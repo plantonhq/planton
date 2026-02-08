@@ -9,7 +9,7 @@ This document provides comprehensive examples of `GcpProject` resource configura
 A minimal configuration for a development/sandbox project. This keeps the default network for quick iteration.
 
 ```yaml
-apiVersion: gcp.project.planton.cloud/v1
+apiVersion: gcp.openmcf.org/v1
 kind: GcpProject
 metadata:
   name: dev-sandbox
@@ -36,7 +36,7 @@ spec:
 A standard project configuration with commonly used APIs enabled.
 
 ```yaml
-apiVersion: gcp.project.planton.cloud/v1
+apiVersion: gcp.openmcf.org/v1
 kind: GcpProject
 metadata:
   name: staging-api-service
@@ -69,7 +69,7 @@ spec:
 A production project with comprehensive security, governance labels, deletion protection, and all essential APIs.
 
 ```yaml
-apiVersion: gcp.project.planton.cloud/v1
+apiVersion: gcp.openmcf.org/v1
 kind: GcpProject
 metadata:
   name: prod-payment-processing
@@ -112,7 +112,7 @@ spec:
 Some organizations prefer flat hierarchies or have specific projects directly under the organization node.
 
 ```yaml
-apiVersion: gcp.project.planton.cloud/v1
+apiVersion: gcp.openmcf.org/v1
 kind: GcpProject
 metadata:
   name: shared-networking
@@ -141,7 +141,7 @@ spec:
 Sometimes IAM is managed separately. This example omits the `ownerMember` field.
 
 ```yaml
-apiVersion: gcp.project.planton.cloud/v1
+apiVersion: gcp.openmcf.org/v1
 kind: GcpProject
 metadata:
   name: demo-project
@@ -167,7 +167,7 @@ spec:
 A project optimized for data science and machine learning workloads.
 
 ```yaml
-apiVersion: gcp.project.planton.cloud/v1
+apiVersion: gcp.openmcf.org/v1
 kind: GcpProject
 metadata:
   name: ml-research
@@ -201,7 +201,7 @@ spec:
 Using a service account (e.g., for CI/CD automation) as the project owner.
 
 ```yaml
-apiVersion: gcp.project.planton.cloud/v1
+apiVersion: gcp.openmcf.org/v1
 kind: GcpProject
 metadata:
   name: ci-automation
@@ -231,7 +231,7 @@ spec:
 A project configured for a multi-region application with database and caching services.
 
 ```yaml
-apiVersion: gcp.project.planton.cloud/v1
+apiVersion: gcp.openmcf.org/v1
 kind: GcpProject
 metadata:
   name: prod-global-app

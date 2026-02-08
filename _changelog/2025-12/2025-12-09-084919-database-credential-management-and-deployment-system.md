@@ -517,8 +517,8 @@ After completing the backend credential management and Docker deployment fixes, 
 
 **Files Changed**:
 
-- **Deleted**: `app/frontend/public/images/planton-cloud-logo-dark.svg`
-- **Modified**: `app/frontend/public/images/planton-cloud-logo.svg` - Updated logo SVG
+- **Deleted**: `app/frontend/public/images/planton-logo-dark.svg`
+- **Modified**: `app/frontend/public/images/planton-logo.svg` - Updated logo SVG
 - **Modified**: `app/frontend/src/components/shared/icon/icon.tsx` - Removed dark mode logo support, updated viewBox
 
 **Details**:
@@ -731,8 +731,8 @@ Total freed: ~27GB
 ### Frontend
 
 - `app/frontend/src/components/shared/icon/icon.tsx` - Removed dark mode logo support, updated logo viewBox
-- `app/frontend/public/images/planton-cloud-logo-dark.svg` - Deleted (no longer needed)
-- `app/frontend/public/images/planton-cloud-logo.svg` - Updated logo SVG
+- `app/frontend/public/images/planton-logo-dark.svg` - Deleted (no longer needed)
+- `app/frontend/public/images/planton-logo.svg` - Updated logo SVG
 
 ### Total Statistics
 

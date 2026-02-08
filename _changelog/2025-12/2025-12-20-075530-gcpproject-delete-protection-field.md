@@ -102,7 +102,7 @@ resource "google_project" "this" {
 ### YAML Manifest
 
 ```yaml
-apiVersion: gcp.project.planton.cloud/v1
+apiVersion: gcp.openmcf.org/v1
 kind: GcpProject
 metadata:
   name: prod-payment-processing
