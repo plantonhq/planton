@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// OpenstackProviderConfig defines the credentials and connection parameters required to interact
+// OpenStackProviderConfig defines the credentials and connection parameters required to interact
 // with an OpenStack cloud. This message supports multiple authentication methods via the
 // `credentials` oneof, reflecting OpenStack's flexible identity model (Keystone).
 //
@@ -37,7 +37,7 @@ const (
 // For more information:
 // - Terraform provider docs: https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs
 // - OpenStack authentication: https://docs.openstack.org/keystone/latest/user/application_credentials.html
-type OpenstackProviderConfig struct {
+type OpenStackProviderConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// auth_url is the Identity (Keystone) authentication endpoint URL.
 	// This is the entry point for all OpenStack API authentication.
@@ -56,10 +56,10 @@ type OpenstackProviderConfig struct {
 	//
 	// Types that are valid to be assigned to Credentials:
 	//
-	//	*OpenstackProviderConfig_Password
-	//	*OpenstackProviderConfig_ApplicationCredential
-	//	*OpenstackProviderConfig_Token
-	Credentials isOpenstackProviderConfig_Credentials `protobuf_oneof:"credentials"`
+	//	*OpenStackProviderConfig_Password
+	//	*OpenStackProviderConfig_ApplicationCredential
+	//	*OpenStackProviderConfig_Token
+	Credentials isOpenStackProviderConfig_Credentials `protobuf_oneof:"credentials"`
 	// tenant_name is the name of the OpenStack project (tenant) to scope operations to.
 	// Required for password and token authentication; not needed for application credentials.
 	// Also known as project_name.
@@ -104,20 +104,20 @@ type OpenstackProviderConfig struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *OpenstackProviderConfig) Reset() {
-	*x = OpenstackProviderConfig{}
+func (x *OpenStackProviderConfig) Reset() {
+	*x = OpenStackProviderConfig{}
 	mi := &file_org_openmcf_provider_openstack_provider_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *OpenstackProviderConfig) String() string {
+func (x *OpenStackProviderConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*OpenstackProviderConfig) ProtoMessage() {}
+func (*OpenStackProviderConfig) ProtoMessage() {}
 
-func (x *OpenstackProviderConfig) ProtoReflect() protoreflect.Message {
+func (x *OpenStackProviderConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_openstack_provider_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -129,158 +129,158 @@ func (x *OpenstackProviderConfig) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use OpenstackProviderConfig.ProtoReflect.Descriptor instead.
-func (*OpenstackProviderConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use OpenStackProviderConfig.ProtoReflect.Descriptor instead.
+func (*OpenStackProviderConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_openstack_provider_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *OpenstackProviderConfig) GetAuthUrl() string {
+func (x *OpenStackProviderConfig) GetAuthUrl() string {
 	if x != nil {
 		return x.AuthUrl
 	}
 	return ""
 }
 
-func (x *OpenstackProviderConfig) GetRegion() string {
+func (x *OpenStackProviderConfig) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *OpenstackProviderConfig) GetCredentials() isOpenstackProviderConfig_Credentials {
+func (x *OpenStackProviderConfig) GetCredentials() isOpenStackProviderConfig_Credentials {
 	if x != nil {
 		return x.Credentials
 	}
 	return nil
 }
 
-func (x *OpenstackProviderConfig) GetPassword() *OpenstackPasswordCredentials {
+func (x *OpenStackProviderConfig) GetPassword() *OpenStackPasswordCredentials {
 	if x != nil {
-		if x, ok := x.Credentials.(*OpenstackProviderConfig_Password); ok {
+		if x, ok := x.Credentials.(*OpenStackProviderConfig_Password); ok {
 			return x.Password
 		}
 	}
 	return nil
 }
 
-func (x *OpenstackProviderConfig) GetApplicationCredential() *OpenstackApplicationCredentials {
+func (x *OpenStackProviderConfig) GetApplicationCredential() *OpenStackApplicationCredentials {
 	if x != nil {
-		if x, ok := x.Credentials.(*OpenstackProviderConfig_ApplicationCredential); ok {
+		if x, ok := x.Credentials.(*OpenStackProviderConfig_ApplicationCredential); ok {
 			return x.ApplicationCredential
 		}
 	}
 	return nil
 }
 
-func (x *OpenstackProviderConfig) GetToken() *OpenstackTokenCredentials {
+func (x *OpenStackProviderConfig) GetToken() *OpenStackTokenCredentials {
 	if x != nil {
-		if x, ok := x.Credentials.(*OpenstackProviderConfig_Token); ok {
+		if x, ok := x.Credentials.(*OpenStackProviderConfig_Token); ok {
 			return x.Token
 		}
 	}
 	return nil
 }
 
-func (x *OpenstackProviderConfig) GetTenantName() string {
+func (x *OpenStackProviderConfig) GetTenantName() string {
 	if x != nil {
 		return x.TenantName
 	}
 	return ""
 }
 
-func (x *OpenstackProviderConfig) GetTenantId() string {
+func (x *OpenStackProviderConfig) GetTenantId() string {
 	if x != nil {
 		return x.TenantId
 	}
 	return ""
 }
 
-func (x *OpenstackProviderConfig) GetUserDomainName() string {
+func (x *OpenStackProviderConfig) GetUserDomainName() string {
 	if x != nil {
 		return x.UserDomainName
 	}
 	return ""
 }
 
-func (x *OpenstackProviderConfig) GetUserDomainId() string {
+func (x *OpenStackProviderConfig) GetUserDomainId() string {
 	if x != nil {
 		return x.UserDomainId
 	}
 	return ""
 }
 
-func (x *OpenstackProviderConfig) GetProjectDomainName() string {
+func (x *OpenStackProviderConfig) GetProjectDomainName() string {
 	if x != nil {
 		return x.ProjectDomainName
 	}
 	return ""
 }
 
-func (x *OpenstackProviderConfig) GetProjectDomainId() string {
+func (x *OpenStackProviderConfig) GetProjectDomainId() string {
 	if x != nil {
 		return x.ProjectDomainId
 	}
 	return ""
 }
 
-func (x *OpenstackProviderConfig) GetInsecure() bool {
+func (x *OpenStackProviderConfig) GetInsecure() bool {
 	if x != nil {
 		return x.Insecure
 	}
 	return false
 }
 
-func (x *OpenstackProviderConfig) GetCacertFile() string {
+func (x *OpenStackProviderConfig) GetCacertFile() string {
 	if x != nil {
 		return x.CacertFile
 	}
 	return ""
 }
 
-func (x *OpenstackProviderConfig) GetEndpointType() string {
+func (x *OpenStackProviderConfig) GetEndpointType() string {
 	if x != nil {
 		return x.EndpointType
 	}
 	return ""
 }
 
-type isOpenstackProviderConfig_Credentials interface {
-	isOpenstackProviderConfig_Credentials()
+type isOpenStackProviderConfig_Credentials interface {
+	isOpenStackProviderConfig_Credentials()
 }
 
-type OpenstackProviderConfig_Password struct {
+type OpenStackProviderConfig_Password struct {
 	// password authenticates using a username and password.
 	// This is the most common method for interactive use and requires
 	// project/domain context fields to be set.
-	Password *OpenstackPasswordCredentials `protobuf:"bytes,10,opt,name=password,proto3,oneof"`
+	Password *OpenStackPasswordCredentials `protobuf:"bytes,10,opt,name=password,proto3,oneof"`
 }
 
-type OpenstackProviderConfig_ApplicationCredential struct {
+type OpenStackProviderConfig_ApplicationCredential struct {
 	// application_credential authenticates using pre-scoped application credentials.
 	// This is the recommended method for automation and CI/CD pipelines.
 	// Application credentials are scoped to a specific project and set of roles,
 	// eliminating the need for separate project/domain context fields.
-	ApplicationCredential *OpenstackApplicationCredentials `protobuf:"bytes,11,opt,name=application_credential,json=applicationCredential,proto3,oneof"`
+	ApplicationCredential *OpenStackApplicationCredentials `protobuf:"bytes,11,opt,name=application_credential,json=applicationCredential,proto3,oneof"`
 }
 
-type OpenstackProviderConfig_Token struct {
+type OpenStackProviderConfig_Token struct {
 	// token authenticates using a pre-existing Keystone token.
 	// Useful for short-lived access or when delegating from another service.
-	Token *OpenstackTokenCredentials `protobuf:"bytes,12,opt,name=token,proto3,oneof"`
+	Token *OpenStackTokenCredentials `protobuf:"bytes,12,opt,name=token,proto3,oneof"`
 }
 
-func (*OpenstackProviderConfig_Password) isOpenstackProviderConfig_Credentials() {}
+func (*OpenStackProviderConfig_Password) isOpenStackProviderConfig_Credentials() {}
 
-func (*OpenstackProviderConfig_ApplicationCredential) isOpenstackProviderConfig_Credentials() {}
+func (*OpenStackProviderConfig_ApplicationCredential) isOpenStackProviderConfig_Credentials() {}
 
-func (*OpenstackProviderConfig_Token) isOpenstackProviderConfig_Credentials() {}
+func (*OpenStackProviderConfig_Token) isOpenStackProviderConfig_Credentials() {}
 
-// OpenstackPasswordCredentials provides username/password authentication.
+// OpenStackPasswordCredentials provides username/password authentication.
 // This method authenticates directly with Keystone using user credentials.
-// It requires project/domain context to be set on the parent OpenstackProviderConfig
+// It requires project/domain context to be set on the parent OpenStackProviderConfig
 // so that the resulting token is scoped to the correct project.
-type OpenstackPasswordCredentials struct {
+type OpenStackPasswordCredentials struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// user_name is the OpenStack username.
 	// Environment variable: OS_USERNAME
@@ -292,20 +292,20 @@ type OpenstackPasswordCredentials struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *OpenstackPasswordCredentials) Reset() {
-	*x = OpenstackPasswordCredentials{}
+func (x *OpenStackPasswordCredentials) Reset() {
+	*x = OpenStackPasswordCredentials{}
 	mi := &file_org_openmcf_provider_openstack_provider_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *OpenstackPasswordCredentials) String() string {
+func (x *OpenStackPasswordCredentials) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*OpenstackPasswordCredentials) ProtoMessage() {}
+func (*OpenStackPasswordCredentials) ProtoMessage() {}
 
-func (x *OpenstackPasswordCredentials) ProtoReflect() protoreflect.Message {
+func (x *OpenStackPasswordCredentials) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_openstack_provider_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -317,32 +317,32 @@ func (x *OpenstackPasswordCredentials) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use OpenstackPasswordCredentials.ProtoReflect.Descriptor instead.
-func (*OpenstackPasswordCredentials) Descriptor() ([]byte, []int) {
+// Deprecated: Use OpenStackPasswordCredentials.ProtoReflect.Descriptor instead.
+func (*OpenStackPasswordCredentials) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_openstack_provider_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *OpenstackPasswordCredentials) GetUserName() string {
+func (x *OpenStackPasswordCredentials) GetUserName() string {
 	if x != nil {
 		return x.UserName
 	}
 	return ""
 }
 
-func (x *OpenstackPasswordCredentials) GetPassword() string {
+func (x *OpenStackPasswordCredentials) GetPassword() string {
 	if x != nil {
 		return x.Password
 	}
 	return ""
 }
 
-// OpenstackApplicationCredentials provides authentication via application credentials.
+// OpenStackApplicationCredentials provides authentication via application credentials.
 // Application credentials are pre-scoped to a specific project and set of roles,
 // making them ideal for automation. They do not require separate project/domain context.
 //
 // Either id or name must be provided (along with secret).
 // Using id is recommended as it is globally unique; name requires the parent user context.
-type OpenstackApplicationCredentials struct {
+type OpenStackApplicationCredentials struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the unique identifier of the application credential.
 	// Preferred over name as it is globally unique.
@@ -360,20 +360,20 @@ type OpenstackApplicationCredentials struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *OpenstackApplicationCredentials) Reset() {
-	*x = OpenstackApplicationCredentials{}
+func (x *OpenStackApplicationCredentials) Reset() {
+	*x = OpenStackApplicationCredentials{}
 	mi := &file_org_openmcf_provider_openstack_provider_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *OpenstackApplicationCredentials) String() string {
+func (x *OpenStackApplicationCredentials) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*OpenstackApplicationCredentials) ProtoMessage() {}
+func (*OpenStackApplicationCredentials) ProtoMessage() {}
 
-func (x *OpenstackApplicationCredentials) ProtoReflect() protoreflect.Message {
+func (x *OpenStackApplicationCredentials) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_openstack_provider_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -385,36 +385,36 @@ func (x *OpenstackApplicationCredentials) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use OpenstackApplicationCredentials.ProtoReflect.Descriptor instead.
-func (*OpenstackApplicationCredentials) Descriptor() ([]byte, []int) {
+// Deprecated: Use OpenStackApplicationCredentials.ProtoReflect.Descriptor instead.
+func (*OpenStackApplicationCredentials) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_openstack_provider_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *OpenstackApplicationCredentials) GetId() string {
+func (x *OpenStackApplicationCredentials) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *OpenstackApplicationCredentials) GetName() string {
+func (x *OpenStackApplicationCredentials) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *OpenstackApplicationCredentials) GetSecret() string {
+func (x *OpenStackApplicationCredentials) GetSecret() string {
 	if x != nil {
 		return x.Secret
 	}
 	return ""
 }
 
-// OpenstackTokenCredentials provides authentication using a pre-existing Keystone token.
+// OpenStackTokenCredentials provides authentication using a pre-existing Keystone token.
 // Tokens are short-lived and are typically obtained from a prior authentication step.
 // Useful for delegated access patterns or when integrating with external auth systems.
-type OpenstackTokenCredentials struct {
+type OpenStackTokenCredentials struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// token is the pre-authenticated Keystone token string.
 	// Environment variable: OS_TOKEN
@@ -423,20 +423,20 @@ type OpenstackTokenCredentials struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *OpenstackTokenCredentials) Reset() {
-	*x = OpenstackTokenCredentials{}
+func (x *OpenStackTokenCredentials) Reset() {
+	*x = OpenStackTokenCredentials{}
 	mi := &file_org_openmcf_provider_openstack_provider_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *OpenstackTokenCredentials) String() string {
+func (x *OpenStackTokenCredentials) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*OpenstackTokenCredentials) ProtoMessage() {}
+func (*OpenStackTokenCredentials) ProtoMessage() {}
 
-func (x *OpenstackTokenCredentials) ProtoReflect() protoreflect.Message {
+func (x *OpenStackTokenCredentials) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_openstack_provider_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -448,12 +448,12 @@ func (x *OpenstackTokenCredentials) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use OpenstackTokenCredentials.ProtoReflect.Descriptor instead.
-func (*OpenstackTokenCredentials) Descriptor() ([]byte, []int) {
+// Deprecated: Use OpenStackTokenCredentials.ProtoReflect.Descriptor instead.
+func (*OpenStackTokenCredentials) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_openstack_provider_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *OpenstackTokenCredentials) GetToken() string {
+func (x *OpenStackTokenCredentials) GetToken() string {
 	if x != nil {
 		return x.Token
 	}
@@ -465,13 +465,13 @@ var File_org_openmcf_provider_openstack_provider_proto protoreflect.FileDescript
 const file_org_openmcf_provider_openstack_provider_proto_rawDesc = "" +
 	"\n" +
 	"-org/openmcf/provider/openstack/provider.proto\x12\x1eorg.openmcf.provider.openstack\x1a\x1bbuf/validate/validate.proto\"\xd8\x05\n" +
-	"\x17OpenstackProviderConfig\x12!\n" +
+	"\x17OpenStackProviderConfig\x12!\n" +
 	"\bauth_url\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\aauthUrl\x12\x16\n" +
 	"\x06region\x18\x02 \x01(\tR\x06region\x12Z\n" +
 	"\bpassword\x18\n" +
-	" \x01(\v2<.org.openmcf.provider.openstack.OpenstackPasswordCredentialsH\x00R\bpassword\x12x\n" +
-	"\x16application_credential\x18\v \x01(\v2?.org.openmcf.provider.openstack.OpenstackApplicationCredentialsH\x00R\x15applicationCredential\x12Q\n" +
-	"\x05token\x18\f \x01(\v29.org.openmcf.provider.openstack.OpenstackTokenCredentialsH\x00R\x05token\x12\x1f\n" +
+	" \x01(\v2<.org.openmcf.provider.openstack.OpenStackPasswordCredentialsH\x00R\bpassword\x12x\n" +
+	"\x16application_credential\x18\v \x01(\v2?.org.openmcf.provider.openstack.OpenStackApplicationCredentialsH\x00R\x15applicationCredential\x12Q\n" +
+	"\x05token\x18\f \x01(\v29.org.openmcf.provider.openstack.OpenStackTokenCredentialsH\x00R\x05token\x12\x1f\n" +
 	"\vtenant_name\x18\x14 \x01(\tR\n" +
 	"tenantName\x12\x1b\n" +
 	"\ttenant_id\x18\x15 \x01(\tR\btenantId\x12(\n" +
@@ -484,14 +484,14 @@ const file_org_openmcf_provider_openstack_provider_proto_rawDesc = "" +
 	"cacertFile\x12#\n" +
 	"\rendpoint_type\x182 \x01(\tR\fendpointTypeB\r\n" +
 	"\vcredentials\"g\n" +
-	"\x1cOpenstackPasswordCredentials\x12#\n" +
+	"\x1cOpenStackPasswordCredentials\x12#\n" +
 	"\tuser_name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\buserName\x12\"\n" +
 	"\bpassword\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bpassword\"e\n" +
-	"\x1fOpenstackApplicationCredentials\x12\x0e\n" +
+	"\x1fOpenStackApplicationCredentials\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1e\n" +
 	"\x06secret\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06secret\"9\n" +
-	"\x19OpenstackTokenCredentials\x12\x1c\n" +
+	"\x19OpenStackTokenCredentials\x12\x1c\n" +
 	"\x05token\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05tokenB\x91\x02\n" +
 	"\"com.org.openmcf.provider.openstackB\rProviderProtoP\x01Z@github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack\xa2\x02\x04OOPO\xaa\x02\x1eOrg.Openmcf.Provider.Openstack\xca\x02\x1eOrg\\Openmcf\\Provider\\Openstack\xe2\x02*Org\\Openmcf\\Provider\\Openstack\\GPBMetadata\xea\x02!Org::Openmcf::Provider::Openstackb\x06proto3"
 
@@ -509,15 +509,15 @@ func file_org_openmcf_provider_openstack_provider_proto_rawDescGZIP() []byte {
 
 var file_org_openmcf_provider_openstack_provider_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_org_openmcf_provider_openstack_provider_proto_goTypes = []any{
-	(*OpenstackProviderConfig)(nil),         // 0: org.openmcf.provider.openstack.OpenstackProviderConfig
-	(*OpenstackPasswordCredentials)(nil),    // 1: org.openmcf.provider.openstack.OpenstackPasswordCredentials
-	(*OpenstackApplicationCredentials)(nil), // 2: org.openmcf.provider.openstack.OpenstackApplicationCredentials
-	(*OpenstackTokenCredentials)(nil),       // 3: org.openmcf.provider.openstack.OpenstackTokenCredentials
+	(*OpenStackProviderConfig)(nil),         // 0: org.openmcf.provider.openstack.OpenStackProviderConfig
+	(*OpenStackPasswordCredentials)(nil),    // 1: org.openmcf.provider.openstack.OpenStackPasswordCredentials
+	(*OpenStackApplicationCredentials)(nil), // 2: org.openmcf.provider.openstack.OpenStackApplicationCredentials
+	(*OpenStackTokenCredentials)(nil),       // 3: org.openmcf.provider.openstack.OpenStackTokenCredentials
 }
 var file_org_openmcf_provider_openstack_provider_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.openstack.OpenstackProviderConfig.password:type_name -> org.openmcf.provider.openstack.OpenstackPasswordCredentials
-	2, // 1: org.openmcf.provider.openstack.OpenstackProviderConfig.application_credential:type_name -> org.openmcf.provider.openstack.OpenstackApplicationCredentials
-	3, // 2: org.openmcf.provider.openstack.OpenstackProviderConfig.token:type_name -> org.openmcf.provider.openstack.OpenstackTokenCredentials
+	1, // 0: org.openmcf.provider.openstack.OpenStackProviderConfig.password:type_name -> org.openmcf.provider.openstack.OpenStackPasswordCredentials
+	2, // 1: org.openmcf.provider.openstack.OpenStackProviderConfig.application_credential:type_name -> org.openmcf.provider.openstack.OpenStackApplicationCredentials
+	3, // 2: org.openmcf.provider.openstack.OpenStackProviderConfig.token:type_name -> org.openmcf.provider.openstack.OpenStackTokenCredentials
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
@@ -531,9 +531,9 @@ func file_org_openmcf_provider_openstack_provider_proto_init() {
 		return
 	}
 	file_org_openmcf_provider_openstack_provider_proto_msgTypes[0].OneofWrappers = []any{
-		(*OpenstackProviderConfig_Password)(nil),
-		(*OpenstackProviderConfig_ApplicationCredential)(nil),
-		(*OpenstackProviderConfig_Token)(nil),
+		(*OpenStackProviderConfig_Password)(nil),
+		(*OpenStackProviderConfig_ApplicationCredential)(nil),
+		(*OpenStackProviderConfig_Token)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

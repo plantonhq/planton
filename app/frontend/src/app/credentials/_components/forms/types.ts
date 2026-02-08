@@ -9,7 +9,7 @@ import { AzureProviderConfig } from '@/gen/org/openmcf/provider/azure/provider_p
 // Flattened form data for OpenStack credentials.
 // The proto uses a oneof for credentials, which doesn't map cleanly to react-hook-form.
 // This flat interface is converted to the proper proto structure in handleSave.
-export interface OpenstackFormData {
+export interface OpenStackFormData {
   authUrl?: string;
   region?: string;
   // Password authentication
@@ -44,7 +44,7 @@ export type CredentialFormData = {
   gcp?: Partial<GcpProviderConfig>;
   aws?: Partial<AwsProviderConfig>;
   azure?: Partial<AzureProviderConfig>;
-  openstack?: OpenstackFormData;
+  openstack?: OpenStackFormData;
   // Auth method discriminator for the OpenStack credential form (not part of the proto)
   openstackAuthMethod?: 'password' | 'application_credential' | 'token';
 };

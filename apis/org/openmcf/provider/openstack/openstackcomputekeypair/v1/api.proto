@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackcomputekeypair.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/openstack/openstackcomputekeypair/v1/spec.proto";
+import "org/openmcf/provider/openstack/openstackcomputekeypair/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OpenStackComputeKeypair is a Kubernetes Resource Model (KRM) style resource for managing
+// SSH keypairs in OpenStack Nova (Compute service).
+//
+// Keypairs are used to authenticate SSH access to compute instances. This component supports
+// both importing existing public keys and generating new keypairs via OpenStack.
+message OpenStackComputeKeypair {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'openstack.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OpenStackComputeKeypair'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OpenStackComputeKeypairSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OpenStackComputeKeypairStatus status = 5;
+}
+
+// OpenStackComputeKeypairStatus represents the observed state of an OpenStack compute keypair.
+message OpenStackComputeKeypairStatus {
+  // stack-outputs from the IaC deployment
+  OpenStackComputeKeypairStackOutputs outputs = 1;
+}

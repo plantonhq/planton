@@ -11,10 +11,10 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/openstack/provider.proto.
  */
 export const file_org_openmcf_provider_openstack_provider: GenFile = /*@__PURE__*/
-  fileDesc("Ci1vcmcvb3Blbm1jZi9wcm92aWRlci9vcGVuc3RhY2svcHJvdmlkZXIucHJvdG8SHm9yZy5vcGVubWNmLnByb3ZpZGVyLm9wZW5zdGFjayKjBAoXT3BlbnN0YWNrUHJvdmlkZXJDb25maWcSGAoIYXV0aF91cmwYASABKAlCBrpIA8gBARIOCgZyZWdpb24YAiABKAkSUAoIcGFzc3dvcmQYCiABKAsyPC5vcmcub3Blbm1jZi5wcm92aWRlci5vcGVuc3RhY2suT3BlbnN0YWNrUGFzc3dvcmRDcmVkZW50aWFsc0gAEmEKFmFwcGxpY2F0aW9uX2NyZWRlbnRpYWwYCyABKAsyPy5vcmcub3Blbm1jZi5wcm92aWRlci5vcGVuc3RhY2suT3BlbnN0YWNrQXBwbGljYXRpb25DcmVkZW50aWFsc0gAEkoKBXRva2VuGAwgASgLMjkub3JnLm9wZW5tY2YucHJvdmlkZXIub3BlbnN0YWNrLk9wZW5zdGFja1Rva2VuQ3JlZGVudGlhbHNIABITCgt0ZW5hbnRfbmFtZRgUIAEoCRIRCgl0ZW5hbnRfaWQYFSABKAkSGAoQdXNlcl9kb21haW5fbmFtZRgeIAEoCRIWCg51c2VyX2RvbWFpbl9pZBgfIAEoCRIbChNwcm9qZWN0X2RvbWFpbl9uYW1lGCAgASgJEhkKEXByb2plY3RfZG9tYWluX2lkGCEgASgJEhAKCGluc2VjdXJlGCggASgIEhMKC2NhY2VydF9maWxlGCkgASgJEhUKDWVuZHBvaW50X3R5cGUYMiABKAlCDQoLY3JlZGVudGlhbHMiUwocT3BlbnN0YWNrUGFzc3dvcmRDcmVkZW50aWFscxIZCgl1c2VyX25hbWUYASABKAlCBrpIA8gBARIYCghwYXNzd29yZBgCIAEoCUIGukgDyAEBIlMKH09wZW5zdGFja0FwcGxpY2F0aW9uQ3JlZGVudGlhbHMSCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRIWCgZzZWNyZXQYAyABKAlCBrpIA8gBASIyChlPcGVuc3RhY2tUb2tlbkNyZWRlbnRpYWxzEhUKBXRva2VuGAEgASgJQga6SAPIAQFCkQIKImNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5vcGVuc3RhY2tCDVByb3ZpZGVyUHJvdG9QAVpAZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL29wZW5zdGFja6ICBE9PUE+qAh5PcmcuT3Blbm1jZi5Qcm92aWRlci5PcGVuc3RhY2vKAh5PcmdcT3Blbm1jZlxQcm92aWRlclxPcGVuc3RhY2viAipPcmdcT3Blbm1jZlxQcm92aWRlclxPcGVuc3RhY2tcR1BCTWV0YWRhdGHqAiFPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpPcGVuc3RhY2tiBnByb3RvMw", [file_buf_validate_validate]);
+  fileDesc("Ci1vcmcvb3Blbm1jZi9wcm92aWRlci9vcGVuc3RhY2svcHJvdmlkZXIucHJvdG8SHm9yZy5vcGVubWNmLnByb3ZpZGVyLm9wZW5zdGFjayKjBAoXT3BlblN0YWNrUHJvdmlkZXJDb25maWcSGAoIYXV0aF91cmwYASABKAlCBrpIA8gBARIOCgZyZWdpb24YAiABKAkSUAoIcGFzc3dvcmQYCiABKAsyPC5vcmcub3Blbm1jZi5wcm92aWRlci5vcGVuc3RhY2suT3BlblN0YWNrUGFzc3dvcmRDcmVkZW50aWFsc0gAEmEKFmFwcGxpY2F0aW9uX2NyZWRlbnRpYWwYCyABKAsyPy5vcmcub3Blbm1jZi5wcm92aWRlci5vcGVuc3RhY2suT3BlblN0YWNrQXBwbGljYXRpb25DcmVkZW50aWFsc0gAEkoKBXRva2VuGAwgASgLMjkub3JnLm9wZW5tY2YucHJvdmlkZXIub3BlbnN0YWNrLk9wZW5TdGFja1Rva2VuQ3JlZGVudGlhbHNIABITCgt0ZW5hbnRfbmFtZRgUIAEoCRIRCgl0ZW5hbnRfaWQYFSABKAkSGAoQdXNlcl9kb21haW5fbmFtZRgeIAEoCRIWCg51c2VyX2RvbWFpbl9pZBgfIAEoCRIbChNwcm9qZWN0X2RvbWFpbl9uYW1lGCAgASgJEhkKEXByb2plY3RfZG9tYWluX2lkGCEgASgJEhAKCGluc2VjdXJlGCggASgIEhMKC2NhY2VydF9maWxlGCkgASgJEhUKDWVuZHBvaW50X3R5cGUYMiABKAlCDQoLY3JlZGVudGlhbHMiUwocT3BlblN0YWNrUGFzc3dvcmRDcmVkZW50aWFscxIZCgl1c2VyX25hbWUYASABKAlCBrpIA8gBARIYCghwYXNzd29yZBgCIAEoCUIGukgDyAEBIlMKH09wZW5TdGFja0FwcGxpY2F0aW9uQ3JlZGVudGlhbHMSCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRIWCgZzZWNyZXQYAyABKAlCBrpIA8gBASIyChlPcGVuU3RhY2tUb2tlbkNyZWRlbnRpYWxzEhUKBXRva2VuGAEgASgJQga6SAPIAQFCkQIKImNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5vcGVuc3RhY2tCDVByb3ZpZGVyUHJvdG9QAVpAZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL29wZW5zdGFja6ICBE9PUE+qAh5PcmcuT3Blbm1jZi5Qcm92aWRlci5PcGVuc3RhY2vKAh5PcmdcT3Blbm1jZlxQcm92aWRlclxPcGVuc3RhY2viAipPcmdcT3Blbm1jZlxQcm92aWRlclxPcGVuc3RhY2tcR1BCTWV0YWRhdGHqAiFPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpPcGVuc3RhY2tiBnByb3RvMw", [file_buf_validate_validate]);
 
 /**
- * OpenstackProviderConfig defines the credentials and connection parameters required to interact
+ * OpenStackProviderConfig defines the credentials and connection parameters required to interact
  * with an OpenStack cloud. This message supports multiple authentication methods via the
  * `credentials` oneof, reflecting OpenStack's flexible identity model (Keystone).
  *
@@ -30,9 +30,9 @@ export const file_org_openmcf_provider_openstack_provider: GenFile = /*@__PURE__
  * - Terraform provider docs: https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs
  * - OpenStack authentication: https://docs.openstack.org/keystone/latest/user/application_credentials.html
  *
- * @generated from message org.openmcf.provider.openstack.OpenstackProviderConfig
+ * @generated from message org.openmcf.provider.openstack.OpenStackProviderConfig
  */
-export type OpenstackProviderConfig = Message<"org.openmcf.provider.openstack.OpenstackProviderConfig"> & {
+export type OpenStackProviderConfig = Message<"org.openmcf.provider.openstack.OpenStackProviderConfig"> & {
   /**
    * auth_url is the Identity (Keystone) authentication endpoint URL.
    * This is the entry point for all OpenStack API authentication.
@@ -59,7 +59,7 @@ export type OpenstackProviderConfig = Message<"org.openmcf.provider.openstack.Op
    * credentials specifies the authentication method and its associated fields.
    * Exactly one method must be provided.
    *
-   * @generated from oneof org.openmcf.provider.openstack.OpenstackProviderConfig.credentials
+   * @generated from oneof org.openmcf.provider.openstack.OpenStackProviderConfig.credentials
    */
   credentials: {
     /**
@@ -67,9 +67,9 @@ export type OpenstackProviderConfig = Message<"org.openmcf.provider.openstack.Op
      * This is the most common method for interactive use and requires
      * project/domain context fields to be set.
      *
-     * @generated from field: org.openmcf.provider.openstack.OpenstackPasswordCredentials password = 10;
+     * @generated from field: org.openmcf.provider.openstack.OpenStackPasswordCredentials password = 10;
      */
-    value: OpenstackPasswordCredentials;
+    value: OpenStackPasswordCredentials;
     case: "password";
   } | {
     /**
@@ -78,18 +78,18 @@ export type OpenstackProviderConfig = Message<"org.openmcf.provider.openstack.Op
      * Application credentials are scoped to a specific project and set of roles,
      * eliminating the need for separate project/domain context fields.
      *
-     * @generated from field: org.openmcf.provider.openstack.OpenstackApplicationCredentials application_credential = 11;
+     * @generated from field: org.openmcf.provider.openstack.OpenStackApplicationCredentials application_credential = 11;
      */
-    value: OpenstackApplicationCredentials;
+    value: OpenStackApplicationCredentials;
     case: "applicationCredential";
   } | {
     /**
      * token authenticates using a pre-existing Keystone token.
      * Useful for short-lived access or when delegating from another service.
      *
-     * @generated from field: org.openmcf.provider.openstack.OpenstackTokenCredentials token = 12;
+     * @generated from field: org.openmcf.provider.openstack.OpenStackTokenCredentials token = 12;
      */
-    value: OpenstackTokenCredentials;
+    value: OpenStackTokenCredentials;
     case: "token";
   } | { case: undefined; value?: undefined };
 
@@ -180,21 +180,21 @@ export type OpenstackProviderConfig = Message<"org.openmcf.provider.openstack.Op
 };
 
 /**
- * Describes the message org.openmcf.provider.openstack.OpenstackProviderConfig.
- * Use `create(OpenstackProviderConfigSchema)` to create a new message.
+ * Describes the message org.openmcf.provider.openstack.OpenStackProviderConfig.
+ * Use `create(OpenStackProviderConfigSchema)` to create a new message.
  */
-export const OpenstackProviderConfigSchema: GenMessage<OpenstackProviderConfig> = /*@__PURE__*/
+export const OpenStackProviderConfigSchema: GenMessage<OpenStackProviderConfig> = /*@__PURE__*/
   messageDesc(file_org_openmcf_provider_openstack_provider, 0);
 
 /**
- * OpenstackPasswordCredentials provides username/password authentication.
+ * OpenStackPasswordCredentials provides username/password authentication.
  * This method authenticates directly with Keystone using user credentials.
- * It requires project/domain context to be set on the parent OpenstackProviderConfig
+ * It requires project/domain context to be set on the parent OpenStackProviderConfig
  * so that the resulting token is scoped to the correct project.
  *
- * @generated from message org.openmcf.provider.openstack.OpenstackPasswordCredentials
+ * @generated from message org.openmcf.provider.openstack.OpenStackPasswordCredentials
  */
-export type OpenstackPasswordCredentials = Message<"org.openmcf.provider.openstack.OpenstackPasswordCredentials"> & {
+export type OpenStackPasswordCredentials = Message<"org.openmcf.provider.openstack.OpenStackPasswordCredentials"> & {
   /**
    * user_name is the OpenStack username.
    * Environment variable: OS_USERNAME
@@ -213,23 +213,23 @@ export type OpenstackPasswordCredentials = Message<"org.openmcf.provider.opensta
 };
 
 /**
- * Describes the message org.openmcf.provider.openstack.OpenstackPasswordCredentials.
- * Use `create(OpenstackPasswordCredentialsSchema)` to create a new message.
+ * Describes the message org.openmcf.provider.openstack.OpenStackPasswordCredentials.
+ * Use `create(OpenStackPasswordCredentialsSchema)` to create a new message.
  */
-export const OpenstackPasswordCredentialsSchema: GenMessage<OpenstackPasswordCredentials> = /*@__PURE__*/
+export const OpenStackPasswordCredentialsSchema: GenMessage<OpenStackPasswordCredentials> = /*@__PURE__*/
   messageDesc(file_org_openmcf_provider_openstack_provider, 1);
 
 /**
- * OpenstackApplicationCredentials provides authentication via application credentials.
+ * OpenStackApplicationCredentials provides authentication via application credentials.
  * Application credentials are pre-scoped to a specific project and set of roles,
  * making them ideal for automation. They do not require separate project/domain context.
  *
  * Either id or name must be provided (along with secret).
  * Using id is recommended as it is globally unique; name requires the parent user context.
  *
- * @generated from message org.openmcf.provider.openstack.OpenstackApplicationCredentials
+ * @generated from message org.openmcf.provider.openstack.OpenStackApplicationCredentials
  */
-export type OpenstackApplicationCredentials = Message<"org.openmcf.provider.openstack.OpenstackApplicationCredentials"> & {
+export type OpenStackApplicationCredentials = Message<"org.openmcf.provider.openstack.OpenStackApplicationCredentials"> & {
   /**
    * id is the unique identifier of the application credential.
    * Preferred over name as it is globally unique.
@@ -259,20 +259,20 @@ export type OpenstackApplicationCredentials = Message<"org.openmcf.provider.open
 };
 
 /**
- * Describes the message org.openmcf.provider.openstack.OpenstackApplicationCredentials.
- * Use `create(OpenstackApplicationCredentialsSchema)` to create a new message.
+ * Describes the message org.openmcf.provider.openstack.OpenStackApplicationCredentials.
+ * Use `create(OpenStackApplicationCredentialsSchema)` to create a new message.
  */
-export const OpenstackApplicationCredentialsSchema: GenMessage<OpenstackApplicationCredentials> = /*@__PURE__*/
+export const OpenStackApplicationCredentialsSchema: GenMessage<OpenStackApplicationCredentials> = /*@__PURE__*/
   messageDesc(file_org_openmcf_provider_openstack_provider, 2);
 
 /**
- * OpenstackTokenCredentials provides authentication using a pre-existing Keystone token.
+ * OpenStackTokenCredentials provides authentication using a pre-existing Keystone token.
  * Tokens are short-lived and are typically obtained from a prior authentication step.
  * Useful for delegated access patterns or when integrating with external auth systems.
  *
- * @generated from message org.openmcf.provider.openstack.OpenstackTokenCredentials
+ * @generated from message org.openmcf.provider.openstack.OpenStackTokenCredentials
  */
-export type OpenstackTokenCredentials = Message<"org.openmcf.provider.openstack.OpenstackTokenCredentials"> & {
+export type OpenStackTokenCredentials = Message<"org.openmcf.provider.openstack.OpenStackTokenCredentials"> & {
   /**
    * token is the pre-authenticated Keystone token string.
    * Environment variable: OS_TOKEN
@@ -283,9 +283,9 @@ export type OpenstackTokenCredentials = Message<"org.openmcf.provider.openstack.
 };
 
 /**
- * Describes the message org.openmcf.provider.openstack.OpenstackTokenCredentials.
- * Use `create(OpenstackTokenCredentialsSchema)` to create a new message.
+ * Describes the message org.openmcf.provider.openstack.OpenStackTokenCredentials.
+ * Use `create(OpenStackTokenCredentialsSchema)` to create a new message.
  */
-export const OpenstackTokenCredentialsSchema: GenMessage<OpenstackTokenCredentials> = /*@__PURE__*/
+export const OpenStackTokenCredentialsSchema: GenMessage<OpenStackTokenCredentials> = /*@__PURE__*/
   messageDesc(file_org_openmcf_provider_openstack_provider, 3);
 

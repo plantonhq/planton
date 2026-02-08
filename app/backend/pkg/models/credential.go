@@ -106,10 +106,10 @@ type SnowflakeCredential struct {
 	UpdatedAt time.Time          `bson:"updated_at" json:"updated_at"`
 }
 
-// OpenstackCredential represents OpenStack credentials.
+// OpenStackCredential represents OpenStack credentials.
 // Supports three authentication methods: password, application_credential, and token.
 // The AuthMethod field acts as a discriminator to determine which credential fields are active.
-type OpenstackCredential struct {
+type OpenStackCredential struct {
 	ID       primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	Name     string             `bson:"name" json:"name"`
 	AuthURL  string             `bson:"auth_url" json:"auth_url"`

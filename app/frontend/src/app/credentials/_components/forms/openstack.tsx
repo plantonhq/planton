@@ -7,7 +7,7 @@ import { CredentialFormData } from '@/app/credentials/_components/forms/types';
 import { UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { Typography, Divider, Stack } from '@mui/material';
 
-interface OpenstackCredentialFormProps {
+interface OpenStackCredentialFormProps {
   register: UseFormRegister<CredentialFormData>;
   setValue: UseFormSetValue<CredentialFormData>;
   watch: UseFormWatch<CredentialFormData>;
@@ -20,12 +20,12 @@ const AUTH_METHOD_OPTIONS = [
   { label: 'Token', value: 'token' },
 ];
 
-export function OpenstackCredentialForm({
+export function OpenStackCredentialForm({
   register,
   setValue,
   watch,
   disabled,
-}: OpenstackCredentialFormProps) {
+}: OpenStackCredentialFormProps) {
   const authMethod = watch('openstackAuthMethod') || 'application_credential';
 
   const onAuthMethodChange = useCallback(
@@ -55,14 +55,12 @@ export function OpenstackCredentialForm({
         name="Auth URL"
         registerOptions={{ required: true }}
         disabled={disabled}
-        placeholder="https://cloud.example.com:5000/v3"
       />
       <SimpleInput
         register={register}
         path="openstack.region"
         name="Region"
         disabled={disabled}
-        placeholder="RegionOne"
       />
 
       {/* Authentication Method */}
@@ -84,14 +82,12 @@ export function OpenstackCredentialForm({
             path="openstack.applicationCredentialId"
             name="Credential ID"
             disabled={disabled}
-            placeholder="Provide ID or Name"
           />
           <SimpleInput
             register={register}
             path="openstack.applicationCredentialName"
             name="Credential Name"
             disabled={disabled}
-            placeholder="Alternative to ID"
           />
           <SimpleInput
             register={register}
@@ -127,7 +123,6 @@ export function OpenstackCredentialForm({
             path="openstack.userDomainName"
             name="User Domain Name"
             disabled={disabled}
-            placeholder="Default"
           />
           <SimpleInput
             register={register}
@@ -140,7 +135,6 @@ export function OpenstackCredentialForm({
             path="openstack.projectDomainName"
             name="Project Domain Name"
             disabled={disabled}
-            placeholder="Default"
           />
         </>
       )}
@@ -176,7 +170,6 @@ export function OpenstackCredentialForm({
           path="openstack.endpointType"
           name="Endpoint Type"
           disabled={disabled}
-          placeholder="public"
         />
         <SimpleInput
           register={register}

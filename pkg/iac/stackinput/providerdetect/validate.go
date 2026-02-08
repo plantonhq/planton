@@ -68,7 +68,7 @@ func getProviderConfigProto(provider cloudresourcekind.CloudResourceProvider) (p
 	case cloudresourcekind.CloudResourceProvider_snowflake:
 		return new(snowflakeprovider.SnowflakeProviderConfig), nil
 	case cloudresourcekind.CloudResourceProvider_openstack:
-		return new(openstackprovider.OpenstackProviderConfig), nil
+		return new(openstackprovider.OpenStackProviderConfig), nil
 	default:
 		return nil, errors.Errorf("unsupported provider: %s", provider.String())
 	}
