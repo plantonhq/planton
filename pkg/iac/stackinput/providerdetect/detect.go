@@ -84,6 +84,8 @@ func ProviderDisplayName(provider cloudresourcekind.CloudResourceProvider) strin
 		return "OpenFGA"
 	case cloudresourcekind.CloudResourceProvider_snowflake:
 		return "Snowflake"
+	case cloudresourcekind.CloudResourceProvider_openstack:
+		return "OpenStack"
 	default:
 		return provider.String()
 	}

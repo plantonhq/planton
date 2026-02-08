@@ -38,5 +38,10 @@ export const providerConfig: Record<Credential_CredentialProvider, ProviderConfi
     description: 'Link your OpenFGA server to manage authorization resources',
     icon: undefined,
   },
+  [Credential_CredentialProvider.OPENSTACK]: {
+    label: 'OpenStack',
+    description: 'Link your OpenStack cloud to deploy compute, networking, and storage resources',
+    icon: undefined,
+  },
 };
 

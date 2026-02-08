@@ -17,6 +17,7 @@ import {
   GcpCredentialForm,
   AwsCredentialForm,
   AzureCredentialForm,
+  OpenstackCredentialForm,
 } from '@/app/credentials/_components/forms';
 import { useCredentialCommand } from '@/app/credentials/_services';
 import {
@@ -29,6 +30,13 @@ import { Auth0ProviderConfig, Auth0ProviderConfigSchema } from '@/gen/org/openmc
 import { GcpProviderConfig, GcpProviderConfigSchema } from '@/gen/org/openmcf/provider/gcp/provider_pb';
 import { AwsProviderConfig, AwsProviderConfigSchema } from '@/gen/org/openmcf/provider/aws/provider_pb';
 import { AzureProviderConfig, AzureProviderConfigSchema } from '@/gen/org/openmcf/provider/azure/provider_pb';
+import {
+  OpenstackProviderConfigSchema,
+  OpenstackPasswordCredentialsSchema,
+  OpenstackApplicationCredentialsSchema,
+  OpenstackTokenCredentialsSchema,
+} from '@/gen/org/openmcf/provider/openstack/provider_pb';
+import type { OpenstackFormData } from '@/app/credentials/_components/forms/types';
 import { create } from '@bufbuild/protobuf';
 import { providerConfig } from '@/app/credentials/_components/utils';
 
@@ -63,6 +71,8 @@ export function CredentialDrawer({
       gcp: {},
       aws: {},
       azure: {},
+      openstack: {},
+      openstackAuthMethod: 'application_credential',
     },
   });
 
@@ -97,6 +107,8 @@ export function CredentialDrawer({
         gcp: {},
         aws: {},
         azure: {},
+        openstack: {},
+        openstackAuthMethod: 'application_credential',
       };
       if (providerConfigData?.data?.case === 'auth0') {
         formData.auth0 = {
@@ -123,6 +135,36 @@ export function CredentialDrawer({
           tenantId: providerConfigData.data.value.tenantId,
           subscriptionId: providerConfigData.data.value.subscriptionId,
         };
+      } else if (providerConfigData?.data?.case === 'openstack') {
+        const os = providerConfigData.data.value;
+        const osData: OpenstackFormData = {
+          authUrl: os.authUrl,
+          region: os.region,
+          tenantName: os.tenantName,
+          tenantId: os.tenantId,
+          userDomainName: os.userDomainName,
+          userDomainId: os.userDomainId,
+          projectDomainName: os.projectDomainName,
+          projectDomainId: os.projectDomainId,
+          insecure: os.insecure,
+          cacertFile: os.cacertFile,
+          endpointType: os.endpointType,
+        };
+        // Determine auth method from the credentials oneof
+        if (os.credentials?.case === 'password') {
+          formData.openstackAuthMethod = 'password';
+          osData.userName = os.credentials.value.userName;
+          osData.password = os.credentials.value.password;
+        } else if (os.credentials?.case === 'applicationCredential') {
+          formData.openstackAuthMethod = 'application_credential';
+          osData.applicationCredentialId = os.credentials.value.id;
+          osData.applicationCredentialName = os.credentials.value.name;
+          osData.applicationCredentialSecret = os.credentials.value.secret;
+        } else if (os.credentials?.case === 'token') {
+          formData.openstackAuthMethod = 'token';
+          osData.token = os.credentials.value.token;
+        }
+        formData.openstack = osData;
       }
       reset(formData);
     } else if (mode === 'create') {
@@ -133,6 +175,8 @@ export function CredentialDrawer({
         gcp: {},
         aws: {},
         azure: {},
+        openstack: {},
+        openstackAuthMethod: 'application_credential',
       });
     }
   }, [selectedCredential, mode, initialProvider, reset]);
@@ -190,6 +234,60 @@ export function CredentialDrawer({
             value: create(AzureProviderConfigSchema, formData.azure as AzureProviderConfig),
           },
         });
+      } else if (
+        formData.provider == Credential_CredentialProvider.OPENSTACK &&
+        formData.openstack?.authUrl
+      ) {
+        // Build the credentials oneof based on the selected auth method
+        let credentials: Record<string, unknown> = {};
+        const method = formData.openstackAuthMethod || 'application_credential';
+        if (method === 'password' && formData.openstack.userName && formData.openstack.password) {
+          credentials = {
+            case: 'password' as const,
+            value: create(OpenstackPasswordCredentialsSchema, {
+              userName: formData.openstack.userName,
+              password: formData.openstack.password,
+            }),
+          };
+        } else if (method === 'application_credential' && formData.openstack.applicationCredentialSecret) {
+          credentials = {
+            case: 'applicationCredential' as const,
+            value: create(OpenstackApplicationCredentialsSchema, {
+              id: formData.openstack.applicationCredentialId || '',
+              name: formData.openstack.applicationCredentialName || '',
+              secret: formData.openstack.applicationCredentialSecret,
+            }),
+          };
+        } else if (method === 'token' && formData.openstack.token) {
+          credentials = {
+            case: 'token' as const,
+            value: create(OpenstackTokenCredentialsSchema, {
+              token: formData.openstack.token,
+            }),
+          };
+        } else {
+          return; // Required credential fields missing
+        }
+
+        providerConfig = create(CredentialProviderConfigSchema, {
+          data: {
+            case: 'openstack',
+            value: create(OpenstackProviderConfigSchema, {
+              authUrl: formData.openstack.authUrl,
+              region: formData.openstack.region || '',
+              credentials,
+              tenantName: formData.openstack.tenantName || '',
+              tenantId: formData.openstack.tenantId || '',
+              userDomainName: formData.openstack.userDomainName || '',
+              userDomainId: formData.openstack.userDomainId || '',
+              projectDomainName: formData.openstack.projectDomainName || '',
+              projectDomainId: formData.openstack.projectDomainId || '',
+              insecure: formData.openstack.insecure || false,
+              cacertFile: formData.openstack.cacertFile || '',
+              endpointType: formData.openstack.endpointType || '',
+            }),
+          },
+        });
       } else {
         return;
       }
@@ -217,6 +315,8 @@ export function CredentialDrawer({
       gcp: {},
       aws: {},
       azure: {},
+      openstack: {},
+      openstackAuthMethod: 'application_credential',
     });
     onClose();
   };
@@ -230,6 +330,8 @@ export function CredentialDrawer({
       setValue('gcp', {});
       setValue('aws', {});
       setValue('azure', {});
+      setValue('openstack', {});
+      setValue('openstackAuthMethod', 'application_credential');
     },
     [setValue, isView, initialProvider]
   );
@@ -283,6 +385,14 @@ export function CredentialDrawer({
               )}
               {formProvider == Credential_CredentialProvider.AZURE && (
                 <AzureCredentialForm register={register} disabled={isView} />
+              )}
+              {formProvider == Credential_CredentialProvider.OPENSTACK && (
+                <OpenstackCredentialForm
+                  register={register}
+                  setValue={setValue}
+                  watch={watch}
+                  disabled={isView}
+                />
               )}
             </Stack>
           </Stack>

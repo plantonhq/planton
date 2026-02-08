@@ -106,6 +106,42 @@ type SnowflakeCredential struct {
 	UpdatedAt time.Time          `bson:"updated_at" json:"updated_at"`
 }
 
+// OpenstackCredential represents OpenStack credentials.
+// Supports three authentication methods: password, application_credential, and token.
+// The AuthMethod field acts as a discriminator to determine which credential fields are active.
+type OpenstackCredential struct {
+	ID       primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	Name     string             `bson:"name" json:"name"`
+	AuthURL  string             `bson:"auth_url" json:"auth_url"`
+	Region   string             `bson:"region,omitempty" json:"region,omitempty"`
+	// AuthMethod discriminates the active credential set: "password", "application_credential", or "token"
+	AuthMethod string `bson:"auth_method" json:"auth_method"`
+	// Password authentication fields
+	UserName string `bson:"user_name,omitempty" json:"user_name,omitempty"`
+	Password string `bson:"password,omitempty" json:"password,omitempty"`
+	// Application credential authentication fields
+	ApplicationCredentialID     string `bson:"application_credential_id,omitempty" json:"application_credential_id,omitempty"`
+	ApplicationCredentialName   string `bson:"application_credential_name,omitempty" json:"application_credential_name,omitempty"`
+	ApplicationCredentialSecret string `bson:"application_credential_secret,omitempty" json:"application_credential_secret,omitempty"`
+	// Token authentication fields
+	Token string `bson:"token,omitempty" json:"token,omitempty"`
+	// Project/tenant context
+	TenantName string `bson:"tenant_name,omitempty" json:"tenant_name,omitempty"`
+	TenantID   string `bson:"tenant_id,omitempty" json:"tenant_id,omitempty"`
+	// Domain context (Identity v3)
+	UserDomainName    string `bson:"user_domain_name,omitempty" json:"user_domain_name,omitempty"`
+	UserDomainID      string `bson:"user_domain_id,omitempty" json:"user_domain_id,omitempty"`
+	ProjectDomainName string `bson:"project_domain_name,omitempty" json:"project_domain_name,omitempty"`
+	ProjectDomainID   string `bson:"project_domain_id,omitempty" json:"project_domain_id,omitempty"`
+	// TLS
+	Insecure   bool   `bson:"insecure,omitempty" json:"insecure,omitempty"`
+	CACertFile string `bson:"cacert_file,omitempty" json:"cacert_file,omitempty"`
+	// Advanced
+	EndpointType string    `bson:"endpoint_type,omitempty" json:"endpoint_type,omitempty"`
+	CreatedAt    time.Time `bson:"created_at" json:"created_at"`
+	UpdatedAt    time.Time `bson:"updated_at" json:"updated_at"`
+}
+
 // KubernetesCredential represents Kubernetes cluster credentials.
 type KubernetesCredential struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty" json:"id"`

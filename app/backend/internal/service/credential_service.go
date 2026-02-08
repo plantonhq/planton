@@ -16,6 +16,7 @@ import (
 	awsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
 	azurev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure"
 	gcpv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
+	openstackv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -58,6 +59,8 @@ func (s *CredentialService) Create(
 		return s.createAzureCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
 	case credentialv1.Credential_AUTH0:
 		return s.createAuth0Credential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
+	case credentialv1.Credential_OPENSTACK:
+		return s.createOpenstackCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
 	default:
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unsupported provider: %v", req.Msg.Provider))
 	}
@@ -324,6 +327,8 @@ func (s *CredentialService) List(
 			provider = "azure"
 		case credentialv1.Credential_AUTH0:
 			provider = "auth0"
+		case credentialv1.Credential_OPENSTACK:
+			provider = "openstack"
 		}
 		if provider != "" {
 			providerFilter = &provider
@@ -355,6 +360,8 @@ func (s *CredentialService) List(
 			summary.Provider = credentialv1.Credential_AZURE
 		case "auth0":
 			summary.Provider = credentialv1.Credential_AUTH0
+		case "openstack":
+			summary.Provider = credentialv1.Credential_OPENSTACK
 		}
 
 		// Add timestamps if present
@@ -512,6 +519,23 @@ func (s *CredentialService) Get(
 		if !auth0Cred.UpdatedAt.IsZero() {
 			protoCredential.UpdatedAt = timestamppb.New(auth0Cred.UpdatedAt)
 		}
+	case "openstack":
+		osCred, err := convertBsonToOpenstackCredential(doc)
+		if err != nil {
+			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to convert credential: %w", err))
+		}
+		protoCredential = &credentialv1.Credential{
+			Id:             osCred.ID.Hex(),
+			Name:           osCred.Name,
+			Provider:       credentialv1.Credential_OPENSTACK,
+			ProviderConfig: openstackModelToProtoConfig(osCred),
+		}
+		if !osCred.CreatedAt.IsZero() {
+			protoCredential.CreatedAt = timestamppb.New(osCred.CreatedAt)
+		}
+		if !osCred.UpdatedAt.IsZero() {
+			protoCredential.UpdatedAt = timestamppb.New(osCred.UpdatedAt)
+		}
 	default:
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unsupported provider: %s", providerStr))
 	}
@@ -546,6 +570,8 @@ func (s *CredentialService) Update(
 		return s.updateAzureCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
 	case credentialv1.Credential_AUTH0:
 		return s.updateAuth0Credential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
+	case credentialv1.Credential_OPENSTACK:
+		return s.updateOpenstackCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
 	default:
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unsupported provider: %v", req.Msg.Provider))
 	}
@@ -943,4 +969,299 @@ func convertBsonToAuth0Credential(doc bson.M) (*models.Auth0Credential, error) {
 		CreatedAt:    createdAt,
 		UpdatedAt:    updatedAt,
 	}, nil
+}
+
+// createOpenstackCredential creates an OpenStack credential.
+func (s *CredentialService) createOpenstackCredential(
+	ctx context.Context,
+	name string,
+	providerConfig *credentialv1.CredentialProviderConfig,
+	now time.Time,
+) (*connect.Response[credentialv1.CreateCredentialResponse], error) {
+	if providerConfig == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("provider_config is required"))
+	}
+	osConfig, ok := providerConfig.Data.(*credentialv1.CredentialProviderConfig_Openstack)
+	if !ok || osConfig == nil || osConfig.Openstack == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("openstack provider_config is required"))
+	}
+	if osConfig.Openstack.AuthUrl == "" {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("auth_url is required"))
+	}
+
+	// Build the credential model from proto, determining the auth method from the oneof
+	credModel, authMethod, err := openstackProtoToModel(name, osConfig.Openstack)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, err)
+	}
+	if authMethod == "" {
+		return nil, connect.NewError(connect.CodeInvalidArgument,
+			fmt.Errorf("credentials are required: provide one of password, application_credential, or token"))
+	}
+
+	createdCredential, err := s.credentialRepo.CreateOpenstack(ctx, credModel)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create OpenStack credential: %w", err))
+	}
+
+	protoCredential := &credentialv1.Credential{
+		Id:             createdCredential.ID.Hex(),
+		Name:           createdCredential.Name,
+		Provider:       credentialv1.Credential_OPENSTACK,
+		ProviderConfig: openstackModelToProtoConfig(createdCredential),
+	}
+	if !createdCredential.CreatedAt.IsZero() {
+		protoCredential.CreatedAt = timestamppb.New(createdCredential.CreatedAt)
+	}
+	if !createdCredential.UpdatedAt.IsZero() {
+		protoCredential.UpdatedAt = timestamppb.New(createdCredential.UpdatedAt)
+	}
+
+	return connect.NewResponse(&credentialv1.CreateCredentialResponse{
+		Credential: protoCredential,
+	}), nil
+}
+
+// updateOpenstackCredential updates an OpenStack credential.
+func (s *CredentialService) updateOpenstackCredential(
+	ctx context.Context,
+	id, name string,
+	providerConfig *credentialv1.CredentialProviderConfig,
+) (*connect.Response[credentialv1.UpdateCredentialResponse], error) {
+	if providerConfig == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("provider_config is required"))
+	}
+	osConfig, ok := providerConfig.Data.(*credentialv1.CredentialProviderConfig_Openstack)
+	if !ok || osConfig == nil || osConfig.Openstack == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("openstack provider_config is required"))
+	}
+	if osConfig.Openstack.AuthUrl == "" {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("auth_url is required"))
+	}
+
+	credModel, authMethod, err := openstackProtoToModel(name, osConfig.Openstack)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, err)
+	}
+	if authMethod == "" {
+		return nil, connect.NewError(connect.CodeInvalidArgument,
+			fmt.Errorf("credentials are required: provide one of password, application_credential, or token"))
+	}
+
+	updatedCredential, err := s.credentialRepo.UpdateOpenstack(ctx, id, credModel)
+	if err != nil {
+		if err.Error() == fmt.Sprintf("OpenStack credential with ID '%s' not found", id) {
+			return nil, connect.NewError(connect.CodeNotFound, err)
+		}
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to update OpenStack credential: %w", err))
+	}
+
+	protoCredential := &credentialv1.Credential{
+		Id:             updatedCredential.ID.Hex(),
+		Name:           updatedCredential.Name,
+		Provider:       credentialv1.Credential_OPENSTACK,
+		ProviderConfig: openstackModelToProtoConfig(updatedCredential),
+	}
+	if !updatedCredential.CreatedAt.IsZero() {
+		protoCredential.CreatedAt = timestamppb.New(updatedCredential.CreatedAt)
+	}
+	if !updatedCredential.UpdatedAt.IsZero() {
+		protoCredential.UpdatedAt = timestamppb.New(updatedCredential.UpdatedAt)
+	}
+
+	return connect.NewResponse(&credentialv1.UpdateCredentialResponse{
+		Credential: protoCredential,
+	}), nil
+}
+
+// openstackProtoToModel converts an OpenstackProviderConfig proto to the database model.
+// Returns the model, the detected auth method name, and any validation error.
+func openstackProtoToModel(name string, cfg *openstackv1.OpenstackProviderConfig) (*models.OpenstackCredential, string, error) {
+	cred := &models.OpenstackCredential{
+		Name:              name,
+		AuthURL:           cfg.AuthUrl,
+		Region:            cfg.Region,
+		TenantName:        cfg.TenantName,
+		TenantID:          cfg.TenantId,
+		UserDomainName:    cfg.UserDomainName,
+		UserDomainID:      cfg.UserDomainId,
+		ProjectDomainName: cfg.ProjectDomainName,
+		ProjectDomainID:   cfg.ProjectDomainId,
+		Insecure:          cfg.Insecure,
+		CACertFile:        cfg.CacertFile,
+		EndpointType:      cfg.EndpointType,
+	}
+
+	var authMethod string
+	switch c := cfg.Credentials.(type) {
+	case *openstackv1.OpenstackProviderConfig_Password:
+		if c.Password == nil {
+			return nil, "", fmt.Errorf("password credentials block is empty")
+		}
+		if c.Password.UserName == "" {
+			return nil, "", fmt.Errorf("user_name is required for password authentication")
+		}
+		if c.Password.Password == "" {
+			return nil, "", fmt.Errorf("password is required for password authentication")
+		}
+		authMethod = "password"
+		cred.AuthMethod = authMethod
+		cred.UserName = c.Password.UserName
+		cred.Password = c.Password.Password
+	case *openstackv1.OpenstackProviderConfig_ApplicationCredential:
+		if c.ApplicationCredential == nil {
+			return nil, "", fmt.Errorf("application_credential block is empty")
+		}
+		if c.ApplicationCredential.Secret == "" {
+			return nil, "", fmt.Errorf("secret is required for application credential authentication")
+		}
+		if c.ApplicationCredential.Id == "" && c.ApplicationCredential.Name == "" {
+			return nil, "", fmt.Errorf("either id or name is required for application credential authentication")
+		}
+		authMethod = "application_credential"
+		cred.AuthMethod = authMethod
+		cred.ApplicationCredentialID = c.ApplicationCredential.Id
+		cred.ApplicationCredentialName = c.ApplicationCredential.Name
+		cred.ApplicationCredentialSecret = c.ApplicationCredential.Secret
+	case *openstackv1.OpenstackProviderConfig_Token:
+		if c.Token == nil {
+			return nil, "", fmt.Errorf("token credentials block is empty")
+		}
+		if c.Token.Token == "" {
+			return nil, "", fmt.Errorf("token is required for token authentication")
+		}
+		authMethod = "token"
+		cred.AuthMethod = authMethod
+		cred.Token = c.Token.Token
+	}
+
+	return cred, authMethod, nil
+}
+
+// openstackModelToProtoConfig converts an OpenstackCredential model back to proto CredentialProviderConfig.
+func openstackModelToProtoConfig(cred *models.OpenstackCredential) *credentialv1.CredentialProviderConfig {
+	cfg := &openstackv1.OpenstackProviderConfig{
+		AuthUrl:           cred.AuthURL,
+		Region:            cred.Region,
+		TenantName:        cred.TenantName,
+		TenantId:          cred.TenantID,
+		UserDomainName:    cred.UserDomainName,
+		UserDomainId:      cred.UserDomainID,
+		ProjectDomainName: cred.ProjectDomainName,
+		ProjectDomainId:   cred.ProjectDomainID,
+		Insecure:          cred.Insecure,
+		CacertFile:        cred.CACertFile,
+		EndpointType:      cred.EndpointType,
+	}
+
+	switch cred.AuthMethod {
+	case "password":
+		cfg.Credentials = &openstackv1.OpenstackProviderConfig_Password{
+			Password: &openstackv1.OpenstackPasswordCredentials{
+				UserName: cred.UserName,
+				Password: cred.Password,
+			},
+		}
+	case "application_credential":
+		cfg.Credentials = &openstackv1.OpenstackProviderConfig_ApplicationCredential{
+			ApplicationCredential: &openstackv1.OpenstackApplicationCredentials{
+				Id:     cred.ApplicationCredentialID,
+				Name:   cred.ApplicationCredentialName,
+				Secret: cred.ApplicationCredentialSecret,
+			},
+		}
+	case "token":
+		cfg.Credentials = &openstackv1.OpenstackProviderConfig_Token{
+			Token: &openstackv1.OpenstackTokenCredentials{
+				Token: cred.Token,
+			},
+		}
+	}
+
+	return &credentialv1.CredentialProviderConfig{
+		Data: &credentialv1.CredentialProviderConfig_Openstack{
+			Openstack: cfg,
+		},
+	}
+}
+
+func convertBsonToOpenstackCredential(doc bson.M) (*models.OpenstackCredential, error) {
+	id, ok := doc["_id"].(primitive.ObjectID)
+	if !ok {
+		return nil, fmt.Errorf("invalid _id field")
+	}
+
+	var createdAt, updatedAt time.Time
+	if dt, ok := doc["created_at"].(primitive.DateTime); ok {
+		createdAt = dt.Time()
+	} else if t, ok := doc["created_at"].(time.Time); ok {
+		createdAt = t
+	}
+	if dt, ok := doc["updated_at"].(primitive.DateTime); ok {
+		updatedAt = dt.Time()
+	} else if t, ok := doc["updated_at"].(time.Time); ok {
+		updatedAt = t
+	}
+
+	cred := &models.OpenstackCredential{
+		ID:        id,
+		Name:      doc["name"].(string),
+		AuthURL:   doc["auth_url"].(string),
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
+	}
+
+	if v, ok := doc["auth_method"].(string); ok {
+		cred.AuthMethod = v
+	}
+	if v, ok := doc["region"].(string); ok {
+		cred.Region = v
+	}
+	if v, ok := doc["user_name"].(string); ok {
+		cred.UserName = v
+	}
+	if v, ok := doc["password"].(string); ok {
+		cred.Password = v
+	}
+	if v, ok := doc["application_credential_id"].(string); ok {
+		cred.ApplicationCredentialID = v
+	}
+	if v, ok := doc["application_credential_name"].(string); ok {
+		cred.ApplicationCredentialName = v
+	}
+	if v, ok := doc["application_credential_secret"].(string); ok {
+		cred.ApplicationCredentialSecret = v
+	}
+	if v, ok := doc["token"].(string); ok {
+		cred.Token = v
+	}
+	if v, ok := doc["tenant_name"].(string); ok {
+		cred.TenantName = v
+	}
+	if v, ok := doc["tenant_id"].(string); ok {
+		cred.TenantID = v
+	}
+	if v, ok := doc["user_domain_name"].(string); ok {
+		cred.UserDomainName = v
+	}
+	if v, ok := doc["user_domain_id"].(string); ok {
+		cred.UserDomainID = v
+	}
+	if v, ok := doc["project_domain_name"].(string); ok {
+		cred.ProjectDomainName = v
+	}
+	if v, ok := doc["project_domain_id"].(string); ok {
+		cred.ProjectDomainID = v
+	}
+	if v, ok := doc["insecure"].(bool); ok {
+		cred.Insecure = v
+	}
+	if v, ok := doc["cacert_file"].(string); ok {
+		cred.CACertFile = v
+	}
+	if v, ok := doc["endpoint_type"].(string); ok {
+		cred.EndpointType = v
+	}
+
+	return cred, nil
 }
