@@ -115,8 +115,8 @@ func (r *CredentialResolver) ResolveProviderConfig(
 		}, nil
 
 	case cloudresourcekind.CloudResourceProvider_openstack:
-		osCred := credInterface.(*models.OpenstackCredential)
-		cfg := &openstackv1.OpenstackProviderConfig{
+		osCred := credInterface.(*models.OpenStackCredential)
+		cfg := &openstackv1.OpenStackProviderConfig{
 			AuthUrl:           osCred.AuthURL,
 			Region:            osCred.Region,
 			TenantName:        osCred.TenantName,
@@ -131,30 +131,30 @@ func (r *CredentialResolver) ResolveProviderConfig(
 		}
 		switch osCred.AuthMethod {
 		case "password":
-			cfg.Credentials = &openstackv1.OpenstackProviderConfig_Password{
-				Password: &openstackv1.OpenstackPasswordCredentials{
+			cfg.Credentials = &openstackv1.OpenStackProviderConfig_Password{
+				Password: &openstackv1.OpenStackPasswordCredentials{
 					UserName: osCred.UserName,
 					Password: osCred.Password,
 				},
 			}
 		case "application_credential":
-			cfg.Credentials = &openstackv1.OpenstackProviderConfig_ApplicationCredential{
-				ApplicationCredential: &openstackv1.OpenstackApplicationCredentials{
+			cfg.Credentials = &openstackv1.OpenStackProviderConfig_ApplicationCredential{
+				ApplicationCredential: &openstackv1.OpenStackApplicationCredentials{
 					Id:     osCred.ApplicationCredentialID,
 					Name:   osCred.ApplicationCredentialName,
 					Secret: osCred.ApplicationCredentialSecret,
 				},
 			}
 		case "token":
-			cfg.Credentials = &openstackv1.OpenstackProviderConfig_Token{
-				Token: &openstackv1.OpenstackTokenCredentials{
+			cfg.Credentials = &openstackv1.OpenStackProviderConfig_Token{
+				Token: &openstackv1.OpenStackTokenCredentials{
 					Token: osCred.Token,
 				},
 			}
 		}
 		return &credentialv1.CredentialProviderConfig{
-			Data: &credentialv1.CredentialProviderConfig_Openstack{
-				Openstack: cfg,
+		Data: &credentialv1.CredentialProviderConfig_Openstack{
+			Openstack: cfg,
 			},
 		}, nil
 

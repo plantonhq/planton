@@ -5,7 +5,7 @@ import { AppContext } from '@/contexts';
 
 // Import SVG icons as React components
 // Note: Requires @svgr/webpack to be installed and configured in next.config.js
-import PlantonLogoIcon from '../../../../public/images/planton-logo.svg';
+import PlantonLogoIcon from '../../../../public/images/openmcf-logo.svg';
 import SunIcon from '../../../../public/images/sun.svg';
 import MoonIcon from '../../../../public/images/moon.svg';
 import NavIcon from '../../../../public/images/nav.svg';

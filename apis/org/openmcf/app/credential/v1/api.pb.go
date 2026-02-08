@@ -356,7 +356,7 @@ func (x *CredentialProviderConfig) GetOpenfga() *openfga.OpenFgaProviderConfig {
 	return nil
 }
 
-func (x *CredentialProviderConfig) GetOpenstack() *openstack.OpenstackProviderConfig {
+func (x *CredentialProviderConfig) GetOpenstack() *openstack.OpenStackProviderConfig {
 	if x != nil {
 		if x, ok := x.Data.(*CredentialProviderConfig_Openstack); ok {
 			return x.Openstack
@@ -418,7 +418,7 @@ type CredentialProviderConfig_Openfga struct {
 }
 
 type CredentialProviderConfig_Openstack struct {
-	Openstack *openstack.OpenstackProviderConfig `protobuf:"bytes,13,opt,name=openstack,proto3,oneof"`
+	Openstack *openstack.OpenStackProviderConfig `protobuf:"bytes,13,opt,name=openstack,proto3,oneof"`
 }
 
 func (*CredentialProviderConfig_Atlas) isCredentialProviderConfig_Data() {}
@@ -488,7 +488,7 @@ const file_org_openmcf_app_credential_v1_api_proto_rawDesc = "" +
 	" \x01(\v27.org.openmcf.provider.snowflake.SnowflakeProviderConfigH\x00R\tsnowflake\x12G\n" +
 	"\x05auth0\x18\v \x01(\v2/.org.openmcf.provider.auth0.Auth0ProviderConfigH\x00R\x05auth0\x12O\n" +
 	"\aopenfga\x18\f \x01(\v23.org.openmcf.provider.openfga.OpenFgaProviderConfigH\x00R\aopenfga\x12W\n" +
-	"\topenstack\x18\r \x01(\v27.org.openmcf.provider.openstack.OpenstackProviderConfigH\x00R\topenstackB\x06\n" +
+	"\topenstack\x18\r \x01(\v27.org.openmcf.provider.openstack.OpenStackProviderConfigH\x00R\topenstackB\x06\n" +
 	"\x04dataB\xfe\x01\n" +
 	"\x1dcom.org.openmcf.credential.v1B\bApiProtoP\x01ZLgithub.com/plantonhq/openmcf/apis/org/openmcf/app/credential/v1;credentialv1\xa2\x02\x03OOC\xaa\x02\x19Org.Openmcf.Credential.V1\xca\x02\x19Org\\Openmcf\\Credential\\V1\xe2\x02%Org\\Openmcf\\Credential\\V1\\GPBMetadata\xea\x02\x1cOrg::Openmcf::Credential::V1b\x06proto3"
 
@@ -523,7 +523,7 @@ var file_org_openmcf_app_credential_v1_api_proto_goTypes = []any{
 	(*snowflake.SnowflakeProviderConfig)(nil),       // 13: org.openmcf.provider.snowflake.SnowflakeProviderConfig
 	(*auth0.Auth0ProviderConfig)(nil),               // 14: org.openmcf.provider.auth0.Auth0ProviderConfig
 	(*openfga.OpenFgaProviderConfig)(nil),           // 15: org.openmcf.provider.openfga.OpenFgaProviderConfig
-	(*openstack.OpenstackProviderConfig)(nil),       // 16: org.openmcf.provider.openstack.OpenstackProviderConfig
+	(*openstack.OpenStackProviderConfig)(nil),       // 16: org.openmcf.provider.openstack.OpenStackProviderConfig
 }
 var file_org_openmcf_app_credential_v1_api_proto_depIdxs = []int32{
 	0,  // 0: org.openmcf.credential.v1.Credential.provider:type_name -> org.openmcf.credential.v1.Credential.CredentialProvider
@@ -542,7 +542,7 @@ var file_org_openmcf_app_credential_v1_api_proto_depIdxs = []int32{
 	13, // 13: org.openmcf.credential.v1.CredentialProviderConfig.snowflake:type_name -> org.openmcf.provider.snowflake.SnowflakeProviderConfig
 	14, // 14: org.openmcf.credential.v1.CredentialProviderConfig.auth0:type_name -> org.openmcf.provider.auth0.Auth0ProviderConfig
 	15, // 15: org.openmcf.credential.v1.CredentialProviderConfig.openfga:type_name -> org.openmcf.provider.openfga.OpenFgaProviderConfig
-	16, // 16: org.openmcf.credential.v1.CredentialProviderConfig.openstack:type_name -> org.openmcf.provider.openstack.OpenstackProviderConfig
+	16, // 16: org.openmcf.credential.v1.CredentialProviderConfig.openstack:type_name -> org.openmcf.provider.openstack.OpenStackProviderConfig
 	17, // [17:17] is the sub-list for method output_type
 	17, // [17:17] is the sub-list for method input_type
 	17, // [17:17] is the sub-list for extension type_name

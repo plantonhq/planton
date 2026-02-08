@@ -407,7 +407,7 @@ func (r *CredentialRepository) FindFirstByProvider(ctx context.Context, provider
 	case "auth0":
 		return convertToAuth0Credential(result)
 	case "openstack":
-		return convertToOpenstackCredential(result)
+		return convertToOpenStackCredential(result)
 	default:
 		return nil, fmt.Errorf("unsupported provider: %s", provider)
 	}
@@ -576,8 +576,8 @@ func convertToAuth0Credential(doc bson.M) (*models.Auth0Credential, error) {
 	}, nil
 }
 
-// CreateOpenstack creates a new OpenStack credential.
-func (r *CredentialRepository) CreateOpenstack(ctx context.Context, cred *models.OpenstackCredential) (*models.OpenstackCredential, error) {
+// CreateOpenStack creates a new OpenStack credential.
+func (r *CredentialRepository) CreateOpenStack(ctx context.Context, cred *models.OpenStackCredential) (*models.OpenStackCredential, error) {
 	exists, err := r.ExistsByProvider(ctx, "openstack")
 	if err != nil {
 		return nil, fmt.Errorf("failed to check for existing OpenStack credential: %w", err)
@@ -629,8 +629,8 @@ func (r *CredentialRepository) CreateOpenstack(ctx context.Context, cred *models
 	return cred, nil
 }
 
-// UpdateOpenstack updates an existing OpenStack credential.
-func (r *CredentialRepository) UpdateOpenstack(ctx context.Context, id string, cred *models.OpenstackCredential) (*models.OpenstackCredential, error) {
+// UpdateOpenStack updates an existing OpenStack credential.
+func (r *CredentialRepository) UpdateOpenStack(ctx context.Context, id string, cred *models.OpenStackCredential) (*models.OpenStackCredential, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, fmt.Errorf("invalid ID format: %w", err)
@@ -680,10 +680,10 @@ func (r *CredentialRepository) UpdateOpenstack(ctx context.Context, id string, c
 		return nil, fmt.Errorf("credential not found after update")
 	}
 
-	return convertToOpenstackCredential(doc)
+	return convertToOpenStackCredential(doc)
 }
 
-func convertToOpenstackCredential(doc bson.M) (*models.OpenstackCredential, error) {
+func convertToOpenStackCredential(doc bson.M) (*models.OpenStackCredential, error) {
 	id, ok := doc["_id"].(primitive.ObjectID)
 	if !ok {
 		return nil, fmt.Errorf("invalid _id field")
@@ -697,7 +697,7 @@ func convertToOpenstackCredential(doc bson.M) (*models.OpenstackCredential, erro
 		updatedAt = dt.Time()
 	}
 
-	cred := &models.OpenstackCredential{
+	cred := &models.OpenStackCredential{
 		ID:        id,
 		Name:      doc["name"].(string),
 		AuthURL:   doc["auth_url"].(string),

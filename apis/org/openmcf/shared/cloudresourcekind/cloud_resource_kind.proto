@@ -811,4 +811,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "fgatuple"
   }];
+
+  // 2500–2799: OpenStack resources
+  OpenStackComputeKeypair = 2500 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "oskp"
+  }];
 }

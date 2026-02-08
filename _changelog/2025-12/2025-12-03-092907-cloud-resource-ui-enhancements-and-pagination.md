@@ -623,7 +623,7 @@ Users can click the theme switch button in the header to toggle between dark and
 - `app/frontend/public/images/moon.svg` - Moon icon for theme
 - `app/frontend/public/images/nav.svg` - Navigation icon
 - `app/frontend/public/images/planton-logo-dark.svg` - Dark mode logo
-- `app/frontend/public/images/planton-logo.svg` - Light mode logo
+- `app/frontend/public/images/openmcf-logo.svg` - Light mode logo
 - `app/frontend/public/images/sun.svg` - Sun icon for theme
 
 ### Configuration

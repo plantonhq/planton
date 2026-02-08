@@ -60,7 +60,7 @@ func (s *CredentialService) Create(
 	case credentialv1.Credential_AUTH0:
 		return s.createAuth0Credential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
 	case credentialv1.Credential_OPENSTACK:
-		return s.createOpenstackCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
+		return s.createOpenStackCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
 	default:
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unsupported provider: %v", req.Msg.Provider))
 	}
@@ -520,7 +520,7 @@ func (s *CredentialService) Get(
 			protoCredential.UpdatedAt = timestamppb.New(auth0Cred.UpdatedAt)
 		}
 	case "openstack":
-		osCred, err := convertBsonToOpenstackCredential(doc)
+		osCred, err := convertBsonToOpenStackCredential(doc)
 		if err != nil {
 			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to convert credential: %w", err))
 		}
@@ -571,7 +571,7 @@ func (s *CredentialService) Update(
 	case credentialv1.Credential_AUTH0:
 		return s.updateAuth0Credential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
 	case credentialv1.Credential_OPENSTACK:
-		return s.updateOpenstackCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
+		return s.updateOpenStackCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
 	default:
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unsupported provider: %v", req.Msg.Provider))
 	}
@@ -971,8 +971,8 @@ func convertBsonToAuth0Credential(doc bson.M) (*models.Auth0Credential, error) {
 	}, nil
 }
 
-// createOpenstackCredential creates an OpenStack credential.
-func (s *CredentialService) createOpenstackCredential(
+// createOpenStackCredential creates an OpenStack credential.
+func (s *CredentialService) createOpenStackCredential(
 	ctx context.Context,
 	name string,
 	providerConfig *credentialv1.CredentialProviderConfig,
@@ -999,7 +999,7 @@ func (s *CredentialService) createOpenstackCredential(
 			fmt.Errorf("credentials are required: provide one of password, application_credential, or token"))
 	}
 
-	createdCredential, err := s.credentialRepo.CreateOpenstack(ctx, credModel)
+	createdCredential, err := s.credentialRepo.CreateOpenStack(ctx, credModel)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create OpenStack credential: %w", err))
 	}
@@ -1022,8 +1022,8 @@ func (s *CredentialService) createOpenstackCredential(
 	}), nil
 }
 
-// updateOpenstackCredential updates an OpenStack credential.
-func (s *CredentialService) updateOpenstackCredential(
+// updateOpenStackCredential updates an OpenStack credential.
+func (s *CredentialService) updateOpenStackCredential(
 	ctx context.Context,
 	id, name string,
 	providerConfig *credentialv1.CredentialProviderConfig,
@@ -1048,7 +1048,7 @@ func (s *CredentialService) updateOpenstackCredential(
 			fmt.Errorf("credentials are required: provide one of password, application_credential, or token"))
 	}
 
-	updatedCredential, err := s.credentialRepo.UpdateOpenstack(ctx, id, credModel)
+	updatedCredential, err := s.credentialRepo.UpdateOpenStack(ctx, id, credModel)
 	if err != nil {
 		if err.Error() == fmt.Sprintf("OpenStack credential with ID '%s' not found", id) {
 			return nil, connect.NewError(connect.CodeNotFound, err)
@@ -1074,10 +1074,10 @@ func (s *CredentialService) updateOpenstackCredential(
 	}), nil
 }
 
-// openstackProtoToModel converts an OpenstackProviderConfig proto to the database model.
+// openstackProtoToModel converts an OpenStackProviderConfig proto to the database model.
 // Returns the model, the detected auth method name, and any validation error.
-func openstackProtoToModel(name string, cfg *openstackv1.OpenstackProviderConfig) (*models.OpenstackCredential, string, error) {
-	cred := &models.OpenstackCredential{
+func openstackProtoToModel(name string, cfg *openstackv1.OpenStackProviderConfig) (*models.OpenStackCredential, string, error) {
+	cred := &models.OpenStackCredential{
 		Name:              name,
 		AuthURL:           cfg.AuthUrl,
 		Region:            cfg.Region,
@@ -1094,7 +1094,7 @@ func openstackProtoToModel(name string, cfg *openstackv1.OpenstackProviderConfig
 
 	var authMethod string
 	switch c := cfg.Credentials.(type) {
-	case *openstackv1.OpenstackProviderConfig_Password:
+	case *openstackv1.OpenStackProviderConfig_Password:
 		if c.Password == nil {
 			return nil, "", fmt.Errorf("password credentials block is empty")
 		}
@@ -1108,7 +1108,7 @@ func openstackProtoToModel(name string, cfg *openstackv1.OpenstackProviderConfig
 		cred.AuthMethod = authMethod
 		cred.UserName = c.Password.UserName
 		cred.Password = c.Password.Password
-	case *openstackv1.OpenstackProviderConfig_ApplicationCredential:
+	case *openstackv1.OpenStackProviderConfig_ApplicationCredential:
 		if c.ApplicationCredential == nil {
 			return nil, "", fmt.Errorf("application_credential block is empty")
 		}
@@ -1123,7 +1123,7 @@ func openstackProtoToModel(name string, cfg *openstackv1.OpenstackProviderConfig
 		cred.ApplicationCredentialID = c.ApplicationCredential.Id
 		cred.ApplicationCredentialName = c.ApplicationCredential.Name
 		cred.ApplicationCredentialSecret = c.ApplicationCredential.Secret
-	case *openstackv1.OpenstackProviderConfig_Token:
+	case *openstackv1.OpenStackProviderConfig_Token:
 		if c.Token == nil {
 			return nil, "", fmt.Errorf("token credentials block is empty")
 		}
@@ -1138,9 +1138,9 @@ func openstackProtoToModel(name string, cfg *openstackv1.OpenstackProviderConfig
 	return cred, authMethod, nil
 }
 
-// openstackModelToProtoConfig converts an OpenstackCredential model back to proto CredentialProviderConfig.
-func openstackModelToProtoConfig(cred *models.OpenstackCredential) *credentialv1.CredentialProviderConfig {
-	cfg := &openstackv1.OpenstackProviderConfig{
+// openstackModelToProtoConfig converts an OpenStackCredential model back to proto CredentialProviderConfig.
+func openstackModelToProtoConfig(cred *models.OpenStackCredential) *credentialv1.CredentialProviderConfig {
+	cfg := &openstackv1.OpenStackProviderConfig{
 		AuthUrl:           cred.AuthURL,
 		Region:            cred.Region,
 		TenantName:        cred.TenantName,
@@ -1156,23 +1156,23 @@ func openstackModelToProtoConfig(cred *models.OpenstackCredential) *credentialv1
 
 	switch cred.AuthMethod {
 	case "password":
-		cfg.Credentials = &openstackv1.OpenstackProviderConfig_Password{
-			Password: &openstackv1.OpenstackPasswordCredentials{
+		cfg.Credentials = &openstackv1.OpenStackProviderConfig_Password{
+			Password: &openstackv1.OpenStackPasswordCredentials{
 				UserName: cred.UserName,
 				Password: cred.Password,
 			},
 		}
 	case "application_credential":
-		cfg.Credentials = &openstackv1.OpenstackProviderConfig_ApplicationCredential{
-			ApplicationCredential: &openstackv1.OpenstackApplicationCredentials{
+		cfg.Credentials = &openstackv1.OpenStackProviderConfig_ApplicationCredential{
+			ApplicationCredential: &openstackv1.OpenStackApplicationCredentials{
 				Id:     cred.ApplicationCredentialID,
 				Name:   cred.ApplicationCredentialName,
 				Secret: cred.ApplicationCredentialSecret,
 			},
 		}
 	case "token":
-		cfg.Credentials = &openstackv1.OpenstackProviderConfig_Token{
-			Token: &openstackv1.OpenstackTokenCredentials{
+		cfg.Credentials = &openstackv1.OpenStackProviderConfig_Token{
+			Token: &openstackv1.OpenStackTokenCredentials{
 				Token: cred.Token,
 			},
 		}
@@ -1185,7 +1185,7 @@ func openstackModelToProtoConfig(cred *models.OpenstackCredential) *credentialv1
 	}
 }
 
-func convertBsonToOpenstackCredential(doc bson.M) (*models.OpenstackCredential, error) {
+func convertBsonToOpenStackCredential(doc bson.M) (*models.OpenStackCredential, error) {
 	id, ok := doc["_id"].(primitive.ObjectID)
 	if !ok {
 		return nil, fmt.Errorf("invalid _id field")
@@ -1203,7 +1203,7 @@ func convertBsonToOpenstackCredential(doc bson.M) (*models.OpenstackCredential, 
 		updatedAt = t
 	}
 
-	cred := &models.OpenstackCredential{
+	cred := &models.OpenStackCredential{
 		ID:        id,
 		Name:      doc["name"].(string),
 		AuthURL:   doc["auth_url"].(string),

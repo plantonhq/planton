@@ -17,7 +17,7 @@ import {
   GcpCredentialForm,
   AwsCredentialForm,
   AzureCredentialForm,
-  OpenstackCredentialForm,
+  OpenStackCredentialForm,
 } from '@/app/credentials/_components/forms';
 import { useCredentialCommand } from '@/app/credentials/_services';
 import {
@@ -31,12 +31,12 @@ import { GcpProviderConfig, GcpProviderConfigSchema } from '@/gen/org/openmcf/pr
 import { AwsProviderConfig, AwsProviderConfigSchema } from '@/gen/org/openmcf/provider/aws/provider_pb';
 import { AzureProviderConfig, AzureProviderConfigSchema } from '@/gen/org/openmcf/provider/azure/provider_pb';
 import {
-  OpenstackProviderConfigSchema,
-  OpenstackPasswordCredentialsSchema,
-  OpenstackApplicationCredentialsSchema,
-  OpenstackTokenCredentialsSchema,
+  OpenStackProviderConfigSchema,
+  OpenStackPasswordCredentialsSchema,
+  OpenStackApplicationCredentialsSchema,
+  OpenStackTokenCredentialsSchema,
 } from '@/gen/org/openmcf/provider/openstack/provider_pb';
-import type { OpenstackFormData } from '@/app/credentials/_components/forms/types';
+import type { OpenStackFormData } from '@/app/credentials/_components/forms/types';
 import { create } from '@bufbuild/protobuf';
 import { providerConfig } from '@/app/credentials/_components/utils';
 
@@ -137,7 +137,7 @@ export function CredentialDrawer({
         };
       } else if (providerConfigData?.data?.case === 'openstack') {
         const os = providerConfigData.data.value;
-        const osData: OpenstackFormData = {
+        const osData: OpenStackFormData = {
           authUrl: os.authUrl,
           region: os.region,
           tenantName: os.tenantName,
@@ -239,12 +239,13 @@ export function CredentialDrawer({
         formData.openstack?.authUrl
       ) {
         // Build the credentials oneof based on the selected auth method
-        let credentials: Record<string, unknown> = {};
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let credentials: any = {};
         const method = formData.openstackAuthMethod || 'application_credential';
         if (method === 'password' && formData.openstack.userName && formData.openstack.password) {
           credentials = {
             case: 'password' as const,
-            value: create(OpenstackPasswordCredentialsSchema, {
+            value: create(OpenStackPasswordCredentialsSchema, {
               userName: formData.openstack.userName,
               password: formData.openstack.password,
             }),
@@ -252,7 +253,7 @@ export function CredentialDrawer({
         } else if (method === 'application_credential' && formData.openstack.applicationCredentialSecret) {
           credentials = {
             case: 'applicationCredential' as const,
-            value: create(OpenstackApplicationCredentialsSchema, {
+            value: create(OpenStackApplicationCredentialsSchema, {
               id: formData.openstack.applicationCredentialId || '',
               name: formData.openstack.applicationCredentialName || '',
               secret: formData.openstack.applicationCredentialSecret,
@@ -261,7 +262,7 @@ export function CredentialDrawer({
         } else if (method === 'token' && formData.openstack.token) {
           credentials = {
             case: 'token' as const,
-            value: create(OpenstackTokenCredentialsSchema, {
+            value: create(OpenStackTokenCredentialsSchema, {
               token: formData.openstack.token,
             }),
           };
@@ -272,7 +273,7 @@ export function CredentialDrawer({
         providerConfig = create(CredentialProviderConfigSchema, {
           data: {
             case: 'openstack',
-            value: create(OpenstackProviderConfigSchema, {
+            value: create(OpenStackProviderConfigSchema, {
               authUrl: formData.openstack.authUrl,
               region: formData.openstack.region || '',
               credentials,
@@ -387,7 +388,7 @@ export function CredentialDrawer({
                 <AzureCredentialForm register={register} disabled={isView} />
               )}
               {formProvider == Credential_CredentialProvider.OPENSTACK && (
-                <OpenstackCredentialForm
+                <OpenStackCredentialForm
                   register={register}
                   setValue={setValue}
                   watch={watch}

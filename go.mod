@@ -37,11 +37,12 @@ require (
 	github.com/pulumi/pulumi-gcp/sdk/v9 v9.4.0
 	github.com/pulumi/pulumi-kubernetes/sdk/v4 v4.18.4
 	github.com/pulumi/pulumi-mongodbatlas/sdk/v3 v3.36.1
+	github.com/pulumi/pulumi-openstack/sdk/v5 v5.4.1
 	github.com/pulumi/pulumi-random/sdk/v4 v4.16.7
 	github.com/pulumi/pulumi-snowflake/sdk/v2 v2.9.1
 	github.com/pulumi/pulumi-tls/sdk/v4 v4.11.1
 	github.com/pulumi/pulumi-tls/sdk/v5 v5.2.1
-	github.com/pulumi/pulumi/sdk/v3 v3.215.0
+	github.com/pulumi/pulumi/sdk/v3 v3.218.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.10.1
 	github.com/spf13/pflag v1.0.10
@@ -158,14 +159,14 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	go.yaml.in/yaml/v3 v3.0.3 // indirect
-	golang.org/x/crypto v0.46.0 // indirect
+	golang.org/x/crypto v0.47.0 // indirect
 	golang.org/x/exp v0.0.0-20250813145105-42675adae3e6 // indirect
 	golang.org/x/mod v0.31.0 // indirect
-	golang.org/x/net v0.48.0 // indirect
+	golang.org/x/net v0.49.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
-	golang.org/x/sys v0.39.0 // indirect
-	golang.org/x/term v0.38.0 // indirect
-	golang.org/x/text v0.32.0 // indirect
+	golang.org/x/sys v0.40.0 // indirect
+	golang.org/x/term v0.39.0 // indirect
+	golang.org/x/text v0.33.0 // indirect
 	golang.org/x/tools v0.40.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20250811230008-5f3141c8851a // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250811230008-5f3141c8851a // indirect
