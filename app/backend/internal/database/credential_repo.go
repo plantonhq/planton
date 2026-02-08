@@ -406,6 +406,8 @@ func (r *CredentialRepository) FindFirstByProvider(ctx context.Context, provider
 		return convertToAzureCredential(result)
 	case "auth0":
 		return convertToAuth0Credential(result)
+	case "openstack":
+		return convertToOpenstackCredential(result)
 	default:
 		return nil, fmt.Errorf("unsupported provider: %s", provider)
 	}
@@ -572,4 +574,195 @@ func convertToAuth0Credential(doc bson.M) (*models.Auth0Credential, error) {
 		CreatedAt:    createdAt,
 		UpdatedAt:    updatedAt,
 	}, nil
+}
+
+// CreateOpenstack creates a new OpenStack credential.
+func (r *CredentialRepository) CreateOpenstack(ctx context.Context, cred *models.OpenstackCredential) (*models.OpenstackCredential, error) {
+	exists, err := r.ExistsByProvider(ctx, "openstack")
+	if err != nil {
+		return nil, fmt.Errorf("failed to check for existing OpenStack credential: %w", err)
+	}
+	if exists {
+		return nil, fmt.Errorf("credential for provider 'openstack' already exists")
+	}
+
+	now := time.Now()
+	cred.ID = primitive.NewObjectID()
+	cred.CreatedAt = now
+	cred.UpdatedAt = now
+
+	doc := bson.M{
+		"_id":         cred.ID,
+		"name":        cred.Name,
+		"provider":    "openstack",
+		"auth_url":    cred.AuthURL,
+		"auth_method": cred.AuthMethod,
+		"created_at":  cred.CreatedAt,
+		"updated_at":  cred.UpdatedAt,
+	}
+
+	// Optional fields
+	setOptionalString(doc, "region", cred.Region)
+	setOptionalString(doc, "user_name", cred.UserName)
+	setOptionalString(doc, "password", cred.Password)
+	setOptionalString(doc, "application_credential_id", cred.ApplicationCredentialID)
+	setOptionalString(doc, "application_credential_name", cred.ApplicationCredentialName)
+	setOptionalString(doc, "application_credential_secret", cred.ApplicationCredentialSecret)
+	setOptionalString(doc, "token", cred.Token)
+	setOptionalString(doc, "tenant_name", cred.TenantName)
+	setOptionalString(doc, "tenant_id", cred.TenantID)
+	setOptionalString(doc, "user_domain_name", cred.UserDomainName)
+	setOptionalString(doc, "user_domain_id", cred.UserDomainID)
+	setOptionalString(doc, "project_domain_name", cred.ProjectDomainName)
+	setOptionalString(doc, "project_domain_id", cred.ProjectDomainID)
+	setOptionalString(doc, "cacert_file", cred.CACertFile)
+	setOptionalString(doc, "endpoint_type", cred.EndpointType)
+	if cred.Insecure {
+		doc["insecure"] = cred.Insecure
+	}
+
+	_, err = r.collection.InsertOne(ctx, doc)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create OpenStack credential: %w", err)
+	}
+
+	return cred, nil
+}
+
+// UpdateOpenstack updates an existing OpenStack credential.
+func (r *CredentialRepository) UpdateOpenstack(ctx context.Context, id string, cred *models.OpenstackCredential) (*models.OpenstackCredential, error) {
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, fmt.Errorf("invalid ID format: %w", err)
+	}
+
+	now := time.Now()
+	setFields := bson.M{
+		"name":        cred.Name,
+		"auth_url":    cred.AuthURL,
+		"auth_method": cred.AuthMethod,
+		"updated_at":  now,
+	}
+
+	// Set all optional fields (overwrite with new values or empty)
+	setFields["region"] = cred.Region
+	setFields["user_name"] = cred.UserName
+	setFields["password"] = cred.Password
+	setFields["application_credential_id"] = cred.ApplicationCredentialID
+	setFields["application_credential_name"] = cred.ApplicationCredentialName
+	setFields["application_credential_secret"] = cred.ApplicationCredentialSecret
+	setFields["token"] = cred.Token
+	setFields["tenant_name"] = cred.TenantName
+	setFields["tenant_id"] = cred.TenantID
+	setFields["user_domain_name"] = cred.UserDomainName
+	setFields["user_domain_id"] = cred.UserDomainID
+	setFields["project_domain_name"] = cred.ProjectDomainName
+	setFields["project_domain_id"] = cred.ProjectDomainID
+	setFields["insecure"] = cred.Insecure
+	setFields["cacert_file"] = cred.CACertFile
+	setFields["endpoint_type"] = cred.EndpointType
+
+	update := bson.M{"$set": setFields}
+
+	result := r.collection.FindOneAndUpdate(ctx, bson.M{"_id": objectID, "provider": "openstack"}, update)
+	if result.Err() == mongo.ErrNoDocuments {
+		return nil, fmt.Errorf("OpenStack credential with ID '%s' not found", id)
+	}
+	if result.Err() != nil {
+		return nil, fmt.Errorf("failed to update OpenStack credential: %w", result.Err())
+	}
+
+	doc, err := r.FindByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	if doc == nil {
+		return nil, fmt.Errorf("credential not found after update")
+	}
+
+	return convertToOpenstackCredential(doc)
+}
+
+func convertToOpenstackCredential(doc bson.M) (*models.OpenstackCredential, error) {
+	id, ok := doc["_id"].(primitive.ObjectID)
+	if !ok {
+		return nil, fmt.Errorf("invalid _id field")
+	}
+
+	var createdAt, updatedAt time.Time
+	if dt, ok := doc["created_at"].(primitive.DateTime); ok {
+		createdAt = dt.Time()
+	}
+	if dt, ok := doc["updated_at"].(primitive.DateTime); ok {
+		updatedAt = dt.Time()
+	}
+
+	cred := &models.OpenstackCredential{
+		ID:        id,
+		Name:      doc["name"].(string),
+		AuthURL:   doc["auth_url"].(string),
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
+	}
+
+	if v, ok := doc["auth_method"].(string); ok {
+		cred.AuthMethod = v
+	}
+	if v, ok := doc["region"].(string); ok {
+		cred.Region = v
+	}
+	if v, ok := doc["user_name"].(string); ok {
+		cred.UserName = v
+	}
+	if v, ok := doc["password"].(string); ok {
+		cred.Password = v
+	}
+	if v, ok := doc["application_credential_id"].(string); ok {
+		cred.ApplicationCredentialID = v
+	}
+	if v, ok := doc["application_credential_name"].(string); ok {
+		cred.ApplicationCredentialName = v
+	}
+	if v, ok := doc["application_credential_secret"].(string); ok {
+		cred.ApplicationCredentialSecret = v
+	}
+	if v, ok := doc["token"].(string); ok {
+		cred.Token = v
+	}
+	if v, ok := doc["tenant_name"].(string); ok {
+		cred.TenantName = v
+	}
+	if v, ok := doc["tenant_id"].(string); ok {
+		cred.TenantID = v
+	}
+	if v, ok := doc["user_domain_name"].(string); ok {
+		cred.UserDomainName = v
+	}
+	if v, ok := doc["user_domain_id"].(string); ok {
+		cred.UserDomainID = v
+	}
+	if v, ok := doc["project_domain_name"].(string); ok {
+		cred.ProjectDomainName = v
+	}
+	if v, ok := doc["project_domain_id"].(string); ok {
+		cred.ProjectDomainID = v
+	}
+	if v, ok := doc["insecure"].(bool); ok {
+		cred.Insecure = v
+	}
+	if v, ok := doc["cacert_file"].(string); ok {
+		cred.CACertFile = v
+	}
+	if v, ok := doc["endpoint_type"].(string); ok {
+		cred.EndpointType = v
+	}
+
+	return cred, nil
+}
+
+// setOptionalString sets a key in the document only if the value is non-empty.
+func setOptionalString(doc bson.M, key, value string) {
+	if value != "" {
+		doc[key] = value
+	}
 }

@@ -1,0 +1,150 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack;
+
+import "buf/validate/validate.proto";
+
+// OpenstackProviderConfig defines the credentials and connection parameters required to interact
+// with an OpenStack cloud. This message supports multiple authentication methods via the
+// `credentials` oneof, reflecting OpenStack's flexible identity model (Keystone).
+//
+// The three supported authentication methods are:
+// - Password: Username + password with project/domain context (most common for interactive use)
+// - Application Credentials: Pre-scoped ID + secret (recommended for automation and CI/CD)
+// - Token: Pre-authenticated token (useful for short-lived or delegated access)
+//
+// Common fields (auth_url, region, project/domain context, TLS) apply to all methods.
+// The Terraform OpenStack provider environment variables (OS_*) are derived from these fields.
+//
+// For more information:
+// - Terraform provider docs: https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs
+// - OpenStack authentication: https://docs.openstack.org/keystone/latest/user/application_credentials.html
+message OpenstackProviderConfig {
+  // auth_url is the Identity (Keystone) authentication endpoint URL.
+  // This is the entry point for all OpenStack API authentication.
+  // Typically ends with /v3 for Identity API v3.
+  // Example: "https://cloud.example.com:5000/v3"
+  // Environment variable: OS_AUTH_URL
+  string auth_url = 1 [(buf.validate.field).required = true];
+
+  // region is the OpenStack region to operate in.
+  // Regions represent separate geographic locations within a single OpenStack deployment.
+  // If your cloud has only one region, this can often be omitted.
+  // Example: "RegionOne"
+  // Environment variable: OS_REGION_NAME
+  string region = 2;
+
+  // credentials specifies the authentication method and its associated fields.
+  // Exactly one method must be provided.
+  oneof credentials {
+    // password authenticates using a username and password.
+    // This is the most common method for interactive use and requires
+    // project/domain context fields to be set.
+    OpenstackPasswordCredentials password = 10;
+
+    // application_credential authenticates using pre-scoped application credentials.
+    // This is the recommended method for automation and CI/CD pipelines.
+    // Application credentials are scoped to a specific project and set of roles,
+    // eliminating the need for separate project/domain context fields.
+    OpenstackApplicationCredentials application_credential = 11;
+
+    // token authenticates using a pre-existing Keystone token.
+    // Useful for short-lived access or when delegating from another service.
+    OpenstackTokenCredentials token = 12;
+  }
+
+  // tenant_name is the name of the OpenStack project (tenant) to scope operations to.
+  // Required for password and token authentication; not needed for application credentials.
+  // Also known as project_name.
+  // Environment variable: OS_TENANT_NAME / OS_PROJECT_NAME
+  string tenant_name = 20;
+
+  // tenant_id is the unique ID of the OpenStack project (tenant).
+  // Alternative to tenant_name. Use one or the other, not both.
+  // Environment variable: OS_TENANT_ID / OS_PROJECT_ID
+  string tenant_id = 21;
+
+  // user_domain_name is the domain name of the authenticating user.
+  // Required for Identity v3 password authentication when the user is not in the default domain.
+  // Common value: "Default"
+  // Environment variable: OS_USER_DOMAIN_NAME
+  string user_domain_name = 30;
+
+  // user_domain_id is the domain ID of the authenticating user.
+  // Alternative to user_domain_name.
+  // Environment variable: OS_USER_DOMAIN_ID
+  string user_domain_id = 31;
+
+  // project_domain_name is the domain name of the target project.
+  // Required for Identity v3 when the project is not in the default domain.
+  // Common value: "Default"
+  // Environment variable: OS_PROJECT_DOMAIN_NAME
+  string project_domain_name = 32;
+
+  // project_domain_id is the domain ID of the target project.
+  // Alternative to project_domain_name.
+  // Environment variable: OS_PROJECT_DOMAIN_ID
+  string project_domain_id = 33;
+
+  // insecure controls whether to trust self-signed or invalid TLS certificates.
+  // Set to true only for development/testing environments.
+  // Default: false
+  // Environment variable: OS_INSECURE
+  bool insecure = 40;
+
+  // cacert_file is the path to a custom CA certificate bundle for TLS verification.
+  // Use this when your OpenStack deployment uses a private or corporate CA.
+  // Environment variable: OS_CACERT
+  string cacert_file = 41;
+
+  // endpoint_type specifies which endpoint type to use from the service catalog.
+  // Valid values: "public" (default), "internal", "admin"
+  // Environment variable: OS_ENDPOINT_TYPE
+  string endpoint_type = 50;
+}
+
+// OpenstackPasswordCredentials provides username/password authentication.
+// This method authenticates directly with Keystone using user credentials.
+// It requires project/domain context to be set on the parent OpenstackProviderConfig
+// so that the resulting token is scoped to the correct project.
+message OpenstackPasswordCredentials {
+  // user_name is the OpenStack username.
+  // Environment variable: OS_USERNAME
+  string user_name = 1 [(buf.validate.field).required = true];
+
+  // password is the user's password.
+  // Environment variable: OS_PASSWORD
+  string password = 2 [(buf.validate.field).required = true];
+}
+
+// OpenstackApplicationCredentials provides authentication via application credentials.
+// Application credentials are pre-scoped to a specific project and set of roles,
+// making them ideal for automation. They do not require separate project/domain context.
+//
+// Either id or name must be provided (along with secret).
+// Using id is recommended as it is globally unique; name requires the parent user context.
+message OpenstackApplicationCredentials {
+  // id is the unique identifier of the application credential.
+  // Preferred over name as it is globally unique.
+  // Environment variable: OS_APPLICATION_CREDENTIAL_ID
+  string id = 1;
+
+  // name is the human-readable name of the application credential.
+  // If using name instead of id, the user context must also be determinable.
+  // Environment variable: OS_APPLICATION_CREDENTIAL_NAME
+  string name = 2;
+
+  // secret is the application credential secret.
+  // This is a required field and must be kept secure.
+  // Environment variable: OS_APPLICATION_CREDENTIAL_SECRET
+  string secret = 3 [(buf.validate.field).required = true];
+}
+
+// OpenstackTokenCredentials provides authentication using a pre-existing Keystone token.
+// Tokens are short-lived and are typically obtained from a prior authentication step.
+// Useful for delegated access patterns or when integrating with external auth systems.
+message OpenstackTokenCredentials {
+  // token is the pre-authenticated Keystone token string.
+  // Environment variable: OS_TOKEN
+  string token = 1 [(buf.validate.field).required = true];
+}

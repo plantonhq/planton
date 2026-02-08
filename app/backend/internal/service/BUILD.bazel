@@ -18,6 +18,7 @@ go_library(
         "//apis/org/openmcf/provider/aws",
         "//apis/org/openmcf/provider/azure",
         "//apis/org/openmcf/provider/gcp",
+        "//apis/org/openmcf/provider/openstack",
         "//apis/org/openmcf/shared/cloudresourcekind",
         "//app/backend/internal/database",
         "//app/backend/pkg/models",

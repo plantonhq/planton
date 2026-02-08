@@ -116,6 +116,8 @@ func loadProviderEnvVars(providerConfigYaml []byte, provider cloudresourcekind.C
 		return loadKubernetesEnvVars(providerConfigYaml, opts.FileCacheLoc)
 	case cloudresourcekind.CloudResourceProvider_snowflake:
 		return loadSnowflakeEnvVars(providerConfigYaml)
+	case cloudresourcekind.CloudResourceProvider_openstack:
+		return loadOpenstackEnvVars(providerConfigYaml)
 	default:
 		// Unknown or unspecified provider - no env vars needed
 		return map[string]string{}, nil

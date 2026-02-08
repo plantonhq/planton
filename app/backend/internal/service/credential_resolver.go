@@ -10,6 +10,7 @@ import (
 	awsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
 	azurev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure"
 	gcpv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
+	openstackv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
 	"github.com/plantonhq/openmcf/app/backend/internal/database"
 	"github.com/plantonhq/openmcf/app/backend/pkg/models"
@@ -61,25 +62,24 @@ func (r *CredentialResolver) ResolveProviderConfig(
 		return nil, fmt.Errorf("no %s credential found. Please create a %s credential first", strings.ToUpper(providerString), strings.ToUpper(providerString))
 	}
 
-	// Convert to CredentialProviderConfig based on provider type
-	switch providerString {
-	case "aws":
+	// Convert to CredentialProviderConfig based on provider enum.
+	// Switch on the enum directly for type safety -- the string is only needed for the DB query above.
+	switch providerEnum {
+	case cloudresourcekind.CloudResourceProvider_aws:
 		awsCred := credInterface.(*models.AwsCredential)
-		region := awsCred.Region
-		sessionToken := awsCred.SessionToken
 		return &credentialv1.CredentialProviderConfig{
 			Data: &credentialv1.CredentialProviderConfig_Aws{
 				Aws: &awsv1.AwsProviderConfig{
 					AccountId:       awsCred.AccountID,
 					AccessKeyId:     awsCred.AccessKeyID,
 					SecretAccessKey: awsCred.SecretAccessKey,
-					Region:          region,
-					SessionToken:    sessionToken,
+					Region:          awsCred.Region,
+					SessionToken:    awsCred.SessionToken,
 				},
 			},
 		}, nil
 
-	case "gcp":
+	case cloudresourcekind.CloudResourceProvider_gcp:
 		gcpCred := credInterface.(*models.GcpCredential)
 		return &credentialv1.CredentialProviderConfig{
 			Data: &credentialv1.CredentialProviderConfig_Gcp{
@@ -89,7 +89,7 @@ func (r *CredentialResolver) ResolveProviderConfig(
 			},
 		}, nil
 
-	case "azure":
+	case cloudresourcekind.CloudResourceProvider_azure:
 		azureCred := credInterface.(*models.AzureCredential)
 		return &credentialv1.CredentialProviderConfig{
 			Data: &credentialv1.CredentialProviderConfig_Azure{
@@ -102,7 +102,7 @@ func (r *CredentialResolver) ResolveProviderConfig(
 			},
 		}, nil
 
-	case "auth0":
+	case cloudresourcekind.CloudResourceProvider_auth0:
 		auth0Cred := credInterface.(*models.Auth0Credential)
 		return &credentialv1.CredentialProviderConfig{
 			Data: &credentialv1.CredentialProviderConfig_Auth0{
@@ -111,6 +111,50 @@ func (r *CredentialResolver) ResolveProviderConfig(
 					ClientId:     auth0Cred.ClientID,
 					ClientSecret: auth0Cred.ClientSecret,
 				},
+			},
+		}, nil
+
+	case cloudresourcekind.CloudResourceProvider_openstack:
+		osCred := credInterface.(*models.OpenstackCredential)
+		cfg := &openstackv1.OpenstackProviderConfig{
+			AuthUrl:           osCred.AuthURL,
+			Region:            osCred.Region,
+			TenantName:        osCred.TenantName,
+			TenantId:          osCred.TenantID,
+			UserDomainName:    osCred.UserDomainName,
+			UserDomainId:      osCred.UserDomainID,
+			ProjectDomainName: osCred.ProjectDomainName,
+			ProjectDomainId:   osCred.ProjectDomainID,
+			Insecure:          osCred.Insecure,
+			CacertFile:        osCred.CACertFile,
+			EndpointType:      osCred.EndpointType,
+		}
+		switch osCred.AuthMethod {
+		case "password":
+			cfg.Credentials = &openstackv1.OpenstackProviderConfig_Password{
+				Password: &openstackv1.OpenstackPasswordCredentials{
+					UserName: osCred.UserName,
+					Password: osCred.Password,
+				},
+			}
+		case "application_credential":
+			cfg.Credentials = &openstackv1.OpenstackProviderConfig_ApplicationCredential{
+				ApplicationCredential: &openstackv1.OpenstackApplicationCredentials{
+					Id:     osCred.ApplicationCredentialID,
+					Name:   osCred.ApplicationCredentialName,
+					Secret: osCred.ApplicationCredentialSecret,
+				},
+			}
+		case "token":
+			cfg.Credentials = &openstackv1.OpenstackProviderConfig_Token{
+				Token: &openstackv1.OpenstackTokenCredentials{
+					Token: osCred.Token,
+				},
+			}
+		}
+		return &credentialv1.CredentialProviderConfig{
+			Data: &credentialv1.CredentialProviderConfig_Openstack{
+				Openstack: cfg,
 			},
 		}, nil
 
