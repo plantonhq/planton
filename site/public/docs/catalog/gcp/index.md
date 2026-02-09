@@ -16,7 +16,7 @@ The following GCP resources can be deployed using OpenMCF:
 - [Cloud Run](/docs/catalog/gcp/gcpcloudrun)
 - [Cloud SQL](/docs/catalog/gcp/gcpcloudsql)
 - [Compute Instance](/docs/catalog/gcp/gcpcomputeinstance)
-- [Dnsrecord](/docs/catalog/gcp/gcpdnsrecord)
+- [DNS Record](/docs/catalog/gcp/gcpdnsrecord)
 - [DNS Zone](/docs/catalog/gcp/gcpdnszone)
 - [GCS Bucket](/docs/catalog/gcp/gcpgcsbucket)
 - [GKE Cluster](/docs/catalog/gcp/gcpgkecluster)

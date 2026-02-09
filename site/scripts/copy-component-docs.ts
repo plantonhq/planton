@@ -135,6 +135,11 @@ function generateTitle(component: string, provider: string): string {
     'user': 'User',
     'key': 'Key',
     'zone': 'Zone',
+    'keypair': 'Keypair',
+    'subnet': 'Subnet',
+    'router': 'Router',
+    'image': 'Image',
+    'project': 'Project',
   };
   
   // Check if the entire name matches a special case
@@ -154,6 +159,23 @@ function generateTitle(component: string, provider: string): string {
     'elasticoperator': 'Elastic Operator',
     'kafkaoperator': 'Kafka Operator',
     'altinityoperator': 'Altinity Operator',
+    // OpenStack compound components
+    'routerinterface': 'Router Interface',
+    'securitygrouprule': 'Security Group Rule',
+    'floatingip': 'Floating IP',
+    'floatingipassociate': 'Floating IP Associate',
+    'networkport': 'Network Port',
+    'servergroup': 'Server Group',
+    'volumeattach': 'Volume Attach',
+    'applicationcredential': 'Application Credential',
+    'roleassignment': 'Role Assignment',
+    'loadbalancerlistener': 'Load Balancer Listener',
+    'loadbalancerpool': 'Load Balancer Pool',
+    'loadbalancermember': 'Load Balancer Member',
+    'loadbalancermonitor': 'Load Balancer Monitor',
+    'dnsrecord': 'DNS Record',
+    'containerclustertemplate': 'Container Cluster Template',
+    'containercluster': 'Container Cluster',
   };
   
   if (compoundSpecialCases[lowerName]) {
@@ -351,6 +373,7 @@ function getProviderIcon(provider: string): string {
     'confluent': '/images/providers/confluent.svg',
     'kubernetes': '/images/providers/kubernetes.svg',
     'snowflake': '/images/providers/snowflake.svg',
+    'openstack': '/images/providers/openstack.svg',
   };
   return iconMap[provider] || '/images/providers/default.svg';
 }
@@ -421,7 +444,7 @@ async function copyComponentDocs(): Promise<void> {
   const providerDirs = [
     'aws', 'gcp', 'azure', 'kubernetes', 
     'cloudflare', 'civo', 'digitalocean', 
-    'atlas', 'confluent', 'snowflake'
+    'atlas', 'confluent', 'openstack', 'snowflake'
   ];
   
   // Clear only provider directories (preserve manually created docs like index.md, getting-started.md, etc.)

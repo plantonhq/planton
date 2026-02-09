@@ -12,7 +12,7 @@ The following AZURE resources can be deployed using OpenMCF:
 - [Aks Cluster](/docs/catalog/azure/azureakscluster)
 - [Aks Node  Pool](/docs/catalog/azure/azureaksnodepool)
 - [Container Registry](/docs/catalog/azure/azurecontainerregistry)
-- [Dnsrecord](/docs/catalog/azure/azurednsrecord)
+- [DNS Record](/docs/catalog/azure/azurednsrecord)
 - [DNS Zone](/docs/catalog/azure/azurednszone)
 - [Key Vault](/docs/catalog/azure/azurekeyvault)
 - [NAT Gateway](/docs/catalog/azure/azurenatgateway)

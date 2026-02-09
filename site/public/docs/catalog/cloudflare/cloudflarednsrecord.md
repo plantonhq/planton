@@ -1,6 +1,6 @@
 ---
-title: "Dnsrecord"
-description: "Dnsrecord deployment documentation"
+title: "DNS Record"
+description: "DNS Record deployment documentation"
 icon: "package"
 order: 100
 componentName: "cloudflarednsrecord"

@@ -10,7 +10,7 @@ order: 10
 The following CLOUDFLARE resources can be deployed using OpenMCF:
 
 - [D1 Database](/docs/catalog/cloudflare/cloudflared1database)
-- [Dnsrecord](/docs/catalog/cloudflare/cloudflarednsrecord)
+- [DNS Record](/docs/catalog/cloudflare/cloudflarednsrecord)
 - [DNS Zone](/docs/catalog/cloudflare/cloudflarednszone)
 - [KV Namespace](/docs/catalog/cloudflare/cloudflarekvnamespace)
 - [Load Balancer](/docs/catalog/cloudflare/cloudflareloadbalancer)

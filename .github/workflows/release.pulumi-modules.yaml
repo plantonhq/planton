@@ -11,7 +11,7 @@
 #   - Clear progress logging with component counts
 #   - No hardcoded component paths - auto-discovers from filesystem
 #
-# Matrix: 12 providers × 4 platforms = 48 parallel jobs
+# Matrix: 13 providers × 4 platforms = 52 parallel jobs
 #
 # Path pattern: apis/org/openmcf/provider/{provider}/{component}/v1/iac/pulumi
 #
@@ -39,7 +39,7 @@ jobs:
     timeout-minutes: 60
     strategy:
       fail-fast: false
-      max-parallel: 48
+      max-parallel: 52
       matrix:
         provider:
           - atlas
@@ -53,6 +53,7 @@ jobs:
           - gcp
           - kubernetes
           - openfga
+          - openstack
           - snowflake
         platform:
           - goos: linux

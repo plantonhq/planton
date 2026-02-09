@@ -13,7 +13,7 @@ The following CIVO resources can be deployed using OpenMCF:
 - [Certificate](/docs/catalog/civo/civocertificate)
 - [Compute Instance](/docs/catalog/civo/civocomputeinstance)
 - [Database](/docs/catalog/civo/civodatabase)
-- [Dnsrecord](/docs/catalog/civo/civodnsrecord)
+- [DNS Record](/docs/catalog/civo/civodnsrecord)
 - [DNS Zone](/docs/catalog/civo/civodnszone)
 - [Firewall](/docs/catalog/civo/civofirewall)
 - [IP Address](/docs/catalog/civo/civoipaddress)

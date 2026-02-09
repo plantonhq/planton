@@ -14,7 +14,7 @@ The following DIGITALOCEAN resources can be deployed using OpenMCF:
 - [Certificate](/docs/catalog/digitalocean/digitaloceancertificate)
 - [Container Registry](/docs/catalog/digitalocean/digitaloceancontainerregistry)
 - [Database Cluster](/docs/catalog/digitalocean/digitaloceandatabasecluster)
-- [Dnsrecord](/docs/catalog/digitalocean/digitaloceandnsrecord)
+- [DNS Record](/docs/catalog/digitalocean/digitaloceandnsrecord)
 - [DNS Zone](/docs/catalog/digitalocean/digitaloceandnszone)
 - [Droplet](/docs/catalog/digitalocean/digitaloceandroplet)
 - [Firewall](/docs/catalog/digitalocean/digitaloceanfirewall)
