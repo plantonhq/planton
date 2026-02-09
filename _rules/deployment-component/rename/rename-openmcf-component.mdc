@@ -110,8 +110,8 @@ Files will be modified in:
 
 Build pipeline will run:
   1. make protos
-  2. make build
-  3. make test
+  2. go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...
+  3. go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
 
 Proceed with rename? (yes/no):
 ```
@@ -128,8 +128,8 @@ If you confirm, the rule will:
 6. **Rename Icon Folder** - Rename `site/public/images/providers/{provider}/{component}/` if exists
 7. **Delete Source** - Remove old component directory
 8. **Build** - Run `make protos`
-9. **Verify** - Run `make build`
-10. **Test** - Run `make test`
+9. **Verify** - Run `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
+10. **Test** - Run `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
 
 ### Step 4: Results
 
@@ -297,8 +297,8 @@ Proceeding with rename...
 **Rename stops on first failure:**
 
 1. `make protos` fails → Stop, show error
-2. `make build` fails → Stop, show error
-3. `make test` fails → Stop, show error
+2. `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` fails → Stop, show error
+3. `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` fails → Stop, show error
 
 **Only if all three pass** does the rename complete successfully.
 
@@ -365,7 +365,7 @@ New ID prefix (current: oldpfx): [press Enter]
 [Provides inputs, confirms]
 
 Running make protos... ✅ Passed
-Running make build... ❌ Failed
+Running go build... ❌ Failed
 
 Error: undefined: newcomponent.SomeType
 
@@ -391,7 +391,7 @@ Before renaming:
 
 3. **Tests Pass**
    ```bash
-   make test
+   go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
    # Should pass before rename
    ```
 
@@ -441,11 +441,11 @@ Before renaming:
    - Creates new `.pb.go` files with new names
    - Removes old stubs
 
-2. **make build** - Compile everything
+2. **go build** - Compile component
    - Verifies all imports resolve
    - Catches reference errors
 
-3. **make test** - Run test suite
+3. **go test** - Run component tests
    - Validates behavior unchanged
    - Catches logic errors
 
@@ -460,7 +460,7 @@ If tests pass:
 
 ### Build Fails After Rename
 
-**Symptom**: `make build` or `make test` fails
+**Symptom**: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` or `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` fails
 
 **Common Causes**:
 1. Missed references in external packages
@@ -658,8 +658,8 @@ After rename completion:
 ✅ Documentation updated
 ✅ Old directory deleted
 ✅ `make protos` passed
-✅ `make build` passed
-✅ `make test` passed
+✅ `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` passed
+✅ `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` passed
 ✅ Changelog created
 ✅ Changes committed
 

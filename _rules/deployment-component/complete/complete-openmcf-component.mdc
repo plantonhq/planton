@@ -110,8 +110,8 @@ Phase 3: Enhance Examples
 Phase 4: Final Validation
 [11/14] ✅ Proto stubs regenerated (make protos)
 [12/14] ✅ Component tests passed (go test ./apis/.../v1/)
-[13/14] ✅ Build validation passed (make build)
-[14/14] ✅ Full test suite passed (make test)
+[13/14] ✅ Build validation passed (go build ./apis/.../v1/...)
+[14/14] ✅ Component tests passed (go test -v ./apis/.../v1/)
 ```
 
 **What Gets Created:**
@@ -128,8 +128,8 @@ The update --fill-gaps scenario will run appropriate forge flow rules to create:
 - Run component-specific tests: `go test ./apis/org/openmcf/provider/<provider>/<component>/v1/`
   - Validates buf.validate rules in spec.proto are correct
   - Validates spec_test.go tests pass with current validation logic
-- After Pulumi/Go code changes: Run `make build` to validate complete build
-- Run full test suite: `make test` to validate all tests pass
+- After Pulumi/Go code changes: Run `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` to validate complete build
+- Run full test suite: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` to validate all tests pass
 - Retries up to 3 times on fixable errors
 - Reports progress in real-time
 
@@ -443,8 +443,8 @@ Updates Applied Successfully:
   ✅ Examples enhanced
 
 Validation Results:
-  ✅ Build passed (make build)
-  ❌ Tests failed (make test)
+  ✅ Build passed (go build ./apis/.../v1/...)
+  ❌ Tests failed (go test -v ./apis/.../v1/)
 
 Test Failures:
   1. spec_test.go:45 - Validation test failed
@@ -668,8 +668,8 @@ Phase 2: Documentation
 Phase 3: Validation
   [10/13] ✅ Proto stubs regenerated (make protos)
   [11/13] ✅ Component tests passed (spec_test.go)
-  [12/13] ✅ Build passed (make build)
-  [13/13] ✅ Full test suite passed (make test)
+  [12/13] ✅ Build passed (go build ./apis/.../v1/...)
+  [13/13] ✅ Component tests passed (go test -v ./apis/.../v1/)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -773,13 +773,13 @@ After complete finishes successfully:
 ✅ spec_test.go exists with validation tests
 ✅ Proto stubs regenerated if proto files changed (`make protos`)
 ✅ Component tests execute and pass (`go test ./apis/.../v1/`)
-✅ Build validation passed (`make build`)
-✅ Full test suite passed (`make test`)
+✅ Build validation passed (`go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`)
+✅ Full test suite passed (`go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`)
 ✅ Two audit reports generated (before/after)
 ✅ Summary report shows improvement
 ✅ Files ready to commit
 
-**Critical:** All validation steps must pass for component to be considered complete. The complete operation executes `make protos`, component tests, `make build`, and `make test` as part of the validation workflow.
+**Critical:** All validation steps must pass for component to be considered complete. The complete operation executes `make protos`, component tests, `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`, and `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` as part of the validation workflow.
 
 ## Examples
 

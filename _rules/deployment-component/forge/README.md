@@ -190,8 +190,8 @@ Phase 6: Terraform Implementation
 [19/21] ✅ Generated Terraform docs
 
 Phase 7: Final Validation
-[20/21] ✅ Build validation passed (make build)
-[21/21] ✅ Test validation passed (make test)
+[20/21] ✅ Build validation passed (go build ./apis/.../v1/...)
+[21/21] ✅ Component tests passed (go test -v ./apis/.../v1/)
 
 🎉 Component creation complete!
 
@@ -266,7 +266,7 @@ Forge creates a **production-ready baseline**. Common customizations:
 5. Update Pulumi module to use new fields
 6. Update Terraform `variables.tf` to match
 7. Update examples in `examples.md`
-8. Run `make build && make test`
+8. Run `go build ./apis/.../v1/... && go test -v ./apis/.../v1/`
 
 ### Modify IaC Implementation
 1. Update Pulumi module files (`iac/pulumi/module/*.go`)

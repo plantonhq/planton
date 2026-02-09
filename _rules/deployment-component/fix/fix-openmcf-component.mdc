@@ -119,7 +119,7 @@ Use fix when you need to:
    - Update Pulumi module (main.go, locals.go, resource files)
    - Update Terraform module to maintain feature parity
    - Ensure both implement the same behavior
-   - **Must execute**: `make build` from project root to validate complete build
+   - **Must execute**: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` from project root to validate complete build
 
 3. **Fix Tests** (if test logic change needed)
    - Update spec_test.go to validate new behavior
@@ -135,10 +135,10 @@ make protos
 go test ./apis/org/openmcf/provider/<provider>/<component>/v1/
 
 # 3. If Go/Pulumi code changed: Verify complete build
-make build
+go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...
 
 # 4. Always: Verify all tests pass
-make test
+go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
 ```
 
 ### Step 3: Propagate to Documentation (Match Source)
@@ -226,11 +226,11 @@ go test ./apis/org/openmcf/provider/<provider>/<component>/v1/
 # Must pass - validates validation logic is correct in spec.proto
 
 # 3. If Pulumi/Go code changed: Build validation
-make build
+go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...
 # Must pass - validates no syntax/import/compilation errors
 
 # 4. Full test suite (validates all tests)
-make test
+go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
 # Must pass - validates no regressions anywhere in the codebase
 ```
 
@@ -290,8 +290,8 @@ Consistency Verified:
 
 Validation Results:
   ✅ Component tests passed (go test ./apis/.../v1/)
-  ✅ Build passed (make build)
-  ✅ Full test suite passed (make test)
+  ✅ Build passed (go build ./apis/.../v1/...)
+  ✅ Component tests passed (go test -v ./apis/.../v1/)
 
 Files Modified: 5
 Documentation Updated: 3
@@ -325,8 +325,8 @@ Next Steps:
 5. Update Terraform variables.tf (int → number)
 6. Update examples.md (show large disk example)
 7. Update README.md (mention TB-scale support)
-8. Run build: `make build`
-9. Run all tests: `make test`
+8. Run build: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
+9. Run all tests: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
 10. Validate consistency
 
 ### Scenario 2: IaC Implementation Fix
@@ -341,13 +341,13 @@ Next Steps:
 **Actions:**
 1. Update Pulumi module/main.go (use spec.BackupRetentionPeriod)
 2. Update Terraform main.tf (ensure same logic)
-3. Run build: `make build`
+3. Run build: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
 4. Update spec_test.go (test backup retention values)
 5. Run component tests: `go test ./apis/org/openmcf/provider/aws/awsrdsinstance/v1/`
 6. Update examples.md (show backup retention usage)
 7. Update iac/pulumi/overview.md (document backup behavior)
 8. Run E2E tests to verify fix works
-9. Run all tests: `make test`
+9. Run all tests: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
 10. Validate consistency
 
 ### Scenario 3: Documentation Out of Sync
@@ -386,10 +386,10 @@ Next Steps:
    - If validation SHOULDN'T exist: Fix test to not expect error
 3. If proto changed: Run `make protos` to regenerate stubs
 4. Run component tests: `go test ./apis/org/openmcf/provider/atlas/mongodbatlas/v1/`
-5. Run build: `make build`
+5. Run build: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
 6. Update examples if validation behavior changed
 7. Update README if validation rules mentioned
-8. Run all tests: `make test`
+8. Run all tests: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
 
 ### Scenario 5: Feature Parity Fix
 
@@ -425,8 +425,8 @@ Next Steps:
 4. Update spec_test.go (test 10.0.0.0/8 is now valid)
 5. Update examples.md (show 10.0.0.0/8 example)
 6. Update docs/README.md (document valid CIDR ranges)
-7. Run build: `make build`
-8. Run all tests: `make test`
+7. Run build: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
+8. Run all tests: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
 9. Validate consistency
 
 ## Consistency Enforcement
@@ -686,12 +686,12 @@ Component Tests:
   Duration: 1.2s
 
 Build Validation:
-  Command: make build
+  Command: go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...
   Result: ✅ Success
   Duration: 2m 15s
 
-Full Test Suite:
-  Command: make test
+Component Tests:
+  Command: go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
   Result: ✅ All tests passed
   Tests run: 156
   Tests passed: 156
@@ -1087,8 +1087,8 @@ After fix completes:
 ✅ All related artifacts updated (examples, docs)
 ✅ Consistency verified (proto ↔ TF, Pulumi ↔ TF, etc.)
 ✅ Component tests pass (`go test ./apis/.../v1/`)
-✅ Build passes (`make build`)
-✅ Full test suite passes (`make test`)
+✅ Build passes (`go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`)
+✅ Full test suite passes (`go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`)
 ✅ Examples validate against schema
 ✅ Documentation describes actual behavior
 ✅ No regressions introduced
@@ -1124,8 +1124,8 @@ After fix completes:
 5. Update IaC module to use getter methods: `GetFieldName()`
 6. Remove defensive default checks (framework applies defaults)
 7. Run component tests: `go test ./apis/.../v1/`
-8. Run build: `make build`
-9. Run all tests: `make test`
+8. Run build: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
+9. Run all tests: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
 
 **Key Principle:** Don't just document defaults in comments - enforce them via:
 - `optional` keyword for presence tracking

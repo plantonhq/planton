@@ -70,15 +70,15 @@ Update handles six distinct scenarios, each with its own workflow:
 2. Validates component tests: `go test ./apis/org/openmcf/provider/<provider>/<component>/v1/`
 3. Updates Terraform variables.tf to match spec.proto
 4. Updates examples.md to use new fields
-5. Runs build validation: `make build`
-6. Runs full test validation: `make test`
+5. Runs build validation: `go build ./apis/.../v1/...`
+6. Runs full test validation: `go test -v ./apis/.../v1/`
 
 **Example:** Added `enable_ssl` field to spec.proto
 - Runs `make protos` to regenerate stubs with new field
 - Runs component tests to validate buf.validate rules
 - Adds `enable_ssl` variable to Terraform
 - Updates examples to show SSL usage
-- Runs `make build` and `make test` for full validation
+- Runs `go build ./apis/.../v1/...` and `go test -v ./apis/.../v1/` for full validation
 - Result: Everything consistent with new schema
 
 ### 3. Refresh Documentation
@@ -113,17 +113,17 @@ Update handles six distinct scenarios, each with its own workflow:
 1. Analyzes current implementation
 2. Updates Pulumi module based on explanation
 3. Updates Terraform module for feature parity
-4. Runs build validation: `make build`
+4. Runs build validation: `go build ./apis/.../v1/...`
 5. Updates tests
 6. Runs E2E tests
-7. Runs full test validation: `make test`
+7. Runs full test validation: `go test -v ./apis/.../v1/`
 
 **Example:** Adding multi-region support
 - Modifies Pulumi to create regional resources
-- Runs `make build` to validate compilation
+- Runs `go build ./apis/.../v1/...` to validate compilation
 - Mirrors changes in Terraform
 - Updates tests for multi-region scenarios
-- Runs `make test` for full validation
+- Runs `go test -v ./apis/.../v1/` for full validation
 - Result: Both IaC modules support multi-region
 
 ### 5. Fix Specific Issue
@@ -317,9 +317,9 @@ Update validates after major changes with specific commands:
 |------------|---------|-----------|----------|
 | After proto changes | `make protos` | Proto compiles, stubs generated | Import errors, syntax errors |
 | Component tests | `go test ./apis/.../v1/` | buf.validate rules work | Any spec_test.go failure |
-| After Go/Pulumi changes | `make build` | Complete build succeeds | Compilation errors |
+| After Go/Pulumi changes | `go build ./apis/.../v1/...` | Complete build succeeds | Compilation errors |
 | After doc updates | Validation | Examples work | Invalid YAML, wrong fields |
-| Final validation | `make test` | Full test suite passes | Any test failure |
+| Final validation | `go test -v ./apis/.../v1/` | Full test suite passes | Any test failure |
 
 **Build and Test Execution:**
 Update always runs these commands in sequence:
@@ -331,10 +331,10 @@ make protos
 go test ./apis/org/openmcf/provider/<provider>/<component>/v1/
 
 # 3. If Go/Pulumi code changed: Verify complete build
-make build
+go build ./apis/.../v1/...
 
 # 4. Always: Verify all tests pass
-make test
+go test -v ./apis/.../v1/
 ```
 This ensures spec_test.go correctly validates all validation rules in spec.proto and the complete build succeeds.
 
@@ -390,8 +390,8 @@ Phase 2: Generate Documentation
 [9/9] ✅ Generated iac/pulumi/overview.md
 
 Phase 3: Validation
-[10/10] ✅ Build passed (make build)
-[11/11] ✅ Tests passed (make test)
+[10/10] ✅ Build passed (go build ./apis/.../v1/...)
+[11/11] ✅ Tests passed (go test -v ./apis/.../v1/)
 
 ✅ Update complete!
 
@@ -589,7 +589,7 @@ If you've customized generated code:
 cd apis/org/openmcf/provider/<provider>/<component>/v1
 make protos    # Regenerate stubs
 go build       # Check Go errors
-make test      # Run tests
+go test -v ./apis/.../v1/      # Run tests
 ```
 
 ### Examples Don't Work After Update

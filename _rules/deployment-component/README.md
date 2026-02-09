@@ -371,8 +371,8 @@ Make targeted fixes to components and automatically propagate changes to all rel
 
 **Validation:**
 - Component tests: `go test ./apis/.../v1/`
-- Build: `make build`
-- Full suite: `make test`
+- Build: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
+- Full suite: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
 - Example validation
 - Consistency checks
 
@@ -459,8 +459,8 @@ New ID prefix (current: k8sms): k8sdpl
 
 Rename isn't complete until all phases pass:
 1. `make protos` - Regenerate proto stubs
-2. `make build` - Verify compilation
-3. `make test` - Validate behavior unchanged
+2. `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` - Verify compilation
+3. `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` - Validate behavior unchanged
 
 **Stops on first failure** for fast feedback.
 
@@ -540,7 +540,7 @@ Completely remove deployment components with safety features to prevent accident
 # Step 3: Confirm (type: DELETE ObsoleteComponent)
 
 # Step 4: Verify
-make build && make test
+go build ./apis/.../v1/... && go test -v ./apis/.../v1/
 ```
 
 **Quick Delete (with caution):**
@@ -833,10 +833,10 @@ find apis/org/openmcf/provider/atlas/mongodbatlas/v1 -type f -exec ls -lh {} \;
 make protos
 
 # Check build
-make build
+go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...
 
 # Check tests
-make test
+go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
 ```
 
 ### "Delete warns about references"

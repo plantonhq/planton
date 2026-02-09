@@ -98,9 +98,9 @@ rename_deployment_component.py (Python Script)
       ↓
    [Run: make protos]
       ↓
-   [Run: make build]
+   [Run: go build ./apis/.../v1/...]
       ↓
-   [Run: make test]
+   [Run: go test -v ./apis/.../v1/]
       ↓
 JSON Output (success + metrics)
       ↓
@@ -363,7 +363,7 @@ The rename isn't complete until all three build phases pass:
 - Import path issues
 - Message name conflicts
 
-### Phase 2: make build
+### Phase 2: go build ./apis/.../v1/...
 
 **Purpose**: Compile entire codebase
 
@@ -377,7 +377,7 @@ The rename isn't complete until all three build phases pass:
 - Import path errors
 - Type mismatches
 
-### Phase 3: make test
+### Phase 3: go test -v ./apis/.../v1/
 
 **Purpose**: Run test suite
 
@@ -397,8 +397,8 @@ The pipeline stops immediately on first failure:
 
 ```
 make protos → ✅ Success → Continue
-make build  → ❌ Failed  → STOP (show error)
-make test   → (not reached)
+go build ./apis/.../v1/...  → ❌ Failed  → STOP (show error)
+go test -v ./apis/.../v1/   → (not reached)
 ```
 
 This provides fast feedback and prevents cascading errors.
@@ -479,7 +479,7 @@ git status
 
 # Ensure tests pass
 cd /path/to/openmcf
-make test
+go test -v ./apis/.../v1/
 ```
 
 #### Step 2: Invoke Rule
@@ -555,8 +555,8 @@ Deleting old directory...
 
 Running build pipeline...
   ✓ make protos (23s)
-  ✓ make build (34s)
-  ✓ make test (18s)
+  ✓ go build ./apis/.../v1/... (34s)
+  ✓ go test -v ./apis/.../v1/ (18s)
 
 ✅ Rename completed successfully!
 ```
@@ -750,7 +750,7 @@ ls apis/org/openmcf/provider/kubernetes/workload/
 ### Error: Build Failed
 
 ```
-Error: make build failed
+Error: go build ./apis/.../v1/... failed
 Exit code: 1
 Output: undefined: kubernetesMicroservice.SomeType
 ```
@@ -773,7 +773,7 @@ grep -r "kubernetesMicroservice" .
 ### Error: Tests Failed
 
 ```
-Error: make test failed
+Error: go test -v ./apis/.../v1/ failed
 Exit code: 1
 Output: Test "TestKubernetesMicroservice" expects old name
 ```
@@ -892,8 +892,8 @@ A rename is successful when:
 - ✅ Icon folder renamed (if exists)
 - ✅ Old directory deleted
 - ✅ `make protos` passes
-- ✅ `make build` passes
-- ✅ `make test` passes
+- ✅ `go build ./apis/.../v1/...` passes
+- ✅ `go test -v ./apis/.../v1/` passes
 - ✅ Changelog created
 - ✅ Changes committed
 

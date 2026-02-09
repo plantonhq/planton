@@ -5,23 +5,24 @@ RULE NUMBER
 019
 
 TITLE
-Forge: Test Validation (make test)
+Forge: Test Validation (component-scoped go test)
 
 ROLE
-You are the PlantonCloud Code Partner working inside the developer's local workspace in Cursor. This rule validates that all unit tests pass by running `make test` from the project root.
+You are the PlantonCloud Code Partner working inside the developer's local workspace in Cursor. This rule validates that the component's unit tests pass by running `go test` scoped to the component directory.
 
 SCOPE
-- Run `make test` from project root
-- Execute all unit tests including newly created ones
+- Run `go test` scoped to the component's v1 directory
+- Execute only the component's tests (spec_test.go)
 - Validate test correctness
 - Ensure all tests pass
 - Do not modify test files or source files
+- Do NOT run `make test` (that runs the entire monorepo's test suite and is unnecessary)
 
 PREREQUISITES
 This rule should be run after:
 - Rule 017: Proto stubs generated (make protos)
 - Rule 003: spec_test.go created
-- Rule 018: Build validation passed (make build)
+- Rule 018: Build validation passed (go build)
 
 All test files must exist and code must compile before running tests.
 
@@ -29,14 +30,14 @@ SEQUENTIAL STEPS
 1) Verify Prerequisites:
    - Confirm proto stubs exist (.pb.go files)
    - Check that test files exist:
-     * `apis/project/planton/provider/<provider>/<kindfolder>/v1/spec_test.go`
+     * `apis/org/openmcf/provider/<provider>/<component>/v1/spec_test.go`
    - Confirm code compiles (rule 018 passed)
    - Confirm you are in the project root directory
 
 2) Execute Command:
-   - Run: `make test` from project root
-   - This command runs all Go tests in the project
-   - May take 1-5 minutes depending on test suite size
+   - Run: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
+   - This runs only the component's tests, not the entire monorepo
+   - Should complete in a few seconds
 
 3) Parse Output:
    - Check exit code (0 = all tests passed, non-zero = failures)
@@ -58,14 +59,12 @@ SEQUENTIAL STEPS
    - Show pass/fail counts
    - List failed tests with error messages
    - Provide fix suggestions for failures
-   - Show test coverage if available
 
 SUCCESS CRITERIA
-- `make test` exits with code 0
-- All tests pass (100% pass rate)
+- `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` exits with code 0
+- All component tests pass (100% pass rate)
 - No test failures, errors, or panics
-- Tests complete within reasonable time
-- No skipped tests (unless intentional)
+- Tests complete within a few seconds
 
 COMMON ERRORS AND FIXES
 
@@ -87,25 +86,19 @@ COMMON ERRORS AND FIXES
    ```
    Fix: Run `go mod download` or `go mod tidy` to fetch dependencies
 
-4. **Test Timeout:**
-   ```
-   Error: test timed out after 10m0s
-   ```
-   Fix: Optimize test code, reduce test scope, or increase timeout
-
-5. **Import Errors:**
+4. **Import Errors:**
    ```
    Error: imported and not used: "testing"
    ```
    Fix: Remove unused imports or use the imported package
 
-6. **Type Mismatch in Test:**
+5. **Type Mismatch in Test:**
    ```
    Error: cannot use X (type Y) as type Z in argument
    ```
    Fix: Ensure test data types match function signatures
 
-7. **Validation Failure:**
+6. **Validation Failure:**
    ```
    Error: validation failed for field X
    ```
@@ -120,17 +113,16 @@ Show results clearly:
    - Test files exist
    - Code compiles
 
-🧪 Running: make test
+🧪 Running: go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
 
-⏱️  Duration: 3m 45s
+⏱️  Duration: 2s
 
 ✅ Success: All tests passed
 
 📊 Test Results:
-   - Total tests: 156
-   - Passed: 156
+   - Total tests: 17
+   - Passed: 17
    - Failed: 0
-   - Skipped: 0
    - Pass rate: 100%
 
 ✅ Test validation complete
@@ -140,67 +132,50 @@ On failure:
 ```
 ❌ Error: Exit code 1
 
-Tests failed: 2/156 (98.7% pass rate)
+Tests failed: 2/17
 
 Failed tests:
 
-1. TestGcpCertManagerCertSpec_Validation/missing_gcp_project_id
-   File: apis/project/planton/provider/gcp/gcpcertmanagercert/v1/spec_test.go:88
+1. TestOpenStackNetworkSpec/should_return_a_validation_error_when_dns_domain_does_not_end_with_a_dot
+   File: apis/org/openmcf/provider/openstack/openstacknetwork/v1/spec_test.go:88
    
    Error:
-   assertion failed: expected true, got false
+   Expected error to not be nil
    
    Suggested fix:
-   The test expects validation to fail when gcp_project_id is missing,
-   but the validation is not triggering. Check that:
-   - spec.proto has [(buf.validate.field).required = true] on gcp_project_id
-   - Proto stubs are regenerated (run: make protos)
-
-2. TestGcpCertManagerCertStatus_Structure
-   File: apis/project/planton/provider/gcp/gcpcertmanagercert/v1/spec_test.go:142
-   
-   Error:
-   panic: runtime error: invalid memory address or nil pointer dereference
-   
-   Suggested fix:
-   Add nil check in test or ensure test data is properly initialized:
-   require.NotNil(t, status.Outputs)
+   The dns_domain validation pattern may be incorrect in spec.proto.
+   Check: (buf.validate.field).string.pattern = "^$|\\.$"
+   Regenerate stubs: make protos
 
 Next steps:
 1. Fix the failing tests
-2. Re-run: make test
+2. Re-run: go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
 3. Ensure 100% pass rate before proceeding
 ```
 
 DEBUGGING TIPS
-1. **Run specific test**: `go test -v ./apis/project/planton/provider/gcp/gcpcertmanagercert/v1 -run TestName`
-2. **Verbose output**: `go test -v` shows more detailed test output
+1. **Run specific test**: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/ -run TestName`
+2. **Verbose output**: `-v` flag shows detailed test output per test case
 3. **Check test setup**: Ensure test data is properly initialized
 4. **Verify validations**: Proto validations must match test expectations
 5. **Re-generate stubs**: If proto changed, run `make protos` before testing
 
-TEST COVERAGE
-If test coverage is reported:
-```
-📊 Coverage:
-   - spec.go: 85%
-   - api.go: 100%
-   - Overall: 87%
-```
-
-Aim for:
-- Critical paths: 100% coverage
-- Business logic: 80%+ coverage
-- Generated code: Coverage not required
+TESTING OPTIONAL FIELDS
+- Fields with `(org.openmcf.shared.options.default)` are marked `optional`
+- Generated Go code uses pointer types (`*string` vs `string`)
+- Tests must assign via pointers:
+  ```go
+  // WRONG: spec.RunnerGroup = "production"
+  // CORRECT:
+  runnerGroup := "production"
+  spec.RunnerGroup = &runnerGroup
+  ```
 
 NOTES
-- This is a quality gate before proceeding to integration tests
-- All unit tests must pass before continuing
+- This is the final quality gate for the forge pipeline
+- Only the component's tests are run, not the entire monorepo
 - Do not skip failing tests without good reason
 - Fix test failures immediately - don't accumulate technical debt
-- Run from project root directory only
+- Run from project root directory
 - Tests validate both source code correctness and test quality
-- Some test failures indicate bugs in source code, others indicate incorrect tests
 - If tests fail after proto changes, regenerate stubs with `make protos`
-- Test failures can block deployment - treat them seriously
-- Consider adding more tests if coverage is low

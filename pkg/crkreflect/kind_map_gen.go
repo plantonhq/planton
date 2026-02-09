@@ -159,6 +159,7 @@ import (
 	openfgarelationshiptuplev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga/openfgarelationshiptuple/v1"
 	openfgastorev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga/openfgastore/v1"
 	openstackkeypairv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackkeypair/v1"
+	openstacknetworkv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstacknetwork/v1"
 	snowflakedatabasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/snowflake/snowflakedatabase/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
 	"google.golang.org/protobuf/proto"
@@ -361,6 +362,7 @@ var ProviderOpenFgaMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 
 var ProviderOpenstackMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_OpenStackKeypair: &openstackkeypairv1.OpenStackKeypair{},
+	cloudresourcekind.CloudResourceKind_OpenStackNetwork: &openstacknetworkv1.OpenStackNetwork{},
 }
 
 var ProviderSnowflakeMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
