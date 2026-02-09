@@ -158,7 +158,7 @@ import (
 	openfgaauthorizationmodelv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga/openfgaauthorizationmodel/v1"
 	openfgarelationshiptuplev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga/openfgarelationshiptuple/v1"
 	openfgastorev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga/openfgastore/v1"
-	openstackcomputekeypairv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackcomputekeypair/v1"
+	openstackkeypairv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackkeypair/v1"
 	snowflakedatabasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/snowflake/snowflakedatabase/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
 	"google.golang.org/protobuf/proto"
@@ -360,7 +360,7 @@ var ProviderOpenFgaMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 }
 
 var ProviderOpenstackMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
-	cloudresourcekind.CloudResourceKind_OpenStackComputeKeypair: &openstackcomputekeypairv1.OpenStackComputeKeypair{},
+	cloudresourcekind.CloudResourceKind_OpenStackKeypair: &openstackkeypairv1.OpenStackKeypair{},
 }
 
 var ProviderSnowflakeMap = map[cloudresourcekind.CloudResourceKind]proto.Message{

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackkeypair.v1;
+
+// OpenStackKeypairStackOutputs captures the observable outputs after provisioning
+// an OpenStack compute keypair.
+//
+// Note: The private_key is intentionally excluded from stack outputs. Secrets belong in
+// external secret managers, not in platform-tracked outputs. When a keypair is generated
+// (no public_key in spec), the private key is available as a sensitive IaC-level output
+// only, retrievable via `pulumi stack output private_key --show-secrets` or
+// `terraform output -raw private_key`.
+message OpenStackKeypairStackOutputs {
+  // name is the name of the keypair (derived from metadata.name).
+  string name = 1;
+
+  // fingerprint is the MD5 fingerprint of the SSH public key.
+  // Example: "d7:62:43:93:10:a8:7e:7c:01:c8:c5:67:ba:99:5c:25"
+  string fingerprint = 2;
+
+  // public_key is the SSH public key in OpenSSH authorized_keys format.
+  // This is the imported key, or the generated public key when no public_key was provided.
+  string public_key = 3;
+
+  // region is the OpenStack region where the keypair was created.
+  string region = 4;
+}

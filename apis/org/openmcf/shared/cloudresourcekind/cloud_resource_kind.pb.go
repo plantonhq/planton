@@ -238,7 +238,7 @@ const (
 	CloudResourceKind_OpenFgaAuthorizationModel CloudResourceKind = 2301
 	CloudResourceKind_OpenFgaRelationshipTuple  CloudResourceKind = 2302
 	// 2500–2799: OpenStack resources
-	CloudResourceKind_OpenStackComputeKeypair CloudResourceKind = 2500
+	CloudResourceKind_OpenStackKeypair CloudResourceKind = 2500
 )
 
 // Enum value maps for CloudResourceKind.
@@ -395,7 +395,7 @@ var (
 		2300: "OpenFgaStore",
 		2301: "OpenFgaAuthorizationModel",
 		2302: "OpenFgaRelationshipTuple",
-		2500: "OpenStackComputeKeypair",
+		2500: "OpenStackKeypair",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
@@ -549,7 +549,7 @@ var (
 		"OpenFgaStore":                          2300,
 		"OpenFgaAuthorizationModel":             2301,
 		"OpenFgaRelationshipTuple":              2302,
-		"OpenStackComputeKeypair":               2500,
+		"OpenStackKeypair":                      2500,
 	}
 )
 
@@ -694,7 +694,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xb12\n" +
+	"\x02v1\x10\x01*\xaa2\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -873,8 +873,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\b\x15\x10\x01\"\x04a0rs\x12%\n" +
 	"\fOpenFgaStore\x10\xfc\x11\x1a\x12\xa2\xf7\x04\x0e\b\x16\x10\x01\"\bfgastore\x122\n" +
 	"\x19OpenFgaAuthorizationModel\x10\xfd\x11\x1a\x12\xa2\xf7\x04\x0e\b\x16\x10\x01\"\bfgamodel\x121\n" +
-	"\x18OpenFgaRelationshipTuple\x10\xfe\x11\x1a\x12\xa2\xf7\x04\x0e\b\x16\x10\x01\"\bfgatuple\x12,\n" +
-	"\x17OpenStackComputeKeypair\x10\xc4\x13\x1a\x0e\xa2\xf7\x04\n" +
+	"\x18OpenFgaRelationshipTuple\x10\xfe\x11\x1a\x12\xa2\xf7\x04\x0e\b\x16\x10\x01\"\bfgatuple\x12%\n" +
+	"\x10OpenStackKeypair\x10\xc4\x13\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\x17\x10\x01\"\x04oskp:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
