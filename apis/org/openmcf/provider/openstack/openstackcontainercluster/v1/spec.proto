@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackcontainercluster.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// OpenStackContainerClusterSpec defines the configuration for an OpenStack Magnum
+// container cluster (typically Kubernetes).
+//
+// A Magnum cluster provisions a fully functional container orchestration platform
+// using a cluster template as a blueprint. The template defines the base image,
+// network topology, and COE; the cluster adds instance counts, overrides, and labels.
+//
+// IMPORTANT: Almost all fields are ForceNew (immutable after creation). Only
+// node_count and cluster_template can be updated:
+//   - node_count: triggers a scale operation
+//   - cluster_template: triggers a cluster upgrade
+//
+// All other changes require destroying and recreating the cluster.
+//
+// Terraform resource: openstack_containerinfra_cluster_v1
+// Pulumi resource:    containerinfra.Cluster
+message OpenStackContainerClusterSpec {
+  // (Required) The cluster template to use as a blueprint.
+  // Can be a literal template UUID or a reference to an OpenStackContainerClusterTemplate.
+  // UPDATABLE: changing the template triggers a cluster upgrade.
+  //
+  // FK: OpenStackContainerClusterTemplate.status.outputs.template_id
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_template = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackContainerClusterTemplate,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.template_id"
+  ];
+
+  // (Optional) The number of master nodes.
+  // Use 1 for development, 3+ for production HA.
+  // ForceNew: changing this requires recreating the cluster.
+  optional int32 master_count = 2;
+
+  // (Optional) The number of worker nodes.
+  // UPDATABLE: changing this triggers a scale operation.
+  // Default: 1 (set by Magnum if not specified).
+  optional int32 node_count = 3;
+
+  // (Optional) The SSH keypair for cluster node access.
+  // Overrides the keypair from the cluster template.
+  // Can be a literal keypair name or a reference to an OpenStackKeypair resource.
+  // ForceNew: changing this requires recreating the cluster.
+  //
+  // FK: OpenStackKeypair.status.outputs.name
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef keypair = 4 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackKeypair,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // (Optional) The Nova flavor for worker nodes.
+  // Overrides the flavor from the cluster template.
+  // ForceNew: changing this requires recreating the cluster.
+  string flavor = 5;
+
+  // (Optional) The Nova flavor for master nodes.
+  // Overrides the master_flavor from the cluster template.
+  // ForceNew: changing this requires recreating the cluster.
+  string master_flavor = 6;
+
+  // (Optional) The size (in GB) of the Docker volume for each node.
+  // Overrides the docker_volume_size from the cluster template.
+  // ForceNew: changing this requires recreating the cluster.
+  optional int32 docker_volume_size = 7;
+
+  // (Optional) Key-value labels for the cluster.
+  // Can extend or override the cluster template's labels.
+  // Used for Kubernetes-specific settings (kube_tag, container_runtime, etc.).
+  // ForceNew: changing this requires recreating the cluster.
+  map<string, string> labels = 8;
+
+  // (Optional) The timeout (in minutes) for cluster creation.
+  // If the cluster is not ready within this time, creation fails.
+  // ForceNew: changing this requires recreating the cluster.
+  optional int32 create_timeout = 9;
+
+  // (Optional) Whether to create a floating IP for every cluster node.
+  // Overrides the floating_ip_enabled from the cluster template.
+  // ForceNew: changing this requires recreating the cluster.
+  optional bool floating_ip_enabled = 10;
+
+  // (Optional) Override the region from the provider config.
+  // ForceNew: changing this requires recreating the cluster.
+  string region = 11;
+}

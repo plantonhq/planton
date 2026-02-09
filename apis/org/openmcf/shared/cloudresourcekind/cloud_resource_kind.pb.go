@@ -239,29 +239,33 @@ const (
 	CloudResourceKind_OpenFgaAuthorizationModel CloudResourceKind = 2301
 	CloudResourceKind_OpenFgaRelationshipTuple  CloudResourceKind = 2302
 	// 2500–2799: OpenStack resources
-	CloudResourceKind_OpenStackKeypair               CloudResourceKind = 2500
-	CloudResourceKind_OpenStackNetwork               CloudResourceKind = 2501
-	CloudResourceKind_OpenStackSubnet                CloudResourceKind = 2502
-	CloudResourceKind_OpenStackRouter                CloudResourceKind = 2503
-	CloudResourceKind_OpenStackRouterInterface       CloudResourceKind = 2504
-	CloudResourceKind_OpenStackSecurityGroup         CloudResourceKind = 2505
-	CloudResourceKind_OpenStackFloatingIp            CloudResourceKind = 2506
-	CloudResourceKind_OpenStackNetworkPort           CloudResourceKind = 2507
-	CloudResourceKind_OpenStackSecurityGroupRule     CloudResourceKind = 2525
-	CloudResourceKind_OpenStackFloatingIpAssociate   CloudResourceKind = 2526
-	CloudResourceKind_OpenStackInstance              CloudResourceKind = 2508
-	CloudResourceKind_OpenStackServerGroup           CloudResourceKind = 2509
-	CloudResourceKind_OpenStackVolume                CloudResourceKind = 2510
-	CloudResourceKind_OpenStackVolumeAttach          CloudResourceKind = 2511
-	CloudResourceKind_OpenStackProject               CloudResourceKind = 2512
-	CloudResourceKind_OpenStackApplicationCredential CloudResourceKind = 2513
-	CloudResourceKind_OpenStackImage                 CloudResourceKind = 2514
-	CloudResourceKind_OpenStackRoleAssignment        CloudResourceKind = 2515
-	CloudResourceKind_OpenStackLoadBalancer          CloudResourceKind = 2516
-	CloudResourceKind_OpenStackLoadBalancerListener  CloudResourceKind = 2517
-	CloudResourceKind_OpenStackLoadBalancerPool      CloudResourceKind = 2518
-	CloudResourceKind_OpenStackLoadBalancerMember    CloudResourceKind = 2519
-	CloudResourceKind_OpenStackLoadBalancerMonitor   CloudResourceKind = 2520
+	CloudResourceKind_OpenStackKeypair                  CloudResourceKind = 2500
+	CloudResourceKind_OpenStackNetwork                  CloudResourceKind = 2501
+	CloudResourceKind_OpenStackSubnet                   CloudResourceKind = 2502
+	CloudResourceKind_OpenStackRouter                   CloudResourceKind = 2503
+	CloudResourceKind_OpenStackRouterInterface          CloudResourceKind = 2504
+	CloudResourceKind_OpenStackSecurityGroup            CloudResourceKind = 2505
+	CloudResourceKind_OpenStackFloatingIp               CloudResourceKind = 2506
+	CloudResourceKind_OpenStackNetworkPort              CloudResourceKind = 2507
+	CloudResourceKind_OpenStackSecurityGroupRule        CloudResourceKind = 2525
+	CloudResourceKind_OpenStackFloatingIpAssociate      CloudResourceKind = 2526
+	CloudResourceKind_OpenStackInstance                 CloudResourceKind = 2508
+	CloudResourceKind_OpenStackServerGroup              CloudResourceKind = 2509
+	CloudResourceKind_OpenStackVolume                   CloudResourceKind = 2510
+	CloudResourceKind_OpenStackVolumeAttach             CloudResourceKind = 2511
+	CloudResourceKind_OpenStackProject                  CloudResourceKind = 2512
+	CloudResourceKind_OpenStackApplicationCredential    CloudResourceKind = 2513
+	CloudResourceKind_OpenStackImage                    CloudResourceKind = 2514
+	CloudResourceKind_OpenStackRoleAssignment           CloudResourceKind = 2515
+	CloudResourceKind_OpenStackLoadBalancer             CloudResourceKind = 2516
+	CloudResourceKind_OpenStackLoadBalancerListener     CloudResourceKind = 2517
+	CloudResourceKind_OpenStackLoadBalancerPool         CloudResourceKind = 2518
+	CloudResourceKind_OpenStackLoadBalancerMember       CloudResourceKind = 2519
+	CloudResourceKind_OpenStackLoadBalancerMonitor      CloudResourceKind = 2520
+	CloudResourceKind_OpenStackDnsZone                  CloudResourceKind = 2521
+	CloudResourceKind_OpenStackDnsRecord                CloudResourceKind = 2522
+	CloudResourceKind_OpenStackContainerClusterTemplate CloudResourceKind = 2523
+	CloudResourceKind_OpenStackContainerCluster         CloudResourceKind = 2524
 )
 
 // Enum value maps for CloudResourceKind.
@@ -442,6 +446,10 @@ var (
 		2518: "OpenStackLoadBalancerPool",
 		2519: "OpenStackLoadBalancerMember",
 		2520: "OpenStackLoadBalancerMonitor",
+		2521: "OpenStackDnsZone",
+		2522: "OpenStackDnsRecord",
+		2523: "OpenStackContainerClusterTemplate",
+		2524: "OpenStackContainerCluster",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
@@ -619,6 +627,10 @@ var (
 		"OpenStackLoadBalancerPool":             2518,
 		"OpenStackLoadBalancerMember":           2519,
 		"OpenStackLoadBalancerMonitor":          2520,
+		"OpenStackDnsZone":                      2521,
+		"OpenStackDnsRecord":                    2522,
+		"OpenStackContainerClusterTemplate":     2523,
+		"OpenStackContainerCluster":             2524,
 	}
 )
 
@@ -763,7 +775,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xb6:\n" +
+	"\x02v1\x10\x01*\xef;\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -974,7 +986,14 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x1dOpenStackLoadBalancerListener\x10\xd5\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05oslbl\x12/\n" +
 	"\x19OpenStackLoadBalancerPool\x10\xd6\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05oslbp\x121\n" +
 	"\x1bOpenStackLoadBalancerMember\x10\xd7\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05oslbm\x124\n" +
-	"\x1cOpenStackLoadBalancerMonitor\x10\xd8\x13\x1a\x11\xa2\xf7\x04\r\b\x17\x10\x01\"\aoslbmon:|\n" +
+	"\x1cOpenStackLoadBalancerMonitor\x10\xd8\x13\x1a\x11\xa2\xf7\x04\r\b\x17\x10\x01\"\aoslbmon\x12%\n" +
+	"\x10OpenStackDnsZone\x10\xd9\x13\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x17\x10\x01\"\x04osdz\x12'\n" +
+	"\x12OpenStackDnsRecord\x10\xda\x13\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x17\x10\x01\"\x04osdr\x127\n" +
+	"!OpenStackContainerClusterTemplate\x10\xdb\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05oscct\x12.\n" +
+	"\x19OpenStackContainerCluster\x10\xdc\x13\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x17\x10\x01\"\x04oscc:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

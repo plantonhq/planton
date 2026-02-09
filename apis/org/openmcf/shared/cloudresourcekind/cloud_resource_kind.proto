@@ -933,4 +933,24 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "oslbmon"
   }];
+  OpenStackDnsZone = 2521 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osdz"
+  }];
+  OpenStackDnsRecord = 2522 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osdr"
+  }];
+  OpenStackContainerClusterTemplate = 2523 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "oscct"
+  }];
+  OpenStackContainerCluster = 2524 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "oscc"
+  }];
 }
