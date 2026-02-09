@@ -828,4 +828,14 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "ossub"
   }];
+  OpenStackRouter = 2503 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osrtr"
+  }];
+  OpenStackRouterInterface = 2504 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osri"
+  }];
 }

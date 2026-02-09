@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackrouter.v1;
+
+// OpenStackRouterStackOutputs captures the observable outputs after provisioning
+// an OpenStack Neutron router.
+//
+// The router_id is the primary output referenced by downstream components:
+// - OpenStackRouterInterface (router_id)
+message OpenStackRouterStackOutputs {
+  // router_id is the unique identifier (UUID) of the router in OpenStack.
+  // This is the primary output used as a foreign key by downstream components.
+  string router_id = 1;
+
+  // name is the name of the router (derived from metadata.name).
+  string name = 2;
+
+  // external_network_id is the ID of the external network used as the router's gateway.
+  // Empty if no external gateway is configured.
+  string external_network_id = 3;
+
+  // external_gateway_ip is the primary external IP address allocated to the router's gateway.
+  // This is the first IP from the external_fixed_ips list.
+  // Empty if no external gateway is configured.
+  string external_gateway_ip = 4;
+
+  // region is the OpenStack region where the router was created.
+  string region = 5;
+}
