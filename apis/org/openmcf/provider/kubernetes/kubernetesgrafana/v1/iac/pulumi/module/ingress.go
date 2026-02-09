@@ -9,7 +9,8 @@ import (
 
 func ingress(ctx *pulumi.Context,
 	locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource,
+	namespaceDeps []pulumi.ResourceOption) error {
 
 	if locals.KubernetesGrafana.Spec.Ingress == nil ||
 		!locals.KubernetesGrafana.Spec.Ingress.Enabled {
@@ -30,6 +31,8 @@ func ingress(ctx *pulumi.Context,
 	}
 
 	pathType := "Prefix"
+
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 
 	// Create external ingress if hostname is provided
 	if externalHost != "" {
@@ -66,7 +69,7 @@ func ingress(ctx *pulumi.Context,
 						},
 					},
 				},
-			}, pulumi.Provider(kubernetesProvider))
+			}, opts...)
 		if err != nil {
 			return errors.Wrap(err, "failed to create external ingress")
 		}
@@ -107,7 +110,7 @@ func ingress(ctx *pulumi.Context,
 						},
 					},
 				},
-			}, pulumi.Provider(kubernetesProvider))
+			}, opts...)
 		if err != nil {
 			return errors.Wrap(err, "failed to create internal ingress")
 		}

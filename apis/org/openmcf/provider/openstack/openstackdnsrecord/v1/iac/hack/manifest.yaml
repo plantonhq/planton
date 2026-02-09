@@ -1,0 +1,12 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackDnsRecord
+metadata:
+  name: app-a-record
+spec:
+  zone_id:
+    value: "zone-uuid-1234"
+  record_name: "app.example.com."
+  type: 1
+  values:
+    - "192.0.2.1"
+  description: "Test DNS record for local development"

@@ -12,6 +12,7 @@ func helmChart(
 	ctx *pulumi.Context,
 	locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
+	namespaceDeps []pulumi.ResourceOption,
 ) error {
 	container := locals.KubernetesNeo4J.Spec.Container
 
@@ -31,6 +32,7 @@ func helmChart(
 		}
 	}
 
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err := helmv3.NewChart(ctx,
 		locals.KubernetesNeo4J.Metadata.Name,
 		helmv3.ChartArgs{
@@ -73,7 +75,7 @@ func helmChart(
 				Repo: pulumi.String(vars.Neo4jHelmChartRepoUrl),
 			},
 		},
-		pulumi.Provider(kubernetesProvider),
+		opts...,
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to deploy neo4j helm chart")

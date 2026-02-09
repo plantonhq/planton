@@ -15,7 +15,7 @@ import (
 // ingress stack (no separate external LB Service).  Pattern copied from webUiIngress:
 // Certificate ➜ Gateway ➜ HTTPS+redirect HTTPRoutes.
 func frontendHttpIngress(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider *kubernetes.Provider) error {
+	kubernetesProvider *kubernetes.Provider, namespaceDeps []pulumi.ResourceOption) error {
 
 	if locals.KubernetesTemporal.Spec.Ingress == nil ||
 		locals.KubernetesTemporal.Spec.Ingress.Frontend == nil ||
@@ -53,7 +53,7 @@ func frontendHttpIngress(ctx *pulumi.Context, locals *Locals,
 					Name: pulumi.String(clusterIssuerName),
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating frontend HTTP certificate")
 	}
@@ -109,7 +109,7 @@ func frontendHttpIngress(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{addedCertificate}))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{addedCertificate})}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating frontend HTTP gateway")
 	}
@@ -146,7 +146,7 @@ func frontendHttpIngress(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating http→https redirect route for frontend HTTP")
 	}
@@ -189,7 +189,7 @@ func frontendHttpIngress(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating HTTPS route for frontend HTTP")
 	}

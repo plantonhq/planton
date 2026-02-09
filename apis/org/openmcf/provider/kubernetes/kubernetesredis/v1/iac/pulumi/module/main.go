@@ -23,18 +23,24 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesredisv1.KubernetesRedi
 
 	// ------------------------------ namespace ----------------------------
 	// Conditionally create namespace based on create_namespace flag
-	_, err = namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}
 
+	// Build dependency list so child resources wait for the namespace.
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
+	}
+
 	// ----------------------------- secrets --------------------------------
-	if err := adminPassword(ctx, locals, kubernetesProvider); err != nil {
+	if err := adminPassword(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to create admin secret")
 	}
 
 	// ------------------------------ helm ----------------------------------
-	if err := helmChart(ctx, locals, kubernetesProvider); err != nil {
+	if err := helmChart(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to create helm-chart resources")
 	}
 
@@ -42,7 +48,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesredisv1.KubernetesRedi
 	if locals.KubernetesRedis.Spec.Ingress != nil &&
 		locals.KubernetesRedis.Spec.Ingress.Enabled &&
 		locals.KubernetesRedis.Spec.Ingress.Hostname != "" {
-		if err := loadBalancerIngress(ctx, locals, kubernetesProvider); err != nil {
+		if err := loadBalancerIngress(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 			return errors.Wrap(err, "failed to create load-balancer ingress resources")
 		}
 	}

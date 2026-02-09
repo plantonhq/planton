@@ -16,11 +16,14 @@ func createIngressLoadBalancer(
 	ctx *pulumi.Context,
 	locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
+	namespaceDeps []pulumi.ResourceOption,
 ) error {
 	// Skip if ingress is not enabled
 	if locals.KubernetesClickHouse.Spec.Ingress == nil || !locals.KubernetesClickHouse.Spec.Ingress.Enabled {
 		return nil
 	}
+
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 
 	// Create LoadBalancer service with external DNS annotation
 	// Use computed name to avoid conflicts when multiple instances share a namespace
@@ -57,7 +60,7 @@ func createIngressLoadBalancer(
 				// Selector targets ClickHouse pods managed by Altinity operator
 				Selector: pulumi.ToStringMap(locals.ClickhousePodSelectorLabels),
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, opts...)
 
 	if err != nil {
 		return errors.Wrapf(err, "failed to create external load balancer service")

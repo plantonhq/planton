@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackcontainerclustertemplate.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/openstack/openstackcontainerclustertemplate/v1/spec.proto";
+import "org/openmcf/provider/openstack/openstackcontainerclustertemplate/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OpenStackContainerClusterTemplate is a Kubernetes Resource Model (KRM) style resource
+// for managing Magnum cluster templates in OpenStack.
+//
+// A cluster template is a reusable blueprint that defines the base image, network
+// topology, node flavors, and container orchestration engine for Kubernetes clusters.
+// Templates are referenced by OpenStackContainerCluster resources to create clusters.
+message OpenStackContainerClusterTemplate {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'openstack.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OpenStackContainerClusterTemplate'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OpenStackContainerClusterTemplateSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OpenStackContainerClusterTemplateStatus status = 5;
+}
+
+// OpenStackContainerClusterTemplateStatus represents the observed state of a Magnum
+// cluster template.
+message OpenStackContainerClusterTemplateStatus {
+  // stack-outputs from the IaC deployment
+  OpenStackContainerClusterTemplateStackOutputs outputs = 1;
+}

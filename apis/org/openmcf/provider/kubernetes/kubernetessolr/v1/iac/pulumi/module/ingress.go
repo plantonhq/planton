@@ -9,7 +9,7 @@ import (
 )
 
 func ingress(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 	// Create new certificate
 	addedCertificate, err := certmanagerv1.NewCertificate(ctx,
 		locals.CertificateName,
@@ -27,7 +27,7 @@ func ingress(ctx *pulumi.Context, locals *Locals,
 					Name: pulumi.String(locals.IngressCertClusterIssuerName),
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating certificate")
 	}
@@ -83,7 +83,7 @@ func ingress(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{addedCertificate}))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{addedCertificate})}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating gateway")
 	}
@@ -120,7 +120,7 @@ func ingress(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 
 	// Create HTTP route for external hostname for https listener
 	_, err = gatewayv1.NewHTTPRoute(ctx,
@@ -160,7 +160,7 @@ func ingress(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 
 	if err != nil {
 		return errors.Wrap(err, "error creating HTTP route for external hostname")

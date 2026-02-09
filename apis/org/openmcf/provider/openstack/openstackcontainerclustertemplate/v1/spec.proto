@@ -1,0 +1,126 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackcontainerclustertemplate.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// OpenStackContainerClusterTemplateSpec defines the configuration for an OpenStack
+// Magnum cluster template. A cluster template is a reusable blueprint that defines
+// the base image, network topology, node flavors, and container orchestration engine
+// for Magnum-managed Kubernetes clusters.
+//
+// Magnum cluster templates are the foundation for creating container clusters.
+// Most configuration is set on the template and inherited by clusters, making
+// templates the primary configuration point for Kubernetes-on-OpenStack deployments.
+//
+// Notable: All fields in this resource are updatable (no ForceNew). This is unusual
+// among OpenStack resources -- Magnum uses PATCH-style updates for templates.
+//
+// Terraform resource: openstack_containerinfra_clustertemplate_v1
+// Pulumi resource:    containerinfra.ClusterTemplate
+message OpenStackContainerClusterTemplateSpec {
+  // (Required) The Container Orchestration Engine for the cluster.
+  // Magnum supports "kubernetes" (actively maintained), "swarm" (deprecated),
+  // and "mesos" (abandoned). In practice, "kubernetes" is the only production choice.
+  string coe = 1 [(buf.validate.field).string.min_len = 1];
+
+  // (Required) The base OS image for cluster nodes.
+  // Can be a literal image name/UUID or a reference to an OpenStackImage resource.
+  // Example literal: "fedora-coreos-39" (pre-existing image)
+  // Example value_from: reference to an OpenStackImage component
+  //
+  // FK: OpenStackImage.status.outputs.image_id
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef image = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackImage,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.image_id"
+  ];
+
+  // (Optional) The SSH keypair for node access.
+  // Can be a literal keypair name or a reference to an OpenStackKeypair resource.
+  //
+  // FK: OpenStackKeypair.status.outputs.name
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef keypair = 3 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackKeypair,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // (Optional) The external (provider) network for outbound connectivity.
+  // Typically the pre-existing public network in the OpenStack deployment.
+  // Can be a literal network ID/name or a reference to an OpenStackNetwork resource.
+  //
+  // FK: OpenStackNetwork.status.outputs.network_id
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef external_network = 4 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackNetwork,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
+  ];
+
+  // (Optional) The fixed (tenant) network for cluster nodes.
+  // Can be a literal network ID/name or a reference to an OpenStackNetwork resource.
+  //
+  // FK: OpenStackNetwork.status.outputs.network_id
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef fixed_network = 5 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackNetwork,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
+  ];
+
+  // (Optional) The fixed subnet for cluster nodes.
+  // Can be a literal subnet ID/name or a reference to an OpenStackSubnet resource.
+  //
+  // FK: OpenStackSubnet.status.outputs.subnet_id
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef fixed_subnet = 6 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // (Optional) The network driver for the container network.
+  // Common values: "flannel", "calico".
+  // If omitted, Magnum uses its deployment default.
+  string network_driver = 7;
+
+  // (Optional) The volume driver for container volumes.
+  // Common values: "cinder".
+  // If omitted, Magnum uses its deployment default.
+  string volume_driver = 8;
+
+  // (Optional) The DNS nameserver address for cluster nodes.
+  // Example: "8.8.8.8"
+  string dns_nameserver = 9;
+
+  // (Optional) The size (in GB) of the Docker volume for each node.
+  // Only set if > 0. If omitted, Magnum uses its deployment default.
+  optional int32 docker_volume_size = 10;
+
+  // (Optional) The Nova flavor for worker nodes.
+  // Example: "m1.medium", "m1.xlarge"
+  string flavor = 11;
+
+  // (Optional) The Nova flavor for master nodes.
+  // Example: "m1.large"
+  string master_flavor = 12;
+
+  // (Optional) Whether to create a floating IP for every cluster node.
+  // Required for external access to nodes when using a private network.
+  optional bool floating_ip_enabled = 13;
+
+  // (Optional) Whether to create a load balancer for master nodes.
+  // Critical for HA Kubernetes clusters with multiple masters.
+  optional bool master_lb_enabled = 14;
+
+  // (Optional) Whether to disable TLS for the cluster API.
+  // Only set to true for testing environments. Production clusters should use TLS.
+  optional bool tls_disabled = 15;
+
+  // (Optional) Key-value labels for the cluster template.
+  // Magnum uses labels to configure Kubernetes-specific settings:
+  //   - "kube_tag": Kubernetes version (e.g., "v1.28.4")
+  //   - "cloud_provider_tag": Cloud controller manager version
+  //   - "container_runtime": Container runtime (e.g., "containerd")
+  //   - "ingress_controller": Ingress controller type
+  map<string, string> labels = 16;
+
+  // (Optional) Override the region from the provider config.
+  // ForceNew: changing this requires recreating the template.
+  string region = 17;
+}

@@ -11,7 +11,7 @@ import (
 // exposes the Temporal gRPC frontend.  HTTP traffic is handled separately in
 // frontendHttpIngress.go via Gateway-API / Istio.
 func frontendIngress(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
 	if locals.KubernetesTemporal.Spec.Ingress == nil ||
 		locals.KubernetesTemporal.Spec.Ingress.Frontend == nil ||
@@ -27,6 +27,8 @@ func frontendIngress(ctx *pulumi.Context, locals *Locals,
 		"app.kubernetes.io/component": "frontend",
 	}
 
+	serviceOpts := []pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}
+	serviceOpts = append(serviceOpts, namespaceDeps...)
 	_, err := kubernetescorev1.NewService(ctx,
 		locals.FrontendGrpcLbServiceName,
 		&kubernetescorev1.ServiceArgs{
@@ -50,7 +52,7 @@ func frontendIngress(ctx *pulumi.Context, locals *Locals,
 				},
 				Selector: pulumi.ToStringMap(selector),
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, serviceOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create frontend gRPC load balancer service")
 	}

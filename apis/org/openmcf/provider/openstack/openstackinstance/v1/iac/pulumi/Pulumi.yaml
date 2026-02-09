@@ -1,0 +1,3 @@
+name: openstack-instance
+runtime: go
+description: Pulumi module for OpenStackInstance

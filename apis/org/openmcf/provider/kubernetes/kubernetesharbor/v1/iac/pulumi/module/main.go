@@ -18,23 +18,28 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesharborv1.KubernetesHar
 	}
 
 	// Conditionally create namespace based on create_namespace flag
-	_, err = namespace(ctx, locals, stackInput.Target.Spec, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, locals, stackInput.Target.Spec, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}
 
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
+	}
+
 	//deploy Harbor using helm-chart
-	if err := harbor(ctx, locals, kubernetesProvider); err != nil {
+	if err := harbor(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to create harbor helm-chart resources")
 	}
 
 	//create Harbor Core/Portal ingress resources using Gateway API
-	if err := createCoreIngress(ctx, locals, kubernetesProvider); err != nil {
+	if err := createCoreIngress(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to create harbor core ingress resources")
 	}
 
 	//create Notary ingress resources using Gateway API
-	if err := createNotaryIngress(ctx, locals, kubernetesProvider); err != nil {
+	if err := createNotaryIngress(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to create notary ingress resources")
 	}
 

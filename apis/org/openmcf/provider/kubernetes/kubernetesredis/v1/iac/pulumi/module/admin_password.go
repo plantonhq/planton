@@ -12,7 +12,7 @@ import (
 
 // adminPassword creates a random password and stores it in a Kubernetes Secret.
 func adminPassword(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
 	createdRandomPassword, err := random.NewRandomPassword(ctx,
 		locals.PasswordSecretName,
@@ -37,6 +37,7 @@ func adminPassword(ctx *pulumi.Context, locals *Locals,
 	}).(pulumi.StringOutput)
 
 	// create or update the secret
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	createdSecret, err := kubernetescorev1.NewSecret(ctx,
 		locals.PasswordSecretName,
 		&kubernetescorev1.SecretArgs{
@@ -48,7 +49,7 @@ func adminPassword(ctx *pulumi.Context, locals *Locals,
 			Data: pulumi.StringMap{
 				vars.RedisPasswordSecretKey: base64Password,
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, opts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create admin secret")
 	}

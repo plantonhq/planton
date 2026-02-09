@@ -19,7 +19,7 @@ import (
 //
 // Reference: https://github.com/nats-io/nack
 func nackController(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource,
-	nackCrds pulumi.Resource, authPassword pulumi.StringOutput) (pulumi.Resource, error) {
+	nackCrds pulumi.Resource, authPassword pulumi.StringOutput, namespaceDeps []pulumi.ResourceOption) (pulumi.Resource, error) {
 
 	// Skip if NACK controller is not enabled
 	if locals.KubernetesNats.Spec.NackController == nil ||
@@ -65,6 +65,10 @@ func nackController(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulu
 
 	// Deploy NACK Helm chart
 	releaseName := fmt.Sprintf("%s-nack", locals.KubernetesNats.Metadata.Name)
+	nackOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProvider),
+		pulumi.DependsOn([]pulumi.Resource{nackCrds}),
+	}, namespaceDeps...)
 	nackRelease, err := helmv3.NewRelease(ctx, releaseName,
 		&helmv3.ReleaseArgs{
 			Chart:     pulumi.String(vars.NackHelmChartName),
@@ -79,8 +83,7 @@ func nackController(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulu
 			// Timeout for the release to be ready (5 minutes)
 			Timeout: pulumi.Int(300),
 		},
-		pulumi.Provider(kubernetesProvider),
-		pulumi.DependsOn([]pulumi.Resource{nackCrds}),
+		nackOpts...,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to deploy NACK controller")

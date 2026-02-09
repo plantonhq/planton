@@ -38,3 +38,21 @@ SUCCESS CRITERIA
 
 NOTES
 - Generate variables once up-front; derive convenience in `locals.tf`.
+
+HANDLING OPTIONAL FIELDS WITH DEFAULTS
+- Fields with `(org.openmcf.shared.options.default)` are `optional` in the proto schema
+- OpenMCF middleware populates defaults BEFORE Terraform runs, so:
+  - The generated `variables.tf` may show `optional(string, null)` for these fields
+  - At runtime, the value will NEVER actually be null for defaulted fields
+  - NO `coalesce()`, `try()`, or conditional default wrappers are needed in `locals.tf`
+- In `locals.tf`, reference defaulted fields directly: `var.spec.field_name` is guaranteed non-null
+- In resource definitions, use the value directly without defensive handling
+- Example:
+  ```hcl
+  # CORRECT: OpenMCF guarantees content_type is populated (default: application/octet-stream)
+  content_type = each.value.content_type
+
+  # WRONG: Unnecessary defensive default - OpenMCF already handled this
+  content_type = coalesce(each.value.content_type, "application/octet-stream")
+  ```
+- See `.cursor/info/terraform_module.md` for full guidelines

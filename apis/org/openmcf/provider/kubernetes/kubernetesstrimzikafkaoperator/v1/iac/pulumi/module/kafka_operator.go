@@ -4,50 +4,30 @@ import (
 	"github.com/pkg/errors"
 	kubernetesstrimzikafkaoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesstrimzikafkaoperator/v1"
 	pulumikubernetes "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes"
-	corev1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/core/v1"
 	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/helm/v3"
-	metav1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/meta/v1"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 // kafkaOperator installs the Strimzi Kafka Operator on the target cluster.
 //
 // The function:
-//  1. Conditionally creates the namespace based on create_namespace flag.
-//  2. Deploys the Helm chart (watch‑any‑namespace=true so one install can
+//  1. Deploys the Helm chart (watch‑any‑namespace=true so one install can
 //     manage topics/streams across all namespaces).
-//  3. Exports the namespace name so other stacks can import it later.
+//  2. Exports the namespace name so other stacks can import it later.
 func kafkaOperator(
 	ctx *pulumi.Context,
 	target *kubernetesstrimzikafkaoperatorv1.KubernetesStrimziKafkaOperator,
+	l *locals,
 	kubernetesProvider *pulumikubernetes.Provider,
+	namespaceDeps []pulumi.ResourceOption,
 ) error {
-	// Compute locals to get the namespace name
-	l := newLocals(&kubernetesstrimzikafkaoperatorv1.KubernetesStrimziKafkaOperatorStackInput{Target: target})
-
 	// ---------------------------------------------------------------------
-	// 1. Namespace - conditionally create based on create_namespace flag
+	// 1. Helm release
 	// ---------------------------------------------------------------------
-	if target.Spec.CreateNamespace {
-		_, err := corev1.NewNamespace(
-			ctx,
-			l.namespace,
-			&corev1.NamespaceArgs{
-				Metadata: metav1.ObjectMetaPtrInput(&metav1.ObjectMetaArgs{
-					Name:   pulumi.String(l.namespace),
-					Labels: l.labels,
-				}),
-			},
-			pulumi.Provider(kubernetesProvider),
-		)
-		if err != nil {
-			return errors.Wrap(err, "failed to create namespace for Kafka operator")
-		}
-	}
-
-	// ---------------------------------------------------------------------
-	// 2. Helm release
-	// ---------------------------------------------------------------------
+	helmOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProvider),
+		pulumi.IgnoreChanges([]string{"status", "description", "resourceNames"}),
+	}, namespaceDeps...)
 	_, err := helm.NewRelease(
 		ctx,
 		l.HelmReleaseName,
@@ -68,15 +48,14 @@ func kafkaOperator(
 				Repo: pulumi.String(vars.HelmChartRepo),
 			},
 		},
-		pulumi.Provider(kubernetesProvider),
-		pulumi.IgnoreChanges([]string{"status", "description", "resourceNames"}),
+		helmOpts...,
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to create Strimzi Helm release")
 	}
 
 	// ---------------------------------------------------------------------
-	// 3. Stack output
+	// 2. Stack output
 	// ---------------------------------------------------------------------
 	ctx.Export(OpNamespace, pulumi.String(l.namespace))
 

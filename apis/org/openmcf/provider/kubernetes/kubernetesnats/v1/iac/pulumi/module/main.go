@@ -31,33 +31,40 @@ func Resources(ctx *pulumi.Context,
 
 	// ------------------------------ namespace ----------------------------
 	// Conditionally create namespace based on create_namespace flag
-	_, err = namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}
 
+	// Build conditional namespace dependency (Pulumi equivalent of Terraform depends_on).
+	// When create_namespace is false, createdNamespace is nil and namespaceDeps is empty.
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
+	}
+
 	// ----------------------------- secrets --------------------------------
-	if err := tlsSecret(ctx, locals, kubernetesProvider); err != nil {
+	if err := tlsSecret(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to create TLS secret")
 	}
 
 	// ------------------------------ NATS helm -----------------------------
 	// Step 1: Deploy NATS server (with JetStream enabled)
 	// Returns auth password for NACK controller (if basic_auth enabled)
-	natsHelmChart, authPassword, err := helmChart(ctx, locals, kubernetesProvider)
+	natsHelmChart, authPassword, err := helmChart(ctx, locals, kubernetesProvider, namespaceDeps)
 	if err != nil {
 		return errors.Wrap(err, "failed to deploy NATS Helm chart")
 	}
 
 	// ----------------------------- ingress --------------------------------
-	if err := ingress(ctx, locals, kubernetesProvider); err != nil {
+	if err := ingress(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to create external ingress")
 	}
 
 	// ----------------------------- NACK CRDs ------------------------------
 	// Step 2: Deploy NACK CRDs (explicit step for better control)
 	// CRDs must be registered before the controller can watch them
-	nackCrdsResource, err := nackCrds(ctx, locals, kubernetesProvider, natsHelmChart)
+	nackCrdsResource, err := nackCrds(ctx, locals, kubernetesProvider, natsHelmChart, namespaceDeps)
 	if err != nil {
 		return errors.Wrap(err, "failed to deploy NACK CRDs")
 	}
@@ -65,7 +72,7 @@ func Resources(ctx *pulumi.Context,
 	// --------------------------- NACK controller --------------------------
 	// Step 3: Deploy NACK controller (watches CRDs and reconciles to NATS)
 	// Pass auth password so NACK can connect to authenticated NATS server
-	nackControllerResource, err := nackController(ctx, locals, kubernetesProvider, nackCrdsResource, authPassword)
+	nackControllerResource, err := nackController(ctx, locals, kubernetesProvider, nackCrdsResource, authPassword, namespaceDeps)
 	if err != nil {
 		return errors.Wrap(err, "failed to deploy NACK controller")
 	}
@@ -73,7 +80,7 @@ func Resources(ctx *pulumi.Context,
 	// -------------------------- streams/consumers -------------------------
 	// Step 4: Create Stream/Consumer custom resources
 	// These depend on both CRDs (for schema) and controller (for reconciliation)
-	if err := streams(ctx, locals, kubernetesProvider, nackControllerResource); err != nil {
+	if err := streams(ctx, locals, kubernetesProvider, nackControllerResource, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to create JetStream streams/consumers")
 	}
 

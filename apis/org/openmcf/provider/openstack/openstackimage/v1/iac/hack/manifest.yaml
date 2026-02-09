@@ -1,0 +1,13 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackImage
+metadata:
+  name: test-image
+spec:
+  container_format: bare
+  disk_format: qcow2
+  image_source_url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
+  min_disk_gb: 10
+  min_ram_mb: 512
+  tags:
+    - test
+    - hack

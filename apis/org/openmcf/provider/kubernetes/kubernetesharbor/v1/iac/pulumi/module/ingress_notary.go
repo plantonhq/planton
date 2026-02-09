@@ -5,7 +5,7 @@ import (
 )
 
 func createNotaryIngress(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
 	// Skip if Notary ingress is not enabled
 	if locals.KubernetesHarbor.Spec.Ingress == nil ||

@@ -1,0 +1,3 @@
+name: openstack-load-balancer-monitor
+runtime: go
+description: Pulumi module for OpenStackLoadBalancerMonitor

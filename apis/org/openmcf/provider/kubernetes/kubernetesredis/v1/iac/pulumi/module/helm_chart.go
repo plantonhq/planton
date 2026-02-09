@@ -10,9 +10,10 @@ import (
 
 // helmChart installs the upstream Redis Helm chart and tailors it to the spec.
 func helmChart(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
 	// install helm-chart
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err := helmv3.NewChart(ctx,
 		locals.KubernetesRedis.Metadata.Name,
 		helmv3.ChartArgs{
@@ -54,7 +55,7 @@ func helmChart(ctx *pulumi.Context, locals *Locals,
 			FetchArgs: helmv3.FetchArgs{
 				Repo: pulumi.String(vars.HelmChartRepoUrl),
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, opts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create helm chart")
 	}

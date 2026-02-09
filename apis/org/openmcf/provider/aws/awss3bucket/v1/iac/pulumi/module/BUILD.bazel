@@ -12,7 +12,8 @@ go_library(
     deps = [
         "//apis/org/openmcf/provider/aws/awss3bucket/v1:awss3bucket",
         "@com_github_pkg_errors//:errors",
-        "@com_github_pulumi_pulumi_aws_sdk_v6//go/aws/s3",
+        "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws",
+        "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/s3",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
     ],
 )

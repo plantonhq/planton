@@ -38,6 +38,7 @@ import (
 	awsroute53dnsrecordv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsroute53dnsrecord/v1"
 	awsroute53zonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsroute53zone/v1"
 	awss3bucketv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awss3bucket/v1"
+	awss3objectsetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awss3objectset/v1"
 	awssecretsmanagerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awssecretsmanager/v1"
 	awssecuritygroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awssecuritygroup/v1"
 	awsvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsvpc/v1"
@@ -158,8 +159,33 @@ import (
 	openfgaauthorizationmodelv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga/openfgaauthorizationmodel/v1"
 	openfgarelationshiptuplev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga/openfgarelationshiptuple/v1"
 	openfgastorev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga/openfgastore/v1"
+	openstackapplicationcredentialv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackapplicationcredential/v1"
+	openstackcontainerclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackcontainercluster/v1"
+	openstackcontainerclustertemplatev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackcontainerclustertemplate/v1"
+	openstackdnsrecordv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackdnsrecord/v1"
+	openstackdnszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackdnszone/v1"
+	openstackfloatingipv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackfloatingip/v1"
+	openstackfloatingipassociatev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackfloatingipassociate/v1"
+	openstackimagev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackimage/v1"
+	openstackinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackinstance/v1"
 	openstackkeypairv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackkeypair/v1"
+	openstackloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackloadbalancer/v1"
+	openstackloadbalancerlistenerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackloadbalancerlistener/v1"
+	openstackloadbalancermemberv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackloadbalancermember/v1"
+	openstackloadbalancermonitorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackloadbalancermonitor/v1"
+	openstackloadbalancerpoolv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackloadbalancerpool/v1"
 	openstacknetworkv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstacknetwork/v1"
+	openstacknetworkportv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstacknetworkport/v1"
+	openstackprojectv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackproject/v1"
+	openstackroleassignmentv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackroleassignment/v1"
+	openstackrouterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackrouter/v1"
+	openstackrouterinterfacev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackrouterinterface/v1"
+	openstacksecuritygroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstacksecuritygroup/v1"
+	openstacksecuritygrouprulev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstacksecuritygrouprule/v1"
+	openstackservergroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackservergroup/v1"
+	openstacksubnetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstacksubnet/v1"
+	openstackvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackvolume/v1"
+	openstackvolumeattachv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackvolumeattach/v1"
 	snowflakedatabasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/snowflake/snowflakedatabase/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
 	"google.golang.org/protobuf/proto"
@@ -214,6 +240,7 @@ var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AwsRoute53DnsRecord: &awsroute53dnsrecordv1.AwsRoute53DnsRecord{},
 	cloudresourcekind.CloudResourceKind_AwsRoute53Zone:      &awsroute53zonev1.AwsRoute53Zone{},
 	cloudresourcekind.CloudResourceKind_AwsS3Bucket:         &awss3bucketv1.AwsS3Bucket{},
+	cloudresourcekind.CloudResourceKind_AwsS3ObjectSet:      &awss3objectsetv1.AwsS3ObjectSet{},
 	cloudresourcekind.CloudResourceKind_AwsSecretsManager:   &awssecretsmanagerv1.AwsSecretsManager{},
 	cloudresourcekind.CloudResourceKind_AwsSecurityGroup:    &awssecuritygroupv1.AwsSecurityGroup{},
 	cloudresourcekind.CloudResourceKind_AwsVpc:              &awsvpcv1.AwsVpc{},
@@ -361,8 +388,33 @@ var ProviderOpenFgaMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 }
 
 var ProviderOpenstackMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
-	cloudresourcekind.CloudResourceKind_OpenStackKeypair: &openstackkeypairv1.OpenStackKeypair{},
-	cloudresourcekind.CloudResourceKind_OpenStackNetwork: &openstacknetworkv1.OpenStackNetwork{},
+	cloudresourcekind.CloudResourceKind_OpenStackApplicationCredential:    &openstackapplicationcredentialv1.OpenStackApplicationCredential{},
+	cloudresourcekind.CloudResourceKind_OpenStackContainerCluster:         &openstackcontainerclusterv1.OpenStackContainerCluster{},
+	cloudresourcekind.CloudResourceKind_OpenStackContainerClusterTemplate: &openstackcontainerclustertemplatev1.OpenStackContainerClusterTemplate{},
+	cloudresourcekind.CloudResourceKind_OpenStackDnsRecord:                &openstackdnsrecordv1.OpenStackDnsRecord{},
+	cloudresourcekind.CloudResourceKind_OpenStackDnsZone:                  &openstackdnszonev1.OpenStackDnsZone{},
+	cloudresourcekind.CloudResourceKind_OpenStackFloatingIp:               &openstackfloatingipv1.OpenStackFloatingIp{},
+	cloudresourcekind.CloudResourceKind_OpenStackFloatingIpAssociate:      &openstackfloatingipassociatev1.OpenStackFloatingIpAssociate{},
+	cloudresourcekind.CloudResourceKind_OpenStackImage:                    &openstackimagev1.OpenStackImage{},
+	cloudresourcekind.CloudResourceKind_OpenStackInstance:                 &openstackinstancev1.OpenStackInstance{},
+	cloudresourcekind.CloudResourceKind_OpenStackKeypair:                  &openstackkeypairv1.OpenStackKeypair{},
+	cloudresourcekind.CloudResourceKind_OpenStackLoadBalancer:             &openstackloadbalancerv1.OpenStackLoadBalancer{},
+	cloudresourcekind.CloudResourceKind_OpenStackLoadBalancerListener:     &openstackloadbalancerlistenerv1.OpenStackLoadBalancerListener{},
+	cloudresourcekind.CloudResourceKind_OpenStackLoadBalancerMember:       &openstackloadbalancermemberv1.OpenStackLoadBalancerMember{},
+	cloudresourcekind.CloudResourceKind_OpenStackLoadBalancerMonitor:      &openstackloadbalancermonitorv1.OpenStackLoadBalancerMonitor{},
+	cloudresourcekind.CloudResourceKind_OpenStackLoadBalancerPool:         &openstackloadbalancerpoolv1.OpenStackLoadBalancerPool{},
+	cloudresourcekind.CloudResourceKind_OpenStackNetwork:                  &openstacknetworkv1.OpenStackNetwork{},
+	cloudresourcekind.CloudResourceKind_OpenStackNetworkPort:              &openstacknetworkportv1.OpenStackNetworkPort{},
+	cloudresourcekind.CloudResourceKind_OpenStackProject:                  &openstackprojectv1.OpenStackProject{},
+	cloudresourcekind.CloudResourceKind_OpenStackRoleAssignment:           &openstackroleassignmentv1.OpenStackRoleAssignment{},
+	cloudresourcekind.CloudResourceKind_OpenStackRouter:                   &openstackrouterv1.OpenStackRouter{},
+	cloudresourcekind.CloudResourceKind_OpenStackRouterInterface:          &openstackrouterinterfacev1.OpenStackRouterInterface{},
+	cloudresourcekind.CloudResourceKind_OpenStackSecurityGroup:            &openstacksecuritygroupv1.OpenStackSecurityGroup{},
+	cloudresourcekind.CloudResourceKind_OpenStackSecurityGroupRule:        &openstacksecuritygrouprulev1.OpenStackSecurityGroupRule{},
+	cloudresourcekind.CloudResourceKind_OpenStackServerGroup:              &openstackservergroupv1.OpenStackServerGroup{},
+	cloudresourcekind.CloudResourceKind_OpenStackSubnet:                   &openstacksubnetv1.OpenStackSubnet{},
+	cloudresourcekind.CloudResourceKind_OpenStackVolume:                   &openstackvolumev1.OpenStackVolume{},
+	cloudresourcekind.CloudResourceKind_OpenStackVolumeAttach:             &openstackvolumeattachv1.OpenStackVolumeAttach{},
 }
 
 var ProviderSnowflakeMap = map[cloudresourcekind.CloudResourceKind]proto.Message{

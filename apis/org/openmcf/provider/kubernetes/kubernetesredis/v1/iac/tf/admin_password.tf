@@ -23,6 +23,8 @@ resource "kubernetes_secret" "redis_admin_secret" {
   data = {
     "password" = local.admin_password_b64
   }
+
+  depends_on = [kubernetes_namespace.redis_namespace]
 }
 
 output "redis_username" {

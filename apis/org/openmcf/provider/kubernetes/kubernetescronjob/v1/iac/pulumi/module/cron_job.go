@@ -11,7 +11,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func cronJob(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource) (*batchv1.CronJob, error) {
+func cronJob(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) (*batchv1.CronJob, error) {
 	target := locals.KubernetesCronJob
 
 	envVarInputs := make([]corev1.EnvVarInput, 0)
@@ -160,6 +160,7 @@ func cronJob(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Prov
 		cronJobSpec.StartingDeadlineSeconds = pulumi.IntPtr(int(*target.Spec.StartingDeadlineSeconds))
 	}
 
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	createdCronJob, err := batchv1.NewCronJob(ctx,
 		target.Metadata.Name,
 		&batchv1.CronJobArgs{
@@ -170,7 +171,7 @@ func cronJob(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Prov
 			},
 			Spec: cronJobSpec,
 		},
-		pulumi.Provider(kubernetesProvider),
+		opts...,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create cronjob")

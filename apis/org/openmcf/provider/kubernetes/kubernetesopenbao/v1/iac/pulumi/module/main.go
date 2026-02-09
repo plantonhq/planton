@@ -23,13 +23,18 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesopenbaov1.KubernetesOp
 
 	// ------------------------------ namespace ----------------------------
 	// Conditionally create namespace based on create_namespace flag
-	_, err = namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}
 
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
+	}
+
 	// ------------------------------ helm ----------------------------------
-	if err := helmChart(ctx, locals, kubernetesProvider); err != nil {
+	if err := helmChart(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to create helm-chart resources")
 	}
 

@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackimage.v1;
+
+// OpenStackImageStackOutputs captures the observable outputs after
+// provisioning an OpenStack Glance image.
+//
+// The image_id is the primary output referenced by downstream components:
+// - OpenStackVolume (image_id FK for bootable volumes)
+// - OpenStackInstance (image_id FK for boot-from-image instances)
+// - OpenStackContainerClusterTemplate (image FK for Magnum templates)
+message OpenStackImageStackOutputs {
+  // image_id is the unique identifier (UUID) of the image in Glance.
+  // This is the primary output used as a foreign key by downstream resources.
+  string image_id = 1;
+
+  // name is the name of the image (derived from metadata.name).
+  string name = 2;
+
+  // checksum is the MD5 checksum of the image data.
+  // Computed by Glance after the image data is uploaded.
+  string checksum = 3;
+
+  // size_bytes is the size of the image data in bytes.
+  // Computed by Glance after upload.
+  int64 size_bytes = 4;
+
+  // status is the current lifecycle state of the image.
+  // Common values: "active", "queued", "saving", "killed", "deleted".
+  string status = 5;
+
+  // file is the URL path to the image data in the Glance store.
+  // Example: "/v2/images/<uuid>/file"
+  string file = 6;
+
+  // region is the OpenStack region where the image was created.
+  string region = 7;
+}

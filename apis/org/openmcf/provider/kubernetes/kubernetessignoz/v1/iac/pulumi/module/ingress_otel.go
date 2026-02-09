@@ -11,7 +11,7 @@ import (
 // createOtelCollectorIngress creates Kubernetes Gateway API resources for OpenTelemetry Collector external access
 // This includes Certificate, Gateway, and HTTPRoute resources for HTTP endpoint
 func createOtelCollectorIngress(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
 	// Skip if ingress is not enabled
 	if locals.KubernetesSignoz.Spec.Ingress == nil ||
@@ -43,7 +43,7 @@ func createOtelCollectorIngress(ctx *pulumi.Context, locals *Locals,
 					Name: pulumi.String(locals.IngressCertClusterIssuerName),
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating OTEL Collector certificate")
 	}
@@ -101,7 +101,7 @@ func createOtelCollectorIngress(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{addedOtelCertificate}))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{addedOtelCertificate})}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating OTEL Collector HTTP gateway")
 	}
@@ -139,7 +139,7 @@ func createOtelCollectorIngress(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating HTTP redirect route for OTEL Collector")
 	}
@@ -184,7 +184,7 @@ func createOtelCollectorIngress(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating HTTPRoute for OTEL Collector HTTP endpoint")
 	}

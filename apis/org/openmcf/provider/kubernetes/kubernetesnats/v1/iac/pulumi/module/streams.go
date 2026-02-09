@@ -20,7 +20,7 @@ import (
 // 2. NACK CRDs (so Kubernetes accepts the CR schemas)
 // 3. NACK controller (so the CRs get reconciled)
 func streams(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource,
-	nackController pulumi.Resource) error {
+	nackController pulumi.Resource, namespaceDeps []pulumi.ResourceOption) error {
 
 	// Skip if NACK controller is not enabled or no streams defined
 	if locals.KubernetesNats.Spec.NackController == nil ||
@@ -40,7 +40,7 @@ func streams(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Prov
 
 	// Create each stream and its consumers
 	for _, stream := range locals.KubernetesNats.Spec.Streams {
-		streamResource, err := createStream(ctx, locals, kubernetesProvider, stream, deps)
+		streamResource, err := createStream(ctx, locals, kubernetesProvider, stream, deps, namespaceDeps)
 		if err != nil {
 			return errors.Wrapf(err, "failed to create stream %s", stream.Name)
 		}
@@ -49,7 +49,7 @@ func streams(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Prov
 
 		// Create consumers for this stream
 		for _, consumer := range stream.Consumers {
-			if err := createConsumer(ctx, locals, kubernetesProvider, stream, consumer, streamResource); err != nil {
+			if err := createConsumer(ctx, locals, kubernetesProvider, stream, consumer, streamResource, namespaceDeps); err != nil {
 				return errors.Wrapf(err, "failed to create consumer %s for stream %s",
 					consumer.DurableName, stream.Name)
 			}
@@ -64,7 +64,7 @@ func streams(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Prov
 
 // createStream creates a JetStream Stream custom resource using strongly-typed nack types
 func createStream(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource,
-	stream *kubernetesnatsv1.KubernetesNatsStream, deps []pulumi.Resource) (pulumi.Resource, error) {
+	stream *kubernetesnatsv1.KubernetesNatsStream, deps []pulumi.Resource, namespaceDeps []pulumi.ResourceOption) (pulumi.Resource, error) {
 
 	// Build stream spec
 	spec := &nackv1beta2.StreamSpecArgs{
@@ -126,6 +126,10 @@ func createStream(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi
 	resourceName := fmt.Sprintf("%s-stream-%s", locals.KubernetesNats.Metadata.Name,
 		strings.ToLower(stream.Name))
 
+	streamOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProvider),
+		pulumi.DependsOn(deps),
+	}, namespaceDeps...)
 	streamCR, err := nackv1beta2.NewStream(ctx, resourceName,
 		&nackv1beta2.StreamArgs{
 			Metadata: &kubernetesmeta.ObjectMetaArgs{
@@ -135,8 +139,7 @@ func createStream(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi
 			},
 			Spec: spec,
 		},
-		pulumi.Provider(kubernetesProvider),
-		pulumi.DependsOn(deps),
+		streamOpts...,
 	)
 	if err != nil {
 		return nil, err
@@ -148,7 +151,7 @@ func createStream(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi
 // createConsumer creates a JetStream Consumer custom resource using strongly-typed nack types
 func createConsumer(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource,
 	stream *kubernetesnatsv1.KubernetesNatsStream, consumer *kubernetesnatsv1.KubernetesNatsConsumer,
-	streamResource pulumi.Resource) error {
+	streamResource pulumi.Resource, namespaceDeps []pulumi.ResourceOption) error {
 
 	// Build consumer spec
 	spec := &nackv1beta2.ConsumerSpecArgs{
@@ -215,6 +218,10 @@ func createConsumer(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulu
 	// Consumer depends on the stream being created first
 	deps := []pulumi.Resource{streamResource}
 
+	consumerOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProvider),
+		pulumi.DependsOn(deps),
+	}, namespaceDeps...)
 	_, err := nackv1beta2.NewConsumer(ctx, resourceName,
 		&nackv1beta2.ConsumerArgs{
 			Metadata: &kubernetesmeta.ObjectMetaArgs{
@@ -224,8 +231,7 @@ func createConsumer(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulu
 			},
 			Spec: spec,
 		},
-		pulumi.Provider(kubernetesProvider),
-		pulumi.DependsOn(deps),
+		consumerOpts...,
 	)
 
 	return err

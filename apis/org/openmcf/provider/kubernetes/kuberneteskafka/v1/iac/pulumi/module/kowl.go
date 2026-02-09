@@ -15,7 +15,7 @@ import (
 )
 
 func kowl(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource,
-	createdKafkaCluster *v1beta2.Kafka) error {
+	createdKafkaCluster *v1beta2.Kafka, namespaceDeps []pulumi.ResourceOption) error {
 
 	type kowlConfigTemplateInput struct {
 		BootstrapKubeServiceFqdn       string
@@ -38,6 +38,7 @@ func kowl(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Provide
 		return errors.Wrap(err, "failed to render kowl config file")
 	}
 
+	cmOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	createdConfigMap, err := kubernetescorev1.NewConfigMap(ctx,
 		locals.KowlConfigMapName,
 		&kubernetescorev1.ConfigMapArgs{
@@ -46,7 +47,7 @@ func kowl(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Provide
 				Name:      pulumi.String(locals.KowlConfigMapName),
 				Namespace: pulumi.String(locals.Namespace),
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, cmOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to add config-map")
 	}

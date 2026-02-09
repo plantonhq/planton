@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackservergroup.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/openstack/openstackservergroup/v1/spec.proto";
+import "org/openmcf/provider/openstack/openstackservergroup/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OpenStackServerGroup is a Kubernetes Resource Model (KRM) style resource
+// for managing OpenStack Compute server groups.
+//
+// A server group is a placement constraint for compute instances. By assigning
+// instances to a server group with an affinity or anti-affinity policy, you
+// control whether instances are co-located on the same hypervisor or spread
+// across different hypervisors.
+//
+// Common use cases:
+//   - Anti-affinity for HA: spread database replicas across different hosts
+//   - Affinity for performance: co-locate coupled services on the same host
+//   - Soft policies for best-effort placement without hard scheduling failures
+message OpenStackServerGroup {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'openstack.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OpenStackServerGroup'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OpenStackServerGroupSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OpenStackServerGroupStatus status = 5;
+}
+
+// OpenStackServerGroupStatus represents the observed state of an OpenStack
+// server group.
+message OpenStackServerGroupStatus {
+  // stack-outputs from the IaC deployment
+  OpenStackServerGroupStackOutputs outputs = 1;
+}

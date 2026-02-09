@@ -4,9 +4,7 @@ import (
 	"github.com/pkg/errors"
 	kubernetesargocdv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesargocd/v1"
 	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider"
-	corev1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/core/v1"
 	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/helm/v3"
-	metav1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/meta/v1"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -22,20 +20,14 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesargocdv1.KubernetesArg
 	}
 
 	// Conditionally create namespace based on create_namespace flag
-	// When false, the namespace is assumed to exist and resources will reference it by name
-	if stackInput.Target.Spec.CreateNamespace {
-		_, err := corev1.NewNamespace(ctx,
-			locals.Namespace,
-			&corev1.NamespaceArgs{
-				Metadata: &metav1.ObjectMetaArgs{
-					Name:   pulumi.String(locals.Namespace),
-					Labels: pulumi.ToStringMap(locals.Labels),
-				},
-			},
-			pulumi.Provider(kubeProvider))
-		if err != nil {
-			return errors.Wrapf(err, "failed to create %s namespace", locals.Namespace)
-		}
+	createdNamespace, err := namespace(ctx, stackInput, locals, kubeProvider)
+	if err != nil {
+		return errors.Wrap(err, "failed to create namespace")
+	}
+
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
 	}
 
 	// Get resource specifications
@@ -107,6 +99,11 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesargocdv1.KubernetesArg
 		resourceId = stackInput.Target.Metadata.Id
 	}
 
+	helmOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubeProvider),
+		pulumi.IgnoreChanges([]string{"status", "description", "resourceNames"}),
+	}, namespaceDeps...)
+
 	_, err = helm.NewRelease(ctx, "argocd",
 		&helm.ReleaseArgs{
 			Name:      pulumi.String(resourceId),
@@ -122,8 +119,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesargocdv1.KubernetesArg
 			Atomic:        pulumi.Bool(true),
 			CleanupOnFail: pulumi.Bool(true),
 		},
-		pulumi.Provider(kubeProvider),
-		pulumi.IgnoreChanges([]string{"status", "description", "resourceNames"}))
+		helmOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to install Argo CD helm release")
 	}

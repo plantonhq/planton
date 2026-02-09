@@ -28,4 +28,8 @@ resource "kubernetes_secret" "this" {
 
   # Populate the secret with key-value pairs (only string values, not secret refs)
   data = { for k, v in local.string_value_secrets : k => base64encode(v) }
+
+  depends_on = [
+    kubernetes_namespace.this
+  ]
 }

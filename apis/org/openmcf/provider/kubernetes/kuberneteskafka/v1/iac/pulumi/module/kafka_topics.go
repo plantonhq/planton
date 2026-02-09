@@ -9,7 +9,7 @@ import (
 )
 
 func kafkaTopics(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource,
-	createdKafkaCluster *v1beta2.Kafka) error {
+	createdKafkaCluster *v1beta2.Kafka, namespaceDeps []pulumi.ResourceOption) error {
 	for _, kafkaTopic := range locals.KubernetesKafka.Spec.KafkaTopics {
 
 		config := vars.KafkaTopicDefaultConfig
@@ -17,6 +17,7 @@ func kafkaTopics(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.
 			config[k] = v
 		}
 
+		opts := append([]pulumi.ResourceOption{pulumi.Parent(createdKafkaCluster)}, namespaceDeps...)
 		_, err := v1beta2.NewKafkaTopic(ctx,
 			kafkaTopic.Name,
 			&v1beta2.KafkaTopicArgs{
@@ -31,7 +32,7 @@ func kafkaTopics(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.
 					Replicas:   pulumi.Int(int(kafkaTopic.GetReplicas())),
 					TopicName:  pulumi.String(kafkaTopic.Name),
 				},
-			}, pulumi.Parent(createdKafkaCluster))
+			}, opts...)
 		if err != nil {
 			return errors.Wrapf(err, "failed to create kafka-topic %s", kafkaTopic.Name)
 		}

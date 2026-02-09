@@ -24,13 +24,18 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesperconamysqloperatorv1
 
 	// ------------------------------ namespace ----------------------------
 	// Conditionally create namespace based on create_namespace flag
-	_, err = namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}
 
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
+	}
+
 	// ------------------------------ helm ----------------------------------
-	if err := helmChart(ctx, locals, kubernetesProvider); err != nil {
+	if err := helmChart(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to deploy Percona MySQL Operator Helm chart")
 	}
 
@@ -38,7 +43,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesperconamysqloperatorv1
 }
 
 // helmChart installs the Percona MySQL Operator Helm chart.
-func helmChart(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource) error {
+func helmChart(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 	target := locals.KubernetesPerconaMysqlOperator
 
 	// prepare helm values with resource limits from spec
@@ -58,6 +63,11 @@ func helmChart(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Pr
 	// deploy the operator via Helm
 	// Use locals.HelmReleaseName for the Kubernetes release name to avoid conflicts
 	// when multiple instances are deployed to the same namespace
+	releaseOpts := []pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProvider),
+		pulumi.IgnoreChanges([]string{"status", "description", "resourceNames"}),
+	}
+	releaseOpts = append(releaseOpts, namespaceDeps...)
 	_, err := helm.NewRelease(ctx, locals.HelmReleaseName,
 		&helm.ReleaseArgs{
 			Name:            pulumi.String(locals.HelmReleaseName),
@@ -74,8 +84,7 @@ func helmChart(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Pr
 				Repo: pulumi.String(vars.HelmChartRepo),
 			},
 		},
-		pulumi.Provider(kubernetesProvider),
-		pulumi.IgnoreChanges([]string{"status", "description", "resourceNames"}))
+		releaseOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to install percona-mysql-operator helm release")
 	}

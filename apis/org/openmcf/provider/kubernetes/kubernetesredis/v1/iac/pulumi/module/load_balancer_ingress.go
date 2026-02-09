@@ -9,8 +9,9 @@ import (
 
 // loadBalancerIngress creates an external LoadBalancer Service when spec.ingress.enabled is true.
 func loadBalancerIngress(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err := kubernetescorev1.NewService(ctx,
 		locals.ExternalLbServiceName,
 		&kubernetescorev1.ServiceArgs{
@@ -35,7 +36,7 @@ func loadBalancerIngress(ctx *pulumi.Context, locals *Locals,
 				},
 				Selector: pulumi.ToStringMap(locals.RedisPodSelectorLabels),
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, opts...)
 	if err != nil {
 		return errors.Wrapf(err, "failed to create external load balancer service")
 	}

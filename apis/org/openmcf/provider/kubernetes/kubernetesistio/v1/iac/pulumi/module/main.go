@@ -4,9 +4,7 @@ import (
 	"github.com/pkg/errors"
 	kubernetesistiov1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesistio/v1"
 	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider"
-	corev1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/core/v1"
 	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/helm/v3"
-	metav1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/meta/v1"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -31,41 +29,9 @@ func Resources(ctx *pulumi.Context, in *kubernetesistiov1.KubernetesIstioStackIn
 	chartVersion := vars.DefaultStableVersion
 
 	// ---- conditionally create namespaces ----
-	var sysNS *corev1.Namespace
-	var gwNS *corev1.Namespace
-	var sysNSName pulumi.StringOutput
-	var gwNSName pulumi.StringOutput
-
-	if spec.CreateNamespace {
-		// Create istio-system namespace
-		sysNS, err = corev1.NewNamespace(ctx, locals.SystemNamespace,
-			&corev1.NamespaceArgs{
-				Metadata: &metav1.ObjectMetaArgs{
-					Name: pulumi.String(locals.SystemNamespace),
-				},
-			},
-			pulumi.Provider(kubernetesProviderConfig))
-		if err != nil {
-			return errors.Wrap(err, "failed to create istio-system namespace")
-		}
-		sysNSName = sysNS.Metadata.Name().Elem()
-
-		// Create istio-ingress namespace
-		gwNS, err = corev1.NewNamespace(ctx, locals.GatewayNamespace,
-			&corev1.NamespaceArgs{
-				Metadata: &metav1.ObjectMetaArgs{
-					Name: pulumi.String(locals.GatewayNamespace),
-				},
-			},
-			pulumi.Provider(kubernetesProviderConfig))
-		if err != nil {
-			return errors.Wrap(err, "failed to create istio-ingress namespace")
-		}
-		gwNSName = gwNS.Metadata.Name().Elem()
-	} else {
-		// Use existing namespaces - convert strings to StringOutput
-		sysNSName = pulumi.String(locals.SystemNamespace).ToStringOutput()
-		gwNSName = pulumi.String(locals.GatewayNamespace).ToStringOutput()
+	sysNSName, gwNSName, namespaceDeps, err := namespaces(ctx, in, locals, kubernetesProviderConfig)
+	if err != nil {
+		return errors.Wrap(err, "failed to create namespaces")
 	}
 
 	// convenience for repeated repo opts
@@ -73,6 +39,10 @@ func Resources(ctx *pulumi.Context, in *kubernetesistiov1.KubernetesIstioStackIn
 
 	// ---- istio/base ----
 	// Helm release name uses {metadata.name}-base to avoid conflicts when multiple instances share a namespace
+	baseOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProviderConfig),
+	}, namespaceDeps...)
+
 	_, err = helm.NewRelease(ctx, locals.BaseReleaseName,
 		&helm.ReleaseArgs{
 			Name:            pulumi.String(locals.BaseReleaseName),
@@ -86,7 +56,7 @@ func Resources(ctx *pulumi.Context, in *kubernetesistiov1.KubernetesIstioStackIn
 			Timeout:         pulumi.Int(180),
 			RepositoryOpts:  repo,
 		},
-		pulumi.Provider(kubernetesProviderConfig))
+		baseOpts...)
 	if err != nil {
 		return errors.Wrap(err, "installing istio/base")
 	}
@@ -112,6 +82,10 @@ func Resources(ctx *pulumi.Context, in *kubernetesistiov1.KubernetesIstioStackIn
 	}
 
 	// Helm release name uses {metadata.name}-istiod to avoid conflicts when multiple instances share a namespace
+	istiodOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProviderConfig),
+	}, namespaceDeps...)
+
 	_, err = helm.NewRelease(ctx, locals.IstiodReleaseName,
 		&helm.ReleaseArgs{
 			Name:            pulumi.String(locals.IstiodReleaseName),
@@ -126,13 +100,17 @@ func Resources(ctx *pulumi.Context, in *kubernetesistiov1.KubernetesIstioStackIn
 			Values:          istiodValues,
 			RepositoryOpts:  repo,
 		},
-		pulumi.Provider(kubernetesProviderConfig))
+		istiodOpts...)
 	if err != nil {
 		return errors.Wrap(err, "installing istiod control‑plane")
 	}
 
 	// ---- ingress‑gateway ----
 	// Helm release name uses {metadata.name}-gateway to avoid conflicts when multiple instances share a namespace
+	gwOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProviderConfig),
+	}, namespaceDeps...)
+
 	_, err = helm.NewRelease(ctx, locals.GatewayReleaseName,
 		&helm.ReleaseArgs{
 			Name:            pulumi.String(locals.GatewayReleaseName),
@@ -151,7 +129,7 @@ func Resources(ctx *pulumi.Context, in *kubernetesistiov1.KubernetesIstioStackIn
 				},
 			},
 		},
-		pulumi.Provider(kubernetesProviderConfig))
+		gwOpts...)
 	if err != nil {
 		return errors.Wrap(err, "installing istio ingress‑gateway")
 	}

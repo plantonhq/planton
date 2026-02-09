@@ -9,7 +9,7 @@ import (
 )
 
 func signoz(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
 	// https://github.com/SigNoz/charts/blob/main/charts/signoz/values.yaml
 	helmValues := pulumi.Map{
@@ -205,6 +205,8 @@ func signoz(ctx *pulumi.Context, locals *Locals,
 	mergestringmaps.MergeMapToPulumiMap(helmValues, locals.KubernetesSignoz.Spec.HelmValues)
 
 	// Install SigNoz Helm chart
+	chartOpts := []pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}
+	chartOpts = append(chartOpts, namespaceDeps...)
 	_, err := helmv3.NewChart(ctx,
 		locals.KubernetesSignoz.Metadata.Name,
 		helmv3.ChartArgs{
@@ -215,7 +217,7 @@ func signoz(ctx *pulumi.Context, locals *Locals,
 			FetchArgs: helmv3.FetchArgs{
 				Repo: pulumi.String(vars.HelmChartRepoUrl),
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, chartOpts...)
 
 	if err != nil {
 		return errors.Wrap(err, "failed to create signoz helm-chart")

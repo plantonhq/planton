@@ -20,7 +20,6 @@ require (
 	github.com/pseudomuto/protoc-gen-doc v1.5.1
 	github.com/pulumi/pulumi-auth0/sdk/v3 v3.35.0
 	github.com/pulumi/pulumi-aws-native/sdk v1.14.0
-	github.com/pulumi/pulumi-aws/sdk/v6 v6.83.2
 	github.com/pulumi/pulumi-aws/sdk/v7 v7.3.0
 	github.com/pulumi/pulumi-azure-native-sdk/compute/v3 v3.12.1
 	github.com/pulumi/pulumi-azure-native-sdk/containerregistry/v3 v3.10.1

@@ -11,9 +11,10 @@ import (
 )
 
 func locust(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
 	// Create a ConfigMap for the main.py file
+	cmOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err := kubernetescorev1.NewConfigMap(ctx, locals.MainPyConfigMapName, &kubernetescorev1.ConfigMapArgs{
 		Metadata: metav1.ObjectMetaPtrInput(&metav1.ObjectMetaArgs{
 			Name:      pulumi.String(locals.MainPyConfigMapName),
@@ -23,7 +24,7 @@ func locust(ctx *pulumi.Context, locals *Locals,
 		Data: pulumi.StringMap{
 			"main.py": pulumi.String(locals.KubernetesLocust.Spec.LoadTest.MainPyContent),
 		},
-	}, pulumi.Provider(kubernetesProvider))
+	}, cmOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create main py configmap")
 	}
@@ -36,7 +37,7 @@ func locust(ctx *pulumi.Context, locals *Locals,
 			Labels:    pulumi.ToStringMap(locals.Labels),
 		}),
 		Data: pulumi.ToStringMap(locals.KubernetesLocust.Spec.LoadTest.LibFilesContent),
-	}, pulumi.Provider(kubernetesProvider))
+	}, cmOpts...)
 
 	if err != nil {
 		return errors.Wrap(err, "failed to create lib files configmap")
@@ -63,6 +64,7 @@ func locust(ctx *pulumi.Context, locals *Locals,
 	mergestringmaps.MergeMapToPulumiMap(helmValues, locals.KubernetesLocust.Spec.HelmValues)
 
 	// Deploying a Locust Helm chart from the Helm repository.
+	helmOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err = helmv3.NewChart(ctx,
 		locals.KubernetesLocust.Metadata.Name,
 		helmv3.ChartArgs{
@@ -74,7 +76,7 @@ func locust(ctx *pulumi.Context, locals *Locals,
 			FetchArgs: helmv3.FetchArgs{
 				Repo: pulumi.String("https://charts.deliveryhero.io"), // The URL for the Helm chart repository
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, helmOpts...)
 
 	if err != nil {
 		return errors.Wrap(err, "failed to create locust resource")

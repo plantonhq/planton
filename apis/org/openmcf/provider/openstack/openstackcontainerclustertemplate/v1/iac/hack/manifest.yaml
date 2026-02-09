@@ -1,0 +1,12 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackContainerClusterTemplate
+metadata:
+  name: k8s-template
+spec:
+  coe: "kubernetes"
+  image:
+    value: "fedora-coreos-39"
+  network_driver: "flannel"
+  dns_nameserver: "8.8.8.8"
+  flavor: "m1.medium"
+  master_flavor: "m1.large"

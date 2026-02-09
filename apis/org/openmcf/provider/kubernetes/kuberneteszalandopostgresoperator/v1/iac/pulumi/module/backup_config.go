@@ -20,6 +20,7 @@ func createBackupResources(
 	namespace string,
 	kubernetesProvider *pulumikubernetes.Provider,
 	labels map[string]string,
+	namespaceDeps []pulumi.ResourceOption,
 ) (pulumi.StringOutput, error) {
 	// If no backup config provided, return empty
 	if backupConfig == nil {
@@ -32,6 +33,7 @@ func createBackupResources(
 	}
 
 	// 1. Create Secret for R2 credentials
+	secretOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	createdSecret, err := corev1.NewSecret(ctx,
 		locals.BackupSecretName,
 		&corev1.SecretArgs{
@@ -46,7 +48,7 @@ func createBackupResources(
 				"AWS_SECRET_ACCESS_KEY": pulumi.String(r2Config.SecretAccessKey),
 			},
 		},
-		pulumi.Provider(kubernetesProvider),
+		secretOpts...,
 	)
 	if err != nil {
 		return pulumi.String("").ToStringOutput(), errors.Wrap(err, "failed to create backup credentials secret")
@@ -88,6 +90,10 @@ func createBackupResources(
 	}
 
 	// 5. Create ConfigMap
+	cmOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProvider),
+		pulumi.DependsOn([]pulumi.Resource{createdSecret}),
+	}, namespaceDeps...)
 	createdConfigMap, err := corev1.NewConfigMap(ctx,
 		locals.BackupConfigMapName,
 		&corev1.ConfigMapArgs{
@@ -98,8 +104,7 @@ func createBackupResources(
 			}),
 			Data: configMapData,
 		},
-		pulumi.Provider(kubernetesProvider),
-		pulumi.DependsOn([]pulumi.Resource{createdSecret}),
+		cmOpts...,
 	)
 	if err != nil {
 		return pulumi.String("").ToStringOutput(), errors.Wrap(err, "failed to create backup config map")

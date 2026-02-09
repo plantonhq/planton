@@ -4,9 +4,7 @@ import (
 	"github.com/pkg/errors"
 	kubernetesrookcephclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesrookcephcluster/v1"
 	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider"
-	corev1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/core/v1"
 	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/helm/v3"
-	metav1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/meta/v1"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -22,42 +20,26 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesrookcephclusterv1.Kube
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
 
-	// --------------------------------------------------------------------
-	// 1. Namespace - conditionally create based on create_namespace flag
-	// --------------------------------------------------------------------
-	if stackInput.Target.Spec.GetCreateNamespace() {
-		_, err := corev1.NewNamespace(ctx, locals.Namespace,
-			&corev1.NamespaceArgs{
-				Metadata: &metav1.ObjectMetaArgs{
-					Name:   pulumi.String(locals.Namespace),
-					Labels: pulumi.ToStringMap(locals.Labels),
-					// CRITICAL: Background Deletion Propagation Policy
-					//
-					// This annotation prevents namespace deletion from timing out during `pulumi destroy`.
-					//
-					// Problem: By default, Pulumi uses "Foreground" cascading deletion for namespaces.
-					// Kubernetes adds a `foregroundDeletion` finalizer and waits for all resources inside
-					// the namespace to be deleted before removing the namespace itself. However, if the
-					// Helm release or CRDs are being deleted concurrently, there can be race conditions
-					// where finalizers on child resources (like operator-managed CRs) prevent timely cleanup.
-					//
-					// Solution: Using "background" propagation policy causes Kubernetes to delete the
-					// namespace object immediately. The namespace controller then asynchronously cleans up
-					// all resources within the namespace. This avoids blocking on child resource finalizers.
-					Annotations: pulumi.StringMap{
-						"pulumi.com/deletionPropagationPolicy": pulumi.String("background"),
-					},
-				},
-			},
-			pulumi.Provider(kubernetesProvider))
-		if err != nil {
-			return errors.Wrap(err, "failed to create namespace")
-		}
+	// ------------------------------ namespace ----------------------------
+	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	if err != nil {
+		return errors.Wrap(err, "failed to create namespace")
+	}
+
+	// Build conditional namespace dependency (Pulumi equivalent of Terraform depends_on).
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
 	}
 
 	// --------------------------------------------------------------------
-	// 2. Deploy the Rook Ceph Cluster via Helm
+	// Deploy the Rook Ceph Cluster via Helm
 	// --------------------------------------------------------------------
+	helmOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProvider),
+		pulumi.IgnoreChanges([]string{"status", "description", "resourceNames"}),
+	}, namespaceDeps...)
+
 	_, err = helm.NewRelease(ctx, locals.HelmReleaseName,
 		&helm.ReleaseArgs{
 			Name:            pulumi.String(locals.HelmReleaseName),
@@ -74,8 +56,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesrookcephclusterv1.Kube
 				Repo: pulumi.String(vars.HelmChartRepo),
 			},
 		},
-		pulumi.Provider(kubernetesProvider),
-		pulumi.IgnoreChanges([]string{"status", "description", "resourceNames"}))
+		helmOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to install rook-ceph-cluster helm release")
 	}

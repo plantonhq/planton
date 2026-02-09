@@ -15,7 +15,8 @@ const (
 
 func helmChart(ctx *pulumi.Context,
 	locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource,
+	namespaceDeps []pulumi.ResourceOption) error {
 
 	// https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
 	var helmValues = pulumi.Map{
@@ -31,6 +32,8 @@ func helmChart(ctx *pulumi.Context,
 		},
 	}
 
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
+
 	//install grafana helm-chart
 	_, err := helmv3.NewChart(ctx,
 		locals.KubernetesGrafana.Metadata.Name,
@@ -42,7 +45,7 @@ func helmChart(ctx *pulumi.Context,
 			FetchArgs: helmv3.FetchArgs{
 				Repo: pulumi.String(grafanaHelmChartRepoUrl),
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, opts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create helm chart")
 	}

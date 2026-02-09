@@ -107,6 +107,7 @@ const (
 	CloudResourceKind_AwsClientVpn        CloudResourceKind = 221
 	CloudResourceKind_AwsDocumentDb       CloudResourceKind = 222
 	CloudResourceKind_AwsRoute53DnsRecord CloudResourceKind = 223
+	CloudResourceKind_AwsS3ObjectSet      CloudResourceKind = 224
 	// 400–599: Azure resources
 	CloudResourceKind_AzureAksCluster        CloudResourceKind = 400
 	CloudResourceKind_AzureAksNodePool       CloudResourceKind = 401
@@ -238,16 +239,33 @@ const (
 	CloudResourceKind_OpenFgaAuthorizationModel CloudResourceKind = 2301
 	CloudResourceKind_OpenFgaRelationshipTuple  CloudResourceKind = 2302
 	// 2500–2799: OpenStack resources
-	CloudResourceKind_OpenStackKeypair             CloudResourceKind = 2500
-	CloudResourceKind_OpenStackNetwork             CloudResourceKind = 2501
-	CloudResourceKind_OpenStackSubnet              CloudResourceKind = 2502
-	CloudResourceKind_OpenStackRouter              CloudResourceKind = 2503
-	CloudResourceKind_OpenStackRouterInterface     CloudResourceKind = 2504
-	CloudResourceKind_OpenStackSecurityGroup       CloudResourceKind = 2505
-	CloudResourceKind_OpenStackFloatingIp          CloudResourceKind = 2506
-	CloudResourceKind_OpenStackNetworkPort         CloudResourceKind = 2507
-	CloudResourceKind_OpenStackSecurityGroupRule   CloudResourceKind = 2525
-	CloudResourceKind_OpenStackFloatingIpAssociate CloudResourceKind = 2526
+	CloudResourceKind_OpenStackKeypair                  CloudResourceKind = 2500
+	CloudResourceKind_OpenStackNetwork                  CloudResourceKind = 2501
+	CloudResourceKind_OpenStackSubnet                   CloudResourceKind = 2502
+	CloudResourceKind_OpenStackRouter                   CloudResourceKind = 2503
+	CloudResourceKind_OpenStackRouterInterface          CloudResourceKind = 2504
+	CloudResourceKind_OpenStackSecurityGroup            CloudResourceKind = 2505
+	CloudResourceKind_OpenStackFloatingIp               CloudResourceKind = 2506
+	CloudResourceKind_OpenStackNetworkPort              CloudResourceKind = 2507
+	CloudResourceKind_OpenStackSecurityGroupRule        CloudResourceKind = 2525
+	CloudResourceKind_OpenStackFloatingIpAssociate      CloudResourceKind = 2526
+	CloudResourceKind_OpenStackInstance                 CloudResourceKind = 2508
+	CloudResourceKind_OpenStackServerGroup              CloudResourceKind = 2509
+	CloudResourceKind_OpenStackVolume                   CloudResourceKind = 2510
+	CloudResourceKind_OpenStackVolumeAttach             CloudResourceKind = 2511
+	CloudResourceKind_OpenStackProject                  CloudResourceKind = 2512
+	CloudResourceKind_OpenStackApplicationCredential    CloudResourceKind = 2513
+	CloudResourceKind_OpenStackImage                    CloudResourceKind = 2514
+	CloudResourceKind_OpenStackRoleAssignment           CloudResourceKind = 2515
+	CloudResourceKind_OpenStackLoadBalancer             CloudResourceKind = 2516
+	CloudResourceKind_OpenStackLoadBalancerListener     CloudResourceKind = 2517
+	CloudResourceKind_OpenStackLoadBalancerPool         CloudResourceKind = 2518
+	CloudResourceKind_OpenStackLoadBalancerMember       CloudResourceKind = 2519
+	CloudResourceKind_OpenStackLoadBalancerMonitor      CloudResourceKind = 2520
+	CloudResourceKind_OpenStackDnsZone                  CloudResourceKind = 2521
+	CloudResourceKind_OpenStackDnsRecord                CloudResourceKind = 2522
+	CloudResourceKind_OpenStackContainerClusterTemplate CloudResourceKind = 2523
+	CloudResourceKind_OpenStackContainerCluster         CloudResourceKind = 2524
 )
 
 // Enum value maps for CloudResourceKind.
@@ -284,6 +302,7 @@ var (
 		221:  "AwsClientVpn",
 		222:  "AwsDocumentDb",
 		223:  "AwsRoute53DnsRecord",
+		224:  "AwsS3ObjectSet",
 		400:  "AzureAksCluster",
 		401:  "AzureAksNodePool",
 		402:  "AzureContainerRegistry",
@@ -414,6 +433,23 @@ var (
 		2507: "OpenStackNetworkPort",
 		2525: "OpenStackSecurityGroupRule",
 		2526: "OpenStackFloatingIpAssociate",
+		2508: "OpenStackInstance",
+		2509: "OpenStackServerGroup",
+		2510: "OpenStackVolume",
+		2511: "OpenStackVolumeAttach",
+		2512: "OpenStackProject",
+		2513: "OpenStackApplicationCredential",
+		2514: "OpenStackImage",
+		2515: "OpenStackRoleAssignment",
+		2516: "OpenStackLoadBalancer",
+		2517: "OpenStackLoadBalancerListener",
+		2518: "OpenStackLoadBalancerPool",
+		2519: "OpenStackLoadBalancerMember",
+		2520: "OpenStackLoadBalancerMonitor",
+		2521: "OpenStackDnsZone",
+		2522: "OpenStackDnsRecord",
+		2523: "OpenStackContainerClusterTemplate",
+		2524: "OpenStackContainerCluster",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
@@ -447,6 +483,7 @@ var (
 		"AwsClientVpn":                          221,
 		"AwsDocumentDb":                         222,
 		"AwsRoute53DnsRecord":                   223,
+		"AwsS3ObjectSet":                        224,
 		"AzureAksCluster":                       400,
 		"AzureAksNodePool":                      401,
 		"AzureContainerRegistry":                402,
@@ -577,6 +614,23 @@ var (
 		"OpenStackNetworkPort":                  2507,
 		"OpenStackSecurityGroupRule":            2525,
 		"OpenStackFloatingIpAssociate":          2526,
+		"OpenStackInstance":                     2508,
+		"OpenStackServerGroup":                  2509,
+		"OpenStackVolume":                       2510,
+		"OpenStackVolumeAttach":                 2511,
+		"OpenStackProject":                      2512,
+		"OpenStackApplicationCredential":        2513,
+		"OpenStackImage":                        2514,
+		"OpenStackRoleAssignment":               2515,
+		"OpenStackLoadBalancer":                 2516,
+		"OpenStackLoadBalancerListener":         2517,
+		"OpenStackLoadBalancerPool":             2518,
+		"OpenStackLoadBalancerMember":           2519,
+		"OpenStackLoadBalancerMonitor":          2520,
+		"OpenStackDnsZone":                      2521,
+		"OpenStackDnsRecord":                    2522,
+		"OpenStackContainerClusterTemplate":     2523,
+		"OpenStackContainerCluster":             2524,
 	}
 )
 
@@ -721,7 +775,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xb95\n" +
+	"\x02v1\x10\x01*\xef;\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -760,7 +814,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0eAwsEc2Instance\x10\xdc\x01\x1a\x11\xa2\xf7\x04\r\b\f\x10\x01\"\aec2inst\x12#\n" +
 	"\fAwsClientVpn\x10\xdd\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsvpn\x12#\n" +
 	"\rAwsDocumentDb\x10\xde\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05docdb\x12*\n" +
-	"\x13AwsRoute53DnsRecord\x10\xdf\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06r53rec\x12#\n" +
+	"\x13AwsRoute53DnsRecord\x10\xdf\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06r53rec\x12%\n" +
+	"\x0eAwsS3ObjectSet\x10\xe0\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06s3objs\x12#\n" +
 	"\x0fAzureAksCluster\x10\x90\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03aks\x12&\n" +
 	"\x10AzureAksNodePool\x10\x91\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05aksnp\x12*\n" +
 	"\x16AzureContainerRegistry\x10\x92\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03acr\x12\"\n" +
@@ -914,7 +969,31 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x14OpenStackNetworkPort\x10\xcb\x13\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\x17\x10\x01\"\x04osnp\x120\n" +
 	"\x1aOpenStackSecurityGroupRule\x10\xdd\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05ossgr\x123\n" +
-	"\x1cOpenStackFloatingIpAssociate\x10\xde\x13\x1a\x10\xa2\xf7\x04\f\b\x17\x10\x01\"\x06osfipa:|\n" +
+	"\x1cOpenStackFloatingIpAssociate\x10\xde\x13\x1a\x10\xa2\xf7\x04\f\b\x17\x10\x01\"\x06osfipa\x12(\n" +
+	"\x11OpenStackInstance\x10\xcc\x13\x1a\x10\xa2\xf7\x04\f\b\x17\x10\x01\"\x06osinst\x12+\n" +
+	"\x14OpenStackServerGroup\x10\xcd\x13\x1a\x10\xa2\xf7\x04\f\b\x17\x10\x01\"\x06ossgrp\x12%\n" +
+	"\x0fOpenStackVolume\x10\xce\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05osvol\x12*\n" +
+	"\x15OpenStackVolumeAttach\x10\xcf\x13\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x17\x10\x01\"\x04osva\x12&\n" +
+	"\x10OpenStackProject\x10\xd0\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05osprj\x123\n" +
+	"\x1eOpenStackApplicationCredential\x10\xd1\x13\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x17\x10\x01\"\x04osac\x12$\n" +
+	"\x0eOpenStackImage\x10\xd2\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05osimg\x12,\n" +
+	"\x17OpenStackRoleAssignment\x10\xd3\x13\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x17\x10\x01\"\x04osra\x12*\n" +
+	"\x15OpenStackLoadBalancer\x10\xd4\x13\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x17\x10\x01\"\x04oslb\x123\n" +
+	"\x1dOpenStackLoadBalancerListener\x10\xd5\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05oslbl\x12/\n" +
+	"\x19OpenStackLoadBalancerPool\x10\xd6\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05oslbp\x121\n" +
+	"\x1bOpenStackLoadBalancerMember\x10\xd7\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05oslbm\x124\n" +
+	"\x1cOpenStackLoadBalancerMonitor\x10\xd8\x13\x1a\x11\xa2\xf7\x04\r\b\x17\x10\x01\"\aoslbmon\x12%\n" +
+	"\x10OpenStackDnsZone\x10\xd9\x13\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x17\x10\x01\"\x04osdz\x12'\n" +
+	"\x12OpenStackDnsRecord\x10\xda\x13\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x17\x10\x01\"\x04osdr\x127\n" +
+	"!OpenStackContainerClusterTemplate\x10\xdb\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05oscct\x12.\n" +
+	"\x19OpenStackContainerCluster\x10\xdc\x13\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x17\x10\x01\"\x04oscc:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

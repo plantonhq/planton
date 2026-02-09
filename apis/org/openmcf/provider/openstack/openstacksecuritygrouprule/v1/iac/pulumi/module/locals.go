@@ -8,8 +8,8 @@ import (
 
 // Locals bundles the data we need throughout the module.
 type Locals struct {
-	OpenStackProviderConfig      *openstackprovider.OpenStackProviderConfig
-	OpenStackSecurityGroupRule   *openstacksecuritygrouprulev1.OpenStackSecurityGroupRule
+	OpenStackProviderConfig    *openstackprovider.OpenStackProviderConfig
+	OpenStackSecurityGroupRule *openstacksecuritygrouprulev1.OpenStackSecurityGroupRule
 	// SecurityGroupId is the resolved security group ID from the required StringValueOrRef.
 	SecurityGroupId string
 	// RemoteGroupId is the resolved remote security group ID from the optional StringValueOrRef.

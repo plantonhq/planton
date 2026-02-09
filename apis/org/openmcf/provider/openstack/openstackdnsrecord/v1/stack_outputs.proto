@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackdnsrecord.v1;
+
+// OpenStackDnsRecordStackOutputs captures the observable outputs after provisioning
+// a DNS record in an OpenStack Designate zone.
+message OpenStackDnsRecordStackOutputs {
+  // recordset_id is the unique identifier (UUID) of the DNS recordset.
+  string recordset_id = 1;
+
+  // fqdn is the fully qualified domain name of the created DNS record.
+  // Example: "www.example.com." or "api.example.com."
+  string fqdn = 2;
+
+  // record_type is the DNS record type that was created.
+  // Example: "A", "AAAA", "CNAME", "MX", "TXT".
+  string record_type = 3;
+
+  // values is the list of DNS record values that were set.
+  repeated string values = 4;
+
+  // zone_id is the ID of the zone containing this record.
+  string zone_id = 5;
+
+  // region is the OpenStack region where the record was created.
+  string region = 6;
+}

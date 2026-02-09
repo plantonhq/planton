@@ -191,6 +191,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "r53rec"
   }];
+  AwsS3ObjectSet = 224 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "s3objs"
+  }];
 
   // 400–599: Azure resources
   AzureAksCluster = 400 [(kind_meta) = {
@@ -862,5 +867,90 @@ enum CloudResourceKind {
     provider: openstack
     version: v1
     id_prefix: "osfipa"
+  }];
+  OpenStackInstance = 2508 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osinst"
+  }];
+  OpenStackServerGroup = 2509 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "ossgrp"
+  }];
+  OpenStackVolume = 2510 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osvol"
+  }];
+  OpenStackVolumeAttach = 2511 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osva"
+  }];
+  OpenStackProject = 2512 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osprj"
+  }];
+  OpenStackApplicationCredential = 2513 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osac"
+  }];
+  OpenStackImage = 2514 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osimg"
+  }];
+  OpenStackRoleAssignment = 2515 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osra"
+  }];
+  OpenStackLoadBalancer = 2516 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "oslb"
+  }];
+  OpenStackLoadBalancerListener = 2517 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "oslbl"
+  }];
+  OpenStackLoadBalancerPool = 2518 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "oslbp"
+  }];
+  OpenStackLoadBalancerMember = 2519 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "oslbm"
+  }];
+  OpenStackLoadBalancerMonitor = 2520 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "oslbmon"
+  }];
+  OpenStackDnsZone = 2521 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osdz"
+  }];
+  OpenStackDnsRecord = 2522 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osdr"
+  }];
+  OpenStackContainerClusterTemplate = 2523 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "oscct"
+  }];
+  OpenStackContainerCluster = 2524 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "oscc"
   }];
 }

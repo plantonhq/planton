@@ -15,6 +15,7 @@ func clickhouseInstallation(
 	locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
 	createdSecret *kubernetescorev1.Secret,
+	namespaceDeps []pulumi.ResourceOption,
 ) error {
 	spec := locals.KubernetesClickHouse.Spec
 
@@ -30,6 +31,8 @@ func clickhouseInstallation(
 		version = vars.ClickhouseVersion
 	}
 
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
+
 	// Build the ClickHouseInstallation CRD
 	_, err := altinityv1.NewClickHouseInstallation(ctx,
 		clusterName,
@@ -44,7 +47,7 @@ func clickhouseInstallation(
 				Defaults:      buildDefaults(),
 				Templates:     buildTemplates(spec, version),
 			},
-		}, pulumi.Provider(kubernetesProvider),
+		}, opts...,
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to create ClickHouseInstallation")

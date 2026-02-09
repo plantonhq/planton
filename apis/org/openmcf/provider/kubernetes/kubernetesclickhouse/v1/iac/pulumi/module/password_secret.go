@@ -17,6 +17,7 @@ func createPasswordSecret(
 	ctx *pulumi.Context,
 	locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
+	namespaceDeps []pulumi.ResourceOption,
 ) (*kubernetescorev1.Secret, error) {
 	// Generate cryptographically secure random password
 	createdRandomString, err := generateRandomPassword(ctx)
@@ -25,7 +26,7 @@ func createPasswordSecret(
 	}
 
 	// Create Kubernetes Secret to store the password
-	createdSecret, err := createKubernetesSecret(ctx, locals, kubernetesProvider, createdRandomString)
+	createdSecret, err := createKubernetesSecret(ctx, locals, kubernetesProvider, createdRandomString, namespaceDeps)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create password secret")
 	}
@@ -75,10 +76,13 @@ func createKubernetesSecret(
 	locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
 	randomPassword *random.RandomPassword,
+	namespaceDeps []pulumi.ResourceOption,
 ) (*kubernetescorev1.Secret, error) {
 	// Create secret with the generated password
 	// Note: Kubernetes automatically base64 encodes secret data, so we use StringData instead
 	// Use computed name to avoid conflicts when multiple instances share a namespace
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
+
 	createdSecret, err := kubernetescorev1.NewSecret(ctx,
 		locals.PasswordSecretName,
 		&kubernetescorev1.SecretArgs{
@@ -89,7 +93,7 @@ func createKubernetesSecret(
 			StringData: pulumi.StringMap{
 				vars.ClickhousePasswordKey: randomPassword.Result,
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, opts...)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create kubernetes secret")

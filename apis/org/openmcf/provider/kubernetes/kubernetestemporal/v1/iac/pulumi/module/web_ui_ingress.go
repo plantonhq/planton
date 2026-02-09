@@ -15,7 +15,7 @@ import (
 // ingress stack (no separate external LB Service).  Pattern copied from
 // your Solr example: Certificate ➜ Gateway ➜ HTTPS+redirect HTTPRoutes.
 func webUiIngress(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider *kubernetes.Provider) error {
+	kubernetesProvider *kubernetes.Provider, namespaceDeps []pulumi.ResourceOption) error {
 
 	if locals.KubernetesTemporal.Spec.Ingress == nil ||
 		locals.KubernetesTemporal.Spec.Ingress.WebUi == nil ||
@@ -54,7 +54,7 @@ func webUiIngress(ctx *pulumi.Context, locals *Locals,
 					Name: pulumi.String(clusterIssuerName),
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating UI certificate")
 	}
@@ -110,7 +110,7 @@ func webUiIngress(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{addedCertificate}))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{addedCertificate})}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating UI gateway")
 	}
@@ -147,7 +147,7 @@ func webUiIngress(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating http→https redirect route")
 	}
@@ -190,7 +190,7 @@ func webUiIngress(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating HTTPS route for UI")
 	}

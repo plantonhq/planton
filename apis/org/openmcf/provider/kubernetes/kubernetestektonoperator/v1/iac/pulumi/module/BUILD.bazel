@@ -6,6 +6,7 @@ go_library(
         "ingress.go",
         "locals.go",
         "main.go",
+        "namespace.go",
         "outputs.go",
         "tekton_operator.go",
         "vars.go",

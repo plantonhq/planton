@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackproject.v1;
+
+import "org/openmcf/shared/options/options.proto";
+
+// OpenStackProjectSpec defines the configuration for an OpenStack Identity
+// (Keystone) project.
+//
+// A project (historically called "tenant") is the fundamental organizational
+// unit in OpenStack. All cloud resources (instances, volumes, networks) belong
+// to a project. Projects provide resource isolation, quota boundaries, and
+// access control scoping.
+//
+// Creating projects is typically an admin-level operation. Tenant users cannot
+// create projects -- only cloud administrators or users with the "admin" role
+// can provision new projects.
+//
+// The project name is derived from metadata.name.
+//
+// Terraform resource: openstack_identity_project_v3
+// Pulumi resource: openstack.identity.Project
+message OpenStackProjectSpec {
+  // description is a human-readable description of the project.
+  // Visible in the OpenStack API, Horizon dashboard, and CLI output.
+  string description = 1;
+
+  // domain_id is the Keystone domain to which this project belongs.
+  // ForceNew: changing the domain requires recreating the project.
+  // If omitted, OpenStack assigns the project to the default domain.
+  // Most single-domain deployments can leave this empty.
+  // Example: "default", or a domain UUID like "abcdef12-3456-7890-abcd-ef1234567890"
+  string domain_id = 2;
+
+  // enabled controls whether the project is active.
+  // When disabled (false), all users in the project lose access to its
+  // resources, but the resources are NOT deleted.
+  // Default: true
+  optional bool enabled = 3 [(org.openmcf.shared.options.default) = "true"];
+
+  // parent_id is the UUID of the parent project in the project hierarchy.
+  // ForceNew: changing the parent requires recreating the project.
+  // If omitted, the project is created as a top-level project in its domain.
+  // Project hierarchies are used for nested quota management and organizational
+  // structuring in large deployments.
+  string parent_id = 4;
+
+  // tags is a set of tags to associate with the project.
+  // Tags are simple strings used for filtering and organizational purposes.
+  // They are visible in the OpenStack API and can be queried via tag-based filters.
+  repeated string tags = 5;
+
+  // region overrides the region from the provider config for this project.
+  // If omitted, the region from the OpenStack provider config is used.
+  // Note: Keystone is typically a global service (not per-region), so this
+  // field is rarely needed. It controls which Keystone endpoint is used.
+  // Example: "RegionOne"
+  string region = 6;
+}

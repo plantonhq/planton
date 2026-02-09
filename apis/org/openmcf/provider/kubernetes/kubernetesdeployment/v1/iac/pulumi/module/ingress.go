@@ -9,7 +9,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider *kubernetes.Provider) error {
+func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider *kubernetes.Provider, namespaceDeps []pulumi.ResourceOption) error {
 	//crate new certificate
 	addedCertificate, err := certmanagerv1.NewCertificate(ctx,
 		locals.IngressCertificateName,
@@ -151,6 +151,11 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider *kubernetes
 		}
 	}
 
+	// Build opts for HTTPRoute resources that live in the component's namespace.
+	// Certificate and Gateway resources live in the istio-ingress namespace and
+	// do not need the namespace dependency.
+	httpRouteOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
+
 	//create http-route for setting up https-redirect for external-hostname
 	httpExternalRedirectArgs := &gatewayv1.HTTPRouteArgs{
 		Metadata: metav1.ObjectMetaArgs{
@@ -185,7 +190,7 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider *kubernetes
 	_, err = gatewayv1.NewHTTPRoute(ctx,
 		locals.HttpExternalRedirectRouteName,
 		httpExternalRedirectArgs,
-		pulumi.Provider(kubernetesProvider))
+		httpRouteOpts...)
 
 	//create http-route for external-hostname with https listener
 	httpsExternalArgs := &gatewayv1.HTTPRouteArgs{
@@ -227,7 +232,7 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider *kubernetes
 	_, err = gatewayv1.NewHTTPRoute(ctx,
 		locals.HttpsExternalRouteName,
 		httpsExternalArgs,
-		pulumi.Provider(kubernetesProvider))
+		httpRouteOpts...)
 
 	//create http-route for setting up https-redirect for internal-hostname
 	httpInternalRedirectArgs := &gatewayv1.HTTPRouteArgs{
@@ -263,7 +268,7 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider *kubernetes
 	_, err = gatewayv1.NewHTTPRoute(ctx,
 		locals.HttpInternalRedirectRouteName,
 		httpInternalRedirectArgs,
-		pulumi.Provider(kubernetesProvider))
+		httpRouteOpts...)
 
 	//create http-route for internal-hostname with https listener
 	httpsInternalArgs := &gatewayv1.HTTPRouteArgs{
@@ -305,7 +310,7 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider *kubernetes
 	_, err = gatewayv1.NewHTTPRoute(ctx,
 		locals.HttpsInternalRouteName,
 		httpsInternalArgs,
-		pulumi.Provider(kubernetesProvider))
+		httpRouteOpts...)
 	if err != nil {
 		return errors.Wrap(err, "error creating https-internal route")
 	}

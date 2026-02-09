@@ -9,9 +9,10 @@ import (
 )
 
 func ingress(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
 	// Create certificate
+	certOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	createdCertificate, err := certmanagerv1.NewCertificate(ctx,
 		locals.IngressCertificateName,
 		&certmanagerv1.CertificateArgs{
@@ -28,7 +29,7 @@ func ingress(ctx *pulumi.Context, locals *Locals,
 					Name: pulumi.String(locals.IngressCertClusterIssuerName),
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, certOpts...)
 	if err != nil {
 		return errors.Wrap(err, "error creating certificate")
 	}

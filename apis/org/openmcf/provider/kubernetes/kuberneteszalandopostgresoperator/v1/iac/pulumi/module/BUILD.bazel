@@ -6,6 +6,7 @@ go_library(
         "backup_config.go",
         "locals.go",
         "main.go",
+        "namespace.go",
         "outputs.go",
         "postgres_operator.go",
         "vars.go",

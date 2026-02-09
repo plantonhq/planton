@@ -14,7 +14,7 @@ import (
 // with a string_value password (not a secret_ref).
 // When secret_ref is used, no new secret is created - the existing secret is used directly.
 func dbPasswordSecret(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
 	ext := locals.KubernetesTemporal.Spec.Database.ExternalDatabase
 	if ext == nil {
@@ -41,6 +41,8 @@ func dbPasswordSecret(ctx *pulumi.Context, locals *Locals,
 
 	encoded := base64.StdEncoding.EncodeToString([]byte(stringValue))
 
+	secretOpts := []pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}
+	secretOpts = append(secretOpts, namespaceDeps...)
 	_, err := kubernetescorev1.NewSecret(ctx,
 		locals.DatabasePasswordSecretName,
 		&kubernetescorev1.SecretArgs{
@@ -53,7 +55,7 @@ func dbPasswordSecret(ctx *pulumi.Context, locals *Locals,
 				vars.DatabasePasswordSecretKey: pulumi.String(encoded),
 			},
 			Type: pulumi.String("Opaque"),
-		}, pulumi.Provider(kubernetesProvider))
+		}, secretOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create database password secret")
 	}

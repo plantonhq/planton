@@ -7,7 +7,7 @@ import (
 )
 
 // helmChart installs the upstream Percona MongoDB Operator Helm chart and tailors it to the spec.
-func helmChart(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource) error {
+func helmChart(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 	spec := locals.KubernetesPerconaMongoOperator.Spec
 
 	// prepare helm values with resource limits from spec
@@ -28,6 +28,11 @@ func helmChart(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Pr
 
 	// deploy the operator via Helm
 	// Use computed release name from metadata.name to avoid conflicts when multiple instances share a namespace
+	releaseOpts := []pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProvider),
+		pulumi.IgnoreChanges([]string{"status", "description", "resourceNames"}),
+	}
+	releaseOpts = append(releaseOpts, namespaceDeps...)
 	_, err := helm.NewRelease(ctx, locals.HelmReleaseName,
 		&helm.ReleaseArgs{
 			Name:            pulumi.String(locals.HelmReleaseName),
@@ -44,8 +49,7 @@ func helmChart(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Pr
 				Repo: pulumi.String(vars.HelmChartRepo),
 			},
 		},
-		pulumi.Provider(kubernetesProvider),
-		pulumi.IgnoreChanges([]string{"status", "description", "resourceNames"}))
+		releaseOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to install percona-operator helm release")
 	}

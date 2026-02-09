@@ -16,7 +16,7 @@ import (
 //
 // Reference: https://helm.sh/docs/chart_best_practices/custom_resource_definitions/
 func nackCrds(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource,
-	natsHelmChart pulumi.Resource) (pulumi.Resource, error) {
+	natsHelmChart pulumi.Resource, namespaceDeps []pulumi.ResourceOption) (pulumi.Resource, error) {
 
 	// Skip if NACK controller is not enabled
 	if locals.KubernetesNats.Spec.NackController == nil ||
@@ -26,16 +26,19 @@ func nackCrds(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Pro
 
 	// Deploy CRDs from the versioned URL
 	// Using ConfigGroup to apply the multi-document YAML containing all CRDs
+	crdsOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProvider),
+		// CRDs should depend on NATS being deployed first
+		// (controller needs NATS to connect to)
+		pulumi.DependsOn([]pulumi.Resource{natsHelmChart}),
+	}, namespaceDeps...)
 	crds, err := yaml.NewConfigGroup(ctx, "nack-crds",
 		&yaml.ConfigGroupArgs{
 			// Fetch CRDs from URL matching the NACK controller version
 			// This ensures CRD schema matches the NACK controller version
 			Files: []string{locals.NackCrdsUrl},
 		},
-		pulumi.Provider(kubernetesProvider),
-		// CRDs should depend on NATS being deployed first
-		// (controller needs NATS to connect to)
-		pulumi.DependsOn([]pulumi.Resource{natsHelmChart}),
+		crdsOpts...,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to deploy NACK CRDs")

@@ -8,6 +8,10 @@ resource "kubernetes_service_account" "this" {
     name      = local.resource_id
     namespace = local.namespace_name
   }
+
+  depends_on = [
+    kubernetes_namespace.this
+  ]
 }
 
 # 2) Create an optional image pull secret if Docker credentials are provided
@@ -23,6 +27,10 @@ resource "kubernetes_secret" "image_pull_secret" {
   data = var.docker_config_json != "" ? {
     ".dockerconfigjson" = var.docker_config_json
   } : {}
+
+  depends_on = [
+    kubernetes_namespace.this
+  ]
 }
 
 # 3) Create the CronJob

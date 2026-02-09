@@ -11,7 +11,7 @@ import (
 // secret creates a Kubernetes Secret for environment secrets that are provided as direct string values.
 // Secrets that reference external Kubernetes Secrets (via secretRef) are not included here;
 // they are handled directly in the deployment as environment variable references.
-func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource) error {
+func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 	dataMap := make(map[string]string)
 
 	// Add all secrets that have direct string values to the data map
@@ -52,10 +52,11 @@ func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Provi
 		StringData: pulumi.ToStringMap(dataMap),
 	}
 
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err := kubernetescorev1.NewSecret(ctx,
 		locals.EnvSecretName,
 		secretArgs,
-		pulumi.Provider(kubernetesProvider))
+		opts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create secret resource")
 	}

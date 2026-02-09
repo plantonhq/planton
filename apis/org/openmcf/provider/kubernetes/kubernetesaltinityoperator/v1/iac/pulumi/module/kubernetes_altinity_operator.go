@@ -21,13 +21,18 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesaltinityoperatorv1.Kub
 	}
 
 	// conditionally create namespace based on create_namespace flag
-	_, err = namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}
 
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
+	}
+
 	// deploy the operator via Helm
-	if err := helmChart(ctx, locals, kubernetesProvider); err != nil {
+	if err := helmChart(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to deploy helm chart")
 	}
 
@@ -38,7 +43,12 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesaltinityoperatorv1.Kub
 }
 
 // helmChart deploys the Altinity ClickHouse Operator Helm chart.
-func helmChart(ctx *pulumi.Context, locals *locals, kubernetesProvider pulumi.ProviderResource) error {
+func helmChart(ctx *pulumi.Context, locals *locals, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
+	opts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProvider),
+		pulumi.IgnoreChanges([]string{"status", "description", "resourceNames"}),
+	}, namespaceDeps...)
+
 	_, err := helm.NewRelease(ctx, locals.HelmReleaseName,
 		&helm.ReleaseArgs{
 			Name:            pulumi.String(locals.HelmReleaseName),
@@ -55,8 +65,7 @@ func helmChart(ctx *pulumi.Context, locals *locals, kubernetesProvider pulumi.Pr
 				Repo: pulumi.String(vars.HelmChartRepo),
 			},
 		},
-		pulumi.Provider(kubernetesProvider),
-		pulumi.IgnoreChanges([]string{"status", "description", "resourceNames"}))
+		opts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to install helm release")
 	}

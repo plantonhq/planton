@@ -10,7 +10,7 @@ import (
 )
 
 // helmChart installs the upstream OpenFGA Helm chart and tailors it to the spec.
-func helmChart(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource) error {
+func helmChart(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 	ds := locals.KubernetesOpenFga.Spec.Datastore
 
 	// Determine port - use default based on engine if not specified
@@ -98,6 +98,8 @@ func helmChart(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Pr
 	}
 
 	// Install openfga helm-chart
+	chartOpts := []pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}
+	chartOpts = append(chartOpts, namespaceDeps...)
 	_, err := helmv3.NewChart(ctx,
 		locals.KubernetesOpenFga.Metadata.Name,
 		helmv3.ChartArgs{
@@ -108,7 +110,7 @@ func helmChart(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Pr
 			FetchArgs: helmv3.FetchArgs{
 				Repo: pulumi.String(vars.HelmChartRepoUrl),
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, chartOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create helm chart")
 	}

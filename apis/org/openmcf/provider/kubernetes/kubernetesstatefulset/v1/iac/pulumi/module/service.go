@@ -12,7 +12,7 @@ import (
 // Headless services are required for StatefulSets to provide stable network identity.
 // Pod DNS: <pod-name>.<headless-service>.<namespace>.svc.cluster.local
 func headlessService(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) (*kubernetescorev1.Service, error) {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) (*kubernetescorev1.Service, error) {
 
 	portsArray := make(kubernetescorev1.ServicePortArray, 0)
 	for _, p := range locals.KubernetesStatefulSet.Spec.Container.App.Ports {
@@ -41,10 +41,11 @@ func headlessService(ctx *pulumi.Context, locals *Locals,
 		},
 	}
 
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	createdService, err := kubernetescorev1.NewService(ctx,
 		locals.HeadlessServiceName,
 		serviceArgs,
-		pulumi.Provider(kubernetesProvider))
+		opts...)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to add headless service")
 	}
@@ -55,7 +56,7 @@ func headlessService(ctx *pulumi.Context, locals *Locals,
 // clientService creates a ClusterIP service for client access to the StatefulSet.
 // This provides load-balanced access to the pods.
 func clientService(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource, createdStatefulSet *appsv1.StatefulSet) error {
+	kubernetesProvider pulumi.ProviderResource, createdStatefulSet *appsv1.StatefulSet, namespaceDeps []pulumi.ResourceOption) error {
 
 	// If no ports are defined, skip creating the client service
 	if len(locals.KubernetesStatefulSet.Spec.Container.App.Ports) == 0 {
@@ -86,11 +87,14 @@ func clientService(ctx *pulumi.Context, locals *Locals,
 		},
 	}
 
+	clientOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProvider),
+		pulumi.DependsOn([]pulumi.Resource{createdStatefulSet}),
+	}, namespaceDeps...)
 	_, err := kubernetescorev1.NewService(ctx,
 		locals.KubeServiceName,
 		serviceArgs,
-		pulumi.Provider(kubernetesProvider),
-		pulumi.DependsOn([]pulumi.Resource{createdStatefulSet}))
+		clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to add client service")
 	}

@@ -245,8 +245,6 @@ github.com/pulumi/pulumi-auth0/sdk/v3 v3.35.0 h1:lPtwbser0dmvqQ+KZVe+DEmQVw1DH1S
 github.com/pulumi/pulumi-auth0/sdk/v3 v3.35.0/go.mod h1:UavgZ3Yd7jskoh1Uy7SeKwYqsag8JN6I3ld4sGYeQws=
 github.com/pulumi/pulumi-aws-native/sdk v1.14.0 h1:4REFro0ak20+jO++hgBBkQcjEUuFcaAAEaliqLBo0g0=
 github.com/pulumi/pulumi-aws-native/sdk v1.14.0/go.mod h1:Ol8812Sy9/cBb4gbfspau/cg7ezFJ6kzjTn6I/Ahcvk=
-github.com/pulumi/pulumi-aws/sdk/v6 v6.83.2 h1:KrV04/k8+PRfkX/90pLm/jug6tfc9YeQH1JOjJmz4GE=
-github.com/pulumi/pulumi-aws/sdk/v6 v6.83.2/go.mod h1:520DDoW2zBYVWwwAT8qt/9VhNoBcDIslDljzE8/O080=
 github.com/pulumi/pulumi-aws/sdk/v7 v7.3.0 h1:gPA0pBbQsbqegOrEEndz+6px8VhOdiB+sfJySztTjrU=
 github.com/pulumi/pulumi-aws/sdk/v7 v7.3.0/go.mod h1:od9x4x3RWuqTpd4MQ7temdMT3MWr3kR4c78JSenxxPc=
 github.com/pulumi/pulumi-azure-native-sdk/compute/v3 v3.12.1 h1:o/jVb+Ze4+AFg0mJ9m6Ld1zkATI73Yw0+tqBouZEjzI=

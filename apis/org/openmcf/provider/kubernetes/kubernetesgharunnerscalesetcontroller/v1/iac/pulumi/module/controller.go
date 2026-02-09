@@ -3,37 +3,23 @@ package module
 import (
 	"github.com/pkg/errors"
 	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes"
-	corev1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/core/v1"
 	helmv3 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/helm/v3"
-	metav1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/meta/v1"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 // ghaRunnerScaleSetController deploys the GitHub Actions Runner Scale Set Controller
 // using the official Helm chart.
-func ghaRunnerScaleSetController(ctx *pulumi.Context, locals *Locals, k8sProvider *kubernetes.Provider) error {
-	var dependencies []pulumi.Resource
-
-	// Create namespace if requested
-	if locals.CreateNamespace {
-		ns, err := corev1.NewNamespace(ctx, locals.Namespace, &corev1.NamespaceArgs{
-			Metadata: &metav1.ObjectMetaArgs{
-				Name:   pulumi.String(locals.Namespace),
-				Labels: pulumi.ToStringMap(locals.KubeLabels),
-			},
-		}, pulumi.Provider(k8sProvider))
-		if err != nil {
-			return errors.Wrap(err, "create namespace")
-		}
-		dependencies = append(dependencies, ns)
-	}
-
+func ghaRunnerScaleSetController(ctx *pulumi.Context, locals *Locals, k8sProvider *kubernetes.Provider, namespaceDeps []pulumi.ResourceOption) error {
 	// Build Helm values
 	helmValues := buildHelmValues(locals)
 
 	// Deploy Helm chart
 	// For OCI charts, the full URL must be passed as the Chart parameter
 	// (RepositoryOpts.Repo doesn't work with OCI registries in Pulumi)
+	helmOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(k8sProvider),
+	}, namespaceDeps...)
+
 	_, err := helmv3.NewRelease(ctx, locals.ReleaseName, &helmv3.ReleaseArgs{
 		Name:            pulumi.String(locals.ReleaseName),
 		Namespace:       pulumi.String(locals.Namespace),
@@ -41,7 +27,7 @@ func ghaRunnerScaleSetController(ctx *pulumi.Context, locals *Locals, k8sProvide
 		Chart:           pulumi.String(vars.HelmChartOCI),
 		Version:         pulumi.String(locals.ChartVersion),
 		Values:          helmValues,
-	}, pulumi.Provider(k8sProvider), pulumi.DependsOn(dependencies))
+	}, helmOpts...)
 	if err != nil {
 		return errors.Wrap(err, "deploy helm release")
 	}

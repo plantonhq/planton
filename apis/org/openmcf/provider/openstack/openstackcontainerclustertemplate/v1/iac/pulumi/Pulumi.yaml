@@ -1,0 +1,3 @@
+name: openstack-container-cluster-template
+runtime: go
+description: Pulumi module for OpenStackContainerClusterTemplate

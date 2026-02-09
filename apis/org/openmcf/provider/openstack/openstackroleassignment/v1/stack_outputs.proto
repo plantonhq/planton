@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackroleassignment.v1;
+
+// OpenStackRoleAssignmentStackOutputs captures the observable outputs after
+// provisioning an OpenStack Identity role assignment.
+message OpenStackRoleAssignmentStackOutputs {
+  // id is the composite identifier of the role assignment.
+  // Terraform generates this as a combination of role_id/scope_id/principal_id.
+  string id = 1;
+
+  // role_id is the UUID of the assigned role.
+  string role_id = 2;
+
+  // project_id is the project scope (if project-scoped assignment).
+  string project_id = 3;
+
+  // domain_id is the domain scope (if domain-scoped assignment).
+  string domain_id = 4;
+
+  // user_id is the user principal (if user assignment).
+  string user_id = 5;
+
+  // group_id is the group principal (if group assignment).
+  string group_id = 6;
+
+  // region is the OpenStack region where the assignment was created.
+  string region = 7;
+}

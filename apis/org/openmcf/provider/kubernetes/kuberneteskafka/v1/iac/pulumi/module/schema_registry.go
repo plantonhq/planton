@@ -16,12 +16,13 @@ import (
 )
 
 func schemaRegistry(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource,
-	createdKafkaCluster *v1beta2.Kafka) error {
+	createdKafkaCluster *v1beta2.Kafka, namespaceDeps []pulumi.ResourceOption) error {
 
 	labels := locals.Labels
 	labels["app"] = locals.SchemaRegistryDeploymentName
 
 	//create schema-registry deployment
+	deployOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err := appsv1.NewDeployment(ctx,
 		locals.SchemaRegistryDeploymentName,
 		&appsv1.DeploymentArgs{
@@ -113,9 +114,10 @@ func schemaRegistry(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulu
 				},
 			},
 		},
-		pulumi.Provider(kubernetesProvider))
+		deployOpts...)
 
 	//create kubernetes service
+	svcOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	createdService, err := kubernetescorev1.NewService(ctx,
 		locals.SchemaRegistryDeploymentName,
 		&kubernetescorev1.ServiceArgs{
@@ -137,7 +139,7 @@ func schemaRegistry(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulu
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, svcOpts...)
 	if err != nil {
 		return errors.Wrapf(err, "failed to add schema registry service")
 	}

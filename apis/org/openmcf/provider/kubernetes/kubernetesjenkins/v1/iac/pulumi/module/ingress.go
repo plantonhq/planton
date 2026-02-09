@@ -10,8 +10,13 @@ import (
 
 func ingress(ctx *pulumi.Context,
 	locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource,
+	namespaceDeps []pulumi.ResourceOption) error {
 	// Create certificate
+	certOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProvider),
+	}, namespaceDeps...)
+
 	createdCertificate, err := certmanagerv1.NewCertificate(ctx,
 		locals.IngressCertificateName,
 		&certmanagerv1.CertificateArgs{
@@ -28,7 +33,7 @@ func ingress(ctx *pulumi.Context,
 					Name: pulumi.String(locals.IngressCertClusterIssuerName),
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, certOpts...)
 	if err != nil {
 		return errors.Wrap(err, "error creating certificate")
 	}
@@ -83,12 +88,19 @@ func ingress(ctx *pulumi.Context,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{createdCertificate}))
+		}, append([]pulumi.ResourceOption{
+			pulumi.Provider(kubernetesProvider),
+			pulumi.DependsOn([]pulumi.Resource{createdCertificate}),
+		}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating gateway")
 	}
 
 	//create http-route for setting up https-redirect for external-hostname
+	redirectOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProvider),
+	}, namespaceDeps...)
+
 	_, err = gatewayv1.NewHTTPRoute(ctx,
 		locals.HttpRedirectRouteName,
 		&gatewayv1.HTTPRouteArgs{
@@ -120,9 +132,13 @@ func ingress(ctx *pulumi.Context,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, redirectOpts...)
 
 	// Create HTTP route for external hostname for https listener
+	httpsOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProvider),
+	}, namespaceDeps...)
+
 	_, err = gatewayv1.NewHTTPRoute(ctx,
 		locals.HttpsRouteName,
 		&gatewayv1.HTTPRouteArgs{
@@ -160,7 +176,7 @@ func ingress(ctx *pulumi.Context,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, httpsOpts...)
 
 	if err != nil {
 		return errors.Wrap(err, "error creating HTTP route")

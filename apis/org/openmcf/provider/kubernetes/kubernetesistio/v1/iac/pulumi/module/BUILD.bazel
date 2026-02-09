@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "locals.go",
         "main.go",
+        "namespace.go",
         "outputs.go",
         "vars.go",
     ],

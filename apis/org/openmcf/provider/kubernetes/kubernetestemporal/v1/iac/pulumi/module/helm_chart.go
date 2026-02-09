@@ -42,7 +42,7 @@ func buildResourcesMap(resources *kubernetes.ContainerResources) pulumi.Map {
 }
 
 func helmChart(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
 	values := pulumi.Map{
 		"fullnameOverride": pulumi.String(locals.KubernetesTemporal.Metadata.Name),
@@ -365,6 +365,8 @@ func helmChart(ctx *pulumi.Context, locals *Locals,
 	}
 
 	// ------------------------------------------------------- install chart
+	chartOpts := []pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}
+	chartOpts = append(chartOpts, namespaceDeps...)
 	_, err := helmv3.NewChart(ctx,
 		locals.KubernetesTemporal.Metadata.Name,
 		helmv3.ChartArgs{
@@ -375,7 +377,7 @@ func helmChart(ctx *pulumi.Context, locals *Locals,
 			FetchArgs: helmv3.FetchArgs{
 				Repo: pulumi.String(vars.HelmChartRepoUrl),
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, chartOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create temporal helm chart")
 	}

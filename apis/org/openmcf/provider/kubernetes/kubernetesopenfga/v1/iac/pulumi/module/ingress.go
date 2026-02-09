@@ -9,7 +9,7 @@ import (
 )
 
 // ingress creates Istio Gateway and HTTPRoute resources for external access when ingress is enabled.
-func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource) error {
+func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 	// Create certificate
 	// Uses computed name from locals to avoid conflicts when multiple instances share a namespace
 	createdCertificate, err := certmanagerv1.NewCertificate(ctx,
@@ -31,7 +31,7 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Prov
 					Name: pulumi.String(locals.IngressCertClusterIssuerName),
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating certificate")
 	}
@@ -90,7 +90,7 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Prov
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{createdCertificate}))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{createdCertificate})}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating gateway")
 	}
@@ -131,7 +131,7 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Prov
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating HTTP redirect route")
 	}
@@ -178,7 +178,7 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Prov
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating HTTPS route")
 	}

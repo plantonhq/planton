@@ -8,7 +8,7 @@ import (
 )
 
 func harbor(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
 	// https://github.com/goharbor/harbor-helm/blob/main/values.yaml
 	helmValues := pulumi.Map{
@@ -271,6 +271,8 @@ func harbor(ctx *pulumi.Context, locals *Locals,
 		}
 	}
 
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
+
 	// Deploy Harbor using Helm chart
 	_, err := helmv3.NewRelease(ctx,
 		locals.KubernetesHarbor.Metadata.Name,
@@ -283,7 +285,7 @@ func harbor(ctx *pulumi.Context, locals *Locals,
 			},
 			Values: helmValues,
 		},
-		pulumi.Provider(kubernetesProvider),
+		opts...,
 	)
 
 	return err
