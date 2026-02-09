@@ -248,6 +248,8 @@ const (
 	CloudResourceKind_OpenStackNetworkPort         CloudResourceKind = 2507
 	CloudResourceKind_OpenStackSecurityGroupRule   CloudResourceKind = 2525
 	CloudResourceKind_OpenStackFloatingIpAssociate CloudResourceKind = 2526
+	CloudResourceKind_OpenStackInstance            CloudResourceKind = 2508
+	CloudResourceKind_OpenStackServerGroup         CloudResourceKind = 2509
 )
 
 // Enum value maps for CloudResourceKind.
@@ -414,6 +416,8 @@ var (
 		2507: "OpenStackNetworkPort",
 		2525: "OpenStackSecurityGroupRule",
 		2526: "OpenStackFloatingIpAssociate",
+		2508: "OpenStackInstance",
+		2509: "OpenStackServerGroup",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
@@ -577,6 +581,8 @@ var (
 		"OpenStackNetworkPort":                  2507,
 		"OpenStackSecurityGroupRule":            2525,
 		"OpenStackFloatingIpAssociate":          2526,
+		"OpenStackInstance":                     2508,
+		"OpenStackServerGroup":                  2509,
 	}
 )
 
@@ -721,7 +727,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xb95\n" +
+	"\x02v1\x10\x01*\x906\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -914,7 +920,9 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x14OpenStackNetworkPort\x10\xcb\x13\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\x17\x10\x01\"\x04osnp\x120\n" +
 	"\x1aOpenStackSecurityGroupRule\x10\xdd\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05ossgr\x123\n" +
-	"\x1cOpenStackFloatingIpAssociate\x10\xde\x13\x1a\x10\xa2\xf7\x04\f\b\x17\x10\x01\"\x06osfipa:|\n" +
+	"\x1cOpenStackFloatingIpAssociate\x10\xde\x13\x1a\x10\xa2\xf7\x04\f\b\x17\x10\x01\"\x06osfipa\x12(\n" +
+	"\x11OpenStackInstance\x10\xcc\x13\x1a\x10\xa2\xf7\x04\f\b\x17\x10\x01\"\x06osinst\x12+\n" +
+	"\x14OpenStackServerGroup\x10\xcd\x13\x1a\x10\xa2\xf7\x04\f\b\x17\x10\x01\"\x06ossgrp:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

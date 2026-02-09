@@ -863,4 +863,14 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "osfipa"
   }];
+  OpenStackInstance = 2508 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osinst"
+  }];
+  OpenStackServerGroup = 2509 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "ossgrp"
+  }];
 }
