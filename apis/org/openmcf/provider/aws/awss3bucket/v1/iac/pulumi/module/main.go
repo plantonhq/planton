@@ -5,13 +5,36 @@ import (
 
 	"github.com/pkg/errors"
 	awss3bucketv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awss3bucket/v1"
-	"github.com/pulumi/pulumi-aws/sdk/v6/go/aws/s3"
+	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws"
+	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws/s3"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func Resources(ctx *pulumi.Context, stackInput *awss3bucketv1.AwsS3BucketStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
 	spec := locals.AwsS3Bucket.Spec
+
+	// Create explicit AWS provider from stack input credentials
+	var provider *aws.Provider
+	var err error
+	awsProviderConfig := stackInput.ProviderConfig
+
+	if awsProviderConfig == nil {
+		provider, err = aws.NewProvider(ctx, "classic-provider", &aws.ProviderArgs{})
+		if err != nil {
+			return errors.Wrap(err, "failed to create default AWS provider")
+		}
+	} else {
+		provider, err = aws.NewProvider(ctx, "classic-provider", &aws.ProviderArgs{
+			AccessKey: pulumi.String(awsProviderConfig.AccessKeyId),
+			SecretKey: pulumi.String(awsProviderConfig.SecretAccessKey),
+			Region:    pulumi.String(awsProviderConfig.GetRegion()),
+			Token:     pulumi.StringPtr(awsProviderConfig.SessionToken),
+		})
+		if err != nil {
+			return errors.Wrap(err, "failed to create AWS provider with custom credentials")
+		}
+	}
 
 	// Prepare tags by merging labels and user-provided tags
 	tags := pulumi.StringMap{}
@@ -27,7 +50,7 @@ func Resources(ctx *pulumi.Context, stackInput *awss3bucketv1.AwsS3BucketStackIn
 		Bucket:       pulumi.String(locals.AwsS3Bucket.Metadata.Name),
 		ForceDestroy: pulumi.Bool(spec.ForceDestroy),
 		Tags:         tags,
-	})
+	}, pulumi.Provider(provider))
 	if err != nil {
 		return errors.Wrap(err, "failed to create S3 bucket")
 	}
@@ -39,7 +62,7 @@ func Resources(ctx *pulumi.Context, stackInput *awss3bucketv1.AwsS3BucketStackIn
 			VersioningConfiguration: &s3.BucketVersioningV2VersioningConfigurationArgs{
 				Status: pulumi.String("Enabled"),
 			},
-		})
+		}, pulumi.Provider(provider))
 		if err != nil {
 			return errors.Wrap(err, "failed to enable bucket versioning")
 		}
@@ -79,7 +102,7 @@ func Resources(ctx *pulumi.Context, stackInput *awss3bucketv1.AwsS3BucketStackIn
 		Rules: s3.BucketServerSideEncryptionConfigurationV2RuleArray{
 			serverSideEncryptionRule,
 		},
-	})
+	}, pulumi.Provider(provider))
 	if err != nil {
 		return errors.Wrap(err, "failed to configure bucket encryption")
 	}
@@ -91,7 +114,7 @@ func Resources(ctx *pulumi.Context, stackInput *awss3bucketv1.AwsS3BucketStackIn
 		BlockPublicPolicy:     pulumi.Bool(!spec.IsPublic),
 		IgnorePublicAcls:      pulumi.Bool(!spec.IsPublic),
 		RestrictPublicBuckets: pulumi.Bool(!spec.IsPublic),
-	})
+	}, pulumi.Provider(provider))
 	if err != nil {
 		return errors.Wrap(err, "failed to configure public access block")
 	}
@@ -102,7 +125,7 @@ func Resources(ctx *pulumi.Context, stackInput *awss3bucketv1.AwsS3BucketStackIn
 		Rule: &s3.BucketOwnershipControlsRuleArgs{
 			ObjectOwnership: pulumi.String("BucketOwnerEnforced"),
 		},
-	})
+	}, pulumi.Provider(provider))
 	if err != nil {
 		return errors.Wrap(err, "failed to configure ownership controls")
 	}
@@ -173,7 +196,7 @@ func Resources(ctx *pulumi.Context, stackInput *awss3bucketv1.AwsS3BucketStackIn
 		_, err = s3.NewBucketLifecycleConfigurationV2(ctx, "lifecycle", &s3.BucketLifecycleConfigurationV2Args{
 			Bucket: bucket.ID(),
 			Rules:  lifecycleRules,
-		})
+		}, pulumi.Provider(provider))
 		if err != nil {
 			return errors.Wrap(err, "failed to configure lifecycle rules")
 		}
@@ -197,7 +220,7 @@ func Resources(ctx *pulumi.Context, stackInput *awss3bucketv1.AwsS3BucketStackIn
 			Bucket:       bucket.ID(),
 			TargetBucket: pulumi.String(spec.Logging.TargetBucket),
 			TargetPrefix: pulumi.String(spec.Logging.TargetPrefix),
-		})
+		}, pulumi.Provider(provider))
 		if err != nil {
 			return errors.Wrap(err, "failed to configure logging")
 		}
@@ -252,7 +275,7 @@ func Resources(ctx *pulumi.Context, stackInput *awss3bucketv1.AwsS3BucketStackIn
 		_, err = s3.NewBucketCorsConfigurationV2(ctx, "cors", &s3.BucketCorsConfigurationV2Args{
 			Bucket:    bucket.ID(),
 			CorsRules: corsRules,
-		})
+		}, pulumi.Provider(provider))
 		if err != nil {
 			return errors.Wrap(err, "failed to configure CORS")
 		}

@@ -71,7 +71,7 @@ The AWS AWS S3 Bucket Pulumi Module provides a standardized and efficient way to
 
 - **Region Specification**: Enables deployment of the S3 bucket in any valid AWS region by specifying the `awsRegion` field, offering flexibility in geographical placement.
 
-- **Credential Management**: Securely handles AWS credentials via the `awsProviderConfigId` field, ensuring authenticated and authorized resource deployments without exposing sensitive information.
+- **Credential Management**: Securely handles AWS credentials via the `provider_config` in the stack input, creating an explicit Pulumi AWS provider with the supplied access key, secret key, region, and optional session token.
 
 - **Status Reporting**: Captures and stores outputs such as the bucket ID in `status.outputs`. This facilitates easy reference and integration with other systems or automation tools.
 
@@ -83,7 +83,7 @@ The module operates by accepting an AWS AWS S3 Bucket API resource definition as
 
 - **Pulumi Module**: Written in Go, the module reads the API resource and uses Pulumi's AWS SDK to provision S3 resources based on the provided specifications. It abstracts the complexity of resource creation, update, and deletion.
 
-- **AWS Provider Initialization**: The module initializes the AWS provider within Pulumi using the credentials specified by `awsProviderConfigId`. This ensures that all AWS resource operations are authenticated and authorized.
+- **AWS Provider Initialization**: The module creates an explicit AWS provider within Pulumi using the credentials from `provider_config` in the stack input (AccessKeyId, SecretAccessKey, Region, SessionToken). This ensures that all AWS resource operations are authenticated, authorized, and targeted at the correct region.
 
 - **Resource Creation**: Provisions the S3 bucket as defined in the `spec`, applying configurations such as public access settings and regional placement.
 
