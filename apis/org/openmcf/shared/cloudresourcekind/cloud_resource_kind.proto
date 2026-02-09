@@ -843,6 +843,16 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "ossg"
   }];
+  OpenStackFloatingIp = 2506 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osfip"
+  }];
+  OpenStackNetworkPort = 2507 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osnp"
+  }];
   OpenStackSecurityGroupRule = 2525 [(kind_meta) = {
     provider: openstack
     version: v1
