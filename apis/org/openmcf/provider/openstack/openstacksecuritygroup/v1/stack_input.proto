@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstacksecuritygroup.v1;
+
+import "org/openmcf/provider/openstack/openstacksecuritygroup/v1/api.proto";
+import "org/openmcf/provider/openstack/provider.proto";
+
+// OpenStackSecurityGroupStackInput is the input to the IaC module.
+// It contains the target resource and provider configuration.
+message OpenStackSecurityGroupStackInput {
+  // target cloud-resource to be deployed
+  OpenStackSecurityGroup target = 1;
+  // provider-config for OpenStack authentication
+  org.openmcf.provider.openstack.OpenStackProviderConfig provider_config = 2;
+}

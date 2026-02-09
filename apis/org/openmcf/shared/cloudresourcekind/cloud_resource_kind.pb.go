@@ -243,6 +243,7 @@ const (
 	CloudResourceKind_OpenStackSubnet          CloudResourceKind = 2502
 	CloudResourceKind_OpenStackRouter          CloudResourceKind = 2503
 	CloudResourceKind_OpenStackRouterInterface CloudResourceKind = 2504
+	CloudResourceKind_OpenStackSecurityGroup   CloudResourceKind = 2505
 )
 
 // Enum value maps for CloudResourceKind.
@@ -404,6 +405,7 @@ var (
 		2502: "OpenStackSubnet",
 		2503: "OpenStackRouter",
 		2504: "OpenStackRouterInterface",
+		2505: "OpenStackSecurityGroup",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
@@ -562,6 +564,7 @@ var (
 		"OpenStackSubnet":                       2502,
 		"OpenStackRouter":                       2503,
 		"OpenStackRouterInterface":              2504,
+		"OpenStackSecurityGroup":                2505,
 	}
 )
 
@@ -706,7 +709,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xcf3\n" +
+	"\x02v1\x10\x01*\xfc3\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -892,7 +895,9 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fOpenStackSubnet\x10\xc6\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05ossub\x12%\n" +
 	"\x0fOpenStackRouter\x10\xc7\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05osrtr\x12-\n" +
 	"\x18OpenStackRouterInterface\x10\xc8\x13\x1a\x0e\xa2\xf7\x04\n" +
-	"\b\x17\x10\x01\"\x04osri:|\n" +
+	"\b\x17\x10\x01\"\x04osri\x12+\n" +
+	"\x16OpenStackSecurityGroup\x10\xc9\x13\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x17\x10\x01\"\x04ossg:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 
