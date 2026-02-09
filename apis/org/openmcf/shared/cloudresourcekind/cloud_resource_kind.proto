@@ -843,4 +843,9 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "ossg"
   }];
+  OpenStackSecurityGroupRule = 2525 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "ossgr"
+  }];
 }
