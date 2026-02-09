@@ -858,4 +858,9 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "ossgr"
   }];
+  OpenStackFloatingIpAssociate = 2526 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osfipa"
+  }];
 }

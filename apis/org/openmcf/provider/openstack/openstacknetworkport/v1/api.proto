@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstacknetworkport.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/openstack/openstacknetworkport/v1/spec.proto";
+import "org/openmcf/provider/openstack/openstacknetworkport/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OpenStackNetworkPort is a Kubernetes Resource Model (KRM) style resource
+// for managing OpenStack Neutron ports.
+//
+// A port provides stable network identity (MAC address, fixed IPs, security
+// groups) on a Neutron network. Explicit ports are preferred over instance-inline
+// networking when you need:
+//   - Stable IP addresses that survive instance rebuilds
+//   - Pre-provisioned network identities for orchestration (InfraCharts)
+//   - Multiple security groups per network attachment
+//   - Specific MAC addresses for licensing or bonding
+//
+// Use this component for:
+//   - Creating network interfaces before launching instances
+//   - Wiring floating IPs to specific network endpoints
+//   - Managing security group assignments independently of instances
+//
+// Downstream consumers:
+//   - OpenStackFloatingIp.spec.port_id (built-in association)
+//   - OpenStackFloatingIpAssociate.spec.port_id (DAG-visible association)
+//   - OpenStackInstance.spec.networks[].port (future)
+message OpenStackNetworkPort {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'openstack.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OpenStackNetworkPort'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OpenStackNetworkPortSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OpenStackNetworkPortStatus status = 5;
+}
+
+// OpenStackNetworkPortStatus represents the observed state of an
+// OpenStack Neutron port.
+message OpenStackNetworkPortStatus {
+  // stack-outputs from the IaC deployment
+  OpenStackNetworkPortStackOutputs outputs = 1;
+}
