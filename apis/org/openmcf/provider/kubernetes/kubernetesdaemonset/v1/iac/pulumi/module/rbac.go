@@ -10,7 +10,7 @@ import (
 
 // rbac creates RBAC resources (ClusterRole, ClusterRoleBinding, Role, RoleBinding)
 // based on the spec.rbac configuration.
-func rbac(ctx *pulumi.Context, locals *Locals, serviceAccountName string, kubernetesProvider pulumi.ProviderResource) error {
+func rbac(ctx *pulumi.Context, locals *Locals, serviceAccountName string, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 	spec := locals.KubernetesDaemonSet.Spec
 
 	// Skip if no RBAC configuration or no service account
@@ -26,6 +26,7 @@ func rbac(ctx *pulumi.Context, locals *Locals, serviceAccountName string, kubern
 		clusterRules := buildPolicyRules(spec.Rbac.ClusterRules)
 
 		// Create ClusterRole
+		crOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 		clusterRole, err := kubernetesrbacv1.NewClusterRole(ctx,
 			resourceName,
 			&kubernetesrbacv1.ClusterRoleArgs{
@@ -35,13 +36,14 @@ func rbac(ctx *pulumi.Context, locals *Locals, serviceAccountName string, kubern
 				},
 				Rules: clusterRules,
 			},
-			pulumi.Provider(kubernetesProvider),
+			crOpts...,
 		)
 		if err != nil {
 			return errors.Wrap(err, "failed to create cluster role")
 		}
 
 		// Create ClusterRoleBinding
+		crbOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 		_, err = kubernetesrbacv1.NewClusterRoleBinding(ctx,
 			resourceName,
 			&kubernetesrbacv1.ClusterRoleBindingArgs{
@@ -62,7 +64,7 @@ func rbac(ctx *pulumi.Context, locals *Locals, serviceAccountName string, kubern
 					ApiGroup: pulumi.String("rbac.authorization.k8s.io"),
 				},
 			},
-			pulumi.Provider(kubernetesProvider),
+			crbOpts...,
 		)
 		if err != nil {
 			return errors.Wrap(err, "failed to create cluster role binding")
@@ -75,6 +77,7 @@ func rbac(ctx *pulumi.Context, locals *Locals, serviceAccountName string, kubern
 		namespaceRules := buildPolicyRules(spec.Rbac.NamespaceRules)
 
 		// Create Role
+		roleOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 		role, err := kubernetesrbacv1.NewRole(ctx,
 			resourceName,
 			&kubernetesrbacv1.RoleArgs{
@@ -85,13 +88,14 @@ func rbac(ctx *pulumi.Context, locals *Locals, serviceAccountName string, kubern
 				},
 				Rules: namespaceRules,
 			},
-			pulumi.Provider(kubernetesProvider),
+			roleOpts...,
 		)
 		if err != nil {
 			return errors.Wrap(err, "failed to create role")
 		}
 
 		// Create RoleBinding
+		rbOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 		_, err = kubernetesrbacv1.NewRoleBinding(ctx,
 			resourceName,
 			&kubernetesrbacv1.RoleBindingArgs{
@@ -113,7 +117,7 @@ func rbac(ctx *pulumi.Context, locals *Locals, serviceAccountName string, kubern
 					ApiGroup: pulumi.String("rbac.authorization.k8s.io"),
 				},
 			},
-			pulumi.Provider(kubernetesProvider),
+			rbOpts...,
 		)
 		if err != nil {
 			return errors.Wrap(err, "failed to create role binding")

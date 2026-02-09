@@ -17,6 +17,7 @@ func mongodb(
 	locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
 	createdSecret *kubernetescorev1.Secret,
+	namespaceDeps []pulumi.ResourceOption,
 ) error {
 	spec := locals.KubernetesMongodb.Spec
 
@@ -27,6 +28,7 @@ func mongodb(
 	}
 
 	// Build the PerconaServerMongoDB CRD
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err := psmdbv1.NewPerconaServerMongoDB(ctx,
 		locals.KubernetesMongodb.Metadata.Name,
 		&psmdbv1.PerconaServerMongoDBArgs{
@@ -45,7 +47,7 @@ func mongodb(
 					ReplsetSize: pulumi.Bool(true),
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider),
+		}, opts...,
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to create PerconaServerMongoDB")

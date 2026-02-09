@@ -25,6 +25,7 @@ resource "kubernetes_service" "this" {
   }
 
   depends_on = [
+    kubernetes_namespace.this,
     kubernetes_deployment.this
   ]
 }

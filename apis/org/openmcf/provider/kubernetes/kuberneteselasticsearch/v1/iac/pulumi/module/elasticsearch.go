@@ -11,7 +11,8 @@ import (
 
 func elasticsearch(ctx *pulumi.Context,
 	locals *Locals,
-	kubernetesProvider *kubernetes.Provider) error {
+	kubernetesProvider *kubernetes.Provider,
+	namespaceDeps []pulumi.ResourceOption) error {
 
 	var volumeClaimTemplates = &elasticsearchv1.ElasticsearchSpecNodeSetsVolumeClaimTemplatesArray{}
 	if locals.KubernetesElasticsearch.Spec.Elasticsearch.Container.PersistenceEnabled {
@@ -88,7 +89,7 @@ func elasticsearch(ctx *pulumi.Context,
 				},
 			},
 		},
-	}, pulumi.Provider(kubernetesProvider))
+	}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrapf(err, "failed to create elastic search")
 	}
@@ -137,7 +138,7 @@ func elasticsearch(ctx *pulumi.Context,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{createdElasticSearch}))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{createdElasticSearch})}, namespaceDeps...)...)
 		if err != nil {
 			return errors.Wrapf(err, "failed to create kibana instance for the elastic search instance")
 		}

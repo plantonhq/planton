@@ -8,7 +8,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// createOrGetNamespace conditionally creates a Kubernetes namespace or returns the name of an existing one
+// createOrGetNamespace conditionally creates a Kubernetes namespace or returns nil
 // based on the create_namespace flag in the spec.
 //
 // When create_namespace is true:
@@ -16,7 +16,7 @@ import (
 //   - All ClickHouse resources will be created within this namespace
 //
 // When create_namespace is false:
-//   - Returns the namespace name from spec without creating it
+//   - Returns nil without creating it
 //   - The namespace must exist before deployment
 //   - Resources will be deployed into the existing namespace
 func createOrGetNamespace(
@@ -24,10 +24,10 @@ func createOrGetNamespace(
 	locals *Locals,
 	spec *kubernetesclickhousev1.KubernetesClickHouseSpec,
 	kubernetesProvider pulumi.ProviderResource,
-) (pulumi.StringInput, error) {
+) (*kubernetescorev1.Namespace, error) {
 	// If create_namespace is false, use the existing namespace
 	if !spec.CreateNamespace {
-		return pulumi.String(locals.Namespace), nil
+		return nil, nil
 	}
 
 	// Create a new namespace
@@ -45,5 +45,5 @@ func createOrGetNamespace(
 		return nil, errors.Wrapf(err, "failed to create %s namespace", locals.Namespace)
 	}
 
-	return createdNamespace.Metadata.Name().Elem(), nil
+	return createdNamespace, nil
 }

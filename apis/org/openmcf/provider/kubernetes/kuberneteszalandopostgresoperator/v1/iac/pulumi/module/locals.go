@@ -14,6 +14,9 @@ type Locals struct {
 	KubernetesZalandoPostgresOperator *kuberneteszalandopostgresoperatorv1.KubernetesZalandoPostgresOperator
 	KubernetesLabels                  map[string]string
 
+	// Namespace is the Kubernetes namespace to deploy to
+	Namespace string
+
 	// Computed resource names to avoid conflicts when multiple instances share a namespace
 	// Format: {metadata.name}-{purpose}
 	BackupSecretName    string
@@ -40,9 +43,16 @@ func initializeLocals(_ *pulumi.Context, stackInput *kuberneteszalandopostgresop
 		kubeLabels[kuberneteslabelkeys.Environment] = target.Metadata.Env
 	}
 
+	// Get namespace from spec (required field)
+	namespace := target.Spec.Namespace.GetValue()
+	if namespace == "" {
+		namespace = vars.Namespace
+	}
+
 	return &Locals{
 		KubernetesZalandoPostgresOperator: target,
 		KubernetesLabels:                  kubeLabels,
+		Namespace:                         namespace,
 
 		// Computed resource names to avoid conflicts when multiple instances share a namespace
 		// Format: {metadata.name}-{purpose}

@@ -5,6 +5,8 @@ resource "helm_release" "redis" {
   version    = "17.10.1"
   namespace  = local.namespace
 
+  depends_on = [kubernetes_namespace.redis_namespace]
+
   # Convert your entire map into a single YAML string
   values = [
     yamlencode({

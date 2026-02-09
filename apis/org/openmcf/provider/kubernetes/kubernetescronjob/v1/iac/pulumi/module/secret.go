@@ -12,7 +12,7 @@ import (
 // secret creates a "main" Kubernetes Secret containing only secret environment variables
 // that have direct string values (not external secret references).
 // Secrets with external references are handled directly in cron_job.go.
-func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource) error {
+func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 	dataMap := make(map[string]string)
 
 	if locals.KubernetesCronJob.Spec.Env != nil && locals.KubernetesCronJob.Spec.Env.Secrets != nil {
@@ -39,6 +39,7 @@ func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Provi
 		return nil
 	}
 
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err := corev1.NewSecret(ctx,
 		locals.EnvSecretsSecretName,
 		&corev1.SecretArgs{
@@ -50,7 +51,7 @@ func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Provi
 			Type:       pulumi.String("Opaque"),
 			StringData: pulumi.ToStringMap(dataMap),
 		},
-		pulumi.Provider(kubernetesProvider),
+		opts...,
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to create secret resource")

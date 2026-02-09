@@ -13,7 +13,7 @@ import (
 // from KubernetesDaemonSet.Spec.Container.App.Env.Secrets that have direct string values.
 // Secrets that reference external Kubernetes Secrets are NOT included here;
 // they are handled directly in the DaemonSet env var configuration.
-func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource) error {
+func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 	dataMap := make(map[string]string)
 
 	if locals.KubernetesDaemonSet.Spec.Container.App.Env != nil {
@@ -41,6 +41,7 @@ func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Provi
 		return nil
 	}
 
+	secretOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err := corev1.NewSecret(ctx,
 		locals.EnvSecretName,
 		&corev1.SecretArgs{
@@ -52,7 +53,7 @@ func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Provi
 			Type:       pulumi.String("Opaque"),
 			StringData: pulumi.ToStringMap(dataMap),
 		},
-		pulumi.Provider(kubernetesProvider),
+		secretOpts...,
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to create secret resource")

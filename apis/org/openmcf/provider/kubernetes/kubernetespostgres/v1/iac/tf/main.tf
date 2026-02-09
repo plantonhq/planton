@@ -35,6 +35,7 @@ resource "kubernetes_service_v1" "external_lb" {
   }
 
   depends_on = [
-    kubernetes_manifest.database
+    kubernetes_namespace_v1.postgres_namespace,
+    kubernetes_manifest.database,
   ]
 }

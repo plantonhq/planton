@@ -13,7 +13,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func daemonSet(ctx *pulumi.Context, locals *Locals, serviceAccountName string, kubernetesProvider pulumi.ProviderResource) error {
+func daemonSet(ctx *pulumi.Context, locals *Locals, serviceAccountName string, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 	target := locals.KubernetesDaemonSet
 
 	// Build environment variables
@@ -239,6 +239,7 @@ func daemonSet(ctx *pulumi.Context, locals *Locals, serviceAccountName string, k
 	}
 
 	// Create the DaemonSet
+	dsOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err := appsv1.NewDaemonSet(ctx,
 		target.Metadata.Name,
 		&appsv1.DaemonSetArgs{
@@ -249,7 +250,7 @@ func daemonSet(ctx *pulumi.Context, locals *Locals, serviceAccountName string, k
 			},
 			Spec: daemonSetSpec,
 		},
-		pulumi.Provider(kubernetesProvider),
+		dsOpts...,
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to create daemonset")

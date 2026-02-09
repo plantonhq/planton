@@ -9,7 +9,7 @@ import (
 
 // serviceAccount creates a ServiceAccount for the DaemonSet if create_service_account is true.
 // Returns the ServiceAccount name to use (either created or specified).
-func serviceAccount(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource) (string, error) {
+func serviceAccount(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) (string, error) {
 	spec := locals.KubernetesDaemonSet.Spec
 
 	// Determine the service account name
@@ -24,6 +24,7 @@ func serviceAccount(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulu
 	}
 
 	// Create the ServiceAccount
+	saOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err := kubernetescorev1.NewServiceAccount(ctx,
 		saName,
 		&kubernetescorev1.ServiceAccountArgs{
@@ -33,7 +34,7 @@ func serviceAccount(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulu
 				Labels:    pulumi.ToStringMap(locals.Labels),
 			},
 		},
-		pulumi.Provider(kubernetesProvider),
+		saOpts...,
 	)
 	if err != nil {
 		return "", errors.Wrapf(err, "failed to create service account %s", saName)

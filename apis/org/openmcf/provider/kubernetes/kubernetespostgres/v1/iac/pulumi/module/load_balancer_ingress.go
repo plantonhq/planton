@@ -7,9 +7,10 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource) error {
+func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 	//create kubernetes-service of type load-balancer(external)
 	//this load-balancer can be used by postgres clients outside the kubernetes cluster.
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err := kubernetescorev1.NewService(ctx,
 		locals.ExternalLbServiceName,
 		&kubernetescorev1.ServiceArgs{
@@ -33,7 +34,7 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Prov
 				},
 				Selector: pulumi.ToStringMap(vars.PostgresPodSectorLabels),
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, opts...)
 	if err != nil {
 		return errors.Wrapf(err, "failed to create external load balancer service")
 	}

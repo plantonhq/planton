@@ -40,17 +40,14 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetescertmanagerv1.Kubernet
 	chartVersion := spec.GetHelmChartVersion()
 
 	// conditionally create namespace based on spec.CreateNamespace
-	if spec.CreateNamespace {
-		_, err = corev1.NewNamespace(ctx, locals.Namespace,
-			&corev1.NamespaceArgs{
-				Metadata: &metav1.ObjectMetaArgs{
-					Name: pulumi.String(locals.Namespace),
-				},
-			},
-			pulumi.Provider(kubeProvider))
-		if err != nil {
-			return errors.Wrap(err, "failed to create namespace")
-		}
+	createdNamespace, err := namespace(ctx, stackInput, locals, kubeProvider)
+	if err != nil {
+		return errors.Wrap(err, "failed to create namespace")
+	}
+
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
 	}
 
 	// build identity annotation map for ServiceAccount
@@ -71,6 +68,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetescertmanagerv1.Kubernet
 
 	// create a ServiceAccount with the chosen annotations
 	// ServiceAccount name uses metadata.name for uniqueness when multiple instances share a namespace
+	saOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubeProvider)}, namespaceDeps...)
 	_, err = corev1.NewServiceAccount(ctx, locals.ServiceAccountName,
 		&corev1.ServiceAccountArgs{
 			Metadata: &metav1.ObjectMetaArgs{
@@ -79,12 +77,13 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetescertmanagerv1.Kubernet
 				Annotations: annotations,
 			},
 		},
-		pulumi.Provider(kubeProvider))
+		saOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create service account")
 	}
 
 	// deploy cert‑manager helm chart with DNS resolver configuration
+	helmOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubeProvider)}, namespaceDeps...)
 	helmRelease, err := helm.NewRelease(ctx, "cert-manager",
 		&helm.ReleaseArgs{
 			Name:            pulumi.String(vars.HelmChartName),
@@ -112,7 +111,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetescertmanagerv1.Kubernet
 				Repo: pulumi.String(vars.HelmChartRepo),
 			},
 		},
-		pulumi.Provider(kubeProvider))
+		helmOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to install kubernetes-cert-manager helm release")
 	}
@@ -123,6 +122,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetescertmanagerv1.Kubernet
 	for _, dnsProvider := range spec.DnsProviders {
 		if cf := dnsProvider.GetCloudflare(); cf != nil {
 			secretName := locals.CloudflareSecretName(dnsProvider.Name)
+			secretOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubeProvider)}, namespaceDeps...)
 			secret, err := corev1.NewSecret(ctx, secretName,
 				&corev1.SecretArgs{
 					Metadata: &metav1.ObjectMetaArgs{
@@ -133,7 +133,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetescertmanagerv1.Kubernet
 						"api-token": pulumi.String(cf.ApiToken),
 					},
 				},
-				pulumi.Provider(kubeProvider))
+				secretOpts...)
 			if err != nil {
 				return errors.Wrapf(err, "failed to create cloudflare secret for provider %s", dnsProvider.Name)
 			}

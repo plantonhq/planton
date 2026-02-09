@@ -13,29 +13,12 @@ import (
 
 // ghaRunnerScaleSet deploys the GitHub Actions Runner Scale Set
 // using the official Helm chart.
-func ghaRunnerScaleSet(ctx *pulumi.Context, locals *Locals, k8sProvider *kubernetes.Provider) error {
-	var dependencies []pulumi.Resource
-
-	// Create namespace if requested
-	if locals.CreateNamespace {
-		ns, err := corev1.NewNamespace(ctx, locals.Namespace, &corev1.NamespaceArgs{
-			Metadata: &metav1.ObjectMetaArgs{
-				Name:   pulumi.String(locals.Namespace),
-				Labels: pulumi.ToStringMap(locals.KubeLabels),
-			},
-		}, pulumi.Provider(k8sProvider))
-		if err != nil {
-			return errors.Wrap(err, "create namespace")
-		}
-		dependencies = append(dependencies, ns)
-	}
-
+func ghaRunnerScaleSet(ctx *pulumi.Context, locals *Locals, k8sProvider *kubernetes.Provider, namespaceDeps []pulumi.ResourceOption) error {
 	// Create PVCs for persistent volumes
-	pvcResources, err := createPersistentVolumes(ctx, locals, k8sProvider, dependencies)
+	pvcResources, err := createPersistentVolumes(ctx, locals, k8sProvider, namespaceDeps)
 	if err != nil {
 		return errors.Wrap(err, "create persistent volumes")
 	}
-	dependencies = append(dependencies, pvcResources...)
 
 	// Build Helm values
 	helmValues := buildHelmValues(locals)
@@ -43,6 +26,11 @@ func ghaRunnerScaleSet(ctx *pulumi.Context, locals *Locals, k8sProvider *kuberne
 	// Deploy Helm chart
 	// For OCI charts, the full URL must be passed as the Chart parameter
 	// (RepositoryOpts.Repo doesn't work with OCI registries in Pulumi)
+	helmOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(k8sProvider),
+		pulumi.DependsOn(pvcResources),
+	}, namespaceDeps...)
+
 	_, err = helmv3.NewRelease(ctx, locals.ReleaseName, &helmv3.ReleaseArgs{
 		Name:            pulumi.String(locals.ReleaseName),
 		Namespace:       pulumi.String(locals.Namespace),
@@ -50,7 +38,7 @@ func ghaRunnerScaleSet(ctx *pulumi.Context, locals *Locals, k8sProvider *kuberne
 		Chart:           pulumi.String(HelmChartOCI),
 		Version:         pulumi.String(locals.ChartVersion),
 		Values:          helmValues,
-	}, pulumi.Provider(k8sProvider), pulumi.DependsOn(dependencies))
+	}, helmOpts...)
 	if err != nil {
 		return errors.Wrap(err, "deploy helm release")
 	}
@@ -59,7 +47,7 @@ func ghaRunnerScaleSet(ctx *pulumi.Context, locals *Locals, k8sProvider *kuberne
 }
 
 // createPersistentVolumes creates PVCs for persistent storage.
-func createPersistentVolumes(ctx *pulumi.Context, locals *Locals, k8sProvider *kubernetes.Provider, dependencies []pulumi.Resource) ([]pulumi.Resource, error) {
+func createPersistentVolumes(ctx *pulumi.Context, locals *Locals, k8sProvider *kubernetes.Provider, namespaceDeps []pulumi.ResourceOption) ([]pulumi.Resource, error) {
 	var pvcs []pulumi.Resource
 
 	for _, pv := range locals.PersistentVolumes {
@@ -92,8 +80,11 @@ func createPersistentVolumes(ctx *pulumi.Context, locals *Locals, k8sProvider *k
 			Spec: spec,
 		}
 
-		pvc, err := corev1.NewPersistentVolumeClaim(ctx, pvcName, pvcArgs,
-			pulumi.Provider(k8sProvider), pulumi.DependsOn(dependencies))
+		pvcOpts := append([]pulumi.ResourceOption{
+			pulumi.Provider(k8sProvider),
+		}, namespaceDeps...)
+
+		pvc, err := corev1.NewPersistentVolumeClaim(ctx, pvcName, pvcArgs, pvcOpts...)
 		if err != nil {
 			return nil, errors.Wrapf(err, "create PVC %s", pvcName)
 		}

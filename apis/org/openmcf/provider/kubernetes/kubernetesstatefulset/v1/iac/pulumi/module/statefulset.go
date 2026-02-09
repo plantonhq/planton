@@ -15,7 +15,7 @@ import (
 
 func statefulSet(ctx *pulumi.Context, locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
-	headlessService *kubernetescorev1.Service) (*appsv1.StatefulSet, error) {
+	headlessService *kubernetescorev1.Service, namespaceDeps []pulumi.ResourceOption) (*appsv1.StatefulSet, error) {
 
 	target := locals.KubernetesStatefulSet
 
@@ -271,11 +271,14 @@ func statefulSet(ctx *pulumi.Context, locals *Locals,
 		},
 	}
 
+	ssOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProvider),
+		pulumi.DependsOn([]pulumi.Resource{headlessService}),
+	}, namespaceDeps...)
 	createdStatefulSet, err := appsv1.NewStatefulSet(ctx,
 		target.Metadata.Name,
 		statefulSetArgs,
-		pulumi.Provider(kubernetesProvider),
-		pulumi.DependsOn([]pulumi.Resource{headlessService}))
+		ssOpts...)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to add statefulset")
 	}

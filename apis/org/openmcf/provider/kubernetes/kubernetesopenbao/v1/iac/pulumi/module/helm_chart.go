@@ -10,7 +10,7 @@ import (
 
 // helmChart installs the upstream OpenBao Helm chart and tailors it to the spec.
 func helmChart(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
 	target := locals.KubernetesOpenBao
 	spec := target.Spec
@@ -146,6 +146,8 @@ storage "file" {
 	}
 
 	// Install helm chart
+	chartOpts := []pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}
+	chartOpts = append(chartOpts, namespaceDeps...)
 	_, err := helmv3.NewChart(ctx,
 		locals.KubernetesOpenBao.Metadata.Name,
 		helmv3.ChartArgs{
@@ -156,7 +158,7 @@ storage "file" {
 			FetchArgs: helmv3.FetchArgs{
 				Repo: pulumi.String(vars.HelmChartRepoUrl),
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, chartOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create helm chart")
 	}

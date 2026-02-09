@@ -16,7 +16,7 @@ import (
 // mismatch meant the Service had **zero endpoints**, so the LB IP could not reach
 // any pod.  We now align the selector with the chart.
 func ingress(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
 	if locals.KubernetesNats.Spec.Ingress == nil ||
 		!locals.KubernetesNats.Spec.Ingress.Enabled {
@@ -35,6 +35,7 @@ func ingress(ctx *pulumi.Context, locals *Locals,
 		annotations["external-dns.alpha.kubernetes.io/hostname"] = pulumi.String(locals.KubernetesNats.Spec.Ingress.Hostname)
 	}
 
+	lbOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	createdLoadBalancerService, err := kubernetescorev1.NewService(ctx,
 		locals.ExternalLbServiceName,
 		&kubernetescorev1.ServiceArgs{
@@ -56,7 +57,7 @@ func ingress(ctx *pulumi.Context, locals *Locals,
 				},
 				Selector: pulumi.ToStringMap(selector),
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, lbOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create external LoadBalancer ingress")
 	}

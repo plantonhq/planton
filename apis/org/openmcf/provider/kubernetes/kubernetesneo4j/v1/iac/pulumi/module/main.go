@@ -23,13 +23,20 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesneo4jv1.KubernetesNeo4
 	}
 
 	// Conditionally create namespace based on create_namespace flag
-	_, err = namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}
 
+	// Build conditional namespace dependency (Pulumi equivalent of Terraform depends_on).
+	// When create_namespace is false, createdNamespace is nil and namespaceDeps is empty.
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
+	}
+
 	// Install the Neo4j Helm chart, applying user-specified config.
-	if err := helmChart(ctx, locals, kubernetesProvider); err != nil {
+	if err := helmChart(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to deploy neo4j helm chart")
 	}
 

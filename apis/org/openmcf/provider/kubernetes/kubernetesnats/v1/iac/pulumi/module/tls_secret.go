@@ -18,7 +18,7 @@ import (
 // single CN = "<namespace>.svc".  If the user needs full ACME / cert-manager
 // workflow, they can fork the module later.
 func tlsSecret(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
 	if !locals.KubernetesNats.Spec.TlsEnabled {
 		return nil
@@ -56,6 +56,7 @@ func tlsSecret(ctx *pulumi.Context, locals *Locals,
 	}
 
 	// ----------------------- Kubernetes Secret ------------------------------
+	tlsOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err = kubernetescorev1.NewSecret(ctx,
 		"tls-secret",
 		&kubernetescorev1.SecretArgs{
@@ -69,7 +70,7 @@ func tlsSecret(ctx *pulumi.Context, locals *Locals,
 				"tls.key": createdPrivateKey.PrivateKeyPem,
 			},
 			Type: pulumi.String("kubernetes.io/tls"),
-		}, pulumi.Provider(kubernetesProvider))
+		}, tlsOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create TLS secret")
 	}

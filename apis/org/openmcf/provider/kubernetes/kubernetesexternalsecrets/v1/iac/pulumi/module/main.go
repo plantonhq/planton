@@ -27,18 +27,14 @@ func Resources(ctx *pulumi.Context, in *kubernetesexternalsecretsv1.KubernetesEx
 	chartVersion := vars.DefaultStableVersion
 
 	// Conditionally create namespace based on create_namespace flag
-	if spec.CreateNamespace {
-		_, err = corev1.NewNamespace(ctx, locals.Namespace,
-			&corev1.NamespaceArgs{
-				Metadata: &metav1.ObjectMetaArgs{
-					Name:   pulumi.String(locals.Namespace),
-					Labels: pulumi.ToStringMap(locals.Labels),
-				},
-			},
-			pulumi.Provider(kubeProvider))
-		if err != nil {
-			return errors.Wrap(err, "failed to create namespace")
-		}
+	createdNamespace, err := namespace(ctx, in, locals, kubeProvider)
+	if err != nil {
+		return errors.Wrap(err, "failed to create namespace")
+	}
+
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
 	}
 
 	// identity annotations
@@ -57,6 +53,7 @@ func Resources(ctx *pulumi.Context, in *kubernetesexternalsecretsv1.KubernetesEx
 	}
 
 	// service account - using computed name from locals to avoid conflicts
+	saOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubeProvider)}, namespaceDeps...)
 	sa, err := corev1.NewServiceAccount(ctx, locals.ServiceAccountName,
 		&corev1.ServiceAccountArgs{
 			Metadata: &metav1.ObjectMetaArgs{
@@ -66,7 +63,7 @@ func Resources(ctx *pulumi.Context, in *kubernetesexternalsecretsv1.KubernetesEx
 				Labels:      pulumi.ToStringMap(locals.Labels),
 			},
 		},
-		pulumi.Provider(kubeProvider))
+		saOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create service account")
 	}
@@ -104,6 +101,10 @@ func Resources(ctx *pulumi.Context, in *kubernetesexternalsecretsv1.KubernetesEx
 	}
 
 	// helm release - using computed release name from locals to avoid conflicts
+	helmOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubeProvider),
+		pulumi.DependsOn([]pulumi.Resource{sa}),
+	}, namespaceDeps...)
 	_, err = helm.NewRelease(ctx, locals.HelmReleaseName,
 		&helm.ReleaseArgs{
 			Name:            pulumi.String(locals.HelmReleaseName),
@@ -131,8 +132,7 @@ func Resources(ctx *pulumi.Context, in *kubernetesexternalsecretsv1.KubernetesEx
 				Repo: pulumi.String(vars.HelmChartRepo),
 			},
 		},
-		pulumi.Provider(kubeProvider),
-		pulumi.DependsOn([]pulumi.Resource{sa}))
+		helmOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to install external‑secrets helm release")
 	}

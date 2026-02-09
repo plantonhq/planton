@@ -9,8 +9,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider *kubernetes.Provider) error {
+func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider *kubernetes.Provider, namespaceDeps []pulumi.ResourceOption) error {
 	// Create new certificate
+	certOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	addedCertificate, err := certmanagerv1.NewCertificate(ctx,
 		locals.IngressCertificateName,
 		&certmanagerv1.CertificateArgs{
@@ -27,12 +28,13 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider *kubernetes
 					Name: pulumi.String(locals.IngressCertClusterIssuerName),
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, certOpts...)
 	if err != nil {
 		return errors.Wrap(err, "error creating certificate")
 	}
 
 	// Create gateway for ingress from external (outside vpc) clients
+	gwOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{addedCertificate})}, namespaceDeps...)
 	createdExternalGateway, err := gatewayv1.NewGateway(ctx,
 		locals.ExternalGatewayName,
 		&gatewayv1.GatewayArgs{
@@ -82,7 +84,7 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider *kubernetes
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{addedCertificate}))
+		}, gwOpts...)
 	if err != nil {
 		return errors.Wrap(err, "error creating gateway for ingress from external clients")
 	}
@@ -137,7 +139,7 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider *kubernetes
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{addedCertificate}))
+		}, gwOpts...)
 	if err != nil {
 		return errors.Wrap(err, "error creating gateway for ingress from internal clients")
 	}
@@ -150,6 +152,7 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider *kubernetes
 	}
 
 	// Create http-route for setting up https-redirect for external-hostname
+	routeOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	httpExternalRedirectArgs := &gatewayv1.HTTPRouteArgs{
 		Metadata: metav1.ObjectMetaArgs{
 			Name:      pulumi.String(locals.HttpExternalRedirectRouteName),
@@ -183,7 +186,7 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider *kubernetes
 	_, err = gatewayv1.NewHTTPRoute(ctx,
 		locals.HttpExternalRedirectRouteName,
 		httpExternalRedirectArgs,
-		pulumi.Provider(kubernetesProvider))
+		routeOpts...)
 	if err != nil {
 		return errors.Wrap(err, "error creating http-external-redirect route")
 	}
@@ -228,7 +231,7 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider *kubernetes
 	_, err = gatewayv1.NewHTTPRoute(ctx,
 		locals.HttpsExternalRouteName,
 		httpsExternalArgs,
-		pulumi.Provider(kubernetesProvider))
+		routeOpts...)
 	if err != nil {
 		return errors.Wrap(err, "error creating https-external route")
 	}
@@ -267,7 +270,7 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider *kubernetes
 	_, err = gatewayv1.NewHTTPRoute(ctx,
 		locals.HttpInternalRedirectRouteName,
 		httpInternalRedirectArgs,
-		pulumi.Provider(kubernetesProvider))
+		routeOpts...)
 	if err != nil {
 		return errors.Wrap(err, "error creating http-internal-redirect route")
 	}
@@ -312,7 +315,7 @@ func ingress(ctx *pulumi.Context, locals *Locals, kubernetesProvider *kubernetes
 	_, err = gatewayv1.NewHTTPRoute(ctx,
 		locals.HttpsInternalRouteName,
 		httpsInternalArgs,
-		pulumi.Provider(kubernetesProvider))
+		routeOpts...)
 	if err != nil {
 		return errors.Wrap(err, "error creating https-internal route")
 	}

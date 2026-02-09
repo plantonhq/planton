@@ -14,7 +14,7 @@ import (
 )
 
 func deployment(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) (*appsv1.Deployment, error) {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) (*appsv1.Deployment, error) {
 
 	// create service account
 	serviceAccountArgs := &kubernetescorev1.ServiceAccountArgs{
@@ -24,10 +24,11 @@ func deployment(ctx *pulumi.Context, locals *Locals,
 		}),
 	}
 
+	saOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	createdServiceAccount, err := kubernetescorev1.NewServiceAccount(ctx,
 		locals.KubernetesDeployment.Metadata.Name,
 		serviceAccountArgs,
-		pulumi.Provider(kubernetesProvider))
+		saOpts...)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to add service account")
 	}
@@ -180,7 +181,7 @@ func deployment(ctx *pulumi.Context, locals *Locals,
 	}
 
 	// Create image pull secret if configured
-	createdImagePullSecret, err := imagePullSecret(ctx, locals, kubernetesProvider)
+	createdImagePullSecret, err := imagePullSecret(ctx, locals, kubernetesProvider, namespaceDeps)
 	if err != nil {
 		return nil, err
 	}
@@ -224,11 +225,11 @@ func deployment(ctx *pulumi.Context, locals *Locals,
 		//"metadata.managedFields", "status",
 	})
 
+	deployOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider), ignoreChangesOpt}, namespaceDeps...)
 	createdDeployment, err := appsv1.NewDeployment(ctx,
 		locals.KubernetesDeployment.Metadata.Name,
 		deploymentArgs,
-		pulumi.Provider(kubernetesProvider),
-		ignoreChangesOpt)
+		deployOpts...)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to add deployment")
 	}

@@ -11,7 +11,7 @@ import (
 // createSignozUIIngress creates Kubernetes Gateway API resources for SigNoz UI external access
 // This includes Certificate, Gateway, and HTTPRoute resources following the Gateway API standard
 func createSignozUIIngress(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
 	// Skip if ingress is not enabled
 	if locals.KubernetesSignoz.Spec.Ingress == nil ||
@@ -39,7 +39,7 @@ func createSignozUIIngress(ctx *pulumi.Context, locals *Locals,
 					Name: pulumi.String(locals.IngressCertClusterIssuerName),
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating certificate")
 	}
@@ -97,7 +97,7 @@ func createSignozUIIngress(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{addedCertificate}))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{addedCertificate})}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating gateway")
 	}
@@ -135,7 +135,7 @@ func createSignozUIIngress(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating HTTP redirect route for SigNoz UI")
 	}
@@ -180,7 +180,7 @@ func createSignozUIIngress(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating HTTPS route for SigNoz UI")
 	}

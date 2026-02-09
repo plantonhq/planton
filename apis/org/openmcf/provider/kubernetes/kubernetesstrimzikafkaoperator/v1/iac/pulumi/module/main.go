@@ -24,10 +24,27 @@ func Resources(
 		return errors.Wrap(err, "failed to set up Kubernetes provider")
 	}
 
+	// Compute locals
+	l := newLocals(stackInput)
+
+	// ------------------------------ namespace ----------------------------
+	// Conditionally create namespace based on create_namespace flag
+	createdNamespace, err := namespace(ctx, stackInput.Target, l, k8sProvider)
+	if err != nil {
+		return errors.Wrap(err, "failed to create namespace")
+	}
+
+	// Build conditional namespace dependency (Pulumi equivalent of Terraform depends_on).
+	// When create_namespace is false, createdNamespace is nil and namespaceDeps is empty.
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
+	}
+
 	// ------------------------------------------------------------------
 	// Helm install
 	// ------------------------------------------------------------------
-	if err := kafkaOperator(ctx, stackInput.Target, k8sProvider); err != nil {
+	if err := kafkaOperator(ctx, stackInput.Target, l, k8sProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to install Kafka operator resources")
 	}
 

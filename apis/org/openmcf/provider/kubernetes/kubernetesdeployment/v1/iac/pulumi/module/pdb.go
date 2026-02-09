@@ -12,7 +12,7 @@ import (
 // podDisruptionBudget creates a PodDisruptionBudget resource if configured.
 // PodDisruptionBudgets ensure minimum availability during voluntary disruptions like node maintenance.
 func podDisruptionBudget(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
 	// Check if PDB is enabled
 	pdbConfig := locals.KubernetesDeployment.Spec.Availability.PodDisruptionBudget
@@ -47,10 +47,11 @@ func podDisruptionBudget(ctx *pulumi.Context, locals *Locals,
 
 	// Use metadata.name prefix for Pulumi resource ID to avoid state conflicts
 	pdbResourceName := fmt.Sprintf("%s-pdb", locals.KubernetesDeployment.Metadata.Name)
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err := policyv1.NewPodDisruptionBudget(ctx,
 		pdbResourceName,
 		pdbArgs,
-		pulumi.Provider(kubernetesProvider))
+		opts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create pod disruption budget")
 	}

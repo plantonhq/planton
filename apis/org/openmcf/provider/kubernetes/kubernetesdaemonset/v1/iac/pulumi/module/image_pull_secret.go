@@ -9,7 +9,8 @@ import (
 
 // imagePullSecret creates an image pull Secret in the target namespace,
 // using the Docker credentials from locals.ImagePullSecretData.
-func imagePullSecret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource) error {
+func imagePullSecret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err := corev1.NewSecret(ctx,
 		locals.ImagePullSecretName,
 		&corev1.SecretArgs{
@@ -21,7 +22,7 @@ func imagePullSecret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pul
 			Type:       pulumi.String("kubernetes.io/dockerconfigjson"),
 			StringData: pulumi.ToStringMap(locals.ImagePullSecretData),
 		},
-		pulumi.Provider(kubernetesProvider),
+		opts...,
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to create image pull secret")

@@ -29,28 +29,33 @@ func Resources(ctx *pulumi.Context,
 	}
 
 	// Conditionally create namespace based on create_namespace flag
-	_, err = namespace(ctx, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}
 
-	if err := dbPasswordSecret(ctx, locals, kubernetesProvider); err != nil {
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
+	}
+
+	if err := dbPasswordSecret(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to create database password secret")
 	}
 
-	if err := helmChart(ctx, locals, kubernetesProvider); err != nil {
+	if err := helmChart(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to install Temporal Helm chart")
 	}
 
-	if err := frontendIngress(ctx, locals, kubernetesProvider); err != nil {
+	if err := frontendIngress(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to create frontend gRPC ingress")
 	}
 
-	if err := frontendHttpIngress(ctx, locals, kubernetesProvider); err != nil {
+	if err := frontendHttpIngress(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to create frontend HTTP ingress")
 	}
 
-	if err := webUiIngress(ctx, locals, kubernetesProvider); err != nil {
+	if err := webUiIngress(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to create web UI ingress")
 	}
 

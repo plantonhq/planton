@@ -8,7 +8,7 @@ import (
 )
 
 func solrCloud(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) error {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 	//create solr-operator's solrcloud resource
 	_, err := v1beta1.NewSolrCloud(ctx, "solr-cloud",
 		&v1beta1.SolrCloudArgs{
@@ -106,7 +106,7 @@ func solrCloud(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create solr-cloud resource")
 	}

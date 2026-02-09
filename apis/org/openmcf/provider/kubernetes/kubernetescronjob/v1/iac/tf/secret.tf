@@ -27,4 +27,8 @@ resource "kubernetes_secret" "this" {
   # `data` automatically converts each map value into a string,
   # then Kubernetes encodes it as base64 in the final secret.
   data = local.string_value_secrets
+
+  depends_on = [
+    kubernetes_namespace.this
+  ]
 }

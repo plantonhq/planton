@@ -9,7 +9,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource) error {
+func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 	dataMap := make(map[string]string)
 
 	// Add only secrets with direct string values to data map
@@ -49,10 +49,11 @@ func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Provi
 		StringData: pulumi.ToStringMap(dataMap),
 	}
 
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err := kubernetescorev1.NewSecret(ctx,
 		locals.EnvSecretName,
 		secretArgs,
-		pulumi.Provider(kubernetesProvider))
+		opts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create secret resource")
 	}

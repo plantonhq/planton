@@ -8,12 +8,13 @@ import (
 )
 
 func kafkaAdminUser(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource,
-	createdKafkaCluster *v1beta2.Kafka) error {
+	createdKafkaCluster *v1beta2.Kafka, namespaceDeps []pulumi.ResourceOption) error {
 
 	labels := locals.Labels
 	//add the label required to create the admin secret for the target kafka-cluster
 	labels[vars.ClusterLabelKey] = locals.KubernetesKafka.Metadata.Name
 
+	opts := append([]pulumi.ResourceOption{pulumi.Parent(createdKafkaCluster)}, namespaceDeps...)
 	_, err := v1beta2.NewKafkaUser(ctx,
 		"admin-user",
 		&v1beta2.KafkaUserArgs{
@@ -27,7 +28,7 @@ func kafkaAdminUser(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulu
 					Type: pulumi.String("scram-sha-512"),
 				},
 			},
-		}, pulumi.Parent(createdKafkaCluster))
+		}, opts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create kafka admin user")
 	}

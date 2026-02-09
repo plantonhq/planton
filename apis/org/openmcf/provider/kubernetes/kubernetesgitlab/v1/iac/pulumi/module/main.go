@@ -26,9 +26,14 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesgitlabv1.KubernetesGit
 
 	// ------------------------------ namespace ----------------------------
 	// Conditionally create namespace based on create_namespace flag
-	_, err = namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
+	}
+
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
 	}
 
 	// Export namespace for reference
@@ -38,6 +43,8 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesgitlabv1.KubernetesGit
 	// Create a placeholder service for GitLab
 	// Note: In production, this would typically use the official GitLab Helm chart
 	// https://docs.gitlab.com/charts/
+	serviceOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
+
 	service, err := corev1.NewService(ctx,
 		locals.ServiceName,
 		&corev1.ServiceArgs{
@@ -62,7 +69,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesgitlabv1.KubernetesGit
 				}),
 			},
 		},
-		pulumi.Provider(kubernetesProvider))
+		serviceOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create GitLab service")
 	}
@@ -75,6 +82,8 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesgitlabv1.KubernetesGit
 	// ----------------------------- ingress --------------------------------
 	if locals.IngressHostname != "" {
 		serviceName := service.Metadata.Name().Elem()
+		ingressOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
+
 		_, err := networkingv1.NewIngress(ctx,
 			locals.IngressName,
 			&networkingv1.IngressArgs{
@@ -119,7 +128,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesgitlabv1.KubernetesGit
 					},
 				},
 			},
-			pulumi.Provider(kubernetesProvider))
+			ingressOpts...)
 		if err != nil {
 			return errors.Wrap(err, "failed to create ingress")
 		}

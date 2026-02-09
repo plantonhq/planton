@@ -20,9 +20,15 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetespostgresv1.KubernetesP
 	}
 
 	// Conditionally create namespace based on create_namespace flag
-	_, err = namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
+	}
+
+	// Build namespace dependency list so all namespaced resources wait for the namespace
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
 	}
 
 	// Build restore configuration (standby block + STANDBY_* env vars)
@@ -126,10 +132,11 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetespostgresv1.KubernetesP
 		},
 	}
 
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	_, err = zalandov1.NewPostgresql(ctx,
 		"database",
 		postgresqlArgs,
-		pulumi.Provider(kubernetesProvider))
+		opts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create postgresql")
 	}
@@ -141,7 +148,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetespostgresv1.KubernetesP
 		return nil
 	}
 
-	if err := ingress(ctx, locals, kubernetesProvider); err != nil {
+	if err := ingress(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to create ingress")
 	}
 	return nil

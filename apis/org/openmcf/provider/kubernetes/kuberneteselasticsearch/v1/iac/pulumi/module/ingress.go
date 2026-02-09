@@ -11,8 +11,10 @@ import (
 
 func ingress(ctx *pulumi.Context,
 	locals *Locals,
-	kubernetesProvider *kubernetes.Provider) error {
+	kubernetesProvider *kubernetes.Provider,
+	namespaceDeps []pulumi.ResourceOption) error {
 	// Create certificate
+	certOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	createdCertificate, err := certmanagerv1.NewCertificate(ctx,
 		locals.IngressCertificateName,
 		&certmanagerv1.CertificateArgs{
@@ -29,7 +31,7 @@ func ingress(ctx *pulumi.Context,
 					Name: pulumi.String(locals.IngressCertClusterIssuerName),
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, certOpts...)
 	if err != nil {
 		return errors.Wrap(err, "error creating certificate")
 	}
@@ -37,6 +39,7 @@ func ingress(ctx *pulumi.Context,
 	// Elasticsearch ingress resources
 	if locals.ElasticsearchIngressExternalHostname != "" {
 		// Create external gateway
+		esGwOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{createdCertificate})}, namespaceDeps...)
 		elasticsearchCreatedGateway, err := gatewayv1.NewGateway(ctx,
 			locals.ElasticsearchExternalGatewayName,
 			&gatewayv1.GatewayArgs{
@@ -86,12 +89,13 @@ func ingress(ctx *pulumi.Context,
 						},
 					},
 				},
-			}, pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{createdCertificate}))
+			}, esGwOpts...)
 		if err != nil {
 			return errors.Wrap(err, "error creating gateway")
 		}
 
 		//create http-route for setting up https-redirect for external-hostname
+		esRedirectOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{elasticsearchCreatedGateway})}, namespaceDeps...)
 		_, err = gatewayv1.NewHTTPRoute(ctx,
 			locals.ElasticsearchHttpRedirectRouteName,
 			&gatewayv1.HTTPRouteArgs{
@@ -123,9 +127,10 @@ func ingress(ctx *pulumi.Context,
 						},
 					},
 				},
-			}, pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{elasticsearchCreatedGateway}))
+			}, esRedirectOpts...)
 
 		// Create HTTP route for external hostname for https listener
+		esHttpsOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 		_, err = gatewayv1.NewHTTPRoute(ctx,
 			locals.ElasticsearchHttpsRouteName,
 			&gatewayv1.HTTPRouteArgs{
@@ -163,7 +168,7 @@ func ingress(ctx *pulumi.Context,
 						},
 					},
 				},
-			}, pulumi.Provider(kubernetesProvider))
+			}, esHttpsOpts...)
 
 		if err != nil {
 			return errors.Wrap(err, "error creating HTTP route")
@@ -173,6 +178,7 @@ func ingress(ctx *pulumi.Context,
 	// Kibana ingress resources
 	if locals.KibanaIngressExternalHostname != "" {
 		// Create external gateway
+		kbGwOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{createdCertificate})}, namespaceDeps...)
 		kibanaCreatedGateway, err := gatewayv1.NewGateway(ctx,
 			locals.KibanaExternalGatewayName,
 			&gatewayv1.GatewayArgs{
@@ -222,12 +228,13 @@ func ingress(ctx *pulumi.Context,
 						},
 					},
 				},
-			}, pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{createdCertificate}))
+			}, kbGwOpts...)
 		if err != nil {
 			return errors.Wrap(err, "error creating gateway")
 		}
 
 		//create http-route for setting up https-redirect for external-hostname
+		kbRedirectOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 		_, err = gatewayv1.NewHTTPRoute(ctx,
 			locals.KibanaHttpRedirectRouteName,
 			&gatewayv1.HTTPRouteArgs{
@@ -259,9 +266,10 @@ func ingress(ctx *pulumi.Context,
 						},
 					},
 				},
-			}, pulumi.Provider(kubernetesProvider))
+			}, kbRedirectOpts...)
 
 		// Create HTTP route for external hostname for https listener
+		kbHttpsOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 		_, err = gatewayv1.NewHTTPRoute(ctx,
 			locals.KibanaHttpsRouteName,
 			&gatewayv1.HTTPRouteArgs{
@@ -299,7 +307,7 @@ func ingress(ctx *pulumi.Context,
 						},
 					},
 				},
-			}, pulumi.Provider(kubernetesProvider))
+			}, kbHttpsOpts...)
 
 		if err != nil {
 			return errors.Wrap(err, "error creating HTTP route")

@@ -23,8 +23,22 @@ func Resources(ctx *pulumi.Context, stackInput *kuberneteszalandopostgresoperato
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
 
+	// ------------------------------ namespace ----------------------------
+	// Conditionally create namespace based on create_namespace flag
+	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	if err != nil {
+		return errors.Wrap(err, "failed to create namespace")
+	}
+
+	// Build conditional namespace dependency (Pulumi equivalent of Terraform depends_on).
+	// When create_namespace is false, createdNamespace is nil and namespaceDeps is empty.
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
+	}
+
 	// Install / upgrade the Zalando Postgres‑Operator.
-	if err := postgresOperator(ctx, locals, kubernetesProvider); err != nil {
+	if err := postgresOperator(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to install postgres-operator resources")
 	}
 

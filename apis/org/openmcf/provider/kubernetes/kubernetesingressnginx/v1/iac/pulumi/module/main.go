@@ -4,9 +4,7 @@ import (
 	"github.com/pkg/errors"
 	kubernetesingressnginxv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesingressnginx/v1"
 	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider"
-	corev1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/core/v1"
 	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/helm/v3"
-	metav1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/meta/v1"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -60,21 +58,14 @@ func Resources(ctx *pulumi.Context,
 	// ---------------------------------------------------------------------
 	// Namespace - conditionally create based on create_namespace flag
 	// ---------------------------------------------------------------------
-	// When create_namespace is false, we assume the namespace already exists
-	// and use locals.Namespace directly. No lookup is needed - the helm release
-	// will fail with a clear error if the namespace doesn't exist.
-	if spec.CreateNamespace {
-		_, err := corev1.NewNamespace(ctx, locals.Namespace,
-			&corev1.NamespaceArgs{
-				Metadata: &metav1.ObjectMetaArgs{
-					Name:   pulumi.String(locals.Namespace),
-					Labels: pulumi.ToStringMap(locals.Labels),
-				},
-			},
-			pulumi.Provider(kubeProvider))
-		if err != nil {
-			return errors.Wrap(err, "failed to create namespace")
-		}
+	createdNamespace, err := namespace(ctx, stackInput, locals, kubeProvider)
+	if err != nil {
+		return errors.Wrap(err, "failed to create namespace")
+	}
+
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
 	}
 
 	// ---------------------------------------------------------------------
@@ -96,6 +87,10 @@ func Resources(ctx *pulumi.Context,
 		},
 	}
 
+	helmOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubeProvider),
+	}, namespaceDeps...)
+
 	_, err = helm.NewRelease(ctx, locals.ReleaseName,
 		&helm.ReleaseArgs{
 			Name:            pulumi.String(locals.ReleaseName),
@@ -112,7 +107,7 @@ func Resources(ctx *pulumi.Context,
 				Repo: pulumi.String(vars.HelmChartRepo),
 			},
 		},
-		pulumi.Provider(kubeProvider))
+		helmOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to install kubernetes-ingress-nginx helm release")
 	}

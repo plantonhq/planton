@@ -19,18 +19,24 @@ func Resources(ctx *pulumi.Context, stackInput *kuberneteskeycloakv1.KubernetesK
 	}
 
 	// Conditionally create namespace based on create_namespace flag.
-	// The return value is discarded because downstream resources should use
-	// pulumi.Provider(kubernetesProvider) instead of pulumi.Parent(namespace)
-	// to avoid nil pointer panics when create_namespace is false.
-	_, err = namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}
 
+	// Build conditional namespace dependency (Pulumi equivalent of Terraform depends_on).
+	// When create_namespace is false, createdNamespace is nil and namespaceDeps is empty.
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
+	}
+
 	// TODO: Keycloak Helm chart deployment
 	// When implementing, resources should use:
+	// - namespaceDeps to depend on the namespace
 	// - pulumi.Provider(kubernetesProvider) for Kubernetes resources
 	// - pulumi.String(locals.Namespace) for namespace references
+	_ = namespaceDeps // will be used when Helm chart deployment is implemented
 
 	return nil
 }

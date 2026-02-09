@@ -1,4 +1,6 @@
 resource "kubernetes_manifest" "database" {
+  depends_on = [kubernetes_namespace_v1.postgres_namespace]
+
   manifest = {
     apiVersion = "acid.zalan.do/v1"
     kind       = "postgresql"

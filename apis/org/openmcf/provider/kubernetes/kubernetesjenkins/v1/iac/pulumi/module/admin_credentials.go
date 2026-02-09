@@ -12,7 +12,8 @@ import (
 
 func adminCredentials(ctx *pulumi.Context,
 	locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) (*kubernetescorev1.Secret, error) {
+	kubernetesProvider pulumi.ProviderResource,
+	namespaceDeps []pulumi.ResourceOption) (*kubernetescorev1.Secret, error) {
 
 	createdRandomPassword, err := random.NewRandomPassword(ctx,
 		"admin-password",
@@ -37,6 +38,10 @@ func adminCredentials(ctx *pulumi.Context,
 	}).(pulumi.StringOutput)
 
 	// Create or update the secret
+	secretOpts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProvider),
+	}, namespaceDeps...)
+
 	createdAdminPasswordSecret, err := kubernetescorev1.NewSecret(ctx,
 		locals.AdminCredentialsSecretName,
 		&kubernetescorev1.SecretArgs{
@@ -47,7 +52,7 @@ func adminCredentials(ctx *pulumi.Context,
 			Data: pulumi.StringMap{
 				vars.JenkinsAdminPasswordSecretKey: base64Password,
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, secretOpts...)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create jenkins admin-password secret")

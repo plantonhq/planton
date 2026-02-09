@@ -18,20 +18,25 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesgrafanav1.KubernetesGr
 	}
 
 	// Conditionally create namespace based on create_namespace flag
-	_, err = namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}
 
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
+	}
+
 	//install the grafana helm-chart
-	if err := helmChart(ctx, locals, kubernetesProvider); err != nil {
+	if err := helmChart(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to create helm-chart resources")
 	}
 
 	//if ingress is enabled, create load-balancer ingress resources
 	if locals.KubernetesGrafana.Spec.Ingress != nil &&
 		locals.KubernetesGrafana.Spec.Ingress.Enabled {
-		if err := ingress(ctx, locals, kubernetesProvider); err != nil {
+		if err := ingress(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 			return errors.Wrap(err, "failed to create ingress")
 		}
 	}

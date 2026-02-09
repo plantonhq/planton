@@ -21,9 +21,16 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesmongodbv1.KubernetesMo
 	}
 
 	// Conditionally create namespace based on create_namespace flag
-	_, err = namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
+	}
+
+	// Build conditional namespace dependency (Pulumi equivalent of Terraform depends_on).
+	// When create_namespace is false, createdNamespace is nil and namespaceDeps is empty.
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
 	}
 
 	//create new random secret to set as password
@@ -46,6 +53,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesmongodbv1.KubernetesMo
 
 	// Create kubernetes secret to store generated password
 	// Percona operator expects plaintext passwords in StringData (Kubernetes auto-encodes)
+	secretOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	createdPasswordSecret, err := kubernetescorev1.NewSecret(ctx,
 		locals.PasswordSecretName,
 		&kubernetescorev1.SecretArgs{
@@ -56,18 +64,19 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesmongodbv1.KubernetesMo
 			StringData: pulumi.StringMap{
 				vars.MongodbRootPasswordKey: createdRandomString.Result,
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, secretOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create password secret")
 	}
 
 	// Create MongoDB using Percona operator CRD
-	if err := mongodb(ctx, locals, kubernetesProvider, createdPasswordSecret); err != nil {
+	if err := mongodb(ctx, locals, kubernetesProvider, createdPasswordSecret, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to create MongoDB PerconaServerMongoDB resource")
 	}
 
 	//create service of type load-balancer if ingress is enabled.
 	if locals.KubernetesMongodb.Spec.Ingress.Enabled {
+		lbOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 		_, err := kubernetescorev1.NewService(ctx,
 			locals.ExternalLbServiceName,
 			&kubernetescorev1.ServiceArgs{
@@ -91,7 +100,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesmongodbv1.KubernetesMo
 					},
 					Selector: pulumi.ToStringMap(locals.MongodbPodSelectorLabels),
 				},
-			}, pulumi.Provider(kubernetesProvider))
+			}, lbOpts...)
 		if err != nil {
 			return errors.Wrapf(err, "failed to create external load balancer service")
 		}

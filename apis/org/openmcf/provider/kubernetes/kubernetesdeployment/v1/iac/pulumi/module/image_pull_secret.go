@@ -21,7 +21,7 @@ import (
 // Returns nil if no docker config is configured (e.g., using GKE Workload Identity).
 // Returns error if file path is specified in label but file cannot be read or is invalid.
 func imagePullSecret(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) (*kubernetescorev1.Secret, error) {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) (*kubernetescorev1.Secret, error) {
 
 	// If no image pull secret data is configured, return nil
 	if locals.ImagePullSecretData == nil {
@@ -39,10 +39,11 @@ func imagePullSecret(ctx *pulumi.Context, locals *Locals,
 		StringData: pulumi.ToStringMap(locals.ImagePullSecretData),
 	}
 
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	createdImagePullSecret, err := kubernetescorev1.NewSecret(ctx,
 		locals.ImagePullSecretName,
 		secretArgs,
-		pulumi.Provider(kubernetesProvider))
+		opts...)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create image pull secret")
 	}

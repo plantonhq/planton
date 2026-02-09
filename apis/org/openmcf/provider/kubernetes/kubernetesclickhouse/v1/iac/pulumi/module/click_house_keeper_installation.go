@@ -18,6 +18,7 @@ func clickhouseKeeperInstallation(
 	locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
 	keeperConfig *kubernetesclickhousev1.KubernetesClickHouseKeeperConfig,
+	namespaceDeps []pulumi.ResourceOption,
 ) error {
 	// Apply defaults if keeper_config is not specified
 	replicas := int(1) // Default: 1 for development
@@ -36,6 +37,8 @@ func clickhouseKeeperInstallation(
 	// Format: {metadata.name}-keeper
 	keeperName := locals.KeeperInstallationName
 
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
+
 	// Build the ClickHouseKeeperInstallation CRD
 	_, err := clickhousekeeperv1.NewClickHouseKeeperInstallation(ctx,
 		keeperName,
@@ -50,7 +53,7 @@ func clickhouseKeeperInstallation(
 				// Defaults removed - not supported in Altinity operator 0.23.6
 				Templates: buildKeeperTemplates(diskSize, keeperConfig),
 			},
-		}, pulumi.Provider(kubernetesProvider),
+		}, opts...,
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to create ClickHouseKeeperInstallation")

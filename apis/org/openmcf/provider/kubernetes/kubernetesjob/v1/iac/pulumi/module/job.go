@@ -11,7 +11,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func job(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource) (*batchv1.Job, error) {
+func job(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) (*batchv1.Job, error) {
 	target := locals.KubernetesJob
 
 	envVarInputs := make([]corev1.EnvVarInput, 0)
@@ -186,6 +186,7 @@ func job(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Provider
 		jobSpec.Suspend = pulumi.BoolPtr(*target.Spec.Suspend)
 	}
 
+	opts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	createdJob, err := batchv1.NewJob(ctx,
 		target.Metadata.Name,
 		&batchv1.JobArgs{
@@ -196,7 +197,7 @@ func job(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Provider
 			},
 			Spec: jobSpec,
 		},
-		pulumi.Provider(kubernetesProvider),
+		opts...,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create job")

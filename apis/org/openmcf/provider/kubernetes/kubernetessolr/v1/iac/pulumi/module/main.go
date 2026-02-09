@@ -18,19 +18,24 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetessolrv1.KubernetesSolrS
 	}
 
 	// Conditionally create namespace based on create_namespace flag
-	_, err = namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}
 
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
+	}
+
 	//create solr-cloud custom resource
-	if err := solrCloud(ctx, locals, kubernetesProvider); err != nil {
+	if err := solrCloud(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "failed to create helm-chart resources")
 	}
 
 	//create istio-ingress resources if ingress is enabled.
 	if locals.KubernetesSolr.Spec.Ingress.Enabled {
-		if err := ingress(ctx, locals, kubernetesProvider); err != nil {
+		if err := ingress(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
 			return errors.Wrap(err, "failed to create istio ingress resources")
 		}
 	}

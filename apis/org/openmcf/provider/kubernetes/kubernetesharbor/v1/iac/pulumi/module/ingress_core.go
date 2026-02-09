@@ -10,7 +10,7 @@ import (
 )
 
 func createCoreIngress(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider *kubernetes.Provider) error {
+	kubernetesProvider *kubernetes.Provider, namespaceDeps []pulumi.ResourceOption) error {
 
 	// Skip if ingress is not enabled
 	if locals.KubernetesHarbor.Spec.Ingress == nil ||
@@ -19,6 +19,8 @@ func createCoreIngress(ctx *pulumi.Context, locals *Locals,
 		locals.IngressExternalHostname == "" {
 		return nil
 	}
+
+	certOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 
 	// Create TLS certificate for Harbor Core/Portal
 	addedCertificate, err := certmanagerv1.NewCertificate(ctx,
@@ -37,7 +39,7 @@ func createCoreIngress(ctx *pulumi.Context, locals *Locals,
 					Name: pulumi.String(locals.IngressCertClusterIssuerName),
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, certOpts...)
 	if err != nil {
 		return errors.Wrap(err, "error creating certificate")
 	}
@@ -81,7 +83,10 @@ func createCoreIngress(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider), pulumi.DependsOn([]pulumi.Resource{addedCertificate}))
+		}, append([]pulumi.ResourceOption{
+			pulumi.Provider(kubernetesProvider),
+			pulumi.DependsOn([]pulumi.Resource{addedCertificate}),
+		}, namespaceDeps...)...)
 	if err != nil {
 		return errors.Wrap(err, "error creating gateway")
 	}
@@ -123,8 +128,8 @@ func createCoreIngress(ctx *pulumi.Context, locals *Locals,
 						},
 					},
 				},
-			},
-		}, pulumi.Provider(kubernetesProvider))
+		},
+	}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 
 	return err
 }

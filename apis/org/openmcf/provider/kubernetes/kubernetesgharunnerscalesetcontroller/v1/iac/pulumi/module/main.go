@@ -26,8 +26,20 @@ func Resources(ctx *pulumi.Context,
 		return errors.Wrap(err, "setup kubernetes provider")
 	}
 
+	// Conditionally create namespace based on create_namespace flag
+	createdNamespace, err := namespace(ctx, in, locals, k8sProvider)
+	if err != nil {
+		return errors.Wrap(err, "failed to create namespace")
+	}
+
+	// Build conditional namespace dependency
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
+	}
+
 	// Deploy GHA Runner Scale Set Controller via Helm
-	if err = ghaRunnerScaleSetController(ctx, locals, k8sProvider); err != nil {
+	if err = ghaRunnerScaleSetController(ctx, locals, k8sProvider, namespaceDeps); err != nil {
 		return errors.Wrap(err, "deploy gha-runner-scale-set-controller")
 	}
 

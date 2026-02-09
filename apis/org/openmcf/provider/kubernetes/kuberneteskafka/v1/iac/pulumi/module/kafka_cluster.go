@@ -9,7 +9,7 @@ import (
 )
 
 func kafkaCluster(ctx *pulumi.Context, locals *Locals,
-	kubernetesProvider pulumi.ProviderResource) (*v1beta2.Kafka, error) {
+	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) (*v1beta2.Kafka, error) {
 	listenersArray := v1beta2.KafkaSpecKafkaListenersArray{}
 
 	listenersArray = append(listenersArray,
@@ -26,6 +26,7 @@ func kafkaCluster(ctx *pulumi.Context, locals *Locals,
 	if locals.KubernetesKafka.Spec.Ingress.Enabled {
 		listenersArray = append(listenersArray, getIngressListeners(locals)...)
 		//crate new certificate
+		certOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 		_, err := certmanagerv1.NewCertificate(ctx,
 			"kafka-ingress-certificate",
 			&certmanagerv1.CertificateArgs{
@@ -42,13 +43,14 @@ func kafkaCluster(ctx *pulumi.Context, locals *Locals,
 						Name: pulumi.String(locals.IngressCertClusterIssuerName),
 					},
 				},
-			}, pulumi.Provider(kubernetesProvider))
+			}, certOpts...)
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating certificate for bootstrap server ingress")
 		}
 	}
 
 	// create kafka cluster
+	kafkaOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 	createdKafkaCluster, err := v1beta2.NewKafka(ctx,
 		"kafka-cluster",
 		&v1beta2.KafkaArgs{
@@ -102,7 +104,7 @@ func kafkaCluster(ctx *pulumi.Context, locals *Locals,
 					},
 				},
 			},
-		}, pulumi.Provider(kubernetesProvider))
+		}, kafkaOpts...)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create kafka-cluster")
 	}
