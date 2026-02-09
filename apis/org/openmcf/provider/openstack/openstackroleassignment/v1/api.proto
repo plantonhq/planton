@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackroleassignment.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/openstack/openstackroleassignment/v1/spec.proto";
+import "org/openmcf/provider/openstack/openstackroleassignment/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OpenStackRoleAssignment is a Kubernetes Resource Model (KRM) style resource
+// for managing OpenStack Identity role assignments.
+//
+// A role assignment binds a role to a principal (user or group) on a scope
+// (project or domain). This is the fundamental authorization mechanism in
+// OpenStack.
+//
+// Role assignments do not have a natural "name" in the OpenStack API --
+// metadata.name provides KRM identity only.
+//
+// Note: This is an admin-level operation requiring appropriate permissions.
+message OpenStackRoleAssignment {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'openstack.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OpenStackRoleAssignment'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OpenStackRoleAssignmentSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OpenStackRoleAssignmentStatus status = 5;
+}
+
+// OpenStackRoleAssignmentStatus represents the observed state of an
+// OpenStack role assignment.
+message OpenStackRoleAssignmentStatus {
+  // stack-outputs from the IaC deployment
+  OpenStackRoleAssignmentStackOutputs outputs = 1;
+}

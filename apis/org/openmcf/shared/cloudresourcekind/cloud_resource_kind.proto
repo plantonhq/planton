@@ -191,6 +191,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "r53rec"
   }];
+  AwsS3ObjectSet = 224 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "s3objs"
+  }];
 
   // 400–599: Azure resources
   AzureAksCluster = 400 [(kind_meta) = {
@@ -883,9 +888,24 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "osva"
   }];
+  OpenStackProject = 2512 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osprj"
+  }];
+  OpenStackApplicationCredential = 2513 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osac"
+  }];
   OpenStackImage = 2514 [(kind_meta) = {
     provider: openstack
     version: v1
     id_prefix: "osimg"
+  }];
+  OpenStackRoleAssignment = 2515 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osra"
   }];
 }

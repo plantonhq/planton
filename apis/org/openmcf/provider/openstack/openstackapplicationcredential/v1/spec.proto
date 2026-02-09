@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackapplicationcredential.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// OpenStackApplicationCredentialSpec defines the configuration for an OpenStack
+// Identity (Keystone) application credential.
+//
+// An application credential is a scoped authentication token that allows
+// applications to authenticate without using a user's password. Application
+// credentials are bound to the project that was in scope when they were created,
+// and they can optionally be restricted to specific roles and API access rules.
+//
+// IMPORTANT: This is an immutable resource. All fields are ForceNew in the
+// Terraform provider -- any change to the spec requires destroying and
+// recreating the credential. The secret is generated once at creation time
+// and cannot be retrieved again after the initial API response.
+//
+// The credential name is derived from metadata.name.
+//
+// Terraform resource: openstack_identity_application_credential_v3
+// Pulumi resource: openstack.identity.ApplicationCredential
+message OpenStackApplicationCredentialSpec {
+  // description is a human-readable description of the application credential.
+  // ForceNew: cannot be changed after creation.
+  string description = 1;
+
+  // unrestricted controls whether the application credential can create
+  // additional application credentials or trusts.
+  // Default: false (restricted). Setting to true is a security risk --
+  // an unrestricted credential can be used to create sub-credentials.
+  // ForceNew: cannot be changed after creation.
+  optional bool unrestricted = 2 [(org.openmcf.shared.options.default) = "false"];
+
+  // secret is the application credential secret.
+  // If omitted, OpenStack generates a random secret.
+  // If provided, the user-specified secret is used.
+  // ForceNew: cannot be changed after creation.
+  // The secret is sensitive and should be stored securely.
+  string secret = 3;
+
+  // roles is a list of role names to scope the application credential.
+  // The credential can only perform actions allowed by these roles.
+  // If omitted, the credential inherits all roles of the creating user
+  // on the current project.
+  // ForceNew: cannot be changed after creation.
+  repeated string roles = 4;
+
+  // access_rules restricts the credential to specific API operations.
+  // Each rule specifies a service, HTTP method, and URL path pattern.
+  // When set, the credential can ONLY call the specified APIs.
+  // ForceNew: cannot be changed after creation.
+  repeated AccessRule access_rules = 5;
+
+  // expires_at is the expiration timestamp in RFC3339 format.
+  // After this time, the credential becomes invalid.
+  // If omitted, the credential does not expire.
+  // ForceNew: cannot be changed after creation.
+  // Example: "2027-01-01T00:00:00Z"
+  string expires_at = 6;
+
+  // region overrides the region from the provider config.
+  // If omitted, the region from the OpenStack provider config is used.
+  // Example: "RegionOne"
+  string region = 7;
+}
+
+// AccessRule restricts an application credential to a specific API operation.
+//
+// Each rule specifies:
+//   - service: the OpenStack service type (e.g., "compute", "identity", "block-storage")
+//   - method: the HTTP method (e.g., "GET", "POST")
+//   - path: the URL path pattern (e.g., "/v3/projects", "/v2.1/servers/*")
+//
+// When access_rules are set on an application credential, the credential
+// can ONLY call the matching APIs.
+message AccessRule {
+  // path is the URL path pattern for the API endpoint.
+  // Supports wildcards: "/v2.1/servers/*" matches all server sub-paths.
+  // Required.
+  string path = 1 [(buf.validate.field).string.min_len = 1];
+
+  // method is the HTTP method allowed for this rule.
+  // Must be one of the standard HTTP methods.
+  // Required.
+  string method = 2 [(buf.validate.field).string = {
+    min_len: 1
+    in: [
+      "POST",
+      "GET",
+      "HEAD",
+      "PATCH",
+      "PUT",
+      "DELETE"
+    ]
+  }];
+
+  // service is the OpenStack service type for this rule.
+  // Examples: "identity", "compute", "block-storage", "image", "network"
+  // Required.
+  string service = 3 [(buf.validate.field).string.min_len = 1];
+}
