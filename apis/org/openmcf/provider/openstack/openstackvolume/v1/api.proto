@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackvolume.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/openstack/openstackvolume/v1/spec.proto";
+import "org/openmcf/provider/openstack/openstackvolume/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OpenStackVolume is a Kubernetes Resource Model (KRM) style resource for an
+// OpenStack Cinder block storage volume.
+//
+// Volumes provide persistent block storage that can be attached to compute
+// instances. They survive instance termination and can be detached and
+// reattached to different instances, making them essential for databases,
+// application data, and any workload that requires durable storage.
+//
+// A volume can be created blank, cloned from an existing volume, restored from
+// a snapshot, or initialized from a Glance image (for bootable volumes).
+//
+// In InfraCharts, volumes typically appear alongside instances. Use
+// OpenStackVolumeAttach to bind a volume to an instance as a visible DAG node.
+message OpenStackVolume {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'openstack.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OpenStackVolume'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OpenStackVolumeSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OpenStackVolumeStatus status = 5;
+}
+
+// OpenStackVolumeStatus represents the observed state of an OpenStack
+// Cinder volume.
+message OpenStackVolumeStatus {
+  // stack-outputs from the IaC deployment
+  OpenStackVolumeStackOutputs outputs = 1;
+}

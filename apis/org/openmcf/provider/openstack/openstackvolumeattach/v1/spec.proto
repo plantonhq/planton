@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackvolumeattach.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// OpenStackVolumeAttachSpec defines the configuration for attaching an
+// OpenStack Cinder volume to a compute instance.
+//
+// A volume attachment is a "join" resource -- it connects a volume (persistent
+// block storage) to an instance (compute). The attachment makes the volume
+// appear as a block device inside the instance (e.g., /dev/vdb).
+//
+// All fields on the underlying resource are ForceNew: any change recreates
+// the attachment. This is expected -- you cannot move a volume between instances
+// without detaching and reattaching.
+//
+// The resource name in OpenMCF is derived from metadata.name. OpenStack volume
+// attachments do not have a user-visible "name" attribute -- the resource is
+// identified by the combination of instance and volume.
+//
+// Terraform resource: openstack_compute_volume_attach_v2
+// Pulumi resource: openstack.compute.VolumeAttach
+message OpenStackVolumeAttachSpec {
+  // instance_id is the ID of the compute instance to attach the volume to.
+  // This is a required foreign key -- every volume attachment must reference
+  // exactly one instance.
+  // Can reference an OpenStackInstance resource's output or be a literal instance UUID.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef instance_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackInstance,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.instance_id"
+  ];
+
+  // volume_id is the ID of the Cinder volume to attach.
+  // This is a required foreign key -- every volume attachment must reference
+  // exactly one volume.
+  // Can reference an OpenStackVolume resource's output or be a literal volume UUID.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef volume_id = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackVolume,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.volume_id"
+  ];
+
+  // device is the device path where the volume appears inside the instance.
+  // Example: "/dev/vdb", "/dev/vdc".
+  // If omitted, OpenStack (Nova) automatically selects the next available device.
+  // Computed by OpenStack if not specified.
+  string device = 3;
+
+  // region overrides the region from the provider config for this attachment.
+  // If omitted, the region from the OpenStack provider config is used.
+  // ForceNew: changing the region recreates the attachment.
+  // Example: "RegionOne"
+  string region = 4;
+}

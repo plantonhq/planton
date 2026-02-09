@@ -873,4 +873,19 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "ossgrp"
   }];
+  OpenStackVolume = 2510 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osvol"
+  }];
+  OpenStackVolumeAttach = 2511 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osva"
+  }];
+  OpenStackImage = 2514 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osimg"
+  }];
 }

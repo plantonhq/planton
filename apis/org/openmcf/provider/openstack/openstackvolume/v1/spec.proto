@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackvolume.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// OpenStackVolumeSpec defines the configuration for an OpenStack Cinder block
+// storage volume.
+//
+// A volume is a persistent block storage device that can be attached to compute
+// instances. Volumes survive instance termination and can be detached and
+// reattached to different instances, making them the primary mechanism for
+// persistent storage in OpenStack.
+//
+// Volumes can be created empty (blank), cloned from an existing volume, restored
+// from a snapshot, or initialized from a Glance image (for bootable volumes).
+// These source options are mutually exclusive.
+//
+// The volume name is derived from metadata.name.
+//
+// Terraform resource: openstack_blockstorage_volume_v3
+// Pulumi resource: openstack.blockstorage.VolumeV3
+message OpenStackVolumeSpec {
+  option (buf.validate.message).cel = {
+    id: "volume_source.mutual_exclusion"
+    message: "at most one of snapshot_id, source_vol_id, or image_id may be set -- they are mutually exclusive volume sources"
+    expression: "((this.snapshot_id != '' ? 1 : 0) + (this.source_vol_id != '' ? 1 : 0) + (has(this.image_id) ? 1 : 0)) <= 1"
+  };
+
+  // description is a human-readable description of the volume.
+  // This is stored on the OpenStack resource and visible in Horizon and API responses.
+  string description = 1;
+
+  // size is the volume size in gigabytes (GB).
+  // Required for blank volumes and image-based volumes.
+  // For snapshot-based or clone-based volumes, if omitted or set to 0, the size
+  // of the source is used. If provided, it must be >= the source size.
+  // Must be greater than 0 for blank volumes.
+  int32 size = 2 [(buf.validate.field).int32.gt = 0];
+
+  // volume_type is the Cinder volume type (backend storage class).
+  // Examples: "SSD", "HDD", "__DEFAULT__", "ceph-ssd", "lvm".
+  // If omitted, the Cinder default volume type for the project is used.
+  // Changing this on an existing volume triggers a retype operation.
+  string volume_type = 3;
+
+  // availability_zone is the availability zone where the volume is created.
+  // ForceNew: changing the AZ requires recreating the volume.
+  // If omitted, Cinder selects the default AZ.
+  // Must match the instance's AZ for attachment to work (in most deployments).
+  string availability_zone = 4;
+
+  // snapshot_id is the UUID of a Cinder volume snapshot to restore from.
+  // ForceNew: the source cannot be changed after creation.
+  // Mutually exclusive with source_vol_id and image_id.
+  string snapshot_id = 5;
+
+  // source_vol_id is the UUID of an existing Cinder volume to clone.
+  // ForceNew: the source cannot be changed after creation.
+  // Mutually exclusive with snapshot_id and image_id.
+  string source_vol_id = 6;
+
+  // image_id is the ID of a Glance image to initialize the volume from.
+  // This creates a bootable volume that can be used as a root disk.
+  // ForceNew: the source cannot be changed after creation.
+  // Mutually exclusive with snapshot_id and source_vol_id.
+  // Can reference an OpenStackImage resource's output or be a literal image UUID.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef image_id = 7 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackImage,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.image_id"
+  ];
+
+  // metadata is a map of key-value pairs stored on the volume.
+  // Metadata is visible in the OpenStack API and Horizon dashboard.
+  // Can be used for tagging, billing, or organizational purposes.
+  map<string, string> metadata = 8;
+
+  // region overrides the region from the provider config for this volume.
+  // If omitted, the region from the OpenStack provider config is used.
+  // ForceNew: changing the region requires recreating the volume.
+  // Example: "RegionOne"
+  string region = 9;
+}
