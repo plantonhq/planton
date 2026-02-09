@@ -1,0 +1,14 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackInstance
+metadata:
+  name: test-instance
+spec:
+  flavor_name: m1.medium
+  image_name: ubuntu-22.04
+  networks:
+    - uuid:
+        value: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  key_pair:
+    value: "test-keypair"
+  security_groups:
+    - value: "default"
