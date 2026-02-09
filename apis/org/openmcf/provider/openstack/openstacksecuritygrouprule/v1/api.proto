@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstacksecuritygrouprule.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/openstack/openstacksecuritygrouprule/v1/spec.proto";
+import "org/openmcf/provider/openstack/openstacksecuritygrouprule/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OpenStackSecurityGroupRule is a Kubernetes Resource Model (KRM) style resource
+// for managing standalone OpenStack Neutron security group rules.
+//
+// A standalone security group rule is independently managed and visible as its
+// own node in InfraChart DAG visualizations. Both security_group_id and
+// remote_group_id support StringValueOrRef for cross-resource FK resolution,
+// unlike inline rules in OpenStackSecurityGroup.rules[] which use plain strings.
+//
+// Use this component for:
+//   - Cross-security-group rules where remote_group_id needs DAG resolution
+//   - Rules that need independent lifecycle management
+//   - InfraCharts where rule dependencies must be visually explicit
+//
+// Use inline rules (OpenStackSecurityGroup.rules[]) for:
+//   - Self-contained security groups where all rules are co-managed
+//   - Simpler configurations without cross-SG references
+message OpenStackSecurityGroupRule {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'openstack.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OpenStackSecurityGroupRule'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OpenStackSecurityGroupRuleSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OpenStackSecurityGroupRuleStatus status = 5;
+}
+
+// OpenStackSecurityGroupRuleStatus represents the observed state of a standalone
+// OpenStack security group rule.
+message OpenStackSecurityGroupRuleStatus {
+  // stack-outputs from the IaC deployment
+  OpenStackSecurityGroupRuleStackOutputs outputs = 1;
+}

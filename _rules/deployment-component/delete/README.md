@@ -65,8 +65,8 @@ Deletion is **irreversible** without backups. Delete prioritizes safety:
 # (Type: DELETE ObsoleteComponent)
 
 # Step 6: Verify no issues
-make build
-make test
+go build ./apis/.../v1/...
+go test -v ./apis/.../v1/
 
 # Step 7: Commit changes
 git add -A
@@ -393,12 +393,12 @@ Build Status:
   ⚠️  Not verified (references may cause build errors)
   
   Recommended:
-    make build  # Check for import errors
-    make test   # Check for test failures
+    go build ./apis/.../v1/...  # Check for import errors
+    go test -v ./apis/.../v1/   # Check for test failures
 
 Next Steps:
   1. Fix critical references (2 files)
-  2. Run: make build && make test
+  2. Run: go build ./apis/.../v1/... && go test -v ./apis/.../v1/
   3. Commit changes:
      git add -A
      git commit -m "Remove MongodbAtlas component"
@@ -420,7 +420,7 @@ Status: ✅ Complete
 # ✅ Deleted successfully
 # ✅ Build still passes
 
-make build && make test  # ✅ All pass
+go build ./apis/.../v1/... && go test -v ./apis/.../v1/  # ✅ All pass
 ```
 
 ### Scenario 2: Remove Obsolete Component
@@ -437,7 +437,7 @@ make build && make test  # ✅ All pass
 @delete-openmcf-component OldPostgresKubernetes --backup
 
 # Verify
-make build && make test  # ✅ All pass
+go build ./apis/.../v1/... && go test -v ./apis/.../v1/  # ✅ All pass
 ```
 
 ### Scenario 3: Provider Discontinuation
@@ -557,7 +557,7 @@ vim apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto
 make protos
 
 # Verify restoration
-make build && make test
+go build ./apis/.../v1/... && go test -v ./apis/.../v1/
 ```
 
 ### From Git History
@@ -579,7 +579,7 @@ git show def5678:apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.p
 # Manually add to current cloud_resource_kind.proto
 
 # Regenerate and verify
-make protos && make build && make test
+make protos && go build ./apis/.../v1/... && go test -v ./apis/.../v1/
 ```
 
 ## Best Practices
@@ -603,8 +603,8 @@ make protos && make build && make test
 
 ### After Deletion
 
-- [ ] Run `make build` (check for errors)
-- [ ] Run `make test` (check for failures)
+- [ ] Run `go build ./apis/.../v1/...` (check for errors)
+- [ ] Run `go test -v ./apis/.../v1/` (check for failures)
 - [ ] Fix any broken references
 - [ ] Update related documentation
 - [ ] Commit with descriptive message
@@ -638,7 +638,7 @@ chmod -R u+w apis/org/openmcf/provider/<provider>/<component>/
 
 ```bash
 # Find what broke
-make build 2>&1 | grep "error"
+go build ./apis/.../v1/... 2>&1 | grep "error"
 
 # Common issues:
 # 1. Unremoved imports
@@ -649,7 +649,7 @@ grep -r "MongodbAtlas" apis/
 
 # Fix imports and references
 # Then rebuild
-make build && make test
+go build ./apis/.../v1/... && go test -v ./apis/.../v1/
 ```
 
 ### "Need to restore deleted component"
@@ -662,7 +662,7 @@ cp -r component-backup-*/v1 component/
 # Edit cloud_resource_kind.proto
 
 # Regenerate
-make protos && make build && make test
+make protos && go build ./apis/.../v1/... && go test -v ./apis/.../v1/
 ```
 
 ## Success Metrics
@@ -671,8 +671,8 @@ Successful deletion:
 
 - ✅ Component folder removed (verified with `ls`)
 - ✅ Enum entry removed (verified in proto file)
-- ✅ Build succeeds (`make build` passes)
-- ✅ Tests pass (`make test` passes)
+- ✅ Build succeeds (`go build ./apis/.../v1/...` passes)
+- ✅ Tests pass (`go test -v ./apis/.../v1/` passes)
 - ✅ Backup created (can be restored)
 - ✅ References updated or documented
 - ✅ Changes committed with clear message
@@ -693,4 +693,4 @@ Successful deletion:
 
 ---
 
-**Remember:** Always `--dry-run` first, always `--backup` when deleting, and always verify with `make build && make test`!
+**Remember:** Always `--dry-run` first, always `--backup` when deleting, and always verify with `go build ./apis/.../v1/... && go test -v ./apis/.../v1/`!

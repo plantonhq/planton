@@ -718,7 +718,7 @@ echo "Improvement: $BEFORE% → $AFTER% (+$(($AFTER - $BEFORE))%)"
 **Action:**
 ```bash
 # Check build errors
-make build
+go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...
 
 # Fix manually
 # Re-run complete (it's idempotent)
@@ -746,8 +746,8 @@ After complete finishes:
 ✅ spec_test.go exists with validation tests
 ✅ Component tests execute successfully
 ✅ All tests pass (`go test ./apis/.../v1/`)
-✅ Build validation passed (`make build`)
-✅ Full test suite passed (`make test`)
+✅ Build validation passed (`go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`)
+✅ Full test suite passed (`go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`)
 ✅ Two audit reports (before/after)
 ✅ Summary shows improvement
 ✅ Ready to commit

@@ -21,6 +21,12 @@ Usage:
     --old-name KubernetesMicroservice \
     --new-name KubernetesDeployment
 
+  # Specify provider explicitly (skips auto-discovery)
+  python3 _rules/deployment-component/rename/_scripts/rename_deployment_component.py \
+    --old-name OpenStackComputeKeypair \
+    --new-name OpenStackKeypair \
+    --provider openstack
+
 Output: JSON object with success status, metrics, and build results
 """
 
@@ -437,6 +443,12 @@ def main() -> int:
         '--new-id-prefix',
         help='New ID prefix (e.g., k8sdpl). If not provided, keeps existing.'
     )
+    parser.add_argument(
+        '--provider',
+        help='Provider name (e.g., openstack, aws, gcp). If provided, the component '
+             'directory is resolved directly as apis/org/openmcf/provider/{provider}/{component}. '
+             'If not provided, all provider directories are searched.'
+    )
     
     args = parser.parse_args()
     
@@ -477,40 +489,64 @@ def main() -> int:
         # Find repo root
         repo_root = os.environ.get('REPO_ROOT', find_repo_root(os.getcwd()))
         
-        # 1. Determine provider by searching for the old folder
+        # 1. Determine provider and locate the old component directory
         old_folder = to_lowercase(args.old_name)
         new_folder = to_lowercase(args.new_name)
         
-        # Search for the component directory in kubernetes subdirectories
-        provider = "kubernetes"
+        provider = args.provider
         old_dir = None
+        providers_base = os.path.join(repo_root, "apis/org/openmcf/provider")
         
-        # Try kubernetes root first
-        test_path = os.path.join(repo_root, "apis/org/openmcf/provider/kubernetes", old_folder)
-        if os.path.exists(test_path):
-            old_dir = test_path
-        
-        # Try workload
-        if not old_dir:
-            test_path = os.path.join(repo_root, "apis/org/openmcf/provider/kubernetes/workload", old_folder)
-            if os.path.exists(test_path):
-                provider = "kubernetes/workload"
-                old_dir = test_path
-        
-        # Try addon
-        if not old_dir:
-            test_path = os.path.join(repo_root, "apis/org/openmcf/provider/kubernetes/addon", old_folder)
-            if os.path.exists(test_path):
-                provider = "kubernetes/addon"
-                old_dir = test_path
-        
-        # Validate old directory exists
-        if not old_dir or not os.path.exists(old_dir):
-            result['error'] = f"Old component directory does not exist for: {args.old_name} (searched: {old_folder})"
-            print(json.dumps(result), file=sys.stderr)
-            return 1
+        if provider:
+            # --provider was given: resolve the path directly, no searching
+            old_dir = os.path.join(providers_base, provider, old_folder)
+            if not os.path.exists(old_dir):
+                result['error'] = (
+                    f"Component directory does not exist at expected path: {old_dir}\n"
+                    f"  (provider={provider}, component={old_folder})"
+                )
+                print(json.dumps(result), file=sys.stderr)
+                return 1
+        else:
+            # --provider was not given: search all provider directories
+            if os.path.isdir(providers_base):
+                for entry in sorted(os.listdir(providers_base)):
+                    entry_path = os.path.join(providers_base, entry)
+                    if not os.path.isdir(entry_path) or entry.startswith('.'):
+                        continue
+                    
+                    # Check directly under this provider
+                    candidate = os.path.join(entry_path, old_folder)
+                    if os.path.exists(candidate):
+                        provider = entry
+                        old_dir = candidate
+                        break
+                    
+                    # Check one level deeper (e.g., kubernetes/workload, kubernetes/addon)
+                    for sub_entry in sorted(os.listdir(entry_path)):
+                        sub_path = os.path.join(entry_path, sub_entry)
+                        if not os.path.isdir(sub_path) or sub_entry.startswith('.'):
+                            continue
+                        candidate = os.path.join(sub_path, old_folder)
+                        if os.path.exists(candidate):
+                            provider = f"{entry}/{sub_entry}"
+                            old_dir = candidate
+                            break
+                    
+                    if old_dir:
+                        break
+            
+            if not old_dir or not os.path.exists(old_dir):
+                result['error'] = (
+                    f"Could not find component directory for: {args.old_name} "
+                    f"(searched all providers under {providers_base} for folder '{old_folder}')"
+                )
+                print(json.dumps(result), file=sys.stderr)
+                return 1
         
         result['provider'] = provider
+        print(f"Resolved provider: {provider}", file=sys.stderr)
+        print(f"Component directory: {old_dir}", file=sys.stderr)
         
         # Skip proto validation entirely - proto is already updated
         

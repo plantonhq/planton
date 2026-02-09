@@ -813,9 +813,54 @@ enum CloudResourceKind {
   }];
 
   // 2500–2799: OpenStack resources
-  OpenStackComputeKeypair = 2500 [(kind_meta) = {
+  OpenStackKeypair = 2500 [(kind_meta) = {
     provider: openstack
     version: v1
     id_prefix: "oskp"
+  }];
+  OpenStackNetwork = 2501 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osnet"
+  }];
+  OpenStackSubnet = 2502 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "ossub"
+  }];
+  OpenStackRouter = 2503 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osrtr"
+  }];
+  OpenStackRouterInterface = 2504 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osri"
+  }];
+  OpenStackSecurityGroup = 2505 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "ossg"
+  }];
+  OpenStackFloatingIp = 2506 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osfip"
+  }];
+  OpenStackNetworkPort = 2507 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osnp"
+  }];
+  OpenStackSecurityGroupRule = 2525 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "ossgr"
+  }];
+  OpenStackFloatingIpAssociate = 2526 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "osfipa"
   }];
 }

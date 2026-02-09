@@ -1,0 +1,12 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackNetworkPort
+metadata:
+  name: test-port
+spec:
+  network_id:
+    value: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  fixed_ips:
+    - subnet_id:
+        value: "b2c3d4e5-f6a7-8901-bcde-f12345678901"
+      ip_address: "192.168.1.10"
+  description: "Test port for local development"

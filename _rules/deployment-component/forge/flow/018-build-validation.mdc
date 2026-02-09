@@ -5,17 +5,18 @@ RULE NUMBER
 018
 
 TITLE
-Forge: Build Validation (make build)
+Forge: Build Validation (component-scoped go build)
 
 ROLE
-You are the PlantonCloud Code Partner working inside the developer's local workspace in Cursor. This rule validates that all Go code compiles correctly by running `make build` from the project root.
+You are the PlantonCloud Code Partner working inside the developer's local workspace in Cursor. This rule validates that the component's Go code compiles correctly by running `go build` scoped to the component directory.
 
 SCOPE
-- Run `make build` from project root
-- Compile all Go code including Pulumi modules
+- Run `go build` scoped to the component's directory tree
+- Compile the component's proto stubs, Pulumi module, and Pulumi entrypoint
 - Catch compilation errors early
 - Validate imports and dependencies
 - Do not modify code files
+- Do NOT run `make build` (that compiles the entire monorepo and is unnecessary)
 
 PREREQUISITES
 This rule should be run after:
@@ -32,15 +33,16 @@ SEQUENTIAL STEPS
      * `iac/pulumi/module/main.go`
      * `iac/pulumi/module/locals.go`
      * `iac/pulumi/module/outputs.go`
-     * Resource implementation files (e.g., `cert_manager_cert.go`)
+     * Resource implementation files (e.g., `network.go`)
    - Check that Pulumi entrypoint exists:
      * `iac/pulumi/main.go`
    - Confirm you are in the project root directory
 
 2) Execute Command:
-   - Run: `make build` from project root
-   - This command compiles all Go code in the project
-   - May take 1-3 minutes depending on project size
+   - Run: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
+   - The `...` wildcard recursively compiles all Go packages under the component:
+     proto stubs, Pulumi module, and Pulumi entrypoint
+   - Should complete in a few seconds (single component, not entire monorepo)
 
 3) Parse Output:
    - Check exit code (0 = success, non-zero = failure)
@@ -62,11 +64,10 @@ SEQUENTIAL STEPS
    - Indicate which files have errors
 
 SUCCESS CRITERIA
-- `make build` exits with code 0
+- `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` exits with code 0
 - No compilation errors
-- All Go files compile successfully
+- All Go files in the component compile successfully
 - Dependencies are resolved
-- Generated binaries are created
 
 COMMON ERRORS AND FIXES
 
@@ -121,16 +122,15 @@ Show results clearly:
    - Pulumi module files exist
    - Pulumi entrypoint exists
 
-🔨 Running: make build
+🔨 Running: go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...
 
-⏱️  Duration: 2m 15s
+⏱️  Duration: 3s
 
 ✅ Success: Exit code 0
 
 📦 Build complete
-   - All packages compiled successfully
+   - Component packages compiled successfully
    - No errors or warnings
-   - Binaries generated
 
 ✅ Build validation passed
 ```
@@ -141,25 +141,16 @@ On error:
 
 Compilation failed with X errors:
 
-1. File: iac/pulumi/module/cert_manager_cert.go:45
-   Error: undefined: gcpcertv1.CertificateType_CERTIFICATE_TYPE_UNSPECIFIED
+1. File: iac/pulumi/module/network.go:45
+   Error: undefined: networking.NewNetwork
    
    Suggested fix:
-   The enum value name may be incorrect. Check the generated spec.pb.go
-   for the correct enum value name. It might be:
-   - gcpcertv1.CertificateType_MANAGED
-   - Or the enum needs an UNSPECIFIED value
-
-2. File: iac/pulumi/module/main.go:28
-   Error: cannot use gcpProviderConfig.ServiceAccountKeyBase64 (type string) as type pulumi.StringInput
-   
-   Suggested fix:
-   Wrap the string value with pulumi.String():
-   pulumi.String(gcpProviderConfig.ServiceAccountKeyBase64)
+   Check the import path. The correct import is:
+   "github.com/pulumi/pulumi-openstack/sdk/v5/go/openstack/networking"
 
 Next steps:
 1. Fix the errors listed above
-2. Re-run: make build
+2. Re-run: go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...
 3. Proceed to next rule only after build succeeds
 ```
 
@@ -171,11 +162,10 @@ DEBUGGING TIPS
 5. **Export names**: Ensure exported symbols start with capital letters
 
 NOTES
-- This is a critical validation step before proceeding to e2e tests
-- All code must compile successfully before continuing
-- Fix all errors before proceeding to rule 011 (Pulumi e2e)
-- Run from project root directory only
+- This is a critical validation step before proceeding to test validation
+- Only the component's code is compiled, not the entire monorepo
+- Fix all errors before proceeding to rule 019 (test validation)
+- Run from project root directory
 - If errors occur, fix source files and re-run this rule
 - Build errors often cascade - fix the first error and rebuild
 - Some errors may require updating proto definitions and re-running `make protos`
-- The build includes all packages in the monorepo, not just the new resource

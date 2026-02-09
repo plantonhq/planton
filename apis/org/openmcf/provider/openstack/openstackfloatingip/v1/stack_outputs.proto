@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackfloatingip.v1;
+
+// OpenStackFloatingIpStackOutputs captures the observable outputs after
+// provisioning an OpenStack Neutron floating IP.
+//
+// The critical output is `address` -- the allocated public IP address.
+// This is the FK target for OpenStackFloatingIpAssociate.floating_ip,
+// enabling DAG wiring in InfraCharts.
+message OpenStackFloatingIpStackOutputs {
+  // floating_ip_id is the unique identifier (UUID) of the floating IP resource
+  // in OpenStack. This is the Terraform resource ID.
+  string floating_ip_id = 1;
+
+  // address is the allocated floating IP address (e.g., "203.0.113.42").
+  // This is the primary output -- consumed by OpenStackFloatingIpAssociate
+  // as a required FK target and by users for DNS configuration, firewall rules, etc.
+  string address = 2;
+
+  // floating_network_id is the UUID of the external network the floating IP
+  // was allocated from.
+  string floating_network_id = 3;
+
+  // port_id is the UUID of the port this floating IP is associated with.
+  // Empty if the floating IP is allocated but not associated (allocation-only mode).
+  string port_id = 4;
+
+  // fixed_ip is the fixed IP address on the port that the floating IP is mapped to.
+  // Empty if no port association exists.
+  string fixed_ip = 5;
+
+  // region is the OpenStack region where the floating IP was allocated.
+  string region = 6;
+}

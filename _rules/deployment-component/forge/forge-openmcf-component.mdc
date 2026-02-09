@@ -40,7 +40,7 @@ A complete deployment component includes:
 
 ## Execution Sequence
 
-The following 21 rules execute in order. Each rule is atomic and can be run individually if needed.
+The following 19 rules execute in order. Each rule is atomic and can be run individually if needed.
 
 ### Phase 1: Proto API Definitions (Rules 001-006)
 
@@ -65,25 +65,22 @@ The following 21 rules execute in order. Each rule is atomic and can be run indi
 
 11. **008-hack-manifest** - Generate iac/hack/manifest.yaml (test manifest)
 
-### Phase 5: Pulumi Implementation (Rules 009-012, 021)
+### Phase 5: Pulumi Implementation (Rules 009-010, 012, 021)
 
 12. **009-pulumi-module** - Generate module/ (main.go, locals.go, outputs.go, resources)
 13. **010-pulumi-entrypoint** - Generate entrypoint (main.go, Pulumi.yaml, Makefile)
-14. **011-pulumi-e2e** - Run Pulumi E2E test (validate deployment works)
-15. **012-pulumi-docs** - Generate iac/pulumi/README.md and debug.sh
-16. **021-pulumi-overview** - Generate iac/pulumi/overview.md (architecture)
+14. **012-pulumi-docs** - Generate iac/pulumi/README.md and debug.sh
+15. **021-pulumi-overview** - Generate iac/pulumi/overview.md (architecture)
 
-### Phase 6: Terraform Implementation (Rules 013-015)
+### Phase 6: Terraform Implementation (Rules 013, 015)
 
-17. **013-terraform-module** - Generate tf/ (variables.tf, main.tf, locals.tf, outputs.tf, provider.tf)
-18. **014-terraform-e2e** - Run Terraform E2E test (validate deployment works)
-19. **015-terraform-docs** - Generate iac/tf/README.md
+16. **013-terraform-module** - Generate tf/ (variables.tf, main.tf, locals.tf, outputs.tf, provider.tf)
+17. **015-terraform-docs** - Generate iac/tf/README.md
 
 ### Phase 7: Final Validation (Rules 018-019)
 
-20. **018-build-validation** - Run make build (verify Go code compiles)
-21. **019-test-validation** - Run make test (verify all tests pass)
-    - Includes component-specific test: `go test ./apis/.../v1/`
+18. **018-build-validation** - Run `go build ./apis/.../v1/...` (verify component Go code compiles)
+19. **019-test-validation** - Run `go test -v ./apis/.../v1/` (verify component tests pass)
     - Validates spec_test.go tests all buf.validate rules
     - Ensures validation rules are syntactically and semantically correct
 
@@ -98,11 +95,11 @@ The following 21 rules execute in order. Each rule is atomic and can be run indi
 
 The orchestrator provides progress updates:
 ```
-[1/21] ✅ Generated spec.proto
-[2/21] ✅ Added validations
-[3/21] ✅ Generated tests
+[1/19] ✅ Generated spec.proto
+[2/19] ✅ Added validations
+[3/19] ✅ Generated tests
 ...
-[21/21] ✅ All tests passed
+[19/19] ✅ All tests passed
 
 🎉 Component creation complete!
 Run @audit-openmcf-component to verify 100% ideal state compliance.
@@ -149,7 +146,7 @@ After forge completes, the component should have:
 ✅ Pulumi module that compiles and works
 ✅ Terraform module that validates and works
 ✅ Supporting files (manifests, debug scripts, module overviews)
-✅ Build validation passed (`make build`)
-✅ Full test validation passed (`make test`)
+✅ Build validation passed (`go build ./apis/.../v1/...`)
+✅ Component test validation passed (`go test -v ./apis/.../v1/`)
 
 **Result:** A production-ready deployment component matching 95-100% of ideal state with all tests passing!

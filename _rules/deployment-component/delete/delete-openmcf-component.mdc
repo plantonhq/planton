@@ -247,8 +247,8 @@ References Found:
 
 Next Steps:
   1. Update files that referenced MongodbAtlas
-  2. Run: make build (verify no import errors)
-  3. Run: make test (verify no test failures)
+  2. Run: go build (verify component no import errors)
+  3. Run: go test (verify component no test failures)
   4. Commit changes:
      git add -A
      git commit -m "Remove MongodbAtlas component"
@@ -345,8 +345,8 @@ ls apis/org/openmcf/provider/aws/obsoletecomponent/
 # ls: cannot access ... : No such file or directory ✅
 
 # Step 5: Check for broken references
-make build
-make test
+go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...
+go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
 ```
 
 ### Example 2: Quick Deletion (Known Safe)
@@ -356,7 +356,7 @@ make test
 @delete-openmcf-component TestCloudResourceOne --force --backup
 
 # Verify and commit
-make build && make test && git add -A && git commit -m "Remove test component"
+go build ./apis/org/openmcf/provider/<provider>/<component>/v1/... && go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/ && git add -A && git commit -m "Remove test component"
 ```
 
 ### Example 3: Delete After Moving
@@ -389,7 +389,7 @@ for component in TestCloudResourceOne TestCloudResourceTwo TestCloudResourceThre
 done
 
 # Verify
-make build && make test
+go build ./apis/org/openmcf/provider/<provider>/<component>/v1/... && go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
 ```
 
 ## Reference Checking
@@ -507,7 +507,7 @@ cat mongodbatlas-backup-2025-11-13-143022/enum_entry.txt
 make protos
 
 # Verify
-make build && make test
+go build ./apis/org/openmcf/provider/<provider>/<component>/v1/... && go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
 ```
 
 ### From Git History
@@ -524,7 +524,7 @@ git show <commit-before-deletion>:apis/org/openmcf/shared/cloudresourcekind/clou
 # Manually add back to current cloud_resource_kind.proto
 
 # Regenerate and verify
-make protos && make build && make test
+make protos && go build ./apis/org/openmcf/provider/<provider>/<component>/v1/... && go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
 ```
 
 ## Integration with Other Rules
@@ -569,8 +569,8 @@ make protos && make build && make test
 
 ### After Deletion
 
-1. ✅ **Verify build** - Run make build
-2. ✅ **Verify tests** - Run make test
+1. ✅ **Verify build** - Run go build
+2. ✅ **Verify tests** - Run go test
 3. ✅ **Update docs** - Remove references
 4. ✅ **Commit with context** - Good commit message
 5. ✅ **Keep backup** - Don't delete immediately
@@ -604,7 +604,7 @@ grep -r "MongodbAtlas" docs/
 @delete-openmcf-component MongodbAtlas --force --backup
 
 # Fix build errors after
-make build  # Shows what broke
+go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...  # Shows what broke
 # Fix broken imports/references
 ```
 
@@ -632,8 +632,8 @@ After deletion:
 ✅ Component folder removed
 ✅ Enum entry removed from registry
 ✅ No broken references (or documented)
-✅ Build succeeds (make build)
-✅ Tests pass (make test)
+✅ Build succeeds (go build ./apis/.../v1/...)
+✅ Tests pass (go test -v ./apis/.../v1/)
 ✅ Backup created (if --backup used)
 ✅ Deletion report generated
 ✅ Changes committed

@@ -1,6 +1,0 @@
-apiVersion: openstack.openmcf.org/v1
-kind: OpenStackComputeKeypair
-metadata:
-  name: test-keypair
-spec:
-  public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDxyz test@local"

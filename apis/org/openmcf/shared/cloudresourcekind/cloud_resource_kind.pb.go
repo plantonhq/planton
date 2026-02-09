@@ -238,7 +238,16 @@ const (
 	CloudResourceKind_OpenFgaAuthorizationModel CloudResourceKind = 2301
 	CloudResourceKind_OpenFgaRelationshipTuple  CloudResourceKind = 2302
 	// 2500–2799: OpenStack resources
-	CloudResourceKind_OpenStackComputeKeypair CloudResourceKind = 2500
+	CloudResourceKind_OpenStackKeypair             CloudResourceKind = 2500
+	CloudResourceKind_OpenStackNetwork             CloudResourceKind = 2501
+	CloudResourceKind_OpenStackSubnet              CloudResourceKind = 2502
+	CloudResourceKind_OpenStackRouter              CloudResourceKind = 2503
+	CloudResourceKind_OpenStackRouterInterface     CloudResourceKind = 2504
+	CloudResourceKind_OpenStackSecurityGroup       CloudResourceKind = 2505
+	CloudResourceKind_OpenStackFloatingIp          CloudResourceKind = 2506
+	CloudResourceKind_OpenStackNetworkPort         CloudResourceKind = 2507
+	CloudResourceKind_OpenStackSecurityGroupRule   CloudResourceKind = 2525
+	CloudResourceKind_OpenStackFloatingIpAssociate CloudResourceKind = 2526
 )
 
 // Enum value maps for CloudResourceKind.
@@ -395,7 +404,16 @@ var (
 		2300: "OpenFgaStore",
 		2301: "OpenFgaAuthorizationModel",
 		2302: "OpenFgaRelationshipTuple",
-		2500: "OpenStackComputeKeypair",
+		2500: "OpenStackKeypair",
+		2501: "OpenStackNetwork",
+		2502: "OpenStackSubnet",
+		2503: "OpenStackRouter",
+		2504: "OpenStackRouterInterface",
+		2505: "OpenStackSecurityGroup",
+		2506: "OpenStackFloatingIp",
+		2507: "OpenStackNetworkPort",
+		2525: "OpenStackSecurityGroupRule",
+		2526: "OpenStackFloatingIpAssociate",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
@@ -549,7 +567,16 @@ var (
 		"OpenFgaStore":                          2300,
 		"OpenFgaAuthorizationModel":             2301,
 		"OpenFgaRelationshipTuple":              2302,
-		"OpenStackComputeKeypair":               2500,
+		"OpenStackKeypair":                      2500,
+		"OpenStackNetwork":                      2501,
+		"OpenStackSubnet":                       2502,
+		"OpenStackRouter":                       2503,
+		"OpenStackRouterInterface":              2504,
+		"OpenStackSecurityGroup":                2505,
+		"OpenStackFloatingIp":                   2506,
+		"OpenStackNetworkPort":                  2507,
+		"OpenStackSecurityGroupRule":            2525,
+		"OpenStackFloatingIpAssociate":          2526,
 	}
 )
 
@@ -694,7 +721,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xb12\n" +
+	"\x02v1\x10\x01*\xb95\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -873,9 +900,21 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\b\x15\x10\x01\"\x04a0rs\x12%\n" +
 	"\fOpenFgaStore\x10\xfc\x11\x1a\x12\xa2\xf7\x04\x0e\b\x16\x10\x01\"\bfgastore\x122\n" +
 	"\x19OpenFgaAuthorizationModel\x10\xfd\x11\x1a\x12\xa2\xf7\x04\x0e\b\x16\x10\x01\"\bfgamodel\x121\n" +
-	"\x18OpenFgaRelationshipTuple\x10\xfe\x11\x1a\x12\xa2\xf7\x04\x0e\b\x16\x10\x01\"\bfgatuple\x12,\n" +
-	"\x17OpenStackComputeKeypair\x10\xc4\x13\x1a\x0e\xa2\xf7\x04\n" +
-	"\b\x17\x10\x01\"\x04oskp:|\n" +
+	"\x18OpenFgaRelationshipTuple\x10\xfe\x11\x1a\x12\xa2\xf7\x04\x0e\b\x16\x10\x01\"\bfgatuple\x12%\n" +
+	"\x10OpenStackKeypair\x10\xc4\x13\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x17\x10\x01\"\x04oskp\x12&\n" +
+	"\x10OpenStackNetwork\x10\xc5\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05osnet\x12%\n" +
+	"\x0fOpenStackSubnet\x10\xc6\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05ossub\x12%\n" +
+	"\x0fOpenStackRouter\x10\xc7\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05osrtr\x12-\n" +
+	"\x18OpenStackRouterInterface\x10\xc8\x13\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x17\x10\x01\"\x04osri\x12+\n" +
+	"\x16OpenStackSecurityGroup\x10\xc9\x13\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x17\x10\x01\"\x04ossg\x12)\n" +
+	"\x13OpenStackFloatingIp\x10\xca\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05osfip\x12)\n" +
+	"\x14OpenStackNetworkPort\x10\xcb\x13\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x17\x10\x01\"\x04osnp\x120\n" +
+	"\x1aOpenStackSecurityGroupRule\x10\xdd\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05ossgr\x123\n" +
+	"\x1cOpenStackFloatingIpAssociate\x10\xde\x13\x1a\x10\xa2\xf7\x04\f\b\x17\x10\x01\"\x06osfipa:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

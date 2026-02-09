@@ -70,8 +70,8 @@ Use update when you need to:
 2. Validates component tests: `go test ./apis/org/openmcf/provider/<provider>/<component>/v1/`
 3. Updates Terraform variables.tf to match spec.proto
 4. Updates examples.md with new fields
-5. Runs build validation: `make build` (rule 018)
-6. Runs full test validation: `make test` (rule 019)
+5. Runs build validation: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` (rule 018)
+6. Runs test validation: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` (rule 019)
 
 **Use when:**
 - Added new fields to spec.proto
@@ -111,9 +111,9 @@ Use update when you need to:
 1. Updates Pulumi module based on your explanation
 2. Updates Terraform module to maintain feature parity
 3. Updates tests if needed
-4. Runs build validation: `make build` (rule 018)
+4. Runs build validation: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` (rule 018)
 5. Runs E2E tests (rules 011, 014)
-6. Runs full test validation: `make test` (rule 019)
+6. Runs test validation: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` (rule 019)
 
 **Use when:**
 - Adding new resources to deployment
@@ -190,7 +190,7 @@ Based on scenario:
 - Plan regeneration sequence
 - **Must execute**: `make protos` to regenerate Go stubs
 - **Must execute**: `go test ./apis/org/openmcf/provider/<provider>/<component>/v1/` to validate spec tests
-- **Must execute**: `make build` for complete build validation
+- **Must execute**: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` for build validation
 
 **Refresh Docs:**
 - Read existing docs/README.md to understand current state
@@ -235,8 +235,8 @@ After all updates, **execute validation commands in sequence**:
 2. **Always run component tests**: `go test ./apis/org/openmcf/provider/<provider>/<component>/v1/`
    - This validates buf.validate rules in spec.proto
    - Ensures spec_test.go passes with current validation logic
-3. **If Pulumi/Go code changed**: Run `make build` to validate complete build (rule 018)
-4. **Always run full test suite**: Run `make test` to validate all tests (rule 019)
+3. **If Pulumi/Go code changed**: Run `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` to validate build (rule 018)
+4. **Always run component tests**: Run `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` to validate tests (rule 019)
 5. Generate update report
 6. Recommend running audit to verify improvements
 
@@ -287,8 +287,8 @@ Show:
 # - go test ./apis/org/openmcf/provider/gcp/gcpcloudsql/v1/ (validate spec tests)
 # - Update Terraform variables.tf (add enable_ssl variable)
 # - Update examples.md (show enable_ssl usage)
-# - make build (validate complete build)
-# - make test (validate all tests)
+# - go build ./apis/org/openmcf/provider/<provider>/<component>/v1/... (validate build)
+# - go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/ (validate tests)
 
 # Result: All files consistent with new schema
 ```
@@ -418,14 +418,14 @@ Update validates after each major change:
 2. Run component tests: `go test ./apis/org/openmcf/provider/<provider>/<component>/v1/`
    - Validates buf.validate rules in spec.proto are correct
    - Ensures spec_test.go passes with current validation logic
-3. Run `make build` to validate complete build
+3. Run `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` to validate build
 
 **After Pulumi/Go Code Changes:**
-1. Run `make build` from project root to validate complete build
-2. Run component tests: `go test ./apis/org/openmcf/provider/<provider>/<component>/v1/`
+1. Run `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` to validate build
+2. Run component tests: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
 
 **Always (Final Validation):**
-1. Run full test suite: `make test` to validate all tests pass
+1. Run component tests: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` to validate tests pass
 2. Verify examples work with current schema
 
 **Critical:** Component-specific tests must pass before proceeding. These tests validate that buf.validate rules work correctly.
@@ -585,8 +585,8 @@ After update completes:
 4. Updates spec_test.go to use pointers for optional fields
 5. Updates IaC module to use getter methods (e.g., `GetFieldName()`)
 6. Removes any defensive default checks (framework handles it)
-7. Runs build validation: `make build`
-8. Runs test validation: `make test`
+7. Runs build validation: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
+8. Runs test validation: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
 
 **Use when:**
 - Audit or review reveals defaults are only in comments

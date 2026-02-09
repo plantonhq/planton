@@ -1,6 +1,6 @@
 # Pulumi Module Authoring Guide
 
-Purpose: implement the Pulumi module under `iac/pulumi/module` for a resource kind. Do not add BUILD.bazel here; `make build` will handle it.
+Purpose: implement the Pulumi module under `iac/pulumi/module` for a resource kind. Do not add BUILD.bazel here; `make protos` (which runs Gazelle) will handle it.
 
 ## Inputs to read
 - `api.proto`, `spec.proto`, `stack_input.proto`, `stack_outputs.proto`

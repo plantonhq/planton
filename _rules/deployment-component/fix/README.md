@@ -337,11 +337,11 @@ Component Tests:
   ✅ PASS (18/18 tests, +2 new tests)
 
 Build Validation:
-  make build
+  go build ./apis/.../v1/...
   ✅ Success (all packages compiled)
 
 Full Test Suite:
-  make test
+  go test -v ./apis/.../v1/
   ✅ PASS (156/156 tests)
 
 All validation passed!

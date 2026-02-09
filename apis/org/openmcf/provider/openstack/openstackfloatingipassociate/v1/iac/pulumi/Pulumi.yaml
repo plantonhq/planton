@@ -1,0 +1,3 @@
+name: openstack-floating-ip-associate
+runtime: go
+description: Pulumi module for OpenStackFloatingIpAssociate
