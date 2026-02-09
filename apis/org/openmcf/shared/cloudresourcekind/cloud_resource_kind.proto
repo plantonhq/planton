@@ -823,4 +823,9 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "osnet"
   }];
+  OpenStackSubnet = 2502 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "ossub"
+  }];
 }

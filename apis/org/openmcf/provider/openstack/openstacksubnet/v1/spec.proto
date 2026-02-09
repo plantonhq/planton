@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstacksubnet.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// OpenStackSubnetSpec defines the configuration for an OpenStack Neutron subnet.
+//
+// A subnet provides IP address allocation for a network. It defines a CIDR block,
+// gateway, DNS servers, and DHCP settings. Every OpenStack workload that needs IP
+// connectivity requires at least one subnet attached to a network.
+//
+// The subnet name is derived from metadata.name.
+//
+// Terraform resource: openstack_networking_subnet_v2
+// Pulumi resource: openstack.networking.Subnet
+message OpenStackSubnetSpec {
+  option (buf.validate.message).cel = {
+    id: "gateway.mutual_exclusion"
+    message: "gateway_ip and no_gateway are mutually exclusive -- set one or neither, not both"
+    expression: "!(this.gateway_ip != '' && this.no_gateway)"
+  };
+
+  // network_id is the ID of the network to which this subnet belongs.
+  // This is the defining relationship -- every subnet must belong to exactly one network.
+  // Can reference an OpenStackNetwork resource's output or be a literal network UUID.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef network_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackNetwork,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
+  ];
+
+  // cidr is the IP address range for this subnet in CIDR notation.
+  // Example IPv4: "192.168.1.0/24". Example IPv6: "2001:db8::/64".
+  // The CIDR must be valid for the selected ip_version.
+  string cidr = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "cidr.valid_format"
+      message: "cidr must be valid CIDR notation (e.g., '192.168.1.0/24' or '2001:db8::/64')"
+      expression: "this.matches('^[0-9a-fA-F.:]+/[0-9]{1,3}$')"
+    }
+  ];
+
+  // ip_version is the IP protocol version for this subnet.
+  // Must be 4 (IPv4) or 6 (IPv6).
+  // Default: 4
+  optional int32 ip_version = 3 [
+    (org.openmcf.shared.options.default) = "4",
+    (buf.validate.field).cel = {
+      id: "ip_version.valid"
+      message: "ip_version must be 4 (IPv4) or 6 (IPv6)"
+      expression: "this == 4 || this == 6"
+    }
+  ];
+
+  // gateway_ip is the IP address of the subnet gateway.
+  // If omitted (and no_gateway is false), OpenStack automatically assigns the first
+  // usable IP in the CIDR as the gateway.
+  // Mutually exclusive with no_gateway.
+  string gateway_ip = 4;
+
+  // no_gateway disables the gateway on this subnet when set to true.
+  // Use this for isolated subnets that do not need routing (e.g., storage networks).
+  // Mutually exclusive with gateway_ip.
+  bool no_gateway = 5;
+
+  // enable_dhcp controls whether DHCP is enabled on this subnet.
+  // When enabled, OpenStack's DHCP agent assigns IP addresses to ports on this subnet.
+  // Default: true
+  optional bool enable_dhcp = 6 [(org.openmcf.shared.options.default) = "true"];
+
+  // dns_nameservers is a list of DNS server IP addresses for this subnet.
+  // These are pushed to instances via DHCP.
+  // Example: ["8.8.8.8", "8.8.4.4"]
+  repeated string dns_nameservers = 7;
+
+  // allocation_pools defines the sub-ranges of the CIDR from which IPs are allocated.
+  // If omitted, the entire CIDR (minus gateway and network/broadcast addresses) is used.
+  // Each pool specifies a start and end IP address.
+  repeated AllocationPool allocation_pools = 8;
+
+  // description is a human-readable description of the subnet.
+  // This is stored on the OpenStack resource and visible in Horizon and API responses.
+  string description = 9;
+
+  // tags are string tags to associate with the subnet in OpenStack.
+  // Tags are stored on the OpenStack resource and can be used for filtering
+  // and organization in the OpenStack API and Horizon dashboard.
+  repeated string tags = 10 [(buf.validate.field).repeated.unique = true];
+
+  // region overrides the region from the provider config for this subnet.
+  // If omitted, the region from the OpenStack provider config is used.
+  // Example: "RegionOne"
+  string region = 11;
+}
+
+// AllocationPool defines an IP allocation range within a subnet.
+// The range is inclusive: both start and end addresses are allocatable.
+message AllocationPool {
+  // start is the first IP address in the allocation range.
+  // Example: "192.168.1.100"
+  string start = 1 [(buf.validate.field).required = true];
+
+  // end is the last IP address in the allocation range.
+  // Example: "192.168.1.200"
+  string end = 2 [(buf.validate.field).required = true];
+}

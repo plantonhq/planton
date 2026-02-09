@@ -1,0 +1,12 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackSubnet
+metadata:
+  name: test-subnet
+spec:
+  network_id:
+    value: "e0a1f622-9aab-4a48-8c8c-3b0c7e2a9b1d"
+  cidr: "192.168.1.0/24"
+  dns_nameservers:
+    - "8.8.8.8"
+    - "8.8.4.4"
+  description: "Test subnet for local development"
