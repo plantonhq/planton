@@ -57,10 +57,10 @@ func createIngressLoadBalancer(
 						TargetPort: pulumi.String("tcp"),
 					},
 				},
-			// Selector targets ClickHouse pods managed by Altinity operator
-			Selector: pulumi.ToStringMap(locals.ClickhousePodSelectorLabels),
-		},
-	}, opts...)
+				// Selector targets ClickHouse pods managed by Altinity operator
+				Selector: pulumi.ToStringMap(locals.ClickhousePodSelectorLabels),
+			},
+		}, opts...)
 
 	if err != nil {
 		return errors.Wrapf(err, "failed to create external load balancer service")

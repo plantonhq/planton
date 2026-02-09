@@ -45,7 +45,12 @@ The following 19 rules execute in order. Each rule is atomic and can be run indi
 ### Phase 1: Proto API Definitions (Rules 001-006)
 
 1. **001-spec-proto** - Generate spec.proto (minimal schema, no validations)
+   - **Includes proactive default identification**: Every field is reviewed against provider docs.
+     Fields with well-known defaults (ports, content types, protocols, storage classes, etc.)
+     are marked `optional` with `(org.openmcf.shared.options.default)` so OpenMCF middleware
+     handles defaults centrally. This eliminates defensive default logic in IaC modules.
 2. **002-spec-validate** - Add buf.validate rules and CEL validations
+   - Also verifies that all identified defaults carry the formal `optional` + default field option.
 3. **003-spec-tests** - Generate spec_test.go with validation tests
 4. **004-stack-outputs** - Generate stack_outputs.proto (deployment outputs)
 5. **005-api** - Generate api.proto (KRM wiring: metadata/spec/status)

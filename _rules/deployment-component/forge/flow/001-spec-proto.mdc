@@ -53,3 +53,21 @@ DEFAULT FIELD OPTIONS
 - Example: `optional string namespace = 1 [(org.openmcf.shared.options.default) = "external-dns"];`
 - The `DEFAULT_REQUIRES_OPTIONAL` linter enforces this pattern at build time
 - See `.cursor/info/spec_proto.md` for full guidelines
+
+PROACTIVE DEFAULT IDENTIFICATION (MANDATORY STEP)
+- During spec authoring, you MUST review EVERY field and ask: "Does this field have a well-known sensible default from the provider's documentation?"
+- If the provider docs say "if not specified, defaults to X", add `optional` + `(org.openmcf.shared.options.default)`.
+- Do NOT leave defaults as comments only. If a default exists, it MUST use the formal pattern.
+- Common categories of fields that typically have defaults:
+  - **MIME/content types**: `application/octet-stream`, `text/html`, `application/json`
+  - **Ports**: 443 (HTTPS), 80 (HTTP), 5432 (Postgres), 3306 (MySQL), 6379 (Redis)
+  - **Protocols**: `TCP`, `HTTPS`, `TLS`
+  - **Storage classes/tiers**: `STANDARD`, `gp3`, `pd-standard`
+  - **Image tags**: Latest stable version from provider docs
+  - **Replica counts**: 1 (single instance default)
+  - **Retention periods**: Provider-documented defaults (e.g., 7 days)
+  - **ACLs/visibility**: `private` (secure default)
+  - **Regions**: Only if the component is region-scoped with an obvious default
+- The heuristic: if 80%+ of users would use the same value, it deserves a default.
+- This step prevents IaC modules from needing defensive default logic and ensures
+  OpenMCF middleware handles defaults centrally.

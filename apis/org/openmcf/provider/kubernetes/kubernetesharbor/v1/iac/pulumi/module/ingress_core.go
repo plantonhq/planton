@@ -128,8 +128,8 @@ func createCoreIngress(ctx *pulumi.Context, locals *Locals,
 						},
 					},
 				},
-		},
-	}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
+			},
+		}, append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)...)
 
 	return err
 }

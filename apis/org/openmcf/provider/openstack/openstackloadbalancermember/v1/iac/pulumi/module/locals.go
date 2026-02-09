@@ -8,8 +8,8 @@ import (
 
 // Locals bundles the data we need throughout the module.
 type Locals struct {
-	OpenStackProviderConfig      *openstackprovider.OpenStackProviderConfig
-	OpenStackLoadBalancerMember  *openstackloadbalancermemberv1.OpenStackLoadBalancerMember
+	OpenStackProviderConfig     *openstackprovider.OpenStackProviderConfig
+	OpenStackLoadBalancerMember *openstackloadbalancermemberv1.OpenStackLoadBalancerMember
 	// PoolId is the resolved pool ID from the StringValueOrRef.
 	PoolId string
 	// SubnetId is the optional resolved subnet ID from the StringValueOrRef.

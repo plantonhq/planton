@@ -44,3 +44,13 @@ DEFAULT FIELD OPTIONS (SEPARATE FROM VALIDATION)
 - Example combining both: `optional string tag = 1 [(org.openmcf.shared.options.default) = "2.331.0", (buf.validate.field).string.min_len = 1];`
 - The `DEFAULT_REQUIRES_OPTIONAL` linter enforces this pattern at build time
 - See `.cursor/info/spec_validate.md` for full guidelines
+
+VERIFY DEFAULTS DURING VALIDATION PASS
+- When adding validations, also verify that all fields identified in rule 001 as having
+  defaults actually carry the `optional` keyword and `(org.openmcf.shared.options.default)`.
+- If you find a field whose comment says "defaults to X" but lacks the formal field option,
+  add both `optional` and the default option now (this counts as adding options, not schema change).
+- Defaults and validations are complementary, not alternatives:
+  - A field can have BOTH a default AND a validation (e.g., `min_len = 1` + default = "standard")
+  - The default ensures the field is populated; the validation ensures the value is acceptable
+- Example: `optional string content_type = 4 [(org.openmcf.shared.options.default) = "application/octet-stream"];`

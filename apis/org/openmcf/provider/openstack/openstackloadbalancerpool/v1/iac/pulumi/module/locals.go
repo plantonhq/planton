@@ -8,7 +8,7 @@ import (
 
 // Locals bundles the data we need throughout the module.
 type Locals struct {
-	OpenStackProviderConfig  *openstackprovider.OpenStackProviderConfig
+	OpenStackProviderConfig   *openstackprovider.OpenStackProviderConfig
 	OpenStackLoadBalancerPool *openstackloadbalancerpoolv1.OpenStackLoadBalancerPool
 	// ListenerId is the resolved listener ID from the StringValueOrRef.
 	ListenerId string

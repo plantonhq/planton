@@ -9,6 +9,7 @@ go_library(
         "kowl.go",
         "locals.go",
         "main.go",
+        "namespace.go",
         "outputs.go",
         "schema_registry.go",
         "variables.go",

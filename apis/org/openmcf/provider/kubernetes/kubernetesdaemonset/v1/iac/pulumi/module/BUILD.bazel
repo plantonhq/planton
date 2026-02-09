@@ -8,6 +8,7 @@ go_library(
         "image_pull_secret.go",
         "locals.go",
         "main.go",
+        "namespace.go",
         "outputs.go",
         "rbac.go",
         "secret.go",

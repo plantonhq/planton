@@ -185,9 +185,9 @@ var _ = ginkgo.Describe("OpenStackLoadBalancerListenerSpec Validation Tests", fu
 					Spec: &OpenStackLoadBalancerListenerSpec{
 						LoadbalancerId:         newStringValueOrRef("a1b2c3d4-e5f6-7890-abcd-ef1234567890"),
 						Protocol:               "TERMINATED_HTTPS",
-						ProtocolPort:            443,
-						Description:             "Production HTTPS listener with TLS termination",
-						ConnectionLimit:         &connLimit,
+						ProtocolPort:           443,
+						Description:            "Production HTTPS listener with TLS termination",
+						ConnectionLimit:        &connLimit,
 						DefaultTlsContainerRef: "https://barbican.example.com/v1/secrets/cert-abc-123",
 						InsertHeaders: map[string]string{
 							"X-Forwarded-For":   "true",

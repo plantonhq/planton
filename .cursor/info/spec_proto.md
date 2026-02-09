@@ -162,6 +162,56 @@ When fields become `optional`:
 - OpenMCF middleware guarantees defaults are applied before IaC modules run
 - **No defensive coding needed** in IaC modules
 
+## Proactive Default Identification
+
+When authoring a spec, you MUST review every field and proactively identify which ones should carry a default value. This is not optional -- it is a core part of spec authoring.
+
+### Decision Checklist
+
+For each field, ask:
+
+1. **Does the provider documentation say "if not specified, defaults to X"?** If yes, add `optional` + default.
+2. **Would 80%+ of users use the same value?** If yes, it deserves a default.
+3. **Is there a secure/sensible zero-configuration value?** (e.g., `private` for ACL, `TCP` for protocol) If yes, make it the default.
+4. **Is the field a format/type identifier with a standard fallback?** (e.g., `application/octet-stream` for MIME type) If yes, add the default.
+
+### Common Default Categories
+
+| Category | Examples | Typical Defaults |
+|----------|----------|-----------------|
+| MIME/content types | `content_type` | `application/octet-stream` |
+| Ports | `port`, `service_port` | 443, 80, 5432, 3306, 6379 |
+| Protocols | `protocol`, `network_protocol` | `TCP`, `HTTPS` |
+| Storage classes | `storage_class`, `disk_type` | `STANDARD`, `gp3`, `pd-standard` |
+| Image tags | `tag`, `image_tag` | Latest stable from provider docs |
+| Replica counts | `replicas`, `min_replicas` | `1` |
+| Retention | `retention_days` | Provider-documented default (e.g., `7`) |
+| ACLs/visibility | `acl`, `visibility` | `private` |
+| Encoding | `content_encoding` | Often omitted (no default needed) |
+
+### Anti-Pattern: Comment-Only Defaults
+
+```proto
+// WRONG: Default documented in comment but not enforced
+// Content type of the object. S3 defaults to application/octet-stream.
+string content_type = 4;
+```
+
+### Correct Pattern
+
+```proto
+// Content type of the object.
+// Default: application/octet-stream
+optional string content_type = 4 [(org.openmcf.shared.options.default) = "application/octet-stream"];
+```
+
+### Why This Matters
+
+- OpenMCF middleware populates defaults before IaC modules run
+- IaC modules (Pulumi, Terraform) never need defensive default logic
+- Defaults are centralized in one place (the proto schema), not scattered across implementations
+- Users get a working deployment with minimal configuration
+
 ## Notes
 - Use official provider docs as reference while keeping the draft minimal.
 - Validations (buf/validate + CEL) are added by a later rule.

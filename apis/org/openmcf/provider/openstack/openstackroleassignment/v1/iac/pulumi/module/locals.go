@@ -8,8 +8,8 @@ import (
 
 // Locals bundles the data we need throughout the module.
 type Locals struct {
-	OpenStackProviderConfig  *openstackprovider.OpenStackProviderConfig
-	OpenStackRoleAssignment  *openstackrav1.OpenStackRoleAssignment
+	OpenStackProviderConfig *openstackprovider.OpenStackProviderConfig
+	OpenStackRoleAssignment *openstackrav1.OpenStackRoleAssignment
 }
 
 // initializeLocals copies fields from the stack input into Locals.

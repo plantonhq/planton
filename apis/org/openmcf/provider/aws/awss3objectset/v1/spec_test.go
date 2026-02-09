@@ -30,10 +30,10 @@ func minimalValidSpec() *AwsS3ObjectSetSpec {
 		Objects: []*AwsS3Object{
 			{
 				Key: "config/app.json",
-			Source: &AwsS3Object_Content{
-				Content: "{\"key\": \"value\"}",
-			},
-			ContentType: stringPtr("application/json"),
+				Source: &AwsS3Object_Content{
+					Content: "{\"key\": \"value\"}",
+				},
+				ContentType: stringPtr("application/json"),
 			},
 		},
 	}
@@ -53,12 +53,12 @@ var _ = ginkgo.Describe("AwsS3ObjectSetSpec Validation Tests", func() {
 			ginkgo.It("should not return a validation error with multiple objects", func() {
 				spec := minimalValidSpec()
 				spec.Objects = append(spec.Objects, &AwsS3Object{
-				Key: "assets/logo.png",
-				Source: &AwsS3Object_ContentBase64{
-					ContentBase64: "iVBORw0KGgoAAAANSUhEUg==",
-				},
-				ContentType: stringPtr("image/png"),
-			})
+					Key: "assets/logo.png",
+					Source: &AwsS3Object_ContentBase64{
+						ContentBase64: "iVBORw0KGgoAAAANSUhEUg==",
+					},
+					ContentType: stringPtr("image/png"),
+				})
 				err := protovalidate.Validate(spec)
 				gomega.Expect(err).To(gomega.BeNil())
 			})
