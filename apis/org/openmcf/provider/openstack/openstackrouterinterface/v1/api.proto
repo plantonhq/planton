@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackrouterinterface.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/openstack/openstackrouterinterface/v1/spec.proto";
+import "org/openmcf/provider/openstack/openstackrouterinterface/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OpenStackRouterInterface is a Kubernetes Resource Model (KRM) style resource
+// for attaching OpenStack Neutron routers to subnets.
+//
+// A router interface is a join resource that creates a port on a subnet and
+// attaches it to a router, providing L3 routing for that subnet. This is the
+// glue between Layer 2 (subnet) and Layer 3 (router) -- without it, a subnet
+// has no route to other subnets or to the external network.
+message OpenStackRouterInterface {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'openstack.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OpenStackRouterInterface'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OpenStackRouterInterfaceSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OpenStackRouterInterfaceStatus status = 5;
+}
+
+// OpenStackRouterInterfaceStatus represents the observed state of an OpenStack
+// router interface attachment.
+message OpenStackRouterInterfaceStatus {
+  // stack-outputs from the IaC deployment
+  OpenStackRouterInterfaceStackOutputs outputs = 1;
+}
