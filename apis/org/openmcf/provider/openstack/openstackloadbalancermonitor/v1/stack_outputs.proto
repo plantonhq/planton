@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackloadbalancermonitor.v1;
+
+// OpenStackLoadBalancerMonitorStackOutputs captures the observable outputs after
+// provisioning an Octavia health monitor in OpenStack.
+message OpenStackLoadBalancerMonitorStackOutputs {
+  // monitor_id is the unique identifier (UUID) of the health monitor.
+  string monitor_id = 1;
+
+  // name is the name of the monitor (derived from metadata.name).
+  string name = 2;
+
+  // type is the health check type (HTTP, HTTPS, PING, TCP, TLS-HELLO, UDP-CONNECT).
+  string type = 3;
+
+  // pool_id is the ID of the monitored pool.
+  string pool_id = 4;
+
+  // region is the OpenStack region where the monitor was created.
+  string region = 5;
+}

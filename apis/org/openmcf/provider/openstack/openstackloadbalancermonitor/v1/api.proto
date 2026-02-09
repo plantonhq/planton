@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackloadbalancermonitor.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/openstack/openstackloadbalancermonitor/v1/spec.proto";
+import "org/openmcf/provider/openstack/openstackloadbalancermonitor/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OpenStackLoadBalancerMonitor is a Kubernetes Resource Model (KRM) style resource
+// for managing Octavia health monitors in OpenStack.
+//
+// A health monitor periodically probes pool members to determine their health status.
+// Unhealthy members are automatically removed from the pool's traffic rotation until
+// they recover. Monitors support HTTP, HTTPS, PING, TCP, TLS-HELLO, and UDP-CONNECT
+// check types.
+message OpenStackLoadBalancerMonitor {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'openstack.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OpenStackLoadBalancerMonitor'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OpenStackLoadBalancerMonitorSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OpenStackLoadBalancerMonitorStatus status = 5;
+}
+
+// OpenStackLoadBalancerMonitorStatus represents the observed state of an Octavia health monitor.
+message OpenStackLoadBalancerMonitorStatus {
+  // stack-outputs from the IaC deployment
+  OpenStackLoadBalancerMonitorStackOutputs outputs = 1;
+}

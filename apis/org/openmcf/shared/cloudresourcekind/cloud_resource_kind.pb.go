@@ -257,6 +257,11 @@ const (
 	CloudResourceKind_OpenStackApplicationCredential CloudResourceKind = 2513
 	CloudResourceKind_OpenStackImage                 CloudResourceKind = 2514
 	CloudResourceKind_OpenStackRoleAssignment        CloudResourceKind = 2515
+	CloudResourceKind_OpenStackLoadBalancer          CloudResourceKind = 2516
+	CloudResourceKind_OpenStackLoadBalancerListener  CloudResourceKind = 2517
+	CloudResourceKind_OpenStackLoadBalancerPool      CloudResourceKind = 2518
+	CloudResourceKind_OpenStackLoadBalancerMember    CloudResourceKind = 2519
+	CloudResourceKind_OpenStackLoadBalancerMonitor   CloudResourceKind = 2520
 )
 
 // Enum value maps for CloudResourceKind.
@@ -432,6 +437,11 @@ var (
 		2513: "OpenStackApplicationCredential",
 		2514: "OpenStackImage",
 		2515: "OpenStackRoleAssignment",
+		2516: "OpenStackLoadBalancer",
+		2517: "OpenStackLoadBalancerListener",
+		2518: "OpenStackLoadBalancerPool",
+		2519: "OpenStackLoadBalancerMember",
+		2520: "OpenStackLoadBalancerMonitor",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
@@ -604,6 +614,11 @@ var (
 		"OpenStackApplicationCredential":        2513,
 		"OpenStackImage":                        2514,
 		"OpenStackRoleAssignment":               2515,
+		"OpenStackLoadBalancer":                 2516,
+		"OpenStackLoadBalancerListener":         2517,
+		"OpenStackLoadBalancerPool":             2518,
+		"OpenStackLoadBalancerMember":           2519,
+		"OpenStackLoadBalancerMonitor":          2520,
 	}
 )
 
@@ -748,7 +763,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xbb8\n" +
+	"\x02v1\x10\x01*\xb6:\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -953,7 +968,13 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\b\x17\x10\x01\"\x04osac\x12$\n" +
 	"\x0eOpenStackImage\x10\xd2\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05osimg\x12,\n" +
 	"\x17OpenStackRoleAssignment\x10\xd3\x13\x1a\x0e\xa2\xf7\x04\n" +
-	"\b\x17\x10\x01\"\x04osra:|\n" +
+	"\b\x17\x10\x01\"\x04osra\x12*\n" +
+	"\x15OpenStackLoadBalancer\x10\xd4\x13\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x17\x10\x01\"\x04oslb\x123\n" +
+	"\x1dOpenStackLoadBalancerListener\x10\xd5\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05oslbl\x12/\n" +
+	"\x19OpenStackLoadBalancerPool\x10\xd6\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05oslbp\x121\n" +
+	"\x1bOpenStackLoadBalancerMember\x10\xd7\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05oslbm\x124\n" +
+	"\x1cOpenStackLoadBalancerMonitor\x10\xd8\x13\x1a\x11\xa2\xf7\x04\r\b\x17\x10\x01\"\aoslbmon:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

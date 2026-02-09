@@ -1,0 +1,10 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackLoadBalancerListener
+metadata:
+  name: test-http-listener
+spec:
+  loadbalancer_id:
+    value: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  protocol: "HTTP"
+  protocol_port: 80
+  description: "Test HTTP listener for local development"

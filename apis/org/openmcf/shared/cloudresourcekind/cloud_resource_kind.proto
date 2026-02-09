@@ -908,4 +908,29 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "osra"
   }];
+  OpenStackLoadBalancer = 2516 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "oslb"
+  }];
+  OpenStackLoadBalancerListener = 2517 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "oslbl"
+  }];
+  OpenStackLoadBalancerPool = 2518 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "oslbp"
+  }];
+  OpenStackLoadBalancerMember = 2519 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "oslbm"
+  }];
+  OpenStackLoadBalancerMonitor = 2520 [(kind_meta) = {
+    provider: openstack
+    version: v1
+    id_prefix: "oslbmon"
+  }];
 }

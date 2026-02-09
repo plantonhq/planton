@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackloadbalancer.v1;
+
+// OpenStackLoadBalancerStackOutputs captures the observable outputs after provisioning
+// an Octavia load balancer in OpenStack.
+//
+// The loadbalancer_id is the primary output referenced by downstream components:
+// - OpenStackLoadBalancerListener (loadbalancer_id)
+message OpenStackLoadBalancerStackOutputs {
+  // loadbalancer_id is the unique identifier (UUID) of the load balancer.
+  // This is the primary output used as a foreign key by listeners.
+  string loadbalancer_id = 1;
+
+  // name is the name of the load balancer (derived from metadata.name).
+  string name = 2;
+
+  // vip_address is the Virtual IP address allocated to the load balancer.
+  // This is the IP that clients connect to.
+  string vip_address = 3;
+
+  // vip_port_id is the Neutron port ID of the VIP.
+  // Useful for attaching security groups or floating IPs to the VIP.
+  string vip_port_id = 4;
+
+  // vip_subnet_id is the subnet where the VIP was allocated.
+  string vip_subnet_id = 5;
+
+  // region is the OpenStack region where the load balancer was created.
+  string region = 6;
+}

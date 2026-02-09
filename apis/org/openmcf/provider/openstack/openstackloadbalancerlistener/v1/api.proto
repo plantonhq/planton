@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package org.openmcf.provider.openstack.openstackloadbalancerlistener.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/openstack/openstackloadbalancerlistener/v1/spec.proto";
+import "org/openmcf/provider/openstack/openstackloadbalancerlistener/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OpenStackLoadBalancerListener is a Kubernetes Resource Model (KRM) style resource
+// for managing Octavia listeners in OpenStack.
+//
+// A listener defines a protocol and port combination on a load balancer that accepts
+// incoming traffic. Each listener is associated with exactly one load balancer and
+// forwards traffic to a backend pool. For TLS termination, the listener references
+// a Barbican secret container holding the certificate.
+message OpenStackLoadBalancerListener {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'openstack.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OpenStackLoadBalancerListener'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OpenStackLoadBalancerListenerSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OpenStackLoadBalancerListenerStatus status = 5;
+}
+
+// OpenStackLoadBalancerListenerStatus represents the observed state of an Octavia listener.
+message OpenStackLoadBalancerListenerStatus {
+  // stack-outputs from the IaC deployment
+  OpenStackLoadBalancerListenerStackOutputs outputs = 1;
+}
