@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awss3objectset.v1;
+
+import "org/openmcf/provider/aws/awss3objectset/v1/api.proto";
+import "org/openmcf/provider/aws/provider.proto";
+
+//aws-s3-object-set stack-input
+message AwsS3ObjectSetStackInput {
+  //target cloud-resource
+  AwsS3ObjectSet target = 1;
+  //provider-config
+  org.openmcf.provider.aws.AwsProviderConfig provider_config = 2;
+}
