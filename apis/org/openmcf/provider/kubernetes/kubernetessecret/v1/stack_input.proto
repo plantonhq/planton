@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetessecret.v1;
+
+import "org/openmcf/provider/kubernetes/kubernetessecret/v1/api.proto";
+import "org/openmcf/provider/kubernetes/provider.proto";
+
+/**
+ * **KubernetesSecretStackInput** defines the input structure for deploying a Kubernetes Secret.
+ * This message contains the target secret specification and the Kubernetes cluster configuration
+ * required by the IaC modules (Pulumi and Terraform) to create and configure the secret.
+ */
+message KubernetesSecretStackInput {
+  /**
+   * The target Kubernetes Secret resource to be created.
+   * Contains the complete specification including metadata, secret type, data,
+   * and associated configuration.
+   */
+  KubernetesSecret target = 1;
+
+  /**
+   * Kubernetes cluster configuration.
+   * Contains connection details and credentials for the target Kubernetes cluster
+   * where the secret will be created.
+   */
+  org.openmcf.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

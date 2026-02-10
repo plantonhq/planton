@@ -10,19 +10,19 @@ import (
 
 // Locals holds computed values derived from the stack input for use across the module.
 type Locals struct {
-	Context   *pulumi.Context
-	Spec      *kubernetesservicev1.KubernetesServiceSpec
-	Namespace string
-	Name      string
-	Labels    map[string]string
-	Annotations map[string]string
-	Selector  map[string]string
-	Ports     []*kubernetesservicev1.KubernetesServicePort
-	ServiceType string
-	Headless    bool
-	ExternalDnsName string
-	ExternalTrafficPolicy string
-	SessionAffinity       string
+	Context                  *pulumi.Context
+	Spec                     *kubernetesservicev1.KubernetesServiceSpec
+	Namespace                string
+	Name                     string
+	Labels                   map[string]string
+	Annotations              map[string]string
+	Selector                 map[string]string
+	Ports                    []*kubernetesservicev1.KubernetesServicePort
+	ServiceType              string
+	Headless                 bool
+	ExternalDnsName          string
+	ExternalTrafficPolicy    string
+	SessionAffinity          string
 	LoadBalancerSourceRanges []string
 }
 

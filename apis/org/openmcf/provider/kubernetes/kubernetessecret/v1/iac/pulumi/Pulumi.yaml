@@ -1,0 +1,3 @@
+name: kubernetes-secret
+runtime: go
+description: Kubernetes Secret deployment with type-safe data variants for Opaque, TLS, DockerConfigJson, BasicAuth, and SSHAuth

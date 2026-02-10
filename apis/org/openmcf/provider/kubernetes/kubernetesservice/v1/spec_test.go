@@ -105,9 +105,9 @@ var _ = ginkgo.Describe("KubernetesServiceSpec validations", func() {
 
 		ginkgo.It("accepts an ExternalName service", func() {
 			spec := &KubernetesServiceSpec{
-				Namespace:      "production",
-				Name:           "external-db",
-				Type:           svcType(KubernetesServiceSpec_external_name),
+				Namespace:       "production",
+				Name:            "external-db",
+				Type:            svcType(KubernetesServiceSpec_external_name),
 				ExternalDnsName: "my-database.us-east-1.rds.amazonaws.com",
 			}
 			err := protovalidate.Validate(spec)
@@ -352,9 +352,9 @@ var _ = ginkgo.Describe("KubernetesServiceSpec validations", func() {
 
 		ginkgo.It("rejects ExternalName type without external_dns_name", func() {
 			spec := &KubernetesServiceSpec{
-				Namespace:      "default",
-				Name:           "external-svc",
-				Type:           svcType(KubernetesServiceSpec_external_name),
+				Namespace:       "default",
+				Name:            "external-svc",
+				Type:            svcType(KubernetesServiceSpec_external_name),
 				ExternalDnsName: "",
 			}
 			err := protovalidate.Validate(spec)

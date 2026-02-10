@@ -7,12 +7,12 @@ import (
 
 // Output key constants aligned with KubernetesServiceStackOutputs field names.
 const (
-	OutputServiceName        = "service_name"
-	OutputNamespace          = "namespace"
-	OutputType               = "type"
-	OutputClusterIP          = "cluster_ip"
+	OutputServiceName         = "service_name"
+	OutputNamespace           = "namespace"
+	OutputType                = "type"
+	OutputClusterIP           = "cluster_ip"
 	OutputLoadBalancerIngress = "load_balancer_ingress"
-	OutputInternalDnsName    = "internal_dns_name"
+	OutputInternalDnsName     = "internal_dns_name"
 )
 
 // exportOutputs exports the stack outputs from the created Kubernetes Service resource.

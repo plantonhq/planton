@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetessecret.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/kubernetes/kubernetessecret/v1/spec.proto";
+import "org/openmcf/provider/kubernetes/kubernetessecret/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+/**
+ * **KubernetesSecret** defines a Kubernetes Secret resource following the Kubernetes Resource Model (KRM).
+ * This resource represents a complete secret deployment with type-safe data variants for
+ * Opaque, TLS, DockerConfigJson, BasicAuth, and SSHAuth secret types.
+ */
+message KubernetesSecret {
+  // API version for this resource.
+  // Always set to "kubernetes.openmcf.org/v1".
+  string api_version = 1 [(buf.validate.field).string.const = "kubernetes.openmcf.org/v1"];
+
+  // Resource kind identifier.
+  // Always set to "KubernetesSecret".
+  string kind = 2 [(buf.validate.field).string.const = "KubernetesSecret"];
+
+  // Metadata for the Kubernetes Secret resource.
+  // Includes standard fields like name, organization, environment, etc.
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // Specification of the desired state for the Kubernetes Secret.
+  // Defines the secret type, data, and associated configuration.
+  KubernetesSecretSpec spec = 4 [(buf.validate.field).required = true];
+
+  // Status of the Kubernetes Secret resource.
+  // Contains outputs and lifecycle information populated after deployment.
+  KubernetesSecretStatus status = 5;
+}
+
+/**
+ * **KubernetesSecretStatus** captures the runtime status of a Kubernetes Secret deployment.
+ * This includes outputs generated after the secret is created.
+ */
+message KubernetesSecretStatus {
+  // Outputs from the secret deployment.
+  // Contains the secret name, namespace, and type.
+  KubernetesSecretStackOutputs outputs = 1;
+}
