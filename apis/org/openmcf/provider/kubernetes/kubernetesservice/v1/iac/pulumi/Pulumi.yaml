@@ -1,0 +1,3 @@
+name: kubernetes-service
+runtime: go
+description: Kubernetes Service deployment for service discovery, load balancing, and external access

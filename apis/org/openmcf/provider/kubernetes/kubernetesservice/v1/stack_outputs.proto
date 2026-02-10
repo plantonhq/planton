@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetesservice.v1;
+
+/**
+ * **KubernetesServiceStackOutputs** captures observable outputs from a Kubernetes Service deployment.
+ * These outputs provide essential information for referencing the service, connecting to it,
+ * and integrating it with other resources.
+ */
+message KubernetesServiceStackOutputs {
+  /**
+   * The name of the created Kubernetes Service.
+   * This is the primary identifier for referencing the service within the cluster.
+   */
+  string service_name = 1;
+
+  /**
+   * The namespace in which the service was created.
+   */
+  string namespace = 2;
+
+  /**
+   * The type of the created service (ClusterIP, NodePort, LoadBalancer, ExternalName).
+   */
+  string type = 3;
+
+  /**
+   * The cluster-internal IP address assigned to the service.
+   * Empty for headless services (clusterIP: None) and ExternalName services.
+   */
+  string cluster_ip = 4;
+
+  /**
+   * The external IP address or hostname assigned by the cloud provider's load balancer.
+   * Only populated for LoadBalancer-type services after the load balancer is provisioned.
+   * May be an IP address or a hostname depending on the cloud provider.
+   */
+  string load_balancer_ingress = 5;
+
+  /**
+   * The fully qualified internal DNS name for the service.
+   * Format: <service-name>.<namespace>.svc.cluster.local
+   */
+  string internal_dns_name = 6;
+}
