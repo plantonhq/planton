@@ -14,8 +14,3 @@ fmt:
 .PHONY: build
 build:deps vet fmt
 
-.PHONY: update-deps
-update-deps:
-	go get github.com/plantonhq/openmcf@latest
-	
-	go get github.com/plantonhq/kubernetes-crd-pulumi-types

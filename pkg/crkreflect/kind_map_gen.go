@@ -147,6 +147,8 @@ import (
 	kubernetesredisv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesredis/v1"
 	kubernetesrookcephclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesrookcephcluster/v1"
 	kubernetesrookcephoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesrookcephoperator/v1"
+	kubernetessecretv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetessecret/v1"
+	kubernetesservicev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesservice/v1"
 	kubernetessignozv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetessignoz/v1"
 	kubernetessolrv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetessolr/v1"
 	kubernetessolroperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetessolroperator/v1"
@@ -370,6 +372,8 @@ var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 	cloudresourcekind.CloudResourceKind_KubernetesRedis:                       &kubernetesredisv1.KubernetesRedis{},
 	cloudresourcekind.CloudResourceKind_KubernetesRookCephCluster:             &kubernetesrookcephclusterv1.KubernetesRookCephCluster{},
 	cloudresourcekind.CloudResourceKind_KubernetesRookCephOperator:            &kubernetesrookcephoperatorv1.KubernetesRookCephOperator{},
+	cloudresourcekind.CloudResourceKind_KubernetesSecret:                      &kubernetessecretv1.KubernetesSecret{},
+	cloudresourcekind.CloudResourceKind_KubernetesService:                     &kubernetesservicev1.KubernetesService{},
 	cloudresourcekind.CloudResourceKind_KubernetesSignoz:                      &kubernetessignozv1.KubernetesSignoz{},
 	cloudresourcekind.CloudResourceKind_KubernetesSolr:                        &kubernetessolrv1.KubernetesSolr{},
 	cloudresourcekind.CloudResourceKind_KubernetesSolrOperator:                &kubernetessolroperatorv1.KubernetesSolrOperator{},
