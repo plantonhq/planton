@@ -233,5 +233,5 @@ This layered approach catches 90%+ of errors before making any cloud API calls.
 ## Learn More
 
 - [Getting Started](../getting-started) - Deploy your first resource
-- [Deployment Components](../deployment-components) - Explore available components
+- [Deployment Components](/docs/catalog) - Explore available components
 

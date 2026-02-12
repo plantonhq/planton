@@ -79,6 +79,6 @@ Instead, OpenMCF provides:
 ## Learn More
 
 - **[Architecture](architecture)** - Deep dive into the technical architecture
-- **[Deployment Components](../deployment-components)** - Explore available components
+- **[Deployment Components](/docs/catalog)** - Explore available components
 - **[Getting Started](../getting-started)** - Deploy your first resource
 

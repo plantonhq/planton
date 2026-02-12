@@ -21,7 +21,7 @@ New to OpenMCF? Start here:
 
 Master the OpenMCF command-line interface:
 
-- **[Unified Commands](/docs/cli/unified-commands)** - NEW! kubectl-style `apply` and `destroy` commands 🚀
+- **[Unified Commands](/docs/cli/unified-commands)** - kubectl-style `apply` and `destroy` commands
 - **[Complete CLI Reference](/docs/cli/cli-reference)** - All commands, flags, and options
 - **[Pulumi Commands](/docs/cli/pulumi-commands)** - Deploy with Pulumi (init, preview, up, refresh, destroy)
 - **[OpenTofu Commands](/docs/cli/tofu-commands)** - Deploy with OpenTofu (init, plan, apply, refresh, destroy)
@@ -148,12 +148,12 @@ openmcf pulumi up -f redis.yaml --stack myorg/project/dev
 
 ## Troubleshooting
 
-Having issues? Check our **[Troubleshooting Guide](/docs/troubleshooting)** for solutions to common problems:
+Having issues? Common solutions:
 
-- Manifest validation errors
-- Authentication and credentials
-- Pulumi/OpenTofu-specific issues
-- Network and connectivity problems
+- **Manifest validation errors** — Check field names and types against the component's protobuf schema
+- **Authentication and credentials** — See the [Credentials Management](/docs/guides/credentials) guide
+- **Pulumi/OpenTofu-specific issues** — Ensure the provisioner CLI is installed and your backend is configured
+- **Network and connectivity** — The CLI clones modules from GitHub; verify network access
 
 ## Resources
 

@@ -620,11 +620,11 @@ openmcf tofu apply -f ops/gcp-resources/gke.yaml  # Uses GOOGLE_APPLICATION_CRED
 # Override with explicit credentials file
 openmcf tofu apply \
   -f ops/aws-resources/vpc.yaml \
-  -p ~/.config/planton/credentials/aws-prod.yaml
+  -p ~/.config/openmcf/credentials/aws-prod.yaml
 
 openmcf tofu apply \
   -f ops/gcp-resources/cluster.yaml \
-  -p ~/.config/planton/credentials/gcp-prod.yaml
+  -p ~/.config/openmcf/credentials/gcp-prod.yaml
 ```
 
 The CLI auto-detects which provider is needed from your manifest's `apiVersion`. See the [Credentials Guide](/docs/guides/credentials) for environment variable details.

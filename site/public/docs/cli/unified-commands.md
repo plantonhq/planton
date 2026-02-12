@@ -192,7 +192,7 @@ openmcf init -f app.yaml \
 3. Routes to appropriate initialization:
    - **Pulumi**: Creates stack if it doesn't exist (idempotent)
    - **Tofu**: Initializes backend, downloads providers
-   - **Terraform**: Not yet implemented
+   - **Terraform**: Initializes backend, downloads providers
 
 **When to use**:
 - First time deploying a resource
@@ -237,7 +237,7 @@ openmcf plan -f app.yaml --diff
 3. Routes to appropriate preview operation:
    - **Pulumi**: Runs `pulumi preview` (dry-run of update)
    - **Tofu**: Runs `tofu plan`
-   - **Terraform**: Not yet implemented
+   - **Terraform**: Runs `terraform plan`
 
 **Output**: Shows what resources would be created, modified, or deleted without making any changes.
 
@@ -278,7 +278,7 @@ openmcf refresh -f app.yaml --diff
 3. Routes to appropriate refresh operation:
    - **Pulumi**: Runs `pulumi refresh`
    - **Tofu**: Runs `tofu refresh`
-   - **Terraform**: Not yet implemented
+   - **Terraform**: Runs `terraform refresh`
 4. Queries cloud provider for current resource state
 5. Updates state file to match reality
 6. **Does NOT modify any cloud resources** (read-only)

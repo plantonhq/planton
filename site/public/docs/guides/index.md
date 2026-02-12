@@ -148,7 +148,7 @@ openmcf load-manifest -f resource.yaml
 ## Related Documentation
 
 - [CLI Reference](/docs/cli/cli-reference) - Complete CLI command reference
-- [Troubleshooting](/docs/troubleshooting) - Solutions to common problems
+- [State Backends](/docs/guides/state-backends) - Configure state storage
 - [Deployment Component Catalog](/docs/catalog) - Browse available components
 
 ---

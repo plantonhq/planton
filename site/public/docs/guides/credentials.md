@@ -842,7 +842,7 @@ The CLI automatically determines which provider credentials are needed based on 
 - [Pulumi Commands](/docs/cli/pulumi-commands) - Deploying with Pulumi
 - [OpenTofu Commands](/docs/cli/tofu-commands) - Deploying with OpenTofu
 - [Manifest Structure](/docs/guides/manifests) - Writing manifests
-- [Troubleshooting](/docs/troubleshooting) - Common issues and solutions
+- [CLI Reference](/docs/cli/cli-reference) - Complete command reference
 
 ---
 

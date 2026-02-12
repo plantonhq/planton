@@ -33,8 +33,16 @@ openmcf
 │   ├── plan           Preview infrastructure changes
 │   ├── apply          Deploy infrastructure
 │   ├── refresh        Sync state with cloud reality
+│   ├── destroy        Teardown infrastructure
+│   ├── generate-variables  Generate variables file from manifest
+│   └── load-tfvars    Load tfvars from manifest
+├── terraform           Manage infrastructure with Terraform
+│   ├── init           Initialize backend and providers
+│   ├── plan           Preview infrastructure changes
+│   ├── apply          Deploy infrastructure
+│   ├── refresh        Sync state with cloud reality
 │   └── destroy        Teardown infrastructure
-├── validate            Validate manifest against schema
+├── validate            Validate manifest against schema (or 'validate-manifest')
 ├── load-manifest       Load and display manifest with defaults
 └── version             Show CLI version
 ```
@@ -168,7 +176,7 @@ openmcf plan -f app.yaml --destroy
 2. Routes to appropriate preview operation:
    - **Pulumi**: Runs `pulumi preview`
    - **Tofu**: Runs `tofu plan`
-   - **Terraform**: Not yet implemented
+   - **Terraform**: Runs `terraform plan`
 
 ### refresh
 
@@ -200,7 +208,7 @@ openmcf refresh -f app.yaml --diff
 4. Routes based on provisioner:
    - **Pulumi**: Runs `pulumi refresh`
    - **Tofu**: Runs `tofu refresh`
-   - **Terraform**: Not yet implemented
+   - **Terraform**: Runs `terraform refresh`
 
 ### pulumi
 

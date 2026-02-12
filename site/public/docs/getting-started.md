@@ -110,7 +110,7 @@ kubectl get pods
 Behind the scenes, the CLI:
 
 1. Read and validated your manifest
-2. Identified the `PostgresKubernetes` deployment component
+2. Identified the `KubernetesPostgres` deployment component
 3. Cloned the corresponding Pulumi module from GitHub
 4. Set up the environment with your manifest as input
 5. Delegated to Pulumi to deploy the resources
@@ -118,7 +118,7 @@ Behind the scenes, the CLI:
 
 ## Next Steps
 
-- **Explore Components**: Check out other [deployment components](deployment-components)
+- **Explore Components**: Check out other [deployment components](/docs/catalog)
 - **Learn Concepts**: Understand the [architecture](concepts/architecture)
 - **Deploy to Cloud**: Try deploying to AWS, GCP, or Azure
 

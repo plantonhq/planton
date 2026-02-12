@@ -224,7 +224,7 @@ git push
 - [Credentials Guide](/docs/guides/credentials) - Set up cloud provider credentials
 - [Kustomize Integration](/docs/guides/kustomize) - Multi-environment deployments
 - [Advanced Usage](/docs/guides/advanced-usage) - Power user techniques
-- [Troubleshooting](/docs/troubleshooting) - Solutions to common problems
+- [State Backends](/docs/guides/state-backends) - Configure state storage
 
 ---
 
