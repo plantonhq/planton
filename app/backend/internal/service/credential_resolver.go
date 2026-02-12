@@ -11,6 +11,7 @@ import (
 	azurev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure"
 	gcpv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
 	openstackv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack"
+	scalewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
 	"github.com/plantonhq/openmcf/app/backend/internal/database"
 	"github.com/plantonhq/openmcf/app/backend/pkg/models"
@@ -155,6 +156,21 @@ func (r *CredentialResolver) ResolveProviderConfig(
 		return &credentialv1.CredentialProviderConfig{
 		Data: &credentialv1.CredentialProviderConfig_Openstack{
 			Openstack: cfg,
+			},
+		}, nil
+
+	case cloudresourcekind.CloudResourceProvider_scaleway:
+		scwCred := credInterface.(*models.ScalewayCredential)
+		return &credentialv1.CredentialProviderConfig{
+			Data: &credentialv1.CredentialProviderConfig_Scaleway{
+				Scaleway: &scalewayv1.ScalewayProviderConfig{
+					AccessKey:      scwCred.AccessKey,
+					SecretKey:      scwCred.SecretKey,
+					ProjectId:      scwCred.ProjectID,
+					OrganizationId: scwCred.OrganizationID,
+					Region:         scwCred.Region,
+					Zone:           scwCred.Zone,
+				},
 			},
 		}, nil
 

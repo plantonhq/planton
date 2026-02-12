@@ -87,6 +87,13 @@ Browse deployment components by cloud provider:
       <div class="text-sm text-slate-400">24 components</div>
     </div>
   </a>
+  <a href="/docs/catalog/scaleway" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
+    <img src="/images/providers/scaleway.svg" alt="SCALEWAY" class="w-8 h-8 object-contain" />
+    <div>
+      <div class="font-semibold text-white">SCALEWAY</div>
+      <div class="text-sm text-slate-400">0 components</div>
+    </div>
+  </a>
   <a href="/docs/catalog/snowflake" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
     <img src="/images/providers/snowflake.svg" alt="SNOWFLAKE" class="w-8 h-8 object-contain" />
     <div>

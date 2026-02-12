@@ -18,6 +18,7 @@ import (
 	kubernetesprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
 	openfgaprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga"
 	openstackprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack"
+	scalewayprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway"
 	snowflakeprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/snowflake"
 )
 
@@ -69,6 +70,8 @@ func getProviderConfigProto(provider cloudresourcekind.CloudResourceProvider) (p
 		return new(snowflakeprovider.SnowflakeProviderConfig), nil
 	case cloudresourcekind.CloudResourceProvider_openstack:
 		return new(openstackprovider.OpenStackProviderConfig), nil
+	case cloudresourcekind.CloudResourceProvider_scaleway:
+		return new(scalewayprovider.ScalewayProviderConfig), nil
 	default:
 		return nil, errors.Errorf("unsupported provider: %s", provider.String())
 	}

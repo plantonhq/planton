@@ -41,6 +41,7 @@ const (
 	CloudResourceProvider_auth0                               CloudResourceProvider = 21
 	CloudResourceProvider_open_fga                            CloudResourceProvider = 22
 	CloudResourceProvider_openstack                           CloudResourceProvider = 23
+	CloudResourceProvider_scaleway                            CloudResourceProvider = 24
 )
 
 // Enum value maps for CloudResourceProvider.
@@ -61,6 +62,7 @@ var (
 		21: "auth0",
 		22: "open_fga",
 		23: "openstack",
+		24: "scaleway",
 	}
 	CloudResourceProvider_value = map[string]int32{
 		"cloud_resource_provider_unspecified": 0,
@@ -78,6 +80,7 @@ var (
 		"auth0":                               21,
 		"open_fga":                            22,
 		"openstack":                           23,
+		"scaleway":                            24,
 	}
 )
 
@@ -187,7 +190,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_provider_proto_ra
 	"Borg/openmcf/shared/cloudresourcekind/cloud_resource_provider.proto\x12$org.openmcf.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\"T\n" +
 	"\x19CloudResourceProviderMeta\x12\x14\n" +
 	"\x05group\x18\x01 \x01(\tR\x05group\x12!\n" +
-	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName*\x83\x06\n" +
+	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName*\xb7\x06\n" +
 	"\x15CloudResourceProvider\x12'\n" +
 	"#cloud_resource_provider_unspecified\x10\x00\x128\n" +
 	"\x05_test\x10\x01\x1a-\xea\xcc')\n" +
@@ -221,7 +224,9 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_provider_proto_ra
 	"\bopen_fga\x10\x16\x1a#\xea\xcc'\x1f\n" +
 	"\x14open-fga.openmcf.org\x12\aOpenFGA\x125\n" +
 	"\topenstack\x10\x17\x1a&\xea\xcc'\"\n" +
-	"\x15openstack.openmcf.org\x12\tOpenStack:\x89\x01\n" +
+	"\x15openstack.openmcf.org\x12\tOpenStack\x122\n" +
+	"\bscaleway\x10\x18\x1a$\xea\xcc' \n" +
+	"\x14scaleway.openmcf.org\x12\bScaleway:\x89\x01\n" +
 	"\rprovider_meta\x12!.google.protobuf.EnumValueOptions\x18\xcd\xf9\x04 \x01(\v2?.org.openmcf.shared.cloudresourcekind.CloudResourceProviderMetaR\fproviderMetaB\xc2\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x1aCloudResourceProviderProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

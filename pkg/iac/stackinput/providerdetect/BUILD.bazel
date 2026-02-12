@@ -22,6 +22,7 @@ go_library(
         "//apis/org/openmcf/provider/kubernetes",
         "//apis/org/openmcf/provider/openfga",
         "//apis/org/openmcf/provider/openstack",
+        "//apis/org/openmcf/provider/scaleway",
         "//apis/org/openmcf/provider/snowflake",
         "//apis/org/openmcf/shared/cloudresourcekind",
         "//pkg/crkreflect",

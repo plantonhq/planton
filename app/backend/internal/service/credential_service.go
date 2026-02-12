@@ -17,6 +17,7 @@ import (
 	azurev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure"
 	gcpv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
 	openstackv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack"
+	scalewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -61,6 +62,8 @@ func (s *CredentialService) Create(
 		return s.createAuth0Credential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
 	case credentialv1.Credential_OPENSTACK:
 		return s.createOpenStackCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
+	case credentialv1.Credential_SCALEWAY:
+		return s.createScalewayCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
 	default:
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unsupported provider: %v", req.Msg.Provider))
 	}
@@ -329,6 +332,8 @@ func (s *CredentialService) List(
 			provider = "auth0"
 		case credentialv1.Credential_OPENSTACK:
 			provider = "openstack"
+		case credentialv1.Credential_SCALEWAY:
+			provider = "scaleway"
 		}
 		if provider != "" {
 			providerFilter = &provider
@@ -362,6 +367,8 @@ func (s *CredentialService) List(
 			summary.Provider = credentialv1.Credential_AUTH0
 		case "openstack":
 			summary.Provider = credentialv1.Credential_OPENSTACK
+		case "scaleway":
+			summary.Provider = credentialv1.Credential_SCALEWAY
 		}
 
 		// Add timestamps if present
@@ -536,6 +543,23 @@ func (s *CredentialService) Get(
 		if !osCred.UpdatedAt.IsZero() {
 			protoCredential.UpdatedAt = timestamppb.New(osCred.UpdatedAt)
 		}
+	case "scaleway":
+		scwCred, err := convertBsonToScalewayCredential(doc)
+		if err != nil {
+			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to convert credential: %w", err))
+		}
+		protoCredential = &credentialv1.Credential{
+			Id:             scwCred.ID.Hex(),
+			Name:           scwCred.Name,
+			Provider:       credentialv1.Credential_SCALEWAY,
+			ProviderConfig: scalewayModelToProtoConfig(scwCred),
+		}
+		if !scwCred.CreatedAt.IsZero() {
+			protoCredential.CreatedAt = timestamppb.New(scwCred.CreatedAt)
+		}
+		if !scwCred.UpdatedAt.IsZero() {
+			protoCredential.UpdatedAt = timestamppb.New(scwCred.UpdatedAt)
+		}
 	default:
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unsupported provider: %s", providerStr))
 	}
@@ -572,6 +596,8 @@ func (s *CredentialService) Update(
 		return s.updateAuth0Credential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
 	case credentialv1.Credential_OPENSTACK:
 		return s.updateOpenStackCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
+	case credentialv1.Credential_SCALEWAY:
+		return s.updateScalewayCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
 	default:
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unsupported provider: %v", req.Msg.Provider))
 	}
@@ -1183,6 +1209,172 @@ func openstackModelToProtoConfig(cred *models.OpenStackCredential) *credentialv1
 			Openstack: cfg,
 		},
 	}
+}
+
+// createScalewayCredential creates a Scaleway credential.
+func (s *CredentialService) createScalewayCredential(
+	ctx context.Context,
+	name string,
+	providerConfig *credentialv1.CredentialProviderConfig,
+	now time.Time,
+) (*connect.Response[credentialv1.CreateCredentialResponse], error) {
+	if providerConfig == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("provider_config is required"))
+	}
+	scwConfig, ok := providerConfig.Data.(*credentialv1.CredentialProviderConfig_Scaleway)
+	if !ok || scwConfig == nil || scwConfig.Scaleway == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("scaleway provider_config is required"))
+	}
+	if scwConfig.Scaleway.AccessKey == "" {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("access_key is required"))
+	}
+	if scwConfig.Scaleway.SecretKey == "" {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("secret_key is required"))
+	}
+
+	credModel := scalewayProtoToModel(name, scwConfig.Scaleway)
+
+	createdCredential, err := s.credentialRepo.CreateScaleway(ctx, credModel)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create Scaleway credential: %w", err))
+	}
+
+	protoCredential := &credentialv1.Credential{
+		Id:             createdCredential.ID.Hex(),
+		Name:           createdCredential.Name,
+		Provider:       credentialv1.Credential_SCALEWAY,
+		ProviderConfig: scalewayModelToProtoConfig(createdCredential),
+	}
+	if !createdCredential.CreatedAt.IsZero() {
+		protoCredential.CreatedAt = timestamppb.New(createdCredential.CreatedAt)
+	}
+	if !createdCredential.UpdatedAt.IsZero() {
+		protoCredential.UpdatedAt = timestamppb.New(createdCredential.UpdatedAt)
+	}
+
+	return connect.NewResponse(&credentialv1.CreateCredentialResponse{
+		Credential: protoCredential,
+	}), nil
+}
+
+// updateScalewayCredential updates a Scaleway credential.
+func (s *CredentialService) updateScalewayCredential(
+	ctx context.Context,
+	id, name string,
+	providerConfig *credentialv1.CredentialProviderConfig,
+) (*connect.Response[credentialv1.UpdateCredentialResponse], error) {
+	if providerConfig == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("provider_config is required"))
+	}
+	scwConfig, ok := providerConfig.Data.(*credentialv1.CredentialProviderConfig_Scaleway)
+	if !ok || scwConfig == nil || scwConfig.Scaleway == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("scaleway provider_config is required"))
+	}
+	if scwConfig.Scaleway.AccessKey == "" {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("access_key is required"))
+	}
+	if scwConfig.Scaleway.SecretKey == "" {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("secret_key is required"))
+	}
+
+	credModel := scalewayProtoToModel(name, scwConfig.Scaleway)
+
+	updatedCredential, err := s.credentialRepo.UpdateScaleway(ctx, id, credModel)
+	if err != nil {
+		if err.Error() == fmt.Sprintf("Scaleway credential with ID '%s' not found", id) {
+			return nil, connect.NewError(connect.CodeNotFound, err)
+		}
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to update Scaleway credential: %w", err))
+	}
+
+	protoCredential := &credentialv1.Credential{
+		Id:             updatedCredential.ID.Hex(),
+		Name:           updatedCredential.Name,
+		Provider:       credentialv1.Credential_SCALEWAY,
+		ProviderConfig: scalewayModelToProtoConfig(updatedCredential),
+	}
+	if !updatedCredential.CreatedAt.IsZero() {
+		protoCredential.CreatedAt = timestamppb.New(updatedCredential.CreatedAt)
+	}
+	if !updatedCredential.UpdatedAt.IsZero() {
+		protoCredential.UpdatedAt = timestamppb.New(updatedCredential.UpdatedAt)
+	}
+
+	return connect.NewResponse(&credentialv1.UpdateCredentialResponse{
+		Credential: protoCredential,
+	}), nil
+}
+
+// scalewayProtoToModel converts a ScalewayProviderConfig proto to the database model.
+func scalewayProtoToModel(name string, cfg *scalewayv1.ScalewayProviderConfig) *models.ScalewayCredential {
+	return &models.ScalewayCredential{
+		Name:           name,
+		AccessKey:      cfg.AccessKey,
+		SecretKey:      cfg.SecretKey,
+		ProjectID:      cfg.ProjectId,
+		OrganizationID: cfg.OrganizationId,
+		Region:         cfg.Region,
+		Zone:           cfg.Zone,
+	}
+}
+
+// scalewayModelToProtoConfig converts a ScalewayCredential model back to proto CredentialProviderConfig.
+func scalewayModelToProtoConfig(cred *models.ScalewayCredential) *credentialv1.CredentialProviderConfig {
+	return &credentialv1.CredentialProviderConfig{
+		Data: &credentialv1.CredentialProviderConfig_Scaleway{
+			Scaleway: &scalewayv1.ScalewayProviderConfig{
+				AccessKey:      cred.AccessKey,
+				SecretKey:      cred.SecretKey,
+				ProjectId:      cred.ProjectID,
+				OrganizationId: cred.OrganizationID,
+				Region:         cred.Region,
+				Zone:           cred.Zone,
+			},
+		},
+	}
+}
+
+func convertBsonToScalewayCredential(doc bson.M) (*models.ScalewayCredential, error) {
+	id, ok := doc["_id"].(primitive.ObjectID)
+	if !ok {
+		return nil, fmt.Errorf("invalid _id field")
+	}
+
+	var createdAt, updatedAt time.Time
+	if dt, ok := doc["created_at"].(primitive.DateTime); ok {
+		createdAt = dt.Time()
+	} else if t, ok := doc["created_at"].(time.Time); ok {
+		createdAt = t
+	}
+	if dt, ok := doc["updated_at"].(primitive.DateTime); ok {
+		updatedAt = dt.Time()
+	} else if t, ok := doc["updated_at"].(time.Time); ok {
+		updatedAt = t
+	}
+
+	cred := &models.ScalewayCredential{
+		ID:        id,
+		Name:      doc["name"].(string),
+		AccessKey: doc["access_key"].(string),
+		SecretKey: doc["secret_key"].(string),
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
+	}
+
+	if v, ok := doc["project_id"].(string); ok {
+		cred.ProjectID = v
+	}
+	if v, ok := doc["organization_id"].(string); ok {
+		cred.OrganizationID = v
+	}
+	if v, ok := doc["region"].(string); ok {
+		cred.Region = v
+	}
+	if v, ok := doc["zone"].(string); ok {
+		cred.Zone = v
+	}
+
+	return cred, nil
 }
 
 func convertBsonToOpenStackCredential(doc bson.M) (*models.OpenStackCredential, error) {
