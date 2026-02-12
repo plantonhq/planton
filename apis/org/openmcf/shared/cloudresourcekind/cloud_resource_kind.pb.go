@@ -268,6 +268,25 @@ const (
 	CloudResourceKind_OpenStackDnsRecord                CloudResourceKind = 2522
 	CloudResourceKind_OpenStackContainerClusterTemplate CloudResourceKind = 2523
 	CloudResourceKind_OpenStackContainerCluster         CloudResourceKind = 2524
+	CloudResourceKind_ScalewayVpc                       CloudResourceKind = 2800
+	CloudResourceKind_ScalewayPrivateNetwork            CloudResourceKind = 2801
+	CloudResourceKind_ScalewayPublicGateway             CloudResourceKind = 2802
+	CloudResourceKind_ScalewayLoadBalancer              CloudResourceKind = 2803
+	CloudResourceKind_ScalewayInstanceSecurityGroup     CloudResourceKind = 2804
+	CloudResourceKind_ScalewayInstance                  CloudResourceKind = 2810
+	CloudResourceKind_ScalewayKapsuleCluster            CloudResourceKind = 2820
+	CloudResourceKind_ScalewayKapsulePool               CloudResourceKind = 2821
+	CloudResourceKind_ScalewayRdbInstance               CloudResourceKind = 2830
+	CloudResourceKind_ScalewayRedisCluster              CloudResourceKind = 2831
+	CloudResourceKind_ScalewayMongodbInstance           CloudResourceKind = 2832
+	CloudResourceKind_ScalewayObjectBucket              CloudResourceKind = 2840
+	CloudResourceKind_ScalewayBlockVolume               CloudResourceKind = 2841
+	CloudResourceKind_ScalewayContainerRegistry         CloudResourceKind = 2850
+	CloudResourceKind_ScalewayDnsZone                   CloudResourceKind = 2860
+	CloudResourceKind_ScalewayDnsRecord                 CloudResourceKind = 2861
+	CloudResourceKind_ScalewayServerlessFunction        CloudResourceKind = 2870
+	CloudResourceKind_ScalewayServerlessContainer       CloudResourceKind = 2871
+	CloudResourceKind_ScalewaySecretManager             CloudResourceKind = 2880
 )
 
 // Enum value maps for CloudResourceKind.
@@ -454,6 +473,25 @@ var (
 		2522: "OpenStackDnsRecord",
 		2523: "OpenStackContainerClusterTemplate",
 		2524: "OpenStackContainerCluster",
+		2800: "ScalewayVpc",
+		2801: "ScalewayPrivateNetwork",
+		2802: "ScalewayPublicGateway",
+		2803: "ScalewayLoadBalancer",
+		2804: "ScalewayInstanceSecurityGroup",
+		2810: "ScalewayInstance",
+		2820: "ScalewayKapsuleCluster",
+		2821: "ScalewayKapsulePool",
+		2830: "ScalewayRdbInstance",
+		2831: "ScalewayRedisCluster",
+		2832: "ScalewayMongodbInstance",
+		2840: "ScalewayObjectBucket",
+		2841: "ScalewayBlockVolume",
+		2850: "ScalewayContainerRegistry",
+		2860: "ScalewayDnsZone",
+		2861: "ScalewayDnsRecord",
+		2870: "ScalewayServerlessFunction",
+		2871: "ScalewayServerlessContainer",
+		2880: "ScalewaySecretManager",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
@@ -637,6 +675,25 @@ var (
 		"OpenStackDnsRecord":                    2522,
 		"OpenStackContainerClusterTemplate":     2523,
 		"OpenStackContainerCluster":             2524,
+		"ScalewayVpc":                           2800,
+		"ScalewayPrivateNetwork":                2801,
+		"ScalewayPublicGateway":                 2802,
+		"ScalewayLoadBalancer":                  2803,
+		"ScalewayInstanceSecurityGroup":         2804,
+		"ScalewayInstance":                      2810,
+		"ScalewayKapsuleCluster":                2820,
+		"ScalewayKapsulePool":                   2821,
+		"ScalewayRdbInstance":                   2830,
+		"ScalewayRedisCluster":                  2831,
+		"ScalewayMongodbInstance":               2832,
+		"ScalewayObjectBucket":                  2840,
+		"ScalewayBlockVolume":                   2841,
+		"ScalewayContainerRegistry":             2850,
+		"ScalewayDnsZone":                       2860,
+		"ScalewayDnsRecord":                     2861,
+		"ScalewayServerlessFunction":            2870,
+		"ScalewayServerlessContainer":           2871,
+		"ScalewaySecretManager":                 2880,
 	}
 )
 
@@ -781,7 +838,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xc2<\n" +
+	"\x02v1\x10\x01*\xa0C\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1001,7 +1058,26 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\b\x17\x10\x01\"\x04osdr\x127\n" +
 	"!OpenStackContainerClusterTemplate\x10\xdb\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05oscct\x12.\n" +
 	"\x19OpenStackContainerCluster\x10\xdc\x13\x1a\x0e\xa2\xf7\x04\n" +
-	"\b\x17\x10\x01\"\x04oscc:|\n" +
+	"\b\x17\x10\x01\"\x04oscc\x12\"\n" +
+	"\vScalewayVpc\x10\xf0\x15\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwvpc\x12,\n" +
+	"\x16ScalewayPrivateNetwork\x10\xf1\x15\x1a\x0f\xa2\xf7\x04\v\b\x18\x10\x01\"\x05scwpn\x12,\n" +
+	"\x15ScalewayPublicGateway\x10\xf2\x15\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwpgw\x12*\n" +
+	"\x14ScalewayLoadBalancer\x10\xf3\x15\x1a\x0f\xa2\xf7\x04\v\b\x18\x10\x01\"\x05scwlb\x123\n" +
+	"\x1dScalewayInstanceSecurityGroup\x10\xf4\x15\x1a\x0f\xa2\xf7\x04\v\b\x18\x10\x01\"\x05scwsg\x12(\n" +
+	"\x10ScalewayInstance\x10\xfa\x15\x1a\x11\xa2\xf7\x04\r\b\x18\x10\x01\"\ascwinst\x12-\n" +
+	"\x16ScalewayKapsuleCluster\x10\x84\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwk8s\x12*\n" +
+	"\x13ScalewayKapsulePool\x10\x85\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwknp\x12*\n" +
+	"\x13ScalewayRdbInstance\x10\x8e\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwrdb\x12+\n" +
+	"\x14ScalewayRedisCluster\x10\x8f\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwred\x12.\n" +
+	"\x17ScalewayMongodbInstance\x10\x90\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwmdb\x12+\n" +
+	"\x14ScalewayObjectBucket\x10\x98\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwbkt\x12*\n" +
+	"\x13ScalewayBlockVolume\x10\x99\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwblk\x12/\n" +
+	"\x19ScalewayContainerRegistry\x10\xa2\x16\x1a\x0f\xa2\xf7\x04\v\b\x18\x10\x01\"\x05scwcr\x12&\n" +
+	"\x0fScalewayDnsZone\x10\xac\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwdns\x12(\n" +
+	"\x11ScalewayDnsRecord\x10\xad\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwrec\x120\n" +
+	"\x1aScalewayServerlessFunction\x10\xb6\x16\x1a\x0f\xa2\xf7\x04\v\b\x18\x10\x01\"\x05scwfn\x122\n" +
+	"\x1bScalewayServerlessContainer\x10\xb7\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwscn\x12+\n" +
+	"\x15ScalewaySecretManager\x10\xc0\x16\x1a\x0f\xa2\xf7\x04\v\b\x18\x10\x01\"\x05scwsm:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

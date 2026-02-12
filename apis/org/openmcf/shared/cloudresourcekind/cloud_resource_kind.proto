@@ -963,4 +963,128 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "oscc"
   }];
+
+  // 2800–2999: Scaleway resources
+
+  // --- Networking ---
+
+  ScalewayVpc = 2800 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwvpc"
+  }];
+  ScalewayPrivateNetwork = 2801 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwpn"
+  }];
+  ScalewayPublicGateway = 2802 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwpgw"
+  }];
+  ScalewayLoadBalancer = 2803 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwlb"
+  }];
+  ScalewayInstanceSecurityGroup = 2804 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwsg"
+  }];
+
+  // --- Compute ---
+
+  ScalewayInstance = 2810 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwinst"
+  }];
+
+  // --- Kubernetes ---
+
+  ScalewayKapsuleCluster = 2820 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwk8s"
+  }];
+  ScalewayKapsulePool = 2821 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwknp"
+  }];
+
+  // --- Databases ---
+
+  ScalewayRdbInstance = 2830 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwrdb"
+  }];
+  ScalewayRedisCluster = 2831 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwred"
+  }];
+  ScalewayMongodbInstance = 2832 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwmdb"
+  }];
+
+  // --- Storage ---
+
+  ScalewayObjectBucket = 2840 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwbkt"
+  }];
+  ScalewayBlockVolume = 2841 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwblk"
+  }];
+
+  // --- Container Registry ---
+
+  ScalewayContainerRegistry = 2850 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwcr"
+  }];
+
+  // --- DNS ---
+
+  ScalewayDnsZone = 2860 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwdns"
+  }];
+  ScalewayDnsRecord = 2861 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwrec"
+  }];
+
+  // --- Serverless ---
+
+  ScalewayServerlessFunction = 2870 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwfn"
+  }];
+  ScalewayServerlessContainer = 2871 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwscn"
+  }];
+
+  // --- Security ---
+
+  ScalewaySecretManager = 2880 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwsm"
+  }];
 }
