@@ -54,6 +54,7 @@ import (
 	azureloganalyticsworkspacev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureloganalyticsworkspace/v1"
 	azurenatgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurenatgateway/v1"
 	azurenetworksecuritygroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurenetworksecuritygroup/v1"
+	azurepostgresqlflexibleserverv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurepostgresqlflexibleserver/v1"
 	azureprivatednszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureprivatednszone/v1"
 	azureprivateendpointv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureprivateendpoint/v1"
 	azurepublicipv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurepublicip/v1"
@@ -199,6 +200,7 @@ import (
 	openstacksubnetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstacksubnet/v1"
 	openstackvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackvolume/v1"
 	openstackvolumeattachv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackvolumeattach/v1"
+	scalewayblockvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayblockvolume/v1"
 	scalewayinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayinstance/v1"
 	scalewayinstancesecuritygroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayinstancesecuritygroup/v1"
 	scalewaykapsuleclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaykapsulecluster/v1"
@@ -272,27 +274,28 @@ var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 }
 
 var ProviderAzureMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
-	cloudresourcekind.CloudResourceKind_AzureAksCluster:            &azureaksclusterv1.AzureAksCluster{},
-	cloudresourcekind.CloudResourceKind_AzureAksNodePool:           &azureaksnodepoolv1.AzureAksNodePool{},
-	cloudresourcekind.CloudResourceKind_AzureApplicationGateway:    &azureapplicationgatewayv1.AzureApplicationGateway{},
-	cloudresourcekind.CloudResourceKind_AzureApplicationInsights:   &azureapplicationinsightsv1.AzureApplicationInsights{},
-	cloudresourcekind.CloudResourceKind_AzureContainerRegistry:     &azurecontainerregistryv1.AzureContainerRegistry{},
-	cloudresourcekind.CloudResourceKind_AzureDnsRecord:             &azurednsrecordv1.AzureDnsRecord{},
-	cloudresourcekind.CloudResourceKind_AzureDnsZone:               &azurednszonev1.AzureDnsZone{},
-	cloudresourcekind.CloudResourceKind_AzureKeyVault:              &azurekeyvaultv1.AzureKeyVault{},
-	cloudresourcekind.CloudResourceKind_AzureLoadBalancer:          &azureloadbalancerv1.AzureLoadBalancer{},
-	cloudresourcekind.CloudResourceKind_AzureLogAnalyticsWorkspace: &azureloganalyticsworkspacev1.AzureLogAnalyticsWorkspace{},
-	cloudresourcekind.CloudResourceKind_AzureNatGateway:            &azurenatgatewayv1.AzureNatGateway{},
-	cloudresourcekind.CloudResourceKind_AzureNetworkSecurityGroup:  &azurenetworksecuritygroupv1.AzureNetworkSecurityGroup{},
-	cloudresourcekind.CloudResourceKind_AzurePrivateDnsZone:        &azureprivatednszonev1.AzurePrivateDnsZone{},
-	cloudresourcekind.CloudResourceKind_AzurePrivateEndpoint:       &azureprivateendpointv1.AzurePrivateEndpoint{},
-	cloudresourcekind.CloudResourceKind_AzurePublicIp:              &azurepublicipv1.AzurePublicIp{},
-	cloudresourcekind.CloudResourceKind_AzureResourceGroup:         &azureresourcegroupv1.AzureResourceGroup{},
-	cloudresourcekind.CloudResourceKind_AzureStorageAccount:        &azurestorageaccountv1.AzureStorageAccount{},
-	cloudresourcekind.CloudResourceKind_AzureSubnet:                &azuresubnetv1.AzureSubnet{},
-	cloudresourcekind.CloudResourceKind_AzureUserAssignedIdentity:  &azureuserassignedidentityv1.AzureUserAssignedIdentity{},
-	cloudresourcekind.CloudResourceKind_AzureVirtualMachine:        &azurevirtualmachinev1.AzureVirtualMachine{},
-	cloudresourcekind.CloudResourceKind_AzureVpc:                   &azurevpcv1.AzureVpc{},
+	cloudresourcekind.CloudResourceKind_AzureAksCluster:               &azureaksclusterv1.AzureAksCluster{},
+	cloudresourcekind.CloudResourceKind_AzureAksNodePool:              &azureaksnodepoolv1.AzureAksNodePool{},
+	cloudresourcekind.CloudResourceKind_AzureApplicationGateway:       &azureapplicationgatewayv1.AzureApplicationGateway{},
+	cloudresourcekind.CloudResourceKind_AzureApplicationInsights:      &azureapplicationinsightsv1.AzureApplicationInsights{},
+	cloudresourcekind.CloudResourceKind_AzureContainerRegistry:        &azurecontainerregistryv1.AzureContainerRegistry{},
+	cloudresourcekind.CloudResourceKind_AzureDnsRecord:                &azurednsrecordv1.AzureDnsRecord{},
+	cloudresourcekind.CloudResourceKind_AzureDnsZone:                  &azurednszonev1.AzureDnsZone{},
+	cloudresourcekind.CloudResourceKind_AzureKeyVault:                 &azurekeyvaultv1.AzureKeyVault{},
+	cloudresourcekind.CloudResourceKind_AzureLoadBalancer:             &azureloadbalancerv1.AzureLoadBalancer{},
+	cloudresourcekind.CloudResourceKind_AzureLogAnalyticsWorkspace:    &azureloganalyticsworkspacev1.AzureLogAnalyticsWorkspace{},
+	cloudresourcekind.CloudResourceKind_AzureNatGateway:               &azurenatgatewayv1.AzureNatGateway{},
+	cloudresourcekind.CloudResourceKind_AzureNetworkSecurityGroup:     &azurenetworksecuritygroupv1.AzureNetworkSecurityGroup{},
+	cloudresourcekind.CloudResourceKind_AzurePostgresqlFlexibleServer: &azurepostgresqlflexibleserverv1.AzurePostgresqlFlexibleServer{},
+	cloudresourcekind.CloudResourceKind_AzurePrivateDnsZone:           &azureprivatednszonev1.AzurePrivateDnsZone{},
+	cloudresourcekind.CloudResourceKind_AzurePrivateEndpoint:          &azureprivateendpointv1.AzurePrivateEndpoint{},
+	cloudresourcekind.CloudResourceKind_AzurePublicIp:                 &azurepublicipv1.AzurePublicIp{},
+	cloudresourcekind.CloudResourceKind_AzureResourceGroup:            &azureresourcegroupv1.AzureResourceGroup{},
+	cloudresourcekind.CloudResourceKind_AzureStorageAccount:           &azurestorageaccountv1.AzureStorageAccount{},
+	cloudresourcekind.CloudResourceKind_AzureSubnet:                   &azuresubnetv1.AzureSubnet{},
+	cloudresourcekind.CloudResourceKind_AzureUserAssignedIdentity:     &azureuserassignedidentityv1.AzureUserAssignedIdentity{},
+	cloudresourcekind.CloudResourceKind_AzureVirtualMachine:           &azurevirtualmachinev1.AzureVirtualMachine{},
+	cloudresourcekind.CloudResourceKind_AzureVpc:                      &azurevpcv1.AzureVpc{},
 }
 
 var ProviderCivoMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
@@ -456,6 +459,7 @@ var ProviderOpenstackMap = map[cloudresourcekind.CloudResourceKind]proto.Message
 }
 
 var ProviderScalewayMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
+	cloudresourcekind.CloudResourceKind_ScalewayBlockVolume:           &scalewayblockvolumev1.ScalewayBlockVolume{},
 	cloudresourcekind.CloudResourceKind_ScalewayInstance:              &scalewayinstancev1.ScalewayInstance{},
 	cloudresourcekind.CloudResourceKind_ScalewayInstanceSecurityGroup: &scalewayinstancesecuritygroupv1.ScalewayInstanceSecurityGroup{},
 	cloudresourcekind.CloudResourceKind_ScalewayKapsuleCluster:        &scalewaykapsuleclusterv1.ScalewayKapsuleCluster{},
