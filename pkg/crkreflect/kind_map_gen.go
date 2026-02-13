@@ -47,6 +47,7 @@ import (
 	azureapplicationgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureapplicationgateway/v1"
 	azureapplicationinsightsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureapplicationinsights/v1"
 	azurecontainerregistryv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurecontainerregistry/v1"
+	azurecosmosdbaccountv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurecosmosdbaccount/v1"
 	azurednsrecordv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurednsrecord/v1"
 	azurednszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurednszone/v1"
 	azurekeyvaultv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurekeyvault/v1"
@@ -217,6 +218,7 @@ import (
 	scalewaypublicgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaypublicgateway/v1"
 	scalewayrdbinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayrdbinstance/v1"
 	scalewayredisclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayrediscluster/v1"
+	scalewayserverlesscontainerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayserverlesscontainer/v1"
 	scalewayserverlessfunctionv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1"
 	scalewayvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayvpc/v1"
 	snowflakedatabasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/snowflake/snowflakedatabase/v1"
@@ -285,6 +287,7 @@ var ProviderAzureMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AzureApplicationGateway:       &azureapplicationgatewayv1.AzureApplicationGateway{},
 	cloudresourcekind.CloudResourceKind_AzureApplicationInsights:      &azureapplicationinsightsv1.AzureApplicationInsights{},
 	cloudresourcekind.CloudResourceKind_AzureContainerRegistry:        &azurecontainerregistryv1.AzureContainerRegistry{},
+	cloudresourcekind.CloudResourceKind_AzureCosmosdbAccount:          &azurecosmosdbaccountv1.AzureCosmosdbAccount{},
 	cloudresourcekind.CloudResourceKind_AzureDnsRecord:                &azurednsrecordv1.AzureDnsRecord{},
 	cloudresourcekind.CloudResourceKind_AzureDnsZone:                  &azurednszonev1.AzureDnsZone{},
 	cloudresourcekind.CloudResourceKind_AzureKeyVault:                 &azurekeyvaultv1.AzureKeyVault{},
@@ -482,6 +485,7 @@ var ProviderScalewayMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_ScalewayPublicGateway:         &scalewaypublicgatewayv1.ScalewayPublicGateway{},
 	cloudresourcekind.CloudResourceKind_ScalewayRdbInstance:           &scalewayrdbinstancev1.ScalewayRdbInstance{},
 	cloudresourcekind.CloudResourceKind_ScalewayRedisCluster:          &scalewayredisclusterv1.ScalewayRedisCluster{},
+	cloudresourcekind.CloudResourceKind_ScalewayServerlessContainer:   &scalewayserverlesscontainerv1.ScalewayServerlessContainer{},
 	cloudresourcekind.CloudResourceKind_ScalewayServerlessFunction:    &scalewayserverlessfunctionv1.ScalewayServerlessFunction{},
 	cloudresourcekind.CloudResourceKind_ScalewayVpc:                   &scalewayvpcv1.ScalewayVpc{},
 }
