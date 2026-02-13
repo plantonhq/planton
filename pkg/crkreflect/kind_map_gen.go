@@ -51,9 +51,11 @@ import (
 	azurekeyvaultv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurekeyvault/v1"
 	azureloganalyticsworkspacev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureloganalyticsworkspace/v1"
 	azurenatgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurenatgateway/v1"
+	azurenetworksecuritygroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurenetworksecuritygroup/v1"
 	azurepublicipv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurepublicip/v1"
 	azureresourcegroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureresourcegroup/v1"
 	azurestorageaccountv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurestorageaccount/v1"
+	azuresubnetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azuresubnet/v1"
 	azureuserassignedidentityv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureuserassignedidentity/v1"
 	azurevirtualmachinev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurevirtualmachine/v1"
 	azurevpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurevpc/v1"
@@ -195,6 +197,7 @@ import (
 	openstackvolumeattachv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackvolumeattach/v1"
 	scalewayinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayinstance/v1"
 	scalewayinstancesecuritygroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayinstancesecuritygroup/v1"
+	scalewaykapsuleclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaykapsulecluster/v1"
 	scalewayloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayloadbalancer/v1"
 	scalewayprivatenetworkv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayprivatenetwork/v1"
 	scalewaypublicgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaypublicgateway/v1"
@@ -269,9 +272,11 @@ var ProviderAzureMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AzureKeyVault:              &azurekeyvaultv1.AzureKeyVault{},
 	cloudresourcekind.CloudResourceKind_AzureLogAnalyticsWorkspace: &azureloganalyticsworkspacev1.AzureLogAnalyticsWorkspace{},
 	cloudresourcekind.CloudResourceKind_AzureNatGateway:            &azurenatgatewayv1.AzureNatGateway{},
+	cloudresourcekind.CloudResourceKind_AzureNetworkSecurityGroup:  &azurenetworksecuritygroupv1.AzureNetworkSecurityGroup{},
 	cloudresourcekind.CloudResourceKind_AzurePublicIp:              &azurepublicipv1.AzurePublicIp{},
 	cloudresourcekind.CloudResourceKind_AzureResourceGroup:         &azureresourcegroupv1.AzureResourceGroup{},
 	cloudresourcekind.CloudResourceKind_AzureStorageAccount:        &azurestorageaccountv1.AzureStorageAccount{},
+	cloudresourcekind.CloudResourceKind_AzureSubnet:                &azuresubnetv1.AzureSubnet{},
 	cloudresourcekind.CloudResourceKind_AzureUserAssignedIdentity:  &azureuserassignedidentityv1.AzureUserAssignedIdentity{},
 	cloudresourcekind.CloudResourceKind_AzureVirtualMachine:        &azurevirtualmachinev1.AzureVirtualMachine{},
 	cloudresourcekind.CloudResourceKind_AzureVpc:                   &azurevpcv1.AzureVpc{},
@@ -440,6 +445,7 @@ var ProviderOpenstackMap = map[cloudresourcekind.CloudResourceKind]proto.Message
 var ProviderScalewayMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_ScalewayInstance:              &scalewayinstancev1.ScalewayInstance{},
 	cloudresourcekind.CloudResourceKind_ScalewayInstanceSecurityGroup: &scalewayinstancesecuritygroupv1.ScalewayInstanceSecurityGroup{},
+	cloudresourcekind.CloudResourceKind_ScalewayKapsuleCluster:        &scalewaykapsuleclusterv1.ScalewayKapsuleCluster{},
 	cloudresourcekind.CloudResourceKind_ScalewayLoadBalancer:          &scalewayloadbalancerv1.ScalewayLoadBalancer{},
 	cloudresourcekind.CloudResourceKind_ScalewayPrivateNetwork:        &scalewayprivatenetworkv1.ScalewayPrivateNetwork{},
 	cloudresourcekind.CloudResourceKind_ScalewayPublicGateway:         &scalewaypublicgatewayv1.ScalewayPublicGateway{},

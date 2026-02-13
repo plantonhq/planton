@@ -1,0 +1,204 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azurenetworksecuritygroup.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// **AzureNetworkSecurityGroupSpec** defines the configuration for creating an
+// Azure Network Security Group (NSG) with security rules.
+//
+// An NSG is a stateful firewall that filters inbound and outbound traffic for
+// Azure resources based on 5-tuple rules (source, destination, port, protocol,
+// direction). NSGs are the primary network access control mechanism in Azure,
+// analogous to AWS Security Groups or GCP Firewall Rules.
+//
+// This component bundles the NSG itself (`azurerm_network_security_group`) with
+// its security rules (`azurerm_network_security_rule`) because an NSG without
+// rules allows all traffic (Azure default) -- the rules are the substance of
+// the resource. This follows DD03 (Composite Bundling Rules).
+//
+// NSGs are associated with subnets or NICs post-creation. This component does
+// NOT create the association -- that is an infra-chart concern handled by the
+// `azurerm_subnet_network_security_group_association` resource. This keeps the
+// NSG lifecycle independent of any particular subnet or NIC.
+//
+// **Key Azure behavior**: Azure creates implicit default rules in every NSG
+// (priorities 65000-65500) that allow VNet-to-VNet traffic, allow Azure Load
+// Balancer probes, and deny all other inbound traffic. User-defined rules
+// (priorities 100-4096) are evaluated before these defaults.
+//
+// This spec follows the 80/20 principle: exposing the essential fields that cover
+// the vast majority of deployment scenarios while keeping the configuration minimal.
+message AzureNetworkSecurityGroupSpec {
+  // The Azure region where the NSG will be created.
+  // Must match the region of the resources it will be associated with (subnets, NICs).
+  // Examples: "eastus", "westus2", "westeurope", "southeastasia".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The Azure Resource Group where the NSG will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef resource_group = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The name of the Network Security Group.
+  // Must be unique within the resource group.
+  // Allowed characters: alphanumeric, underscores, hyphens, and periods.
+  // Must start with alphanumeric. Length: 1 to 80 characters.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 80
+  ];
+
+  // Security rules that define allowed or denied traffic flows.
+  // Each rule specifies a 5-tuple filter (source, destination, port, protocol, direction)
+  // combined with an access decision (Allow/Deny) and a priority for ordering.
+  //
+  // Rules are evaluated in priority order (lowest number = highest priority).
+  // The first matching rule determines whether traffic is allowed or denied.
+  // If no user-defined rule matches, Azure's implicit default rules apply.
+  //
+  // An NSG with no rules relies entirely on Azure's defaults: allow VNet-to-VNet,
+  // allow load balancer probes, deny all other inbound, allow all outbound.
+  repeated AzureSecurityRule security_rules = 4;
+}
+
+// AzureSecurityRule defines a single network security rule within the NSG.
+// Each rule is a 5-tuple filter combined with an access decision and priority.
+//
+// Rules are evaluated in priority order within their direction (Inbound or Outbound).
+// Lower priority numbers are evaluated first. The first matching rule wins.
+message AzureSecurityRule {
+  // A user-chosen name for this rule.
+  // Must be unique within the NSG. Used for identification in Azure Portal, CLI,
+  // and IaC state. Use descriptive names like "allow-https-inbound" or "deny-all-outbound".
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 80
+  ];
+
+  // Optional human-readable description of the rule's purpose.
+  // Useful for documenting intent (e.g., "Allow HTTPS from corporate VPN range").
+  // Maximum 140 characters.
+  string description = 2 [(buf.validate.field).string.max_len = 140];
+
+  // The evaluation priority of this rule. Lower numbers are evaluated first.
+  // Range: 100 to 4096 (inclusive).
+  // Azure reserves priorities 65000-65500 for implicit default rules.
+  //
+  // Best practice: Use increments of 10 or 100 (e.g., 100, 200, 300) to leave
+  // room for inserting rules later without renumbering.
+  int32 priority = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {
+      gte: 100
+      lte: 4096
+    }
+  ];
+
+  // The traffic direction this rule applies to.
+  // Uses Azure's exact API values for provider authenticity.
+  //
+  // Valid values:
+  // - "Inbound" -- traffic entering the resource (from external to internal)
+  // - "Outbound" -- traffic leaving the resource (from internal to external)
+  string direction = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "direction_valid"
+      message: "direction must be one of: Inbound, Outbound"
+      expression: "this in ['Inbound', 'Outbound']"
+    }
+  ];
+
+  // The access decision when this rule matches.
+  // Uses Azure's exact API values.
+  //
+  // Valid values:
+  // - "Allow" -- permit matching traffic
+  // - "Deny" -- block matching traffic
+  string access = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "access_valid"
+      message: "access must be one of: Allow, Deny"
+      expression: "this in ['Allow', 'Deny']"
+    }
+  ];
+
+  // The network protocol this rule matches.
+  // Uses Azure's exact API values.
+  //
+  // Valid values:
+  // - "Tcp" -- TCP traffic
+  // - "Udp" -- UDP traffic
+  // - "Icmp" -- ICMP traffic (ping, traceroute)
+  // - "*" -- any protocol
+  string protocol = 6 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "protocol_valid"
+      message: "protocol must be one of: Tcp, Udp, Icmp, *"
+      expression: "this in ['Tcp', 'Udp', 'Icmp', '*']"
+    }
+  ];
+
+  // The source port or port range for this rule.
+  // Accepts a single port ("443"), a range ("1024-65535"), or "*" for any port.
+  // Most rules use "*" for source port since source ports are typically ephemeral.
+  // Default: "*"
+  optional string source_port_range = 7 [(org.openmcf.shared.options.default) = "*"];
+
+  // The destination port or port range for this rule.
+  // Accepts a single port ("443"), a range ("1024-65535"), or "*" for any port.
+  // This is the field that typically defines what service the rule targets.
+  // Examples: "22" (SSH), "80" (HTTP), "443" (HTTPS), "3306" (MySQL), "5432" (PostgreSQL).
+  string destination_port_range = 8 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The source address prefix for this rule.
+  // Accepts a CIDR ("10.0.0.0/8"), a single IP ("10.0.0.1"), an Azure service tag
+  // ("VirtualNetwork", "AzureLoadBalancer", "Internet"), or "*" for any source.
+  // Default: "*"
+  //
+  // If source_address_prefixes (plural) is also set, the plural field takes precedence
+  // and this field is ignored. Use singular for simple rules and plural for multi-CIDR rules.
+  optional string source_address_prefix = 9 [(org.openmcf.shared.options.default) = "*"];
+
+  // The destination address prefix for this rule.
+  // Accepts a CIDR ("10.0.1.0/24"), a single IP, an Azure service tag
+  // ("VirtualNetwork", "AzureLoadBalancer", "Internet"), or "*" for any destination.
+  // Default: "*"
+  //
+  // If destination_address_prefixes (plural) is also set, the plural field takes
+  // precedence and this field is ignored.
+  optional string destination_address_prefix = 10 [(org.openmcf.shared.options.default) = "*"];
+
+  // Optional list of source address prefixes (CIDRs or IPs).
+  // Use this when a rule needs to allow/deny traffic from multiple non-contiguous
+  // source ranges in a single rule (e.g., multiple VPN CIDR blocks).
+  //
+  // When set (non-empty), this field takes precedence over source_address_prefix.
+  // Note: Azure service tags (e.g., "VirtualNetwork") are only supported in the
+  // singular source_address_prefix field, not in this list.
+  repeated string source_address_prefixes = 11;
+
+  // Optional list of destination address prefixes (CIDRs or IPs).
+  // Use this when a rule needs to target multiple non-contiguous destination ranges.
+  //
+  // When set (non-empty), this field takes precedence over destination_address_prefix.
+  // Note: Azure service tags are only supported in the singular destination_address_prefix
+  // field, not in this list.
+  repeated string destination_address_prefixes = 12;
+}
