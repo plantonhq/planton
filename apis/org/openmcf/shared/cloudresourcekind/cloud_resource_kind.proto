@@ -288,6 +288,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "azlb"
   }];
+  AzurePostgresqlFlexibleServer = 430 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azpg"
+  }];
   AzureLogAnalyticsWorkspace = 450 [(kind_meta) = {
     provider: azure
     version: v1

@@ -109,27 +109,28 @@ const (
 	CloudResourceKind_AwsRoute53DnsRecord CloudResourceKind = 223
 	CloudResourceKind_AwsS3ObjectSet      CloudResourceKind = 224
 	// 400–599: Azure resources
-	CloudResourceKind_AzureResourceGroup         CloudResourceKind = 400
-	CloudResourceKind_AzureAksCluster            CloudResourceKind = 401
-	CloudResourceKind_AzureAksNodePool           CloudResourceKind = 402
-	CloudResourceKind_AzureContainerRegistry     CloudResourceKind = 403
-	CloudResourceKind_AzureDnsZone               CloudResourceKind = 404
-	CloudResourceKind_AzureKeyVault              CloudResourceKind = 405
-	CloudResourceKind_AzureVpc                   CloudResourceKind = 406
-	CloudResourceKind_AzureNatGateway            CloudResourceKind = 407
-	CloudResourceKind_AzureVirtualMachine        CloudResourceKind = 408
-	CloudResourceKind_AzureStorageAccount        CloudResourceKind = 409
-	CloudResourceKind_AzureDnsRecord             CloudResourceKind = 410
-	CloudResourceKind_AzureSubnet                CloudResourceKind = 411
-	CloudResourceKind_AzureNetworkSecurityGroup  CloudResourceKind = 412
-	CloudResourceKind_AzurePublicIp              CloudResourceKind = 413
-	CloudResourceKind_AzurePrivateEndpoint       CloudResourceKind = 414
-	CloudResourceKind_AzurePrivateDnsZone        CloudResourceKind = 415
-	CloudResourceKind_AzureApplicationGateway    CloudResourceKind = 416
-	CloudResourceKind_AzureLoadBalancer          CloudResourceKind = 417
-	CloudResourceKind_AzureLogAnalyticsWorkspace CloudResourceKind = 450
-	CloudResourceKind_AzureApplicationInsights   CloudResourceKind = 451
-	CloudResourceKind_AzureUserAssignedIdentity  CloudResourceKind = 460
+	CloudResourceKind_AzureResourceGroup            CloudResourceKind = 400
+	CloudResourceKind_AzureAksCluster               CloudResourceKind = 401
+	CloudResourceKind_AzureAksNodePool              CloudResourceKind = 402
+	CloudResourceKind_AzureContainerRegistry        CloudResourceKind = 403
+	CloudResourceKind_AzureDnsZone                  CloudResourceKind = 404
+	CloudResourceKind_AzureKeyVault                 CloudResourceKind = 405
+	CloudResourceKind_AzureVpc                      CloudResourceKind = 406
+	CloudResourceKind_AzureNatGateway               CloudResourceKind = 407
+	CloudResourceKind_AzureVirtualMachine           CloudResourceKind = 408
+	CloudResourceKind_AzureStorageAccount           CloudResourceKind = 409
+	CloudResourceKind_AzureDnsRecord                CloudResourceKind = 410
+	CloudResourceKind_AzureSubnet                   CloudResourceKind = 411
+	CloudResourceKind_AzureNetworkSecurityGroup     CloudResourceKind = 412
+	CloudResourceKind_AzurePublicIp                 CloudResourceKind = 413
+	CloudResourceKind_AzurePrivateEndpoint          CloudResourceKind = 414
+	CloudResourceKind_AzurePrivateDnsZone           CloudResourceKind = 415
+	CloudResourceKind_AzureApplicationGateway       CloudResourceKind = 416
+	CloudResourceKind_AzureLoadBalancer             CloudResourceKind = 417
+	CloudResourceKind_AzurePostgresqlFlexibleServer CloudResourceKind = 430
+	CloudResourceKind_AzureLogAnalyticsWorkspace    CloudResourceKind = 450
+	CloudResourceKind_AzureApplicationInsights      CloudResourceKind = 451
+	CloudResourceKind_AzureUserAssignedIdentity     CloudResourceKind = 460
 	// 600–799: GCP resources
 	CloudResourceKind_GcpArtifactRegistryRepo       CloudResourceKind = 600
 	CloudResourceKind_GcpCloudCdn                   CloudResourceKind = 601
@@ -353,6 +354,7 @@ var (
 		415:  "AzurePrivateDnsZone",
 		416:  "AzureApplicationGateway",
 		417:  "AzureLoadBalancer",
+		430:  "AzurePostgresqlFlexibleServer",
 		450:  "AzureLogAnalyticsWorkspace",
 		451:  "AzureApplicationInsights",
 		460:  "AzureUserAssignedIdentity",
@@ -566,6 +568,7 @@ var (
 		"AzurePrivateDnsZone":                   415,
 		"AzureApplicationGateway":               416,
 		"AzureLoadBalancer":                     417,
+		"AzurePostgresqlFlexibleServer":         430,
 		"AzureLogAnalyticsWorkspace":            450,
 		"AzureApplicationInsights":              451,
 		"AzureUserAssignedIdentity":             460,
@@ -871,7 +874,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\x81G\n" +
+	"\x02v1\x10\x01*\xb5G\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -935,7 +938,9 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x13AzurePrivateDnsZone\x10\x9f\x03\x1a\x10\xa2\xf7\x04\f\b\r\x10\x01\"\x06azpdns\x12-\n" +
 	"\x17AzureApplicationGateway\x10\xa0\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azagw\x12&\n" +
 	"\x11AzureLoadBalancer\x10\xa1\x03\x1a\x0e\xa2\xf7\x04\n" +
-	"\b\r\x10\x01\"\x04azlb\x120\n" +
+	"\b\r\x10\x01\"\x04azlb\x122\n" +
+	"\x1dAzurePostgresqlFlexibleServer\x10\xae\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\r\x10\x01\"\x04azpg\x120\n" +
 	"\x1aAzureLogAnalyticsWorkspace\x10\xc2\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azlaw\x12-\n" +
 	"\x18AzureApplicationInsights\x10\xc3\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azai\x12.\n" +

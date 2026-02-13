@@ -1,0 +1,3 @@
+name: azure-postgresql-flexible-server
+runtime: go
+description: Pulumi program for Azure Database for PostgreSQL Flexible Server
