@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azuremysqlflexibleserver.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/azure/azuremysqlflexibleserver/v1/spec.proto";
+import "org/openmcf/provider/azure/azuremysqlflexibleserver/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// AzureMysqlFlexibleServer is the top-level API resource for an Azure
+// Database for MySQL Flexible Server.
+// Azure Database for MySQL Flexible Server is a fully managed relational
+// database service with granular control over compute, storage, high availability,
+// and networking. Supports MySQL 5.7, 8.0.21, and 8.4.
+message AzureMysqlFlexibleServer {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'azure.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AzureMysqlFlexibleServer'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AzureMysqlFlexibleServerSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AzureMysqlFlexibleServerStatus status = 5;
+}
+
+// AzureMysqlFlexibleServerStatus holds the deployment status and outputs.
+message AzureMysqlFlexibleServerStatus {
+  // stack-outputs
+  AzureMysqlFlexibleServerStackOutputs outputs = 1;
+}

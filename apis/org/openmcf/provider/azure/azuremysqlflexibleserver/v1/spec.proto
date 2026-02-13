@@ -1,0 +1,328 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azuremysqlflexibleserver.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// **AzureMysqlFlexibleServerSpec** defines the configuration for creating
+// an Azure Database for MySQL Flexible Server with optional databases and
+// firewall rules.
+//
+// Azure Database for MySQL Flexible Server is a fully managed relational
+// database service designed for granular control over database management and
+// configuration. It offers zone-redundant and same-zone high availability,
+// burstable/general-purpose/memory-optimized compute tiers, and configurable
+// storage with auto-grow.
+//
+// This component bundles the flexible server (`azurerm_mysql_flexible_server`)
+// with its databases (`azurerm_mysql_flexible_database`) and firewall rules
+// (`azurerm_mysql_flexible_server_firewall_rule`) because a server without at
+// least a connection path (firewall rules or VNet integration) and databases
+// has no practical utility. This follows DD03 (Composite Bundling Rules).
+//
+// **Network access mode** is determined by whether `delegated_subnet_id` is set:
+// - `delegated_subnet_id` set --> **private VNet access** (public access disabled)
+// - `delegated_subnet_id` not set --> **public access** (firewall rules control access)
+// There is no `public_network_access_enabled` boolean; the IaC modules derive this
+// from the presence of `delegated_subnet_id` to eliminate contradiction risk.
+//
+// **Authentication**: Password authentication is used for all connections.
+// Azure Active Directory authentication is not exposed in v1 and can be configured
+// post-deployment via the Azure portal for advanced scenarios.
+//
+// **Versions**: MySQL 5.7, 8.0.21, and 8.4 are supported. The default is "8.0.21"
+// (current production standard). Version 8.4 is the latest GA release with performance
+// improvements. Version 5.7 is approaching EOL and should only be used for legacy
+// migration.
+//
+// **SKU naming convention**: `{TIER}_Standard_{SIZE}` where TIER is:
+// - `B` (Burstable) -- dev/test, e.g., "B_Standard_B1ms", "B_Standard_B2s"
+// - `GP` (General Purpose) -- production, e.g., "GP_Standard_D2ds_v4", "GP_Standard_D4ads_v5"
+// - `MO` (Memory Optimized) -- analytics/caching, e.g., "MO_Standard_E2ds_v4"
+//
+// **ForceNew fields** (changing these destroys and recreates the server):
+// `name`, `administrator_login`, `delegated_subnet_id`, `private_dns_zone_id`,
+// `geo_redundant_backup_enabled`.
+// These are documented prominently because database recreation causes data loss.
+message AzureMysqlFlexibleServerSpec {
+  // The Azure region where the MySQL Flexible Server will be created.
+  // Must match the region of the VNet/subnet if VNet integration is used.
+  // Examples: "eastus", "westus2", "westeurope", "southeastasia".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The Azure Resource Group where the MySQL Flexible Server will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef resource_group = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The name of the MySQL Flexible Server.
+  // Must be globally unique across Azure. Used as the server hostname:
+  // `{name}.mysql.database.azure.com`
+  // Allowed characters: lowercase letters, numbers, and hyphens.
+  // Must start with a letter or number. Length: 3 to 63 characters.
+  //
+  // **ForceNew**: Changing this destroys and recreates the server.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 3,
+    (buf.validate.field).string.max_len = 63,
+    (buf.validate.field).cel = {
+      id: "server_name_format"
+      message: "Server name must start with a letter or number and contain only lowercase letters, numbers, and hyphens"
+      expression: "this.matches('^[a-z0-9][a-z0-9-]*[a-z0-9]$')"
+    }
+  ];
+
+  // The administrator login name for the server.
+  // Cannot be "azure_superuser", "admin", "administrator", "root", "guest", or "public".
+  // Must start with a letter or underscore. Length: 1 to 32 characters.
+  //
+  // **ForceNew**: Changing this destroys and recreates the server.
+  string administrator_login = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 32
+  ];
+
+  // The administrator password for the server.
+  // Can be a literal value or a reference to another resource's output
+  // (e.g., a generated random password or a Key Vault secret value).
+  //
+  // Password requirements: 8-128 characters, must contain characters from
+  // at least three of: uppercase, lowercase, digits, special characters.
+  //
+  // This is a polymorphic StringValueOrRef with no default_kind because
+  // the password source varies (literal, chart variable, external secret).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef administrator_password = 5 [(buf.validate.field).required = true];
+
+  // The MySQL major version.
+  // Uses Azure's exact version strings for provider authenticity.
+  //
+  // Valid values: "5.7", "8.0.21", "8.4"
+  // Default: "8.0.21" (current GA production standard)
+  //
+  // - "5.7": Approaching EOL, use only for legacy migration
+  // - "8.0.21": Active, recommended for most production workloads (default)
+  // - "8.4": Latest GA, performance improvements, new features
+  optional string version = 6 [
+    (org.openmcf.shared.options.default) = "8.0.21",
+    (buf.validate.field).cel = {
+      id: "version_valid"
+      message: "version must be one of: 5.7, 8.0.21, 8.4"
+      expression: "this in ['5.7', '8.0.21', '8.4']"
+    }
+  ];
+
+  // The SKU name defining the compute tier and size.
+  // Format: {TIER}_Standard_{SIZE}
+  //
+  // Burstable (dev/test):
+  //   "B_Standard_B1ms" (1 vCPU, 2 GiB), "B_Standard_B2ms" (2 vCPU, 4 GiB),
+  //   "B_Standard_B4ms" (4 vCPU, 8 GiB), "B_Standard_B8ms" (8 vCPU, 16 GiB)
+  //
+  // General Purpose (production):
+  //   "GP_Standard_D2ds_v4" (2 vCPU, 8 GiB), "GP_Standard_D4ds_v4" (4 vCPU, 16 GiB),
+  //   "GP_Standard_D8ds_v4" (8 vCPU, 32 GiB), "GP_Standard_D16ds_v4" (16 vCPU, 64 GiB),
+  //   "GP_Standard_D2ads_v5" through "GP_Standard_D64ads_v5"
+  //
+  // Memory Optimized (analytics, caching):
+  //   "MO_Standard_E2ds_v4" (2 vCPU, 16 GiB) through "MO_Standard_E96ads_v5"
+  string sku_name = 7 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The storage size in gigabytes.
+  // Range: 20 GB to 16384 GB (16 TB).
+  //
+  // **Cannot be downgraded** -- decreasing storage_size_gb forces server recreation.
+  // Azure validates exact values; the minimum is enforced here.
+  int32 storage_size_gb = 8 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32.gte = 20
+  ];
+
+  // Enable storage auto-grow.
+  // When enabled, Azure automatically increases storage when free storage
+  // falls below a threshold. Prevents out-of-storage failures for databases
+  // that grow unpredictably.
+  //
+  // Default: true (MySQL provider default; note this differs from PostgreSQL
+  // where auto-grow defaults to false)
+  optional bool auto_grow_enabled = 9 [(org.openmcf.shared.options.default) = "true"];
+
+  // The ID of a subnet delegated to Microsoft.DBforMySQL/flexibleServers.
+  // When set, the server is deployed with **private VNet access** and
+  // public network access is automatically disabled.
+  //
+  // The subnet must have the delegation `Microsoft.DBforMySQL/flexibleServers`.
+  // Use the AzureSubnet component with a delegation block to create a properly
+  // configured subnet.
+  //
+  // **ForceNew**: Changing this destroys and recreates the server.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef delegated_subnet_id = 10 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // The ID of a private DNS zone for server name resolution within the VNet.
+  // Typically "privatelink.mysql.database.azure.com" for private access.
+  //
+  // When `delegated_subnet_id` is set, providing a private DNS zone enables
+  // VNet-connected clients to resolve the server's FQDN to its private IP.
+  //
+  // **ForceNew**: Changing this destroys and recreates the server.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef private_dns_zone_id = 11 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzurePrivateDnsZone,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+
+  // The availability zone for the primary server.
+  // Valid values: "1", "2", "3". If omitted, Azure selects automatically.
+  //
+  // When using ZoneRedundant high availability, the standby is placed in
+  // a different zone from the primary. Set this to control primary placement.
+  string zone = 12;
+
+  // High availability configuration.
+  // If this message is present, high availability is enabled.
+  // If omitted, the server runs as a single instance (no HA).
+  //
+  // Burstable SKUs (B_Standard_*) do NOT support high availability.
+  // General Purpose and Memory Optimized SKUs support both modes.
+  AzureMysqlHighAvailability high_availability = 13;
+
+  // The number of days to retain backups.
+  // Azure performs automatic daily backups. This controls how far back
+  // you can restore using point-in-time restore.
+  // Default: 7 days. Range: 1 to 35 days.
+  optional int32 backup_retention_days = 14 [
+    (org.openmcf.shared.options.default) = "7",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 35
+    }
+  ];
+
+  // Enable geo-redundant backup storage.
+  // When enabled, backup data is replicated to a paired Azure region,
+  // enabling cross-region restore for disaster recovery.
+  //
+  // **ForceNew**: Changing this destroys and recreates the server.
+  // Only available in regions that support geo-redundant storage.
+  // Default: false
+  optional bool geo_redundant_backup_enabled = 15 [(org.openmcf.shared.options.default) = "false"];
+
+  // Databases to create on the server.
+  // Each database is created as a separate `azurerm_mysql_flexible_database`
+  // resource with its own lifecycle.
+  //
+  // If omitted, only the default system databases exist (created by Azure
+  // automatically). Most applications create at least one application database.
+  repeated AzureMysqlDatabase databases = 16;
+
+  // Firewall rules for public access mode.
+  // Only effective when `delegated_subnet_id` is NOT set (public access mode).
+  // Each rule allows connections from a range of IP addresses.
+  //
+  // To allow all Azure services: start_ip_address = "0.0.0.0", end_ip_address = "0.0.0.0"
+  // To allow a single IP: set both start and end to the same address.
+  repeated AzureMysqlFirewallRule firewall_rules = 17;
+}
+
+// AzureMysqlHighAvailability defines the high availability configuration
+// for the MySQL Flexible Server.
+//
+// When this message is present on the spec, HA is enabled. Omitting it means
+// the server runs as a single instance.
+message AzureMysqlHighAvailability {
+  // The high availability mode.
+  // Uses Azure's exact API values for provider authenticity.
+  //
+  // Valid values:
+  // - "ZoneRedundant" -- Standby in a different availability zone (recommended for production)
+  // - "SameZone" -- Standby in the same zone as primary (lower latency failover)
+  //
+  // ZoneRedundant provides protection against zone-level failures.
+  // SameZone provides faster failover but no zone-level protection.
+  string mode = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "ha_mode_valid"
+      message: "mode must be one of: ZoneRedundant, SameZone"
+      expression: "this in ['ZoneRedundant', 'SameZone']"
+    }
+  ];
+
+  // The availability zone for the standby server.
+  // Valid values: "1", "2", "3". If omitted, Azure selects automatically.
+  //
+  // Must be different from the primary server's `zone` when using ZoneRedundant mode.
+  // Can only be set during initial creation; updates are not supported.
+  string standby_availability_zone = 2;
+}
+
+// AzureMysqlDatabase defines a database to create on the MySQL Flexible Server.
+// Each database is a separate Azure resource with its own lifecycle, enabling
+// independent management.
+message AzureMysqlDatabase {
+  // The name of the database.
+  // Must be unique within the server.
+  // Must be a valid MySQL identifier.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The character set for the database.
+  // Default: "utf8mb4" (recommended for most applications, supports full Unicode
+  // including emojis and supplementary characters).
+  // Common values: "utf8mb4", "utf8", "latin1".
+  //
+  // Note: The charset comparison is case-insensitive in Azure.
+  optional string charset = 2 [(org.openmcf.shared.options.default) = "utf8mb4"];
+
+  // The collation for the database.
+  // Default: "utf8mb4_0900_ai_ci" (MySQL 8.0+ default, accent-insensitive,
+  // case-insensitive).
+  // For MySQL 5.7: use "utf8mb4_unicode_ci" instead.
+  //
+  // Determines sort order and string comparison behavior.
+  optional string collation = 3 [(org.openmcf.shared.options.default) = "utf8mb4_0900_ai_ci"];
+}
+
+// AzureMysqlFirewallRule defines a firewall rule for public access mode.
+// Each rule allows connections from a contiguous range of IPv4 addresses.
+message AzureMysqlFirewallRule {
+  // The name of the firewall rule.
+  // Must be unique within the server.
+  // Examples: "allow-office", "allow-azure-services", "allow-dev-machine".
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The start of the IP address range (inclusive).
+  // Must be a valid IPv4 address.
+  // Use "0.0.0.0" with end "0.0.0.0" to allow all Azure services.
+  string start_ip_address = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 7
+  ];
+
+  // The end of the IP address range (inclusive).
+  // Must be a valid IPv4 address and >= start_ip_address.
+  // Set equal to start_ip_address for a single IP rule.
+  string end_ip_address = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 7
+  ];
+}
