@@ -1,0 +1,8 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzurePublicIp
+metadata:
+  name: test-pip
+spec:
+  region: eastus
+  resource_group: test-rg
+  name: test-public-ip
