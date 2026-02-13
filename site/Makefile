@@ -8,7 +8,7 @@ deps:
 	yarn install
 
 generate-structure: copy-docs
-	yarn tsx scripts/generate-docs-structure.ts
+	yarn generate-structure
 
 dev: generate-structure
 	yarn dev --port $(PORT)
@@ -18,7 +18,7 @@ run: dev
 copy-docs:
 	yarn copy-docs
 
-build: deps copy-docs
+build: deps
 	yarn build
 
 start:

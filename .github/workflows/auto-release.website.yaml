@@ -50,9 +50,6 @@ jobs:
           corepack install
           yarn
 
-      - name: Copy component documentation
-        run: yarn copy-docs
-
       - name: Build site
         run: |
           yarn build

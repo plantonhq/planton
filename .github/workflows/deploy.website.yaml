@@ -1,15 +1,18 @@
 # =============================================================================
-# Website Release (Reusable Workflow)
+# Website Deploy (Manual Trigger)
 # =============================================================================
-# Builds and deploys openmcf.org to GitHub Pages.
+# Builds and deploys openmcf.org to GitHub Pages from any branch.
 #
-# Called by: .github/workflows/release.yaml
+# Use the branch picker in the GitHub Actions UI to select the branch to
+# deploy. No tagging or GitHub release is created — this is a lightweight
+# operational deploy for previewing changes before merging.
 # =============================================================================
 
-name: release.website
+name: deploy.website
+run-name: "Website Deploy: ${{ github.ref_name }}"
 
 on:
-  workflow_call:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -62,4 +65,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
