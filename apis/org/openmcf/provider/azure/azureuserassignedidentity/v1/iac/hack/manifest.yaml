@@ -1,0 +1,15 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureUserAssignedIdentity
+metadata:
+  name: test-identity
+  org: test-org
+  env: dev
+spec:
+  region: eastus
+  resource_group: test-rg
+  name: test-managed-identity
+  role_assignments:
+    - scope: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-kv
+      role_definition_name: Key Vault Secrets User
+    - scope: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.Storage/storageAccounts/teststorage
+      role_definition_name: Storage Blob Data Contributor

@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azureuserassignedidentity.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/azure/azureuserassignedidentity/v1/spec.proto";
+import "org/openmcf/provider/azure/azureuserassignedidentity/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// AzureUserAssignedIdentity is the top-level resource definition for an Azure
+// User-Assigned Managed Identity with RBAC role assignments. It follows the KRM
+// (Kubernetes Resource Model) pattern with apiVersion, kind, metadata, spec, and status.
+//
+// User-Assigned Managed Identities provide a secure, credential-free way for Azure
+// resources to authenticate to Azure services. Unlike system-assigned identities,
+// user-assigned identities have an independent lifecycle and can be shared across
+// multiple resources.
+message AzureUserAssignedIdentity {
+  // API version identifier. Must be "azure.openmcf.org/v1".
+  string api_version = 1 [(buf.validate.field).string.const = 'azure.openmcf.org/v1'];
+
+  // Resource kind. Must be "AzureUserAssignedIdentity".
+  string kind = 2 [(buf.validate.field).string.const = 'AzureUserAssignedIdentity'];
+
+  // Standard OpenMCF metadata (name, org, env, labels, tags).
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // Managed Identity specification.
+  AzureUserAssignedIdentitySpec spec = 4 [(buf.validate.field).required = true];
+
+  // Deployment status containing stack outputs. Populated after deployment.
+  AzureUserAssignedIdentityStatus status = 5;
+}
+
+// AzureUserAssignedIdentityStatus holds the deployment outputs.
+message AzureUserAssignedIdentityStatus {
+  // Stack outputs from the IaC deployment.
+  AzureUserAssignedIdentityStackOutputs outputs = 1;
+}
