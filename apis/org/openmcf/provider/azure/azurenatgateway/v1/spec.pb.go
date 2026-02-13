@@ -105,7 +105,7 @@ const file_org_openmcf_provider_azure_azurenatgateway_v1_spec_proto_rawDesc = ""
 	"\n" +
 	"8org/openmcf/provider/azure/azurenatgateway/v1/spec.proto\x12-org.openmcf.provider.azure.azurenatgateway.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xee\x03\n" +
 	"\x13AzureNatGatewaySpec\x12~\n" +
-	"\tsubnet_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB-\xbaH\x03\xc8\x01\x01\x88\xd4a\x95\x03\x92\xd4a\x1estatus.outputs.nodes_subnet_idR\bsubnetId\x12@\n" +
+	"\tsubnet_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB-\xbaH\x03\xc8\x01\x01\x88\xd4a\x96\x03\x92\xd4a\x1estatus.outputs.nodes_subnet_idR\bsubnetId\x12@\n" +
 	"\x14idle_timeout_minutes\x18\x02 \x01(\x05B\t\xbaH\x06\x1a\x04\x18x(\x04H\x00R\x12idleTimeoutMinutes\x88\x01\x01\x12E\n" +
 	"\x17public_ip_prefix_length\x18\x03 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x1f(\x1cH\x01R\x14publicIpPrefixLength\x88\x01\x01\x12`\n" +
 	"\x04tags\x18\x04 \x03(\v2L.org.openmcf.provider.azure.azurenatgateway.v1.AzureNatGatewaySpec.TagsEntryR\x04tags\x1a7\n" +

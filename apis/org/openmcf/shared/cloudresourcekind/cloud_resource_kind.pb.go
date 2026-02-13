@@ -109,16 +109,18 @@ const (
 	CloudResourceKind_AwsRoute53DnsRecord CloudResourceKind = 223
 	CloudResourceKind_AwsS3ObjectSet      CloudResourceKind = 224
 	// 400–599: Azure resources
-	CloudResourceKind_AzureAksCluster        CloudResourceKind = 400
-	CloudResourceKind_AzureAksNodePool       CloudResourceKind = 401
-	CloudResourceKind_AzureContainerRegistry CloudResourceKind = 402
-	CloudResourceKind_AzureDnsZone           CloudResourceKind = 403
-	CloudResourceKind_AzureKeyVault          CloudResourceKind = 404
-	CloudResourceKind_AzureVpc               CloudResourceKind = 405
-	CloudResourceKind_AzureNatGateway        CloudResourceKind = 406
-	CloudResourceKind_AzureVirtualMachine    CloudResourceKind = 407
-	CloudResourceKind_AzureStorageAccount    CloudResourceKind = 408
-	CloudResourceKind_AzureDnsRecord         CloudResourceKind = 409
+	CloudResourceKind_AzureResourceGroup         CloudResourceKind = 400
+	CloudResourceKind_AzureAksCluster            CloudResourceKind = 401
+	CloudResourceKind_AzureAksNodePool           CloudResourceKind = 402
+	CloudResourceKind_AzureContainerRegistry     CloudResourceKind = 403
+	CloudResourceKind_AzureDnsZone               CloudResourceKind = 404
+	CloudResourceKind_AzureKeyVault              CloudResourceKind = 405
+	CloudResourceKind_AzureVpc                   CloudResourceKind = 406
+	CloudResourceKind_AzureNatGateway            CloudResourceKind = 407
+	CloudResourceKind_AzureVirtualMachine        CloudResourceKind = 408
+	CloudResourceKind_AzureStorageAccount        CloudResourceKind = 409
+	CloudResourceKind_AzureDnsRecord             CloudResourceKind = 410
+	CloudResourceKind_AzureLogAnalyticsWorkspace CloudResourceKind = 450
 	// 600–799: GCP resources
 	CloudResourceKind_GcpArtifactRegistryRepo       CloudResourceKind = 600
 	CloudResourceKind_GcpCloudCdn                   CloudResourceKind = 601
@@ -324,16 +326,18 @@ var (
 		222:  "AwsDocumentDb",
 		223:  "AwsRoute53DnsRecord",
 		224:  "AwsS3ObjectSet",
-		400:  "AzureAksCluster",
-		401:  "AzureAksNodePool",
-		402:  "AzureContainerRegistry",
-		403:  "AzureDnsZone",
-		404:  "AzureKeyVault",
-		405:  "AzureVpc",
-		406:  "AzureNatGateway",
-		407:  "AzureVirtualMachine",
-		408:  "AzureStorageAccount",
-		409:  "AzureDnsRecord",
+		400:  "AzureResourceGroup",
+		401:  "AzureAksCluster",
+		402:  "AzureAksNodePool",
+		403:  "AzureContainerRegistry",
+		404:  "AzureDnsZone",
+		405:  "AzureKeyVault",
+		406:  "AzureVpc",
+		407:  "AzureNatGateway",
+		408:  "AzureVirtualMachine",
+		409:  "AzureStorageAccount",
+		410:  "AzureDnsRecord",
+		450:  "AzureLogAnalyticsWorkspace",
 		600:  "GcpArtifactRegistryRepo",
 		601:  "GcpCloudCdn",
 		602:  "GcpCloudFunction",
@@ -526,16 +530,18 @@ var (
 		"AwsDocumentDb":                         222,
 		"AwsRoute53DnsRecord":                   223,
 		"AwsS3ObjectSet":                        224,
-		"AzureAksCluster":                       400,
-		"AzureAksNodePool":                      401,
-		"AzureContainerRegistry":                402,
-		"AzureDnsZone":                          403,
-		"AzureKeyVault":                         404,
-		"AzureVpc":                              405,
-		"AzureNatGateway":                       406,
-		"AzureVirtualMachine":                   407,
-		"AzureStorageAccount":                   408,
-		"AzureDnsRecord":                        409,
+		"AzureResourceGroup":                    400,
+		"AzureAksCluster":                       401,
+		"AzureAksNodePool":                      402,
+		"AzureContainerRegistry":                403,
+		"AzureDnsZone":                          404,
+		"AzureKeyVault":                         405,
+		"AzureVpc":                              406,
+		"AzureNatGateway":                       407,
+		"AzureVirtualMachine":                   408,
+		"AzureStorageAccount":                   409,
+		"AzureDnsRecord":                        410,
+		"AzureLogAnalyticsWorkspace":            450,
 		"GcpArtifactRegistryRepo":               600,
 		"GcpCloudCdn":                           601,
 		"GcpCloudFunction":                      602,
@@ -838,7 +844,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xa0C\n" +
+	"\x02v1\x10\x01*\xfbC\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -878,20 +884,23 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\fAwsClientVpn\x10\xdd\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsvpn\x12#\n" +
 	"\rAwsDocumentDb\x10\xde\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05docdb\x12*\n" +
 	"\x13AwsRoute53DnsRecord\x10\xdf\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06r53rec\x12%\n" +
-	"\x0eAwsS3ObjectSet\x10\xe0\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06s3objs\x12#\n" +
-	"\x0fAzureAksCluster\x10\x90\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03aks\x12&\n" +
-	"\x10AzureAksNodePool\x10\x91\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05aksnp\x12*\n" +
-	"\x16AzureContainerRegistry\x10\x92\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03acr\x12\"\n" +
-	"\fAzureDnsZone\x10\x93\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azdns\x12\"\n" +
-	"\rAzureKeyVault\x10\x94\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\x0eAwsS3ObjectSet\x10\xe0\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06s3objs\x12'\n" +
+	"\x12AzureResourceGroup\x10\x90\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\r\x10\x01\"\x04azrg\x12#\n" +
+	"\x0fAzureAksCluster\x10\x91\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03aks\x12&\n" +
+	"\x10AzureAksNodePool\x10\x92\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05aksnp\x12*\n" +
+	"\x16AzureContainerRegistry\x10\x93\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03acr\x12\"\n" +
+	"\fAzureDnsZone\x10\x94\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azdns\x12\"\n" +
+	"\rAzureKeyVault\x10\x95\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azkv\x12\x1e\n" +
-	"\bAzureVpc\x10\x95\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azvpc\x12%\n" +
-	"\x0fAzureNatGateway\x10\x96\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05aznat\x12(\n" +
-	"\x13AzureVirtualMachine\x10\x97\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\bAzureVpc\x10\x96\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azvpc\x12%\n" +
+	"\x0fAzureNatGateway\x10\x97\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05aznat\x12(\n" +
+	"\x13AzureVirtualMachine\x10\x98\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azvm\x12(\n" +
-	"\x13AzureStorageAccount\x10\x98\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\x13AzureStorageAccount\x10\x99\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azsa\x12%\n" +
-	"\x0eAzureDnsRecord\x10\x99\x03\x1a\x10\xa2\xf7\x04\f\b\r\x10\x01\"\x06azdrec\x12.\n" +
+	"\x0eAzureDnsRecord\x10\x9a\x03\x1a\x10\xa2\xf7\x04\f\b\r\x10\x01\"\x06azdrec\x120\n" +
+	"\x1aAzureLogAnalyticsWorkspace\x10\xc2\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azlaw\x12.\n" +
 	"\x17GcpArtifactRegistryRepo\x10\xd8\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpart\x12\"\n" +
 	"\vGcpCloudCdn\x10\xd9\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpcdn\x12(\n" +
 	"\x10GcpCloudFunction\x10\xda\x04\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\acldfunc\x12\"\n" +

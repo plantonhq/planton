@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azureloganalyticsworkspace.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/azure/azureloganalyticsworkspace/v1/spec.proto";
+import "org/openmcf/provider/azure/azureloganalyticsworkspace/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// AzureLogAnalyticsWorkspace is the top-level API resource for an Azure Log Analytics Workspace.
+// Log Analytics Workspaces are the central data platform for Azure Monitor, collecting
+// and analyzing log data from Azure resources, on-premises servers, and applications.
+message AzureLogAnalyticsWorkspace {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'azure.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AzureLogAnalyticsWorkspace'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AzureLogAnalyticsWorkspaceSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AzureLogAnalyticsWorkspaceStatus status = 5;
+}
+
+// AzureLogAnalyticsWorkspaceStatus holds the deployment status and outputs.
+message AzureLogAnalyticsWorkspaceStatus {
+  // stack-outputs
+  AzureLogAnalyticsWorkspaceStackOutputs outputs = 1;
+}

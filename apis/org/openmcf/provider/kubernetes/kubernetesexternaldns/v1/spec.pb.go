@@ -446,7 +446,7 @@ const file_org_openmcf_provider_kubernetes_kubernetesexternaldns_v1_spec_proto_r
 	"\x0froute53_zone_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\xbaH\x03\xc8\x01\x01\x88\xd4a\xd4\x01\x92\xd4a\x16status.outputs.zone_idR\rroute53ZoneId\x123\n" +
 	"\x16irsa_role_arn_override\x18\x02 \x01(\tR\x13irsaRoleArnOverride\"\xd8\x01\n" +
 	"\x1eKubernetesExternalDnsAksConfig\x12y\n" +
-	"\vdns_zone_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\xbaH\x03\xc8\x01\x01\x88\xd4a\x93\x03\x92\xd4a\x16status.outputs.zone_idR\tdnsZoneId\x12;\n" +
+	"\vdns_zone_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\xbaH\x03\xc8\x01\x01\x88\xd4a\x94\x03\x92\xd4a\x16status.outputs.zone_idR\tdnsZoneId\x12;\n" +
 	"\x1amanaged_identity_client_id\x18\x02 \x01(\tR\x17managedIdentityClientId\"\xe6\x01\n" +
 	"%KubernetesExternalDnsCloudflareConfig\x12#\n" +
 	"\tapi_token\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bapiToken\x12y\n" +

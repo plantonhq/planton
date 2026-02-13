@@ -198,55 +198,65 @@ enum CloudResourceKind {
   }];
 
   // 400–599: Azure resources
-  AzureAksCluster = 400 [(kind_meta) = {
+  AzureResourceGroup = 400 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azrg"
+  }];
+  AzureAksCluster = 401 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "aks"
   }];
-  AzureAksNodePool = 401 [(kind_meta) = {
+  AzureAksNodePool = 402 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "aksnp"
   }];
-  AzureContainerRegistry = 402 [(kind_meta) = {
+  AzureContainerRegistry = 403 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "acr"
   }];
-  AzureDnsZone = 403 [(kind_meta) = {
+  AzureDnsZone = 404 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "azdns"
   }];
-  AzureKeyVault = 404 [(kind_meta) = {
+  AzureKeyVault = 405 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "azkv"
   }];
-  AzureVpc = 405 [(kind_meta) = {
+  AzureVpc = 406 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "azvpc"
   }];
-  AzureNatGateway = 406 [(kind_meta) = {
+  AzureNatGateway = 407 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "aznat"
   }];
-  AzureVirtualMachine = 407 [(kind_meta) = {
+  AzureVirtualMachine = 408 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "azvm"
   }];
-  AzureStorageAccount = 408 [(kind_meta) = {
+  AzureStorageAccount = 409 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "azsa"
   }];
-  AzureDnsRecord = 409 [(kind_meta) = {
+  AzureDnsRecord = 410 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "azdrec"
+  }];
+  AzureLogAnalyticsWorkspace = 450 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azlaw"
   }];
 
   // 600–799: GCP resources

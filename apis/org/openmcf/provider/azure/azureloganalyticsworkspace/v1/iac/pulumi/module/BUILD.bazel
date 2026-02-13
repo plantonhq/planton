@@ -1,0 +1,21 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "locals.go",
+        "main.go",
+        "outputs.go",
+    ],
+    importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureloganalyticsworkspace/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/org/openmcf/provider/azure/azureloganalyticsworkspace/v1:azureloganalyticsworkspace",
+        "//apis/org/openmcf/shared/cloudresourcekind",
+        "//apis/org/openmcf/shared/foreignkey/v1:foreignkey",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_azure_sdk_v6//go/azure",
+        "@com_github_pulumi_pulumi_azure_sdk_v6//go/azure/operationalinsights",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

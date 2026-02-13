@@ -896,7 +896,7 @@ const file_org_openmcf_provider_azure_azurevirtualmachine_v1_spec_proto_rawDesc 
 	"\x0eresource_group\x18\x02 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\rresourceGroup\x12;\n" +
 	"\avm_size\x18\x03 \x01(\tB\x1d\xbaH\a\xd8\x01\x01r\x02\x10\x01\x92\xa6\x1d\x0fStandard_D2s_v3H\x00R\x06vmSize\x88\x01\x01\x12~\n" +
-	"\tsubnet_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB-\xbaH\x03\xc8\x01\x01\x88\xd4a\x95\x03\x92\xd4a\x1estatus.outputs.nodes_subnet_idR\bsubnetId\x12i\n" +
+	"\tsubnet_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB-\xbaH\x03\xc8\x01\x01\x88\xd4a\x96\x03\x92\xd4a\x1estatus.outputs.nodes_subnet_idR\bsubnetId\x12i\n" +
 	"\x05image\x18\x05 \x01(\v2K.org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineImageB\x06\xbaH\x03\xc8\x01\x01R\x05image\x12e\n" +
 	"\aos_disk\x18\x06 \x01(\v2L.org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDiskR\x06osDisk\x12m\n" +
 	"\n" +
@@ -904,7 +904,7 @@ const file_org_openmcf_provider_azure_azurevirtualmachine_v1_spec_proto_rawDesc 
 	"\x0eadmin_username\x18\b \x01(\tB\x19\xbaH\t\xd8\x01\x01r\x04\x10\x01\x18@\x8a\xa6\x1d\tazureuserH\x01R\radminUsername\x88\x01\x01\x12$\n" +
 	"\x0essh_public_key\x18\t \x01(\tR\fsshPublicKey\x12|\n" +
 	"\x0eadmin_password\x18\n" +
-	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x94\x03\x92\xd4a\x18status.outputs.vault_uriR\radminPassword\x12m\n" +
+	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x95\x03\x92\xd4a\x18status.outputs.vault_uriR\radminPassword\x12m\n" +
 	"\anetwork\x18\v \x01(\v2S.org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfigR\anetwork\x12=\n" +
 	"\x11availability_zone\x18\f \x01(\tB\x10\xbaH\rr\vR\x00R\x011R\x012R\x013R\x10availabilityZone\x12E\n" +
 	"\x17enable_boot_diagnostics\x18\r \x01(\bB\b\x8a\xa6\x1d\x04trueH\x02R\x15enableBootDiagnostics\x88\x01\x01\x12E\n" +
@@ -939,7 +939,7 @@ const file_org_openmcf_provider_azure_azurevirtualmachine_v1_spec_proto_rawDesc 
 	"\acaching\x18\x03 \x01(\x0e2X.org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk.DiskCachingB\x16\xbaH\x05\x82\x01\x02\x10\x01\x8a\xa6\x1d\n" +
 	"read_writeH\x01R\acaching\x88\x01\x01\x123\n" +
 	"\x0edelete_with_vm\x18\x04 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x02R\fdeleteWithVm\x88\x01\x01\x12\x89\x01\n" +
-	"\x16disk_encryption_set_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\x94\x03\x92\xd4a\x17status.outputs.vault_idR\x13diskEncryptionSetId\"T\n" +
+	"\x16disk_encryption_set_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\x95\x03\x92\xd4a\x17status.outputs.vault_idR\x13diskEncryptionSetId\"T\n" +
 	"\vDiskCaching\x12\x1c\n" +
 	"\x18disk_caching_unspecified\x10\x00\x12\b\n" +
 	"\x04none\x10\x01\x12\r\n" +

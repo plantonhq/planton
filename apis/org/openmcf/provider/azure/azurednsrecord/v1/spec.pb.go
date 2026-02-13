@@ -251,7 +251,7 @@ const file_org_openmcf_provider_azure_azurednsrecord_v1_spec_proto_rawDesc = "" 
 	"7org/openmcf/provider/azure/azurednsrecord/v1/spec.proto\x12,org.openmcf.provider.azure.azurednsrecord.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xce\b\n" +
 	"\x12AzureDnsRecordSpec\x12-\n" +
 	"\x0eresource_group\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\rresourceGroup\x12x\n" +
-	"\tzone_name\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\x93\x03\x92\xd4a\x18status.outputs.zone_nameR\bzoneName\x12\xcc\x01\n" +
+	"\tzone_name\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\x94\x03\x92\xd4a\x18status.outputs.zone_nameR\bzoneName\x12\xcc\x01\n" +
 	"\x04type\x18\x03 \x01(\x0e2K.org.openmcf.provider.azure.azurednsrecord.v1.AzureDnsRecordSpec.RecordTypeBk\xbaHh\xba\x01]\n" +
 	"\x14type.not_unspecified\x12:type must be specified (cannot be record_type_unspecified)\x1a\tthis != 0\xc8\x01\x01\x82\x01\x02\x10\x01R\x04type\x12\x8c\x02\n" +
 	"\x04name\x18\x04 \x01(\tB\xf7\x01\xbaH\xf3\x01\xba\x01\xec\x01\n" +

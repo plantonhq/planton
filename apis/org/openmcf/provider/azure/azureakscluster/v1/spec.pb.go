@@ -744,7 +744,7 @@ const file_org_openmcf_provider_azure_azureakscluster_v1_spec_proto_rawDesc = ""
 	"\n" +
 	"\x13AzureAksClusterSpec\x12\x1e\n" +
 	"\x06region\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12\x87\x01\n" +
-	"\x0evnet_subnet_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB-\xbaH\x03\xc8\x01\x01\x88\xd4a\x95\x03\x92\xd4a\x1estatus.outputs.nodes_subnet_idR\fvnetSubnetId\x127\n" +
+	"\x0evnet_subnet_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB-\xbaH\x03\xc8\x01\x01\x88\xd4a\x96\x03\x92\xd4a\x1estatus.outputs.nodes_subnet_idR\fvnetSubnetId\x127\n" +
 	"\x12kubernetes_version\x18\x03 \x01(\tB\b\x92\xa6\x1d\x041.30R\x11kubernetesVersion\x12y\n" +
 	"\x11control_plane_sku\x18\x04 \x01(\x0e2M.org.openmcf.provider.azure.azureakscluster.v1.AzureAksClusterControlPlaneSkuR\x0fcontrolPlaneSku\x12r\n" +
 	"\x0enetwork_plugin\x18\x05 \x01(\x0e2K.org.openmcf.provider.azure.azureakscluster.v1.AzureAksClusterNetworkPluginR\rnetworkPlugin\x12\x7f\n" +

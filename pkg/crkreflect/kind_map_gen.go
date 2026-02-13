@@ -48,7 +48,9 @@ import (
 	azurednsrecordv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurednsrecord/v1"
 	azurednszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurednszone/v1"
 	azurekeyvaultv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurekeyvault/v1"
+	azureloganalyticsworkspacev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureloganalyticsworkspace/v1"
 	azurenatgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurenatgateway/v1"
+	azureresourcegroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureresourcegroup/v1"
 	azurestorageaccountv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurestorageaccount/v1"
 	azurevirtualmachinev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurevirtualmachine/v1"
 	azurevpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurevpc/v1"
@@ -188,25 +190,6 @@ import (
 	openstacksubnetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstacksubnet/v1"
 	openstackvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackvolume/v1"
 	openstackvolumeattachv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackvolumeattach/v1"
-	scalewayblockvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayblockvolume/v1"
-	scalewaycontainerregistryv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaycontainerregistry/v1"
-	scalewaydnsrecordv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaydnsrecord/v1"
-	scalewaydnszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaydnszone/v1"
-	scalewayinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayinstance/v1"
-	scalewayinstancesecuritygroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayinstancesecuritygroup/v1"
-	scalewaykapsuleclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaykapsulecluster/v1"
-	scalewaykapsulepoolv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaykapsulepool/v1"
-	scalewayloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayloadbalancer/v1"
-	scalewaymongodbinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaymongodbinstance/v1"
-	scalewayobjectbucketv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayobjectbucket/v1"
-	scalewayprivatenetworkv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayprivatenetwork/v1"
-	scalewaypublicgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaypublicgateway/v1"
-	scalewayrdbinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayrdbinstance/v1"
-	scalewayredisclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayrediscluster/v1"
-	scalewaysecretmanagerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaysecretmanager/v1"
-	scalewayserverlesscontainerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayserverlesscontainer/v1"
-	scalewayserverlessfunctionv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1"
-	scalewayvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayvpc/v1"
 	snowflakedatabasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/snowflake/snowflakedatabase/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
 	"google.golang.org/protobuf/proto"
@@ -268,16 +251,18 @@ var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 }
 
 var ProviderAzureMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
-	cloudresourcekind.CloudResourceKind_AzureAksCluster:        &azureaksclusterv1.AzureAksCluster{},
-	cloudresourcekind.CloudResourceKind_AzureAksNodePool:       &azureaksnodepoolv1.AzureAksNodePool{},
-	cloudresourcekind.CloudResourceKind_AzureContainerRegistry: &azurecontainerregistryv1.AzureContainerRegistry{},
-	cloudresourcekind.CloudResourceKind_AzureDnsRecord:         &azurednsrecordv1.AzureDnsRecord{},
-	cloudresourcekind.CloudResourceKind_AzureDnsZone:           &azurednszonev1.AzureDnsZone{},
-	cloudresourcekind.CloudResourceKind_AzureKeyVault:          &azurekeyvaultv1.AzureKeyVault{},
-	cloudresourcekind.CloudResourceKind_AzureNatGateway:        &azurenatgatewayv1.AzureNatGateway{},
-	cloudresourcekind.CloudResourceKind_AzureStorageAccount:    &azurestorageaccountv1.AzureStorageAccount{},
-	cloudresourcekind.CloudResourceKind_AzureVirtualMachine:    &azurevirtualmachinev1.AzureVirtualMachine{},
-	cloudresourcekind.CloudResourceKind_AzureVpc:               &azurevpcv1.AzureVpc{},
+	cloudresourcekind.CloudResourceKind_AzureAksCluster:            &azureaksclusterv1.AzureAksCluster{},
+	cloudresourcekind.CloudResourceKind_AzureAksNodePool:           &azureaksnodepoolv1.AzureAksNodePool{},
+	cloudresourcekind.CloudResourceKind_AzureContainerRegistry:     &azurecontainerregistryv1.AzureContainerRegistry{},
+	cloudresourcekind.CloudResourceKind_AzureDnsRecord:             &azurednsrecordv1.AzureDnsRecord{},
+	cloudresourcekind.CloudResourceKind_AzureDnsZone:               &azurednszonev1.AzureDnsZone{},
+	cloudresourcekind.CloudResourceKind_AzureKeyVault:              &azurekeyvaultv1.AzureKeyVault{},
+	cloudresourcekind.CloudResourceKind_AzureLogAnalyticsWorkspace: &azureloganalyticsworkspacev1.AzureLogAnalyticsWorkspace{},
+	cloudresourcekind.CloudResourceKind_AzureNatGateway:            &azurenatgatewayv1.AzureNatGateway{},
+	cloudresourcekind.CloudResourceKind_AzureResourceGroup:         &azureresourcegroupv1.AzureResourceGroup{},
+	cloudresourcekind.CloudResourceKind_AzureStorageAccount:        &azurestorageaccountv1.AzureStorageAccount{},
+	cloudresourcekind.CloudResourceKind_AzureVirtualMachine:        &azurevirtualmachinev1.AzureVirtualMachine{},
+	cloudresourcekind.CloudResourceKind_AzureVpc:                   &azurevpcv1.AzureVpc{},
 }
 
 var ProviderCivoMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
@@ -440,28 +425,6 @@ var ProviderOpenstackMap = map[cloudresourcekind.CloudResourceKind]proto.Message
 	cloudresourcekind.CloudResourceKind_OpenStackVolumeAttach:             &openstackvolumeattachv1.OpenStackVolumeAttach{},
 }
 
-var ProviderScalewayMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
-	cloudresourcekind.CloudResourceKind_ScalewayBlockVolume:           &scalewayblockvolumev1.ScalewayBlockVolume{},
-	cloudresourcekind.CloudResourceKind_ScalewayContainerRegistry:     &scalewaycontainerregistryv1.ScalewayContainerRegistry{},
-	cloudresourcekind.CloudResourceKind_ScalewayDnsRecord:             &scalewaydnsrecordv1.ScalewayDnsRecord{},
-	cloudresourcekind.CloudResourceKind_ScalewayDnsZone:               &scalewaydnszonev1.ScalewayDnsZone{},
-	cloudresourcekind.CloudResourceKind_ScalewayInstance:              &scalewayinstancev1.ScalewayInstance{},
-	cloudresourcekind.CloudResourceKind_ScalewayInstanceSecurityGroup: &scalewayinstancesecuritygroupv1.ScalewayInstanceSecurityGroup{},
-	cloudresourcekind.CloudResourceKind_ScalewayKapsuleCluster:        &scalewaykapsuleclusterv1.ScalewayKapsuleCluster{},
-	cloudresourcekind.CloudResourceKind_ScalewayKapsulePool:           &scalewaykapsulepoolv1.ScalewayKapsulePool{},
-	cloudresourcekind.CloudResourceKind_ScalewayLoadBalancer:          &scalewayloadbalancerv1.ScalewayLoadBalancer{},
-	cloudresourcekind.CloudResourceKind_ScalewayMongodbInstance:       &scalewaymongodbinstancev1.ScalewayMongodbInstance{},
-	cloudresourcekind.CloudResourceKind_ScalewayObjectBucket:          &scalewayobjectbucketv1.ScalewayObjectBucket{},
-	cloudresourcekind.CloudResourceKind_ScalewayPrivateNetwork:        &scalewayprivatenetworkv1.ScalewayPrivateNetwork{},
-	cloudresourcekind.CloudResourceKind_ScalewayPublicGateway:         &scalewaypublicgatewayv1.ScalewayPublicGateway{},
-	cloudresourcekind.CloudResourceKind_ScalewayRdbInstance:           &scalewayrdbinstancev1.ScalewayRdbInstance{},
-	cloudresourcekind.CloudResourceKind_ScalewayRedisCluster:          &scalewayredisclusterv1.ScalewayRedisCluster{},
-	cloudresourcekind.CloudResourceKind_ScalewaySecretManager:         &scalewaysecretmanagerv1.ScalewaySecretManager{},
-	cloudresourcekind.CloudResourceKind_ScalewayServerlessContainer:   &scalewayserverlesscontainerv1.ScalewayServerlessContainer{},
-	cloudresourcekind.CloudResourceKind_ScalewayServerlessFunction:    &scalewayserverlessfunctionv1.ScalewayServerlessFunction{},
-	cloudresourcekind.CloudResourceKind_ScalewayVpc:                   &scalewayvpcv1.ScalewayVpc{},
-}
-
 var ProviderSnowflakeMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_SnowflakeDatabase: &snowflakedatabasev1.SnowflakeDatabase{},
 }
@@ -480,6 +443,5 @@ var ToMessageMap = merge(
 	ProviderKubernetesMap,
 	ProviderOpenFgaMap,
 	ProviderOpenstackMap,
-	ProviderScalewayMap,
 	ProviderSnowflakeMap,
 )

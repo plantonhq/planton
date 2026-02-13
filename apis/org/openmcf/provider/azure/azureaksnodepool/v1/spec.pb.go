@@ -306,7 +306,7 @@ const file_org_openmcf_provider_azure_azureaksnodepool_v1_spec_proto_rawDesc = "
 	"\n" +
 	"9org/openmcf/provider/azure/azureaksnodepool/v1/spec.proto\x12.org.openmcf.provider.azure.azureaksnodepool.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xe7\x05\n" +
 	"\x14AzureAksNodePoolSpec\x12s\n" +
-	"\fcluster_name\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1c\xbaH\x03\xc8\x01\x01\x88\xd4a\x90\x03\x92\xd4a\rmetadata.nameR\vclusterName\x12\x1f\n" +
+	"\fcluster_name\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1c\xbaH\x03\xc8\x01\x01\x88\xd4a\x91\x03\x92\xd4a\rmetadata.nameR\vclusterName\x12\x1f\n" +
 	"\avm_size\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06vmSize\x128\n" +
 	"\x12initial_node_count\x18\x03 \x01(\x05B\n" +
 	"\xbaH\a\xc8\x01\x01\x1a\x02 \x00R\x10initialNodeCount\x12m\n" +
