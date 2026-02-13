@@ -87,7 +87,7 @@ const file_org_openmcf_provider_kubernetes_target_cluster_proto_rawDesc = "" +
 	"\n" +
 	"4org/openmcf/provider/kubernetes/target_cluster.proto\x12\x1forg.openmcf.provider.kubernetes\x1a\x1bbuf/validate/validate.proto\x1a>org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto\"\xb1\x01\n" +
 	"\x19KubernetesClusterSelector\x12q\n" +
-	"\fcluster_kind\x18\x01 \x01(\x0e27.org.openmcf.shared.cloudresourcekind.CloudResourceKindB\x15\xbaH\x12\x82\x01\x0f\x18\x90\x03\x18\xcf\x01\x18\xdf\x04\x18\xb8\t\x18\xe3\vR\vclusterKind\x12!\n" +
+	"\fcluster_kind\x18\x01 \x01(\x0e27.org.openmcf.shared.cloudresourcekind.CloudResourceKindB\x15\xbaH\x12\x82\x01\x0f\x18\x91\x03\x18\xcf\x01\x18\xdf\x04\x18\xb8\t\x18\xe3\vR\vclusterKind\x12!\n" +
 	"\fcluster_name\x18\x02 \x01(\tR\vclusterNameB\x9c\x02\n" +
 	"#com.org.openmcf.provider.kubernetesB\x12TargetClusterProtoP\x01ZAgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes\xa2\x02\x04OOPK\xaa\x02\x1fOrg.Openmcf.Provider.Kubernetes\xca\x02\x1fOrg\\Openmcf\\Provider\\Kubernetes\xe2\x02+Org\\Openmcf\\Provider\\Kubernetes\\GPBMetadata\xea\x02\"Org::Openmcf::Provider::Kubernetesb\x06proto3"
 

@@ -10,7 +10,7 @@ message KubernetesClusterSelector {
   //can be one of the supported kubernetes cluster kinds
   org.openmcf.shared.cloudresourcekind.CloudResourceKind cluster_kind = 1 [(buf.validate.field).enum = {
     in: [
-      400, //AzureAksCluster
+      401, //AzureAksCluster
       207, //AwsEksCluster
       607, //GcpGkeCluster
       1208, //DigitalOceanKubernetesCluster

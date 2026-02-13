@@ -48,7 +48,6 @@ use_repo(
     "com_github_pulumi_pulumi_azure_native_sdk_containerregistry_v3",
     "com_github_pulumi_pulumi_azure_native_sdk_containerservice_v3",
     "com_github_pulumi_pulumi_azure_native_sdk_network_v3",
-    "com_github_pulumi_pulumi_azure_native_sdk_resources_v3",
     "com_github_pulumi_pulumi_azure_native_sdk_v3",
     "com_github_pulumi_pulumi_azure_sdk_v5",
     "com_github_pulumi_pulumi_azure_sdk_v6",
