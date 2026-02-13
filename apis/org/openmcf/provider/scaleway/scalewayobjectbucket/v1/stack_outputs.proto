@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway.scalewayobjectbucket.v1;
+
+// ScalewayObjectBucketStackOutputs captures the provisioned bucket
+// details needed by downstream resources and applications.
+//
+// The primary outputs are `bucket_id` (for Terraform state references)
+// and `endpoint` (for S3-compatible client configuration).
+//
+// Downstream resources and applications use these outputs to:
+//   - Configure S3 clients with the correct endpoint
+//   - Reference the bucket in IAM policies or serverless function config
+//   - Set up DNS CNAME records pointing to the bucket endpoint
+message ScalewayObjectBucketStackOutputs {
+  // The unique identifier of the created bucket.
+  //
+  // Format: "{region}/{bucket-name}" (e.g., "fr-par/my-app-media").
+  // This is the primary output referenced by downstream resources.
+  string bucket_id = 1;
+
+  // The FQDN endpoint URL of the bucket.
+  //
+  // Format: "{bucket-name}.s3.{region}.scw.cloud"
+  //
+  // This is the URL used by S3-compatible clients, CDNs, and
+  // applications to access objects in the bucket.
+  string endpoint = 2;
+
+  // The S3 API endpoint URL for the bucket's region.
+  //
+  // Format: "https://s3.{region}.scw.cloud"
+  //
+  // Used when configuring S3 clients that require the API endpoint
+  // separately from the bucket name (e.g., AWS CLI --endpoint-url).
+  string api_endpoint = 3;
+
+  // The name of the bucket as it exists in Scaleway Object Storage.
+  //
+  // This is the bucket name that S3 clients use in their requests.
+  // Typically matches `metadata.name` but exported explicitly for
+  // downstream reference convenience.
+  string bucket_name = 4;
+
+  // The region where the bucket is deployed.
+  //
+  // Exported for downstream resources that need region-aware
+  // configuration (e.g., Lambda@Edge, CDN origin configuration).
+  string region = 5;
+}
