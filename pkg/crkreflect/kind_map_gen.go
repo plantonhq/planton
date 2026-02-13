@@ -44,6 +44,7 @@ import (
 	awsvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsvpc/v1"
 	azureaksclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureakscluster/v1"
 	azureaksnodepoolv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureaksnodepool/v1"
+	azureapplicationinsightsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureapplicationinsights/v1"
 	azurecontainerregistryv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurecontainerregistry/v1"
 	azurednsrecordv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurednsrecord/v1"
 	azurednszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurednszone/v1"
@@ -190,6 +191,7 @@ import (
 	openstacksubnetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstacksubnet/v1"
 	openstackvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackvolume/v1"
 	openstackvolumeattachv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackvolumeattach/v1"
+	scalewayinstancesecuritygroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayinstancesecuritygroup/v1"
 	scalewayprivatenetworkv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayprivatenetwork/v1"
 	scalewaypublicgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaypublicgateway/v1"
 	scalewayvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayvpc/v1"
@@ -256,6 +258,7 @@ var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 var ProviderAzureMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AzureAksCluster:            &azureaksclusterv1.AzureAksCluster{},
 	cloudresourcekind.CloudResourceKind_AzureAksNodePool:           &azureaksnodepoolv1.AzureAksNodePool{},
+	cloudresourcekind.CloudResourceKind_AzureApplicationInsights:   &azureapplicationinsightsv1.AzureApplicationInsights{},
 	cloudresourcekind.CloudResourceKind_AzureContainerRegistry:     &azurecontainerregistryv1.AzureContainerRegistry{},
 	cloudresourcekind.CloudResourceKind_AzureDnsRecord:             &azurednsrecordv1.AzureDnsRecord{},
 	cloudresourcekind.CloudResourceKind_AzureDnsZone:               &azurednszonev1.AzureDnsZone{},
@@ -429,9 +432,10 @@ var ProviderOpenstackMap = map[cloudresourcekind.CloudResourceKind]proto.Message
 }
 
 var ProviderScalewayMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
-	cloudresourcekind.CloudResourceKind_ScalewayPrivateNetwork: &scalewayprivatenetworkv1.ScalewayPrivateNetwork{},
-	cloudresourcekind.CloudResourceKind_ScalewayPublicGateway:  &scalewaypublicgatewayv1.ScalewayPublicGateway{},
-	cloudresourcekind.CloudResourceKind_ScalewayVpc:            &scalewayvpcv1.ScalewayVpc{},
+	cloudresourcekind.CloudResourceKind_ScalewayInstanceSecurityGroup: &scalewayinstancesecuritygroupv1.ScalewayInstanceSecurityGroup{},
+	cloudresourcekind.CloudResourceKind_ScalewayPrivateNetwork:        &scalewayprivatenetworkv1.ScalewayPrivateNetwork{},
+	cloudresourcekind.CloudResourceKind_ScalewayPublicGateway:         &scalewaypublicgatewayv1.ScalewayPublicGateway{},
+	cloudresourcekind.CloudResourceKind_ScalewayVpc:                   &scalewayvpcv1.ScalewayVpc{},
 }
 
 var ProviderSnowflakeMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
