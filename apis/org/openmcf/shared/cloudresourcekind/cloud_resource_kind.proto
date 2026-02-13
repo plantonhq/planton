@@ -278,6 +278,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "azpdns"
   }];
+  AzureLoadBalancer = 417 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azlb"
+  }];
   AzureLogAnalyticsWorkspace = 450 [(kind_meta) = {
     provider: azure
     version: v1
