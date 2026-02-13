@@ -178,11 +178,11 @@ spec:
     - valueFrom:
         kind: AwsVpc
         name: my-vpc
-        field: status.outputs.subnet_ids[0]
+        field: status.outputs.public_subnets[0].id
     - valueFrom:
         kind: AwsVpc
         name: my-vpc
-        field: status.outputs.subnet_ids[1]
+        field: status.outputs.public_subnets[1].id
   securityGroups:
     - valueFrom:
         kind: AwsSecurityGroup
