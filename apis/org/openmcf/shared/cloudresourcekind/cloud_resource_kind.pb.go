@@ -128,6 +128,7 @@ const (
 	CloudResourceKind_AzureApplicationGateway       CloudResourceKind = 416
 	CloudResourceKind_AzureLoadBalancer             CloudResourceKind = 417
 	CloudResourceKind_AzurePostgresqlFlexibleServer CloudResourceKind = 430
+	CloudResourceKind_AzureMssqlServer              CloudResourceKind = 433
 	CloudResourceKind_AzureMysqlFlexibleServer      CloudResourceKind = 434
 	CloudResourceKind_AzureLogAnalyticsWorkspace    CloudResourceKind = 450
 	CloudResourceKind_AzureApplicationInsights      CloudResourceKind = 451
@@ -356,6 +357,7 @@ var (
 		416:  "AzureApplicationGateway",
 		417:  "AzureLoadBalancer",
 		430:  "AzurePostgresqlFlexibleServer",
+		433:  "AzureMssqlServer",
 		434:  "AzureMysqlFlexibleServer",
 		450:  "AzureLogAnalyticsWorkspace",
 		451:  "AzureApplicationInsights",
@@ -571,6 +573,7 @@ var (
 		"AzureApplicationGateway":               416,
 		"AzureLoadBalancer":                     417,
 		"AzurePostgresqlFlexibleServer":         430,
+		"AzureMssqlServer":                      433,
 		"AzureMysqlFlexibleServer":              434,
 		"AzureLogAnalyticsWorkspace":            450,
 		"AzureApplicationInsights":              451,
@@ -877,7 +880,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xe7G\n" +
+	"\x02v1\x10\x01*\x90H\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -943,7 +946,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x11AzureLoadBalancer\x10\xa1\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azlb\x122\n" +
 	"\x1dAzurePostgresqlFlexibleServer\x10\xae\x03\x1a\x0e\xa2\xf7\x04\n" +
-	"\b\r\x10\x01\"\x04azpg\x120\n" +
+	"\b\r\x10\x01\"\x04azpg\x12'\n" +
+	"\x10AzureMssqlServer\x10\xb1\x03\x1a\x10\xa2\xf7\x04\f\b\r\x10\x01\"\x06azmsql\x120\n" +
 	"\x18AzureMysqlFlexibleServer\x10\xb2\x03\x1a\x11\xa2\xf7\x04\r\b\r\x10\x01\"\aazmysql\x120\n" +
 	"\x1aAzureLogAnalyticsWorkspace\x10\xc2\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azlaw\x12-\n" +
 	"\x18AzureApplicationInsights\x10\xc3\x03\x1a\x0e\xa2\xf7\x04\n" +
