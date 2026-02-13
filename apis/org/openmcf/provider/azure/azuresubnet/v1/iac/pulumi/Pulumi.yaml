@@ -1,0 +1,3 @@
+name: azure-subnet
+runtime: go
+description: Pulumi program for Azure Subnet

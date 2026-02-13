@@ -1,0 +1,9 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureSubnet
+metadata:
+  name: test-subnet
+spec:
+  resource_group: test-rg
+  vnet_id: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.Network/virtualNetworks/test-vnet
+  name: test-subnet
+  address_prefix: "10.0.1.0/24"
