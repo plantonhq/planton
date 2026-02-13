@@ -6,272 +6,307 @@ order: 100
 componentName: "kuberneteslocust"
 ---
 
-# Deploying Locust on Kubernetes: From Manual Manifests to Production-Ready Abstractions
+# Kubernetes Locust
 
-## Introduction
+Deploys a Locust distributed load testing cluster on Kubernetes using the Delivery Hero Locust Helm chart. Provisions master and worker nodes with configurable replicas and resource limits, injects test scripts and library files via ConfigMaps, supports extra pip packages, allows arbitrary Helm value overrides, and optionally exposes the Locust web UI externally through Istio Gateway API ingress with TLS termination and HTTP-to-HTTPS redirect.
 
-Load testing has come a long way from the days of manually scaling virtual machines and praying your infrastructure could handle the spike. Locust, with its Python-based scripting and elegant distributed architecture, modernized load testing by making it accessible to developers. But deploying Locust *on Kubernetes* introduced a new set of challenges: managing the master-worker architecture, injecting test scripts without rebuilding containers, installing dependencies at runtime, and orchestrating rolling updates when scripts change.
+## What Gets Created
 
-The Kubernetes ecosystem has evolved a clear pattern for deploying Locust at scale. This document explores that landscape—from the anti-patterns that fail under load to the production-ready approaches that power tests generating 20,000+ requests per second. More importantly, it explains *why* OpenMCF's LocustKubernetes resource is designed the way it is: as an opinionated abstraction that eliminates the most painful friction points in the developer workflow.
+When you deploy a KubernetesLocust resource, OpenMCF provisions:
 
-## The Locust Architecture: Master-Worker and the GIL
+- **Kubernetes Namespace** — created if `createNamespace` is `true`
+- **Main Script ConfigMap** — a ConfigMap containing your `main.py` Locust test file
+- **Library Files ConfigMap** — a ConfigMap containing additional Python files referenced by the main script
+- **Locust Helm Release** — the `locust` chart (v0.31.5) from `https://charts.deliveryhero.io`, which creates:
+  - A Locust master pod serving the web UI and coordinating workers
+  - One or more Locust worker pods that generate simulated user traffic
+  - Kubernetes Service for cluster-internal access to the master on port 8080
+- **Ingress Resources** (when `ingress.enabled` is `true`):
+  - cert-manager Certificate for TLS, issued by a ClusterIssuer matching the ingress domain
+  - Gateway API Gateway with HTTPS (port 443) and HTTP (port 80) listeners
+  - HTTPRoute for HTTPS traffic forwarding to the Locust master service
+  - HTTPRoute for HTTP-to-HTTPS 301 redirect
 
-Before understanding deployment patterns, you need to understand *why* Locust is inherently distributed.
+## Prerequisites
 
-### The Python GIL Constraint
+- **A Kubernetes cluster** with kubectl configured for access
+- **Istio ingress gateway** installed (only if using ingress)
+- **cert-manager** with a ClusterIssuer matching your ingress domain (only if using ingress)
+- **Gateway API CRDs** installed in the cluster (only if using ingress)
 
-Locust is written in Python, which means it inherits Python's Global Interpreter Lock (GIL). The GIL ensures only one thread can execute Python bytecode at a time within a single process. No matter how many CPU cores your machine has, a single Locust process can only fully utilize *one* core.
+## Quick Start
 
-To bypass this limitation and generate serious load, Locust employs a **master-worker architecture**:
+Create a file `locust.yaml`:
 
-- **Master Node**: A single process (started with `--master`) that runs the web UI, coordinates workers, and aggregates statistics. Critically, the master *does not* simulate any users itself.
-- **Worker Nodes**: One or more processes (started with `--worker`) that connect to the master, receive commands, run the test scripts, and report statistics back for aggregation.
-
-The standard practice is to run **one worker process per CPU core** to maximize load generation capacity.
-
-### Mapping to Kubernetes Primitives
-
-This architecture maps cleanly to Kubernetes:
-
-- **Master**: A Deployment with `replicas: 1` and container args `["--master"]`
-- **Master Service**: A ClusterIP Service exposing ports 8089 (web UI), 5557, and 5558 (worker communication). This provides a stable DNS name (e.g., `locust-master`) for worker discovery.
-- **Workers**: A separate Deployment with `replicas: N` and container args `["--worker", "--master-host=locust-master"]`
-- **UI Access**: An Ingress resource to expose the master's web UI externally
-
-Both master and workers are deployed as standard **Deployments** (not StatefulSets). While the master aggregates state in memory, this state is *ephemeral*—it only contains statistics for the currently running test. If the master pod crashes, the test is over. Using a StatefulSet would provide no benefit, as the master doesn't require persistent storage or a stable pod identity. The stable identity workers need is provided by the Service's DNS name, not the pod itself.
-
-## The Deployment Method Spectrum
-
-Let's progress through the deployment approaches, from what doesn't work to what powers production systems.
-
-### Level 0: The Single-Pod Anti-Pattern
-
-Deploying Locust as a single pod is fundamentally broken:
-
-1. **GIL Limitation**: A single Python process can only use one CPU core, severely throttling load generation.
-2. **No Scalability**: The entire design philosophy of Locust is *distributed* load generation. A single pod cannot be scaled horizontally to meet high-volume requirements.
-
-**Verdict**: Never deploy Locust as a single pod. It defeats the purpose of the tool.
-
-### Level 1: Manual Kubernetes Manifests
-
-The "roll your own" approach involves creating YAML manifests manually. This is the foundational pattern that all higher-level abstractions build upon.
-
-**What you need**:
-- `master-deployment.yaml`: Deployment with one master pod
-- `worker-deployment.yaml`: Deployment with N worker pods
-- `service.yaml`: ClusterIP Service for the master (ports 8089, 5557, 5558)
-- `scripts-cm.yaml`: ConfigMap created via `kubectl create configmap --from-file=locustfile.py`
-
-**Pros**: Full control and transparency  
-**Cons**: Verbose, manual ConfigMap management, no built-in mechanism for script updates or dependency management
-
-**Verdict**: Educational, but too manual for iterative test development.
-
-### Level 2: Helm Charts (The Industry Standard)
-
-Helm is the dominant abstraction for deploying Locust on Kubernetes. While there is no "official" Helm chart from the locustio project, the **deliveryhero/helm-charts** repository has become the de-facto standard. The official Locust documentation explicitly endorses it as "a good helm chart" and the "most up to date" option.
-
-#### Why DeliveryHero's Chart Won
-
-- **Production-proven**: Used in case studies generating 19,000+ requests per second
-- **Official endorsement**: Recommended by locust.io's own documentation
-- **Feature-rich**: Supports the critical `pip_packages` field (more on this below)
-- **Actively maintained**: Regular updates and community contributions
-
-#### Key Features
-
-The chart's `values.yaml` provides a mature API:
-
-| Feature | Configuration | Purpose |
-|---------|---------------|---------|
-| **Script Injection** | `loadtest.locust_locustfile_configmap` | Reference to pre-existing ConfigMap containing `locustfile.py` |
-| **Library Injection** | `loadtest.locust_lib_configmap` | Reference to ConfigMap with additional Python modules |
-| **Pip Dependencies** | `loadtest.pip_packages: ["boto3", "pandas"]` | Packages installed at runtime via init container |
-| **Worker Scaling** | `worker.replicas: 10` | Static worker count (the 80% use case) |
-| **HPA Support** | `worker.hpa.enabled: false` (default) | Optional autoscaling for advanced users |
-| **Ingress** | `ingress.enabled: true` | Expose web UI externally |
-
-#### The "Tricky" Part: Manual ConfigMap Creation
-
-The chart's primary friction point is that it *references* ConfigMaps by name. You must run `kubectl create configmap locust-scripts --from-file=locustfile.py` *before* installing the chart. This manual pre-step is exactly the kind of workflow friction that OpenMCF eliminates (more on that later).
-
-**Verdict**: Production-ready, but requires manual orchestration of ConfigMaps and script updates.
-
-### Level 3: Kubernetes Operators
-
-The operator pattern extends Kubernetes with custom resources. The most mature option is the **locust-k8s-operator**, which introduces a `LocustTest` CRD.
-
-**How it works**:
 ```yaml
-apiVersion: locust-operator.io/v1
-kind: LocustTest
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesLocust
+metadata:
+  name: my-locust
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesLocust.my-locust
 spec:
-  image: locustio/locust:latest
-  workerReplicas: 3
-  configMap: demo-test-map
-  libConfigMap: demo-lib-map
+  namespace:
+    value: locust-dev
+  createNamespace: true
+  loadTest:
+    name: smoke-test
+    mainPyContent: |
+      from locust import HttpUser, task, between
+
+      class QuickstartUser(HttpUser):
+          wait_time = between(1, 3)
+
+          @task
+          def index(self):
+              self.client.get("/")
+    libFilesContent: {}
 ```
 
-The operator watches for `LocustTest` resources and generates the underlying Deployments, Services, and ConfigMaps.
+Deploy:
 
-**Key advantage**: Declarative, Kubernetes-native API with a `status` field that enables CI/CD integration (e.g., `kubectl wait --for=condition=Completed`).
-
-**OpenMCF's Approach**: As an IaC framework, OpenMCF *is* an abstraction layer. We don't deploy third-party operators. Instead, our `LocustKubernetes` resource behaves *like* the `LocustTest` CRD—it provides a high-level, declarative API while the Planton controller directly creates and manages the Kubernetes resources.
-
-## The Developer Experience Problem
-
-Deploying Locust on Kubernetes is technically straightforward. The challenge is the *developer workflow*:
-
-### Problem 1: Script Management
-
-Test scripts must get into the pods somehow. There are three methods:
-
-| Method | How It Works | Developer Experience |
-|--------|--------------|---------------------|
-| **ConfigMap** | `kubectl create cm --from-file=locustfile.py` + volumeMount | ✅ Fast iteration, but "tricky" manual step |
-| **Custom Docker Image** | `COPY locustfile.py` in Dockerfile | ❌ Requires full docker build/push cycle for every change |
-| **Persistent Volume** | Mount NFS or EBS volume | ❌ Massive overkill; adds stateful complexity unnecessarily |
-
-The ConfigMap approach is the industry standard because it decouples scripts from images. However, it requires manual pre-creation and lacks a native "hot reload" mechanism.
-
-### Problem 2: Python Dependencies
-
-Real-world test scripts have dependencies (requests, boto3, pandas, etc.). Managing these creates another workflow challenge:
-
-| Method | How It Works | Developer Experience |
-|--------|--------------|---------------------|
-| **Custom Docker Image** | `RUN pip install -r requirements.txt` in Dockerfile | ❌ Requires rebuilding the image for every new package |
-| **Runtime Installation** | `pip_packages: ["boto3"]` in Helm values | ✅ Packages installed via init container at pod startup |
-
-The DeliveryHero Helm chart's `pip_packages` field is a **game-changer** for developer experience. The chart's entrypoint script reads this list and runs `pip install` before starting Locust. This completely eliminates the need to build custom Docker images for common dependencies.
-
-The tradeoff is slower pod startup (packages install on every restart) and a runtime dependency on PyPI. But for iterative test development, this is an acceptable cost for the massive DX improvement.
-
-### Problem 3: Script Updates
-
-Locust doesn't auto-detect file changes. If you update a ConfigMap, the running pods won't see the change—they only read the script at startup.
-
-**The Manual Workflow**:
-1. Update `locustfile.py`
-2. Update ConfigMap: `kubectl apply -f cm.yaml`
-3. Manually restart: `kubectl rollout restart deployment/locust-master`
-
-**The Superior Kustomize Pattern**:
-
-Production case studies reveal a much better approach using Kustomize's `configMapGenerator`:
-
-1. Kustomize generates a ConfigMap with a *content hash* in the name: `locust-scripts-a1b2c3d4`
-2. The Deployment is patched to reference this hashed name
-3. When you change `locustfile.py` and run `kubectl apply -k .`, Kustomize creates a *new* ConfigMap with a *new* hash
-4. Updating the ConfigMap reference in the Deployment's pod template triggers an **automatic rolling update**
-
-This hash-based rollout is the gold standard for "GitOps-native" script updates. OpenMCF implements this logic internally—changing the `load_test` spec triggers an automatic rolling update of the managed Deployments.
-
-## OpenMCF's Design Philosophy
-
-OpenMCF's LocustKubernetes resource is not a simple wrapper around the DeliveryHero Helm chart. It's an **opinionated abstraction** that automates the most painful parts of the workflow.
-
-### What We Solve
-
-1. **Automatic ConfigMap Management**: You provide script content directly in the API. The Planton controller synthesizes ConfigMaps with content-hashed names, eliminating the "tricky" manual pre-step.
-
-2. **Automatic Dependency Management**: You specify `pip_packages` in the spec. The controller injects an init container that installs these packages at runtime, removing the need for custom Docker images.
-
-3. **Automatic Rollouts**: Any change to your test script content triggers a rolling update. No manual `kubectl rollout restart` required.
-
-### The API Design
-
-The `LocustKubernetesSpec` proto reflects the 80/20 principle—expose the 20% of configuration that 80% of users need:
-
-**Essential fields** (the 80%):
-- `load_test.main_py_content`: The test script itself
-- `load_test.lib_files_content`: Additional Python modules
-- `load_test.pip_packages`: Runtime dependencies
-- `master_container.resources`: Master CPU/memory allocation
-- `worker_container.replicas`: Static worker count (the primary scaling knob)
-- `worker_container.resources`: Per-worker resources
-- `ingress`: Web UI access configuration
-
-**Advanced fields** (the 20%):
-- `helm_values`: Escape hatch for fine-grained control (e.g., HPA, affinity, tolerations)
-
-### Why Static Scaling is the Default
-
-You might expect worker autoscaling (HPA) to be a core feature. It's not, and here's why:
-
-The Horizontal Pod Autoscaler is **reactive**. It scales *after* observing high CPU. But Locust's master dispatches workload when you start the test—only to *currently connected* workers. If HPA adds a new worker pod mid-test, that worker connects to the master but sits idle. It wasn't part of the initial workload dispatch, and Locust has no protocol to rebalance users to new workers.
-
-The production pattern is **static pre-scaling**: determine the required worker count (e.g., 50), set `worker_container.replicas: 50`, wait for all pods to be ready, *then* start the test.
-
-HPA is supported via `helm_values` for the 20% of users with advanced use cases (e.g., external state management patterns). But it's disabled by default because it's a common trap for new users.
-
-## Production Operations
-
-### Resource Allocation Strategy
-
-Master and worker resource needs are asymmetric:
-
-- **Workers**: CPU and network-bound. They execute test scripts and generate HTTP traffic. Their needs scale linearly with replica count.
-- **Master**: CPU and memory-bound. The master processes and aggregates statistics from *every* worker in real-time. In a high-volume test (100 workers, 20,000 RPS), the master is processing a massive inbound stream. Under-provisioning the master is a common pitfall that leads to OOMKills mid-test.
-
-**Recommendation**: Generous master resources (e.g., 1 CPU, 2Gi memory) for large-scale tests.
-
-### Security Hardening
-
-The DeliveryHero Helm chart dangerously defaults `securityContext.runAsNonRoot` to `false`. OpenMCF enforces security by default:
-
-- `runAsNonRoot: true`
-- `runAsUser: 1000` (high UID)
-- Minimal RBAC (Locust pods need zero Kubernetes API permissions)
-- Optional NetworkPolicy enforcement (restrict master/worker communication to necessary ports)
-
-### Cost Optimization: Spot Instances
-
-Locust workers are a *perfect* fit for Spot/Preemptible instances:
-
-- **Stateless**: Workers hold no persistent state
-- **Fault-tolerant**: Losing 1 out of 50 workers is acceptable performance degradation
-- **Batch workload**: Tests have a defined start and end
-
-**Pattern**:
-1. Create a Kubernetes NodePool using Spot instances
-2. Taint the nodes: `workload-type=spot:NoSchedule`
-3. Configure worker scheduling via `helm_values`:
-   - `worker.tolerations` to tolerate the taint
-   - `worker.nodeSelector` or `worker.affinity` to target Spot nodes
-
-This can reduce compute costs by up to 90% while maintaining test reliability.
-
-### Observability
-
-Locust doesn't natively export Prometheus metrics. The standard solution is the **containersol/locust_exporter** sidecar, which scrapes the master's web UI and translates statistics into a Prometheus-compatible `/metrics` endpoint.
-
-The DeliveryHero project provides a dedicated Helm chart for this exporter: `deliveryhero/prometheus-locust-exporter`.
-
-**Recommendation**: OpenMCF could expose a simple `metrics.prometheus.enabled` boolean that co-deploys this exporter and the necessary ServiceMonitor resources.
-
-### CI/CD Integration
-
-For automated performance testing pipelines, "headless" mode is essential. The challenge is: how does the CI job know when the test is complete?
-
-The operator pattern solves this elegantly via a `status` sub-resource. The controller monitors the master pod and updates `status.phase = "Completed"` or `"Failed"` when the test finishes. This enables a robust, Kubernetes-native wait command:
-
-```bash
-kubectl wait --for=condition=Completed LocustKubernetes/my-test --timeout=30m
+```shell
+openmcf apply -f locust.yaml
 ```
 
-OpenMCF's LocustKubernetes resource implements this status pattern, making CI/CD integration seamless.
+This creates a Locust cluster with one master and one worker using default resources (1 CPU / 1Gi memory limit, 50m CPU / 100Mi memory request each) in the `locust-dev` namespace.
 
-## Conclusion: The Paradigm Shift
+## Configuration Reference
 
-The evolution of Locust on Kubernetes reflects a broader shift in cloud-native development: from "infrastructure as YAML" to "infrastructure as high-level, opinionated APIs."
+### Required Fields
 
-Manual manifests gave you control at the cost of verbosity. Helm charts provided reusable templates but still required manual orchestration of ConfigMaps and dependencies. Operators introduced declarative, Kubernetes-native resources but required installing and managing additional controllers.
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `namespace` | `StringValueOrRef` | Kubernetes namespace for the Locust deployment. Use `value` for a direct string or `valueFrom` to reference a KubernetesNamespace resource. | Required |
+| `loadTest.name` | `string` | Unique identifier for this load test configuration. | Required |
+| `loadTest.mainPyContent` | `string` | Python source code for the main Locust test script. Defines simulated user behavior. | Required |
+| `loadTest.libFilesContent` | `map<string, string>` | Map of filename to Python source code for additional library files used by the main script. Pass an empty map `{}` when no extra files are needed. | Required |
 
-OpenMCF synthesizes the best of all three approaches: the declarative simplicity of operators, the production-readiness of the DeliveryHero Helm chart's `pip_packages` innovation, and the GitOps-native script management of Kustomize's content-hashed ConfigMaps—all wrapped in a single, opinionated abstraction that eliminates workflow friction.
+### Optional Fields
 
-The result is a load testing platform where you define your test in protobuf, commit it to git, and let the system handle the rest. No manual ConfigMaps. No custom Docker images. No manual rollouts. Just iterative, fast-paced load test development that scales from dev clusters to production systems generating 20,000+ requests per second.
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `createNamespace` | `bool` | `false` | Create the namespace if it does not exist. |
+| `masterContainer.replicas` | `int32` | `1` | Number of Locust master replicas. |
+| `masterContainer.resources.limits.cpu` | `string` | `"1000m"` | CPU limit for the master container. |
+| `masterContainer.resources.limits.memory` | `string` | `"1Gi"` | Memory limit for the master container. |
+| `masterContainer.resources.requests.cpu` | `string` | `"50m"` | CPU request for the master container. |
+| `masterContainer.resources.requests.memory` | `string` | `"100Mi"` | Memory request for the master container. |
+| `workerContainer.replicas` | `int32` | `1` | Number of Locust worker replicas. Increase for higher load generation concurrency. |
+| `workerContainer.resources.limits.cpu` | `string` | `"1000m"` | CPU limit for each worker container. |
+| `workerContainer.resources.limits.memory` | `string` | `"1Gi"` | Memory limit for each worker container. |
+| `workerContainer.resources.requests.cpu` | `string` | `"50m"` | CPU request for each worker container. |
+| `workerContainer.resources.requests.memory` | `string` | `"100Mi"` | Memory request for each worker container. |
+| `loadTest.pipPackages` | `repeated string` | `[]` | Extra Python pip packages to install in the Locust environment for custom dependencies. |
+| `helmValues` | `map<string, string>` | `{}` | Additional Helm chart values for customization. See the [Locust Helm chart values](https://github.com/deliveryhero/helm-charts/tree/master/stable/locust#values) for available options. |
+| `ingress.enabled` | `bool` | `false` | Enable external access to the Locust web UI via Istio Gateway API ingress with TLS. |
+| `ingress.hostname` | `string` | -- | Full hostname for external access (e.g., `locust.example.com`). Required when `ingress.enabled` is `true`. |
 
-That's the promise of truly cloud-native infrastructure.
+## Examples
 
+### Locust with Scaled Workers
+
+Scale workers up and allocate more resources for higher throughput testing:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesLocust
+metadata:
+  name: load-test
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesLocust.load-test
+spec:
+  namespace:
+    value: load-testing
+  createNamespace: true
+  masterContainer:
+    replicas: 1
+    resources:
+      limits:
+        cpu: "2000m"
+        memory: "2Gi"
+      requests:
+        cpu: "250m"
+        memory: "256Mi"
+  workerContainer:
+    replicas: 5
+    resources:
+      limits:
+        cpu: "2000m"
+        memory: "2Gi"
+      requests:
+        cpu: "500m"
+        memory: "512Mi"
+  loadTest:
+    name: api-stress
+    mainPyContent: |
+      from locust import HttpUser, task, between
+
+      class ApiUser(HttpUser):
+          wait_time = between(0.5, 2)
+
+          @task(3)
+          def list_items(self):
+              self.client.get("/api/items")
+
+          @task(1)
+          def create_item(self):
+              self.client.post("/api/items", json={"name": "test"})
+    libFilesContent: {}
+```
+
+### Locust with Library Files and Pip Packages
+
+Supply helper modules and install additional Python packages for complex test scenarios:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesLocust
+metadata:
+  name: advanced-test
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: staging.KubernetesLocust.advanced-test
+spec:
+  namespace:
+    value: perf-testing
+  createNamespace: true
+  workerContainer:
+    replicas: 3
+    resources:
+      limits:
+        cpu: "1000m"
+        memory: "1Gi"
+      requests:
+        cpu: "200m"
+        memory: "256Mi"
+  loadTest:
+    name: e2e-flow
+    mainPyContent: |
+      from locust import HttpUser, task, between
+      from lib.auth import get_token
+
+      class AuthenticatedUser(HttpUser):
+          wait_time = between(1, 5)
+
+          def on_start(self):
+              self.token = get_token(self.client)
+
+          @task
+          def get_dashboard(self):
+              self.client.get("/api/dashboard",
+                  headers={"Authorization": f"Bearer {self.token}"})
+    libFilesContent:
+      auth.py: |
+        def get_token(client):
+            resp = client.post("/auth/login",
+                json={"user": "loadtest", "pass": "secret"})
+            return resp.json()["token"]
+    pipPackages:
+      - faker
+      - pytz
+  helmValues:
+    master.environment.LOCUST_HOST: "https://api.staging.example.com"
+```
+
+### Full-Featured with Ingress
+
+Expose the Locust web UI over HTTPS with automatic TLS and HTTP redirect:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesLocust
+metadata:
+  name: prod-loadtest
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesLocust.prod-loadtest
+spec:
+  namespace:
+    value: loadtest-prod
+  createNamespace: true
+  masterContainer:
+    replicas: 1
+    resources:
+      limits:
+        cpu: "4000m"
+        memory: "4Gi"
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+  workerContainer:
+    replicas: 10
+    resources:
+      limits:
+        cpu: "2000m"
+        memory: "2Gi"
+      requests:
+        cpu: "500m"
+        memory: "512Mi"
+  loadTest:
+    name: production-soak
+    mainPyContent: |
+      from locust import HttpUser, task, between, events
+      from lib.scenarios import browse_catalog, checkout_flow
+
+      class ProductionUser(HttpUser):
+          wait_time = between(2, 10)
+
+          @task(5)
+          def browse(self):
+              browse_catalog(self.client)
+
+          @task(1)
+          def checkout(self):
+              checkout_flow(self.client)
+    libFilesContent:
+      scenarios.py: |
+        import random
+
+        def browse_catalog(client):
+            client.get("/products")
+            product_id = random.randint(1, 100)
+            client.get(f"/products/{product_id}")
+
+        def checkout_flow(client):
+            client.post("/cart", json={"productId": 1, "qty": 1})
+            client.post("/checkout", json={"method": "credit"})
+    pipPackages:
+      - faker
+  helmValues:
+    master.environment.LOCUST_HOST: "https://api.example.com"
+    master.environment.LOCUST_USERS: "500"
+    master.environment.LOCUST_SPAWN_RATE: "10"
+  ingress:
+    enabled: true
+    hostname: locust.example.com
+```
+
+## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `namespace` | `string` | Kubernetes namespace where the Locust cluster was created |
+| `service` | `string` | Name of the Kubernetes service for the Locust master |
+| `port_forward_command` | `string` | Ready-to-run `kubectl port-forward` command for local access on port 8080 |
+| `kube_endpoint` | `string` | Cluster-internal endpoint (e.g., `my-locust.locust-dev.svc.cluster.local`) |
+| `external_hostname` | `string` | External hostname when ingress is enabled (e.g., `locust.example.com`) |
+| `internal_hostname` | `string` | Internal hostname for private ingress (e.g., `internal-locust.example.com`) |
+
+## Related Components
+
+- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — pre-create a namespace to reference via `valueFrom`
+- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — deploy the target application to load test against
+- [KubernetesRedis](/docs/catalog/kubernetes/kubernetesredis) — deploy Redis as a backend or caching layer for the system under test

@@ -6,308 +6,301 @@ order: 100
 componentName: "kubernetesnats"
 ---
 
-# Deploying NATS on Kubernetes: A Production-Ready Guide
+# Kubernetes NATS
 
-## Introduction: The Messaging System That Embraces Simplicity
+Deploys a NATS messaging cluster on Kubernetes using the official NATS Helm chart, with optional JetStream persistence, authentication (bearer-token or basic-auth), TLS encryption, external ingress via LoadBalancer, and declarative stream/consumer management through the NACK JetStream controller.
 
-For years, the conventional wisdom in distributed systems was that powerful messaging requires complexity. Kafka demanded Zookeeper clusters and partition management. RabbitMQ introduced elaborate AMQP routing topologies. Redis Streams bolted persistence onto a cache.
+## What Gets Created
 
-Then came NATS: a single binary, a simple subject-based model, and performance that embarrasses the competition—6 million messages per second compared to RabbitMQ's 60,000. The message was clear: simplicity is not a compromise; it's a strategic advantage.
+When you deploy a KubernetesNats resource, OpenMCF provisions:
 
-NATS is an open-source messaging system (Apache 2.0, CNCF project) designed as "connective technology" for distributed applications. It excels at microservices communication, request-reply patterns, and event streaming—all delivered through an intentionally straightforward API that respects both developer time and operational sanity.
+- **Namespace** — created only when `createNamespace` is `true`
+- **Helm Release (NATS)** — deploys a NATS server cluster via the official NATS Helm chart with configurable replicas, JetStream file storage, resource limits, and disk size
+- **Auth Secret** — a Kubernetes Secret storing a randomly generated bearer token or basic-auth credentials, created when authentication is enabled
+- **No-Auth User Secret** — an additional Kubernetes Secret for the unauthenticated user, created when basic-auth is enabled with `noAuthUser.enabled` set to `true`
+- **TLS Secret** — a self-signed certificate (RSA 2048-bit, 5-year validity) stored as a `kubernetes.io/tls` Secret, created when `tlsEnabled` is `true`
+- **LoadBalancer Service** — created when `ingress.enabled` is `true`, exposes NATS on port 4222 with an `external-dns.alpha.kubernetes.io/hostname` annotation for automatic DNS record creation
+- **NACK CRDs** — JetStream custom resource definitions fetched from the official NACK GitHub release, deployed when the NACK controller is enabled
+- **NACK Controller Helm Release** — deploys the NATS Controllers for Kubernetes operator, which reconciles JetStream Stream and Consumer CRDs to the NATS server
+- **JetStream Stream CRs** — Kubernetes custom resources representing JetStream streams, each with configurable subjects, storage, retention, and limits
+- **JetStream Consumer CRs** — Kubernetes custom resources representing JetStream consumers attached to streams, with configurable delivery, acknowledgment, and replay policies
 
-This document explores how to deploy production NATS clusters on Kubernetes, examining the evolution from anti-patterns to modern best practices, and explaining why OpenMCF's approach honors NATS's philosophy of simplicity.
+## Prerequisites
 
-## The Evolution: From Core NATS to JetStream
+- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
+- **A StorageClass** available in the cluster if JetStream persistence is enabled (most managed Kubernetes clusters provide a default)
+- **external-dns** running in the cluster if enabling ingress with a hostname
 
-Understanding NATS deployment begins with understanding its two operational modes, both embedded in the same `nats-server` binary:
+## Quick Start
 
-### Core NATS: The Fire-and-Forget Transport
-
-Core NATS is an in-memory, at-most-once messaging system. It's exceptionally fast and low-latency, perfect for service discovery, RPC-style request-reply, and scenarios where TCP-level reliability is sufficient. If a subscriber is offline when a message arrives, that message is lost—by design.
-
-This is NATS at its purest: a lightweight pub/sub fabric with no persistence overhead.
-
-### NATS JetStream: The Persistence Layer
-
-JetStream is not a separate server; it's an optionally enabled subsystem within the same NATS server. When enabled, it fundamentally transforms NATS by adding:
-
-- **At-least-once and exactly-once delivery guarantees**
-- **Historical message replay** and durable subscribers
-- **Persistence** via disk-based file storage
-- **Higher-level abstractions**: built-in Key-Value stores and Object Storage
-
-JetStream, introduced in NATS 2.2, explicitly replaces the older NATS Streaming (STAN) system. Any modern Kubernetes deployment must focus exclusively on JetStream for persistence.
-
-| Feature | Core NATS | JetStream |
-|---------|-----------|-----------|
-| **Quality of Service** | At-most-once | At-most-once, At-least-once, Exactly-once |
-| **Persistence** | In-memory only | In-memory and/or disk-based file storage |
-| **Primary Pattern** | Pub/Sub, Request-Reply | Durable streaming, event sourcing |
-| **Data Replay** | Not supported | Historical replay from any point |
-| **High-Level Services** | None | Key-Value store, Object store |
-
-## The Deployment Landscape: From Anti-Patterns to Production
-
-Deploying NATS on Kubernetes requires understanding which primitives match its stateful, clustered nature. Choosing wrongly isn't just inefficient—it's catastrophic.
-
-### Level 0: The Anti-Pattern (Deployments and DaemonSets)
-
-Using a standard Kubernetes Deployment or DaemonSet for a NATS cluster is an anti-pattern that guarantees failure.
-
-**Why Deployments Fail**: Kubernetes Deployments are designed for stateless applications with interchangeable pods. When a Deployment restarts a pod, it creates a new pod with a random hostname (e.g., `nats-deployment-6b8f...`).
-
-NATS JetStream clustering uses the RAFT consensus algorithm, which requires a quorum (majority of members) to elect a leader and operate. RAFT relies on **stable identities** for its members.
-
-Here's the failure sequence:
-
-1. A 3-replica cluster starts with pods `nats-abc`, `nats-def`, and `nats-ghi`. These identities are recorded in RAFT's persistent log.
-2. Kubernetes reschedules `nats-abc`, terminating it and creating `nats-xyz`.
-3. The cluster sees `nats-xyz` as a *fourth member* joining. The RAFT log now lists four members, with `nats-abc` marked "offline."
-4. After several pod-churn events, the RAFT member list might contain 5, 6, or 7 "phantom-offline" servers.
-5. The 3 active pods no longer constitute a quorum of the *total* registered members (3 active / 7 total = no quorum).
-6. **The cluster fails to elect a leader, JetStream stops accepting messages, and the cluster is irrecoverably broken.**
-
-**Why DaemonSets Fail**: DaemonSets run one pod per Kubernetes node, which doesn't match the desired 3- or 5-replica NATS cluster topology. This is a tool mismatch, not a solution.
-
-### Level 1: The Required Primitive (StatefulSets)
-
-For any application requiring stable identity and storage, Kubernetes provides the **StatefulSet** primitive. A clustered NATS server with JetStream is definitionally a stateful application.
-
-The official NATS documentation is explicit: **"The recommended way to deploy NATS on Kubernetes is using Helm with the official NATS Helm Chart"**—and that chart deploys NATS as a StatefulSet.
-
-**What StatefulSets Provide**:
-
-1. **Stable, Unique Network IDs**: Each pod gets a predictable hostname based on an ordinal index: `nats-0`, `nats-1`, `nats-2`. This stable identity is precisely what RAFT requires across restarts and upgrades.
-
-2. **Stable, Persistent Storage**: StatefulSet's `volumeClaimTemplates` ensures each pod gets its own unique PersistentVolumeClaim (PVC). `nats-0` is bound to `pvc-nats-0`, `nats-1` to `pvc-nats-1`, and so on. This is required for JetStream's file-based persistence.
-
-3. **Sequenced, Graceful Rollouts**: StatefulSets perform ordered updates (e.g., updating `nats-2`, then `nats-1`, then `nats-0`). This controlled rollout maintains quorum during upgrades, ensuring a majority of the cluster is always available.
-
-### Level 2: The Two-Service Model
-
-A correct NATS deployment requires understanding that the cluster has two distinct types of network traffic:
-
-1. **Client-to-Server Traffic (Port 4222)**: Applications need to connect to *any* healthy NATS pod. A standard **ClusterIP Service** is perfect for this—it provides a single, stable DNS name that load-balances client connections across the cluster.
-
-2. **Server-to-Server Traffic (Port 6222)**: A NATS server pod (e.g., `nats-0`) needs to form a full mesh with *all* of its peers (`nats-1`, `nats-2`) for clustering and RAFT communication. It cannot use the ClusterIP service for this, as it might just get load-balanced back to itself.
-
-The **Headless Service** (defined by setting `clusterIP: None`) solves this. When queried via DNS, it returns the *list of all individual pod IPs*, allowing `nats-0` to discover the actual IPs of `nats-1` and `nats-2`.
-
-**Verdict**: A production NATS deployment requires a StatefulSet paired with *two* Service objects:
-- A **ClusterIP Service** for client connections (port 4222)
-- A **Headless Service** for server-to-server peering (port 6222), linked to the StatefulSet via `spec.serviceName`
-
-## The Official NATS Tooling: Helm, Operators, and Nack
-
-The NATS.io team provides several tools for Kubernetes, but their roles and recommendations have evolved significantly.
-
-### The Standard: nats-io/k8s Helm Chart
-
-The official NATS documentation is unambiguous: **"The recommended way to deploy NATS on Kubernetes is using Helm with the official NATS Helm Chart."**
-
-This chart, hosted at `https://nats-io.github.io/k8s/helm/charts/`, is the community and maintainer-backed standard. It correctly provisions:
-
-- The StatefulSet for NATS servers
-- The Headless Service for cluster peering
-- The ClusterIP service for client connections
-- An optional `nats-box` Deployment for debugging
-
-This chart serves as the best-practice model for configuration and is the foundation for any production deployment.
-
-### The Deprecated: nats-io/nats-operator
-
-The `nats-io/nats-operator` uses a Custom Resource Definition (CRD) called `NatsCluster` to manage NATS deployments.
-
-However, the README file of the operator repository itself contains a prominent warning:
-
-> **"⚠️ The recommended way of running NATS on Kubernetes is by using the Helm charts... The NATS Operator is not recommended to be used for new deployments."**
-
-This is a definitive, first-party deprecation. Unlike systems like Kafka (where the Strimzi operator is recommended) or PostgreSQL, the NATS maintainers have abandoned the operator model in favor of the simpler Helm chart. This decision aligns with NATS's core philosophy: avoiding high complexity when a StatefulSet managed by Helm is sufficient.
-
-**Verdict**: Do not use the nats-operator. It is obsolete.
-
-### The Configuration Manager: nats-io/nack
-
-Nack ("NATS Controllers for Kubernetes") is a separate controller that *does not* deploy the NATS cluster itself. Instead, it manages JetStream *resources* (Streams, Consumers, Key-Value Stores, Object Stores) using Kubernetes-native CRDs.
-
-An administrator or application developer can define a NATS Stream in YAML:
+Create a file `nats.yaml`:
 
 ```yaml
-apiVersion: jetstream.nats.io/v1beta2
-kind: Stream
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesNats
 metadata:
-  name: orders-stream
+  name: my-nats
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesNats.my-nats
 spec:
-  subjects:
-    - orders.*
-  storage: file
-  replicas: 3
+  namespace: messaging
+  createNamespace: true
 ```
 
-When this manifest is applied (via `kubectl apply` or GitOps), the Nack controller detects it and issues commands to the NATS cluster to create or update that stream.
+Deploy:
 
-This enables a powerful **"Infrastructure vs. Configuration"** pattern that separates concerns:
+```shell
+openmcf apply -f nats.yaml
+```
 
-1. **Infrastructure (Day 1)**: The NATS cluster itself (StatefulSet, PVCs, Services) is a "slow-moving" resource deployed by a platform team.
-2. **Configuration (Day 2)**: Streams and Consumers are "fast-moving" resources defined by application teams and managed declaratively via Git.
+This creates a single-replica NATS server with JetStream enabled, a 10Gi PersistentVolumeClaim, default resource limits (1000m CPU, 2Gi memory), and the nats-box utility pod for debugging.
 
-This avoids the disaster of letting application code create/manage streams ad-hoc, which leads to configuration drift and conflicts.
+## Configuration Reference
 
-| Tool | Purpose | Production Readiness | Recommendation |
-|------|---------|---------------------|----------------|
-| **nats-io/k8s Helm Chart** | Deploys NATS infrastructure (StatefulSet, Services) | **Recommended** | Use as the model for deployment |
-| **nats-io/nats-operator** | Deploys NATS infrastructure | **DEPRECATED** | Do not use. Obsolete. |
-| **nats-io/nack** | Manages NATS resources (Streams, Consumers) | **Recommended** | Deploy *alongside* cluster for GitOps |
+### Required Fields
 
-### Licensing: 100% Open Source
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `namespace` | `string` | Kubernetes namespace for the NATS deployment. Can reference a KubernetesNamespace resource via `valueFrom`. | Required |
 
-All official NATS tooling and container images are 100% open source under the Apache 2.0 license:
+### Optional Fields
 
-- `nats-io/k8s` (Helm Charts): Apache 2.0
-- `nats-io/nack` (Controller): Apache 2.0
-- `nats-io/nats-docker` (Container Images): Apache 2.0
-- `nats-io/nats-box` (Utility Image): Apache 2.0
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `targetCluster.clusterKind` | `enum` | — | Kubernetes cluster kind. Valid values: `AwsEksCluster`, `GcpGkeCluster`, `AzureAksCluster`, `DigitalOceanKubernetesCluster`, `CivoKubernetesCluster`. |
+| `targetCluster.clusterName` | `string` | — | Name of the target Kubernetes cluster in the same environment. |
+| `createNamespace` | `bool` | `false` | When `true`, creates the namespace before deploying resources. |
+| `serverContainer.replicas` | `int32` | `1` | Number of NATS server replicas. Use an odd value for quorum in clustered mode. Must be greater than 0. |
+| `serverContainer.resources.limits.cpu` | `string` | `1000m` | Maximum CPU allocation for each NATS pod. |
+| `serverContainer.resources.limits.memory` | `string` | `2Gi` | Maximum memory allocation for each NATS pod. |
+| `serverContainer.resources.requests.cpu` | `string` | `100m` | Minimum guaranteed CPU for each NATS pod. |
+| `serverContainer.resources.requests.memory` | `string` | `256Mi` | Minimum guaranteed memory for each NATS pod. |
+| `serverContainer.diskSize` | `string` | `10Gi` | PVC size for JetStream file storage. Must be a valid Kubernetes quantity (e.g., `1Gi`, `10Gi`). Recommended default: `1Gi`. |
+| `disableJetStream` | `bool` | `false` | When `true`, disables JetStream persistence entirely. No file store PVC is created. |
+| `auth.enabled` | `bool` | `false` | Enables authentication for the NATS cluster. |
+| `auth.scheme` | `enum` | — | Authentication scheme. Valid values: `bearer_token`, `basic_auth`. |
+| `auth.noAuthUser.enabled` | `bool` | `false` | Enables an unauthenticated user alongside authenticated users. Only applies when `auth.scheme` is `basic_auth`. |
+| `auth.noAuthUser.publishSubjects` | `string[]` | — | Subjects the unauthenticated user may publish to. At least one subject must be specified when `noAuthUser.enabled` is `true`. |
+| `tlsEnabled` | `bool` | `false` | Generates a self-signed TLS certificate and configures NATS to use it. |
+| `ingress.enabled` | `bool` | `false` | Creates a LoadBalancer Service exposing NATS on port 4222 with external-dns annotations. |
+| `ingress.hostname` | `string` | — | Hostname for external access (e.g., `nats.example.com`). Configured automatically via external-dns. Required when `ingress.enabled` is `true`. |
+| `disableNatsBox` | `bool` | `false` | When `true`, skips deployment of the nats-box utility pod. |
+| `nackController.enabled` | `bool` | `false` | Deploys the NACK JetStream controller for managing streams and consumers via Kubernetes CRDs. |
+| `nackController.enableControlLoop` | `bool` | `false` | Enables control-loop mode for the NACK controller. Required for KeyValue and ObjectStore support. |
+| `nackController.helmChartVersion` | `string` | `0.31.1` | NACK Helm chart version. |
+| `nackController.appVersion` | `string` | `0.21.1` | NACK app version (GitHub release tag). Used for fetching CRDs. Differs from chart version. |
+| `streams[].name` | `string` | — | Unique stream name. 1-255 characters, alphanumeric with `-`, `_`, `.` allowed. |
+| `streams[].subjects` | `string[]` | — | Subjects the stream captures. Supports wildcards (e.g., `orders.*`, `events.>`). At least one required. |
+| `streams[].storage` | `enum` | `memory` | Storage backend: `file` (persistent) or `memory` (ephemeral). |
+| `streams[].replicas` | `int32` | — | Number of stream replicas (1-5). Odd values recommended for quorum. |
+| `streams[].retention` | `enum` | `limits` | Retention policy: `limits`, `interest`, or `workqueue`. |
+| `streams[].maxAge` | `string` | — | Maximum message age (e.g., `24h`, `7d`). Empty for unlimited. |
+| `streams[].maxBytes` | `int64` | — | Maximum stream size in bytes. `-1` for unlimited. |
+| `streams[].maxMsgs` | `int64` | — | Maximum number of messages. `-1` for unlimited. |
+| `streams[].maxMsgSize` | `int32` | — | Maximum message size in bytes. `-1` for unlimited. |
+| `streams[].maxConsumers` | `int32` | — | Maximum number of consumers. `-1` for unlimited. |
+| `streams[].discard` | `enum` | `old` | Discard policy when limits are reached: `old` or `new_msgs`. |
+| `streams[].description` | `string` | — | Description of the stream. |
+| `streams[].consumers[].durableName` | `string` | — | Durable consumer name. Must be unique within the stream. 1-255 characters. |
+| `streams[].consumers[].deliverPolicy` | `enum` | `all` | Delivery policy: `all`, `last`, or `new_msgs`. |
+| `streams[].consumers[].ackPolicy` | `enum` | `none` | Acknowledgment policy: `none`, `all`, or `explicit`. |
+| `streams[].consumers[].filterSubject` | `string` | — | Subject filter with wildcard support. Only matching messages are delivered. |
+| `streams[].consumers[].deliverSubject` | `string` | — | Deliver subject for push-based consumers. Omit for pull-based. |
+| `streams[].consumers[].deliverGroup` | `string` | — | Queue group name for load balancing across multiple consumer instances. |
+| `streams[].consumers[].maxAckPending` | `int32` | — | Maximum number of unacknowledged messages. |
+| `streams[].consumers[].maxDeliver` | `int32` | — | Maximum delivery attempts. `-1` for unlimited. |
+| `streams[].consumers[].ackWait` | `string` | — | Time to wait for acknowledgment (e.g., `30s`, `1m`). |
+| `streams[].consumers[].replayPolicy` | `enum` | `instant` | Replay policy: `original` (original rate) or `instant` (as fast as possible). |
+| `streams[].consumers[].description` | `string` | — | Description of the consumer. |
+| `natsHelmChartVersion` | `string` | `2.12.3` | NATS Helm chart version. Available versions: `helm search repo nats/nats --versions`. |
 
-This confirms a clean bill of health for integration into any open-source or commercial platform.
+## Examples
 
-## OpenMCF's Approach: Simplicity by Design
+### Development NATS with Defaults
 
-OpenMCF's `NatsKubernetes` API generates the same artifacts as the official `nats-io/k8s` Helm chart, following the maintainer-recommended pattern. The API focuses on the **80/20 configuration principle**: exposing the 20% of fields that 80% of users need for production deployments.
+A single-replica NATS server for development with JetStream enabled and default settings:
 
-### Essential Configuration (The "80%")
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesNats
+metadata:
+  name: dev-nats
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesNats.dev-nats
+spec:
+  namespace: dev
+  createNamespace: true
+  serverContainer:
+    replicas: 1
+    resources:
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+      requests:
+        cpu: "50m"
+        memory: "128Mi"
+    diskSize: "1Gi"
+```
 
-**Server Configuration**:
-- `replicas`: The most fundamental field. Development uses 1; production uses 3 or 5 (odd numbers for RAFT quorum).
-- `resources`: CPU and memory requests/limits. Critical for production stability—NATS pods resyncing large JetStream streams without limits can be OOMKilled by Kubernetes, leading to crash-loops.
+### Production Cluster with Authentication and TLS
 
-**JetStream Configuration**:
-- `jetstream.enabled`: Top-level toggle for persistence.
-- `jetstream.persistence.mode`: Choose `FILE` (disk, production) or `MEMORY` (ephemeral, staging).
-- `jetstream.persistence.size`: PVC size (e.g., `10Gi`).
+A three-node NATS cluster with basic-auth, TLS encryption, and external access:
 
-**Security Configuration**:
-- `auth.enabled`: Default NATS has no authentication ("useful for development only"). Production must enable this.
-- `auth.mode`: Support `BASIC` (username/password) or `TOKEN` for the 80% use case.
-- `tls.enabled`: Enable TLS for client connections, referencing a Kubernetes Secret.
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesNats
+metadata:
+  name: prod-nats
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesNats.prod-nats
+spec:
+  namespace: messaging
+  serverContainer:
+    replicas: 3
+    resources:
+      limits:
+        cpu: "2000m"
+        memory: "4Gi"
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+    diskSize: "50Gi"
+  auth:
+    enabled: true
+    scheme: basic_auth
+  tlsEnabled: true
+  ingress:
+    enabled: true
+    hostname: nats.example.com
+```
 
-**Utility and Access**:
-- `nats_box.enabled`: Deploy the `nats-box` utility pod for debugging.
-- `external_access.type`: Expose via `LOADBALANCER` (L4 TCP) or `INGRESS` (L7 WebSocket).
-- `nack.enabled`: Co-deploy the Nack controller to enable GitOps-based JetStream resource management.
+### Event-Driven Architecture with Streams and Consumers
 
-**Monitoring**:
-- `monitoring.enabled`: Deploy the `prometheus-nats-exporter` sidecar for Prometheus integration.
+A NATS cluster with the NACK controller managing JetStream streams and consumers declaratively:
 
-### Omitted Advanced Features (The "20%")
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesNats
+metadata:
+  name: event-bus
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesNats.event-bus
+spec:
+  namespace: events
+  createNamespace: true
+  serverContainer:
+    replicas: 3
+    resources:
+      limits:
+        cpu: "2000m"
+        memory: "4Gi"
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+    diskSize: "100Gi"
+  auth:
+    enabled: true
+    scheme: basic_auth
+  nackController:
+    enabled: true
+    enableControlLoop: true
+  streams:
+    - name: ORDERS
+      subjects:
+        - "orders.>"
+      storage: file
+      replicas: 3
+      retention: limits
+      maxAge: "7d"
+      maxBytes: -1
+      discard: old
+      consumers:
+        - durableName: order-processor
+          deliverPolicy: all
+          ackPolicy: explicit
+          filterSubject: "orders.created"
+          maxAckPending: 1000
+          maxDeliver: 5
+          ackWait: "30s"
+        - durableName: order-analytics
+          deliverPolicy: all
+          ackPolicy: none
+          description: "Analytics consumer, no ack required"
+    - name: NOTIFICATIONS
+      subjects:
+        - "notify.*"
+      storage: memory
+      replicas: 1
+      retention: interest
+      consumers:
+        - durableName: email-sender
+          deliverPolicy: new_msgs
+          ackPolicy: explicit
+          filterSubject: "notify.email"
+          ackWait: "1m"
+          maxDeliver: 3
+```
 
-To honor NATS's philosophy of simplicity, the v1 API omits corner-case configurations:
+### Using Foreign Key References
 
-- **Leafnodes**: For edge-to-cloud topologies
-- **Gateway**: For "super-cluster" (multi-cluster) topologies
-- **MQTT**: For MQTT protocol gateway
-- **Advanced Auth**: Full NKey/JWT multi-tenancy
-- **Advanced JetStream Tuning**: Per-server max_payload, etc.
+Reference an OpenMCF-managed namespace instead of hardcoding the name:
 
-These can be considered for v2 if user demand warrants the added complexity.
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesNats
+metadata:
+  name: my-nats
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesNats.my-nats
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      name: app-namespace
+      field: spec.name
+  serverContainer:
+    replicas: 3
+    diskSize: "20Gi"
+  auth:
+    enabled: true
+    scheme: bearer_token
+```
 
-### Example Configurations
+## Stack Outputs
 
-**Development (Minimal)**:
-- `replicas: 1`
-- `auth.enabled: false`
-- `jetstream.enabled: false`
+After deployment, the following outputs are available in `status.outputs`:
 
-**Staging (Clustered, In-Memory)**:
-- `replicas: 3`
-- `auth.enabled: true` with `mode: BASIC`
-- `jetstream.enabled: true` with `persistence.mode: MEMORY`
-- `nats_box.enabled: true`
+| Output | Type | Description |
+|--------|------|-------------|
+| `namespace` | `string` | Kubernetes namespace where NATS is deployed |
+| `clientUrlInternal` | `string` | Cluster-internal NATS URL (e.g., `nats://my-nats.messaging.svc.cluster.local:4222`) |
+| `clientUrlExternal` | `string` | External NATS URL, only set when ingress is enabled |
+| `authTokenSecret.name` | `string` | Name of the Kubernetes Secret storing the auth credentials |
+| `authTokenSecret.key` | `string` | Key within the auth Secret (`token` for bearer-token, `password` for basic-auth) |
+| `jetStreamDomain` | `string` | JetStream domain configured for the cluster, blank when JetStream is disabled |
+| `metricsEndpoint` | `string` | Prometheus metrics endpoint (e.g., `http://nats-prom.messaging.svc.cluster.local:7777/metrics`) |
+| `tlsSecret.name` | `string` | Name of the Kubernetes Secret containing the TLS certificate and key, blank when TLS is disabled |
+| `tlsSecret.key` | `string` | Key within the TLS Secret (`tls.crt`), blank when TLS is disabled |
 
-**Production (HA, Persistent, Secure)**:
-- `replicas: 3`
-- `resources`: CPU/memory requests and limits
-- `auth.enabled: true` with `mode: TOKEN`
-- `tls.enabled: true`
-- `jetstream.enabled: true` with `persistence.mode: FILE, size: 50Gi`
-- `external_access.type: LOADBALANCER`
-- `nack.enabled: true`
-- `monitoring.enabled: true`
+## Related Components
 
-## Production Best Practices
-
-### Clustering and High Availability
-
-- **Always use odd-numbered replicas** (3 or 5) for StatefulSets to satisfy RAFT quorum requirements.
-- **Never scale from 1 to 3** in production. Start with 3 replicas. Scaling a live JetStream cluster from 1 to 3 is risky and can cause "group node missing" errors and inconsistent state.
-- **Use pod anti-affinity** to ensure NATS server pods run on different physical nodes, preventing a single node failure from causing quorum loss.
-
-### JetStream Persistence
-
-- **Use file storage** (`fileStore`) with high-performance SSDs for production durability. Memory storage (`memStore`) does not survive pod restarts.
-- **Provision adequate PVC size** for `fileStore`. Insufficient disk is a common and avoidable failure.
-
-### Authentication and Authorization
-
-- **Enforce authentication** (`auth.enabled: true`) in all production environments. No-auth is for development only.
-- For most use cases, `TOKEN` or `BASIC` auth (via Kubernetes Secrets) covers the 80% need. Complex multi-tenancy with NKeys/JWTs is an advanced feature.
-
-### TLS Configuration
-
-- **Enable TLS** for all endpoints: client connections (port 4222) and internal cluster mesh (port 6222).
-- **Integrate with cert-manager** to automatically provision and rotate TLS certificates, storing them in Kubernetes Secrets.
-
-### Resource Sizing
-
-- **Always set CPU and memory limits**. NATS pods that fall behind (e.g., due to network partitions) will attempt to catch up by replicating large amounts of data. Without limits, they can be OOMKilled by Kubernetes, entering a crash-loop.
-
-### Monitoring
-
-- **Enable the NATS monitoring endpoint** (port 8222).
-- **Deploy the prometheus-nats-exporter** to expose metrics to Prometheus.
-- **Import standard Grafana dashboards** for NATS Server and NATS JetStream to gain immediate operational visibility.
-
-**Key Metrics to Monitor**:
-
-| Metric | Description | Alert Condition |
-|--------|-------------|-----------------|
-| `nats_server_total_connections` | Total active client connections | > 90% of `max_connections` |
-| `nats_server_slow_consumers` | Consumers not keeping up | > 0 (critical indicator) |
-| `nats_jetstream_storage_bytes` | Total bytes used by JetStream | > 80% of disk size |
-| `nats_jetstream_meta_cluster_leader` | Is this node the meta-cluster leader? | sum() != 1 (quorum loss!) |
-| `nats_jetstream_stream_replicas_lag` | Replication lag between replicas | > threshold (replica falling behind) |
-
-## Client Connectivity Patterns
-
-### Internal Access: The Two-Service Model
-
-Applications inside the cluster connect to NATS via the **ClusterIP Service** (e.g., `nats-client.default.svc.cluster.local`), which load-balances connections across all healthy NATS pods.
-
-NATS server pods discover each other via the **Headless Service**, which returns individual pod IPs to enable the full-mesh peering required by RAFT.
-
-### External Access: LoadBalancer vs. Ingress
-
-**LoadBalancer**:
-- **Pro**: Simplest way to expose the L4 TCP client port (4222) to the internet.
-- **Con**: Provisions a dedicated, often expensive cloud load balancer for each NATS cluster.
-
-**Ingress**:
-- **Pro**: Cost-effective. Can share a single L7 load balancer among many services.
-- **Con**: Standard Ingress controllers (e.g., NGINX) are HTTP-based, typically suitable only for NATS clients connecting via WebSockets, not raw TCP.
-
-Choose **LoadBalancer** for general-purpose TCP clients. Choose **Ingress** for browser-based (WebSocket) clients.
-
-### Multi-Cluster NATS (Advanced)
-
-NATS natively supports "super-clusters" by federating multiple independent clusters (e.g., in different clouds or regions) using its `gateway` configuration. This is an advanced topology but a core strength of NATS's "connective technology" philosophy.
-
-## Conclusion: The Paradigm Shift
-
-The evolution of NATS deployment on Kubernetes mirrors the system's broader philosophy: **simplicity is not a limitation; it's a superpower**.
-
-Where competitors demand elaborate operational overhead—Zookeeper clusters, partition management, complex routing topologies—NATS offers a single binary, a straightforward subject-based model, and production-proven performance. But simplicity doesn't mean naivety. Deploying NATS correctly on Kubernetes requires understanding stateful primitives (StatefulSets, not Deployments), consensus requirements (RAFT quorum), and the separation of infrastructure from configuration (Helm for clusters, Nack for streams).
-
-OpenMCF's `NatsKubernetes` API honors this philosophy by focusing on the 80% configuration that matters, generating maintainer-recommended artifacts, and enabling modern GitOps patterns. The result is a deployment model that feels as simple as NATS itself—and delivers the same production-grade reliability.
-
-For deeper guides on specific implementation details, operator configuration, and advanced patterns, see the [NATS Kubernetes Deep Dive](./nats-kubernetes-deep-dive.md) (coming soon).
-
+- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — application deployments that connect to NATS as a messaging backend
+- [KubernetesRedis](/docs/catalog/kubernetes/kubernetesredis) — often deployed alongside NATS for caching in event-driven architectures
+- [KubernetesPostgres](/docs/catalog/kubernetes/kubernetespostgres) — persistent storage for applications consuming NATS events

@@ -6,414 +6,384 @@ order: 100
 componentName: "kubernetessignoz"
 ---
 
-# SigNoz on Kubernetes: From Anti-Patterns to Production
+# Kubernetes SigNoz
 
-## Introduction
+Deploys the SigNoz observability platform on Kubernetes using the official SigNoz Helm chart, providing unified logs, metrics, and traces through an OpenTelemetry-native stack with configurable SigNoz UI, OpenTelemetry Collector, self-managed or external ClickHouse database, optional Kubernetes Gateway API ingress for both the UI and OTel Collector endpoints, and custom Helm value overrides.
 
-"Just deploy it with a Deployment and mount a hostPath volume—it's just a database, right?"
+## What Gets Created
 
-If you've deployed stateful observability platforms on Kubernetes, you've probably encountered this sentiment. And if you've encountered it in production, you've probably also encountered the 3 AM page that follows when the node reboots and all your telemetry data vanishes into the void.
+When you deploy a KubernetesSignoz resource, OpenMCF provisions:
 
-SigNoz is a modern, OpenTelemetry-native observability platform that unifies logs, metrics, and traces into a single application. But beneath its elegant UI lies a complex, stateful architecture: a high-performance columnar database (ClickHouse), a distributed coordination service (Zookeeper), a telemetry processing pipeline (OpenTelemetry Collector), and the SigNoz application itself. Getting this stack production-ready on Kubernetes is not a trivial exercise.
+- **Namespace** — created only when `createNamespace` is `true`
+- **SigNoz Helm Release** — the full SigNoz stack (UI, API server, Ruler, Alertmanager, and Frontend) deployed via the `signoz` Helm chart from `https://charts.signoz.io` (chart version 0.52.0)
+- **OpenTelemetry Collector** — a multi-replica data ingestion gateway accepting traces, metrics, and logs over gRPC (port 4317) and HTTP (port 4318)
+- **Self-Managed ClickHouse** — an in-cluster ClickHouse deployment with configurable persistence, clustering (sharding and replication), and optional Zookeeper coordination; created only when `database.isExternal` is `false`
+- **Zookeeper** — coordination service for distributed ClickHouse clusters; created only when `database.managedDatabase.zookeeper.isEnabled` is `true`
+- **SigNoz UI Gateway and Routes** — a Kubernetes Gateway API Gateway, TLS Certificate (via cert-manager), HTTPS HTTPRoute, and HTTP-to-HTTPS redirect HTTPRoute for the SigNoz UI; created only when `ingress.ui.enabled` is `true`
+- **OTel Collector Gateway and Routes** — a separate Gateway API Gateway, TLS Certificate, HTTPS HTTPRoute, and HTTP-to-HTTPS redirect HTTPRoute for the OpenTelemetry Collector HTTP endpoint; created only when `ingress.otelCollector.enabled` is `true`
 
-This document explores the landscape of SigNoz deployment methods, from fundamentally flawed approaches to battle-tested production patterns. More importantly, it explains **why** OpenMCF made the architectural choices it did when designing the `SignozKubernetes` API.
+## Prerequisites
 
-## The Deployment Maturity Spectrum
+- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
+- **A StorageClass** available in the cluster if enabling ClickHouse persistence (most managed Kubernetes clusters provide a default)
+- **Istio ingress gateway** installed in the `istio-ingress` namespace if enabling ingress for the UI or OTel Collector
+- **cert-manager** with a ClusterIssuer matching your ingress domain if enabling ingress
+- **Gateway API CRDs** installed on the cluster if enabling ingress
 
-### Level 0: The Anti-Pattern — Raw Kubernetes Primitives
+## Quick Start
 
-**What it looks like**: Deploying SigNoz components using basic Kubernetes Deployments, manually configured StatefulSets, or worse—Pods with `hostPath` volumes.
+Create a file `signoz.yaml`:
 
-**Why it fails**:
-
-The fundamental problem is that SigNoz is a **stateful, multi-component system** where component relationships and startup ordering matter. The two most critical components—ClickHouse and Zookeeper—are inherently stateful and require:
-
-- **Stable, persistent identities**: Each ClickHouse pod needs a stable network identity and persistent volume that survives pod rescheduling.
-- **Ordered, coordinated startup**: ClickHouse replicas must start in a specific sequence and register with Zookeeper before accepting writes.
-- **Persistent storage**: Data must survive node failures, pod rescheduling, and cluster maintenance.
-
-**The Deployment primitive is designed for stateless applications**. Pods are ephemeral and interchangeable. If you deploy ClickHouse as a Deployment:
-- A rescheduled pod gets a new name and identity, severing its connection to persistent data
-- No mechanism ensures replicas start in order or maintain quorum
-- Data written to `emptyDir` or `hostPath` is lost on pod termination or node failure
-
-**Manual StatefulSets** are technically correct but practically untenable. Even the official SigNoz Helm chart—which is professionally maintained—experiences frequent user-reported failures during upgrades due to immutable StatefulSet fields. Helm upgrade commands commonly fail with errors like:
-
-```
-Forbidden: updates to statefulset spec for fields other than 'replicas', 'template', 
-'updateStrategy' are forbidden
-```
-
-If the official chart struggles with this complexity, reimplementing it manually or through lightweight abstractions is a recipe for production outages.
-
-**Verdict**: This is not a deployment method; it's a ticking time bomb. Don't do this.
-
----
-
-### Level 1: The Official Helm Chart — The De Facto Standard
-
-**What it is**: The `signoz/signoz` Helm chart is the community-supported, officially documented way to deploy SigNoz on Kubernetes. It's hosted at [https://github.com/SigNoz/charts](https://github.com/SigNoz/charts) and published to the Helm repository at `https://charts.signoz.io`.
-
-**What it provides**:
-
-This is not just a collection of templated YAML files. The Helm chart is a **sophisticated management layer** that encapsulates the conditional logic and operational complexity of SigNoz deployment. It:
-
-1. **Provisions all required components**: SigNoz backend (UI, API, Alertmanager), OpenTelemetry Collector, ClickHouse, and Zookeeper.
-2. **Manages critical dependencies**: Automatically enables Zookeeper when you configure a distributed ClickHouse cluster (replication > 1).
-3. **Bundles the Altinity ClickHouse Operator**: This is crucial. The chart doesn't create ClickHouse StatefulSets directly. Instead, it:
-   - Deploys the battle-tested Altinity ClickHouse Operator as a dependency
-   - Creates a `ClickHouseInstallation` (CHI) Custom Resource
-   - Lets the Altinity Operator handle all StatefulSet creation, reconciliation, and lifecycle management
-
-**Why it matters**:
-
-The Helm chart is not a convenience wrapper—it's the **API** for deploying SigNoz. The ClickHouse configuration, for example, is abstracted through the CHI Custom Resource, which the Altinity Operator translates into StatefulSets, Services, ConfigMaps, and PodDisruptionBudgets.
-
-**Limitations**:
-
-While the Helm chart is production-ready, it's also complex:
-- **Configuration burden**: The `values.yaml` file contains hundreds of fields. Understanding which 20% of fields matter for 80% of use cases requires deep domain knowledge.
-- **Dependency pitfalls**: Even simple deployments have hidden dependencies. For example, SigNoz hardcodes the ClickHouse cluster name as `"cluster"`, which forces ClickHouse into cluster mode. This **mandates Zookeeper** even for single-node deployments—an unintuitive requirement that confuses users and adds unnecessary resource overhead in dev/test environments.
-- **Manual lifecycle management**: Users must manually calculate appropriate replica counts, resource allocations, and disk sizes. Misconfiguration is common.
-
-**Verdict**: This is the **baseline** for any production deployment. Any higher-level abstraction—including OpenMCF's `SignozKubernetes`—should be built as a wrapper **over this chart**, not as a replacement for it. The chart is the source of truth.
-
----
-
-### Level 2: Declarative Orchestration — GitOps and IaC
-
-**What it looks like**: Using tools like ArgoCD, Flux, Terraform, or Pulumi to manage the Helm chart declaratively.
-
-**How it works**:
-
-These tools don't change the deployment method—they wrap the official Helm chart in a declarative management layer:
-
-- **ArgoCD**: Deploys an `Application` manifest that points to `https://charts.signoz.io` and applies your custom `values.yaml`.
-- **Flux**: Uses a `HelmRelease` Custom Resource to manage the chart's lifecycle.
-- **Terraform/Pulumi**: Use their respective Helm providers to declare the chart installation as infrastructure-as-code.
-- **Kustomize**: Applies overlays and patches to the Helm chart's rendered manifests (can be integrated via Helm's `--post-renderer` flag).
-
-**Why it's valuable**:
-
-- **GitOps**: Configuration is version-controlled, auditable, and recoverable. Changes are peer-reviewed.
-- **Repeatability**: Promotes consistent deployments across dev, staging, and production.
-- **Drift detection**: ArgoCD and Flux detect configuration drift and can auto-heal resources.
-- **IaC integration**: Terraform and Pulumi allow SigNoz deployment to be orchestrated alongside other infrastructure (VPCs, DNS, secrets).
-
-**Limitations**:
-
-These tools solve the **orchestration problem**, not the **configuration problem**. They don't tell you how to size ClickHouse disk volumes, calculate Zookeeper quorum requirements, or avoid the gRPC/HTTP ingress conflict. You still need deep knowledge of the Helm chart to configure it correctly.
-
-**Verdict**: Essential for production environments, but not a substitute for understanding the underlying deployment architecture. Best used in combination with a higher-level abstraction that provides opinionated defaults.
-
----
-
-### Level 3: The Production Solution — Opinionated, Structured Abstractions
-
-**What it is**: A high-level API that encapsulates deployment best practices, provides intelligent defaults, and automatically handles cross-component dependencies.
-
-**How OpenMCF's SignozKubernetes API embodies this**:
-
-The `SignozKubernetes` API is not a simple pass-through to the Helm chart. It's a **structured abstraction** that implements the 80/20 principle: expose the 20% of configuration that 80% of users need, with intelligent logic to handle the remaining 80% of complexity.
-
-**Key design principles**:
-
-1. **Logical, not flat**: Instead of exposing hundreds of Helm values as a flat map, the API is structured into logical components (`signoz_container`, `otel_collector_container`, `database`, `ingress`). This makes it clear what each setting controls.
-
-2. **Dependency automation**: If a user configures a distributed ClickHouse cluster (replicas > 1), the controller knows this **requires Zookeeper** and automatically:
-   - Enables Zookeeper in the Helm chart
-   - Sets `zookeeper.replicaCount: 3` for production quorum (not 1, which is a single point of failure)
-   - Configures ClickHouse to use the Zookeeper service
-
-3. **Profile-based defaults**: Instead of requiring users to specify every resource allocation, the API can support deployment profiles:
-   - `dev`: Minimal single-node ClickHouse, single Zookeeper (if required), minimal resources
-   - `staging`: HA-ready with 1 shard, 2 replicas, 3 Zookeeper nodes
-   - `production`: Multi-shard with proper anti-affinity, PodDisruptionBudgets, and production-scale resources
-
-4. **Ingress intelligence**: The API handles the dual-protocol ingress requirement for the OpenTelemetry Collector by generating **two separate Ingress resources** automatically—one for gRPC (port 4317, with the correct annotations) and one for HTTP (port 4318).
-
-5. **Validation and safety**: The protobuf schema enforces constraints:
-   - External ClickHouse configuration is required when `is_external: true`
-   - Disk sizes must match Kubernetes quantity formats (e.g., `"100Gi"`)
-   - Zookeeper replicas should be odd numbers for quorum
-   - Clustering can't be enabled without specifying shard and replica counts
-
-**Example: Solving the "Single-Node Zookeeper" Pitfall**:
-
-Users frequently encounter this frustrating scenario:
-- They want a simple dev deployment with a single-node ClickHouse
-- They don't enable clustering in the Helm chart
-- The deployment fails because SigNoz hardcodes `cluster_name: "cluster"`, forcing ClickHouse into cluster mode
-- Cluster mode **requires Zookeeper**, even with 1 replica
-
-The SignozKubernetes API's controller can implement logic to handle this automatically:
-```
-IF (database.managed_database.container.replicas == 1 AND 
-    (!database.managed_database.cluster.is_enabled OR 
-     database.managed_database.cluster.replica_count == 1)) THEN
-  // Single-node mode
-  Enable Zookeeper with replicaCount: 1
-  Configure ClickHouse with layout.replicasCount: 1, layout.shardsCount: 1
-ELSE IF (database.managed_database.cluster.is_enabled AND 
-         database.managed_database.cluster.replica_count > 1) THEN
-  // Distributed mode
-  Enable Zookeeper with replicaCount: 3 (production quorum)
-  Configure ClickHouse with layout.replicasCount and layout.shardsCount from spec
-  Apply podDistribution: ReplicaAntiAffinity for true HA
-END IF
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesSignoz
+metadata:
+  name: my-signoz
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesSignoz.my-signoz
+spec:
+  namespace: observability
+  createNamespace: true
+  database:
+    isExternal: false
 ```
 
-This logic is invisible to the user but prevents a common misconfiguration.
-
-**What it doesn't do**:
-
-The SignozKubernetes API doesn't try to replace the Helm chart or reimplement its logic. Instead, it **generates the appropriate Helm values** and uses the chart as its deployment engine. This ensures:
-- Compatibility with upstream updates
-- Leverage of the bundled Altinity ClickHouse Operator
-- Access to advanced features for power users (via `helm_values` pass-through)
-
-**Verdict**: This is the **strategic approach** for teams that want production-ready observability without becoming SigNoz deployment experts. It balances simplicity for common use cases with flexibility for advanced needs.
-
----
-
-## Understanding ClickHouse Deployment Patterns
-
-ClickHouse is the heart of SigNoz—a high-performance columnar database that stores and queries telemetry data. How you deploy ClickHouse determines SigNoz's reliability, scalability, and operational complexity.
-
-### Single-Node ClickHouse (Dev/Test)
-
-**Configuration**: `shardsCount: 1`, `replicasCount: 1`
-
-**Use case**: Local development, quick evaluation, CI/CD test environments.
-
-**Characteristics**:
-- Simplest configuration
-- No high availability—a pod or node failure causes downtime and potential data loss
-- Vertical scaling only (increase CPU/memory of the single pod)
-- Still requires 1 Zookeeper pod due to SigNoz's hardcoded cluster configuration
-
-**Resources**: 
-- ClickHouse: 500m CPU, 1Gi memory, 20Gi disk (default, increase for longer testing)
-- Zookeeper: 100m CPU, 256Mi memory, 5Gi disk
-
-**Verdict**: Acceptable for non-production environments. Do not use in staging or production.
-
----
-
-### Distributed ClickHouse Cluster (Staging/Production)
-
-**Configuration**: 
-- Sharding: `shardsCount > 1` (horizontal partitioning of data)
-- Replication: `replicasCount > 1` (data redundancy within each shard)
-- Example: 2 shards, 2 replicas = 4 ClickHouse pods total
-
-**Use case**: Staging environments, production deployments.
-
-**Why it's essential**:
-
-- **Sharding** scales write throughput and query parallelism. As telemetry volume grows, adding shards distributes the load.
-- **Replication** provides fault tolerance. If a ClickHouse pod fails, its replica within the shard continues serving queries and accepting writes.
-- **Requires Zookeeper quorum**: ClickHouse's `ReplicatedMergeTree` table engine uses Zookeeper for replica coordination, leader election, and schema migrations. A 3-node Zookeeper ensemble is the **minimum** for production (provides fault tolerance for 1 Zookeeper failure).
-
-**Pod anti-affinity is critical**: Deploying multiple replicas is pointless if they all run on the same node. The Altinity Operator supports `podDistribution` rules:
-- `ClickHouseAntiAffinity`: Basic spreading of all ClickHouse pods
-- `ReplicaAntiAffinity` **(recommended)**: Ensures replicas of the same shard never run on the same node
-
-**Resources** (baseline for small production):
-- ClickHouse: 2 CPU, 4Gi memory, 100Gi+ disk per pod
-- Zookeeper: 500m CPU, 1Gi memory, 20Gi disk per pod (3 pods)
-
-**Operational considerations**:
-- **PodDisruptionBudgets**: Prevent voluntary disruptions (node drains) from taking down all replicas simultaneously
-- **Volume expansion**: The StorageClass **must** support `allowVolumeExpansion: true` (many cloud defaults don't enable this). Otherwise, expanding disk size requires complex and risky data migrations.
-
-**Verdict**: This is the **production standard**. The added complexity is justified by the resilience and scalability it provides.
-
----
-
-### External ClickHouse
-
-**Configuration**: Set `database.is_external: true` and provide connection details.
-
-**Use cases**:
-1. **Managed services**: Connect to Altinity.Cloud (BYOC managed ClickHouse)
-2. **Centralized database**: Multiple SigNoz instances sharing a single ClickHouse cluster
-3. **Organizational boundaries**: ClickHouse managed by a dedicated DBA team
-
-**Critical incompatibility—ClickHouse Cloud**:
-
-SigNoz is **fundamentally incompatible** with the official multi-tenant ClickHouse Cloud service. Here's why:
-
-- SigNoz uses User-Defined Functions (UDFs) to calculate histogram quantiles for Prometheus-style metrics
-- These are not SQL functions—they're **executable scripts** (located in `deploy/docker/clickhouse-setup/user_scripts/`)
-- ClickHouse Cloud, for valid security and multi-tenancy reasons, **does not allow** users to install arbitrary executable UDFs
-- Result: Basic tracing might work, but **metrics ingestion and querying will fail**
-
-This is a hard blocker. If you want managed ClickHouse, use Altinity.Cloud (built by the authors of the Altinity ClickHouse Operator) or self-host externally.
-
-**Operational complexity**:
-
-External ClickHouse is "expert mode":
-- You must manually create a distributed cluster named `"cluster"` (SigNoz hardcodes this name)
-- You must manage schema migrations, user provisioning, and UDF installation
-- No built-in operator management—you handle all ClickHouse lifecycle operations
-
-**Verdict**: High complexity, high maintenance. Only viable for organizations with dedicated ClickHouse expertise or using Altinity.Cloud.
-
----
-
-## The 80/20 Configuration Principle
-
-The official SigNoz Helm chart's `values.yaml` contains hundreds of fields. But for 80% of deployments, users only need to configure about 20% of them.
-
-### The Essential 20%
-
-These are the fields that genuinely matter for deploying a functional, production-ready SigNoz cluster:
-
-**Global**:
-- `global.storageClass`: The only universally mandatory field. Defines the StorageClass for all PersistentVolumeClaims.
-
-**ClickHouse**:
-- `clickhouse.layout.shardsCount`: Scale write performance (default: 1, production: 2+)
-- `clickhouse.layout.replicasCount`: Enable high availability (default: 1, production: 2)
-- `clickhouse.persistence.size`: Disk volume size (default 20Gi is unusable in production; set 100Gi+ for real workloads)
-- `clickhouse.resources`: CPU/memory allocations
-
-**Zookeeper**:
-- `zookeeper.enabled`: Auto-required when replication > 1
-- `zookeeper.replicaCount`: Quorum size (production: 3, never 1)
-- `zookeeper.persistence.size`: Disk for transaction logs (20Gi recommended)
-
-**OpenTelemetry Collector**:
-- `otelCollector.replicaCount`: Scale ingestion layer (2+ for production)
-- `otelCollector.resources`: Prevent OOMKills during high ingestion load
-
-**SigNoz Application**:
-- `queryService.replicaCount`: Scale query/API layer (2+ for production)
-- `frontend.replicaCount`: Scale UI (2 for redundancy)
-
-**Ingress**:
-- `frontend.ingress.enabled`, `frontend.ingress.hosts`, `frontend.ingress.tls`: Expose the UI
-- `otelCollector.ingress.enabled`, `otelCollector.ingress.hosts`: Expose data ingestion endpoints
-  - **Critical**: Must configure as two separate host entries (one for gRPC with `backend-protocol: GRPC` annotation, one for HTTP without it)
-
-### The Advanced 80% (Skip These)
-
-These fields exist for niche use cases and power users:
-- `otelCollector.config`: Raw OpenTelemetry Collector YAML (use the OTel Operator separately if you need this)
-- `image.repository` / `image.tag` overrides: Stick with chart-bundled versions
-- `externalClickhouse.*`: High-maintenance expert mode
-- `clickhouse.podDistribution`: Critical for production but complex to model—better abstracted by an opinionated controller
-
----
-
-## Why OpenMCF Chose This Approach
-
-The `SignozKubernetes` API design was informed by these key insights from the deployment landscape research:
-
-### 1. The Helm Chart is the API
-
-We don't reimplement ClickHouse deployment logic. We wrap the official Helm chart, which means:
-- We benefit from the bundled Altinity ClickHouse Operator
-- We stay compatible with upstream improvements
-- Power users can access advanced features via `helm_values` pass-through
-
-### 2. Intelligent Dependency Management
-
-The controller enforces correct dependency relationships:
-- Distributed ClickHouse **requires** Zookeeper (and automatically sets quorum to 3)
-- Single-node deployments still enable Zookeeper (required due to hardcoded cluster name) but use 1 replica
-- External ClickHouse skips in-cluster database deployment entirely
-
-### 3. The 80/20 Principle
-
-The protobuf spec exposes only the essential fields that most users actually configure:
-- Component replicas and resources
-- ClickHouse clustering (shards, replicas, disk size)
-- Zookeeper quorum size
-- Ingress endpoints
-
-Everything else has smart defaults or is hidden behind the optional `helm_values` map for advanced users.
-
-### 4. Dual-Ingress Pattern for OpenTelemetry Collector
-
-We handle the gRPC/HTTP protocol conflict automatically. When a user enables ingress for the OTel Collector, the controller generates **two Ingress resources**:
-- One for gRPC (port 4317, `backend-protocol: GRPC` annotation)
-- One for HTTP (port 4318, no special annotation)
-
-This is transparent to the user but prevents a common misconfiguration that breaks telemetry ingestion.
-
-### 5. Validation and Safety
-
-The protobuf schema prevents common mistakes:
-- Can't enable external ClickHouse without providing connection details
-- Disk sizes must match Kubernetes quantity formats
-- Clustering requires explicit shard/replica counts
-- Ingress requires hostnames when enabled
-
-### 6. Production-Ready Defaults
-
-The API's default values are designed for production readiness:
-- OpenTelemetry Collector: 2 replicas (load balancing and redundancy)
-- ClickHouse: Reasonable resource allocations (1 CPU, 2Gi memory)
-- Zookeeper: Sufficient disk for transaction logs (8Gi)
-
----
-
-## Common Pitfalls and How OpenMCF Avoids Them
-
-Based on community pain points and production outages, here are the most common SigNoz deployment failures:
-
-### 1. Resource Under-provisioning
-**Problem**: Default ClickHouse resources (500m CPU, 1Gi memory) cause OOMKills and query timeouts under real load.
-
-**Solution**: SignozKubernetes API defaults to production-appropriate resources (2 CPU, 4Gi memory limits for ClickHouse).
-
-### 2. Disk Size Miscalculation
-**Problem**: Default 20Gi ClickHouse disk fills in hours or days with production telemetry volume.
-
-**Solution**: API documentation clearly states 100Gi+ for production, and validation warns if values seem too small.
-
-### 3. Single-Node Zookeeper in Production
-**Problem**: Using 1 Zookeeper replica creates a single point of failure that negates ClickHouse HA.
-
-**Solution**: Controller logic automatically sets `zookeeper.replicaCount: 3` when ClickHouse replication is enabled.
-
-### 4. The gRPC/HTTP Ingress Conflict
-**Problem**: Using a single Ingress resource with `backend-protocol: GRPC` annotation breaks HTTP ingestion.
-
-**Solution**: Controller generates two separate Ingress resources automatically.
-
-### 5. Non-Expandable Storage
-**Problem**: Choosing a StorageClass without `allowVolumeExpansion: true` forces complex data migrations when disk fills.
-
-**Solution**: API documentation emphasizes this requirement; future controller versions could validate StorageClass capabilities.
-
-### 6. ClickHouse Cloud Incompatibility
-**Problem**: Users discover too late that SigNoz metrics don't work on ClickHouse Cloud (UDF restriction).
-
-**Solution**: Documentation clearly warns about this incompatibility; external ClickHouse setup guides recommend Altinity.Cloud.
-
-### 7. Immutable StatefulSet Field Errors
-**Problem**: Helm upgrades fail with "forbidden field" errors when users manually edit chart resources.
-
-**Solution**: SignozKubernetes API is declarative—controller generates correct Helm values, reducing manual chart manipulation.
-
----
-
-## Conclusion
-
-Deploying SigNoz on Kubernetes is a spectrum from "catastrophically wrong" to "battle-tested and production-ready." The key insights:
-
-- **Never use basic Deployments** for stateful components—it's a guaranteed failure.
-- **The official Helm chart is the standard**—any abstraction should wrap it, not replace it.
-- **ClickHouse architecture determines everything**—single-node for dev, distributed with replication for production.
-- **Dependencies matter**—distributed ClickHouse requires Zookeeper, which requires quorum (3+ nodes).
-- **The 80/20 principle is real**—most users only need to configure 20% of available fields.
-
-OpenMCF's `SignozKubernetes` API embodies these lessons. It's not a lowest-common-denominator abstraction—it's an opinionated, intelligent layer that handles the complex 80% so you can focus on the essential 20%. It enforces best practices, automates dependency management, and provides production-ready defaults while still allowing power users to customize advanced features.
-
-The result: You can deploy a production-grade, OpenTelemetry-native observability platform without becoming a ClickHouse operator expert. And when you inevitably need to scale or troubleshoot, the underlying Helm chart and Altinity ClickHouse Operator are still there, well-understood and well-documented.
-
-That's the kind of abstraction worth building.
-
+Deploy:
+
+```shell
+openmcf apply -f signoz.yaml
+```
+
+This creates a SigNoz instance with a single SigNoz replica (1000m CPU / 2Gi memory limits), two OTel Collector replicas (2000m CPU / 4Gi memory limits), and a self-managed single-node ClickHouse with 20Gi persistent storage. No ingress is configured; access the UI via port-forward using the `portForwardCommand` stack output.
+
+## Configuration Reference
+
+### Required Fields
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `namespace` | `StringValueOrRef` | Kubernetes namespace for the SigNoz deployment. Can reference a KubernetesNamespace resource via `valueFrom`. | Required |
+| `database` | `object` | ClickHouse database configuration. Must specify either self-managed or external mode. | Required |
+
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `targetCluster.clusterKind` | `enum` | — | Kubernetes cluster kind. Valid values: `AwsEksCluster`, `GcpGkeCluster`, `AzureAksCluster`, `DigitalOceanKubernetesCluster`, `CivoKubernetesCluster`. |
+| `targetCluster.clusterName` | `string` | — | Name of the target Kubernetes cluster in the same environment. |
+| `createNamespace` | `bool` | `false` | When `true`, creates the namespace before deploying resources. |
+| `signozContainer.replicas` | `int32` | `1` | Number of SigNoz (UI/API/Ruler/Alertmanager) pods. Must be at least 1. |
+| `signozContainer.resources.limits.cpu` | `string` | `1000m` | Maximum CPU allocation for each SigNoz pod. |
+| `signozContainer.resources.limits.memory` | `string` | `2Gi` | Maximum memory allocation for each SigNoz pod. |
+| `signozContainer.resources.requests.cpu` | `string` | `200m` | Minimum guaranteed CPU for each SigNoz pod. |
+| `signozContainer.resources.requests.memory` | `string` | `512Mi` | Minimum guaranteed memory for each SigNoz pod. |
+| `signozContainer.image.repo` | `string` | — | Custom container image repository for the SigNoz binary. |
+| `signozContainer.image.tag` | `string` | — | Custom container image tag for the SigNoz binary. |
+| `otelCollectorContainer.replicas` | `int32` | `2` | Number of OpenTelemetry Collector pods. Must be at least 1. |
+| `otelCollectorContainer.resources.limits.cpu` | `string` | `2000m` | Maximum CPU allocation for each OTel Collector pod. |
+| `otelCollectorContainer.resources.limits.memory` | `string` | `4Gi` | Maximum memory allocation for each OTel Collector pod. |
+| `otelCollectorContainer.resources.requests.cpu` | `string` | `500m` | Minimum guaranteed CPU for each OTel Collector pod. |
+| `otelCollectorContainer.resources.requests.memory` | `string` | `1Gi` | Minimum guaranteed memory for each OTel Collector pod. |
+| `otelCollectorContainer.image.repo` | `string` | — | Custom container image repository for the OTel Collector. |
+| `otelCollectorContainer.image.tag` | `string` | — | Custom container image tag for the OTel Collector. |
+| `database.isExternal` | `bool` | `false` | When `true`, connects to an existing external ClickHouse instance instead of deploying one in-cluster. |
+| `database.externalDatabase.host` | `string` | — | Hostname of the external ClickHouse instance. Required when `database.isExternal` is `true`. |
+| `database.externalDatabase.httpPort` | `int32` | `8123` | HTTP port for the external ClickHouse instance. |
+| `database.externalDatabase.tcpPort` | `int32` | `9000` | TCP port for the external ClickHouse native protocol. |
+| `database.externalDatabase.clusterName` | `string` | `cluster` | Name of the distributed cluster in ClickHouse configuration. |
+| `database.externalDatabase.isSecure` | `bool` | `false` | Whether to use TLS when connecting to the external ClickHouse instance. |
+| `database.externalDatabase.username` | `string` | — | Username for authenticating to the external ClickHouse. Required when `database.isExternal` is `true`. |
+| `database.externalDatabase.password` | `KubernetesSensitiveValue` | — | Password for the external ClickHouse. Supports `value` for a plain string or `secretRef` with `name` and `key` to reference an existing Kubernetes Secret. Required when `database.isExternal` is `true`. |
+| `database.managedDatabase.container.replicas` | `int32` | `1` | Number of self-managed ClickHouse pods. Must be at least 1. |
+| `database.managedDatabase.container.resources.limits.cpu` | `string` | `2000m` | Maximum CPU for each ClickHouse pod. |
+| `database.managedDatabase.container.resources.limits.memory` | `string` | `4Gi` | Maximum memory for each ClickHouse pod. |
+| `database.managedDatabase.container.resources.requests.cpu` | `string` | `500m` | Minimum guaranteed CPU for each ClickHouse pod. |
+| `database.managedDatabase.container.resources.requests.memory` | `string` | `1Gi` | Minimum guaranteed memory for each ClickHouse pod. |
+| `database.managedDatabase.container.persistenceEnabled` | `bool` | `true` | Enables persistent storage for ClickHouse data. |
+| `database.managedDatabase.container.diskSize` | `string` | `20Gi` | Size of the PersistentVolumeClaim per ClickHouse pod. Required when `persistenceEnabled` is `true`. Must be a valid Kubernetes quantity (e.g., `20Gi`). Cannot be modified after creation. |
+| `database.managedDatabase.container.image.repo` | `string` | — | Custom container image repository for ClickHouse. |
+| `database.managedDatabase.container.image.tag` | `string` | — | Custom container image tag for ClickHouse. |
+| `database.managedDatabase.cluster.isEnabled` | `bool` | `false` | Enables distributed cluster mode with sharding and replication for ClickHouse. |
+| `database.managedDatabase.cluster.shardCount` | `int32` | — | Number of shards for distributed data storage. Must be at least 1 when clustering is enabled. |
+| `database.managedDatabase.cluster.replicaCount` | `int32` | — | Number of replicas per shard for data redundancy. Must be at least 1 when clustering is enabled. |
+| `database.managedDatabase.zookeeper.isEnabled` | `bool` | `false` | Enables Zookeeper deployment for distributed ClickHouse coordination. Must be `true` when clustering is enabled. |
+| `database.managedDatabase.zookeeper.container.replicas` | `int32` | `1` | Number of Zookeeper pods. Use an odd number (3 or 5) for production quorum. |
+| `database.managedDatabase.zookeeper.container.resources.limits.cpu` | `string` | `500m` | Maximum CPU for each Zookeeper pod. |
+| `database.managedDatabase.zookeeper.container.resources.limits.memory` | `string` | `512Mi` | Maximum memory for each Zookeeper pod. |
+| `database.managedDatabase.zookeeper.container.resources.requests.cpu` | `string` | `100m` | Minimum guaranteed CPU for each Zookeeper pod. |
+| `database.managedDatabase.zookeeper.container.resources.requests.memory` | `string` | `256Mi` | Minimum guaranteed memory for each Zookeeper pod. |
+| `database.managedDatabase.zookeeper.container.diskSize` | `string` | `8Gi` | Persistent volume size per Zookeeper pod. Must be a valid Kubernetes quantity. |
+| `database.managedDatabase.zookeeper.container.image.repo` | `string` | — | Custom container image repository for Zookeeper. |
+| `database.managedDatabase.zookeeper.container.image.tag` | `string` | — | Custom container image tag for Zookeeper. |
+| `ingress.ui.enabled` | `bool` | `false` | Creates Gateway API resources for external SigNoz UI access with TLS termination and HTTP-to-HTTPS redirect. |
+| `ingress.ui.hostname` | `string` | — | Hostname for external SigNoz UI access (e.g., `signoz.example.com`). Required when `ingress.ui.enabled` is `true`. |
+| `ingress.otelCollector.enabled` | `bool` | `false` | Creates Gateway API resources for external OTel Collector HTTP endpoint access with TLS termination. |
+| `ingress.otelCollector.hostname` | `string` | — | Hostname for external OTel Collector HTTP endpoint (e.g., `otel-ingest.example.com`). Required when `ingress.otelCollector.enabled` is `true`. |
+| `helmValues` | `map<string, string>` | — | Additional key-value pairs passed to the SigNoz Helm chart for advanced customization. See [SigNoz Helm chart documentation](https://github.com/SigNoz/charts) for available options. |
+
+> **Note on `namespace`:** The `namespace` field is a `StringValueOrRef`. You can provide a plain string value directly, or use `valueFrom` to reference the output of another OpenMCF resource (e.g., a KubernetesNamespace).
+
+## Examples
+
+### Development SigNoz with Reduced Resources
+
+A lightweight SigNoz instance for development and testing with smaller resource allocations and a single OTel Collector replica:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesSignoz
+metadata:
+  name: dev-signoz
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesSignoz.dev-signoz
+spec:
+  namespace: dev-observability
+  createNamespace: true
+  signozContainer:
+    replicas: 1
+    resources:
+      limits:
+        cpu: "500m"
+        memory: "1Gi"
+      requests:
+        cpu: "100m"
+        memory: "256Mi"
+  otelCollectorContainer:
+    replicas: 1
+    resources:
+      limits:
+        cpu: "500m"
+        memory: "1Gi"
+      requests:
+        cpu: "100m"
+        memory: "256Mi"
+  database:
+    isExternal: false
+    managedDatabase:
+      container:
+        replicas: 1
+        resources:
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+        persistenceEnabled: true
+        diskSize: "10Gi"
+```
+
+### Production SigNoz with Clustered ClickHouse and Ingress
+
+A production-grade deployment with ClickHouse clustering (2 shards, 2 replicas), Zookeeper quorum, and external access for both the UI and OTel Collector:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesSignoz
+metadata:
+  name: prod-signoz
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesSignoz.prod-signoz
+spec:
+  namespace: observability
+  signozContainer:
+    replicas: 2
+    resources:
+      limits:
+        cpu: "2000m"
+        memory: "4Gi"
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+  otelCollectorContainer:
+    replicas: 4
+    resources:
+      limits:
+        cpu: "4000m"
+        memory: "8Gi"
+      requests:
+        cpu: "1000m"
+        memory: "2Gi"
+  database:
+    isExternal: false
+    managedDatabase:
+      container:
+        replicas: 2
+        resources:
+          limits:
+            cpu: "4000m"
+            memory: "16Gi"
+          requests:
+            cpu: "1000m"
+            memory: "4Gi"
+        persistenceEnabled: true
+        diskSize: "200Gi"
+      cluster:
+        isEnabled: true
+        shardCount: 2
+        replicaCount: 2
+      zookeeper:
+        isEnabled: true
+        container:
+          replicas: 3
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+          diskSize: "10Gi"
+  ingress:
+    ui:
+      enabled: true
+      hostname: signoz.example.com
+    otelCollector:
+      enabled: true
+      hostname: otel-ingest.example.com
+```
+
+### SigNoz with External ClickHouse
+
+Connect SigNoz to an existing external ClickHouse instance instead of deploying one in-cluster. The password is referenced from a pre-existing Kubernetes Secret:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesSignoz
+metadata:
+  name: shared-signoz
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesSignoz.shared-signoz
+spec:
+  namespace: observability
+  signozContainer:
+    replicas: 2
+    resources:
+      limits:
+        cpu: "2000m"
+        memory: "4Gi"
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+  otelCollectorContainer:
+    replicas: 3
+    resources:
+      limits:
+        cpu: "2000m"
+        memory: "4Gi"
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+  database:
+    isExternal: true
+    externalDatabase:
+      host: clickhouse.shared-infra.svc.cluster.local
+      httpPort: 8123
+      tcpPort: 9000
+      clusterName: cluster
+      isSecure: false
+      username: signoz
+      password:
+        secretRef:
+          name: clickhouse-credentials
+          key: password
+  ingress:
+    ui:
+      enabled: true
+      hostname: signoz.example.com
+```
+
+### Using Foreign Key References
+
+Reference an OpenMCF-managed namespace instead of hardcoding the name:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesSignoz
+metadata:
+  name: team-signoz
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesSignoz.team-signoz
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      name: observability-namespace
+      field: spec.name
+  database:
+    isExternal: false
+    managedDatabase:
+      container:
+        persistenceEnabled: true
+        diskSize: "50Gi"
+```
+
+### SigNoz with Custom Helm Values
+
+Override additional Helm chart values for advanced customization, such as configuring retention policies:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesSignoz
+metadata:
+  name: custom-signoz
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: staging.KubernetesSignoz.custom-signoz
+spec:
+  namespace: observability
+  createNamespace: true
+  database:
+    isExternal: false
+  helmValues:
+    "signoz.alertmanager.enabled": "true"
+    "queryService.replicaCount": "2"
+```
+
+## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `namespace` | `string` | Kubernetes namespace where SigNoz is deployed |
+| `signozService` | `string` | Kubernetes Service name for the SigNoz UI and API (format: `{name}-signoz`) |
+| `otelCollectorService` | `string` | Kubernetes Service name for the OpenTelemetry Collector (format: `{name}-otel-collector`) |
+| `portForwardCommand` | `string` | kubectl port-forward command for local access to SigNoz UI on port 8080 |
+| `kubeEndpoint` | `string` | Cluster-internal FQDN for SigNoz UI (e.g., `my-signoz-signoz.observability.svc.cluster.local:8080`) |
+| `externalHostname` | `string` | Public hostname for external SigNoz UI access, only set when `ingress.ui.enabled` is `true` |
+| `internalHostname` | `string` | Internal hostname for VPC-internal SigNoz access |
+| `otelCollectorGrpcEndpoint` | `string` | Cluster-internal FQDN for OTel Collector gRPC ingestion (e.g., `my-signoz-otel-collector.observability.svc.cluster.local:4317`) |
+| `otelCollectorHttpEndpoint` | `string` | Cluster-internal FQDN for OTel Collector HTTP ingestion (e.g., `my-signoz-otel-collector.observability.svc.cluster.local:4318`) |
+| `otelCollectorExternalGrpcHostname` | `string` | Public hostname for OTel Collector gRPC endpoint, only set when OTel Collector ingress is configured |
+| `otelCollectorExternalHttpHostname` | `string` | Public hostname for OTel Collector HTTP endpoint, only set when `ingress.otelCollector.enabled` is `true` |
+| `clickhouseEndpoint` | `string` | Cluster-internal ClickHouse endpoint (e.g., `my-signoz-clickhouse.observability.svc.cluster.local:8123`), only set when using self-managed ClickHouse |
+| `clickhouseUsername` | `string` | ClickHouse username for authentication (always `admin`), only set when using self-managed ClickHouse |
+| `clickhousePasswordSecret.name` | `string` | Name of the Kubernetes Secret containing the ClickHouse password (format: `{name}-clickhouse`), only set when using self-managed ClickHouse |
+| `clickhousePasswordSecret.key` | `string` | Key within the ClickHouse password Secret (always `admin-password`), only set when using self-managed ClickHouse |
+
+## Related Components
+
+- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesClickHouse](/docs/catalog/kubernetes/kubernetesclickhouse) — standalone ClickHouse deployment that can be used as an external database for SigNoz
+- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — application deployments instrumented with OpenTelemetry SDKs that send telemetry to SigNoz
+- [KubernetesIstio](/docs/catalog/kubernetes/kubernetesistio) — provides the Istio ingress gateway used by SigNoz Gateway API resources
+- [KubernetesGatewayApiCrds](/docs/catalog/kubernetes/kubernetesgatewayapicrds) — installs the Gateway API CRDs required for SigNoz ingress configuration

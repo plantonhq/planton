@@ -6,432 +6,139 @@ order: 100
 componentName: "kubernetesgatewayapicrds"
 ---
 
-# Kubernetes Gateway API CRDs: Research Documentation
+# Kubernetes Gateway API CRDs
 
-## Introduction
+Installs the Kubernetes Gateway API Custom Resource Definitions (CRDs) on a target Kubernetes cluster. The Gateway API is the next-generation, role-oriented API for managing ingress and service mesh traffic, replacing the legacy Ingress resource with richer routing primitives such as Gateway, HTTPRoute, GRPCRoute, and ReferenceGrant. This component fetches the official CRD manifests from the upstream `kubernetes-sigs/gateway-api` releases and applies them directly to the cluster.
 
-The Kubernetes Gateway API represents the next generation of ingress and service mesh traffic routing APIs for Kubernetes. Unlike its predecessor, the Ingress API, Gateway API was designed from the ground up with role-oriented design, expressiveness, and extensibility as core principles.
+## What Gets Created
 
-This research document explores the Gateway API landscape, explains why CRD management matters, and justifies the design decisions in OpenMCF's KubernetesGatewayApiCrds component.
+When you deploy a KubernetesGatewayApiCrds resource, OpenMCF provisions:
 
-## The Evolution of Kubernetes Traffic Management
+- **Standard Channel CRDs** — `GatewayClass`, `Gateway`, `HTTPRoute`, and `ReferenceGrant` custom resource definitions, enabling the core Gateway API surface
+- **Experimental Channel CRDs** (when `installChannel` is set to `experimental`) — all standard CRDs plus `TCPRoute`, `UDPRoute`, `TLSRoute`, and `GRPCRoute` experimental custom resource definitions
 
-### The Ingress Era (2015-2020)
+No namespaced workloads are created. The CRDs are cluster-scoped and make the Gateway API resource types available for any namespace in the cluster.
 
-Kubernetes Ingress was introduced in 2015 as a simple way to route HTTP traffic to services. While widely adopted, Ingress had significant limitations:
+## Prerequisites
 
-- **Single resource type**: One Ingress resource handled everything
-- **Annotation explosion**: Advanced features required vendor-specific annotations
-- **No role separation**: The same person defining routes also configured infrastructure
-- **Limited protocol support**: HTTP/HTTPS only, no TCP/UDP
-- **Provider lock-in**: Annotations differed between NGINX, Traefik, HAProxy
+- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Cluster-admin privileges** on the target cluster, because CRD installation requires cluster-wide write access
+- **Network access** from the deployment runner to `https://github.com/kubernetes-sigs/gateway-api/releases/download` to fetch CRD manifests
 
-```yaml
-# Ingress example with vendor-specific annotations
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
-    # ^ Provider-specific, non-portable
-```
+## Quick Start
 
-### Gateway API Genesis (2019-Present)
-
-The Gateway API project started in 2019 as a Kubernetes SIG-Network initiative to address Ingress limitations. Key milestones:
-
-| Year | Milestone |
-|------|-----------|
-| 2019 | Project inception as "Service APIs" |
-| 2020 | Renamed to Gateway API |
-| 2021 | Alpha release (v0.3.0) |
-| 2022 | Beta release (v0.5.0) |
-| 2023 | GA release (v1.0.0) |
-| 2024 | v1.2.0 with enhanced features |
-
-## Gateway API Architecture
-
-### Role-Oriented Design
-
-Gateway API separates concerns across three personas:
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Infrastructure Provider                   │
-│  Creates GatewayClass (defines capabilities, defaults)       │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    Cluster Operator                          │
-│  Creates Gateway (where traffic enters, TLS, listeners)      │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    Application Developer                     │
-│  Creates HTTPRoute/GRPCRoute (how traffic routes)           │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Core Resources
-
-#### GatewayClass
-
-Defines a class of Gateways with shared behavior. Typically created by infrastructure providers:
+Create a file `gateway-api-crds.yaml`:
 
 ```yaml
-apiVersion: gateway.networking.k8s.io/v1
-kind: GatewayClass
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesGatewayApiCrds
 metadata:
-  name: istio
+  name: gateway-api
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesGatewayApiCrds.gateway-api
+spec: {}
+```
+
+Deploy:
+
+```shell
+openmcf apply -f gateway-api-crds.yaml
+```
+
+This installs the standard-channel Gateway API CRDs at the default version (v1.2.1) on the cluster configured in your environment.
+
+## Configuration Reference
+
+### Required Fields
+
+This component has no strictly required spec fields. An empty `spec: {}` installs the standard-channel CRDs at the default version.
+
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `targetCluster.clusterKind` | `enum` | — | Kubernetes cluster kind. Valid values: `AwsEksCluster`, `GcpGkeCluster`, `AzureAksCluster`, `DigitalOceanKubernetesCluster`, `CivoKubernetesCluster`. |
+| `targetCluster.clusterName` | `string` | — | Name of the target Kubernetes cluster in the same environment. |
+| `version` | `string` | `v1.2.1` | Gateway API release version to install. Must match the pattern `v<major>.<minor>.<patch>` with an optional pre-release suffix (e.g., `v1.3.0`, `v1.2.1-rc1`). |
+| `installChannel.channel` | `enum` | `standard` | CRD installation channel. `standard` installs Gateway, GatewayClass, HTTPRoute, and ReferenceGrant. `experimental` adds TCPRoute, UDPRoute, TLSRoute, and GRPCRoute. |
+
+## Examples
+
+### Standard CRDs at Default Version
+
+Installs the stable Gateway API CRDs using all defaults:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesGatewayApiCrds
+metadata:
+  name: gateway-api
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesGatewayApiCrds.gateway-api
+spec: {}
+```
+
+### Experimental Channel with Specific Version
+
+Installs all Gateway API CRDs, including the experimental route types, at a pinned version:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesGatewayApiCrds
+metadata:
+  name: gateway-api-experimental
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: staging.KubernetesGatewayApiCrds.gateway-api-experimental
 spec:
-  controllerName: istio.io/gateway-controller
-  description: "Istio Gateway Controller"
+  version: "v1.3.0"
+  installChannel:
+    channel: experimental
 ```
 
-#### Gateway
+### Target a Specific GKE Cluster
 
-Defines where and how traffic enters the cluster:
+Installs the standard CRDs on a named GKE cluster in a production environment:
 
 ```yaml
-apiVersion: gateway.networking.k8s.io/v1
-kind: Gateway
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesGatewayApiCrds
 metadata:
-  name: prod-gateway
-  namespace: gateway-system
+  name: gateway-api-prod
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesGatewayApiCrds.gateway-api-prod
 spec:
-  gatewayClassName: istio
-  listeners:
-  - name: https
-    port: 443
-    protocol: HTTPS
-    hostname: "*.example.com"
-    tls:
-      mode: Terminate
-      certificateRefs:
-      - name: wildcard-cert
+  targetCluster:
+    clusterKind: GcpGkeCluster
+    clusterName: prod-cluster
+  version: "v1.2.1"
+  installChannel:
+    channel: standard
 ```
 
-#### HTTPRoute
+## Stack Outputs
 
-Routes HTTP traffic to backend services:
+After deployment, the following outputs are available in `status.outputs`:
 
-```yaml
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: app-route
-  namespace: my-app
-spec:
-  parentRefs:
-  - name: prod-gateway
-    namespace: gateway-system
-  hostnames:
-  - "app.example.com"
-  rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /api
-    backendRefs:
-    - name: api-service
-      port: 8080
-```
+| Output | Type | Description |
+|--------|------|-------------|
+| `installedVersion` | `string` | Gateway API version that was installed (e.g., `v1.2.1`, `v1.3.0`) |
+| `installedChannel` | `string` | Installation channel that was used (`standard` or `experimental`) |
+| `installedCrds` | `list(string)` | Fully qualified names of the CRDs that were installed (e.g., `gatewayclasses.gateway.networking.k8s.io`) |
 
-### Standard vs Experimental Channels
+## Related Components
 
-Gateway API maintains two release channels:
-
-#### Standard Channel
-
-Contains stable, GA resources with strong backward compatibility guarantees:
-
-| Resource | Status | Use Case |
-|----------|--------|----------|
-| GatewayClass | GA | Define gateway types |
-| Gateway | GA | Define entry points |
-| HTTPRoute | GA | HTTP routing |
-| ReferenceGrant | GA | Cross-namespace refs |
-
-#### Experimental Channel
-
-Contains resources still maturing:
-
-| Resource | Status | Use Case |
-|----------|--------|----------|
-| TCPRoute | Beta | Raw TCP routing |
-| UDPRoute | Alpha | UDP routing |
-| TLSRoute | Alpha | TLS passthrough |
-| GRPCRoute | Beta | Native gRPC |
-
-## Installation Landscape
-
-### Manual Installation
-
-The simplest approach—apply manifests directly:
-
-```bash
-# Standard channel
-kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/standard-install.yaml
-
-# Experimental channel
-kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/experimental-install.yaml
-```
-
-**Pros:**
-- Simple, no tools required
-- Official manifests from upstream
-
-**Cons:**
-- Manual process per cluster
-- No version tracking
-- No rollback mechanism
-- Inconsistent across clusters
-
-### Helm-Based Installation
-
-Some implementations bundle CRDs with their Helm charts:
-
-```bash
-helm repo add istio https://istio-release.storage.googleapis.com/charts
-helm install istio-base istio/base -n istio-system --create-namespace
-# CRDs installed as part of istio-base
-```
-
-**Pros:**
-- Bundled with implementation
-- Helm release tracking
-
-**Cons:**
-- CRD version tied to implementation version
-- Potential conflicts if multiple implementations
-- CRD ownership issues during uninstall
-
-### GitOps Installation
-
-Apply CRD manifests via ArgoCD/Flux:
-
-```yaml
-# ArgoCD Application
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: gateway-api-crds
-spec:
-  source:
-    repoURL: https://github.com/kubernetes-sigs/gateway-api
-    targetRevision: v1.2.1
-    path: config/crd/standard
-  destination:
-    server: https://kubernetes.default.svc
-```
-
-**Pros:**
-- GitOps workflow
-- Version controlled
-- Audit trail
-
-**Cons:**
-- Requires GitOps tooling
-- Complex for multi-cluster
-
-### IaC-Based Installation
-
-Use Terraform or Pulumi to manage CRD lifecycle:
-
-```hcl
-# Terraform
-resource "kubernetes_manifest" "gateway_api_crds" {
-  for_each = fileset("${path.module}/crds", "*.yaml")
-  manifest = yamldecode(file("${path.module}/crds/${each.value}"))
-}
-```
-
-**Pros:**
-- Infrastructure-as-code approach
-- State tracking
-- Multi-cluster deployment
-
-**Cons:**
-- Additional tooling
-- State management overhead
-
-## Why CRD Management Matters
-
-### Version Consistency
-
-Gateway API implementations have specific CRD version requirements:
-
-| Implementation | Minimum CRD Version | Recommended |
-|----------------|---------------------|-------------|
-| Istio 1.21+ | v1.0.0 | v1.1.0+ |
-| Envoy Gateway 1.0 | v1.0.0 | v1.1.0+ |
-| NGINX Gateway Fabric | v1.0.0 | v1.0.0+ |
-| GKE Gateway Controller | v1.0.0 | v1.0.0+ |
-
-Running mismatched versions causes:
-- Validation failures
-- Missing features
-- Unexpected behavior
-- Controller crashes
-
-### Upgrade Considerations
-
-CRD upgrades require care:
-
-1. **Backward compatibility**: New CRD versions must support existing resources
-2. **Conversion webhooks**: Some versions require webhooks for migration
-3. **Implementation compatibility**: Controllers must support new CRD version
-4. **Rollback complexity**: Downgrading CRDs can break existing resources
-
-### Multi-Cluster Challenges
-
-Organizations running multiple clusters face:
-
-- **Version drift**: Different clusters have different CRD versions
-- **Upgrade coordination**: Upgrading CRDs across clusters is error-prone
-- **Testing complexity**: Hard to test upgrades before production
-- **Audit requirements**: No record of when/what was installed
-
-## OpenMCF's Approach
-
-### Design Principles
-
-1. **Declarative Management**: CRD installation is a manifest, not a command
-2. **Version Pinning**: Explicit version selection, no "latest" surprises
-3. **Channel Selection**: Easy switch between standard and experimental
-4. **Multi-Cluster Ready**: Same manifest works across all clusters
-5. **Audit Trail**: Installation tracked like any infrastructure change
-
-### Implementation Strategy
-
-Our KubernetesGatewayApiCrds component:
-
-1. **Fetches official manifests** from kubernetes-sigs/gateway-api releases
-2. **Applies CRDs** using kubernetes provider
-3. **Tracks installed version** in stack outputs
-4. **Supports both channels** via simple configuration
-
-### 80/20 Scoping
-
-We intentionally keep this component focused:
-
-**In Scope:**
-- CRD installation from official releases
-- Version selection
-- Channel selection
-- Multi-cluster deployment
-
-**Out of Scope:**
-- Gateway implementation deployment (handled by separate components)
-- Custom CRD modifications
-- CRD conversion webhook management
-- Implementation-specific CRD extensions
-
-This separation ensures:
-- Clean dependency management
-- Faster updates
-- Reduced complexity
-- Clear ownership
-
-## Implementation Comparison
-
-### Implementations Overview
-
-| Implementation | Maintainer | Best For |
-|----------------|------------|----------|
-| Istio | Google/Community | Service mesh users |
-| Envoy Gateway | Envoy Proxy | Standalone Envoy |
-| NGINX Gateway Fabric | F5/NGINX | NGINX users |
-| Traefik | Traefik Labs | Simple setups |
-| Contour | VMware | Enterprise deployments |
-| Kong Gateway | Kong | API management |
-| GKE Gateway Controller | Google | GKE native |
-| AWS Gateway API Controller | AWS | EKS/ALB native |
-
-### Feature Matrix
-
-| Feature | Istio | Envoy GW | NGINX GW | Traefik |
-|---------|-------|----------|----------|---------|
-| HTTPRoute | ✅ | ✅ | ✅ | ✅ |
-| GRPCRoute | ✅ | ✅ | ❌ | ✅ |
-| TCPRoute | ✅ | ✅ | ✅ | ✅ |
-| TLSRoute | ✅ | ✅ | ❌ | ✅ |
-| Traffic Splitting | ✅ | ✅ | ✅ | ✅ |
-| Header Modification | ✅ | ✅ | ✅ | ✅ |
-| Rate Limiting | ✅ | ✅ | ✅ | ✅ |
-| mTLS | ✅ | ✅ | ❌ | ✅ |
-
-## Best Practices
-
-### Version Management
-
-1. **Pin to specific versions**: Never use "latest" in production
-2. **Test upgrades in staging**: Verify compatibility before production
-3. **Document version requirements**: Track which implementations need which CRD versions
-4. **Coordinate upgrades**: Upgrade CRDs before implementations that need them
-
-### Channel Selection
-
-1. **Start with standard**: Use standard channel unless you need experimental features
-2. **Test experimental thoroughly**: Experimental resources may change
-3. **Monitor deprecations**: Stay informed about graduation timelines
-4. **Plan migrations**: Have a plan for when experimental becomes standard
-
-### Multi-Cluster Strategy
-
-1. **Centralized version management**: Use OpenMCF to ensure consistency
-2. **Environment progression**: dev → staging → production
-3. **Canary upgrades**: Upgrade one cluster first, monitor, then roll out
-4. **Rollback plan**: Know how to revert if issues arise
-
-## Common Pitfalls
-
-### CRD Ownership Conflicts
-
-**Problem:** Multiple Helm releases try to manage the same CRDs.
-
-**Solution:** Install CRDs separately from implementations using KubernetesGatewayApiCrds.
-
-### Version Mismatches
-
-**Problem:** Implementation requires newer CRD version than installed.
-
-**Solution:** Always check implementation requirements, upgrade CRDs first.
-
-### Experimental Feature Breakage
-
-**Problem:** Experimental resource API changed between versions.
-
-**Solution:** Monitor changelog, test in non-production first, have migration plan.
-
-### Cross-Namespace Reference Issues
-
-**Problem:** Routes in namespace A can't reference backends in namespace B.
-
-**Solution:** Create appropriate ReferenceGrant resources.
-
-## Conclusion
-
-The Kubernetes Gateway API represents a significant improvement over Ingress, providing a more expressive, role-oriented, and portable API for traffic management. Proper CRD management is essential for production deployments.
-
-OpenMCF's KubernetesGatewayApiCrds component provides:
-
-- **Declarative CRD management** instead of manual kubectl commands
-- **Version control** for consistent deployments
-- **Multi-cluster support** from a single manifest
-- **Clear separation** between CRD installation and implementation deployment
-
-This approach aligns with infrastructure-as-code best practices and enables organizations to confidently adopt Gateway API across their Kubernetes fleet.
-
-## References
-
-- [Gateway API Official Documentation](https://gateway-api.sigs.k8s.io/)
-- [Gateway API GitHub Repository](https://github.com/kubernetes-sigs/gateway-api)
-- [Gateway API Releases](https://github.com/kubernetes-sigs/gateway-api/releases)
-- [Gateway API Implementations](https://gateway-api.sigs.k8s.io/implementations/)
-- [Gateway API GEPs (Enhancement Proposals)](https://gateway-api.sigs.k8s.io/geps/overview/)
-- [SIG-Network Gateway API Meetings](https://github.com/kubernetes/community/tree/master/sig-network)
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — deploy a Gateway API controller (such as Envoy Gateway or Istio) after the CRDs are in place
+- [KubernetesManifest](/docs/catalog/kubernetes/kubernetesmanifest) — apply Gateway and HTTPRoute manifests that reference the installed CRDs
+- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — create namespaces for Gateway API controller workloads

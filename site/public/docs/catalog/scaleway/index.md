@@ -1,12 +1,13 @@
 ---
 title: "SCALEWAY"
-description: "Deploy Scaleway resources using OpenMCF"
+description: "Deploy SCALEWAY resources using OpenMCF"
 icon: "cloud"
-order: 11
+order: 10
 ---
 
-# Scaleway
+# SCALEWAY
 
-Scaleway provider registered. Deployment components coming soon.
+The following SCALEWAY resources can be deployed using OpenMCF:
 
-For more information about Scaleway, see the [Scaleway Documentation](https://www.scaleway.com/en/docs/).
+- [Kapsule Cluster](/docs/catalog/scaleway/scalewaykapsulecluster)
+- [Rdb Instance](/docs/catalog/scaleway/scalewayrdbinstance)

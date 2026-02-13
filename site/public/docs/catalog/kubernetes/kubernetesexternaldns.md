@@ -6,267 +6,235 @@ order: 100
 componentName: "kubernetesexternaldns"
 ---
 
-# ExternalDNS Deployment on Kubernetes
+# Kubernetes External DNS
 
-## Introduction
+Deploys ExternalDNS on Kubernetes using the official Helm chart (external-dns v1.19.0) from kubernetes-sigs, with support for Google Cloud DNS (GKE), AWS Route53 (EKS), Azure DNS (AKS), and Cloudflare as DNS providers, automatic ServiceAccount creation with workload-identity annotations, optional namespace creation, and configurable ExternalDNS and Helm chart versions.
 
-For years, managing DNS records for Kubernetes services was a manual chore. Developers would spin up a service, grab its external IP or load balancer hostname, then context-switch to their DNS provider's console to create or update records. This workflow was error-prone, slow, and fundamentally at odds with the declarative nature of Kubernetes.
+## What Gets Created
 
-ExternalDNS changed this paradigm. By watching Kubernetes resources (Ingresses, Services, and more) and automatically synchronizing DNS records to external providers like AWS Route53, Google Cloud DNS, Azure DNS, and Cloudflare, it eliminates the manual DNS management loop entirely. You declare your desired DNS name in an annotation or hostname field, and ExternalDNS ensures it exists and points to the right target.
+When you deploy a KubernetesExternalDns resource, OpenMCF provisions:
 
-But here's the challenge: ExternalDNS itself needs to be deployed, configured with provider credentials, scoped to appropriate zones, and managed across potentially dozens of clusters spanning multiple cloud providers. This document explores the landscape of ExternalDNS deployment methods, from anti-patterns to production-ready approaches, and explains the design philosophy behind OpenMCF's ExternalDNS module.
+- **Namespace** — created only when `createNamespace` is `true`
+- **ServiceAccount** — a dedicated Kubernetes ServiceAccount annotated with workload-identity bindings for the selected DNS provider (GKE Workload Identity, EKS IRSA, AKS Workload Identity, or no annotation for Cloudflare)
+- **Helm Release (ExternalDNS)** — deploys ExternalDNS from the `external-dns` chart at `https://kubernetes-sigs.github.io/external-dns/`, pinned to version 1.19.0 by default, with atomic rollback enabled, cleanup-on-fail, and a 3-minute timeout
+- **Cloudflare API Token Secret** — when using the Cloudflare provider, a Kubernetes Secret named `{name}-cloudflare-api-token` is created in the target namespace and mounted as the `CF_API_TOKEN` environment variable
 
-## The Maturity Spectrum: From Manual YAML to Production Automation
+## Prerequisites
 
-### Level 0: The Anti-Pattern (Raw YAML Manifests)
+- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
+- **DNS provider access** — one of the following depending on your provider:
+  - **GKE**: a GCP project with Cloud DNS enabled and a Google Service Account with `dns.admin` role; Workload Identity must be configured on the GKE cluster
+  - **EKS**: an AWS Route53 hosted zone and either an existing IRSA role ARN or IAM permissions for auto-creation
+  - **AKS**: an Azure DNS zone and optionally a Managed Identity client ID for workload identity
+  - **Cloudflare**: an API token with `Zone:Zone:Read` and `Zone:DNS:Edit` permissions
 
-The simplest way to deploy ExternalDNS is to copy a YAML manifest from the documentation, fill in your provider credentials, and `kubectl apply` it. This works for a single-cluster proof-of-concept, but it falls apart at scale:
+## Quick Start
 
-- **No version control or reusability**: Each cluster gets a slightly different configuration as manual edits accumulate
-- **Credential sprawl**: Hard-coded secrets in YAML files (or worse, in Git)
-- **No upgrade path**: When ExternalDNS releases a new version, you manually edit every cluster's manifest
-- **Configuration drift**: Zone filters, RBAC permissions, and provider-specific flags diverge across environments
+Create a file `external-dns.yaml`:
 
-Raw manifests are brittle. They're fine for learning, but they don't belong in production multi-cluster environments.
-
-### Level 1: Helm Charts (The Production Standard)
-
-Helm emerged as the de facto packaging format for Kubernetes applications, and ExternalDNS is no exception. Two Helm charts dominate:
-
-**Official kubernetes-sigs/kubernetes-external-dns chart:**
-- Published by the Kubernetes SIG ExternalDNS maintainers
-- Reflects upstream defaults and latest features
-- Minimal opinions on secret management (you create secrets separately)
-- Close alignment with ExternalDNS CLI flags
-
-**Bitnami's kubernetes-external-dns chart:**
-- Enterprise-focused with extensive configuration options
-- Includes security hardening (Bitnami Secure Images with zero CVEs)
-- Built-in Prometheus metrics, ServiceMonitor support
-- Richer templating for AWS, Azure, GCP-specific features
-
-Both charts are **production-ready and Apache 2.0 licensed**. The choice often comes down to whether you prefer upstream simplicity (official chart) or enterprise conveniences (Bitnami). In practice, either works well—what matters is consistency across your fleet.
-
-Helm solves the reusability problem: you define values once, version them in Git, and apply them across clusters. Upgrades become `helm upgrade`. This is the baseline for serious deployments.
-
-### Level 2: GitOps (Declarative Fleet Management)
-
-Helm gets you to reusable configurations, but GitOps takes it further: treat your cluster's entire desired state as code in Git, and let a tool like ArgoCD or Flux continuously reconcile reality with that declaration.
-
-For ExternalDNS, this means:
-- Store Helm values (or raw manifests) in Git per cluster or environment
-- Let ArgoCD/Flux detect drift and automatically sync changes
-- Gain audit trails, rollback capabilities, and multi-cluster orchestration
-
-GitOps is a **best practice** for multi-cloud deployments. You might have `prod-us-west-eks/kubernetes-external-dns-values.yaml` and `prod-eu-gke/kubernetes-external-dns-values.yaml`, each pointing to the appropriate DNS zone and using cloud-native credentials. Changes go through pull requests, not `kubectl apply` sessions.
-
-ExternalDNS requires no special integration here—it's just another Kubernetes application managed declaratively. The power is in the operational model: your entire DNS automation layer is versioned, reviewable, and reproducible.
-
-### Level 3: IaC Integration (Terraform/Pulumi)
-
-For teams that provision clusters with infrastructure-as-code tools like Terraform or Pulumi, deploying ExternalDNS via the same tool is a natural extension. Both tools have Kubernetes and Helm providers, allowing you to:
-
-- Create the DNS zone (e.g., Route53 hosted zone, Cloud DNS managed zone)
-- Provision the cluster (EKS, GKE, AKS)
-- Set up cloud-native identity bindings (IRSA role, Workload Identity, Managed Identity)
-- Deploy ExternalDNS via Helm with the right configuration—all in one workflow
-
-Published modules (like Gruntwork's EKS modules) often encapsulate this pattern, ensuring that ExternalDNS is deployed with secure defaults (IRSA, zone scoping, upsert-only policy) as part of cluster bootstrapping.
-
-**Caveat:** IaC deployments require careful secret management (avoid committing credentials) and awareness that ExternalDNS configuration changes may require a deployment rollout. But for multi-cluster automation, IaC integration is extremely powerful—it ties DNS lifecycle to infrastructure lifecycle.
-
-### Verdict: Helm + GitOps or IaC
-
-For production, the maturity spectrum converges on **Helm as the deployment mechanism**, with GitOps or IaC providing the orchestration layer. Raw YAML manifests are for learning only. The choice between GitOps and IaC often depends on your team's existing tooling—either is production-grade.
-
-## Multi-Cloud Authentication: The Cloud-Native Way
-
-One of ExternalDNS's strengths is its broad provider support, but each cloud has distinct authentication mechanisms. Modern best practice is to use **cloud-native identity** (short-lived tokens, no long-lived secrets) whenever possible.
-
-### AWS Route53: IRSA (IAM Roles for Service Accounts)
-
-On EKS, ExternalDNS should use **IRSA** to assume an IAM role scoped to specific Route53 zones. No AWS access keys in the cluster—just an annotation on the ExternalDNS service account mapping it to a role ARN. The IAM policy grants `route53:ChangeResourceRecordSets` on specific hosted zone ARNs (not wildcard), enforcing least privilege.
-
-**Why this matters:** Static credentials can be compromised or leaked. IRSA tokens are short-lived and automatically rotated, and the role can be restricted to exactly the zones ExternalDNS manages.
-
-### Google Cloud DNS: Workload Identity
-
-On GKE, **Workload Identity** links a Kubernetes service account to a Google Cloud service account with DNS Administrator role on the target Cloud DNS project. ExternalDNS pods acquire credentials automatically via metadata server tokens—no JSON keys needed.
-
-The setup involves:
-- Creating a GCP service account with `roles/dns.admin` on the DNS project
-- Binding it to the Kubernetes service account via IAM policy (`roles/iam.workloadIdentityUser`)
-- Annotating the KSA with `iam.gke.io/gcp-service-account=<GSA_EMAIL>`
-
-This eliminates key sprawl and ties DNS permissions to the pod's identity.
-
-### Azure DNS: Managed Identity
-
-On AKS, **Azure Managed Identity** (especially user-assigned) is the equivalent. You create a managed identity, grant it "DNS Zone Contributor" role on the target Azure DNS zone, and establish a federated identity credential linking it to the ExternalDNS service account.
-
-Azure AD issues tokens to the pod, allowing it to modify DNS records without any stored secrets. This is the modern approach—service principals with client secrets are fallback options, not the default.
-
-### Cloudflare: Scoped API Tokens
-
-Cloudflare doesn't have ambient cluster identity, so you'll use an **API token**. The key is to scope it tightly: grant only `Zone:DNS:Edit` and `Zone:Zone:Read` permissions, and limit the token to specific zones.
-
-Store the token in a Kubernetes Secret and mount it as an environment variable (`CF_API_TOKEN`). While not as dynamic as IRSA/Workload Identity, a scoped token significantly limits blast radius compared to a global API key.
-
-### The Pattern: Ambient Identity First, Secrets as Fallback
-
-Across all providers, the production pattern is:
-1. Use cloud-native identity (IRSA, Workload Identity, Managed Identity) if available
-2. Scope credentials to specific DNS zones, never `*`
-3. Store any required secrets in Kubernetes Secrets (or external secret managers)
-4. Rotate and audit credentials regularly
-
-OpenMCF's API reflects this philosophy: it asks for the zone ID (scoping) and, where applicable, the identity binding (IRSA role ARN, managed identity client ID). Static credentials are not the default path.
-
-## The 80/20 Configuration Principle
-
-ExternalDNS exposes dozens of flags and configuration options, but **most production deployments use a small core subset**. OpenMCF's API is designed around these essentials:
-
-### Essential Fields (The 20% That Covers 80%)
-
-**DNS Zone Identifier:**
-- AWS: Route53 hosted zone ID
-- GCP: Cloud DNS managed zone ID (plus project ID)
-- Azure: DNS zone resource name
-- Cloudflare: Zone ID
-
-This single reference tells ExternalDNS what domain space it's responsible for, and drives automatic domain filtering.
-
-**Authentication Mechanism:**
-- AWS: IRSA role ARN (or auto-created)
-- GCP: Workload Identity (inferred from project)
-- Azure: Managed Identity client ID
-- Cloudflare: API token
-
-These tie ExternalDNS to cloud credentials. In most cases, the platform can auto-configure these (e.g., create an IRSA role automatically), so the user only provides overrides if needed.
-
-**Deployment Metadata:**
-- Namespace (default: `kubernetes-external-dns`)
-- ExternalDNS version (default: `v0.19.0`)
-- Helm chart version (default: `1.19.0`)
-
-These allow version pinning and namespace isolation but have sane defaults.
-
-**Provider-Specific Toggles:**
-- Cloudflare: `is_proxied` (enable orange-cloud CDN proxy)
-- Others: generally no toggles needed—safe defaults apply
-
-### What's Not Exposed (The 80% You Don't Need)
-
-**Policy and Registry:** OpenMCF always uses `upsert-only` policy (no accidental deletions) and TXT registry (ownership tracking). These are best practices, not configurable knobs.
-
-**Domain Filters:** Automatically derived from the zone ID—no need to manually specify domain patterns.
-
-**TXT Owner ID:** Auto-generated from cluster name to prevent conflicts.
-
-**Sources:** Default to Service and Ingress (the 99% use case). Advanced sources (Gateway API, CRDs) can be added via Helm value overrides if needed.
-
-**RBAC:** Automatically configured with minimal necessary permissions.
-
-By exposing only the essential fields, OpenMCF's API achieves the 80/20 goal: simple for the common case, extensible for edge cases via Helm values.
-
-## Production Best Practices Baked In
-
-### Zone Scoping and Ownership
-
-Every ExternalDNS instance is filtered to a specific DNS zone (via `--zone-id-filter` or `--domain-filter`), preventing it from managing unintended records. TXT ownership records (`kubernetes-external-dns/owner=<cluster-id>`) ensure that multiple ExternalDNS instances never conflict—one won't delete records created by another.
-
-### Least Privilege RBAC
-
-ExternalDNS only needs read access to Kubernetes resources (Services, Ingresses, Endpoints). It should never have write access to cluster objects. The Helm chart includes a ClusterRole with minimal permissions, bound to a dedicated service account.
-
-### Observability
-
-Prometheus metrics are enabled by default (exposed on port 7979), covering sync status, error counts, and record changes. Logging is set to `info` level, capturing every DNS operation for audit trails.
-
-### Failure Modes and Alerts
-
-If ExternalDNS crashes or loses cloud permissions, it stops syncing DNS—but existing records remain intact (no deletions with upsert-only policy). Monitoring should alert on:
-- Pod unavailability
-- Cloud API errors in logs (e.g., `AccessDenied`)
-- Sync failures (via metrics)
-
-A common canary test: deploy a dummy Ingress and verify DNS appears within the sync interval.
-
-### Multi-Cluster Isolation
-
-In multi-cluster setups, each cluster runs its own ExternalDNS, scoped to a distinct subdomain or zone:
-- Prod-US cluster manages `*.us.prod.example.com`
-- Prod-EU cluster manages `*.eu.prod.example.com`
-
-This prevents cross-cluster interference and limits the blast radius of misconfigurations.
-
-## The OpenMCF Approach
-
-OpenMCF's `KubernetesExternalDns` module encapsulates the production patterns described above:
-
-**Deployment Method:** Helm (official kubernetes-sigs chart) deployed via Pulumi/Terraform, with GitOps-friendly output.
-
-**Authentication:** Cloud-native by default (IRSA on EKS, Workload Identity on GKE, Managed Identity on AKS), with automatic role/identity creation if not provided.
-
-**Configuration Surface:** Minimal—just the zone ID and any provider-specific overrides. Policy, filters, and RBAC are pre-configured with best practices.
-
-**Multi-Cloud:** Provider-specific configurations (EKS, GKE, AKS, Cloudflare) are expressed as a `oneof` in the protobuf spec—clear, type-safe, and scoped to what each provider actually needs.
-
-**Extensibility:** While the API is minimal, it generates Helm values that can be extended. Power users can layer additional customizations via Helm value overrides without polluting the base API.
-
-### Example Configurations
-
-**GKE with Workload Identity:**
 ```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesExternalDns
+metadata:
+  name: my-external-dns
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesExternalDns.my-external-dns
 spec:
-  target_cluster: <cluster-reference>
-  namespace: kubernetes-external-dns
-  kubernetes_external_dns_version: v0.19.0
-  gke:
-    project_id: my-gcp-project
-    dns_zone_id: my-zone-id
-```
-
-OpenMCF will:
-- Create a GCP service account with DNS Administrator role
-- Bind it to the ExternalDNS Kubernetes service account via Workload Identity
-- Deploy ExternalDNS with `--provider=google`, `--google-project=my-gcp-project`, `--zone-id-filter=my-zone-id`
-- Set upsert-only policy, enable metrics, and configure TXT ownership
-
-**EKS with IRSA:**
-```yaml
-spec:
-  target_cluster: <cluster-reference>
-  eks:
-    route53_zone_id: Z1234567890ABC
-    # irsa_role_arn_override: <optional-custom-role>
-```
-
-If `irsa_role_arn_override` is omitted, OpenMCF creates an IAM role with a policy scoped to that zone, annotates the service account, and deploys ExternalDNS.
-
-**Cloudflare:**
-```yaml
-spec:
-  target_cluster: <cluster-reference>
+  namespace: external-dns
+  createNamespace: true
   cloudflare:
-    api_token: <scoped-token>
-    dns_zone_id: <zone-id>
-    is_proxied: true
+    apiToken: cf-api-token-value
+    dnsZoneId: zone-id-value
 ```
 
-Deploys ExternalDNS with Cloudflare provider, proxied mode enabled (traffic through Cloudflare's edge), filtered to the specified zone.
+Deploy:
 
-## Conclusion: DNS Automation as Infrastructure Code
+```shell
+openmcf apply -f external-dns.yaml
+```
 
-ExternalDNS transformed Kubernetes DNS from a manual bottleneck to an automated, declarative process. But deploying ExternalDNS itself at scale—across clouds, clusters, and zones—requires careful attention to authentication, scoping, and operational best practices.
+This creates an ExternalDNS instance in the `external-dns` namespace configured to manage DNS records in Cloudflare, using ExternalDNS v0.19.0 and Helm chart version 1.19.0.
 
-The maturity spectrum runs from raw YAML (a learning tool, not a production strategy) to Helm-based deployments orchestrated via GitOps or IaC (the production standard). Cloud-native authentication (IRSA, Workload Identity, Managed Identity) eliminates credential sprawl, and tight zone scoping prevents cross-cluster conflicts.
+## Configuration Reference
 
-OpenMCF's approach is to **expose the essential 20% of configuration** that covers 80% of real-world deployments, while embedding production best practices (upsert-only policy, TXT ownership, least-privilege RBAC, observability) as non-negotiable defaults. The result is a minimal API surface that's powerful enough for multi-cloud production environments, yet simple enough that a developer can deploy ExternalDNS to a new cluster with just a zone ID and a provider type.
+### Required Fields
 
-DNS automation should be invisible infrastructure—reliable, secure, and boring in the best way. This module aims to make it exactly that.
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `namespace` | `string` | Kubernetes namespace for the ExternalDNS deployment. Can reference a KubernetesNamespace resource via `valueFrom`. | Required |
+| Provider config (one of) | `object` | Exactly one of `gke`, `eks`, `aks`, or `cloudflare` must be set. | Required |
 
----
+### Optional Fields
 
-For detailed configuration options and advanced scenarios, see the protobuf spec in `spec.proto` and the generated Pulumi/Terraform modules in the `iac/` directory.
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `targetCluster.clusterKind` | `enum` | — | Kubernetes cluster kind. Valid values: `AwsEksCluster`, `GcpGkeCluster`, `AzureAksCluster`, `DigitalOceanKubernetesCluster`, `CivoKubernetesCluster`. |
+| `targetCluster.clusterName` | `string` | — | Name of the target Kubernetes cluster in the same environment. |
+| `createNamespace` | `bool` | `false` | When `true`, creates the namespace before deploying resources. |
+| `externalDnsVersion` | `string` | `v0.19.0` | ExternalDNS container image tag. |
+| `helmChartVersion` | `string` | `1.19.0` | Helm chart version for the external-dns chart. |
 
+**GKE Provider** (`gke`):
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `gke.projectId` | `string` | GCP project hosting the DNS zone and GKE cluster. Can reference a GcpProject resource via `valueFrom`. | Required |
+| `gke.dnsZoneId` | `string` | GCP Cloud DNS zone ID for ExternalDNS to manage. Can reference a GcpDnsZone resource via `valueFrom`. | Required |
+
+**EKS Provider** (`eks`):
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `eks.route53ZoneId` | `string` | AWS Route53 hosted zone ID for ExternalDNS to manage. Can reference an AwsRoute53Zone resource via `valueFrom`. | Required |
+| `eks.irsaRoleArnOverride` | `string` | Existing IAM role ARN for IRSA. If blank, the role is expected to be auto-created externally. | Optional |
+
+**AKS Provider** (`aks`):
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `aks.dnsZoneId` | `string` | Azure DNS zone ID for ExternalDNS to manage. Can reference an AzureDnsZone resource via `valueFrom`. | Required |
+| `aks.managedIdentityClientId` | `string` | Azure Managed Identity client ID for workload identity authentication. | Optional |
+
+**Cloudflare Provider** (`cloudflare`):
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `cloudflare.apiToken` | `string` | Cloudflare API token with `Zone:Zone:Read` and `Zone:DNS:Edit` permissions. Stored as a Kubernetes Secret. | Required |
+| `cloudflare.dnsZoneId` | `string` | Cloudflare DNS zone ID to manage. Can reference a CloudflareDnsZone resource via `valueFrom`. | Required |
+| `cloudflare.isProxied` | `bool` | Enable Cloudflare proxy (orange cloud) for managed DNS records, routing traffic through Cloudflare's edge network for DDoS protection, WAF, and CDN. Default: `false`. | Optional |
+
+> **Note on `valueFrom`**: Fields marked "Can reference ... via `valueFrom`" are `StringValueOrRef` types. You can provide a literal string value directly, or use `valueFrom` to reference the output of another OpenMCF resource. See the foreign key reference example below.
+
+## Examples
+
+### GKE with Google Cloud DNS
+
+Deploy ExternalDNS on a GKE cluster to manage records in a Google Cloud DNS zone:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesExternalDns
+metadata:
+  name: gke-external-dns
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesExternalDns.gke-external-dns
+spec:
+  namespace: external-dns
+  createNamespace: true
+  gke:
+    projectId: my-gcp-project
+    dnsZoneId: my-dns-zone
+```
+
+The module creates a ServiceAccount annotated with `iam.gke.io/gcp-service-account: gke-external-dns@my-gcp-project.iam.gserviceaccount.com` and configures ExternalDNS to use the `google` provider scoped to the specified zone.
+
+### EKS with AWS Route53
+
+Deploy ExternalDNS on an EKS cluster with an existing IRSA role:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesExternalDns
+metadata:
+  name: eks-external-dns
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesExternalDns.eks-external-dns
+spec:
+  namespace: external-dns
+  createNamespace: true
+  externalDnsVersion: "v0.15.1"
+  helmChartVersion: "1.15.0"
+  eks:
+    route53ZoneId: Z0123456789ABCDEF
+    irsaRoleArnOverride: arn:aws:iam::123456789012:role/external-dns-irsa
+```
+
+This pins ExternalDNS to v0.15.1 and the Helm chart to 1.15.0. The ServiceAccount is annotated with `eks.amazonaws.com/role-arn` for IRSA authentication.
+
+### Cloudflare with Proxy Enabled
+
+Deploy ExternalDNS to manage Cloudflare DNS records with the proxy (orange cloud) enabled:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesExternalDns
+metadata:
+  name: cf-external-dns
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesExternalDns.cf-external-dns
+spec:
+  namespace: external-dns
+  createNamespace: true
+  cloudflare:
+    apiToken: my-cloudflare-api-token
+    dnsZoneId: abc123def456
+    isProxied: true
+```
+
+The module creates a Kubernetes Secret for the API token, configures ExternalDNS to watch Services, Ingress, Gateway API HTTPRoutes, and Istio Gateways, and enables the `--cloudflare-proxied` flag so all managed records are proxied through Cloudflare's edge network.
+
+### Using Foreign Key References
+
+Reference OpenMCF-managed resources instead of hardcoding values:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesExternalDns
+metadata:
+  name: platform-external-dns
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesExternalDns.platform-external-dns
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      name: dns-namespace
+      field: spec.name
+  createNamespace: false
+  gke:
+    projectId:
+      valueFrom:
+        kind: GcpProject
+        name: platform-project
+        field: status.outputs.project_id
+    dnsZoneId:
+      valueFrom:
+        kind: GcpDnsZone
+        name: platform-zone
+        field: status.outputs.zone_id
+```
+
+This example references an OpenMCF-managed namespace, GCP project, and DNS zone rather than embedding literal values.
+
+## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `namespace` | `string` | Kubernetes namespace where ExternalDNS is deployed |
+| `releaseName` | `string` | Helm release name for the ExternalDNS deployment |
+| `solverSa` | `string` | Kubernetes ServiceAccount name used by ExternalDNS |
+
+## Related Components
+
+- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — alternative for deploying Helm charts with custom configurations
+- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — application deployments that ExternalDNS can create DNS records for
+- [KubernetesService](/docs/catalog/kubernetes/kubernetesservice) — services annotated with ExternalDNS hostname annotations to trigger DNS record creation

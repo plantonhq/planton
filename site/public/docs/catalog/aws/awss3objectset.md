@@ -6,368 +6,252 @@ order: 100
 componentName: "awss3objectset"
 ---
 
-# AWS S3 Object Set - Research Documentation
+# AWS S3 Object Set
 
-## Introduction
+Deploys one or more objects into an existing AWS S3 bucket, supporting inline text content and base64-encoded binary content. The component manages objects declaratively alongside infrastructure, making it suitable for configuration files, static assets, and seed data.
 
-Amazon S3 (Simple Storage Service) is the foundational object storage service in AWS, used for everything from static website hosting to data lake storage. While S3 *buckets* are the containers, S3 *objects* are the actual data units stored within them. Managing objects programmatically is a critical need for infrastructure automation -- configuration files, static assets, seed data, TLS certificates, and application resources all need to be uploaded to S3 as part of deployment workflows.
+## What Gets Created
 
-The `AwsS3ObjectSet` component addresses the gap between "bucket exists" and "bucket has the right content." It provides a declarative way to manage a collection of S3 objects within a single bucket, tightly integrated with OpenMCF's resource graph via foreign key references to `AwsS3Bucket`.
+When you deploy an AwsS3ObjectSet resource, OpenMCF provisions:
 
-The core problem this component solves: infrastructure tools create buckets easily, but populating them with initial content requires separate scripts, manual uploads, or ad-hoc automation. By bringing object management into the same declarative model as bucket creation, `AwsS3ObjectSet` ensures that content and infrastructure are deployed atomically.
+- **S3 Object (one per entry)** — an `aws_s3_bucket_object_v2` resource for each item in the `objects` list, uploaded to the target bucket with the specified key, content, content type, caching headers, and tags
+- **Merged Tags** — each object receives tags merged from three sources in increasing precedence: resource labels, set-level `tags`, and per-object `tags`
 
-## Evolution and Historical Context
+## Prerequisites
 
-### The Manual Era
+- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **An existing S3 bucket** — either a literal bucket name or a deployed AwsS3Bucket resource to reference via `valueFrom`
+- **The bucket's AWS region** — must match the region specified in `awsRegion`
 
-In the early days of S3, objects were uploaded via the AWS Console or simple HTTP PUT requests. Teams manually uploaded files after bucket creation, leading to "empty bucket" problems where infrastructure was deployed but not functional until someone remembered to upload the config files.
+## Quick Start
 
-### The Scripting Era
-
-As DevOps practices matured, teams wrote shell scripts using the AWS CLI (`aws s3 cp`, `aws s3 sync`) to upload objects after infrastructure provisioning. This worked but created a two-phase deployment: first create infrastructure, then run scripts to populate it. These scripts were fragile, poorly integrated with infrastructure state, and difficult to track for drift detection.
-
-### The IaC Integration Era
-
-Terraform introduced `aws_s3_object` (formerly `aws_s3_bucket_object`) and Pulumi provided `s3.BucketObject`, allowing objects to be managed as infrastructure resources. This was a significant improvement -- objects could be declared alongside buckets, tracked in state, and managed through the same lifecycle. However, managing many objects still requires significant boilerplate, and coordinating bucket references between modules remains tedious.
-
-### The OpenMCF Approach
-
-OpenMCF's `AwsS3ObjectSet` takes the IaC approach further by providing:
-- A single resource that manages multiple objects (reducing boilerplate)
-- Foreign key integration for bucket references (reducing coordination complexity)
-- Unified tagging with inheritance (reducing repetition)
-- Content flexibility with inline text and base64 binary support
-
-## Deployment Methods Landscape
-
-### Level 0: Manual (AWS Console)
-
-**Workflow:**
-1. Navigate to S3 in the AWS Console
-2. Select the target bucket
-3. Click "Upload"
-4. Drag and drop files or browse to select them
-5. Configure metadata (content type, cache control, etc.)
-6. Set permissions
-7. Click "Upload"
-
-**Pros:**
-- Visual interface, easy for one-off uploads
-- Supports drag-and-drop for convenience
-- No tooling required
-
-**Cons:**
-- Not repeatable or auditable
-- Tedious for multiple files with different settings
-- No version control for what was uploaded
-- No drift detection
-- Cannot be automated in CI/CD pipelines
-
-**Verdict:** Suitable only for ad-hoc debugging or one-time uploads. Not appropriate for production infrastructure.
-
-### Level 1: AWS CLI
-
-**Example commands:**
-```bash
-# Upload a single file
-aws s3 cp config/app.json s3://my-bucket/config/app.json \
-  --content-type application/json \
-  --cache-control max-age=3600
-
-# Upload with inline content
-echo '{"key": "value"}' | aws s3 cp - s3://my-bucket/config/app.json \
-  --content-type application/json
-
-# Upload multiple files
-aws s3 sync ./assets/ s3://my-bucket/assets/ \
-  --exclude "*.tmp"
-
-# Upload with tags
-aws s3api put-object \
-  --bucket my-bucket \
-  --key config/app.json \
-  --body config/app.json \
-  --content-type application/json \
-  --tagging "environment=production&team=platform"
-```
-
-**Pros:**
-- Scriptable and automatable
-- Supports all S3 object features
-- Can be integrated into CI/CD pipelines
-- `s3 sync` handles multiple files efficiently
-
-**Cons:**
-- No state tracking (cannot detect drift)
-- Scripts become complex for different content types and settings
-- No dependency management with bucket creation
-- Error handling requires custom logic
-- Credentials must be managed separately
-
-**Verdict:** Good for simple automation and CI/CD integration. Falls short for infrastructure-as-code workflows where state tracking and dependency management matter.
-
-### Level 2: Terraform
-
-**Example configuration:**
-```hcl
-resource "aws_s3_object" "app_config" {
-  bucket       = aws_s3_bucket.main.id
-  key          = "config/app.json"
-  content      = jsonencode({
-    database = "postgres"
-    port     = 5432
-  })
-  content_type = "application/json"
-  
-  tags = {
-    environment = "production"
-  }
-}
-
-resource "aws_s3_object" "index_html" {
-  bucket       = aws_s3_bucket.main.id
-  key          = "index.html"
-  content      = file("${path.module}/files/index.html")
-  content_type = "text/html"
-  cache_control = "max-age=300"
-  
-  tags = {
-    environment = "production"
-  }
-}
-
-# For binary files
-resource "aws_s3_object" "favicon" {
-  bucket         = aws_s3_bucket.main.id
-  key            = "favicon.ico"
-  content_base64 = filebase64("${path.module}/files/favicon.ico")
-  content_type   = "image/x-icon"
-}
-```
-
-**Pros:**
-- Full state tracking and drift detection
-- Dependency management (waits for bucket creation)
-- Plan/apply workflow for review
-- Supports all S3 object features
-- Version controlled
-
-**Cons:**
-- Each object is a separate resource block (verbose for many objects)
-- Referencing bucket across modules requires output passing
-- Large binary files bloat state
-- Content changes trigger full resource replacement
-- No native "upload multiple objects" primitive
-
-**Verdict:** Production-grade approach for managing S3 objects as infrastructure. The verbosity for multiple objects is the main drawback.
-
-### Level 3: Pulumi
-
-**Example (Go):**
-```go
-bucket, _ := s3.NewBucket(ctx, "main", &s3.BucketArgs{})
-
-s3.NewBucketObject(ctx, "app-config", &s3.BucketObjectArgs{
-    Bucket:      bucket.ID(),
-    Key:         pulumi.String("config/app.json"),
-    Content:     pulumi.String(`{"database": "postgres", "port": 5432}`),
-    ContentType: pulumi.String("application/json"),
-    Tags: pulumi.StringMap{
-        "environment": pulumi.String("production"),
-    },
-})
-
-s3.NewBucketObject(ctx, "index-html", &s3.BucketObjectArgs{
-    Bucket:       bucket.ID(),
-    Key:          pulumi.String("index.html"),
-    Content:      pulumi.String("<html>...</html>"),
-    ContentType:  pulumi.String("text/html"),
-    CacheControl: pulumi.String("max-age=300"),
-})
-```
-
-**Pros:**
-- Full state tracking
-- Type safety with native language constructs
-- Loops and conditionals for managing multiple objects
-- First-class dependency resolution
-- Testable with unit tests
-
-**Cons:**
-- Requires programming language knowledge
-- Each object still needs explicit creation
-- Cross-stack references need explicit exports/imports
-
-**Verdict:** Excellent for teams comfortable with general-purpose programming languages. Loop constructs naturally handle multiple objects.
-
-### Other Methods
-
-**Ansible:**
-- `amazon.aws.s3_object` module supports upload/download
-- Good for configuration management but less suitable for infrastructure-as-code
-- No state tracking; relies on idempotency
-
-**Crossplane:**
-- `Object` resource in the AWS provider
-- Good for Kubernetes-native workflows
-- Each object is a separate CR; verbose for many objects
-
-## Comparative Analysis
-
-- **Manual Console**: No automation, no state, no versioning. Development/debugging only.
-- **AWS CLI**: Scriptable but no state tracking. Good for CI/CD file sync.
-- **Terraform**: Full state, drift detection, verbose per-object. Production standard.
-- **Pulumi**: Full state, type-safe, loops for batching. Production standard.
-- **OpenMCF**: Full state via Terraform/Pulumi, foreign key references, batch objects, tag inheritance. Minimal configuration for common patterns.
-
-## The OpenMCF Approach
-
-### Design Philosophy
-
-`AwsS3ObjectSet` applies the 80/20 principle: expose the 20% of S3 object configuration that covers 80% of use cases, while keeping the API surface clean and approachable.
-
-### Why "ObjectSet" Instead of "Object"
-
-A single `AwsS3Object` component per object would create excessive resource proliferation. Most real-world use cases involve uploading a *group* of related objects to the same bucket (e.g., a set of config files, a collection of static assets). The "set" model:
-- Reduces the number of OpenMCF resources to manage
-- Shares common configuration (bucket, region, tags) across all objects
-- Maps naturally to how teams think about "deploying content to a bucket"
-
-### Foreign Key Integration
-
-The `bucket` field uses `StringValueOrRef` with `default_kind = AwsS3Bucket`:
+Create a file `s3-objects.yaml`:
 
 ```yaml
-# Literal bucket name (for pre-existing buckets)
-bucket:
-  value: my-existing-bucket
-
-# Reference to an AwsS3Bucket component (resolved automatically)
-bucket:
-  valueFrom:
-    name: my-s3-bucket
+apiVersion: aws.openmcf.org/v1
+kind: AwsS3ObjectSet
+metadata:
+  name: my-objects
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AwsS3ObjectSet.my-objects
+spec:
+  bucket: my-app-bucket
+  awsRegion: us-east-1
+  objects:
+    - key: config/app.json
+      content: '{"env": "dev", "debug": true}'
 ```
 
-This pattern mirrors how `KubernetesDeployment` references `KubernetesNamespace`, providing seamless cross-component wiring.
+Deploy:
 
-### Fields Included (and Why)
-
-| Field | Rationale |
-|-------|-----------|
-| `bucket` | Required target. Foreign key enables component wiring. |
-| `aws_region` | Required for provider configuration. |
-| `objects[].key` | Required S3 object path. |
-| `objects[].content` | Inline text for config files, HTML, JSON, YAML. |
-| `objects[].content_base64` | Binary support for images, compiled assets. |
-| `objects[].content_type` | MIME type affects browser handling and CDN behavior. |
-| `objects[].cache_control` | Critical for static websites and CDN integration. |
-| `objects[].content_encoding` | Pre-compressed content support (gzip/brotli). |
-| `objects[].acl` | Per-object access control for mixed-access patterns. |
-| `objects[].tags` | Per-object governance with set-level inheritance. |
-| `tags` (set-level) | Common tags applied to all objects. |
-
-### Fields Excluded (and Why)
-
-| Excluded Feature | Rationale |
-|-----------------|-----------|
-| `source` (file path) | OpenMCF runs remotely; local file paths don't translate. Inline content and base64 cover all cases. |
-| `server_side_encryption` | Bucket-level encryption (configured in AwsS3Bucket) applies to all objects automatically. |
-| `storage_class` | Per-object storage class overrides are rare; bucket-level lifecycle rules handle transitions. |
-| `website_redirect` | Niche feature; can be added later if needed. |
-| `object_lock` | Governance feature typically set at bucket level, not per-object. |
-| `metadata` (custom) | Rarely used; tags serve the same governance purpose. |
-
-## Implementation Landscape
-
-### Pulumi Module Architecture
-
-The Pulumi module iterates over the `objects` list and creates one `s3.BucketObject` per entry:
-
-```
-main.go          - Entry point, loads StackInput
-module/
-  locals.go      - Extracts spec fields, merges tags
-  main.go        - Creates BucketObject resources in a loop
-  outputs.go     - Collects ETags and version IDs into maps
+```shell
+openmcf apply -f s3-objects.yaml
 ```
 
-Key implementation details:
-- Bucket name is resolved from the foreign key before reaching the module
-- Tags are merged: set-level tags serve as defaults, object-level tags override
-- ETag and version ID are collected per-object for the outputs map
+This uploads a single JSON configuration file to the `config/app.json` key in the target bucket.
 
-### Terraform Module Architecture
+## Configuration Reference
 
-The Terraform module uses `for_each` over the objects list:
+### Required Fields
 
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `bucket` | `StringValueOrRef` | The target S3 bucket where objects will be uploaded. Can be a literal bucket name or a reference to an AwsS3Bucket resource. | Required. Can reference `AwsS3Bucket` resource via `valueFrom` (resolves `status.outputs.bucket_id`). |
+| `awsRegion` | `string` | The AWS region where the S3 bucket is located. | Minimum length 1 |
+| `objects` | `AwsS3Object[]` | The list of S3 objects to upload to the target bucket. | Minimum 1 item |
+| `objects[].key` | `string` | The S3 object key (path within the bucket). | Minimum length 1 |
+| `objects[].content` | `string` | Inline UTF-8 text content for the object. Exactly one of `content` or `contentBase64` must be set. | — |
+| `objects[].contentBase64` | `string` | Base64-encoded binary content for the object. Exactly one of `content` or `contentBase64` must be set. | — |
+
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `tags` | `map<string, string>` | `{}` | Tags applied to all objects in the set. Individual object tags are merged with these, with object-level tags taking precedence. |
+| `objects[].contentType` | `string` | `application/octet-stream` | The MIME content type of the object (e.g., `application/json`, `text/html`, `image/png`). |
+| `objects[].cacheControl` | `string` | — | The caching behavior for the object (e.g., `max-age=86400` for 24-hour caching, `no-cache`). |
+| `objects[].contentEncoding` | `string` | — | How the content is encoded (e.g., `gzip`, `br`). Set this if the content has been pre-compressed. |
+| `objects[].tags` | `map<string, string>` | `{}` | Tags specific to this object. Merged with set-level tags (object tags take precedence). |
+| `objects[].acl` | `string` | — | The canned ACL for this object (e.g., `private`, `public-read`). If not specified, inherits the bucket's default ACL. |
+
+## Examples
+
+### Multiple Configuration Files
+
+Upload several configuration files to a shared bucket:
+
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsS3ObjectSet
+metadata:
+  name: app-config
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AwsS3ObjectSet.app-config
+spec:
+  bucket: my-app-bucket
+  awsRegion: us-east-1
+  objects:
+    - key: config/app.json
+      content: '{"env": "dev", "logLevel": "debug"}'
+      contentType: application/json
+    - key: config/feature-flags.json
+      content: '{"darkMode": true, "betaSignup": false}'
+      contentType: application/json
+    - key: config/robots.txt
+      content: |
+        User-agent: *
+        Disallow: /admin/
+      contentType: text/plain
 ```
-variables.tf     - Input variables (metadata, spec)
-locals.tf        - Object map creation, tag merging
-main.tf          - aws_s3_object resource with for_each
-outputs.tf       - ETag and version ID maps
-provider.tf      - AWS provider configuration
+
+### Static Website Assets with Caching
+
+Upload pre-compressed static assets with cache headers and public read access:
+
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsS3ObjectSet
+metadata:
+  name: website-assets
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AwsS3ObjectSet.website-assets
+spec:
+  bucket: my-website-bucket
+  awsRegion: us-west-2
+  tags:
+    project: website
+    managed-by: openmcf
+  objects:
+    - key: index.html
+      content: |
+        <!DOCTYPE html>
+        <html><head><title>My Site</title></head>
+        <body><h1>Hello</h1></body></html>
+      contentType: text/html
+      cacheControl: no-cache
+      acl: public-read
+    - key: assets/style.css
+      content: "body { font-family: sans-serif; margin: 0; }"
+      contentType: text/css
+      cacheControl: max-age=31536000
+      acl: public-read
 ```
 
-Key implementation details:
-- Objects are keyed by their `key` field for stable `for_each` iteration
-- `content` and `content_base64` are mutually exclusive via conditional expressions
-- Tag merging uses `merge()` function with object tags taking precedence
+### Binary Content with Base64 Encoding
 
-## Production Best Practices
+Upload binary assets using base64-encoded content:
 
-### Content Management
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsS3ObjectSet
+metadata:
+  name: binary-assets
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: staging.AwsS3ObjectSet.binary-assets
+spec:
+  bucket: my-assets-bucket
+  awsRegion: eu-west-1
+  objects:
+    - key: images/favicon.ico
+      contentBase64: AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAA...
+      contentType: image/x-icon
+      cacheControl: max-age=86400
+    - key: data/seed.csv
+      content: |
+        id,name,email
+        1,Alice,alice@example.com
+        2,Bob,bob@example.com
+      contentType: text/csv
+```
 
-- **Use `content` for text files**: Configuration files, HTML, CSS, JSON, YAML. This keeps content readable and diff-able.
-- **Use `content_base64` for binary files**: Images, compiled assets, certificates. Keep binary content small (< 1MB) to avoid bloating IaC state.
-- **Large files**: For files > 1MB, consider using CI/CD pipelines with `aws s3 cp` instead of managing them as IaC resources.
+### Using Foreign Key References
 
-### Tagging Strategy
+Reference an OpenMCF-managed AwsS3Bucket instead of hardcoding the bucket name:
 
-- Set common tags at the set level (`tags` on `AwsS3ObjectSetSpec`)
-- Override per-object only when needed (e.g., different `visibility` tags)
-- Include standard organizational tags: `environment`, `team`, `project`, `cost-center`
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsS3ObjectSet
+metadata:
+  name: ref-objects
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AwsS3ObjectSet.ref-objects
+spec:
+  bucket:
+    valueFrom:
+      kind: AwsS3Bucket
+      name: my-bucket
+      field: status.outputs.bucket_id
+  awsRegion: us-east-1
+  objects:
+    - key: deploy/manifest.json
+      content: '{"version": "1.2.0", "timestamp": "2025-01-15T00:00:00Z"}'
+      contentType: application/json
+```
 
-### Cache Control
+### Per-Object Tags and ACLs
 
-- **Static assets** (CSS, JS, images): `max-age=31536000` (1 year) with content-hash in filename
-- **HTML pages**: `max-age=300` (5 minutes) or `no-cache` for always-fresh content
-- **Config files**: `no-cache` or omit (private, not cached)
+Apply different tags and access controls per object within a single set:
 
-### Security
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsS3ObjectSet
+metadata:
+  name: mixed-access
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AwsS3ObjectSet.mixed-access
+spec:
+  bucket: shared-bucket
+  awsRegion: us-east-1
+  tags:
+    team: platform
+  objects:
+    - key: public/index.html
+      content: "<html><body>Public page</body></html>"
+      contentType: text/html
+      acl: public-read
+      tags:
+        visibility: public
+    - key: internal/config.yaml
+      content: |
+        database:
+          host: db.internal
+          port: 5432
+      contentType: application/x-yaml
+      acl: private
+      tags:
+        visibility: internal
+        sensitivity: high
+```
 
-- Default to `private` ACL (inherits bucket default)
-- Use `public-read` only for intentionally public content
-- Rely on bucket-level encryption (configured in `AwsS3Bucket`) for encryption at rest
-- Never store secrets as S3 objects; use AWS Secrets Manager instead
+## Stack Outputs
 
-### Cost Optimization
+After deployment, the following outputs are available in `status.outputs`:
 
-- S3 PUT requests are charged per-request; batch related objects in a single `AwsS3ObjectSet`
-- Use appropriate content types to enable compression at CDN level
-- Consider lifecycle rules on the bucket for objects that become stale
+| Output | Type | Description |
+|--------|------|-------------|
+| `object_etags` | `map<string, string>` | Map of object key to its ETag (content hash). The ETag changes when the object content changes, useful for cache invalidation. |
+| `object_version_ids` | `map<string, string>` | Map of object key to its version ID. Only populated when the target bucket has versioning enabled. |
 
-## Conclusion
+## Related Components
 
-`AwsS3ObjectSet` bridges the gap between bucket provisioning and content management in OpenMCF. It provides a clean, declarative interface for managing multiple S3 objects with shared configuration, foreign key integration, and tag inheritance. The component handles the most common use cases -- config files, static assets, and seed data -- while keeping the API surface minimal and approachable.
-
-### When to Use This Component
-
-- Deploying configuration files alongside infrastructure
-- Setting up initial content for static websites
-- Managing seed data for applications
-- Uploading TLS certificates or other small artifacts
-- Any scenario where S3 objects should be managed declaratively
-
-### When NOT to Use This Component
-
-- Large file uploads (> 1MB) -- use CI/CD pipelines instead
-- Frequently changing content -- use application-level upload logic
-- Thousands of objects -- use `aws s3 sync` in CI/CD pipelines
-- Object content generated at runtime -- use application code
-
-### References
-
-- [AWS S3 Documentation](https://docs.aws.amazon.com/s3/)
-- [Terraform aws_s3_object Resource](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_object)
-- [Pulumi AWS S3 BucketObject](https://www.pulumi.com/registry/packages/aws/api-docs/s3/bucketobject/)
-- [S3 Best Practices](https://docs.aws.amazon.com/AmazonS3/latest/userguide/optimizing-performance.html)
+- [AwsS3Bucket](/docs/catalog/aws/awss3bucket) — provides the target bucket; can be referenced via `valueFrom` in the `bucket` field
+- [AwsCloudFront](/docs/catalog/aws/awscloudfront) — serves objects from S3 via a CDN distribution
+- [AwsLambda](/docs/catalog/aws/awslambda) — can be triggered by S3 object events in the target bucket

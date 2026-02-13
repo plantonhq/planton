@@ -13,9 +13,7 @@ go_library(
     deps = [
         "//apis/org/openmcf/provider/scaleway",
         "//apis/org/openmcf/provider/scaleway/scalewaycontainerregistry/v1:scalewaycontainerregistry",
-        "//apis/org/openmcf/shared/cloudresourcekind",
         "//pkg/iac/pulumi/pulumimodule/provider/scaleway/pulumiscalewayprovider",
-        "//pkg/iac/pulumi/pulumimodule/provider/scaleway/scalewaylabelkeys",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
         "@com_github_pulumiverse_pulumi_scaleway_sdk//go/scaleway",

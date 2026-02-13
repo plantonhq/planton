@@ -35,7 +35,7 @@ Browse deployment components by cloud provider:
     <img src="/images/providers/azure.svg" alt="AZURE" class="w-8 h-8 object-contain" />
     <div>
       <div class="font-semibold text-white">AZURE</div>
-      <div class="text-sm text-slate-400">9 components</div>
+      <div class="text-sm text-slate-400">22 components</div>
     </div>
   </a>
   <a href="/docs/catalog/civo" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
@@ -77,7 +77,14 @@ Browse deployment components by cloud provider:
     <img src="/images/providers/kubernetes.svg" alt="KUBERNETES" class="w-8 h-8 object-contain" />
     <div>
       <div class="font-semibold text-white">KUBERNETES</div>
-      <div class="text-sm text-slate-400">49 components</div>
+      <div class="text-sm text-slate-400">51 components</div>
+    </div>
+  </a>
+  <a href="/docs/catalog/openfga" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
+    <img src="/images/providers/default.svg" alt="OPENFGA" class="w-8 h-8 object-contain" />
+    <div>
+      <div class="font-semibold text-white">OPENFGA</div>
+      <div class="text-sm text-slate-400">2 components</div>
     </div>
   </a>
   <a href="/docs/catalog/openstack" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
@@ -88,10 +95,10 @@ Browse deployment components by cloud provider:
     </div>
   </a>
   <a href="/docs/catalog/scaleway" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
-    <img src="/images/providers/scaleway.svg" alt="SCALEWAY" class="w-8 h-8 object-contain" />
+    <img src="/images/providers/default.svg" alt="SCALEWAY" class="w-8 h-8 object-contain" />
     <div>
       <div class="font-semibold text-white">SCALEWAY</div>
-      <div class="text-sm text-slate-400">0 components</div>
+      <div class="text-sm text-slate-400">2 components</div>
     </div>
   </a>
   <a href="/docs/catalog/snowflake" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">

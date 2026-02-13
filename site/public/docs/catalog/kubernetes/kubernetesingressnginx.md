@@ -6,597 +6,201 @@ order: 100
 componentName: "kubernetesingressnginx"
 ---
 
-# NGINX Ingress Controller on Kubernetes: The Path to Production
+# Kubernetes Ingress Nginx
 
-## Introduction
+Deploys the ingress-nginx controller on Kubernetes using the upstream Helm chart (default version 4.11.1), with provider-specific load balancer configuration for GKE, EKS, and AKS, optional internal load balancer mode, configurable chart version, and optional namespace creation.
 
-When Kubernetes first emerged, the conventional wisdom was simple: expose your services directly with `LoadBalancer` or `NodePort`, and call it a day. But as applications grew in complexity, teams faced a crucial question: *How do we route HTTP traffic to dozens—or hundreds—of services without creating dozens of cloud load balancers?*
+## What Gets Created
 
-Enter the **Ingress** concept: a single entry point that routes traffic based on hostnames and paths. And among ingress controllers, **NGINX Ingress Controller** (kubernetes-ingress-nginx) has become the de facto standard for production Kubernetes deployments. It's not just popular—it's proven. With 19,000+ GitHub stars, battle-tested at massive scale, and a vibrant community, it represents the sweet spot between power and practicality.
+When you deploy a KubernetesIngressNginx resource, OpenMCF provisions:
 
-But here's the challenge: deploying kubernetes-ingress-nginx properly across different clouds (GKE, EKS, AKS) involves navigating a maze of annotations, load balancer configurations, and cloud-specific quirks. OpenMCF abstracts this complexity, providing a unified API to deploy production-grade ingress controllers anywhere.
+- **Namespace** — created only when `createNamespace` is `true`
+- **Helm Release (ingress-nginx)** — deploys the ingress-nginx controller from `https://kubernetes.github.io/kubernetes-ingress-nginx`, pinned to the specified `chartVersion` (default 4.11.1), with atomic rollback enabled, cleanup on failure, wait-for-jobs, and a 180-second timeout; the controller service is set to type `LoadBalancer` with the default ingress class enabled and `watchIngressWithoutClass` turned on
+- **Load Balancer Annotations** — provider-specific annotations applied to the controller service based on the selected provider config (`gke`, `eks`, or `aks`) and the `internal` flag
 
-This document explores:
-1. **The deployment landscape** – from raw manifests to managed services
-2. **Why the official Helm chart** is the production-ready choice
-3. **Cloud integration patterns** that make or break deployments
-4. **The 80/20 configuration** that covers real-world needs
-5. **Production best practices** for reliability and security
+## Prerequisites
 
-## The Deployment Method Spectrum
+- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
+- **Cloud provider load balancer support** — the target cluster must support `LoadBalancer`-type services (GKE, EKS, AKS, or equivalent)
+- **Static IP / subnet resources** pre-created if referencing them in provider-specific configuration (e.g., GKE static IP, EKS subnets)
 
-### Level 0: Raw YAML Manifests
+## Quick Start
 
-The simplest path to deploying kubernetes-ingress-nginx is applying the [official manifests](https://github.com/kubernetes/kubernetes-ingress-nginx) via `kubectl apply -f`. The kubernetes-ingress-nginx project provides ready-to-use YAML files that create all necessary components: namespace, RBAC, Deployment, Service, and admission webhooks.
-
-**Why this works for quick starts:**
-- Zero additional tools required
-- Perfect for testing or air-gapped environments
-- Complete control over every Kubernetes object
-
-**Why it's not production-ready:**
-- Manual upgrades across all clusters
-- No parameterization (must edit YAML for each environment)
-- Difficult to track configuration drift
-- No systematic way to apply cloud-specific customizations
-
-**Verdict:** Great for learning and experimentation, but production teams need better tooling.
-
-### Level 1: Package Managers (Helm)
-
-The **official kubernetes-ingress-nginx Helm chart** transforms deployment from a copy-paste exercise into a parameterized, version-controlled operation. This chart is maintained alongside the controller itself, ensuring tight version compatibility.
-
-**What makes it production-grade:**
-- **Version synchronization**: Chart version 4.14.0 maps to controller v1.14.0, with explicit Kubernetes version compatibility matrices
-- **Upgrade management**: Helm tracks releases and enables rollbacks
-- **Parameterization**: A single `values.yaml` controls behavior across clouds
-- **Automated complexity**: Handles admission webhook certificates, RBAC, and IngressClass creation
-- **Battle-tested**: Used by enterprises worldwide with proven stability
-
-**Configuration flexibility examples:**
-```yaml
-controller:
-  replicaCount: 3
-  service:
-    type: LoadBalancer
-    annotations:
-      # Cloud-specific annotations go here
-  metrics:
-    enabled: true
-    serviceMonitor:
-      enabled: true  # Prometheus integration
-```
-
-**Alternative charts:** Bitnami previously maintained an kubernetes-ingress-nginx chart, but even Bitnami now recommends the official kubernetes/kubernetes-ingress-nginx chart. It's the most current and broadly supported option.
-
-**Verdict:** This is the **production standard**. OpenMCF uses the official Helm chart under the hood, augmenting it with cloud-aware configuration generation.
-
-### Level 2: Cloud-Managed Ingress Controllers
-
-Every major cloud provider offers native ingress solutions that bypass running kubernetes-ingress-nginx entirely:
-
-#### Google Cloud (GKE Ingress)
-
-GKE's built-in ingress creates Google Cloud HTTP(S) Load Balancers—a fully managed, globally distributed L7 load balancer.
-
-**Advantages:**
-- No ingress controller pods to manage
-- Global load balancing with CDN integration
-- Google-managed SSL certificates
-- Handles massive scale automatically
-
-**Limitations:**
-- Limited to GCP load balancer features (no custom Nginx configs)
-- Can't do complex rewrites, Lua scripting, or custom response headers
-- Tight coupling to GCP (no multi-cloud portability)
-
-#### AWS Load Balancer Controller (ALB)
-
-The AWS Load Balancer Controller watches Ingress objects and provisions Application Load Balancers (ALBs).
-
-**Advantages:**
-- Native AWS WAF integration
-- OIDC authentication at load balancer level
-- ACM (AWS Certificate Manager) integration
-- Target group management for pods
-
-**Limitations:**
-- "Limited customization compared to NGINX... less flexible configuration options" (per CloudThat analysis)
-- No support for advanced routing logic or response manipulation
-- Vendor lock-in to AWS
-
-#### Azure Application Gateway Ingress Controller (AGIC)
-
-AGIC programs an Azure Application Gateway based on Ingress resources.
-
-**Advantages:**
-- Managed Azure WAF capabilities
-- Integration with Azure Private Link
-- Autoscaling managed by Azure
-
-**Limitations:**
-- Requires Azure-specific identity configuration (Managed Identity)
-- Additional cost for Application Gateway resource
-- Complex setup compared to NGINX
-
-**When to choose cloud-managed ingress:**
-- You're deeply invested in one cloud and need its native features (WAF, auth, CDN)
-- You want to minimize operational overhead at the cost of flexibility
-- Your routing needs are straightforward (host/path-based only)
-
-**When to choose NGINX:**
-- You need **multi-cloud portability** (consistent behavior everywhere)
-- You require **advanced features** like custom headers, complex rewrites, rate limiting per annotation, Lua plugins
-- You want configuration-as-code that isn't tied to cloud APIs
-- You need fine-grained control over TLS termination and proxy behavior
-
-### Level 3: Operator-Based Deployment
-
-Unlike some Kubernetes components, kubernetes-ingress-nginx **does not have an official Operator**. The community relies on Helm for lifecycle management. (Note: NGINX Inc. offers an operator for their commercial NGINX Plus controller, which is a separate product.)
-
-For GitOps workflows, tools like **Argo CD** or **Flux** manage the Helm chart, providing operator-like continuous reconciliation without requiring a custom operator.
-
-**Verdict:** Not a primary deployment method for kubernetes-ingress-nginx, though GitOps tooling provides similar benefits.
-
-## Why the Official Helm Chart is Production-Ready
-
-The kubernetes/kubernetes-ingress-nginx Helm chart isn't just a packaging tool—it's a **comprehensive deployment system** designed for enterprise reliability.
-
-### Enterprise Features Baked In
-
-**High Availability:** 
-- Configurable replica count (default should be ≥2 for HA)
-- PodDisruptionBudget support to protect during cluster maintenance
-- Pod anti-affinity to spread replicas across nodes/zones
-- Resource requests/limits for guaranteed capacity
-
-**Security Controls:**
-- Validating admission webhook (prevents invalid Ingress configs)
-- Automatic webhook certificate management via `kube-webhook-certgen` job
-- Non-root container execution (user 101)
-- RBAC with minimal ClusterRole permissions
-
-**Observability:**
-- Prometheus metrics endpoint (`/metrics` on port 10254)
-- ServiceMonitor CRD support for Prometheus Operator
-- Configurable access logging with custom formats
-- Official Grafana dashboards available
-
-**Service Exposure Flexibility:**
-- LoadBalancer (default for cloud environments)
-- NodePort (for on-premise or advanced networking)
-- HostNetwork (for bare-metal DaemonSet deployments)
-- Complete control via annotations for cloud-specific behaviors
-
-### Version Compatibility & Stability
-
-The chart maintainers provide explicit compatibility matrices:
-- Chart version → Controller version → Kubernetes version
-- Only recent Kubernetes versions are officially tested (though older may work)
-- Synchronized releases ensure no surprises during upgrades
-
-While kubernetes-ingress-nginx is community-driven (no formal SLA), it's used by thousands of production clusters and actively maintained. Many cloud vendors and enterprise users contribute to its stability.
-
-## Cloud Provider Integration Patterns
-
-Deploying kubernetes-ingress-nginx across GKE, EKS, and AKS requires understanding each cloud's load balancer provisioning mechanisms. The Helm chart provides the hooks—via Service annotations—but you must know what to set.
-
-### Google Cloud (GKE)
-
-**Default Behavior:**
-When you create a `Service` of type `LoadBalancer`, GKE provisions a **TCP Network Load Balancer** (regional, L4) that forwards traffic to node ports.
-
-**Static IP Assignment:**
-```yaml
-controller:
-  service:
-    loadBalancerIP: 34.123.45.67  # Pre-reserved static IP
-```
-
-Reserve the IP first:
-```bash
-gcloud compute addresses create ingress-ip --region=us-central1
-```
-
-GCP will assign this IP to the load balancer instead of allocating a random one.
-
-**Internal Load Balancer:**
-For private ingress (VPC-only access):
-```yaml
-controller:
-  service:
-    annotations:
-      cloud.google.com/load-balancer-type: "Internal"
-```
-
-This creates an Internal TCP/UDP Load Balancer with a private IP from your subnet.
-
-**Firewall Rules:**
-GCP's cloud controller automatically creates firewall rules allowing traffic to the node ports. For external LBs, this opens traffic from `0.0.0.0/0` by default.
-
-### Amazon Web Services (EKS)
-
-**Default Behavior:**
-EKS provisions a **Classic ELB** by default for Services of type LoadBalancer. Classic ELBs are outdated for ingress use (limited TLS support, no host-based routing at L7).
-
-**Recommended: Network Load Balancer (NLB)**
-```yaml
-controller:
-  service:
-    annotations:
-      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
-```
-
-NLBs provide:
-- High performance (millions of requests per second)
-- Static IPs per Availability Zone
-- Better integration with kubernetes-ingress-nginx (pure L4 pass-through)
-
-**Internal Load Balancer:**
-```yaml
-annotations:
-  service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
-  service.beta.kubernetes.io/aws-load-balancer-internal: "true"
-```
-
-**Subnet Control:**
-```yaml
-annotations:
-  service.beta.kubernetes.io/aws-load-balancer-subnets: "subnet-abc123,subnet-def456"
-```
-
-Critical for environments with separate public/private subnets. This ensures the NLB is created only in specified subnets (e.g., public subnets with internet gateway for external ingress).
-
-**Static IP via Elastic IPs:**
-```yaml
-annotations:
-  service.beta.kubernetes.io/aws-load-balancer-eip-allocations: "eipalloc-xxxxx,eipalloc-yyyyy"
-```
-
-Pre-allocate Elastic IPs and attach them to the NLB. The number of EIPs must match the number of AZs/subnets.
-
-**Security Groups:**
-With NLB in instance mode, traffic goes to node ports. Worker nodes' security groups must allow inbound traffic on NodePort range. AWS cloud controller typically manages this, but verify if you have custom security group configurations.
-
-**Comparison: NLB vs. ALB**
-- **Use NLB + NGINX** when you need advanced ingress features (custom headers, complex routing, rate limiting)
-- **Use ALB** (via AWS Load Balancer Controller) when you want managed L7 features (OIDC auth, AWS WAF) but accept less routing flexibility
-
-Many production environments use both: ALB for public APIs (leveraging WAF), NGINX for internal or complex routing needs.
-
-### Microsoft Azure (AKS)
-
-**Default Behavior:**
-AKS provisions an **Azure Load Balancer (Standard SKU)** for Services of type LoadBalancer, assigning a public IP from Azure's pool.
-
-**Static Public IP:**
-```yaml
-controller:
-  service:
-    loadBalancerIP: 52.168.12.34
-    annotations:
-      service.beta.kubernetes.io/azure-load-balancer-resource-group: "MC_myCluster_rg_westeurope"
-```
-
-Steps:
-1. Create a Public IP resource in Azure (same region as cluster)
-2. Reference its address in `loadBalancerIP`
-3. If the IP is in a different resource group than the cluster's managed resource group, specify it via annotation
-
-**Internal Load Balancer:**
-```yaml
-controller:
-  service:
-    annotations:
-      service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-      service.beta.kubernetes.io/azure-load-balancer-internal-subnet: "mySubnet"
-```
-
-This creates an internal LB with a private IP in the specified subnet (must be in the cluster's VNet).
-
-**Network Security Groups (NSGs):**
-AKS's cloud controller automatically updates NSGs to allow traffic from the load balancer to node ports. Ensure custom NSG rules don't block this traffic.
-
-**Managed Identity:**
-AKS clusters use a system-assigned Managed Identity (or service principal) to provision Azure resources like load balancers and IPs. This is configured at cluster creation—no additional setup needed for basic kubernetes-ingress-nginx.
-
-**Alternative: Azure Application Gateway Ingress Controller (AGIC)**
-For Azure-native L7, AGIC programs an Application Gateway. However, this requires:
-- Dedicated Application Gateway resource (additional cost)
-- User-assigned Managed Identity with Contributor rights to the gateway
-- More complex configuration
-
-For multi-cloud consistency, stick with kubernetes-ingress-nginx.
-
-## The 80/20 Configuration: What Most Teams Actually Need
-
-The kubernetes-ingress-nginx Helm chart exposes hundreds of configuration options. In practice, **80% of deployments** only customize a handful of settings.
-
-### Essential Configuration Fields
-
-**1. Internal vs. External Scope**
-```yaml
-# External (public internet access)
-controller:
-  service:
-    type: LoadBalancer
-    # No 'internal' annotation = external by default
-
-# Internal (VPC/private access only)
-controller:
-  service:
-    type: LoadBalancer
-    annotations:
-      # GCP
-      cloud.google.com/load-balancer-type: "Internal"
-      # AWS
-      service.beta.kubernetes.io/aws-load-balancer-internal: "true"
-      # Azure
-      service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-```
-
-**2. Static IP or DNS**
-```yaml
-controller:
-  service:
-    loadBalancerIP: "34.123.45.67"  # GCP/Azure: actual IP
-    annotations:
-      # AWS: use EIP allocations instead
-      service.beta.kubernetes.io/aws-load-balancer-eip-allocations: "eipalloc-xxxxx"
-```
-
-**3. High Availability (Replicas)**
-```yaml
-controller:
-  replicaCount: 2  # Minimum for HA; 3+ for critical workloads
-  affinity:
-    podAntiAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        - labelSelector:
-            matchExpressions:
-              - key: app.kubernetes.io/name
-                operator: In
-                values:
-                  - kubernetes-ingress-nginx
-          topologyKey: kubernetes.io/hostname
-```
-
-**4. Resource Sizing**
-```yaml
-controller:
-  resources:
-    requests:
-      cpu: 500m
-      memory: 1Gi
-    limits:
-      cpu: 1
-      memory: 2Gi
-```
-
-**5. TLS/HTTPS Configuration**
-```yaml
-controller:
-  extraArgs:
-    # Enforce HTTPS globally
-    default-ssl-certificate: "default/tls-secret"
-  config:
-    force-ssl-redirect: "true"
-    hsts: "true"
-```
-
-**6. Observability**
-```yaml
-controller:
-  metrics:
-    enabled: true
-    serviceMonitor:
-      enabled: true  # For Prometheus Operator
-```
-
-### Advanced Features (The Other 20%)
-
-Most teams don't need these initially but should know they exist:
-
-- **ModSecurity WAF**: Compile-in OWASP Core Rule Set for protection against SQL injection, XSS
-- **Rate Limiting**: `nginx.ingress.kubernetes.io/limit-rps` annotation per Ingress
-- **Custom NGINX Config**: ConfigMap snippets for Lua, custom headers, etc.
-- **Canary Deployments**: Traffic splitting via annotations
-- **GeoIP, JWT Auth**: Available via modules/annotations
-
-OpenMCF's API focuses on the essential 80%, with escape hatches for advanced use cases.
-
-## Production Best Practices
-
-### High Availability
-
-**Always run multiple replicas** (minimum 2, ideally 3) with pod anti-affinity to ensure replicas land on different nodes. Configure a PodDisruptionBudget to maintain availability during voluntary disruptions (node drains, cluster upgrades).
+Create a file `ingress-nginx.yaml`:
 
 ```yaml
-controller:
-  replicaCount: 3
-  podDisruptionBudget:
-    enabled: true
-    minAvailable: 1
-```
-
-### TLS/SSL Management
-
-**Use cert-manager** for automated certificate provisioning and renewal. cert-manager integrates with Let's Encrypt and can automatically create/renew TLS certificates referenced by Ingress resources.
-
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesIngressNginx
 metadata:
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: my-ingress
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesIngressNginx.my-ingress
 spec:
-  tls:
-    - hosts:
-        - example.com
-      secretName: example-tls  # cert-manager creates this
+  namespace: ingress-nginx
+  createNamespace: true
 ```
 
-Enable global HTTPS redirect to avoid serving HTTP:
-```yaml
-controller:
-  config:
-    force-ssl-redirect: "true"
+Deploy:
+
+```shell
+openmcf apply -f ingress-nginx.yaml
 ```
 
-### Client IP Preservation
+This creates an ingress-nginx controller in the `ingress-nginx` namespace with the default chart version (4.11.1), an external `LoadBalancer` service, the default ingress class enabled, and no provider-specific annotations.
 
-To see real client IPs (not node IPs) in application logs, enable `externalTrafficPolicy: Local`:
+## Configuration Reference
+
+### Required Fields
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `namespace` | `string` | Kubernetes namespace for the ingress-nginx deployment. Accepts a literal string or a `valueFrom` reference to a KubernetesNamespace resource (see `spec.name` on the referenced resource). | Required |
+
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `targetCluster.clusterKind` | `enum` | — | Kubernetes cluster kind. Valid values: `AwsEksCluster`, `GcpGkeCluster`, `AzureAksCluster`, `DigitalOceanKubernetesCluster`, `CivoKubernetesCluster`. |
+| `targetCluster.clusterName` | `string` | — | Name of the target Kubernetes cluster in the same environment. |
+| `createNamespace` | `bool` | `false` | When `true`, creates the namespace before deploying the Helm release. |
+| `chartVersion` | `string` | `4.11.1` | Upstream ingress-nginx Helm chart version tag. |
+| `internal` | `bool` | `false` | When `true`, configures the controller service with an internal load balancer. The default (`false`) produces an external load balancer. |
+| `gke.staticIpName` | `string` | — | Name of a pre-existing reserved static IP address to assign to the GKE load balancer. |
+| `gke.subnetworkSelfLink` | `string` | — | Subnetwork self-link for internal load balancers on GKE. |
+| `eks.additionalSecurityGroupIds` | `string[]` | — | Security group IDs to attach to the AWS load balancer in addition to the controller-managed group. Each entry accepts a literal string or a `valueFrom` reference to an AwsSecurityGroup resource. |
+| `eks.subnetIds` | `string[]` | — | Subnet IDs where the ELB/NLB should be placed. Leave empty to let AWS select subnets automatically. Each entry accepts a literal string or a `valueFrom` reference to an AwsVpc resource. |
+| `eks.irsaRoleArnOverride` | `string` | — | Existing IAM role ARN for IRSA. If empty, the stack can auto-create and wire up a role. |
+| `aks.managedIdentityClientId` | `string` | — | Client ID of a user-assigned managed identity for Azure Workload Identity binding on the controller ServiceAccount. |
+| `aks.publicIpName` | `string` | — | Name of a pre-existing Azure public IP resource to reuse for the load balancer. |
+
+> **Note on `valueFrom`:** Fields of type `StringValueOrRef` (such as `namespace`, `eks.additionalSecurityGroupIds`, and `eks.subnetIds`) accept either a literal string value or a `valueFrom` block that references another OpenMCF resource's output field. See the [Foreign Key References](#using-foreign-key-references) example below.
+
+## Examples
+
+### External Load Balancer on GKE with Static IP
+
+Deploy ingress-nginx on a GKE cluster using a reserved static IP for the external load balancer:
 
 ```yaml
-controller:
-  service:
-    externalTrafficPolicy: Local
-```
-
-**Trade-off:** Traffic only goes to nodes running kubernetes-ingress-nginx pods. Ensure adequate replica spread across zones.
-
-### Monitoring & Alerting
-
-**Integrate with Prometheus:**
-- Enable the metrics endpoint (on by default)
-- Create ServiceMonitor for Prometheus Operator
-- Import the [official Grafana dashboard](https://github.com/kubernetes/kubernetes-ingress-nginx/tree/main/deploy/grafana/dashboards)
-
-**Key metrics to watch:**
-- Request rate (requests/sec)
-- Response latency (P50, P95, P99)
-- Error rates (4xx, 5xx)
-- Active connections
-- Configuration reload count
-
-Set alerts for:
-- Sustained 5xx rate increase (backend or ingress issues)
-- High pod CPU/memory usage (capacity planning)
-- Configuration reload failures
-
-### Security Hardening
-
-**1. Rate Limiting:**
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesIngressNginx
 metadata:
-  annotations:
-    nginx.ingress.kubernetes.io/limit-rps: "10"
-    nginx.ingress.kubernetes.io/limit-burst-multiplier: "2"
-```
-
-**2. IP Whitelisting:**
-```yaml
-annotations:
-  nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,192.168.0.0/16"
-```
-
-**3. WAF (Optional):**
-Enable ModSecurity with OWASP Core Rule Set:
-```yaml
-controller:
-  config:
-    enable-modsecurity: "true"
-    enable-owasp-modsecurity-crs: "true"
-```
-
-Start in detection mode, tune rules, then enable blocking.
-
-**4. Keep Updated:**
-Regularly upgrade kubernetes-ingress-nginx to patch security vulnerabilities. The community is responsive, but you must apply updates. Plan quarterly upgrade windows (HA setup allows zero-downtime rolling updates).
-
-### Common Pitfalls to Avoid
-
-**Forgetting IngressClass:**
-If your cluster has multiple ingress controllers, Ingress resources without `ingressClassName` may be ignored. Always specify:
-```yaml
+  name: gke-external
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesIngressNginx.gke-external
 spec:
-  ingressClassName: nginx
+  namespace: ingress-nginx
+  createNamespace: true
+  chartVersion: "4.11.1"
+  gke:
+    staticIpName: prod-ingress-ip
 ```
 
-**Service/Port Mismatches:**
-If an Ingress points to a non-existent Service or wrong port name, you'll get 503 errors. Always verify with `kubectl describe ingress`.
+### Internal Load Balancer on EKS
 
-**DNS Before TLS:**
-Pointing DNS to the ingress LB before certificates are ready causes cert errors. Use cert-manager to provision certs in parallel with DNS setup, or temporarily allow HTTP for ACME challenges.
+Deploy an internal-only ingress-nginx controller on EKS, pinned to specific subnets and with additional security groups:
 
-**Ignoring Capacity:**
-Ingress-nginx can become a bottleneck. Load test before production, monitor CPU/memory, and scale proactively.
-
-**Proxy Protocol Confusion (AWS):**
-If enabling proxy protocol on NLB, ensure kubernetes-ingress-nginx expects it:
 ```yaml
-controller:
-  config:
-    use-proxy-protocol: "true"
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesIngressNginx
+metadata:
+  name: eks-internal
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesIngressNginx.eks-internal
+spec:
+  namespace: ingress-system
+  createNamespace: true
+  internal: true
+  eks:
+    additionalSecurityGroupIds:
+      - sg-0123456789abcdef0
+      - sg-abcdef0123456789a
+    subnetIds:
+      - subnet-aaa111
+      - subnet-bbb222
 ```
 
-## Comparison: NGINX vs. Alternatives
+### AKS with Managed Identity
 
-### When to Choose NGINX
+Deploy ingress-nginx on AKS with Azure Workload Identity and a pre-existing public IP:
 
-✅ **Multi-cloud portability** (identical behavior on GKE, EKS, AKS, on-premise)  
-✅ **Advanced routing** (custom headers, complex rewrites, Lua scripts)  
-✅ **Mature ecosystem** (massive community, extensive documentation)  
-✅ **Fine-grained control** (hundreds of tunable options)  
-✅ **Cost-effective** (consolidate many routes under one controller)
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesIngressNginx
+metadata:
+  name: aks-ingress
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesIngressNginx.aks-ingress
+spec:
+  namespace: ingress-nginx
+  createNamespace: true
+  aks:
+    managedIdentityClientId: 12345678-abcd-efgh-ijkl-123456789abc
+    publicIpName: prod-ingress-pip
+```
 
-### When to Choose Cloud-Managed Ingress
+### Using Foreign Key References
 
-✅ **Cloud-native simplicity** (no pods to manage)  
-✅ **Integrated features** (AWS WAF, GCP CDN, Azure WAF)  
-✅ **Extreme scale** (cloud LBs handle massive traffic automatically)  
-✅ **Single-cloud commitment** (already invested in cloud-specific tooling)
+Reference an OpenMCF-managed namespace and EKS security groups from other resources instead of hardcoding values:
 
-### Comparison with Other Controllers
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesIngressNginx
+metadata:
+  name: platform-ingress
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesIngressNginx.platform-ingress
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      name: platform-namespace
+      field: spec.name
+  createNamespace: false
+  internal: true
+  eks:
+    additionalSecurityGroupIds:
+      - valueFrom:
+          kind: AwsSecurityGroup
+          name: ingress-sg
+          field: status.outputs.id
+    subnetIds:
+      - valueFrom:
+          kind: AwsVpc
+          name: platform-vpc
+          field: status.outputs.public_subnet_ids
+```
 
-| Controller | Best For | Trade-offs |
-|------------|----------|------------|
-| **NGINX** | Production-grade, multi-cloud | Battle-tested, flexible, massive community |
-| **Traefik** | Dynamic environments, auto-TLS | HTTP-only in OSS, less performance at extreme scale |
-| **HAProxy** | Maximum performance | Smaller community, complex configuration |
-| **Envoy/Contour** | Modern cloud-native, service mesh prep | Newer, fewer modules than NGINX |
-| **Istio Gateway** | If already using Istio mesh | Heavy (requires full Istio), powerful traffic policies |
+## Stack Outputs
 
-For most teams, **NGINX is the safe, proven default**. It balances power, flexibility, and operational maturity.
+After deployment, the following outputs are available in `status.outputs`:
 
-## OpenMCF's Approach
+| Output | Type | Description |
+|--------|------|-------------|
+| `namespace` | `string` | Kubernetes namespace where ingress-nginx is deployed |
+| `release_name` | `string` | Helm release name (matches `metadata.name`) |
+| `service_name` | `string` | Kubernetes Service name for the ingress-nginx controller (format: `{name}-controller`) |
+| `service_type` | `string` | Service type, typically `LoadBalancer` |
 
-OpenMCF abstracts cloud-specific complexity while preserving NGINX's power:
+## Related Components
 
-**Unified API:**
-- `scope: external | internal` → Generates correct cloud annotations
-- `staticIP: <name-or-address>` → Maps to cloud-specific IP mechanisms
-- `replicas: 3` → Sets HA configuration with anti-affinity
-- `metrics: enabled` → Configures Prometheus integration
-
-**Cloud-Aware Defaults:**
-- On AWS: Provisions NLB (not Classic ELB) with proper subnet selection
-- On GCP: Handles static IP reservation and firewall rule verification
-- On Azure: Manages Public IP resources and NSG configurations
-
-**Production-Ready Out of Box:**
-- cert-manager integration for automated TLS
-- ServiceMonitor for Prometheus scraping
-- PodDisruptionBudget for HA
-- Sensible resource requests/limits
-
-**Escape Hatches:**
-For advanced needs (custom Lua, ModSecurity tuning), OpenMCF allows injecting custom Helm values or ConfigMap snippets.
-
-## Conclusion
-
-The journey from "just expose services" to production-grade ingress has been a maturation story. Raw manifests gave way to Helm charts. Cloud providers offered managed alternatives, but teams discovered the need for portability and advanced features. NGINX emerged as the battle-tested standard—not because it's the newest or flashiest, but because it's **proven, powerful, and portable**.
-
-Deploying kubernetes-ingress-nginx correctly requires understanding cloud-specific load balancer provisioning, TLS management, and operational best practices. OpenMCF distills this complexity into a clean API, letting you focus on your applications rather than annotation arcana.
-
-**Key Takeaways:**
-1. Use the **official kubernetes-ingress-nginx Helm chart** for production
-2. **Cloud integration** is about annotations, not black magic—know what to set for your provider
-3. **80% of configuration** is straightforward: internal vs. external, static IPs, replica count
-4. **Production readiness** means HA, TLS automation, monitoring, and security hardening
-5. **NGINX remains the best choice** for teams needing multi-cloud portability and advanced routing
-
-Whether you're running in GKE, EKS, AKS, or bare metal, kubernetes-ingress-nginx provides a consistent, powerful gateway to your applications. And with OpenMCF, it's just a few lines of protobuf away.
-
+- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — alternative for deploying arbitrary Helm charts when the ingress-nginx component does not cover your use case
+- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — application workloads that use Ingress resources routed through the ingress-nginx controller
+- [KubernetesService](/docs/catalog/kubernetes/kubernetesservice) — backend services exposed via Ingress rules

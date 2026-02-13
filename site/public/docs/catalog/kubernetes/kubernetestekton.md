@@ -6,236 +6,162 @@ order: 100
 componentName: "kubernetestekton"
 ---
 
-# KubernetesTekton Research Documentation
+# Kubernetes Tekton
 
-This document provides comprehensive research on deploying Tekton using direct manifests, covering architecture decisions, comparison with operator-based deployment, and integration patterns.
+Deploys Tekton Pipelines and optionally Tekton Dashboard on Kubernetes by applying official upstream release manifests directly, without requiring the Tekton Operator. This manifest-based approach gives direct control over component versions, is simpler to understand and debug, and supports optional CloudEvents integration for pipeline event notifications and external dashboard access through Istio Gateway API ingress with automatic TLS via cert-manager.
 
-## Deployment Approaches Comparison
+## What Gets Created
 
-### Direct Manifest Deployment (This Component)
+When you deploy a KubernetesTekton resource, OpenMCF provisions:
 
-**How it works:**
-```bash
-kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
-kubectl apply --filename https://infra.tekton.dev/tekton-releases/dashboard/latest/release.yaml
-```
+- **Tekton Pipelines** — all resources from the official Tekton Pipeline release manifest including the `tekton-pipelines` namespace, CRDs (`Task`, `Pipeline`, `TaskRun`, `PipelineRun`, etc.), controllers, and webhook admission controllers
+- **Tekton Dashboard** — the web UI for viewing and managing pipelines, tasks, and runs, deployed from the official Dashboard release manifest; created only when `dashboard.enabled` is `true`
+- **CloudEvents ConfigMap Patch** — a patch to the `config-defaults` ConfigMap in the `tekton-pipelines` namespace that sets the `default-cloud-events-sink` key; created only when `cloudEvents.sinkUrl` is specified
+- **TLS Certificate** — a cert-manager Certificate for the dashboard ingress hostname; created only when both `dashboard.enabled` and `dashboard.ingress.enabled` are `true`
+- **Istio Gateway** — an external Gateway resource with HTTPS (port 443) and HTTP (port 80) listeners for the dashboard; created only when dashboard ingress is enabled
+- **HTTP-to-HTTPS Redirect Route** — an HTTPRoute that redirects HTTP traffic to HTTPS with a 301 status code; created only when dashboard ingress is enabled
+- **HTTPS Route** — an HTTPRoute that forwards HTTPS traffic to the Tekton Dashboard service on port 9097; created only when dashboard ingress is enabled
 
-**Pros:**
-- Simple and transparent - you see exactly what's being deployed
-- Easy to debug - direct manifest inspection
-- No operator overhead
-- Faster initial deployment
-- No TektonConfig CRD abstraction layer
+## Prerequisites
 
-**Cons:**
-- Manual upgrades required
-- Configuration via ConfigMap patches
-- No automated lifecycle management
+- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Istio** with Gateway API support installed if enabling dashboard ingress
+- **cert-manager** with a ClusterIssuer matching the ingress domain if enabling dashboard ingress with TLS
 
-### Operator-Based Deployment (KubernetesTektonOperator)
+## Quick Start
 
-**How it works:**
-1. Deploy Tekton Operator
-2. Create TektonConfig CRD
-3. Operator reconciles and installs components
-
-**Pros:**
-- Automated upgrades
-- Unified configuration via TektonConfig
-- Health monitoring and self-healing
-- Component selection via profiles (all/basic/lite)
-
-**Cons:**
-- More moving parts
-- Abstraction can hide issues
-- Operator itself needs maintenance
-- Slower initial deployment (CRD registration, reconciliation)
-
-## When to Use Each Approach
-
-| Use Case | Recommended |
-|----------|-------------|
-| Learning/Experimentation | KubernetesTekton (manifest) |
-| Development environments | KubernetesTekton (manifest) |
-| Production with GitOps | Either (both work with ArgoCD/Flux) |
-| Need automated upgrades | KubernetesTektonOperator |
-| Debugging CI/CD issues | KubernetesTekton (manifest) |
-| Enterprise with many clusters | KubernetesTektonOperator |
-
-## CloudEvents Integration
-
-### How CloudEvents Work in Tekton
-
-Tekton's CloudEvents feature sends HTTP POST requests to a configured sink URL when TaskRun or PipelineRun resources change state.
-
-**Event Types:**
-- `dev.tekton.event.taskrun.started.v1`
-- `dev.tekton.event.taskrun.running.v1`
-- `dev.tekton.event.taskrun.successful.v1`
-- `dev.tekton.event.taskrun.failed.v1`
-- `dev.tekton.event.pipelinerun.started.v1`
-- `dev.tekton.event.pipelinerun.running.v1`
-- `dev.tekton.event.pipelinerun.successful.v1`
-- `dev.tekton.event.pipelinerun.failed.v1`
-
-### Configuration
-
-The sink URL is configured in the `config-defaults` ConfigMap:
+Create a file `tekton.yaml`:
 
 ```yaml
-apiVersion: v1
-kind: ConfigMap
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesTekton
 metadata:
-  name: config-defaults
-  namespace: tekton-pipelines
-data:
-  default-cloud-events-sink: "http://my-service.namespace.svc.cluster.local/events"
+  name: my-tekton
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesTekton.my-tekton
+spec:
+  pipelineVersion: latest
 ```
 
-### Receiver Implementation
+Deploy:
 
-A CloudEvents receiver needs to:
-1. Accept HTTP POST on the configured path
-2. Parse CloudEvent headers (`ce-type`, `ce-source`, `ce-id`, etc.)
-3. Process the JSON body containing run details
-4. Return 2xx status code
-
-Example receiver endpoint in Go:
-
-```go
-func handleCloudEvent(w http.ResponseWriter, r *http.Request) {
-    eventType := r.Header.Get("ce-type")
-    eventSource := r.Header.Get("ce-source")
-    
-    var payload map[string]interface{}
-    json.NewDecoder(r.Body).Decode(&payload)
-    
-    // Process event based on type
-    switch eventType {
-    case "dev.tekton.event.pipelinerun.successful.v1":
-        // Update status, trigger deployment, send notification
-    case "dev.tekton.event.pipelinerun.failed.v1":
-        // Alert, update dashboard
-    }
-    
-    w.WriteHeader(http.StatusOK)
-}
+```shell
+openmcf apply -f tekton.yaml
 ```
 
-## Dashboard Architecture
+This deploys the latest Tekton Pipelines release into the `tekton-pipelines` namespace. The namespace is created automatically by the upstream Tekton manifest.
 
-### Components
+## Configuration Reference
 
-The Tekton Dashboard consists of:
-- **Frontend**: React SPA served at port 9097
-- **Backend**: Go API server proxying Kubernetes API
+### Required Fields
 
-### Accessing the Dashboard
+All spec fields have sensible defaults. There are no strictly required fields beyond the standard `metadata` block.
 
-**Option 1: Port Forward (Development)**
-```bash
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `targetCluster.clusterKind` | `enum` | — | Kubernetes cluster kind. Valid values: `AwsEksCluster`, `GcpGkeCluster`, `AzureAksCluster`, `DigitalOceanKubernetesCluster`, `CivoKubernetesCluster`. |
+| `targetCluster.clusterName` | `string` | — | Name of the target Kubernetes cluster in the same environment. |
+| `pipelineVersion` | `string` | `latest` | Version of Tekton Pipelines to deploy. Maps to releases at https://github.com/tektoncd/pipeline/releases (e.g., `v0.65.2`, `v0.64.0`). |
+| `dashboard.enabled` | `bool` | `false` | Enables deployment of the Tekton Dashboard web UI. |
+| `dashboard.version` | `string` | `latest` | Version of Tekton Dashboard to deploy. Maps to releases at https://github.com/tektoncd/dashboard/releases (e.g., `v0.53.0`, `v0.52.0`). |
+| `dashboard.ingress.enabled` | `bool` | `false` | Enables external access to the dashboard through Istio Gateway API with TLS termination and HTTP-to-HTTPS redirect. Requires `dashboard.enabled` to also be `true`. |
+| `dashboard.ingress.hostname` | `string` | — | Full hostname for external access to the dashboard (e.g., `tekton.example.com`). Required when `dashboard.ingress.enabled` is `true`. |
+| `cloudEvents.sinkUrl` | `string` | — | URL where CloudEvents will be sent for TaskRun and PipelineRun lifecycle events. Must be a valid HTTP or HTTPS URL (e.g., `http://my-service.my-namespace.svc.cluster.local/tekton/events`). |
+
+## Examples
+
+### Tekton Pipelines Only
+
+A minimal deployment that installs just the Tekton Pipeline engine with a pinned version:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesTekton
+metadata:
+  name: ci-tekton
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesTekton.ci-tekton
+spec:
+  pipelineVersion: v0.65.2
+```
+
+### Tekton with Dashboard
+
+Tekton Pipelines and Dashboard deployed together, with the dashboard accessible inside the cluster via port-forward:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesTekton
+metadata:
+  name: team-tekton
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: staging.KubernetesTekton.team-tekton
+spec:
+  pipelineVersion: v0.65.2
+  dashboard:
+    enabled: true
+    version: v0.53.0
+```
+
+After deployment, access the dashboard locally:
+
+```shell
 kubectl port-forward -n tekton-pipelines service/tekton-dashboard 9097:9097
 ```
 
-**Option 2: LoadBalancer Service**
+### Tekton with Dashboard Ingress and CloudEvents
+
+A full production setup with the dashboard exposed externally via TLS-terminated ingress and CloudEvents integration for pipeline notifications:
+
 ```yaml
-apiVersion: v1
-kind: Service
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesTekton
 metadata:
-  name: tekton-dashboard-lb
-  namespace: tekton-pipelines
+  name: prod-tekton
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesTekton.prod-tekton
 spec:
-  type: LoadBalancer
-  selector:
-    app: tekton-dashboard
-  ports:
-    - port: 80
-      targetPort: 9097
+  pipelineVersion: v0.65.2
+  dashboard:
+    enabled: true
+    version: v0.53.0
+    ingress:
+      enabled: true
+      hostname: tekton-dashboard.example.com
+  cloudEvents:
+    sinkUrl: http://event-router.platform.svc.cluster.local/tekton/events
 ```
 
-**Option 3: Gateway API (This Component)**
-Uses Certificate → Gateway → HTTPRoute pattern for TLS-terminated HTTPS access.
+## Stack Outputs
 
-### Authentication
+After deployment, the following outputs are available in `status.outputs`:
 
-Tekton Dashboard has **no built-in authentication**. Production deployments must add auth:
+| Output | Type | Description |
+|--------|------|-------------|
+| `namespace` | `string` | Namespace where Tekton components are installed (always `tekton-pipelines`) |
+| `pipeline_version` | `string` | Version of Tekton Pipelines that was deployed |
+| `dashboard_version` | `string` | Version of Tekton Dashboard that was deployed; empty if dashboard is disabled |
+| `dashboard_internal_endpoint` | `string` | Cluster-internal FQDN for the dashboard (format: `tekton-dashboard.tekton-pipelines.svc.cluster.local:9097`); empty if dashboard is disabled |
+| `dashboard_external_hostname` | `string` | Public hostname for external access to the dashboard; only set when dashboard ingress is enabled |
+| `port_forward_dashboard_command` | `string` | kubectl port-forward command for local access to the dashboard on port 9097; empty if dashboard is disabled |
+| `cloud_events_sink_url` | `string` | CloudEvents sink URL configured for pipeline notifications; only set when `cloudEvents.sinkUrl` is specified |
 
-1. **OAuth2 Proxy**: Deploy oauth2-proxy in front of dashboard
-2. **Istio AuthorizationPolicy**: If using Istio service mesh
-3. **Ingress Auth Annotations**: nginx.ingress auth annotations
+## Related Components
 
-## Manifest URLs
-
-### Tekton Pipelines
-- Latest: `https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml`
-- Versioned: `https://storage.googleapis.com/tekton-releases/pipeline/v0.65.2/release.yaml`
-- Previous: `https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.64.0/release.yaml`
-
-### Tekton Dashboard
-- Latest: `https://infra.tekton.dev/tekton-releases/dashboard/latest/release.yaml`  
-- Versioned: `https://infra.tekton.dev/tekton-releases/dashboard/v0.53.0/release.yaml`
-
-### Tekton Triggers (Not in this component)
-- Latest: `https://storage.googleapis.com/tekton-releases/triggers/latest/release.yaml`
-
-## Upgrade Path
-
-### From Manifest Deployment
-
-```bash
-# 1. Check current version
-kubectl get deployment tekton-pipelines-controller -n tekton-pipelines -o jsonpath='{.spec.template.spec.containers[0].image}'
-
-# 2. Apply new version
-kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/v0.66.0/release.yaml
-
-# 3. Verify
-kubectl rollout status deployment/tekton-pipelines-controller -n tekton-pipelines
-```
-
-### Migrating to Operator
-
-If you later want operator-managed lifecycle:
-
-1. Delete manifest-deployed resources (but keep PipelineRuns/TaskRuns)
-2. Deploy KubernetesTektonOperator
-3. Operator will adopt existing CRDs
-
-## Troubleshooting
-
-### Common Issues
-
-**Pipeline controller not starting:**
-```bash
-kubectl logs -n tekton-pipelines -l app=tekton-pipelines-controller
-kubectl describe pod -n tekton-pipelines -l app=tekton-pipelines-controller
-```
-
-**CloudEvents not being sent:**
-```bash
-# Verify config
-kubectl get cm config-defaults -n tekton-pipelines -o yaml | grep cloud-events
-
-# Check controller logs for CloudEvent errors
-kubectl logs -n tekton-pipelines -l app=tekton-pipelines-controller | grep -i cloudevent
-```
-
-**Dashboard not accessible:**
-```bash
-# Check dashboard pod
-kubectl get pods -n tekton-pipelines -l app=tekton-dashboard
-
-# Check service
-kubectl get svc -n tekton-pipelines tekton-dashboard
-
-# Test connectivity
-kubectl run curl --rm -it --restart=Never --image=curlimages/curl -- \
-  curl -v http://tekton-dashboard.tekton-pipelines:9097
-```
-
-## References
-
-- [Tekton Pipelines Releases](https://github.com/tektoncd/pipeline/releases)
-- [Tekton Dashboard Releases](https://github.com/tektoncd/dashboard/releases)
-- [Tekton CloudEvents Documentation](https://tekton.dev/docs/pipelines/events/)
-- [Tekton ConfigMap Configuration](https://tekton.dev/docs/pipelines/additional-configs/)
+- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — application deployments that use Tekton-built images or are triggered by Tekton pipelines
+- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — namespaces for workloads that Tekton pipelines build and deploy into
+- [KubernetesSecret](/docs/catalog/kubernetes/kubernetessecret) — secrets for Git credentials, container registry tokens, and other pipeline authentication needs

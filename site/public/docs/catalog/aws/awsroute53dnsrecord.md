@@ -6,352 +6,300 @@ order: 100
 componentName: "awsroute53dnsrecord"
 ---
 
-# AWS Route53 DNS Record - Technical Research Documentation
+# AWS Route53 DNS Record
 
-## Introduction
+Deploys an individual DNS record in an existing AWS Route53 hosted zone, with support for standard record types (A, AAAA, CNAME, MX, TXT, NS, SRV, CAA), alias records pointing to AWS resources, and advanced routing policies (weighted, latency, failover, geolocation).
 
-AWS Route53 is Amazon's highly available and scalable Domain Name System (DNS) web service. While Route53 offers a comprehensive set of features including domain registration, DNS routing, and health checking, this document focuses specifically on **DNS resource records** - the fundamental building blocks of DNS that map domain names to IP addresses or other resources.
+## What Gets Created
 
-This research document analyzes the DNS record management landscape, compares deployment approaches, and explains OpenMCF's design decisions for the `AwsRoute53DnsRecord` component.
+When you deploy an AwsRoute53DnsRecord resource, OpenMCF provisions:
 
-## The DNS Record Landscape
+- **Route53 DNS Record** — a `route53.Record` (AWS Classic) resource in the specified hosted zone, configured with the given record type, values or alias target, and optional routing policy
 
-### What Are DNS Records?
+Depending on configuration, the record may be:
 
-DNS records are entries in a DNS zone that define how domain names are resolved. Common record types include:
+- A **standard record** with explicit values and TTL (e.g., A record with IP addresses)
+- An **alias record** pointing to an AWS resource (ALB, CloudFront, S3 website, API Gateway) with automatic TTL from the target
+- A **policy-routed record** using weighted, latency-based, failover, or geolocation routing for advanced traffic management
 
-| Type | Purpose | Example |
-|------|---------|---------|
-| A | Maps domain to IPv4 address | `www.example.com → 192.0.2.1` |
-| AAAA | Maps domain to IPv6 address | `www.example.com → 2001:db8::1` |
-| CNAME | Alias to another domain | `blog.example.com → example.ghost.io` |
-| MX | Mail exchange servers | `example.com → 10 mail.example.com` |
-| TXT | Text data (SPF, DKIM, verification) | `example.com → "v=spf1..."` |
-| NS | Nameserver delegation | `example.com → ns1.awsdns-01.com` |
-| CAA | Certificate Authority Authorization | `example.com → 0 issue "letsencrypt.org"` |
+## Prerequisites
 
-### Route53's Unique Features
+- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **An existing Route53 hosted zone** — provide the zone ID directly or reference an AwsRoute53Zone resource via `valueFrom`
+- **A health check ID** (optional) if using failover routing — health checks must be created separately in Route53
+- **The target resource's DNS name and hosted zone ID** if creating alias records — or reference an AwsAlb resource via `valueFrom`
 
-Route53 offers capabilities beyond standard DNS:
+## Quick Start
 
-**1. Alias Records**
-- Route53's proprietary extension to DNS
-- Can point zone apex (naked domain) to AWS resources
-- Free queries for alias records pointing to AWS resources
-- Automatic IP updates when target resource IPs change
-- Supports: CloudFront, ALB/NLB, S3 website, API Gateway, Elastic Beanstalk, VPC endpoints
-
-**2. Advanced Routing Policies**
-- **Simple**: Standard DNS behavior (default)
-- **Weighted**: Distribute traffic by percentage (0-255 weight)
-- **Latency**: Route to lowest-latency endpoint
-- **Failover**: Active-passive with health checks
-- **Geolocation**: Route by continent/country/US state
-- **Multivalue Answer**: Return multiple healthy IPs
-
-**3. Health Checks Integration**
-- HTTP/HTTPS/TCP endpoint monitoring
-- CloudWatch alarm-based health checks
-- Automatic failover when health checks fail
-
-## Deployment Methods Analysis
-
-### 1. AWS Console (Manual)
-
-**Pros:**
-- Visual interface for simple changes
-- Good for learning and exploration
-- Immediate feedback
-
-**Cons:**
-- No version control
-- Error-prone for complex configurations
-- Not scalable for many records
-- No audit trail
-
-**Use Case:** Ad-hoc changes, debugging, initial exploration
-
-### 2. AWS CLI
-
-```bash
-aws route53 change-resource-record-sets \
-  --hosted-zone-id Z1234567890ABC \
-  --change-batch file://record.json
-```
-
-**Pros:**
-- Scriptable
-- Can be version controlled
-- Supports all features
-
-**Cons:**
-- Complex JSON format
-- No state management
-- Manual change tracking
-- No drift detection
-
-**Use Case:** Quick scripts, CI/CD integration
-
-### 3. AWS CloudFormation
+Create a file `dns-record.yaml`:
 
 ```yaml
-Resources:
-  DNSRecord:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneId: Z1234567890ABC
-      Name: www.example.com
-      Type: A
-      TTL: 300
-      ResourceRecords:
-        - 192.0.2.1
-```
-
-**Pros:**
-- Native AWS integration
-- Stack-based management
-- Rollback support
-
-**Cons:**
-- AWS-only
-- YAML/JSON syntax verbose
-- Limited cross-stack references
-- Slower deployment cycles
-
-### 4. Terraform/OpenTofu
-
-```hcl
-resource "aws_route53_record" "www" {
-  zone_id = "Z1234567890ABC"
-  name    = "www.example.com"
-  type    = "A"
-  ttl     = 300
-  records = ["192.0.2.1"]
-}
-```
-
-**Pros:**
-- Multi-cloud support
-- Excellent state management
-- Large community
-- Rich ecosystem
-
-**Cons:**
-- HCL learning curve
-- State file management complexity
-- Provider version compatibility
-
-### 5. Pulumi
-
-```go
-record, err := route53.NewRecord(ctx, "www", &route53.RecordArgs{
-    ZoneId:  pulumi.String("Z1234567890ABC"),
-    Name:    pulumi.String("www.example.com"),
-    Type:    pulumi.String("A"),
-    Ttl:     pulumi.Int(300),
-    Records: pulumi.StringArray{pulumi.String("192.0.2.1")},
-})
-```
-
-**Pros:**
-- Real programming languages
-- Strong typing
-- Excellent IDE support
-- Component abstractions
-
-**Cons:**
-- Requires programming knowledge
-- Smaller community than Terraform
-
-### 6. ExternalDNS (Kubernetes)
-
-ExternalDNS automatically creates DNS records from Kubernetes Service/Ingress annotations:
-
-```yaml
-apiVersion: v1
-kind: Service
+apiVersion: aws.openmcf.org/v1
+kind: AwsRoute53DnsRecord
 metadata:
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: www.example.com
+  name: www-example
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AwsRoute53DnsRecord.www-example
 spec:
-  type: LoadBalancer
+  zoneId: Z1234567890ABCDEF
+  name: www.example.com
+  type: A
+  ttl: 300
+  values:
+    - "203.0.113.10"
 ```
 
-**Pros:**
-- Automatic record management
-- Kubernetes-native
-- Supports multiple providers
+Deploy:
 
-**Cons:**
-- Kubernetes-only
-- Limited to service discovery use case
-- No advanced routing policies
-- Less control over record details
-
-## Comparative Analysis
-
-| Approach | Declarative | State Mgmt | Multi-Cloud | Learning Curve | Advanced Features |
-|----------|------------|------------|-------------|----------------|-------------------|
-| Console | ❌ | ❌ | ❌ | Low | ✅ |
-| CLI | Partial | ❌ | ❌ | Medium | ✅ |
-| CloudFormation | ✅ | ✅ | ❌ | Medium | ✅ |
-| Terraform | ✅ | ✅ | ✅ | Medium | ✅ |
-| Pulumi | ✅ | ✅ | ✅ | Medium-High | ✅ |
-| ExternalDNS | ✅ | Partial | ✅ | Low | ❌ |
-
-## OpenMCF's Approach
-
-### Design Philosophy
-
-`AwsRoute53DnsRecord` follows the 80/20 principle - exposing the 20% of features that serve 80% of use cases while maintaining access to Route53's powerful capabilities.
-
-### Why a Standalone DNS Record Component?
-
-While `AwsRoute53Zone` can create records inline within a zone, a standalone record component provides:
-
-1. **Granular Management**: Create/update/delete individual records without touching the zone
-2. **Cross-Account Records**: Create records in zones owned by different AWS accounts
-3. **Team Autonomy**: Application teams manage their records without zone access
-4. **Modular Composition**: Combine with other components (ALB, CloudFront) in pipelines
-
-### Scope Decisions
-
-**In Scope (80/20 Focus):**
-- Standard record types: A, AAAA, CNAME, MX, TXT, NS, SRV, CAA
-- Alias records (Route53's killer feature)
-- All routing policies: weighted, latency, failover, geolocation
-- Health check integration
-- Wildcard records
-
-**Out of Scope:**
-- Traffic flow policies (complex visual routing)
-- DNSSEC key management (handled at zone level)
-- Private hosted zone creation (use AwsRoute53Zone)
-- Domain registration (separate workflow)
-- Health check creation (separate resource)
-
-### Schema Design Rationale
-
-**1. Using Shared DnsRecordType Enum**
-Instead of creating an AWS-specific enum, we use the shared `DnsRecordType` from `org.openmcf.shared.networking.enums.dnsrecordtype`. This provides consistency across providers (AWS, GCP, Cloudflare) and enables potential cross-provider DNS abstractions.
-
-**2. Values vs Alias as Mutually Exclusive**
-The schema enforces that `values` (for standard records) and `alias_target` (for alias records) cannot both be specified. This matches Route53's API behavior and prevents configuration errors.
-
-**3. Routing Policy as Oneof**
-Only one routing policy can be active per record. The schema uses protobuf `oneof` to enforce this at the type level, preventing invalid combinations.
-
-**4. Set Identifier Validation**
-The schema validates that `set_identifier` is required when using non-simple routing policies, preventing deployment failures.
-
-## Implementation Landscape
-
-### Pulumi Implementation
-
-The Pulumi module uses the `aws.route53.Record` resource:
-
-```go
-recordArgs := &route53.RecordArgs{
-    ZoneId: pulumi.String(spec.HostedZoneId),
-    Name:   pulumi.String(spec.Name),
-    Type:   pulumi.String(spec.Type.String()),
-}
-
-if len(spec.Values) > 0 {
-    recordArgs.Ttl = pulumi.Int(spec.Ttl)
-    recordArgs.Records = pulumi.ToStringArray(spec.Values)
-} else if spec.AliasTarget != nil {
-    recordArgs.Aliases = route53.RecordAliasArray{
-        &route53.RecordAliasArgs{
-            Name:                 pulumi.String(spec.AliasTarget.DnsName),
-            ZoneId:               pulumi.String(spec.AliasTarget.HostedZoneId),
-            EvaluateTargetHealth: pulumi.Bool(spec.AliasTarget.EvaluateTargetHealth),
-        },
-    }
-}
+```shell
+openmcf apply -f dns-record.yaml
 ```
 
-### Terraform Implementation
+This creates an A record for `www.example.com` pointing to `203.0.113.10` with a 5-minute TTL.
 
-The Terraform module uses `aws_route53_record`:
+## Configuration Reference
 
-```hcl
-resource "aws_route53_record" "record" {
-  zone_id = var.hosted_zone_id
-  name    = var.name
-  type    = var.type
-  
-  dynamic "alias" {
-    for_each = var.alias_target != null ? [var.alias_target] : []
-    content {
-      name                   = alias.value.dns_name
-      zone_id                = alias.value.hosted_zone_id
-      evaluate_target_health = alias.value.evaluate_target_health
-    }
-  }
-  
-  ttl     = var.alias_target == null ? var.ttl : null
-  records = var.alias_target == null ? var.values : null
-}
+### Required Fields
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `zoneId` | `StringValueOrRef` | The Route53 hosted zone ID where this record is created. Can reference an AwsRoute53Zone resource via `valueFrom` (default kind: `AwsRoute53Zone`, default field: `status.outputs.zone_id`). | Required |
+| `name` | `string` | The fully qualified domain name or subdomain (e.g., `www.example.com`, `*.example.com`). | Required. Pattern: hostname, subdomain, or wildcard. |
+| `type` | `RecordType` | The DNS record type. Valid values: `A`, `AAAA`, `CNAME`, `MX`, `TXT`, `SRV`, `NS`, `CAA`. | Required. Cannot be `record_type_unspecified`. |
+
+At least one of `values` or `aliasTarget` must be specified. They are mutually exclusive.
+
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `ttl` | `int32` | `300` | Time to live in seconds. Valid range: 0-604800 (1 week). Ignored for alias records. Common values: 60 (fast changes), 300 (default), 86400 (static records). |
+| `values` | `string[]` | `[]` | Record values. Format depends on type: A = IPv4 addresses, AAAA = IPv6, CNAME = target hostname, MX = priority + mail server, TXT = text values. Mutually exclusive with `aliasTarget`. |
+| `aliasTarget` | `object` | — | Alias target for Route53 alias records. Use for zone apex records or free-query routing to AWS resources. Mutually exclusive with `values`. |
+| `aliasTarget.dnsName` | `StringValueOrRef` | — | DNS name of the target resource. Can reference an AwsAlb resource via `valueFrom` (default kind: `AwsAlb`, default field: `status.outputs.load_balancer_dns_name`). Required for alias records. |
+| `aliasTarget.zoneId` | `StringValueOrRef` | — | Hosted zone ID of the target AWS service (not your Route53 zone). Can reference an AwsAlb resource via `valueFrom` (default kind: `AwsAlb`, default field: `status.outputs.load_balancer_hosted_zone_id`). Required for alias records. |
+| `aliasTarget.evaluateTargetHealth` | `bool` | `false` | When `true`, Route53 checks the health of the target before responding. Useful for failover scenarios. |
+| `routingPolicy` | `object` | — | Routing policy for advanced traffic management. If not specified, simple routing is used. Only one policy type can be set. |
+| `routingPolicy.weighted` | `object` | — | Weighted routing. Distributes traffic based on assigned weights. |
+| `routingPolicy.weighted.weight` | `int32` | — | Weight value (0-255). Higher weight means more traffic. Weight of 0 stops traffic to this record. |
+| `routingPolicy.latency` | `object` | — | Latency-based routing. Routes to the lowest-latency endpoint. |
+| `routingPolicy.latency.region` | `string` | — | AWS region where this resource is located (e.g., `us-east-1`). Required for latency routing. |
+| `routingPolicy.failover` | `object` | — | Failover routing. Automatic failover to secondary when primary fails. |
+| `routingPolicy.failover.failoverType` | `FailoverType` | — | Must be `primary` or `secondary`. Required for failover routing. |
+| `routingPolicy.geolocation` | `object` | — | Geolocation routing. Routes based on user location. |
+| `routingPolicy.geolocation.continent` | `string` | — | Two-letter continent code (e.g., `NA`, `EU`, `AS`). Use continent or country, not both. |
+| `routingPolicy.geolocation.country` | `string` | — | Two-letter ISO 3166-1 country code (e.g., `US`, `GB`, `DE`). |
+| `routingPolicy.geolocation.subdivision` | `string` | — | US state code (e.g., `CA`, `NY`). Only valid when country is `US`. |
+| `healthCheckId` | `string` | — | Route53 health check ID for failover routing. Health checks must be created separately. |
+| `setIdentifier` | `string` | — | Unique identifier for routing policies. Required for weighted, latency, failover, and geolocation routing. Must be unique among records with the same name and type. |
+
+## Examples
+
+### Simple A Record
+
+A basic A record pointing a subdomain to an IP address:
+
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsRoute53DnsRecord
+metadata:
+  name: api-example
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AwsRoute53DnsRecord.api-example
+spec:
+  zoneId: Z1234567890ABCDEF
+  name: api.example.com
+  type: A
+  ttl: 300
+  values:
+    - "203.0.113.10"
+    - "203.0.113.11"
 ```
 
-## Production Best Practices
+### Alias Record Pointing to an ALB
 
-### 1. TTL Strategy
+An alias record at the zone apex pointing to an Application Load Balancer. Alias records at the apex are not possible with CNAME, and alias queries to AWS resources are free:
 
-| Record Purpose | Recommended TTL | Rationale |
-|----------------|-----------------|-----------|
-| Stable records (MX, NS) | 86400 (1 day) | Reduce query costs |
-| Standard records | 300 (5 min) | Balance caching and agility |
-| Records that may change | 60 (1 min) | Faster failover |
-| During migrations | 60 or lower | Quick cutover |
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsRoute53DnsRecord
+metadata:
+  name: apex-example
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AwsRoute53DnsRecord.apex-example
+spec:
+  zoneId: Z1234567890ABCDEF
+  name: example.com
+  type: A
+  aliasTarget:
+    dnsName: my-alb-123456.us-east-1.elb.amazonaws.com
+    zoneId: Z35SXDOTRQ7X7K
+    evaluateTargetHealth: true
+```
 
-### 2. Alias Records Best Practices
+### Using Foreign Key References
 
-- **Always use alias for AWS resources**: Free queries, automatic IP updates
-- **Always use alias for zone apex**: CNAME not allowed at apex
-- **Enable evaluate_target_health for failover**: Ensures unhealthy targets are skipped
+Reference other OpenMCF-managed resources instead of hardcoding IDs. The `zoneId` defaults to kind `AwsRoute53Zone` and the alias target fields default to kind `AwsAlb`:
 
-### 3. Routing Policy Guidelines
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsRoute53DnsRecord
+metadata:
+  name: app-alias
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AwsRoute53DnsRecord.app-alias
+spec:
+  zoneId:
+    valueFrom:
+      name: my-zone
+  name: app.example.com
+  type: A
+  aliasTarget:
+    dnsName:
+      valueFrom:
+        name: my-alb
+    zoneId:
+      valueFrom:
+        name: my-alb
+    evaluateTargetHealth: true
+```
 
-- **Weighted**: Start with 95/5 split for canary, gradually shift
-- **Latency**: Ensure endpoints are actually in the specified regions
-- **Failover**: Always configure health checks for primary
-- **Geolocation**: Always include a default record for unmatched locations
+### Weighted Routing for Canary Deployment
 
-### 4. Health Check Integration
+Split traffic between two endpoints. Create two AwsRoute53DnsRecord resources with the same name and type but different `setIdentifier` and weights:
 
-- Create health checks as separate resources
-- Use 3+ regions for health check origins
-- Set appropriate failure thresholds (typically 3)
-- Monitor health check status in CloudWatch
+**Primary (90% traffic):**
 
-## Common Pitfalls
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsRoute53DnsRecord
+metadata:
+  name: api-stable
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AwsRoute53DnsRecord.api-stable
+spec:
+  zoneId: Z1234567890ABCDEF
+  name: api.example.com
+  type: A
+  ttl: 60
+  values:
+    - "203.0.113.10"
+  routingPolicy:
+    weighted:
+      weight: 90
+  setIdentifier: stable
+```
 
-1. **Forgetting trailing dot**: Route53 adds it automatically, but inconsistency can cause issues
-2. **Using CNAME at apex**: Not allowed by DNS spec - use alias instead
-3. **Missing set_identifier**: Required for all non-simple routing policies
-4. **TTL on alias records**: TTL is ignored for alias records (uses target's TTL)
-5. **Wrong hosted zone ID for alias**: The alias `hosted_zone_id` is the target service's zone, not your zone
+**Canary (10% traffic):**
 
-## Cost Considerations
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsRoute53DnsRecord
+metadata:
+  name: api-canary
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AwsRoute53DnsRecord.api-canary
+spec:
+  zoneId: Z1234567890ABCDEF
+  name: api.example.com
+  type: A
+  ttl: 60
+  values:
+    - "203.0.113.20"
+  routingPolicy:
+    weighted:
+      weight: 10
+  setIdentifier: canary
+```
 
-| Operation | Cost (as of 2024) |
-|-----------|-------------------|
-| Hosted zone | $0.50/month |
-| Standard queries | $0.40/million |
-| Latency queries | $0.60/million |
-| Geo DNS queries | $0.70/million |
-| Alias queries to AWS | Free |
-| Health checks | $0.50-$2.00/month |
+### Failover with Health Check
 
-**Cost Optimization Tips:**
-- Use alias records for AWS resources (free queries)
-- Higher TTLs reduce query volume
-- Consolidate related records to reduce zone count
+Active-passive failover between a primary and secondary endpoint. The primary record includes a health check; when it fails, Route53 returns the secondary:
 
-## Conclusion
+**Primary:**
 
-`AwsRoute53DnsRecord` provides a focused, declarative interface for managing Route53 DNS records. By supporting the full range of record types, alias records, and routing policies, it covers the vast majority of DNS management needs while maintaining simplicity through careful API design and built-in validation.
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsRoute53DnsRecord
+metadata:
+  name: app-primary
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AwsRoute53DnsRecord.app-primary
+spec:
+  zoneId: Z1234567890ABCDEF
+  name: app.example.com
+  type: A
+  ttl: 60
+  values:
+    - "203.0.113.10"
+  routingPolicy:
+    failover:
+      failoverType: primary
+  healthCheckId: hc-12345-abcde
+  setIdentifier: primary
+```
 
-The component integrates seamlessly with other OpenMCF AWS components, enabling sophisticated infrastructure patterns like multi-region deployments, blue/green releases, and automatic failover - all managed as code through a consistent, validated interface.
+**Secondary:**
+
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsRoute53DnsRecord
+metadata:
+  name: app-secondary
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AwsRoute53DnsRecord.app-secondary
+spec:
+  zoneId: Z1234567890ABCDEF
+  name: app.example.com
+  type: A
+  ttl: 60
+  values:
+    - "203.0.113.20"
+  routingPolicy:
+    failover:
+      failoverType: secondary
+  setIdentifier: secondary
+```
+
+## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `fqdn` | `string` | The fully qualified domain name of the created record (e.g., `www.example.com`) |
+| `record_type` | `string` | The DNS record type that was created (e.g., `A`, `CNAME`, `TXT`) |
+| `zone_id` | `string` | The hosted zone ID where the record was created |
+| `is_alias` | `bool` | Whether this is an alias record (pointing to an AWS resource) |
+| `set_identifier` | `string` | The set identifier, if using routing policies. Empty for simple routing. |
+
+## Related Components
+
+- [AwsRoute53Zone](/docs/catalog/aws/awsroute53zone) — creates the hosted zone where DNS records are placed; also supports inline record creation
+- [AwsAlb](/docs/catalog/aws/awsalb) — provides `load_balancer_dns_name` and `load_balancer_hosted_zone_id` outputs for alias record targets
+- [AwsCloudfront](/docs/catalog/aws/awscloudfront) — provides the distribution DNS name for alias record targets
+- [AwsCertManagerCert](/docs/catalog/aws/awscertmanagercert) — DNS-validated certificates require TXT or CNAME records in the zone

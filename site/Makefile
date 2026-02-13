@@ -1,13 +1,16 @@
 SHELL := /bin/bash
 
-.PHONY: deps dev build start run lint clean preview-site export-static
+.PHONY: deps dev build start run lint clean preview-site export-static copy-docs generate-structure
 
 PORT ?= 3000
 
 deps:
 	yarn install
 
-dev: copy-docs
+generate-structure: copy-docs
+	yarn tsx scripts/generate-docs-structure.ts
+
+dev: generate-structure
 	yarn dev --port $(PORT)
 
 run: dev
@@ -30,4 +33,4 @@ preview-site: export-static
 	yarn serve -s out -l $(PORT)
 
 clean:
-	rm -rf .next out
+	rm -rf .next out public/docs-structure.json
