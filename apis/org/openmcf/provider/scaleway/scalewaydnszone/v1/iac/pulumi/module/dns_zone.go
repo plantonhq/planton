@@ -10,20 +10,23 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// dnsRecordTypeMap maps the shared DnsRecordType enum string values
+// dnsRecordTypeMap maps the local RecordType enum string values
 // to the uppercase record type strings expected by the Scaleway API.
+// Includes all 13 Scaleway-supported record types.
 var dnsRecordTypeMap = map[string]string{
 	"A":     "A",
 	"AAAA":  "AAAA",
 	"ALIAS": "ALIAS",
+	"CAA":   "CAA",
 	"CNAME": "CNAME",
+	"DNAME": "DNAME",
 	"MX":    "MX",
 	"NS":    "NS",
 	"PTR":   "PTR",
 	"SOA":   "SOA",
 	"SRV":   "SRV",
 	"TXT":   "TXT",
-	"CAA":   "CAA",
+	"TLSA":  "TLSA",
 }
 
 // dnsZone provisions the Scaleway DNS zone, creates inline DNS records,

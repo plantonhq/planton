@@ -9,7 +9,6 @@ package scalewaydnszonev1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
-	dnsrecordtype "github.com/plantonhq/openmcf/apis/org/openmcf/shared/networking/enums/dnsrecordtype"
 	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -24,6 +23,107 @@ const (
 	// Verify that runtime/protoimpl is sufficiently up-to-date.
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
+
+// Supported DNS record types for Scaleway inline zone records.
+//
+// This is a local enum (not the shared DnsRecordType) because each
+// provider component owns its type surface. Scaleway supports DNAME
+// and TLSA which are not present in the shared enum.
+type ScalewayDnsZoneRecord_RecordType int32
+
+const (
+	// Unspecified record type (invalid).
+	ScalewayDnsZoneRecord_record_type_unspecified ScalewayDnsZoneRecord_RecordType = 0
+	// IPv4 address record.
+	ScalewayDnsZoneRecord_A ScalewayDnsZoneRecord_RecordType = 1
+	// IPv6 address record.
+	ScalewayDnsZoneRecord_AAAA ScalewayDnsZoneRecord_RecordType = 2
+	// Auto-resolved alias record (Scaleway-native, like CNAME at zone apex).
+	ScalewayDnsZoneRecord_ALIAS ScalewayDnsZoneRecord_RecordType = 3
+	// Certificate Authority Authorization record.
+	ScalewayDnsZoneRecord_CAA ScalewayDnsZoneRecord_RecordType = 4
+	// Canonical name (alias) record.
+	ScalewayDnsZoneRecord_CNAME ScalewayDnsZoneRecord_RecordType = 5
+	// Delegation name record. Redirects a subtree of the DNS name space.
+	ScalewayDnsZoneRecord_DNAME ScalewayDnsZoneRecord_RecordType = 6
+	// Mail exchange record.
+	ScalewayDnsZoneRecord_MX ScalewayDnsZoneRecord_RecordType = 7
+	// Nameserver record.
+	ScalewayDnsZoneRecord_NS ScalewayDnsZoneRecord_RecordType = 8
+	// Pointer record (reverse DNS).
+	ScalewayDnsZoneRecord_PTR ScalewayDnsZoneRecord_RecordType = 9
+	// Start of authority record.
+	ScalewayDnsZoneRecord_SOA ScalewayDnsZoneRecord_RecordType = 10
+	// Service locator record.
+	ScalewayDnsZoneRecord_SRV ScalewayDnsZoneRecord_RecordType = 11
+	// Text record (SPF, DKIM, DMARC, domain verification, etc.).
+	ScalewayDnsZoneRecord_TXT ScalewayDnsZoneRecord_RecordType = 12
+	// Transport Layer Security Association record (DANE).
+	ScalewayDnsZoneRecord_TLSA ScalewayDnsZoneRecord_RecordType = 13
+)
+
+// Enum value maps for ScalewayDnsZoneRecord_RecordType.
+var (
+	ScalewayDnsZoneRecord_RecordType_name = map[int32]string{
+		0:  "record_type_unspecified",
+		1:  "A",
+		2:  "AAAA",
+		3:  "ALIAS",
+		4:  "CAA",
+		5:  "CNAME",
+		6:  "DNAME",
+		7:  "MX",
+		8:  "NS",
+		9:  "PTR",
+		10: "SOA",
+		11: "SRV",
+		12: "TXT",
+		13: "TLSA",
+	}
+	ScalewayDnsZoneRecord_RecordType_value = map[string]int32{
+		"record_type_unspecified": 0,
+		"A":                       1,
+		"AAAA":                    2,
+		"ALIAS":                   3,
+		"CAA":                     4,
+		"CNAME":                   5,
+		"DNAME":                   6,
+		"MX":                      7,
+		"NS":                      8,
+		"PTR":                     9,
+		"SOA":                     10,
+		"SRV":                     11,
+		"TXT":                     12,
+		"TLSA":                    13,
+	}
+)
+
+func (x ScalewayDnsZoneRecord_RecordType) Enum() *ScalewayDnsZoneRecord_RecordType {
+	p := new(ScalewayDnsZoneRecord_RecordType)
+	*p = x
+	return p
+}
+
+func (x ScalewayDnsZoneRecord_RecordType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ScalewayDnsZoneRecord_RecordType) Descriptor() protoreflect.EnumDescriptor {
+	return file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto_enumTypes[0].Descriptor()
+}
+
+func (ScalewayDnsZoneRecord_RecordType) Type() protoreflect.EnumType {
+	return &file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto_enumTypes[0]
+}
+
+func (x ScalewayDnsZoneRecord_RecordType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ScalewayDnsZoneRecord_RecordType.Descriptor instead.
+func (ScalewayDnsZoneRecord_RecordType) EnumDescriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto_rawDescGZIP(), []int{1, 0}
+}
 
 // ScalewayDnsZoneSpec defines the specification for a Scaleway DNS zone
 // with optional inline DNS records.
@@ -60,9 +160,6 @@ const (
 // **Scaleway DNS limitations:**
 //   - No DNSSEC support
 //   - No traffic routing policies (geo, weighted, latency, failover)
-//   - Advanced record types (DNAME, TLSA) are supported by Scaleway
-//     but not exposed in this spec's shared DnsRecordType enum. Use
-//     the standalone ScalewayDnsRecord kind for those niche types.
 //
 // **Composition pattern:** This is a foundation resource (DAG Layer 0)
 // with no upstream `StringValueOrRef` dependencies. The primary output
@@ -73,9 +170,7 @@ const (
 // **Deferred features (not in v1):**
 //   - DNSSEC configuration
 //   - Dynamic record types (geo_ip, http_service, view, weighted)
-//   - DNAME and TLSA record types in inline records
-//     These can be added in future versions or used via the standalone
-//     ScalewayDnsRecord kind.
+//     These can be added in future versions.
 type ScalewayDnsZoneSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The registered parent domain name (e.g., "example.com").
@@ -181,12 +276,9 @@ func (x *ScalewayDnsZoneSpec) GetRecords() []*ScalewayDnsZoneRecord {
 // records for the same domain), add multiple entries with the same
 // name and type but different data values and priorities.
 //
-// Supported record types via the shared DnsRecordType enum:
+// Supported record types cover all Scaleway DNS record types:
 //
-//	A, AAAA, ALIAS, CNAME, MX, NS, PTR, SOA, SRV, TXT, CAA
-//
-// For Scaleway-specific types (DNAME, TLSA), use the standalone
-// ScalewayDnsRecord kind.
+//	A, AAAA, ALIAS, CAA, CNAME, DNAME, MX, NS, PTR, SOA, SRV, TXT, TLSA
 type ScalewayDnsZoneRecord struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Record name relative to the zone.
@@ -204,17 +296,22 @@ type ScalewayDnsZoneRecord struct {
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// DNS record type.
 	//
-	// Common types and their data formats:
+	// All Scaleway-supported record types and their data formats:
 	//
 	//	A: IPv4 address (e.g., "192.0.2.1")
 	//	AAAA: IPv6 address (e.g., "2001:db8::1")
+	//	ALIAS: target hostname (e.g., "www.example.com.")
+	//	CAA: flags tag value (e.g., '0 issue "letsencrypt.org"')
 	//	CNAME: target hostname with trailing dot (e.g., "target.example.com.")
+	//	DNAME: delegation target (e.g., "other.example.com.")
 	//	MX: mail server with trailing dot (e.g., "mail.example.com.")
-	//	TXT: text data (e.g., "v=spf1 include:_spf.google.com ~all")
-	//	CAA: authority value (e.g., "letsencrypt.org")
 	//	NS: nameserver with trailing dot (e.g., "ns1.example.com.")
-	//	SRV: target with trailing dot (e.g., "sipserver.example.com.")
-	Type dnsrecordtype.DnsRecordType `protobuf:"varint,2,opt,name=type,proto3,enum=org.openmcf.shared.networking.enums.dnsrecordtype.DnsRecordType" json:"type,omitempty"`
+	//	PTR: pointer target (e.g., "host.example.com.")
+	//	SOA: SOA parameters
+	//	SRV: "weight port target" (e.g., "10 5060 sipserver.example.com.")
+	//	TXT: text data (e.g., "v=spf1 include:_spf.google.com ~all")
+	//	TLSA: "usage selector matching-type cert-data" (DANE)
+	Type ScalewayDnsZoneRecord_RecordType `protobuf:"varint,2,opt,name=type,proto3,enum=org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneRecord_RecordType" json:"type,omitempty"`
 	// Record data/value.
 	//
 	// Can be a literal string or a reference to another resource's
@@ -295,11 +392,11 @@ func (x *ScalewayDnsZoneRecord) GetName() string {
 	return ""
 }
 
-func (x *ScalewayDnsZoneRecord) GetType() dnsrecordtype.DnsRecordType {
+func (x *ScalewayDnsZoneRecord) GetType() ScalewayDnsZoneRecord_RecordType {
 	if x != nil {
 		return x.Type
 	}
-	return dnsrecordtype.DnsRecordType(0)
+	return ScalewayDnsZoneRecord_record_type_unspecified
 }
 
 func (x *ScalewayDnsZoneRecord) GetData() *v1.StringValueOrRef {
@@ -327,17 +424,34 @@ var File_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto protoreflec
 
 const file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	";org/openmcf/provider/scaleway/scalewaydnszone/v1/spec.proto\x120org.openmcf.provider.scaleway.scalewaydnszone.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1aGorg/openmcf/shared/networking/enums/dnsrecordtype/dns_record_type.proto\x1a(org/openmcf/shared/options/options.proto\"\xb6\x01\n" +
+	";org/openmcf/provider/scaleway/scalewaydnszone/v1/spec.proto\x120org.openmcf.provider.scaleway.scalewaydnszone.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb6\x01\n" +
 	"\x13ScalewayDnsZoneSpec\x12\x1e\n" +
 	"\x06domain\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06domain\x12\x1c\n" +
 	"\tsubdomain\x18\x02 \x01(\tR\tsubdomain\x12a\n" +
-	"\arecords\x18\x03 \x03(\v2G.org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneRecordR\arecords\"\x91\x02\n" +
+	"\arecords\x18\x03 \x03(\v2G.org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneRecordR\arecords\"\xc8\x03\n" +
 	"\x15ScalewayDnsZoneRecord\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\\\n" +
-	"\x04type\x18\x02 \x01(\x0e2@.org.openmcf.shared.networking.enums.dnsrecordtype.DnsRecordTypeB\x06\xbaH\x03\xc8\x01\x01R\x04type\x12N\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12n\n" +
+	"\x04type\x18\x02 \x01(\x0e2R.org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneRecord.RecordTypeB\x06\xbaH\x03\xc8\x01\x01R\x04type\x12N\n" +
 	"\x04data\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x04data\x12\x1a\n" +
 	"\x03ttl\x18\x04 \x01(\rB\b\x92\xa6\x1d\x043600R\x03ttl\x12\x1a\n" +
-	"\bpriority\x18\x05 \x01(\rR\bpriorityB\x8e\x03\n" +
+	"\bpriority\x18\x05 \x01(\rR\bpriority\"\xa2\x01\n" +
+	"\n" +
+	"RecordType\x12\x1b\n" +
+	"\x17record_type_unspecified\x10\x00\x12\x05\n" +
+	"\x01A\x10\x01\x12\b\n" +
+	"\x04AAAA\x10\x02\x12\t\n" +
+	"\x05ALIAS\x10\x03\x12\a\n" +
+	"\x03CAA\x10\x04\x12\t\n" +
+	"\x05CNAME\x10\x05\x12\t\n" +
+	"\x05DNAME\x10\x06\x12\x06\n" +
+	"\x02MX\x10\a\x12\x06\n" +
+	"\x02NS\x10\b\x12\a\n" +
+	"\x03PTR\x10\t\x12\a\n" +
+	"\x03SOA\x10\n" +
+	"\x12\a\n" +
+	"\x03SRV\x10\v\x12\a\n" +
+	"\x03TXT\x10\f\x12\b\n" +
+	"\x04TLSA\x10\rB\x8e\x03\n" +
 	"4com.org.openmcf.provider.scaleway.scalewaydnszone.v1B\tSpecProtoP\x01Zdgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaydnszone/v1;scalewaydnszonev1\xa2\x02\x05OOPSS\xaa\x020Org.Openmcf.Provider.Scaleway.Scalewaydnszone.V1\xca\x020Org\\Openmcf\\Provider\\Scaleway\\Scalewaydnszone\\V1\xe2\x02<Org\\Openmcf\\Provider\\Scaleway\\Scalewaydnszone\\V1\\GPBMetadata\xea\x025Org::Openmcf::Provider::Scaleway::Scalewaydnszone::V1b\x06proto3"
 
 var (
@@ -352,16 +466,17 @@ func file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto_rawDescGZI
 	return file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto_rawDescData
 }
 
+var file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto_goTypes = []any{
-	(*ScalewayDnsZoneSpec)(nil),      // 0: org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneSpec
-	(*ScalewayDnsZoneRecord)(nil),    // 1: org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneRecord
-	(dnsrecordtype.DnsRecordType)(0), // 2: org.openmcf.shared.networking.enums.dnsrecordtype.DnsRecordType
-	(*v1.StringValueOrRef)(nil),      // 3: org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	(ScalewayDnsZoneRecord_RecordType)(0), // 0: org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneRecord.RecordType
+	(*ScalewayDnsZoneSpec)(nil),           // 1: org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneSpec
+	(*ScalewayDnsZoneRecord)(nil),         // 2: org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneRecord
+	(*v1.StringValueOrRef)(nil),           // 3: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneSpec.records:type_name -> org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneRecord
-	2, // 1: org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneRecord.type:type_name -> org.openmcf.shared.networking.enums.dnsrecordtype.DnsRecordType
+	2, // 0: org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneSpec.records:type_name -> org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneRecord
+	0, // 1: org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneRecord.type:type_name -> org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneRecord.RecordType
 	3, // 2: org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneRecord.data:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
@@ -380,13 +495,14 @@ func file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto_rawDesc), len(file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto_goTypes,
 		DependencyIndexes: file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto_depIdxs,
+		EnumInfos:         file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto_enumTypes,
 		MessageInfos:      file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto_msgTypes,
 	}.Build()
 	File_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec_proto = out.File

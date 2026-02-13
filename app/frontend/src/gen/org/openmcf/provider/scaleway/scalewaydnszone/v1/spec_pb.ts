@@ -2,13 +2,11 @@
 // @generated from file org/openmcf/provider/scaleway/scalewaydnszone/v1/spec.proto (package org.openmcf.provider.scaleway.scalewaydnszone.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
-import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv1";
+import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
+import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv1";
 import { file_buf_validate_validate } from "../../../../../../buf/validate/validate_pb";
 import type { StringValueOrRef } from "../../../../shared/foreignkey/v1/foreign_key_pb";
 import { file_org_openmcf_shared_foreignkey_v1_foreign_key } from "../../../../shared/foreignkey/v1/foreign_key_pb";
-import type { DnsRecordType } from "../../../../shared/networking/enums/dnsrecordtype/dns_record_type_pb";
-import { file_org_openmcf_shared_networking_enums_dnsrecordtype_dns_record_type } from "../../../../shared/networking/enums/dnsrecordtype/dns_record_type_pb";
 import { file_org_openmcf_shared_options_options } from "../../../../shared/options/options_pb";
 import type { Message } from "@bufbuild/protobuf";
 
@@ -16,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/scaleway/scalewaydnszone/v1/spec.proto.
  */
 export const file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjtvcmcvb3Blbm1jZi9wcm92aWRlci9zY2FsZXdheS9zY2FsZXdheWRuc3pvbmUvdjEvc3BlYy5wcm90bxIwb3JnLm9wZW5tY2YucHJvdmlkZXIuc2NhbGV3YXkuc2NhbGV3YXlkbnN6b25lLnYxIpoBChNTY2FsZXdheURuc1pvbmVTcGVjEhYKBmRvbWFpbhgBIAEoCUIGukgDyAEBEhEKCXN1YmRvbWFpbhgCIAEoCRJYCgdyZWNvcmRzGAMgAygLMkcub3JnLm9wZW5tY2YucHJvdmlkZXIuc2NhbGV3YXkuc2NhbGV3YXlkbnN6b25lLnYxLlNjYWxld2F5RG5zWm9uZVJlY29yZCLwAQoVU2NhbGV3YXlEbnNab25lUmVjb3JkEgwKBG5hbWUYASABKAkSVgoEdHlwZRgCIAEoDjJALm9yZy5vcGVubWNmLnNoYXJlZC5uZXR3b3JraW5nLmVudW1zLmRuc3JlY29yZHR5cGUuRG5zUmVjb3JkVHlwZUIGukgDyAEBEkgKBGRhdGEYAyABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQga6SAPIAQESFQoDdHRsGAQgASgNQgiSph0EMzYwMBIQCghwcmlvcml0eRgFIAEoDUKOAwo0Y29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLnNjYWxld2F5LnNjYWxld2F5ZG5zem9uZS52MUIJU3BlY1Byb3RvUAFaZGdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9zY2FsZXdheS9zY2FsZXdheWRuc3pvbmUvdjE7c2NhbGV3YXlkbnN6b25ldjGiAgVPT1BTU6oCME9yZy5PcGVubWNmLlByb3ZpZGVyLlNjYWxld2F5LlNjYWxld2F5ZG5zem9uZS5WMcoCME9yZ1xPcGVubWNmXFByb3ZpZGVyXFNjYWxld2F5XFNjYWxld2F5ZG5zem9uZVxWMeICPE9yZ1xPcGVubWNmXFByb3ZpZGVyXFNjYWxld2F5XFNjYWxld2F5ZG5zem9uZVxWMVxHUEJNZXRhZGF0YeoCNU9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OlNjYWxld2F5OjpTY2FsZXdheWRuc3pvbmU6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_networking_enums_dnsrecordtype_dns_record_type, file_org_openmcf_shared_options_options]);
+  fileDesc("Cjtvcmcvb3Blbm1jZi9wcm92aWRlci9zY2FsZXdheS9zY2FsZXdheWRuc3pvbmUvdjEvc3BlYy5wcm90bxIwb3JnLm9wZW5tY2YucHJvdmlkZXIuc2NhbGV3YXkuc2NhbGV3YXlkbnN6b25lLnYxIpoBChNTY2FsZXdheURuc1pvbmVTcGVjEhYKBmRvbWFpbhgBIAEoCUIGukgDyAEBEhEKCXN1YmRvbWFpbhgCIAEoCRJYCgdyZWNvcmRzGAMgAygLMkcub3JnLm9wZW5tY2YucHJvdmlkZXIuc2NhbGV3YXkuc2NhbGV3YXlkbnN6b25lLnYxLlNjYWxld2F5RG5zWm9uZVJlY29yZCKnAwoVU2NhbGV3YXlEbnNab25lUmVjb3JkEgwKBG5hbWUYASABKAkSaAoEdHlwZRgCIAEoDjJSLm9yZy5vcGVubWNmLnByb3ZpZGVyLnNjYWxld2F5LnNjYWxld2F5ZG5zem9uZS52MS5TY2FsZXdheURuc1pvbmVSZWNvcmQuUmVjb3JkVHlwZUIGukgDyAEBEkgKBGRhdGEYAyABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQga6SAPIAQESFQoDdHRsGAQgASgNQgiSph0EMzYwMBIQCghwcmlvcml0eRgFIAEoDSKiAQoKUmVjb3JkVHlwZRIbChdyZWNvcmRfdHlwZV91bnNwZWNpZmllZBAAEgUKAUEQARIICgRBQUFBEAISCQoFQUxJQVMQAxIHCgNDQUEQBBIJCgVDTkFNRRAFEgkKBUROQU1FEAYSBgoCTVgQBxIGCgJOUxAIEgcKA1BUUhAJEgcKA1NPQRAKEgcKA1NSVhALEgcKA1RYVBAMEggKBFRMU0EQDUKOAwo0Y29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLnNjYWxld2F5LnNjYWxld2F5ZG5zem9uZS52MUIJU3BlY1Byb3RvUAFaZGdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9zY2FsZXdheS9zY2FsZXdheWRuc3pvbmUvdjE7c2NhbGV3YXlkbnN6b25ldjGiAgVPT1BTU6oCME9yZy5PcGVubWNmLlByb3ZpZGVyLlNjYWxld2F5LlNjYWxld2F5ZG5zem9uZS5WMcoCME9yZ1xPcGVubWNmXFByb3ZpZGVyXFNjYWxld2F5XFNjYWxld2F5ZG5zem9uZVxWMeICPE9yZ1xPcGVubWNmXFByb3ZpZGVyXFNjYWxld2F5XFNjYWxld2F5ZG5zem9uZVxWMVxHUEJNZXRhZGF0YeoCNU9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OlNjYWxld2F5OjpTY2FsZXdheWRuc3pvbmU6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * ScalewayDnsZoneSpec defines the specification for a Scaleway DNS zone
@@ -54,9 +52,6 @@ export const file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec: GenFile
  * **Scaleway DNS limitations:**
  *   - No DNSSEC support
  *   - No traffic routing policies (geo, weighted, latency, failover)
- *   - Advanced record types (DNAME, TLSA) are supported by Scaleway
- *     but not exposed in this spec's shared DnsRecordType enum. Use
- *     the standalone ScalewayDnsRecord kind for those niche types.
  *
  * **Composition pattern:** This is a foundation resource (DAG Layer 0)
  * with no upstream `StringValueOrRef` dependencies. The primary output
@@ -67,9 +62,7 @@ export const file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec: GenFile
  * **Deferred features (not in v1):**
  *   - DNSSEC configuration
  *   - Dynamic record types (geo_ip, http_service, view, weighted)
- *   - DNAME and TLSA record types in inline records
- *   These can be added in future versions or used via the standalone
- *   ScalewayDnsRecord kind.
+ *   These can be added in future versions.
  *
  * ── Zone Identity ─────────────────────────────────────────────────
  *
@@ -148,11 +141,8 @@ export const ScalewayDnsZoneSpecSchema: GenMessage<ScalewayDnsZoneSpec> = /*@__P
  * records for the same domain), add multiple entries with the same
  * name and type but different data values and priorities.
  *
- * Supported record types via the shared DnsRecordType enum:
- *   A, AAAA, ALIAS, CNAME, MX, NS, PTR, SOA, SRV, TXT, CAA
- *
- * For Scaleway-specific types (DNAME, TLSA), use the standalone
- * ScalewayDnsRecord kind.
+ * Supported record types cover all Scaleway DNS record types:
+ *   A, AAAA, ALIAS, CAA, CNAME, DNAME, MX, NS, PTR, SOA, SRV, TXT, TLSA
  *
  * @generated from message org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneRecord
  */
@@ -177,19 +167,24 @@ export type ScalewayDnsZoneRecord = Message<"org.openmcf.provider.scaleway.scale
   /**
    * DNS record type.
    *
-   * Common types and their data formats:
+   * All Scaleway-supported record types and their data formats:
    *   A: IPv4 address (e.g., "192.0.2.1")
    *   AAAA: IPv6 address (e.g., "2001:db8::1")
+   *   ALIAS: target hostname (e.g., "www.example.com.")
+   *   CAA: flags tag value (e.g., '0 issue "letsencrypt.org"')
    *   CNAME: target hostname with trailing dot (e.g., "target.example.com.")
+   *   DNAME: delegation target (e.g., "other.example.com.")
    *   MX: mail server with trailing dot (e.g., "mail.example.com.")
-   *   TXT: text data (e.g., "v=spf1 include:_spf.google.com ~all")
-   *   CAA: authority value (e.g., "letsencrypt.org")
    *   NS: nameserver with trailing dot (e.g., "ns1.example.com.")
-   *   SRV: target with trailing dot (e.g., "sipserver.example.com.")
+   *   PTR: pointer target (e.g., "host.example.com.")
+   *   SOA: SOA parameters
+   *   SRV: "weight port target" (e.g., "10 5060 sipserver.example.com.")
+   *   TXT: text data (e.g., "v=spf1 include:_spf.google.com ~all")
+   *   TLSA: "usage selector matching-type cert-data" (DANE)
    *
-   * @generated from field: org.openmcf.shared.networking.enums.dnsrecordtype.DnsRecordType type = 2;
+   * @generated from field: org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneRecord.RecordType type = 2;
    */
-  type: DnsRecordType;
+  type: ScalewayDnsZoneRecord_RecordType;
 
   /**
    * Record data/value.
@@ -250,4 +245,119 @@ export type ScalewayDnsZoneRecord = Message<"org.openmcf.provider.scaleway.scale
  */
 export const ScalewayDnsZoneRecordSchema: GenMessage<ScalewayDnsZoneRecord> = /*@__PURE__*/
   messageDesc(file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec, 1);
+
+/**
+ * Supported DNS record types for Scaleway inline zone records.
+ *
+ * This is a local enum (not the shared DnsRecordType) because each
+ * provider component owns its type surface. Scaleway supports DNAME
+ * and TLSA which are not present in the shared enum.
+ *
+ * @generated from enum org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneRecord.RecordType
+ */
+export enum ScalewayDnsZoneRecord_RecordType {
+  /**
+   * Unspecified record type (invalid).
+   *
+   * @generated from enum value: record_type_unspecified = 0;
+   */
+  record_type_unspecified = 0,
+
+  /**
+   * IPv4 address record.
+   *
+   * @generated from enum value: A = 1;
+   */
+  A = 1,
+
+  /**
+   * IPv6 address record.
+   *
+   * @generated from enum value: AAAA = 2;
+   */
+  AAAA = 2,
+
+  /**
+   * Auto-resolved alias record (Scaleway-native, like CNAME at zone apex).
+   *
+   * @generated from enum value: ALIAS = 3;
+   */
+  ALIAS = 3,
+
+  /**
+   * Certificate Authority Authorization record.
+   *
+   * @generated from enum value: CAA = 4;
+   */
+  CAA = 4,
+
+  /**
+   * Canonical name (alias) record.
+   *
+   * @generated from enum value: CNAME = 5;
+   */
+  CNAME = 5,
+
+  /**
+   * Delegation name record. Redirects a subtree of the DNS name space.
+   *
+   * @generated from enum value: DNAME = 6;
+   */
+  DNAME = 6,
+
+  /**
+   * Mail exchange record.
+   *
+   * @generated from enum value: MX = 7;
+   */
+  MX = 7,
+
+  /**
+   * Nameserver record.
+   *
+   * @generated from enum value: NS = 8;
+   */
+  NS = 8,
+
+  /**
+   * Pointer record (reverse DNS).
+   *
+   * @generated from enum value: PTR = 9;
+   */
+  PTR = 9,
+
+  /**
+   * Start of authority record.
+   *
+   * @generated from enum value: SOA = 10;
+   */
+  SOA = 10,
+
+  /**
+   * Service locator record.
+   *
+   * @generated from enum value: SRV = 11;
+   */
+  SRV = 11,
+
+  /**
+   * Text record (SPF, DKIM, DMARC, domain verification, etc.).
+   *
+   * @generated from enum value: TXT = 12;
+   */
+  TXT = 12,
+
+  /**
+   * Transport Layer Security Association record (DANE).
+   *
+   * @generated from enum value: TLSA = 13;
+   */
+  TLSA = 13,
+}
+
+/**
+ * Describes the enum org.openmcf.provider.scaleway.scalewaydnszone.v1.ScalewayDnsZoneRecord.RecordType.
+ */
+export const ScalewayDnsZoneRecord_RecordTypeSchema: GenEnum<ScalewayDnsZoneRecord_RecordType> = /*@__PURE__*/
+  enumDesc(file_org_openmcf_provider_scaleway_scalewaydnszone_v1_spec, 1, 0);
 

@@ -7,21 +7,23 @@ locals {
   zone_name = local.subdomain != "" ? "${local.subdomain}.${local.domain}" : local.domain
 
   # ── Record type mapping ────────────────────────────────────────────
-  # Maps shared DnsRecordType proto enum values (as passed through
-  # Terraform variables) to Scaleway API record type strings.
+  # Maps local RecordType proto enum values to Scaleway API record type
+  # strings. Includes all 13 Scaleway-supported record types.
   record_type_map = {
-    "unspecified" = "A" # Fallback, should not occur with proper validation
-    "A"           = "A"
-    "AAAA"        = "AAAA"
-    "ALIAS"       = "ALIAS"
-    "CNAME"       = "CNAME"
-    "MX"          = "MX"
-    "NS"          = "NS"
-    "PTR"         = "PTR"
-    "SOA"         = "SOA"
-    "SRV"         = "SRV"
-    "TXT"         = "TXT"
-    "CAA"         = "CAA"
+    "record_type_unspecified" = "A" # Fallback, should not occur with proper validation
+    "A"                       = "A"
+    "AAAA"                    = "AAAA"
+    "ALIAS"                   = "ALIAS"
+    "CAA"                     = "CAA"
+    "CNAME"                   = "CNAME"
+    "DNAME"                   = "DNAME"
+    "MX"                      = "MX"
+    "NS"                      = "NS"
+    "PTR"                     = "PTR"
+    "SOA"                     = "SOA"
+    "SRV"                     = "SRV"
+    "TXT"                     = "TXT"
+    "TLSA"                    = "TLSA"
   }
 
   # ── Record flattening ──────────────────────────────────────────────

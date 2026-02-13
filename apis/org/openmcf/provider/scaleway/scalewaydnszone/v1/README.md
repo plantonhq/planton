@@ -51,7 +51,7 @@ Both approaches can be used together. A common pattern is to use inline records 
 | Field | Type | Required | Default | Description |
 |---|---|---|---|---|
 | `name` | string | No | "" | Record name relative to zone. Empty/"@" = zone apex. |
-| `type` | DnsRecordType | Yes | -- | DNS record type (A, AAAA, CNAME, MX, TXT, CAA, NS, SRV, PTR, SOA, ALIAS). |
+| `type` | RecordType | Yes | -- | DNS record type (A, AAAA, ALIAS, CAA, CNAME, DNAME, MX, NS, PTR, SOA, SRV, TXT, TLSA). |
 | `data` | StringValueOrRef | Yes | -- | Record value. Literal or cross-resource reference. |
 | `ttl` | uint32 | No | 3600 | Time to live in seconds. |
 | `priority` | uint32 | No | 0 | Priority for MX/SRV records. Lower = higher priority. |
@@ -98,7 +98,7 @@ Scaleway DNS zones and records do not support tags in the API. Unlike most other
 - **Record `name` and `type`** are immutable in Scaleway's API. Changing them forces record recreation.
 
 ### Record Type Coverage
-The shared `DnsRecordType` enum covers: A, AAAA, ALIAS, CNAME, MX, NS, PTR, SOA, SRV, TXT, CAA. Scaleway also supports DNAME and TLSA, which are available through the standalone ScalewayDnsRecord kind.
+The local `RecordType` enum covers all 13 Scaleway-supported record types: A, AAAA, ALIAS, CAA, CNAME, DNAME, MX, NS, PTR, SOA, SRV, TXT, TLSA.
 
 ### No Advanced DNS Features
 Scaleway DNS does not support: DNSSEC, traffic routing policies (geo, weighted, latency, failover), or health-check-based DNS. For these features, consider Cloudflare or AWS Route53.
@@ -107,7 +107,6 @@ Scaleway DNS does not support: DNSSEC, traffic routing policies (geo, weighted, 
 
 - **DNSSEC** -- Not available in Scaleway DNS.
 - **Dynamic record types** -- Geo-IP, HTTP service checks, view-based routing, weighted routing are supported by Scaleway but deferred from v1.
-- **DNAME/TLSA record types** -- Available in Scaleway but not in the shared DnsRecordType enum. Use standalone ScalewayDnsRecord.
 
 ## Scaleway Documentation
 

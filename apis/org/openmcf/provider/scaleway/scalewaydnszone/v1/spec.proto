@@ -4,7 +4,6 @@ package org.openmcf.provider.scaleway.scalewaydnszone.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
-import "org/openmcf/shared/networking/enums/dnsrecordtype/dns_record_type.proto";
 import "org/openmcf/shared/options/options.proto";
 
 // ScalewayDnsZoneSpec defines the specification for a Scaleway DNS zone
@@ -42,9 +41,6 @@ import "org/openmcf/shared/options/options.proto";
 // **Scaleway DNS limitations:**
 //   - No DNSSEC support
 //   - No traffic routing policies (geo, weighted, latency, failover)
-//   - Advanced record types (DNAME, TLSA) are supported by Scaleway
-//     but not exposed in this spec's shared DnsRecordType enum. Use
-//     the standalone ScalewayDnsRecord kind for those niche types.
 //
 // **Composition pattern:** This is a foundation resource (DAG Layer 0)
 // with no upstream `StringValueOrRef` dependencies. The primary output
@@ -55,9 +51,7 @@ import "org/openmcf/shared/options/options.proto";
 // **Deferred features (not in v1):**
 //   - DNSSEC configuration
 //   - Dynamic record types (geo_ip, http_service, view, weighted)
-//   - DNAME and TLSA record types in inline records
-//   These can be added in future versions or used via the standalone
-//   ScalewayDnsRecord kind.
+//   These can be added in future versions.
 message ScalewayDnsZoneSpec {
   // ── Zone Identity ─────────────────────────────────────────────────
 
@@ -115,12 +109,45 @@ message ScalewayDnsZoneSpec {
 // records for the same domain), add multiple entries with the same
 // name and type but different data values and priorities.
 //
-// Supported record types via the shared DnsRecordType enum:
-//   A, AAAA, ALIAS, CNAME, MX, NS, PTR, SOA, SRV, TXT, CAA
-//
-// For Scaleway-specific types (DNAME, TLSA), use the standalone
-// ScalewayDnsRecord kind.
+// Supported record types cover all Scaleway DNS record types:
+//   A, AAAA, ALIAS, CAA, CNAME, DNAME, MX, NS, PTR, SOA, SRV, TXT, TLSA
 message ScalewayDnsZoneRecord {
+  // Supported DNS record types for Scaleway inline zone records.
+  //
+  // This is a local enum (not the shared DnsRecordType) because each
+  // provider component owns its type surface. Scaleway supports DNAME
+  // and TLSA which are not present in the shared enum.
+  enum RecordType {
+    // Unspecified record type (invalid).
+    record_type_unspecified = 0;
+    // IPv4 address record.
+    A = 1;
+    // IPv6 address record.
+    AAAA = 2;
+    // Auto-resolved alias record (Scaleway-native, like CNAME at zone apex).
+    ALIAS = 3;
+    // Certificate Authority Authorization record.
+    CAA = 4;
+    // Canonical name (alias) record.
+    CNAME = 5;
+    // Delegation name record. Redirects a subtree of the DNS name space.
+    DNAME = 6;
+    // Mail exchange record.
+    MX = 7;
+    // Nameserver record.
+    NS = 8;
+    // Pointer record (reverse DNS).
+    PTR = 9;
+    // Start of authority record.
+    SOA = 10;
+    // Service locator record.
+    SRV = 11;
+    // Text record (SPF, DKIM, DMARC, domain verification, etc.).
+    TXT = 12;
+    // Transport Layer Security Association record (DANE).
+    TLSA = 13;
+  }
+
   // Record name relative to the zone.
   //
   // Use empty string or omit for the zone apex (root record).
@@ -136,16 +163,21 @@ message ScalewayDnsZoneRecord {
 
   // DNS record type.
   //
-  // Common types and their data formats:
+  // All Scaleway-supported record types and their data formats:
   //   A: IPv4 address (e.g., "192.0.2.1")
   //   AAAA: IPv6 address (e.g., "2001:db8::1")
+  //   ALIAS: target hostname (e.g., "www.example.com.")
+  //   CAA: flags tag value (e.g., '0 issue "letsencrypt.org"')
   //   CNAME: target hostname with trailing dot (e.g., "target.example.com.")
+  //   DNAME: delegation target (e.g., "other.example.com.")
   //   MX: mail server with trailing dot (e.g., "mail.example.com.")
-  //   TXT: text data (e.g., "v=spf1 include:_spf.google.com ~all")
-  //   CAA: authority value (e.g., "letsencrypt.org")
   //   NS: nameserver with trailing dot (e.g., "ns1.example.com.")
-  //   SRV: target with trailing dot (e.g., "sipserver.example.com.")
-  org.openmcf.shared.networking.enums.dnsrecordtype.DnsRecordType type = 2 [(buf.validate.field).required = true];
+  //   PTR: pointer target (e.g., "host.example.com.")
+  //   SOA: SOA parameters
+  //   SRV: "weight port target" (e.g., "10 5060 sipserver.example.com.")
+  //   TXT: text data (e.g., "v=spf1 include:_spf.google.com ~all")
+  //   TLSA: "usage selector matching-type cert-data" (DANE)
+  RecordType type = 2 [(buf.validate.field).required = true];
 
   // Record data/value.
   //

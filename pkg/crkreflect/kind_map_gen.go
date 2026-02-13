@@ -204,6 +204,7 @@ import (
 	openstackvolumeattachv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackvolumeattach/v1"
 	scalewayblockvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayblockvolume/v1"
 	scalewaycontainerregistryv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaycontainerregistry/v1"
+	scalewaydnsrecordv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaydnsrecord/v1"
 	scalewaydnszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaydnszone/v1"
 	scalewayinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayinstance/v1"
 	scalewayinstancesecuritygroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayinstancesecuritygroup/v1"
@@ -467,6 +468,7 @@ var ProviderOpenstackMap = map[cloudresourcekind.CloudResourceKind]proto.Message
 var ProviderScalewayMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_ScalewayBlockVolume:           &scalewayblockvolumev1.ScalewayBlockVolume{},
 	cloudresourcekind.CloudResourceKind_ScalewayContainerRegistry:     &scalewaycontainerregistryv1.ScalewayContainerRegistry{},
+	cloudresourcekind.CloudResourceKind_ScalewayDnsRecord:             &scalewaydnsrecordv1.ScalewayDnsRecord{},
 	cloudresourcekind.CloudResourceKind_ScalewayDnsZone:               &scalewaydnszonev1.ScalewayDnsZone{},
 	cloudresourcekind.CloudResourceKind_ScalewayInstance:              &scalewayinstancev1.ScalewayInstance{},
 	cloudresourcekind.CloudResourceKind_ScalewayInstanceSecurityGroup: &scalewayinstancesecuritygroupv1.ScalewayInstanceSecurityGroup{},

@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway.scalewaydnsrecord.v1;
+
+// ScalewayDnsRecordStackOutputs captures the provisioned DNS record
+// details after IaC deployment.
+//
+// The `fqdn` output is computed by Scaleway and provides the fully
+// qualified domain name of the record -- useful for downstream
+// resources or for user reference without manual string concatenation.
+message ScalewayDnsRecordStackOutputs {
+  // The unique identifier of the created DNS record in Scaleway.
+  //
+  // Format: "{dns_zone}/{record_id}" as assigned by the Scaleway API.
+  // Used for API operations and Terraform import.
+  string record_id = 1;
+
+  // The fully qualified domain name of the DNS record.
+  //
+  // Computed by Scaleway from the record name and zone name.
+  // Examples:
+  //   "www.example.com" (for name="www", zone="example.com")
+  //   "example.com" (for name="", zone="example.com")
+  //   "api.staging.example.com" (for name="api", zone="staging.example.com")
+  //
+  // This is the primary downstream output -- use it when other
+  // resources need to know the full record name.
+  string fqdn = 2;
+}

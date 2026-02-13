@@ -1,14 +1,14 @@
 load("@rules_go//go:def.bzl", "go_library")
 
 go_library(
-    name = "scalewaydnszone",
+    name = "scalewaydnsrecord",
     srcs = [
         "api.pb.go",
         "spec.pb.go",
         "stack_input.pb.go",
         "stack_outputs.pb.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaydnszone/v1",
+    importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaydnsrecord/v1",
     visibility = ["//visibility:public"],
     deps = [
         "//apis/org/openmcf/provider/scaleway",
