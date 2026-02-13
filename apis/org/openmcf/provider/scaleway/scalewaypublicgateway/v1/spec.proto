@@ -1,0 +1,184 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway.scalewaypublicgateway.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// ScalewayPublicGatewaySpec defines the specification for a Scaleway Public Gateway.
+//
+// A Scaleway Public Gateway is a managed network appliance that sits at the edge
+// of a Private Network and provides:
+//   - NAT (masquerade): Allows resources in the Private Network to reach the
+//     internet through a single public IP.
+//   - SSH bastion: A secure access point for SSH connections to resources that
+//     have no public IP.
+//   - Port forwarding (PAT): Maps public ports on the gateway's IP to private
+//     IP:port pairs inside the attached Private Network.
+//
+// This resource bundles three Scaleway resources into a single declarative unit:
+//   1. A dedicated Flexible IP (public IPv4 address).
+//   2. The Public Gateway appliance.
+//   3. A GatewayNetwork attachment (connecting the gateway to a Private Network).
+//
+// Public Gateways are zonal resources (e.g., "fr-par-1"), unlike VPCs and Private
+// Networks which are regional. The zone must be within the same region as the
+// target Private Network.
+message ScalewayPublicGatewaySpec {
+  // The Private Network to attach this gateway to.
+  //
+  // The gateway provides NAT, SSH bastion, and port forwarding for resources
+  // in this network. Can be a literal Private Network UUID or a reference to
+  // a ScalewayPrivateNetwork resource's output.
+  //
+  // In infra charts, this is typically wired via valueFrom:
+  //
+  //   privateNetworkId:
+  //     valueFrom:
+  //       kind: ScalewayPrivateNetwork
+  //       name: app-network
+  //       fieldPath: status.outputs.private_network_id
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef private_network_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = ScalewayPrivateNetwork,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_network_id"
+  ];
+
+  // The Scaleway zone where the gateway will be created.
+  // Examples: "fr-par-1", "nl-ams-1", "pl-waw-1"
+  //
+  // Public Gateways are zonal resources (unlike VPCs and Private Networks
+  // which are regional). The zone must be within the same region as the
+  // target Private Network. For example, if the Private Network is in
+  // region "fr-par", the gateway zone must be "fr-par-1", "fr-par-2", etc.
+  //
+  // This field is required and cannot be changed after creation.
+  string zone = 2 [(buf.validate.field).required = true];
+
+  // Gateway type determines bandwidth and performance tier.
+  //
+  // Available types:
+  //   - "VPC-GW-S"  -- Standard gateway. Sufficient for most workloads.
+  //   - "VPC-GW-XL" -- High-bandwidth gateway (up to 10 Gbps). Available
+  //                     only in Paris region zones (fr-par-1, fr-par-2, etc.).
+  //
+  // Choose "VPC-GW-S" unless you have specific high-throughput requirements.
+  string type = 3 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.options.recommended_default) = "VPC-GW-S"
+  ];
+
+  // Whether to enable NAT masquerade on the Private Network attachment.
+  //
+  // When enabled, resources in the attached Private Network can reach the
+  // internet through the gateway's public IP. This is the primary use case
+  // for a Public Gateway and is almost always enabled.
+  //
+  // Disable only if using the gateway solely as an SSH bastion without NAT
+  // functionality, or if outbound internet access is handled by other means.
+  //
+  // Default: true
+  bool enable_masquerade = 4 [(org.openmcf.shared.options.recommended_default) = "true"];
+
+  // SSH bastion configuration.
+  //
+  // When enabled, the gateway acts as a jump host for SSH connections to
+  // resources in the Private Network. Users SSH to the gateway's public IP,
+  // and the gateway proxies the connection to the target private IP.
+  //
+  // Optional. If omitted, the SSH bastion is disabled.
+  ScalewayPublicGatewayBastion bastion = 5;
+
+  // Whether to enable outbound SMTP through the gateway.
+  //
+  // By default, outbound SMTP (port 25) is blocked to prevent spam abuse.
+  // Enable only if resources in the Private Network need to send email
+  // directly (e.g., an email relay or notification service).
+  //
+  // Default: false
+  bool enable_smtp = 6;
+
+  // Reverse DNS hostname for the gateway's public IP.
+  // Example: "gateway.example.com"
+  //
+  // A matching DNS A record pointing to the public IP must already exist
+  // before setting this field. Useful for email servers (SPF/DKIM compliance),
+  // compliance requirements, and professional appearance in network logs.
+  //
+  // Optional. If omitted, reverse DNS is not configured.
+  string reverse_dns = 7;
+
+  // Port forwarding (PAT) rules.
+  //
+  // Each rule maps a public port on the gateway's IP to a private IP and
+  // port inside the attached Private Network. This enables inbound access
+  // to specific services without giving them public IPs.
+  //
+  // Example: Forward public port 8080 to a web server at 10.0.1.5:80.
+  //
+  // Optional. If omitted, no port forwarding rules are created.
+  repeated ScalewayPublicGatewayPatRule pat_rules = 8;
+}
+
+// ScalewayPublicGatewayBastion configures the SSH bastion feature.
+//
+// The bastion provides a secure, auditable entry point for SSH connections
+// to resources in the Private Network. Instead of assigning public IPs to
+// individual instances, users SSH to the gateway and the gateway proxies
+// the connection.
+message ScalewayPublicGatewayBastion {
+  // Whether to enable SSH bastion.
+  //
+  // When true, the gateway listens for SSH connections and proxies them
+  // to resources in the attached Private Network.
+  bool enabled = 1;
+
+  // Port for the SSH bastion to listen on.
+  //
+  // Default: 22. Change only if port 22 is blocked by corporate firewalls
+  // or if you need a non-standard port for security-through-obscurity.
+  int32 port = 2 [(org.openmcf.shared.options.recommended_default) = "22"];
+
+  // CIDR ranges allowed to connect to the bastion.
+  // Examples: ["203.0.113.0/24", "198.51.100.10/32"]
+  //
+  // Restricts SSH bastion access to specific source IP ranges. If empty,
+  // all IP ranges are allowed -- not recommended for production.
+  //
+  // Best practice: Restrict to your office IP range, VPN exit IPs, or
+  // CI/CD runner IPs.
+  repeated string allowed_ip_ranges = 3;
+}
+
+// ScalewayPublicGatewayPatRule defines a port forwarding rule.
+//
+// PAT (Port Address Translation) maps a public port on the gateway's IP
+// to a private IP and port inside the attached Private Network. This
+// enables inbound traffic to reach specific services without assigning
+// public IPs to individual resources.
+message ScalewayPublicGatewayPatRule {
+  // Private IP address to forward traffic to.
+  //
+  // Must be an IP address within the attached Private Network's subnet.
+  // Example: "10.0.1.5"
+  string private_ip = 1 [(buf.validate.field).required = true];
+
+  // Private port to forward traffic to.
+  // Example: 80 (for a web server), 5432 (for PostgreSQL)
+  int32 private_port = 2 [(buf.validate.field).required = true];
+
+  // Public port to listen on the gateway's public IP.
+  //
+  // External traffic hitting this port on the gateway's public IP will
+  // be forwarded to private_ip:private_port.
+  // Example: 8080
+  int32 public_port = 3 [(buf.validate.field).required = true];
+
+  // Protocol for the rule: "tcp", "udp", or "both".
+  //
+  // Default: "both" (forwards both TCP and UDP traffic).
+  // Use "tcp" for web servers, SSH, databases. Use "udp" for DNS, game
+  // servers, media streaming. Use "both" when unsure.
+  string protocol = 4 [(org.openmcf.shared.options.recommended_default) = "both"];
+}

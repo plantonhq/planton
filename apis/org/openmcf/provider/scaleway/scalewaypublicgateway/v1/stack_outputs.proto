@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway.scalewaypublicgateway.v1;
+
+// ScalewayPublicGatewayStackOutputs captures the provisioned gateway details.
+//
+// The primary outputs are gateway_id and public_ip_address. The public IP is
+// particularly useful for DNS configuration, firewall allowlists, and
+// connectivity diagnostics.
+message ScalewayPublicGatewayStackOutputs {
+  // The unique identifier of the created Public Gateway.
+  //
+  // Format: zoned ID (e.g., "fr-par-1/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx").
+  // This ID can be used to manage the gateway or reference it in PAT rules.
+  string gateway_id = 1;
+
+  // The public IPv4 address assigned to the gateway.
+  //
+  // This is the IP that external traffic sees and that NAT masquerade uses
+  // as the source address for outbound connections. Useful for:
+  //   - DNS A records pointing to your gateway
+  //   - Firewall allowlists on external services
+  //   - Connectivity diagnostics and monitoring
+  string public_ip_address = 2;
+
+  // The unique identifier of the Flexible IP resource.
+  //
+  // Format: zoned ID. The Flexible IP is the public IP resource that is
+  // attached to the gateway. This ID is useful if you need to manage the
+  // IP independently (e.g., reassign to a replacement gateway without
+  // changing the public IP).
+  string public_ip_id = 3;
+
+  // The unique identifier of the gateway-to-network attachment.
+  //
+  // Format: zoned ID. Represents the GatewayNetwork resource that binds
+  // the gateway to the Private Network with NAT/masquerade settings.
+  string gateway_network_id = 4;
+}

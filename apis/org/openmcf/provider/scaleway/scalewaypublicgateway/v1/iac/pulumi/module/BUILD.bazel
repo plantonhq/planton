@@ -1,0 +1,24 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "gateway.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+    ],
+    importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaypublicgateway/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/org/openmcf/provider/scaleway",
+        "//apis/org/openmcf/provider/scaleway/scalewaypublicgateway/v1:scalewaypublicgateway",
+        "//apis/org/openmcf/shared/cloudresourcekind",
+        "//pkg/iac/pulumi/pulumimodule/provider/scaleway/pulumiscalewayprovider",
+        "//pkg/iac/pulumi/pulumimodule/provider/scaleway/scalewaylabelkeys",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+        "@com_github_pulumiverse_pulumi_scaleway_sdk//go/scaleway",
+        "@com_github_pulumiverse_pulumi_scaleway_sdk//go/scaleway/network",
+    ],
+)
