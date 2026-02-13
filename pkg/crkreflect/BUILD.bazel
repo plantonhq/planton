@@ -205,6 +205,7 @@ go_library(
         "//apis/org/openmcf/provider/openstack/openstacksubnet/v1:openstacksubnet",
         "//apis/org/openmcf/provider/openstack/openstackvolume/v1:openstackvolume",
         "//apis/org/openmcf/provider/openstack/openstackvolumeattach/v1:openstackvolumeattach",
+        "//apis/org/openmcf/provider/scaleway/scalewayvpc/v1:scalewayvpc",
         "//apis/org/openmcf/provider/snowflake/snowflakedatabase/v1:snowflakedatabase",
         "//apis/org/openmcf/shared/cloudresourcekind",
         "//pkg/apis/gvk",

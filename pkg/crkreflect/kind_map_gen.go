@@ -190,6 +190,7 @@ import (
 	openstacksubnetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstacksubnet/v1"
 	openstackvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackvolume/v1"
 	openstackvolumeattachv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackvolumeattach/v1"
+	scalewayvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayvpc/v1"
 	snowflakedatabasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/snowflake/snowflakedatabase/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
 	"google.golang.org/protobuf/proto"
@@ -425,6 +426,10 @@ var ProviderOpenstackMap = map[cloudresourcekind.CloudResourceKind]proto.Message
 	cloudresourcekind.CloudResourceKind_OpenStackVolumeAttach:             &openstackvolumeattachv1.OpenStackVolumeAttach{},
 }
 
+var ProviderScalewayMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
+	cloudresourcekind.CloudResourceKind_ScalewayVpc: &scalewayvpcv1.ScalewayVpc{},
+}
+
 var ProviderSnowflakeMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_SnowflakeDatabase: &snowflakedatabasev1.SnowflakeDatabase{},
 }
@@ -443,5 +448,6 @@ var ToMessageMap = merge(
 	ProviderKubernetesMap,
 	ProviderOpenFgaMap,
 	ProviderOpenstackMap,
+	ProviderScalewayMap,
 	ProviderSnowflakeMap,
 )
