@@ -1,11 +1,3 @@
----
-title: "Instance"
-description: "Instance deployment documentation"
-icon: "package"
-order: 100
-componentName: "openstackinstance"
----
-
 # OpenStack Instance
 
 Deploys an OpenStack Compute instance with configurable flavor, image or boot-from-volume source, network attachments via network UUID or pre-provisioned port, and optional placement controls via server groups and availability zones.

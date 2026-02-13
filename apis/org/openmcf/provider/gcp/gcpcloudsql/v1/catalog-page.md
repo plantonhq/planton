@@ -1,11 +1,3 @@
----
-title: "Cloud SQL"
-description: "Cloud SQL deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcpcloudsql"
----
-
 # GCP Cloud SQL
 
 Deploys a Google Cloud SQL instance with configurable database engine (MySQL or PostgreSQL), optional private IP networking, automated backups with point-in-time recovery, and regional high availability. The component provisions a single managed database instance with SSD storage and GCP-managed labels.

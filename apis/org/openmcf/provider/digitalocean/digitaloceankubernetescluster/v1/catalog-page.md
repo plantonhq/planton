@@ -1,11 +1,3 @@
----
-title: "Kubernetes Cluster"
-description: "Kubernetes Cluster deployment documentation"
-icon: "package"
-order: 100
-componentName: "digitaloceankubernetescluster"
----
-
 # DigitalOcean Kubernetes Cluster
 
 Deploys a managed Kubernetes cluster on DigitalOcean with a configurable default node pool, optional high-availability control plane, automatic patch upgrades, and control plane firewall restrictions. The component supports VPC placement, container registry integration, and surge upgrades out of the box.

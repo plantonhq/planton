@@ -1,11 +1,3 @@
----
-title: "EKS Cluster"
-description: "EKS Cluster deployment documentation"
-icon: "package"
-order: 100
-componentName: "awsekscluster"
----
-
 # AWS EKS Cluster
 
 Deploys an AWS EKS cluster control plane with configurable public/private API endpoint access, optional envelope encryption of Kubernetes secrets via KMS, and optional control plane logging to CloudWatch. The component requires at least two subnets in distinct Availability Zones for high availability.

@@ -1,11 +1,3 @@
----
-title: "Aks Cluster"
-description: "Aks Cluster deployment documentation"
-icon: "package"
-order: 100
-componentName: "azureakscluster"
----
-
 # Azure AKS Cluster
 
 Deploys an Azure Kubernetes Service cluster with configurable node pools, Azure CNI networking, optional Azure AD RBAC integration, and managed add-ons including Container Insights, Key Vault CSI driver, and Workload Identity. The component uses a system-assigned managed identity and supports both public and private cluster topologies.

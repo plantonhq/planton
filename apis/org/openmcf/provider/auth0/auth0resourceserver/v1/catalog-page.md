@@ -1,11 +1,3 @@
----
-title: "Resourceserver"
-description: "Resourceserver deployment documentation"
-icon: "package"
-order: 100
-componentName: "auth0resourceserver"
----
-
 # Auth0 Resource Server
 
 Deploys an Auth0 Resource Server (API) with configurable token settings, scope definitions, and optional RBAC policy enforcement. Resource Servers define the APIs that applications request access to via the OAuth 2.0 `audience` parameter.

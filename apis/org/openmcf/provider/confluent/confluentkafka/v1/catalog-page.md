@@ -1,11 +1,3 @@
----
-title: "Kafka"
-description: "Kafka deployment documentation"
-icon: "package"
-order: 100
-componentName: "confluentkafka"
----
-
 # Confluent Kafka
 
 Deploys a Confluent Cloud Kafka cluster with configurable cluster type, multi-zone availability, and optional private networking. Supports Basic, Standard, Enterprise, and Dedicated cluster tiers across AWS, Azure, and GCP regions.

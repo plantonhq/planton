@@ -1,11 +1,3 @@
----
-title: "RDS Instance"
-description: "RDS Instance deployment documentation"
-icon: "package"
-order: 100
-componentName: "awsrdsinstance"
----
-
 # AWS RDS Instance
 
 Deploys a single AWS RDS database instance supporting engines such as PostgreSQL, MySQL, MariaDB, Oracle, and SQL Server. The component handles DB subnet group creation, security group attachment, optional storage encryption via KMS, and Multi-AZ deployment. Either subnet IDs or an existing DB subnet group name must be provided for VPC placement.

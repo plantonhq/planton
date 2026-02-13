@@ -1,11 +1,3 @@
----
-title: "Database"
-description: "Database deployment documentation"
-icon: "package"
-order: 100
-componentName: "civodatabase"
----
-
 # Civo Database
 
 Deploys a managed MySQL or PostgreSQL database instance on Civo Cloud with configurable replicas, private network attachment, and firewall integration. The component supports up to four read replicas and exposes connection details as stack outputs for wiring to application workloads.

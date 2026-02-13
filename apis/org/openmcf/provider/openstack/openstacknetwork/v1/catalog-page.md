@@ -1,11 +1,3 @@
----
-title: "Network"
-description: "Network deployment documentation"
-icon: "package"
-order: 100
-componentName: "openstacknetwork"
----
-
 # OpenStack Network
 
 Deploys an OpenStack Neutron network, providing an isolated Layer 2 broadcast domain that serves as the foundation for subnets, ports, routers, and instance attachments.

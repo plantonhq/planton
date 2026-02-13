@@ -1,11 +1,3 @@
----
-title: "Key Vault"
-description: "Key Vault deployment documentation"
-icon: "package"
-order: 100
-componentName: "azurekeyvault"
----
-
 # Azure Key Vault
 
 Deploys an Azure Key Vault with configurable SKU tier, RBAC authorization, purge protection, soft delete retention, and network access controls. The component optionally creates named secret placeholders whose values are set separately via Azure SDK or CLI.

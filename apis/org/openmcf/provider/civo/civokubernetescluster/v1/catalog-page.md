@@ -1,11 +1,3 @@
----
-title: "Kubernetes Cluster"
-description: "Kubernetes Cluster deployment documentation"
-icon: "package"
-order: 100
-componentName: "civokubernetescluster"
----
-
 # Civo Kubernetes Cluster
 
 Deploys a managed K3s-based Kubernetes cluster on Civo Cloud with configurable node pools, optional high-availability control plane, and automatic patch upgrades. The cluster is attached to an existing Civo network and exposes a kubeconfig for immediate access.

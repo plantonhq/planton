@@ -1,11 +1,3 @@
----
-title: "Client"
-description: "Client deployment documentation"
-icon: "package"
-order: 100
-componentName: "auth0client"
----
-
 # Auth0 Client
 
 Deploys an Auth0 Application (Client) with configurable OAuth flows, token settings, and optional API access grants. Supports all four Auth0 application types — native, SPA, regular web, and machine-to-machine — with full control over callbacks, refresh token behavior, JWT signing, and organization-aware authentication.

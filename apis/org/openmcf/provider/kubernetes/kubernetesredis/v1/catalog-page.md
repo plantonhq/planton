@@ -1,11 +1,3 @@
----
-title: "Redis"
-description: "Redis deployment documentation"
-icon: "package"
-order: 100
-componentName: "kubernetesredis"
----
-
 # Kubernetes Redis
 
 Deploys a Redis instance on Kubernetes using the Bitnami Helm chart in standalone architecture, with automatic password generation, optional data persistence via PersistentVolumeClaims, and optional external access through a LoadBalancer Service with external-dns integration.

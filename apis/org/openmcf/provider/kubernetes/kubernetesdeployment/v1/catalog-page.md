@@ -1,11 +1,3 @@
----
-title: "Deployment"
-description: "Deployment deployment documentation"
-icon: "package"
-order: 100
-componentName: "kubernetesdeployment"
----
-
 # Kubernetes Deployment
 
 Deploys a containerized application to Kubernetes as a Deployment with automatic Service creation, configurable ingress via Gateway API, environment variable and secret management, and availability controls including autoscaling, rolling update strategy, and pod disruption budgets.

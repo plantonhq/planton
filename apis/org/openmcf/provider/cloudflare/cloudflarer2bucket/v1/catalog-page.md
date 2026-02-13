@@ -1,11 +1,3 @@
----
-title: "R2 Bucket"
-description: "R2 Bucket deployment documentation"
-icon: "package"
-order: 100
-componentName: "cloudflarer2bucket"
----
-
 # Cloudflare R2 Bucket
 
 Deploys a Cloudflare R2 object storage bucket with a configurable location hint and optional custom domain access via an R2 managed domain. The component supports all six R2 location regions and integrates with CloudflareDnsZone for custom domain configuration.

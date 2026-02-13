@@ -1,11 +1,3 @@
----
-title: "Database"
-description: "Database deployment documentation"
-icon: "package"
-order: 100
-componentName: "snowflakedatabase"
----
-
 # Snowflake Database
 
 Deploys a Snowflake database with configurable Time Travel retention, transient mode, Iceberg table defaults, and task execution parameters. All database-level settings are managed declaratively through the spec, including collation, logging, and user task configuration.

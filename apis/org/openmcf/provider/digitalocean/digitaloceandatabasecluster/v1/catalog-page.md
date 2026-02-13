@@ -1,11 +1,3 @@
----
-title: "Database Cluster"
-description: "Database Cluster deployment documentation"
-icon: "package"
-order: 100
-componentName: "digitaloceandatabasecluster"
----
-
 # DigitalOcean Database Cluster
 
 Deploys a managed database cluster on DigitalOcean supporting PostgreSQL, MySQL, Redis, and MongoDB engines. The component handles node sizing, version selection, optional VPC placement, and custom storage configuration, exposing connection details as stack outputs.

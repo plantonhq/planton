@@ -1,11 +1,3 @@
----
-title: "DNS Zone"
-description: "DNS Zone deployment documentation"
-icon: "package"
-order: 100
-componentName: "cloudflarednszone"
----
-
 # Cloudflare DNS Zone
 
 Deploys a Cloudflare DNS zone with optional inline DNS record management. The component creates the zone, exports the assigned nameservers, and provisions any DNS records defined in the spec — supporting A, AAAA, CNAME, MX, TXT, SRV, NS, and CAA record types.

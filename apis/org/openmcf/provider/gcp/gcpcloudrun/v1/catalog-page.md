@@ -1,11 +1,3 @@
----
-title: "Cloud Run"
-description: "Cloud Run deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcpcloudrun"
----
-
 # GCP Cloud Run
 
 Deploys a Google Cloud Run v2 service with configurable container resources, autoscaling, VPC egress, and optional custom domain mapping with DNS verification. The component supports environment variables, Secret Manager references, and configurable ingress controls.
