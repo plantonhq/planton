@@ -52,6 +52,7 @@ import (
 	azurekeyvaultv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurekeyvault/v1"
 	azureloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureloadbalancer/v1"
 	azureloganalyticsworkspacev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureloganalyticsworkspace/v1"
+	azuremysqlflexibleserverv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azuremysqlflexibleserver/v1"
 	azurenatgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurenatgateway/v1"
 	azurenetworksecuritygroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurenetworksecuritygroup/v1"
 	azurepostgresqlflexibleserverv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurepostgresqlflexibleserver/v1"
@@ -201,6 +202,7 @@ import (
 	openstackvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackvolume/v1"
 	openstackvolumeattachv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackvolumeattach/v1"
 	scalewayblockvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayblockvolume/v1"
+	scalewaycontainerregistryv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaycontainerregistry/v1"
 	scalewayinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayinstance/v1"
 	scalewayinstancesecuritygroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayinstancesecuritygroup/v1"
 	scalewaykapsuleclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaykapsulecluster/v1"
@@ -284,6 +286,7 @@ var ProviderAzureMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AzureKeyVault:                 &azurekeyvaultv1.AzureKeyVault{},
 	cloudresourcekind.CloudResourceKind_AzureLoadBalancer:             &azureloadbalancerv1.AzureLoadBalancer{},
 	cloudresourcekind.CloudResourceKind_AzureLogAnalyticsWorkspace:    &azureloganalyticsworkspacev1.AzureLogAnalyticsWorkspace{},
+	cloudresourcekind.CloudResourceKind_AzureMysqlFlexibleServer:      &azuremysqlflexibleserverv1.AzureMysqlFlexibleServer{},
 	cloudresourcekind.CloudResourceKind_AzureNatGateway:               &azurenatgatewayv1.AzureNatGateway{},
 	cloudresourcekind.CloudResourceKind_AzureNetworkSecurityGroup:     &azurenetworksecuritygroupv1.AzureNetworkSecurityGroup{},
 	cloudresourcekind.CloudResourceKind_AzurePostgresqlFlexibleServer: &azurepostgresqlflexibleserverv1.AzurePostgresqlFlexibleServer{},
@@ -460,6 +463,7 @@ var ProviderOpenstackMap = map[cloudresourcekind.CloudResourceKind]proto.Message
 
 var ProviderScalewayMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_ScalewayBlockVolume:           &scalewayblockvolumev1.ScalewayBlockVolume{},
+	cloudresourcekind.CloudResourceKind_ScalewayContainerRegistry:     &scalewaycontainerregistryv1.ScalewayContainerRegistry{},
 	cloudresourcekind.CloudResourceKind_ScalewayInstance:              &scalewayinstancev1.ScalewayInstance{},
 	cloudresourcekind.CloudResourceKind_ScalewayInstanceSecurityGroup: &scalewayinstancesecuritygroupv1.ScalewayInstanceSecurityGroup{},
 	cloudresourcekind.CloudResourceKind_ScalewayKapsuleCluster:        &scalewaykapsuleclusterv1.ScalewayKapsuleCluster{},
