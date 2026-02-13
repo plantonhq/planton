@@ -217,6 +217,7 @@ import (
 	scalewaypublicgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaypublicgateway/v1"
 	scalewayrdbinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayrdbinstance/v1"
 	scalewayredisclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayrediscluster/v1"
+	scalewayserverlessfunctionv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1"
 	scalewayvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayvpc/v1"
 	snowflakedatabasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/snowflake/snowflakedatabase/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
@@ -481,6 +482,7 @@ var ProviderScalewayMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_ScalewayPublicGateway:         &scalewaypublicgatewayv1.ScalewayPublicGateway{},
 	cloudresourcekind.CloudResourceKind_ScalewayRdbInstance:           &scalewayrdbinstancev1.ScalewayRdbInstance{},
 	cloudresourcekind.CloudResourceKind_ScalewayRedisCluster:          &scalewayredisclusterv1.ScalewayRedisCluster{},
+	cloudresourcekind.CloudResourceKind_ScalewayServerlessFunction:    &scalewayserverlessfunctionv1.ScalewayServerlessFunction{},
 	cloudresourcekind.CloudResourceKind_ScalewayVpc:                   &scalewayvpcv1.ScalewayVpc{},
 }
 

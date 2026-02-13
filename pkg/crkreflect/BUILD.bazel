@@ -219,6 +219,7 @@ go_library(
         "//apis/org/openmcf/provider/openstack/openstackvolumeattach/v1:openstackvolumeattach",
         "//apis/org/openmcf/provider/scaleway/scalewayblockvolume/v1:scalewayblockvolume",
         "//apis/org/openmcf/provider/scaleway/scalewaycontainerregistry/v1:scalewaycontainerregistry",
+        "//apis/org/openmcf/provider/scaleway/scalewaydnsrecord/v1:scalewaydnsrecord",
         "//apis/org/openmcf/provider/scaleway/scalewaydnszone/v1:scalewaydnszone",
         "//apis/org/openmcf/provider/scaleway/scalewayinstance/v1:scalewayinstance",
         "//apis/org/openmcf/provider/scaleway/scalewayinstancesecuritygroup/v1:scalewayinstancesecuritygroup",
