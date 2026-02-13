@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azureapplicationgateway.v1;
+
+import "org/openmcf/provider/azure/azureapplicationgateway/v1/api.proto";
+import "org/openmcf/provider/azure/provider.proto";
+
+// AzureApplicationGatewayStackInput is the input to the IaC module.
+// It contains the target resource and provider configuration.
+message AzureApplicationGatewayStackInput {
+  // target cloud-resource to be deployed
+  AzureApplicationGateway target = 1;
+  // provider-config for Azure authentication
+  org.openmcf.provider.azure.AzureProviderConfig provider_config = 2;
+}

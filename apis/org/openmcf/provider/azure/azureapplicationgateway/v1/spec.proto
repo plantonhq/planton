@@ -1,0 +1,572 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azureapplicationgateway.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// **AzureApplicationGatewaySpec** defines the configuration for creating an Azure
+// Application Gateway -- a Layer 7 (HTTP/HTTPS) load balancer and reverse proxy
+// that routes traffic based on HTTP attributes such as URI path, host headers,
+// and URL components.
+//
+// Azure Application Gateway provides SSL termination, cookie-based session
+// affinity, host-based routing, custom health probes, and optional Web
+// Application Firewall (WAF) protection via the WAF_v2 SKU.
+//
+// This component bundles the Application Gateway with its structural
+// sub-resources: gateway IP configuration, frontend IP configuration,
+// frontend ports, backend address pools, backend HTTP settings, HTTP listeners,
+// request routing rules, health probes, SSL certificates, and WAF configuration.
+// An Application Gateway without listeners and routing rules cannot route
+// traffic. This follows DD03 (Composite Bundling Rules).
+//
+// **SKU**: Only Standard_v2 and WAF_v2 are supported. V1 SKUs (Standard,
+// WAF) are legacy and lack autoscaling, zone redundancy, and modern features.
+// Standard_v2 is the default for general L7 load balancing; WAF_v2 adds Web
+// Application Firewall capability.
+//
+// **Subnet requirement**: Application Gateway v2 requires a **dedicated subnet**
+// with no other resources. A /24 CIDR block is recommended for production
+// workloads (supports up to 125 instances plus 5 Azure-reserved addresses).
+//
+// **Public IP requirement**: Standard_v2 and WAF_v2 SKUs require a Standard SKU
+// public IP address with static allocation. This is enforced by AzurePublicIp
+// which hardcodes Standard SKU and Static allocation.
+//
+// **Internal plumbing auto-derived**: Gateway IP configuration, frontend IP
+// configuration, and frontend port names are automatically derived by the IaC
+// modules from the resource name and listener definitions. Users never need
+// to specify these internal Azure naming details.
+//
+// **Deployment time**: Application Gateway provisioning typically takes 10-20
+// minutes. Plan for this in deployment pipelines.
+//
+// **Path-based routing** and **redirect configurations** are omitted per 80/20
+// scoping. They can be added as a v2 enhancement. The primary L7 value
+// (SSL termination, host-based routing, WAF, health probes) is fully captured.
+message AzureApplicationGatewaySpec {
+  // The Azure region where the Application Gateway will be created.
+  // Must match the region of the subnet, public IP, and backend resources.
+  // Examples: "eastus", "westus2", "westeurope", "southeastasia".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The Azure Resource Group where the Application Gateway will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef resource_group = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The name of the Application Gateway.
+  // Must be unique within the resource group.
+  // Allowed characters: alphanumeric, underscores, hyphens, and periods.
+  // Must start with alphanumeric. Length: 1 to 80 characters.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 80
+  ];
+
+  // The ID of a dedicated subnet for the Application Gateway.
+  // App Gateway v2 requires its own subnet with no other resources deployed.
+  // Recommended CIDR: /24 (supports up to 125 instances + 5 Azure-reserved).
+  //
+  // Can be a literal Azure resource ID or a reference to an AzureSubnet output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 4 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // The ID of a public IP address for the frontend configuration.
+  // Must be Standard SKU with Static allocation (enforced by AzurePublicIp).
+  //
+  // Can be a literal Azure resource ID or a reference to an AzurePublicIp output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef public_ip_id = 5 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzurePublicIp,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.public_ip_id"
+  ];
+
+  // The SKU tier of the Application Gateway.
+  // Uses Azure's exact API values for provider authenticity.
+  //
+  // Valid values:
+  // - "Standard_v2" -- general L7 load balancing with autoscale, zone redundancy
+  // - "WAF_v2" -- same as Standard_v2 plus Web Application Firewall
+  //
+  // V1 SKUs (Standard, WAF) are legacy and not supported.
+  string sku = 6 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "sku_valid"
+      message: "sku must be one of: Standard_v2, WAF_v2"
+      expression: "this in ['Standard_v2', 'WAF_v2']"
+    }
+  ];
+
+  // Fixed instance count for the Application Gateway.
+  // Range: 1 to 125. Mutually exclusive with `autoscale`.
+  //
+  // If neither `capacity` nor `autoscale` is set, capacity defaults to 2.
+  optional int32 capacity = 7 [
+    (org.openmcf.shared.options.default) = "2",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 125
+    }
+  ];
+
+  // Autoscale configuration. Mutually exclusive with `capacity`.
+  // When set, the Application Gateway automatically scales between
+  // min_capacity and max_capacity based on traffic load.
+  optional AzureApplicationGatewayAutoscale autoscale = 8;
+
+  // Backend address pools that receive routed traffic.
+  // At least one pool is required. Each pool defines a set of backend
+  // targets by FQDN and/or IP address.
+  //
+  // Backend pool membership is defined at creation time (unlike the LB
+  // where membership is managed externally). FQDNs and IP addresses
+  // identify the backends directly.
+  repeated AzureBackendAddressPool backend_address_pools = 9 [(buf.validate.field).repeated.min_items = 1];
+
+  // Backend HTTP settings that control how the Application Gateway
+  // communicates with backend targets. At least one is required.
+  //
+  // Each setting defines the port, protocol, cookie affinity, timeout,
+  // and optional health probe for a group of backends. Routing rules
+  // reference these settings by name to determine backend communication
+  // behavior.
+  repeated AzureBackendHttpSettings backend_http_settings = 10 [(buf.validate.field).repeated.min_items = 1];
+
+  // HTTP listeners that define the entry points for traffic.
+  // At least one listener is required. Each listener binds to a port
+  // and protocol (HTTP or HTTPS) and optionally matches a host name
+  // for host-based routing.
+  //
+  // The IaC modules automatically derive named frontend_port objects
+  // from the listener port values (as "{listener_name}-port"). Users
+  // only specify the port number on the listener.
+  repeated AzureHttpListener http_listeners = 11 [(buf.validate.field).repeated.min_items = 1];
+
+  // Request routing rules that connect listeners to backend pools
+  // via backend HTTP settings. At least one rule is required.
+  //
+  // Each rule maps an HTTP listener to a backend address pool and
+  // backend HTTP settings, defining the complete traffic path from
+  // frontend to backend.
+  //
+  // Only Basic rule type is supported in this version. Path-based
+  // routing (url_path_map) can be added as a v2 enhancement.
+  repeated AzureRequestRoutingRule request_routing_rules = 12 [(buf.validate.field).repeated.min_items = 1];
+
+  // Custom health probes for backend health monitoring.
+  // Optional -- Azure provides default health probes that check
+  // the root path ("/") on the backend port. Custom probes allow
+  // specifying a health endpoint, interval, and failure threshold.
+  //
+  // Referenced by backend_http_settings via `probe_name`.
+  repeated AzureHealthProbe probes = 13;
+
+  // SSL certificates for HTTPS listeners.
+  // Required when any HTTP listener uses protocol "Https".
+  //
+  // Certificates are sourced from Azure Key Vault via `key_vault_secret_id`.
+  // This is the production-recommended approach -- no PFX data or passwords
+  // in the manifest. The Application Gateway must have a user-assigned
+  // identity with GET permission on the Key Vault certificate.
+  repeated AzureSslCertificate ssl_certificates = 14;
+
+  // User-assigned managed identity IDs for the Application Gateway.
+  // Required when `ssl_certificates` reference Key Vault secrets.
+  // The identity must have GET permission on the Key Vault's certificates.
+  //
+  // Can be literal Azure resource IDs or references to AzureUserAssignedIdentity outputs.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef identity_ids = 15 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureUserAssignedIdentity,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.identity_id"
+  ];
+
+  // Enable Web Application Firewall (WAF).
+  // Only valid when `sku` is "WAF_v2". When enabled, the WAF inspects
+  // incoming HTTP traffic and blocks common web exploits (SQL injection,
+  // XSS, etc.) using OWASP rule sets.
+  //
+  // Default: false.
+  optional bool waf_enabled = 16 [(org.openmcf.shared.options.default) = "false"];
+
+  // WAF firewall mode. Only used when `waf_enabled` is true.
+  // Uses Azure's exact API values.
+  //
+  // Valid values:
+  // - "Detection" -- logs attacks but does not block them
+  // - "Prevention" -- blocks attacks and logs them
+  //
+  // Default: "Prevention" (recommended for production).
+  optional string waf_mode = 17 [
+    (org.openmcf.shared.options.default) = "Prevention",
+    (buf.validate.field).cel = {
+      id: "waf_mode_valid"
+      message: "waf_mode must be one of: Detection, Prevention"
+      expression: "this == '' || this in ['Detection', 'Prevention']"
+    }
+  ];
+
+  // Enable HTTP/2 protocol support.
+  // HTTP/2 improves performance via multiplexed streams and header
+  // compression. Only applies to client-to-gateway connections;
+  // backend connections always use HTTP/1.1.
+  //
+  // Default: false.
+  optional bool enable_http2 = 18 [(org.openmcf.shared.options.default) = "false"];
+}
+
+// AzureApplicationGatewayAutoscale defines autoscale capacity bounds.
+// When configured, the Application Gateway dynamically adjusts instance
+// count based on traffic load.
+message AzureApplicationGatewayAutoscale {
+  // Minimum number of instances. The Application Gateway always runs
+  // at least this many instances.
+  // Range: 0 to 100. Use 0 for scale-to-zero in low-traffic scenarios.
+  int32 min_capacity = 1 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 100
+  }];
+
+  // Maximum number of instances. The Application Gateway will not
+  // scale beyond this count.
+  // Range: 2 to 125. Must be greater than min_capacity.
+  // Optional -- if omitted, Azure uses the subscription-level maximum.
+  optional int32 max_capacity = 2 [(buf.validate.field).int32 = {
+    gte: 2
+    lte: 125
+  }];
+}
+
+// AzureBackendAddressPool defines a group of backend targets that
+// receive traffic from the Application Gateway. Backends are identified
+// by FQDN and/or IP address.
+message AzureBackendAddressPool {
+  // The name of the backend pool.
+  // Must be unique within the Application Gateway. Referenced by
+  // request routing rules to target traffic.
+  // Examples: "api-backends", "web-servers", "default".
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 80
+  ];
+
+  // Backend server FQDNs. The Application Gateway resolves these
+  // to IP addresses and routes traffic accordingly.
+  // Examples: "api.contoso.com", "10.0.1.100.nip.io".
+  repeated string fqdns = 2;
+
+  // Backend server IP addresses.
+  // Examples: "10.0.1.4", "10.0.1.5".
+  repeated string ip_addresses = 3;
+}
+
+// AzureBackendHttpSettings defines how the Application Gateway
+// communicates with backend servers. This includes the port, protocol,
+// session affinity, timeouts, and health probe configuration.
+message AzureBackendHttpSettings {
+  // The name of the backend HTTP settings.
+  // Must be unique within the Application Gateway. Referenced by
+  // request routing rules.
+  // Examples: "http-settings", "https-backend-settings".
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 80
+  ];
+
+  // The port number used to communicate with backend servers.
+  // Range: 1 to 65535.
+  // Examples: 80 (HTTP), 443 (HTTPS), 8080 (app server).
+  int32 port = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  // The protocol used to communicate with backend servers.
+  // Uses Azure's exact API values.
+  //
+  // Valid values:
+  // - "Http" -- plain HTTP to backend
+  // - "Https" -- TLS to backend (end-to-end encryption)
+  string protocol = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "backend_protocol_valid"
+      message: "protocol must be one of: Http, Https"
+      expression: "this in ['Http', 'Https']"
+    }
+  ];
+
+  // Cookie-based session affinity.
+  // Uses Azure's exact API values.
+  //
+  // Valid values:
+  // - "Disabled" -- no session affinity (round-robin)
+  // - "Enabled" -- route requests from the same client to the same backend
+  //
+  // Default: "Disabled".
+  optional string cookie_based_affinity = 4 [
+    (org.openmcf.shared.options.default) = "Disabled",
+    (buf.validate.field).cel = {
+      id: "affinity_valid"
+      message: "cookie_based_affinity must be one of: Enabled, Disabled"
+      expression: "this == '' || this in ['Enabled', 'Disabled']"
+    }
+  ];
+
+  // Request timeout in seconds.
+  // If the backend does not respond within this time, the request fails.
+  // Range: 1 to 86400 seconds (24 hours).
+  // Default: 30 seconds.
+  optional int32 request_timeout = 5 [
+    (org.openmcf.shared.options.default) = "30",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 86400
+    }
+  ];
+
+  // The name of a custom health probe to use for this backend.
+  // Must match a probe name defined in `probes`.
+  // If omitted, Azure uses the default health probe (GET / on the backend port).
+  string probe_name = 6;
+
+  // Override the host header sent to the backend.
+  // Useful when backends expect a specific Host header that differs from
+  // the frontend domain.
+  // Mutually exclusive with `pick_host_name_from_backend_address`.
+  string host_name = 7;
+
+  // Automatically set the Host header to the backend server's hostname.
+  // Useful for multi-tenant backends (e.g., Azure App Service).
+  // Mutually exclusive with `host_name`.
+  // Default: false.
+  optional bool pick_host_name_from_backend_address = 8 [(org.openmcf.shared.options.default) = "false"];
+}
+
+// AzureHttpListener defines an entry point for incoming traffic.
+// Each listener binds to a frontend port and protocol, optionally
+// matching a specific host name for host-based routing.
+message AzureHttpListener {
+  // The name of the HTTP listener.
+  // Must be unique within the Application Gateway. Referenced by
+  // request routing rules.
+  // Examples: "http-listener", "https-listener", "api-listener".
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 80
+  ];
+
+  // The frontend port number for this listener.
+  // The IaC modules auto-derive a named frontend_port object
+  // (as "{listener_name}-port") from this value.
+  // Common values: 80 (HTTP), 443 (HTTPS), 8080 (alt HTTP).
+  int32 port = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65534
+    }
+  ];
+
+  // The protocol for this listener.
+  // Uses Azure's exact API values.
+  //
+  // Valid values:
+  // - "Http" -- plain HTTP listener
+  // - "Https" -- HTTPS listener (requires `ssl_certificate_name`)
+  string protocol = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "listener_protocol_valid"
+      message: "protocol must be one of: Http, Https"
+      expression: "this in ['Http', 'Https']"
+    }
+  ];
+
+  // Optional host name for host-based routing.
+  // When set, only requests with a matching Host header are routed
+  // to this listener. Multiple listeners on the same port can each
+  // match different host names (virtual hosting).
+  // Example: "api.contoso.com".
+  string host_name = 4;
+
+  // The name of an SSL certificate for HTTPS listeners.
+  // Must match a certificate name defined in `ssl_certificates`.
+  // Required when protocol is "Https".
+  string ssl_certificate_name = 5;
+}
+
+// AzureRequestRoutingRule connects an HTTP listener to a backend
+// address pool via backend HTTP settings, defining the complete
+// traffic routing path.
+//
+// Only Basic rule type is supported. Path-based routing can be
+// added as a v2 enhancement.
+message AzureRequestRoutingRule {
+  // The name of the routing rule.
+  // Must be unique within the Application Gateway.
+  // Examples: "http-rule", "https-rule", "api-routing".
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 80
+  ];
+
+  // The name of the HTTP listener that receives incoming traffic.
+  // Must match a listener name defined in `http_listeners`.
+  string http_listener_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The name of the backend address pool to route traffic to.
+  // Must match a pool name defined in `backend_address_pools`.
+  string backend_address_pool_name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The name of the backend HTTP settings to use.
+  // Must match a settings name defined in `backend_http_settings`.
+  string backend_http_settings_name = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The priority of the routing rule.
+  // Required for Application Gateway v2 (API version 2021-08-01+).
+  // Lower values have higher priority. Range: 1 to 20000.
+  // Each rule must have a unique priority value.
+  int32 priority = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 20000
+    }
+  ];
+}
+
+// AzureHealthProbe defines a custom health check for backend servers.
+// Custom probes provide more accurate health status than the default
+// Azure probe (which checks GET / on the backend port).
+message AzureHealthProbe {
+  // The name of the health probe.
+  // Must be unique within the Application Gateway. Referenced by
+  // backend HTTP settings via `probe_name`.
+  // Examples: "api-health", "web-health", "readiness-check".
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 80
+  ];
+
+  // The protocol used for the health probe.
+  // Uses Azure's exact API values.
+  //
+  // Valid values:
+  // - "Http" -- HTTP health check
+  // - "Https" -- HTTPS health check
+  string protocol = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "probe_protocol_valid"
+      message: "protocol must be one of: Http, Https"
+      expression: "this in ['Http', 'Https']"
+    }
+  ];
+
+  // The URI path for the health probe request.
+  // The probe sends a GET request to this path and considers the
+  // backend healthy if it returns HTTP 200-399.
+  // Examples: "/health", "/api/healthz", "/ready".
+  string path = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The host header value for the health probe request.
+  // If omitted, the probe uses the backend server's IP/FQDN as the host.
+  // Useful when backends require a specific Host header.
+  string host = 4;
+
+  // The interval between probe attempts, in seconds.
+  // Lower values detect failures faster but generate more traffic.
+  // Range: 1 to 86400 seconds. Default: 30 seconds.
+  optional int32 interval = 5 [
+    (org.openmcf.shared.options.default) = "30",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 86400
+    }
+  ];
+
+  // The probe timeout in seconds.
+  // If the backend does not respond within this time, the probe
+  // is considered failed. Range: 1 to 86400 seconds. Default: 30 seconds.
+  optional int32 timeout = 6 [
+    (org.openmcf.shared.options.default) = "30",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 86400
+    }
+  ];
+
+  // The number of consecutive probe failures before marking a backend
+  // as unhealthy. Range: 1 to 20. Default: 3.
+  optional int32 unhealthy_threshold = 7 [
+    (org.openmcf.shared.options.default) = "3",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 20
+    }
+  ];
+}
+
+// AzureSslCertificate defines an SSL/TLS certificate for HTTPS listeners.
+// Certificates are sourced from Azure Key Vault -- the production-recommended
+// approach that avoids putting PFX data or passwords in manifests.
+//
+// The Application Gateway must have a user-assigned managed identity
+// (specified via `identity_ids`) with GET permission on the Key Vault
+// certificate/secret.
+message AzureSslCertificate {
+  // The name of the SSL certificate.
+  // Must be unique within the Application Gateway. Referenced by
+  // HTTPS listeners via `ssl_certificate_name`.
+  // Examples: "wildcard-contoso", "api-cert", "frontend-cert".
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 80
+  ];
+
+  // The Azure Key Vault secret ID for the certificate.
+  // This is the full URI to the Key Vault secret/certificate.
+  // Format: https://{vault-name}.vault.azure.net/secrets/{secret-name}
+  // or https://{vault-name}.vault.azure.net/secrets/{secret-name}/{version}
+  //
+  // The certificate must be stored as a PFX in Key Vault.
+  string key_vault_secret_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}
