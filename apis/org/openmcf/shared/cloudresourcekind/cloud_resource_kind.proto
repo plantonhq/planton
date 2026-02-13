@@ -293,6 +293,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "azpg"
   }];
+  AzureCosmosdbAccount = 432 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azcdb"
+  }];
   AzureMssqlServer = 433 [(kind_meta) = {
     provider: azure
     version: v1

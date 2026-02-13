@@ -1,0 +1,19 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureCosmosdbAccount
+metadata:
+  name: test-cosmos
+spec:
+  region: eastus
+  resource_group: test-rg
+  name: test-cosmos-account
+  kind: GlobalDocumentDB
+  geo_locations:
+    - location: eastus
+      failover_priority: 0
+  sql_databases:
+    - name: myapp
+      throughput: 400
+      containers:
+        - name: items
+          partition_key_paths:
+            - /tenantId

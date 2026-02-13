@@ -232,6 +232,7 @@ go_library(
         "//apis/org/openmcf/provider/scaleway/scalewaypublicgateway/v1:scalewaypublicgateway",
         "//apis/org/openmcf/provider/scaleway/scalewayrdbinstance/v1:scalewayrdbinstance",
         "//apis/org/openmcf/provider/scaleway/scalewayrediscluster/v1:scalewayrediscluster",
+        "//apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1:scalewayserverlessfunction",
         "//apis/org/openmcf/provider/scaleway/scalewayvpc/v1:scalewayvpc",
         "//apis/org/openmcf/provider/snowflake/snowflakedatabase/v1:snowflakedatabase",
         "//apis/org/openmcf/shared/cloudresourcekind",
