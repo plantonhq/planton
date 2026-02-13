@@ -1,7 +1,7 @@
 ---
 title: "Documentation"
 description: "Comprehensive guides for OpenMCF - the open-source multi-cloud infrastructure framework"
-icon: "📚"
+icon: "book"
 order: 1
 ---
 
@@ -35,6 +35,28 @@ In-depth guides for common scenarios:
 - **[Kustomize Integration](/docs/guides/kustomize)** - Multi-environment deployments
 - **[Advanced Usage](/docs/guides/advanced-usage)** - Runtime overrides, URL manifests, and power techniques
 
+## Tutorials
+
+Step-by-step walkthroughs for common deployment scenarios:
+
+- **[Deploy Your First AWS Resource](/docs/tutorials/first-aws-resource)** - S3 bucket end-to-end
+- **[Deploy Your First Kubernetes Resource](/docs/tutorials/first-kubernetes-resource)** - PostgreSQL on Kubernetes
+- **[Multi-Environment Deployments](/docs/tutorials/multi-environment)** - Kustomize overlays for dev/staging/prod
+- **[Deploy Across Providers](/docs/tutorials/multi-provider)** - Cross-provider comparison
+
+## Examples
+
+Copy-paste-ready manifest examples:
+
+- **[Manifest Gallery](/docs/examples/manifest-gallery)** - Curated manifests across AWS, GCP, Azure, Kubernetes, and more
+
+## Contributing
+
+Join the OpenMCF community:
+
+- **[How to Contribute](/docs/contributing)** - Development setup, building, testing, and PR workflow
+- **[Adding Components](/docs/contributing/adding-components)** - Create new deployment components
+
 ## Deployment Components
 
 Browse deployment components by cloud provider in the [Catalog](/docs/catalog):
@@ -44,28 +66,28 @@ Browse deployment components by cloud provider in the [Catalog](/docs/catalog):
     <img src="/images/providers/aws.svg" alt="AWS" class="w-8 h-8 object-contain" />
     <div>
       <div class="font-semibold text-white">AWS</div>
-      <div class="text-sm text-slate-400">22 components</div>
+      <div class="text-sm text-slate-400">25 components</div>
     </div>
   </a>
   <a href="/docs/catalog/gcp" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
     <img src="/images/providers/gcp.svg" alt="GCP" class="w-8 h-8 object-contain" />
     <div>
       <div class="font-semibold text-white">GCP</div>
-      <div class="text-sm text-slate-400">17 components</div>
+      <div class="text-sm text-slate-400">19 components</div>
     </div>
   </a>
   <a href="/docs/catalog/azure" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
     <img src="/images/providers/azure.svg" alt="Azure" class="w-8 h-8 object-contain" />
     <div>
       <div class="font-semibold text-white">Azure</div>
-      <div class="text-sm text-slate-400">7 components</div>
+      <div class="text-sm text-slate-400">10 components</div>
     </div>
   </a>
   <a href="/docs/catalog/cloudflare" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
     <img src="/images/providers/cloudflare.svg" alt="Cloudflare" class="w-8 h-8 object-contain" />
     <div>
       <div class="font-semibold text-white">Cloudflare</div>
-      <div class="text-sm text-slate-400">7 components</div>
+      <div class="text-sm text-slate-400">8 components</div>
     </div>
   </a>
   <a href="/docs/catalog/civo" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
@@ -79,7 +101,7 @@ Browse deployment components by cloud provider in the [Catalog](/docs/catalog):
     <img src="/images/providers/digital-ocean.svg" alt="DigitalOcean" class="w-8 h-8 object-contain" />
     <div>
       <div class="font-semibold text-white">DigitalOcean</div>
-      <div class="text-sm text-slate-400">14 components</div>
+      <div class="text-sm text-slate-400">15 components</div>
     </div>
   </a>
   <a href="/docs/catalog/atlas" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
@@ -100,7 +122,7 @@ Browse deployment components by cloud provider in the [Catalog](/docs/catalog):
     <img src="/images/providers/kubernetes.svg" alt="Kubernetes" class="w-8 h-8 object-contain" />
     <div>
       <div class="font-semibold text-white">Kubernetes</div>
-      <div class="text-sm text-slate-400">36 components</div>
+      <div class="text-sm text-slate-400">51 components</div>
     </div>
   </a>
   <a href="/docs/catalog/snowflake" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
@@ -108,6 +130,20 @@ Browse deployment components by cloud provider in the [Catalog](/docs/catalog):
     <div>
       <div class="font-semibold text-white">Snowflake</div>
       <div class="text-sm text-slate-400">1 component</div>
+    </div>
+  </a>
+  <a href="/docs/catalog/scaleway" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
+    <img src="/images/providers/scaleway.svg" alt="Scaleway" class="w-8 h-8 object-contain" />
+    <div>
+      <div class="font-semibold text-white">Scaleway</div>
+      <div class="text-sm text-slate-400">19 components</div>
+    </div>
+  </a>
+  <a href="/docs/catalog/openstack" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
+    <img src="/images/providers/openstack.svg" alt="OpenStack" class="w-8 h-8 object-contain" />
+    <div>
+      <div class="font-semibold text-white">OpenStack</div>
+      <div class="text-sm text-slate-400">27 components</div>
     </div>
   </a>
 </div>
@@ -124,17 +160,19 @@ Browse deployment components by cloud provider in the [Catalog](/docs/catalog):
 
 ```yaml
 apiVersion: kubernetes.openmcf.org/v1
-kind: RedisKubernetes
+kind: KubernetesRedis
 metadata:
   name: my-redis
   labels:
     openmcf.org/provisioner: pulumi
 spec:
-  replicas: 3
-  resources:
-    limits:
-      memory: 2Gi
-      cpu: 1000m
+  namespace: redis
+  container:
+    replicas: 3
+    resources:
+      limits:
+        memory: 2Gi
+        cpu: 1000m
 ```
 
 ```bash
@@ -154,6 +192,8 @@ Having issues? Common solutions:
 - **Authentication and credentials** — See the [Credentials Management](/docs/guides/credentials) guide
 - **Pulumi/OpenTofu-specific issues** — Ensure the provisioner CLI is installed and your backend is configured
 - **Network and connectivity** — The CLI clones modules from GitHub; verify network access
+
+For detailed solutions, see the full [Troubleshooting Guide](/docs/troubleshooting).
 
 ## Resources
 

@@ -1,7 +1,7 @@
 ---
 title: "Troubleshooting"
 description: "Solutions to common OpenMCF issues - manifest validation, authentication, state management, and deployment problems"
-icon: "wrench"
+icon: "gear"
 order: 100
 ---
 

@@ -57,12 +57,15 @@ metadata:
   labels:
     openmcf.org/provisioner: pulumi
 spec:
+  namespace:
+    value: default
   container:
     replicas: 1
     resources:
       limits:
         cpu: 500m
         memory: 1Gi
+    diskSize: 1Gi
 ```
 
 ### Step 3: Validate (Optional)
@@ -118,9 +121,10 @@ Behind the scenes, the CLI:
 
 ## Next Steps
 
-- **Explore Components**: Check out other [deployment components](/docs/catalog)
-- **Learn Concepts**: Understand the [architecture](concepts/architecture)
-- **Deploy to Cloud**: Try deploying to AWS, GCP, or Azure
+- **Explore Components**: Browse [deployment components](/docs/catalog) across 14 cloud providers
+- **Learn Concepts**: Understand the [architecture](/docs/concepts/architecture) and [key concepts](/docs/concepts)
+- **Follow Tutorials**: Try the [AWS S3 bucket tutorial](/docs/tutorials/first-aws-resource) or [Kubernetes Postgres tutorial](/docs/tutorials/first-kubernetes-resource)
+- **Deploy to Cloud**: Set up [AWS](/docs/guides/aws-provider-setup), [GCP](/docs/guides/gcp-provider-setup), or [Azure](/docs/guides/azure-provider-setup) credentials
 
 ## Common Commands
 
@@ -131,8 +135,6 @@ openmcf validate -f config.yaml
 # Unified kubectl-style commands (provisioner auto-detected from manifest)
 openmcf apply -f config.yaml
 openmcf destroy -f config.yaml
-# Or use 'delete' as an alias
-openmcf delete -f config.yaml
 
 # Provisioner-specific commands (still supported)
 openmcf pulumi up -f config.yaml --stack org/project/env
@@ -169,6 +171,7 @@ brew install opentofu  # For Terraform deployments
 ## Get Help
 
 - **GitHub Issues**: [Report bugs or request features](https://github.com/plantonhq/openmcf/issues)
-- **Documentation**: Browse the full [documentation](/)
+- **Documentation**: Browse the full [documentation](/docs)
+- **Troubleshooting**: Check the [Troubleshooting Guide](/docs/troubleshooting) for common issues
 - **Examples**: Check the repository for example manifests
 

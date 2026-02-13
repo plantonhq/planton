@@ -11,12 +11,12 @@ import (
 
 const (
 	// OpenMCFGitRepoEnvVar is the environment variable name for the local openmcf repo path
-	OpenMCFGitRepoEnvVar = "PROJECT_PLANTON_GIT_REPO"
+	OpenMCFGitRepoEnvVar = "OPENMCF_GIT_REPO"
 )
 
 // GetLocalRepoPath determines the openmcf repo location with priority:
 // 1. --openmcf-git-repo flag if explicitly set
-// 2. PROJECT_PLANTON_GIT_REPO environment variable
+// 2. OPENMCF_GIT_REPO environment variable
 // 3. Flag's default value
 // Always returns a valid path string (expands ~ to home directory). Never returns an error.
 func GetLocalRepoPath(cmd *cobra.Command) string {

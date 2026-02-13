@@ -20,7 +20,7 @@ type MissingField struct {
 	Name string
 	// FlagName is the CLI flag to provide this value (e.g., "--backend-endpoint")
 	FlagName string
-	// EnvVarName is the environment variable to provide this value (e.g., "PROJECT_PLANTON_BACKEND_ENDPOINT")
+	// EnvVarName is the environment variable to provide this value (e.g., "OPENMCF_BACKEND_ENDPOINT")
 	EnvVarName string
 	// LabelName is the manifest label (e.g., "terraform.openmcf.org/backend.endpoint")
 	LabelName string

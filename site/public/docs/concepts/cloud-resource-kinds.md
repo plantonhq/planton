@@ -60,7 +60,7 @@ The `group` value directly maps to the `apiVersion` in manifests. A resource wit
 | **GCP** | 19 | `gcp.openmcf.org` | GcpCloudSql, GcpGkeCluster, GcpGcsBucket, GcpCloudRun, GcpVpc |
 | **Scaleway** | 19 | `scaleway.openmcf.org` | ScalewayInstance, ScalewayKapsuleCluster, ScalewayRdbInstance, ScalewayVpc |
 | **DigitalOcean** | 15 | `digitalocean.openmcf.org` | DigitalOceanDroplet, DigitalOceanKubernetesCluster, DigitalOceanDatabaseCluster |
-| **Azure** | 12 | `azure.openmcf.org` | AzureAksCluster, AzureKeyVault, AzureStorageAccount, AzureVpc |
+| **Azure** | 10 | `azure.openmcf.org` | AzureAksCluster, AzureKeyVault, AzureStorageAccount, AzureVpc |
 | **Civo** | 12 | `civo.openmcf.org` | CivoKubernetesCluster, CivoDatabase, CivoComputeInstance, CivoVpc |
 | **Cloudflare** | 8 | `cloudflare.openmcf.org` | CloudflareDnsZone, CloudflareWorker, CloudflareR2Bucket, CloudflareD1Database |
 | **Auth0** | 4 | `auth0.openmcf.org` | Auth0Client, Auth0Connection, Auth0EventStream, Auth0ResourceServer |

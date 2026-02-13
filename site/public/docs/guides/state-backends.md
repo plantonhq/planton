@@ -87,10 +87,10 @@ For scenarios where CLI flags are cumbersome or manifests can't be modified, you
 
 | Variable                           | Description                                         |
 | ---------------------------------- | --------------------------------------------------- |
-| `PROJECT_PLANTON_BACKEND_TYPE`     | Backend type: `s3`, `gcs`, `azurerm`, `local`       |
-| `PROJECT_PLANTON_BACKEND_BUCKET`   | State bucket/container name                         |
-| `PROJECT_PLANTON_BACKEND_REGION`   | AWS region (use `auto` for S3-compatible backends)  |
-| `PROJECT_PLANTON_BACKEND_ENDPOINT` | Custom S3-compatible endpoint URL (R2, MinIO, etc.) |
+| `OPENMCF_BACKEND_TYPE`     | Backend type: `s3`, `gcs`, `azurerm`, `local`       |
+| `OPENMCF_BACKEND_BUCKET`   | State bucket/container name                         |
+| `OPENMCF_BACKEND_REGION`   | AWS region (use `auto` for S3-compatible backends)  |
+| `OPENMCF_BACKEND_ENDPOINT` | Custom S3-compatible endpoint URL (R2, MinIO, etc.) |
 
 **Note:** `backend.key` is intentionally NOT configurable via environment variable. State file paths should be explicit and traceable, so they must come from manifest labels or CLI flags.
 
@@ -98,10 +98,10 @@ For scenarios where CLI flags are cumbersome or manifests can't be modified, you
 
 ```bash
 # Set environment variables (e.g., in CI/CD pipeline)
-export PROJECT_PLANTON_BACKEND_TYPE=s3
-export PROJECT_PLANTON_BACKEND_BUCKET=my-state-bucket
-export PROJECT_PLANTON_BACKEND_REGION=auto
-export PROJECT_PLANTON_BACKEND_ENDPOINT=https://account-id.r2.cloudflarestorage.com
+export OPENMCF_BACKEND_TYPE=s3
+export OPENMCF_BACKEND_BUCKET=my-state-bucket
+export OPENMCF_BACKEND_REGION=auto
+export OPENMCF_BACKEND_ENDPOINT=https://account-id.r2.cloudflarestorage.com
 
 # Run with key from manifest
 openmcf apply -f manifest.yaml
@@ -117,10 +117,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      PROJECT_PLANTON_BACKEND_TYPE: s3
-      PROJECT_PLANTON_BACKEND_BUCKET: ${{ secrets.STATE_BUCKET }}
-      PROJECT_PLANTON_BACKEND_REGION: auto
-      PROJECT_PLANTON_BACKEND_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+      OPENMCF_BACKEND_TYPE: s3
+      OPENMCF_BACKEND_BUCKET: ${{ secrets.STATE_BUCKET }}
+      OPENMCF_BACKEND_REGION: auto
+      OPENMCF_BACKEND_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
     steps:
       - uses: actions/checkout@v4
       - name: Deploy infrastructure
@@ -133,7 +133,7 @@ Environment variables serve as defaults that can be overridden:
 
 ```bash
 # Environment sets bucket to "default-bucket"
-export PROJECT_PLANTON_BACKEND_BUCKET=default-bucket
+export OPENMCF_BACKEND_BUCKET=default-bucket
 
 # Manifest label overrides to "manifest-bucket"
 # terraform.openmcf.org/backend.bucket: manifest-bucket

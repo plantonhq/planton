@@ -440,7 +440,7 @@ Loaded manifests are passed to IaC modules (Pulumi, OpenTofu) as environment var
 
 **For Pulumi**:
 - Manifest marshaled to JSON
-- Set as `PROJECT_PLANTON_MANIFEST` environment variable
+- Set as `OPENMCF_MANIFEST` environment variable
 - Module reads and unmarshals
 
 **For OpenTofu**:

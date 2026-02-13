@@ -74,10 +74,10 @@ flowchart TB
 
 | Variable | Description |
 |----------|-------------|
-| `PROJECT_PLANTON_BACKEND_TYPE` | Backend type |
-| `PROJECT_PLANTON_BACKEND_BUCKET` | State bucket name |
-| `PROJECT_PLANTON_BACKEND_REGION` | Region (`auto` for R2/MinIO) |
-| `PROJECT_PLANTON_BACKEND_ENDPOINT` | Custom endpoint URL |
+| `OPENMCF_BACKEND_TYPE` | Backend type |
+| `OPENMCF_BACKEND_BUCKET` | State bucket name |
+| `OPENMCF_BACKEND_REGION` | Region (`auto` for R2/MinIO) |
+| `OPENMCF_BACKEND_ENDPOINT` | Custom endpoint URL |
 
 **Note**: `backend.key` is intentionally excluded from environment variables to ensure state paths remain explicit and traceable.
 
@@ -248,10 +248,10 @@ openmcf apply -f manifest.yaml \
 ### Environment Variables for CI/CD
 
 ```bash
-export PROJECT_PLANTON_BACKEND_TYPE=s3
-export PROJECT_PLANTON_BACKEND_BUCKET=my-state-bucket
-export PROJECT_PLANTON_BACKEND_REGION=auto
-export PROJECT_PLANTON_BACKEND_ENDPOINT=https://account-id.r2.cloudflarestorage.com
+export OPENMCF_BACKEND_TYPE=s3
+export OPENMCF_BACKEND_BUCKET=my-state-bucket
+export OPENMCF_BACKEND_REGION=auto
+export OPENMCF_BACKEND_ENDPOINT=https://account-id.r2.cloudflarestorage.com
 
 # Key from manifest or flag
 openmcf apply -f manifest.yaml --backend-key path/to/state.tfstate
@@ -264,10 +264,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      PROJECT_PLANTON_BACKEND_TYPE: s3
-      PROJECT_PLANTON_BACKEND_BUCKET: ${{ secrets.STATE_BUCKET }}
-      PROJECT_PLANTON_BACKEND_REGION: auto
-      PROJECT_PLANTON_BACKEND_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+      OPENMCF_BACKEND_TYPE: s3
+      OPENMCF_BACKEND_BUCKET: ${{ secrets.STATE_BUCKET }}
+      OPENMCF_BACKEND_REGION: auto
+      OPENMCF_BACKEND_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
     steps:
       - uses: actions/checkout@v4
       - name: Deploy infrastructure

@@ -65,7 +65,7 @@ func GetModuleDir(targetManifestPath string, cmd *cobra.Command, prov shared.Iac
 				"  Options:\n"+
 				"  1. Clone the repo: git clone https://github.com/plantonhq/openmcf %s\n"+
 				"  2. Set a different path: --openmcf-git-repo /your/path\n"+
-				"  3. Use environment variable: export PROJECT_PLANTON_GIT_REPO=/your/path",
+				"  3. Use environment variable: export OPENMCF_GIT_REPO=/your/path",
 				repoPath, repoPath),
 		}
 	}
