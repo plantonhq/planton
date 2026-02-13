@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway.scalewaydnszone.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/scaleway/scalewaydnszone/v1/spec.proto";
+import "org/openmcf/provider/scaleway/scalewaydnszone/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// scaleway-dns-zone
+message ScalewayDnsZone {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = "scaleway.openmcf.org/v1"];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = "ScalewayDnsZone"];
+
+  //metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  ScalewayDnsZoneSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  ScalewayDnsZoneStatus status = 5;
+}
+
+// scaleway-dns-zone status
+message ScalewayDnsZoneStatus {
+  //stack-outputs
+  //  scaleway-dns-zone stack-outputs
+  ScalewayDnsZoneStackOutputs outputs = 1;
+}
