@@ -1,26 +1,30 @@
 ---
 title: "Getting Started"
-description: "Install OpenMCF CLI and deploy your first resource"
+description: "Install OpenMCF and deploy your first resource to a local Kubernetes cluster"
 icon: "rocket"
 order: 2
 ---
 
 # Getting Started
 
-This guide will help you install the OpenMCF CLI and deploy your first infrastructure resource.
+By the end of this page, you will have installed the OpenMCF CLI, deployed a PostgreSQL database to a local Kubernetes cluster, verified it is running, and torn it down. The entire process takes about 10 minutes.
 
-## Prerequisites
+You will use KubernetesPostgres — one of OpenMCF's 198 deployment components — as your first resource. It runs on a local Kind cluster, so you do not need cloud provider credentials or a paid account to get started.
 
-Before you begin, ensure you have the following installed:
+## What You'll Need
 
-- **Git** - Required for cloning modules
-- **Pulumi CLI** - For Pulumi deployments (`brew install pulumi`)
-- **Terraform/OpenTofu CLI** - For Terraform deployments (`brew install opentofu`)
-- **Cloud provider credentials** - AWS, GCP, Azure, etc. configured locally
+Install these tools before proceeding:
 
-## Installation
+| Tool | Purpose | Install |
+|------|---------|---------|
+| [Git](https://git-scm.com/) | Module resolution (clones IaC modules) | `brew install git` |
+| [Kind](https://kind.sigs.k8s.io/) | Local Kubernetes cluster | `brew install kind` |
+| [kubectl](https://kubernetes.io/docs/tasks/tools/) | Cluster verification | `brew install kubectl` |
+| [Pulumi CLI](https://www.pulumi.com/docs/install/) | IaC engine (executes deployments) | `brew install pulumi` |
 
-Install the OpenMCF CLI using Homebrew:
+This guide uses Pulumi as the IaC engine. If you prefer OpenTofu or Terraform, see [Dual IaC Engines](/docs/concepts/dual-iac-engines) for setup instructions.
+
+## Install OpenMCF
 
 ```bash
 brew install plantonhq/tap/openmcf
@@ -32,20 +36,21 @@ Verify the installation:
 openmcf version
 ```
 
-## Your First Deployment
+## Create a Local Cluster
 
-Let's deploy a PostgreSQL database to a local Kubernetes cluster.
-
-### Step 1: Create a Local Kubernetes Cluster
-
-If you don't have a Kubernetes cluster, create one using Kind:
+Create a Kubernetes cluster using Kind:
 
 ```bash
-brew install kind
-kind create cluster
+kind create cluster --name openmcf-quickstart
 ```
 
-### Step 2: Create Your Manifest
+Confirm the cluster is running:
+
+```bash
+kubectl cluster-info --context kind-openmcf-quickstart
+```
+
+## Write Your Manifest
 
 Create a file named `postgres.yaml`:
 
@@ -53,122 +58,130 @@ Create a file named `postgres.yaml`:
 apiVersion: kubernetes.openmcf.org/v1
 kind: KubernetesPostgres
 metadata:
-  name: dev-database
+  name: my-first-postgres
   labels:
     openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: local
+    pulumi.openmcf.org/project: getting-started
+    pulumi.openmcf.org/stack.name: dev
 spec:
+  namespace:
+    value: my-first-postgres
+  createNamespace: true
   container:
     replicas: 1
     resources:
+      requests:
+        cpu: 50m
+        memory: 100Mi
       limits:
         cpu: 500m
-        memory: 1Gi
+        memory: 512Mi
+    diskSize: 1Gi
 ```
 
-### Step 3: Validate (Optional)
+Every OpenMCF manifest follows the Kubernetes Resource Model (KRM) — the same `apiVersion`, `kind`, `metadata`, `spec` structure used by Kubernetes itself. Here is what each section does:
 
-Validate your manifest before deployment:
+- **`apiVersion` and `kind`** identify this as a KubernetesPostgres resource. OpenMCF has [198 component kinds](/docs/concepts/cloud-resource-kinds) across 14 cloud providers, each with its own apiVersion and kind.
+- **`metadata.name`** names this resource. The name is used in state tracking, logging, and resource identification.
+- **`metadata.labels`** control how OpenMCF processes the manifest:
+  - `openmcf.org/provisioner: pulumi` tells the CLI to route this deployment through the Pulumi engine. The alternative is `tofu` for OpenTofu/Terraform.
+  - The three `pulumi.openmcf.org/*` labels configure the Pulumi stack identity — where deployment state is stored. For local development, any values work.
+- **`spec`** defines the desired state of the resource. Each component kind has its own spec fields, defined by Protocol Buffer schemas with built-in validation.
+
+For a deeper explanation of the manifest model, see [Manifests](/docs/concepts/manifests).
+
+## Validate the Manifest
 
 ```bash
 openmcf validate -f postgres.yaml
 ```
 
-This runs validation rules defined in the protobuf, catching errors like:
-- Invalid CPU format
-- Replica count out of range
-- Missing required fields
+Validation checks the manifest against the KubernetesPostgres Protocol Buffer schema. It catches structural errors — missing required fields, invalid field types, values outside allowed ranges — before you attempt a deployment.
 
-### Step 4: Deploy
+If validation passes, the CLI prints a confirmation. If it fails, the error message identifies the exact field and constraint that was violated.
 
-Set up a local Pulumi backend:
+## Prepare for Deployment
+
+Two setup steps before deploying:
+
+**Configure a local Pulumi backend.** Pulumi needs a backend to store deployment state. For local development, use file-based storage:
 
 ```bash
 pulumi login --local
 ```
 
-Deploy the resource using the unified kubectl-style command:
+This stores state in `~/.pulumi/` on your machine. For team or production use, OpenMCF supports Pulumi Cloud, S3, GCS, and Azure Blob backends. See [State Management](/docs/concepts/state-management) for details.
+
+**Initialize the stack.** A Pulumi stack is a unit of deployment state — it tracks what resources exist and their current configuration. Create one for this deployment:
 
 ```bash
-# Simple unified command (automatically detects provisioner from label)
+openmcf init -f postgres.yaml
+```
+
+This reads the stack labels from the manifest (`local/getting-started/dev`) and registers the stack with your configured backend. The command is idempotent — running it again on an existing stack is safe.
+
+## Deploy
+
+```bash
 openmcf apply -f postgres.yaml
-
-# Or use the traditional Pulumi-specific command
-openmcf pulumi up -f postgres.yaml --stack org/dev/local
 ```
 
-### Step 5: Verify
+The CLI loads the manifest, resolves the Pulumi module for KubernetesPostgres from the OpenMCF repository, and executes the deployment. You will see Pulumi's output as it creates Kubernetes resources — a StatefulSet, Service, PersistentVolumeClaim, and supporting objects.
 
-Check that the PostgreSQL instance is running:
+The first run takes longer because the CLI clones the IaC module from GitHub. Subsequent runs use the cached module at `~/.openmcf/modules/`.
+
+## Verify
+
+Check that the PostgreSQL pod is running:
 
 ```bash
-kubectl get pods
-# You should see: dev-database-postgresql-0
+kubectl get pods -n my-first-postgres
 ```
 
-## What Happened?
+You should see a pod named `my-first-postgres-postgresql-0` with status `Running`. It may take a minute for the pod to pull the PostgreSQL image and start.
 
-Behind the scenes, the CLI:
+Check the service:
 
-1. Read and validated your manifest
-2. Identified the `PostgresKubernetes` deployment component
-3. Cloned the corresponding Pulumi module from GitHub
-4. Set up the environment with your manifest as input
-5. Delegated to Pulumi to deploy the resources
-6. PostgreSQL is now running in your cluster!
+```bash
+kubectl get svc -n my-first-postgres
+```
+
+## Clean Up
+
+Destroy the deployed resources:
+
+```bash
+openmcf destroy -f postgres.yaml
+```
+
+This removes all Kubernetes resources that were created by the deployment.
+
+Optionally, delete the Kind cluster:
+
+```bash
+kind delete cluster --name openmcf-quickstart
+```
+
+## What Just Happened
+
+When you ran `openmcf apply`, the CLI executed this pipeline:
+
+1. **Loaded** the manifest from `postgres.yaml` and applied Protocol Buffer validation
+2. **Read** the `openmcf.org/provisioner: pulumi` label and routed execution to the Pulumi engine
+3. **Resolved** the Pulumi module for KubernetesPostgres — a Go program that translates the spec into Kubernetes resources
+4. **Built** a stack input from the manifest and passed it to the Pulumi program as configuration
+5. **Executed** `pulumi up`, which created a StatefulSet, Service, PersistentVolumeClaim, and associated resources in your cluster
+
+This is the same workflow for every deployment component in OpenMCF. Whether you deploy an AWS S3 bucket, a GCP Cloud SQL instance, or a Cloudflare Worker, the pattern is identical: write a manifest, validate, init, apply. The manifest fields change; the workflow does not.
 
 ## Next Steps
 
-- **Explore Components**: Check out other [deployment components](deployment-components)
-- **Learn Concepts**: Understand the [architecture](concepts/architecture)
-- **Deploy to Cloud**: Try deploying to AWS, GCP, or Azure
+You have deployed your first resource with OpenMCF. Here is where to go next:
 
-## Common Commands
-
-```bash
-# Validate a manifest
-openmcf validate -f config.yaml
-
-# Unified kubectl-style commands (provisioner auto-detected from manifest)
-openmcf apply -f config.yaml
-openmcf destroy -f config.yaml
-# Or use 'delete' as an alias
-openmcf delete -f config.yaml
-
-# Provisioner-specific commands (still supported)
-openmcf pulumi up -f config.yaml --stack org/project/env
-openmcf tofu apply -f config.yaml
-
-# Override specific values
-openmcf apply -f config.yaml --set spec.container.cpu=500m
-```
-
-## Troubleshooting
-
-### "Module not found"
-
-The CLI clones modules from GitHub. Ensure you have:
-- Git installed and configured
-- Network connectivity to GitHub
-
-### "Validation failed"
-
-Check the error message for specific field validation failures. Common issues:
-- Invalid resource units (e.g., CPU should be "500m" not "500")
-- Missing required fields
-- Values outside allowed ranges
-
-### "Pulumi/Terraform not found"
-
-Install the required IaC tool:
-
-```bash
-brew install pulumi    # For Pulumi deployments
-brew install opentofu  # For Terraform deployments
-```
-
-## Get Help
-
-- **GitHub Issues**: [Report bugs or request features](https://github.com/plantonhq/openmcf/issues)
-- **Documentation**: Browse the full [documentation](/)
-- **Examples**: Check the repository for example manifests
-
+- **Understand the model.** Read [Core Concepts](/docs/concepts) to learn how deployment components, manifests, validation, and the dual IaC engine system work together.
+- **Deploy to a cloud provider.** Follow the [AWS S3 Bucket tutorial](/docs/tutorials/first-aws-resource) or the [Multi-Provider tutorial](/docs/tutorials/multi-provider) to deploy real cloud infrastructure.
+- **Go deeper with Kubernetes.** The [Kubernetes Postgres tutorial](/docs/tutorials/first-kubernetes-resource) builds on this guide with custom databases, named users, resource tuning, and runtime overrides.
+- **Set up cloud credentials.** Configure [AWS](/docs/guides/aws-provider-setup), [GCP](/docs/guides/gcp-provider-setup), or [Azure](/docs/guides/azure-provider-setup) for production deployments.
+- **Explore the catalog.** Browse all [198 deployment components](/docs/catalog) across 14 cloud providers.
+- **Troubleshoot issues.** Check the [Troubleshooting Guide](/docs/troubleshooting) if you run into problems.

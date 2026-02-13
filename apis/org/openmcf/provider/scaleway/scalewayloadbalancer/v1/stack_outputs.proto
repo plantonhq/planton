@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway.scalewayloadbalancer.v1;
+
+// ScalewayLoadBalancerStackOutputs captures the provisioned Load Balancer details.
+//
+// The primary outputs are `lb_id` and `lb_ip_address`. The IP address is
+// particularly useful for downstream DNS configuration -- a `ScalewayDnsRecord`
+// can reference `status.outputs.lb_ip_address` to create A records pointing
+// to the Load Balancer.
+message ScalewayLoadBalancerStackOutputs {
+  // The unique identifier of the created Load Balancer.
+  //
+  // Format: zoned ID (e.g., "fr-par-1/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx").
+  // This ID can be used to reference the LB in Scaleway APIs or to manage
+  // it outside of OpenMCF.
+  string lb_id = 1;
+
+  // The public IPv4 address assigned to the Load Balancer's Flexible IP.
+  //
+  // This is the address that clients connect to. Use this output for:
+  //   - DNS A records pointing to the LB (via ScalewayDnsRecord)
+  //   - Firewall allowlists on backend servers
+  //   - Monitoring and connectivity diagnostics
+  //   - External service whitelisting
+  string lb_ip_address = 2;
+
+  // The unique identifier of the Flexible IP resource attached to the LB.
+  //
+  // Format: zoned ID. The Flexible IP is created as a dedicated resource
+  // with independent lifecycle, so the IP survives LB replacement. This ID
+  // is useful for managing the IP independently.
+  string lb_ip_id = 3;
+}

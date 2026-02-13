@@ -11,6 +11,7 @@ import (
 type Locals struct {
 	AzureStorageAccount *azurestorageaccountv1.AzureStorageAccount
 	StorageAccountName  string
+	ResourceGroupName   string
 	AzureTags           map[string]string
 }
 
@@ -19,6 +20,11 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurestorageaccountv1.Azu
 
 	locals.AzureStorageAccount = stackInput.Target
 	target := stackInput.Target
+
+	// The resource_group field is a StringValueOrRef. The platform middleware resolves
+	// valueFrom references before IaC modules run, so .GetValue() always returns the
+	// resolved literal string.
+	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
 	// Create storage account name from metadata.name
 	// Azure Storage Account names must be 3-24 characters, lowercase letters and numbers only, globally unique

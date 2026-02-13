@@ -126,6 +126,17 @@ func run() error {
 			"github.com/plantonhq/openmcf/apis/org/openmcf/provider/%s/%s/v1",
 			provSlug, lowerKind)
 
+		// Skip kinds whose API packages have not been implemented yet.
+		// The package directory is created when proto files are added and
+		// buf generate produces the corresponding .pb.go files. Until then,
+		// including the import would break both Gazelle resolution and Go
+		// compilation.
+		pkgDir := filepath.Join("apis", "org", "openmcf", "provider", provSlug, lowerKind, "v1")
+		if _, err := os.Stat(pkgDir); os.IsNotExist(err) {
+			fmt.Fprintf(os.Stderr, "skipping %s: package dir %s not found\n", kindName, pkgDir)
+			continue
+		}
+
 		alias := uniqueAlias(importPath, importAlias, &imports, aliasByPath)
 		provEntries[provRaw] = append(provEntries[provRaw], entry{
 			KindConst:   kindName,

@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azureuserassignedidentity.v1;
+
+// AzureUserAssignedIdentityStackOutputs contains the outputs from a deployed
+// User-Assigned Managed Identity resource.
+//
+// These outputs are consumed by downstream resources that need to reference
+// this identity for authentication and authorization purposes:
+// - AzureAksCluster (kubelet identity or control plane identity)
+// - AzureFunctionApp (managed identity for accessing Azure services)
+// - AzureLinuxWebApp (managed identity for accessing Azure services)
+// - AzureContainerApp (managed identity for accessing Azure services)
+message AzureUserAssignedIdentityStackOutputs {
+  // The Azure Resource Manager ID of the User-Assigned Managed Identity.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{name}
+  // Referenced by downstream resources that accept a user-assigned identity ID.
+  string identity_id = 1;
+
+  // The Service Principal Object ID associated with this Managed Identity.
+  // This is the object ID in Azure AD, used internally for RBAC role assignments.
+  // Also referenced by resources that need the principal ID for access policies
+  // (e.g., Key Vault access policies that accept object IDs).
+  string principal_id = 2;
+
+  // The Client ID (Application ID) of the Managed Identity.
+  // Used by applications to authenticate as this identity via the Azure SDK.
+  // Configured as an environment variable (AZURE_CLIENT_ID) or in SDK configuration
+  // to specify which identity to use when running on Azure services.
+  string client_id = 3;
+
+  // The Azure AD Tenant ID that the Managed Identity belongs to.
+  // Used in conjunction with client_id for cross-tenant or multi-tenant scenarios.
+  string tenant_id = 4;
+}

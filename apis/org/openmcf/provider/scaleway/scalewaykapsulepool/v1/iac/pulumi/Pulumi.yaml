@@ -1,0 +1,6 @@
+name: scaleway-kapsule-pool
+runtime:
+  name: go
+  options:
+    binary: main
+description: Scaleway Kapsule Node Pool - Additional worker node pool for Kapsule clusters

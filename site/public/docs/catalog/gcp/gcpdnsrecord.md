@@ -6,302 +6,220 @@ order: 100
 componentName: "gcpdnsrecord"
 ---
 
-# GcpDnsRecord: Technical Research Document
+# GCP DNS Record
 
-## Introduction
+Deploys an individual DNS record set within an existing Google Cloud DNS Managed Zone. This component supports all standard record types (A, AAAA, CNAME, MX, TXT, SRV, NS, PTR, CAA, SOA), configurable TTL, and round-robin record sets with multiple values.
 
-DNS (Domain Name System) record management is a foundational aspect of modern cloud infrastructure. Google Cloud DNS is a high-performance, resilient, global Domain Name System service that publishes domain names to the global DNS. This document explores the landscape of DNS record management in GCP and explains OpenMCF's approach to providing a streamlined, declarative interface for DNS record operations.
+## What Gets Created
 
-## The Evolution of DNS Management
+When you deploy a GcpDnsRecord resource, OpenMCF provisions:
 
-### Traditional Approaches
+- **DNS Record Set** — a `google_dns_record_set` resource in the specified managed zone, with the given type, FQDN, values, and TTL
 
-Historically, DNS management involved:
-1. **Manual Console Updates**: Administrators logged into provider dashboards to add/modify records
-2. **Zone File Editing**: Direct manipulation of BIND-style zone files
-3. **CLI Tools**: Using `gcloud dns record-sets` commands for record management
+## Prerequisites
 
-These approaches suffered from:
-- No version control for DNS changes
-- Lack of auditability
-- Manual error-prone processes
-- Difficulty in maintaining consistency across environments
+- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **An existing GCP project** — referenced via `projectId`
+- **An existing Cloud DNS Managed Zone** — referenced via `managedZone`, either by direct name or as a foreign key to a GcpDnsZone resource
+- **IAM permissions** to create and manage DNS record sets in the target managed zone
 
-### Modern Infrastructure as Code
+## Quick Start
 
-The shift to Infrastructure as Code (IaC) brought declarative DNS management:
-- **Terraform**: Google provider's `google_dns_record_set` resource
-- **Pulumi**: GCP classic provider's DNS record set resources
-- **Crossplane**: Kubernetes-style CRDs for GCP DNS
-- **Cloud Foundation Toolkit**: Google's Terraform modules
-
-## Google Cloud DNS Record Types
-
-Cloud DNS supports the following record types:
-
-| Type | Purpose | Example Value |
-|------|---------|---------------|
-| A | IPv4 address | 192.0.2.1 |
-| AAAA | IPv6 address | 2001:db8::1 |
-| CNAME | Canonical name (alias) | target.example.com. |
-| MX | Mail exchange | 10 mail.example.com. |
-| TXT | Text record | "v=spf1 include:_spf.google.com ~all" |
-| SRV | Service location | 10 5 5269 xmpp.example.com. |
-| NS | Nameserver | ns-cloud-d1.googledomains.com. |
-| PTR | Reverse DNS | host.example.com. |
-| CAA | Certificate Authority Authorization | 0 issue "letsencrypt.org" |
-| SOA | Start of Authority | ns.example.com. admin.example.com. 1 ... |
-
-## Deployment Methods Comparison
-
-### 1. Google Cloud Console
-
-**Pros:**
-- Visual interface for quick changes
-- Built-in validation
-- No tooling setup required
-
-**Cons:**
-- No version control
-- Manual process prone to errors
-- No automation capability
-- Difficult to replicate across environments
-
-### 2. gcloud CLI
-
-```bash
-gcloud dns record-sets create www.example.com. \
-  --zone=example-zone \
-  --type=A \
-  --ttl=300 \
-  --rrdatas="192.0.2.1"
-```
-
-**Pros:**
-- Scriptable
-- Can be integrated into CI/CD
-- Quick for one-off changes
-
-**Cons:**
-- Imperative rather than declarative
-- State not tracked
-- Requires careful scripting for idempotency
-
-### 3. Terraform
-
-```hcl
-resource "google_dns_record_set" "www" {
-  name         = "www.example.com."
-  type         = "A"
-  ttl          = 300
-  managed_zone = "example-zone"
-  rrdatas      = ["192.0.2.1"]
-}
-```
-
-**Pros:**
-- Declarative configuration
-- State management
-- Drift detection
-- Plan before apply
-
-**Cons:**
-- Requires Terraform expertise
-- State file management overhead
-- Provider version compatibility
-
-### 4. Pulumi (Go)
-
-```go
-record, err := dns.NewRecordSet(ctx, "www", &dns.RecordSetArgs{
-    Name:        pulumi.String("www.example.com."),
-    Type:        pulumi.String("A"),
-    Ttl:         pulumi.Int(300),
-    ManagedZone: pulumi.String("example-zone"),
-    Rrdatas:     pulumi.StringArray{pulumi.String("192.0.2.1")},
-})
-```
-
-**Pros:**
-- Full programming language capabilities
-- Type safety
-- Reusable components
-- Testing support
-
-**Cons:**
-- Steeper learning curve
-- More complex setup
-- Requires programming knowledge
-
-### 5. OpenMCF
+Create a file `dns-record.yaml`:
 
 ```yaml
 apiVersion: gcp.openmcf.org/v1
 kind: GcpDnsRecord
 metadata:
-  name: www-example
+  name: app-a-record
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.GcpDnsRecord.app-a-record
 spec:
-  projectId: my-project
+  projectId: my-gcp-project-123
   managedZone: example-zone
-  recordType: A
+  type: A
+  name: app.example.com.
+  values:
+    - 203.0.113.10
+```
+
+Deploy:
+
+```shell
+openmcf apply -f dns-record.yaml
+```
+
+This creates an A record for `app.example.com.` pointing to `203.0.113.10` with the default TTL of 300 seconds.
+
+## Configuration Reference
+
+### Required Fields
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `projectId` | `StringValueOrRef` | GCP project ID where the managed zone exists. Can reference a GcpProject resource via `valueFrom`. | Required |
+| `managedZone` | `StringValueOrRef` | Name of the Cloud DNS Managed Zone where the record is created. Can reference a GcpDnsZone resource via `valueFrom`. | Required |
+| `type` | `RecordType` | DNS record type. One of: `A`, `AAAA`, `CNAME`, `MX`, `TXT`, `SRV`, `NS`, `PTR`, `CAA`, `SOA`. | Required, must be a defined enum value |
+| `name` | `string` | Fully qualified domain name for the record. Must end with a trailing dot (e.g., `www.example.com.`). | Required, must match valid FQDN pattern |
+| `values` | `string[]` | Record values. For A records: IPv4 addresses. For AAAA: IPv6 addresses. For CNAME: target hostname with trailing dot. Multiple values create a round-robin record set. | Minimum 1 item |
+
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `ttlSeconds` | `int32` | `300` | Time to live for the DNS record in seconds. Determines how long resolvers cache this record. Valid range: 1-86400. Common values: 60 (1 min), 300 (5 min), 3600 (1 hour), 86400 (1 day). |
+
+## Examples
+
+### Simple A Record
+
+An A record pointing a subdomain to a single IP address:
+
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpDnsRecord
+metadata:
+  name: web-a-record
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.GcpDnsRecord.web-a-record
+spec:
+  projectId: my-gcp-project-123
+  managedZone: example-zone
+  type: A
   name: www.example.com.
   values:
-    - 192.0.2.1
+    - 203.0.113.10
   ttlSeconds: 300
 ```
 
-**Pros:**
-- Simple YAML configuration
-- KRM-style familiar to Kubernetes users
-- Built-in validation
-- Dual IaC backend (Pulumi + Terraform)
-- No IaC expertise required
+### CNAME Record with Foreign Key References
 
-**Cons:**
-- Abstraction over native tools
-- Limited to supported record types
-
-## OpenMCF's Approach
-
-### 80/20 Design Philosophy
-
-The `GcpDnsRecord` component focuses on the most common DNS record management needs:
-
-**In Scope (80% of use cases):**
-- Standard record types (A, AAAA, CNAME, MX, TXT, SRV, NS, PTR, CAA, SOA)
-- TTL configuration
-- Multiple values for round-robin
-- Wildcard records
-- Reference to existing managed zones
-
-**Out of Scope (edge cases):**
-- DNSSEC signing operations (managed at zone level)
-- Private DNS forwarding rules
-- DNS policies and logging
-- Record set transactions/batching
-- Response policies
-
-### Why a Separate Record Component?
-
-OpenMCF provides both `GcpDnsZone` (which can include inline records) and `GcpDnsRecord` for different use cases:
-
-| Use Case | Recommended Component |
-|----------|----------------------|
-| Zone + records managed together | GcpDnsZone with inline records |
-| Records managed by different teams | GcpDnsRecord per team |
-| Dynamic record creation | GcpDnsRecord |
-| Fine-grained access control | GcpDnsRecord |
-| Records in external zones | GcpDnsRecord |
-
-### Validation Strategy
-
-The component enforces:
-
-1. **Required Fields**: project_id, managed_zone, record_type, name, values
-2. **Format Validation**: 
-   - DNS name must be FQDN (ending with dot)
-   - Managed zone name follows GCP naming conventions
-3. **Range Validation**: TTL between 1-86400 seconds
-4. **Enum Validation**: Record type must be a valid DNS record type
-
-## Implementation Landscape
-
-### Pulumi Module Design
-
-The Pulumi module:
-1. Loads stack input from environment
-2. Configures GCP provider with credentials
-3. Creates `dns.RecordSet` resource
-4. Exports outputs (FQDN, record type, TTL)
-
-### Terraform Module Design
-
-The Terraform module:
-1. Accepts variables matching spec.proto
-2. Configures google provider
-3. Creates `google_dns_record_set` resource
-4. Outputs record metadata
-
-### Feature Parity
-
-Both implementations:
-- Create the same underlying `google_dns_record_set` resource
-- Support all record types
-- Handle multiple values identically
-- Produce equivalent outputs
-
-## Production Best Practices
-
-### TTL Guidelines
-
-| Scenario | Recommended TTL | Reason |
-|----------|-----------------|--------|
-| Production stable | 3600-86400 | Reduce DNS queries |
-| Pre-migration | 60-300 | Enable quick failover |
-| Development | 60-300 | Faster iteration |
-| MX records | 3600+ | Email delivery stability |
-| TXT (verification) | 3600 | Service provider caching |
-
-### Security Considerations
-
-1. **CAA Records**: Always configure CAA to limit certificate issuance
-2. **SPF Records**: Prevent email spoofing with proper SPF
-3. **DMARC**: Add DMARC records for email authentication
-4. **Minimal Permissions**: Use service accounts with DNS Admin role only where needed
-
-### Common Patterns
-
-#### Blue-Green Deployments
+A CNAME record that references OpenMCF-managed GcpProject and GcpDnsZone resources instead of hardcoding identifiers:
 
 ```yaml
-# Blue environment
 apiVersion: gcp.openmcf.org/v1
 kind: GcpDnsRecord
 metadata:
-  name: api-blue
+  name: docs-cname
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpDnsRecord.docs-cname
 spec:
-  projectId: my-project
-  managedZone: example-zone
-  recordType: CNAME
-  name: api-blue.example.com.
+  projectId:
+    valueFrom:
+      kind: GcpProject
+      name: my-project
+      fieldPath: status.outputs.project_id
+  managedZone:
+    valueFrom:
+      kind: GcpDnsZone
+      name: example.com
+      fieldPath: status.outputs.zone_name
+  type: CNAME
+  name: docs.example.com.
   values:
-    - blue-lb.example.com.
----
-# Production (points to active)
-apiVersion: gcp.openmcf.org/v1
-kind: GcpDnsRecord
-metadata:
-  name: api-production
-spec:
-  projectId: my-project
-  managedZone: example-zone
-  recordType: CNAME
-  name: api.example.com.
-  values:
-    - api-blue.example.com.
-  ttlSeconds: 60  # Low TTL for quick switch
+    - example.github.io.
+  ttlSeconds: 3600
 ```
 
-#### Multi-Region with GeoDNS
+### Round-Robin A Record with Multiple IPs
 
-Note: GCP Cloud DNS doesn't support GeoDNS natively. Use Cloud Load Balancing with Backend Services for geographic routing. DNS records should point to the load balancer.
+An A record with multiple values for basic load distribution across servers:
 
-## Common Pitfalls
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpDnsRecord
+metadata:
+  name: api-round-robin
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpDnsRecord.api-round-robin
+spec:
+  projectId: my-prod-project-456
+  managedZone: example-zone
+  type: A
+  name: api.example.com.
+  values:
+    - 203.0.113.10
+    - 203.0.113.11
+    - 203.0.113.12
+  ttlSeconds: 60
+```
 
-1. **Missing Trailing Dot**: DNS names must end with a dot (FQDN format)
-2. **TTL Too High**: High TTL during migration causes extended propagation
-3. **Forgotten Reverse DNS**: PTR records often forgotten for mail servers
-4. **Wildcard Conflicts**: Explicit records override wildcards
-5. **Zone Mismatches**: Record must be within the managed zone's domain
+### MX Record for Email Routing
 
-## Conclusion
+An MX record configuring mail delivery with primary and backup mail servers:
 
-`GcpDnsRecord` provides a declarative, validated interface for managing DNS records in Google Cloud DNS. By focusing on the 80% of common use cases while maintaining feature parity between Pulumi and Terraform backends, it enables teams to manage DNS as code with confidence.
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpDnsRecord
+metadata:
+  name: mail-mx
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpDnsRecord.mail-mx
+spec:
+  projectId: my-prod-project-456
+  managedZone: example-zone
+  type: MX
+  name: example.com.
+  values:
+    - "10 mail.example.com."
+    - "20 mail2.example.com."
+  ttlSeconds: 3600
+```
 
-The component's design separates record management from zone management, enabling:
-- Team-specific DNS management
-- Granular access control
-- Independent record lifecycle
-- Integration with existing zones
+### TXT Record for SPF and Domain Verification
 
-For advanced DNS features like DNSSEC management or DNS policies, users should combine `GcpDnsRecord` with native GCP tooling or consider the `GcpDnsZone` component which provides zone-level features.
+A TXT record used for email sender policy and domain ownership verification:
+
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpDnsRecord
+metadata:
+  name: spf-txt
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpDnsRecord.spf-txt
+spec:
+  projectId: my-prod-project-456
+  managedZone: example-zone
+  type: TXT
+  name: example.com.
+  values:
+    - "v=spf1 include:_spf.google.com ~all"
+  ttlSeconds: 3600
+```
+
+## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `fqdn` | `string` | The fully qualified domain name of the created DNS record (e.g., `www.example.com.`) |
+| `record_type` | `string` | The DNS record type that was created (e.g., `A`, `CNAME`, `TXT`) |
+| `managed_zone` | `string` | The name of the managed zone containing this record |
+| `project_id` | `string` | The GCP project ID where the record was created |
+| `ttl_seconds` | `int32` | The TTL (time to live) in seconds for the DNS record |
+
+## Related Components
+
+- [GcpDnsZone](/docs/catalog/gcp/gcpdnszone) — creates the Cloud DNS Managed Zone where records are hosted
+- [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project referenced by `projectId`
+- [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — creates service accounts that can be granted DNS management permissions
+- [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — deploys GKE clusters whose ingress endpoints are commonly referenced by A or CNAME records

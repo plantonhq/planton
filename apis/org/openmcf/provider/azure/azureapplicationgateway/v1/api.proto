@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azureapplicationgateway.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/azure/azureapplicationgateway/v1/spec.proto";
+import "org/openmcf/provider/azure/azureapplicationgateway/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// AzureApplicationGateway is the top-level API resource for an Azure Application Gateway.
+// Azure Application Gateway is a Layer 7 (HTTP/HTTPS) load balancer and reverse proxy
+// that provides SSL termination, host-based routing, cookie-based session affinity,
+// custom health probes, and optional Web Application Firewall (WAF) protection.
+message AzureApplicationGateway {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'azure.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AzureApplicationGateway'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AzureApplicationGatewaySpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AzureApplicationGatewayStatus status = 5;
+}
+
+// AzureApplicationGatewayStatus holds the deployment status and outputs.
+message AzureApplicationGatewayStatus {
+  // stack-outputs
+  AzureApplicationGatewayStackOutputs outputs = 1;
+}

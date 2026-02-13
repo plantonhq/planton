@@ -211,7 +211,7 @@ error (no manifest source)
 
 **Pulumi**: `pkg/iac/pulumi/pulumistack/run.go`
 
-- Exports manifest as `PROJECT_PLANTON_MANIFEST` env var
+- Exports manifest as `OPENMCF_MANIFEST` env var
 - Runs `pulumi <command>` in module directory
 - Streams output to user
 

@@ -6,7 +6,6 @@ import (
 	"github.com/pkg/errors"
 	azurecontainerregistryv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurecontainerregistry/v1"
 	"github.com/pulumi/pulumi-azure-native-sdk/containerregistry/v3"
-	"github.com/pulumi/pulumi-azure-native-sdk/resources/v3"
 	azurenative "github.com/pulumi/pulumi-azure-native-sdk/v3"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
@@ -31,17 +30,8 @@ func Resources(ctx *pulumi.Context, stackInput *azurecontainerregistryv1.AzureCo
 	target := stackInput.Target
 	spec := target.Spec
 
-	// Create resource group name from registry name
-	resourceGroupName := fmt.Sprintf("rg-%s", spec.RegistryName)
-
-	// Create Resource Group
-	resourceGroup, err := resources.NewResourceGroup(ctx, resourceGroupName, &resources.ResourceGroupArgs{
-		ResourceGroupName: pulumi.String(resourceGroupName),
-		Location:          pulumi.String(spec.Region),
-	}, pulumi.Provider(provider))
-	if err != nil {
-		return errors.Wrap(err, "failed to create resource group")
-	}
+	// Resource group is provided externally
+	resourceGroupName := spec.ResourceGroup.GetValue()
 
 	// Determine SKU name
 	skuName := "Standard" // Default
@@ -54,7 +44,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecontainerregistryv1.AzureCo
 
 	// Build registry arguments
 	registryArgs := &containerregistry.RegistryArgs{
-		ResourceGroupName: resourceGroup.Name,
+		ResourceGroupName: pulumi.String(resourceGroupName),
 		RegistryName:      pulumi.String(spec.RegistryName),
 		Location:          pulumi.String(spec.Region),
 
@@ -81,7 +71,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecontainerregistryv1.AzureCo
 		for _, replicaRegion := range spec.GeoReplicationRegions {
 			replicationName := fmt.Sprintf("%s-%s", spec.RegistryName, replicaRegion)
 			_, err := containerregistry.NewReplication(ctx, replicationName, &containerregistry.ReplicationArgs{
-				ResourceGroupName: resourceGroup.Name,
+				ResourceGroupName: pulumi.String(resourceGroupName),
 				RegistryName:      registry.Name,
 				ReplicationName:   pulumi.String(replicaRegion),
 				Location:          pulumi.String(replicaRegion),

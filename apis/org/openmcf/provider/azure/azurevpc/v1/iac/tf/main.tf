@@ -1,15 +1,8 @@
-# Create Resource Group
-resource "azurerm_resource_group" "main" {
-  name     = local.resource_group_name
-  location = var.location
-  tags     = local.final_tags
-}
-
 # Create Virtual Network
 resource "azurerm_virtual_network" "main" {
   name                = local.vnet_name
-  resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
+  resource_group_name = local.resource_group_name
+  location            = var.spec.region
   address_space       = [var.spec.address_space_cidr]
   tags                = local.final_tags
 }
@@ -19,8 +12,8 @@ resource "azurerm_public_ip" "nat" {
   count = var.spec.is_nat_gateway_enabled ? 1 : 0
 
   name                = local.public_ip_name
-  resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
+  resource_group_name = local.resource_group_name
+  location            = var.spec.region
   allocation_method   = "Static"
   sku                 = "Standard"
   tags                = local.final_tags
@@ -31,8 +24,8 @@ resource "azurerm_nat_gateway" "main" {
   count = var.spec.is_nat_gateway_enabled ? 1 : 0
 
   name                    = local.nat_gateway_name
-  resource_group_name     = azurerm_resource_group.main.name
-  location                = azurerm_resource_group.main.location
+  resource_group_name     = local.resource_group_name
+  location                = var.spec.region
   sku_name                = "Standard"
   idle_timeout_in_minutes = 4
   tags                    = local.final_tags
@@ -49,7 +42,7 @@ resource "azurerm_nat_gateway_public_ip_association" "main" {
 # Create Subnet for nodes
 resource "azurerm_subnet" "nodes" {
   name                 = local.subnet_name
-  resource_group_name  = azurerm_resource_group.main.name
+  resource_group_name  = local.resource_group_name
   virtual_network_name = azurerm_virtual_network.main.name
   address_prefixes     = [var.spec.nodes_subnet_cidr]
 
@@ -75,7 +68,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "dns_links" {
   for_each = toset(var.spec.dns_private_zone_links)
 
   name                  = "${local.vnet_name}-link-${index(var.spec.dns_private_zone_links, each.value)}"
-  resource_group_name   = azurerm_resource_group.main.name
+  resource_group_name   = local.resource_group_name
   private_dns_zone_name = element(reverse(split("/", each.value)), 0)
   virtual_network_id    = azurerm_virtual_network.main.id
   registration_enabled  = false

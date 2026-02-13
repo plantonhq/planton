@@ -32,6 +32,8 @@ var _ = ginkgo.Describe("AzureNatGatewaySpec Custom Validation Tests", func() {
 						SubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet"},
 						},
+						Region:        "eastus",
+						ResourceGroup: stringRef("test-rg"),
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -40,3 +42,7 @@ var _ = ginkgo.Describe("AzureNatGatewaySpec Custom Validation Tests", func() {
 		})
 	})
 })
+
+func stringRef(s string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: s}}
+}

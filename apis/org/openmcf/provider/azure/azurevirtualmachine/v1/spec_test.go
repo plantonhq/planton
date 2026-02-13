@@ -16,6 +16,10 @@ func TestAzureVirtualMachineSpec(t *testing.T) {
 	ginkgo.RunSpecs(t, "AzureVirtualMachineSpec Validation Suite")
 }
 
+func stringRef(s string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: s}}
+}
+
 var _ = ginkgo.Describe("AzureVirtualMachineSpec Validation Tests", func() {
 
 	ginkgo.Describe("When valid input is passed", func() {
@@ -30,7 +34,7 @@ var _ = ginkgo.Describe("AzureVirtualMachineSpec Validation Tests", func() {
 					},
 					Spec: &AzureVirtualMachineSpec{
 						Region:        "eastus",
-						ResourceGroup: "my-rg",
+						ResourceGroup: stringRef("my-rg"),
 						SubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -57,7 +61,7 @@ var _ = ginkgo.Describe("AzureVirtualMachineSpec Validation Tests", func() {
 					},
 					Spec: &AzureVirtualMachineSpec{
 						Region:        "eastus",
-						ResourceGroup: "my-rg",
+						ResourceGroup: stringRef("my-rg"),
 						SubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -88,7 +92,7 @@ var _ = ginkgo.Describe("AzureVirtualMachineSpec Validation Tests", func() {
 					},
 					Spec: &AzureVirtualMachineSpec{
 						Region:        "eastus",
-						ResourceGroup: "my-rg",
+						ResourceGroup: stringRef("my-rg"),
 						SubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -113,7 +117,7 @@ var _ = ginkgo.Describe("AzureVirtualMachineSpec Validation Tests", func() {
 					},
 					Spec: &AzureVirtualMachineSpec{
 						Region:           "eastus",
-						ResourceGroup:    "my-rg",
+						ResourceGroup:    stringRef("my-rg"),
 						AvailabilityZone: "1",
 						SubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
@@ -141,7 +145,7 @@ var _ = ginkgo.Describe("AzureVirtualMachineSpec Validation Tests", func() {
 					},
 					Spec: &AzureVirtualMachineSpec{
 						Region:        "eastus",
-						ResourceGroup: "my-rg",
+						ResourceGroup: stringRef("my-rg"),
 						SubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -170,7 +174,7 @@ var _ = ginkgo.Describe("AzureVirtualMachineSpec Validation Tests", func() {
 					},
 					Spec: &AzureVirtualMachineSpec{
 						Region:        "eastus",
-						ResourceGroup: "my-rg",
+						ResourceGroup: stringRef("my-rg"),
 						SubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -213,7 +217,7 @@ var _ = ginkgo.Describe("AzureVirtualMachineSpec Validation Tests", func() {
 						Name: "test-vm",
 					},
 					Spec: &AzureVirtualMachineSpec{
-						ResourceGroup: "my-rg",
+						ResourceGroup: stringRef("my-rg"),
 						SubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -266,7 +270,7 @@ var _ = ginkgo.Describe("AzureVirtualMachineSpec Validation Tests", func() {
 					},
 					Spec: &AzureVirtualMachineSpec{
 						Region:        "eastus",
-						ResourceGroup: "my-rg",
+						ResourceGroup: stringRef("my-rg"),
 						Image: &AzureVirtualMachineImage{
 							Publisher: "Canonical",
 							Offer:     "0001-com-ubuntu-server-jammy",
@@ -288,7 +292,7 @@ var _ = ginkgo.Describe("AzureVirtualMachineSpec Validation Tests", func() {
 					},
 					Spec: &AzureVirtualMachineSpec{
 						Region:        "eastus",
-						ResourceGroup: "my-rg",
+						ResourceGroup: stringRef("my-rg"),
 						SubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -310,7 +314,7 @@ var _ = ginkgo.Describe("AzureVirtualMachineSpec Validation Tests", func() {
 					},
 					Spec: &AzureVirtualMachineSpec{
 						Region:        "eastus",
-						ResourceGroup: "my-rg",
+						ResourceGroup: stringRef("my-rg"),
 						SubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -336,7 +340,7 @@ var _ = ginkgo.Describe("AzureVirtualMachineSpec Validation Tests", func() {
 					},
 					Spec: &AzureVirtualMachineSpec{
 						Region:           "eastus",
-						ResourceGroup:    "my-rg",
+						ResourceGroup:    stringRef("my-rg"),
 						AvailabilityZone: "4",
 						SubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
@@ -364,7 +368,7 @@ var _ = ginkgo.Describe("AzureVirtualMachineSpec Validation Tests", func() {
 					},
 					Spec: &AzureVirtualMachineSpec{
 						Region:        "eastus",
-						ResourceGroup: "my-rg",
+						ResourceGroup: stringRef("my-rg"),
 						SubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -393,7 +397,7 @@ var _ = ginkgo.Describe("AzureVirtualMachineSpec Validation Tests", func() {
 					},
 					Spec: &AzureVirtualMachineSpec{
 						Region:        "eastus",
-						ResourceGroup: "my-rg",
+						ResourceGroup: stringRef("my-rg"),
 						SubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -416,7 +420,7 @@ var _ = ginkgo.Describe("AzureVirtualMachineSpec Validation Tests", func() {
 					},
 					Spec: &AzureVirtualMachineSpec{
 						Region:        "eastus",
-						ResourceGroup: "my-rg",
+						ResourceGroup: stringRef("my-rg"),
 						SubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -450,7 +454,7 @@ var _ = ginkgo.Describe("AzureVirtualMachineSpec Validation Tests", func() {
 					},
 					Spec: &AzureVirtualMachineSpec{
 						Region:        "eastus",
-						ResourceGroup: "my-rg",
+						ResourceGroup: stringRef("my-rg"),
 						SubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",

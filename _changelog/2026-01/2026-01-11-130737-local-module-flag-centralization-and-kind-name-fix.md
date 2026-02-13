@@ -95,7 +95,7 @@ type Error struct {
   Options:
   1. Clone the repo: git clone https://github.com/plantonhq/openmcf ~/scm/github.com/plantonhq/openmcf
   2. Set a different path: --openmcf-git-repo /your/path
-  3. Use environment variable: export PROJECT_PLANTON_GIT_REPO=/your/path
+  3. Use environment variable: export OPENMCF_GIT_REPO=/your/path
 ```
 
 ### Kind Name Fallback Fix
@@ -193,7 +193,7 @@ openmcf pulumi up --manifest nats.yaml --local-module
 openmcf pulumi up --manifest nats.yaml --local-module --openmcf-git-repo /custom/path
 
 # Environment variable also works
-export PROJECT_PLANTON_GIT_REPO=/custom/path
+export OPENMCF_GIT_REPO=/custom/path
 openmcf tofu apply --manifest nats.yaml --local-module
 ```
 

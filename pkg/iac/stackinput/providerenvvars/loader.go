@@ -118,6 +118,8 @@ func loadProviderEnvVars(providerConfigYaml []byte, provider cloudresourcekind.C
 		return loadSnowflakeEnvVars(providerConfigYaml)
 	case cloudresourcekind.CloudResourceProvider_openstack:
 		return loadOpenStackEnvVars(providerConfigYaml)
+	case cloudresourcekind.CloudResourceProvider_scaleway:
+		return loadScalewayEnvVars(providerConfigYaml)
 	default:
 		// Unknown or unspecified provider - no env vars needed
 		return map[string]string{}, nil

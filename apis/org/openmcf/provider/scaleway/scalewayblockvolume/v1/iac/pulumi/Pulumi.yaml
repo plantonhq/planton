@@ -1,0 +1,4 @@
+name: scaleway-block-volume
+runtime:
+  name: go
+description: Scaleway Block Volume Pulumi module

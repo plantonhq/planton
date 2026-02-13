@@ -14,6 +14,12 @@ variable "metadata" {
 variable "spec" {
   description = "Azure VPC specification"
   type = object({
+    # Azure region for deployment
+    region = string
+
+    # The Azure Resource Group where the VPC will be created
+    resource_group = string
+
     # The CIDR block defining the address space for the Virtual Network
     address_space_cidr = string
 
@@ -39,10 +45,4 @@ variable "spec" {
     condition     = can(cidrhost(var.spec.nodes_subnet_cidr, 0))
     error_message = "nodes_subnet_cidr must be a valid CIDR block."
   }
-}
-
-variable "location" {
-  description = "Azure region for deployment"
-  type        = string
-  default     = "eastus"
 }

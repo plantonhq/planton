@@ -1,0 +1,4 @@
+name: scaleway-container-registry
+runtime:
+  name: go
+description: Scaleway Container Registry Pulumi module

@@ -44,6 +44,9 @@ next-env.d.ts
 # Note: public/docs/index.md and other manual docs are committed
 public/docs/catalog/
 
+# generated sidebar structure (built by scripts/generate-docs-structure.ts)
+public/docs-structure.json
+
 # pagefind search index (generated at build time)
 out/_pagefind/
 public/_pagefind/

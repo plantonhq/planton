@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway.scalewayserverlesscontainer.v1;
+
+// ScalewayServerlessContainerStackOutputs captures the provisioned
+// container details after IaC deployment.
+//
+// The `domain_name` output is the primary downstream reference --
+// use it with ScalewayDnsRecord to create custom domain CNAME records
+// pointing to the container's native Scaleway endpoint.
+message ScalewayServerlessContainerStackOutputs {
+  // The unique identifier of the deployed serverless container.
+  //
+  // Format: Scaleway-assigned UUID.
+  // Used for API operations, Scaleway CLI commands, and Terraform import.
+  string container_id = 1;
+
+  // The unique identifier of the container namespace.
+  //
+  // Useful for managing additional resources that reference the
+  // namespace (external cron triggers, tokens, or additional containers
+  // not managed by this resource).
+  string namespace_id = 2;
+
+  // The native Scaleway domain name for invoking the container.
+  //
+  // This is the HTTPS endpoint automatically assigned by Scaleway.
+  // Downstream ScalewayDnsRecord resources can create CNAME records
+  // pointing to this domain for custom domain routing.
+  //
+  // Example: "mycontainer-abc123.containers.fnc.fr-par.scw.cloud"
+  string domain_name = 3;
+}

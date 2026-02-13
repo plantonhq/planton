@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway.scalewaycontainerregistry.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// ScalewayContainerRegistrySpec defines the specification for a Scaleway
+// Container Registry namespace.
+//
+// Scaleway Container Registry provides a fully managed, OCI-compliant
+// registry for storing, managing, and deploying container images and
+// Helm charts. Each registry is a **namespace** -- a logical grouping
+// of repositories that shares a single Docker endpoint.
+//
+// This is a **standalone resource** wrapping a single
+// `scaleway_registry_namespace` Terraform resource. It covers the 80%
+// use case of creating a private (or public) registry namespace for
+// container image storage.
+//
+// Container Registry namespaces are **regional** resources. Available
+// regions:
+//   - "fr-par" (Paris, France)
+//   - "nl-ams" (Amsterdam, Netherlands)
+//   - "pl-waw" (Warsaw, Poland)
+//
+// **Naming constraints:** The namespace name must be unique within the
+// Scaleway project. It becomes part of the Docker endpoint URL:
+//   `rg.<region>.scw.cloud/<namespace-name>`
+//
+// The name is derived from `metadata.name`, so choose a name that is:
+//   - 4-63 characters long
+//   - Lowercase alphanumeric with hyphens
+//   - DNS-compatible (it appears in the endpoint URL)
+//
+// **Docker usage:** After creating a registry, authenticate with:
+//   ```
+//   docker login rg.<region>.scw.cloud/<namespace-name> \
+//     -u nologin \
+//     -p <SCW_SECRET_KEY>
+//   ```
+//
+// Then push images:
+//   ```
+//   docker tag myapp:latest rg.<region>.scw.cloud/<namespace-name>/myapp:latest
+//   docker push rg.<region>.scw.cloud/<namespace-name>/myapp:latest
+//   ```
+//
+// **Image cleanup:** Scaleway provides image lifecycle management
+// through the Console and API (retention policies, tag-based cleanup).
+// These are not exposed via the Terraform provider and are managed
+// outside of IaC.
+//
+// **Deferred features (not in v1):**
+//   - Image lifecycle policies (not available in Terraform provider)
+//   - Cross-region replication (not supported by Scaleway)
+//   - Vulnerability scanning configuration
+//   These can be managed via the Scaleway Console/API or added in
+//   future versions if Terraform support is available.
+//
+// **Composition pattern:** This is a leaf resource with no upstream
+// `StringValueOrRef` dependencies. The primary outputs `endpoint` and
+// `namespace_id` are referenced by:
+//   - ScalewayServerlessFunction (R17) and ScalewayServerlessContainer
+//     (R18) for image source configuration
+//   - ScalewayKapsuleCluster workloads via Kubernetes imagePullSecrets
+//   - CI/CD pipelines for `docker push` target configuration
+message ScalewayContainerRegistrySpec {
+  // ── Placement ──────────────────────────────────────────────────────
+
+  // The Scaleway region where the registry namespace will be created.
+  //
+  // The region determines the Docker endpoint URL:
+  //   `rg.<region>.scw.cloud/<namespace-name>`
+  //
+  // Available regions: "fr-par", "nl-ams", "pl-waw"
+  //
+  // Choose the region closest to your build infrastructure and
+  // deployment targets for lowest image push/pull latency. Consider
+  // data residency requirements for container images.
+  //
+  // Cannot be changed after creation (would require recreating the
+  // namespace and re-pushing all images).
+  string region = 1 [(buf.validate.field).required = true];
+
+  // ── Description ────────────────────────────────────────────────────
+
+  // Optional human-readable description of the registry namespace.
+  //
+  // Useful for documenting the purpose of the registry (e.g.,
+  // "Production microservices images", "Staging environment artifacts",
+  // "Shared base images").
+  //
+  // Has no effect on registry behavior. Displayed in the Scaleway
+  // Console for identification.
+  string description = 2;
+
+  // ── Visibility ─────────────────────────────────────────────────────
+
+  // Whether images in this namespace can be pulled without
+  // authentication.
+  //
+  // When false (default): Images require authentication to pull.
+  // Suitable for proprietary application images, internal tools, and
+  // any images that should not be publicly accessible.
+  //
+  // When true: Anyone can pull images from this namespace without
+  // credentials (`docker pull` works without `docker login`). Pushing
+  // always requires authentication regardless of this setting.
+  // Suitable for open-source projects, public base images, and shared
+  // community tools.
+  //
+  // Can be changed after creation (toggling public/private is safe).
+  //
+  // Default: false (private -- secure by default)
+  bool is_public = 3 [(org.openmcf.shared.options.recommended_default) = "false"];
+}

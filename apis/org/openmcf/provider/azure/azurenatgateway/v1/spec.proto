@@ -31,4 +31,19 @@ message AzureNatGatewaySpec {
 
   // Optional tags to assign to the NAT Gateway resource.
   map<string, string> tags = 4;
+
+  // The Azure region where the NAT Gateway will be deployed.
+  // Examples: "eastus", "westus2", "westeurope".
+  string region = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The Azure Resource Group where the NAT Gateway will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef resource_group = 6 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
 }

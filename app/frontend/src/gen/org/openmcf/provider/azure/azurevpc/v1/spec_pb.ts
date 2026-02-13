@@ -5,13 +5,15 @@
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv1";
 import { file_buf_validate_validate } from "../../../../../../buf/validate/validate_pb";
+import type { StringValueOrRef } from "../../../../shared/foreignkey/v1/foreign_key_pb";
+import { file_org_openmcf_shared_foreignkey_v1_foreign_key } from "../../../../shared/foreignkey/v1/foreign_key_pb";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file org/openmcf/provider/azure/azurevpc/v1/spec.proto.
  */
 export const file_org_openmcf_provider_azure_azurevpc_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjFvcmcvb3Blbm1jZi9wcm92aWRlci9henVyZS9henVyZXZwYy92MS9zcGVjLnByb3RvEiZvcmcub3Blbm1jZi5wcm92aWRlci5henVyZS5henVyZXZwYy52MSKQAgoMQXp1cmVWcGNTcGVjEiIKEmFkZHJlc3Nfc3BhY2VfY2lkchgBIAEoCUIGukgDyAEBEiEKEW5vZGVzX3N1Ym5ldF9jaWRyGAIgASgJQga6SAPIAQESHgoWaXNfbmF0X2dhdGV3YXlfZW5hYmxlZBgDIAEoCBIeChZkbnNfcHJpdmF0ZV96b25lX2xpbmtzGAQgAygJEkwKBHRhZ3MYBSADKAsyPi5vcmcub3Blbm1jZi5wcm92aWRlci5henVyZS5henVyZXZwYy52MS5BenVyZVZwY1NwZWMuVGFnc0VudHJ5GisKCVRhZ3NFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBQssCCipjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXp1cmUuYXp1cmV2cGMudjFCCVNwZWNQcm90b1ABWlNnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXp1cmUvYXp1cmV2cGMvdjE7YXp1cmV2cGN2MaICBU9PUEFBqgImT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXp1cmUuQXp1cmV2cGMuVjHKAiZPcmdcT3Blbm1jZlxQcm92aWRlclxBenVyZVxBenVyZXZwY1xWMeICMk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF6dXJlXEF6dXJldnBjXFYxXEdQQk1ldGFkYXRh6gIrT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXp1cmU6OkF6dXJldnBjOjpWMWIGcHJvdG8z", [file_buf_validate_validate]);
+  fileDesc("CjFvcmcvb3Blbm1jZi9wcm92aWRlci9henVyZS9henVyZXZwYy92MS9zcGVjLnByb3RvEiZvcmcub3Blbm1jZi5wcm92aWRlci5henVyZS5henVyZXZwYy52MSKnAwoMQXp1cmVWcGNTcGVjEhYKBnJlZ2lvbhgGIAEoCUIGukgDyAEBEn0KDnJlc291cmNlX2dyb3VwGAcgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIxukgDyAEBiNRhkAOS1GEic3RhdHVzLm91dHB1dHMucmVzb3VyY2VfZ3JvdXBfbmFtZRIiChJhZGRyZXNzX3NwYWNlX2NpZHIYASABKAlCBrpIA8gBARIhChFub2Rlc19zdWJuZXRfY2lkchgCIAEoCUIGukgDyAEBEh4KFmlzX25hdF9nYXRld2F5X2VuYWJsZWQYAyABKAgSHgoWZG5zX3ByaXZhdGVfem9uZV9saW5rcxgEIAMoCRJMCgR0YWdzGAUgAygLMj4ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXp1cmUuYXp1cmV2cGMudjEuQXp1cmVWcGNTcGVjLlRhZ3NFbnRyeRorCglUYWdzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4AULLAgoqY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF6dXJlLmF6dXJldnBjLnYxQglTcGVjUHJvdG9QAVpTZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F6dXJlL2F6dXJldnBjL3YxO2F6dXJldnBjdjGiAgVPT1BBQaoCJk9yZy5PcGVubWNmLlByb3ZpZGVyLkF6dXJlLkF6dXJldnBjLlYxygImT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXp1cmVcQXp1cmV2cGNcVjHiAjJPcmdcT3Blbm1jZlxQcm92aWRlclxBenVyZVxBenVyZXZwY1xWMVxHUEJNZXRhZGF0YeoCK09yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF6dXJlOjpBenVyZXZwYzo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
 
 /**
  * AzureVpcSpec defines the configuration for an Azure Virtual Network (VNet).
@@ -22,6 +24,21 @@ export const file_org_openmcf_provider_azure_azurevpc_v1_spec: GenFile = /*@__PU
  * @generated from message org.openmcf.provider.azure.azurevpc.v1.AzureVpcSpec
  */
 export type AzureVpcSpec = Message<"org.openmcf.provider.azure.azurevpc.v1.AzureVpcSpec"> & {
+  /**
+   * Azure region in which to create the Virtual Network (e.g., "eastus", "westeurope").
+   *
+   * @generated from field: string region = 6;
+   */
+  region: string;
+
+  /**
+   * The Azure Resource Group where the Virtual Network will be created.
+   * Can be a literal string or a reference to an AzureResourceGroup output.
+   *
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef resource_group = 7;
+   */
+  resourceGroup?: StringValueOrRef;
+
   /**
    * The CIDR block defining the address space for the Virtual Network.
    * Example: "10.0.0.0/16" would allow IP addresses from 10.0.0.0 to 10.0.255.255.

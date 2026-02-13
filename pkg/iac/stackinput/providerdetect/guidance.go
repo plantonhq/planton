@@ -16,6 +16,7 @@ import (
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack"
+	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/snowflake"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
 )
@@ -49,6 +50,8 @@ func ProviderConfigExample(provider cloudresourcekind.CloudResourceProvider) str
 		return snowflake.ConfigFileExample
 	case cloudresourcekind.CloudResourceProvider_openstack:
 		return openstack.ConfigFileExample
+	case cloudresourcekind.CloudResourceProvider_scaleway:
+		return scaleway.ConfigFileExample
 	default:
 		return "# Provider config format not available"
 	}
@@ -83,6 +86,8 @@ func ProviderConfigFilename(provider cloudresourcekind.CloudResourceProvider) st
 		return snowflake.ConfigFileName
 	case cloudresourcekind.CloudResourceProvider_openstack:
 		return openstack.ConfigFileName
+	case cloudresourcekind.CloudResourceProvider_scaleway:
+		return scaleway.ConfigFileName
 	default:
 		return "provider-config.yaml"
 	}
@@ -117,6 +122,8 @@ func ProviderEnvironmentVariablesHelp(provider cloudresourcekind.CloudResourcePr
 		return snowflake.EnvironmentVariablesHelp
 	case cloudresourcekind.CloudResourceProvider_openstack:
 		return openstack.EnvironmentVariablesHelp
+	case cloudresourcekind.CloudResourceProvider_scaleway:
+		return scaleway.EnvironmentVariablesHelp
 	default:
 		return "# Environment variables not available for this provider"
 	}
@@ -151,6 +158,8 @@ func ProviderDocsURL(provider cloudresourcekind.CloudResourceProvider) string {
 		return snowflake.ProviderDocsURL
 	case cloudresourcekind.CloudResourceProvider_openstack:
 		return openstack.ProviderDocsURL
+	case cloudresourcekind.CloudResourceProvider_scaleway:
+		return scaleway.ProviderDocsURL
 	default:
 		return ""
 	}

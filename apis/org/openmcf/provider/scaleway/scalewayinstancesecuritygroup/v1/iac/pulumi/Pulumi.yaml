@@ -1,0 +1,6 @@
+#name should be updated based on the choice of 'project' name in pulumi backend
+name: openmcf-scaleway-instance-security-group
+runtime:
+  name: go
+#  options:
+#    binary: ./debug.sh

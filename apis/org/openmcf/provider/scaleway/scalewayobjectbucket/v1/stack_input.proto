@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway.scalewayobjectbucket.v1;
+
+import "org/openmcf/provider/scaleway/provider.proto";
+import "org/openmcf/provider/scaleway/scalewayobjectbucket/v1/api.proto";
+
+//scaleway-object-bucket stack-input
+message ScalewayObjectBucketStackInput {
+  //target cloud-resource
+  ScalewayObjectBucket target = 1;
+  //provider-config
+  org.openmcf.provider.scaleway.ScalewayProviderConfig provider_config = 2;
+}

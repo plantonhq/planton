@@ -20,6 +20,6 @@ output "resource_group" {
 
 output "location" {
   description = "Azure region where NAT Gateway was deployed"
-  value       = data.azurerm_subnet.target.location
+  value       = local.location
 }
 

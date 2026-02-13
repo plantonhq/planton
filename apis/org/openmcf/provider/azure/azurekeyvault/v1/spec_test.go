@@ -7,6 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
 func TestAzureKeyVaultSpec(t *testing.T) {
@@ -28,7 +29,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureKeyVaultSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -46,7 +47,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureKeyVaultSpec{
 						Region:                  "eastus",
-						ResourceGroup:           "prod-security-rg",
+						ResourceGroup:           stringRef("prod-security-rg"),
 						Sku:                     AzureKeyVaultSku_PREMIUM.Enum(),
 						EnableRbacAuthorization: boolPtr(true),
 						EnablePurgeProtection:   boolPtr(true),
@@ -67,7 +68,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureKeyVaultSpec{
 						Region:        "westus2",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						NetworkAcls: &AzureKeyVaultNetworkAcls{
 							DefaultAction:       AzureKeyVaultNetworkAction_DENY.Enum(),
 							BypassAzureServices: boolPtr(true),
@@ -91,7 +92,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureKeyVaultSpec{
 						Region:                  "eastus",
-						ResourceGroup:           "dev-rg",
+						ResourceGroup:           stringRef("dev-rg"),
 						SoftDeleteRetentionDays: int32Ptr(7),
 					},
 				}
@@ -108,7 +109,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureKeyVaultSpec{
 						Region:                  "eastus",
-						ResourceGroup:           "prod-rg",
+						ResourceGroup:           stringRef("prod-rg"),
 						SoftDeleteRetentionDays: int32Ptr(90),
 					},
 				}
@@ -125,7 +126,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureKeyVaultSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						Sku:           AzureKeyVaultSku_STANDARD.Enum(),
 					},
 				}
@@ -142,7 +143,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureKeyVaultSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						SecretNames:   []string{},
 					},
 				}
@@ -159,7 +160,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureKeyVaultSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						NetworkAcls: &AzureKeyVaultNetworkAcls{
 							DefaultAction:       AzureKeyVaultNetworkAction_ALLOW.Enum(),
 							BypassAzureServices: boolPtr(false),
@@ -183,7 +184,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 						Name: "test-key-vault",
 					},
 					Spec: &AzureKeyVaultSpec{
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -199,7 +200,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureKeyVaultSpec{
 						Region:        "",
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -221,7 +222,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 
-			ginkgo.It("should return a validation error when resource_group is empty string", func() {
+			ginkgo.It("should return a validation error when resource_group is nil", func() {
 				input := &AzureKeyVault{
 					ApiVersion: "azure.openmcf.org/v1",
 					Kind:       "AzureKeyVault",
@@ -230,7 +231,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureKeyVaultSpec{
 						Region:        "eastus",
-						ResourceGroup: "",
+						ResourceGroup: nil,
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -246,7 +247,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureKeyVaultSpec{
 						Region:                  "eastus",
-						ResourceGroup:           "test-rg",
+						ResourceGroup:           stringRef("test-rg"),
 						SoftDeleteRetentionDays: int32Ptr(6),
 					},
 				}
@@ -263,7 +264,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureKeyVaultSpec{
 						Region:                  "eastus",
-						ResourceGroup:           "test-rg",
+						ResourceGroup:           stringRef("test-rg"),
 						SoftDeleteRetentionDays: int32Ptr(91),
 					},
 				}
@@ -286,7 +287,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureKeyVaultSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						SecretNames:   secretNames,
 					},
 				}
@@ -309,7 +310,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureKeyVaultSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						NetworkAcls: &AzureKeyVaultNetworkAcls{
 							IpRules: ipRules,
 						},
@@ -334,7 +335,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureKeyVaultSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						NetworkAcls: &AzureKeyVaultNetworkAcls{
 							VirtualNetworkSubnetIds: subnetIds,
 						},
@@ -353,7 +354,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureKeyVaultSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -369,7 +370,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureKeyVaultSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -382,7 +383,7 @@ var _ = ginkgo.Describe("AzureKeyVaultSpec Custom Validation Tests", func() {
 					Kind:       "AzureKeyVault",
 					Spec: &AzureKeyVaultSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -411,4 +412,8 @@ func boolPtr(b bool) *bool {
 
 func int32Ptr(i int32) *int32 {
 	return &i
+}
+
+func stringRef(s string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: s}}
 }

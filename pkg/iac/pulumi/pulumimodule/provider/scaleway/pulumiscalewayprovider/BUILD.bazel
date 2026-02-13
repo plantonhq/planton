@@ -1,0 +1,15 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "pulumiscalewayprovider",
+    srcs = ["provider.go"],
+    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/scaleway/pulumiscalewayprovider",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/org/openmcf/provider/scaleway",
+        "//pkg/iac/pulumi/pulumimodule/pulumi/pulumioutput",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+        "@com_github_pulumiverse_pulumi_scaleway_sdk//go/scaleway",
+    ],
+)

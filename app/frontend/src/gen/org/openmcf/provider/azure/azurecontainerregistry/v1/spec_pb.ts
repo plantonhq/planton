@@ -5,13 +5,15 @@
 import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
 import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv1";
 import { file_buf_validate_validate } from "../../../../../../buf/validate/validate_pb";
+import type { StringValueOrRef } from "../../../../shared/foreignkey/v1/foreign_key_pb";
+import { file_org_openmcf_shared_foreignkey_v1_foreign_key } from "../../../../shared/foreignkey/v1/foreign_key_pb";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file org/openmcf/provider/azure/azurecontainerregistry/v1/spec.proto.
  */
 export const file_org_openmcf_provider_azure_azurecontainerregistry_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cj9vcmcvb3Blbm1jZi9wcm92aWRlci9henVyZS9henVyZWNvbnRhaW5lcnJlZ2lzdHJ5L3YxL3NwZWMucHJvdG8SNG9yZy5vcGVubWNmLnByb3ZpZGVyLmF6dXJlLmF6dXJlY29udGFpbmVycmVnaXN0cnkudjEiggIKGkF6dXJlQ29udGFpbmVyUmVnaXN0cnlTcGVjEhYKBnJlZ2lvbhgBIAEoCUIGukgDyAEBEjEKDXJlZ2lzdHJ5X25hbWUYAiABKAlCGrpIF8gBAXISMhBeW2EtejAtOV17NSw1MH0kElwKA3NrdRgDIAEoDjJPLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF6dXJlLmF6dXJlY29udGFpbmVycmVnaXN0cnkudjEuQXp1cmVDb250YWluZXJSZWdpc3RyeVNrdRIaChJhZG1pbl91c2VyX2VuYWJsZWQYBCABKAgSHwoXZ2VvX3JlcGxpY2F0aW9uX3JlZ2lvbnMYBSADKAkqQQoZQXp1cmVDb250YWluZXJSZWdpc3RyeVNrdRIJCgVCQVNJQxAAEgwKCFNUQU5EQVJEEAESCwoHUFJFTUlVTRACQq0DCjhjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXp1cmUuYXp1cmVjb250YWluZXJyZWdpc3RyeS52MUIJU3BlY1Byb3RvUAFab2dpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9henVyZS9henVyZWNvbnRhaW5lcnJlZ2lzdHJ5L3YxO2F6dXJlY29udGFpbmVycmVnaXN0cnl2MaICBU9PUEFBqgI0T3JnLk9wZW5tY2YuUHJvdmlkZXIuQXp1cmUuQXp1cmVjb250YWluZXJyZWdpc3RyeS5WMcoCNE9yZ1xPcGVubWNmXFByb3ZpZGVyXEF6dXJlXEF6dXJlY29udGFpbmVycmVnaXN0cnlcVjHiAkBPcmdcT3Blbm1jZlxQcm92aWRlclxBenVyZVxBenVyZWNvbnRhaW5lcnJlZ2lzdHJ5XFYxXEdQQk1ldGFkYXRh6gI5T3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXp1cmU6OkF6dXJlY29udGFpbmVycmVnaXN0cnk6OlYxYgZwcm90bzM", [file_buf_validate_validate]);
+  fileDesc("Cj9vcmcvb3Blbm1jZi9wcm92aWRlci9henVyZS9henVyZWNvbnRhaW5lcnJlZ2lzdHJ5L3YxL3NwZWMucHJvdG8SNG9yZy5vcGVubWNmLnByb3ZpZGVyLmF6dXJlLmF6dXJlY29udGFpbmVycmVnaXN0cnkudjEigQMKGkF6dXJlQ29udGFpbmVyUmVnaXN0cnlTcGVjEhYKBnJlZ2lvbhgBIAEoCUIGukgDyAEBEn0KDnJlc291cmNlX2dyb3VwGAYgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIxukgDyAEBiNRhkAOS1GEic3RhdHVzLm91dHB1dHMucmVzb3VyY2VfZ3JvdXBfbmFtZRIxCg1yZWdpc3RyeV9uYW1lGAIgASgJQhq6SBfIAQFyEjIQXlthLXowLTldezUsNTB9JBJcCgNza3UYAyABKA4yTy5vcmcub3Blbm1jZi5wcm92aWRlci5henVyZS5henVyZWNvbnRhaW5lcnJlZ2lzdHJ5LnYxLkF6dXJlQ29udGFpbmVyUmVnaXN0cnlTa3USGgoSYWRtaW5fdXNlcl9lbmFibGVkGAQgASgIEh8KF2dlb19yZXBsaWNhdGlvbl9yZWdpb25zGAUgAygJKkEKGUF6dXJlQ29udGFpbmVyUmVnaXN0cnlTa3USCQoFQkFTSUMQABIMCghTVEFOREFSRBABEgsKB1BSRU1JVU0QAkKtAwo4Y29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF6dXJlLmF6dXJlY29udGFpbmVycmVnaXN0cnkudjFCCVNwZWNQcm90b1ABWm9naXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXp1cmUvYXp1cmVjb250YWluZXJyZWdpc3RyeS92MTthenVyZWNvbnRhaW5lcnJlZ2lzdHJ5djGiAgVPT1BBQaoCNE9yZy5PcGVubWNmLlByb3ZpZGVyLkF6dXJlLkF6dXJlY29udGFpbmVycmVnaXN0cnkuVjHKAjRPcmdcT3Blbm1jZlxQcm92aWRlclxBenVyZVxBenVyZWNvbnRhaW5lcnJlZ2lzdHJ5XFYx4gJAT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXp1cmVcQXp1cmVjb250YWluZXJyZWdpc3RyeVxWMVxHUEJNZXRhZGF0YeoCOU9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF6dXJlOjpBenVyZWNvbnRhaW5lcnJlZ2lzdHJ5OjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
 
 /**
  * **AzureContainerRegistrySpec** defines the configuration for deploying an Azure Container Registry.
@@ -27,6 +29,14 @@ export type AzureContainerRegistrySpec = Message<"org.openmcf.provider.azure.azu
    * @generated from field: string region = 1;
    */
   region: string;
+
+  /**
+   * The Azure Resource Group where the Container Registry will be created.
+   * Can be a literal string or a reference to an AzureResourceGroup output.
+   *
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef resource_group = 6;
+   */
+  resourceGroup?: StringValueOrRef;
 
   /**
    * The globally unique name of the container registry.

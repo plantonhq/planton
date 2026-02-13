@@ -25,7 +25,6 @@ require (
 	github.com/pulumi/pulumi-azure-native-sdk/containerregistry/v3 v3.10.1
 	github.com/pulumi/pulumi-azure-native-sdk/containerservice/v3 v3.10.1
 	github.com/pulumi/pulumi-azure-native-sdk/network/v3 v3.12.1
-	github.com/pulumi/pulumi-azure-native-sdk/resources/v3 v3.10.1
 	github.com/pulumi/pulumi-azure-native-sdk/v3 v3.12.1
 	github.com/pulumi/pulumi-azure/sdk/v5 v5.89.0
 	github.com/pulumi/pulumi-azure/sdk/v6 v6.28.0
@@ -42,6 +41,7 @@ require (
 	github.com/pulumi/pulumi-tls/sdk/v4 v4.11.1
 	github.com/pulumi/pulumi-tls/sdk/v5 v5.2.1
 	github.com/pulumi/pulumi/sdk/v3 v3.218.0
+	github.com/pulumiverse/pulumi-scaleway/sdk v1.43.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.10.1
 	github.com/spf13/pflag v1.0.10

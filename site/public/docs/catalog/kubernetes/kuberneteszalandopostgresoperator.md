@@ -6,222 +6,234 @@ order: 100
 componentName: "kuberneteszalandopostgresoperator"
 ---
 
-# Deploying PostgreSQL Operators on Kubernetes
-
-## Introduction
-
-"Just use a managed database service." That was the prevailing wisdom for years when teams asked about running PostgreSQL in production. The conventional answer: databases are stateful, complex, and operationally demanding—let AWS, GCP, or Azure handle it.
-
-But something shifted. As Kubernetes matured and organizations committed to multi-cloud or on-premises strategies, the question evolved from "should we run databases on Kubernetes?" to "how do we run them well?" The answer lies in **Kubernetes Operators**—controllers that codify operational expertise into software.
-
-For PostgreSQL specifically, operators have reached production maturity. They handle the hard problems: automated failover, streaming replication, point-in-time recovery, rolling upgrades, and connection pooling. What once required a dedicated DBA team now runs autonomously in your cluster.
-
-This document explores the landscape of deploying PostgreSQL operators on Kubernetes, with a focus on the **Zalando Postgres Operator**—one of the most battle-tested solutions in the ecosystem. We'll examine deployment methods from anti-patterns to production-ready approaches, understand the operator's architecture and capabilities, and explain why it remains a strong choice for teams building database services on Kubernetes.
-
-The OpenMCF `KubernetesZalandoPostgresOperator` resource provides a declarative API for deploying and managing the Zalando Postgres Operator across Kubernetes clusters.
-
-## The Deployment Landscape
-
-Deploying a PostgreSQL operator isn't fundamentally different from deploying any other Kubernetes workload, but the stakes are higher. Get it wrong, and you're managing stateful infrastructure with potential data loss exposure. Get it right, and you have a self-healing database platform.
-
-### Level 0: The Manual Path
-
-**Approach:** Apply raw YAML manifests with `kubectl apply -f` commands, pulling files directly from the operator's GitHub repository.
-
-**What it solves:** Complete transparency. Every resource (CRDs, RBAC, ConfigMaps, Deployments) is visible and under your control. No hidden abstractions, no external tooling dependencies.
-
-**What it doesn't solve:** Operational continuity. Upgrades become manual archaeology—which manifests changed between versions? Did you remember to apply CRD updates before the operator deployment? Configuration changes require editing raw YAML and reapplying, creating drift between environments.
-
-**Verdict:** Fine for initial exploration or demos. Unsustainable for production where consistency and repeatability matter.
-
-### Level 1: Kustomize Overlays
-
-**Approach:** Use the operator's provided Kustomization or build your own, applying with `kubectl apply -k`.
-
-**What it solves:** Bundled deployment of correct manifest versions. Kustomize overlays let you patch namespaces, resource limits, or other fields without editing base files. GitOps-friendly structure.
-
-**What it doesn't solve:** Limited templating power. CRD installation ordering isn't automatic (you might still apply CRDs separately). Major customizations require complex patches.
-
-**Verdict:** A step up from raw manifests. Good for teams already using Kustomize, but still requires careful orchestration of multi-step installations.
-
-### Level 2: Helm Charts
-
-**Approach:** Deploy via the official Helm chart (or community charts), configuring through a `values.yaml` file.
-
-**What it solves:** Streamlined installation with templating built in. Configuration via structured values rather than YAML patches. Helm manages CRD lifecycle (with caveats). Repeatable across environments—same chart, different values files for dev/staging/prod.
-
-**What it doesn't solve:** Another tool in the stack (Helm itself requires learning). Not all operator settings may be exposed through chart values (though official charts are comprehensive). CRD upgrades require special handling (Helm historically doesn't auto-upgrade CRDs).
-
-**Verdict:** Production-appropriate for most teams. The official Zalando Helm chart has been used successfully in large-scale deployments. Balance between simplicity and flexibility.
-
-### Level 3: GitOps (ArgoCD/Flux)
-
-**Approach:** Declare the operator installation in Git (either as Helm charts or raw manifests), let ArgoCD or Flux CD continuously reconcile the desired state.
-
-**What it solves:** Everything-as-code philosophy. Automated drift detection and remediation. Audit trail via Git history. Multi-cluster deployments from a single source of truth. ArgoCD sync waves can handle CRD ordering (apply CRDs before the operator deployment).
-
-**What it doesn't solve:** Initial setup complexity—GitOps pipelines require configuration themselves. Must handle CRD lifecycle carefully (ArgoCD won't auto-prune CRDs by default, which is usually good). Requires team commitment to Git-driven operations.
-
-**Verdict:** The gold standard for production Kubernetes. Once established, GitOps provides unmatched operational consistency. Particularly valuable for teams managing multiple clusters or environments.
-
-**Pitfall to avoid:** ArgoCD's auto-prune can be dangerous if misconfigured—you don't want it accidentally deleting PostgreSQL cluster CRs during cleanup. Use annotations and sync policies deliberately.
-
-### Level 4: Infrastructure-as-Code Abstractions
-
-**Approach:** Manage operator deployment through Terraform, Pulumi, Crossplane, or similar IaC tools.
-
-**What it solves:** Integration with broader infrastructure management. Enforce dependencies (e.g., operator must be present before database clusters). Fits teams already standardized on Terraform or Pulumi for all infrastructure. OpenMCF's approach of wrapping the operator in a `KubernetesZalandoPostgresOperator` CRD exemplifies this pattern—operators become composable infrastructure components.
-
-**What it doesn't solve:** Added abstraction layer means debugging complexity (chase issues through IaC state, Kubernetes resources, and operator logs). Module/provider version compatibility lag (IaC modules might not expose the latest operator features immediately).
-
-**Verdict:** Powerful for platform teams building opinionated infrastructure layers. The abstraction pays off when you're managing dozens of operators across many clusters. However, requires discipline to avoid becoming a black box.
-
-**Pitfall to avoid:** Race conditions on first install. Applying a PostgreSQL CRD and a cluster CR in the same Terraform/Pulumi apply can fail if the CRD isn't established yet. Use explicit `depends_on` or phased deployments.
-
-## Production Patterns: What Actually Works
-
-The deployment method (Helm, GitOps, IaC) is less important than the operational patterns you establish. Here's what matters in production:
-
-### Multi-Tenancy Decisions
-
-**Single Operator, Cluster-Wide:** One operator deployment watches all namespaces. Uses `ClusterRole` RBAC, manages PostgreSQL clusters across teams/environments. Easier to upgrade (one deployment), but failure affects all clusters. Use `teamId` prefixes to prevent naming collisions.
-
-**Multiple Operators, Isolated:** One operator per namespace or per environment. Strong isolation—dev team's operator issues don't impact production. Allows environment-specific configuration (e.g., backups disabled in dev). Trade-off: more operator instances to maintain.
-
-Most organizations start with single cluster-wide operator and split only when scale or isolation requirements demand it.
-
-### The 80/20 of Operator Configuration
-
-Not all configuration is created equal. The vast majority of deployments need only these essentials:
-
-**Operator-level (OperatorConfiguration CRD):**
-- `docker_image`: Spilo image version (determines default PostgreSQL version)
-- `watched_namespace`: `"*"` for cluster-wide, specific namespace for isolation
-- `enable_pod_antiaffinity`: `true` in production (spreads replicas across nodes)
-- `enable_pod_disruption_budget`: `true` (safeguards against mass evictions)
-- Resource requests/limits for the operator pod itself
-
-**Backup configuration (per-cluster or global via environment variables):**
-- S3-compatible bucket and endpoint (`WAL_S3_BUCKET`, `AWS_ENDPOINT`)
-- Credentials (via Kubernetes Secrets referenced as `secretKeyRef`)
-- Backup schedule (`BACKUP_SCHEDULE` cron expression)
-- WAL-G enable flags (`USE_WALG_BACKUP=true`, `USE_WALG_RESTORE=true`)
-
-**PostgreSQL cluster configuration (per cluster CR):**
-- Team ID and cluster name
-- Number of instances (replicas)
-- Volume size and storage class
-- Resource requests/limits
-- Users and databases
-- Optional: Connection pooler, TLS secrets
-
-Everything else—Teams API integration, custom sidecar images, etcd for Patroni DCS, advanced RBAC—is edge-case configuration. The defaults are sensible.
-
-### Backup and Disaster Recovery: The S3-Compatible Approach
-
-The Zalando operator uses **WAL-G** for continuous archiving and point-in-time recovery. This is production-proven:
-
-**Continuous WAL archiving** pushes write-ahead logs to S3-compatible storage in real-time. **Scheduled base backups** (typically nightly) provide restore anchors. Together, they enable recovery to any point in time.
-
-**Why S3-compatible?** Because it's ubiquitous. AWS S3, Google Cloud Storage (with interop mode), Azure Blob, Cloudflare R2, MinIO—all work. The operator doesn't care; it just needs an S3 API endpoint and credentials.
-
-**Cloudflare R2 deserves special mention:** Zero egress fees make it ideal for backups. AWS S3 charges significant egress when you pull a 100GB backup for disaster recovery. R2 doesn't. Storage costs are also lower (\$0.015/GB-month vs S3's \$0.023/GB-month). The trade-off: R2 lacks tiered storage classes like Glacier for long-term archival. But for active PITR windows (7-30 days), R2 is compelling.
-
-**Configuration is environment variables:** Set `WAL_S3_BUCKET`, `AWS_ENDPOINT` (for non-AWS), `AWS_ACCESS_KEY_ID` (via Secret), and `BACKUP_SCHEDULE`. WAL-G handles the rest—compressing WAL segments, uploading base backups, managing retention (though S3 lifecycle policies are more reliable than WAL-G's retention logic).
-
-**Point-in-time recovery** works by creating a new cluster CR with a `clone` section specifying the source cluster's UID and a timestamp. The operator fetches the nearest base backup before that timestamp and replays WAL to the exact moment. This is how you test DR scenarios or roll back from bad migrations.
-
-### Security and RBAC
-
-The operator needs broad permissions (managing StatefulSets, Secrets, Services cluster-wide), so deploy it in a protected namespace accessible only to platform admins. PostgreSQL pods themselves run as non-root (UID 1000) with an `fsGroup` for volume ownership.
-
-Backup credentials deserve special care. Use **Kubernetes Secrets**, not ConfigMaps. Limit IAM permissions to specific buckets. If running on AWS EKS, use IRSA (IAM Roles for Service Accounts) instead of long-lived access keys.
-
-For production, enable **delete protection annotations**. The operator can require explicit annotations on a cluster CR before allowing deletion—prevents accidental `kubectl delete` from wiping databases.
-
-### High Availability Notes
-
-**At the database level:** Patroni (built into Spilo images) handles automated failover using Kubernetes API objects as its distributed consensus store. If the primary pod fails, Patroni promotes a replica within ~30 seconds. The operator isn't in the failover path—this continues even if the operator is down.
-
-**At the operator level:** The operator itself typically runs as a single instance. Kubernetes will restart it automatically if it crashes. This is fine—the operator's job is orchestration (scaling, upgrades, configuration sync), not live failover handling. Patroni doesn't need the operator for HA.
-
-## Alternatives: CloudNativePG, Crunchy, Percona
-
-The Kubernetes PostgreSQL operator landscape is mature. Zalando's operator isn't alone:
-
-### CloudNativePG (CNPG)
-
-A CNCF Sandbox project, Apache 2.0 licensed. **Key difference:** Built-in failover logic (no Patroni), lighter weight. Strong Kubernetes-native focus (e.g., uses PVC snapshots for backups). Backed by EnterpriseDB.
-
-**When to choose:** If you want CNCF governance and a pure-Go operator. If you prefer avoiding Patroni's DCS dependencies (CNPG uses Kubernetes leases directly).
-
-**Why Zalando might still win:** Patroni's years of production hardening. Spilo's extensive extension library (PostGIS, TimescaleDB, pg_partman pre-installed). Established community knowledge base.
-
-### Crunchy Postgres Operator (PGO)
-
-Backed by Crunchy Data (commercial Postgres support vendor). Uses **pgBackRest** for backups instead of WAL-G—arguably more enterprise-proven for very large databases. Historically had some image licensing requirements (developer program click-through).
-
-**When to choose:** If you need vendor support contracts. If you prefer pgBackRest's dedicated backup management over WAL-G.
-
-**Why Zalando might still win:** Fully open with no image license strings. Simpler backup configuration (environment variables vs pgBackRest repo pods).
-
-### Percona Operator for PostgreSQL
-
-Percona's offering, also uses Patroni + pgBackRest. Apache 2.0 licensed. Part of Percona's broader database portfolio (they do MySQL, MongoDB too).
-
-**When to choose:** If you're already in the Percona ecosystem. If you want their monitoring (PMM) integration.
-
-**Why Zalando might still win:** Longer production track record (Zalando's operator has been managing hundreds of clusters at scale since 2018). More comprehensive extension set in Spilo.
-
-### The Zalando Advantage
-
-**Battle-tested at scale:** Zalando runs this operator for thousands of PostgreSQL clusters in production. That operational burn-in is invaluable—edge cases have been discovered and fixed.
-
-**Patroni's robustness:** Using Patroni means leveraging the most mature PostgreSQL HA solution in the ecosystem. Split-brain scenarios, network partitions, sync replication modes—Patroni handles them elegantly.
-
-**Feature completeness:** Streaming replication, PITR, cloning, connection pooling (PgBouncer), volume resizing, TLS, in-place major version upgrades. It's all there.
-
-**Open source purity:** MIT licensed code, no image licensing gotchas. No community vs enterprise edition splits.
-
-**Extension-rich Spilo image:** PostGIS, TimescaleDB, pgAudit, pg_cron, and more—pre-installed. For platform teams building database-as-a-service, this saves significant effort.
-
-All major operators (Zalando, CNPG, Crunchy, Percona) now support the essential features (HA, backups, self-healing, upgrades). The choice often comes down to specific preferences: Patroni vs built-in failover, WAL-G vs pgBackRest, vendor support vs pure open source.
-
-## OpenMCF's Choice: Zalando as the Foundation
-
-For a platform like OpenMCF—building multi-cloud IaC abstractions over Kubernetes—the Zalando Postgres Operator provides a rock-solid foundation for offering PostgreSQL as a service.
-
-**Why it fits:**
-
-1. **Production-proven reliability:** When you're abstracting infrastructure for others to consume, you need components with extensive burn-in. Zalando's operator has it.
-
-2. **Comprehensive feature set:** Platform users need HA, backups, pooling, and upgrade automation. Zalando delivers all of it without gaps.
-
-3. **Operational simplicity:** Backup configuration via environment variables, straightforward RBAC, clear upgrade paths—platform operators appreciate this.
-
-4. **Extension versatility:** Different teams need different extensions. Spilo's pre-packaged approach (PostGIS for geo teams, TimescaleDB for time-series workloads) reduces friction.
-
-5. **Open source alignment:** No licensing concerns means OpenMCF can package and distribute this freely, whether for public cloud, private cloud, or on-premises deployments.
-
-The abstraction layer—OpenMCF's `KubernetesZalandoPostgresOperator` API—wraps deployment complexity (Helm charts, RBAC, namespace setup) into a declarative interface. Teams using OpenMCF don't need to understand operator internals; they declare intent via protobuf APIs, and the platform handles the rest.
-
-This is the promise of modern infrastructure platforms: take battle-tested open source components (like Zalando's operator), wrap them in ergonomic APIs, and deliver them consistently across clouds.
-
-## Conclusion
-
-Running PostgreSQL on Kubernetes stopped being a question of "if" years ago. The question is "how well?"
-
-The shift from manual database administration to operator-managed automation represents a paradigm change. Operations that once required runbooks and escalations—failover, backup verification, replica scaling, major version upgrades—now run autonomously. The DBA role hasn't disappeared; it's been codified into Kubernetes controllers.
-
-The Zalando Postgres Operator embodies this evolution. Built from production experience at a large-scale e-commerce company, refined by an active open source community, and hardened across thousands of deployments, it's not experimental technology. It's the infrastructure many organizations quietly run in production today.
-
-For teams building platforms like OpenMCF, or organizations standardizing their database infrastructure on Kubernetes, the Zalando operator offers the right balance: comprehensive features without unnecessary complexity, open source values without vendor lock-in, and a track record that speaks louder than marketing claims.
-
-The real test of infrastructure isn't how it performs during normal operation—it's how it handles failure. When a node dies, when a network partition occurs, when someone accidentally deletes a critical table and needs a point-in-time restore—that's when architectural choices matter. The Zalando Postgres Operator, with Patroni's failover logic and WAL-G's recovery capabilities, has passed this test repeatedly.
-
-Running databases on Kubernetes is no longer the bold frontier. It's the expected baseline. Choose your operator wisely.
-
----
-
-*For implementation details on configuring the operator, setting up backup encryption, or designing multi-region disaster recovery strategies, refer to the [Zalando Postgres Operator official documentation](https://opensource.zalando.com/postgres-operator/).*
-
+# Kubernetes Zalando Postgres Operator
+
+Deploys the Zalando Postgres Operator on a Kubernetes cluster using its official Helm chart (v1.12.2). The operator installs the control-plane components that watch for `postgresql` custom resources, enabling declarative PostgreSQL cluster lifecycle management including automated patroni-based failover, rolling updates, and optional WAL-G backups to Cloudflare R2-compatible object storage.
+
+## What Gets Created
+
+When you deploy a KubernetesZalandoPostgresOperator resource, OpenMCF provisions:
+
+- **Namespace** — created only when `createNamespace` is `true`
+- **Helm Release** — installs the `postgres-operator` Helm chart (v1.12.2) from the Zalando Helm repository, deploying the operator pod with configurable CPU and memory resources
+- **Operator Pod** — runs the Zalando Postgres Operator controller that reconciles `postgresql` custom resources into running PostgreSQL clusters managed by Patroni
+- **CRDs and RBAC** — Custom Resource Definitions for `postgresql` and associated ClusterRoles, ServiceAccounts, and bindings installed by the Helm chart
+- **Label Inheritance** — configures the operator to propagate OpenMCF resource labels (organization, environment, resource kind, resource ID) to all managed PostgreSQL clusters
+- **Backup Secret** (optional) — a Kubernetes Secret containing Cloudflare R2 credentials for WAL-G backups, created when `backupConfig` is provided
+- **Backup ConfigMap** (optional) — a Kubernetes ConfigMap with WAL-G environment variables (S3 endpoint, prefix, schedule) referenced by the operator's `pod_environment_configmap` setting
+
+## Prerequisites
+
+- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
+- **Helm-capable cluster** — the cluster must support Helm chart installations (standard for all managed Kubernetes offerings)
+- **Cloudflare R2 credentials** (optional) — required only if configuring WAL-G backups via `backupConfig`
+
+## Quick Start
+
+Create a file `zalando-postgres-operator.yaml`:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesZalandoPostgresOperator
+metadata:
+  name: my-pg-operator
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesZalandoPostgresOperator.my-pg-operator
+spec:
+  namespace: postgres-operator
+  createNamespace: true
+```
+
+Deploy:
+
+```shell
+openmcf apply -f zalando-postgres-operator.yaml
+```
+
+This installs the Zalando Postgres Operator into the `postgres-operator` namespace with default resource limits (1000m CPU / 1Gi memory) and requests (50m CPU / 100Mi memory).
+
+## Configuration Reference
+
+### Required Fields
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `namespace` | `string` | Kubernetes namespace where the operator is installed. Can reference a KubernetesNamespace resource via `valueFrom`. | Required |
+| `container` | `object` | Container specification for the operator pod, including resource limits and requests. | Required |
+
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `targetCluster.clusterKind` | `enum` | — | Kubernetes cluster kind. Valid values: `AwsEksCluster`, `GcpGkeCluster`, `AzureAksCluster`, `DigitalOceanKubernetesCluster`, `CivoKubernetesCluster`. |
+| `targetCluster.clusterName` | `string` | — | Name of the target Kubernetes cluster in the same environment. |
+| `createNamespace` | `bool` | `false` | When `true`, creates the namespace before deploying the operator. |
+| `container.resources.limits.cpu` | `string` | `1000m` | Maximum CPU allocation for the operator pod. |
+| `container.resources.limits.memory` | `string` | `1Gi` | Maximum memory allocation for the operator pod. |
+| `container.resources.requests.cpu` | `string` | `50m` | Minimum guaranteed CPU for the operator pod. |
+| `container.resources.requests.memory` | `string` | `100Mi` | Minimum guaranteed memory for the operator pod. |
+| `backupConfig` | `object` | — | WAL-G backup configuration for all PostgreSQL databases managed by this operator. When provided, creates a Secret and ConfigMap for R2-based backups. |
+| `backupConfig.r2Config.cloudflareAccountId` | `string` | — | Cloudflare account ID used to construct the R2 endpoint URL (`https://<accountId>.r2.cloudflarestorage.com`). Required when `backupConfig` is specified. |
+| `backupConfig.r2Config.bucketName` | `string` | — | R2 bucket name for storing backups. Required when `backupConfig` is specified. |
+| `backupConfig.r2Config.accessKeyId` | `string` | — | R2 access key ID. Stored in a Kubernetes Secret. Required when `backupConfig` is specified. |
+| `backupConfig.r2Config.secretAccessKey` | `string` | — | R2 secret access key. Stored in a Kubernetes Secret. Required when `backupConfig` is specified. |
+| `backupConfig.s3PrefixTemplate` | `string` | `backups/$(SCOPE)/$(PGVERSION)` | Custom S3 prefix template for WAL-G. Zalando variables `$(SCOPE)` (cluster name) and `$(PGVERSION)` (postgres version) are interpolated at runtime. |
+| `backupConfig.backupSchedule` | `string` | — | Cron schedule for base backups (e.g., `0 2 * * *` for 2 AM daily). Required when `backupConfig` is specified. |
+| `backupConfig.enableWalGBackup` | `bool` | `true` | Enable WAL-G for continuous archiving backups. |
+| `backupConfig.enableWalGRestore` | `bool` | `true` | Enable WAL-G for point-in-time restore operations. |
+| `backupConfig.enableCloneWalGRestore` | `bool` | `true` | Enable WAL-G for clone-from-backup operations. |
+
+> **Note on `namespace`:** The `namespace` field supports `valueFrom` for referencing an OpenMCF-managed KubernetesNamespace resource. When using `valueFrom`, the namespace name is resolved at deploy time from the referenced resource's `spec.name` field.
+
+## Examples
+
+### Default Operator Installation
+
+Install the Zalando Postgres Operator with default resource allocations, creating the target namespace automatically:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesZalandoPostgresOperator
+metadata:
+  name: pg-operator
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesZalandoPostgresOperator.pg-operator
+spec:
+  namespace: postgres-operator
+  createNamespace: true
+  container:
+    resources:
+      limits:
+        cpu: "1000m"
+        memory: "1Gi"
+      requests:
+        cpu: "50m"
+        memory: "100Mi"
+```
+
+### Production Operator with Higher Resources and R2 Backups
+
+For production clusters, increase the operator's resources and enable WAL-G backups to Cloudflare R2 with a nightly schedule:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesZalandoPostgresOperator
+metadata:
+  name: prod-pg-operator
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesZalandoPostgresOperator.prod-pg-operator
+spec:
+  namespace: postgres-operator
+  container:
+    resources:
+      limits:
+        cpu: "2000m"
+        memory: "2Gi"
+      requests:
+        cpu: "200m"
+        memory: "256Mi"
+  backupConfig:
+    r2Config:
+      cloudflareAccountId: "abc123def456"
+      bucketName: "prod-pg-backups"
+      accessKeyId: "R2_ACCESS_KEY"
+      secretAccessKey: "R2_SECRET_KEY"
+    backupSchedule: "0 2 * * *"
+    enableWalGBackup: true
+    enableWalGRestore: true
+    enableCloneWalGRestore: true
+```
+
+### Operator with Foreign Key Namespace Reference
+
+Reference an OpenMCF-managed namespace instead of hardcoding the name. The `valueFrom` syntax resolves the namespace name from a KubernetesNamespace resource at deploy time:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesZalandoPostgresOperator
+metadata:
+  name: shared-pg-operator
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: staging.KubernetesZalandoPostgresOperator.shared-pg-operator
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      name: operators-namespace
+      field: spec.name
+  container:
+    resources:
+      limits:
+        cpu: "1000m"
+        memory: "1Gi"
+      requests:
+        cpu: "100m"
+        memory: "128Mi"
+```
+
+### Backups with Custom S3 Prefix Template
+
+Organize backup paths by team or environment using a custom S3 prefix template:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesZalandoPostgresOperator
+metadata:
+  name: team-pg-operator
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesZalandoPostgresOperator.team-pg-operator
+spec:
+  namespace: postgres-operator
+  createNamespace: true
+  container:
+    resources:
+      limits:
+        cpu: "1000m"
+        memory: "1Gi"
+      requests:
+        cpu: "50m"
+        memory: "100Mi"
+  backupConfig:
+    r2Config:
+      cloudflareAccountId: "abc123def456"
+      bucketName: "shared-pg-backups"
+      accessKeyId: "R2_ACCESS_KEY"
+      secretAccessKey: "R2_SECRET_KEY"
+    backupSchedule: "0 3 * * 0"
+    s3PrefixTemplate: "team-alpha/$(SCOPE)/$(PGVERSION)"
+    enableWalGBackup: true
+    enableWalGRestore: true
+```
+
+## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `namespace` | `string` | Kubernetes namespace where the Zalando Postgres Operator is installed |
+| `service` | `string` | Kubernetes service name for the operator |
+| `portForwardCommand` | `string` | Command to set up port-forwarding to the operator from a developer laptop |
+| `kubeEndpoint` | `string` | Cluster-internal endpoint for the operator service |
+| `ingressEndpoint` | `string` | Public endpoint for the operator when ingress is configured |
+
+## Related Components
+
+- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesPostgres](/docs/catalog/kubernetes/kubernetespostgres) — deploys PostgreSQL instances that can be managed by the Zalando Operator installed by this component

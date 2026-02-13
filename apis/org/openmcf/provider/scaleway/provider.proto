@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway;
+
+import "buf/validate/validate.proto";
+
+// ScalewayProviderConfig defines the credentials and connection parameters required to interact
+// with Scaleway cloud infrastructure. This message maps directly to the authentication fields
+// accepted by the Terraform Scaleway provider.
+//
+// Scaleway uses an access key / secret key pair for API authentication, scoped to a project
+// and optionally an organization. Region and zone control the default geographic placement
+// of resources.
+//
+// Field-to-environment-variable mapping:
+//   access_key       -> SCW_ACCESS_KEY
+//   secret_key       -> SCW_SECRET_KEY
+//   project_id       -> SCW_DEFAULT_PROJECT_ID
+//   organization_id  -> SCW_DEFAULT_ORGANIZATION_ID
+//   region           -> SCW_DEFAULT_REGION
+//   zone             -> SCW_DEFAULT_ZONE
+//
+// For more information:
+// - Terraform provider docs: https://registry.terraform.io/providers/scaleway/scaleway/latest/docs
+// - Scaleway API keys: https://www.scaleway.com/en/docs/identity-and-access-management/iam/how-to/create-api-keys/
+message ScalewayProviderConfig {
+  // access_key is the Scaleway access key used to authenticate API requests.
+  // Access keys are created in the Scaleway console under IAM > API Keys.
+  // Environment variable: SCW_ACCESS_KEY
+  string access_key = 1 [(buf.validate.field).required = true];
+
+  // secret_key is the Scaleway secret key paired with the access key.
+  // Must be kept confidential. Format is a UUID.
+  // Environment variable: SCW_SECRET_KEY
+  string secret_key = 2 [(buf.validate.field).required = true];
+
+  // project_id is the default Scaleway project ID for project-scoped resources.
+  // Most resources in Scaleway are scoped to a project. While optional at the
+  // provider level, many resources will require it.
+  // Environment variable: SCW_DEFAULT_PROJECT_ID
+  string project_id = 3;
+
+  // organization_id is the default Scaleway organization ID.
+  // Required only for organization-scoped resources (e.g., IAM, billing).
+  // Most users can omit this field.
+  // Environment variable: SCW_DEFAULT_ORGANIZATION_ID
+  string organization_id = 4;
+
+  // region is the default Scaleway region for regional resources.
+  // Examples: "fr-par", "nl-ams", "pl-waw"
+  // If omitted, defaults to "fr-par".
+  // Environment variable: SCW_DEFAULT_REGION
+  string region = 5;
+
+  // zone is the default Scaleway availability zone for zonal resources.
+  // Examples: "fr-par-1", "nl-ams-1", "pl-waw-2"
+  // If omitted, defaults to "fr-par-1".
+  // Environment variable: SCW_DEFAULT_ZONE
+  string zone = 6;
+}

@@ -12,6 +12,14 @@ message AzureAksClusterSpec {
   // Azure region in which to create the AKS cluster (e.g., "eastus").
   string region = 1 [(buf.validate.field).required = true];
 
+  // The Azure Resource Group where the AKS Cluster will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef resource_group = 14 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
   // The Azure resource ID of the Virtual Network subnet to use for cluster nodes.
   // This should reference the subnet created by an AzureVirtualNetwork resource.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vnet_subnet_id = 2 [

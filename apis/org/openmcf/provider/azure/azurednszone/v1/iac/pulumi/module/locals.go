@@ -9,8 +9,9 @@ import (
 )
 
 type Locals struct {
-	AzureDnsZone *azurednszonev1.AzureDnsZone
-	AzureTags    map[string]string
+	AzureDnsZone      *azurednszonev1.AzureDnsZone
+	ResourceGroupName string
+	AzureTags         map[string]string
 }
 
 func initializeLocals(ctx *pulumi.Context, stackInput *azurednszonev1.AzureDnsZoneStackInput) *Locals {
@@ -19,6 +20,11 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurednszonev1.AzureDnsZo
 	locals.AzureDnsZone = stackInput.Target
 
 	target := stackInput.Target
+
+	// The resource_group field is a StringValueOrRef. The platform middleware resolves
+	// valueFrom references before IaC modules run, so .GetValue() always returns the
+	// resolved literal string.
+	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
 	// Create Azure tags for resource tagging
 	locals.AzureTags = map[string]string{

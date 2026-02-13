@@ -13,7 +13,6 @@ go_library(
     deps = [
         "//apis/org/openmcf/provider/openstack",
         "//apis/org/openmcf/provider/openstack/openstackroleassignment/v1:openstackroleassignment",
-        "//apis/org/openmcf/shared/foreignkey/v1:foreignkey",
         "//pkg/iac/pulumi/pulumimodule/provider/openstack/pulumiopenstackprovider",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_openstack_sdk_v5//go/openstack",

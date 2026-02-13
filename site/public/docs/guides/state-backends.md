@@ -7,22 +7,9 @@ order: 25
 
 # State Backends
 
-State backends store the state of your infrastructure, tracking what resources exist and their current configuration. OpenMCF supports automatic backend detection from manifest labels for all three provisioners: Pulumi, OpenTofu, and Terraform.
+This guide covers how to configure state storage for Pulumi, OpenTofu, and Terraform deployments. OpenMCF reads backend configuration from manifest labels and CLI flags, eliminating the need for separate backend configuration files.
 
----
-
-## Overview
-
-Infrastructure as Code tools need to track what they've deployed. This tracking happens through "state" - a record of resources, their properties, and their relationships. Where this state is stored is the "backend."
-
-**Why backends matter:**
-
-- **Collaboration**: Teams need shared state to avoid conflicts
-- **Persistence**: State survives beyond your local machine
-- **Locking**: Prevents simultaneous modifications
-- **History**: Enables rollbacks and auditing
-
-OpenMCF automatically detects backend configuration from labels in your manifest, eliminating the need for separate backend configuration files.
+For the conceptual overview of state management — what state is, why it matters, and how each engine handles it — see [State Management](../concepts/state-management).
 
 ---
 
@@ -100,10 +87,10 @@ For scenarios where CLI flags are cumbersome or manifests can't be modified, you
 
 | Variable                           | Description                                         |
 | ---------------------------------- | --------------------------------------------------- |
-| `PROJECT_PLANTON_BACKEND_TYPE`     | Backend type: `s3`, `gcs`, `azurerm`, `local`       |
-| `PROJECT_PLANTON_BACKEND_BUCKET`   | State bucket/container name                         |
-| `PROJECT_PLANTON_BACKEND_REGION`   | AWS region (use `auto` for S3-compatible backends)  |
-| `PROJECT_PLANTON_BACKEND_ENDPOINT` | Custom S3-compatible endpoint URL (R2, MinIO, etc.) |
+| `OPENMCF_BACKEND_TYPE`     | Backend type: `s3`, `gcs`, `azurerm`, `local`       |
+| `OPENMCF_BACKEND_BUCKET`   | State bucket/container name                         |
+| `OPENMCF_BACKEND_REGION`   | AWS region (use `auto` for S3-compatible backends)  |
+| `OPENMCF_BACKEND_ENDPOINT` | Custom S3-compatible endpoint URL (R2, MinIO, etc.) |
 
 **Note:** `backend.key` is intentionally NOT configurable via environment variable. State file paths should be explicit and traceable, so they must come from manifest labels or CLI flags.
 
@@ -111,10 +98,10 @@ For scenarios where CLI flags are cumbersome or manifests can't be modified, you
 
 ```bash
 # Set environment variables (e.g., in CI/CD pipeline)
-export PROJECT_PLANTON_BACKEND_TYPE=s3
-export PROJECT_PLANTON_BACKEND_BUCKET=my-state-bucket
-export PROJECT_PLANTON_BACKEND_REGION=auto
-export PROJECT_PLANTON_BACKEND_ENDPOINT=https://account-id.r2.cloudflarestorage.com
+export OPENMCF_BACKEND_TYPE=s3
+export OPENMCF_BACKEND_BUCKET=my-state-bucket
+export OPENMCF_BACKEND_REGION=auto
+export OPENMCF_BACKEND_ENDPOINT=https://account-id.r2.cloudflarestorage.com
 
 # Run with key from manifest
 openmcf apply -f manifest.yaml
@@ -130,10 +117,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      PROJECT_PLANTON_BACKEND_TYPE: s3
-      PROJECT_PLANTON_BACKEND_BUCKET: ${{ secrets.STATE_BUCKET }}
-      PROJECT_PLANTON_BACKEND_REGION: auto
-      PROJECT_PLANTON_BACKEND_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+      OPENMCF_BACKEND_TYPE: s3
+      OPENMCF_BACKEND_BUCKET: ${{ secrets.STATE_BUCKET }}
+      OPENMCF_BACKEND_REGION: auto
+      OPENMCF_BACKEND_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
     steps:
       - uses: actions/checkout@v4
       - name: Deploy infrastructure
@@ -146,7 +133,7 @@ Environment variables serve as defaults that can be overridden:
 
 ```bash
 # Environment sets bucket to "default-bucket"
-export PROJECT_PLANTON_BACKEND_BUCKET=default-bucket
+export OPENMCF_BACKEND_BUCKET=default-bucket
 
 # Manifest label overrides to "manifest-bucket"
 # terraform.openmcf.org/backend.bucket: manifest-bucket
@@ -827,18 +814,10 @@ Enter endpoint: _
 
 ---
 
-## Related Documentation
+## What's Next
 
-- [Unified Commands](/docs/cli/unified-commands) - Using apply, destroy, init, plan, refresh
-- [Credentials Guide](/docs/guides/credentials) - Setting up cloud provider credentials
-- [Kustomize Integration](/docs/guides/kustomize) - Multi-environment deployments
-- [OpenTofu Commands](/docs/cli/tofu-commands) - OpenTofu-specific details
-- [CLI Reference](/docs/cli/cli-reference) - Complete command reference
-
----
-
-## Getting Help
-
-**Questions?** [GitHub Discussions](https://github.com/plantonhq/openmcf/discussions)
-
-**Found a bug?** [Open an issue](https://github.com/plantonhq/openmcf/issues)
+- [State Management](../concepts/state-management) — Conceptual overview of state in OpenMCF
+- [Unified Commands](/docs/cli/unified-commands) — Using apply, destroy, init, plan, refresh
+- [Credentials](./credentials) — Setting up cloud provider credentials
+- [Kustomize Integration](./kustomize) — Multi-environment deployments with per-environment state
+- [CLI Reference](/docs/cli/cli-reference) — Complete command and flag reference

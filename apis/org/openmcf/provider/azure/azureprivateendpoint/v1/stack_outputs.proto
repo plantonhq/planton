@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azureprivateendpoint.v1;
+
+// **AzurePrivateEndpointStackOutputs** captures the outputs of provisioning an
+// Azure Private Endpoint.
+//
+// The primary output is `private_endpoint_id` (the Azure resource ID) and
+// `private_ip_address` (the private IP allocated from the subnet). These enable:
+//
+// - Downstream resources to reference the endpoint
+// - DNS configuration to map FQDNs to the private IP
+// - Network troubleshooting by inspecting the allocated IP
+//
+// AzurePrivateEndpoint is a leaf resource in the infra chart DAG -- nothing
+// currently references it downstream. However, the outputs are essential for
+// operational visibility and potential future consumers.
+message AzurePrivateEndpointStackOutputs {
+  // The Azure Resource Manager ID of the Private Endpoint.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/privateEndpoints/{name}
+  string private_endpoint_id = 1;
+
+  // The private IP address allocated to the Private Endpoint from the subnet.
+  // This is the IP address that the target service's FQDN should resolve to
+  // within the VNet. If a DNS zone group is configured, this IP is automatically
+  // registered as an A-record in the corresponding private DNS zone.
+  string private_ip_address = 2;
+
+  // The Azure Resource Manager ID of the network interface created for this
+  // Private Endpoint. The NIC is automatically provisioned by Azure and attached
+  // to the subnet. Useful for advanced networking diagnostics.
+  string network_interface_id = 3;
+}

@@ -18,6 +18,7 @@ import {
   AwsCredentialForm,
   AzureCredentialForm,
   OpenStackCredentialForm,
+  ScalewayCredentialForm,
 } from '@/app/credentials/_components/forms';
 import { useCredentialCommand } from '@/app/credentials/_services';
 import {
@@ -36,7 +37,10 @@ import {
   OpenStackApplicationCredentialsSchema,
   OpenStackTokenCredentialsSchema,
 } from '@/gen/org/openmcf/provider/openstack/provider_pb';
-import type { OpenStackFormData } from '@/app/credentials/_components/forms/types';
+import {
+  ScalewayProviderConfigSchema,
+} from '@/gen/org/openmcf/provider/scaleway/provider_pb';
+import type { OpenStackFormData, ScalewayFormData } from '@/app/credentials/_components/forms/types';
 import { create } from '@bufbuild/protobuf';
 import { providerConfig } from '@/app/credentials/_components/utils';
 
@@ -73,6 +77,7 @@ export function CredentialDrawer({
       azure: {},
       openstack: {},
       openstackAuthMethod: 'application_credential',
+      scaleway: {},
     },
   });
 
@@ -109,6 +114,7 @@ export function CredentialDrawer({
         azure: {},
         openstack: {},
         openstackAuthMethod: 'application_credential',
+        scaleway: {},
       };
       if (providerConfigData?.data?.case === 'auth0') {
         formData.auth0 = {
@@ -165,6 +171,16 @@ export function CredentialDrawer({
           osData.token = os.credentials.value.token;
         }
         formData.openstack = osData;
+      } else if (providerConfigData?.data?.case === 'scaleway') {
+        const scw = providerConfigData.data.value;
+        formData.scaleway = {
+          accessKey: scw.accessKey,
+          secretKey: scw.secretKey,
+          projectId: scw.projectId,
+          organizationId: scw.organizationId,
+          region: scw.region,
+          zone: scw.zone,
+        };
       }
       reset(formData);
     } else if (mode === 'create') {
@@ -177,6 +193,7 @@ export function CredentialDrawer({
         azure: {},
         openstack: {},
         openstackAuthMethod: 'application_credential',
+        scaleway: {},
       });
     }
   }, [selectedCredential, mode, initialProvider, reset]);
@@ -289,6 +306,24 @@ export function CredentialDrawer({
             }),
           },
         });
+      } else if (
+        formData.provider == Credential_CredentialProvider.SCALEWAY &&
+        formData.scaleway?.accessKey &&
+        formData.scaleway?.secretKey
+      ) {
+        providerConfig = create(CredentialProviderConfigSchema, {
+          data: {
+            case: 'scaleway',
+            value: create(ScalewayProviderConfigSchema, {
+              accessKey: formData.scaleway.accessKey,
+              secretKey: formData.scaleway.secretKey,
+              projectId: formData.scaleway.projectId || '',
+              organizationId: formData.scaleway.organizationId || '',
+              region: formData.scaleway.region || '',
+              zone: formData.scaleway.zone || '',
+            }),
+          },
+        });
       } else {
         return;
       }
@@ -318,6 +353,7 @@ export function CredentialDrawer({
       azure: {},
       openstack: {},
       openstackAuthMethod: 'application_credential',
+      scaleway: {},
     });
     onClose();
   };
@@ -333,6 +369,7 @@ export function CredentialDrawer({
       setValue('azure', {});
       setValue('openstack', {});
       setValue('openstackAuthMethod', 'application_credential');
+      setValue('scaleway', {});
     },
     [setValue, isView, initialProvider]
   );
@@ -394,6 +431,9 @@ export function CredentialDrawer({
                   watch={watch}
                   disabled={isView}
                 />
+              )}
+              {formProvider == Credential_CredentialProvider.SCALEWAY && (
+                <ScalewayCredentialForm register={register} disabled={isView} />
               )}
             </Stack>
           </Stack>

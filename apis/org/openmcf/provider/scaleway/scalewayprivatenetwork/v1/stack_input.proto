@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway.scalewayprivatenetwork.v1;
+
+import "org/openmcf/provider/scaleway/provider.proto";
+import "org/openmcf/provider/scaleway/scalewayprivatenetwork/v1/api.proto";
+
+//scaleway-private-network stack-input
+message ScalewayPrivateNetworkStackInput {
+  //target cloud-resource
+  ScalewayPrivateNetwork target = 1;
+  //provider-config
+  org.openmcf.provider.scaleway.ScalewayProviderConfig provider_config = 2;
+}

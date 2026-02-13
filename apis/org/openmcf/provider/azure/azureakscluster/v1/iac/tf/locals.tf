@@ -1,6 +1,6 @@
 locals {
-  # Resource group name
-  resource_group_name = "rg-${var.metadata.name}"
+  # Resource group name (provided externally)
+  resource_group_name = var.spec.resource_group
 
   # Cluster name
   cluster_name = var.metadata.name

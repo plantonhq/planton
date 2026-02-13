@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azureloadbalancer.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/azure/azureloadbalancer/v1/spec.proto";
+import "org/openmcf/provider/azure/azureloadbalancer/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// AzureLoadBalancer is the top-level API resource for an Azure Load Balancer.
+// Azure Load Balancer is a Layer 4 (TCP/UDP) load balancer that distributes
+// traffic across healthy backend instances using health probes and configurable
+// routing rules. Supports both public and internal configurations.
+message AzureLoadBalancer {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'azure.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AzureLoadBalancer'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AzureLoadBalancerSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AzureLoadBalancerStatus status = 5;
+}
+
+// AzureLoadBalancerStatus holds the deployment status and outputs.
+message AzureLoadBalancerStatus {
+  // stack-outputs
+  AzureLoadBalancerStackOutputs outputs = 1;
+}

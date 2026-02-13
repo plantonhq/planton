@@ -6,377 +6,316 @@ order: 100
 componentName: "auth0client"
 ---
 
-# Auth0Client: Technical Research Documentation
+# Auth0 Client
 
-## Introduction
+Deploys an Auth0 Application (Client) with configurable OAuth flows, token settings, and optional API access grants. Supports all four Auth0 application types — native, SPA, regular web, and machine-to-machine — with full control over callbacks, refresh token behavior, JWT signing, and organization-aware authentication.
 
-Auth0 Applications (called "Clients" in the API) are the fundamental building blocks for integrating authentication into your applications. Each application registered in Auth0 represents an OAuth 2.0 client that can authenticate users and request access tokens.
+## What Gets Created
 
-This document provides comprehensive research into Auth0 applications, their configuration options, and the rationale behind OpenMCF's Auth0Client deployment component design.
+When you deploy an Auth0Client resource, OpenMCF provisions:
 
-## Application Types in Auth0
+- **Auth0 Client (Application)** — an `auth0_client` resource configured with the specified application type, OAuth settings, URL allowlists, and optional JWT/refresh token configuration
+- **Client Grants** — created only when `apiGrants` is configured, one `auth0_client_grant` resource per entry authorizing this client to call the specified API with the listed scopes
 
-### Native Applications
+## Prerequisites
 
-**Strategy:** Mobile, desktop, or CLI applications
+- **Auth0 credentials** configured via environment variables (`AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, `AUTH0_CLIENT_SECRET`) or OpenMCF provider config
+- **An Auth0 tenant** with sufficient application quota
+- **An Auth0 Resource Server** if configuring `apiGrants` to authorize API access
+- **An Auth0 Connection** if restricting the client to specific connections via `enabledConnections`
 
-**Characteristics:**
-- Cannot securely store client secrets
-- Run directly on user devices
-- Use Authorization Code flow with PKCE
-- Support native social login (Sign in with Apple, Facebook SDK)
+## Quick Start
 
-**Use Cases:**
-- iOS and Android mobile apps
-- Desktop applications (Electron, native)
-- CLI tools requiring user authentication
-
-**Configuration Requirements:**
-- Custom URL scheme callbacks (e.g., `myapp://callback`)
-- Mobile-specific settings (bundle identifiers, package names)
-- Native social login configuration
-
-### Single Page Applications (SPA)
-
-**Strategy:** JavaScript applications running in the browser
-
-**Characteristics:**
-- Cannot securely store client secrets
-- All code is visible to users
-- Use Authorization Code flow with PKCE
-- Require CORS configuration
-
-**Use Cases:**
-- React, Angular, Vue.js applications
-- Any JavaScript framework running in browser
-- Progressive Web Apps (PWAs)
-
-**Configuration Requirements:**
-- Callback URLs for redirect after authentication
-- Web origins for CORS
-- Token handling in browser storage
-
-### Regular Web Applications
-
-**Strategy:** Traditional server-side web applications
-
-**Characteristics:**
-- Can securely store client secrets
-- Server renders HTML and handles auth flow
-- Use Authorization Code flow
-- Session-based authentication
-
-**Use Cases:**
-- Node.js/Express applications
-- Python/Django applications
-- Ruby on Rails, PHP applications
-- Any server-rendered web app
-
-**Configuration Requirements:**
-- Server-side callback URL
-- Client secret management
-- Session configuration
-
-### Machine-to-Machine (M2M) Applications
-
-**Strategy:** Backend services and APIs
-
-**Characteristics:**
-- Can securely store client secrets
-- No user interaction
-- Use Client Credentials flow
-- Service-to-service authentication
-
-**Use Cases:**
-- Backend API services
-- Scheduled jobs and cron tasks
-- CI/CD pipelines
-- Microservice communication
-
-**Configuration Requirements:**
-- Client credentials grant type
-- API permissions (scopes)
-- Token lifetime configuration
-
-## OAuth Grant Types
-
-### Authorization Code
-
-The most secure flow for applications that can receive callbacks:
-
-```
-User -> App -> Auth0 (login) -> App (with code) -> Auth0 (token) -> App
-```
-
-**When to use:**
-- Web applications (SPA, regular web)
-- Native mobile applications
-- Any user-facing application
-
-**PKCE Enhancement:**
-Required for public clients (SPA, native) to prevent authorization code interception.
-
-### Client Credentials
-
-For machine-to-machine authentication:
-
-```
-Service -> Auth0 (credentials) -> Service (with token)
-```
-
-**When to use:**
-- Backend services
-- Scheduled jobs
-- Service-to-service communication
-
-### Implicit (Legacy)
-
-**Deprecated** - Do not use for new applications. Use Authorization Code with PKCE instead.
-
-### Resource Owner Password
-
-**Not recommended** - Use only for legacy system migration.
-
-## API Grants (Client Grants)
-
-### Understanding Grant Types vs API Grants
-
-These are **different concepts** in Auth0:
-
-| Concept | What it does | Field in Auth0ClientSpec |
-|---------|--------------|--------------------------|
-| **`grant_types`** | Which OAuth flows the client can use (e.g., `authorization_code`, `client_credentials`) | `grant_types` |
-| **`api_grants`** | Which APIs the client is authorized to access and with what scopes | `api_grants` |
-
-**Example:** An M2M application needs:
-- `grant_types: ["client_credentials"]` — to use client credentials flow
-- An **api_grant** — to actually call an API with specific scopes
-
-Without the API grant, the M2M app exists but can't call any APIs.
-
-### Configuring API Grants
-
-Each API grant authorizes the client to call a specific API (Resource Server) with specified permissions:
+Create a file `auth0-client.yaml`:
 
 ```yaml
-api_grants:
-  - audience: "https://api.example.com/"
-    scopes:
-      - read:resources
-      - write:resources
+apiVersion: auth0.openmcf.org/v1
+kind: Auth0Client
+metadata:
+  name: my-app
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.Auth0Client.my-app
+spec:
+  applicationType: spa
 ```
 
-**For Auth0 Management API access:**
+Deploy:
+
+```shell
+openmcf apply -f auth0-client.yaml
+```
+
+This creates a Single Page Application in Auth0 with default OAuth settings and OIDC-conformant behavior.
+
+## Configuration Reference
+
+### Required Fields
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `applicationType` | `string` | The type of Auth0 application. Determines which OAuth flows and security settings apply. | Must be one of: `native`, `spa`, `regular_web`, `non_interactive` |
+
+### Optional Fields
+
+#### General
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `description` | `string` | `""` | Free-text description of the application. Maximum 140 characters. |
+| `logoUri` | `string` | `""` | URL of the application logo, displayed on consent and login pages. |
+| `clientMetadata` | `map<string, string>` | `{}` | Custom metadata key-value pairs for application-specific configuration. Maximum 10 pairs. |
+| `clientAliases` | `string[]` | `[]` | Alternative identifiers for this client, usable in authentication requests instead of client_id. |
+
+#### URL Configuration
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `callbacks` | `string[]` | `[]` | Allowed callback URLs. Auth0 redirects here after authentication. Include both development and production URLs. |
+| `allowedLogoutUrls` | `string[]` | `[]` | URLs that Auth0 can redirect to after logout. |
+| `webOrigins` | `string[]` | `[]` | Allowed origins for web message response mode. Required for SPAs using popup or iframe-based authentication. |
+| `allowedOrigins` | `string[]` | `[]` | CORS origins allowed for cross-origin requests from JavaScript applications. |
+
+#### OAuth & Authentication
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `grantTypes` | `string[]` | per app type | OAuth grant types this application can use. Common values: `authorization_code`, `implicit`, `refresh_token`, `client_credentials`, `password`. If not specified, defaults are based on `applicationType`. |
+| `oidcConformant` | `bool` | `false` | Enables stricter OIDC-conformant behavior. Recommended for new applications. |
+| `isFirstParty` | `bool` | `false` | Marks this as a first-party application. First-party apps skip the user consent prompt. |
+| `crossOriginAuthentication` | `bool` | `false` | Enables cross-origin authentication for embedded login forms in SPAs. |
+| `crossOriginLoc` | `string` | `""` | URL for cross-origin verification fallback. Used with `crossOriginAuthentication` for certain browsers. |
+| `sso` | `bool` | `false` | Enables Single Sign-On. Users already logged in won't need to re-authenticate. |
+| `ssoDisabled` | `bool` | `false` | Explicitly disables SSO, requiring authentication for each session. |
+| `isTokenEndpointIpHeaderTrusted` | `bool` | `false` | When `true`, Auth0 uses the `X-Forwarded-For` header for IP-based features. |
+
+#### Login & Organization
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `customLoginPage` | `string` | `""` | Custom HTML for the login page. Only used when `customLoginPageOn` is `true`. |
+| `customLoginPageOn` | `bool` | `false` | Enables the custom login page instead of Universal Login. |
+| `initiateLoginUri` | `string` | `""` | URL to initiate login for OIDC third-party initiated login flows. |
+| `organizationUsage` | `string` | `""` | How organizations are used with this app. Values: `deny`, `allow`, `require`. |
+| `organizationRequireBehavior` | `string` | `""` | When `organizationUsage` is `require`, determines prompt behavior. Values: `no_prompt`, `pre_login_prompt`, `post_login_prompt`. |
+
+#### JWT Configuration (`jwtConfiguration`)
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `jwtConfiguration.lifetimeInSeconds` | `int32` | `36000` | JWT expiration time in seconds. Range: 0–2592000 (30 days). |
+| `jwtConfiguration.alg` | `string` | `RS256` | Signing algorithm. Values: `HS256` (symmetric), `RS256` (asymmetric, recommended), `PS256`. |
+| `jwtConfiguration.secretEncoded` | `bool` | `false` | Whether the client secret is base64-encoded. Only relevant when `alg` is `HS256`. |
+| `jwtConfiguration.scopes` | `map<string, string>` | `{}` | Custom scopes and their descriptions available for this application. |
+
+#### Refresh Token Configuration (`refreshToken`)
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `refreshToken.rotationType` | `string` | `non-rotating` | Rotation behavior. Values: `non-rotating`, `rotating` (recommended — issues new token with each use). |
+| `refreshToken.expirationType` | `string` | `non-expiring` | Expiration behavior. Values: `non-expiring`, `expiring`. |
+| `refreshToken.tokenLifetime` | `int32` | `2592000` | Absolute lifetime in seconds. Token expires after this time regardless of activity. Only used when `expirationType` is `expiring`. |
+| `refreshToken.idleTokenLifetime` | `int32` | `1296000` | Inactivity timeout in seconds. Token expires if not used within this time. Only used when `expirationType` is `expiring`. |
+| `refreshToken.infiniteTokenLifetime` | `bool` | `false` | Allows tokens to never expire. Only valid when `expirationType` is `non-expiring`. |
+| `refreshToken.infiniteIdleTokenLifetime` | `bool` | `false` | Allows tokens to never expire due to inactivity. Only valid when `expirationType` is `non-expiring`. |
+| `refreshToken.leeway` | `int32` | `0` | Clock skew leeway in seconds for token validation. |
+
+#### Native Social Login (`nativeSocialLogin`)
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `nativeSocialLogin.apple.enabled` | `bool` | `false` | Enables Sign in with Apple native integration. Only applicable for `native` application types. |
+| `nativeSocialLogin.facebook.enabled` | `bool` | `false` | Enables Facebook native login integration. Only applicable for `native` application types. |
+
+#### Mobile Configuration (`mobile`)
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `mobile.android.appPackageName` | `string` | `""` | Android application package name (e.g., `com.example.myapp`). |
+| `mobile.android.sha256CertFingerprints` | `string[]` | `[]` | SHA-256 fingerprints of Android signing certificates for App Links and secure deep linking. |
+| `mobile.ios.teamId` | `string` | `""` | Apple Developer Team ID. Required for universal links. |
+| `mobile.ios.appBundleIdentifier` | `string` | `""` | iOS application bundle identifier (e.g., `com.example.myapp`). |
+
+#### OIDC Backchannel Logout (`oidcBackchannelLogout`)
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `oidcBackchannelLogout.backchannelLogoutUrls` | `string[]` | `[]` | URLs to receive logout tokens. Auth0 POSTs a logout token to these URLs on logout. |
+
+#### Connections (`enabledConnections`)
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `enabledConnections` | `StringValueOrRef[]` | `[]` | Limits which Auth0 connections this application can use. If empty, all connections are available. Can reference Auth0Connection resources via `valueFrom`. |
+
+#### API Grants (`apiGrants`)
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `apiGrants[].audience` | `StringValueOrRef` | — | API identifier (Resource Server identifier) this client is authorized to access. Required per grant entry. Can reference Auth0ResourceServer resources via `valueFrom`. |
+| `apiGrants[].scopes` | `string[]` | `[]` | Permissions granted for this API. If empty, the client gets access with no specific scopes. |
+| `apiGrants[].allowAnyOrganization` | `bool` | `false` | Whether any organization can be used with this grant. Only relevant when using Auth0 Organizations. |
+| `apiGrants[].organizationUsage` | `string` | `""` | Whether organizations can be used with client credentials exchanges. Values: `deny`, `allow`, `require`. |
+
+## Examples
+
+### SPA with Callback URLs
+
+A Single Page Application with development and production callback URLs:
 
 ```yaml
-api_grants:
-  - audience: "https://your-tenant.us.auth0.com/api/v2/"
-    scopes:
-      - read:users
-      - read:user_idp_tokens
-      - update:users
+apiVersion: auth0.openmcf.org/v1
+kind: Auth0Client
+metadata:
+  name: my-spa
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.Auth0Client.my-spa
+spec:
+  applicationType: spa
+  description: React dashboard application
+  callbacks:
+    - https://app.example.com/callback
+    - http://localhost:3000/callback
+  allowedLogoutUrls:
+    - https://app.example.com
+    - http://localhost:3000
+  webOrigins:
+    - https://app.example.com
+    - http://localhost:3000
+  grantTypes:
+    - authorization_code
+    - refresh_token
+  oidcConformant: true
+  isFirstParty: true
 ```
 
-### Common Management API Scopes
+### Machine-to-Machine with API Grants
 
-| Scope | Description |
-|-------|-------------|
-| `read:users` | Read user profiles |
-| `read:user_idp_tokens` | Read identity provider tokens |
-| `create:users` | Create new users |
-| `update:users` | Update user profiles |
-| `delete:users` | Delete users |
-| `read:clients` | Read client/application details |
-| `update:clients` | Update clients |
-| `read:connections` | Read connection configuration |
+A backend service client authorized to call a custom API and the Auth0 Management API:
 
-### Organization Support in API Grants
+```yaml
+apiVersion: auth0.openmcf.org/v1
+kind: Auth0Client
+metadata:
+  name: backend-service
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.Auth0Client.backend-service
+spec:
+  applicationType: non_interactive
+  description: Backend API service
+  grantTypes:
+    - client_credentials
+  apiGrants:
+    - audience: https://api.example.com/
+      scopes:
+        - read:resources
+        - write:resources
+    - audience: https://my-tenant.us.auth0.com/api/v2/
+      scopes:
+        - read:users
+        - read:user_idp_tokens
+```
 
-When using Auth0 Organizations with M2M applications:
+### Full-Featured Web Application
 
-- `organization_usage: "deny"` - Organizations cannot be used (default)
-- `organization_usage: "allow"` - Organizations can be used optionally
-- `organization_usage: "require"` - Organizations must be specified
+A server-side web application with JWT configuration, rotating refresh tokens, and organization support:
 
-- `allow_any_organization: true` - Any organization can use this grant
-- `allow_any_organization: false` - Must explicitly assign to organizations (default)
+```yaml
+apiVersion: auth0.openmcf.org/v1
+kind: Auth0Client
+metadata:
+  name: web-portal
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.Auth0Client.web-portal
+spec:
+  applicationType: regular_web
+  description: Customer portal web application
+  callbacks:
+    - https://portal.example.com/auth/callback
+  allowedLogoutUrls:
+    - https://portal.example.com
+  grantTypes:
+    - authorization_code
+    - refresh_token
+  oidcConformant: true
+  isFirstParty: true
+  sso: true
+  organizationUsage: allow
+  jwtConfiguration:
+    lifetimeInSeconds: 3600
+    alg: RS256
+  refreshToken:
+    rotationType: rotating
+    expirationType: expiring
+    tokenLifetime: 2592000
+    idleTokenLifetime: 1296000
+```
 
-## Token Configuration
+### Using Foreign Key References
 
-### JWT Configuration
+Reference other OpenMCF-managed Auth0 resources instead of hardcoding identifiers:
 
-**Algorithm Options:**
-| Algorithm | Type | Secret Storage | Recommendation |
-|-----------|------|----------------|----------------|
-| RS256 | Asymmetric | Tenant keys | Recommended |
-| HS256 | Symmetric | Client secret | Legacy only |
-| PS256 | Asymmetric | Tenant keys | High security |
+```yaml
+apiVersion: auth0.openmcf.org/v1
+kind: Auth0Client
+metadata:
+  name: ref-client
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.Auth0Client.ref-client
+spec:
+  applicationType: non_interactive
+  description: Service client with resource references
+  grantTypes:
+    - client_credentials
+  enabledConnections:
+    - valueFrom:
+        kind: Auth0Connection
+        name: my-db-connection
+        field: status.outputs.name
+  apiGrants:
+    - audience:
+        valueFrom:
+          kind: Auth0ResourceServer
+          name: my-api
+          field: status.outputs.identifier
+      scopes:
+        - read:data
+        - write:data
+```
 
-**Lifetime Considerations:**
-- Shorter = More secure, more auth requests
-- Longer = Better UX, higher risk if compromised
-- Recommended: 1-8 hours for access tokens
+## Stack Outputs
 
-### Refresh Token Configuration
+After deployment, the following outputs are available in `status.outputs`:
 
-**Rotation Types:**
-- `non-rotating`: Same token reused (less secure)
-- `rotating`: New token each refresh (recommended)
+| Output | Type | Description |
+|--------|------|-------------|
+| `id` | `string` | Internal Auth0 identifier for the client |
+| `client_id` | `string` | OAuth 2.0 client identifier. Safe to expose in client-side code. |
+| `client_secret` | `string` | OAuth 2.0 client secret. Only available for `regular_web` and `non_interactive` application types. Keep secure — never expose in client-side code. |
+| `name` | `string` | Name of the application, derived from `metadata.name` |
+| `application_type` | `string` | Application type (`native`, `spa`, `regular_web`, `non_interactive`) |
+| `signing_keys` | `Auth0SigningKey[]` | Signing keys for RS256 token signature verification. Each key contains `cert`, `pkcs7`, `subject`, and `thumbprint` fields. |
+| `callback_url_template` | `string` | Whether callback URL templating is enabled |
+| `allowed_clients` | `string[]` | Clients allowed to perform delegation for this client |
+| `global` | `string` | Whether this is the tenant's global (default) client |
+| `token_endpoint_auth_method` | `string` | Authentication method for the token endpoint (e.g., `none`, `client_secret_post`, `client_secret_basic`) |
 
-**Expiration Types:**
-- `non-expiring`: Token never expires (not recommended)
-- `expiring`: Token expires based on lifetime settings
+## Related Components
 
-**Best Practices:**
-- Use rotating refresh tokens
-- Set absolute lifetime (e.g., 30 days)
-- Set idle timeout (e.g., 7-15 days)
-- Enable leeway for clock skew
-
-## Mobile Application Configuration
-
-### iOS Configuration
-
-Required for:
-- Universal Links (deep linking)
-- Sign in with Apple native integration
-- Associated Domains
-
-**Settings:**
-- `team_id`: Apple Developer Team ID (10 characters)
-- `app_bundle_identifier`: App's bundle ID (e.g., `com.example.app`)
-
-### Android Configuration
-
-Required for:
-- App Links (deep linking)
-- Intent filters for callbacks
-
-**Settings:**
-- `app_package_name`: App's package name
-- `sha256_cert_fingerprints`: Signing certificate fingerprints
-
-## Organization Support
-
-Auth0 Organizations enable B2B SaaS scenarios:
-
-**Usage Modes:**
-- `deny`: No organization support
-- `allow`: Optional organization context
-- `require`: Organization must be specified
-
-**Require Behaviors:**
-- `no_prompt`: Fail if no org specified
-- `pre_login_prompt`: Show org picker before login
-- `post_login_prompt`: Show org picker after login
-
-## Design Decisions
-
-### 80/20 Scoping
-
-Based on research, the following features cover 80% of use cases:
-
-**In Scope:**
-1. All four application types
-2. Standard OAuth grant types
-3. JWT configuration (algorithm, lifetime, scopes)
-4. Refresh token configuration
-5. Mobile app configuration
-6. Organization support
-7. Cross-origin authentication
-8. OIDC backchannel logout
-9. API grants (client grants for API access authorization)
-
-**Out of Scope (20% edge cases):**
-1. Custom database action scripts
-2. Addons (SAML, WS-Fed configuration)
-3. Resource server (API) configuration
-4. Custom token storage
-
-**Rationale:**
-- Addons are better managed separately
-- Resource servers are a separate concept
-- Custom scripts require runtime
-
-### Validation Rules
-
-Proto validations enforce:
-- Required `application_type` with allowed values
-- Description max length (140 chars)
-- JWT lifetime ranges (0-2592000)
-- Refresh token lifetime non-negative
-- Organization usage enum values
-- JWT algorithm enum values
-
-### Sensible Defaults
-
-All optional fields have production-appropriate defaults:
-- `oidc_conformant: true` (modern OIDC behavior)
-- `is_first_party: true` (skip consent for own apps)
-- Secure refresh token settings when specified
-
-## Production Best Practices
-
-### Security
-
-1. **Use PKCE**: Always enable for SPAs and native apps
-2. **Rotate Refresh Tokens**: Enable rotation for security
-3. **Short Access Tokens**: 1-8 hour lifetimes
-4. **HTTPS Only**: All callback URLs should be HTTPS in production
-5. **Limit Scopes**: Request only necessary permissions
-
-### Operations
-
-1. **Environment Separation**: Different clients per environment
-2. **Secret Rotation**: Rotate client secrets periodically
-3. **Monitoring**: Track token issuance and failures
-4. **Audit Trail**: Log all authentication events
-
-### Token Management
-
-1. **Store Tokens Securely**: Use secure storage mechanisms
-2. **Handle Expiry**: Implement proper refresh logic
-3. **Revoke on Logout**: Clear tokens on user logout
-4. **Session Management**: Coordinate with backend sessions
-
-## Common Pitfalls
-
-### 1. Missing Callback URLs
-
-Callbacks must be exact matches. Ensure all URLs are registered:
-- Development: `http://localhost:3000/callback`
-- Production: `https://app.example.com/callback`
-
-### 2. CORS Issues
-
-For SPAs, ensure `web_origins` includes your application's origin without trailing slashes.
-
-### 3. Grant Type Mismatch
-
-Using wrong grant types causes authentication failures:
-- SPAs: Use `authorization_code`, not `implicit`
-- M2M: Must use `client_credentials`
-
-### 4. Token Storage in SPAs
-
-Never store tokens in localStorage for sensitive apps. Use:
-- In-memory storage with refresh rotation
-- Secure HTTP-only cookies (BFF pattern)
-
-### 5. Missing PKCE
-
-SPAs and native apps must use PKCE. Auth0 enforces this for new apps.
-
-## Conclusion
-
-Auth0 Applications are the entry points for authentication in your systems. OpenMCF's Auth0Client component provides a declarative, secure-by-default approach to managing these applications.
-
-By supporting all application types and common OAuth configurations, this component enables teams to:
-- Standardize application registration
-- Version control authentication configuration
-- Maintain consistency across environments
-- Apply security best practices automatically
-
-The dual IaC implementation (Pulumi and Terraform) ensures flexibility while the KRM-style manifest provides a familiar interface for platform engineers.
-
-
+- [Auth0ResourceServer](/docs/catalog/auth0/auth0resourceserver) — defines the APIs that this client can be authorized to access via `apiGrants`
+- [Auth0Connection](/docs/catalog/auth0/auth0connection) — provides authentication connections that can be linked via `enabledConnections`
+- [Auth0EventStream](/docs/catalog/auth0/auth0eventstream) — streams authentication events from the Auth0 tenant

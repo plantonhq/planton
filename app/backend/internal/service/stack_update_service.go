@@ -555,7 +555,7 @@ func (s *StackUpdateService) deployWithPulumi(ctx context.Context, stackUpdateID
 	if stackInputYaml != "" {
 		refreshCmd.Env = append(refreshCmd.Env, fmt.Sprintf("STACK_INPUT_YAML=%s", stackInputYaml))
 	}
-	refreshCmd.Env = append(refreshCmd.Env, fmt.Sprintf("PROJECT_PLANTON_MANIFEST=%s", manifestYaml))
+	refreshCmd.Env = append(refreshCmd.Env, fmt.Sprintf("OPENMCF_MANIFEST=%s", manifestYaml))
 
 	// Run refresh - don't fail if it errors, just log it
 	// Refresh errors are non-critical - we'll proceed with pulumi up anyway
@@ -589,8 +589,8 @@ func (s *StackUpdateService) deployWithPulumi(ctx context.Context, stackUpdateID
 	if stackInputYaml != "" {
 		cmd.Env = append(cmd.Env, fmt.Sprintf("STACK_INPUT_YAML=%s", stackInputYaml))
 	}
-	// Set PROJECT_PLANTON_MANIFEST (some modules may read this)
-	cmd.Env = append(cmd.Env, fmt.Sprintf("PROJECT_PLANTON_MANIFEST=%s", manifestYaml))
+	// Set OPENMCF_MANIFEST (some modules may read this)
+	cmd.Env = append(cmd.Env, fmt.Sprintf("OPENMCF_MANIFEST=%s", manifestYaml))
 
 	// Create pipes for streaming stdout and stderr
 	stdoutPipe, err := cmd.StdoutPipe()

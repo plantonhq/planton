@@ -198,55 +198,130 @@ enum CloudResourceKind {
   }];
 
   // 400–599: Azure resources
-  AzureAksCluster = 400 [(kind_meta) = {
+  AzureResourceGroup = 400 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azrg"
+  }];
+  AzureAksCluster = 401 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "aks"
   }];
-  AzureAksNodePool = 401 [(kind_meta) = {
+  AzureAksNodePool = 402 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "aksnp"
   }];
-  AzureContainerRegistry = 402 [(kind_meta) = {
+  AzureContainerRegistry = 403 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "acr"
   }];
-  AzureDnsZone = 403 [(kind_meta) = {
+  AzureDnsZone = 404 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "azdns"
   }];
-  AzureKeyVault = 404 [(kind_meta) = {
+  AzureKeyVault = 405 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "azkv"
   }];
-  AzureVpc = 405 [(kind_meta) = {
+  AzureVpc = 406 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "azvpc"
   }];
-  AzureNatGateway = 406 [(kind_meta) = {
+  AzureNatGateway = 407 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "aznat"
   }];
-  AzureVirtualMachine = 407 [(kind_meta) = {
+  AzureVirtualMachine = 408 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "azvm"
   }];
-  AzureStorageAccount = 408 [(kind_meta) = {
+  AzureStorageAccount = 409 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "azsa"
   }];
-  AzureDnsRecord = 409 [(kind_meta) = {
+  AzureDnsRecord = 410 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "azdrec"
+  }];
+  AzureSubnet = 411 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azsub"
+  }];
+  AzureNetworkSecurityGroup = 412 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "aznsg"
+  }];
+  AzurePublicIp = 413 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azpip"
+  }];
+  AzurePrivateEndpoint = 414 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azpe"
+  }];
+  AzurePrivateDnsZone = 415 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azpdns"
+  }];
+  AzureApplicationGateway = 416 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azagw"
+  }];
+  AzureLoadBalancer = 417 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azlb"
+  }];
+  AzurePostgresqlFlexibleServer = 430 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azpg"
+  }];
+  AzureCosmosdbAccount = 432 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azcdb"
+  }];
+  AzureMssqlServer = 433 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azmsql"
+  }];
+  AzureMysqlFlexibleServer = 434 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azmysql"
+  }];
+  AzureLogAnalyticsWorkspace = 450 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azlaw"
+  }];
+  AzureApplicationInsights = 451 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azai"
+  }];
+  AzureUserAssignedIdentity = 460 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azid"
   }];
 
   // 600–799: GCP resources
@@ -962,5 +1037,121 @@ enum CloudResourceKind {
     provider: openstack
     version: v1
     id_prefix: "oscc"
+  }];
+
+  // 2800–2999: Scaleway resources
+
+  // --- Networking ---
+
+  ScalewayVpc = 2800 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwvpc"
+  }];
+  ScalewayPrivateNetwork = 2801 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwpn"
+  }];
+  ScalewayPublicGateway = 2802 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwpgw"
+  }];
+  ScalewayLoadBalancer = 2803 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwlb"
+  }];
+  ScalewayInstanceSecurityGroup = 2804 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwsg"
+  }];
+
+  // --- Compute ---
+
+  ScalewayInstance = 2810 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwinst"
+  }];
+
+  // --- Kubernetes ---
+
+  ScalewayKapsuleCluster = 2820 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwk8s"
+  }];
+  ScalewayKapsulePool = 2821 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwknp"
+  }];
+
+  // --- Databases ---
+
+  ScalewayRdbInstance = 2830 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwrdb"
+  }];
+  ScalewayRedisCluster = 2831 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwred"
+  }];
+  ScalewayMongodbInstance = 2832 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwmdb"
+  }];
+
+  // --- Storage ---
+
+  ScalewayObjectBucket = 2840 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwbkt"
+  }];
+  ScalewayBlockVolume = 2841 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwblk"
+  }];
+
+  // --- Container Registry ---
+
+  ScalewayContainerRegistry = 2850 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwcr"
+  }];
+
+  // --- DNS ---
+
+  ScalewayDnsZone = 2860 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwdns"
+  }];
+  ScalewayDnsRecord = 2861 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwrec"
+  }];
+
+  // --- Serverless ---
+
+  ScalewayServerlessFunction = 2870 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwfn"
+  }];
+  ScalewayServerlessContainer = 2871 [(kind_meta) = {
+    provider: scaleway
+    version: v1
+    id_prefix: "scwscn"
   }];
 }

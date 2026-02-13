@@ -153,7 +153,10 @@ type AzureAksNodePoolSpec struct {
 	Mode *AzureAksNodePoolMode `protobuf:"varint,7,opt,name=mode,proto3,enum=org.openmcf.provider.azure.azureaksnodepool.v1.AzureAksNodePoolMode,oneof" json:"mode,omitempty"`
 	// Use Spot (preemptible) VMs for this node pool to reduce cost. Defaults to false (regular on-demand VMs).
 	// NOTE: Spot cannot be used for System mode pools.
-	SpotEnabled   bool `protobuf:"varint,8,opt,name=spot_enabled,json=spotEnabled,proto3" json:"spot_enabled,omitempty"`
+	SpotEnabled bool `protobuf:"varint,8,opt,name=spot_enabled,json=spotEnabled,proto3" json:"spot_enabled,omitempty"`
+	// The Azure Resource Group where the node pool's parent cluster resides.
+	// Can be a literal string or a reference to an AzureResourceGroup output.
+	ResourceGroup *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=resource_group,json=resourceGroup,proto3" json:"resource_group,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -244,6 +247,13 @@ func (x *AzureAksNodePoolSpec) GetSpotEnabled() bool {
 	return false
 }
 
+func (x *AzureAksNodePoolSpec) GetResourceGroup() *v1.StringValueOrRef {
+	if x != nil {
+		return x.ResourceGroup
+	}
+	return nil
+}
+
 // Autoscaling settings for an AKS node pool. Effective only if autoscaling is enabled.
 type AzureAksNodePoolAutoscaling struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -304,9 +314,9 @@ var File_org_openmcf_provider_azure_azureaksnodepool_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_azure_azureaksnodepool_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/azure/azureaksnodepool/v1/spec.proto\x12.org.openmcf.provider.azure.azureaksnodepool.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xe7\x05\n" +
+	"9org/openmcf/provider/azure/azureaksnodepool/v1/spec.proto\x12.org.openmcf.provider.azure.azureaksnodepool.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xf6\x06\n" +
 	"\x14AzureAksNodePoolSpec\x12s\n" +
-	"\fcluster_name\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1c\xbaH\x03\xc8\x01\x01\x88\xd4a\x90\x03\x92\xd4a\rmetadata.nameR\vclusterName\x12\x1f\n" +
+	"\fcluster_name\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1c\xbaH\x03\xc8\x01\x01\x88\xd4a\x91\x03\x92\xd4a\rmetadata.nameR\vclusterName\x12\x1f\n" +
 	"\avm_size\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06vmSize\x128\n" +
 	"\x12initial_node_count\x18\x03 \x01(\x05B\n" +
 	"\xbaH\a\xc8\x01\x01\x1a\x02 \x00R\x10initialNodeCount\x12m\n" +
@@ -314,7 +324,8 @@ const file_org_openmcf_provider_azure_azureaksnodepool_v1_spec_proto_rawDesc = "
 	"\x12availability_zones\x18\x05 \x03(\tB\x18\xbaH\x15\xd8\x01\x01\x92\x01\x0f\b\x02\"\vr\tR\x011R\x012R\x013R\x11availabilityZones\x12\x8b\x01\n" +
 	"\aos_type\x18\x06 \x01(\x0e2F.org.openmcf.provider.azure.azureaksnodepool.v1.AzureAksNodePoolOsTypeB%\x8a\xa6\x1d!AZURE_AKS_NODE_POOL_OS_TYPE_LINUXH\x00R\x06osType\x88\x01\x01\x12\x80\x01\n" +
 	"\x04mode\x18\a \x01(\x0e2D.org.openmcf.provider.azure.azureaksnodepool.v1.AzureAksNodePoolModeB!\x8a\xa6\x1d\x1dAZURE_AKS_NODE_POOL_MODE_USERH\x01R\x04mode\x88\x01\x01\x12!\n" +
-	"\fspot_enabled\x18\b \x01(\bR\vspotEnabledB\n" +
+	"\fspot_enabled\x18\b \x01(\bR\vspotEnabled\x12\x8c\x01\n" +
+	"\x0eresource_group\x18\t \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\x90\x03\x92\xd4a\"status.outputs.resource_group_nameR\rresourceGroupB\n" +
 	"\n" +
 	"\b_os_typeB\a\n" +
 	"\x05_mode\"i\n" +
@@ -358,11 +369,12 @@ var file_org_openmcf_provider_azure_azureaksnodepool_v1_spec_proto_depIdxs = []i
 	3, // 1: org.openmcf.provider.azure.azureaksnodepool.v1.AzureAksNodePoolSpec.autoscaling:type_name -> org.openmcf.provider.azure.azureaksnodepool.v1.AzureAksNodePoolAutoscaling
 	0, // 2: org.openmcf.provider.azure.azureaksnodepool.v1.AzureAksNodePoolSpec.os_type:type_name -> org.openmcf.provider.azure.azureaksnodepool.v1.AzureAksNodePoolOsType
 	1, // 3: org.openmcf.provider.azure.azureaksnodepool.v1.AzureAksNodePoolSpec.mode:type_name -> org.openmcf.provider.azure.azureaksnodepool.v1.AzureAksNodePoolMode
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	4, // 4: org.openmcf.provider.azure.azureaksnodepool.v1.AzureAksNodePoolSpec.resource_group:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_azure_azureaksnodepool_v1_spec_proto_init() }

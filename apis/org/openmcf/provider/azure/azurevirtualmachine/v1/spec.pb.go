@@ -293,9 +293,9 @@ type AzureVirtualMachineSpec struct {
 	// Azure region where the Virtual Machine will be deployed (e.g., "eastus", "westus2", "westeurope").
 	// This is required as VMs are regional resources.
 	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
-	// The Azure Resource Group name where the Virtual Machine will be created.
-	// The resource group must already exist.
-	ResourceGroup string `protobuf:"bytes,2,opt,name=resource_group,json=resourceGroup,proto3" json:"resource_group,omitempty"`
+	// The Azure Resource Group where the Virtual Machine will be created.
+	// Can be a literal string or a reference to an AzureResourceGroup output.
+	ResourceGroup *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=resource_group,json=resourceGroup,proto3" json:"resource_group,omitempty"`
 	// The Azure VM size determining vCPU count, memory, and capabilities.
 	// Examples: "Standard_D2s_v3" (2 vCPUs, 8 GiB RAM), "Standard_D4s_v5" (4 vCPUs, 16 GiB RAM).
 	VmSize *string `protobuf:"bytes,3,opt,name=vm_size,json=vmSize,proto3,oneof" json:"vm_size,omitempty"`
@@ -390,11 +390,11 @@ func (x *AzureVirtualMachineSpec) GetRegion() string {
 	return ""
 }
 
-func (x *AzureVirtualMachineSpec) GetResourceGroup() string {
+func (x *AzureVirtualMachineSpec) GetResourceGroup() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ResourceGroup
 	}
-	return ""
+	return nil
 }
 
 func (x *AzureVirtualMachineSpec) GetVmSize() string {
@@ -889,14 +889,13 @@ var File_org_openmcf_provider_azure_azurevirtualmachine_v1_spec_proto protorefle
 
 const file_org_openmcf_provider_azure_azurevirtualmachine_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"<org/openmcf/provider/azure/azurevirtualmachine/v1/spec.proto\x121org.openmcf.provider.azure.azurevirtualmachine.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xcb\x0f\n" +
+	"<org/openmcf/provider/azure/azurevirtualmachine/v1/spec.proto\x121org.openmcf.provider.azure.azurevirtualmachine.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa7\x10\n" +
 	"\x17AzureVirtualMachineSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x121\n" +
-	"\x0eresource_group\x18\x02 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\rresourceGroup\x12;\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\x8c\x01\n" +
+	"\x0eresource_group\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\x90\x03\x92\xd4a\"status.outputs.resource_group_nameR\rresourceGroup\x12;\n" +
 	"\avm_size\x18\x03 \x01(\tB\x1d\xbaH\a\xd8\x01\x01r\x02\x10\x01\x92\xa6\x1d\x0fStandard_D2s_v3H\x00R\x06vmSize\x88\x01\x01\x12~\n" +
-	"\tsubnet_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB-\xbaH\x03\xc8\x01\x01\x88\xd4a\x95\x03\x92\xd4a\x1estatus.outputs.nodes_subnet_idR\bsubnetId\x12i\n" +
+	"\tsubnet_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB-\xbaH\x03\xc8\x01\x01\x88\xd4a\x96\x03\x92\xd4a\x1estatus.outputs.nodes_subnet_idR\bsubnetId\x12i\n" +
 	"\x05image\x18\x05 \x01(\v2K.org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineImageB\x06\xbaH\x03\xc8\x01\x01R\x05image\x12e\n" +
 	"\aos_disk\x18\x06 \x01(\v2L.org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDiskR\x06osDisk\x12m\n" +
 	"\n" +
@@ -904,7 +903,7 @@ const file_org_openmcf_provider_azure_azurevirtualmachine_v1_spec_proto_rawDesc 
 	"\x0eadmin_username\x18\b \x01(\tB\x19\xbaH\t\xd8\x01\x01r\x04\x10\x01\x18@\x8a\xa6\x1d\tazureuserH\x01R\radminUsername\x88\x01\x01\x12$\n" +
 	"\x0essh_public_key\x18\t \x01(\tR\fsshPublicKey\x12|\n" +
 	"\x0eadmin_password\x18\n" +
-	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x94\x03\x92\xd4a\x18status.outputs.vault_uriR\radminPassword\x12m\n" +
+	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x95\x03\x92\xd4a\x18status.outputs.vault_uriR\radminPassword\x12m\n" +
 	"\anetwork\x18\v \x01(\v2S.org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfigR\anetwork\x12=\n" +
 	"\x11availability_zone\x18\f \x01(\tB\x10\xbaH\rr\vR\x00R\x011R\x012R\x013R\x10availabilityZone\x12E\n" +
 	"\x17enable_boot_diagnostics\x18\r \x01(\bB\b\x8a\xa6\x1d\x04trueH\x02R\x15enableBootDiagnostics\x88\x01\x01\x12E\n" +
@@ -939,7 +938,7 @@ const file_org_openmcf_provider_azure_azurevirtualmachine_v1_spec_proto_rawDesc 
 	"\acaching\x18\x03 \x01(\x0e2X.org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk.DiskCachingB\x16\xbaH\x05\x82\x01\x02\x10\x01\x8a\xa6\x1d\n" +
 	"read_writeH\x01R\acaching\x88\x01\x01\x123\n" +
 	"\x0edelete_with_vm\x18\x04 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x02R\fdeleteWithVm\x88\x01\x01\x12\x89\x01\n" +
-	"\x16disk_encryption_set_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\x94\x03\x92\xd4a\x17status.outputs.vault_idR\x13diskEncryptionSetId\"T\n" +
+	"\x16disk_encryption_set_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\x95\x03\x92\xd4a\x17status.outputs.vault_idR\x13diskEncryptionSetId\"T\n" +
 	"\vDiskCaching\x12\x1c\n" +
 	"\x18disk_caching_unspecified\x10\x00\x12\b\n" +
 	"\x04none\x10\x01\x12\r\n" +
@@ -1023,27 +1022,28 @@ var file_org_openmcf_provider_azure_azurevirtualmachine_v1_spec_proto_goTypes = 
 	(*v1.StringValueOrRef)(nil),                               // 11: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_azure_azurevirtualmachine_v1_spec_proto_depIdxs = []int32{
-	11, // 0: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineSpec.subnet_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	6,  // 1: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineSpec.image:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineImage
-	7,  // 2: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineSpec.os_disk:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk
-	8,  // 3: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineSpec.data_disks:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineDataDisk
-	11, // 4: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineSpec.admin_password:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	9,  // 5: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineSpec.network:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfig
-	10, // 6: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineSpec.tags:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineSpec.TagsEntry
-	1,  // 7: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk.storage_type:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk.DiskStorageType
-	0,  // 8: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk.caching:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk.DiskCaching
-	11, // 9: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk.disk_encryption_set_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	1,  // 10: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineDataDisk.storage_type:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk.DiskStorageType
-	0,  // 11: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineDataDisk.caching:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk.DiskCaching
-	2,  // 12: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfig.public_ip_sku:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfig.PublicIpSku
-	3,  // 13: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfig.public_ip_allocation:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfig.PublicIpAllocation
-	11, // 14: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfig.network_security_group_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	4,  // 15: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfig.private_ip_allocation:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfig.PrivateIpAllocation
-	16, // [16:16] is the sub-list for method output_type
-	16, // [16:16] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	11, // 0: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineSpec.resource_group:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	11, // 1: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineSpec.subnet_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	6,  // 2: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineSpec.image:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineImage
+	7,  // 3: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineSpec.os_disk:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk
+	8,  // 4: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineSpec.data_disks:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineDataDisk
+	11, // 5: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineSpec.admin_password:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	9,  // 6: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineSpec.network:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfig
+	10, // 7: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineSpec.tags:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineSpec.TagsEntry
+	1,  // 8: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk.storage_type:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk.DiskStorageType
+	0,  // 9: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk.caching:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk.DiskCaching
+	11, // 10: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk.disk_encryption_set_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	1,  // 11: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineDataDisk.storage_type:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk.DiskStorageType
+	0,  // 12: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineDataDisk.caching:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDisk.DiskCaching
+	2,  // 13: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfig.public_ip_sku:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfig.PublicIpSku
+	3,  // 14: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfig.public_ip_allocation:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfig.PublicIpAllocation
+	11, // 15: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfig.network_security_group_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	4,  // 16: org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfig.private_ip_allocation:type_name -> org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfig.PrivateIpAllocation
+	17, // [17:17] is the sub-list for method output_type
+	17, // [17:17] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_azure_azurevirtualmachine_v1_spec_proto_init() }

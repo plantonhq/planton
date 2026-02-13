@@ -1,30 +1,15 @@
 ---
 title: "Kustomize Integration"
-description: "Using Kustomize with OpenMCF for multi-environment deployments - directory structure, overlays, and workflows"
-icon: "layers"
-order: 4
+description: "Using Kustomize with OpenMCF for multi-environment deployments — directory structure, overlays, and workflows"
+icon: "guide"
+order: 40
 ---
 
-# Kustomize Integration Guide
+# Kustomize Integration
 
-Learn how to use Kustomize with OpenMCF for managing multi-environment deployments.
+Kustomize lets you manage variations of OpenMCF manifests without duplication. Instead of maintaining separate manifest files for dev, staging, and production, you maintain one **base** manifest and environment-specific **overlays** that patch the base.
 
----
-
-## What is Kustomize?
-
-Kustomize is a configuration management tool that lets you create variations of YAML files without duplication. Instead of maintaining separate manifests for dev/staging/prod, you maintain one **base** and environment-specific **overlays** that patch the base.
-
-**The Problem Without Kustomize**:
-
-```
-manifests/
-├── dev-database.yaml      # Lots of duplication
-├── staging-database.yaml  # Same resource, different values
-└── prod-database.yaml     # Hard to maintain consistency
-```
-
-**The Solution With Kustomize**:
+For the conceptual overview of manifest sources (including Kustomize), see [Manifests](../concepts/manifests). For flag details, see [CLI Reference](/docs/cli/cli-reference).
 
 ```
 manifests/database/
@@ -36,15 +21,7 @@ manifests/database/
     └── prod/               # Environment-specific patches
 ```
 
-### The Clothing Analogy
-
-Think of Kustomize like a clothing store:
-
-- **Base** = The standard shirt design (common to all)
-- **Overlays** = Size-specific modifications (small, medium, large)
-- **Result** = A shirt that fits each person, derived from the same base design
-
-OpenMCF integrates Kustomize seamlessly, building your manifest at deployment time.
+OpenMCF integrates Kustomize as a Go library (`sigs.k8s.io/kustomize`), not as an external binary. The `--kustomize-dir` and `--overlay` flags trigger Kustomize to build the final manifest at deployment time.
 
 ---
 
@@ -426,64 +403,7 @@ openmcf load-manifest \
 
 ---
 
-## CI/CD Integration
-
-### GitHub Actions
-
-```yaml
-name: Deploy API
-
-on:
-  push:
-    branches:
-      - main
-      - develop
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Determine Environment
-        id: env
-        run: |
-          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            echo "overlay=prod" >> $GITHUB_OUTPUT
-          else
-            echo "overlay=dev" >> $GITHUB_OUTPUT
-          fi
-      
-      - name: Deploy
-        run: |
-          openmcf pulumi up \
-            --kustomize-dir services/api/kustomize \
-            --overlay ${{ steps.env.outputs.overlay }} \
-            --yes
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-```
-
-### GitLab CI
-
-```yaml
-deploy:
-  script:
-    - |
-      if [ "$CI_COMMIT_BRANCH" == "main" ]; then
-        OVERLAY="prod"
-      elif [ "$CI_COMMIT_BRANCH" == "staging" ]; then
-        OVERLAY="staging"
-      else
-        OVERLAY="dev"
-      fi
-    - openmcf pulumi up --kustomize-dir services/api/kustomize --overlay $OVERLAY --yes
-  only:
-    - main
-    - staging
-    - develop
-```
+For using Kustomize in CI/CD pipelines with branch-based overlay selection, see [CI/CD Integration](./cicd-integration).
 
 ---
 
@@ -821,21 +741,11 @@ openmcf pulumi up \
 
 ---
 
-## Related Documentation
+## What's Next
 
-- [Manifest Structure](/docs/guides/manifests) - Understanding manifests
-- [Pulumi Commands](/docs/cli/pulumi-commands) - Deploying with Pulumi
-- [OpenTofu Commands](/docs/cli/tofu-commands) - Deploying with OpenTofu
-- [Official Kustomize Docs](https://kustomize.io/) - Learn more about Kustomize
-
----
-
-## Next Steps
-
-1. **Create Your First Overlay**: Start with a simple dev/prod split
-2. **Test Locally**: Use `kustomize build` to preview results
-3. **Deploy Gradually**: Test in dev before prod
-4. **Iterate**: Add more overlays as needed (staging, regional, etc.)
-
-Kustomize + OpenMCF gives you powerful multi-environment management with minimal duplication. Start simple and grow as needed.
+- [Writing Manifests](./manifests) — Manifest structure and best practices
+- [CI/CD Integration](./cicd-integration) — Kustomize with GitHub Actions and GitLab CI
+- [Advanced Usage](./advanced-usage) — Combining Kustomize with `--set` overrides
+- [State Backends](./state-backends) — Per-environment state configuration
+- [Official Kustomize Docs](https://kustomize.io/) — Kustomize reference documentation
 

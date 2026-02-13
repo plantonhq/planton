@@ -250,7 +250,7 @@ export const DocsSidebar: FC<DocsSidebarProps> = ({ onNavigate }) => {
   useEffect(() => {
     const loadStructure = async () => {
       try {
-        const response = await fetch('/api/docs/structure');
+        const response = await fetch('/docs-structure.json');
         if (response.ok) {
           const data = await response.json();
           setStructure(data);

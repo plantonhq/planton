@@ -6,533 +6,309 @@ order: 100
 componentName: "gcpcloudcdn"
 ---
 
-# GCP Cloud CDN Deployment Architecture
+# GCP Cloud CDN
 
-## Introduction: The Invisible CDN
+Deploys a Google Cloud CDN endpoint backed by a Global Application Load Balancer, with support for GCS bucket, Compute Engine, Cloud Run, and external origin backends. The component provisions the backend resource, URL map, global IP address, forwarding rules, and optionally Google-managed SSL certificates, HTTP-to-HTTPS redirect, and Cloud Armor integration.
 
-When you search for "how to create a Cloud CDN resource" in GCP documentation, you encounter a curious puzzle: **there is no standalone Cloud CDN resource**. Unlike other GCP services where you create a discrete resource (a VM, a bucket, a database), Cloud CDN exists only as a feature flag—a boolean switch and configuration block nested within another resource.
+## What Gets Created
 
-This is not a documentation oversight. It's the architectural reality of how Google designed their CDN: Cloud CDN is an integrated caching layer within the **Global Application Load Balancer** stack, not a separate product you provision independently.
+When you deploy a GcpCloudCdn resource, OpenMCF provisions:
 
-This architectural choice has profound implications:
-- You cannot "create a CDN" without first creating (or referencing) a load balancer backend
-- The CDN configuration lives as a `cdn_policy` block on either a `BackendService` or `BackendBucket` resource
-- All the power of Cloud CDN—caching, SSL/TLS termination, DDoS protection—flows from its tight integration with Google's global edge infrastructure (the Google Front End, or GFE)
+- **Global IP Address** — a static anycast IP for the load balancer frontend
+- **Backend Bucket or Backend Service** — one of the following, depending on the configured backend type:
+  - Backend Bucket with CDN enabled (for GCS bucket origins)
+  - Backend Service with CDN enabled and a Serverless NEG (for Cloud Run origins)
+  - Backend Service with CDN enabled and an Internet NEG (for external origins)
+  - Backend Service with CDN enabled (for Compute Engine instance group origins)
+- **Health Check** — HTTP health check for Compute Engine backends (when `healthCheck` is configured)
+- **URL Map** — routing configuration that directs all traffic to the backend
+- **HTTPS Proxy + Forwarding Rule** — TLS termination and port-443 forwarding (when `frontendConfig` is specified)
+- **Google-managed SSL Certificate** — automatic certificate provisioning and renewal (when `frontendConfig.sslCertificate.googleManaged` is specified)
+- **HTTP Proxy + Forwarding Rule** — port-80 forwarding (when no `frontendConfig` is specified, or for HTTP-to-HTTPS redirect)
+- **HTTP-to-HTTPS Redirect** — 301 redirect URL map, HTTP proxy, and forwarding rule (enabled by default when `frontendConfig` is specified)
 
-This document explains how to think about deploying Cloud CDN, what deployment methods exist across the maturity spectrum, and how OpenMCF abstracts this complexity into a clean, declarative API.
+## Prerequisites
 
-## The Architecture: CDN as a Load Balancer Feature
+- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **An existing GCP project** — referenced via `gcpProjectId`
+- **IAM permissions** to create Compute Engine load balancer resources in the target project
+- **An existing origin** — depending on backend type:
+  - A GCS bucket (for `gcsBucket` backend)
+  - A Managed Instance Group (for `computeService` backend)
+  - A deployed Cloud Run service (for `cloudRunService` backend)
+  - A reachable external hostname (for `externalOrigin` backend)
+- **DNS configuration** (optional) — if using custom domains, the ability to create DNS records pointing to the global IP
 
-### The Core Dependency
+## Quick Start
 
-Cloud CDN operates exclusively as part of Google's **Global Application Load Balancer**. Understanding the request flow illuminates why this integration is mandatory:
-
-1. **User Request** → A user requests `https://example.com/image.png`
-2. **Anycast Routing** → DNS resolves to a global anycast IP, routing the user to the nearest Google edge Point of Presence (PoP)
-3. **GFE Cache Check** → The Google Front End checks its local Cloud CDN cache
-   - **Cache Hit**: Content served instantly from edge, never touching the origin
-   - **Cache Miss**: Request forwarded to the origin server (GCS bucket, Compute Engine, Cloud Run, etc.)
-4. **Response & Cache Fill** → Origin response flows back to user and populates the edge cache for future requests
-
-This architecture provides several automatic benefits:
-- **Integrated SSL/TLS**: HTTPS termination happens at the load balancer, with free Google-managed certificates
-- **Integrated Security**: Cloud Armor (WAF/DDoS protection) sits at the same layer, protecting both the CDN and origin
-- **Premium Network**: Traffic travels over Google's private global backbone, not the public internet (note: Cloud CDN **requires** Premium Network Tier—you cannot use the cheaper Standard Tier)
-
-### The Two Backend Types
-
-Cloud CDN is enabled on one of two underlying GCP resources:
-
-1. **`BackendBucket`** - For Google Cloud Storage origins
-   - Use case: Static websites, file downloads, media hosting
-   - Simplest configuration: point a backend bucket at a GCS bucket, flip `enable_cdn = true`
-   - Represents ~80% of Cloud CDN deployments
-
-2. **`BackendService`** - For compute origins
-   - Use case: Dynamic web apps, APIs, containerized services
-   - Supports multiple backend types:
-     - Compute Engine (Managed Instance Groups)
-     - GKE (via Ingress and Serverless NEGs)
-     - Cloud Run (via Serverless NEGs)
-     - External/hybrid origins (via Internet NEGs, e.g., AWS S3, on-prem servers)
-
-The choice of backend dictates not just where your content comes from, but also which configuration options are available.
-
-### Cloud CDN vs. Media CDN
-
-Google offers two distinct CDN products, optimized for different workloads:
-
-| Product | Optimized For | Primary API | Analogous To |
-|---------|---------------|-------------|--------------|
-| **Cloud CDN** | Web and API acceleration (small, frequent requests) | `compute.v1.BackendService/BackendBucket` with `cdn_policy` | Cloud SQL (transactional, low-latency) |
-| **Media CDN** | Video streaming and large file downloads (high throughput) | `networkservices.v1.EdgeCacheService` | BigQuery (analytical, high-throughput) |
-
-This document focuses on **Cloud CDN** (the web/API acceleration product). Media CDN uses a completely different API surface and resource model.
-
-## The Maturity Spectrum: Deployment Methods
-
-Cloud CDN can be deployed through a wide range of methods, from manual console clicks to fully declarative infrastructure-as-code. Understanding this spectrum helps you choose the right tool for your maturity level and use case.
-
-### Level 0: The Anti-Pattern (Manual Console Configuration)
-
-**How it works**: Navigate to "Network Services > Load balancing" in the GCP Console, click through a multi-step wizard, check the "Enable Cloud CDN" box.
-
-**Prerequisites**: Before you can enable CDN, you must manually create:
-- A global static IP address
-- An SSL certificate (for HTTPS)
-- A target HTTPS proxy
-- A URL map
-- A backend service or backend bucket
-
-**Verdict**: This workflow is suitable only for initial experimentation or one-off demos. Any production deployment requires repeatability and version control. The console workflow is error-prone (one missing prerequisite breaks everything) and leaves no audit trail.
-
-### Level 1: Scripted Automation (gcloud CLI)
-
-**How it works**: Use imperative shell commands to create and configure resources:
-
-```bash
-# Create a backend bucket with CDN enabled
-gcloud compute backend-buckets create static-site-backend \
-  --gcs-bucket-name=my-static-site-bucket \
-  --enable-cdn
-
-# Update CDN policy
-gcloud compute backend-services update webapp-backend \
-  --enable-cdn \
-  --cache-mode=CACHE_ALL_STATIC \
-  --default-ttl=3600
-
-# Invalidate cache (imperative operation)
-gcloud compute url-maps invalidate-cdn-cache my-url-map \
-  --path="/images/*"
-```
-
-**Verdict**: Useful for CI/CD scripts (especially cache invalidation tasks) and one-off operational tasks. Not suitable as the primary deployment method because state is not tracked—repeated execution may create duplicate resources or fail unpredictably.
-
-### Level 2: Configuration Management (Ansible)
-
-**How it works**: Use Ansible's `google.cloud` collection to manage GCP resources declaratively:
+Create a file `cdn.yaml`:
 
 ```yaml
-- name: Create CDN-enabled backend bucket
-  google.cloud.gcp_compute_backend_bucket:
-    name: static-site-backend
-    bucketName: my-static-site-bucket
-    enable_cdn: true
-    cdn_policy:
-      cache_mode: CACHE_ALL_STATIC
-      default_ttl: 3600
-    state: present
-```
-
-**Verdict**: A solid choice for teams already invested in Ansible. Provides idempotency and integrates well with existing playbook-based infrastructure. However, Ansible lacks native state management (like Terraform state files), making it harder to detect and reconcile drift.
-
-### Level 3: The Production Foundation (Terraform, Pulumi, OpenTofu)
-
-**How it works**: Define infrastructure as code using declarative DSLs (Terraform HCL) or general-purpose languages (Pulumi TypeScript/Python).
-
-**Terraform Example**:
-
-```hcl
-resource "google_compute_backend_bucket" "static_site" {
-  name        = "static-site-backend"
-  bucket_name = google_storage_bucket.static_site.name
-  enable_cdn  = true
-
-  cdn_policy {
-    cache_mode  = "CACHE_ALL_STATIC"
-    default_ttl = 3600
-    max_ttl     = 86400
-
-    cache_key_policy {
-      include_query_string   = true
-      query_string_whitelist = ["version", "lang"]
-    }
-  }
-}
-```
-
-**Pulumi Example**:
-
-```typescript
-const staticSiteBackend = new gcp.compute.BackendBucket("static-site", {
-  bucketName: staticSiteBucket.name,
-  enableCdn: true,
-  cdnPolicy: {
-    cacheMode: "CACHE_ALL_STATIC",
-    defaultTtl: 3600,
-    maxTtl: 86400,
-    cacheKeyPolicy: {
-      includeQueryString: true,
-      queryStringWhitelist: ["version", "lang"],
-    },
-  },
-});
-```
-
-**Why this is the production standard**:
-- **State Management**: Tracks the current state of infrastructure, enabling plan/apply workflows
-- **Drift Detection**: Can detect when manual changes diverge from declared configuration
-- **Reusability**: Modules and components enable DRY principles
-- **Multi-Cloud**: Terraform and Pulumi support multiple cloud providers with a consistent workflow
-
-**Verdict**: This is the industry standard for production infrastructure. Choose Terraform/OpenTofu for HCL-based declarative config, or Pulumi if you prefer expressing infrastructure in TypeScript, Python, or Go.
-
-### Level 4: Kubernetes-Native IaC (Config Connector, Crossplane)
-
-**How it works**: Manage GCP resources as Kubernetes Custom Resources, using `kubectl apply` instead of cloud provider CLIs.
-
-**Config Connector (GCP-specific)**:
-
-```yaml
-apiVersion: compute.cnrm.cloud.google.com/v1beta1
-kind: ComputeBackendBucket
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCloudCdn
 metadata:
-  name: static-site-backend
+  name: my-cdn
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.GcpCloudCdn.my-cdn
 spec:
-  bucketRef:
-    name: static-site-bucket
-  enableCdn: true
-  cdnPolicy:
-    cacheMode: CACHE_ALL_STATIC
-    defaultTtl: 3600
+  gcpProjectId:
+    value: my-gcp-project-123
+  backend:
+    gcsBucket:
+      bucketName: my-static-site-bucket
 ```
 
-**Crossplane (multi-cloud)**:
+Deploy:
 
-Similar YAML structure but uses Crossplane's composition model to abstract across clouds.
+```shell
+openmcf apply -f cdn.yaml
+```
 
-**Verdict**: Ideal for teams practicing GitOps with Kubernetes. Config Connector is simpler if you're GCP-only; Crossplane is better for multi-cloud environments. Both provide the "infrastructure as Kubernetes resources" experience that platform teams value.
+This creates a Cloud CDN endpoint backed by a GCS bucket, using the default `CACHE_ALL_STATIC` cache mode with a 1-hour default TTL and a 1-day max TTL.
 
-### Level 5: Highest Abstraction (GKE Ingress + BackendConfig)
+## Configuration Reference
 
-**How it works**: For applications running on GKE, you don't manage the `BackendService` at all. The GKE Ingress controller creates it automatically. To enable CDN, you create a `BackendConfig` CRD and annotate your Kubernetes Service:
+### Required Fields
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `gcpProjectId` | `StringValueOrRef` | GCP project ID. Can reference a GcpProject resource via `valueFrom`. | Required |
+| `backend` | `object` | Backend origin configuration. Exactly one backend type must be specified. | Required |
+
+**Backend Types (one of):**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `backend.gcsBucket.bucketName` | `string` | Name of the GCS bucket to use as origin. | 
+| `backend.computeService.instanceGroupName` | `string` | Name of the Managed Instance Group to use as backend. |
+| `backend.cloudRunService.serviceName` | `string` | Name of the Cloud Run service to use as backend. |
+| `backend.cloudRunService.region` | `string` | GCP region where the Cloud Run service is deployed. |
+| `backend.externalOrigin.hostname` | `string` | FQDN or IP address of the external origin. |
+
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `cacheMode` | `enum` | `CACHE_ALL_STATIC` | Caching strategy: `CACHE_ALL_STATIC`, `USE_ORIGIN_HEADERS`, or `FORCE_CACHE_ALL`. |
+| `defaultTtlSeconds` | `int32` | `3600` | Default TTL in seconds when origin does not specify Cache-Control. Range: 0-31536000. |
+| `maxTtlSeconds` | `int32` | `86400` | Maximum TTL in seconds. Hard ceiling that overrides origin headers. Range: 0-31536000. |
+| `clientTtlSeconds` | `int32` | value of `maxTtlSeconds` | Client-facing TTL in seconds. Overrides max-age for browser caches. Range: 0-31536000. |
+| `enableNegativeCaching` | `bool` | `false` | Cache HTTP 4xx/5xx error responses to reduce origin load during failures. |
+| `advancedConfig` | `object` | — | Advanced CDN configuration (cache keys, signed URLs, negative caching policies). |
+| `advancedConfig.cacheKeyPolicy` | `object` | — | Controls which request attributes are included in the cache key. |
+| `advancedConfig.cacheKeyPolicy.includeQueryString` | `bool` | `true` | Include URL query string in cache key. |
+| `advancedConfig.cacheKeyPolicy.queryStringWhitelist` | `string[]` | `[]` | Whitelist of query parameters to include in cache key (all others ignored). |
+| `advancedConfig.cacheKeyPolicy.includeProtocol` | `bool` | `true` | Include request protocol (HTTP vs HTTPS) in cache key. |
+| `advancedConfig.cacheKeyPolicy.includeHost` | `bool` | `true` | Include Host header in cache key. |
+| `advancedConfig.cacheKeyPolicy.includedHeaders` | `string[]` | `[]` | Request headers to include in cache key. Supported: Accept, Accept-Encoding, Origin. |
+| `advancedConfig.signedUrlConfig.enabled` | `bool` | — | Enable signed URL validation for private content delivery. |
+| `advancedConfig.signedUrlConfig.keys` | `SignedUrlKey[]` | — | Signing keys for URL validation. Each key requires `keyName` and `keyValue`. |
+| `advancedConfig.negativeCachingPolicies` | `NegativeCachingPolicy[]` | `[]` | Per-status-code caching policies. Each entry requires `code` (400-599) and `ttlSeconds` (0-86400). |
+| `advancedConfig.serveWhileStaleSeconds` | `int32` | `0` | Serve stale content while revalidating with origin. Range: 0-604800. |
+| `advancedConfig.enableRequestCoalescing` | `bool` | `true` | Combine multiple identical requests into one origin fetch. |
+| `frontendConfig` | `object` | — | Load balancer frontend configuration (SSL, domains, Cloud Armor). |
+| `frontendConfig.customDomains` | `string[]` | `[]` | Custom domains for the CDN endpoint. |
+| `frontendConfig.sslCertificate.googleManaged.domains` | `string[]` | — | Domains for Google-managed SSL certificate (auto-provisioned via Let's Encrypt). |
+| `frontendConfig.sslCertificate.selfManaged.certificatePem` | `string` | — | PEM-encoded SSL certificate chain (bring your own certificate). |
+| `frontendConfig.sslCertificate.selfManaged.privateKeyPem` | `string` | — | PEM-encoded private key for self-managed certificate. |
+| `frontendConfig.cloudArmor.enabled` | `bool` | — | Enable Cloud Armor WAF/DDoS protection. |
+| `frontendConfig.cloudArmor.securityPolicyName` | `string` | — | Name of existing Cloud Armor security policy to attach. |
+| `frontendConfig.enableHttpsRedirect` | `bool` | `true` | Create an HTTP-to-HTTPS 301 redirect. |
+| `backend.gcsBucket.enableUniformAccess` | `bool` | `true` | Use uniform bucket-level IAM access (no legacy ACLs). |
+| `backend.computeService.healthCheck` | `object` | — | Health check config for Compute Engine backends. |
+| `backend.computeService.protocol` | `enum` | `HTTP` | Backend protocol: `HTTP` or `HTTPS`. |
+| `backend.computeService.port` | `int32` | `80`/`443` | Port where backend instances serve traffic. |
+| `backend.externalOrigin.port` | `int32` | `443`/`80` | Port for the external origin. |
+| `backend.externalOrigin.protocol` | `enum` | `HTTPS` | Protocol for connecting to external origin: `HTTP` or `HTTPS`. |
+
+## Examples
+
+### Static Website with GCS Bucket Backend
+
+Serve a static site from a GCS bucket with default caching settings:
 
 ```yaml
-apiVersion: cloud.google.com/v1
-kind: BackendConfig
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCloudCdn
 metadata:
-  name: my-app-backend-config
+  name: static-site-cdn
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpCloudCdn.static-site-cdn
 spec:
-  cdn:
-    enabled: true
-    cachePolicy:
+  gcpProjectId:
+    value: my-prod-project
+  backend:
+    gcsBucket:
+      bucketName: my-static-site-bucket
+  cacheMode: CACHE_ALL_STATIC
+  defaultTtlSeconds: 3600
+  maxTtlSeconds: 86400
+  enableNegativeCaching: true
+```
+
+### Cloud Run Backend with Custom Domain and HTTPS
+
+Cache a Cloud Run service behind a custom domain with a Google-managed SSL certificate:
+
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCloudCdn
+metadata:
+  name: api-cdn
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpCloudCdn.api-cdn
+spec:
+  gcpProjectId:
+    value: my-prod-project
+  backend:
+    cloudRunService:
+      serviceName: my-api-service
+      region: us-central1
+  cacheMode: USE_ORIGIN_HEADERS
+  defaultTtlSeconds: 300
+  maxTtlSeconds: 3600
+  frontendConfig:
+    customDomains:
+      - cdn.example.com
+    sslCertificate:
+      googleManaged:
+        domains:
+          - cdn.example.com
+    enableHttpsRedirect: true
+```
+
+### Full-Featured with Advanced Caching and Cloud Armor
+
+Production deployment with tuned cache keys, negative caching policies, stale-while-revalidate, signed URLs, and Cloud Armor protection:
+
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCloudCdn
+metadata:
+  name: media-cdn
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpCloudCdn.media-cdn
+spec:
+  gcpProjectId:
+    valueFrom:
+      kind: GcpProject
+      name: my-project
+      field: status.outputs.project_id
+  backend:
+    gcsBucket:
+      bucketName: media-assets-bucket
+      enableUniformAccess: true
+  cacheMode: FORCE_CACHE_ALL
+  defaultTtlSeconds: 86400
+  maxTtlSeconds: 604800
+  clientTtlSeconds: 3600
+  enableNegativeCaching: true
+  advancedConfig:
+    cacheKeyPolicy:
+      includeQueryString: true
+      queryStringWhitelist:
+        - version
+        - lang
+      includeProtocol: false
       includeHost: true
-      includeProtocol: true
-      includeQueryString: false
----
-apiVersion: v1
-kind: Service
+    signedUrlConfig:
+      enabled: true
+      keys:
+        - keyName: primary-key
+          keyValue: "dGhpcy1pcy1hLXNhbXBsZS1rZXk="
+        - keyName: rotation-key
+          keyValue: "cm90YXRpb24ta2V5LXZhbHVl"
+    negativeCachingPolicies:
+      - code: 404
+        ttlSeconds: 600
+      - code: 503
+        ttlSeconds: 60
+    serveWhileStaleSeconds: 86400
+    enableRequestCoalescing: true
+  frontendConfig:
+    customDomains:
+      - media.example.com
+      - cdn.example.com
+    sslCertificate:
+      googleManaged:
+        domains:
+          - media.example.com
+          - cdn.example.com
+    cloudArmor:
+      enabled: true
+      securityPolicyName: media-waf-policy
+    enableHttpsRedirect: true
+```
+
+### External Origin Backend
+
+Cache content from an origin server outside GCP (multi-cloud or on-premises):
+
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCloudCdn
 metadata:
-  name: my-app-service
-  annotations:
-    cloud.google.com/backend-config: '{"default": "my-app-backend-config"}'
+  name: hybrid-cdn
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: staging.GcpCloudCdn.hybrid-cdn
 spec:
-  type: LoadBalancer
-  # ...
+  gcpProjectId:
+    value: my-staging-project
+  backend:
+    externalOrigin:
+      hostname: origin.example.com
+      port: 443
+      protocol: HTTPS
+  cacheMode: USE_ORIGIN_HEADERS
+  defaultTtlSeconds: 1800
+  maxTtlSeconds: 7200
 ```
 
-**Verdict**: This is the **cleanest abstraction** for GKE users. The entire GCP networking stack (load balancer, backend service, CDN) is managed by Kubernetes annotations and CRDs. Application developers never touch GCP APIs directly. However, this abstraction is GKE-specific and not portable to other clouds or GCP compute platforms.
-
-## Production Essentials: Configuration Deep Dive
-
-Deploying Cloud CDN is straightforward. **Optimizing** it for performance, cost, and security requires understanding its configuration knobs.
-
-### Cache Modes: The Most Critical Decision
-
-The `cache_mode` field dictates what gets cached and when to trust origin headers.
-
-| Mode | Behavior | Recommended Use Case | Anti-Pattern |
-|------|----------|---------------------|--------------|
-| **`CACHE_ALL_STATIC`** (default) | Automatically caches common static file types (CSS, JS, images). Also caches any response with valid `Cache-Control` headers. | **90% of deployments**. Safe and flexible for backends serving a mix of static and dynamic content. | None. This is the recommended default. |
-| **`USE_ORIGIN_HEADERS`** | Strict mode. Caches **only** if the origin sends valid `Cache-Control` or `Expires` headers. All other content bypasses the cache. | Backends where the application provides perfect, granular cache headers. | Using this on a GCS bucket or static server that doesn't send `Cache-Control` headers → 0% cache hit ratio. |
-| **`FORCE_CACHE_ALL`** | Aggressive mode. Caches **all** 200 OK responses, ignoring `Cache-Control: private` or `no-store`. | Public GCS buckets containing 100% public, non-sensitive static assets. | **Data leak vulnerability**: Using this on any backend serving dynamic or user-specific content. |
-
-### Cache Keys: Solving the "Cache Shattering" Problem
-
-By default, the cache key is a composite of:
-
-```
-Protocol + Host + Path + Query String
-```
-
-This leads to a classic anti-pattern called **cache shattering**:
-
-```
-# Two requests for the same content, but different query strings
-Request 1: /api/items?user_id=123&session=abc
-Request 2: /api/items?user_id=456&session=xyz
-
-# Result: Two separate cache entries, each used once → 0% cache hit ratio
-```
-
-**The Solution**: Use the `cache_key_policy` to whitelist only the query parameters that define unique content:
-
-```hcl
-cache_key_policy {
-  include_query_string   = true
-  query_string_whitelist = ["version", "lang", "page"]
-  # Now "user_id" and "session" are ignored in the cache key
-}
-```
-
-**The `Vary` Header Pitfall**: Cloud CDN only respects three `Vary` headers: `Accept`, `Accept-Encoding`, and `Origin`. If your backend sends `Vary: Cookie`, caching will break (all requests will miss). Remove or avoid unsupported `Vary` headers.
-
-### TTLs: Time-to-Live Configuration
-
-```hcl
-cdn_policy {
-  default_ttl = 3600   # 1 hour - for responses without Cache-Control
-  max_ttl     = 86400  # 1 day - hard ceiling, overrides origin headers
-  client_ttl  = 1800   # 30 min - overrides max-age for browser cache
-  
-  negative_caching = true  # Cache 404/503 errors (best practice)
-}
-```
-
-**Production Pattern**: Use **versioned URLs** instead of cache invalidation:
-
-```
-# Anti-pattern: Short TTLs + frequent cache invalidation
-Cache-Control: max-age=300  # 5 minutes
-# On deploy: gcloud compute url-maps invalidate-cdn-cache --path="/app.css"
-
-# Production pattern: Long TTLs + versioned filenames
-Cache-Control: max-age=31536000  # 1 year
-# Filename: app.a83f5b2c.css (hash changes on each build)
-# On deploy: No action needed - new HTML references new filename
-```
-
-This eliminates the need for cache invalidation entirely, resulting in atomic, instant deployments.
-
-### Security: Signed URLs for Private Content
-
-To serve private content (e.g., paid videos, user-specific downloads) via Cloud CDN, use **Signed URLs**:
-
-1. Create a secret signing key and attach it to the backend
-2. Your application generates a time-limited URL with a cryptographic signature
-3. Users present this URL to Cloud CDN
-4. Cloud CDN validates the signature before serving the (potentially cached) private file
-
-**Configuration (BackendBucket)**:
-
-```hcl
-resource "google_compute_backend_bucket_signed_url_key" "default" {
-  name           = "my-cdn-key"
-  key_value      = random_id.cdn_key.b64_url
-  backend_bucket = google_compute_backend_bucket.default.name
-}
-```
-
-**Note**: For `BackendService`, the API is inconsistent—you must use an imperative `gcloud` command or direct API call. This is a pain point that higher-level abstractions (like OpenMCF) can smooth over.
-
-### Observability: Measuring Cache Hit Ratio
-
-The **Cache Hit Ratio (CHR)** is the single most important metric for both performance and cost optimization. A low CHR indicates configuration problems, not a broken CDN.
-
-Enable logging on your backend to track cache performance:
-
-```hcl
-log_config {
-  enable      = true
-  sample_rate = 1.0  # 100% of requests (adjust for high-traffic sites)
-}
-```
-
-Query logs in Cloud Logging to identify cache behavior:
-
-- **Cache Hit**: `httpRequest.cacheHit = true AND httpRequest.cacheValidatedWithOriginServer != true`
-- **Cache Hit (Revalidated)**: `httpRequest.cacheHit = true AND httpRequest.cacheValidatedWithOriginServer = true` (e.g., 304 Not Modified)
-- **Cache Miss**: `httpRequest.cacheHit != true AND jsonPayload.statusDetails = "response_sent_by_backend"`
-
-**Root causes of low CHR**:
-1. Cache key shattering (query string not whitelisted)
-2. Unsupported `Vary` headers from origin
-3. Incorrect cache mode for your backend type
-
-## Common Anti-Patterns to Avoid
-
-| Anti-Pattern | Why It's Wrong | Correct Approach |
-|--------------|----------------|------------------|
-| Using `FORCE_CACHE_ALL` on dynamic backends | **Data leak**: Caches user-specific or private data | Use `CACHE_ALL_STATIC` or `USE_ORIGIN_HEADERS` |
-| Not defining a `cache_key_policy` | Cache shattering → 0% hit ratio | Whitelist query params that define unique content |
-| Sending `Vary: Cookie` from origin | Cloud CDN doesn't support it → all requests miss | Remove or use a different caching strategy |
-| Relying on cache invalidation for deploys | Slow, rate-limited, unreliable | Use versioned/hashed filenames with long TTLs |
-| Using `USE_ORIGIN_HEADERS` without sending headers | No `Cache-Control` from origin → 0% hit ratio | Ensure origin sends headers, or use `CACHE_ALL_STATIC` |
-
-## Integration Patterns
-
-### Pattern 1: Static Website (GCS + BackendBucket)
-
-**Use case**: Hosting a static website (HTML, CSS, JS, images)
-
-**Resources**:
-- GCS bucket configured for website hosting
-- `BackendBucket` pointing to the GCS bucket with CDN enabled
-- Global load balancer with HTTPS
-
-**80% Configuration**:
-```hcl
-resource "google_compute_backend_bucket" "website" {
-  name        = "static-site-backend"
-  bucket_name = google_storage_bucket.website.name
-  enable_cdn  = true
-
-  cdn_policy {
-    cache_mode  = "CACHE_ALL_STATIC"
-    default_ttl = 3600
-  }
-}
-```
-
-### Pattern 2: Dynamic Web App (Compute Engine + BackendService)
-
-**Use case**: Traditional web application on VMs (monolith or microservices)
-
-**Resources**:
-- Managed Instance Group (MIG)
-- `BackendService` with CDN and custom cache key policy
-- HTTPS load balancer with Cloud Armor
-
-**Production Configuration**:
-```hcl
-resource "google_compute_backend_service" "webapp" {
-  name     = "webapp-backend"
-  protocol = "HTTP"
-  
-  backend {
-    group = google_compute_instance_group_manager.webapp.instance_group
-  }
-
-  enable_cdn = true
-  cdn_policy {
-    cache_mode  = "USE_ORIGIN_HEADERS"
-    default_ttl = 3600
-    max_ttl     = 86400
-    
-    cache_key_policy {
-      include_query_string   = true
-      query_string_whitelist = ["page", "category", "version"]
-    }
-  }
-}
-```
-
-### Pattern 3: Serverless (Cloud Run + Serverless NEG)
-
-**Use case**: Modern containerized applications on Cloud Run
-
-**Resources**:
-- Cloud Run service
-- Serverless Network Endpoint Group (NEG)
-- `BackendService` pointing to the NEG with CDN enabled
-
-**Planton Abstraction**: OpenMCF would automatically create the serverless NEG and wire it to the backend service, abstracting this complexity from users.
-
-### Pattern 4: Kubernetes (GKE + BackendConfig CRD)
-
-**Use case**: Applications deployed on GKE
-
-**GKE-Specific Abstraction**: Use a `BackendConfig` CRD instead of managing GCP resources directly. The GKE Ingress controller handles all the underlying infrastructure.
-
-**Note for OpenMCF**: This pattern requires a separate resource type (e.g., `GkeCloudCdnPolicy`) rather than the standard `GcpCloudCdn` resource, as the management model is fundamentally different.
-
-### Pattern 5: Hybrid/Multi-Cloud (Internet NEG)
-
-**Use case**: Using Cloud CDN in front of an external origin (AWS S3, on-prem server)
-
-**Resources**:
-- Internet Network Endpoint Group pointing to external FQDN
-- `BackendService` with CDN enabled
-
-**Strategic Note**: This pattern enables gradual migration from other clouds or on-prem to GCP while immediately gaining the performance benefits of Google's edge network.
-
-## Cost and Performance Model
-
-### Pricing Structure
-
-Cloud CDN costs have three components:
-
-1. **Cache Egress**: Data served from edge caches to users (~$0.02–$0.08/GB depending on region)
-2. **Cache Fill**: Data transferred from origin to CDN cache (~$0.01–$0.04/GB)
-3. **Cache Lookup Requests**: Per-request fee (~$0.0075 per 10,000 requests)
-
-**Optimization Equation**: Maximize cache hit ratio (CHR). A high CHR converts expensive "standard egress" into cheaper "cache egress" and minimizes cache fill costs.
-
-### The Premium Tier Mandate
-
-Cloud CDN **only works on Google's Premium Network Tier**. This is non-negotiable. You cannot opt for the cheaper Standard Tier egress and use Cloud CDN.
-
-- **Premium Tier**: Traffic travels over Google's private global backbone, exiting at an edge PoP near the user (high performance, higher cost)
-- **Standard Tier**: Traffic exits from the origin region over the public internet (lower performance, lower cost)
-
-**Implication**: Choosing Cloud CDN is also choosing Premium Tier networking for all traffic from that load balancer.
-
-### Strategies for Maximizing CHR
-
-1. **Tune cache keys** (most important): Whitelist only content-defining query params
-2. **Use correct cache mode**: `CACHE_ALL_STATIC` for most use cases
-3. **Use long TTLs with versioned URLs**: Embed file hash in filename, set 1-year TTL
-4. **Enable negative caching**: Cache 404s to prevent origin overload
-5. **Use cache tags** (advanced): Invalidate by tag instead of URL for bulk operations
-
-## What OpenMCF Supports
-
-OpenMCF's `GcpCloudCdn` resource provides a **compositional abstraction** over GCP's complex networking stack. Rather than forcing users to manually create and wire together load balancers, backend services/buckets, SSL certificates, and CDN policies, Planton presents a unified resource that manages this entire stack as a cohesive unit.
-
-### Design Philosophy: Composition Over References
-
-The current `GcpCloudCdnSpec` (which contains only `gcp_project_id`) is intentionally minimal as the API evolves. The next iteration will adopt a **compositional model** where a single Planton resource:
-
-1. Defines the **origin** (GCS bucket, Compute Engine service, Cloud Run, or external backend)
-2. Specifies the **CDN policy** (cache mode, TTLs, cache keys)
-3. Optionally manages the **load balancer frontend** (SSL certificates, domains, Cloud Armor policies)
-
-This mirrors the mental model of "I want a CDN for this bucket/service" while abstracting away GCP's implementation details.
-
-### 80/20 Configuration Principle
-
-Following Planton's philosophy, the API will expose:
-
-**Essential (80%)** - Always visible:
-- Backend type and configuration
-- Cache mode
-- TTLs (`default_ttl`, `max_ttl`, `client_ttl`)
-- Negative caching
-
-**Advanced (20%)** - Nested for clarity:
-- Cache key policy (query string whitelists, headers)
-- Signed URL configuration
-- Granular negative caching policies per status code
-- Serve-while-stale settings
-
-### Abstracting GCP's Inconsistencies
-
-One area where Planton adds immediate value: **Signed URL key management**. GCP's API has an inconsistency:
-- For `BackendBucket`: Declarative resource (`google_compute_backend_bucket_signed_url_key`)
-- For `BackendService`: Imperative command only (`gcloud compute backend-services add-signed-url-key`)
-
-Planton's API presents a unified `signed_url_policy` field. The controller handles the correct underlying implementation (declarative resource or imperative API call) based on the backend type.
-
-### GKE: A Special Case
-
-For applications on GKE, Planton will provide a separate resource (e.g., `GkeCloudCdnPolicy`) that models the `BackendConfig` CRD. This recognizes that the GKE management model (Kubernetes-native annotations and CRDs) is fundamentally different from managing raw GCP networking resources.
-
-## Conclusion
-
-Google Cloud CDN challenges conventional assumptions about how CDNs are deployed. It is not a standalone service you "create," but rather a feature you enable on a load balancer backend. This tight integration with Google's Global Application Load Balancer provides automatic SSL/TLS, DDoS protection, and access to Google's global edge network—but also imposes architectural constraints, such as the mandatory Premium Network Tier.
-
-For teams choosing Cloud CDN, the decision is typically driven by existing GCP investments: if your origin is already on GCS, Compute Engine, GKE, or Cloud Run, Cloud CDN provides the fastest, most seamless integration.
-
-For OpenMCF, this architecture dictates a **compositional resource model**. Rather than asking users to separately manage backends and CDN policies, Planton's API will treat the origin and CDN as a single, cohesive unit—abstracting away GCP's complexity while preserving the full power of its configuration model.
-
-The next evolution of the `GcpCloudCdn` API will embrace this reality, providing a clean 80/20 interface that makes the simple case trivial (static website CDN in 10 lines of YAML) while making the advanced cases possible (signed URLs, custom cache keys, multi-region failover).
-
----
-
-**For deeper implementation details**, see the following guides (planned):
-- [GCS Static Website CDN Setup](./gcs-static-website-guide.md)
-- [Cloud Run CDN Integration](./cloud-run-cdn-guide.md)
-- [Advanced Cache Key Tuning](./cache-key-optimization-guide.md)
-- [Signed URLs and Private Content](./signed-urls-guide.md)
-
+## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `cdnUrl` | `string` | Public URL of the Cloud CDN endpoint (e.g., `https://<ip-address>`) |
+| `globalIpAddress` | `string` | Static global anycast IP address assigned to the load balancer. Use for DNS records. |
+| `backendName` | `string` | Name of the backend resource (BackendBucket or BackendService) |
+| `backendId` | `string` | Full resource ID of the backend (e.g., `projects/{project}/global/backendBuckets/{name}`) |
+| `cdnEnabled` | `string` | Whether Cloud CDN is enabled on the backend |
+| `cacheMode` | `string` | Cache mode configured for this CDN (`CACHE_ALL_STATIC`, `USE_ORIGIN_HEADERS`, `FORCE_CACHE_ALL`) |
+| `urlMapName` | `string` | URL map name for load balancer routing configuration |
+| `httpsProxyName` | `string` | Target HTTPS proxy name (set when `frontendConfig` is specified) |
+| `sslCertificateName` | `string` | SSL certificate name or ID (set when `frontendConfig` is specified) |
+| `cloudArmorPolicyName` | `string` | Cloud Armor security policy name (empty if Cloud Armor is not configured) |
+| `backendType` | `string` | Backend type: `GCS_BUCKET`, `COMPUTE_SERVICE`, `CLOUD_RUN`, or `EXTERNAL` |
+| `gcsBucketName` | `string` | GCS bucket name (only set when `backendType` is `GCS_BUCKET`) |
+| `instanceGroupName` | `string` | Compute Engine instance group name (only set when `backendType` is `COMPUTE_SERVICE`) |
+| `cloudRunServiceName` | `string` | Cloud Run service name (only set when `backendType` is `CLOUD_RUN`) |
+| `cloudRunRegion` | `string` | Cloud Run service region (only set when `backendType` is `CLOUD_RUN`) |
+| `externalHostname` | `string` | External origin hostname (only set when `backendType` is `EXTERNAL`) |
+| `customDomains` | `string[]` | Custom domains configured for this CDN |
+| `healthCheckUrl` | `string` | Health check URL (set when health check is configured for Compute Engine backends) |
+| `monitoringDashboardUrl` | `string` | Cloud Console link to view CDN cache hit ratio, bandwidth, and request metrics |
+
+## Related Components
+
+- [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project for CDN resource creation
+- [GcpGcsBucket](/docs/catalog/gcp/gcpgcsbucket) — provisions a GCS bucket that can serve as the CDN origin
+- [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — container orchestration that can be fronted by Cloud CDN
+- [GcpDnsRecord](/docs/catalog/gcp/gcpdnsrecord) — creates DNS records pointing custom domains to the CDN global IP
+- [GcpDnsZone](/docs/catalog/gcp/gcpdnszone) — manages the DNS zone for custom domain configuration

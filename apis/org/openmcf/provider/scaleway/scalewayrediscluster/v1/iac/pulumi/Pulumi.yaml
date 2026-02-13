@@ -1,0 +1,4 @@
+name: scaleway-redis-cluster
+runtime:
+  name: go
+description: Scaleway Redis Cluster Pulumi module

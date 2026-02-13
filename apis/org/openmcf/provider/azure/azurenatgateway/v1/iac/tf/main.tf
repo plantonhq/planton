@@ -4,7 +4,7 @@ resource "azurerm_public_ip_prefix" "nat" {
 
   name                = "${local.nat_gateway_name}-prefix"
   resource_group_name = local.resource_group
-  location            = data.azurerm_subnet.target.location
+  location            = local.location
   prefix_length       = var.spec.public_ip_prefix_length
   sku                 = "Standard"
 
@@ -17,7 +17,7 @@ resource "azurerm_public_ip" "nat" {
 
   name                = "${local.nat_gateway_name}-ip"
   resource_group_name = local.resource_group
-  location            = data.azurerm_subnet.target.location
+  location            = local.location
   allocation_method   = "Static"
   sku                 = "Standard"
 
@@ -28,7 +28,7 @@ resource "azurerm_public_ip" "nat" {
 resource "azurerm_nat_gateway" "main" {
   name                    = local.nat_gateway_name
   resource_group_name     = local.resource_group
-  location                = data.azurerm_subnet.target.location
+  location                = local.location
   sku_name                = "Standard"
   idle_timeout_in_minutes = var.spec.idle_timeout_minutes
 

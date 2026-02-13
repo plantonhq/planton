@@ -8,6 +8,7 @@ package azurestorageaccountv1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -437,9 +438,9 @@ type AzureStorageAccountSpec struct {
 	// The Azure region where the Storage Account will be deployed (e.g., "eastus", "westus2", "westeurope").
 	// This is required as Storage Account is a regional service.
 	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
-	// The Azure Resource Group name where the Storage Account will be created.
-	// The resource group must already exist.
-	ResourceGroup string `protobuf:"bytes,2,opt,name=resource_group,json=resourceGroup,proto3" json:"resource_group,omitempty"`
+	// The Azure Resource Group where the Storage Account will be created.
+	// Can be a literal string or a reference to an AzureResourceGroup output.
+	ResourceGroup *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=resource_group,json=resourceGroup,proto3" json:"resource_group,omitempty"`
 	// The kind of storage account.
 	// - STORAGE_V2: General-purpose v2 (recommended for most scenarios)
 	// - BLOB_STORAGE: Specialized for blob data (hot/cool/archive tiers)
@@ -525,11 +526,11 @@ func (x *AzureStorageAccountSpec) GetRegion() string {
 	return ""
 }
 
-func (x *AzureStorageAccountSpec) GetResourceGroup() string {
+func (x *AzureStorageAccountSpec) GetResourceGroup() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ResourceGroup
 	}
-	return ""
+	return nil
 }
 
 func (x *AzureStorageAccountSpec) GetAccountKind() AzureStorageAccountKind {
@@ -811,13 +812,11 @@ var File_org_openmcf_provider_azure_azurestorageaccount_v1_spec_proto protorefle
 
 const file_org_openmcf_provider_azure_azurestorageaccount_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"<org/openmcf/provider/azure/azurestorageaccount/v1/spec.proto\x121org.openmcf.provider.azure.azurestorageaccount.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xc4\n" +
-	"\n" +
+	"<org/openmcf/provider/azure/azurestorageaccount/v1/spec.proto\x121org.openmcf.provider.azure.azurestorageaccount.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa0\v\n" +
 	"\x17AzureStorageAccountSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x121\n" +
-	"\x0eresource_group\x18\x02 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\rresourceGroup\x12\x8a\x01\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\x8c\x01\n" +
+	"\x0eresource_group\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\x90\x03\x92\xd4a\"status.outputs.resource_group_nameR\rresourceGroup\x12\x8a\x01\n" +
 	"\faccount_kind\x18\x03 \x01(\x0e2J.org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountKindB\x16\xbaH\x05\x82\x01\x02\x10\x01\x8a\xa6\x1d\n" +
 	"STORAGE_V2H\x00R\vaccountKind\x88\x01\x01\x12\x88\x01\n" +
 	"\faccount_tier\x18\x04 \x01(\x0e2J.org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountTierB\x14\xbaH\x05\x82\x01\x02\x10\x01\x8a\xa6\x1d\bSTANDARDH\x01R\vaccountTier\x88\x01\x01\x12\x8f\x01\n" +
@@ -927,23 +926,25 @@ var file_org_openmcf_provider_azure_azurestorageaccount_v1_spec_proto_goTypes = 
 	(*AzureStorageNetworkRules)(nil),   // 8: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageNetworkRules
 	(*AzureStorageBlobProperties)(nil), // 9: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageBlobProperties
 	(*AzureStorageContainer)(nil),      // 10: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageContainer
+	(*v1.StringValueOrRef)(nil),        // 11: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_azure_azurestorageaccount_v1_spec_proto_depIdxs = []int32{
-	0,  // 0: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountSpec.account_kind:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountKind
-	1,  // 1: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountSpec.account_tier:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountTier
-	2,  // 2: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountSpec.replication_type:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageReplicationType
-	3,  // 3: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountSpec.access_tier:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccessTier
-	4,  // 4: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountSpec.min_tls_version:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureTlsVersion
-	8,  // 5: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountSpec.network_rules:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageNetworkRules
-	9,  // 6: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountSpec.blob_properties:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageBlobProperties
-	10, // 7: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountSpec.containers:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageContainer
-	5,  // 8: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageNetworkRules.default_action:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageNetworkAction
-	6,  // 9: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageContainer.access_type:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageContainerAccess
-	10, // [10:10] is the sub-list for method output_type
-	10, // [10:10] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	11, // 0: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountSpec.resource_group:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	0,  // 1: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountSpec.account_kind:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountKind
+	1,  // 2: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountSpec.account_tier:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountTier
+	2,  // 3: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountSpec.replication_type:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageReplicationType
+	3,  // 4: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountSpec.access_tier:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccessTier
+	4,  // 5: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountSpec.min_tls_version:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureTlsVersion
+	8,  // 6: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountSpec.network_rules:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageNetworkRules
+	9,  // 7: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountSpec.blob_properties:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageBlobProperties
+	10, // 8: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageAccountSpec.containers:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageContainer
+	5,  // 9: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageNetworkRules.default_action:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageNetworkAction
+	6,  // 10: org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageContainer.access_type:type_name -> org.openmcf.provider.azure.azurestorageaccount.v1.AzureStorageContainerAccess
+	11, // [11:11] is the sub-list for method output_type
+	11, // [11:11] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_azure_azurestorageaccount_v1_spec_proto_init() }

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway.scalewayinstance.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/scaleway/scalewayinstance/v1/spec.proto";
+import "org/openmcf/provider/scaleway/scalewayinstance/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// scaleway-instance
+message ScalewayInstance {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = "scaleway.openmcf.org/v1"];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = "ScalewayInstance"];
+
+  //metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  ScalewayInstanceSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  ScalewayInstanceStatus status = 5;
+}
+
+// scaleway-instance status
+message ScalewayInstanceStatus {
+  //stack-outputs
+  //  scaleway-instance stack-outputs
+  ScalewayInstanceStackOutputs outputs = 1;
+}

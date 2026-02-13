@@ -9,9 +9,10 @@ import (
 )
 
 type Locals struct {
-	AzureKeyVault *azurekeyvaultv1.AzureKeyVault
-	VaultName     string
-	AzureTags     map[string]string
+	AzureKeyVault     *azurekeyvaultv1.AzureKeyVault
+	ResourceGroupName string
+	VaultName         string
+	AzureTags         map[string]string
 }
 
 func initializeLocals(ctx *pulumi.Context, stackInput *azurekeyvaultv1.AzureKeyVaultStackInput) *Locals {
@@ -19,6 +20,11 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurekeyvaultv1.AzureKeyV
 
 	locals.AzureKeyVault = stackInput.Target
 	target := stackInput.Target
+
+	// The resource_group field is a StringValueOrRef. The platform middleware resolves
+	// valueFrom references before IaC modules run, so .GetValue() always returns the
+	// resolved literal string.
+	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
 	// Create vault name from metadata.name
 	// Azure Key Vault names must be 3-24 characters, alphanumeric and hyphens only, globally unique

@@ -831,14 +831,14 @@ This reduces cognitive friction for engineers familiar with Terraform.
 
 The CLI exports the manifest as an environment variable:
 ```bash
-export PROJECT_PLANTON_MANIFEST="$(cat manifest.yaml)"
+export OPENMCF_MANIFEST="$(cat manifest.yaml)"
 ```
 
 Modules read this variable:
 
 **Pulumi (Go):**
 ```go
-manifestYaml := os.Getenv("PROJECT_PLANTON_MANIFEST")
+manifestYaml := os.Getenv("OPENMCF_MANIFEST")
 config := &PostgresKubernetes{}
 yaml.Unmarshal([]byte(manifestYaml), config)
 ```
@@ -935,7 +935,7 @@ openmcf
                          ▼
 ┌─────────────────────────────────────────────────────────────┐
 │ 5. Setup Environment                                        │
-│    - Export PROJECT_PLANTON_MANIFEST=<yaml>                 │
+│    - Export OPENMCF_MANIFEST=<yaml>                 │
 │    - CD to module directory                                 │
 └────────────────────────┬────────────────────────────────────┘
                          │
@@ -1067,7 +1067,7 @@ Research → Forge → Audit → (Complete) → Deploy & Test → Commit
 5. **Local Testing**
    ```bash
    cd apis/org/openmcf/provider/atlas/mongodbatlas/v1/iac/pulumi
-   export PROJECT_PLANTON_MANIFEST="$(cat ../hack/manifest.yaml)"
+   export OPENMCF_MANIFEST="$(cat ../hack/manifest.yaml)"
    pulumi up
    ```
    - Test Pulumi module locally
@@ -1341,7 +1341,7 @@ import pulumi_kubernetes as k8s
 from openmcf.apis.org.openmcf.provider.kubernetes.workload.postgreskubernetes.v1 import api_pb2
 
 # Read manifest from environment
-manifest_yaml = os.getenv("PROJECT_PLANTON_MANIFEST")
+manifest_yaml = os.getenv("OPENMCF_MANIFEST")
 manifest_dict = yaml.safe_load(manifest_yaml)
 
 # Parse into proto
@@ -1507,7 +1507,7 @@ go test -v
 Test IaC modules locally:
 ```bash
 cd apis/org/openmcf/provider/atlas/mongodbatlas/v1/iac/pulumi
-export PROJECT_PLANTON_MANIFEST="$(cat ../hack/manifest.yaml)"
+export OPENMCF_MANIFEST="$(cat ../hack/manifest.yaml)"
 pulumi preview
 ```
 

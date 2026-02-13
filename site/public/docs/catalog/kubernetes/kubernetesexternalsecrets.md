@@ -6,298 +6,256 @@ order: 100
 componentName: "kubernetesexternalsecrets"
 ---
 
-# External Secrets Operator: From Git-Tracked Secrets to Cloud-Native Secret Management
+# Kubernetes External Secrets
 
-## The Evolution of Kubernetes Secret Management
+Deploys the [External Secrets Operator](https://external-secrets.io/) (ESO) onto any Kubernetes cluster using its official Helm chart. ESO synchronizes secrets from cloud provider secret stores (Google Cloud Secret Manager, AWS Secrets Manager, Azure Key Vault) into native Kubernetes Secrets, keeping application pods decoupled from provider-specific APIs. The module creates a dedicated ServiceAccount wired to the correct cloud identity mechanism (GKE Workload Identity, EKS IRSA, or AKS Managed Identity), installs CRDs, and configures RBAC automatically.
 
-For years, the conventional wisdom was simple: **never store secrets in etcd**. This led to elaborate workarounds—encrypted secrets in Git repositories, Vault clusters requiring dedicated teams, or custom sidecars that injected secrets from cloud providers. While security teams slept better, developers wrestled with complex workflows just to get a database password into their pods.
+## What Gets Created
 
-The landscape has fundamentally changed. Modern Kubernetes secret management has matured from "avoid etcd at all costs" to "sync from authoritative external stores with encryption-at-rest." This shift was enabled by three key developments:
+When you deploy a KubernetesExternalSecrets resource, OpenMCF provisions:
 
-1. **Kubernetes encryption-at-rest** became standard (KMS integration on EKS, GKE, AKS)
-2. **Workload identity patterns** (IRSA, Workload Identity, Managed Identity) eliminated the need for static credentials
-3. **Operator-based sync patterns** emerged that treat external secret stores as the source of truth
+- **Kubernetes Namespace** — created if `createNamespace` is `true`
+- **ServiceAccount** — a Kubernetes ServiceAccount annotated with the appropriate cloud identity binding (`iam.gke.io/gcp-service-account` for GKE, `eks.amazonaws.com/role-arn` for EKS, or `azure.workload.identity/client-id` for AKS)
+- **External Secrets Helm Release** — the `external-secrets` chart (v0.9.20) from `https://charts.external-secrets.io`, which creates:
+  - The ESO controller Deployment that watches `ExternalSecret` custom resources
+  - Custom Resource Definitions (`ExternalSecret`, `SecretStore`, `ClusterSecretStore`, and others)
+  - ClusterRole and ClusterRoleBinding for RBAC
+  - Webhook components for validation and conversion
 
-External Secrets Operator (ESO) sits at the convergence of these trends: a lightweight controller that continuously syncs secrets from cloud providers into Kubernetes Secret objects, using cloud-native identity, with minimal operational overhead. It's neither a heavyweight secret vault requiring specialized teams, nor a static encryption scheme requiring manual rotations. It's secret synchronization done right for cloud-native infrastructure.
+## Prerequisites
 
-## The Maturity Spectrum: Kubernetes Secret Management Approaches
+- **A Kubernetes cluster** with kubectl configured for access
+- **A cloud secret store** with secrets you want to synchronize (Google Cloud Secret Manager, AWS Secrets Manager, or Azure Key Vault)
+- **Cloud identity binding** already configured:
+  - **GKE**: A Google Service Account with `roles/secretmanager.secretAccessor` and Workload Identity binding to the Kubernetes ServiceAccount
+  - **EKS**: An IAM role with `secretsmanager:GetSecretValue` permission and an IRSA trust policy
+  - **AKS**: A User-Assigned Managed Identity with `Key Vault Secrets User` role on the target Key Vault
 
-Let's examine how teams manage secrets in Kubernetes, from anti-patterns to production-ready solutions.
+## Quick Start
 
-### Level 0: The Anti-Pattern
+Create a file `external-secrets.yaml`:
 
-**Base64-Encoded Secrets in Git** — Some teams still commit Kubernetes Secret manifests directly to Git, relying on base64 encoding as "security." This is fundamentally broken: base64 is encoding, not encryption. Anyone with repository access has plaintext secrets.
-
-**Verdict**: Never do this. Base64 provides zero security and creates a nightmare of secret sprawl, rotation, and audit trails.
-
-### Level 1: Encrypted Secrets in Git
-
-**Sealed Secrets** (Bitnami) and similar tools encrypt secrets using a cluster-specific key, allowing you to safely store encrypted Secret manifests in Git. Developers commit sealed secrets, and a controller decrypts them at runtime.
-
-**Strengths**:
-- Pure GitOps workflow: all secrets are code-reviewed and versioned
-- No external runtime dependencies
-- Simple mental model
-
-**Limitations**:
-- Secret rotation requires re-encrypting and committing new sealed secrets
-- No dynamic secret generation (database credentials with short TTLs)
-- Secrets are effectively static configuration, not runtime data
-- Disaster recovery requires backing up cluster private keys
-
-**When to use**: Small teams with configuration-type secrets that rarely change, strong GitOps culture, and no compliance requirements around dynamic rotation.
-
-### Level 2: Sidecar Injection from Cloud Providers
-
-**Cloud-Specific CSI Drivers** (AWS Secrets Store CSI, GCP Secret Manager CSI, Azure Key Vault CSI) mount secrets as volumes directly into pods using native cloud identity.
-
-**Strengths**:
-- Secrets never touch etcd—mounted as ephemeral volumes
-- Cloud-native: maintained by providers, tight IAM integration
-- Automatic updates when volume remounts
-
-**Limitations**:
-- Secrets aren't Kubernetes Secret objects—incompatible with Helm charts expecting `existingSecret` references
-- Application code must read from file paths, not environment variables (without additional configuration)
-- Single-cloud focus: multi-cloud setups require multiple CSI drivers
-- Volume mounts don't work well for init containers or job-style workloads
-
-**When to use**: Strict compliance requirements prohibiting secrets in etcd, applications designed for file-based secret injection, single-cloud environments.
-
-### Level 3: Full-Featured Secret Management (Vault)
-
-**HashiCorp Vault** with Vault Agent Injector or CSI driver provides enterprise-grade secret management: dynamic secrets, detailed audit logs, advanced policies, and automatic rotation.
-
-**Strengths**:
-- Dynamic secret generation (database credentials rotated every few hours)
-- Fine-grained access policies and comprehensive audit trails
-- Secrets-as-a-service for the entire organization
-- Short-lived credentials reduce exposure window
-
-**Limitations**:
-- Significant operational overhead: running Vault clusters (HA setup, backups, upgrades)
-- Requires dedicated expertise: Vault administrators become a specialization
-- Complexity can slow down development velocity
-- Many teams only need 20% of Vault's features but pay 100% of the operational cost
-
-**When to use**: Large enterprises already invested in Vault infrastructure, compliance requirements mandating detailed audit trails, need for dynamic secret generation across the organization.
-
-### Level 4: The Modern Pragmatic Solution
-
-**External Secrets Operator (ESO)** bridges the gap between simplicity and production readiness. It treats **cloud provider secret stores as the source of truth**, continuously syncing them into Kubernetes Secret objects.
-
-**How it works**:
-1. Secrets live in AWS Secrets Manager, GCP Secret Manager, Azure Key Vault, or 20+ other providers
-2. ESO runs as a lightweight controller (50m CPU, 100Mi memory)
-3. Developers define `ExternalSecret` custom resources that reference external secrets
-4. ESO pulls secrets using cloud-native identity (IRSA, Workload Identity, Managed Identity)
-5. Kubernetes Secret objects are created/updated automatically at configurable intervals
-
-**Strengths**:
-- **Cloud-native identity**: No static credentials—uses IRSA (EKS), Workload Identity (GKE), Managed Identity (AKS)
-- **Multi-cloud by design**: Single controller handles AWS + GCP + Azure + Vault simultaneously
-- **Kubernetes-native UX**: Secrets end up as standard Secret objects—compatible with all Helm charts and applications
-- **Minimal overhead**: One lightweight operator per cluster, no specialized infrastructure
-- **Operational maturity**: Apache 2.0 licensed, CNCF sandbox project, production-proven at scale
-- **Rotation-friendly**: Update secret in cloud provider → ESO syncs automatically within configured interval
-
-**Trade-offs**:
-- Secrets are stored in etcd (mitigated by Kubernetes encryption-at-rest with KMS)
-- Polling-based updates (configurable intervals from minutes to hours)
-- Not designed for extremely short-lived secrets (minute-scale TTLs—use Vault for that)
-
-**When to use**: Cloud-native teams using AWS/GCP/Azure, need for simple secret sync without heavyweight infrastructure, multi-cloud environments, teams wanting standard Kubernetes Secret objects rather than sidecar injection.
-
-## Comparison: ESO vs. Alternatives
-
-| Approach | Secrets in etcd? | Dynamic Secrets? | Multi-Cloud? | Operational Overhead | GitOps-Friendly? |
-|----------|------------------|------------------|--------------|----------------------|-------------------|
-| **Sealed Secrets** | Yes (encrypted) | No | Yes | Very Low | Excellent |
-| **CSI Drivers** | No (volume mount) | No | Single-cloud per driver | Low | Good |
-| **Vault** | Depends on mode | Yes | Yes | High | Fair |
-| **ESO** | Yes (encrypted at rest) | No* | Excellent | Low | Excellent |
-
-*ESO can sync dynamically-generated Vault secrets, but doesn't generate them itself.
-
-**Licensing & Maturity**:
-- **ESO**: Apache 2.0, CNCF Sandbox, 6K+ GitHub stars, v1.0+ Helm chart
-- **Sealed Secrets**: Apache 2.0, stable, widely deployed
-- **Vault**: MPL 2.0 (Enterprise features require commercial license)
-- **CSI Drivers**: Provider-specific (typically Apache/MIT)
-
-## The OpenMCF Choice: External Secrets Operator
-
-OpenMCF defaults to **External Secrets Operator** for Kubernetes secret management. This decision is grounded in three principles:
-
-### 1. Cloud-Native by Default
-Modern cloud platforms provide excellent secret stores (AWS Secrets Manager, GCP Secret Manager, Azure Key Vault) with built-in encryption, audit trails, and IAM integration. ESO leverages these native capabilities rather than reinventing secret storage.
-
-### 2. Open-Source and Production-Proven
-ESO is Apache 2.0 licensed with no proprietary tiers. It's mature enough for production (v1.0+ chart, CNCF sandbox) yet lightweight enough to run in every cluster without specialized teams.
-
-### 3. Developer Experience Matters
-Developers get standard Kubernetes Secret objects that work with any Helm chart or application. No file-path injection, no custom sidecars, no reading from specialized volume mounts. Just `secretKeyRef` in pod specs—the Kubernetes-native pattern everyone already knows.
-
-**OpenMCF Abstractions**:
-
-The `KubernetesExternalSecrets` API focuses on the essential 20%:
-
-```protobuf
-message KubernetesExternalSecretsSpec {
-  // Target cluster (any K8s cluster—EKS, GKE, AKS, or on-prem)
-  KubernetesAddonTargetCluster target_cluster = 1;
-  
-  // Poll interval (balance freshness vs. cloud API costs)
-  uint32 poll_interval_seconds = 2;  // default: 10 seconds
-  
-  // Resource tuning (CPU/memory for controller)
-  KubernetesExternalSecretsSpecContainer container = 3;
-  
-  // Provider-specific configuration (exactly one)
-  oneof provider_config {
-    KubernetesExternalSecretsGkeConfig gke = 100;    // GCP + Workload Identity
-    KubernetesExternalSecretsEksConfig eks = 101;    // AWS + IRSA
-    KubernetesExternalSecretsAksConfig aks = 102;    // Azure + Managed Identity
-  }
-}
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesExternalSecrets
+metadata:
+  name: eso
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesExternalSecrets.eso
+spec:
+  namespace:
+    value: external-secrets
+  createNamespace: true
+  container:
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "100Mi"
+      limits:
+        cpu: "1000m"
+        memory: "1Gi"
+  gke:
+    projectId:
+      value: my-gcp-project
+    gsaEmail: eso-sa@my-gcp-project.iam.gserviceaccount.com
 ```
 
-**What we handle for you**:
-- Installing ESO Helm chart with production defaults (HA mode, leader election)
-- Configuring cloud provider authentication (IRSA role creation for EKS, Workload Identity binding for GKE, etc.)
-- Setting up ClusterSecretStore resources for the configured provider
-- Resource tuning and namespace isolation
+Deploy:
 
-**What you control**:
-- Which secrets to sync (via `ExternalSecret` custom resources in your namespaces)
-- Poll intervals (balance secret freshness vs. cloud API costs)
-- Provider-specific IAM policies (which secrets ESO can access)
+```shell
+openmcf apply -f external-secrets.yaml
+```
 
-### Multi-Provider Support
+This installs the External Secrets Operator into the `external-secrets` namespace with GKE Workload Identity configured. The controller begins polling Google Cloud Secret Manager every 10 seconds by default.
 
-One ESO instance can sync secrets from multiple providers simultaneously. A single cluster might pull:
-- Database credentials from AWS Secrets Manager
-- API keys from GCP Secret Manager
-- TLS certificates from Azure Key Vault
-- Internal credentials from HashiCorp Vault
+## Configuration Reference
 
-Define multiple `SecretStore` resources (one per provider) and `ExternalSecret` resources reference the appropriate store. ESO handles the rest.
+### Required Fields
 
-## Production Considerations
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `namespace` | `StringValueOrRef` | Kubernetes namespace for the ESO deployment. Use `value` for a literal string or `valueFrom` to reference a KubernetesNamespace resource. | Required |
+| `container` | `object` | Container resource configuration for the ESO controller. | Required |
 
-### Security Best Practices
+### Optional Fields
 
-**Least-Privilege IAM**: 
-- EKS: Create IRSA roles limited to specific secret paths (`prod/analytics/*`)
-- GKE: Grant GCP Service Accounts only `Secret Manager Secret Accessor` on needed secrets
-- AKS: Use Managed Identities with Key Vault access policies scoped to specific keys
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `createNamespace` | `bool` | `false` | Create the namespace if it does not exist. |
+| `pollIntervalSeconds` | `uint32` | `10` | How often the controller polls the backing secret store, in seconds. Must be greater than 0. Very small values can incur high cloud API costs. |
+| `container.resources.requests.cpu` | `string` | `"50m"` | CPU request for the ESO controller container. |
+| `container.resources.requests.memory` | `string` | `"100Mi"` | Memory request for the ESO controller container. |
+| `container.resources.limits.cpu` | `string` | `"1000m"` | CPU limit for the ESO controller container. |
+| `container.resources.limits.memory` | `string` | `"1Gi"` | Memory limit for the ESO controller container. |
 
-**RBAC on ExternalSecret CRDs**: 
-Treat `ExternalSecret` and `SecretStore` custom resources as sensitive. Only allow developers to create KubernetesExternalSecrets in their own namespaces, referencing pre-configured ClusterSecretStores. Restrict ClusterSecretStore creation to cluster admins.
+**Provider Configuration** — exactly one of the following blocks must be set:
 
-**Network Policies**: 
-Limit ESO pod egress to cloud provider API endpoints and Kubernetes API. No unrestricted internet access.
+| Field | Type | Description |
+|-------|------|-------------|
+| `gke.projectId` | `StringValueOrRef` | GCP project hosting the secrets and the GKE cluster. Use `value` for a literal string or `valueFrom` to reference a GcpProject resource. Required when using `gke`. |
+| `gke.gsaEmail` | `string` | Google Service Account email used via Workload Identity. Required when using `gke`. |
+| `eks.region` | `string` | AWS region containing the secret store. Defaults to the cluster region if empty. |
+| `eks.irsaRoleArnOverride` | `string` | Existing IAM role ARN for IRSA. If left blank, one is auto-created. |
+| `aks.keyVaultResourceId` | `string` | Azure Key Vault resource ID that stores the secrets. |
+| `aks.managedIdentityClientId` | `string` | Client ID of an existing User-Assigned Managed Identity to bind to ESO. |
 
-**Pod Security**: 
-ESO adheres to Kubernetes restricted Pod Security Standard by default (non-root, read-only filesystem, dropped capabilities).
+> **Note on `StringValueOrRef` fields:** Fields typed as `StringValueOrRef` accept either a direct `value` string or a `valueFrom` block that references the output of another OpenMCF resource.
 
-### High Availability
+## Examples
 
-Production deployments run ESO with:
-- **Multiple replicas** (2-3) with leader election (only one actively syncs, others standby)
-- **Pod anti-affinity** to spread replicas across nodes
-- **Resource limits** to prevent memory leaks from affecting cluster
+### GKE with Google Cloud Secret Manager
 
-OpenMCF configures this automatically.
+Deploy ESO on a GKE cluster with Workload Identity for Google Cloud Secret Manager access:
 
-### Monitoring & Operational Health
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesExternalSecrets
+metadata:
+  name: eso-gke
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesExternalSecrets.eso-gke
+spec:
+  namespace:
+    value: external-secrets
+  createNamespace: true
+  pollIntervalSeconds: 30
+  container:
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "128Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+  gke:
+    projectId:
+      value: my-gcp-project
+    gsaEmail: eso-secrets@my-gcp-project.iam.gserviceaccount.com
+```
 
-**Key Metrics** (Prometheus):
-- `externalsecret_sync_calls_total` — total syncs
-- `externalsecret_sync_calls_error` — failed syncs (alert on this)
-- `externalsecret_status_condition` — per-secret health gauge
+### EKS with AWS Secrets Manager
 
-**Alerts to Configure**:
-- Any ExternalSecret in error state for >10 minutes
-- Sync error rate spike (could indicate IAM issues or provider outage)
-- No successful syncs for a canary ExternalSecret (ESO health check)
+Deploy ESO on an EKS cluster with IRSA for AWS Secrets Manager access. The `irsaRoleArnOverride` field lets you point to a pre-existing IAM role:
 
-**Troubleshooting Common Issues**:
-- **Error: AccessDenied** → Check IAM policy on cloud provider
-- **Error: Secret not found** → Verify `remoteRef.key` matches secret name in provider
-- **ExternalSecret stuck in "Pending"** → Check ESO controller logs for authentication errors
-- **Secret not updating after external change** → Verify poll interval hasn't elapsed; consider shorter interval or manual trigger
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesExternalSecrets
+metadata:
+  name: eso-eks
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: staging.KubernetesExternalSecrets.eso-eks
+spec:
+  namespace:
+    value: external-secrets
+  createNamespace: true
+  pollIntervalSeconds: 15
+  container:
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "128Mi"
+      limits:
+        cpu: "1000m"
+        memory: "1Gi"
+  eks:
+    region: us-east-1
+    irsaRoleArnOverride: arn:aws:iam::123456789012:role/eso-secrets-role
+```
 
-### Cost Optimization
+### AKS with Azure Key Vault
 
-**Poll Interval Tuning**:
-- Longer intervals (1-4 hours) for rarely-changed secrets (TLS certificates, API keys)
-- Shorter intervals (15-30 minutes) for frequently-rotated credentials
-- Very short intervals (<5 minutes) only for critical secrets—beware cloud API costs
+Deploy ESO on an AKS cluster with Azure Workload Identity for Key Vault secret synchronization. Increase resource limits for a production workload with many ExternalSecret objects:
 
-**Example Cost Math**:
-- 100 secrets polled every hour = 2,400 API calls/day = ~72,000/month
-- AWS Secrets Manager: $0.05 per 10,000 API calls → ~$0.36/month
-- Scale this by your secret count and poll frequency
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesExternalSecrets
+metadata:
+  name: eso-aks
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesExternalSecrets.eso-aks
+spec:
+  namespace:
+    value: external-secrets
+  createNamespace: true
+  pollIntervalSeconds: 60
+  container:
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "256Mi"
+      limits:
+        cpu: "2000m"
+        memory: "2Gi"
+  aks:
+    keyVaultResourceId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.KeyVault/vaults/my-keyvault
+    managedIdentityClientId: 11111111-1111-1111-1111-111111111111
+```
 
-Most teams find polling costs negligible, but avoid "poll everything every minute" anti-patterns.
+### Referencing a KubernetesNamespace via valueFrom
 
-### Secret Rotation
+Use `valueFrom` on the `namespace` field to reference a namespace managed by a separate KubernetesNamespace resource instead of hard-coding the name:
 
-ESO's polling model handles rotation elegantly:
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesExternalSecrets
+metadata:
+  name: eso-ref
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesExternalSecrets.eso-ref
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      metadata:
+        name: secrets-ns
+      fieldPath: spec.name
+  container:
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "100Mi"
+      limits:
+        cpu: "1000m"
+        memory: "1Gi"
+  gke:
+    projectId:
+      valueFrom:
+        kind: GcpProject
+        metadata:
+          name: my-project
+        fieldPath: status.outputs.project_id
+    gsaEmail: eso-sa@my-gcp-project.iam.gserviceaccount.com
+```
 
-1. Rotate secret in cloud provider (AWS, GCP, Azure)
-2. ESO fetches new value at next poll interval
-3. Kubernetes Secret object updates automatically
-4. Pods using Secret via environment variables require restart (standard K8s behavior)
-5. Pods mounting Secret as volume get updated content (kubelet sync delay applies)
+## Stack Outputs
 
-**For zero-downtime rotations**: Stage new credentials, update ExternalSecret to create a new Secret, update deployment to reference new Secret, cut over, delete old Secret.
+After deployment, the following outputs are available in `status.outputs`:
 
-## Migration Path: From Static Secrets to ESO
+| Output | Type | Description |
+|--------|------|-------------|
+| `namespace` | `string` | Kubernetes namespace where the External Secrets Operator is deployed |
+| `service` | `string` | Name of the Kubernetes Service for the ESO controller |
+| `portForwardCommand` | `string` | Ready-to-run `kubectl port-forward` command for local access to the operator |
+| `kubeEndpoint` | `string` | Cluster-internal endpoint for the ESO service (e.g., `eso.external-secrets.svc.cluster.local`) |
+| `ingressEndpoint` | `string` | Public endpoint when ingress is configured |
 
-Existing clusters with static Kubernetes Secrets can migrate incrementally:
+## Related Components
 
-1. **Install ESO** (via OpenMCF or directly)
-2. **Populate external store** with current secret values
-3. **Create ExternalSecret resources** with `creationPolicy: Merge` (doesn't overwrite existing secrets)
-4. **Validate sync** — ensure ESO-synced values match existing secrets
-5. **Switch to Owner mode** — change `creationPolicy: Owner` so ESO fully manages the Secret
-6. **Remove static definitions** from Git/Helm/Terraform
-
-**One secret at a time**, one namespace at a time. No big-bang migration required.
-
-## Common Anti-Patterns to Avoid
-
-### ❌ Overly Frequent Polling
-Setting poll intervals to seconds wastes cloud API calls and increases costs. Most secrets change infrequently—hourly polling is usually sufficient.
-
-### ❌ Shared ClusterSecretStore Without RBAC Controls
-One ClusterSecretStore with broad credentials accessible to all namespaces violates least-privilege. Use namespace-scoped SecretStores or add ClusterSecretStore conditions restricting namespace access.
-
-### ❌ Hardcoding Cloud Credentials in Kubernetes
-Storing AWS access keys or GCP service account JSON keys in Kubernetes Secrets defeats the purpose. Use IRSA, Workload Identity, or Managed Identity—never static credentials in production.
-
-### ❌ Running Single Replica in Production
-One ESO pod is a single point of failure. Run 2-3 replicas with leader election for high availability.
-
-### ❌ No Monitoring on Sync Failures
-Secrets are critical infrastructure. Always alert on ExternalSecret sync errors—a failed sync can lead to outages during rotations.
-
-## Conclusion: The Right Tool for Modern Cloud-Native Teams
-
-External Secrets Operator represents a pragmatic middle ground in Kubernetes secret management. It's not as heavyweight as running Vault clusters, nor as limited as sealed secrets in Git. It leverages what cloud providers already do well (secret storage, encryption, audit) while giving you standard Kubernetes primitives (Secret objects) that work with existing tooling.
-
-For teams running workloads on EKS, GKE, or AKS, ESO is the natural choice: cloud-native identity, minimal overhead, production-proven, and open-source. OpenMCF's integration makes it even simpler—define your provider configuration, and we handle the installation, authentication setup, and best-practice defaults.
-
-The result? Developers reference secrets naturally via `secretKeyRef`, operations teams manage them in cloud provider UIs (or Terraform), and security teams get audit trails and rotation without custom infrastructure. Secret management that just works.
-
----
-
-**Further Reading**:
-- [External Secrets Operator Official Docs](https://kubernetes-external-secrets.io/)
-- [AWS Secrets Manager Integration Guide](https://kubernetes-external-secrets.io/latest/provider/aws-secrets-manager/)
-- [GCP Secret Manager Integration Guide](https://kubernetes-external-secrets.io/latest/provider/google-secrets-manager/)
-- [Azure Key Vault Integration Guide](https://kubernetes-external-secrets.io/latest/provider/azure-key-vault/)
-- [Multi-Tenancy Security Best Practices](https://kubernetes-external-secrets.io/latest/guides/security-best-practices/)
-
+- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — pre-create a namespace to reference via `valueFrom`
+- [KubernetesSecret](/docs/catalog/kubernetes/kubernetessecret) — manage Kubernetes Secrets directly when external secret stores are not needed
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — deploy arbitrary Helm charts if you need to customize the ESO installation beyond what this component offers

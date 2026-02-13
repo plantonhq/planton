@@ -109,16 +109,31 @@ const (
 	CloudResourceKind_AwsRoute53DnsRecord CloudResourceKind = 223
 	CloudResourceKind_AwsS3ObjectSet      CloudResourceKind = 224
 	// 400–599: Azure resources
-	CloudResourceKind_AzureAksCluster        CloudResourceKind = 400
-	CloudResourceKind_AzureAksNodePool       CloudResourceKind = 401
-	CloudResourceKind_AzureContainerRegistry CloudResourceKind = 402
-	CloudResourceKind_AzureDnsZone           CloudResourceKind = 403
-	CloudResourceKind_AzureKeyVault          CloudResourceKind = 404
-	CloudResourceKind_AzureVpc               CloudResourceKind = 405
-	CloudResourceKind_AzureNatGateway        CloudResourceKind = 406
-	CloudResourceKind_AzureVirtualMachine    CloudResourceKind = 407
-	CloudResourceKind_AzureStorageAccount    CloudResourceKind = 408
-	CloudResourceKind_AzureDnsRecord         CloudResourceKind = 409
+	CloudResourceKind_AzureResourceGroup            CloudResourceKind = 400
+	CloudResourceKind_AzureAksCluster               CloudResourceKind = 401
+	CloudResourceKind_AzureAksNodePool              CloudResourceKind = 402
+	CloudResourceKind_AzureContainerRegistry        CloudResourceKind = 403
+	CloudResourceKind_AzureDnsZone                  CloudResourceKind = 404
+	CloudResourceKind_AzureKeyVault                 CloudResourceKind = 405
+	CloudResourceKind_AzureVpc                      CloudResourceKind = 406
+	CloudResourceKind_AzureNatGateway               CloudResourceKind = 407
+	CloudResourceKind_AzureVirtualMachine           CloudResourceKind = 408
+	CloudResourceKind_AzureStorageAccount           CloudResourceKind = 409
+	CloudResourceKind_AzureDnsRecord                CloudResourceKind = 410
+	CloudResourceKind_AzureSubnet                   CloudResourceKind = 411
+	CloudResourceKind_AzureNetworkSecurityGroup     CloudResourceKind = 412
+	CloudResourceKind_AzurePublicIp                 CloudResourceKind = 413
+	CloudResourceKind_AzurePrivateEndpoint          CloudResourceKind = 414
+	CloudResourceKind_AzurePrivateDnsZone           CloudResourceKind = 415
+	CloudResourceKind_AzureApplicationGateway       CloudResourceKind = 416
+	CloudResourceKind_AzureLoadBalancer             CloudResourceKind = 417
+	CloudResourceKind_AzurePostgresqlFlexibleServer CloudResourceKind = 430
+	CloudResourceKind_AzureCosmosdbAccount          CloudResourceKind = 432
+	CloudResourceKind_AzureMssqlServer              CloudResourceKind = 433
+	CloudResourceKind_AzureMysqlFlexibleServer      CloudResourceKind = 434
+	CloudResourceKind_AzureLogAnalyticsWorkspace    CloudResourceKind = 450
+	CloudResourceKind_AzureApplicationInsights      CloudResourceKind = 451
+	CloudResourceKind_AzureUserAssignedIdentity     CloudResourceKind = 460
 	// 600–799: GCP resources
 	CloudResourceKind_GcpArtifactRegistryRepo       CloudResourceKind = 600
 	CloudResourceKind_GcpCloudCdn                   CloudResourceKind = 601
@@ -268,6 +283,24 @@ const (
 	CloudResourceKind_OpenStackDnsRecord                CloudResourceKind = 2522
 	CloudResourceKind_OpenStackContainerClusterTemplate CloudResourceKind = 2523
 	CloudResourceKind_OpenStackContainerCluster         CloudResourceKind = 2524
+	CloudResourceKind_ScalewayVpc                       CloudResourceKind = 2800
+	CloudResourceKind_ScalewayPrivateNetwork            CloudResourceKind = 2801
+	CloudResourceKind_ScalewayPublicGateway             CloudResourceKind = 2802
+	CloudResourceKind_ScalewayLoadBalancer              CloudResourceKind = 2803
+	CloudResourceKind_ScalewayInstanceSecurityGroup     CloudResourceKind = 2804
+	CloudResourceKind_ScalewayInstance                  CloudResourceKind = 2810
+	CloudResourceKind_ScalewayKapsuleCluster            CloudResourceKind = 2820
+	CloudResourceKind_ScalewayKapsulePool               CloudResourceKind = 2821
+	CloudResourceKind_ScalewayRdbInstance               CloudResourceKind = 2830
+	CloudResourceKind_ScalewayRedisCluster              CloudResourceKind = 2831
+	CloudResourceKind_ScalewayMongodbInstance           CloudResourceKind = 2832
+	CloudResourceKind_ScalewayObjectBucket              CloudResourceKind = 2840
+	CloudResourceKind_ScalewayBlockVolume               CloudResourceKind = 2841
+	CloudResourceKind_ScalewayContainerRegistry         CloudResourceKind = 2850
+	CloudResourceKind_ScalewayDnsZone                   CloudResourceKind = 2860
+	CloudResourceKind_ScalewayDnsRecord                 CloudResourceKind = 2861
+	CloudResourceKind_ScalewayServerlessFunction        CloudResourceKind = 2870
+	CloudResourceKind_ScalewayServerlessContainer       CloudResourceKind = 2871
 )
 
 // Enum value maps for CloudResourceKind.
@@ -305,16 +338,31 @@ var (
 		222:  "AwsDocumentDb",
 		223:  "AwsRoute53DnsRecord",
 		224:  "AwsS3ObjectSet",
-		400:  "AzureAksCluster",
-		401:  "AzureAksNodePool",
-		402:  "AzureContainerRegistry",
-		403:  "AzureDnsZone",
-		404:  "AzureKeyVault",
-		405:  "AzureVpc",
-		406:  "AzureNatGateway",
-		407:  "AzureVirtualMachine",
-		408:  "AzureStorageAccount",
-		409:  "AzureDnsRecord",
+		400:  "AzureResourceGroup",
+		401:  "AzureAksCluster",
+		402:  "AzureAksNodePool",
+		403:  "AzureContainerRegistry",
+		404:  "AzureDnsZone",
+		405:  "AzureKeyVault",
+		406:  "AzureVpc",
+		407:  "AzureNatGateway",
+		408:  "AzureVirtualMachine",
+		409:  "AzureStorageAccount",
+		410:  "AzureDnsRecord",
+		411:  "AzureSubnet",
+		412:  "AzureNetworkSecurityGroup",
+		413:  "AzurePublicIp",
+		414:  "AzurePrivateEndpoint",
+		415:  "AzurePrivateDnsZone",
+		416:  "AzureApplicationGateway",
+		417:  "AzureLoadBalancer",
+		430:  "AzurePostgresqlFlexibleServer",
+		432:  "AzureCosmosdbAccount",
+		433:  "AzureMssqlServer",
+		434:  "AzureMysqlFlexibleServer",
+		450:  "AzureLogAnalyticsWorkspace",
+		451:  "AzureApplicationInsights",
+		460:  "AzureUserAssignedIdentity",
 		600:  "GcpArtifactRegistryRepo",
 		601:  "GcpCloudCdn",
 		602:  "GcpCloudFunction",
@@ -454,6 +502,24 @@ var (
 		2522: "OpenStackDnsRecord",
 		2523: "OpenStackContainerClusterTemplate",
 		2524: "OpenStackContainerCluster",
+		2800: "ScalewayVpc",
+		2801: "ScalewayPrivateNetwork",
+		2802: "ScalewayPublicGateway",
+		2803: "ScalewayLoadBalancer",
+		2804: "ScalewayInstanceSecurityGroup",
+		2810: "ScalewayInstance",
+		2820: "ScalewayKapsuleCluster",
+		2821: "ScalewayKapsulePool",
+		2830: "ScalewayRdbInstance",
+		2831: "ScalewayRedisCluster",
+		2832: "ScalewayMongodbInstance",
+		2840: "ScalewayObjectBucket",
+		2841: "ScalewayBlockVolume",
+		2850: "ScalewayContainerRegistry",
+		2860: "ScalewayDnsZone",
+		2861: "ScalewayDnsRecord",
+		2870: "ScalewayServerlessFunction",
+		2871: "ScalewayServerlessContainer",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
@@ -488,16 +554,31 @@ var (
 		"AwsDocumentDb":                         222,
 		"AwsRoute53DnsRecord":                   223,
 		"AwsS3ObjectSet":                        224,
-		"AzureAksCluster":                       400,
-		"AzureAksNodePool":                      401,
-		"AzureContainerRegistry":                402,
-		"AzureDnsZone":                          403,
-		"AzureKeyVault":                         404,
-		"AzureVpc":                              405,
-		"AzureNatGateway":                       406,
-		"AzureVirtualMachine":                   407,
-		"AzureStorageAccount":                   408,
-		"AzureDnsRecord":                        409,
+		"AzureResourceGroup":                    400,
+		"AzureAksCluster":                       401,
+		"AzureAksNodePool":                      402,
+		"AzureContainerRegistry":                403,
+		"AzureDnsZone":                          404,
+		"AzureKeyVault":                         405,
+		"AzureVpc":                              406,
+		"AzureNatGateway":                       407,
+		"AzureVirtualMachine":                   408,
+		"AzureStorageAccount":                   409,
+		"AzureDnsRecord":                        410,
+		"AzureSubnet":                           411,
+		"AzureNetworkSecurityGroup":             412,
+		"AzurePublicIp":                         413,
+		"AzurePrivateEndpoint":                  414,
+		"AzurePrivateDnsZone":                   415,
+		"AzureApplicationGateway":               416,
+		"AzureLoadBalancer":                     417,
+		"AzurePostgresqlFlexibleServer":         430,
+		"AzureCosmosdbAccount":                  432,
+		"AzureMssqlServer":                      433,
+		"AzureMysqlFlexibleServer":              434,
+		"AzureLogAnalyticsWorkspace":            450,
+		"AzureApplicationInsights":              451,
+		"AzureUserAssignedIdentity":             460,
 		"GcpArtifactRegistryRepo":               600,
 		"GcpCloudCdn":                           601,
 		"GcpCloudFunction":                      602,
@@ -637,6 +718,24 @@ var (
 		"OpenStackDnsRecord":                    2522,
 		"OpenStackContainerClusterTemplate":     2523,
 		"OpenStackContainerCluster":             2524,
+		"ScalewayVpc":                           2800,
+		"ScalewayPrivateNetwork":                2801,
+		"ScalewayPublicGateway":                 2802,
+		"ScalewayLoadBalancer":                  2803,
+		"ScalewayInstanceSecurityGroup":         2804,
+		"ScalewayInstance":                      2810,
+		"ScalewayKapsuleCluster":                2820,
+		"ScalewayKapsulePool":                   2821,
+		"ScalewayRdbInstance":                   2830,
+		"ScalewayRedisCluster":                  2831,
+		"ScalewayMongodbInstance":               2832,
+		"ScalewayObjectBucket":                  2840,
+		"ScalewayBlockVolume":                   2841,
+		"ScalewayContainerRegistry":             2850,
+		"ScalewayDnsZone":                       2860,
+		"ScalewayDnsRecord":                     2861,
+		"ScalewayServerlessFunction":            2870,
+		"ScalewayServerlessContainer":           2871,
 	}
 )
 
@@ -781,7 +880,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xc2<\n" +
+	"\x02v1\x10\x01*\x8fH\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -821,20 +920,41 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\fAwsClientVpn\x10\xdd\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsvpn\x12#\n" +
 	"\rAwsDocumentDb\x10\xde\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05docdb\x12*\n" +
 	"\x13AwsRoute53DnsRecord\x10\xdf\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06r53rec\x12%\n" +
-	"\x0eAwsS3ObjectSet\x10\xe0\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06s3objs\x12#\n" +
-	"\x0fAzureAksCluster\x10\x90\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03aks\x12&\n" +
-	"\x10AzureAksNodePool\x10\x91\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05aksnp\x12*\n" +
-	"\x16AzureContainerRegistry\x10\x92\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03acr\x12\"\n" +
-	"\fAzureDnsZone\x10\x93\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azdns\x12\"\n" +
-	"\rAzureKeyVault\x10\x94\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\x0eAwsS3ObjectSet\x10\xe0\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06s3objs\x12'\n" +
+	"\x12AzureResourceGroup\x10\x90\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\r\x10\x01\"\x04azrg\x12#\n" +
+	"\x0fAzureAksCluster\x10\x91\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03aks\x12&\n" +
+	"\x10AzureAksNodePool\x10\x92\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05aksnp\x12*\n" +
+	"\x16AzureContainerRegistry\x10\x93\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03acr\x12\"\n" +
+	"\fAzureDnsZone\x10\x94\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azdns\x12\"\n" +
+	"\rAzureKeyVault\x10\x95\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azkv\x12\x1e\n" +
-	"\bAzureVpc\x10\x95\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azvpc\x12%\n" +
-	"\x0fAzureNatGateway\x10\x96\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05aznat\x12(\n" +
-	"\x13AzureVirtualMachine\x10\x97\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\bAzureVpc\x10\x96\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azvpc\x12%\n" +
+	"\x0fAzureNatGateway\x10\x97\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05aznat\x12(\n" +
+	"\x13AzureVirtualMachine\x10\x98\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azvm\x12(\n" +
-	"\x13AzureStorageAccount\x10\x98\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\x13AzureStorageAccount\x10\x99\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azsa\x12%\n" +
-	"\x0eAzureDnsRecord\x10\x99\x03\x1a\x10\xa2\xf7\x04\f\b\r\x10\x01\"\x06azdrec\x12.\n" +
+	"\x0eAzureDnsRecord\x10\x9a\x03\x1a\x10\xa2\xf7\x04\f\b\r\x10\x01\"\x06azdrec\x12!\n" +
+	"\vAzureSubnet\x10\x9b\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azsub\x12/\n" +
+	"\x19AzureNetworkSecurityGroup\x10\x9c\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05aznsg\x12#\n" +
+	"\rAzurePublicIp\x10\x9d\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azpip\x12)\n" +
+	"\x14AzurePrivateEndpoint\x10\x9e\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\r\x10\x01\"\x04azpe\x12*\n" +
+	"\x13AzurePrivateDnsZone\x10\x9f\x03\x1a\x10\xa2\xf7\x04\f\b\r\x10\x01\"\x06azpdns\x12-\n" +
+	"\x17AzureApplicationGateway\x10\xa0\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azagw\x12&\n" +
+	"\x11AzureLoadBalancer\x10\xa1\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\r\x10\x01\"\x04azlb\x122\n" +
+	"\x1dAzurePostgresqlFlexibleServer\x10\xae\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\r\x10\x01\"\x04azpg\x12*\n" +
+	"\x14AzureCosmosdbAccount\x10\xb0\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azcdb\x12'\n" +
+	"\x10AzureMssqlServer\x10\xb1\x03\x1a\x10\xa2\xf7\x04\f\b\r\x10\x01\"\x06azmsql\x120\n" +
+	"\x18AzureMysqlFlexibleServer\x10\xb2\x03\x1a\x11\xa2\xf7\x04\r\b\r\x10\x01\"\aazmysql\x120\n" +
+	"\x1aAzureLogAnalyticsWorkspace\x10\xc2\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azlaw\x12-\n" +
+	"\x18AzureApplicationInsights\x10\xc3\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\r\x10\x01\"\x04azai\x12.\n" +
+	"\x19AzureUserAssignedIdentity\x10\xcc\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\r\x10\x01\"\x04azid\x12.\n" +
 	"\x17GcpArtifactRegistryRepo\x10\xd8\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpart\x12\"\n" +
 	"\vGcpCloudCdn\x10\xd9\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpcdn\x12(\n" +
 	"\x10GcpCloudFunction\x10\xda\x04\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\acldfunc\x12\"\n" +
@@ -1001,7 +1121,25 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\b\x17\x10\x01\"\x04osdr\x127\n" +
 	"!OpenStackContainerClusterTemplate\x10\xdb\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05oscct\x12.\n" +
 	"\x19OpenStackContainerCluster\x10\xdc\x13\x1a\x0e\xa2\xf7\x04\n" +
-	"\b\x17\x10\x01\"\x04oscc:|\n" +
+	"\b\x17\x10\x01\"\x04oscc\x12\"\n" +
+	"\vScalewayVpc\x10\xf0\x15\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwvpc\x12,\n" +
+	"\x16ScalewayPrivateNetwork\x10\xf1\x15\x1a\x0f\xa2\xf7\x04\v\b\x18\x10\x01\"\x05scwpn\x12,\n" +
+	"\x15ScalewayPublicGateway\x10\xf2\x15\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwpgw\x12*\n" +
+	"\x14ScalewayLoadBalancer\x10\xf3\x15\x1a\x0f\xa2\xf7\x04\v\b\x18\x10\x01\"\x05scwlb\x123\n" +
+	"\x1dScalewayInstanceSecurityGroup\x10\xf4\x15\x1a\x0f\xa2\xf7\x04\v\b\x18\x10\x01\"\x05scwsg\x12(\n" +
+	"\x10ScalewayInstance\x10\xfa\x15\x1a\x11\xa2\xf7\x04\r\b\x18\x10\x01\"\ascwinst\x12-\n" +
+	"\x16ScalewayKapsuleCluster\x10\x84\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwk8s\x12*\n" +
+	"\x13ScalewayKapsulePool\x10\x85\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwknp\x12*\n" +
+	"\x13ScalewayRdbInstance\x10\x8e\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwrdb\x12+\n" +
+	"\x14ScalewayRedisCluster\x10\x8f\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwred\x12.\n" +
+	"\x17ScalewayMongodbInstance\x10\x90\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwmdb\x12+\n" +
+	"\x14ScalewayObjectBucket\x10\x98\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwbkt\x12*\n" +
+	"\x13ScalewayBlockVolume\x10\x99\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwblk\x12/\n" +
+	"\x19ScalewayContainerRegistry\x10\xa2\x16\x1a\x0f\xa2\xf7\x04\v\b\x18\x10\x01\"\x05scwcr\x12&\n" +
+	"\x0fScalewayDnsZone\x10\xac\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwdns\x12(\n" +
+	"\x11ScalewayDnsRecord\x10\xad\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwrec\x120\n" +
+	"\x1aScalewayServerlessFunction\x10\xb6\x16\x1a\x0f\xa2\xf7\x04\v\b\x18\x10\x01\"\x05scwfn\x122\n" +
+	"\x1bScalewayServerlessContainer\x10\xb7\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwscn:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

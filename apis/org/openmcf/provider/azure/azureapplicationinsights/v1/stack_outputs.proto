@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azureapplicationinsights.v1;
+
+// AzureApplicationInsightsStackOutputs contains the outputs from a deployed
+// Application Insights resource.
+//
+// These outputs are consumed by downstream resources such as AzureFunctionApp,
+// AzureLinuxWebApp, and AzureContainerApp to wire up APM telemetry.
+message AzureApplicationInsightsStackOutputs {
+  // The Azure Resource Manager ID of the Application Insights resource.
+  string app_insights_id = 1;
+
+  // The instrumentation key for classic SDK configuration.
+  // This is a sensitive value used by the Application Insights SDK to identify
+  // which resource to send telemetry to. While still functional, Microsoft
+  // recommends using the connection_string instead for new applications.
+  string instrumentation_key = 2;
+
+  // The connection string for SDK configuration.
+  // This is the recommended way to configure Application Insights SDKs.
+  // It contains the instrumentation key, ingestion endpoint, and other
+  // configuration in a single string.
+  // Referenced by: AzureFunctionApp, AzureLinuxWebApp, AzureContainerApp (via env var).
+  string connection_string = 3;
+
+  // The Application ID for API access.
+  // Used when programmatically querying Application Insights data via the
+  // Application Insights REST API.
+  string app_id = 4;
+}

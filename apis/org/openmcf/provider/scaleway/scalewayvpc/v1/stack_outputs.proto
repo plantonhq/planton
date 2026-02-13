@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway.scalewayvpc.v1;
+
+// ScalewayVpcStackOutputs captures the resulting VPC info after provisioning.
+message ScalewayVpcStackOutputs {
+  // The unique identifier (UUID) of the created Scaleway VPC.
+  // This is the primary output referenced by downstream resources
+  // (e.g., ScalewayPrivateNetwork) via StringValueOrRef.
+  string vpc_id = 1;
+}

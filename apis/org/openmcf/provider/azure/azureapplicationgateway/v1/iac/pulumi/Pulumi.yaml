@@ -1,0 +1,3 @@
+name: azure-application-gateway
+runtime: go
+description: Pulumi program for Azure Application Gateway

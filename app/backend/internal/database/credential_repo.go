@@ -408,6 +408,8 @@ func (r *CredentialRepository) FindFirstByProvider(ctx context.Context, provider
 		return convertToAuth0Credential(result)
 	case "openstack":
 		return convertToOpenStackCredential(result)
+	case "scaleway":
+		return convertToScalewayCredential(result)
 	default:
 		return nil, fmt.Errorf("unsupported provider: %s", provider)
 	}
@@ -755,6 +757,125 @@ func convertToOpenStackCredential(doc bson.M) (*models.OpenStackCredential, erro
 	}
 	if v, ok := doc["endpoint_type"].(string); ok {
 		cred.EndpointType = v
+	}
+
+	return cred, nil
+}
+
+// CreateScaleway creates a new Scaleway credential.
+func (r *CredentialRepository) CreateScaleway(ctx context.Context, cred *models.ScalewayCredential) (*models.ScalewayCredential, error) {
+	exists, err := r.ExistsByProvider(ctx, "scaleway")
+	if err != nil {
+		return nil, fmt.Errorf("failed to check for existing Scaleway credential: %w", err)
+	}
+	if exists {
+		return nil, fmt.Errorf("credential for provider 'scaleway' already exists")
+	}
+
+	now := time.Now()
+	cred.ID = primitive.NewObjectID()
+	cred.CreatedAt = now
+	cred.UpdatedAt = now
+
+	doc := bson.M{
+		"_id":        cred.ID,
+		"name":       cred.Name,
+		"provider":   "scaleway",
+		"access_key": cred.AccessKey,
+		"secret_key": cred.SecretKey,
+		"created_at": cred.CreatedAt,
+		"updated_at": cred.UpdatedAt,
+	}
+
+	setOptionalString(doc, "project_id", cred.ProjectID)
+	setOptionalString(doc, "organization_id", cred.OrganizationID)
+	setOptionalString(doc, "region", cred.Region)
+	setOptionalString(doc, "zone", cred.Zone)
+
+	_, err = r.collection.InsertOne(ctx, doc)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create Scaleway credential: %w", err)
+	}
+
+	return cred, nil
+}
+
+// UpdateScaleway updates an existing Scaleway credential.
+func (r *CredentialRepository) UpdateScaleway(ctx context.Context, id string, cred *models.ScalewayCredential) (*models.ScalewayCredential, error) {
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, fmt.Errorf("invalid ID format: %w", err)
+	}
+
+	now := time.Now()
+	setFields := bson.M{
+		"name":       cred.Name,
+		"access_key": cred.AccessKey,
+		"secret_key": cred.SecretKey,
+		"updated_at": now,
+	}
+
+	// Set all optional fields (overwrite with new values or empty)
+	setFields["project_id"] = cred.ProjectID
+	setFields["organization_id"] = cred.OrganizationID
+	setFields["region"] = cred.Region
+	setFields["zone"] = cred.Zone
+
+	update := bson.M{"$set": setFields}
+
+	result := r.collection.FindOneAndUpdate(ctx, bson.M{"_id": objectID, "provider": "scaleway"}, update)
+	if result.Err() == mongo.ErrNoDocuments {
+		return nil, fmt.Errorf("Scaleway credential with ID '%s' not found", id)
+	}
+	if result.Err() != nil {
+		return nil, fmt.Errorf("failed to update Scaleway credential: %w", result.Err())
+	}
+
+	doc, err := r.FindByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	if doc == nil {
+		return nil, fmt.Errorf("credential not found after update")
+	}
+
+	return convertToScalewayCredential(doc)
+}
+
+func convertToScalewayCredential(doc bson.M) (*models.ScalewayCredential, error) {
+	id, ok := doc["_id"].(primitive.ObjectID)
+	if !ok {
+		return nil, fmt.Errorf("invalid _id field")
+	}
+
+	var createdAt, updatedAt time.Time
+	if dt, ok := doc["created_at"].(primitive.DateTime); ok {
+		createdAt = dt.Time()
+	}
+	if dt, ok := doc["updated_at"].(primitive.DateTime); ok {
+		updatedAt = dt.Time()
+	}
+
+	cred := &models.ScalewayCredential{
+		ID:        id,
+		Name:      doc["name"].(string),
+		AccessKey: doc["access_key"].(string),
+		SecretKey: doc["secret_key"].(string),
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
+	}
+
+	if v, ok := doc["project_id"].(string); ok {
+		cred.ProjectID = v
+	}
+	if v, ok := doc["organization_id"].(string); ok {
+		cred.OrganizationID = v
+	}
+	if v, ok := doc["region"].(string); ok {
+		cred.Region = v
+	}
+	if v, ok := doc["zone"].(string); ok {
+		cred.Zone = v
 	}
 
 	return cred, nil

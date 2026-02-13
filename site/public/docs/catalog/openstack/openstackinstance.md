@@ -6,119 +6,249 @@ order: 100
 componentName: "openstackinstance"
 ---
 
-# OpenStackInstance -- Research Documentation
+# OpenStack Instance
 
-## Terraform Provider Analysis
+Deploys an OpenStack Compute instance with configurable flavor, image or boot-from-volume source, network attachments via network UUID or pre-provisioned port, and optional placement controls via server groups and availability zones.
 
-**Resource**: `openstack_compute_instance_v2`
-**Provider version**: v3.x (terraform-provider-openstack)
-**Source**: `openstack/resource_openstack_compute_instance_v2.go`
+## What Gets Created
 
-### Fields Included (15 of 30+)
+When you deploy an OpenStackInstance resource, OpenMCF provisions:
 
-| TF Field | OpenMCF Field | Type | Rationale |
-|----------|--------------|------|-----------|
-| `name` | `metadata.name` | string | Standard KRM pattern |
-| `flavor_name` | `flavor_name` | string | Primary flavor selection (human-readable) |
-| `flavor_id` | `flavor_id` | string | Alternative flavor selection (UUID) |
-| `image_name` | `image_name` | string | Primary image selection (name lookup) |
-| `image_id` | `image_id` | string | Alternative image selection (UUID) |
-| `key_pair` | `key_pair` | StringValueOrRef | FK to OpenStackKeypair for DAG ordering |
-| `network` | `networks` | repeated nested | Network attachment configuration |
-| `security_groups` | `security_groups` | repeated StringValueOrRef | FK to OpenStackSecurityGroup (names, not UUIDs) |
-| `block_device` | `block_device` | repeated nested | Boot-from-volume and additional storage |
-| `user_data` | `user_data` | string | Cloud-init configuration |
-| `metadata` | `metadata` | map | Instance metadata |
-| `config_drive` | `config_drive` | optional bool | Config drive toggle |
-| `scheduler_hints.group` | `server_group_id` | StringValueOrRef | FK to ServerGroup (flattened from nested block) |
-| `availability_zone` | `availability_zone` | string | AZ placement |
-| `tags` | `tags` | repeated string | Instance tags |
-| `region` | `region` | string | Region override |
+- **Compute Instance** — an `openstack_compute_instance_v2` resource with the specified flavor and image (or block device boot source), placed in the configured networks with attached security groups. When `blockDevice` entries are provided, the instance boots from persistent Cinder volumes instead of ephemeral image-based storage. When `serverGroupId` is set, scheduler hints control placement within the server group.
 
-### Fields Excluded (15+ of 30+)
+## Prerequisites
 
-| TF Field | Reason |
-|----------|--------|
-| `personality` | Deprecated in modern Nova; conflicts with cloud-init |
-| `admin_pass` | Sensitive field, not appropriate for declarative IaC |
-| `network_mode` | Niche ("auto"/"none"); replaced by requiring explicit networks |
-| `hypervisor_hostname` | Admin-only, conflicts with personality |
-| `force_delete` | Operational escape hatch |
-| `stop_before_destroy` | Operational lifecycle |
-| `power_state` | Default "active" is correct; managing power via IaC is risky |
-| `vendor_options` | Terraform-specific workaround block |
-| `availability_zone_hints` | Niche alternative to availability_zone |
-| `block_device.guest_format` | Low-level disk formatting |
-| `block_device.device_type` | Low-level device control |
-| `block_device.disk_bus` | Low-level bus selection |
-| `block_device.multiattach` | Shared volume (niche) |
-| `network.fixed_ip_v6` | IPv6 can be added later |
-| `scheduler_hints.different_host` | Admin-level scheduling |
-| `scheduler_hints.same_host` | Admin-level scheduling |
-| `scheduler_hints.query` | Admin-level scheduling |
-| `scheduler_hints.target_cell` | Admin-level scheduling |
-| `scheduler_hints.additional_properties` | Escape hatch |
+- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **At least one network** (a network UUID or a pre-provisioned port UUID) for the instance to attach to
+- **A flavor** (by name or UUID) available in the target OpenStack project
+- **A Glance image** (by name or UUID) if not booting from a block device volume
+- **An SSH keypair** registered in OpenStack if setting `keyPair`
+- **A server group** if using placement constraints via `serverGroupId`
 
-## Design Decisions
+## Quick Start
 
-### 1. Singular `server_group_id` instead of nested `scheduler_hints`
+Create a file `instance.yaml`:
 
-The TF provider nests `group` inside `scheduler_hints`, which has 8 fields. For the 80/20 spec, only `group` is needed. A flat `server_group_id` field:
-- Follows the FK naming convention
-- Produces cleaner YAML
-- The IaC modules map it to `scheduler_hints { group = ... }` internally
+```yaml
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackInstance
+metadata:
+  name: my-instance
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.OpenStackInstance.my-instance
+spec:
+  flavorName: m1.medium
+  imageName: ubuntu-22.04
+  networks:
+    - uuid: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
+```
 
-### 2. `security_groups` FK targets `status.outputs.name` (not UUID)
+Deploy:
 
-The Compute API (Nova) uses security group NAMES, unlike the Networking API (Neutron) which uses UUIDs. This is a well-known OpenStack API inconsistency. The FK resolves to the SecurityGroup component's `name` output.
+```shell
+openmcf apply -f instance.yaml
+```
 
-### 3. `key_pair` FK targets `status.outputs.name`
+This creates a compute instance with the `m1.medium` flavor, booted from the `ubuntu-22.04` Glance image, attached to the specified network.
 
-Similar to security_groups, the Compute API uses the keypair name (not UUID). The FK provides DAG ordering in InfraCharts while resolving to the correct name value.
+## Configuration Reference
 
-### 4. `image_id` and `image_name` as plain strings (not FK)
+### Required Fields
 
-OpenStackImage (2514) is Phase 4. Most instances reference pre-existing images by name. The FK would only be useful if an InfraChart creates both an Image and an Instance from it -- an extremely rare workflow. Plain strings keep this simple; FK can be added when the Image component is created if demand warrants it.
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `flavorName` | `string` | Human-readable name of the instance flavor (e.g., `m1.medium`). Mutually exclusive with `flavorId`. | Exactly one of `flavorName` or `flavorId` must be set |
+| `flavorId` | `string` | UUID of the instance flavor. Mutually exclusive with `flavorName`. | Exactly one of `flavorName` or `flavorId` must be set |
+| `networks` | `InstanceNetwork[]` | Network attachments for the instance. Each entry connects the instance to a network via UUID or a pre-provisioned port. | Minimum 1 item required |
+| `networks[].uuid` | `StringValueOrRef` | Network UUID to attach to. OpenStack auto-creates a port on this network. Can reference an OpenStackNetwork resource via `valueFrom`. Mutually exclusive with `port`. | Exactly one of `uuid` or `port` per network entry |
+| `networks[].port` | `StringValueOrRef` | UUID of a pre-provisioned port to attach. Use for stable MAC/IP addresses or port-level security groups. Can reference an OpenStackNetworkPort resource via `valueFrom`. Mutually exclusive with `uuid`. | Exactly one of `uuid` or `port` per network entry |
 
-### 5. Both `flavor_name` and `flavor_id` included
+### Optional Fields
 
-`flavor_name` is the 90% case (human-readable, what users type in Horizon). `flavor_id` serves automation workflows that reference flavors by UUID. CEL mutual exclusion keeps the spec clean.
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `imageName` | `string` | — | Name of the Glance image to boot from (e.g., `ubuntu-22.04`). Optional when using `blockDevice` with a boot volume. |
+| `imageId` | `string` | — | UUID of the Glance image to boot from. Alternative to `imageName`. Optional when using `blockDevice` with a boot volume. |
+| `keyPair` | `StringValueOrRef` | — | SSH keypair name to inject into the instance. Can reference an OpenStackKeypair resource via `valueFrom`. |
+| `securityGroups` | `StringValueOrRef[]` | default SG | Security group names to apply. Uses names, not UUIDs. Can reference OpenStackSecurityGroup resources via `valueFrom`. If omitted, OpenStack applies the default security group. |
+| `blockDevice` | `BlockDevice[]` | `[]` | Block device mappings for boot-from-volume or additional volumes at launch. |
+| `blockDevice[].sourceType` | `string` | — | Source type: `blank`, `image`, `snapshot`, or `volume`. Required per block device entry. |
+| `blockDevice[].uuid` | `string` | — | UUID of the source image, volume, or snapshot. Required unless `sourceType` is `blank`. |
+| `blockDevice[].destinationType` | `string` | `local` | Where the device is created: `local` (ephemeral) or `volume` (persistent Cinder volume). |
+| `blockDevice[].bootIndex` | `int` | `0` | Boot order: `0` = boot device, `-1` = not bootable, higher values = lower priority. |
+| `blockDevice[].volumeSize` | `int` | — | Size in GB. Required for image-to-volume and blank mappings. |
+| `blockDevice[].deleteOnTermination` | `bool` | `false` | When `true`, the volume is deleted when the instance terminates. |
+| `blockDevice[].volumeType` | `string` | — | Cinder volume type (e.g., `SSD`, `HDD`). Only applies when `destinationType` is `volume`. |
+| `networks[].fixedIpV4` | `string` | — | Specific IPv4 address to request on the network. Only applies when `uuid` is used, not `port`. |
+| `networks[].accessNetwork` | `bool` | `false` | Marks this network as the access network, determining which IP appears in the `access_ip_v4` output. |
+| `userData` | `string` | — | Cloud-init configuration or script for first boot. Base64-encoded before passing to the instance. ForceNew: changing this recreates the instance. |
+| `metadata` | `map<string, string>` | `{}` | Key-value pairs attached to the instance, visible in the OpenStack API. Can be updated without recreating the instance. |
+| `configDrive` | `bool` | — | Enables a config drive containing instance metadata and user data on a local read-only disk. ForceNew: changing this recreates the instance. |
+| `serverGroupId` | `StringValueOrRef` | — | Server group UUID for placement control. Maps to scheduler hints. Can reference an OpenStackServerGroup resource via `valueFrom`. ForceNew. |
+| `availabilityZone` | `string` | — | AZ where the instance launches (e.g., `nova`, `az1`). If omitted, Nova selects one. ForceNew. |
+| `tags` | `string[]` | `[]` | Tags for filtering and organization in the OpenStack API. Must be unique. |
+| `region` | `string` | provider default | Overrides the region from the provider config for this instance. |
 
-### 6. Required networks (min 1)
+## Examples
 
-Since `network_mode` is excluded, every instance needs explicit network configuration. Requiring at least one network prevents silent failures from missing network config.
+### Basic Instance with Image Boot
 
-### 7. Block device included despite complexity
+A minimal instance booted from a Glance image on a single network with an SSH keypair:
 
-Boot-from-volume is fundamental to production OpenStack usage (persistent root disks). 7 fields in the nested message is justified by the real-world importance of this feature.
+```yaml
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackInstance
+metadata:
+  name: web-server
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.OpenStackInstance.web-server
+spec:
+  flavorName: m1.small
+  imageName: ubuntu-22.04
+  keyPair: my-keypair
+  networks:
+    - uuid: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
+  securityGroups:
+    - web-sg
+```
 
-## Pulumi SDK Mapping
+### Boot from Volume
 
-| Proto Field | Pulumi Arg | Notes |
-|------------|------------|-------|
-| `flavor_name` | `FlavorName` | `StringPtr` |
-| `flavor_id` | `FlavorId` | `StringPtr` |
-| `image_name` | `ImageName` | `StringPtr` |
-| `image_id` | `ImageId` | `StringPtr` |
-| `key_pair` | `KeyPair` | `StringPtr` (resolved from FK) |
-| `networks` | `Networks` | `InstanceNetworkArray` |
-| `security_groups` | `SecurityGroups` | `StringArray` (resolved names) |
-| `block_device` | `BlockDevices` | `InstanceBlockDeviceArray` |
-| `user_data` | `UserData` | `StringPtr` |
-| `metadata` | `Metadata` | `StringMap` |
-| `config_drive` | `ConfigDrive` | `BoolPtr` |
-| `server_group_id` | `SchedulerHints[].Group` | Wrapped in scheduler hints |
-| `availability_zone` | `AvailabilityZone` | `StringPtr` |
-| `tags` | `Tags` | `StringArray` |
-| `region` | `Region` | `StringPtr` |
+An instance with a persistent 50 GB root disk created from a Glance image, recommended for production workloads where the root disk must survive instance rebuilds:
 
-## ForceNew Behavior
+```yaml
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackInstance
+metadata:
+  name: db-server
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.OpenStackInstance.db-server
+spec:
+  flavorName: m1.large
+  keyPair: ops-keypair
+  networks:
+    - uuid: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
+  securityGroups:
+    - db-sg
+  blockDevice:
+    - sourceType: image
+      uuid: 12345678-abcd-efgh-ijkl-123456789abc
+      destinationType: volume
+      bootIndex: 0
+      volumeSize: 50
+      deleteOnTermination: false
+      volumeType: SSD
+```
 
-Fields that recreate the instance on change:
-- `key_pair`, `networks` (all sub-fields), `user_data`, `config_drive`
-- `server_group_id` (scheduler_hints), `availability_zone`, `block_device` (all sub-fields)
-- `region`
+### Full-Featured Instance with Placement Controls
 
-Fields that update in-place:
-- `flavor_name`/`flavor_id` (resize), `security_groups`, `metadata`, `tags`
-- `image_name`/`image_id` (rebuild)
+Production instance with server group placement, cloud-init configuration, metadata, multiple networks, and a specific availability zone:
+
+```yaml
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackInstance
+metadata:
+  name: app-server-01
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.OpenStackInstance.app-server-01
+spec:
+  flavorName: m1.xlarge
+  imageName: ubuntu-22.04
+  keyPair: prod-keypair
+  availabilityZone: az1
+  configDrive: true
+  serverGroupId: 98765432-dcba-4321-fedc-ba9876543210
+  networks:
+    - uuid: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
+      accessNetwork: true
+    - uuid: 7d8e9f0a-1b2c-3d4e-5f6a-7b8c9d0e1f2a
+  securityGroups:
+    - app-sg
+    - monitoring-sg
+  userData: |
+    #cloud-config
+    packages:
+      - nginx
+      - prometheus-node-exporter
+    runcmd:
+      - systemctl enable nginx
+      - systemctl start nginx
+  metadata:
+    environment: production
+    team: platform
+  tags:
+    - production
+    - app-tier
+```
+
+### Using Foreign Key References
+
+Reference other OpenMCF-managed resources instead of hardcoding UUIDs:
+
+```yaml
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackInstance
+metadata:
+  name: ref-instance
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.OpenStackInstance.ref-instance
+spec:
+  flavorName: m1.medium
+  imageName: ubuntu-22.04
+  keyPair:
+    valueFrom:
+      kind: OpenStackKeypair
+      name: my-keypair
+      field: status.outputs.name
+  networks:
+    - uuid:
+        valueFrom:
+          kind: OpenStackNetwork
+          name: my-network
+          field: status.outputs.network_id
+  securityGroups:
+    - valueFrom:
+        kind: OpenStackSecurityGroup
+        name: app-sg
+        field: status.outputs.name
+  serverGroupId:
+    valueFrom:
+      kind: OpenStackServerGroup
+      name: anti-affinity-group
+      field: status.outputs.server_group_id
+```
+
+## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `instance_id` | `string` | UUID of the created compute instance |
+| `name` | `string` | Name of the instance, derived from `metadata.name` |
+| `access_ip_v4` | `string` | Best IPv4 address for accessing the instance, prioritizing the access network if one is marked |
+| `access_ip_v6` | `string` | Best IPv6 address for accessing the instance. Empty if the instance has no IPv6 connectivity. |
+| `region` | `string` | OpenStack region where the instance was created |
+
+## Related Components
+
+- [OpenStackNetwork](/docs/catalog/openstack/openstacknetwork) — provides the network for instance attachment
+- [OpenStackNetworkPort](/docs/catalog/openstack/openstacknetworkport) — provides pre-provisioned ports for stable network identity
+- [OpenStackKeypair](/docs/catalog/openstack/openstackkeypair) — manages the SSH keypair injected into the instance
+- [OpenStackSecurityGroup](/docs/catalog/openstack/openstacksecuritygroup) — controls inbound and outbound traffic rules
+- [OpenStackServerGroup](/docs/catalog/openstack/openstackservergroup) — defines placement policies (affinity/anti-affinity) for instance groups

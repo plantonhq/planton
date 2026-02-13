@@ -1,0 +1,4 @@
+name: scaleway-dns-zone
+runtime:
+  name: go
+description: Scaleway DNS Zone Pulumi module

@@ -1,6 +1,6 @@
 locals {
-  # Resource group name (derived from registry name)
-  resource_group_name = "rg-${var.spec.registry_name}"
+  # Resource group name (provided externally)
+  resource_group_name = var.spec.resource_group
 
   # Registry name
   registry_name = var.spec.registry_name

@@ -6,8 +6,8 @@ locals {
     : var.metadata.name
   )
 
-  # Generate resource names
-  resource_group_name = "rg-${var.metadata.name}"
+  # Resource group name (provided externally)
+  resource_group_name = var.spec.resource_group
   vnet_name           = "vnet-${var.metadata.name}"
   subnet_name         = "subnet-nodes-${var.metadata.name}"
   nat_gateway_name    = "natgw-${var.metadata.name}"

@@ -6,315 +6,380 @@ order: 100
 componentName: "awsecsservice"
 ---
 
-# AWS ECS Service Deployment: Filling the Vacuum Left by Copilot
+# AWS ECS Service
 
-## Introduction
+Deploys a Fargate-based ECS service with a task definition, optional ALB integration (path-based or hostname-based routing), CloudWatch logging, and target-tracking autoscaling. The component creates the task definition, ECS service, target group, listener rules, and scaling policies from a single manifest.
 
-The AWS Elastic Container Service (ECS) deployment landscape reveals a critical truth: developers don't want to be infrastructure assemblers. They want to define a *service*—an image, resource requirements, routing rules—and have the platform handle the intricate orchestration of task definitions, IAM roles, target groups, security policies, and load balancer rules.
+## What Gets Created
 
-AWS understood this. They built `ecs-cli` for high-level service abstractions, deprecated it, then replaced it with AWS Copilot—a more mature, opinionated CLI that generated clean CloudFormation and abstracted the entire workflow from Dockerfile to deployed service. On February 3, 2025, AWS officially ended support for Copilot.
+When you deploy an AwsEcsService resource, OpenMCF provisions:
 
-This deprecation created a vacuum. Developers who relied on Copilot's service-oriented simplicity are left with a choice: drop down to low-level CloudFormation/Terraform resource-by-resource definitions, or find an alternative that provides the same high-level abstraction without vendor abandonment risk.
+- **CloudWatch Log Group** — a `cloudwatch.LogGroup` named `/ecs/<serviceName>` with 30-day retention (created when logging is enabled, which is the default)
+- **ECS Task Definition** — an `ecs.TaskDefinition` configured for Fargate with `awsvpc` networking, the specified CPU/memory, container image, environment variables, secrets, S3 environment files, and optional IAM roles
+- **ECS Service** — an `ecs.Service` running the task definition on the specified cluster with the desired replica count and network configuration
+- **ALB Target Group** — an `lb.TargetGroup` of type `ip` (created only when `alb.enabled` is `true`) with configurable health check settings
+- **ALB Listener Rule** — an `lb.ListenerRule` for path-based or hostname-based routing (created only when `alb.enabled` is `true` and a routing type is specified)
+- **Auto Scaling Target** — an `appautoscaling.Target` for the ECS service (created only when `autoscaling.enabled` is `true`)
+- **CPU Scaling Policy** — an `appautoscaling.Policy` using `ECSServiceAverageCPUUtilization` target tracking (created when `autoscaling.targetCpuPercent` is set)
+- **Memory Scaling Policy** — an `appautoscaling.Policy` using `ECSServiceAverageMemoryUtilization` target tracking (created when `autoscaling.targetMemoryPercent` is set)
 
-OpenMCF fills this vacuum. It provides a stable, production-grade, service-oriented API for ECS deployment—one that learns from both the successes and failures of its predecessors.
+## Prerequisites
 
-## The ECS Abstraction Lifecycle: Understanding the Layers
+- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **An existing ECS cluster** (deploy with [AwsEcsCluster](/docs/catalog/aws/awsecscluster) or provide an ARN)
+- **At least one VPC subnet** for Fargate task placement
+- **A security group** allowing traffic to the container port
+- **An existing ALB** with a listener on the target port if enabling ALB integration (deploy with [AwsAlb](/docs/catalog/aws/awsalb))
+- **IAM roles** for task execution (image pull, log writes) and optional task role (AWS API access)
 
-ECS deployment methods have evolved through four distinct abstraction layers. Understanding this progression clarifies what OpenMCF is designed to be.
+## Quick Start
 
-### Layer 1: The Raw API
+Create a file `ecs-service.yaml`:
 
-At the foundation is the AWS SDK, exposing raw API calls like `create_service`. This is the "ground truth" of the ECS control plane—every tool must ultimately interact with this layer.
-
-**The Assembler Problem**: A single `create_service` call doesn't create a functional service. It *assembles* pre-existing resources. You must first create the cluster, task definition, IAM roles, subnets, security groups, and ALB target group, then pass their ARNs and IDs to wire everything together.
-
-**Verdict**: Essential for understanding the system, unsuitable for production workflows.
-
-### Layer 2: 1:1 Declarative Wrappers
-
-This layer includes AWS CloudFormation (`AWS::ECS::Service`) and Terraform/OpenTofu (`aws_ecs_service`). These tools provide state management and a direct 1:1 mapping to API concepts.
-
-**The Pattern**: Developers explicitly define every resource. A "simple" Fargate service requires verbose, separate definitions for:
-- TaskDefinition
-- TaskRole (for application AWS API permissions)
-- ExecutionRole (for ECS agent permissions to pull images, fetch secrets, write logs)
-- TargetGroup (for load balancer health checks)
-- ListenerRule (for routing traffic)
-- SecurityGroup (for network policies)
-
-The ARNs and IDs from these resources are then manually "wired" together within the main `aws_ecs_service` resource block.
-
-**Trade-offs**:
-- **Pros**: 100% API coverage, granular control, stable and widely adopted
-- **Cons**: Extremely verbose (200-500 lines for a simple service), high cognitive load, steep learning curve requiring deep expertise in ECS, IAM, and VPC networking
-
-**Verdict**: The current industry standard for production teams with dedicated platform engineering capacity. The foundation layer for higher-level abstractions.
-
-### Layer 3: High-Level Constructs
-
-This layer, exemplified by AWS CDK Patterns (`ApplicationLoadBalancedFargateService`) and Pulumi Crosswalk (`awsx.ecs.FargateService`), bundles multiple L2 resources into a single, service-oriented construct.
-
-**The Pattern**: Developers define a *single component* with high-level inputs like `image: "nginx"`, `cpu: 512`, and `memory: 1024`. The L3 construct automatically and implicitly generates all 5-10 ancillary L2 resources (ALB, Target Groups, Roles, Security Groups, Task Definition) with sensible, secure defaults.
-
-**Example** (Pulumi awsx):
-```typescript
-const service = new awsx.ecs.FargateService("my-service", {
-    cluster: cluster.arn,
-    taskDefinitionArgs: {
-        container: {
-            image: "nginx:latest",
-            cpu: 512,
-            memory: 1024,
-            portMappings: [{ containerPort: 80 }],
-        },
-    },
-});
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsEcsService
+metadata:
+  name: my-api
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AwsEcsService.my-api
+spec:
+  clusterArn: arn:aws:ecs:us-east-1:123456789012:cluster/my-cluster
+  container:
+    image:
+      repo: nginx
+      tag: latest
+    cpu: 256
+    memory: 512
+    port: 80
+  network:
+    subnets:
+      - subnet-0a1b2c3d4e5f00001
+      - subnet-0a1b2c3d4e5f00002
 ```
 
-This single declaration generates the entire stack: Task Definition, both IAM roles (with appropriate policies), Target Group, and wires them into the service configuration.
-
-**Trade-offs**:
-- **Pros**: Massive reduction in boilerplate, codifies best practices, low cognitive load
-- **Cons**: Opinionated (may not match 100% of edge cases), requires learning construct-specific patterns, CloudFormation synthesis can be slow (CDK)
-
-**Verdict**: The right abstraction for developer productivity. This is where AWS Copilot operated, and where OpenMCF aims.
-
-### Layer 4: Platform-Level Abstractions
-
-Tools like Crossplane Compositions and OpenMCF present a simplified, abstract "platform API" to developers, hiding even the L3 constructs.
-
-**The Vision**: A developer declares `AwsEcsService` with minimal, service-oriented fields. The platform handles everything: provisioning, networking, secrets management, observability, security policies—often enforcing organizational standards automatically.
-
-**Verdict**: The future for large organizations with dedicated platform teams building internal developer platforms (IDPs).
-
-## The Strategic Vacuum: Why Copilot's Deprecation Matters
-
-AWS's abandonment of Copilot is significant. It's not just the loss of a tool—it's the loss of AWS's official stance that *developers deserve service-oriented abstractions*.
-
-Copilot users are now faced with an unpleasant choice:
-1. **Regress to Layer 2**: Drop down to verbose Terraform or CloudFormation, becoming infrastructure assemblers again
-2. **Adopt Layer 3 CDK/Pulumi**: Learn a new imperative programming model, accept synthesis overhead, and manage state complexity
-3. **Build Custom Abstractions**: Invest significant engineering time to recreate what Copilot provided
-
-OpenMCF offers a fourth path: stable, declarative, service-oriented abstractions built on proven open-source foundations (Terraform/Pulumi), designed for production use, and free from vendor deprecation risk.
-
-## Production-Grade ECS: The Non-Negotiables
-
-A robust L3 abstraction must correctly handle the patterns and pitfalls that define production ECS deployments.
-
-### Compute: Fargate as the Sane Default
-
-**Fargate** is the serverless, default option. AWS manages the underlying compute infrastructure. Developers define `cpu` and `memory` for their task and pay per-second for those allocated resources.
-
-**When to Use Fargate**:
-- Spiky or unpredictable workloads
-- New or unproven workloads where utilization is unknown
-- Teams prioritizing operational simplicity over cost optimization
-- Workloads where compute utilization is below 60-80%
-
-**EC2 Launch Type**: The alternative model where developers manage a cluster of EC2 instances (via Auto Scaling Groups) that tasks are placed onto. This is only cost-effective for **sustained high-utilization workloads** where tasks can be densely "bin-packed" onto instances to achieve >80% utilization.
-
-**The Break-Even Point**: Analysis shows the cost break-even is between 60-85% EC2 utilization. Below this threshold, Fargate is cheaper. Achieving sustained >80% utilization in dynamic microservice environments is described as "more or less unachievable" in practice.
-
-**Savings Plans Revolution**: The old argument for EC2 was Reserved Instances (RIs). This is now obsolete. AWS Compute Savings Plans offer up to 66% discounts and apply *equally* to EC2, **Fargate**, and Lambda. This allows teams to choose Fargate for its operational benefits without cost penalty.
-
-**OpenMCF Approach**: Default to `FARGATE` launch type. Advanced users can override for specialized cases (GPU workloads, extreme cost optimization with proven high utilization).
-
-### Networking: The awsvpc Standard
-
-The `awsvpc` network mode is *required* for all Fargate tasks and is the production standard for EC2 tasks. Every task receives its own Elastic Network Interface (ENI).
-
-**Why This Matters**:
-1. **Per-Task Security**: Each task ENI can have its own Security Group, enabling granular, zero-trust network policies
-2. **No Port Conflicts**: Multiple copies of the same container can run on the same host without port collision
-3. **Service Discovery**: Prerequisite for seamless integration with AWS Cloud Map
-
-**Subnet Configuration**:
-- **Private Subnets** (Recommended): Tasks are secure and not directly exposed to the internet. They access the internet (to pull images, hit APIs) via a NAT Gateway. This is the 80% production use case.
-- **Public Subnets**: Used for tasks that need a public IP. **Critical**: `assignPublicIp: true` must be set, otherwise tasks cannot pull container images and deployments will fail.
-
-**OpenMCF Approach**: Treat `awsvpc` as the default. Require `subnets` and `security_groups` as essential configuration fields.
-
-### IAM: The Two-Role Model
-
-This is the single most confused concept for new ECS users. A production-ready abstraction must handle this correctly and intuitively.
-
-**Task Execution Role** (for the **ECS Agent**):
-- Grants permissions *to ECS itself* to perform actions *on your behalf* before the container starts
-- Required permissions:
-  - Pull images from ECR (`ecr:GetAuthorizationToken`, `ecr:BatchGetImage`)
-  - Fetch secrets (`secretsmanager:GetSecretValue`, `ssm:GetParameters`)
-  - Write logs (`logs:CreateLogStream`, `logs:PutLogEvents`)
-
-**Task Role** (for your **Application Container**):
-- Grants permissions *to your application code* to interact with other AWS services *after* it has started
-- Example permissions: `s3:GetObject`, `sqs:SendMessage`, `dynamodb:PutItem`
-
-**Common Anti-Pattern**: Granting application permissions (S3, DynamoDB) to the Task Execution Role. This is a security violation—the ECS agent should not have access to business data.
-
-**OpenMCF Approach**: Provide sensible defaults for Task Execution Role (ECR, logs, secrets). Expose Task Role ARN as an explicit field for users to attach application-specific policies.
-
-### Secret Management: The Right Way
-
-**Anti-Pattern**: Defining secrets in plain-text environment variables in infrastructure code. This hardcodes sensitive data into task definitions, IaC state files, and version control.
-
-**Best Practice**: Sensitive data *must* be stored in AWS Secrets Manager or Systems Manager (SSM) Parameter Store as encrypted SecureStrings.
-
-**The IaC Pattern**:
-1. Store the secret value in Secrets Manager/SSM (outside of IaC)
-2. In the task definition, reference the secret's ARN in a `secrets` block (not `environment`)
-3. Grant the **Task Execution Role** permission to `secretsmanager:GetSecretValue` or `ssm:GetParameters`
-4. ECS fetches the secret at runtime and injects it into the container as an environment variable
-
-**SSM vs. Secrets Manager**:
-- **Secrets Manager**: Use when automatic rotation, random generation, or cross-account sharing is required
-- **SSM Parameter Store (SecureString)**: Use for simpler key-value storage without rotation requirements
-
-**OpenMCF Approach**: Provide a dedicated `secrets` map accepting `{name: valueFrom ARN}` pairs. Automatically add required permissions to the auto-generated Task Execution Role.
-
-### Load Balancer Integration: The Single ALB Pattern
-
-The standard architecture for microservices on ECS is the **"Single ALB, Multiple Services"** pattern. This is cost-effective and simplifies routing.
-
-**Architecture**:
-1. **One Shared ALB**: A single Application Load Balancer for the entire environment (e.g., "production-alb")
-2. **One Shared Listener**: Typically HTTPS:443, configured with a wildcard SSL certificate
-3. **N Services**: Each microservice (users-service, orders-service, auth-service) is a separate ECS service
-4. **N Target Groups**: Each service gets its own Target Group tracking its task IPs
-5. **N Listener Rules**: The shared listener routes traffic based on path or hostname:
-   - Priority 10: IF `path == /users/*` → FORWARD to users-target-group
-   - Priority 20: IF `path == /orders/*` → FORWARD to orders-target-group
-   - Priority 30: IF `host == auth.example.com` → FORWARD to auth-target-group
-
-**Critical Configuration**: `healthCheckGracePeriodSeconds` prevents a common deployment failure race condition:
-1. ECS starts a new task. Container state becomes `RUNNING`.
-2. Application inside is still booting (may take 30-60 seconds for Spring Boot, JVM apps).
-3. ALB health check pings the task before it's ready.
-4. Health check fails → ALB marks task Unhealthy → ECS kills the task → deployment fails.
-
-**Solution**: Set `healthCheckGracePeriodSeconds` (e.g., 60-120 seconds) to instruct ECS to ignore ALB health status during initial boot.
-
-**OpenMCF Approach**: The `AwsEcsService` resource should *not* create the shared ALB or Listener. It takes the listener ARN as input and creates *only* the Target Group and Listener Rule. Default `healthCheckGracePeriodSeconds` to 60.
-
-### CI/CD: The GitOps Pattern for Image Updates
-
-A critical integration point: how does an ECS service, defined in IaC, get updated when a new Docker image is built?
-
-**Anti-Pattern 1: The :latest Tag**: Using `image: "my-app:latest"` breaks deployments and rollbacks. ECS/IaC sees no change (the string is identical) even if the ECR image has updated. Rollbacks fail because the previous task definition also points to `:latest`.
-
-**Anti-Pattern 2: The CLI Push**: App CI runs `aws ecs update-service --force-new-deployment`. This creates state drift—the live environment no longer matches the Git-defined state. The next `terraform apply` may revert the deployment.
-
-**Recommended Pattern: The IaC Pull (GitOps)**:
-1. App CI builds and pushes `my-app:git-sha-12345`
-2. App CI opens a PR to the *IaC repo*, updating a variable: `image_tag = "git-sha-12345"`
-3. Change is reviewed, merged, and triggers the IaC pipeline
-4. Terraform/Pulumi sees a diff in the task definition and performs a safe, state-managed rolling deployment
-
-**Alternative Pattern: The Data Source Pull**:
-1. IaC uses a data source to query ECR for the digest of a stable tag (e.g., `stable`)
-2. Task definition references the immutable digest
-3. App CI's job is to push the new image and re-tag `stable` to its digest
-4. Next IaC pipeline run fetches the new digest, forcing a diff and deployment
-
-**OpenMCF Approach**: Support both patterns. Provide `container.image.repo` and `container.image.tag` fields for explicit tagging (GitOps pattern). Document the data source pattern for advanced users.
-
-### Observability: Logs, Metrics, and Traces
-
-A production service is blind without observability.
-
-**Logging**: The `awslogs` log driver is the standard. L3 abstractions should automatically create a CloudWatch Log Group (e.g., `/ecs/{service-name}`) and configure the task definition to send container stdout/stderr to it.
-
-**Metrics (Container Insights)**: Provides cluster, service, and task-level metrics for CPU, memory, network, and disk. It is *not* enabled by default and must be explicitly enabled at the **cluster level**.
-
-**Tracing (X-Ray)**: The standard pattern uses the AWS Distro for OpenTelemetry (ADOT) collector deployed as a *sidecar container* in the same task. The application container sends traces to the sidecar, which forwards them to X-Ray. This requires:
-1. Adding the ADOT container definition to the task
-2. Adding `AWSXrayWriteOnlyAccess` managed policy to the **Task Role**
-
-**OpenMCF Approach**: Auto-create CloudWatch Log Groups by default. Document Container Insights and ADOT as opt-in production enhancements.
-
-### Auto Scaling: Target Tracking
-
-The modern, recommended pattern for service scaling is **Target Tracking Scaling**.
-
-**How It Works**: Developers define a minimum and maximum task count and a target metric (typically `cpu_utilization: 75%` or `memory_utilization: 75%`). AWS Application Auto Scaling automatically creates CloudWatch Alarms to scale the service's `desired_count` up or down to maintain the target.
-
-**Behavior**: Designed for availability—scales out aggressively and quickly, scales in conservatively and gradually.
-
-**OpenMCF Approach**: Expose a simple `autoscaling` block accepting `min_tasks`, `max_tasks`, `target_cpu_percent`, and optionally `target_memory_percent`.
-
-### Cost Optimization: The Hidden Drivers
-
-The compute cost (Fargate/EC2) is often not the dominant expense. Production architectures must account for:
-
-**NAT Gateway**: A major, often unexpected cost. Billed per-hour and per-GB processed. A private Fargate task must route through a NAT Gateway to pull images from ECR or hit external APIs.
-- **Mitigation**: Use **VPC Endpoints** (Interface) for ECR, S3, Secrets Manager, and CloudWatch Logs. Tasks access these services over the AWS internal network, bypassing the NAT Gateway entirely.
-
-**Cross-AZ Data Transfer**: Traffic between Availability Zones is billed (~$0.01-0.02/GB). Chatty microservices across AZs can generate significant costs.
-
-**CloudWatch Logs**: Billed per-GB ingested (~$0.50/GB). Verbose logging at scale can cost thousands.
-- **Mitigation**: Set log levels to INFO/WARN in production, use log sampling
-
-**ELB**: ALBs/NLBs are billed per-hour and per-LCU (a unit of traffic/connections).
-- **Mitigation**: Share ALBs across services (Single ALB, Multiple Services pattern)
-
-## What OpenMCF Supports
-
-OpenMCF provides a service-oriented API for deploying Fargate-based ECS services into existing clusters. The design follows the 80/20 principle: make the common case simple while making the advanced case possible.
-
-### Design Philosophy: Service-First, Not Infrastructure-First
-
-The core insight from the research is clear: developers want to define *services*, not assemble infrastructure components. OpenMCF's `AwsEcsServiceSpec` reflects this philosophy.
-
-**Essential Fields (The 80% Case)**:
-- `cluster_arn`: The ECS cluster to deploy into
-- `container.image.repo` and `container.image.tag`: The Docker image
-- `container.port`: The port to expose for load balancing
-- `container.cpu` and `container.memory`: Task-level resource requirements
-- `container.replicas`: Number of tasks to run
-- `network.subnets` and `network.security_groups`: The awsvpc configuration
-- `alb.arn`, `alb.routing_type` (path or hostname), `alb.path` or `alb.hostname`: How to route traffic from the shared ALB
-
-**Common Fields (The 19% Case)**:
-- `container.env.variables`: Plain-text environment variables
-- `container.env.secrets`: Secure secret injection from Secrets Manager/SSM
-- `container.env.s3_files`: Environment files from S3
-- `container.logging.enabled`: Auto-create CloudWatch Log Groups (default: true)
-- `iam.task_execution_role_arn` and `iam.task_role_arn`: Override auto-generated IAM roles
-- `alb.health_check`: Customize ALB target group health check settings
-- `alb.listener_priority`: Control listener rule priority
-
-**Advanced Fields (The 1% Case)**: Not yet exposed, reserved for future needs:
-- Launch type override (EC2)
-- Capacity provider strategies (Fargate + Fargate Spot blends)
-- Placement constraints (EC2-only)
-- Service discovery / service mesh integration
-- Sidecar containers (ADOT, Envoy)
-- Blue/Green deployments (CODE_DEPLOY controller)
-
-### Current Implementation Patterns
-
-**Fargate-First**: The implementation defaults to Fargate. No EC2 cluster management overhead.
-
-**Shared ALB Integration**: The API assumes a shared ALB pattern. Users provide the ALB ARN and routing configuration (path-based or hostname-based). OpenMCF creates the Target Group and Listener Rule.
-
-**Secure Secrets Management**: Secrets are configured separately from plain-text environment variables, ensuring proper IAM permissions and runtime injection.
-
-**Automatic Logging**: CloudWatch Log Groups are auto-created unless explicitly disabled, codifying the production standard.
-
-### Multi-Environment Best Practice
-
-Following AWS best practices, OpenMCF encourages separate ECS clusters for each environment:
-- `dev-cluster` → Development services
-- `staging-cluster` → Staging services
-- `prod-cluster` → Production services
-
-Each environment references a different `cluster_arn`, providing complete isolation for resources, security policies, and cost allocation.
-
-## Conclusion: The Service-Oriented Future
-
-AWS ECS deployment has evolved through four abstraction layers: from raw API calls to 1:1 declarative resources to high-level constructs to platform-level abstractions. AWS's own opinionated tooling (ecs-cli, Copilot) attempted to provide Layer 3 abstractions but were ultimately deprecated, leaving a vacuum for teams seeking service-oriented simplicity.
-
-OpenMCF fills this vacuum with a production-grade, declarative API that makes deploying ECS services feel like deploying to a platform—not like assembling infrastructure components. By codifying best practices (Fargate defaults, awsvpc networking, secure secret management, shared ALB patterns, automatic logging), OpenMCF helps teams avoid common pitfalls and deploy production-ready services with confidence.
-
-The paradigm shift is clear: developers should define *what* they want to run (a service), not *how* to wire together the dozen resources required to run it. OpenMCF provides that abstraction—stable, open-source, and built on the proven foundations of Terraform and Pulumi.
-
+Deploy:
+
+```shell
+openmcf apply -f ecs-service.yaml
+```
+
+This creates a single-replica Fargate service running nginx with CloudWatch logging enabled by default.
+
+## Configuration Reference
+
+### Required Fields
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `clusterArn` | `StringValueOrRef` | ARN of the ECS cluster where this service runs. Can reference an AwsEcsCluster resource via `valueFrom`. | Required |
+| `clusterArn.value` | `string` | Direct cluster ARN value | — |
+| `clusterArn.valueFrom` | `object` | Foreign key reference | Default kind: `AwsEcsCluster`, field: `status.outputs.cluster_arn` |
+| `container.cpu` | `int32` | vCPU units for the task. Valid Fargate values: 256, 512, 1024, 2048, 4096. | Required |
+| `container.memory` | `int32` | Memory in MiB for the task. Valid values depend on CPU (e.g., 256 CPU supports 512-2048 MiB). | Required |
+| `network.subnets` | `StringValueOrRef[]` | VPC subnet IDs for Fargate task placement. Can reference AwsVpc resources via `valueFrom`. | Required, at least 1 item |
+
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `container.image.repo` | `string` | `""` | Container image repository (e.g., `nginx`, `123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app`). |
+| `container.image.tag` | `string` | `""` | Container image tag (e.g., `latest`, `v1.2.3`). |
+| `container.port` | `int32` | `0` | Container port to expose. Omit for background workers that do not receive inbound traffic. |
+| `container.replicas` | `int32` | `1` | Number of task replicas. Higher values improve availability at increased cost. |
+| `container.env.variables` | `map<string,string>` | `{}` | Environment variables injected into the container as key-value pairs. |
+| `container.env.secrets` | `map<string,string>` | `{}` | Secret values injected as environment variables. Values can be plaintext or ARN references to Secrets Manager / SSM Parameter Store. |
+| `container.env.s3Files` | `string[]` | `[]` | S3 URIs loaded as environment files via the ECS `environmentFiles` feature. Must be unique. |
+| `container.logging.enabled` | `bool` | `true` | Auto-creates a CloudWatch Log Group at `/ecs/<serviceName>` with 30-day retention and configures the `awslogs` driver. |
+| `network.securityGroups` | `StringValueOrRef[]` | `[]` | Security group IDs for task ENIs. Can reference AwsSecurityGroup resources via `valueFrom`. |
+| `iam.taskExecutionRoleArn` | `StringValueOrRef` | — | IAM role for ECS to pull images and write logs. Can reference an AwsIamRole resource via `valueFrom`. |
+| `iam.taskRoleArn` | `StringValueOrRef` | — | IAM role the container assumes for AWS API calls. Can reference an AwsIamRole resource via `valueFrom`. |
+| `alb.enabled` | `bool` | `false` | Attaches the service to an ALB via a target group and listener rule. |
+| `alb.arn` | `StringValueOrRef` | — | ARN of the ALB. Required when `alb.enabled` is `true`. Can reference an AwsAlb resource via `valueFrom`. |
+| `alb.routingType` | `string` | — | Routing mode. Valid values: `path`, `hostname`. |
+| `alb.path` | `string` | `""` | URL path pattern for routing (e.g., `/api/*`). Required when `routingType` is `path`. |
+| `alb.hostname` | `string` | `""` | Hostname for routing (e.g., `api.example.com`). Required when `routingType` is `hostname`. |
+| `alb.listenerPort` | `int32` | `80` | Port on the ALB listener to attach the rule to. |
+| `alb.listenerPriority` | `int32` | `100` | Priority of the listener rule. Lower numbers have higher priority. Must be unique per ALB. |
+| `alb.healthCheck.protocol` | `string` | `HTTP` | Health check protocol. Valid values: `HTTP`, `HTTPS`, `TCP`. |
+| `alb.healthCheck.path` | `string` | `/` | Health check path (HTTP/HTTPS only). |
+| `alb.healthCheck.port` | `string` | `traffic-port` | Health check port. Use `traffic-port` or an explicit port number as a string. |
+| `alb.healthCheck.interval` | `int32` | `30` | Seconds between health checks. |
+| `alb.healthCheck.timeout` | `int32` | `5` | Seconds before a health check times out. |
+| `alb.healthCheck.healthyThreshold` | `int32` | `5` | Consecutive successes before a target is considered healthy. |
+| `alb.healthCheck.unhealthyThreshold` | `int32` | `2` | Consecutive failures before a target is considered unhealthy. |
+| `healthCheckGracePeriodSeconds` | `int32` | `60` | Seconds ECS ignores ALB health check failures during container startup. Only applies when `alb.enabled` is `true`. |
+| `autoscaling.enabled` | `bool` | `false` | Enables target-tracking autoscaling for the service. |
+| `autoscaling.minTasks` | `int32` | — | Minimum number of tasks. Must be >= 1. Required when autoscaling is enabled. |
+| `autoscaling.maxTasks` | `int32` | — | Maximum number of tasks. Must be >= 1 and >= `minTasks`. Required when autoscaling is enabled. |
+| `autoscaling.targetCpuPercent` | `int32` | `75` | Target average CPU utilization percentage (1-100). Scaling out occurs when CPU exceeds this threshold. |
+| `autoscaling.targetMemoryPercent` | `int32` | — | Target average memory utilization percentage (1-100). Optional; most services scale on CPU alone. |
+
+## Examples
+
+### Background Worker (No Ingress)
+
+A background processing service with no exposed port and no ALB:
+
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsEcsService
+metadata:
+  name: queue-worker
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AwsEcsService.queue-worker
+spec:
+  clusterArn: arn:aws:ecs:us-east-1:123456789012:cluster/my-cluster
+  container:
+    image:
+      repo: 123456789012.dkr.ecr.us-east-1.amazonaws.com/worker
+      tag: v1.0.0
+    cpu: 512
+    memory: 1024
+    replicas: 2
+    env:
+      variables:
+        QUEUE_URL: https://sqs.us-east-1.amazonaws.com/123456789012/my-queue
+        WORKER_CONCURRENCY: "10"
+  network:
+    subnets:
+      - subnet-private-az1
+      - subnet-private-az2
+    securityGroups:
+      - sg-worker
+  iam:
+    taskExecutionRoleArn: arn:aws:iam::123456789012:role/ecsTaskExecutionRole
+    taskRoleArn: arn:aws:iam::123456789012:role/workerTaskRole
+```
+
+### Service with Path-Based ALB Routing
+
+An API service fronted by an ALB using path-based routing:
+
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsEcsService
+metadata:
+  name: api-service
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AwsEcsService.api-service
+spec:
+  clusterArn: arn:aws:ecs:us-east-1:123456789012:cluster/prod-cluster
+  container:
+    image:
+      repo: 123456789012.dkr.ecr.us-east-1.amazonaws.com/api
+      tag: v2.1.0
+    cpu: 1024
+    memory: 2048
+    port: 8080
+    replicas: 3
+  network:
+    subnets:
+      - subnet-private-az1
+      - subnet-private-az2
+    securityGroups:
+      - sg-api
+  iam:
+    taskExecutionRoleArn: arn:aws:iam::123456789012:role/ecsTaskExecutionRole
+  alb:
+    enabled: true
+    arn: arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/app/prod-alb/1234567890
+    routingType: path
+    path: /api/*
+    listenerPort: 80
+    listenerPriority: 10
+    healthCheck:
+      protocol: HTTP
+      path: /health
+      interval: 15
+      timeout: 5
+      healthyThreshold: 3
+      unhealthyThreshold: 2
+  healthCheckGracePeriodSeconds: 90
+```
+
+### Service with Hostname-Based ALB Routing
+
+A web application routed by hostname through an ALB:
+
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsEcsService
+metadata:
+  name: web-app
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AwsEcsService.web-app
+spec:
+  clusterArn: arn:aws:ecs:us-east-1:123456789012:cluster/prod-cluster
+  container:
+    image:
+      repo: 123456789012.dkr.ecr.us-east-1.amazonaws.com/web
+      tag: v3.0.0
+    cpu: 512
+    memory: 1024
+    port: 3000
+    replicas: 2
+  network:
+    subnets:
+      - subnet-private-az1
+      - subnet-private-az2
+    securityGroups:
+      - sg-web
+  alb:
+    enabled: true
+    arn: arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/app/prod-alb/1234567890
+    routingType: hostname
+    hostname: app.example.com
+    listenerPort: 80
+```
+
+### Service with Autoscaling
+
+A service that scales between 2 and 10 replicas based on CPU utilization:
+
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsEcsService
+metadata:
+  name: scalable-api
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AwsEcsService.scalable-api
+spec:
+  clusterArn: arn:aws:ecs:us-east-1:123456789012:cluster/prod-cluster
+  container:
+    image:
+      repo: 123456789012.dkr.ecr.us-east-1.amazonaws.com/api
+      tag: v2.5.0
+    cpu: 1024
+    memory: 2048
+    port: 8080
+    replicas: 2
+  network:
+    subnets:
+      - subnet-private-az1
+      - subnet-private-az2
+    securityGroups:
+      - sg-api
+  iam:
+    taskExecutionRoleArn: arn:aws:iam::123456789012:role/ecsTaskExecutionRole
+  alb:
+    enabled: true
+    arn: arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/app/prod-alb/1234567890
+    routingType: hostname
+    hostname: api.example.com
+    listenerPort: 80
+    healthCheck:
+      protocol: HTTP
+      path: /health
+  autoscaling:
+    enabled: true
+    minTasks: 2
+    maxTasks: 10
+    targetCpuPercent: 70
+    targetMemoryPercent: 80
+```
+
+### Using Foreign Key References
+
+Reference other OpenMCF-managed resources instead of hardcoding ARNs and IDs:
+
+```yaml
+apiVersion: aws.openmcf.org/v1
+kind: AwsEcsService
+metadata:
+  name: ref-service
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AwsEcsService.ref-service
+spec:
+  clusterArn:
+    valueFrom:
+      kind: AwsEcsCluster
+      name: prod-cluster
+      field: status.outputs.cluster_arn
+  container:
+    image:
+      repo: 123456789012.dkr.ecr.us-east-1.amazonaws.com/app
+      tag: v1.0.0
+    cpu: 512
+    memory: 1024
+    port: 8080
+  network:
+    subnets:
+      - valueFrom:
+          kind: AwsVpc
+          name: prod-vpc
+          field: status.outputs.private_subnets[0].id
+      - valueFrom:
+          kind: AwsVpc
+          name: prod-vpc
+          field: status.outputs.private_subnets[1].id
+    securityGroups:
+      - valueFrom:
+          kind: AwsSecurityGroup
+          name: app-sg
+          field: status.outputs.security_group_id
+  iam:
+    taskExecutionRoleArn:
+      valueFrom:
+        kind: AwsIamRole
+        name: ecs-exec-role
+        field: status.outputs.role_arn
+    taskRoleArn:
+      valueFrom:
+        kind: AwsIamRole
+        name: app-task-role
+        field: status.outputs.role_arn
+  alb:
+    enabled: true
+    arn:
+      valueFrom:
+        kind: AwsAlb
+        name: prod-alb
+        field: status.outputs.load_balancer_arn
+    routingType: hostname
+    hostname: app.example.com
+    listenerPort: 80
+```
+
+## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `aws_ecs_service_name` | `string` | Name of the created ECS service |
+| `ecs_cluster_name` | `string` | Cluster ARN/name the service is deployed in |
+| `load_balancer_dns_name` | `string` | DNS name of the ALB (empty if ALB is not enabled) |
+| `service_url` | `string` | External URL constructed from `alb.hostname` when hostname routing is used (empty otherwise) |
+| `service_discovery_name` | `string` | Internal DNS name if service discovery is configured |
+| `cloudwatch_log_group_name` | `string` | Name of the CloudWatch log group (e.g., `/ecs/my-api`) |
+| `cloudwatch_log_group_arn` | `string` | ARN of the CloudWatch log group |
+| `service_arn` | `string` | ARN of the ECS service |
+| `target_group_arn` | `string` | ARN of the ALB target group (empty if ALB is not enabled) |
+
+## Related Components
+
+- [AwsEcsCluster](/docs/catalog/aws/awsecscluster) — provides the cluster where this service runs
+- [AwsAlb](/docs/catalog/aws/awsalb) — provides the Application Load Balancer for ingress traffic
+- [AwsVpc](/docs/catalog/aws/awsvpc) — provides subnets for Fargate task placement
+- [AwsSecurityGroup](/docs/catalog/aws/awssecuritygroup) — controls network access to task ENIs
+- [AwsIamRole](/docs/catalog/aws/awsiamrole) — provides task execution and task roles
+- [AwsEcrRepo](/docs/catalog/aws/awsecrrepo) — hosts container images deployed by this service

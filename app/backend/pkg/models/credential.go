@@ -142,6 +142,21 @@ type OpenStackCredential struct {
 	UpdatedAt    time.Time `bson:"updated_at" json:"updated_at"`
 }
 
+// ScalewayCredential represents Scaleway credentials.
+// Uses a flat access key / secret key authentication model.
+type ScalewayCredential struct {
+	ID             primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	Name           string             `bson:"name" json:"name"`
+	AccessKey      string             `bson:"access_key" json:"access_key"`
+	SecretKey      string             `bson:"secret_key" json:"secret_key"`
+	ProjectID      string             `bson:"project_id,omitempty" json:"project_id,omitempty"`
+	OrganizationID string             `bson:"organization_id,omitempty" json:"organization_id,omitempty"`
+	Region         string             `bson:"region,omitempty" json:"region,omitempty"`
+	Zone           string             `bson:"zone,omitempty" json:"zone,omitempty"`
+	CreatedAt      time.Time          `bson:"created_at" json:"created_at"`
+	UpdatedAt      time.Time          `bson:"updated_at" json:"updated_at"`
+}
+
 // KubernetesCredential represents Kubernetes cluster credentials.
 type KubernetesCredential struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty" json:"id"`

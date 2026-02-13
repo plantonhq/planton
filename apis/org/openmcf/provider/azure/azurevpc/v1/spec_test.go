@@ -7,7 +7,12 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
+
+func stringRef(s string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: s}}
+}
 
 func TestAzureVpcSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
@@ -27,6 +32,8 @@ var _ = ginkgo.Describe("AzureVpcSpec Custom Validation Tests", func() {
 						Name: "test-vpc",
 					},
 					Spec: &AzureVpcSpec{
+						Region:           "eastus",
+						ResourceGroup:    stringRef("test-rg"),
 						AddressSpaceCidr: "10.0.0.0/16",
 						NodesSubnetCidr:  "10.0.0.0/18",
 					},

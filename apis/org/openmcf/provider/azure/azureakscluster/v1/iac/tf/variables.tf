@@ -16,6 +16,7 @@ variable "spec" {
   type = object({
     # Required fields
     region         = string
+    resource_group = string
     vnet_subnet_id = string
 
     # Kubernetes version

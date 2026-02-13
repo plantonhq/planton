@@ -43,5 +43,10 @@ export const providerConfig: Record<Credential_CredentialProvider, ProviderConfi
     description: 'Link your OpenStack cloud to deploy compute, networking, and storage resources',
     icon: undefined,
   },
+  [Credential_CredentialProvider.SCALEWAY]: {
+    label: 'Scaleway',
+    description: 'Link your Scaleway account to deploy cloud infrastructure',
+    icon: undefined,
+  },
 };
 

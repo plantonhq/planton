@@ -1,572 +1,234 @@
 ---
 title: "CLI Reference"
-description: "Complete command-line reference for openmcf CLI - all commands, flags, and options"
-icon: "terminal"
-order: 1
+description: "Complete command tree, flag reference, and exit codes for the openmcf CLI"
+icon: "code"
+order: 20
 ---
 
 # CLI Reference
 
-Complete command-line reference for the `openmcf` CLI.
-
----
+This page is the single authoritative reference for every command, flag, and option in the `openmcf` CLI. Other CLI documentation pages link here for flag details.
 
 ## Command Tree
 
+The complete command tree, verified against source. Commands are grouped by purpose.
+
 ```
 openmcf
-├── apply               Deploy infrastructure (unified, auto-detects provisioner)
-├── destroy             Teardown infrastructure (or 'delete')
-├── init                Initialize backend/stack (unified, auto-detects provisioner)
-├── plan                Preview changes (or 'preview', unified, auto-detects provisioner)
-├── refresh             Sync state with reality (unified, auto-detects provisioner)
-├── pulumi              Manage infrastructure with Pulumi
-│   ├── init           Initialize Pulumi stack
-│   ├── preview        Preview infrastructure changes
-│   ├── up             Deploy infrastructure (or 'update')
-│   ├── refresh        Sync state with cloud reality
-│   ├── destroy        Teardown infrastructure
-│   ├── delete         Remove stack metadata (or 'rm')
-│   └── cancel         Cancel ongoing Pulumi operation
-├── tofu                Manage infrastructure with OpenTofu
-│   ├── init           Initialize backend and providers
-│   ├── plan           Preview infrastructure changes
-│   ├── apply          Deploy infrastructure
-│   ├── refresh        Sync state with cloud reality
-│   └── destroy        Teardown infrastructure
-├── validate            Validate manifest against schema
-├── load-manifest       Load and display manifest with defaults
-└── version             Show CLI version
+│
+├── Unified Commands (provisioner auto-detected from manifest)
+│   ├── apply                 Deploy infrastructure
+│   ├── plan                  Preview changes (alias: preview)
+│   ├── init                  Initialize backend or stack
+│   ├── destroy               Tear down infrastructure (alias: delete)
+│   └── refresh               Sync state with cloud reality
+│
+├── Pulumi Commands
+│   └── pulumi
+│       ├── init              Initialize a new Pulumi stack
+│       ├── preview           Preview infrastructure changes
+│       ├── update            Deploy infrastructure (alias: up)
+│       ├── destroy           Tear down infrastructure
+│       ├── refresh           Sync state with cloud reality
+│       ├── delete            Remove stack metadata (alias: rm)
+│       └── cancel            Cancel in-progress stack operation
+│
+├── OpenTofu Commands
+│   └── tofu
+│       ├── init              Initialize backend and providers
+│       ├── plan              Preview infrastructure changes
+│       ├── apply             Deploy infrastructure
+│       ├── destroy           Tear down infrastructure
+│       ├── refresh           Sync state with cloud reality
+│       ├── generate-variables Generate Terraform variables from manifest
+│       └── load-tfvars       Load manifest into tfvars format
+│
+├── Terraform Commands
+│   └── terraform
+│       ├── init              Initialize backend and providers
+│       ├── plan              Preview infrastructure changes
+│       ├── apply             Deploy infrastructure
+│       ├── destroy           Tear down infrastructure
+│       └── refresh           Sync state with cloud reality
+│
+├── Module Management
+│   ├── checkout              Check out a specific module version in staging
+│   ├── pull                  Pull latest modules from upstream
+│   ├── upgrade               Upgrade the CLI to latest or specified version
+│   ├── downgrade             Install a previous CLI version
+│   └── modules-version       Show current module version in staging
+│
+├── Manifest Utilities
+│   ├── validate-manifest     Validate manifest against schema (alias: validate)
+│   └── load-manifest         Load and display manifest with defaults (alias: load)
+│
+├── Configuration
+│   └── config
+│       ├── set               Set a configuration value
+│       ├── get               Get a configuration value
+│       └── list              List all configuration values
+│
+└── version                   Show CLI version and update status
 ```
 
----
+## Global Flags
 
-## Top-Level Commands
+These flags are inherited by every subcommand.
 
-### apply
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--local-module` | `false` | Use local openmcf git repository for IaC modules instead of downloading |
+| `--openmcf-git-repo` | `~/scm/github.com/plantonhq/openmcf` | Path to local openmcf git repository (used with `--local-module`) |
+| `-v`, `--version` | | Show version information (root command only) |
 
-**NEW!** Unified kubectl-style command to deploy infrastructure by automatically detecting the provisioner from the manifest label `openmcf.org/provisioner`.
+## Flag Reference
 
-**Usage**:
+All flags below are organized by the group they belong to. The "Used by" column shows which commands accept each flag.
 
-```bash
-openmcf apply -f <file> [flags]
-# or
-openmcf apply -f <file> [flags]
-```
+### Manifest Source Flags
 
-**Example**:
+These flags control where the manifest is loaded from. When multiple source flags are provided, the CLI uses the first one found in priority order: clipboard, stack-input, manifest file, input-dir, kustomize.
 
-```bash
-# Auto-detect provisioner from manifest
-openmcf apply -f database.yaml
+| Flag | Short | Default | Description |
+|------|-------|---------|-------------|
+| `--manifest` | `-f` | | Path to the deployment-component manifest file |
+| `--clipboard` | `-c` | `false` | Read manifest from system clipboard |
+| `--stack-input` | `-i` | | Path to YAML file containing stack input (extracts manifest from `target` field) |
+| `--input-dir` | | | Directory containing `target.yaml` and credential YAML files |
+| `--kustomize-dir` | | | Directory containing kustomize configuration |
+| `--overlay` | | | Kustomize overlay to use (e.g., `prod`, `dev`, `staging`). Requires `--kustomize-dir` |
 
-# With kustomize
-openmcf apply --kustomize-dir services/api --overlay prod
+Hidden aliases for `--clipboard`: `--clip`, `--cb`
 
-# With overrides
-openmcf apply -f api.yaml --set spec.replicas=5
-```
+**Used by**: All unified commands (`apply`, `plan`, `init`, `destroy`, `refresh`), `validate-manifest`, `load-manifest`.
 
-**How it works**:
-1. Reads the `openmcf.org/provisioner` label from your manifest
-2. Automatically routes to the appropriate provisioner (pulumi/tofu/terraform)
-3. If label is missing, prompts you to select a provisioner interactively (defaults to Pulumi)
+**Resolution priority**: `--clipboard` > `--stack-input` > `--manifest` > `--input-dir` > `--kustomize-dir` + `--overlay`
 
-**Supported provisioners**: `pulumi`, `tofu`, `terraform` (case-insensitive)
+### Execution Flags
 
-### destroy
+These flags control how the IaC module is located and executed.
 
-**NEW!** Unified kubectl-style command to destroy infrastructure. Works exactly like `apply` but tears down resources instead.
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--module-dir` | current directory | Directory containing the provisioner module |
+| `--module-version` | | Check out a specific version (tag, branch, or SHA) of the IaC modules in the workspace copy |
+| `--no-cleanup` | `false` | Do not clean up the workspace copy after execution |
+| `--kube-context` | | kubectl context for Kubernetes deployments (overrides manifest label) |
+| `--set` | | Override manifest values using `key=value` pairs (repeatable) |
+| `--local-module` | `false` | Use the local openmcf repository to derive the module directory |
 
-**Aliases**: `delete` (for kubectl compatibility)
+**Used by**: All unified commands (`apply`, `plan`, `init`, `destroy`, `refresh`).
 
-**Usage**:
+### Provider Config Flags
 
-```bash
-openmcf destroy -f <file> [flags]
-openmcf delete -f <file> [flags]
-```
+| Flag | Short | Default | Description |
+|------|-------|---------|-------------|
+| `--provider-config` | `-p` | | Path to provider credentials file. Provider type is auto-detected from the manifest's `apiVersion` and `kind` |
 
-**Example**:
-
-```bash
-# Auto-detect provisioner from manifest
-openmcf destroy -f database.yaml
-
-# Using kubectl-style delete alias
-openmcf delete -f database.yaml
-
-# With auto-approve (skips confirmation)
-openmcf destroy -f api.yaml --auto-approve
-```
-
-### init
-
-**NEW!** Unified command to initialize infrastructure backend or stack by automatically detecting the provisioner.
-
-**Usage**:
-
-```bash
-openmcf init -f <file> [flags]
-```
-
-**Example**:
-
-```bash
-# Auto-detect provisioner from manifest
-openmcf init -f database.yaml
-
-# With kustomize
-openmcf init --kustomize-dir services/api --overlay prod
-
-# Reconfigure after backend changes
-openmcf init -f app.yaml --reconfigure
-
-# With tofu-specific backend config
-openmcf init -f app.yaml --backend-type s3 --backend-config bucket=my-bucket
-```
-
-**How it works**:
-1. Reads the `openmcf.org/provisioner` label from your manifest
-2. Routes to appropriate initialization:
-   - **Pulumi**: Creates stack if it doesn't exist
-   - **Tofu**: Initializes backend and downloads providers
-   - **Terraform**: Initializes backend and downloads providers
-
-### plan
-
-**NEW!** Unified command to preview infrastructure changes without applying them.
-
-**Aliases**: `preview` (for Pulumi-style experience)
-
-**Usage**:
-
-```bash
-openmcf plan -f <file> [flags]
-openmcf preview -f <file> [flags]
-```
-
-**Example**:
-
-```bash
-# Auto-detect provisioner and preview changes
-openmcf plan -f database.yaml
-
-# Using preview alias (Pulumi-style)
-openmcf preview -f database.yaml
-
-# With kustomize
-openmcf plan --kustomize-dir services/api --overlay staging
-
-# Preview destroy plan (Tofu)
-openmcf plan -f app.yaml --destroy
-```
-
-**How it works**:
-1. Reads the `openmcf.org/provisioner` label from your manifest
-2. Routes to appropriate preview operation:
-   - **Pulumi**: Runs `pulumi preview`
-   - **Tofu**: Runs `tofu plan`
-   - **Terraform**: Not yet implemented
-
-### refresh
-
-**NEW!** Unified command to sync state with cloud reality without modifying resources.
-
-**Usage**:
-
-```bash
-openmcf refresh -f <file> [flags]
-```
-
-**Example**:
-
-```bash
-# Auto-detect provisioner and refresh state
-openmcf refresh -f database.yaml
-
-# With kustomize
-openmcf refresh --kustomize-dir services/api --overlay prod
-
-# Show detailed diffs (Pulumi)
-openmcf refresh -f app.yaml --diff
-```
-
-**How it works**:
-1. Queries your cloud provider for current resource state
-2. Updates state file to reflect reality
-3. Does NOT modify any cloud resources (read-only operation)
-4. Routes based on provisioner:
-   - **Pulumi**: Runs `pulumi refresh`
-   - **Tofu**: Runs `tofu refresh`
-   - **Terraform**: Not yet implemented
-
-### pulumi
-
-Manage infrastructure using Pulumi as the IaC engine.
-
-**Subcommands**: `init`, `preview`, `up`/`update`, `refresh`, `destroy`, `delete`/`rm`, `cancel`
-
-**Documentation**: See [Pulumi Commands Reference](/docs/cli/pulumi-commands)
-
-**Example**:
-
-```bash
-openmcf pulumi up -f database.yaml
-```
-
-### tofu
-
-Manage infrastructure using OpenTofu/Terraform as the IaC engine.
-
-**Subcommands**: `init`, `plan`, `apply`, `refresh`, `destroy`
-
-**Documentation**: See [OpenTofu Commands Reference](/docs/cli/tofu-commands)
-
-**Example**:
-
-```bash
-openmcf tofu apply -f database.yaml
-```
-
-### validate
-
-Validate a manifest against its Protocol Buffer schema without deploying.
-
-**Usage**:
-
-```bash
-openmcf validate -f <file> [flags]
-```
-
-**Example**:
-
-```bash
-# Validate single manifest
-openmcf validate -f ops/resources/database.yaml
-
-# With kustomize
-openmcf validate \
-  --kustomize-dir services/api/kustomize \
-  --overlay prod
-
-# If valid: exits with code 0, no output
-# If invalid: shows detailed errors, exits with code 1
-```
-
-**Flags**:
-- `-f <file>`: Path to manifest file
-- `--kustomize-dir <dir>`: Kustomize base directory
-- `--overlay <name>`: Kustomize overlay name
-
-### load-manifest
-
-Load a manifest and display it with defaults applied and overrides resolved.
-
-**Usage**:
-
-```bash
-openmcf load-manifest -f <file> [flags]
-```
-
-**Example**:
-
-```bash
-# Load manifest and see defaults
-openmcf load-manifest -f database.yaml
-
-# Load with overrides
-openmcf load-manifest \
-  -f api.yaml \
-  --set spec.replicas=5
-
-# Load kustomize-built manifest
-openmcf load-manifest \
-  --kustomize-dir services/api/kustomize \
-  --overlay prod
-```
-
-**Flags**: Same as `validate`
-
-**Output**: YAML manifest with defaults filled in and overrides applied
-
-### version
-
-Show OpenMCF CLI version information.
-
-**Usage**:
-
-```bash
-openmcf version
-```
-
-**Example Output**:
-
-```
-openmcf version: v0.1.0
-git commit: a1b2c3d
-built: 2025-11-11T10:30:00Z
-```
-
----
-
-## Common Flags
-
-These flags are available across multiple commands:
-
-### Manifest Input
-
-**`-f, -f <path>`**  
-Path to manifest YAML file (local or URL). The `-f` shorthand is available for kubectl-style experience.
-
-```bash
-# Local file (kubectl-style)
--f ops/resources/database.yaml
-
-# Local file (traditional)
--f ops/resources/database.yaml
-
-# URL
--f https://raw.githubusercontent.com/myorg/manifests/main/db.yaml
-```
-
-**`--kustomize-dir <directory>`**  
-Base directory containing kustomize structure.
-
-```bash
---kustomize-dir services/api/kustomize
-```
-
-**`--overlay <name>`**  
-Kustomize overlay environment to build (must be used with `--kustomize-dir`).
-
-```bash
---overlay prod
-```
-
-**Priority**: `-f` > `--kustomize-dir` + `--overlay`
-
-### Execution Control
-
-**`--module-dir <path>`**  
-Override IaC module directory (defaults to current directory).
-
-```bash
---module-dir ~/projects/custom-modules/my-module
-```
-
-**`--set <key>=<value>`**  
-Override manifest field values at runtime (repeatable).
-
-```bash
---set spec.replicas=5 \
---set spec.container.image.tag=v2.0.0
-```
+**Used by**: All unified commands, all `pulumi` subcommands, all `tofu` subcommands, all `terraform` subcommands.
 
 ### Pulumi-Specific Flags
 
-**`--stack <org>/<project>/<stack>`**  
-Override stack FQDN (instead of using manifest label).
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--stack` | | Pulumi stack FQDN in the format `<org>/<project>/<stack>` |
+| `--yes` | `false` | Automatically approve and perform the update after previewing (Pulumi) |
+| `--diff` | `false` | Show detailed resource diffs (Pulumi) |
+| `--force` | `false` | Force stack removal even if resources exist (`pulumi delete` only) |
 
-```bash
---stack my-org/my-project/dev-stack
-```
+**Used by**: All unified commands (Pulumi flags are passed through when provisioner is Pulumi), all `pulumi` subcommands.
 
-**`--yes`**  
-Auto-approve operations without confirmation (Pulumi commands).
+### OpenTofu / Terraform Flags
 
-```bash
---yes
-```
+#### Apply and Destroy
 
-**`--force`**  
-Force stack removal even if resources exist (`delete`/`rm` only).
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--auto-approve` | `false` | Skip interactive approval of plan before applying |
 
-```bash
---force
-```
+**Used by**: Unified `apply` and `destroy`, `tofu apply`, `tofu destroy`, `terraform apply`, `terraform destroy`.
 
-### OpenTofu/Terraform-Specific Flags
+#### Plan
 
-**`--auto-approve`**  
-Skip interactive approval (`apply` and `destroy` commands).
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--destroy` | `false` | Create a destroy plan instead of an apply plan |
 
-```bash
---auto-approve
-```
+**Used by**: Unified `plan`, `tofu plan`, `terraform plan`.
 
-**`--reconfigure`**  
-Reconfigure backend, ignoring any saved configuration. Use when backend configuration changes.
+#### Init (Backend Configuration)
 
-```bash
---reconfigure
-```
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--backend-type` | `local` | Backend type: `local`, `s3`, `gcs`, `azurerm`, and others |
+| `--backend-bucket` | | State bucket name (S3/GCS) or container name (Azure) |
+| `--backend-key` | | State file path within bucket (e.g., `env/prod/terraform.tfstate`) |
+| `--backend-region` | | Region for S3 backend (use `auto` for S3-compatible backends like R2) |
+| `--backend-endpoint` | | Custom S3-compatible endpoint URL (required for R2, MinIO, etc.) |
+| `--backend-config` | | Additional backend configuration `key=value` pairs (repeatable) |
+| `--reconfigure` | `false` | Reconfigure backend, ignoring any saved configuration |
 
-**`--destroy`**  
-Create destroy plan (`plan` command).
+**Used by**: Unified `init`. For direct `tofu init` and `terraform init`, only `--backend-type`, `--backend-config`, and `--module-version` are available.
 
-```bash
---destroy
-```
+### Engine-Specific Persistent Flags (Direct Commands)
 
-### Provider Credentials
+When using `openmcf tofu` or `openmcf terraform` directly (not unified commands), each engine has its own set of persistent flags:
 
-**Default Behavior (Environment Variables)**:
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--manifest` | | Path to the deployment-component manifest file |
+| `--input-dir` | | Directory containing `target.yaml` and credential YAML files |
+| `--kustomize-dir` | | Directory containing kustomize configuration |
+| `--overlay` | | Kustomize overlay |
+| `--module-dir` | | Directory containing the module (default: current directory) |
+| `--set` | | Override manifest values using `key=value` pairs |
+| `--provider-config` | `-p` | Path to provider credentials file |
 
-By default, the CLI reads credentials from environment variables - the same ones used by cloud provider CLIs. If you have `aws`, `gcloud`, or `az` configured, credentials are automatically available.
+These are registered on the `tofu` and `terraform` parent commands and inherited by all their subcommands.
 
-```bash
-# These work without any credential flags if env vars are set
-openmcf apply -f aws-vpc.yaml         # Uses AWS_ACCESS_KEY_ID, etc.
-openmcf apply -f gcp-cluster.yaml     # Uses GOOGLE_APPLICATION_CREDENTIALS
-openmcf apply -f azure-aks.yaml       # Uses ARM_CLIENT_ID, etc.
-```
-
-**Explicit Override (`-p, --provider-config <file>`)**:
-
-Use the `-p` flag to override environment variables with an explicit credentials file:
-
-```bash
--p ~/.config/aws-creds.yaml      # Override AWS credentials
--p ~/.config/gcp-creds.yaml      # Override GCP credentials
--p ~/.config/azure-creds.yaml    # Override Azure credentials
--p ~/.kube/config                # Override Kubernetes config
-```
-
-**How it works**: 
-1. The CLI parses your manifest's `apiVersion` (e.g., `aws.openmcf.org/v1`)
-2. Determines the required provider (e.g., AWS)
-3. Loads credentials from environment variables OR from the file specified with `-p`
-
-See the [Credentials Guide](/docs/guides/credentials) for the complete list of environment variables per provider.
-
----
-
-## Environment Variables
-
-### Respected by CLI
-
-**`TF_LOG`** / **`PULUMI_LOG_LEVEL`**  
-Enable verbose logging for debugging.
-
-```bash
-export TF_LOG=DEBUG
-export PULUMI_LOG_LEVEL=3
-```
-
-### Provider Credentials
-
-See [Credentials Guide](/docs/guides/credentials) for complete list of provider-specific environment variables.
-
----
+**Note**: Direct engine commands do not support `--clipboard` or `--stack-input` manifest sources. Use the unified commands for those input methods.
 
 ## Exit Codes
 
 | Code | Meaning |
 |------|---------|
-| 0 | Success |
-| 1 | General error (validation failed, deployment failed, etc.) |
+| `0` | Success |
+| `1` | Error: validation failure, deployment failure, missing prerequisites, or invalid flags |
 
----
+## File System Paths
 
-## Configuration Files
+The CLI uses the following directories under `~/.openmcf/`:
 
-### Manifest Download Directory
-
-Downloaded URL manifests are cached in:
-
-```
-~/.openmcf/manifests/downloaded/
-```
-
-### Module Cache
-
-Cloned IaC modules are cached in:
-
-```
-~/.openmcf/modules/
-```
-
----
-
-## Examples by Use Case
-
-### First Deployment
-
-```bash
-# Unified kubectl-style (recommended)
-openmcf validate -f database.yaml
-openmcf apply -f database.yaml
-
-# Using Pulumi directly
-openmcf validate -f database.yaml
-openmcf pulumi up -f database.yaml
-
-# Using OpenTofu directly
-openmcf validate -f database.yaml
-openmcf tofu init -f database.yaml
-openmcf tofu plan -f database.yaml
-openmcf tofu apply -f database.yaml
-```
-
-### Multi-Environment Deployment
-
-```bash
-# Deploy across environments with unified command
-for env in dev staging prod; do
-    openmcf apply \
-        --kustomize-dir services/api/kustomize \
-        --overlay $env \
-        --yes
-done
-```
-
-### CI/CD Deployment
-
-```bash
-# Non-interactive with dynamic values (unified command)
-openmcf apply \
-  -f deployment.yaml \
-  --set spec.container.image.tag=$CI_COMMIT_SHA \
-  --yes
-```
-
-### Testing Local Module Changes
-
-```bash
-# Point to local module during development
-openmcf pulumi preview \
-  -f test.yaml \
-  --module-dir ~/dev/my-module
-```
-
----
-
-## Related Documentation
-
-- [Pulumi Commands](/docs/cli/pulumi-commands) - Detailed Pulumi command guide
-- [OpenTofu Commands](/docs/cli/tofu-commands) - Detailed OpenTofu command guide
-- [Manifest Structure](/docs/guides/manifests) - Understanding manifests
-- [Credentials Guide](/docs/guides/credentials) - Setting up cloud credentials
-- [Advanced Usage](/docs/guides/advanced-usage) - Power user techniques
-
----
+| Path | Purpose |
+|------|---------|
+| `~/.openmcf/config.yaml` | CLI configuration file |
+| `~/.openmcf/staging/openmcf/` | Cloned openmcf repository for module resolution |
+| `~/.openmcf/staging/.version` | Current module version in staging |
+| `~/.openmcf/pulumi/binaries/{version}/` | Cached pre-built Pulumi module binaries |
+| `~/.openmcf/pulumi/staging-workspaces/{stack}/` | Pulumi workspace copies per stack |
+| `~/.openmcf/terraform/modules/{version}/{component}/` | Cached Terraform/OpenTofu module archives |
+| `~/.openmcf/downloads/` | Downloaded URL manifests |
 
 ## Getting Help
-
-**Command help**:
 
 ```bash
 # General help
 openmcf --help
 
 # Command-specific help
+openmcf apply --help
 openmcf pulumi --help
-openmcf tofu apply --help
+openmcf tofu init --help
+openmcf terraform apply --help
 ```
 
-**Found an issue?** [Open an issue](https://github.com/plantonhq/openmcf/issues)
+Every command and subcommand supports `--help` to display its usage, flags, and description.
 
-**Need support?** Check existing issues or discussions
+## What's Next
 
+- **[Unified Commands](./unified-commands)** — How provisioner auto-detection works and when to use unified vs. direct commands
+- **[Pulumi Commands](./pulumi-commands)** — Pulumi-specific subcommands and workflows
+- **[OpenTofu Commands](./tofu-commands)** — OpenTofu-specific subcommands and workflows
+- **[Terraform Commands](./terraform-commands)** — Terraform-specific subcommands and workflows
+- **[Module Management](./module-management)** — Module versioning, caching, and the staging area
+- **[Configuration](./configuration)** — Config, validation, manifest loading, and version utilities

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway.scalewaycontainerregistry.v1;
+
+import "org/openmcf/provider/scaleway/provider.proto";
+import "org/openmcf/provider/scaleway/scalewaycontainerregistry/v1/api.proto";
+
+//scaleway-container-registry stack-input
+message ScalewayContainerRegistryStackInput {
+  //target cloud-resource
+  ScalewayContainerRegistry target = 1;
+  //provider-config
+  org.openmcf.provider.scaleway.ScalewayProviderConfig provider_config = 2;
+}

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azureresourcegroup.v1;
+
+// **AzureResourceGroupStackOutputs** captures the outputs of provisioning an Azure Resource Group.
+// These outputs are used by downstream Azure resources via StringValueOrRef to establish
+// the resource group dependency in infra chart DAGs.
+message AzureResourceGroupStackOutputs {
+  // The Azure Resource Manager ID of the resource group.
+  // Format: /subscriptions/{subscription-id}/resourceGroups/{resource-group-name}
+  string resource_group_id = 1;
+
+  // The name of the resource group.
+  // This is the primary output referenced by downstream Azure resources via
+  // StringValueOrRef resource_group with field_path "status.outputs.resource_group_name".
+  string resource_group_name = 2;
+
+  // The Azure region where the resource group was created.
+  string region = 3;
+}

@@ -112,9 +112,9 @@ func (AzureDnsRecordSpec_RecordType) EnumDescriptor() ([]byte, []int) {
 // Records are created within a DNS Zone that must already exist in an Azure Resource Group.
 type AzureDnsRecordSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The Azure Resource Group where the DNS Zone exists.
-	// This resource group must contain the target DNS zone.
-	ResourceGroup string `protobuf:"bytes,1,opt,name=resource_group,json=resourceGroup,proto3" json:"resource_group,omitempty"`
+	// The Azure Resource Group where the DNS Record will be created.
+	// Can be a literal string or a reference to an AzureResourceGroup output.
+	ResourceGroup *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=resource_group,json=resourceGroup,proto3" json:"resource_group,omitempty"`
 	// The name of the DNS Zone where this record will be created.
 	// Can be provided as a literal value or referenced from an AzureDnsZone resource.
 	//
@@ -195,11 +195,11 @@ func (*AzureDnsRecordSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_azure_azurednsrecord_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDnsRecordSpec) GetResourceGroup() string {
+func (x *AzureDnsRecordSpec) GetResourceGroup() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ResourceGroup
 	}
-	return ""
+	return nil
 }
 
 func (x *AzureDnsRecordSpec) GetZoneName() *v1.StringValueOrRef {
@@ -248,10 +248,10 @@ var File_org_openmcf_provider_azure_azurednsrecord_v1_spec_proto protoreflect.Fi
 
 const file_org_openmcf_provider_azure_azurednsrecord_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"7org/openmcf/provider/azure/azurednsrecord/v1/spec.proto\x12,org.openmcf.provider.azure.azurednsrecord.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xce\b\n" +
-	"\x12AzureDnsRecordSpec\x12-\n" +
-	"\x0eresource_group\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\rresourceGroup\x12x\n" +
-	"\tzone_name\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\x93\x03\x92\xd4a\x18status.outputs.zone_nameR\bzoneName\x12\xcc\x01\n" +
+	"7org/openmcf/provider/azure/azurednsrecord/v1/spec.proto\x12,org.openmcf.provider.azure.azurednsrecord.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xae\t\n" +
+	"\x12AzureDnsRecordSpec\x12\x8c\x01\n" +
+	"\x0eresource_group\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\x90\x03\x92\xd4a\"status.outputs.resource_group_nameR\rresourceGroup\x12x\n" +
+	"\tzone_name\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\x94\x03\x92\xd4a\x18status.outputs.zone_nameR\bzoneName\x12\xcc\x01\n" +
 	"\x04type\x18\x03 \x01(\x0e2K.org.openmcf.provider.azure.azurednsrecord.v1.AzureDnsRecordSpec.RecordTypeBk\xbaHh\xba\x01]\n" +
 	"\x14type.not_unspecified\x12:type must be specified (cannot be record_type_unspecified)\x1a\tthis != 0\xc8\x01\x01\x82\x01\x02\x10\x01R\x04type\x12\x8c\x02\n" +
 	"\x04name\x18\x04 \x01(\tB\xf7\x01\xbaH\xf3\x01\xba\x01\xec\x01\n" +
@@ -299,13 +299,14 @@ var file_org_openmcf_provider_azure_azurednsrecord_v1_spec_proto_goTypes = []any
 	(*v1.StringValueOrRef)(nil),        // 2: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_azure_azurednsrecord_v1_spec_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.azure.azurednsrecord.v1.AzureDnsRecordSpec.zone_name:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	0, // 1: org.openmcf.provider.azure.azurednsrecord.v1.AzureDnsRecordSpec.type:type_name -> org.openmcf.provider.azure.azurednsrecord.v1.AzureDnsRecordSpec.RecordType
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	2, // 0: org.openmcf.provider.azure.azurednsrecord.v1.AzureDnsRecordSpec.resource_group:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	2, // 1: org.openmcf.provider.azure.azurednsrecord.v1.AzureDnsRecordSpec.zone_name:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	0, // 2: org.openmcf.provider.azure.azurednsrecord.v1.AzureDnsRecordSpec.type:type_name -> org.openmcf.provider.azure.azurednsrecord.v1.AzureDnsRecordSpec.RecordType
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_azure_azurednsrecord_v1_spec_proto_init() }

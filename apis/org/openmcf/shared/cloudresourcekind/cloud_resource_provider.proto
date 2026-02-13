@@ -77,4 +77,8 @@ enum CloudResourceProvider {
     group: "openstack.openmcf.org"
     display_name: "OpenStack"
   }];
+  scaleway = 24 [(provider_meta) = {
+    group: "scaleway.openmcf.org"
+    display_name: "Scaleway"
+  }];
 }

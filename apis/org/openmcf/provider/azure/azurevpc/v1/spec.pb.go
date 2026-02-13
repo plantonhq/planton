@@ -8,6 +8,7 @@ package azurevpcv1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -28,6 +29,11 @@ const (
 // like a NAT Gateway for outbound Internet access and Private DNS zone links for name resolution.
 type AzureVpcSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// Azure region in which to create the Virtual Network (e.g., "eastus", "westeurope").
+	Region string `protobuf:"bytes,6,opt,name=region,proto3" json:"region,omitempty"`
+	// The Azure Resource Group where the Virtual Network will be created.
+	// Can be a literal string or a reference to an AzureResourceGroup output.
+	ResourceGroup *v1.StringValueOrRef `protobuf:"bytes,7,opt,name=resource_group,json=resourceGroup,proto3" json:"resource_group,omitempty"`
 	// The CIDR block defining the address space for the Virtual Network.
 	// Example: "10.0.0.0/16" would allow IP addresses from 10.0.0.0 to 10.0.255.255.
 	AddressSpaceCidr string `protobuf:"bytes,1,opt,name=address_space_cidr,json=addressSpaceCidr,proto3" json:"address_space_cidr,omitempty"`
@@ -80,6 +86,20 @@ func (*AzureVpcSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_azure_azurevpc_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
+func (x *AzureVpcSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
+func (x *AzureVpcSpec) GetResourceGroup() *v1.StringValueOrRef {
+	if x != nil {
+		return x.ResourceGroup
+	}
+	return nil
+}
+
 func (x *AzureVpcSpec) GetAddressSpaceCidr() string {
 	if x != nil {
 		return x.AddressSpaceCidr
@@ -119,8 +139,10 @@ var File_org_openmcf_provider_azure_azurevpc_v1_spec_proto protoreflect.FileDesc
 
 const file_org_openmcf_provider_azure_azurevpc_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"1org/openmcf/provider/azure/azurevpc/v1/spec.proto\x12&org.openmcf.provider.azure.azurevpc.v1\x1a\x1bbuf/validate/validate.proto\"\xef\x02\n" +
-	"\fAzureVpcSpec\x124\n" +
+	"1org/openmcf/provider/azure/azurevpc/v1/spec.proto\x12&org.openmcf.provider.azure.azurevpc.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x9e\x04\n" +
+	"\fAzureVpcSpec\x12\x1e\n" +
+	"\x06region\x18\x06 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12\x8c\x01\n" +
+	"\x0eresource_group\x18\a \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\x90\x03\x92\xd4a\"status.outputs.resource_group_nameR\rresourceGroup\x124\n" +
 	"\x12address_space_cidr\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x10addressSpaceCidr\x122\n" +
 	"\x11nodes_subnet_cidr\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0fnodesSubnetCidr\x123\n" +
 	"\x16is_nat_gateway_enabled\x18\x03 \x01(\bR\x13isNatGatewayEnabled\x123\n" +
@@ -145,16 +167,18 @@ func file_org_openmcf_provider_azure_azurevpc_v1_spec_proto_rawDescGZIP() []byte
 
 var file_org_openmcf_provider_azure_azurevpc_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_azure_azurevpc_v1_spec_proto_goTypes = []any{
-	(*AzureVpcSpec)(nil), // 0: org.openmcf.provider.azure.azurevpc.v1.AzureVpcSpec
-	nil,                  // 1: org.openmcf.provider.azure.azurevpc.v1.AzureVpcSpec.TagsEntry
+	(*AzureVpcSpec)(nil),        // 0: org.openmcf.provider.azure.azurevpc.v1.AzureVpcSpec
+	nil,                         // 1: org.openmcf.provider.azure.azurevpc.v1.AzureVpcSpec.TagsEntry
+	(*v1.StringValueOrRef)(nil), // 2: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_azure_azurevpc_v1_spec_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.azure.azurevpc.v1.AzureVpcSpec.tags:type_name -> org.openmcf.provider.azure.azurevpc.v1.AzureVpcSpec.TagsEntry
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 0: org.openmcf.provider.azure.azurevpc.v1.AzureVpcSpec.resource_group:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	1, // 1: org.openmcf.provider.azure.azurevpc.v1.AzureVpcSpec.tags:type_name -> org.openmcf.provider.azure.azurevpc.v1.AzureVpcSpec.TagsEntry
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_azure_azurevpc_v1_spec_proto_init() }

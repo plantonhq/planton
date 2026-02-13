@@ -1,0 +1,630 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azurecosmosdbaccount.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// **AzureCosmosdbAccountSpec** defines the configuration for creating an Azure
+// Cosmos DB account with optional SQL API databases/containers and MongoDB API
+// databases/collections.
+//
+// Azure Cosmos DB is a globally distributed, multi-model database service
+// designed for low-latency, elastic scalability, and well-defined consistency
+// models. It supports multiple APIs (SQL/NoSQL, MongoDB, Cassandra, Gremlin,
+// Table) through a single account resource with the `kind` field selecting
+// the wire protocol.
+//
+// This component supports two API modes via the `kind` field:
+// - **GlobalDocumentDB** (default): SQL/NoSQL API with SQL-like queries over
+//   JSON documents. Sub-resources: `sql_databases` with `containers`.
+// - **MongoDB**: MongoDB wire-protocol compatible API. Sub-resources:
+//   `mongo_databases` with `collections`.
+//
+// The component bundles the account (`azurerm_cosmosdb_account`) with its
+// databases and containers/collections because an account without at least one
+// data container has no storage utility. This follows DD03 (Composite Bundling
+// Rules).
+//
+// **Consistency model**: Cosmos DB offers five consistency levels ranging from
+// strong (linearizable reads) to eventual (highest throughput). The default
+// `Session` consistency provides read-your-writes guarantees within a session,
+// which is the right default for most applications.
+//
+// **Global distribution**: At least one `geo_location` is required. Multi-region
+// writes (`multiple_write_locations_enabled`) enable active-active patterns but
+// require conflict resolution. Automatic failover (`automatic_failover_enabled`)
+// is recommended for any multi-region deployment.
+//
+// **Throughput model**: Cosmos DB uses Request Units per second (RU/s) for
+// throughput. Throughput can be provisioned (fixed RU/s) or autoscale (Azure
+// adjusts between 10% and 100% of max RU/s). Serverless mode (via the
+// `EnableServerless` capability) uses pay-per-request with no throughput config.
+// Throughput can be set at the database level (shared across containers) or
+// at the container level (dedicated). When both are set, the container's
+// dedicated throughput takes precedence.
+//
+// **ForceNew fields** (changing these destroys and recreates the account):
+// `name`, `kind`, `free_tier_enabled`.
+message AzureCosmosdbAccountSpec {
+  // The Azure region where the Cosmos DB account will be created.
+  // This is the primary write region. Additional regions are configured
+  // via `geo_locations`.
+  // Examples: "eastus", "westus2", "westeurope", "southeastasia".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The Azure Resource Group where the Cosmos DB account will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef resource_group = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The name of the Cosmos DB account.
+  // Must be globally unique across Azure. Used as the account endpoint:
+  // `https://{name}.documents.azure.com:443/`
+  // Allowed characters: lowercase letters, numbers, and hyphens.
+  // Length: 3 to 50 characters.
+  //
+  // **ForceNew**: Changing this destroys and recreates the account.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 3,
+    (buf.validate.field).string.max_len = 50,
+    (buf.validate.field).cel = {
+      id: "account_name_format"
+      message: "Account name must contain only lowercase letters, numbers, and hyphens"
+      expression: "this.matches('^[-a-z0-9]{3,50}$')"
+    }
+  ];
+
+  // The API kind for the Cosmos DB account.
+  // Uses Azure's exact API values for provider authenticity.
+  //
+  // Valid values:
+  // - "GlobalDocumentDB" (default): SQL/NoSQL API -- query JSON documents
+  //   with SQL-like syntax. Use `sql_databases` for sub-resources.
+  // - "MongoDB": MongoDB wire-protocol compatible API. Use `mongo_databases`
+  //   for sub-resources.
+  //
+  // **ForceNew**: Changing this destroys and recreates the account.
+  optional string kind = 4 [
+    (org.openmcf.shared.options.default) = "GlobalDocumentDB",
+    (buf.validate.field).cel = {
+      id: "kind_valid"
+      message: "kind must be one of: GlobalDocumentDB, MongoDB"
+      expression: "this in ['GlobalDocumentDB', 'MongoDB']"
+    }
+  ];
+
+  // Consistency policy for the account.
+  // Defines the default consistency level for all reads.
+  // If omitted, defaults to Session consistency (read-your-writes within a
+  // session -- the right default for most applications).
+  //
+  // Cosmos DB consistency levels (from strongest to weakest):
+  // 1. Strong -- linearizable reads, highest latency
+  // 2. BoundedStaleness -- reads lag behind writes by at most K versions or T time
+  // 3. Session -- read-your-writes within a session (default, recommended)
+  // 4. ConsistentPrefix -- reads never see out-of-order writes
+  // 5. Eventual -- no ordering guarantees, highest throughput
+  AzureCosmosdbConsistencyPolicy consistency_policy = 5;
+
+  // Geographic locations for the Cosmos DB account.
+  // At least one geo_location is required. The first location with
+  // `failover_priority = 0` is the primary write region and should match
+  // the `region` field.
+  //
+  // For single-region deployments, provide one geo_location.
+  // For multi-region, provide multiple with unique failover priorities.
+  repeated AzureCosmosdbGeoLocation geo_locations = 6 [(buf.validate.field).repeated.min_items = 1];
+
+  // Cosmos DB capabilities to enable on the account.
+  // Capabilities customize account behavior and enable specific features.
+  //
+  // Common capabilities:
+  // - "EnableServerless" -- serverless mode (pay-per-request, no throughput config)
+  // - "EnableAggregationPipeline" -- MongoDB aggregation pipeline
+  // - "EnableMongoRetryableWrites" -- MongoDB retryable writes
+  // - "EnableMongoRoleBasedAccessControl" -- MongoDB RBAC
+  // - "EnableNoSqlVectorSearch" -- vector search for SQL API
+  // - "EnableNoSqlFullTextSearch" -- full-text search for SQL API
+  //
+  // Note: When `kind` is "MongoDB", the IaC modules automatically add
+  // "EnableMongo" to capabilities if not already present.
+  //
+  // **Some capabilities are ForceNew** (e.g., EnableServerless).
+  repeated string capabilities = 7;
+
+  // Enable the free tier for this account.
+  // Azure Cosmos DB offers a free tier with 1000 RU/s and 25 GB of storage
+  // per subscription. Only one account per subscription can use the free tier.
+  //
+  // **ForceNew**: Changing this destroys and recreates the account.
+  // Default: false
+  optional bool free_tier_enabled = 8 [(org.openmcf.shared.options.default) = "false"];
+
+  // Enable automatic failover when a region goes down.
+  // When enabled, Azure automatically promotes the next region in the
+  // failover priority list to be the write region.
+  //
+  // Recommended for any multi-region deployment.
+  // Required when `multiple_write_locations_enabled` is true.
+  //
+  // Default: false
+  optional bool automatic_failover_enabled = 9 [(org.openmcf.shared.options.default) = "false"];
+
+  // Enable multi-region writes (active-active).
+  // When enabled, all configured regions accept writes. Conflicts are
+  // resolved using the configured conflict resolution policy.
+  //
+  // Requires `automatic_failover_enabled` to be true.
+  // Increases cost but enables lowest-latency writes from any region.
+  //
+  // Default: false
+  optional bool multiple_write_locations_enabled = 10 [(org.openmcf.shared.options.default) = "false"];
+
+  // Whether the account is accessible over the public internet.
+  // When false, the account can only be accessed via AzurePrivateEndpoint.
+  //
+  // Default: true
+  optional bool public_network_access_enabled = 11 [(org.openmcf.shared.options.default) = "true"];
+
+  // Enable virtual network filtering.
+  // When enabled, only traffic from allowed virtual networks (defined in
+  // `virtual_network_rules`) can reach the account.
+  //
+  // Default: false
+  optional bool is_virtual_network_filter_enabled = 12 [(org.openmcf.shared.options.default) = "false"];
+
+  // Virtual network rules for restricting network access.
+  // Only effective when `is_virtual_network_filter_enabled` is true.
+  // Each rule allows traffic from a specific subnet.
+  repeated AzureCosmosdbVirtualNetworkRule virtual_network_rules = 13;
+
+  // IP-based firewall rules.
+  // A set of CIDR ranges or individual IPv4 addresses that are allowed to
+  // access the account. Applied in addition to virtual network rules.
+  //
+  // To allow access from the Azure portal, include: "104.42.195.92",
+  // "40.76.54.131", "52.176.6.30", "52.169.50.45", "52.187.184.26"
+  //
+  // To allow all Azure datacenter IPs: include "0.0.0.0"
+  repeated string ip_range_filter = 14;
+
+  // Backup policy configuration.
+  // If omitted, Azure defaults to Periodic backup with geo-redundant storage.
+  //
+  // Once set to Continuous, the backup type cannot be changed back to Periodic.
+  AzureCosmosdbBackupPolicy backup = 15;
+
+  // MongoDB server version.
+  // Only applicable when `kind` is "MongoDB". Ignored for GlobalDocumentDB.
+  //
+  // Controls the MongoDB wire protocol version that the account supports.
+  // Applications connecting via MongoDB drivers should use a compatible version.
+  //
+  // Valid values: "3.6", "4.0", "4.2", "5.0", "6.0", "7.0"
+  optional string mongo_server_version = 16 [(buf.validate.field).cel = {
+    id: "mongo_version_valid"
+    message: "mongo_server_version must be one of: 3.6, 4.0, 4.2, 5.0, 6.0, 7.0"
+    expression: "this in ['3.6', '4.0', '4.2', '5.0', '6.0', '7.0']"
+  }];
+
+  // SQL API databases and containers.
+  // Only applicable when `kind` is "GlobalDocumentDB" (default).
+  //
+  // Each database is a logical namespace for containers. Throughput can be
+  // provisioned at the database level (shared across containers) or at the
+  // container level (dedicated per container).
+  //
+  // If omitted, only the account is created with no databases.
+  repeated AzureCosmosdbSqlDatabase sql_databases = 17;
+
+  // MongoDB API databases and collections.
+  // Only applicable when `kind` is "MongoDB".
+  //
+  // Each database is a logical namespace for collections. Throughput can be
+  // provisioned at the database level (shared across collections) or at the
+  // collection level (dedicated per collection).
+  //
+  // If omitted, only the account is created with no databases.
+  repeated AzureCosmosdbMongoDatabase mongo_databases = 18;
+}
+
+// AzureCosmosdbConsistencyPolicy defines the default consistency policy for
+// the Cosmos DB account. Consistency is a per-account setting that applies
+// to all databases and containers.
+//
+// The five consistency levels (from strongest to weakest):
+// - "Strong": Linearizable. Reads return the most recent committed write.
+//   Only available in single-region or with single write region.
+// - "BoundedStaleness": Reads lag behind writes by at most K versions or T
+//   seconds. Requires `max_staleness_prefix` and `max_interval_in_seconds`.
+// - "Session": Read-your-writes within a client session. The default and
+//   recommended for most applications.
+// - "ConsistentPrefix": Reads never see out-of-order writes. No staleness
+//   bounds.
+// - "Eventual": No ordering or freshness guarantees. Highest throughput and
+//   lowest latency.
+message AzureCosmosdbConsistencyPolicy {
+  // The consistency level.
+  // Uses Azure's exact API values for provider authenticity.
+  //
+  // Default: "Session"
+  optional string consistency_level = 1 [
+    (org.openmcf.shared.options.default) = "Session",
+    (buf.validate.field).cel = {
+      id: "consistency_level_valid"
+      message: "consistency_level must be one of: BoundedStaleness, ConsistentPrefix, Eventual, Session, Strong"
+      expression: "this in ['BoundedStaleness', 'ConsistentPrefix', 'Eventual', 'Session', 'Strong']"
+    }
+  ];
+
+  // Maximum staleness interval in seconds.
+  // Only applicable when `consistency_level` is "BoundedStaleness".
+  // Defines the maximum time lag between writes and reads.
+  //
+  // Range: 5 to 86400 (24 hours).
+  // For multi-region accounts with BoundedStaleness, minimum is 300 seconds.
+  //
+  // Default: 5
+  optional int32 max_interval_in_seconds = 2 [
+    (org.openmcf.shared.options.default) = "5",
+    (buf.validate.field).int32 = {
+      gte: 5
+      lte: 86400
+    }
+  ];
+
+  // Maximum staleness prefix (number of stale requests tolerated).
+  // Only applicable when `consistency_level` is "BoundedStaleness".
+  // Defines the maximum number of versions (operations) a read can lag behind.
+  //
+  // Range: 10 to 2147483647.
+  // For multi-region accounts with BoundedStaleness, minimum is 100000.
+  //
+  // Default: 100
+  optional int32 max_staleness_prefix = 3 [
+    (org.openmcf.shared.options.default) = "100",
+    (buf.validate.field).int32.gte = 10
+  ];
+}
+
+// AzureCosmosdbGeoLocation defines a geographic region for the Cosmos DB account.
+//
+// At least one geo_location with `failover_priority = 0` is required (the
+// primary write region). Additional locations enable reads from closer regions
+// and provide failover capability.
+//
+// Failover priorities must be unique and contiguous starting from 0.
+// The maximum failover_priority value must equal the total number of regions
+// minus one.
+message AzureCosmosdbGeoLocation {
+  // The Azure region name for this geo-location.
+  // Examples: "eastus", "westeurope", "southeastasia".
+  //
+  // The location with `failover_priority = 0` should match the account's
+  // `region` field.
+  string location = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The failover priority for this region.
+  // Must be unique across all geo_locations.
+  // `0` = primary write region. Higher numbers = lower priority.
+  //
+  // When `automatic_failover_enabled` is true, Azure promotes the next
+  // region in priority order if the current write region fails.
+  int32 failover_priority = 2 [(buf.validate.field).int32.gte = 0];
+
+  // Enable availability zone redundancy for this region.
+  // When true, data is replicated across availability zones within the region
+  // for higher availability. Not all regions support zone redundancy.
+  //
+  // Default: false
+  optional bool zone_redundant = 3 [(org.openmcf.shared.options.default) = "false"];
+}
+
+// AzureCosmosdbVirtualNetworkRule defines a virtual network rule for
+// restricting access to the Cosmos DB account.
+message AzureCosmosdbVirtualNetworkRule {
+  // The subnet ID to allow access from.
+  // The subnet must have the "Microsoft.AzureCosmosDB" service endpoint enabled.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+}
+
+// AzureCosmosdbBackupPolicy defines the backup configuration for the account.
+//
+// Azure Cosmos DB supports two backup modes:
+// - **Periodic** (default): Backups are taken at regular intervals and retained
+//   for a configurable duration. Storage redundancy can be configured.
+// - **Continuous**: Continuous backups with point-in-time restore capability.
+//   More expensive but allows restoration to any point in time.
+//
+// **Important**: Once set to Continuous, the backup type cannot be changed
+// back to Periodic.
+message AzureCosmosdbBackupPolicy {
+  // The backup type.
+  // Uses Azure's exact API values.
+  //
+  // Valid values:
+  // - "Periodic": Backups at regular intervals (default Azure behavior)
+  // - "Continuous": Continuous backups with point-in-time restore
+  string type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "backup_type_valid"
+      message: "backup type must be one of: Periodic, Continuous"
+      expression: "this in ['Periodic', 'Continuous']"
+    }
+  ];
+
+  // Backup interval in minutes.
+  // Only applicable when `type` is "Periodic".
+  // Range: 60 to 1440 (1 hour to 24 hours).
+  //
+  // Default: 240 (4 hours) when Periodic
+  optional int32 interval_in_minutes = 2 [(buf.validate.field).int32 = {
+    gte: 60
+    lte: 1440
+  }];
+
+  // Backup retention in hours.
+  // Only applicable when `type` is "Periodic".
+  // Range: 8 to 720 (8 hours to 30 days).
+  //
+  // Default: 8 when Periodic
+  optional int32 retention_in_hours = 3 [(buf.validate.field).int32 = {
+    gte: 8
+    lte: 720
+  }];
+
+  // Storage redundancy for backup data.
+  // Only applicable when `type` is "Periodic".
+  //
+  // Valid values:
+  // - "Geo": Geo-redundant (default, replicated to paired region)
+  // - "Local": Locally-redundant (stays in same region)
+  // - "Zone": Zone-redundant (across availability zones, same region)
+  optional string storage_redundancy = 4 [(buf.validate.field).cel = {
+    id: "storage_redundancy_valid"
+    message: "storage_redundancy must be one of: Geo, Local, Zone"
+    expression: "this in ['Geo', 'Local', 'Zone']"
+  }];
+
+  // Continuous backup tier.
+  // Only applicable when `type` is "Continuous".
+  //
+  // Valid values:
+  // - "Continuous7Days": 7-day point-in-time restore window
+  // - "Continuous30Days": 30-day point-in-time restore window (higher cost)
+  optional string tier = 5 [(buf.validate.field).cel = {
+    id: "continuous_tier_valid"
+    message: "tier must be one of: Continuous7Days, Continuous30Days"
+    expression: "this in ['Continuous7Days', 'Continuous30Days']"
+  }];
+}
+
+// ---------------------------------------------------------------------------
+// SQL API Sub-Resources (used when kind = GlobalDocumentDB)
+// ---------------------------------------------------------------------------
+
+// AzureCosmosdbSqlDatabase defines a SQL API database within the Cosmos DB
+// account. A SQL database is a logical namespace for containers and a boundary
+// for shared throughput.
+//
+// Throughput can be provisioned at the database level (shared across all
+// containers in the database) or at the container level (dedicated). When
+// serverless mode is enabled via capabilities, throughput fields are ignored.
+//
+// `throughput` and `autoscale_max_throughput` are mutually exclusive.
+message AzureCosmosdbSqlDatabase {
+  // The database name.
+  // Must be unique within the account.
+  // Length: 1 to 255 characters.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 255
+  ];
+
+  // Provisioned throughput in RU/s (Request Units per second).
+  // Shared across all containers in this database unless a container
+  // has its own dedicated throughput.
+  // Minimum: 400. Increments of 100.
+  //
+  // Mutually exclusive with `autoscale_max_throughput`.
+  // Ignored when serverless mode is enabled.
+  optional int32 throughput = 2 [(buf.validate.field).int32.gte = 400];
+
+  // Maximum throughput for autoscale in RU/s.
+  // Azure automatically scales between 10% of this value and this value.
+  // Minimum: 1000. Increments of 1000.
+  //
+  // Mutually exclusive with `throughput`.
+  // Ignored when serverless mode is enabled.
+  optional int32 autoscale_max_throughput = 3 [(buf.validate.field).int32.gte = 1000];
+
+  // SQL containers within this database.
+  // Containers are where data is stored. Each container requires a partition
+  // key, which determines how data is distributed across physical partitions.
+  repeated AzureCosmosdbSqlContainer containers = 4;
+}
+
+// AzureCosmosdbSqlContainer defines a SQL API container (table) within a
+// database. Containers are the fundamental unit of scalability in Cosmos DB.
+//
+// The partition key is the single most critical design decision for Cosmos DB
+// performance and cost. Choose a partition key that:
+// - Has high cardinality (many distinct values)
+// - Distributes requests evenly across partitions
+// - Is frequently used in query WHERE clauses
+//
+// Common partition key choices: tenantId, userId, deviceId, region.
+// Avoid: timestamp (hot partition), status (low cardinality).
+message AzureCosmosdbSqlContainer {
+  // The container name.
+  // Must be unique within the database.
+  // Length: 1 to 255 characters.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 255
+  ];
+
+  // Partition key paths.
+  // At least one path is required. Each path starts with "/" and references
+  // a property in the JSON document.
+  //
+  // Single partition key (most common): ["/tenantId"]
+  // Hierarchical partition key (MultiHash): ["/tenantId", "/userId"]
+  //
+  // When using multiple paths, set `partition_key_kind` to "MultiHash".
+  repeated string partition_key_paths = 2 [(buf.validate.field).repeated.min_items = 1];
+
+  // Partition key kind.
+  // Determines how the partition key is hashed.
+  //
+  // Valid values:
+  // - "Hash" (default): Single partition key path
+  // - "MultiHash": Hierarchical (multi-level) partition key
+  //
+  // Use "MultiHash" when `partition_key_paths` has multiple paths.
+  optional string partition_key_kind = 3 [
+    (org.openmcf.shared.options.default) = "Hash",
+    (buf.validate.field).cel = {
+      id: "partition_key_kind_valid"
+      message: "partition_key_kind must be one of: Hash, MultiHash"
+      expression: "this in ['Hash', 'MultiHash']"
+    }
+  ];
+
+  // Provisioned throughput in RU/s for this container (dedicated).
+  // When set, this container uses its own dedicated throughput instead
+  // of sharing the database-level throughput.
+  // Minimum: 400. Increments of 100.
+  //
+  // Mutually exclusive with `autoscale_max_throughput`.
+  // Ignored when serverless mode is enabled.
+  optional int32 throughput = 4 [(buf.validate.field).int32.gte = 400];
+
+  // Maximum throughput for autoscale in RU/s for this container.
+  // Minimum: 1000. Increments of 1000.
+  //
+  // Mutually exclusive with `throughput`.
+  // Ignored when serverless mode is enabled.
+  optional int32 autoscale_max_throughput = 5 [(buf.validate.field).int32.gte = 1000];
+
+  // Default time-to-live in seconds.
+  // When set, documents in this container automatically expire after this
+  // duration unless overridden by a per-document TTL.
+  //
+  // -1 means TTL is enabled but no default expiry (per-document TTL only).
+  // 0 or omitted means TTL is disabled.
+  // Positive value: default expiry in seconds.
+  optional int32 default_ttl = 6;
+}
+
+// ---------------------------------------------------------------------------
+// MongoDB API Sub-Resources (used when kind = MongoDB)
+// ---------------------------------------------------------------------------
+
+// AzureCosmosdbMongoDatabase defines a MongoDB API database within the Cosmos
+// DB account. A Mongo database is a logical namespace for collections and a
+// boundary for shared throughput.
+//
+// `throughput` and `autoscale_max_throughput` are mutually exclusive.
+message AzureCosmosdbMongoDatabase {
+  // The database name.
+  // Must be unique within the account.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 255
+  ];
+
+  // Provisioned throughput in RU/s.
+  // Shared across all collections in this database.
+  // Minimum: 400. Increments of 100.
+  optional int32 throughput = 2 [(buf.validate.field).int32.gte = 400];
+
+  // Maximum throughput for autoscale in RU/s.
+  // Minimum: 1000. Increments of 1000.
+  optional int32 autoscale_max_throughput = 3 [(buf.validate.field).int32.gte = 1000];
+
+  // MongoDB collections within this database.
+  repeated AzureCosmosdbMongoCollection collections = 4;
+}
+
+// AzureCosmosdbMongoCollection defines a MongoDB API collection within a
+// database. Collections are the MongoDB equivalent of SQL containers.
+//
+// The shard key is the MongoDB equivalent of a partition key. It determines
+// how data is distributed across physical partitions. The same design
+// principles apply: high cardinality, even distribution, query alignment.
+message AzureCosmosdbMongoCollection {
+  // The collection name.
+  // Must be unique within the database.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 255
+  ];
+
+  // The shard key for the collection.
+  // Determines how documents are distributed across physical partitions.
+  // This is the MongoDB equivalent of a SQL API partition key.
+  //
+  // Examples: "_id", "tenantId", "userId", "region"
+  //
+  // Choose a shard key with high cardinality and even distribution.
+  string shard_key = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Provisioned throughput in RU/s for this collection (dedicated).
+  // Minimum: 400. Increments of 100.
+  optional int32 throughput = 3 [(buf.validate.field).int32.gte = 400];
+
+  // Maximum throughput for autoscale in RU/s for this collection.
+  // Minimum: 1000. Increments of 1000.
+  optional int32 autoscale_max_throughput = 4 [(buf.validate.field).int32.gte = 1000];
+
+  // Default time-to-live in seconds.
+  // When set, documents in this collection automatically expire.
+  // -1 means TTL is enabled but no default expiry (per-document TTL only).
+  optional int32 default_ttl_seconds = 5;
+
+  // Indexes to create on the collection.
+  // MongoDB automatically creates an index on the `_id` field.
+  // Additional indexes improve query performance for frequently queried fields.
+  repeated AzureCosmosdbMongoIndex indexes = 6;
+}
+
+// AzureCosmosdbMongoIndex defines an index on a MongoDB collection.
+// Indexes improve query performance by allowing efficient lookups on
+// specific fields.
+message AzureCosmosdbMongoIndex {
+  // The field names to include in the index.
+  // For single-field indexes: ["fieldName"]
+  // For compound indexes: ["field1", "field2"]
+  repeated string keys = 1 [(buf.validate.field).repeated.min_items = 1];
+
+  // Whether the index enforces uniqueness.
+  // When true, the index rejects duplicate values for the indexed fields.
+  //
+  // Default: false
+  optional bool unique = 2 [(org.openmcf.shared.options.default) = "false"];
+}

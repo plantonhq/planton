@@ -16,6 +16,10 @@ func TestAzureDnsRecordSpec(t *testing.T) {
 	ginkgo.RunSpecs(t, "AzureDnsRecordSpec Custom Validation Tests")
 }
 
+func stringRef(s string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: s}}
+}
+
 var _ = ginkgo.Describe("AzureDnsRecordSpec Custom Validation Tests", func() {
 
 	ginkgo.Describe("When valid input is passed", func() {
@@ -29,7 +33,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Custom Validation Tests", func() {
 						Name: "test-a-record",
 					},
 					Spec: &AzureDnsRecordSpec{
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 						ZoneName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "example.com",
@@ -52,7 +56,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Custom Validation Tests", func() {
 						Name: "apex-record",
 					},
 					Spec: &AzureDnsRecordSpec{
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 						ZoneName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "example.com",
@@ -75,7 +79,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Custom Validation Tests", func() {
 						Name: "wildcard-record",
 					},
 					Spec: &AzureDnsRecordSpec{
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 						ZoneName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "example.com",
@@ -98,7 +102,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Custom Validation Tests", func() {
 						Name: "mx-record",
 					},
 					Spec: &AzureDnsRecordSpec{
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 						ZoneName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "example.com",
@@ -122,7 +126,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Custom Validation Tests", func() {
 						Name: "cname-record",
 					},
 					Spec: &AzureDnsRecordSpec{
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 						ZoneName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "example.com",
@@ -145,7 +149,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Custom Validation Tests", func() {
 						Name: "txt-record",
 					},
 					Spec: &AzureDnsRecordSpec{
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 						ZoneName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "example.com",
@@ -168,7 +172,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Custom Validation Tests", func() {
 						Name: "nested-record",
 					},
 					Spec: &AzureDnsRecordSpec{
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 						ZoneName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "example.com",
@@ -191,7 +195,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Custom Validation Tests", func() {
 						Name: "ref-record",
 					},
 					Spec: &AzureDnsRecordSpec{
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 						ZoneName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 								ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -243,7 +247,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Custom Validation Tests", func() {
 						Name: "test-record",
 					},
 					Spec: &AzureDnsRecordSpec{
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 						Type:          AzureDnsRecordSpec_A,
 						Name:          "www",
 						Values:        []string{"192.0.2.1"},
@@ -261,7 +265,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Custom Validation Tests", func() {
 						Name: "test-record",
 					},
 					Spec: &AzureDnsRecordSpec{
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 						ZoneName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "example.com",
@@ -284,7 +288,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Custom Validation Tests", func() {
 						Name: "test-record",
 					},
 					Spec: &AzureDnsRecordSpec{
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 						ZoneName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "example.com",
@@ -306,7 +310,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Custom Validation Tests", func() {
 						Name: "test-record",
 					},
 					Spec: &AzureDnsRecordSpec{
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 						ZoneName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "example.com",
@@ -329,7 +333,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Custom Validation Tests", func() {
 						Name: "test-record",
 					},
 					Spec: &AzureDnsRecordSpec{
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 						ZoneName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "example.com",
@@ -353,7 +357,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Custom Validation Tests", func() {
 						Name: "test-record",
 					},
 					Spec: &AzureDnsRecordSpec{
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 						ZoneName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "example.com",

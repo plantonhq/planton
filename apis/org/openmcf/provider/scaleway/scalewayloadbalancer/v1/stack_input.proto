@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway.scalewayloadbalancer.v1;
+
+import "org/openmcf/provider/scaleway/provider.proto";
+import "org/openmcf/provider/scaleway/scalewayloadbalancer/v1/api.proto";
+
+// ScalewayLoadBalancerStackInput is the input contract for the Pulumi/Terraform
+// modules that provision a Scaleway Load Balancer.
+//
+// The platform populates this message by resolving all StringValueOrRef
+// references (replacing `value_from` with literal strings) before passing
+// it to the IaC engine.
+message ScalewayLoadBalancerStackInput {
+  // target is the fully-resolved ScalewayLoadBalancer resource to provision.
+  ScalewayLoadBalancer target = 1;
+
+  // provider_config holds the Scaleway API credentials and project context.
+  org.openmcf.provider.scaleway.ScalewayProviderConfig provider_config = 2;
+}

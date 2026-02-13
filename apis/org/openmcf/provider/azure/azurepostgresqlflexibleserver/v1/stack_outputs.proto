@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azurepostgresqlflexibleserver.v1;
+
+// **AzurePostgresqlFlexibleServerStackOutputs** captures the outputs of
+// provisioning an Azure Database for PostgreSQL Flexible Server.
+//
+// The primary outputs are `server_id` for resource identification, `fqdn`
+// for constructing connection strings, and `administrator_login` for
+// authentication. The `database_ids` map provides individual database
+// resource IDs for downstream references.
+//
+// In the database-stack infra chart, the `fqdn` and `administrator_login`
+// outputs are used by applications to construct PostgreSQL connection strings.
+// The `server_id` is referenced by AzurePrivateEndpoint for private connectivity.
+message AzurePostgresqlFlexibleServerStackOutputs {
+  // The Azure Resource Manager ID of the PostgreSQL Flexible Server.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.DBforPostgreSQL/flexibleServers/{name}
+  //
+  // Referenced by AzurePrivateEndpoint (private_connection_resource_id)
+  // for establishing private connectivity to the database server.
+  string server_id = 1;
+
+  // The name of the PostgreSQL Flexible Server.
+  string server_name = 2;
+
+  // The fully qualified domain name of the PostgreSQL Flexible Server.
+  // Format: {name}.postgres.database.azure.com
+  //
+  // Used to construct connection strings:
+  //   postgresql://{admin_login}:{password}@{fqdn}:5432/{database}?sslmode=require
+  string fqdn = 3;
+
+  // The administrator login name.
+  // Exported so downstream resources and applications can construct
+  // connection strings without needing to duplicate this value.
+  string administrator_login = 4;
+
+  // Map of database names to their Azure Resource Manager IDs.
+  // Only populated for databases defined in the spec's `databases` field.
+  // Format: { "myapp": "/subscriptions/.../databases/myapp" }
+  map<string, string> database_ids = 5;
+}

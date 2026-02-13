@@ -49,6 +49,8 @@ The following KUBERNETES resources can be deployed using OpenMCF:
 - [Redis](/docs/catalog/kubernetes/kubernetesredis)
 - [Rookceph Cluster](/docs/catalog/kubernetes/kubernetesrookcephcluster)
 - [Rookceph Operator](/docs/catalog/kubernetes/kubernetesrookcephoperator)
+- [Secret](/docs/catalog/kubernetes/kubernetessecret)
+- [Service](/docs/catalog/kubernetes/kubernetesservice)
 - [SigNoz](/docs/catalog/kubernetes/kubernetessignoz)
 - [Solr](/docs/catalog/kubernetes/kubernetessolr)
 - [Solr Operator](/docs/catalog/kubernetes/kubernetessolroperator)

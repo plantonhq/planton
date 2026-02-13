@@ -32,6 +32,7 @@ var _ = ginkgo.Describe("AzureAksNodePoolSpec Custom Validation Tests", func() {
 						ClusterName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-aks-cluster"},
 						},
+						ResourceGroup:     stringRef("test-rg"),
 						VmSize:            "Standard_D4s_v3",
 						InitialNodeCount:  2,
 						AvailabilityZones: []string{"1", "2"},
@@ -52,6 +53,7 @@ var _ = ginkgo.Describe("AzureAksNodePoolSpec Custom Validation Tests", func() {
 						ClusterName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-aks-cluster"},
 						},
+						ResourceGroup:    stringRef("test-rg"),
 						VmSize:           "Standard_D8s_v3",
 						InitialNodeCount: 2,
 						Autoscaling: &AzureAksNodePoolAutoscaling{
@@ -76,6 +78,7 @@ var _ = ginkgo.Describe("AzureAksNodePoolSpec Custom Validation Tests", func() {
 						ClusterName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-aks-cluster"},
 						},
+						ResourceGroup:     stringRef("test-rg"),
 						VmSize:            "Standard_D4s_v3",
 						InitialNodeCount:  3,
 						AvailabilityZones: []string{"1", "2", "3"},
@@ -98,6 +101,7 @@ var _ = ginkgo.Describe("AzureAksNodePoolSpec Custom Validation Tests", func() {
 						ClusterName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-aks-cluster"},
 						},
+						ResourceGroup:    stringRef("test-rg"),
 						VmSize:           "Standard_D8s_v3",
 						InitialNodeCount: 1, // Must start with at least 1 node, can scale to 0 via autoscaling
 						Autoscaling: &AzureAksNodePoolAutoscaling{
@@ -124,6 +128,7 @@ var _ = ginkgo.Describe("AzureAksNodePoolSpec Custom Validation Tests", func() {
 						ClusterName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-aks-cluster"},
 						},
+						ResourceGroup:     stringRef("test-rg"),
 						VmSize:            "Standard_D4s_v3",
 						InitialNodeCount:  2,
 						AvailabilityZones: []string{"1", "2"},
@@ -146,6 +151,7 @@ var _ = ginkgo.Describe("AzureAksNodePoolSpec Custom Validation Tests", func() {
 						ClusterName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-aks-cluster"},
 						},
+						ResourceGroup:     stringRef("test-rg"),
 						VmSize:            "Standard_D4s_v3",
 						InitialNodeCount:  2,
 						AvailabilityZones: []string{}, // Empty zones is valid (uses regional defaults)
@@ -168,6 +174,7 @@ var _ = ginkgo.Describe("AzureAksNodePoolSpec Custom Validation Tests", func() {
 						Name: "test-node-pool",
 					},
 					Spec: &AzureAksNodePoolSpec{
+						ResourceGroup:     stringRef("test-rg"),
 						VmSize:            "Standard_D4s_v3",
 						InitialNodeCount:  2,
 						AvailabilityZones: []string{"1", "2"},
@@ -188,6 +195,7 @@ var _ = ginkgo.Describe("AzureAksNodePoolSpec Custom Validation Tests", func() {
 						ClusterName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-aks-cluster"},
 						},
+						ResourceGroup:     stringRef("test-rg"),
 						InitialNodeCount:  2,
 						AvailabilityZones: []string{"1", "2"},
 					},
@@ -207,6 +215,7 @@ var _ = ginkgo.Describe("AzureAksNodePoolSpec Custom Validation Tests", func() {
 						ClusterName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-aks-cluster"},
 						},
+						ResourceGroup:     stringRef("test-rg"),
 						VmSize:            "Standard_D4s_v3",
 						InitialNodeCount:  0,
 						AvailabilityZones: []string{"1", "2"},
@@ -227,6 +236,7 @@ var _ = ginkgo.Describe("AzureAksNodePoolSpec Custom Validation Tests", func() {
 						ClusterName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-aks-cluster"},
 						},
+						ResourceGroup:     stringRef("test-rg"),
 						VmSize:            "Standard_D4s_v3",
 						InitialNodeCount:  -1,
 						AvailabilityZones: []string{"1", "2"},
@@ -247,6 +257,7 @@ var _ = ginkgo.Describe("AzureAksNodePoolSpec Custom Validation Tests", func() {
 						ClusterName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-aks-cluster"},
 						},
+						ResourceGroup:     stringRef("test-rg"),
 						VmSize:            "Standard_D4s_v3",
 						InitialNodeCount:  2,
 						AvailabilityZones: []string{"1"}, // Only 1 zone - violates min_items=2
@@ -267,6 +278,7 @@ var _ = ginkgo.Describe("AzureAksNodePoolSpec Custom Validation Tests", func() {
 						ClusterName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-aks-cluster"},
 						},
+						ResourceGroup:     stringRef("test-rg"),
 						VmSize:            "Standard_D4s_v3",
 						InitialNodeCount:  2,
 						AvailabilityZones: []string{"1", "4"}, // "4" is not valid (only 1, 2, 3 allowed)
@@ -278,3 +290,7 @@ var _ = ginkgo.Describe("AzureAksNodePoolSpec Custom Validation Tests", func() {
 		})
 	})
 })
+
+func stringRef(s string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: s}}
+}

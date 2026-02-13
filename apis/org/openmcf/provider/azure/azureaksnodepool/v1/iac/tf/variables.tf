@@ -36,5 +36,8 @@ variable "spec" {
 
     # Optional Spot instances
     spot_enabled = optional(bool, false)
+
+    # The Azure Resource Group where the node pool's parent cluster resides
+    resource_group = string
   })
 }

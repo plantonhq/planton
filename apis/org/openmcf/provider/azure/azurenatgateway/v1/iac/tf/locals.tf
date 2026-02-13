@@ -9,16 +9,9 @@ locals {
   # Generate NAT Gateway name
   nat_gateway_name = "natgw-${var.metadata.name}"
 
-  # Parse subnet ID to extract resource group and location
-  # Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{vnet}/subnets/{subnet}
-  subnet_id_parts = split("/", var.spec.subnet_id)
-
-  # Extract resource group name from subnet ID
-  resource_group = (
-    length(local.subnet_id_parts) >= 5 ?
-    element([for i, v in local.subnet_id_parts : local.subnet_id_parts[i + 1] if v == "resourceGroups"], 0) :
-    ""
-  )
+  # Resource group and region are explicit spec fields
+  resource_group = var.spec.resource_group
+  location       = var.spec.region
 
   # Base tags for Azure resources
   base_tags = {
@@ -43,12 +36,5 @@ locals {
 
   # Determine if we're creating a prefix or individual IP
   use_ip_prefix = var.spec.public_ip_prefix_length != null && var.spec.public_ip_prefix_length > 0
-}
-
-# Data source to get the subnet details for location
-data "azurerm_subnet" "target" {
-  name                 = element(reverse(split("/", var.spec.subnet_id)), 0)
-  virtual_network_name = element(reverse(split("/", var.spec.subnet_id)), 2)
-  resource_group_name  = local.resource_group
 }
 

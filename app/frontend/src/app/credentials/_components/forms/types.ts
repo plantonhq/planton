@@ -36,6 +36,17 @@ export interface OpenStackFormData {
   endpointType?: string;
 }
 
+// Form data for Scaleway credentials.
+// Flat structure matching ScalewayProviderConfig proto fields.
+export interface ScalewayFormData {
+  accessKey?: string;
+  secretKey?: string;
+  projectId?: string;
+  organizationId?: string;
+  region?: string;
+  zone?: string;
+}
+
 // Form-friendly type based on CreateCredentialRequest fields (without the protobuf Message wrapper)
 export type CredentialFormData = {
   name: string;
@@ -47,5 +58,6 @@ export type CredentialFormData = {
   openstack?: OpenStackFormData;
   // Auth method discriminator for the OpenStack credential form (not part of the proto)
   openstackAuthMethod?: 'password' | 'application_credential' | 'token';
+  scaleway?: ScalewayFormData;
 };
 

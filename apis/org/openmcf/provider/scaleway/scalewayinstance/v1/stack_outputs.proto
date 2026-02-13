@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway.scalewayinstance.v1;
+
+// ScalewayInstanceStackOutputs captures the provisioned instance details.
+//
+// The primary outputs are `server_id` and the IP addresses. These enable
+// downstream resource composition in infra charts:
+//   - `public_ip_address` is used by ScalewayDnsRecord for A records.
+//   - `private_ip_address` is used by ScalewayLoadBalancer as a backend server IP.
+//   - `server_id` is used for management, monitoring, and lifecycle operations.
+message ScalewayInstanceStackOutputs {
+  // The unique identifier of the created instance server.
+  //
+  // Format: zoned ID (e.g., "fr-par-1/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx").
+  // This is the primary output for referencing this instance in Scaleway APIs,
+  // monitoring dashboards, and automation scripts.
+  string server_id = 1;
+
+  // The public IPv4 address assigned to the instance.
+  //
+  // Populated only when `spec.public_ip` is set. Empty string if the instance
+  // has no public IP.
+  //
+  // Use this output for:
+  //   - DNS A records (via ScalewayDnsRecord)
+  //   - SSH access configuration
+  //   - External service whitelisting
+  //   - Monitoring endpoint registration
+  string public_ip_address = 2;
+
+  // The unique identifier of the Flexible IP resource.
+  //
+  // Populated only when `spec.public_ip` is set. Empty string otherwise.
+  // Format: zoned ID. The Flexible IP has independent lifecycle -- it
+  // survives instance replacement, preserving DNS records and firewall rules.
+  string public_ip_id = 3;
+
+  // The private IP address on the attached Private Network.
+  //
+  // Populated only when `spec.private_network_id` is set. Empty string if
+  // no Private Network is configured.
+  //
+  // Use this output for:
+  //   - Load Balancer backend server IPs
+  //   - Internal service discovery
+  //   - Database connection allowlists
+  //   - Inter-instance communication
+  string private_ip_address = 4;
+}

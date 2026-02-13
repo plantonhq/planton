@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azurenetworksecuritygroup.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/azure/azurenetworksecuritygroup/v1/spec.proto";
+import "org/openmcf/provider/azure/azurenetworksecuritygroup/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// AzureNetworkSecurityGroup is the top-level API resource for an Azure Network
+// Security Group. NSGs provide stateful packet filtering for Azure resources,
+// controlling inbound and outbound traffic with priority-ordered security rules.
+message AzureNetworkSecurityGroup {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'azure.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AzureNetworkSecurityGroup'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AzureNetworkSecurityGroupSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AzureNetworkSecurityGroupStatus status = 5;
+}
+
+// AzureNetworkSecurityGroupStatus holds the deployment status and outputs.
+message AzureNetworkSecurityGroupStatus {
+  // stack-outputs
+  AzureNetworkSecurityGroupStackOutputs outputs = 1;
+}

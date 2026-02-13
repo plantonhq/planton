@@ -11,6 +11,10 @@ import (
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
 )
 
+func stringRef(s string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: s}}
+}
+
 func TestAzureAksClusterSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
 	ginkgo.RunSpecs(t, "AzureAksClusterSpec Custom Validation Tests")
@@ -29,7 +33,8 @@ var _ = ginkgo.Describe("AzureAksClusterSpec Custom Validation Tests", func() {
 						Name: "test-aks-cluster",
 					},
 					Spec: &AzureAksClusterSpec{
-						Region: "eastus",
+						Region:        "eastus",
+						ResourceGroup: stringRef("test-rg"),
 						VnetSubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -61,7 +66,8 @@ var _ = ginkgo.Describe("AzureAksClusterSpec Custom Validation Tests", func() {
 						Name: "test-aks-cluster",
 					},
 					Spec: &AzureAksClusterSpec{
-						Region: "eastus",
+						Region:        "eastus",
+						ResourceGroup: stringRef("test-rg"),
 						VnetSubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -101,7 +107,8 @@ var _ = ginkgo.Describe("AzureAksClusterSpec Custom Validation Tests", func() {
 						Name: "test-aks-cluster",
 					},
 					Spec: &AzureAksClusterSpec{
-						Region: "eastus",
+						Region:        "eastus",
+						ResourceGroup: stringRef("test-rg"),
 						VnetSubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -136,7 +143,8 @@ var _ = ginkgo.Describe("AzureAksClusterSpec Custom Validation Tests", func() {
 						Name: "test-aks-cluster",
 					},
 					Spec: &AzureAksClusterSpec{
-						Region: "eastus",
+						Region:        "eastus",
+						ResourceGroup: stringRef("test-rg"),
 						VnetSubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -166,7 +174,8 @@ var _ = ginkgo.Describe("AzureAksClusterSpec Custom Validation Tests", func() {
 						Name: "test-aks-cluster",
 					},
 					Spec: &AzureAksClusterSpec{
-						Region: "eastus",
+						Region:        "eastus",
+						ResourceGroup: stringRef("test-rg"),
 						VnetSubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -205,6 +214,7 @@ var _ = ginkgo.Describe("AzureAksClusterSpec Custom Validation Tests", func() {
 						Name: "test-aks-cluster",
 					},
 					Spec: &AzureAksClusterSpec{
+						ResourceGroup: stringRef("test-rg"),
 						VnetSubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -232,7 +242,8 @@ var _ = ginkgo.Describe("AzureAksClusterSpec Custom Validation Tests", func() {
 						Name: "test-aks-cluster",
 					},
 					Spec: &AzureAksClusterSpec{
-						Region: "eastus",
+						Region:        "eastus",
+						ResourceGroup: stringRef("test-rg"),
 						SystemNodePool: &AzureAksClusterSystemNodePool{
 							VmSize: "Standard_D4s_v5",
 							Autoscaling: &AzureAksClusterAutoscalingConfig{
@@ -255,7 +266,8 @@ var _ = ginkgo.Describe("AzureAksClusterSpec Custom Validation Tests", func() {
 						Name: "test-aks-cluster",
 					},
 					Spec: &AzureAksClusterSpec{
-						Region: "eastus",
+						Region:        "eastus",
+						ResourceGroup: stringRef("test-rg"),
 						VnetSubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -275,7 +287,8 @@ var _ = ginkgo.Describe("AzureAksClusterSpec Custom Validation Tests", func() {
 						Name: "test-aks-cluster",
 					},
 					Spec: &AzureAksClusterSpec{
-						Region: "eastus",
+						Region:        "eastus",
+						ResourceGroup: stringRef("test-rg"),
 						VnetSubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -303,7 +316,8 @@ var _ = ginkgo.Describe("AzureAksClusterSpec Custom Validation Tests", func() {
 						Name: "test-aks-cluster",
 					},
 					Spec: &AzureAksClusterSpec{
-						Region: "eastus",
+						Region:        "eastus",
+						ResourceGroup: stringRef("test-rg"),
 						VnetSubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -327,7 +341,8 @@ var _ = ginkgo.Describe("AzureAksClusterSpec Custom Validation Tests", func() {
 						Name: "test-aks-cluster",
 					},
 					Spec: &AzureAksClusterSpec{
-						Region: "eastus",
+						Region:        "eastus",
+						ResourceGroup: stringRef("test-rg"),
 						VnetSubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -355,7 +370,8 @@ var _ = ginkgo.Describe("AzureAksClusterSpec Custom Validation Tests", func() {
 						Name: "test-aks-cluster",
 					},
 					Spec: &AzureAksClusterSpec{
-						Region: "eastus",
+						Region:        "eastus",
+						ResourceGroup: stringRef("test-rg"),
 						VnetSubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
@@ -394,7 +410,8 @@ var _ = ginkgo.Describe("AzureAksClusterSpec Custom Validation Tests", func() {
 						Name: "test-aks-cluster",
 					},
 					Spec: &AzureAksClusterSpec{
-						Region: "eastus",
+						Region:        "eastus",
+						ResourceGroup: stringRef("test-rg"),
 						VnetSubnetId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "/subscriptions/sub-123/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",

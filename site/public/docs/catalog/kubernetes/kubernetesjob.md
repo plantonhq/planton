@@ -6,286 +6,262 @@ order: 100
 componentName: "kubernetesjob"
 ---
 
-# KubernetesJob: Technical Research Documentation
+# Kubernetes Job
 
-## Introduction
+Deploys a one-shot batch workload to Kubernetes as a Job with configurable parallelism, completion tracking, retry policies, environment variable and secret management, ConfigMap creation, and volume mounts. The Job runs pods to completion and then stops, making it suitable for data migrations, ETL pipelines, backup operations, and any task that must finish before the process exits.
 
-Kubernetes Jobs are a fundamental workload controller that runs pods to completion, making them the building blocks for batch processing in Kubernetes. Unlike Deployments that maintain a desired number of running pods indefinitely, or CronJobs that trigger on a schedule, Jobs create pods that execute a task and then stop.
+## What Gets Created
 
-This document provides comprehensive research into Kubernetes Jobs, their deployment landscape, implementation approaches, and the design decisions behind OpenMCF's KubernetesJob component.
+When you deploy a KubernetesJob resource, OpenMCF provisions:
 
-## What is a Kubernetes Job?
+- **Namespace** — created only when `createNamespace` is `true`
+- **Job** — a Kubernetes batch/v1 Job with the specified container image, resource limits, parallelism, completion requirements, retry policy, and optional deadline
+- **ConfigMaps** — one ConfigMap per entry in `configMaps`, available for mounting into the Job container
+- **Secret** — an Opaque Secret containing environment secrets provided as direct string values, created only when `env.secrets` includes direct values
+- **Image Pull Secret** — a `kubernetes.io/dockerconfigjson` Secret for pulling from private registries, created only when Docker config JSON is provided via the provider
 
-A Kubernetes Job creates one or more pods and ensures that a specified number of them successfully terminate. When a successful number of completions is reached, the job is complete. Jobs can run:
+## Prerequisites
 
-1. **Single Pods**: One pod runs to completion (default behavior)
-2. **Parallel Pods (Work Queue)**: Multiple pods process a shared queue until empty
-3. **Parallel Pods (Fixed Count)**: A specific number of pods each process a portion of work
-4. **Indexed Parallel Jobs**: Each pod gets a unique index for processing partitioned data
+- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
+- **A container image** accessible from the cluster (public registry or with a configured image pull secret)
 
-### Core Concepts
+## Quick Start
 
-**Completion**: A job is complete when the required number of pods have successfully terminated (exit code 0). The `completions` field specifies how many successful completions are needed.
+Create a file `job.yaml`:
 
-**Parallelism**: The `parallelism` field specifies the maximum number of pods that can run simultaneously. For work queue patterns, this is typically less than completions.
-
-**Backoff Limit**: The `backoffLimit` field specifies how many times Kubernetes retries creating a pod before marking the job as failed. Each retry uses exponential backoff.
-
-**Active Deadline**: The `activeDeadlineSeconds` field sets an absolute deadline for the job. If the job runs longer, it's terminated and marked as failed.
-
-**TTL After Finished**: The `ttlSecondsAfterFinished` field enables automatic cleanup of completed jobs after a specified duration.
-
-### Job Completion Modes
-
-Kubernetes 1.21+ introduced completion modes:
-
-1. **NonIndexed (default)**: All pods are interchangeable. The job completes when `.spec.completions` pods succeed.
-
-2. **Indexed**: Each pod gets a unique index (0 to completions-1) via the `JOB_COMPLETION_INDEX` environment variable. The job completes when each index has exactly one successful pod.
-
-Indexed mode is particularly useful for:
-- Processing partitioned datasets
-- Sharded database operations
-- Parallel processing with explicit coordination
-
-## Deployment Landscape
-
-### Manual Deployment Methods
-
-**kubectl CLI**:
-```bash
-kubectl create job my-job --image=busybox -- echo "Hello"
-kubectl get jobs
-kubectl describe job my-job
-kubectl logs job/my-job
-kubectl delete job my-job
-```
-
-**YAML Manifests**:
 ```yaml
-apiVersion: batch/v1
-kind: Job
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesJob
 metadata:
-  name: my-job
+  name: db-migrate
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesJob.db-migrate
 spec:
-  template:
-    spec:
-      containers:
-      - name: main
-        image: busybox
-        command: ["echo", "Hello"]
-      restartPolicy: Never
-  backoffLimit: 4
+  namespace: my-namespace
+  createNamespace: true
+  image:
+    repo: my-registry/db-migrate
+    tag: "v1.0.0"
 ```
 
-### Infrastructure-as-Code Tools
+Deploy:
 
-**Terraform (kubernetes provider)**:
-```hcl
-resource "kubernetes_job" "example" {
-  metadata {
-    name = "my-job"
-  }
-  spec {
-    template {
-      spec {
-        container {
-          name    = "main"
-          image   = "busybox"
-          command = ["echo", "Hello"]
-        }
-        restart_policy = "Never"
-      }
-    }
-    backoff_limit = 4
-  }
-}
+```shell
+openmcf apply -f job.yaml
 ```
 
-**Pulumi (Go)**:
-```go
-job, err := batchv1.NewJob(ctx, "my-job", &batchv1.JobArgs{
-    Spec: &batchv1.JobSpecArgs{
-        Template: &corev1.PodTemplateSpecArgs{
-            Spec: &corev1.PodSpecArgs{
-                Containers: corev1.ContainerArray{
-                    &corev1.ContainerArgs{
-                        Name:    pulumi.String("main"),
-                        Image:   pulumi.String("busybox"),
-                        Command: pulumi.StringArray{pulumi.String("echo"), pulumi.String("Hello")},
-                    },
-                },
-                RestartPolicy: pulumi.String("Never"),
-            },
-        },
-        BackoffLimit: pulumi.Int(4),
-    },
-})
+This creates a Job that runs one pod to completion in the `my-namespace` namespace, using default resource limits (1000m CPU, 1Gi memory), a backoff limit of 6, and a restart policy of `Never`.
+
+## Configuration Reference
+
+### Required Fields
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `namespace` | `StringValueOrRef` | Kubernetes namespace for the job. Can reference a KubernetesNamespace resource via `valueFrom`. | Required |
+| `image.repo` | `string` | Container image repository (e.g., `my-registry/worker`, `alpine`). | Required, non-empty |
+| `image.tag` | `string` | Container image tag (e.g., `latest`, `v2.0.0`). | Required, non-empty |
+
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `targetCluster.clusterKind` | `enum` | — | Kubernetes cluster kind. Valid values: `AwsEksCluster`, `GcpGkeCluster`, `AzureAksCluster`, `DigitalOceanKubernetesCluster`, `CivoKubernetesCluster`. |
+| `targetCluster.clusterName` | `string` | — | Name of the target Kubernetes cluster in the same environment. |
+| `createNamespace` | `bool` | `false` | When `true`, creates the namespace before deploying resources. |
+| `resources.limits.cpu` | `string` | `1000m` | Maximum CPU allocation. |
+| `resources.limits.memory` | `string` | `1Gi` | Maximum memory allocation. |
+| `resources.requests.cpu` | `string` | `50m` | Minimum guaranteed CPU. |
+| `resources.requests.memory` | `string` | `100Mi` | Minimum guaranteed memory. |
+| `env.variables` | `map<string, StringValueOrRef>` | `{}` | Environment variables. Each value can be a direct string via `value` or a reference to another resource via `valueFrom`. |
+| `env.secrets` | `map<string, KubernetesSensitiveValue>` | `{}` | Secret environment variables. Each value can be a direct string via `value` (auto-stored in a Kubernetes Secret) or a reference to an existing Kubernetes Secret via `secretRef`. |
+| `parallelism` | `uint32` | `1` | Number of pods to run in parallel. Set higher for parallel batch processing. |
+| `completions` | `uint32` | `1` | Number of successful pod completions required before the job is considered complete. |
+| `backoffLimit` | `uint32` | `6` | Number of retries before the job is marked as failed. |
+| `activeDeadlineSeconds` | `uint64` | `0` | Maximum duration in seconds for the job. The job is terminated if it exceeds this limit. `0` means no deadline. |
+| `ttlSecondsAfterFinished` | `uint32` | `0` | Seconds to retain the job after completion before automatic cleanup. `0` means no automatic cleanup. |
+| `completionMode` | `string` | `NonIndexed` | Completion mode. `NonIndexed`: all pods are equivalent. `Indexed`: each pod gets an index from 0 to completions-1. |
+| `restartPolicy` | `string` | `Never` | Pod restart policy. Allowed values: `OnFailure`, `Never`. |
+| `command` | `string[]` | `[]` | Overrides the container image ENTRYPOINT. |
+| `args` | `string[]` | `[]` | Overrides the container image CMD. |
+| `configMaps` | `map<string, string>` | `{}` | ConfigMaps to create alongside the job. Key is the ConfigMap name, value is the content. These can be referenced in `volumeMounts`. |
+| `volumeMounts` | `VolumeMount[]` | `[]` | Volume mounts supporting ConfigMap, Secret, HostPath, EmptyDir, and PVC sources. |
+| `suspend` | `bool` | `false` | When `true`, prevents pod creation. Existing pods are not affected. |
+
+## Examples
+
+### Database Migration
+
+A one-shot migration job that connects to a database using a referenced host and a secret password:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesJob
+metadata:
+  name: db-migrate
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesJob.db-migrate
+spec:
+  namespace: backend
+  image:
+    repo: my-registry/db-migrate
+    tag: "v2.1.0"
+  command:
+    - /bin/sh
+    - -c
+  args:
+    - "flyway -url=jdbc:postgresql://$DATABASE_HOST:5432/mydb migrate"
+  env:
+    variables:
+      DATABASE_HOST:
+        valueFrom:
+          kind: KubernetesPostgres
+          name: my-postgres
+          field: status.outputs.service
+    secrets:
+      DATABASE_PASSWORD:
+        secretRef:
+          name: postgres-credentials
+          key: password
+  backoffLimit: 3
+  activeDeadlineSeconds: 600
+  ttlSecondsAfterFinished: 3600
 ```
 
-### Specialized Tools
+### Parallel Batch Processing
 
-**Helm Charts**: Many applications include job templates for migrations, setup tasks, or backups.
+An indexed parallel job that processes partitioned data across multiple pods, each receiving its own index via the `JOB_COMPLETION_INDEX` environment variable:
 
-**Argo Workflows**: Extends Jobs into complex DAG-based workflows with dependencies.
-
-**Tekton**: CI/CD focused task runner built on Kubernetes primitives.
-
-**Kueue**: Kubernetes-native job queueing system for batch workloads.
-
-## Comparative Analysis
-
-| Aspect | kubectl/YAML | Terraform | Pulumi | OpenMCF |
-|--------|--------------|-----------|--------|-----------------|
-| Learning Curve | Low | Medium | Medium-High | Low |
-| Type Safety | None | Limited (HCL) | Full (Go) | Full (Protobuf) |
-| Multi-Cluster | Manual | Via providers | Via providers | Built-in |
-| Secrets Management | External | Via providers | Via providers | Integrated |
-| State Management | None | Remote state | Remote state | Integrated |
-| Validation | kubectl dry-run | terraform validate | Compile-time | Protobuf + CEL |
-| Documentation | Manual | terraform-docs | Code comments | Auto-generated |
-
-## OpenMCF's Approach
-
-### Design Philosophy
-
-OpenMCF's KubernetesJob follows the 80/20 principle, exposing the configuration options that address the most common use cases while providing sensible defaults for advanced settings.
-
-### Key Design Decisions
-
-1. **Unified Container Model**: Uses the same container image, resources, and environment variable patterns as KubernetesDeployment and KubernetesCronJob for consistency.
-
-2. **Foreign Key References**: Environment variables can reference outputs from other OpenMCF resources, enabling dynamic configuration.
-
-3. **Secret References**: Supports both direct secret values (for development) and Kubernetes Secret references (for production).
-
-4. **Volume Mounts**: Supports ConfigMaps, Secrets, PVCs, HostPaths, and EmptyDirs with a unified interface.
-
-5. **Sensible Defaults**:
-   - `parallelism: 1` - Sequential execution by default
-   - `completions: 1` - Single completion by default
-   - `backoffLimit: 6` - Standard Kubernetes default
-   - `restartPolicy: Never` - Job-level retries preferred over pod-level
-
-### Fields Included (80% Use Cases)
-
-| Field | Purpose |
-|-------|---------|
-| `namespace` | Target namespace with reference support |
-| `createNamespace` | Optionally create namespace |
-| `image` | Container image configuration |
-| `resources` | CPU and memory limits/requests |
-| `env` | Environment variables and secrets |
-| `parallelism` | Concurrent pod count |
-| `completions` | Required successful completions |
-| `backoffLimit` | Retry count before failure |
-| `activeDeadlineSeconds` | Maximum job duration |
-| `ttlSecondsAfterFinished` | Automatic cleanup timer |
-| `completionMode` | NonIndexed or Indexed |
-| `restartPolicy` | Never or OnFailure |
-| `command` / `args` | Container entry point override |
-| `configMaps` | Create ConfigMaps for the job |
-| `volumeMounts` | Mount various volume types |
-| `suspend` | Pause job creation |
-
-### Fields Excluded (Advanced/Rare)
-
-| Field | Reason for Exclusion |
-|-------|----------------------|
-| `selector` | Auto-generated, rarely customized |
-| `manualSelector` | Advanced use case |
-| `podFailurePolicy` | Complex, Kubernetes 1.26+ |
-| `successPolicy` | Complex, Kubernetes 1.30+ |
-| `backoffLimitPerIndex` | Indexed mode advanced config |
-| `maxFailedIndexes` | Indexed mode advanced config |
-| `podReplacementPolicy` | Advanced pod scheduling |
-| `managedBy` | External controller integration |
-
-## Implementation Architecture
-
-### Resource Creation Flow
-
-```
-User Manifest → Orchestrator → Stack Input → IaC Module → Kubernetes API
-                    ↓
-            Resolve References
-            Apply Defaults
-            Validate Schema
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesJob
+metadata:
+  name: batch-processor
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: staging.KubernetesJob.batch-processor
+spec:
+  namespace: data-pipeline
+  createNamespace: true
+  image:
+    repo: my-registry/batch-worker
+    tag: "v1.3.0"
+  resources:
+    limits:
+      cpu: "2000m"
+      memory: "4Gi"
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+  env:
+    variables:
+      INPUT_BUCKET:
+        value: "s3://my-bucket/input"
+      OUTPUT_BUCKET:
+        value: "s3://my-bucket/output"
+    secrets:
+      AWS_SECRET_ACCESS_KEY:
+        secretRef:
+          name: aws-credentials
+          key: secret-access-key
+  parallelism: 5
+  completions: 20
+  completionMode: Indexed
+  backoffLimit: 3
+  restartPolicy: OnFailure
+  activeDeadlineSeconds: 7200
 ```
 
-### Created Kubernetes Resources
+### Script Job with ConfigMap and Volume Mount
 
-1. **Namespace** (optional): If `createNamespace: true`
-2. **ConfigMaps**: From `spec.configMaps`
-3. **Secret** (internal): For `env.secrets` with direct values
-4. **Image Pull Secret** (optional): If Docker credentials provided
-5. **ServiceAccount**: For pod identity
-6. **Job**: The main batch workload
+A job that mounts a user-defined script from a ConfigMap and executes it, with an emptyDir volume for scratch space:
 
-### Output Values
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesJob
+metadata:
+  name: etl-pipeline
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesJob.etl-pipeline
+spec:
+  namespace: data-ops
+  image:
+    repo: python
+    tag: "3.12-slim"
+  command:
+    - /bin/sh
+    - -c
+  args:
+    - "pip install pandas && python /scripts/etl.py"
+  resources:
+    limits:
+      cpu: "4000m"
+      memory: "8Gi"
+    requests:
+      cpu: "1000m"
+      memory: "2Gi"
+  env:
+    variables:
+      SOURCE_DB:
+        valueFrom:
+          kind: KubernetesPostgres
+          name: source-db
+          field: status.outputs.service
+      TARGET_DB:
+        valueFrom:
+          kind: KubernetesPostgres
+          name: target-db
+          field: status.outputs.service
+  configMaps:
+    etl-script: |
+      import pandas as pd
+      import os
+      source = os.environ["SOURCE_DB"]
+      target = os.environ["TARGET_DB"]
+      print(f"Extracting from {source}, loading to {target}")
+      # ... ETL logic ...
+  volumeMounts:
+    - name: etl-script
+      mountPath: /scripts/etl.py
+      subPath: etl.py
+      configMap:
+        name: etl-script
+        key: etl-script
+        path: etl.py
+    - name: scratch
+      mountPath: /tmp/scratch
+      emptyDir:
+        sizeLimit: "10Gi"
+  backoffLimit: 2
+  activeDeadlineSeconds: 3600
+  ttlSecondsAfterFinished: 86400
+```
 
-| Output | Description |
-|--------|-------------|
-| `namespace` | Kubernetes namespace name |
-| `job_name` | Created job name |
+## Stack Outputs
 
-## Best Practices
+After deployment, the following outputs are available in `status.outputs`:
 
-### Resource Management
+| Output | Type | Description |
+|--------|------|-------------|
+| `namespace` | `string` | Kubernetes namespace where the job is created |
+| `jobName` | `string` | Name of the Kubernetes Job resource |
 
-1. **Always Set Limits**: Jobs can consume significant resources; set CPU and memory limits
-2. **Set Active Deadline**: Prevent runaway jobs with `activeDeadlineSeconds`
-3. **Enable TTL Cleanup**: Use `ttlSecondsAfterFinished` to prevent job accumulation
+## Related Components
 
-### Reliability
-
-1. **Configure Backoff**: Set appropriate `backoffLimit` for transient failures
-2. **Choose Restart Policy Carefully**:
-   - `Never`: Job controller handles retries (new pod each attempt)
-   - `OnFailure`: kubelet restarts container in same pod (preserves local state)
-3. **Use Indexed Mode**: For partitioned processing with failure isolation
-
-### Security
-
-1. **Use Secret References**: Avoid direct secret values in manifests
-2. **Limit Namespace Access**: Run jobs in dedicated namespaces
-3. **Use Service Accounts**: Configure appropriate RBAC permissions
-
-### Observability
-
-1. **Log Aggregation**: Ensure job logs are captured before pod cleanup
-2. **Set Meaningful Names**: Use descriptive job names for debugging
-3. **Monitor Job Metrics**: Track job success/failure rates
-
-## Comparison: Job vs CronJob
-
-| Aspect | Job | CronJob |
-|--------|-----|---------|
-| Trigger | Immediate on creation | Schedule-based |
-| Use Case | One-time tasks | Recurring tasks |
-| Cleanup | Manual or TTL | History limits |
-| Concurrency | N/A | Allow/Forbid/Replace |
-| Schedule | N/A | Cron expression |
-
-Choose **Job** when:
-- Task is triggered by an event (deployment, user action)
-- Exact timing isn't important
-- Task should run once
-
-Choose **CronJob** when:
-- Task needs to run on a schedule
-- Recurring execution is required
-- Time-based triggering is needed
-
-## Conclusion
-
-OpenMCF's KubernetesJob component provides a streamlined, type-safe interface for deploying batch workloads to Kubernetes. By focusing on the 80/20 of configuration options while maintaining consistency with other Kubernetes workload components, it enables platform teams to standardize job deployments across their infrastructure.
-
-The integration with OpenMCF's resource reference system allows jobs to dynamically reference configuration from other resources, while the dual IaC support (Pulumi and Terraform) ensures flexibility in deployment tooling preferences.
-
-## References
-
-- [Kubernetes Jobs Documentation](https://kubernetes.io/docs/concepts/workloads/controllers/job/)
-- [Kubernetes Indexed Jobs](https://kubernetes.io/docs/tasks/job/indexed-parallel-processing-static/)
-- [Kubernetes TTL Controller](https://kubernetes.io/docs/concepts/workloads/controllers/ttlafterfinished/)
-- [Batch Processing Patterns](https://kubernetes.io/docs/concepts/workloads/controllers/job/#job-patterns)
+- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesCronJob](/docs/catalog/kubernetes/kubernetescronjob) — runs jobs on a recurring schedule rather than as a one-shot execution
+- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — runs containers continuously as long-lived services
+- [KubernetesPostgres](/docs/catalog/kubernetes/kubernetespostgres) — commonly referenced for database connection environment variables
+- [KubernetesRedis](/docs/catalog/kubernetes/kubernetesredis) — commonly referenced for cache connection environment variables

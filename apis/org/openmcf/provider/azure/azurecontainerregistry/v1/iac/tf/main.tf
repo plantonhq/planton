@@ -1,15 +1,8 @@
-# Create Resource Group
-resource "azurerm_resource_group" "acr" {
-  name     = local.resource_group_name
-  location = var.spec.region
-  tags     = local.tags
-}
-
 # Create Azure Container Registry
 resource "azurerm_container_registry" "acr" {
   name                = local.registry_name
-  resource_group_name = azurerm_resource_group.acr.name
-  location            = azurerm_resource_group.acr.location
+  resource_group_name = local.resource_group_name
+  location            = var.spec.region
   sku                 = local.sku_name
   admin_enabled       = var.spec.admin_user_enabled
 
@@ -30,7 +23,7 @@ resource "azurerm_container_registry_geo_replication" "replicas" {
   for_each = local.sku_name == "Premium" ? toset(var.spec.geo_replication_regions) : []
 
   container_registry_name = azurerm_container_registry.acr.name
-  resource_group_name     = azurerm_resource_group.acr.name
+  resource_group_name     = local.resource_group_name
   location                = each.value
   zone_redundancy_enabled = true
 

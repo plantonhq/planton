@@ -1,0 +1,283 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway.scalewaykapsulepool.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// ScalewayKapsulePoolSpec defines the specification for an additional node
+// pool in an existing Scaleway Kapsule Kubernetes cluster.
+//
+// Node pools provide compute capacity for Kubernetes workloads. Each pool
+// consists of identical nodes (same instance type, root volume, container
+// runtime) and can be independently scaled, upgraded, and configured.
+//
+// This is a **standalone resource** (not composite) that creates a single
+// `scaleway_k8s_pool` resource. It depends on an existing
+// ScalewayKapsuleCluster, referenced via `cluster_id`.
+//
+// **Kubernetes labels and taints** are first-class fields in this spec.
+// Under the hood, they are applied via Scaleway's Cloud Controller Manager
+// (CCM) tag convention:
+//   - Labels: Pool tag `noprefix={key}={value}` → K8s node label `{key}={value}`
+//   - Taints: Pool tag `taint=noprefix={key}={value}:{Effect}` → K8s taint
+//
+// This abstraction gives users the same clean experience as other providers
+// (DigitalOcean, AWS) while using the correct Scaleway mechanism.
+//
+// **Composition pattern**: The pool requires a cluster reference via
+// `StringValueOrRef`. Infra charts wire this using `valueFrom`:
+//
+//   clusterId:
+//     valueFrom:
+//       kind: ScalewayKapsuleCluster
+//       name: my-cluster
+//       fieldPath: status.outputs.cluster_id
+message ScalewayKapsulePoolSpec {
+  // The Scaleway region where the pool will be created.
+  //
+  // Must match the parent cluster's region. All nodes in this pool will
+  // be placed in zones within this region.
+  //
+  // Examples: "fr-par", "nl-ams", "pl-waw"
+  //
+  // IMPORTANT: Cannot be changed after creation.
+  string region = 1 [(buf.validate.field).required = true];
+
+  // Reference to the Kapsule cluster in which to create this node pool.
+  //
+  // Can be a literal cluster ID or a reference to a ScalewayKapsuleCluster
+  // resource's output. In infra charts, this is wired via `valueFrom`.
+  //
+  // IMPORTANT: Cannot be changed after creation.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_id = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = ScalewayKapsuleCluster,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cluster_id"
+  ];
+
+  // Instance type for worker nodes (required).
+  //
+  // Determines CPU, RAM, and local storage for each node. Common types:
+  //   - Development:  "DEV1-M" (3 vCPU, 4 GB RAM)
+  //   - General:      "GP1-XS" (4 vCPU, 16 GB RAM), "GP1-S" (8 vCPU, 32 GB)
+  //   - Production:   "PRO2-S" (2 vCPU, 8 GB), "PRO2-M" (4 vCPU, 16 GB)
+  //
+  // See Scaleway pricing page for the full catalog. Instances with
+  // insufficient memory (DEV1-S, PLAY2-PICO, STARDUST) are not eligible.
+  //
+  // IMPORTANT: Cannot be changed after creation. To change instance types,
+  // create a new pool and migrate workloads.
+  string node_type = 3 [(buf.validate.field).required = true];
+
+  // Number of nodes in the pool (required).
+  //
+  // When autoscaling is disabled, this is the fixed pool size. When
+  // autoscaling is enabled, this is the initial size -- the autoscaler
+  // will adjust between min_size and max_size based on workload demands.
+  //
+  // Minimum: 1 (a pool must have at least one node).
+  //
+  // Note: When autoscaling is enabled, updates to this field are ignored
+  // by the provider -- the autoscaler controls the actual size.
+  int32 size = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  // Enable the cluster autoscaler for this pool.
+  //
+  // When true, Kubernetes automatically adds or removes nodes based on
+  // pending pod resource requests. Requires min_size and max_size to
+  // be configured. The autoscaler's behavior (delays, thresholds) is
+  // controlled by the cluster-level `autoscaler_config` on the parent
+  // ScalewayKapsuleCluster.
+  //
+  // Default: false (fixed-size pool).
+  bool auto_scale = 5;
+
+  // Minimum number of nodes when autoscaling is enabled.
+  //
+  // The autoscaler will not scale below this number, even if all nodes
+  // are underutilized. Set to at least 1 for availability.
+  //
+  // Only meaningful when auto_scale is true.
+  int32 min_size = 6;
+
+  // Maximum number of nodes when autoscaling is enabled.
+  //
+  // The autoscaler will not scale above this number, even if pods are
+  // pending. Controls cost ceiling.
+  //
+  // Only meaningful when auto_scale is true.
+  int32 max_size = 7;
+
+  // Enable autohealing for this pool.
+  //
+  // When true, Scaleway automatically detects and replaces unhealthy
+  // nodes. A node is considered unhealthy if its kubelet stops
+  // reporting status for a configurable period.
+  //
+  // Recommended for production pools.
+  bool autohealing = 8;
+
+  // Container runtime for pool nodes.
+  //
+  // Options:
+  //   - "containerd" (default, recommended) -- Industry-standard container
+  //     runtime. Required for Kubernetes 1.24+.
+  //
+  // IMPORTANT: Cannot be changed after creation.
+  string container_runtime = 9 [(org.openmcf.shared.options.recommended_default) = "containerd"];
+
+  // Root volume type for pool nodes.
+  //
+  // Controls the storage backing each node's root filesystem. Options
+  // depend on the instance type and availability zone.
+  //
+  // IMPORTANT: Cannot be changed after creation.
+  string root_volume_type = 10;
+
+  // Root volume size in GB for pool nodes.
+  //
+  // If omitted, uses the default size for the instance type. Increase
+  // for workloads that pull many large container images or need
+  // significant local ephemeral storage.
+  //
+  // IMPORTANT: Cannot be changed after creation.
+  int32 root_volume_size_in_gb = 11;
+
+  // Disable public IP addresses on pool nodes.
+  //
+  // When true, nodes have only private IPs (from the cluster's Private
+  // Network). This is the recommended security posture for production:
+  // nodes are not reachable from the internet.
+  //
+  // Requires a Public Gateway or NAT on the Private Network so nodes
+  // can reach external registries and APIs.
+  //
+  // IMPORTANT: Cannot be changed after creation.
+  bool public_ip_disabled = 12;
+
+  // Zone within the region to place pool nodes.
+  //
+  // Optional. If omitted, Scaleway chooses the zone automatically.
+  // Use this for zone-specific placement (e.g., "fr-par-1", "fr-par-2").
+  //
+  // All nodes in this pool will be in the specified zone. For multi-AZ
+  // deployments, create separate pools in different zones.
+  //
+  // IMPORTANT: Cannot be changed after creation.
+  string zone = 13;
+
+  // Placement group ID for anti-affinity scheduling.
+  //
+  // Associates pool nodes with a Scaleway Instance placement group. Use
+  // placement groups to spread nodes across different hypervisors for
+  // higher availability.
+  //
+  // Must be a valid placement group UUID. Placement groups are created
+  // separately via the Scaleway console or API.
+  //
+  // IMPORTANT: Cannot be changed after creation.
+  string placement_group_id = 14;
+
+  // Kubernetes labels to apply to all nodes in this pool.
+  //
+  // Labels are key-value pairs used for node selection and workload
+  // scheduling. Pods use `nodeSelector` or node affinity rules to
+  // target nodes with specific labels.
+  //
+  // Example: {"workload": "gpu", "team": "ml", "tier": "compute"}
+  //
+  // Implementation: Labels are applied via Scaleway's Cloud Controller
+  // Manager tag convention. Each label generates a pool tag in the
+  // format `noprefix={key}={value}`, which the CCM syncs to K8s nodes
+  // as the label `{key}={value}`.
+  map<string, string> kubernetes_labels = 15;
+
+  // Kubernetes taints to apply to all nodes in this pool.
+  //
+  // Taints prevent pods from being scheduled on these nodes unless they
+  // have matching tolerations. Commonly used for workload isolation
+  // (e.g., GPU nodes, dedicated system pools, batch processing).
+  //
+  // Implementation: Taints are applied via Scaleway's Cloud Controller
+  // Manager tag convention. Each taint generates a pool tag in the
+  // format `taint=noprefix={key}={value}:{Effect}`, which the CCM
+  // syncs to K8s nodes as the taint `{key}={value}:{Effect}`.
+  repeated ScalewayKapsulePoolTaint taints = 16;
+
+  // Node pool upgrade policy for rolling updates.
+  //
+  // Controls how nodes are replaced during Kubernetes version upgrades
+  // or pool configuration changes.
+  //
+  // Optional. If omitted, Scaleway uses defaults (max_surge=0,
+  // max_unavailable=1 -- one node at a time).
+  ScalewayKapsulePoolUpgradePolicy upgrade_policy = 17;
+
+  // Custom kubelet arguments for pool nodes.
+  //
+  // Power-user escape hatch for setting kubelet flags not exposed as
+  // first-class fields. Example: {"maxPods": "150"}.
+  //
+  // WARNING: Use with caution. Incorrect kubelet arguments can prevent
+  // nodes from joining the cluster or cause instability.
+  map<string, string> kubelet_args = 18;
+}
+
+// ScalewayKapsulePoolTaint represents a Kubernetes taint to apply to all
+// nodes in the pool.
+//
+// Taints work together with tolerations to ensure that pods are not
+// scheduled onto inappropriate nodes. A taint on a node instructs the
+// scheduler to avoid placing pods that don't tolerate the taint.
+message ScalewayKapsulePoolTaint {
+  // The taint key.
+  //
+  // Examples: "nvidia.com/gpu", "dedicated", "workload", "node-role"
+  string key = 1 [(buf.validate.field).required = true];
+
+  // The taint value.
+  //
+  // Examples: "true", "gpu", "batch", "system"
+  string value = 2;
+
+  // The taint effect.
+  //
+  // Must be one of:
+  //   - "NoSchedule" -- Pods that don't tolerate this taint will not be
+  //     scheduled on the node. Existing pods are not evicted.
+  //   - "PreferNoSchedule" -- Kubernetes will try to avoid scheduling
+  //     pods that don't tolerate this taint, but it's not guaranteed.
+  //   - "NoExecute" -- Pods that don't tolerate this taint will be
+  //     evicted if already running, and not scheduled if pending.
+  string effect = 3 [(buf.validate.field).required = true];
+}
+
+// ScalewayKapsulePoolUpgradePolicy controls how nodes are replaced
+// during pool upgrades.
+//
+// During a Kubernetes version upgrade or pool reconfiguration, nodes
+// are replaced one or more at a time according to this policy.
+message ScalewayKapsulePoolUpgradePolicy {
+  // Maximum number of extra nodes created during an upgrade.
+  //
+  // Surge nodes are temporary workers that accept workloads while
+  // existing nodes are drained and replaced. Higher values speed up
+  // upgrades but temporarily increase cost.
+  //
+  // Default: 0 (no surge nodes).
+  int32 max_surge = 1;
+
+  // Maximum number of nodes that can be unavailable simultaneously
+  // during an upgrade.
+  //
+  // Controls the disruption budget. Setting this to 1 means nodes
+  // are replaced one at a time (safest but slowest).
+  //
+  // Default: 1.
+  int32 max_unavailable = 2;
+}

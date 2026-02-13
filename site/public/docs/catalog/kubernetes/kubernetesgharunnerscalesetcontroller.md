@@ -6,418 +6,236 @@ order: 100
 componentName: "kubernetesgharunnerscalesetcontroller"
 ---
 
-# GitHub Actions Runner Scale Set Controller: Deployment Research
+# Kubernetes GHA Runner Scale Set Controller
 
-This document provides comprehensive research on deploying the GitHub Actions Runner Scale Set Controller on Kubernetes, exploring deployment methods, architectural decisions, and best practices.
+Deploys the GitHub Actions Runner Scale Set Controller on Kubernetes using the official OCI Helm chart from `ghcr.io/actions/actions-runner-controller-charts`. The controller manages `AutoScalingRunnerSet` and `EphemeralRunner` custom resources, enabling self-hosted GitHub Actions runners that scale dynamically based on workflow demand. This component installs only the controller; runner scale sets (the actual runner pods) are deployed separately.
 
-## Introduction
+## What Gets Created
 
-The GitHub Actions Runner Scale Set Controller is the official Kubernetes-native solution for running self-hosted GitHub Actions runners. It replaces the community-maintained actions-runner-controller (legacy mode) with a more scalable and maintainable architecture.
+When you deploy a KubernetesGhaRunnerScaleSetController resource, OpenMCF provisions:
 
-### What Problem Does It Solve?
+- **Kubernetes Namespace** — created if `createNamespace` is `true`
+- **Helm Release** — the `gha-runner-scale-set-controller` OCI chart (default version 0.13.1) from `ghcr.io/actions/actions-runner-controller-charts`, which creates:
+  - A controller Deployment that watches for `AutoScalingRunnerSet` resources and manages `EphemeralRunner` pods
+  - A ServiceAccount for the controller
+  - CRD management for `AutoScalingRunnerSet` and `EphemeralRunner` resource types
+  - Leader election support when running multiple replicas
+  - Metrics endpoints (when metrics configuration is provided)
 
-Self-hosted GitHub Actions runners provide:
+## Prerequisites
 
-1. **Cost Control**: Avoid per-minute charges for GitHub-hosted runners
-2. **Custom Environments**: Run workflows in specialized environments
-3. **Network Access**: Access internal resources without exposing them
-4. **Hardware Customization**: GPU, ARM, or high-memory workloads
-5. **Compliance**: Keep CI/CD within your infrastructure perimeter
+- **A Kubernetes cluster** with kubectl configured for access
+- **Helm 3** available (the module uses an OCI-based Helm chart)
+- **A GitHub App or PAT** configured for runner registration (required when deploying runner scale sets, not for the controller itself)
 
-### Evolution of GitHub Actions Self-Hosted Runners
+## Quick Start
 
-```mermaid
-flowchart TB
-    subgraph "Era 1: Manual Runners"
-        A[VM-based runners] --> B[Manual scaling]
-        B --> C[Always-on resources]
-    end
-    
-    subgraph "Era 2: Community Controller (Legacy)"
-        D[actions-runner-controller] --> E[Webhook-based scaling]
-        E --> F[Complex webhook infrastructure]
-    end
-    
-    subgraph "Era 3: Scale Set Controller (Current)"
-        G[gha-runner-scale-set-controller] --> H[Listener-based scaling]
-        H --> I[No webhook complexity]
-    end
-    
-    A --> D
-    D --> G
-```
-
-## Deployment Landscape
-
-### Method 1: Direct Helm Installation
-
-The simplest approach using the official Helm chart:
-
-```bash
-helm install arc \
-  oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller \
-  --namespace arc-system \
-  --create-namespace
-```
-
-**Pros:**
-- Officially supported by GitHub
-- Regular updates
-- Simple installation
-
-**Cons:**
-- Manual management outside GitOps
-- Version tracking requires external tools
-
-### Method 2: FluxCD/ArgoCD with Helm
-
-GitOps approach using Helm charts:
-
-```yaml
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
-kind: HelmRelease
-metadata:
-  name: arc-controller
-  namespace: arc-system
-spec:
-  chart:
-    spec:
-      chart: gha-runner-scale-set-controller
-      sourceRef:
-        kind: HelmRepository
-        name: actions-runner-controller
-  values:
-    replicaCount: 1
-```
-
-**Pros:**
-- GitOps-friendly
-- Declarative management
-- Easy rollbacks
-
-**Cons:**
-- Requires Flux/Argo setup
-- Additional abstraction layer
-
-### Method 3: Pulumi/Terraform
-
-Infrastructure-as-code approach:
-
-```go
-// Pulumi example
-chart, err := helm.NewChart(ctx, "arc-controller", helm.ChartArgs{
-    Chart:     pulumi.String("gha-runner-scale-set-controller"),
-    Namespace: pulumi.String("arc-system"),
-    FetchArgs: helm.FetchArgs{
-        Repo: pulumi.String("oci://ghcr.io/actions/actions-runner-controller-charts"),
-    },
-})
-```
-
-**Pros:**
-- Full programming language capabilities
-- Integration with other infrastructure
-- Strong typing and IDE support
-
-**Cons:**
-- Requires IaC toolchain
-- Learning curve
-
-### Method 4: OpenMCF (This Component)
-
-Declarative deployment with validation:
+Create a file `gha-controller.yaml`:
 
 ```yaml
 apiVersion: kubernetes.openmcf.org/v1
 kind: KubernetesGhaRunnerScaleSetController
 metadata:
   name: arc-controller
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesGhaRunnerScaleSetController.arc-controller
 spec:
   namespace:
     value: arc-system
+  createNamespace: true
   container:
     resources:
       requests:
-        cpu: 100m
-        memory: 128Mi
+        cpu: "100m"
+        memory: "128Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
 ```
 
-**Pros:**
-- Schema validation before deployment
-- Consistent interface across cloud resources
-- Multi-IaC backend support (Pulumi/Terraform)
+Deploy:
 
-**Cons:**
-- OpenMCF dependency
-
-## Architecture Deep Dive
-
-### Controller Components
-
-```mermaid
-flowchart TB
-    subgraph "Controller Pod"
-        CM[Controller Manager]
-        CM --> RC[Runner Controller]
-        CM --> LC[Listener Controller]
-        CM --> ERSC[EphemeralRunnerSet Controller]
-    end
-    
-    subgraph "Per AutoScalingRunnerSet"
-        AL[AutoScalingListener Pod]
-        ERS[EphemeralRunnerSet]
-        ER1[EphemeralRunner Pod]
-        ER2[EphemeralRunner Pod]
-        ER3[EphemeralRunner Pod]
-    end
-    
-    RC --> ERS
-    LC --> AL
-    ERSC --> ER1
-    ERSC --> ER2
-    ERSC --> ER3
-    
-    AL -->|Listen for jobs| GH[GitHub API]
-    AL -->|Scale request| ERS
+```shell
+openmcf apply -f gha-controller.yaml
 ```
 
-### Custom Resource Relationships
+This installs the controller in the `arc-system` namespace with default resource limits. Once running, you can deploy `AutoScalingRunnerSet` resources in any namespace to register self-hosted GitHub Actions runners.
 
-| CRD | Purpose | Created By |
-|-----|---------|------------|
-| AutoScalingRunnerSet | User-defined runner configuration | User |
-| AutoScalingListener | Listens to GitHub for job events | Controller |
-| EphemeralRunnerSet | Manages runner pod lifecycle | Controller |
-| EphemeralRunner | Individual runner pod definition | Controller |
+## Configuration Reference
 
-### Scaling Workflow
+### Required Fields
 
-```mermaid
-sequenceDiagram
-    participant GH as GitHub
-    participant AL as AutoScalingListener
-    participant Ctrl as Controller
-    participant ERS as EphemeralRunnerSet
-    participant ER as EphemeralRunner Pod
-    
-    GH->>AL: Job queued event
-    AL->>Ctrl: Scale request
-    Ctrl->>ERS: Update desired replicas
-    ERS->>ER: Create runner pod
-    ER->>GH: Register as runner
-    GH->>ER: Assign job
-    ER->>GH: Execute job
-    ER->>ER: Terminate (ephemeral)
-```
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `namespace` | `StringValueOrRef` | Kubernetes namespace where the controller will be installed. Use `value` for a direct string or `valueFrom` to reference a KubernetesNamespace resource. | Required |
+| `container` | `object` | Container specifications for the controller pod, including CPU/memory resources. | Required |
 
-## OpenMCF's Approach
+### Optional Fields
 
-### 80/20 Scoping Decision
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `createNamespace` | `bool` | `false` | Create the namespace if it does not exist. |
+| `helmChartVersion` | `string` | `"0.13.1"` | Version of the Helm chart to deploy. Chart versions match controller image versions. See [releases](https://github.com/actions/actions-runner-controller/releases). |
+| `replicaCount` | `int32` | `1` | Number of controller replicas. Leader election is automatically enabled when greater than 1. |
+| `container.resources.requests.cpu` | `string` | `"100m"` | CPU request for the controller container. |
+| `container.resources.requests.memory` | `string` | `"128Mi"` | Memory request for the controller container. |
+| `container.resources.limits.cpu` | `string` | `"500m"` | CPU limit for the controller container. |
+| `container.resources.limits.memory` | `string` | `"512Mi"` | Memory limit for the controller container. |
+| `container.image.repository` | `string` | `"ghcr.io/actions/gha-runner-scale-set-controller"` | Custom container image repository. |
+| `container.image.tag` | `string` | chart appVersion | Custom image tag. |
+| `container.image.pullPolicy` | `string` | -- | Image pull policy: `Always`, `IfNotPresent`, or `Never`. |
+| `flags.logLevel` | `enum` | `"debug"` | Log level for the controller. Valid values: `debug`, `info`, `warn`, `error`. |
+| `flags.logFormat` | `enum` | `"text"` | Log format. Valid values: `text`, `json`. |
+| `flags.watchSingleNamespace` | `string` | -- | Restrict the controller to watch only the specified namespace. By default, watches all namespaces. |
+| `flags.runnerMaxConcurrentReconciles` | `int32` | `2` | Maximum concurrent reconciles for the EphemeralRunner controller. |
+| `flags.updateStrategy` | `enum` | `"immediate"` | How upgrades are handled while jobs are running. `immediate` applies changes right away (may cause overprovisioning). `eventual` waits for running jobs to complete. |
+| `flags.excludeLabelPropagationPrefixes` | `string[]` | `[]` | Label prefixes to exclude from propagation to internal resources (e.g., ArgoCD labels). |
+| `flags.k8sClientRateLimiterQps` | `int32` | `0` | Kubernetes API client rate limiter QPS. |
+| `flags.k8sClientRateLimiterBurst` | `int32` | `0` | Kubernetes API client rate limiter burst. |
+| `metrics.controllerManagerAddr` | `string` | -- | Metrics address for the controller manager (e.g., `":8080"`). Providing this value enables metrics. |
+| `metrics.listenerAddr` | `string` | -- | Metrics address for the listener (e.g., `":8080"`). |
+| `metrics.listenerEndpoint` | `string` | -- | Metrics endpoint path for the listener (e.g., `"/metrics"`). |
+| `imagePullSecrets` | `string[]` | `[]` | Image pull secrets for private container registries. Also passed to the auto-scaler for pulling listener images. |
+| `priorityClassName` | `string` | -- | Priority class name for controller pods. Use `"system-cluster-critical"` to ensure the controller survives resource pressure. |
 
-This component focuses on the **controller deployment only**, which represents the 80/20 of what users need:
+## Examples
 
-**In Scope:**
-- Controller deployment and configuration
-- Resource allocation
-- Logging and metrics
-- High availability (replicas)
-- Rate limiting configuration
-- Update strategy
+### Minimal Controller with Defaults
 
-**Out of Scope (separate components):**
-- AutoScalingRunnerSet configuration
-- GitHub authentication secrets
-- Runner image customization
-- Runner-specific RBAC
-
-### Why Controller-Only?
-
-1. **Separation of Concerns**: Controller is cluster-wide; runner sets are per-team/repo
-2. **Different Lifecycles**: Controller updates rarely; runner sets change frequently
-3. **Simpler Validation**: Controller config is stable; runner config varies widely
-4. **Security Boundaries**: Controller doesn't need GitHub credentials
-
-## Configuration Deep Dive
-
-### Replica Count and Leader Election
-
-When `replicaCount > 1`, the controller enables leader election:
+Deploy the controller with default settings in a dedicated namespace:
 
 ```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesGhaRunnerScaleSetController
+metadata:
+  name: arc-controller
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesGhaRunnerScaleSetController.arc-controller
 spec:
-  replicaCount: 3  # Enables HA with leader election
+  namespace:
+    value: arc-system
+  createNamespace: true
+  container:
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "128Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
 ```
 
-- Only one replica actively reconciles at a time
-- Other replicas are on standby
-- Automatic failover if leader pod fails
+### High-Availability with Structured Logging
 
-### Update Strategies
-
-| Strategy | Behavior | Use Case |
-|----------|----------|----------|
-| `immediate` | Apply changes instantly | Dev/test environments |
-| `eventual` | Wait for running jobs | Production workloads |
-
-The `eventual` strategy prevents:
-- Runner overprovisioning during upgrades
-- Job interruption from listener recreation
-
-### Concurrent Reconciles
-
-Controls how many EphemeralRunner resources are reconciled simultaneously:
+Run multiple replicas for high availability and configure JSON logging for structured log aggregation:
 
 ```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesGhaRunnerScaleSetController
+metadata:
+  name: arc-controller-ha
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: staging.KubernetesGhaRunnerScaleSetController.arc-controller-ha
 spec:
+  namespace:
+    value: arc-system
+  createNamespace: true
+  helmChartVersion: "0.13.1"
+  replicaCount: 3
+  container:
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "256Mi"
+      limits:
+        cpu: "1000m"
+        memory: "1Gi"
   flags:
+    logLevel: info
+    logFormat: json
+    updateStrategy: eventual
+    runnerMaxConcurrentReconciles: 5
+  priorityClassName: system-cluster-critical
+```
+
+### Production with Metrics, Private Registry, and Namespace Scoping
+
+Full production configuration with metrics enabled, a private container registry, and the controller scoped to a single namespace:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesGhaRunnerScaleSetController
+metadata:
+  name: arc-controller-prod
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesGhaRunnerScaleSetController.arc-controller-prod
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      name: arc-system-prod
+      fieldPath: spec.name
+  container:
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "512Mi"
+      limits:
+        cpu: "2000m"
+        memory: "2Gi"
+    image:
+      repository: registry.internal.example.com/actions/gha-runner-scale-set-controller
+      tag: "0.13.1"
+      pullPolicy: IfNotPresent
+  replicaCount: 3
+  flags:
+    logLevel: info
+    logFormat: json
+    watchSingleNamespace: runners-prod
+    updateStrategy: eventual
     runnerMaxConcurrentReconciles: 10
-```
-
-**Trade-offs:**
-- Higher values = faster scaling
-- Higher values = more API server load
-- Default (2) is conservative for most clusters
-
-### Rate Limiting
-
-For large clusters with many runner sets:
-
-```yaml
-spec:
-  flags:
+    excludeLabelPropagationPrefixes:
+      - argocd.argoproj.io/
+      - app.kubernetes.io/managed-by
     k8sClientRateLimiterQps: 50
     k8sClientRateLimiterBurst: 100
-```
-
-Prevents controller from overwhelming the Kubernetes API server.
-
-## Production Best Practices
-
-### High Availability
-
-```yaml
-spec:
-  replicaCount: 3
-  priorityClassName: system-cluster-critical
-  container:
-    resources:
-      requests:
-        cpu: 200m
-        memory: 256Mi
-      limits:
-        cpu: 1000m
-        memory: 1Gi
-```
-
-### Monitoring
-
-Enable metrics for Prometheus scraping:
-
-```yaml
-spec:
   metrics:
     controllerManagerAddr: ":8080"
     listenerAddr: ":8080"
     listenerEndpoint: "/metrics"
+  imagePullSecrets:
+    - registry-credentials
+  priorityClassName: system-cluster-critical
 ```
 
-Create ServiceMonitor for Prometheus Operator:
+## Stack Outputs
 
-```yaml
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: arc-controller
-spec:
-  endpoints:
-    - port: metrics
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: gha-runner-scale-set-controller
-```
+After deployment, the following outputs are available in `status.outputs`:
 
-### Security Considerations
+| Output | Type | Description |
+|--------|------|-------------|
+| `namespace` | `string` | Namespace where the controller is deployed |
+| `releaseName` | `string` | Name of the Helm release |
+| `chartVersion` | `string` | Version of the deployed Helm chart |
+| `deploymentName` | `string` | Name of the controller Deployment |
+| `serviceAccountName` | `string` | Name of the controller ServiceAccount |
+| `metricsEndpoint` | `string` | Controller metrics endpoint in `<service>.<namespace>.svc.cluster.local:<port>` format (only present when metrics are enabled) |
 
-1. **Network Policies**: Restrict controller to only needed access
-2. **RBAC**: Controller creates ClusterRoleBindings; ensure least privilege
-3. **Pod Security**: Consider pod security standards
-4. **Image Registry**: Mirror images to internal registry for air-gapped environments
+## Related Components
 
-### Resource Sizing Guidelines
-
-| Cluster Size | Replicas | CPU Request | Memory Request |
-|--------------|----------|-------------|----------------|
-| Small (<10 runner sets) | 1 | 100m | 128Mi |
-| Medium (10-50 runner sets) | 2 | 200m | 256Mi |
-| Large (50+ runner sets) | 3 | 500m | 512Mi |
-
-## Common Issues and Solutions
-
-### Controller Not Starting
-
-**Symptom**: Controller pod in CrashLoopBackOff
-
-**Causes:**
-1. Missing CRDs (check `kubectl get crds | grep actions.github.com`)
-2. Insufficient RBAC permissions
-3. Resource constraints
-
-**Solution:** Ensure Helm chart installed CRDs correctly.
-
-### Runners Not Scaling
-
-**Symptom**: Jobs queued but no runners created
-
-**Causes:**
-1. AutoScalingListener not running
-2. GitHub authentication failed
-3. Rate limiting hit
-
-**Solution:** Check listener pod logs: `kubectl logs -n <namespace> -l actions.github.com/scale-set-name=<name>`
-
-### High API Server Load
-
-**Symptom**: Kubernetes API server throttling
-
-**Causes:**
-1. Too many concurrent reconciles
-2. Large number of runner sets
-3. Frequent scaling events
-
-**Solution:**
-```yaml
-spec:
-  flags:
-    runnerMaxConcurrentReconciles: 2
-    k8sClientRateLimiterQps: 20
-    k8sClientRateLimiterBurst: 30
-```
-
-## Comparison with Legacy Controller
-
-| Feature | Scale Set Controller | Legacy (Webhook) |
-|---------|---------------------|------------------|
-| Scaling Trigger | Long-polling listener | Webhook events |
-| Webhook Required | No | Yes |
-| Official Support | GitHub-maintained | Community |
-| CRD API | actions.github.com/v1alpha1 | actions.summerwind.dev/v1alpha1 |
-| Scale to Zero | Built-in | Requires configuration |
-
-## Conclusion
-
-The GitHub Actions Runner Scale Set Controller represents the evolution of self-hosted runner management. By deploying via OpenMCF, teams get:
-
-1. **Validated Configuration**: Schema validation catches errors before deployment
-2. **Consistent Interface**: Same manifest structure as other cloud resources
-3. **Multi-IaC Support**: Choose Pulumi or Terraform as the backend
-4. **Production Defaults**: Sensible defaults for resource allocation
-
-The 80/20 approach of focusing on controller deployment keeps this component focused while allowing flexibility for runner set configurations through separate resources.
-
-## References
-
-- [GitHub ARC Documentation](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners-with-actions-runner-controller/about-actions-runner-controller)
-- [ARC GitHub Repository](https://github.com/actions/actions-runner-controller)
-- [Helm Chart Values](https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set-controller/values.yaml)
-- [Quickstart Guide](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners-with-actions-runner-controller/quickstart-for-actions-runner-controller)
-
+- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — pre-create a namespace to reference via `valueFrom`
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — deploy additional Helm charts, such as the `gha-runner-scale-set` chart for runner pods
+- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — deploy custom workloads alongside the controller
+- [KubernetesSecret](/docs/catalog/kubernetes/kubernetessecret) — manage secrets for GitHub App credentials or PAT tokens used by runner scale sets

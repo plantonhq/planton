@@ -5,6 +5,8 @@
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv1";
 import { file_buf_validate_validate } from "../../../../../../buf/validate/validate_pb";
+import type { StringValueOrRef } from "../../../../shared/foreignkey/v1/foreign_key_pb";
+import { file_org_openmcf_shared_foreignkey_v1_foreign_key } from "../../../../shared/foreignkey/v1/foreign_key_pb";
 import type { DnsRecordType } from "../../../../shared/networking/enums/dnsrecordtype/dns_record_type_pb";
 import { file_org_openmcf_shared_networking_enums_dnsrecordtype_dns_record_type } from "../../../../shared/networking/enums/dnsrecordtype/dns_record_type_pb";
 import { file_org_openmcf_shared_options_options } from "../../../../shared/options/options_pb";
@@ -14,7 +16,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/azure/azurednszone/v1/spec.proto.
  */
 export const file_org_openmcf_provider_azure_azurednszone_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjVvcmcvb3Blbm1jZi9wcm92aWRlci9henVyZS9henVyZWRuc3pvbmUvdjEvc3BlYy5wcm90bxIqb3JnLm9wZW5tY2YucHJvdmlkZXIuYXp1cmUuYXp1cmVkbnN6b25lLnYxIpICChBBenVyZURuc1pvbmVTcGVjEpABCgl6b25lX25hbWUYASABKAlCfbpIeroBdAoJem9uZV9uYW1lEjhab25lIG5hbWUgbXVzdCBiZSBhIHZhbGlkIEROUyBkb21haW4gKGUuZy4sIGV4YW1wbGUuY29tKRotdGhpcy5tYXRjaGVzKCdeKD86W2EtejAtOS1dK1suXSkrW2Etel17Mix9JCcpyAEBEh4KDnJlc291cmNlX2dyb3VwGAIgASgJQga6SAPIAQESSwoHcmVjb3JkcxgDIAMoCzI6Lm9yZy5vcGVubWNmLnByb3ZpZGVyLmF6dXJlLmF6dXJlZG5zem9uZS52MS5BenVyZURuc1JlY29yZCKeAwoOQXp1cmVEbnNSZWNvcmQSXQoLcmVjb3JkX3R5cGUYASABKA4yQC5vcmcub3Blbm1jZi5zaGFyZWQubmV0d29ya2luZy5lbnVtcy5kbnNyZWNvcmR0eXBlLkRuc1JlY29yZFR5cGVCBrpIA8gBARLgAQoEbmFtZRgCIAEoCULRAbpIzQG6AcYBCgtyZWNvcmRfbmFtZRJEUmVjb3JkIG5hbWUgc2hvdWxkIGJlIGEgdmFsaWQgRE5TIG5hbWUuIFVzZSBhIHRyYWlsaW5nIGRvdCBmb3IgRlFETi4acXRoaXMubWF0Y2hlcygnXig/OlsqXVsuXSk/KD86W19hLXowLTldKD86W19hLXowLTktXXswLDYxfVthLXowLTldKT9bLl0pKyg/OlthLXpdKD86W2EtejAtOS1dezAsNjF9W2EtejAtOV0pPyk/JCcpyAEBEhgKBnZhbHVlcxgDIAMoCUIIukgFkgECCAESIAoLdHRsX3NlY29uZHMYBCABKAVCBoqmHQI2MEgAiAEBQg4KDF90dGxfc2Vjb25kc0LnAgouY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF6dXJlLmF6dXJlZG5zem9uZS52MUIJU3BlY1Byb3RvUAFaW2dpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9henVyZS9henVyZWRuc3pvbmUvdjE7YXp1cmVkbnN6b25ldjGiAgVPT1BBQaoCKk9yZy5PcGVubWNmLlByb3ZpZGVyLkF6dXJlLkF6dXJlZG5zem9uZS5WMcoCKk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF6dXJlXEF6dXJlZG5zem9uZVxWMeICNk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF6dXJlXEF6dXJlZG5zem9uZVxWMVxHUEJNZXRhZGF0YeoCL09yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF6dXJlOjpBenVyZWRuc3pvbmU6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_networking_enums_dnsrecordtype_dns_record_type, file_org_openmcf_shared_options_options]);
+  fileDesc("CjVvcmcvb3Blbm1jZi9wcm92aWRlci9henVyZS9henVyZWRuc3pvbmUvdjEvc3BlYy5wcm90bxIqb3JnLm9wZW5tY2YucHJvdmlkZXIuYXp1cmUuYXp1cmVkbnN6b25lLnYxIvECChBBenVyZURuc1pvbmVTcGVjEpABCgl6b25lX25hbWUYASABKAlCfbpIeroBdAoJem9uZV9uYW1lEjhab25lIG5hbWUgbXVzdCBiZSBhIHZhbGlkIEROUyBkb21haW4gKGUuZy4sIGV4YW1wbGUuY29tKRotdGhpcy5tYXRjaGVzKCdeKD86W2EtejAtOS1dK1suXSkrW2Etel17Mix9JCcpyAEBEn0KDnJlc291cmNlX2dyb3VwGAIgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIxukgDyAEBiNRhkAOS1GEic3RhdHVzLm91dHB1dHMucmVzb3VyY2VfZ3JvdXBfbmFtZRJLCgdyZWNvcmRzGAMgAygLMjoub3JnLm9wZW5tY2YucHJvdmlkZXIuYXp1cmUuYXp1cmVkbnN6b25lLnYxLkF6dXJlRG5zUmVjb3JkIp4DCg5BenVyZURuc1JlY29yZBJdCgtyZWNvcmRfdHlwZRgBIAEoDjJALm9yZy5vcGVubWNmLnNoYXJlZC5uZXR3b3JraW5nLmVudW1zLmRuc3JlY29yZHR5cGUuRG5zUmVjb3JkVHlwZUIGukgDyAEBEuABCgRuYW1lGAIgASgJQtEBukjNAboBxgEKC3JlY29yZF9uYW1lEkRSZWNvcmQgbmFtZSBzaG91bGQgYmUgYSB2YWxpZCBETlMgbmFtZS4gVXNlIGEgdHJhaWxpbmcgZG90IGZvciBGUUROLhpxdGhpcy5tYXRjaGVzKCdeKD86WypdWy5dKT8oPzpbX2EtejAtOV0oPzpbX2EtejAtOS1dezAsNjF9W2EtejAtOV0pP1suXSkrKD86W2Etel0oPzpbYS16MC05LV17MCw2MX1bYS16MC05XSk/KT8kJynIAQESGAoGdmFsdWVzGAMgAygJQgi6SAWSAQIIARIgCgt0dGxfc2Vjb25kcxgEIAEoBUIGiqYdAjYwSACIAQFCDgoMX3R0bF9zZWNvbmRzQucCCi5jb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXp1cmUuYXp1cmVkbnN6b25lLnYxQglTcGVjUHJvdG9QAVpbZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F6dXJlL2F6dXJlZG5zem9uZS92MTthenVyZWRuc3pvbmV2MaICBU9PUEFBqgIqT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXp1cmUuQXp1cmVkbnN6b25lLlYxygIqT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXp1cmVcQXp1cmVkbnN6b25lXFYx4gI2T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXp1cmVcQXp1cmVkbnN6b25lXFYxXEdQQk1ldGFkYXRh6gIvT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXp1cmU6OkF6dXJlZG5zem9uZTo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_networking_enums_dnsrecordtype_dns_record_type, file_org_openmcf_shared_options_options]);
 
 /**
  * **AzureDnsZoneSpec** defines the configuration for creating an Azure DNS Zone.
@@ -32,11 +34,12 @@ export type AzureDnsZoneSpec = Message<"org.openmcf.provider.azure.azurednszone.
   zoneName: string;
 
   /**
-   * The Azure Resource Group in which to create the DNS zone. This resource group must exist in the target subscription.
+   * The Azure Resource Group where the DNS Zone will be created.
+   * Can be a literal string or a reference to an AzureResourceGroup output.
    *
-   * @generated from field: string resource_group = 2;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef resource_group = 2;
    */
-  resourceGroup: string;
+  resourceGroup?: StringValueOrRef;
 
   /**
    * (Optional) DNS records to pre-populate in the zone. Each record includes type, name, values, and TTL.

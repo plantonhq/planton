@@ -30,20 +30,11 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurenatgatewayv1.AzureNa
 	// Get subnet ID (either direct value or from reference)
 	locals.SubnetId = target.Spec.SubnetId.GetValue()
 
-	// Parse subnet ID to extract resource group and location
-	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{vnet}/subnets/{subnet}
-	parts := strings.Split(locals.SubnetId, "/")
-	if len(parts) >= 5 {
-		for i, part := range parts {
-			if part == "resourceGroups" && i+1 < len(parts) {
-				locals.ResourceGroup = parts[i+1]
-			}
-		}
-	}
-
-	// For location, we'll need to query the resource group or use a default
-	// For simplicity, we'll extract from subnet or use a sensible default
-	locals.Location = "eastus" // This should ideally be extracted or passed
+	// The resource_group and region fields are explicit spec fields.
+	// The platform middleware resolves valueFrom references before IaC modules run,
+	// so .GetValue() always returns the resolved literal string.
+	locals.ResourceGroup = target.Spec.ResourceGroup.GetValue()
+	locals.Location = target.Spec.Region
 
 	// Create Azure tags for resource tagging
 	locals.AzureTags = map[string]string{
