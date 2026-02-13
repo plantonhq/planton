@@ -192,6 +192,7 @@ import (
 	openstackvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackvolume/v1"
 	openstackvolumeattachv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackvolumeattach/v1"
 	scalewayinstancesecuritygroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayinstancesecuritygroup/v1"
+	scalewayloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayloadbalancer/v1"
 	scalewayprivatenetworkv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayprivatenetwork/v1"
 	scalewaypublicgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaypublicgateway/v1"
 	scalewayvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayvpc/v1"
@@ -433,6 +434,7 @@ var ProviderOpenstackMap = map[cloudresourcekind.CloudResourceKind]proto.Message
 
 var ProviderScalewayMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_ScalewayInstanceSecurityGroup: &scalewayinstancesecuritygroupv1.ScalewayInstanceSecurityGroup{},
+	cloudresourcekind.CloudResourceKind_ScalewayLoadBalancer:          &scalewayloadbalancerv1.ScalewayLoadBalancer{},
 	cloudresourcekind.CloudResourceKind_ScalewayPrivateNetwork:        &scalewayprivatenetworkv1.ScalewayPrivateNetwork{},
 	cloudresourcekind.CloudResourceKind_ScalewayPublicGateway:         &scalewaypublicgatewayv1.ScalewayPublicGateway{},
 	cloudresourcekind.CloudResourceKind_ScalewayVpc:                   &scalewayvpcv1.ScalewayVpc{},
