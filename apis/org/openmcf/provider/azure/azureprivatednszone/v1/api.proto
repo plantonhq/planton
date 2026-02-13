@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azureprivatednszone.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/azure/azureprivatednszone/v1/spec.proto";
+import "org/openmcf/provider/azure/azureprivatednszone/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// AzurePrivateDnsZone is the top-level API resource for an Azure Private DNS Zone.
+// Private DNS zones provide DNS resolution within a virtual network, enabling
+// Private Link connectivity for Azure PaaS services and custom internal DNS
+// for VM hostname resolution.
+message AzurePrivateDnsZone {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'azure.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AzurePrivateDnsZone'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AzurePrivateDnsZoneSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AzurePrivateDnsZoneStatus status = 5;
+}
+
+// AzurePrivateDnsZoneStatus holds the deployment status and outputs.
+message AzurePrivateDnsZoneStatus {
+  // stack-outputs
+  AzurePrivateDnsZoneStackOutputs outputs = 1;
+}

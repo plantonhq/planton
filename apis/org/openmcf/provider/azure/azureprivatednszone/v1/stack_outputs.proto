@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azureprivatednszone.v1;
+
+// **AzurePrivateDnsZoneStackOutputs** captures the outputs of provisioning an
+// Azure Private DNS Zone with its VNet link.
+//
+// The primary output is `zone_id`, which is referenced by downstream resources:
+// - AzurePrivateEndpoint (private_dns_zone_id for DNS zone group registration)
+// - AzurePostgresqlFlexibleServer (private_dns_zone_id for VNet-integrated deployment)
+// - AzureMysqlFlexibleServer (private_dns_zone_id for VNet-integrated deployment)
+//
+// These outputs enable the database-stack infra chart to wire private DNS zones
+// to database servers and private endpoints for fully private connectivity.
+message AzurePrivateDnsZoneStackOutputs {
+  // The Azure Resource Manager ID of the Private DNS Zone.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/privateDnsZones/{name}
+  // This is the primary output referenced by downstream resources via StringValueOrRef.
+  string zone_id = 1;
+
+  // The name of the Private DNS Zone (e.g., "privatelink.postgres.database.azure.com").
+  // Echoed from the spec for convenience -- useful in IaC modules that need the
+  // zone name for creating DNS records or additional VNet links.
+  string zone_name = 2;
+}
