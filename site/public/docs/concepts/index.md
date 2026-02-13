@@ -1,84 +1,80 @@
 ---
 title: "Concepts"
-description: "Core concepts and architecture of OpenMCF"
+description: "The core ideas behind OpenMCF: how a multi-cloud deployment framework brings Kubernetes-style consistency to infrastructure across 14 cloud providers"
 icon: "lightbulb"
-order: 3
+order: 10
 ---
 
-# Core Concepts
+# Concepts
 
-Understanding the core concepts of OpenMCF will help you make the most of the framework.
+OpenMCF is a multi-cloud deployment framework that brings Kubernetes-style consistency to infrastructure provisioning across any cloud provider. It is built on three foundational ideas: Protocol Buffer APIs define the resource model, dual IaC engines (Pulumi and OpenTofu/Terraform) implement the deployments, and a Go CLI orchestrates the entire workflow.
 
-## Overview
+This section explains the core concepts that make the framework work.
 
-OpenMCF is built on three foundational pillars:
+## The Problem
 
-1. **APIs** - Standardized configuration schema using Protocol Buffers
-2. **IaC Modules** - Pre-built Pulumi and Terraform modules
-3. **CLI** - Orchestration layer that brings everything together
+Deploying infrastructure across multiple cloud providers is fragmented. AWS has its own resource model, its own CLI, its own state management. GCP has a different one. Azure, another. Kubernetes, yet another. Teams that operate across providers end up with different tools, different patterns, different validation models, and different expertise requirements for each platform.
+
+The common response is to build an abstraction layer -- a `GenericDatabase` that works on every cloud. But abstractions leak. A generic database component either exposes the lowest common denominator (losing provider-specific capabilities like AWS RDS read replicas, GCP Cloud SQL private IP allocation, or Azure Managed Identity integration) or creates a fragile mapping layer that breaks when providers change.
+
+## The OpenMCF Approach
+
+OpenMCF takes a different path: consistency of structure and workflow, not abstraction of capability.
+
+Every resource across every provider follows the same manifest format (the Kubernetes Resource Model), uses the same validation framework (Protocol Buffers with buf-validate), is deployed with the same CLI commands, and is managed through the same module and state systems. But the spec -- the actual configuration surface -- is provider-specific. An `AwsS3Bucket` exposes the full S3 feature set. A `GcpGcsBucket` exposes the full GCS feature set. Neither pretends to be the other.
+
+The result: you learn one set of tools and one workflow pattern, then apply it to 198 deployment components across 14 cloud providers. The learning curve is the framework itself, not each provider's toolchain.
 
 ## Key Concepts
 
-### Kubernetes Resource Model (KRM)
-
-Every deployment component follows the same structure:
-
-```yaml
-apiVersion: <provider>.openmcf.org/<version>
-kind: <ComponentType>
-metadata:
-  name: <resource-name>
-  org: <organization>
-  env: <environment>
-spec:
-  # Provider-specific configuration
-status:
-  # System-managed status (read-only)
-```
-
-This consistent structure makes it easy to understand and work with any resource type.
-
-### Protocol Buffers
-
-Unlike Kubernetes (which uses Go structs), OpenMCF uses Protocol Buffers to enable:
-
-- **Language Neutrality**: Auto-generate SDKs in Go, Java, Python, TypeScript
-- **Beautiful Documentation**: Publish to Buf Schema Registry
-- **Field-Level Validations**: Define validation rules directly in the API schema
-- **Early Error Detection**: Catch configuration errors before deployment
-
 ### Deployment Components
 
-A deployment component is a self-contained unit that includes:
+A deployment component is the atomic unit of OpenMCF -- a self-contained package combining a Protocol Buffer API definition, dual IaC module implementations (Pulumi and Terraform), and auto-generated documentation. OpenMCF ships with 198 components spanning 14 providers.
 
-- **API Definition**: Protocol Buffer schema defining configuration
-- **Pulumi Module**: Infrastructure-as-code in a real programming language
-- **Terraform Module**: Alternative IaC implementation
-- **Documentation**: Auto-generated from protobuf definitions
+Every component follows the same four-file protobuf contract: `api.proto` (resource envelope), `spec.proto` (configuration surface), `stack_input.proto` (IaC input), and `stack_outputs.proto` (IaC output).
 
-Examples:
-- `PostgresKubernetes` - Deploy PostgreSQL to any Kubernetes cluster
-- `AwsRdsInstance` - Deploy to AWS RDS
-- `GcpCloudSql` - Deploy to Google Cloud SQL
+**[Read more: Deployment Components](deployment-components)**
 
-### Provider-Specific vs. Abstract
+### Manifests
 
-OpenMCF **does NOT** abstract away cloud provider differences. This is intentional.
+OpenMCF manifests use the Kubernetes Resource Model: `apiVersion`, `kind`, `metadata`, `spec`, `status`. The manifest is the single source of truth for what you want to deploy. Metadata labels configure the IaC engine and state backend. The spec holds provider-specific configuration, with every field defined by protobuf and validated before deployment.
 
-Each cloud provider has different capabilities, pricing models, and operational characteristics. Attempting to abstract these would either:
+**[Read more: Manifests](manifests)**
 
-1. Force a "lowest common denominator" approach (losing provider-specific capabilities)
-2. Create a leaky abstraction that's harder to understand
+### Cloud Resource Kinds
 
-Instead, OpenMCF provides:
-- ✅ **Consistent structure**: Every resource uses KRM
-- ✅ **Consistent workflow**: Same CLI commands, same validation
-- ✅ **Consistent developer experience**: Same documentation approach
-- ✅ **Provider-specific manifests**: Each deployment target has its own manifest
+The `CloudResourceKind` enum is the canonical registry of everything OpenMCF can deploy -- 198 entries mapped to 14 providers. Each kind maps to a provider, an API version, a module path, and a validation schema. The kind name in your manifest is the key that drives the entire deployment pipeline.
 
-## Learn More
+**[Read more: Cloud Resource Kinds](cloud-resource-kinds)**
 
-- **[Architecture](architecture)** - Deep dive into the technical architecture
-- **[Deployment Components](/docs/catalog)** - Explore available components
-- **[Getting Started](../getting-started)** - Deploy your first resource
+### Validation
 
+OpenMCF validates manifests at three layers: schema-level rules defined in protobuf (constant enforcement, required fields, patterns, CEL expressions), CLI-side validation using the protovalidate library, and cloud provider API validation during deployment. The first two layers catch the vast majority of errors before any cloud API call is made.
+
+**[Read more: Validation](validation)**
+
+### Dual IaC Engines
+
+Every component ships with both a Pulumi module (Go) and an OpenTofu/Terraform module (HCL). Both receive the same stack input and produce the same outputs. You choose your engine based on team preference -- Pulumi for programmatic Go workflows, OpenTofu/Terraform for HCL familiarity. The CLI handles the orchestration for either path.
+
+**[Read more: Dual IaC Engines](dual-iac-engines)**
+
+### Module System
+
+The CLI resolves IaC modules through a priority chain: local directory, pre-built binary, zip download, or staging repository. Modules are cached locally, workspace-isolated per deployment, and version-pinnable. The `checkout`, `pull`, and `modules-version` commands manage the local module cache.
+
+**[Read more: Module System](module-system)**
+
+### State Management
+
+Deployment state is tracked by the IaC engine's backend. Pulumi supports Pulumi Cloud, S3, GCS, Azure Blob, and local backends -- configured via manifest labels. OpenTofu/Terraform supports S3, GCS, Azure Storage, and local backends, with S3-compatible backends (R2, MinIO) also supported. State backend configuration is embedded in the manifest, not in separate configuration files.
+
+**[Read more: State Management](state-management)**
+
+## Architecture Overview
+
+For a visual guide to how these concepts connect -- the deployment flow, the component anatomy, and the three-layer architecture -- see the **[Architecture](architecture)** page.
+
+## Getting Started
+
+If you are ready to deploy your first resource, head to the **[Getting Started](/docs/getting-started)** guide. If you want to browse what OpenMCF can deploy, explore the **[Component Catalog](/docs/catalog)**.

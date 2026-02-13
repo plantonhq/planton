@@ -1,237 +1,188 @@
 ---
 title: "Architecture"
-description: "Technical architecture and design of OpenMCF"
+description: "How the pieces of OpenMCF fit together: the deployment flow from manifest to cloud resources, the component anatomy, and the three-layer architecture"
 icon: "gear"
-order: 1
+order: 15
 ---
 
 # Architecture
 
-OpenMCF is built on three foundational components that work together seamlessly.
+This page shows how the different parts of OpenMCF connect. Each diagram is a visual summary -- follow the links to the deep-dive page for any concept that needs more detail.
 
-## The Three Pillars
+## The Deployment Flow
 
-### 1. APIs: Standardized Configuration Schema
+When you run a deployment command, this is the path your manifest takes from YAML file to deployed cloud resources:
 
-**Technology**: Protocol Buffers  
-**Inspiration**: Kubernetes Resource Model
-
-Every deployment component follows the same structure:
-
-```yaml
-apiVersion: <provider>.openmcf.org/<version>
-kind: <ComponentType>
-metadata:
-  name: <resource-name>
-  org: <organization>
-  env: <environment>
-spec:
-  # Provider-specific configuration
-status:
-  # System-managed status (read-only)
+```
+                         ┌─────────────────┐
+                         │  YAML Manifest   │
+                         │   (your file)    │
+                         └────────┬─────────┘
+                                  │
+                                  ▼
+                    ┌─────────────────────────────┐
+                    │        CLI: Load Manifest     │
+                    │  --manifest / --clipboard /   │
+                    │  --kustomize-dir / --stack-input│
+                    └──────────────┬────────────────┘
+                                   │
+                                   ▼
+                    ┌─────────────────────────────┐
+                    │     CLI: Validate Manifest    │
+                    │  protobuf schema + buf-validate│
+                    │  apiVersion, kind, spec fields │
+                    └──────────────┬────────────────┘
+                                   │
+                          (validation passes)
+                                   │
+                                   ▼
+                    ┌─────────────────────────────┐
+                    │    CLI: Resolve IaC Module    │
+                    │  kind → provider → module path│
+                    │  binary / zip / staging repo  │
+                    └──────────────┬────────────────┘
+                                   │
+                                   ▼
+                    ┌─────────────────────────────┐
+                    │  CLI: Construct Stack Input   │
+                    │  manifest + provider config   │
+                    └──────────────┬────────────────┘
+                                   │
+                        ┌──────────┴──────────┐
+                        │                     │
+                        ▼                     ▼
+              ┌──────────────────┐  ┌──────────────────┐
+              │   Pulumi Engine   │  │  Tofu/TF Engine   │
+              │   (Go program)    │  │  (HCL modules)    │
+              └────────┬─────────┘  └────────┬─────────┘
+                       │                     │
+                       └──────────┬──────────┘
+                                  │
+                                  ▼
+                    ┌─────────────────────────────┐
+                    │     Cloud Provider APIs       │
+                    │  AWS / GCP / Azure / K8s /    │
+                    │  DigitalOcean / Civo / ...    │
+                    └──────────────┬────────────────┘
+                                   │
+                                   ▼
+                    ┌─────────────────────────────┐
+                    │     Deployed Resources        │
+                    │  + state stored in backend    │
+                    │  + outputs returned to CLI    │
+                    └─────────────────────────────┘
 ```
 
-**Why Protocol Buffers?**
+**Deep dives**: [Manifests](manifests) | [Validation](validation) | [Module System](module-system) | [Dual IaC Engines](dual-iac-engines) | [State Management](state-management)
 
-Unlike Kubernetes (which uses Go structs), OpenMCF uses Protocol Buffers to enable:
+## Component Anatomy
 
-- **Language Neutrality**: Auto-generate SDKs in Go, Java, Python, TypeScript
-- **Beautiful Documentation**: Publish to Buf Schema Registry
-- **Field-Level Validations**: Define validation rules directly in the API schema
-- **Early Error Detection**: Catch configuration errors before deployment
-- **Platform Engineering**: Import SDKs to build custom internal tools
+Every deployment component is a self-contained package at a fixed path. The Protocol Buffer definitions define the contract. The IaC modules implement it.
 
-Example validation in protobuf:
-
-```protobuf
-message PostgresKubernetesSpec {
-  string cpu = 1 [(buf.validate.field).string.pattern = "^[0-9]+m$"];
-  int32 replicas = 2 [(buf.validate.field).int32 = {gte: 1, lte: 10}];
-}
+```
+apis/org/openmcf/provider/{provider}/{component}/v1/
+│
+├── api.proto                 ← Resource envelope
+│   apiVersion, kind,           (apiVersion + kind are const-validated)
+│   metadata, spec, status
+│
+├── spec.proto                ← Configuration surface
+│   All configurable fields     (types, validation rules, defaults,
+│   for this component           nested messages, enums)
+│
+├── stack_input.proto         ← IaC input contract
+│   target (full manifest)      (bridges manifest → IaC module)
+│   + provider_config
+│
+├── stack_outputs.proto       ← IaC output contract
+│   Deployment results          (endpoints, ARNs, secrets,
+│   returned after apply         connection strings)
+│
+├── iac/
+│   ├── pulumi/               ← Pulumi implementation (Go)
+│   │   ├── main.go             Load stack input → module.Resources()
+│   │   └── module/             Actual resource creation logic
+│   │
+│   └── tf/                   ← Terraform implementation (HCL)
+│       ├── main.tf             Resource creation
+│       ├── variables.tf        Mirrors spec.proto structure
+│       ├── provider.tf         Cloud provider configuration
+│       └── outputs.tf          Stack outputs
+│
+└── docs/
+    └── README.md             ← Auto-generated documentation
 ```
 
-The `openmcf validate` command checks these rules **before** calling any cloud APIs.
+**Deep dive**: [Deployment Components](deployment-components)
 
-### 2. IaC Modules: The "Recipes"
+## The Three Layers
 
-**Technology**: Pulumi and Terraform/OpenTofu  
-**Approach**: Provider-specific, deliberately simple
+OpenMCF's architecture has three distinct layers, each with a clear responsibility:
 
-Every deployment component has **both** a Pulumi module and a Terraform module. You choose which IaC engine to use.
-
-**Why Both Pulumi and Terraform?**
-
-Different teams have different preferences:
-
-- **Pulumi**: Real programming languages (Go, Python, TypeScript), better for complex logic, type safety
-- **Terraform/OpenTofu**: Mature ecosystem, HashiCorp Configuration Language, familiar to many DevOps teams
-
-OpenMCF doesn't force a choice—it supports both.
-
-**Design Philosophy: Deliberately Simple**
-
-The default modules are intentionally designed to be **Terraform-like** even when written in Pulumi:
-
-- Simple, straightforward code
-- Single directory structure (like Terraform modules)
-- Familiar file names (`main.go` similar to `main.tf`)
-- Minimal language features
-
-**Why?** Because **adoption matters more than perfect code**. A Terraform engineer should be able to fork a Pulumi module and immediately understand the flow.
-
-### 3. CLI: The Orchestration Layer
-
-**Distribution**: Homebrew  
-**Role**: The "chef" that brings everything together
-
-Installation:
-
-```bash
-brew install plantonhq/tap/openmcf
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│                     API LAYER (Protocol Buffers)                 │
+│                                                                 │
+│  CloudResourceKind enum    CloudResourceMetadata    buf-validate │
+│  198 kinds, 14 providers   name, org, env, labels   schema rules│
+│                                                                 │
+│  api.proto  spec.proto  stack_input.proto  stack_outputs.proto   │
+│                                                                 │
+│  Defines: what resources exist, what fields they accept,        │
+│           what validation rules apply, what outputs they produce │
+│                                                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│                  EXECUTION LAYER (CLI + IaC Engines)             │
+│                                                                 │
+│  CLI:     load manifest → validate → resolve module → run engine│
+│  Pulumi:  Go SDK programs, stack management, binary provider    │
+│  Tofu/TF: HCL modules, tfvars generation, backend.tf writing   │
+│                                                                 │
+│  Module system: staging repo, workspace isolation, versioning   │
+│  State:         Pulumi Cloud / S3 / GCS / Azure Blob / local   │
+│                                                                 │
+│  Orchestrates: manifest-to-infrastructure deployment pipeline   │
+│                                                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│                INFRASTRUCTURE LAYER (Cloud Providers)            │
+│                                                                 │
+│  AWS          GCP           Azure         Kubernetes            │
+│  DigitalOcean Civo          Cloudflare    OpenStack             │
+│  Scaleway     Auth0         OpenFGA       Confluent             │
+│  MongoDB Atlas              Snowflake                           │
+│                                                                 │
+│  Each provider: native APIs, native resource models,            │
+│                 full capability exposure (no abstraction)        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-**What the CLI does:**
+**The API layer** is the source of truth. It defines the vocabulary, the resource models, and the validation rules. Everything downstream -- the CLI, the IaC modules, the documentation, the SDKs -- is derived from these Protocol Buffer definitions.
 
-1. Reads your manifest (local file or GitHub raw URL)
-2. Validates inputs using proto-validate rules
-3. Maps `kind` to IaC module
-4. Clones/pulls the module from GitHub (with smart caching)
-5. Sets up the environment (exports manifest for the module)
-6. Delegates to IaC engine (Pulumi or Terraform/OpenTofu)
-7. Streams output to the developer
+**The execution layer** turns manifests into cloud resources. The CLI orchestrates the process: loading manifests, running validation, resolving modules, and delegating to the correct IaC engine. The module system ensures the right code runs. The state backends ensure deployments are tracked.
 
-**Core commands:**
+**The infrastructure layer** is the real world. Cloud provider APIs, actual resources, real costs. OpenMCF does not abstract this layer -- it provides consistent structure and workflow above it while exposing each provider's full native capability.
 
-```bash
-# Validate a manifest
-openmcf validate -f postgres.yaml
+**Deep dives**: [Cloud Resource Kinds](cloud-resource-kinds) | [Dual IaC Engines](dual-iac-engines) | [Module System](module-system) | [State Management](state-management)
 
-# Deploy with Pulumi
-openmcf pulumi up -f postgres.yaml --stack org/project/env
+## Auto-Generated SDKs
 
-# Deploy with Terraform/OpenTofu
-openmcf tofu apply -f postgres.yaml
+The Protocol Buffer definitions in the API layer are published to the [Buf Schema Registry](https://buf.build/openmcf/openmcf), which auto-generates client SDKs in multiple languages:
 
-# Override specific values
-openmcf pulumi up \
-  -f postgres.yaml \
-  --set spec.container.cpu=500m \
-  --stack org/project/env
-```
+| Language | Generation Plugin | Use Case |
+|----------|------------------|----------|
+| **Go** | `protocolbuffers/go` + `grpc/go` | CLI internals, Pulumi modules, custom tooling |
+| **TypeScript** | `bufbuild/es` + `connectrpc/es` | Web applications, Node.js tooling |
+| **Java** | `protocolbuffers/java` + `grpc/java` | JVM-based tooling and integrations |
 
-## The Complete Workflow
+These SDKs enable teams to build custom tools that work with OpenMCF manifests programmatically -- creating manifests, validating them, and interacting with the API surface in type-safe code.
 
-Here's how a developer deploys Redis to Kubernetes:
+## What's Next
 
-### Step 1: Browse Available Components
-
-Visit the OpenMCF repository to find deployment components.
-
-**Example**: "RedisKubernetes" - deploys Redis to any Kubernetes cluster
-
-### Step 2: Explore the API
-
-Visit Buf Schema Registry where APIs are published to see:
-- Required fields
-- Optional fields with defaults
-- Field-level documentation
-- Validation rules
-
-### Step 3: Write Your Manifest
-
-Create `my-redis.yaml`:
-
-```yaml
-apiVersion: kubernetes.openmcf.org/v1
-kind: RedisKubernetes
-metadata:
-  name: session-store
-  org: acme
-  env: production
-spec:
-  container:
-    replicas: 3
-    resources:
-      limits:
-        cpu: 500m
-        memory: 1Gi
-      requests:
-        cpu: 250m
-        memory: 512Mi
-    isPersistenceEnabled: true
-    diskSize: 20Gi
-```
-
-### Step 4: Validate (Optional)
-
-```bash
-openmcf validate -f my-redis.yaml
-```
-
-### Step 5: Deploy
-
-```bash
-openmcf pulumi up -f my-redis.yaml --stack acme/platform/prod
-```
-
-**What happens under the hood:**
-
-1. CLI validates the manifest
-2. CLI identifies this is `RedisKubernetes`
-3. CLI clones/pulls the Redis Kubernetes module
-4. CLI exports your manifest as an environment variable
-5. CLI runs `pulumi up`
-6. You see progress in your terminal
-7. Redis is deployed to your Kubernetes cluster
-
-## Module Distribution
-
-**Default modules:**
-- Hosted on GitHub (open source)
-- Versioned with Git tags
-- Cached locally in `~/.openmcf/`
-- Updated via `git pull` on demand
-
-**Custom modules:**
-- Point CLI to your own GitHub repository
-- Use private repos with SSH authentication
-- Override module URLs via CLI flags
-
-## State Management
-
-**With Pulumi:**
-- Supports multiple backends: Local, S3, GCS, Azure Blob, Pulumi Cloud
-- State tracks deployed resources
-- Enables detecting configuration drift
-- Allows previewing changes before applying
-
-**With Terraform:**
-- Supports multiple backends: Local, S3, GCS, Azure Storage
-- State file management via standard Terraform workflow
-- Remote state sharing for team collaboration
-
-## Validation Architecture
-
-**Three layers of validation:**
-
-1. **Proto-level validation** (schema definition):
-   ```protobuf
-   string cpu = 1 [(buf.validate.field).string.pattern = "^[0-9]+m$"];
-   ```
-
-2. **CLI validation** (before deployment):
-   ```bash
-   openmcf validate -f config.yaml
-   ```
-
-3. **Cloud provider validation** (during deployment):
-   - Final validation by the actual cloud provider APIs
-   - Catches provider-specific constraints
-
-This layered approach catches 90%+ of errors before making any cloud API calls.
-
-## Learn More
-
-- [Getting Started](../getting-started) - Deploy your first resource
-- [Deployment Components](/docs/catalog) - Explore available components
-
+- **[Deployment Components](deployment-components)** -- Deep dive into the component structure
+- **[Manifests](manifests)** -- The KRM manifest model
+- **[Validation](validation)** -- The three-layer validation architecture
+- **[Component Catalog](/docs/catalog)** -- Browse all 198 deployment components
