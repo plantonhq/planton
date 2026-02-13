@@ -13,8 +13,8 @@ import (
 
 // Locals bundles resolved values from the stack input for use throughout the module.
 type Locals struct {
-	ScalewayProviderConfig  *scalewayprovider.ScalewayProviderConfig
-	ScalewayLoadBalancer    *scalewayloadbalancerv1.ScalewayLoadBalancer
+	ScalewayProviderConfig *scalewayprovider.ScalewayProviderConfig
+	ScalewayLoadBalancer   *scalewayloadbalancerv1.ScalewayLoadBalancer
 
 	// PrivateNetworkId is resolved from the StringValueOrRef field in the spec.
 	// Empty string if no Private Network is configured.

@@ -2,9 +2,9 @@ package module
 
 import (
 	"github.com/pkg/errors"
+	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	scaleway "github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway"
 	"github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway/redis"
-	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 // redisCluster provisions the Scaleway Redis cluster and exports the

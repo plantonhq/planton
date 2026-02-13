@@ -77,11 +77,11 @@ func createInstance(
 			ctx,
 			fmt.Sprintf("volume-%d", i),
 			&scalewayinstance.VolumeArgs{
-				Name:   pulumi.String(volName),
-				Type:   pulumi.String(volSpec.VolumeType),
+				Name:     pulumi.String(volName),
+				Type:     pulumi.String(volSpec.VolumeType),
 				SizeInGb: pulumi.Int(int(volSpec.SizeInGb)),
-				Tags:   pulumi.ToStringArray(locals.ScalewayTags),
-				Zone:   pulumi.String(spec.Zone),
+				Tags:     pulumi.ToStringArray(locals.ScalewayTags),
+				Zone:     pulumi.String(spec.Zone),
 			},
 			pulumi.Provider(scalewayProvider),
 		)

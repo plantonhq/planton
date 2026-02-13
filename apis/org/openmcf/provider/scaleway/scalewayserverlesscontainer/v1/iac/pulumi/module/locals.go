@@ -14,9 +14,9 @@ import (
 // Locals bundles resolved values from the stack input for use
 // throughout the module.
 type Locals struct {
-	ScalewayProviderConfig       *scalewayprovider.ScalewayProviderConfig
-	ScalewayServerlessContainer  *scalewayserverlesscontainerv1.ScalewayServerlessContainer
-	ScalewayTags                 []string
+	ScalewayProviderConfig      *scalewayprovider.ScalewayProviderConfig
+	ScalewayServerlessContainer *scalewayserverlesscontainerv1.ScalewayServerlessContainer
+	ScalewayTags                []string
 }
 
 // initializeLocals copies stack-input fields into the Locals struct

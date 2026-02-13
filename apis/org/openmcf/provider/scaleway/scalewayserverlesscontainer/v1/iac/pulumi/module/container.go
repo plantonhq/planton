@@ -5,9 +5,9 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	scalewayv2 "github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway"
 	"github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway/containers"
-	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 // privacyEnumToString maps the proto privacy enum to the string

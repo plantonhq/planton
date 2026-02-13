@@ -2,9 +2,9 @@ package module
 
 import (
 	"github.com/pkg/errors"
+	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	scaleway "github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway"
 	"github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway/mongodb"
-	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 // mongodbInstance provisions the Scaleway MongoDB instance and exports the

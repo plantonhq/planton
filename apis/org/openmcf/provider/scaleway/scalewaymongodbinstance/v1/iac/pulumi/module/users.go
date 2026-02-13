@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
+	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	scaleway "github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway"
 	"github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway/mongodb"
-	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 // users creates additional MongoDB users with their role assignments.

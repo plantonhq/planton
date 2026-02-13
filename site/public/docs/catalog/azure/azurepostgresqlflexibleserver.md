@@ -6,148 +6,301 @@ order: 100
 componentName: "azurepostgresqlflexibleserver"
 ---
 
-# AzurePostgresqlFlexibleServer - Research & Design Documentation
+# Azure PostgreSQL Flexible Server
 
-## Deployment Landscape
+Deploys an Azure Database for PostgreSQL Flexible Server with configurable compute tier, storage, high availability, backup retention, and network access mode. The component optionally creates named databases and firewall rules on the server as part of a single composite deployment.
 
-### Azure Database for PostgreSQL: Flexible Server
+## What Gets Created
 
-Azure Database for PostgreSQL Flexible Server is Microsoft's current-generation managed PostgreSQL offering. It replaced the previous "Single Server" deployment option, which reached end-of-life and is being retired. Flexible Server provides more granular control over compute, storage, networking, and high availability than its predecessor.
+When you deploy an AzurePostgresqlFlexibleServer resource, OpenMCF provisions:
 
-**Key differentiators from Single Server:**
-- Zone-redundant and same-zone high availability
-- Burstable compute tier for dev/test
-- VNet integration via delegated subnets (not just Private Link)
-- Maintenance window control
-- Storage auto-grow
-- Customer-managed encryption keys
-- PostgreSQL 12 through 17 support
+- **PostgreSQL Flexible Server** -- a `postgresql.FlexibleServer` resource in the specified region and resource group, configured with the chosen SKU, PostgreSQL version, storage size, backup retention, and authentication settings (password authentication enabled by default)
+- **Network Access** -- either private VNet access (when `delegatedSubnetId` is set, public access is automatically disabled) or public access with firewall rules controlling connectivity
+- **Databases** -- a `postgresql.FlexibleServerDatabase` for each entry in `databases`, each with independent lifecycle, charset, and collation settings
+- **Firewall Rules** -- a `postgresql.FlexibleServerFirewallRule` for each entry in `firewallRules`, allowing connections from specified IP address ranges in public access mode
+- **High Availability** -- optional zone-redundant or same-zone standby when the `highAvailability` block is present (General Purpose and Memory Optimized SKUs only)
+- **Azure Tags** -- resource metadata tags applied to the server for tracking and governance
 
-### Deployment Methods Compared
+## Prerequisites
 
-| Method | Strengths | Weaknesses |
-|--------|-----------|------------|
-| Azure Portal | Visual, guided, immediate | Manual, not repeatable |
-| Azure CLI | Scriptable, CI/CD friendly | Imperative, state management burden |
-| ARM Templates | Declarative, Azure-native | Verbose JSON, complex for multi-resource |
-| Terraform (`azurerm`) | Declarative, state management, mature | HCL learning curve |
-| Pulumi (azure classic) | Declarative, general-purpose languages | Smaller community than Terraform |
-| OpenMCF | Opinionated defaults, infra-chart composability | Opinionated (by design) |
+- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **An Azure Resource Group** where the server will be created (can reference an AzureResourceGroup resource)
+- **A globally unique server name** -- the name becomes the hostname `{name}.postgres.database.azure.com`
+- **Network planning** -- decide between public access with firewall rules or private VNet access with a delegated subnet before deployment, as changing `delegatedSubnetId` after creation destroys and recreates the server
 
-### Why OpenMCF
+## Quick Start
 
-OpenMCF's AzurePostgresqlFlexibleServer component provides:
+Create a file `postgresql.yaml`:
 
-1. **Opinionated defaults** -- Password auth enabled, sensible storage defaults, Standard create mode
-2. **Infra-chart composability** -- StringValueOrRef fields enable wiring to subnets, DNS zones, resource groups
-3. **Bundled sub-resources** -- Server + databases + firewall rules managed as a unit
-4. **Dual IaC** -- Both Pulumi and Terraform modules with feature parity
-
-## 80/20 Scoping Rationale
-
-### Included (covers 80%+ of production use cases)
-
-- **Standard create mode** -- New server creation (most common)
-- **Password authentication** -- Default and most widely used auth method
-- **Storage provisioning** -- All Azure-supported sizes from 32 GB to 32 TB
-- **High availability** -- Both ZoneRedundant and SameZone modes
-- **VNet integration** -- Delegated subnet + private DNS zone
-- **Multiple databases** -- With charset/collation customization
-- **Firewall rules** -- IP-based access control for public mode
-- **Backup configuration** -- Retention days (7-35) and geo-redundant backup
-- **Auto-grow storage** -- Automatic storage scaling
-
-### Excluded (advanced/niche features deferred to v2)
-
-- **Azure AD authentication** -- Requires tenant configuration, service principal setup. Can be enabled post-deployment via Azure portal.
-- **Customer-managed encryption keys** -- Requires Key Vault with specific access policies. Enterprise-only feature.
-- **Point-in-time restore / Replica creation** -- Uses different `create_mode` values. Restore operations are typically one-off, not declarative IaC.
-- **Server configurations** (e.g., `max_connections`, `work_mem`) -- Runtime tuning done post-deployment. Azure provides defaults appropriate for the SKU.
-- **Maintenance window** -- Terraform provider limitation (cannot set on create). Configure post-deployment.
-- **Cluster feature** (PostgreSQL 17+) -- New feature for horizontal read scaling. Requires cluster-aware application design.
-- **Read replicas** -- Cross-region read scaling. Managed separately from primary.
-
-## Provider Research
-
-### Terraform Provider (`azurerm`)
-
-The `azurerm_postgresql_flexible_server` resource (API version 2025-08-01) supports approximately 25 top-level fields. Key findings from provider source analysis:
-
-**Storage model:**
-- `storage_mb` is in MB (not GB) with specific allowed values
-- `storage_tier` is separate but defaults based on `storage_mb`
-- We expose `storage_mb` only (80/20) and let Azure choose the tier
-
-**Authentication model:**
-- `authentication` block with `password_auth_enabled` and `active_directory_auth_enabled`
-- We hardcode password auth = true (80/20)
-
-**Network model:**
-- `delegated_subnet_id` and `private_dns_zone_id` are independent (both optional)
-- `public_network_access_enabled` defaults to true
-- We derive public access from the presence of `delegated_subnet_id`
-
-**ForceNew fields** (resource recreation on change):
-- `name`, `administrator_login`, `delegated_subnet_id`, `geo_redundant_backup_enabled`
-- `customer_managed_key` (not exposed), `cluster` (not exposed)
-
-### Pulumi Provider
-
-Uses `github.com/pulumi/pulumi-azure/sdk/v6/go/azure/postgresql` (classic provider), consistent with all other Azure modules in OpenMCF. The classic provider mirrors Terraform's schema closely.
-
-Key types:
-- `postgresql.FlexibleServer` -- Main server resource
-- `postgresql.FlexibleServerDatabase` -- Database resource
-- `postgresql.FlexibleServerFirewallRule` -- Firewall rule resource
-- `postgresql.FlexibleServerArgs` -- Server constructor arguments
-- `postgresql.FlexibleServerAuthenticationArgs` -- Auth configuration
-
-## Design Decisions Applied
-
-### C1-C2: Required resource_group and region (DD05 compliance)
-Every Azure resource in OpenMCF requires `resource_group` (StringValueOrRef) and `region` (string). These were missing from the original T02 spec.
-
-### C3: String+CEL for version (not proto enum)
-Following the established pattern from R02, R06, R09, version uses string with CEL `in` validation. This preserves Azure's exact API values and avoids proto enum maintenance burden.
-
-### C4: Optional HA message (not bool+enum)
-If the `high_availability` message is present, HA is enabled. No separate boolean needed. Mode uses string+CEL with Azure's exact values ("ZoneRedundant", "SameZone").
-
-### C7: auto_grow_enabled
-Added as a production safety net. Default false matches Azure's behavior. Critical for databases with unpredictable growth patterns.
-
-### C8: Repeated databases (not initial_database_name)
-Changed from a single string to `repeated AzurePostgresqlDatabase` following the LB backend_pools pattern. Supports multiple databases with custom charset/collation.
-
-### C9: Polymorphic StringValueOrRef for password
-No `default_kind` annotation since the password source varies (literal, chart variable, external secret). Matches the UserAssignedIdentity `scope` pattern.
-
-### C10: Hardcoded public_network_access logic
-Not exposed as a spec field. IaC modules derive from `delegated_subnet_id` presence:
-- Subnet set -> public access disabled
-- Subnet not set -> public access enabled
-
-### C11: Maintenance window omitted
-Cannot be set on create in the Terraform provider. Deferred to v2.
-
-## Infra Chart Integration
-
-### database-stack chart pattern
-
-```
-AzureResourceGroup
-└── AzureSubnet (delegated to PostgreSQL)
-    └── AzurePrivateDnsZone (privatelink.postgres.database.azure.com)
-        └── AzurePostgresqlFlexibleServer
-            ├── delegated_subnet_id: valueFrom AzureSubnet
-            ├── private_dns_zone_id: valueFrom AzurePrivateDnsZone
-            └── resource_group: valueFrom AzureResourceGroup
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePostgresqlFlexibleServer
+metadata:
+  name: my-pg-server
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AzurePostgresqlFlexibleServer.my-pg-server
+spec:
+  region: eastus
+  resourceGroup: my-rg
+  name: my-pg-server
+  administratorLogin: pgadmin
+  administratorPassword: "Ch@ngeMe1234!"
+  skuName: B_Standard_B1ms
+  storageMb: 32768
+  databases:
+    - name: myapp
 ```
 
-### Referenced by
-- **AzurePrivateEndpoint** -- `private_connection_resource_id` references `server_id` (for non-VNet-integrated servers)
+Deploy:
 
-### References
-- **AzureResourceGroup** -- `resource_group` (required)
-- **AzureSubnet** -- `delegated_subnet_id` (optional, for VNet integration)
-- **AzurePrivateDnsZone** -- `private_dns_zone_id` (optional, for private DNS)
+```shell
+openmcf apply -f postgresql.yaml
+```
+
+This creates a Burstable-tier PostgreSQL 16 Flexible Server with 32 GB storage, public network access, and a single application database named `myapp`.
+
+## Configuration Reference
+
+### Required Fields
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `region` | `string` | Azure region for the server (e.g., `eastus`, `westeurope`). Must match the VNet/subnet region if VNet integration is used. | Required, minimum length 1 |
+| `resourceGroup` | `StringValueOrRef` | Azure Resource Group name. Can reference an AzureResourceGroup resource via `valueFrom`. | Required |
+| `name` | `string` | Globally unique server name. Becomes the hostname `{name}.postgres.database.azure.com`. Lowercase letters, numbers, and hyphens only; must start with a letter. **ForceNew**: changing this destroys and recreates the server. | Required, 3--63 characters, pattern `^[a-z][a-z0-9-]*$` |
+| `administratorLogin` | `string` | Administrator login name. Cannot be `azure_superuser`, `admin`, `administrator`, `root`, `guest`, or `public`. Must start with a letter. **ForceNew**: changing this destroys and recreates the server. | Required, minimum length 1 |
+| `administratorPassword` | `StringValueOrRef` | Administrator password. 8--128 characters with characters from at least three of: uppercase, lowercase, digits, special characters. Can reference another resource's output via `valueFrom`. | Required |
+| `skuName` | `string` | Compute tier and size. Format: `{TIER}_Standard_{SIZE}`. See SKU naming below. | Required, minimum length 1 |
+| `storageMb` | `int32` | Storage size in megabytes. Allowed values: 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33553408. Cannot be downgraded after creation. | Required, minimum 32768 |
+
+**SKU naming convention** -- `{TIER}_Standard_{SIZE}` where TIER is:
+
+- `B` (Burstable) -- dev/test workloads. Examples: `B_Standard_B1ms`, `B_Standard_B2s`, `B_Standard_B4ms`
+- `GP` (General Purpose) -- production workloads. Examples: `GP_Standard_D2s_v3`, `GP_Standard_D4s_v3`, `GP_Standard_D8s_v3`
+- `MO` (Memory Optimized) -- analytics and caching. Examples: `MO_Standard_E2s_v3`, `MO_Standard_E4s_v3`
+
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `version` | `string` | `"16"` | PostgreSQL major version. Valid values: `"12"`, `"13"`, `"14"`, `"15"`, `"16"`, `"17"`. |
+| `autoGrowEnabled` | `bool` | `false` | Automatically increase storage when free storage falls below a threshold. |
+| `backupRetentionDays` | `int32` | `7` | Number of days to retain automatic daily backups for point-in-time restore. Range: 7--35. |
+| `geoRedundantBackupEnabled` | `bool` | `false` | Replicate backup data to a paired Azure region for cross-region disaster recovery. **ForceNew**: changing this destroys and recreates the server. |
+| `delegatedSubnetId` | `StringValueOrRef` | -- | Subnet ID delegated to `Microsoft.DBforPostgreSQL/flexibleServers`. When set, the server uses private VNet access and public access is disabled. Can reference an AzureSubnet resource via `valueFrom`. **ForceNew**: changing this destroys and recreates the server. |
+| `privateDnsZoneId` | `StringValueOrRef` | -- | Private DNS zone ID for server name resolution within the VNet. Typically used with `delegatedSubnetId`. Can reference an AzurePrivateDnsZone resource via `valueFrom`. |
+| `zone` | `string` | -- | Availability zone for the primary server. Valid values: `"1"`, `"2"`, `"3"`. If omitted, Azure selects automatically. |
+| `highAvailability.mode` | `string` | -- | High availability mode. `"ZoneRedundant"` places the standby in a different zone; `"SameZone"` places it in the same zone. Burstable SKUs do not support HA. |
+| `highAvailability.standbyAvailabilityZone` | `string` | -- | Availability zone for the standby server. Valid values: `"1"`, `"2"`, `"3"`. Must differ from `zone` in ZoneRedundant mode. |
+| `databases` | `list` | `[]` | Databases to create on the server. Each entry has `name` (required), `charset` (default `"UTF8"`), and `collation` (default `"en_US.utf8"`). |
+| `firewallRules` | `list` | `[]` | Firewall rules for public access mode. Each entry has `name`, `startIpAddress`, and `endIpAddress` (all required). Use `0.0.0.0`/`0.0.0.0` to allow all Azure services. |
+
+## Examples
+
+### Development Server with Public Access
+
+A minimal Burstable-tier server for development with a single database and a firewall rule allowing the developer machine:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePostgresqlFlexibleServer
+metadata:
+  name: dev-pg
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AzurePostgresqlFlexibleServer.dev-pg
+spec:
+  region: eastus
+  resourceGroup: dev-rg
+  name: dev-pg
+  administratorLogin: devadmin
+  administratorPassword: "DevP@ss2024!"
+  skuName: B_Standard_B1ms
+  storageMb: 32768
+  version: "16"
+  databases:
+    - name: myapp
+  firewallRules:
+    - name: allow-dev-machine
+      startIpAddress: "203.0.113.42"
+      endIpAddress: "203.0.113.42"
+    - name: allow-azure-services
+      startIpAddress: "0.0.0.0"
+      endIpAddress: "0.0.0.0"
+```
+
+### Production Server with High Availability
+
+A General Purpose server with zone-redundant HA, geo-redundant backups, 35-day retention, storage auto-grow, and multiple databases:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePostgresqlFlexibleServer
+metadata:
+  name: prod-pg
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzurePostgresqlFlexibleServer.prod-pg
+spec:
+  region: westeurope
+  resourceGroup: prod-rg
+  name: prod-pg
+  administratorLogin: pgadmin
+  administratorPassword: "Pr0dStr0ng!P@ss"
+  skuName: GP_Standard_D4s_v3
+  storageMb: 262144
+  version: "16"
+  autoGrowEnabled: true
+  backupRetentionDays: 35
+  geoRedundantBackupEnabled: true
+  zone: "1"
+  highAvailability:
+    mode: ZoneRedundant
+    standbyAvailabilityZone: "2"
+  databases:
+    - name: orders
+    - name: inventory
+    - name: analytics
+      charset: UTF8
+      collation: en_US.utf8
+  firewallRules:
+    - name: allow-office
+      startIpAddress: "203.0.113.0"
+      endIpAddress: "203.0.113.255"
+    - name: allow-cicd
+      startIpAddress: "198.51.100.10"
+      endIpAddress: "198.51.100.10"
+```
+
+### Private VNet Access with Delegated Subnet
+
+A server deployed into a VNet with private access, a private DNS zone for name resolution, and no public connectivity:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePostgresqlFlexibleServer
+metadata:
+  name: private-pg
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzurePostgresqlFlexibleServer.private-pg
+spec:
+  region: eastus
+  resourceGroup: prod-rg
+  name: private-pg
+  administratorLogin: pgadmin
+  administratorPassword: "Pr1v@teAccess!99"
+  skuName: GP_Standard_D2s_v3
+  storageMb: 131072
+  delegatedSubnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.Network/virtualNetworks/prod-vnet/subnets/pg-subnet
+  privateDnsZoneId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.Network/privateDnsZones/privatelink.postgres.database.azure.com
+  zone: "1"
+  highAvailability:
+    mode: SameZone
+  databases:
+    - name: appdb
+```
+
+### Using Foreign Key References
+
+Reference OpenMCF-managed resources instead of hardcoding IDs. The resource group, subnet, and private DNS zone are resolved from their respective stack outputs:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePostgresqlFlexibleServer
+metadata:
+  name: ref-pg
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzurePostgresqlFlexibleServer.ref-pg
+spec:
+  region: eastus
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: my-rg
+      field: status.outputs.resource_group_name
+  name: ref-pg
+  administratorLogin: pgadmin
+  administratorPassword: "R3f@Str0ng!Pass"
+  skuName: GP_Standard_D2s_v3
+  storageMb: 65536
+  delegatedSubnetId:
+    valueFrom:
+      kind: AzureSubnet
+      name: pg-subnet
+      field: status.outputs.subnet_id
+  privateDnsZoneId:
+    valueFrom:
+      kind: AzurePrivateDnsZone
+      name: pg-dns
+      field: status.outputs.zone_id
+  databases:
+    - name: appdb
+```
+
+### Memory Optimized for Analytics
+
+A Memory Optimized server with PostgreSQL 17 for analytics workloads, large storage, and extended backup retention:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePostgresqlFlexibleServer
+metadata:
+  name: analytics-pg
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzurePostgresqlFlexibleServer.analytics-pg
+spec:
+  region: southeastasia
+  resourceGroup: analytics-rg
+  name: analytics-pg
+  administratorLogin: analyticsadmin
+  administratorPassword: "An@lyt1cs!Str0ng"
+  skuName: MO_Standard_E4s_v3
+  storageMb: 4194304
+  version: "17"
+  autoGrowEnabled: true
+  backupRetentionDays: 35
+  geoRedundantBackupEnabled: true
+  zone: "2"
+  highAvailability:
+    mode: ZoneRedundant
+    standbyAvailabilityZone: "3"
+  databases:
+    - name: warehouse
+    - name: reporting
+```
+
+## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `server_id` | `string` | Azure Resource Manager ID of the PostgreSQL Flexible Server. Referenced by AzurePrivateEndpoint for establishing private connectivity. |
+| `server_name` | `string` | Name of the PostgreSQL Flexible Server |
+| `fqdn` | `string` | Fully qualified domain name (e.g., `{name}.postgres.database.azure.com`). Used to construct connection strings: `postgresql://{admin}:{password}@{fqdn}:5432/{database}?sslmode=require` |
+| `administrator_login` | `string` | Administrator login name, exported so downstream resources can construct connection strings without duplicating this value |
+| `database_ids` | `map<string, string>` | Map of database names to their Azure Resource Manager IDs. Only populated for databases defined in `databases`. |
+
+## Related Components
+
+- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) -- provides the resource group for server placement
+- [AzureSubnet](/docs/catalog/azure/azuresubnet) -- provides a delegated subnet for private VNet access
+- [AzurePrivateDnsZone](/docs/catalog/azure/azureprivatednszone) -- provides DNS resolution for VNet-connected clients
+- [AzureKeyVault](/docs/catalog/azure/azurekeyvault) -- stores the administrator password or connection strings as secrets
+- [AzureVpc](/docs/catalog/azure/azurevpc) -- provides the virtual network containing the delegated subnet

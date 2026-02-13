@@ -14,8 +14,8 @@ type Locals struct {
 	ZoneName          string
 	ResourceGroupName string
 	RecordName        string
-	TTL            int
-	MxPriority     int
+	TTL               int
+	MxPriority        int
 }
 
 func initializeLocals(ctx *pulumi.Context, stackInput *azurednsrecordv1.AzureDnsRecordStackInput) *Locals {

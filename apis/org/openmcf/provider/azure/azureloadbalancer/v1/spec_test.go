@@ -138,9 +138,9 @@ var _ = ginkgo.Describe("AzureLoadBalancerSpec Validation Tests", func() {
 						},
 						HealthProbes: []*AzureHealthProbe{
 							{
-								Name:     "http-probe",
-								Protocol: "Http",
-								Port:     80,
+								Name:        "http-probe",
+								Protocol:    "Http",
+								Port:        80,
 								RequestPath: "/health",
 							},
 						},
@@ -404,14 +404,14 @@ var _ = ginkgo.Describe("AzureLoadBalancerSpec Validation Tests", func() {
 						},
 						Rules: []*AzureLoadBalancingRule{
 							{
-								Name:                 "sql-always-on",
-								Protocol:             "Tcp",
-								FrontendPort:         1433,
-								BackendPort:          1433,
-								BackendPoolName:      "default",
-								ProbeName:            "tcp-probe",
-								EnableFloatingIp:     &floatingIp,
-								DisableOutboundSnat:  &disableSnat,
+								Name:                "sql-always-on",
+								Protocol:            "Tcp",
+								FrontendPort:        1433,
+								BackendPort:         1433,
+								BackendPoolName:     "default",
+								ProbeName:           "tcp-probe",
+								EnableFloatingIp:    &floatingIp,
+								DisableOutboundSnat: &disableSnat,
 							},
 						},
 					},
@@ -655,8 +655,8 @@ var _ = ginkgo.Describe("AzureLoadBalancerSpec Validation Tests", func() {
 							},
 						},
 						BackendPools: []*AzureBackendPool{},
-						HealthProbes:  []*AzureHealthProbe{{Name: "probe", Protocol: "Tcp", Port: 80}},
-						Rules:         []*AzureLoadBalancingRule{{Name: "rule", Protocol: "Tcp", FrontendPort: 80, BackendPort: 80, BackendPoolName: "default", ProbeName: "probe"}},
+						HealthProbes: []*AzureHealthProbe{{Name: "probe", Protocol: "Tcp", Port: 80}},
+						Rules:        []*AzureLoadBalancingRule{{Name: "rule", Protocol: "Tcp", FrontendPort: 80, BackendPort: 80, BackendPoolName: "default", ProbeName: "probe"}},
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -684,8 +684,8 @@ var _ = ginkgo.Describe("AzureLoadBalancerSpec Validation Tests", func() {
 							},
 						},
 						BackendPools: []*AzureBackendPool{{Name: "default"}},
-						HealthProbes:  []*AzureHealthProbe{},
-						Rules:         []*AzureLoadBalancingRule{{Name: "rule", Protocol: "Tcp", FrontendPort: 80, BackendPort: 80, BackendPoolName: "default", ProbeName: "probe"}},
+						HealthProbes: []*AzureHealthProbe{},
+						Rules:        []*AzureLoadBalancingRule{{Name: "rule", Protocol: "Tcp", FrontendPort: 80, BackendPort: 80, BackendPoolName: "default", ProbeName: "probe"}},
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -713,8 +713,8 @@ var _ = ginkgo.Describe("AzureLoadBalancerSpec Validation Tests", func() {
 							},
 						},
 						BackendPools: []*AzureBackendPool{{Name: "default"}},
-						HealthProbes:  []*AzureHealthProbe{{Name: "probe", Protocol: "Tcp", Port: 80}},
-						Rules:         []*AzureLoadBalancingRule{},
+						HealthProbes: []*AzureHealthProbe{{Name: "probe", Protocol: "Tcp", Port: 80}},
+						Rules:        []*AzureLoadBalancingRule{},
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -773,7 +773,7 @@ var _ = ginkgo.Describe("AzureLoadBalancerSpec Validation Tests", func() {
 							},
 						},
 						BackendPools: []*AzureBackendPool{{Name: "default"}},
-						HealthProbes:  []*AzureHealthProbe{{Name: "probe", Protocol: "Tcp", Port: 80}},
+						HealthProbes: []*AzureHealthProbe{{Name: "probe", Protocol: "Tcp", Port: 80}},
 						Rules: []*AzureLoadBalancingRule{
 							{Name: "bad-rule", Protocol: "HTTP", FrontendPort: 80, BackendPort: 80, BackendPoolName: "default", ProbeName: "probe"},
 						},
@@ -868,7 +868,7 @@ var _ = ginkgo.Describe("AzureLoadBalancerSpec Validation Tests", func() {
 							},
 						},
 						BackendPools: []*AzureBackendPool{{Name: "default"}},
-						HealthProbes:  []*AzureHealthProbe{{Name: "probe", Protocol: "Tcp", Port: 80}},
+						HealthProbes: []*AzureHealthProbe{{Name: "probe", Protocol: "Tcp", Port: 80}},
 						Rules: []*AzureLoadBalancingRule{
 							{Name: "rule", Protocol: "Tcp", FrontendPort: 80, BackendPort: 80, BackendPoolName: "default", ProbeName: "probe", IdleTimeoutInMinutes: &timeout},
 						},
@@ -900,7 +900,7 @@ var _ = ginkgo.Describe("AzureLoadBalancerSpec Validation Tests", func() {
 							},
 						},
 						BackendPools: []*AzureBackendPool{{Name: "default"}},
-						HealthProbes:  []*AzureHealthProbe{{Name: "probe", Protocol: "Tcp", Port: 80}},
+						HealthProbes: []*AzureHealthProbe{{Name: "probe", Protocol: "Tcp", Port: 80}},
 						Rules: []*AzureLoadBalancingRule{
 							{Name: "rule", Protocol: "Tcp", FrontendPort: 80, BackendPort: 80, BackendPoolName: "default", ProbeName: "probe", IdleTimeoutInMinutes: &timeout},
 						},
@@ -931,8 +931,8 @@ var _ = ginkgo.Describe("AzureLoadBalancerSpec Validation Tests", func() {
 							},
 						},
 						BackendPools: []*AzureBackendPool{{Name: ""}},
-						HealthProbes:  []*AzureHealthProbe{{Name: "probe", Protocol: "Tcp", Port: 80}},
-						Rules:         []*AzureLoadBalancingRule{{Name: "rule", Protocol: "Tcp", FrontendPort: 80, BackendPort: 80, BackendPoolName: "default", ProbeName: "probe"}},
+						HealthProbes: []*AzureHealthProbe{{Name: "probe", Protocol: "Tcp", Port: 80}},
+						Rules:        []*AzureLoadBalancingRule{{Name: "rule", Protocol: "Tcp", FrontendPort: 80, BackendPort: 80, BackendPoolName: "default", ProbeName: "probe"}},
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -960,7 +960,7 @@ var _ = ginkgo.Describe("AzureLoadBalancerSpec Validation Tests", func() {
 							},
 						},
 						BackendPools: []*AzureBackendPool{{Name: "default"}},
-						HealthProbes:  []*AzureHealthProbe{{Name: "probe", Protocol: "Tcp", Port: 80}},
+						HealthProbes: []*AzureHealthProbe{{Name: "probe", Protocol: "Tcp", Port: 80}},
 						Rules: []*AzureLoadBalancingRule{
 							{Name: "rule", Protocol: "Tcp", FrontendPort: 80, BackendPort: 80, ProbeName: "probe"},
 						},
@@ -991,7 +991,7 @@ var _ = ginkgo.Describe("AzureLoadBalancerSpec Validation Tests", func() {
 							},
 						},
 						BackendPools: []*AzureBackendPool{{Name: "default"}},
-						HealthProbes:  []*AzureHealthProbe{{Name: "probe", Protocol: "Tcp", Port: 80}},
+						HealthProbes: []*AzureHealthProbe{{Name: "probe", Protocol: "Tcp", Port: 80}},
 						Rules: []*AzureLoadBalancingRule{
 							{Name: "rule", Protocol: "Tcp", FrontendPort: 80, BackendPort: 80, BackendPoolName: "default"},
 						},

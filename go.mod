@@ -25,7 +25,6 @@ require (
 	github.com/pulumi/pulumi-azure-native-sdk/containerregistry/v3 v3.10.1
 	github.com/pulumi/pulumi-azure-native-sdk/containerservice/v3 v3.10.1
 	github.com/pulumi/pulumi-azure-native-sdk/network/v3 v3.12.1
-	github.com/pulumi/pulumi-azure-native-sdk/resources/v3 v3.10.1
 	github.com/pulumi/pulumi-azure-native-sdk/v3 v3.12.1
 	github.com/pulumi/pulumi-azure/sdk/v5 v5.89.0
 	github.com/pulumi/pulumi-azure/sdk/v6 v6.28.0

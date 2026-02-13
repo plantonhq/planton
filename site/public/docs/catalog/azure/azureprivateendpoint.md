@@ -6,202 +6,236 @@ order: 100
 componentName: "azureprivateendpoint"
 ---
 
-# AzurePrivateEndpoint: Research & Deployment Guide
+# Azure Private Endpoint
 
-## What is Azure Private Endpoint?
+Deploys an Azure Private Endpoint that provides secure, private connectivity to Azure PaaS services over the Microsoft backbone network using a private IP address from your VNet. The component optionally creates a Private DNS Zone Group to automatically register the private endpoint's IP as an A-record in a linked private DNS zone.
 
-Azure Private Endpoint is a network interface that connects you privately and securely to a service powered by Azure Private Link. It uses a private IP address from your Virtual Network (VNet), effectively bringing the service into your VNet. The service could be an Azure PaaS service (Azure SQL, PostgreSQL, Storage, Key Vault, etc.) or a custom Private Link Service.
+## What Gets Created
 
-Private Endpoints enable three critical capabilities:
+When you deploy an AzurePrivateEndpoint resource, OpenMCF provisions:
 
-1. **Private connectivity** -- Access Azure PaaS services over a private IP instead of the public internet. Traffic stays entirely on the Microsoft backbone network, reducing latency and improving security.
+- **Private Endpoint** — a `privatelink.Endpoint` resource in the specified region and resource group, with an auto-approved private service connection to the target Azure service and a private IP allocated from the designated subnet
+- **Private Service Connection** — an auto-approved connection from the endpoint to the target resource, named `{metadata.name}-connection`, mapping one or more sub-resource group IDs
+- **Private DNS Zone Group** (conditional) — when `privateDnsZoneId` is provided, a DNS zone group named `{metadata.name}-dns-zone-group` that registers the private endpoint's IP as an A-record in the specified private DNS zone, ensuring in-VNet DNS resolution routes to the private IP instead of the public one
+- **Azure Tags** — resource metadata tags applied to the endpoint for tracking and governance
 
-2. **Data exfiltration protection** -- Each private endpoint maps to a specific sub-resource (e.g., "postgresqlServer", "vault", "blob"), not the entire service. Clients can only connect to the specific resource, preventing lateral data access to other resources in the same service account.
+## Prerequisites
 
-3. **Simplified network architecture** -- No need for service endpoints, NAT devices, or public IP addresses to reach Azure services from the VNet. Private endpoints eliminate the complexity of managing public endpoints and firewall rules.
+- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **An Azure Resource Group** where the endpoint will be created (can reference an AzureResourceGroup resource)
+- **A Subnet** in a VNet from which the private IP will be allocated; the subnet must have private endpoint network policies configured appropriately
+- **A Private Link-enabled target resource** — the Azure PaaS service or custom Private Link Service to connect to (e.g., PostgreSQL Flexible Server, Key Vault, Storage Account)
+- **A Private DNS Zone** (optional) — required if you want automatic DNS registration of the private endpoint's IP address
 
-## How Private Link Works
+## Quick Start
 
-The Private Link flow involves several Azure resources working together:
+Create a file `private-endpoint.yaml`:
 
-```
-VNet → Subnet → Private Endpoint → Network Interface → Private IP → Target Service
-```
-
-1. **VNet** -- The virtual network where your workloads reside
-2. **Subnet** -- A dedicated subnet (typically named "pe-subnet" or "private-endpoints") where private endpoints are deployed
-3. **Private Endpoint** -- The Azure resource that creates the connection
-4. **Network Interface** -- Azure automatically creates a network interface (NIC) for each private endpoint
-5. **Private IP** -- A private IP address allocated from the subnet's address space
-6. **Target Service** -- The Azure PaaS service (PostgreSQL, Key Vault, Storage, etc.) being accessed privately
-
-When a client in the VNet connects to the service's FQDN (e.g., `myserver.postgres.database.azure.com`), DNS resolution should point to the private IP address. This is where Private DNS Zones come in -- they ensure the FQDN resolves to the private IP instead of the public one.
-
-## Deployment Landscape
-
-### Manual (Azure Portal / CLI)
-
-```bash
-# Create private endpoint
-az network private-endpoint create \
-  --resource-group myRG \
-  --name myPE \
-  --vnet-name myVnet \
-  --subnet pe-subnet \
-  --private-connection-resource-id /subscriptions/.../Microsoft.DBforPostgreSQL/flexibleServers/myserver \
-  --connection-name myConnection \
-  --group-id postgresqlServer
-
-# Create DNS zone group (optional)
-az network private-endpoint dns-zone-group create \
-  --resource-group myRG \
-  --endpoint-name myPE \
-  --name myZoneGroup \
-  --private-dns-zone /subscriptions/.../privateDnsZones/privatelink.postgres.database.azure.com \
-  --zone-name privatelink.postgres.database.azure.com
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePrivateEndpoint
+metadata:
+  name: my-pe
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AzurePrivateEndpoint.my-pe
+spec:
+  region: eastus
+  resourceGroup: my-rg
+  name: my-private-endpoint
+  subnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Network/virtualNetworks/my-vnet/subnets/pe-subnet
+  privateConnectionResourceId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.DBforPostgreSQL/flexibleServers/my-postgres
+  subresourceNames:
+    - postgresqlServer
 ```
 
-### Terraform
+Deploy:
 
-```hcl
-resource "azurerm_private_endpoint" "postgres" {
-  name                = "pg-private-endpoint"
-  resource_group_name = azurerm_resource_group.example.name
-  location            = azurerm_resource_group.example.location
-  subnet_id           = azurerm_subnet.pe.id
-
-  private_service_connection {
-    name                           = "pg-connection"
-    private_connection_resource_id = azurerm_postgresql_flexible_server.example.id
-    subresource_names              = ["postgresqlServer"]
-    is_manual_connection           = false
-  }
-
-  private_dns_zone_group {
-    name                 = "pg-zone-group"
-    private_dns_zone_ids = [azurerm_private_dns_zone.postgres.id]
-  }
-}
+```shell
+openmcf apply -f private-endpoint.yaml
 ```
 
-### Pulumi (Go)
+This creates a private endpoint in the specified subnet with an auto-approved connection to the target PostgreSQL Flexible Server, allocating a private IP from the subnet.
 
-```go
-endpoint, _ := network.NewPrivateEndpoint(ctx, "pg-pe", &network.PrivateEndpointArgs{
-    Name:                pulumi.String("pg-private-endpoint"),
-    ResourceGroupName:   rg.Name,
-    Location:            rg.Location,
-    SubnetId:            subnet.ID(),
-    PrivateServiceConnection: &network.PrivateEndpointPrivateServiceConnectionArgs{
-        Name:                           pulumi.String("pg-connection"),
-        PrivateConnectionResourceId:     postgresql.ID(),
-        SubresourceNames:                pulumi.StringArray{pulumi.String("postgresqlServer")},
-        IsManualConnection:              pulumi.Bool(false),
-    },
-    PrivateDnsZoneGroup: &network.PrivateEndpointPrivateDnsZoneGroupArgs{
-        Name:                 pulumi.String("pg-zone-group"),
-        PrivateDnsZoneIds:     pulumi.StringArray{zone.ID()},
-    },
-})
+## Configuration Reference
+
+### Required Fields
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `region` | `string` | Azure region for the Private Endpoint (e.g., `eastus`, `westeurope`). Must be in the same region as the subnet. | Required, minimum length 1 |
+| `resourceGroup` | `StringValueOrRef` | Azure Resource Group name. Can reference an AzureResourceGroup resource via `valueFrom`. | Required |
+| `name` | `string` | Name of the Private Endpoint. Must be unique within the resource group. Allows letters, numbers, underscores, periods, and hyphens; must start and end with an alphanumeric character. | Required, 1-80 characters |
+| `subnetId` | `StringValueOrRef` | Azure Resource Manager ID of the subnet from which a private IP will be allocated. Can reference an AzureSubnet resource via `valueFrom`. | Required |
+| `privateConnectionResourceId` | `StringValueOrRef` | Azure Resource Manager ID of the Private Link-enabled target resource. Can reference any OpenMCF resource that supports Private Link via `valueFrom` (polymorphic -- no default kind). | Required |
+
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `subresourceNames` | `string[]` | `[]` | Sub-resource group IDs that the endpoint connects to. Common values: `postgresqlServer`, `mysqlServer`, `sqlServer`, `vault`, `blob`, `table`, `queue`, `file`, `Sql` (Cosmos DB SQL API), `MongoDB` (Cosmos DB Mongo API), `redisCache`, `registry`. Most endpoints use exactly one sub-resource. |
+| `privateDnsZoneId` | `StringValueOrRef` | not set | Azure Resource Manager ID of a Private DNS Zone for automatic A-record registration. Can reference an AzurePrivateDnsZone resource via `valueFrom`. When omitted, no DNS zone group is created. |
+
+## Examples
+
+### Private Endpoint for PostgreSQL with DNS
+
+A private endpoint connecting to a PostgreSQL Flexible Server with automatic DNS registration in the corresponding privatelink zone:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePrivateEndpoint
+metadata:
+  name: postgres-pe
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzurePrivateEndpoint.postgres-pe
+spec:
+  region: eastus
+  resourceGroup: prod-rg
+  name: postgres-private-endpoint
+  subnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.Network/virtualNetworks/prod-vnet/subnets/pe-subnet
+  privateConnectionResourceId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.DBforPostgreSQL/flexibleServers/prod-postgres
+  subresourceNames:
+    - postgresqlServer
+  privateDnsZoneId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.Network/privateDnsZones/privatelink.postgres.database.azure.com
 ```
 
-## Why OpenMCF Bundles Endpoint + DNS Zone Group
+### Private Endpoint for Key Vault without DNS
 
-Per DD03 (Composite Bundling Rules), a private endpoint without DNS zone group registration won't resolve correctly in the VNet. The service FQDN will resolve to the public IP instead of the private one, causing clients to bypass the private endpoint entirely.
+A private endpoint for Key Vault where DNS is managed externally:
 
-The bundling follows the same reasoning as:
-- AzureNetworkSecurityGroup (NSG + rules -- rules are the substance)
-- AzureUserAssignedIdentity (identity + role assignments -- assignments are the substance)
-- AzurePrivateDnsZone (zone + VNet link -- link is the substance)
-
-However, the DNS zone group is **optional** in this component because:
-1. Some organizations manage DNS externally (e.g., custom DNS servers)
-2. Some scenarios don't require DNS resolution (direct IP access)
-3. Flexibility is needed for advanced networking patterns
-
-## 80/20 Scoping Rationale
-
-### What's Included
-
-| Feature | Rationale |
-|---------|-----------|
-| Private endpoint creation | Core resource |
-| Optional DNS zone group | Enables seamless DNS resolution (80/20 case) |
-| Auto-approved connections | Manual connections require approval workflows (edge case) |
-| Dynamic IP allocation | Standard pattern; static IP is niche |
-| Polymorphic `private_connection_resource_id` | Supports all Azure PaaS services via StringValueOrRef |
-| Sub-resource names | Required for proper service targeting |
-| Tags | Standard Azure resource management |
-
-### What's Excluded
-
-| Feature | Rationale |
-|---------|-----------|
-| Static IP assignment | Dynamic allocation is the standard pattern; static IP is niche |
-| Manual connection approval | Requires request messages and owner approval; edge case |
-| Multiple DNS zone groups | Single zone group covers 99% of use cases |
-| Custom connection names | Auto-derived from metadata.name follows established patterns |
-| Application security groups | Advanced networking feature, very niche |
-| Request message | Only needed for manual connections (excluded) |
-
-## Design Decisions
-
-**Polymorphic `private_connection_resource_id`**: This field accepts any Azure resource ID that supports Private Link. No `default_kind` annotation is used because the target can be PostgreSQL, MySQL, Key Vault, Storage, Cosmos DB, Redis, or any other Private Link-enabled service. The flexibility enables the component to work across all Azure PaaS services.
-
-**Hardcoded auto-approval**: `is_manual_connection` is hardcoded to `false` in IaC modules. Auto-approved connections are the 80/20 case; manual connections require request messages and owner approval workflows, adding spec complexity for an edge case.
-
-**No static IP**: The `ip_configuration` field (static IP assignment) is omitted per 80/20 scoping. Dynamic allocation from the subnet is the standard pattern, and static IP assignment is a niche requirement.
-
-**Auto-derived names**: Private service connection name and DNS zone group name are auto-derived from `metadata.name` in IaC modules, following the pattern established by AzurePrivateDnsZone (VNet link name auto-derived). This reduces spec complexity and avoids naming conflicts.
-
-**Optional DNS zone group**: The DNS zone group is optional to support flexible DNS management patterns. When provided, it automatically registers the private IP as an A-record in the specified zone. When omitted, DNS is managed externally or via custom configuration.
-
-## Best Practices
-
-1. **Dedicated subnet for private endpoints** -- Create a dedicated subnet (e.g., "pe-subnet") for all private endpoints. This simplifies network policy management and IP address planning.
-
-2. **One endpoint per service instance** -- Each database, Key Vault, or Storage Account instance should have its own private endpoint. Don't try to share endpoints across instances.
-
-3. **Always use DNS zone groups** -- Unless you have a specific reason to manage DNS externally, always provide `private_dns_zone_id` to enable seamless DNS resolution.
-
-4. **Match zone names exactly** -- For Private Link, the DNS zone name must exactly match Azure's predefined name for the service (e.g., `privatelink.postgres.database.azure.com`). A typo means DNS resolution fails silently.
-
-5. **Sub-resource names are service-specific** -- Each Azure service defines its own sub-resource names. Use the correct name for your service type (see Common Sub-Resource Names table in README.md).
-
-6. **Region must match subnet** -- The private endpoint's region must match the subnet's region. Subnets inherit their region from the parent VNet.
-
-## Downstream Consumers
-
-```
-AzurePrivateEndpoint
-└── (leaf resource -- no current downstream consumers)
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePrivateEndpoint
+metadata:
+  name: vault-pe
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzurePrivateEndpoint.vault-pe
+spec:
+  region: eastus
+  resourceGroup: prod-rg
+  name: vault-private-endpoint
+  subnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.Network/virtualNetworks/prod-vnet/subnets/pe-subnet
+  privateConnectionResourceId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.KeyVault/vaults/prod-vault
+  subresourceNames:
+    - vault
 ```
 
-AzurePrivateEndpoint is currently a leaf resource in the infra chart DAG. No other OpenMCF resources reference its outputs. However, the outputs (`private_endpoint_id`, `private_ip_address`, `network_interface_id`) are essential for operational visibility and potential future consumers.
+### Private Endpoint for Storage Account Blob
 
-## Infra Chart Integration
+A private endpoint for Azure Blob Storage with DNS zone group:
 
-### Database Stack Pattern
-
-The database-stack infra chart creates one private endpoint per database instance:
-
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePrivateEndpoint
+metadata:
+  name: blob-pe
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzurePrivateEndpoint.blob-pe
+spec:
+  region: westeurope
+  resourceGroup: data-rg
+  name: blob-private-endpoint
+  subnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/data-rg/providers/Microsoft.Network/virtualNetworks/data-vnet/subnets/pe-subnet
+  privateConnectionResourceId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/data-rg/providers/Microsoft.Storage/storageAccounts/prodstorage
+  subresourceNames:
+    - blob
+  privateDnsZoneId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/data-rg/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net
 ```
-VPC → Subnet → PrivateDnsZone → Database Server → PrivateEndpoint → DNS Zone Group
+
+### Using Foreign Key References
+
+Reference OpenMCF-managed resources instead of hardcoding Azure resource IDs. The `privateConnectionResourceId` field is polymorphic and can reference any resource kind that supports Private Link:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePrivateEndpoint
+metadata:
+  name: ref-pe
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzurePrivateEndpoint.ref-pe
+spec:
+  region: eastus
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: my-rg
+      field: status.outputs.resource_group_name
+  name: ref-private-endpoint
+  subnetId:
+    valueFrom:
+      kind: AzureSubnet
+      name: pe-subnet
+      field: status.outputs.subnet_id
+  privateConnectionResourceId:
+    valueFrom:
+      kind: AzurePostgresqlFlexibleServer
+      name: prod-postgresql
+      field: status.outputs.server_id
+  subresourceNames:
+    - postgresqlServer
+  privateDnsZoneId:
+    valueFrom:
+      kind: AzurePrivateDnsZone
+      name: pg-dns-zone
+      field: status.outputs.zone_id
 ```
 
-Each database server (PostgreSQL, MySQL, MSSQL, Redis) gets its own private endpoint. The endpoint is wired to:
-1. The subnet (for private IP allocation)
-2. The database server (via `private_connection_resource_id`)
-3. The corresponding private DNS zone (via `private_dns_zone_id`)
+### Multiple Sub-Resources for Cosmos DB
 
-The DNS zone group automatically registers the private IP as an A-record in the zone, ensuring the database FQDN resolves to the private IP within the VNet.
+A private endpoint connecting to Azure Cosmos DB using the SQL API sub-resource:
 
-### Enterprise Network Foundation
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePrivateEndpoint
+metadata:
+  name: cosmos-pe
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzurePrivateEndpoint.cosmos-pe
+spec:
+  region: eastus
+  resourceGroup: app-rg
+  name: cosmos-private-endpoint
+  subnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Network/virtualNetworks/app-vnet/subnets/pe-subnet
+  privateConnectionResourceId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.DocumentDB/databaseAccounts/prod-cosmos
+  subresourceNames:
+    - Sql
+  privateDnsZoneId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Network/privateDnsZones/privatelink.documents.azure.com
+```
 
-Optional component for organizations that pre-create private endpoints as part of their networking foundation, before any databases or services are deployed. However, private endpoints are typically created alongside their target services, not as standalone networking infrastructure.
+## Stack Outputs
 
----
+After deployment, the following outputs are available in `status.outputs`:
 
-**Status**: Production Ready
-**Azure Provider Version**: ~> 4.0
-**Pulumi Provider Version**: v6
+| Output | Type | Description |
+|--------|------|-------------|
+| `private_endpoint_id` | `string` | Azure Resource Manager ID of the Private Endpoint |
+| `private_ip_address` | `string` | Private IP address allocated from the subnet. This is the IP that the target service's FQDN should resolve to within the VNet. If a DNS zone group is configured, this IP is automatically registered as an A-record. |
+| `network_interface_id` | `string` | Azure Resource Manager ID of the network interface created for this Private Endpoint. Useful for advanced networking diagnostics. |
+
+## Related Components
+
+- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) -- provides the resource group for endpoint placement
+- [AzureVpc](/docs/catalog/azure/azurevpc) -- provides the VNet containing the subnet for private IP allocation
+- [AzureSubnet](/docs/catalog/azure/azuresubnet) -- provides the subnet from which the private endpoint's IP is allocated
+- [AzurePrivateDnsZone](/docs/catalog/azure/azureprivatednszone) -- provides the DNS zone for automatic A-record registration of the private endpoint's IP
+- [AzurePostgresqlFlexibleServer](/docs/catalog/azure/azurepostgresqlflexibleserver) -- a common Private Link-enabled target for database workloads
+- [AzureKeyVault](/docs/catalog/azure/azurekeyvault) -- a common Private Link-enabled target for secrets management
+- [AzureStorageAccount](/docs/catalog/azure/azurestorageaccount) -- a common Private Link-enabled target for blob, table, queue, and file storage

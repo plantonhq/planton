@@ -6,228 +6,301 @@ order: 100
 componentName: "azurenetworksecuritygroup"
 ---
 
-# AzureNetworkSecurityGroup -- Research & Design Documentation
+# Azure Network Security Group
 
-## Overview
+Deploys an Azure Network Security Group (NSG) with priority-ordered security rules that control inbound and outbound traffic for Azure resources. The component bundles the NSG with its security rules because an NSG without rules relies entirely on Azure defaults, making the rules the substance of the resource.
 
-Azure Network Security Groups (NSGs) are stateful, Layer 3-4 packet-filtering firewalls
-that control traffic flow for Azure resources. They are the primary network access control
-mechanism in Azure, analogous to:
+## What Gets Created
 
-- **AWS Security Groups** -- stateful, but AWS SGs are allow-only (no deny rules)
-- **GCP Firewall Rules** -- similar priority-based evaluation, but GCP uses VPC-level rules
-- **Traditional firewalls** -- NSGs are per-subnet or per-NIC, not per-network-boundary
+When you deploy an AzureNetworkSecurityGroup resource, OpenMCF provisions:
 
-NSGs are foundational to Azure networking. Every enterprise Azure deployment uses NSGs
-to implement network segmentation, enforce the principle of least privilege, and meet
-compliance requirements.
+- **Network Security Group** — a `network.NetworkSecurityGroup` resource in the specified region and resource group, acting as a stateful firewall for associated subnets or NICs
+- **Security Rules** — a separate `network.NetworkSecurityRule` resource for each entry in `securityRules`, providing per-rule lifecycle management and explicit state tracking
+- **Azure Tags** — resource metadata tags applied to the NSG for tracking and governance
 
-## Azure NSG Architecture
+The component does not create subnet-to-NSG associations. Association is handled separately via `azurerm_subnet_network_security_group_association`, keeping the NSG lifecycle independent of any particular subnet or NIC.
 
-### Rule Evaluation Model
+Azure automatically creates implicit default rules in every NSG (priorities 65000-65500) that allow VNet-to-VNet traffic, allow Azure Load Balancer probes, and deny all other inbound traffic. User-defined rules (priorities 100-4096) are evaluated before these defaults.
 
-Azure evaluates NSG rules using a priority-based, first-match model:
+## Prerequisites
 
-1. **Direction separation** -- Inbound and outbound rules are evaluated independently
-2. **Priority ordering** -- Rules are evaluated from lowest priority number (highest priority)
-   to highest priority number (lowest priority)
-3. **First match wins** -- The first rule whose 5-tuple matches the traffic determines the
-   access decision (Allow or Deny)
-4. **Default rules** -- If no user rule matches, Azure's implicit default rules apply
+- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **An Azure Resource Group** where the NSG will be created (can reference an AzureResourceGroup resource)
+- **Network planning** — understand the traffic flows to allow or deny before defining security rules
 
-### 5-Tuple Matching
+## Quick Start
 
-Each rule matches traffic based on:
+Create a file `nsg.yaml`:
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| Source IP | Source address/CIDR/tag | `10.0.1.0/24`, `VirtualNetwork`, `*` |
-| Source Port | Source port/range | `*`, `1024-65535` |
-| Destination IP | Destination address/CIDR/tag | `10.0.2.0/24`, `Internet` |
-| Destination Port | Destination port/range | `443`, `80`, `22` |
-| Protocol | Transport protocol | `Tcp`, `Udp`, `Icmp`, `*` |
-
-### Implicit Default Rules
-
-Every NSG has six immutable default rules (three inbound, three outbound):
-
-**Inbound defaults:**
-
-| Priority | Name | Action | Description |
-|----------|------|--------|-------------|
-| 65000 | AllowVnetInBound | Allow | VNet-to-VNet traffic |
-| 65001 | AllowAzureLoadBalancerInBound | Allow | Load Balancer health probes |
-| 65500 | DenyAllInBound | Deny | All other inbound traffic |
-
-**Outbound defaults:**
-
-| Priority | Name | Action | Description |
-|----------|------|--------|-------------|
-| 65000 | AllowVnetOutBound | Allow | VNet-to-VNet traffic |
-| 65001 | AllowInternetOutBound | Allow | All outbound internet traffic |
-| 65500 | DenyAllOutBound | Deny | All other outbound traffic |
-
-### Stateful Behavior
-
-NSGs are stateful: if inbound traffic is allowed, the return (response) traffic is
-automatically permitted regardless of outbound rules, and vice versa. This means you
-only need to define rules in one direction for established connections.
-
-### Association Model
-
-NSGs can be associated with:
-
-- **Subnets** -- Rules apply to all resources in the subnet
-- **Network Interfaces (NICs)** -- Rules apply to a specific VM/resource
-
-When both subnet-level and NIC-level NSGs exist, traffic is evaluated against both:
-inbound traffic hits the subnet NSG first, then the NIC NSG. Outbound traffic hits
-the NIC NSG first, then the subnet NSG.
-
-## Deployment Landscape
-
-### Azure Terraform Provider Resources
-
-The AzureRM Terraform provider offers two approaches for NSG rules:
-
-1. **Inline rules** -- `security_rule` blocks within `azurerm_network_security_group`
-2. **Separate rules** -- `azurerm_network_security_rule` as standalone resources
-
-**Important:** These two approaches conflict. Using both inline and separate rules for
-the same NSG causes Terraform state conflicts. OpenMCF uses separate rules exclusively
-to provide per-rule lifecycle management and better error reporting.
-
-### Azure Pulumi Provider Resources
-
-The Pulumi Azure Classic SDK (v6) mirrors the Terraform resources:
-
-- `network.NetworkSecurityGroup` -- NSG resource
-- `network.NetworkSecurityRule` -- Individual rule resource
-
-### NSG vs Application Security Groups (ASGs)
-
-Azure also offers Application Security Groups (ASGs) for grouping VMs by application
-role. ASGs can be used as source or destination in NSG rules instead of IP addresses.
-OpenMCF omits ASG support in this 80/20 design because:
-
-1. ASGs add complexity with marginal benefit for most deployments
-2. CIDR-based rules cover the vast majority of enterprise use cases
-3. ASGs can be added as a future enhancement without breaking changes
-
-### NSG Flow Logs
-
-Azure supports NSG Flow Logs for traffic auditing (via Network Watcher). This is
-a separate resource (`azurerm_network_watcher_flow_log`) and is not bundled into
-the NSG component. Enabling flow logs is an operational concern that can be handled
-by a separate OpenMCF component or infra chart configuration.
-
-## Design Rationale
-
-### Why Strings with CEL Validation (Not Proto Enums)
-
-The `direction`, `access`, and `protocol` fields use string types with CEL `in`
-validation instead of protobuf enums. This design choice was established across
-R02-R05 (AzureApplicationInsights, AzurePublicIp, AzureSubnet) and is grounded in:
-
-1. **Provider authenticity** -- Azure API values are mixed-case strings (`"Tcp"`, `"Inbound"`,
-   `"Allow"`). Proto enums use UPPER_CASE, requiring a mapping layer in IaC modules
-2. **Zero mapping** -- String values pass through directly to Azure provider calls
-3. **Consistency** -- All Azure resources in OpenMCF use this pattern
-4. **Extensibility** -- Adding new protocol values (e.g., `"Ah"`, `"Esp"`) only requires
-   updating the CEL expression, not adding proto enum values and regenerating code
-
-### Why Separate Rules (Not Inline)
-
-Security rules are created as separate `NetworkSecurityRule` resources rather than
-inline on the NSG. This follows the AzureUserAssignedIdentity pattern (separate
-role assignments) and provides:
-
-1. **Per-rule error messages** -- If rule creation fails, the error identifies the specific rule
-2. **Per-rule state management** -- Each rule has its own entry in Pulumi/Terraform state
-3. **Conflict avoidance** -- Terraform's inline vs separate rule conflict is eliminated
-4. **Explicit naming** -- Each rule gets a descriptive Pulumi resource name
-
-### Why No Subnet Association
-
-The NSG-to-subnet association is deliberately excluded from this component:
-
-1. **Independent lifecycle** -- An NSG may be created, reviewed, and approved before
-   being associated with a subnet
-2. **Reuse** -- The same NSG could potentially be associated with multiple subnets
-   (same rules for peer subnets)
-3. **Infra chart responsibility** -- The enterprise-network-foundation chart creates
-   both NSGs and subnets, then wires the associations as a separate step
-4. **Separation of concerns** -- NSG defines "what traffic to allow/deny";
-   association defines "where to enforce it"
-
-### Why Description Field Was Added
-
-The T02 plan did not include a `description` field on security rules. It was added
-because:
-
-1. Azure supports it (max 140 characters)
-2. It serves a real operational need -- when reviewing NSGs in Azure Portal or via CLI,
-   descriptions explain the intent behind each rule
-3. It has zero cost (optional field, no IaC module complexity)
-4. It follows the "production-quality infrastructure" philosophy of the platform
-
-### 80/20 Omissions
-
-The following Azure NSG features are deliberately omitted:
-
-| Feature | Reason for Omission |
-|---------|---------------------|
-| Application Security Groups (ASGs) | Adds complexity, CIDR-based rules cover 80% of use cases |
-| Plural port ranges (`source_port_ranges`) | Single port range covers most rules; multiple rules handle edge cases |
-| `Ah` and `Esp` protocols | IPsec protocols are edge cases for enterprise NSGs |
-| NSG Flow Logs | Separate operational concern, different lifecycle |
-| Augmented security rules | Preview feature, not GA stable |
-
-All omissions can be added later without breaking changes.
-
-## Enterprise Deployment Patterns
-
-### Three-Tier Architecture
-
-The most common pattern -- web, app, and data tiers each with their own NSG:
-
-```
-Internet
-  │
-  ▼
-[Web NSG] ── Allow 80, 443 from Internet
-  │          Deny all other inbound
-  ▼
-[App NSG] ── Allow 8080 from web subnet
-  │          Allow health probes from LB
-  │          Deny all other inbound
-  ▼
-[Data NSG] ── Allow 5432 from app subnet
-              Allow 6380 from app subnet
-              Allow 22 from mgmt subnet
-              Deny all other inbound
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureNetworkSecurityGroup
+metadata:
+  name: my-nsg
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AzureNetworkSecurityGroup.my-nsg
+spec:
+  region: eastus
+  resourceGroup: my-rg
+  name: my-nsg
+  securityRules:
+    - name: allow-https-inbound
+      priority: 100
+      direction: Inbound
+      access: Allow
+      protocol: Tcp
+      destinationPortRange: "443"
 ```
 
-### Hub-and-Spoke Network
+Deploy:
 
-In hub-and-spoke topologies, NSGs control traffic between spokes via the hub:
+```shell
+openmcf apply -f nsg.yaml
+```
 
-- **Hub NSG** -- Controls traffic to/from shared services (DNS, NVA, bastion)
-- **Spoke NSGs** -- Per-workload rules specific to each spoke's requirements
-- **Gateway NSG** -- Controls traffic entering/leaving the Azure environment
+This creates an NSG with a single rule allowing inbound HTTPS traffic from any source. All other inbound traffic is handled by Azure's implicit default rules (VNet-to-VNet allowed, everything else denied).
 
-### AKS Cluster NSG
+## Configuration Reference
 
-AKS clusters require specific NSG rules for control plane communication:
+### Required Fields
 
-- Allow TCP 443 (API server) from authorized IP ranges
-- Allow TCP 9000 (tunnelfront) from AzureCloud service tag
-- Allow UDP 1194 (tunnel) from AzureCloud service tag
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `region` | `string` | Azure region for the NSG (e.g., `eastus`, `westeurope`). Must match the region of resources it will be associated with. | Required, minimum length 1 |
+| `resourceGroup` | `StringValueOrRef` | Azure Resource Group name. Can reference an AzureResourceGroup resource via `valueFrom`. | Required |
+| `name` | `string` | Name of the Network Security Group. Must be unique within the resource group. Allowed characters: alphanumeric, underscores, hyphens, periods. Must start with alphanumeric. | Required, 1-80 characters |
 
-## References
+### Optional Fields
 
-- [Azure NSG Documentation](https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview)
-- [NSG Default Rules](https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview#default-security-rules)
-- [Service Tags](https://learn.microsoft.com/en-us/azure/virtual-network/service-tags-overview)
-- [Terraform azurerm_network_security_group](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group)
-- [Terraform azurerm_network_security_rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule)
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `securityRules` | `AzureSecurityRule[]` | `[]` | Security rules defining allowed or denied traffic flows. Rules are evaluated in priority order (lowest number first). An NSG with no rules relies on Azure defaults: allow VNet-to-VNet, allow load balancer probes, deny all other inbound, allow all outbound. |
+
+### Security Rule Fields
+
+Each entry in `securityRules` supports the following fields:
+
+| Field | Type | Default | Required | Description |
+|-------|------|---------|----------|-------------|
+| `name` | `string` | — | Yes | Unique name within the NSG. Use descriptive names like `allow-https-inbound`. 1-80 characters. |
+| `description` | `string` | — | No | Human-readable description of the rule's purpose. Maximum 140 characters. |
+| `priority` | `int` | — | Yes | Evaluation priority. Lower numbers are evaluated first. Range: 100-4096. Use increments of 10 or 100 to leave room for future rules. |
+| `direction` | `string` | — | Yes | Traffic direction. Values: `Inbound`, `Outbound`. |
+| `access` | `string` | — | Yes | Access decision when the rule matches. Values: `Allow`, `Deny`. |
+| `protocol` | `string` | — | Yes | Network protocol. Values: `Tcp`, `Udp`, `Icmp`, `*` (any). |
+| `sourcePortRange` | `string` | `*` | No | Source port, range (`1024-65535`), or `*` for any. Most rules use `*` since source ports are typically ephemeral. |
+| `destinationPortRange` | `string` | — | Yes | Destination port, range (`1024-65535`), or `*` for any. Examples: `22` (SSH), `80` (HTTP), `443` (HTTPS). |
+| `sourceAddressPrefix` | `string` | `*` | No | Source CIDR, IP, Azure service tag (`VirtualNetwork`, `Internet`), or `*`. Ignored if `sourceAddressPrefixes` is set. |
+| `destinationAddressPrefix` | `string` | `*` | No | Destination CIDR, IP, Azure service tag, or `*`. Ignored if `destinationAddressPrefixes` is set. |
+| `sourceAddressPrefixes` | `string[]` | `[]` | No | Multiple source CIDRs or IPs. Takes precedence over `sourceAddressPrefix` when non-empty. Service tags are not supported in this field. |
+| `destinationAddressPrefixes` | `string[]` | `[]` | No | Multiple destination CIDRs or IPs. Takes precedence over `destinationAddressPrefix` when non-empty. Service tags are not supported in this field. |
+
+## Examples
+
+### Allow HTTPS Only
+
+A minimal NSG that allows inbound HTTPS and denies everything else (via Azure defaults):
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureNetworkSecurityGroup
+metadata:
+  name: web-nsg
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AzureNetworkSecurityGroup.web-nsg
+spec:
+  region: eastus
+  resourceGroup: dev-rg
+  name: web-nsg
+  securityRules:
+    - name: allow-https-inbound
+      priority: 100
+      direction: Inbound
+      access: Allow
+      protocol: Tcp
+      destinationPortRange: "443"
+```
+
+### Web Tier with HTTP and HTTPS
+
+An NSG for a web tier that allows both HTTP and HTTPS inbound from the internet:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureNetworkSecurityGroup
+metadata:
+  name: web-tier-nsg
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureNetworkSecurityGroup.web-tier-nsg
+spec:
+  region: eastus
+  resourceGroup: prod-rg
+  name: web-tier-nsg
+  securityRules:
+    - name: allow-https-inbound
+      priority: 100
+      direction: Inbound
+      access: Allow
+      protocol: Tcp
+      destinationPortRange: "443"
+      sourceAddressPrefix: Internet
+    - name: allow-http-inbound
+      priority: 200
+      direction: Inbound
+      access: Allow
+      protocol: Tcp
+      destinationPortRange: "80"
+      sourceAddressPrefix: Internet
+    - name: deny-all-inbound
+      priority: 4096
+      direction: Inbound
+      access: Deny
+      protocol: "*"
+      destinationPortRange: "*"
+      description: Explicit deny-all as a safety net
+```
+
+### Application Tier with Restricted Sources
+
+An NSG for an application tier that only accepts traffic from the web tier subnet and allows SSH from a bastion host:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureNetworkSecurityGroup
+metadata:
+  name: app-tier-nsg
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureNetworkSecurityGroup.app-tier-nsg
+spec:
+  region: eastus
+  resourceGroup: prod-rg
+  name: app-tier-nsg
+  securityRules:
+    - name: allow-web-to-app
+      priority: 100
+      direction: Inbound
+      access: Allow
+      protocol: Tcp
+      destinationPortRange: "8080"
+      sourceAddressPrefix: "10.0.1.0/24"
+      description: Allow traffic from web tier subnet
+    - name: allow-ssh-from-bastion
+      priority: 200
+      direction: Inbound
+      access: Allow
+      protocol: Tcp
+      destinationPortRange: "22"
+      sourceAddressPrefix: "10.0.255.4"
+      description: Allow SSH from bastion host
+    - name: deny-all-inbound
+      priority: 4096
+      direction: Inbound
+      access: Deny
+      protocol: "*"
+      destinationPortRange: "*"
+```
+
+### Data Tier with Multiple Source Ranges
+
+An NSG for a data tier that allows database traffic from multiple application subnets using plural address prefixes:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureNetworkSecurityGroup
+metadata:
+  name: data-tier-nsg
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureNetworkSecurityGroup.data-tier-nsg
+spec:
+  region: westeurope
+  resourceGroup: prod-rg
+  name: data-tier-nsg
+  securityRules:
+    - name: allow-postgres-from-app-subnets
+      priority: 100
+      direction: Inbound
+      access: Allow
+      protocol: Tcp
+      destinationPortRange: "5432"
+      sourceAddressPrefixes:
+        - "10.0.2.0/24"
+        - "10.0.3.0/24"
+        - "10.0.4.0/24"
+      description: Allow PostgreSQL from all app subnets
+    - name: deny-all-inbound
+      priority: 4096
+      direction: Inbound
+      access: Deny
+      protocol: "*"
+      destinationPortRange: "*"
+    - name: deny-internet-outbound
+      priority: 4096
+      direction: Outbound
+      access: Deny
+      protocol: "*"
+      destinationPortRange: "*"
+      destinationAddressPrefix: Internet
+      description: Prevent data tier from reaching the internet
+```
+
+### Using Foreign Key References
+
+Reference an OpenMCF-managed resource group instead of hardcoding the name:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureNetworkSecurityGroup
+metadata:
+  name: ref-nsg
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureNetworkSecurityGroup.ref-nsg
+spec:
+  region: eastus
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: my-rg
+      field: status.outputs.resource_group_name
+  name: ref-nsg
+  securityRules:
+    - name: allow-https-inbound
+      priority: 100
+      direction: Inbound
+      access: Allow
+      protocol: Tcp
+      destinationPortRange: "443"
+```
+
+## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `nsg_id` | `string` | Azure Resource Manager ID of the Network Security Group. Format: `/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkSecurityGroups/{name}`. Used by infra charts for subnet-NSG association. |
+| `nsg_name` | `string` | Name of the Network Security Group |
+
+## Related Components
+
+- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) — provides the resource group for NSG placement
+- [AzureVpc](/docs/catalog/azure/azurevpc) — provides the virtual network and subnets that NSGs are associated with
+- [AzureSubnet](/docs/catalog/azure/azuresubnet) — NSGs are associated with subnets to filter traffic at the subnet level
+- [AzureAksCluster](/docs/catalog/azure/azureakscluster) — AKS node pool subnets often require NSGs for controlling cluster traffic

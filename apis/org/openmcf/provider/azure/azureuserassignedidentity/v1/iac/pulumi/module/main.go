@@ -51,9 +51,9 @@ func Resources(ctx *pulumi.Context, stackInput *azureuserassignedidentityv1.Azur
 		_, err := authorization.NewAssignment(ctx,
 			fmt.Sprintf("%s-ra-%d", spec.Name, i),
 			&authorization.AssignmentArgs{
-				PrincipalId:                 identity.PrincipalId,
-				Scope:                       pulumi.String(resolvedScope),
-				RoleDefinitionName:          pulumi.String(ra.RoleDefinitionName),
+				PrincipalId:                  identity.PrincipalId,
+				Scope:                        pulumi.String(resolvedScope),
+				RoleDefinitionName:           pulumi.String(ra.RoleDefinitionName),
 				SkipServicePrincipalAadCheck: pulumi.Bool(true),
 			},
 			pulumi.Provider(azureProvider),

@@ -235,21 +235,21 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 
-		ginkgo.It("should return a validation error when resource_group is nil", func() {
-			input := &AzureStorageAccount{
-				ApiVersion: "azure.openmcf.org/v1",
-				Kind:       "AzureStorageAccount",
-				Metadata: &shared.CloudResourceMetadata{
-					Name: "test-storage-account",
-				},
-				Spec: &AzureStorageAccountSpec{
-					Region:        "eastus",
-					ResourceGroup: nil,
-				},
-			}
-			err := protovalidate.Validate(input)
-			gomega.Expect(err).ToNot(gomega.BeNil())
-		})
+			ginkgo.It("should return a validation error when resource_group is nil", func() {
+				input := &AzureStorageAccount{
+					ApiVersion: "azure.openmcf.org/v1",
+					Kind:       "AzureStorageAccount",
+					Metadata: &shared.CloudResourceMetadata{
+						Name: "test-storage-account",
+					},
+					Spec: &AzureStorageAccountSpec{
+						Region:        "eastus",
+						ResourceGroup: nil,
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
 
 			ginkgo.It("should return a validation error when container name is too short", func() {
 				input := &AzureStorageAccount{

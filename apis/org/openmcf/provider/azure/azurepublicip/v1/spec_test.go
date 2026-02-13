@@ -145,7 +145,7 @@ var _ = ginkgo.Describe("AzurePublicIpSpec Validation Tests", func() {
 								Value: "my-rg",
 							},
 						},
-						Name:                  "my-public-ip",
+						Name:                 "my-public-ip",
 						IdleTimeoutInMinutes: &minTimeout,
 					},
 				}
@@ -168,7 +168,7 @@ var _ = ginkgo.Describe("AzurePublicIpSpec Validation Tests", func() {
 								Value: "my-rg",
 							},
 						},
-						Name:                  "my-public-ip",
+						Name:                 "my-public-ip",
 						IdleTimeoutInMinutes: &maxTimeout,
 					},
 				}
@@ -193,9 +193,9 @@ var _ = ginkgo.Describe("AzurePublicIpSpec Validation Tests", func() {
 								Value: "prod-network-rg",
 							},
 						},
-						Name:                  "prod-gateway-pip",
-						DomainNameLabel:       "prod-gateway",
-						Zones:                 []string{"1", "2", "3"},
+						Name:                 "prod-gateway-pip",
+						DomainNameLabel:      "prod-gateway",
+						Zones:                []string{"1", "2", "3"},
 						IdleTimeoutInMinutes: &timeout,
 					},
 				}
@@ -461,7 +461,7 @@ var _ = ginkgo.Describe("AzurePublicIpSpec Validation Tests", func() {
 								Value: "my-rg",
 							},
 						},
-						Name:                  "my-public-ip",
+						Name:                 "my-public-ip",
 						IdleTimeoutInMinutes: &belowMin,
 					},
 				}
@@ -484,7 +484,7 @@ var _ = ginkgo.Describe("AzurePublicIpSpec Validation Tests", func() {
 								Value: "my-rg",
 							},
 						},
-						Name:                  "my-public-ip",
+						Name:                 "my-public-ip",
 						IdleTimeoutInMinutes: &aboveMax,
 					},
 				}

@@ -10,8 +10,8 @@ import (
 
 type Locals struct {
 	AzurePrivateEndpoint *azureprivateendpointv1.AzurePrivateEndpoint
-	ResourceGroupName     string
-	AzureTags             map[string]string
+	ResourceGroupName    string
+	AzureTags            map[string]string
 }
 
 func initializeLocals(ctx *pulumi.Context, stackInput *azureprivateendpointv1.AzurePrivateEndpointStackInput) *Locals {

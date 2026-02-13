@@ -6,369 +6,242 @@ order: 100
 componentName: "kubernetesrookcephoperator"
 ---
 
-# Deploying Rook Ceph Operator on Kubernetes: A Comprehensive Guide
+# Kubernetes Rook Ceph Operator
 
-## Introduction
+Deploys the Rook Ceph Operator on Kubernetes using the official Rook Helm chart (rook-ceph v1.16.6) with support for Ceph CSI RBD (block storage) and CephFS (file storage) drivers, optional NFS driver, configurable CSI host networking, CSI provisioner replica count, CRD management, operator container resource limits and requests, optional namespace creation, and atomic Helm rollback with cleanup-on-fail semantics.
 
-Storage remains one of the most challenging aspects of running stateful workloads on Kubernetes. While Kubernetes excels at managing stateless applications, persistent storage introduces complexity around data durability, performance, and availability. **Rook** emerged as a solution to this challenge, bringing **Ceph**—one of the most battle-tested distributed storage systems—to Kubernetes as a cloud-native experience.
+## What Gets Created
 
-The Rook Ceph Operator transforms Ceph from a complex, manually-managed distributed storage system into a self-managing, self-healing Kubernetes-native service. This document explores the deployment landscape for storage on Kubernetes, why Rook Ceph stands out, and how OpenMCF leverages it to provide production-ready storage infrastructure.
+When you deploy a KubernetesRookCephOperator resource, OpenMCF provisions:
 
-## The Kubernetes Storage Challenge
+- **Namespace** — created only when `createNamespace` is `true`
+- **Helm Release (rook-ceph)** — deploys the Rook Ceph Operator from the `rook-ceph` chart at `https://charts.rook.io/release`, pinned to version v1.16.6 by default, with CRDs installed, atomic rollback enabled, cleanup-on-fail, wait-for-jobs, and a 5-minute timeout
+- **CRDs** — Rook custom resource definitions (CephCluster, CephBlockPool, CephFilesystem, etc.) are installed by default via the Helm chart unless explicitly disabled
+- **CSI Drivers** — Ceph CSI RBD and CephFS drivers are enabled by default, providing block and file storage support for PersistentVolumeClaims; NFS and CSI Addons drivers are available as optional add-ons
 
-### Why Storage is Different
+## Prerequisites
 
-Kubernetes was designed with stateless workloads in mind. Pods are ephemeral, can be rescheduled anywhere, and shouldn't rely on local state. However, real-world applications need persistent storage:
+- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
+- **Cluster-level permissions** — the Rook operator requires RBAC privileges to manage CRDs, namespaces, pods, and storage resources across the cluster
+- **Storage-capable nodes** — at least one node with raw block devices or directories available for Ceph OSDs (required when deploying a CephCluster after the operator is installed)
 
-- **Databases** require durable block storage with consistent I/O performance
-- **Content management systems** need shared file storage across multiple pods
-- **Cloud-native applications** benefit from S3-compatible object storage
-- **Machine learning workflows** require high-throughput data access
+## Quick Start
 
-### Traditional Approaches and Their Limitations
-
-**Cloud Provider Storage (EBS, Persistent Disks, Azure Disks):**
-- Simple to use but vendor-locked
-- Limited to single-availability-zone attachment
-- Pricing scales linearly with capacity
-- No shared storage (ReadWriteMany) for most types
-
-**Network File Systems (NFS, EFS):**
-- Provides shared storage but often becomes a bottleneck
-- Limited IOPS and throughput
-- Single point of failure without clustering
-- Not suitable for database workloads
-
-**Storage Area Networks (SAN/iSCSI):**
-- Enterprise-grade but complex to integrate with Kubernetes
-- Requires specialized hardware and expertise
-- Not cloud-native or easily scalable
-
-### Enter Software-Defined Storage
-
-Software-defined storage (SDS) solutions like Ceph, GlusterFS, and Longhorn run on commodity hardware and provide storage abstractions through software. Among these, **Ceph** stands out for its:
-
-- **Unified storage**: Block (RBD), File (CephFS), and Object (RGW) from a single system
-- **Proven reliability**: Powers some of the largest storage deployments globally
-- **Self-healing**: Automatic data replication and recovery
-- **Scalability**: Linear scale-out by adding nodes
-
-## Rook: Making Ceph Cloud-Native
-
-### What is Rook?
-
-Rook is a CNCF graduated project that provides cloud-native storage orchestration for Kubernetes. While Rook supports multiple storage backends (Ceph, NFS, Cassandra), Ceph is the primary and most mature implementation.
-
-The Rook Ceph Operator:
-- **Deploys** Ceph clusters using Kubernetes-native resources
-- **Manages** the lifecycle of all Ceph daemons (MON, OSD, MGR, MDS, RGW)
-- **Integrates** with Kubernetes through CSI drivers for PersistentVolume provisioning
-- **Monitors** cluster health and triggers automatic recovery
-- **Upgrades** Ceph versions with rolling updates
-
-### Why Rook Over Manual Ceph Deployment?
-
-Running Ceph without an operator requires:
-- Manual daemon deployment and configuration
-- Complex networking and service discovery setup
-- Custom scripts for health monitoring and recovery
-- Manual handling of failures, rebalancing, and upgrades
-
-With Rook:
-- Declare desired state in YAML, operator handles implementation
-- Automatic daemon placement based on available resources
-- Built-in health checks and self-healing
-- One-command upgrades with automatic rollback on failure
-
-## The Deployment Maturity Spectrum
-
-### Level 0: Anti-Pattern – Manual Ceph Deployment
-
-**What it is**: Deploying Ceph daemons directly as Pods or StatefulSets without operator management.
-
-**Why it fails**:
-- Ceph daemons have complex interdependencies
-- MON quorum requires careful bootstrapping
-- OSD deployment needs device discovery and preparation
-- Failure recovery requires manual intervention
-- No integration with Kubernetes storage primitives
-
-**Verdict**: Avoid. The operational complexity is prohibitive for Kubernetes environments.
-
-### Level 1: Helm Charts Without Operators
-
-**What it is**: Using Helm charts to template Ceph deployment resources.
-
-**Limitations**:
-- Charts can deploy initial state but don't manage ongoing operations
-- No automatic recovery from failures
-- Scaling requires manual OSD configuration
-- Upgrades are risky without orchestration
-
-**Verdict**: Insufficient for production. Works for initial deployment but lacks lifecycle management.
-
-### Level 2: Rook Ceph Operator
-
-**What it is**: Full operator-based deployment with custom resources and controllers.
-
-**Capabilities**:
-- **CephCluster CRD**: Define entire cluster topology declaratively
-- **CephBlockPool CRD**: Create replicated or erasure-coded block pools
-- **CephFilesystem CRD**: Deploy CephFS with metadata servers
-- **CephObjectStore CRD**: S3/Swift compatible object storage
-- **CephObjectStoreUser CRD**: Manage object store access credentials
-
-**Why it works**:
-- Operator has deep domain knowledge of Ceph operations
-- Continuous reconciliation ensures desired state
-- Automatic OSD preparation on new devices
-- Rolling upgrades with health checks
-- CSI integration for Kubernetes PV provisioning
-
-**Verdict**: The production-ready choice. Matches Ceph's complexity with appropriate automation.
-
-## Rook Architecture Deep Dive
-
-### Core Components
-
-**Rook Operator Pod**:
-- Watches CRD resources for desired state
-- Launches and manages Ceph daemon pods
-- Monitors cluster health
-- Orchestrates upgrades and scaling
-
-**Ceph MON (Monitors)**:
-- Maintain cluster map (topology information)
-- Require quorum (minimum 3 recommended)
-- Critical for cluster availability
-
-**Ceph MGR (Managers)**:
-- Provide management interfaces (dashboard, Prometheus)
-- Run modules for additional functionality
-- Active/standby for high availability
-
-**Ceph OSD (Object Storage Daemon)**:
-- Store actual data on physical devices
-- Handle replication and recovery
-- One OSD per block device or partition
-
-**Ceph MDS (Metadata Server)** - For CephFS:
-- Manage file system metadata
-- Enable POSIX-compatible file access
-- Active/standby or active/active configurations
-
-**Ceph RGW (RADOS Gateway)** - For Object Storage:
-- S3 and Swift compatible API
-- Multi-site replication support
-- Integration with identity providers
-
-### CSI Integration
-
-Rook deploys Container Storage Interface (CSI) drivers that integrate with Kubernetes:
-
-**RBD CSI Driver**:
-- Provisions RBD (block) volumes from Ceph pools
-- Supports volume cloning and snapshots
-- ReadWriteOnce access mode
-
-**CephFS CSI Driver**:
-- Provisions CephFS subvolumes
-- ReadWriteMany access mode for shared storage
-- Dynamic subvolume group management
-
-**NFS CSI Driver** (optional):
-- NFS-over-CephFS exports
-- Broader client compatibility
-
-## Production Best Practices
-
-### Hardware Considerations
-
-**Minimum Cluster**:
-- 3 nodes for MON quorum
-- 1 OSD per node minimum
-- 10 GbE networking recommended
-
-**Production Cluster**:
-- Dedicated storage nodes with local SSDs/NVMe
-- Separated networks for cluster and public traffic
-- Multiple OSDs per node for performance
-- 25 GbE or higher for large clusters
-
-### Configuration Guidelines
-
-**Monitor Placement**:
-```yaml
-spec:
-  mon:
-    count: 3  # Always odd number, minimum 3
-    allowMultiplePerNode: false
-```
-
-**Manager Configuration**:
-```yaml
-spec:
-  mgr:
-    count: 2  # Active + standby
-    modules:
-      - name: pg_autoscaler
-        enabled: true
-```
-
-**OSD Configuration**:
-```yaml
-spec:
-  storage:
-    useAllNodes: false
-    useAllDevices: false
-    nodes:
-      - name: "storage-node-1"
-        devices:
-          - name: "nvme0n1"
-          - name: "nvme1n1"
-```
-
-### Failure Domain Awareness
-
-Configure failure domains to ensure data availability:
+Create a file `rook-ceph-operator.yaml`:
 
 ```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesRookCephOperator
+metadata:
+  name: my-rook-ceph
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesRookCephOperator.my-rook-ceph
 spec:
-  storage:
-    nodes:
-      - name: "node1"
-        config:
-          crush_location: "rack=rack1"
-      - name: "node2"
-        config:
-          crush_location: "rack=rack2"
+  namespace: rook-ceph
+  createNamespace: true
+  container:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
 ```
 
-### Resource Allocation
+Deploy:
 
-| Daemon | CPU Request | Memory Request | Notes |
-|--------|-------------|----------------|-------|
-| MON    | 500m        | 1Gi            | Scales with cluster size |
-| MGR    | 500m        | 512Mi          | More for dashboard usage |
-| OSD    | 500m-2      | 2-4Gi          | Varies by device count |
-| MDS    | 500m        | 1Gi            | Per active MDS |
-| RGW    | 500m        | 512Mi          | Per gateway instance |
+```shell
+openmcf apply -f rook-ceph-operator.yaml
+```
 
-### Monitoring and Alerting
+This creates the Rook Ceph Operator in the `rook-ceph` namespace with default CSI drivers enabled and CRDs installed.
 
-Rook integrates with Prometheus:
+## Configuration Reference
+
+### Required Fields
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `namespace` | `string` | Kubernetes namespace for the Rook Ceph Operator deployment. Can reference a KubernetesNamespace resource via `valueFrom`. | Required |
+| `container` | `object` | Container specifications for the operator deployment. | Required |
+| `container.resources` | `object` | CPU and memory resource requests and limits for the operator container. Defaults: requests `200m` CPU / `128Mi` memory, limits `500m` CPU / `512Mi` memory. | Required |
+
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `targetCluster.clusterKind` | `enum` | — | Kubernetes cluster kind. Valid values: `AwsEksCluster`, `GcpGkeCluster`, `AzureAksCluster`, `DigitalOceanKubernetesCluster`, `CivoKubernetesCluster`. |
+| `targetCluster.clusterName` | `string` | — | Name of the target Kubernetes cluster in the same environment. |
+| `createNamespace` | `bool` | `false` | When `true`, creates the namespace before deploying resources. |
+| `operatorVersion` | `string` | `v1.16.6` | Helm chart version for the Rook Ceph Operator. Must match a valid [Rook release tag](https://github.com/rook/rook/releases). The `v` prefix is stripped automatically before passing to Helm. |
+| `crdsEnabled` | `bool` | `true` | Whether the Helm chart should install and update CRDs. Only set to `false` if managing CRDs independently. |
+| `csi.enableRbdDriver` | `bool` | `true` | Enable the Ceph CSI RBD (block storage) driver. |
+| `csi.enableCephfsDriver` | `bool` | `true` | Enable the Ceph CSI CephFS (file storage) driver. |
+| `csi.disableCsiDriver` | `bool` | `false` | Disable the CSI driver entirely. Set to `true` to use an external CSI driver instead. |
+| `csi.enableCsiHostNetwork` | `bool` | `true` | Enable host networking for CSI CephFS and RBD nodeplugins. May be necessary when the SDN does not provide access to an external cluster or when there is significant drop in read/write performance. |
+| `csi.provisionerReplicas` | `int32` | `2` | Number of replicas for the CSI provisioner deployment. |
+| `csi.enableCsiAddons` | `bool` | `false` | Enable CSI Addons for additional CSI functionality such as volume replication and reclaim space. |
+| `csi.enableNfsDriver` | `bool` | `false` | Enable the NFS CSI driver for NFS storage support via Ceph NFS gateways. |
+
+> **Note on `valueFrom`**: The `namespace` field is a `StringValueOrRef` type. You can provide a literal string value directly, or use `valueFrom` to reference the output of another OpenMCF resource. See the foreign key reference example below.
+
+## Examples
+
+### Default Deployment with All CSI Drivers
+
+Deploy the Rook Ceph Operator with default settings, enabling both RBD and CephFS drivers:
 
 ```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesRookCephOperator
+metadata:
+  name: rook-default
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.KubernetesRookCephOperator.rook-default
 spec:
-  monitoring:
-    enabled: true
-    metricsDisabled: false
+  namespace: rook-ceph
+  createNamespace: true
+  container:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
 ```
 
-Key metrics to monitor:
-- `ceph_health_status`: Overall cluster health
-- `ceph_osd_op_latency`: OSD operation latency
-- `ceph_pool_used_bytes`: Pool capacity usage
-- `ceph_pg_degraded`: Degraded placement groups
+This deploys the operator at version v1.16.6 with CRDs installed, RBD and CephFS CSI drivers enabled, host networking on, and 2 CSI provisioner replicas. After the operator is running, you can create CephCluster and CephBlockPool resources in the same namespace.
 
-## The 80/20 Configuration Principle
+### Production with Custom Resources and NFS
 
-When designing the OpenMCF API for KubernetesRookCephOperator, we focus on the essential 20% of configuration that 80% of users need:
+Deploy a production-grade Rook Ceph Operator with increased resource limits, NFS driver, and CSI Addons enabled:
 
-**Essential Configuration (Included)**:
-1. **Target Cluster**: Where to deploy the operator
-2. **Namespace**: Kubernetes namespace for Rook components
-3. **Operator Version**: Helm chart version for reproducibility
-4. **CRD Management**: Whether operator manages CRDs
-5. **Container Resources**: CPU/memory for operator pod
-6. **CSI Configuration**: Which drivers to enable
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesRookCephOperator
+metadata:
+  name: rook-prod
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesRookCephOperator.rook-prod
+spec:
+  namespace: rook-ceph
+  createNamespace: true
+  operatorVersion: "v1.16.6"
+  container:
+    resources:
+      requests:
+        cpu: 500m
+        memory: 256Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+  csi:
+    enableRbdDriver: true
+    enableCephfsDriver: true
+    enableNfsDriver: true
+    enableCsiAddons: true
+    enableCsiHostNetwork: true
+    provisionerReplicas: 3
+```
 
-**Advanced Settings (Defaulted)**:
-- Node selectors and tolerations for operator pod
-- Detailed CSI resource allocations
-- Webhook configuration
-- Discovery daemon settings
-- Advanced RBAC configurations
+This deploys the operator with higher CPU and memory allocations suitable for production clusters, enables the NFS driver for NFS-backed PersistentVolumes, activates CSI Addons for features like volume replication, and runs 3 CSI provisioner replicas for high availability.
 
-The operator deployment is just the foundation. The actual storage cluster configuration (CephCluster CRD) contains significantly more options, which users apply separately after operator installation.
+### Block Storage Only with External CRD Management
 
-## Comparison with Alternatives
+Deploy the operator with only the RBD (block storage) driver and manage CRDs externally:
 
-### Rook vs Longhorn
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesRookCephOperator
+metadata:
+  name: rook-block-only
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: staging.KubernetesRookCephOperator.rook-block-only
+spec:
+  namespace: rook-ceph
+  createNamespace: true
+  crdsEnabled: false
+  container:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  csi:
+    enableRbdDriver: true
+    enableCephfsDriver: false
+    enableNfsDriver: false
+    enableCsiHostNetwork: false
+    provisionerReplicas: 1
+```
 
-| Aspect | Rook Ceph | Longhorn |
-|--------|-----------|----------|
-| Storage Types | Block, File, Object | Block only |
-| Complexity | Higher | Lower |
-| Scalability | Massive | Medium |
-| Maturity | 15+ years (Ceph) | Younger |
-| Cloud-Native | Via Rook | Native |
-| Best For | Enterprise, large scale | Edge, simpler needs |
+This deploys a minimal operator for environments that only need Ceph block storage. CRD management is disabled (assumes CRDs are applied separately), CephFS and NFS drivers are turned off, host networking is disabled, and a single provisioner replica reduces resource consumption in staging or development environments.
 
-### Rook vs OpenEBS
+### Using Foreign Key References
 
-| Aspect | Rook Ceph | OpenEBS |
-|--------|-----------|---------|
-| Architecture | Distributed | Multiple engines |
-| Storage Engines | Ceph only | Mayastor, cStor, Jiva |
-| Management | Operator-based | Operator-based |
-| Replication | Ceph native | Engine-dependent |
-| Best For | Unified storage | Flexibility |
+Reference an OpenMCF-managed namespace instead of hardcoding values:
 
-### When to Choose Rook Ceph
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesRookCephOperator
+metadata:
+  name: rook-with-ref
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesRookCephOperator.rook-with-ref
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      name: rook-ceph-ns
+      field: spec.name
+  createNamespace: false
+  container:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+```
 
-Choose Rook Ceph when you need:
-- **Unified storage** (block + file + object)
-- **Enterprise-proven** reliability
-- **Massive scale** potential
-- **On-premises** or **hybrid cloud** storage
-- **S3-compatible** object storage
+This example references an OpenMCF-managed namespace rather than embedding a literal value. The `createNamespace` flag is set to `false` because the referenced KubernetesNamespace resource manages the namespace lifecycle.
 
-Consider alternatives when:
-- You only need simple block storage
-- Operational complexity must be minimal
-- Edge or resource-constrained environments
-- Cloud-provider storage is sufficient
+## Stack Outputs
 
-## OpenMCF's Approach
+After deployment, the following outputs are available in `status.outputs`:
 
-### Why Rook Ceph Operator?
+| Output | Type | Description |
+|--------|------|-------------|
+| `namespace` | `string` | Kubernetes namespace where the Rook Ceph Operator is deployed |
+| `helmReleaseName` | `string` | Name of the Helm release for the Rook Ceph Operator |
+| `webhookService` | `string` | Kubernetes service name for the Rook Ceph Operator webhook (format: `{name}-rook-ceph-operator`) |
+| `portForwardCommand` | `string` | Command to set up port-forwarding for accessing operator metrics (e.g., `kubectl port-forward svc/rook-ceph-operator -n rook-ceph 9443:9443`) |
 
-**Open Source Foundation**: Rook is a CNCF graduated project with Apache 2.0 licensing. No vendor lock-in, no proprietary components.
+## Related Components
 
-**Production Proven**: Ceph powers storage at organizations like CERN, Bloomberg, and major cloud providers. Combined with Rook's operator pattern, it's battle-tested at scale.
-
-**Comprehensive Automation**: The operator handles the complex lifecycle management that would otherwise require dedicated storage engineers.
-
-**Kubernetes Native**: Deep integration with Kubernetes primitives—CSI, CRDs, RBAC, monitoring—makes it a natural fit for the ecosystem.
-
-### What OpenMCF Provides
-
-1. **Simplified Deployment**: Deploy the operator with a clean, validated API
-2. **Sensible Defaults**: Pre-configured for common production scenarios
-3. **CSI Configuration**: Easy control over which storage drivers to enable
-4. **Version Management**: Pinned operator versions for reproducibility
-5. **Documentation**: Comprehensive examples and best practices
-
-The KubernetesRookCephOperator deploys the foundation. Users then create CephCluster and related resources to provision actual storage, with the operator managing all complexity.
-
-## Conclusion
-
-Storage on Kubernetes has evolved from a significant challenge to a solved problem—thanks to operators like Rook that encode distributed systems expertise into Kubernetes controllers. The Rook Ceph Operator specifically brings the power of Ceph's unified storage to Kubernetes without requiring deep Ceph expertise.
-
-For OpenMCF, choosing Rook Ceph as the default storage operator means users get:
-- Production-ready distributed storage
-- Block, file, and object storage from a single system
-- Self-healing and automatic recovery
-- Kubernetes-native management
-
-The complexity that once required dedicated storage teams is now managed by the operator, letting platform engineers focus on building applications rather than maintaining storage infrastructure.
-
-## Additional Resources
-
-- **Rook Documentation**: https://rook.io/docs/rook/latest/
-- **Ceph Documentation**: https://docs.ceph.com/
-- **Rook GitHub**: https://github.com/rook/rook
-- **CNCF Rook Page**: https://www.cncf.io/projects/rook/
-- **Ceph Performance Tuning**: https://docs.ceph.com/en/latest/rados/configuration/
-- **Kubernetes CSI Documentation**: https://kubernetes-csi.github.io/docs/
+- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — alternative for deploying Helm charts with custom configurations
+- [KubernetesStatefulSet](/docs/catalog/kubernetes/kubernetesstatefulset) — deploy stateful workloads that consume Ceph-backed PersistentVolumeClaims provisioned by the operator
+- [KubernetesPrometheus](/docs/catalog/kubernetes/kubernetesprometheus) — collect metrics from the Rook Ceph Operator and Ceph cluster components
+- [KubernetesGrafana](/docs/catalog/kubernetes/kubernetesgrafana) — visualize Ceph cluster health, OSD performance, and storage utilization using Rook-provided dashboards

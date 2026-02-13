@@ -9,10 +9,10 @@ import (
 )
 
 type Locals struct {
-	AzureLoadBalancer      *azureloadbalancerv1.AzureLoadBalancer
-	ResourceGroupName      string
-	FrontendConfigName     string
-	AzureTags              map[string]string
+	AzureLoadBalancer  *azureloadbalancerv1.AzureLoadBalancer
+	ResourceGroupName  string
+	FrontendConfigName string
+	AzureTags          map[string]string
 }
 
 func initializeLocals(ctx *pulumi.Context, stackInput *azureloadbalancerv1.AzureLoadBalancerStackInput) *Locals {

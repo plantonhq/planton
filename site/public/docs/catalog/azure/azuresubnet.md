@@ -6,285 +6,231 @@ order: 100
 componentName: "azuresubnet"
 ---
 
-# AzureSubnet: Research & Design Documentation
+# Azure Subnet
 
-## 1. What Is an Azure Subnet?
+Deploys an Azure Subnet within an existing Virtual Network, with configurable address prefix, service endpoints, service delegation, and private endpoint network policies. Subnets partition a VNet's address space into segments for different workloads, tiers, or service delegations.
 
-An Azure Subnet is a range of IP addresses within a Virtual Network (VNet). Subnets
-segment the VNet's address space into logical sections, each hosting a different tier
-of resources. Every Azure resource deployed into a VNet must be placed in a subnet.
+## What Gets Created
 
-Subnets are Azure's fundamental network partitioning mechanism. They provide:
-- **Address isolation** -- different workloads get different IP ranges
-- **Security boundaries** -- NSGs can be associated per-subnet for traffic filtering
-- **Service delegation** -- Azure PaaS services can inject resources into subnets
-- **Service endpoints** -- optimized routes to Azure PaaS over the backbone network
-- **Private endpoint hosting** -- private IPs for PaaS services within the VNet
+When you deploy an AzureSubnet resource, OpenMCF provisions:
 
-### Key Properties
+- **Subnet** — a `network.Subnet` resource inside the specified Virtual Network, configured with the given address prefix, service endpoints, delegation, and network policies
+- **Service Endpoints** — optimized routes over the Azure backbone to specified Azure services, bypassing the public internet (when `serviceEndpoints` is provided)
+- **Service Delegation** — grants an Azure PaaS service permission to inject service-specific resources and network rules into the subnet (when `delegation` is provided)
+- **Azure Tags** — resource metadata tags applied to the subnet for tracking and governance
 
-- **Address Prefix**: IPv4 CIDR block within the parent VNet's address space
-- **Service Endpoints**: Optimized routes to Azure services (Storage, SQL, Key Vault)
-- **Delegation**: Grants a PaaS service exclusive control of the subnet
-- **Private Endpoint Policies**: Controls NSG/UDR enforcement on private endpoints
-- **Lifecycle**: Independent from the VNet (can be added/removed without VNet changes)
+## Prerequisites
 
-### Azure's Reserved IPs
+- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **An Azure Resource Group** where the parent VNet exists (can reference an AzureResourceGroup resource)
+- **An Azure Virtual Network** with an address space that contains the desired subnet CIDR block (can reference an AzureVpc resource)
+- **Network planning** — the subnet address prefix must be a subset of the parent VNet's address space and must not overlap with other subnets in the same VNet. Azure reserves 5 IPs per subnet (first 4 + last) for internal use.
 
-Azure reserves **5 IP addresses** per subnet for internal services:
-- x.x.x.0: Network address
-- x.x.x.1: Default gateway
-- x.x.x.2-3: Azure DNS mapping
-- x.x.x.255: Broadcast (last IP)
+## Quick Start
 
-A /24 subnet (256 IPs) provides 251 usable addresses.
+Create a file `subnet.yaml`:
 
-## 2. Deployment Landscape
-
-### How People Deploy Subnets Today
-
-#### Level 0: Azure Portal (Click-Ops)
-
-The portal provides a GUI for adding subnets to VNets. Users navigate to the VNet
-resource, click "Subnets", and add one. This creates undocumented, un-versioned
-infrastructure that's impossible to reproduce.
-
-#### Level 1: Azure CLI
-
-```bash
-az network vnet subnet create \
-  --name app-subnet \
-  --resource-group my-rg \
-  --vnet-name my-vnet \
-  --address-prefix 10.0.1.0/24 \
-  --service-endpoints Microsoft.Sql Microsoft.Storage \
-  --delegations Microsoft.DBforPostgreSQL/flexibleServers
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureSubnet
+metadata:
+  name: my-subnet
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AzureSubnet.my-subnet
+spec:
+  resourceGroup: my-rg
+  vnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Network/virtualNetworks/my-vnet
+  name: my-subnet
+  addressPrefix: "10.0.1.0/24"
 ```
 
-Simple and scriptable but lacks state management and drift detection.
+Deploy:
 
-#### Level 2: ARM Templates / Bicep
-
-```bicep
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-09-01' = {
-  name: 'app-subnet'
-  parent: vnet
-  properties: {
-    addressPrefix: '10.0.1.0/24'
-    serviceEndpoints: [{ service: 'Microsoft.Sql' }]
-  }
-}
+```shell
+openmcf apply -f subnet.yaml
 ```
 
-Azure-native IaC with full lifecycle management. Good for Azure-only shops.
+This creates a /24 subnet (254 usable IPs) with private endpoint network policies disabled, private link service network policies enabled, and no service endpoints or delegations.
 
-#### Level 3: Terraform
+## Configuration Reference
 
-```hcl
-resource "azurerm_subnet" "app" {
-  name                 = "app-subnet"
-  resource_group_name  = "my-rg"
-  virtual_network_name = "my-vnet"
-  address_prefixes     = ["10.0.1.0/24"]
-  service_endpoints    = ["Microsoft.Sql", "Microsoft.Storage"]
-}
+### Required Fields
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `resourceGroup` | `StringValueOrRef` | Azure Resource Group where the parent VNet exists. Can reference an AzureResourceGroup resource via `valueFrom`. | Required |
+| `vnetId` | `StringValueOrRef` | Azure Resource Manager ID of the parent Virtual Network. The subnet is created inside this VNet and must use an address prefix within the VNet's address space. Can reference an AzureVpc resource via `valueFrom`. | Required |
+| `name` | `string` | Name of the subnet. Must be unique within the VNet. Allowed characters: alphanumeric, underscores, hyphens, periods. Must start with alphanumeric. | Required, 1–80 characters |
+| `addressPrefix` | `string` | IPv4 CIDR block for the subnet (e.g., `10.0.1.0/24`). Must be a subset of the parent VNet's address space and must not overlap with other subnets. | Required, minimum length 1 |
+
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `serviceEndpoints` | `string[]` | `[]` | Azure service endpoints to enable. Creates optimized routes over the Azure backbone. Common values: `Microsoft.Storage`, `Microsoft.Sql`, `Microsoft.KeyVault`, `Microsoft.AzureCosmosDB`, `Microsoft.ServiceBus`, `Microsoft.EventHub`, `Microsoft.Web`, `Microsoft.ContainerRegistry`. |
+| `delegation` | `object` | none | Service delegation granting an Azure PaaS service permission to inject resources into the subnet. A subnet can have at most one delegation. See delegation fields below. |
+| `delegation.name` | `string` | — | A user-chosen label for the delegation (e.g., `postgresql`, `container-apps`). Required when `delegation` is set. |
+| `delegation.serviceName` | `string` | — | The Azure service to delegate to. Required when `delegation` is set. Common values: `Microsoft.DBforPostgreSQL/flexibleServers`, `Microsoft.DBforMySQL/flexibleServers`, `Microsoft.App/environments`, `Microsoft.Web/serverFarms`, `Microsoft.ContainerInstance/containerGroups`, `Microsoft.Netapp/volumes`. |
+| `delegation.actions` | `string[]` | `[]` | Actions the delegated service is permitted to perform. If omitted, Azure uses the default actions. Common action: `Microsoft.Network/virtualNetworks/subnets/action`. |
+| `privateEndpointNetworkPolicies` | `string` | `Disabled` | Controls whether network policies apply to private endpoints. Values: `Disabled` (no policies on private endpoints), `Enabled` (both NSG and route table), `NetworkSecurityGroupEnabled` (NSG only), `RouteTableEnabled` (route table only). |
+| `privateLinkServiceNetworkPoliciesEnabled` | `bool` | `true` | Controls whether network policies apply to Private Link Service resources. Set to `false` only when creating a Private Link Service that needs to bypass network policies. |
+
+## Examples
+
+### General-Purpose Workload Subnet
+
+A /24 subnet for general workloads with no special endpoints or delegations:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureSubnet
+metadata:
+  name: workload-subnet
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AzureSubnet.workload-subnet
+spec:
+  resourceGroup: dev-rg
+  vnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev-rg/providers/Microsoft.Network/virtualNetworks/dev-vnet
+  name: workload-subnet
+  addressPrefix: "10.0.1.0/24"
 ```
 
-The most popular IaC approach for multi-cloud teams.
+### Database Subnet with Delegation and Service Endpoints
 
-#### Level 4: Pulumi
+A subnet delegated to PostgreSQL Flexible Server with service endpoints for secure access to Storage and Key Vault:
 
-```go
-subnet, _ := network.NewSubnet(ctx, "app-subnet", &network.SubnetArgs{
-    Name:               pulumi.String("app-subnet"),
-    ResourceGroupName:  pulumi.String("my-rg"),
-    VirtualNetworkName: pulumi.String("my-vnet"),
-    AddressPrefixes:    pulumi.StringArray{pulumi.String("10.0.1.0/24")},
-    ServiceEndpoints:   pulumi.StringArray{pulumi.String("Microsoft.Sql")},
-})
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureSubnet
+metadata:
+  name: postgres-subnet
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureSubnet.postgres-subnet
+spec:
+  resourceGroup: prod-rg
+  vnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.Network/virtualNetworks/prod-vnet
+  name: postgres-subnet
+  addressPrefix: "10.0.10.0/24"
+  serviceEndpoints:
+    - Microsoft.Storage
+    - Microsoft.KeyVault
+  delegation:
+    name: postgresql
+    serviceName: Microsoft.DBforPostgreSQL/flexibleServers
+    actions:
+      - Microsoft.Network/virtualNetworks/subnets/action
 ```
 
-Programmatic IaC with type safety. Good for complex conditional logic.
+### Private Endpoint Subnet with Network Policies
 
-#### Level 5: OpenMCF (This Component)
+A subnet for private endpoints with NSG policies enabled for zero-trust architectures:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureSubnet
+metadata:
+  name: pe-subnet
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureSubnet.pe-subnet
+spec:
+  resourceGroup: prod-rg
+  vnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.Network/virtualNetworks/prod-vnet
+  name: pe-subnet
+  addressPrefix: "10.0.20.0/28"
+  privateEndpointNetworkPolicies: NetworkSecurityGroupEnabled
+  privateLinkServiceNetworkPoliciesEnabled: true
+```
+
+### Using Foreign Key References
+
+Reference OpenMCF-managed resources instead of hardcoding resource group name and VNet ID:
 
 ```yaml
 apiVersion: azure.openmcf.org/v1
 kind: AzureSubnet
 metadata:
   name: app-subnet
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureSubnet.app-subnet
 spec:
-  resource_group:
+  resourceGroup:
     valueFrom:
       kind: AzureResourceGroup
-      name: network-rg
-      fieldPath: status.outputs.resource_group_name
-  vnet_id:
+      name: my-rg
+      field: status.outputs.resource_group_name
+  vnetId:
     valueFrom:
       kind: AzureVpc
-      name: prod-vpc
-      fieldPath: status.outputs.vnet_id
+      name: my-vnet
+      field: status.outputs.vnet_id
   name: app-subnet
-  address_prefix: "10.0.1.0/24"
-  service_endpoints:
+  addressPrefix: "10.0.2.0/24"
+  serviceEndpoints:
     - Microsoft.Sql
     - Microsoft.Storage
+    - Microsoft.KeyVault
+    - Microsoft.Web
 ```
 
-Declarative, Kubernetes-style API that enables infra chart composition with
-`StringValueOrRef` dependency wiring.
+### Container App Environment Subnet
 
-## 3. 80/20 Analysis: What We Include and What We Skip
+A subnet delegated to Azure Container App Environments with the minimum /23 sizing recommended by Azure:
 
-### Included (80% of Use Cases)
-
-| Feature | Rationale |
-|---------|-----------|
-| Address prefix (singular) | 99.9% of subnets use a single CIDR |
-| Service endpoints | Common for secure PaaS access |
-| Service delegation | Required for PostgreSQL, MySQL, Container Apps, App Service |
-| Private endpoint network policies | Enterprise private link architectures |
-| Private Link Service policies | Required for PLS providers |
-
-### Excluded (20% Niche / Advanced)
-
-| Feature | Rationale |
-|---------|-----------|
-| Multiple address prefixes | Azure supports this but it's extremely rare |
-| Service endpoint policies | Advanced traffic restriction, very niche |
-| Default outbound access | Newer feature for zero-trust; can add later |
-| IP address pool (IPAM) | Azure IPAM integration; enterprise-only feature |
-| Sharing scope | Multi-tenant subnet sharing; preview feature |
-| NSG association | Separate lifecycle, handled by AzureNetworkSecurityGroup |
-| Route table association | Advanced networking, future iteration |
-| NAT Gateway association | Handled at VNet level by AzureVpc |
-
-## 4. Why No Region Field
-
-Unlike every other Azure resource in OpenMCF, AzureSubnet deliberately omits
-the `region` field. Here's why:
-
-1. **Subnets don't have their own region** -- they inherit from the parent VNet
-2. **Azure's API doesn't accept a region parameter** for subnet creation
-3. **Neither Terraform nor Pulumi accept a region** on the subnet resource
-4. **Including it would be misleading** -- users could provide a different region
-   than the VNet, which would be silently ignored or fail
-
-This is a deliberate, well-reasoned deviation from the standard Azure pattern.
-
-## 5. VNet ID Reference Design
-
-AzureSubnet references the parent VNet via `StringValueOrRef vnet_id`, which
-resolves to the VNet's ARM resource ID. The IaC modules extract the VNet name
-from the ARM ID using string parsing:
-
-```
-ARM ID: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{name}
-VNet Name: last segment after splitting by "/"
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureSubnet
+metadata:
+  name: cae-subnet
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureSubnet.cae-subnet
+spec:
+  resourceGroup: prod-rg
+  vnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.Network/virtualNetworks/prod-vnet
+  name: cae-subnet
+  addressPrefix: "10.0.32.0/23"
+  delegation:
+    name: container-apps
+    serviceName: Microsoft.App/environments
+    actions:
+      - Microsoft.Network/virtualNetworks/subnets/action
 ```
 
-This follows the same pattern as GcpSubnetwork, which references `vpc_self_link`
-(a full GCP URL) and parses it for the VPC name.
+## Stack Outputs
 
-## 6. Downstream Consumers (11 Resource Types)
+After deployment, the following outputs are available in `status.outputs`:
 
-AzureSubnet is the most widely referenced Azure resource. These resource types
-consume `subnet_id`:
+| Output | Type | Description |
+|--------|------|-------------|
+| `subnet_id` | `string` | Azure Resource Manager ID of the subnet. This is the most referenced Azure output in OpenMCF, consumed by AzureAksCluster, AzureContainerAppEnvironment, AzurePostgresqlFlexibleServer, AzureMysqlFlexibleServer, AzureRedisCache, AzurePrivateEndpoint, AzureApplicationGateway, AzureLoadBalancer, AzureVirtualMachine, AzureFunctionApp, and AzureLinuxWebApp. |
+| `subnet_name` | `string` | Name of the subnet within the VNet |
+| `address_prefix` | `string` | IPv4 CIDR block assigned to this subnet. Useful in NSG rules, firewall rules, and network planning where downstream resources need to know the subnet's address range. |
 
-| Resource | Use Case |
-|----------|----------|
-| AzureAksCluster | AKS node pool placement |
-| AzureContainerAppEnvironment | Infrastructure subnet for Container Apps |
-| AzurePostgresqlFlexibleServer | Delegated subnet for private access |
-| AzureMysqlFlexibleServer | Delegated subnet for private access |
-| AzureRedisCache | Premium SKU VNet injection |
-| AzurePrivateEndpoint | Private IP for PaaS services |
-| AzureApplicationGateway | Dedicated subnet for App GW |
-| AzureLoadBalancer | Internal LB frontend placement |
-| AzureVirtualMachine | VM NIC placement |
-| AzureFunctionApp | VNet integration subnet |
-| AzureLinuxWebApp | VNet integration subnet |
+## Related Components
 
-## 7. Infra Chart Integration
-
-### Database Stack
-
-```
-AzureResourceGroup (Layer 0)
-├── AzureVpc (Layer 1)
-│   ├── AzureSubnet [db-delegated] (Layer 2)  <-- THIS RESOURCE
-│   │   └── AzurePostgresqlFlexibleServer (Layer 3)
-│   ├── AzureSubnet [pe-subnet] (Layer 2)
-│   │   └── AzurePrivateEndpoint (Layer 3)
-│   └── AzureSubnet [redis-subnet] (Layer 2)
-│       └── AzureRedisCache (Layer 3)
-└── AzurePrivateDnsZone (Layer 1)
-```
-
-### Enterprise Network Foundation
-
-```
-AzureResourceGroup (Layer 0)
-├── AzureVpc (Layer 1)
-│   ├── AzureSubnet [app-gw] (Layer 2)       <-- App Gateway dedicated
-│   ├── AzureSubnet [app-tier] (Layer 2)      <-- Application workloads
-│   ├── AzureSubnet [db-tier] (Layer 2)       <-- Database delegations
-│   ├── AzureSubnet [pe-tier] (Layer 2)       <-- Private endpoints
-│   └── AzureSubnet [mgmt] (Layer 2)          <-- Management/bastion
-├── AzurePublicIp (Layer 1)
-└── AzureLogAnalyticsWorkspace (Layer 1)
-```
-
-### Container Apps Environment
-
-```
-AzureResourceGroup (Layer 0)
-├── AzureVpc (Layer 1)
-│   └── AzureSubnet [cae-infra] (Layer 2)     <-- /23 for Container Apps
-│       └── AzureContainerAppEnvironment (Layer 3)
-│           └── AzureContainerApp (Layer 4)
-└── AzureLogAnalyticsWorkspace (Layer 1)
-```
-
-## 8. Design Decisions
-
-### Why Standalone Resource (DD01)
-
-AzureSubnet exists as a standalone resource rather than being embedded in AzureVpc
-because subnets have independent lifecycles. Different subnets need different
-configurations (delegations, service endpoints, policies), and bundling them all
-into the VPC spec would force VPC redeployment when a subnet changes. See DD01.
-
-### Why Singular address_prefix
-
-Azure's API supports `address_prefixes` (plural), but multiple CIDRs per subnet
-is an extremely rare edge case introduced for backwards-compatibility with legacy
-configurations. Using singular `address_prefix` keeps the spec clean and matches
-the 80/20 principle. The IaC modules wrap it in a single-element list for the provider.
-
-### Why private_endpoint_network_policies as String (Not Bool)
-
-Azure deprecated the boolean field `private_endpoint_network_policies_enabled` in
-favor of a string enum with four values: `Disabled`, `Enabled`,
-`NetworkSecurityGroupEnabled`, and `RouteTableEnabled`. The string enum provides
-granular control -- you can apply NSG policies without route table policies, or
-vice versa. Using the current API surface prevents future deprecation issues.
-
-## 9. Scope Boundaries
-
-### What This Component Does
-
-- Creates a subnet in an existing VNet
-- Configures service endpoints for optimized PaaS access
-- Configures service delegation for PaaS resource injection
-- Sets private endpoint and Private Link Service network policies
-- Tags the subnet with OpenMCF metadata (via parent VNet tagging)
-- Exports subnet_id, subnet_name, and address_prefix for downstream consumption
-
-### What This Component Does NOT Do
-
-- **NSG association** -- handled by AzureNetworkSecurityGroup
-- **Route table association** -- future iteration
-- **NAT Gateway association** -- handled by AzureVpc
-- **Multiple address prefixes** -- niche feature, not included
-- **Create the parent VNet** -- VNet must exist first (AzureVpc)
+- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) — provides the resource group where the parent VNet exists
+- [AzureVpc](/docs/catalog/azure/azurevpc) — provides the parent Virtual Network that contains this subnet
+- [AzureAksCluster](/docs/catalog/azure/azureakscluster) — references `subnet_id` for node pool placement
+- [AzureContainerAppEnvironment](/docs/catalog/azure/azurecontainerappenvironment) — requires a delegated subnet for VNet integration
+- [AzurePostgresqlFlexibleServer](/docs/catalog/azure/azurepostgresqlflexibleserver) — requires a delegated subnet for VNet integration
+- [AzureMysqlFlexibleServer](/docs/catalog/azure/azuremysqlflexibleserver) — requires a delegated subnet for VNet integration
+- [AzurePrivateEndpoint](/docs/catalog/azure/azureprivateendpoint) — deployed into a subnet for private connectivity to Azure PaaS services
+- [AzureApplicationGateway](/docs/catalog/azure/azureapplicationgateway) — requires a dedicated subnet (minimum /27)
+- [AzureKeyVault](/docs/catalog/azure/azurekeyvault) — can restrict access to specific subnet IDs via network ACLs

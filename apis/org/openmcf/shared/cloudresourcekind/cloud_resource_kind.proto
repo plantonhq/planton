@@ -1154,12 +1154,4 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "scwscn"
   }];
-
-  // --- Security ---
-
-  ScalewaySecretManager = 2880 [(kind_meta) = {
-    provider: scaleway
-    version: v1
-    id_prefix: "scwsm"
-  }];
 }

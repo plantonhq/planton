@@ -6,335 +6,266 @@ order: 100
 componentName: "azurestorageaccount"
 ---
 
-# Azure Storage Account Deployment Methods
+# Azure Storage Account
 
-## Introduction
+Deploys an Azure Storage Account with configurable account kind, performance tier, replication strategy, access tier, network access controls, blob service properties, and optional blob containers. The component enforces HTTPS-only traffic and TLS 1.2 by default, applies default-deny network rules, and enables soft delete retention for both blobs and containers.
 
-"We'll just use blob storage for now — it's basically infinite disk space in the cloud." Sound familiar? Azure Storage Account is the foundational storage service that powers everything from simple blob containers to enterprise data lakes, yet properly deploying and configuring it remains surprisingly nuanced.
+## What Gets Created
 
-Azure Storage Account offers multiple storage types (Blob, Queue, Table, File, Data Lake), various replication strategies (from single-datacenter to cross-region), multiple access tiers (Hot, Cool, Archive), and complex networking options. The promise is simple: scalable, durable storage for any workload. The reality involves careful consideration of performance requirements, durability needs, network security, and cost optimization.
+When you deploy an AzureStorageAccount resource, OpenMCF provisions:
 
-This document explores the full spectrum of Azure Storage Account deployment approaches — from quick portal setups to production-hardened Infrastructure-as-Code patterns that satisfy enterprise security requirements. We'll examine what works, what doesn't, and why OpenMCF defaults to certain choices for its Azure Storage Account implementation.
+- **Storage Account** — an `storage.Account` resource in the specified region and resource group, configured with the chosen account kind, performance tier, replication type, access tier, HTTPS enforcement, minimum TLS version, and public nested-item access disabled
+- **Network Rules** — default-deny network ACLs with optional IP allowlists, VNet subnet rules, and Azure trusted services bypass
+- **Blob Properties** — blob service configuration including versioning, blob soft delete retention, and container soft delete retention
+- **Blob Containers** — a `storage.Container` resource for each entry in the `containers` list, with configurable public access levels, parented to the storage account
+- **Azure Tags** — resource metadata tags applied to the storage account for tracking and governance
 
-## The Maturity Spectrum: From Manual Clicks to Production IaC
+## Prerequisites
 
-### Level 0: The Portal Deployment (Quick Start, Not Production)
+- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **An Azure Resource Group** where the storage account will be created (can reference an AzureResourceGroup resource)
+- **A globally unique name** — Azure Storage Account names must be 3-24 lowercase alphanumeric characters and must be globally unique; the component derives the name from `metadata.name` by stripping dots, underscores, and hyphens, lowercasing, and truncating to 24 characters
+- **Network planning** — know which IP ranges and/or VNet subnets need storage access if restricting with network ACLs
 
-The Azure Portal provides the fastest path to a Storage Account: navigate to Storage Accounts, click "Create," fill out a few fields, and you have storage in minutes. Azure even provides helpful defaults and explanatory tooltips.
+## Quick Start
 
-This approach works for learning, prototyping, or ad-hoc storage needs. But it reveals limitations quickly:
+Create a file `storage-account.yaml`:
 
-- **Configuration Drift**: Manual deployments across environments inevitably differ. Your dev storage account might use LRS while prod accidentally got GRS — discovered only when the billing statement arrives.
-
-- **Security Gaps**: The portal makes it easy to leave storage accounts with public access enabled or without proper network restrictions. "Allow access from all networks" is often the default path of least resistance.
-
-- **Naming Challenges**: Storage account names must be globally unique across all of Azure (3-24 characters, lowercase letters and numbers only). Manual creation means trial-and-error naming.
-
-- **No Change History**: When access tier changes unexpectedly affect costs, there's no Git history showing who changed what and when.
-
-**Verdict**: Portal deployment is excellent for exploration and quick demos. Treat it as training wheels before moving to automation.
-
-### Level 1: CLI and PowerShell Scripts (Repeatable, But Imperative)
-
-Azure CLI and PowerShell bring repeatability through scripting:
-
-```bash
-az storage account create \
-  --name myappprodstorage \
-  --resource-group myapp-rg \
-  --location eastus \
-  --sku Standard_GRS \
-  --kind StorageV2 \
-  --access-tier Hot \
-  --https-only true \
-  --min-tls-version TLS1_2 \
-  --allow-blob-public-access false
-
-az storage container create \
-  --account-name myappprodstorage \
-  --name data \
-  --public-access off
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureStorageAccount
+metadata:
+  name: my-storage
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AzureStorageAccount.my-storage
+spec:
+  region: eastus
+  resourceGroup: my-rg
 ```
 
-Scripts can be version-controlled, reviewed, and executed in CI/CD pipelines. This is a meaningful step forward from manual operations.
+Deploy:
 
-Challenges include:
-
-- **Imperative nature**: Scripts describe steps, not desired state. Running twice might fail or cause unexpected changes without careful idempotency handling.
-
-- **Dependency orchestration**: Create resource group, then storage account, then containers, then network rules. Miss a dependency and deployment fails.
-
-- **State ignorance**: Scripts don't inherently know what exists. Conditional logic ("if not exists") adds complexity.
-
-- **Limited validation**: Many errors surface only at runtime, potentially mid-deployment.
-
-**Verdict**: Scripts work for simple automation but require discipline to make production-ready. Better tools exist.
-
-### Level 2: Azure Resource Manager Templates and Bicep (Azure-Native IaC)
-
-ARM templates (JSON) and Bicep (Microsoft's domain-specific language) provide declarative Infrastructure-as-Code:
-
-```bicep
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
-  name: 'myappstorage${uniqueString(resourceGroup().id)}'
-  location: resourceGroup().location
-  kind: 'StorageV2'
-  sku: {
-    name: 'Standard_GRS'
-  }
-  properties: {
-    accessTier: 'Hot'
-    supportsHttpsTrafficOnly: true
-    minimumTlsVersion: 'TLS1_2'
-    allowBlobPublicAccess: false
-    networkAcls: {
-      defaultAction: 'Deny'
-      bypass: 'AzureServices'
-    }
-  }
-}
-
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = {
-  name: '${storageAccount.name}/default/data'
-  properties: {
-    publicAccess: 'None'
-  }
-}
+```shell
+openmcf apply -f storage-account.yaml
 ```
 
-Key advantages:
+This creates a StorageV2 storage account with Standard tier, LRS replication, Hot access tier, HTTPS-only traffic, TLS 1.2 minimum, default-deny network ACLs that bypass Azure trusted services, and 7-day soft delete retention for blobs and containers.
 
-- **Declarative**: Describe what you want, Azure figures out how to achieve it
-- **Idempotent**: Re-running produces consistent results
-- **Validation**: Templates are validated before deployment
-- **Parameter files**: Separate environment-specific values from infrastructure definitions
+## Configuration Reference
 
-The limitation is Azure lock-in — ARM/Bicep is Azure-only. Multi-cloud organizations often prefer cross-platform tools.
+### Required Fields
 
-**Verdict**: ARM/Bicep is production-ready for Azure-centric teams. Use Bicep over raw ARM JSON for better readability and developer experience.
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `region` | `string` | Azure region for the Storage Account (e.g., `eastus`, `westeurope`). | Required, minimum length 1 |
+| `resourceGroup` | `StringValueOrRef` | Azure Resource Group name. Can reference an AzureResourceGroup resource via `valueFrom`. | Required |
 
-### Level 3: Cross-Platform IaC (Terraform, Pulumi)
+### Optional Fields
 
-Terraform and Pulumi provide cloud-agnostic Infrastructure-as-Code with rich ecosystems:
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `accountKind` | `enum` | `STORAGE_V2` | Kind of storage account. Values: `STORAGE_V2` (general-purpose v2, recommended), `BLOB_STORAGE` (specialized blob with access tiers), `BLOCK_BLOB_STORAGE` (premium block blobs, SSD-backed), `FILE_STORAGE` (premium file shares, SSD-backed), `STORAGE` (legacy general-purpose v1). |
+| `accountTier` | `enum` | `STANDARD` | Performance tier. Values: `STANDARD` (HDD-backed), `PREMIUM` (SSD-backed, only for specific account kinds). |
+| `replicationType` | `enum` | `LRS` | Replication strategy. Values: `LRS` (3 copies in one datacenter), `ZRS` (3 copies across availability zones), `GRS` (6 copies: 3 local + 3 in paired region), `GZRS` (ZRS + geo-replication), `RA_GRS` (read-access geo-redundant), `RA_GZRS` (read-access geo-zone-redundant). |
+| `accessTier` | `enum` | `HOT` | Default blob access tier. Only applicable for BlobStorage and StorageV2 account kinds. Values: `HOT` (frequently accessed data), `COOL` (infrequently accessed, 30-day minimum retention). |
+| `enableHttpsTrafficOnly` | `bool` | `true` | When true, all requests must use HTTPS. Strongly recommended for security. |
+| `minTlsVersion` | `enum` | `TLS1_2` | Minimum TLS version for incoming requests. Values: `TLS1_0`, `TLS1_1`, `TLS1_2` (recommended). |
+| `networkRules.defaultAction` | `enum` | `DENY` | Default action when no explicit rule matches. Values: `DENY` (recommended), `ALLOW`. |
+| `networkRules.bypassAzureServices` | `bool` | `true` | Allows traffic from trusted Azure services (Backup, Monitor, Event Grid, etc.) even when default action is `DENY`. |
+| `networkRules.ipRules` | `string[]` | `[]` | IP addresses or CIDR ranges allowed to access the storage. Maximum 200 entries. |
+| `networkRules.virtualNetworkSubnetIds` | `string[]` | `[]` | Azure VNet subnet resource IDs allowed to access the storage. Maximum 100 entries. |
+| `blobProperties.enableVersioning` | `bool` | `false` | Enables blob versioning. When enabled, Azure maintains previous versions of blobs for data protection and recovery. |
+| `blobProperties.softDeleteRetentionDays` | `int` | `7` | Retention period in days for deleted blobs. Range: 0-365. Set to 0 to disable blob soft delete. |
+| `blobProperties.containerSoftDeleteRetentionDays` | `int` | `7` | Retention period in days for deleted containers. Range: 0-365. Set to 0 to disable container soft delete. |
+| `containers` | `object[]` | `[]` | List of blob containers to create. Maximum 100 entries. Each entry requires `name` (3-63 lowercase characters) and optionally `accessType`. |
+| `containers[].name` | `string` | — | Container name. Must be lowercase, 3-63 characters. | 
+| `containers[].accessType` | `enum` | `PRIVATE` | Public access level for the container. Values: `PRIVATE` (no public read access, recommended), `BLOB` (public read for blobs only), `CONTAINER` (public read for container and blobs). |
 
-**Terraform Example:**
+## Examples
 
-```hcl
-resource "azurerm_storage_account" "main" {
-  name                     = "myappprodstorage"
-  resource_group_name      = azurerm_resource_group.main.name
-  location                 = azurerm_resource_group.main.location
-  account_tier             = "Standard"
-  account_replication_type = "GRS"
-  account_kind             = "StorageV2"
-  access_tier              = "Hot"
-  
-  enable_https_traffic_only       = true
-  min_tls_version                 = "TLS1_2"
-  allow_nested_items_to_be_public = false
-  
-  network_rules {
-    default_action = "Deny"
-    bypass         = ["AzureServices"]
-    ip_rules       = ["203.0.113.0/24"]
-  }
-  
-  blob_properties {
-    versioning_enabled = true
-    delete_retention_policy {
-      days = 30
-    }
-    container_delete_retention_policy {
-      days = 30
-    }
-  }
-}
+### Development Storage with Open Network Access
 
-resource "azurerm_storage_container" "data" {
-  name                  = "data"
-  storage_account_name  = azurerm_storage_account.main.name
-  container_access_type = "private"
-}
+A storage account for development with network ACLs set to allow all traffic and reduced soft delete retention:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureStorageAccount
+metadata:
+  name: dev-storage
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AzureStorageAccount.dev-storage
+spec:
+  region: eastus
+  resourceGroup: dev-rg
+  accountKind: STORAGE_V2
+  accountTier: STANDARD
+  replicationType: LRS
+  blobProperties:
+    softDeleteRetentionDays: 1
+    containerSoftDeleteRetentionDays: 1
+  networkRules:
+    defaultAction: ALLOW
 ```
 
-**Pulumi Example (Go):**
+### Production Storage with Blob Containers and Network Restrictions
 
-```go
-storageAccount, err := storage.NewStorageAccount(ctx, "main", &storage.StorageAccountArgs{
-    ResourceGroupName: resourceGroup.Name,
-    Location:          pulumi.String("eastus"),
-    AccountTier:       pulumi.String("Standard"),
-    AccountReplicationType: pulumi.String("GRS"),
-    AccountKind:       pulumi.String("StorageV2"),
-    AccessTier:        pulumi.String("Hot"),
-    EnableHttpsTrafficOnly: pulumi.Bool(true),
-    MinTlsVersion:     pulumi.String("TLS1_2"),
-    AllowNestedItemsToBePublic: pulumi.Bool(false),
-    NetworkRules: &storage.StorageAccountNetworkRulesTypeArgs{
-        DefaultAction: pulumi.String("Deny"),
-        Bypass:        pulumi.StringArray{pulumi.String("AzureServices")},
-    },
-})
+A production storage account with geo-redundant replication, blob versioning, restricted network access from office IPs, and pre-created containers for application data:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureStorageAccount
+metadata:
+  name: prod-storage
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureStorageAccount.prod-storage
+spec:
+  region: eastus
+  resourceGroup: prod-rg
+  accountKind: STORAGE_V2
+  accountTier: STANDARD
+  replicationType: GRS
+  accessTier: HOT
+  enableHttpsTrafficOnly: true
+  minTlsVersion: TLS1_2
+  blobProperties:
+    enableVersioning: true
+    softDeleteRetentionDays: 30
+    containerSoftDeleteRetentionDays: 30
+  networkRules:
+    defaultAction: DENY
+    bypassAzureServices: true
+    ipRules:
+      - "203.0.113.0/24"
+      - "198.51.100.42"
+  containers:
+    - name: application-data
+    - name: backups
+    - name: logs
+      accessType: PRIVATE
 ```
 
-Key advantages over ARM/Bicep:
+### Premium Block Blob Storage for High-Performance Workloads
 
-- **Cross-cloud consistency**: Same tooling patterns for AWS, GCP, Azure
-- **Rich state management**: Terraform and Pulumi track infrastructure state, enabling drift detection
-- **Ecosystem**: Large communities, extensive module libraries
-- **Programming languages**: Pulumi enables real programming constructs (loops, conditionals, functions)
+A Premium-tier block blob storage account with zone-redundant replication for latency-sensitive workloads:
 
-**Verdict**: Terraform and Pulumi are the enterprise standard for multi-cloud organizations. Choose based on preference for HCL (Terraform) vs. general-purpose languages (Pulumi).
-
-## The 80/20 of Azure Storage Account Configuration
-
-After analyzing hundreds of production Storage Account deployments, certain patterns emerge. Here's what matters most:
-
-### Always Configure
-
-1. **Replication Type**: Choose based on durability requirements
-   - LRS: Development, non-critical data
-   - ZRS: Single-region high availability
-   - GRS/GZRS: Production, disaster recovery required
-
-2. **Network Restrictions**: Never leave storage open to the internet
-   - Default action: Deny
-   - Bypass Azure Services: Usually yes
-   - IP rules for CI/CD and administrative access
-   - VNet rules for application access
-
-3. **Security Settings**:
-   - HTTPS only: Always true
-   - TLS 1.2 minimum: Always true
-   - Disable public blob access: Usually true
-
-4. **Data Protection**:
-   - Soft delete for blobs: 7-365 days based on recovery needs
-   - Soft delete for containers: Matching retention
-   - Versioning: Enable for critical data
-
-### Often Overlooked
-
-1. **Access Tier Selection**: Hot vs Cool has significant cost implications
-   - Hot: Frequently accessed data (higher storage cost, lower access cost)
-   - Cool: Infrequently accessed (lower storage cost, higher access cost, 30-day minimum)
-
-2. **Account Kind**: StorageV2 is almost always the right choice
-   - BlockBlobStorage and FileStorage only for specific premium scenarios
-   - Legacy Storage (v1) should be avoided
-
-3. **Private Endpoints**: Required for true network isolation
-   - Storage firewall still allows Azure backbone access
-   - Private endpoints provide full private network integration
-
-## Why OpenMCF Chose These Defaults
-
-OpenMCF's Azure Storage Account implementation makes specific choices to balance security, usability, and operational simplicity:
-
-### Security-First Defaults
-
-- **HTTPS-only traffic**: Non-negotiable for production storage
-- **TLS 1.2 minimum**: Older TLS versions have known vulnerabilities
-- **Network rules default to Deny**: Secure by default, explicitly allow what's needed
-- **Private container access**: No accidental public blob exposure
-
-### Sensible Storage Defaults
-
-- **StorageV2**: The modern, feature-complete account type
-- **Standard tier**: Premium only when performance justifies cost
-- **LRS replication**: Start simple, upgrade when needed
-- **Hot access tier**: Most application data is accessed regularly
-
-### Data Protection Defaults
-
-- **7-day soft delete**: Balances recovery capability with storage costs
-- **Versioning disabled by default**: Enable explicitly when needed
-- **Container soft delete**: Matches blob retention for consistency
-
-### Why Not More?
-
-We explicitly don't default:
-
-- **GRS/GZRS replication**: Doubles storage costs; not all workloads need it
-- **Premium tier**: Significantly more expensive; Standard handles most workloads
-- **Hierarchical namespace**: Requires specific account configuration, not reversible
-- **Static website hosting**: Requires additional configuration post-deployment
-
-## Integration Patterns
-
-### With Azure Kubernetes Service (AKS)
-
-Storage accounts commonly serve AKS workloads via:
-
-1. **CSI Driver**: Azure Blob or File CSI driver for persistent volumes
-2. **Workload Identity**: Pod identity accessing storage via managed identity
-3. **Network Integration**: Storage VNet rules allowing AKS subnet
-
-### With Azure Functions / App Service
-
-1. **Managed Identity**: Applications access storage without credentials
-2. **Key Vault integration**: Storage connection strings stored in Key Vault
-3. **VNet Integration**: Private endpoint access from app VNet
-
-### With Data Analytics
-
-1. **Data Lake Gen2**: Enable hierarchical namespace for analytics workloads
-2. **Synapse/Databricks**: VNet service endpoints for secure access
-3. **Event Grid**: Blob events triggering data pipelines
-
-## Common Pitfalls and Solutions
-
-### 1. Name Conflicts
-
-**Problem**: Storage account names must be globally unique, 3-24 characters, lowercase alphanumeric only.
-
-**Solution**: Use deterministic naming with organization prefix and unique suffix:
-```
-{org}{env}{purpose}{random4}
-# Example: mycomproddata1234
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureStorageAccount
+metadata:
+  name: perf-blobs
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureStorageAccount.perf-blobs
+spec:
+  region: westeurope
+  resourceGroup: perf-rg
+  accountKind: BLOCK_BLOB_STORAGE
+  accountTier: PREMIUM
+  replicationType: ZRS
+  blobProperties:
+    enableVersioning: true
+    softDeleteRetentionDays: 14
+    containerSoftDeleteRetentionDays: 14
+  networkRules:
+    defaultAction: DENY
+    bypassAzureServices: true
+    virtualNetworkSubnetIds:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/perf-rg/providers/Microsoft.Network/virtualNetworks/perf-vnet/subnets/app
+  containers:
+    - name: hot-data
+    - name: cache
 ```
 
-### 2. Network Rule Lockout
+### Cool-Tier Archival Storage
 
-**Problem**: Enabling "Deny" default action without proper IP rules locks out administrators.
+A storage account with Cool access tier for infrequently accessed data and extended soft delete retention:
 
-**Solution**: Always include:
-- Azure Services bypass
-- CI/CD system IPs
-- VPN/bastion host IPs for emergency access
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureStorageAccount
+metadata:
+  name: archive-storage
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureStorageAccount.archive-storage
+spec:
+  region: eastus
+  resourceGroup: archive-rg
+  accountKind: STORAGE_V2
+  accountTier: STANDARD
+  replicationType: RA_GRS
+  accessTier: COOL
+  blobProperties:
+    enableVersioning: true
+    softDeleteRetentionDays: 365
+    containerSoftDeleteRetentionDays: 365
+  containers:
+    - name: audit-logs
+    - name: compliance-records
+    - name: historical-data
+```
 
-### 3. Replication Cost Surprises
+### Using Foreign Key References
 
-**Problem**: GRS/GZRS doubles storage costs, surprising teams at billing time.
+Reference an OpenMCF-managed resource group instead of hardcoding the name:
 
-**Solution**: 
-- Default to LRS for development
-- Explicitly choose replication based on documented requirements
-- Use Azure Cost Management alerts
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureStorageAccount
+metadata:
+  name: ref-storage
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureStorageAccount.ref-storage
+spec:
+  region: eastus
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: my-rg
+      field: status.outputs.resource_group_name
+  containers:
+    - name: uploads
+    - name: media
+      accessType: BLOB
+```
 
-### 4. Access Tier Cost Optimization
+## Stack Outputs
 
-**Problem**: Storing infrequently accessed data in Hot tier wastes money; storing frequently accessed data in Cool tier incurs access charges.
+After deployment, the following outputs are available in `status.outputs`:
 
-**Solution**:
-- Lifecycle management policies for automatic tier transitions
-- Monitor access patterns before choosing tier
-- Use Hot for applications, Cool for backups/archives
+| Output | Type | Description |
+|--------|------|-------------|
+| `storageAccountId` | `string` | Azure Resource Manager ID of the Storage Account |
+| `storageAccountName` | `string` | Name of the Storage Account |
+| `primaryBlobEndpoint` | `string` | Primary blob endpoint URL (e.g., `https://{name}.blob.core.windows.net/`) |
+| `primaryQueueEndpoint` | `string` | Primary queue endpoint URL (e.g., `https://{name}.queue.core.windows.net/`) |
+| `primaryTableEndpoint` | `string` | Primary table endpoint URL (e.g., `https://{name}.table.core.windows.net/`) |
+| `primaryFileEndpoint` | `string` | Primary file endpoint URL (e.g., `https://{name}.file.core.windows.net/`) |
+| `primaryDfsEndpoint` | `string` | Primary DFS (Data Lake Storage Gen2) endpoint URL |
+| `primaryWebEndpoint` | `string` | Primary web endpoint URL for static website hosting |
+| `containerUrlMap` | `map<string, string>` | Map of container names to their blob URLs (`https://{name}.blob.core.windows.net/{container}`). Only contains containers created by this stack. |
+| `region` | `string` | Azure region where the Storage Account was deployed |
+| `resourceGroup` | `string` | Resource group name where the Storage Account was created |
 
-## Conclusion
+## Related Components
 
-Azure Storage Account is deceptively simple at first glance but requires careful configuration for production workloads. The key decisions — replication strategy, network security, access tiers, and data protection — significantly impact both security and costs.
-
-OpenMCF's implementation provides secure, sensible defaults while exposing the 20% of configuration options that matter for 80% of use cases. By abstracting the complexity of storage account deployment into a declarative manifest, teams can deploy consistent, secure storage across environments without deep Azure storage expertise.
-
-For organizations requiring advanced features (hierarchical namespace, premium performance, specific compliance configurations), the manifest format provides clear extension points while maintaining the security-first philosophy that production storage demands.
-
-## References
-
-- [Azure Storage Account Overview](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview)
-- [Storage Redundancy Options](https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy)
-- [Storage Access Tiers](https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview)
-- [Storage Network Security](https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security)
-- [Storage Security Best Practices](https://learn.microsoft.com/en-us/azure/storage/blobs/security-recommendations)
-- [Terraform Azure Storage Provider](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account)
-- [Pulumi Azure Storage](https://www.pulumi.com/registry/packages/azure-native/api-docs/storage/)
+- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) — provides the resource group for storage account placement
+- [AzureKeyVault](/docs/catalog/azure/azurekeyvault) — store storage account access keys as vault secrets
+- [AzureVpc](/docs/catalog/azure/azurevpc) — provides VNet subnets for network ACL rules
+- [AzureAksCluster](/docs/catalog/azure/azureakscluster) — AKS workloads can mount blob containers as persistent volumes or access storage via managed identity

@@ -69,8 +69,8 @@ var _ = ginkgo.Describe("AzureApplicationInsightsSpec Validation Tests", func() 
 								Value: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.OperationalInsights/workspaces/prod-law",
 							},
 						},
-						RetentionInDays:  int32Ptr(90),
-						DailyDataCapInGb: float64Ptr(100.0),
+						RetentionInDays:    int32Ptr(90),
+						DailyDataCapInGb:   float64Ptr(100.0),
 						SamplingPercentage: float64Ptr(50.0),
 					},
 				}

@@ -134,20 +134,20 @@ func Resources(ctx *pulumi.Context, stackInput *azurecosmosdbaccountv1.AzureCosm
 
 	// Build account args
 	accountArgs := &cosmosdb.AccountArgs{
-		Name:                              pulumi.String(spec.Name),
-		Location:                         pulumi.String(spec.Region),
-		ResourceGroupName:                pulumi.String(locals.ResourceGroupName),
-		OfferType:                        pulumi.String("Standard"),
-		Kind:                              pulumi.String(kind),
-		ConsistencyPolicy:                 consistencyPolicy,
-		GeoLocations:                     geoLocations,
-		Capabilities:                     capabilityArgs,
-		FreeTierEnabled:                  pulumi.BoolPtr(spec.GetFreeTierEnabled()),
-		AutomaticFailoverEnabled:         pulumi.BoolPtr(spec.GetAutomaticFailoverEnabled()),
-		MultipleWriteLocationsEnabled:    pulumi.BoolPtr(spec.GetMultipleWriteLocationsEnabled()),
-		PublicNetworkAccessEnabled:       pulumi.BoolPtr(spec.GetPublicNetworkAccessEnabled()),
-		IsVirtualNetworkFilterEnabled:    pulumi.BoolPtr(spec.GetIsVirtualNetworkFilterEnabled()),
-		Tags:                             pulumi.ToStringMap(locals.AzureTags),
+		Name:                          pulumi.String(spec.Name),
+		Location:                      pulumi.String(spec.Region),
+		ResourceGroupName:             pulumi.String(locals.ResourceGroupName),
+		OfferType:                     pulumi.String("Standard"),
+		Kind:                          pulumi.String(kind),
+		ConsistencyPolicy:             consistencyPolicy,
+		GeoLocations:                  geoLocations,
+		Capabilities:                  capabilityArgs,
+		FreeTierEnabled:               pulumi.BoolPtr(spec.GetFreeTierEnabled()),
+		AutomaticFailoverEnabled:      pulumi.BoolPtr(spec.GetAutomaticFailoverEnabled()),
+		MultipleWriteLocationsEnabled: pulumi.BoolPtr(spec.GetMultipleWriteLocationsEnabled()),
+		PublicNetworkAccessEnabled:    pulumi.BoolPtr(spec.GetPublicNetworkAccessEnabled()),
+		IsVirtualNetworkFilterEnabled: pulumi.BoolPtr(spec.GetIsVirtualNetworkFilterEnabled()),
+		Tags:                          pulumi.ToStringMap(locals.AzureTags),
 	}
 
 	if len(vnetRules) > 0 {
@@ -178,9 +178,9 @@ func Resources(ctx *pulumi.Context, stackInput *azurecosmosdbaccountv1.AzureCosm
 		// SQL API: create sql_databases and containers
 		for _, db := range spec.GetSqlDatabases() {
 			dbArgs := &cosmosdb.SqlDatabaseArgs{
-				Name:               pulumi.String(db.Name),
-				AccountName:        account.Name,
-				ResourceGroupName:  pulumi.String(locals.ResourceGroupName),
+				Name:              pulumi.String(db.Name),
+				AccountName:       account.Name,
+				ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 			}
 			if db.Throughput != nil {
 				dbArgs.Throughput = pulumi.IntPtr(int(*db.Throughput))

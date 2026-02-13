@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/pkg/errors"
 	scalewayloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayloadbalancer/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayloadbalancer/v1/iac/pulumi/module"
 	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/stackinput"
-	"github.com/pkg/errors"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 

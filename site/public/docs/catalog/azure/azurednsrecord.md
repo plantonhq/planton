@@ -6,269 +6,213 @@ order: 100
 componentName: "azurednsrecord"
 ---
 
-# Azure DNS Record - Technical Research Documentation
+# Azure DNS Record
 
-## Introduction
+Deploys an individual DNS record (A, AAAA, CNAME, MX, TXT, SRV, NS, PTR, or CAA) within an existing Azure DNS Zone. The component supports all standard record types with configurable TTL, multiple record values for round-robin behavior, and MX priority for mail exchange records.
 
-Azure DNS is Microsoft's authoritative DNS hosting service, providing name resolution using Microsoft Azure infrastructure. Azure DNS Records are individual entries within a DNS zone that map domain names to various resources like IP addresses, mail servers, or other domains.
+## What Gets Created
 
-This document provides comprehensive research on deploying and managing Azure DNS Records, comparing different approaches and explaining the design decisions behind OpenMCF's implementation.
+When you deploy an AzureDnsRecord resource, OpenMCF provisions:
 
-## DNS Record Fundamentals
+- **DNS Record** -- one of the following Pulumi Azure DNS resources based on the specified `type`: `dns.ARecord`, `dns.AaaaRecord`, `dns.CNameRecord`, `dns.MxRecord`, `dns.TxtRecord`, `dns.SrvRecord`, `dns.NsRecord`, `dns.PtrRecord`, or `dns.CaaRecord`
+- **Azure Tags** -- resource metadata tags applied to the record for tracking and governance, including resource name, kind, organization, and environment
 
-### What is a DNS Record?
+## Prerequisites
 
-A DNS record is a database entry that provides information about a domain, including its associated IP addresses, mail servers, and other configuration data. When users query a domain name, DNS resolvers use these records to route traffic appropriately.
+- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **An Azure Resource Group** containing the DNS Zone (can reference an AzureResourceGroup resource)
+- **An Azure DNS Zone** where the record will be created (can reference an AzureDnsZone resource)
 
-### Common Record Types
+## Quick Start
 
-| Type | Purpose | Example Use Case |
-|------|---------|------------------|
-| **A** | Maps hostname to IPv4 address | `www.example.com → 192.0.2.1` |
-| **AAAA** | Maps hostname to IPv6 address | `www.example.com → 2001:db8::1` |
-| **CNAME** | Creates alias to another domain | `blog.example.com → example.ghost.io` |
-| **MX** | Specifies mail servers | Email routing for domain |
-| **TXT** | Stores text data | SPF, DKIM, domain verification |
-| **NS** | Delegates subdomain | Subdomain to different nameservers |
-| **SRV** | Service location | SIP, LDAP service discovery |
-| **CAA** | Certificate authority authorization | SSL/TLS issuance control |
-| **PTR** | Reverse DNS lookup | IP to hostname mapping |
-
-## Deployment Methods Landscape
-
-### 1. Azure Portal (Manual)
-
-**Pros:**
-- Visual interface
-- No coding required
-- Good for learning
-
-**Cons:**
-- Not repeatable
-- No version control
-- Error-prone for bulk operations
-- No audit trail
-
-### 2. Azure CLI
-
-```bash
-az network dns record-set a add-record \
-  --resource-group MyResourceGroup \
-  --zone-name example.com \
-  --record-set-name www \
-  --ipv4-address 192.0.2.1
-```
-
-**Pros:**
-- Scriptable
-- Can be version controlled
-
-**Cons:**
-- Imperative (describes actions, not state)
-- Difficult to manage dependencies
-- No drift detection
-
-### 3. ARM Templates
-
-```json
-{
-  "type": "Microsoft.Network/dnsZones/A",
-  "apiVersion": "2018-05-01",
-  "name": "example.com/www",
-  "properties": {
-    "TTL": 300,
-    "ARecords": [
-      { "ipv4Address": "192.0.2.1" }
-    ]
-  }
-}
-```
-
-**Pros:**
-- Declarative
-- Native Azure support
-- Version controllable
-
-**Cons:**
-- Verbose JSON syntax
-- Limited reusability
-- Azure-specific
-
-### 4. Terraform
-
-```hcl
-resource "azurerm_dns_a_record" "www" {
-  name                = "www"
-  zone_name           = "example.com"
-  resource_group_name = "my-rg"
-  ttl                 = 300
-  records             = ["192.0.2.1"]
-}
-```
-
-**Pros:**
-- Declarative
-- State management
-- Drift detection
-- Multi-cloud support
-
-**Cons:**
-- HCL learning curve
-- State file management
-- Manual wiring between resources
-
-### 5. Pulumi
-
-```go
-record, err := dns.NewARecord(ctx, "www", &dns.ARecordArgs{
-    Name:              pulumi.String("www"),
-    ZoneName:          pulumi.String("example.com"),
-    ResourceGroupName: pulumi.String("my-rg"),
-    Ttl:               pulumi.Int(300),
-    Records:           pulumi.StringArray{pulumi.String("192.0.2.1")},
-})
-```
-
-**Pros:**
-- Real programming languages
-- Type safety
-- IDE support
-- Reusable components
-
-**Cons:**
-- Requires programming knowledge
-- More complex setup
-
-## OpenMCF's Approach
-
-### Design Philosophy
-
-OpenMCF's AzureDnsRecord component follows the 80/20 principle:
-- **80%** of DNS record use cases are covered
-- **20%** of configuration options exposed
-
-### Key Design Decisions
-
-#### 1. Zone Reference via `value_from`
-
-The `zone_name` field supports both literal values and references to `AzureDnsZone` resources:
+Create a file `dns-record.yaml`:
 
 ```yaml
-# Literal value
-zone_name:
-  value: example.com
-
-# Reference to zone resource
-zone_name:
-  value_from:
-    name: my-azure-zone
+apiVersion: azure.openmcf.org/v1
+kind: AzureDnsRecord
+metadata:
+  name: my-a-record
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AzureDnsRecord.my-a-record
+spec:
+  resourceGroup: my-rg
+  zoneName: example.com
+  type: A
+  name: www
+  values:
+    - "192.0.2.1"
 ```
 
-This enables:
-- **Loose coupling**: Records can be deployed independently
-- **Dependency resolution**: CLI resolves zone name at deploy time
-- **Flexibility**: Mix literal and referenced values
+Deploy:
 
-#### 2. Single Record Per Resource
+```shell
+openmcf apply -f dns-record.yaml
+```
 
-Unlike the `AzureDnsZone` component which can create multiple records, `AzureDnsRecord` creates exactly one record. This provides:
-- **Atomic operations**: Each record has its own lifecycle
-- **Fine-grained control**: Update individual records without affecting others
-- **Clear ownership**: One manifest = one DNS record
+This creates an A record for `www.example.com` pointing to `192.0.2.1` with a default TTL of 300 seconds (5 minutes).
 
-#### 3. Unified Record Type Handling
+## Configuration Reference
 
-All record types use the same `values` field, with type-specific interpretation:
-- A/AAAA: IP addresses
-- CNAME: Target hostname (first value only)
-- MX: Mail server hostnames (priority via `mx_priority`)
-- TXT: Text values
-- etc.
+### Required Fields
 
-### What's NOT Included (By Design)
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `resourceGroup` | `StringValueOrRef` | Azure Resource Group containing the DNS Zone. Can reference an AzureResourceGroup resource via `valueFrom`. | Required |
+| `zoneName` | `StringValueOrRef` | Name of the DNS Zone where the record will be created (e.g., `example.com`). Can reference an AzureDnsZone resource via `valueFrom`. | Required |
+| `type` | `enum` | DNS record type. Values: `A`, `AAAA`, `CNAME`, `MX`, `TXT`, `SRV`, `NS`, `PTR`, `CAA`. | Required, must be a defined enum value |
+| `name` | `string` | Record name relative to the zone. Use `@` for zone apex, `*` for wildcard, or a valid DNS label (e.g., `www`, `api.v1`). | Required, must match `@`, `*`, or lowercase alphanumeric with hyphens and dots |
+| `values` | `string[]` | Record values. Format depends on type: IPv4 for A, IPv6 for AAAA, hostname for CNAME, mail server for MX, text for TXT, `priority weight port target` for SRV, `flags tag value` for CAA. | Minimum 1 item |
 
-1. **Traffic Manager integration**: Complex routing scenarios have dedicated components
-2. **Private DNS zones**: Separate component for VNet-scoped DNS
-3. **Alias records**: Azure-specific alias records not yet supported
-4. **Record set grouping**: Each record type at a name gets its own resource
+### Optional Fields
 
-## Azure DNS Record Specifics
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `ttlSeconds` | `int32` | `300` | Time to live in seconds. Determines how long resolvers cache this record. Range: 1--2147483647. Common values: 60 (1 min), 300 (5 min), 3600 (1 hour), 86400 (1 day). |
+| `mxPriority` | `int32` | `10` | Priority value for MX records. Lower values indicate higher priority. Only applicable when `type` is `MX`. Range: 0--65535. |
 
-### Record Naming
+## Examples
 
-- `@` - Zone apex (root domain)
-- `*` - Wildcard
-- Subdomain names without trailing dot
+### A Record for a Subdomain
 
-### TTL Guidelines
-
-| Scenario | Recommended TTL |
-|----------|-----------------|
-| Frequently changing | 60-300 seconds |
-| Standard records | 300-3600 seconds |
-| Stable records | 3600-86400 seconds |
-| NS delegations | 86400 seconds |
-
-### Limits and Quotas
-
-- Max 10,000 record sets per zone
-- Max 20 records per record set
-- Max 500 DNS zones per subscription (soft limit)
-
-## Production Best Practices
-
-### 1. Use Appropriate TTLs
-
-Lower TTLs = faster propagation but more DNS queries (cost)
-Higher TTLs = better caching but slower changes
-
-### 2. CAA Records
-
-Always configure CAA records to control certificate issuance:
+Point a subdomain to one or more IPv4 addresses with round-robin behavior:
 
 ```yaml
-record_type: CAA
-name: "@"
-values:
-  - "letsencrypt.org"
+apiVersion: azure.openmcf.org/v1
+kind: AzureDnsRecord
+metadata:
+  name: web-a-record
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureDnsRecord.web-a-record
+spec:
+  resourceGroup: prod-rg
+  zoneName: example.com
+  type: A
+  name: www
+  values:
+    - "192.0.2.1"
+    - "192.0.2.2"
+  ttlSeconds: 3600
 ```
 
-### 3. SPF/DKIM/DMARC
+### CNAME Record for an Alias
 
-For email deliverability, always configure:
-- SPF (TXT record)
-- DKIM (TXT record)  
-- DMARC (TXT record at `_dmarc`)
+Create an alias from one hostname to another:
 
-### 4. Monitoring
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureDnsRecord
+metadata:
+  name: app-cname
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureDnsRecord.app-cname
+spec:
+  resourceGroup: prod-rg
+  zoneName: example.com
+  type: CNAME
+  name: app
+  values:
+    - "myapp.azurewebsites.net"
+  ttlSeconds: 300
+```
 
-- Enable Azure DNS Analytics
-- Monitor query volume
-- Alert on failed queries
+### MX Records for Email Routing
 
-## Implementation Details
+Configure mail exchange records with priority for primary and secondary mail servers:
 
-### Pulumi Module
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureDnsRecord
+metadata:
+  name: mail-mx-record
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureDnsRecord.mail-mx-record
+spec:
+  resourceGroup: prod-rg
+  zoneName: example.com
+  type: MX
+  name: "@"
+  values:
+    - "mail1.example.com"
+    - "mail2.example.com"
+  ttlSeconds: 3600
+  mxPriority: 10
+```
 
-The Pulumi module:
-1. Creates Azure provider with credentials from `ProviderConfig`
-2. Switches on `record_type` to call appropriate DNS record constructor
-3. Exports `record_id` and `fqdn` as stack outputs
+### TXT Record for Domain Verification
 
-### Terraform Module
+Add SPF or domain-verification TXT records at the zone apex:
 
-The Terraform module:
-1. Uses conditional resources (`count`) based on record type
-2. Creates exactly one record resource per deployment
-3. Outputs record ID and FQDN using `coalesce` for type-agnostic output
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureDnsRecord
+metadata:
+  name: spf-txt-record
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureDnsRecord.spf-txt-record
+spec:
+  resourceGroup: prod-rg
+  zoneName: example.com
+  type: TXT
+  name: "@"
+  values:
+    - "v=spf1 include:_spf.google.com ~all"
+  ttlSeconds: 3600
+```
 
-## References
+### Using Foreign Key References
 
-- [Azure DNS Documentation](https://docs.microsoft.com/en-us/azure/dns/)
-- [Azure DNS REST API](https://docs.microsoft.com/en-us/rest/api/dns/)
-- [Terraform azurerm_dns_* resources](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)
-- [Pulumi Azure DNS resources](https://www.pulumi.com/registry/packages/azure/api-docs/dns/)
+Reference OpenMCF-managed resources instead of hardcoding the resource group and zone name. The `resourceGroup` field defaults to kind `AzureResourceGroup` with field path `status.outputs.resource_group_name`. The `zoneName` field defaults to kind `AzureDnsZone` with field path `status.outputs.zone_name`.
 
-## Conclusion
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureDnsRecord
+metadata:
+  name: ref-a-record
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureDnsRecord.ref-a-record
+spec:
+  resourceGroup:
+    valueFrom:
+      name: my-rg
+  zoneName:
+    valueFrom:
+      name: my-azure-zone
+  type: A
+  name: api
+  values:
+    - "10.0.1.50"
+```
 
-The AzureDnsRecord component provides a streamlined, declarative interface for managing DNS records in Azure. By supporting zone references through `value_from`, it integrates seamlessly with the broader OpenMCF ecosystem while maintaining the flexibility needed for diverse DNS configurations.
+## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `record_id` | `string` | Azure Resource Manager ID of the DNS record (format: `/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/dnsZones/{zone}/{type}/{name}`) |
+| `fqdn` | `string` | Fully qualified domain name for this record (e.g., `www.example.com`) |
+
+## Related Components
+
+- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) -- provides the resource group containing the DNS Zone
+- [AzureDnsZone](/docs/catalog/azure/azurednszone) -- provides the DNS Zone where records are created
+- [AzurePublicIp](/docs/catalog/azure/azurepublicip) -- public IP addresses that A records can point to
+- [AzureLoadBalancer](/docs/catalog/azure/azureloadbalancer) -- load balancer frontend IPs that DNS records can target

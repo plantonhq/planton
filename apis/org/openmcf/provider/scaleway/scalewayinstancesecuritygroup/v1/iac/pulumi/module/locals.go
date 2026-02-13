@@ -13,9 +13,9 @@ import (
 
 // Locals bundles handy references for the rest of the module.
 type Locals struct {
-	ScalewayProviderConfig          *scalewayprovider.ScalewayProviderConfig
-	ScalewayInstanceSecurityGroup   *scalewayinstancesecuritygroupv1.ScalewayInstanceSecurityGroup
-	ScalewayTags                    []string
+	ScalewayProviderConfig        *scalewayprovider.ScalewayProviderConfig
+	ScalewayInstanceSecurityGroup *scalewayinstancesecuritygroupv1.ScalewayInstanceSecurityGroup
+	ScalewayTags                  []string
 }
 
 // initializeLocals copies stack-input fields into the Locals struct and builds

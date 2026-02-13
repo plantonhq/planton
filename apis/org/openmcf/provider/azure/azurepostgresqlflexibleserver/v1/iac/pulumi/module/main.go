@@ -38,16 +38,16 @@ func Resources(ctx *pulumi.Context, stackInput *azurepostgresqlflexibleserverv1.
 		AdministratorPassword: pulumi.StringPtr(
 			spec.AdministratorPassword.GetValue(),
 		),
-		Version: pulumi.StringPtr(spec.GetVersion()),
-		SkuName: pulumi.StringPtr(spec.SkuName),
-		StorageMb: pulumi.IntPtr(int(spec.StorageMb)),
-		AutoGrowEnabled:          pulumi.BoolPtr(spec.GetAutoGrowEnabled()),
-		BackupRetentionDays:      pulumi.IntPtr(int(spec.GetBackupRetentionDays())),
+		Version:                   pulumi.StringPtr(spec.GetVersion()),
+		SkuName:                   pulumi.StringPtr(spec.SkuName),
+		StorageMb:                 pulumi.IntPtr(int(spec.StorageMb)),
+		AutoGrowEnabled:           pulumi.BoolPtr(spec.GetAutoGrowEnabled()),
+		BackupRetentionDays:       pulumi.IntPtr(int(spec.GetBackupRetentionDays())),
 		GeoRedundantBackupEnabled: pulumi.BoolPtr(spec.GetGeoRedundantBackupEnabled()),
 		// Password auth is always enabled (80/20); AAD auth omitted for v1.
 		Authentication: &postgresql.FlexibleServerAuthenticationArgs{
-			PasswordAuthEnabled:          pulumi.BoolPtr(true),
-			ActiveDirectoryAuthEnabled:   pulumi.BoolPtr(false),
+			PasswordAuthEnabled:        pulumi.BoolPtr(true),
+			ActiveDirectoryAuthEnabled: pulumi.BoolPtr(false),
 		},
 		Tags: pulumi.ToStringMap(locals.AzureTags),
 	}
@@ -99,9 +99,9 @@ func Resources(ctx *pulumi.Context, stackInput *azurepostgresqlflexibleserverv1.
 	databaseIdMap := make(map[string]pulumi.StringOutput)
 	for _, db := range spec.Databases {
 		dbArgs := &postgresql.FlexibleServerDatabaseArgs{
-			Name:     pulumi.String(db.Name),
-			ServerId: server.ID(),
-			Charset:  pulumi.String(db.GetCharset()),
+			Name:      pulumi.String(db.Name),
+			ServerId:  server.ID(),
+			Charset:   pulumi.String(db.GetCharset()),
 			Collation: pulumi.String(db.GetCollation()),
 		}
 

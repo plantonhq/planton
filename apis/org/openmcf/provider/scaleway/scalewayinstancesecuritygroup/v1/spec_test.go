@@ -45,12 +45,12 @@ var _ = ginkgo.Describe("ScalewayInstanceSecurityGroupSpec Custom Validation Tes
 						Env:  "production",
 					},
 					Spec: &ScalewayInstanceSecurityGroupSpec{
-						Zone:                   "fr-par-1",
-						Description:            "Production web tier firewall",
-						Stateful:               true,
-						InboundDefaultPolicy:   "drop",
-						OutboundDefaultPolicy:  "accept",
-						EnableDefaultSecurity:  true,
+						Zone:                  "fr-par-1",
+						Description:           "Production web tier firewall",
+						Stateful:              true,
+						InboundDefaultPolicy:  "drop",
+						OutboundDefaultPolicy: "accept",
+						EnableDefaultSecurity: true,
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -71,10 +71,10 @@ var _ = ginkgo.Describe("ScalewayInstanceSecurityGroupSpec Custom Validation Tes
 						InboundDefaultPolicy: "drop",
 						InboundRules: []*ScalewaySecurityGroupInboundRule{
 							{
-								Action:   "accept",
-								Protocol: "TCP",
+								Action:    "accept",
+								Protocol:  "TCP",
 								PortRange: "80",
-								IpRange:  "0.0.0.0/0",
+								IpRange:   "0.0.0.0/0",
 							},
 						},
 					},
@@ -112,10 +112,10 @@ var _ = ginkgo.Describe("ScalewayInstanceSecurityGroupSpec Custom Validation Tes
 								IpRange:  "0.0.0.0/0",
 							},
 							{
-								Action:   "accept",
-								Protocol: "UDP",
+								Action:    "accept",
+								Protocol:  "UDP",
 								PortRange: "53",
-								IpRange:  "0.0.0.0/0",
+								IpRange:   "0.0.0.0/0",
 							},
 						},
 					},
@@ -350,8 +350,8 @@ var _ = ginkgo.Describe("ScalewayInstanceSecurityGroupSpec Custom Validation Tes
 						Zone: "fr-par-1",
 						InboundRules: []*ScalewaySecurityGroupInboundRule{
 							{
-								Action:   "allow", // Invalid -- must be "accept" or "drop"
-								Protocol: "TCP",
+								Action:    "allow", // Invalid -- must be "accept" or "drop"
+								Protocol:  "TCP",
 								PortRange: "80",
 							},
 						},
@@ -372,8 +372,8 @@ var _ = ginkgo.Describe("ScalewayInstanceSecurityGroupSpec Custom Validation Tes
 						Zone: "fr-par-1",
 						OutboundRules: []*ScalewaySecurityGroupOutboundRule{
 							{
-								Action:   "deny", // Invalid -- must be "accept" or "drop"
-								Protocol: "TCP",
+								Action:    "deny", // Invalid -- must be "accept" or "drop"
+								Protocol:  "TCP",
 								PortRange: "443",
 							},
 						},
@@ -394,8 +394,8 @@ var _ = ginkgo.Describe("ScalewayInstanceSecurityGroupSpec Custom Validation Tes
 						Zone: "fr-par-1",
 						InboundRules: []*ScalewaySecurityGroupInboundRule{
 							{
-								Action:   "", // Empty action -- required field
-								Protocol: "TCP",
+								Action:    "", // Empty action -- required field
+								Protocol:  "TCP",
 								PortRange: "80",
 							},
 						},

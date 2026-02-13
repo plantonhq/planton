@@ -6,158 +6,193 @@ order: 100
 componentName: "azureprivatednszone"
 ---
 
-# AzurePrivateDnsZone: Research & Deployment Guide
+# Azure Private DNS Zone
 
-## What is Azure Private DNS?
+Deploys an Azure Private DNS Zone with a Virtual Network link for internal name resolution. The component supports both Private Link DNS scenarios (resolving Azure PaaS service private endpoints) and custom internal DNS zones for VM hostname discovery within a VNet.
 
-Azure Private DNS provides a reliable, secure DNS service for virtual networks. It manages and resolves domain names within a virtual network without the need for a custom DNS solution. Private DNS zones are the Azure counterpart to internal DNS zones in traditional networking -- they enable name resolution that is scoped to one or more VNets and invisible from the public internet.
+## What Gets Created
 
-### Two Deployment Models
+When you deploy an AzurePrivateDnsZone resource, OpenMCF provisions:
 
-**1. Private Link DNS (Primary Use Case)**
+- **Private DNS Zone** — a `privatedns.Zone` resource in the specified resource group. Private DNS zones are global Azure resources with no region parameter.
+- **Virtual Network Link** — a `privatedns.ZoneVirtualNetworkLink` that connects the zone to a VNet, enabling DNS resolution of zone records from resources within the linked VNet. Without this link the zone is unreachable.
+- **Azure Tags** — resource metadata tags applied to both the zone and the VNet link for tracking and governance
 
-Azure Private Link enables access to Azure PaaS services (Azure SQL, PostgreSQL, Storage, Key Vault, etc.) over a private IP address in the VNet. Each Azure service that supports Private Link has a predefined privatelink DNS zone name (e.g., `privatelink.postgres.database.azure.com`). When a Private Endpoint is created:
+## Prerequisites
 
-1. Azure allocates a private IP from the endpoint's subnet
-2. A DNS A-record is created (or should be created) mapping the service's FQDN to this private IP
-3. Clients in the VNet resolve the service FQDN to the private IP and communicate entirely over the private network
+- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **An Azure Resource Group** where the zone will be created (can reference an AzureResourceGroup resource)
+- **A Virtual Network** to link to the zone (can reference an AzureVpc resource)
+- **Zone name planning** — for Private Link scenarios, the zone name must match the Azure-defined privatelink zone name for the target service (e.g., `privatelink.postgres.database.azure.com` for PostgreSQL Flexible Server)
 
-Without a properly configured private DNS zone and VNet link, the FQDN resolves to the public IP, completely bypassing the Private Endpoint.
+## Quick Start
 
-**2. Custom Internal DNS**
+Create a file `private-dns-zone.yaml`:
 
-For non-Azure-service use cases, private DNS zones enable custom internal name resolution. A zone like `contoso.internal` can host A, AAAA, CNAME, MX, SRV, TXT, and PTR records accessible only from linked VNets. With auto-registration enabled, VMs in the linked VNet automatically get A-records created and removed as they are created and deleted.
-
-## Deployment Landscape
-
-### Manual (Azure Portal / CLI)
-
-```bash
-# Create zone
-az network private-dns zone create \
-  --resource-group myRG \
-  --name privatelink.postgres.database.azure.com
-
-# Create VNet link
-az network private-dns link vnet create \
-  --resource-group myRG \
-  --zone-name privatelink.postgres.database.azure.com \
-  --name myVnetLink \
-  --virtual-network /subscriptions/.../virtualNetworks/myVnet \
-  --registration-enabled false
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePrivateDnsZone
+metadata:
+  name: my-zone
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AzurePrivateDnsZone.my-zone
+spec:
+  resourceGroup: my-rg
+  name: privatelink.postgres.database.azure.com
+  vnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Network/virtualNetworks/my-vnet
 ```
 
-### Terraform
+Deploy:
 
-```hcl
-resource "azurerm_private_dns_zone" "postgres" {
-  name                = "privatelink.postgres.database.azure.com"
-  resource_group_name = azurerm_resource_group.example.name
-}
-
-resource "azurerm_private_dns_zone_virtual_network_link" "postgres" {
-  name                  = "postgres-vnet-link"
-  resource_group_name   = azurerm_resource_group.example.name
-  private_dns_zone_name = azurerm_private_dns_zone.postgres.name
-  virtual_network_id    = azurerm_virtual_network.example.id
-  registration_enabled  = false
-}
+```shell
+openmcf apply -f private-dns-zone.yaml
 ```
 
-### Pulumi (Go)
+This creates a Private DNS Zone for PostgreSQL Private Link resolution, linked to the specified VNet with auto-registration disabled.
 
-```go
-zone, _ := privatedns.NewZone(ctx, "postgres", &privatedns.ZoneArgs{
-    Name:              pulumi.String("privatelink.postgres.database.azure.com"),
-    ResourceGroupName: rg.Name,
-})
+## Configuration Reference
 
-privatedns.NewZoneVirtualNetworkLink(ctx, "postgres-link", &privatedns.ZoneVirtualNetworkLinkArgs{
-    Name:               pulumi.String("postgres-vnet-link"),
-    ResourceGroupName:  rg.Name,
-    PrivateDnsZoneName: zone.Name,
-    VirtualNetworkId:   vnet.ID(),
-    RegistrationEnabled: pulumi.Bool(false),
-})
+### Required Fields
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `name` | `string` | DNS zone name. For Private Link, must match the Azure-defined privatelink zone name for the target service (e.g., `privatelink.postgres.database.azure.com`). For custom internal DNS, use any valid domain (e.g., `contoso.internal`). | Required, must be a valid DNS domain name |
+| `resourceGroup` | `StringValueOrRef` | Azure Resource Group name. Can reference an AzureResourceGroup resource via `valueFrom`. | Required |
+| `vnetId` | `StringValueOrRef` | Azure Resource Manager ID of the Virtual Network to link. Format: `/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{name}`. Can reference an AzureVpc resource via `valueFrom`. | Required |
+
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `registrationEnabled` | `bool` | `false` | Enables auto-registration of VM DNS records in the linked VNet. When true, Azure automatically creates and removes A records for VMs in the linked VNet. Useful for custom internal DNS zones. Should remain false for Private Link zones, where DNS records are managed by the private endpoint resource. |
+
+## Examples
+
+### Private Link Zone for PostgreSQL
+
+A Private DNS Zone for resolving PostgreSQL Flexible Server private endpoints:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePrivateDnsZone
+metadata:
+  name: postgres-dns
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzurePrivateDnsZone.postgres-dns
+spec:
+  resourceGroup: prod-rg
+  name: privatelink.postgres.database.azure.com
+  vnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.Network/virtualNetworks/prod-vnet
 ```
 
-## Why OpenMCF Bundles Zone + VNet Link
+### Private Link Zone for Key Vault
 
-Per DD03 (Composite Bundling Rules), a private DNS zone without a VNet link is unreachable from any VNet. The zone exists but serves no purpose -- no resources can resolve records in it. This makes the VNet link a structural dependency, not an independent resource.
+A Private DNS Zone enabling private connectivity to Azure Key Vault:
 
-The bundling follows the same reasoning as:
-- AzureNetworkSecurityGroup (NSG + rules -- rules are the substance)
-- AzureUserAssignedIdentity (identity + role assignments -- assignments are the substance)
-
-## 80/20 Scoping Rationale
-
-### What's Included
-
-| Feature | Rationale |
-|---------|-----------|
-| Zone creation | Core resource |
-| Single VNet link | Minimum viable DNS resolution |
-| `registration_enabled` toggle | Enables both privatelink and custom DNS use cases |
-| Tags | Standard Azure resource management |
-
-### What's Excluded
-
-| Feature | Rationale |
-|---------|-----------|
-| Multiple VNet links | Advanced hub-spoke scenario; 80/20 covers single-VNet |
-| SOA record customization | Azure defaults are correct for 99% of use cases |
-| DNS record creation | Records are managed by Private Endpoints or other resources |
-| Resolution policy | `NxDomainRedirect` is a niche DNS resolver feature |
-
-### Design Decisions
-
-**No `region` field**: Private DNS zones are global Azure resources. Unlike most Azure resources that are deployed to a specific region, private DNS zones exist at the subscription level and are accessible from any VNet in the subscription.
-
-**Required `resource_group`**: Added during research (not in original T02 spec). Every Azure resource requires a resource group, and the Terraform/Pulumi providers require `resource_group_name` as a mandatory parameter.
-
-**Required `vnet_id`**: The VNet link is mandatory because a zone without a link is useless. Making it required ensures users don't accidentally create orphaned zones.
-
-**Optional `registration_enabled`**: Defaults to `false` because the primary use case (privatelink zones) should never have auto-registration. Exposing it as optional enables the secondary use case (custom internal DNS) without adding complexity.
-
-## Best Practices
-
-1. **One zone per service type** -- Create a separate privatelink zone for each Azure service (PostgreSQL, MySQL, Key Vault, etc.). Don't try to share zones across service types.
-
-2. **Same resource group as networking** -- Place private DNS zones in the same resource group as VNet and networking resources for lifecycle alignment.
-
-3. **Registration for custom zones only** -- Only enable `registration_enabled` for custom internal DNS zones (e.g., `contoso.internal`). Never enable it for privatelink zones.
-
-4. **Zone names are exact** -- For Private Link, the zone name must exactly match Azure's predefined name for the service. A typo means DNS resolution fails silently.
-
-5. **VNet link naming** -- The IaC module auto-generates the link name from the resource metadata. This avoids naming conflicts when multiple zones link to the same VNet.
-
-## Downstream Consumers
-
-```
-AzurePrivateDnsZone
-├── AzurePrivateEndpoint (private_dns_zone_id → zone group)
-├── AzurePostgresqlFlexibleServer (private_dns_zone_id → VNet integration)
-└── AzureMysqlFlexibleServer (private_dns_zone_id → VNet integration)
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePrivateDnsZone
+metadata:
+  name: keyvault-dns
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzurePrivateDnsZone.keyvault-dns
+spec:
+  resourceGroup: prod-rg
+  name: privatelink.vaultcore.azure.net
+  vnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.Network/virtualNetworks/prod-vnet
 ```
 
-## Infra Chart Integration
+### Custom Internal DNS with Auto-Registration
 
-### Database Stack Pattern
+An internal DNS zone for VM hostname discovery with auto-registration enabled:
 
-The database-stack infra chart creates one privatelink zone per database type:
-
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePrivateDnsZone
+metadata:
+  name: internal-dns
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AzurePrivateDnsZone.internal-dns
+spec:
+  resourceGroup: dev-rg
+  name: contoso.internal
+  vnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev-rg/providers/Microsoft.Network/virtualNetworks/dev-vnet
+  registrationEnabled: true
 ```
-VPC → Subnet → PrivateDnsZone (per DB type) → Database Server → PrivateEndpoint
+
+### Private Link Zone for Blob Storage
+
+A Private DNS Zone for resolving Azure Blob Storage private endpoints:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePrivateDnsZone
+metadata:
+  name: blob-dns
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzurePrivateDnsZone.blob-dns
+spec:
+  resourceGroup: prod-rg
+  name: privatelink.blob.core.windows.net
+  vnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.Network/virtualNetworks/prod-vnet
 ```
 
-Each database server references its corresponding zone for DNS resolution. The private endpoint then registers its IP in the zone via DNS zone group.
+### Using Foreign Key References
 
-### Enterprise Network Foundation
+Reference OpenMCF-managed resources instead of hardcoding IDs:
 
-Optional component for organizations that pre-create private DNS zones as part of their networking foundation, before any databases or services are deployed.
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzurePrivateDnsZone
+metadata:
+  name: ref-dns
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzurePrivateDnsZone.ref-dns
+spec:
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: my-rg
+      field: status.outputs.resource_group_name
+  name: privatelink.postgres.database.azure.com
+  vnetId:
+    valueFrom:
+      kind: AzureVpc
+      name: my-vpc
+      field: status.outputs.vnet_id
+```
 
----
+## Stack Outputs
 
-**Status**: Production Ready
-**Azure Provider Version**: ~> 4.0
-**Pulumi Provider Version**: v6
+After deployment, the following outputs are available in `status.outputs`:
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `zone_id` | `string` | Azure Resource Manager ID of the Private DNS Zone. Format: `/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/privateDnsZones/{name}`. Referenced by downstream resources via `StringValueOrRef`. |
+| `zone_name` | `string` | Name of the Private DNS Zone (e.g., `privatelink.postgres.database.azure.com`). |
+
+## Related Components
+
+- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) — provides the resource group for zone placement
+- [AzureVpc](/docs/catalog/azure/azurevpc) — provides the Virtual Network to link to the zone
+- [AzurePostgresqlFlexibleServer](/docs/catalog/azure/azurepostgresqlflexibleserver) — references `zone_id` for VNet-integrated deployment with private DNS resolution
+- [AzureMysqlFlexibleServer](/docs/catalog/azure/azuremysqlflexibleserver) — references `zone_id` for VNet-integrated deployment with private DNS resolution
+- [AzurePrivateEndpoint](/docs/catalog/azure/azureprivateendpoint) — references `zone_id` for DNS zone group registration, enabling private endpoint FQDN resolution

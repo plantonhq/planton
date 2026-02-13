@@ -8,7 +8,7 @@ componentName: "kubernetesnamespace"
 
 # Kubernetes Namespace
 
-Deploys a Kubernetes namespace with optional resource quotas, LimitRanges, network policies, service mesh sidecar injection, and Pod Security Standards enforcement. Configuration is abstracted into T-shirt-sized resource profiles and declarative network isolation rules, so each namespace is created with production-grade guardrails from the start.
+Deploys a Kubernetes namespace with optional resource quotas, LimitRanges, network policies, service mesh sidecar injection, and Pod Security Standards enforcement. Configuration is abstracted into T-shirt-sized resource profiles and declarative network isolation rules, so each namespace is created with resource limits and network isolation configured from the start.
 
 ## What Gets Created
 

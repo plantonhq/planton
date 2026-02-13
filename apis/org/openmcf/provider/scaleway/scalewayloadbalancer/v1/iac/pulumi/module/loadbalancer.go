@@ -43,11 +43,11 @@ func loadBalancer(
 
 	// ── 2. Create the Load Balancer ────────────────────────────────────────
 	lbArgs := &loadbalancers.LoadBalancerArgs{
-		Name:   pulumi.String(locals.ScalewayLoadBalancer.Metadata.Name),
-		Type:   pulumi.String(spec.Type),
-		IpIds:  pulumi.StringArray{createdIp.ID()},
-		Tags:   pulumi.ToStringArray(locals.ScalewayTags),
-		Zone:   pulumi.String(spec.Zone),
+		Name:  pulumi.String(locals.ScalewayLoadBalancer.Metadata.Name),
+		Type:  pulumi.String(spec.Type),
+		IpIds: pulumi.StringArray{createdIp.ID()},
+		Tags:  pulumi.ToStringArray(locals.ScalewayTags),
+		Zone:  pulumi.String(spec.Zone),
 	}
 
 	if spec.Description != "" {

@@ -6,313 +6,217 @@ order: 100
 componentName: "azurenatgateway"
 ---
 
-# Azure NAT Gateway Deployment: From SNAT Chaos to Predictable Egress
-
-## Introduction: The Hidden Bottleneck in Cloud Networking
-
-For years, developers deploying private workloads on Azure—AKS clusters, VM scale sets, App Services—would experience a puzzling, intermittent failure: outbound connections would suddenly fail. Database queries would hang. API calls would timeout. Container image pulls would stall. The root cause was often invisible until production broke under load: **SNAT port exhaustion**.
-
-Azure's default outbound connectivity model relies on pre-allocating a fixed number of Source Network Address Translation (SNAT) ports to each VM instance. This pre-allocation is fundamentally inefficient. In a dynamic, high-scale workload, some instances exhaust their allocated ports while others have thousands sitting unused. The result is connection failures that are difficult to diagnose and even harder to solve after the fact.
-
-Azure NAT Gateway represents a paradigm shift away from this broken model. It's a fully managed, software-defined networking service that provides **dynamic SNAT**, creating a shared, on-demand pool of ports for all resources in a subnet. A single Standard SKU public IP provides 64,512 SNAT ports. A NAT Gateway can use up to 16 public IP addresses, yielding over 1 million ports—a scale that transforms SNAT exhaustion from an inevitable production failure into a solved problem.
-
-This document explores the landscape of outbound connectivity methods for Azure, explains why NAT Gateway has become the production-standard solution, and details how OpenMCF provides a declarative API to deploy and manage NAT Gateways across your infrastructure.
-
-## The Outbound Connectivity Spectrum
-
-Not all outbound connectivity methods are created equal. Understanding the evolution from basic approaches to production-ready solutions helps clarify when and why NAT Gateway is the right choice.
-
-### Level 0: Default Implicit SNAT (The Anti-Pattern)
-
-**What it is:** Azure provides implicit outbound connectivity for private VMs. No explicit configuration required.
-
-**Why it's tempting:** Zero setup. Just deploy a VM or AKS cluster in a private subnet, and it "just works."
-
-**Why it fails in production:** This method uses Azure Load Balancer's implicit SNAT with extremely limited port allocation. For VM scale sets and AKS node pools, this defaults to as few as 64-256 ports per instance. High-churn workloads (think microservices making thousands of API calls) exhaust this allocation in seconds.
-
-**The verdict:** Acceptable only for development or proof-of-concept environments. **Never use this for production workloads.**
-
-### Level 1: Load Balancer Outbound Rules (The Band-Aid)
-
-**What it is:** Explicitly configure a Standard Load Balancer with outbound rules to provide SNAT for backend pool members.
-
-**What it solves:** Gives you control over the number of frontend IPs and ports allocated per instance. Better than implicit SNAT.
-
-**What it doesn't solve:** Still uses pre-allocation. You might configure 1,024 ports per instance, but if one instance is idle and another is under load, the busy instance still can't access the idle one's unused ports. You're also coupling your inbound load balancing configuration with your outbound egress strategy.
-
-**The verdict:** A partial improvement, but fundamentally still fighting the pre-allocation problem. Outbound rules are complex to configure correctly and don't scale as cleanly as NAT Gateway.
-
-### Level 2: Instance-Level Public IPs (The Edge Case)
-
-**What it is:** Assign a public IP directly to a VM's network interface.
-
-**What it solves:** That VM gets the full 64,000 ephemeral port range. No SNAT exhaustion for that single instance.
-
-**What it doesn't solve:** Doesn't scale. You can't assign instance-level public IPs to AKS node pools managed by virtual machine scale sets. Your egress IP changes every time the VM is redeployed. You lose centralized egress control and create a firewall rule management nightmare.
-
-**The verdict:** Useful only for very specific single-VM scenarios (e.g., a bastion host). Not a solution for cluster or fleet workloads.
-
-### Level 3: Azure NAT Gateway (The Production Solution)
-
-**What it is:** A fully managed, software-defined NAT service that operates at the subnet level. Once associated with a subnet, **all resources in that subnet automatically use the NAT Gateway for outbound internet traffic.**
-
-**What it solves:**
-
-- **Dynamic SNAT:** No more pre-allocation. Ports are available on-demand to any instance that needs them from a shared pool.
-- **Massive scale:** Each public IP provides 64,512 ports. Associate up to 16 IPs for over 1 million ports per subnet.
-- **Predictable egress:** Your outbound traffic always uses the same static public IP or IP prefix, simplifying firewall allow-listing.
-- **Automatic precedence:** NAT Gateway takes precedence over all other outbound methods (Load Balancer rules, instance-level IPs, even Azure Firewall unless explicitly overridden). This makes the egress path explicit and eliminates ambiguity.
-
-**What it costs:** NAT Gateway has a two-component pricing model: a fixed hourly charge (~$0.045/hour, ~$33/month) plus a variable charge for data processed (~$0.045/GB). The key cost optimization strategy is using **Private Link or Service Endpoints** to route traffic to Azure PaaS services (Storage, SQL Database, Key Vault) over the Azure backbone, bypassing the NAT Gateway entirely and reserving its capacity for true public internet egress.
-
-**The verdict:** This is the **production-standard solution** for private workloads needing internet access. Microsoft recommends it as the default for AKS clusters, VM scale sets, and any scenario where SNAT port exhaustion is a risk.
-
-## Public IP vs. Public IP Prefix: Scaling Your Egress
-
-NAT Gateway requires at least one Standard SKU public IP address or public IP prefix to function. The choice between individual IPs and prefixes is strategic.
-
-### When to Use Individual Public IPs
-
-**Best for:** Development, testing, or small-scale production workloads with predictable, low-volume egress.
-
-**Characteristics:**
-- One IP = 64,512 SNAT ports (sufficient for many workloads)
-- Simple to set up
-- You can add more individual IPs later, up to 16 total
-
-**Example use case:** A staging AKS cluster with a dozen nodes running batch jobs.
-
-### When to Use Public IP Prefixes (Production Pattern)
-
-**Best for:** Any production workload requiring scale, IP allow-listing, or proactive capacity planning.
-
-**Characteristics:**
-- **Scalability:** A /28 prefix provides 16 IPs (1,032,192 SNAT ports) from day one. No need to add IPs incrementally as you scale.
-- **IP Whitelisting:** A prefix provides a contiguous, static, predictable range of IPs. This is often a hard requirement when third-party partners or compliance controls need to add your egress IPs to firewall allow-lists.
-- **Operational simplicity:** One prefix resource vs. managing 16 individual IP resources.
-
-**Recommendation:** Use public IP prefixes for all production deployments. The operational benefits far outweigh the minimal additional cost.
-
-## Availability Zones and High Availability
-
-Azure NAT Gateway is inherently resilient—it's a software-defined service with multiple fault domains. But for mission-critical workloads, you can use **Availability Zones** to add an explicit layer of isolation.
-
-### Option 1: "No-Zone" Deployment (Default)
-
-When you don't specify an availability zone, Azure automatically places the NAT Gateway in a single zone (not visible to you). You can pair this with **zone-redundant public IPs**, which is a common and simple HA pattern for most workloads.
-
-**Best for:** Standard production workloads where automatic zone placement is acceptable.
-
-### Option 2: "Zonal Stacks" (Maximum Isolation)
-
-For the highest level of control and fault isolation, deploy **multiple NAT Gateways, one per availability zone**, each associated with a zone-specific subnet.
-
-**Example architecture:**
-- `nat-gateway-zone-1` (pinned to Zone 1) → `subnet-zone-1`
-- `nat-gateway-zone-2` (pinned to Zone 2) → `subnet-zone-2`
-- `nat-gateway-zone-3` (pinned to Zone 3) → `subnet-zone-3`
-
-**Benefit:** A catastrophic datapath failure in Zone 1 only affects resources in `subnet-zone-1`. Zones 2 and 3 continue operating independently.
-
-**Best for:** Mission-critical, zone-aware AKS clusters or VM scale sets where you need guaranteed isolation.
-
-## The Idle Timeout Problem (And How to Solve It)
-
-One of the most common NAT Gateway misconfigurations is leaving the default **TCP idle timeout** at 4 minutes.
-
-### What Happens
-
-NAT Gateway maintains a SNAT port mapping for each active TCP connection. If no packets are sent for longer than the idle timeout, the gateway silently drops the mapping. When the client attempts to send the next packet, it goes into a void—the connection appears to hang until a higher-level TCP timeout occurs (often 60+ seconds).
-
-This creates mysterious, intermittent failures for:
-- Long-running SSH sessions
-- Database connection pools with idle connections
-- HTTP/2 persistent connections
-- Any long-lived but low-traffic flows
-
-### The Solutions
-
-**Option 1: Increase the Idle Timeout**
-
-Set `idle_timeout_in_minutes` to a higher value (10, 30, or 60 minutes). This is a simple, effective fix for applications known to have long-lived idle connections.
-
-**OpenMCF Default:** The Planton API defaults to **10 minutes** (not the Azure default of 4), providing a safer, more production-ready baseline.
-
-**Option 2: Use TCP Keepalives (Best Practice)**
-
-Configure your application or host OS to send TCP keepalive packets at an interval shorter than the timeout (e.g., every 3 minutes). This keeps the NAT Gateway's state table entry "active" and prevents the timer from expiring.
-
-**For UDP:** The idle timeout for UDP is fixed at 4 minutes and cannot be changed. Long-running UDP flows must use application-level keepalives.
-
-## Integration with Azure Kubernetes Service (AKS)
-
-NAT Gateway is the **Microsoft-recommended egress solution** for AKS clusters, especially for private clusters or those needing predictable outbound IPs.
-
-### Two Deployment Patterns
-
-**Pattern 1: `managedNatGateway` (Simple, Less Control)**
-
-AKS provisions and manages the NAT Gateway in the cluster's node resource group.
-
-```bash
-az aks create ... --outbound-type managedNatGateway
+# Azure NAT Gateway
+
+Deploys an Azure NAT Gateway with an automatically provisioned public IP address or public IP prefix, associated with a specified subnet and resource group. The component handles the full lifecycle including IP allocation, gateway creation, IP-to-gateway association, and subnet-to-gateway association.
+
+## What Gets Created
+
+When you deploy an AzureNatGateway resource, OpenMCF provisions:
+
+- **NAT Gateway** — a Standard SKU `network.NatGateway` in the specified region and resource group, configured with an idle timeout for TCP connections
+- **Public IP** — a single Standard SKU static `network.PublicIp` allocated and associated with the gateway (when no prefix length is specified)
+- **Public IP Prefix** — a Standard SKU `network.PublicIpPrefix` of the requested prefix length, associated with the gateway instead of a single IP (when `publicIpPrefixLength` is set)
+- **Subnet Association** — a `network.SubnetNatGatewayAssociation` binding the NAT Gateway to the target subnet so all outbound traffic from that subnet routes through the gateway
+- **Azure Tags** — resource metadata tags applied to the gateway, public IP, and prefix for tracking and governance
+
+## Prerequisites
+
+- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **An Azure Resource Group** where the NAT Gateway will be created (can reference an AzureResourceGroup resource)
+- **A subnet** to attach the NAT Gateway to (can reference an AzureVpc resource's nodes subnet output)
+
+## Quick Start
+
+Create a file `natgateway.yaml`:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureNatGateway
+metadata:
+  name: my-natgw
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AzureNatGateway.my-natgw
+spec:
+  region: eastus
+  resourceGroup: my-rg
+  subnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Network/virtualNetworks/my-vnet/subnets/nodes
 ```
 
-**Best for:** Quick setup, development, or simple production scenarios where you don't need fine-grained control over the NAT Gateway configuration.
+Deploy:
 
-**Pattern 2: `userAssignedNatGateway` (Enterprise Standard)**
-
-You (or your platform team) pre-deploy the VNet, subnet, and NAT Gateway using IaC. The AKS cluster is then deployed into that pre-configured subnet.
-
-```bash
-# 1. Deploy VNet, subnet, and NAT Gateway (using Terraform, Pulumi, or Planton)
-# 2. Associate NAT Gateway with AKS node subnet
-# 3. Deploy AKS cluster
-az aks create ... --outbound-type userAssignedNatGateway --vnet-subnet-id <subnet-id>
+```shell
+openmcf apply -f natgateway.yaml
 ```
 
-**Best for:** Enterprise deployments where the network team manages VNet infrastructure separately from the cluster team. This model correctly separates lifecycle concerns: the network infrastructure is long-lived, while clusters are ephemeral.
+This creates a Standard SKU NAT Gateway with a single static public IP, a 4-minute idle timeout, and associates it with the specified subnet.
 
-### Private Clusters and API Server Traffic
+## Configuration Reference
 
-For private AKS clusters, the API server traffic also respects the `outboundType`. If using `userAssignedNatGateway`, control plane traffic will egress through the NAT Gateway to the public API server endpoint. To keep this traffic private, you must use **API Server VNet Integration** or a private endpoint.
+### Required Fields
 
-## Monitoring NAT Gateway: The Essential Metrics
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `region` | `string` | Azure region for the NAT Gateway (e.g., `eastus`, `westeurope`). | Required, minimum length 1 |
+| `resourceGroup` | `StringValueOrRef` | Azure Resource Group name. Can reference an AzureResourceGroup resource via `valueFrom`. | Required |
+| `subnetId` | `StringValueOrRef` | Subnet resource ID to attach the NAT Gateway to. Can reference an AzureVpc resource via `valueFrom`. | Required |
 
-Effective monitoring is critical. Unlike traditional infrastructure, there is **no metric for "SNAT port usage percentage."** You must infer health and utilization from several key metrics.
+### Optional Fields
 
-### Critical Metrics (Azure Monitor)
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `idleTimeoutMinutes` | `int32` | `4` | Idle timeout in minutes for TCP connections through the NAT Gateway. Range: 4--120. |
+| `publicIpPrefixLength` | `int32` | unset | CIDR prefix length for a Public IP Prefix. When set (allowed values 28--31), a Public IP Prefix of the given length is created instead of a single public IP. Use this when workloads require multiple outbound IPs. |
+| `tags` | `map<string, string>` | `{}` | Additional tags to assign to the NAT Gateway and associated IP resources. Merged with automatic metadata tags. |
 
-| Metric | Type | What to Monitor | Alert Threshold |
-|--------|------|----------------|----------------|
-| **DatapathAvailability** | Gauge (Average) | Health of the NAT Gateway datapath | Alert if < 99% |
-| **SNATConnectionCount** | Sum | Total active SNAT connections | Monitor against max capacity (Total IPs × 64,512) |
-| **PacketDropCount** | Sum | Dropped packets | Alert if > 0 (indicates SNAT exhaustion or datapath failure) |
-| **ByteCount** | Sum | Data processed (for cost analysis) | Track for billing correlation |
-| **TotalConnectionCount** | Sum | New connections per second | Monitor for traffic churn patterns |
+## Examples
 
-### What You Can't Measure Directly
+### Single Public IP with Literal Subnet ID
 
-- **SNAT port usage percentage:** Not available. Use `SNATConnectionCount` as a proxy.
-- **Per-VM connection distribution:** NAT Gateway operates at the subnet level. You see aggregate metrics, not per-instance breakdowns.
+A NAT Gateway with default settings and a directly specified subnet:
 
-## Common Anti-Patterns to Avoid
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureNatGateway
+metadata:
+  name: basic-natgw
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AzureNatGateway.basic-natgw
+spec:
+  region: eastus
+  resourceGroup: dev-rg
+  subnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev-rg/providers/Microsoft.Network/virtualNetworks/dev-vnet/subnets/nodes
+```
 
-**❌ Anti-Pattern 1: No NAT Gateway for Private Clusters**
+### Custom Idle Timeout with Tags
 
-Deploying private AKS clusters or VM scale sets with default implicit SNAT and hoping for the best. This leads to inevitable SNAT port exhaustion in production.
+A NAT Gateway with a longer idle timeout for workloads that hold long-lived outbound TCP connections:
 
-**✅ Solution:** Always deploy NAT Gateway for production workloads needing public internet egress.
-
----
-
-**❌ Anti-Pattern 2: Single Public IP for High-Scale Workloads**
-
-Provisioning a NAT Gateway with only one public IP for a massive AKS cluster (e.g., 100+ nodes, high-churn microservices).
-
-**✅ Solution:** Use a Public IP Prefix (e.g., /28 for 16 IPs, 1M+ ports) to proactively scale.
-
----
-
-**❌ Anti-Pattern 3: Ignoring Idle Timeout**
-
-Using the 4-minute default for applications with long-lived database connections, leading to mysterious connection hangs.
-
-**✅ Solution:** Set `idle_timeout_minutes` to 10+ or configure TCP keepalives.
-
----
-
-**❌ Anti-Pattern 4: Processing Azure PaaS Traffic Through NAT Gateway**
-
-Routing all traffic (including traffic to Azure Storage, SQL Database, Key Vault) through the NAT Gateway, incurring unnecessary data processing charges.
-
-**✅ Solution:** Use **Private Link** or **Service Endpoints** to route Azure PaaS traffic over the Azure backbone, bypassing the NAT Gateway and eliminating data processing fees for internal-Azure traffic.
-
-## The OpenMCF Approach
-
-OpenMCF provides a declarative, protobuf-based API for deploying Azure NAT Gateways. The design philosophy prioritizes production-ready defaults and simplicity for the 80% use case while exposing advanced configuration for the 20% edge cases.
-
-### Production-Ready Defaults
-
-**Idle Timeout:** The Planton API defaults `idle_timeout_minutes` to **10 minutes** (not the Azure default of 4). This provides a safer baseline for applications with persistent connections, reducing the likelihood of mysterious timeout issues.
-
-**SKU:** The API hardcodes the NAT Gateway SKU to `Standard` (the only supported SKU). There's no reason to expose this as a configuration option—it only adds confusion.
-
-### The Subnet Association Model
-
-Azure NAT Gateway operates at the **subnet level**. Once associated with a subnet, all resources in that subnet automatically use the gateway for outbound traffic.
-
-In the Azure API, subnet association is a **property of the subnet resource**, not the NAT Gateway. The Planton API reflects this reality:
-
-- The `AzureNatGateway` resource creates and manages the NAT Gateway itself
-- Subnet association is handled via the `subnet_id` field, which references an existing Azure subnet
-
-This model mirrors the native Azure API structure and avoids architectural conflicts where multiple controllers might fight for control of subnet configuration.
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureNatGateway
+metadata:
+  name: long-lived-natgw
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureNatGateway.long-lived-natgw
+spec:
+  region: westeurope
+  resourceGroup: prod-rg
+  subnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.Network/virtualNetworks/prod-vnet/subnets/app
+  idleTimeoutMinutes: 30
+  tags:
+    team: platform
+    cost-center: infra
+```
 
 ### Public IP Prefix for Scale
 
-For production deployments, use the `public_ip_prefix_length` field to provision a Public IP Prefix instead of individual IPs:
-
-- `/28` = 16 IPs = 1,032,192 SNAT ports (recommended for large-scale production)
-- `/29` = 8 IPs = 516,096 SNAT ports
-- `/30` = 4 IPs = 258,048 SNAT ports
-- `/31` = 2 IPs = 129,024 SNAT ports
-
-### Example: Development/Staging
-
-A simple NAT Gateway for a dev AKS cluster:
+A NAT Gateway backed by a /28 Public IP Prefix (16 addresses) for high-throughput subnets that need multiple outbound IPs to avoid SNAT port exhaustion:
 
 ```yaml
 apiVersion: azure.openmcf.org/v1
 kind: AzureNatGateway
 metadata:
-  name: dev-aks-nat-gateway
+  name: scale-natgw
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureNatGateway.scale-natgw
 spec:
-  subnetId: ${ref:dev-aks-vpc.status.outputs.nodes_subnet_id}
-  idle_timeout_minutes: 10
+  region: eastus
+  resourceGroup: prod-rg
+  subnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.Network/virtualNetworks/prod-vnet/subnets/nodes
+  publicIpPrefixLength: 28
+  idleTimeoutMinutes: 10
   tags:
-    environment: dev
-    team: platform
+    workload: high-throughput
 ```
 
-This configuration:
-- Associates with an existing AKS node subnet
-- Uses the default 10-minute idle timeout
-- Provisions a single public IP (suitable for dev/staging)
+### Using Foreign Key References
 
-### Example: Production with HA and Scale
-
-A production-grade NAT Gateway with IP prefix for scale and whitelisting:
+Reference OpenMCF-managed resources for the resource group and subnet instead of hardcoding IDs:
 
 ```yaml
 apiVersion: azure.openmcf.org/v1
 kind: AzureNatGateway
 metadata:
-  name: prod-aks-nat-gateway-z1
+  name: ref-natgw
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureNatGateway.ref-natgw
 spec:
-  subnetId: ${ref:prod-aks-vpc-z1.status.outputs.nodes_subnet_id}
-  idle_timeout_minutes: 30
-  public_ip_prefix_length: 28  # 16 IPs, 1M+ ports
+  region: eastus
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: my-rg
+      field: status.outputs.resource_group_name
+  subnetId:
+    valueFrom:
+      kind: AzureVpc
+      name: my-vpc
+      field: status.outputs.nodes_subnet_id
+  idleTimeoutMinutes: 15
+```
+
+### Production AKS Cluster Egress
+
+A NAT Gateway designed to serve as the outbound egress for an AKS cluster node subnet, with a /31 prefix (2 addresses) and a 120-minute idle timeout for long-running batch jobs:
+
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureNatGateway
+metadata:
+  name: aks-egress-natgw
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureNatGateway.aks-egress-natgw
+spec:
+  region: eastus
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: aks-rg
+      field: status.outputs.resource_group_name
+  subnetId:
+    valueFrom:
+      kind: AzureVpc
+      name: aks-vpc
+      field: status.outputs.nodes_subnet_id
+  publicIpPrefixLength: 31
+  idleTimeoutMinutes: 120
   tags:
+    purpose: aks-egress
     environment: production
-    availability_zone: "1"
-    cost_center: platform-engineering
 ```
 
-This configuration:
-- Uses a /28 public IP prefix (16 IPs, 1M+ SNAT ports)
-- Sets a 30-minute idle timeout for long-running connections
-- Designed as part of a "zonal stack" HA pattern (one gateway per zone)
+## Stack Outputs
 
-## Conclusion: From Bottleneck to Foundation
+After deployment, the following outputs are available in `status.outputs`:
 
-Azure NAT Gateway represents a shift from viewing outbound connectivity as a default, implicit behavior to treating it as a first-class infrastructure component that requires deliberate design.
+| Output | Type | Description |
+|--------|------|-------------|
+| `natGatewayId` | `string` | Azure Resource Manager ID of the NAT Gateway |
+| `publicIpAddresses` | `string[]` | Public IP addresses allocated to the NAT Gateway. Populated when a single public IP is created; empty when a public IP prefix is used. |
+| `publicIpPrefixId` | `string` | Azure Resource Manager ID of the Public IP Prefix. Populated when `publicIpPrefixLength` is set; empty otherwise. |
 
-The days of diagnosing SNAT port exhaustion at 3 AM in production are over—if you architect correctly. NAT Gateway's dynamic SNAT model, massive port capacity, and predictable egress behavior make it the production standard for any private workload needing internet access.
+## Related Components
 
-OpenMCF's declarative API abstracts the complexity of resource associations and provides production-ready defaults (like a sensible idle timeout) while still exposing the full power of Azure NAT Gateway for advanced scenarios.
-
-When you deploy your next AKS cluster, VM scale set, or private application, don't rely on default SNAT. Make your egress path explicit. Make it scalable. Make it predictable.
-
-Deploy a NAT Gateway.
-
+- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) -- provides the resource group for gateway placement
+- [AzureVpc](/docs/catalog/azure/azurevpc) -- provides the VNet and subnets that the NAT Gateway attaches to
+- [AzurePublicIp](/docs/catalog/azure/azurepublicip) -- standalone public IP resources, if managing IPs separately from the gateway
+- [AzureAksCluster](/docs/catalog/azure/azureakscluster) -- AKS clusters commonly use a NAT Gateway for predictable outbound IPs and SNAT port scaling

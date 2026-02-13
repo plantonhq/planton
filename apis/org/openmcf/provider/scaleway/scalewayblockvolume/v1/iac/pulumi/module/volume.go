@@ -1,11 +1,11 @@
 package module
 
 import (
-	scalewayblockvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayblockvolume/v1"
 	"github.com/pkg/errors"
-	"github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway/block"
-	scalewayv2 "github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway"
+	scalewayblockvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayblockvolume/v1"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
+	scalewayv2 "github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway"
+	"github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway/block"
 )
 
 // performanceTierToIops maps the proto enum to the integer IOPS value

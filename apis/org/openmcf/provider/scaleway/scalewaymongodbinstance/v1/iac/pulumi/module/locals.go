@@ -16,8 +16,8 @@ import (
 // a plain string here -- at IaC runtime, valueFrom references have already
 // been resolved by the platform middleware.
 type Locals struct {
-	ScalewayProviderConfig   *scalewayprovider.ScalewayProviderConfig
-	ScalewayMongodbInstance  *scalewaymongodbinstancev1.ScalewayMongodbInstance
+	ScalewayProviderConfig  *scalewayprovider.ScalewayProviderConfig
+	ScalewayMongodbInstance *scalewaymongodbinstancev1.ScalewayMongodbInstance
 
 	// PrivateNetworkId is resolved from the optional StringValueOrRef field.
 	// Empty string if no Private Network is configured.

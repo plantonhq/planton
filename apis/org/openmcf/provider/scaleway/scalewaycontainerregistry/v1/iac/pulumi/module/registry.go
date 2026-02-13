@@ -2,9 +2,9 @@ package module
 
 import (
 	"github.com/pkg/errors"
+	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	scalewayv2 "github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway"
 	"github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway/registry"
-	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 // registryNamespace provisions the Scaleway Container Registry namespace

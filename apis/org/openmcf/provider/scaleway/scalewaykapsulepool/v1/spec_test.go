@@ -138,7 +138,7 @@ var _ = ginkgo.Describe("ScalewayKapsulePoolSpec Validation Tests", func() {
 						ContainerRuntime:   "containerd",
 						RootVolumeType:     "l_ssd",
 						RootVolumeSizeInGb: 100,
-						PublicIpDisabled:    true,
+						PublicIpDisabled:   true,
 						Zone:               "fr-par-1",
 						PlacementGroupId:   "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
 						KubernetesLabels: map[string]string{

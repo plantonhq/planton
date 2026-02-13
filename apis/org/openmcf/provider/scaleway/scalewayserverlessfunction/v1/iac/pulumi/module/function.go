@@ -5,9 +5,9 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	scalewayv2 "github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway"
 	"github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway/functions"
-	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 // privacyEnumToString maps the proto privacy enum to the string
@@ -89,15 +89,15 @@ func serverlessFunction(
 	// ── 4. Create the function ────────────────────────────────────────
 
 	fnArgs := &functions.FunctionArgs{
-		NamespaceId:              createdNamespace.ID(),
-		Name:                     pulumi.String(metadata.Name),
-		Runtime:                  pulumi.String(spec.Runtime),
-		Handler:                  pulumi.String(spec.Handler),
-		Privacy:                  pulumi.String(privacy),
-		EnvironmentVariables:     envVars,
+		NamespaceId:                createdNamespace.ID(),
+		Name:                       pulumi.String(metadata.Name),
+		Runtime:                    pulumi.String(spec.Runtime),
+		Handler:                    pulumi.String(spec.Handler),
+		Privacy:                    pulumi.String(privacy),
+		EnvironmentVariables:       envVars,
 		SecretEnvironmentVariables: secretEnvVars,
-		HttpOption:               pulumi.String(httpOption),
-		Tags:                     toPulumiStringArray(locals.ScalewayTags),
+		HttpOption:                 pulumi.String(httpOption),
+		Tags:                       toPulumiStringArray(locals.ScalewayTags),
 	}
 
 	// Optional: description.

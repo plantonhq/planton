@@ -111,10 +111,10 @@ var _ = ginkgo.Describe("AzureCosmosdbAccountSpec Validation Tests", func() {
 			ginkgo.It("should not return a validation error with backup policy Periodic", func() {
 				input := minimalSpec()
 				input.Spec.Backup = &AzureCosmosdbBackupPolicy{
-					Type:               "Periodic",
-					IntervalInMinutes:  int32Ptr(240),
-					RetentionInHours:   int32Ptr(168),
-					StorageRedundancy:  strPtr("Geo"),
+					Type:              "Periodic",
+					IntervalInMinutes: int32Ptr(240),
+					RetentionInHours:  int32Ptr(168),
+					StorageRedundancy: strPtr("Geo"),
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
@@ -154,10 +154,10 @@ var _ = ginkgo.Describe("AzureCosmosdbAccountSpec Validation Tests", func() {
 						Name: "mydb",
 						Containers: []*AzureCosmosdbSqlContainer{
 							{
-								Name:                    "autoscale-container",
-								PartitionKeyPaths:       []string{"/userId"},
-								AutoscaleMaxThroughput:  int32Ptr(4000),
-								PartitionKeyKind:        strPtr("Hash"),
+								Name:                   "autoscale-container",
+								PartitionKeyPaths:      []string{"/userId"},
+								AutoscaleMaxThroughput: int32Ptr(4000),
+								PartitionKeyKind:       strPtr("Hash"),
 							},
 						},
 					},

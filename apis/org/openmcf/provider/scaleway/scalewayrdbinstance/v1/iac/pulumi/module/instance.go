@@ -2,9 +2,9 @@ package module
 
 import (
 	"github.com/pkg/errors"
-	"github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway/databases"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	scaleway "github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway"
+	"github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway/databases"
 )
 
 // rdbInstance provisions the Scaleway RDB instance and exports the core

@@ -53,11 +53,11 @@ func Resources(ctx *pulumi.Context, stackInput *azureprivatednszonev1.AzurePriva
 		vnetLinkName,
 		&privatedns.ZoneVirtualNetworkLinkArgs{
 			Name:                pulumi.String(vnetLinkName),
-			ResourceGroupName:  pulumi.String(locals.ResourceGroupName),
-			PrivateDnsZoneName: zone.Name,
-			VirtualNetworkId:   pulumi.String(vnetId),
+			ResourceGroupName:   pulumi.String(locals.ResourceGroupName),
+			PrivateDnsZoneName:  zone.Name,
+			VirtualNetworkId:    pulumi.String(vnetId),
 			RegistrationEnabled: pulumi.Bool(spec.GetRegistrationEnabled()),
-			Tags:               pulumi.ToStringMap(locals.AzureTags),
+			Tags:                pulumi.ToStringMap(locals.AzureTags),
 		},
 		pulumi.Provider(azureProvider),
 		pulumi.DependsOn([]pulumi.Resource{zone}))

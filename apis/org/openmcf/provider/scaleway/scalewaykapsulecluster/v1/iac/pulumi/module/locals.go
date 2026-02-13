@@ -16,8 +16,8 @@ import (
 // a plain string here -- at IaC runtime, valueFrom references have already
 // been resolved by the platform middleware.
 type Locals struct {
-	ScalewayProviderConfig  *scalewayprovider.ScalewayProviderConfig
-	ScalewayKapsuleCluster  *scalewaykapsuleclusterv1.ScalewayKapsuleCluster
+	ScalewayProviderConfig *scalewayprovider.ScalewayProviderConfig
+	ScalewayKapsuleCluster *scalewaykapsuleclusterv1.ScalewayKapsuleCluster
 
 	// PrivateNetworkId is resolved from the required StringValueOrRef field.
 	PrivateNetworkId string

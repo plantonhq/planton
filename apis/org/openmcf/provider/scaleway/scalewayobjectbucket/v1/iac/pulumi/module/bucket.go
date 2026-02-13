@@ -2,9 +2,9 @@ package module
 
 import (
 	"github.com/pkg/errors"
-	"github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway/object"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	scalewayv2 "github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway"
+	"github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway/object"
 )
 
 // bucket provisions the Scaleway Object Storage bucket with optional
@@ -30,10 +30,10 @@ func bucket(
 
 	// ── Build bucket arguments ──────────────────────────────────────
 	bucketArgs := &object.BucketArgs{
-		Name:             pulumi.String(locals.ScalewayObjectBucket.Metadata.Name),
-		Region:           pulumi.String(spec.Region),
-		Tags:             tags,
-		ForceDestroy:     pulumi.Bool(spec.ForceDestroy),
+		Name:              pulumi.String(locals.ScalewayObjectBucket.Metadata.Name),
+		Region:            pulumi.String(spec.Region),
+		Tags:              tags,
+		ForceDestroy:      pulumi.Bool(spec.ForceDestroy),
 		ObjectLockEnabled: pulumi.Bool(spec.ObjectLockEnabled),
 	}
 

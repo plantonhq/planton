@@ -99,8 +99,8 @@ var _ = ginkgo.Describe("AzureApplicationGatewaySpec Validation Tests", func() {
 				input := minimalAppGateway()
 				input.Spec.SslCertificates = []*AzureSslCertificate{
 					{
-						Name:              "wildcard-cert",
-						KeyVaultSecretId:  "https://my-vault.vault.azure.net/secrets/wildcard-cert",
+						Name:             "wildcard-cert",
+						KeyVaultSecretId: "https://my-vault.vault.azure.net/secrets/wildcard-cert",
 					},
 				}
 				input.Spec.IdentityIds = []*foreignkeyv1.StringValueOrRef{
@@ -193,11 +193,11 @@ var _ = ginkgo.Describe("AzureApplicationGatewaySpec Validation Tests", func() {
 				pickHost := true
 				input.Spec.BackendHttpSettings = []*AzureBackendHttpSettings{
 					{
-						Name:                             "https-backend",
-						Port:                             443,
-						Protocol:                         "Https",
-						RequestTimeout:                   &requestTimeout,
-						PickHostNameFromBackendAddress:   &pickHost,
+						Name:                           "https-backend",
+						Port:                           443,
+						Protocol:                       "Https",
+						RequestTimeout:                 &requestTimeout,
+						PickHostNameFromBackendAddress: &pickHost,
 					},
 				}
 				input.Spec.RequestRoutingRules[0].BackendHttpSettingsName = "https-backend"

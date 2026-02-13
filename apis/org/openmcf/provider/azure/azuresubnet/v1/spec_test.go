@@ -181,8 +181,8 @@ var _ = ginkgo.Describe("AzureSubnetSpec Validation Tests", func() {
 								Value: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Network/virtualNetworks/my-vnet",
 							},
 						},
-						Name:                            "pe-subnet",
-						AddressPrefix:                   "10.0.5.0/24",
+						Name:                           "pe-subnet",
+						AddressPrefix:                  "10.0.5.0/24",
 						PrivateEndpointNetworkPolicies: &penp,
 					},
 				}
@@ -209,8 +209,8 @@ var _ = ginkgo.Describe("AzureSubnetSpec Validation Tests", func() {
 								Value: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Network/virtualNetworks/my-vnet",
 							},
 						},
-						Name:                            "nsg-pe-subnet",
-						AddressPrefix:                   "10.0.6.0/24",
+						Name:                           "nsg-pe-subnet",
+						AddressPrefix:                  "10.0.6.0/24",
 						PrivateEndpointNetworkPolicies: &penp,
 					},
 				}
@@ -237,8 +237,8 @@ var _ = ginkgo.Describe("AzureSubnetSpec Validation Tests", func() {
 								Value: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Network/virtualNetworks/my-vnet",
 							},
 						},
-						Name:                                       "pls-subnet",
-						AddressPrefix:                              "10.0.7.0/24",
+						Name:                                     "pls-subnet",
+						AddressPrefix:                            "10.0.7.0/24",
 						PrivateLinkServiceNetworkPoliciesEnabled: &plsnpe,
 					},
 				}
@@ -276,7 +276,7 @@ var _ = ginkgo.Describe("AzureSubnetSpec Validation Tests", func() {
 							ServiceName: "Microsoft.Web/serverFarms",
 							Actions:     []string{"Microsoft.Network/virtualNetworks/subnets/action"},
 						},
-						PrivateEndpointNetworkPolicies:             &penp,
+						PrivateEndpointNetworkPolicies:           &penp,
 						PrivateLinkServiceNetworkPoliciesEnabled: &plsnpe,
 					},
 				}
@@ -430,8 +430,8 @@ var _ = ginkgo.Describe("AzureSubnetSpec Validation Tests", func() {
 								Value: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Network/virtualNetworks/my-vnet",
 							},
 						},
-						Name:                            "my-subnet",
-						AddressPrefix:                   "10.0.1.0/24",
+						Name:                           "my-subnet",
+						AddressPrefix:                  "10.0.1.0/24",
 						PrivateEndpointNetworkPolicies: &invalid,
 					},
 				}

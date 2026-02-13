@@ -32,20 +32,20 @@ func Resources(ctx *pulumi.Context, stackInput *azureprivateendpointv1.AzurePriv
 	// Build PrivateServiceConnection block
 	privateServiceConnectionName := fmt.Sprintf("%s-connection", locals.AzurePrivateEndpoint.Metadata.Name)
 	privateServiceConnection := &privatelink.EndpointPrivateServiceConnectionArgs{
-		Name:                         pulumi.String(privateServiceConnectionName),
-		IsManualConnection:           pulumi.Bool(false),
-		PrivateConnectionResourceId:  pulumi.String(spec.PrivateConnectionResourceId.GetValue()),
-		SubresourceNames:             pulumi.ToStringArray(spec.SubresourceNames),
+		Name:                        pulumi.String(privateServiceConnectionName),
+		IsManualConnection:          pulumi.Bool(false),
+		PrivateConnectionResourceId: pulumi.String(spec.PrivateConnectionResourceId.GetValue()),
+		SubresourceNames:            pulumi.ToStringArray(spec.SubresourceNames),
 	}
 
 	// Build endpoint args
 	endpointArgs := &privatelink.EndpointArgs{
-		Name:              pulumi.String(spec.Name),
-		Location:          pulumi.String(spec.Region),
-		ResourceGroupName: pulumi.String(locals.ResourceGroupName),
-		SubnetId:          pulumi.String(spec.SubnetId.GetValue()),
+		Name:                     pulumi.String(spec.Name),
+		Location:                 pulumi.String(spec.Region),
+		ResourceGroupName:        pulumi.String(locals.ResourceGroupName),
+		SubnetId:                 pulumi.String(spec.SubnetId.GetValue()),
 		PrivateServiceConnection: privateServiceConnection,
-		Tags:              pulumi.ToStringMap(locals.AzureTags),
+		Tags:                     pulumi.ToStringMap(locals.AzureTags),
 	}
 
 	// Conditionally add PrivateDnsZoneGroup if PrivateDnsZoneId is provided

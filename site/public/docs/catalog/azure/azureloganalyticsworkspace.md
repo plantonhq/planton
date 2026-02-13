@@ -6,257 +6,177 @@ order: 100
 componentName: "azureloganalyticsworkspace"
 ---
 
-# AzureLogAnalyticsWorkspace: Research & Design Documentation
+# Azure Log Analytics Workspace
 
-## 1. What Is Azure Log Analytics?
+Deploys an Azure Log Analytics Workspace with configurable pricing tier, data retention period, and daily ingestion quota. Log Analytics Workspaces are the central data platform for Azure Monitor, collecting and analyzing log and performance data from Azure resources, on-premises servers, and third-party services.
 
-Azure Log Analytics is the primary log aggregation and query engine in the Azure ecosystem. It is part of Azure Monitor and provides a unified platform for collecting, analyzing, and acting on telemetry data from Azure resources, on-premises infrastructure, and multi-cloud environments.
+## What Gets Created
 
-A **Log Analytics Workspace** is the logical container where this data lives. It defines:
-- Where data is stored (region)
-- How long data is retained (retention policy)
-- Who can access the data (RBAC scoped to the workspace)
-- How much data can be ingested per day (quota)
-- The pricing model (SKU/tier)
+When you deploy an AzureLogAnalyticsWorkspace resource, OpenMCF provisions:
 
-### Core Capabilities
+- **Log Analytics Workspace** — an `operationalinsights.AnalyticsWorkspace` resource in the specified region and resource group, configured with the chosen SKU pricing tier, retention period, and daily ingestion quota
+- **Azure Tags** — resource metadata tags applied to the workspace for tracking and governance, including resource name, kind, organization, and environment
 
-- **Kusto Query Language (KQL)**: A powerful query language for analyzing log data
-- **Data collection rules**: Configurable pipelines that control what data is collected
-- **Cross-resource queries**: Query across multiple workspaces and Application Insights
-- **Alerts**: Rule-based alerting on log patterns and metrics
-- **Workbooks**: Interactive reports and dashboards built on log data
+## Prerequisites
 
-## 2. Deployment Landscape
+- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **An Azure Resource Group** where the workspace will be created (can reference an AzureResourceGroup resource)
+- **Workspace naming plan** — names must be 4-63 characters, alphanumeric and hyphens only, starting with a letter, unique within the resource group
 
-### Level 0: Azure Portal
+## Quick Start
 
-Most users start by creating workspaces through the Azure Portal. The portal auto-creates a workspace when enabling monitoring features like Container Insights.
-
-### Level 1: Azure CLI
-
-```bash
-az monitor log-analytics workspace create \
-  --resource-group my-rg \
-  --workspace-name my-law \
-  --location eastus \
-  --sku PerGB2018 \
-  --retention-time 90
-```
-
-### Level 2: ARM Templates / Bicep
-
-```bicep
-resource law 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
-  name: 'my-law'
-  location: 'eastus'
-  properties: {
-    sku: { name: 'PerGB2018' }
-    retentionInDays: 90
-    workspaceCapping: { dailyQuotaGb: -1 }
-  }
-}
-```
-
-### Level 3: Terraform
-
-```hcl
-resource "azurerm_log_analytics_workspace" "main" {
-  name                = "my-law"
-  location            = "eastus"
-  resource_group_name = "my-rg"
-  sku                 = "PerGB2018"
-  retention_in_days   = 90
-  daily_quota_gb      = -1
-}
-```
-
-### Level 4: Pulumi
-
-```go
-workspace, _ := operationalinsights.NewAnalyticsWorkspace(ctx, "my-law",
-  &operationalinsights.AnalyticsWorkspaceArgs{
-    Name:              pulumi.String("my-law"),
-    Location:          pulumi.String("eastus"),
-    ResourceGroupName: pulumi.String("my-rg"),
-    Sku:               pulumi.String("PerGB2018"),
-    RetentionInDays:   pulumi.Int(90),
-  })
-```
-
-### Level 5: OpenMCF (This Component)
+Create a file `log-analytics.yaml`:
 
 ```yaml
 apiVersion: azure.openmcf.org/v1
 kind: AzureLogAnalyticsWorkspace
 metadata:
-  name: my-law
+  name: my-workspace
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AzureLogAnalyticsWorkspace.my-workspace
 spec:
   region: eastus
-  resource_group:
-    valueFrom:
-      kind: AzureResourceGroup
-      name: platform-rg
-      fieldPath: status.outputs.resource_group_name
-  name: my-law
-  retention_in_days: 90
+  resourceGroup: my-rg
+  name: my-workspace
 ```
 
-OpenMCF adds composability (StringValueOrRef for resource_group) and consistency (same API pattern across all cloud providers) on top of Terraform/Pulumi.
+Deploy:
 
-## 3. Pricing Tiers (SKUs)
+```shell
+openmcf apply -f log-analytics.yaml
+```
 
-### PerGB2018 (Recommended)
+This creates a Log Analytics Workspace with pay-as-you-go (PerGB2018) pricing, 30-day data retention, and unlimited daily ingestion.
 
-- **Model**: Pay-as-you-go per GB ingested
-- **Included retention**: 31 days free (for the first 5 GB/day per billing account)
-- **Cost**: ~$2.76/GB ingested (varies by region)
-- **Best for**: Most workloads, variable ingestion volumes
-- **Why we default to this**: Simplest to reason about, no commitment required, scales linearly with usage
+## Configuration Reference
 
-### CapacityReservation
+### Required Fields
 
-- **Model**: Fixed daily commitment at a discount
-- **Tiers**: 100, 200, 300, 400, 500, 1000, 2000, 5000 GB/day
-- **Discount**: 15-25% vs PerGB2018
-- **Best for**: High-volume environments (>100 GB/day) with predictable ingestion
-- **Not in 80/20**: Requires understanding of daily volume to right-size
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `region` | `string` | Azure region for the workspace (e.g., `eastus`, `westeurope`). Choose a region close to the resources that will send logs to minimize egress costs and latency. | Required, minimum length 1 |
+| `resourceGroup` | `StringValueOrRef` | Azure Resource Group name. Can reference an AzureResourceGroup resource via `valueFrom`. | Required |
+| `name` | `string` | Name of the Log Analytics Workspace. Must be unique within the resource group. Alphanumeric and hyphens only, must start with a letter. | Required, 4-63 characters |
 
-### Standalone / PerNode (Legacy)
+### Optional Fields
 
-- **Status**: These are legacy tiers from OMS (Operations Management Suite)
-- **PerNode**: Per-server pricing model, still available for backwards compatibility
-- **Standalone**: Per-GB pricing with different rate structure
-- **Not recommended**: Microsoft advises migrating to PerGB2018
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `sku` | `string` | `PerGB2018` | Pricing tier of the workspace. Values: `PerGB2018` (pay-as-you-go, recommended), `CapacityReservation` (commitment tier with discount), `Standalone` (legacy per-node), `PerNode` (legacy OMS per-node). |
+| `retentionInDays` | `int32` | `30` | Number of days to retain data. PerGB2018 includes 31 days free; beyond that, retention is billed per GB per month. Range: 30-730. For compliance workloads, 90-365 days is typical. |
+| `dailyQuotaGb` | `double` | `-1` | Daily ingestion quota in GB. Set to `-1` for unlimited ingestion. Set to a positive value to cap daily ingestion and prevent cost overruns. When the cap is reached, ingestion stops until the next UTC day. |
 
-## 4. Retention Strategy
+## Examples
 
-### Azure's Retention Model
+### Development Workspace with Minimal Retention
 
-- **Interactive retention**: 30-730 days. Data is queryable via KQL.
-- **Archive tier**: Beyond interactive retention, data can be archived for up to 12 years at reduced cost ($0.02/GB/month). Archived data is not directly queryable but can be searched or restored.
-- **Free retention**: First 31 days are included with PerGB2018 for the first 5 GB/day.
+A workspace for development with short retention and unlimited ingestion:
 
-### Common Retention Patterns
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureLogAnalyticsWorkspace
+metadata:
+  name: dev-logs
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.AzureLogAnalyticsWorkspace.dev-logs
+spec:
+  region: eastus
+  resourceGroup: dev-rg
+  name: dev-logs
+  sku: PerGB2018
+  retentionInDays: 30
+```
 
-| Use Case | Retention | Rationale |
-|----------|-----------|-----------|
-| Development | 30 days | Minimum cost, logs are for debugging |
-| Production operations | 90 days | 3 months covers most incident investigations |
-| Security/compliance | 365 days | One year satisfies most audit requirements |
-| Regulated industries | 730 days | Maximum retention for PCI-DSS, HIPAA, SOX |
+### Production Workspace with Extended Retention and Ingestion Cap
 
-### Why We Default to 30 Days
+A production workspace with 180-day retention for audit compliance and a daily ingestion cap to control costs:
 
-The default is the minimum (30 days) rather than a longer period because:
-1. Cost scales linearly with retention for large workloads
-2. Users can easily increase retention after creation
-3. Reducing retention requires manual configuration to avoid data loss
-4. For dev/test environments, 30 days is sufficient
-5. Production environments should explicitly set retention based on requirements
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureLogAnalyticsWorkspace
+metadata:
+  name: prod-logs
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureLogAnalyticsWorkspace.prod-logs
+spec:
+  region: westeurope
+  resourceGroup: prod-rg
+  name: prod-logs
+  sku: PerGB2018
+  retentionInDays: 180
+  dailyQuotaGb: 50
+```
 
-## 5. Daily Quota (Ingestion Cap)
+### Compliance Workspace with Maximum Retention
 
-### How It Works
+A workspace for regulatory compliance requiring two-year log retention:
 
-- Set `daily_quota_gb` to a positive number to cap daily ingestion
-- When the cap is reached, ingestion stops until midnight UTC
-- Set to `-1` for unlimited ingestion (no cap)
-- Azure resets the counter at midnight UTC daily
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureLogAnalyticsWorkspace
+metadata:
+  name: compliance-logs
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureLogAnalyticsWorkspace.compliance-logs
+spec:
+  region: westeurope
+  resourceGroup: compliance-rg
+  name: compliance-logs
+  sku: PerGB2018
+  retentionInDays: 730
+  dailyQuotaGb: -1
+```
 
-### When to Use Caps
+### Using Foreign Key References
 
-- **Development/staging**: Prevent runaway costs from log storms
-- **Initial deployment**: Set a reasonable cap until you understand ingestion volume
-- **Cost-sensitive workloads**: Hard budget constraint on monitoring costs
+Reference an OpenMCF-managed resource group instead of hardcoding the name:
 
-### When NOT to Use Caps
+```yaml
+apiVersion: azure.openmcf.org/v1
+kind: AzureLogAnalyticsWorkspace
+metadata:
+  name: ref-workspace
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.AzureLogAnalyticsWorkspace.ref-workspace
+spec:
+  region: eastus
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: my-rg
+      field: status.outputs.resource_group_name
+  name: ref-workspace
+  retentionInDays: 90
+```
 
-- **Production**: Dropping logs during incidents is worse than the cost
-- **Security monitoring**: Missing security logs creates audit gaps
-- **Compliance workloads**: Regulations may require complete log collection
+## Stack Outputs
 
-### Why We Default to -1 (Unlimited)
+After deployment, the following outputs are available in `status.outputs`:
 
-Unlimited ingestion is the safest default because:
-1. Capping ingestion in production can hide critical issues
-2. Users who need caps are cost-aware and will set them explicitly
-3. Azure provides cost alerts as an alternative to hard caps
+| Output | Type | Description |
+|--------|------|-------------|
+| `workspace_id` | `string` | Azure Resource Manager ID of the Log Analytics Workspace (format: `/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.OperationalInsights/workspaces/{name}`) |
+| `workspace_name` | `string` | Name of the Log Analytics Workspace |
+| `primary_shared_key` | `string` | Primary shared key for agent authentication. Used by the Log Analytics agent and direct ingestion APIs. Treat as a secret. |
+| `secondary_shared_key` | `string` | Secondary shared key for agent authentication. Enables key rotation without downtime. |
 
-## 6. OpenMCF Design: The 80/20 Applied
+## Related Components
 
-### Fields We Include (80% of Users Need These)
-
-| Field | Justification |
-|-------|---------------|
-| `region` | Every workspace needs a location |
-| `resource_group` | Azure requirement, now with StringValueOrRef |
-| `name` | Every workspace needs a name |
-| `sku` | Controls pricing model |
-| `retention_in_days` | The most impactful cost and compliance lever |
-| `daily_quota_gb` | Cost protection for budget-sensitive environments |
-
-### Fields We Exclude (20% or Less Need These)
-
-| Azure Field | Why Excluded |
-|-------------|-------------|
-| `reservation_capacity_in_gb_per_day` | Only for CapacityReservation SKU (niche) |
-| `internet_ingestion_enabled` | Rare security requirement |
-| `internet_query_enabled` | Rare security requirement |
-| `local_authentication_enabled` | Advanced security setting |
-| `cmk_for_query_forced` | Niche encryption requirement |
-| `identity` | Managed identity for CMK scenarios |
-| `data_collection_rule_id` | Advanced data routing |
-| `immediate_data_purge_on_30_days_enabled` | Niche compliance requirement |
-| `allow_resource_only_permissions` | Advanced RBAC configuration |
-
-Any of these can be added in a future iteration if demand emerges.
-
-## 7. Integration Points
-
-### As a Foundation Resource
-
-Log Analytics Workspace sits at Layer 1 in Azure infra charts (just above the resource group at Layer 0). It is consumed by:
-
-- **AzureApplicationInsights**: References `workspace_id` to store APM data
-- **AzureContainerAppEnvironment**: References workspace for container logs
-- **AzureAksCluster**: Container Insights addon sends node/pod/container logs
-- **Any Azure resource**: Diagnostic settings can route logs to any workspace
-
-### Output Design
-
-We export 4 outputs:
-
-1. **workspace_id**: The ARM resource ID. This is the primary output used by downstream resources (Container Insights, App Insights, diagnostic settings).
-2. **workspace_name**: Useful for display and CLI commands.
-3. **primary_shared_key**: Agent authentication key. Required by Log Analytics agents and direct ingestion APIs.
-4. **secondary_shared_key**: Backup key for rotation.
-
-### A Note on Shared Keys as Outputs
-
-The shared keys are sensitive outputs. In a production deployment, they should be handled carefully:
-- The Pulumi stack marks them as secrets
-- The Terraform module marks them as `sensitive = true`
-- Applications should retrieve them from the workspace at runtime, not from stored outputs
-- Key rotation should use the secondary key to avoid downtime
-
-We include them as outputs because they are needed for agent configuration in infra charts where automation provisions both the workspace and the agents that send data to it.
-
-## 8. Scope Boundaries
-
-### What This Component Does
-
-- Creates an Azure Log Analytics Workspace
-- Configures SKU, retention, and daily quota
-- Tags the workspace with OpenMCF metadata
-- Exports workspace ID, name, and shared keys
-
-### What This Component Does NOT Do
-
-- **Solutions/Intelligence Packs**: Azure Monitor solutions (like Container Insights, Security Center) are separate configurations applied to the workspace
-- **Data collection rules**: These control what data sources send to the workspace
-- **Diagnostic settings**: These are configured on individual Azure resources, not on the workspace
-- **Alerts**: Log search alerts and metric alerts are separate resources
-- **Workbooks/dashboards**: These are presentation-layer constructs
-- **Archive tier**: Long-term archival beyond interactive retention requires separate configuration
-- **Linked automation accounts**: Azure Automation integration is a separate resource
+- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) — provides the resource group for workspace placement
+- [AzureAksCluster](/docs/catalog/azure/azureakscluster) — AKS clusters send container logs to the workspace via Container Insights
+- [AzureContainerAppEnvironment](/docs/catalog/azure/azurecontainerappenvironment) — Container App environments reference the workspace for log collection
