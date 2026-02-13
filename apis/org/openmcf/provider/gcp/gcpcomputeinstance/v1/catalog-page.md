@@ -1,11 +1,3 @@
----
-title: "Compute Instance"
-description: "Compute Instance deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcpcomputeinstance"
----
-
 # GCP Compute Instance
 
 Deploys a Google Compute Engine VM instance with configurable machine type, boot disk, network interfaces, optional attached disks, service accounts, scheduling policies, and startup scripts. The component provisions a single managed instance in a specified zone and project, applying GCP-managed labels automatically.

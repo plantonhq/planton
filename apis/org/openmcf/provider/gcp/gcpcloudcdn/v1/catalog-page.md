@@ -1,11 +1,3 @@
----
-title: "Cloud CDN"
-description: "Cloud CDN deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcpcloudcdn"
----
-
 # GCP Cloud CDN
 
 Deploys a Google Cloud CDN endpoint backed by a Global Application Load Balancer, with support for GCS bucket, Compute Engine, Cloud Run, and external origin backends. The component provisions the backend resource, URL map, global IP address, forwarding rules, and optionally Google-managed SSL certificates, HTTP-to-HTTPS redirect, and Cloud Armor integration.

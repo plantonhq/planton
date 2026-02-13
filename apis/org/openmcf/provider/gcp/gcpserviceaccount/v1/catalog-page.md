@@ -1,11 +1,3 @@
----
-title: "Service Account"
-description: "Service Account deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcpserviceaccount"
----
-
 # GCP Service Account
 
 Deploys a Google Cloud service account with optional JSON key generation and IAM role bindings at the project and organization levels. The module creates the account, attaches the specified roles using per-role `IAMMember` bindings, and exports the resulting email address and (when requested) the base64-encoded private key.

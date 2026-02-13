@@ -1,11 +1,3 @@
----
-title: "VPC"
-description: "VPC deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcpvpc"
----
-
 # GCP VPC
 
 Deploys a GCP VPC network in custom subnet mode by default, with configurable dynamic routing and optional Private Services Access for Google managed services like Cloud SQL and Memorystore. The component automatically enables the Compute Engine API on the target project before creating the network.

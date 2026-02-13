@@ -1,11 +1,3 @@
----
-title: "DNS Zone"
-description: "DNS Zone deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcpdnszone"
----
-
 # GCP DNS Zone
 
 Deploys a Google Cloud DNS Managed Zone with optional DNS record creation and IAM bindings for service accounts that need to manage records in the zone. The zone is created as a public zone with the domain name derived from `metadata.name`.

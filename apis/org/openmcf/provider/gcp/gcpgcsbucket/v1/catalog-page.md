@@ -1,11 +1,3 @@
----
-title: "GCS Bucket"
-description: "GCS Bucket deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcpgcsbucket"
----
-
 # GCP GCS Bucket
 
 Deploys a Google Cloud Storage bucket with full control over storage class, access model, lifecycle management, encryption, CORS, static website hosting, and IAM bindings. The bucket is created in the specified GCP project and location with Uniform Bucket-Level Access enabled by default.

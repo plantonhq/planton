@@ -1,11 +1,3 @@
----
-title: "Project"
-description: "Project deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcpproject"
----
-
 # GCP Project
 
 Creates and configures a Google Cloud project within your resource hierarchy. The component handles project creation under an organization or folder, billing account linkage, standard label propagation, optional removal of the default VPC network, API enablement, and an optional owner IAM binding.

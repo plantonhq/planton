@@ -1,11 +1,3 @@
----
-title: "Artifact Registry Repo"
-description: "Artifact Registry Repo deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcpartifactregistryrepo"
----
-
 # GCP Artifact Registry Repo
 
 Deploys a Google Cloud Artifact Registry repository with configurable format, region, and access control. The component creates the repository along with dedicated reader and writer GCP service accounts with appropriate IAM bindings, and optionally enables unauthenticated public access for open-source artifact distribution.

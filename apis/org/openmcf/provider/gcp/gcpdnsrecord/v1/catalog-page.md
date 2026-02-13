@@ -1,11 +1,3 @@
----
-title: "DNS Record"
-description: "DNS Record deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcpdnsrecord"
----
-
 # GCP DNS Record
 
 Deploys an individual DNS record set within an existing Google Cloud DNS Managed Zone. This component supports all standard record types (A, AAAA, CNAME, MX, TXT, SRV, NS, PTR, CAA, SOA), configurable TTL, and round-robin record sets with multiple values.

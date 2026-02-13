@@ -1,11 +1,3 @@
----
-title: "Cert Manager Certificate"
-description: "Cert Manager Certificate deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcpcertmanagercert"
----
-
 # GCP Certificate Manager Cert
 
 Provisions a Google-managed SSL/TLS certificate with automatic DNS validation through Cloud DNS. The component supports two certificate backends: Certificate Manager (newer, with DNS authorization) and classic Google-managed SSL certificates for load balancers.

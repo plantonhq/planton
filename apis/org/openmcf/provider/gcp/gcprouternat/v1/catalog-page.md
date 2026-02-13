@@ -1,11 +1,3 @@
----
-title: "Router NAT"
-description: "Router NAT deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcprouternat"
----
-
 # GCP Router NAT
 
 Deploys a GCP Cloud Router with a Cloud NAT gateway to provide outbound internet connectivity for private instances in a VPC. The component supports automatic or manual (static) IP allocation, per-subnet scoping, and configurable NAT translation logging.

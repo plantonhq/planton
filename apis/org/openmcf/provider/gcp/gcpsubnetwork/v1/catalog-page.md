@@ -1,11 +1,3 @@
----
-title: "Subnetwork"
-description: "Subnetwork deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcpsubnetwork"
----
-
 # GCP Subnetwork
 
 Deploys a GCP VPC subnetwork in a specified region with a primary CIDR range, optional secondary IP ranges for alias IPs (commonly used by GKE for Pod and Service CIDRs), and optional Private Google Access. The module also enables the Compute Engine API on the target project automatically.

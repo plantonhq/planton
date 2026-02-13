@@ -1,11 +1,3 @@
----
-title: "GKE Node  Pool"
-description: "GKE Node  Pool deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcpgkenodepool"
----
-
 # GCP GKE Node Pool
 
 Deploys a node pool into an existing GKE cluster on Google Cloud with configurable machine types, disk options, autoscaling, and Spot VM support. This component is a companion to [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — it manages the compute capacity for workloads while the cluster component manages the control plane.

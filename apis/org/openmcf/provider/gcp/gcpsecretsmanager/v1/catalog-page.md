@@ -1,11 +1,3 @@
----
-title: "Secrets Manager"
-description: "Secrets Manager deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcpsecretsmanager"
----
-
 # GCP Secrets Manager
 
 Deploys secrets in Google Cloud Secret Manager with automatic replication and placeholder secret versions. Each secret name in the spec produces a dedicated Secret resource and an initial SecretVersion, with secret IDs optionally prefixed by the environment label for multi-environment isolation.

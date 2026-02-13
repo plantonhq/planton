@@ -1,11 +1,3 @@
----
-title: "Cloud Function"
-description: "Cloud Function deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcpcloudfunction"
----
-
 # GCP Cloud Function
 
 Deploys a Google Cloud Function (Gen 2) from source code stored in a GCS bucket, with full control over runtime, compute resources, scaling, networking, secrets, and trigger configuration. Gen 2 functions are built on Cloud Run and Eventarc, supporting both HTTP and event-driven invocation patterns.

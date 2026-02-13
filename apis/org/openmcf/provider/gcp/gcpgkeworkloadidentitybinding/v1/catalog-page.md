@@ -1,11 +1,3 @@
----
-title: "GKE Workload  Identity  Binding"
-description: "GKE Workload  Identity  Binding deployment documentation"
-icon: "package"
-order: 100
-componentName: "gcpgkeworkloadidentitybinding"
----
-
 # GCP GKE Workload Identity Binding
 
 Creates an IAM policy binding that allows a Kubernetes ServiceAccount (KSA) in a GKE cluster to impersonate a Google Service Account (GSA) via Workload Identity Federation. This component grants `roles/iam.workloadIdentityUser` on the target GSA so the specified KSA can authenticate as that GSA without managing keys.
