@@ -1,0 +1,3 @@
+name: scalewayrdbinstance-pulumi-project
+runtime:
+  name: go

@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package org.openmcf.provider.scaleway.scalewayrdbinstance.v1;
+
+// ScalewayRdbInstanceStackOutputs captures the provisioned RDB instance
+// details needed by downstream resources and applications.
+//
+// The primary outputs are `instance_id` (for downstream references like
+// read replicas and monitoring) and the connection endpoints (for
+// applications to connect to the database).
+//
+// Two endpoint pairs are provided:
+//   - Public endpoint (endpoint_ip + endpoint_port): Accessible over the
+//     internet, restricted by ACL rules. Use for admin access and
+//     external integrations.
+//   - Private endpoint (private_endpoint_ip + private_endpoint_port):
+//     Accessible only from the attached Private Network. Use for
+//     application connections in production.
+//
+// Passwords are NOT exported as outputs. They are user-specified in the
+// spec and should be managed through your organization's secrets workflow.
+message ScalewayRdbInstanceStackOutputs {
+  // The unique identifier of the created RDB instance.
+  //
+  // Format: regional ID (e.g., "fr-par/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx").
+  // This is the primary output referenced by downstream resources:
+  //   - Read replicas (scaleway_rdb_read_replica)
+  //   - Monitoring and backup tools
+  //   - External management integrations
+  string instance_id = 1;
+
+  // Public endpoint IP address.
+  //
+  // The IPv4 address for connecting to the database over the public
+  // internet. Subject to ACL rules configured in the spec.
+  //
+  // Empty if the instance has no public endpoint (rare -- Scaleway
+  // provides one by default).
+  string endpoint_ip = 2;
+
+  // Public endpoint port number.
+  //
+  // The TCP port for public connections. Typically 5432 for PostgreSQL
+  // or 3306 for MySQL, but Scaleway may assign different ports.
+  uint32 endpoint_port = 3;
+
+  // Private Network endpoint IP address.
+  //
+  // The IPv4 address for connecting to the database from resources on
+  // the same Private Network. This is the recommended connection path
+  // for application workloads.
+  //
+  // Empty if no Private Network is attached.
+  string private_endpoint_ip = 4;
+
+  // Private Network endpoint port number.
+  //
+  // The TCP port for private connections.
+  //
+  // Zero if no Private Network is attached.
+  uint32 private_endpoint_port = 5;
+
+  // TLS certificate in PEM format for verifying the database server.
+  //
+  // Clients should use this CA certificate to establish encrypted
+  // connections and verify the database server's identity. Both
+  // PostgreSQL (`sslrootcert`) and MySQL (`ssl-ca`) support this.
+  string certificate = 6;
+}
