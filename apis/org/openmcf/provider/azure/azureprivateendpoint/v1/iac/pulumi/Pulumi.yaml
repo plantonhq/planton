@@ -1,0 +1,3 @@
+name: azure-private-endpoint
+runtime: go
+description: Pulumi program for Azure Private Endpoint

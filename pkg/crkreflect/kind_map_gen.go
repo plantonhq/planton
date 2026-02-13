@@ -53,6 +53,7 @@ import (
 	azurenatgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurenatgateway/v1"
 	azurenetworksecuritygroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurenetworksecuritygroup/v1"
 	azureprivatednszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureprivatednszone/v1"
+	azureprivateendpointv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureprivateendpoint/v1"
 	azurepublicipv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurepublicip/v1"
 	azureresourcegroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureresourcegroup/v1"
 	azurestorageaccountv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurestorageaccount/v1"
@@ -203,6 +204,7 @@ import (
 	scalewayloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayloadbalancer/v1"
 	scalewayprivatenetworkv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayprivatenetwork/v1"
 	scalewaypublicgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewaypublicgateway/v1"
+	scalewayrdbinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayrdbinstance/v1"
 	scalewayvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway/scalewayvpc/v1"
 	snowflakedatabasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/snowflake/snowflakedatabase/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
@@ -276,6 +278,7 @@ var ProviderAzureMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AzureNatGateway:            &azurenatgatewayv1.AzureNatGateway{},
 	cloudresourcekind.CloudResourceKind_AzureNetworkSecurityGroup:  &azurenetworksecuritygroupv1.AzureNetworkSecurityGroup{},
 	cloudresourcekind.CloudResourceKind_AzurePrivateDnsZone:        &azureprivatednszonev1.AzurePrivateDnsZone{},
+	cloudresourcekind.CloudResourceKind_AzurePrivateEndpoint:       &azureprivateendpointv1.AzurePrivateEndpoint{},
 	cloudresourcekind.CloudResourceKind_AzurePublicIp:              &azurepublicipv1.AzurePublicIp{},
 	cloudresourcekind.CloudResourceKind_AzureResourceGroup:         &azureresourcegroupv1.AzureResourceGroup{},
 	cloudresourcekind.CloudResourceKind_AzureStorageAccount:        &azurestorageaccountv1.AzureStorageAccount{},
@@ -453,6 +456,7 @@ var ProviderScalewayMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_ScalewayLoadBalancer:          &scalewayloadbalancerv1.ScalewayLoadBalancer{},
 	cloudresourcekind.CloudResourceKind_ScalewayPrivateNetwork:        &scalewayprivatenetworkv1.ScalewayPrivateNetwork{},
 	cloudresourcekind.CloudResourceKind_ScalewayPublicGateway:         &scalewaypublicgatewayv1.ScalewayPublicGateway{},
+	cloudresourcekind.CloudResourceKind_ScalewayRdbInstance:           &scalewayrdbinstancev1.ScalewayRdbInstance{},
 	cloudresourcekind.CloudResourceKind_ScalewayVpc:                   &scalewayvpcv1.ScalewayVpc{},
 }
 
