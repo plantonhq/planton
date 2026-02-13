@@ -5,8 +5,8 @@ locals {
   # Cluster name
   cluster_name = var.spec.cluster_name
 
-  # Resource group name (derived from cluster name)
-  resource_group_name = "rg-${var.spec.cluster_name}"
+  # Resource group name (explicit spec field)
+  resource_group_name = var.spec.resource_group
 
   # OS type mapping
   os_type = var.spec.os_type == "WINDOWS" ? "Windows" : "Linux"

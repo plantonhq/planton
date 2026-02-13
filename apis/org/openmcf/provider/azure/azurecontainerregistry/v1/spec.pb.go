@@ -8,6 +8,7 @@ package azurecontainerregistryv1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -79,6 +80,9 @@ type AzureContainerRegistrySpec struct {
 	// Azure region in which to create the container registry (e.g., "eastus", "westeurope").
 	// This is the primary location where the registry is deployed.
 	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
+	// The Azure Resource Group where the Container Registry will be created.
+	// Can be a literal string or a reference to an AzureResourceGroup output.
+	ResourceGroup *v1.StringValueOrRef `protobuf:"bytes,6,opt,name=resource_group,json=resourceGroup,proto3" json:"resource_group,omitempty"`
 	// The globally unique name of the container registry.
 	// Must be 5-50 characters of lowercase letters or numbers (per Azure naming rules).
 	RegistryName string `protobuf:"bytes,2,opt,name=registry_name,json=registryName,proto3" json:"registry_name,omitempty"`
@@ -133,6 +137,13 @@ func (x *AzureContainerRegistrySpec) GetRegion() string {
 	return ""
 }
 
+func (x *AzureContainerRegistrySpec) GetResourceGroup() *v1.StringValueOrRef {
+	if x != nil {
+		return x.ResourceGroup
+	}
+	return nil
+}
+
 func (x *AzureContainerRegistrySpec) GetRegistryName() string {
 	if x != nil {
 		return x.RegistryName
@@ -165,9 +176,10 @@ var File_org_openmcf_provider_azure_azurecontainerregistry_v1_spec_proto protore
 
 const file_org_openmcf_provider_azure_azurecontainerregistry_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"?org/openmcf/provider/azure/azurecontainerregistry/v1/spec.proto\x124org.openmcf.provider.azure.azurecontainerregistry.v1\x1a\x1bbuf/validate/validate.proto\"\xc6\x02\n" +
+	"?org/openmcf/provider/azure/azurecontainerregistry/v1/spec.proto\x124org.openmcf.provider.azure.azurecontainerregistry.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xd5\x03\n" +
 	"\x1aAzureContainerRegistrySpec\x12\x1e\n" +
-	"\x06region\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12?\n" +
+	"\x06region\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12\x8c\x01\n" +
+	"\x0eresource_group\x18\x06 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\x90\x03\x92\xd4a\"status.outputs.resource_group_nameR\rresourceGroup\x12?\n" +
 	"\rregistry_name\x18\x02 \x01(\tB\x1a\xbaH\x17\xc8\x01\x01r\x122\x10^[a-z0-9]{5,50}$R\fregistryName\x12a\n" +
 	"\x03sku\x18\x03 \x01(\x0e2O.org.openmcf.provider.azure.azurecontainerregistry.v1.AzureContainerRegistrySkuR\x03sku\x12,\n" +
 	"\x12admin_user_enabled\x18\x04 \x01(\bR\x10adminUserEnabled\x126\n" +
@@ -195,14 +207,16 @@ var file_org_openmcf_provider_azure_azurecontainerregistry_v1_spec_proto_msgType
 var file_org_openmcf_provider_azure_azurecontainerregistry_v1_spec_proto_goTypes = []any{
 	(AzureContainerRegistrySku)(0),     // 0: org.openmcf.provider.azure.azurecontainerregistry.v1.AzureContainerRegistrySku
 	(*AzureContainerRegistrySpec)(nil), // 1: org.openmcf.provider.azure.azurecontainerregistry.v1.AzureContainerRegistrySpec
+	(*v1.StringValueOrRef)(nil),        // 2: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_azure_azurecontainerregistry_v1_spec_proto_depIdxs = []int32{
-	0, // 0: org.openmcf.provider.azure.azurecontainerregistry.v1.AzureContainerRegistrySpec.sku:type_name -> org.openmcf.provider.azure.azurecontainerregistry.v1.AzureContainerRegistrySku
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 0: org.openmcf.provider.azure.azurecontainerregistry.v1.AzureContainerRegistrySpec.resource_group:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	0, // 1: org.openmcf.provider.azure.azurecontainerregistry.v1.AzureContainerRegistrySpec.sku:type_name -> org.openmcf.provider.azure.azurecontainerregistry.v1.AzureContainerRegistrySku
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_azure_azurecontainerregistry_v1_spec_proto_init() }

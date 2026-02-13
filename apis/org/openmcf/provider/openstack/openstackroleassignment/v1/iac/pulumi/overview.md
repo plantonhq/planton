@@ -2,10 +2,11 @@
 
 ## Architecture
 
-Single-resource module with FK resolution for `project_id`.
+Single-resource module for OpenStack Identity role assignments.
 
-## FK Resolution
+## StringValueOrRef Fields
 
-- `project_id` uses `StringValueOrRef` -- resolved by middleware before IaC runs
-- `resolveStringValueOrRef()` extracts the literal value from the oneof wrapper
+- `project_id` uses `StringValueOrRef` -- the platform middleware resolves `valueFrom`
+  references before IaC modules run, so the module calls `.GetValue()` to extract the
+  resolved literal string
 - Other fields (`domain_id`, `user_id`, `group_id`, `role_id`) are plain strings

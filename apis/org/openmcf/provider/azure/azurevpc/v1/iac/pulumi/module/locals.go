@@ -28,11 +28,11 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurevpcv1.AzureVpcStackI
 	// Generate resource names from metadata
 	locals.VNetName = fmt.Sprintf("vnet-%s", target.Metadata.Name)
 	locals.SubnetName = fmt.Sprintf("subnet-nodes-%s", target.Metadata.Name)
-	locals.ResourceGroup = fmt.Sprintf("rg-%s", target.Metadata.Name)
 	locals.NatGatewayName = fmt.Sprintf("natgw-%s", target.Metadata.Name)
 
-	// Default location if not specified (could be parameterized)
-	locals.Location = "eastus"
+	// Resource group and location are provided externally via spec
+	locals.ResourceGroup = target.Spec.ResourceGroup.GetValue()
+	locals.Location = target.Spec.Region
 
 	// Create Azure tags for resource tagging
 	locals.AzureTags = map[string]string{

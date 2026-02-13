@@ -1,8 +1,6 @@
 package module
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 	azureaksnodepoolv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureaksnodepool/v1"
 	"github.com/pulumi/pulumi-azure-native-sdk/containerservice/v3"
@@ -53,8 +51,10 @@ func Resources(ctx *pulumi.Context, stackInput *azureaksnodepoolv1.AzureAksNodeP
 
 	// Build node pool arguments
 	nodePoolArgs := &containerservice.AgentPoolArgs{
-		// The cluster's resource group name (derived from cluster name)
-		ResourceGroupName: pulumi.String(fmt.Sprintf("rg-%s", clusterName)),
+		// The resource_group field is a StringValueOrRef. The platform middleware resolves
+		// valueFrom references before IaC modules run, so .GetValue() always returns the
+		// resolved literal string.
+		ResourceGroupName: pulumi.String(spec.ResourceGroup.GetValue()),
 
 		// The parent cluster name
 		ResourceName: pulumi.String(clusterName),

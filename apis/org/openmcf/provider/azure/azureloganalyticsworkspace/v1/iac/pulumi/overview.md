@@ -18,7 +18,7 @@ AzureLogAnalyticsWorkspaceStackInput
          ▼
   ┌─────────────────┐
   │  module/main.go  │  Creates azure provider + workspace
-  │  module/locals.go│  Resolves StringValueOrRef, builds tags
+  │  module/locals.go│  Extracts spec values, builds tags
   │  module/outputs.go│ Defines output constant names
   └─────────────────┘
          │
@@ -28,11 +28,12 @@ AzureLogAnalyticsWorkspaceStackInput
 
 ## Key Implementation Details
 
-### StringValueOrRef Resolution
+### StringValueOrRef Fields
 
-The `resource_group` field uses `StringValueOrRef`. OpenMCF middleware resolves
-`valueFrom` references before the IaC module runs. The `resolveStringValueOrRef`
-helper in `locals.go` extracts the resolved string value.
+The `resource_group` field uses `StringValueOrRef`, which supports both literal
+string values and references to other resource outputs. The platform middleware
+resolves all `valueFrom` references before the IaC module runs, so the module
+simply calls `.GetValue()` to extract the resolved string.
 
 ### Daily Quota Handling
 

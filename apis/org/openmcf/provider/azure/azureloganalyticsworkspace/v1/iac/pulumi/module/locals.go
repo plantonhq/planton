@@ -5,7 +5,6 @@ import (
 
 	azureloganalyticsworkspacev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureloganalyticsworkspace/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -21,10 +20,10 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureloganalyticsworkspac
 	locals.AzureLogAnalyticsWorkspace = stackInput.Target
 	target := stackInput.Target
 
-	// Resolve resource_group from StringValueOrRef.
-	// At runtime, OpenMCF middleware resolves valueFrom references before IaC runs,
-	// so we always get the resolved value here.
-	locals.ResourceGroupName = resolveStringValueOrRef(target.Spec.ResourceGroup)
+	// The resource_group field is a StringValueOrRef. The platform middleware resolves
+	// valueFrom references before IaC modules run, so .GetValue() always returns the
+	// resolved literal string.
+	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
 	// Create Azure tags for resource tagging
 	locals.AzureTags = map[string]string{
@@ -46,19 +45,4 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureloganalyticsworkspac
 	}
 
 	return locals
-}
-
-// resolveStringValueOrRef extracts the string value from a StringValueOrRef.
-// OpenMCF middleware resolves valueFrom references before IaC modules run,
-// so the Value field is always populated at this point.
-func resolveStringValueOrRef(ref *foreignkeyv1.StringValueOrRef) string {
-	if ref == nil {
-		return ""
-	}
-	switch v := ref.LiteralOrRef.(type) {
-	case *foreignkeyv1.StringValueOrRef_Value:
-		return v.Value
-	default:
-		return ""
-	}
 }

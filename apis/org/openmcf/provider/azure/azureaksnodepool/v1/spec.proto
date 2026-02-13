@@ -59,6 +59,14 @@ message AzureAksNodePoolSpec {
   // Use Spot (preemptible) VMs for this node pool to reduce cost. Defaults to false (regular on-demand VMs).
   // NOTE: Spot cannot be used for System mode pools.
   bool spot_enabled = 8;
+
+  // The Azure Resource Group where the node pool's parent cluster resides.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef resource_group = 9 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
 }
 
 // Autoscaling settings for an AKS node pool. Effective only if autoscaling is enabled.

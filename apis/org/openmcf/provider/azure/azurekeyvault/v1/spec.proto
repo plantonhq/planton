@@ -3,6 +3,7 @@ syntax = "proto3";
 package org.openmcf.provider.azure.azurekeyvault.v1;
 
 import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
 // **AzureKeyVaultSpec** defines the configuration for creating an Azure Key Vault.
@@ -15,11 +16,12 @@ message AzureKeyVaultSpec {
     (buf.validate.field).string.min_len = 1
   ];
 
-  // The Azure Resource Group name where the Key Vault will be created.
-  // The resource group must already exist.
-  string resource_group = 2 [
+  // The Azure Resource Group where the Key Vault will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef resource_group = 2 [
     (buf.validate.field).required = true,
-    (buf.validate.field).string.min_len = 1
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
   ];
 
   // The SKU tier for the Key Vault.

@@ -10,12 +10,12 @@ output "nodes_subnet_id" {
 
 output "resource_group_name" {
   description = "The name of the resource group"
-  value       = azurerm_resource_group.main.name
+  value       = local.resource_group_name
 }
 
 output "location" {
   description = "The Azure region where resources were deployed"
-  value       = azurerm_resource_group.main.location
+  value       = var.spec.region
 }
 
 output "nat_gateway_id" {

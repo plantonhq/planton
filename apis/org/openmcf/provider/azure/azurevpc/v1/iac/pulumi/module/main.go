@@ -6,7 +6,6 @@ import (
 	"github.com/pkg/errors"
 	azurevpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurevpc/v1"
 	"github.com/pulumi/pulumi-azure/sdk/v6/go/azure"
-	"github.com/pulumi/pulumi-azure/sdk/v6/go/azure/core"
 	"github.com/pulumi/pulumi-azure/sdk/v6/go/azure/network"
 	"github.com/pulumi/pulumi-azure/sdk/v6/go/azure/privatedns"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
@@ -31,31 +30,21 @@ func Resources(ctx *pulumi.Context, stackInput *azurevpcv1.AzureVpcStackInput) e
 
 	spec := locals.AzureVpc.Spec
 
-	// Create Resource Group
-	resourceGroup, err := core.NewResourceGroup(ctx,
-		locals.ResourceGroup,
-		&core.ResourceGroupArgs{
-			Name:     pulumi.String(locals.ResourceGroup),
-			Location: pulumi.String(locals.Location),
-			Tags:     pulumi.ToStringMap(locals.AzureTags),
-		},
-		pulumi.Provider(azureProvider))
-	if err != nil {
-		return errors.Wrap(err, "failed to create resource group")
-	}
+	// Resource group is provided externally
+	resourceGroupName := pulumi.String(locals.ResourceGroup)
+	location := pulumi.String(locals.Location)
 
 	// Create Virtual Network
 	vnet, err := network.NewVirtualNetwork(ctx,
 		locals.VNetName,
 		&network.VirtualNetworkArgs{
 			Name:              pulumi.String(locals.VNetName),
-			ResourceGroupName: resourceGroup.Name,
-			Location:          resourceGroup.Location,
+			ResourceGroupName: resourceGroupName,
+			Location:          location,
 			AddressSpaces:     pulumi.StringArray{pulumi.String(spec.AddressSpaceCidr)},
 			Tags:              pulumi.ToStringMap(locals.AzureTags),
 		},
-		pulumi.Provider(azureProvider),
-		pulumi.Parent(resourceGroup))
+		pulumi.Provider(azureProvider))
 	if err != nil {
 		return errors.Wrap(err, "failed to create virtual network")
 	}
@@ -68,14 +57,13 @@ func Resources(ctx *pulumi.Context, stackInput *azurevpcv1.AzureVpcStackInput) e
 			fmt.Sprintf("%s-ip", locals.NatGatewayName),
 			&network.PublicIpArgs{
 				Name:              pulumi.String(fmt.Sprintf("%s-ip", locals.NatGatewayName)),
-				ResourceGroupName: resourceGroup.Name,
-				Location:          resourceGroup.Location,
+				ResourceGroupName: resourceGroupName,
+				Location:          location,
 				AllocationMethod:  pulumi.String("Static"),
 				Sku:               pulumi.String("Standard"),
 				Tags:              pulumi.ToStringMap(locals.AzureTags),
 			},
-			pulumi.Provider(azureProvider),
-			pulumi.Parent(resourceGroup))
+			pulumi.Provider(azureProvider))
 		if err != nil {
 			return errors.Wrap(err, "failed to create public IP for NAT gateway")
 		}
@@ -85,14 +73,13 @@ func Resources(ctx *pulumi.Context, stackInput *azurevpcv1.AzureVpcStackInput) e
 			locals.NatGatewayName,
 			&network.NatGatewayArgs{
 				Name:                 pulumi.String(locals.NatGatewayName),
-				ResourceGroupName:    resourceGroup.Name,
-				Location:             resourceGroup.Location,
+				ResourceGroupName:    resourceGroupName,
+				Location:             location,
 				SkuName:              pulumi.String("Standard"),
 				IdleTimeoutInMinutes: pulumi.Int(4),
 				Tags:                 pulumi.ToStringMap(locals.AzureTags),
 			},
-			pulumi.Provider(azureProvider),
-			pulumi.Parent(resourceGroup))
+			pulumi.Provider(azureProvider))
 		if err != nil {
 			return errors.Wrap(err, "failed to create NAT gateway")
 		}
@@ -116,7 +103,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurevpcv1.AzureVpcStackInput) e
 	// Create Subnet (with optional NAT Gateway)
 	subnetArgs := &network.SubnetArgs{
 		Name:               pulumi.String(locals.SubnetName),
-		ResourceGroupName:  resourceGroup.Name,
+		ResourceGroupName:  resourceGroupName,
 		VirtualNetworkName: vnet.Name,
 		AddressPrefixes:    pulumi.StringArray{pulumi.String(spec.NodesSubnetCidr)},
 	}
@@ -151,7 +138,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurevpcv1.AzureVpcStackInput) e
 			fmt.Sprintf("dns-link-%d", i),
 			&privatedns.ZoneVirtualNetworkLinkArgs{
 				Name:                pulumi.String(fmt.Sprintf("%s-link-%d", locals.VNetName, i)),
-				ResourceGroupName:   resourceGroup.Name,
+				ResourceGroupName:   resourceGroupName,
 				PrivateDnsZoneName:  pulumi.String(dnsZoneId), // This should be parsed
 				VirtualNetworkId:    vnet.ID(),
 				RegistrationEnabled: pulumi.Bool(false),

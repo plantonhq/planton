@@ -31,7 +31,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednsrecordv1.AzureDnsRecordS
 	recordType := spec.Type
 	recordName := locals.RecordName
 	zoneName := locals.ZoneName
-	resourceGroup := locals.ResourceGroup
+	resourceGroup := locals.ResourceGroupName
 	ttl := locals.TTL
 
 	var recordId pulumi.IDOutput

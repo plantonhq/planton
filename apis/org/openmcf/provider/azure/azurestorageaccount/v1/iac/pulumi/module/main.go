@@ -107,7 +107,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurestorageaccountv1.AzureStora
 		&storage.AccountArgs{
 			Name:                   pulumi.String(locals.StorageAccountName),
 			Location:               pulumi.String(spec.Region),
-			ResourceGroupName:      pulumi.String(spec.ResourceGroup),
+			ResourceGroupName:      pulumi.String(locals.ResourceGroupName),
 			AccountKind:            pulumi.String(getAccountKind(spec.GetAccountKind())),
 			AccountTier:            pulumi.String(getAccountTier(spec.GetAccountTier())),
 			AccountReplicationType: pulumi.String(getReplicationType(spec.GetReplicationType())),
@@ -164,7 +164,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurestorageaccountv1.AzureStora
 	ctx.Export(OpPrimaryDfsEndpoint, storageAccount.PrimaryBlobHost)
 	ctx.Export(OpPrimaryWebEndpoint, storageAccount.PrimaryWebEndpoint)
 	ctx.Export(OpRegion, pulumi.String(spec.Region))
-	ctx.Export(OpResourceGroup, pulumi.String(spec.ResourceGroup))
+	ctx.Export(OpResourceGroup, pulumi.String(locals.ResourceGroupName))
 
 	// Export container URL map
 	if len(containerUrlMap) > 0 {

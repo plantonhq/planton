@@ -9,11 +9,11 @@ import (
 )
 
 type Locals struct {
-	AzureDnsRecord *azurednsrecordv1.AzureDnsRecord
-	AzureTags      map[string]string
-	ZoneName       string
-	ResourceGroup  string
-	RecordName     string
+	AzureDnsRecord    *azurednsrecordv1.AzureDnsRecord
+	AzureTags         map[string]string
+	ZoneName          string
+	ResourceGroupName string
+	RecordName        string
 	TTL            int
 	MxPriority     int
 }
@@ -36,7 +36,10 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurednsrecordv1.AzureDns
 		}
 	}
 
-	locals.ResourceGroup = spec.ResourceGroup
+	// The resource_group field is a StringValueOrRef. The platform middleware resolves
+	// valueFrom references before IaC modules run, so .GetValue() always returns the
+	// resolved literal string.
+	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 	locals.RecordName = spec.Name
 
 	// Set TTL with default value

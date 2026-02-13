@@ -1,12 +1,9 @@
 package module
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 	azureaksclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureakscluster/v1"
 	"github.com/pulumi/pulumi-azure-native-sdk/containerservice/v3"
-	"github.com/pulumi/pulumi-azure-native-sdk/resources/v3"
 	azurenative "github.com/pulumi/pulumi-azure-native-sdk/v3"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
@@ -31,17 +28,8 @@ func Resources(ctx *pulumi.Context, stackInput *azureaksclusterv1.AzureAksCluste
 	target := stackInput.Target
 	spec := target.Spec
 
-	// Create resource group name from metadata
-	resourceGroupName := fmt.Sprintf("rg-%s", target.Metadata.Name)
-
-	// Create Resource Group
-	resourceGroup, err := resources.NewResourceGroup(ctx, resourceGroupName, &resources.ResourceGroupArgs{
-		ResourceGroupName: pulumi.String(resourceGroupName),
-		Location:          pulumi.String(spec.Region),
-	}, pulumi.Provider(provider))
-	if err != nil {
-		return errors.Wrap(err, "failed to create resource group")
-	}
+	// Resource group is provided externally
+	resourceGroupName := spec.ResourceGroup.GetValue()
 
 	// Determine control plane SKU tier
 	skuTier := "Standard" // Default to Standard for production
@@ -163,7 +151,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureaksclusterv1.AzureAksCluste
 
 	// Build AKS cluster arguments
 	aksClusterArgs := &containerservice.ManagedClusterArgs{
-		ResourceGroupName: resourceGroup.Name,
+		ResourceGroupName: pulumi.String(resourceGroupName),
 		ResourceName:      pulumi.String(target.Metadata.Name),
 		Location:          pulumi.String(spec.Region),
 
@@ -233,7 +221,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureaksclusterv1.AzureAksCluste
 		}
 
 		userPoolArgs := &containerservice.AgentPoolArgs{
-			ResourceGroupName: resourceGroup.Name,
+			ResourceGroupName: pulumi.String(resourceGroupName),
 			ResourceName:      aksCluster.Name,
 			AgentPoolName:     pulumi.String(userPool.Name),
 			Count:             pulumi.Int(int(userPool.Autoscaling.MinCount)),
@@ -262,7 +250,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureaksclusterv1.AzureAksCluste
 
 	// Get kubeconfig
 	listCredentials := containerservice.ListManagedClusterUserCredentialsOutput(ctx, containerservice.ListManagedClusterUserCredentialsOutputArgs{
-		ResourceGroupName: resourceGroup.Name,
+		ResourceGroupName: pulumi.String(resourceGroupName),
 		ResourceName:      aksCluster.Name,
 	})
 

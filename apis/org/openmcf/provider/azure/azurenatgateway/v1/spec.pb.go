@@ -36,7 +36,13 @@ type AzureNatGatewaySpec struct {
 	// If set (allowed values 28–31), a Public IP Prefix of /<prefix_length> is created instead of a single IP.
 	PublicIpPrefixLength *int32 `protobuf:"varint,3,opt,name=public_ip_prefix_length,json=publicIpPrefixLength,proto3,oneof" json:"public_ip_prefix_length,omitempty"`
 	// Optional tags to assign to the NAT Gateway resource.
-	Tags          map[string]string `protobuf:"bytes,4,rep,name=tags,proto3" json:"tags,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Tags map[string]string `protobuf:"bytes,4,rep,name=tags,proto3" json:"tags,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	// The Azure region where the NAT Gateway will be deployed.
+	// Examples: "eastus", "westus2", "westeurope".
+	Region string `protobuf:"bytes,5,opt,name=region,proto3" json:"region,omitempty"`
+	// The Azure Resource Group where the NAT Gateway will be created.
+	// Can be a literal string or a reference to an AzureResourceGroup output.
+	ResourceGroup *v1.StringValueOrRef `protobuf:"bytes,6,opt,name=resource_group,json=resourceGroup,proto3" json:"resource_group,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -99,16 +105,33 @@ func (x *AzureNatGatewaySpec) GetTags() map[string]string {
 	return nil
 }
 
+func (x *AzureNatGatewaySpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
+func (x *AzureNatGatewaySpec) GetResourceGroup() *v1.StringValueOrRef {
+	if x != nil {
+		return x.ResourceGroup
+	}
+	return nil
+}
+
 var File_org_openmcf_provider_azure_azurenatgateway_v1_spec_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_azure_azurenatgateway_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8org/openmcf/provider/azure/azurenatgateway/v1/spec.proto\x12-org.openmcf.provider.azure.azurenatgateway.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xee\x03\n" +
+	"8org/openmcf/provider/azure/azurenatgateway/v1/spec.proto\x12-org.openmcf.provider.azure.azurenatgateway.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xa1\x05\n" +
 	"\x13AzureNatGatewaySpec\x12~\n" +
 	"\tsubnet_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB-\xbaH\x03\xc8\x01\x01\x88\xd4a\x96\x03\x92\xd4a\x1estatus.outputs.nodes_subnet_idR\bsubnetId\x12@\n" +
 	"\x14idle_timeout_minutes\x18\x02 \x01(\x05B\t\xbaH\x06\x1a\x04\x18x(\x04H\x00R\x12idleTimeoutMinutes\x88\x01\x01\x12E\n" +
 	"\x17public_ip_prefix_length\x18\x03 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x1f(\x1cH\x01R\x14publicIpPrefixLength\x88\x01\x01\x12`\n" +
-	"\x04tags\x18\x04 \x03(\v2L.org.openmcf.provider.azure.azurenatgateway.v1.AzureNatGatewaySpec.TagsEntryR\x04tags\x1a7\n" +
+	"\x04tags\x18\x04 \x03(\v2L.org.openmcf.provider.azure.azurenatgateway.v1.AzureNatGatewaySpec.TagsEntryR\x04tags\x12\"\n" +
+	"\x06region\x18\x05 \x01(\tB\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\x8c\x01\n" +
+	"\x0eresource_group\x18\x06 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\x90\x03\x92\xd4a\"status.outputs.resource_group_nameR\rresourceGroup\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x17\n" +
@@ -137,11 +160,12 @@ var file_org_openmcf_provider_azure_azurenatgateway_v1_spec_proto_goTypes = []an
 var file_org_openmcf_provider_azure_azurenatgateway_v1_spec_proto_depIdxs = []int32{
 	2, // 0: org.openmcf.provider.azure.azurenatgateway.v1.AzureNatGatewaySpec.subnet_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
 	1, // 1: org.openmcf.provider.azure.azurenatgateway.v1.AzureNatGatewaySpec.tags:type_name -> org.openmcf.provider.azure.azurenatgateway.v1.AzureNatGatewaySpec.TagsEntry
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	2, // 2: org.openmcf.provider.azure.azurenatgateway.v1.AzureNatGatewaySpec.resource_group:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_azure_azurenatgateway_v1_spec_proto_init() }

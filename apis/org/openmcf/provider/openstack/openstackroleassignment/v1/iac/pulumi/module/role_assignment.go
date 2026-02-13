@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"github.com/pulumi/pulumi-openstack/sdk/v5/go/openstack"
 	"github.com/pulumi/pulumi-openstack/sdk/v5/go/openstack/identity"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
@@ -25,9 +24,9 @@ func roleAssignment(
 
 	// Scope: project_id (FK) or domain_id (plain string) -- exactly one.
 	if spec.ProjectId != nil {
-		// Resolve the StringValueOrRef FK.
-		projectId := resolveStringValueOrRef(spec.ProjectId)
-		raArgs.ProjectId = pulumi.StringPtr(projectId)
+		// The platform middleware resolves valueFrom references before IaC modules run,
+		// so .GetValue() always returns the resolved literal string.
+		raArgs.ProjectId = pulumi.StringPtr(spec.ProjectId.GetValue())
 	} else if spec.DomainId != "" {
 		raArgs.DomainId = pulumi.StringPtr(spec.DomainId)
 	}
@@ -64,23 +63,4 @@ func roleAssignment(
 	ctx.Export(OpRegion, createdRA.Region)
 
 	return nil
-}
-
-// resolveStringValueOrRef extracts the literal value from a StringValueOrRef.
-// In Pulumi modules, the middleware has already resolved value_from references
-// before the module runs, so we always get a literal value.
-func resolveStringValueOrRef(ref *foreignkeyv1.StringValueOrRef) string {
-	if ref == nil {
-		return ""
-	}
-	switch v := ref.LiteralOrRef.(type) {
-	case *foreignkeyv1.StringValueOrRef_Value:
-		return v.Value
-	case *foreignkeyv1.StringValueOrRef_ValueFrom:
-		// value_from is resolved by middleware before IaC runs.
-		// This branch should not be reached in practice.
-		return ""
-	default:
-		return ""
-	}
 }

@@ -1,15 +1,8 @@
-# Create Resource Group
-resource "azurerm_resource_group" "aks" {
-  name     = local.resource_group_name
-  location = var.spec.region
-  tags     = local.tags
-}
-
 # Create Azure Kubernetes Service (AKS) Cluster
 resource "azurerm_kubernetes_cluster" "aks" {
   name                = local.cluster_name
-  location            = azurerm_resource_group.aks.location
-  resource_group_name = azurerm_resource_group.aks.name
+  location            = var.spec.region
+  resource_group_name = local.resource_group_name
   dns_prefix          = local.dns_prefix
   kubernetes_version  = var.spec.kubernetes_version
 

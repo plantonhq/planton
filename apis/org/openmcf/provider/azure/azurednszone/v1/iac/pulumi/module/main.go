@@ -36,7 +36,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednszonev1.AzureDnsZoneStack
 		spec.ZoneName,
 		&dns.ZoneArgs{
 			Name:              pulumi.String(spec.ZoneName),
-			ResourceGroupName: pulumi.String(spec.ResourceGroup),
+			ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 			Tags:              pulumi.ToStringMap(locals.AzureTags),
 		},
 		pulumi.Provider(azureProvider))
@@ -58,7 +58,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednszonev1.AzureDnsZoneStack
 				&dns.ARecordArgs{
 					Name:              pulumi.String(recordName),
 					ZoneName:          dnsZone.Name,
-					ResourceGroupName: pulumi.String(spec.ResourceGroup),
+					ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 					Ttl:               pulumi.Int(ttl),
 					Records:           pulumi.ToStringArray(record.Values),
 					Tags:              pulumi.ToStringMap(locals.AzureTags),
@@ -75,7 +75,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednszonev1.AzureDnsZoneStack
 				&dns.AaaaRecordArgs{
 					Name:              pulumi.String(recordName),
 					ZoneName:          dnsZone.Name,
-					ResourceGroupName: pulumi.String(spec.ResourceGroup),
+					ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 					Ttl:               pulumi.Int(ttl),
 					Records:           pulumi.ToStringArray(record.Values),
 					Tags:              pulumi.ToStringMap(locals.AzureTags),
@@ -93,7 +93,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednszonev1.AzureDnsZoneStack
 					&dns.CNameRecordArgs{
 						Name:              pulumi.String(recordName),
 						ZoneName:          dnsZone.Name,
-						ResourceGroupName: pulumi.String(spec.ResourceGroup),
+						ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 						Ttl:               pulumi.Int(ttl),
 						Record:            pulumi.String(record.Values[0]),
 						Tags:              pulumi.ToStringMap(locals.AzureTags),
@@ -120,7 +120,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednszonev1.AzureDnsZoneStack
 				&dns.MxRecordArgs{
 					Name:              pulumi.String(recordName),
 					ZoneName:          dnsZone.Name,
-					ResourceGroupName: pulumi.String(spec.ResourceGroup),
+					ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 					Ttl:               pulumi.Int(ttl),
 					Records:           mxRecords,
 					Tags:              pulumi.ToStringMap(locals.AzureTags),
@@ -137,7 +137,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednszonev1.AzureDnsZoneStack
 				&dns.TxtRecordArgs{
 					Name:              pulumi.String(recordName),
 					ZoneName:          dnsZone.Name,
-					ResourceGroupName: pulumi.String(spec.ResourceGroup),
+					ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 					Ttl:               pulumi.Int(ttl),
 					Records: dns.TxtRecordRecordArray{
 						&dns.TxtRecordRecordArgs{
@@ -158,7 +158,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednszonev1.AzureDnsZoneStack
 				&dns.NsRecordArgs{
 					Name:              pulumi.String(recordName),
 					ZoneName:          dnsZone.Name,
-					ResourceGroupName: pulumi.String(spec.ResourceGroup),
+					ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 					Ttl:               pulumi.Int(ttl),
 					Records:           pulumi.ToStringArray(record.Values),
 					Tags:              pulumi.ToStringMap(locals.AzureTags),
@@ -185,7 +185,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednszonev1.AzureDnsZoneStack
 				&dns.CaaRecordArgs{
 					Name:              pulumi.String(recordName),
 					ZoneName:          dnsZone.Name,
-					ResourceGroupName: pulumi.String(spec.ResourceGroup),
+					ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 					Ttl:               pulumi.Int(ttl),
 					Records:           caaRecords,
 					Tags:              pulumi.ToStringMap(locals.AzureTags),
@@ -213,7 +213,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednszonev1.AzureDnsZoneStack
 				&dns.SrvRecordArgs{
 					Name:              pulumi.String(recordName),
 					ZoneName:          dnsZone.Name,
-					ResourceGroupName: pulumi.String(spec.ResourceGroup),
+					ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 					Ttl:               pulumi.Int(ttl),
 					Records:           srvRecords,
 					Tags:              pulumi.ToStringMap(locals.AzureTags),
@@ -230,7 +230,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednszonev1.AzureDnsZoneStack
 				&dns.PtrRecordArgs{
 					Name:              pulumi.String(recordName),
 					ZoneName:          dnsZone.Name,
-					ResourceGroupName: pulumi.String(spec.ResourceGroup),
+					ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 					Ttl:               pulumi.Int(ttl),
 					Records:           pulumi.ToStringArray(record.Values),
 					Tags:              pulumi.ToStringMap(locals.AzureTags),

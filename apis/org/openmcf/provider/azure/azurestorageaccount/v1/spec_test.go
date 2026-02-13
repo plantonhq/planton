@@ -7,6 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
 func TestAzureStorageAccountSpec(t *testing.T) {
@@ -28,7 +29,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -46,7 +47,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:                 "eastus",
-						ResourceGroup:          "prod-storage-rg",
+						ResourceGroup:          stringRef("prod-storage-rg"),
 						AccountKind:            AzureStorageAccountKind_STORAGE_V2.Enum(),
 						AccountTier:            AzureStorageAccountTier_STANDARD.Enum(),
 						ReplicationType:        AzureStorageReplicationType_GRS.Enum(),
@@ -68,7 +69,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:        "westus2",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						Containers: []*AzureStorageContainer{
 							{
 								Name:       "data",
@@ -94,7 +95,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						NetworkRules: &AzureStorageNetworkRules{
 							DefaultAction:       AzureStorageNetworkAction_DENY.Enum(),
 							BypassAzureServices: boolPtr(true),
@@ -118,7 +119,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						BlobProperties: &AzureStorageBlobProperties{
 							EnableVersioning:                 boolPtr(true),
 							SoftDeleteRetentionDays:          int32Ptr(30),
@@ -139,7 +140,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:          "eastus",
-						ResourceGroup:   "test-rg",
+						ResourceGroup:   stringRef("test-rg"),
 						AccountKind:     AzureStorageAccountKind_BLOCK_BLOB_STORAGE.Enum(),
 						AccountTier:     AzureStorageAccountTier_PREMIUM.Enum(),
 						ReplicationType: AzureStorageReplicationType_LRS.Enum(),
@@ -158,7 +159,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						AccessTier:    AzureStorageAccessTier_COOL.Enum(),
 					},
 				}
@@ -175,7 +176,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:          "eastus",
-						ResourceGroup:   "test-rg",
+						ResourceGroup:   stringRef("test-rg"),
 						ReplicationType: AzureStorageReplicationType_GZRS.Enum(),
 					},
 				}
@@ -196,7 +197,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 						Name: "test-storage-account",
 					},
 					Spec: &AzureStorageAccountSpec{
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -212,7 +213,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:        "",
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -234,21 +235,21 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 
-			ginkgo.It("should return a validation error when resource_group is empty string", func() {
-				input := &AzureStorageAccount{
-					ApiVersion: "azure.openmcf.org/v1",
-					Kind:       "AzureStorageAccount",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-storage-account",
-					},
-					Spec: &AzureStorageAccountSpec{
-						Region:        "eastus",
-						ResourceGroup: "",
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
+		ginkgo.It("should return a validation error when resource_group is nil", func() {
+			input := &AzureStorageAccount{
+				ApiVersion: "azure.openmcf.org/v1",
+				Kind:       "AzureStorageAccount",
+				Metadata: &shared.CloudResourceMetadata{
+					Name: "test-storage-account",
+				},
+				Spec: &AzureStorageAccountSpec{
+					Region:        "eastus",
+					ResourceGroup: nil,
+				},
+			}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+		})
 
 			ginkgo.It("should return a validation error when container name is too short", func() {
 				input := &AzureStorageAccount{
@@ -259,7 +260,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						Containers: []*AzureStorageContainer{
 							{
 								Name: "ab", // Too short, needs at least 3 characters
@@ -281,7 +282,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						Containers: []*AzureStorageContainer{
 							{
 								Name: longName,
@@ -302,7 +303,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						BlobProperties: &AzureStorageBlobProperties{
 							SoftDeleteRetentionDays: int32Ptr(366),
 						},
@@ -321,7 +322,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						BlobProperties: &AzureStorageBlobProperties{
 							ContainerSoftDeleteRetentionDays: int32Ptr(366),
 						},
@@ -348,7 +349,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						Containers:    containers,
 					},
 				}
@@ -371,7 +372,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						NetworkRules: &AzureStorageNetworkRules{
 							IpRules: ipRules,
 						},
@@ -396,7 +397,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 						NetworkRules: &AzureStorageNetworkRules{
 							VirtualNetworkSubnetIds: subnetIds,
 						},
@@ -415,7 +416,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -431,7 +432,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					},
 					Spec: &AzureStorageAccountSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -444,7 +445,7 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 					Kind:       "AzureStorageAccount",
 					Spec: &AzureStorageAccountSpec{
 						Region:        "eastus",
-						ResourceGroup: "test-rg",
+						ResourceGroup: stringRef("test-rg"),
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -465,6 +466,10 @@ var _ = ginkgo.Describe("AzureStorageAccountSpec Custom Validation Tests", func(
 		})
 	})
 })
+
+func stringRef(s string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: s}}
+}
 
 // Helper functions for pointer types
 func boolPtr(b bool) *bool {

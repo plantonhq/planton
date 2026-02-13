@@ -70,7 +70,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurekeyvaultv1.AzureKeyVaultSta
 		&keyvault.KeyVaultArgs{
 			Name:              pulumi.String(locals.VaultName),
 			Location:          pulumi.String(spec.Region),
-			ResourceGroupName: pulumi.String(spec.ResourceGroup),
+			ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 			TenantId:          pulumi.String(azureProviderConfig.TenantId),
 			SkuName:           pulumi.String(getSku(spec.GetSku())),
 
@@ -120,7 +120,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurekeyvaultv1.AzureKeyVaultSta
 	ctx.Export(OpVaultName, vault.Name)
 	ctx.Export(OpVaultUri, vault.VaultUri)
 	ctx.Export(OpRegion, pulumi.String(spec.Region))
-	ctx.Export(OpResourceGroup, pulumi.String(spec.ResourceGroup))
+	ctx.Export(OpResourceGroup, pulumi.String(locals.ResourceGroupName))
 
 	// Export secret ID map
 	if len(secretIdMap) > 0 {

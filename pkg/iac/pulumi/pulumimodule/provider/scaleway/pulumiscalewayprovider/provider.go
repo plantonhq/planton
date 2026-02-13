@@ -8,8 +8,8 @@ import (
 	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/pulumi/pulumioutput"
 
 	"github.com/pkg/errors"
-	"github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
+	"github.com/pulumiverse/pulumi-scaleway/sdk/go/scaleway"
 )
 
 // Get builds a pulumi-scaleway Provider using the supplied credential.

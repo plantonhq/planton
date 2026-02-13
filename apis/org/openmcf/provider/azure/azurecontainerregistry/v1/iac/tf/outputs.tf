@@ -14,7 +14,7 @@ output "registry_resource_id" {
 
 output "resource_group_name" {
   description = "Name of the resource group containing the container registry"
-  value       = azurerm_resource_group.acr.name
+  value       = local.resource_group_name
 }
 
 output "registry_name" {

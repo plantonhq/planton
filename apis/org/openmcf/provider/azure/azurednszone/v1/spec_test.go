@@ -7,11 +7,16 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
 func TestAzureDnsZoneSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
 	ginkgo.RunSpecs(t, "AzureDnsZoneSpec Custom Validation Tests")
+}
+
+func stringRef(s string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: s}}
 }
 
 var _ = ginkgo.Describe("AzureDnsZoneSpec Custom Validation Tests", func() {
@@ -28,7 +33,7 @@ var _ = ginkgo.Describe("AzureDnsZoneSpec Custom Validation Tests", func() {
 					},
 					Spec: &AzureDnsZoneSpec{
 						ZoneName:      "example.com",
-						ResourceGroup: "test-resource-group",
+						ResourceGroup: stringRef("test-resource-group"),
 					},
 				}
 				err := protovalidate.Validate(input)

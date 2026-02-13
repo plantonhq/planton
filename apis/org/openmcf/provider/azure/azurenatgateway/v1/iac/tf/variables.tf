@@ -26,6 +26,12 @@ variable "spec" {
 
     # Optional tags to assign to the NAT Gateway resource
     tags = optional(map(string), {})
+
+    # The Azure region where the NAT Gateway will be deployed
+    region = string
+
+    # The Azure Resource Group where the NAT Gateway will be created
+    resource_group = string
   })
 
   validation {

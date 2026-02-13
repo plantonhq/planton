@@ -26,6 +26,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurevirtualmachinev1.AzureVirtu
 	}
 
 	// Get inputs
+	locals := initializeLocals(ctx, stackInput)
 	target := stackInput.Target
 	spec := target.Spec
 	metadata := target.Metadata
@@ -46,7 +47,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurevirtualmachinev1.AzureVirtu
 	nicName := metadata.Name + "-nic"
 	nicArgs := &network.NetworkInterfaceArgs{
 		NetworkInterfaceName: pulumi.String(nicName),
-		ResourceGroupName:    pulumi.String(spec.ResourceGroup),
+		ResourceGroupName:    pulumi.String(locals.ResourceGroupName),
 		Location:             pulumi.String(spec.Region),
 		IpConfigurations: network.NetworkInterfaceIPConfigurationArray{
 			&network.NetworkInterfaceIPConfigurationArgs{
@@ -102,7 +103,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurevirtualmachinev1.AzureVirtu
 
 		publicIp, err = network.NewPublicIPAddress(ctx, pipName, &network.PublicIPAddressArgs{
 			PublicIpAddressName:      pulumi.String(pipName),
-			ResourceGroupName:        pulumi.String(spec.ResourceGroup),
+			ResourceGroupName:        pulumi.String(locals.ResourceGroupName),
 			Location:                 pulumi.String(spec.Region),
 			PublicIPAllocationMethod: pulumi.String(pipAllocation),
 			Sku: &network.PublicIPAddressSkuArgs{
@@ -118,7 +119,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurevirtualmachinev1.AzureVirtu
 	// Build VM arguments
 	vmArgs := &compute.VirtualMachineArgs{
 		VmName:            pulumi.String(metadata.Name),
-		ResourceGroupName: pulumi.String(spec.ResourceGroup),
+		ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 		Location:          pulumi.String(spec.Region),
 		HardwareProfile: &compute.HardwareProfileArgs{
 			VmSize: pulumi.String(vmSize),

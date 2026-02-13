@@ -15,8 +15,9 @@ variable "spec" {
   description = "Specification for Azure Container Registry"
   type = object({
     # Required fields
-    region        = string
-    registry_name = string
+    region         = string
+    resource_group = string
+    registry_name  = string
 
     # Optional fields
     sku                       = optional(string, "STANDARD")

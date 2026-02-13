@@ -25,7 +25,7 @@ output "managed_identity_principal_id" {
 
 output "resource_group_name" {
   description = "Name of the resource group containing the AKS cluster"
-  value       = azurerm_resource_group.aks.name
+  value       = local.resource_group_name
 }
 
 output "cluster_name" {

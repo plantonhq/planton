@@ -8,6 +8,7 @@ package azurekeyvaultv1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -138,9 +139,9 @@ type AzureKeyVaultSpec struct {
 	// The Azure region where the Key Vault will be deployed (e.g., "eastus", "westus2", "westeurope").
 	// This is required as Key Vault is a regional service.
 	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
-	// The Azure Resource Group name where the Key Vault will be created.
-	// The resource group must already exist.
-	ResourceGroup string `protobuf:"bytes,2,opt,name=resource_group,json=resourceGroup,proto3" json:"resource_group,omitempty"`
+	// The Azure Resource Group where the Key Vault will be created.
+	// Can be a literal string or a reference to an AzureResourceGroup output.
+	ResourceGroup *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=resource_group,json=resourceGroup,proto3" json:"resource_group,omitempty"`
 	// The SKU tier for the Key Vault.
 	// - STANDARD: Software-protected keys, suitable for most applications
 	// - PREMIUM: HSM-backed keys, required for compliance (PCI-DSS, FIPS 140-2 Level 3)
@@ -207,11 +208,11 @@ func (x *AzureKeyVaultSpec) GetRegion() string {
 	return ""
 }
 
-func (x *AzureKeyVaultSpec) GetResourceGroup() string {
+func (x *AzureKeyVaultSpec) GetResourceGroup() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ResourceGroup
 	}
-	return ""
+	return nil
 }
 
 func (x *AzureKeyVaultSpec) GetSku() AzureKeyVaultSku {
@@ -342,12 +343,11 @@ var File_org_openmcf_provider_azure_azurekeyvault_v1_spec_proto protoreflect.Fil
 
 const file_org_openmcf_provider_azure_azurekeyvault_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"6org/openmcf/provider/azure/azurekeyvault/v1/spec.proto\x12+org.openmcf.provider.azure.azurekeyvault.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xc3\x05\n" +
+	"6org/openmcf/provider/azure/azurekeyvault/v1/spec.proto\x12+org.openmcf.provider.azure.azurekeyvault.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x9f\x06\n" +
 	"\x11AzureKeyVaultSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x121\n" +
-	"\x0eresource_group\x18\x02 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\rresourceGroup\x12b\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\x8c\x01\n" +
+	"\x0eresource_group\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\x90\x03\x92\xd4a\"status.outputs.resource_group_nameR\rresourceGroup\x12b\n" +
 	"\x03sku\x18\x03 \x01(\x0e2=.org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultSkuB\f\x8a\xa6\x1d\bSTANDARDH\x00R\x03sku\x88\x01\x01\x12I\n" +
 	"\x19enable_rbac_authorization\x18\x04 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\x17enableRbacAuthorization\x88\x01\x01\x12E\n" +
 	"\x17enable_purge_protection\x18\x05 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x02R\x15enablePurgeProtection\x88\x01\x01\x12Q\n" +
@@ -396,16 +396,18 @@ var file_org_openmcf_provider_azure_azurekeyvault_v1_spec_proto_goTypes = []any{
 	(AzureKeyVaultNetworkAction)(0),  // 1: org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultNetworkAction
 	(*AzureKeyVaultSpec)(nil),        // 2: org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultSpec
 	(*AzureKeyVaultNetworkAcls)(nil), // 3: org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultNetworkAcls
+	(*v1.StringValueOrRef)(nil),      // 4: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_azure_azurekeyvault_v1_spec_proto_depIdxs = []int32{
-	0, // 0: org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultSpec.sku:type_name -> org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultSku
-	3, // 1: org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultSpec.network_acls:type_name -> org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultNetworkAcls
-	1, // 2: org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultNetworkAcls.default_action:type_name -> org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultNetworkAction
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	4, // 0: org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultSpec.resource_group:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	0, // 1: org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultSpec.sku:type_name -> org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultSku
+	3, // 2: org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultSpec.network_acls:type_name -> org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultNetworkAcls
+	1, // 3: org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultNetworkAcls.default_action:type_name -> org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultNetworkAction
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_azure_azurekeyvault_v1_spec_proto_init() }

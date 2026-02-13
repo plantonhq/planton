@@ -12,7 +12,6 @@ go_library(
     deps = [
         "//apis/org/openmcf/provider/azure/azureloganalyticsworkspace/v1:azureloganalyticsworkspace",
         "//apis/org/openmcf/shared/cloudresourcekind",
-        "//apis/org/openmcf/shared/foreignkey/v1:foreignkey",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_azure_sdk_v6//go/azure",
         "@com_github_pulumi_pulumi_azure_sdk_v6//go/azure/operationalinsights",
