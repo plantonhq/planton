@@ -1,0 +1,213 @@
+---
+description: Action rule to audit an existing catalog-page.md for consistency, correctness, and adherence to the catalog page standard.
+globs: []
+alwaysApply: false
+---
+
+# Rule: Audit Catalog Page
+
+**Purpose**: Guide an AI agent through auditing an existing `catalog-page.md` file for a deployment component. Verifies structural consistency, source code accuracy, tone adherence, and formatting against the established standard.
+
+**Trigger**: User references this rule or asks to audit/verify/review a catalog page.
+
+**Output**: An audit report listing issues found, organized by severity (Critical, Warning, Style), with specific fixes for each issue.
+
+---
+
+## Audit Procedure
+
+### Step 1: Read Source Files
+
+Before auditing, read the following files for the component:
+
+1. `v1/api.proto` — verify apiVersion and kind
+2. `v1/spec.proto` — verify all fields in Configuration Reference
+3. `v1/stack_outputs.proto` — verify all outputs in Stack Outputs
+4. `v1/iac/pulumi/module/main.go` — verify What Gets Created
+5. `v1/iac/pulumi/module/*.go` — verify all resources listed
+
+### Step 2: Run Structural Checks
+
+Verify the catalog page contains all required sections in the correct order:
+
+```
+1. H1 title
+2. Overview paragraph (no heading)
+3. ## What Gets Created
+4. ## Prerequisites
+5. ## Quick Start
+6. ## Configuration Reference
+   - ### Required Fields
+   - ### Optional Fields
+7. ## Examples
+   - At least 3 H3 sub-sections
+8. ## Stack Outputs
+9. ## Related Components
+```
+
+**Critical issues:**
+- Missing required section
+- Sections out of order
+- Extra sections not in the standard (e.g., "## Overview", "## Conclusion", "## What's Not Implemented")
+
+### Step 3: Run Field Verification
+
+**Configuration Reference completeness:**
+- Every field in spec.proto must appear in either Required Fields or Optional Fields
+- Field names must be in camelCase (JSON serialization)
+- Types must be accurate (string, bool, int, enum, etc.)
+- Validation rules from `buf.validate` must be documented
+- Default values from `recommended_default` annotations must be listed
+- `StringValueOrRef` fields must note the `valueFrom` capability and the `default_kind`
+
+**Stack Outputs completeness:**
+- Every field in stack_outputs.proto must appear in the Stack Outputs table
+- Field names must match the proto field names (snake_case)
+- Types must be accurate
+
+**What Gets Created accuracy:**
+- Every resource created in the Pulumi module must be listed
+- No resources listed that aren't actually created
+- Conditional resources must note their conditions
+
+### Step 4: Run Manifest Verification
+
+For every YAML manifest in the page:
+
+- `apiVersion` matches the const in api.proto
+- `kind` matches the const in api.proto
+- `metadata.name` is present
+- `metadata.labels` includes `openmcf.org/provisioner` and stack labels
+- All spec field names are camelCase
+- All spec field values are valid types (string, bool, int — not quoted booleans, etc.)
+- Required fields (per spec.proto) are present in the Quick Start manifest
+- No fields that don't exist in spec.proto
+
+### Step 5: Run Tone and Persona Audit
+
+Check that the page reads like it was written by the same senior documentation writer who wrote the exemplars. Flag:
+
+**Critical tone issues:**
+- Marketing language: "seamless", "effortless", "powerful", "robust", "cutting-edge", "game-changing", "revolutionary"
+- Research-style prose: deployment maturity spectrums, tool comparisons, historical context
+- Explaining the cloud service itself rather than what OpenMCF does with it
+- Speculative content about unimplemented features
+- Filler introductions or conclusions
+
+**Warning tone issues:**
+- Overly terse reference-only style missing helpful context
+- Inconsistent formality (mixing casual and formal tone)
+- Unnecessary adjectives that don't add information
+
+**Style checks:**
+- Quick Start: Is it approachable for a less experienced ops engineer?
+- Configuration Reference: Is it complete enough for a power user?
+- Examples: Do they progress from simple to complex?
+- Overview paragraph: Is it 1-3 sentences (not a full paragraph)?
+
+### Step 6: Run Boundary Checks
+
+- Zero references to "Planton", "planton.ai", or any commercial platform
+- Zero references to SaaS, web console, hosted service
+- Zero references to Infra Hub, Service Hub, Cloud Ops, Runner, Connect, Security
+- Zero references to `webapp:*`, `cloud-resource:*`, `credential:*` commands
+- Only acceptable Planton reference: `plantonhq` in GitHub URLs
+
+### Step 7: Run Formatting Checks
+
+- No frontmatter (build script adds it)
+- Field names in camelCase in YAML manifests
+- Code blocks use correct language tags (`yaml`, `shell`)
+- Tables use consistent column alignment
+- Links use absolute paths from docs root (`/docs/catalog/...`)
+- No emoji in prose
+- H1 is the component display name, not the proto kind
+- H2s match the exact section names from the standard
+- H3s under Examples have descriptive use-case names
+
+### Step 8: Cross-Reference with Exemplars
+
+Compare the audited page against the AWS ALB exemplar at:
+
+```
+apis/org/openmcf/provider/aws/awsalb/v1/catalog-page.md
+```
+
+Check for:
+- Similar density of detail in Configuration Reference tables
+- Similar number and progression of examples
+- Similar level of description in What Gets Created bullets
+- Consistent table column formatting
+- Similar overview paragraph length and style
+
+---
+
+## Audit Report Format
+
+Present findings organized by severity:
+
+```markdown
+## Catalog Page Audit: {Component Name}
+
+### Critical Issues (must fix)
+- [ ] {Issue description} — {specific fix}
+
+### Warnings (should fix)
+- [ ] {Issue description} — {specific fix}
+
+### Style Notes (optional fix)
+- [ ] {Issue description} — {suggested improvement}
+
+### Summary
+- Fields in spec.proto: {N}
+- Fields documented: {N}
+- Missing fields: {list or "none"}
+- Output fields in proto: {N}
+- Output fields documented: {N}
+- Missing outputs: {list or "none"}
+- Examples count: {N}
+- Manifest errors: {N}
+- Boundary violations: {N}
+```
+
+---
+
+## Severity Definitions
+
+**Critical** — The page is factually incorrect, structurally broken, or violates the boundary rule. Must be fixed before the page can ship.
+- Missing or extra sections
+- Incorrect field names, types, or defaults
+- Missing required fields in Configuration Reference
+- Manifest examples with non-existent fields
+- Planton/SaaS references
+- Resources listed in What Gets Created that don't exist in the module
+
+**Warning** — The page is technically correct but has quality issues that should be addressed.
+- Missing optional fields that are important for the component
+- Tone deviations (marketing language, research prose)
+- Missing foreign key reference documentation
+- Examples that don't progress from simple to complex
+- Inconsistent formatting compared to exemplars
+
+**Style** — Minor improvements that would bring the page closer to exemplar quality.
+- Table column alignment inconsistencies
+- Slightly verbose descriptions that could be tightened
+- Example names that could be more descriptive
+- Related Components that could include additional relevant references
+
+---
+
+## Batch Audit Mode
+
+When auditing multiple catalog pages at once, produce a summary table:
+
+```markdown
+| Component | Critical | Warnings | Style | Status |
+|-----------|----------|----------|-------|--------|
+| AwsAlb | 0 | 1 | 2 | Pass |
+| KubernetesPostgres | 2 | 0 | 1 | Fail |
+```
+
+Status:
+- **Pass**: Zero critical issues
+- **Fail**: One or more critical issues

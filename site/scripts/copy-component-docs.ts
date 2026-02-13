@@ -244,8 +244,11 @@ function scanProvider(providerPath: string, provider: string): ComponentDoc[] {
       continue;
     }
 
-    // Check for v1/docs/README.md at this level
-    const docPath = path.join(componentPath, 'v1', 'docs', 'README.md');
+    // Prefer catalog-page.md (hand-written), fall back to docs/README.md (legacy)
+    const catalogPath = path.join(componentPath, 'v1', 'catalog-page.md');
+    const legacyPath = path.join(componentPath, 'v1', 'docs', 'README.md');
+    const docPath = fs.existsSync(catalogPath) ? catalogPath : legacyPath;
+    const isCatalogPage = fs.existsSync(catalogPath);
     
     if (fs.existsSync(docPath)) {
       const content = fs.readFileSync(docPath, 'utf-8');
@@ -270,7 +273,9 @@ function scanProvider(providerPath: string, provider: string): ComponentDoc[] {
           continue;
         }
         
-        const subDocPath = path.join(subComponentPath, 'v1', 'docs', 'README.md');
+        const subCatalogPath = path.join(subComponentPath, 'v1', 'catalog-page.md');
+        const subLegacyPath = path.join(subComponentPath, 'v1', 'docs', 'README.md');
+        const subDocPath = fs.existsSync(subCatalogPath) ? subCatalogPath : subLegacyPath;
         
         if (fs.existsSync(subDocPath)) {
           const content = fs.readFileSync(subDocPath, 'utf-8');
@@ -498,7 +503,8 @@ async function copyComponentDocs(): Promise<void> {
         try {
           writeComponentDoc(doc, siteDocsRoot);
           stats.copied++;
-          console.log(`   ✓ ${doc.component}`);
+          const sourceType = doc.sourcePath.endsWith('catalog-page.md') ? 'catalog-page' : 'legacy';
+          console.log(`   ✓ ${doc.component} (${sourceType})`);
         } catch (error) {
           console.error(`   ✗ ${doc.component}: ${error}`);
           stats.skipped++;
