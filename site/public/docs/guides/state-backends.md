@@ -7,22 +7,9 @@ order: 25
 
 # State Backends
 
-State backends store the state of your infrastructure, tracking what resources exist and their current configuration. OpenMCF supports automatic backend detection from manifest labels for all three provisioners: Pulumi, OpenTofu, and Terraform.
+This guide covers how to configure state storage for Pulumi, OpenTofu, and Terraform deployments. OpenMCF reads backend configuration from manifest labels and CLI flags, eliminating the need for separate backend configuration files.
 
----
-
-## Overview
-
-Infrastructure as Code tools need to track what they've deployed. This tracking happens through "state" - a record of resources, their properties, and their relationships. Where this state is stored is the "backend."
-
-**Why backends matter:**
-
-- **Collaboration**: Teams need shared state to avoid conflicts
-- **Persistence**: State survives beyond your local machine
-- **Locking**: Prevents simultaneous modifications
-- **History**: Enables rollbacks and auditing
-
-OpenMCF automatically detects backend configuration from labels in your manifest, eliminating the need for separate backend configuration files.
+For the conceptual overview of state management — what state is, why it matters, and how each engine handles it — see [State Management](../concepts/state-management).
 
 ---
 
@@ -827,18 +814,10 @@ Enter endpoint: _
 
 ---
 
-## Related Documentation
+## What's Next
 
-- [Unified Commands](/docs/cli/unified-commands) - Using apply, destroy, init, plan, refresh
-- [Credentials Guide](/docs/guides/credentials) - Setting up cloud provider credentials
-- [Kustomize Integration](/docs/guides/kustomize) - Multi-environment deployments
-- [OpenTofu Commands](/docs/cli/tofu-commands) - OpenTofu-specific details
-- [CLI Reference](/docs/cli/cli-reference) - Complete command reference
-
----
-
-## Getting Help
-
-**Questions?** [GitHub Discussions](https://github.com/plantonhq/openmcf/discussions)
-
-**Found a bug?** [Open an issue](https://github.com/plantonhq/openmcf/issues)
+- [State Management](../concepts/state-management) — Conceptual overview of state in OpenMCF
+- [Unified Commands](/docs/cli/unified-commands) — Using apply, destroy, init, plan, refresh
+- [Credentials](./credentials) — Setting up cloud provider credentials
+- [Kustomize Integration](./kustomize) — Multi-environment deployments with per-environment state
+- [CLI Reference](/docs/cli/cli-reference) — Complete command and flag reference

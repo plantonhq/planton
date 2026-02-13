@@ -1,13 +1,13 @@
 ---
 title: "Advanced Usage"
-description: "Advanced OpenMCF techniques - runtime overrides, URL manifests, validation, module customization, and power-user workflows"
-icon: "settings"
-order: 5
+description: "Advanced OpenMCF techniques — runtime overrides, URL manifests, module customization, and power-user workflows"
+icon: "gear"
+order: 60
 ---
 
-# Advanced Usage Guide
+# Advanced Usage
 
-Master advanced OpenMCF techniques for power users and complex scenarios.
+Advanced techniques for power users and complex deployment scenarios. This page assumes familiarity with [Writing Manifests](./manifests), [Kustomize Integration](./kustomize), and the [CLI Reference](/docs/cli/cli-reference).
 
 ---
 
@@ -214,156 +214,29 @@ https://github.com/myorg/manifests/blob/main/database.yaml
 
 ---
 
-## Validation Command
+## Validation and Load-Manifest
 
-Validate manifests before deploying to catch errors early.
-
-### Basic Validation
+Use `openmcf validate` to catch errors before deployment, and `openmcf load-manifest` to inspect the effective manifest with defaults and overrides applied. For detailed usage of these commands, see [Configuration](/docs/cli/configuration).
 
 ```bash
-# Validate a single manifest
-openmcf validate -f database.yaml
-
-# If valid, no output (exit code 0)
-# If invalid, shows detailed errors
-```
-
-### What Gets Validated
-
-**1. Schema validation**: Fields match proto definition  
-**2. Type validation**: Values are correct types (string, int, bool)  
-**3. Field constraints**: Proto-validate rules (min/max, patterns, etc.)  
-**4. Required fields**: All required fields present  
-**5. Custom rules**: CEL expressions for complex validation
-
-### Example Validation Errors
-
-```bash
-$ openmcf validate -f bad-config.yaml
-
-╔═══════════════════════════════════════════════════════════╗
-║                 ❌  MANIFEST VALIDATION FAILED            ║
-╚═══════════════════════════════════════════════════════════╝
-
-⚠️  Validation Errors:
-
-spec.container.replicas: value must be >= 1 and <= 10 (got: 15)
-spec.container.cpu: value must match pattern "^[0-9]+m$" (got: "2cores")
-spec.container.image.repo: value is required
-```
-
-### Pre-Deployment Workflow
-
-```bash
-# ✅ Good: Validate before deploying
+# Validate manifest
 openmcf validate -f resource.yaml
-# See errors immediately (2 seconds)
 
-openmcf pulumi up -f resource.yaml
-# Deploy with confidence
+# Inspect effective manifest with defaults
+openmcf load-manifest -f resource.yaml
 
-# ⚠️ Risky: Deploy without validation
-openmcf pulumi up -f resource.yaml
-# Might fail after 5 minutes of deployment
-```
+# Inspect with overrides applied
+openmcf load-manifest -f resource.yaml --set spec.container.replicas=5
 
-### Validation in CI/CD
-
-```yaml
-# GitHub Actions
-- name: Validate Manifests
-  run: |
-    for manifest in ops/manifests/**/*.yaml; do
-      openmcf validate -f $manifest
-    done
-
-- name: Deploy
-  run: openmcf pulumi up -f ops/manifests/prod.yaml --yes
-```
-
----
-
-## Load-Manifest Command
-
-View the effective manifest with defaults applied and overrides resolved.
-
-### Basic Usage
-
-```bash
-# Load and display manifest
-openmcf load-manifest database.yaml
-```
-
-**Output**: YAML with all defaults filled in.
-
-### With Overrides
-
-```bash
-# See what --set would produce
-openmcf load-manifest \
-  -f deployment.yaml \
-  --set spec.replicas=5 \
-  --set spec.container.image.tag=v2.0.0
-```
-
-### With Kustomize
-
-```bash
-# See what kustomize builds
-openmcf load-manifest \
-  --kustomize-dir services/api/kustomize \
-  --overlay prod
-```
-
-### Use Cases
-
-**Debug default application**:
-
-```yaml
-# Your manifest (minimal)
-spec:
-  namespace: custom-ns
-  # version omitted
-
-# Load to see defaults
-$ openmcf load-manifest kubernetes-kubernetes-cert-manager.yaml
-
-# Output shows:
-spec:
-  namespace: custom-ns
-  version: v1.13.0           # ← Default applied
-  helmChartVersion: 1.13.0   # ← Default applied
-```
-
-**Verify kustomize output**:
-
-```bash
-# Make sure your overlay produces expected result
-openmcf load-manifest \
-  --kustomize-dir services/api/kustomize \
-  --overlay prod \
-  | grep "replicas:"
-
-# Should show: replicas: 3 (from prod overlay)
-```
-
-**Test --set before deploying**:
-
-```bash
-# Verify override works as expected
-openmcf load-manifest \
-  -f api.yaml \
-  --set spec.container.image.tag=v2.0.0 \
-  | grep "tag:"
-
-# Should show: tag: v2.0.0
+# Inspect kustomize output
+openmcf load-manifest --kustomize-dir services/api/kustomize --overlay prod
 ```
 
 ---
 
 ## Module Directory Override
 
-Customize or test IaC modules locally before deploying.
+Customize or test IaC modules locally before deploying. For the conceptual overview of how module resolution works (direct, binary, staging), see [Module System](../concepts/module-system).
 
 ### When to Use --module-dir
 
@@ -667,47 +540,6 @@ openmcf pulumi up \
   --set spec.container.image.tag=$IMAGE_TAG
 ```
 
-### Pattern 3: Manifest Generation
-
-Generate manifests programmatically:
-
-```python
-#!/usr/bin/env python3
-import yaml
-
-def generate_manifest(name, replicas, memory):
-    manifest = {
-        'apiVersion': 'kubernetes.openmcf.org/v1',
-        'kind': 'MicroserviceKubernetes',
-        'metadata': {'name': name},
-        'spec': {
-            'container': {
-                'replicas': replicas,
-                'resources': {
-                    'limits': {
-                        'memory': memory
-                    }
-                }
-            }
-        }
-    }
-    
-    with open(f'{name}.yaml', 'w') as f:
-        yaml.dump(manifest, f)
-
-# Generate manifests
-generate_manifest('api', 3, '2Gi')
-generate_manifest('worker', 5, '4Gi')
-```
-
-Then deploy:
-
-```bash
-python3 generate-manifests.py
-openmcf pulumi up -f api.yaml
-openmcf pulumi up -f worker.yaml
-```
-
 ---
 
 ## Debugging Techniques
@@ -885,21 +717,11 @@ openmcf pulumi up \
 
 ---
 
-## Related Documentation
+## What's Next
 
-- [Manifest Structure](/docs/guides/manifests) - Understanding manifests
-- [Kustomize Integration](/docs/guides/kustomize) - Detailed kustomize guide
-- [Pulumi Commands](/docs/cli/pulumi-commands) - Pulumi deployment
-- [OpenTofu Commands](/docs/cli/tofu-commands) - OpenTofu deployment
-
----
-
-## Next Steps
-
-1. **Experiment with --set**: Try overriding values in a test manifest
-2. **Set up Kustomize**: Create overlays for your environments
-3. **Create Scripts**: Automate your common deployment workflows
-4. **Test Validation**: Add validate step to your CI/CD pipeline
-
-Master these advanced techniques to unlock OpenMCF's full power for complex deployment scenarios.
+- [Writing Manifests](./manifests) — Manifest structure and best practices
+- [Kustomize Integration](./kustomize) — Multi-environment overlay workflows
+- [CI/CD Integration](./cicd-integration) — Automation patterns for pipelines
+- [Module System](../concepts/module-system) — How module resolution works
+- [CLI Reference](/docs/cli/cli-reference) — Complete command and flag reference
 
