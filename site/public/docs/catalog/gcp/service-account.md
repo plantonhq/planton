@@ -182,7 +182,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project where the service account is created
-- [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — GKE clusters that may use this service account for workload identity
-- [GcpDnsZone](/docs/catalog/gcp/gcpdnszone) — DNS zones that can reference service accounts in `iamServiceAccounts`
-- [GcpCloudRun](/docs/catalog/gcp/gcpcloudrun) — Cloud Run services that may run under this service account
+- [GcpProject](/docs/catalog/gcp/project) — provides the GCP project where the service account is created
+- [GcpGkeCluster](/docs/catalog/gcp/gke-cluster) — GKE clusters that may use this service account for workload identity
+- [GcpDnsZone](/docs/catalog/gcp/dns-zone) — DNS zones that can reference service accounts in `iamServiceAccounts`
+- [GcpCloudRun](/docs/catalog/gcp/cloud-run) — Cloud Run services that may run under this service account

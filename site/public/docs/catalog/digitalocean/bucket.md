@@ -148,5 +148,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [DigitalOceanCertificate](/docs/catalog/digitalocean/digitaloceancertificate) — provides TLS certificates for CDN custom domains serving bucket content
-- [DigitalOceanDnsRecord](/docs/catalog/digitalocean/digitaloceandnsrecord) — creates DNS records pointing to the bucket endpoint
+- [DigitalOceanCertificate](/docs/catalog/digitalocean/certificate) — provides TLS certificates for CDN custom domains serving bucket content
+- [DigitalOceanDnsRecord](/docs/catalog/digitalocean/dns-record) — creates DNS records pointing to the bucket endpoint

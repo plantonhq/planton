@@ -172,6 +172,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [DigitalOceanVpc](/docs/catalog/digitalocean/digitaloceanvpc) — provides the VPC for private network placement
-- [DigitalOceanKubernetesCluster](/docs/catalog/digitalocean/digitaloceankubernetescluster) — commonly co-deployed to run applications that consume the database
-- [DigitalOceanFirewall](/docs/catalog/digitalocean/digitaloceanfirewall) — controls network access to the database cluster
+- [DigitalOceanVpc](/docs/catalog/digitalocean/vpc) — provides the VPC for private network placement
+- [DigitalOceanKubernetesCluster](/docs/catalog/digitalocean/kubernetes-cluster) — commonly co-deployed to run applications that consume the database
+- [DigitalOceanFirewall](/docs/catalog/digitalocean/firewall) — controls network access to the database cluster

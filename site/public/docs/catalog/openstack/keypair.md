@@ -136,6 +136,6 @@ The private key is intentionally excluded from stack outputs. When OpenStack gen
 
 ## Related Components
 
-- [OpenStackInstance](/docs/catalog/openstack/openstackinstance) — launches compute instances that reference keypairs for SSH access
-- [OpenStackSecurityGroup](/docs/catalog/openstack/openstacksecuritygroup) — defines firewall rules, including SSH (port 22) ingress required for keypair-based access
-- [OpenStackNetwork](/docs/catalog/openstack/openstacknetwork) — provides the network connectivity for SSH access to instances
+- [OpenStackInstance](/docs/catalog/openstack/instance) — launches compute instances that reference keypairs for SSH access
+- [OpenStackSecurityGroup](/docs/catalog/openstack/security-group) — defines firewall rules, including SSH (port 22) ingress required for keypair-based access
+- [OpenStackNetwork](/docs/catalog/openstack/network) — provides the network connectivity for SSH access to instances

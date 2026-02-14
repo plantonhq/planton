@@ -299,8 +299,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project where the function is created
-- [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — creates service accounts for `serviceConfig.serviceAccountEmail` and event trigger identity
-- [GcpSecretsManager](/docs/catalog/gcp/gcpsecretsmanager) — manages secrets referenced in `serviceConfig.secretEnvironmentVariables`
-- [GcpGcsBucket](/docs/catalog/gcp/gcpgcsbucket) — stores the function source code archive and can be an event trigger source
-- [GcpVpc](/docs/catalog/gcp/gcpvpc) — network for VPC connector used by `serviceConfig.vpcConnector`
+- [GcpProject](/docs/catalog/gcp/project) — provides the GCP project where the function is created
+- [GcpServiceAccount](/docs/catalog/gcp/service-account) — creates service accounts for `serviceConfig.serviceAccountEmail` and event trigger identity
+- [GcpSecretsManager](/docs/catalog/gcp/secrets-manager) — manages secrets referenced in `serviceConfig.secretEnvironmentVariables`
+- [GcpGcsBucket](/docs/catalog/gcp/gcs-bucket) — stores the function source code archive and can be an event trigger source
+- [GcpVpc](/docs/catalog/gcp/vpc) — network for VPC connector used by `serviceConfig.vpcConnector`

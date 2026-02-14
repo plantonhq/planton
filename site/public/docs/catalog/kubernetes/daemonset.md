@@ -405,7 +405,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — commonly referenced for service endpoint environment variables
-- [KubernetesSecret](/docs/catalog/kubernetes/kubernetessecret) — provides pre-existing secrets that can be referenced via `secretRef`
-- [KubernetesService](/docs/catalog/kubernetes/kubernetesservice) — can expose DaemonSet pod ports as a Service for cluster-internal access
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — commonly referenced for service endpoint environment variables
+- [KubernetesSecret](/docs/catalog/kubernetes/secret) — provides pre-existing secrets that can be referenced via `secretRef`
+- [KubernetesService](/docs/catalog/kubernetes/service) — can expose DaemonSet pod ports as a Service for cluster-internal access

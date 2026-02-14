@@ -1,0 +1,14 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureFunctionApp
+metadata:
+  name: test-fn
+spec:
+  region: eastus
+  resource_group: test-rg
+  name: test-function-app
+  service_plan_id: /subscriptions/sub/resourceGroups/rg/providers/Microsoft.Web/serverfarms/plan
+  storage_account_name: teststorage
+  storage_account_access_key: dGVzdC1rZXk=
+  site_config:
+    application_stack:
+      python_version: "3.12"

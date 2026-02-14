@@ -260,8 +260,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesCronJob](/docs/catalog/kubernetes/kubernetescronjob) — runs jobs on a recurring schedule rather than as a one-shot execution
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — runs containers continuously as long-lived services
-- [KubernetesPostgres](/docs/catalog/kubernetes/kubernetespostgres) — commonly referenced for database connection environment variables
-- [KubernetesRedis](/docs/catalog/kubernetes/kubernetesredis) — commonly referenced for cache connection environment variables
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesCronJob](/docs/catalog/kubernetes/cronjob) — runs jobs on a recurring schedule rather than as a one-shot execution
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — runs containers continuously as long-lived services
+- [KubernetesPostgres](/docs/catalog/kubernetes/postgres) — commonly referenced for database connection environment variables
+- [KubernetesRedis](/docs/catalog/kubernetes/redis) — commonly referenced for cache connection environment variables

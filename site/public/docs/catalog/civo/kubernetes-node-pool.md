@@ -166,7 +166,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CivoKubernetesCluster](/docs/catalog/civo/civokubernetescluster) — the parent cluster to which the node pool is added
-- [CivoVpc](/docs/catalog/civo/civovpc) — provides the network used by the cluster
-- [CivoFirewall](/docs/catalog/civo/civofirewall) — controls network access to cluster nodes
-- [CivoVolume](/docs/catalog/civo/civovolume) — provides persistent block storage for workloads running on the node pool
+- [CivoKubernetesCluster](/docs/catalog/civo/kubernetes-cluster) — the parent cluster to which the node pool is added
+- [CivoVpc](/docs/catalog/civo/vpc) — provides the network used by the cluster
+- [CivoFirewall](/docs/catalog/civo/firewall) — controls network access to cluster nodes
+- [CivoVolume](/docs/catalog/civo/volume) — provides persistent block storage for workloads running on the node pool

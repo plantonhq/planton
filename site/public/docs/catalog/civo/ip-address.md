@@ -136,7 +136,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CivoComputeInstance](/docs/catalog/civo/civocomputeinstance) — attach the reserved IP to a compute instance for a stable public address
-- [CivoDnsRecord](/docs/catalog/civo/civodnsrecord) — create DNS records pointing to the reserved IP
-- [CivoFirewall](/docs/catalog/civo/civofirewall) — control inbound traffic to resources using this IP
-- [CivoVpc](/docs/catalog/civo/civovpc) — private network for the resources that use this IP
+- [CivoComputeInstance](/docs/catalog/civo/compute-instance) — attach the reserved IP to a compute instance for a stable public address
+- [CivoDnsRecord](/docs/catalog/civo/dns-record) — create DNS records pointing to the reserved IP
+- [CivoFirewall](/docs/catalog/civo/firewall) — control inbound traffic to resources using this IP
+- [CivoVpc](/docs/catalog/civo/vpc) — private network for the resources that use this IP

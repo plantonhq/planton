@@ -152,5 +152,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [ScalewayKapsuleCluster](/docs/catalog/scaleway/scalewaykapsulecluster) — deploys Kubernetes clusters whose workloads pull images from this registry via imagePullSecrets
-- [ScalewayPrivateNetwork](/docs/catalog/scaleway/scalewayprivatenetwork) — provides private connectivity for workloads accessing the registry
+- [ScalewayKapsuleCluster](/docs/catalog/scaleway/kapsule-cluster) — deploys Kubernetes clusters whose workloads pull images from this registry via imagePullSecrets
+- [ScalewayPrivateNetwork](/docs/catalog/scaleway/private-network) — provides private connectivity for workloads accessing the registry

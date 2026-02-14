@@ -156,5 +156,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackProject](/docs/catalog/openstack/openstackproject) — the project scope that the application credential is bound to
-- [OpenStackRoleAssignment](/docs/catalog/openstack/openstackroleassignment) — manages role assignments that determine what actions the credential can perform
+- [OpenStackProject](/docs/catalog/openstack/project) — the project scope that the application credential is bound to
+- [OpenStackRoleAssignment](/docs/catalog/openstack/role-assignment) — manages role assignments that determine what actions the credential can perform

@@ -326,8 +326,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — for long-running workloads instead of scheduled jobs
-- [KubernetesPostgres](/docs/catalog/kubernetes/kubernetespostgres) — commonly referenced for database connection environment variables
-- [KubernetesRedis](/docs/catalog/kubernetes/kubernetesredis) — commonly referenced for cache connection environment variables
-- [KubernetesSecret](/docs/catalog/kubernetes/kubernetessecret) — for managing secrets that CronJobs reference via `secretRef`
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — for long-running workloads instead of scheduled jobs
+- [KubernetesPostgres](/docs/catalog/kubernetes/postgres) — commonly referenced for database connection environment variables
+- [KubernetesRedis](/docs/catalog/kubernetes/redis) — commonly referenced for cache connection environment variables
+- [KubernetesSecret](/docs/catalog/kubernetes/secret) — for managing secrets that CronJobs reference via `secretRef`

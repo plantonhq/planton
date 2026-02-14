@@ -192,7 +192,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [DigitalOceanLoadBalancer](/docs/catalog/digitalocean/digitaloceanloadbalancer) -- attach certificates to load balancers for SSL/TLS termination
-- [DigitalOceanDnsZone](/docs/catalog/digitalocean/digitaloceandnszone) -- manage DNS zones in DigitalOcean, a prerequisite for Let's Encrypt certificates
-- [DigitalOceanDnsRecord](/docs/catalog/digitalocean/digitaloceandnsrecord) -- manage individual DNS records under a DigitalOcean-managed domain
-- [DigitalOceanBucket](/docs/catalog/digitalocean/digitaloceanbucket) -- Spaces object storage with CDN endpoints that can use certificates for custom domain HTTPS
+- [DigitalOceanLoadBalancer](/docs/catalog/digitalocean/load-balancer) -- attach certificates to load balancers for SSL/TLS termination
+- [DigitalOceanDnsZone](/docs/catalog/digitalocean/dns-zone) -- manage DNS zones in DigitalOcean, a prerequisite for Let's Encrypt certificates
+- [DigitalOceanDnsRecord](/docs/catalog/digitalocean/dns-record) -- manage individual DNS records under a DigitalOcean-managed domain
+- [DigitalOceanBucket](/docs/catalog/digitalocean/bucket) -- Spaces object storage with CDN endpoints that can use certificates for custom domain HTTPS

@@ -178,7 +178,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project where the repository is created
-- [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — Kubernetes clusters that pull container images from the repository
-- [GcpGkeNodePool](/docs/catalog/gcp/gcpgkenodepool) — node pools that can use the reader service account for image pulls
-- [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — additional service accounts that may need access to the repository
+- [GcpProject](/docs/catalog/gcp/project) — provides the GCP project where the repository is created
+- [GcpGkeCluster](/docs/catalog/gcp/gke-cluster) — Kubernetes clusters that pull container images from the repository
+- [GcpGkeNodePool](/docs/catalog/gcp/gke-node-pool) — node pools that can use the reader service account for image pulls
+- [GcpServiceAccount](/docs/catalog/gcp/service-account) — additional service accounts that may need access to the repository

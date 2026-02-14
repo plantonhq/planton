@@ -177,7 +177,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) — provides the resource group for registry placement
-- [AzureAksCluster](/docs/catalog/azure/azureakscluster) — AKS clusters pull container images from the registry
-- [AzureKeyVault](/docs/catalog/azure/azurekeyvault) — stores registry admin credentials or service principal secrets used for authentication
-- [AzureVpc](/docs/catalog/azure/azurevpc) — provides VNet subnets for private endpoint connectivity to Premium-tier registries
+- [AzureResourceGroup](/docs/catalog/azure/resource-group) — provides the resource group for registry placement
+- [AzureAksCluster](/docs/catalog/azure/aks-cluster) — AKS clusters pull container images from the registry
+- [AzureKeyVault](/docs/catalog/azure/key-vault) — stores registry admin credentials or service principal secrets used for authentication
+- [AzureVpc](/docs/catalog/azure/vpc-virtual-network) — provides VNet subnets for private endpoint connectivity to Premium-tier registries

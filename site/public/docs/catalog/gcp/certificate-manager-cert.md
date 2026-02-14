@@ -185,6 +185,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpDnsZone](/docs/catalog/gcp/gcpdnszone) — provides the Cloud DNS managed zone where validation records are created
-- [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — GKE clusters that may use certificates for ingress TLS termination
-- [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — service accounts that may need permissions to manage certificates
+- [GcpDnsZone](/docs/catalog/gcp/dns-zone) — provides the Cloud DNS managed zone where validation records are created
+- [GcpGkeCluster](/docs/catalog/gcp/gke-cluster) — GKE clusters that may use certificates for ingress TLS termination
+- [GcpServiceAccount](/docs/catalog/gcp/service-account) — service accounts that may need permissions to manage certificates

@@ -59,7 +59,7 @@ Deploy:
 openmcf apply -f solr-operator.yaml
 ```
 
-This installs the Solr Operator v0.9.1 into the `solr-system` namespace with default resource limits. Once the operator is running, you can create SolrCloud clusters using the [KubernetesSolr](/docs/catalog/kubernetes/kubernetessolr) component.
+This installs the Solr Operator v0.9.1 into the `solr-system` namespace with default resource limits. Once the operator is running, you can create SolrCloud clusters using the [KubernetesSolr](/docs/catalog/kubernetes/solr) component.
 
 ## Configuration Reference
 
@@ -187,6 +187,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesSolr](/docs/catalog/kubernetes/kubernetessolr) — deploys SolrCloud clusters that depend on the operator installed by this component
-- [KubernetesCertManager](/docs/catalog/kubernetes/kubernetescertmanager) — manages TLS certificates for SolrCloud ingress when external access is configured
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesSolr](/docs/catalog/kubernetes/solr) — deploys SolrCloud clusters that depend on the operator installed by this component
+- [KubernetesCertManager](/docs/catalog/kubernetes/cert-manager) — manages TLS certificates for SolrCloud ingress when external access is configured

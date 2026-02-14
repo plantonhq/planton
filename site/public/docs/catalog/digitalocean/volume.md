@@ -157,6 +157,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [DigitalOceanDroplet](/docs/catalog/digitalocean/digitaloceandroplet) — the compute instance a volume attaches to; volume and Droplet must share the same region
-- [DigitalOceanVpc](/docs/catalog/digitalocean/digitaloceanvpc) — provides the private network for Droplets that use attached volumes
-- [DigitalOceanFirewall](/docs/catalog/digitalocean/digitaloceanfirewall) — controls network access to Droplets with attached volumes
+- [DigitalOceanDroplet](/docs/catalog/digitalocean/droplet) — the compute instance a volume attaches to; volume and Droplet must share the same region
+- [DigitalOceanVpc](/docs/catalog/digitalocean/vpc) — provides the private network for Droplets that use attached volumes
+- [DigitalOceanFirewall](/docs/catalog/digitalocean/firewall) — controls network access to Droplets with attached volumes

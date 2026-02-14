@@ -189,7 +189,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackLoadBalancer](/docs/catalog/openstack/openstackloadbalancer) — provides the top-level load balancer (VIP) that owns listeners
-- [OpenStackLoadBalancerListener](/docs/catalog/openstack/openstackloadbalancerlistener) — provides the listener that this pool attaches to
-- [OpenStackLoadBalancerMember](/docs/catalog/openstack/openstackloadbalancermember) — adds backend servers to this pool
-- [OpenStackLoadBalancerMonitor](/docs/catalog/openstack/openstackloadbalancermonitor) — attaches health checks to this pool
+- [OpenStackLoadBalancer](/docs/catalog/openstack/load-balancer) — provides the top-level load balancer (VIP) that owns listeners
+- [OpenStackLoadBalancerListener](/docs/catalog/openstack/load-balancer-listener) — provides the listener that this pool attaches to
+- [OpenStackLoadBalancerMember](/docs/catalog/openstack/load-balancer-member) — adds backend servers to this pool
+- [OpenStackLoadBalancerMonitor](/docs/catalog/openstack/load-balancer-monitor) — attaches health checks to this pool

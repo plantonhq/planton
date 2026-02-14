@@ -382,8 +382,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesClickHouse](/docs/catalog/kubernetes/kubernetesclickhouse) — standalone ClickHouse deployment that can be used as an external database for SigNoz
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — application deployments instrumented with OpenTelemetry SDKs that send telemetry to SigNoz
-- [KubernetesIstio](/docs/catalog/kubernetes/kubernetesistio) — provides the Istio ingress gateway used by SigNoz Gateway API resources
-- [KubernetesGatewayApiCrds](/docs/catalog/kubernetes/kubernetesgatewayapicrds) — installs the Gateway API CRDs required for SigNoz ingress configuration
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesClickHouse](/docs/catalog/kubernetes/clickhouse) — standalone ClickHouse deployment that can be used as an external database for SigNoz
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — application deployments instrumented with OpenTelemetry SDKs that send telemetry to SigNoz
+- [KubernetesIstio](/docs/catalog/kubernetes/istio) — provides the Istio ingress gateway used by SigNoz Gateway API resources
+- [KubernetesGatewayApiCrds](/docs/catalog/kubernetes/gateway-api-crds) — installs the Gateway API CRDs required for SigNoz ingress configuration

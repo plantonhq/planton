@@ -255,7 +255,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [ScalewayContainerRegistry](/docs/catalog/scaleway/scalewaycontainerregistry) — provides a managed OCI registry whose endpoint can be referenced via `image.registryEndpoint.valueFrom`
-- [ScalewayPrivateNetwork](/docs/catalog/scaleway/scalewayprivatenetwork) — connects the container to a VPC for internal communication with databases, caches, and other services
-- [ScalewayServerlessFunction](/docs/catalog/scaleway/scalewayserverlessfunction) — deploys source code with a runtime instead of pre-built container images, suited for lightweight event-driven functions
-- [ScalewayDnsRecord](/docs/catalog/scaleway/scalewaydnsrecord) — creates custom domain CNAME records pointing to the container's `domainName` output
+- [ScalewayContainerRegistry](/docs/catalog/scaleway/container-registry) — provides a managed OCI registry whose endpoint can be referenced via `image.registryEndpoint.valueFrom`
+- [ScalewayPrivateNetwork](/docs/catalog/scaleway/private-network) — connects the container to a VPC for internal communication with databases, caches, and other services
+- [ScalewayServerlessFunction](/docs/catalog/scaleway/serverless-function) — deploys source code with a runtime instead of pre-built container images, suited for lightweight event-driven functions
+- [ScalewayDnsRecord](/docs/catalog/scaleway/dns-record) — creates custom domain CNAME records pointing to the container's `domainName` output

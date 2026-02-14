@@ -382,6 +382,23 @@ function scanProvider(providerPath: string, provider: string): ComponentDoc[] {
 }
 
 /**
+ * Rewrite internal catalog links so that component directory names are replaced
+ * with URL-friendly slugs. Source catalog-page.md files use stable directory names
+ * (e.g., /docs/catalog/aws/awsvpc) but the built site uses title-derived slugs
+ * (e.g., /docs/catalog/aws/vpc). This function translates one to the other.
+ */
+function rewriteCatalogLinks(content: string, lookup: Map<string, string>): string {
+  return content.replace(
+    /\/docs\/catalog\/([a-z0-9-]+)\/([a-z0-9-]+)/g,
+    (match, provider, component) => {
+      const key = `${provider}/${component}`;
+      const slugPath = lookup.get(key);
+      return slugPath ? `/docs/catalog/${slugPath}` : match;
+    }
+  );
+}
+
+/**
  * Write component doc to site/public/docs/catalog/{provider}/{slug}.md
  */
 function writeComponentDoc(
@@ -573,6 +590,9 @@ async function copyComponentDocs(): Promise<void> {
 
   console.log(`Scanning ${providers.length} providers...\n`);
 
+  // Phase 1: Scan all providers to collect docs and build the component-to-slug lookup.
+  // Writing is deferred to Phase 2 so that internal catalog links can be rewritten
+  // using the complete lookup (a component in AWS may link to a component in GCP).
   for (const provider of providers) {
     const providerPath = path.join(apisRoot, provider);
     const docs = scanProvider(providerPath, provider);
@@ -580,26 +600,38 @@ async function copyComponentDocs(): Promise<void> {
     if (docs.length > 0) {
       stats.providers.add(provider);
       docsByProvider.set(provider, docs);
-
       console.log(`${provider.toUpperCase()}: Found ${docs.length} components`);
-
-      // Write each component doc
-      for (const doc of docs) {
-        try {
-          writeComponentDoc(doc, siteDocsRoot);
-          stats.copied++;
-          const sourceType = doc.sourcePath.endsWith('catalog-page.md') ? 'catalog-page' : 'legacy';
-          console.log(`   ${doc.component} -> ${doc.slug}.md (${sourceType})`);
-        } catch (error) {
-          console.error(`   FAIL ${doc.component}: ${error}`);
-          stats.skipped++;
-        }
-      }
-
-      // Generate provider index
-      generateProviderIndex(provider, docs, siteDocsRoot);
-      console.log(`   Generated index page\n`);
     }
+  }
+
+  // Build a global lookup from component directory path to URL slug path.
+  // e.g. "aws/awsvpc" -> "aws/vpc", "openstack/openstackinstance" -> "openstack/instance"
+  const componentToSlug = new Map<string, string>();
+  for (const [provider, docs] of docsByProvider) {
+    for (const doc of docs) {
+      componentToSlug.set(`${provider}/${doc.component}`, `${provider}/${doc.slug}`);
+    }
+  }
+
+  console.log(`\nBuilt link lookup for ${componentToSlug.size} components\n`);
+
+  // Phase 2: Write docs with rewritten catalog links, then generate index pages.
+  for (const [provider, docs] of docsByProvider) {
+    for (const doc of docs) {
+      try {
+        doc.content = rewriteCatalogLinks(doc.content, componentToSlug);
+        writeComponentDoc(doc, siteDocsRoot);
+        stats.copied++;
+        const sourceType = doc.sourcePath.endsWith('catalog-page.md') ? 'catalog-page' : 'legacy';
+        console.log(`   ${doc.component} -> ${doc.slug}.md (${sourceType})`);
+      } catch (error) {
+        console.error(`   FAIL ${doc.component}: ${error}`);
+        stats.skipped++;
+      }
+    }
+
+    generateProviderIndex(provider, docs, siteDocsRoot);
+    console.log(`   Generated index page\n`);
   }
 
   // Generate catalog index (now in /docs/catalog/)

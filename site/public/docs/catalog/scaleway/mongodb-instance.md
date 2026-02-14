@@ -220,7 +220,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [ScalewayPrivateNetwork](/docs/catalog/scaleway/scalewayprivatenetwork) — provides private connectivity between the database and application workloads
-- [ScalewayKapsuleCluster](/docs/catalog/scaleway/scalewaykapsulecluster) — deploys Kubernetes clusters whose workloads connect to this database
-- [ScalewayInstance](/docs/catalog/scaleway/scalewayinstance) — deploys compute instances that can connect to the database over a shared Private Network
-- [ScalewayRdbInstance](/docs/catalog/scaleway/scalewayrdbinstance) — alternative managed database component for PostgreSQL and MySQL workloads
+- [ScalewayPrivateNetwork](/docs/catalog/scaleway/private-network) — provides private connectivity between the database and application workloads
+- [ScalewayKapsuleCluster](/docs/catalog/scaleway/kapsule-cluster) — deploys Kubernetes clusters whose workloads connect to this database
+- [ScalewayInstance](/docs/catalog/scaleway/instance) — deploys compute instances that can connect to the database over a shared Private Network
+- [ScalewayRdbInstance](/docs/catalog/scaleway/rdb-instance) — alternative managed database component for PostgreSQL and MySQL workloads

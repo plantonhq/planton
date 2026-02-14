@@ -137,7 +137,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStack Network](/docs/catalog/openstack/openstacknetwork) — creates Neutron networks within the project
-- [OpenStack Security Group](/docs/catalog/openstack/openstacksecuritygroup) — defines firewall rules for instances in the project
-- [OpenStack Router](/docs/catalog/openstack/openstackrouter) — provides routing and external connectivity for project networks
-- [OpenStack Instance](/docs/catalog/openstack/openstackinstance) — launches compute instances within the project
+- [OpenStack Network](/docs/catalog/openstack/network) — creates Neutron networks within the project
+- [OpenStack Security Group](/docs/catalog/openstack/security-group) — defines firewall rules for instances in the project
+- [OpenStack Router](/docs/catalog/openstack/router) — provides routing and external connectivity for project networks
+- [OpenStack Instance](/docs/catalog/openstack/instance) — launches compute instances within the project

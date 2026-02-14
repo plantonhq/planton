@@ -202,7 +202,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CloudflareDnsRecord](/docs/catalog/cloudflare/cloudflarednsrecord) — manages individual DNS records as standalone resources, useful when records are owned by different teams
-- [CloudflareR2Bucket](/docs/catalog/cloudflare/cloudflarer2bucket) — references this zone via `customDomain.zoneId` for custom domain bucket access
-- [CloudflareWorker](/docs/catalog/cloudflare/cloudflareworker) — commonly deployed with DNS routes pointing to Worker endpoints
-- [CloudflareLoadBalancer](/docs/catalog/cloudflare/cloudflareloadbalancer) — load balances traffic across origins within the zone
+- [CloudflareDnsRecord](/docs/catalog/cloudflare/dns-record) — manages individual DNS records as standalone resources, useful when records are owned by different teams
+- [CloudflareR2Bucket](/docs/catalog/cloudflare/r2-bucket) — references this zone via `customDomain.zoneId` for custom domain bucket access
+- [CloudflareWorker](/docs/catalog/cloudflare/worker) — commonly deployed with DNS routes pointing to Worker endpoints
+- [CloudflareLoadBalancer](/docs/catalog/cloudflare/load-balancer) — load balances traffic across origins within the zone

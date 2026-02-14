@@ -166,6 +166,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsRoute53Zone](/docs/catalog/aws/awsroute53zone) — provides the hosted zone where DNS validation records are created
-- [AwsAlb](/docs/catalog/aws/awsalb) — uses the certificate ARN for SSL termination on HTTPS listeners
-- [AwsCloudfront](/docs/catalog/aws/awscloudfront) — uses the certificate ARN for HTTPS on CloudFront distributions
+- [AwsRoute53Zone](/docs/catalog/aws/route53-zone) — provides the hosted zone where DNS validation records are created
+- [AwsAlb](/docs/catalog/aws/alb) — uses the certificate ARN for SSL termination on HTTPS listeners
+- [AwsCloudfront](/docs/catalog/aws/cloudfront) — uses the certificate ARN for HTTPS on CloudFront distributions

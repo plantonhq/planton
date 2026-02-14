@@ -21,7 +21,7 @@ When you deploy a KubernetesGhaRunnerScaleSet resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **KubernetesGhaRunnerScaleSetController** must already be deployed in the cluster (use the [KubernetesGhaRunnerScaleSetController](/docs/catalog/kubernetes/kubernetesgharunnerscalesetcontroller) component)
+- **KubernetesGhaRunnerScaleSetController** must already be deployed in the cluster (use the [KubernetesGhaRunnerScaleSetController](/docs/catalog/kubernetes/gha-runner-scale-set-controller) component)
 - **Kubernetes credentials** configured via environment variables or OpenMCF provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **GitHub authentication** — one of:
@@ -281,7 +281,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesGhaRunnerScaleSetController](/docs/catalog/kubernetes/kubernetesgharunnerscalesetcontroller) — required prerequisite; deploys the controller that watches AutoScalingRunnerSet resources and manages runner pod lifecycle
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — generic Helm release component; use KubernetesGhaRunnerScaleSet instead for GitHub Actions runners since it provides typed configuration and validation
-- [KubernetesSecret](/docs/catalog/kubernetes/kubernetessecret) — can be used to manage the GitHub credentials secret independently when using `existingSecretName`
+- [KubernetesGhaRunnerScaleSetController](/docs/catalog/kubernetes/gha-runner-scale-set-controller) — required prerequisite; deploys the controller that watches AutoScalingRunnerSet resources and manages runner pod lifecycle
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/helm-release) — generic Helm release component; use KubernetesGhaRunnerScaleSet instead for GitHub Actions runners since it provides typed configuration and validation
+- [KubernetesSecret](/docs/catalog/kubernetes/secret) — can be used to manage the GitHub credentials secret independently when using `existingSecretName`

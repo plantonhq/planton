@@ -232,10 +232,10 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) -- provides the resource group for endpoint placement
-- [AzureVpc](/docs/catalog/azure/azurevpc) -- provides the VNet containing the subnet for private IP allocation
-- [AzureSubnet](/docs/catalog/azure/azuresubnet) -- provides the subnet from which the private endpoint's IP is allocated
-- [AzurePrivateDnsZone](/docs/catalog/azure/azureprivatednszone) -- provides the DNS zone for automatic A-record registration of the private endpoint's IP
-- [AzurePostgresqlFlexibleServer](/docs/catalog/azure/azurepostgresqlflexibleserver) -- a common Private Link-enabled target for database workloads
-- [AzureKeyVault](/docs/catalog/azure/azurekeyvault) -- a common Private Link-enabled target for secrets management
-- [AzureStorageAccount](/docs/catalog/azure/azurestorageaccount) -- a common Private Link-enabled target for blob, table, queue, and file storage
+- [AzureResourceGroup](/docs/catalog/azure/resource-group) -- provides the resource group for endpoint placement
+- [AzureVpc](/docs/catalog/azure/vpc-virtual-network) -- provides the VNet containing the subnet for private IP allocation
+- [AzureSubnet](/docs/catalog/azure/subnet) -- provides the subnet from which the private endpoint's IP is allocated
+- [AzurePrivateDnsZone](/docs/catalog/azure/private-dns-zone) -- provides the DNS zone for automatic A-record registration of the private endpoint's IP
+- [AzurePostgresqlFlexibleServer](/docs/catalog/azure/postgresql-flexible-server) -- a common Private Link-enabled target for database workloads
+- [AzureKeyVault](/docs/catalog/azure/key-vault) -- a common Private Link-enabled target for secrets management
+- [AzureStorageAccount](/docs/catalog/azure/storage-account) -- a common Private Link-enabled target for blob, table, queue, and file storage

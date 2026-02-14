@@ -252,8 +252,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackContainerCluster](/docs/catalog/openstack/openstackcontainercluster) — creates Kubernetes clusters using this template as a blueprint
-- [OpenStackImage](/docs/catalog/openstack/openstackimage) — manages the base OS image referenced by the template
-- [OpenStackKeypair](/docs/catalog/openstack/openstackkeypair) — manages the SSH keypair for node access
-- [OpenStackNetwork](/docs/catalog/openstack/openstacknetwork) — provides the external or fixed network for cluster connectivity
-- [OpenStackSubnet](/docs/catalog/openstack/openstacksubnet) — provides the fixed subnet for cluster nodes
+- [OpenStackContainerCluster](/docs/catalog/openstack/container-cluster) — creates Kubernetes clusters using this template as a blueprint
+- [OpenStackImage](/docs/catalog/openstack/image) — manages the base OS image referenced by the template
+- [OpenStackKeypair](/docs/catalog/openstack/keypair) — manages the SSH keypair for node access
+- [OpenStackNetwork](/docs/catalog/openstack/network) — provides the external or fixed network for cluster connectivity
+- [OpenStackSubnet](/docs/catalog/openstack/subnet) — provides the fixed subnet for cluster nodes

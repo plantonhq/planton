@@ -193,6 +193,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — pre-create a namespace to reference via `valueFrom`
-- [KubernetesPostgres](/docs/catalog/kubernetes/kubernetespostgres) — deploy PostgreSQL for Jenkins pipeline data or external storage
-- [KubernetesRedis](/docs/catalog/kubernetes/kubernetesredis) — deploy Redis for caching in CI/CD pipelines
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — pre-create a namespace to reference via `valueFrom`
+- [KubernetesPostgres](/docs/catalog/kubernetes/postgres) — deploy PostgreSQL for Jenkins pipeline data or external storage
+- [KubernetesRedis](/docs/catalog/kubernetes/redis) — deploy Redis for caching in CI/CD pipelines

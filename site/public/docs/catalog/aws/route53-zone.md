@@ -295,8 +295,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsRoute53DnsRecord](/docs/catalog/aws/awsroute53dnsrecord) — creates standalone DNS records in an existing hosted zone, useful for cross-team or cross-account record management
-- [AwsAlb](/docs/catalog/aws/awsalb) — provides the DNS name and hosted zone ID for alias record targets
-- [AwsCloudfront](/docs/catalog/aws/awscloudfront) — provides the distribution DNS name for alias record targets
-- [AwsVpc](/docs/catalog/aws/awsvpc) — provides VPC IDs for private zone associations
-- [AwsCertManagerCert](/docs/catalog/aws/awscertmanagercert) — DNS validation of ACM certificates requires records in the zone
+- [AwsRoute53DnsRecord](/docs/catalog/aws/route53-dns-record) — creates standalone DNS records in an existing hosted zone, useful for cross-team or cross-account record management
+- [AwsAlb](/docs/catalog/aws/alb) — provides the DNS name and hosted zone ID for alias record targets
+- [AwsCloudfront](/docs/catalog/aws/cloudfront) — provides the distribution DNS name for alias record targets
+- [AwsVpc](/docs/catalog/aws/vpc) — provides VPC IDs for private zone associations
+- [AwsCertManagerCert](/docs/catalog/aws/certificate-manager-certificate) — DNS validation of ACM certificates requires records in the zone

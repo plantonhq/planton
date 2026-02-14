@@ -135,6 +135,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [ScalewayPrivateNetwork](/docs/catalog/scaleway/scalewayprivatenetwork) — creates Private Networks attached to this VPC for workload-level IP planning and isolation
-- [ScalewayKapsuleCluster](/docs/catalog/scaleway/scalewaykapsulecluster) — deploys a managed Kubernetes cluster that requires a Private Network (and therefore a VPC)
-- [ScalewayRdbInstance](/docs/catalog/scaleway/scalewayrdbinstance) — provisions managed databases that can be attached to a Private Network within this VPC
+- [ScalewayPrivateNetwork](/docs/catalog/scaleway/private-network) — creates Private Networks attached to this VPC for workload-level IP planning and isolation
+- [ScalewayKapsuleCluster](/docs/catalog/scaleway/kapsule-cluster) — deploys a managed Kubernetes cluster that requires a Private Network (and therefore a VPC)
+- [ScalewayRdbInstance](/docs/catalog/scaleway/rdb-instance) — provisions managed databases that can be attached to a Private Network within this VPC

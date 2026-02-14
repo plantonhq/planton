@@ -300,7 +300,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — application deployments that connect to NATS as a messaging backend
-- [KubernetesRedis](/docs/catalog/kubernetes/kubernetesredis) — often deployed alongside NATS for caching in event-driven architectures
-- [KubernetesPostgres](/docs/catalog/kubernetes/kubernetespostgres) — persistent storage for applications consuming NATS events
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — application deployments that connect to NATS as a messaging backend
+- [KubernetesRedis](/docs/catalog/kubernetes/redis) — often deployed alongside NATS for caching in event-driven architectures
+- [KubernetesPostgres](/docs/catalog/kubernetes/postgres) — persistent storage for applications consuming NATS events

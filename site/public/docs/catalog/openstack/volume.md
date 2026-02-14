@@ -179,6 +179,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStack Instance](/docs/catalog/openstack/openstackinstance) — compute instance that volumes are typically attached to
-- [OpenStack Volume Attach](/docs/catalog/openstack/openstackvolumeattach) — binds a volume to an instance as a DAG node in InfraCharts
-- [OpenStack Image](/docs/catalog/openstack/openstackimage) — provides Glance images that can be referenced via `imageId` for bootable volumes
+- [OpenStack Instance](/docs/catalog/openstack/instance) — compute instance that volumes are typically attached to
+- [OpenStack Volume Attach](/docs/catalog/openstack/volume-attach) — binds a volume to an instance as a DAG node in InfraCharts
+- [OpenStack Image](/docs/catalog/openstack/image) — provides Glance images that can be referenced via `imageId` for bootable volumes

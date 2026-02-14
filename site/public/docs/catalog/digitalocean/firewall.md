@@ -316,8 +316,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [DigitalOceanDroplet](/docs/catalog/digitalocean/digitaloceandroplet) — provisions the Droplets that the firewall protects
-- [DigitalOceanLoadBalancer](/docs/catalog/digitalocean/digitaloceanloadbalancer) — can be referenced as a source or destination in firewall rules via Load Balancer UIDs
-- [DigitalOceanKubernetesCluster](/docs/catalog/digitalocean/digitaloceankubernetescluster) — can be referenced as a source or destination in firewall rules via Kubernetes cluster IDs
-- [DigitalOceanVpc](/docs/catalog/digitalocean/digitaloceanvpc) — provides the network layer for Droplets protected by this firewall
-- [DigitalOceanDatabaseCluster](/docs/catalog/digitalocean/digitaloceandatabasecluster) — commonly co-deployed with firewall rules restricting database port access
+- [DigitalOceanDroplet](/docs/catalog/digitalocean/droplet) — provisions the Droplets that the firewall protects
+- [DigitalOceanLoadBalancer](/docs/catalog/digitalocean/load-balancer) — can be referenced as a source or destination in firewall rules via Load Balancer UIDs
+- [DigitalOceanKubernetesCluster](/docs/catalog/digitalocean/kubernetes-cluster) — can be referenced as a source or destination in firewall rules via Kubernetes cluster IDs
+- [DigitalOceanVpc](/docs/catalog/digitalocean/vpc) — provides the network layer for Droplets protected by this firewall
+- [DigitalOceanDatabaseCluster](/docs/catalog/digitalocean/database-cluster) — commonly co-deployed with firewall rules restricting database port access

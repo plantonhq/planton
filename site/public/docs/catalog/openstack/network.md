@@ -147,8 +147,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackSubnet](/docs/catalog/openstack/openstacksubnet) — defines IP address ranges and DHCP settings on the network
-- [OpenStackNetworkPort](/docs/catalog/openstack/openstacknetworkport) — creates ports with specific IPs and security groups on the network
-- [OpenStackRouter](/docs/catalog/openstack/openstackrouter) — provides routing between networks and external connectivity
-- [OpenStackInstance](/docs/catalog/openstack/openstackinstance) — attaches compute instances to the network
-- [OpenStackFloatingIp](/docs/catalog/openstack/openstackfloatingip) — allocates floating IPs from external networks
+- [OpenStackSubnet](/docs/catalog/openstack/subnet) — defines IP address ranges and DHCP settings on the network
+- [OpenStackNetworkPort](/docs/catalog/openstack/network-port) — creates ports with specific IPs and security groups on the network
+- [OpenStackRouter](/docs/catalog/openstack/router) — provides routing between networks and external connectivity
+- [OpenStackInstance](/docs/catalog/openstack/instance) — attaches compute instances to the network
+- [OpenStackFloatingIp](/docs/catalog/openstack/floating-ip) — allocates floating IPs from external networks

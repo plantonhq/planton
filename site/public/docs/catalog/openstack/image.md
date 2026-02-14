@@ -168,5 +168,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackInstance](/docs/catalog/openstack/openstackinstance) — boots compute instances from this image via `imageName` or `imageId`
-- [OpenStackVolume](/docs/catalog/openstack/openstackvolume) — creates bootable Cinder volumes from this image
+- [OpenStackInstance](/docs/catalog/openstack/instance) — boots compute instances from this image via `imageName` or `imageId`
+- [OpenStackVolume](/docs/catalog/openstack/volume) — creates bootable Cinder volumes from this image

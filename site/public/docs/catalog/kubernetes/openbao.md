@@ -223,6 +223,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — pre-create a namespace to reference via `valueFrom`
-- [KubernetesSecret](/docs/catalog/kubernetes/kubernetessecret) — manage Kubernetes secrets that OpenBao can inject into pods
-- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — deploy additional Helm charts alongside OpenBao
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — pre-create a namespace to reference via `valueFrom`
+- [KubernetesSecret](/docs/catalog/kubernetes/secret) — manage Kubernetes secrets that OpenBao can inject into pods
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/helm-release) — deploy additional Helm charts alongside OpenBao

@@ -252,6 +252,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsS3Bucket](/docs/catalog/aws/awss3bucket) — provides the target bucket; can be referenced via `valueFrom` in the `bucket` field
-- [AwsCloudFront](/docs/catalog/aws/awscloudfront) — serves objects from S3 via a CDN distribution
-- [AwsLambda](/docs/catalog/aws/awslambda) — can be triggered by S3 object events in the target bucket
+- [AwsS3Bucket](/docs/catalog/aws/s3-bucket) — provides the target bucket; can be referenced via `valueFrom` in the `bucket` field
+- [AwsCloudFront](/docs/catalog/aws/cloudfront) — serves objects from S3 via a CDN distribution
+- [AwsLambda](/docs/catalog/aws/lambda) — can be triggered by S3 object events in the target bucket

@@ -142,6 +142,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [ScalewayPrivateNetwork](/docs/catalog/scaleway/scalewayprivatenetwork) — provides private connectivity between Instances and other Scaleway resources in the same region
-- [ScalewayKapsuleCluster](/docs/catalog/scaleway/scalewaykapsulecluster) — deploys Kubernetes clusters whose nodes can use block volumes for persistent storage
-- [ScalewayRdbInstance](/docs/catalog/scaleway/scalewayrdbinstance) — deploys managed databases that can use block storage volume types for data persistence
+- [ScalewayPrivateNetwork](/docs/catalog/scaleway/private-network) — provides private connectivity between Instances and other Scaleway resources in the same region
+- [ScalewayKapsuleCluster](/docs/catalog/scaleway/kapsule-cluster) — deploys Kubernetes clusters whose nodes can use block volumes for persistent storage
+- [ScalewayRdbInstance](/docs/catalog/scaleway/rdb-instance) — deploys managed databases that can use block storage volume types for data persistence

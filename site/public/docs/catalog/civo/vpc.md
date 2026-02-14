@@ -150,7 +150,7 @@ Note: The `createdAtRfc3339` field is defined in the output schema but is not cu
 
 ## Related Components
 
-- [CivoFirewall](/docs/catalog/civo/civofirewall) -- defines firewall rules for controlling network traffic
-- [CivoKubernetesCluster](/docs/catalog/civo/civokubernetescluster) -- deploys a Kubernetes cluster that can be attached to this network
-- [CivoDatabase](/docs/catalog/civo/civodatabase) -- provisions a managed database instance connected to this network
-- [CivoComputeInstance](/docs/catalog/civo/civocomputeinstance) -- launches compute instances within this network
+- [CivoFirewall](/docs/catalog/civo/firewall) -- defines firewall rules for controlling network traffic
+- [CivoKubernetesCluster](/docs/catalog/civo/kubernetes-cluster) -- deploys a Kubernetes cluster that can be attached to this network
+- [CivoDatabase](/docs/catalog/civo/database) -- provisions a managed database instance connected to this network
+- [CivoComputeInstance](/docs/catalog/civo/compute-instance) -- launches compute instances within this network

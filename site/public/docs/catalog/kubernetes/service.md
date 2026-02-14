@@ -270,6 +270,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — deploys the workload pods that this service routes traffic to
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace for the service
-- [KubernetesStatefulSet](/docs/catalog/kubernetes/kubernetesstatefulset) — commonly used with headless services for stable pod identity and direct addressing
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — deploys the workload pods that this service routes traffic to
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace for the service
+- [KubernetesStatefulSet](/docs/catalog/kubernetes/statefulset) — commonly used with headless services for stable pod identity and direct addressing

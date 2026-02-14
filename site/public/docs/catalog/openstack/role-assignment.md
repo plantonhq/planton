@@ -197,5 +197,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackProject](/docs/catalog/openstack/openstackproject) — manages the projects that role assignments can scope to
-- [OpenStackSecurityGroup](/docs/catalog/openstack/openstacksecuritygroup) — controls network-level access for resources within a project
+- [OpenStackProject](/docs/catalog/openstack/project) — manages the projects that role assignments can scope to
+- [OpenStackSecurityGroup](/docs/catalog/openstack/security-group) — controls network-level access for resources within a project

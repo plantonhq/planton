@@ -177,8 +177,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpVpc](/docs/catalog/gcp/gcpvpc) — provides the parent VPC network for this subnetwork
-- [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — consumes subnetwork and secondary ranges for node, Pod, and Service networking
-- [GcpRouterNat](/docs/catalog/gcp/gcprouternat) — provides NAT gateway for subnetworks without external IPs
-- [GcpProject](/docs/catalog/gcp/gcpproject) — manages the GCP project that hosts the subnetwork
-- [GcpComputeInstance](/docs/catalog/gcp/gcpcomputeinstance) — VMs deployed into this subnetwork
+- [GcpVpc](/docs/catalog/gcp/vpc) — provides the parent VPC network for this subnetwork
+- [GcpGkeCluster](/docs/catalog/gcp/gke-cluster) — consumes subnetwork and secondary ranges for node, Pod, and Service networking
+- [GcpRouterNat](/docs/catalog/gcp/router-nat) — provides NAT gateway for subnetworks without external IPs
+- [GcpProject](/docs/catalog/gcp/project) — manages the GCP project that hosts the subnetwork
+- [GcpComputeInstance](/docs/catalog/gcp/compute-instance) — VMs deployed into this subnetwork

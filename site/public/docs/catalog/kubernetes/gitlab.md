@@ -190,7 +190,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — application deployments that integrate with GitLab
-- [KubernetesRedis](/docs/catalog/kubernetes/kubernetesredis) — Redis cache commonly used alongside GitLab for session storage and caching
-- [KubernetesPostgres](/docs/catalog/kubernetes/kubernetespostgres) — PostgreSQL database used by GitLab as its primary data store
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — application deployments that integrate with GitLab
+- [KubernetesRedis](/docs/catalog/kubernetes/redis) — Redis cache commonly used alongside GitLab for session storage and caching
+- [KubernetesPostgres](/docs/catalog/kubernetes/postgres) — PostgreSQL database used by GitLab as its primary data store

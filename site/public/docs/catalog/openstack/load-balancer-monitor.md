@@ -193,7 +193,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackLoadBalancer](/docs/catalog/openstack/openstackloadbalancer) — provides the top-level VIP that receives client traffic
-- [OpenStackLoadBalancerListener](/docs/catalog/openstack/openstackloadbalancerlistener) — binds a protocol and port on the load balancer to a pool
-- [OpenStackLoadBalancerPool](/docs/catalog/openstack/openstackloadbalancerpool) — the pool whose members this monitor checks
-- [OpenStackLoadBalancerMember](/docs/catalog/openstack/openstackloadbalancermember) — the backend servers being health-checked by this monitor
+- [OpenStackLoadBalancer](/docs/catalog/openstack/load-balancer) — provides the top-level VIP that receives client traffic
+- [OpenStackLoadBalancerListener](/docs/catalog/openstack/load-balancer-listener) — binds a protocol and port on the load balancer to a pool
+- [OpenStackLoadBalancerPool](/docs/catalog/openstack/load-balancer-pool) — the pool whose members this monitor checks
+- [OpenStackLoadBalancerMember](/docs/catalog/openstack/load-balancer-member) — the backend servers being health-checked by this monitor

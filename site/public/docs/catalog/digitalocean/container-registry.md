@@ -143,5 +143,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [DigitalOceanKubernetesCluster](/docs/catalog/digitalocean/digitaloceankubernetescluster) — integrates with the container registry to pull images without additional credentials
-- [DigitalOceanAppPlatformService](/docs/catalog/digitalocean/digitaloceanappplatformservice) — can deploy containers directly from the registry
+- [DigitalOceanKubernetesCluster](/docs/catalog/digitalocean/kubernetes-cluster) — integrates with the container registry to pull images without additional credentials
+- [DigitalOceanAppPlatformService](/docs/catalog/digitalocean/app-platform-service) — can deploy containers directly from the registry

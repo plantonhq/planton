@@ -199,5 +199,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenFgaStore](/docs/catalog/openfga/openfgastore) — provides the store where relationship tuples are written
-- [OpenFgaAuthorizationModel](/docs/catalog/openfga/openfgaauthorizationmodel) — defines the types, relations, and conditions that govern how tuples are evaluated
+- [OpenFgaStore](/docs/catalog/openfga/store) — provides the store where relationship tuples are written
+- [OpenFgaAuthorizationModel](/docs/catalog/openfga/authorization-model) — defines the types, relations, and conditions that govern how tuples are evaluated

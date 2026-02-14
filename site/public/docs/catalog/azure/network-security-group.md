@@ -300,7 +300,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) — provides the resource group for NSG placement
-- [AzureVpc](/docs/catalog/azure/azurevpc) — provides the virtual network and subnets that NSGs are associated with
-- [AzureSubnet](/docs/catalog/azure/azuresubnet) — NSGs are associated with subnets to filter traffic at the subnet level
-- [AzureAksCluster](/docs/catalog/azure/azureakscluster) — AKS node pool subnets often require NSGs for controlling cluster traffic
+- [AzureResourceGroup](/docs/catalog/azure/resource-group) — provides the resource group for NSG placement
+- [AzureVpc](/docs/catalog/azure/vpc-virtual-network) — provides the virtual network and subnets that NSGs are associated with
+- [AzureSubnet](/docs/catalog/azure/subnet) — NSGs are associated with subnets to filter traffic at the subnet level
+- [AzureAksCluster](/docs/catalog/azure/aks-cluster) — AKS node pool subnets often require NSGs for controlling cluster traffic

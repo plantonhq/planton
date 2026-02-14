@@ -199,7 +199,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackSecurityGroup](/docs/catalog/openstack/openstacksecuritygroup) — the security group this rule belongs to; also supports inline rules via `rules[]` for simpler configurations
-- [OpenStackInstance](/docs/catalog/openstack/openstackinstance) — compute instances that reference security groups for network access control
-- [OpenStackNetwork](/docs/catalog/openstack/openstacknetwork) — provides the network context where security group rules take effect
-- [OpenStackNetworkPort](/docs/catalog/openstack/openstacknetworkport) — network ports that can have security groups applied directly
+- [OpenStackSecurityGroup](/docs/catalog/openstack/security-group) — the security group this rule belongs to; also supports inline rules via `rules[]` for simpler configurations
+- [OpenStackInstance](/docs/catalog/openstack/instance) — compute instances that reference security groups for network access control
+- [OpenStackNetwork](/docs/catalog/openstack/network) — provides the network context where security group rules take effect
+- [OpenStackNetworkPort](/docs/catalog/openstack/network-port) — network ports that can have security groups applied directly

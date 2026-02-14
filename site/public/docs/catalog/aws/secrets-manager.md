@@ -140,8 +140,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsKmsKey](/docs/catalog/aws/awskmskey) — provides a customer-managed KMS key for encrypting secrets at rest (configured at the AWS account level or via resource policy)
-- [AwsIamRole](/docs/catalog/aws/awsiamrole) — creates IAM roles with policies granting `secretsmanager:GetSecretValue` access
-- [AwsLambda](/docs/catalog/aws/awslambda) — can consume secrets at runtime via environment variable references or SDK calls
-- [AwsEcsService](/docs/catalog/aws/awsecsservice) — can reference secret ARNs for container secret injection
-- [AwsRdsInstance](/docs/catalog/aws/awsrdsinstance) — often paired to store database master passwords
+- [AwsKmsKey](/docs/catalog/aws/kms-key) — provides a customer-managed KMS key for encrypting secrets at rest (configured at the AWS account level or via resource policy)
+- [AwsIamRole](/docs/catalog/aws/iam-role) — creates IAM roles with policies granting `secretsmanager:GetSecretValue` access
+- [AwsLambda](/docs/catalog/aws/lambda) — can consume secrets at runtime via environment variable references or SDK calls
+- [AwsEcsService](/docs/catalog/aws/ecs-service) — can reference secret ARNs for container secret injection
+- [AwsRdsInstance](/docs/catalog/aws/rds-instance) — often paired to store database master passwords

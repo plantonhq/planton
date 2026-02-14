@@ -225,6 +225,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsIamUser](/docs/catalog/aws/awsiamuser) — creates long-lived IAM users for programmatic access
-- [AwsEksCluster](/docs/catalog/aws/awsekscluster) — EKS clusters frequently use IAM roles for node groups and service accounts
-- [AwsS3Bucket](/docs/catalog/aws/awss3bucket) — bucket policies often reference IAM role ARNs for access control
+- [AwsIamUser](/docs/catalog/aws/iam-user) — creates long-lived IAM users for programmatic access
+- [AwsEksCluster](/docs/catalog/aws/eks-cluster) — EKS clusters frequently use IAM roles for node groups and service accounts
+- [AwsS3Bucket](/docs/catalog/aws/s3-bucket) — bucket policies often reference IAM role ARNs for access control

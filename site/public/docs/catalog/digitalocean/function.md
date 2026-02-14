@@ -198,7 +198,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [DigitalOceanVpc](/docs/catalog/digitalocean/digitaloceanvpc) -- provides VPC networking for secure function-to-database connectivity
-- [DigitalOceanDnsRecord](/docs/catalog/digitalocean/digitaloceandnsrecord) -- creates custom DNS records to point a domain at the function endpoint
-- [DigitalOceanDnsZone](/docs/catalog/digitalocean/digitaloceandnszone) -- manages the DNS zone for custom domain routing
-- [DigitalOceanFirewall](/docs/catalog/digitalocean/digitaloceanfirewall) -- controls network access rules for resources the function connects to
+- [DigitalOceanVpc](/docs/catalog/digitalocean/vpc) -- provides VPC networking for secure function-to-database connectivity
+- [DigitalOceanDnsRecord](/docs/catalog/digitalocean/dns-record) -- creates custom DNS records to point a domain at the function endpoint
+- [DigitalOceanDnsZone](/docs/catalog/digitalocean/dns-zone) -- manages the DNS zone for custom domain routing
+- [DigitalOceanFirewall](/docs/catalog/digitalocean/firewall) -- controls network access rules for resources the function connects to

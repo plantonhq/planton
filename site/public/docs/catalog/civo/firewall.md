@@ -227,7 +227,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CivoVpc](/docs/catalog/civo/civovpc) — provides the private network to which the firewall is attached
-- [CivoComputeInstance](/docs/catalog/civo/civocomputeinstance) — compute instances protected by the firewall
-- [CivoKubernetesCluster](/docs/catalog/civo/civokubernetescluster) — Kubernetes clusters that can use the firewall for network access control
-- [CivoDatabase](/docs/catalog/civo/civodatabase) — managed database instances that reference the firewall for access restriction
+- [CivoVpc](/docs/catalog/civo/vpc) — provides the private network to which the firewall is attached
+- [CivoComputeInstance](/docs/catalog/civo/compute-instance) — compute instances protected by the firewall
+- [CivoKubernetesCluster](/docs/catalog/civo/kubernetes-cluster) — Kubernetes clusters that can use the firewall for network access control
+- [CivoDatabase](/docs/catalog/civo/database) — managed database instances that reference the firewall for access restriction

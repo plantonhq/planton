@@ -169,6 +169,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackInstance](/docs/catalog/openstack/openstackinstance) — references the server group via scheduler hints to enforce the placement policy
-- [OpenStackNetwork](/docs/catalog/openstack/openstacknetwork) — provides networking for instances placed by the server group
-- [OpenStackSecurityGroup](/docs/catalog/openstack/openstacksecuritygroup) — controls traffic to instances within the server group
+- [OpenStackInstance](/docs/catalog/openstack/instance) — references the server group via scheduler hints to enforce the placement policy
+- [OpenStackNetwork](/docs/catalog/openstack/network) — provides networking for instances placed by the server group
+- [OpenStackSecurityGroup](/docs/catalog/openstack/security-group) — controls traffic to instances within the server group

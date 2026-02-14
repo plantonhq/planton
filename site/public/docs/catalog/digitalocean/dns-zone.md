@@ -217,7 +217,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [DigitalOceanDroplet](/docs/catalog/digitalocean/digitaloceandroplet) -- provides compute instances whose IPs can be referenced in A records
-- [DigitalOceanLoadBalancer](/docs/catalog/digitalocean/digitaloceanloadbalancer) -- provisions load balancers whose IPs can be used as record targets
-- [DigitalOceanVpc](/docs/catalog/digitalocean/digitaloceanvpc) -- defines the network for infrastructure that DNS records resolve to
-- [DigitalOceanKubernetesCluster](/docs/catalog/digitalocean/digitaloceankubernetescluster) -- deploys Kubernetes clusters that can use ExternalDNS to manage records in this zone
+- [DigitalOceanDroplet](/docs/catalog/digitalocean/droplet) -- provides compute instances whose IPs can be referenced in A records
+- [DigitalOceanLoadBalancer](/docs/catalog/digitalocean/load-balancer) -- provisions load balancers whose IPs can be used as record targets
+- [DigitalOceanVpc](/docs/catalog/digitalocean/vpc) -- defines the network for infrastructure that DNS records resolve to
+- [DigitalOceanKubernetesCluster](/docs/catalog/digitalocean/kubernetes-cluster) -- deploys Kubernetes clusters that can use ExternalDNS to manage records in this zone

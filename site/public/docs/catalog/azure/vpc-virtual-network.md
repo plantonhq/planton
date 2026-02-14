@@ -167,6 +167,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) — provides the resource group for VNet placement
-- [AzureAksCluster](/docs/catalog/azure/azureakscluster) — AKS clusters deployed into the nodes subnet of this VNet
-- [AzureKeyVault](/docs/catalog/azure/azurekeyvault) — Key Vaults can restrict network access to subnets in this VNet
+- [AzureResourceGroup](/docs/catalog/azure/resource-group) — provides the resource group for VNet placement
+- [AzureAksCluster](/docs/catalog/azure/aks-cluster) — AKS clusters deployed into the nodes subnet of this VNet
+- [AzureKeyVault](/docs/catalog/azure/key-vault) — Key Vaults can restrict network access to subnets in this VNet

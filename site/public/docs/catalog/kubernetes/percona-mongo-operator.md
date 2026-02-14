@@ -168,5 +168,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesMongodb](/docs/catalog/kubernetes/kubernetesmongodb) — deploys MongoDB instances managed by the Percona Operator installed by this component
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesMongodb](/docs/catalog/kubernetes/mongodb) — deploys MongoDB instances managed by the Percona Operator installed by this component

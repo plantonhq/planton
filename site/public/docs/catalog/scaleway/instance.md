@@ -206,9 +206,9 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [ScalewayInstanceSecurityGroup](/docs/catalog/scaleway/scalewayinstancesecuritygroup) — zonal firewall that controls inbound and outbound traffic rules; referenced via the `securityGroupId` field
-- [ScalewayPrivateNetwork](/docs/catalog/scaleway/scalewayprivatenetwork) — internal network for private communication between instances, databases, and load balancers; referenced via the `privateNetworkId` field
-- [ScalewayVpc](/docs/catalog/scaleway/scalewayvpc) — regional VPC that contains Private Networks
-- [ScalewayPublicGateway](/docs/catalog/scaleway/scalewaypublicgateway) — provides NAT and DHCP for instances on a Private Network that do not have a public IP
-- [ScalewayKapsuleCluster](/docs/catalog/scaleway/scalewaykapsulecluster) — managed Kubernetes cluster; instances can serve as standalone workloads alongside Kapsule clusters on the same Private Network
-- [ScalewayRdbInstance](/docs/catalog/scaleway/scalewayrdbinstance) — managed database that instances connect to over the Private Network using `private_ip_address`
+- [ScalewayInstanceSecurityGroup](/docs/catalog/scaleway/instance-security-group) — zonal firewall that controls inbound and outbound traffic rules; referenced via the `securityGroupId` field
+- [ScalewayPrivateNetwork](/docs/catalog/scaleway/private-network) — internal network for private communication between instances, databases, and load balancers; referenced via the `privateNetworkId` field
+- [ScalewayVpc](/docs/catalog/scaleway/vpc) — regional VPC that contains Private Networks
+- [ScalewayPublicGateway](/docs/catalog/scaleway/public-gateway) — provides NAT and DHCP for instances on a Private Network that do not have a public IP
+- [ScalewayKapsuleCluster](/docs/catalog/scaleway/kapsule-cluster) — managed Kubernetes cluster; instances can serve as standalone workloads alongside Kapsule clusters on the same Private Network
+- [ScalewayRdbInstance](/docs/catalog/scaleway/rdb-instance) — managed database that instances connect to over the Private Network using `private_ip_address`

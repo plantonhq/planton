@@ -150,7 +150,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CivoComputeInstance](/docs/catalog/civo/civocomputeinstance) — attach the volume to a compute instance for persistent storage
-- [CivoKubernetesCluster](/docs/catalog/civo/civokubernetescluster) — use the volume as persistent storage for Kubernetes workloads via the Civo CSI driver
-- [CivoVpc](/docs/catalog/civo/civovpc) — provides the network in which the attached instance and volume reside
-- [CivoFirewall](/docs/catalog/civo/civofirewall) — controls network access to instances using the volume
+- [CivoComputeInstance](/docs/catalog/civo/compute-instance) — attach the volume to a compute instance for persistent storage
+- [CivoKubernetesCluster](/docs/catalog/civo/kubernetes-cluster) — use the volume as persistent storage for Kubernetes workloads via the Civo CSI driver
+- [CivoVpc](/docs/catalog/civo/vpc) — provides the network in which the attached instance and volume reside
+- [CivoFirewall](/docs/catalog/civo/firewall) — controls network access to instances using the volume

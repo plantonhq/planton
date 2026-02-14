@@ -219,7 +219,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpDnsZone](/docs/catalog/gcp/gcpdnszone) — creates the Cloud DNS Managed Zone where records are hosted
-- [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project referenced by `projectId`
-- [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — creates service accounts that can be granted DNS management permissions
-- [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — deploys GKE clusters whose ingress endpoints are commonly referenced by A or CNAME records
+- [GcpDnsZone](/docs/catalog/gcp/dns-zone) — creates the Cloud DNS Managed Zone where records are hosted
+- [GcpProject](/docs/catalog/gcp/project) — provides the GCP project referenced by `projectId`
+- [GcpServiceAccount](/docs/catalog/gcp/service-account) — creates service accounts that can be granted DNS management permissions
+- [GcpGkeCluster](/docs/catalog/gcp/gke-cluster) — deploys GKE clusters whose ingress endpoints are commonly referenced by A or CNAME records

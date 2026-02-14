@@ -173,6 +173,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesClickhouse](/docs/catalog/kubernetes/kubernetesclickhouse) — deploy ClickHouse clusters managed by the Altinity operator
-- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — alternative for deploying Helm charts directly when a dedicated component is not available
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesClickhouse](/docs/catalog/kubernetes/clickhouse) — deploy ClickHouse clusters managed by the Altinity operator
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/helm-release) — alternative for deploying Helm charts directly when a dedicated component is not available

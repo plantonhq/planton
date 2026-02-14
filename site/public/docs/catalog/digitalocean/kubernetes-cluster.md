@@ -204,8 +204,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [DigitalOceanVpc](/docs/catalog/digitalocean/digitaloceanvpc) — provides the VPC for cluster placement
-- [DigitalOceanKubernetesNodePool](/docs/catalog/digitalocean/digitaloceankubernetesnodepool) — adds additional node pools to the cluster
-- [DigitalOceanContainerRegistry](/docs/catalog/digitalocean/digitaloceancontainerregistry) — hosts private container images for registry integration
-- [DigitalOceanLoadBalancer](/docs/catalog/digitalocean/digitaloceanloadbalancer) — provisions load balancers for exposing cluster services
-- [DigitalOceanFirewall](/docs/catalog/digitalocean/digitaloceanfirewall) — controls network access to cluster nodes
+- [DigitalOceanVpc](/docs/catalog/digitalocean/vpc) — provides the VPC for cluster placement
+- [DigitalOceanKubernetesNodePool](/docs/catalog/digitalocean/kubernetes-node-pool) — adds additional node pools to the cluster
+- [DigitalOceanContainerRegistry](/docs/catalog/digitalocean/container-registry) — hosts private container images for registry integration
+- [DigitalOceanLoadBalancer](/docs/catalog/digitalocean/load-balancer) — provisions load balancers for exposing cluster services
+- [DigitalOceanFirewall](/docs/catalog/digitalocean/firewall) — controls network access to cluster nodes

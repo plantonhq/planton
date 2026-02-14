@@ -214,8 +214,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackLoadBalancerPool](/docs/catalog/openstack/openstackloadbalancerpool) — the pool this member belongs to; provides the `poolId` foreign key
-- [OpenStackSubnet](/docs/catalog/openstack/openstacksubnet) — optional subnet for cross-subnet routing; provides the `subnetId` foreign key
-- [OpenStackLoadBalancerListener](/docs/catalog/openstack/openstackloadbalancerlistener) — listener that routes traffic to the pool containing this member
-- [OpenStackLoadBalancer](/docs/catalog/openstack/openstackloadbalancer) — top-level load balancer resource that owns the VIP
-- [OpenStackLoadBalancerMonitor](/docs/catalog/openstack/openstackloadbalancermonitor) — health monitor attached to the pool that determines member health
+- [OpenStackLoadBalancerPool](/docs/catalog/openstack/load-balancer-pool) — the pool this member belongs to; provides the `poolId` foreign key
+- [OpenStackSubnet](/docs/catalog/openstack/subnet) — optional subnet for cross-subnet routing; provides the `subnetId` foreign key
+- [OpenStackLoadBalancerListener](/docs/catalog/openstack/load-balancer-listener) — listener that routes traffic to the pool containing this member
+- [OpenStackLoadBalancer](/docs/catalog/openstack/load-balancer) — top-level load balancer resource that owns the VIP
+- [OpenStackLoadBalancerMonitor](/docs/catalog/openstack/load-balancer-monitor) — health monitor attached to the pool that determines member health

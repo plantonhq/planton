@@ -195,6 +195,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CivoComputeInstance](/docs/catalog/civo/civocomputeinstance) — compute instances whose public IPs can be referenced as DNS record values
-- [CivoKubernetesCluster](/docs/catalog/civo/civokubernetescluster) — Kubernetes clusters whose ingress IPs can be mapped to DNS records
-- [CivoFirewall](/docs/catalog/civo/civofirewall) — firewalls that protect the instances behind the DNS zone
+- [CivoComputeInstance](/docs/catalog/civo/compute-instance) — compute instances whose public IPs can be referenced as DNS record values
+- [CivoKubernetesCluster](/docs/catalog/civo/kubernetes-cluster) — Kubernetes clusters whose ingress IPs can be mapped to DNS records
+- [CivoFirewall](/docs/catalog/civo/firewall) — firewalls that protect the instances behind the DNS zone

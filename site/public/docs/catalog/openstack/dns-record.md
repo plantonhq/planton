@@ -184,4 +184,4 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackDnsZone](/docs/catalog/openstack/openstackdnszone) — provides the Designate zone where records are created; also supports inline records for simpler setups
+- [OpenStackDnsZone](/docs/catalog/openstack/dns-zone) — provides the Designate zone where records are created; also supports inline records for simpler setups

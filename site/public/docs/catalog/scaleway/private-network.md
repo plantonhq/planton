@@ -148,8 +148,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [ScalewayVpc](/docs/catalog/scaleway/scalewayvpc) — the parent VPC that contains this Private Network
-- [ScalewayKapsuleCluster](/docs/catalog/scaleway/scalewaykapsulecluster) — attaches Kubernetes clusters to this Private Network for private pod-to-service communication
-- [ScalewayRdbInstance](/docs/catalog/scaleway/scalewayrdbinstance) — attaches managed database instances to this Private Network for private database connectivity
-- [ScalewayRedisCluster](/docs/catalog/scaleway/scalewayrediscluster) — attaches Redis clusters to this Private Network
-- [ScalewayInstanceSecurityGroup](/docs/catalog/scaleway/scalewayinstancesecuritygroup) — controls network access for compute instances within this Private Network
+- [ScalewayVpc](/docs/catalog/scaleway/vpc) — the parent VPC that contains this Private Network
+- [ScalewayKapsuleCluster](/docs/catalog/scaleway/kapsule-cluster) — attaches Kubernetes clusters to this Private Network for private pod-to-service communication
+- [ScalewayRdbInstance](/docs/catalog/scaleway/rdb-instance) — attaches managed database instances to this Private Network for private database connectivity
+- [ScalewayRedisCluster](/docs/catalog/scaleway/redis-cluster) — attaches Redis clusters to this Private Network
+- [ScalewayInstanceSecurityGroup](/docs/catalog/scaleway/instance-security-group) — controls network access for compute instances within this Private Network

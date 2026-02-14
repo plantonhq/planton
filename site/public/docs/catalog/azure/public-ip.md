@@ -182,7 +182,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) — provides the resource group for Public IP placement
-- [AzureLoadBalancer](/docs/catalog/azure/azureloadbalancer) — attaches a Public IP as a frontend IP configuration
-- [AzureApplicationGateway](/docs/catalog/azure/azureapplicationgateway) — attaches a Public IP for HTTP/HTTPS ingress
-- [AzureNatGateway](/docs/catalog/azure/azurenatgateway) — attaches a Public IP for outbound NAT
+- [AzureResourceGroup](/docs/catalog/azure/resource-group) — provides the resource group for Public IP placement
+- [AzureLoadBalancer](/docs/catalog/azure/load-balancer) — attaches a Public IP as a frontend IP configuration
+- [AzureApplicationGateway](/docs/catalog/azure/application-gateway) — attaches a Public IP for HTTP/HTTPS ingress
+- [AzureNatGateway](/docs/catalog/azure/nat-gateway) — attaches a Public IP for outbound NAT

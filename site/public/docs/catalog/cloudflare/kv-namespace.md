@@ -134,7 +134,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CloudflareWorker](/docs/catalog/cloudflare/cloudflareworker) — Workers consume KV namespaces via bindings; use the `namespaceId` output to wire a KV store to your Worker
-- [CloudflareR2Bucket](/docs/catalog/cloudflare/cloudflarer2bucket) — object storage for larger or binary data, complementary to KV for small-value, read-heavy access patterns
-- [CloudflareD1Database](/docs/catalog/cloudflare/cloudflared1database) — relational SQL storage at the edge; use when you need structured queries rather than simple key-value lookups
-- [CloudflareDnsZone](/docs/catalog/cloudflare/cloudflarednszone) — manages DNS zones that front the Workers consuming this KV namespace
+- [CloudflareWorker](/docs/catalog/cloudflare/worker) — Workers consume KV namespaces via bindings; use the `namespaceId` output to wire a KV store to your Worker
+- [CloudflareR2Bucket](/docs/catalog/cloudflare/r2-bucket) — object storage for larger or binary data, complementary to KV for small-value, read-heavy access patterns
+- [CloudflareD1Database](/docs/catalog/cloudflare/d1-database) — relational SQL storage at the edge; use when you need structured queries rather than simple key-value lookups
+- [CloudflareDnsZone](/docs/catalog/cloudflare/dns-zone) — manages DNS zones that front the Workers consuming this KV namespace

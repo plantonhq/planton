@@ -67,7 +67,7 @@ This creates a PRIMARY DNS zone for `example.com` in OpenStack Designate with th
 | `ttl` | `int32` | Designate default | Default Time To Live (in seconds) for records in this zone. Determines how long resolvers cache records from this zone. |
 | `type` | `string` | `PRIMARY` | The zone type. `PRIMARY` for zones where Designate is the authoritative source. `SECONDARY` for zones replicated from upstream master nameservers. ForceNew: changing this requires recreating the zone. Must be `PRIMARY` or `SECONDARY` when specified. |
 | `masters` | `string[]` | `[]` | List of master nameserver addresses for SECONDARY zones. Required when `type` is `SECONDARY`. Ignored for PRIMARY zones. |
-| `records` | `OpenStackDnsRecord[]` | `[]` | Inline DNS records to create alongside the zone. Each entry provisions a separate record set resource. For independently managed records, use the standalone [OpenStackDnsRecord](/docs/catalog/openstack/openstackdnsrecord) component instead. |
+| `records` | `OpenStackDnsRecord[]` | `[]` | Inline DNS records to create alongside the zone. Each entry provisions a separate record set resource. For independently managed records, use the standalone [OpenStackDnsRecord](/docs/catalog/openstack/dns-record) component instead. |
 | `region` | `string` | provider default | Override the region from the provider config for this zone. ForceNew: changing this requires recreating the zone. |
 
 #### Inline Record Sub-Fields (`records[]`)
@@ -209,7 +209,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackDnsRecord](/docs/catalog/openstack/openstackdnsrecord) — standalone DNS recordset component for independently managed records; use instead of inline `records` when DAG-visible dependencies are needed
-- [OpenStackFloatingIp](/docs/catalog/openstack/openstackfloatingip) — floating IPs commonly referenced by A records within a DNS zone
-- [OpenStackLoadBalancer](/docs/catalog/openstack/openstackloadbalancer) — load balancer VIPs commonly referenced by A or CNAME records within a DNS zone
-- [OpenStackInstance](/docs/catalog/openstack/openstackinstance) — compute instances whose IPs can be published as DNS records
+- [OpenStackDnsRecord](/docs/catalog/openstack/dns-record) — standalone DNS recordset component for independently managed records; use instead of inline `records` when DAG-visible dependencies are needed
+- [OpenStackFloatingIp](/docs/catalog/openstack/floating-ip) — floating IPs commonly referenced by A records within a DNS zone
+- [OpenStackLoadBalancer](/docs/catalog/openstack/load-balancer) — load balancer VIPs commonly referenced by A or CNAME records within a DNS zone
+- [OpenStackInstance](/docs/catalog/openstack/instance) — compute instances whose IPs can be published as DNS records

@@ -157,8 +157,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackRouter](/docs/catalog/openstack/openstackrouter) — the L3 router that this interface attaches to
-- [OpenStackSubnet](/docs/catalog/openstack/openstacksubnet) — the subnet that this interface connects to the router
-- [OpenStackNetwork](/docs/catalog/openstack/openstacknetwork) — the Layer 2 network that subnets belong to
-- [OpenStackFloatingIp](/docs/catalog/openstack/openstackfloatingip) — allocates floating IPs from the external network reachable via the router
-- [OpenStackInstance](/docs/catalog/openstack/openstackinstance) — compute instances that use the subnet's default gateway provided by the router interface
+- [OpenStackRouter](/docs/catalog/openstack/router) — the L3 router that this interface attaches to
+- [OpenStackSubnet](/docs/catalog/openstack/subnet) — the subnet that this interface connects to the router
+- [OpenStackNetwork](/docs/catalog/openstack/network) — the Layer 2 network that subnets belong to
+- [OpenStackFloatingIp](/docs/catalog/openstack/floating-ip) — allocates floating IPs from the external network reachable via the router
+- [OpenStackInstance](/docs/catalog/openstack/instance) — compute instances that use the subnet's default gateway provided by the router interface

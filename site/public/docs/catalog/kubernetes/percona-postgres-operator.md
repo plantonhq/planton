@@ -168,5 +168,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesPostgres](/docs/catalog/kubernetes/kubernetespostgres) — deploys PostgreSQL instances that can be managed by the Percona Operator installed by this component
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesPostgres](/docs/catalog/kubernetes/postgres) — deploys PostgreSQL instances that can be managed by the Percona Operator installed by this component

@@ -201,5 +201,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackLoadBalancer](/docs/catalog/openstack/openstackloadbalancer) -- provides the load balancer that this listener attaches to
-- [OpenStackLoadBalancerPool](/docs/catalog/openstack/openstackloadbalancerpool) -- defines the backend pool that receives traffic forwarded by this listener
+- [OpenStackLoadBalancer](/docs/catalog/openstack/load-balancer) -- provides the load balancer that this listener attaches to
+- [OpenStackLoadBalancerPool](/docs/catalog/openstack/load-balancer-pool) -- defines the backend pool that receives traffic forwarded by this listener

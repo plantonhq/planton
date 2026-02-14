@@ -256,8 +256,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsIamRole](/docs/catalog/aws/awsiamrole) — provides the execution role for the function
-- [AwsVpc](/docs/catalog/aws/awsvpc) — provides subnets for VPC-connected functions
-- [AwsSecurityGroup](/docs/catalog/aws/awssecuritygroup) — controls network access for Lambda ENIs
-- [AwsKmsKey](/docs/catalog/aws/awskmskey) — encrypts environment variables at rest
-- [AwsS3Bucket](/docs/catalog/aws/awss3bucket) — hosts the deployment package for zip-based code
+- [AwsIamRole](/docs/catalog/aws/iam-role) — provides the execution role for the function
+- [AwsVpc](/docs/catalog/aws/vpc) — provides subnets for VPC-connected functions
+- [AwsSecurityGroup](/docs/catalog/aws/security-group) — controls network access for Lambda ENIs
+- [AwsKmsKey](/docs/catalog/aws/kms-key) — encrypts environment variables at rest
+- [AwsS3Bucket](/docs/catalog/aws/s3-bucket) — hosts the deployment package for zip-based code

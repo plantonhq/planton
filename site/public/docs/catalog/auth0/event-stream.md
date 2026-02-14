@@ -200,6 +200,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [Auth0Client](/docs/catalog/auth0/auth0client) — applications that generate the authentication and user events consumed by this stream
-- [Auth0ResourceServer](/docs/catalog/auth0/auth0resourceserver) — APIs whose authorization events can be streamed via `api.authorization.*` subscriptions
-- [Auth0Connection](/docs/catalog/auth0/auth0connection) — authentication connections whose events can be monitored through this stream
+- [Auth0Client](/docs/catalog/auth0/client) — applications that generate the authentication and user events consumed by this stream
+- [Auth0ResourceServer](/docs/catalog/auth0/resource-server) — APIs whose authorization events can be streamed via `api.authorization.*` subscriptions
+- [Auth0Connection](/docs/catalog/auth0/connection) — authentication connections whose events can be monitored through this stream

@@ -309,7 +309,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsVpc](/docs/catalog/aws/awsvpc) — provides subnets and VPC ID for cluster placement
-- [AwsSecurityGroup](/docs/catalog/aws/awssecuritygroup) — controls network access to the cluster
-- [AwsKmsKey](/docs/catalog/aws/awskmskey) — provides KMS keys for storage encryption and Secrets Manager
-- [AwsRoute53Zone](/docs/catalog/aws/awsroute53zone) — hosts DNS zones for CNAME records pointing to the cluster endpoint
+- [AwsVpc](/docs/catalog/aws/vpc) — provides subnets and VPC ID for cluster placement
+- [AwsSecurityGroup](/docs/catalog/aws/security-group) — controls network access to the cluster
+- [AwsKmsKey](/docs/catalog/aws/kms-key) — provides KMS keys for storage encryption and Secrets Manager
+- [AwsRoute53Zone](/docs/catalog/aws/route53-zone) — hosts DNS zones for CNAME records pointing to the cluster endpoint

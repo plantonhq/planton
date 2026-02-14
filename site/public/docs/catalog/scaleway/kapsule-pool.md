@@ -209,6 +209,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [ScalewayKapsuleCluster](/docs/catalog/scaleway/scalewaykapsulecluster) — provides the Kapsule cluster that this pool attaches to
-- [ScalewayPrivateNetwork](/docs/catalog/scaleway/scalewayprivatenetwork) — provides the Private Network used by the parent cluster
-- [ScalewayPublicGateway](/docs/catalog/scaleway/scalewaypublicgateway) — required when `publicIpDisabled` is `true` to give nodes outbound internet access
+- [ScalewayKapsuleCluster](/docs/catalog/scaleway/kapsule-cluster) — provides the Kapsule cluster that this pool attaches to
+- [ScalewayPrivateNetwork](/docs/catalog/scaleway/private-network) — provides the Private Network used by the parent cluster
+- [ScalewayPublicGateway](/docs/catalog/scaleway/public-gateway) — required when `publicIpDisabled` is `true` to give nodes outbound internet access

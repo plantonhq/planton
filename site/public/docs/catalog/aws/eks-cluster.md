@@ -208,6 +208,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsVpc](/docs/catalog/aws/awsvpc) — provides the subnets for cluster control plane placement
-- [AwsIamRole](/docs/catalog/aws/awsiamrole) — provides the IAM role for the EKS cluster service
-- [AwsKmsKey](/docs/catalog/aws/awskmskey) — provides the customer-managed key for secrets encryption
+- [AwsVpc](/docs/catalog/aws/vpc) — provides the subnets for cluster control plane placement
+- [AwsIamRole](/docs/catalog/aws/iam-role) — provides the IAM role for the EKS cluster service
+- [AwsKmsKey](/docs/catalog/aws/kms-key) — provides the customer-managed key for secrets encryption

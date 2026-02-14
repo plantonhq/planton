@@ -206,8 +206,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [DigitalOceanDnsZone](/docs/catalog/digitalocean/digitaloceandnszone) -- manages the DNS zone referenced by `customDomain` for routing traffic to the app
-- [DigitalOceanContainerRegistry](/docs/catalog/digitalocean/digitaloceancontainerregistry) -- hosts private container images used by `imageSource` deployments
-- [DigitalOceanDnsRecord](/docs/catalog/digitalocean/digitaloceandnsrecord) -- creates individual DNS records within a zone, useful for additional subdomains pointing to the service
-- [DigitalOceanFirewall](/docs/catalog/digitalocean/digitaloceanfirewall) -- controls network access rules for DigitalOcean resources
-- [DigitalOceanVpc](/docs/catalog/digitalocean/digitaloceanvpc) -- provides private networking for other DigitalOcean resources that interact with the app
+- [DigitalOceanDnsZone](/docs/catalog/digitalocean/dns-zone) -- manages the DNS zone referenced by `customDomain` for routing traffic to the app
+- [DigitalOceanContainerRegistry](/docs/catalog/digitalocean/container-registry) -- hosts private container images used by `imageSource` deployments
+- [DigitalOceanDnsRecord](/docs/catalog/digitalocean/dns-record) -- creates individual DNS records within a zone, useful for additional subdomains pointing to the service
+- [DigitalOceanFirewall](/docs/catalog/digitalocean/firewall) -- controls network access rules for DigitalOcean resources
+- [DigitalOceanVpc](/docs/catalog/digitalocean/vpc) -- provides private networking for other DigitalOcean resources that interact with the app

@@ -209,6 +209,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [ScalewayInstance](/docs/catalog/scaleway/scalewayinstance) — compute Instance that references this security group via its `securityGroupId` field
-- [ScalewayPrivateNetwork](/docs/catalog/scaleway/scalewayprivatenetwork) — provides the Private Network for Instance connectivity; security groups operate independently of Private Networks
-- [ScalewayPublicGateway](/docs/catalog/scaleway/scalewaypublicgateway) — manages NAT and DHCP for Instances on a Private Network, complementing security group rules for egress control
+- [ScalewayInstance](/docs/catalog/scaleway/instance) — compute Instance that references this security group via its `securityGroupId` field
+- [ScalewayPrivateNetwork](/docs/catalog/scaleway/private-network) — provides the Private Network for Instance connectivity; security groups operate independently of Private Networks
+- [ScalewayPublicGateway](/docs/catalog/scaleway/public-gateway) — manages NAT and DHCP for Instances on a Private Network, complementing security group rules for egress control

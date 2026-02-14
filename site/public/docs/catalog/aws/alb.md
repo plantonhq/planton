@@ -227,7 +227,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsVpc](/docs/catalog/aws/awsvpc) — provides the subnets for ALB placement
-- [AwsSecurityGroup](/docs/catalog/aws/awssecuritygroup) — controls inbound and outbound traffic to the ALB
-- [AwsRoute53Zone](/docs/catalog/aws/awsroute53zone) — hosts the DNS zone for alias records
-- [AwsCertManagerCert](/docs/catalog/aws/awscertmanagercert) — provides the ACM certificate for SSL termination
+- [AwsVpc](/docs/catalog/aws/vpc) — provides the subnets for ALB placement
+- [AwsSecurityGroup](/docs/catalog/aws/security-group) — controls inbound and outbound traffic to the ALB
+- [AwsRoute53Zone](/docs/catalog/aws/route53-zone) — hosts the DNS zone for alias records
+- [AwsCertManagerCert](/docs/catalog/aws/certificate-manager-certificate) — provides the ACM certificate for SSL termination

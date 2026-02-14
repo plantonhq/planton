@@ -197,7 +197,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CivoVpc](/docs/catalog/civo/civovpc) — provides the network for instance placement
-- [CivoFirewall](/docs/catalog/civo/civofirewall) — controls inbound and outbound network access
-- [CivoVolume](/docs/catalog/civo/civovolume) — provides persistent block storage to attach to the instance
-- [CivoIpAddress](/docs/catalog/civo/civoipaddress) — reserves a static public IP for the instance
+- [CivoVpc](/docs/catalog/civo/vpc) — provides the network for instance placement
+- [CivoFirewall](/docs/catalog/civo/firewall) — controls inbound and outbound network access
+- [CivoVolume](/docs/catalog/civo/volume) — provides persistent block storage to attach to the instance
+- [CivoIpAddress](/docs/catalog/civo/ip-address) — reserves a static public IP for the instance

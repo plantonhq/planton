@@ -193,6 +193,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CivoDnsZone](/docs/catalog/civo/civodnszone) --- the parent DNS zone where records are created; can be referenced via `valueFrom` in the `zoneId` field
-- [CivoKubernetesCluster](/docs/catalog/civo/civokubernetescluster) --- Kubernetes clusters whose ingress addresses are common targets for A and CNAME records
-- [CivoIpAddress](/docs/catalog/civo/civoipaddress) --- reserved IP addresses that can be used as A record values for stable endpoints
+- [CivoDnsZone](/docs/catalog/civo/dns-zone) --- the parent DNS zone where records are created; can be referenced via `valueFrom` in the `zoneId` field
+- [CivoKubernetesCluster](/docs/catalog/civo/kubernetes-cluster) --- Kubernetes clusters whose ingress addresses are common targets for A and CNAME records
+- [CivoIpAddress](/docs/catalog/civo/ip-address) --- reserved IP addresses that can be used as A record values for stable endpoints

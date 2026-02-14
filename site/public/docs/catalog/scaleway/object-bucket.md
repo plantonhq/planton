@@ -208,6 +208,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [ScalewayKapsuleCluster](/docs/catalog/scaleway/scalewaykapsulecluster) — deploys Kubernetes clusters whose workloads can read from and write to this bucket
-- [ScalewayPrivateNetwork](/docs/catalog/scaleway/scalewayprivatenetwork) — provides private connectivity for workloads accessing the bucket
-- [ScalewayRdbInstance](/docs/catalog/scaleway/scalewayrdbinstance) — deploys managed databases that may store references to objects in this bucket
+- [ScalewayKapsuleCluster](/docs/catalog/scaleway/kapsule-cluster) — deploys Kubernetes clusters whose workloads can read from and write to this bucket
+- [ScalewayPrivateNetwork](/docs/catalog/scaleway/private-network) — provides private connectivity for workloads accessing the bucket
+- [ScalewayRdbInstance](/docs/catalog/scaleway/rdb-instance) — deploys managed databases that may store references to objects in this bucket

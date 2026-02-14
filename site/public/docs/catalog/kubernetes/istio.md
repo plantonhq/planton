@@ -176,6 +176,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — alternative for deploying individual Helm charts when full Istio mesh setup is not needed
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — application deployments that can be injected with Istio sidecar proxies
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/helm-release) — alternative for deploying individual Helm charts when full Istio mesh setup is not needed
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — application deployments that can be injected with Istio sidecar proxies

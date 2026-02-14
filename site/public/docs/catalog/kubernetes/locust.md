@@ -307,6 +307,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — pre-create a namespace to reference via `valueFrom`
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — deploy the target application to load test against
-- [KubernetesRedis](/docs/catalog/kubernetes/kubernetesredis) — deploy Redis as a backend or caching layer for the system under test
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — pre-create a namespace to reference via `valueFrom`
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — deploy the target application to load test against
+- [KubernetesRedis](/docs/catalog/kubernetes/redis) — deploy Redis as a backend or caching layer for the system under test

@@ -189,7 +189,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [ScalewayPrivateNetwork](/docs/catalog/scaleway/scalewayprivatenetwork) — provides private connectivity between the Redis cluster and application workloads
-- [ScalewayRdbInstance](/docs/catalog/scaleway/scalewayrdbinstance) — deploys managed PostgreSQL or MySQL databases that pair with Redis as a caching layer
-- [ScalewayKapsuleCluster](/docs/catalog/scaleway/scalewaykapsulecluster) — deploys Kubernetes clusters whose workloads connect to this Redis cluster
-- [ScalewayInstanceSecurityGroup](/docs/catalog/scaleway/scalewayinstancesecuritygroup) — controls network access for compute instances connecting to the cluster
+- [ScalewayPrivateNetwork](/docs/catalog/scaleway/private-network) — provides private connectivity between the Redis cluster and application workloads
+- [ScalewayRdbInstance](/docs/catalog/scaleway/rdb-instance) — deploys managed PostgreSQL or MySQL databases that pair with Redis as a caching layer
+- [ScalewayKapsuleCluster](/docs/catalog/scaleway/kapsule-cluster) — deploys Kubernetes clusters whose workloads connect to this Redis cluster
+- [ScalewayInstanceSecurityGroup](/docs/catalog/scaleway/instance-security-group) — controls network access for compute instances connecting to the cluster

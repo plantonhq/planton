@@ -205,6 +205,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [ScalewayLoadBalancer](/docs/catalog/scaleway/scalewayloadbalancer) — provisions a Scaleway Load Balancer whose IP address can be referenced by DNS A records in this zone or via standalone ScalewayDnsRecord resources
-- [ScalewayKapsuleCluster](/docs/catalog/scaleway/scalewaykapsulecluster) — deploys a managed Kubernetes cluster whose wildcard DNS endpoint can be pointed to via CNAME records
-- [ScalewayInstance](/docs/catalog/scaleway/scalewayinstance) — creates compute instances whose public IPs can be mapped to A records in this zone
+- [ScalewayLoadBalancer](/docs/catalog/scaleway/load-balancer) — provisions a Scaleway Load Balancer whose IP address can be referenced by DNS A records in this zone or via standalone ScalewayDnsRecord resources
+- [ScalewayKapsuleCluster](/docs/catalog/scaleway/kapsule-cluster) — deploys a managed Kubernetes cluster whose wildcard DNS endpoint can be pointed to via CNAME records
+- [ScalewayInstance](/docs/catalog/scaleway/instance) — creates compute instances whose public IPs can be mapped to A records in this zone

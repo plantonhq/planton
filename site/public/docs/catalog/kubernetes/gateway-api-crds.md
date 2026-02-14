@@ -139,6 +139,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — deploy a Gateway API controller (such as Envoy Gateway or Istio) after the CRDs are in place
-- [KubernetesManifest](/docs/catalog/kubernetes/kubernetesmanifest) — apply Gateway and HTTPRoute manifests that reference the installed CRDs
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — create namespaces for Gateway API controller workloads
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/helm-release) — deploy a Gateway API controller (such as Envoy Gateway or Istio) after the CRDs are in place
+- [KubernetesManifest](/docs/catalog/kubernetes/manifest) — apply Gateway and HTTPRoute manifests that reference the installed CRDs
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — create namespaces for Gateway API controller workloads

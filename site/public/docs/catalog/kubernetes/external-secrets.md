@@ -256,6 +256,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — pre-create a namespace to reference via `valueFrom`
-- [KubernetesSecret](/docs/catalog/kubernetes/kubernetessecret) — manage Kubernetes Secrets directly when external secret stores are not needed
-- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — deploy arbitrary Helm charts if you need to customize the ESO installation beyond what this component offers
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — pre-create a namespace to reference via `valueFrom`
+- [KubernetesSecret](/docs/catalog/kubernetes/secret) — manage Kubernetes Secrets directly when external secret stores are not needed
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/helm-release) — deploy arbitrary Helm charts if you need to customize the ESO installation beyond what this component offers

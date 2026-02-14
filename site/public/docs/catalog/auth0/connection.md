@@ -306,6 +306,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [Auth0Client](/docs/catalog/auth0/auth0client) — applications that use this connection for authentication, linked via `enabledClients`
-- [Auth0ResourceServer](/docs/catalog/auth0/auth0resourceserver) — APIs that authenticated users may access after signing in through this connection
-- [Auth0EventStream](/docs/catalog/auth0/auth0eventstream) — streams authentication events including login activity on this connection
+- [Auth0Client](/docs/catalog/auth0/client) — applications that use this connection for authentication, linked via `enabledClients`
+- [Auth0ResourceServer](/docs/catalog/auth0/resource-server) — APIs that authenticated users may access after signing in through this connection
+- [Auth0EventStream](/docs/catalog/auth0/event-stream) — streams authentication events including login activity on this connection

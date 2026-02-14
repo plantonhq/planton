@@ -286,8 +286,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [ScalewayPrivateNetwork](/docs/catalog/scaleway/scalewayprivatenetwork) — the Private Network that the Load Balancer attaches to for private backend connectivity
-- [ScalewayVpc](/docs/catalog/scaleway/scalewayvpc) — the parent VPC containing the Private Network
-- [ScalewayInstance](/docs/catalog/scaleway/scalewayinstance) — compute instances that serve as backend servers behind the Load Balancer
-- [ScalewayDnsRecord](/docs/catalog/scaleway/scalewaydnsrecord) — DNS records that can reference `status.outputs.lb_ip_address` to point a domain to the Load Balancer
-- [ScalewayInstanceSecurityGroup](/docs/catalog/scaleway/scalewayinstancesecuritygroup) — controls network access for backend instances
+- [ScalewayPrivateNetwork](/docs/catalog/scaleway/private-network) — the Private Network that the Load Balancer attaches to for private backend connectivity
+- [ScalewayVpc](/docs/catalog/scaleway/vpc) — the parent VPC containing the Private Network
+- [ScalewayInstance](/docs/catalog/scaleway/instance) — compute instances that serve as backend servers behind the Load Balancer
+- [ScalewayDnsRecord](/docs/catalog/scaleway/dns-record) — DNS records that can reference `status.outputs.lb_ip_address` to point a domain to the Load Balancer
+- [ScalewayInstanceSecurityGroup](/docs/catalog/scaleway/instance-security-group) — controls network access for backend instances

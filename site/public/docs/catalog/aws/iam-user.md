@@ -189,6 +189,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsIamRole](/docs/catalog/aws/awsiamrole) — creates IAM roles for service-level permission delegation via temporary credentials
-- [AwsS3Bucket](/docs/catalog/aws/awss3bucket) — bucket policies can reference IAM user ARNs for access control
-- [AwsEksCluster](/docs/catalog/aws/awsekscluster) — IAM user credentials are sometimes used for programmatic cluster access
+- [AwsIamRole](/docs/catalog/aws/iam-role) — creates IAM roles for service-level permission delegation via temporary credentials
+- [AwsS3Bucket](/docs/catalog/aws/s3-bucket) — bucket policies can reference IAM user ARNs for access control
+- [AwsEksCluster](/docs/catalog/aws/eks-cluster) — IAM user credentials are sometimes used for programmatic cluster access

@@ -208,8 +208,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStack Container Cluster Template](/docs/catalog/openstack/openstackcontainerclustertemplate) — defines the blueprint (base image, network driver, COE) used by the cluster
-- [OpenStack Keypair](/docs/catalog/openstack/openstackkeypair) — manages the SSH keypair for node access
-- [OpenStack Network](/docs/catalog/openstack/openstacknetwork) — provides the network referenced in the cluster template
-- [OpenStack Subnet](/docs/catalog/openstack/openstacksubnet) — provides the fixed subnet for cluster networking
-- [OpenStack Load Balancer](/docs/catalog/openstack/openstackloadbalancer) — Magnum may provision load balancers for the Kubernetes API and services
+- [OpenStack Container Cluster Template](/docs/catalog/openstack/container-cluster-template) — defines the blueprint (base image, network driver, COE) used by the cluster
+- [OpenStack Keypair](/docs/catalog/openstack/keypair) — manages the SSH keypair for node access
+- [OpenStack Network](/docs/catalog/openstack/network) — provides the network referenced in the cluster template
+- [OpenStack Subnet](/docs/catalog/openstack/subnet) — provides the fixed subnet for cluster networking
+- [OpenStack Load Balancer](/docs/catalog/openstack/load-balancer) — Magnum may provision load balancers for the Kubernetes API and services

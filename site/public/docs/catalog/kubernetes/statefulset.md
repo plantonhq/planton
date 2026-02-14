@@ -391,9 +391,9 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — alternative for stateless workloads that do not require stable identity or persistent storage per pod
-- [KubernetesPostgres](/docs/catalog/kubernetes/kubernetespostgres) — commonly referenced for database connection environment variables
-- [KubernetesRedis](/docs/catalog/kubernetes/kubernetesredis) — commonly referenced for cache connection environment variables
-- [KubernetesCertManager](/docs/catalog/kubernetes/kubernetescertmanager) — provides the ClusterIssuer for ingress TLS certificates
-- [KubernetesIstio](/docs/catalog/kubernetes/kubernetesistio) — provides the Gateway API controller for ingress routing
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — alternative for stateless workloads that do not require stable identity or persistent storage per pod
+- [KubernetesPostgres](/docs/catalog/kubernetes/postgres) — commonly referenced for database connection environment variables
+- [KubernetesRedis](/docs/catalog/kubernetes/redis) — commonly referenced for cache connection environment variables
+- [KubernetesCertManager](/docs/catalog/kubernetes/cert-manager) — provides the ClusterIssuer for ingress TLS certificates
+- [KubernetesIstio](/docs/catalog/kubernetes/istio) — provides the Gateway API controller for ingress routing

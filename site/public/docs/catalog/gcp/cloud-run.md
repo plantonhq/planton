@@ -275,7 +275,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project where the service is created
-- [GcpVpc](/docs/catalog/gcp/gcpvpc) — provides the VPC network for Direct VPC Egress
-- [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork) — provides the subnet for Direct VPC Egress
-- [GcpCloudSql](/docs/catalog/gcp/gcpcloudsql) — commonly co-deployed as the database backend accessed via VPC
+- [GcpProject](/docs/catalog/gcp/project) — provides the GCP project where the service is created
+- [GcpVpc](/docs/catalog/gcp/vpc) — provides the VPC network for Direct VPC Egress
+- [GcpSubnetwork](/docs/catalog/gcp/subnetwork) — provides the subnet for Direct VPC Egress
+- [GcpCloudSql](/docs/catalog/gcp/cloud-sql) — commonly co-deployed as the database backend accessed via VPC

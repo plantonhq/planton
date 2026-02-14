@@ -225,12 +225,12 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) — provides the resource group where the parent VNet exists
-- [AzureVpc](/docs/catalog/azure/azurevpc) — provides the parent Virtual Network that contains this subnet
-- [AzureAksCluster](/docs/catalog/azure/azureakscluster) — references `subnet_id` for node pool placement
-- [AzureContainerAppEnvironment](/docs/catalog/azure/azurecontainerappenvironment) — requires a delegated subnet for VNet integration
-- [AzurePostgresqlFlexibleServer](/docs/catalog/azure/azurepostgresqlflexibleserver) — requires a delegated subnet for VNet integration
-- [AzureMysqlFlexibleServer](/docs/catalog/azure/azuremysqlflexibleserver) — requires a delegated subnet for VNet integration
-- [AzurePrivateEndpoint](/docs/catalog/azure/azureprivateendpoint) — deployed into a subnet for private connectivity to Azure PaaS services
-- [AzureApplicationGateway](/docs/catalog/azure/azureapplicationgateway) — requires a dedicated subnet (minimum /27)
-- [AzureKeyVault](/docs/catalog/azure/azurekeyvault) — can restrict access to specific subnet IDs via network ACLs
+- [AzureResourceGroup](/docs/catalog/azure/resource-group) — provides the resource group where the parent VNet exists
+- [AzureVpc](/docs/catalog/azure/vpc-virtual-network) — provides the parent Virtual Network that contains this subnet
+- [AzureAksCluster](/docs/catalog/azure/aks-cluster) — references `subnet_id` for node pool placement
+- [AzureContainerAppEnvironment](/docs/catalog/azure/azurecontainerappenvironment-research-design-documentation) — requires a delegated subnet for VNet integration
+- [AzurePostgresqlFlexibleServer](/docs/catalog/azure/postgresql-flexible-server) — requires a delegated subnet for VNet integration
+- [AzureMysqlFlexibleServer](/docs/catalog/azure/mysql-flexible-server) — requires a delegated subnet for VNet integration
+- [AzurePrivateEndpoint](/docs/catalog/azure/private-endpoint) — deployed into a subnet for private connectivity to Azure PaaS services
+- [AzureApplicationGateway](/docs/catalog/azure/application-gateway) — requires a dedicated subnet (minimum /27)
+- [AzureKeyVault](/docs/catalog/azure/key-vault) — can restrict access to specific subnet IDs via network ACLs

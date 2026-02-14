@@ -201,8 +201,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [DigitalOceanVpc](/docs/catalog/digitalocean/digitaloceanvpc) — provides the VPC for Droplet network placement
-- [DigitalOceanVolume](/docs/catalog/digitalocean/digitaloceanvolume) — provisions block storage volumes for persistent data
-- [DigitalOceanFirewall](/docs/catalog/digitalocean/digitaloceanfirewall) — controls network access to the Droplet via tag-based rules
-- [DigitalOceanLoadBalancer](/docs/catalog/digitalocean/digitaloceanloadbalancer) — distributes traffic across Droplets matched by tag
-- [DigitalOceanDnsRecord](/docs/catalog/digitalocean/digitaloceandnsrecord) — maps DNS names to Droplet IP addresses
+- [DigitalOceanVpc](/docs/catalog/digitalocean/vpc) — provides the VPC for Droplet network placement
+- [DigitalOceanVolume](/docs/catalog/digitalocean/volume) — provisions block storage volumes for persistent data
+- [DigitalOceanFirewall](/docs/catalog/digitalocean/firewall) — controls network access to the Droplet via tag-based rules
+- [DigitalOceanLoadBalancer](/docs/catalog/digitalocean/load-balancer) — distributes traffic across Droplets matched by tag
+- [DigitalOceanDnsRecord](/docs/catalog/digitalocean/dns-record) — maps DNS names to Droplet IP addresses

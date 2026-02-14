@@ -202,8 +202,8 @@ Each subnet entry in `public_subnets` and `private_subnets` contains:
 
 ## Related Components
 
-- [AwsSecurityGroup](/docs/catalog/aws/awssecuritygroup) — controls network traffic for resources deployed in the VPC
-- [AwsAlb](/docs/catalog/aws/awsalb) — deploys an Application Load Balancer in the VPC's subnets
-- [AwsEksCluster](/docs/catalog/aws/awsekscluster) — deploys a Kubernetes cluster in the VPC
-- [AwsClientVpn](/docs/catalog/aws/awsclientvpn) — provides VPN access into the VPC
-- [AwsEc2Instance](/docs/catalog/aws/awsec2instance) — launches EC2 instances in the VPC's subnets
+- [AwsSecurityGroup](/docs/catalog/aws/security-group) — controls network traffic for resources deployed in the VPC
+- [AwsAlb](/docs/catalog/aws/alb) — deploys an Application Load Balancer in the VPC's subnets
+- [AwsEksCluster](/docs/catalog/aws/eks-cluster) — deploys a Kubernetes cluster in the VPC
+- [AwsClientVpn](/docs/catalog/aws/client-vpn) — provides VPN access into the VPC
+- [AwsEc2Instance](/docs/catalog/aws/ec2-instance) — launches EC2 instances in the VPC's subnets

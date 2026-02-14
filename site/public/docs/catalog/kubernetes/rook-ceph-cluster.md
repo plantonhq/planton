@@ -352,7 +352,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — pre-create a namespace to reference via `valueFrom`
-- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — deploy the Rook Ceph Operator prerequisite via Helm
-- [KubernetesPrometheus](/docs/catalog/kubernetes/kubernetesprometheus) — set up Prometheus to consume Ceph monitoring metrics
-- [KubernetesStatefulSet](/docs/catalog/kubernetes/kubernetesstatefulset) — deploy stateful workloads backed by Ceph block or filesystem storage
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — pre-create a namespace to reference via `valueFrom`
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/helm-release) — deploy the Rook Ceph Operator prerequisite via Helm
+- [KubernetesPrometheus](/docs/catalog/kubernetes/prometheus) — set up Prometheus to consume Ceph monitoring metrics
+- [KubernetesStatefulSet](/docs/catalog/kubernetes/statefulset) — deploy stateful workloads backed by Ceph block or filesystem storage

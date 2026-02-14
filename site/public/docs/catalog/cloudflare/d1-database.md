@@ -141,6 +141,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CloudflareWorker](/docs/catalog/cloudflare/cloudflareworker) — Workers bind to D1 databases for query execution; deploy a Worker alongside your D1 database to serve your application
-- [CloudflareR2Bucket](/docs/catalog/cloudflare/cloudflarer2bucket) — object storage commonly paired with D1 for storing large blobs while keeping metadata in D1
-- [CloudflareKvNamespace](/docs/catalog/cloudflare/cloudflarekvnamespace) — key-value storage useful as a caching layer in front of D1 queries
+- [CloudflareWorker](/docs/catalog/cloudflare/worker) — Workers bind to D1 databases for query execution; deploy a Worker alongside your D1 database to serve your application
+- [CloudflareR2Bucket](/docs/catalog/cloudflare/r2-bucket) — object storage commonly paired with D1 for storing large blobs while keeping metadata in D1
+- [CloudflareKvNamespace](/docs/catalog/cloudflare/kv-namespace) — key-value storage useful as a caching layer in front of D1 queries

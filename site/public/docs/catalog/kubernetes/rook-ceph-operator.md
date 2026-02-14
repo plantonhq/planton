@@ -240,8 +240,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — alternative for deploying Helm charts with custom configurations
-- [KubernetesStatefulSet](/docs/catalog/kubernetes/kubernetesstatefulset) — deploy stateful workloads that consume Ceph-backed PersistentVolumeClaims provisioned by the operator
-- [KubernetesPrometheus](/docs/catalog/kubernetes/kubernetesprometheus) — collect metrics from the Rook Ceph Operator and Ceph cluster components
-- [KubernetesGrafana](/docs/catalog/kubernetes/kubernetesgrafana) — visualize Ceph cluster health, OSD performance, and storage utilization using Rook-provided dashboards
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/helm-release) — alternative for deploying Helm charts with custom configurations
+- [KubernetesStatefulSet](/docs/catalog/kubernetes/statefulset) — deploy stateful workloads that consume Ceph-backed PersistentVolumeClaims provisioned by the operator
+- [KubernetesPrometheus](/docs/catalog/kubernetes/prometheus) — collect metrics from the Rook Ceph Operator and Ceph cluster components
+- [KubernetesGrafana](/docs/catalog/kubernetes/grafana) — visualize Ceph cluster health, OSD performance, and storage utilization using Rook-provided dashboards

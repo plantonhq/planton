@@ -216,8 +216,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [ScalewayPrivateNetwork](/docs/catalog/scaleway/scalewayprivatenetwork) — provides private connectivity between the function and backend services such as databases and Redis clusters
-- [ScalewayRedisCluster](/docs/catalog/scaleway/scalewayrediscluster) — deploys managed Redis clusters reachable from the function over a Private Network
-- [ScalewayRdbInstance](/docs/catalog/scaleway/scalewayrdbinstance) — deploys managed PostgreSQL or MySQL databases that the function can connect to
-- [ScalewayObjectBucket](/docs/catalog/scaleway/scalewayobjectbucket) — provides S3-compatible object storage for function input/output data
-- [ScalewayContainerRegistry](/docs/catalog/scaleway/scalewaycontainerregistry) — hosts container images if migrating from serverless functions to containerized workloads
+- [ScalewayPrivateNetwork](/docs/catalog/scaleway/private-network) — provides private connectivity between the function and backend services such as databases and Redis clusters
+- [ScalewayRedisCluster](/docs/catalog/scaleway/redis-cluster) — deploys managed Redis clusters reachable from the function over a Private Network
+- [ScalewayRdbInstance](/docs/catalog/scaleway/rdb-instance) — deploys managed PostgreSQL or MySQL databases that the function can connect to
+- [ScalewayObjectBucket](/docs/catalog/scaleway/object-bucket) — provides S3-compatible object storage for function input/output data
+- [ScalewayContainerRegistry](/docs/catalog/scaleway/container-registry) — hosts container images if migrating from serverless functions to containerized workloads

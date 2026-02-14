@@ -225,6 +225,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [DigitalOceanDnsZone](/docs/catalog/digitalocean/digitaloceandnszone) -- provides the domain (DNS zone) in which records are created
-- [DigitalOceanDroplet](/docs/catalog/digitalocean/digitaloceandroplet) -- provisions Droplets whose IP addresses can be used as A/AAAA record values
-- [DigitalOceanLoadBalancer](/docs/catalog/digitalocean/digitaloceanloadbalancer) -- provisions load balancers whose IPs or hostnames can serve as record targets
+- [DigitalOceanDnsZone](/docs/catalog/digitalocean/dns-zone) -- provides the domain (DNS zone) in which records are created
+- [DigitalOceanDroplet](/docs/catalog/digitalocean/droplet) -- provisions Droplets whose IP addresses can be used as A/AAAA record values
+- [DigitalOceanLoadBalancer](/docs/catalog/digitalocean/load-balancer) -- provisions load balancers whose IPs or hostnames can serve as record targets

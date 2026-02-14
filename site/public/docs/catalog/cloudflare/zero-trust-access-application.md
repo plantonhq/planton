@@ -163,6 +163,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CloudflareDnsZone](/docs/catalog/cloudflare/cloudflarednszone) — provisions the DNS zone whose `zone_id` is referenced by this component
-- [CloudflareDnsRecord](/docs/catalog/cloudflare/cloudflarednsrecord) — manages DNS records that route traffic to the hostname protected by this Access Application
-- [CloudflareWorker](/docs/catalog/cloudflare/cloudflareworker) — can serve content behind the Access Application for authenticated users
+- [CloudflareDnsZone](/docs/catalog/cloudflare/dns-zone) — provisions the DNS zone whose `zone_id` is referenced by this component
+- [CloudflareDnsRecord](/docs/catalog/cloudflare/dns-record) — manages DNS records that route traffic to the hostname protected by this Access Application
+- [CloudflareWorker](/docs/catalog/cloudflare/worker) — can serve content behind the Access Application for authenticated users

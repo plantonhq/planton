@@ -195,5 +195,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStack Instance](/docs/catalog/openstack/openstackinstance) -- the compute instance that the volume attaches to
-- [OpenStack Volume](/docs/catalog/openstack/openstackvolume) -- the Cinder block storage volume being attached
+- [OpenStack Instance](/docs/catalog/openstack/instance) -- the compute instance that the volume attaches to
+- [OpenStack Volume](/docs/catalog/openstack/volume) -- the Cinder block storage volume being attached

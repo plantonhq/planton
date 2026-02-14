@@ -200,7 +200,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [DigitalOceanKubernetesCluster](/docs/catalog/digitalocean/digitaloceankubernetescluster) -- provides the parent DOKS cluster that this node pool is attached to
-- [DigitalOceanVpc](/docs/catalog/digitalocean/digitaloceanvpc) -- provides the VPC in which the parent cluster and its node pools reside
-- [DigitalOceanFirewall](/docs/catalog/digitalocean/digitaloceanfirewall) -- controls network access to node pool Droplets
-- [DigitalOceanLoadBalancer](/docs/catalog/digitalocean/digitaloceanloadbalancer) -- provisions load balancers for exposing services running on pool nodes
+- [DigitalOceanKubernetesCluster](/docs/catalog/digitalocean/kubernetes-cluster) -- provides the parent DOKS cluster that this node pool is attached to
+- [DigitalOceanVpc](/docs/catalog/digitalocean/vpc) -- provides the VPC in which the parent cluster and its node pools reside
+- [DigitalOceanFirewall](/docs/catalog/digitalocean/firewall) -- controls network access to node pool Droplets
+- [DigitalOceanLoadBalancer](/docs/catalog/digitalocean/load-balancer) -- provisions load balancers for exposing services running on pool nodes

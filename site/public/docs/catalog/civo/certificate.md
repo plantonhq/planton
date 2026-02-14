@@ -188,6 +188,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CivoKubernetesCluster](/docs/catalog/civo/civokubernetescluster) --- Kubernetes clusters that can reference certificates for ingress TLS termination
-- [CivoFirewall](/docs/catalog/civo/civofirewall) --- firewall rules to restrict access to services using the certificate
-- [CivoVpc](/docs/catalog/civo/civovpc) --- private networks where certificate-protected services run
+- [CivoKubernetesCluster](/docs/catalog/civo/kubernetes-cluster) --- Kubernetes clusters that can reference certificates for ingress TLS termination
+- [CivoFirewall](/docs/catalog/civo/firewall) --- firewall rules to restrict access to services using the certificate
+- [CivoVpc](/docs/catalog/civo/vpc) --- private networks where certificate-protected services run

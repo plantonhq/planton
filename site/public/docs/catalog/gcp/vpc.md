@@ -156,8 +156,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project and can enable the Service Networking API required for Private Services Access
-- [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork) — creates subnets within this VPC with primary and secondary IP ranges
-- [GcpRouterNat](/docs/catalog/gcp/gcprouternat) — provides Cloud NAT for private workload outbound internet access
-- [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — deploys a GKE cluster into this VPC
-- [GcpCloudSql](/docs/catalog/gcp/gcpcloudsql) — deploys Cloud SQL instances that can use Private Services Access for private IP connectivity
+- [GcpProject](/docs/catalog/gcp/project) — provides the GCP project and can enable the Service Networking API required for Private Services Access
+- [GcpSubnetwork](/docs/catalog/gcp/subnetwork) — creates subnets within this VPC with primary and secondary IP ranges
+- [GcpRouterNat](/docs/catalog/gcp/router-nat) — provides Cloud NAT for private workload outbound internet access
+- [GcpGkeCluster](/docs/catalog/gcp/gke-cluster) — deploys a GKE cluster into this VPC
+- [GcpCloudSql](/docs/catalog/gcp/cloud-sql) — deploys Cloud SQL instances that can use Private Services Access for private IP connectivity

@@ -188,7 +188,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CloudflareDnsZone](/docs/catalog/cloudflare/cloudflarednszone) — manages the parent DNS zone; its `zone_id` output can be referenced by this component via `valueFrom`
-- [CloudflareR2Bucket](/docs/catalog/cloudflare/cloudflarer2bucket) — may use DNS records for custom domain access
-- [CloudflareWorker](/docs/catalog/cloudflare/cloudflareworker) — commonly paired with DNS records pointing to Worker routes
-- [CloudflareLoadBalancer](/docs/catalog/cloudflare/cloudflareloadbalancer) — load balances traffic across origins, often configured alongside DNS records
+- [CloudflareDnsZone](/docs/catalog/cloudflare/dns-zone) — manages the parent DNS zone; its `zone_id` output can be referenced by this component via `valueFrom`
+- [CloudflareR2Bucket](/docs/catalog/cloudflare/r2-bucket) — may use DNS records for custom domain access
+- [CloudflareWorker](/docs/catalog/cloudflare/worker) — commonly paired with DNS records pointing to Worker routes
+- [CloudflareLoadBalancer](/docs/catalog/cloudflare/load-balancer) — load balances traffic across origins, often configured alongside DNS records

@@ -193,7 +193,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [ScalewayPrivateNetwork](/docs/catalog/scaleway/scalewayprivatenetwork) — provides the Private Network that the gateway attaches to for NAT, bastion, and port forwarding
-- [ScalewayKapsuleCluster](/docs/catalog/scaleway/scalewaykapsulecluster) — deploys Kubernetes clusters whose nodes use the gateway for outbound internet access
-- [ScalewayRdbInstance](/docs/catalog/scaleway/scalewayrdbinstance) — deploys managed databases reachable through the gateway's port forwarding rules
-- [ScalewayInstanceSecurityGroup](/docs/catalog/scaleway/scalewayinstancesecuritygroup) — controls network access for compute instances behind the gateway
+- [ScalewayPrivateNetwork](/docs/catalog/scaleway/private-network) — provides the Private Network that the gateway attaches to for NAT, bastion, and port forwarding
+- [ScalewayKapsuleCluster](/docs/catalog/scaleway/kapsule-cluster) — deploys Kubernetes clusters whose nodes use the gateway for outbound internet access
+- [ScalewayRdbInstance](/docs/catalog/scaleway/rdb-instance) — deploys managed databases reachable through the gateway's port forwarding rules
+- [ScalewayInstanceSecurityGroup](/docs/catalog/scaleway/instance-security-group) — controls network access for compute instances behind the gateway

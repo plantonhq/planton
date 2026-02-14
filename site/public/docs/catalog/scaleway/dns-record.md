@@ -238,7 +238,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [ScalewayDnsZone](/docs/catalog/scaleway/scalewaydnszone) — manages DNS zones where records are created; provides `zone_name` output used by `zoneName.valueFrom`
-- [ScalewayLoadBalancer](/docs/catalog/scaleway/scalewayloadbalancer) — deploys load balancers whose IP addresses are commonly wired into A records via `data.valueFrom`
-- [ScalewayKapsuleCluster](/docs/catalog/scaleway/scalewaykapsulecluster) — deploys Kubernetes clusters whose endpoints can be referenced in CNAME or A records
-- [ScalewayInstance](/docs/catalog/scaleway/scalewayinstance) — deploys compute instances whose public IPs can be targeted by A/AAAA records
+- [ScalewayDnsZone](/docs/catalog/scaleway/dns-zone) — manages DNS zones where records are created; provides `zone_name` output used by `zoneName.valueFrom`
+- [ScalewayLoadBalancer](/docs/catalog/scaleway/load-balancer) — deploys load balancers whose IP addresses are commonly wired into A records via `data.valueFrom`
+- [ScalewayKapsuleCluster](/docs/catalog/scaleway/kapsule-cluster) — deploys Kubernetes clusters whose endpoints can be referenced in CNAME or A records
+- [ScalewayInstance](/docs/catalog/scaleway/instance) — deploys compute instances whose public IPs can be targeted by A/AAAA records

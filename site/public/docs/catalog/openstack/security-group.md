@@ -265,7 +265,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackSecurityGroupRule](/docs/catalog/openstack/openstacksecuritygrouprule) — manages standalone security group rules with full foreign key support for DAG-visible rule management in InfraCharts
-- [OpenStackInstance](/docs/catalog/openstack/openstackinstance) — references security groups via the `securityGroups` field
-- [OpenStackNetworkPort](/docs/catalog/openstack/openstacknetworkport) — references security groups via the `securityGroupIds` field
-- [OpenStackNetwork](/docs/catalog/openstack/openstacknetwork) — provides the network layer that security groups protect
+- [OpenStackSecurityGroupRule](/docs/catalog/openstack/security-group-rule) — manages standalone security group rules with full foreign key support for DAG-visible rule management in InfraCharts
+- [OpenStackInstance](/docs/catalog/openstack/instance) — references security groups via the `securityGroups` field
+- [OpenStackNetworkPort](/docs/catalog/openstack/network-port) — references security groups via the `securityGroupIds` field
+- [OpenStackNetwork](/docs/catalog/openstack/network) — provides the network layer that security groups protect

@@ -178,9 +178,9 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackSubnet](/docs/catalog/openstack/openstacksubnet) -- provides the subnet for VIP allocation
-- [OpenStackLoadBalancerListener](/docs/catalog/openstack/openstackloadbalancerlistener) -- attaches a protocol/port listener to the load balancer
-- [OpenStackLoadBalancerPool](/docs/catalog/openstack/openstackloadbalancerpool) -- defines a backend pool with load balancing algorithm
-- [OpenStackLoadBalancerMember](/docs/catalog/openstack/openstackloadbalancermember) -- registers backend servers in a pool
-- [OpenStackLoadBalancerMonitor](/docs/catalog/openstack/openstackloadbalancermonitor) -- configures health checks for pool members
-- [OpenStackFloatingIpAssociate](/docs/catalog/openstack/openstackfloatingipassociate) -- associates a floating IP with the VIP port for external access
+- [OpenStackSubnet](/docs/catalog/openstack/subnet) -- provides the subnet for VIP allocation
+- [OpenStackLoadBalancerListener](/docs/catalog/openstack/load-balancer-listener) -- attaches a protocol/port listener to the load balancer
+- [OpenStackLoadBalancerPool](/docs/catalog/openstack/load-balancer-pool) -- defines a backend pool with load balancing algorithm
+- [OpenStackLoadBalancerMember](/docs/catalog/openstack/load-balancer-member) -- registers backend servers in a pool
+- [OpenStackLoadBalancerMonitor](/docs/catalog/openstack/load-balancer-monitor) -- configures health checks for pool members
+- [OpenStackFloatingIpAssociate](/docs/catalog/openstack/floating-ip-associate) -- associates a floating IP with the VIP port for external access

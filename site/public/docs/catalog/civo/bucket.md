@@ -173,6 +173,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CivoKubernetesCluster](/docs/catalog/civo/civokubernetescluster) — application workloads that read from or write to the bucket
-- [CivoVpc](/docs/catalog/civo/civovpc) — provides private network connectivity for workloads accessing the bucket
-- [CivoFirewall](/docs/catalog/civo/civofirewall) — controls network access to services that interact with the bucket
+- [CivoKubernetesCluster](/docs/catalog/civo/kubernetes-cluster) — application workloads that read from or write to the bucket
+- [CivoVpc](/docs/catalog/civo/vpc) — provides private network connectivity for workloads accessing the bucket
+- [CivoFirewall](/docs/catalog/civo/firewall) — controls network access to services that interact with the bucket

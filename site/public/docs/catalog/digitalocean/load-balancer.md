@@ -217,7 +217,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [DigitalOceanVpc](/docs/catalog/digitalocean/digitaloceanvpc) -- provides the VPC for load balancer placement
-- [DigitalOceanDroplet](/docs/catalog/digitalocean/digitaloceandroplet) -- backend compute instances that receive traffic from the load balancer
-- [DigitalOceanKubernetesCluster](/docs/catalog/digitalocean/digitaloceankubernetescluster) -- managed Kubernetes cluster whose services can be exposed through load balancers
-- [DigitalOceanFirewall](/docs/catalog/digitalocean/digitaloceanfirewall) -- controls network access to backend Droplets
+- [DigitalOceanVpc](/docs/catalog/digitalocean/vpc) -- provides the VPC for load balancer placement
+- [DigitalOceanDroplet](/docs/catalog/digitalocean/droplet) -- backend compute instances that receive traffic from the load balancer
+- [DigitalOceanKubernetesCluster](/docs/catalog/digitalocean/kubernetes-cluster) -- managed Kubernetes cluster whose services can be exposed through load balancers
+- [DigitalOceanFirewall](/docs/catalog/digitalocean/firewall) -- controls network access to backend Droplets

@@ -170,8 +170,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackNetwork](/docs/catalog/openstack/openstacknetwork) — the external (provider) network from which floating IPs are allocated
-- [OpenStackNetworkPort](/docs/catalog/openstack/openstacknetworkport) — the port that a floating IP can be associated with for external connectivity
-- [OpenStackFloatingIpAssociate](/docs/catalog/openstack/openstackfloatingipassociate) — associates an existing floating IP with a port as a separate DAG node in InfraCharts
-- [OpenStackRouter](/docs/catalog/openstack/openstackrouter) — provides routing between tenant and external networks
-- [OpenStackInstance](/docs/catalog/openstack/openstackinstance) — compute instances that gain external connectivity through floating IPs
+- [OpenStackNetwork](/docs/catalog/openstack/network) — the external (provider) network from which floating IPs are allocated
+- [OpenStackNetworkPort](/docs/catalog/openstack/network-port) — the port that a floating IP can be associated with for external connectivity
+- [OpenStackFloatingIpAssociate](/docs/catalog/openstack/floating-ip-associate) — associates an existing floating IP with a port as a separate DAG node in InfraCharts
+- [OpenStackRouter](/docs/catalog/openstack/router) — provides routing between tenant and external networks
+- [OpenStackInstance](/docs/catalog/openstack/instance) — compute instances that gain external connectivity through floating IPs

@@ -222,6 +222,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CloudflareDnsZone](/docs/catalog/cloudflare/cloudflarednszone) — manages the parent DNS zone; its `zone_id` output can be referenced by this component via `valueFrom`
-- [CloudflareDnsRecord](/docs/catalog/cloudflare/cloudflarednsrecord) — manages individual DNS records; commonly used alongside load balancers for non-load-balanced hostnames
-- [CloudflareWorker](/docs/catalog/cloudflare/cloudflareworker) — serverless functions that can act as origins or be paired with load-balanced routes
+- [CloudflareDnsZone](/docs/catalog/cloudflare/dns-zone) — manages the parent DNS zone; its `zone_id` output can be referenced by this component via `valueFrom`
+- [CloudflareDnsRecord](/docs/catalog/cloudflare/dns-record) — manages individual DNS records; commonly used alongside load balancers for non-load-balanced hostnames
+- [CloudflareWorker](/docs/catalog/cloudflare/worker) — serverless functions that can act as origins or be paired with load-balanced routes

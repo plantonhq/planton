@@ -169,8 +169,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackFloatingIp](/docs/catalog/openstack/openstackfloatingip) — allocates floating IPs from external networks; use its built-in `portId` field for simple allocation-and-association in a single manifest
-- [OpenStackNetworkPort](/docs/catalog/openstack/openstacknetworkport) — creates ports with specific IPs and security groups that floating IPs can be associated with
-- [OpenStackNetwork](/docs/catalog/openstack/openstacknetwork) — provides the Layer 2 network on which ports are created
-- [OpenStackSubnet](/docs/catalog/openstack/openstacksubnet) — defines IP address ranges and DHCP settings that determine the fixed IPs available on ports
-- [OpenStackRouter](/docs/catalog/openstack/openstackrouter) — provides routing between internal networks and external connectivity
+- [OpenStackFloatingIp](/docs/catalog/openstack/floating-ip) — allocates floating IPs from external networks; use its built-in `portId` field for simple allocation-and-association in a single manifest
+- [OpenStackNetworkPort](/docs/catalog/openstack/network-port) — creates ports with specific IPs and security groups that floating IPs can be associated with
+- [OpenStackNetwork](/docs/catalog/openstack/network) — provides the Layer 2 network on which ports are created
+- [OpenStackSubnet](/docs/catalog/openstack/subnet) — defines IP address ranges and DHCP settings that determine the fixed IPs available on ports
+- [OpenStackRouter](/docs/catalog/openstack/router) — provides routing between internal networks and external connectivity

@@ -215,7 +215,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) -- provides the resource group where the identity is created
-- [AzureKeyVault](/docs/catalog/azure/azurekeyvault) -- a common scope target for granting secret, key, or certificate access
-- [AzureStorageAccount](/docs/catalog/azure/azurestorageaccount) -- a common scope target for granting blob, queue, or table data access
-- [AzureAksCluster](/docs/catalog/azure/azureakscluster) -- AKS clusters can use user-assigned identities for kubelet or control plane authentication
+- [AzureResourceGroup](/docs/catalog/azure/resource-group) -- provides the resource group where the identity is created
+- [AzureKeyVault](/docs/catalog/azure/key-vault) -- a common scope target for granting secret, key, or certificate access
+- [AzureStorageAccount](/docs/catalog/azure/storage-account) -- a common scope target for granting blob, queue, or table data access
+- [AzureAksCluster](/docs/catalog/azure/aks-cluster) -- AKS clusters can use user-assigned identities for kubelet or control plane authentication

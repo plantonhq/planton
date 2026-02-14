@@ -201,9 +201,9 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackNetwork](/docs/catalog/openstack/openstacknetwork) — the network this port belongs to
-- [OpenStackSubnet](/docs/catalog/openstack/openstacksubnet) — defines IP address ranges that fixed IPs are allocated from
-- [OpenStackSecurityGroup](/docs/catalog/openstack/openstacksecuritygroup) — security groups applied to this port
-- [OpenStackFloatingIp](/docs/catalog/openstack/openstackfloatingip) — allocates a floating IP that can be associated with this port
-- [OpenStackFloatingIpAssociate](/docs/catalog/openstack/openstackfloatingipassociate) — associates a floating IP to this port via `portId`
-- [OpenStackInstance](/docs/catalog/openstack/openstackinstance) — attaches this port to a compute instance
+- [OpenStackNetwork](/docs/catalog/openstack/network) — the network this port belongs to
+- [OpenStackSubnet](/docs/catalog/openstack/subnet) — defines IP address ranges that fixed IPs are allocated from
+- [OpenStackSecurityGroup](/docs/catalog/openstack/security-group) — security groups applied to this port
+- [OpenStackFloatingIp](/docs/catalog/openstack/floating-ip) — allocates a floating IP that can be associated with this port
+- [OpenStackFloatingIpAssociate](/docs/catalog/openstack/floating-ip-associate) — associates a floating IP to this port via `portId`
+- [OpenStackInstance](/docs/catalog/openstack/instance) — attaches this port to a compute instance

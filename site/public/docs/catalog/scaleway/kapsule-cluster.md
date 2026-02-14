@@ -226,6 +226,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [ScalewayPrivateNetwork](/docs/catalog/scaleway/scalewayprivatenetwork) — provides the Private Network required by the cluster
-- [ScalewayKapsulePool](/docs/catalog/scaleway/scalewaykapsulepool) — adds additional node pools with different instance types, labels, or taints
-- [ScalewayLoadBalancer](/docs/catalog/scaleway/scalewayloadbalancer) — provisions load balancers for exposing services running on the cluster
+- [ScalewayPrivateNetwork](/docs/catalog/scaleway/private-network) — provides the Private Network required by the cluster
+- [ScalewayKapsulePool](/docs/catalog/scaleway/kapsule-pool) — adds additional node pools with different instance types, labels, or taints
+- [ScalewayLoadBalancer](/docs/catalog/scaleway/load-balancer) — provisions load balancers for exposing services running on the cluster

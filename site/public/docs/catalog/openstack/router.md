@@ -165,9 +165,9 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackNetwork](/docs/catalog/openstack/openstacknetwork) — provides the Layer 2 network that the router connects to as an external gateway
-- [OpenStackSubnet](/docs/catalog/openstack/openstacksubnet) — defines IP address ranges on networks; subnets are attached to routers via router interfaces
-- [OpenStackRouterInterface](/docs/catalog/openstack/openstackrouterinterface) — attaches a subnet to this router, enabling routing for that subnet's traffic
-- [OpenStackFloatingIp](/docs/catalog/openstack/openstackfloatingip) — allocates floating IPs from the external network for 1:1 NAT to instances
-- [OpenStackSecurityGroup](/docs/catalog/openstack/openstacksecuritygroup) — controls traffic filtering for ports on networks connected to this router
-- [OpenStackInstance](/docs/catalog/openstack/openstackinstance) — compute instances whose traffic is routed by this router
+- [OpenStackNetwork](/docs/catalog/openstack/network) — provides the Layer 2 network that the router connects to as an external gateway
+- [OpenStackSubnet](/docs/catalog/openstack/subnet) — defines IP address ranges on networks; subnets are attached to routers via router interfaces
+- [OpenStackRouterInterface](/docs/catalog/openstack/router-interface) — attaches a subnet to this router, enabling routing for that subnet's traffic
+- [OpenStackFloatingIp](/docs/catalog/openstack/floating-ip) — allocates floating IPs from the external network for 1:1 NAT to instances
+- [OpenStackSecurityGroup](/docs/catalog/openstack/security-group) — controls traffic filtering for ports on networks connected to this router
+- [OpenStackInstance](/docs/catalog/openstack/instance) — compute instances whose traffic is routed by this router
