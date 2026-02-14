@@ -1,0 +1,13 @@
+apiVersion: civo.openmcf.org/v1
+kind: CivoComputeInstance
+metadata:
+  name: my-dev-instance
+spec:
+  instanceName: my-dev-instance
+  region: lon1
+  size: g3.small
+  image: ubuntu-jammy
+  network:
+    value: "<vpc-network-id>"
+  tags:
+    - development

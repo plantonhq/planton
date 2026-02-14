@@ -1,0 +1,11 @@
+apiVersion: civo.openmcf.org/v1
+kind: CivoBucket
+metadata:
+  name: my-backup-bucket
+spec:
+  bucketName: my-backup-bucket
+  region: lon1
+  versioningEnabled: true
+  tags:
+    - backup
+    - production

@@ -3,17 +3,15 @@ syntax = "proto3";
 package org.openmcf.provider.civo.civovpc.v1;
 
 import "buf/validate/validate.proto";
+import "org/openmcf/provider/civo/region.proto";
 
 // CivoVpcSpec defines the specification for an isolated private network on Civo.
 message CivoVpcSpec {
-  // The ID of the Civo credential to use for this network.
-  string civo_credential_id = 1 [(buf.validate.field).required = true];
-
   // The name of the network (DNS-friendly label).
   string network_name = 2 [(buf.validate.field).required = true];
 
-  // The Civo region where this network will be created (e.g., "lon1", "fra1").
-  string region = 3 [(buf.validate.field).required = true];
+  // The Civo region where this network will be created.
+  org.openmcf.provider.civo.CivoRegion region = 3 [(buf.validate.field).required = true];
 
   // The IPv4 CIDR range for the network (max /24). If omitted, an available range will be auto-allocated.
   string ip_range_cidr = 4;

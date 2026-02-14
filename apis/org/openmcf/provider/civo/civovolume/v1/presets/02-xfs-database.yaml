@@ -1,0 +1,12 @@
+apiVersion: civo.openmcf.org/v1
+kind: CivoVolume
+metadata:
+  name: my-database-volume
+spec:
+  volumeName: my-database-volume
+  region: lon1
+  sizeGib: 100
+  filesystemType: xfs
+  tags:
+    - database
+    - production

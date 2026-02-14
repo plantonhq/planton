@@ -1,0 +1,16 @@
+apiVersion: open-fga.openmcf.org/v1
+kind: OpenFgaRelationshipTuple
+metadata:
+  name: my-user-document-tuple
+spec:
+  storeId:
+    value: "<store-id>"
+  user:
+    type: user
+    id:
+      value: "<user-id>"
+  relation: viewer
+  object:
+    type: document
+    id:
+      value: "<document-id>"

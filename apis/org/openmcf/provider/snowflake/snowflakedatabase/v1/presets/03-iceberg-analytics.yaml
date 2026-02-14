@@ -1,0 +1,15 @@
+apiVersion: snowflake.openmcf.org/v1
+kind: SnowflakeDatabase
+metadata:
+  name: my-iceberg-db
+spec:
+  name: ANALYTICS_ICEBERG
+  comment: Iceberg-enabled database for open table format analytics
+  catalog: SNOWFLAKE
+  externalVolume: <your-external-volume>
+  storageSerializationPolicy: OPTIMIZED
+  replaceInvalidCharacters: true
+  dataRetentionTimeInDays: 7
+  logLevel: INFO
+  traceLevel: OFF
+  dropPublicSchemaOnCreation: true
