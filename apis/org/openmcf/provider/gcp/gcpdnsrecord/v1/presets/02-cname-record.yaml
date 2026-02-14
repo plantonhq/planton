@@ -1,0 +1,14 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpDnsRecord
+metadata:
+  name: my-cname-record
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  managedZone:
+    value: "<dns-zone-name>"
+  type: CNAME
+  name: "<subdomain.example.com.>"
+  values:
+    - "<target.example.com.>"
+  ttlSeconds: 300  # default from spec; 5 minutes

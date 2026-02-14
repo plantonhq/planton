@@ -1,0 +1,18 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpSubnetwork
+metadata:
+  name: my-gke-subnet
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  vpcSelfLink:
+    value: "<vpc-network-self-link>"
+  subnetworkName: <your-subnet-name>
+  region: <gcp-region>
+  ipCidrRange: 10.0.0.0/20  # 4,096 IPs for nodes
+  secondaryIpRanges:
+    - rangeName: pods
+      ipCidrRange: 10.4.0.0/14  # 262,144 IPs for GKE pods
+    - rangeName: services
+      ipCidrRange: 10.8.0.0/20  # 4,096 IPs for GKE services
+  privateIpGoogleAccess: true  # allows private nodes to reach Google APIs

@@ -1,0 +1,13 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpSubnetwork
+metadata:
+  name: my-general-subnet
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  vpcSelfLink:
+    value: "<vpc-network-self-link>"
+  subnetworkName: <your-subnet-name>
+  region: <gcp-region>
+  ipCidrRange: 10.1.0.0/24  # 256 IPs for general compute workloads
+  privateIpGoogleAccess: true  # allows VMs without external IPs to reach Google APIs

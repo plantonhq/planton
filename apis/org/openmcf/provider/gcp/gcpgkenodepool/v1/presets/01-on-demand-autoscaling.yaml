@@ -1,0 +1,20 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpGkeNodePool
+metadata:
+  name: my-node-pool
+spec:
+  clusterProjectId:
+    value: "<gcp-project-id>"
+  clusterName:
+    value: "<gke-cluster-name>"
+  clusterLocation:
+    value: "<gcp-region>"
+  nodePoolName: <your-node-pool-name>
+  machineType: e2-standard-4  # 4 vCPU, 16 GB RAM; good general-purpose size
+  diskSizeGb: 100
+  diskType: pd-ssd  # SSD for production workloads
+  imageType: COS_CONTAINERD  # default from spec; Container-Optimized OS
+  autoscaling:
+    minNodes: 1
+    maxNodes: 5
+    locationPolicy: BALANCED  # default from spec; spreads nodes across zones
