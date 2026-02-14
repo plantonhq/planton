@@ -127,9 +127,9 @@ After deployment, the following outputs are available in `status.outputs`:
 
 | Output | Type | Description |
 |--------|------|-------------|
-| `database_id` | `string` | The unique identifier (UUID) of the created D1 database |
-| `database_name` | `string` | The name of the database as confirmed by Cloudflare |
-| `connection_string` | `string` | Reserved for future use. The Pulumi Cloudflare provider does not currently expose a connection string for D1, so this field is empty. |
+| `databaseId` | `string` | The unique identifier (UUID) of the created D1 database |
+| `databaseName` | `string` | The name of the database as confirmed by Cloudflare |
+| `connectionString` | `string` | Reserved for future use. The Pulumi Cloudflare provider does not currently expose a connection string for D1, so this field is empty. |
 
 ## Related Components
 

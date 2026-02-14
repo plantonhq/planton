@@ -184,7 +184,7 @@ spec:
     valueFrom:
       kind: CivoVpc
       name: my-network
-      field: status.outputs.network_id
+      fieldPath: status.outputs.network_id
   inboundRules:
     - protocol: tcp
       portRange: "80"
