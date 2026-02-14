@@ -1,0 +1,11 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesSecret
+metadata:
+  name: my-registry-credentials
+spec:
+  name: my-registry-credentials
+  namespace: "<your-namespace>"
+  dockerConfigJson:
+    server: "<your-registry-server>"
+    username: "<your-registry-username>"
+    password: "<your-registry-password>"

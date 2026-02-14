@@ -1,0 +1,10 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesSecret
+metadata:
+  name: my-tls-secret
+spec:
+  name: my-tls-secret
+  namespace: "<your-namespace>"
+  tls:
+    cert: "<your-tls-certificate-pem>"
+    key: "<your-tls-private-key-pem>"

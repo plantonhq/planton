@@ -1,0 +1,27 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesDeployment
+metadata:
+  name: my-worker
+spec:
+  namespace:
+    value: "<your-namespace>"
+  createNamespace: false
+  version: latest
+  container:
+    app:
+      image:
+        repo: "<your-container-registry>/<your-image>"
+        tag: "<your-image-tag>"
+      resources:
+        requests:
+          cpu: 50m
+          memory: 100Mi
+        limits:
+          cpu: 1000m
+          memory: 1Gi
+      env:
+        variables:
+          WORKER_CONCURRENCY:
+            value: "4"
+  availability:
+    minReplicas: 1

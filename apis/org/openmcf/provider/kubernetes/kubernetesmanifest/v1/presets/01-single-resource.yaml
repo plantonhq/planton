@@ -1,0 +1,17 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesManifest
+metadata:
+  name: my-manifest
+spec:
+  namespace:
+    value: "<your-namespace>"
+  createNamespace: false
+  manifestYaml: |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: my-config
+    data:
+      config.yaml: |
+        key: value
+        environment: production
