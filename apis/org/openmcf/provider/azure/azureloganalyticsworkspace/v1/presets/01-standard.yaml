@@ -1,0 +1,12 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureLogAnalyticsWorkspace
+metadata:
+  name: my-log-analytics
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-workspace-name>
+  sku: PerGB2018  # default from spec; pay-as-you-go pricing
+  retentionInDays: 30  # default from spec; included free with PerGB2018
+  dailyQuotaGb: -1  # default from spec; unlimited ingestion
