@@ -8,6 +8,7 @@ package civovpcv1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	civo "github.com/plantonhq/openmcf/apis/org/openmcf/provider/civo"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -25,12 +26,10 @@ const (
 // CivoVpcSpec defines the specification for an isolated private network on Civo.
 type CivoVpcSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The ID of the Civo credential to use for this network.
-	CivoCredentialId string `protobuf:"bytes,1,opt,name=civo_credential_id,json=civoCredentialId,proto3" json:"civo_credential_id,omitempty"`
 	// The name of the network (DNS-friendly label).
 	NetworkName string `protobuf:"bytes,2,opt,name=network_name,json=networkName,proto3" json:"network_name,omitempty"`
-	// The Civo region where this network will be created (e.g., "lon1", "fra1").
-	Region string `protobuf:"bytes,3,opt,name=region,proto3" json:"region,omitempty"`
+	// The Civo region where this network will be created.
+	Region civo.CivoRegion `protobuf:"varint,3,opt,name=region,proto3,enum=org.openmcf.provider.civo.CivoRegion" json:"region,omitempty"`
 	// The IPv4 CIDR range for the network (max /24). If omitted, an available range will be auto-allocated.
 	IpRangeCidr string `protobuf:"bytes,4,opt,name=ip_range_cidr,json=ipRangeCidr,proto3" json:"ip_range_cidr,omitempty"`
 	// Whether this network should be the default for the region (only one default network per region).
@@ -71,13 +70,6 @@ func (*CivoVpcSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_civo_civovpc_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CivoVpcSpec) GetCivoCredentialId() string {
-	if x != nil {
-		return x.CivoCredentialId
-	}
-	return ""
-}
-
 func (x *CivoVpcSpec) GetNetworkName() string {
 	if x != nil {
 		return x.NetworkName
@@ -85,11 +77,11 @@ func (x *CivoVpcSpec) GetNetworkName() string {
 	return ""
 }
 
-func (x *CivoVpcSpec) GetRegion() string {
+func (x *CivoVpcSpec) GetRegion() civo.CivoRegion {
 	if x != nil {
 		return x.Region
 	}
-	return ""
+	return civo.CivoRegion(0)
 }
 
 func (x *CivoVpcSpec) GetIpRangeCidr() string {
@@ -117,11 +109,10 @@ var File_org_openmcf_provider_civo_civovpc_v1_spec_proto protoreflect.FileDescri
 
 const file_org_openmcf_provider_civo_civovpc_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"/org/openmcf/provider/civo/civovpc/v1/spec.proto\x12$org.openmcf.provider.civo.civovpc.v1\x1a\x1bbuf/validate/validate.proto\"\x90\x02\n" +
-	"\vCivoVpcSpec\x124\n" +
-	"\x12civo_credential_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x10civoCredentialId\x12)\n" +
-	"\fnetwork_name\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vnetworkName\x12\x1e\n" +
-	"\x06region\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12\"\n" +
+	"/org/openmcf/provider/civo/civovpc/v1/spec.proto\x12$org.openmcf.provider.civo.civovpc.v1\x1a\x1bbuf/validate/validate.proto\x1a&org/openmcf/provider/civo/region.proto\"\x81\x02\n" +
+	"\vCivoVpcSpec\x12)\n" +
+	"\fnetwork_name\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vnetworkName\x12E\n" +
+	"\x06region\x18\x03 \x01(\x0e2%.org.openmcf.provider.civo.CivoRegionB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12\"\n" +
 	"\rip_range_cidr\x18\x04 \x01(\tR\vipRangeCidr\x121\n" +
 	"\x15is_default_for_region\x18\x05 \x01(\bR\x12isDefaultForRegion\x12)\n" +
 	"\vdescription\x18\x06 \x01(\tB\a\xbaH\x04r\x02\x18dR\vdescriptionB\xbe\x02\n" +
@@ -141,14 +132,16 @@ func file_org_openmcf_provider_civo_civovpc_v1_spec_proto_rawDescGZIP() []byte {
 
 var file_org_openmcf_provider_civo_civovpc_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_civo_civovpc_v1_spec_proto_goTypes = []any{
-	(*CivoVpcSpec)(nil), // 0: org.openmcf.provider.civo.civovpc.v1.CivoVpcSpec
+	(*CivoVpcSpec)(nil),  // 0: org.openmcf.provider.civo.civovpc.v1.CivoVpcSpec
+	(civo.CivoRegion)(0), // 1: org.openmcf.provider.civo.CivoRegion
 }
 var file_org_openmcf_provider_civo_civovpc_v1_spec_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: org.openmcf.provider.civo.civovpc.v1.CivoVpcSpec.region:type_name -> org.openmcf.provider.civo.CivoRegion
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_civo_civovpc_v1_spec_proto_init() }

@@ -6,6 +6,7 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
+	civo "github.com/plantonhq/openmcf/apis/org/openmcf/provider/civo"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
 )
 
@@ -27,9 +28,8 @@ var _ = ginkgo.Describe("CivoVpcSpec Custom Validation Tests", func() {
 						Name: "test-network",
 					},
 					Spec: &CivoVpcSpec{
-						CivoCredentialId: "civo-cred-123",
-						NetworkName:      "test-network",
-						Region:           "LON1",
+						NetworkName: "test-network",
+						Region:      civo.CivoRegion_lon1,
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -44,10 +44,9 @@ var _ = ginkgo.Describe("CivoVpcSpec Custom Validation Tests", func() {
 						Name: "dev-network",
 					},
 					Spec: &CivoVpcSpec{
-						CivoCredentialId: "civo-cred-456",
-						NetworkName:      "dev-network",
-						Region:           "NYC1",
-						IpRangeCidr:      "", // Empty = auto-allocate
+						NetworkName: "dev-network",
+						Region:      civo.CivoRegion_nyc1,
+						IpRangeCidr: "", // Empty = auto-allocate
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -62,10 +61,9 @@ var _ = ginkgo.Describe("CivoVpcSpec Custom Validation Tests", func() {
 						Name: "prod-network",
 					},
 					Spec: &CivoVpcSpec{
-						CivoCredentialId: "civo-cred-789",
-						NetworkName:      "prod-network",
-						Region:           "FRA1",
-						IpRangeCidr:      "10.10.1.0/24",
+						NetworkName: "prod-network",
+						Region:      civo.CivoRegion_fra1,
+						IpRangeCidr: "10.10.1.0/24",
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -80,9 +78,8 @@ var _ = ginkgo.Describe("CivoVpcSpec Custom Validation Tests", func() {
 						Name: "default-network",
 					},
 					Spec: &CivoVpcSpec{
-						CivoCredentialId:   "civo-cred-123",
 						NetworkName:        "default-network",
-						Region:             "LON1",
+						Region:             civo.CivoRegion_lon1,
 						IpRangeCidr:        "10.0.0.0/24",
 						IsDefaultForRegion: true,
 					},
@@ -99,11 +96,10 @@ var _ = ginkgo.Describe("CivoVpcSpec Custom Validation Tests", func() {
 						Name: "staging-network",
 					},
 					Spec: &CivoVpcSpec{
-						CivoCredentialId: "civo-cred-123",
-						NetworkName:      "staging-network",
-						Region:           "NYC1",
-						IpRangeCidr:      "10.20.2.0/24",
-						Description:      "Staging environment network",
+						NetworkName: "staging-network",
+						Region:      civo.CivoRegion_nyc1,
+						IpRangeCidr: "10.20.2.0/24",
+						Description: "Staging environment network",
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -118,11 +114,10 @@ var _ = ginkgo.Describe("CivoVpcSpec Custom Validation Tests", func() {
 						Name: "prod-network",
 					},
 					Spec: &CivoVpcSpec{
-						CivoCredentialId: "civo-cred-123",
-						NetworkName:      "prod-network",
-						Region:           "LON1",
-						IpRangeCidr:      "10.10.1.0/24",
-						Description:      "This is exactly one hundred characters long for testing maximum length constraint validation rule", // exactly 100 chars
+						NetworkName: "prod-network",
+						Region:      civo.CivoRegion_lon1,
+						IpRangeCidr: "10.10.1.0/24",
+						Description: "This is exactly one hundred characters long for testing maximum length constraint validation rule", // exactly 100 chars
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -137,9 +132,8 @@ var _ = ginkgo.Describe("CivoVpcSpec Custom Validation Tests", func() {
 						Name: "complete-network",
 					},
 					Spec: &CivoVpcSpec{
-						CivoCredentialId:   "civo-cred-123",
 						NetworkName:        "complete-network",
-						Region:             "FRA1",
+						Region:             civo.CivoRegion_fra1,
 						IpRangeCidr:        "10.30.1.0/24",
 						IsDefaultForRegion: false,
 						Description:        "Production network for Frankfurt region",
@@ -150,19 +144,24 @@ var _ = ginkgo.Describe("CivoVpcSpec Custom Validation Tests", func() {
 			})
 
 			ginkgo.It("should not return a validation error with different regions", func() {
-				regions := []string{"LON1", "NYC1", "FRA1", "PHX1", "SIN1"}
+				regions := []civo.CivoRegion{
+					civo.CivoRegion_lon1,
+					civo.CivoRegion_nyc1,
+					civo.CivoRegion_fra1,
+					civo.CivoRegion_phx1,
+					civo.CivoRegion_mum1,
+				}
 				for _, region := range regions {
 					input := &CivoVpc{
 						ApiVersion: "civo.openmcf.org/v1",
 						Kind:       "CivoVpc",
 						Metadata: &shared.CloudResourceMetadata{
-							Name: "test-network-" + region,
+							Name: "test-network",
 						},
 						Spec: &CivoVpcSpec{
-							CivoCredentialId: "civo-cred-123",
-							NetworkName:      "test-network-" + region,
-							Region:           region,
-							IpRangeCidr:      "10.0.1.0/24",
+							NetworkName: "test-network",
+							Region:      region,
+							IpRangeCidr: "10.0.1.0/24",
 						},
 					}
 					err := protovalidate.Validate(input)
@@ -185,10 +184,9 @@ var _ = ginkgo.Describe("CivoVpcSpec Custom Validation Tests", func() {
 							Name: "test-network",
 						},
 						Spec: &CivoVpcSpec{
-							CivoCredentialId: "civo-cred-123",
-							NetworkName:      "test-network",
-							Region:           "LON1",
-							IpRangeCidr:      cidr,
+							NetworkName: "test-network",
+							Region:      civo.CivoRegion_lon1,
+							IpRangeCidr: cidr,
 						},
 					}
 					err := protovalidate.Validate(input)
@@ -199,26 +197,6 @@ var _ = ginkgo.Describe("CivoVpcSpec Custom Validation Tests", func() {
 	})
 
 	ginkgo.Describe("When invalid input is passed", func() {
-		ginkgo.Context("civo_credential_id validation", func() {
-
-			ginkgo.It("should return a validation error when civo_credential_id is empty", func() {
-				input := &CivoVpc{
-					ApiVersion: "civo.openmcf.org/v1",
-					Kind:       "CivoVpc",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-network",
-					},
-					Spec: &CivoVpcSpec{
-						CivoCredentialId: "", // Empty
-						NetworkName:      "test-network",
-						Region:           "LON1",
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).NotTo(gomega.BeNil())
-			})
-		})
-
 		ginkgo.Context("network_name validation", func() {
 
 			ginkgo.It("should return a validation error when network_name is empty", func() {
@@ -229,9 +207,8 @@ var _ = ginkgo.Describe("CivoVpcSpec Custom Validation Tests", func() {
 						Name: "test-network",
 					},
 					Spec: &CivoVpcSpec{
-						CivoCredentialId: "civo-cred-123",
-						NetworkName:      "", // Empty
-						Region:           "LON1",
+						NetworkName: "", // Empty
+						Region:      civo.CivoRegion_lon1,
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -241,7 +218,7 @@ var _ = ginkgo.Describe("CivoVpcSpec Custom Validation Tests", func() {
 
 		ginkgo.Context("region validation", func() {
 
-			ginkgo.It("should return a validation error when region is empty", func() {
+			ginkgo.It("should return a validation error when region is unspecified", func() {
 				input := &CivoVpc{
 					ApiVersion: "civo.openmcf.org/v1",
 					Kind:       "CivoVpc",
@@ -249,9 +226,8 @@ var _ = ginkgo.Describe("CivoVpcSpec Custom Validation Tests", func() {
 						Name: "test-network",
 					},
 					Spec: &CivoVpcSpec{
-						CivoCredentialId: "civo-cred-123",
-						NetworkName:      "test-network",
-						Region:           "", // Empty
+						NetworkName: "test-network",
+						Region:      civo.CivoRegion_civo_region_unspecified,
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -269,10 +245,9 @@ var _ = ginkgo.Describe("CivoVpcSpec Custom Validation Tests", func() {
 						Name: "test-network",
 					},
 					Spec: &CivoVpcSpec{
-						CivoCredentialId: "civo-cred-123",
-						NetworkName:      "test-network",
-						Region:           "LON1",
-						Description:      "This description is definitely way too long because it exceeds the maximum allowed length of one hundred characters which should cause a validation error to be returned",
+						NetworkName: "test-network",
+						Region:      civo.CivoRegion_lon1,
+						Description: "This description is definitely way too long because it exceeds the maximum allowed length of one hundred characters which should cause a validation error to be returned",
 					},
 				}
 				err := protovalidate.Validate(input)
