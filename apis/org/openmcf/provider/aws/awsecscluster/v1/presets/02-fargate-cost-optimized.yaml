@@ -1,0 +1,16 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsEcsCluster
+metadata:
+  name: my-cost-optimized-cluster
+spec:
+  enableContainerInsights: true  # recommended_default from spec
+  capacityProviders:
+    - FARGATE
+    - FARGATE_SPOT
+  defaultCapacityProviderStrategy:
+    - capacityProvider: FARGATE
+      base: 1  # Guarantee at least 1 on-demand task for stability
+      weight: 1
+    - capacityProvider: FARGATE_SPOT
+      base: 0
+      weight: 4  # 80% of scaled tasks use Spot for cost savings

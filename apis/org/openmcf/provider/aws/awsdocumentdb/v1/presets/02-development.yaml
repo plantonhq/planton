@@ -1,0 +1,16 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsDocumentDb
+metadata:
+  name: my-development-docdb
+spec:
+  subnets:
+    - value: "<private-subnet-id-az1>"
+    - value: "<private-subnet-id-az2>"
+  securityGroups:
+    - value: "<security-group-id>"
+  vpc:
+    value: "<vpc-id>"
+  masterPassword: <master-password>
+  instanceCount: 1  # Single instance for development
+  instanceClass: db.t3.medium  # Cost-effective for dev
+  skipFinalSnapshot: true  # No snapshot needed for dev

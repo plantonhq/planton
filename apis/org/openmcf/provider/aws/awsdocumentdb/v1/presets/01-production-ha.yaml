@@ -1,0 +1,23 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsDocumentDb
+metadata:
+  name: my-production-docdb
+spec:
+  subnets:
+    - value: "<private-subnet-id-az1>"
+    - value: "<private-subnet-id-az2>"
+  securityGroups:
+    - value: "<security-group-id>"
+  vpc:
+    value: "<vpc-id>"
+  engineVersion: "5.0.0"  # default from spec
+  port: 27017  # default from spec
+  masterUsername: docdbadmin  # default from spec
+  masterPassword: <master-password>
+  instanceCount: 3  # Multi-AZ HA: primary + 2 replicas
+  instanceClass: db.r6g.large  # default from spec
+  storageEncrypted: true  # default from spec
+  backupRetentionPeriod: 7  # default from spec
+  deletionProtection: true
+  skipFinalSnapshot: false  # default from spec
+  autoMinorVersionUpgrade: true  # default from spec

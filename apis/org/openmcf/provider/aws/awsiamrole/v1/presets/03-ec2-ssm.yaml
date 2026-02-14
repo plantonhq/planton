@@ -1,0 +1,17 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsIamRole
+metadata:
+  name: my-ec2-ssm-role
+spec:
+  description: EC2 instance role with SSM Session Manager and CloudWatch Agent access
+  path: /  # recommended_default from spec
+  trustPolicy:
+    Version: "2012-10-17"
+    Statement:
+      - Effect: Allow
+        Principal:
+          Service: ec2.amazonaws.com
+        Action: sts:AssumeRole
+  managedPolicyArns:
+    - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+    - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy

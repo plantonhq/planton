@@ -1,0 +1,15 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsEc2Instance
+metadata:
+  name: my-ssh-instance
+spec:
+  instanceName: <instance-name>
+  amiId: <ami-id>
+  instanceType: t3.small
+  subnetId:
+    value: "<private-subnet-id>"
+  securityGroupIds:
+    - value: "<security-group-id>"
+  connectionMethod: BASTION
+  keyName: <ec2-key-pair-name>
+  rootVolumeSizeGb: 30  # default from spec
