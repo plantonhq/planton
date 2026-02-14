@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -10,6 +10,10 @@ import matter from 'gray-matter';
 import { formatDate } from '@/lib/utils';
 import { Author } from '@/lib/mdx';
 import { CodeBlock } from '@/app/docs/components/CodeBlock';
+import {
+  CatalogProviderGrid,
+  CatalogProvider,
+} from '@/app/docs/components/CatalogProviderGrid';
 import 'highlight.js/styles/github-dark.css';
 
 interface MdxMetadata {
@@ -24,12 +28,66 @@ interface MdxMetadata {
 
 interface MDXRendererProps {
   mdxContent: string;
+  /** When set, the catalog provider grid is rendered after the markdown content. */
+  catalogProviders?: CatalogProvider[];
   nextArticle?: {
     title: string;
     excerpt?: string;
     slug: string;
   };
 }
+
+// ---------------------------------------------------------------------------
+// MarkdownImage — proper React component so it can hold error state.
+// Replaces the previous inline arrow function in the ReactMarkdown components
+// map.  Detects provider icon images and shows a letter-badge fallback when
+// the image fails to load.
+//
+// react-markdown passes the full set of <img> HTML attributes plus its own
+// ExtraProps, so the component accepts React.ImgHTMLAttributes and spreads
+// only the subset it cares about.
+// ---------------------------------------------------------------------------
+
+const MarkdownImage: React.FC<
+  React.ImgHTMLAttributes<HTMLImageElement>
+> = (props) => {
+  const { src, alt, className, ...rest } = props;
+  const [error, setError] = useState(false);
+
+  if (!src || typeof src !== 'string') return null;
+
+  // Provider icons live at /images/providers/{name}.svg (no subdirectory).
+  const isProviderIcon =
+    src.startsWith('/images/providers/') &&
+    src.endsWith('.svg') &&
+    src.split('/').length === 4; // exactly /images/providers/foo.svg
+
+  if (error && isProviderIcon) {
+    const letter = (alt || '?').charAt(0).toUpperCase();
+    return (
+      <span
+        className="inline-flex items-center justify-center rounded bg-slate-700 text-sm font-bold text-gray-300 flex-shrink-0 w-8 h-8"
+        aria-label={alt || 'icon'}
+      >
+        {letter}
+      </span>
+    );
+  }
+
+  const finalClassName =
+    className || 'max-w-full h-auto rounded-lg shadow-lg my-6 block';
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      {...rest}
+      src={src}
+      alt={alt || ''}
+      className={finalClassName}
+      onError={() => setError(true)}
+    />
+  );
+};
 
 // NextArticle component for navigation
 interface NextArticleProps {
@@ -66,6 +124,7 @@ const NextArticle: React.FC<NextArticleProps> = ({ nextArticle }) => {
 
 export const MDXRenderer: React.FC<MDXRendererProps> = ({
   mdxContent,
+  catalogProviders,
   nextArticle,
 }) => {
   const { data, content } = matter(mdxContent);
@@ -264,19 +323,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
                   </a>
                 );
               },
-              img: ({ src, alt, className }) => {
-                if (!src) return null;
-                // Preserve custom classes if provided (for provider icons, etc.)
-                const finalClassName = className || "max-w-full h-auto rounded-lg shadow-lg my-6 block";
-                return (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={src}
-                    alt={alt || ''}
-                    className={finalClassName}
-                  />
-                );
-              },
+              img: MarkdownImage,
               table: ({ children }) => (
                 <div className="overflow-x-auto my-6">
                   <table className="min-w-full bg-slate-900 border border-purple-900/30 rounded-lg">
@@ -297,6 +344,11 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
             {content}
           </ReactMarkdown>
         </div>
+
+        {/* Catalog provider grid — rendered only on the catalog index page */}
+        {catalogProviders && (
+          <CatalogProviderGrid providers={catalogProviders} />
+        )}
 
         {/* Next Article Section */}
         <NextArticle nextArticle={nextArticle} />

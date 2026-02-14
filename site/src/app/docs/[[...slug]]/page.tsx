@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import {
+  DocItem,
   getMarkdownContent,
   getDocumentationStructure,
   getNextDocItem,
@@ -8,9 +9,34 @@ import {
   processDocumentationSlug,
 } from '@/app/docs/utils/fileSystem';
 import { MDXRenderer } from '@/app/docs/components/MDXRenderer';
+import { CatalogProvider } from '@/app/docs/components/CatalogProviderGrid';
 import { Author, MDXParser } from '@/lib/mdx';
 import RightSidebar from '@/app/docs/components/RightSidebar';
 import matter from 'gray-matter';
+
+/**
+ * Extract catalog provider metadata from the docs structure tree.
+ *
+ * Walks the top-level "catalog" directory and returns a sorted list of
+ * providers with their component counts (derived from child file entries).
+ * This data is computed at build time and serialised to the client component.
+ */
+function extractCatalogProviders(structure: DocItem[]): CatalogProvider[] {
+  const catalogDir = structure.find(
+    (item) => item.name === 'catalog' && item.type === 'directory',
+  );
+  if (!catalogDir?.children) return [];
+
+  return catalogDir.children
+    .filter((item) => item.type === 'directory')
+    .map((provider) => ({
+      name: provider.name,
+      path: provider.path,
+      componentCount:
+        provider.children?.filter((child) => child.type === 'file').length ?? 0,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
 
 type DocsParams = Promise<{ slug?: string[] }>;
 
@@ -49,9 +75,14 @@ export default async function DocsPage({ params }: { params: DocsParams }) {
     const { data } = matter(content);
     const mdxContent = MDXParser.reconstructMDX(content);
 
-    // Get the documentation structure to find the next item
+    // Get the documentation structure to find the next item and catalog data
     const allDocs = await getDocumentationStructure();
     const nextDocItem = getNextDocItem(path, allDocs);
+
+    // When rendering the catalog index page, derive provider metadata from
+    // the docs structure so the grid is data-driven (never stale).
+    const catalogProviders =
+      path === 'catalog' ? extractCatalogProviders(allDocs) : undefined;
 
     const author = (data?.author as unknown as Author[]) || [];
 
@@ -62,6 +93,7 @@ export default async function DocsPage({ params }: { params: DocsParams }) {
           <div className={`px-4 sm:px-6 lg:px-12 py-8 max-w-full ${author.length > 0 ? 'max-w-4xl mx-auto' : ''}`}>
             <MDXRenderer
               mdxContent={mdxContent}
+              catalogProviders={catalogProviders}
               nextArticle={
                 nextDocItem
                   ? {
