@@ -19,7 +19,7 @@ When you deploy a DigitalOceanDnsRecord resource, OpenMCF provisions:
 Create a file `dns-record.yaml`:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: www-a-record
@@ -82,7 +82,7 @@ The protobuf schema enforces two cross-field rules:
 Points a subdomain to an IPv4 address:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: www-a-record
@@ -106,7 +106,7 @@ spec:
 Creates an alias from one hostname to another:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: blog-cname
@@ -130,7 +130,7 @@ spec:
 Routes email to a mail server with explicit priority:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: mail-mx
@@ -155,7 +155,7 @@ spec:
 Restricts which certificate authorities may issue certificates for the domain:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: caa-letsencrypt
@@ -181,7 +181,7 @@ spec:
 Uses a `valueFrom` reference to resolve the domain from a DigitalOceanDnsZone resource instead of specifying it inline:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: api-a-record

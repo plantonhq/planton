@@ -156,10 +156,10 @@ var File_org_openmcf_provider_digitalocean_digitaloceandnsrecord_v1_api_proto pr
 
 const file_org_openmcf_provider_digitalocean_digitaloceandnsrecord_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"Dorg/openmcf/provider/digitalocean/digitaloceandnsrecord/v1/api.proto\x12:org.openmcf.provider.digitalocean.digitaloceandnsrecord.v1\x1a\x1bbuf/validate/validate.proto\x1aEorg/openmcf/provider/digitalocean/digitaloceandnsrecord/v1/spec.proto\x1aNorg/openmcf/provider/digitalocean/digitaloceandnsrecord/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xc1\x03\n" +
-	"\x15DigitalOceanDnsRecord\x12C\n" +
-	"\vapi_version\x18\x01 \x01(\tB\"\xbaH\x1fr\x1d\n" +
-	"\x1bdigitalocean.openmcf.org/v1R\n" +
+	"Dorg/openmcf/provider/digitalocean/digitaloceandnsrecord/v1/api.proto\x12:org.openmcf.provider.digitalocean.digitaloceandnsrecord.v1\x1a\x1bbuf/validate/validate.proto\x1aEorg/openmcf/provider/digitalocean/digitaloceandnsrecord/v1/spec.proto\x1aNorg/openmcf/provider/digitalocean/digitaloceandnsrecord/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xc2\x03\n" +
+	"\x15DigitalOceanDnsRecord\x12D\n" +
+	"\vapi_version\x18\x01 \x01(\tB#\xbaH r\x1e\n" +
+	"\x1cdigital-ocean.openmcf.org/v1R\n" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15DigitalOceanDnsRecordR\x04kind\x12M\n" +

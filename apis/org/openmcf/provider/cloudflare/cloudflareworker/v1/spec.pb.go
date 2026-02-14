@@ -82,7 +82,7 @@ type CloudflareWorkerSpec struct {
 	// Specifies the R2 bucket and path where the pre-built Worker script bundle is stored.
 	ScriptBundle *CloudflareWorkerScriptBundle `protobuf:"bytes,3,opt,name=script_bundle,json=scriptBundle,proto3" json:"script_bundle,omitempty"`
 	// (Optional) One or more KV namespaces to bind to this Worker (referenced by CloudflareKVNamespace.namespace_id).
-	KvBindings []*v1.ValueFromRef `protobuf:"bytes,4,rep,name=kv_bindings,json=kvBindings,proto3" json:"kv_bindings,omitempty"`
+	KvBindings []*v1.StringValueOrRef `protobuf:"bytes,4,rep,name=kv_bindings,json=kvBindings,proto3" json:"kv_bindings,omitempty"`
 	// (Optional) DNS configuration for attaching the Worker to a custom domain.
 	Dns *CloudflareWorkerDns `protobuf:"bytes,5,opt,name=dns,proto3" json:"dns,omitempty"`
 	// (Optional) Compatibility date for the Worker script (YYYY-MM-DD). If unset, defaults to today's date.
@@ -148,7 +148,7 @@ func (x *CloudflareWorkerSpec) GetScriptBundle() *CloudflareWorkerScriptBundle {
 	return nil
 }
 
-func (x *CloudflareWorkerSpec) GetKvBindings() []*v1.ValueFromRef {
+func (x *CloudflareWorkerSpec) GetKvBindings() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.KvBindings
 	}
@@ -378,14 +378,14 @@ var File_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto protoref
 
 const file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	">org/openmcf/provider/cloudflare/cloudflareworker/v1/spec.proto\x123org.openmcf.provider.cloudflare.cloudflareworker.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xc7\x06\n" +
+	">org/openmcf/provider/cloudflare/cloudflareworker/v1/spec.proto\x123org.openmcf.provider.cloudflare.cloudflareworker.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xcb\x06\n" +
 	"\x14CloudflareWorkerSpec\x12=\n" +
 	"\n" +
 	"account_id\x18\x01 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x162\x11^[0-9a-fA-F]{32}$\x98\x01 R\taccountId\x12-\n" +
 	"\vworker_name\x18\x02 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x01\x18?R\n" +
 	"workerName\x12~\n" +
-	"\rscript_bundle\x18\x03 \x01(\v2Q.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerScriptBundleB\x06\xbaH\x03\xc8\x01\x01R\fscriptBundle\x12u\n" +
-	"\vkv_bindings\x18\x04 \x03(\v2..org.openmcf.shared.foreignkey.v1.ValueFromRefB$\x88\xd4a\x89\x0e\x92\xd4a\x1bstatus.outputs.namespace_idR\n" +
+	"\rscript_bundle\x18\x03 \x01(\v2Q.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerScriptBundleB\x06\xbaH\x03\xc8\x01\x01R\fscriptBundle\x12y\n" +
+	"\vkv_bindings\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\x89\x0e\x92\xd4a\x1bstatus.outputs.namespace_idR\n" +
 	"kvBindings\x12Z\n" +
 	"\x03dns\x18\x05 \x01(\v2H.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerDnsR\x03dns\x12R\n" +
 	"\x12compatibility_date\x18\x06 \x01(\tB#\xbaH r\x1e2\x1c^[0-9]{4}-[0-9]{2}-[0-9]{2}$R\x11compatibilityDate\x12\x85\x01\n" +
@@ -436,11 +436,11 @@ var file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_goTypes 
 	(*CloudflareWorkerDns)(nil),                          // 4: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerDns
 	nil,                                                  // 5: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv.VariablesEntry
 	nil,                                                  // 6: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv.SecretsEntry
-	(*v1.ValueFromRef)(nil),                              // 7: org.openmcf.shared.foreignkey.v1.ValueFromRef
+	(*v1.StringValueOrRef)(nil),                          // 7: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_depIdxs = []int32{
 	3, // 0: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.script_bundle:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerScriptBundle
-	7, // 1: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.kv_bindings:type_name -> org.openmcf.shared.foreignkey.v1.ValueFromRef
+	7, // 1: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.kv_bindings:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
 	4, // 2: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.dns:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerDns
 	0, // 3: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.usage_model:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.CloudflareWorkerUsageModel
 	2, // 4: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.env:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv

@@ -1,4 +1,4 @@
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: test-dns-record

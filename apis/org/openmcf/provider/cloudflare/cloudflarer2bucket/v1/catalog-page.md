@@ -58,7 +58,7 @@ This creates an R2 bucket named `my-app-assets` in Western North America with no
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `publicAccess` | `bool` | `false` | Expose the bucket via Cloudflare's managed `r2.dev` public URL. Note: this currently requires manual enablement via the Cloudflare Dashboard or API. |
-| `versioningEnabled` | `bool` | `false` | Reserved for future use. Cloudflare R2 does not currently support object versioning; this field is accepted but ignored. |
+
 | `customDomain.enabled` | `bool` | `false` | Enables custom domain access for the bucket. When `true`, `customDomain.zoneId` and `customDomain.domain` are required. |
 | `customDomain.zoneId` | `string` | — | Cloudflare Zone ID where the custom domain is configured. Can reference a CloudflareDnsZone resource via `valueFrom`. Required when `customDomain.enabled` is `true`. |
 | `customDomain.domain` | `string` | — | Fully qualified domain name for accessing the bucket (e.g., `media.example.com`). Must be within the zone specified by `customDomain.zoneId`. Maximum 253 characters. Required when `customDomain.enabled` is `true`. |

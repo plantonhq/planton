@@ -40,12 +40,7 @@ func bucket(
 		ctx.Log.Warn("Public access (r2.dev subdomain) must be enabled manually via Cloudflare Dashboard or API - field noted but not yet implemented in provider.", nil)
 	}
 
-	// 5. Warn about unsupported versioning.
-	if locals.CloudflareR2Bucket.Spec.VersioningEnabled {
-		ctx.Log.Warn("Cloudflare R2 does not support object versioning – field will be ignored.", nil)
-	}
-
-	// 6. Handle custom domain configuration.
+	// 5. Handle custom domain configuration.
 	if locals.CloudflareR2Bucket.Spec.CustomDomain != nil && locals.CloudflareR2Bucket.Spec.CustomDomain.Enabled {
 		customDomain := locals.CloudflareR2Bucket.Spec.CustomDomain
 		zoneId := customDomain.ZoneId.GetValue()

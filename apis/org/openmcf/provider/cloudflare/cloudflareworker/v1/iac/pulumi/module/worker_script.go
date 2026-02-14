@@ -1,6 +1,8 @@
 package module
 
 import (
+	"fmt"
+
 	"github.com/pkg/errors"
 	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws"
 	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws/s3"
@@ -45,12 +47,23 @@ func createWorkerScript(
 	}
 
 	// Add KV namespace bindings
-	for _, kvBinding := range locals.CloudflareWorker.Spec.KvBindings {
-		bindings = append(bindings, cloudfl.WorkersScriptBindingArgs{
-			Name:        pulumi.String(kvBinding.Name),
-			Type:        pulumi.String("kv_namespace"),
-			NamespaceId: pulumi.String(kvBinding.GetFieldPath()),
-		})
+	// Each binding is a StringValueOrRef: either a literal namespace ID or a cross-resource reference.
+	for i, kvBinding := range locals.CloudflareWorker.Spec.KvBindings {
+		if ref := kvBinding.GetValueFrom(); ref != nil {
+			// Cross-resource reference: use the referenced resource name as the binding name
+			bindings = append(bindings, cloudfl.WorkersScriptBindingArgs{
+				Name:        pulumi.String(ref.Name),
+				Type:        pulumi.String("kv_namespace"),
+				NamespaceId: pulumi.String(ref.FieldPath),
+			})
+		} else if val := kvBinding.GetValue(); val != "" {
+			// Literal namespace ID
+			bindings = append(bindings, cloudfl.WorkersScriptBindingArgs{
+				Name:        pulumi.String(fmt.Sprintf("KV_%d", i)),
+				Type:        pulumi.String("kv_namespace"),
+				NamespaceId: pulumi.String(val),
+			})
+		}
 	}
 
 	// Build Worker script arguments

@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should not return a validation error for minimal valid A record", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-a-record",
@@ -52,7 +52,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should not return a validation error for AAAA record", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-aaaa-record",
@@ -70,7 +70,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should not return a validation error for CNAME record", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-cname-record",
@@ -88,7 +88,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should not return a validation error for MX record with priority", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-mx-record",
@@ -107,7 +107,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should not return a validation error for TXT record", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-txt-record",
@@ -125,7 +125,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should not return a validation error for SRV record with required fields", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-srv-record",
@@ -146,7 +146,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should not return a validation error for CAA record with tag", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-caa-record",
@@ -167,7 +167,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 			ginkgo.It("should not return a validation error for record with custom TTL", func() {
 				ttlSeconds := int32(3600)
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-ttl-record",
@@ -186,7 +186,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should not return a validation error for root domain record", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-root-record",
@@ -204,7 +204,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should not return a validation error for NS record", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-ns-record",
@@ -227,7 +227,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should return a validation error when domain is missing", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-record",
@@ -244,7 +244,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should return a validation error when name is missing", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-record",
@@ -261,7 +261,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should return a validation error when type is unspecified", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-record",
@@ -279,7 +279,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should return a validation error when value is missing", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-record",
@@ -297,7 +297,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 			ginkgo.It("should return a validation error for TTL below minimum", func() {
 				ttlSeconds := int32(10)
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-record",
@@ -317,7 +317,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 			ginkgo.It("should return a validation error for TTL exceeding max", func() {
 				ttlSeconds := int32(100000)
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-record",
@@ -336,7 +336,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should return a validation error for negative priority", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-record",
@@ -355,7 +355,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should return a validation error for priority exceeding max", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-record",
@@ -374,7 +374,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should return a validation error for SRV record without port", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-record",
@@ -394,7 +394,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should return a validation error for CAA record without tag", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-record",
@@ -413,7 +413,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should return a validation error for port exceeding max", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-record",
@@ -434,7 +434,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsRecordSpec Custom Validation Tests", fun
 
 			ginkgo.It("should return a validation error for flags exceeding max", func() {
 				input := &DigitalOceanDnsRecord{
-					ApiVersion: "digitalocean.openmcf.org/v1",
+					ApiVersion: "digital-ocean.openmcf.org/v1",
 					Kind:       "DigitalOceanDnsRecord",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-record",

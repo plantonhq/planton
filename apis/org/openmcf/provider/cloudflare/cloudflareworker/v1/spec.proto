@@ -27,7 +27,7 @@ message CloudflareWorkerSpec {
   CloudflareWorkerScriptBundle script_bundle = 3 [(buf.validate.field).required = true];
 
   // (Optional) One or more KV namespaces to bind to this Worker (referenced by CloudflareKVNamespace.namespace_id).
-  repeated org.openmcf.shared.foreignkey.v1.ValueFromRef kv_bindings = 4 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef kv_bindings = 4 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareKvNamespace,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.namespace_id"
   ];

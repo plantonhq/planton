@@ -55,25 +55,7 @@ var _ = ginkgo.Describe("CloudflareR2BucketSpec Custom Validation Tests", func()
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
-			ginkgo.It("should not return a validation error with versioning enabled", func() {
-				input := &CloudflareR2Bucket{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareR2Bucket",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-r2-bucket-versioned",
-					},
-					Spec: &CloudflareR2BucketSpec{
-						BucketName:        "test-versioned-bucket",
-						AccountId:         "00000000000000000000000000000000",
-						Location:          CloudflareR2Location_APAC,
-						VersioningEnabled: true,
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).To(gomega.BeNil())
-			})
-
-			ginkgo.It("should not return a validation error with custom domain enabled and valid config", func() {
+		ginkgo.It("should not return a validation error with custom domain enabled and valid config", func() {
 				input := &CloudflareR2Bucket{
 					ApiVersion: "cloudflare.openmcf.org/v1",
 					Kind:       "CloudflareR2Bucket",
