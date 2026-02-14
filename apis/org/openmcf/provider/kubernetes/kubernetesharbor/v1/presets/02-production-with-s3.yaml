@@ -1,0 +1,33 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesHarbor
+metadata:
+  name: my-harbor
+spec:
+  namespace:
+    value: harbor
+  createNamespace: true
+  coreContainer:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+  registryContainer:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+  storage:
+    s3:
+      region: "<your-aws-region>"
+      bucket: "<your-s3-bucket-name>"
+      accessKey: "<your-s3-access-key>"
+      secretKey: "<your-s3-secret-key>"
+  ingress:
+    enabled: true
+    hostname: "<your-harbor.example.com>"

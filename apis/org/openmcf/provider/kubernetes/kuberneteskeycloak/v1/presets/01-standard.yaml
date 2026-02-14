@@ -1,0 +1,19 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesKeycloak
+metadata:
+  name: my-keycloak
+spec:
+  namespace:
+    value: keycloak
+  createNamespace: true
+  container:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: 2000m
+        memory: 2Gi
+  ingress:
+    enabled: true
+    hostname: "<your-keycloak.example.com>"
