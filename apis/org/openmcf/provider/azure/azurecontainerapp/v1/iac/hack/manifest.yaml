@@ -1,0 +1,13 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureContainerApp
+metadata:
+  name: test-app
+spec:
+  resource_group: test-rg
+  name: test-container-app
+  container_app_environment_id: /subscriptions/sub/resourceGroups/rg/providers/Microsoft.App/managedEnvironments/test-env
+  containers:
+    - name: main
+      image: mcr.microsoft.com/k8se/quickstart:latest
+      cpu: 0.25
+      memory: "0.5Gi"

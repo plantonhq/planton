@@ -1,0 +1,30 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureContainerApp
+metadata:
+  name: my-worker
+spec:
+  resource_group: my-rg
+  name: my-worker
+  container_app_environment_id: ""  # Required: set to your environment ID
+  containers:
+    - name: worker
+      image: my-registry/my-worker:latest
+      cpu: 0.25
+      memory: "0.5Gi"
+      env:
+        - name: QUEUE_CONNECTION
+          secret_name: queue-connection
+  min_replicas: 0
+  max_replicas: 5
+  custom_scale_rules:
+    - name: queue-depth
+      custom_rule_type: azure-servicebus
+      metadata:
+        queueName: my-queue
+        messageCount: "10"
+      authentication:
+        - secret_name: queue-connection
+          trigger_parameter: connection
+  secrets:
+    - name: queue-connection
+      value: "Endpoint=sb://my-namespace.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=..."

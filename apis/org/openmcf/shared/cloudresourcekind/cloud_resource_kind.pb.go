@@ -133,6 +133,7 @@ const (
 	CloudResourceKind_AzureMssqlServer              CloudResourceKind = 433
 	CloudResourceKind_AzureMysqlFlexibleServer      CloudResourceKind = 434
 	CloudResourceKind_AzureContainerAppEnvironment  CloudResourceKind = 440
+	CloudResourceKind_AzureContainerApp             CloudResourceKind = 441
 	CloudResourceKind_AzureServicePlan              CloudResourceKind = 442
 	CloudResourceKind_AzureLogAnalyticsWorkspace    CloudResourceKind = 450
 	CloudResourceKind_AzureApplicationInsights      CloudResourceKind = 451
@@ -365,6 +366,7 @@ var (
 		433:  "AzureMssqlServer",
 		434:  "AzureMysqlFlexibleServer",
 		440:  "AzureContainerAppEnvironment",
+		441:  "AzureContainerApp",
 		442:  "AzureServicePlan",
 		450:  "AzureLogAnalyticsWorkspace",
 		451:  "AzureApplicationInsights",
@@ -584,6 +586,7 @@ var (
 		"AzureMssqlServer":                      433,
 		"AzureMysqlFlexibleServer":              434,
 		"AzureContainerAppEnvironment":          440,
+		"AzureContainerApp":                     441,
 		"AzureServicePlan":                      442,
 		"AzureLogAnalyticsWorkspace":            450,
 		"AzureApplicationInsights":              451,
@@ -889,7 +892,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\x91I\n" +
+	"\x02v1\x10\x01*\xb9I\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -960,7 +963,9 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x14AzureCosmosdbAccount\x10\xb0\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azcdb\x12'\n" +
 	"\x10AzureMssqlServer\x10\xb1\x03\x1a\x10\xa2\xf7\x04\f\b\r\x10\x01\"\x06azmsql\x120\n" +
 	"\x18AzureMysqlFlexibleServer\x10\xb2\x03\x1a\x11\xa2\xf7\x04\r\b\r\x10\x01\"\aazmysql\x122\n" +
-	"\x1cAzureContainerAppEnvironment\x10\xb8\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azcae\x12%\n" +
+	"\x1cAzureContainerAppEnvironment\x10\xb8\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azcae\x12&\n" +
+	"\x11AzureContainerApp\x10\xb9\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\r\x10\x01\"\x04azca\x12%\n" +
 	"\x10AzureServicePlan\x10\xba\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azsp\x120\n" +
 	"\x1aAzureLogAnalyticsWorkspace\x10\xc2\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azlaw\x12-\n" +

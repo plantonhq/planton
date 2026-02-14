@@ -1,0 +1,32 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureContainerApp
+metadata:
+  name: my-web-service
+spec:
+  resource_group: my-rg
+  name: my-web-service
+  container_app_environment_id: ""  # Required: set to your environment ID
+  containers:
+    - name: web
+      image: mcr.microsoft.com/k8se/quickstart:latest
+      cpu: 0.5
+      memory: "1Gi"
+      liveness_probe:
+        transport: HTTP
+        port: 8080
+        path: /healthz
+      readiness_probe:
+        transport: HTTP
+        port: 8080
+        path: /ready
+  min_replicas: 1
+  max_replicas: 10
+  http_scale_rules:
+    - name: http-requests
+      concurrent_requests: "100"
+  ingress:
+    external_enabled: true
+    target_port: 8080
+    traffic_weight:
+      - latest_revision: true
+        percentage: 100
