@@ -1,0 +1,28 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureLoadBalancer
+metadata:
+  name: my-internal-lb
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-lb-name>
+  subnetId:
+    value: "<subnet-resource-id>"
+  privateIpAddress: <private-ip-address>  # optional; omit for dynamic allocation
+  backendPools:
+    - name: default
+  healthProbes:
+    - name: tcp-probe
+      protocol: Tcp
+      port: 8080
+      intervalInSeconds: 15  # default from spec
+      numberOfProbes: 2  # default from spec
+  rules:
+    - name: app-rule
+      protocol: Tcp
+      frontendPort: 8080
+      backendPort: 8080
+      backendPoolName: default
+      probeName: tcp-probe
+      idleTimeoutInMinutes: 4  # default from spec
