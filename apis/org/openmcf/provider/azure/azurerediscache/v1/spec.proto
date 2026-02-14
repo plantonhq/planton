@@ -1,0 +1,308 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azurerediscache.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// **AzureRedisCacheSpec** defines the configuration for creating an Azure
+// Cache for Redis instance with optional firewall rules and patch schedules.
+//
+// Azure Cache for Redis provides a fully managed, in-memory data store based
+// on the open-source Redis engine. It supports caching, session management,
+// real-time analytics, and message brokering with sub-millisecond latency.
+//
+// The component bundles the cache (`azurerm_redis_cache`) with its firewall
+// rules (`azurerm_redis_firewall_rule`) because firewall rules are security
+// configuration intrinsic to the cache instance. This follows DD03 (Composite
+// Bundling Rules).
+//
+// **SKU tiers**: Azure Cache for Redis offers three tiers:
+// - **Basic**: Single node, no SLA. Suitable for development and testing.
+// - **Standard** (default): Two-node replicated (primary + replica), 99.9% SLA.
+//   Recommended for most production workloads.
+// - **Premium**: Advanced features including VNet injection, clustering (sharding),
+//   zone redundancy, and data persistence. Required for enterprise networking.
+//
+// **Cache sizing**: The `capacity` field selects the cache size within a tier.
+// For Basic and Standard tiers, valid values are 0-6 (C0 through C6, from
+// 250 MB to 53 GB). For Premium tier, valid values are 1-5 (P1 through P5,
+// from 6 GB to 120 GB per shard).
+//
+// **Eviction policy**: The `maxmemory_policy` field controls what happens when
+// the cache reaches its memory limit. The default `volatile-lru` evicts keys
+// with an expiration set, using least-recently-used ordering. For cache-only
+// workloads (no TTL on keys), use `allkeys-lru`. For workloads that must never
+// lose data, use `noeviction` (writes fail when full).
+//
+// **VNet injection** (Premium only): Set `subnet_id` to deploy the cache inside
+// a virtual network. This provides network isolation and private IP addressing.
+// When VNet-injected, the cache is not accessible from the public internet
+// regardless of the `public_network_access_enabled` setting.
+//
+// **ForceNew fields** (changing these destroys and recreates the cache):
+// `name`, `subnet_id`.
+message AzureRedisCacheSpec {
+  // The Azure region where the Redis cache will be created.
+  // Examples: "eastus", "westus2", "westeurope", "southeastasia".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The Azure Resource Group where the Redis cache will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef resource_group = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The name of the Redis cache.
+  // Must be globally unique across Azure. Used as the cache endpoint:
+  // `{name}.redis.cache.windows.net`
+  // Allowed characters: lowercase letters, numbers, and hyphens.
+  // Must start with a letter, must not end with a hyphen.
+  // Length: 1 to 63 characters.
+  //
+  // **ForceNew**: Changing this destroys and recreates the cache.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 63,
+    (buf.validate.field).cel = {
+      id: "cache_name_format"
+      message: "Cache name must contain only lowercase letters, numbers, and hyphens, and start with a letter"
+      expression: "this.matches('^[a-z][a-z0-9-]{0,62}$')"
+    }
+  ];
+
+  // The SKU tier for the Redis cache.
+  // Uses Azure's exact API values for provider authenticity.
+  //
+  // Valid values:
+  // - "Basic": Single node, no SLA, no replication. Dev/test only.
+  // - "Standard" (default): Primary + replica, 99.9% SLA. Production recommended.
+  // - "Premium": Advanced features -- VNet injection, clustering, persistence,
+  //   zone redundancy. Required for `subnet_id` and `shard_count`.
+  //
+  // SKU downgrades force resource recreation. Basic does not support
+  // `maxmemory_reserved`, `maxmemory_delta`, or `maxfragmentationmemory_reserved`.
+  optional string sku_name = 4 [
+    (org.openmcf.shared.options.default) = "Standard",
+    (buf.validate.field).cel = {
+      id: "sku_name_valid"
+      message: "sku_name must be one of: Basic, Standard, Premium"
+      expression: "this in ['Basic', 'Standard', 'Premium']"
+    }
+  ];
+
+  // Cache capacity (size) within the chosen SKU tier.
+  // The actual memory size depends on the SKU family:
+  //
+  // Basic/Standard (C-family):
+  //   0=250MB, 1=1GB, 2=2.5GB, 3=6GB, 4=13GB, 5=26GB, 6=53GB
+  //
+  // Premium (P-family):
+  //   1=6GB, 2=13GB, 3=26GB, 4=53GB, 5=120GB (per shard)
+  //
+  // The `family` field ("C" or "P") is auto-derived from `sku_name` in the
+  // IaC modules -- users do not need to specify it.
+  int32 capacity = 5 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 6
+  }];
+
+  // Redis engine version.
+  //
+  // Valid values: "4", "6"
+  // Default: "6" (recommended -- Redis 4 is end-of-life).
+  //
+  // Note: Azure represents versions as major version only. Version "6" maps
+  // to the latest Redis 6.x release available in the region.
+  optional string redis_version = 6 [
+    (org.openmcf.shared.options.default) = "6",
+    (buf.validate.field).cel = {
+      id: "redis_version_valid"
+      message: "redis_version must be one of: 4, 6"
+      expression: "this in ['4', '6']"
+    }
+  ];
+
+  // Subnet ID for VNet injection (Premium SKU only).
+  // When set, the cache is deployed inside the specified subnet with private
+  // IP addressing. The subnet must be dedicated to Azure Cache for Redis
+  // (no other resources in the subnet).
+  //
+  // **ForceNew**: Changing this destroys and recreates the cache.
+  //
+  // Can be a literal ARM resource ID or a reference to an AzureSubnet output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 7 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // Availability zones for the Redis cache.
+  // Distributes cache nodes across specified zones for higher availability.
+  // Requires Standard or Premium SKU.
+  //
+  // Examples: ["1"], ["1", "2", "3"]
+  repeated string zones = 8;
+
+  // Number of shards for Redis Cluster (Premium SKU only).
+  // Enables data partitioning across multiple Redis nodes for higher
+  // throughput and larger data sets.
+  //
+  // Each shard is a primary/replica pair. Total cache memory = capacity * (1 + shard_count).
+  // Range: 1-10 shards.
+  optional int32 shard_count = 9 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 10
+  }];
+
+  // Enable the non-SSL port (6379).
+  // When false (default), only the SSL port (6380) is available.
+  // It is strongly recommended to keep this disabled for production workloads.
+  //
+  // Default: false
+  optional bool non_ssl_port_enabled = 10 [(org.openmcf.shared.options.default) = "false"];
+
+  // Minimum TLS version for client connections.
+  // Azure enforces this on all connections to the SSL port.
+  //
+  // Default: "1.2" (only valid value in Azure provider v5.0+)
+  optional string minimum_tls_version = 11 [
+    (org.openmcf.shared.options.default) = "1.2",
+    (buf.validate.field).cel = {
+      id: "tls_version_valid"
+      message: "minimum_tls_version must be one of: 1.0, 1.1, 1.2"
+      expression: "this in ['1.0', '1.1', '1.2']"
+    }
+  ];
+
+  // Whether the Redis cache is accessible over the public internet.
+  // When false, the cache can only be accessed via VNet injection or
+  // AzurePrivateEndpoint.
+  //
+  // Default: true
+  optional bool public_network_access_enabled = 12 [(org.openmcf.shared.options.default) = "true"];
+
+  // Memory eviction policy when the cache reaches its memory limit.
+  // Uses Redis's exact configuration value names for provider authenticity.
+  //
+  // Valid values:
+  // - "volatile-lru" (default): Evict keys with TTL, least-recently-used first
+  // - "allkeys-lru": Evict any key, least-recently-used first (cache-only workloads)
+  // - "volatile-lfu": Evict keys with TTL, least-frequently-used first
+  // - "allkeys-lfu": Evict any key, least-frequently-used first
+  // - "volatile-random": Evict random keys with TTL
+  // - "allkeys-random": Evict random keys
+  // - "volatile-ttl": Evict keys with shortest TTL first
+  // - "noeviction": Return errors on writes when memory is full (data integrity)
+  //
+  // **Guidance:**
+  // - Cache-only workload (all keys expendable): use `allkeys-lru`
+  // - Mixed workload (some keys must persist): use `volatile-lru` (default)
+  // - Data must never be evicted: use `noeviction` (monitor memory carefully)
+  optional string maxmemory_policy = 13 [
+    (org.openmcf.shared.options.default) = "volatile-lru",
+    (buf.validate.field).cel = {
+      id: "maxmemory_policy_valid"
+      message: "maxmemory_policy must be one of: allkeys-lfu, allkeys-lru, allkeys-random, noeviction, volatile-lfu, volatile-lru, volatile-random, volatile-ttl"
+      expression: "this in ['allkeys-lfu', 'allkeys-lru', 'allkeys-random', 'noeviction', 'volatile-lfu', 'volatile-lru', 'volatile-random', 'volatile-ttl']"
+    }
+  ];
+
+  // Patch (maintenance) schedules for the Redis cache.
+  // Defines when Azure can apply Redis engine patches and updates.
+  // If not specified, Azure chooses the maintenance window automatically.
+  //
+  // For production workloads, specify at least one patch schedule during
+  // a low-traffic window.
+  repeated AzureRedisPatchSchedule patch_schedules = 14;
+
+  // Firewall rules for IP-based access control.
+  // Only effective when `public_network_access_enabled` is true and the cache
+  // is NOT VNet-injected.
+  //
+  // Each rule allows a range of IPv4 addresses to access the cache.
+  // Without firewall rules, all public IP addresses are blocked by default.
+  repeated AzureRedisFirewallRule firewall_rules = 15;
+}
+
+// AzureRedisPatchSchedule defines a maintenance window for Redis engine
+// patches and updates. Azure uses these windows to apply updates with
+// minimal disruption.
+//
+// It is recommended to schedule patches during low-traffic periods.
+// Multiple schedules can be specified (e.g., one per week).
+message AzureRedisPatchSchedule {
+  // Day of the week for the maintenance window.
+  // Uses English day names (case-insensitive in the provider, but we
+  // validate for capitalized form for consistency).
+  //
+  // Valid values: "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+  // "Saturday", "Sunday", "Everyday", "Weekend"
+  string day_of_week = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "day_of_week_valid"
+      message: "day_of_week must be one of: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday, Everyday, Weekend"
+      expression: "this in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Everyday', 'Weekend']"
+    }
+  ];
+
+  // UTC hour at which the maintenance window starts (0-23).
+  // Default: 0
+  optional int32 start_hour_utc = 2 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 23
+  }];
+
+  // Duration of the maintenance window as an ISO 8601 duration string.
+  // Default: "PT5H" (5 hours)
+  //
+  // Examples: "PT5H" (5 hours), "PT3H" (3 hours)
+  optional string maintenance_window = 3 [(org.openmcf.shared.options.default) = "PT5H"];
+}
+
+// AzureRedisFirewallRule defines an IP-based access rule for the Redis cache.
+// Each rule allows a contiguous range of IPv4 addresses to connect.
+//
+// Firewall rules are only effective when:
+// - `public_network_access_enabled` is true
+// - The cache is NOT deployed with VNet injection (`subnet_id` is not set)
+//
+// **Note:** Azure requires firewall rule names to contain only alphanumeric
+// characters and underscores (no hyphens).
+message AzureRedisFirewallRule {
+  // Rule name.
+  // Must contain only alphanumeric characters and underscores.
+  // Azure rejects names with hyphens or special characters.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).cel = {
+      id: "firewall_rule_name_format"
+      message: "Firewall rule name must contain only alphanumeric characters and underscores (no hyphens)"
+      expression: "this.matches('^\\\\w+$')"
+    }
+  ];
+
+  // Start of the IP address range (inclusive).
+  // Must be a valid IPv4 address.
+  // Use "0.0.0.0" for both start and end to allow Azure services.
+  string start_ip = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // End of the IP address range (inclusive).
+  // Must be a valid IPv4 address.
+  // Set equal to `start_ip` for a single IP address.
+  string end_ip = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}

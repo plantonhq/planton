@@ -128,6 +128,7 @@ const (
 	CloudResourceKind_AzureApplicationGateway       CloudResourceKind = 416
 	CloudResourceKind_AzureLoadBalancer             CloudResourceKind = 417
 	CloudResourceKind_AzurePostgresqlFlexibleServer CloudResourceKind = 430
+	CloudResourceKind_AzureRedisCache               CloudResourceKind = 431
 	CloudResourceKind_AzureCosmosdbAccount          CloudResourceKind = 432
 	CloudResourceKind_AzureMssqlServer              CloudResourceKind = 433
 	CloudResourceKind_AzureMysqlFlexibleServer      CloudResourceKind = 434
@@ -357,6 +358,7 @@ var (
 		416:  "AzureApplicationGateway",
 		417:  "AzureLoadBalancer",
 		430:  "AzurePostgresqlFlexibleServer",
+		431:  "AzureRedisCache",
 		432:  "AzureCosmosdbAccount",
 		433:  "AzureMssqlServer",
 		434:  "AzureMysqlFlexibleServer",
@@ -573,6 +575,7 @@ var (
 		"AzureApplicationGateway":               416,
 		"AzureLoadBalancer":                     417,
 		"AzurePostgresqlFlexibleServer":         430,
+		"AzureRedisCache":                       431,
 		"AzureCosmosdbAccount":                  432,
 		"AzureMssqlServer":                      433,
 		"AzureMysqlFlexibleServer":              434,
@@ -880,7 +883,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\x8fH\n" +
+	"\x02v1\x10\x01*\xb6H\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -946,7 +949,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x11AzureLoadBalancer\x10\xa1\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azlb\x122\n" +
 	"\x1dAzurePostgresqlFlexibleServer\x10\xae\x03\x1a\x0e\xa2\xf7\x04\n" +
-	"\b\r\x10\x01\"\x04azpg\x12*\n" +
+	"\b\r\x10\x01\"\x04azpg\x12%\n" +
+	"\x0fAzureRedisCache\x10\xaf\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azred\x12*\n" +
 	"\x14AzureCosmosdbAccount\x10\xb0\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azcdb\x12'\n" +
 	"\x10AzureMssqlServer\x10\xb1\x03\x1a\x10\xa2\xf7\x04\f\b\r\x10\x01\"\x06azmsql\x120\n" +
 	"\x18AzureMysqlFlexibleServer\x10\xb2\x03\x1a\x11\xa2\xf7\x04\r\b\r\x10\x01\"\aazmysql\x120\n" +

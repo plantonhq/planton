@@ -293,6 +293,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "azpg"
   }];
+  AzureRedisCache = 431 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azred"
+  }];
   AzureCosmosdbAccount = 432 [(kind_meta) = {
     provider: azure
     version: v1
