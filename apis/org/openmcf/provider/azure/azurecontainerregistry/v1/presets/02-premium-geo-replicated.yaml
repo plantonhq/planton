@@ -1,0 +1,13 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureContainerRegistry
+metadata:
+  name: my-container-registry
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  registryName: <youruniquename>
+  sku: PREMIUM
+  adminUserEnabled: false
+  geoReplicationRegions:
+    - <secondary-azure-region>
