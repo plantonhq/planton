@@ -1,0 +1,17 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureServiceBusNamespace
+metadata:
+  name: test-sb
+spec:
+  region: eastus
+  resource_group: test-rg
+  name: test-servicebus-ns
+  sku: Standard
+  queues:
+    - name: orders
+      max_delivery_count: 10
+      dead_lettering_on_message_expiration: true
+    - name: notifications
+  topics:
+    - name: events
+    - name: audit-logs

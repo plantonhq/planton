@@ -353,6 +353,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "azid"
   }];
+  AzureServiceBusNamespace = 470 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azsb"
+  }];
 
   // 600–799: GCP resources
   GcpArtifactRegistryRepo = 600 [(kind_meta) = {

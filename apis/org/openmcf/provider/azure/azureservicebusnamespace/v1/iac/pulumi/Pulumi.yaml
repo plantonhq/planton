@@ -1,0 +1,3 @@
+name: azure-service-bus-namespace
+runtime: go
+description: Pulumi program for Azure Service Bus Namespace

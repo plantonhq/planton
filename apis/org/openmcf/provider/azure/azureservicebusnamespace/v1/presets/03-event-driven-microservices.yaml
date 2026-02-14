@@ -1,0 +1,25 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureServiceBusNamespace
+metadata:
+  name: my-event-bus
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-namespace-name>
+  sku: Standard  # default from spec
+  queues:
+    - name: order-intake
+      forwardTo: order-processing
+    - name: order-processing
+      requiresDuplicateDetection: true
+      maxDeliveryCount: 3
+      deadLetteringOnMessageExpiration: true
+      forwardDeadLetteredMessagesTo: dlq-monitor
+    - name: dlq-monitor
+      defaultMessageTtl: P30D
+  topics:
+    - name: order-events
+      supportOrdering: true
+    - name: audit-trail
+      defaultMessageTtl: P365D

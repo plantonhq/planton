@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azureservicebusnamespace.v1;
+
+// **AzureServiceBusNamespaceStackOutputs** captures the outputs of provisioning
+// an Azure Service Bus namespace with its queues and topics.
+//
+// The primary outputs are `namespace_id` for resource identification,
+// `endpoint` for SDK connectivity, and `primary_connection_string` /
+// `primary_key` for authentication. The `queue_ids` and `topic_ids` maps
+// provide individual entity resource IDs for downstream references.
+//
+// Applications connect to Service Bus using the `primary_connection_string`
+// which includes the namespace endpoint and the SAS key from the default
+// `RootManageSharedAccessKey` authorization rule. This is the standard
+// authentication method for most workloads.
+//
+// For production workloads, consider using Azure AD (Entra ID) RBAC-based
+// authentication instead of SAS keys. The connection string is still useful
+// for quick setup and development.
+message AzureServiceBusNamespaceStackOutputs {
+  // The Azure Resource Manager ID of the Service Bus namespace.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ServiceBus/namespaces/{name}
+  //
+  // Referenced by AzurePrivateEndpoint (private_connection_resource_id)
+  // for establishing private connectivity.
+  // Subresource name for private endpoint: ["namespace"].
+  string namespace_id = 1;
+
+  // The name of the Service Bus namespace.
+  string namespace_name = 2;
+
+  // The Service Bus endpoint URL.
+  // Format: https://{name}.servicebus.windows.net:443/
+  //
+  // Used by Service Bus SDKs to connect to the namespace.
+  string endpoint = 3;
+
+  // The primary connection string from the default RootManageSharedAccessKey.
+  // Format: Endpoint=sb://{name}.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey={key}
+  //
+  // Ready-to-use connection string for Service Bus SDKs.
+  // Includes the endpoint, key name, and key value.
+  string primary_connection_string = 4;
+
+  // The primary SAS key from the default RootManageSharedAccessKey.
+  // Used for manual SAS token generation or when connecting with
+  // libraries that accept key and key-name separately.
+  string primary_key = 5;
+
+  // Map of queue names to their Azure Resource Manager IDs.
+  // Format: { "my-queue": "/subscriptions/.../queues/my-queue" }
+  //
+  // Useful for downstream references and monitoring dashboards.
+  map<string, string> queue_ids = 6;
+
+  // Map of topic names to their Azure Resource Manager IDs.
+  // Format: { "my-topic": "/subscriptions/.../topics/my-topic" }
+  //
+  // Useful for downstream references and monitoring dashboards.
+  map<string, string> topic_ids = 7;
+}
