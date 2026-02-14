@@ -364,6 +364,14 @@ enum CloudResourceKind {
     id_prefix: "azeh"
   }];
 
+  // --- CDN ---
+
+  AzureFrontDoorProfile = 480 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azfd"
+  }];
+
   // 600–799: GCP resources
   GcpArtifactRegistryRepo = 600 [(kind_meta) = {
     provider: gcp

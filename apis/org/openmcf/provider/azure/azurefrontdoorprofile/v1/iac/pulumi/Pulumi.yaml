@@ -1,0 +1,3 @@
+name: azure-front-door-profile
+runtime: go
+description: Pulumi program for Azure Front Door Profile
