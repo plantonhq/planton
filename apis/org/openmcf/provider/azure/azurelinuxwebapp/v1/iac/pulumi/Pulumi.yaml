@@ -1,0 +1,3 @@
+name: azure-linux-web-app
+runtime: go
+description: Pulumi program for Azure Linux Web App

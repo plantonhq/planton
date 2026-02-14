@@ -1,0 +1,26 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureLinuxWebApp
+metadata:
+  name: my-node-api
+spec:
+  region: eastus
+  resource_group:
+    value: "<your-resource-group-name>"
+  name: my-node-api
+  service_plan_id:
+    value: "<your-service-plan-id>"
+  application_insights_connection_string:
+    value: "<your-app-insights-connection-string>"
+  https_only: true
+  app_settings:
+    NODE_ENV: production
+  site_config:
+    application_stack:
+      node_version: "22-lts"
+    health_check_path: /health
+    http2_enabled: true
+    minimum_tls_version: "1.2"
+    ftps_state: Disabled
+    cors:
+      allowed_origins:
+        - https://myapp.example.com

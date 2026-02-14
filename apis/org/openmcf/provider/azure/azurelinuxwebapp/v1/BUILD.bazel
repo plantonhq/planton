@@ -1,14 +1,14 @@
 load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
-    name = "azurefunctionapp",
+    name = "azurelinuxwebapp",
     srcs = [
         "api.pb.go",
         "spec.pb.go",
         "stack_input.pb.go",
         "stack_outputs.pb.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurefunctionapp/v1",
+    importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurelinuxwebapp/v1",
     visibility = ["//visibility:public"],
     deps = [
         "//apis/org/openmcf/provider/azure",
@@ -22,9 +22,9 @@ go_library(
 )
 
 go_test(
-    name = "azurefunctionapp_test",
+    name = "azurelinuxwebapp_test",
     srcs = ["spec_test.go"],
-    embed = [":azurefunctionapp"],
+    embed = [":azurelinuxwebapp"],
     deps = [
         "//apis/org/openmcf/shared",
         "//apis/org/openmcf/shared/cloudresourcekind",
