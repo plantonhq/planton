@@ -1,0 +1,6 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackKeypair
+metadata:
+  name: my-keypair
+spec:
+  publicKey: <ssh-public-key>

@@ -1,0 +1,11 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackContainerCluster
+metadata:
+  name: my-ha-cluster
+spec:
+  clusterTemplate:
+    value: <cluster-template-id>
+  masterCount: 3
+  nodeCount: 3
+  masterFlavor: <master-flavor-name>
+  flavor: <worker-flavor-name>

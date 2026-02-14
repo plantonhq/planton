@@ -1,0 +1,14 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackSecurityGroupRule
+metadata:
+  name: my-allow-ssh-rule
+spec:
+  securityGroupId:
+    value: <security-group-id>
+  direction: ingress
+  ethertype: IPv4
+  protocol: tcp
+  portRangeMin: 22
+  portRangeMax: 22
+  remoteIpPrefix: <trusted-cidr>
+  description: Allow SSH from trusted network

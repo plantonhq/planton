@@ -1,0 +1,7 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackVolume
+metadata:
+  name: my-data-volume
+spec:
+  size: 100
+  description: Blank data volume for application storage

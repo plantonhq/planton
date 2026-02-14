@@ -1,0 +1,9 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackVolume
+metadata:
+  name: my-boot-volume
+spec:
+  size: 50
+  imageId:
+    value: <image-id>
+  description: Bootable volume created from a Glance image

@@ -1,0 +1,9 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackVolumeAttach
+metadata:
+  name: my-volume-attachment
+spec:
+  instanceId:
+    value: <instance-id>
+  volumeId:
+    value: <volume-id>

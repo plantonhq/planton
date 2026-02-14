@@ -1,0 +1,8 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackContainerCluster
+metadata:
+  name: my-dev-cluster
+spec:
+  clusterTemplate:
+    value: <cluster-template-id>
+  nodeCount: 1

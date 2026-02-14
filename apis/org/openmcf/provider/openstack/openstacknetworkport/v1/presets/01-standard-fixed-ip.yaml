@@ -1,0 +1,10 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackNetworkPort
+metadata:
+  name: my-network-port
+spec:
+  networkId:
+    value: <network-id>
+  fixedIps:
+    - subnetId:
+        value: <subnet-id>
