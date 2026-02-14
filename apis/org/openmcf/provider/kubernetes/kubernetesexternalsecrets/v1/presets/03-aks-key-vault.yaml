@@ -1,0 +1,19 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesExternalSecrets
+metadata:
+  name: my-external-secrets
+spec:
+  namespace:
+    value: external-secrets
+  createNamespace: true
+  container:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 100Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+  aks:
+    keyVaultResourceId: "<your-azure-key-vault-resource-id>"
+    managedIdentityClientId: "<your-managed-identity-client-id>"

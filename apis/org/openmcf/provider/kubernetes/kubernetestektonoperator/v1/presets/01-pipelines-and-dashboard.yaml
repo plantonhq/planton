@@ -1,0 +1,18 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesTektonOperator
+metadata:
+  name: my-tekton-operator
+spec:
+  container:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  components:
+    pipelines: true
+    triggers: true
+    dashboard: true
+  operatorVersion: v0.78.0  # default from spec

@@ -1,0 +1,13 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesExternalDns
+metadata:
+  name: my-external-dns
+spec:
+  namespace:
+    value: external-dns
+  createNamespace: true
+  gke:
+    projectId:
+      value: "<your-gcp-project-id>"
+    dnsZoneId:
+      value: "<your-cloud-dns-zone-id>"

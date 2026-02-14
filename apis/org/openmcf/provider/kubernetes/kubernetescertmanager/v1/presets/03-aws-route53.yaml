@@ -1,0 +1,18 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesCertManager
+metadata:
+  name: my-cert-manager
+spec:
+  namespace:
+    value: cert-manager
+  createNamespace: true
+  acme:
+    email: "<your-acme-email@example.com>"
+    server: https://acme-v02.api.letsencrypt.org/directory
+  dnsProviders:
+    - name: aws-primary
+      dnsZones:
+        - "<your-domain.com>"
+      awsRoute53:
+        region: "<your-aws-region>"
+        roleArn: "<your-irsa-role-arn>"
