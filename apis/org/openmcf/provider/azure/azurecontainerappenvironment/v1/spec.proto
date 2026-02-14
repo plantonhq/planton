@@ -1,0 +1,213 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azurecontainerappenvironment.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// **AzureContainerAppEnvironmentSpec** defines the configuration for creating
+// an Azure Container Apps Managed Environment (Microsoft.App/managedEnvironments),
+// the hosting platform for Azure Container Apps.
+//
+// A Container App Environment is a secure boundary around one or more container
+// apps. All apps within an environment share the same virtual network, logging
+// configuration, and Dapr infrastructure. It is the Azure equivalent of an
+// ECS Cluster or Kubernetes namespace -- the execution boundary for containerized
+// workloads.
+//
+// **Networking modes**:
+//
+// External (default):
+//   - Apps can receive traffic from the public internet
+//   - Azure assigns a public static IP and default domain
+//   - No subnet required (Azure manages networking)
+//
+// VNet-injected (infrastructure_subnet_id provided):
+//   - Apps run inside a customer-managed VNet
+//   - Enables private connectivity to databases, storage, and other VNet resources
+//   - Subnet must be /21 or larger (minimum 2048 IPs for Container Apps infrastructure)
+//   - Enables internal_load_balancer_enabled and zone_redundancy_enabled
+//
+// Internal (internal_load_balancer_enabled = true):
+//   - Apps are only accessible from within the VNet
+//   - Requires infrastructure_subnet_id
+//   - Static IP is private, default domain resolves to private IP
+//   - Used for backend services, microservice meshes, internal APIs
+//
+// **Workload profiles**:
+//
+// By default, environments use the Consumption plan (serverless, pay-per-use).
+// For workloads requiring dedicated compute, GPU access, or guaranteed resources,
+// add workload profiles:
+//
+// Dedicated compute:
+//   - D4, D8, D16, D32 (general purpose)
+//   - E4, E8, E16, E32 (memory optimized)
+//
+// GPU compute:
+//   - NC24-A100, NC48-A100, NC96-A100 (NVIDIA A100)
+//
+// The "Consumption" profile is always available and auto-added by Azure.
+// The workload_profiles field is for defining additional dedicated profiles only.
+//
+// **Logging**:
+//
+// When log_analytics_workspace_id is provided, the IaC modules automatically
+// configure log-analytics as the logging destination. When omitted, container
+// app logs are streaming-only (no persistent storage).
+//
+// **ForceNew fields** (changing these destroys and recreates the environment):
+// `name`, `region`, `resource_group`, `infrastructure_subnet_id`,
+// `internal_load_balancer_enabled`, `zone_redundancy_enabled`.
+//
+// **Referenced by**: AzureContainerApp (container_app_environment_id)
+message AzureContainerAppEnvironmentSpec {
+  // The Azure region where the Container App Environment will be created.
+  // Examples: "eastus", "westus2", "westeurope", "southeastasia".
+  //
+  // **ForceNew**: Changing this destroys and recreates the environment.
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The Azure Resource Group where the Container App Environment will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  //
+  // **ForceNew**: Changing this destroys and recreates the environment.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef resource_group = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The name of the Container App Environment.
+  // Must be lowercase alphanumeric or hyphens, start with a letter, end with
+  // an alphanumeric character, and be between 2 and 60 characters.
+  //
+  // This name appears in the Azure portal, CLI, and is part of the default
+  // domain for apps in this environment ({app-name}.{env-default-domain}).
+  //
+  // **ForceNew**: Changing this destroys and recreates the environment.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 2,
+    (buf.validate.field).string.max_len = 60,
+    (buf.validate.field).cel = {
+      id: "env_name_format"
+      message: "name must be lowercase alphanumeric or hyphens, start with a letter, end with alphanumeric"
+      expression: "this.matches('^[a-z][a-z0-9-]{0,58}[a-z0-9]$')"
+    }
+  ];
+
+  // The existing Subnet to use for the Container Apps Control Plane.
+  // When provided, the environment is VNet-injected, enabling private
+  // connectivity to other VNet resources (databases, storage, etc.).
+  //
+  // **Important**: The subnet must have a /21 or larger address space
+  // (minimum 2048 IPs). Container Apps infrastructure reserves a significant
+  // portion of the address space for platform services.
+  //
+  // When set, enables `internal_load_balancer_enabled` and
+  // `zone_redundancy_enabled` options.
+  //
+  // **ForceNew**: Changing this destroys and recreates the environment.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef infrastructure_subnet_id = 4 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // The Log Analytics Workspace to link for centralized log collection.
+  // When provided, the IaC modules automatically configure the logging
+  // destination to "log-analytics". When omitted, logs are streaming-only.
+  //
+  // Log Analytics enables querying container app logs via KQL, setting up
+  // alerts, and integrating with Azure Monitor dashboards.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef log_analytics_workspace_id = 5 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureLogAnalyticsWorkspace,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.workspace_id"
+  ];
+
+  // Enable Internal Load Balancing mode. When true, apps in this environment
+  // are only accessible from within the VNet (no public internet access).
+  //
+  // Requires `infrastructure_subnet_id` to be set.
+  //
+  // Use this for backend microservices, internal APIs, and workloads that
+  // should not be exposed to the public internet.
+  //
+  // Default: false (external mode -- apps are publicly accessible)
+  //
+  // **ForceNew**: Changing this destroys and recreates the environment.
+  optional bool internal_load_balancer_enabled = 6 [(org.openmcf.shared.options.default) = "false"];
+
+  // Enable zone redundancy. Distributes the environment's infrastructure
+  // across multiple availability zones for higher resilience.
+  //
+  // Requires `infrastructure_subnet_id` to be set.
+  //
+  // When enabled, Container Apps infrastructure is spread across all
+  // available zones in the region (typically 3). Recommended for
+  // production workloads requiring high availability.
+  //
+  // Default: false
+  //
+  // **ForceNew**: Changing this destroys and recreates the environment.
+  optional bool zone_redundancy_enabled = 7 [(org.openmcf.shared.options.default) = "false"];
+
+  // Workload profiles for dedicated compute resources.
+  //
+  // By default, all environments include the "Consumption" profile (serverless,
+  // pay-per-use, scales to zero). This field is for adding **dedicated compute
+  // profiles** alongside Consumption. Azure automatically includes the
+  // Consumption profile -- do not add it here.
+  //
+  // Use dedicated profiles when workloads need:
+  // - Guaranteed CPU/memory resources
+  // - GPU access (NC* profiles)
+  // - Predictable performance (no cold starts)
+  // - Compliance requirements for dedicated infrastructure
+  //
+  // **Note**: Adding or removing workload profiles forces environment
+  // replacement (ForceNew).
+  repeated AzureContainerAppWorkloadProfile workload_profiles = 8;
+}
+
+// AzureContainerAppWorkloadProfile defines a dedicated compute profile
+// within a Container App Environment.
+//
+// Each profile represents a pool of dedicated VMs that container apps can
+// target. Apps select a workload profile by name in their configuration.
+message AzureContainerAppWorkloadProfile {
+  // The name of the workload profile.
+  // This name is referenced by Container Apps when selecting which
+  // profile to run on (e.g., "gpu-pool", "high-memory").
+  //
+  // Must be unique within the environment.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The workload profile type (SKU) that determines the VM size.
+  //
+  // General purpose: "D4", "D8", "D16", "D32"
+  // Memory optimized: "E4", "E8", "E16", "E32"
+  // GPU (NVIDIA A100): "NC24-A100", "NC48-A100", "NC96-A100"
+  //
+  // Do not use "Consumption" here -- it is always available by default.
+  string workload_profile_type = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Minimum number of instances for this profile.
+  // Set to 0 to allow scale-to-zero (instances are deallocated when idle).
+  // Set to 1+ to keep pre-warmed instances for reduced cold-start latency.
+  optional int32 minimum_count = 3 [(buf.validate.field).int32 = {gte: 0}];
+
+  // Maximum number of instances this profile can scale to.
+  // Controls the upper bound on cost and capacity.
+  optional int32 maximum_count = 4 [(buf.validate.field).int32 = {gte: 0}];
+}
