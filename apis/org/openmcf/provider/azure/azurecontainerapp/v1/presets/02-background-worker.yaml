@@ -3,9 +3,11 @@ kind: AzureContainerApp
 metadata:
   name: my-worker
 spec:
-  resource_group: my-rg
+  resourceGroup:
+    value: "<your-resource-group-name>"
   name: my-worker
-  container_app_environment_id: ""  # Required: set to your environment ID
+  containerAppEnvironmentId:
+    value: "<container-app-environment-id>"
   containers:
     - name: worker
       image: my-registry/my-worker:latest
@@ -13,18 +15,18 @@ spec:
       memory: "0.5Gi"
       env:
         - name: QUEUE_CONNECTION
-          secret_name: queue-connection
-  min_replicas: 0
-  max_replicas: 5
-  custom_scale_rules:
+          secretName: queue-connection
+  minReplicas: 0
+  maxReplicas: 5
+  customScaleRules:
     - name: queue-depth
-      custom_rule_type: azure-servicebus
+      customRuleType: azure-servicebus
       metadata:
         queueName: my-queue
         messageCount: "10"
       authentication:
-        - secret_name: queue-connection
-          trigger_parameter: connection
+        - secretName: queue-connection
+          triggerParameter: connection
   secrets:
     - name: queue-connection
       value: "Endpoint=sb://my-namespace.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=..."

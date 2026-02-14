@@ -1,0 +1,27 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureVirtualMachine
+metadata:
+  name: my-ubuntu-vm
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  vmSize: Standard_D2s_v3  # recommended_default from spec
+  subnetId:
+    value: "<subnet-id>"
+  image:
+    publisher: Canonical
+    offer: 0001-com-ubuntu-server-jammy
+    sku: 22_04-lts-gen2
+    version: latest  # default from spec
+  osDisk:
+    sizeGb: 30
+    storageType: premium_lrs  # default from spec
+    caching: read_write  # default from spec
+  adminUsername: azureuser  # default from spec
+  sshPublicKey: <your-ssh-public-key>
+  network:
+    enablePublicIp: false
+    enableAcceleratedNetworking: true  # default from spec
+  availabilityZone: "1"
+  enableBootDiagnostics: true  # default from spec

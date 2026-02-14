@@ -2,12 +2,12 @@ apiVersion: azure.openmcf.org/v1
 kind: AzureContainerApp
 metadata:
   name: my-enterprise-api
-  org: mycompany
-  env: production
 spec:
-  resource_group: production-rg
+  resourceGroup:
+    value: "<your-resource-group-name>"
   name: my-enterprise-api
-  container_app_environment_id: ""  # Required: set to your environment ID
+  containerAppEnvironmentId:
+    value: "<container-app-environment-id>"
   containers:
     - name: api
       image: mycompany.azurecr.io/enterprise-api:v1.0.0
@@ -17,60 +17,60 @@ spec:
         - name: ASPNETCORE_ENVIRONMENT
           value: Production
         - name: DB_CONNECTION
-          secret_name: db-conn
-      liveness_probe:
+          secretName: db-conn
+      livenessProbe:
         transport: HTTP
         port: 8080
         path: /healthz
-        initial_delay_in_seconds: 10
-        interval_seconds: 15
-        timeout_seconds: 5
-        failure_count_threshold: 3
-      readiness_probe:
+        initialDelayInSeconds: 10
+        intervalSeconds: 15
+        timeoutSeconds: 5
+        failureCountThreshold: 3
+      readinessProbe:
         transport: HTTP
         port: 8080
         path: /ready
-        interval_seconds: 5
-        timeout_seconds: 3
-        success_count_threshold: 2
-        failure_count_threshold: 3
-      startup_probe:
+        intervalSeconds: 5
+        timeoutSeconds: 3
+        successCountThreshold: 2
+        failureCountThreshold: 3
+      startupProbe:
         transport: HTTP
         port: 8080
         path: /healthz
-        interval_seconds: 3
-        timeout_seconds: 5
-        failure_count_threshold: 30
-  min_replicas: 2
-  max_replicas: 20
-  cooldown_period_in_seconds: 180
-  termination_grace_period_seconds: 30
-  http_scale_rules:
+        intervalSeconds: 3
+        timeoutSeconds: 5
+        failureCountThreshold: 30
+  minReplicas: 2
+  maxReplicas: 20
+  cooldownPeriodInSeconds: 180
+  terminationGracePeriodSeconds: 30
+  httpScaleRules:
     - name: http-requests
-      concurrent_requests: "75"
+      concurrentRequests: "75"
   secrets:
     - name: db-conn
-      key_vault_secret_id: https://my-keyvault.vault.azure.net/secrets/db-connection
-      identity: ""  # Required: set to your User Assigned Identity resource ID
+      keyVaultSecretId: https://my-keyvault.vault.azure.net/secrets/db-connection
+      identity: "<your-user-assigned-identity-id>"
   registries:
     - server: mycompany.azurecr.io
-      identity: ""  # Required: set to your User Assigned Identity resource ID
+      identity: "<your-user-assigned-identity-id>"
   identity:
     type: UserAssigned
-    identity_ids:
-      - ""  # Required: set to your User Assigned Identity resource ID
+    identityIds:
+      - value: "<your-user-assigned-identity-id>"
   ingress:
-    external_enabled: true
-    target_port: 8080
-    ip_security_restrictions:
+    externalEnabled: true
+    targetPort: 8080
+    ipSecurityRestrictions:
       - name: allow-office
         action: Allow
-        ip_address_range: 203.0.113.0/24
+        ipAddressRange: 203.0.113.0/24
         description: Corporate office CIDR
       - name: deny-all
         action: Deny
-        ip_address_range: 0.0.0.0/0
+        ipAddressRange: 0.0.0.0/0
         description: Deny all other traffic
-    traffic_weight:
-      - latest_revision: true
+    trafficWeight:
+      - latestRevision: true
         percentage: 100

@@ -11,22 +11,22 @@ This preset deploys a background worker that processes messages from an Azure Se
 
 ## Key Configuration Choices
 
-- **0 min replicas** (`min_replicas: 0`) -- Scale-to-zero; no cost when the queue is empty
-- **5 max replicas** (`max_replicas: 5`) -- Conservative ceiling; increase for high-throughput queues
+- **0 min replicas** (`minReplicas: 0`) -- Scale-to-zero; no cost when the queue is empty
+- **5 max replicas** (`maxReplicas: 5`) -- Conservative ceiling; increase for high-throughput queues
 - **0.25 vCPU / 0.5 GiB memory** -- Minimal resources for message processing; increase for CPU-intensive work
 - **Custom KEDA rule** (`azure-servicebus`) -- Scales based on queue message count (10 messages per replica)
 - **No ingress** -- Worker is not accessible via HTTP; processes messages only
-- **Secret-backed env var** -- Queue connection string is stored as a secret and injected via `secret_name`
+- **Secret-backed env var** -- Queue connection string is stored as a secret and injected via `secretName`
 
 ## Placeholders to Replace
 
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
-| `container_app_environment_id: ""` | ARM ID of the Container App Environment | Azure portal or `AzureContainerAppEnvironment` status outputs |
-| `resource_group: my-rg` | Resource group name | Azure portal or `AzureResourceGroup` status outputs |
+| `<container-app-environment-id>` | ARM ID of the Container App Environment | Azure portal or `AzureContainerAppEnvironment` status outputs |
+| `<your-resource-group-name>` | Name of the resource group | Azure portal or `AzureResourceGroup` status outputs |
 | `image: my-registry/my-worker:latest` | Your worker container image | Your container registry |
 | `queueName: my-queue` | Service Bus queue name | Azure portal or Service Bus admin |
-| `value: "Endpoint=sb://..."` | Service Bus connection string | Azure portal → Service Bus → Shared access policies |
+| `value: "Endpoint=sb://..."` | Service Bus connection string | Azure portal -> Service Bus -> Shared access policies |
 
 ## Related Presets
 

@@ -3,30 +3,32 @@ kind: AzureContainerApp
 metadata:
   name: my-web-service
 spec:
-  resource_group: my-rg
+  resourceGroup:
+    value: "<your-resource-group-name>"
   name: my-web-service
-  container_app_environment_id: ""  # Required: set to your environment ID
+  containerAppEnvironmentId:
+    value: "<container-app-environment-id>"
   containers:
     - name: web
       image: mcr.microsoft.com/k8se/quickstart:latest
       cpu: 0.5
       memory: "1Gi"
-      liveness_probe:
+      livenessProbe:
         transport: HTTP
         port: 8080
         path: /healthz
-      readiness_probe:
+      readinessProbe:
         transport: HTTP
         port: 8080
         path: /ready
-  min_replicas: 1
-  max_replicas: 10
-  http_scale_rules:
+  minReplicas: 1
+  maxReplicas: 10
+  httpScaleRules:
     - name: http-requests
-      concurrent_requests: "100"
+      concurrentRequests: "100"
   ingress:
-    external_enabled: true
-    target_port: 8080
-    traffic_weight:
-      - latest_revision: true
+    externalEnabled: true
+    targetPort: 8080
+    trafficWeight:
+      - latestRevision: true
         percentage: 100

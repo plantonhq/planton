@@ -13,25 +13,24 @@ This preset deploys a production-grade API with User Assigned managed identity, 
 ## Key Configuration Choices
 
 - **User Assigned Identity** -- Enables credential-free access to Key Vault and ACR; shared identity lifecycle independent of the app
-- **Key Vault secret** (`key_vault_secret_id`) -- DB connection string stored in Key Vault, not in the manifest
+- **Key Vault secret** (`keyVaultSecretId`) -- DB connection string stored in Key Vault, not in the manifest
 - **ACR with identity** -- Registry authentication via managed identity instead of username/password
-- **2 min replicas** (`min_replicas: 2`) -- High availability; never scale below 2
-- **20 max replicas** (`max_replicas: 20`) -- Production ceiling; adjust based on load testing
+- **2 min replicas** (`minReplicas: 2`) -- High availability; never scale below 2
+- **20 max replicas** (`maxReplicas: 20`) -- Production ceiling; adjust based on load testing
 - **1.0 vCPU / 2 GiB memory** -- Suitable for production API workloads; right-size after profiling
 - **All three probes** -- Liveness (restart on failure), readiness (remove from LB until ready), startup (tolerate slow starts)
 - **IP restrictions** -- Allow corporate office CIDR, deny all other traffic
-- **Graceful shutdown** (`termination_grace_period_seconds: 30`) -- Allows in-flight requests to complete before termination
+- **Graceful shutdown** (`terminationGracePeriodSeconds: 30`) -- Allows in-flight requests to complete before termination
 
 ## Placeholders to Replace
 
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
-| `container_app_environment_id: ""` | ARM ID of the Container App Environment | Azure portal or `AzureContainerAppEnvironment` status outputs |
-| `identity: ""` (secrets) | User Assigned Identity ARM resource ID | Azure portal or `AzureUserAssignedIdentity` status outputs |
-| `identity: ""` (registries) | Same User Assigned Identity ARM resource ID | Same as above |
-| `identity_ids: [""]` | Same User Assigned Identity ARM resource ID | Same as above |
-| `key_vault_secret_id: https://...` | Key Vault secret URI for your DB connection | Azure portal → Key Vault → Secrets |
-| `ip_address_range: 203.0.113.0/24` | Your corporate office or VPN CIDR | Network administrator |
+| `<container-app-environment-id>` | ARM ID of the Container App Environment | Azure portal or `AzureContainerAppEnvironment` status outputs |
+| `<your-resource-group-name>` | Name of the resource group | Azure portal or `AzureResourceGroup` status outputs |
+| `<your-user-assigned-identity-id>` | User Assigned Identity ARM resource ID (used for secrets, registries, and identity) | Azure portal or `AzureUserAssignedIdentity` status outputs |
+| `keyVaultSecretId: https://...` | Key Vault secret URI for your DB connection | Azure portal -> Key Vault -> Secrets |
+| `ipAddressRange: 203.0.113.0/24` | Your corporate office or VPN CIDR | Network administrator |
 
 ## Related Presets
 
