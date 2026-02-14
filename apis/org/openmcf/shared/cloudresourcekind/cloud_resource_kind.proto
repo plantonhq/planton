@@ -313,6 +313,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "azmysql"
   }];
+  AzureServicePlan = 442 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azsp"
+  }];
   AzureLogAnalyticsWorkspace = 450 [(kind_meta) = {
     provider: azure
     version: v1

@@ -132,6 +132,7 @@ const (
 	CloudResourceKind_AzureCosmosdbAccount          CloudResourceKind = 432
 	CloudResourceKind_AzureMssqlServer              CloudResourceKind = 433
 	CloudResourceKind_AzureMysqlFlexibleServer      CloudResourceKind = 434
+	CloudResourceKind_AzureServicePlan              CloudResourceKind = 442
 	CloudResourceKind_AzureLogAnalyticsWorkspace    CloudResourceKind = 450
 	CloudResourceKind_AzureApplicationInsights      CloudResourceKind = 451
 	CloudResourceKind_AzureUserAssignedIdentity     CloudResourceKind = 460
@@ -362,6 +363,7 @@ var (
 		432:  "AzureCosmosdbAccount",
 		433:  "AzureMssqlServer",
 		434:  "AzureMysqlFlexibleServer",
+		442:  "AzureServicePlan",
 		450:  "AzureLogAnalyticsWorkspace",
 		451:  "AzureApplicationInsights",
 		460:  "AzureUserAssignedIdentity",
@@ -579,6 +581,7 @@ var (
 		"AzureCosmosdbAccount":                  432,
 		"AzureMssqlServer":                      433,
 		"AzureMysqlFlexibleServer":              434,
+		"AzureServicePlan":                      442,
 		"AzureLogAnalyticsWorkspace":            450,
 		"AzureApplicationInsights":              451,
 		"AzureUserAssignedIdentity":             460,
@@ -883,7 +886,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xb6H\n" +
+	"\x02v1\x10\x01*\xddH\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -953,7 +956,9 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fAzureRedisCache\x10\xaf\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azred\x12*\n" +
 	"\x14AzureCosmosdbAccount\x10\xb0\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azcdb\x12'\n" +
 	"\x10AzureMssqlServer\x10\xb1\x03\x1a\x10\xa2\xf7\x04\f\b\r\x10\x01\"\x06azmsql\x120\n" +
-	"\x18AzureMysqlFlexibleServer\x10\xb2\x03\x1a\x11\xa2\xf7\x04\r\b\r\x10\x01\"\aazmysql\x120\n" +
+	"\x18AzureMysqlFlexibleServer\x10\xb2\x03\x1a\x11\xa2\xf7\x04\r\b\r\x10\x01\"\aazmysql\x12%\n" +
+	"\x10AzureServicePlan\x10\xba\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\r\x10\x01\"\x04azsp\x120\n" +
 	"\x1aAzureLogAnalyticsWorkspace\x10\xc2\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azlaw\x12-\n" +
 	"\x18AzureApplicationInsights\x10\xc3\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azai\x12.\n" +
