@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azureserviceplan.v1;
+
+// **AzureServicePlanStackOutputs** captures the outputs of provisioning an
+// Azure App Service Plan.
+//
+// The primary output is `plan_id`, which is referenced by downstream
+// resources as the `service_plan_id` field:
+// - AzureFunctionApp (service_plan_id)
+// - AzureLinuxWebApp (service_plan_id)
+//
+// The remaining outputs (`plan_name`, `os_type`, `sku_name`) are informational
+// and useful for debugging, auditing, and infra chart visibility.
+message AzureServicePlanStackOutputs {
+  // The Azure Resource Manager ID of the Service Plan.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Web/serverFarms/{name}
+  //
+  // This is the primary reference output. Referenced by:
+  // - AzureFunctionApp (service_plan_id)
+  // - AzureLinuxWebApp (service_plan_id)
+  string plan_id = 1;
+
+  // The name of the Service Plan.
+  // Echo of the input name, useful for debugging and audit trails.
+  string plan_name = 2;
+
+  // The configured operating system type ("Linux" or "Windows").
+  // Informational output for downstream visibility.
+  string os_type = 3;
+
+  // The configured SKU name (e.g., "P1v3", "EP1", "Y1").
+  // Informational output for cost tracking and capacity planning.
+  string sku_name = 4;
+}

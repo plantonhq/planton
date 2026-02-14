@@ -9,11 +9,11 @@ order: 10
 
 The following CLOUDFLARE resources can be deployed using OpenMCF:
 
-- [Deploying Cloudflare D1: The SQLite Database That Lives at the Edge](/docs/catalog/cloudflare/deploying-cloudflare-d1-the-sqlite-database-that-lives-at-the-edge)
-- [Deploying Cloudflare Load Balancers: Steering Traffic at the Edge](/docs/catalog/cloudflare/deploying-cloudflare-load-balancers-steering-traffic-at-the-edge)
-- [Deploying Cloudflare Workers KV Namespaces: Edge Storage Without the Edge Cases](/docs/catalog/cloudflare/deploying-cloudflare-workers-kv-namespaces-edge-storage-without-the-edge-cases)
-- [DNS Record: Technical Research Documentation](/docs/catalog/cloudflare/dns-record-technical-research-documentation)
+- [D1 Database](/docs/catalog/cloudflare/d1-database)
+- [DNS Record](/docs/catalog/cloudflare/dns-record)
 - [DNS Zone](/docs/catalog/cloudflare/dns-zone)
+- [KV Namespace](/docs/catalog/cloudflare/kv-namespace)
+- [Load Balancer](/docs/catalog/cloudflare/load-balancer)
 - [R2 Bucket](/docs/catalog/cloudflare/r2-bucket)
-- [Securing Applications with Cloudflare Zero Trust Access: A Production Guide](/docs/catalog/cloudflare/securing-applications-with-cloudflare-zero-trust-access-a-production-guide)
 - [Worker](/docs/catalog/cloudflare/worker)
+- [Zero Trust Access Application](/docs/catalog/cloudflare/zero-trust-access-application)

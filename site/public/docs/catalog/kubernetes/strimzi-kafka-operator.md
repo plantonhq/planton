@@ -182,6 +182,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — pre-create a namespace to reference via `valueFrom`
-- [KubernetesKafka](/docs/catalog/kubernetes/kuberneteskafka) — deploy Kafka clusters managed by this operator
-- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — alternative approach for deploying Helm charts with full value control
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — pre-create a namespace to reference via `valueFrom`
+- [KubernetesKafka](/docs/catalog/kubernetes/kafka) — deploy Kafka clusters managed by this operator
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/helm-release) — alternative approach for deploying Helm charts with full value control

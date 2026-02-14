@@ -1,0 +1,29 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCloudFunction
+metadata:
+  name: my-event-function
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  region: <gcp-region>
+  buildConfig:
+    runtime: python312
+    entryPoint: process_message
+    source:
+      bucket: <source-bucket-name>
+      object: <source-archive-path>
+  serviceConfig:
+    availableMemoryMb: 256  # recommended_default from spec
+    timeoutSeconds: 60  # recommended_default from spec
+    maxInstanceRequestConcurrency: 1  # process one event at a time for event-driven functions
+    ingressSettings: ALLOW_INTERNAL_ONLY  # event-driven functions don't need public access
+    allowUnauthenticated: false  # recommended_default from spec
+    scaling:
+      minInstanceCount: 0  # recommended_default from spec
+      maxInstanceCount: 100  # recommended_default from spec
+  trigger:
+    triggerType: EVENT_TRIGGER
+    eventTrigger:
+      eventType: google.cloud.pubsub.topic.v1.messagePublished
+      pubsubTopic: "<pubsub-topic-resource-name>"
+      retryPolicy: RETRY_POLICY_DO_NOT_RETRY  # recommended_default from spec; set to RETRY_POLICY_RETRY for at-least-once delivery

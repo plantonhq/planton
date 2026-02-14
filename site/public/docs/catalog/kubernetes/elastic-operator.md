@@ -181,6 +181,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — pre-create a namespace to reference via `valueFrom`
-- [KubernetesElasticsearch](/docs/catalog/kubernetes/kuberneteselasticsearch) — deploy Elasticsearch clusters managed by this operator
-- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — alternative approach for deploying Helm charts with full value control
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — pre-create a namespace to reference via `valueFrom`
+- [KubernetesElasticsearch](/docs/catalog/kubernetes/elasticsearch) — deploy Elasticsearch clusters managed by this operator
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/helm-release) — alternative approach for deploying Helm charts with full value control

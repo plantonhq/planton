@@ -1,0 +1,19 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesPrometheus
+metadata:
+  name: my-prometheus
+spec:
+  namespace:
+    value: monitoring
+  createNamespace: true
+  container:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+    persistenceEnabled: true
+    diskSize: 20Gi

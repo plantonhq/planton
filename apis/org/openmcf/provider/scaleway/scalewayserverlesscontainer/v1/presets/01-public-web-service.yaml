@@ -1,0 +1,17 @@
+apiVersion: scaleway.openmcf.org/v1
+kind: ScalewayServerlessContainer
+metadata:
+  name: my-container
+spec:
+  region: fr-par
+  image:
+    registryEndpoint:
+      value: "<your-registry-endpoint>"
+    name: <your-image-name>
+    tag: latest
+  port: 8080  # recommended_default from spec
+  privacy: public
+  memoryLimitMb: 256  # recommended_default from spec
+  maxScale: 20  # recommended_default from spec
+  timeoutSeconds: 300  # recommended_default from spec
+  deploy: true  # recommended_default from spec

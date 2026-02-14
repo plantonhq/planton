@@ -1,0 +1,17 @@
+apiVersion: civo.openmcf.org/v1
+kind: CivoDnsZone
+metadata:
+  name: my-dns-zone
+spec:
+  domainName: example.com
+  records:
+    - name: "@"
+      type: A
+      values:
+        - value: "<server-ipv4-address>"
+      ttlSeconds: 3600  # recommended_default
+    - name: www
+      type: CNAME
+      values:
+        - value: example.com
+      ttlSeconds: 3600

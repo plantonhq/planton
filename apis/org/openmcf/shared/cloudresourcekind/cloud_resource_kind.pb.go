@@ -128,12 +128,21 @@ const (
 	CloudResourceKind_AzureApplicationGateway       CloudResourceKind = 416
 	CloudResourceKind_AzureLoadBalancer             CloudResourceKind = 417
 	CloudResourceKind_AzurePostgresqlFlexibleServer CloudResourceKind = 430
+	CloudResourceKind_AzureRedisCache               CloudResourceKind = 431
 	CloudResourceKind_AzureCosmosdbAccount          CloudResourceKind = 432
 	CloudResourceKind_AzureMssqlServer              CloudResourceKind = 433
 	CloudResourceKind_AzureMysqlFlexibleServer      CloudResourceKind = 434
+	CloudResourceKind_AzureContainerAppEnvironment  CloudResourceKind = 440
+	CloudResourceKind_AzureContainerApp             CloudResourceKind = 441
+	CloudResourceKind_AzureServicePlan              CloudResourceKind = 442
+	CloudResourceKind_AzureFunctionApp              CloudResourceKind = 443
+	CloudResourceKind_AzureLinuxWebApp              CloudResourceKind = 444
 	CloudResourceKind_AzureLogAnalyticsWorkspace    CloudResourceKind = 450
 	CloudResourceKind_AzureApplicationInsights      CloudResourceKind = 451
 	CloudResourceKind_AzureUserAssignedIdentity     CloudResourceKind = 460
+	CloudResourceKind_AzureServiceBusNamespace      CloudResourceKind = 470
+	CloudResourceKind_AzureEventHubNamespace        CloudResourceKind = 471
+	CloudResourceKind_AzureFrontDoorProfile         CloudResourceKind = 480
 	// 600–799: GCP resources
 	CloudResourceKind_GcpArtifactRegistryRepo       CloudResourceKind = 600
 	CloudResourceKind_GcpCloudCdn                   CloudResourceKind = 601
@@ -357,12 +366,21 @@ var (
 		416:  "AzureApplicationGateway",
 		417:  "AzureLoadBalancer",
 		430:  "AzurePostgresqlFlexibleServer",
+		431:  "AzureRedisCache",
 		432:  "AzureCosmosdbAccount",
 		433:  "AzureMssqlServer",
 		434:  "AzureMysqlFlexibleServer",
+		440:  "AzureContainerAppEnvironment",
+		441:  "AzureContainerApp",
+		442:  "AzureServicePlan",
+		443:  "AzureFunctionApp",
+		444:  "AzureLinuxWebApp",
 		450:  "AzureLogAnalyticsWorkspace",
 		451:  "AzureApplicationInsights",
 		460:  "AzureUserAssignedIdentity",
+		470:  "AzureServiceBusNamespace",
+		471:  "AzureEventHubNamespace",
+		480:  "AzureFrontDoorProfile",
 		600:  "GcpArtifactRegistryRepo",
 		601:  "GcpCloudCdn",
 		602:  "GcpCloudFunction",
@@ -573,12 +591,21 @@ var (
 		"AzureApplicationGateway":               416,
 		"AzureLoadBalancer":                     417,
 		"AzurePostgresqlFlexibleServer":         430,
+		"AzureRedisCache":                       431,
 		"AzureCosmosdbAccount":                  432,
 		"AzureMssqlServer":                      433,
 		"AzureMysqlFlexibleServer":              434,
+		"AzureContainerAppEnvironment":          440,
+		"AzureContainerApp":                     441,
+		"AzureServicePlan":                      442,
+		"AzureFunctionApp":                      443,
+		"AzureLinuxWebApp":                      444,
 		"AzureLogAnalyticsWorkspace":            450,
 		"AzureApplicationInsights":              451,
 		"AzureUserAssignedIdentity":             460,
+		"AzureServiceBusNamespace":              470,
+		"AzureEventHubNamespace":                471,
+		"AzureFrontDoorProfile":                 480,
 		"GcpArtifactRegistryRepo":               600,
 		"GcpCloudCdn":                           601,
 		"GcpCloudFunction":                      602,
@@ -880,7 +907,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\x8fH\n" +
+	"\x02v1\x10\x01*\x90K\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -946,15 +973,30 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x11AzureLoadBalancer\x10\xa1\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azlb\x122\n" +
 	"\x1dAzurePostgresqlFlexibleServer\x10\xae\x03\x1a\x0e\xa2\xf7\x04\n" +
-	"\b\r\x10\x01\"\x04azpg\x12*\n" +
+	"\b\r\x10\x01\"\x04azpg\x12%\n" +
+	"\x0fAzureRedisCache\x10\xaf\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azred\x12*\n" +
 	"\x14AzureCosmosdbAccount\x10\xb0\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azcdb\x12'\n" +
 	"\x10AzureMssqlServer\x10\xb1\x03\x1a\x10\xa2\xf7\x04\f\b\r\x10\x01\"\x06azmsql\x120\n" +
-	"\x18AzureMysqlFlexibleServer\x10\xb2\x03\x1a\x11\xa2\xf7\x04\r\b\r\x10\x01\"\aazmysql\x120\n" +
+	"\x18AzureMysqlFlexibleServer\x10\xb2\x03\x1a\x11\xa2\xf7\x04\r\b\r\x10\x01\"\aazmysql\x122\n" +
+	"\x1cAzureContainerAppEnvironment\x10\xb8\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azcae\x12&\n" +
+	"\x11AzureContainerApp\x10\xb9\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\r\x10\x01\"\x04azca\x12%\n" +
+	"\x10AzureServicePlan\x10\xba\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\r\x10\x01\"\x04azsp\x12%\n" +
+	"\x10AzureFunctionApp\x10\xbb\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\r\x10\x01\"\x04azfn\x12&\n" +
+	"\x10AzureLinuxWebApp\x10\xbc\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azweb\x120\n" +
 	"\x1aAzureLogAnalyticsWorkspace\x10\xc2\x03\x1a\x0f\xa2\xf7\x04\v\b\r\x10\x01\"\x05azlaw\x12-\n" +
 	"\x18AzureApplicationInsights\x10\xc3\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azai\x12.\n" +
 	"\x19AzureUserAssignedIdentity\x10\xcc\x03\x1a\x0e\xa2\xf7\x04\n" +
-	"\b\r\x10\x01\"\x04azid\x12.\n" +
+	"\b\r\x10\x01\"\x04azid\x12-\n" +
+	"\x18AzureServiceBusNamespace\x10\xd6\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\r\x10\x01\"\x04azsb\x12+\n" +
+	"\x16AzureEventHubNamespace\x10\xd7\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\r\x10\x01\"\x04azeh\x12*\n" +
+	"\x15AzureFrontDoorProfile\x10\xe0\x03\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\r\x10\x01\"\x04azfd\x12.\n" +
 	"\x17GcpArtifactRegistryRepo\x10\xd8\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpart\x12\"\n" +
 	"\vGcpCloudCdn\x10\xd9\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpcdn\x12(\n" +
 	"\x10GcpCloudFunction\x10\xda\x04\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\acldfunc\x12\"\n" +

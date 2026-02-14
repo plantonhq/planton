@@ -199,7 +199,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project where the managed zone is created
-- [GcpDnsRecord](/docs/catalog/gcp/gcpdnsrecord) — manages individual DNS records as standalone resources
-- [GcpCertManagerCert](/docs/catalog/gcp/gcpcertmanagercert) — provisions TLS certificates that may use DNS-01 validation against this zone
-- [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — creates service accounts that can be added to `iamServiceAccounts`
+- [GcpProject](/docs/catalog/gcp/project) — provides the GCP project where the managed zone is created
+- [GcpDnsRecord](/docs/catalog/gcp/dns-record) — manages individual DNS records as standalone resources
+- [GcpCertManagerCert](/docs/catalog/gcp/certificate-manager-cert) — provisions TLS certificates that may use DNS-01 validation against this zone
+- [GcpServiceAccount](/docs/catalog/gcp/service-account) — creates service accounts that can be added to `iamServiceAccounts`

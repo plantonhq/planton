@@ -170,6 +170,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesPostgres](/docs/catalog/kubernetes/kubernetespostgres) — alternative database operator for PostgreSQL workloads
-- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — alternative for deploying Helm charts with custom configurations
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesPostgres](/docs/catalog/kubernetes/postgres) — alternative database operator for PostgreSQL workloads
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/helm-release) — alternative for deploying Helm charts with custom configurations

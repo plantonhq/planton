@@ -1,0 +1,16 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesStrimziKafkaOperator
+metadata:
+  name: my-strimzi-kafka-operator
+spec:
+  namespace:
+    value: strimzi-system
+  createNamespace: true
+  container:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 100Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi

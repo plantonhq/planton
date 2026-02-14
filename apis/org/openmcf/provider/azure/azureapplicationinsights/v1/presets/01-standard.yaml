@@ -1,0 +1,15 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureApplicationInsights
+metadata:
+  name: my-app-insights
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-app-insights-name>
+  applicationType: web  # default from spec
+  workspaceId:
+    value: "<log-analytics-workspace-id>"
+  retentionInDays: 90  # default from spec; free tier includes 90 days
+  dailyDataCapInGb: 100  # default from spec
+  samplingPercentage: 100  # default from spec; full telemetry collection

@@ -307,8 +307,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project for CDN resource creation
-- [GcpGcsBucket](/docs/catalog/gcp/gcpgcsbucket) — provisions a GCS bucket that can serve as the CDN origin
-- [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — container orchestration that can be fronted by Cloud CDN
-- [GcpDnsRecord](/docs/catalog/gcp/gcpdnsrecord) — creates DNS records pointing custom domains to the CDN global IP
-- [GcpDnsZone](/docs/catalog/gcp/gcpdnszone) — manages the DNS zone for custom domain configuration
+- [GcpProject](/docs/catalog/gcp/project) — provides the GCP project for CDN resource creation
+- [GcpGcsBucket](/docs/catalog/gcp/gcs-bucket) — provisions a GCS bucket that can serve as the CDN origin
+- [GcpGkeCluster](/docs/catalog/gcp/gke-cluster) — container orchestration that can be fronted by Cloud CDN
+- [GcpDnsRecord](/docs/catalog/gcp/dns-record) — creates DNS records pointing custom domains to the CDN global IP
+- [GcpDnsZone](/docs/catalog/gcp/dns-zone) — manages the DNS zone for custom domain configuration

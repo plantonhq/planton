@@ -216,7 +216,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) -- provides the resource group for gateway placement
-- [AzureVpc](/docs/catalog/azure/azurevpc) -- provides the VNet and subnets that the NAT Gateway attaches to
-- [AzurePublicIp](/docs/catalog/azure/azurepublicip) -- standalone public IP resources, if managing IPs separately from the gateway
-- [AzureAksCluster](/docs/catalog/azure/azureakscluster) -- AKS clusters commonly use a NAT Gateway for predictable outbound IPs and SNAT port scaling
+- [AzureResourceGroup](/docs/catalog/azure/resource-group) -- provides the resource group for gateway placement
+- [AzureVpc](/docs/catalog/azure/vpc-virtual-network) -- provides the VNet and subnets that the NAT Gateway attaches to
+- [AzurePublicIp](/docs/catalog/azure/public-ip) -- standalone public IP resources, if managing IPs separately from the gateway
+- [AzureAksCluster](/docs/catalog/azure/aks-cluster) -- AKS clusters commonly use a NAT Gateway for predictable outbound IPs and SNAT port scaling

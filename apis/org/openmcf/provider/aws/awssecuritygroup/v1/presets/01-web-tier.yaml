@@ -1,0 +1,28 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsSecurityGroup
+metadata:
+  name: my-web-tier-sg
+spec:
+  vpcId:
+    value: "<vpc-id>"
+  description: Allow inbound HTTP and HTTPS from the internet
+  ingress:
+    - protocol: tcp
+      fromPort: 80
+      toPort: 80
+      ipv4Cidrs:
+        - 0.0.0.0/0
+      description: HTTP from anywhere
+    - protocol: tcp
+      fromPort: 443
+      toPort: 443
+      ipv4Cidrs:
+        - 0.0.0.0/0
+      description: HTTPS from anywhere
+  egress:
+    - protocol: "-1"
+      fromPort: 0
+      toPort: 0
+      ipv4Cidrs:
+        - 0.0.0.0/0
+      description: All outbound traffic

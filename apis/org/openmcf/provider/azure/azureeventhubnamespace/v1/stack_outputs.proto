@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azureeventhubnamespace.v1;
+
+// **AzureEventHubNamespaceStackOutputs** captures the outputs of provisioning
+// an Azure Event Hubs namespace with its event hubs and consumer groups.
+//
+// The primary outputs are `namespace_id` for resource identification and
+// `primary_connection_string` / `primary_key` for authentication. The
+// `event_hub_ids` map provides individual entity resource IDs for downstream
+// references and monitoring.
+//
+// Applications connect to Event Hubs using the `primary_connection_string`
+// which includes the namespace endpoint and the SAS key from the default
+// `RootManageSharedAccessKey` authorization rule. This is the standard
+// authentication method for most streaming workloads.
+//
+// For production workloads requiring fine-grained access control, consider
+// creating per-event-hub authorization rules or using Azure AD (Entra ID)
+// RBAC-based authentication instead of the namespace-level SAS key.
+message AzureEventHubNamespaceStackOutputs {
+  // The Azure Resource Manager ID of the Event Hubs namespace.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{name}
+  //
+  // Referenced by AzurePrivateEndpoint (private_connection_resource_id)
+  // for establishing private connectivity.
+  // Subresource name for private endpoint: ["namespace"].
+  string namespace_id = 1;
+
+  // The name of the Event Hubs namespace.
+  string namespace_name = 2;
+
+  // The primary connection string from the default RootManageSharedAccessKey.
+  // Format: Endpoint=sb://{name}.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey={key}
+  //
+  // Ready-to-use connection string for Event Hubs SDKs, Kafka clients,
+  // and Azure Functions Event Hub triggers.
+  string primary_connection_string = 3;
+
+  // The primary SAS key from the default RootManageSharedAccessKey.
+  // Used for manual SAS token generation or when connecting with
+  // libraries that accept key and key-name separately.
+  string primary_key = 4;
+
+  // Map of event hub names to their Azure Resource Manager IDs.
+  // Format: { "my-events": "/subscriptions/.../eventhubs/my-events" }
+  //
+  // Useful for downstream references, monitoring dashboards, and
+  // Azure Functions Event Hub trigger configuration.
+  map<string, string> event_hub_ids = 5;
+}

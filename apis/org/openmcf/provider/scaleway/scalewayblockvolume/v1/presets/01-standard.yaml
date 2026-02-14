@@ -1,0 +1,8 @@
+apiVersion: scaleway.openmcf.org/v1
+kind: ScalewayBlockVolume
+metadata:
+  name: my-volume
+spec:
+  zone: fr-par-1
+  sizeGb: 20
+  performanceTier: sbs_5k

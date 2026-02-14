@@ -228,5 +228,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — references secrets as environment variables via `container.app.env.secrets` or as image pull secrets
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace for the secret
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — references secrets as environment variables via `container.app.env.secrets` or as image pull secrets
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace for the secret

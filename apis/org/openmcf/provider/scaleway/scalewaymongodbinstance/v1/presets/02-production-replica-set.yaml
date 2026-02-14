@@ -1,0 +1,18 @@
+apiVersion: scaleway.openmcf.org/v1
+kind: ScalewayMongodbInstance
+metadata:
+  name: my-mongodb
+spec:
+  region: fr-par
+  version: 7.0.12
+  nodeType: MGDB-POP2-2C-8G
+  nodeNumber: 3
+  privateNetworkId:
+    value: "<your-private-network-id>"
+  volumeType: sbs_5k  # recommended_default from spec
+  volumeSizeInGb: 50
+  enableSnapshotSchedule: true
+  snapshotScheduleFrequencyHours: 12
+  snapshotScheduleRetentionDays: 14
+  adminUser: <your-admin-user>
+  adminPassword: <your-admin-password>

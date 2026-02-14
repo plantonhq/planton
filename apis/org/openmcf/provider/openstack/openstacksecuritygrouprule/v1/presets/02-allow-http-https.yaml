@@ -1,0 +1,14 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackSecurityGroupRule
+metadata:
+  name: my-allow-https-rule
+spec:
+  securityGroupId:
+    value: <security-group-id>
+  direction: ingress
+  ethertype: IPv4
+  protocol: tcp
+  portRangeMin: 443
+  portRangeMax: 443
+  remoteIpPrefix: 0.0.0.0/0
+  description: Allow HTTPS from anywhere

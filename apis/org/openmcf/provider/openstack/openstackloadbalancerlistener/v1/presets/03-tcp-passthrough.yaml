@@ -1,0 +1,10 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackLoadBalancerListener
+metadata:
+  name: my-tcp-listener
+spec:
+  loadbalancerId:
+    value: <loadbalancer-id>
+  protocol: TCP
+  protocolPort: <port>
+  description: TCP passthrough listener

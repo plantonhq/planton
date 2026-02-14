@@ -311,8 +311,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) -- provides the resource group for VM placement
-- [AzureVpc](/docs/catalog/azure/azurevpc) -- provides the VNet and subnet where the VM's network interface is attached
-- [AzureNetworkSecurityGroup](/docs/catalog/azure/azurenetworksecuritygroup) -- controls inbound and outbound traffic rules for the VM's network interface
-- [AzureKeyVault](/docs/catalog/azure/azurekeyvault) -- stores secrets such as admin passwords and disk encryption keys
-- [AzurePublicIp](/docs/catalog/azure/azurepublicip) -- standalone public IP management (the VM component creates its own when `network.enablePublicIp` is set)
+- [AzureResourceGroup](/docs/catalog/azure/resource-group) -- provides the resource group for VM placement
+- [AzureVpc](/docs/catalog/azure/vpc-virtual-network) -- provides the VNet and subnet where the VM's network interface is attached
+- [AzureNetworkSecurityGroup](/docs/catalog/azure/network-security-group) -- controls inbound and outbound traffic rules for the VM's network interface
+- [AzureKeyVault](/docs/catalog/azure/key-vault) -- stores secrets such as admin passwords and disk encryption keys
+- [AzurePublicIp](/docs/catalog/azure/public-ip) -- standalone public IP management (the VM component creates its own when `network.enablePublicIp` is set)

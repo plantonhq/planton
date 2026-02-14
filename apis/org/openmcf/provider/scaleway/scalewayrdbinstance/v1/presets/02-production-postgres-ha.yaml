@@ -1,0 +1,18 @@
+apiVersion: scaleway.openmcf.org/v1
+kind: ScalewayRdbInstance
+metadata:
+  name: my-rdb
+spec:
+  region: fr-par
+  engine: PostgreSQL-16
+  nodeType: DB-GP-XS
+  privateNetworkId:
+    value: "<your-private-network-id>"
+  isHaCluster: true
+  volumeType: lssd  # recommended_default from spec
+  volumeSizeInGb: 50
+  backupScheduleFrequencyHours: 6
+  backupScheduleRetentionDays: 30
+  encryptionAtRest: true
+  adminUser: <your-admin-user>
+  adminPassword: <your-admin-password>

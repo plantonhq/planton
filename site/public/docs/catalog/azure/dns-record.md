@@ -212,7 +212,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) -- provides the resource group containing the DNS Zone
-- [AzureDnsZone](/docs/catalog/azure/azurednszone) -- provides the DNS Zone where records are created
-- [AzurePublicIp](/docs/catalog/azure/azurepublicip) -- public IP addresses that A records can point to
-- [AzureLoadBalancer](/docs/catalog/azure/azureloadbalancer) -- load balancer frontend IPs that DNS records can target
+- [AzureResourceGroup](/docs/catalog/azure/resource-group) -- provides the resource group containing the DNS Zone
+- [AzureDnsZone](/docs/catalog/azure/dns-zone) -- provides the DNS Zone where records are created
+- [AzurePublicIp](/docs/catalog/azure/public-ip) -- public IP addresses that A records can point to
+- [AzureLoadBalancer](/docs/catalog/azure/load-balancer) -- load balancer frontend IPs that DNS records can target

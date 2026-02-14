@@ -1,0 +1,9 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareR2Bucket
+metadata:
+  name: my-private-r2-bucket
+spec:
+  bucketName: <bucket-name>
+  accountId: <cloudflare-account-id>
+  location: auto
+  publicAccess: false

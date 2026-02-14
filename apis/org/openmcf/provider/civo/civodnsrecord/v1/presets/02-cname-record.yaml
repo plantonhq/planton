@@ -1,0 +1,11 @@
+apiVersion: civo.openmcf.org/v1
+kind: CivoDnsRecord
+metadata:
+  name: my-cname-record
+spec:
+  zoneId:
+    value: "<dns-zone-id>"
+  name: app
+  type: CNAME
+  value: "<target-hostname.example.com>"
+  ttl: 3600

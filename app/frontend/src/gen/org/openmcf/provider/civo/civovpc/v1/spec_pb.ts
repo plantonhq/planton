@@ -5,13 +5,15 @@
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv1";
 import { file_buf_validate_validate } from "../../../../../../buf/validate/validate_pb";
+import type { CivoRegion } from "../../region_pb";
+import { file_org_openmcf_provider_civo_region } from "../../region_pb";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file org/openmcf/provider/civo/civovpc/v1/spec.proto.
  */
 export const file_org_openmcf_provider_civo_civovpc_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Ci9vcmcvb3Blbm1jZi9wcm92aWRlci9jaXZvL2Npdm92cGMvdjEvc3BlYy5wcm90bxIkb3JnLm9wZW5tY2YucHJvdmlkZXIuY2l2by5jaXZvdnBjLnYxIrsBCgtDaXZvVnBjU3BlYxIiChJjaXZvX2NyZWRlbnRpYWxfaWQYASABKAlCBrpIA8gBARIcCgxuZXR3b3JrX25hbWUYAiABKAlCBrpIA8gBARIWCgZyZWdpb24YAyABKAlCBrpIA8gBARIVCg1pcF9yYW5nZV9jaWRyGAQgASgJEh0KFWlzX2RlZmF1bHRfZm9yX3JlZ2lvbhgFIAEoCBIcCgtkZXNjcmlwdGlvbhgGIAEoCUIHukgEcgIYZEK+AgooY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmNpdm8uY2l2b3ZwYy52MUIJU3BlY1Byb3RvUAFaUGdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9jaXZvL2Npdm92cGMvdjE7Y2l2b3ZwY3YxogIFT09QQ0OqAiRPcmcuT3Blbm1jZi5Qcm92aWRlci5DaXZvLkNpdm92cGMuVjHKAiRPcmdcT3Blbm1jZlxQcm92aWRlclxDaXZvXENpdm92cGNcVjHiAjBPcmdcT3Blbm1jZlxQcm92aWRlclxDaXZvXENpdm92cGNcVjFcR1BCTWV0YWRhdGHqAilPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpDaXZvOjpDaXZvdnBjOjpWMWIGcHJvdG8z", [file_buf_validate_validate]);
+  fileDesc("Ci9vcmcvb3Blbm1jZi9wcm92aWRlci9jaXZvL2Npdm92cGMvdjEvc3BlYy5wcm90bxIkb3JnLm9wZW5tY2YucHJvdmlkZXIuY2l2by5jaXZvdnBjLnYxIr4BCgtDaXZvVnBjU3BlYxIcCgxuZXR3b3JrX25hbWUYAiABKAlCBrpIA8gBARI9CgZyZWdpb24YAyABKA4yJS5vcmcub3Blbm1jZi5wcm92aWRlci5jaXZvLkNpdm9SZWdpb25CBrpIA8gBARIVCg1pcF9yYW5nZV9jaWRyGAQgASgJEh0KFWlzX2RlZmF1bHRfZm9yX3JlZ2lvbhgFIAEoCBIcCgtkZXNjcmlwdGlvbhgGIAEoCUIHukgEcgIYZEK+AgooY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmNpdm8uY2l2b3ZwYy52MUIJU3BlY1Byb3RvUAFaUGdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9jaXZvL2Npdm92cGMvdjE7Y2l2b3ZwY3YxogIFT09QQ0OqAiRPcmcuT3Blbm1jZi5Qcm92aWRlci5DaXZvLkNpdm92cGMuVjHKAiRPcmdcT3Blbm1jZlxQcm92aWRlclxDaXZvXENpdm92cGNcVjHiAjBPcmdcT3Blbm1jZlxQcm92aWRlclxDaXZvXENpdm92cGNcVjFcR1BCTWV0YWRhdGHqAilPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpDaXZvOjpDaXZvdnBjOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_provider_civo_region]);
 
 /**
  * CivoVpcSpec defines the specification for an isolated private network on Civo.
@@ -20,13 +22,6 @@ export const file_org_openmcf_provider_civo_civovpc_v1_spec: GenFile = /*@__PURE
  */
 export type CivoVpcSpec = Message<"org.openmcf.provider.civo.civovpc.v1.CivoVpcSpec"> & {
   /**
-   * The ID of the Civo credential to use for this network.
-   *
-   * @generated from field: string civo_credential_id = 1;
-   */
-  civoCredentialId: string;
-
-  /**
    * The name of the network (DNS-friendly label).
    *
    * @generated from field: string network_name = 2;
@@ -34,11 +29,11 @@ export type CivoVpcSpec = Message<"org.openmcf.provider.civo.civovpc.v1.CivoVpcS
   networkName: string;
 
   /**
-   * The Civo region where this network will be created (e.g., "lon1", "fra1").
+   * The Civo region where this network will be created.
    *
-   * @generated from field: string region = 3;
+   * @generated from field: org.openmcf.provider.civo.CivoRegion region = 3;
    */
-  region: string;
+  region: CivoRegion;
 
   /**
    * The IPv4 CIDR range for the network (max /24). If omitted, an available range will be auto-allocated.

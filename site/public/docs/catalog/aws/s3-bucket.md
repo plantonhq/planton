@@ -203,5 +203,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsKmsKey](/docs/catalog/aws/awskmskey) — create a KMS key for SSE-KMS encryption
-- [AwsRoute53Zone](/docs/catalog/aws/awsroute53zone) — DNS zone for hosting a static website bucket
+- [AwsKmsKey](/docs/catalog/aws/kms-key) — create a KMS key for SSE-KMS encryption
+- [AwsRoute53Zone](/docs/catalog/aws/route53-zone) — DNS zone for hosting a static website bucket

@@ -292,8 +292,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) — provides the resource group for cluster placement
-- [AzureVpc](/docs/catalog/azure/azurevpc) — provides the VNet and subnet for cluster nodes
-- [AzureKeyVault](/docs/catalog/azure/azurekeyvault) — stores secrets that pods can mount via the Key Vault CSI driver
-- [AzureLogAnalyticsWorkspace](/docs/catalog/azure/azureloganalyticsworkspace) — provides the workspace for Container Insights monitoring
-- [AzureContainerRegistry](/docs/catalog/azure/azurecontainerregistry) — hosts container images for cluster workloads
+- [AzureResourceGroup](/docs/catalog/azure/resource-group) — provides the resource group for cluster placement
+- [AzureVpc](/docs/catalog/azure/vpc-virtual-network) — provides the VNet and subnet for cluster nodes
+- [AzureKeyVault](/docs/catalog/azure/key-vault) — stores secrets that pods can mount via the Key Vault CSI driver
+- [AzureLogAnalyticsWorkspace](/docs/catalog/azure/log-analytics-workspace) — provides the workspace for Container Insights monitoring
+- [AzureContainerRegistry](/docs/catalog/azure/container-registry) — hosts container images for cluster workloads

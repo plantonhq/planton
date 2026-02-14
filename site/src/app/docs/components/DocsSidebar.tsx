@@ -13,6 +13,7 @@ import {
   KeyboardArrowDown as ExpandIcon
 } from '@mui/icons-material';
 import { DocItem } from '@/app/docs/utils/fileSystem';
+import { ProviderIcon } from '@/app/docs/components/ProviderIcon';
 
 interface DocsSidebarProps {
   onNavigate?: () => void;
@@ -79,34 +80,8 @@ const SidebarItem: FC<SidebarItemProps> = ({
     const isProvider = item.path.startsWith('catalog/') && item.type === 'directory' && pathParts.length === 2;
 
     if (isProvider) {
-      // Extract provider name from path (e.g., catalog/aws -> aws)
-      const provider = item.path.split('/')[1];
-      const providerIconMap: Record<string, string> = {
-        'aws': '/images/providers/aws.svg',
-        'gcp': '/images/providers/gcp.svg',
-        'azure': '/images/providers/azure.svg',
-        'auth0': '/images/providers/auth0.svg',
-        'cloudflare': '/images/providers/cloudflare.svg',
-        'civo': '/images/providers/civo.svg',
-        'digitalocean': '/images/providers/digital-ocean.svg',
-        'atlas': '/images/providers/mongodb-atlas.svg',
-        'confluent': '/images/providers/confluent.svg',
-        'kubernetes': '/images/providers/kubernetes.svg',
-        'snowflake': '/images/providers/snowflake.svg',
-      };
-
-      const iconPath = providerIconMap[provider];
-      if (iconPath) {
-        return (
-          <Image
-            src={iconPath}
-            alt={provider.toUpperCase()}
-            width={20}
-            height={20}
-            className="w-5 h-5 object-contain"
-          />
-        );
-      }
+      const provider = pathParts[1];
+      return <ProviderIcon provider={provider} size={20} className="w-5 h-5" />;
     }
 
     if (item.icon) {

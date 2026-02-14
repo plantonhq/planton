@@ -1,0 +1,3 @@
+name: azure-redis-cache
+runtime: go
+description: Pulumi program for Azure Cache for Redis

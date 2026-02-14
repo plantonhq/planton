@@ -199,8 +199,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpVpc](/docs/catalog/gcp/gcpvpc) — provides the VPC network that the Cloud Router attaches to
-- [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork) — subnets that can be scoped for NAT coverage
-- [GcpProject](/docs/catalog/gcp/gcpproject) — the GCP project where the router and NAT are created
-- [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — private GKE clusters that depend on Cloud NAT for outbound internet access
-- [GcpComputeInstance](/docs/catalog/gcp/gcpcomputeinstance) — private VMs that use Cloud NAT for egress
+- [GcpVpc](/docs/catalog/gcp/vpc) — provides the VPC network that the Cloud Router attaches to
+- [GcpSubnetwork](/docs/catalog/gcp/subnetwork) — subnets that can be scoped for NAT coverage
+- [GcpProject](/docs/catalog/gcp/project) — the GCP project where the router and NAT are created
+- [GcpGkeCluster](/docs/catalog/gcp/gke-cluster) — private GKE clusters that depend on Cloud NAT for outbound internet access
+- [GcpComputeInstance](/docs/catalog/gcp/compute-instance) — private VMs that use Cloud NAT for egress

@@ -157,6 +157,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CloudflareDnsZone](/docs/catalog/cloudflare/cloudflarednszone) — provides the DNS zone referenced by `customDomain.zoneId`
-- [CloudflareWorker](/docs/catalog/cloudflare/cloudflareworker) — commonly deployed alongside R2 to handle object transformations or access control
-- [CloudflareKvNamespace](/docs/catalog/cloudflare/cloudflarekvnamespace) — key-value storage often paired with R2 for metadata indexing
+- [CloudflareDnsZone](/docs/catalog/cloudflare/dns-zone) — provides the DNS zone referenced by `customDomain.zoneId`
+- [CloudflareWorker](/docs/catalog/cloudflare/worker) — commonly deployed alongside R2 to handle object transformations or access control
+- [CloudflareKvNamespace](/docs/catalog/cloudflare/kv-namespace) — key-value storage often paired with R2 for metadata indexing

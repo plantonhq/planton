@@ -22,7 +22,7 @@ Concrete, copy-and-paste examples for common DigitalOcean DNS record deployment 
 Map a subdomain to an IPv4 address:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: www-a-record
@@ -50,7 +50,7 @@ planton apply -f www-a-record.yaml
 Map a subdomain to an IPv6 address:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: www-aaaa-record
@@ -72,7 +72,7 @@ spec:
 Create an alias pointing to another hostname:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: app-cname
@@ -96,7 +96,7 @@ spec:
 ### Primary Mail Server
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: mx-primary
@@ -113,7 +113,7 @@ spec:
 ### Backup Mail Server
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: mx-backup
@@ -130,7 +130,7 @@ spec:
 ### Google Workspace MX Records
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: mx-google-1
@@ -143,7 +143,7 @@ spec:
     value: "aspmx.l.google.com"
   priority: 1
 ---
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: mx-google-2
@@ -156,7 +156,7 @@ spec:
     value: "alt1.aspmx.l.google.com"
   priority: 5
 ---
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: mx-google-3
@@ -177,7 +177,7 @@ spec:
 ### SPF Record
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: spf-record
@@ -193,7 +193,7 @@ spec:
 ### DKIM Record
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: dkim-google
@@ -209,7 +209,7 @@ spec:
 ### DMARC Record
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: dmarc-record
@@ -225,7 +225,7 @@ spec:
 ### Domain Verification
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: google-verification
@@ -245,7 +245,7 @@ spec:
 Service location record for SIP:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: sip-srv
@@ -264,7 +264,7 @@ spec:
 ### XMPP SRV Records
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: xmpp-client
@@ -279,7 +279,7 @@ spec:
   weight: 0
   port: 5222
 ---
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: xmpp-server
@@ -302,7 +302,7 @@ spec:
 Control which Certificate Authorities can issue certificates for your domain:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: caa-letsencrypt
@@ -320,7 +320,7 @@ spec:
 ### Allow Multiple CAs
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: caa-digicert
@@ -338,7 +338,7 @@ spec:
 ### Allow Wildcard Certificates from Specific CA
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: caa-wildcard
@@ -360,7 +360,7 @@ spec:
 ### A Record at Root
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: apex-a-record
@@ -380,7 +380,7 @@ spec:
 Route all unmatched subdomains:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: wildcard-record
@@ -404,7 +404,7 @@ All records needed for professional email:
 ### MX Records
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: email-mx-1
@@ -417,7 +417,7 @@ spec:
     value: "aspmx.l.google.com"
   priority: 1
 ---
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: email-mx-2
@@ -434,7 +434,7 @@ spec:
 ### SPF Record
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: email-spf
@@ -450,7 +450,7 @@ spec:
 ### DKIM Record
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: email-dkim
@@ -466,7 +466,7 @@ spec:
 ### DMARC Record
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: email-dmarc

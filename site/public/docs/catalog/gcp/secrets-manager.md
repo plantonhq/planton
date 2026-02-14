@@ -155,7 +155,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project where secrets are created
-- [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — creates service accounts that can be granted `roles/secretmanager.secretAccessor` to read secret values at runtime
-- [GcpCloudRun](/docs/catalog/gcp/gcpcloudrun) — Cloud Run services that consume secrets as environment variables or mounted volumes
-- [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — GKE clusters whose workloads can access secrets via workload identity
+- [GcpProject](/docs/catalog/gcp/project) — provides the GCP project where secrets are created
+- [GcpServiceAccount](/docs/catalog/gcp/service-account) — creates service accounts that can be granted `roles/secretmanager.secretAccessor` to read secret values at runtime
+- [GcpCloudRun](/docs/catalog/gcp/cloud-run) — Cloud Run services that consume secrets as environment variables or mounted volumes
+- [GcpGkeCluster](/docs/catalog/gcp/gke-cluster) — GKE clusters whose workloads can access secrets via workload identity

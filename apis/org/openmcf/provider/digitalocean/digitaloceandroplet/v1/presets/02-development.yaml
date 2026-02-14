@@ -1,0 +1,13 @@
+apiVersion: digital-ocean.openmcf.org/v1
+kind: DigitalOceanDroplet
+metadata:
+  name: my-dev-droplet
+spec:
+  dropletName: my-dev-droplet
+  region: nyc1
+  size: s-1vcpu-1gb
+  image: ubuntu-24-04-x64
+  vpc:
+    value: "<vpc-id>"
+  tags:
+    - development

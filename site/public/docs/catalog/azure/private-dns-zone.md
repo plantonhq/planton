@@ -191,8 +191,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AzureResourceGroup](/docs/catalog/azure/azureresourcegroup) — provides the resource group for zone placement
-- [AzureVpc](/docs/catalog/azure/azurevpc) — provides the Virtual Network to link to the zone
-- [AzurePostgresqlFlexibleServer](/docs/catalog/azure/azurepostgresqlflexibleserver) — references `zone_id` for VNet-integrated deployment with private DNS resolution
-- [AzureMysqlFlexibleServer](/docs/catalog/azure/azuremysqlflexibleserver) — references `zone_id` for VNet-integrated deployment with private DNS resolution
-- [AzurePrivateEndpoint](/docs/catalog/azure/azureprivateendpoint) — references `zone_id` for DNS zone group registration, enabling private endpoint FQDN resolution
+- [AzureResourceGroup](/docs/catalog/azure/resource-group) — provides the resource group for zone placement
+- [AzureVpc](/docs/catalog/azure/vpc-virtual-network) — provides the Virtual Network to link to the zone
+- [AzurePostgresqlFlexibleServer](/docs/catalog/azure/postgresql-flexible-server) — references `zone_id` for VNet-integrated deployment with private DNS resolution
+- [AzureMysqlFlexibleServer](/docs/catalog/azure/mysql-flexible-server) — references `zone_id` for VNet-integrated deployment with private DNS resolution
+- [AzurePrivateEndpoint](/docs/catalog/azure/private-endpoint) — references `zone_id` for DNS zone group registration, enabling private endpoint FQDN resolution

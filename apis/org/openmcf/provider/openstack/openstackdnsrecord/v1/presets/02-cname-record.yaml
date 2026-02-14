@@ -1,0 +1,12 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackDnsRecord
+metadata:
+  name: my-cname-record
+spec:
+  zoneId:
+    value: <zone-id>
+  recordName: <alias.your-domain.com.>
+  type: CNAME
+  values:
+    - <target.your-domain.com.>
+  ttl: 300

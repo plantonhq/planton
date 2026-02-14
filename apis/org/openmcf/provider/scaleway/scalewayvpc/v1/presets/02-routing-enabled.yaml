@@ -1,0 +1,8 @@
+apiVersion: scaleway.openmcf.org/v1
+kind: ScalewayVpc
+metadata:
+  name: my-vpc
+spec:
+  region: fr-par
+  enableRouting: true  # Required for cross-Private-Network communication
+  enableCustomRoutesPropagation: false  # recommended_default from spec

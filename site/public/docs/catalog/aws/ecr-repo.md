@@ -193,6 +193,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsKmsKey](/docs/catalog/aws/awskmskey) — provides a customer-managed KMS key for repository encryption
-- [AwsIamRole](/docs/catalog/aws/awsiamrole) — grants push/pull permissions to CI/CD pipelines or services
-- [AwsEksCluster](/docs/catalog/aws/awsekscluster) — Kubernetes cluster that pulls images from ECR repositories
+- [AwsKmsKey](/docs/catalog/aws/kms-key) — provides a customer-managed KMS key for repository encryption
+- [AwsIamRole](/docs/catalog/aws/iam-role) — grants push/pull permissions to CI/CD pipelines or services
+- [AwsEksCluster](/docs/catalog/aws/eks-cluster) — Kubernetes cluster that pulls images from ECR repositories

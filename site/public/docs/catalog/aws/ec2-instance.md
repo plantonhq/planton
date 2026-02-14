@@ -252,7 +252,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsVpc](/docs/catalog/aws/awsvpc) — provides the subnet where the instance is placed
-- [AwsSecurityGroup](/docs/catalog/aws/awssecuritygroup) — controls inbound and outbound traffic for the instance
-- [AwsIamRole](/docs/catalog/aws/awsiamrole) — provides the IAM instance profile for SSM or other AWS API access
-- [AwsAlb](/docs/catalog/aws/awsalb) — routes traffic to the instance via an Application Load Balancer
+- [AwsVpc](/docs/catalog/aws/vpc) — provides the subnet where the instance is placed
+- [AwsSecurityGroup](/docs/catalog/aws/security-group) — controls inbound and outbound traffic for the instance
+- [AwsIamRole](/docs/catalog/aws/iam-role) — provides the IAM instance profile for SSM or other AWS API access
+- [AwsAlb](/docs/catalog/aws/alb) — routes traffic to the instance via an Application Load Balancer

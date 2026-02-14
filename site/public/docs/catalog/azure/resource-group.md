@@ -159,8 +159,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AzureKeyVault](/docs/catalog/azure/azurekeyvault) — stores secrets, keys, and certificates within this resource group
-- [AzureAksCluster](/docs/catalog/azure/azureakscluster) — deploys a Kubernetes cluster into this resource group
-- [AzureVpc](/docs/catalog/azure/azurevpc) — creates a Virtual Network within this resource group
-- [AzureStorageAccount](/docs/catalog/azure/azurestorageaccount) — provisions blob, file, table, and queue storage in this resource group
-- [AzurePostgresqlFlexibleServer](/docs/catalog/azure/azurepostgresqlflexibleserver) — deploys a PostgreSQL Flexible Server in this resource group
+- [AzureKeyVault](/docs/catalog/azure/key-vault) — stores secrets, keys, and certificates within this resource group
+- [AzureAksCluster](/docs/catalog/azure/aks-cluster) — deploys a Kubernetes cluster into this resource group
+- [AzureVpc](/docs/catalog/azure/vpc-virtual-network) — creates a Virtual Network within this resource group
+- [AzureStorageAccount](/docs/catalog/azure/storage-account) — provisions blob, file, table, and queue storage in this resource group
+- [AzurePostgresqlFlexibleServer](/docs/catalog/azure/postgresql-flexible-server) — deploys a PostgreSQL Flexible Server in this resource group

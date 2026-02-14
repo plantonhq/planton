@@ -1,0 +1,23 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureServiceBusNamespace
+metadata:
+  name: my-enterprise-messaging
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-namespace-name>
+  sku: Premium
+  capacity: 1  # 1 messaging unit
+  zoneRedundant: true
+  minimumTlsVersion: "1.2"  # default from spec
+  publicNetworkAccessEnabled: false  # private networking
+  queues:
+    - name: command-processing
+      requiresSession: true
+      lockDuration: PT5M
+      maxDeliveryCount: 5
+      deadLetteringOnMessageExpiration: true
+  topics:
+    - name: integration-events
+      requiresDuplicateDetection: true

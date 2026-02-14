@@ -1,0 +1,29 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpComputeInstance
+metadata:
+  name: my-dev-vm
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  zone: <gcp-zone>
+  machineType: e2-medium  # 2 vCPU, 4 GB RAM; smallest general-purpose
+  bootDisk:
+    image: debian-cloud/debian-12
+    sizeGb: 20
+    type: pd-standard  # recommended_default from spec; lower cost for dev
+    autoDelete: true  # recommended_default from spec
+  networkInterfaces:
+    - subnetwork:
+        value: "<subnet-self-link>"
+      accessConfigs:
+        - networkTier: PREMIUM  # external IP for SSH access
+  spot: true  # 60-91% cost savings; VM may be preempted
+  scheduling:
+    provisioningModel: SPOT
+    instanceTerminationAction: STOP  # stop on preemption instead of delete
+  allowStoppingForUpdate: true  # recommended_default from spec
+  sshKeys:
+    - "<username>:<ssh-public-key>"
+  labels:
+    environment: development
+    managed-by: openmcf

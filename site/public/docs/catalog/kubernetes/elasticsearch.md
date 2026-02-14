@@ -274,6 +274,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — application deployments that query Elasticsearch for search or analytics
-- [KubernetesSecret](/docs/catalog/kubernetes/kubernetessecret) — manage additional secrets consumed by Elasticsearch clients
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — application deployments that query Elasticsearch for search or analytics
+- [KubernetesSecret](/docs/catalog/kubernetes/secret) — manage additional secrets consumed by Elasticsearch clients

@@ -1,0 +1,270 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azureeventhubnamespace.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// **AzureEventHubNamespaceSpec** defines the configuration for creating an
+// Azure Event Hubs namespace with optional event hubs and consumer groups.
+//
+// Azure Event Hubs is a fully managed, real-time data ingestion service that
+// can receive and process millions of events per second. It is designed for
+// high-throughput event streaming scenarios such as telemetry collection,
+// log aggregation, IoT data ingestion, and real-time analytics pipelines.
+//
+// The component bundles the namespace (`azurerm_eventhub_namespace`) with
+// event hubs (`azurerm_eventhub`) and consumer groups
+// (`azurerm_eventhub_consumer_group`) because a streaming namespace without
+// at least one event hub is incomplete for most use cases. This follows
+// DD03 (Composite Bundling Rules).
+//
+// **SKU tiers**:
+// - **Basic**: Single consumer group per event hub, 1-day max retention,
+//   no Kafka protocol support. Suitable for simple telemetry ingestion.
+// - **Standard** (default): Up to 20 consumer groups per event hub, 7-day
+//   max retention, Kafka protocol support, auto-inflate for elastic throughput.
+//   99.95% SLA.
+// - **Premium**: Dedicated processing units, zone redundancy, larger event
+//   sizes (up to 1 MB), dynamic partitions. Enterprise workloads requiring
+//   isolation and compliance.
+//
+// **Event Hub Capture is deliberately omitted** from this component.
+// Capture (archiving events to Azure Blob Storage) involves storage account
+// dependencies, encoding configuration, and archive naming conventions that
+// add significant complexity. It can be added in a future v2 expansion.
+//
+// **ForceNew fields** (changing these destroys and recreates the namespace):
+// `name`.
+message AzureEventHubNamespaceSpec {
+  // The Azure region where the Event Hubs namespace will be created.
+  // Examples: "eastus", "westus2", "westeurope", "southeastasia".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The Azure Resource Group where the Event Hubs namespace will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef resource_group = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The name of the Event Hubs namespace.
+  // Must be globally unique across Azure. Used as the endpoint:
+  // `{name}.servicebus.windows.net`
+  //
+  // Naming rules (Azure API enforced):
+  // - 6 to 50 characters
+  // - Must start with a letter
+  // - Must end with a letter or number
+  // - Can contain letters, numbers, and hyphens
+  //
+  // **ForceNew**: Changing this destroys and recreates the namespace.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 6,
+    (buf.validate.field).string.max_len = 50,
+    (buf.validate.field).cel = {
+      id: "namespace_name_format"
+      message: "Namespace name must start with a letter, end with a letter or number, and contain only letters, numbers, and hyphens"
+      expression: "this.matches('^[a-zA-Z][-a-zA-Z0-9]{4,48}[a-zA-Z0-9]$')"
+    }
+  ];
+
+  // The SKU tier for the Event Hubs namespace.
+  // Uses Azure's exact API values for provider authenticity.
+  //
+  // Valid values:
+  // - "Basic": Single consumer group, 1-day retention. Simple ingestion.
+  // - "Standard" (default): Full-featured with Kafka support, auto-inflate,
+  //   up to 20 consumer groups, 7-day retention. 99.95% SLA.
+  // - "Premium": Dedicated processing units, zone redundancy, dynamic
+  //   partitions, large events. Enterprise isolation.
+  //
+  // **Note**: Changing to/from Premium forces resource recreation.
+  optional string sku = 4 [
+    (org.openmcf.shared.options.default) = "Standard",
+    (buf.validate.field).cel = {
+      id: "sku_valid"
+      message: "sku must be one of: Basic, Standard, Premium"
+      expression: "this in ['Basic', 'Standard', 'Premium']"
+    }
+  ];
+
+  // Capacity for the namespace.
+  // For Standard SKU: throughput units (TUs). Each TU provides 1 MB/s ingress
+  // and 2 MB/s egress. Default 1, max 40 (with auto-inflate).
+  // For Premium SKU: processing units (PUs) for dedicated compute. Valid
+  // values: 1, 2, 4, 8, 16.
+  //
+  // Default: 1
+  optional int32 capacity = 5 [
+    (org.openmcf.shared.options.default) = "1",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  // Enable auto-inflate (automatic throughput unit scaling) for Standard SKU.
+  // When enabled, the namespace automatically scales throughput units up to
+  // `maximum_throughput_units` based on traffic demand.
+  //
+  // Only applicable for Standard SKU. Premium uses fixed processing units.
+  //
+  // Default: false
+  optional bool auto_inflate_enabled = 6 [(org.openmcf.shared.options.default) = "false"];
+
+  // Maximum throughput units when auto-inflate is enabled.
+  // The namespace scales up to this value automatically.
+  //
+  // Range: 0-40. A value of 0 effectively disables auto-inflate.
+  // Only meaningful when `auto_inflate_enabled` is true.
+  optional int32 maximum_throughput_units = 7 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 40
+  }];
+
+  // Enable zone redundancy for the namespace.
+  // When enabled, the namespace metadata and data are replicated across
+  // availability zones within the region for higher availability.
+  //
+  // Applicable for Standard and Premium SKUs.
+  //
+  // Default: false
+  optional bool zone_redundant = 8 [(org.openmcf.shared.options.default) = "false"];
+
+  // Minimum TLS version for client connections.
+  // Azure enforces this on all AMQP, HTTPS, and Kafka connections.
+  //
+  // Default: "1.2" (recommended for all production workloads)
+  optional string minimum_tls_version = 9 [
+    (org.openmcf.shared.options.default) = "1.2",
+    (buf.validate.field).cel = {
+      id: "tls_version_valid"
+      message: "minimum_tls_version must be one of: 1.0, 1.1, 1.2"
+      expression: "this in ['1.0', '1.1', '1.2']"
+    }
+  ];
+
+  // Whether the namespace is accessible over the public internet.
+  // When false, the namespace can only be accessed via AzurePrivateEndpoint
+  // or VNet service endpoints.
+  //
+  // Default: true
+  optional bool public_network_access_enabled = 10 [(org.openmcf.shared.options.default) = "true"];
+
+  // Event hubs within this namespace.
+  // Each event hub is an independent stream of events with its own partition
+  // layout and consumer groups.
+  //
+  // Azure creates a default `$Default` consumer group automatically for each
+  // event hub. Additional consumer groups defined here are created alongside it.
+  repeated AzureEventHub event_hubs = 11;
+}
+
+// AzureEventHub defines an event hub within the Event Hubs namespace.
+//
+// An event hub is the core streaming entity. Events are published to an event
+// hub by producers and consumed by consumer groups. Each event hub has a fixed
+// number of partitions that determine the degree of downstream parallelism.
+//
+// Key concepts:
+// - **Partitions**: Ordered sequences of events. Each partition is consumed
+//   independently. More partitions = higher throughput parallelism.
+//   Cannot be decreased after creation.
+// - **Message retention**: How long events are retained in the event hub.
+//   Consumers can replay events within the retention window.
+// - **Consumer groups**: Isolated views of the event stream. Each consumer
+//   group maintains its own read position (offset) independently.
+//
+// **ForceNew fields**: `name`.
+message AzureEventHub {
+  // The event hub name.
+  // Must be unique within the namespace.
+  //
+  // Naming rules: 1-256 characters. Must start and end with a letter or
+  // number. Can contain letters, numbers, periods, hyphens, underscores.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 256
+  ];
+
+  // Number of partitions for the event hub.
+  // Determines the maximum downstream parallelism. Each partition is an
+  // ordered sequence of events consumed independently.
+  //
+  // Range: 1-32 (shared namespaces).
+  //
+  // **Important**: Partition count cannot be decreased after creation.
+  // Plan for peak throughput needs upfront.
+  //
+  // Guidelines:
+  // - 2-4 partitions: Low-throughput workloads
+  // - 8-16 partitions: Medium throughput, typical production
+  // - 32 partitions: Maximum parallelism for high-throughput ingestion
+  int32 partition_count = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 32
+    }
+  ];
+
+  // Message retention in days.
+  // Events are retained for this duration and can be replayed by consumers.
+  //
+  // Range: 1-7 days (shared namespaces).
+  // Default: 1 day.
+  //
+  // Higher retention enables longer replay windows for reprocessing scenarios
+  // but increases storage costs.
+  optional int32 message_retention = 3 [
+    (org.openmcf.shared.options.default) = "1",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 7
+    }
+  ];
+
+  // Consumer groups for this event hub.
+  // Each consumer group provides an independent view of the event stream
+  // with its own read position (offset). Multiple consumer applications
+  // can process the same events independently.
+  //
+  // Azure creates a `$Default` consumer group automatically. Groups defined
+  // here are additional named groups for specific consumer applications.
+  //
+  // Limits: Up to 20 consumer groups per event hub (Standard/Premium).
+  // Basic SKU: Only `$Default` consumer group (no additional groups).
+  repeated AzureEventHubConsumerGroup consumer_groups = 4;
+}
+
+// AzureEventHubConsumerGroup defines a consumer group within an event hub.
+//
+// A consumer group is a view of the entire event hub. It enables multiple
+// consuming applications to each have a separate view of the event stream,
+// reading independently at their own pace and with their own offsets.
+//
+// **ForceNew fields**: `name`.
+message AzureEventHubConsumerGroup {
+  // The consumer group name.
+  // Must be unique within the event hub.
+  //
+  // Naming rules: 1-50 characters. Must start and end with a letter or
+  // number. Can contain letters, numbers, periods, hyphens, underscores.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 50
+  ];
+
+  // User-defined metadata for the consumer group.
+  // Can store application-specific information such as the consumer
+  // application name, purpose, or team ownership.
+  //
+  // Maximum: 1024 characters.
+  optional string user_metadata = 2 [(buf.validate.field).string.max_len = 1024];
+}

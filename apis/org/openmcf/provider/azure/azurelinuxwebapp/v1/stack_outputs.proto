@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azurelinuxwebapp.v1;
+
+// **AzureLinuxWebAppStackOutputs** captures the outputs of provisioning an
+// Azure Linux Web App.
+//
+// The primary output is `web_app_id`, the ARM resource ID. The
+// `default_hostname` is the most commonly consumed output -- it provides
+// the FQDN for the web app's primary HTTP endpoint.
+//
+// Identity outputs (`identity_principal_id`, `identity_tenant_id`) are
+// populated when the Web App has a system-assigned managed identity.
+// These are used for setting up RBAC role assignments on Azure resources
+// (e.g., granting the Web App access to Key Vault, Storage, or databases).
+//
+// The `custom_domain_verification_id` is needed when binding custom domains
+// to the Web App via DNS TXT record verification.
+//
+// **Leaf resource**: Nothing references AzureLinuxWebApp outputs downstream.
+// These outputs are consumed by users, infra chart visibility, and external
+// DNS/domain configuration.
+message AzureLinuxWebAppStackOutputs {
+  // The Azure Resource Manager ID of the Web App.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Web/sites/{name}
+  string web_app_id = 1;
+
+  // The default hostname of the Web App.
+  // Format: {name}.azurewebsites.net
+  //
+  // This is the primary endpoint for the web app.
+  // Custom domains can be added via Azure portal or DNS configuration.
+  string default_hostname = 2;
+
+  // Outbound IP addresses used by the Web App.
+  // These IPs should be allowed in downstream firewall rules (e.g.,
+  // database firewall, third-party API whitelists).
+  //
+  // Note: On shared/free tiers, outbound IPs are shared across the region
+  // and may change. On Dedicated/Premium plans, IPs are stable.
+  repeated string outbound_ip_addresses = 3;
+
+  // The principal ID of the system-assigned managed identity.
+  // Populated only when the Web App has a system-assigned identity
+  // (identity.type includes "SystemAssigned").
+  //
+  // Used for granting RBAC roles: e.g., "Key Vault Secrets User",
+  // "Storage Blob Data Contributor".
+  string identity_principal_id = 4;
+
+  // The tenant ID of the system-assigned managed identity.
+  // Paired with identity_principal_id for RBAC configuration.
+  string identity_tenant_id = 5;
+
+  // The custom domain verification ID.
+  // Used when binding custom domains to the Web App. Add this value
+  // as a TXT record at `asuid.{custom-domain}` to verify domain ownership.
+  string custom_domain_verification_id = 6;
+
+  // The resource kind string as reported by Azure.
+  // Example: "app,linux"
+  string kind = 7;
+}

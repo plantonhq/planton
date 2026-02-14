@@ -240,6 +240,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — deploys containerized workloads into namespaces managed by this component
-- [KubernetesPostgres](/docs/catalog/kubernetes/kubernetespostgres) — deploys PostgreSQL into a namespace, often co-deployed alongside application namespaces
-- [KubernetesRedis](/docs/catalog/kubernetes/kubernetesredis) — deploys Redis into a namespace for caching and pub/sub workloads
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — deploys containerized workloads into namespaces managed by this component
+- [KubernetesPostgres](/docs/catalog/kubernetes/postgres) — deploys PostgreSQL into a namespace, often co-deployed alongside application namespaces
+- [KubernetesRedis](/docs/catalog/kubernetes/redis) — deploys Redis into a namespace for caching and pub/sub workloads

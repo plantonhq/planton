@@ -1,0 +1,15 @@
+apiVersion: digital-ocean.openmcf.org/v1
+kind: DigitalOceanDroplet
+metadata:
+  name: my-production-droplet
+spec:
+  dropletName: my-production-droplet
+  region: nyc1
+  size: s-2vcpu-4gb
+  image: ubuntu-24-04-x64
+  vpc:
+    value: "<vpc-id>"
+  enableBackups: true  # Recommended for production
+  tags:
+    - production
+    - web

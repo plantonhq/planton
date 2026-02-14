@@ -34,6 +34,12 @@ spec:
   # Optional: specify authorization model ID (uses latest if not specified)
   # authorizationModelId: "01HXYZ_REPLACE_WITH_MODEL_ID"
   # Grant user:anne viewer access to document:budget-2024
-  user: "user:anne"
-  relation: "viewer"
-  object: "document:budget-2024"
+  user:
+    type: user
+    id:
+      value: anne
+  relation: viewer
+  object:
+    type: document
+    id:
+      value: budget-2024

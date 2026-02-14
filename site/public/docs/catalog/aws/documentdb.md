@@ -290,6 +290,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsVpc](/docs/catalog/aws/awsvpc) — provides subnets and VPC ID for cluster placement
-- [AwsSecurityGroup](/docs/catalog/aws/awssecuritygroup) — controls network access to the cluster
-- [AwsKmsKey](/docs/catalog/aws/awskmskey) — provides KMS keys for storage encryption
+- [AwsVpc](/docs/catalog/aws/vpc) — provides subnets and VPC ID for cluster placement
+- [AwsSecurityGroup](/docs/catalog/aws/security-group) — controls network access to the cluster
+- [AwsKmsKey](/docs/catalog/aws/kms-key) — provides KMS keys for storage encryption

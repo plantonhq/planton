@@ -200,7 +200,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — alternative for deploying arbitrary Helm charts when the ingress-nginx component does not cover your use case
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — application workloads that use Ingress resources routed through the ingress-nginx controller
-- [KubernetesService](/docs/catalog/kubernetes/kubernetesservice) — backend services exposed via Ingress rules
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/helm-release) — alternative for deploying arbitrary Helm charts when the ingress-nginx component does not cover your use case
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — application workloads that use Ingress resources routed through the ingress-nginx controller
+- [KubernetesService](/docs/catalog/kubernetes/service) — backend services exposed via Ingress rules

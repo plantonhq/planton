@@ -1,0 +1,6 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsRoute53Zone
+metadata:
+  name: my-public-dns-zone
+spec:
+  isPrivate: false

@@ -1,0 +1,23 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpGkeNodePool
+metadata:
+  name: my-spot-pool
+spec:
+  clusterProjectId:
+    value: "<gcp-project-id>"
+  clusterName:
+    value: "<gke-cluster-name>"
+  clusterLocation:
+    value: "<gcp-region>"
+  nodePoolName: <your-node-pool-name>
+  machineType: e2-standard-2  # 2 vCPU, 8 GB RAM; smaller for cost optimization
+  diskSizeGb: 50
+  diskType: pd-standard  # default from spec; standard disk saves cost
+  imageType: COS_CONTAINERD  # default from spec
+  spot: true  # Spot VMs at 60-91% discount; may be preempted
+  autoscaling:
+    minNodes: 0  # scale-to-zero when no workloads need spot capacity
+    maxNodes: 10
+    locationPolicy: BALANCED  # default from spec
+  nodeLabels:
+    node-type: spot

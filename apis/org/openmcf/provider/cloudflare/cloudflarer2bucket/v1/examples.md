@@ -36,7 +36,7 @@ spec:
   accountId: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"  # Replace with your account ID
   location: ENAM  # Eastern North America
   publicAccess: false
-  versioningEnabled: false
+
 ```
 
 **Expected Behavior**:
@@ -72,7 +72,7 @@ spec:
   accountId: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
   location: WEUR  # Western Europe
   publicAccess: true  # Enable r2.dev public URL
-  versioningEnabled: false
+
 ```
 
 **Expected Behavior**:
@@ -191,7 +191,7 @@ spec:
   accountId: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
   location: ENAM
   publicAccess: true  # Easy testing without auth
-  versioningEnabled: false
+
 ```
 
 **Expected Behavior**:
@@ -234,7 +234,7 @@ spec:
   accountId: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
   location: ENAM
   publicAccess: false  # Strict auth required
-  versioningEnabled: false
+
 ```
 
 **Expected Behavior**:
@@ -274,7 +274,7 @@ spec:
   accountId: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
   location: WEUR  # Western Europe
   publicAccess: true
-  versioningEnabled: false
+
 ```
 
 **Expected Behavior**:
@@ -319,7 +319,7 @@ spec:
   accountId: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
   location: ENAM
   publicAccess: false  # Users get presigned URLs
-  versioningEnabled: false
+
 ```
 
 **Expected Behavior**:
@@ -374,7 +374,7 @@ spec:
   accountId: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
   location: ENAM
   publicAccess: false
-  versioningEnabled: false
+
 ```
 
 **Expected Behavior**:

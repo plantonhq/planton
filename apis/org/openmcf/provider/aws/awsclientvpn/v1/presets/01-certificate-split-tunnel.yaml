@@ -1,0 +1,19 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsClientVpn
+metadata:
+  name: my-split-tunnel-vpn
+spec:
+  description: Split-tunnel VPN for secure VPC access
+  vpcId:
+    value: "<vpc-id>"
+  subnets:
+    - value: "<private-subnet-id>"
+  clientCidrBlock: 10.100.0.0/22
+  authenticationType: certificate
+  serverCertificateArn:
+    value: "<server-certificate-arn>"
+  cidrAuthorizationRules:
+    - <vpc-cidr-block>
+  disableSplitTunnel: false  # Split-tunnel: only VPC traffic through VPN
+  vpnPort: 443  # default from spec
+  transportProtocol: tcp  # recommended_default from spec

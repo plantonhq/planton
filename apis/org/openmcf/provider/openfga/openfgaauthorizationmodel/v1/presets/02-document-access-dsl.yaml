@@ -1,0 +1,26 @@
+apiVersion: open-fga.openmcf.org/v1
+kind: OpenFgaAuthorizationModel
+metadata:
+  name: my-document-model
+spec:
+  storeId:
+    value: "<store-id>"
+  modelDsl: |
+    model
+      schema 1.1
+
+    type user
+
+    type folder
+      relations
+        define viewer: [user] or viewer from parent
+        define editor: [user] or editor from parent
+        define owner: [user]
+        define parent: [folder]
+
+    type document
+      relations
+        define viewer: [user] or viewer from parent
+        define editor: [user] or editor from parent
+        define owner: [user]
+        define parent: [folder]

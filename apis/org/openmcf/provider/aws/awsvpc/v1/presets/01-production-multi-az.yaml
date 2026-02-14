@@ -1,0 +1,14 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsVpc
+metadata:
+  name: my-production-vpc
+spec:
+  vpcCidr: 10.0.0.0/16
+  availabilityZones:
+    - <aws-region>a
+    - <aws-region>b
+  subnetsPerAvailabilityZone: 1  # recommended_default from spec
+  subnetSize: 1  # recommended_default from spec
+  isNatGatewayEnabled: true  # Required for private subnet internet access
+  isDnsHostnamesEnabled: true  # Required for private hosted zones and service discovery
+  isDnsSupportEnabled: true  # Required for DNS resolution within the VPC

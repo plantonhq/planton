@@ -1,0 +1,7 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackFloatingIp
+metadata:
+  name: my-floating-ip
+spec:
+  floatingNetworkId:
+    value: <external-network-id>

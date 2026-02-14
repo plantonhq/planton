@@ -1,0 +1,6 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackProject
+metadata:
+  name: my-project
+spec:
+  description: Standard project for workload isolation

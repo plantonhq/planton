@@ -1,0 +1,8 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackLoadBalancer
+metadata:
+  name: my-load-balancer
+spec:
+  vipSubnetId:
+    value: <subnet-id>
+  description: Standard Octavia load balancer

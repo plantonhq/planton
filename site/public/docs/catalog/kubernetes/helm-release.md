@@ -176,6 +176,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesManifest](/docs/catalog/kubernetes/kubernetesmanifest) — preferred when deploying raw Kubernetes YAML rather than a packaged Helm chart
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — preferred for containerized applications that need built-in Service, ingress, and autoscaling support
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesManifest](/docs/catalog/kubernetes/manifest) — preferred when deploying raw Kubernetes YAML rather than a packaged Helm chart
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — preferred for containerized applications that need built-in Service, ingress, and autoscaling support

@@ -1,0 +1,24 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsS3ObjectSet
+metadata:
+  name: my-config-files
+spec:
+  bucket:
+    value: "<s3-bucket-name>"
+  awsRegion: <aws-region>
+  objects:
+    - key: config/app.json
+      content: |
+        {
+          "environment": "<environment-name>",
+          "logLevel": "info",
+          "port": 8080
+        }
+      contentType: application/json
+    - key: config/settings.yaml
+      content: |
+        database:
+          host: "<database-host>"
+          port: 5432
+          name: "<database-name>"
+      contentType: application/x-yaml

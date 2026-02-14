@@ -186,7 +186,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsS3Bucket](/docs/catalog/aws/awss3bucket) — common origin for static website hosting
-- [AwsCertManagerCert](/docs/catalog/aws/awscertmanagercert) — provides ACM certificates for custom domain SSL
-- [AwsRoute53Zone](/docs/catalog/aws/awsroute53zone) — hosts DNS zones for creating alias records pointing to the distribution
-- [AwsRoute53DnsRecord](/docs/catalog/aws/awsroute53dnsrecord) — creates alias records pointing custom domains to the CloudFront distribution
+- [AwsS3Bucket](/docs/catalog/aws/s3-bucket) — common origin for static website hosting
+- [AwsCertManagerCert](/docs/catalog/aws/certificate-manager-certificate) — provides ACM certificates for custom domain SSL
+- [AwsRoute53Zone](/docs/catalog/aws/route53-zone) — hosts DNS zones for creating alias records pointing to the distribution
+- [AwsRoute53DnsRecord](/docs/catalog/aws/route53-dns-record) — creates alias records pointing custom domains to the CloudFront distribution

@@ -1,0 +1,26 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesZalandoPostgresOperator
+metadata:
+  name: my-zalando-postgres-operator
+spec:
+  namespace:
+    value: zalando-postgres-system
+  createNamespace: true
+  container:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 100Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+  backupConfig:
+    r2Config:
+      cloudflareAccountId: "<your-cloudflare-account-id>"
+      bucketName: "<your-r2-backup-bucket>"
+      accessKeyId: "<your-r2-access-key-id>"
+      secretAccessKey: "<your-r2-secret-access-key>"
+    backupSchedule: "0 2 * * *"  # daily at 2:00 AM UTC
+    enableWalGBackup: true
+    enableWalGRestore: true
+    enableCloneWalGRestore: true

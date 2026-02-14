@@ -246,6 +246,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsVpc](/docs/catalog/aws/awsvpc) — provides the subnets for DB instance placement
-- [AwsSecurityGroup](/docs/catalog/aws/awssecuritygroup) — controls inbound and outbound traffic to the DB instance
-- [AwsKmsKey](/docs/catalog/aws/awskmskey) — provides the customer-managed key for storage encryption
+- [AwsVpc](/docs/catalog/aws/vpc) — provides the subnets for DB instance placement
+- [AwsSecurityGroup](/docs/catalog/aws/security-group) — controls inbound and outbound traffic to the DB instance
+- [AwsKmsKey](/docs/catalog/aws/kms-key) — provides the customer-managed key for storage encryption

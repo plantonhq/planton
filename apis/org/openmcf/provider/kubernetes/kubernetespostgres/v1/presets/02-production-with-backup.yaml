@@ -1,0 +1,30 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesPostgres
+metadata:
+  name: my-postgres
+spec:
+  namespace:
+    value: "<your-namespace>"
+  createNamespace: false
+  container:
+    replicas: 2
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+    diskSize: 50Gi
+  databases:
+    - name: app
+      ownerRole: app_owner
+  users:
+    - name: app_owner
+      flags:
+        - LOGIN
+        - CREATEDB
+  backupConfig:
+    enableBackup: true
+    backupSchedule: "0 2 * * *"
+    s3Prefix: backups/postgres

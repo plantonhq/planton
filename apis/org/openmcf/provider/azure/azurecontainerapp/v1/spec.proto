@@ -1,0 +1,1025 @@
+syntax = "proto3";
+
+package org.openmcf.provider.azure.azurecontainerapp.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// **AzureContainerAppSpec** defines the configuration for creating an Azure
+// Container App (Microsoft.App/containerApps), a serverless container workload
+// running inside an Azure Container Apps Managed Environment.
+//
+// A Container App is the Azure equivalent of a Kubernetes Deployment or an ECS
+// Service -- it defines one or more containers, their resource allocations,
+// scaling rules, ingress configuration, and runtime secrets.
+//
+// **Relationship to AzureContainerAppEnvironment**:
+//
+// Every Container App runs inside an Environment. The Environment provides the
+// shared networking boundary, logging, Dapr infrastructure, and compute capacity.
+// The Container App defines the workload: which containers to run, how to scale
+// them, how to expose them, and what secrets they need.
+//
+// **Revision model**:
+//
+// Container Apps uses a revision-based deployment model. Each change to the
+// `template` section (containers, scale, volumes) creates a new revision.
+//
+// Single mode (default):
+//   - Only one revision is active at a time
+//   - New revisions automatically replace the old one
+//   - Simplest model for most workloads
+//
+// Multiple mode:
+//   - Multiple revisions can be active simultaneously
+//   - Traffic can be split across revisions via traffic_weight
+//   - Enables blue-green and canary deployment patterns
+//
+// **Containers**:
+//
+// At least one container is required. Each container specifies an image, CPU/memory
+// allocation, environment variables (literal or secret-backed), optional command/args
+// overrides, health probes, and volume mounts.
+//
+// Init containers run to completion before main containers start. They share the
+// same volume mounts and secrets but cannot have health probes.
+//
+// **Scaling**:
+//
+// Container Apps scale based on KEDA-compatible rules:
+// - HTTP concurrent requests (most common for web services)
+// - TCP concurrent connections
+// - Azure Queue length
+// - Custom KEDA scalers (Kafka, Prometheus, Redis, cron, etc.)
+//
+// Scale ranges from min_replicas to max_replicas. Setting min_replicas=0 enables
+// scale-to-zero (no cost when idle).
+//
+// **Secrets and registries**:
+//
+// Secrets can be plain-text values or Key Vault references (requiring managed
+// identity). They are referenced by name in container environment variables and
+// registry passwords.
+//
+// Private container registries authenticate via username/password (referencing
+// a secret) or managed identity.
+//
+// **Ingress**:
+//
+// Optional HTTP/TCP ingress with traffic splitting, IP security restrictions,
+// CORS policy, and client certificate mode. When ingress is not configured,
+// the app is only accessible from within the environment via the app name.
+//
+// **No region field**: Container App location is computed from its environment.
+// This is like AzureSubnet inheriting region from its VNet.
+//
+// **ForceNew fields** (changing these destroys and recreates):
+// `name`, `container_app_environment_id`.
+//
+// **Referenced by**: None (leaf workload resource)
+message AzureContainerAppSpec {
+  // The Azure Resource Group where the Container App will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  //
+  // **ForceNew**: Changing this destroys and recreates the app.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef resource_group = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The name of the Container App.
+  // Must be lowercase alphanumeric or hyphens, start with a letter, end with
+  // an alphanumeric character, no consecutive hyphens, max 32 characters.
+  //
+  // This name is used in the app's FQDN: {name}.{environment-default-domain}
+  //
+  // **ForceNew**: Changing this destroys and recreates the app.
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 2,
+    (buf.validate.field).string.max_len = 32,
+    (buf.validate.field).cel = {
+      id: "app_name_format"
+      message: "name must be lowercase alphanumeric or hyphens, start with a letter, end with alphanumeric, no consecutive hyphens"
+      expression: "this.matches('^[a-z]([a-z0-9](-[a-z0-9])*)*$')"
+    }
+  ];
+
+  // The Container App Environment where this app will run.
+  // The environment provides networking, logging, and compute capacity.
+  //
+  // **ForceNew**: Changing this destroys and recreates the app.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef container_app_environment_id = 3 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureContainerAppEnvironment,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.environment_id"
+  ];
+
+  // The revision operating mode. Controls how many revisions can be active.
+  //
+  // "Single": Only one revision active at a time (default, simplest).
+  // "Multiple": Multiple revisions active simultaneously with traffic splitting.
+  //
+  // Default: "Single"
+  optional string revision_mode = 4 [
+    (org.openmcf.shared.options.default) = "Single",
+    (buf.validate.field).cel = {
+      id: "revision_mode_valid"
+      message: "revision_mode must be 'Single' or 'Multiple'"
+      expression: "this in ['Single', 'Multiple']"
+    }
+  ];
+
+  // The workload profile name to run this app on.
+  // References a profile defined in the Container App Environment.
+  //
+  // Omit to use the default Consumption (serverless) profile.
+  // Set to a named profile (e.g., "gpu-pool", "high-memory") for dedicated compute.
+  string workload_profile_name = 5;
+
+  // Maximum number of inactive revisions to retain.
+  // Older inactive revisions beyond this limit are automatically purged.
+  //
+  // Range: 0-100. Omit to use Azure's default (typically 100).
+  optional int32 max_inactive_revisions = 6 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 100
+  }];
+
+  // --- Template section (creates revisions when changed) ---
+
+  // Main containers for the app. At least one container is required.
+  // Each container runs continuously and can have health probes.
+  repeated AzureContainerAppContainer containers = 7 [(buf.validate.field).repeated.min_items = 1];
+
+  // Init containers run to completion before main containers start.
+  // Use for database migrations, configuration generation, or downloading
+  // assets. Init containers cannot have health probes.
+  repeated AzureContainerAppInitContainer init_containers = 8;
+
+  // Volumes available to containers in this app.
+  // Containers reference volumes by name in their volume_mounts field.
+  repeated AzureContainerAppVolume volumes = 9;
+
+  // Minimum number of replicas. Set to 0 for scale-to-zero (no cost when idle).
+  //
+  // Default: 0
+  // Range: 0-300
+  optional int32 min_replicas = 10 [
+    (org.openmcf.shared.options.default) = "0",
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 300
+    }
+  ];
+
+  // Maximum number of replicas the app can scale to.
+  //
+  // Default: 10
+  // Range: 1-300
+  optional int32 max_replicas = 11 [
+    (org.openmcf.shared.options.default) = "10",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 300
+    }
+  ];
+
+  // Scale cooldown period in seconds. After a scale event, the scaler waits
+  // this duration before evaluating scale rules again.
+  //
+  // Default: 300 (5 minutes)
+  optional int32 cooldown_period_in_seconds = 12 [
+    (org.openmcf.shared.options.default) = "300",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  // KEDA polling interval in seconds. How often scale rules are evaluated.
+  //
+  // Default: 30
+  optional int32 polling_interval_in_seconds = 13 [
+    (org.openmcf.shared.options.default) = "30",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  // Manual revision suffix. When set, the revision name becomes
+  // "{app-name}--{revision_suffix}". When omitted, Azure auto-generates a suffix.
+  //
+  // Useful for canary deployments and explicit revision tracking.
+  string revision_suffix = 14;
+
+  // Termination grace period in seconds. How long to wait for containers
+  // to gracefully shut down before forcefully terminating them.
+  //
+  // Default: 0 (immediate termination)
+  // Range: 0-600
+  optional int32 termination_grace_period_seconds = 15 [
+    (org.openmcf.shared.options.default) = "0",
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 600
+    }
+  ];
+
+  // --- Scale rules ---
+
+  // HTTP scale rules. Scale based on concurrent HTTP requests.
+  // Most common for web services and APIs.
+  repeated AzureContainerAppHttpScaleRule http_scale_rules = 16;
+
+  // TCP scale rules. Scale based on concurrent TCP connections.
+  repeated AzureContainerAppTcpScaleRule tcp_scale_rules = 17;
+
+  // Azure Queue scale rules. Scale based on Azure Storage Queue depth.
+  repeated AzureContainerAppAzureQueueScaleRule azure_queue_scale_rules = 18;
+
+  // Custom KEDA scale rules. Scale based on any KEDA-supported scaler
+  // (Kafka, Prometheus, Redis, cron, cpu, memory, etc.).
+  repeated AzureContainerAppCustomScaleRule custom_scale_rules = 19;
+
+  // --- App-level configuration ---
+
+  // Secrets available to the app. Referenced by name in container env vars
+  // and registry password_secret_name.
+  //
+  // Secrets can be plain-text values or Key Vault references. Key Vault
+  // references require a managed identity (set identity on secret or app level).
+  repeated AzureContainerAppSecret secrets = 20;
+
+  // Private container registry credentials. Required to pull images from
+  // private registries (ACR, Docker Hub, GitHub Container Registry, etc.).
+  //
+  // Each registry authenticates via username/password (referencing a secret)
+  // or managed identity.
+  repeated AzureContainerAppRegistry registries = 21;
+
+  // Ingress configuration. When set, the app is accessible via HTTP/TCP.
+  // When omitted, the app is only accessible from within the environment
+  // via service discovery (app name).
+  AzureContainerAppIngress ingress = 22;
+
+  // Dapr sidecar configuration. When set, a Dapr sidecar is injected
+  // alongside the app container, enabling Dapr building blocks
+  // (service invocation, pub/sub, state management, etc.).
+  AzureContainerAppDapr dapr = 23;
+
+  // Managed identity configuration for the app. Enables the app to
+  // authenticate with Azure services (Key Vault, ACR, Storage, etc.)
+  // without managing credentials.
+  AzureContainerAppIdentity identity = 24;
+}
+
+// AzureContainerAppContainer defines a main container within the app.
+//
+// Each container specifies an image, CPU/memory allocation, environment variables,
+// optional entrypoint overrides, health probes, and volume mounts.
+//
+// CPU and memory are required for main containers. Valid combinations depend on
+// the workload profile:
+// - Consumption: 0.25/0.5/0.75/1.0/1.25/1.5/1.75/2.0 vCPU
+// - Dedicated: up to profile limits (e.g., D4 = 4 vCPU, 8 GiB)
+//
+// Memory must be specified in Gi format (e.g., "0.5Gi", "1Gi", "2Gi").
+message AzureContainerAppContainer {
+  // Container name. Must be unique within the app.
+  // Lowercase alphanumeric, hyphens, or dots, max 46 characters.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 46,
+    (buf.validate.field).cel = {
+      id: "container_name_format"
+      message: "container name must be lowercase alphanumeric, hyphens, or dots"
+      expression: "this.matches('^[a-z0-9][a-z0-9.-]*[a-z0-9]$') || this.matches('^[a-z0-9]$')"
+    }
+  ];
+
+  // Container image in repository:tag format.
+  // Examples: "mcr.microsoft.com/k8se/quickstart:latest", "myregistry.azurecr.io/myapp:v1.2.3"
+  string image = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // CPU allocation in vCPU cores.
+  // Examples: 0.25, 0.5, 1.0, 2.0
+  //
+  // Valid values depend on the workload profile. For Consumption plan:
+  // 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0
+  double cpu = 3 [(buf.validate.field).double.gte = 0.1];
+
+  // Memory allocation in Gi format.
+  // Examples: "0.5Gi", "1Gi", "2Gi", "4Gi"
+  //
+  // Must match the CPU allocation. For Consumption plan with 0.25 vCPU,
+  // memory must be "0.5Gi". See Azure docs for valid CPU/memory pairs.
+  string memory = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Environment variables for the container.
+  // Each variable is a literal value or a reference to a secret by name.
+  repeated AzureContainerAppEnvVar env = 5;
+
+  // Container command (entrypoint override).
+  // Overrides the image's default ENTRYPOINT.
+  repeated string command = 6;
+
+  // Container arguments.
+  // Overrides the image's default CMD.
+  repeated string args = 7;
+
+  // Liveness probe. Determines if the container is alive.
+  // If the probe fails, the container is restarted.
+  AzureContainerAppProbe liveness_probe = 8;
+
+  // Readiness probe. Determines if the container is ready to serve traffic.
+  // If the probe fails, the container is removed from load balancing.
+  AzureContainerAppProbe readiness_probe = 9;
+
+  // Startup probe. Determines when the container has finished starting.
+  // During startup, liveness and readiness probes are disabled.
+  // Useful for slow-starting applications.
+  AzureContainerAppProbe startup_probe = 10;
+
+  // Volume mounts for the container. References volumes defined in the
+  // spec's `volumes` field by name.
+  repeated AzureContainerAppVolumeMount volume_mounts = 11;
+}
+
+// AzureContainerAppInitContainer defines an init container that runs
+// to completion before main containers start.
+//
+// Use cases: database migrations, configuration generation, downloading
+// assets, waiting for dependencies to become available.
+//
+// Init containers share the same volume mounts and secrets as main containers
+// but cannot have health probes. CPU and memory are optional -- when omitted,
+// init containers inherit the resource allocation of the app.
+message AzureContainerAppInitContainer {
+  // Container name. Must be unique within the app (across both containers
+  // and init containers).
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 46,
+    (buf.validate.field).cel = {
+      id: "init_container_name_format"
+      message: "init container name must be lowercase alphanumeric, hyphens, or dots"
+      expression: "this.matches('^[a-z0-9][a-z0-9.-]*[a-z0-9]$') || this.matches('^[a-z0-9]$')"
+    }
+  ];
+
+  // Container image in repository:tag format.
+  string image = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // CPU allocation in vCPU cores. Optional for init containers.
+  // When omitted, inherits from the app's overall resource allocation.
+  optional double cpu = 3;
+
+  // Memory allocation in Gi format. Optional for init containers.
+  // When omitted, inherits from the app's overall resource allocation.
+  optional string memory = 4;
+
+  // Environment variables for the init container.
+  repeated AzureContainerAppEnvVar env = 5;
+
+  // Container command (entrypoint override).
+  repeated string command = 6;
+
+  // Container arguments.
+  repeated string args = 7;
+
+  // Volume mounts for the init container.
+  repeated AzureContainerAppVolumeMount volume_mounts = 8;
+}
+
+// AzureContainerAppEnvVar defines an environment variable for a container.
+//
+// An env var is either a literal value or a reference to a secret by name.
+// When `secret_name` is set, `value` is ignored and the env var's value
+// comes from the named secret in the app's `secrets` list.
+message AzureContainerAppEnvVar {
+  // Environment variable name.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Literal value. Ignored when secret_name is set.
+  string value = 2;
+
+  // Reference to a secret name defined in the app's `secrets` list.
+  // When set, the env var's value comes from the secret.
+  string secret_name = 3;
+}
+
+// AzureContainerAppProbe defines a health probe for a container.
+//
+// Probes support three transport types:
+// - TCP: Simple port check (container is alive if port accepts connections)
+// - HTTP: GET request to a path (healthy if response is 200-399)
+// - HTTPS: Same as HTTP but over TLS
+//
+// This message is shared by liveness, readiness, and startup probes.
+// The `success_count_threshold` field is only applicable to readiness probes.
+message AzureContainerAppProbe {
+  // Probe transport type.
+  // "TCP": Port connectivity check.
+  // "HTTP": HTTP GET request.
+  // "HTTPS": HTTPS GET request.
+  string transport = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "probe_transport_valid"
+      message: "transport must be 'TCP', 'HTTP', or 'HTTPS'"
+      expression: "this in ['TCP', 'HTTP', 'HTTPS']"
+    }
+  ];
+
+  // Port to probe. Range: 1-65535.
+  int32 port = 2 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+
+  // URI path for HTTP/HTTPS probes. Ignored for TCP probes.
+  // Example: "/healthz", "/ready"
+  string path = 3;
+
+  // Hostname for the probe request. When omitted, defaults to the container IP.
+  string host = 4;
+
+  // HTTP headers to include in probe requests. Only for HTTP/HTTPS probes.
+  repeated AzureContainerAppProbeHeader headers = 5;
+
+  // Seconds to wait before starting probes after container start.
+  //
+  // Default: 0 (readiness/startup), 1 (liveness)
+  // Range: 0-60
+  optional int32 initial_delay_in_seconds = 6 [
+    (org.openmcf.shared.options.default) = "0",
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 60
+    }
+  ];
+
+  // Seconds between probe executions.
+  //
+  // Default: 10
+  // Range: 1-240
+  optional int32 interval_seconds = 7 [
+    (org.openmcf.shared.options.default) = "10",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 240
+    }
+  ];
+
+  // Seconds to wait for a probe response before timing out.
+  //
+  // Default: 1
+  // Range: 1-240
+  optional int32 timeout_seconds = 8 [
+    (org.openmcf.shared.options.default) = "1",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 240
+    }
+  ];
+
+  // Number of consecutive failures before the probe is considered failed.
+  //
+  // Default: 3
+  // Range: 1-30
+  optional int32 failure_count_threshold = 9 [
+    (org.openmcf.shared.options.default) = "3",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 30
+    }
+  ];
+
+  // Number of consecutive successes before the probe is considered successful.
+  // Only applicable to readiness probes; ignored for liveness and startup.
+  //
+  // Default: 3
+  // Range: 1-10
+  optional int32 success_count_threshold = 10 [
+    (org.openmcf.shared.options.default) = "3",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 10
+    }
+  ];
+}
+
+// AzureContainerAppProbeHeader defines an HTTP header to include in a probe request.
+message AzureContainerAppProbeHeader {
+  // Header name.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Header value.
+  string value = 2 [(buf.validate.field).required = true];
+}
+
+// AzureContainerAppVolumeMount mounts a volume into a container at a specified path.
+message AzureContainerAppVolumeMount {
+  // Name of the volume to mount. Must match a volume name in the spec's `volumes` field.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Absolute path inside the container where the volume is mounted.
+  // Example: "/data", "/mnt/config"
+  string path = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Sub-path within the volume to mount. When omitted, the entire volume is mounted.
+  string sub_path = 3;
+}
+
+// AzureContainerAppVolume defines a volume available to containers.
+//
+// Supported storage types:
+// - EmptyDir (default): Ephemeral storage, fast, lost when the replica terminates.
+//   Good for scratch space, caching, temporary files.
+// - AzureFile: Persistent Azure Files share. Survives replica restarts.
+//   Requires a storage resource configured in the Container App Environment.
+message AzureContainerAppVolume {
+  // Volume name. Referenced by containers in their volume_mounts field.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Storage type. "EmptyDir" for ephemeral storage, "AzureFile" for persistent.
+  //
+  // Default: "EmptyDir"
+  optional string storage_type = 2 [
+    (org.openmcf.shared.options.default) = "EmptyDir",
+    (buf.validate.field).cel = {
+      id: "volume_storage_type_valid"
+      message: "storage_type must be 'EmptyDir' or 'AzureFile'"
+      expression: "this in ['EmptyDir', 'AzureFile']"
+    }
+  ];
+
+  // Name of the Container App Environment storage resource.
+  // Required when storage_type is "AzureFile".
+  // References a storage resource created via azurerm_container_app_environment_storage.
+  string storage_name = 3;
+
+  // Comma-separated mount options for the volume.
+  // Example: "uid=1000,gid=1000"
+  string mount_options = 4;
+}
+
+// AzureContainerAppSecret defines a secret available to the app.
+//
+// Secrets can be:
+// 1. Plain-text value: Set `value` directly. Simple but less secure.
+// 2. Key Vault reference: Set `key_vault_secret_id` + `identity`.
+//    The identity must have read access to the Key Vault secret.
+//
+// Secrets are referenced by name in:
+// - Container env vars (via secret_name)
+// - Registry credentials (via password_secret_name)
+// - Scale rule authentication (via secret_name)
+message AzureContainerAppSecret {
+  // Secret name. Lowercase alphanumeric or hyphens, max 253 characters.
+  // This name is used to reference the secret elsewhere in the spec.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 253,
+    (buf.validate.field).cel = {
+      id: "secret_name_format"
+      message: "secret name must be lowercase alphanumeric or hyphens, start and end with alphanumeric"
+      expression: "this.matches('^[a-z0-9]([a-z0-9-]*[a-z0-9])?$')"
+    }
+  ];
+
+  // Plain-text secret value. Mutually exclusive with key_vault_secret_id.
+  string value = 2;
+
+  // Key Vault secret URI. Format:
+  // https://{vault-name}.vault.azure.net/secrets/{secret-name}
+  // or with version: https://{vault-name}.vault.azure.net/secrets/{secret-name}/{version}
+  //
+  // Requires `identity` to be set for Key Vault access.
+  // Mutually exclusive with `value`.
+  string key_vault_secret_id = 3;
+
+  // Identity for Key Vault access. Required when key_vault_secret_id is set.
+  //
+  // Value is either:
+  // - "System": Use the app's system-assigned managed identity
+  // - A User Assigned Identity Azure resource ID
+  string identity = 4;
+}
+
+// AzureContainerAppRegistry defines credentials for a private container registry.
+//
+// Authentication modes (exactly one must be used):
+// 1. Username/password: Set `username` and `password_secret_name` (references a secret).
+// 2. Managed identity: Set `identity` (system-assigned or user-assigned identity ID).
+message AzureContainerAppRegistry {
+  // Registry server hostname.
+  // Examples: "myregistry.azurecr.io", "ghcr.io", "docker.io"
+  string server = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Registry username. Required with password_secret_name.
+  string username = 2;
+
+  // Secret name containing the registry password.
+  // Must reference a secret defined in the app's `secrets` list.
+  // Required with username.
+  string password_secret_name = 3;
+
+  // Managed identity for registry authentication.
+  // Value is either "System" (system-assigned) or a User Assigned Identity
+  // Azure resource ID. Alternative to username/password.
+  string identity = 4;
+}
+
+// AzureContainerAppIngress defines HTTP/TCP ingress for the app.
+//
+// When ingress is configured, the app gets a FQDN and can receive traffic.
+// Without ingress, the app is only accessible from within the environment
+// via service discovery (the app name).
+//
+// Features:
+// - External or internal (environment-only) access
+// - HTTP/HTTP2/TCP transport
+// - Traffic splitting across revisions
+// - IP security restrictions (allow/deny)
+// - CORS policy for browser-based clients
+// - Client certificate mode (mTLS)
+message AzureContainerAppIngress {
+  // Whether the app is accessible from outside the environment.
+  //
+  // true: App is accessible from the internet (or VNet if environment is internal).
+  // false: App is only accessible from within the environment.
+  //
+  // Default: false
+  optional bool external_enabled = 1 [(org.openmcf.shared.options.default) = "false"];
+
+  // Target port on the container to route traffic to. Range: 1-65535.
+  int32 target_port = 2 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+
+  // Exposed port for TCP transport. Range: 1-65535.
+  // Only applicable when transport is "tcp".
+  optional int32 exposed_port = 3 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+
+  // Transport protocol.
+  // "auto": Auto-detect (default, tries HTTP then TCP).
+  // "http": HTTP/1.1.
+  // "http2": HTTP/2 (for gRPC and long-running connections).
+  // "tcp": Raw TCP (requires exposed_port).
+  //
+  // Default: "auto"
+  optional string transport = 4 [
+    (org.openmcf.shared.options.default) = "auto",
+    (buf.validate.field).cel = {
+      id: "ingress_transport_valid"
+      message: "transport must be 'auto', 'http', 'http2', or 'tcp'"
+      expression: "this in ['auto', 'http', 'http2', 'tcp']"
+    }
+  ];
+
+  // Allow insecure (HTTP) connections. When false, only HTTPS is accepted
+  // and HTTP requests are redirected to HTTPS.
+  //
+  // Default: false (HTTPS only)
+  optional bool allow_insecure_connections = 5 [(org.openmcf.shared.options.default) = "false"];
+
+  // Client certificate mode for mTLS.
+  // "Accept": Accept client certificates but don't require them.
+  // "Require": Require client certificates for all requests.
+  // "Ignore": Ignore client certificates entirely.
+  //
+  // Omit to use Azure's default behavior (no client certificate requirement).
+  string client_certificate_mode = 6 [(buf.validate.field).cel = {
+    id: "client_cert_mode_valid"
+    message: "client_certificate_mode must be 'Accept', 'Require', or 'Ignore' when set"
+    expression: "this == '' || this in ['Accept', 'Require', 'Ignore']"
+  }];
+
+  // Traffic weight distribution across revisions.
+  // At least one traffic weight is required when ingress is configured.
+  //
+  // For Single revision mode, typically one weight with latest_revision=true
+  // and percentage=100. For Multiple revision mode, weights split traffic
+  // across named revisions.
+  //
+  // Total percentage across all weights must equal 100.
+  repeated AzureContainerAppTrafficWeight traffic_weight = 7 [(buf.validate.field).repeated.min_items = 1];
+
+  // IP security restrictions. Allow or deny traffic from specific IP ranges.
+  // Rules are evaluated in order.
+  repeated AzureContainerAppIpSecurityRestriction ip_security_restrictions = 8;
+
+  // CORS policy for browser-based clients.
+  AzureContainerAppCorsPolicy cors_policy = 9;
+}
+
+// AzureContainerAppTrafficWeight defines how traffic is distributed across revisions.
+//
+// Either `latest_revision` must be true OR `revision_suffix` must be set.
+// For Single revision mode, use latest_revision=true with percentage=100.
+message AzureContainerAppTrafficWeight {
+  // Route traffic to the latest revision.
+  // When true, revision_suffix is ignored and traffic goes to the latest active revision.
+  optional bool latest_revision = 1 [(org.openmcf.shared.options.default) = "false"];
+
+  // Target a specific revision by suffix.
+  // The full revision name is "{app-name}--{revision_suffix}".
+  // Required when latest_revision is false.
+  string revision_suffix = 2;
+
+  // Percentage of traffic to route to this revision.
+  // All weights must sum to 100. Range: 0-100.
+  int32 percentage = 3 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 100
+  }];
+
+  // Optional label prefix for this traffic weight.
+  // When set, the revision gets an additional FQDN: {label}.{app-fqdn}
+  string label = 4;
+}
+
+// AzureContainerAppIpSecurityRestriction defines an IP allow/deny rule for ingress.
+message AzureContainerAppIpSecurityRestriction {
+  // Rule name.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Action to take for matching traffic.
+  // "Allow": Permit traffic from the IP range.
+  // "Deny": Block traffic from the IP range.
+  string action = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "ip_restriction_action_valid"
+      message: "action must be 'Allow' or 'Deny'"
+      expression: "this in ['Allow', 'Deny']"
+    }
+  ];
+
+  // IP address or CIDR range.
+  // Examples: "203.0.113.0/24", "10.0.0.1"
+  string ip_address_range = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Optional description of the rule.
+  string description = 4;
+}
+
+// AzureContainerAppCorsPolicy defines Cross-Origin Resource Sharing rules for ingress.
+message AzureContainerAppCorsPolicy {
+  // Allowed origins. At least one origin is required.
+  // Use "*" to allow all origins (not recommended for production).
+  // Examples: "https://example.com", "https://*.contoso.com"
+  repeated string allowed_origins = 1 [(buf.validate.field).repeated.min_items = 1];
+
+  // Allowed HTTP headers.
+  // Examples: "Content-Type", "Authorization", "X-Custom-Header"
+  repeated string allowed_headers = 2;
+
+  // Allowed HTTP methods.
+  // Examples: "GET", "POST", "PUT", "DELETE", "OPTIONS"
+  repeated string allowed_methods = 3;
+
+  // Headers to expose to the browser.
+  repeated string exposed_headers = 4;
+
+  // Maximum time in seconds that preflight results can be cached.
+  optional int32 max_age_in_seconds = 5 [(buf.validate.field).int32.gte = 0];
+
+  // Whether to include credentials (cookies, authorization headers)
+  // in CORS requests.
+  //
+  // Default: false
+  optional bool allow_credentials_enabled = 6 [(org.openmcf.shared.options.default) = "false"];
+}
+
+// AzureContainerAppHttpScaleRule scales the app based on concurrent HTTP requests.
+//
+// This is the most common scale rule for web services and APIs.
+// When concurrent requests exceed the threshold, the app scales up.
+message AzureContainerAppHttpScaleRule {
+  // Rule name. Must be unique within the app's scale rules.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Number of concurrent HTTP requests that triggers scaling.
+  // Must be a positive integer as a string (KEDA convention).
+  //
+  // Example: "100" means scale up when more than 100 concurrent requests per replica.
+  string concurrent_requests = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Authentication configuration for the scale rule.
+  // References secrets for KEDA scaler authentication.
+  repeated AzureContainerAppScaleRuleAuth authentication = 3;
+}
+
+// AzureContainerAppTcpScaleRule scales the app based on concurrent TCP connections.
+message AzureContainerAppTcpScaleRule {
+  // Rule name.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Number of concurrent TCP connections that triggers scaling.
+  // Must be a positive integer as a string.
+  string concurrent_requests = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Authentication configuration for the scale rule.
+  repeated AzureContainerAppScaleRuleAuth authentication = 3;
+}
+
+// AzureContainerAppAzureQueueScaleRule scales the app based on Azure Storage Queue depth.
+message AzureContainerAppAzureQueueScaleRule {
+  // Rule name.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Azure Storage Queue name.
+  string queue_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Queue length threshold. When the queue has more messages than this value,
+  // the app scales up.
+  int32 queue_length = 3 [(buf.validate.field).int32.gte = 1];
+
+  // Authentication configuration. Required for Azure Queue scale rules.
+  // Must include credentials to access the Azure Storage Queue.
+  repeated AzureContainerAppScaleRuleAuth authentication = 4 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// AzureContainerAppCustomScaleRule scales the app based on any KEDA-supported scaler.
+//
+// KEDA supports dozens of scalers: Kafka, Prometheus, Redis, PostgreSQL, MySQL,
+// cron, cpu, memory, and many more. The `custom_rule_type` identifies the scaler
+// and `metadata` provides scaler-specific configuration.
+//
+// See https://keda.sh/docs/scalers/ for the full list of supported scalers.
+message AzureContainerAppCustomScaleRule {
+  // Rule name.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // KEDA scaler type identifier.
+  // Examples: "kafka", "prometheus", "redis", "cron", "cpu", "memory",
+  // "postgresql", "mysql", "rabbitmq", "azure-servicebus"
+  string custom_rule_type = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Scaler-specific metadata. Keys and values depend on the scaler type.
+  //
+  // Example for cron: {"timezone": "UTC", "start": "0 8 * * 1-5", "end": "0 18 * * 1-5", "desiredReplicas": "5"}
+  // Example for cpu: {"type": "Utilization", "value": "70"}
+  // Example for kafka: {"bootstrapServers": "kafka:9092", "consumerGroup": "my-group", "topic": "my-topic", "lagThreshold": "100"}
+  map<string, string> metadata = 3;
+
+  // Authentication configuration for the scale rule.
+  repeated AzureContainerAppScaleRuleAuth authentication = 4;
+}
+
+// AzureContainerAppScaleRuleAuth provides authentication for a scale rule.
+// References a secret by name and maps it to a scaler-specific trigger parameter.
+message AzureContainerAppScaleRuleAuth {
+  // Name of the secret in the app's `secrets` list.
+  string secret_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Scaler-specific trigger parameter name that this secret maps to.
+  // The parameter name depends on the scale rule type.
+  //
+  // Examples:
+  // - Azure Queue: "connection"
+  // - Kafka: "sasl" or "tls"
+  // - Custom: varies by scaler
+  string trigger_parameter = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}
+
+// AzureContainerAppDapr configures the Dapr sidecar for the app.
+//
+// When configured, a Dapr sidecar is injected alongside the app container,
+// providing building blocks for distributed applications:
+// - Service-to-service invocation
+// - Pub/sub messaging
+// - State management
+// - Secrets management
+// - Bindings and triggers
+message AzureContainerAppDapr {
+  // Dapr application identifier. Used for service discovery and invocation.
+  // Other Dapr-enabled apps invoke this app using this ID.
+  string app_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Application port that the Dapr sidecar communicates with.
+  // This is the port your application listens on.
+  optional int32 app_port = 2;
+
+  // Protocol used for Dapr-to-app communication.
+  // "http": HTTP/1.1 (default).
+  // "grpc": gRPC (for gRPC-based applications).
+  //
+  // Default: "http"
+  optional string app_protocol = 3 [
+    (org.openmcf.shared.options.default) = "http",
+    (buf.validate.field).cel = {
+      id: "dapr_protocol_valid"
+      message: "app_protocol must be 'http' or 'grpc'"
+      expression: "this in ['http', 'grpc']"
+    }
+  ];
+}
+
+// AzureContainerAppIdentity configures managed identity for the app.
+//
+// Managed identities allow the app to authenticate with Azure services
+// (Key Vault, ACR, Storage, etc.) without managing credentials.
+//
+// Types:
+// - SystemAssigned: Azure creates and manages an identity tied to this app.
+//   Simplest option. The identity is deleted when the app is deleted.
+// - UserAssigned: References pre-created identities. Can be shared across
+//   multiple apps and has an independent lifecycle.
+// - SystemAssigned,UserAssigned: Both types simultaneously.
+message AzureContainerAppIdentity {
+  // Identity type.
+  // "SystemAssigned": Azure-managed identity.
+  // "UserAssigned": Pre-created identity.
+  // "SystemAssigned,UserAssigned": Both.
+  string type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "identity_type_valid"
+      message: "type must be 'SystemAssigned', 'UserAssigned', or 'SystemAssigned,UserAssigned'"
+      expression: "this in ['SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned']"
+    }
+  ];
+
+  // User Assigned Identity Azure resource IDs.
+  // Required when type includes "UserAssigned".
+  //
+  // Can be literal ARM resource IDs or references to AzureUserAssignedIdentity outputs.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef identity_ids = 2 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AzureUserAssignedIdentity,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.identity_id"
+  ];
+}

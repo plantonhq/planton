@@ -1,0 +1,13 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCertManagerCert
+metadata:
+  name: my-wildcard-cert
+spec:
+  gcpProjectId: <gcp-project-id>
+  primaryDomainName: "*.example.com"
+  alternateDomainNames:
+    - example.com  # include apex domain alongside the wildcard
+  cloudDnsZoneId:
+    value: "<dns-zone-name>"
+  certificateType: MANAGED  # default from spec
+  validationMethod: DNS  # default from spec

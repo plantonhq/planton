@@ -308,6 +308,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsKmsKey](/docs/catalog/aws/awskmskey) — provides a customer-managed KMS key for server-side encryption
-- [AwsIamRole](/docs/catalog/aws/awsiamrole) — creates IAM roles with policies for DynamoDB table access
-- [AwsLambda](/docs/catalog/aws/awslambda) — can be triggered by DynamoDB Streams events
+- [AwsKmsKey](/docs/catalog/aws/kms-key) — provides a customer-managed KMS key for server-side encryption
+- [AwsIamRole](/docs/catalog/aws/iam-role) — creates IAM roles with policies for DynamoDB table access
+- [AwsLambda](/docs/catalog/aws/lambda) — can be triggered by DynamoDB Streams events

@@ -299,7 +299,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsRoute53Zone](/docs/catalog/aws/awsroute53zone) — creates the hosted zone where DNS records are placed; also supports inline record creation
-- [AwsAlb](/docs/catalog/aws/awsalb) — provides `load_balancer_dns_name` and `load_balancer_hosted_zone_id` outputs for alias record targets
-- [AwsCloudfront](/docs/catalog/aws/awscloudfront) — provides the distribution DNS name for alias record targets
-- [AwsCertManagerCert](/docs/catalog/aws/awscertmanagercert) — DNS-validated certificates require TXT or CNAME records in the zone
+- [AwsRoute53Zone](/docs/catalog/aws/route53-zone) — creates the hosted zone where DNS records are placed; also supports inline record creation
+- [AwsAlb](/docs/catalog/aws/alb) — provides `load_balancer_dns_name` and `load_balancer_hosted_zone_id` outputs for alias record targets
+- [AwsCloudfront](/docs/catalog/aws/cloudfront) — provides the distribution DNS name for alias record targets
+- [AwsCertManagerCert](/docs/catalog/aws/certificate-manager-certificate) — DNS-validated certificates require TXT or CNAME records in the zone

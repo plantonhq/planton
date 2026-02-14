@@ -234,6 +234,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsEksCluster](/docs/catalog/aws/awsekscluster) — provides the EKS cluster that this node group attaches to
-- [AwsIamRole](/docs/catalog/aws/awsiamrole) — supplies the IAM role assumed by the worker nodes
-- [AwsVpc](/docs/catalog/aws/awsvpc) — provides the subnets for node placement
+- [AwsEksCluster](/docs/catalog/aws/eks-cluster) — provides the EKS cluster that this node group attaches to
+- [AwsIamRole](/docs/catalog/aws/iam-role) — supplies the IAM role assumed by the worker nodes
+- [AwsVpc](/docs/catalog/aws/vpc) — provides the subnets for node placement

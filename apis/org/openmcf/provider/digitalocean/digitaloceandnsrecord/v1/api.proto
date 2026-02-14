@@ -11,7 +11,7 @@ import "org/openmcf/shared/metadata.proto";
 // individual DNS records within a DigitalOcean DNS zone (domain).
 message DigitalOceanDnsRecord {
   // api-version
-  string api_version = 1 [(buf.validate.field).string.const = 'digitalocean.openmcf.org/v1'];
+  string api_version = 1 [(buf.validate.field).string.const = "digital-ocean.openmcf.org/v1"];
 
   // resource-kind
   string kind = 2 [(buf.validate.field).string.const = 'DigitalOceanDnsRecord'];

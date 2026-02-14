@@ -160,6 +160,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CloudflareKvNamespace](/docs/catalog/cloudflare/cloudflarekvnamespace) — create KV namespaces to bind to the Worker
-- [CloudflareD1Database](/docs/catalog/cloudflare/cloudflared1database) — deploy a D1 database for the Worker to query
-- [CloudflareR2Bucket](/docs/catalog/cloudflare/cloudflarer2bucket) — R2 storage for the Worker to read and write objects
+- [CloudflareKvNamespace](/docs/catalog/cloudflare/kv-namespace) — create KV namespaces to bind to the Worker
+- [CloudflareD1Database](/docs/catalog/cloudflare/d1-database) — deploy a D1 database for the Worker to query
+- [CloudflareR2Bucket](/docs/catalog/cloudflare/r2-bucket) — R2 storage for the Worker to read and write objects

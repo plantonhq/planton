@@ -1,0 +1,13 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsVpc
+metadata:
+  name: my-development-vpc
+spec:
+  vpcCidr: 10.0.0.0/16
+  availabilityZones:
+    - <aws-region>a
+  subnetsPerAvailabilityZone: 1  # recommended_default from spec
+  subnetSize: 1  # recommended_default from spec
+  isNatGatewayEnabled: false  # No NAT gateway to reduce costs
+  isDnsHostnamesEnabled: true
+  isDnsSupportEnabled: true

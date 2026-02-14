@@ -40,8 +40,9 @@ message CloudflareR2BucketSpec {
   // expose bucket via public URL (Cloudflare-managed r2.dev domain; default: false)
   bool public_access = 4;
 
-  // enable object versioning for the bucket (default: false)
-  bool versioning_enabled = 5;
+  // Field 5 removed: R2 does not support object versioning.
+  reserved 5;
+  reserved "versioning_enabled";
 
   // custom domain configuration for the bucket
   CloudflareR2BucketCustomDomainConfig custom_domain = 6;

@@ -185,6 +185,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — pre-create a namespace to reference via `valueFrom`
-- [KubernetesPostgres](/docs/catalog/kubernetes/kubernetespostgres) — deploy PostgreSQL as the backing database for Keycloak
-- [KubernetesJenkins](/docs/catalog/kubernetes/kubernetesjenkins) — integrate Jenkins CI/CD with Keycloak for authentication
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — pre-create a namespace to reference via `valueFrom`
+- [KubernetesPostgres](/docs/catalog/kubernetes/postgres) — deploy PostgreSQL as the backing database for Keycloak
+- [KubernetesJenkins](/docs/catalog/kubernetes/jenkins) — integrate Jenkins CI/CD with Keycloak for authentication

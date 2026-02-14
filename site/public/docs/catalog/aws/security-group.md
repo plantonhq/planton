@@ -280,8 +280,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsVpc](/docs/catalog/aws/awsvpc) — provides the VPC where Security Groups are created
-- [AwsAlb](/docs/catalog/aws/awsalb) — attaches Security Groups to Application Load Balancers
-- [AwsEksCluster](/docs/catalog/aws/awsekscluster) — uses Security Groups for cluster and node networking
-- [AwsEc2Instance](/docs/catalog/aws/awsec2instance) — assigns Security Groups to EC2 instances
-- [AwsRdsInstance](/docs/catalog/aws/awsrdsinstance) — uses Security Groups to control database access
+- [AwsVpc](/docs/catalog/aws/vpc) — provides the VPC where Security Groups are created
+- [AwsAlb](/docs/catalog/aws/alb) — attaches Security Groups to Application Load Balancers
+- [AwsEksCluster](/docs/catalog/aws/eks-cluster) — uses Security Groups for cluster and node networking
+- [AwsEc2Instance](/docs/catalog/aws/ec2-instance) — assigns Security Groups to EC2 instances
+- [AwsRdsInstance](/docs/catalog/aws/rds-instance) — uses Security Groups to control database access

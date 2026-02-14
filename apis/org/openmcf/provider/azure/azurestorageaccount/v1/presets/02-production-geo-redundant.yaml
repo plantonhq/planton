@@ -1,0 +1,27 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureStorageAccount
+metadata:
+  name: my-production-storage
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  accountKind: STORAGE_V2
+  accountTier: STANDARD
+  replicationType: GRS  # geo-redundant; 6 copies across paired regions
+  accessTier: HOT
+  enableHttpsTrafficOnly: true
+  minTlsVersion: TLS1_2
+  networkRules:
+    defaultAction: DENY
+    bypassAzureServices: true
+    ipRules:
+      - <your-trusted-cidr>
+  blobProperties:
+    enableVersioning: true
+    softDeleteRetentionDays: 30  # 30-day retention for production
+    containerSoftDeleteRetentionDays: 30
+  containers:
+    - name: data
+    - name: backups
+    - name: archives

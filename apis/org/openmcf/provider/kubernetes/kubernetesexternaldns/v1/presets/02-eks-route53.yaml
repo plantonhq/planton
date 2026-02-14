@@ -1,0 +1,11 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesExternalDns
+metadata:
+  name: my-external-dns
+spec:
+  namespace:
+    value: external-dns
+  createNamespace: true
+  eks:
+    route53ZoneId:
+      value: "<your-route53-hosted-zone-id>"

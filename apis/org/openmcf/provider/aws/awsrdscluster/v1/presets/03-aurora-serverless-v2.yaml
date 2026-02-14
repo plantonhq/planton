@@ -1,0 +1,24 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsRdsCluster
+metadata:
+  name: my-aurora-serverless-v2
+spec:
+  subnetIds:
+    - value: "<private-subnet-id-az1>"
+    - value: "<private-subnet-id-az2>"
+  securityGroupIds:
+    - value: "<security-group-id>"
+  engine: aurora-postgresql
+  engineVersion: "15.4"
+  databaseName: <database-name>
+  manageMasterUserPassword: true  # recommended_default from spec
+  username: master  # default from spec
+  storageEncrypted: true
+  deletionProtection: true
+  backupRetentionPeriod: 7
+  skipFinalSnapshot: false
+  finalSnapshotIdentifier: <final-snapshot-name>
+  serverlessV2Scaling:
+    minCapacity: 0.5  # Minimum ACUs; scales to zero-ish for cost savings
+    maxCapacity: 16  # Maximum ACUs; adjust based on peak load
+  enableHttpEndpoint: true  # Data API for serverless access

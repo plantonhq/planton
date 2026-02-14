@@ -426,7 +426,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — pre-create a namespace to reference via `valueFrom`
-- [KubernetesPostgres](/docs/catalog/kubernetes/kubernetespostgres) — deploy a standalone PostgreSQL instance as an external database for Harbor
-- [KubernetesSecret](/docs/catalog/kubernetes/kubernetessecret) — manage secrets for external database or storage credentials
-- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — deploy additional Helm charts alongside Harbor (e.g., monitoring exporters)
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — pre-create a namespace to reference via `valueFrom`
+- [KubernetesPostgres](/docs/catalog/kubernetes/postgres) — deploy a standalone PostgreSQL instance as an external database for Harbor
+- [KubernetesSecret](/docs/catalog/kubernetes/secret) — manage secrets for external database or storage credentials
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/helm-release) — deploy additional Helm charts alongside Harbor (e.g., monitoring exporters)

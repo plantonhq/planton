@@ -1,0 +1,13 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesRookCephCluster
+metadata:
+  name: my-ceph-cluster
+spec:
+  namespace:
+    value: rook-ceph
+  createNamespace: false
+  operatorNamespace:
+    value: rook-ceph
+  enableToolbox: true
+  enableMonitoring: false
+  enableDashboard: true

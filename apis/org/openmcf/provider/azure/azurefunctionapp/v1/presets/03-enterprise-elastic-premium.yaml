@@ -1,0 +1,55 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureFunctionApp
+metadata:
+  name: my-enterprise-fn
+spec:
+  region: eastus
+  resource_group:
+    value: "<your-resource-group-name>"
+  name: my-enterprise-fn
+  service_plan_id:
+    value: "<your-elastic-premium-plan-id>"
+  storage_account_name:
+    value: "<your-storage-account-name>"
+  storage_uses_managed_identity: true
+  application_insights_connection_string:
+    value: "<your-app-insights-connection-string>"
+  https_only: true
+  builtin_logging_enabled: false
+  public_network_access_enabled: true
+  virtual_network_subnet_id:
+    value: "<your-vnet-subnet-id>"
+  identity:
+    type: SystemAssigned
+  app_settings:
+    ENVIRONMENT: production
+    SERVICE_BUS_CONNECTION: "@Microsoft.KeyVault(SecretUri=https://<your-keyvault>.vault.azure.net/secrets/sb-connection)"
+  site_config:
+    application_stack:
+      python_version: "3.12"
+    health_check_path: /api/health
+    app_scale_limit: 30
+    elastic_instance_minimum: 2
+    pre_warmed_instance_count: 3
+    minimum_tls_version: "1.2"
+    ftps_state: Disabled
+    http2_enabled: true
+    vnet_route_all_enabled: true
+    runtime_scale_monitoring_enabled: true
+    ip_restrictions:
+      - name: allow-office
+        priority: 100
+        action: Allow
+        ip_address: 203.0.113.0/24
+        description: Corporate office CIDR
+      - name: allow-vpn
+        priority: 200
+        action: Allow
+        ip_address: 198.51.100.0/24
+        description: VPN gateway CIDR
+    ip_restriction_default_action: Deny
+    scm_use_main_ip_restriction: true
+    cors:
+      allowed_origins:
+        - https://portal.example.com
+      support_credentials: true

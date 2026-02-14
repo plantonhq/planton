@@ -162,6 +162,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — application deployments that use Tekton-built images or are triggered by Tekton pipelines
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — namespaces for workloads that Tekton pipelines build and deploy into
-- [KubernetesSecret](/docs/catalog/kubernetes/kubernetessecret) — secrets for Git credentials, container registry tokens, and other pipeline authentication needs
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — application deployments that use Tekton-built images or are triggered by Tekton pipelines
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — namespaces for workloads that Tekton pipelines build and deploy into
+- [KubernetesSecret](/docs/catalog/kubernetes/secret) — secrets for Git credentials, container registry tokens, and other pipeline authentication needs

@@ -185,7 +185,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [CivoVpc](/docs/catalog/civo/civovpc) — provides the private network for database connectivity
-- [CivoFirewall](/docs/catalog/civo/civofirewall) — controls network access to the database instance
-- [CivoKubernetesCluster](/docs/catalog/civo/civokubernetescluster) — application workloads that connect to the database
-- [CivoDnsRecord](/docs/catalog/civo/civodnsrecord) — creates DNS records pointing to the database endpoint
+- [CivoVpc](/docs/catalog/civo/vpc) — provides the private network for database connectivity
+- [CivoFirewall](/docs/catalog/civo/firewall) — controls network access to the database instance
+- [CivoKubernetesCluster](/docs/catalog/civo/kubernetes-cluster) — application workloads that connect to the database
+- [CivoDnsRecord](/docs/catalog/civo/dns-record) — creates DNS records pointing to the database endpoint

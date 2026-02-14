@@ -26,10 +26,10 @@ When you deploy an AwsEcsService resource, OpenMCF provisions:
 ## Prerequisites
 
 - **AWS credentials** configured via environment variables or OpenMCF provider config
-- **An existing ECS cluster** (deploy with [AwsEcsCluster](/docs/catalog/aws/awsecscluster) or provide an ARN)
+- **An existing ECS cluster** (deploy with [AwsEcsCluster](/docs/catalog/aws/ecs-cluster) or provide an ARN)
 - **At least one VPC subnet** for Fargate task placement
 - **A security group** allowing traffic to the container port
-- **An existing ALB** with a listener on the target port if enabling ALB integration (deploy with [AwsAlb](/docs/catalog/aws/awsalb))
+- **An existing ALB** with a listener on the target port if enabling ALB integration (deploy with [AwsAlb](/docs/catalog/aws/alb))
 - **IAM roles** for task execution (image pull, log writes) and optional task role (AWS API access)
 
 ## Quick Start
@@ -377,9 +377,9 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsEcsCluster](/docs/catalog/aws/awsecscluster) — provides the cluster where this service runs
-- [AwsAlb](/docs/catalog/aws/awsalb) — provides the Application Load Balancer for ingress traffic
-- [AwsVpc](/docs/catalog/aws/awsvpc) — provides subnets for Fargate task placement
-- [AwsSecurityGroup](/docs/catalog/aws/awssecuritygroup) — controls network access to task ENIs
-- [AwsIamRole](/docs/catalog/aws/awsiamrole) — provides task execution and task roles
-- [AwsEcrRepo](/docs/catalog/aws/awsecrrepo) — hosts container images deployed by this service
+- [AwsEcsCluster](/docs/catalog/aws/ecs-cluster) — provides the cluster where this service runs
+- [AwsAlb](/docs/catalog/aws/alb) — provides the Application Load Balancer for ingress traffic
+- [AwsVpc](/docs/catalog/aws/vpc) — provides subnets for Fargate task placement
+- [AwsSecurityGroup](/docs/catalog/aws/security-group) — controls network access to task ENIs
+- [AwsIamRole](/docs/catalog/aws/iam-role) — provides task execution and task roles
+- [AwsEcrRepo](/docs/catalog/aws/ecr-repo) — hosts container images deployed by this service

@@ -264,6 +264,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project where the instance is created
-- [GcpVpc](/docs/catalog/gcp/gcpvpc) — provides the VPC network for network interface configuration
-- [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork) — provides the subnetwork for network interface configuration
+- [GcpProject](/docs/catalog/gcp/project) — provides the GCP project where the instance is created
+- [GcpVpc](/docs/catalog/gcp/vpc) — provides the VPC network for network interface configuration
+- [GcpSubnetwork](/docs/catalog/gcp/subnetwork) — provides the subnetwork for network interface configuration

@@ -1,0 +1,19 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureEventHubNamespace
+metadata:
+  name: my-streaming
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-namespace-name>
+  sku: Standard  # default from spec
+  minimumTlsVersion: "1.2"  # default from spec
+  publicNetworkAccessEnabled: true  # default from spec
+  eventHubs:
+    - name: app-events
+      partitionCount: 4
+      messageRetention: 1  # default from spec
+      consumerGroups:
+        - name: analytics-pipeline
+          userMetadata: "Event analytics consumer"

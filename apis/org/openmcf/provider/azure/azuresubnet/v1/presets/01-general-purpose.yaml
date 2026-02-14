@@ -1,0 +1,15 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureSubnet
+metadata:
+  name: my-general-subnet
+spec:
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  vnetId:
+    value: "<vnet-resource-id>"
+  name: general
+  addressPrefix: 10.0.1.0/24
+  serviceEndpoints:
+    - Microsoft.Storage
+    - Microsoft.KeyVault
+    - Microsoft.Sql

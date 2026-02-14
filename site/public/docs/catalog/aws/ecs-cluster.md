@@ -194,7 +194,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsEcsService](/docs/catalog/aws/awsecsservice) — deploys Fargate services into this cluster
-- [AwsAlb](/docs/catalog/aws/awsalb) — provides load balancing for services running in the cluster
-- [AwsVpc](/docs/catalog/aws/awsvpc) — provides the network infrastructure for ECS services
-- [AwsKmsKey](/docs/catalog/aws/awskmskey) — provides encryption keys for ECS Exec session data
+- [AwsEcsService](/docs/catalog/aws/ecs-service) — deploys Fargate services into this cluster
+- [AwsAlb](/docs/catalog/aws/alb) — provides load balancing for services running in the cluster
+- [AwsVpc](/docs/catalog/aws/vpc) — provides the network infrastructure for ECS services
+- [AwsKmsKey](/docs/catalog/aws/kms-key) — provides encryption keys for ECS Exec session data

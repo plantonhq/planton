@@ -247,8 +247,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenStackNetwork](/docs/catalog/openstack/openstacknetwork) — provides the network for instance attachment
-- [OpenStackNetworkPort](/docs/catalog/openstack/openstacknetworkport) — provides pre-provisioned ports for stable network identity
-- [OpenStackKeypair](/docs/catalog/openstack/openstackkeypair) — manages the SSH keypair injected into the instance
-- [OpenStackSecurityGroup](/docs/catalog/openstack/openstacksecuritygroup) — controls inbound and outbound traffic rules
-- [OpenStackServerGroup](/docs/catalog/openstack/openstackservergroup) — defines placement policies (affinity/anti-affinity) for instance groups
+- [OpenStackNetwork](/docs/catalog/openstack/network) — provides the network for instance attachment
+- [OpenStackNetworkPort](/docs/catalog/openstack/network-port) — provides pre-provisioned ports for stable network identity
+- [OpenStackKeypair](/docs/catalog/openstack/keypair) — manages the SSH keypair injected into the instance
+- [OpenStackSecurityGroup](/docs/catalog/openstack/security-group) — controls inbound and outbound traffic rules
+- [OpenStackServerGroup](/docs/catalog/openstack/server-group) — defines placement policies (affinity/anti-affinity) for instance groups

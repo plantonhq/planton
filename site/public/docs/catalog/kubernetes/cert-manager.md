@@ -299,8 +299,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — provides the target namespace via `valueFrom` reference
-- [KubernetesExternalDns](/docs/catalog/kubernetes/kubernetesexternaldns) — manages DNS records for services and ingresses; pairs well with cert-manager for full DNS automation
-- [KubernetesIngressNginx](/docs/catalog/kubernetes/kubernetesingressnginx) — ingress controller that uses cert-manager ClusterIssuers to provision TLS certificates
-- [KubernetesIstio](/docs/catalog/kubernetes/kubernetesistio) — service mesh that can consume cert-manager certificates for mTLS and gateway TLS
-- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — alternative for deploying Helm charts with custom configurations
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
+- [KubernetesExternalDns](/docs/catalog/kubernetes/external-dns) — manages DNS records for services and ingresses; pairs well with cert-manager for full DNS automation
+- [KubernetesIngressNginx](/docs/catalog/kubernetes/ingress-nginx) — ingress controller that uses cert-manager ClusterIssuers to provision TLS certificates
+- [KubernetesIstio](/docs/catalog/kubernetes/istio) — service mesh that can consume cert-manager certificates for mTLS and gateway TLS
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/helm-release) — alternative for deploying Helm charts with custom configurations

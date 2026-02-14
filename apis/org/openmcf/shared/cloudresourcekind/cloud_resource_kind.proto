@@ -293,6 +293,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "azpg"
   }];
+  AzureRedisCache = 431 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azred"
+  }];
   AzureCosmosdbAccount = 432 [(kind_meta) = {
     provider: azure
     version: v1
@@ -308,6 +313,31 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "azmysql"
   }];
+  AzureContainerAppEnvironment = 440 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azcae"
+  }];
+  AzureContainerApp = 441 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azca"
+  }];
+  AzureServicePlan = 442 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azsp"
+  }];
+  AzureFunctionApp = 443 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azfn"
+  }];
+  AzureLinuxWebApp = 444 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azweb"
+  }];
   AzureLogAnalyticsWorkspace = 450 [(kind_meta) = {
     provider: azure
     version: v1
@@ -322,6 +352,24 @@ enum CloudResourceKind {
     provider: azure
     version: v1
     id_prefix: "azid"
+  }];
+  AzureServiceBusNamespace = 470 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azsb"
+  }];
+  AzureEventHubNamespace = 471 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azeh"
+  }];
+
+  // --- CDN ---
+
+  AzureFrontDoorProfile = 480 [(kind_meta) = {
+    provider: azure
+    version: v1
+    id_prefix: "azfd"
   }];
 
   // 600–799: GCP resources

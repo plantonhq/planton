@@ -382,6 +382,23 @@ function scanProvider(providerPath: string, provider: string): ComponentDoc[] {
 }
 
 /**
+ * Rewrite internal catalog links so that component directory names are replaced
+ * with URL-friendly slugs. Source catalog-page.md files use stable directory names
+ * (e.g., /docs/catalog/aws/awsvpc) but the built site uses title-derived slugs
+ * (e.g., /docs/catalog/aws/vpc). This function translates one to the other.
+ */
+function rewriteCatalogLinks(content: string, lookup: Map<string, string>): string {
+  return content.replace(
+    /\/docs\/catalog\/([a-z0-9-]+)\/([a-z0-9-]+)/g,
+    (match, provider, component) => {
+      const key = `${provider}/${component}`;
+      const slugPath = lookup.get(key);
+      return slugPath ? `/docs/catalog/${slugPath}` : match;
+    }
+  );
+}
+
+/**
  * Write component doc to site/public/docs/catalog/{provider}/{slug}.md
  */
 function writeComponentDoc(
@@ -478,26 +495,11 @@ function getProviderComponentCount(provider: string, allDocs: Map<string, Compon
 /**
  * Generate main provider index page
  */
-function generateMainIndex(providers: string[], outputRoot: string, allDocs: Map<string, ComponentDoc[]>): void {
-  // Sort providers alphabetically
-  const sortedProviders = [...providers].sort();
-
-  // Generate provider cards with icons
-  const providerCards = sortedProviders
-    .map(provider => {
-      const title = provider.toUpperCase();
-      const icon = getProviderIcon(provider);
-      const count = getProviderComponentCount(provider, allDocs);
-      return `  <a href="/docs/catalog/${provider}" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
-    <img src="${icon}" alt="${title}" class="w-8 h-8 object-contain" />
-    <div>
-      <div class="font-semibold text-white">${title}</div>
-      <div class="text-sm text-slate-400">${count} component${count !== 1 ? 's' : ''}</div>
-    </div>
-  </a>`;
-    })
-    .join('\n');
-
+function generateMainIndex(_providers: string[], outputRoot: string, _allDocs: Map<string, ComponentDoc[]>): void {
+  // The provider grid is now rendered by the CatalogProviderGrid React
+  // component at runtime (data-driven from docs-structure.json).  This
+  // function only writes the frontmatter and header text so the markdown
+  // file exists for the static-generation pipeline.
   const indexContent = `---
 title: "Catalog"
 description: "Browse deployment components organized by cloud provider"
@@ -508,10 +510,6 @@ order: 50
 # Catalog
 
 Browse deployment components by cloud provider:
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
-${providerCards}
-</div>
 `;
 
   const indexPath = path.join(outputRoot, 'index.md');
@@ -530,12 +528,12 @@ async function copyComponentDocs(): Promise<void> {
   const apisRoot = path.join(projectRoot, 'apis/org/openmcf/provider');
   const siteDocsRoot = path.join(scriptDir, '../public/docs/catalog');
 
-  // List of provider directories to manage (clear only these, not the entire docs directory)
-  const providerDirs = [
-    'aws', 'gcp', 'azure', 'kubernetes',
-    'cloudflare', 'civo', 'digitalocean',
-    'atlas', 'confluent', 'openstack', 'snowflake'
-  ];
+  // Dynamically discover provider directories to clear (prevents stale files from previous builds)
+  const providerDirs = fs.existsSync(siteDocsRoot)
+    ? fs.readdirSync(siteDocsRoot).filter(item =>
+        fs.statSync(path.join(siteDocsRoot, item)).isDirectory()
+      )
+    : [];
 
   // Clear only provider directories (preserve manually created docs like index.md, getting-started.md, etc.)
   for (const provider of providerDirs) {
@@ -573,6 +571,9 @@ async function copyComponentDocs(): Promise<void> {
 
   console.log(`Scanning ${providers.length} providers...\n`);
 
+  // Phase 1: Scan all providers to collect docs and build the component-to-slug lookup.
+  // Writing is deferred to Phase 2 so that internal catalog links can be rewritten
+  // using the complete lookup (a component in AWS may link to a component in GCP).
   for (const provider of providers) {
     const providerPath = path.join(apisRoot, provider);
     const docs = scanProvider(providerPath, provider);
@@ -580,26 +581,38 @@ async function copyComponentDocs(): Promise<void> {
     if (docs.length > 0) {
       stats.providers.add(provider);
       docsByProvider.set(provider, docs);
-
       console.log(`${provider.toUpperCase()}: Found ${docs.length} components`);
-
-      // Write each component doc
-      for (const doc of docs) {
-        try {
-          writeComponentDoc(doc, siteDocsRoot);
-          stats.copied++;
-          const sourceType = doc.sourcePath.endsWith('catalog-page.md') ? 'catalog-page' : 'legacy';
-          console.log(`   ${doc.component} -> ${doc.slug}.md (${sourceType})`);
-        } catch (error) {
-          console.error(`   FAIL ${doc.component}: ${error}`);
-          stats.skipped++;
-        }
-      }
-
-      // Generate provider index
-      generateProviderIndex(provider, docs, siteDocsRoot);
-      console.log(`   Generated index page\n`);
     }
+  }
+
+  // Build a global lookup from component directory path to URL slug path.
+  // e.g. "aws/awsvpc" -> "aws/vpc", "openstack/openstackinstance" -> "openstack/instance"
+  const componentToSlug = new Map<string, string>();
+  for (const [provider, docs] of docsByProvider) {
+    for (const doc of docs) {
+      componentToSlug.set(`${provider}/${doc.component}`, `${provider}/${doc.slug}`);
+    }
+  }
+
+  console.log(`\nBuilt link lookup for ${componentToSlug.size} components\n`);
+
+  // Phase 2: Write docs with rewritten catalog links, then generate index pages.
+  for (const [provider, docs] of docsByProvider) {
+    for (const doc of docs) {
+      try {
+        doc.content = rewriteCatalogLinks(doc.content, componentToSlug);
+        writeComponentDoc(doc, siteDocsRoot);
+        stats.copied++;
+        const sourceType = doc.sourcePath.endsWith('catalog-page.md') ? 'catalog-page' : 'legacy';
+        console.log(`   ${doc.component} -> ${doc.slug}.md (${sourceType})`);
+      } catch (error) {
+        console.error(`   FAIL ${doc.component}: ${error}`);
+        stats.skipped++;
+      }
+    }
+
+    generateProviderIndex(provider, docs, siteDocsRoot);
+    console.log(`   Generated index page\n`);
   }
 
   // Generate catalog index (now in /docs/catalog/)

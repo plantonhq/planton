@@ -1,0 +1,27 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesSignoz
+metadata:
+  name: my-signoz
+spec:
+  namespace:
+    value: signoz
+  createNamespace: true
+  signozContainer:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+  otelCollectorContainer:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 100Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  ingress:
+    enabled: true
+    hostname: "<your-signoz.example.com>"

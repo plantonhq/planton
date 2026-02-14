@@ -1,0 +1,19 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesTemporal
+metadata:
+  name: my-temporal
+spec:
+  namespace:
+    value: temporal
+  createNamespace: true
+  container:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+  ingress:
+    enabled: true
+    hostname: "<your-temporal.example.com>"

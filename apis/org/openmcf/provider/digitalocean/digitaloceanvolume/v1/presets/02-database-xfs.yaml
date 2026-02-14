@@ -1,0 +1,13 @@
+apiVersion: digital-ocean.openmcf.org/v1
+kind: DigitalOceanVolume
+metadata:
+  name: my-database-volume
+spec:
+  volumeName: my-database-volume
+  region: nyc1
+  sizeGib: 100
+  filesystemType: xfs  # Optimized for database write patterns
+  description: Database block storage with XFS
+  tags:
+    - production
+    - database

@@ -231,6 +231,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — pre-create a namespace to reference via `valueFrom`
-- [KubernetesPostgres](/docs/catalog/kubernetes/kubernetespostgres) — deploy a PostgreSQL cluster as the OpenFGA datastore backend
-- [KubernetesSecret](/docs/catalog/kubernetes/kubernetessecret) — manage Kubernetes Secrets for database credentials
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — pre-create a namespace to reference via `valueFrom`
+- [KubernetesPostgres](/docs/catalog/kubernetes/postgres) — deploy a PostgreSQL cluster as the OpenFGA datastore backend
+- [KubernetesSecret](/docs/catalog/kubernetes/secret) — manage Kubernetes Secrets for database credentials

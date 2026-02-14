@@ -235,7 +235,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — pre-create a namespace to reference via `valueFrom`
-- [KubernetesHelmRelease](/docs/catalog/kubernetes/kuberneteshelmrelease) — deploy additional Helm charts, such as the `gha-runner-scale-set` chart for runner pods
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — deploy custom workloads alongside the controller
-- [KubernetesSecret](/docs/catalog/kubernetes/kubernetessecret) — manage secrets for GitHub App credentials or PAT tokens used by runner scale sets
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — pre-create a namespace to reference via `valueFrom`
+- [KubernetesHelmRelease](/docs/catalog/kubernetes/helm-release) — deploy additional Helm charts, such as the `gha-runner-scale-set` chart for runner pods
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — deploy custom workloads alongside the controller
+- [KubernetesSecret](/docs/catalog/kubernetes/secret) — manage secrets for GitHub App credentials or PAT tokens used by runner scale sets

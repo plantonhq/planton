@@ -208,9 +208,9 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [KubernetesTekton](/docs/catalog/kubernetes/kubernetestekton) — manifest-based Tekton deployment that applies Pipeline and Dashboard release YAMLs directly without the operator
-- [KubernetesDeployment](/docs/catalog/kubernetes/kubernetesdeployment) — application deployments that use Tekton-built images or are triggered by Tekton pipelines
-- [KubernetesNamespace](/docs/catalog/kubernetes/kubernetesnamespace) — namespaces for workloads that Tekton pipelines build and deploy into
-- [KubernetesSecret](/docs/catalog/kubernetes/kubernetessecret) — secrets for Git credentials, container registry tokens, and other pipeline authentication needs
-- [KubernetesIstio](/docs/catalog/kubernetes/kubernetesistio) — Istio service mesh required for dashboard ingress via Gateway API
-- [KubernetesCertManager](/docs/catalog/kubernetes/kubernetescertmanager) — cert-manager for automatic TLS certificate provisioning on dashboard ingress
+- [KubernetesTekton](/docs/catalog/kubernetes/tekton) — manifest-based Tekton deployment that applies Pipeline and Dashboard release YAMLs directly without the operator
+- [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — application deployments that use Tekton-built images or are triggered by Tekton pipelines
+- [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — namespaces for workloads that Tekton pipelines build and deploy into
+- [KubernetesSecret](/docs/catalog/kubernetes/secret) — secrets for Git credentials, container registry tokens, and other pipeline authentication needs
+- [KubernetesIstio](/docs/catalog/kubernetes/istio) — Istio service mesh required for dashboard ingress via Gateway API
+- [KubernetesCertManager](/docs/catalog/kubernetes/cert-manager) — cert-manager for automatic TLS certificate provisioning on dashboard ingress

@@ -196,7 +196,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project for cluster creation
-- [GcpVpc](/docs/catalog/gcp/gcpvpc) — provides the VPC network
-- [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork) — provides the subnetwork with secondary IP ranges for pods and services
-- [GcpRouterNat](/docs/catalog/gcp/gcprouternat) — provides Cloud NAT for private node outbound internet access
+- [GcpProject](/docs/catalog/gcp/project) — provides the GCP project for cluster creation
+- [GcpVpc](/docs/catalog/gcp/vpc) — provides the VPC network
+- [GcpSubnetwork](/docs/catalog/gcp/subnetwork) — provides the subnetwork with secondary IP ranges for pods and services
+- [GcpRouterNat](/docs/catalog/gcp/router-nat) — provides Cloud NAT for private node outbound internet access

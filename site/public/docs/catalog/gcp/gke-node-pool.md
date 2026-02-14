@@ -8,7 +8,7 @@ componentName: "gcpgkenodepool"
 
 # GCP GKE Node Pool
 
-Deploys a node pool into an existing GKE cluster on Google Cloud with configurable machine types, disk options, autoscaling, and Spot VM support. This component is a companion to [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — it manages the compute capacity for workloads while the cluster component manages the control plane.
+Deploys a node pool into an existing GKE cluster on Google Cloud with configurable machine types, disk options, autoscaling, and Spot VM support. This component is a companion to [GcpGkeCluster](/docs/catalog/gcp/gke-cluster) — it manages the compute capacity for workloads while the cluster component manages the control plane.
 
 ## What Gets Created
 
@@ -28,7 +28,7 @@ When you deploy a GcpGkeNodePool resource, OpenMCF provisions:
 ## Prerequisites
 
 - **GCP credentials** configured via environment variables or OpenMCF provider config
-- **An existing GKE cluster** — deployed via a [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) resource or created externally
+- **An existing GKE cluster** — deployed via a [GcpGkeCluster](/docs/catalog/gcp/gke-cluster) resource or created externally
 - **IAM permissions** to create node pools in the target GCP project and GKE cluster
 
 ## Quick Start
@@ -219,7 +219,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — provides the parent GKE cluster that this node pool attaches to
-- [GcpVpc](/docs/catalog/gcp/gcpvpc) — provides the VPC network used by the parent cluster
-- [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork) — provides the subnetwork with IP ranges for pods and services
-- [GcpRouterNat](/docs/catalog/gcp/gcprouternat) — provides Cloud NAT for private node outbound internet access
+- [GcpGkeCluster](/docs/catalog/gcp/gke-cluster) — provides the parent GKE cluster that this node pool attaches to
+- [GcpVpc](/docs/catalog/gcp/vpc) — provides the VPC network used by the parent cluster
+- [GcpSubnetwork](/docs/catalog/gcp/subnetwork) — provides the subnetwork with IP ranges for pods and services
+- [GcpRouterNat](/docs/catalog/gcp/router-nat) — provides Cloud NAT for private node outbound internet access

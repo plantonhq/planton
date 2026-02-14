@@ -151,7 +151,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project that hosts the GKE cluster
-- [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — creates the Google Service Account referenced by `serviceAccountEmail`
-- [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — provisions the GKE cluster where Workload Identity is enabled
-- [GcpDnsZone](/docs/catalog/gcp/gcpdnszone) — commonly paired with Workload Identity bindings for cert-manager or external-dns
+- [GcpProject](/docs/catalog/gcp/project) — provides the GCP project that hosts the GKE cluster
+- [GcpServiceAccount](/docs/catalog/gcp/service-account) — creates the Google Service Account referenced by `serviceAccountEmail`
+- [GcpGkeCluster](/docs/catalog/gcp/gke-cluster) — provisions the GKE cluster where Workload Identity is enabled
+- [GcpDnsZone](/docs/catalog/gcp/dns-zone) — commonly paired with Workload Identity bindings for cert-manager or external-dns

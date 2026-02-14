@@ -115,5 +115,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [OpenFgaAuthorizationModel](/docs/catalog/openfga/openfgaauthorizationmodel) — defines the types, relations, and access rules within a store
-- [OpenFgaRelationshipTuple](/docs/catalog/openfga/openfgarelationshiptuple) — creates authorization data (who has what relation to which object) within a store
+- [OpenFgaAuthorizationModel](/docs/catalog/openfga/authorization-model) — defines the types, relations, and access rules within a store
+- [OpenFgaRelationshipTuple](/docs/catalog/openfga/relationship-tuple) — creates authorization data (who has what relation to which object) within a store
