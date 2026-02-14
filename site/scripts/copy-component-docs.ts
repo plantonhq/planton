@@ -495,26 +495,11 @@ function getProviderComponentCount(provider: string, allDocs: Map<string, Compon
 /**
  * Generate main provider index page
  */
-function generateMainIndex(providers: string[], outputRoot: string, allDocs: Map<string, ComponentDoc[]>): void {
-  // Sort providers alphabetically
-  const sortedProviders = [...providers].sort();
-
-  // Generate provider cards with icons
-  const providerCards = sortedProviders
-    .map(provider => {
-      const title = provider.toUpperCase();
-      const icon = getProviderIcon(provider);
-      const count = getProviderComponentCount(provider, allDocs);
-      return `  <a href="/docs/catalog/${provider}" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
-    <img src="${icon}" alt="${title}" class="w-8 h-8 object-contain" />
-    <div>
-      <div class="font-semibold text-white">${title}</div>
-      <div class="text-sm text-slate-400">${count} component${count !== 1 ? 's' : ''}</div>
-    </div>
-  </a>`;
-    })
-    .join('\n');
-
+function generateMainIndex(_providers: string[], outputRoot: string, _allDocs: Map<string, ComponentDoc[]>): void {
+  // The provider grid is now rendered by the CatalogProviderGrid React
+  // component at runtime (data-driven from docs-structure.json).  This
+  // function only writes the frontmatter and header text so the markdown
+  // file exists for the static-generation pipeline.
   const indexContent = `---
 title: "Catalog"
 description: "Browse deployment components organized by cloud provider"
@@ -525,10 +510,6 @@ order: 50
 # Catalog
 
 Browse deployment components by cloud provider:
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
-${providerCards}
-</div>
 `;
 
   const indexPath = path.join(outputRoot, 'index.md');
