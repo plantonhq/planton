@@ -1,0 +1,22 @@
+apiVersion: digital-ocean.openmcf.org/v1
+kind: DigitalOceanLoadBalancer
+metadata:
+  name: my-http-lb
+spec:
+  loadBalancerName: my-http-lb
+  region: nyc3
+  vpc:
+    value: "<vpc-id>"
+  forwardingRules:
+    - entryPort: 80
+      entryProtocol: http
+      targetPort: 8080
+      targetProtocol: http
+  healthCheck:
+    port: 8080
+    protocol: http
+    path: /health
+    checkIntervalSec: 10
+  dropletIds:
+    - value: "<droplet-id-1>"
+    - value: "<droplet-id-2>"

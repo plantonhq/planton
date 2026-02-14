@@ -1,0 +1,18 @@
+apiVersion: digital-ocean.openmcf.org/v1
+kind: DigitalOceanFunction
+metadata:
+  name: my-api-function
+spec:
+  functionName: my-api-function
+  region: nyc1
+  runtime: nodejs_20
+  githubSource:
+    repo: "<your-org>/<your-repo>"
+    branch: main
+    deployOnPush: true  # recommended_default from spec
+  sourceDirectory: /functions/api
+  memoryMb: 256  # recommended_default from spec
+  timeoutMs: 3000  # recommended_default from spec
+  isWeb: true  # recommended_default from spec
+  environmentVariables:
+    NODE_ENV: production

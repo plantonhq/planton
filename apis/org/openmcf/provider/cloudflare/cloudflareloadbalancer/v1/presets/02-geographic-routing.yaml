@@ -1,0 +1,21 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareLoadBalancer
+metadata:
+  name: my-geographic-routing
+spec:
+  hostname: <www-subdomain>.<your-domain.com>
+  zoneId:
+    value: <cloudflare-zone-id>
+  origins:
+    - name: us-east
+      address: <us-east-origin-ip-or-hostname>
+      weight: 1
+    - name: eu-west
+      address: <eu-west-origin-ip-or-hostname>
+      weight: 1
+    - name: apac
+      address: <apac-origin-ip-or-hostname>
+      weight: 1
+  proxied: true
+  healthProbePath: /
+  steeringPolicy: geo

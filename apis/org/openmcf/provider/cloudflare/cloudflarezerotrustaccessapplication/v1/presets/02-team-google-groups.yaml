@@ -1,0 +1,14 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareZeroTrustAccessApplication
+metadata:
+  name: my-team-google-groups
+spec:
+  applicationName: Team App - Google Groups
+  zoneId: <cloudflare-zone-id>
+  hostname: <admin-subdomain>.<your-domain.com>
+  policyType: ALLOW
+  allowedGoogleGroups:
+    - engineering@<company-domain>
+    - admins@<company-domain>
+  sessionDurationMinutes: 480
+  requireMfa: true
