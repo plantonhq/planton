@@ -1,0 +1,9 @@
+apiVersion: scaleway.openmcf.org/v1
+kind: ScalewayPrivateNetwork
+metadata:
+  name: my-network
+spec:
+  vpcId:
+    value: "<your-vpc-id>"
+  region: fr-par
+  enableDefaultRoutePropagation: false  # recommended_default from spec

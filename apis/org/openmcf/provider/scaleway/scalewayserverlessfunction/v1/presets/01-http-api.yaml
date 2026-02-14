@@ -1,0 +1,12 @@
+apiVersion: scaleway.openmcf.org/v1
+kind: ScalewayServerlessFunction
+metadata:
+  name: my-function
+spec:
+  region: fr-par
+  runtime: node20
+  handler: handler.handle
+  privacy: public
+  memoryLimitMb: 256  # recommended_default from spec
+  maxScale: 20  # recommended_default from spec
+  timeoutSeconds: 300  # recommended_default from spec

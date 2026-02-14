@@ -1,0 +1,15 @@
+apiVersion: scaleway.openmcf.org/v1
+kind: ScalewayKapsulePool
+metadata:
+  name: my-pool
+spec:
+  region: fr-par
+  clusterId:
+    value: "<your-kapsule-cluster-id>"
+  nodeType: GP1-XS
+  size: 3
+  autohealing: true
+  containerRuntime: containerd  # recommended_default from spec
+  publicIpDisabled: true  # Recommended for production
+  kubernetesLabels:
+    pool: general
