@@ -1,0 +1,19 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureUserAssignedIdentity
+metadata:
+  name: my-app-identity
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-identity-name>
+  roleAssignments:
+    - scope:
+        value: "<key-vault-resource-id>"
+      roleDefinitionName: Key Vault Secrets User
+    - scope:
+        value: "<storage-account-resource-id>"
+      roleDefinitionName: Storage Blob Data Contributor
+    - scope:
+        value: "<acr-resource-id>"
+      roleDefinitionName: AcrPull
