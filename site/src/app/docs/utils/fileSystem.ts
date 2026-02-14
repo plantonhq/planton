@@ -11,6 +11,7 @@ export interface DocItem {
   children?: DocItem[];
   // Enhanced properties for dynamic sidebar
   title?: string;
+  pageTitle?: string; // Full page title from the first # heading (may differ from sidebar title)
   description?: string;
   icon?: string;
   category?: string;
@@ -166,8 +167,9 @@ function buildStructure(dirPath: string, relativePath: string = ''): DocItem[] {
     if (stat.isDirectory()) {
       const children = buildStructure(fullPath, itemRelativePath);
       if (children.length > 0) {
-        // Try to get metadata from index/README (.md only)
+        // Try to get metadata and page title from index/README (.md only)
         let metadata: MarkdownContent['data'] = {};
+        let dirPageTitle: string | undefined;
         const indexFiles = ['index.md', 'README.md'];
 
         for (const indexFile of indexFiles) {
@@ -175,8 +177,11 @@ function buildStructure(dirPath: string, relativePath: string = ''): DocItem[] {
           if (fs.existsSync(indexPath)) {
             try {
               const fileContent = fs.readFileSync(indexPath, 'utf-8');
-              const { data } = matter(fileContent);
+              const { data, content: mdContent } = matter(fileContent);
               metadata = data;
+              // Extract # heading for full page title
+              const headingMatch = mdContent.match(/^#\s+(.+)$/m);
+              dirPageTitle = headingMatch ? headingMatch[1].trim() : undefined;
               break;
             } catch (error) {
               console.warn(`Failed to parse metadata from ${indexPath}:`, error);
@@ -195,6 +200,7 @@ function buildStructure(dirPath: string, relativePath: string = ''): DocItem[] {
           path: itemRelativePath,
           children,
           title: metadata.title || formatName(item),
+          pageTitle: dirPageTitle,
           description: metadata.description,
           icon: resolveIcon(metadata.icon as string | undefined, 'directory', item, category),
           category,
@@ -217,14 +223,20 @@ function buildStructure(dirPath: string, relativePath: string = ''): DocItem[] {
       ) {
         try {
           const fileContent = fs.readFileSync(fullPath, 'utf-8');
-          const { data } = matter(fileContent);
+          const { data, content: mdContent } = matter(fileContent);
           const category = relativePath.split('/')[0] || 'general';
+
+          // Extract the first # heading from content for use as the full page title.
+          // This may differ from frontmatter title (which is the sidebar label).
+          const headingMatch = mdContent.match(/^#\s+(.+)$/m);
+          const pageTitle = headingMatch ? headingMatch[1].trim() : undefined;
 
           structure.push({
             name: item.replace(/\.md$/i, ''),
             type: 'file',
             path: itemRelativePath.replace(/\.md$/i, ''),
             title: (data.title as string) || formatName(item.replace(/\.md$/i, '')),
+            pageTitle,
             description: data.description as string | undefined,
             icon: resolveIcon(
               data.icon as string | undefined,
@@ -237,7 +249,7 @@ function buildStructure(dirPath: string, relativePath: string = ''): DocItem[] {
             badge: data.badge as string | undefined,
             isExternal: (data.isExternal as boolean) || false,
             externalUrl: data.externalUrl as string | undefined,
-            excerpt: generateExcerptFromContent(fs.readFileSync(fullPath, 'utf-8')),
+            excerpt: generateExcerptFromContent(fileContent),
             componentName: data.componentName as string | undefined,
           });
         } catch (error) {
@@ -294,15 +306,22 @@ function formatName(name: string): string {
 export function getNextDocItem(
   currentPath: string,
   structure: DocItem[]
-): { title: string; excerpt: string; slug: string } | null {
-  // Flatten the structure to get all items in order
+): { title: string; pageTitle: string; excerpt: string; slug: string } | null {
+  // Flatten the structure into reading order.
+  // Directories with an index page are included before their children
+  // so that section transitions navigate to the section index first.
   const flattenItems = (items: DocItem[]): DocItem[] => {
     const result: DocItem[] = [];
     for (const item of items) {
       if (item.type === 'file') {
         result.push(item);
-      } else if (item.children) {
-        result.push(...flattenItems(item.children));
+      } else if (item.type === 'directory') {
+        if (item.hasIndex) {
+          result.push(item);
+        }
+        if (item.children) {
+          result.push(...flattenItems(item.children));
+        }
       }
     }
     return result;
@@ -319,6 +338,7 @@ export function getNextDocItem(
 
   return {
     title: nextDocItem.title || '',
+    pageTitle: nextDocItem.pageTitle || nextDocItem.title || '',
     excerpt: nextDocItem.excerpt || '',
     slug: nextDocItem.path,
   };

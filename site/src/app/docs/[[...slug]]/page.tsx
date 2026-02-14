@@ -65,7 +65,7 @@ export default async function DocsPage({ params }: { params: DocsParams }) {
               nextArticle={
                 nextDocItem
                   ? {
-                      title: nextDocItem.title,
+                      title: nextDocItem.pageTitle || nextDocItem.title,
                       excerpt: nextDocItem.excerpt,
                       slug: `/docs/${nextDocItem.slug}`,
                     }

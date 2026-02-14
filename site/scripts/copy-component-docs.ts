@@ -530,12 +530,12 @@ async function copyComponentDocs(): Promise<void> {
   const apisRoot = path.join(projectRoot, 'apis/org/openmcf/provider');
   const siteDocsRoot = path.join(scriptDir, '../public/docs/catalog');
 
-  // List of provider directories to manage (clear only these, not the entire docs directory)
-  const providerDirs = [
-    'aws', 'gcp', 'azure', 'kubernetes',
-    'cloudflare', 'civo', 'digitalocean',
-    'atlas', 'confluent', 'openstack', 'snowflake'
-  ];
+  // Dynamically discover provider directories to clear (prevents stale files from previous builds)
+  const providerDirs = fs.existsSync(siteDocsRoot)
+    ? fs.readdirSync(siteDocsRoot).filter(item =>
+        fs.statSync(path.join(siteDocsRoot, item)).isDirectory()
+      )
+    : [];
 
   // Clear only provider directories (preserve manually created docs like index.md, getting-started.md, etc.)
   for (const provider of providerDirs) {

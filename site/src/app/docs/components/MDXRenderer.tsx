@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
@@ -52,12 +53,12 @@ const NextArticle: React.FC<NextArticleProps> = ({ nextArticle }) => {
             <div className="text-gray-300 leading-6">{nextArticle.excerpt}</div>
           </div>
         )}
-        <a
+        <Link
           href={nextArticle.slug}
           className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-md transition-colors duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
         >
           Read next article
-        </a>
+        </Link>
       </div>
     </div>
   );
@@ -242,14 +243,22 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
               ),
               a: ({ href, children }) => {
                 const isExternal = href?.startsWith('http');
+                if (!isExternal && href) {
+                  return (
+                    <Link
+                      href={href}
+                      className="text-purple-400 hover:text-purple-300 underline"
+                    >
+                      {children}
+                    </Link>
+                  );
+                }
                 return (
                   <a
                     href={href}
                     className="text-purple-400 hover:text-purple-300 underline"
-                    {...(isExternal && {
-                      target: "_blank",
-                      rel: "noopener noreferrer"
-                    })}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     {children}
                   </a>
