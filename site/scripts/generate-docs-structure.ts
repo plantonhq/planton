@@ -34,6 +34,7 @@ interface DocItem {
   externalUrl?: string;
   hasIndex?: boolean;
   excerpt?: string;
+  componentName?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -233,6 +234,7 @@ function buildStructure(dirPath: string, relativePath = ''): DocItem[] {
             isExternal: (data.isExternal as boolean) || false,
             externalUrl: data.externalUrl as string | undefined,
             excerpt: generateExcerptFromContent(fileContent),
+            componentName: data.componentName as string | undefined,
           });
         } catch (error) {
           console.warn(`Failed to parse metadata from ${fullPath}:`, error);

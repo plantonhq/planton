@@ -9,5 +9,5 @@ order: 10
 
 The following SCALEWAY resources can be deployed using OpenMCF:
 
-- [Kapsule Cluster](/docs/catalog/scaleway/scalewaykapsulecluster)
-- [Rdb Instance](/docs/catalog/scaleway/scalewayrdbinstance)
+- [Kapsule Cluster](/docs/catalog/scaleway/kapsule-cluster)
+- [RDB Instance](/docs/catalog/scaleway/rdb-instance)

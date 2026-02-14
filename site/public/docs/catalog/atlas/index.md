@@ -9,4 +9,4 @@ order: 10
 
 The following ATLAS resources can be deployed using OpenMCF:
 
-- [Mongo D Batlas](/docs/catalog/atlas/mongodbatlas)
+- [Deployment: From Manual Clicks to Production Automation](/docs/catalog/atlas/deployment-from-manual-clicks-to-production-automation)

@@ -375,7 +375,7 @@ openmcf (area)     → pkg (libraries)
 ```
 planton-cloud                          → openmcf
 ---------------------------------      → ----------------------------------
-client-apps/web-console/**            → cmd/openmcf/**
+client-apps/web/console/**            → cmd/openmcf/**
 backend/services/**                    → apis/org/openmcf/provider/**
 .cursor/rules/product/.../forge/**    → .cursor/rules/.../forge/**
 ```

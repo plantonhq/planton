@@ -4,20 +4,23 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 /**
- * Build script to copy deployment component documentation from apis/ to site/public/docs/provider/
- * 
- * Scans: apis/org/openmcf/provider/{provider}/{component}/v1/docs/README.md
- * Outputs: site/public/docs/provider/{provider}/{component}.md
- * 
+ * Build script to copy deployment component documentation from apis/ to site/public/docs/catalog/
+ *
+ * Scans: apis/org/openmcf/provider/{provider}/{component}/v1/catalog-page.md (or docs/README.md)
+ * Outputs: site/public/docs/catalog/{provider}/{slug}.md
+ *
+ * Title extraction: Extracts from first `# ` heading in content (hand-written, always correct).
+ * Slug generation: Title -> lowercase, spaces to hyphens (e.g., "Route53 DNS Record" -> "route53-dns-record").
  * Generates frontmatter for each component and creates provider index pages.
  */
 
 interface ComponentDoc {
   provider: string;
-  component: string;
+  component: string;   // Original directory name (e.g., "awsroute53dnsrecord")
+  slug: string;        // URL-friendly slug (e.g., "route53-dns-record")
   sourcePath: string;
   content: string;
-  title: string;
+  title: string;       // Sidebar label (e.g., "Route53 DNS Record")
 }
 
 interface Stats {
@@ -27,8 +30,67 @@ interface Stats {
   providers: Set<string>;
 }
 
+// ---------------------------------------------------------------------------
+// Provider prefix mapping (for stripping from content headings)
+// ---------------------------------------------------------------------------
+
+const PROVIDER_PREFIXES: Record<string, string[]> = {
+  'aws': ['AWS '],
+  'gcp': ['GCP '],
+  'azure': ['Azure '],
+  'kubernetes': ['Kubernetes '],
+  'digitalocean': ['DigitalOcean '],
+  'civo': ['Civo '],
+  'cloudflare': ['Cloudflare '],
+  'openstack': ['OpenStack '],
+  'auth0': ['Auth0 '],
+  'openfga': ['OpenFGA '],
+  'atlas': ['MongoDB Atlas ', 'Atlas '],
+  'confluent': ['Confluent '],
+  'snowflake': ['Snowflake '],
+  'scaleway': ['Scaleway '],
+};
+
 /**
- * Generate human-readable title from component name
+ * Extract the title from the first `# ` heading in content.
+ * Returns null if no heading is found.
+ */
+function extractTitleFromContent(content: string): string | null {
+  const match = content.match(/^#\s+(.+)$/m);
+  return match ? match[1].trim() : null;
+}
+
+/**
+ * Strip the provider prefix from a title for use as a sidebar label.
+ * e.g., "AWS Route53 DNS Record" -> "Route53 DNS Record"
+ */
+function stripProviderPrefix(title: string, provider: string): string {
+  const prefixes = PROVIDER_PREFIXES[provider.toLowerCase()] || [];
+  for (const prefix of prefixes) {
+    if (title.startsWith(prefix)) {
+      return title.substring(prefix.length);
+    }
+  }
+  return title;
+}
+
+/**
+ * Generate a URL-friendly slug from a title.
+ * e.g., "Route53 DNS Record" -> "route53-dns-record"
+ * e.g., "ALB" -> "alb"
+ * e.g., "GKE Cluster" -> "gke-cluster"
+ */
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+    .replace(/\s+/g, '-')          // Spaces to hyphens
+    .replace(/-+/g, '-')           // Collapse multiple hyphens
+    .replace(/^-|-$/g, '');        // Trim leading/trailing hyphens
+}
+
+/**
+ * Generate human-readable title from component name (fallback for legacy docs without headings).
  * Examples:
  *   awsalb -> ALB
  *   gcpgkecluster -> GKE Cluster
@@ -41,7 +103,7 @@ function generateTitle(component: string, provider: string): string {
   if (name.toLowerCase().startsWith(provider.toLowerCase())) {
     name = name.substring(provider.length);
   }
-  
+
   // For kubernetes components, also remove the "kubernetes" suffix
   if (provider.toLowerCase() === 'kubernetes' && name.toLowerCase().endsWith('kubernetes')) {
     name = name.substring(0, name.length - 'kubernetes'.length);
@@ -141,13 +203,13 @@ function generateTitle(component: string, provider: string): string {
     'image': 'Image',
     'project': 'Project',
   };
-  
+
   // Check if the entire name matches a special case
   const lowerName = name.toLowerCase();
   if (specialCases[lowerName]) {
     return specialCases[lowerName];
   }
-  
+
   // Handle specific compound components that need special handling
   const compoundSpecialCases: Record<string, string> = {
     'certmanagercert': 'Cert Manager Certificate',
@@ -177,11 +239,11 @@ function generateTitle(component: string, provider: string): string {
     'containerclustertemplate': 'Container Cluster Template',
     'containercluster': 'Container Cluster',
   };
-  
+
   if (compoundSpecialCases[lowerName]) {
     return compoundSpecialCases[lowerName];
   }
-  
+
   // Check for compound names (e.g., "perconapostgresqloperator")
   for (const [key, value] of Object.entries(specialCases)) {
     if (lowerName.includes(key)) {
@@ -191,22 +253,42 @@ function generateTitle(component: string, provider: string): string {
 
   // Handle common acronyms
   const acronyms = ['ALB', 'EKS', 'GKE', 'VPC', 'DNS', 'IAM', 'ACM', 'S3', 'EC2', 'ECS', 'RDS', 'CDN', 'HTTP', 'HTTPS', 'API', 'SDK', 'CLI', 'NAT', 'IP', 'SSL', 'TLS', 'WAF', 'KV', 'D1', 'R2', 'GCS'];
-  
+
   // Insert spaces before uppercase letters
   let spaced = name.replace(/([A-Z])/g, ' $1').trim();
-  
+
   // Uppercase known acronyms
   acronyms.forEach(acronym => {
     const regex = new RegExp(`\\b${acronym}\\b`, 'gi');
     spaced = spaced.replace(regex, acronym);
   });
-  
+
   // Capitalize first letter if not already capitalized
   if (spaced.length > 0 && spaced[0] === spaced[0].toLowerCase()) {
     spaced = spaced.charAt(0).toUpperCase() + spaced.slice(1);
   }
-  
+
   return spaced;
+}
+
+/**
+ * Resolve a title for a component doc.
+ * Priority: extract from content heading (stripped of provider prefix) > generateTitle() fallback.
+ */
+function resolveTitle(content: string, component: string, provider: string): string {
+  const heading = extractTitleFromContent(content);
+  if (heading) {
+    return stripProviderPrefix(heading, provider);
+  }
+  return generateTitle(component, provider);
+}
+
+/**
+ * Escape a string for safe embedding in YAML double-quoted values.
+ * Replaces literal double quotes and backslashes.
+ */
+function yamlEscape(value: string): string {
+  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 }
 
 /**
@@ -215,8 +297,8 @@ function generateTitle(component: string, provider: string): string {
 function generateFrontmatter(title: string, component: string, description?: string): string {
   const desc = description || `${title} deployment documentation`;
   return `---
-title: "${title}"
-description: "${desc}"
+title: "${yamlEscape(title)}"
+description: "${yamlEscape(desc)}"
 icon: "package"
 order: 100
 componentName: "${component}"
@@ -229,17 +311,17 @@ componentName: "${component}"
  */
 function scanProvider(providerPath: string, provider: string): ComponentDoc[] {
   const docs: ComponentDoc[] = [];
-  
+
   if (!fs.existsSync(providerPath)) {
     return docs;
   }
 
   const items = fs.readdirSync(providerPath);
-  
+
   for (const item of items) {
     const componentPath = path.join(providerPath, item);
     const stat = fs.statSync(componentPath);
-    
+
     if (!stat.isDirectory()) {
       continue;
     }
@@ -248,15 +330,16 @@ function scanProvider(providerPath: string, provider: string): ComponentDoc[] {
     const catalogPath = path.join(componentPath, 'v1', 'catalog-page.md');
     const legacyPath = path.join(componentPath, 'v1', 'docs', 'README.md');
     const docPath = fs.existsSync(catalogPath) ? catalogPath : legacyPath;
-    const isCatalogPage = fs.existsSync(catalogPath);
-    
+
     if (fs.existsSync(docPath)) {
       const content = fs.readFileSync(docPath, 'utf-8');
-      const title = generateTitle(item, provider);
-      
+      const title = resolveTitle(content, item, provider);
+      const slug = generateSlug(title);
+
       docs.push({
         provider,
         component: item,
+        slug,
         sourcePath: docPath,
         content,
         title,
@@ -268,22 +351,24 @@ function scanProvider(providerPath: string, provider: string): ComponentDoc[] {
       for (const subitem of subitems) {
         const subComponentPath = path.join(componentPath, subitem);
         const subStat = fs.statSync(subComponentPath);
-        
+
         if (!subStat.isDirectory()) {
           continue;
         }
-        
+
         const subCatalogPath = path.join(subComponentPath, 'v1', 'catalog-page.md');
         const subLegacyPath = path.join(subComponentPath, 'v1', 'docs', 'README.md');
         const subDocPath = fs.existsSync(subCatalogPath) ? subCatalogPath : subLegacyPath;
-        
+
         if (fs.existsSync(subDocPath)) {
           const content = fs.readFileSync(subDocPath, 'utf-8');
-          const title = generateTitle(subitem, provider);
-          
+          const title = resolveTitle(content, subitem, provider);
+          const slug = generateSlug(title);
+
           docs.push({
             provider,
             component: subitem,
+            slug,
             sourcePath: subDocPath,
             content,
             title,
@@ -292,30 +377,30 @@ function scanProvider(providerPath: string, provider: string): ComponentDoc[] {
       }
     }
   }
-  
+
   return docs;
 }
 
 /**
- * Write component doc to site/public/docs/provider/{provider}/{component}.md
+ * Write component doc to site/public/docs/catalog/{provider}/{slug}.md
  */
 function writeComponentDoc(
   doc: ComponentDoc,
   outputRoot: string
 ): void {
   const providerDir = path.join(outputRoot, doc.provider);
-  
+
   // Ensure provider directory exists
   if (!fs.existsSync(providerDir)) {
     fs.mkdirSync(providerDir, { recursive: true });
   }
-  
+
   // Generate output with frontmatter
   const frontmatter = generateFrontmatter(doc.title, doc.component);
   const output = `${frontmatter}\n\n${doc.content}`;
-  
-  // Write to {provider}/{component}.md
-  const outputPath = path.join(providerDir, `${doc.component}.md`);
+
+  // Write to {provider}/{slug}.md (URL-friendly filename)
+  const outputPath = path.join(providerDir, `${doc.slug}.md`);
   fs.writeFileSync(outputPath, output, 'utf-8');
 }
 
@@ -328,23 +413,23 @@ function generateProviderIndex(
   outputRoot: string
 ): void {
   const providerDir = path.join(outputRoot, provider);
-  
+
   if (!fs.existsSync(providerDir)) {
     fs.mkdirSync(providerDir, { recursive: true });
   }
 
   const providerTitle = provider.toUpperCase();
-  
-  // Sort docs alphabetically by component name
-  const sortedDocs = [...docs].sort((a, b) => 
-    a.component.localeCompare(b.component)
+
+  // Sort docs alphabetically by title
+  const sortedDocs = [...docs].sort((a, b) =>
+    a.title.localeCompare(b.title)
   );
-  
-  // Generate component list
+
+  // Generate component list using slug-based URLs
   const componentList = sortedDocs
-    .map(doc => `- [${doc.title}](/docs/catalog/${provider}/${doc.component})`)
+    .map(doc => `- [${doc.title}](/docs/catalog/${provider}/${doc.slug})`)
     .join('\n');
-  
+
   const indexContent = `---
 title: "${providerTitle}"
 description: "Deploy ${providerTitle} resources using OpenMCF"
@@ -396,7 +481,7 @@ function getProviderComponentCount(provider: string, allDocs: Map<string, Compon
 function generateMainIndex(providers: string[], outputRoot: string, allDocs: Map<string, ComponentDoc[]>): void {
   // Sort providers alphabetically
   const sortedProviders = [...providers].sort();
-  
+
   // Generate provider cards with icons
   const providerCards = sortedProviders
     .map(provider => {
@@ -412,7 +497,7 @@ function generateMainIndex(providers: string[], outputRoot: string, allDocs: Map
   </a>`;
     })
     .join('\n');
-  
+
   const indexContent = `---
 title: "Catalog"
 description: "Browse deployment components organized by cloud provider"
@@ -437,33 +522,33 @@ ${providerCards}
  * Main function to copy all component docs
  */
 async function copyComponentDocs(): Promise<void> {
-  console.log('🚀 Starting component documentation copy process...\n');
-  
+  console.log('Starting component documentation copy process...\n');
+
   // Paths
   const scriptDir = __dirname;
   const projectRoot = path.join(scriptDir, '../..');
   const apisRoot = path.join(projectRoot, 'apis/org/openmcf/provider');
   const siteDocsRoot = path.join(scriptDir, '../public/docs/catalog');
-  
+
   // List of provider directories to manage (clear only these, not the entire docs directory)
   const providerDirs = [
-    'aws', 'gcp', 'azure', 'kubernetes', 
-    'cloudflare', 'civo', 'digitalocean', 
+    'aws', 'gcp', 'azure', 'kubernetes',
+    'cloudflare', 'civo', 'digitalocean',
     'atlas', 'confluent', 'openstack', 'snowflake'
   ];
-  
+
   // Clear only provider directories (preserve manually created docs like index.md, getting-started.md, etc.)
   for (const provider of providerDirs) {
     const providerPath = path.join(siteDocsRoot, provider);
     if (fs.existsSync(providerPath)) {
-      console.log(`🗑️  Clearing ${provider} docs`);
+      console.log(`  Clearing ${provider} docs`);
       fs.rmSync(providerPath, { recursive: true });
     }
   }
-  
+
   // Ensure output directory exists
   fs.mkdirSync(siteDocsRoot, { recursive: true });
-  
+
   // Stats
   const stats: Stats = {
     total: 0,
@@ -471,70 +556,69 @@ async function copyComponentDocs(): Promise<void> {
     skipped: 0,
     providers: new Set(),
   };
-  
+
   // Track docs by provider for index generation
   const docsByProvider: Map<string, ComponentDoc[]> = new Map();
-  
+
   // Scan all providers
   if (!fs.existsSync(apisRoot)) {
-    console.error(`❌ Error: APIs directory not found at ${apisRoot}`);
+    console.error(`Error: APIs directory not found at ${apisRoot}`);
     process.exit(1);
   }
-  
+
   const providers = fs.readdirSync(apisRoot).filter(item => {
     const itemPath = path.join(apisRoot, item);
     return fs.statSync(itemPath).isDirectory();
   });
-  
-  console.log(`📁 Scanning ${providers.length} providers...\n`);
-  
+
+  console.log(`Scanning ${providers.length} providers...\n`);
+
   for (const provider of providers) {
     const providerPath = path.join(apisRoot, provider);
     const docs = scanProvider(providerPath, provider);
-    
+
     if (docs.length > 0) {
       stats.providers.add(provider);
       docsByProvider.set(provider, docs);
-      
-      console.log(`📦 ${provider.toUpperCase()}: Found ${docs.length} components`);
-      
+
+      console.log(`${provider.toUpperCase()}: Found ${docs.length} components`);
+
       // Write each component doc
       for (const doc of docs) {
         try {
           writeComponentDoc(doc, siteDocsRoot);
           stats.copied++;
           const sourceType = doc.sourcePath.endsWith('catalog-page.md') ? 'catalog-page' : 'legacy';
-          console.log(`   ✓ ${doc.component} (${sourceType})`);
+          console.log(`   ${doc.component} -> ${doc.slug}.md (${sourceType})`);
         } catch (error) {
-          console.error(`   ✗ ${doc.component}: ${error}`);
+          console.error(`   FAIL ${doc.component}: ${error}`);
           stats.skipped++;
         }
       }
-      
+
       // Generate provider index
       generateProviderIndex(provider, docs, siteDocsRoot);
-      console.log(`   ✓ Generated index page\n`);
+      console.log(`   Generated index page\n`);
     }
   }
-  
+
   // Generate catalog index (now in /docs/catalog/)
   if (stats.providers.size > 0) {
     generateMainIndex(Array.from(stats.providers), siteDocsRoot, docsByProvider);
-    console.log(`✓ Generated catalog index\n`);
+    console.log(`Generated catalog index\n`);
   }
-  
+
   // Summary
-  console.log('📊 Summary:');
+  console.log('Summary:');
   console.log(`   Providers: ${stats.providers.size}`);
   console.log(`   Components copied: ${stats.copied}`);
   console.log(`   Components skipped: ${stats.skipped}`);
   console.log(`   Output: ${path.relative(projectRoot, siteDocsRoot)}`);
-  console.log('\n✅ Component documentation copy complete!\n');
+  console.log('\nComponent documentation copy complete!\n');
 }
 
 // Run the script
 copyComponentDocs().catch(error => {
-  console.error('❌ Error copying component docs:', error);
+  console.error('Error copying component docs:', error);
   process.exit(1);
 });
-

@@ -9,7 +9,7 @@ import {
 } from '@/app/docs/utils/fileSystem';
 import { MDXRenderer } from '@/app/docs/components/MDXRenderer';
 import { Author, MDXParser } from '@/lib/mdx';
-import { DocsLayout } from '@/app/docs/components/DocsLayout';
+import RightSidebar from '@/app/docs/components/RightSidebar';
 import matter from 'gray-matter';
 
 type DocsParams = Promise<{ slug?: string[] }>;
@@ -53,26 +53,38 @@ export default async function DocsPage({ params }: { params: DocsParams }) {
     const allDocs = await getDocumentationStructure();
     const nextDocItem = getNextDocItem(path, allDocs);
 
-    // Normal rendering with full layout
+    const author = (data?.author as unknown as Author[]) || [];
+
     return (
-      <DocsLayout author={data?.author as unknown as Author[]} content={content}>
-        <MDXRenderer
-          mdxContent={mdxContent}
-          nextArticle={
-            nextDocItem
-              ? {
-                  title: nextDocItem.title,
-                  excerpt: nextDocItem.excerpt,
-                  slug: `/docs/${nextDocItem.slug}`,
-                }
-              : undefined
-          }
-        />
-      </DocsLayout>
+      <>
+        {/* Main Content Area */}
+        <div className="flex-1 min-h-screen overflow-x-hidden">
+          <div className={`px-4 sm:px-6 lg:px-12 py-8 max-w-full ${author.length > 0 ? 'max-w-4xl mx-auto' : ''}`}>
+            <MDXRenderer
+              mdxContent={mdxContent}
+              nextArticle={
+                nextDocItem
+                  ? {
+                      title: nextDocItem.title,
+                      excerpt: nextDocItem.excerpt,
+                      slug: `/docs/${nextDocItem.slug}`,
+                    }
+                  : undefined
+              }
+            />
+          </div>
+        </div>
+
+        {/* Right Sidebar - Table of contents */}
+        <div className="hidden xl:block sticky top-16 h-[calc(100vh-4rem)] w-80 flex-shrink-0">
+          <div className="h-full overflow-y-auto bg-slate-950 border-l border-purple-900/30">
+            <RightSidebar author={author} content={content} />
+          </div>
+        </div>
+      </>
     );
   } catch (error) {
     console.error('Error loading documentation:', error);
     notFound();
   }
 }
-

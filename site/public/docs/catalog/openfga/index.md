@@ -9,5 +9,5 @@ order: 10
 
 The following OPENFGA resources can be deployed using OpenMCF:
 
-- [Authorizationmodel](/docs/catalog/openfga/openfgaauthorizationmodel)
-- [Store](/docs/catalog/openfga/openfgastore)
+- [Authorization Model](/docs/catalog/openfga/authorization-model)
+- [Store](/docs/catalog/openfga/store)

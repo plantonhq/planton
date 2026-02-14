@@ -9,4 +9,4 @@ order: 10
 
 The following SNOWFLAKE resources can be deployed using OpenMCF:
 
-- [Database](/docs/catalog/snowflake/snowflakedatabase)
+- [Database](/docs/catalog/snowflake/database)

@@ -9,7 +9,7 @@ order: 10
 
 The following AUTH0 resources can be deployed using OpenMCF:
 
-- [Client](/docs/catalog/auth0/auth0client)
-- [Connection](/docs/catalog/auth0/auth0connection)
-- [Eventstream](/docs/catalog/auth0/auth0eventstream)
-- [Resourceserver](/docs/catalog/auth0/auth0resourceserver)
+- [Auth0Connection: Technical Research Documentation](/docs/catalog/auth0/auth0connection-technical-research-documentation)
+- [Auth0EventStream - Technical Documentation](/docs/catalog/auth0/auth0eventstream-technical-documentation)
+- [Client](/docs/catalog/auth0/client)
+- [Resource Server](/docs/catalog/auth0/resource-server)

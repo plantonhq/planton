@@ -9,4 +9,4 @@ order: 10
 
 The following CONFLUENT resources can be deployed using OpenMCF:
 
-- [Kafka](/docs/catalog/confluent/confluentkafka)
+- [Kafka](/docs/catalog/confluent/kafka)

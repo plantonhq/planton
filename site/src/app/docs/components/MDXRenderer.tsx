@@ -8,6 +8,7 @@ import rehypeHighlight from 'rehype-highlight';
 import matter from 'gray-matter';
 import { formatDate } from '@/lib/utils';
 import { Author } from '@/lib/mdx';
+import { CodeBlock } from '@/app/docs/components/CodeBlock';
 import 'highlight.js/styles/github-dark.css';
 
 interface MdxMetadata {
@@ -229,7 +230,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
                 const isInline = !className;
                 if (isInline) {
                   return (
-                    <code className="bg-purple-900/30 text-purple-300 px-1.5 py-0.5 rounded text-sm">
+                    <code className="bg-slate-800/60 text-sky-300 px-1.5 py-0.5 rounded text-sm">
                       {children}
                     </code>
                   );
@@ -237,9 +238,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
                 return <code className={className}>{children}</code>;
               },
               pre: ({ children }) => (
-                <pre className="bg-slate-900 rounded-lg p-4 overflow-x-auto mb-4 border border-purple-900/30">
-                  {children}
-                </pre>
+                <CodeBlock>{children}</CodeBlock>
               ),
               a: ({ href, children }) => {
                 const isExternal = href?.startsWith('http');

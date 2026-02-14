@@ -20,6 +20,7 @@ export interface DocItem {
   externalUrl?: string;
   hasIndex?: boolean; // For directories with index files
   excerpt?: string;
+  componentName?: string; // Original component directory name (for icon resolution in catalog)
 }
 
 export interface MarkdownContent {
@@ -236,7 +237,8 @@ function buildStructure(dirPath: string, relativePath: string = ''): DocItem[] {
             badge: data.badge as string | undefined,
             isExternal: (data.isExternal as boolean) || false,
             externalUrl: data.externalUrl as string | undefined,
-            excerpt: generateExcerptFromContent(fs.readFileSync(fullPath, 'utf-8'))
+            excerpt: generateExcerptFromContent(fs.readFileSync(fullPath, 'utf-8')),
+            componentName: data.componentName as string | undefined,
           });
         } catch (error) {
           console.warn(`Failed to parse metadata from ${fullPath}:`, error);
