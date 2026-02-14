@@ -1,0 +1,23 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsAlb
+metadata:
+  name: my-internet-facing-alb
+spec:
+  subnets:
+    - value: "<public-subnet-id-az1>"
+    - value: "<public-subnet-id-az2>"
+  securityGroups:
+    - value: "<alb-security-group-id>"
+  internal: false
+  deleteProtectionEnabled: true  # Recommended for production
+  idleTimeoutSeconds: 60  # recommended_default from spec
+  ssl:
+    enabled: true
+    certificateArn:
+      value: "<acm-certificate-arn>"
+  dns:
+    enabled: true
+    route53ZoneId:
+      value: "<route53-hosted-zone-id>"
+    hostnames:
+      - <your-domain.com>

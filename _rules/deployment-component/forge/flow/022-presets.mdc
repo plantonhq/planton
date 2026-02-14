@@ -1,0 +1,87 @@
+---
+alwaysApply: false
+---
+RULE NUMBER
+022
+
+TITLE
+Forge: Generate Initial Presets for a Deployment Component
+
+ROLE
+You are the OpenMCF Code Partner working inside the developer's local workspace in Cursor. This rule generates 2-3 initial presets (YAML + companion markdown) for a newly forged deployment component. You have deep cloud infrastructure expertise and understand common real-world deployment patterns.
+
+SCOPE
+- Target directory: `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/presets/`
+- Creates both `.yaml` and `.md` files for each preset
+- Does not modify any existing files
+- Follows conventions from `.cursor/info/presets.md`
+
+PREREQUISITES
+- `api.proto` exists (provides `apiVersion` and `kind` constants)
+- `spec.proto` exists (provides field definitions, types, validations, defaults)
+- `examples.md` exists (provides configuration context)
+- `docs/README.md` exists (provides design rationale)
+
+SEQUENTIAL STEPS
+
+1) **Read Component Context**
+   - Read `api.proto`: extract exact `apiVersion` and `kind` constant values from `buf.validate` constraints
+   - Read `spec.proto`: catalog all fields, their types, validations, and default annotations (`recommended_default`, `default`)
+   - Read `.cursor/info/presets.md`: load the preset authoring conventions
+
+2) **Identify Preset Patterns**
+   
+   Analyze `spec.proto` fields to determine which common patterns apply:
+   
+   - **Standard production (rank 01)**: Always created. The "30-second decision" configuration with security-conscious defaults.
+   - **Development/minimal (rank 02)**: Created when the component has fields that can be meaningfully simplified for dev environments (e.g., fewer replicas, smaller sizes, disabled features).
+   - **Use-case variant (rank 03)**: Created when the component has boolean or enum fields that produce a meaningfully different deployment pattern (e.g., `internal: true` vs `false` for load balancers).
+   
+   If the component is simple (3-5 fields, no meaningful variants), create only 1 preset.
+
+3) **Create Each Preset**
+   
+   For each identified pattern:
+   
+   a) **Create the YAML file** at `v1/presets/{rank}-{name}.yaml`:
+      - `apiVersion` and `kind` match `api.proto` constants exactly
+      - `metadata.name` prefixed with `my-`
+      - All `StringValueOrRef` fields use `value:` wrapper with angle-bracket placeholders
+      - Fields with `recommended_default` or `default` annotations use the annotated value with a comment
+      - Boolean flags set explicitly based on the use case
+      - No unnecessary quotes
+   
+   b) **Create the companion MD file** at `v1/presets/{rank}-{name}.md`:
+      - Title (H1)
+      - Description (2-4 sentences)
+      - When to Use (bulleted list)
+      - Key Configuration Choices (bulleted list with field references)
+      - Placeholders to Replace (table: Placeholder, Description, Where to Find)
+      - Related Presets (if multiple presets created)
+
+4) **Self-Validate**
+   - Verify `apiVersion` and `kind` match `api.proto` constants
+   - Verify all required fields are present
+   - Verify all `StringValueOrRef` fields use `value:` wrapper
+   - Verify naming convention: `{NN}-{kebab-case}.yaml` + `.md`
+   - Verify no duplicate ranks
+
+OUTPUT
+- Confirm number of presets created
+- List each preset with its rank, name, and brief description of the pattern
+- Show the file paths created
+
+SUCCESS
+- At least 1 preset created (rank 01 at minimum)
+- All YAML files have companion MD files
+- All presets follow conventions from `.cursor/info/presets.md`
+- `apiVersion` and `kind` match `api.proto` constants
+- All `StringValueOrRef` fields use `value:` wrapper
+
+NOTES
+- This rule is part of the forge sequence (step 20 in the orchestrator)
+- Presets created here are initial drafts -- they can be refined later with `@create-openmcf-preset`
+- For simple components (DNS records, IAM roles), a single preset is sufficient
+- Do NOT force patterns that don't naturally exist for the component
+- Quality over quantity: 1 excellent preset > 3 mediocre ones
+- When uncertain about a configuration pattern, create fewer presets rather than guessing
