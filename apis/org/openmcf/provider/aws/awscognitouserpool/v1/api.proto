@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awscognitouserpool.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/aws/awscognitouserpool/v1/spec.proto";
+import "org/openmcf/provider/aws/awscognitouserpool/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// aws-cognito-user-pool
+message AwsCognitoUserPool {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'aws.openmcf.org/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AwsCognitoUserPool'];
+
+  //metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  AwsCognitoUserPoolSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  AwsCognitoUserPoolStatus status = 5;
+}
+
+// aws-cognito-user-pool status
+message AwsCognitoUserPoolStatus {
+  //stack-outputs
+  AwsCognitoUserPoolStackOutputs outputs = 1;
+}

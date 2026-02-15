@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awscognitouserpool.v1;
+
+// AwsCognitoUserPoolStackOutputs captures observable identifiers and endpoints
+// from a provisioned Cognito User Pool. These outputs are used by downstream
+// resources (e.g., API Gateway JWT authorizers, application environment configs)
+// to wire dependencies via StringValueOrRef.
+message AwsCognitoUserPoolStackOutputs {
+  // The user pool identifier. Primary reference used in SDK calls, IAM policies,
+  // and as the user_pool_id input for identity providers and resource servers.
+  // Format: "{region}_{poolId}" (e.g., "us-east-1_Ab1Cd2EfG").
+  string user_pool_id = 1;
+
+  // The Amazon Resource Name of the user pool. Used in IAM policies and
+  // cross-service permissions.
+  string user_pool_arn = 2;
+
+  // The OIDC issuer endpoint URL for the user pool. Format:
+  // "https://cognito-idp.{region}.amazonaws.com/{user_pool_id}"
+  //
+  // This is the value used as the JWT `issuer` in API Gateway authorizers
+  // and OIDC client configurations.
+  string user_pool_endpoint = 3;
+
+  // The full domain URL for the hosted UI. For Cognito-hosted domains:
+  // "https://{prefix}.auth.{region}.amazoncognito.com"
+  // For custom domains: "https://{custom_domain}"
+  // Empty when no domain is configured.
+  string user_pool_domain = 4;
+
+  // The CloudFront distribution ARN for custom domains. Use this to create
+  // a Route53 alias record pointing your custom domain to CloudFront.
+  // Empty when using a Cognito-hosted prefix domain or no domain.
+  string cloudfront_distribution_arn = 5;
+
+  // Map of client name to client ID. The keys correspond to the `name` field
+  // of each entry in `spec.clients`. Downstream resources reference specific
+  // client IDs via `valueFrom` using `status.outputs.client_ids.{name}`.
+  //
+  // Example: {"web-app": "1a2b3c4d5e", "api-server": "6f7g8h9i0j"}
+  map<string, string> client_ids = 6;
+
+  // Map of client name to client secret. Only populated for clients with
+  // `generate_secret` set to true. Keys match `spec.clients[*].name`.
+  // Sensitive — treat as a credential.
+  map<string, string> client_secrets = 7;
+}

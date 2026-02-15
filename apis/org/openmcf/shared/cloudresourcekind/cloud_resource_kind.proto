@@ -265,6 +265,14 @@ enum CloudResourceKind {
     id_prefix: "awsefs"
   }];
 
+  // --- Auth / Identity ---
+
+  AwsCognitoUserPool = 300 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awscog"
+  }];
+
   // 400–599: Azure resources
   AzureResourceGroup = 400 [(kind_meta) = {
     provider: azure
@@ -565,6 +573,11 @@ enum CloudResourceKind {
     provider: gcp
     version: v1
     id_prefix: "gcpspdb"
+  }];
+  GcpBigtableInstance = 635 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpbt"
   }];
   GcpMemorystoreInstance = 636 [(kind_meta) = {
     provider: gcp
