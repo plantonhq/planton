@@ -226,6 +226,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "awssfn"
   }];
+  AwsRedisElasticache = 250 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsredis"
+  }];
 
   // 400–599: Azure resources
   AzureResourceGroup = 400 [(kind_meta) = {
@@ -517,6 +522,11 @@ enum CloudResourceKind {
     provider: gcp
     version: v1
     id_prefix: "gcppst"
+  }];
+  GcpPubSubSubscription = 661 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcppss"
   }];
   GcpKmsKeyRing = 690 [(kind_meta) = {
     provider: gcp

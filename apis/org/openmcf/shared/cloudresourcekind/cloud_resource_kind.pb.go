@@ -114,6 +114,7 @@ const (
 	CloudResourceKind_AwsEventBridgeRule  CloudResourceKind = 228
 	CloudResourceKind_AwsHttpApiGateway   CloudResourceKind = 240
 	CloudResourceKind_AwsStepFunction     CloudResourceKind = 241
+	CloudResourceKind_AwsRedisElasticache CloudResourceKind = 250
 	// 400–599: Azure resources
 	CloudResourceKind_AzureResourceGroup            CloudResourceKind = 400
 	CloudResourceKind_AzureAksCluster               CloudResourceKind = 401
@@ -173,6 +174,7 @@ const (
 	CloudResourceKind_GcpGlobalAddress              CloudResourceKind = 621
 	CloudResourceKind_GcpBigQueryDataset            CloudResourceKind = 650
 	CloudResourceKind_GcpPubSubTopic                CloudResourceKind = 660
+	CloudResourceKind_GcpPubSubSubscription         CloudResourceKind = 661
 	CloudResourceKind_GcpKmsKeyRing                 CloudResourceKind = 690
 	CloudResourceKind_GcpKmsKey                     CloudResourceKind = 691
 	// 800–999: Kubernetes resources
@@ -365,6 +367,7 @@ var (
 		228:  "AwsEventBridgeRule",
 		240:  "AwsHttpApiGateway",
 		241:  "AwsStepFunction",
+		250:  "AwsRedisElasticache",
 		400:  "AzureResourceGroup",
 		401:  "AzureAksCluster",
 		402:  "AzureAksNodePool",
@@ -422,6 +425,7 @@ var (
 		621:  "GcpGlobalAddress",
 		650:  "GcpBigQueryDataset",
 		660:  "GcpPubSubTopic",
+		661:  "GcpPubSubSubscription",
 		690:  "GcpKmsKeyRing",
 		691:  "GcpKmsKey",
 		800:  "KubernetesArgocd",
@@ -602,6 +606,7 @@ var (
 		"AwsEventBridgeRule":                    228,
 		"AwsHttpApiGateway":                     240,
 		"AwsStepFunction":                       241,
+		"AwsRedisElasticache":                   250,
 		"AzureResourceGroup":                    400,
 		"AzureAksCluster":                       401,
 		"AzureAksNodePool":                      402,
@@ -659,6 +664,7 @@ var (
 		"GcpGlobalAddress":                      621,
 		"GcpBigQueryDataset":                    650,
 		"GcpPubSubTopic":                        660,
+		"GcpPubSubSubscription":                 661,
 		"GcpKmsKeyRing":                         690,
 		"GcpKmsKey":                             691,
 		"KubernetesArgocd":                      800,
@@ -943,7 +949,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xefN\n" +
+	"\x02v1\x10\x01*\xcbO\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -989,7 +995,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x11AwsEventBridgeBus\x10\xe3\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awseb\x12)\n" +
 	"\x12AwsEventBridgeRule\x10\xe4\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsebr\x12.\n" +
 	"\x11AwsHttpApiGateway\x10\xf0\x01\x1a\x16\xa2\xf7\x04\x12\b\f\x10\x01\"\fawshttpapigw\x12&\n" +
-	"\x0fAwsStepFunction\x10\xf1\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssfn\x12'\n" +
+	"\x0fAwsStepFunction\x10\xf1\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssfn\x12,\n" +
+	"\x13AwsRedisElasticache\x10\xfa\x01\x1a\x12\xa2\xf7\x04\x0e\b\f\x10\x01\"\bawsredis\x12'\n" +
 	"\x12AzureResourceGroup\x10\x90\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azrg\x12#\n" +
 	"\x0fAzureAksCluster\x10\x91\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03aks\x12&\n" +
@@ -1063,7 +1070,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fGcpFirewallRule\x10\xec\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpfwr\x12'\n" +
 	"\x10GcpGlobalAddress\x10\xed\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpgip\x12*\n" +
 	"\x12GcpBigQueryDataset\x10\x8a\x05\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpbqds\x12%\n" +
-	"\x0eGcpPubSubTopic\x10\x94\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcppst\x12#\n" +
+	"\x0eGcpPubSubTopic\x10\x94\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcppst\x12,\n" +
+	"\x15GcpPubSubSubscription\x10\x95\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcppss\x12#\n" +
 	"\rGcpKmsKeyRing\x10\xb2\x05\x1a\x0f\xa2\xf7\x04\v\b\x12\x10\x01\"\x05gcpkr\x12 \n" +
 	"\tGcpKmsKey\x10\xb3\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpkms\x12(\n" +
 	"\x10KubernetesArgocd\x10\xa0\x06\x1a\x11\xa2\xf7\x04\r\b\x13\x10\x01\"\ak8sargo\x12)\n" +

@@ -1,0 +1,24 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "locals.go",
+        "main.go",
+        "outputs.go",
+        "parameter_group.go",
+        "replication_group.go",
+        "subnet_group.go",
+    ],
+    importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsrediselasticache/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/org/openmcf/provider/aws/awsrediselasticache/v1:awsrediselasticache",
+        "//apis/org/openmcf/shared/cloudresourcekind",
+        "//pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws",
+        "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/elasticache",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)
