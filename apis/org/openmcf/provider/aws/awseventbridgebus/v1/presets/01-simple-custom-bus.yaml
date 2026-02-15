@@ -1,0 +1,6 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsEventBridgeBus
+metadata:
+  name: my-events
+spec:
+  description: Custom event bus for application events

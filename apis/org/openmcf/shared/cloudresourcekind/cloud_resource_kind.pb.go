@@ -110,6 +110,7 @@ const (
 	CloudResourceKind_AwsS3ObjectSet      CloudResourceKind = 224
 	CloudResourceKind_AwsSqsQueue         CloudResourceKind = 225
 	CloudResourceKind_AwsSnsTopic         CloudResourceKind = 226
+	CloudResourceKind_AwsEventBridgeBus   CloudResourceKind = 227
 	// 400–599: Azure resources
 	CloudResourceKind_AzureResourceGroup            CloudResourceKind = 400
 	CloudResourceKind_AzureAksCluster               CloudResourceKind = 401
@@ -167,6 +168,7 @@ const (
 	CloudResourceKind_GcpDnsRecord                  CloudResourceKind = 618
 	CloudResourceKind_GcpFirewallRule               CloudResourceKind = 620
 	CloudResourceKind_GcpGlobalAddress              CloudResourceKind = 621
+	CloudResourceKind_GcpKmsKeyRing                 CloudResourceKind = 690
 	// 800–999: Kubernetes resources
 	CloudResourceKind_KubernetesArgocd                      CloudResourceKind = 800
 	CloudResourceKind_KubernetesCronJob                     CloudResourceKind = 801
@@ -353,6 +355,7 @@ var (
 		224:  "AwsS3ObjectSet",
 		225:  "AwsSqsQueue",
 		226:  "AwsSnsTopic",
+		227:  "AwsEventBridgeBus",
 		400:  "AzureResourceGroup",
 		401:  "AzureAksCluster",
 		402:  "AzureAksNodePool",
@@ -408,6 +411,7 @@ var (
 		618:  "GcpDnsRecord",
 		620:  "GcpFirewallRule",
 		621:  "GcpGlobalAddress",
+		690:  "GcpKmsKeyRing",
 		800:  "KubernetesArgocd",
 		801:  "KubernetesCronJob",
 		802:  "KubernetesElasticsearch",
@@ -582,6 +586,7 @@ var (
 		"AwsS3ObjectSet":                        224,
 		"AwsSqsQueue":                           225,
 		"AwsSnsTopic":                           226,
+		"AwsEventBridgeBus":                     227,
 		"AzureResourceGroup":                    400,
 		"AzureAksCluster":                       401,
 		"AzureAksNodePool":                      402,
@@ -637,6 +642,7 @@ var (
 		"GcpDnsRecord":                          618,
 		"GcpFirewallRule":                       620,
 		"GcpGlobalAddress":                      621,
+		"GcpKmsKeyRing":                         690,
 		"KubernetesArgocd":                      800,
 		"KubernetesCronJob":                     801,
 		"KubernetesElasticsearch":               802,
@@ -919,7 +925,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xa9L\n" +
+	"\x02v1\x10\x01*\xf7L\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -962,6 +968,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0eAwsS3ObjectSet\x10\xe0\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06s3objs\x12\"\n" +
 	"\vAwsSqsQueue\x10\xe1\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssqs\x12\"\n" +
 	"\vAwsSnsTopic\x10\xe2\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssns\x12'\n" +
+	"\x11AwsEventBridgeBus\x10\xe3\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awseb\x12'\n" +
 	"\x12AzureResourceGroup\x10\x90\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azrg\x12#\n" +
 	"\x0fAzureAksCluster\x10\x91\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03aks\x12&\n" +
@@ -1033,7 +1040,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x12GcpComputeInstance\x10\xe9\x04\x1a\x0f\xa2\xf7\x04\v\b\x12\x10\x01\"\x05gcpvm\x12$\n" +
 	"\fGcpDnsRecord\x10\xea\x04\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpdrec\x12&\n" +
 	"\x0fGcpFirewallRule\x10\xec\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpfwr\x12'\n" +
-	"\x10GcpGlobalAddress\x10\xed\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpgip\x12(\n" +
+	"\x10GcpGlobalAddress\x10\xed\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpgip\x12#\n" +
+	"\rGcpKmsKeyRing\x10\xb2\x05\x1a\x0f\xa2\xf7\x04\v\b\x12\x10\x01\"\x05gcpkr\x12(\n" +
 	"\x10KubernetesArgocd\x10\xa0\x06\x1a\x11\xa2\xf7\x04\r\b\x13\x10\x01\"\ak8sargo\x12)\n" +
 	"\x11KubernetesCronJob\x10\xa1\x06\x1a\x11\xa2\xf7\x04\r\b\x13\x10\x01\"\ak8scron\x12-\n" +
 	"\x17KubernetesElasticsearch\x10\xa2\x06\x1a\x0f\xa2\xf7\x04\v\b\x13\x10\x01\"\x05k8ses\x12&\n" +
