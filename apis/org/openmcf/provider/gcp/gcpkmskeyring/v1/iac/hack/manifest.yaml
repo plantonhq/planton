@@ -1,0 +1,14 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpKmsKeyRing
+metadata:
+  name: test-key-ring
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: test-org
+    pulumi.openmcf.org/project: test-project
+    pulumi.openmcf.org/stack.name: dev.GcpKmsKeyRing.test-key-ring
+spec:
+  projectId:
+    value: my-gcp-project-123
+  keyRingName: test-key-ring
+  location: us-central1

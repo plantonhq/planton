@@ -98,23 +98,19 @@ message GcpGlobalAddressSpec {
   // Required for VPC_PEERING purpose (e.g., 20 reserves a /20 range).
   // Not applicable for single IP reservations or PRIVATE_SERVICE_CONNECT addresses.
   // Valid range: 8 to 29.
-  optional int32 prefix_length = 8 [
-    (buf.validate.field).int32 = {
-      gte: 8
-      lte: 29
-    }
-  ];
+  optional int32 prefix_length = 8 [(buf.validate.field).int32 = {
+    gte: 8
+    lte: 29
+  }];
 
   // The purpose of this address reservation. Only applicable for INTERNAL addresses.
   // VPC_PEERING — reserves a CIDR range for VPC network peering. Used by managed services
   // like Cloud SQL, Redis, AlloyDB, and Filestore for private networking.
   // PRIVATE_SERVICE_CONNECT — reserves an address for a Private Service Connect endpoint.
   // Leave empty for standard external address reservations.
-  string purpose = 9 [
-    (buf.validate.field).cel = {
-      id: "purpose_valid"
-      message: "purpose must be empty, VPC_PEERING, or PRIVATE_SERVICE_CONNECT"
-      expression: "this in ['', 'VPC_PEERING', 'PRIVATE_SERVICE_CONNECT']"
-    }
-  ];
+  string purpose = 9 [(buf.validate.field).cel = {
+    id: "purpose_valid"
+    message: "purpose must be empty, VPC_PEERING, or PRIVATE_SERVICE_CONNECT"
+    expression: "this in ['', 'VPC_PEERING', 'PRIVATE_SERVICE_CONNECT']"
+  }];
 }

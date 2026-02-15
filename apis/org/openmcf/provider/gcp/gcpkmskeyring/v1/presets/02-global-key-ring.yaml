@@ -1,0 +1,9 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpKmsKeyRing
+metadata:
+  name: my-global-key-ring
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  keyRingName: <your-key-ring-name>  # e.g., global-shared-keys
+  location: global
