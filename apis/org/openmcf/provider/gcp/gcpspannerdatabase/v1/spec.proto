@@ -1,0 +1,129 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpspannerdatabase.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// GcpSpannerDatabaseSpec defines the configuration for a Google Cloud Spanner
+// database.
+//
+// A Spanner database is a collection of tables, views, indexes, and other
+// schema objects hosted within a Spanner instance. Each database belongs to
+// exactly one instance and inherits its compute capacity and regional
+// configuration.
+//
+// Important behavioral notes:
+//
+//   - The database_name, database_dialect, kms_key_name, and instance fields
+//     are immutable after creation. Changing them requires recreating the
+//     database.
+//
+//   - The ddl field executes DDL statements atomically with database creation.
+//     After creation, new statements may be appended but existing statements
+//     cannot be modified or removed without recreating the database.
+//
+//   - Spanner databases do not support GCP labels. Labels are only available
+//     at the instance level (see GcpSpannerInstance).
+//
+//   - The enable_drop_protection flag is a GCP API-level protection that
+//     prevents deletion of both the database and its parent instance through
+//     any interface (Console, API, CLI, IaC tools).
+message GcpSpannerDatabaseSpec {
+  // GCP project where the Spanner database will be created.
+  // Must match the project of the parent Spanner instance.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpProject,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Spanner instance to create the database on. This determines the
+  // compute capacity and regional configuration available to the database.
+  // Immutable after creation.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef instance = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpSpannerInstance,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.instance_name"
+  ];
+
+  // Unique name for the Spanner database within the instance.
+  // Must start with a lowercase letter, can contain lowercase letters,
+  // digits, underscores, and hyphens, and must end with a lowercase
+  // letter or digit. 2-30 characters. Immutable after creation.
+  string database_name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z][a-z0-9_\\-]*[a-z0-9]$",
+    (buf.validate.field).string.min_len = 2,
+    (buf.validate.field).string.max_len = 30
+  ];
+
+  // SQL dialect for the database. Determines the SQL syntax and features
+  // available. This choice is permanent and cannot be changed after creation.
+  //
+  // GOOGLE_STANDARD_SQL: Google's proprietary SQL dialect with full Spanner
+  // feature support including interleaved tables and STRUCT types.
+  //
+  // POSTGRESQL: PostgreSQL-compatible interface for teams familiar with
+  // PostgreSQL syntax. Some Spanner-specific features may not be available.
+  //
+  // If not set, defaults to GOOGLE_STANDARD_SQL.
+  string database_dialect = 4 [(buf.validate.field).cel = {
+    id: "database_dialect_valid_value"
+    expression: "this == '' || this in ['GOOGLE_STANDARD_SQL', 'POSTGRESQL']"
+    message: "database_dialect must be GOOGLE_STANDARD_SQL or POSTGRESQL"
+  }];
+
+  // Retention period for database versions, enabling point-in-time recovery.
+  // The retention period must be between 1 hour and 7 days.
+  // Accepts duration formats: "1h", "24h", "1d", "1440m", "86400s".
+  // Defaults to "1h" if not set.
+  //
+  // Increasing this value provides a longer window for point-in-time
+  // recovery but consumes more storage. Changing this value does not
+  // require database recreation.
+  string version_retention_period = 5;
+
+  // Optional list of DDL statements to execute when creating the database.
+  // Statements can create tables, indexes, views, and other schema objects.
+  //
+  // These statements execute atomically with the database creation. If any
+  // statement fails, the database is not created.
+  //
+  // Important lifecycle behavior:
+  //   - New statements can be appended after creation (executed via UpdateDDL).
+  //   - Modifying or removing existing statements forces database recreation.
+  //   - For ongoing schema management, use a migration tool (Liquibase, Flyway).
+  repeated string ddl = 6;
+
+  // Whether to enable GCP API-level drop protection for this database.
+  // When true, the database cannot be deleted through any interface
+  // (Console, gcloud, API, Terraform, Pulumi) until this flag is set
+  // back to false.
+  //
+  // Additionally, enabling drop protection on a database prevents deletion
+  // of the parent Spanner instance.
+  //
+  // Defaults to false.
+  bool enable_drop_protection = 7;
+
+  // Fully qualified name of the KMS key to use for customer-managed
+  // encryption (CMEK). The key must exist in the same location as the
+  // Spanner instance. Immutable after creation.
+  //
+  // Format: projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}
+  //
+  // If not set, Google-managed encryption is used (default).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_name = 8 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // Default time zone for the database. Affects SQL functions that depend
+  // on time zones, such as CURRENT_TIMESTAMP() and FORMAT_TIMESTAMP().
+  // Must be a valid name from the IANA Time Zone Database
+  // (e.g., "America/New_York", "Europe/London", "UTC").
+  //
+  // If not set, GCP defaults to "America/Los_Angeles".
+  string default_time_zone = 9;
+}

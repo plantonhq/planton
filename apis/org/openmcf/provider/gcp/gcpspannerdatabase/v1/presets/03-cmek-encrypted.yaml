@@ -1,0 +1,15 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpSpannerDatabase
+metadata:
+  name: my-secure-database
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  instance:
+    value: "<spanner-instance-name>"
+  databaseName: <database-name>
+  kmsKeyName:
+    value: "<kms-key-fully-qualified-name>"
+  enableDropProtection: true
+  versionRetentionPeriod: "3d"
+  defaultTimeZone: UTC
