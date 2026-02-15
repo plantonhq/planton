@@ -33,6 +33,7 @@ The following AWS resources can be deployed using OpenMCF:
 - [IAM Role](/docs/catalog/aws/iam-role)
 - [IAM User](/docs/catalog/aws/iam-user)
 - [Kinesis Stream](/docs/catalog/aws/kinesis-stream)
+- [Kinesis Stream Consumer](/docs/catalog/aws/kinesis-stream-consumer)
 - [KMS Key](/docs/catalog/aws/kms-key)
 - [Lambda](/docs/catalog/aws/lambda)
 - [Memcached ElastiCache](/docs/catalog/aws/memcached-elasticache)

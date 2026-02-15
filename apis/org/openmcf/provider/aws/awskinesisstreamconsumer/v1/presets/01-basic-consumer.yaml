@@ -1,0 +1,7 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsKinesisStreamConsumer
+metadata:
+  name: example-consumer
+spec:
+  streamArn:
+    value: arn:aws:kinesis:us-east-1:123456789012:stream/my-stream

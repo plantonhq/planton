@@ -1,0 +1,15 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsKinesisStreamConsumer
+metadata:
+  name: test-consumer
+  org: test-org
+  env: dev
+  id: test-consumer-dev
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: test-org
+    pulumi.openmcf.org/project: test-project
+    pulumi.openmcf.org/stack.name: dev.AwsKinesisStreamConsumer.test-consumer
+spec:
+  streamArn:
+    value: arn:aws:kinesis:us-east-1:123456789012:stream/test-stream

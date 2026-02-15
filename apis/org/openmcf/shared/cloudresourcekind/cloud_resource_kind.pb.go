@@ -127,6 +127,7 @@ const (
 	CloudResourceKind_AwsCloudwatchLogGroup      CloudResourceKind = 310
 	CloudResourceKind_AwsCloudwatchAlarm         CloudResourceKind = 311
 	CloudResourceKind_AwsKinesisStream           CloudResourceKind = 260
+	CloudResourceKind_AwsKinesisStreamConsumer   CloudResourceKind = 262
 	// 400–599: Azure resources
 	CloudResourceKind_AzureResourceGroup            CloudResourceKind = 400
 	CloudResourceKind_AzureAksCluster               CloudResourceKind = 401
@@ -196,6 +197,7 @@ const (
 	CloudResourceKind_GcpDataprocVirtualCluster     CloudResourceKind = 652
 	CloudResourceKind_GcpPubSubTopic                CloudResourceKind = 660
 	CloudResourceKind_GcpPubSubSubscription         CloudResourceKind = 661
+	CloudResourceKind_GcpCloudTasksQueue            CloudResourceKind = 662
 	CloudResourceKind_GcpCloudComposerEnvironment   CloudResourceKind = 680
 	CloudResourceKind_GcpKmsKeyRing                 CloudResourceKind = 690
 	CloudResourceKind_GcpKmsKey                     CloudResourceKind = 691
@@ -403,6 +405,7 @@ var (
 		310:  "AwsCloudwatchLogGroup",
 		311:  "AwsCloudwatchAlarm",
 		260:  "AwsKinesisStream",
+		262:  "AwsKinesisStreamConsumer",
 		400:  "AzureResourceGroup",
 		401:  "AzureAksCluster",
 		402:  "AzureAksNodePool",
@@ -470,6 +473,7 @@ var (
 		652:  "GcpDataprocVirtualCluster",
 		660:  "GcpPubSubTopic",
 		661:  "GcpPubSubSubscription",
+		662:  "GcpCloudTasksQueue",
 		680:  "GcpCloudComposerEnvironment",
 		690:  "GcpKmsKeyRing",
 		691:  "GcpKmsKey",
@@ -665,6 +669,7 @@ var (
 		"AwsCloudwatchLogGroup":                 310,
 		"AwsCloudwatchAlarm":                    311,
 		"AwsKinesisStream":                      260,
+		"AwsKinesisStreamConsumer":              262,
 		"AzureResourceGroup":                    400,
 		"AzureAksCluster":                       401,
 		"AzureAksNodePool":                      402,
@@ -732,6 +737,7 @@ var (
 		"GcpDataprocVirtualCluster":             652,
 		"GcpPubSubTopic":                        660,
 		"GcpPubSubSubscription":                 661,
+		"GcpCloudTasksQueue":                    662,
 		"GcpCloudComposerEnvironment":           680,
 		"GcpKmsKeyRing":                         690,
 		"GcpKmsKey":                             691,
@@ -1018,7 +1024,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xd9W\n" +
+	"\x02v1\x10\x01*\xb7X\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1077,7 +1083,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\fAwsWafWebAcl\x10\xad\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awswaf\x12-\n" +
 	"\x15AwsCloudwatchLogGroup\x10\xb6\x02\x1a\x11\xa2\xf7\x04\r\b\f\x10\x01\"\aawscwlg\x12)\n" +
 	"\x12AwsCloudwatchAlarm\x10\xb7\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awscwa\x12'\n" +
-	"\x10AwsKinesisStream\x10\x84\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awskin\x12'\n" +
+	"\x10AwsKinesisStream\x10\x84\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awskin\x122\n" +
+	"\x18AwsKinesisStreamConsumer\x10\x86\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawskincon\x12'\n" +
 	"\x12AzureResourceGroup\x10\x90\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azrg\x12#\n" +
 	"\x0fAzureAksCluster\x10\x91\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03aks\x12&\n" +
@@ -1161,7 +1168,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x12GcpDataprocCluster\x10\x8b\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpdpc\x120\n" +
 	"\x19GcpDataprocVirtualCluster\x10\x8c\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpdvc\x12%\n" +
 	"\x0eGcpPubSubTopic\x10\x94\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcppst\x12,\n" +
-	"\x15GcpPubSubSubscription\x10\x95\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcppss\x122\n" +
+	"\x15GcpPubSubSubscription\x10\x95\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcppss\x12(\n" +
+	"\x12GcpCloudTasksQueue\x10\x96\x05\x1a\x0f\xa2\xf7\x04\v\b\x12\x10\x01\"\x05gcptq\x122\n" +
 	"\x1bGcpCloudComposerEnvironment\x10\xa8\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpcce\x12#\n" +
 	"\rGcpKmsKeyRing\x10\xb2\x05\x1a\x0f\xa2\xf7\x04\v\b\x12\x10\x01\"\x05gcpkr\x12 \n" +
 	"\tGcpKmsKey\x10\xb3\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpkms\x12+\n" +

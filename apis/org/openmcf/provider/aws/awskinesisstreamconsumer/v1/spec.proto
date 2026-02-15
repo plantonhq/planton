@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awskinesisstreamconsumer.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// AwsKinesisStreamConsumerSpec defines the desired configuration for an Amazon
+// Kinesis Data Stream enhanced fan-out consumer.
+//
+// An enhanced fan-out consumer (also known as a registered consumer) provides
+// a dedicated 2 MB/s read throughput pipe from a Kinesis stream, independent
+// of all other consumers. This contrasts with standard consumers (GetRecords
+// API), which share the shard's 2 MB/s read capacity across all readers.
+//
+// Enhanced fan-out uses the SubscribeToShard API with HTTP/2 push delivery,
+// achieving ~70ms propagation delay compared to ~200ms for standard polling.
+//
+// Key characteristics:
+// - Each consumer gets dedicated 2 MB/s per shard (not shared).
+// - Push-based delivery via HTTP/2 (SubscribeToShard).
+// - Up to 20 consumers per stream (soft limit, can be increased).
+// - Consumer name is derived from metadata.name (ForceNew — cannot be renamed).
+// - Changing the stream_arn forces consumer replacement (ForceNew).
+// - No configuration beyond the stream reference — AWS manages all internals.
+//
+// Common use cases:
+// - Multiple independent applications reading from the same stream without
+//   contention (e.g., analytics pipeline + real-time dashboard + audit trail).
+// - Lambda event source mappings with enhanced fan-out for low-latency triggers.
+// - High-throughput consumers that need guaranteed 2 MB/s per shard.
+//
+// Notes:
+// - The consumer name (from metadata.name) is immutable after creation.
+// - Credentials, region, and deployment workflow live outside this spec in
+//   stack inputs.
+message AwsKinesisStreamConsumerSpec {
+  // ARN of the Kinesis Data Stream to register this consumer with. The consumer
+  // receives a dedicated 2 MB/s read throughput pipe for every shard in the
+  // stream, independent of other consumers.
+  //
+  // ForceNew: changing the stream ARN forces consumer replacement (deregister
+  // + re-register). A consumer can only be registered with one stream at a time.
+  //
+  // Accepts a direct ARN string or a reference to an AwsKinesisStream resource
+  // via valueFrom.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef stream_arn = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKinesisStream,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.stream_arn"
+  ];
+}

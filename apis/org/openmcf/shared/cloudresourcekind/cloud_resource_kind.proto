@@ -309,6 +309,12 @@ enum CloudResourceKind {
     id_prefix: "awskin"
   }];
 
+  AwsKinesisStreamConsumer = 262 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awskincon"
+  }];
+
   // 400–599: Azure resources
   AzureResourceGroup = 400 [(kind_meta) = {
     provider: azure
@@ -649,6 +655,11 @@ enum CloudResourceKind {
     provider: gcp
     version: v1
     id_prefix: "gcppss"
+  }];
+  GcpCloudTasksQueue = 662 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcptq"
   }];
   GcpCloudComposerEnvironment = 680 [(kind_meta) = {
     provider: gcp

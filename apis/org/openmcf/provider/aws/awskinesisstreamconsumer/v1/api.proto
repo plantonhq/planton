@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awskinesisstreamconsumer.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/aws/awskinesisstreamconsumer/v1/spec.proto";
+import "org/openmcf/provider/aws/awskinesisstreamconsumer/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// AwsKinesisStreamConsumer is the Kubernetes-style resource envelope for an
+// Amazon Kinesis enhanced fan-out consumer.
+message AwsKinesisStreamConsumer {
+  // api-version must be set to "aws.openmcf.org/v1".
+  string api_version = 1 [(buf.validate.field).string.const = "aws.openmcf.org/v1"];
+
+  // resource-kind for this Kinesis stream consumer resource, must be
+  // "AwsKinesisStreamConsumer".
+  string kind = 2 [(buf.validate.field).string.const = "AwsKinesisStreamConsumer"];
+
+  // metadata captures identifying information (name, org, env, id, labels,
+  // relationships).
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec holds the desired configuration for the enhanced fan-out consumer.
+  AwsKinesisStreamConsumerSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status holds runtime or post-deployment information.
+  AwsKinesisStreamConsumerStatus status = 5;
+}
+
+// AwsKinesisStreamConsumerStatus captures lifecycle, audit, job linkage, and
+// observable outputs.
+message AwsKinesisStreamConsumerStatus {
+  // stack-outputs
+  AwsKinesisStreamConsumerStackOutputs outputs = 1;
+}
