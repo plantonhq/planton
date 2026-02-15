@@ -1,0 +1,36 @@
+# rate-limited-processing: Queue with explicit rate limits and retry config
+#
+# Use when: You need controlled dispatch rates to protect downstream services
+# and reliable retry behavior for background processing workloads.
+#
+# What it configures:
+# - 500 tasks/second max dispatch rate
+# - 100 concurrent task limit
+# - 5 retry attempts with exponential backoff (1s-3600s)
+# - 16 doublings before linear backoff
+# - 10% logging sampling for operational visibility
+#
+# Typical use cases:
+# - Production background processing
+# - API rate-limited integrations
+# - Order/payment processing pipelines
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCloudTasksQueue
+metadata:
+  name: ${name}
+spec:
+  projectId:
+    value: ${project-id}
+  queueName: ${queue-name}
+  location: ${location}
+  rateLimits:
+    maxDispatchesPerSecond: 500
+    maxConcurrentDispatches: 100
+  retryConfig:
+    maxAttempts: 5
+    minBackoff: "1s"
+    maxBackoff: "3600s"
+    maxDoublings: 16
+    maxRetryDuration: "86400s"
+  stackdriverLoggingConfig:
+    samplingRatio: 0.1

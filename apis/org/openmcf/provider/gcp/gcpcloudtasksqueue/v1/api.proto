@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpcloudtasksqueue.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/gcp/gcpcloudtasksqueue/v1/spec.proto";
+import "org/openmcf/provider/gcp/gcpcloudtasksqueue/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+//gcp-cloud-tasks-queue
+message GcpCloudTasksQueue {
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.openmcf.org/v1'];
+  string kind = 2 [(buf.validate.field).string.const = 'GcpCloudTasksQueue'];
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  GcpCloudTasksQueueSpec spec = 4 [(buf.validate.field).required = true];
+  GcpCloudTasksQueueStatus status = 5;
+}
+
+message GcpCloudTasksQueueStatus {
+  GcpCloudTasksQueueStackOutputs outputs = 1;
+}
