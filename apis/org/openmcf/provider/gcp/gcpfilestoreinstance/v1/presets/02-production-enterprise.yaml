@@ -1,0 +1,25 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpFilestoreInstance
+metadata:
+  name: prod-nfs
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  instanceName: <instance-name>
+  location: <gcp-region>
+  tier: ENTERPRISE
+  description: Production Filestore instance with HA and deletion protection
+  deletionProtectionEnabled: true
+  deletionProtectionReason: "production data -- disable protection before destroying"
+  fileShare:
+    name: data
+    capacityGb: 1024
+    nfsExportOptions:
+      - ipRanges:
+          - "10.0.0.0/8"
+        accessMode: READ_WRITE
+        squashMode: ROOT_SQUASH
+  networkConfig:
+    network:
+      value: "<vpc-network-name>"
+    connectMode: PRIVATE_SERVICE_ACCESS
