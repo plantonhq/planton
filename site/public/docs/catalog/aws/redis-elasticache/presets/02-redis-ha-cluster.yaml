@@ -1,0 +1,27 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsRedisElasticache
+metadata:
+  name: my-redis-ha
+spec:
+  engine: redis
+  engineVersion: "7.1"
+  description: HA Redis cluster with automatic failover
+  nodeType: cache.r7g.large
+  numCacheClusters: 3
+  automaticFailoverEnabled: true
+  multiAzEnabled: true
+  atRestEncryptionEnabled: true
+  transitEncryptionEnabled: true
+  transitEncryptionMode: required
+  subnetIds:
+    - value: <private-subnet-id-az1>
+    - value: <private-subnet-id-az2>
+  securityGroupIds:
+    - value: <security-group-id>
+  snapshotRetentionLimit: 7
+  snapshotWindow: "03:00-04:00"
+  maintenanceWindow: "sun:05:00-sun:06:00"
+  parameterGroupFamily: redis7
+  parameters:
+    - name: maxmemory-policy
+      value: volatile-lru

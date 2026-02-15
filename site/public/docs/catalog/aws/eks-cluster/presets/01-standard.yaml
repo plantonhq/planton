@@ -1,0 +1,13 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsEksCluster
+metadata:
+  name: my-eks-cluster
+spec:
+  subnetIds:
+    - value: "<private-subnet-id-az1>"
+    - value: "<private-subnet-id-az2>"
+  clusterRoleArn:
+    value: "<eks-cluster-role-arn>"
+  version: "1.30"
+  disablePublicEndpoint: false
+  enableControlPlaneLogs: true  # Recommended for production observability

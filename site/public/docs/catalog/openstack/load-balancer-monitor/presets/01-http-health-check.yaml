@@ -1,0 +1,14 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackLoadBalancerMonitor
+metadata:
+  name: my-http-monitor
+spec:
+  poolId:
+    value: <pool-id>
+  type: HTTP
+  delay: 10
+  timeout: 5
+  maxRetries: 3
+  urlPath: /healthz
+  httpMethod: GET
+  expectedCodes: "200"

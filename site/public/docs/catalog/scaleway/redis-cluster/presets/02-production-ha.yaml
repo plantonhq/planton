@@ -1,0 +1,14 @@
+apiVersion: scaleway.openmcf.org/v1
+kind: ScalewayRedisCluster
+metadata:
+  name: my-redis
+spec:
+  zone: fr-par-1
+  version: 7.2.5
+  nodeType: RED1-M
+  clusterSize: 3
+  tlsEnabled: true
+  userName: <your-redis-user>
+  password: <your-redis-password>
+  privateNetworkId:
+    value: "<your-private-network-id>"

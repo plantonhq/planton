@@ -1,0 +1,21 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureAksNodePool
+metadata:
+  name: my-spot-pool
+spec:
+  clusterName:
+    value: "<aks-cluster-name>"
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  vmSize: Standard_D4s_v5
+  initialNodeCount: 1
+  autoscaling:
+    minNodes: 0
+    maxNodes: 10
+  availabilityZones:
+    - "1"
+    - "2"
+    - "3"
+  osType: LINUX
+  mode: USER
+  spotEnabled: true

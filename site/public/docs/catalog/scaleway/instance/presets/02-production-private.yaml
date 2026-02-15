@@ -1,0 +1,14 @@
+apiVersion: scaleway.openmcf.org/v1
+kind: ScalewayInstance
+metadata:
+  name: my-instance
+spec:
+  zone: fr-par-1
+  type: PRO2-S
+  image: ubuntu_jammy
+  securityGroupId:
+    value: "<your-security-group-id>"
+  privateNetworkId:
+    value: "<your-private-network-id>"
+  state: started  # recommended_default from spec
+  protected: true  # Recommended for production

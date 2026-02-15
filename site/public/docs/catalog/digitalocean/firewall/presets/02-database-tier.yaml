@@ -1,0 +1,28 @@
+apiVersion: digital-ocean.openmcf.org/v1
+kind: DigitalOceanFirewall
+metadata:
+  name: my-database-tier-firewall
+spec:
+  name: database-tier
+  inboundRules:
+    - protocol: tcp
+      portRange: "5432"
+      sourceTags:
+        - web
+    - protocol: tcp
+      portRange: "22"
+      sourceAddresses:
+        - "<your-management-cidr>"
+  outboundRules:
+    - protocol: tcp
+      portRange: 1-65535
+      destinationAddresses:
+        - 0.0.0.0/0
+        - "::/0"
+    - protocol: udp
+      portRange: "53"
+      destinationAddresses:
+        - 0.0.0.0/0
+        - "::/0"
+  tags:
+    - database

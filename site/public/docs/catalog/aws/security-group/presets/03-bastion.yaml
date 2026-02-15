@@ -1,0 +1,22 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsSecurityGroup
+metadata:
+  name: my-bastion-sg
+spec:
+  vpcId:
+    value: "<vpc-id>"
+  description: Allow SSH access from trusted IP addresses only
+  ingress:
+    - protocol: tcp
+      fromPort: 22
+      toPort: 22
+      ipv4Cidrs:
+        - <trusted-ip-cidr>
+      description: SSH from trusted IPs
+  egress:
+    - protocol: "-1"
+      fromPort: 0
+      toPort: 0
+      ipv4Cidrs:
+        - 0.0.0.0/0
+      description: All outbound traffic

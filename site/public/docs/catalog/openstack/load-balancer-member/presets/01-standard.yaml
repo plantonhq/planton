@@ -1,0 +1,11 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackLoadBalancerMember
+metadata:
+  name: my-pool-member
+spec:
+  poolId:
+    value: <pool-id>
+  address: <backend-ip-address>
+  protocolPort: <backend-port>
+  subnetId:
+    value: <member-subnet-id>

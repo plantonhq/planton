@@ -1,0 +1,14 @@
+apiVersion: scaleway.openmcf.org/v1
+kind: ScalewayRdbInstance
+metadata:
+  name: my-rdb
+spec:
+  region: fr-par
+  engine: MySQL-8
+  nodeType: DB-GP-XS
+  privateNetworkId:
+    value: "<your-private-network-id>"
+  volumeType: lssd  # recommended_default from spec
+  volumeSizeInGb: 20
+  adminUser: <your-admin-user>
+  adminPassword: <your-admin-password>

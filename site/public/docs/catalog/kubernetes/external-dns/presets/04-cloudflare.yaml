@@ -1,0 +1,12 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesExternalDns
+metadata:
+  name: my-external-dns
+spec:
+  namespace:
+    value: external-dns
+  createNamespace: true
+  cloudflare:
+    apiToken: "<your-cloudflare-api-token>"
+    dnsZoneId:
+      value: "<your-cloudflare-dns-zone-id>"

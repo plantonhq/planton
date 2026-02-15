@@ -1,0 +1,16 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesGhaRunnerScaleSetController
+metadata:
+  name: my-gha-runner-controller
+spec:
+  namespace:
+    value: gha-runner-system
+  createNamespace: true
+  container:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi

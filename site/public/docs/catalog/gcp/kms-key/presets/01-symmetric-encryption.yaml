@@ -1,0 +1,9 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpKmsKey
+metadata:
+  name: my-cmek-key
+spec:
+  keyRingId:
+    value: "<key-ring-id>"  # e.g., projects/my-project/locations/us-central1/keyRings/my-key-ring
+  keyName: <your-key-name>  # e.g., cmek-encrypt-key
+  rotationPeriod: "7776000s"  # 90 days

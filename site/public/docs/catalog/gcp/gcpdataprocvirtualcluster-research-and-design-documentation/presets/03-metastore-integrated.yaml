@@ -1,0 +1,47 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpDataprocVirtualCluster
+metadata:
+  name: my-spark-with-metastore
+spec:
+  projectId:
+    value: "<your-gcp-project-id>"
+  region: us-central1
+  gkeClusterTarget:
+    value: "<your-gke-cluster-resource-id>"
+  kubernetesNamespace:
+    value: "<your-kubernetes-namespace>"
+  stagingBucket:
+    value: "<your-staging-bucket-name>"
+  softwareConfig:
+    componentVersion:
+      SPARK: "3.5-dataproc-17"
+    properties:
+      "spark:spark.sql.catalogImplementation": "hive"
+      "spark:spark.executor.memory": "8g"
+      "spark:spark.driver.memory": "4g"
+      "spark:spark.eventLog.enabled": "true"
+      "spark:spark.eventLog.dir": "<your-spark-event-log-gcs-path>"
+  nodePoolTargets:
+    - nodePool:
+        value: "<your-default-pool-name>"
+      roles:
+        - DEFAULT
+        - CONTROLLER
+      nodePoolConfig:
+        machineType: e2-standard-4
+        autoscaling:
+          minNodeCount: 1
+          maxNodeCount: 3
+    - nodePool:
+        value: "<your-executor-pool-name>"
+      roles:
+        - SPARK_DRIVER
+        - SPARK_EXECUTOR
+      nodePoolConfig:
+        machineType: n2-standard-8
+        autoscaling:
+          minNodeCount: 1
+          maxNodeCount: 20
+  auxiliaryServicesConfig:
+    metastoreService: "<your-dataproc-metastore-service-resource-name>"
+    sparkHistoryServerCluster: "<your-spark-history-server-cluster-resource-name>"

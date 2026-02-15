@@ -1,0 +1,18 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareLoadBalancer
+metadata:
+  name: my-weighted-ab-testing
+spec:
+  hostname: <app-subdomain>.<your-domain.com>
+  zoneId:
+    value: <cloudflare-zone-id>
+  origins:
+    - name: control
+      address: <control-origin-ip-or-hostname>
+      weight: 70
+    - name: variant
+      address: <variant-origin-ip-or-hostname>
+      weight: 30
+  proxied: true
+  healthProbePath: /
+  steeringPolicy: random

@@ -1,0 +1,24 @@
+apiVersion: scaleway.openmcf.org/v1
+kind: ScalewayServerlessContainer
+metadata:
+  name: my-container
+spec:
+  region: fr-par
+  image:
+    registryEndpoint:
+      value: "<your-registry-endpoint>"
+    name: <your-image-name>
+    tag: latest
+  port: 8080  # recommended_default from spec
+  privacy: private
+  memoryLimitMb: 512
+  minScale: 1  # Keep warm for low-latency Private Network access
+  maxScale: 10
+  timeoutSeconds: 300  # recommended_default from spec
+  privateNetworkId:
+    value: "<your-private-network-id>"
+  deploy: true  # recommended_default from spec
+  healthCheck:
+    path: /health
+    failureThreshold: 3
+    intervalSeconds: 10

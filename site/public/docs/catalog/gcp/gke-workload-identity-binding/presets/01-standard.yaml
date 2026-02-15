@@ -1,0 +1,11 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpGkeWorkloadIdentityBinding
+metadata:
+  name: my-workload-identity-binding
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  serviceAccountEmail:
+    value: "<gsa-email>"
+  ksaNamespace: <kubernetes-namespace>
+  ksaName: <kubernetes-service-account>

@@ -1,0 +1,10 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpArtifactRegistryRepo
+metadata:
+  name: my-docker-repo
+spec:
+  repoFormat: DOCKER
+  projectId:
+    value: "<gcp-project-id>"
+  region: <gcp-region>
+  enablePublicAccess: false  # private repository; requires authentication

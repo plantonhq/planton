@@ -1,0 +1,76 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureContainerApp
+metadata:
+  name: my-enterprise-api
+spec:
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: my-enterprise-api
+  containerAppEnvironmentId:
+    value: "<container-app-environment-id>"
+  containers:
+    - name: api
+      image: mycompany.azurecr.io/enterprise-api:v1.0.0
+      cpu: 1.0
+      memory: "2Gi"
+      env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Production
+        - name: DB_CONNECTION
+          secretName: db-conn
+      livenessProbe:
+        transport: HTTP
+        port: 8080
+        path: /healthz
+        initialDelayInSeconds: 10
+        intervalSeconds: 15
+        timeoutSeconds: 5
+        failureCountThreshold: 3
+      readinessProbe:
+        transport: HTTP
+        port: 8080
+        path: /ready
+        intervalSeconds: 5
+        timeoutSeconds: 3
+        successCountThreshold: 2
+        failureCountThreshold: 3
+      startupProbe:
+        transport: HTTP
+        port: 8080
+        path: /healthz
+        intervalSeconds: 3
+        timeoutSeconds: 5
+        failureCountThreshold: 30
+  minReplicas: 2
+  maxReplicas: 20
+  cooldownPeriodInSeconds: 180
+  terminationGracePeriodSeconds: 30
+  httpScaleRules:
+    - name: http-requests
+      concurrentRequests: "75"
+  secrets:
+    - name: db-conn
+      keyVaultSecretId: https://my-keyvault.vault.azure.net/secrets/db-connection
+      identity: "<your-user-assigned-identity-id>"
+  registries:
+    - server: mycompany.azurecr.io
+      identity: "<your-user-assigned-identity-id>"
+  identity:
+    type: UserAssigned
+    identityIds:
+      - value: "<your-user-assigned-identity-id>"
+  ingress:
+    externalEnabled: true
+    targetPort: 8080
+    ipSecurityRestrictions:
+      - name: allow-office
+        action: Allow
+        ipAddressRange: 203.0.113.0/24
+        description: Corporate office CIDR
+      - name: deny-all
+        action: Deny
+        ipAddressRange: 0.0.0.0/0
+        description: Deny all other traffic
+    trafficWeight:
+      - latestRevision: true
+        percentage: 100

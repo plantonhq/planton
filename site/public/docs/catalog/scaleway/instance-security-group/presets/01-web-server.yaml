@@ -1,0 +1,24 @@
+apiVersion: scaleway.openmcf.org/v1
+kind: ScalewayInstanceSecurityGroup
+metadata:
+  name: my-web-sg
+spec:
+  zone: fr-par-1
+  description: Web server -- allows HTTP, HTTPS, and SSH inbound
+  stateful: true  # recommended_default from spec
+  inboundDefaultPolicy: drop  # Allowlist model for production
+  outboundDefaultPolicy: accept  # recommended_default from spec
+  enableDefaultSecurity: true  # recommended_default from spec
+  inboundRules:
+    - action: accept
+      protocol: TCP
+      portRange: "22"
+      ipRange: "<your-admin-cidr>"
+    - action: accept
+      protocol: TCP
+      portRange: "80"
+      ipRange: 0.0.0.0/0
+    - action: accept
+      protocol: TCP
+      portRange: "443"
+      ipRange: 0.0.0.0/0

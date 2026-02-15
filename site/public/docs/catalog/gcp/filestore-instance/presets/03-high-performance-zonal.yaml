@@ -1,0 +1,23 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpFilestoreInstance
+metadata:
+  name: perf-nfs
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  instanceName: <instance-name>
+  location: <gcp-zone>
+  tier: ZONAL
+  description: High-performance NFS with fixed IOPS provisioning
+  kmsKeyName:
+    value: "<kms-key-resource-name>"
+  fileShare:
+    name: fast_vol
+    capacityGb: 2560
+  networkConfig:
+    network:
+      value: "<vpc-network-name>"
+    connectMode: PRIVATE_SERVICE_ACCESS
+  performanceConfig:
+    fixedIops:
+      maxIops: 20000

@@ -8,7 +8,7 @@ export default function Stats() {
 	const stats = [
 		{
 			icon: Package,
-			value: "100+",
+			value: "200+",
 			label: "Deployment Components",
 			description: "Pre-built, battle-tested modules for common infrastructure patterns",
 		},

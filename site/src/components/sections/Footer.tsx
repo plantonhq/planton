@@ -7,7 +7,7 @@ export default function Footer() {
   const links = [
     { name: "Documentation", href: "/docs", external: false },
     { name: "Getting Started", href: "/docs/getting-started", external: false },
-    { name: "Components", href: "/docs", external: false },
+    { name: "Components", href: "/docs/catalog", external: false },
     { name: "GitHub", href: "https://github.com/plantonhq/openmcf", external: true },
   ];
 

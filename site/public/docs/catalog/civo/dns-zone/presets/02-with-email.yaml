@@ -1,0 +1,27 @@
+apiVersion: civo.openmcf.org/v1
+kind: CivoDnsZone
+metadata:
+  name: my-email-zone
+spec:
+  domainName: example.com
+  records:
+    - name: "@"
+      type: A
+      values:
+        - value: "<server-ipv4-address>"
+      ttlSeconds: 3600
+    - name: www
+      type: CNAME
+      values:
+        - value: example.com
+      ttlSeconds: 3600
+    - name: "@"
+      type: MX
+      values:
+        - value: "<mail-server.example.com>"
+      ttlSeconds: 3600
+    - name: "@"
+      type: TXT
+      values:
+        - value: "v=spf1 include:<your-email-provider> ~all"
+      ttlSeconds: 3600

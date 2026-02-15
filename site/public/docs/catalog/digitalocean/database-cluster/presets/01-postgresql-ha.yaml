@@ -1,0 +1,13 @@
+apiVersion: digital-ocean.openmcf.org/v1
+kind: DigitalOceanDatabaseCluster
+metadata:
+  name: my-postgresql-ha
+spec:
+  clusterName: my-postgresql-ha
+  engine: pg
+  engineVersion: "16"
+  region: nyc3
+  sizeSlug: db-s-2vcpu-4gb
+  nodeCount: 3
+  vpc:
+    value: "<vpc-id>"

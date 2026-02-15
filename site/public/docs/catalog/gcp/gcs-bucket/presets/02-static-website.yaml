@@ -1,0 +1,29 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpGcsBucket
+metadata:
+  name: my-website-bucket
+spec:
+  gcpProjectId:
+    value: "<gcp-project-id>"
+  bucketName: <your-bucket-name>
+  location: <gcp-region>
+  uniformBucketLevelAccessEnabled: true
+  storageClass: STANDARD
+  website:
+    mainPageSuffix: index.html
+    notFoundPage: 404.html
+  corsRules:
+    - methods:
+        - GET
+        - HEAD
+      origins:
+        - "*"
+      responseHeaders:
+        - Content-Type
+      maxAgeSeconds: 3600
+  iamBindings:
+    - role: roles/storage.objectViewer
+      members:
+        - allUsers  # public read access for website content
+  gcpLabels:
+    managed-by: openmcf

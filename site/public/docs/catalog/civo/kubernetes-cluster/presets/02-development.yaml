@@ -1,0 +1,15 @@
+apiVersion: civo.openmcf.org/v1
+kind: CivoKubernetesCluster
+metadata:
+  name: my-dev-cluster
+spec:
+  clusterName: my-dev-cluster
+  region: lon1
+  kubernetesVersion: "1.29.2"
+  network:
+    value: "<vpc-network-id>"
+  defaultNodePool:
+    size: g4s.kube.small
+    nodeCount: 1
+  tags:
+    - development

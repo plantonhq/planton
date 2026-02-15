@@ -1,0 +1,14 @@
+apiVersion: civo.openmcf.org/v1
+kind: CivoCertificate
+metadata:
+  name: my-certificate
+spec:
+  certificateName: my-certificate
+  type: letsEncrypt
+  letsEncrypt:
+    domains:
+      - example.com
+      - "*.example.com"
+  description: Let's Encrypt wildcard certificate
+  tags:
+    - production

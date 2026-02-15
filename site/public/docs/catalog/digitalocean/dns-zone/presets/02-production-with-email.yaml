@@ -1,0 +1,23 @@
+apiVersion: digital-ocean.openmcf.org/v1
+kind: DigitalOceanDnsZone
+metadata:
+  name: my-production-zone
+spec:
+  domainName: "<your-domain.com>"
+  records:
+    - name: "@"
+      type: A
+      values:
+        - value: "<web-server-ip>"
+      ttlSeconds: 3600
+    - name: "@"
+      type: MX
+      values:
+        - value: "<mail-server-hostname>"
+      priority: 10
+      ttlSeconds: 3600
+    - name: "@"
+      type: TXT
+      values:
+        - value: "v=spf1 include:_spf.google.com ~all"
+      ttlSeconds: 3600

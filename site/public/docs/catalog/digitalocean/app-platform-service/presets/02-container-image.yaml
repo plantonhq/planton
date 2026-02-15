@@ -1,0 +1,19 @@
+apiVersion: digital-ocean.openmcf.org/v1
+kind: DigitalOceanAppPlatformService
+metadata:
+  name: my-container-app
+spec:
+  serviceName: my-container-app
+  region: nyc1
+  serviceType: web_service
+  imageSource:
+    registry:
+      value: "<registry-url>"
+    repository: "<your-image-repository>"
+    tag: latest
+  instanceSizeSlug: professional_xs
+  enableAutoscale: true
+  minInstanceCount: 2
+  maxInstanceCount: 5
+  env:
+    APP_ENV: production

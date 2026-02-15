@@ -1,0 +1,19 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesArgocd
+metadata:
+  name: my-argocd
+spec:
+  namespace:
+    value: argocd
+  createNamespace: true
+  container:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 100Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+  ingress:
+    enabled: true
+    hostname: "<your-argocd.example.com>"

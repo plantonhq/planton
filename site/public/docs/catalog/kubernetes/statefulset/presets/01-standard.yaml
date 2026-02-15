@@ -1,0 +1,29 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesStatefulSet
+metadata:
+  name: my-statefulset
+spec:
+  namespace:
+    value: "<your-namespace>"
+  createNamespace: false
+  container:
+    app:
+      image:
+        repo: "<your-container-registry>/<your-image>"
+        tag: "<your-image-tag>"
+      resources:
+        requests:
+          cpu: 50m
+          memory: 100Mi
+        limits:
+          cpu: 1000m
+          memory: 1Gi
+      ports:
+        - name: http
+          containerPort: 8080
+          networkProtocol: TCP
+          appProtocol: http
+          servicePort: 80
+          isIngressPort: false
+  availability:
+    minReplicas: 1

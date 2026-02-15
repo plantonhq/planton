@@ -1,0 +1,10 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackLoadBalancerListener
+metadata:
+  name: my-http-listener
+spec:
+  loadbalancerId:
+    value: <loadbalancer-id>
+  protocol: HTTP
+  protocolPort: 80
+  description: HTTP listener on port 80

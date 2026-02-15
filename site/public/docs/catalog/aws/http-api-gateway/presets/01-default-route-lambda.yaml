@@ -1,0 +1,11 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsHttpApiGateway
+metadata:
+  name: my-simple-api
+spec:
+  routes:
+    - route_key: "$default"
+      integration:
+        integration_type: "AWS_PROXY"
+        integration_uri:
+          value: "<lambda-function-arn>"

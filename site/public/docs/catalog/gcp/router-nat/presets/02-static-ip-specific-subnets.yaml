@@ -1,0 +1,17 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpRouterNat
+metadata:
+  name: my-static-nat
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  vpcSelfLink:
+    value: "<vpc-network-self-link>"
+  region: <gcp-region>
+  routerName: <your-router-name>
+  natName: <your-nat-name>
+  subnetworkSelfLinks:
+    - value: "<subnet-self-link>"
+  natIpNames:
+    - value: "<static-ip-name>"
+  logFilter: ERRORS_ONLY  # default from spec

@@ -1,0 +1,13 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsMemcachedElasticache
+metadata:
+  name: my-memcached
+spec:
+  engineVersion: "1.6.22"
+  nodeType: cache.t3.medium
+  numCacheNodes: 3
+  azMode: cross-az
+  preferredAvailabilityZones:
+    - us-east-1a
+    - us-east-1b
+    - us-east-1c

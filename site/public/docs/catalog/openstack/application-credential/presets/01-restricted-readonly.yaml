@@ -1,0 +1,18 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackApplicationCredential
+metadata:
+  name: my-readonly-credential
+spec:
+  description: Read-only application credential for monitoring and auditing
+  roles:
+    - reader
+  accessRules:
+    - service: compute
+      method: GET
+      path: /v2.1/*
+    - service: network
+      method: GET
+      path: /v2.0/*
+    - service: block-storage
+      method: GET
+      path: /v3/*

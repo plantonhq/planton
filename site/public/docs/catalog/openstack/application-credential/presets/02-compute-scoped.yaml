@@ -1,0 +1,21 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackApplicationCredential
+metadata:
+  name: my-compute-credential
+spec:
+  description: Application credential scoped to compute operations
+  roles:
+    - member
+  accessRules:
+    - service: compute
+      method: GET
+      path: /v2.1/*
+    - service: compute
+      method: POST
+      path: /v2.1/servers
+    - service: compute
+      method: POST
+      path: /v2.1/servers/*/action
+    - service: compute
+      method: DELETE
+      path: /v2.1/servers/*

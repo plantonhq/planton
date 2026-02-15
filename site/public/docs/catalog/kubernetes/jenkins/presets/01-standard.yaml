@@ -1,0 +1,19 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesJenkins
+metadata:
+  name: my-jenkins
+spec:
+  namespace:
+    value: jenkins
+  createNamespace: true
+  container:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+  ingress:
+    enabled: true
+    hostname: "<your-jenkins.example.com>"

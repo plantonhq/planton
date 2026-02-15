@@ -1,0 +1,33 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesDaemonSet
+metadata:
+  name: my-log-collector
+spec:
+  namespace:
+    value: "<your-namespace>"
+  createNamespace: false
+  container:
+    app:
+      image:
+        repo: "<your-container-registry>/<your-log-collector-image>"
+        tag: "<your-image-tag>"
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+      volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+          hostPath:
+            path: /var/log
+        - name: containers
+          mountPath: /var/lib/docker/containers
+          hostPath:
+            path: /var/lib/docker/containers
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule

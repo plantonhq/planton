@@ -1,0 +1,10 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpSpannerDatabase
+metadata:
+  name: my-database
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  instance:
+    value: "<spanner-instance-name>"
+  databaseName: <database-name>

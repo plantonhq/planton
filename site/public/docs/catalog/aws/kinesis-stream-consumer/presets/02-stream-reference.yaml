@@ -1,0 +1,10 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsKinesisStreamConsumer
+metadata:
+  name: analytics-consumer
+spec:
+  streamArn:
+    valueFrom:
+      kind: AwsKinesisStream
+      name: my-stream
+      fieldPath: status.outputs.stream_arn

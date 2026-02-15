@@ -1,0 +1,14 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpServiceAccount
+metadata:
+  name: my-ci-cd-sa
+spec:
+  serviceAccountId: <your-sa-id>
+  projectId:
+    value: "<gcp-project-id>"
+  createKey: true  # JSON key exported for use in CI/CD systems (GitHub Actions, GitLab CI, etc.)
+  projectIamRoles:
+    - roles/artifactregistry.writer
+    - roles/container.developer
+    - roles/run.developer
+    - roles/iam.serviceAccountUser

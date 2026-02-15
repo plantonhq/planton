@@ -1,0 +1,10 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpVpc
+metadata:
+  name: my-global-vpc
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  networkName: <your-vpc-name>
+  autoCreateSubnetworks: false  # custom mode
+  routingMode: GLOBAL  # Cloud Routers advertise routes across all regions

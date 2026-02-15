@@ -1,0 +1,28 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureLoadBalancer
+metadata:
+  name: my-public-lb
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-lb-name>
+  publicIpId:
+    value: "<public-ip-resource-id>"
+  backendPools:
+    - name: default
+  healthProbes:
+    - name: http-probe
+      protocol: Http
+      port: 80
+      requestPath: /health
+      intervalInSeconds: 15  # default from spec
+      numberOfProbes: 2  # default from spec
+  rules:
+    - name: http-rule
+      protocol: Tcp
+      frontendPort: 80
+      backendPort: 80
+      backendPoolName: default
+      probeName: http-probe
+      idleTimeoutInMinutes: 4  # default from spec

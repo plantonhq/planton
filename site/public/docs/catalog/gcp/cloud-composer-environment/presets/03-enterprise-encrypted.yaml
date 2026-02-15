@@ -1,0 +1,59 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCloudComposerEnvironment
+metadata:
+  name: my-enterprise-composer-encrypted
+spec:
+  projectId:
+    value: "<your-gcp-project-id>"
+  region: us-central1
+  environmentSize: ENVIRONMENT_SIZE_LARGE
+  resilienceMode: HIGH_RESILIENCE
+  kmsKeyName:
+    value: "<your-kms-key-resource-id>"
+  nodeConfig:
+    network:
+      value: "<your-vpc-network-name>"
+    subnetwork:
+      value: "<your-vpc-subnetwork-name>"
+    serviceAccount:
+      value: "<your-service-account-email>"
+  softwareConfig:
+    imageVersion: "<composer-2-latest-airflow-version>"
+  privateEnvironmentConfig:
+    enablePrivateEndpoint: true
+    connectionType: VPC_PEERING
+  workloadsConfig:
+    scheduler:
+      cpu: 4.0
+      memoryGb: 15.0
+      storageGb: 10.0
+      count: 2
+    webServer:
+      cpu: 4.0
+      memoryGb: 15.0
+      storageGb: 10.0
+    triggerer:
+      cpu: 1.0
+      memoryGb: 2.0
+      count: 2
+    worker:
+      cpu: 4.0
+      memoryGb: 15.0
+      storageGb: 10.0
+      minCount: 3
+      maxCount: 10
+  maintenanceWindow:
+    startTime: "2026-01-01T00:00:00Z"
+    endTime: "2026-01-01T12:00:00Z"
+    recurrence: "FREQ=WEEKLY;BYDAY=SA,SU"
+  recoveryConfig:
+    enabled: true
+    snapshotLocation: "<your-gcs-snapshot-bucket-path>"
+    snapshotCreationSchedule: "0 4 * * *"
+    timeZone: "UTC"
+  webServerNetworkAccessControl:
+    allowedIpRanges:
+      - value: "<your-allowed-ip-range-1>"
+        description: "Corporate office network"
+      - value: "<your-allowed-ip-range-2>"
+        description: "VPN network"

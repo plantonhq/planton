@@ -1,0 +1,15 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsRoute53DnsRecord
+metadata:
+  name: my-alb-dns-record
+spec:
+  zoneId:
+    value: "<route53-hosted-zone-id>"
+  name: <your-domain.com>
+  type: A
+  aliasTarget:
+    dnsName:
+      value: "<alb-dns-name>"
+    zoneId:
+      value: "<alb-hosted-zone-id>"
+    evaluateTargetHealth: true  # Recommended for ALB health monitoring

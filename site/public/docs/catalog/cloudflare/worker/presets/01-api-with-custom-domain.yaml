@@ -1,0 +1,23 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareWorker
+metadata:
+  name: my-api-worker
+spec:
+  accountId: <cloudflare-account-id>
+  workerName: <worker-name>
+  scriptBundle:
+    bucket: <r2-bucket-name>
+    path: <script-bundle-path>
+  kvBindings:
+    - value: <kv-namespace-id>
+  dns:
+    enabled: true
+    zoneId: <cloudflare-zone-id>
+    hostname: <api-subdomain>.<your-domain.com>
+    routePattern: <api-subdomain>.<your-domain.com>/*
+  compatibilityDate: 2024-01-01
+  usageModel: BUNDLED
+  env:
+    variables:
+      LOG_LEVEL: info
+      API_VERSION: v1
