@@ -1,0 +1,29 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpBigtableInstance
+metadata:
+  name: test-bigtable
+  org: test-org
+  env: dev
+spec:
+  projectId:
+    value: my-gcp-project
+  instanceName: test-bigtable-inst
+  displayName: Test Bigtable Instance
+  deletionProtection: false
+  forceDestroy: true
+  clusters:
+    - clusterId: test-cluster-c1
+      zone: us-central1-a
+      numNodes: 3
+      storageType: SSD
+      nodeScalingFactor: NodeScalingFactor1X
+      kmsKeyName:
+        value: projects/my-gcp-project/locations/us-central1/keyRings/test-kr/cryptoKeys/test-key
+    - clusterId: test-cluster-c2
+      zone: us-east1-b
+      storageType: SSD
+      autoscalingConfig:
+        minNodes: 1
+        maxNodes: 5
+        cpuTarget: 60
+        storageTarget: 2560

@@ -3,6 +3,8 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "module",
     srcs = [
+        "cluster.go",
+        "instance.go",
         "locals.go",
         "main.go",
         "outputs.go",
@@ -16,6 +18,8 @@ go_library(
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider",
         "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/alloydb",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
     ],
 )
