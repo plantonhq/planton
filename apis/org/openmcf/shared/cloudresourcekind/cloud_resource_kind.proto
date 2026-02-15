@@ -301,6 +301,14 @@ enum CloudResourceKind {
     id_prefix: "awscwa"
   }];
 
+  // --- Analytics / Streaming ---
+
+  AwsKinesisStream = 260 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awskin"
+  }];
+
   // 400–599: Azure resources
   AzureResourceGroup = 400 [(kind_meta) = {
     provider: azure
@@ -656,6 +664,11 @@ enum CloudResourceKind {
     provider: gcp
     version: v1
     id_prefix: "gcpkms"
+  }];
+  GcpFilestoreInstance = 700 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpnfs"
   }];
 
   // 800–999: Kubernetes resources

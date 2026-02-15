@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awskinesisstream.v1;
+
+import "org/openmcf/provider/aws/awskinesisstream/v1/api.proto";
+import "org/openmcf/provider/aws/provider.proto";
+
+// AwsKinesisStreamStackInput is the input envelope passed to IaC modules for provisioning.
+message AwsKinesisStreamStackInput {
+  // target is the fully-specified AwsKinesisStream resource to provision.
+  AwsKinesisStream target = 1;
+
+  // provider_config supplies AWS credentials and region for the deployment.
+  // When nil the module falls back to ambient credentials (environment variables
+  // or instance profile).
+  org.openmcf.provider.aws.AwsProviderConfig provider_config = 2;
+}

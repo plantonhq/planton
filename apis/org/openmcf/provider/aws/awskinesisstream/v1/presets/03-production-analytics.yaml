@@ -1,0 +1,18 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsKinesisStream
+metadata:
+  name: example-stream
+spec:
+  streamMode: ON_DEMAND
+  retentionPeriodHours: 168
+  kmsKeyId:
+    value: alias/aws/kinesis
+  shardLevelMetrics:
+    - IncomingBytes
+    - IncomingRecords
+    - OutgoingBytes
+    - OutgoingRecords
+    - WriteProvisionedThroughputExceeded
+    - ReadProvisionedThroughputExceeded
+    - IteratorAgeMilliseconds
+  enforceConsumerDeletion: true
