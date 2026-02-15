@@ -10,6 +10,7 @@ order: 10
 The following GCP resources can be deployed using OpenMCF:
 
 - [Artifact Registry Repo](/docs/catalog/gcp/artifact-registry-repo)
+- [BigQuery Dataset](/docs/catalog/gcp/bigquery-dataset)
 - [Certificate Manager Cert](/docs/catalog/gcp/certificate-manager-cert)
 - [Cloud CDN](/docs/catalog/gcp/cloud-cdn)
 - [Cloud Function](/docs/catalog/gcp/cloud-function)

@@ -216,6 +216,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "awsebr"
   }];
+  AwsHttpApiGateway = 240 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awshttpapigw"
+  }];
 
   // 400–599: Azure resources
   AzureResourceGroup = 400 [(kind_meta) = {
@@ -497,6 +502,11 @@ enum CloudResourceKind {
     provider: gcp
     version: v1
     id_prefix: "gcpgip"
+  }];
+  GcpBigQueryDataset = 650 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpbqds"
   }];
   GcpKmsKeyRing = 690 [(kind_meta) = {
     provider: gcp

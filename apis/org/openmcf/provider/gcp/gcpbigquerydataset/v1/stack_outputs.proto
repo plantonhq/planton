@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpbigquerydataset.v1;
+
+// Outputs produced after provisioning a GCP BigQuery dataset.
+message GcpBigQueryDatasetStackOutputs {
+  // The short dataset ID (same as the spec's dataset_id input).
+  // This is the identifier used in BigQuery SQL queries, job configurations,
+  // and API calls (e.g., SELECT * FROM `project.dataset.table`).
+  string dataset_id = 1;
+
+  // The fully qualified URI of the dataset.
+  // Format: https://bigquery.googleapis.com/bigquery/v2/projects/{project}/datasets/{dataset}
+  string self_link = 2;
+
+  // The GCP project that contains this dataset.
+  // Useful when referencing the dataset from a different project context
+  // or wiring into downstream resources that need explicit project references.
+  string project = 3;
+
+  // The creation time of the dataset in milliseconds since epoch.
+  int64 creation_time = 4;
+}
