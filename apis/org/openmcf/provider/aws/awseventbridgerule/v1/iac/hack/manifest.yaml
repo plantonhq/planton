@@ -1,0 +1,19 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsEventBridgeRule
+metadata:
+  name: test-rule
+  org: test-org
+  env: dev
+  id: test-rule-dev
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: test-org
+    pulumi.openmcf.org/project: test-project
+    pulumi.openmcf.org/stack.name: dev.AwsEventBridgeRule.test-rule
+spec:
+  description: Test rule for local development
+  scheduleExpression: "rate(1 hour)"
+  targets:
+    - name: test-target
+      arn:
+        value: arn:aws:lambda:us-east-1:123456789012:function:test-function
