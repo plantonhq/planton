@@ -295,6 +295,12 @@ enum CloudResourceKind {
     id_prefix: "awscwlg"
   }];
 
+  AwsCloudwatchAlarm = 311 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awscwa"
+  }];
+
   // 400–599: Azure resources
   AzureResourceGroup = 400 [(kind_meta) = {
     provider: azure
@@ -635,6 +641,11 @@ enum CloudResourceKind {
     provider: gcp
     version: v1
     id_prefix: "gcppss"
+  }];
+  GcpCloudComposerEnvironment = 680 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpcce"
   }];
   GcpKmsKeyRing = 690 [(kind_meta) = {
     provider: gcp

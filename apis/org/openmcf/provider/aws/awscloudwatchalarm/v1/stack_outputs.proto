@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awscloudwatchalarm.v1;
+
+// AwsCloudwatchAlarmStackOutputs captures observable identifiers from a
+// provisioned CloudWatch metric alarm.
+//
+// The primary output is `alarm_arn`, which downstream resources (such as
+// composite alarms or dashboards) can reference via StringValueOrRef. The
+// `alarm_name` is useful for operational tooling and cross-referencing in
+// the CloudWatch console.
+message AwsCloudwatchAlarmStackOutputs {
+  // The Amazon Resource Name (ARN) of the metric alarm. This is the primary
+  // identifier used to reference the alarm in composite alarms, dashboards,
+  // and operational tooling.
+  string alarm_arn = 1;
+
+  // The name of the metric alarm. The alarm name is unique within the AWS
+  // account and region. Useful for CloudWatch API calls, CLI operations,
+  // and dashboard widgets.
+  string alarm_name = 2;
+}
