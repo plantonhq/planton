@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsmemcachedelasticache.v1;
+
+import "org/openmcf/provider/aws/awsmemcachedelasticache/v1/api.proto";
+import "org/openmcf/provider/aws/provider.proto";
+
+// aws-memcached-elasticache stack-input
+message AwsMemcachedElasticacheStackInput {
+  // target cloud-resource
+  AwsMemcachedElasticache target = 1;
+  // provider-credential
+  org.openmcf.provider.aws.AwsProviderConfig provider_config = 2;
+}

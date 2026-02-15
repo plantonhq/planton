@@ -231,6 +231,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "awsredis"
   }];
+  AwsMemcachedElasticache = 252 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsmemcached"
+  }];
 
   // 400–599: Azure resources
   AzureResourceGroup = 400 [(kind_meta) = {

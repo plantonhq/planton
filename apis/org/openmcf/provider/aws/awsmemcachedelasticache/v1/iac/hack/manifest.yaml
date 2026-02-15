@@ -1,0 +1,16 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsMemcachedElasticache
+metadata:
+  name: test-memcached
+  org: test-org
+  env: dev
+  id: test-memcached-dev
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: test-org
+    pulumi.openmcf.org/project: test-project
+    pulumi.openmcf.org/stack.name: dev.AwsMemcachedElasticache.test-memcached
+spec:
+  engineVersion: "1.6.22"
+  nodeType: cache.t3.micro
+  numCacheNodes: 1
