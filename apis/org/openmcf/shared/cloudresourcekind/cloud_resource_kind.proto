@@ -483,6 +483,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "gcpfwr"
   }];
+  GcpGlobalAddress = 621 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpgip"
+  }];
 
   // 800–999: Kubernetes resources
   KubernetesArgocd = 800 [(kind_meta) = {

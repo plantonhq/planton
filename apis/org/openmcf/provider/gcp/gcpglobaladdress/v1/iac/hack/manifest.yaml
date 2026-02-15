@@ -1,0 +1,16 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpGlobalAddress
+metadata:
+  name: test-global-address
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: test-org
+    pulumi.openmcf.org/project: test-project
+    pulumi.openmcf.org/stack.name: dev.GcpGlobalAddress.test-global-address
+spec:
+  projectId:
+    value: my-gcp-project-123
+  addressName: test-lb-external-ip
+  addressType: EXTERNAL
+  ipVersion: IPV4
+  description: Test static IP for load balancer

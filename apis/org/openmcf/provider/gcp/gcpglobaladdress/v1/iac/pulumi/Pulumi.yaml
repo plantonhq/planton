@@ -1,0 +1,6 @@
+name: gcp-global-address
+runtime:
+  name: go
+  options:
+    binary: ./pulumi
+description: OpenMCF GcpGlobalAddress Pulumi module
