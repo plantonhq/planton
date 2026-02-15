@@ -1,0 +1,22 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpRedisInstance
+metadata:
+  name: my-read-scale-redis
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  instanceName: <instance-name>
+  region: <gcp-region>
+  tier: STANDARD_HA
+  memorySizeGb: 10
+  readReplicasMode: READ_REPLICAS_ENABLED
+  replicaCount: 3
+  authEnabled: true
+  transitEncryptionMode: SERVER_AUTHENTICATION
+  authorizedNetwork:
+    value: "<vpc-network-self-link>"
+  persistenceConfig:
+    persistenceMode: RDB
+    rdbSnapshotPeriod: SIX_HOURS
+  customerManagedKey:
+    value: "<kms-key-resource-name>"
