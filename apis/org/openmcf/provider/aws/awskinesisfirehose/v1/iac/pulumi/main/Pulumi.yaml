@@ -1,0 +1,6 @@
+name: main
+runtime:
+  name: go
+  options:
+    binary: main
+description: Pulumi module for AwsKinesisFirehose deployment component

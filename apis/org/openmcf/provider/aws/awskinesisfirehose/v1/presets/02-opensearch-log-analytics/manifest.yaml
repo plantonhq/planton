@@ -1,0 +1,30 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsKinesisFirehose
+metadata:
+  name: log-analytics-firehose
+  org: my-org
+  env: prod
+  id: log-analytics-firehose-prod
+spec:
+  # Direct PUT source — logs sent via PutRecord/PutRecordBatch
+  opensearch:
+    domainArn:
+      valueFrom:
+        kind: AwsOpenSearchDomain
+        name: my-log-domain
+        fieldPath: status.outputs.domain_arn
+    indexName: application-logs
+    roleArn:
+      value: arn:aws:iam::123456789012:role/firehose-opensearch-role
+    indexRotationPeriod: OneDay
+    s3BackupMode: FailedDocumentsOnly
+    buffering:
+      intervalInSeconds: 60
+      sizeInMbs: 5
+    s3Config:
+      bucketArn:
+        value: arn:aws:s3:::my-firehose-backup-bucket
+      roleArn:
+        value: arn:aws:iam::123456789012:role/firehose-s3-backup-role
+      prefix: opensearch-backup/failed/
+      compressionFormat: GZIP
