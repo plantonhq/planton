@@ -196,6 +196,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "s3objs"
   }];
+  AwsSqsQueue = 225 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awssqs"
+  }];
 
   // 400–599: Azure resources
   AzureResourceGroup = 400 [(kind_meta) = {
@@ -467,6 +472,11 @@ enum CloudResourceKind {
     provider: gcp
     version: v1
     id_prefix: "gcpdrec"
+  }];
+  GcpFirewallRule = 620 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpfwr"
   }];
 
   // 800–999: Kubernetes resources
