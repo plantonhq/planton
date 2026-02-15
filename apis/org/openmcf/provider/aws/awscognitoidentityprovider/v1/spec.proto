@@ -1,0 +1,297 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awscognitoidentityprovider.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// AwsCognitoIdentityProviderType enumerates the supported identity provider
+// types for Amazon Cognito User Pool federation. Values match the AWS API
+// exactly.
+enum AwsCognitoIdentityProviderType {
+  // unspecified is the zero value; set an explicit provider type.
+  unspecified = 0;
+  // Google OAuth 2.0 social identity provider.
+  Google = 1;
+  // Facebook Login social identity provider.
+  Facebook = 2;
+  // Login with Amazon social identity provider.
+  LoginWithAmazon = 3;
+  // Sign in with Apple social identity provider.
+  SignInWithApple = 4;
+  // Generic OpenID Connect identity provider.
+  OIDC = 5;
+  // SAML 2.0 federation identity provider.
+  SAML = 6;
+}
+
+// AwsCognitoIdpGoogleConfig holds the OAuth 2.0 configuration for a Google
+// identity provider. Cognito auto-discovers authorize_url, token_url, and
+// oidc_issuer from Google's well-known endpoints.
+message AwsCognitoIdpGoogleConfig {
+  // Google OAuth 2.0 client ID from the Google Cloud Console.
+  string client_id = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Google OAuth 2.0 client secret from the Google Cloud Console.
+  string client_secret = 2 [(buf.validate.field).string.min_len = 1];
+
+  // Space-separated OAuth scopes (e.g., "email profile openid").
+  string authorize_scopes = 3 [(buf.validate.field).string.min_len = 1];
+}
+
+// AwsCognitoIdpFacebookConfig holds the OAuth 2.0 configuration for a Facebook
+// Login identity provider.
+message AwsCognitoIdpFacebookConfig {
+  // Facebook App ID from the Facebook Developer Portal.
+  string client_id = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Facebook App Secret from the Facebook Developer Portal.
+  string client_secret = 2 [(buf.validate.field).string.min_len = 1];
+
+  // Comma-separated OAuth scopes (e.g., "email,public_profile").
+  // Note: Facebook uses comma-separated scopes, unlike other providers
+  // which use space-separated.
+  string authorize_scopes = 3 [(buf.validate.field).string.min_len = 1];
+
+  // Facebook Graph API version (e.g., "v17.0"). When omitted, Cognito uses
+  // the latest version it supports.
+  string api_version = 4;
+}
+
+// AwsCognitoIdpLoginWithAmazonConfig holds the OAuth 2.0 configuration for a
+// Login with Amazon identity provider.
+message AwsCognitoIdpLoginWithAmazonConfig {
+  // Login with Amazon client ID from the Amazon Developer Console.
+  string client_id = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Login with Amazon client secret from the Amazon Developer Console.
+  string client_secret = 2 [(buf.validate.field).string.min_len = 1];
+
+  // Space-separated OAuth scopes (e.g., "profile postal_code").
+  string authorize_scopes = 3 [(buf.validate.field).string.min_len = 1];
+}
+
+// AwsCognitoIdpSignInWithAppleConfig holds the configuration for a Sign in
+// with Apple identity provider. Apple uses a private-key-based authentication
+// model rather than a simple client_secret.
+message AwsCognitoIdpSignInWithAppleConfig {
+  // Apple Services ID configured in the Apple Developer Portal.
+  string client_id = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Apple Developer Team ID (10-character alphanumeric string).
+  string team_id = 2 [(buf.validate.field).string.min_len = 1];
+
+  // Key ID for the Apple private key.
+  string key_id = 3 [(buf.validate.field).string.min_len = 1];
+
+  // Apple private key in PEM format. Used to generate the client_secret JWT.
+  string private_key = 4 [(buf.validate.field).string.min_len = 1];
+
+  // Space-separated OAuth scopes (e.g., "email name").
+  string authorize_scopes = 5 [(buf.validate.field).string.min_len = 1];
+}
+
+// AwsCognitoIdpOidcConfig holds the configuration for a generic OpenID Connect
+// identity provider. Cognito auto-discovers endpoint URLs from the issuer's
+// .well-known/openid-configuration when only oidc_issuer is provided.
+message AwsCognitoIdpOidcConfig {
+  // OIDC client ID registered with the identity provider.
+  string client_id = 1 [(buf.validate.field).string.min_len = 1];
+
+  // OIDC issuer URL (e.g., "https://login.microsoftonline.com/{tenant}/v2.0").
+  // Cognito auto-discovers authorize, token, userinfo, and JWKS endpoints from
+  // the issuer's .well-known/openid-configuration document.
+  string oidc_issuer = 2 [(buf.validate.field).string.min_len = 1];
+
+  // Space-separated OAuth/OIDC scopes (e.g., "openid email profile").
+  string authorize_scopes = 3;
+
+  // OIDC client secret. Optional for public clients that use PKCE.
+  string client_secret = 4;
+
+  // HTTP method for the userinfo endpoint: "GET" or "POST".
+  // When omitted, Cognito defaults to "GET".
+  string attributes_request_method = 5;
+
+  // Override the auto-discovered authorization endpoint URL.
+  string authorize_url = 6;
+
+  // Override the auto-discovered token endpoint URL.
+  string token_url = 7;
+
+  // Override the auto-discovered userinfo endpoint URL.
+  string attributes_url = 8;
+
+  // Override the auto-discovered JWKS endpoint URL.
+  string jwks_uri = 9;
+}
+
+// AwsCognitoIdpSamlConfig holds the configuration for a SAML 2.0 federation
+// identity provider. Exactly one of metadata_file or metadata_url must be set
+// to provide the IdP's SAML metadata.
+message AwsCognitoIdpSamlConfig {
+  // SAML metadata XML content as a string. Use this for inline metadata.
+  // Mutually exclusive with metadata_url.
+  string metadata_file = 1;
+
+  // URL pointing to the IdP's SAML metadata document. Cognito fetches the
+  // metadata from this URL. Mutually exclusive with metadata_file.
+  string metadata_url = 2;
+
+  // Enable single logout (SLO). When true, Cognito signs the user out of
+  // the SAML IdP when they sign out of the User Pool.
+  bool idp_sign_out = 3;
+
+  // Enable IdP-initiated SSO. When true, the IdP can start the sign-in
+  // flow directly without the user first visiting the Cognito hosted UI.
+  bool idp_init = 4;
+
+  // Require encrypted SAML assertions from the IdP.
+  bool encrypted_responses = 5;
+
+  // SAML request signing algorithm (e.g., "rsa-sha256"). When omitted,
+  // Cognito uses the default algorithm.
+  string request_signing_algorithm = 6;
+}
+
+// AwsCognitoIdentityProviderSpec defines the desired configuration for an
+// external identity provider federated into an Amazon Cognito User Pool.
+//
+// This resource manages social (Google, Facebook, Amazon, Apple), enterprise
+// OIDC (Okta, Azure AD, Auth0), and SAML 2.0 (Azure AD, Salesforce, ADFS)
+// identity providers. Once configured, users can sign in to the User Pool
+// through the federated provider, and Cognito maps the provider's user
+// attributes to the pool's schema.
+//
+// This is a child resource of AwsCognitoUserPool. The User Pool must exist
+// before creating identity providers. After creating an identity provider,
+// add its provider_name to the User Pool Client's
+// `supported_identity_providers` list to enable federated sign-in for that
+// client.
+//
+// Key constraints:
+// - provider_name and provider_type are ForceNew: changing either destroys
+//   and recreates the identity provider.
+// - user_pool_id is ForceNew: the provider cannot be moved between pools.
+// - provider_name must be unique within a User Pool.
+//
+// Credentials, region, and deployment workflow live outside this spec in
+// stack inputs.
+message AwsCognitoIdentityProviderSpec {
+  // ---------------------------------------------------------------------------
+  // Parent reference
+  // ---------------------------------------------------------------------------
+
+  // The ID of the Cognito User Pool to attach this identity provider to.
+  // Format: "{region}_{poolId}" (e.g., "us-east-1_Ab1Cd2EfG").
+  //
+  // This field is ForceNew: changing it requires replacing the identity provider.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef user_pool_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsCognitoUserPool,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.user_pool_id"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Identity fields (all ForceNew)
+  // ---------------------------------------------------------------------------
+
+  // Display name for this identity provider within the User Pool. Must be
+  // unique within the pool. Referenced by User Pool Clients in their
+  // `supported_identity_providers` list.
+  //
+  // Examples: "Google", "CorpOkta", "AzureAD-SAML"
+  //
+  // 1-32 UTF-8 characters. This field is ForceNew.
+  string provider_name = 2 [
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 32
+  ];
+
+  // The type of identity provider. Determines which provider configuration
+  // field to populate (google, facebook, login_with_amazon, sign_in_with_apple,
+  // oidc, or saml).
+  //
+  // This field is ForceNew: changing it requires replacing the identity provider.
+  AwsCognitoIdentityProviderType provider_type = 3 [(buf.validate.field).enum = {
+    defined_only: true
+    not_in: [0]
+  }];
+
+  // ---------------------------------------------------------------------------
+  // Provider configuration (exactly one must be set, matching provider_type)
+  // ---------------------------------------------------------------------------
+
+  oneof provider_config {
+    // Google OAuth 2.0 configuration. Set when provider_type is Google.
+    AwsCognitoIdpGoogleConfig google = 4;
+
+    // Facebook Login configuration. Set when provider_type is Facebook.
+    AwsCognitoIdpFacebookConfig facebook = 5;
+
+    // Login with Amazon configuration. Set when provider_type is LoginWithAmazon.
+    AwsCognitoIdpLoginWithAmazonConfig login_with_amazon = 6;
+
+    // Sign in with Apple configuration. Set when provider_type is SignInWithApple.
+    AwsCognitoIdpSignInWithAppleConfig sign_in_with_apple = 7;
+
+    // Generic OIDC configuration. Set when provider_type is OIDC.
+    AwsCognitoIdpOidcConfig oidc = 8;
+
+    // SAML 2.0 configuration. Set when provider_type is SAML.
+    AwsCognitoIdpSamlConfig saml = 9;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Optional fields
+  // ---------------------------------------------------------------------------
+
+  // Maps identity provider attributes to Cognito User Pool attributes.
+  // Keys are Cognito user pool attribute names (e.g., "email", "username",
+  // "given_name"). Values are provider-specific attribute names or paths
+  // (e.g., "sub", "email").
+  //
+  // When omitted, AWS applies default mappings based on the provider type.
+  map<string, string> attribute_mapping = 10;
+
+  // Alternative identifiers for this identity provider. These can be used
+  // in the login endpoint's `idp_identifier` parameter to redirect to this
+  // provider without exposing the provider_name.
+  //
+  // Maximum 50 identifiers, each 1-40 characters.
+  repeated string idp_identifiers = 11 [(buf.validate.field).repeated.max_items = 50];
+
+  // ---------------------------------------------------------------------------
+  // CEL validations
+  // ---------------------------------------------------------------------------
+
+  // The provider_type must match the oneof provider_config field that is set.
+  // This ensures type-safe configuration: a Google provider_type requires
+  // google config, an OIDC provider_type requires oidc config, etc.
+  option (buf.validate.message).cel = {
+    id: "provider_type_config_match"
+    message: "provider_type must match the provider configuration field: Google requires 'google', Facebook requires 'facebook', LoginWithAmazon requires 'loginWithAmazon', SignInWithApple requires 'signInWithApple', OIDC requires 'oidc', SAML requires 'saml'"
+    expression: "(this.provider_type == 1 && has(this.google)) || (this.provider_type == 2 && has(this.facebook)) || (this.provider_type == 3 && has(this.login_with_amazon)) || (this.provider_type == 4 && has(this.sign_in_with_apple)) || (this.provider_type == 5 && has(this.oidc)) || (this.provider_type == 6 && has(this.saml))"
+  };
+
+  // SAML providers must provide at least one metadata source.
+  option (buf.validate.message).cel = {
+    id: "saml_metadata_required"
+    message: "SAML providers must set metadata_file or metadata_url"
+    expression: "!has(this.saml) || this.saml.metadata_file != '' || this.saml.metadata_url != ''"
+  };
+
+  // SAML providers must not set both metadata sources.
+  option (buf.validate.message).cel = {
+    id: "saml_metadata_exclusive"
+    message: "SAML providers must set only one of metadata_file or metadata_url, not both"
+    expression: "!has(this.saml) || this.saml.metadata_file == '' || this.saml.metadata_url == ''"
+  };
+
+  // OIDC attributes_request_method must be GET or POST when specified.
+  option (buf.validate.message).cel = {
+    id: "oidc_attributes_request_method_valid"
+    message: "OIDC attributes_request_method must be 'GET' or 'POST'"
+    expression: "!has(this.oidc) || this.oidc.attributes_request_method == '' || this.oidc.attributes_request_method in ['GET', 'POST']"
+  };
+}

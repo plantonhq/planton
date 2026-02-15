@@ -13,6 +13,7 @@ The following AWS resources can be deployed using OpenMCF:
 - [Certificate Manager Certificate](/docs/catalog/aws/certificate-manager-certificate)
 - [Client VPN](/docs/catalog/aws/client-vpn)
 - [CloudFront](/docs/catalog/aws/cloudfront)
+- [Cognito Identity Provider](/docs/catalog/aws/cognito-identity-provider)
 - [Cognito User Pool](/docs/catalog/aws/cognito-user-pool)
 - [DocumentDB](/docs/catalog/aws/documentdb)
 - [DynamoDB](/docs/catalog/aws/dynamodb)
