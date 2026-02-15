@@ -1,0 +1,17 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpMemorystoreInstance
+metadata:
+  name: my-dev-memorystore
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  instanceName: <instance-name>
+  location: <gcp-region>
+  shardCount: 1
+  mode: CLUSTER_DISABLED
+  nodeType: SHARED_CORE_NANO
+  pscAutoConnections:
+    - network:
+        value: "<vpc-network-path>"
+      projectId:
+        value: "<gcp-project-id>"
