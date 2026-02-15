@@ -309,6 +309,12 @@ enum CloudResourceKind {
     id_prefix: "awskin"
   }];
 
+  AwsKinesisFirehose = 261 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awskfh"
+  }];
+
   AwsKinesisStreamConsumer = 262 [(kind_meta) = {
     provider: aws
     version: v1
@@ -660,6 +666,11 @@ enum CloudResourceKind {
     provider: gcp
     version: v1
     id_prefix: "gcptq"
+  }];
+  GcpCloudSchedulerJob = 663 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpcsj"
   }];
   GcpCloudComposerEnvironment = 680 [(kind_meta) = {
     provider: gcp

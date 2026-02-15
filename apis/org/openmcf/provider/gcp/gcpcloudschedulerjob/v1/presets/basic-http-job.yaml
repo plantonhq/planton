@@ -1,0 +1,27 @@
+# basic-http-job: Simple HTTP GET on a cron schedule
+#
+# Use when: You need to trigger an HTTP endpoint on a recurring schedule
+# with no authentication required (e.g., a public health-check or webhook).
+#
+# What it configures:
+# - HTTP GET to a public endpoint
+# - Default retry behavior (GCP-managed)
+# - Default attempt deadline (180s)
+# - UTC time zone
+#
+# Typical use cases:
+# - Triggering a public webhook on a schedule
+# - Periodic health checks
+# - Simple URL pinging for uptime monitoring
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCloudSchedulerJob
+metadata:
+  name: ${name}
+spec:
+  projectId:
+    value: ${project-id}
+  location: ${location}
+  schedule: "${schedule}"
+  httpTarget:
+    uri: ${target-url}
+    httpMethod: GET

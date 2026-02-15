@@ -1,0 +1,28 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCloudSchedulerJob
+metadata:
+  name: test-cloud-scheduler-job
+spec:
+  projectId:
+    value: my-gcp-project
+  jobName: daily-report-trigger
+  location: us-central1
+  schedule: "0 9 * * 1-5"
+  timeZone: America/New_York
+  description: Triggers daily report generation on weekdays at 9am ET
+  attemptDeadline: "300s"
+  httpTarget:
+    uri: https://my-service-abc123.run.app/api/report
+    httpMethod: POST
+    body: eyJhY3Rpb24iOiAiZ2VuZXJhdGVfcmVwb3J0In0=
+    headers:
+      Content-Type: application/json
+    oidcToken:
+      serviceAccountEmail:
+        value: invoker@my-gcp-project.iam.gserviceaccount.com
+  retryConfig:
+    retryCount: 3
+    maxRetryDuration: "1800s"
+    minBackoffDuration: "5s"
+    maxBackoffDuration: "600s"
+    maxDoublings: 3
