@@ -15,5 +15,8 @@ message GcpGkeClusterStackOutputs {
   // Workload Identity Pool identifier used by this cluster (e.g. "PROJECT_ID.svc.id.goog").
   string workload_identity_pool = 3;
 
-  // (Additional fields can be added if needed by other components, e.g., cluster name or selfLink.)
+  // Fully qualified GKE cluster resource ID.
+  // Format: projects/{project}/locations/{location}/clusters/{name}
+  // Used by downstream resources (e.g., Dataproc on GKE) to reference this cluster.
+  string cluster_id = 4;
 }

@@ -123,6 +123,7 @@ func nodePool(ctx *pulumi.Context,
 	// ----- Export outputs ------------------------------------------------
 
 	ctx.Export(OpNodePoolName, createdNodePool.Name)
+	ctx.Export(OpNodePoolId, createdNodePool.ID())
 	ctx.Export(OpInstanceGroupUrls, createdNodePool.InstanceGroupUrls)
 	ctx.Export(OpCurrentNodeCount, createdNodePool.NodeCount)
 

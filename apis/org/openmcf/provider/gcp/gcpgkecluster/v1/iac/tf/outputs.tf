@@ -14,3 +14,8 @@ output "workload_identity_pool" {
   value       = var.spec.disable_workload_identity ? "" : "${var.spec.project_id.value}.svc.id.goog"
 }
 
+output "cluster_id" {
+  description = "Fully qualified GKE cluster resource ID (projects/{project}/locations/{location}/clusters/{name})"
+  value       = google_container_cluster.cluster.id
+}
+

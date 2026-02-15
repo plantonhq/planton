@@ -34,8 +34,12 @@ type GcpGkeNodePoolStackOutputs struct {
 	MaxNodes string `protobuf:"bytes,4,opt,name=max_nodes,json=maxNodes,proto3" json:"max_nodes,omitempty"`
 	// Current number of nodes in this pool.
 	CurrentNodeCount string `protobuf:"bytes,5,opt,name=current_node_count,json=currentNodeCount,proto3" json:"current_node_count,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	// Fully qualified GKE node pool resource ID.
+	// Format: projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{nodePool}
+	// Used by downstream resources (e.g., Dataproc on GKE) to reference this node pool.
+	NodePoolId    string `protobuf:"bytes,6,opt,name=node_pool_id,json=nodePoolId,proto3" json:"node_pool_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpGkeNodePoolStackOutputs) Reset() {
@@ -103,17 +107,26 @@ func (x *GcpGkeNodePoolStackOutputs) GetCurrentNodeCount() string {
 	return ""
 }
 
+func (x *GcpGkeNodePoolStackOutputs) GetNodePoolId() string {
+	if x != nil {
+		return x.NodePoolId
+	}
+	return ""
+}
+
 var File_org_openmcf_provider_gcp_gcpgkenodepool_v1_stack_outputs_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_gcp_gcpgkenodepool_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	">org/openmcf/provider/gcp/gcpgkenodepool/v1/stack_outputs.proto\x12*org.openmcf.provider.gcp.gcpgkenodepool.v1\"\xda\x01\n" +
+	">org/openmcf/provider/gcp/gcpgkenodepool/v1/stack_outputs.proto\x12*org.openmcf.provider.gcp.gcpgkenodepool.v1\"\xfc\x01\n" +
 	"\x1aGcpGkeNodePoolStackOutputs\x12$\n" +
 	"\x0enode_pool_name\x18\x01 \x01(\tR\fnodePoolName\x12.\n" +
 	"\x13instance_group_urls\x18\x02 \x03(\tR\x11instanceGroupUrls\x12\x1b\n" +
 	"\tmin_nodes\x18\x03 \x01(\tR\bminNodes\x12\x1b\n" +
 	"\tmax_nodes\x18\x04 \x01(\tR\bmaxNodes\x12,\n" +
-	"\x12current_node_count\x18\x05 \x01(\tR\x10currentNodeCountB\xf1\x02\n" +
+	"\x12current_node_count\x18\x05 \x01(\tR\x10currentNodeCount\x12 \n" +
+	"\fnode_pool_id\x18\x06 \x01(\tR\n" +
+	"nodePoolIdB\xf1\x02\n" +
 	".com.org.openmcf.provider.gcp.gcpgkenodepool.v1B\x11StackOutputsProtoP\x01Z]github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpgkenodepool/v1;gcpgkenodepoolv1\xa2\x02\x05OOPGG\xaa\x02*Org.Openmcf.Provider.Gcp.Gcpgkenodepool.V1\xca\x02*Org\\Openmcf\\Provider\\Gcp\\Gcpgkenodepool\\V1\xe2\x026Org\\Openmcf\\Provider\\Gcp\\Gcpgkenodepool\\V1\\GPBMetadata\xea\x02/Org::Openmcf::Provider::Gcp::Gcpgkenodepool::V1b\x06proto3"
 
 var (

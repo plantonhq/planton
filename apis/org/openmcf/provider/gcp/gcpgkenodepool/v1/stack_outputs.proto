@@ -18,5 +18,8 @@ message GcpGkeNodePoolStackOutputs {
   // Current number of nodes in this pool.
   string current_node_count = 5;
 
-  // (Additional outputs like autoscaler status or errors can be added as needed.)
+  // Fully qualified GKE node pool resource ID.
+  // Format: projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{nodePool}
+  // Used by downstream resources (e.g., Dataproc on GKE) to reference this node pool.
+  string node_pool_id = 6;
 }

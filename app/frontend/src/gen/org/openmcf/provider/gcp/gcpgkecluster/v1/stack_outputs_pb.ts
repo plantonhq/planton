@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/gcp/gcpgkecluster/v1/stack_outputs.proto.
  */
 export const file_org_openmcf_provider_gcp_gcpgkecluster_v1_stack_outputs: GenFile = /*@__PURE__*/
-  fileDesc("Cj1vcmcvb3Blbm1jZi9wcm92aWRlci9nY3AvZ2NwZ2tlY2x1c3Rlci92MS9zdGFja19vdXRwdXRzLnByb3RvEilvcmcub3Blbm1jZi5wcm92aWRlci5nY3AuZ2NwZ2tlY2x1c3Rlci52MSJtChlHY3BHa2VDbHVzdGVyU3RhY2tPdXRwdXRzEhAKCGVuZHBvaW50GAEgASgJEh4KFmNsdXN0ZXJfY2FfY2VydGlmaWNhdGUYAiABKAkSHgoWd29ya2xvYWRfaWRlbnRpdHlfcG9vbBgDIAEoCULqAgotY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmdjcC5nY3Bna2VjbHVzdGVyLnYxQhFTdGFja091dHB1dHNQcm90b1ABWltnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvZ2NwL2djcGdrZWNsdXN0ZXIvdjE7Z2NwZ2tlY2x1c3RlcnYxogIFT09QR0eqAilPcmcuT3Blbm1jZi5Qcm92aWRlci5HY3AuR2NwZ2tlY2x1c3Rlci5WMcoCKU9yZ1xPcGVubWNmXFByb3ZpZGVyXEdjcFxHY3Bna2VjbHVzdGVyXFYx4gI1T3JnXE9wZW5tY2ZcUHJvdmlkZXJcR2NwXEdjcGdrZWNsdXN0ZXJcVjFcR1BCTWV0YWRhdGHqAi5Pcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpHY3A6OkdjcGdrZWNsdXN0ZXI6OlYxYgZwcm90bzM");
+  fileDesc("Cj1vcmcvb3Blbm1jZi9wcm92aWRlci9nY3AvZ2NwZ2tlY2x1c3Rlci92MS9zdGFja19vdXRwdXRzLnByb3RvEilvcmcub3Blbm1jZi5wcm92aWRlci5nY3AuZ2NwZ2tlY2x1c3Rlci52MSKBAQoZR2NwR2tlQ2x1c3RlclN0YWNrT3V0cHV0cxIQCghlbmRwb2ludBgBIAEoCRIeChZjbHVzdGVyX2NhX2NlcnRpZmljYXRlGAIgASgJEh4KFndvcmtsb2FkX2lkZW50aXR5X3Bvb2wYAyABKAkSEgoKY2x1c3Rlcl9pZBgEIAEoCULqAgotY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmdjcC5nY3Bna2VjbHVzdGVyLnYxQhFTdGFja091dHB1dHNQcm90b1ABWltnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvZ2NwL2djcGdrZWNsdXN0ZXIvdjE7Z2NwZ2tlY2x1c3RlcnYxogIFT09QR0eqAilPcmcuT3Blbm1jZi5Qcm92aWRlci5HY3AuR2NwZ2tlY2x1c3Rlci5WMcoCKU9yZ1xPcGVubWNmXFByb3ZpZGVyXEdjcFxHY3Bna2VjbHVzdGVyXFYx4gI1T3JnXE9wZW5tY2ZcUHJvdmlkZXJcR2NwXEdjcGdrZWNsdXN0ZXJcVjFcR1BCTWV0YWRhdGHqAi5Pcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpHY3A6OkdjcGdrZWNsdXN0ZXI6OlYxYgZwcm90bzM");
 
 /**
  * GcpGkeClusterStackOutputs captures key info after provisioning a GKE cluster.
@@ -40,6 +40,15 @@ export type GcpGkeClusterStackOutputs = Message<"org.openmcf.provider.gcp.gcpgke
    * @generated from field: string workload_identity_pool = 3;
    */
   workloadIdentityPool: string;
+
+  /**
+   * Fully qualified GKE cluster resource ID.
+   * Format: projects/{project}/locations/{location}/clusters/{name}
+   * Used by downstream resources (e.g., Dataproc on GKE) to reference this cluster.
+   *
+   * @generated from field: string cluster_id = 4;
+   */
+  clusterId: string;
 };
 
 /**
