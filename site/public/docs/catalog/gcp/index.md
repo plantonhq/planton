@@ -9,16 +9,20 @@ order: 10
 
 The following GCP resources can be deployed using OpenMCF:
 
+- [AlloyDB Cluster](/docs/catalog/gcp/alloydb-cluster)
 - [Artifact Registry Repo](/docs/catalog/gcp/artifact-registry-repo)
 - [BigQuery Dataset](/docs/catalog/gcp/bigquery-dataset)
+- [Bigtable Instance](/docs/catalog/gcp/bigtable-instance)
 - [Certificate Manager Cert](/docs/catalog/gcp/certificate-manager-cert)
 - [Cloud CDN](/docs/catalog/gcp/cloud-cdn)
+- [Cloud Composer Environment](/docs/catalog/gcp/cloud-composer-environment)
 - [Cloud Function](/docs/catalog/gcp/cloud-function)
 - [Cloud Run](/docs/catalog/gcp/cloud-run)
 - [Cloud SQL](/docs/catalog/gcp/cloud-sql)
 - [Compute Instance](/docs/catalog/gcp/compute-instance)
 - [DNS Record](/docs/catalog/gcp/dns-record)
 - [DNS Zone](/docs/catalog/gcp/dns-zone)
+- [Firestore Database](/docs/catalog/gcp/firestore-database)
 - [Firewall Rule](/docs/catalog/gcp/firewall-rule)
 - [GCS Bucket](/docs/catalog/gcp/gcs-bucket)
 - [GKE Cluster](/docs/catalog/gcp/gke-cluster)
@@ -35,6 +39,7 @@ The following GCP resources can be deployed using OpenMCF:
 - [Router NAT](/docs/catalog/gcp/router-nat)
 - [Secrets Manager](/docs/catalog/gcp/secrets-manager)
 - [Service Account](/docs/catalog/gcp/service-account)
+- [Spanner Database](/docs/catalog/gcp/spanner-database)
 - [Spanner Instance](/docs/catalog/gcp/spanner-instance)
 - [Subnetwork](/docs/catalog/gcp/subnetwork)
 - [VPC](/docs/catalog/gcp/vpc)
