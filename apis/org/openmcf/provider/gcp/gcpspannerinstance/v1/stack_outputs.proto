@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpspannerinstance.v1;
+
+// GcpSpannerInstanceStackOutputs captures observable values produced after
+// provisioning a Cloud Spanner instance.
+message GcpSpannerInstanceStackOutputs {
+  // Fully qualified instance ID.
+  // Format: projects/{project}/instances/{instance_name}
+  // This is the canonical identifier used for IAM bindings and API calls.
+  string instance_id = 1;
+
+  // Short instance name. This is the value that GcpSpannerDatabase
+  // and other downstream resources use to reference this instance.
+  string instance_name = 2;
+
+  // Instance state: CREATING or READY.
+  // CREATING indicates the instance is being provisioned.
+  // READY indicates the instance is available for use.
+  string state = 3;
+}

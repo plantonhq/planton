@@ -1,0 +1,13 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpSpannerInstance
+metadata:
+  name: my-prod-spanner
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  instanceName: <instance-name>
+  config: <instance-config>
+  displayName: <display-name>
+  numNodes: 1
+  edition: ENTERPRISE
+  defaultBackupScheduleType: AUTOMATIC

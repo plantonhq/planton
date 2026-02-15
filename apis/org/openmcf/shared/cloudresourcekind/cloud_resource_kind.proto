@@ -246,6 +246,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "awsslselc"
   }];
+  AwsNetworkLoadBalancer = 280 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsnlb"
+  }];
 
   // 400–599: Azure resources
   AzureResourceGroup = 400 [(kind_meta) = {
@@ -532,6 +537,11 @@ enum CloudResourceKind {
     provider: gcp
     version: v1
     id_prefix: "gcpred"
+  }];
+  GcpSpannerInstance = 633 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpspn"
   }];
   GcpMemorystoreInstance = 636 [(kind_meta) = {
     provider: gcp
