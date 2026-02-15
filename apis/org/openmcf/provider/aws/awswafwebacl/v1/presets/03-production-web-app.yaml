@@ -1,0 +1,63 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsWafWebAcl
+metadata:
+  name: <acl-name>
+spec:
+  scope: REGIONAL
+  description: Production Web ACL with comprehensive protection
+  defaultAction:
+    type: allow
+  rules:
+    - name: rate-limit
+      priority: 1
+      action: block
+      rateBased:
+        limit: 2000
+    - name: block-high-risk-countries
+      priority: 2
+      action: block
+      geoMatch:
+        countryCodes:
+          - <country-code-1>
+          - <country-code-2>
+    - name: aws-ip-reputation
+      priority: 10
+      overrideAction: none
+      managedRuleGroup:
+        name: AWSManagedRulesAmazonIpReputationList
+        vendorName: AWS
+    - name: aws-anonymous-ip
+      priority: 11
+      overrideAction: none
+      managedRuleGroup:
+        name: AWSManagedRulesAnonymousIpList
+        vendorName: AWS
+    - name: aws-common-rules
+      priority: 20
+      overrideAction: none
+      managedRuleGroup:
+        name: AWSManagedRulesCommonRuleSet
+        vendorName: AWS
+    - name: aws-sqli-rules
+      priority: 30
+      overrideAction: none
+      managedRuleGroup:
+        name: AWSManagedRulesSQLiRuleSet
+        vendorName: AWS
+    - name: aws-known-bad-inputs
+      priority: 40
+      overrideAction: none
+      managedRuleGroup:
+        name: AWSManagedRulesKnownBadInputsRuleSet
+        vendorName: AWS
+  customResponseBodies:
+    - key: rate-limited
+      content: '{"error": "rate_limited", "message": "Too many requests. Please retry later."}'
+      contentType: APPLICATION_JSON
+  logging:
+    destinationArn:
+      value: <log-group-arn>
+    redactedHeaderNames:
+      - authorization
+      - cookie
+    redactQueryString: true

@@ -1,0 +1,3 @@
+name: aws-waf-web-acl
+runtime: go
+description: Deploy an AWS WAFv2 Web ACL using OpenMCF

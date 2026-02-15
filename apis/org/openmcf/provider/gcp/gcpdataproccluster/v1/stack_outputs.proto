@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpdataproccluster.v1;
+
+// Outputs produced after provisioning a Dataproc cluster.
+message GcpDataprocClusterStackOutputs {
+  // Fully qualified cluster resource name.
+  // Format: projects/{project}/regions/{region}/clusters/{cluster}
+  // Used by downstream resources (jobs, workflow templates) that
+  // reference this cluster.
+  string cluster_id = 1;
+
+  // Short name of the cluster (same as the spec's cluster_name input).
+  // Useful for display, logging, and human-readable references.
+  string cluster_name = 2;
+
+  // Server-generated unique identifier for the cluster.
+  // Unlike cluster_name, this UUID is stable across cluster recreations
+  // with the same name.
+  string cluster_uuid = 3;
+
+  // Cloud Storage bucket used for staging job dependencies.
+  // This is either the user-supplied staging_bucket or the
+  // auto-created bucket chosen by GCP.
+  string staging_bucket = 4;
+}

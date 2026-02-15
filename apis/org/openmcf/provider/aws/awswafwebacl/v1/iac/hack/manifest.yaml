@@ -1,0 +1,20 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsWafWebAcl
+metadata:
+  name: test-waf-acl
+spec:
+  scope: REGIONAL
+  defaultAction:
+    type: allow
+  rules:
+    - name: aws-managed-common
+      priority: 1
+      overrideAction: none
+      managedRuleGroup:
+        name: AWSManagedRulesCommonRuleSet
+        vendorName: AWS
+    - name: rate-limit
+      priority: 2
+      action: block
+      rateBased:
+        limit: 2000

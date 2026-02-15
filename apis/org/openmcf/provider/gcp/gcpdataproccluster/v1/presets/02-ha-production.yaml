@@ -1,0 +1,43 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpDataprocCluster
+metadata:
+  name: my-prod-spark
+spec:
+  projectId:
+    value: "<your-gcp-project-id>"
+  region: us-central1
+  clusterName: my-prod-spark
+  gracefulDecommissionTimeout: "3600s"
+  clusterConfig:
+    gceConfig:
+      subnetwork:
+        value: "<your-subnetwork-self-link>"
+      serviceAccount:
+        value: "<your-dataproc-sa-email>"
+      internalIpOnly: true
+      tags:
+        - dataproc
+        - spark
+    masterConfig:
+      numInstances: 3 # HA mode
+      machineType: n2-standard-8
+      diskConfig:
+        bootDiskSizeGb: 200
+        bootDiskType: pd-ssd
+    workerConfig:
+      numInstances: 5
+      machineType: n2-standard-8
+      minNumInstances: 3
+      diskConfig:
+        bootDiskSizeGb: 500
+        bootDiskType: pd-ssd
+        numLocalSsds: 2
+    softwareConfig:
+      imageVersion: "2.2-debian12"
+      properties:
+        "spark:spark.executor.memory": "12g"
+        "spark:spark.driver.memory": "8g"
+    encryptionKmsKeyName:
+      value: "<your-kms-key-resource-name>"
+    endpointConfig:
+      enableHttpPortAccess: true

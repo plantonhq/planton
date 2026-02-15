@@ -123,6 +123,7 @@ const (
 	CloudResourceKind_AwsElasticFileSystem       CloudResourceKind = 290
 	CloudResourceKind_AwsCognitoUserPool         CloudResourceKind = 300
 	CloudResourceKind_AwsCognitoIdentityProvider CloudResourceKind = 302
+	CloudResourceKind_AwsWafWebAcl               CloudResourceKind = 301
 	// 400–599: Azure resources
 	CloudResourceKind_AzureResourceGroup            CloudResourceKind = 400
 	CloudResourceKind_AzureAksCluster               CloudResourceKind = 401
@@ -188,6 +189,7 @@ const (
 	CloudResourceKind_GcpBigtableInstance           CloudResourceKind = 635
 	CloudResourceKind_GcpMemorystoreInstance        CloudResourceKind = 636
 	CloudResourceKind_GcpBigQueryDataset            CloudResourceKind = 650
+	CloudResourceKind_GcpDataprocCluster            CloudResourceKind = 651
 	CloudResourceKind_GcpPubSubTopic                CloudResourceKind = 660
 	CloudResourceKind_GcpPubSubSubscription         CloudResourceKind = 661
 	CloudResourceKind_GcpKmsKeyRing                 CloudResourceKind = 690
@@ -391,6 +393,7 @@ var (
 		290:  "AwsElasticFileSystem",
 		300:  "AwsCognitoUserPool",
 		302:  "AwsCognitoIdentityProvider",
+		301:  "AwsWafWebAcl",
 		400:  "AzureResourceGroup",
 		401:  "AzureAksCluster",
 		402:  "AzureAksNodePool",
@@ -454,6 +457,7 @@ var (
 		635:  "GcpBigtableInstance",
 		636:  "GcpMemorystoreInstance",
 		650:  "GcpBigQueryDataset",
+		651:  "GcpDataprocCluster",
 		660:  "GcpPubSubTopic",
 		661:  "GcpPubSubSubscription",
 		690:  "GcpKmsKeyRing",
@@ -645,6 +649,7 @@ var (
 		"AwsElasticFileSystem":                  290,
 		"AwsCognitoUserPool":                    300,
 		"AwsCognitoIdentityProvider":            302,
+		"AwsWafWebAcl":                          301,
 		"AzureResourceGroup":                    400,
 		"AzureAksCluster":                       401,
 		"AzureAksNodePool":                      402,
@@ -708,6 +713,7 @@ var (
 		"GcpBigtableInstance":                   635,
 		"GcpMemorystoreInstance":                636,
 		"GcpBigQueryDataset":                    650,
+		"GcpDataprocCluster":                    651,
 		"GcpPubSubTopic":                        660,
 		"GcpPubSubSubscription":                 661,
 		"GcpKmsKeyRing":                         690,
@@ -994,7 +1000,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xf3T\n" +
+	"\x02v1\x10\x01*\xc3U\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1049,7 +1055,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\fAwsElasticIp\x10\x99\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awseip\x12+\n" +
 	"\x14AwsElasticFileSystem\x10\xa2\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsefs\x12)\n" +
 	"\x12AwsCognitoUserPool\x10\xac\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awscog\x124\n" +
-	"\x1aAwsCognitoIdentityProvider\x10\xae\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawscogidp\x12'\n" +
+	"\x1aAwsCognitoIdentityProvider\x10\xae\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawscogidp\x12#\n" +
+	"\fAwsWafWebAcl\x10\xad\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awswaf\x12'\n" +
 	"\x12AzureResourceGroup\x10\x90\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azrg\x12#\n" +
 	"\x0fAzureAksCluster\x10\x91\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03aks\x12&\n" +
@@ -1129,7 +1136,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x12GcpSpannerDatabase\x10\xfa\x04\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpspdb\x12)\n" +
 	"\x13GcpBigtableInstance\x10\xfb\x04\x1a\x0f\xa2\xf7\x04\v\b\x12\x10\x01\"\x05gcpbt\x12-\n" +
 	"\x16GcpMemorystoreInstance\x10\xfc\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpmsi\x12*\n" +
-	"\x12GcpBigQueryDataset\x10\x8a\x05\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpbqds\x12%\n" +
+	"\x12GcpBigQueryDataset\x10\x8a\x05\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpbqds\x12)\n" +
+	"\x12GcpDataprocCluster\x10\x8b\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpdpc\x12%\n" +
 	"\x0eGcpPubSubTopic\x10\x94\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcppst\x12,\n" +
 	"\x15GcpPubSubSubscription\x10\x95\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcppss\x12#\n" +
 	"\rGcpKmsKeyRing\x10\xb2\x05\x1a\x0f\xa2\xf7\x04\v\b\x12\x10\x01\"\x05gcpkr\x12 \n" +
