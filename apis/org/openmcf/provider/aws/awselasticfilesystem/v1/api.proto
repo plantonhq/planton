@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awselasticfilesystem.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/aws/awselasticfilesystem/v1/spec.proto";
+import "org/openmcf/provider/aws/awselasticfilesystem/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// aws-elastic-file-system
+message AwsElasticFileSystem {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'aws.openmcf.org/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AwsElasticFileSystem'];
+
+  //metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  AwsElasticFileSystemSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  AwsElasticFileSystemStatus status = 5;
+}
+
+// aws-elastic-file-system status
+message AwsElasticFileSystemStatus {
+  //stack-outputs
+  AwsElasticFileSystemStackOutputs outputs = 1;
+}

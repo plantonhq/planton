@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awselasticfilesystem.v1;
+
+import "org/openmcf/provider/aws/awselasticfilesystem/v1/api.proto";
+import "org/openmcf/provider/aws/provider.proto";
+
+// aws-elastic-file-system stack-input
+message AwsElasticFileSystemStackInput {
+  // target cloud-resource
+  AwsElasticFileSystem target = 1;
+  // provider-credential
+  org.openmcf.provider.aws.AwsProviderConfig provider_config = 2;
+}

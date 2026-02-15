@@ -21,6 +21,7 @@ The following AWS resources can be deployed using OpenMCF:
 - [ECS Service](/docs/catalog/aws/ecs-service)
 - [EKS Cluster](/docs/catalog/aws/eks-cluster)
 - [EKS Node Group](/docs/catalog/aws/eks-node-group)
+- [Elastic File System](/docs/catalog/aws/elastic-file-system)
 - [Elastic IP](/docs/catalog/aws/elastic-ip)
 - [EventBridge Bus](/docs/catalog/aws/eventbridge-bus)
 - [EventBridge Rule](/docs/catalog/aws/eventbridge-rule)

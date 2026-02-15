@@ -1,0 +1,40 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsElasticFileSystem
+metadata:
+  org: example-org
+  env: prod
+  name: prod-efs-elastic
+  id: prod-efs-elastic-id
+spec:
+  encrypted: true
+  throughput_mode: elastic
+  backup_enabled: true
+  transition_to_ia: AFTER_30_DAYS
+  transition_to_archive: AFTER_90_DAYS
+  transition_to_primary_storage_class: AFTER_1_ACCESS
+  subnet_ids:
+    - value: "<subnet-id-az-a>"
+    - value: "<subnet-id-az-b>"
+  security_group_ids:
+    - value: "<security-group-id>"
+  access_points:
+    - name: app-data
+      posix_user:
+        uid: 1000
+        gid: 1000
+      root_directory:
+        path: /app/data
+        creation_info:
+          owner_uid: 1000
+          owner_gid: 1000
+          permissions: "0755"
+    - name: logs
+      posix_user:
+        uid: 1001
+        gid: 1001
+      root_directory:
+        path: /logs
+        creation_info:
+          owner_uid: 1001
+          owner_gid: 1001
+          permissions: "0755"
