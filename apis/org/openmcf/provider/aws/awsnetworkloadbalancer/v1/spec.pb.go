@@ -217,8 +217,6 @@ type AwsNetworkLoadBalancerSubnetMapping struct {
 	// Elastic IP allocation ID for a static public IP address on this NLB node.
 	// Only valid for internet-facing NLBs. Each subnet mapping can have at most
 	// one Elastic IP.
-	//
-	// No default_kind set because AwsElasticIp is not yet registered.
 	AllocationId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=allocation_id,json=allocationId,proto3" json:"allocation_id,omitempty"`
 	// Specific private IPv4 address for the NLB node in this subnet. Only valid
 	// for internal NLBs. The address must belong to the subnet's CIDR range.
@@ -852,10 +850,10 @@ const file_org_openmcf_provider_aws_awsnetworkloadbalancer_v1_spec_proto_rawDesc
 	"\tlisteners\x18\b \x03(\v2R.org.openmcf.provider.aws.awsnetworkloadbalancer.v1.AwsNetworkLoadBalancerListenerB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01R\tlisteners\x12_\n" +
 	"\x03dns\x18\t \x01(\v2M.org.openmcf.provider.aws.awsnetworkloadbalancer.v1.AwsNetworkLoadBalancerDnsR\x03dns:\x99\x04\xbaH\x95\x04\x1a\x9c\x01\n" +
 	"\x15ip_address_type_valid\x126ip_address_type must be 'ipv4' or 'dualstack' when set\x1aKthis.ip_address_type == '' || this.ip_address_type in ['ipv4', 'dualstack']\x1a\xf3\x02\n" +
-	"&dns_record_client_routing_policy_valid\x12\x90\x01dns_record_client_routing_policy must be 'any_availability_zone', 'availability_zone_affinity', or 'partial_availability_zone_affinity' when set\x1a\xb5\x01this.dns_record_client_routing_policy == '' || this.dns_record_client_routing_policy in ['any_availability_zone', 'availability_zone_affinity', 'partial_availability_zone_affinity']\"\x8e\x02\n" +
+	"&dns_record_client_routing_policy_valid\x12\x90\x01dns_record_client_routing_policy must be 'any_availability_zone', 'availability_zone_affinity', or 'partial_availability_zone_affinity' when set\x1a\xb5\x01this.dns_record_client_routing_policy == '' || this.dns_record_client_routing_policy in ['any_availability_zone', 'availability_zone_affinity', 'partial_availability_zone_affinity']\"\xb5\x02\n" +
 	"#AwsNetworkLoadBalancerSubnetMapping\x12\\\n" +
-	"\tsubnet_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\v\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01R\bsubnetId\x12W\n" +
-	"\rallocation_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\fallocationId\x120\n" +
+	"\tsubnet_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\v\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01R\bsubnetId\x12~\n" +
+	"\rallocation_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\x88\xd4a\x99\x02\x92\xd4a\x1cstatus.outputs.allocation_idR\fallocationId\x120\n" +
 	"\x14private_ipv4_address\x18\x03 \x01(\tR\x12privateIpv4Address\"\xdd\f\n" +
 	"\x1eAwsNetworkLoadBalancerListener\x12\xcf\x01\n" +
 	"\x04name\x18\x01 \x01(\tB\xba\x01\xbaH\xb6\x01\xba\x01\xaf\x01\n" +

@@ -158,8 +158,10 @@ message AwsNetworkLoadBalancerSubnetMapping {
   // Only valid for internet-facing NLBs. Each subnet mapping can have at most
   // one Elastic IP.
   //
-  // No default_kind set because AwsElasticIp is not yet registered.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef allocation_id = 2;
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef allocation_id = 2 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsElasticIp,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.allocation_id"
+  ];
 
   // Specific private IPv4 address for the NLB node in this subnet. Only valid
   // for internal NLBs. The address must belong to the subnet's CIDR range.

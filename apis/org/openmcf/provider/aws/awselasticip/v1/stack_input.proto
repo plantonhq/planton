@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awselasticip.v1;
+
+import "org/openmcf/provider/aws/awselasticip/v1/api.proto";
+import "org/openmcf/provider/aws/provider.proto";
+
+// AwsElasticIpStackInput provides the inputs required by Pulumi/Terraform modules
+// to provision an Elastic IP.
+message AwsElasticIpStackInput {
+  // target cloud-resource
+  AwsElasticIp target = 1;
+  // provider-config
+  org.openmcf.provider.aws.AwsProviderConfig provider_config = 2;
+}
