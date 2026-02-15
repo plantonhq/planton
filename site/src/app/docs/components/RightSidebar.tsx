@@ -1,12 +1,22 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Box, Typography } from '@mui/material';
 import { Author } from '@/lib/mdx';
+
+interface PresetsLinkInfo {
+  /** URL path to the presets list page, e.g. "/docs/catalog/aws/documentdb/presets" */
+  path: string;
+  /** Number of presets available */
+  count: number;
+}
 
 interface RightSidebarProps {
   author?: Author[];
   content?: string;
+  /** When set, renders a pinned "Presets" link section below the TOC. */
+  presetsLink?: PresetsLinkInfo;
 }
 
 interface Heading {
@@ -15,7 +25,7 @@ interface Heading {
   level: number;
 }
 
-const RightSidebar: React.FC<RightSidebarProps> = ({ author = [], content }) => {
+const RightSidebar: React.FC<RightSidebarProps> = ({ author = [], content, presetsLink }) => {
   const [headings, setHeadings] = useState<Heading[]>([]);
   const [activeId, setActiveId] = useState<string>('');
 
@@ -112,6 +122,36 @@ const RightSidebar: React.FC<RightSidebarProps> = ({ author = [], content }) => 
               ))}
             </ul>
           </nav>
+        </Box>
+      )}
+
+      {/* Presets link */}
+      {presetsLink && (
+        <Box className="border-t border-purple-900/30 pt-5 mb-5">
+          <Typography variant="subtitle2" className="text-gray-400 font-semibold mb-3 uppercase text-xs">
+            Presets
+          </Typography>
+          <Link
+            href={presetsLink.path}
+            className="group flex items-start gap-3 p-3 -mx-1 rounded-lg hover:bg-purple-900/10 transition-colors"
+          >
+            <span className="flex-shrink-0 mt-0.5 text-purple-400">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="6" width="20" height="12" rx="2" />
+                <path d="M12 12h.01" />
+                <path d="M17 12h.01" />
+                <path d="M7 12h.01" />
+              </svg>
+            </span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-sm font-medium text-gray-300 group-hover:text-purple-400 transition-colors">
+                {presetsLink.count} ready-to-deploy {presetsLink.count === 1 ? 'configuration' : 'configurations'}
+              </span>
+              <span className="block text-xs text-gray-500 mt-0.5">
+                View presets &rarr;
+              </span>
+            </span>
+          </Link>
         </Box>
       )}
 

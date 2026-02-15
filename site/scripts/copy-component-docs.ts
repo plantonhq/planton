@@ -7,12 +7,27 @@ import * as path from 'path';
  * Build script to copy deployment component documentation from apis/ to site/public/docs/catalog/
  *
  * Scans: apis/org/openmcf/provider/{provider}/{component}/v1/catalog-page.md (or docs/README.md)
- * Outputs: site/public/docs/catalog/{provider}/{slug}.md
+ * Also:  apis/org/openmcf/provider/{provider}/{component}/v1/presets/*.yaml + *.md
+ *
+ * Outputs:
+ *   site/public/docs/catalog/{provider}/{slug}/index.md          (catalog page)
+ *   site/public/docs/catalog/{provider}/{slug}/presets/index.md   (preset list page)
+ *   site/public/docs/catalog/{provider}/{slug}/presets/{name}.md  (preset detail - raw + page source)
+ *   site/public/docs/catalog/{provider}/{slug}/presets/{name}.yaml (raw YAML)
  *
  * Title extraction: Extracts from first `# ` heading in content (hand-written, always correct).
  * Slug generation: Title -> lowercase, spaces to hyphens (e.g., "Route53 DNS Record" -> "route53-dns-record").
  * Generates frontmatter for each component and creates provider index pages.
  */
+
+interface PresetFile {
+  slug: string;          // e.g., "01-production-ha"
+  rank: string;          // e.g., "01"
+  title: string;         // Extracted from MD heading
+  excerpt: string;       // First meaningful paragraph from MD
+  yamlSourcePath: string;
+  mdSourcePath: string;
+}
 
 interface ComponentDoc {
   provider: string;
@@ -21,12 +36,14 @@ interface ComponentDoc {
   sourcePath: string;
   content: string;
   title: string;       // Sidebar label (e.g., "Route53 DNS Record")
+  presets: PresetFile[];
 }
 
 interface Stats {
   total: number;
   copied: number;
   skipped: number;
+  presetsCopied: number;
   providers: Set<string>;
 }
 
@@ -284,6 +301,99 @@ function resolveTitle(content: string, component: string, provider: string): str
 }
 
 /**
+ * Scan a component's v1/presets/ directory for preset YAML/MD pairs.
+ * Returns an array of PresetFile objects sorted by rank.
+ */
+function scanPresets(componentPath: string): PresetFile[] {
+  const presetsDir = path.join(componentPath, 'v1', 'presets');
+  if (!fs.existsSync(presetsDir)) {
+    return [];
+  }
+
+  const files = fs.readdirSync(presetsDir);
+  const yamlFiles = files.filter(f => f.endsWith('.yaml'));
+  const presets: PresetFile[] = [];
+
+  for (const yamlFile of yamlFiles) {
+    const baseName = yamlFile.replace(/\.yaml$/, '');
+    const mdFile = `${baseName}.md`;
+
+    if (!files.includes(mdFile)) {
+      continue; // Skip YAML files without a matching MD
+    }
+
+    // Extract rank from filename (e.g., "01" from "01-production-ha")
+    const rankMatch = baseName.match(/^(\d+)-/);
+    const rank = rankMatch ? rankMatch[1] : '99';
+
+    // Read the MD file to extract title and excerpt
+    const mdPath = path.join(presetsDir, mdFile);
+    const mdContent = fs.readFileSync(mdPath, 'utf-8');
+
+    const title = extractTitleFromContent(mdContent) || formatPresetSlug(baseName);
+    const excerpt = extractExcerptFromPresetMd(mdContent);
+
+    presets.push({
+      slug: baseName,
+      rank,
+      title,
+      excerpt,
+      yamlSourcePath: path.join(presetsDir, yamlFile),
+      mdSourcePath: mdPath,
+    });
+  }
+
+  // Sort by rank (string comparison works for zero-padded numbers)
+  return presets.sort((a, b) => a.rank.localeCompare(b.rank));
+}
+
+/**
+ * Format a preset slug into a readable title (fallback when MD has no heading).
+ * e.g., "01-production-ha" -> "Production HA"
+ */
+function formatPresetSlug(slug: string): string {
+  return slug
+    .replace(/^\d+-/, '')           // Remove rank prefix
+    .replace(/-/g, ' ')            // Hyphens to spaces
+    .replace(/\b\w/g, l => l.toUpperCase()); // Title case
+}
+
+/**
+ * Extract the first meaningful paragraph from a preset MD file for use as an excerpt.
+ * Skips the heading and "When to Use" section, grabs the first paragraph.
+ */
+function extractExcerptFromPresetMd(content: string): string {
+  const lines = content.split('\n');
+  let foundFirstParagraph = false;
+  const paragraphLines: string[] = [];
+
+  for (const line of lines) {
+    // Skip headings
+    if (line.match(/^#{1,6}\s/)) {
+      if (foundFirstParagraph) break; // Stop at the next heading
+      continue;
+    }
+    // Skip empty lines before first paragraph
+    if (!foundFirstParagraph && line.trim() === '') continue;
+
+    if (line.trim() !== '') {
+      foundFirstParagraph = true;
+      paragraphLines.push(line.trim());
+    } else if (foundFirstParagraph) {
+      break; // End of first paragraph
+    }
+  }
+
+  const excerpt = paragraphLines.join(' ');
+  if (excerpt.length > 200) {
+    const truncated = excerpt.substring(0, 200);
+    const lastSpace = truncated.lastIndexOf(' ');
+    return (lastSpace > 150 ? truncated.substring(0, lastSpace) : truncated) + '...';
+  }
+  return excerpt;
+}
+
+/**
  * Escape a string for safe embedding in YAML double-quoted values.
  * Replaces literal double quotes and backslashes.
  */
@@ -335,6 +445,7 @@ function scanProvider(providerPath: string, provider: string): ComponentDoc[] {
       const content = fs.readFileSync(docPath, 'utf-8');
       const title = resolveTitle(content, item, provider);
       const slug = generateSlug(title);
+      const presets = scanPresets(componentPath);
 
       docs.push({
         provider,
@@ -343,6 +454,7 @@ function scanProvider(providerPath: string, provider: string): ComponentDoc[] {
         sourcePath: docPath,
         content,
         title,
+        presets,
       });
     } else {
       // If no docs at this level, check subdirectories
@@ -364,6 +476,7 @@ function scanProvider(providerPath: string, provider: string): ComponentDoc[] {
           const content = fs.readFileSync(subDocPath, 'utf-8');
           const title = resolveTitle(content, subitem, provider);
           const slug = generateSlug(title);
+          const presets = scanPresets(subComponentPath);
 
           docs.push({
             provider,
@@ -372,6 +485,7 @@ function scanProvider(providerPath: string, provider: string): ComponentDoc[] {
             sourcePath: subDocPath,
             content,
             title,
+            presets,
           });
         }
       }
@@ -399,26 +513,95 @@ function rewriteCatalogLinks(content: string, lookup: Map<string, string>): stri
 }
 
 /**
- * Write component doc to site/public/docs/catalog/{provider}/{slug}.md
+ * Write component doc to site/public/docs/catalog/{provider}/{slug}/index.md
+ * and copy presets if present.
  */
 function writeComponentDoc(
   doc: ComponentDoc,
   outputRoot: string
 ): void {
-  const providerDir = path.join(outputRoot, doc.provider);
-
-  // Ensure provider directory exists
-  if (!fs.existsSync(providerDir)) {
-    fs.mkdirSync(providerDir, { recursive: true });
-  }
+  // Always use directory-based layout: {provider}/{slug}/index.md
+  const componentDir = path.join(outputRoot, doc.provider, doc.slug);
+  fs.mkdirSync(componentDir, { recursive: true });
 
   // Generate output with frontmatter
   const frontmatter = generateFrontmatter(doc.title, doc.component);
   const output = `${frontmatter}\n\n${doc.content}`;
 
-  // Write to {provider}/{slug}.md (URL-friendly filename)
-  const outputPath = path.join(providerDir, `${doc.slug}.md`);
-  fs.writeFileSync(outputPath, output, 'utf-8');
+  // Write catalog page as index.md inside the component directory
+  const indexPath = path.join(componentDir, 'index.md');
+  fs.writeFileSync(indexPath, output, 'utf-8');
+
+  // Write presets if present
+  if (doc.presets.length > 0) {
+    writePresets(doc, componentDir);
+  }
+}
+
+/**
+ * Write preset files for a component:
+ *   {componentDir}/presets/index.md           -- preset list page
+ *   {componentDir}/presets/{name}.md          -- preset detail page (also served as raw MD)
+ *   {componentDir}/presets/{name}.yaml        -- raw YAML file
+ */
+function writePresets(doc: ComponentDoc, componentDir: string): void {
+  const presetsDir = path.join(componentDir, 'presets');
+  fs.mkdirSync(presetsDir, { recursive: true });
+
+  // Copy each preset's YAML and MD files
+  for (const preset of doc.presets) {
+    // Copy YAML as-is (served as raw file)
+    const yamlDest = path.join(presetsDir, `${preset.slug}.yaml`);
+    fs.copyFileSync(preset.yamlSourcePath, yamlDest);
+
+    // Read original MD and prepend frontmatter for page rendering
+    const originalMd = fs.readFileSync(preset.mdSourcePath, 'utf-8');
+    const presetFrontmatter = `---
+title: "${yamlEscape(preset.title)}"
+description: "${yamlEscape(preset.excerpt)}"
+type: "preset"
+rank: "${preset.rank}"
+presetSlug: "${preset.slug}"
+componentSlug: "${doc.slug}"
+componentTitle: "${yamlEscape(doc.title)}"
+provider: "${doc.provider}"
+icon: "package"
+order: ${parseInt(preset.rank, 10)}
+---`;
+
+    const presetMdOutput = `${presetFrontmatter}\n\n${originalMd}`;
+    const mdDest = path.join(presetsDir, `${preset.slug}.md`);
+    fs.writeFileSync(mdDest, presetMdOutput, 'utf-8');
+  }
+
+  // Generate presets index page
+  const presetsListYaml = doc.presets
+    .map(p => `  - slug: "${p.slug}"
+    rank: "${p.rank}"
+    title: "${yamlEscape(p.title)}"
+    excerpt: "${yamlEscape(p.excerpt)}"`)
+    .join('\n');
+
+  const presetsIndexContent = `---
+title: "Presets"
+description: "Ready-to-deploy configuration presets for ${doc.title}"
+type: "preset-list"
+componentSlug: "${doc.slug}"
+componentTitle: "${yamlEscape(doc.title)}"
+provider: "${doc.provider}"
+icon: "package"
+order: 200
+presets:
+${presetsListYaml}
+---
+
+# ${doc.title} Presets
+
+Ready-to-deploy configuration presets for ${doc.title}. Each preset is a complete manifest you can copy, customize, and deploy.
+`;
+
+  const presetsIndexPath = path.join(presetsDir, 'index.md');
+  fs.writeFileSync(presetsIndexPath, presetsIndexContent, 'utf-8');
 }
 
 /**
@@ -552,6 +735,7 @@ async function copyComponentDocs(): Promise<void> {
     total: 0,
     copied: 0,
     skipped: 0,
+    presetsCopied: 0,
     providers: new Set(),
   };
 
@@ -603,8 +787,10 @@ async function copyComponentDocs(): Promise<void> {
         doc.content = rewriteCatalogLinks(doc.content, componentToSlug);
         writeComponentDoc(doc, siteDocsRoot);
         stats.copied++;
+        stats.presetsCopied += doc.presets.length;
         const sourceType = doc.sourcePath.endsWith('catalog-page.md') ? 'catalog-page' : 'legacy';
-        console.log(`   ${doc.component} -> ${doc.slug}.md (${sourceType})`);
+        const presetInfo = doc.presets.length > 0 ? ` + ${doc.presets.length} presets` : '';
+        console.log(`   ${doc.component} -> ${doc.slug}/index.md (${sourceType}${presetInfo})`);
       } catch (error) {
         console.error(`   FAIL ${doc.component}: ${error}`);
         stats.skipped++;
@@ -625,6 +811,7 @@ async function copyComponentDocs(): Promise<void> {
   console.log('Summary:');
   console.log(`   Providers: ${stats.providers.size}`);
   console.log(`   Components copied: ${stats.copied}`);
+  console.log(`   Presets copied: ${stats.presetsCopied}`);
   console.log(`   Components skipped: ${stats.skipped}`);
   console.log(`   Output: ${path.relative(projectRoot, siteDocsRoot)}`);
   console.log('\nComponent documentation copy complete!\n');

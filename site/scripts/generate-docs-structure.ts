@@ -166,10 +166,20 @@ function buildStructure(dirPath: string, relativePath = ''): DocItem[] {
     const itemRelativePath = path.join(relativePath, item);
 
     if (stat.isDirectory()) {
+      // In the catalog section, skip "presets" subdirectories inside
+      // component directories so they don't appear in the sidebar.
+      // Preset pages are still generated via the full structure in fileSystem.ts.
+      const relParts = relativePath.split('/').filter(Boolean);
+      if (item === 'presets' && relParts.length === 3 && relParts[0] === 'catalog') {
+        continue;
+      }
+
       const children = buildStructure(fullPath, itemRelativePath);
-      if (children.length > 0) {
+      const indexFiles = ['index.md', 'README.md'];
+      const hasIndex = indexFiles.some((f) => fs.existsSync(path.join(fullPath, f)));
+
+      if (children.length > 0 || hasIndex) {
         let metadata: Record<string, unknown> = {};
-        const indexFiles = ['index.md', 'README.md'];
 
         for (const indexFile of indexFiles) {
           const indexPath = path.join(fullPath, indexFile);
@@ -185,7 +195,6 @@ function buildStructure(dirPath: string, relativePath = ''): DocItem[] {
         }
 
         const category = relativePath.split('/')[0] || item;
-        const hasIndex = indexFiles.some((f) => fs.existsSync(path.join(fullPath, f)));
 
         structure.push({
           name: item,
