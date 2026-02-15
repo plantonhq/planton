@@ -120,6 +120,7 @@ const (
 	CloudResourceKind_AwsServerlessElasticache CloudResourceKind = 253
 	CloudResourceKind_AwsNetworkLoadBalancer   CloudResourceKind = 280
 	CloudResourceKind_AwsElasticIp             CloudResourceKind = 281
+	CloudResourceKind_AwsElasticFileSystem     CloudResourceKind = 290
 	// 400–599: Azure resources
 	CloudResourceKind_AzureResourceGroup            CloudResourceKind = 400
 	CloudResourceKind_AzureAksCluster               CloudResourceKind = 401
@@ -177,6 +178,7 @@ const (
 	CloudResourceKind_GcpDnsRecord                  CloudResourceKind = 618
 	CloudResourceKind_GcpFirewallRule               CloudResourceKind = 620
 	CloudResourceKind_GcpGlobalAddress              CloudResourceKind = 621
+	CloudResourceKind_GcpAlloydbCluster             CloudResourceKind = 630
 	CloudResourceKind_GcpRedisInstance              CloudResourceKind = 631
 	CloudResourceKind_GcpSpannerInstance            CloudResourceKind = 633
 	CloudResourceKind_GcpSpannerDatabase            CloudResourceKind = 634
@@ -382,6 +384,7 @@ var (
 		253:  "AwsServerlessElasticache",
 		280:  "AwsNetworkLoadBalancer",
 		281:  "AwsElasticIp",
+		290:  "AwsElasticFileSystem",
 		400:  "AzureResourceGroup",
 		401:  "AzureAksCluster",
 		402:  "AzureAksNodePool",
@@ -437,6 +440,7 @@ var (
 		618:  "GcpDnsRecord",
 		620:  "GcpFirewallRule",
 		621:  "GcpGlobalAddress",
+		630:  "GcpAlloydbCluster",
 		631:  "GcpRedisInstance",
 		633:  "GcpSpannerInstance",
 		634:  "GcpSpannerDatabase",
@@ -630,6 +634,7 @@ var (
 		"AwsServerlessElasticache":              253,
 		"AwsNetworkLoadBalancer":                280,
 		"AwsElasticIp":                          281,
+		"AwsElasticFileSystem":                  290,
 		"AzureResourceGroup":                    400,
 		"AzureAksCluster":                       401,
 		"AzureAksNodePool":                      402,
@@ -685,6 +690,7 @@ var (
 		"GcpDnsRecord":                          618,
 		"GcpFirewallRule":                       620,
 		"GcpGlobalAddress":                      621,
+		"GcpAlloydbCluster":                     630,
 		"GcpRedisInstance":                      631,
 		"GcpSpannerInstance":                    633,
 		"GcpSpannerDatabase":                    634,
@@ -976,7 +982,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xe3R\n" +
+	"\x02v1\x10\x01*\xbaS\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1028,7 +1034,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x17AwsMemcachedElasticache\x10\xfc\x01\x1a\x16\xa2\xf7\x04\x12\b\f\x10\x01\"\fawsmemcached\x122\n" +
 	"\x18AwsServerlessElasticache\x10\xfd\x01\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawsslselc\x12-\n" +
 	"\x16AwsNetworkLoadBalancer\x10\x98\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsnlb\x12#\n" +
-	"\fAwsElasticIp\x10\x99\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awseip\x12'\n" +
+	"\fAwsElasticIp\x10\x99\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awseip\x12+\n" +
+	"\x14AwsElasticFileSystem\x10\xa2\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsefs\x12'\n" +
 	"\x12AzureResourceGroup\x10\x90\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azrg\x12#\n" +
 	"\x0fAzureAksCluster\x10\x91\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03aks\x12&\n" +
@@ -1100,7 +1107,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x12GcpComputeInstance\x10\xe9\x04\x1a\x0f\xa2\xf7\x04\v\b\x12\x10\x01\"\x05gcpvm\x12$\n" +
 	"\fGcpDnsRecord\x10\xea\x04\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpdrec\x12&\n" +
 	"\x0fGcpFirewallRule\x10\xec\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpfwr\x12'\n" +
-	"\x10GcpGlobalAddress\x10\xed\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpgip\x12'\n" +
+	"\x10GcpGlobalAddress\x10\xed\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpgip\x12(\n" +
+	"\x11GcpAlloydbCluster\x10\xf6\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpadb\x12'\n" +
 	"\x10GcpRedisInstance\x10\xf7\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpred\x12)\n" +
 	"\x12GcpSpannerInstance\x10\xf9\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpspn\x12*\n" +
 	"\x12GcpSpannerDatabase\x10\xfa\x04\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpspdb\x12-\n" +

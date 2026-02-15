@@ -1,0 +1,16 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpAlloydbCluster
+metadata:
+  name: my-dev-alloydb
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  clusterName: <cluster-name>
+  location: <gcp-region>
+  network:
+    value: "<vpc-network-path>"
+  deletionProtection: false
+  primaryInstance:
+    instanceId: <primary-instance-id>
+    cpuCount: 2
+    availabilityType: ZONAL

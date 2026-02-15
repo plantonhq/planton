@@ -1,0 +1,23 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpAlloydbCluster
+metadata:
+  name: my-prod-alloydb
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  clusterName: <cluster-name>
+  location: <gcp-region>
+  network:
+    value: "<vpc-network-path>"
+  deletionProtection: true
+  initialUser:
+    user: postgres
+    password: "<secure-password>"
+  automatedBackupPolicy:
+    enabled: true
+    timeBasedRetentionPeriod: "604800s"
+  primaryInstance:
+    instanceId: <primary-instance-id>
+    cpuCount: 4
+    availabilityType: REGIONAL
+    sslMode: ENCRYPTED_ONLY

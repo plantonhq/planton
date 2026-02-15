@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpalloydbcluster.v1;
+
+import "org/openmcf/provider/gcp/gcpalloydbcluster/v1/api.proto";
+import "org/openmcf/provider/gcp/provider.proto";
+
+//gcp-alloydb-cluster stack-input
+message GcpAlloydbClusterStackInput {
+  //target cloud-resource
+  GcpAlloydbCluster target = 1;
+  //provider-config
+  org.openmcf.provider.gcp.GcpProviderConfig provider_config = 2;
+}
