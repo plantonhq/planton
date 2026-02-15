@@ -325,11 +325,11 @@ const file_org_openmcf_provider_aws_awsstepfunction_v1_spec_proto_rawDesc = "" +
 	"encryption\x18\a \x01(\v2L.org.openmcf.provider.aws.awsstepfunction.v1.AwsStepFunctionEncryptionConfigR\n" +
 	"encryption:\xe8\x02\xbaH\xe4\x02\x1a{\n" +
 	"\x11type_valid_values\x12-type must be 'STANDARD' or 'EXPRESS' when set\x1a7this.type == '' || this.type in ['STANDARD', 'EXPRESS']\x1a\xe4\x01\n" +
-	")logging_destination_required_when_enabled\x12Clogging.log_destination is required when logging.level is not 'OFF'\x1ar!has(this.logging) || this.logging.level == '' || this.logging.level == 'OFF' || has(this.logging.log_destination)\"\xf3\x02\n" +
+	")logging_destination_required_when_enabled\x12Clogging.log_destination is required when logging.level is not 'OFF'\x1ar!has(this.logging) || this.logging.level == '' || this.logging.level == 'OFF' || has(this.logging.log_destination)\"\x9b\x03\n" +
 	"\x1cAwsStepFunctionLoggingConfig\x12\x14\n" +
 	"\x05level\x18\x01 \x01(\tR\x05level\x124\n" +
-	"\x16include_execution_data\x18\x02 \x01(\bR\x14includeExecutionData\x12[\n" +
-	"\x0flog_destination\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x0elogDestination:\xa9\x01\xbaH\xa5\x01\x1a\xa2\x01\n" +
+	"\x16include_execution_data\x18\x02 \x01(\bR\x14includeExecutionData\x12\x82\x01\n" +
+	"\x0flog_destination\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\x88\xd4a\xb6\x02\x92\xd4a\x1cstatus.outputs.log_group_arnR\x0elogDestination:\xa9\x01\xbaH\xa5\x01\x1a\xa2\x01\n" +
 	"\x1alogging_level_valid_values\x12@logging.level must be 'ALL', 'ERROR', 'FATAL', or 'OFF' when set\x1aBthis.level == '' || this.level in ['ALL', 'ERROR', 'FATAL', 'OFF']\"\xdf\x03\n" +
 	"\x1fAwsStepFunctionEncryptionConfig\x12w\n" +
 	"\n" +

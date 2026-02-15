@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awscloudwatchloggroup.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/aws/awscloudwatchloggroup/v1/spec.proto";
+import "org/openmcf/provider/aws/awscloudwatchloggroup/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// AwsCloudwatchLogGroup represents a CloudWatch Logs log group — a container
+// for log streams that share the same retention, monitoring, and access control
+// settings. Log groups are the primary destination for application logs, service
+// logs, and operational data across AWS services.
+message AwsCloudwatchLogGroup {
+  // api-version must be set to "aws.openmcf.org/v1".
+  string api_version = 1 [(buf.validate.field).string.const = "aws.openmcf.org/v1"];
+
+  // resource-kind for this CloudWatch Log Group resource, must be "AwsCloudwatchLogGroup".
+  string kind = 2 [(buf.validate.field).string.const = "AwsCloudwatchLogGroup"];
+
+  // metadata captures identifying information (name, org, version, etc.)
+  // and must pass standard validations for resource naming.
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec holds the desired configuration for the log group.
+  AwsCloudwatchLogGroupSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status holds runtime or post-deployment information.
+  AwsCloudwatchLogGroupStatus status = 5;
+}
+
+// AwsCloudwatchLogGroupStatus describes the status fields for a CloudWatch
+// Log Group resource.
+message AwsCloudwatchLogGroupStatus {
+  // stack_outputs captures the outputs returned by Pulumi/Terraform after provisioning.
+  AwsCloudwatchLogGroupStackOutputs outputs = 1;
+}

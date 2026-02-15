@@ -529,7 +529,11 @@ message AwsOpenSearchDomainLogPublishingOption {
   string log_type = 1 [(buf.validate.field).required = true];
 
   // CloudWatch Logs log group ARN where logs are published.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef cloudwatch_log_group_arn = 2 [(buf.validate.field).required = true];
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef cloudwatch_log_group_arn = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsCloudwatchLogGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.log_group_arn"
+  ];
 
   // Whether this log publishing option is active. Default: true.
   // Set to false to temporarily disable publishing without removing the configuration.

@@ -215,7 +215,11 @@ message AwsHttpApiGatewayStageConfig {
 message AwsHttpApiGatewayAccessLogConfig {
   // CloudWatch Log Group ARN for access log delivery. Accepts a direct ARN
   // or a reference to an AwsCloudwatchLogGroup resource.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef destination_arn = 1 [(buf.validate.field).required = true];
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef destination_arn = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsCloudwatchLogGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.log_group_arn"
+  ];
 
   // Log format template. Uses API Gateway access log variables (e.g.,
   // $context.requestId, $context.identity.sourceIp, $context.httpMethod).

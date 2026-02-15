@@ -896,10 +896,10 @@ const file_org_openmcf_provider_aws_awsopensearchdomain_v1_spec_proto_rawDesc = 
 	"\x1cmaster_user_mutual_exclusion\x12\x92\x01master_user_arn and master_user_name/master_user_password are mutually exclusive; use IAM-based OR internal user database authentication, not both\x1a;!(has(this.master_user_arn) && this.master_user_name != '')\x1a\xfc\x01\n" +
 	"!master_user_required_when_enabled\x12\x8b\x01when advanced security is enabled, provide either master_user_arn (IAM) or master_user_name + master_user_password (internal user database)\x1aI!this.enabled || has(this.master_user_arn) || this.master_user_name != ''\x1a\x96\x01\n" +
 	"\x1apassword_requires_username\x128master_user_password requires master_user_name to be set\x1a>!has(this.master_user_password) || this.master_user_name != ''\x1a\x8f\x01\n" +
-	"\x1emaster_user_name_requires_fgac\x12@master_user_name requires advanced security (enabled) to be true\x1a+this.master_user_name == '' || this.enabled\"\xce\x03\n" +
+	"\x1emaster_user_name_requires_fgac\x12@master_user_name requires advanced security (enabled) to be true\x1a+this.master_user_name == '' || this.enabled\"\xf4\x03\n" +
 	"&AwsOpenSearchDomainLogPublishingOption\x12!\n" +
-	"\blog_type\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\alogType\x12s\n" +
-	"\x18cloudwatch_log_group_arn\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x15cloudwatchLogGroupArn\x12'\n" +
+	"\blog_type\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\alogType\x12\x98\x01\n" +
+	"\x18cloudwatch_log_group_arn\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xb6\x02\x92\xd4a\x1cstatus.outputs.log_group_arnR\x15cloudwatchLogGroupArn\x12'\n" +
 	"\aenabled\x18\x03 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01:\xd6\x01\xbaH\xd2\x01\x1a\xcf\x01\n" +
 	"\x0elog_type_valid\x12^log_type must be 'INDEX_SLOW_LOGS', 'SEARCH_SLOW_LOGS', 'ES_APPLICATION_LOGS', or 'AUDIT_LOGS'\x1a]this.log_type in ['INDEX_SLOW_LOGS', 'SEARCH_SLOW_LOGS', 'ES_APPLICATION_LOGS', 'AUDIT_LOGS']B\n" +
 	"\n" +

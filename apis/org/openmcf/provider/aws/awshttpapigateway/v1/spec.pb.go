@@ -881,9 +881,9 @@ const file_org_openmcf_provider_aws_awshttpapigateway_v1_spec_proto_rawDesc = ""
 	"\x0fstage_variables\x18\x05 \x03(\v2_.org.openmcf.provider.aws.awshttpapigateway.v1.AwsHttpApiGatewayStageConfig.StageVariablesEntryR\x0estageVariables\x1aA\n" +
 	"\x13StageVariablesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xa8\x01\n" +
-	" AwsHttpApiGatewayAccessLogConfig\x12c\n" +
-	"\x0fdestination_arn\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x0edestinationArn\x12\x1f\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xce\x01\n" +
+	" AwsHttpApiGatewayAccessLogConfig\x12\x88\x01\n" +
+	"\x0fdestination_arn\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xb6\x02\x92\xd4a\x1cstatus.outputs.log_group_arnR\x0edestinationArn\x12\x1f\n" +
 	"\x06format\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06format\"j\n" +
 	"\x1fAwsHttpApiGatewayThrottleConfig\x12(\n" +
 	"\vburst_limit\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00R\n" +

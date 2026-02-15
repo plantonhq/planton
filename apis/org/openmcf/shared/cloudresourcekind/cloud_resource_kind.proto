@@ -287,6 +287,14 @@ enum CloudResourceKind {
     id_prefix: "awswaf"
   }];
 
+  // --- Monitoring / Observability ---
+
+  AwsCloudwatchLogGroup = 310 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awscwlg"
+  }];
+
   // 400–599: Azure resources
   AzureResourceGroup = 400 [(kind_meta) = {
     provider: azure
@@ -612,6 +620,11 @@ enum CloudResourceKind {
     provider: gcp
     version: v1
     id_prefix: "gcpdpc"
+  }];
+  GcpDataprocVirtualCluster = 652 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpdvc"
   }];
   GcpPubSubTopic = 660 [(kind_meta) = {
     provider: gcp
