@@ -28,6 +28,7 @@ The following GCP resources can be deployed using OpenMCF:
 - [KMS Key](/docs/catalog/gcp/kms-key)
 - [KMS Key Ring](/docs/catalog/gcp/kms-key-ring)
 - [Project](/docs/catalog/gcp/project)
+- [Pub/Sub Topic](/docs/catalog/gcp/pubsub-topic)
 - [Router NAT](/docs/catalog/gcp/router-nat)
 - [Secrets Manager](/docs/catalog/gcp/secrets-manager)
 - [Service Account](/docs/catalog/gcp/service-account)

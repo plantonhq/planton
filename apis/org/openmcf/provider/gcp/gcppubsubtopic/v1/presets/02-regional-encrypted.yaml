@@ -1,0 +1,14 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpPubSubTopic
+metadata:
+  name: my-encrypted-topic
+spec:
+  projectId:
+    value: "<project-id>"  # e.g., my-prod-project
+  topicName: <your-topic-name>  # e.g., secure-audit-events
+  kmsKeyName:
+    value: "<kms-key-name>"  # e.g., projects/my-project/locations/us-central1/keyRings/ring/cryptoKeys/key
+  messageStoragePolicy:
+    allowedPersistenceRegions:
+      - us-central1
+    enforceInTransit: true

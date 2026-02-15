@@ -172,6 +172,7 @@ const (
 	CloudResourceKind_GcpFirewallRule               CloudResourceKind = 620
 	CloudResourceKind_GcpGlobalAddress              CloudResourceKind = 621
 	CloudResourceKind_GcpBigQueryDataset            CloudResourceKind = 650
+	CloudResourceKind_GcpPubSubTopic                CloudResourceKind = 660
 	CloudResourceKind_GcpKmsKeyRing                 CloudResourceKind = 690
 	CloudResourceKind_GcpKmsKey                     CloudResourceKind = 691
 	// 800–999: Kubernetes resources
@@ -420,6 +421,7 @@ var (
 		620:  "GcpFirewallRule",
 		621:  "GcpGlobalAddress",
 		650:  "GcpBigQueryDataset",
+		660:  "GcpPubSubTopic",
 		690:  "GcpKmsKeyRing",
 		691:  "GcpKmsKey",
 		800:  "KubernetesArgocd",
@@ -656,6 +658,7 @@ var (
 		"GcpFirewallRule":                       620,
 		"GcpGlobalAddress":                      621,
 		"GcpBigQueryDataset":                    650,
+		"GcpPubSubTopic":                        660,
 		"GcpKmsKeyRing":                         690,
 		"GcpKmsKey":                             691,
 		"KubernetesArgocd":                      800,
@@ -940,7 +943,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xc8N\n" +
+	"\x02v1\x10\x01*\xefN\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1059,7 +1062,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\fGcpDnsRecord\x10\xea\x04\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpdrec\x12&\n" +
 	"\x0fGcpFirewallRule\x10\xec\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpfwr\x12'\n" +
 	"\x10GcpGlobalAddress\x10\xed\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpgip\x12*\n" +
-	"\x12GcpBigQueryDataset\x10\x8a\x05\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpbqds\x12#\n" +
+	"\x12GcpBigQueryDataset\x10\x8a\x05\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpbqds\x12%\n" +
+	"\x0eGcpPubSubTopic\x10\x94\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcppst\x12#\n" +
 	"\rGcpKmsKeyRing\x10\xb2\x05\x1a\x0f\xa2\xf7\x04\v\b\x12\x10\x01\"\x05gcpkr\x12 \n" +
 	"\tGcpKmsKey\x10\xb3\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpkms\x12(\n" +
 	"\x10KubernetesArgocd\x10\xa0\x06\x1a\x11\xa2\xf7\x04\r\b\x13\x10\x01\"\ak8sargo\x12)\n" +

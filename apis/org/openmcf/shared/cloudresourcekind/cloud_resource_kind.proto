@@ -513,6 +513,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "gcpbqds"
   }];
+  GcpPubSubTopic = 660 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcppst"
+  }];
   GcpKmsKeyRing = 690 [(kind_meta) = {
     provider: gcp
     version: v1
