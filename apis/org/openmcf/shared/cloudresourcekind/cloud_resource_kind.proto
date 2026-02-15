@@ -236,6 +236,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "awsmemcached"
   }];
+  AwsServerlessElasticache = 253 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsslselc"
+  }];
 
   // 400–599: Azure resources
   AzureResourceGroup = 400 [(kind_meta) = {
@@ -517,6 +522,11 @@ enum CloudResourceKind {
     provider: gcp
     version: v1
     id_prefix: "gcpgip"
+  }];
+  GcpRedisInstance = 631 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpred"
   }];
   GcpBigQueryDataset = 650 [(kind_meta) = {
     provider: gcp

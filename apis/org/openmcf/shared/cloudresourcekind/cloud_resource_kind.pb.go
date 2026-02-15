@@ -83,39 +83,40 @@ const (
 	CloudResourceKind_MongodbAtlas      CloudResourceKind = 51
 	CloudResourceKind_SnowflakeDatabase CloudResourceKind = 52
 	// 200–399: AWS resources
-	CloudResourceKind_AwsAlb                  CloudResourceKind = 200
-	CloudResourceKind_AwsCertManagerCert      CloudResourceKind = 201
-	CloudResourceKind_AwsCloudFront           CloudResourceKind = 202
-	CloudResourceKind_AwsDynamodb             CloudResourceKind = 203
-	CloudResourceKind_AwsEcrRepo              CloudResourceKind = 204
-	CloudResourceKind_AwsEcsCluster           CloudResourceKind = 205
-	CloudResourceKind_AwsEcsService           CloudResourceKind = 206
-	CloudResourceKind_AwsEksCluster           CloudResourceKind = 207
-	CloudResourceKind_AwsIamRole              CloudResourceKind = 208
-	CloudResourceKind_AwsLambda               CloudResourceKind = 209
-	CloudResourceKind_AwsRdsCluster           CloudResourceKind = 210
-	CloudResourceKind_AwsRdsInstance          CloudResourceKind = 211
-	CloudResourceKind_AwsRoute53Zone          CloudResourceKind = 212
-	CloudResourceKind_AwsS3Bucket             CloudResourceKind = 213
-	CloudResourceKind_AwsSecretsManager       CloudResourceKind = 214
-	CloudResourceKind_AwsSecurityGroup        CloudResourceKind = 215
-	CloudResourceKind_AwsVpc                  CloudResourceKind = 216
-	CloudResourceKind_AwsEksNodeGroup         CloudResourceKind = 217
-	CloudResourceKind_AwsIamUser              CloudResourceKind = 218
-	CloudResourceKind_AwsKmsKey               CloudResourceKind = 219
-	CloudResourceKind_AwsEc2Instance          CloudResourceKind = 220
-	CloudResourceKind_AwsClientVpn            CloudResourceKind = 221
-	CloudResourceKind_AwsDocumentDb           CloudResourceKind = 222
-	CloudResourceKind_AwsRoute53DnsRecord     CloudResourceKind = 223
-	CloudResourceKind_AwsS3ObjectSet          CloudResourceKind = 224
-	CloudResourceKind_AwsSqsQueue             CloudResourceKind = 225
-	CloudResourceKind_AwsSnsTopic             CloudResourceKind = 226
-	CloudResourceKind_AwsEventBridgeBus       CloudResourceKind = 227
-	CloudResourceKind_AwsEventBridgeRule      CloudResourceKind = 228
-	CloudResourceKind_AwsHttpApiGateway       CloudResourceKind = 240
-	CloudResourceKind_AwsStepFunction         CloudResourceKind = 241
-	CloudResourceKind_AwsRedisElasticache     CloudResourceKind = 250
-	CloudResourceKind_AwsMemcachedElasticache CloudResourceKind = 252
+	CloudResourceKind_AwsAlb                   CloudResourceKind = 200
+	CloudResourceKind_AwsCertManagerCert       CloudResourceKind = 201
+	CloudResourceKind_AwsCloudFront            CloudResourceKind = 202
+	CloudResourceKind_AwsDynamodb              CloudResourceKind = 203
+	CloudResourceKind_AwsEcrRepo               CloudResourceKind = 204
+	CloudResourceKind_AwsEcsCluster            CloudResourceKind = 205
+	CloudResourceKind_AwsEcsService            CloudResourceKind = 206
+	CloudResourceKind_AwsEksCluster            CloudResourceKind = 207
+	CloudResourceKind_AwsIamRole               CloudResourceKind = 208
+	CloudResourceKind_AwsLambda                CloudResourceKind = 209
+	CloudResourceKind_AwsRdsCluster            CloudResourceKind = 210
+	CloudResourceKind_AwsRdsInstance           CloudResourceKind = 211
+	CloudResourceKind_AwsRoute53Zone           CloudResourceKind = 212
+	CloudResourceKind_AwsS3Bucket              CloudResourceKind = 213
+	CloudResourceKind_AwsSecretsManager        CloudResourceKind = 214
+	CloudResourceKind_AwsSecurityGroup         CloudResourceKind = 215
+	CloudResourceKind_AwsVpc                   CloudResourceKind = 216
+	CloudResourceKind_AwsEksNodeGroup          CloudResourceKind = 217
+	CloudResourceKind_AwsIamUser               CloudResourceKind = 218
+	CloudResourceKind_AwsKmsKey                CloudResourceKind = 219
+	CloudResourceKind_AwsEc2Instance           CloudResourceKind = 220
+	CloudResourceKind_AwsClientVpn             CloudResourceKind = 221
+	CloudResourceKind_AwsDocumentDb            CloudResourceKind = 222
+	CloudResourceKind_AwsRoute53DnsRecord      CloudResourceKind = 223
+	CloudResourceKind_AwsS3ObjectSet           CloudResourceKind = 224
+	CloudResourceKind_AwsSqsQueue              CloudResourceKind = 225
+	CloudResourceKind_AwsSnsTopic              CloudResourceKind = 226
+	CloudResourceKind_AwsEventBridgeBus        CloudResourceKind = 227
+	CloudResourceKind_AwsEventBridgeRule       CloudResourceKind = 228
+	CloudResourceKind_AwsHttpApiGateway        CloudResourceKind = 240
+	CloudResourceKind_AwsStepFunction          CloudResourceKind = 241
+	CloudResourceKind_AwsRedisElasticache      CloudResourceKind = 250
+	CloudResourceKind_AwsMemcachedElasticache  CloudResourceKind = 252
+	CloudResourceKind_AwsServerlessElasticache CloudResourceKind = 253
 	// 400–599: Azure resources
 	CloudResourceKind_AzureResourceGroup            CloudResourceKind = 400
 	CloudResourceKind_AzureAksCluster               CloudResourceKind = 401
@@ -173,6 +174,7 @@ const (
 	CloudResourceKind_GcpDnsRecord                  CloudResourceKind = 618
 	CloudResourceKind_GcpFirewallRule               CloudResourceKind = 620
 	CloudResourceKind_GcpGlobalAddress              CloudResourceKind = 621
+	CloudResourceKind_GcpRedisInstance              CloudResourceKind = 631
 	CloudResourceKind_GcpBigQueryDataset            CloudResourceKind = 650
 	CloudResourceKind_GcpPubSubTopic                CloudResourceKind = 660
 	CloudResourceKind_GcpPubSubSubscription         CloudResourceKind = 661
@@ -370,6 +372,7 @@ var (
 		241:  "AwsStepFunction",
 		250:  "AwsRedisElasticache",
 		252:  "AwsMemcachedElasticache",
+		253:  "AwsServerlessElasticache",
 		400:  "AzureResourceGroup",
 		401:  "AzureAksCluster",
 		402:  "AzureAksNodePool",
@@ -425,6 +428,7 @@ var (
 		618:  "GcpDnsRecord",
 		620:  "GcpFirewallRule",
 		621:  "GcpGlobalAddress",
+		631:  "GcpRedisInstance",
 		650:  "GcpBigQueryDataset",
 		660:  "GcpPubSubTopic",
 		661:  "GcpPubSubSubscription",
@@ -610,6 +614,7 @@ var (
 		"AwsStepFunction":                       241,
 		"AwsRedisElasticache":                   250,
 		"AwsMemcachedElasticache":               252,
+		"AwsServerlessElasticache":              253,
 		"AzureResourceGroup":                    400,
 		"AzureAksCluster":                       401,
 		"AzureAksNodePool":                      402,
@@ -665,6 +670,7 @@ var (
 		"GcpDnsRecord":                          618,
 		"GcpFirewallRule":                       620,
 		"GcpGlobalAddress":                      621,
+		"GcpRedisInstance":                      631,
 		"GcpBigQueryDataset":                    650,
 		"GcpPubSubTopic":                        660,
 		"GcpPubSubSubscription":                 661,
@@ -952,7 +958,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\x81P\n" +
+	"\x02v1\x10\x01*\xdeP\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1000,7 +1006,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x11AwsHttpApiGateway\x10\xf0\x01\x1a\x16\xa2\xf7\x04\x12\b\f\x10\x01\"\fawshttpapigw\x12&\n" +
 	"\x0fAwsStepFunction\x10\xf1\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssfn\x12,\n" +
 	"\x13AwsRedisElasticache\x10\xfa\x01\x1a\x12\xa2\xf7\x04\x0e\b\f\x10\x01\"\bawsredis\x124\n" +
-	"\x17AwsMemcachedElasticache\x10\xfc\x01\x1a\x16\xa2\xf7\x04\x12\b\f\x10\x01\"\fawsmemcached\x12'\n" +
+	"\x17AwsMemcachedElasticache\x10\xfc\x01\x1a\x16\xa2\xf7\x04\x12\b\f\x10\x01\"\fawsmemcached\x122\n" +
+	"\x18AwsServerlessElasticache\x10\xfd\x01\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawsslselc\x12'\n" +
 	"\x12AzureResourceGroup\x10\x90\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azrg\x12#\n" +
 	"\x0fAzureAksCluster\x10\x91\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03aks\x12&\n" +
@@ -1072,7 +1079,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x12GcpComputeInstance\x10\xe9\x04\x1a\x0f\xa2\xf7\x04\v\b\x12\x10\x01\"\x05gcpvm\x12$\n" +
 	"\fGcpDnsRecord\x10\xea\x04\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpdrec\x12&\n" +
 	"\x0fGcpFirewallRule\x10\xec\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpfwr\x12'\n" +
-	"\x10GcpGlobalAddress\x10\xed\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpgip\x12*\n" +
+	"\x10GcpGlobalAddress\x10\xed\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpgip\x12'\n" +
+	"\x10GcpRedisInstance\x10\xf7\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpred\x12*\n" +
 	"\x12GcpBigQueryDataset\x10\x8a\x05\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpbqds\x12%\n" +
 	"\x0eGcpPubSubTopic\x10\x94\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcppst\x12,\n" +
 	"\x15GcpPubSubSubscription\x10\x95\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcppss\x12#\n" +

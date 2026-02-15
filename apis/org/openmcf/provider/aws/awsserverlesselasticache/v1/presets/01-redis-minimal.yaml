@@ -1,0 +1,10 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsServerlessElasticache
+metadata:
+  name: ${name}
+  org: ${org}
+  env: ${env}
+  id: ${name}-${env}
+spec:
+  engine: redis
+  majorEngineVersion: "7"

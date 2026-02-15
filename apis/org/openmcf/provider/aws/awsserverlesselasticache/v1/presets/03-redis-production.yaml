@@ -1,0 +1,41 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsServerlessElasticache
+metadata:
+  name: ${name}
+  org: ${org}
+  env: prod
+  id: ${name}-prod
+spec:
+  engine: redis
+  majorEngineVersion: "7"
+  description: Production Redis cache with encryption, snapshots, and access control
+  dataStorageMinGb: 5
+  dataStorageMaxGb: 200
+  ecpuMin: 5000
+  ecpuMax: 500000
+  kmsKeyId:
+    valueFrom:
+      kind: AwsKmsKey
+      name: ${kms_key_name}
+      fieldPath: status.outputs.key_arn
+  subnetIds:
+    - valueFrom:
+        kind: AwsVpc
+        name: ${vpc_name}
+        fieldPath: status.outputs.private_subnets.[0].id
+    - valueFrom:
+        kind: AwsVpc
+        name: ${vpc_name}
+        fieldPath: status.outputs.private_subnets.[1].id
+    - valueFrom:
+        kind: AwsVpc
+        name: ${vpc_name}
+        fieldPath: status.outputs.private_subnets.[2].id
+  securityGroupIds:
+    - valueFrom:
+        kind: AwsSecurityGroup
+        name: ${sg_name}
+        fieldPath: status.outputs.security_group_id
+  dailySnapshotTime: "03:00"
+  snapshotRetentionLimit: 14
+  userGroupId: ${user_group_id}
