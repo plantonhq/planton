@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsopensearchdomain.v1;
+
+// AwsOpenSearchDomainStackOutputs captures observable identifiers and endpoints
+// from a provisioned OpenSearch Service domain. These outputs are used by
+// downstream resources to wire dependencies via StringValueOrRef.
+message AwsOpenSearchDomainStackOutputs {
+  // The unique identifier assigned to the domain by AWS.
+  string domain_id = 1;
+
+  // The name of the domain. Matches the name derived from metadata.
+  string domain_name = 2;
+
+  // The Amazon Resource Name of the domain. Used in IAM policies, cross-service
+  // permissions, and as a reference in other AWS resources.
+  string domain_arn = 3;
+
+  // The domain-specific endpoint for submitting index, search, and data upload
+  // requests. For VPC domains, this is a VPC endpoint. For public domains, this
+  // is an internet-accessible endpoint.
+  // Format: "search-{domain-name}-{id}.{region}.es.amazonaws.com" (no https://).
+  string endpoint = 4;
+
+  // The endpoint for OpenSearch Dashboards (the visualization and management UI).
+  // Format: endpoint + "/_dashboards".
+  string dashboard_endpoint = 5;
+}

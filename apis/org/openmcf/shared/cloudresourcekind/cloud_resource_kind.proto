@@ -231,6 +231,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "awsredis"
   }];
+  AwsOpenSearchDomain = 251 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsos"
+  }];
   AwsMemcachedElasticache = 252 [(kind_meta) = {
     provider: aws
     version: v1
@@ -527,6 +532,11 @@ enum CloudResourceKind {
     provider: gcp
     version: v1
     id_prefix: "gcpred"
+  }];
+  GcpMemorystoreInstance = 636 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpmsi"
   }];
   GcpBigQueryDataset = 650 [(kind_meta) = {
     provider: gcp

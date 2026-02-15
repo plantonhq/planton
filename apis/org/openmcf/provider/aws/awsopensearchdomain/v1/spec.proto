@@ -1,0 +1,548 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsopensearchdomain.v1;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/struct.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// AwsOpenSearchDomainSpec defines the desired configuration for an Amazon
+// OpenSearch Service domain (successor to Amazon Elasticsearch Service).
+//
+// OpenSearch provides managed search, analytics, and observability capabilities.
+// A domain consists of data nodes (required), optional dedicated master nodes for
+// cluster management, optional UltraWarm nodes for infrequently accessed data,
+// and optional cold storage backed by S3.
+//
+// Deployment models:
+// - **Public** (no vpc_options) — accessible over the internet, secured via access
+//   policies and optionally fine-grained access control (FGAC).
+// - **VPC** (vpc_options set) — deployed into VPC subnets, secured via security
+//   groups and access policies. VPC configuration is ForceNew — changing it
+//   destroys and recreates the domain.
+//
+// Notes:
+// - `encrypt_at_rest` KMS key is ForceNew — choose the encryption key carefully upfront.
+// - `advanced_security_options.enabled` cannot be disabled once turned on (ForceNew).
+// - Domain name must match `^[a-z][0-9a-z\-]{2,27}$` (3-28 chars, lowercase, hyphens).
+// - Engine version format: "OpenSearch_X.Y" or "Elasticsearch_X.Y".
+// - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+message AwsOpenSearchDomainSpec {
+  // ---------------------------------------------------------------------------
+  // Engine
+  // ---------------------------------------------------------------------------
+
+  // OpenSearch or Elasticsearch engine version. Format: "OpenSearch_X.Y" (e.g.,
+  // "OpenSearch_2.11") or "Elasticsearch_X.Y" (e.g., "Elasticsearch_7.10").
+  // Changing to an incompatible version forces domain recreation.
+  string engine_version = 1 [(buf.validate.field).required = true];
+
+  // ---------------------------------------------------------------------------
+  // Cluster configuration
+  // ---------------------------------------------------------------------------
+
+  // Cluster topology: data nodes, dedicated masters, zone awareness, warm/cold storage.
+  AwsOpenSearchDomainClusterConfig cluster_config = 2 [(buf.validate.field).required = true];
+
+  // ---------------------------------------------------------------------------
+  // EBS storage
+  // ---------------------------------------------------------------------------
+
+  // EBS volume configuration for data node storage. Required for most instance types
+  // (all except certain storage-optimized types that use instance storage).
+  AwsOpenSearchDomainEbsOptions ebs_options = 3 [(buf.validate.field).required = true];
+
+  // ---------------------------------------------------------------------------
+  // Encryption
+  // ---------------------------------------------------------------------------
+
+  // Enable encryption at rest for indices and automated snapshots. Uses the
+  // AWS-managed `aws/es` key unless `kms_key_id` is provided.
+  // ForceNew when disabling on older engine versions.
+  bool encrypt_at_rest_enabled = 4 [(org.openmcf.shared.options.recommended_default) = "true"];
+
+  // Customer-managed KMS key ARN or ID for at-rest encryption. ForceNew — the
+  // KMS key cannot be changed after domain creation.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 5 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // Enable TLS encryption for all traffic between nodes in the cluster.
+  // Strongly recommended for production.
+  bool node_to_node_encryption_enabled = 6 [(org.openmcf.shared.options.recommended_default) = "true"];
+
+  // ---------------------------------------------------------------------------
+  // Networking (VPC)
+  // ---------------------------------------------------------------------------
+
+  // VPC placement configuration. When provided, the domain is deployed into VPC
+  // subnets and is not publicly accessible. ForceNew — adding or removing VPC
+  // options destroys and recreates the domain.
+  AwsOpenSearchDomainVpcOptions vpc_options = 7;
+
+  // ---------------------------------------------------------------------------
+  // Domain endpoint
+  // ---------------------------------------------------------------------------
+
+  // HTTPS enforcement, TLS policy, and custom endpoint configuration.
+  AwsOpenSearchDomainEndpointOptions domain_endpoint_options = 8;
+
+  // ---------------------------------------------------------------------------
+  // Fine-grained access control (FGAC)
+  // ---------------------------------------------------------------------------
+
+  // Advanced security options enable fine-grained access control: internal user
+  // database, IAM-based authentication, and role-based index-level permissions.
+  // Once enabled, FGAC cannot be disabled (ForceNew).
+  AwsOpenSearchDomainAdvancedSecurityOptions advanced_security_options = 9;
+
+  // ---------------------------------------------------------------------------
+  // Log publishing
+  // ---------------------------------------------------------------------------
+
+  // Publish domain logs to CloudWatch Logs for monitoring and troubleshooting.
+  // Up to 4 configurations — one per log type (INDEX_SLOW_LOGS, SEARCH_SLOW_LOGS,
+  // ES_APPLICATION_LOGS, AUDIT_LOGS).
+  repeated AwsOpenSearchDomainLogPublishingOption log_publishing_options = 10;
+
+  // ---------------------------------------------------------------------------
+  // Access policies
+  // ---------------------------------------------------------------------------
+
+  // IAM-based access policy for the domain. Serialized to JSON by the IaC modules.
+  // Controls who can perform actions on the domain and its indices.
+  // For VPC domains, this works in conjunction with security groups.
+  // For public domains, this is the primary access control mechanism (unless FGAC is enabled).
+  google.protobuf.Struct access_policies = 11;
+
+  // ---------------------------------------------------------------------------
+  // Auto-Tune and maintenance
+  // ---------------------------------------------------------------------------
+
+  // Enable AWS Auto-Tune to automatically optimize JVM heap size, disk I/O,
+  // and other performance settings based on cluster metrics.
+  bool auto_tune_enabled = 12;
+
+  // Enable automatic service software updates. When true, AWS applies mandatory
+  // and optional service software updates during the off-peak window.
+  bool auto_software_update_enabled = 13;
+
+  // ---------------------------------------------------------------------------
+  // IP and advanced options
+  // ---------------------------------------------------------------------------
+
+  // IP address type for the domain. "ipv4" (default) or "dualstack" (IPv4 + IPv6).
+  // Changing from "dualstack" to "ipv4" forces domain recreation.
+  string ip_address_type = 14;
+
+  // Low-level key-value configuration options. Common options:
+  // - "rest.action.multi.allow_explicit_index": "true" (default)
+  // - "indices.fielddata.cache.size": percentage of heap
+  // - "indices.query.bool.max_clause_count": max boolean clauses
+  // Values must be strings.
+  map<string, string> advanced_options = 15;
+
+  // ---------------------------------------------------------------------------
+  // CEL validations (cross-field)
+  // ---------------------------------------------------------------------------
+
+  // Engine version format: must match OpenSearch_X.Y or Elasticsearch_X.Y
+  option (buf.validate.message).cel = {
+    id: "engine_version_format"
+    message: "engine_version must match 'OpenSearch_X.Y' or 'Elasticsearch_X.Y' format (e.g., 'OpenSearch_2.11', 'Elasticsearch_7.10')"
+    expression: "this.engine_version.matches('^(OpenSearch|Elasticsearch)_[0-9]+\\\\.[0-9]+$')"
+  };
+
+  // kms_key_id requires encrypt_at_rest_enabled.
+  option (buf.validate.message).cel = {
+    id: "kms_requires_encryption"
+    message: "kms_key_id requires encrypt_at_rest_enabled to be true"
+    expression: "!has(this.kms_key_id) || this.encrypt_at_rest_enabled"
+  };
+
+  // ip_address_type valid values.
+  option (buf.validate.message).cel = {
+    id: "ip_address_type_valid"
+    message: "ip_address_type must be 'ipv4' or 'dualstack' when set"
+    expression: "this.ip_address_type == '' || this.ip_address_type in ['ipv4', 'dualstack']"
+  };
+
+  // log_publishing_options: at most 4 entries.
+  option (buf.validate.message).cel = {
+    id: "log_options_max_four"
+    message: "at most 4 log publishing options are allowed (one per log_type)"
+    expression: "this.log_publishing_options.size() <= 4"
+  };
+
+  // AUDIT_LOGS requires advanced_security_options.enabled.
+  option (buf.validate.message).cel = {
+    id: "audit_logs_require_fgac"
+    message: "AUDIT_LOGS log type requires advanced_security_options to be enabled"
+    expression: "!this.log_publishing_options.exists(l, l.log_type == 'AUDIT_LOGS') || (has(this.advanced_security_options) && this.advanced_security_options.enabled)"
+  };
+}
+
+// AwsOpenSearchDomainClusterConfig defines the cluster topology including data
+// nodes, dedicated master nodes, zone awareness, and UltraWarm/cold storage tiers.
+message AwsOpenSearchDomainClusterConfig {
+  // ---------------------------------------------------------------------------
+  // Data nodes
+  // ---------------------------------------------------------------------------
+
+  // Instance type for data nodes. Uses the `.search` suffix.
+  // Examples: "t3.small.search" (dev), "r6g.large.search" (production),
+  // "r6g.2xlarge.search" (high-memory workloads).
+  string instance_type = 1 [(buf.validate.field).required = true];
+
+  // Number of data node instances. Default: 1.
+  // For zone-aware deployments, use a multiple of the availability zone count.
+  optional int32 instance_count = 2 [(org.openmcf.shared.options.default) = "1"];
+
+  // ---------------------------------------------------------------------------
+  // Dedicated master nodes
+  // ---------------------------------------------------------------------------
+
+  // Enable dedicated master nodes for cluster stability. Dedicated masters handle
+  // cluster management tasks (shard allocation, index state management) without
+  // competing with data node workloads. Recommended for production.
+  bool dedicated_master_enabled = 3;
+
+  // Instance type for dedicated master nodes. Does not need EBS storage.
+  // Example: "r6g.large.search". Only used when `dedicated_master_enabled` is true.
+  string dedicated_master_type = 4;
+
+  // Number of dedicated master nodes. AWS recommends 3 for production (provides
+  // quorum for split-brain protection). Only used when `dedicated_master_enabled` is true.
+  int32 dedicated_master_count = 5;
+
+  // ---------------------------------------------------------------------------
+  // Zone awareness
+  // ---------------------------------------------------------------------------
+
+  // Enable zone awareness to distribute data nodes and replicas across multiple
+  // Availability Zones for resilience against AZ-level failures.
+  bool zone_awareness_enabled = 6;
+
+  // Number of Availability Zones. Must be 2 or 3.
+  // Only used when `zone_awareness_enabled` is true.
+  int32 availability_zone_count = 7;
+
+  // ---------------------------------------------------------------------------
+  // UltraWarm storage
+  // ---------------------------------------------------------------------------
+
+  // Enable UltraWarm storage tier for infrequently accessed, read-only data.
+  // UltraWarm uses S3-backed storage at lower cost per GB than hot storage.
+  bool warm_enabled = 8;
+
+  // Instance type for UltraWarm nodes. Examples: "ultrawarm1.medium.search",
+  // "ultrawarm1.large.search". Only used when `warm_enabled` is true.
+  string warm_type = 9;
+
+  // Number of UltraWarm nodes. Range: 2-150.
+  // Only used when `warm_enabled` is true.
+  int32 warm_count = 10;
+
+  // ---------------------------------------------------------------------------
+  // Cold storage
+  // ---------------------------------------------------------------------------
+
+  // Enable cold storage backed by S3. Requires UltraWarm to be enabled.
+  // Cold storage provides the lowest-cost tier for data that is rarely queried.
+  bool cold_storage_enabled = 11;
+
+  // ---------------------------------------------------------------------------
+  // Multi-AZ with standby
+  // ---------------------------------------------------------------------------
+
+  // Enable Multi-AZ with Standby for 99.99% availability SLA. Deploys standby
+  // nodes in a different AZ that take over automatically during AZ failures.
+  // Requires 3 AZs and at least 3 data nodes.
+  bool multi_az_with_standby_enabled = 12;
+
+  // ---------------------------------------------------------------------------
+  // CEL validations
+  // ---------------------------------------------------------------------------
+
+  // dedicated_master_type requires dedicated_master_enabled.
+  option (buf.validate.message).cel = {
+    id: "master_type_requires_enabled"
+    message: "dedicated_master_type requires dedicated_master_enabled to be true"
+    expression: "this.dedicated_master_type == '' || this.dedicated_master_enabled"
+  };
+
+  // dedicated_master_count requires dedicated_master_enabled.
+  option (buf.validate.message).cel = {
+    id: "master_count_requires_enabled"
+    message: "dedicated_master_count requires dedicated_master_enabled to be true"
+    expression: "this.dedicated_master_count == 0 || this.dedicated_master_enabled"
+  };
+
+  // zone_awareness_config requires zone_awareness_enabled.
+  option (buf.validate.message).cel = {
+    id: "az_count_requires_zone_awareness"
+    message: "availability_zone_count requires zone_awareness_enabled to be true"
+    expression: "this.availability_zone_count == 0 || this.zone_awareness_enabled"
+  };
+
+  // availability_zone_count must be 2 or 3.
+  option (buf.validate.message).cel = {
+    id: "az_count_valid_values"
+    message: "availability_zone_count must be 2 or 3 when set"
+    expression: "this.availability_zone_count == 0 || this.availability_zone_count in [2, 3]"
+  };
+
+  // warm_type requires warm_enabled.
+  option (buf.validate.message).cel = {
+    id: "warm_type_requires_enabled"
+    message: "warm_type requires warm_enabled to be true"
+    expression: "this.warm_type == '' || this.warm_enabled"
+  };
+
+  // warm_count requires warm_enabled.
+  option (buf.validate.message).cel = {
+    id: "warm_count_requires_enabled"
+    message: "warm_count requires warm_enabled to be true"
+    expression: "this.warm_count == 0 || this.warm_enabled"
+  };
+
+  // warm_count range 2-150.
+  option (buf.validate.message).cel = {
+    id: "warm_count_range"
+    message: "warm_count must be between 2 and 150 when set"
+    expression: "this.warm_count == 0 || (this.warm_count >= 2 && this.warm_count <= 150)"
+  };
+
+  // cold_storage requires warm_enabled.
+  option (buf.validate.message).cel = {
+    id: "cold_requires_warm"
+    message: "cold_storage_enabled requires warm_enabled to be true (cold storage depends on UltraWarm)"
+    expression: "!this.cold_storage_enabled || this.warm_enabled"
+  };
+}
+
+// AwsOpenSearchDomainEbsOptions defines EBS volume configuration for data node storage.
+message AwsOpenSearchDomainEbsOptions {
+  // Whether EBS volumes are attached to data nodes. Required for most instance
+  // types. Only storage-optimized instances (e.g., i3) use instance storage.
+  bool ebs_enabled = 1;
+
+  // EBS volume type. "gp3" (recommended), "gp2", "io1", or "standard".
+  // gp3 provides predictable performance with configurable IOPS and throughput.
+  string volume_type = 2;
+
+  // Size of each EBS volume in GB. The total storage is volume_size * instance_count.
+  int32 volume_size = 3;
+
+  // Provisioned IOPS for the volume. Only valid for "gp3" and "io1" volume types.
+  // gp3 baseline: 3000 IOPS. io1: specify based on workload.
+  int32 iops = 4;
+
+  // Provisioned throughput in MiB/s. Only valid for "gp3" volume type.
+  // Minimum: 125 MiB/s. gp3 baseline: 125 MiB/s.
+  int32 throughput = 5;
+
+  // ---------------------------------------------------------------------------
+  // CEL validations
+  // ---------------------------------------------------------------------------
+
+  // volume_type, volume_size require ebs_enabled.
+  option (buf.validate.message).cel = {
+    id: "ebs_fields_require_enabled"
+    message: "volume_type, volume_size, iops, and throughput require ebs_enabled to be true"
+    expression: "(this.volume_type == '' && this.volume_size == 0 && this.iops == 0 && this.throughput == 0) || this.ebs_enabled"
+  };
+
+  // volume_type valid values.
+  option (buf.validate.message).cel = {
+    id: "volume_type_valid"
+    message: "volume_type must be 'gp3', 'gp2', 'io1', or 'standard' when set"
+    expression: "this.volume_type == '' || this.volume_type in ['gp3', 'gp2', 'io1', 'standard']"
+  };
+
+  // iops requires gp3 or io1.
+  option (buf.validate.message).cel = {
+    id: "iops_requires_volume_type"
+    message: "iops is only valid for 'gp3' or 'io1' volume types"
+    expression: "this.iops == 0 || this.volume_type in ['gp3', 'io1']"
+  };
+
+  // throughput requires gp3.
+  option (buf.validate.message).cel = {
+    id: "throughput_requires_gp3"
+    message: "throughput is only valid for 'gp3' volume type"
+    expression: "this.throughput == 0 || this.volume_type == 'gp3'"
+  };
+
+  // throughput minimum 125.
+  option (buf.validate.message).cel = {
+    id: "throughput_minimum"
+    message: "throughput must be at least 125 MiB/s when set"
+    expression: "this.throughput == 0 || this.throughput >= 125"
+  };
+}
+
+// AwsOpenSearchDomainVpcOptions defines VPC placement for the domain.
+// When configured, the domain is not publicly accessible and instead uses
+// VPC endpoints for traffic. VPC configuration is ForceNew.
+message AwsOpenSearchDomainVpcOptions {
+  // Subnet IDs where OpenSearch deploys ENIs. For zone-aware domains, provide
+  // subnets in 2 or 3 AZs matching the cluster's availability_zone_count.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 1 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+  ];
+
+  // Security group IDs controlling inbound/outbound traffic to the domain.
+  // Must allow HTTPS (port 443) from clients that need to access OpenSearch.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 2 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+}
+
+// AwsOpenSearchDomainEndpointOptions configures the domain's HTTPS behavior,
+// TLS policy, and optional custom endpoint.
+message AwsOpenSearchDomainEndpointOptions {
+  // Require HTTPS for all traffic to the domain endpoint. Default: true.
+  // Strongly recommended for all environments.
+  optional bool enforce_https = 1 [(org.openmcf.shared.options.default) = "true"];
+
+  // TLS security policy for the HTTPS endpoint. Controls the minimum TLS version
+  // and cipher suites. Example: "Policy-Min-TLS-1-2-PFS-2023-10" (recommended).
+  // Leave empty for the provider default.
+  string tls_security_policy = 2;
+
+  // Enable a custom domain endpoint (e.g., "search.example.com") instead of the
+  // AWS-generated endpoint.
+  bool custom_endpoint_enabled = 3;
+
+  // The fully qualified domain name for the custom endpoint.
+  // Only used when `custom_endpoint_enabled` is true.
+  string custom_endpoint = 4;
+
+  // ACM certificate ARN for the custom endpoint. Must be a valid certificate
+  // covering the custom_endpoint FQDN.
+  // Only used when `custom_endpoint_enabled` is true.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef custom_endpoint_certificate_arn = 5 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsCertManagerCert,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.certificate_arn"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // CEL validations
+  // ---------------------------------------------------------------------------
+
+  // custom_endpoint requires custom_endpoint_enabled.
+  option (buf.validate.message).cel = {
+    id: "custom_endpoint_requires_enabled"
+    message: "custom_endpoint requires custom_endpoint_enabled to be true"
+    expression: "this.custom_endpoint == '' || this.custom_endpoint_enabled"
+  };
+
+  // certificate_arn requires custom_endpoint_enabled.
+  option (buf.validate.message).cel = {
+    id: "cert_requires_custom_enabled"
+    message: "custom_endpoint_certificate_arn requires custom_endpoint_enabled to be true"
+    expression: "!has(this.custom_endpoint_certificate_arn) || this.custom_endpoint_enabled"
+  };
+}
+
+// AwsOpenSearchDomainAdvancedSecurityOptions configures fine-grained access control
+// (FGAC) for the domain. FGAC enables internal user database authentication,
+// IAM-based authentication, and role-based index-level permissions.
+//
+// Once enabled, FGAC cannot be disabled without recreating the domain.
+message AwsOpenSearchDomainAdvancedSecurityOptions {
+  // Enable fine-grained access control. ForceNew if disabling (cannot disable
+  // once enabled without domain recreation).
+  bool enabled = 1;
+
+  // Enable the internal user database. When true, you can create users and roles
+  // directly in OpenSearch Dashboards. When false, use IAM or SAML for authentication.
+  bool internal_user_database_enabled = 2;
+
+  // IAM entity ARN (user or role) designated as the master user. The master user
+  // has full access to the cluster, indices, and OpenSearch Dashboards.
+  // Mutually exclusive with master_user_name/master_user_password.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef master_user_arn = 3;
+
+  // Username for the internal user database master user.
+  // Mutually exclusive with master_user_arn.
+  string master_user_name = 4;
+
+  // Password for the internal user database master user. Must be at least 8
+  // characters with uppercase, lowercase, digit, and special character.
+  // Mutually exclusive with master_user_arn.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef master_user_password = 5;
+
+  // ---------------------------------------------------------------------------
+  // CEL validations
+  // ---------------------------------------------------------------------------
+
+  // internal_user_database_enabled requires enabled.
+  option (buf.validate.message).cel = {
+    id: "internal_db_requires_fgac"
+    message: "internal_user_database_enabled requires advanced security (enabled) to be true"
+    expression: "!this.internal_user_database_enabled || this.enabled"
+  };
+
+  // master_user_arn and master_user_name are mutually exclusive.
+  option (buf.validate.message).cel = {
+    id: "master_user_mutual_exclusion"
+    message: "master_user_arn and master_user_name/master_user_password are mutually exclusive; use IAM-based OR internal user database authentication, not both"
+    expression: "!(has(this.master_user_arn) && this.master_user_name != '')"
+  };
+
+  // When enabled, at least one master user method must be configured.
+  option (buf.validate.message).cel = {
+    id: "master_user_required_when_enabled"
+    message: "when advanced security is enabled, provide either master_user_arn (IAM) or master_user_name + master_user_password (internal user database)"
+    expression: "!this.enabled || has(this.master_user_arn) || this.master_user_name != ''"
+  };
+
+  // master_user_password requires master_user_name.
+  option (buf.validate.message).cel = {
+    id: "password_requires_username"
+    message: "master_user_password requires master_user_name to be set"
+    expression: "!has(this.master_user_password) || this.master_user_name != ''"
+  };
+
+  // master_user_name requires enabled.
+  option (buf.validate.message).cel = {
+    id: "master_user_name_requires_fgac"
+    message: "master_user_name requires advanced security (enabled) to be true"
+    expression: "this.master_user_name == '' || this.enabled"
+  };
+}
+
+// AwsOpenSearchDomainLogPublishingOption configures delivery of a specific log type
+// to a CloudWatch Logs log group for monitoring, troubleshooting, and auditing.
+message AwsOpenSearchDomainLogPublishingOption {
+  // Type of log to publish. Values:
+  // - "INDEX_SLOW_LOGS" — indexing operations exceeding the slow log threshold
+  // - "SEARCH_SLOW_LOGS" — search queries exceeding the slow log threshold
+  // - "ES_APPLICATION_LOGS" — OpenSearch application and error logs
+  // - "AUDIT_LOGS" — fine-grained access control audit trail (requires FGAC enabled)
+  string log_type = 1 [(buf.validate.field).required = true];
+
+  // CloudWatch Logs log group ARN where logs are published.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef cloudwatch_log_group_arn = 2 [(buf.validate.field).required = true];
+
+  // Whether this log publishing option is active. Default: true.
+  // Set to false to temporarily disable publishing without removing the configuration.
+  optional bool enabled = 3 [(org.openmcf.shared.options.default) = "true"];
+
+  // ---------------------------------------------------------------------------
+  // CEL validations
+  // ---------------------------------------------------------------------------
+
+  // log_type valid values.
+  option (buf.validate.message).cel = {
+    id: "log_type_valid"
+    message: "log_type must be 'INDEX_SLOW_LOGS', 'SEARCH_SLOW_LOGS', 'ES_APPLICATION_LOGS', or 'AUDIT_LOGS'"
+    expression: "this.log_type in ['INDEX_SLOW_LOGS', 'SEARCH_SLOW_LOGS', 'ES_APPLICATION_LOGS', 'AUDIT_LOGS']"
+  };
+}

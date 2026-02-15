@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsopensearchdomain.v1;
+
+import "org/openmcf/provider/aws/awsopensearchdomain/v1/api.proto";
+import "org/openmcf/provider/aws/provider.proto";
+
+// aws-opensearch-domain stack-input
+message AwsOpenSearchDomainStackInput {
+  // target cloud-resource
+  AwsOpenSearchDomain target = 1;
+  // provider-credential
+  org.openmcf.provider.aws.AwsProviderConfig provider_config = 2;
+}
