@@ -59,8 +59,8 @@ Updated `scanProvider()` in `site/scripts/copy-component-docs.ts` to check for `
 
 Created two rules in `_rules/docs/`:
 
-- **write-catalog-page.mdc** — Comprehensive guide for writing new catalog pages. Includes the documentation writer persona, section-by-section content guidelines, source code reading order, formatting rules, anti-patterns, and the 6-point verification protocol.
-- **audit-catalog-page.mdc** — 8-step audit procedure for verifying existing catalog pages. Covers structural checks, field verification against proto definitions, manifest validation, tone auditing, boundary checks, and formatting consistency.
+- **write-openmcf-component-catalog-page.mdc** — Comprehensive guide for writing new catalog pages. Includes the documentation writer persona, section-by-section content guidelines, source code reading order, formatting rules, anti-patterns, and the 6-point verification protocol.
+- **audit-openmcf-component-catalog-page.mdc** — 8-step audit procedure for verifying existing catalog pages. Covers structural checks, field verification against proto definitions, manifest validation, tone auditing, boundary checks, and formatting consistency.
 
 ### 5 Exemplar Catalog Pages
 

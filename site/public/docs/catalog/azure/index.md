@@ -16,6 +16,7 @@ The following AZURE resources can be deployed using OpenMCF:
 - [AzureContainerApp: Research & Design Documentation](/docs/catalog/azure/azurecontainerapp-research-design-documentation)
 - [AzureContainerAppEnvironment: Research & Design Documentation](/docs/catalog/azure/azurecontainerappenvironment-research-design-documentation)
 - [AzureFunctionApp: Research & Design Documentation](/docs/catalog/azure/azurefunctionapp-research-design-documentation)
+- [AzureLinuxWebApp: Research & Design Documentation](/docs/catalog/azure/azurelinuxwebapp-research-design-documentation)
 - [AzureRedisCache: Deployment Landscape & Design Research](/docs/catalog/azure/azurerediscache-deployment-landscape-design-research)
 - [AzureServicePlan: Research & Design Documentation](/docs/catalog/azure/azureserviceplan-research-design-documentation)
 - [Container Registry](/docs/catalog/azure/container-registry)

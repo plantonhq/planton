@@ -13,7 +13,6 @@ When you deploy a GcpGlobalAddress resource, OpenMCF provisions:
 
 - **GCP credentials** configured via environment variables or OpenMCF provider config
 - **An existing GCP project** — referenced via `projectId`
-- **Compute Engine API enabled** (`compute.googleapis.com`) on the target project
 - **An existing VPC network** — required only for INTERNAL addresses, referenced via `network`
 - **IAM permissions** — `roles/compute.networkAdmin` or equivalent on the target project
 
@@ -170,8 +169,8 @@ After deployment, the following outputs are available in `status.outputs`:
 | Output | Type | Description |
 |--------|------|-------------|
 | `address` | `string` | The reserved IP address. For EXTERNAL, this is a public IP (e.g., `34.120.1.2`). For INTERNAL VPC_PEERING, this is the first IP in the reserved range. |
-| `selfLink` | `string` | Full self-link URL of the global address (e.g., `projects/my-project/global/addresses/prod-lb-ip`). Used to reference this address in forwarding rules. |
-| `creationTimestamp` | `string` | RFC 3339 timestamp of when the address was created. |
+| `self_link` | `string` | Full self-link URL of the global address (e.g., `projects/my-project/global/addresses/prod-lb-ip`). Used to reference this address in forwarding rules. |
+| `creation_timestamp` | `string` | RFC 3339 timestamp of when the address was created. |
 
 ## Related Components
 
@@ -179,5 +178,4 @@ After deployment, the following outputs are available in `status.outputs`:
 - [GcpVpc](/docs/catalog/gcp/gcpvpc) — provides the VPC network for internal address reservations and can enable Private Services Access
 - [GcpCloudCdn](/docs/catalog/gcp/gcpcloudcdn) — uses an external global address as the frontend IP for CDN-enabled load balancers
 - [GcpCloudSql](/docs/catalog/gcp/gcpcloudsql) — uses a VPC_PEERING range for private IP connectivity to database instances
-- [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — GKE clusters benefit from private service networking enabled by VPC peering ranges
 - [GcpCertManagerCert](/docs/catalog/gcp/gcpcertmanagercert) — provisions managed SSL certificates that attach to the same load balancer using this IP

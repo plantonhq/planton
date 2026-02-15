@@ -55,6 +55,8 @@ Deploy:
 openmcf apply -f firewall.yaml
 ```
 
+This creates an INGRESS firewall rule that allows HTTP and HTTPS traffic from any source to instances tagged `web-server` in the `my-vpc` network.
+
 ## Configuration Reference
 
 ### Required Fields
@@ -67,6 +69,8 @@ openmcf apply -f firewall.yaml
 | `direction` | `string` | Traffic direction: `INGRESS` or `EGRESS`. | Required |
 | `action` | `string` | Action when traffic matches: `ALLOW` or `DENY`. | Required |
 | `rules` | `GcpFirewallProtocolPort[]` | Protocol and port combinations to match. | Min 1 item |
+| `rules[].protocol` | `string` | IP protocol: `tcp`, `udp`, `icmp`, `esp`, `ah`, `sctp`, `ipip`, `all`, or an IANA protocol number. | Required |
+| `rules[].ports` | `string[]` | Ports or port ranges (e.g., `"80"`, `"8000-9000"`). Only applicable for `tcp` or `udp`. Omit for other protocols. | — |
 
 ### Optional Fields
 
@@ -179,9 +183,9 @@ After deployment, the following outputs are available in `status.outputs`:
 
 | Output | Type | Description |
 |--------|------|-------------|
-| `firewallSelfLink` | `string` | Full self-link URI of the firewall rule (e.g., `projects/my-project/global/firewalls/allow-http-https`) |
-| `firewallName` | `string` | Name of the firewall rule as it exists in GCP |
-| `creationTimestamp` | `string` | RFC 3339 timestamp of when the firewall rule was created |
+| `firewall_self_link` | `string` | Full self-link URI of the firewall rule (e.g., `projects/my-project/global/firewalls/allow-http-https`) |
+| `firewall_name` | `string` | Name of the firewall rule as it exists in GCP |
+| `creation_timestamp` | `string` | RFC 3339 timestamp of when the firewall rule was created |
 
 ## Related Components
 

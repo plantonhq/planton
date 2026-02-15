@@ -80,7 +80,7 @@ Each page was verified against the 6-point protocol:
 
 ## Related Work
 
-- [Catalog Page Rewrite System](2026-02-13-150154-catalog-page-rewrite-system.md) -- established the 9-section standard and `write-catalog-page` rule
+- [Catalog Page Rewrite System](2026-02-13-150154-catalog-page-rewrite-system.md) -- established the 9-section standard and `write-openmcf-component-catalog-page` rule
 - [Catalog Page Expansion](2026-02-13-154844-catalog-page-expansion-across-all-providers.md) -- wrote the initial 2 DigitalOcean exemplar pages
 - [OpenStack Catalog Pages](2026-02-14-openstack-catalog-pages-complete-provider-coverage.md) -- previous provider to reach 100%
 

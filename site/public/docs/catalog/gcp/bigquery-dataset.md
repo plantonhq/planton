@@ -1,75 +1,224 @@
 ---
 title: "BigQuery Dataset"
-description: "Deploy GCP BigQuery datasets using OpenMCF"
+description: "BigQuery Dataset deployment documentation"
+icon: "package"
+order: 100
+componentName: "gcpbigquerydataset"
 ---
 
-# GcpBigQueryDataset
+# GCP BigQuery Dataset
 
-Provision and manage BigQuery datasets -- the top-level container for tables,
-views, and routines in Google BigQuery, with location control, access management,
-encryption, and lifecycle policies.
+Deploys a GCP BigQuery dataset with configurable data location, table lifecycle defaults, access control, and optional CMEK encryption. The dataset serves as the top-level container for tables, views, and routines in BigQuery.
 
-## Overview
+## What Gets Created
 
-GcpBigQueryDataset creates a BigQuery dataset within a GCP project. Datasets
-control where data lives (location), who can access it (access entries), how
-it's encrypted (Google-managed or CMEK), and how long tables and partitions
-are retained. Tables within a dataset are managed by application code or tools
-like dbt -- this resource focuses on the infrastructure boundary.
+When you deploy a GcpBigQueryDataset resource, OpenMCF provisions:
+
+- **BigQuery Dataset** — a `google_bigquery_dataset` resource in the specified project and location, tagged with organization, environment, and resource labels
+- **Access Control Entries** — if the `access` field is provided, an authoritative set of IAM bindings granting roles to users, groups, domains, special groups, IAM members, or authorized views
+- **CMEK Encryption Configuration** — if `kmsKeyName` is provided, all new tables in the dataset default to encryption with the specified Cloud KMS key
+
+## Prerequisites
+
+- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **A GCP project** where the dataset will be created
+- **A Cloud KMS key** if enabling customer-managed encryption (optional)
+- **BigQuery API** enabled in the target project
 
 ## Quick Start
+
+Create a file `bigquery-dataset.yaml`:
 
 ```yaml
 apiVersion: gcp.openmcf.org/v1
 kind: GcpBigQueryDataset
 metadata:
-  name: my-analytics-dataset
+  name: my-dataset
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.GcpBigQueryDataset.my-dataset
 spec:
-  projectId:
-    value: "my-gcp-project"
-  datasetId: analytics_prod
+  projectId: my-gcp-project
+  datasetId: analytics_events
   location: US
 ```
 
-## Configuration
+Deploy:
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `projectId` | StringValueOrRef | Yes | GCP project ID |
-| `datasetId` | string | Yes | Dataset ID (letters, numbers, underscores) |
-| `location` | string | Yes | Multi-regional (US, EU) or regional |
-| `friendlyName` | string | No | Display name |
-| `description` | string | No | Description |
-| `defaultTableExpirationMs` | int64 | No | Auto-delete tables after N ms (min 3600000) |
-| `defaultPartitionExpirationMs` | int64 | No | Auto-delete partitions after N ms |
-| `maxTimeTravelHours` | int32 | No | 48-168 hours (default: 168) |
-| `isCaseInsensitive` | bool | No | Case-insensitive names (immutable) |
-| `defaultCollation` | string | No | "und:ci" for case-insensitive |
-| `storageBillingModel` | string | No | LOGICAL (default) or PHYSICAL |
-| `deleteContentsOnDestroy` | bool | No | Delete tables on destroy (default: false) |
-| `kmsKeyName` | StringValueOrRef | No | CMEK encryption key |
-| `access` | list | No | Access control entries (authoritative) |
+```shell
+openmcf apply -f bigquery-dataset.yaml
+```
 
-## Outputs
+This creates a BigQuery dataset named `analytics_events` in the `US` multi-region with default access (project owners = OWNER, project editors = WRITER, project viewers = READER).
 
-| Output | Description |
-|--------|-------------|
-| `dataset_id` | Short dataset ID for SQL queries |
-| `self_link` | Fully qualified dataset URI |
-| `project` | GCP project containing the dataset |
-| `creation_time` | Creation timestamp (ms since epoch) |
+## Configuration Reference
 
-## Important
+### Required Fields
 
-**Access is authoritative.** When you specify `access`, BigQuery removes entries
-not in your spec. Omitting `access` preserves default project-level access.
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `projectId` | `StringValueOrRef` | GCP project where the dataset will be created. Can reference a GcpProject resource via `valueFrom`. | Required |
+| `datasetId` | `string` | Unique identifier for the dataset within the project. Only letters, numbers, and underscores. Immutable after creation. | Required; pattern `^[0-9A-Za-z_]+$`; max 1024 chars |
+| `location` | `string` | Geographic location where the dataset resides (e.g., `US`, `EU`, `us-central1`). Immutable after creation. | Required |
 
-**Dataset ID cannot contain hyphens.** Only letters, numbers, and underscores.
+### Optional Fields
 
-**Location is immutable.** Choose carefully -- changing requires destroy and recreate.
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `friendlyName` | `string` | — | User-friendly display name for the dataset. |
+| `description` | `string` | — | Description of the dataset's contents or purpose. |
+| `defaultTableExpirationMs` | `int64` | `0` (no expiration) | Default lifetime for tables in the dataset, in milliseconds. Minimum 3600000 (1 hour). |
+| `defaultPartitionExpirationMs` | `int64` | `0` (no expiration) | Default expiration for partitions in partitioned tables, in milliseconds. |
+| `maxTimeTravelHours` | `int32` | `168` (7 days) | Hours of time travel for point-in-time snapshots. Range: 48–168. Lower values reduce storage costs. |
+| `isCaseInsensitive` | `bool` | `false` | When `true`, dataset and table names are case-insensitive. Immutable after creation. |
+| `defaultCollation` | `string` | — | Default collation for string columns in new tables. Use `und:ci` for case-insensitive collation. |
+| `storageBillingModel` | `string` | `LOGICAL` | Billing model: `LOGICAL` (uncompressed bytes) or `PHYSICAL` (compressed bytes, can reduce costs 60–80%). |
+| `deleteContentsOnDestroy` | `bool` | `false` | When `true`, all tables are deleted when the dataset is destroyed. When `false`, destroy fails if the dataset contains tables. |
+| `kmsKeyName` | `StringValueOrRef` | — | Cloud KMS key for default table encryption (CMEK). Format: `projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{key}`. Can reference a GcpKmsKey resource via `valueFrom`. |
+| `access` | `GcpBigQueryDatasetAccessEntry[]` | Default project access | Authoritative access control entries. Entries not listed here are removed. See access entry fields below. |
+| `access[].role` | `string` | — | IAM role to grant (e.g., `OWNER`, `WRITER`, `READER`, `roles/bigquery.dataViewer`). Required unless `view` is set. |
+| `access[].userByEmail` | `string` | — | Email address of a Google Account. |
+| `access[].groupByEmail` | `string` | — | Email address of a Google Group. |
+| `access[].domain` | `string` | — | Domain to grant access to (e.g., `example.com`). |
+| `access[].specialGroup` | `string` | — | Special group: `projectOwners`, `projectReaders`, `projectWriters`, or `allAuthenticatedUsers`. |
+| `access[].iamMember` | `string` | — | IAM member expression (e.g., `serviceAccount:sa@project.iam.gserviceaccount.com`). |
+| `access[].view.projectId` | `string` | — | GCP project containing the authorized view. |
+| `access[].view.datasetId` | `string` | — | Dataset containing the authorized view. |
+| `access[].view.tableId` | `string` | — | Table ID of the authorized view. |
 
-## Related
+## Examples
 
-- [GcpKmsKey](/docs/catalog/gcp/kms-key) -- CMEK encryption key
-- [GcpProject](/docs/catalog/gcp/project) -- Parent GCP project
-- [GcpGcsBucket](/docs/catalog/gcp/gcs-bucket) -- Often paired for data lake patterns
+### Dataset with Table Expiration
+
+Automatically delete tables after 90 days, useful for staging or transient data:
+
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpBigQueryDataset
+metadata:
+  name: staging-events
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: staging.GcpBigQueryDataset.staging-events
+spec:
+  projectId: my-gcp-project
+  datasetId: staging_events
+  location: us-central1
+  friendlyName: Staging Events
+  description: Transient event data with 90-day auto-expiration
+  defaultTableExpirationMs: 7776000000
+  maxTimeTravelHours: 48
+  deleteContentsOnDestroy: true
+```
+
+### Dataset with CMEK Encryption and Physical Billing
+
+Production dataset using customer-managed encryption and physical storage billing for cost optimization:
+
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpBigQueryDataset
+metadata:
+  name: prod-analytics
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpBigQueryDataset.prod-analytics
+spec:
+  projectId: my-gcp-project
+  datasetId: prod_analytics
+  location: US
+  friendlyName: Production Analytics
+  description: Core analytics dataset with CMEK and physical billing
+  storageBillingModel: PHYSICAL
+  kmsKeyName: projects/my-gcp-project/locations/us/keyRings/analytics-ring/cryptoKeys/analytics-key
+```
+
+### Dataset with Explicit Access Control
+
+Grant access to specific users, groups, and an authorized view:
+
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpBigQueryDataset
+metadata:
+  name: finance-data
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpBigQueryDataset.finance-data
+spec:
+  projectId: my-gcp-project
+  datasetId: finance_data
+  location: EU
+  friendlyName: Finance Data
+  description: Restricted financial data with explicit access grants
+  isCaseInsensitive: true
+  defaultCollation: "und:ci"
+  access:
+    - role: OWNER
+      userByEmail: data-owner@example.com
+    - role: WRITER
+      groupByEmail: data-engineers@example.com
+    - role: READER
+      groupByEmail: analysts@example.com
+    - role: READER
+      iamMember: "serviceAccount:etl-pipeline@my-gcp-project.iam.gserviceaccount.com"
+    - view:
+        projectId: my-gcp-project
+        datasetId: reporting_views
+        tableId: finance_summary
+```
+
+### Using Foreign Key References
+
+Reference other OpenMCF-managed resources instead of hardcoding values:
+
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpBigQueryDataset
+metadata:
+  name: ref-dataset
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpBigQueryDataset.ref-dataset
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpProject
+      name: my-project
+      field: status.outputs.project_id
+  datasetId: warehouse
+  location: us-central1
+  kmsKeyName:
+    valueFrom:
+      kind: GcpKmsKey
+      name: warehouse-key
+      field: status.outputs.key_id
+```
+
+## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `dataset_id` | `string` | The short dataset ID (same as the spec's `datasetId` input), used in BigQuery SQL queries and API calls |
+| `self_link` | `string` | Fully qualified URI of the dataset (e.g., `https://bigquery.googleapis.com/bigquery/v2/projects/{project}/datasets/{dataset}`) |
+| `project` | `string` | The GCP project that contains this dataset |
+| `creation_time` | `int64` | Creation time of the dataset in milliseconds since epoch |
+
+## Related Components
+
+- [GcpCloudDnsZone](/docs/catalog/gcp/gcpclouddnszone) — manages DNS zones in the same project
+- [GcpKmsKeyRing](/docs/catalog/gcp/kms-key-ring) — provides the key ring containing KMS keys for CMEK encryption
+- [GcpKmsKey](/docs/catalog/gcp/kms-key) — provides the Cloud KMS encryption key referenced by `kmsKeyName`
+- [GcpIamServiceAccount](/docs/catalog/gcp/gcpiamserviceaccount) — creates service accounts that can be granted dataset access

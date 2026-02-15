@@ -216,5 +216,5 @@ After deployment, the following outputs are available in `status.outputs`:
 - [AzureResourceGroup](/docs/catalog/azure/resource-group) -- provides the resource group for Application Insights placement
 - [AzureLogAnalyticsWorkspace](/docs/catalog/azure/log-analytics-workspace) -- provides the workspace for storing telemetry data
 - [AzureFunctionApp](/docs/catalog/azure/azurefunctionapp-research-design-documentation) -- references the connection string for APM telemetry
-- [AzureLinuxWebApp](/docs/catalog/azure/azurelinuxwebapp) -- references the connection string for APM telemetry
+- [AzureLinuxWebApp](/docs/catalog/azure/azurelinuxwebapp-research-design-documentation) -- references the connection string for APM telemetry
 - [AzureContainerApp](/docs/catalog/azure/azurecontainerapp-research-design-documentation) -- references the connection string for APM telemetry

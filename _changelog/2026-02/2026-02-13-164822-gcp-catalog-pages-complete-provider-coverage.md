@@ -51,7 +51,7 @@ The GCP provider had 19 deployment components but only 3 hand-written catalog pa
 
 ### Execution Approach
 
-4 rounds of 4 parallel agents, each following the `write-catalog-page.mdc` Cursor rule:
+4 rounds of 4 parallel agents, each following the `write-openmcf-component-catalog-page.mdc` Cursor rule:
 
 1. Read source files: `api.proto`, `spec.proto`, `stack_outputs.proto`, `iac/pulumi/module/*.go`
 2. Write 9-section catalog page with all fields from proto, all resources from module
@@ -91,7 +91,7 @@ The 16 new pages cover a wide range of component complexity:
 
 - Developers evaluating OpenMCF for GCP infrastructure now see consistent, high-quality documentation across all 19 components
 - The GCP catalog pages establish patterns for networking (VPC/subnet/NAT), identity (service accounts/Workload Identity), and platform (projects/APIs) that will be referenced by other provider pages
-- The catalog page coverage milestone (2 providers at 100%) demonstrates the scalability of the `write-catalog-page.mdc` system
+- The catalog page coverage milestone (2 providers at 100%) demonstrates the scalability of the `write-openmcf-component-catalog-page.mdc` system
 
 ## Related Work
 

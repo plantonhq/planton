@@ -1,59 +1,91 @@
-# GcpKmsKey
+# GCP KMS Key
 
-Provision and manage Cloud KMS cryptographic keys for customer-managed encryption,
-digital signing, and message authentication across GCP services.
+Deploys a Cloud KMS cryptographic key within an existing key ring for customer-managed encryption (CMEK), digital signing, asymmetric decryption, or MAC generation. Downstream GCP services — BigQuery, Spanner, GKE, Cloud SQL, GCS, Pub/Sub — reference this key for encryption at rest with keys you control. Keys are permanent GCP resources and cannot be deleted; on destroy, all key versions are destroyed and automatic rotation is disabled.
 
-## Overview
+## What Gets Created
 
-GcpKmsKey creates a Cloud KMS cryptographic key within an existing key ring.
-Keys are the foundation of customer-managed encryption (CMEK) in GCP -- they
-protect data in BigQuery, Spanner, GKE, CloudSQL, GCS, PubSub, AlloyDB, and
-dozens of other GCP services with encryption keys that you control.
+When you deploy a GcpKmsKey resource, OpenMCF provisions:
 
-Beyond CMEK, keys also support asymmetric signing (for CI/CD artifact verification,
-JWT signing), asymmetric decryption, and MAC generation.
+- **CryptoKey** — a `google_kms_crypto_key` resource within the specified key ring, configured with the requested purpose, rotation policy, version template, and framework labels (`openmcf-resource`, `openmcf-resource-name`, `openmcf-resource-kind`, plus org/env/id when set)
 
-## Key Features
+## Prerequisites
 
-- **Multiple key purposes** -- symmetric encryption, asymmetric signing, asymmetric
-  decryption, MAC, and raw encryption for small payloads
-- **Hardware security module (HSM)** -- optional Cloud HSM protection for FIPS 140-2
-  Level 3 compliance
-- **Automatic rotation** -- configurable rotation period for symmetric keys creates
-  new key versions automatically
-- **Cross-resource references** -- use `valueFrom` to reference a key ring from another
-  OpenMCF resource, creating dependency-aware provisioning
-- **Framework labels** -- automatic labeling with resource kind, organization, and
-  environment metadata
+- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **An existing KMS key ring** — referenced via `keyRingId` (fully qualified path from a GcpKmsKeyRing resource or a direct string)
+- **Cloud KMS API enabled** (`cloudkms.googleapis.com`) on the target project
+- **IAM permissions** — `roles/cloudkms.admin` on the key ring or project
 
 ## Quick Start
 
-### Standard CMEK Key
+Create a file `kms-key.yaml`:
 
 ```yaml
 apiVersion: gcp.openmcf.org/v1
 kind: GcpKmsKey
 metadata:
   name: my-cmek-key
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpKmsKey.my-cmek-key
 spec:
   keyRingId:
-    value: "projects/my-project/locations/us-central1/keyRings/my-key-ring"
+    value: "projects/my-project/locations/us-central1/keyRings/prod-encryption"
   keyName: cmek-encrypt-key
-  rotationPeriod: "7776000s"  # 90 days
+  rotationPeriod: "7776000s"
 ```
 
-### HSM-Protected Key
+Deploy:
+
+```shell
+openmcf apply -f kms-key.yaml
+```
+
+This creates a symmetric encryption key with automatic 90-day rotation, suitable for CMEK use across GCP services.
+
+## Configuration Reference
+
+### Required Fields
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `keyRingId` | `StringValueOrRef` | Fully qualified key ring path (`projects/{p}/locations/{l}/keyRings/{name}`). Can reference GcpKmsKeyRing via `valueFrom`. Immutable after creation. | Required |
+| `keyName` | `string` | Name of the key in GCP. Distinct from the OpenMCF `metadata.name`. Immutable after creation. | 1-63 chars; pattern: `^[a-zA-Z0-9_-]{1,63}$` |
+
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `purpose` | `string` | `ENCRYPT_DECRYPT` | Cryptographic purpose. Valid values: `ENCRYPT_DECRYPT`, `ASYMMETRIC_SIGN`, `ASYMMETRIC_DECRYPT`, `MAC`, `RAW_ENCRYPT_DECRYPT`. Immutable after creation. |
+| `rotationPeriod` | `string` | — | Auto-rotation interval in seconds with suffix `s` (e.g., `7776000s` for 90 days). Minimum `86400s` (24 hours). Only meaningful for `ENCRYPT_DECRYPT` keys. |
+| `destroyScheduledDuration` | `string` | `2592000s` (30 days) | How long key versions remain in `DESTROY_SCHEDULED` state before permanent destruction. Minimum `86400s`. Format: seconds with suffix `s`. Immutable after creation. |
+| `versionTemplate.algorithm` | `string` | `GOOGLE_SYMMETRIC_ENCRYPTION` | Encryption algorithm for new key versions. Required when `versionTemplate` is specified. Common values: `GOOGLE_SYMMETRIC_ENCRYPTION`, `EC_SIGN_P256_SHA256`, `RSA_SIGN_PSS_2048_SHA256`, `RSA_DECRYPT_OAEP_2048_SHA256`, `HMAC_SHA256`. |
+| `versionTemplate.protectionLevel` | `string` | `SOFTWARE` | Protection level for key versions: `SOFTWARE` (standard) or `HSM` (Cloud HSM, FIPS 140-2 Level 3). Immutable after creation. |
+| `skipInitialVersionCreation` | `bool` | `false` | When `true`, the key is created without an initial key version. Versions must be created manually afterward. |
+
+## Examples
+
+### HSM-Protected Key for Compliance
+
+A Cloud HSM-backed symmetric key for regulated workloads requiring FIPS 140-2 Level 3 hardware protection:
 
 ```yaml
 apiVersion: gcp.openmcf.org/v1
 kind: GcpKmsKey
 metadata:
-  name: my-hsm-key
+  name: compliance-cmek
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpKmsKey.compliance-cmek
 spec:
   keyRingId:
     value: "projects/my-project/locations/us-central1/keyRings/compliance-keys"
   keyName: hsm-cmek-key
   rotationPeriod: "7776000s"
+  destroyScheduledDuration: "2592000s"
   versionTemplate:
     algorithm: GOOGLE_SYMMETRIC_ENCRYPTION
     protectionLevel: HSM
@@ -61,11 +93,18 @@ spec:
 
 ### Asymmetric Signing Key
 
+An elliptic curve signing key for verifying build artifacts, container images, or JWTs:
+
 ```yaml
 apiVersion: gcp.openmcf.org/v1
 kind: GcpKmsKey
 metadata:
-  name: my-signing-key
+  name: artifact-signer
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpKmsKey.artifact-signer
 spec:
   keyRingId:
     value: "projects/my-project/locations/us-central1/keyRings/signing-keys"
@@ -75,89 +114,44 @@ spec:
     algorithm: EC_SIGN_P256_SHA256
 ```
 
-## Configuration Reference
+### Using Foreign Key References
 
-| Field | Type | Required | Default | Description |
-|-------|------|----------|---------|-------------|
-| `keyRingId` | StringValueOrRef | Yes | — | Fully qualified key ring path |
-| `keyName` | string | Yes | — | Key name (`[a-zA-Z0-9_-]{1,63}`) |
-| `purpose` | string | No | ENCRYPT_DECRYPT | Cryptographic purpose |
-| `rotationPeriod` | string | No | — | Auto-rotation period (min: 86400s) |
-| `destroyScheduledDuration` | string | No | 2592000s (30d) | Version destroy delay |
-| `versionTemplate.algorithm` | string | Conditional | — | Algorithm (required if versionTemplate set) |
-| `versionTemplate.protectionLevel` | string | No | SOFTWARE | SOFTWARE or HSM |
-| `skipInitialVersionCreation` | bool | No | false | Create key without initial version |
-
-## Outputs
-
-| Output | Description |
-|--------|-------------|
-| `key_id` | Fully qualified path: `projects/{p}/locations/{l}/keyRings/{kr}/cryptoKeys/{name}` |
-| `key_name` | Short name of the key |
-
-## Important: Permanent Resource
-
-**Keys cannot be deleted from GCP.** When you destroy a GcpKmsKey:
-
-1. All CryptoKeyVersions are scheduled for destruction
-2. Automatic rotation is disabled
-3. The resource is removed from your IaC state
-4. **The key itself remains permanently in the key ring**
-
-Key names cannot be reused. Plan names carefully before creation.
-
-## Use Cases
-
-### Customer-Managed Encryption (CMEK)
-
-The primary use case. Reference the `key_id` output from downstream resources:
+Reference a key ring from a GcpKmsKeyRing resource instead of hardcoding the path:
 
 ```yaml
-# BigQuery dataset with CMEK
 apiVersion: gcp.openmcf.org/v1
-kind: GcpBigQueryDataset
+kind: GcpKmsKey
 metadata:
-  name: analytics-dataset
+  name: composed-cmek
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpKmsKey.composed-cmek
 spec:
-  kmsKeyId:
+  keyRingId:
     valueFrom:
-      kind: GcpKmsKey
-      name: my-cmek-key
-      fieldPath: status.outputs.key_id
+      kind: GcpKmsKeyRing
+      name: prod-encryption
+      field: status.outputs.key_ring_id
+  keyName: composed-cmek-key
+  rotationPeriod: "7776000s"
+  skipInitialVersionCreation: false
 ```
 
-### Compliance (HSM)
+## Stack Outputs
 
-For regulated industries requiring hardware-backed key protection, set
-`versionTemplate.protectionLevel` to `HSM`. This uses Google Cloud HSM,
-which is validated to FIPS 140-2 Level 3.
+After deployment, the following outputs are available in `status.outputs`:
 
-### Artifact Signing
-
-Use `purpose: ASYMMETRIC_SIGN` with an elliptic curve or RSA algorithm to
-sign build artifacts, container images, or JWTs. The public key can be
-distributed to verifiers without exposing the private key material.
-
-## Presets
-
-- **[Symmetric Encryption](presets/01-symmetric-encryption.md)** -- Standard CMEK key with 90-day rotation
-- **[HSM Symmetric Encryption](presets/02-hsm-symmetric-encryption.md)** -- HSM-protected CMEK for compliance
-- **[Asymmetric Signing](presets/03-asymmetric-signing.md)** -- EC P-256 signing key for CI/CD
+| Output | Type | Description |
+|--------|------|-------------|
+| `key_id` | `string` | Fully qualified crypto key path (`projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{name}`). This is the CMEK reference used by downstream resources for customer-managed encryption. |
+| `key_name` | `string` | Short name of the key as it exists in GCP (same as the `keyName` input). |
 
 ## Related Components
 
-| Component | Relationship |
-|-----------|-------------|
-| [GcpKmsKeyRing](../gcpkmskeyring/v1/) | Parent container (required) |
-| [GcpBigQueryDataset](../gcpbigquerydataset/v1/) | CMEK consumer |
-| [GcpCloudSql](../gcpcloudsql/v1/) | CMEK consumer |
-| [GcpGkeCluster](../gcpgkecluster/v1/) | Boot disk encryption consumer |
-| [GcpGcsBucket](../gcpgcsbucket/v1/) | Bucket encryption consumer |
-| [GcpSpannerInstance](../gcpspannerinstance/v1/) | CMEK consumer |
-
-## Implementation
-
-Both Pulumi (Go) and Terraform modules are provided with full feature parity:
-
-- **Pulumi**: `iac/pulumi/` -- uses `kms.NewCryptoKey` with framework label management
-- **Terraform**: `iac/tf/` -- uses `google_kms_crypto_key` with dynamic `version_template` block
+- [GcpKmsKeyRing](/docs/catalog/gcp/gcpkmskeyring) — parent container for this key (required)
+- [GcpBigQueryDataset](/docs/catalog/gcp/gcpbigquerydataset) — references `key_id` for dataset-level CMEK encryption
+- [GcpCloudSql](/docs/catalog/gcp/gcpcloudsql) — references `key_id` for database CMEK encryption
+- [GcpGcsBucket](/docs/catalog/gcp/gcpgcsbucket) — references `key_id` for bucket encryption
+- [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — references `key_id` for boot disk and secrets encryption

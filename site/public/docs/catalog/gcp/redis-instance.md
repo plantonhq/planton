@@ -1,35 +1,49 @@
 ---
 title: "Redis Instance"
-description: "Memorystore for Redis deployment documentation"
+description: "Redis Instance deployment documentation"
 icon: "package"
 order: 100
 componentName: "gcpredisinstance"
 ---
 
-# Redis Instance
+# GCP Redis Instance
 
-Deploys a Google Cloud Memorystore for Redis instance — a fully managed, in-memory data store backed by the Redis protocol. Suitable for caching, session management, real-time analytics, rate limiting, and pub/sub messaging.
+Deploys a Google Cloud Memorystore for Redis instance with configurable tier, replication, persistence, AUTH, transit encryption, and optional CMEK. Supports both standalone (BASIC) and highly-available (STANDARD_HA) configurations with automatic failover and read replicas.
 
 ## What Gets Created
 
 When you deploy a GcpRedisInstance resource, OpenMCF provisions:
 
-- **Redis instance** — a `google_redis_instance` in the specified project and region
-- **Primary endpoint** — host and port (typically 6379) for read/write traffic
-- **Read endpoint** (STANDARD_HA + read replicas) — separate host/port for read-only traffic
-- **VPC connectivity** — instance attached to the specified `authorizedNetwork` via peering or Private Service Access
+- **Memorystore Redis Instance** — a fully managed Redis instance in the specified project and region, tagged with organization, environment, and resource labels
+- **Primary Endpoint** — a host and port for read/write operations, available immediately after creation
+- **Read Replica Endpoint** — created only when tier is `STANDARD_HA` with `readReplicasMode` set to `READ_REPLICAS_ENABLED`, provides a separate endpoint for read-only traffic
+- **Maintenance Policy** — configured when a maintenance window is specified, schedules a weekly 1-hour window for GCP-managed updates
+- **Persistence (RDB Snapshots)** — configured when persistence is enabled, periodically writes data to disk for durability across restarts
+
+## Prerequisites
+
+- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **A GCP project** where the Redis instance will be created
+- **A VPC network** if connecting to a non-default network (referenced via `authorizedNetwork`)
+- **A Cloud KMS key** if using customer-managed encryption at rest (CMEK)
 
 ## Quick Start
+
+Create a file `redis.yaml`:
 
 ```yaml
 apiVersion: gcp.openmcf.org/v1
 kind: GcpRedisInstance
 metadata:
-  name: my-cache
+  name: my-redis
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.GcpRedisInstance.my-redis
 spec:
-  projectId:
-    value: my-gcp-project-123
-  instanceName: my-cache
+  projectId: my-gcp-project
+  instanceName: my-redis
   region: us-central1
   tier: BASIC
   memorySizeGb: 1
@@ -41,40 +55,159 @@ Deploy:
 openmcf apply -f redis.yaml
 ```
 
-## Key Features
+This creates a standalone 1 GiB Redis instance in `us-central1` using the default VPC network and the latest supported Redis version.
 
-- **Tier selection** — BASIC (standalone, no SLA) or STANDARD_HA (primary + replica, 99.9% SLA)
-- **Memory sizing** — configurable from 1 GiB upward
-- **Redis AUTH** — optional AUTH string for client authentication
-- **TLS in transit** — optional `SERVER_AUTHENTICATION` for encrypted connections
-- **Read replicas** — scale read throughput with 1–5 replicas (STANDARD_HA only)
-- **RDB persistence** — optional periodic snapshots (ONE_HOUR, SIX_HOURS, TWELVE_HOURS, TWENTY_FOUR_HOURS)
-- **Maintenance windows** — schedule weekly maintenance (day + hour UTC)
-- **CMEK** — customer-managed encryption keys for data at rest
-- **Deletion protection** — prevent accidental destruction of production instances
+## Configuration Reference
 
-## Configuration Highlights
+### Required Fields
 
-| Field | Description |
-|-------|-------------|
-| `tier` | `BASIC` or `STANDARD_HA` |
-| `memorySizeGb` | Memory in GiB (min 1) |
-| `authEnabled` | Enable Redis AUTH; AUTH string exported in outputs |
-| `transitEncryptionMode` | `DISABLED` or `SERVER_AUTHENTICATION` |
-| `readReplicasMode` | `READ_REPLICAS_DISABLED` or `READ_REPLICAS_ENABLED` (STANDARD_HA only) |
-| `persistenceConfig` | RDB snapshots with configurable period |
-| `maintenanceWindow` | Day and hour (UTC) for weekly maintenance |
-| `deletionProtection` | Prevent Terraform/Pulumi from destroying the instance |
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `projectId` | `StringValueOrRef` | GCP project where the Redis instance will be created. Can reference a GcpProject resource via `valueFrom`. | Required |
+| `instanceName` | `string` | Name of the Redis instance. Becomes the GCP resource name. Immutable after creation. | Lowercase letters, numbers, hyphens; 2–40 characters; must start with a letter and end with a letter or number |
+| `region` | `string` | GCP region for the instance (e.g., `us-central1`). | Required |
+| `tier` | `string` | Service tier. `BASIC` for standalone, `STANDARD_HA` for primary + replica with automatic failover. | `BASIC` or `STANDARD_HA` |
+| `memorySizeGb` | `int` | Memory size in GiB for the Redis instance. | Minimum 1 |
 
-## Presets
+### Optional Fields
 
-- **[01-basic-cache](../../../../../apis/org/openmcf/provider/gcp/gcpredisinstance/v1/presets/01-basic-cache.yaml)** — BASIC tier, 1 GB, minimal config for dev/test
-- **[02-ha-production](../../../../../apis/org/openmcf/provider/gcp/gcpredisinstance/v1/presets/02-ha-production.yaml)** — STANDARD_HA, auth, TLS, persistence, maintenance window, deletion protection
-- **[03-ha-read-replicas](../../../../../apis/org/openmcf/provider/gcp/gcpredisinstance/v1/presets/03-ha-read-replicas.yaml)** — STANDARD_HA with read replicas, CMEK, persistence
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `redisVersion` | `string` | Latest supported | Redis engine version (e.g., `REDIS_7_0`, `REDIS_7_2`, `REDIS_6_X`). |
+| `displayName` | `string` | — | Human-readable display name for the instance. |
+| `locationId` | `string` | GCP-selected | Zone within the region for the primary node. For `STANDARD_HA`, GCP automatically picks a different zone for the replica. |
+| `authorizedNetwork` | `StringValueOrRef` | Default network | VPC network the instance connects to. Immutable after creation. Can reference a GcpVpc resource via `valueFrom`. |
+| `connectMode` | `string` | `DIRECT_PEERING` | How the instance connects to the VPC. `DIRECT_PEERING` or `PRIVATE_SERVICE_ACCESS`. Immutable after creation. |
+| `reservedIpRange` | `string` | GCP-selected | CIDR `/29` block reserved for the instance (e.g., `10.0.0.0/29`). Must not overlap with existing subnets. Immutable after creation. |
+| `authEnabled` | `bool` | `false` | Enables Redis AUTH. When `true`, GCP generates a random AUTH string exported in stack outputs. |
+| `transitEncryptionMode` | `string` | `DISABLED` | TLS encryption for client traffic. `DISABLED` or `SERVER_AUTHENTICATION`. Immutable after creation. |
+| `redisConfigs` | `map<string,string>` | `{}` | Redis configuration parameters (e.g., `maxmemory-policy`, `notify-keyspace-events`). |
+| `maintenanceWindow.day` | `string` | — | Day of week for the maintenance window (`MONDAY` through `SUNDAY`). |
+| `maintenanceWindow.hour` | `int` | — | Hour of day (0–23, UTC) when the maintenance window starts. |
+| `readReplicasMode` | `string` | `READ_REPLICAS_DISABLED` | `READ_REPLICAS_DISABLED` or `READ_REPLICAS_ENABLED`. Requires `STANDARD_HA` tier. |
+| `replicaCount` | `int` | `0` | Number of read replicas (1–5). Requires `STANDARD_HA` tier with `readReplicasMode` set to `READ_REPLICAS_ENABLED`. |
+| `persistenceConfig.persistenceMode` | `string` | — | `DISABLED` or `RDB`. RDB enables periodic snapshots. Only meaningful for `STANDARD_HA` tier. |
+| `persistenceConfig.rdbSnapshotPeriod` | `string` | — | Snapshot frequency when mode is `RDB`. One of `ONE_HOUR`, `SIX_HOURS`, `TWELVE_HOURS`, `TWENTY_FOUR_HOURS`. |
+| `customerManagedKey` | `StringValueOrRef` | Google-managed | Cloud KMS key for encryption at rest (CMEK). Format: `projects/{p}/locations/{l}/keyRings/{kr}/cryptoKeys/{k}`. Immutable after creation. Can reference a GcpKmsKey resource via `valueFrom`. |
+| `deletionProtection` | `bool` | `false` | Prevents accidental deletion of the instance when enabled. |
+
+## Examples
+
+### High-Availability Instance with AUTH
+
+A `STANDARD_HA` instance with Redis AUTH enabled for production workloads:
+
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpRedisInstance
+metadata:
+  name: prod-cache
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpRedisInstance.prod-cache
+spec:
+  projectId: my-gcp-project
+  instanceName: prod-cache
+  region: us-central1
+  tier: STANDARD_HA
+  memorySizeGb: 5
+  redisVersion: REDIS_7_2
+  authEnabled: true
+  deletionProtection: true
+  maintenanceWindow:
+    day: SUNDAY
+    hour: 4
+```
+
+### Read Replicas with Persistence
+
+A `STANDARD_HA` instance with read replicas and RDB snapshots for high-throughput, durable workloads:
+
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpRedisInstance
+metadata:
+  name: analytics-redis
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpRedisInstance.analytics-redis
+spec:
+  projectId: my-gcp-project
+  instanceName: analytics-redis
+  region: europe-west1
+  tier: STANDARD_HA
+  memorySizeGb: 16
+  redisVersion: REDIS_7_0
+  readReplicasMode: READ_REPLICAS_ENABLED
+  replicaCount: 3
+  persistenceConfig:
+    persistenceMode: RDB
+    rdbSnapshotPeriod: SIX_HOURS
+  deletionProtection: true
+  redisConfigs:
+    maxmemory-policy: allkeys-lru
+```
+
+### Private Network with TLS and CMEK
+
+A locked-down instance using Private Service Access, transit encryption, and customer-managed encryption keys:
+
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpRedisInstance
+metadata:
+  name: secure-redis
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpRedisInstance.secure-redis
+spec:
+  projectId: my-gcp-project
+  instanceName: secure-redis
+  region: us-east1
+  tier: STANDARD_HA
+  memorySizeGb: 8
+  authorizedNetwork:
+    valueFrom:
+      kind: GcpVpc
+      name: my-vpc
+      field: status.outputs.network_self_link
+  connectMode: PRIVATE_SERVICE_ACCESS
+  reservedIpRange: 10.100.0.0/29
+  authEnabled: true
+  transitEncryptionMode: SERVER_AUTHENTICATION
+  customerManagedKey:
+    valueFrom:
+      kind: GcpKmsKey
+      name: redis-cmek
+      field: status.outputs.key_id
+  deletionProtection: true
+  maintenanceWindow:
+    day: WEDNESDAY
+    hour: 2
+```
+
+## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `host` | `string` | Hostname or IP address of the primary Redis endpoint |
+| `port` | `int` | Port number of the primary Redis endpoint (typically 6379) |
+| `read_endpoint` | `string` | Hostname or IP address of the read replica endpoint. Only populated when `STANDARD_HA` tier with read replicas enabled. |
+| `read_endpoint_port` | `int` | Port number of the read replica endpoint. Only populated when `STANDARD_HA` tier with read replicas enabled. |
+| `current_location_id` | `string` | Zone where the Redis primary is currently running. May change after a failover event. |
+| `auth_string` | `string` | Redis AUTH string for client authentication. Only populated when `authEnabled` is `true`. Treat as a secret. |
 
 ## Related Components
 
-- [GcpProject](/docs/catalog/gcp/project) — provides the GCP project
-- [GcpVpc](/docs/catalog/gcp/vpc) — provides the VPC network for `authorizedNetwork`
-- [GcpGlobalAddress](/docs/catalog/gcp/global-address) — reserve a /20 range for VPC peering with managed services
-- [GcpKmsKey](/docs/catalog/gcp/kms-key) — provides a CMEK key for `customerManagedKey`
+- [GcpVpc](/docs/catalog/gcp/vpc) — provides the VPC network for instance connectivity
+- [GcpKmsKey](/docs/catalog/gcp/kms-key) — provides the Cloud KMS key for customer-managed encryption at rest
+- [GcpKmsKeyRing](/docs/catalog/gcp/kms-key-ring) — manages the key ring containing the KMS key
+- [GcpFirewallRule](/docs/catalog/gcp/firewall-rule) — controls network access to the VPC where the instance resides

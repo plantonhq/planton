@@ -2,7 +2,12 @@ load("@rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "module",
-    srcs = ["locals.go"],
+    srcs = [
+        "locals.go",
+        "main.go",
+        "outputs.go",
+        "redis_instance.go",
+    ],
     importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpredisinstance/v1/iac/pulumi/module",
     visibility = ["//visibility:public"],
     deps = [
@@ -10,6 +15,10 @@ go_library(
         "//apis/org/openmcf/provider/gcp/gcpredisinstance/v1:gcpredisinstance",
         "//apis/org/openmcf/shared/cloudresourcekind",
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys",
+        "//pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/redis",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
     ],
 )

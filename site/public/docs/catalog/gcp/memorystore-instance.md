@@ -1,38 +1,35 @@
 ---
 title: "Memorystore Instance"
-description: "Provision and manage Google Cloud Memorystore instances"
-icon: "database"
+description: "Memorystore Instance deployment documentation"
+icon: "package"
 order: 100
 componentName: "gcpmemorystoreinstance"
 ---
 
 # GCP Memorystore Instance
 
-Deploys a Google Cloud Memorystore instance using the new-generation API with the Valkey engine. This component provisions a fully managed, in-memory data store with native sharding, Private Service Connect (PSC) networking, configurable persistence, automated backups, and multi-zone distribution. It supports both standalone (CLUSTER_DISABLED) and sharded cluster (CLUSTER) topologies, making it suitable for everything from development caching to enterprise-scale real-time analytics.
+Deploys a fully managed GCP Memorystore instance supporting the Valkey protocol (Redis-compatible) with configurable sharding, Private Service Connect (PSC) networking, persistence modes (RDB/AOF), automated backups, and customer-managed encryption keys. The instance connects to consumer VPCs exclusively through PSC endpoints.
 
 ## What Gets Created
 
 When you deploy a GcpMemorystoreInstance resource, OpenMCF provisions:
 
-- **Memorystore Instance** — a `google-native:memorystore/v1:Instance` resource with the specified shard count, node type, and engine version (Valkey)
-- **PSC Auto-Connections** — Private Service Connect endpoints auto-created in the consumer VPC, providing private connectivity without VPC peering
-- **Persistence Configuration** — RDB snapshots or AOF logging when configured, ensuring data survives restarts and failovers
-- **Automated Backups** — daily backups with configurable retention when `automatedBackupConfig` is provided
-- **Zone Distribution** — MULTI_ZONE or SINGLE_ZONE placement of nodes across availability zones
-- **Encryption** — TLS transit encryption and/or CMEK encryption at rest when configured
+- **Memorystore Instance** — a `memorystore.Instance` resource with the specified shard count, node type, and engine version
+- **PSC Auto-Created Endpoints** — one per entry in `pscAutoConnections`, each creating a Private Service Connect endpoint in the specified consumer VPC network for application connectivity
+- **Persistence Layer** — when configured, either RDB snapshots at a configurable interval or AOF write logging for data durability across restarts
+- **Automated Backup Schedule** — when configured, daily backups at a specified hour with configurable retention duration
+- **Maintenance Window** — when configured, a weekly maintenance window controlling when GCP performs scheduled maintenance
 
 ## Prerequisites
 
 - **GCP credentials** configured via environment variables or OpenMCF provider config
-- **An existing GCP project** — referenced via `projectId`
-- **Memorystore API enabled** (`memorystore.googleapis.com`) on the target project
-- **A VPC network** — required for PSC auto-connections; the instance is only reachable via PSC endpoints
-- **IAM permissions** — `roles/memorystore.admin` or equivalent on the target project
-- **A KMS key** (optional) — required only when configuring CMEK encryption at rest
+- **A GCP project** where the Memorystore instance will be created
+- **A VPC network** in the consumer project for PSC endpoint creation (format: `projects/{project_id}/global/networks/{network_id}`)
+- **A Cloud KMS key** if using customer-managed encryption at rest (CMEK)
 
 ## Quick Start
 
-Create a file `memorystore.yaml`:
+Create a file `memorystore-instance.yaml`:
 
 ```yaml
 apiVersion: gcp.openmcf.org/v1
@@ -45,91 +42,189 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.GcpMemorystoreInstance.my-cache
 spec:
-  projectId:
-    value: my-gcp-project-123
+  projectId: my-gcp-project
   instanceName: my-cache
   location: us-central1
   shardCount: 1
-  mode: CLUSTER_DISABLED
-  nodeType: SHARED_CORE_NANO
   pscAutoConnections:
-    - network:
-        value: "projects/my-gcp-project-123/global/networks/dev-vpc"
-      projectId:
-        value: "my-gcp-project-123"
+    - network: projects/my-gcp-project/global/networks/default
+      projectId: my-gcp-project
 ```
 
 Deploy:
 
 ```shell
-openmcf apply -f memorystore.yaml
+openmcf apply -f memorystore-instance.yaml
 ```
 
-This creates a minimal standalone Memorystore instance with a single shard, the smallest node type, and a PSC endpoint in the specified VPC.
+This creates a single-shard Memorystore instance in `us-central1` with a PSC endpoint in the default VPC network.
 
-## Key Features
+## Configuration Reference
 
-- **Native sharding** — distribute data across multiple shards for horizontal scaling; each shard handles a portion of the keyspace
-- **Predefined node types** — choose from SHARED_CORE_NANO, STANDARD_SMALL, HIGHMEM_MEDIUM, and HIGHMEM_XLARGE based on workload needs
-- **Private Service Connect** — instances are reachable only via PSC endpoints; no VPC peering required
-- **Dual persistence modes** — RDB snapshots for periodic point-in-time recovery or AOF for per-write durability
-- **Automated backups** — daily backups with configurable retention (1–365 days)
-- **IAM authentication** — authenticate clients using GCP IAM credentials instead of shared secrets
-- **TLS encryption** — SERVER_AUTHENTICATION mode for encrypted client-to-server traffic
-- **CMEK support** — encrypt data at rest using customer-managed Cloud KMS keys
-- **Multi-zone distribution** — spread nodes across availability zones for resilience
-- **Cluster and standalone modes** — CLUSTER for sharded topology with native protocol, CLUSTER_DISABLED for single-endpoint simplicity
-- **Valkey engine** — Redis-compatible protocol with configurable engine version and tuning parameters
+### Required Fields
 
-## Configuration Highlights
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `projectId` | `string` | GCP project where the instance is created. Can reference GcpProject via `valueFrom`. | Required |
+| `instanceName` | `string` | Name of the Memorystore instance. Becomes the GCP resource name. Immutable after creation. | 4-63 chars, lowercase letters/numbers/hyphens, must start with letter and end with letter or number |
+| `location` | `string` | GCP region for deployment (e.g., `us-central1`). Immutable after creation. | Required |
+| `shardCount` | `int` | Number of shards. Each shard handles a portion of the keyspace. | Minimum 1 |
 
-| Feature | Field | Values / Notes |
-|---------|-------|----------------|
-| Topology | `mode` | `CLUSTER` (sharded, cluster-aware clients) or `CLUSTER_DISABLED` (standalone) |
-| Scaling | `shardCount` | 1+ shards; each shard adds capacity and throughput |
-| Node size | `nodeType` | `SHARED_CORE_NANO`, `STANDARD_SMALL`, `HIGHMEM_MEDIUM`, `HIGHMEM_XLARGE` |
-| Read replicas | `replicaCount` | 0–5 replicas per shard for read scaling and failover |
-| Networking | `pscAutoConnections` | PSC endpoints in consumer VPCs; supports cross-project access |
-| Authentication | `authorizationMode` | `AUTH_DISABLED` (default) or `IAM_AUTH` |
-| Transit encryption | `transitEncryptionMode` | `TRANSIT_ENCRYPTION_DISABLED` or `SERVER_AUTHENTICATION` |
-| Encryption at rest | `kmsKey` | Cloud KMS key resource name for CMEK |
-| Persistence | `persistenceConfig.mode` | `DISABLED`, `RDB`, or `AOF` |
-| RDB snapshots | `persistenceConfig.rdbConfig.rdbSnapshotPeriod` | `ONE_HOUR`, `SIX_HOURS`, `TWELVE_HOURS`, `TWENTY_FOUR_HOURS` |
-| AOF durability | `persistenceConfig.aofConfig.appendFsync` | `NEVER`, `EVERY_SEC`, `ALWAYS` |
-| Zone placement | `zoneDistributionConfig.mode` | `MULTI_ZONE` or `SINGLE_ZONE` |
-| Maintenance | `maintenancePolicy.weeklyMaintenanceWindow` | Day of week + hour (UTC) |
-| Backups | `automatedBackupConfig` | Start hour + retention duration in seconds |
-| Engine tuning | `engineConfigs` | Key-value map (e.g., `maxmemory-policy: volatile-lru`) |
-| Deletion guard | `deletionProtectionEnabled` | `true` to prevent accidental deletion |
+### Optional Fields
 
-## Presets
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `mode` | `string` | — | Instance topology. `CLUSTER`: sharded mode requiring cluster-aware clients. `CLUSTER_DISABLED`: standalone single-primary mode. Immutable after creation. |
+| `nodeType` | `string` | GCP default | CPU and memory per node. `SHARED_CORE_NANO`, `STANDARD_SMALL`, `HIGHMEM_MEDIUM`, or `HIGHMEM_XLARGE`. |
+| `engineVersion` | `string` | Latest | Valkey engine version (e.g., `VALKEY_8_0`, `VALKEY_7_2`). |
+| `engineConfigs` | `map<string, string>` | `{}` | Engine configuration parameters as key-value pairs (e.g., `maxmemory-policy`, `notify-keyspace-events`). |
+| `replicaCount` | `int` | `0` | Read replicas per shard (0-5). Replicas provide read scaling and automatic failover. |
+| `pscAutoConnections` | `object[]` | `[]` | PSC endpoints for VPC connectivity. Each entry creates a PSC endpoint in the specified consumer VPC. Immutable after creation. |
+| `pscAutoConnections[].network` | `string` | — | Consumer VPC network. Format: `projects/{project}/global/networks/{network}`. Can reference GcpVpc via `valueFrom`. |
+| `pscAutoConnections[].projectId` | `string` | — | Consumer project ID for the PSC endpoint. Can reference GcpProject via `valueFrom`. |
+| `authorizationMode` | `string` | `AUTH_DISABLED` | Authentication mode. `AUTH_DISABLED`: no auth. `IAM_AUTH`: GCP IAM credentials required. Immutable after creation. |
+| `transitEncryptionMode` | `string` | `TRANSIT_ENCRYPTION_DISABLED` | TLS encryption mode. `TRANSIT_ENCRYPTION_DISABLED`: no encryption. `SERVER_AUTHENTICATION`: clients verify server via TLS. Immutable after creation. |
+| `kmsKey` | `string` | Google-managed | Cloud KMS key for customer-managed encryption at rest. Format: `projects/{p}/locations/{l}/keyRings/{kr}/cryptoKeys/{k}`. Can reference GcpKmsKey via `valueFrom`. Immutable after creation. |
+| `persistenceConfig.mode` | `string` | — | Persistence mode. `DISABLED`: in-memory only. `RDB`: periodic snapshots. `AOF`: append-only file logging. |
+| `persistenceConfig.rdbConfig.rdbSnapshotPeriod` | `string` | — | Snapshot frequency. `ONE_HOUR`, `SIX_HOURS`, `TWELVE_HOURS`, or `TWENTY_FOUR_HOURS`. Required when mode is `RDB`. |
+| `persistenceConfig.rdbConfig.rdbSnapshotStartTime` | `string` | GCP default | RFC3339 timestamp for the first snapshot. |
+| `persistenceConfig.aofConfig.appendFsync` | `string` | — | AOF flush frequency. `NEVER`, `EVERY_SEC`, or `ALWAYS`. Required when mode is `AOF`. |
+| `zoneDistributionConfig.mode` | `string` | — | Zone distribution. `MULTI_ZONE`: nodes across zones for HA. `SINGLE_ZONE`: all nodes in one zone. Immutable after creation. |
+| `zoneDistributionConfig.zone` | `string` | — | Zone for `SINGLE_ZONE` mode (e.g., `us-central1-a`). Required when mode is `SINGLE_ZONE`. |
+| `maintenancePolicy.weeklyMaintenanceWindow.day` | `string` | — | Day of week for maintenance (`MONDAY` through `SUNDAY`). |
+| `maintenancePolicy.weeklyMaintenanceWindow.hour` | `int` | — | Hour of day (0-23, UTC) when the 1-hour maintenance window starts. |
+| `automatedBackupConfig.startHour` | `int` | — | Hour of day (0-23, UTC) when the daily backup starts. |
+| `automatedBackupConfig.retention` | `string` | — | Backup retention duration in seconds (e.g., `3024000s` for 35 days). Min: `86400s` (1 day). Max: `31536000s` (365 days). |
+| `deletionProtectionEnabled` | `bool` | `false` | Prevents deletion of the instance until this flag is disabled. |
 
-OpenMCF provides three ready-to-use presets for common scenarios:
+## Examples
 
-- **01-dev-single-shard** — Minimal standalone instance with SHARED_CORE_NANO nodes, no persistence or encryption. Ideal for development and testing.
-- **02-ha-production** — CLUSTER mode with 3 shards, 1 replica, HIGHMEM_MEDIUM nodes, TLS, RDB persistence, multi-zone distribution, and deletion protection. Suitable for production workloads.
-- **03-enterprise-cluster** — CLUSTER mode with 5 shards, 2 replicas, HIGHMEM_XLARGE nodes, IAM auth, TLS, CMEK, AOF persistence, automated backups (35-day retention), and deletion protection. Designed for enterprise and mission-critical environments.
+### Standalone Instance with RDB Persistence
 
-## GcpRedisInstance vs GcpMemorystoreInstance
+A single-shard standalone instance with periodic RDB snapshots and deletion protection:
 
-Google Cloud offers two Memorystore APIs. OpenMCF models each as a separate component:
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpMemorystoreInstance
+metadata:
+  name: session-cache
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpMemorystoreInstance.session-cache
+spec:
+  projectId: my-gcp-project
+  instanceName: session-cache
+  location: us-central1
+  shardCount: 1
+  mode: CLUSTER_DISABLED
+  nodeType: STANDARD_SMALL
+  replicaCount: 1
+  deletionProtectionEnabled: true
+  pscAutoConnections:
+    - network: projects/my-gcp-project/global/networks/prod-vpc
+      projectId: my-gcp-project
+  persistenceConfig:
+    mode: RDB
+    rdbConfig:
+      rdbSnapshotPeriod: SIX_HOURS
+```
 
-| Aspect | GcpRedisInstance | GcpMemorystoreInstance |
-|--------|-----------------|----------------------|
-| **API generation** | Legacy Memorystore for Redis API | New-generation Memorystore API |
-| **Engine** | Redis | Valkey (Redis-compatible) |
-| **Networking** | VPC peering (`authorizedNetwork`) | Private Service Connect (PSC) |
-| **Sharding** | Not supported; single primary | Native sharding via `shardCount` |
-| **Node sizing** | `memorySizeGb` (explicit memory) | `nodeType` (predefined CPU + memory tiers) |
-| **Cluster mode** | Not available | `CLUSTER` or `CLUSTER_DISABLED` |
-| **Persistence** | RDB only | RDB or AOF |
-| **Automated backups** | Not available | Daily backups with configurable retention |
-| **Authentication** | Redis AUTH string | IAM_AUTH or AUTH_DISABLED |
-| **Read replicas** | Separate `readReplicasMode` + `replicaCount` | `replicaCount` per shard (built into cluster topology) |
+### Sharded Cluster with AOF and Automated Backups
 
-**When to use GcpRedisInstance:** You have existing workloads on the legacy API, need VPC peering connectivity, or require the traditional Redis AUTH model.
+A multi-shard cluster with AOF persistence, automated daily backups, and a maintenance window:
 
-**When to use GcpMemorystoreInstance:** New deployments that benefit from native sharding, PSC networking, AOF persistence, automated backups, or IAM-based authentication. This is Google's recommended path for new Memorystore instances.
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpMemorystoreInstance
+metadata:
+  name: realtime-store
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpMemorystoreInstance.realtime-store
+spec:
+  projectId: my-gcp-project
+  instanceName: realtime-store
+  location: us-east1
+  shardCount: 3
+  mode: CLUSTER
+  nodeType: HIGHMEM_MEDIUM
+  engineVersion: VALKEY_8_0
+  replicaCount: 2
+  deletionProtectionEnabled: true
+  pscAutoConnections:
+    - network: projects/my-gcp-project/global/networks/prod-vpc
+      projectId: my-gcp-project
+  persistenceConfig:
+    mode: AOF
+    aofConfig:
+      appendFsync: EVERY_SEC
+  automatedBackupConfig:
+    startHour: 3
+    retention: "3024000s"
+  maintenancePolicy:
+    weeklyMaintenanceWindow:
+      day: SUNDAY
+      hour: 5
+  zoneDistributionConfig:
+    mode: MULTI_ZONE
+```
+
+### Encrypted Instance with IAM Auth and Foreign Key References
+
+A production instance using CMEK encryption, IAM authentication, TLS, and foreign key references to other OpenMCF-managed resources:
+
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpMemorystoreInstance
+metadata:
+  name: secure-cache
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpMemorystoreInstance.secure-cache
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpProject
+      name: my-project
+      field: status.outputs.project_id
+  instanceName: secure-cache
+  location: us-central1
+  shardCount: 2
+  mode: CLUSTER
+  nodeType: HIGHMEM_XLARGE
+  replicaCount: 1
+  authorizationMode: IAM_AUTH
+  transitEncryptionMode: SERVER_AUTHENTICATION
+  deletionProtectionEnabled: true
+  kmsKey:
+    valueFrom:
+      kind: GcpKmsKey
+      name: my-kms-key
+      field: status.outputs.key_id
+  pscAutoConnections:
+    - network:
+        valueFrom:
+          kind: GcpVpc
+          name: prod-vpc
+          field: status.outputs.network_self_link
+      projectId:
+        valueFrom:
+          kind: GcpProject
+          name: my-project
+          field: status.outputs.project_id
+  persistenceConfig:
+    mode: RDB
+    rdbConfig:
+      rdbSnapshotPeriod: TWELVE_HOURS
+  engineConfigs:
+    maxmemory-policy: allkeys-lru
+```
 
 ## Stack Outputs
 
@@ -137,14 +232,14 @@ After deployment, the following outputs are available in `status.outputs`:
 
 | Output | Type | Description |
 |--------|------|-------------|
-| `discoveryAddress` | `string` | IP address of the instance's discovery endpoint. Clients connect here for cluster topology discovery and command routing. |
-| `discoveryPort` | `int32` | Port of the discovery endpoint (typically 6379). |
-| `instanceUid` | `string` | Server-generated unique identifier for the instance. |
-| `nodeSizeGb` | `double` | Memory size per node in GB, determined by the chosen `nodeType`. |
+| `discovery_address` | `string` | IP address of the instance's discovery endpoint. Clients connect to this address for cluster topology discovery and command routing. |
+| `discovery_port` | `int` | Port of the instance's discovery endpoint (typically 6379). |
+| `instance_uid` | `string` | Server-generated unique identifier for the instance. Stable across updates. |
+| `node_size_gb` | `double` | Memory size per node in GB, determined by the chosen `nodeType`. Useful for capacity planning. |
 
 ## Related Components
 
-- [GcpProject](/docs/catalog/gcp/project) — provides the GCP project where the instance is created
-- [GcpVpc](/docs/catalog/gcp/vpc) — provides the VPC network for PSC auto-connections
-- [GcpKmsKeyRing](/docs/catalog/gcp/kms-key-ring) — contains the key ring for CMEK encryption keys
-- [GcpRedisInstance](/docs/catalog/gcp/gcpredisinstance-research-and-design-documentation) — legacy Memorystore for Redis API; use for existing VPC-peering-based workloads
+- [GcpVpc](/docs/catalog/gcp/vpc) — provides the VPC network for PSC endpoint creation
+- [GcpProject](/docs/catalog/gcp/project) — provides the GCP project for instance deployment
+- [GcpKmsKey](/docs/catalog/gcp/kms-key) — provides the Cloud KMS key for customer-managed encryption at rest
+- [GcpRedisInstance](/docs/catalog/gcp/redis-instance) — legacy Memorystore for Redis API using VPC peering instead of PSC
