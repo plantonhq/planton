@@ -1,0 +1,169 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsstepfunction.v1;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/struct.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// AwsStepFunctionSpec defines the desired configuration for an AWS Step Functions
+// state machine.
+//
+// Step Functions orchestrates distributed workflows by coordinating AWS services
+// (Lambda, SQS, SNS, DynamoDB, ECS, etc.) into serverless state machines defined
+// in Amazon States Language (ASL).
+//
+// Two state machine types are supported:
+// - STANDARD: Long-running workflows (up to 1 year) with exactly-once execution,
+//   full execution history, and visual debugging in the AWS console.
+// - EXPRESS: High-volume, short-duration workflows (up to 5 minutes) with
+//   at-most-once execution semantics, optimized for event processing pipelines.
+//
+// Notes:
+// - The `type` cannot be changed after creation (forces replacement).
+// - The `definition` field accepts ASL as native YAML. The IaC modules serialize
+//   it to JSON before passing it to the AWS API. ASL key casing (StartAt, States,
+//   Type, etc.) is preserved through serialization.
+// - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+message AwsStepFunctionSpec {
+  // ---------------------------------------------------------------------------
+  // State machine configuration
+  // ---------------------------------------------------------------------------
+
+  // State machine type. Determines execution semantics and pricing model.
+  // - "STANDARD": Long-running, exactly-once, full execution history.
+  // - "EXPRESS": High-volume, short-duration, at-most-once.
+  // Cannot be changed after creation (forces replacement).
+  // When omitted the IaC module defaults to "STANDARD".
+  string type = 1;
+
+  // State machine definition in Amazon States Language (ASL). Write the
+  // definition as native YAML; the IaC module serializes it to JSON for the
+  // AWS API. ASL key casing (StartAt, States, Type, Resource, etc.) is
+  // preserved through serialization.
+  //
+  // Maximum size: 1,048,576 bytes (1 MB) after JSON serialization.
+  //
+  // Use AWS Step Functions Workflow Studio, CDK, or the ASL specification
+  // to author complex workflows, then express the result as YAML here.
+  google.protobuf.Struct definition = 2 [(buf.validate.field).required = true];
+
+  // IAM execution role ARN. The role must have a trust policy for
+  // states.amazonaws.com and policies granting access to all services
+  // invoked by the workflow (Lambda:InvokeFunction, SQS:SendMessage, etc.).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef role_arn = 3 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsIamRole,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
+  ];
+
+  // Free-form description visible in the AWS Console. Useful for documenting
+  // the workflow's purpose and behavior.
+  string description = 4;
+
+  // ---------------------------------------------------------------------------
+  // Observability
+  // ---------------------------------------------------------------------------
+
+  // Logging configuration for execution history events. When omitted, logging
+  // is disabled (level OFF). Logging is supported for both STANDARD and EXPRESS
+  // state machines.
+  AwsStepFunctionLoggingConfig logging = 5;
+
+  // Enable AWS X-Ray tracing for the state machine. When true, Step Functions
+  // sends trace data to X-Ray for visualizing request flows. Ensure the
+  // execution role has xray:PutTraceSegments and xray:PutTelemetryRecords
+  // permissions.
+  bool tracing_enabled = 6;
+
+  // ---------------------------------------------------------------------------
+  // Encryption
+  // ---------------------------------------------------------------------------
+
+  // Encryption configuration for data at rest. When omitted, AWS uses
+  // AWS-owned keys (default, no additional cost). Provide this block to
+  // use a customer-managed KMS key for encrypting state machine data,
+  // execution history, and input/output payloads.
+  AwsStepFunctionEncryptionConfig encryption = 7;
+
+  // ---------------------------------------------------------------------------
+  // CEL validations
+  // ---------------------------------------------------------------------------
+
+  // Type must be a valid Step Functions state machine type.
+  option (buf.validate.message).cel = {
+    id: "type_valid_values"
+    message: "type must be 'STANDARD' or 'EXPRESS' when set"
+    expression: "this.type == '' || this.type in ['STANDARD', 'EXPRESS']"
+  };
+
+  // When logging is configured with a level other than OFF, a log destination
+  // is required so execution history events have somewhere to go.
+  option (buf.validate.message).cel = {
+    id: "logging_destination_required_when_enabled"
+    message: "logging.log_destination is required when logging.level is not 'OFF'"
+    expression: "!has(this.logging) || this.logging.level == '' || this.logging.level == 'OFF' || has(this.logging.log_destination)"
+  };
+}
+
+// AwsStepFunctionLoggingConfig configures execution history logging to
+// CloudWatch Logs. Logging helps with debugging, auditing, and monitoring
+// state machine executions.
+message AwsStepFunctionLoggingConfig {
+  // Logging level. Determines which execution history events are logged.
+  // - "ALL": Log all event types (recommended for development and debugging).
+  // - "ERROR": Log only error events (recommended for production).
+  // - "FATAL": Log only fatal errors.
+  // - "OFF": Disable logging.
+  string level = 1;
+
+  // Whether to include execution input and output data in log entries. When
+  // true, the full JSON payloads passed between states are logged. Useful for
+  // debugging but may increase log volume and expose sensitive data.
+  bool include_execution_data = 2;
+
+  // CloudWatch Logs log group ARN for log delivery. Accepts a direct ARN or a
+  // reference to a CloudWatch Log Group resource.
+  //
+  // Note: AWS requires the ARN to end with ":*". The IaC module automatically
+  // appends this suffix if not present, so you can reference a log group ARN
+  // directly without worrying about the suffix.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef log_destination = 3;
+
+  // Logging level must be a valid Step Functions log level.
+  option (buf.validate.message).cel = {
+    id: "logging_level_valid_values"
+    message: "logging.level must be 'ALL', 'ERROR', 'FATAL', or 'OFF' when set"
+    expression: "this.level == '' || this.level in ['ALL', 'ERROR', 'FATAL', 'OFF']"
+  };
+}
+
+// AwsStepFunctionEncryptionConfig configures encryption for state machine data
+// using a customer-managed KMS key. When this block is provided with a
+// kms_key_id, the IaC module sets the encryption type to
+// CUSTOMER_MANAGED_KMS_KEY. When omitted, AWS-owned keys are used.
+message AwsStepFunctionEncryptionConfig {
+  // Customer-managed KMS key ARN for encrypting state machine data, execution
+  // history, and input/output payloads. The key must be a symmetric encryption
+  // key in the same region as the state machine. For cross-account access, use
+  // the full key ARN (not alias).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // Duration in seconds for which Step Functions reuses a data encryption key
+  // before calling KMS GenerateDataKey again. Higher values reduce KMS API
+  // costs but increase the window for key reuse.
+  // Range: 60–900 seconds. AWS default: 300 (5 minutes).
+  // Leave at 0 to use the AWS default.
+  int32 kms_data_key_reuse_period_seconds = 2;
+
+  // Reuse period range validation.
+  option (buf.validate.message).cel = {
+    id: "kms_data_key_reuse_range"
+    message: "kms_data_key_reuse_period_seconds must be between 60 and 900 when set"
+    expression: "this.kms_data_key_reuse_period_seconds == 0 || (this.kms_data_key_reuse_period_seconds >= 60 && this.kms_data_key_reuse_period_seconds <= 900)"
+  };
+}

@@ -113,6 +113,7 @@ const (
 	CloudResourceKind_AwsEventBridgeBus   CloudResourceKind = 227
 	CloudResourceKind_AwsEventBridgeRule  CloudResourceKind = 228
 	CloudResourceKind_AwsHttpApiGateway   CloudResourceKind = 240
+	CloudResourceKind_AwsStepFunction     CloudResourceKind = 241
 	// 400–599: Azure resources
 	CloudResourceKind_AzureResourceGroup            CloudResourceKind = 400
 	CloudResourceKind_AzureAksCluster               CloudResourceKind = 401
@@ -362,6 +363,7 @@ var (
 		227:  "AwsEventBridgeBus",
 		228:  "AwsEventBridgeRule",
 		240:  "AwsHttpApiGateway",
+		241:  "AwsStepFunction",
 		400:  "AzureResourceGroup",
 		401:  "AzureAksCluster",
 		402:  "AzureAksNodePool",
@@ -597,6 +599,7 @@ var (
 		"AwsEventBridgeBus":                     227,
 		"AwsEventBridgeRule":                    228,
 		"AwsHttpApiGateway":                     240,
+		"AwsStepFunction":                       241,
 		"AzureResourceGroup":                    400,
 		"AzureAksCluster":                       401,
 		"AzureAksNodePool":                      402,
@@ -937,7 +940,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xa0N\n" +
+	"\x02v1\x10\x01*\xc8N\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -982,7 +985,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\vAwsSnsTopic\x10\xe2\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssns\x12'\n" +
 	"\x11AwsEventBridgeBus\x10\xe3\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awseb\x12)\n" +
 	"\x12AwsEventBridgeRule\x10\xe4\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsebr\x12.\n" +
-	"\x11AwsHttpApiGateway\x10\xf0\x01\x1a\x16\xa2\xf7\x04\x12\b\f\x10\x01\"\fawshttpapigw\x12'\n" +
+	"\x11AwsHttpApiGateway\x10\xf0\x01\x1a\x16\xa2\xf7\x04\x12\b\f\x10\x01\"\fawshttpapigw\x12&\n" +
+	"\x0fAwsStepFunction\x10\xf1\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssfn\x12'\n" +
 	"\x12AzureResourceGroup\x10\x90\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azrg\x12#\n" +
 	"\x0fAzureAksCluster\x10\x91\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03aks\x12&\n" +

@@ -1,0 +1,18 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsStepFunction
+metadata:
+  name: <workflow-name>
+  org: <organization>
+  env: <environment>
+  id: <resource-id>
+spec:
+  type: STANDARD
+  roleArn:
+    value: <iam-execution-role-arn>
+  definition:
+    StartAt: ProcessTask
+    States:
+      ProcessTask:
+        Type: Task
+        Resource: <lambda-function-arn>
+        End: true

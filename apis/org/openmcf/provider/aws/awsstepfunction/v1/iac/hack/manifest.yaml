@@ -1,0 +1,23 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsStepFunction
+metadata:
+  name: test-workflow
+  org: test-org
+  env: dev
+  id: test-workflow-dev
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: test-org
+    pulumi.openmcf.org/project: test-project
+    pulumi.openmcf.org/stack.name: dev.AwsStepFunction.test-workflow
+spec:
+  type: STANDARD
+  roleArn:
+    value: arn:aws:iam::123456789012:role/StepFunctionsExecRole
+  definition:
+    StartAt: Hello
+    States:
+      Hello:
+        Type: Pass
+        Result: Hello, World!
+        End: true
