@@ -1,0 +1,16 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpPubSubSubscription
+metadata:
+  name: my-push-subscription
+spec:
+  projectId:
+    value: "<project-id>"
+  subscriptionName: <your-subscription-name>  # e.g., webhook-delivery-sub
+  topic:
+    value: "<topic-id>"  # e.g., projects/my-project/topics/user-events
+  ackDeadlineSeconds: 30
+  pushConfig:
+    pushEndpoint: "<https-endpoint>"  # e.g., https://my-app.run.app/webhook
+    oidcToken:
+      serviceAccountEmail: "<service-account-email>"  # e.g., push-invoker@my-project.iam.gserviceaccount.com
+      audience: "<audience>"  # e.g., https://my-app.run.app (defaults to push endpoint if omitted)
