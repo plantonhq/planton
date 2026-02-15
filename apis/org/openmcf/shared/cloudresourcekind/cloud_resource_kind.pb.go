@@ -109,6 +109,7 @@ const (
 	CloudResourceKind_AwsRoute53DnsRecord CloudResourceKind = 223
 	CloudResourceKind_AwsS3ObjectSet      CloudResourceKind = 224
 	CloudResourceKind_AwsSqsQueue         CloudResourceKind = 225
+	CloudResourceKind_AwsSnsTopic         CloudResourceKind = 226
 	// 400–599: Azure resources
 	CloudResourceKind_AzureResourceGroup            CloudResourceKind = 400
 	CloudResourceKind_AzureAksCluster               CloudResourceKind = 401
@@ -350,6 +351,7 @@ var (
 		223:  "AwsRoute53DnsRecord",
 		224:  "AwsS3ObjectSet",
 		225:  "AwsSqsQueue",
+		226:  "AwsSnsTopic",
 		400:  "AzureResourceGroup",
 		401:  "AzureAksCluster",
 		402:  "AzureAksNodePool",
@@ -577,6 +579,7 @@ var (
 		"AwsRoute53DnsRecord":                   223,
 		"AwsS3ObjectSet":                        224,
 		"AwsSqsQueue":                           225,
+		"AwsSnsTopic":                           226,
 		"AzureResourceGroup":                    400,
 		"AzureAksCluster":                       401,
 		"AzureAksNodePool":                      402,
@@ -913,7 +916,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xdcK\n" +
+	"\x02v1\x10\x01*\x80L\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -954,7 +957,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\rAwsDocumentDb\x10\xde\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05docdb\x12*\n" +
 	"\x13AwsRoute53DnsRecord\x10\xdf\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06r53rec\x12%\n" +
 	"\x0eAwsS3ObjectSet\x10\xe0\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06s3objs\x12\"\n" +
-	"\vAwsSqsQueue\x10\xe1\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssqs\x12'\n" +
+	"\vAwsSqsQueue\x10\xe1\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssqs\x12\"\n" +
+	"\vAwsSnsTopic\x10\xe2\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssns\x12'\n" +
 	"\x12AzureResourceGroup\x10\x90\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azrg\x12#\n" +
 	"\x0fAzureAksCluster\x10\x91\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03aks\x12&\n" +

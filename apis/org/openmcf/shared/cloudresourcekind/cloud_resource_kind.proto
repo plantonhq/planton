@@ -201,6 +201,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "awssqs"
   }];
+  AwsSnsTopic = 226 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awssns"
+  }];
 
   // 400–599: Azure resources
   AzureResourceGroup = 400 [(kind_meta) = {

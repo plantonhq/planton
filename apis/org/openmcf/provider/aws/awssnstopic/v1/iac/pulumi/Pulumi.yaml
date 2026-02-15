@@ -1,0 +1,3 @@
+name: aws-sns-topic
+runtime: go
+description: Deploy an AWS SNS Topic using OpenMCF
