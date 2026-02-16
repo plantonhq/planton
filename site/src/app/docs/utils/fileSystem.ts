@@ -176,6 +176,7 @@ function buildStructure(dirPath: string, relativePath: string = ''): DocItem[] {
         // Try to get metadata and page title from index/README (.md only)
         let metadata: MarkdownContent['data'] = {};
         let dirPageTitle: string | undefined;
+        let dirExcerpt = '';
 
         for (const indexFile of indexFiles) {
           const indexPath = path.join(fullPath, indexFile);
@@ -187,6 +188,7 @@ function buildStructure(dirPath: string, relativePath: string = ''): DocItem[] {
               // Extract # heading for full page title
               const headingMatch = mdContent.match(/^#\s+(.+)$/m);
               dirPageTitle = headingMatch ? headingMatch[1].trim() : undefined;
+              dirExcerpt = generateExcerptFromContent(fileContent);
               break;
             } catch (error) {
               console.warn(`Failed to parse metadata from ${indexPath}:`, error);
@@ -211,7 +213,7 @@ function buildStructure(dirPath: string, relativePath: string = ''): DocItem[] {
           isExternal: (metadata.isExternal as boolean) || false,
           externalUrl: metadata.externalUrl as string | undefined,
           hasIndex,
-          excerpt: '', // Directories don't have content to generate excerpts from
+          excerpt: dirExcerpt,
           componentName: metadata.componentName as string | undefined,
         });
       }

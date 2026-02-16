@@ -180,13 +180,16 @@ function buildStructure(dirPath: string, relativePath = ''): DocItem[] {
 
       if (children.length > 0 || hasIndex) {
         let metadata: Record<string, unknown> = {};
+        let dirExcerpt = '';
 
         for (const indexFile of indexFiles) {
           const indexPath = path.join(fullPath, indexFile);
           if (fs.existsSync(indexPath)) {
             try {
-              const { data } = matter(fs.readFileSync(indexPath, 'utf-8'));
+              const fileContent = fs.readFileSync(indexPath, 'utf-8');
+              const { data } = matter(fileContent);
               metadata = data;
+              dirExcerpt = generateExcerptFromContent(fileContent);
               break;
             } catch (error) {
               console.warn(`Failed to parse metadata from ${indexPath}:`, error);
@@ -210,7 +213,7 @@ function buildStructure(dirPath: string, relativePath = ''): DocItem[] {
           isExternal: (metadata.isExternal as boolean) || false,
           externalUrl: metadata.externalUrl as string | undefined,
           hasIndex,
-          excerpt: '',
+          excerpt: dirExcerpt,
           componentName: metadata.componentName as string | undefined,
         });
       }
