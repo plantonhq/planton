@@ -1,0 +1,15 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsFsxLustreFileSystem
+metadata:
+  org: example-org
+  env: dev
+  name: my-lustre-fs
+  id: awsfxl-my-lustre-fs-dev
+spec:
+  deployment_type: SCRATCH_2
+  storage_capacity_gib: 1200
+  storage_type: SSD
+  subnet_id:
+    value: subnet-0123456789abcdef0
+  security_group_ids:
+    - value: sg-0123456789abcdef0
