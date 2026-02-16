@@ -130,6 +130,7 @@ const (
 	CloudResourceKind_AwsKinesisFirehose         CloudResourceKind = 261
 	CloudResourceKind_AwsKinesisStreamConsumer   CloudResourceKind = 262
 	CloudResourceKind_AwsAthenaWorkgroup         CloudResourceKind = 263
+	CloudResourceKind_AwsGlueCatalogDatabase     CloudResourceKind = 264
 	// 400–599: Azure resources
 	CloudResourceKind_AzureResourceGroup            CloudResourceKind = 400
 	CloudResourceKind_AzureAksCluster               CloudResourceKind = 401
@@ -202,6 +203,7 @@ const (
 	CloudResourceKind_GcpCloudTasksQueue            CloudResourceKind = 662
 	CloudResourceKind_GcpCloudSchedulerJob          CloudResourceKind = 663
 	CloudResourceKind_GcpVertexAiNotebook           CloudResourceKind = 670
+	CloudResourceKind_GcpVertexAiEndpoint           CloudResourceKind = 671
 	CloudResourceKind_GcpCloudComposerEnvironment   CloudResourceKind = 680
 	CloudResourceKind_GcpKmsKeyRing                 CloudResourceKind = 690
 	CloudResourceKind_GcpKmsKey                     CloudResourceKind = 691
@@ -412,6 +414,7 @@ var (
 		261:  "AwsKinesisFirehose",
 		262:  "AwsKinesisStreamConsumer",
 		263:  "AwsAthenaWorkgroup",
+		264:  "AwsGlueCatalogDatabase",
 		400:  "AzureResourceGroup",
 		401:  "AzureAksCluster",
 		402:  "AzureAksNodePool",
@@ -482,6 +485,7 @@ var (
 		662:  "GcpCloudTasksQueue",
 		663:  "GcpCloudSchedulerJob",
 		670:  "GcpVertexAiNotebook",
+		671:  "GcpVertexAiEndpoint",
 		680:  "GcpCloudComposerEnvironment",
 		690:  "GcpKmsKeyRing",
 		691:  "GcpKmsKey",
@@ -680,6 +684,7 @@ var (
 		"AwsKinesisFirehose":                    261,
 		"AwsKinesisStreamConsumer":              262,
 		"AwsAthenaWorkgroup":                    263,
+		"AwsGlueCatalogDatabase":                264,
 		"AzureResourceGroup":                    400,
 		"AzureAksCluster":                       401,
 		"AzureAksNodePool":                      402,
@@ -750,6 +755,7 @@ var (
 		"GcpCloudTasksQueue":                    662,
 		"GcpCloudSchedulerJob":                  663,
 		"GcpVertexAiNotebook":                   670,
+		"GcpVertexAiEndpoint":                   671,
 		"GcpCloudComposerEnvironment":           680,
 		"GcpKmsKeyRing":                         690,
 		"GcpKmsKey":                             691,
@@ -1036,7 +1042,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xe6Y\n" +
+	"\x02v1\x10\x01*\xc2Z\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1098,7 +1104,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x10AwsKinesisStream\x10\x84\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awskin\x12)\n" +
 	"\x12AwsKinesisFirehose\x10\x85\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awskfh\x122\n" +
 	"\x18AwsKinesisStreamConsumer\x10\x86\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawskincon\x12)\n" +
-	"\x12AwsAthenaWorkgroup\x10\x87\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsath\x12'\n" +
+	"\x12AwsAthenaWorkgroup\x10\x87\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsath\x12.\n" +
+	"\x16AwsGlueCatalogDatabase\x10\x88\x02\x1a\x11\xa2\xf7\x04\r\b\f\x10\x01\"\aawsglue\x12'\n" +
 	"\x12AzureResourceGroup\x10\x90\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azrg\x12#\n" +
 	"\x0fAzureAksCluster\x10\x91\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03aks\x12&\n" +
@@ -1185,7 +1192,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x15GcpPubSubSubscription\x10\x95\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcppss\x12(\n" +
 	"\x12GcpCloudTasksQueue\x10\x96\x05\x1a\x0f\xa2\xf7\x04\v\b\x12\x10\x01\"\x05gcptq\x12+\n" +
 	"\x14GcpCloudSchedulerJob\x10\x97\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpcsj\x12*\n" +
-	"\x13GcpVertexAiNotebook\x10\x9e\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpvnb\x122\n" +
+	"\x13GcpVertexAiNotebook\x10\x9e\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpvnb\x12*\n" +
+	"\x13GcpVertexAiEndpoint\x10\x9f\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpvep\x122\n" +
 	"\x1bGcpCloudComposerEnvironment\x10\xa8\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpcce\x12#\n" +
 	"\rGcpKmsKeyRing\x10\xb2\x05\x1a\x0f\xa2\xf7\x04\v\b\x12\x10\x01\"\x05gcpkr\x12 \n" +
 	"\tGcpKmsKey\x10\xb3\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpkms\x12+\n" +

@@ -327,6 +327,12 @@ enum CloudResourceKind {
     id_prefix: "awsath"
   }];
 
+  AwsGlueCatalogDatabase = 264 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsglue"
+  }];
+
   // 400–599: Azure resources
   AzureResourceGroup = 400 [(kind_meta) = {
     provider: azure
@@ -682,6 +688,11 @@ enum CloudResourceKind {
     provider: gcp
     version: v1
     id_prefix: "gcpvnb"
+  }];
+  GcpVertexAiEndpoint = 671 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpvep"
   }];
   GcpCloudComposerEnvironment = 680 [(kind_meta) = {
     provider: gcp
