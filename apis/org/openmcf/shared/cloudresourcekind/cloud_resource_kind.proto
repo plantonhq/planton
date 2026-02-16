@@ -372,6 +372,13 @@ enum CloudResourceKind {
     id_prefix: "awsnep"
   }];
 
+  // In-Memory Database
+  AwsMemorydbCluster = 342 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsmdb"
+  }];
+
   // Streaming
   AwsMskCluster = 350 [(kind_meta) = {
     provider: aws

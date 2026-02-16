@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsmemorydbcluster.v1;
+
+import "org/openmcf/provider/aws/awsmemorydbcluster/v1/api.proto";
+import "org/openmcf/provider/aws/provider.proto";
+
+// AwsMemorydbClusterStackInput is the input for the IaC modules that deploy the MemoryDB cluster.
+message AwsMemorydbClusterStackInput {
+  // target is the AwsMemorydbCluster resource to deploy.
+  AwsMemorydbCluster target = 1;
+  // provider_config contains the AWS provider credentials and configuration.
+  org.openmcf.provider.aws.AwsProviderConfig provider_config = 2;
+}

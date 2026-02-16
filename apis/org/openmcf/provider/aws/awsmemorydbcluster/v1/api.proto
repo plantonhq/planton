@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsmemorydbcluster.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/aws/awsmemorydbcluster/v1/spec.proto";
+import "org/openmcf/provider/aws/awsmemorydbcluster/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// AwsMemorydbCluster is a deployment component for creating and managing
+// Amazon MemoryDB clusters — a fully managed, Redis-compatible, durable
+// in-memory database with microsecond reads and single-digit millisecond writes.
+message AwsMemorydbCluster {
+  // api_version specifies the API version for this resource.
+  string api_version = 1 [(buf.validate.field).string.const = 'aws.openmcf.org/v1'];
+
+  // kind identifies this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'AwsMemorydbCluster'];
+
+  // metadata contains standard resource metadata including name, labels, and annotations.
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec defines the desired state of the MemoryDB cluster.
+  AwsMemorydbClusterSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the observed state and outputs from the deployment.
+  AwsMemorydbClusterStatus status = 5;
+}
+
+// AwsMemorydbClusterStatus contains the status and outputs for the MemoryDB cluster.
+message AwsMemorydbClusterStatus {
+  // outputs contains the values exported from the IaC stack after deployment.
+  AwsMemorydbClusterStackOutputs outputs = 1;
+}

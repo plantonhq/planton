@@ -141,6 +141,8 @@ const (
 	CloudResourceKind_AwsMwaaEnvironment CloudResourceKind = 340
 	// Graph Database
 	CloudResourceKind_AwsNeptuneCluster CloudResourceKind = 341
+	// In-Memory Database
+	CloudResourceKind_AwsMemorydbCluster CloudResourceKind = 342
 	// Streaming
 	CloudResourceKind_AwsMskCluster CloudResourceKind = 350
 	// 400–599: Azure resources
@@ -434,6 +436,7 @@ var (
 		320:  "AwsAppRunnerService",
 		340:  "AwsMwaaEnvironment",
 		341:  "AwsNeptuneCluster",
+		342:  "AwsMemorydbCluster",
 		350:  "AwsMskCluster",
 		400:  "AzureResourceGroup",
 		401:  "AzureAksCluster",
@@ -712,6 +715,7 @@ var (
 		"AwsAppRunnerService":                   320,
 		"AwsMwaaEnvironment":                    340,
 		"AwsNeptuneCluster":                     341,
+		"AwsMemorydbCluster":                    342,
 		"AwsMskCluster":                         350,
 		"AzureResourceGroup":                    400,
 		"AzureAksCluster":                       401,
@@ -1071,7 +1075,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\x93]\n" +
+	"\x02v1\x10\x01*\xbe]\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1140,7 +1144,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x12AwsSagemakerDomain\x10\x8e\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05sgmkd\x12)\n" +
 	"\x13AwsAppRunnerService\x10\xc0\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awsar\x12*\n" +
 	"\x12AwsMwaaEnvironment\x10\xd4\x02\x1a\x11\xa2\xf7\x04\r\b\f\x10\x01\"\aawsmwaa\x12(\n" +
-	"\x11AwsNeptuneCluster\x10\xd5\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsnep\x12$\n" +
+	"\x11AwsNeptuneCluster\x10\xd5\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsnep\x12)\n" +
+	"\x12AwsMemorydbCluster\x10\xd6\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsmdb\x12$\n" +
 	"\rAwsMskCluster\x10\xde\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsmsk\x12'\n" +
 	"\x12AzureResourceGroup\x10\x90\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azrg\x12#\n" +

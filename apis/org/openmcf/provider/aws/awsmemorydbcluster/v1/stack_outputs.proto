@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsmemorydbcluster.v1;
+
+// AwsMemorydbClusterStackOutputs captures observable identifiers and endpoints
+// from a provisioned MemoryDB cluster. These outputs are used by downstream
+// resources to wire dependencies via StringValueOrRef.
+message AwsMemorydbClusterStackOutputs {
+  // The DNS address of the cluster endpoint. Applications connect here for
+  // read-write operations. MemoryDB exposes a single cluster endpoint that
+  // handles slot discovery and routing internally.
+  string cluster_endpoint_address = 1;
+
+  // The port of the cluster endpoint.
+  int32 cluster_endpoint_port = 2;
+
+  // The Amazon Resource Name of the MemoryDB cluster. Used in IAM policies
+  // and cross-service permissions.
+  string cluster_arn = 3;
+
+  // The name of the MemoryDB cluster. Matches metadata.id.
+  string cluster_name = 4;
+
+  // The actual engine patch version running on the cluster (e.g., "7.1.0.20").
+  // May differ from the requested engine_version due to automatic patching.
+  string engine_patch_version = 5;
+
+  // The name of the MemoryDB subnet group associated with this cluster.
+  // Only populated when subnet_ids were provided and a subnet group was
+  // created by the module.
+  string subnet_group_name = 6;
+
+  // The name of the custom parameter group associated with this cluster.
+  // Only populated when parameters were provided and a parameter group
+  // was created by the module.
+  string parameter_group_name = 7;
+}
