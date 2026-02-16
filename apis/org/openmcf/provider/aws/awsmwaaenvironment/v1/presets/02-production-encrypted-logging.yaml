@@ -1,0 +1,66 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsMwaaEnvironment
+metadata:
+  name: prod-encrypted-airflow
+spec:
+  airflowVersion: "2.10.1"
+  sourceBucketArn:
+    valueFrom:
+      kind: AwsS3Bucket
+      name: airflow-source-bucket
+      fieldPath: status.outputs.bucket_arn
+  dagS3Path: "dags/"
+  executionRoleArn:
+    valueFrom:
+      kind: AwsIamRole
+      name: mwaa-execution-role
+      fieldPath: status.outputs.role_arn
+  subnetIds:
+    - valueFrom:
+        kind: AwsVpc
+        name: production-vpc
+        fieldPath: status.outputs.private_subnets.[0].id
+    - valueFrom:
+        kind: AwsVpc
+        name: production-vpc
+        fieldPath: status.outputs.private_subnets.[1].id
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: production-vpc
+      fieldPath: status.outputs.vpc_id
+  securityGroupIds:
+    - valueFrom:
+        kind: AwsSecurityGroup
+        name: mwaa-clients-sg
+        fieldPath: status.outputs.security_group_id
+  kmsKeyArn:
+    valueFrom:
+      kind: AwsKmsKey
+      name: platform-encryption-key
+      fieldPath: status.outputs.key_arn
+  environmentClass: mw1.medium
+  minWorkers: 2
+  maxWorkers: 10
+  minWebservers: 2
+  maxWebservers: 4
+  schedulers: 3
+  webserverAccessMode: PRIVATE_ONLY
+  loggingConfiguration:
+    dagProcessingLogs:
+      enabled: true
+      logLevel: INFO
+    schedulerLogs:
+      enabled: true
+      logLevel: INFO
+    taskLogs:
+      enabled: true
+      logLevel: INFO
+    webserverLogs:
+      enabled: true
+      logLevel: INFO
+    workerLogs:
+      enabled: true
+      logLevel: INFO
+  weeklyMaintenanceWindowStart: "TUE:03:30"
+  workerReplacementStrategy: GRACEFUL

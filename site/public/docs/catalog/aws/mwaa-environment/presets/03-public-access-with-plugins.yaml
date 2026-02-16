@@ -1,0 +1,45 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsMwaaEnvironment
+metadata:
+  name: public-airflow-with-plugins
+spec:
+  airflowVersion: "2.10.1"
+  sourceBucketArn:
+    value: "<s3-bucket-arn>"
+  dagS3Path: "dags/"
+  pluginsS3Path: "plugins/plugins.zip"
+  requirementsS3Path: "requirements/requirements.txt"
+  startupScriptS3Path: "scripts/startup.sh"
+  executionRoleArn:
+    value: "<execution-role-arn>"
+  subnetIds:
+    - value: "<private-subnet-id-az1>"
+    - value: "<private-subnet-id-az2>"
+  associateSecurityGroupIds:
+    - value: "<security-group-id>"
+  environmentClass: mw1.large
+  minWorkers: 1
+  maxWorkers: 25
+  minWebservers: 2
+  maxWebservers: 5
+  schedulers: 3
+  webserverAccessMode: PUBLIC_ONLY
+  airflowConfigurationOptions:
+    core.default_timezone: "America/New_York"
+    webserver.dag_default_view: grid
+  loggingConfiguration:
+    dagProcessingLogs:
+      enabled: true
+      logLevel: INFO
+    schedulerLogs:
+      enabled: true
+      logLevel: INFO
+    taskLogs:
+      enabled: true
+      logLevel: INFO
+    webserverLogs:
+      enabled: true
+      logLevel: WARNING
+    workerLogs:
+      enabled: true
+      logLevel: INFO

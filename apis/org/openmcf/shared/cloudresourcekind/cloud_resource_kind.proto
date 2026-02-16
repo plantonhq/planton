@@ -353,6 +353,13 @@ enum CloudResourceKind {
     id_prefix: "awsar"
   }];
 
+  // Workflow / Orchestration
+  AwsMwaaEnvironment = 340 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsmwaa"
+  }];
+
   // Streaming
   AwsMskCluster = 350 [(kind_meta) = {
     provider: aws
