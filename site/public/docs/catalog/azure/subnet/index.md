@@ -228,7 +228,7 @@ After deployment, the following outputs are available in `status.outputs`:
 - [AzureResourceGroup](/docs/catalog/azure/resource-group) — provides the resource group where the parent VNet exists
 - [AzureVpc](/docs/catalog/azure/vpc-virtual-network) — provides the parent Virtual Network that contains this subnet
 - [AzureAksCluster](/docs/catalog/azure/aks-cluster) — references `subnet_id` for node pool placement
-- [AzureContainerAppEnvironment](/docs/catalog/azure/azurecontainerappenvironment-research-design-documentation) — requires a delegated subnet for VNet integration
+- [AzureContainerAppEnvironment](/docs/catalog/azure/container-app-environment) — requires a delegated subnet for VNet integration
 - [AzurePostgresqlFlexibleServer](/docs/catalog/azure/postgresql-flexible-server) — requires a delegated subnet for VNet integration
 - [AzureMysqlFlexibleServer](/docs/catalog/azure/mysql-flexible-server) — requires a delegated subnet for VNet integration
 - [AzurePrivateEndpoint](/docs/catalog/azure/private-endpoint) — deployed into a subnet for private connectivity to Azure PaaS services

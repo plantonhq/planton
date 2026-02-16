@@ -171,18 +171,18 @@ spec:
     valueFrom:
       kind: GcpProject
       name: my-project
-      fieldPath: status.outputs.project_id
+      field: status.outputs.project_id
   instance:
     valueFrom:
       kind: GcpSpannerInstance
       name: prod-spanner
-      fieldPath: status.outputs.instance_name
+      field: status.outputs.instance_name
   databaseName: composed-db
   kmsKeyName:
     valueFrom:
       kind: GcpKmsKey
       name: spanner-key
-      fieldPath: status.outputs.key_id
+      field: status.outputs.key_id
   databaseDialect: GOOGLE_STANDARD_SQL
   versionRetentionPeriod: "7d"
   enableDropProtection: true
@@ -200,7 +200,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpSpannerInstance](/docs/catalog/gcp/spanner-instance) — provides the compute instance that hosts this database
-- [GcpKmsKey](/docs/catalog/gcp/kms-key) — provides the encryption key for CMEK
-- [GcpKmsKeyRing](/docs/catalog/gcp/kms-key-ring) — provides the key ring containing the encryption key
-- [GcpProject](/docs/catalog/gcp/project) — provides the GCP project
+- [GcpSpannerInstance](/docs/catalog/gcp/gcpspannerinstance) — provides the compute instance that hosts this database
+- [GcpKmsKey](/docs/catalog/gcp/gcpkmskey) — provides the encryption key for CMEK
+- [GcpKmsKeyRing](/docs/catalog/gcp/gcpkmskeyring) — provides the key ring containing the encryption key
+- [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project

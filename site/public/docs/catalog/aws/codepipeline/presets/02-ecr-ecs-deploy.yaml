@@ -1,0 +1,53 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsCodePipeline
+metadata:
+  name: my-service-deploy
+spec:
+  pipelineType: V2
+  executionMode: QUEUED
+  roleArn:
+    value: "<codepipeline-service-role-arn>"
+  artifactStores:
+    - location:
+        value: "<pipeline-artifacts-bucket-name>"
+  stages:
+    - name: Source
+      actions:
+        - name: ECRSource
+          category: Source
+          owner: AWS
+          provider: ECR
+          version: "1"
+          configuration:
+            RepositoryName: "<ecr-repository-name>"
+            ImageTag: latest
+          outputArtifacts:
+            - ECROutput
+
+    - name: Build
+      actions:
+        - name: PrepareDeployment
+          category: Build
+          owner: AWS
+          provider: CodeBuild
+          version: "1"
+          configuration:
+            ProjectName: "<codebuild-deploy-prep-project>"
+          inputArtifacts:
+            - ECROutput
+          outputArtifacts:
+            - DeploymentBundle
+
+    - name: Deploy
+      actions:
+        - name: ECSDeployProd
+          category: Deploy
+          owner: AWS
+          provider: ECS
+          version: "1"
+          configuration:
+            ClusterName: "<ecs-cluster-name>"
+            ServiceName: "<ecs-service-name>"
+            FileName: imagedefinitions.json
+          inputArtifacts:
+            - DeploymentBundle

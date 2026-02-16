@@ -40,7 +40,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.GcpBigQueryDataset.my-dataset
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   datasetId: analytics_events
   location: US
 ```
@@ -105,7 +106,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: staging.GcpBigQueryDataset.staging-events
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   datasetId: staging_events
   location: us-central1
   friendlyName: Staging Events
@@ -130,13 +132,15 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.GcpBigQueryDataset.prod-analytics
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   datasetId: prod_analytics
   location: US
   friendlyName: Production Analytics
   description: Core analytics dataset with CMEK and physical billing
   storageBillingModel: PHYSICAL
-  kmsKeyName: projects/my-gcp-project/locations/us/keyRings/analytics-ring/cryptoKeys/analytics-key
+  kmsKeyName:
+    value: projects/my-gcp-project/locations/us/keyRings/analytics-ring/cryptoKeys/analytics-key
 ```
 
 ### Dataset with Explicit Access Control
@@ -154,7 +158,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.GcpBigQueryDataset.finance-data
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   datasetId: finance_data
   location: EU
   friendlyName: Finance Data
@@ -218,7 +223,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpCloudDnsZone](/docs/catalog/gcp/gcpclouddnszone) — manages DNS zones in the same project
+- [GcpProject](/docs/catalog/gcp/project) — provides the GCP project where the dataset is created
 - [GcpKmsKeyRing](/docs/catalog/gcp/kms-key-ring) — provides the key ring containing KMS keys for CMEK encryption
 - [GcpKmsKey](/docs/catalog/gcp/kms-key) — provides the Cloud KMS encryption key referenced by `kmsKeyName`
-- [GcpIamServiceAccount](/docs/catalog/gcp/gcpiamserviceaccount) — creates service accounts that can be granted dataset access
+- [GcpServiceAccount](/docs/catalog/gcp/service-account) — creates service accounts that can be granted dataset access

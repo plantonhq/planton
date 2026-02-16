@@ -42,13 +42,16 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.GcpMemorystoreInstance.my-cache
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   instanceName: my-cache
   location: us-central1
   shardCount: 1
   pscAutoConnections:
-    - network: projects/my-gcp-project/global/networks/default
-      projectId: my-gcp-project
+    - network:
+        value: projects/my-gcp-project/global/networks/default
+      projectId:
+        value: my-gcp-project
 ```
 
 Deploy:
@@ -114,7 +117,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.GcpMemorystoreInstance.session-cache
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   instanceName: session-cache
   location: us-central1
   shardCount: 1
@@ -123,8 +127,10 @@ spec:
   replicaCount: 1
   deletionProtectionEnabled: true
   pscAutoConnections:
-    - network: projects/my-gcp-project/global/networks/prod-vpc
-      projectId: my-gcp-project
+    - network:
+        value: projects/my-gcp-project/global/networks/prod-vpc
+      projectId:
+        value: my-gcp-project
   persistenceConfig:
     mode: RDB
     rdbConfig:
@@ -146,7 +152,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.GcpMemorystoreInstance.realtime-store
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   instanceName: realtime-store
   location: us-east1
   shardCount: 3
@@ -156,8 +163,10 @@ spec:
   replicaCount: 2
   deletionProtectionEnabled: true
   pscAutoConnections:
-    - network: projects/my-gcp-project/global/networks/prod-vpc
-      projectId: my-gcp-project
+    - network:
+        value: projects/my-gcp-project/global/networks/prod-vpc
+      projectId:
+        value: my-gcp-project
   persistenceConfig:
     mode: AOF
     aofConfig:

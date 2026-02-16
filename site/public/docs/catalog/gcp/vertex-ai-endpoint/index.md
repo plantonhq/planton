@@ -172,19 +172,19 @@ spec:
     valueFrom:
       kind: GcpProject
       name: ml-project
-      fieldPath: status.outputs.project_id
+      field: status.outputs.project_id
   location: us-central1
   displayName: Composed ML Endpoint
   network:
     valueFrom:
       kind: GcpVpc
       name: ml-vpc
-      fieldPath: status.outputs.network_self_link
+      field: status.outputs.network_self_link
   kmsKeyName:
     valueFrom:
       kind: GcpKmsKey
       name: ml-encryption-key
-      fieldPath: status.outputs.key_id
+      field: status.outputs.key_id
 ```
 
 ## Stack Outputs

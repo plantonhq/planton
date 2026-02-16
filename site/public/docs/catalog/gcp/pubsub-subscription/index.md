@@ -42,9 +42,11 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.GcpPubSubSubscription.my-subscription
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   subscriptionName: my-subscription
-  topic: projects/my-gcp-project/topics/my-topic
+  topic:
+    value: projects/my-gcp-project/topics/my-topic
 ```
 
 Deploy:
@@ -119,9 +121,11 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.GcpPubSubSubscription.push-subscription
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   subscriptionName: push-subscription
-  topic: projects/my-gcp-project/topics/events-topic
+  topic:
+    value: projects/my-gcp-project/topics/events-topic
   ackDeadlineSeconds: 30
   pushConfig:
     pushEndpoint: https://my-service.example.com/pubsub/push
@@ -145,9 +149,11 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.GcpPubSubSubscription.bq-subscription
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   subscriptionName: bq-subscription
-  topic: projects/my-gcp-project/topics/analytics-topic
+  topic:
+    value: projects/my-gcp-project/topics/analytics-topic
   enableExactlyOnceDelivery: true
   bigqueryConfig:
     table: my-gcp-project.analytics_dataset.events
@@ -155,7 +161,8 @@ spec:
     dropUnknownFields: true
     writeMetadata: true
   deadLetterPolicy:
-    deadLetterTopic: projects/my-gcp-project/topics/analytics-dlq
+    deadLetterTopic:
+      value: projects/my-gcp-project/topics/analytics-dlq
     maxDeliveryAttempts: 10
   retryPolicy:
     minimumBackoff: "15s"
@@ -177,13 +184,16 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.GcpPubSubSubscription.gcs-subscription
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   subscriptionName: gcs-subscription
-  topic: projects/my-gcp-project/topics/logs-topic
+  topic:
+    value: projects/my-gcp-project/topics/logs-topic
   ackDeadlineSeconds: 600
   messageRetentionDuration: "2678400s"
   cloudStorageConfig:
-    bucket: my-logs-archive-bucket
+    bucket:
+      value: my-logs-archive-bucket
     filenamePrefix: pubsub/logs/
     filenameSuffix: .avro
     maxBytes: 1073741824

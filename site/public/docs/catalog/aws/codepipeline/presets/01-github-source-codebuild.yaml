@@ -1,0 +1,49 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsCodePipeline
+metadata:
+  name: my-app-ci
+spec:
+  pipelineType: V2
+  executionMode: QUEUED
+  roleArn:
+    value: "<codepipeline-service-role-arn>"
+  artifactStores:
+    - location:
+        value: "<pipeline-artifacts-bucket-name>"
+  stages:
+    - name: Source
+      actions:
+        - name: GitHubSource
+          category: Source
+          owner: AWS
+          provider: CodeStarSourceConnection
+          version: "1"
+          configuration:
+            ConnectionArn: "<codestar-connection-arn>"
+            FullRepositoryId: "<github-org>/<github-repo>"
+            BranchName: main
+            OutputArtifactFormat: CODE_ZIP
+          outputArtifacts:
+            - SourceOutput
+          namespace: SourceVariables
+    - name: Build
+      actions:
+        - name: BuildAndTest
+          category: Build
+          owner: AWS
+          provider: CodeBuild
+          version: "1"
+          configuration:
+            ProjectName: "<codebuild-project-name>"
+          inputArtifacts:
+            - SourceOutput
+          outputArtifacts:
+            - BuildOutput
+  triggers:
+    - providerType: CodeStarSourceConnection
+      gitConfiguration:
+        sourceActionName: GitHubSource
+        push:
+          - branches:
+              includes:
+                - main

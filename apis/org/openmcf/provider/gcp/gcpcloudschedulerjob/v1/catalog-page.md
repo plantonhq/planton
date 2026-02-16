@@ -26,6 +26,11 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpCloudSchedulerJob
 metadata:
   name: my-cron-job
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.GcpCloudSchedulerJob.my-cron-job
 spec:
   projectId:
     value: my-gcp-project
@@ -118,6 +123,11 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpCloudSchedulerJob
 metadata:
   name: daily-report
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpCloudSchedulerJob.daily-report
 spec:
   projectId:
     value: my-gcp-project
@@ -153,6 +163,11 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpCloudSchedulerJob
 metadata:
   name: pipeline-trigger
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpCloudSchedulerJob.pipeline-trigger
 spec:
   projectId:
     value: my-gcp-project
@@ -180,12 +195,17 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpCloudSchedulerJob
 metadata:
   name: composed-scheduler
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpCloudSchedulerJob.composed-scheduler
 spec:
   projectId:
     valueFrom:
       kind: GcpProject
       name: my-project
-      fieldPath: status.outputs.project_id
+      field: status.outputs.project_id
   location: us-central1
   schedule: "0 8 * * *"
   pubsubTarget:
@@ -193,7 +213,7 @@ spec:
       valueFrom:
         kind: GcpPubSubTopic
         name: events-topic
-        fieldPath: status.outputs.topic_id
+        field: status.outputs.topic_id
     data: eyJ0cmlnZ2VyIjogInNjaGVkdWxlZCJ9
 ```
 
@@ -209,8 +229,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [GcpPubSubTopic](/docs/catalog/gcp/pubsub-topic) — provides the target topic for Pub/Sub scheduled publishing
-- [GcpCloudTasksQueue](/docs/catalog/gcp/cloud-tasks-queue) — asynchronous task dispatch (complementary to cron-based scheduling)
-- [GcpCloudRun](/docs/catalog/gcp/cloud-run) — common HTTP target for scheduled job invocation
-- [GcpServiceAccount](/docs/catalog/gcp/service-account) — provides the identity for OIDC/OAuth authentication
-- [GcpProject](/docs/catalog/gcp/project) — project hosting the scheduler job and target resources
+- [GcpPubSubTopic](/docs/catalog/gcp/gcppubsubtopic) — provides the target topic for Pub/Sub scheduled publishing
+- [GcpCloudTasksQueue](/docs/catalog/gcp/gcpcloudtasksqueue) — asynchronous task dispatch (complementary to cron-based scheduling)
+- [GcpCloudRun](/docs/catalog/gcp/gcpcloudrun) — common HTTP target for scheduled job invocation
+- [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — provides the identity for OIDC/OAuth authentication
+- [GcpProject](/docs/catalog/gcp/gcpproject) — project hosting the scheduler job and target resources

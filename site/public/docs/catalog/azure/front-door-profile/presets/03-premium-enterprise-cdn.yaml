@@ -1,0 +1,61 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureFrontDoorProfile
+metadata:
+  name: my-enterprise-cdn
+spec:
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-profile-name>
+  sku: Premium_AzureFrontDoor
+  responseTimeoutSeconds: 120  # default from spec
+  endpoints:
+    - name: secure-endpoint
+      enabled: true  # default from spec
+  originGroups:
+    - name: private-backend
+      sessionAffinityEnabled: true  # default from spec
+      loadBalancing:
+        sampleSize: 4  # default from spec
+        successfulSamplesRequired: 3  # default from spec
+        additionalLatencyInMilliseconds: 50  # default from spec
+      healthProbe:
+        protocol: Https
+        path: /health
+        requestType: GET
+        intervalInSeconds: 30
+      origins:
+        - name: app-service
+          hostName: <your-app>.azurewebsites.net
+          originHostHeader: <your-app>.azurewebsites.net
+          certificateNameCheckEnabled: true  # required for private link
+          priority: 1  # default from spec
+          weight: 500  # default from spec
+          privateLink:
+            location: <azure-region>
+            privateLinkTargetId: /subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.Web/sites/<your-app>
+            requestMessage: "Access request for CDN FrontDoor Private Link Origin"  # default from spec
+            targetType: sites
+  routes:
+    - name: secure-route
+      endpointName: secure-endpoint
+      originGroupName: private-backend
+      patternsToMatch:
+        - "/*"
+      supportedProtocols:
+        - Http
+        - Https
+      forwardingProtocol: HttpsOnly
+      httpsRedirectEnabled: true  # default from spec
+      linkToDefaultDomain: true  # default from spec
+      cache:
+        queryStringCachingBehavior: IgnoreQueryString  # default from spec
+        compressionEnabled: true
+        contentTypesToCompress:
+          - text/html
+          - text/css
+          - text/javascript
+          - application/javascript
+          - application/json
+          - application/xml
+          - image/svg+xml
+          - font/woff2

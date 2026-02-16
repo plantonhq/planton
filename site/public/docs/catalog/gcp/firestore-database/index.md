@@ -166,7 +166,7 @@ spec:
     valueFrom:
       kind: GcpProject
       name: my-project
-      fieldPath: status.outputs.project_id
+      field: status.outputs.project_id
   locationId: nam5
   databaseName: composed-db
   type: FIRESTORE_NATIVE
@@ -174,12 +174,14 @@ spec:
     valueFrom:
       kind: GcpKmsKey
       name: firestore-key
-      fieldPath: status.outputs.key_id
+      field: status.outputs.key_id
   pointInTimeRecoveryEnablement: POINT_IN_TIME_RECOVERY_ENABLED
   deleteProtectionState: DELETE_PROTECTION_ENABLED
 ```
 
 ## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
 
 | Output | Type | Description |
 |--------|------|-------------|

@@ -1,0 +1,21 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsFsxLustreFileSystem
+metadata:
+  org: example-org
+  env: prod
+  name: datalake-fsx
+  id: datalake-fsx-id
+spec:
+  deployment_type: PERSISTENT_1
+  storage_capacity_gib: 6000
+  storage_type: HDD
+  per_unit_storage_throughput: 12
+  data_compression_type: LZ4
+  subnet_id:
+    value: "<subnet-id>"
+  security_group_ids:
+    - value: "<security-group-id>"
+  automatic_backup_retention_days: 14
+  daily_automatic_backup_start_time: "02:00"
+  copy_tags_to_backups: true
+  weekly_maintenance_start_time: "1:05:00"

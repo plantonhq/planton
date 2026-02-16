@@ -179,4 +179,4 @@ After deployment, the following outputs are available in `status.outputs`:
 
 - [AzureResourceGroup](/docs/catalog/azure/resource-group) — provides the resource group for workspace placement
 - [AzureAksCluster](/docs/catalog/azure/aks-cluster) — AKS clusters send container logs to the workspace via Container Insights
-- [AzureContainerAppEnvironment](/docs/catalog/azure/azurecontainerappenvironment-research-design-documentation) — Container App environments reference the workspace for log collection
+- [AzureContainerAppEnvironment](/docs/catalog/azure/container-app-environment) — Container App environments reference the workspace for log collection

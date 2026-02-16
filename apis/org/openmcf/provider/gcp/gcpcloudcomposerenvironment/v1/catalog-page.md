@@ -268,6 +268,8 @@ spec:
 
 ## Stack Outputs
 
+After deployment, the following outputs are available in `status.outputs`:
+
 | Output | Type | Description |
 |--------|------|-------------|
 | `environment_id` | `string` | Fully qualified resource ID (`projects/{project}/locations/{region}/environments/{name}`) |
@@ -278,8 +280,8 @@ spec:
 
 ## Related Components
 
-- [GCP VPC](/docs/catalog/gcp/vpc) — Network for Composer 2.x VPC peering
-- [GCP Subnetwork](/docs/catalog/gcp/subnetwork) — Subnetwork for node placement
-- [GCP Service Account](/docs/catalog/gcp/service-account) — Custom identity for Composer nodes
-- [GCP KMS Key](/docs/catalog/gcp/kms-key) — Customer-managed encryption key for CMEK
-- [GCP GCS Bucket](/docs/catalog/gcp/gcs-bucket) — Storage for DAGs, plugins, and snapshots
+- [GcpVpc](/docs/catalog/gcp/gcpvpc) — Network for Composer 2.x VPC peering
+- [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork) — Subnetwork for node placement
+- [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — Custom identity for Composer nodes
+- [GcpKmsKey](/docs/catalog/gcp/gcpkmskey) — Customer-managed encryption key for CMEK
+- [GcpGcsBucket](/docs/catalog/gcp/gcpgcsbucket) — Storage for DAGs, plugins, and snapshots

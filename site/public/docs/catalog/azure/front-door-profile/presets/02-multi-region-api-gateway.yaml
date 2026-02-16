@@ -1,0 +1,76 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureFrontDoorProfile
+metadata:
+  name: my-api-gateway
+spec:
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-profile-name>
+  sku: Standard_AzureFrontDoor  # default from spec
+  responseTimeoutSeconds: 60  # lower timeout for APIs
+  endpoints:
+    - name: gateway-endpoint
+      enabled: true  # default from spec
+  originGroups:
+    - name: api-backends
+      sessionAffinityEnabled: false  # stateless APIs
+      loadBalancing:
+        sampleSize: 4  # default from spec
+        successfulSamplesRequired: 3  # default from spec
+        additionalLatencyInMilliseconds: 50  # default from spec
+      healthProbe:
+        protocol: Https
+        path: /api/healthz
+        requestType: GET
+        intervalInSeconds: 15  # fast detection for APIs
+      origins:
+        - name: api-east
+          hostName: <your-api-east>.azurecontainerapps.io
+          originHostHeader: <your-api-east>.azurecontainerapps.io
+          certificateNameCheckEnabled: true  # default from spec
+          priority: 1
+          weight: 500
+        - name: api-west
+          hostName: <your-api-west>.azurecontainerapps.io
+          originHostHeader: <your-api-west>.azurecontainerapps.io
+          certificateNameCheckEnabled: true  # default from spec
+          priority: 1
+          weight: 500
+    - name: static-assets
+      sessionAffinityEnabled: false
+      origins:
+        - name: blob-origin
+          hostName: <your-storage>.blob.core.windows.net
+          originHostHeader: <your-storage>.blob.core.windows.net
+          certificateNameCheckEnabled: true  # default from spec
+  routes:
+    - name: api-route
+      endpointName: gateway-endpoint
+      originGroupName: api-backends
+      patternsToMatch:
+        - "/api/*"
+      supportedProtocols:
+        - Http
+        - Https
+      forwardingProtocol: HttpsOnly
+      httpsRedirectEnabled: true  # default from spec
+      linkToDefaultDomain: true  # default from spec
+    - name: static-route
+      endpointName: gateway-endpoint
+      originGroupName: static-assets
+      patternsToMatch:
+        - "/static/*"
+      supportedProtocols:
+        - Http
+        - Https
+      forwardingProtocol: HttpsOnly
+      httpsRedirectEnabled: true  # default from spec
+      linkToDefaultDomain: true  # default from spec
+      cache:
+        queryStringCachingBehavior: IgnoreQueryString  # default from spec
+        compressionEnabled: true
+        contentTypesToCompress:
+          - text/css
+          - text/javascript
+          - application/javascript
+          - image/svg+xml

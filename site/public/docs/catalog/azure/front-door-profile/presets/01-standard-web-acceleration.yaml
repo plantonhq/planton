@@ -1,0 +1,54 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureFrontDoorProfile
+metadata:
+  name: my-web-cdn
+spec:
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-profile-name>
+  sku: Standard_AzureFrontDoor  # default from spec
+  responseTimeoutSeconds: 120  # default from spec
+  endpoints:
+    - name: web-endpoint
+      enabled: true  # default from spec
+  originGroups:
+    - name: web-backend
+      sessionAffinityEnabled: true  # default from spec
+      loadBalancing:
+        sampleSize: 4  # default from spec
+        successfulSamplesRequired: 3  # default from spec
+        additionalLatencyInMilliseconds: 50  # default from spec
+      healthProbe:
+        protocol: Https
+        path: /
+        requestType: HEAD  # default from spec
+        intervalInSeconds: 30
+      origins:
+        - name: app-origin
+          hostName: <your-app>.azurewebsites.net
+          originHostHeader: <your-app>.azurewebsites.net
+          certificateNameCheckEnabled: true  # default from spec
+          priority: 1  # default from spec
+          weight: 500  # default from spec
+  routes:
+    - name: web-route
+      endpointName: web-endpoint
+      originGroupName: web-backend
+      patternsToMatch:
+        - "/*"
+      supportedProtocols:
+        - Http
+        - Https
+      forwardingProtocol: HttpsOnly
+      httpsRedirectEnabled: true  # default from spec
+      linkToDefaultDomain: true  # default from spec
+      cache:
+        queryStringCachingBehavior: IgnoreQueryString  # default from spec
+        compressionEnabled: true
+        contentTypesToCompress:
+          - text/html
+          - text/css
+          - text/javascript
+          - application/javascript
+          - application/json
+          - image/svg+xml

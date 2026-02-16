@@ -1,4 +1,4 @@
-# AWS FSx ONTAP Storage Virtual Machine
+# AWS FSx ONTAP Storage VM
 
 Deploys a Storage Virtual Machine (SVM) on an existing FSx for NetApp ONTAP file system, providing multi-protocol data access endpoints for NFS, iSCSI, and optionally SMB via Active Directory integration. The SVM serves as the data access layer and parent container for ONTAP volumes.
 

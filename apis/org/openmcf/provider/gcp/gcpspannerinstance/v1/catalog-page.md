@@ -176,7 +176,7 @@ spec:
     valueFrom:
       kind: GcpProject
       name: my-project
-      fieldPath: status.outputs.project_id
+      field: status.outputs.project_id
   instanceName: ref-spanner
   config: regional-us-central1
   displayName: Referenced Spanner

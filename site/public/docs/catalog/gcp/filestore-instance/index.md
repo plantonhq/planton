@@ -41,7 +41,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.GcpFilestoreInstance.my-nfs
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   instanceName: my-nfs-server
   location: us-central1-a
   tier: BASIC_SSD
@@ -49,7 +50,8 @@ spec:
     name: vol1
     capacityGb: 2560
   networkConfig:
-    network: default
+    network:
+      value: default
 ```
 
 Deploy:
@@ -105,8 +107,14 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpFilestoreInstance
 metadata:
   name: prod-nfs
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpFilestoreInstance.prod-nfs
 spec:
-  projectId: my-prod-project
+  projectId:
+    value: my-prod-project
   instanceName: prod-nfs-server
   location: us-central1
   tier: ENTERPRISE
@@ -122,7 +130,8 @@ spec:
         accessMode: READ_WRITE
         squashMode: ROOT_SQUASH
   networkConfig:
-    network: my-vpc
+    network:
+      value: my-vpc
     connectMode: PRIVATE_SERVICE_ACCESS
 ```
 
@@ -135,8 +144,14 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpFilestoreInstance
 metadata:
   name: perf-nfs
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpFilestoreInstance.perf-nfs
 spec:
-  projectId: my-project
+  projectId:
+    value: my-project
   instanceName: render-farm-nfs
   location: us-west1-a
   tier: ZONAL
@@ -167,8 +182,14 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpFilestoreInstance
 metadata:
   name: secure-nfs
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpFilestoreInstance.secure-nfs
 spec:
-  projectId: my-project
+  projectId:
+    value: my-project
   instanceName: secure-nfs
   location: us-east1-b
   tier: ZONAL
@@ -186,7 +207,8 @@ spec:
         accessMode: READ_ONLY
         squashMode: NO_ROOT_SQUASH
   networkConfig:
-    network: my-vpc
+    network:
+      value: my-vpc
 ```
 
 ### Cost-Effective HDD Storage
@@ -198,8 +220,14 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpFilestoreInstance
 metadata:
   name: archive-nfs
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.GcpFilestoreInstance.archive-nfs
 spec:
-  projectId: my-project
+  projectId:
+    value: my-project
   instanceName: archive-nfs
   location: us-central1-a
   tier: STANDARD
@@ -207,7 +235,8 @@ spec:
     name: archive
     capacityGb: 1024
   networkConfig:
-    network: default
+    network:
+      value: default
 ```
 
 ### Infra-Chart Composition with valueFrom
@@ -219,6 +248,11 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpFilestoreInstance
 metadata:
   name: shared-nfs
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpFilestoreInstance.shared-nfs
 spec:
   projectId:
     valueFrom:
@@ -245,13 +279,15 @@ spec:
 
 ## Stack Outputs
 
+After deployment, the following outputs are available in `status.outputs`:
+
 | Output | Type | Description |
 |--------|------|-------------|
-| `instanceId` | `string` | Fully qualified resource ID (`projects/{project}/locations/{location}/instances/{instance}`) |
-| `instanceName` | `string` | Short name of the Filestore instance |
-| `ipAddresses` | `string[]` | IP addresses on the connected VPC network. Use the first address for NFS mounts. |
-| `fileShareName` | `string` | Name of the file share. Mount path: `<ipAddresses[0]>:/<fileShareName>` |
-| `createTime` | `string` | Instance creation timestamp (RFC3339 format) |
+| `instance_id` | `string` | Fully qualified resource ID (`projects/{project}/locations/{location}/instances/{instance}`) |
+| `instance_name` | `string` | Short name of the Filestore instance |
+| `ip_addresses` | `string[]` | IP addresses on the connected VPC network. Use the first address for NFS mounts. |
+| `file_share_name` | `string` | Name of the file share. Mount path: `<ip_addresses[0]>:/<file_share_name>` |
+| `create_time` | `string` | Instance creation timestamp (RFC3339 format) |
 
 ## Related Components
 

@@ -179,18 +179,18 @@ spec:
     valueFrom:
       kind: GcpProject
       name: my-project
-      fieldPath: status.outputs.project_id
+      field: status.outputs.project_id
   instance:
     valueFrom:
       kind: GcpSpannerInstance
       name: prod-spanner
-      fieldPath: status.outputs.instance_name
+      field: status.outputs.instance_name
   databaseName: composed-db
   kmsKeyName:
     valueFrom:
       kind: GcpKmsKey
       name: spanner-key
-      fieldPath: status.outputs.key_id
+      field: status.outputs.key_id
   databaseDialect: GOOGLE_STANDARD_SQL
   versionRetentionPeriod: "7d"
   enableDropProtection: true

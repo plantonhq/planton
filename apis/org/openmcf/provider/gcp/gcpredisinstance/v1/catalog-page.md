@@ -34,7 +34,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.GcpRedisInstance.my-redis
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   instanceName: my-redis
   region: us-central1
   tier: BASIC
@@ -100,7 +101,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.GcpRedisInstance.prod-cache
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   instanceName: prod-cache
   region: us-central1
   tier: STANDARD_HA
@@ -128,7 +130,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.GcpRedisInstance.analytics-redis
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   instanceName: analytics-redis
   region: europe-west1
   tier: STANDARD_HA

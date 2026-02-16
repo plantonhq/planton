@@ -299,4 +299,4 @@ After deployment, the following outputs are available in `status.outputs`:
 - [AwsAlb](/docs/catalog/aws/alb) — provides the DNS name and hosted zone ID for alias record targets
 - [AwsCloudfront](/docs/catalog/aws/cloudfront) — provides the distribution DNS name for alias record targets
 - [AwsVpc](/docs/catalog/aws/vpc) — provides VPC IDs for private zone associations
-- [AwsCertManagerCert](/docs/catalog/aws/certificate-manager-certificate) — DNS validation of ACM certificates requires records in the zone
+- [AwsCertManagerCert](/docs/catalog/aws/certificate) — DNS validation of ACM certificates requires records in the zone

@@ -189,7 +189,7 @@ spec:
     valueFrom:
       kind: GcpProject
       name: my-project
-      fieldPath: status.outputs.project_id
+      field: status.outputs.project_id
   queueName: composed-task-queue
   location: us-central1
   desiredState: RUNNING
@@ -200,7 +200,7 @@ spec:
         valueFrom:
           kind: GcpServiceAccount
           name: task-invoker-sa
-          fieldPath: status.outputs.email
+          field: status.outputs.email
       audience: https://my-service.run.app
     uriOverride:
       scheme: HTTPS

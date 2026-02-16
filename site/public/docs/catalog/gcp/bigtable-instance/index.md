@@ -40,7 +40,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.GcpBigtableInstance.my-bigtable
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   instanceName: my-bigtable-instance
   clusters:
     - clusterId: my-cluster-01
@@ -100,7 +101,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.GcpBigtableInstance.analytics-bt
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   instanceName: analytics-bigtable
   clusters:
     - clusterId: analytics-cluster
@@ -123,7 +125,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.GcpBigtableInstance.timeseries-bt
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   instanceName: timeseries-bigtable
   displayName: Time Series Production
   deletionProtection: true
@@ -151,7 +154,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.GcpBigtableInstance.ha-bigtable
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   instanceName: ha-bigtable-prod
   displayName: HA Production Bigtable
   deletionProtection: true
@@ -189,7 +193,7 @@ spec:
     valueFrom:
       kind: GcpProject
       name: prod-project
-      fieldPath: status.outputs.project_id
+      field: status.outputs.project_id
   instanceName: encrypted-bigtable
   deletionProtection: true
   clusters:
@@ -199,7 +203,7 @@ spec:
         valueFrom:
           kind: GcpKmsKey
           name: bigtable-cmek-key
-          fieldPath: status.outputs.key_id
+          field: status.outputs.key_id
       autoscalingConfig:
         minNodes: 3
         maxNodes: 30
@@ -223,7 +227,8 @@ metadata:
     pulumi.openmcf.org/project: data-platform
     pulumi.openmcf.org/stack.name: prod.GcpBigtableInstance.enterprise-bt
 spec:
-  projectId: acme-data-prod
+  projectId:
+    value: acme-data-prod
   instanceName: enterprise-bigtable
   displayName: Enterprise Data Platform
   deletionProtection: true
@@ -253,6 +258,8 @@ spec:
 
 ## Stack Outputs
 
+After deployment, the following outputs are available in `status.outputs`:
+
 | Output | Type | Description |
 |--------|------|-------------|
 | `instance_id` | `string` | Fully qualified instance resource name. Format: `projects/{project}/instances/{instance}` |
@@ -260,7 +267,7 @@ spec:
 
 ## Related Components
 
-- [GCP Project](/docs/catalog/gcp/project) — project where the instance is created
-- [GCP KMS Key](/docs/catalog/gcp/kms-key) — encryption key for CMEK-protected clusters
-- [GCP KMS Key Ring](/docs/catalog/gcp/kms-key-ring) — key ring containing the CMEK key
-- [GCP VPC](/docs/catalog/gcp/vpc) — network infrastructure for Private Service Connect (if applicable)
+- [GcpProject](/docs/catalog/gcp/project) — project where the instance is created
+- [GcpKmsKey](/docs/catalog/gcp/kms-key) — encryption key for CMEK-protected clusters
+- [GcpKmsKeyRing](/docs/catalog/gcp/kms-key-ring) — key ring containing the CMEK key
+- [GcpVpc](/docs/catalog/gcp/vpc) — network infrastructure for Private Service Connect (if applicable)

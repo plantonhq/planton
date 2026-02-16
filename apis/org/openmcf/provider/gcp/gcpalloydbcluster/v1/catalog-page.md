@@ -234,6 +234,8 @@ spec:
 
 ## Stack Outputs
 
+After deployment, the following outputs are available in `status.outputs`:
+
 | Output | Type | Description |
 |--------|------|-------------|
 | `cluster_id` | `string` | Fully qualified cluster resource name: `projects/{p}/locations/{l}/clusters/{c}` |
@@ -245,8 +247,8 @@ spec:
 
 ## Related Components
 
-- [GCP VPC](/docs/catalog/gcp/gcpvpc) — VPC network with Private Service Access for cluster connectivity
-- [GCP KMS Key](/docs/catalog/gcp/gcpkmskey) — CMEK encryption keys for data, backups, and continuous backups
-- [GCP KMS Key Ring](/docs/catalog/gcp/gcpkmskeyring) — Key ring containing KMS keys (must be in the same region as the cluster)
-- [GCP Service Account](/docs/catalog/gcp/gcpserviceaccount) — Service account for application-level IAM access to AlloyDB
-- [GCP Firewall Rule](/docs/catalog/gcp/gcpfirewallrule) — Network-level access control for AlloyDB connectivity
+- [GcpVpc](/docs/catalog/gcp/gcpvpc) — VPC network with Private Service Access for cluster connectivity
+- [GcpKmsKey](/docs/catalog/gcp/gcpkmskey) — CMEK encryption keys for data, backups, and continuous backups
+- [GcpKmsKeyRing](/docs/catalog/gcp/gcpkmskeyring) — Key ring containing KMS keys (must be in the same region as the cluster)
+- [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — Service account for application-level IAM access to AlloyDB
+- [GcpFirewallRule](/docs/catalog/gcp/gcpfirewallrule) — Network-level access control for AlloyDB connectivity

@@ -302,5 +302,5 @@ After deployment, the following outputs are available in `status.outputs`:
 - [AwsVpc](/docs/catalog/aws/vpc) — provides the subnets for NLB placement via subnet mappings
 - [AwsSecurityGroup](/docs/catalog/aws/security-group) — optional inbound traffic filtering for the NLB
 - [AwsRoute53Zone](/docs/catalog/aws/route53-zone) — hosts the DNS zone for alias records
-- [AwsCertManagerCert](/docs/catalog/aws/certificate-manager-certificate) — provides the ACM certificate for TLS termination on listeners
+- [AwsCertManagerCert](/docs/catalog/aws/certificate) — provides the ACM certificate for TLS termination on listeners
 - [AwsAlb](/docs/catalog/aws/alb) — Application Load Balancer for Layer 7 (HTTP/HTTPS) routing; can be used as a target type for NLB-in-front-of-ALB patterns

@@ -39,6 +39,11 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpVertexAiNotebook
 metadata:
   name: my-notebook
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.GcpVertexAiNotebook.my-notebook
 spec:
   projectId:
     value: my-gcp-project
@@ -108,6 +113,11 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpVertexAiNotebook
 metadata:
   name: data-explorer
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.GcpVertexAiNotebook.data-explorer
 spec:
   projectId:
     value: my-gcp-project
@@ -127,6 +137,11 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpVertexAiNotebook
 metadata:
   name: ml-training
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpVertexAiNotebook.ml-training
 spec:
   projectId:
     value: my-gcp-project
@@ -155,6 +170,11 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpVertexAiNotebook
 metadata:
   name: secure-notebook
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpVertexAiNotebook.secure-notebook
 spec:
   projectId:
     valueFrom:
@@ -200,6 +220,8 @@ spec:
 ```
 
 ## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
 
 | Output | Type | Description |
 |--------|------|-------------|

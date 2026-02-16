@@ -252,5 +252,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 - [AwsVpc](/docs/catalog/aws/vpc) — provides the VPC and subnets for VPN endpoint placement
 - [AwsSecurityGroup](/docs/catalog/aws/security-group) — controls traffic between VPN clients and VPC resources
-- [AwsCertManagerCert](/docs/catalog/aws/certificate-manager-certificate) — provides the ACM server certificate for TLS termination
+- [AwsCertManagerCert](/docs/catalog/aws/certificate) — provides the ACM server certificate for TLS termination
 - [AwsEc2Instance](/docs/catalog/aws/ec2-instance) — private instances that VPN clients typically connect to

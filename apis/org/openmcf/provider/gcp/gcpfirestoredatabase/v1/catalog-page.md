@@ -158,7 +158,7 @@ spec:
     valueFrom:
       kind: GcpProject
       name: my-project
-      fieldPath: status.outputs.project_id
+      field: status.outputs.project_id
   locationId: nam5
   databaseName: composed-db
   type: FIRESTORE_NATIVE
@@ -166,12 +166,14 @@ spec:
     valueFrom:
       kind: GcpKmsKey
       name: firestore-key
-      fieldPath: status.outputs.key_id
+      field: status.outputs.key_id
   pointInTimeRecoveryEnablement: POINT_IN_TIME_RECOVERY_ENABLED
   deleteProtectionState: DELETE_PROTECTION_ENABLED
 ```
 
 ## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -183,6 +185,6 @@ spec:
 
 ## Related Components
 
-- [GcpProject](/docs/catalog/gcp/project) -- provides the GCP project that hosts this database
-- [GcpKmsKey](/docs/catalog/gcp/kms-key) -- provides the encryption key for CMEK
-- [GcpKmsKeyRing](/docs/catalog/gcp/kms-key-ring) -- provides the key ring containing the encryption key
+- [GcpProject](/docs/catalog/gcp/gcpproject) -- provides the GCP project that hosts this database
+- [GcpKmsKey](/docs/catalog/gcp/gcpkmskey) -- provides the encryption key for CMEK
+- [GcpKmsKeyRing](/docs/catalog/gcp/gcpkmskeyring) -- provides the key ring containing the encryption key

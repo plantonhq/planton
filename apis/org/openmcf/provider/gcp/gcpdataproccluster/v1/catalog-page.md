@@ -29,6 +29,11 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpDataprocCluster
 metadata:
   name: my-spark-cluster
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.GcpDataprocCluster.my-spark-cluster
 spec:
   projectId:
     value: "my-gcp-project"
@@ -115,6 +120,11 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpDataprocCluster
 metadata:
   name: dev-jupyter
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: dev.GcpDataprocCluster.dev-jupyter
 spec:
   projectId:
     value: "my-gcp-project"
@@ -143,6 +153,11 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpDataprocCluster
 metadata:
   name: prod-spark
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpDataprocCluster.prod-spark
 spec:
   projectId:
     value: "my-gcp-project"
@@ -184,6 +199,11 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpDataprocCluster
 metadata:
   name: batch-spark
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpDataprocCluster.batch-spark
 spec:
   projectId:
     value: "my-gcp-project"
@@ -211,6 +231,11 @@ apiVersion: gcp.openmcf.org/v1
 kind: GcpDataprocCluster
 metadata:
   name: composed-spark
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.GcpDataprocCluster.composed-spark
 spec:
   projectId:
     valueFrom:
@@ -245,6 +270,8 @@ spec:
 
 ## Stack Outputs
 
+After deployment, the following outputs are available in `status.outputs`:
+
 | Output | Type | Description |
 |--------|------|-------------|
 | `cluster_id` | `string` | Fully qualified cluster resource name (`projects/{project}/regions/{region}/clusters/{cluster}`) |
@@ -254,8 +281,8 @@ spec:
 
 ## Related Components
 
-- [GcpGcsBucket](/gcp/gcp-gcs-bucket) — Staging and temp bucket for job artifacts
-- [GcpVpc](/gcp/gcp-vpc) — VPC network for cluster node placement
-- [GcpSubnetwork](/gcp/gcp-subnetwork) — Subnetwork for controlled IP range allocation
-- [GcpServiceAccount](/gcp/gcp-service-account) — Custom IAM identity for cluster VMs
-- [GcpKmsKey](/gcp/gcp-kms-key) — Customer-managed encryption keys for disk encryption
+- [GcpGcsBucket](/docs/catalog/gcp/gcpgcsbucket) — Staging and temp bucket for job artifacts
+- [GcpVpc](/docs/catalog/gcp/gcpvpc) — VPC network for cluster node placement
+- [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork) — Subnetwork for controlled IP range allocation
+- [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — Custom IAM identity for cluster VMs
+- [GcpKmsKey](/docs/catalog/gcp/gcpkmskey) — Customer-managed encryption keys for disk encryption

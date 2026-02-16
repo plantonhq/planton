@@ -35,7 +35,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.GcpPubSubTopic.my-topic
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   topicName: my-topic
 ```
 
@@ -90,7 +91,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.GcpPubSubTopic.orders-topic
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   topicName: orders
   messageRetentionDuration: "604800s"
   messageStoragePolicy:
@@ -114,9 +116,11 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.GcpPubSubTopic.events-topic
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   topicName: events
-  kmsKeyName: projects/my-gcp-project/locations/us-central1/keyRings/my-ring/cryptoKeys/my-key
+  kmsKeyName:
+    value: projects/my-gcp-project/locations/us-central1/keyRings/my-ring/cryptoKeys/my-key
   schemaSettings:
     schema: projects/my-gcp-project/schemas/event-schema
     encoding: JSON
@@ -137,11 +141,13 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.GcpPubSubTopic.logs-ingest-topic
 spec:
-  projectId: my-gcp-project
+  projectId:
+    value: my-gcp-project
   topicName: logs-ingest
   ingestionDataSourceSettings:
     cloudStorage:
-      bucket: my-logs-bucket
+      bucket:
+        value: my-logs-bucket
       matchGlob: "**/*.log"
       textFormat:
         delimiter: "\n"

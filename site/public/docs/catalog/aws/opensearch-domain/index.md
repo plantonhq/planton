@@ -319,5 +319,5 @@ After deployment, the following outputs are available in `status.outputs`:
 - [AwsVpc](/docs/catalog/aws/vpc) — provides subnets for VPC deployment
 - [AwsSecurityGroup](/docs/catalog/aws/security-group) — controls network access to the domain
 - [AwsKmsKey](/docs/catalog/aws/kms-key) — provides KMS keys for at-rest encryption
-- [AwsCertManagerCert](/docs/catalog/aws/certificate-manager-certificate) — provides ACM certificates for custom endpoints
+- [AwsCertManagerCert](/docs/catalog/aws/certificate) — provides ACM certificates for custom endpoints
 - [AwsRoute53Zone](/docs/catalog/aws/route53-zone) — hosts DNS zones for CNAME records pointing to the domain
