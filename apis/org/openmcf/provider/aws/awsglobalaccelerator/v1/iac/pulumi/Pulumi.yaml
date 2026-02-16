@@ -1,0 +1,3 @@
+name: awsglobalaccelerator-pulumi-project
+runtime:
+  name: go

@@ -32,6 +32,7 @@ The following AWS resources can be deployed using OpenMCF:
 - [Elastic IP](/docs/catalog/aws/elastic-ip)
 - [EventBridge Bus](/docs/catalog/aws/eventbridge-bus)
 - [EventBridge Rule](/docs/catalog/aws/eventbridge-rule)
+- [Global Accelerator](/docs/catalog/aws/global-accelerator)
 - [Glue Catalog Database](/docs/catalog/aws/glue-catalog-database)
 - [HTTP API Gateway](/docs/catalog/aws/http-api-gateway)
 - [IAM Role](/docs/catalog/aws/iam-role)
