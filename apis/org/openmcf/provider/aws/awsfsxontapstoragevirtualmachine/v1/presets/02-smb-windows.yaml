@@ -1,0 +1,22 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsFsxOntapStorageVirtualMachine
+metadata:
+  name: <REPLACE>
+  id: <REPLACE>
+  org: <REPLACE>
+  env: <REPLACE>
+spec:
+  file_system_id:
+    value: fs-0123456789abcdef0
+  name: svm_smb
+  root_volume_security_style: NTFS
+  svm_admin_password: <REPLACE_WITH_8_TO_50_CHAR_PASSWORD>
+  active_directory_configuration:
+    netbios_name: SVMSMB
+    domain_name: corp.example.com
+    dns_ips:
+      - "10.0.0.1"
+      - "10.0.0.2"
+    username: svc_fsx_join
+    password: <REPLACE_WITH_AD_PASSWORD>
+    organizational_unit_distinguished_name: "OU=FSx,DC=corp,DC=example,DC=com"

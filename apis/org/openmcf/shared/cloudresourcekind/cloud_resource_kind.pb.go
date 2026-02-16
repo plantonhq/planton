@@ -83,61 +83,62 @@ const (
 	CloudResourceKind_MongodbAtlas      CloudResourceKind = 51
 	CloudResourceKind_SnowflakeDatabase CloudResourceKind = 52
 	// 200–399: AWS resources
-	CloudResourceKind_AwsAlb                     CloudResourceKind = 200
-	CloudResourceKind_AwsCertManagerCert         CloudResourceKind = 201
-	CloudResourceKind_AwsCloudFront              CloudResourceKind = 202
-	CloudResourceKind_AwsDynamodb                CloudResourceKind = 203
-	CloudResourceKind_AwsEcrRepo                 CloudResourceKind = 204
-	CloudResourceKind_AwsEcsCluster              CloudResourceKind = 205
-	CloudResourceKind_AwsEcsService              CloudResourceKind = 206
-	CloudResourceKind_AwsEksCluster              CloudResourceKind = 207
-	CloudResourceKind_AwsIamRole                 CloudResourceKind = 208
-	CloudResourceKind_AwsLambda                  CloudResourceKind = 209
-	CloudResourceKind_AwsRdsCluster              CloudResourceKind = 210
-	CloudResourceKind_AwsRdsInstance             CloudResourceKind = 211
-	CloudResourceKind_AwsRoute53Zone             CloudResourceKind = 212
-	CloudResourceKind_AwsS3Bucket                CloudResourceKind = 213
-	CloudResourceKind_AwsSecretsManager          CloudResourceKind = 214
-	CloudResourceKind_AwsSecurityGroup           CloudResourceKind = 215
-	CloudResourceKind_AwsVpc                     CloudResourceKind = 216
-	CloudResourceKind_AwsEksNodeGroup            CloudResourceKind = 217
-	CloudResourceKind_AwsIamUser                 CloudResourceKind = 218
-	CloudResourceKind_AwsKmsKey                  CloudResourceKind = 219
-	CloudResourceKind_AwsEc2Instance             CloudResourceKind = 220
-	CloudResourceKind_AwsClientVpn               CloudResourceKind = 221
-	CloudResourceKind_AwsDocumentDb              CloudResourceKind = 222
-	CloudResourceKind_AwsRoute53DnsRecord        CloudResourceKind = 223
-	CloudResourceKind_AwsS3ObjectSet             CloudResourceKind = 224
-	CloudResourceKind_AwsSqsQueue                CloudResourceKind = 225
-	CloudResourceKind_AwsSnsTopic                CloudResourceKind = 226
-	CloudResourceKind_AwsEventBridgeBus          CloudResourceKind = 227
-	CloudResourceKind_AwsEventBridgeRule         CloudResourceKind = 228
-	CloudResourceKind_AwsHttpApiGateway          CloudResourceKind = 240
-	CloudResourceKind_AwsStepFunction            CloudResourceKind = 241
-	CloudResourceKind_AwsRedisElasticache        CloudResourceKind = 250
-	CloudResourceKind_AwsOpenSearchDomain        CloudResourceKind = 251
-	CloudResourceKind_AwsMemcachedElasticache    CloudResourceKind = 252
-	CloudResourceKind_AwsServerlessElasticache   CloudResourceKind = 253
-	CloudResourceKind_AwsNetworkLoadBalancer     CloudResourceKind = 280
-	CloudResourceKind_AwsElasticIp               CloudResourceKind = 281
-	CloudResourceKind_AwsTransitGateway          CloudResourceKind = 282
-	CloudResourceKind_AwsGlobalAccelerator       CloudResourceKind = 283
-	CloudResourceKind_AwsElasticFileSystem       CloudResourceKind = 290
-	CloudResourceKind_AwsFsxLustreFileSystem     CloudResourceKind = 291
-	CloudResourceKind_AwsFsxOpenzfsFileSystem    CloudResourceKind = 292
-	CloudResourceKind_AwsFsxWindowsFileSystem    CloudResourceKind = 293
-	CloudResourceKind_AwsFsxOntapFileSystem      CloudResourceKind = 294
-	CloudResourceKind_AwsCognitoUserPool         CloudResourceKind = 300
-	CloudResourceKind_AwsCognitoIdentityProvider CloudResourceKind = 302
-	CloudResourceKind_AwsWafWebAcl               CloudResourceKind = 301
-	CloudResourceKind_AwsCloudwatchLogGroup      CloudResourceKind = 310
-	CloudResourceKind_AwsCloudwatchAlarm         CloudResourceKind = 311
-	CloudResourceKind_AwsKinesisStream           CloudResourceKind = 260
-	CloudResourceKind_AwsKinesisFirehose         CloudResourceKind = 261
-	CloudResourceKind_AwsKinesisStreamConsumer   CloudResourceKind = 262
-	CloudResourceKind_AwsAthenaWorkgroup         CloudResourceKind = 263
-	CloudResourceKind_AwsGlueCatalogDatabase     CloudResourceKind = 264
-	CloudResourceKind_AwsRedshiftCluster         CloudResourceKind = 265
+	CloudResourceKind_AwsAlb                           CloudResourceKind = 200
+	CloudResourceKind_AwsCertManagerCert               CloudResourceKind = 201
+	CloudResourceKind_AwsCloudFront                    CloudResourceKind = 202
+	CloudResourceKind_AwsDynamodb                      CloudResourceKind = 203
+	CloudResourceKind_AwsEcrRepo                       CloudResourceKind = 204
+	CloudResourceKind_AwsEcsCluster                    CloudResourceKind = 205
+	CloudResourceKind_AwsEcsService                    CloudResourceKind = 206
+	CloudResourceKind_AwsEksCluster                    CloudResourceKind = 207
+	CloudResourceKind_AwsIamRole                       CloudResourceKind = 208
+	CloudResourceKind_AwsLambda                        CloudResourceKind = 209
+	CloudResourceKind_AwsRdsCluster                    CloudResourceKind = 210
+	CloudResourceKind_AwsRdsInstance                   CloudResourceKind = 211
+	CloudResourceKind_AwsRoute53Zone                   CloudResourceKind = 212
+	CloudResourceKind_AwsS3Bucket                      CloudResourceKind = 213
+	CloudResourceKind_AwsSecretsManager                CloudResourceKind = 214
+	CloudResourceKind_AwsSecurityGroup                 CloudResourceKind = 215
+	CloudResourceKind_AwsVpc                           CloudResourceKind = 216
+	CloudResourceKind_AwsEksNodeGroup                  CloudResourceKind = 217
+	CloudResourceKind_AwsIamUser                       CloudResourceKind = 218
+	CloudResourceKind_AwsKmsKey                        CloudResourceKind = 219
+	CloudResourceKind_AwsEc2Instance                   CloudResourceKind = 220
+	CloudResourceKind_AwsClientVpn                     CloudResourceKind = 221
+	CloudResourceKind_AwsDocumentDb                    CloudResourceKind = 222
+	CloudResourceKind_AwsRoute53DnsRecord              CloudResourceKind = 223
+	CloudResourceKind_AwsS3ObjectSet                   CloudResourceKind = 224
+	CloudResourceKind_AwsSqsQueue                      CloudResourceKind = 225
+	CloudResourceKind_AwsSnsTopic                      CloudResourceKind = 226
+	CloudResourceKind_AwsEventBridgeBus                CloudResourceKind = 227
+	CloudResourceKind_AwsEventBridgeRule               CloudResourceKind = 228
+	CloudResourceKind_AwsHttpApiGateway                CloudResourceKind = 240
+	CloudResourceKind_AwsStepFunction                  CloudResourceKind = 241
+	CloudResourceKind_AwsRedisElasticache              CloudResourceKind = 250
+	CloudResourceKind_AwsOpenSearchDomain              CloudResourceKind = 251
+	CloudResourceKind_AwsMemcachedElasticache          CloudResourceKind = 252
+	CloudResourceKind_AwsServerlessElasticache         CloudResourceKind = 253
+	CloudResourceKind_AwsNetworkLoadBalancer           CloudResourceKind = 280
+	CloudResourceKind_AwsElasticIp                     CloudResourceKind = 281
+	CloudResourceKind_AwsTransitGateway                CloudResourceKind = 282
+	CloudResourceKind_AwsGlobalAccelerator             CloudResourceKind = 283
+	CloudResourceKind_AwsElasticFileSystem             CloudResourceKind = 290
+	CloudResourceKind_AwsFsxLustreFileSystem           CloudResourceKind = 291
+	CloudResourceKind_AwsFsxOpenzfsFileSystem          CloudResourceKind = 292
+	CloudResourceKind_AwsFsxWindowsFileSystem          CloudResourceKind = 293
+	CloudResourceKind_AwsFsxOntapFileSystem            CloudResourceKind = 294
+	CloudResourceKind_AwsFsxOntapStorageVirtualMachine CloudResourceKind = 295
+	CloudResourceKind_AwsCognitoUserPool               CloudResourceKind = 300
+	CloudResourceKind_AwsCognitoIdentityProvider       CloudResourceKind = 302
+	CloudResourceKind_AwsWafWebAcl                     CloudResourceKind = 301
+	CloudResourceKind_AwsCloudwatchLogGroup            CloudResourceKind = 310
+	CloudResourceKind_AwsCloudwatchAlarm               CloudResourceKind = 311
+	CloudResourceKind_AwsKinesisStream                 CloudResourceKind = 260
+	CloudResourceKind_AwsKinesisFirehose               CloudResourceKind = 261
+	CloudResourceKind_AwsKinesisStreamConsumer         CloudResourceKind = 262
+	CloudResourceKind_AwsAthenaWorkgroup               CloudResourceKind = 263
+	CloudResourceKind_AwsGlueCatalogDatabase           CloudResourceKind = 264
+	CloudResourceKind_AwsRedshiftCluster               CloudResourceKind = 265
 	// AI/ML
 	CloudResourceKind_AwsSagemakerDomain CloudResourceKind = 270
 	// Containers
@@ -436,6 +437,7 @@ var (
 		292:  "AwsFsxOpenzfsFileSystem",
 		293:  "AwsFsxWindowsFileSystem",
 		294:  "AwsFsxOntapFileSystem",
+		295:  "AwsFsxOntapStorageVirtualMachine",
 		300:  "AwsCognitoUserPool",
 		302:  "AwsCognitoIdentityProvider",
 		301:  "AwsWafWebAcl",
@@ -723,6 +725,7 @@ var (
 		"AwsFsxOpenzfsFileSystem":               292,
 		"AwsFsxWindowsFileSystem":               293,
 		"AwsFsxOntapFileSystem":                 294,
+		"AwsFsxOntapStorageVirtualMachine":      295,
 		"AwsCognitoUserPool":                    300,
 		"AwsCognitoIdentityProvider":            302,
 		"AwsWafWebAcl":                          301,
@@ -1101,7 +1104,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xac`\n" +
+	"\x02v1\x10\x01*\xe8`\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1160,7 +1163,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x16AwsFsxLustreFileSystem\x10\xa3\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxl\x12.\n" +
 	"\x17AwsFsxOpenzfsFileSystem\x10\xa4\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxz\x12.\n" +
 	"\x17AwsFsxWindowsFileSystem\x10\xa5\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxw\x12,\n" +
-	"\x15AwsFsxOntapFileSystem\x10\xa6\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxo\x12)\n" +
+	"\x15AwsFsxOntapFileSystem\x10\xa6\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxo\x12:\n" +
+	" AwsFsxOntapStorageVirtualMachine\x10\xa7\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawsfxosvm\x12)\n" +
 	"\x12AwsCognitoUserPool\x10\xac\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awscog\x124\n" +
 	"\x1aAwsCognitoIdentityProvider\x10\xae\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawscogidp\x12#\n" +
 	"\fAwsWafWebAcl\x10\xad\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awswaf\x12-\n" +

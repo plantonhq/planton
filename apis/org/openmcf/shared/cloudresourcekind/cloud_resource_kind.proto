@@ -299,6 +299,12 @@ enum CloudResourceKind {
     id_prefix: "awsfxo"
   }];
 
+  AwsFsxOntapStorageVirtualMachine = 295 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsfxosvm"
+  }];
+
   // --- Auth / Identity ---
 
   AwsCognitoUserPool = 300 [(kind_meta) = {

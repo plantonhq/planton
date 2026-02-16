@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsfsxontapstoragevirtualmachine.v1;
+
+import "org/openmcf/provider/aws/awsfsxontapstoragevirtualmachine/v1/api.proto";
+import "org/openmcf/provider/aws/provider.proto";
+
+// aws-fsx-ontap-storage-virtual-machine stack-input
+message AwsFsxOntapStorageVirtualMachineStackInput {
+  // target cloud-resource
+  AwsFsxOntapStorageVirtualMachine target = 1;
+  // provider-credential
+  org.openmcf.provider.aws.AwsProviderConfig provider_config = 2;
+}

@@ -1,0 +1,12 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsFsxOntapStorageVirtualMachine
+metadata:
+  name: <REPLACE>
+  id: <REPLACE>
+  org: <REPLACE>
+  env: <REPLACE>
+spec:
+  file_system_id:
+    value: fs-0123456789abcdef0
+  name: svm_nfs
+  root_volume_security_style: UNIX

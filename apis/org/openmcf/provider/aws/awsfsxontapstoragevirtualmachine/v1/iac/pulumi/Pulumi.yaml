@@ -1,0 +1,6 @@
+name: aws-fsx-ontap-storage-virtual-machine
+runtime:
+  name: go
+  options:
+    binary: aws-fsx-ontap-storage-virtual-machine
+description: AWS FSx ONTAP Storage Virtual Machine
