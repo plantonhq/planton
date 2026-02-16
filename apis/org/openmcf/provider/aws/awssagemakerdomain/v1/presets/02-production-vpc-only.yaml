@@ -1,0 +1,35 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsSagemakerDomain
+metadata:
+  name: production-ml-domain
+spec:
+  authMode: SSO
+  appNetworkAccessType: VpcOnly
+  vpcId:
+    value: "<vpc-id>"
+  subnetIds:
+    - value: "<private-subnet-id-az1>"
+    - value: "<private-subnet-id-az2>"
+    - value: "<private-subnet-id-az3>"
+  kmsKeyId:
+    value: "<kms-key-arn>"
+  domainSecurityGroupIds:
+    - value: "<domain-security-group-id>"
+  defaultUserSettings:
+    executionRoleArn:
+      value: "<sagemaker-execution-role-arn>"
+    securityGroupIds:
+      - value: "<user-security-group-id>"
+    studioWebPortal: ENABLED
+    defaultLandingUri: "studio::relative/JupyterLab"
+    jupyterLabAppSettings:
+      defaultResourceSpec:
+        instanceType: ml.t3.medium
+      idleSettings:
+        lifecycleManagement: ENABLED
+        idleTimeoutInMinutes: 120
+        minIdleTimeoutInMinutes: 60
+        maxIdleTimeoutInMinutes: 480
+    spaceStorageSettings:
+      defaultEbsVolumeSizeInGb: 20
+      maximumEbsVolumeSizeInGb: 200

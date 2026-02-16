@@ -1,0 +1,6 @@
+name: aws-sagemaker-domain
+runtime:
+  name: go
+  options:
+    binary: main
+description: AWS SageMaker Domain deployment component

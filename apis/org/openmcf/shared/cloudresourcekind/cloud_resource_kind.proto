@@ -339,6 +339,13 @@ enum CloudResourceKind {
     id_prefix: "awsrs"
   }];
 
+  // AI/ML
+  AwsSagemakerDomain = 270 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "sgmkd"
+  }];
+
   // Streaming
   AwsMskCluster = 350 [(kind_meta) = {
     provider: aws

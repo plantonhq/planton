@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awssagemakerdomain.v1;
+
+// AwsSagemakerDomainStackOutputs captures observable identifiers and endpoints from a deployed
+// Amazon SageMaker Domain. These outputs enable downstream resources (user profiles, spaces,
+// apps, IAM policies) to connect to and operate within the domain, and provide essential
+// information for monitoring, security auditing, and infra chart composition.
+message AwsSagemakerDomainStackOutputs {
+  // domain_id is the unique identifier of the SageMaker Domain.
+  // Used in API calls and as a reference when creating user profiles, spaces, and apps.
+  string domain_id = 1;
+
+  // domain_arn is the Amazon Resource Name of the SageMaker Domain.
+  // Used in IAM policies, CloudWatch metrics filters, and cross-service references.
+  string domain_arn = 2;
+
+  // domain_url is the HTTPS URL for accessing the SageMaker Studio web interface.
+  // Users navigate to this URL (with their user profile appended) to open Studio.
+  string domain_url = 3;
+
+  // home_efs_file_system_id is the ID of the EFS file system automatically created by
+  // AWS for user home directories. Each user gets a dedicated directory on this file system.
+  // Useful for monitoring, backup policies, and lifecycle management.
+  string home_efs_file_system_id = 4;
+
+  // security_group_id_for_domain_boundary is the ID of the security group that AWS
+  // automatically creates to establish the network boundary for the domain.
+  // This security group controls cross-app and cross-user traffic within the domain.
+  string security_group_id_for_domain_boundary = 5;
+
+  // single_sign_on_application_arn is the ARN of the IAM Identity Center application
+  // created for this domain. Only populated when auth_mode is "SSO".
+  // Useful for SSO configuration and access management.
+  string single_sign_on_application_arn = 6;
+}

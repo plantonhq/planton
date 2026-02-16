@@ -51,6 +51,7 @@ The following AWS resources can be deployed using OpenMCF:
 - [Route53 DNS Record](/docs/catalog/aws/route53-dns-record)
 - [Route53 Zone](/docs/catalog/aws/route53-zone)
 - [S3 Bucket](/docs/catalog/aws/s3-bucket)
+- [SageMaker Domain](/docs/catalog/aws/sagemaker-domain)
 - [S3 Object Set](/docs/catalog/aws/s3-object-set)
 - [Secrets Manager](/docs/catalog/aws/secrets-manager)
 - [Security Group](/docs/catalog/aws/security-group)
