@@ -1,0 +1,15 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsFsxOpenzfsFileSystem
+metadata:
+  org: example-org
+  env: dev
+  name: dev-openzfs
+  id: awsfxz-dev-openzfs-dev
+spec:
+  deployment_type: SINGLE_AZ_1
+  storage_capacity_gib: 64
+  throughput_capacity: 64
+  subnet_ids:
+    - value: subnet-0123456789abcdef0
+  security_group_ids:
+    - value: sg-0123456789abcdef0

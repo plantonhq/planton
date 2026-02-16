@@ -124,6 +124,7 @@ const (
 	CloudResourceKind_AwsGlobalAccelerator       CloudResourceKind = 283
 	CloudResourceKind_AwsElasticFileSystem       CloudResourceKind = 290
 	CloudResourceKind_AwsFsxLustreFileSystem     CloudResourceKind = 291
+	CloudResourceKind_AwsFsxOpenzfsFileSystem    CloudResourceKind = 292
 	CloudResourceKind_AwsCognitoUserPool         CloudResourceKind = 300
 	CloudResourceKind_AwsCognitoIdentityProvider CloudResourceKind = 302
 	CloudResourceKind_AwsWafWebAcl               CloudResourceKind = 301
@@ -427,6 +428,7 @@ var (
 		283:  "AwsGlobalAccelerator",
 		290:  "AwsElasticFileSystem",
 		291:  "AwsFsxLustreFileSystem",
+		292:  "AwsFsxOpenzfsFileSystem",
 		300:  "AwsCognitoUserPool",
 		302:  "AwsCognitoIdentityProvider",
 		301:  "AwsWafWebAcl",
@@ -709,6 +711,7 @@ var (
 		"AwsGlobalAccelerator":                  283,
 		"AwsElasticFileSystem":                  290,
 		"AwsFsxLustreFileSystem":                291,
+		"AwsFsxOpenzfsFileSystem":               292,
 		"AwsCognitoUserPool":                    300,
 		"AwsCognitoIdentityProvider":            302,
 		"AwsWafWebAcl":                          301,
@@ -1085,7 +1088,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xcc^\n" +
+	"\x02v1\x10\x01*\xfc^\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1141,7 +1144,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x11AwsTransitGateway\x10\x9a\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awstgw\x12*\n" +
 	"\x14AwsGlobalAccelerator\x10\x9b\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awsga\x12+\n" +
 	"\x14AwsElasticFileSystem\x10\xa2\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsefs\x12-\n" +
-	"\x16AwsFsxLustreFileSystem\x10\xa3\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxl\x12)\n" +
+	"\x16AwsFsxLustreFileSystem\x10\xa3\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxl\x12.\n" +
+	"\x17AwsFsxOpenzfsFileSystem\x10\xa4\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxz\x12)\n" +
 	"\x12AwsCognitoUserPool\x10\xac\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awscog\x124\n" +
 	"\x1aAwsCognitoIdentityProvider\x10\xae\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawscogidp\x12#\n" +
 	"\fAwsWafWebAcl\x10\xad\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awswaf\x12-\n" +

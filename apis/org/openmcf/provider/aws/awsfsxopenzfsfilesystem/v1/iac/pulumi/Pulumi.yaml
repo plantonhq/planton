@@ -1,0 +1,6 @@
+name: aws-fsx-openzfs-file-system
+runtime:
+  name: go
+  options:
+    binary: aws-fsx-openzfs-file-system
+description: AWS FSx OpenZFS File System

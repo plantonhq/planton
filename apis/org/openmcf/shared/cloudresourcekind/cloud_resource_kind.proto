@@ -281,6 +281,12 @@ enum CloudResourceKind {
     id_prefix: "awsfxl"
   }];
 
+  AwsFsxOpenzfsFileSystem = 292 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsfxz"
+  }];
+
   // --- Auth / Identity ---
 
   AwsCognitoUserPool = 300 [(kind_meta) = {
