@@ -128,6 +128,7 @@ const (
 	CloudResourceKind_AwsFsxWindowsFileSystem          CloudResourceKind = 293
 	CloudResourceKind_AwsFsxOntapFileSystem            CloudResourceKind = 294
 	CloudResourceKind_AwsFsxOntapStorageVirtualMachine CloudResourceKind = 295
+	CloudResourceKind_AwsFsxOntapVolume                CloudResourceKind = 296
 	CloudResourceKind_AwsCognitoUserPool               CloudResourceKind = 300
 	CloudResourceKind_AwsCognitoIdentityProvider       CloudResourceKind = 302
 	CloudResourceKind_AwsWafWebAcl                     CloudResourceKind = 301
@@ -438,6 +439,7 @@ var (
 		293:  "AwsFsxWindowsFileSystem",
 		294:  "AwsFsxOntapFileSystem",
 		295:  "AwsFsxOntapStorageVirtualMachine",
+		296:  "AwsFsxOntapVolume",
 		300:  "AwsCognitoUserPool",
 		302:  "AwsCognitoIdentityProvider",
 		301:  "AwsWafWebAcl",
@@ -726,6 +728,7 @@ var (
 		"AwsFsxWindowsFileSystem":               293,
 		"AwsFsxOntapFileSystem":                 294,
 		"AwsFsxOntapStorageVirtualMachine":      295,
+		"AwsFsxOntapVolume":                     296,
 		"AwsCognitoUserPool":                    300,
 		"AwsCognitoIdentityProvider":            302,
 		"AwsWafWebAcl":                          301,
@@ -1104,7 +1107,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xe8`\n" +
+	"\x02v1\x10\x01*\x93a\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1165,6 +1168,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x17AwsFsxWindowsFileSystem\x10\xa5\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxw\x12,\n" +
 	"\x15AwsFsxOntapFileSystem\x10\xa6\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxo\x12:\n" +
 	" AwsFsxOntapStorageVirtualMachine\x10\xa7\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawsfxosvm\x12)\n" +
+	"\x11AwsFsxOntapVolume\x10\xa8\x02\x1a\x11\xa2\xf7\x04\r\b\f\x10\x01\"\aawsfxov\x12)\n" +
 	"\x12AwsCognitoUserPool\x10\xac\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awscog\x124\n" +
 	"\x1aAwsCognitoIdentityProvider\x10\xae\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawscogidp\x12#\n" +
 	"\fAwsWafWebAcl\x10\xad\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awswaf\x12-\n" +
