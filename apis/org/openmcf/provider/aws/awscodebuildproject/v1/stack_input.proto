@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awscodebuildproject.v1;
+
+import "org/openmcf/provider/aws/awscodebuildproject/v1/api.proto";
+import "org/openmcf/provider/aws/provider.proto";
+
+// AwsCodeBuildProjectStackInput is the input for the IaC modules that
+// deploy the CodeBuild project and optional webhook.
+message AwsCodeBuildProjectStackInput {
+  // target is the AwsCodeBuildProject resource to deploy.
+  AwsCodeBuildProject target = 1;
+  // provider_config contains the AWS provider credentials and configuration.
+  org.openmcf.provider.aws.AwsProviderConfig provider_config = 2;
+}

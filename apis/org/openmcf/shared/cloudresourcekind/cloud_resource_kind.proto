@@ -287,6 +287,12 @@ enum CloudResourceKind {
     id_prefix: "awsfxz"
   }];
 
+  AwsFsxWindowsFileSystem = 293 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsfxw"
+  }];
+
   // --- Auth / Identity ---
 
   AwsCognitoUserPool = 300 [(kind_meta) = {
@@ -380,6 +386,13 @@ enum CloudResourceKind {
     provider: aws
     version: v1
     id_prefix: "awsbat"
+  }];
+
+  // CI/CD
+  AwsCodeBuildProject = 330 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awscb"
   }];
 
   // Workflow / Orchestration

@@ -1,0 +1,570 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awscodebuildproject.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// AwsCodeBuildProjectSpec defines the specification for an AWS CodeBuild
+// project with an optional webhook for source-triggered builds.
+//
+// AWS CodeBuild is a fully managed build service that compiles source code,
+// runs tests, and produces deployable artifacts. This component creates a
+// CodeBuild project — the build configuration unit — and optionally a webhook
+// for automatic build triggers from source providers.
+//
+// Bundling rationale: a webhook is 1:1 with a project and useless in isolation.
+// Source-triggered projects are incomplete without a webhook, while
+// CodePipeline-triggered and manual projects omit it. Source credentials,
+// report groups, and fleets have independent lifecycles and are excluded.
+message AwsCodeBuildProjectSpec {
+  // source defines where the build input comes from and how to fetch it.
+  AwsCodeBuildSource source = 1 [(buf.validate.field).required = true];
+
+  // environment defines the build container: image, compute, and variables.
+  AwsCodeBuildEnvironment environment = 2 [(buf.validate.field).required = true];
+
+  // artifacts defines where the build output goes.
+  AwsCodeBuildArtifacts artifacts = 3 [(buf.validate.field).required = true];
+
+  // service_role is the IAM role ARN that grants CodeBuild permission to
+  // access source code, write artifacts, publish logs, and interact with
+  // other AWS services during the build.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef service_role = 4 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsIamRole,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
+  ];
+
+  // description is a human-readable description of the project (max 255 chars).
+  string description = 5 [(buf.validate.field).string.max_len = 255];
+
+  // encryption_key is the ARN of a KMS key used to encrypt build artifacts.
+  // If omitted, CodeBuild uses the AWS-managed key for S3.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef encryption_key = 6 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // build_timeout is the maximum duration of a single build, in minutes.
+  // Range: 5-2160 (36 hours). Default: 60.
+  optional int32 build_timeout = 7 [
+    (org.openmcf.shared.options.default) = "60",
+    (buf.validate.field).int32 = {
+      gte: 5
+      lte: 2160
+    }
+  ];
+
+  // queued_timeout is the maximum time a build can wait in the queue before
+  // timing out, in minutes. Range: 5-480 (8 hours). Default: 480.
+  optional int32 queued_timeout = 8 [
+    (org.openmcf.shared.options.default) = "480",
+    (buf.validate.field).int32 = {
+      gte: 5
+      lte: 480
+    }
+  ];
+
+  // concurrent_build_limit caps the number of concurrent builds. Useful for
+  // cost control. Minimum 1. Omit to allow unlimited concurrency.
+  int32 concurrent_build_limit = 9 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  // source_version is the default branch, tag, or commit ID to build.
+  // For GitHub: branch name, tag, or full commit SHA.
+  // For S3: object version ID.
+  string source_version = 10;
+
+  // cache configures build caching to speed up subsequent builds.
+  AwsCodeBuildCache cache = 11;
+
+  // logs_config controls where build logs are sent.
+  AwsCodeBuildLogsConfig logs_config = 12;
+
+  // vpc_config places the build in a VPC, giving it access to private
+  // resources such as RDS databases, ElastiCache clusters, or internal APIs.
+  AwsCodeBuildVpcConfig vpc_config = 13;
+
+  // webhook configures automatic build triggers from the source provider.
+  // Only valid when source type supports webhooks: GITHUB, BITBUCKET,
+  // GITHUB_ENTERPRISE, GITLAB, GITLAB_SELF_MANAGED, CODECOMMIT.
+  // Omit for CodePipeline-triggered or manual-only projects.
+  AwsCodeBuildWebhook webhook = 14;
+
+  // Cross-field validations
+
+  // source.type and artifacts.type must both be CODEPIPELINE or neither.
+  option (buf.validate.message).cel = {
+    id: "codepipeline_source_artifacts_match"
+    message: "when source.type is CODEPIPELINE, artifacts.type must also be CODEPIPELINE (and vice versa)"
+    expression: "(this.source.type == 'CODEPIPELINE') == (this.artifacts.type == 'CODEPIPELINE')"
+  };
+
+  // source.location required for all source types except CODEPIPELINE and NO_SOURCE.
+  option (buf.validate.message).cel = {
+    id: "source_location_required"
+    message: "source.location is required when source.type is not CODEPIPELINE or NO_SOURCE"
+    expression: "this.source.type in ['CODEPIPELINE', 'NO_SOURCE'] || this.source.location != ''"
+  };
+
+  // buildspec is required when there is no source repository.
+  option (buf.validate.message).cel = {
+    id: "buildspec_required_for_no_source"
+    message: "source.buildspec is required when source.type is NO_SOURCE"
+    expression: "this.source.type != 'NO_SOURCE' || this.source.buildspec != ''"
+  };
+
+  // S3 artifacts require a bucket location.
+  option (buf.validate.message).cel = {
+    id: "s3_artifacts_require_location"
+    message: "artifacts.location is required when artifacts.type is S3"
+    expression: "this.artifacts.type != 'S3' || has(this.artifacts.location)"
+  };
+
+  // S3 cache requires a bucket location.
+  option (buf.validate.message).cel = {
+    id: "s3_cache_requires_location"
+    message: "cache.location is required when cache.type is S3"
+    expression: "!has(this.cache) || this.cache.type != 'S3' || has(this.cache.location)"
+  };
+
+  // Webhook is only valid with source types that support it.
+  option (buf.validate.message).cel = {
+    id: "webhook_requires_compatible_source"
+    message: "webhook is only valid when source.type supports webhooks (GITHUB, BITBUCKET, GITHUB_ENTERPRISE, GITLAB, GITLAB_SELF_MANAGED, CODECOMMIT)"
+    expression: "!has(this.webhook) || this.source.type in ['GITHUB', 'BITBUCKET', 'GITHUB_ENTERPRISE', 'GITLAB', 'GITLAB_SELF_MANAGED', 'CODECOMMIT']"
+  };
+}
+
+// AwsCodeBuildSource defines the source code location and retrieval settings.
+message AwsCodeBuildSource {
+  // type is the source provider.
+  //   GITHUB:                GitHub.com repository (via CodeStar Connections)
+  //   BITBUCKET:             Bitbucket Cloud repository
+  //   CODECOMMIT:            AWS CodeCommit repository
+  //   CODEPIPELINE:          Source provided by CodePipeline (no location needed)
+  //   GITHUB_ENTERPRISE:     GitHub Enterprise Server
+  //   GITLAB:                GitLab.com repository
+  //   GITLAB_SELF_MANAGED:   Self-hosted GitLab instance
+  //   NO_SOURCE:             No source — buildspec must be provided inline
+  //   S3:                    S3 bucket containing source archive
+  string type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "GITHUB",
+        "BITBUCKET",
+        "CODECOMMIT",
+        "CODEPIPELINE",
+        "GITHUB_ENTERPRISE",
+        "GITLAB",
+        "GITLAB_SELF_MANAGED",
+        "NO_SOURCE",
+        "S3"
+      ]
+    }
+  ];
+
+  // location is the source code repository URL or S3 path.
+  // Required for all types except CODEPIPELINE and NO_SOURCE.
+  // Format depends on type:
+  //   GITHUB/BITBUCKET/GITLAB: https URL (e.g., https://github.com/owner/repo.git)
+  //   CODECOMMIT: HTTPS clone URL
+  //   S3: bucket/path (e.g., my-bucket/source.zip)
+  //   GITHUB_ENTERPRISE: HTTPS URL of the repo
+  string location = 2;
+
+  // buildspec is the build specification, either as an inline YAML string or
+  // a path relative to the source root (e.g., "buildspec.yml").
+  // If omitted, CodeBuild looks for buildspec.yml at the source root.
+  // Required when source type is NO_SOURCE.
+  string buildspec = 3;
+
+  // git_clone_depth limits the Git clone depth. 0 means full clone.
+  // Only applicable for Git-based source types.
+  int32 git_clone_depth = 4 [(buf.validate.field).int32.gte = 0];
+
+  // report_build_status reports build start and finish status back to the
+  // source provider (e.g., GitHub commit status checks).
+  // Only applicable for GITHUB, BITBUCKET, GITHUB_ENTERPRISE, GITLAB, GITLAB_SELF_MANAGED.
+  bool report_build_status = 5;
+
+  // fetch_submodules controls whether Git submodules are fetched during the
+  // source download phase. Only applicable for Git-based source types.
+  bool fetch_submodules = 6;
+}
+
+// AwsCodeBuildEnvironment defines the build container configuration.
+message AwsCodeBuildEnvironment {
+  // type is the build environment type.
+  //   LINUX_CONTAINER:              Standard Linux (x86_64)
+  //   LINUX_GPU_CONTAINER:          Linux with GPU support
+  //   ARM_CONTAINER:                Linux (ARM64)
+  //   WINDOWS_SERVER_2019_CONTAINER: Windows Server 2019
+  //   WINDOWS_SERVER_2022_CONTAINER: Windows Server 2022
+  //   LINUX_LAMBDA_CONTAINER:       Lambda-based Linux (x86_64)
+  //   ARM_LAMBDA_CONTAINER:         Lambda-based Linux (ARM64)
+  string type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "LINUX_CONTAINER",
+        "LINUX_GPU_CONTAINER",
+        "ARM_CONTAINER",
+        "WINDOWS_SERVER_2019_CONTAINER",
+        "WINDOWS_SERVER_2022_CONTAINER",
+        "LINUX_LAMBDA_CONTAINER",
+        "ARM_LAMBDA_CONTAINER"
+      ]
+    }
+  ];
+
+  // compute_type is the compute capacity for the build container.
+  //   Standard:     BUILD_GENERAL1_SMALL, BUILD_GENERAL1_MEDIUM,
+  //                 BUILD_GENERAL1_LARGE, BUILD_GENERAL1_XLARGE, BUILD_GENERAL1_2XLARGE
+  //   Lambda:       BUILD_LAMBDA_1GB through BUILD_LAMBDA_10GB
+  string compute_type = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "BUILD_GENERAL1_SMALL",
+        "BUILD_GENERAL1_MEDIUM",
+        "BUILD_GENERAL1_LARGE",
+        "BUILD_GENERAL1_XLARGE",
+        "BUILD_GENERAL1_2XLARGE",
+        "BUILD_LAMBDA_1GB",
+        "BUILD_LAMBDA_2GB",
+        "BUILD_LAMBDA_4GB",
+        "BUILD_LAMBDA_8GB",
+        "BUILD_LAMBDA_10GB"
+      ]
+    }
+  ];
+
+  // image is the Docker image identifier for the build environment.
+  // Use AWS managed images (e.g., "aws/codebuild/amazonlinux2-x86_64-standard:5.0")
+  // or a custom image URI from ECR or Docker Hub.
+  string image = 3 [(buf.validate.field).required = true];
+
+  // privileged_mode enables Docker daemon access inside the build container.
+  // Required for building Docker images. Only applicable to non-Lambda types.
+  bool privileged_mode = 4;
+
+  // image_pull_credentials_type controls how the build image is pulled.
+  //   CODEBUILD:    CodeBuild uses its own credentials (default, for AWS images)
+  //   SERVICE_ROLE: CodeBuild uses the project's service role (for ECR private images)
+  optional string image_pull_credentials_type = 5 [
+    (org.openmcf.shared.options.default) = "CODEBUILD",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "CODEBUILD",
+        "SERVICE_ROLE"
+      ]
+    }
+  ];
+
+  // environment_variables define key-value pairs available during the build.
+  // Supports plaintext values, SSM Parameter Store references, and
+  // Secrets Manager references.
+  repeated AwsCodeBuildEnvironmentVariable environment_variables = 6;
+
+  // registry_credential provides credentials for pulling the build image
+  // from a private Docker registry. Only needed when image_pull_credentials_type
+  // is SERVICE_ROLE and the image is in a non-ECR private registry.
+  AwsCodeBuildRegistryCredential registry_credential = 7;
+}
+
+// AwsCodeBuildEnvironmentVariable defines a build environment variable.
+message AwsCodeBuildEnvironmentVariable {
+  // name is the environment variable name.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // value is the environment variable value. For PARAMETER_STORE type,
+  // this is the SSM parameter name. For SECRETS_MANAGER, this is the
+  // secret ARN or name.
+  string value = 2 [(buf.validate.field).required = true];
+
+  // type controls how the value is interpreted.
+  //   PLAINTEXT:       Value is used as-is (default)
+  //   PARAMETER_STORE: Value is an SSM Parameter Store parameter name
+  //   SECRETS_MANAGER: Value is a Secrets Manager secret ARN or name
+  optional string type = 3 [
+    (org.openmcf.shared.options.default) = "PLAINTEXT",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "PLAINTEXT",
+        "PARAMETER_STORE",
+        "SECRETS_MANAGER"
+      ]
+    }
+  ];
+}
+
+// AwsCodeBuildRegistryCredential provides credentials for pulling images
+// from a private Docker registry.
+message AwsCodeBuildRegistryCredential {
+  // credential is the ARN or name of the Secrets Manager secret containing
+  // the Docker registry credentials (username + password).
+  string credential = 1 [(buf.validate.field).required = true];
+
+  // credential_provider is the credential provider type.
+  // Currently only SECRETS_MANAGER is supported by AWS.
+  string credential_provider = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.const = "SECRETS_MANAGER"
+  ];
+}
+
+// AwsCodeBuildArtifacts defines the build output configuration.
+message AwsCodeBuildArtifacts {
+  // type is the artifact output type.
+  //   NO_ARTIFACTS:  No output artifacts (CI-only builds, or push to ECR in buildspec)
+  //   S3:            Write artifacts to an S3 bucket
+  //   CODEPIPELINE:  Artifacts managed by CodePipeline
+  string type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "NO_ARTIFACTS",
+        "S3",
+        "CODEPIPELINE"
+      ]
+    }
+  ];
+
+  // location is the S3 bucket name for artifact output.
+  // Required when type is S3.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef location = 2 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsS3Bucket,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_name"
+  ];
+
+  // name is the artifact output name (object key in S3).
+  string name = 3;
+
+  // path is the S3 prefix for the artifact output.
+  string path = 4;
+
+  // packaging controls how artifacts are packaged.
+  //   NONE: No packaging (files uploaded as-is)
+  //   ZIP:  Files packaged into a ZIP archive
+  string packaging = 5 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "NONE",
+        "ZIP"
+      ]
+    }
+  ];
+
+  // namespace_type controls whether artifact paths include the build ID.
+  //   NONE:     No namespace (artifacts at path/name)
+  //   BUILD_ID: Artifacts at path/<build-id>/name
+  string namespace_type = 6 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "NONE",
+        "BUILD_ID"
+      ]
+    }
+  ];
+
+  // encryption_disabled disables server-side encryption for artifacts.
+  // By default, CodeBuild encrypts artifacts using the project's encryption key.
+  bool encryption_disabled = 7;
+}
+
+// AwsCodeBuildCache configures build caching to speed up subsequent builds.
+message AwsCodeBuildCache {
+  // type is the cache type.
+  //   NO_CACHE: Caching disabled (default)
+  //   S3:       Cache stored in an S3 bucket
+  //   LOCAL:    Cache stored on the build host (ephemeral, useful for Docker layers)
+  optional string type = 1 [
+    (org.openmcf.shared.options.default) = "NO_CACHE",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "NO_CACHE",
+        "S3",
+        "LOCAL"
+      ]
+    }
+  ];
+
+  // location is the S3 bucket and optional prefix for cache storage.
+  // Required when type is S3. Format: "bucket-name" or "bucket-name/prefix".
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef location = 2 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsS3Bucket,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_name"
+  ];
+
+  // modes specifies what to cache when type is LOCAL.
+  //   LOCAL_SOURCE_CACHE:        Cache Git metadata
+  //   LOCAL_DOCKER_LAYER_CACHE:  Cache Docker layers
+  //   LOCAL_CUSTOM_CACHE:        Cache paths specified in buildspec
+  repeated string modes = 3;
+}
+
+// AwsCodeBuildLogsConfig controls where build logs are sent.
+message AwsCodeBuildLogsConfig {
+  // cloudwatch_logs configures CloudWatch Logs for build output.
+  AwsCodeBuildCloudWatchLogs cloudwatch_logs = 1;
+
+  // s3_logs configures S3 logging for build output.
+  AwsCodeBuildS3Logs s3_logs = 2;
+}
+
+// AwsCodeBuildCloudWatchLogs configures CloudWatch Logs for builds.
+message AwsCodeBuildCloudWatchLogs {
+  // status controls whether CloudWatch logging is enabled.
+  // Default: ENABLED.
+  optional string status = 1 [
+    (org.openmcf.shared.options.default) = "ENABLED",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "ENABLED",
+        "DISABLED"
+      ]
+    }
+  ];
+
+  // group_name is the CloudWatch Logs log group name.
+  // If omitted, CodeBuild creates a default log group.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef group_name = 2 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsCloudwatchLogGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.log_group_name"
+  ];
+
+  // stream_name is the CloudWatch Logs log stream name prefix.
+  // If omitted, CodeBuild generates a default stream name.
+  string stream_name = 3;
+}
+
+// AwsCodeBuildS3Logs configures S3 logging for builds.
+message AwsCodeBuildS3Logs {
+  // status controls whether S3 logging is enabled.
+  // Default: DISABLED.
+  optional string status = 1 [
+    (org.openmcf.shared.options.default) = "DISABLED",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "ENABLED",
+        "DISABLED"
+      ]
+    }
+  ];
+
+  // location is the S3 bucket and prefix for log storage.
+  // Format: "bucket-name" or "bucket-name/prefix".
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef location = 2 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsS3Bucket,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_name"
+  ];
+
+  // encryption_disabled disables server-side encryption for log files.
+  bool encryption_disabled = 3;
+}
+
+// AwsCodeBuildVpcConfig places the build environment inside a VPC, enabling
+// access to private resources (RDS, ElastiCache, internal APIs, etc.).
+message AwsCodeBuildVpcConfig {
+  // vpc_id is the VPC where build containers are launched.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // subnet_ids are the VPC subnets where build containers are placed.
+  // Use private subnets for security. Maximum 16 subnets.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.max_items = 16,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+  ];
+
+  // security_group_ids are the VPC security groups applied to build containers.
+  // Maximum 5 security groups.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.max_items = 5,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+}
+
+// AwsCodeBuildWebhook configures automatic build triggers from the source
+// provider. Creates a webhook that listens for repository events.
+message AwsCodeBuildWebhook {
+  // build_type controls the build type triggered by the webhook.
+  //   BUILD:             Standard single build (default)
+  //   BUILD_BATCH:       Batch build
+  string build_type = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "BUILD",
+        "BUILD_BATCH"
+      ]
+    }
+  ];
+
+  // filter_groups define which repository events trigger a build.
+  // Multiple groups are OR'd together — a build triggers if ANY group matches.
+  // Within a group, filters are AND'd — ALL filters in the group must match.
+  repeated AwsCodeBuildWebhookFilterGroup filter_groups = 2;
+}
+
+// AwsCodeBuildWebhookFilterGroup is a set of filters that are AND'd together.
+// A build triggers when ALL filters in the group match the webhook event.
+message AwsCodeBuildWebhookFilterGroup {
+  // filters are the individual conditions in this group.
+  repeated AwsCodeBuildWebhookFilter filters = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// AwsCodeBuildWebhookFilter defines a single condition for webhook filtering.
+message AwsCodeBuildWebhookFilter {
+  // type is the event field to match against.
+  //   EVENT:            Event type (PUSH, PULL_REQUEST_CREATED, etc.)
+  //   BASE_REF:         Base branch for PRs (regex)
+  //   HEAD_REF:         Branch or tag name (regex)
+  //   ACTOR_ACCOUNT_ID: Source provider account ID
+  //   FILE_PATH:        Changed file paths (regex)
+  //   COMMIT_MESSAGE:   Commit message (regex)
+  string type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "EVENT",
+        "BASE_REF",
+        "HEAD_REF",
+        "ACTOR_ACCOUNT_ID",
+        "FILE_PATH",
+        "COMMIT_MESSAGE"
+      ]
+    }
+  ];
+
+  // pattern is the regex pattern or comma-separated event list to match.
+  // For EVENT type: comma-separated values like "PUSH, PULL_REQUEST_CREATED".
+  // For other types: a regex pattern (e.g., "^refs/heads/main$").
+  string pattern = 2 [(buf.validate.field).required = true];
+
+  // exclude_matched_pattern inverts the match — the filter passes when the
+  // pattern does NOT match. Useful for excluding branches or paths.
+  bool exclude_matched_pattern = 3;
+}
