@@ -1,0 +1,204 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsathenaworkgroup.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// AwsAthenaWorkgroupSpec defines the desired configuration for an Amazon Athena
+// workgroup.
+//
+// An Athena workgroup is a resource that isolates query execution, enforces cost
+// controls, and manages result storage for teams or applications running
+// interactive SQL analytics against data in Amazon S3, AWS Glue Data Catalog,
+// and federated data sources.
+//
+// Workgroups provide:
+// - Query result isolation: each workgroup can direct results to a dedicated S3
+//   location with its own encryption settings.
+// - Cost controls: enforce per-query data scan limits to prevent runaway costs.
+// - Configuration enforcement: lock settings so individual queries cannot
+//   override the workgroup defaults.
+// - Engine selection: pin to a specific Athena engine version or use AUTO to
+//   always run the latest.
+//
+// For the common use case (SQL analytics on S3 data), only result_configuration
+// with an output_location is needed. Cost controls, encryption, and engine
+// version are optional settings for production governance.
+//
+// Notes:
+// - The workgroup name (from metadata.name) cannot be changed after creation
+//   (ForceNew). Naming constraints: 1-128 characters, alphanumeric, periods,
+//   underscores, and hyphens only.
+// - Credentials, region, and deployment workflow live outside this spec in stack
+//   inputs.
+message AwsAthenaWorkgroupSpec {
+  // ---------------------------------------------------------------------------
+  // Result storage
+  // ---------------------------------------------------------------------------
+
+  // Configuration for query result storage, encryption, and access control.
+  // When omitted, queries must specify their own result location or will use the
+  // AWS account-level Athena settings.
+  AwsAthenaWorkgroupResultConfig result_configuration = 1;
+
+  // ---------------------------------------------------------------------------
+  // Cost controls
+  // ---------------------------------------------------------------------------
+
+  // Maximum number of bytes a single query is allowed to scan. Queries that
+  // exceed this limit are cancelled automatically. This is the primary cost
+  // control mechanism for Athena workgroups.
+  //
+  // Must be 0 (no limit, the default) or at least 10485760 (10 MB). AWS
+  // enforces this minimum to prevent trivially small limits that would break
+  // most queries.
+  //
+  // Recommended for production: set to a reasonable ceiling based on your
+  // dataset sizes (e.g., 10737418240 for 10 GB).
+  int64 bytes_scanned_cutoff_per_query = 2;
+
+  // ---------------------------------------------------------------------------
+  // Governance
+  // ---------------------------------------------------------------------------
+
+  // When true (the default), workgroup settings override client-side settings
+  // for result location, encryption, and other configuration. Individual queries
+  // cannot override these values.
+  //
+  // When false, queries can override workgroup settings. Useful for development
+  // workgroups where engineers need flexibility, but not recommended for
+  // production where consistent encryption and result locations are required.
+  optional bool enforce_workgroup_configuration = 3 [(org.openmcf.shared.options.default) = "true"];
+
+  // When true, Athena publishes query execution metrics (data scanned, execution
+  // time, etc.) to CloudWatch. Useful for monitoring query performance and cost
+  // trends across the workgroup.
+  optional bool publish_cloudwatch_metrics_enabled = 4 [(org.openmcf.shared.options.default) = "true"];
+
+  // When true, the requester pays for data access charges when querying data in
+  // requester-pays S3 buckets. Default is false (the bucket owner pays).
+  bool requester_pays_enabled = 5;
+
+  // When true, enforces a minimum encryption level (at least SSE_S3) for all
+  // query results written by this workgroup. Queries that do not specify
+  // encryption will default to SSE_S3.
+  //
+  // Useful as a compliance guardrail to ensure no query results are ever written
+  // unencrypted, even if result_configuration.encryption_option is not set.
+  bool enable_minimum_encryption_configuration = 6;
+
+  // ---------------------------------------------------------------------------
+  // Engine version
+  // ---------------------------------------------------------------------------
+
+  // The Athena engine version to use for queries in this workgroup. Leave empty
+  // or set to "AUTO" (the default) to use the latest available engine version.
+  //
+  // Pinning to a specific version (e.g., "Athena engine version 3") is useful
+  // when you need to control query behavior across engine upgrades. The actual
+  // engine version in use is available in the effective_engine_version output.
+  //
+  // Valid values depend on the AWS region and change over time as AWS releases
+  // new engine versions. AWS validates at apply time.
+  string selected_engine_version = 7;
+
+  // ---------------------------------------------------------------------------
+  // Operational
+  // ---------------------------------------------------------------------------
+
+  // When true, all named queries and prepared statements associated with the
+  // workgroup are deleted when the workgroup is destroyed. When false (the
+  // default), destroying a workgroup that contains named queries or prepared
+  // statements will fail.
+  bool force_destroy = 8;
+
+  // ---------------------------------------------------------------------------
+  // Spark execution
+  // ---------------------------------------------------------------------------
+
+  // IAM role ARN for Apache Spark workloads. Required only for workgroups that
+  // run PySpark notebooks or Spark SQL — standard Athena SQL workgroups do not
+  // need this field.
+  //
+  // The role must have permissions to read from S3 data sources, write results,
+  // and access the AWS Glue Data Catalog.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef execution_role = 9 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsIamRole,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // CEL validations
+  // ---------------------------------------------------------------------------
+
+  // bytes_scanned_cutoff_per_query must be 0 (no limit) or >= 10 MB.
+  option (buf.validate.message).cel = {
+    id: "bytes_scanned_cutoff_range"
+    message: "bytes_scanned_cutoff_per_query must be 0 (no limit) or at least 10485760 (10 MB)"
+    expression: "this.bytes_scanned_cutoff_per_query == 0 || this.bytes_scanned_cutoff_per_query >= 10485760"
+  };
+
+  // encryption_option must be a valid AWS value when set.
+  option (buf.validate.message).cel = {
+    id: "result_encryption_option_valid"
+    message: "result_configuration.encryption_option must be 'SSE_S3', 'SSE_KMS', or 'CSE_KMS' when set"
+    expression: "!has(this.result_configuration) || this.result_configuration.encryption_option == '' || this.result_configuration.encryption_option in ['SSE_S3', 'SSE_KMS', 'CSE_KMS']"
+  };
+
+  // s3_acl_option must be a valid value when set.
+  option (buf.validate.message).cel = {
+    id: "s3_acl_option_valid"
+    message: "result_configuration.s3_acl_option must be 'BUCKET_OWNER_FULL_CONTROL' when set"
+    expression: "!has(this.result_configuration) || this.result_configuration.s3_acl_option == '' || this.result_configuration.s3_acl_option == 'BUCKET_OWNER_FULL_CONTROL'"
+  };
+}
+
+// AwsAthenaWorkgroupResultConfig defines where Athena stores query results and
+// how those results are encrypted.
+message AwsAthenaWorkgroupResultConfig {
+  // S3 URI where query results are stored, e.g., "s3://my-bucket/athena-results/".
+  // Include the trailing slash. When omitted, queries must specify their own
+  // result location.
+  //
+  // This is a plain string (not StringValueOrRef) because it's an S3 URI with a
+  // user-defined path prefix, not a direct resource identifier.
+  string output_location = 1;
+
+  // Server-side encryption mode for query results written to S3.
+  //
+  // Valid values:
+  // - "SSE_S3"   — Amazon S3-managed encryption keys (no additional cost).
+  // - "SSE_KMS"  — AWS KMS-managed key. Requires kms_key_arn. Provides key
+  //                rotation control and CloudTrail audit of key usage.
+  // - "CSE_KMS"  — Client-side encryption with AWS KMS key. Requires kms_key_arn.
+  //                Data is encrypted before leaving the Athena service.
+  //
+  // When omitted, query results are not encrypted (unless
+  // enable_minimum_encryption_configuration is true at the workgroup level,
+  // which enforces at least SSE_S3).
+  string encryption_option = 2;
+
+  // KMS key ARN for encrypting query results. Required when encryption_option is
+  // SSE_KMS or CSE_KMS. Must not be set for SSE_S3 or when encryption is
+  // disabled.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_arn = 3 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // AWS account ID that owns the S3 bucket used for query results. Set this when
+  // the output_location bucket belongs to a different AWS account than the one
+  // running the Athena workgroup. Ensures Athena applies the correct bucket
+  // ownership controls.
+  string expected_bucket_owner = 4;
+
+  // S3 ACL option applied to query result objects. The only valid value is
+  // "BUCKET_OWNER_FULL_CONTROL", which grants the bucket owner full control of
+  // result objects. Useful for cross-account scenarios where the query executor
+  // writes to a bucket owned by another account.
+  //
+  // When omitted, S3 default ACL behavior applies.
+  string s3_acl_option = 5;
+}

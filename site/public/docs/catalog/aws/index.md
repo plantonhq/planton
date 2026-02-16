@@ -10,6 +10,7 @@ order: 10
 The following AWS resources can be deployed using OpenMCF:
 
 - [ALB](/docs/catalog/aws/alb)
+- [Athena Workgroup](/docs/catalog/aws/athena-workgroup)
 - [Certificate Manager Certificate](/docs/catalog/aws/certificate-manager-certificate)
 - [Client VPN](/docs/catalog/aws/client-vpn)
 - [CloudFront](/docs/catalog/aws/cloudfront)
