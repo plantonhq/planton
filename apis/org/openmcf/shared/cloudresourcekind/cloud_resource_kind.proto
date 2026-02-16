@@ -365,6 +365,13 @@ enum CloudResourceKind {
     id_prefix: "awsmwaa"
   }];
 
+  // Graph Database
+  AwsNeptuneCluster = 341 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsnep"
+  }];
+
   // Streaming
   AwsMskCluster = 350 [(kind_meta) = {
     provider: aws
