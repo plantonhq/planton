@@ -1,3 +1,11 @@
+---
+title: "Athena Workgroup"
+description: "Athena Workgroup deployment documentation"
+icon: "package"
+order: 100
+componentName: "awsathenaworkgroup"
+---
+
 # AWS Athena Workgroup
 
 Deploys an Amazon Athena workgroup with configurable query result storage, server-side encryption, per-query cost controls, and optional Apache Spark execution support. The workgroup enforces governance settings so individual queries cannot override result locations or encryption policies.

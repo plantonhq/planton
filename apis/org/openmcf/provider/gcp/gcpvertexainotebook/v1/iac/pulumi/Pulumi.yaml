@@ -1,0 +1,6 @@
+name: gcp-vertex-ai-notebook
+runtime:
+  name: go
+  options:
+    binary: ./pulumi
+description: OpenMCF GcpVertexAiNotebook Pulumi module

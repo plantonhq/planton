@@ -1,0 +1,38 @@
+# gpu-ml-notebook: GPU-accelerated notebook for ML training
+#
+# Use when: You need a GPU-equipped JupyterLab environment for training
+# deep learning models with TensorFlow, PyTorch, or JAX.
+#
+# What it configures:
+# - n1-standard-8 machine type (8 vCPU, 30 GB RAM)
+# - NVIDIA Tesla T4 GPU (16 GB VRAM, good price/performance)
+# - 200 GB PD_SSD boot disk
+# - 500 GB PD_SSD data disk for datasets and checkpoints
+# - TensorFlow GPU deep learning VM image
+#
+# Typical use cases:
+# - Training neural networks (CNNs, transformers, etc.)
+# - Fine-tuning pre-trained models
+# - Running GPU-accelerated data processing (RAPIDS, cuDF)
+# - Model experimentation and hyperparameter tuning
+apiVersion: gcp.openmcf.org/v1
+kind: GcpVertexAiNotebook
+metadata:
+  name: ${name}
+spec:
+  projectId:
+    value: ${project-id}
+  location: ${location}
+  machineType: n1-standard-8
+  acceleratorConfig:
+    type: NVIDIA_TESLA_T4
+    coreCount: 1
+  bootDisk:
+    diskType: PD_SSD
+    diskSizeGb: 200
+  dataDisk:
+    diskType: PD_SSD
+    diskSizeGb: 500
+  vmImage:
+    project: deeplearning-platform-release
+    family: tf-latest-gpu

@@ -1,0 +1,31 @@
+# basic-notebook: CPU-only notebook for data exploration and light ML
+#
+# Use when: You need a managed JupyterLab environment for data exploration,
+# visualization, or light machine learning work without GPU acceleration.
+#
+# What it configures:
+# - e2-standard-4 machine type (4 vCPU, 16 GB RAM)
+# - 200 GB PD_SSD boot disk (fast OS and JupyterLab)
+# - Default deep learning VM image (common-cpu-notebooks)
+# - Public IP with JupyterLab proxy access
+#
+# Typical use cases:
+# - Data exploration and visualization with pandas, matplotlib
+# - Feature engineering and data preprocessing
+# - Light scikit-learn model training
+# - Notebook prototyping before scaling to GPU
+apiVersion: gcp.openmcf.org/v1
+kind: GcpVertexAiNotebook
+metadata:
+  name: ${name}
+spec:
+  projectId:
+    value: ${project-id}
+  location: ${location}
+  machineType: e2-standard-4
+  bootDisk:
+    diskType: PD_SSD
+    diskSizeGb: 200
+  vmImage:
+    project: deeplearning-platform-release
+    family: common-cpu-notebooks

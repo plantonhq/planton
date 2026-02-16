@@ -1,0 +1,14 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsAthenaWorkgroup
+metadata:
+  name: prod-analytics
+spec:
+  resultConfiguration:
+    outputLocation: "s3://prod-athena-results/queries/"
+    encryptionOption: SSE_KMS
+    kmsKeyArn: "arn:aws:kms:us-east-1:123456789012:key/mrk-REPLACE-ME"
+  bytesScannedCutoffPerQuery: 10737418240
+  enforceWorkgroupConfiguration: true
+  publishCloudwatchMetricsEnabled: true
+  enableMinimumEncryptionConfiguration: true
+  selectedEngineVersion: "Athena engine version 3"

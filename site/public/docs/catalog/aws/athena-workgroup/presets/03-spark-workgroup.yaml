@@ -1,0 +1,11 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsAthenaWorkgroup
+metadata:
+  name: spark-notebooks
+spec:
+  resultConfiguration:
+    outputLocation: "s3://spark-results/notebooks/"
+    encryptionOption: SSE_S3
+  executionRole: "arn:aws:iam::123456789012:role/AthenaSparkExecutionRole-REPLACE-ME"
+  selectedEngineVersion: "PySpark engine version 3"
+  forceDestroy: true

@@ -47,4 +47,5 @@ The following GCP resources can be deployed using OpenMCF:
 - [Spanner Database](/docs/catalog/gcp/spanner-database)
 - [Spanner Instance](/docs/catalog/gcp/spanner-instance)
 - [Subnetwork](/docs/catalog/gcp/subnetwork)
+- [Vertex AI Notebook](/docs/catalog/gcp/vertex-ai-notebook)
 - [VPC](/docs/catalog/gcp/vpc)
