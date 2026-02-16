@@ -121,7 +121,9 @@ const (
 	CloudResourceKind_AwsNetworkLoadBalancer     CloudResourceKind = 280
 	CloudResourceKind_AwsElasticIp               CloudResourceKind = 281
 	CloudResourceKind_AwsTransitGateway          CloudResourceKind = 282
+	CloudResourceKind_AwsGlobalAccelerator       CloudResourceKind = 283
 	CloudResourceKind_AwsElasticFileSystem       CloudResourceKind = 290
+	CloudResourceKind_AwsFsxLustreFileSystem     CloudResourceKind = 291
 	CloudResourceKind_AwsCognitoUserPool         CloudResourceKind = 300
 	CloudResourceKind_AwsCognitoIdentityProvider CloudResourceKind = 302
 	CloudResourceKind_AwsWafWebAcl               CloudResourceKind = 301
@@ -137,6 +139,8 @@ const (
 	CloudResourceKind_AwsSagemakerDomain CloudResourceKind = 270
 	// Containers
 	CloudResourceKind_AwsAppRunnerService CloudResourceKind = 320
+	// Batch Processing
+	CloudResourceKind_AwsBatchComputeEnvironment CloudResourceKind = 321
 	// Workflow / Orchestration
 	CloudResourceKind_AwsMwaaEnvironment CloudResourceKind = 340
 	// Graph Database
@@ -420,7 +424,9 @@ var (
 		280:  "AwsNetworkLoadBalancer",
 		281:  "AwsElasticIp",
 		282:  "AwsTransitGateway",
+		283:  "AwsGlobalAccelerator",
 		290:  "AwsElasticFileSystem",
+		291:  "AwsFsxLustreFileSystem",
 		300:  "AwsCognitoUserPool",
 		302:  "AwsCognitoIdentityProvider",
 		301:  "AwsWafWebAcl",
@@ -434,6 +440,7 @@ var (
 		265:  "AwsRedshiftCluster",
 		270:  "AwsSagemakerDomain",
 		320:  "AwsAppRunnerService",
+		321:  "AwsBatchComputeEnvironment",
 		340:  "AwsMwaaEnvironment",
 		341:  "AwsNeptuneCluster",
 		342:  "AwsMemorydbCluster",
@@ -699,7 +706,9 @@ var (
 		"AwsNetworkLoadBalancer":                280,
 		"AwsElasticIp":                          281,
 		"AwsTransitGateway":                     282,
+		"AwsGlobalAccelerator":                  283,
 		"AwsElasticFileSystem":                  290,
+		"AwsFsxLustreFileSystem":                291,
 		"AwsCognitoUserPool":                    300,
 		"AwsCognitoIdentityProvider":            302,
 		"AwsWafWebAcl":                          301,
@@ -713,6 +722,7 @@ var (
 		"AwsRedshiftCluster":                    265,
 		"AwsSagemakerDomain":                    270,
 		"AwsAppRunnerService":                   320,
+		"AwsBatchComputeEnvironment":            321,
 		"AwsMwaaEnvironment":                    340,
 		"AwsNeptuneCluster":                     341,
 		"AwsMemorydbCluster":                    342,
@@ -1075,7 +1085,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xbe]\n" +
+	"\x02v1\x10\x01*\xcc^\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1128,8 +1138,10 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x18AwsServerlessElasticache\x10\xfd\x01\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawsslselc\x12-\n" +
 	"\x16AwsNetworkLoadBalancer\x10\x98\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsnlb\x12#\n" +
 	"\fAwsElasticIp\x10\x99\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awseip\x12(\n" +
-	"\x11AwsTransitGateway\x10\x9a\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awstgw\x12+\n" +
-	"\x14AwsElasticFileSystem\x10\xa2\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsefs\x12)\n" +
+	"\x11AwsTransitGateway\x10\x9a\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awstgw\x12*\n" +
+	"\x14AwsGlobalAccelerator\x10\x9b\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awsga\x12+\n" +
+	"\x14AwsElasticFileSystem\x10\xa2\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsefs\x12-\n" +
+	"\x16AwsFsxLustreFileSystem\x10\xa3\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxl\x12)\n" +
 	"\x12AwsCognitoUserPool\x10\xac\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awscog\x124\n" +
 	"\x1aAwsCognitoIdentityProvider\x10\xae\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawscogidp\x12#\n" +
 	"\fAwsWafWebAcl\x10\xad\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awswaf\x12-\n" +
@@ -1142,7 +1154,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x16AwsGlueCatalogDatabase\x10\x88\x02\x1a\x11\xa2\xf7\x04\r\b\f\x10\x01\"\aawsglue\x12(\n" +
 	"\x12AwsRedshiftCluster\x10\x89\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awsrs\x12(\n" +
 	"\x12AwsSagemakerDomain\x10\x8e\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05sgmkd\x12)\n" +
-	"\x13AwsAppRunnerService\x10\xc0\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awsar\x12*\n" +
+	"\x13AwsAppRunnerService\x10\xc0\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awsar\x121\n" +
+	"\x1aAwsBatchComputeEnvironment\x10\xc1\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsbat\x12*\n" +
 	"\x12AwsMwaaEnvironment\x10\xd4\x02\x1a\x11\xa2\xf7\x04\r\b\f\x10\x01\"\aawsmwaa\x12(\n" +
 	"\x11AwsNeptuneCluster\x10\xd5\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsnep\x12)\n" +
 	"\x12AwsMemorydbCluster\x10\xd6\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsmdb\x12$\n" +

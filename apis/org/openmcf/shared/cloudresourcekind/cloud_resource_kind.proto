@@ -261,6 +261,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "awstgw"
   }];
+  AwsGlobalAccelerator = 283 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsga"
+  }];
 
   // --- Storage ---
 
@@ -268,6 +273,12 @@ enum CloudResourceKind {
     provider: aws
     version: v1
     id_prefix: "awsefs"
+  }];
+
+  AwsFsxLustreFileSystem = 291 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsfxl"
   }];
 
   // --- Auth / Identity ---
@@ -356,6 +367,13 @@ enum CloudResourceKind {
     provider: aws
     version: v1
     id_prefix: "awsar"
+  }];
+
+  // Batch Processing
+  AwsBatchComputeEnvironment = 321 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsbat"
   }];
 
   // Workflow / Orchestration

@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsbatchcomputeenvironment.v1;
+
+// AwsBatchComputeEnvironmentStackOutputs captures observable identifiers and
+// endpoints from the AWS Batch compute environment deployment.
+message AwsBatchComputeEnvironmentStackOutputs {
+  // The Amazon Resource Name (ARN) of the compute environment.
+  string compute_environment_arn = 1;
+
+  // The name of the compute environment.
+  string compute_environment_name = 2;
+
+  // The ARN of the underlying ECS cluster managed by AWS Batch.
+  // AWS Batch automatically provisions an ECS cluster for MANAGED compute
+  // environments. This ARN is useful for monitoring and debugging.
+  string ecs_cluster_arn = 3;
+
+  // The current status of the compute environment (e.g., "VALID", "INVALID").
+  string status = 4;
+
+  // job_queue_arns maps each queue name to its ARN. Use these ARNs when
+  // submitting jobs via the AWS Batch SubmitJob API or referencing queues
+  // from other resources.
+  map<string, string> job_queue_arns = 5;
+
+  // The ARN of the scheduling policy, if one was created.
+  string scheduling_policy_arn = 6;
+}
