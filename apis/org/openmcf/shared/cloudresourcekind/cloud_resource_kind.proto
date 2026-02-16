@@ -256,6 +256,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "awseip"
   }];
+  AwsTransitGateway = 282 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awstgw"
+  }];
 
   // --- Storage ---
 

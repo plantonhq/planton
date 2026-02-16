@@ -120,6 +120,7 @@ const (
 	CloudResourceKind_AwsServerlessElasticache   CloudResourceKind = 253
 	CloudResourceKind_AwsNetworkLoadBalancer     CloudResourceKind = 280
 	CloudResourceKind_AwsElasticIp               CloudResourceKind = 281
+	CloudResourceKind_AwsTransitGateway          CloudResourceKind = 282
 	CloudResourceKind_AwsElasticFileSystem       CloudResourceKind = 290
 	CloudResourceKind_AwsCognitoUserPool         CloudResourceKind = 300
 	CloudResourceKind_AwsCognitoIdentityProvider CloudResourceKind = 302
@@ -414,6 +415,7 @@ var (
 		253:  "AwsServerlessElasticache",
 		280:  "AwsNetworkLoadBalancer",
 		281:  "AwsElasticIp",
+		282:  "AwsTransitGateway",
 		290:  "AwsElasticFileSystem",
 		300:  "AwsCognitoUserPool",
 		302:  "AwsCognitoIdentityProvider",
@@ -690,6 +692,7 @@ var (
 		"AwsServerlessElasticache":              253,
 		"AwsNetworkLoadBalancer":                280,
 		"AwsElasticIp":                          281,
+		"AwsTransitGateway":                     282,
 		"AwsElasticFileSystem":                  290,
 		"AwsCognitoUserPool":                    300,
 		"AwsCognitoIdentityProvider":            302,
@@ -1064,7 +1067,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xbf\\\n" +
+	"\x02v1\x10\x01*\xe9\\\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1116,7 +1119,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x17AwsMemcachedElasticache\x10\xfc\x01\x1a\x16\xa2\xf7\x04\x12\b\f\x10\x01\"\fawsmemcached\x122\n" +
 	"\x18AwsServerlessElasticache\x10\xfd\x01\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawsslselc\x12-\n" +
 	"\x16AwsNetworkLoadBalancer\x10\x98\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsnlb\x12#\n" +
-	"\fAwsElasticIp\x10\x99\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awseip\x12+\n" +
+	"\fAwsElasticIp\x10\x99\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awseip\x12(\n" +
+	"\x11AwsTransitGateway\x10\x9a\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awstgw\x12+\n" +
 	"\x14AwsElasticFileSystem\x10\xa2\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsefs\x12)\n" +
 	"\x12AwsCognitoUserPool\x10\xac\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awscog\x124\n" +
 	"\x1aAwsCognitoIdentityProvider\x10\xae\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawscogidp\x12#\n" +
