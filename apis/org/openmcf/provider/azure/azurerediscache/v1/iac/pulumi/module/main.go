@@ -32,17 +32,17 @@ func Resources(ctx *pulumi.Context, stackInput *azurerediscachev1.AzureRedisCach
 	// Build the Redis cache arguments.
 	// The family ("C" or "P") is auto-derived from sku_name in locals.
 	cacheArgs := &redis.CacheArgs{
-		Name:              pulumi.String(spec.Name),
-		Location:          pulumi.String(spec.Region),
-		ResourceGroupName: pulumi.String(locals.ResourceGroupName),
-		SkuName:           pulumi.String(spec.GetSkuName()),
-		Family:            pulumi.String(locals.Family),
-		Capacity:          pulumi.Int(int(spec.Capacity)),
-		RedisVersion:      pulumi.StringPtr(spec.GetRedisVersion()),
-		MinimumTlsVersion: pulumi.StringPtr(spec.GetMinimumTlsVersion()),
-		NonSslPortEnabled: pulumi.BoolPtr(spec.GetNonSslPortEnabled()),
+		Name:                       pulumi.String(spec.Name),
+		Location:                   pulumi.String(spec.Region),
+		ResourceGroupName:          pulumi.String(locals.ResourceGroupName),
+		SkuName:                    pulumi.String(spec.GetSkuName()),
+		Family:                     pulumi.String(locals.Family),
+		Capacity:                   pulumi.Int(int(spec.Capacity)),
+		RedisVersion:               pulumi.StringPtr(spec.GetRedisVersion()),
+		MinimumTlsVersion:          pulumi.StringPtr(spec.GetMinimumTlsVersion()),
+		NonSslPortEnabled:          pulumi.BoolPtr(spec.GetNonSslPortEnabled()),
 		PublicNetworkAccessEnabled: pulumi.BoolPtr(spec.GetPublicNetworkAccessEnabled()),
-		Tags:              pulumi.ToStringMap(locals.AzureTags),
+		Tags:                       pulumi.ToStringMap(locals.AzureTags),
 		RedisConfiguration: &redis.CacheRedisConfigurationArgs{
 			MaxmemoryPolicy: pulumi.StringPtr(spec.GetMaxmemoryPolicy()),
 		},
@@ -73,7 +73,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurerediscachev1.AzureRedisCach
 		patchArray := redis.CachePatchScheduleArray{}
 		for _, ps := range spec.PatchSchedules {
 			patchArgs := &redis.CachePatchScheduleArgs{
-				DayOfWeek:    pulumi.String(ps.DayOfWeek),
+				DayOfWeek: pulumi.String(ps.DayOfWeek),
 			}
 			if ps.StartHourUtc != nil {
 				patchArgs.StartHourUtc = pulumi.IntPtr(int(ps.GetStartHourUtc()))
@@ -101,11 +101,11 @@ func Resources(ctx *pulumi.Context, stackInput *azurerediscachev1.AzureRedisCach
 		_, err := redis.NewFirewallRule(ctx,
 			fmt.Sprintf("%s-%s", spec.Name, rule.Name),
 			&redis.FirewallRuleArgs{
-				Name:            pulumi.String(rule.Name),
-				RedisCacheName:  cache.Name,
+				Name:              pulumi.String(rule.Name),
+				RedisCacheName:    cache.Name,
 				ResourceGroupName: pulumi.String(locals.ResourceGroupName),
-				StartIp:         pulumi.String(rule.StartIp),
-				EndIp:           pulumi.String(rule.EndIp),
+				StartIp:           pulumi.String(rule.StartIp),
+				EndIp:             pulumi.String(rule.EndIp),
 			},
 			pulumi.Provider(azureProvider),
 			pulumi.DependsOn([]pulumi.Resource{cache}))

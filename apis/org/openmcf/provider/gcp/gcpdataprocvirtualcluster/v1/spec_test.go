@@ -40,8 +40,8 @@ var _ = ginkgo.Describe("GcpDataprocVirtualClusterSpec", func() {
 				Name: "test-virtual-cluster",
 			},
 			Spec: &GcpDataprocVirtualClusterSpec{
-				ProjectId: svr("my-gcp-project"),
-				Region:    "us-central1",
+				ProjectId:        svr("my-gcp-project"),
+				Region:           "us-central1",
 				GkeClusterTarget: svr("projects/my-gcp-project/locations/us-central1/clusters/my-gke-cluster"),
 				SoftwareConfig: &GcpDataprocVirtualClusterSoftwareConfig{
 					ComponentVersion: map[string]string{

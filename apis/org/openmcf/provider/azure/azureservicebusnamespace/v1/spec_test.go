@@ -135,17 +135,17 @@ var _ = ginkgo.Describe("AzureServiceBusNamespaceSpec Validation Tests", func() 
 				input := minimalSpec()
 				input.Spec.Queues = []*AzureServiceBusQueue{
 					{
-						Name:                               "full-featured-queue",
-						MaxSizeInMegabytes:                 &maxSize,
-						PartitioningEnabled:                &partitioning,
-						DefaultMessageTtl:                  &ttl,
-						LockDuration:                       &lockDuration,
-						MaxDeliveryCount:                   &maxDelivery,
-						RequiresDuplicateDetection:         &dupDetection,
-						RequiresSession:                    &session,
-						DeadLetteringOnMessageExpiration:   &deadLettering,
-						ForwardTo:                          &forwardTo,
-						ForwardDeadLetteredMessagesTo:      &forwardDlq,
+						Name:                             "full-featured-queue",
+						MaxSizeInMegabytes:               &maxSize,
+						PartitioningEnabled:              &partitioning,
+						DefaultMessageTtl:                &ttl,
+						LockDuration:                     &lockDuration,
+						MaxDeliveryCount:                 &maxDelivery,
+						RequiresDuplicateDetection:       &dupDetection,
+						RequiresSession:                  &session,
+						DeadLetteringOnMessageExpiration: &deadLettering,
+						ForwardTo:                        &forwardTo,
+						ForwardDeadLetteredMessagesTo:    &forwardDlq,
 					},
 				}
 				err := protovalidate.Validate(input)

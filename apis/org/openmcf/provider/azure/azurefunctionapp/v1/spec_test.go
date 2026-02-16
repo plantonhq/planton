@@ -43,10 +43,10 @@ func minimalSpec() *AzureFunctionApp {
 			Name: "test-fn",
 		},
 		Spec: &AzureFunctionAppSpec{
-			Region:        "eastus",
-			ResourceGroup: literalRef("my-rg"),
-			Name:          "my-function-app",
-			ServicePlanId: literalRef("/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Web/serverfarms/plan"),
+			Region:             "eastus",
+			ResourceGroup:      literalRef("my-rg"),
+			Name:               "my-function-app",
+			ServicePlanId:      literalRef("/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Web/serverfarms/plan"),
 			StorageAccountName: literalRef("mystorageaccount"),
 			SiteConfig:         &AzureFunctionAppSiteConfig{},
 		},
@@ -513,7 +513,7 @@ var _ = ginkgo.Describe("AzureFunctionAppSpec Validation Tests", func() {
 						RegistryUrl:      "https://ghcr.io",
 						ImageName:        "myorg/my-function",
 						ImageTag:         "latest",
-						RegistryUsername:  "myuser",
+						RegistryUsername: "myuser",
 						RegistryPassword: literalRef("mypassword"),
 					},
 				}

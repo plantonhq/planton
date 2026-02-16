@@ -101,7 +101,7 @@ func buildManagedRuleGroupStatement(mg *awswafwebaclv1.AwsWafWebAclManagedRuleGr
 		var overrides []map[string]interface{}
 		for _, override := range mg.RuleActionOverrides {
 			overrides = append(overrides, map[string]interface{}{
-				"Name": override.Name,
+				"Name":        override.Name,
 				"ActionToUse": buildSimpleAction(override.Action),
 			})
 		}

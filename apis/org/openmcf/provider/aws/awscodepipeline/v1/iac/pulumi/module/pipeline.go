@@ -1,8 +1,8 @@
 package module
 
 import (
-	awscodepipelinev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awscodepipeline/v1"
 	"github.com/pkg/errors"
+	awscodepipelinev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awscodepipeline/v1"
 	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws"
 	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws/codepipeline"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"

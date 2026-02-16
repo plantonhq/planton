@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"buf.build/go/protovalidate"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/structpb"
 )
@@ -124,8 +124,8 @@ var _ = ginkgo.Describe("AwsOpenSearchDomainSpec validations", func() {
 
 	ginkgo.It("accepts custom endpoint", func() {
 		spec.DomainEndpointOptions = &AwsOpenSearchDomainEndpointOptions{
-			CustomEndpointEnabled:       true,
-			CustomEndpoint:              "search.example.com",
+			CustomEndpointEnabled:        true,
+			CustomEndpoint:               "search.example.com",
 			CustomEndpointCertificateArn: strRef("arn:aws:acm:us-east-1:123456789012:certificate/abc-123"),
 		}
 		err := protovalidate.Validate(spec)

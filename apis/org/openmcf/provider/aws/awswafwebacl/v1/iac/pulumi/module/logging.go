@@ -13,7 +13,7 @@ func logging(ctx *pulumi.Context, locals *Locals, provider *aws.Provider, webAcl
 	loggingSpec := locals.WebAcl.Spec.Logging
 
 	args := &wafv2.WebAclLoggingConfigurationArgs{
-		ResourceArn:            webAclResource.Arn,
+		ResourceArn:           webAclResource.Arn,
 		LogDestinationConfigs: pulumi.StringArray{pulumi.String(loggingSpec.DestinationArn.GetValue())},
 	}
 

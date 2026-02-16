@@ -11,9 +11,9 @@ import (
 )
 
 type Locals struct {
-	GcpProviderConfig   *gcpprovider.GcpProviderConfig
-	GcpDataprocCluster  *gcpdataprocclusterv1.GcpDataprocCluster
-	GcpLabels           map[string]string
+	GcpProviderConfig  *gcpprovider.GcpProviderConfig
+	GcpDataprocCluster *gcpdataprocclusterv1.GcpDataprocCluster
+	GcpLabels          map[string]string
 }
 
 func initializeLocals(_ *pulumi.Context, stackInput *gcpdataprocclusterv1.GcpDataprocClusterStackInput) *Locals {

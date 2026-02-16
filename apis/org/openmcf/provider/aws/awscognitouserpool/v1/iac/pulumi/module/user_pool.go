@@ -141,9 +141,9 @@ func userPool(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) (*cog
 		var schemas cognito.UserPoolSchemaArray
 		for _, attr := range spec.CustomAttributes {
 			schemaArgs := &cognito.UserPoolSchemaArgs{
-				Name:                pulumi.String(attr.Name),
-				AttributeDataType:   pulumi.String(attr.AttributeDataType),
-				Mutable:             pulumi.BoolPtr(attr.Mutable),
+				Name:                   pulumi.String(attr.Name),
+				AttributeDataType:      pulumi.String(attr.AttributeDataType),
+				Mutable:                pulumi.BoolPtr(attr.Mutable),
 				DeveloperOnlyAttribute: pulumi.BoolPtr(false),
 			}
 

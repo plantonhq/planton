@@ -21,7 +21,7 @@ func redshiftCluster(
 	spec := locals.AwsRedshiftCluster.Spec
 
 	args := &redshift.ClusterArgs{
-		ClusterIdentifier:               pulumi.String(locals.AwsRedshiftCluster.Metadata.Id),
+		ClusterIdentifier:                pulumi.String(locals.AwsRedshiftCluster.Metadata.Id),
 		NodeType:                         pulumi.String(spec.NodeType),
 		NumberOfNodes:                    pulumi.Int(int(spec.GetNumberOfNodes())),
 		DatabaseName:                     pulumi.String(spec.GetDatabaseName()),

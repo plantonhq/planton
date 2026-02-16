@@ -38,8 +38,8 @@ func webAcl(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) (*wafv2
 	}
 
 	args := &wafv2.WebAclArgs{
-		Name:  pulumi.String(locals.WebAcl.Metadata.Name),
-		Scope: pulumi.String(spec.Scope),
+		Name:          pulumi.String(locals.WebAcl.Metadata.Name),
+		Scope:         pulumi.String(spec.Scope),
 		DefaultAction: defaultAction,
 		VisibilityConfig: &wafv2.WebAclVisibilityConfigArgs{
 			CloudwatchMetricsEnabled: pulumi.Bool(metricsEnabled),

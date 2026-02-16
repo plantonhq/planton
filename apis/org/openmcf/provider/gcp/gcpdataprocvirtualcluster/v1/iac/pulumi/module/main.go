@@ -1,9 +1,9 @@
 package module
 
 import (
+	"github.com/pkg/errors"
 	gcpdataprocvirtualclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpdataprocvirtualcluster/v1"
 	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider"
-	"github.com/pkg/errors"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 

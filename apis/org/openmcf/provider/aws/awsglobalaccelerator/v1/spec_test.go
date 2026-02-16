@@ -6,8 +6,8 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
 func TestAwsGlobalAcceleratorSpec(t *testing.T) {
@@ -92,8 +92,8 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 									TrafficDialPercentage:      70.0,
 									Endpoints: []*AwsGlobalAcceleratorEndpoint{
 										{
-											EndpointId:                   svr("arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/app/my-alb/1234567890"),
-											Weight:                       200,
+											EndpointId:                  svr("arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/app/my-alb/1234567890"),
+											Weight:                      200,
 											ClientIpPreservationEnabled: true,
 										},
 									},
@@ -271,15 +271,15 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 									Name: "primary",
 									Endpoints: []*AwsGlobalAcceleratorEndpoint{
 										{
-										EndpointId: &foreignkeyv1.StringValueOrRef{
-											LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
-												ValueFrom: &foreignkeyv1.ValueFromRef{
-													Kind:      cloudresourcekind.CloudResourceKind_AwsAlb,
-													Name:      "my-alb",
-													FieldPath: "status.outputs.load_balancer_arn",
+											EndpointId: &foreignkeyv1.StringValueOrRef{
+												LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
+													ValueFrom: &foreignkeyv1.ValueFromRef{
+														Kind:      cloudresourcekind.CloudResourceKind_AwsAlb,
+														Name:      "my-alb",
+														FieldPath: "status.outputs.load_balancer_arn",
+													},
 												},
 											},
-										},
 											Weight: 128,
 										},
 									},

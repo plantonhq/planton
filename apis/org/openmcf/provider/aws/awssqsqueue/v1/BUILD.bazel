@@ -1,17 +1,5 @@
 load("@rules_go//go:def.bzl", "go_library", "go_test")
 
-go_test(
-    name = "awssqsqueue_test",
-    srcs = ["spec_test.go"],
-    embed = [":awssqsqueue"],
-    deps = [
-        "//apis/org/openmcf/shared/foreignkey/v1:foreignkey",
-        "@build_buf_go_protovalidate//:protovalidate",
-        "@com_github_onsi_ginkgo_v2//:ginkgo",
-        "@com_github_onsi_gomega//:gomega",
-    ],
-)
-
 go_library(
     name = "awssqsqueue",
     srcs = [
@@ -30,5 +18,17 @@ go_library(
         "@org_golang_google_protobuf//reflect/protoreflect",
         "@org_golang_google_protobuf//runtime/protoimpl",
         "@org_golang_google_protobuf//types/known/structpb",
+    ],
+)
+
+go_test(
+    name = "awssqsqueue_test",
+    srcs = ["spec_test.go"],
+    embed = [":awssqsqueue"],
+    deps = [
+        "//apis/org/openmcf/shared/foreignkey/v1:foreignkey",
+        "@build_buf_go_protovalidate//:protovalidate",
+        "@com_github_onsi_ginkgo_v2//:ginkgo",
+        "@com_github_onsi_gomega//:gomega",
     ],
 )

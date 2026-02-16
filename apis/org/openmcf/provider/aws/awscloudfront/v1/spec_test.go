@@ -26,7 +26,7 @@ var _ = ginkgo.Describe("AwsCloudFrontSpec validations", func() {
 					Value: "arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012",
 				},
 			},
-			PriceClass:     AwsCloudFrontSpec_PRICE_CLASS_100,
+			PriceClass: AwsCloudFrontSpec_PRICE_CLASS_100,
 			Origins: []*AwsCloudFrontSpec_Origin{
 				{
 					DomainName: "my-bucket.s3.amazonaws.com",

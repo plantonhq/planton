@@ -134,11 +134,11 @@ var _ = ginkgo.Describe("AwsCodeBuildProjectSpec validations", func() {
 						FetchSubmodules:   true,
 					},
 					Environment: &AwsCodeBuildEnvironment{
-						Type:                      "LINUX_CONTAINER",
-						ComputeType:               "BUILD_GENERAL1_LARGE",
-						Image:                     "aws/codebuild/amazonlinux2-x86_64-standard:5.0",
-						PrivilegedMode:             true,
-						ImagePullCredentialsType:   stringPtr("CODEBUILD"),
+						Type:                     "LINUX_CONTAINER",
+						ComputeType:              "BUILD_GENERAL1_LARGE",
+						Image:                    "aws/codebuild/amazonlinux2-x86_64-standard:5.0",
+						PrivilegedMode:           true,
+						ImagePullCredentialsType: stringPtr("CODEBUILD"),
 						EnvironmentVariables: []*AwsCodeBuildEnvironmentVariable{
 							{Name: "ENV", Value: "production", Type: stringPtr("PLAINTEXT")},
 							{Name: "DB_PASSWORD", Value: "my-secret", Type: stringPtr("SECRETS_MANAGER")},

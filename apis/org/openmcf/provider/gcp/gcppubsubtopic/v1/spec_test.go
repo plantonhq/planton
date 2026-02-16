@@ -187,7 +187,7 @@ var _ = ginkgo.Describe("GcpPubSubTopicSpec", func() {
 						Value: "my-avro-bucket",
 					},
 				},
-				MatchGlob: "*.avro",
+				MatchGlob:  "*.avro",
 				AvroFormat: &GcpPubSubTopicIngestionCloudStorageAvroFormat{},
 			},
 		}

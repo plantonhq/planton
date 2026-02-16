@@ -3,8 +3,8 @@ package module
 import (
 	"fmt"
 
-	azurefrontdoorprofilev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurefrontdoorprofile/v1"
 	"github.com/pkg/errors"
+	azurefrontdoorprofilev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurefrontdoorprofile/v1"
 	"github.com/pulumi/pulumi-azure/sdk/v6/go/azure"
 	"github.com/pulumi/pulumi-azure/sdk/v6/go/azure/cdn"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"

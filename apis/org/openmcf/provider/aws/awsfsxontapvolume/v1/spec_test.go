@@ -39,8 +39,8 @@ var _ = ginkgo.Describe("AwsFsxOntapVolumeSpec validations", func() {
 	ginkgo.BeforeEach(func() {
 		spec = &AwsFsxOntapVolumeSpec{
 			StorageVirtualMachineId: strRef("svm-0123456789abcdef0"),
-			Name:                   "vol_default",
-			SizeInMegabytes:        1024,
+			Name:                    "vol_default",
+			SizeInMegabytes:         1024,
 		}
 	})
 
@@ -196,7 +196,7 @@ var _ = ginkgo.Describe("AwsFsxOntapVolumeSpec validations", func() {
 
 	ginkgo.It("accepts SnapLock ENTERPRISE with privileged delete enabled", func() {
 		spec.SnaplockConfiguration = &AwsFsxOntapVolumeSnaplockConfiguration{
-			SnaplockType:    "ENTERPRISE",
+			SnaplockType:     "ENTERPRISE",
 			PrivilegedDelete: stringPtr("ENABLED"),
 		}
 		err := protovalidate.Validate(spec)
@@ -237,7 +237,7 @@ var _ = ginkgo.Describe("AwsFsxOntapVolumeSpec validations", func() {
 
 	ginkgo.It("accepts SnapLock with volume append mode enabled", func() {
 		spec.SnaplockConfiguration = &AwsFsxOntapVolumeSnaplockConfiguration{
-			SnaplockType:           "ENTERPRISE",
+			SnaplockType:            "ENTERPRISE",
 			VolumeAppendModeEnabled: boolPtr(true),
 		}
 		err := protovalidate.Validate(spec)
@@ -413,7 +413,7 @@ var _ = ginkgo.Describe("AwsFsxOntapVolumeSpec validations", func() {
 
 	ginkgo.It("rejects invalid privileged_delete value", func() {
 		spec.SnaplockConfiguration = &AwsFsxOntapVolumeSnaplockConfiguration{
-			SnaplockType:    "ENTERPRISE",
+			SnaplockType:     "ENTERPRISE",
 			PrivilegedDelete: stringPtr("INVALID"),
 		}
 		err := protovalidate.Validate(spec)

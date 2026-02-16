@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"buf.build/go/protovalidate"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
@@ -133,7 +133,7 @@ var _ = ginkgo.Describe("AwsStepFunctionSpec validations", func() {
 
 	ginkgo.It("accepts a spec with customer-managed KMS encryption", func() {
 		spec.Encryption = &AwsStepFunctionEncryptionConfig{
-			KmsKeyId:                       strRef("arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"),
+			KmsKeyId:                     strRef("arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"),
 			KmsDataKeyReusePeriodSeconds: 300,
 		}
 		err := protovalidate.Validate(spec)
@@ -159,7 +159,7 @@ var _ = ginkgo.Describe("AwsStepFunctionSpec validations", func() {
 			LogDestination:       strRef("arn:aws:logs:us-east-1:123456789012:log-group:/aws/stepfunctions/prod-workflow:*"),
 		}
 		spec.Encryption = &AwsStepFunctionEncryptionConfig{
-			KmsKeyId:                       strRef("arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"),
+			KmsKeyId:                     strRef("arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"),
 			KmsDataKeyReusePeriodSeconds: 600,
 		}
 		err := protovalidate.Validate(spec)
@@ -254,7 +254,7 @@ var _ = ginkgo.Describe("AwsStepFunctionSpec validations", func() {
 
 	ginkgo.It("fails when kms_data_key_reuse_period_seconds is below 60", func() {
 		spec.Encryption = &AwsStepFunctionEncryptionConfig{
-			KmsKeyId:                       strRef("arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"),
+			KmsKeyId:                     strRef("arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"),
 			KmsDataKeyReusePeriodSeconds: 30,
 		}
 		err := protovalidate.Validate(spec)
@@ -263,7 +263,7 @@ var _ = ginkgo.Describe("AwsStepFunctionSpec validations", func() {
 
 	ginkgo.It("fails when kms_data_key_reuse_period_seconds exceeds 900", func() {
 		spec.Encryption = &AwsStepFunctionEncryptionConfig{
-			KmsKeyId:                       strRef("arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"),
+			KmsKeyId:                     strRef("arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"),
 			KmsDataKeyReusePeriodSeconds: 901,
 		}
 		err := protovalidate.Validate(spec)
@@ -272,7 +272,7 @@ var _ = ginkgo.Describe("AwsStepFunctionSpec validations", func() {
 
 	ginkgo.It("accepts kms_data_key_reuse_period_seconds at boundary 60", func() {
 		spec.Encryption = &AwsStepFunctionEncryptionConfig{
-			KmsKeyId:                       strRef("arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"),
+			KmsKeyId:                     strRef("arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"),
 			KmsDataKeyReusePeriodSeconds: 60,
 		}
 		err := protovalidate.Validate(spec)
@@ -281,7 +281,7 @@ var _ = ginkgo.Describe("AwsStepFunctionSpec validations", func() {
 
 	ginkgo.It("accepts kms_data_key_reuse_period_seconds at boundary 900", func() {
 		spec.Encryption = &AwsStepFunctionEncryptionConfig{
-			KmsKeyId:                       strRef("arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"),
+			KmsKeyId:                     strRef("arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"),
 			KmsDataKeyReusePeriodSeconds: 900,
 		}
 		err := protovalidate.Validate(spec)

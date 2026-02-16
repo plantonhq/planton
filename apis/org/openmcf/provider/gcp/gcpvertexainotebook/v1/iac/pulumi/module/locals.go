@@ -11,10 +11,10 @@ import (
 )
 
 type Locals struct {
-	GcpProviderConfig  *gcpprovider.GcpProviderConfig
+	GcpProviderConfig   *gcpprovider.GcpProviderConfig
 	GcpVertexAiNotebook *gcpvertexainotebookv1.GcpVertexAiNotebook
-	GcpLabels          map[string]string
-	InstanceName       string
+	GcpLabels           map[string]string
+	InstanceName        string
 }
 
 func initializeLocals(_ *pulumi.Context, stackInput *gcpvertexainotebookv1.GcpVertexAiNotebookStackInput) *Locals {

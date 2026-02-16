@@ -31,13 +31,13 @@ func Resources(ctx *pulumi.Context, stackInput *azureservicebusnamespacev1.Azure
 
 	// Build the Service Bus namespace arguments.
 	namespaceArgs := &servicebus.NamespaceArgs{
-		Name:              pulumi.String(spec.Name),
-		Location:          pulumi.String(spec.Region),
-		ResourceGroupName: pulumi.String(locals.ResourceGroupName),
-		Sku:               pulumi.String(spec.GetSku()),
-		MinimumTlsVersion: pulumi.StringPtr(spec.GetMinimumTlsVersion()),
+		Name:                       pulumi.String(spec.Name),
+		Location:                   pulumi.String(spec.Region),
+		ResourceGroupName:          pulumi.String(locals.ResourceGroupName),
+		Sku:                        pulumi.String(spec.GetSku()),
+		MinimumTlsVersion:          pulumi.StringPtr(spec.GetMinimumTlsVersion()),
 		PublicNetworkAccessEnabled: pulumi.BoolPtr(spec.GetPublicNetworkAccessEnabled()),
-		Tags:              pulumi.ToStringMap(locals.AzureTags),
+		Tags:                       pulumi.ToStringMap(locals.AzureTags),
 	}
 
 	// Premium-only fields: capacity, premium_messaging_partitions, zone_redundant.

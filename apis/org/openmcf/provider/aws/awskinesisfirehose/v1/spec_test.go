@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"buf.build/go/protovalidate"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
 func TestAwsKinesisFirehoseSpec(t *testing.T) {
@@ -283,25 +283,25 @@ var _ = ginkgo.Describe("AwsKinesisFirehoseSpec validations", func() {
 			RoleArn:   strRef("arn:aws:iam::123456789012:role/firehose-kinesis-read"),
 		}
 		s3 := &AwsKinesisFirehoseExtendedS3Destination{
-			BucketArn:        strRef("arn:aws:s3:::prod-data-lake"),
-			RoleArn:          strRef("arn:aws:iam::123456789012:role/firehose-prod"),
-			Prefix:           "data/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/",
+			BucketArn:         strRef("arn:aws:s3:::prod-data-lake"),
+			RoleArn:           strRef("arn:aws:iam::123456789012:role/firehose-prod"),
+			Prefix:            "data/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/",
 			ErrorOutputPrefix: "errors/year=!{timestamp:yyyy}/",
-			KmsKeyArn:        strRef("arn:aws:kms:us-east-1:123456789012:key/prod-key"),
-			FileExtension:    ".parquet",
+			KmsKeyArn:         strRef("arn:aws:kms:us-east-1:123456789012:key/prod-key"),
+			FileExtension:     ".parquet",
 			Buffering: &AwsKinesisFirehoseBufferingHints{
 				IntervalInSeconds: 120,
 				SizeInMbs:         64,
 			},
 			Processing: &AwsKinesisFirehoseLambdaProcessing{
-				Enabled:                  true,
+				Enabled:                 true,
 				LambdaArn:               strRef("arn:aws:lambda:us-east-1:123456789012:function:enrich"),
-				BufferSizeInMbs:          3,
-				BufferIntervalInSeconds:  60,
-				NumberOfRetries:          3,
+				BufferSizeInMbs:         3,
+				BufferIntervalInSeconds: 60,
+				NumberOfRetries:         3,
 			},
 			DynamicPartitioning: &AwsKinesisFirehoseDynamicPartitioning{
-				Enabled:                 true,
+				Enabled:                true,
 				RetryDurationInSeconds: 600,
 			},
 			DataFormatConversion: &AwsKinesisFirehoseDataFormatConversion{
@@ -322,8 +322,8 @@ var _ = ginkgo.Describe("AwsKinesisFirehoseSpec validations", func() {
 			},
 			S3BackupMode: "Enabled",
 			S3Backup: &AwsKinesisFirehoseS3Config{
-				BucketArn:        strRef("arn:aws:s3:::prod-backup"),
-				RoleArn:          strRef("arn:aws:iam::123456789012:role/firehose-backup"),
+				BucketArn:         strRef("arn:aws:s3:::prod-backup"),
+				RoleArn:           strRef("arn:aws:iam::123456789012:role/firehose-backup"),
 				CompressionFormat: "GZIP",
 			},
 		}

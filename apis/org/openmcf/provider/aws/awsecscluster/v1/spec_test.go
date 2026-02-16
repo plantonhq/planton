@@ -6,8 +6,8 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
 func TestAwsEcsCluster(t *testing.T) {
@@ -136,50 +136,50 @@ var _ = ginkgo.Describe("AwsEcsCluster Validation Tests", func() {
 						EnableContainerInsights: true,
 						ExecuteCommandConfiguration: &ExecConfiguration{
 							Logging: ExecConfiguration_OVERRIDE,
-						LogConfiguration: &ExecLogConfiguration{
-							CloudWatchLogGroupName:      "/aws/ecs/exec-logs",
-							CloudWatchEncryptionEnabled: true,
-						},
-						KmsKeyId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
-								Value: "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012",
+							LogConfiguration: &ExecLogConfiguration{
+								CloudWatchLogGroupName:      "/aws/ecs/exec-logs",
+								CloudWatchEncryptionEnabled: true,
+							},
+							KmsKeyId: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
+									Value: "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012",
+								},
 							},
 						},
 					},
-				},
-			}
+				}
+			})
+
+			ginkgo.It("should not return a validation error", func() {
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
 		})
 
-		ginkgo.It("should not return a validation error", func() {
-			err := protovalidate.Validate(input)
-			gomega.Expect(err).To(gomega.BeNil())
-		})
-	})
+		ginkgo.Context("with exec configuration - OVERRIDE with S3", func() {
+			var input *AwsEcsCluster
 
-	ginkgo.Context("with exec configuration - OVERRIDE with S3", func() {
-		var input *AwsEcsCluster
-
-		ginkgo.BeforeEach(func() {
-			input = &AwsEcsCluster{
-				ApiVersion: "aws.openmcf.org/v1",
-				Kind:       "AwsEcsCluster",
-				Metadata: &shared.CloudResourceMetadata{
-					Name: "compliance-cluster",
-				},
-				Spec: &AwsEcsClusterSpec{
-					EnableContainerInsights: true,
-					ExecuteCommandConfiguration: &ExecConfiguration{
-						Logging: ExecConfiguration_OVERRIDE,
-						LogConfiguration: &ExecLogConfiguration{
-							S3BucketName:        "my-compliance-bucket",
-							S3KeyPrefix:         "ecs-exec/",
-							S3EncryptionEnabled: true,
-						},
-						KmsKeyId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
-								Value: "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012",
+			ginkgo.BeforeEach(func() {
+				input = &AwsEcsCluster{
+					ApiVersion: "aws.openmcf.org/v1",
+					Kind:       "AwsEcsCluster",
+					Metadata: &shared.CloudResourceMetadata{
+						Name: "compliance-cluster",
+					},
+					Spec: &AwsEcsClusterSpec{
+						EnableContainerInsights: true,
+						ExecuteCommandConfiguration: &ExecConfiguration{
+							Logging: ExecConfiguration_OVERRIDE,
+							LogConfiguration: &ExecLogConfiguration{
+								S3BucketName:        "my-compliance-bucket",
+								S3KeyPrefix:         "ecs-exec/",
+								S3EncryptionEnabled: true,
 							},
-						},
+							KmsKeyId: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
+									Value: "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012",
+								},
+							},
 						},
 					},
 				}
@@ -226,10 +226,10 @@ var _ = ginkgo.Describe("AwsEcsCluster Validation Tests", func() {
 								S3EncryptionEnabled:         true,
 							},
 							KmsKeyId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
-								Value: "arn:aws:kms:us-east-1:123456789012:key/prod-key",
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
+									Value: "arn:aws:kms:us-east-1:123456789012:key/prod-key",
+								},
 							},
-						},
 						},
 					},
 				}

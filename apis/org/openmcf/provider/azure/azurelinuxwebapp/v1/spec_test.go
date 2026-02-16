@@ -135,7 +135,7 @@ var _ = ginkgo.Describe("AzureLinuxWebAppSpec Validation Tests", func() {
 						RegistryUrl:      "https://myregistry.azurecr.io",
 						ImageName:        "myorg/my-web-app",
 						ImageTag:         "v1.0.0",
-						RegistryUsername:  "myuser",
+						RegistryUsername: "myuser",
 						RegistryPassword: literalRef("mypassword"),
 					},
 				}
@@ -431,7 +431,7 @@ var _ = ginkgo.Describe("AzureLinuxWebAppSpec Validation Tests", func() {
 						RegistryUrl:      "https://ghcr.io",
 						ImageName:        "myorg/my-web-app",
 						ImageTag:         "latest",
-						RegistryUsername:  "myuser",
+						RegistryUsername: "myuser",
 						RegistryPassword: literalRef("mypassword"),
 					},
 				}

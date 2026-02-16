@@ -11,10 +11,10 @@ import (
 )
 
 type Locals struct {
-	GcpProviderConfig    *gcpprovider.GcpProviderConfig
-	GcpCloudArmorPolicy  *gcpcloudarmorpolicyv1.GcpCloudArmorPolicy
-	GcpLabels            map[string]string
-	PolicyName           string
+	GcpProviderConfig   *gcpprovider.GcpProviderConfig
+	GcpCloudArmorPolicy *gcpcloudarmorpolicyv1.GcpCloudArmorPolicy
+	GcpLabels           map[string]string
+	PolicyName          string
 }
 
 func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudarmorpolicyv1.GcpCloudArmorPolicyStackInput) *Locals {

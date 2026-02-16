@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"buf.build/go/protovalidate"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
 func TestAwsTransitGatewaySpec(t *testing.T) {
@@ -161,12 +161,12 @@ var _ = ginkgo.Describe("AwsTransitGatewaySpec validations", func() {
 
 	ginkgo.It("accepts a production-ready multi-VPC configuration", func() {
 		spec = &AwsTransitGatewaySpec{
-			Description:                 "Production hub connecting application and shared-services VPCs",
-			AmazonSideAsn:               64512,
+			Description:                  "Production hub connecting application and shared-services VPCs",
+			AmazonSideAsn:                64512,
 			DefaultRouteTableAssociation: true,
 			DefaultRouteTablePropagation: true,
-			DnsSupport:                  true,
-			VpnEcmpSupport:              true,
+			DnsSupport:                   true,
+			VpnEcmpSupport:               true,
 			VpcAttachments: []*AwsTransitGatewayVpcAttachment{
 				{
 					Name:  "app-vpc",
@@ -175,7 +175,7 @@ var _ = ginkgo.Describe("AwsTransitGatewaySpec validations", func() {
 						strRef("subnet-app-az1"),
 						strRef("subnet-app-az2"),
 					},
-					DnsSupport:                  true,
+					DnsSupport:                   true,
 					DefaultRouteTableAssociation: true,
 					DefaultRouteTablePropagation: true,
 				},
@@ -186,7 +186,7 @@ var _ = ginkgo.Describe("AwsTransitGatewaySpec validations", func() {
 						strRef("subnet-shared-az1"),
 						strRef("subnet-shared-az2"),
 					},
-					DnsSupport:                  true,
+					DnsSupport:                   true,
 					DefaultRouteTableAssociation: true,
 					DefaultRouteTablePropagation: true,
 				},

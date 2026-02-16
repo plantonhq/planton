@@ -62,8 +62,8 @@ func cluster(
 	}
 
 	args := &msk.ClusterArgs{
-		ClusterName:        pulumi.String(locals.AwsMskCluster.Metadata.Id),
-		KafkaVersion:       pulumi.String(spec.KafkaVersion),
+		ClusterName:         pulumi.String(locals.AwsMskCluster.Metadata.Id),
+		KafkaVersion:        pulumi.String(spec.KafkaVersion),
 		NumberOfBrokerNodes: pulumi.Int(int(spec.NumberOfBrokerNodes)),
 		BrokerNodeGroupInfo: &msk.ClusterBrokerNodeGroupInfoArgs{
 			InstanceType:     pulumi.String(spec.InstanceType),

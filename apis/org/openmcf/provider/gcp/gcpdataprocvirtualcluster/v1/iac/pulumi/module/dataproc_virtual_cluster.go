@@ -93,7 +93,7 @@ func dataprocVirtualCluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gc
 	// -- Build Kubernetes cluster config ----------------------------------
 
 	k8sClusterCfg := &dataproc.ClusterVirtualClusterConfigKubernetesClusterConfigArgs{
-		GkeClusterConfig:        gkeClusterCfg,
+		GkeClusterConfig:         gkeClusterCfg,
 		KubernetesSoftwareConfig: softwareCfg,
 	}
 	if spec.KubernetesNamespace != nil && spec.KubernetesNamespace.GetValue() != "" {

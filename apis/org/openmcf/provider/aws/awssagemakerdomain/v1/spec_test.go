@@ -164,7 +164,7 @@ var _ = ginkgo.Describe("AwsSagemakerDomainSpec Validation Tests", func() {
 			input := validMinimalSpec()
 			input.Spec.DefaultUserSettings.KernelGatewayAppSettings = &AwsSagemakerDomainKernelGatewayAppSettings{
 				DefaultResourceSpec: &AwsSagemakerDomainResourceSpec{
-					InstanceType:    "ml.g4dn.xlarge",
+					InstanceType:      "ml.g4dn.xlarge",
 					SagemakerImageArn: "arn:aws:sagemaker:us-east-1:123456789012:image/gpu-kernel",
 				},
 				CustomImages: []*AwsSagemakerDomainCustomImage{
@@ -230,7 +230,7 @@ var _ = ginkgo.Describe("AwsSagemakerDomainSpec Validation Tests", func() {
 			input := validMinimalSpec()
 			input.Spec.AppNetworkAccessType = proto.String("VpcOnly")
 			input.Spec.DockerSettings = &AwsSagemakerDomainDockerSettings{
-				EnableDockerAccess:      "ENABLED",
+				EnableDockerAccess:     "ENABLED",
 				VpcOnlyTrustedAccounts: []string{"111122223333", "444455556666"},
 			}
 			err := protovalidate.Validate(input)
@@ -285,7 +285,7 @@ var _ = ginkgo.Describe("AwsSagemakerDomainSpec Validation Tests", func() {
 				{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "sg-domain1"}},
 			}
 			input.Spec.DockerSettings = &AwsSagemakerDomainDockerSettings{
-				EnableDockerAccess:      "ENABLED",
+				EnableDockerAccess:     "ENABLED",
 				VpcOnlyTrustedAccounts: []string{"123456789012"},
 			}
 			input.Spec.DefaultUserSettings.SecurityGroupIds = []*foreignkeyv1.StringValueOrRef{
@@ -298,8 +298,8 @@ var _ = ginkgo.Describe("AwsSagemakerDomainSpec Validation Tests", func() {
 					InstanceType: "ml.t3.medium",
 				},
 				IdleSettings: &AwsSagemakerDomainIdleSettings{
-					LifecycleManagement:    "ENABLED",
-					IdleTimeoutInMinutes:   120,
+					LifecycleManagement:     "ENABLED",
+					IdleTimeoutInMinutes:    120,
 					MinIdleTimeoutInMinutes: 60,
 					MaxIdleTimeoutInMinutes: 480,
 				},

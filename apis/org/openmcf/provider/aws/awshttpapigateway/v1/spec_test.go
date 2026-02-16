@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"buf.build/go/protovalidate"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
 func TestAwsHttpApiGatewaySpec(t *testing.T) {
@@ -148,13 +148,13 @@ var _ = ginkgo.Describe("AwsHttpApiGatewaySpec validations", func() {
 	ginkgo.It("accepts a spec with REQUEST authorizer", func() {
 		spec.Authorizers = []*AwsHttpApiGatewayAuthorizer{
 			{
-				Name:                          "custom-lambda",
-				AuthorizerType:                "REQUEST",
-				AuthorizerUri:                 strRef("arn:aws:lambda:us-east-1:123456789012:function:auth"),
-				AuthorizerCredentialsArn:      strRef("arn:aws:iam::123456789012:role/api-auth-role"),
-				IdentitySources:               []string{"$request.header.Authorization"},
-				ResultTtlSeconds:              300,
-				EnableSimpleResponses:         true,
+				Name:                           "custom-lambda",
+				AuthorizerType:                 "REQUEST",
+				AuthorizerUri:                  strRef("arn:aws:lambda:us-east-1:123456789012:function:auth"),
+				AuthorizerCredentialsArn:       strRef("arn:aws:iam::123456789012:role/api-auth-role"),
+				IdentitySources:                []string{"$request.header.Authorization"},
+				ResultTtlSeconds:               300,
+				EnableSimpleResponses:          true,
 				AuthorizerPayloadFormatVersion: "2.0",
 			},
 		}
@@ -392,9 +392,9 @@ var _ = ginkgo.Describe("AwsHttpApiGatewaySpec validations", func() {
 	ginkgo.It("fails when authorizer_payload_format_version is invalid", func() {
 		spec.Authorizers = []*AwsHttpApiGatewayAuthorizer{
 			{
-				Name:                          "bad-payload-ver",
-				AuthorizerType:                "REQUEST",
-				AuthorizerUri:                 strRef("arn:aws:lambda:us-east-1:123456789012:function:auth"),
+				Name:                           "bad-payload-ver",
+				AuthorizerType:                 "REQUEST",
+				AuthorizerUri:                  strRef("arn:aws:lambda:us-east-1:123456789012:function:auth"),
 				AuthorizerPayloadFormatVersion: "3.0",
 			},
 		}

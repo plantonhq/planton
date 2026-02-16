@@ -31,13 +31,13 @@ func Resources(ctx *pulumi.Context, stackInput *azureeventhubnamespacev1.AzureEv
 
 	// Build the Event Hub namespace arguments.
 	namespaceArgs := &eventhub.EventHubNamespaceArgs{
-		Name:                      pulumi.String(spec.Name),
-		Location:                  pulumi.String(spec.Region),
-		ResourceGroupName:         pulumi.String(locals.ResourceGroupName),
-		Sku:                       pulumi.String(spec.GetSku()),
-		MinimumTlsVersion:         pulumi.StringPtr(spec.GetMinimumTlsVersion()),
+		Name:                       pulumi.String(spec.Name),
+		Location:                   pulumi.String(spec.Region),
+		ResourceGroupName:          pulumi.String(locals.ResourceGroupName),
+		Sku:                        pulumi.String(spec.GetSku()),
+		MinimumTlsVersion:          pulumi.StringPtr(spec.GetMinimumTlsVersion()),
 		PublicNetworkAccessEnabled: pulumi.BoolPtr(spec.GetPublicNetworkAccessEnabled()),
-		Tags:                      pulumi.ToStringMap(locals.AzureTags),
+		Tags:                       pulumi.ToStringMap(locals.AzureTags),
 	}
 
 	// Optional fields.

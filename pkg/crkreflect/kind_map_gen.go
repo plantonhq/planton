@@ -18,9 +18,18 @@ import (
 	auth0eventstreamv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/auth0eventstream/v1"
 	auth0resourceserverv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/auth0resourceserver/v1"
 	awsalbv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsalb/v1"
+	awsapprunnerservicev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsapprunnerservice/v1"
+	awsathenaworkgroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsathenaworkgroup/v1"
+	awsbatchcomputeenvironmentv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsbatchcomputeenvironment/v1"
 	awscertmanagercertv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awscertmanagercert/v1"
 	awsclientvpnv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsclientvpn/v1"
 	awscloudfrontv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awscloudfront/v1"
+	awscloudwatchalarmv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awscloudwatchalarm/v1"
+	awscloudwatchloggroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awscloudwatchloggroup/v1"
+	awscodebuildprojectv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awscodebuildproject/v1"
+	awscodepipelinev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awscodepipeline/v1"
+	awscognitoidentityproviderv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awscognitoidentityprovider/v1"
+	awscognitouserpoolv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awscognitouserpool/v1"
 	awsdocumentdbv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsdocumentdb/v1"
 	awsdynamodbv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsdynamodb/v1"
 	awsec2instancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsec2instance/v1"
@@ -29,28 +38,66 @@ import (
 	awsecsservicev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsecsservice/v1"
 	awseksclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsekscluster/v1"
 	awseksnodegroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awseksnodegroup/v1"
+	awselasticfilesystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awselasticfilesystem/v1"
+	awselasticipv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awselasticip/v1"
+	awseventbridgebusv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awseventbridgebus/v1"
+	awseventbridgerulev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awseventbridgerule/v1"
+	awsfsxlustrefilesystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsfsxlustrefilesystem/v1"
+	awsfsxontapfilesystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsfsxontapfilesystem/v1"
+	awsfsxontapstoragevirtualmachinev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsfsxontapstoragevirtualmachine/v1"
+	awsfsxontapvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsfsxontapvolume/v1"
+	awsfsxopenzfsfilesystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsfsxopenzfsfilesystem/v1"
+	awsfsxwindowsfilesystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsfsxwindowsfilesystem/v1"
+	awsglobalacceleratorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsglobalaccelerator/v1"
+	awsgluecatalogdatabasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsgluecatalogdatabase/v1"
+	awshttpapigatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awshttpapigateway/v1"
 	awsiamrolev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsiamrole/v1"
 	awsiamuserv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsiamuser/v1"
+	awskinesisfirehosev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awskinesisfirehose/v1"
+	awskinesisstreamv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awskinesisstream/v1"
+	awskinesisstreamconsumerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awskinesisstreamconsumer/v1"
 	awskmskeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awskmskey/v1"
 	awslambdav1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awslambda/v1"
+	awsmemcachedelasticachev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsmemcachedelasticache/v1"
+	awsmemorydbclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsmemorydbcluster/v1"
+	awsmskclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsmskcluster/v1"
+	awsmwaaenvironmentv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsmwaaenvironment/v1"
+	awsneptuneclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsneptunecluster/v1"
+	awsnetworkloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsnetworkloadbalancer/v1"
+	awsopensearchdomainv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsopensearchdomain/v1"
 	awsrdsclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsrdscluster/v1"
 	awsrdsinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsrdsinstance/v1"
+	awsrediselasticachev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsrediselasticache/v1"
+	awsredshiftclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsredshiftcluster/v1"
 	awsroute53dnsrecordv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsroute53dnsrecord/v1"
 	awsroute53zonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsroute53zone/v1"
 	awss3bucketv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awss3bucket/v1"
 	awss3objectsetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awss3objectset/v1"
+	awssagemakerdomainv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awssagemakerdomain/v1"
 	awssecretsmanagerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awssecretsmanager/v1"
 	awssecuritygroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awssecuritygroup/v1"
+	awsserverlesselasticachev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsserverlesselasticache/v1"
+	awssnstopicv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awssnstopic/v1"
+	awssqsqueuev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awssqsqueue/v1"
+	awsstepfunctionv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsstepfunction/v1"
+	awstransitgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awstransitgateway/v1"
 	awsvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsvpc/v1"
+	awswafwebaclv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awswafwebacl/v1"
 	azureaksclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureakscluster/v1"
 	azureaksnodepoolv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureaksnodepool/v1"
 	azureapplicationgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureapplicationgateway/v1"
 	azureapplicationinsightsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureapplicationinsights/v1"
+	azurecontainerappv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurecontainerapp/v1"
+	azurecontainerappenvironmentv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurecontainerappenvironment/v1"
 	azurecontainerregistryv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurecontainerregistry/v1"
 	azurecosmosdbaccountv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurecosmosdbaccount/v1"
 	azurednsrecordv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurednsrecord/v1"
 	azurednszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurednszone/v1"
+	azureeventhubnamespacev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureeventhubnamespace/v1"
+	azurefrontdoorprofilev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurefrontdoorprofile/v1"
+	azurefunctionappv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurefunctionapp/v1"
 	azurekeyvaultv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurekeyvault/v1"
+	azurelinuxwebappv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurelinuxwebapp/v1"
 	azureloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureloadbalancer/v1"
 	azureloganalyticsworkspacev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureloganalyticsworkspace/v1"
 	azuremssqlserverv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azuremssqlserver/v1"
@@ -61,7 +108,10 @@ import (
 	azureprivatednszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureprivatednszone/v1"
 	azureprivateendpointv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureprivateendpoint/v1"
 	azurepublicipv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurepublicip/v1"
+	azurerediscachev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurerediscache/v1"
 	azureresourcegroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureresourcegroup/v1"
+	azureservicebusnamespacev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureservicebusnamespace/v1"
+	azureserviceplanv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureserviceplan/v1"
 	azurestorageaccountv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azurestorageaccount/v1"
 	azuresubnetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azuresubnet/v1"
 	azureuserassignedidentityv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure/azureuserassignedidentity/v1"
@@ -103,24 +153,47 @@ import (
 	digitaloceanloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/digitalocean/digitaloceanloadbalancer/v1"
 	digitaloceanvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/digitalocean/digitaloceanvolume/v1"
 	digitaloceanvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/digitalocean/digitaloceanvpc/v1"
+	gcpalloydbclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpalloydbcluster/v1"
 	gcpartifactregistryrepov1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpartifactregistryrepo/v1"
+	gcpbigquerydatasetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpbigquerydataset/v1"
+	gcpbigtableinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpbigtableinstance/v1"
 	gcpcertmanagercertv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpcertmanagercert/v1"
+	gcpcloudarmorpolicyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpcloudarmorpolicy/v1"
 	gcpcloudcdnv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpcloudcdn/v1"
+	gcpcloudcomposerenvironmentv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpcloudcomposerenvironment/v1"
 	gcpcloudfunctionv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpcloudfunction/v1"
 	gcpcloudrunv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpcloudrun/v1"
+	gcpcloudschedulerjobv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpcloudschedulerjob/v1"
 	gcpcloudsqlv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpcloudsql/v1"
+	gcpcloudtasksqueuev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpcloudtasksqueue/v1"
 	gcpcomputeinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpcomputeinstance/v1"
+	gcpdataprocclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpdataproccluster/v1"
+	gcpdataprocvirtualclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpdataprocvirtualcluster/v1"
 	gcpdnsrecordv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpdnsrecord/v1"
 	gcpdnszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpdnszone/v1"
+	gcpfilestoreinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpfilestoreinstance/v1"
+	gcpfirestoredatabasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpfirestoredatabase/v1"
+	gcpfirewallrulev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpfirewallrule/v1"
 	gcpgcsbucketv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpgcsbucket/v1"
 	gcpgkeclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpgkecluster/v1"
 	gcpgkenodepoolv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpgkenodepool/v1"
 	gcpgkeworkloadidentitybindingv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpgkeworkloadidentitybinding/v1"
+	gcpglobaladdressv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpglobaladdress/v1"
+	gcpkmskeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpkmskey/v1"
+	gcpkmskeyringv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpkmskeyring/v1"
+	gcpmemorystoreinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpmemorystoreinstance/v1"
 	gcpprojectv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpproject/v1"
+	gcppubsubsubscriptionv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcppubsubsubscription/v1"
+	gcppubsubtopicv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcppubsubtopic/v1"
+	gcpredisinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpredisinstance/v1"
 	gcprouternatv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcprouternat/v1"
 	gcpsecretsmanagerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpsecretsmanager/v1"
 	gcpserviceaccountv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpserviceaccount/v1"
+	gcpspannerdatabasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpspannerdatabase/v1"
+	gcpspannerinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpspannerinstance/v1"
 	gcpsubnetworkv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpsubnetwork/v1"
+	gcpvertexaiendpointv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpvertexaiendpoint/v1"
+	gcpvertexainotebookv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpvertexainotebook/v1"
 	gcpvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpvpc/v1"
 	kubernetesaltinityoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesaltinityoperator/v1"
 	kubernetesargocdv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesargocd/v1"
@@ -254,31 +327,72 @@ var ProviderAuth0Map = map[cloudresourcekind.CloudResourceKind]proto.Message{
 }
 
 var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
-	cloudresourcekind.CloudResourceKind_AwsAlb:              &awsalbv1.AwsAlb{},
-	cloudresourcekind.CloudResourceKind_AwsCertManagerCert:  &awscertmanagercertv1.AwsCertManagerCert{},
-	cloudresourcekind.CloudResourceKind_AwsClientVpn:        &awsclientvpnv1.AwsClientVpn{},
-	cloudresourcekind.CloudResourceKind_AwsCloudFront:       &awscloudfrontv1.AwsCloudFront{},
-	cloudresourcekind.CloudResourceKind_AwsDocumentDb:       &awsdocumentdbv1.AwsDocumentDb{},
-	cloudresourcekind.CloudResourceKind_AwsDynamodb:         &awsdynamodbv1.AwsDynamodb{},
-	cloudresourcekind.CloudResourceKind_AwsEc2Instance:      &awsec2instancev1.AwsEc2Instance{},
-	cloudresourcekind.CloudResourceKind_AwsEcrRepo:          &awsecrrepov1.AwsEcrRepo{},
-	cloudresourcekind.CloudResourceKind_AwsEcsCluster:       &awsecsclusterv1.AwsEcsCluster{},
-	cloudresourcekind.CloudResourceKind_AwsEcsService:       &awsecsservicev1.AwsEcsService{},
-	cloudresourcekind.CloudResourceKind_AwsEksCluster:       &awseksclusterv1.AwsEksCluster{},
-	cloudresourcekind.CloudResourceKind_AwsEksNodeGroup:     &awseksnodegroupv1.AwsEksNodeGroup{},
-	cloudresourcekind.CloudResourceKind_AwsIamRole:          &awsiamrolev1.AwsIamRole{},
-	cloudresourcekind.CloudResourceKind_AwsIamUser:          &awsiamuserv1.AwsIamUser{},
-	cloudresourcekind.CloudResourceKind_AwsKmsKey:           &awskmskeyv1.AwsKmsKey{},
-	cloudresourcekind.CloudResourceKind_AwsLambda:           &awslambdav1.AwsLambda{},
-	cloudresourcekind.CloudResourceKind_AwsRdsCluster:       &awsrdsclusterv1.AwsRdsCluster{},
-	cloudresourcekind.CloudResourceKind_AwsRdsInstance:      &awsrdsinstancev1.AwsRdsInstance{},
-	cloudresourcekind.CloudResourceKind_AwsRoute53DnsRecord: &awsroute53dnsrecordv1.AwsRoute53DnsRecord{},
-	cloudresourcekind.CloudResourceKind_AwsRoute53Zone:      &awsroute53zonev1.AwsRoute53Zone{},
-	cloudresourcekind.CloudResourceKind_AwsS3Bucket:         &awss3bucketv1.AwsS3Bucket{},
-	cloudresourcekind.CloudResourceKind_AwsS3ObjectSet:      &awss3objectsetv1.AwsS3ObjectSet{},
-	cloudresourcekind.CloudResourceKind_AwsSecretsManager:   &awssecretsmanagerv1.AwsSecretsManager{},
-	cloudresourcekind.CloudResourceKind_AwsSecurityGroup:    &awssecuritygroupv1.AwsSecurityGroup{},
-	cloudresourcekind.CloudResourceKind_AwsVpc:              &awsvpcv1.AwsVpc{},
+	cloudresourcekind.CloudResourceKind_AwsAlb:                           &awsalbv1.AwsAlb{},
+	cloudresourcekind.CloudResourceKind_AwsAppRunnerService:              &awsapprunnerservicev1.AwsAppRunnerService{},
+	cloudresourcekind.CloudResourceKind_AwsAthenaWorkgroup:               &awsathenaworkgroupv1.AwsAthenaWorkgroup{},
+	cloudresourcekind.CloudResourceKind_AwsBatchComputeEnvironment:       &awsbatchcomputeenvironmentv1.AwsBatchComputeEnvironment{},
+	cloudresourcekind.CloudResourceKind_AwsCertManagerCert:               &awscertmanagercertv1.AwsCertManagerCert{},
+	cloudresourcekind.CloudResourceKind_AwsClientVpn:                     &awsclientvpnv1.AwsClientVpn{},
+	cloudresourcekind.CloudResourceKind_AwsCloudFront:                    &awscloudfrontv1.AwsCloudFront{},
+	cloudresourcekind.CloudResourceKind_AwsCloudwatchAlarm:               &awscloudwatchalarmv1.AwsCloudwatchAlarm{},
+	cloudresourcekind.CloudResourceKind_AwsCloudwatchLogGroup:            &awscloudwatchloggroupv1.AwsCloudwatchLogGroup{},
+	cloudresourcekind.CloudResourceKind_AwsCodeBuildProject:              &awscodebuildprojectv1.AwsCodeBuildProject{},
+	cloudresourcekind.CloudResourceKind_AwsCodePipeline:                  &awscodepipelinev1.AwsCodePipeline{},
+	cloudresourcekind.CloudResourceKind_AwsCognitoIdentityProvider:       &awscognitoidentityproviderv1.AwsCognitoIdentityProvider{},
+	cloudresourcekind.CloudResourceKind_AwsCognitoUserPool:               &awscognitouserpoolv1.AwsCognitoUserPool{},
+	cloudresourcekind.CloudResourceKind_AwsDocumentDb:                    &awsdocumentdbv1.AwsDocumentDb{},
+	cloudresourcekind.CloudResourceKind_AwsDynamodb:                      &awsdynamodbv1.AwsDynamodb{},
+	cloudresourcekind.CloudResourceKind_AwsEc2Instance:                   &awsec2instancev1.AwsEc2Instance{},
+	cloudresourcekind.CloudResourceKind_AwsEcrRepo:                       &awsecrrepov1.AwsEcrRepo{},
+	cloudresourcekind.CloudResourceKind_AwsEcsCluster:                    &awsecsclusterv1.AwsEcsCluster{},
+	cloudresourcekind.CloudResourceKind_AwsEcsService:                    &awsecsservicev1.AwsEcsService{},
+	cloudresourcekind.CloudResourceKind_AwsEksCluster:                    &awseksclusterv1.AwsEksCluster{},
+	cloudresourcekind.CloudResourceKind_AwsEksNodeGroup:                  &awseksnodegroupv1.AwsEksNodeGroup{},
+	cloudresourcekind.CloudResourceKind_AwsElasticFileSystem:             &awselasticfilesystemv1.AwsElasticFileSystem{},
+	cloudresourcekind.CloudResourceKind_AwsElasticIp:                     &awselasticipv1.AwsElasticIp{},
+	cloudresourcekind.CloudResourceKind_AwsEventBridgeBus:                &awseventbridgebusv1.AwsEventBridgeBus{},
+	cloudresourcekind.CloudResourceKind_AwsEventBridgeRule:               &awseventbridgerulev1.AwsEventBridgeRule{},
+	cloudresourcekind.CloudResourceKind_AwsFsxLustreFileSystem:           &awsfsxlustrefilesystemv1.AwsFsxLustreFileSystem{},
+	cloudresourcekind.CloudResourceKind_AwsFsxOntapFileSystem:            &awsfsxontapfilesystemv1.AwsFsxOntapFileSystem{},
+	cloudresourcekind.CloudResourceKind_AwsFsxOntapStorageVirtualMachine: &awsfsxontapstoragevirtualmachinev1.AwsFsxOntapStorageVirtualMachine{},
+	cloudresourcekind.CloudResourceKind_AwsFsxOntapVolume:                &awsfsxontapvolumev1.AwsFsxOntapVolume{},
+	cloudresourcekind.CloudResourceKind_AwsFsxOpenzfsFileSystem:          &awsfsxopenzfsfilesystemv1.AwsFsxOpenzfsFileSystem{},
+	cloudresourcekind.CloudResourceKind_AwsFsxWindowsFileSystem:          &awsfsxwindowsfilesystemv1.AwsFsxWindowsFileSystem{},
+	cloudresourcekind.CloudResourceKind_AwsGlobalAccelerator:             &awsglobalacceleratorv1.AwsGlobalAccelerator{},
+	cloudresourcekind.CloudResourceKind_AwsGlueCatalogDatabase:           &awsgluecatalogdatabasev1.AwsGlueCatalogDatabase{},
+	cloudresourcekind.CloudResourceKind_AwsHttpApiGateway:                &awshttpapigatewayv1.AwsHttpApiGateway{},
+	cloudresourcekind.CloudResourceKind_AwsIamRole:                       &awsiamrolev1.AwsIamRole{},
+	cloudresourcekind.CloudResourceKind_AwsIamUser:                       &awsiamuserv1.AwsIamUser{},
+	cloudresourcekind.CloudResourceKind_AwsKinesisFirehose:               &awskinesisfirehosev1.AwsKinesisFirehose{},
+	cloudresourcekind.CloudResourceKind_AwsKinesisStream:                 &awskinesisstreamv1.AwsKinesisStream{},
+	cloudresourcekind.CloudResourceKind_AwsKinesisStreamConsumer:         &awskinesisstreamconsumerv1.AwsKinesisStreamConsumer{},
+	cloudresourcekind.CloudResourceKind_AwsKmsKey:                        &awskmskeyv1.AwsKmsKey{},
+	cloudresourcekind.CloudResourceKind_AwsLambda:                        &awslambdav1.AwsLambda{},
+	cloudresourcekind.CloudResourceKind_AwsMemcachedElasticache:          &awsmemcachedelasticachev1.AwsMemcachedElasticache{},
+	cloudresourcekind.CloudResourceKind_AwsMemorydbCluster:               &awsmemorydbclusterv1.AwsMemorydbCluster{},
+	cloudresourcekind.CloudResourceKind_AwsMskCluster:                    &awsmskclusterv1.AwsMskCluster{},
+	cloudresourcekind.CloudResourceKind_AwsMwaaEnvironment:               &awsmwaaenvironmentv1.AwsMwaaEnvironment{},
+	cloudresourcekind.CloudResourceKind_AwsNeptuneCluster:                &awsneptuneclusterv1.AwsNeptuneCluster{},
+	cloudresourcekind.CloudResourceKind_AwsNetworkLoadBalancer:           &awsnetworkloadbalancerv1.AwsNetworkLoadBalancer{},
+	cloudresourcekind.CloudResourceKind_AwsOpenSearchDomain:              &awsopensearchdomainv1.AwsOpenSearchDomain{},
+	cloudresourcekind.CloudResourceKind_AwsRdsCluster:                    &awsrdsclusterv1.AwsRdsCluster{},
+	cloudresourcekind.CloudResourceKind_AwsRdsInstance:                   &awsrdsinstancev1.AwsRdsInstance{},
+	cloudresourcekind.CloudResourceKind_AwsRedisElasticache:              &awsrediselasticachev1.AwsRedisElasticache{},
+	cloudresourcekind.CloudResourceKind_AwsRedshiftCluster:               &awsredshiftclusterv1.AwsRedshiftCluster{},
+	cloudresourcekind.CloudResourceKind_AwsRoute53DnsRecord:              &awsroute53dnsrecordv1.AwsRoute53DnsRecord{},
+	cloudresourcekind.CloudResourceKind_AwsRoute53Zone:                   &awsroute53zonev1.AwsRoute53Zone{},
+	cloudresourcekind.CloudResourceKind_AwsS3Bucket:                      &awss3bucketv1.AwsS3Bucket{},
+	cloudresourcekind.CloudResourceKind_AwsS3ObjectSet:                   &awss3objectsetv1.AwsS3ObjectSet{},
+	cloudresourcekind.CloudResourceKind_AwsSagemakerDomain:               &awssagemakerdomainv1.AwsSagemakerDomain{},
+	cloudresourcekind.CloudResourceKind_AwsSecretsManager:                &awssecretsmanagerv1.AwsSecretsManager{},
+	cloudresourcekind.CloudResourceKind_AwsSecurityGroup:                 &awssecuritygroupv1.AwsSecurityGroup{},
+	cloudresourcekind.CloudResourceKind_AwsServerlessElasticache:         &awsserverlesselasticachev1.AwsServerlessElasticache{},
+	cloudresourcekind.CloudResourceKind_AwsSnsTopic:                      &awssnstopicv1.AwsSnsTopic{},
+	cloudresourcekind.CloudResourceKind_AwsSqsQueue:                      &awssqsqueuev1.AwsSqsQueue{},
+	cloudresourcekind.CloudResourceKind_AwsStepFunction:                  &awsstepfunctionv1.AwsStepFunction{},
+	cloudresourcekind.CloudResourceKind_AwsTransitGateway:                &awstransitgatewayv1.AwsTransitGateway{},
+	cloudresourcekind.CloudResourceKind_AwsVpc:                           &awsvpcv1.AwsVpc{},
+	cloudresourcekind.CloudResourceKind_AwsWafWebAcl:                     &awswafwebaclv1.AwsWafWebAcl{},
 }
 
 var ProviderAzureMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
@@ -286,11 +400,17 @@ var ProviderAzureMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AzureAksNodePool:              &azureaksnodepoolv1.AzureAksNodePool{},
 	cloudresourcekind.CloudResourceKind_AzureApplicationGateway:       &azureapplicationgatewayv1.AzureApplicationGateway{},
 	cloudresourcekind.CloudResourceKind_AzureApplicationInsights:      &azureapplicationinsightsv1.AzureApplicationInsights{},
+	cloudresourcekind.CloudResourceKind_AzureContainerApp:             &azurecontainerappv1.AzureContainerApp{},
+	cloudresourcekind.CloudResourceKind_AzureContainerAppEnvironment:  &azurecontainerappenvironmentv1.AzureContainerAppEnvironment{},
 	cloudresourcekind.CloudResourceKind_AzureContainerRegistry:        &azurecontainerregistryv1.AzureContainerRegistry{},
 	cloudresourcekind.CloudResourceKind_AzureCosmosdbAccount:          &azurecosmosdbaccountv1.AzureCosmosdbAccount{},
 	cloudresourcekind.CloudResourceKind_AzureDnsRecord:                &azurednsrecordv1.AzureDnsRecord{},
 	cloudresourcekind.CloudResourceKind_AzureDnsZone:                  &azurednszonev1.AzureDnsZone{},
+	cloudresourcekind.CloudResourceKind_AzureEventHubNamespace:        &azureeventhubnamespacev1.AzureEventHubNamespace{},
+	cloudresourcekind.CloudResourceKind_AzureFrontDoorProfile:         &azurefrontdoorprofilev1.AzureFrontDoorProfile{},
+	cloudresourcekind.CloudResourceKind_AzureFunctionApp:              &azurefunctionappv1.AzureFunctionApp{},
 	cloudresourcekind.CloudResourceKind_AzureKeyVault:                 &azurekeyvaultv1.AzureKeyVault{},
+	cloudresourcekind.CloudResourceKind_AzureLinuxWebApp:              &azurelinuxwebappv1.AzureLinuxWebApp{},
 	cloudresourcekind.CloudResourceKind_AzureLoadBalancer:             &azureloadbalancerv1.AzureLoadBalancer{},
 	cloudresourcekind.CloudResourceKind_AzureLogAnalyticsWorkspace:    &azureloganalyticsworkspacev1.AzureLogAnalyticsWorkspace{},
 	cloudresourcekind.CloudResourceKind_AzureMssqlServer:              &azuremssqlserverv1.AzureMssqlServer{},
@@ -301,7 +421,10 @@ var ProviderAzureMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AzurePrivateDnsZone:           &azureprivatednszonev1.AzurePrivateDnsZone{},
 	cloudresourcekind.CloudResourceKind_AzurePrivateEndpoint:          &azureprivateendpointv1.AzurePrivateEndpoint{},
 	cloudresourcekind.CloudResourceKind_AzurePublicIp:                 &azurepublicipv1.AzurePublicIp{},
+	cloudresourcekind.CloudResourceKind_AzureRedisCache:               &azurerediscachev1.AzureRedisCache{},
 	cloudresourcekind.CloudResourceKind_AzureResourceGroup:            &azureresourcegroupv1.AzureResourceGroup{},
+	cloudresourcekind.CloudResourceKind_AzureServiceBusNamespace:      &azureservicebusnamespacev1.AzureServiceBusNamespace{},
+	cloudresourcekind.CloudResourceKind_AzureServicePlan:              &azureserviceplanv1.AzureServicePlan{},
 	cloudresourcekind.CloudResourceKind_AzureStorageAccount:           &azurestorageaccountv1.AzureStorageAccount{},
 	cloudresourcekind.CloudResourceKind_AzureSubnet:                   &azuresubnetv1.AzureSubnet{},
 	cloudresourcekind.CloudResourceKind_AzureUserAssignedIdentity:     &azureuserassignedidentityv1.AzureUserAssignedIdentity{},
@@ -358,24 +481,47 @@ var ProviderDigitalOceanMap = map[cloudresourcekind.CloudResourceKind]proto.Mess
 }
 
 var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
+	cloudresourcekind.CloudResourceKind_GcpAlloydbCluster:             &gcpalloydbclusterv1.GcpAlloydbCluster{},
 	cloudresourcekind.CloudResourceKind_GcpArtifactRegistryRepo:       &gcpartifactregistryrepov1.GcpArtifactRegistryRepo{},
+	cloudresourcekind.CloudResourceKind_GcpBigQueryDataset:            &gcpbigquerydatasetv1.GcpBigQueryDataset{},
+	cloudresourcekind.CloudResourceKind_GcpBigtableInstance:           &gcpbigtableinstancev1.GcpBigtableInstance{},
 	cloudresourcekind.CloudResourceKind_GcpCertManagerCert:            &gcpcertmanagercertv1.GcpCertManagerCert{},
+	cloudresourcekind.CloudResourceKind_GcpCloudArmorPolicy:           &gcpcloudarmorpolicyv1.GcpCloudArmorPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpCloudCdn:                   &gcpcloudcdnv1.GcpCloudCdn{},
+	cloudresourcekind.CloudResourceKind_GcpCloudComposerEnvironment:   &gcpcloudcomposerenvironmentv1.GcpCloudComposerEnvironment{},
 	cloudresourcekind.CloudResourceKind_GcpCloudFunction:              &gcpcloudfunctionv1.GcpCloudFunction{},
 	cloudresourcekind.CloudResourceKind_GcpCloudRun:                   &gcpcloudrunv1.GcpCloudRun{},
+	cloudresourcekind.CloudResourceKind_GcpCloudSchedulerJob:          &gcpcloudschedulerjobv1.GcpCloudSchedulerJob{},
 	cloudresourcekind.CloudResourceKind_GcpCloudSql:                   &gcpcloudsqlv1.GcpCloudSql{},
+	cloudresourcekind.CloudResourceKind_GcpCloudTasksQueue:            &gcpcloudtasksqueuev1.GcpCloudTasksQueue{},
 	cloudresourcekind.CloudResourceKind_GcpComputeInstance:            &gcpcomputeinstancev1.GcpComputeInstance{},
+	cloudresourcekind.CloudResourceKind_GcpDataprocCluster:            &gcpdataprocclusterv1.GcpDataprocCluster{},
+	cloudresourcekind.CloudResourceKind_GcpDataprocVirtualCluster:     &gcpdataprocvirtualclusterv1.GcpDataprocVirtualCluster{},
 	cloudresourcekind.CloudResourceKind_GcpDnsRecord:                  &gcpdnsrecordv1.GcpDnsRecord{},
 	cloudresourcekind.CloudResourceKind_GcpDnsZone:                    &gcpdnszonev1.GcpDnsZone{},
+	cloudresourcekind.CloudResourceKind_GcpFilestoreInstance:          &gcpfilestoreinstancev1.GcpFilestoreInstance{},
+	cloudresourcekind.CloudResourceKind_GcpFirestoreDatabase:          &gcpfirestoredatabasev1.GcpFirestoreDatabase{},
+	cloudresourcekind.CloudResourceKind_GcpFirewallRule:               &gcpfirewallrulev1.GcpFirewallRule{},
 	cloudresourcekind.CloudResourceKind_GcpGcsBucket:                  &gcpgcsbucketv1.GcpGcsBucket{},
 	cloudresourcekind.CloudResourceKind_GcpGkeCluster:                 &gcpgkeclusterv1.GcpGkeCluster{},
 	cloudresourcekind.CloudResourceKind_GcpGkeNodePool:                &gcpgkenodepoolv1.GcpGkeNodePool{},
 	cloudresourcekind.CloudResourceKind_GcpGkeWorkloadIdentityBinding: &gcpgkeworkloadidentitybindingv1.GcpGkeWorkloadIdentityBinding{},
+	cloudresourcekind.CloudResourceKind_GcpGlobalAddress:              &gcpglobaladdressv1.GcpGlobalAddress{},
+	cloudresourcekind.CloudResourceKind_GcpKmsKey:                     &gcpkmskeyv1.GcpKmsKey{},
+	cloudresourcekind.CloudResourceKind_GcpKmsKeyRing:                 &gcpkmskeyringv1.GcpKmsKeyRing{},
+	cloudresourcekind.CloudResourceKind_GcpMemorystoreInstance:        &gcpmemorystoreinstancev1.GcpMemorystoreInstance{},
 	cloudresourcekind.CloudResourceKind_GcpProject:                    &gcpprojectv1.GcpProject{},
+	cloudresourcekind.CloudResourceKind_GcpPubSubSubscription:         &gcppubsubsubscriptionv1.GcpPubSubSubscription{},
+	cloudresourcekind.CloudResourceKind_GcpPubSubTopic:                &gcppubsubtopicv1.GcpPubSubTopic{},
+	cloudresourcekind.CloudResourceKind_GcpRedisInstance:              &gcpredisinstancev1.GcpRedisInstance{},
 	cloudresourcekind.CloudResourceKind_GcpRouterNat:                  &gcprouternatv1.GcpRouterNat{},
 	cloudresourcekind.CloudResourceKind_GcpSecretsManager:             &gcpsecretsmanagerv1.GcpSecretsManager{},
 	cloudresourcekind.CloudResourceKind_GcpServiceAccount:             &gcpserviceaccountv1.GcpServiceAccount{},
+	cloudresourcekind.CloudResourceKind_GcpSpannerDatabase:            &gcpspannerdatabasev1.GcpSpannerDatabase{},
+	cloudresourcekind.CloudResourceKind_GcpSpannerInstance:            &gcpspannerinstancev1.GcpSpannerInstance{},
 	cloudresourcekind.CloudResourceKind_GcpSubnetwork:                 &gcpsubnetworkv1.GcpSubnetwork{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiEndpoint:           &gcpvertexaiendpointv1.GcpVertexAiEndpoint{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiNotebook:           &gcpvertexainotebookv1.GcpVertexAiNotebook{},
 	cloudresourcekind.CloudResourceKind_GcpVpc:                        &gcpvpcv1.GcpVpc{},
 }
 

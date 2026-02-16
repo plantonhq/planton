@@ -25,9 +25,9 @@ func validMinimalSpec() *AwsMskCluster {
 			Name: "test-msk-cluster",
 		},
 		Spec: &AwsMskClusterSpec{
-			KafkaVersion:       "3.6.0",
+			KafkaVersion:        "3.6.0",
 			NumberOfBrokerNodes: 3,
-			InstanceType:       "kafka.m5.large",
+			InstanceType:        "kafka.m5.large",
 			SubnetIds: []*foreignkeyv1.StringValueOrRef{
 				{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-aaa"}},
 				{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-bbb"}},

@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"buf.build/go/protovalidate"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
 func TestAwsNetworkLoadBalancerSpec(t *testing.T) {
@@ -225,10 +225,10 @@ var _ = ginkgo.Describe("AwsNetworkLoadBalancerSpec validations", func() {
 	ginkgo.It("accepts a TCP listener with idle timeout", func() {
 		spec.Listeners = []*AwsNetworkLoadBalancerListener{
 			{
-				Name:                   "tcp-80",
-				Port:                   80,
-				Protocol:               "TCP",
-				TcpIdleTimeoutSeconds:  600,
+				Name:                  "tcp-80",
+				Port:                  80,
+				Protocol:              "TCP",
+				TcpIdleTimeoutSeconds: 600,
 				TargetGroup: &AwsNetworkLoadBalancerTargetGroup{
 					Port:     80,
 					Protocol: "TCP",
@@ -277,14 +277,14 @@ var _ = ginkgo.Describe("AwsNetworkLoadBalancerSpec validations", func() {
 
 	ginkgo.It("accepts target group with all options", func() {
 		spec.Listeners[0].TargetGroup = &AwsNetworkLoadBalancerTargetGroup{
-			Port:                        8080,
-			Protocol:                    "TCP",
-			TargetType:                  "ip",
-			DeregistrationDelaySeconds:  60,
-			PreserveClientIp:            true,
-			ProxyProtocolV2:             true,
-			ConnectionTermination:       true,
-			StickinessEnabled:           true,
+			Port:                       8080,
+			Protocol:                   "TCP",
+			TargetType:                 "ip",
+			DeregistrationDelaySeconds: 60,
+			PreserveClientIp:           true,
+			ProxyProtocolV2:            true,
+			ConnectionTermination:      true,
+			StickinessEnabled:          true,
 		}
 		err := protovalidate.Validate(spec)
 		gomega.Expect(err).To(gomega.BeNil())
@@ -334,9 +334,9 @@ var _ = ginkgo.Describe("AwsNetworkLoadBalancerSpec validations", func() {
 
 	ginkgo.It("accepts DNS configuration", func() {
 		spec.Dns = &AwsNetworkLoadBalancerDns{
-			Enabled:      true,
+			Enabled:       true,
 			Route53ZoneId: strRef("Z0123456789ABCDEFGHIJ"),
-			Hostnames:    []string{"api.example.com", "app.example.com"},
+			Hostnames:     []string{"api.example.com", "app.example.com"},
 		}
 		err := protovalidate.Validate(spec)
 		gomega.Expect(err).To(gomega.BeNil())
@@ -361,7 +361,7 @@ var _ = ginkgo.Describe("AwsNetworkLoadBalancerSpec validations", func() {
 			SecurityGroups:                []*foreignkeyv1.StringValueOrRef{strRef("sg-nlb-prod")},
 			DeleteProtectionEnabled:       true,
 			CrossZoneLoadBalancingEnabled: true,
-			IpAddressType:                "ipv4",
+			IpAddressType:                 "ipv4",
 			Listeners: []*AwsNetworkLoadBalancerListener{
 				{
 					Name:     "tls-443",
@@ -373,12 +373,12 @@ var _ = ginkgo.Describe("AwsNetworkLoadBalancerSpec validations", func() {
 					},
 					AlpnPolicy: "HTTP2Preferred",
 					TargetGroup: &AwsNetworkLoadBalancerTargetGroup{
-						Port:                        8443,
-						Protocol:                    "TCP",
-						TargetType:                  "ip",
-						DeregistrationDelaySeconds:  60,
-						PreserveClientIp:            true,
-						ConnectionTermination:       true,
+						Port:                       8443,
+						Protocol:                   "TCP",
+						TargetType:                 "ip",
+						DeregistrationDelaySeconds: 60,
+						PreserveClientIp:           true,
+						ConnectionTermination:      true,
 						HealthCheck: &AwsNetworkLoadBalancerHealthCheck{
 							Protocol:           "HTTPS",
 							Path:               "/healthz",
@@ -537,10 +537,10 @@ var _ = ginkgo.Describe("AwsNetworkLoadBalancerSpec validations", func() {
 	ginkgo.It("rejects tcp_idle_timeout on non-TCP listener", func() {
 		spec.Listeners = []*AwsNetworkLoadBalancerListener{
 			{
-				Name:                   "udp-53",
-				Port:                   53,
-				Protocol:               "UDP",
-				TcpIdleTimeoutSeconds:  120,
+				Name:                  "udp-53",
+				Port:                  53,
+				Protocol:              "UDP",
+				TcpIdleTimeoutSeconds: 120,
 				TargetGroup: &AwsNetworkLoadBalancerTargetGroup{
 					Port:     53,
 					Protocol: "UDP",

@@ -12,8 +12,8 @@ func accelerator(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) (*
 	name := locals.GlobalAccelerator.Metadata.Name
 
 	args := &globalaccelerator.AcceleratorArgs{
-		Name:    pulumi.String(name),
-		Tags:    pulumi.ToStringMap(locals.AwsTags),
+		Name: pulumi.String(name),
+		Tags: pulumi.ToStringMap(locals.AwsTags),
 	}
 
 	if spec.Enabled != nil {

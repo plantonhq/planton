@@ -37,7 +37,7 @@ func minimalSpec() *AzureFrontDoorProfile {
 			},
 			OriginGroups: []*AzureFrontDoorOriginGroup{
 				{
-					Name:         "my-origins",
+					Name:          "my-origins",
 					LoadBalancing: &AzureFrontDoorLoadBalancing{},
 					Origins: []*AzureFrontDoorOrigin{
 						{Name: "backend", HostName: "api.example.com"},
@@ -131,7 +131,7 @@ var _ = ginkgo.Describe("AzureFrontDoorProfileSpec Validation Tests", func() {
 				input := minimalSpec()
 				input.Spec.OriginGroups[0].LoadBalancing = &AzureFrontDoorLoadBalancing{
 					SampleSize:                      &sampleSize,
-					SuccessfulSamplesRequired:        &successfulSamples,
+					SuccessfulSamplesRequired:       &successfulSamples,
 					AdditionalLatencyInMilliseconds: &latency,
 				}
 				err := protovalidate.Validate(input)
@@ -242,7 +242,7 @@ var _ = ginkgo.Describe("AzureFrontDoorProfileSpec Validation Tests", func() {
 				targetType := "sites"
 				input := minimalSpec()
 				input.Spec.OriginGroups[0].Origins[0].PrivateLink = &AzureFrontDoorPrivateLink{
-					Location:           "eastus",
+					Location:            "eastus",
 					PrivateLinkTargetId: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Web/sites/myapp",
 					TargetType:          &targetType,
 				}
@@ -304,7 +304,7 @@ var _ = ginkgo.Describe("AzureFrontDoorProfileSpec Validation Tests", func() {
 				}
 				input.Spec.OriginGroups = []*AzureFrontDoorOriginGroup{
 					{
-						Name:         "group-api",
+						Name:          "group-api",
 						LoadBalancing: &AzureFrontDoorLoadBalancing{},
 						Origins: []*AzureFrontDoorOrigin{
 							{Name: "api-primary", HostName: "api-primary.example.com"},
@@ -312,7 +312,7 @@ var _ = ginkgo.Describe("AzureFrontDoorProfileSpec Validation Tests", func() {
 						},
 					},
 					{
-						Name:         "group-web",
+						Name:          "group-web",
 						LoadBalancing: &AzureFrontDoorLoadBalancing{},
 						Origins: []*AzureFrontDoorOrigin{
 							{Name: "web-backend", HostName: "web.example.com"},
@@ -408,7 +408,7 @@ var _ = ginkgo.Describe("AzureFrontDoorProfileSpec Validation Tests", func() {
 				input := minimalSpec()
 				input.Spec.OriginGroups[0].LoadBalancing = &AzureFrontDoorLoadBalancing{
 					SampleSize:                      &sampleSizeMin,
-					SuccessfulSamplesRequired:        &successfulMax,
+					SuccessfulSamplesRequired:       &successfulMax,
 					AdditionalLatencyInMilliseconds: &latencyMax,
 				}
 				err := protovalidate.Validate(input)
@@ -604,7 +604,7 @@ var _ = ginkgo.Describe("AzureFrontDoorProfileSpec Validation Tests", func() {
 			ginkgo.It("should return a validation error when private link location is missing", func() {
 				input := minimalSpec()
 				input.Spec.OriginGroups[0].Origins[0].PrivateLink = &AzureFrontDoorPrivateLink{
-					Location:           "",
+					Location:            "",
 					PrivateLinkTargetId: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Web/sites/myapp",
 				}
 				err := protovalidate.Validate(input)
@@ -614,7 +614,7 @@ var _ = ginkgo.Describe("AzureFrontDoorProfileSpec Validation Tests", func() {
 			ginkgo.It("should return a validation error when private link target_id is missing", func() {
 				input := minimalSpec()
 				input.Spec.OriginGroups[0].Origins[0].PrivateLink = &AzureFrontDoorPrivateLink{
-					Location:           "eastus",
+					Location:            "eastus",
 					PrivateLinkTargetId: "",
 				}
 				err := protovalidate.Validate(input)
@@ -625,7 +625,7 @@ var _ = ginkgo.Describe("AzureFrontDoorProfileSpec Validation Tests", func() {
 				longMessage := strings.Repeat("a", 141)
 				input := minimalSpec()
 				input.Spec.OriginGroups[0].Origins[0].PrivateLink = &AzureFrontDoorPrivateLink{
-					Location:           "eastus",
+					Location:            "eastus",
 					PrivateLinkTargetId: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Web/sites/myapp",
 					RequestMessage:      &longMessage,
 				}

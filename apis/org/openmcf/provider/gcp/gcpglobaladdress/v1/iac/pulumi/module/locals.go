@@ -12,9 +12,9 @@ import (
 )
 
 type Locals struct {
-	GcpProviderConfig  *gcpprovider.GcpProviderConfig
-	GcpGlobalAddress   *gcpglobaladdressv1.GcpGlobalAddress
-	GcpLabels          map[string]string
+	GcpProviderConfig *gcpprovider.GcpProviderConfig
+	GcpGlobalAddress  *gcpglobaladdressv1.GcpGlobalAddress
+	GcpLabels         map[string]string
 }
 
 func initializeLocals(_ *pulumi.Context, stackInput *gcpglobaladdressv1.GcpGlobalAddressStackInput) *Locals {

@@ -37,15 +37,15 @@ func vpcAttachments(
 		resourceName := fmt.Sprintf("%s-%s", locals.TransitGateway.Metadata.Name, attachment.Name)
 
 		args := &ec2transitgateway.VpcAttachmentArgs{
-			TransitGatewayId:                          tgw.ID(),
-			VpcId:                                     pulumi.String(attachment.VpcId.GetValue()),
-			SubnetIds:                                 pulumi.ToStringArray(subnetIds),
-			DnsSupport:                                pulumi.StringPtr(enableDisable(attachment.DnsSupport)),
-			Ipv6Support:                               pulumi.StringPtr(enableDisable(attachment.Ipv6Support)),
-			ApplianceModeSupport:                      pulumi.StringPtr(enableDisable(attachment.ApplianceModeSupport)),
+			TransitGatewayId:     tgw.ID(),
+			VpcId:                pulumi.String(attachment.VpcId.GetValue()),
+			SubnetIds:            pulumi.ToStringArray(subnetIds),
+			DnsSupport:           pulumi.StringPtr(enableDisable(attachment.DnsSupport)),
+			Ipv6Support:          pulumi.StringPtr(enableDisable(attachment.Ipv6Support)),
+			ApplianceModeSupport: pulumi.StringPtr(enableDisable(attachment.ApplianceModeSupport)),
 			TransitGatewayDefaultRouteTableAssociation: pulumi.BoolPtr(attachment.DefaultRouteTableAssociation),
 			TransitGatewayDefaultRouteTablePropagation: pulumi.BoolPtr(attachment.DefaultRouteTablePropagation),
-			Tags:                                      pulumi.ToStringMap(locals.AwsTags),
+			Tags: pulumi.ToStringMap(locals.AwsTags),
 		}
 
 		createdAttachment, err := ec2transitgateway.NewVpcAttachment(

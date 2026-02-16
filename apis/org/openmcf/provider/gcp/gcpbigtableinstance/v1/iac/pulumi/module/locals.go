@@ -11,9 +11,9 @@ import (
 )
 
 type Locals struct {
-	GcpProviderConfig    *gcpprovider.GcpProviderConfig
-	GcpBigtableInstance  *gcpbigtableinstancev1.GcpBigtableInstance
-	GcpLabels            map[string]string
+	GcpProviderConfig   *gcpprovider.GcpProviderConfig
+	GcpBigtableInstance *gcpbigtableinstancev1.GcpBigtableInstance
+	GcpLabels           map[string]string
 }
 
 func initializeLocals(_ *pulumi.Context, stackInput *gcpbigtableinstancev1.GcpBigtableInstanceStackInput) *Locals {

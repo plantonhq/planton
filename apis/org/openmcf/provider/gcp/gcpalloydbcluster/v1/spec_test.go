@@ -113,9 +113,9 @@ var _ = ginkgo.Describe("GcpAlloydbClusterSpec", func() {
 	ginkgo.It("should accept a cluster with automated_backup_policy (quantity-based)", func() {
 		msg := minimal()
 		msg.Spec.AutomatedBackupPolicy = &GcpAlloydbClusterAutomatedBackupPolicy{
-			Enabled:                       true,
-			BackupWindow:                  "3600s",
-			QuantityBasedRetentionCount:   7,
+			Enabled:                     true,
+			BackupWindow:                "3600s",
+			QuantityBasedRetentionCount: 7,
 		}
 		err := validator.Validate(msg)
 		gomega.Expect(err).ToNot(gomega.HaveOccurred())
@@ -124,8 +124,8 @@ var _ = ginkgo.Describe("GcpAlloydbClusterSpec", func() {
 	ginkgo.It("should accept a cluster with automated_backup_policy (time-based)", func() {
 		msg := minimal()
 		msg.Spec.AutomatedBackupPolicy = &GcpAlloydbClusterAutomatedBackupPolicy{
-			Enabled:                    true,
-			TimeBasedRetentionPeriod:   "1209600s",
+			Enabled:                  true,
+			TimeBasedRetentionPeriod: "1209600s",
 		}
 		err := validator.Validate(msg)
 		gomega.Expect(err).ToNot(gomega.HaveOccurred())
@@ -147,7 +147,7 @@ var _ = ginkgo.Describe("GcpAlloydbClusterSpec", func() {
 	ginkgo.It("should accept automated_backup_policy with CMEK encryption", func() {
 		msg := minimal()
 		msg.Spec.AutomatedBackupPolicy = &GcpAlloydbClusterAutomatedBackupPolicy{
-			Enabled:             true,
+			Enabled:              true,
 			EncryptionKmsKeyName: svr("projects/p/locations/l/keyRings/kr/cryptoKeys/k"),
 		}
 		err := validator.Validate(msg)
@@ -242,8 +242,8 @@ var _ = ginkgo.Describe("GcpAlloydbClusterSpec", func() {
 	ginkgo.It("should accept primary_instance with query_insights_config", func() {
 		msg := minimal()
 		msg.Spec.PrimaryInstance.QueryInsightsConfig = &GcpAlloydbClusterQueryInsightsConfig{
-			QueryPlansPerMinute:  10,
-			QueryStringLength:    2048,
+			QueryPlansPerMinute:   10,
+			QueryStringLength:     2048,
 			RecordApplicationTags: true,
 			RecordClientAddress:   true,
 		}
@@ -304,8 +304,8 @@ var _ = ginkgo.Describe("GcpAlloydbClusterSpec", func() {
 				"max_connections": "500",
 			},
 			QueryInsightsConfig: &GcpAlloydbClusterQueryInsightsConfig{
-				QueryPlansPerMinute:  10,
-				QueryStringLength:    4096,
+				QueryPlansPerMinute:   10,
+				QueryStringLength:     4096,
 				RecordApplicationTags: true,
 				RecordClientAddress:   true,
 			},
@@ -438,9 +438,9 @@ var _ = ginkgo.Describe("GcpAlloydbClusterSpec", func() {
 	ginkgo.It("should reject both quantity_based and time_based retention", func() {
 		msg := minimal()
 		msg.Spec.AutomatedBackupPolicy = &GcpAlloydbClusterAutomatedBackupPolicy{
-			Enabled:                       true,
-			QuantityBasedRetentionCount:   7,
-			TimeBasedRetentionPeriod:      "1209600s",
+			Enabled:                     true,
+			QuantityBasedRetentionCount: 7,
+			TimeBasedRetentionPeriod:    "1209600s",
 		}
 		err := validator.Validate(msg)
 		gomega.Expect(err).To(gomega.HaveOccurred())

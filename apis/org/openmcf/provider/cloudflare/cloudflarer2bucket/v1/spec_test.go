@@ -55,7 +55,7 @@ var _ = ginkgo.Describe("CloudflareR2BucketSpec Custom Validation Tests", func()
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
-		ginkgo.It("should not return a validation error with custom domain enabled and valid config", func() {
+			ginkgo.It("should not return a validation error with custom domain enabled and valid config", func() {
 				input := &CloudflareR2Bucket{
 					ApiVersion: "cloudflare.openmcf.org/v1",
 					Kind:       "CloudflareR2Bucket",

@@ -16,9 +16,9 @@ func TestAwsAppRunnerServiceSpec(t *testing.T) {
 	ginkgo.RunSpecs(t, "AwsAppRunnerService Validation Tests")
 }
 
-func strPtr(s string) *string   { return &s }
-func int32Ptr(i int32) *int32   { return &i }
-func boolPtr(b bool) *bool      { return &b }
+func strPtr(s string) *string { return &s }
+func int32Ptr(i int32) *int32 { return &i }
+func boolPtr(b bool) *bool    { return &b }
 
 func stringValueOrRefLiteral(val string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
@@ -90,7 +90,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 				Port:         strPtr("3000"),
 				StartCommand: "node server.js",
 				EnvironmentVariables: map[string]string{
-					"NODE_ENV": "production",
+					"NODE_ENV":  "production",
 					"LOG_LEVEL": "info",
 				},
 			})
@@ -150,10 +150,10 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 					ImageRepositoryType: "ECR",
 					AccessRoleArn:       stringValueOrRefLiteral("arn:aws:iam::123456789012:role/apprunner-ecr-access"),
 				},
-				Port:         strPtr("8080"),
-				StartCommand: "./start.sh",
-				Cpu:          strPtr("2048"),
-				Memory:       strPtr("4096"),
+				Port:            strPtr("8080"),
+				StartCommand:    "./start.sh",
+				Cpu:             strPtr("2048"),
+				Memory:          strPtr("4096"),
 				InstanceRoleArn: stringValueOrRefLiteral("arn:aws:iam::123456789012:role/apprunner-instance"),
 				HealthCheck: &AwsAppRunnerServiceHealthCheck{
 					Protocol:           strPtr("HTTP"),
@@ -175,12 +175,12 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 				SecurityGroupIds: []*foreignkeyv1.StringValueOrRef{
 					stringValueOrRefLiteral("sg-0abc1234"),
 				},
-				KmsKeyArn:             stringValueOrRefLiteral("arn:aws:kms:us-east-1:123456789012:key/my-key"),
-				ObservabilityEnabled:  true,
+				KmsKeyArn:                     stringValueOrRefLiteral("arn:aws:kms:us-east-1:123456789012:key/my-key"),
+				ObservabilityEnabled:          true,
 				ObservabilityConfigurationArn: stringValueOrRefLiteral("arn:aws:apprunner:us-east-1:123456789012:observabilityconfiguration/my-config/1"),
-				IsPubliclyAccessible:  boolPtr(true),
-				IpAddressType:         strPtr("IPV4"),
-				AutoDeploymentsEnabled: boolPtr(true),
+				IsPubliclyAccessible:          boolPtr(true),
+				IpAddressType:                 strPtr("IPV4"),
+				AutoDeploymentsEnabled:        boolPtr(true),
 				EnvironmentVariables: map[string]string{
 					"APP_ENV": "production",
 				},
@@ -278,7 +278,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
 				},
-				ObservabilityEnabled: true,
+				ObservabilityEnabled:          true,
 				ObservabilityConfigurationArn: stringValueOrRefLiteral("arn:aws:apprunner:us-east-1:123456789012:observabilityconfiguration/my-config/1"),
 			})
 			err := protovalidate.Validate(input)

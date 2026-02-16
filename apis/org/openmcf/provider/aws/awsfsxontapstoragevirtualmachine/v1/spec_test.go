@@ -100,11 +100,11 @@ var _ = ginkgo.Describe("AwsFsxOntapStorageVirtualMachineSpec validations", func
 		spec.RootVolumeSecurityStyle = stringPtr("NTFS")
 		spec.SvmAdminPassword = "VsAdmin2024!"
 		spec.ActiveDirectoryConfiguration = &AwsFsxOntapStorageVirtualMachineActiveDirectoryConfiguration{
-			NetbiosName: "PRODSVM",
-			DomainName:  "corp.example.com",
-			DnsIps:      []string{"10.0.0.1", "10.0.0.2"},
-			Username:    "svc_fsx_join",
-			Password:    "ADJoinP@ssw0rd!",
+			NetbiosName:                         "PRODSVM",
+			DomainName:                          "corp.example.com",
+			DnsIps:                              []string{"10.0.0.1", "10.0.0.2"},
+			Username:                            "svc_fsx_join",
+			Password:                            "ADJoinP@ssw0rd!",
 			OrganizationalUnitDistinguishedName: "OU=FSx,DC=corp,DC=example,DC=com",
 		}
 		err := protovalidate.Validate(spec)
@@ -114,12 +114,12 @@ var _ = ginkgo.Describe("AwsFsxOntapStorageVirtualMachineSpec validations", func
 	ginkgo.It("accepts AD configuration with all optional fields", func() {
 		spec.RootVolumeSecurityStyle = stringPtr("MIXED")
 		spec.ActiveDirectoryConfiguration = &AwsFsxOntapStorageVirtualMachineActiveDirectoryConfiguration{
-			NetbiosName:                      "MYSVM",
-			DomainName:                       "ad.internal.com",
-			DnsIps:                           []string{"10.0.1.1", "10.0.1.2", "10.0.1.3"},
-			Username:                         "admin",
-			Password:                         "SecureP@ss1",
-			FileSystemAdministratorsGroup:    stringPtr("FSx Admins"),
+			NetbiosName:                         "MYSVM",
+			DomainName:                          "ad.internal.com",
+			DnsIps:                              []string{"10.0.1.1", "10.0.1.2", "10.0.1.3"},
+			Username:                            "admin",
+			Password:                            "SecureP@ss1",
+			FileSystemAdministratorsGroup:       stringPtr("FSx Admins"),
 			OrganizationalUnitDistinguishedName: "OU=Servers,OU=IT,DC=ad,DC=internal,DC=com",
 		}
 		err := protovalidate.Validate(spec)

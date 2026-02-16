@@ -1,8 +1,8 @@
 package module
 
 import (
-	gcpcloudarmorpolicyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpcloudarmorpolicy/v1"
 	"github.com/pkg/errors"
+	gcpcloudarmorpolicyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpcloudarmorpolicy/v1"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/compute"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"

@@ -71,10 +71,10 @@ var _ = ginkgo.Describe("GcpCloudComposerEnvironmentSpec", func() {
 	ginkgo.It("should accept node_config with VPC networking", func() {
 		msg := minimal()
 		msg.Spec.NodeConfig = &GcpCloudComposerNodeConfig{
-			Network:    svr("projects/my-project/global/networks/my-vpc"),
-			Subnetwork: svr("projects/my-project/regions/us-central1/subnetworks/my-subnet"),
+			Network:        svr("projects/my-project/global/networks/my-vpc"),
+			Subnetwork:     svr("projects/my-project/regions/us-central1/subnetworks/my-subnet"),
 			ServiceAccount: svr("composer-sa@my-project.iam.gserviceaccount.com"),
-			Tags:       []string{"composer", "airflow"},
+			Tags:           []string{"composer", "airflow"},
 		}
 		err := validator.Validate(msg)
 		gomega.Expect(err).ToNot(gomega.HaveOccurred())
@@ -83,7 +83,7 @@ var _ = ginkgo.Describe("GcpCloudComposerEnvironmentSpec", func() {
 	ginkgo.It("should accept node_config with Composer 3 PSC networking", func() {
 		msg := minimal()
 		msg.Spec.NodeConfig = &GcpCloudComposerNodeConfig{
-			ComposerNetworkAttachment:      "projects/my-project/regions/us-central1/networkAttachments/my-attachment",
+			ComposerNetworkAttachment:     "projects/my-project/regions/us-central1/networkAttachments/my-attachment",
 			ComposerInternalIpv4CidrBlock: "10.0.0.0/20",
 		}
 		err := validator.Validate(msg)
@@ -130,11 +130,11 @@ var _ = ginkgo.Describe("GcpCloudComposerEnvironmentSpec", func() {
 	ginkgo.It("should accept private_environment_config with VPC_PEERING", func() {
 		msg := minimal()
 		msg.Spec.PrivateEnvironmentConfig = &GcpCloudComposerPrivateEnvironmentConfig{
-			EnablePrivateEndpoint:                  true,
-			ConnectionType:                         "VPC_PEERING",
-			MasterIpv4CidrBlock:                    "172.16.0.0/28",
-			CloudSqlIpv4CidrBlock:                  "10.0.32.0/20",
-			CloudComposerNetworkIpv4CidrBlock:      "10.0.48.0/20",
+			EnablePrivateEndpoint:             true,
+			ConnectionType:                    "VPC_PEERING",
+			MasterIpv4CidrBlock:               "172.16.0.0/28",
+			CloudSqlIpv4CidrBlock:             "10.0.32.0/20",
+			CloudComposerNetworkIpv4CidrBlock: "10.0.48.0/20",
 		}
 		err := validator.Validate(msg)
 		gomega.Expect(err).ToNot(gomega.HaveOccurred())
@@ -143,8 +143,8 @@ var _ = ginkgo.Describe("GcpCloudComposerEnvironmentSpec", func() {
 	ginkgo.It("should accept private_environment_config with PRIVATE_SERVICE_CONNECT", func() {
 		msg := minimal()
 		msg.Spec.PrivateEnvironmentConfig = &GcpCloudComposerPrivateEnvironmentConfig{
-			ConnectionType:                         "PRIVATE_SERVICE_CONNECT",
-			CloudComposerConnectionSubnetwork:      "projects/my-project/regions/us-central1/subnetworks/psc-subnet",
+			ConnectionType:                    "PRIVATE_SERVICE_CONNECT",
+			CloudComposerConnectionSubnetwork: "projects/my-project/regions/us-central1/subnetworks/psc-subnet",
 		}
 		err := validator.Validate(msg)
 		gomega.Expect(err).ToNot(gomega.HaveOccurred())

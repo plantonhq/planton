@@ -19,14 +19,14 @@ func transitGateway(ctx *pulumi.Context, locals *Locals, provider *aws.Provider)
 	spec := locals.TransitGateway.Spec
 
 	args := &ec2transitgateway.TransitGatewayArgs{
-		AutoAcceptSharedAttachments:    pulumi.StringPtr(enableDisable(spec.AutoAcceptSharedAttachments)),
-		DefaultRouteTableAssociation:   pulumi.StringPtr(enableDisable(spec.DefaultRouteTableAssociation)),
-		DefaultRouteTablePropagation:   pulumi.StringPtr(enableDisable(spec.DefaultRouteTablePropagation)),
-		DnsSupport:                     pulumi.StringPtr(enableDisable(spec.DnsSupport)),
-		VpnEcmpSupport:                pulumi.StringPtr(enableDisable(spec.VpnEcmpSupport)),
+		AutoAcceptSharedAttachments:     pulumi.StringPtr(enableDisable(spec.AutoAcceptSharedAttachments)),
+		DefaultRouteTableAssociation:    pulumi.StringPtr(enableDisable(spec.DefaultRouteTableAssociation)),
+		DefaultRouteTablePropagation:    pulumi.StringPtr(enableDisable(spec.DefaultRouteTablePropagation)),
+		DnsSupport:                      pulumi.StringPtr(enableDisable(spec.DnsSupport)),
+		VpnEcmpSupport:                  pulumi.StringPtr(enableDisable(spec.VpnEcmpSupport)),
 		SecurityGroupReferencingSupport: pulumi.StringPtr(enableDisable(spec.SecurityGroupReferencingSupport)),
-		MulticastSupport:               pulumi.StringPtr(enableDisable(spec.MulticastSupport)),
-		Tags:                           pulumi.ToStringMap(locals.AwsTags),
+		MulticastSupport:                pulumi.StringPtr(enableDisable(spec.MulticastSupport)),
+		Tags:                            pulumi.ToStringMap(locals.AwsTags),
 	}
 
 	if spec.Description != "" {

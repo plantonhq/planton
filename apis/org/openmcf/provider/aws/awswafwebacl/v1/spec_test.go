@@ -6,8 +6,8 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
@@ -422,7 +422,7 @@ var _ = ginkgo.Describe("AwsWafWebAclSpec validations", func() {
 		spec.DefaultAction = &AwsWafWebAclDefaultAction{
 			Type: "block",
 			CustomResponse: &AwsWafWebAclCustomResponse{
-				ResponseCode:         403,
+				ResponseCode:          403,
 				CustomResponseBodyKey: "forbidden-html",
 			},
 		}

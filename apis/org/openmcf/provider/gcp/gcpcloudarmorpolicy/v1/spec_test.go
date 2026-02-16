@@ -338,9 +338,9 @@ var _ = ginkgo.Describe("GcpCloudArmorPolicySpec", func() {
 	ginkgo.It("should accept advanced options with JSON parsing and verbose logging", func() {
 		msg := minimal()
 		msg.Spec.AdvancedOptionsConfig = &GcpCloudArmorAdvancedOptionsConfig{
-			JsonParsing:                "STANDARD",
-			LogLevel:                   "VERBOSE",
-			UserIpRequestHeaders:       []string{"X-Real-IP", "X-Forwarded-For"},
+			JsonParsing:               "STANDARD",
+			LogLevel:                  "VERBOSE",
+			UserIpRequestHeaders:      []string{"X-Real-IP", "X-Forwarded-For"},
 			RequestBodyInspectionSize: "32KB",
 		}
 		err := validator.Validate(msg)
@@ -454,8 +454,8 @@ var _ = ginkgo.Describe("GcpCloudArmorPolicySpec", func() {
 				PreconfiguredWafConfig: &GcpCloudArmorPreconfiguredWafConfig{
 					Exclusions: []*GcpCloudArmorWafExclusion{
 						{
-							TargetRuleSet:  "xss-v33-stable",
-							TargetRuleIds:  []string{"941100", "941110"},
+							TargetRuleSet: "xss-v33-stable",
+							TargetRuleIds: []string{"941100", "941110"},
 							RequestHeaders: []*GcpCloudArmorWafExclusionFieldParams{
 								{Operator: "EQUALS_ANY"},
 							},
@@ -478,8 +478,8 @@ var _ = ginkgo.Describe("GcpCloudArmorPolicySpec", func() {
 			RuleVisibility:           "STANDARD",
 		}
 		msg.Spec.AdvancedOptionsConfig = &GcpCloudArmorAdvancedOptionsConfig{
-			JsonParsing:                "STANDARD",
-			LogLevel:                   "VERBOSE",
+			JsonParsing:               "STANDARD",
+			LogLevel:                  "VERBOSE",
 			RequestBodyInspectionSize: "32KB",
 		}
 		msg.Spec.Rules = []*GcpCloudArmorRule{
@@ -490,9 +490,9 @@ var _ = ginkgo.Describe("GcpCloudArmorPolicySpec", func() {
 				Priority: 300,
 				Match:    &GcpCloudArmorRuleMatch{VersionedExpr: "SRC_IPS_V1", SrcIpRanges: []string{"*"}},
 				RateLimitOptions: &GcpCloudArmorRateLimitOptions{
-					ConformAction:  "allow",
-					ExceedAction:   "deny(429)",
-					EnforceOnKey:   "IP",
+					ConformAction:      "allow",
+					ExceedAction:       "deny(429)",
+					EnforceOnKey:       "IP",
 					RateLimitThreshold: &GcpCloudArmorRateThreshold{Count: 100, IntervalSec: 60},
 				},
 			},
@@ -707,9 +707,9 @@ var _ = ginkgo.Describe("GcpCloudArmorPolicySpec", func() {
 				Priority: 1000,
 				Match:    &GcpCloudArmorRuleMatch{VersionedExpr: "SRC_IPS_V1", SrcIpRanges: []string{"*"}},
 				RateLimitOptions: &GcpCloudArmorRateLimitOptions{
-					ConformAction:  "allow",
-					ExceedAction:   "deny(429)",
-					EnforceOnKey:   "INVALID_KEY",
+					ConformAction:      "allow",
+					ExceedAction:       "deny(429)",
+					EnforceOnKey:       "INVALID_KEY",
 					RateLimitThreshold: &GcpCloudArmorRateThreshold{Count: 100, IntervalSec: 60},
 				},
 			},
@@ -726,8 +726,8 @@ var _ = ginkgo.Describe("GcpCloudArmorPolicySpec", func() {
 				Priority: 1000,
 				Match:    &GcpCloudArmorRuleMatch{VersionedExpr: "SRC_IPS_V1", SrcIpRanges: []string{"*"}},
 				RateLimitOptions: &GcpCloudArmorRateLimitOptions{
-					ConformAction:  "deny",
-					ExceedAction:   "deny(429)",
+					ConformAction:      "deny",
+					ExceedAction:       "deny(429)",
 					RateLimitThreshold: &GcpCloudArmorRateThreshold{Count: 100, IntervalSec: 60},
 				},
 			},
@@ -744,8 +744,8 @@ var _ = ginkgo.Describe("GcpCloudArmorPolicySpec", func() {
 				Priority: 1000,
 				Match:    &GcpCloudArmorRuleMatch{VersionedExpr: "SRC_IPS_V1", SrcIpRanges: []string{"*"}},
 				RateLimitOptions: &GcpCloudArmorRateLimitOptions{
-					ConformAction:  "allow",
-					ExceedAction:   "deny(500)",
+					ConformAction:      "allow",
+					ExceedAction:       "deny(500)",
 					RateLimitThreshold: &GcpCloudArmorRateThreshold{Count: 100, IntervalSec: 60},
 				},
 			},

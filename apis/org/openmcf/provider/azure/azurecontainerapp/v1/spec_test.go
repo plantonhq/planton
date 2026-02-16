@@ -424,10 +424,10 @@ var _ = ginkgo.Describe("AzureContainerAppSpec Validation Tests", func() {
 						},
 					},
 					CorsPolicy: &AzureContainerAppCorsPolicy{
-						AllowedOrigins: []string{"https://example.com", "https://*.contoso.com"},
-						AllowedHeaders: []string{"Content-Type", "Authorization"},
-						AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
-						ExposedHeaders: []string{"X-Custom-Header"},
+						AllowedOrigins:          []string{"https://example.com", "https://*.contoso.com"},
+						AllowedHeaders:          []string{"Content-Type", "Authorization"},
+						AllowedMethods:          []string{"GET", "POST", "PUT", "DELETE"},
+						ExposedHeaders:          []string{"X-Custom-Header"},
 						AllowCredentialsEnabled: boolPtr(true),
 					},
 				}

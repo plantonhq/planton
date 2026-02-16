@@ -223,11 +223,11 @@ var _ = ginkgo.Describe("GcpBigtableInstanceSpec", func() {
 			r.Spec.ForceDestroy = false
 			r.Spec.Clusters = []*GcpBigtableInstanceCluster{
 				{
-					ClusterId:        "prod-cluster-a",
-					Zone:             "us-central1-a",
-					StorageType:      proto.String("SSD"),
+					ClusterId:         "prod-cluster-a",
+					Zone:              "us-central1-a",
+					StorageType:       proto.String("SSD"),
 					NodeScalingFactor: "NodeScalingFactor1X",
-					KmsKeyName:       svr("projects/p/locations/us-central1/keyRings/kr/cryptoKeys/k"),
+					KmsKeyName:        svr("projects/p/locations/us-central1/keyRings/kr/cryptoKeys/k"),
 					AutoscalingConfig: &GcpBigtableInstanceClusterAutoscalingConfig{
 						MinNodes:      3,
 						MaxNodes:      30,
@@ -236,11 +236,11 @@ var _ = ginkgo.Describe("GcpBigtableInstanceSpec", func() {
 					},
 				},
 				{
-					ClusterId:        "prod-cluster-b",
-					Zone:             "us-central1-b",
-					StorageType:      proto.String("SSD"),
+					ClusterId:         "prod-cluster-b",
+					Zone:              "us-central1-b",
+					StorageType:       proto.String("SSD"),
 					NodeScalingFactor: "NodeScalingFactor1X",
-					KmsKeyName:       svr("projects/p/locations/us-central1/keyRings/kr/cryptoKeys/k"),
+					KmsKeyName:        svr("projects/p/locations/us-central1/keyRings/kr/cryptoKeys/k"),
 					AutoscalingConfig: &GcpBigtableInstanceClusterAutoscalingConfig{
 						MinNodes:      3,
 						MaxNodes:      30,

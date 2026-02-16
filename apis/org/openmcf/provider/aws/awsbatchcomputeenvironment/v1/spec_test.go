@@ -136,7 +136,7 @@ var _ = ginkgo.Describe("AwsBatchComputeEnvironmentSpec validations", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := minimalEc2Spec()
 				spec.UpdatePolicy = &AwsBatchUpdatePolicy{
-					TerminateJobsOnUpdate:       true,
+					TerminateJobsOnUpdate:      true,
 					JobExecutionTimeoutMinutes: int32Ptr(30),
 				}
 				err := protovalidate.Validate(spec)
@@ -380,7 +380,7 @@ var _ = ginkgo.Describe("AwsBatchComputeEnvironmentSpec validations", func() {
 			ginkgo.It("should return a validation error when > 360", func() {
 				spec := minimalEc2Spec()
 				spec.UpdatePolicy = &AwsBatchUpdatePolicy{
-					TerminateJobsOnUpdate:       true,
+					TerminateJobsOnUpdate:      true,
 					JobExecutionTimeoutMinutes: int32Ptr(500),
 				}
 				err := protovalidate.Validate(spec)

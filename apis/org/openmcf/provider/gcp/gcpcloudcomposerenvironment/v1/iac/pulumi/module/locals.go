@@ -12,9 +12,9 @@ import (
 
 // Locals holds pre-computed values used across the module.
 type Locals struct {
-	GcpProviderConfig            *gcpprovider.GcpProviderConfig
-	GcpCloudComposerEnvironment  *gcpcloudcomposerenvironmentv1.GcpCloudComposerEnvironment
-	GcpLabels                    map[string]string
+	GcpProviderConfig           *gcpprovider.GcpProviderConfig
+	GcpCloudComposerEnvironment *gcpcloudcomposerenvironmentv1.GcpCloudComposerEnvironment
+	GcpLabels                   map[string]string
 }
 
 func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudcomposerenvironmentv1.GcpCloudComposerEnvironmentStackInput) *Locals {

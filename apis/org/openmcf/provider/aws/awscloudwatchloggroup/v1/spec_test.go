@@ -194,7 +194,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 				Name: "protected-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
-				RetentionInDays:            90,
+				RetentionInDays:           90,
 				DeletionProtectionEnabled: true,
 			},
 		}

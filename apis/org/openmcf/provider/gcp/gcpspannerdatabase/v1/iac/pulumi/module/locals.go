@@ -10,8 +10,8 @@ import (
 // Note: Spanner databases do not support GCP labels. Labels are
 // managed at the instance level only (see GcpSpannerInstance).
 type Locals struct {
-	GcpProviderConfig   *gcpprovider.GcpProviderConfig
-	GcpSpannerDatabase  *gcpspannerdatabasev1.GcpSpannerDatabase
+	GcpProviderConfig  *gcpprovider.GcpProviderConfig
+	GcpSpannerDatabase *gcpspannerdatabasev1.GcpSpannerDatabase
 }
 
 func initializeLocals(_ *pulumi.Context, stackInput *gcpspannerdatabasev1.GcpSpannerDatabaseStackInput) *Locals {

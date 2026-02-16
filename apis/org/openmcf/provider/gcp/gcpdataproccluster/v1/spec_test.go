@@ -344,8 +344,8 @@ var _ = ginkgo.Describe("GcpDataprocClusterSpec", func() {
 				ImageVersion:       "2.2-debian12",
 				OptionalComponents: []string{"JUPYTER", "DOCKER"},
 				Properties: map[string]string{
-					"spark:spark.executor.memory":    "8g",
-					"hdfs:dfs.replication":           "2",
+					"spark:spark.executor.memory":              "8g",
+					"hdfs:dfs.replication":                     "2",
 					"yarn:yarn.nodemanager.resource.memory-mb": "16384",
 				},
 			},

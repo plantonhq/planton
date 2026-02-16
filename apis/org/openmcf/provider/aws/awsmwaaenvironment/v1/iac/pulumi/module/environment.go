@@ -209,4 +209,3 @@ func buildWorkerLoggingModuleConfig(config *awsmwaaenvironmentv1.AwsMwaaEnvironm
 	}
 	return args
 }
-

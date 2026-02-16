@@ -30,13 +30,13 @@ func Resources(ctx *pulumi.Context, stackInput *azurefunctionappv1.AzureFunction
 
 	// Build the Linux Function App arguments
 	functionAppArgs := &appservice.LinuxFunctionAppArgs{
-		Name:              pulumi.String(spec.Name),
-		Location:          pulumi.String(spec.Region),
-		ResourceGroupName: pulumi.String(locals.ResourceGroupName),
-		ServicePlanId:     pulumi.String(spec.ServicePlanId.GetValue()),
+		Name:               pulumi.String(spec.Name),
+		Location:           pulumi.String(spec.Region),
+		ResourceGroupName:  pulumi.String(locals.ResourceGroupName),
+		ServicePlanId:      pulumi.String(spec.ServicePlanId.GetValue()),
 		StorageAccountName: pulumi.String(spec.StorageAccountName.GetValue()),
-		SiteConfig:        siteConfigArgs,
-		Tags:              pulumi.ToStringMap(locals.AzureTags),
+		SiteConfig:         siteConfigArgs,
+		Tags:               pulumi.ToStringMap(locals.AzureTags),
 	}
 
 	// Storage authentication: access key or managed identity

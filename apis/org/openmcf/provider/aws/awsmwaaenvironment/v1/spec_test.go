@@ -65,9 +65,9 @@ var _ = ginkgo.Describe("AwsMwaaEnvironmentSpec Validation Tests", func() {
 		ginkgo.It("should accept an environment with airflow_configuration_options", func() {
 			input := validMinimalSpec()
 			input.Spec.AirflowConfigurationOptions = map[string]string{
-				"core.default_timezone":    "utc",
+				"core.default_timezone":      "utc",
 				"webserver.dag_default_view": "grid",
-				"celery.worker_autoscale":  "10,2",
+				"celery.worker_autoscale":    "10,2",
 			}
 			err := protovalidate.Validate(input)
 			gomega.Expect(err).To(gomega.BeNil())

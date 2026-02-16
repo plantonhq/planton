@@ -342,7 +342,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						IsPrivate: true,
 						VpcAssociations: []*Route53VpcAssociation{
 							{
-								VpcId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "vpc-12345678"}},
+								VpcId:     &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "vpc-12345678"}},
 								VpcRegion: "us-east-1",
 							},
 						},

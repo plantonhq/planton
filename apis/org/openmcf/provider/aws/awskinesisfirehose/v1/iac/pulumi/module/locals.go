@@ -11,9 +11,9 @@ import (
 
 // Locals holds pre-computed values derived from the stack input.
 type Locals struct {
-	Target           *awskinesisfirehose.AwsKinesisFirehose
-	Spec             *awskinesisfirehose.AwsKinesisFirehoseSpec
-	AwsTags          map[string]string
+	Target             *awskinesisfirehose.AwsKinesisFirehose
+	Spec               *awskinesisfirehose.AwsKinesisFirehoseSpec
+	AwsTags            map[string]string
 	DeliveryStreamName string
 }
 

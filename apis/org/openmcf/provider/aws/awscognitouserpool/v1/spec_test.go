@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"buf.build/go/protovalidate"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
 func TestAwsCognitoUserPoolSpec(t *testing.T) {
@@ -72,11 +72,11 @@ var _ = ginkgo.Describe("AwsCognitoUserPoolSpec validations", func() {
 
 	ginkgo.It("accepts a password policy", func() {
 		spec.PasswordPolicy = &AwsCognitoUserPoolPasswordPolicy{
-			MinimumLength:    12,
-			RequireLowercase: true,
-			RequireUppercase: true,
-			RequireNumbers:   true,
-			RequireSymbols:   true,
+			MinimumLength:                 12,
+			RequireLowercase:              true,
+			RequireUppercase:              true,
+			RequireNumbers:                true,
+			RequireSymbols:                true,
 			TemporaryPasswordValidityDays: 7,
 		}
 		err := protovalidate.Validate(spec)
@@ -161,8 +161,8 @@ var _ = ginkgo.Describe("AwsCognitoUserPoolSpec validations", func() {
 
 	ginkgo.It("accepts Lambda triggers", func() {
 		spec.LambdaConfig = &AwsCognitoUserPoolLambdaConfig{
-			PreSignUp:        strRef("arn:aws:lambda:us-east-1:123456789012:function:pre-signup"),
-			PostConfirmation: strRef("arn:aws:lambda:us-east-1:123456789012:function:post-confirm"),
+			PreSignUp:          strRef("arn:aws:lambda:us-east-1:123456789012:function:pre-signup"),
+			PostConfirmation:   strRef("arn:aws:lambda:us-east-1:123456789012:function:post-confirm"),
 			PreTokenGeneration: strRef("arn:aws:lambda:us-east-1:123456789012:function:pre-token"),
 		}
 		err := protovalidate.Validate(spec)
@@ -172,20 +172,20 @@ var _ = ginkgo.Describe("AwsCognitoUserPoolSpec validations", func() {
 	ginkgo.It("accepts an OAuth-enabled client with callbacks", func() {
 		spec.Clients = []*AwsCognitoUserPoolClient{
 			{
-				Name:                              "web-app",
-				AllowedOauthFlowsUserPoolClient:   true,
-				AllowedOauthFlows:                 []string{"code"},
-				AllowedOauthScopes:                []string{"openid", "email", "profile"},
-				CallbackUrls:                      []string{"https://app.example.com/callback"},
-				LogoutUrls:                        []string{"https://app.example.com/logout"},
-				DefaultRedirectUri:                "https://app.example.com/callback",
-				SupportedIdentityProviders:        []string{"COGNITO"},
-				ExplicitAuthFlows:                 []string{"ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"},
-				AccessTokenValidityMinutes:        60,
-				IdTokenValidityMinutes:            60,
-				RefreshTokenValidityDays:          30,
-				EnableTokenRevocation:             true,
-				PreventUserExistenceErrors:        "ENABLED",
+				Name:                            "web-app",
+				AllowedOauthFlowsUserPoolClient: true,
+				AllowedOauthFlows:               []string{"code"},
+				AllowedOauthScopes:              []string{"openid", "email", "profile"},
+				CallbackUrls:                    []string{"https://app.example.com/callback"},
+				LogoutUrls:                      []string{"https://app.example.com/logout"},
+				DefaultRedirectUri:              "https://app.example.com/callback",
+				SupportedIdentityProviders:      []string{"COGNITO"},
+				ExplicitAuthFlows:               []string{"ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"},
+				AccessTokenValidityMinutes:      60,
+				IdTokenValidityMinutes:          60,
+				RefreshTokenValidityDays:        30,
+				EnableTokenRevocation:           true,
+				PreventUserExistenceErrors:      "ENABLED",
 			},
 		}
 		err := protovalidate.Validate(spec)
@@ -223,11 +223,11 @@ var _ = ginkgo.Describe("AwsCognitoUserPoolSpec validations", func() {
 		spec.UsernameAttributes = []string{"email"}
 		spec.UsernameCaseSensitive = false
 		spec.PasswordPolicy = &AwsCognitoUserPoolPasswordPolicy{
-			MinimumLength:    12,
-			RequireLowercase: true,
-			RequireUppercase: true,
-			RequireNumbers:   true,
-			RequireSymbols:   true,
+			MinimumLength:                 12,
+			RequireLowercase:              true,
+			RequireUppercase:              true,
+			RequireNumbers:                true,
+			RequireSymbols:                true,
 			TemporaryPasswordValidityDays: 3,
 		}
 		spec.MfaConfiguration = "OPTIONAL"
@@ -251,19 +251,19 @@ var _ = ginkgo.Describe("AwsCognitoUserPoolSpec validations", func() {
 		}
 		spec.Clients = []*AwsCognitoUserPoolClient{
 			{
-				Name:                              "web-app",
-				AllowedOauthFlowsUserPoolClient:   true,
-				AllowedOauthFlows:                 []string{"code"},
-				AllowedOauthScopes:                []string{"openid", "email", "profile"},
-				CallbackUrls:                      []string{"https://app.example.com/callback"},
-				LogoutUrls:                        []string{"https://app.example.com/logout"},
-				ExplicitAuthFlows:                 []string{"ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"},
-				EnableTokenRevocation:             true,
-				PreventUserExistenceErrors:        "ENABLED",
+				Name:                            "web-app",
+				AllowedOauthFlowsUserPoolClient: true,
+				AllowedOauthFlows:               []string{"code"},
+				AllowedOauthScopes:              []string{"openid", "email", "profile"},
+				CallbackUrls:                    []string{"https://app.example.com/callback"},
+				LogoutUrls:                      []string{"https://app.example.com/logout"},
+				ExplicitAuthFlows:               []string{"ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"},
+				EnableTokenRevocation:           true,
+				PreventUserExistenceErrors:      "ENABLED",
 			},
 			{
-				Name:            "api-server",
-				GenerateSecret:  true,
+				Name:                            "api-server",
+				GenerateSecret:                  true,
 				AllowedOauthFlowsUserPoolClient: true,
 				AllowedOauthFlows:               []string{"client_credentials"},
 				AllowedOauthScopes:              []string{"api/read", "api/write"},
@@ -388,7 +388,7 @@ var _ = ginkgo.Describe("AwsCognitoUserPoolSpec validations", func() {
 
 	ginkgo.It("rejects temporary_password_validity_days above 365", func() {
 		spec.PasswordPolicy = &AwsCognitoUserPoolPasswordPolicy{
-			MinimumLength: 8,
+			MinimumLength:                 8,
 			TemporaryPasswordValidityDays: 400,
 		}
 		err := protovalidate.Validate(spec)

@@ -28,7 +28,7 @@ func neptuneCluster(
 		BackupRetentionPeriod:            pulumi.Int(spec.GetBackupRetentionPeriod()),
 		SkipFinalSnapshot:                pulumi.Bool(spec.GetSkipFinalSnapshot()),
 		ApplyImmediately:                 pulumi.Bool(spec.ApplyImmediately),
-		CopyTagsToSnapshot:              pulumi.Bool(spec.CopyTagsToSnapshot),
+		CopyTagsToSnapshot:               pulumi.Bool(spec.CopyTagsToSnapshot),
 		AllowMajorVersionUpgrade:         pulumi.Bool(spec.AllowMajorVersionUpgrade),
 		IamDatabaseAuthenticationEnabled: pulumi.Bool(spec.IamDatabaseAuthenticationEnabled),
 		Tags:                             pulumi.ToStringMap(locals.Labels),

@@ -17,10 +17,10 @@ func fileSystem(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) (*f
 	}
 
 	args := &fsx.OntapFileSystemArgs{
-		SubnetIds:                    subnetIds,
+		SubnetIds:                   subnetIds,
 		ThroughputCapacityPerHaPair: pulumi.IntPtr(int(spec.ThroughputCapacityPerHaPair)),
-		StorageCapacity:              pulumi.Int(int(spec.StorageCapacityGib)),
-		Tags:                         pulumi.ToStringMap(locals.AwsTags),
+		StorageCapacity:             pulumi.Int(int(spec.StorageCapacityGib)),
+		Tags:                        pulumi.ToStringMap(locals.AwsTags),
 	}
 
 	// Deployment type (optional, default SINGLE_AZ_2 via OpenMCF middleware).
