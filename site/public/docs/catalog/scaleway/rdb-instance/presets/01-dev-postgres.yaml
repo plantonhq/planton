@@ -1,0 +1,11 @@
+apiVersion: scaleway.openmcf.org/v1
+kind: ScalewayRdbInstance
+metadata:
+  name: my-rdb
+spec:
+  region: fr-par
+  engine: PostgreSQL-16
+  nodeType: DB-DEV-S
+  volumeType: lssd  # recommended_default from spec
+  adminUser: <your-admin-user>
+  adminPassword: <your-admin-password>

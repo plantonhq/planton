@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/gcp/gcpgkenodepool/v1/stack_outputs.proto.
  */
 export const file_org_openmcf_provider_gcp_gcpgkenodepool_v1_stack_outputs: GenFile = /*@__PURE__*/
-  fileDesc("Cj5vcmcvb3Blbm1jZi9wcm92aWRlci9nY3AvZ2NwZ2tlbm9kZXBvb2wvdjEvc3RhY2tfb3V0cHV0cy5wcm90bxIqb3JnLm9wZW5tY2YucHJvdmlkZXIuZ2NwLmdjcGdrZW5vZGVwb29sLnYxIpMBChpHY3BHa2VOb2RlUG9vbFN0YWNrT3V0cHV0cxIWCg5ub2RlX3Bvb2xfbmFtZRgBIAEoCRIbChNpbnN0YW5jZV9ncm91cF91cmxzGAIgAygJEhEKCW1pbl9ub2RlcxgDIAEoCRIRCgltYXhfbm9kZXMYBCABKAkSGgoSY3VycmVudF9ub2RlX2NvdW50GAUgASgJQvECCi5jb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuZ2NwLmdjcGdrZW5vZGVwb29sLnYxQhFTdGFja091dHB1dHNQcm90b1ABWl1naXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvZ2NwL2djcGdrZW5vZGVwb29sL3YxO2djcGdrZW5vZGVwb29sdjGiAgVPT1BHR6oCKk9yZy5PcGVubWNmLlByb3ZpZGVyLkdjcC5HY3Bna2Vub2RlcG9vbC5WMcoCKk9yZ1xPcGVubWNmXFByb3ZpZGVyXEdjcFxHY3Bna2Vub2RlcG9vbFxWMeICNk9yZ1xPcGVubWNmXFByb3ZpZGVyXEdjcFxHY3Bna2Vub2RlcG9vbFxWMVxHUEJNZXRhZGF0YeoCL09yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkdjcDo6R2NwZ2tlbm9kZXBvb2w6OlYxYgZwcm90bzM");
+  fileDesc("Cj5vcmcvb3Blbm1jZi9wcm92aWRlci9nY3AvZ2NwZ2tlbm9kZXBvb2wvdjEvc3RhY2tfb3V0cHV0cy5wcm90bxIqb3JnLm9wZW5tY2YucHJvdmlkZXIuZ2NwLmdjcGdrZW5vZGVwb29sLnYxIqkBChpHY3BHa2VOb2RlUG9vbFN0YWNrT3V0cHV0cxIWCg5ub2RlX3Bvb2xfbmFtZRgBIAEoCRIbChNpbnN0YW5jZV9ncm91cF91cmxzGAIgAygJEhEKCW1pbl9ub2RlcxgDIAEoCRIRCgltYXhfbm9kZXMYBCABKAkSGgoSY3VycmVudF9ub2RlX2NvdW50GAUgASgJEhQKDG5vZGVfcG9vbF9pZBgGIAEoCULxAgouY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmdjcC5nY3Bna2Vub2RlcG9vbC52MUIRU3RhY2tPdXRwdXRzUHJvdG9QAVpdZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2djcC9nY3Bna2Vub2RlcG9vbC92MTtnY3Bna2Vub2RlcG9vbHYxogIFT09QR0eqAipPcmcuT3Blbm1jZi5Qcm92aWRlci5HY3AuR2NwZ2tlbm9kZXBvb2wuVjHKAipPcmdcT3Blbm1jZlxQcm92aWRlclxHY3BcR2NwZ2tlbm9kZXBvb2xcVjHiAjZPcmdcT3Blbm1jZlxQcm92aWRlclxHY3BcR2NwZ2tlbm9kZXBvb2xcVjFcR1BCTWV0YWRhdGHqAi9Pcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpHY3A6OkdjcGdrZW5vZGVwb29sOjpWMWIGcHJvdG8z");
 
 /**
  * Outputs produced after creating/updating a GKE Node Pool.
@@ -51,6 +51,15 @@ export type GcpGkeNodePoolStackOutputs = Message<"org.openmcf.provider.gcp.gcpgk
    * @generated from field: string current_node_count = 5;
    */
   currentNodeCount: string;
+
+  /**
+   * Fully qualified GKE node pool resource ID.
+   * Format: projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{nodePool}
+   * Used by downstream resources (e.g., Dataproc on GKE) to reference this node pool.
+   *
+   * @generated from field: string node_pool_id = 6;
+   */
+  nodePoolId: string;
 };
 
 /**

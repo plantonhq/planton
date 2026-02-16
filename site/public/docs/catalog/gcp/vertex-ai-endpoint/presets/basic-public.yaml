@@ -1,0 +1,9 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpVertexAiEndpoint
+metadata:
+  name: example
+spec:
+  projectId:
+    value: "${PROJECT_ID}"
+  location: us-central1
+  displayName: My ML Endpoint

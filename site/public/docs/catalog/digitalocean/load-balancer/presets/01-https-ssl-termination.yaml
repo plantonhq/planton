@@ -1,0 +1,21 @@
+apiVersion: digital-ocean.openmcf.org/v1
+kind: DigitalOceanLoadBalancer
+metadata:
+  name: my-https-lb
+spec:
+  loadBalancerName: my-https-lb
+  region: nyc3
+  vpc:
+    value: "<vpc-id>"
+  forwardingRules:
+    - entryPort: 443
+      entryProtocol: https
+      targetPort: 80
+      targetProtocol: http
+      certificateName: "<certificate-name>"
+  healthCheck:
+    port: 80
+    protocol: http
+    path: /health
+    checkIntervalSec: 10
+  dropletTag: web

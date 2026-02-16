@@ -146,7 +146,7 @@ openmcf plan -f manifest.yaml --kube-context my-staging-cluster
 ### Via Manifest Label
 
 ```yaml
-apiVersion: kubernetes.project.planton.org/v1
+apiVersion: kubernetes.org.openmcf.org/v1
 kind: PostgresKubernetes
 metadata:
   name: my-postgres

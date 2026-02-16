@@ -3,6 +3,7 @@ syntax = "proto3";
 package org.openmcf.provider.aws.awss3bucket.v1;
 
 import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 
 // AwsS3BucketSpec defines the specification required to deploy an AWS S3 Bucket with production-grade defaults.
 // This message encapsulates all configurations necessary for setting up an S3 bucket following security best practices,
@@ -72,7 +73,12 @@ message AwsS3BucketSpec {
     bool enabled = 1;
     // ARN of the IAM role that S3 assumes to replicate objects.
     // The role must have permissions to read from source bucket and write to destination.
-    string role_arn = 2 [(buf.validate.field).string.min_len = 1];
+    // Can reference an AwsIamRole resource.
+    org.openmcf.shared.foreignkey.v1.StringValueOrRef role_arn = 2 [
+      (buf.validate.field).required = true,
+      (org.openmcf.shared.foreignkey.v1.default_kind) = AwsIamRole,
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
+    ];
     // Destination bucket for replication.
     message Destination {
       // ARN of the destination bucket (e.g., "arn:aws:s3:::destination-bucket").
@@ -146,8 +152,11 @@ message AwsS3BucketSpec {
   // KMS key ID or ARN for SSE-KMS encryption.
   // Required when encryption_type is ENCRYPTION_TYPE_SSE_KMS.
   // Leave empty for ENCRYPTION_TYPE_SSE_S3.
-  // Example: "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
-  string kms_key_id = 5;
+  // Can reference an AwsKmsKey resource.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 5 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
 
   // Tags for resource governance, cost allocation, and organization.
   // Common tags: Environment (prod/staging), Project, Owner, CostCenter.

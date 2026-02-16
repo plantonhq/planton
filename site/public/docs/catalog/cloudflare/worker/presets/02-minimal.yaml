@@ -1,0 +1,10 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareWorker
+metadata:
+  name: my-minimal-worker
+spec:
+  accountId: <cloudflare-account-id>
+  workerName: <worker-name>
+  scriptBundle:
+    bucket: <r2-bucket-name>
+    path: <script-bundle-path>

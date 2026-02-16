@@ -1,0 +1,6 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsGlueCatalogDatabase
+metadata:
+  name: analytics
+spec:
+  description: "Analytics data catalog for ad-hoc queries and BI dashboards"

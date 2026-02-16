@@ -56,6 +56,7 @@ Use update when you need to:
 - Missing research docs → runs rule 020
 - Missing Pulumi overview → runs rule 021
 - Failed tests → fixes and re-runs rule 019
+- Missing presets → runs rule 022 to generate initial presets (2-3 common configurations)
 
 #### Scenario 2: Proto Schema Changed
 
@@ -70,8 +71,15 @@ Use update when you need to:
 2. Validates component tests: `go test ./apis/org/openmcf/provider/<provider>/<component>/v1/`
 3. Updates Terraform variables.tf to match spec.proto
 4. Updates examples.md with new fields
-5. Runs build validation: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` (rule 018)
-6. Runs test validation: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` (rule 019)
+5. **Validates existing presets against new schema** (if `v1/presets/` exists):
+   - Checks for renamed fields (preset uses old field names that no longer exist in spec.proto)
+   - Checks for removed fields (preset references fields deleted from spec.proto)
+   - Checks for new required fields (preset may need them added)
+   - Checks for changed `StringValueOrRef` types (may need `value:` wrapper added or removed)
+   - Checks for changed `recommended_default` / `default` annotations (preset values and comments may need updating)
+   - Updates stale presets to match the new schema
+6. Runs build validation: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` (rule 018)
+7. Runs test validation: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` (rule 019)
 
 **Use when:**
 - Added new fields to spec.proto
@@ -151,9 +159,10 @@ Use update when you need to:
 
 **What it does:**
 1. Runs audit to assess current state
-2. Asks you what you want to update
-3. Determines best scenario automatically
-4. Proceeds with appropriate updates
+2. Checks for preset issues: missing `v1/presets/` directory, stale presets referencing old field names, or presets missing new required fields
+3. Asks you what you want to update
+4. Determines best scenario automatically
+5. Proceeds with appropriate updates
 
 **Default behavior** when no scenario specified.
 
@@ -181,16 +190,19 @@ Based on scenario:
 **Fill Gaps:**
 - Run audit (or read latest audit report)
 - Parse completion score and missing items
+- Check if `v1/presets/` is missing or empty -- if so, add rule 022 to the execution list
 - Build list of forge rules to run
 
 **Proto Changed:**
 - Check if spec.proto was recently modified
 - Consult docs/README.md to understand which fields are essential
 - Identify dependent files that need updating
+- **Check existing presets**: Read `v1/presets/*.yaml` and compare field names against new spec.proto to detect stale references
 - Plan regeneration sequence
 - **Must execute**: `make protos` to regenerate Go stubs
 - **Must execute**: `go test ./apis/org/openmcf/provider/<provider>/<component>/v1/` to validate spec tests
 - **Must execute**: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` for build validation
+- **Must validate**: Existing presets are consistent with new spec.proto (no stale field names, correct StringValueOrRef usage)
 
 **Refresh Docs:**
 - Read existing docs/README.md to understand current state
@@ -237,8 +249,9 @@ After all updates, **execute validation commands in sequence**:
    - Ensures spec_test.go passes with current validation logic
 3. **If Pulumi/Go code changed**: Run `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` to validate build (rule 018)
 4. **Always run component tests**: Run `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` to validate tests (rule 019)
-5. Generate update report
-6. Recommend running audit to verify improvements
+5. **If proto files changed and presets exist**: Verify all preset YAML field names exist in current spec.proto, all StringValueOrRef fields use `value:` wrapper, and apiVersion/kind still match api.proto
+6. Generate update report
+7. Recommend running audit to verify improvements
 
 ### Step 5: Report Results
 
@@ -260,6 +273,7 @@ Show:
 # - Terraform module
 # - Research documentation
 # - Pulumi overview
+# - Presets
 
 # Run update to fill gaps
 @update-openmcf-component MongodbAtlas --scenario fill-gaps
@@ -268,6 +282,7 @@ Show:
 # - Rule 013-015 (Terraform module)
 # - Rule 020 (Research docs)
 # - Rule 021 (Pulumi overview)
+# - Rule 022 (Presets -- generates 2-3 initial presets)
 # - Rules 018-019 (Validation)
 
 # Result: 95-100% complete
@@ -287,10 +302,11 @@ Show:
 # - go test ./apis/org/openmcf/provider/gcp/gcpcloudsql/v1/ (validate spec tests)
 # - Update Terraform variables.tf (add enable_ssl variable)
 # - Update examples.md (show enable_ssl usage)
+# - Validate presets against new schema (check for stale fields, add enable_ssl if appropriate)
 # - go build ./apis/org/openmcf/provider/<provider>/<component>/v1/... (validate build)
 # - go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/ (validate tests)
 
-# Result: All files consistent with new schema
+# Result: All files consistent with new schema, including presets
 ```
 
 ### Example 3: Refresh Outdated Documentation
@@ -397,12 +413,14 @@ Scenario: fill-gaps
 Identified Gaps (from audit):
   ❌ Missing: iac/tf/ (Terraform module)
   ❌ Missing: v1/docs/README.md (research docs)
+  ❌ Missing: v1/presets/ (no presets)
   ⚠️  Incomplete: examples.md (only 1 example, need 3+)
 
 Planned Updates:
   1. Run rule 013-015 → Create Terraform module
   2. Run rule 020 → Generate research documentation
   3. Update examples.md → Add 2 more examples
+  4. Run rule 022 → Generate initial presets (2-3 common configurations)
 
 Estimated time: 10-15 minutes
 No files will be modified (dry-run mode)
@@ -419,6 +437,7 @@ Update validates after each major change:
    - Validates buf.validate rules in spec.proto are correct
    - Ensures spec_test.go passes with current validation logic
 3. Run `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` to validate build
+4. If `v1/presets/` exists: validate all preset field names exist in the updated spec.proto, check StringValueOrRef compliance, and verify apiVersion/kind still match api.proto
 
 **After Pulumi/Go Code Changes:**
 1. Run `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` to validate build
@@ -427,6 +446,7 @@ Update validates after each major change:
 **Always (Final Validation):**
 1. Run component tests: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` to validate tests pass
 2. Verify examples work with current schema
+3. Verify presets are consistent with current spec.proto (if presets exist)
 
 **Critical:** Component-specific tests must pass before proceeding. These tests validate that buf.validate rules work correctly.
 
@@ -502,6 +522,9 @@ Next step: Run @audit-openmcf-component MongodbAtlas to verify
 - **Forge Flow Rules:** `_rules/deployment-component/forge/flow/`
 - **Update README:** `_rules/deployment-component/update/README.md`
 - **Audit Rule:** `_rules/deployment-component/audit/audit-openmcf-component.mdc`
+- **Preset Convention:** `architecture/presets.md`
+- **Preset AI Reference:** `.cursor/info/presets.md`
+- **Preset Rules:** `_rules/deployment-component/presets/` (create, audit, validate)
 
 ## Tips
 
@@ -563,6 +586,7 @@ After update completes:
 ✅ Audit score improved (if filling gaps)
 ✅ Documentation is current
 ✅ Examples work with current schema
+✅ Existing presets are consistent with current spec.proto (no stale field names, correct StringValueOrRef usage)
 
 ---
 
@@ -585,8 +609,11 @@ After update completes:
 4. Updates spec_test.go to use pointers for optional fields
 5. Updates IaC module to use getter methods (e.g., `GetFieldName()`)
 6. Removes any defensive default checks (framework handles it)
-7. Runs build validation: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
-8. Runs test validation: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
+7. **Updates existing presets** (if `v1/presets/` exists):
+   - For each field that gained a `default` or `recommended_default` annotation, update the preset value and comment to cite the annotation
+   - For each field that changed from required to optional-with-default, the preset may now omit it or include it with a comment
+8. Runs build validation: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
+9. Runs test validation: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
 
 **Use when:**
 - Audit or review reveals defaults are only in comments

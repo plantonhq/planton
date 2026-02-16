@@ -1,0 +1,7 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsAthenaWorkgroup
+metadata:
+  name: analytics
+spec:
+  resultConfiguration:
+    outputLocation: "s3://my-athena-results/analytics/"

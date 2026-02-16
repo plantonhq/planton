@@ -1,0 +1,18 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsFsxOntapVolume
+metadata:
+  name: <REPLACE>
+  id: <REPLACE>
+  org: <REPLACE>
+  env: <REPLACE>
+spec:
+  storage_virtual_machine_id:
+    value: svm-0123456789abcdef0
+  name: vol_data
+  size_in_megabytes: 102400
+  junction_path: /data
+  security_style: UNIX
+  storage_efficiency_enabled: true
+  tiering_policy:
+    name: AUTO
+    cooling_period: 31

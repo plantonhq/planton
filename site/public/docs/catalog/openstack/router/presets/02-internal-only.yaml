@@ -1,0 +1,6 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackRouter
+metadata:
+  name: my-internal-router
+spec:
+  description: Internal router for inter-subnet routing without external access

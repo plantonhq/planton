@@ -80,13 +80,13 @@ export default function Hero() {
 								</span>
 							</Button>
 
-					<Link href="/docs">
+					<Link href="/docs/catalog">
 						<Button
 							size="lg"
 							variant="outline"
 							className="rounded-full border border-white/20 text-slate-100 bg-transparent hover:bg-white/5 hover:border-white/40 px-8 py-3 h-auto transform-gpu transition-all hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-fuchsia-400/40"
 						>
-							Browse 100+ Components
+							Browse 200+ Components
 							<ArrowRight className="w-4 h-4 ml-2" />
 						</Button>
 					</Link>

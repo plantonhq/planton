@@ -1,0 +1,20 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCloudSql
+metadata:
+  name: my-dev-postgresql
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  region: <gcp-region>
+  databaseEngine: POSTGRESQL
+  databaseVersion: POSTGRES_15
+  tier: db-f1-micro  # shared-core, 0.6 GB RAM; smallest available
+  storageGb: 10  # recommended_default from spec; minimum
+  diskAutoresize: true  # recommended_default from spec
+  edition: ENTERPRISE  # recommended_default from spec
+  network:
+    ipv4Enabled: true  # public IP for developer access via Cloud SQL Proxy
+  backup:
+    enabled: true
+    startTime: "03:00"
+    retentionDays: 3  # shorter retention for dev

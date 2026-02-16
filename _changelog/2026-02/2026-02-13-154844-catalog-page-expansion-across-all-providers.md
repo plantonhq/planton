@@ -123,7 +123,7 @@ flowchart TB
 
 Each agent followed the same workflow:
 
-1. Read `write-catalog-page.mdc` rule
+1. Read `write-openmcf-component-catalog-page.mdc` rule
 2. Read AWS ALB exemplar as gold standard
 3. Read component source files (api.proto, spec.proto, stack_outputs.proto, Pulumi module)
 4. Write catalog page following the 9-section structure
@@ -154,7 +154,7 @@ All 24 pages passed all 6 verification checks:
 - **Full provider coverage** — every developer evaluating OpenMCF for any of the 13 supported providers now finds at least 1-2 hand-written, source-verified catalog pages
 - **Rich reference set for automation** — the 29 pages cover every complexity level and infrastructure pattern, providing AI agents comprehensive reference material for migrating the remaining ~149 components
 - **Consistent quality** — all pages follow the same 9-section structure, persona, and tone established by the original exemplars
-- **Parallelization validated** — the 3-round execution pattern proved that the `write-catalog-page.mdc` rule is self-contained enough for parallel agent execution
+- **Parallelization validated** — the 3-round execution pattern proved that the `write-openmcf-component-catalog-page.mdc` rule is self-contained enough for parallel agent execution
 
 ## Impact
 

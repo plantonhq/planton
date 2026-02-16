@@ -1,0 +1,501 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsfsxontapvolume.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// AwsFsxOntapVolumeSpec defines the desired configuration for an Amazon FSx for
+// NetApp ONTAP Volume. A volume is a data container within an ONTAP Storage
+// Virtual Machine (SVM) that provides file-level (NFS/SMB) or block-level
+// (iSCSI) storage.
+//
+// Volumes sit at the bottom of the FSx ONTAP hierarchy:
+// - **File System** provides physical infrastructure (storage, throughput, HA)
+// - **SVM** provides the logical data server (protocols, endpoints, AD)
+// - **Volume** provides data containers (capacity, tiering, snapshots, SnapLock)
+//
+// Key features:
+// - **Tiering policy** moves cold data to lower-cost capacity pool storage.
+// - **SnapLock** provides WORM (Write Once Read Many) storage for regulatory
+//   compliance (SEC 17a-4, HIPAA, FINRA).
+// - **FlexGroup** distributes a single volume across multiple aggregates for
+//   high-throughput large-scale workloads.
+// - **Storage efficiency** enables ONTAP deduplication, compression, and
+//   compaction to reduce physical storage consumption.
+//
+// Key design notes:
+// - `storage_virtual_machine_id` and `name` are ForceNew — changing either
+//   requires replacing the volume.
+// - `ontap_volume_type` and `volume_style` are ForceNew — they define the
+//   volume's fundamental architecture.
+// - `junction_path` is the mount point in the SVM namespace. Without it, the
+//   volume exists but is not accessible via NFS/SMB.
+// - `security_style` can differ from the SVM's root volume security style,
+//   allowing mixed workloads within a single SVM.
+// - `size_in_megabytes` covers volumes up to ~2.1 PB (int32 max). For the
+//   extremely rare case of >2 PB volumes, use the AWS console or CLI directly.
+// - Credentials, region, and deployment workflow live outside this spec in stack
+//   inputs.
+message AwsFsxOntapVolumeSpec {
+  // ---------------------------------------------------------------------------
+  // Parent Reference
+  // ---------------------------------------------------------------------------
+
+  // The ID of the Storage Virtual Machine that this volume belongs to. Required.
+  // ForceNew — the volume cannot be moved to a different SVM after creation.
+  //
+  // The SVM provides the network endpoints, protocol configuration, and Active
+  // Directory integration. All volumes within an SVM share its protocol stack.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef storage_virtual_machine_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsFsxOntapStorageVirtualMachine,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.svm_id"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Volume Identity
+  // ---------------------------------------------------------------------------
+
+  // The name of the volume within the ONTAP file system. Required. ForceNew.
+  //
+  // This is the ONTAP volume name (not the OpenMCF metadata name). ONTAP volume
+  // names must be alphanumeric plus underscores — hyphens are not allowed. This
+  // name appears in junction paths, SnapMirror relationships, and ONTAP CLI
+  // output.
+  //
+  // Constraints: 1-203 characters, alphanumeric and underscore only.
+  string name = 2 [
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 203
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Size
+  // ---------------------------------------------------------------------------
+
+  // The size of the volume in megabytes. Required.
+  //
+  // Minimum 20 MB. Maximum is constrained by the file system's total storage
+  // capacity. ONTAP volumes support thin provisioning, so the logical size can
+  // exceed the physical capacity available — ONTAP handles overcommit at the
+  // aggregate level.
+  //
+  // Covers volumes up to ~2.1 PB (int32 max). For the extremely rare case of
+  // volumes exceeding 2 PB, use the AWS console or CLI with size_in_bytes.
+  int32 size_in_megabytes = 3 [(buf.validate.field).int32.gte = 20];
+
+  // ---------------------------------------------------------------------------
+  // Volume Configuration
+  // ---------------------------------------------------------------------------
+
+  // The location in the SVM namespace where this volume is mounted. Clients
+  // access the volume at this path (e.g., mount nfs.svm.example.com:/vol1).
+  //
+  // If omitted, the volume is created but not mounted — it exists in ONTAP
+  // but is not accessible via NFS/SMB until a junction path is set.
+  //
+  // Must start with "/" and be unique within the SVM. Examples: "/vol1",
+  // "/data/prod", "/shares/finance".
+  //
+  // Constraints: 1-255 characters.
+  string junction_path = 4;
+
+  // The ONTAP volume type. ForceNew.
+  //
+  // - "RW": Read-write volume. The standard type for serving data to clients.
+  // - "DP": Data protection volume. A read-only destination for SnapMirror
+  //   replication. DP volumes cannot be mounted until the SnapMirror
+  //   relationship is broken or the volume is converted.
+  //
+  // Default: RW
+  optional string ontap_volume_type = 5 [(org.openmcf.shared.options.default) = "RW"];
+
+  // The volume style. ForceNew.
+  //
+  // - "FLEXVOL": Traditional ONTAP volume on a single aggregate. Suitable for
+  //   most workloads. Simpler operations and faster metadata performance.
+  // - "FLEXGROUP": A volume distributed across multiple aggregates for high
+  //   throughput and large-scale workloads (hundreds of TBs to PBs). Requires
+  //   aggregate_configuration. Ideal for data lakes, genomics, and media.
+  //
+  // Default: FLEXVOL
+  optional string volume_style = 6 [(org.openmcf.shared.options.default) = "FLEXVOL"];
+
+  // The security style for this volume's root directory. Controls how file
+  // permissions are evaluated.
+  //
+  // - "UNIX": UNIX permissions (mode bits, uid/gid). Best for Linux/NFS.
+  // - "NTFS": Windows ACLs. Best for Windows/SMB with Active Directory.
+  // - "MIXED": Both permission systems coexist. The effective security style
+  //   depends on which protocol last set permissions on a file.
+  //
+  // If omitted, inherits from the parent SVM's root_volume_security_style.
+  string security_style = 7;
+
+  // The name of the ONTAP snapshot policy to apply to this volume. Snapshot
+  // policies control automatic snapshot creation and retention.
+  //
+  // Common policies: "default" (6 hourly + 2 daily + 2 weekly), "none"
+  // (no automatic snapshots). Custom policies can be created via the ONTAP CLI.
+  //
+  // Constraints: 1-255 characters.
+  string snapshot_policy = 8;
+
+  // Enable ONTAP storage efficiency features: deduplication, compression, and
+  // compaction. These features reduce physical storage consumption by
+  // identifying and eliminating redundant data blocks.
+  //
+  // Recommended for most workloads. Disable only for workloads that are
+  // already compressed or deduplicated (e.g., encrypted data, pre-compressed
+  // media files) where the CPU overhead provides no benefit.
+  bool storage_efficiency_enabled = 9;
+
+  // Whether to copy resource tags to automatic volume backups.
+  //
+  // Default: false
+  optional bool copy_tags_to_backups = 10 [(org.openmcf.shared.options.default) = "false"];
+
+  // ---------------------------------------------------------------------------
+  // Deletion Behavior
+  // ---------------------------------------------------------------------------
+
+  // Whether to skip the automatic backup that AWS takes when the volume is
+  // deleted. Set to true for development/test volumes where the backup is
+  // unnecessary.
+  //
+  // Default: false (a final backup is taken)
+  optional bool skip_final_backup = 11 [(org.openmcf.shared.options.default) = "false"];
+
+  // Whether to allow deletion of a SnapLock Enterprise volume that contains
+  // WORM files with unexpired retention periods. Only relevant for SnapLock
+  // Enterprise volumes — Compliance volumes can never bypass retention.
+  //
+  // Default: false
+  optional bool bypass_snaplock_enterprise_retention = 12 [(org.openmcf.shared.options.default) = "false"];
+
+  // ---------------------------------------------------------------------------
+  // Tiering Policy (optional)
+  // ---------------------------------------------------------------------------
+
+  // Data tiering policy that controls when and how data moves from primary
+  // SSD storage to lower-cost capacity pool storage. If omitted, the volume
+  // uses the default tiering policy (SNAPSHOT_ONLY).
+  AwsFsxOntapVolumeTieringPolicy tiering_policy = 13;
+
+  // ---------------------------------------------------------------------------
+  // SnapLock Configuration (optional)
+  // ---------------------------------------------------------------------------
+
+  // SnapLock configuration for WORM (Write Once Read Many) compliance storage.
+  // When configured, files committed to this volume become immutable for their
+  // retention period. ForceNew for snaplock_type.
+  //
+  // SnapLock has two modes:
+  // - ENTERPRISE: Admins can delete WORM files before retention expiry (if
+  //   privileged_delete is enabled). Suitable for internal governance.
+  // - COMPLIANCE: No one — not even the root/admin user or AWS support — can
+  //   delete WORM files before retention expiry. Required for SEC 17a-4, HIPAA,
+  //   and similar regulations.
+  //
+  // Once set, the snaplock_type cannot be changed. Choosing the wrong type
+  // requires deleting and recreating the volume.
+  AwsFsxOntapVolumeSnaplockConfiguration snaplock_configuration = 14;
+
+  // ---------------------------------------------------------------------------
+  // Aggregate Configuration (optional — for FLEXGROUP volumes)
+  // ---------------------------------------------------------------------------
+
+  // Aggregate configuration for FLEXGROUP volumes. Controls how the volume is
+  // distributed across the file system's aggregates. Ignored for FLEXVOL
+  // volumes.
+  //
+  // All fields in this block are ForceNew — changing the aggregate layout
+  // requires recreating the volume.
+  AwsFsxOntapVolumeAggregateConfiguration aggregate_configuration = 15;
+
+  // ---------------------------------------------------------------------------
+  // CEL Validations
+  // ---------------------------------------------------------------------------
+
+  // name must be alphanumeric plus underscore only (ONTAP naming constraint).
+  option (buf.validate.message).cel = {
+    id: "name_format"
+    message: "name must contain only alphanumeric characters and underscores (no hyphens, spaces, or special characters)"
+    expression: "this.name == '' || this.name.matches('^[a-zA-Z0-9_]+$')"
+  };
+
+  // ontap_volume_type valid values.
+  option (buf.validate.message).cel = {
+    id: "ontap_volume_type_valid"
+    message: "ontap_volume_type must be 'RW' or 'DP'"
+    expression: "this.ontap_volume_type == '' || this.ontap_volume_type in ['RW', 'DP']"
+  };
+
+  // volume_style valid values.
+  option (buf.validate.message).cel = {
+    id: "volume_style_valid"
+    message: "volume_style must be 'FLEXVOL' or 'FLEXGROUP'"
+    expression: "this.volume_style == '' || this.volume_style in ['FLEXVOL', 'FLEXGROUP']"
+  };
+
+  // security_style valid values.
+  option (buf.validate.message).cel = {
+    id: "security_style_valid"
+    message: "security_style must be 'UNIX', 'NTFS', or 'MIXED'"
+    expression: "this.security_style == '' || this.security_style in ['UNIX', 'NTFS', 'MIXED']"
+  };
+
+  // junction_path must start with "/" when provided.
+  option (buf.validate.message).cel = {
+    id: "junction_path_format"
+    message: "junction_path must start with '/'"
+    expression: "this.junction_path == '' || this.junction_path.startsWith('/')"
+  };
+
+  // aggregate_configuration requires volume_style FLEXGROUP.
+  option (buf.validate.message).cel = {
+    id: "aggregate_requires_flexgroup"
+    message: "aggregate_configuration is only valid for FLEXGROUP volumes (set volume_style to 'FLEXGROUP')"
+    expression: "!has(this.aggregate_configuration) || this.aggregate_configuration == org.openmcf.provider.aws.awsfsxontapvolume.v1.AwsFsxOntapVolumeAggregateConfiguration{} || this.volume_style == 'FLEXGROUP'"
+  };
+}
+
+// AwsFsxOntapVolumeTieringPolicy controls the movement of data between primary
+// SSD storage and lower-cost capacity pool (HDD) storage. Tiering reduces costs
+// by automatically migrating infrequently accessed data.
+message AwsFsxOntapVolumeTieringPolicy {
+  // The tiering policy name.
+  //
+  // - "NONE": All data remains on primary SSD storage. No tiering. Use for
+  //   latency-sensitive workloads where all data must be instantly accessible.
+  // - "SNAPSHOT_ONLY": Only snapshot data (point-in-time copies) is tiered.
+  //   Active file system data stays on SSD. The safest tiering option.
+  // - "AUTO": Data not accessed for the cooling period is automatically tiered.
+  //   The most cost-effective option for mixed-access workloads.
+  // - "ALL": All data (including active data) is stored on capacity pool. Only
+  //   metadata stays on SSD. Lowest cost, highest latency for first access.
+  string name = 1;
+
+  // The number of days before data is considered "cold" and eligible for
+  // tiering to capacity pool storage. Only applicable when name is "AUTO" or
+  // "SNAPSHOT_ONLY".
+  //
+  // Range: 2-183 days. Lower values tier data more aggressively (lower cost,
+  // potentially higher latency for recently accessed data).
+  int32 cooling_period = 2;
+
+  // tiering policy name valid values.
+  option (buf.validate.message).cel = {
+    id: "tiering_name_valid"
+    message: "tiering policy name must be 'NONE', 'SNAPSHOT_ONLY', 'AUTO', or 'ALL'"
+    expression: "this.name == '' || this.name in ['NONE', 'SNAPSHOT_ONLY', 'AUTO', 'ALL']"
+  };
+
+  // cooling_period is only valid for AUTO and SNAPSHOT_ONLY policies.
+  option (buf.validate.message).cel = {
+    id: "cooling_period_requires_auto_or_snapshot"
+    message: "cooling_period is only valid when tiering policy name is 'AUTO' or 'SNAPSHOT_ONLY'"
+    expression: "this.cooling_period == 0 || this.name in ['AUTO', 'SNAPSHOT_ONLY']"
+  };
+
+  // cooling_period range validation (2-183 when provided).
+  option (buf.validate.message).cel = {
+    id: "cooling_period_range"
+    message: "cooling_period must be between 2 and 183 days"
+    expression: "this.cooling_period == 0 || (this.cooling_period >= 2 && this.cooling_period <= 183)"
+  };
+}
+
+// AwsFsxOntapVolumeSnaplockConfiguration configures WORM (Write Once Read Many)
+// storage for regulatory compliance. Once a file is committed to WORM state on
+// a SnapLock volume, it cannot be modified or deleted until its retention period
+// expires.
+//
+// SnapLock is used by organizations subject to SEC 17a-4(f), CFTC Rule 1.31,
+// HIPAA, FINRA, and similar regulations that require immutable record retention.
+message AwsFsxOntapVolumeSnaplockConfiguration {
+  // The SnapLock retention mode. Required. ForceNew — cannot be changed after
+  // volume creation.
+  //
+  // - "ENTERPRISE": Administrative deletion of WORM files is possible (if
+  //   privileged_delete is enabled). Suitable for internal governance policies
+  //   where an escape hatch is acceptable.
+  // - "COMPLIANCE": Immutable. No one can delete WORM files before retention
+  //   expiry — not the root user, not AWS Support, not even the account owner.
+  //   Required for SEC 17a-4 and similar strict regulatory mandates.
+  string snaplock_type = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Whether this volume is designated as the SnapLock audit log volume.
+  // A single audit log volume per SVM records all SnapLock operations
+  // (file commits, retention changes, privileged deletions).
+  //
+  // Default: false
+  optional bool audit_log_volume = 2 [(org.openmcf.shared.options.default) = "false"];
+
+  // Controls whether privileged deletion of WORM files is allowed before their
+  // retention period expires. Only meaningful for ENTERPRISE SnapLock.
+  //
+  // - "DISABLED": Privileged delete is not allowed (default).
+  // - "ENABLED": Administrators can delete WORM files early.
+  // - "PERMANENTLY_DISABLED": Privileged delete is permanently disabled and
+  //   cannot be re-enabled. Use this for Enterprise volumes that must never
+  //   allow early deletion.
+  //
+  // Default: DISABLED
+  optional string privileged_delete = 3 [(org.openmcf.shared.options.default) = "DISABLED"];
+
+  // Whether volume-append mode is enabled. When enabled, files can be appended
+  // to (new data added at the end) even after being committed to WORM state.
+  // The existing content remains immutable. Useful for log files and audit
+  // trails that need continuous appending.
+  //
+  // Default: false
+  optional bool volume_append_mode_enabled = 4 [(org.openmcf.shared.options.default) = "false"];
+
+  // Configures automatic commitment of files to WORM state after a period of
+  // inactivity. When autocommit is configured, files that have not been modified
+  // for the specified duration are automatically transitioned to WORM state.
+  //
+  // This eliminates the need for applications to explicitly commit files.
+  AwsFsxOntapVolumeAutocommitPeriod autocommit_period = 5;
+
+  // Configures the default, minimum, and maximum retention periods for WORM
+  // files on this volume. These bounds constrain how long files must be retained
+  // and provide guardrails for retention policy enforcement.
+  AwsFsxOntapVolumeRetentionPeriod retention_period = 6;
+
+  // snaplock_type valid values.
+  option (buf.validate.message).cel = {
+    id: "snaplock_type_valid"
+    message: "snaplock_type must be 'ENTERPRISE' or 'COMPLIANCE'"
+    expression: "this.snaplock_type in ['ENTERPRISE', 'COMPLIANCE']"
+  };
+
+  // privileged_delete valid values.
+  option (buf.validate.message).cel = {
+    id: "privileged_delete_valid"
+    message: "privileged_delete must be 'DISABLED', 'ENABLED', or 'PERMANENTLY_DISABLED'"
+    expression: "this.privileged_delete == '' || this.privileged_delete in ['DISABLED', 'ENABLED', 'PERMANENTLY_DISABLED']"
+  };
+}
+
+// AwsFsxOntapVolumeAutocommitPeriod configures automatic transition of files to
+// WORM state after a period of inactivity.
+message AwsFsxOntapVolumeAutocommitPeriod {
+  // The unit of time for the autocommit period.
+  //
+  // - "NONE": Autocommit is disabled.
+  // - "MINUTES", "HOURS", "DAYS", "MONTHS", "YEARS": The time unit for the
+  //   value field.
+  string type = 1;
+
+  // The number of time units before an unmodified file is auto-committed to
+  // WORM state. Required when type is not "NONE".
+  //
+  // Range: 1-65535.
+  int32 value = 2;
+
+  // autocommit type valid values.
+  option (buf.validate.message).cel = {
+    id: "autocommit_type_valid"
+    message: "autocommit period type must be 'NONE', 'MINUTES', 'HOURS', 'DAYS', 'MONTHS', or 'YEARS'"
+    expression: "this.type == '' || this.type in ['NONE', 'MINUTES', 'HOURS', 'DAYS', 'MONTHS', 'YEARS']"
+  };
+
+  // value is required when type is not NONE or empty.
+  option (buf.validate.message).cel = {
+    id: "autocommit_value_required"
+    message: "autocommit period value must be >= 1 when type is not 'NONE'"
+    expression: "this.type == '' || this.type == 'NONE' || this.value >= 1"
+  };
+
+  // value range when provided.
+  option (buf.validate.message).cel = {
+    id: "autocommit_value_range"
+    message: "autocommit period value must be between 1 and 65535"
+    expression: "this.value == 0 || (this.value >= 1 && this.value <= 65535)"
+  };
+}
+
+// AwsFsxOntapVolumeRetentionPeriod defines the default, minimum, and maximum
+// retention bounds for WORM files on a SnapLock volume.
+//
+// - default_retention: Applied to files committed without an explicit retention
+//   period.
+// - minimum_retention: The shortest retention any file can have. Prevents
+//   accidental setting of too-short retention.
+// - maximum_retention: The longest retention any file can have. Prevents
+//   accidental setting of very long retention that would lock data indefinitely.
+message AwsFsxOntapVolumeRetentionPeriod {
+  // The default retention period applied to files committed to WORM state
+  // without an explicit retention period.
+  AwsFsxOntapVolumeRetentionDuration default_retention = 1;
+
+  // The minimum retention period. Files cannot have retention periods shorter
+  // than this value.
+  AwsFsxOntapVolumeRetentionDuration minimum_retention = 2;
+
+  // The maximum retention period. Files cannot have retention periods longer
+  // than this value.
+  AwsFsxOntapVolumeRetentionDuration maximum_retention = 3;
+}
+
+// AwsFsxOntapVolumeRetentionDuration specifies a time duration for SnapLock
+// retention periods. Used for default, minimum, and maximum retention.
+message AwsFsxOntapVolumeRetentionDuration {
+  // The unit of time for the retention duration.
+  //
+  // - "SECONDS", "MINUTES", "HOURS", "DAYS", "MONTHS", "YEARS": Standard
+  //   time units. The value field specifies the count.
+  // - "INFINITE": Files are retained forever. The value field is ignored.
+  // - "UNSPECIFIED": No retention period is set. The value field is ignored.
+  string type = 1;
+
+  // The number of time units for the retention duration. Ignored when type is
+  // "INFINITE" or "UNSPECIFIED".
+  //
+  // Range: 0-65535.
+  int32 value = 2;
+
+  // retention duration type valid values.
+  option (buf.validate.message).cel = {
+    id: "retention_type_valid"
+    message: "retention duration type must be 'SECONDS', 'MINUTES', 'HOURS', 'DAYS', 'MONTHS', 'YEARS', 'INFINITE', or 'UNSPECIFIED'"
+    expression: "this.type == '' || this.type in ['SECONDS', 'MINUTES', 'HOURS', 'DAYS', 'MONTHS', 'YEARS', 'INFINITE', 'UNSPECIFIED']"
+  };
+}
+
+// AwsFsxOntapVolumeAggregateConfiguration controls how a FLEXGROUP volume is
+// distributed across the file system's aggregates. All fields are ForceNew —
+// changing the aggregate layout requires recreating the volume.
+//
+// Aggregates are the physical storage pools within an ONTAP file system. Each
+// HA pair has its own set of aggregates (named aggr1, aggr2, etc.). FlexGroup
+// volumes spread data across aggregates for parallel throughput.
+message AwsFsxOntapVolumeAggregateConfiguration {
+  // The list of aggregate names to use for the FlexGroup volume. Each name
+  // must match the pattern "aggr" followed by 1-2 digits (e.g., "aggr1",
+  // "aggr2"). Maximum 12 aggregates.
+  //
+  // ForceNew — changing this requires volume recreation.
+  repeated string aggregates = 1 [(buf.validate.field).repeated.max_items = 12];
+
+  // The number of FlexGroup constituents (member volumes) to create per
+  // aggregate. The total number of constituents equals
+  // constituents_per_aggregate * len(aggregates).
+  //
+  // Higher values increase parallelism but also metadata overhead. Default
+  // in AWS is typically 8.
+  //
+  // Range: 1-200. ForceNew.
+  int32 constituents_per_aggregate = 2;
+
+  // constituents_per_aggregate range validation.
+  option (buf.validate.message).cel = {
+    id: "constituents_range"
+    message: "constituents_per_aggregate must be between 1 and 200"
+    expression: "this.constituents_per_aggregate == 0 || (this.constituents_per_aggregate >= 1 && this.constituents_per_aggregate <= 200)"
+  };
+}

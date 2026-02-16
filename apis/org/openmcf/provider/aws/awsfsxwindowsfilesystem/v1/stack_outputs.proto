@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsfsxwindowsfilesystem.v1;
+
+// AwsFsxWindowsFileSystemStackOutputs captures observable identifiers and
+// endpoints from a provisioned FSx for Windows File Server. These outputs are
+// used by downstream resources to wire dependencies via StringValueOrRef.
+//
+// Primary consumers:
+// - EC2 / ECS (SMB mount): uses `dns_name` — \\<dns_name>\share
+// - EKS (SMB CSI driver): needs `file_system_id` and `dns_name`
+// - PowerShell administration: uses `remote_administration_endpoint`
+// - DNS alias setup: needs `dns_name` for CNAME target
+// - IAM policies: needs `file_system_arn`
+// - Network troubleshooting: uses `preferred_file_server_ip`, `network_interface_ids`
+//
+// Mount command: net use Z: \\<dns_name>\share
+message AwsFsxWindowsFileSystemStackOutputs {
+  // The ID of the file system (e.g., "fs-0123456789abcdef0"). Primary
+  // identifier used by EKS SMB CSI driver, AWS Backup, and other AWS services.
+  string file_system_id = 1;
+
+  // The Amazon Resource Name of the file system. Used in IAM policies for
+  // resource-level permissions.
+  string file_system_arn = 2;
+
+  // The DNS name for the file system (e.g.,
+  // "fs-0123456789abcdef0.corp.example.com" for AD-joined file systems).
+  // Used in SMB mount commands: net use Z: \\<dns_name>\share
+  string dns_name = 3;
+
+  // The IP address of the preferred (active) file server. For MULTI_AZ_1,
+  // this is the active server's IP; in failover, the standby takes over.
+  // For SINGLE_AZ, this is the primary ENI IP. Useful for DNS record
+  // creation and network troubleshooting.
+  string preferred_file_server_ip = 4;
+
+  // The endpoint for remote administration via Windows Remote PowerShell.
+  // For MULTI_AZ_1: a floating endpoint that follows the active file server.
+  // For SINGLE_AZ: the file system's DNS name.
+  // Connect with: Enter-PSSession -ComputerName <endpoint> -ConfigurationName FsxRemoteAdmin
+  string remote_administration_endpoint = 5;
+
+  // The network interface IDs created for the file system, in order. SINGLE_AZ
+  // creates 1 ENI; MULTI_AZ creates 2 ENIs. Useful for security group debugging
+  // and network troubleshooting.
+  repeated string network_interface_ids = 6;
+
+  // The VPC ID in which the file system was created. Computed from the subnets.
+  // Useful for constructing security group rules and verifying network placement.
+  string vpc_id = 7;
+
+  // The AWS account ID of the file system owner.
+  string owner_id = 8;
+}

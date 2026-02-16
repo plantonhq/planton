@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpfilestoreinstance.v1;
+
+import "org/openmcf/provider/gcp/gcpfilestoreinstance/v1/api.proto";
+import "org/openmcf/provider/gcp/provider.proto";
+
+//gcp-filestore-instance stack-input
+message GcpFilestoreInstanceStackInput {
+  //target cloud-resource
+  GcpFilestoreInstance target = 1;
+  //provider-config
+  org.openmcf.provider.gcp.GcpProviderConfig provider_config = 2;
+}

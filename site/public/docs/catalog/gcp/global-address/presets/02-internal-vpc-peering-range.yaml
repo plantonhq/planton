@@ -1,0 +1,14 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpGlobalAddress
+metadata:
+  name: my-vpc-peering-range
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  addressName: <your-address-name>  # e.g., managed-services-range
+  addressType: INTERNAL  # private IP range within the VPC
+  purpose: VPC_PEERING  # required for managed-service private networking
+  prefixLength: 20  # /20 = 4,096 IPs; adjust based on the number of managed service instances
+  network:
+    value: "<vpc-network-name-or-self-link>"
+  description: Internal IP range for VPC peering with Google managed services

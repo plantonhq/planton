@@ -1,0 +1,9 @@
+apiVersion: civo.openmcf.org/v1
+kind: CivoBucket
+metadata:
+  name: my-bucket
+spec:
+  bucketName: my-bucket
+  region: lon1
+  tags:
+    - production

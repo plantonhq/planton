@@ -1,0 +1,15 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpPubSubSubscription
+metadata:
+  name: my-bq-subscription
+spec:
+  projectId:
+    value: "<project-id>"
+  subscriptionName: <your-subscription-name>  # e.g., analytics-bq-sub
+  topic:
+    value: "<topic-id>"  # e.g., projects/my-project/topics/click-events
+  bigqueryConfig:
+    table: "<project-id>.<dataset-id>.<table-id>"  # e.g., my-project.analytics.events
+    useTopicSchema: true
+    dropUnknownFields: true
+    writeMetadata: true

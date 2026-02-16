@@ -44,7 +44,7 @@ export default function FAQ() {
     {
       question: "Which cloud providers are supported today?",
       answer:
-        "AWS, GCP, Azure, Kubernetes, plus Cloudflare, DigitalOcean, Civo, Confluent, MongoDB Atlas, and more. Browse the full catalog at /docs/catalog to see all 100+ deployment components across 8 providers.",
+        "AWS, GCP, Azure, Kubernetes, plus Cloudflare, DigitalOcean, Civo, Confluent, MongoDB Atlas, and more. Browse the full catalog at /docs/catalog to see all 200+ deployment components across 8 providers.",
     },
     {
       question: "How are configuration errors caught before deployment?",

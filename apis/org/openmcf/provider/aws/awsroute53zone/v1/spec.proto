@@ -3,6 +3,7 @@ syntax = "proto3";
 package org.openmcf.provider.aws.awsroute53zone.v1;
 
 import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/networking/enums/dnsrecordtype/dns_record_type.proto";
 
 // AwsRoute53ZoneSpec defines the specification required to create and manage a Route53 DNS Zone in AWS.
@@ -56,7 +57,12 @@ message AwsRoute53ZoneSpec {
 message Route53VpcAssociation {
   // The VPC ID to associate with the private hosted zone.
   // Example: "vpc-12345678"
-  string vpc_id = 1 [(buf.validate.field).required = true];
+  // Can reference an AwsVpc resource.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
 
   // The AWS region where the VPC is located.
   // Example: "us-east-1"

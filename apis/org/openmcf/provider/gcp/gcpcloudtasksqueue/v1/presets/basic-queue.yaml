@@ -1,0 +1,24 @@
+# basic-queue: Minimal Cloud Tasks queue with default settings
+#
+# Use when: You need a simple task queue for background processing with
+# GCP-managed defaults for rate limits and retry behavior.
+#
+# What it configures:
+# - Default rate limits (GCP-managed)
+# - Default retry config (GCP-managed)
+# - No HTTP target (tasks define their own targets)
+# - No logging
+#
+# Typical use cases:
+# - Simple background job processing
+# - Development and testing environments
+# - Low-volume task dispatch
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCloudTasksQueue
+metadata:
+  name: ${name}
+spec:
+  projectId:
+    value: ${project-id}
+  queueName: ${queue-name}
+  location: ${location}

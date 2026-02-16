@@ -121,7 +121,7 @@ All 14 providers are now at 100% catalog page coverage.
 
 ## Related Work
 
-- Catalog page rewrite system: `_rules/docs/write-catalog-page.mdc` and `_rules/docs/audit-catalog-page.mdc`
+- Catalog page rewrite system: `_rules/docs/write-openmcf-component-catalog-page.mdc` and `_rules/docs/audit-openmcf-component-catalog-page.mdc`
 - Previous coverage rounds: AWS (25/25), GCP (19/19), Kubernetes (51/51), Azure (24/24), OpenStack (27/27), DigitalOcean (15/15), Civo (12/12), Cloudflare (8/8)
 - Documentation feature parity project: `planton/_projects/20260212.03.openmcf-docs-feature-parity/`
 

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awssqsqueue.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/aws/awssqsqueue/v1/spec.proto";
+import "org/openmcf/provider/aws/awssqsqueue/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// AwsSqsQueue is the Kubernetes-style resource envelope for an AWS SQS queue.
+message AwsSqsQueue {
+  // api-version must be set to "aws.openmcf.org/v1".
+  string api_version = 1 [(buf.validate.field).string.const = "aws.openmcf.org/v1"];
+
+  // resource-kind for this SQS queue resource, must be "AwsSqsQueue".
+  string kind = 2 [(buf.validate.field).string.const = "AwsSqsQueue"];
+
+  // metadata captures identifying information (name, org, env, id, labels, relationships).
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec holds the desired configuration for the SQS queue.
+  AwsSqsQueueSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status holds runtime or post-deployment information.
+  AwsSqsQueueStatus status = 5;
+}
+
+// AwsSqsQueueStatus captures lifecycle, audit, job linkage, and observable outputs.
+message AwsSqsQueueStatus {
+  // stack-outputs
+  AwsSqsQueueStackOutputs outputs = 1;
+}

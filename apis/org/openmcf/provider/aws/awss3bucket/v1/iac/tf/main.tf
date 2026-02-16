@@ -22,7 +22,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm     = try(var.spec.encryption_type, "SSE_S3") == "SSE_KMS" ? "aws:kms" : "AES256"
-      kms_master_key_id = try(var.spec.encryption_type, "SSE_S3") == "SSE_KMS" ? var.spec.kms_key_id : null
+      kms_master_key_id = try(var.spec.encryption_type, "SSE_S3") == "SSE_KMS" ? try(var.spec.kms_key_id.value, null) : null
     }
     bucket_key_enabled = true
   }
@@ -110,7 +110,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "this" {
 resource "aws_s3_bucket_replication_configuration" "this" {
   count  = try(var.spec.replication.enabled, false) ? 1 : 0
   bucket = aws_s3_bucket.this.id
-  role   = var.spec.replication.role_arn
+  role   = var.spec.replication.role_arn.value
 
   rule {
     id       = "replication-rule"

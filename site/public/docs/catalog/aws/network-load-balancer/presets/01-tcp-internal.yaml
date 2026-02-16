@@ -1,0 +1,18 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsNetworkLoadBalancer
+metadata:
+  name: <nlb-name>
+spec:
+  internal: true
+  subnetMappings:
+    - subnetId:
+        value: <private-subnet-id-az1>
+    - subnetId:
+        value: <private-subnet-id-az2>
+  listeners:
+    - name: tcp-app
+      port: <listener-port>
+      protocol: TCP
+      targetGroup:
+        port: <target-port>
+        protocol: TCP

@@ -72,6 +72,7 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) (*c
 	// ------ Outputs -----------------------------------------------------------------------------
 	ctx.Export(OpEndpoint, createdCluster.Endpoint)
 	ctx.Export(OpClusterCaCertificate, createdCluster.MasterAuth.ClusterCaCertificate())
+	ctx.Export(OpClusterId, createdCluster.ID())
 	if workloadIdentityCfg != nil {
 		ctx.Export(OpWorkloadIdentityPool,
 			pulumi.Sprintf("%s.svc.id.goog", locals.GcpGkeCluster.Spec.ProjectId.GetValue()))

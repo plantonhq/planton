@@ -1,0 +1,9 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsRoute53Zone
+metadata:
+  name: my-private-dns-zone
+spec:
+  isPrivate: true
+  vpcAssociations:
+    - vpcId: <vpc-id>
+      vpcRegion: <aws-region>

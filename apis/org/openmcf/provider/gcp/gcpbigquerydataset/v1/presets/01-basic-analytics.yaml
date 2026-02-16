@@ -1,0 +1,9 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpBigQueryDataset
+metadata:
+  name: my-analytics-dataset
+spec:
+  projectId:
+    value: "<project-id>"  # e.g., my-gcp-project
+  datasetId: <your_dataset_id>  # e.g., analytics_prod (letters, numbers, underscores only)
+  location: US

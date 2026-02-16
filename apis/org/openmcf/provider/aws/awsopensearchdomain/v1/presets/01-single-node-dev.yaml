@@ -1,0 +1,14 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsOpenSearchDomain
+metadata:
+  name: my-search
+spec:
+  engineVersion: "OpenSearch_2.11"
+  clusterConfig:
+    instanceType: t3.small.search
+  ebsOptions:
+    ebsEnabled: true
+    volumeType: gp3
+    volumeSize: 10
+  encryptAtRestEnabled: true
+  nodeToNodeEncryptionEnabled: true

@@ -1,0 +1,10 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsKinesisStream
+metadata:
+  name: example-stream
+spec:
+  streamMode: PROVISIONED
+  shardCount: 2
+  retentionPeriodHours: 48
+  kmsKeyId:
+    value: alias/aws/kinesis

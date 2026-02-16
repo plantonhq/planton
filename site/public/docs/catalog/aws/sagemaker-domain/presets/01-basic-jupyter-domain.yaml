@@ -1,0 +1,14 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsSagemakerDomain
+metadata:
+  name: basic-jupyter-domain
+spec:
+  authMode: IAM
+  vpcId:
+    value: "<vpc-id>"
+  subnetIds:
+    - value: "<private-subnet-id-az1>"
+    - value: "<private-subnet-id-az2>"
+  defaultUserSettings:
+    executionRoleArn:
+      value: "<sagemaker-execution-role-arn>"

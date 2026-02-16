@@ -186,16 +186,45 @@ For each category, check files and record results. Use the following structure t
 
 **Scoring:** Each sub-category scored independently
 
-#### Category 9: Supporting Files - Nice to Have (Nice to Have - 20%)
+#### Category 9: Supporting Files - Nice to Have (Nice to Have - 10%)
 
-**Additional Documentation (10%):**
+**Additional Documentation (5%):**
 - [ ] `iac/pulumi/examples.md` exists (optional, not required per updated requirements)
 - [ ] `iac/tf/examples.md` exists (optional, not required per updated requirements)
 
-**Build Files (10%):**
+**Build Files (5%):**
 - [ ] BUILD.bazel files exist (auto-generated, optional check)
 
 **Scoring:** Bonus points only
+
+#### Category 10: Presets (Important - 5.00%)
+
+**Reference:** See `architecture/presets.md` for full convention and `.cursor/info/presets.md` for authoring guide.
+
+**Directory and File Checks (2.50%):**
+- [ ] `presets/` directory exists under `v1/`
+- [ ] At least 1 `.yaml` preset file exists (rank 01 at minimum)
+- [ ] Every `.yaml` file has a companion `.md` file with the same base name
+- [ ] No orphan `.md` files without a companion `.yaml`
+- [ ] File naming follows `{NN}-{kebab-case-description}.yaml` + `.md` convention
+- [ ] No duplicate rank numbers within the `presets/` directory
+
+**Content Correctness (2.50%):**
+- [ ] `apiVersion` in each preset YAML matches the constant in `api.proto`
+- [ ] `kind` in each preset YAML matches the constant in `api.proto`
+- [ ] `metadata.name` is present and prefixed with `my-`
+- [ ] `spec` is present and non-empty
+- [ ] No `status` block in any preset
+- [ ] All `StringValueOrRef` fields (identified by reading `spec.proto`) use `value:` wrapper form
+- [ ] All field names in preset YAML exist in current `spec.proto` (no stale references to renamed or removed fields)
+- [ ] Fields with `recommended_default` or `default` proto annotations use the annotated value
+
+**Scoring:**
+- Directory exists with at least 1 valid preset pair = 2.50%
+- All content correctness checks pass = 2.50%
+- If `presets/` directory is missing entirely = 0%
+
+> **Note:** For a deeper preset-specific audit (gap analysis, missing patterns, per-field validation), use the dedicated `@audit-openmcf-presets` rule.
 
 ### Step 3: Calculate Completion Score
 
@@ -212,12 +241,13 @@ Where:
   - IaC Modules - Pulumi: 13.32%
   - IaC Modules - Terraform: 4.24%
   
-- Important Items = 36.36% weight:
+- Important Items = 41.36% weight:
   - Documentation - Research: 13.18%
   - Documentation - User-Facing: 13.09%
   - Supporting Files: 10.09%
+  - Presets: 5.00%
   
-- Nice to Have = 15% weight
+- Nice to Have = 10% weight
 ```
 
 **Interpretation:**
@@ -354,13 +384,14 @@ Before writing the report file, verify:
 |----------|--------|-------|--------|
 | Cloud Resource Registry | 4.44% | X.XX% | ✅/⚠️/❌ |
 | Folder Structure | 4.44% | X.XX% | ✅/⚠️/❌ |
-| Protobuf API Definitions | 17.76% | X.XX% | ✅/⚠️/❌ |
+| Protobuf API Definitions | 22.20% | X.XX% | ✅/⚠️/❌ |
 | IaC Modules - Pulumi | 13.32% | X.XX% | ✅/⚠️/❌ |
-| IaC Modules - Terraform | 4.44% | X.XX% | ✅/⚠️/❌ |
-| Documentation - Research | 13.34% | X.XX% | ✅/⚠️/❌ |
-| Documentation - User-Facing | 13.33% | X.XX% | ✅/⚠️/❌ |
-| Supporting Files | 13.33% | X.XX% | ✅/⚠️/❌ |
-| Nice to Have | 20.00% | X.XX% | ✅/⚠️/❌ |
+| IaC Modules - Terraform | 4.24% | X.XX% | ✅/⚠️/❌ |
+| Documentation - Research | 13.18% | X.XX% | ✅/⚠️/❌ |
+| Documentation - User-Facing | 13.09% | X.XX% | ✅/⚠️/❌ |
+| Supporting Files | 10.09% | X.XX% | ✅/⚠️/❌ |
+| Presets | 5.00% | X.XX% | ✅/⚠️/❌ |
+| Nice to Have | 10.00% | X.XX% | ✅/⚠️/❌ |
 
 **Legend:** ✅ Complete | ⚠️ Partial | ❌ Missing
 
@@ -573,9 +604,53 @@ go test -v
 
 ---
 
-### 9. Nice to Have (20%)
+### 9. Nice to Have (10%)
 
 <Same structure>
+
+---
+
+### 10. Presets (5.00%)
+
+#### 10.1 Directory and File Checks (2.50%)
+
+✅ **Passed:**
+
+- `presets/` directory exists
+- 2 preset YAML files found: `01-internet-facing-https.yaml`, `02-internal-http.yaml`
+- Both `.yaml` files have companion `.md` files
+- No duplicate ranks
+- Naming convention correct
+
+❌ **Failed:**
+
+- None
+
+**Score:** X.XX% / 2.50%
+
+#### 10.2 Content Correctness (2.50%)
+
+✅ **Passed:**
+
+- `apiVersion` matches `api.proto` constant in all presets
+- `kind` matches `api.proto` constant in all presets
+- All `metadata.name` values prefixed with `my-`
+- All `StringValueOrRef` fields use `value:` wrapper
+- All field names exist in current `spec.proto`
+
+❌ **Failed:**
+
+- None
+
+⚠️ **Warnings:**
+
+- None
+
+**Score:** X.XX% / 2.50%
+
+**Total Presets Score:** X.XX% / 5.00%
+
+> **Tip:** For a deeper preset audit (gap analysis, missing patterns, quality recommendations), run `@audit-openmcf-presets <ComponentName>`.
 
 ---
 
@@ -612,6 +687,7 @@ To complete missing items, consider running these forge rules in sequence:
 - **Rule 009** - Pulumi module (if Pulumi missing)
 - **Rule 013** - Terraform module (if Terraform missing)
 - **Rule 016** - cloud_resource_kind.proto entry (if enum missing)
+- **Rule 022** - Presets (if presets/ directory is missing or empty)
 
 ---
 
@@ -640,7 +716,7 @@ To complete missing items, consider running these forge rules in sequence:
 
 <Complete checklist with checkbox status>
 
-### Critical Items (40%)
+### Critical Items (48.64%)
 
 #### Cloud Resource Registry (4.44%)
 - [x/  ] Enum entry exists
@@ -650,6 +726,24 @@ To complete missing items, consider running these forge rules in sequence:
 - [x/  ] Kubernetes metadata (if applicable)
 
 <Continue for all categories>
+
+### Important Items (41.36%)
+
+<Categories 6-8 as above, plus:>
+
+#### Presets (5.00%)
+- [x/  ] `presets/` directory exists
+- [x/  ] At least 1 preset YAML + MD pair
+- [x/  ] Naming convention correct
+- [x/  ] No duplicate ranks
+- [x/  ] `apiVersion` and `kind` match `api.proto`
+- [x/  ] `StringValueOrRef` fields use `value:` wrapper
+- [x/  ] All field names exist in current `spec.proto`
+- [x/  ] Companion `.md` files have required sections
+
+### Nice to Have (10%)
+
+<Category 9 as above>
 
 ---
 

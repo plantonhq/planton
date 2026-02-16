@@ -101,13 +101,11 @@ variable "spec" {
       # If empty, no IPv6 CIDRs are included in this rule.
       ipv6_cidrs = list(string)
 
-      # source_security_group_ids is the list of Security Group IDs that can send traffic (for ingress).
-      # Typically used for internal traffic between resources. For egress, this field is less common.
-      source_security_group_ids = list(string)
+      # source_security_group_ids is the list of Security Group IDs that can send traffic (for ingress) (StringValueOrRef).
+      source_security_group_ids = list(object({ value = string }))
 
-      # destination_security_group_ids is the list of Security Group IDs that receive traffic (for egress).
-      # Not typically used for ingress. Useful for restricting outbound traffic to specific groups.
-      destination_security_group_ids = list(string)
+      # destination_security_group_ids is the list of Security Group IDs that receive traffic (for egress) (StringValueOrRef).
+      destination_security_group_ids = list(object({ value = string }))
 
       # self_reference indicates whether to allow traffic from/to the same Security Group.
       # This is equivalent to referencing the group’s own ID.
@@ -146,13 +144,11 @@ variable "spec" {
       # If empty, no IPv6 CIDRs are included in this rule.
       ipv6_cidrs = list(string)
 
-      # source_security_group_ids is the list of Security Group IDs that can send traffic (for ingress).
-      # Typically used for internal traffic between resources. For egress, this field is less common.
-      source_security_group_ids = list(string)
+      # source_security_group_ids is the list of Security Group IDs that can send traffic (for ingress) (StringValueOrRef).
+      source_security_group_ids = list(object({ value = string }))
 
-      # destination_security_group_ids is the list of Security Group IDs that receive traffic (for egress).
-      # Not typically used for ingress. Useful for restricting outbound traffic to specific groups.
-      destination_security_group_ids = list(string)
+      # destination_security_group_ids is the list of Security Group IDs that receive traffic (for egress) (StringValueOrRef).
+      destination_security_group_ids = list(object({ value = string }))
 
       # self_reference indicates whether to allow traffic from/to the same Security Group.
       # This is equivalent to referencing the group’s own ID.

@@ -1,0 +1,6 @@
+name: aws-fsx-lustre-file-system
+runtime:
+  name: go
+  options:
+    binary: aws-fsx-lustre-file-system
+description: AWS FSx Lustre File System

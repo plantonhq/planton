@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpdataprocvirtualcluster.v1;
+
+import "org/openmcf/provider/gcp/gcpdataprocvirtualcluster/v1/api.proto";
+import "org/openmcf/provider/gcp/provider.proto";
+
+//gcp-dataproc-virtual-cluster stack-input
+message GcpDataprocVirtualClusterStackInput {
+  //target cloud-resource
+  GcpDataprocVirtualCluster target = 1;
+  //provider-config
+  org.openmcf.provider.gcp.GcpProviderConfig provider_config = 2;
+}

@@ -1,0 +1,18 @@
+apiVersion: civo.openmcf.org/v1
+kind: CivoDatabase
+metadata:
+  name: my-postgresql
+spec:
+  dbInstanceName: my-postgresql
+  engine: postgres
+  engineVersion: "16"
+  region: lon1
+  sizeSlug: g3.db.medium
+  replicas: 2
+  networkId:
+    value: "<vpc-network-id>"
+  firewallIds:
+    - value: "<database-firewall-id>"
+  tags:
+    - production
+    - postgresql

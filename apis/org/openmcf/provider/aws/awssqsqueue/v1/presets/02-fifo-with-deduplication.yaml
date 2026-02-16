@@ -1,0 +1,15 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsSqsQueue
+metadata:
+  name: my-fifo-queue
+spec:
+  fifoQueue: true
+  contentBasedDeduplication: true
+  deduplicationScope: messageGroup
+  fifoThroughputLimit: perMessageGroupId
+  sqsManagedSseEnabled: true
+  visibilityTimeoutSeconds: 60
+  deadLetterConfig:
+    targetArn:
+      value: <dlq-queue-arn>
+    maxReceiveCount: 3

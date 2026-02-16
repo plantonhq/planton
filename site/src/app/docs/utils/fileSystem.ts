@@ -166,11 +166,17 @@ function buildStructure(dirPath: string, relativePath: string = ''): DocItem[] {
 
     if (stat.isDirectory()) {
       const children = buildStructure(fullPath, itemRelativePath);
-      if (children.length > 0) {
+
+      // Check if this directory has an index file (needed even when children is empty,
+      // e.g. a component directory that has been converted from flat file to directory layout)
+      const indexFiles = ['index.md', 'README.md'];
+      const hasIndex = indexFiles.some((indexFile) => fs.existsSync(path.join(fullPath, indexFile)));
+
+      if (children.length > 0 || hasIndex) {
         // Try to get metadata and page title from index/README (.md only)
         let metadata: MarkdownContent['data'] = {};
         let dirPageTitle: string | undefined;
-        const indexFiles = ['index.md', 'README.md'];
+        let dirExcerpt = '';
 
         for (const indexFile of indexFiles) {
           const indexPath = path.join(fullPath, indexFile);
@@ -182,6 +188,7 @@ function buildStructure(dirPath: string, relativePath: string = ''): DocItem[] {
               // Extract # heading for full page title
               const headingMatch = mdContent.match(/^#\s+(.+)$/m);
               dirPageTitle = headingMatch ? headingMatch[1].trim() : undefined;
+              dirExcerpt = generateExcerptFromContent(fileContent);
               break;
             } catch (error) {
               console.warn(`Failed to parse metadata from ${indexPath}:`, error);
@@ -190,9 +197,6 @@ function buildStructure(dirPath: string, relativePath: string = ''): DocItem[] {
         }
 
         const category = relativePath.split('/')[0] || item;
-
-        // Check if this directory has an index file
-        const hasIndex = indexFiles.some((indexFile) => fs.existsSync(path.join(fullPath, indexFile)));
 
         structure.push({
           name: item,
@@ -209,7 +213,8 @@ function buildStructure(dirPath: string, relativePath: string = ''): DocItem[] {
           isExternal: (metadata.isExternal as boolean) || false,
           externalUrl: metadata.externalUrl as string | undefined,
           hasIndex,
-          excerpt: '' // Directories don't have content to generate excerpts from
+          excerpt: dirExcerpt,
+          componentName: metadata.componentName as string | undefined,
         });
       }
     } else if (item.endsWith('.md')) {
@@ -313,6 +318,10 @@ export function getNextDocItem(
   const flattenItems = (items: DocItem[]): DocItem[] => {
     const result: DocItem[] = [];
     for (const item of items) {
+      // Skip presets in catalog section from reading order — preset pages
+      // are accessed via the right sidebar TOC link, not "Next article".
+      if (item.name === 'presets' && item.path.startsWith('catalog/')) continue;
+
       if (item.type === 'file') {
         result.push(item);
       } else if (item.type === 'directory') {

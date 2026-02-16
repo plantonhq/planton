@@ -1,0 +1,15 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsFsxLustreFileSystem
+metadata:
+  org: example-org
+  env: dev
+  name: dev-scratch-fsx
+  id: dev-scratch-fsx-id
+spec:
+  deployment_type: SCRATCH_2
+  storage_capacity_gib: 1200
+  storage_type: SSD
+  subnet_id:
+    value: "<subnet-id>"
+  security_group_ids:
+    - value: "<security-group-id>"

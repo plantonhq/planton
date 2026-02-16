@@ -1,0 +1,44 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsRedshiftCluster
+metadata:
+  name: my-analytics-cluster
+spec:
+  nodeType: ra3.4xlarge
+  numberOfNodes: 4
+  databaseName: datalake
+  masterUsername: admin
+  manageMasterPassword: true
+  masterPasswordSecretKmsKeyId:
+    value: "<kms-key-arn>"
+  subnetIds:
+    - value: "<private-subnet-id-az1>"
+    - value: "<private-subnet-id-az2>"
+  encrypted: true
+  kmsKeyId:
+    value: "<kms-key-arn>"
+  enhancedVpcRouting: true
+  multiAz: true
+  automatedSnapshotRetentionPeriod: 14
+  skipFinalSnapshot: false
+  finalSnapshotIdentifier: my-analytics-cluster-final
+  preferredMaintenanceWindow: "sun:02:00-sun:04:00"
+  allowVersionUpgrade: true
+  applyImmediately: false
+  logging:
+    logDestinationType: cloudwatch
+    logExports:
+      - connectionlog
+      - useractivitylog
+      - userlog
+  parameters:
+    - name: require_ssl
+      value: "true"
+    - name: enable_user_activity_logging
+      value: "true"
+    - name: max_concurrency_scaling_clusters
+      value: "5"
+  iamRoles:
+    - value: "<redshift-s3-access-role-arn>"
+    - value: "<redshift-spectrum-role-arn>"
+  defaultIamRoleArn:
+    value: "<redshift-s3-access-role-arn>"

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpbigtableinstance.v1;
+
+// Outputs produced after provisioning a Cloud Bigtable instance.
+message GcpBigtableInstanceStackOutputs {
+  // Fully qualified instance resource name.
+  // Format: projects/{project}/instances/{instance}
+  // Used by Bigtable client libraries and downstream tools that
+  // reference this instance.
+  string instance_id = 1;
+
+  // Short name of the instance (same as the spec's instance_name input).
+  // This is the value passed to Bigtable client libraries along with
+  // the project ID to establish connections.
+  string instance_name = 2;
+}

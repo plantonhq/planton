@@ -1,0 +1,54 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsAppRunnerService
+metadata:
+  name: my-production-api
+spec:
+  # Private ECR image -- requires an access role for pulling
+  imageSource:
+    imageIdentifier: "<account-id>.dkr.ecr.<region>.amazonaws.com/<repo>:<tag>"
+    imageRepositoryType: "ECR"
+    accessRoleArn:
+      value: "<ecr-access-role-arn>"
+
+  port: "<application-port>"
+  # 2 vCPU / 4 GB -- sized for production API workloads
+  cpu: "2048"
+  memory: "4096"
+
+  # Instance role for runtime AWS API access (S3, DynamoDB, Secrets Manager, etc.)
+  instanceRoleArn:
+    value: "<instance-role-arn>"
+
+  # Secrets injected from Secrets Manager or SSM Parameter Store
+  environmentSecrets:
+    DB_PASSWORD: "<secrets-manager-arn-or-ssm-parameter-arn>"
+
+  # VPC egress -- inline VPC Connector for reaching databases, caches, internal APIs
+  # Use at least 2 subnets in different AZs for high availability
+  subnetIds:
+    - value: "<private-subnet-1>"
+    - value: "<private-subnet-2>"
+  securityGroupIds:
+    - value: "<security-group-id>"
+
+  # Customer-managed KMS encryption (ForceNew -- changing this replaces the service)
+  kmsKeyArn:
+    value: "<kms-key-arn>"
+
+  # Tuned auto scaling: 2 warm instances minimum to eliminate cold starts
+  autoScaling:
+    minSize: 2
+    maxSize: 10
+    maxConcurrency: 50
+
+  # HTTP health check for application-level readiness validation
+  healthCheck:
+    protocol: "HTTP"
+    path: "<health-check-path>"
+    intervalSeconds: 5
+    timeoutSeconds: 3
+    healthyThreshold: 1
+    unhealthyThreshold: 3
+
+  # Disable auto-deploy in production -- deployments should be deliberate
+  autoDeploymentsEnabled: false

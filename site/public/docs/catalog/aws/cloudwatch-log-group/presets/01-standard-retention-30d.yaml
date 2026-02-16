@@ -1,0 +1,6 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsCloudwatchLogGroup
+metadata:
+  name: ${name}
+spec:
+  retentionInDays: 30

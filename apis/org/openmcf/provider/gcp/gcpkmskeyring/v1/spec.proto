@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpkmskeyring.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// GcpKmsKeyRingSpec defines the configuration for a GCP Cloud KMS key ring.
+//
+// A key ring is an organizational grouping of cryptographic keys in Cloud KMS.
+// Key rings belong to a GCP project and reside in a specific location (region,
+// multi-region, or "global"). Once created, a key ring cannot be deleted — it
+// is a permanent container whose name and location are immutable.
+//
+// Key rings do not carry any encryption policy themselves; they exist solely to
+// group and scope CryptoKeys. A single key ring can hold any number of
+// CryptoKeys with different purposes (ENCRYPT_DECRYPT, ASYMMETRIC_SIGN, etc.).
+//
+// All fields in this spec are immutable after creation — any change destroys
+// and recreates the resource (which actually creates a new key ring, since GCP
+// does not support deletion of the original).
+message GcpKmsKeyRingSpec {
+  // The GCP project in which to create this key ring.
+  // Example: "my-prod-project-123"
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpProject,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Name of the key ring in GCP. Immutable after creation.
+  // Must be 1-63 characters: letters (upper or lower), digits, hyphens, or underscores.
+  // This is the GCP resource name, distinct from the OpenMCF metadata.name.
+  // Example: "prod-encryption", "data-keys-us-central1"
+  string key_ring_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-zA-Z0-9_-]{1,63}$"
+  ];
+
+  // GCP location (region, multi-region, or "global") where the key ring resides.
+  // Immutable after creation. Choose based on latency, data residency, and
+  // redundancy requirements.
+  //
+  // Common values:
+  //   Region:       "us-central1", "europe-west1", "asia-east1"
+  //   Multi-region: "us", "europe", "asia"
+  //   Global:       "global"
+  //
+  // Run `gcloud kms locations list` for a full list of valid locations.
+  string location = 3 [(buf.validate.field).required = true];
+}

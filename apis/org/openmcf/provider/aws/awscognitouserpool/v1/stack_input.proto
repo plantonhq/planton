@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awscognitouserpool.v1;
+
+import "org/openmcf/provider/aws/awscognitouserpool/v1/api.proto";
+import "org/openmcf/provider/aws/provider.proto";
+
+// aws-cognito-user-pool stack-input
+message AwsCognitoUserPoolStackInput {
+  // target cloud-resource
+  AwsCognitoUserPool target = 1;
+  // provider-credential
+  org.openmcf.provider.aws.AwsProviderConfig provider_config = 2;
+}

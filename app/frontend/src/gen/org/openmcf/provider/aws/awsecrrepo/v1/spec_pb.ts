@@ -5,6 +5,8 @@
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv1";
 import { file_buf_validate_validate } from "../../../../../../buf/validate/validate_pb";
+import type { StringValueOrRef } from "../../../../shared/foreignkey/v1/foreign_key_pb";
+import { file_org_openmcf_shared_foreignkey_v1_foreign_key } from "../../../../shared/foreignkey/v1/foreign_key_pb";
 import { file_org_openmcf_shared_options_options } from "../../../../shared/options/options_pb";
 import type { Message } from "@bufbuild/protobuf";
 
@@ -12,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsecrrepo/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsecrrepo_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjFvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWNycmVwby92MS9zcGVjLnByb3RvEiZvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWNycmVwby52MSL7AgoOQXdzRWNyUmVwb1NwZWMSJgoPcmVwb3NpdG9yeV9uYW1lGAEgASgJQg26SArIAQFyBRACGIACEhcKD2ltYWdlX2ltbXV0YWJsZRgCIAEoCBI9Cg9lbmNyeXB0aW9uX3R5cGUYAyABKAlCH7pIEtgBAXINUgZBRVMyNTZSA0tNU4qmHQZBRVMyNTZIAIgBARISCgprbXNfa2V5X2lkGAQgASgJEhQKDGZvcmNlX2RlbGV0ZRgFIAEoCBIjCgxzY2FuX29uX3B1c2gYBiABKAhCCIqmHQR0cnVlSAGIAQESYAoQbGlmZWN5Y2xlX3BvbGljeRgHIAEoCzJBLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NlY3JyZXBvLnYxLkF3c0VjclJlcG9MaWZlY3ljbGVQb2xpY3lIAogBAUISChBfZW5jcnlwdGlvbl90eXBlQg8KDV9zY2FuX29uX3B1c2hCEwoRX2xpZmVjeWNsZV9wb2xpY3kivwEKGUF3c0VjclJlcG9MaWZlY3ljbGVQb2xpY3kSPAoaZXhwaXJlX3VudGFnZ2VkX2FmdGVyX2RheXMYASABKAVCE7pICtgBARoFGO0CKAGKph0CMTRIAIgBARIxCg9tYXhfaW1hZ2VfY291bnQYAiABKAVCE7pICtgBARoFGOgHKAGKph0CMzBIAYgBAUIdChtfZXhwaXJlX3VudGFnZ2VkX2FmdGVyX2RheXNCEgoQX21heF9pbWFnZV9jb3VudELNAgoqY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NlY3JyZXBvLnYxQglTcGVjUHJvdG9QAVpVZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NlY3JyZXBvL3YxO2F3c2VjcnJlcG92MaICBU9PUEFBqgImT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2VjcnJlcG8uVjHKAiZPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZWNycmVwb1xWMeICMk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NlY3JyZXBvXFYxXEdQQk1ldGFkYXRh6gIrT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NlY3JyZXBvOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_options_options]);
+  fileDesc("CjFvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWNycmVwby92MS9zcGVjLnByb3RvEiZvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWNycmVwby52MSLQAwoOQXdzRWNyUmVwb1NwZWMSJgoPcmVwb3NpdG9yeV9uYW1lGAEgASgJQg26SArIAQFyBRACGIACEhcKD2ltYWdlX2ltbXV0YWJsZRgCIAEoCBI9Cg9lbmNyeXB0aW9uX3R5cGUYAyABKAlCH7pIEtgBAXINUgZBRVMyNTZSA0tNU4qmHQZBRVMyNTZIAIgBARJnCgprbXNfa2V5X2lkGAQgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybhIUCgxmb3JjZV9kZWxldGUYBSABKAgSIwoMc2Nhbl9vbl9wdXNoGAYgASgIQgiKph0EdHJ1ZUgBiAEBEmAKEGxpZmVjeWNsZV9wb2xpY3kYByABKAsyQS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWNycmVwby52MS5Bd3NFY3JSZXBvTGlmZWN5Y2xlUG9saWN5SAKIAQFCEgoQX2VuY3J5cHRpb25fdHlwZUIPCg1fc2Nhbl9vbl9wdXNoQhMKEV9saWZlY3ljbGVfcG9saWN5Ir8BChlBd3NFY3JSZXBvTGlmZWN5Y2xlUG9saWN5EjwKGmV4cGlyZV91bnRhZ2dlZF9hZnRlcl9kYXlzGAEgASgFQhO6SArYAQEaBRjtAigBiqYdAjE0SACIAQESMQoPbWF4X2ltYWdlX2NvdW50GAIgASgFQhO6SArYAQEaBRjoBygBiqYdAjMwSAGIAQFCHQobX2V4cGlyZV91bnRhZ2dlZF9hZnRlcl9kYXlzQhIKEF9tYXhfaW1hZ2VfY291bnRCzQIKKmNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWNycmVwby52MUIJU3BlY1Byb3RvUAFaVWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWNycmVwby92MTthd3NlY3JyZXBvdjGiAgVPT1BBQaoCJk9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NlY3JyZXBvLlYxygImT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2VjcnJlcG9cVjHiAjJPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZWNycmVwb1xWMVxHUEJNZXRhZGF0YeoCK09yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzZWNycmVwbzo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsEcrRepoSpec defines the configuration for creating an AWS ECR repository
@@ -53,10 +55,11 @@ export type AwsEcrRepoSpec = Message<"org.openmcf.provider.aws.awsecrrepo.v1.Aws
    * kmsKeyId is the ARN or ID of a KMS key used when encryption_type = KMS.
    * If omitted, AWS uses the default service-managed key for ECR.
    * Ignored if encryption_type = AES256.
+   * Can reference an AwsKmsKey resource.
    *
-   * @generated from field: string kms_key_id = 4;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 4;
    */
-  kmsKeyId: string;
+  kmsKeyId?: StringValueOrRef;
 
   /**
    * forceDelete, if true, allows deleting the repository even when it contains

@@ -1,0 +1,16 @@
+apiVersion: civo.openmcf.org/v1
+kind: CivoKubernetesNodePool
+metadata:
+  name: my-autoscaling-pool
+spec:
+  nodePoolName: my-autoscaling-pool
+  cluster:
+    value: "<cluster-name>"
+  size: g4s.kube.medium
+  nodeCount: 2
+  autoScale: true
+  minNodes: 2
+  maxNodes: 5
+  tags:
+    - workload
+    - production

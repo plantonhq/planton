@@ -1,0 +1,15 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpVertexAiEndpoint
+metadata:
+  name: example
+spec:
+  projectId:
+    value: "${PROJECT_ID}"
+  location: us-central1
+  displayName: Private ML Endpoint
+  description: VPC-peered endpoint with CMEK encryption
+  network:
+    value: "projects/${PROJECT_NUMBER}/global/networks/${VPC_NAME}"
+  kmsKeyName:
+    value: "projects/${PROJECT_ID}/locations/us-central1/keyRings/${KEY_RING}/cryptoKeys/${KEY_NAME}"
+  dedicatedEndpointEnabled: true

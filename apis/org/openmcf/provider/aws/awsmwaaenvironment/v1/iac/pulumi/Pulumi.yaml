@@ -1,0 +1,6 @@
+name: aws-mwaa-environment
+runtime:
+  name: go
+  options:
+    binary: main
+description: AWS MWAA (Managed Workflows for Apache Airflow) Environment deployment component

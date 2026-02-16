@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsglobalaccelerator.v1;
+
+// AwsGlobalAcceleratorStackOutputs captures observable identifiers and endpoints
+// from a provisioned Global Accelerator. These outputs are the primary interface
+// for downstream resources to wire dependencies via StringValueOrRef.
+//
+// The DNS names and hosted zone ID are used to create Route53 alias records
+// pointing custom domains to the accelerator. The listener and endpoint group
+// ARN maps enable fine-grained cross-resource references.
+message AwsGlobalAcceleratorStackOutputs {
+  // The Amazon Resource Name of the Global Accelerator. Used in IAM policies
+  // and cross-service permissions.
+  string accelerator_arn = 1;
+
+  // The DNS name assigned to the accelerator (e.g.,
+  // "a1234567890abcdef.awsglobalaccelerator.com"). Clients connect to this
+  // DNS name to reach the accelerator. Create Route53 alias records pointing
+  // custom domains here.
+  string accelerator_dns_name = 2;
+
+  // The dual-stack DNS name assigned to the accelerator. Only populated when
+  // ip_address_type is DUAL_STACK. Supports both IPv4 and IPv6 clients.
+  string accelerator_dual_stack_dns_name = 3;
+
+  // The Route53 hosted zone ID for the accelerator's DNS name. Always
+  // Z2BJ6XQ5FK7U4H for Global Accelerator. Required when creating Route53
+  // alias records that point to this accelerator.
+  string accelerator_hosted_zone_id = 4;
+
+  // The static anycast IP addresses assigned to the accelerator. Typically
+  // two IPv4 addresses. These never change for the lifetime of the accelerator
+  // (unless using BYOIP and the accelerator is recreated).
+  repeated string accelerator_ip_addresses = 5;
+
+  // Map of listener name to listener ARN. The keys correspond to the name
+  // field of each entry in spec.listeners. Downstream resources can reference
+  // specific listener ARNs via valueFrom using
+  // status.outputs.listener_arns.{name}.
+  map<string, string> listener_arns = 6;
+
+  // Map of composite key to endpoint group ARN. Keys use the format
+  // "listener_name/group_name" to uniquely identify each endpoint group
+  // across the accelerator. Downstream resources can reference specific
+  // endpoint group ARNs via valueFrom.
+  map<string, string> endpoint_group_arns = 7;
+}

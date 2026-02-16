@@ -1,0 +1,28 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsAppRunnerService
+metadata:
+  name: apprunner-demo
+spec:
+  imageSource:
+    imageIdentifier: "public.ecr.aws/nginx/nginx:latest"
+    imageRepositoryType: "ECR_PUBLIC"
+  port: "80"
+  cpu: "1024"
+  memory: "2048"
+  environmentVariables:
+    EXAMPLE: "true"
+  # healthCheck:
+  #   protocol: "HTTP"
+  #   path: "/health"
+  # autoScaling:
+  #   minSize: 1
+  #   maxSize: 5
+  #   maxConcurrency: 100
+  # instanceRoleArn:
+  #   value: "arn:aws:iam::123456789012:role/apprunner-instance-role"
+  # subnetIds:
+  #   - value: "subnet-abc123"
+  # securityGroupIds:
+  #   - value: "sg-abc123"
+  # kmsKeyArn:
+  #   value: "arn:aws:kms:us-east-1:123456789012:key/abc123"

@@ -22,7 +22,7 @@ locals {
   enable_execute_command = local.safe_exec_config != null && try(local.safe_exec_config.logging, "") != ""
   exec_logging           = local.enable_execute_command ? try(local.safe_exec_config.logging, "DEFAULT") : "DEFAULT"
   exec_log_config        = local.enable_execute_command && local.exec_logging == "OVERRIDE" ? try(local.safe_exec_config.log_configuration, null) : null
-  exec_kms_key_id        = local.enable_execute_command ? try(local.safe_exec_config.kms_key_id, "") : ""
+  exec_kms_key_id        = local.enable_execute_command ? try(local.safe_exec_config.kms_key_id.value, "") : ""
 }
 
 

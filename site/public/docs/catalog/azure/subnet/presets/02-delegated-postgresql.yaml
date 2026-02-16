@@ -1,0 +1,16 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureSubnet
+metadata:
+  name: my-postgresql-subnet
+spec:
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  vnetId:
+    value: "<vnet-resource-id>"
+  name: postgresql
+  addressPrefix: 10.0.2.0/28
+  delegation:
+    name: postgresql
+    serviceName: Microsoft.DBforPostgreSQL/flexibleServers
+    actions:
+      - Microsoft.Network/virtualNetworks/subnets/action

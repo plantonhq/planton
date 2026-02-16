@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awscognitoidentityprovider.v1;
+
+import "org/openmcf/provider/aws/awscognitoidentityprovider/v1/api.proto";
+import "org/openmcf/provider/aws/provider.proto";
+
+// AwsCognitoIdentityProviderStackInput provides the inputs required by
+// Pulumi/Terraform modules to provision a Cognito Identity Provider.
+message AwsCognitoIdentityProviderStackInput {
+  // target is the fully-specified AwsCognitoIdentityProvider resource to provision.
+  AwsCognitoIdentityProvider target = 1;
+
+  // provider_config supplies AWS credentials and region for the deployment.
+  // When nil the module falls back to ambient credentials (environment variables
+  // or instance profile).
+  org.openmcf.provider.aws.AwsProviderConfig provider_config = 2;
+}

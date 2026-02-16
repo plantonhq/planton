@@ -1,0 +1,21 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsCloudwatchAlarm
+metadata:
+  name: prod-sqs-depth-alarm
+spec:
+  comparisonOperator: GreaterThanOrEqualToThreshold
+  evaluationPeriods: 5
+  datapointsToAlarm: 3
+  threshold: 1000.0
+  metricName: ApproximateNumberOfMessagesVisible
+  namespace: AWS/SQS
+  period: 60
+  statistic: Maximum
+  treatMissingData: notBreaching
+  alarmDescription: "SQS queue depth exceeds 1000 messages — consumers may be backed up"
+  alarmActions:
+    - value: arn:aws:sns:us-east-1:123456789012:ops-critical
+  okActions:
+    - value: arn:aws:sns:us-east-1:123456789012:ops-resolved
+  insufficientDataActions:
+    - value: arn:aws:sns:us-east-1:123456789012:ops-warnings

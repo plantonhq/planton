@@ -1,0 +1,19 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsClientVpn
+metadata:
+  name: my-full-tunnel-vpn
+spec:
+  description: Full-tunnel VPN routing all traffic through VPN
+  vpcId:
+    value: "<vpc-id>"
+  subnets:
+    - value: "<private-subnet-id>"
+  clientCidrBlock: 10.100.0.0/22
+  authenticationType: certificate
+  serverCertificateArn:
+    value: "<server-certificate-arn>"
+  cidrAuthorizationRules:
+    - 0.0.0.0/0
+  disableSplitTunnel: true  # Full-tunnel: all client traffic routes through VPN
+  vpnPort: 443  # default from spec
+  transportProtocol: tcp  # recommended_default from spec

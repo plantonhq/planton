@@ -1,0 +1,3 @@
+name: aws-opensearch-domain
+runtime: go
+description: Deploy an Amazon OpenSearch Service domain using OpenMCF

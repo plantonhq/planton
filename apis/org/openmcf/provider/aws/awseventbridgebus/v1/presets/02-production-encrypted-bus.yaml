@@ -1,0 +1,14 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsEventBridgeBus
+metadata:
+  name: my-events
+spec:
+  description: Production event bus with encryption, DLQ, and logging
+  kmsKeyIdentifier:
+    value: <kms-key-arn>
+  deadLetterConfig:
+    arn:
+      value: <dlq-queue-arn>
+  logConfig:
+    level: ERROR
+    includeDetail: NONE

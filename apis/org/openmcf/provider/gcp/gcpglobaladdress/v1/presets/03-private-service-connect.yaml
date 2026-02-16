@@ -1,0 +1,13 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpGlobalAddress
+metadata:
+  name: my-psc-endpoint-ip
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  addressName: <your-address-name>  # e.g., psc-endpoint-ip
+  addressType: INTERNAL  # private IP within the VPC
+  purpose: PRIVATE_SERVICE_CONNECT  # required for PSC endpoints
+  network:
+    value: "<vpc-network-name-or-self-link>"
+  description: Internal address for Private Service Connect endpoint

@@ -1,0 +1,18 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsS3Bucket
+metadata:
+  name: my-public-website-bucket
+spec:
+  awsRegion: <aws-region>
+  isPublic: true
+  versioningEnabled: false
+  encryptionType: ENCRYPTION_TYPE_SSE_S3
+  forceDestroy: false
+  cors:
+    corsRules:
+      - allowedMethods:
+          - GET
+          - HEAD
+        allowedOrigins:
+          - "*"
+        maxAgeSeconds: 3600

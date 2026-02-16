@@ -1,0 +1,16 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesAltinityOperator
+metadata:
+  name: my-altinity-operator
+spec:
+  namespace:
+    value: altinity-system
+  createNamespace: true
+  container:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi

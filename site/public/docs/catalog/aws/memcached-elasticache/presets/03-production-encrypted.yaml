@@ -1,0 +1,16 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsMemcachedElasticache
+metadata:
+  name: my-memcached
+spec:
+  engineVersion: "1.6.22"
+  nodeType: cache.r7g.large
+  numCacheNodes: 3
+  azMode: cross-az
+  transitEncryptionEnabled: true
+  maintenanceWindow: sun:05:00-sun:06:00
+  autoMinorVersionUpgrade: true
+  parameterGroupFamily: memcached1.6
+  parameters:
+    - name: chunk_size
+      value: "96"

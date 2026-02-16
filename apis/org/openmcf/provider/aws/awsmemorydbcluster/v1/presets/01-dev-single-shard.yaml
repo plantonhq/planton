@@ -1,0 +1,13 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsMemorydbCluster
+metadata:
+  name: my-memorydb
+spec:
+  engine: redis
+  engineVersion: "7.1"
+  description: Single-shard MemoryDB for development
+  nodeType: db.t4g.small
+  numShards: 1
+  numReplicasPerShard: 0
+  aclName: open-access
+  tlsEnabled: true

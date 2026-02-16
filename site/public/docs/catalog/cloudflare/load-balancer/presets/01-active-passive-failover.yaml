@@ -1,0 +1,18 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareLoadBalancer
+metadata:
+  name: my-active-passive-failover
+spec:
+  hostname: <app-subdomain>.<your-domain.com>
+  zoneId:
+    value: <cloudflare-zone-id>
+  origins:
+    - name: primary
+      address: 192.0.2.1
+      weight: 1
+    - name: secondary
+      address: 192.0.2.2
+      weight: 1
+  proxied: true
+  healthProbePath: /
+  steeringPolicy: off

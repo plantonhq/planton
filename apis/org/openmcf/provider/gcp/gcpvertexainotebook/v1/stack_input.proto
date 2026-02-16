@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpvertexainotebook.v1;
+
+import "org/openmcf/provider/gcp/gcpvertexainotebook/v1/api.proto";
+import "org/openmcf/provider/gcp/provider.proto";
+
+message GcpVertexAiNotebookStackInput {
+  GcpVertexAiNotebook target = 1;
+  org.openmcf.provider.gcp.GcpProviderConfig provider_config = 2;
+}

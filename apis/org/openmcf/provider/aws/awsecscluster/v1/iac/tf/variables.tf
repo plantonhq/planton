@@ -75,7 +75,7 @@ variable "spec" {
         s3_key_prefix                   = string
         s3_encryption_enabled           = bool
       })
-      kms_key_id = string
+      kms_key_id = optional(object({ value = string }))
     })
   })
 }

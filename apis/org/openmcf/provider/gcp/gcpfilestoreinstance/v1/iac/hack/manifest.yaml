@@ -1,0 +1,16 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpFilestoreInstance
+metadata:
+  name: test-filestore
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  instanceName: my-test-nfs
+  location: us-central1-a
+  tier: BASIC_SSD
+  fileShare:
+    name: vol1
+    capacityGb: 2560
+  networkConfig:
+    network:
+      value: default

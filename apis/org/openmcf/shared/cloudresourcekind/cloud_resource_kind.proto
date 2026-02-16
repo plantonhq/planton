@@ -196,6 +196,256 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "s3objs"
   }];
+  AwsSqsQueue = 225 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awssqs"
+  }];
+  AwsSnsTopic = 226 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awssns"
+  }];
+  AwsEventBridgeBus = 227 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awseb"
+  }];
+  AwsEventBridgeRule = 228 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsebr"
+  }];
+  AwsHttpApiGateway = 240 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awshttpapigw"
+  }];
+  AwsStepFunction = 241 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awssfn"
+  }];
+  AwsRedisElasticache = 250 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsredis"
+  }];
+  AwsOpenSearchDomain = 251 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsos"
+  }];
+  AwsMemcachedElasticache = 252 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsmemcached"
+  }];
+  AwsServerlessElasticache = 253 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsslselc"
+  }];
+  AwsNetworkLoadBalancer = 280 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsnlb"
+  }];
+  AwsElasticIp = 281 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awseip"
+  }];
+  AwsTransitGateway = 282 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awstgw"
+  }];
+  AwsGlobalAccelerator = 283 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsga"
+  }];
+
+  // --- Storage ---
+
+  AwsElasticFileSystem = 290 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsefs"
+  }];
+
+  AwsFsxLustreFileSystem = 291 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsfxl"
+  }];
+
+  AwsFsxOpenzfsFileSystem = 292 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsfxz"
+  }];
+
+  AwsFsxWindowsFileSystem = 293 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsfxw"
+  }];
+
+  AwsFsxOntapFileSystem = 294 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsfxo"
+  }];
+
+  AwsFsxOntapStorageVirtualMachine = 295 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsfxosvm"
+  }];
+
+  AwsFsxOntapVolume = 296 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsfxov"
+  }];
+
+  // --- Auth / Identity ---
+
+  AwsCognitoUserPool = 300 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awscog"
+  }];
+
+  AwsCognitoIdentityProvider = 302 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awscogidp"
+  }];
+
+  // --- Security (WAF) ---
+
+  AwsWafWebAcl = 301 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awswaf"
+  }];
+
+  // --- Monitoring / Observability ---
+
+  AwsCloudwatchLogGroup = 310 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awscwlg"
+  }];
+
+  AwsCloudwatchAlarm = 311 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awscwa"
+  }];
+
+  // --- Analytics / Streaming ---
+
+  AwsKinesisStream = 260 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awskin"
+  }];
+
+  AwsKinesisFirehose = 261 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awskfh"
+  }];
+
+  AwsKinesisStreamConsumer = 262 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awskincon"
+  }];
+
+  AwsAthenaWorkgroup = 263 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsath"
+  }];
+
+  AwsGlueCatalogDatabase = 264 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsglue"
+  }];
+
+  AwsRedshiftCluster = 265 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsrs"
+  }];
+
+  // AI/ML
+  AwsSagemakerDomain = 270 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "sgmkd"
+  }];
+
+  // Containers
+  AwsAppRunnerService = 320 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsar"
+  }];
+
+  // Batch Processing
+  AwsBatchComputeEnvironment = 321 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsbat"
+  }];
+
+  // CI/CD
+  AwsCodeBuildProject = 330 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awscb"
+  }];
+
+  AwsCodePipeline = 331 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awscp"
+  }];
+
+  // Workflow / Orchestration
+  AwsMwaaEnvironment = 340 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsmwaa"
+  }];
+
+  // Graph Database
+  AwsNeptuneCluster = 341 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsnep"
+  }];
+
+  // In-Memory Database
+  AwsMemorydbCluster = 342 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsmdb"
+  }];
+
+  // Streaming
+  AwsMskCluster = 350 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsmsk"
+  }];
 
   // 400–599: Azure resources
   AzureResourceGroup = 400 [(kind_meta) = {
@@ -467,6 +717,121 @@ enum CloudResourceKind {
     provider: gcp
     version: v1
     id_prefix: "gcpdrec"
+  }];
+  GcpFirewallRule = 620 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpfwr"
+  }];
+  GcpGlobalAddress = 621 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpgip"
+  }];
+  GcpCloudArmorPolicy = 622 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpcap"
+  }];
+  GcpAlloydbCluster = 630 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpadb"
+  }];
+  GcpRedisInstance = 631 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpred"
+  }];
+  GcpFirestoreDatabase = 632 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpfst"
+  }];
+  GcpSpannerInstance = 633 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpspn"
+  }];
+  GcpSpannerDatabase = 634 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpspdb"
+  }];
+  GcpBigtableInstance = 635 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpbt"
+  }];
+  GcpMemorystoreInstance = 636 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpmsi"
+  }];
+  GcpBigQueryDataset = 650 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpbqds"
+  }];
+  GcpDataprocCluster = 651 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpdpc"
+  }];
+  GcpDataprocVirtualCluster = 652 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpdvc"
+  }];
+  GcpPubSubTopic = 660 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcppst"
+  }];
+  GcpPubSubSubscription = 661 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcppss"
+  }];
+  GcpCloudTasksQueue = 662 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcptq"
+  }];
+  GcpCloudSchedulerJob = 663 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpcsj"
+  }];
+  GcpVertexAiNotebook = 670 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpvnb"
+  }];
+  GcpVertexAiEndpoint = 671 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpvep"
+  }];
+  GcpCloudComposerEnvironment = 680 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpcce"
+  }];
+  GcpKmsKeyRing = 690 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpkr"
+  }];
+  GcpKmsKey = 691 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpkms"
+  }];
+  GcpFilestoreInstance = 700 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpnfs"
   }];
 
   // 800–999: Kubernetes resources

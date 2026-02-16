@@ -1,0 +1,19 @@
+apiVersion: scaleway.openmcf.org/v1
+kind: ScalewayInstanceSecurityGroup
+metadata:
+  name: my-internal-sg
+spec:
+  zone: fr-par-1
+  description: Internal services -- deny all inbound except private network traffic
+  stateful: true  # recommended_default from spec
+  inboundDefaultPolicy: drop  # Allowlist model
+  outboundDefaultPolicy: accept  # recommended_default from spec
+  enableDefaultSecurity: true  # recommended_default from spec
+  inboundRules:
+    - action: accept
+      protocol: TCP
+      ipRange: 10.0.0.0/8
+    - action: accept
+      protocol: TCP
+      portRange: "22"
+      ipRange: "<your-bastion-ip>/32"

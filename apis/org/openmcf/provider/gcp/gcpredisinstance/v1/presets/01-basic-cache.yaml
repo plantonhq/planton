@@ -1,0 +1,11 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpRedisInstance
+metadata:
+  name: my-redis-cache
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  instanceName: <instance-name>
+  region: <gcp-region>
+  tier: BASIC
+  memorySizeGb: 1

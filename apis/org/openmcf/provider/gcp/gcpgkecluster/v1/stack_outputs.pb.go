@@ -32,8 +32,12 @@ type GcpGkeClusterStackOutputs struct {
 	ClusterCaCertificate string `protobuf:"bytes,2,opt,name=cluster_ca_certificate,json=clusterCaCertificate,proto3" json:"cluster_ca_certificate,omitempty"`
 	// Workload Identity Pool identifier used by this cluster (e.g. "PROJECT_ID.svc.id.goog").
 	WorkloadIdentityPool string `protobuf:"bytes,3,opt,name=workload_identity_pool,json=workloadIdentityPool,proto3" json:"workload_identity_pool,omitempty"`
-	unknownFields        protoimpl.UnknownFields
-	sizeCache            protoimpl.SizeCache
+	// Fully qualified GKE cluster resource ID.
+	// Format: projects/{project}/locations/{location}/clusters/{name}
+	// Used by downstream resources (e.g., Dataproc on GKE) to reference this cluster.
+	ClusterId     string `protobuf:"bytes,4,opt,name=cluster_id,json=clusterId,proto3" json:"cluster_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpGkeClusterStackOutputs) Reset() {
@@ -87,15 +91,24 @@ func (x *GcpGkeClusterStackOutputs) GetWorkloadIdentityPool() string {
 	return ""
 }
 
+func (x *GcpGkeClusterStackOutputs) GetClusterId() string {
+	if x != nil {
+		return x.ClusterId
+	}
+	return ""
+}
+
 var File_org_openmcf_provider_gcp_gcpgkecluster_v1_stack_outputs_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_gcp_gcpgkecluster_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=org/openmcf/provider/gcp/gcpgkecluster/v1/stack_outputs.proto\x12)org.openmcf.provider.gcp.gcpgkecluster.v1\"\xa3\x01\n" +
+	"=org/openmcf/provider/gcp/gcpgkecluster/v1/stack_outputs.proto\x12)org.openmcf.provider.gcp.gcpgkecluster.v1\"\xc2\x01\n" +
 	"\x19GcpGkeClusterStackOutputs\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x124\n" +
 	"\x16cluster_ca_certificate\x18\x02 \x01(\tR\x14clusterCaCertificate\x124\n" +
-	"\x16workload_identity_pool\x18\x03 \x01(\tR\x14workloadIdentityPoolB\xea\x02\n" +
+	"\x16workload_identity_pool\x18\x03 \x01(\tR\x14workloadIdentityPool\x12\x1d\n" +
+	"\n" +
+	"cluster_id\x18\x04 \x01(\tR\tclusterIdB\xea\x02\n" +
 	"-com.org.openmcf.provider.gcp.gcpgkecluster.v1B\x11StackOutputsProtoP\x01Z[github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpgkecluster/v1;gcpgkeclusterv1\xa2\x02\x05OOPGG\xaa\x02)Org.Openmcf.Provider.Gcp.Gcpgkecluster.V1\xca\x02)Org\\Openmcf\\Provider\\Gcp\\Gcpgkecluster\\V1\xe2\x025Org\\Openmcf\\Provider\\Gcp\\Gcpgkecluster\\V1\\GPBMetadata\xea\x02.Org::Openmcf::Provider::Gcp::Gcpgkecluster::V1b\x06proto3"
 
 var (

@@ -1,0 +1,6 @@
+name: aws-fsx-ontap-file-system
+runtime:
+  name: go
+  options:
+    binary: aws-fsx-ontap-file-system
+description: AWS FSx ONTAP File System

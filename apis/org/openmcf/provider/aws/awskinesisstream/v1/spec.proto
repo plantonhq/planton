@@ -1,0 +1,186 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awskinesisstream.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// AwsKinesisStreamSpec defines the desired configuration for an Amazon Kinesis Data Stream.
+//
+// Kinesis Data Streams is a real-time data streaming service that captures gigabytes of
+// data per second from hundreds of thousands of sources. Common sources include website
+// click-streams, database event streams, financial transactions, social media feeds, IT
+// logs, and location-tracking events.
+//
+// Two capacity modes are available:
+// - PROVISIONED: You specify the number of shards. Each shard provides 1 MB/s write and
+//   2 MB/s read capacity. You pay per shard-hour. Use this when you can predict throughput.
+// - ON_DEMAND: AWS automatically manages shards to accommodate up to 200 MB/s write and
+//   400 MB/s read. You pay per GB of data written and read. Use this when throughput is
+//   unpredictable or bursty.
+//
+// Notes:
+// - The stream name (from metadata.name) cannot be changed after creation (ForceNew).
+// - Encryption at rest is supported via a customer-managed KMS key. When kms_key_id is
+//   set, the IaC modules automatically enable KMS encryption; when absent, encryption is
+//   disabled (NONE). You can also use the Kinesis-owned key by passing "alias/aws/kinesis".
+// - Enhanced shard-level CloudWatch metrics are available for production observability.
+// - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+message AwsKinesisStreamSpec {
+  // ---------------------------------------------------------------------------
+  // Capacity mode
+  // ---------------------------------------------------------------------------
+
+  // Capacity mode for the stream. This is a fundamental design choice that
+  // determines pricing model, scaling behavior, and operational overhead.
+  //
+  // Valid values:
+  // - "PROVISIONED": You manage shard count explicitly. Each shard provides
+  //   1 MB/s ingestion and 2 MB/s consumption. Cost-effective for steady,
+  //   predictable workloads.
+  // - "ON_DEMAND": AWS auto-scales shards to match throughput. Supports up to
+  //   200 MB/s write and 400 MB/s read. Best for variable or unpredictable
+  //   workloads. No capacity planning required.
+  //
+  // This field is required. There is no default -- you must make an explicit
+  // choice because the two modes have fundamentally different cost and
+  // operational characteristics.
+  string stream_mode = 1;
+
+  // Number of open shards in the stream. Each shard provides 1 MB/s write
+  // (1,000 records/s) and 2 MB/s read capacity.
+  //
+  // Required when stream_mode is "PROVISIONED" (must be >= 1).
+  // Must be 0 (or omitted) when stream_mode is "ON_DEMAND" because AWS
+  // manages shard count automatically.
+  //
+  // Can be updated after creation to scale provisioned streams. AWS uses
+  // uniform scaling (UpdateShardCount with UNIFORM_SCALING strategy).
+  int32 shard_count = 2;
+
+  // ---------------------------------------------------------------------------
+  // Data retention
+  // ---------------------------------------------------------------------------
+
+  // Duration in hours that data records remain accessible after being added to
+  // the stream. After the retention period expires, records are no longer
+  // accessible via GetRecords.
+  //
+  // Range: 24–8760 (1 day to 365 days). AWS default: 24 hours.
+  // Leave at 0 to use the AWS default.
+  //
+  // Increasing retention is useful for reprocessing scenarios and late-arriving
+  // consumers. Note: extended retention (beyond 24h) incurs additional cost.
+  int32 retention_period_hours = 3;
+
+  // ---------------------------------------------------------------------------
+  // Encryption
+  // ---------------------------------------------------------------------------
+
+  // Customer-managed KMS key for server-side encryption of data at rest. When
+  // set, the IaC modules automatically configure KMS encryption (encryption_type
+  // = "KMS"). When absent, encryption is disabled (encryption_type = "NONE").
+  //
+  // Accepts a KMS key ID, key ARN, alias name (e.g., "alias/aws/kinesis"), or
+  // alias ARN. Also accepts a reference to an AwsKmsKey resource.
+  //
+  // Encryption can be enabled or disabled after stream creation (not ForceNew).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 4 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Record size
+  // ---------------------------------------------------------------------------
+
+  // Maximum size of a single data record in KiB (kibibytes). Records exceeding
+  // this limit are rejected by the PutRecord/PutRecords API.
+  //
+  // Range: 1024–10240 (1 MiB to 10 MiB). AWS default: 1024 (1 MiB).
+  // Leave at 0 to use the AWS default.
+  //
+  // Larger record sizes are useful for aggregated events, rich JSON payloads,
+  // or binary data. Note: larger records consume more shard capacity.
+  int32 max_record_size_in_kib = 5;
+
+  // ---------------------------------------------------------------------------
+  // Enhanced monitoring
+  // ---------------------------------------------------------------------------
+
+  // Shard-level CloudWatch metrics to enable. By default, Kinesis only provides
+  // stream-level metrics. Enabling shard-level metrics allows monitoring of
+  // individual shard performance, which is critical for identifying hot shards
+  // and capacity bottlenecks in production.
+  //
+  // Valid values (one or more):
+  // - "IncomingBytes" -- bytes written per shard
+  // - "IncomingRecords" -- records written per shard
+  // - "OutgoingBytes" -- bytes read per shard
+  // - "OutgoingRecords" -- records read per shard
+  // - "WriteProvisionedThroughputExceeded" -- throttled write requests
+  // - "ReadProvisionedThroughputExceeded" -- throttled read requests
+  // - "IteratorAgeMilliseconds" -- consumer lag per shard
+  //
+  // Enhanced metrics incur additional CloudWatch cost per metric per shard.
+  // Leave empty to use stream-level metrics only (no additional cost).
+  repeated string shard_level_metrics = 6;
+
+  // ---------------------------------------------------------------------------
+  // Deletion behavior
+  // ---------------------------------------------------------------------------
+
+  // When true, all registered enhanced fan-out consumers are automatically
+  // deregistered before the stream is deleted, preventing deletion errors.
+  // When false (default), deleting a stream with active consumers will fail.
+  //
+  // This is an operational setting that only affects stream deletion. It has
+  // no impact on the running stream.
+  bool enforce_consumer_deletion = 7;
+
+  // ---------------------------------------------------------------------------
+  // CEL validations
+  // ---------------------------------------------------------------------------
+
+  // stream_mode is required and must be one of the two valid values.
+  option (buf.validate.message).cel = {
+    id: "stream_mode_required"
+    message: "stream_mode is required and must be 'PROVISIONED' or 'ON_DEMAND'"
+    expression: "this.stream_mode in ['PROVISIONED', 'ON_DEMAND']"
+  };
+
+  // PROVISIONED mode requires at least one shard.
+  option (buf.validate.message).cel = {
+    id: "shard_count_required_for_provisioned"
+    message: "shard_count must be at least 1 when stream_mode is 'PROVISIONED'"
+    expression: "this.stream_mode != 'PROVISIONED' || this.shard_count >= 1"
+  };
+
+  // ON_DEMAND mode does not accept a shard count (AWS manages shards).
+  option (buf.validate.message).cel = {
+    id: "shard_count_forbidden_for_on_demand"
+    message: "shard_count must be 0 when stream_mode is 'ON_DEMAND' (AWS manages shards automatically)"
+    expression: "this.stream_mode != 'ON_DEMAND' || this.shard_count == 0"
+  };
+
+  // Retention period must be within the AWS-allowed range when set.
+  option (buf.validate.message).cel = {
+    id: "retention_period_range"
+    message: "retention_period_hours must be between 24 and 8760 (1 day to 365 days) when set"
+    expression: "this.retention_period_hours == 0 || (this.retention_period_hours >= 24 && this.retention_period_hours <= 8760)"
+  };
+
+  // Max record size must be within the AWS-allowed range when set.
+  option (buf.validate.message).cel = {
+    id: "max_record_size_range"
+    message: "max_record_size_in_kib must be between 1024 and 10240 (1 MiB to 10 MiB) when set"
+    expression: "this.max_record_size_in_kib == 0 || (this.max_record_size_in_kib >= 1024 && this.max_record_size_in_kib <= 10240)"
+  };
+
+  // Each shard-level metric must be a valid AWS metric name.
+  option (buf.validate.message).cel = {
+    id: "shard_level_metrics_valid"
+    message: "each shard_level_metrics value must be one of: IncomingBytes, IncomingRecords, OutgoingBytes, OutgoingRecords, WriteProvisionedThroughputExceeded, ReadProvisionedThroughputExceeded, IteratorAgeMilliseconds"
+    expression: "this.shard_level_metrics.all(m, m in ['IncomingBytes', 'IncomingRecords', 'OutgoingBytes', 'OutgoingRecords', 'WriteProvisionedThroughputExceeded', 'ReadProvisionedThroughputExceeded', 'IteratorAgeMilliseconds'])"
+  };
+}

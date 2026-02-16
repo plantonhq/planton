@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpfilestoreinstance.v1;
+
+// GcpFilestoreInstanceStackOutputs captures observable values produced after
+// provisioning a Filestore instance.
+message GcpFilestoreInstanceStackOutputs {
+  // Fully qualified resource ID of the Filestore instance.
+  // Format: projects/{project}/locations/{location}/instances/{instance}
+  string instance_id = 1;
+
+  // Short name of the Filestore instance.
+  string instance_name = 2;
+
+  // IP addresses assigned to the instance on its connected VPC network.
+  // Use the first address for NFS mounts: mount <ip>:/<share_name> /mnt/nfs
+  repeated string ip_addresses = 3;
+
+  // Name of the file share. Used to construct the NFS mount path.
+  string file_share_name = 4;
+
+  // Timestamp when the instance was created (RFC3339 format).
+  string create_time = 5;
+}

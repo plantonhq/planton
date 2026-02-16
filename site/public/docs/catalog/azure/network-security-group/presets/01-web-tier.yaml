@@ -1,0 +1,26 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureNetworkSecurityGroup
+metadata:
+  name: my-web-nsg
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-nsg-name>
+  securityRules:
+    - name: allow-https-inbound
+      description: Allow HTTPS from internet
+      priority: 100
+      direction: Inbound
+      access: Allow
+      protocol: Tcp
+      destinationPortRange: "443"
+      sourceAddressPrefix: Internet
+    - name: allow-http-inbound
+      description: Allow HTTP from internet for redirect to HTTPS
+      priority: 110
+      direction: Inbound
+      access: Allow
+      protocol: Tcp
+      destinationPortRange: "80"
+      sourceAddressPrefix: Internet

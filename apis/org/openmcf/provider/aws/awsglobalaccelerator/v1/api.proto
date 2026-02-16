@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsglobalaccelerator.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/aws/awsglobalaccelerator/v1/spec.proto";
+import "org/openmcf/provider/aws/awsglobalaccelerator/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// AwsGlobalAccelerator is a deployment component for creating and managing
+// AWS Global Accelerator resources — a networking service that improves
+// availability and performance by routing traffic through the AWS global
+// network to optimal regional endpoints.
+message AwsGlobalAccelerator {
+  // api_version specifies the API version for this resource.
+  string api_version = 1 [(buf.validate.field).string.const = 'aws.openmcf.org/v1'];
+
+  // kind identifies this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'AwsGlobalAccelerator'];
+
+  // metadata contains standard resource metadata including name, labels, and annotations.
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec defines the desired state of the Global Accelerator.
+  AwsGlobalAcceleratorSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the observed state and outputs from the deployment.
+  AwsGlobalAcceleratorStatus status = 5;
+}
+
+// AwsGlobalAcceleratorStatus contains the status and outputs for the Global Accelerator.
+message AwsGlobalAcceleratorStatus {
+  // outputs contains the values exported from the IaC stack after deployment.
+  AwsGlobalAcceleratorStackOutputs outputs = 1;
+}

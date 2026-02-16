@@ -1,0 +1,38 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesNamespace
+metadata:
+  name: my-production-namespace
+spec:
+  name: my-production-namespace
+  labels:
+    team: "<your-team-name>"
+    environment: production
+  resourceProfile:
+    custom:
+      cpu:
+        requests: "4"
+        limits: "8"
+      memory:
+        requests: 8Gi
+        limits: 16Gi
+      objectCounts:
+        pods: 50
+        services: 20
+        configmaps: 50
+        secrets: 50
+        persistentVolumeClaims: 10
+        loadBalancers: 2
+      defaultLimits:
+        defaultCpuRequest: 100m
+        defaultCpuLimit: 500m
+        defaultMemoryRequest: 128Mi
+        defaultMemoryLimit: 512Mi
+  networkConfig:
+    isolateIngress: true
+    restrictEgress: true
+    allowedIngressNamespaces:
+      - kube-system
+      - istio-system
+    allowedEgressCidrs:
+      - 10.0.0.0/8
+  podSecurityStandard: restricted

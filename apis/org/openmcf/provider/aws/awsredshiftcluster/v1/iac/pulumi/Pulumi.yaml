@@ -1,0 +1,6 @@
+name: aws-redshift-cluster
+runtime:
+  name: go
+  options:
+    binary: main
+description: AWS Redshift Cluster deployment component

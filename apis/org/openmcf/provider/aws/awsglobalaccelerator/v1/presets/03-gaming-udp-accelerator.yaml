@@ -1,0 +1,26 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsGlobalAccelerator
+metadata:
+  name: game-server-ga
+  labels:
+    openmcf.org/provisioner: pulumi
+spec:
+  listeners:
+    - name: udp-game
+      protocol: UDP
+      clientAffinity: SOURCE_IP
+      portRanges:
+        - fromPort: 7000
+          toPort: 8000
+      endpointGroups:
+        - name: us-west-2
+          endpointGroupRegion: us-west-2
+          healthCheckProtocol: TCP
+          healthCheckPort: 8080
+          healthCheckIntervalSeconds: 10
+          thresholdCount: 2
+          endpoints:
+            - endpointId: "<eip-allocation-id-1>"
+              weight: 128
+            - endpointId: "<eip-allocation-id-2>"
+              weight: 128

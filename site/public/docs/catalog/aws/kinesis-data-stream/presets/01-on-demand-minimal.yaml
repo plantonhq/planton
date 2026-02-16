@@ -1,0 +1,6 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsKinesisStream
+metadata:
+  name: example-stream
+spec:
+  streamMode: ON_DEMAND

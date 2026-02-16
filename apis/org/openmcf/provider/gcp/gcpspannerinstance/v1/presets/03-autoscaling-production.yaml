@@ -1,0 +1,19 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpSpannerInstance
+metadata:
+  name: my-autoscale-spanner
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  instanceName: <instance-name>
+  config: <instance-config>
+  displayName: <display-name>
+  edition: ENTERPRISE
+  defaultBackupScheduleType: AUTOMATIC
+  autoscalingConfig:
+    autoscalingLimits:
+      minNodes: 1
+      maxNodes: 3
+    autoscalingTargets:
+      highPriorityCpuUtilizationPercent: 65
+      storageUtilizationPercent: 80

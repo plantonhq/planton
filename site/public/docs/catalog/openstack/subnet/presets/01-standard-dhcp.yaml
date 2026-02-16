@@ -1,0 +1,11 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackSubnet
+metadata:
+  name: my-workload-subnet
+spec:
+  networkId:
+    value: <network-id>
+  cidr: 192.168.1.0/24
+  dnsNameservers:
+    - 8.8.8.8
+    - 8.8.4.4

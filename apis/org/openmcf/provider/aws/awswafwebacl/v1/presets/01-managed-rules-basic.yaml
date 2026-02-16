@@ -1,0 +1,21 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsWafWebAcl
+metadata:
+  name: <acl-name>
+spec:
+  scope: REGIONAL
+  defaultAction:
+    type: allow
+  rules:
+    - name: aws-common-rules
+      priority: 1
+      overrideAction: none
+      managedRuleGroup:
+        name: AWSManagedRulesCommonRuleSet
+        vendorName: AWS
+    - name: aws-known-bad-inputs
+      priority: 2
+      overrideAction: none
+      managedRuleGroup:
+        name: AWSManagedRulesKnownBadInputsRuleSet
+        vendorName: AWS

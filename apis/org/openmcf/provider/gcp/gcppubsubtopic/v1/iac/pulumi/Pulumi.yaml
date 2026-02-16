@@ -1,0 +1,6 @@
+name: gcp-pubsub-topic
+runtime:
+  name: go
+  options:
+    binary: ./pulumi
+description: OpenMCF GcpPubSubTopic Pulumi module

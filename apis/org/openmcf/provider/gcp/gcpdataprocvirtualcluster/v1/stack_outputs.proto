@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpdataprocvirtualcluster.v1;
+
+// GcpDataprocVirtualClusterStackOutputs captures key information after
+// provisioning a Dataproc on GKE virtual cluster.
+message GcpDataprocVirtualClusterStackOutputs {
+  // Fully qualified Dataproc cluster resource name.
+  // Format: projects/{project}/regions/{region}/clusters/{name}
+  string cluster_id = 1;
+
+  // Short name of the Dataproc cluster.
+  string cluster_name = 2;
+
+  // Server-generated UUID for the cluster.
+  string cluster_uuid = 3;
+}

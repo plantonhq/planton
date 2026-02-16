@@ -1,0 +1,36 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsMemorydbCluster
+metadata:
+  name: my-memorydb-ht
+spec:
+  engine: redis
+  engineVersion: "7.1"
+  description: High-throughput MemoryDB with data tiering
+  nodeType: db.r6gd.xlarge
+  numShards: 4
+  numReplicasPerShard: 2
+  aclName: <acl-name>
+  dataTiering: true
+  tlsEnabled: true
+  kmsKeyId:
+    value: <kms-key-arn>
+  subnetIds:
+    - value: <private-subnet-id-az1>
+    - value: <private-subnet-id-az2>
+    - value: <private-subnet-id-az3>
+  securityGroupIds:
+    - value: <security-group-id>
+  snapshotRetentionLimit: 14
+  snapshotWindow: "02:00-03:00"
+  maintenanceWindow: "wed:04:00-wed:05:00"
+  parameterGroupFamily: memorydb_redis7
+  parameters:
+    - name: activedefrag
+      value: "yes"
+    - name: maxmemory-policy
+      value: volatile-lru
+    - name: timeout
+      value: "300"
+  snsTopicArn:
+    value: <sns-topic-arn>
+  autoMinorVersionUpgrade: true

@@ -1,0 +1,49 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsHttpApiGateway
+metadata:
+  name: my-jwt-api
+spec:
+  description: API with JWT authorization via Cognito
+  cors_configuration:
+    allow_origins:
+      - "<your-frontend-url>"
+    allow_methods:
+      - "GET"
+      - "POST"
+      - "OPTIONS"
+    allow_headers:
+      - "Content-Type"
+      - "Authorization"
+    allow_credentials: true
+  routes:
+    - route_key: "GET /public"
+      authorization_type: "NONE"
+      integration:
+        integration_type: "AWS_PROXY"
+        integration_uri:
+          value: "<public-handler-lambda-arn>"
+    - route_key: "GET /profile"
+      authorization_type: "JWT"
+      authorizer_name: "cognito-authorizer"
+      integration:
+        integration_type: "AWS_PROXY"
+        integration_uri:
+          value: "<profile-handler-lambda-arn>"
+    - route_key: "POST /orders"
+      authorization_type: "JWT"
+      authorizer_name: "cognito-authorizer"
+      authorization_scopes:
+        - "orders:write"
+      integration:
+        integration_type: "AWS_PROXY"
+        integration_uri:
+          value: "<orders-handler-lambda-arn>"
+  authorizers:
+    - name: "cognito-authorizer"
+      authorizer_type: "JWT"
+      jwt_configuration:
+        issuer: "<cognito-issuer-url>"
+        audiences:
+          - "<cognito-app-client-id>"
+      identity_sources:
+        - "$request.header.Authorization"

@@ -1,0 +1,12 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsRoute53DnsRecord
+metadata:
+  name: my-a-record
+spec:
+  zoneId:
+    value: "<route53-hosted-zone-id>"
+  name: <your-subdomain.your-domain.com>
+  type: A
+  ttl: 300  # 5 minutes; standard default for most records
+  values:
+    - <ipv4-address>

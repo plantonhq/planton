@@ -1,0 +1,239 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsneptunecluster.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// AwsNeptuneClusterSpec defines the specification for deploying an Amazon Neptune
+// graph database cluster. Neptune is a fully managed graph database service that
+// supports property-graph (Apache TinkerPop Gremlin) and RDF (SPARQL) query languages.
+//
+// Unlike relational databases, Neptune does not use master username/password for
+// authentication. Access is controlled via IAM database authentication and/or
+// network-level security (VPC, security groups).
+message AwsNeptuneClusterSpec {
+  // subnet_ids is the list of subnet IDs for the Neptune subnet group.
+  // Provide at least two subnets in distinct Availability Zones for high availability.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 1 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+  ];
+
+  // neptune_subnet_group_name is an optional name of an existing Neptune subnet group
+  // to use instead of creating one from subnet_ids.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef neptune_subnet_group_name = 2;
+
+  // security_group_ids are the VPC security groups to associate with the cluster.
+  // Ingress rules are created on a managed security group for these source SGs.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 3 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // allowed_cidr_blocks are IPv4 CIDRs to allow ingress to the cluster security group
+  // on the Neptune port.
+  repeated string allowed_cidr_blocks = 4 [
+    (buf.validate.field).repeated.items.string.pattern = "^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$",
+    (buf.validate.field).repeated.unique = true
+  ];
+
+  // vpc_id is the VPC where the cluster will be deployed. Required when creating
+  // a managed security group via security_group_ids or allowed_cidr_blocks.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 5 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // engine_version is the Neptune engine version to deploy.
+  // Examples: "1.2.1.0", "1.3.0.0", "1.3.1.0"
+  optional string engine_version = 6 [
+    (org.openmcf.shared.options.default) = "1.3.0.0",
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // port is the TCP port on which the cluster accepts connections.
+  optional int32 port = 7 [
+    (org.openmcf.shared.options.default) = "8182",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  // storage_type controls the storage I/O model for the cluster.
+  // "standard" is the default; "iopt1" enables I/O-Optimized storage for
+  // read-heavy workloads with higher throughput and predictable pricing.
+  string storage_type = 8 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "standard",
+        "iopt1"
+      ]
+    }
+  ];
+
+  // instance_count is the number of instances to create in the cluster.
+  // The first instance is the primary writer; additional instances are read replicas.
+  optional int32 instance_count = 9 [
+    (org.openmcf.shared.options.default) = "1",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  // instance_class is the compute and memory capacity of the DB instances.
+  // Examples: "db.r6g.large", "db.r6g.xlarge", "db.r5.large"
+  // Use "db.serverless" for Neptune Serverless (requires serverless_v2_scaling).
+  optional string instance_class = 10 [
+    (org.openmcf.shared.options.default) = "db.r6g.large",
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // serverless_v2_scaling configures Neptune Serverless capacity scaling.
+  // When set, instance_class should be "db.serverless".
+  // Neptune Capacity Units (NCUs): min 1.0, max 128.0.
+  AwsNeptuneClusterServerlessV2ScalingConfiguration serverless_v2_scaling = 11;
+
+  // storage_encrypted indicates whether to encrypt the cluster storage at rest.
+  optional bool storage_encrypted = 12 [(org.openmcf.shared.options.default) = "true"];
+
+  // kms_key_id is the ARN of the KMS key for storage encryption.
+  // When storage_encrypted is true and this is not set, the AWS-managed key is used.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 13 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // iam_database_authentication_enabled enables IAM database authentication,
+  // allowing IAM users and roles to authenticate to Neptune using temporary credentials.
+  bool iam_database_authentication_enabled = 14;
+
+  // iam_roles is a list of IAM role ARNs to associate with the Neptune cluster.
+  // These roles allow Neptune to access other AWS services (e.g., S3 for bulk data loading).
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef iam_roles = 15 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsIamRole,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
+  ];
+
+  // backup_retention_period is the number of days to retain automated backups (1-35).
+  optional int32 backup_retention_period = 16 [
+    (org.openmcf.shared.options.default) = "7",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 35
+    }
+  ];
+
+  // preferred_backup_window is the daily time range for automated backups in UTC.
+  // Format: "hh24:mi-hh24:mi" (e.g., "03:00-04:00").
+  string preferred_backup_window = 17 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$"
+  ];
+
+  // preferred_maintenance_window is the weekly time range for maintenance in UTC.
+  // Format: "ddd:hh24:mi-ddd:hh24:mi" (e.g., "sun:05:00-sun:06:00").
+  string preferred_maintenance_window = 18 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$"
+  ];
+
+  // deletion_protection prevents accidental cluster deletion when enabled.
+  bool deletion_protection = 19;
+
+  // skip_final_snapshot controls whether a final snapshot is created on deletion.
+  optional bool skip_final_snapshot = 20 [(org.openmcf.shared.options.default) = "false"];
+
+  // final_snapshot_identifier is the identifier for the final snapshot when
+  // skip_final_snapshot is false.
+  string final_snapshot_identifier = 21 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // enabled_cloudwatch_logs_exports lists log types to export to CloudWatch Logs.
+  // Valid values for Neptune: "audit", "slowquery"
+  repeated string enabled_cloudwatch_logs_exports = 22 [(buf.validate.field).repeated.unique = true];
+
+  // apply_immediately specifies whether modifications are applied immediately
+  // or during the next maintenance window.
+  bool apply_immediately = 23;
+
+  // copy_tags_to_snapshot copies cluster tags to snapshots when enabled.
+  bool copy_tags_to_snapshot = 24;
+
+  // allow_major_version_upgrade allows major engine version upgrades when applying
+  // changes. Required when updating engine_version to a new major version.
+  bool allow_major_version_upgrade = 25;
+
+  // cluster_parameter_group_name is the name of an existing Neptune cluster
+  // parameter group to use.
+  string cluster_parameter_group_name = 26;
+
+  // cluster_parameters are custom parameters for the cluster parameter group.
+  // When provided (and cluster_parameter_group_name is not set), a new parameter
+  // group is created with these parameters.
+  repeated AwsNeptuneClusterParameter cluster_parameters = 27;
+
+  // Conditional validations
+  option (buf.validate.message).cel = {
+    id: "subnets_or_group"
+    message: "Provide either subnet_ids (>=2) or neptune_subnet_group_name"
+    expression: "(this.subnet_ids.size() >= 2) || has(this.neptune_subnet_group_name)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "final_snapshot_id_required_when_not_skipping"
+    message: "final_snapshot_identifier must be set when skip_final_snapshot is false"
+    expression: "this.skip_final_snapshot ? true : this.final_snapshot_identifier != \"\""
+  };
+
+  option (buf.validate.message).cel = {
+    id: "logs_exports_valid_values"
+    message: "enabled_cloudwatch_logs_exports must contain only valid values: audit, slowquery"
+    expression: "this.enabled_cloudwatch_logs_exports.all(x, x == \"audit\" || x == \"slowquery\")"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "serverless_requires_db_serverless_class"
+    message: "instance_class must be 'db.serverless' when serverless_v2_scaling is configured"
+    expression: "!has(this.serverless_v2_scaling) || this.instance_class == \"db.serverless\""
+  };
+}
+
+// AwsNeptuneClusterParameter represents a parameter for the Neptune cluster parameter group.
+message AwsNeptuneClusterParameter {
+  // name is the parameter name (e.g., "neptune_enable_audit_log").
+  string name = 1 [(buf.validate.field).string.min_len = 1];
+  // value is the parameter value.
+  string value = 2 [(buf.validate.field).string.min_len = 1];
+  // apply_method specifies when the parameter is applied: "immediate" or "pending-reboot".
+  string apply_method = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "immediate",
+        "pending-reboot"
+      ]
+    }
+  ];
+}
+
+// AwsNeptuneClusterServerlessV2ScalingConfiguration configures Neptune Serverless
+// capacity scaling. Neptune Capacity Units (NCUs) determine the compute and memory
+// resources available.
+message AwsNeptuneClusterServerlessV2ScalingConfiguration {
+  // min_capacity is the minimum Neptune Capacity Units (NCUs).
+  // Valid range: 1.0 to 128.0.
+  double min_capacity = 1 [(buf.validate.field).double.gte = 1.0];
+  // max_capacity is the maximum Neptune Capacity Units (NCUs).
+  // Valid range: 1.0 to 128.0. Must be >= min_capacity.
+  double max_capacity = 2 [(buf.validate.field).double.lte = 128.0];
+
+  option (buf.validate.message).cel = {
+    id: "serverless_v2_scaling_bounds"
+    message: "max_capacity must be >= min_capacity"
+    expression: "this.max_capacity >= this.min_capacity"
+  };
+}

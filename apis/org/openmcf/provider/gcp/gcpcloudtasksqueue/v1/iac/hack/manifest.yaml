@@ -1,0 +1,19 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCloudTasksQueue
+metadata:
+  name: test-cloud-tasks-queue
+spec:
+  projectId:
+    value: my-gcp-project
+  queueName: my-task-queue
+  location: us-central1
+  rateLimits:
+    maxDispatchesPerSecond: 500
+    maxConcurrentDispatches: 100
+  retryConfig:
+    maxAttempts: 5
+    minBackoff: "1s"
+    maxBackoff: "3600s"
+    maxDoublings: 16
+  stackdriverLoggingConfig:
+    samplingRatio: 0.1

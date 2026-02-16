@@ -1,0 +1,170 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpdataprocvirtualcluster.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// GcpDataprocVirtualClusterSpec defines the configuration for a Dataproc cluster
+// running on an existing GKE cluster (Dataproc on GKE). Instead of managing its
+// own Compute Engine VMs, a virtual cluster schedules Spark, PySpark, and SparkR
+// workloads as Kubernetes pods on a GKE node pool.
+//
+// Use this component when you want to consolidate Spark processing onto shared
+// GKE infrastructure. For dedicated Dataproc clusters with managed Compute Engine
+// VMs, use GcpDataprocCluster instead.
+message GcpDataprocVirtualClusterSpec {
+  // GCP project in which to create the Dataproc virtual cluster.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpProject,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // GCP region for the Dataproc virtual cluster (e.g., "us-central1").
+  // Must match the region of the target GKE cluster.
+  string region = 2 [(buf.validate.field).required = true];
+
+  // Name of the Dataproc cluster resource in GCP.
+  // Must be lowercase letters, numbers, and hyphens; start with a letter; end with a letter or number.
+  // Optional: when empty, defaults to metadata.name.
+  string cluster_name = 3 [(buf.validate.field).string.pattern = "^([a-z]([a-z0-9-]{0,38}[a-z0-9])?)?$"];
+
+  // Fully qualified resource ID of the target GKE cluster.
+  // Format: projects/{project}/locations/{location}/clusters/{name}
+  // The GKE cluster must be in the same project and region as this virtual cluster.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef gke_cluster_target = 4 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpGkeCluster,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cluster_id"
+  ];
+
+  // Kubernetes namespace in which the Dataproc virtual cluster will be deployed.
+  // If not specified, Dataproc creates a namespace using the cluster name.
+  // The namespace is created automatically if it does not exist.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kubernetes_namespace = 5 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Cloud Storage bucket used to stage job dependencies, config files, and
+  // driver console output. If not specified, a default staging bucket is used.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef staging_bucket = 6 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpGcsBucket,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_id"
+  ];
+
+  // Kubernetes software configuration for the Dataproc virtual cluster.
+  // Defines component versions (SPARK is mandatory) and optional daemon properties.
+  GcpDataprocVirtualClusterSoftwareConfig software_config = 7 [(buf.validate.field).required = true];
+
+  // GKE node pool targets that define where Dataproc workloads are scheduled.
+  // At least one node pool target must be assigned the DEFAULT role.
+  repeated GcpDataprocVirtualClusterNodePoolTarget node_pool_targets = 8 [(buf.validate.field).repeated.min_items = 1];
+
+  // Optional auxiliary services for the virtual cluster.
+  GcpDataprocVirtualClusterAuxiliaryServicesConfig auxiliary_services_config = 9;
+}
+
+// GcpDataprocVirtualClusterSoftwareConfig defines the Kubernetes-level software
+// configuration for the Dataproc virtual cluster.
+message GcpDataprocVirtualClusterSoftwareConfig {
+  // Component versions to install. Keys are component names from the
+  // KubernetesComponent enumeration (e.g., "SPARK"). Values are version strings
+  // (e.g., "3.5-dataproc-17").
+  //
+  // The "SPARK" component is mandatory -- the cluster will fail to create without it.
+  map<string, string> component_version = 1 [(buf.validate.field).required = true];
+
+  // Optional daemon config properties in prefix:property format.
+  // Example: {"spark:spark.kubernetes.container.image": "custom-image:latest"}
+  map<string, string> properties = 2;
+}
+
+// GcpDataprocVirtualClusterNodePoolTarget assigns a GKE node pool to a Dataproc role.
+// Roles determine which workload types are scheduled on each node pool.
+message GcpDataprocVirtualClusterNodePoolTarget {
+  // Reference to a GKE node pool. Can be a short name (resolved within the
+  // target GKE cluster) or a fully qualified resource path.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef node_pool = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpGkeNodePool,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.node_pool_id"
+  ];
+
+  // Dataproc roles assigned to this node pool.
+  // Valid values: "DEFAULT", "CONTROLLER", "SPARK_DRIVER", "SPARK_EXECUTOR".
+  // At least one node pool target across the cluster must have the "DEFAULT" role.
+  // Each role may only be assigned to one node pool target.
+  repeated string roles = 2 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.items.string.in = "DEFAULT",
+    (buf.validate.field).repeated.items.string.in = "CONTROLLER",
+    (buf.validate.field).repeated.items.string.in = "SPARK_DRIVER",
+    (buf.validate.field).repeated.items.string.in = "SPARK_EXECUTOR"
+  ];
+
+  // Optional node pool configuration. When specified, Dataproc attempts to
+  // create or verify a node pool matching this shape. If a node pool with the
+  // same name already exists, it is verified against all specified fields.
+  GcpDataprocVirtualClusterNodePoolConfig node_pool_config = 3;
+}
+
+// GcpDataprocVirtualClusterNodePoolConfig defines the desired shape of a GKE
+// node pool used by the Dataproc virtual cluster.
+message GcpDataprocVirtualClusterNodePoolConfig {
+  // Compute Engine zones where node pool nodes will be located.
+  // All node pools must use the same set of locations.
+  repeated string locations = 1;
+
+  // Autoscaling configuration for this node pool.
+  GcpDataprocVirtualClusterNodePoolAutoscaling autoscaling = 2;
+
+  // Compute Engine machine type for nodes (e.g., "n1-standard-4").
+  string machine_type = 3;
+
+  // Number of local SSD disks to attach to each node.
+  int32 local_ssd_count = 4;
+
+  // Minimum CPU platform (e.g., "Intel Haswell", "Intel Sandy Bridge").
+  string min_cpu_platform = 5;
+
+  // Whether nodes are created as preemptible VM instances.
+  // Preemptible nodes cannot be used in a node pool with the CONTROLLER role
+  // or the DEFAULT role when CONTROLLER is not separately assigned.
+  bool preemptible = 6;
+
+  // Whether nodes are created as Spot VM instances (rebrand of preemptible).
+  // Same role restrictions as preemptible.
+  bool spot = 7;
+}
+
+// GcpDataprocVirtualClusterNodePoolAutoscaling defines autoscaling bounds
+// for a GKE node pool used by Dataproc.
+message GcpDataprocVirtualClusterNodePoolAutoscaling {
+  // Minimum number of nodes in the pool. Must be >= 0.
+  int32 min_node_count = 1 [(buf.validate.field).int32.gte = 0];
+
+  // Maximum number of nodes in the pool. Must be >= min_node_count and > 0.
+  int32 max_node_count = 2 [(buf.validate.field).int32.gte = 0];
+
+  option (buf.validate.message).cel = {
+    id: "autoscaling.max_gte_min"
+    message: "max_node_count must be >= min_node_count"
+    expression: "this.max_node_count >= this.min_node_count"
+  };
+}
+
+// GcpDataprocVirtualClusterAuxiliaryServicesConfig configures optional services
+// that enhance the virtual cluster.
+message GcpDataprocVirtualClusterAuxiliaryServicesConfig {
+  // Fully qualified resource name of an existing Dataproc Metastore service
+  // to use as the Hive metastore for the virtual cluster.
+  // Format: projects/{project}/locations/{location}/services/{service}
+  string metastore_service = 1;
+
+  // Fully qualified resource name of an existing Dataproc Cluster that serves
+  // as the Spark History Server for this virtual cluster.
+  // Format: projects/{project}/regions/{region}/clusters/{cluster}
+  string spark_history_server_cluster = 2;
+}

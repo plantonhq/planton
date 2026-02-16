@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpfirestoredatabase.v1;
+
+// GcpFirestoreDatabaseStackOutputs captures observable values produced after
+// provisioning a Cloud Firestore database.
+message GcpFirestoreDatabaseStackOutputs {
+  // Fully qualified database ID.
+  // Format: projects/{project}/databases/{database}
+  // This is the canonical identifier used for API calls and client
+  // library connections.
+  string database_id = 1;
+
+  // Database name. This is the value passed during creation (e.g.,
+  // "(default)" or a custom name) and is used by client libraries
+  // to select which database to connect to.
+  string database_name = 2;
+
+  // Server-generated UUID4 for this database. Unique across all
+  // Firestore databases.
+  string uid = 3;
+
+  // Timestamp at which the database was created. RFC3339 UTC format.
+  string create_time = 4;
+
+  // Earliest timestamp at which older versions of data can be read.
+  // Determined by the version retention period (1 hour without PITR,
+  // 7 days with PITR enabled). Useful for planning point-in-time
+  // recovery operations. RFC3339 UTC format.
+  string earliest_version_time = 5;
+}

@@ -85,13 +85,13 @@ func Resources(ctx *pulumi.Context, stackInput *awss3bucketv1.AwsS3BucketStackIn
 			BucketKeyEnabled: pulumi.Bool(true),
 		}
 	case awss3bucketv1.AwsS3BucketSpec_ENCRYPTION_TYPE_SSE_KMS:
-		if spec.KmsKeyId == "" {
+		if spec.KmsKeyId == nil || spec.KmsKeyId.GetValue() == "" {
 			return errors.New("kms_key_id is required when encryption_type is SSE_KMS")
 		}
 		serverSideEncryptionRule = &s3.BucketServerSideEncryptionConfigurationV2RuleArgs{
 			ApplyServerSideEncryptionByDefault: &s3.BucketServerSideEncryptionConfigurationV2RuleApplyServerSideEncryptionByDefaultArgs{
 				SseAlgorithm:   pulumi.String("aws:kms"),
-				KmsMasterKeyId: pulumi.String(spec.KmsKeyId),
+				KmsMasterKeyId: pulumi.String(spec.KmsKeyId.GetValue()),
 			},
 			BucketKeyEnabled: pulumi.Bool(true),
 		}

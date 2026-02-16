@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpfirewallrule.v1;
+
+// Outputs produced after provisioning a GCP firewall rule.
+message GcpFirewallRuleStackOutputs {
+  // Full self-link URI of the created firewall rule.
+  // Example: "projects/my-project/global/firewalls/allow-http-ingress"
+  // Useful for expressing depends_on or uses relationships in infra charts.
+  string firewall_self_link = 1;
+
+  // Name of the firewall rule as it exists in GCP.
+  string firewall_name = 2;
+
+  // RFC3339 timestamp of when the firewall rule was created.
+  string creation_timestamp = 3;
+}

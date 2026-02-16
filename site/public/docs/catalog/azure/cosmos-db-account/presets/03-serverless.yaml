@@ -1,0 +1,28 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureCosmosdbAccount
+metadata:
+  name: my-cosmosdb-serverless
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-account-name>
+  kind: GlobalDocumentDB  # default from spec; SQL/NoSQL API
+  capabilities:
+    - EnableServerless
+  consistencyPolicy:
+    consistencyLevel: Session  # default from spec
+  geoLocations:
+    - location: <azure-region>
+      failoverPriority: 0
+      zoneRedundant: false  # default from spec
+  freeTierEnabled: false  # default from spec
+  publicNetworkAccessEnabled: true  # default from spec
+  sqlDatabases:
+    - name: <your-database-name>
+      # No throughput fields -- serverless uses pay-per-request pricing
+      containers:
+        - name: <your-container-name>
+          partitionKeyPaths:
+            - /partitionKey
+          partitionKeyKind: Hash  # default from spec

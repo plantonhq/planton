@@ -1,0 +1,7 @@
+apiVersion: scaleway.openmcf.org/v1
+kind: ScalewayContainerRegistry
+metadata:
+  name: my-registry
+spec:
+  region: fr-par
+  isPublic: false  # recommended_default from spec

@@ -1,0 +1,37 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsStepFunction
+metadata:
+  name: <workflow-name>
+  org: <organization>
+  env: <environment>
+  id: <resource-id>
+spec:
+  type: EXPRESS
+  roleArn:
+    value: <iam-execution-role-arn>
+  definition:
+    StartAt: EnrichEvent
+    States:
+      EnrichEvent:
+        Type: Task
+        Resource: <enrichment-lambda-arn>
+        Next: RouteEvent
+      RouteEvent:
+        Type: Choice
+        Choices:
+          - Variable: "$.eventType"
+            StringEquals: high-priority
+            Next: ProcessUrgent
+        Default: ProcessNormal
+      ProcessUrgent:
+        Type: Task
+        Resource: <urgent-lambda-arn>
+        End: true
+      ProcessNormal:
+        Type: Task
+        Resource: <normal-lambda-arn>
+        End: true
+  logging:
+    level: ERROR
+    logDestination:
+      value: <cloudwatch-log-group-arn>

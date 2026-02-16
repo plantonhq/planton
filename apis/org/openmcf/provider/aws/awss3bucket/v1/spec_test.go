@@ -7,6 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
 func TestAwsS3BucketSpec(t *testing.T) {
@@ -100,7 +101,11 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 					Spec: &AwsS3BucketSpec{
 						AwsRegion:      "us-east-1",
 						EncryptionType: AwsS3BucketSpec_ENCRYPTION_TYPE_SSE_KMS,
-						KmsKeyId:       "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012",
+						KmsKeyId: &foreignkeyv1.StringValueOrRef{
+							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
+								Value: "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012",
+							},
+						},
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -171,7 +176,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						VersioningEnabled: true,
 						Replication: &AwsS3BucketSpec_ReplicationConfiguration{
 							Enabled: true,
-							RoleArn: "arn:aws:iam::123456789012:role/replication-role",
+							RoleArn: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "arn:aws:iam::123456789012:role/replication-role"}},
 							Destination: &AwsS3BucketSpec_ReplicationConfiguration_Destination{
 								BucketArn: "arn:aws:s3:::destination-bucket",
 							},
@@ -330,7 +335,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						VersioningEnabled: true,
 						Replication: &AwsS3BucketSpec_ReplicationConfiguration{
 							Enabled: true,
-							RoleArn: "", // Empty role ARN should fail
+							RoleArn: nil, // nil role ARN should fail
 							Destination: &AwsS3BucketSpec_ReplicationConfiguration_Destination{
 								BucketArn: "arn:aws:s3:::destination-bucket",
 							},
@@ -353,7 +358,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						VersioningEnabled: true,
 						Replication: &AwsS3BucketSpec_ReplicationConfiguration{
 							Enabled:     true,
-							RoleArn:     "arn:aws:iam::123456789012:role/replication-role",
+							RoleArn:     &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "arn:aws:iam::123456789012:role/replication-role"}},
 							Destination: nil, // Missing destination should fail
 						},
 					},
@@ -374,7 +379,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						VersioningEnabled: true,
 						Replication: &AwsS3BucketSpec_ReplicationConfiguration{
 							Enabled: true,
-							RoleArn: "arn:aws:iam::123456789012:role/replication-role",
+							RoleArn: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "arn:aws:iam::123456789012:role/replication-role"}},
 							Destination: &AwsS3BucketSpec_ReplicationConfiguration_Destination{
 								BucketArn: "", // Empty bucket ARN should fail
 							},
@@ -397,7 +402,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						VersioningEnabled: true,
 						Replication: &AwsS3BucketSpec_ReplicationConfiguration{
 							Enabled: true,
-							RoleArn: "arn:aws:iam::123456789012:role/replication-role",
+							RoleArn: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "arn:aws:iam::123456789012:role/replication-role"}},
 							Destination: &AwsS3BucketSpec_ReplicationConfiguration_Destination{
 								BucketArn:    "arn:aws:s3:::destination-bucket",
 								StorageClass: AwsS3BucketSpec_StorageClass(999), // Invalid enum

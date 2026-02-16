@@ -1,0 +1,21 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesGhaRunnerScaleSet
+metadata:
+  name: my-gha-runners
+spec:
+  namespace:
+    value: gha-runners
+  createNamespace: true
+  githubConfigUrl: "https://github.com/<your-org>"
+  githubConfigSecret: "<your-github-app-secret-name>"
+  runnerScaleSetName: "<your-runner-label>"
+  minRunners: 0
+  maxRunners: 10
+  container:
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 2000m
+        memory: 4Gi

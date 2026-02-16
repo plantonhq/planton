@@ -1,0 +1,16 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsIamRole
+metadata:
+  name: my-ecs-task-execution-role
+spec:
+  description: ECS task execution role for pulling images and writing logs
+  path: /  # recommended_default from spec
+  trustPolicy:
+    Version: "2012-10-17"
+    Statement:
+      - Effect: Allow
+        Principal:
+          Service: ecs-tasks.amazonaws.com
+        Action: sts:AssumeRole
+  managedPolicyArns:
+    - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy

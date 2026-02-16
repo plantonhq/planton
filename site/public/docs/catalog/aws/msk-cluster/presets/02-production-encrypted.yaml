@@ -1,0 +1,59 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsMskCluster
+metadata:
+  name: prod-kafka
+spec:
+  kafkaVersion: "3.6.0"
+  numberOfBrokerNodes: 6
+  instanceType: kafka.m7g.xlarge
+  subnetIds:
+    - valueFrom:
+        kind: AwsVpc
+        name: production-vpc
+        fieldPath: status.outputs.private_subnets.[0].id
+    - valueFrom:
+        kind: AwsVpc
+        name: production-vpc
+        fieldPath: status.outputs.private_subnets.[1].id
+    - valueFrom:
+        kind: AwsVpc
+        name: production-vpc
+        fieldPath: status.outputs.private_subnets.[2].id
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: production-vpc
+      fieldPath: status.outputs.vpc_id
+  securityGroupIds:
+    - valueFrom:
+        kind: AwsSecurityGroup
+        name: kafka-clients-sg
+        fieldPath: status.outputs.security_group_id
+  ebsVolumeSizeGib: 1000
+  storageMode: TIERED
+  kmsKeyArn:
+    valueFrom:
+      kind: AwsKmsKey
+      name: platform-encryption-key
+      fieldPath: status.outputs.key_arn
+  clientBrokerEncryption: TLS
+  inClusterEncryption: true
+  authentication:
+    saslIamEnabled: true
+  serverProperties:
+    auto.create.topics.enable: "false"
+    default.replication.factor: "3"
+    min.insync.replicas: "2"
+    num.partitions: "12"
+    log.retention.hours: "168"
+  logging:
+    cloudwatchLogs:
+      enabled: true
+      logGroup:
+        valueFrom:
+          kind: AwsCloudwatchLogGroup
+          name: kafka-broker-logs
+          fieldPath: status.outputs.log_group_name
+  enhancedMonitoring: PER_TOPIC_PER_BROKER
+  jmxExporterEnabled: true
+  nodeExporterEnabled: true

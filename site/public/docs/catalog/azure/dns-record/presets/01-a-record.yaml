@@ -1,0 +1,14 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureDnsRecord
+metadata:
+  name: my-a-record
+spec:
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  zoneName:
+    value: "<your-domain.com>"
+  type: A
+  name: <subdomain>
+  values:
+    - <ipv4-address>
+  ttlSeconds: 300  # default from spec; 5 minutes

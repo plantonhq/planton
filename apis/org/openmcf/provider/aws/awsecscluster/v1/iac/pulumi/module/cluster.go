@@ -47,7 +47,7 @@ func cluster(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) error 
 					if execConfig.LogConfiguration.CloudWatchLogGroupName != "" {
 						logConfig.CloudWatchLogGroupName = pulumi.String(execConfig.LogConfiguration.CloudWatchLogGroupName)
 					}
-					if execConfig.LogConfiguration.CloudWatchEncryptionEnabled && execConfig.KmsKeyId != "" {
+					if execConfig.LogConfiguration.CloudWatchEncryptionEnabled && execConfig.KmsKeyId != nil && execConfig.KmsKeyId.GetValue() != "" {
 						logConfig.CloudWatchEncryptionEnabled = pulumi.Bool(true)
 					}
 					if execConfig.LogConfiguration.S3BucketName != "" {
@@ -60,8 +60,8 @@ func cluster(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) error 
 				}
 			}
 
-			if execConfig.KmsKeyId != "" {
-				execCmdConfig.KmsKeyId = pulumi.String(execConfig.KmsKeyId)
+			if execConfig.KmsKeyId != nil && execConfig.KmsKeyId.GetValue() != "" {
+				execCmdConfig.KmsKeyId = pulumi.String(execConfig.KmsKeyId.GetValue())
 			}
 
 			args.Configuration = &ecs.ClusterConfigurationArgs{

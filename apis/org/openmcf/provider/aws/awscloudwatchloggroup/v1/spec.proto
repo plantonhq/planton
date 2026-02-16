@@ -1,0 +1,125 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awscloudwatchloggroup.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// AwsCloudwatchLogGroupSpec defines the desired configuration for an AWS
+// CloudWatch Logs log group.
+//
+// A CloudWatch Logs log group is a container for log streams that share the same
+// retention, monitoring, and access control settings. Log groups are the primary
+// destination for application logs, service logs, and operational data across
+// AWS services.
+//
+// CloudWatch Log Groups are referenced by many AWS services:
+// - Step Functions (execution logging)
+// - API Gateway (access logging)
+// - OpenSearch (slow logs, application logs, audit logs)
+// - Lambda (function execution logs — auto-created, but can be pre-created for policy control)
+// - ECS (container logs via awslogs driver)
+// - WAF (web request logging — one of several destination options)
+// - ElastiCache (slow logs, engine logs — one of several destination options)
+//
+// For the common use case, only `retention_in_days` is needed. KMS encryption
+// and log group class are optional settings for compliance and cost optimization.
+//
+// Credentials, region, and deployment workflow live outside this spec in stack inputs.
+message AwsCloudwatchLogGroupSpec {
+  // ---------------------------------------------------------------------------
+  // Retention
+  // ---------------------------------------------------------------------------
+
+  // Number of days to retain log events. After this period, log events are
+  // automatically deleted. Set to 0 (the default) to retain log events
+  // indefinitely — they will never expire.
+  //
+  // AWS only accepts specific values for this field. Any value not in the
+  // allowed set will be rejected by the AWS API.
+  //
+  // Allowed values: 0 (never expire), 1, 3, 5, 7, 14, 30, 60, 90, 120, 150,
+  // 180, 365, 400, 545, 731, 1096, 1827, 2192, 2557, 2922, 3288, 3653.
+  //
+  // Recommended: Set an explicit retention for cost control. Indefinite retention
+  // (0) accumulates storage costs over time.
+  int32 retention_in_days = 1 [(org.openmcf.shared.options.recommended_default) = "30"];
+
+  // ---------------------------------------------------------------------------
+  // Encryption
+  // ---------------------------------------------------------------------------
+
+  // ARN of the KMS key to use for encrypting log data at rest. When omitted,
+  // CloudWatch Logs uses its default server-side encryption (SSE-CWL).
+  //
+  // Customer-managed KMS keys provide:
+  // - Key rotation control
+  // - Cross-account access via key policy
+  // - CloudTrail audit trail of log data access
+  // - Compliance with regulations requiring customer-controlled encryption keys
+  //
+  // The KMS key must be in the same region as the log group.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 2 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Log group class
+  // ---------------------------------------------------------------------------
+
+  // The class of the log group, which determines pricing, feature availability,
+  // and data durability characteristics.
+  //
+  // Valid values:
+  // - "STANDARD" — Full feature set including metric filters, subscription
+  //   filters, Logs Insights, and Contributor Insights. Default when omitted.
+  // - "INFREQUENT_ACCESS" — Reduced cost (~50% cheaper storage) with a subset
+  //   of features. Supports Logs Insights and managed ingestion to S3, but does
+  //   NOT support metric filters, subscription filters, or Contributor Insights.
+  //   Best for high-volume logs accessed infrequently (VPC flow logs, CDN access
+  //   logs, compliance archives).
+  // - "DELIVERY" — Purpose-built for AWS service log delivery (VPC Flow Logs,
+  //   CloudTrail, Route53 Resolver). Lowest cost. Retention is managed by AWS
+  //   and retention_in_days must not be set.
+  //
+  // This field is ForceNew: changing it requires replacing the log group.
+  string log_group_class = 3;
+
+  // ---------------------------------------------------------------------------
+  // Deletion protection
+  // ---------------------------------------------------------------------------
+
+  // When true, the log group is protected from deletion. Any attempt to delete
+  // the log group (including via IaC destroy) will fail until this flag is set
+  // to false. Useful for protecting production log groups from accidental
+  // deletion.
+  bool deletion_protection_enabled = 4;
+
+  // ---------------------------------------------------------------------------
+  // CEL validations
+  // ---------------------------------------------------------------------------
+
+  // retention_in_days must be one of the AWS-allowed values.
+  option (buf.validate.message).cel = {
+    id: "retention_in_days_valid_values"
+    message: "retention_in_days must be one of: 0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1096, 1827, 2192, 2557, 2922, 3288, 3653"
+    expression: "this.retention_in_days in [0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1096, 1827, 2192, 2557, 2922, 3288, 3653]"
+  };
+
+  // log_group_class must be a valid AWS log group class.
+  option (buf.validate.message).cel = {
+    id: "log_group_class_valid_values"
+    message: "log_group_class must be 'STANDARD', 'INFREQUENT_ACCESS', or 'DELIVERY' when set"
+    expression: "this.log_group_class == '' || this.log_group_class in ['STANDARD', 'INFREQUENT_ACCESS', 'DELIVERY']"
+  };
+
+  // DELIVERY class log groups must not set retention_in_days — AWS manages
+  // retention for Delivery log groups internally.
+  option (buf.validate.message).cel = {
+    id: "delivery_class_no_retention"
+    message: "retention_in_days must not be set (must be 0) when log_group_class is 'DELIVERY' — AWS manages retention for Delivery log groups"
+    expression: "this.log_group_class != 'DELIVERY' || this.retention_in_days == 0"
+  };
+}

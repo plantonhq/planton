@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awscognitoidentityprovider.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/aws/awscognitoidentityprovider/v1/spec.proto";
+import "org/openmcf/provider/aws/awscognitoidentityprovider/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// AwsCognitoIdentityProvider represents an external identity provider (social,
+// OIDC, or SAML) federated into an Amazon Cognito User Pool. This is a child
+// resource of AwsCognitoUserPool — the pool must exist before creating
+// identity providers.
+//
+// Supported provider types: Google, Facebook, Login with Amazon, Sign in with
+// Apple, generic OIDC, and SAML 2.0.
+message AwsCognitoIdentityProvider {
+  // api-version must be set to "aws.openmcf.org/v1".
+  string api_version = 1 [(buf.validate.field).string.const = "aws.openmcf.org/v1"];
+
+  // resource-kind for this identity provider resource, must be "AwsCognitoIdentityProvider".
+  string kind = 2 [(buf.validate.field).string.const = "AwsCognitoIdentityProvider"];
+
+  // metadata captures identifying information (name, org, env, id, labels, relationships).
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec holds the desired configuration for the identity provider.
+  AwsCognitoIdentityProviderSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status holds runtime or post-deployment information.
+  AwsCognitoIdentityProviderStatus status = 5;
+}
+
+// AwsCognitoIdentityProviderStatus captures lifecycle, audit, and observable
+// outputs from a provisioned identity provider.
+message AwsCognitoIdentityProviderStatus {
+  // stack-outputs
+  AwsCognitoIdentityProviderStackOutputs outputs = 1;
+}

@@ -1,0 +1,12 @@
+apiVersion: digital-ocean.openmcf.org/v1
+kind: DigitalOceanDnsZone
+metadata:
+  name: my-simple-website-zone
+spec:
+  domainName: "<your-domain.com>"
+  records:
+    - name: "@"
+      type: A
+      values:
+        - value: "<web-server-ip>"
+      ttlSeconds: 3600

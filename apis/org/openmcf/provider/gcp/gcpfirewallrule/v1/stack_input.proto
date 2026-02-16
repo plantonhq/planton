@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpfirewallrule.v1;
+
+import "org/openmcf/provider/gcp/gcpfirewallrule/v1/api.proto";
+import "org/openmcf/provider/gcp/provider.proto";
+
+//gcp-firewall-rule stack-input
+message GcpFirewallRuleStackInput {
+  //target cloud-resource
+  GcpFirewallRule target = 1;
+  //provider-config
+  org.openmcf.provider.gcp.GcpProviderConfig provider_config = 2;
+}

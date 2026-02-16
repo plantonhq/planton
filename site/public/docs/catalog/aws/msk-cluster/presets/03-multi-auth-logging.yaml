@@ -1,0 +1,42 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsMskCluster
+metadata:
+  name: multi-auth-kafka
+spec:
+  kafkaVersion: "3.6.0"
+  numberOfBrokerNodes: 3
+  instanceType: kafka.m5.large
+  subnetIds:
+    - value: "<private-subnet-id-az1>"
+    - value: "<private-subnet-id-az2>"
+    - value: "<private-subnet-id-az3>"
+  ebsVolumeSizeGib: 500
+  clientBrokerEncryption: TLS
+  inClusterEncryption: true
+  authentication:
+    saslIamEnabled: true
+    saslScramEnabled: true
+    tlsEnabled: true
+    tlsCertificateAuthorityArns:
+      - value: "arn:aws:acm-pca:us-east-1:111122223333:certificate-authority/your-pca-id"
+  serverProperties:
+    auto.create.topics.enable: "false"
+    default.replication.factor: "3"
+    min.insync.replicas: "2"
+  logging:
+    cloudwatchLogs:
+      enabled: true
+      logGroup:
+        value: /aws/msk/multi-auth-cluster
+    firehose:
+      enabled: true
+      deliveryStream:
+        value: msk-logs-to-s3
+    s3:
+      enabled: true
+      bucket:
+        value: my-msk-audit-logs
+      prefix: msk-broker-logs/
+  enhancedMonitoring: PER_TOPIC_PER_BROKER
+  jmxExporterEnabled: true
+  nodeExporterEnabled: true

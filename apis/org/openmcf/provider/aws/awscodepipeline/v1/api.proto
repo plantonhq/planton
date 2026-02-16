@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awscodepipeline.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/aws/awscodepipeline/v1/spec.proto";
+import "org/openmcf/provider/aws/awscodepipeline/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// AwsCodePipeline is a deployment component for creating and managing
+// AWS CodePipeline continuous delivery pipelines that orchestrate build,
+// test, and deploy phases of your release process through an ordered
+// sequence of stages and actions.
+message AwsCodePipeline {
+  // api_version specifies the API version for this resource.
+  string api_version = 1 [(buf.validate.field).string.const = 'aws.openmcf.org/v1'];
+
+  // kind identifies this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'AwsCodePipeline'];
+
+  // metadata contains standard resource metadata including name, labels, and annotations.
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec defines the desired state of the CodePipeline pipeline.
+  AwsCodePipelineSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the observed state and outputs from the deployment.
+  AwsCodePipelineStatus status = 5;
+}
+
+// AwsCodePipelineStatus contains the status and outputs for the pipeline.
+message AwsCodePipelineStatus {
+  // outputs contains the values exported from the IaC stack after deployment.
+  AwsCodePipelineStackOutputs outputs = 1;
+}

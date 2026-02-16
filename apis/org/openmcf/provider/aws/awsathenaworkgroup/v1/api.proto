@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsathenaworkgroup.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/aws/awsathenaworkgroup/v1/spec.proto";
+import "org/openmcf/provider/aws/awsathenaworkgroup/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// AwsAthenaWorkgroup is the Kubernetes-style resource envelope for an Amazon
+// Athena workgroup.
+message AwsAthenaWorkgroup {
+  // api-version must be set to "aws.openmcf.org/v1".
+  string api_version = 1 [(buf.validate.field).string.const = "aws.openmcf.org/v1"];
+
+  // resource-kind for this Athena workgroup resource, must be "AwsAthenaWorkgroup".
+  string kind = 2 [(buf.validate.field).string.const = "AwsAthenaWorkgroup"];
+
+  // metadata captures identifying information (name, org, env, id, labels, relationships).
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec holds the desired configuration for the Athena workgroup.
+  AwsAthenaWorkgroupSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status holds runtime or post-deployment information.
+  AwsAthenaWorkgroupStatus status = 5;
+}
+
+// AwsAthenaWorkgroupStatus captures lifecycle, audit, job linkage, and observable outputs.
+message AwsAthenaWorkgroupStatus {
+  // stack-outputs
+  AwsAthenaWorkgroupStackOutputs outputs = 1;
+}

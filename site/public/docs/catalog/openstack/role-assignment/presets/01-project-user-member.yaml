@@ -1,0 +1,9 @@
+apiVersion: openstack.openmcf.org/v1
+kind: OpenStackRoleAssignment
+metadata:
+  name: my-project-member-assignment
+spec:
+  roleId: <member-role-id>
+  projectId:
+    value: <project-id>
+  userId: <user-id>

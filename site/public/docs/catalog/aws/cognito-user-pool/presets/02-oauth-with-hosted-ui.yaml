@@ -1,0 +1,49 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsCognitoUserPool
+metadata:
+  name: ${name}
+  org: ${org}
+  env: ${env}
+  id: ${id}
+  labels:
+    openmcf.org/provisioner: pulumi
+    openmcf.org/stack: ${env}.AwsCognitoUserPool.${name}
+spec:
+  usernameAttributes:
+    - email
+  passwordPolicy:
+    minimumLength: 10
+    requireLowercase: true
+    requireUppercase: true
+    requireNumbers: true
+  autoVerifiedAttributes:
+    - email
+  accountRecoveryMechanisms:
+    - name: verified_email
+      priority: 1
+  clients:
+    - name: web-app
+      allowedOauthFlowsUserPoolClient: true
+      allowedOauthFlows:
+        - code
+      allowedOauthScopes:
+        - openid
+        - email
+        - profile
+      callbackUrls:
+        - https://app.example.com/callback
+      logoutUrls:
+        - https://app.example.com/logout
+      defaultRedirectUri: https://app.example.com/callback
+      supportedIdentityProviders:
+        - COGNITO
+      explicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      accessTokenValidityMinutes: 60
+      idTokenValidityMinutes: 60
+      refreshTokenValidityDays: 30
+      enableTokenRevocation: true
+      preventUserExistenceErrors: ENABLED
+  domain:
+    domain: ${name}-auth

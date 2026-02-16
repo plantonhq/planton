@@ -1,0 +1,9 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpBigQueryDataset
+metadata:
+  name: test-bq-dataset
+spec:
+  projectId:
+    value: "test-project"
+  datasetId: test_analytics
+  location: US

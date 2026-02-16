@@ -1,0 +1,19 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsRdsInstance
+metadata:
+  name: my-mysql-instance
+spec:
+  subnetIds:
+    - value: "<private-subnet-id-az1>"
+    - value: "<private-subnet-id-az2>"
+  securityGroupIds:
+    - value: "<security-group-id>"
+  engine: mysql
+  engineVersion: "8.0.35"
+  instanceClass: db.t3.medium
+  allocatedStorageGb: 50
+  storageEncrypted: true
+  username: <master-username>
+  password: <master-password>
+  multiAz: true
+  publiclyAccessible: false

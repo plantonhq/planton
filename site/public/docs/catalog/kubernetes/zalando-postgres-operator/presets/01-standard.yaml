@@ -1,0 +1,16 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesZalandoPostgresOperator
+metadata:
+  name: my-zalando-postgres-operator
+spec:
+  namespace:
+    value: zalando-postgres-system
+  createNamespace: true
+  container:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 100Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi

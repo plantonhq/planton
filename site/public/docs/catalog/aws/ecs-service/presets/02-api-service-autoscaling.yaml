@@ -1,0 +1,43 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsEcsService
+metadata:
+  name: my-api-service
+spec:
+  clusterArn:
+    value: "<ecs-cluster-arn>"
+  container:
+    image:
+      repo: <ecr-repo-uri>
+      tag: latest
+    port: 8080
+    replicas: 2
+    cpu: 1024
+    memory: 2048
+    logging:
+      enabled: true  # recommended_default from spec
+  network:
+    subnets:
+      - value: "<private-subnet-id-az1>"
+      - value: "<private-subnet-id-az2>"
+    securityGroups:
+      - value: "<security-group-id>"
+  alb:
+    enabled: true
+    arn:
+      value: "<alb-arn>"
+    routingType: hostname
+    hostname: <api-hostname>
+    listenerPort: 80  # recommended_default from spec
+    healthCheck:
+      protocol: HTTP
+      path: /health
+      interval: 30
+      timeout: 5
+      healthyThreshold: 3
+      unhealthyThreshold: 2
+  healthCheckGracePeriodSeconds: 60  # default from spec
+  autoscaling:
+    enabled: true
+    minTasks: 2
+    maxTasks: 10
+    targetCpuPercent: 75  # default from spec

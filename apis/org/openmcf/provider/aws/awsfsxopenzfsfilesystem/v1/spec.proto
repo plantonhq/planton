@@ -1,0 +1,373 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsfsxopenzfsfilesystem.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// AwsFsxOpenzfsFileSystemSpec defines the desired configuration for an Amazon FSx
+// for OpenZFS file system — a fully managed NFS file system built on the OpenZFS
+// file system, providing sub-millisecond latency, snapshots, cloning, and data
+// compression with support for NFSv3, NFSv4.0, NFSv4.1, and NFSv4.2 protocols.
+//
+// FSx for OpenZFS delivers up to 10 GB/s throughput and over 1 million IOPS,
+// making it suitable for general-purpose NFS workloads including web serving,
+// content management, analytics, DevOps, CI/CD, and application data stores.
+// It supports ZSTD/LZ4 compression, user/group quotas, and Multi-AZ deployments
+// for high availability.
+//
+// Key design notes:
+// - `deployment_type`, `subnet_ids`, `security_group_ids`, `kms_key_id`, and
+//   `storage_type` are ForceNew — changing them requires replacing the file system.
+// - SINGLE_AZ_1 and SINGLE_AZ_2 require exactly one subnet. MULTI_AZ_1 requires
+//   exactly two subnets and additionally needs `preferred_subnet_id`.
+// - SINGLE_AZ_2 is the recommended deployment type for new workloads. MULTI_AZ_1
+//   provides automatic failover across AZs for high availability.
+// - The root volume is automatically created with the file system. Its NFS export
+//   settings, compression, and quotas are configured via `root_volume_configuration`.
+// - Child volumes are independent lifecycle resources and are NOT managed by this
+//   component. Use the root_volume_id output to create child volumes externally.
+// - Only SSD storage type is supported in v1. INTELLIGENT_TIERING (MULTI_AZ_1
+//   only, no explicit storage capacity) is deferred to a future version.
+// - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+message AwsFsxOpenzfsFileSystemSpec {
+  // ---------------------------------------------------------------------------
+  // File System Core
+  // ---------------------------------------------------------------------------
+
+  // Deployment type controlling availability and performance characteristics.
+  // ForceNew — cannot be changed after creation.
+  //
+  // - "SINGLE_AZ_1": first-generation single-AZ. Lower throughput ceiling.
+  //   Supported throughput: 64, 128, 256, 512, 1024, 2048, 3072, 4096 MB/s.
+  // - "SINGLE_AZ_2": latest single-AZ with higher throughput and more features.
+  //   Recommended for most workloads. Supported throughput: 160, 320, 640,
+  //   1280, 2560, 3840, 5120, 7680, 10240 MB/s.
+  // - "MULTI_AZ_1": multi-AZ with automatic failover. Requires two subnets in
+  //   different AZs, a preferred_subnet_id, and route_table_ids. Same throughput
+  //   range as SINGLE_AZ_2.
+  //
+  // Default: SINGLE_AZ_2
+  optional string deployment_type = 1 [(org.openmcf.shared.options.default) = "SINGLE_AZ_2"];
+
+  // Storage capacity in GiB. Required.
+  //
+  // Valid range: 64–524288 GiB. Choose based on data size and throughput needs.
+  // Storage can be increased after creation but never decreased.
+  int32 storage_capacity_gib = 2 [(buf.validate.field).int32.gte = 64];
+
+  // Throughput capacity in MB/s. Required.
+  //
+  // Valid values depend on deployment type:
+  // - SINGLE_AZ_1: 64, 128, 256, 512, 1024, 2048, 3072, 4096
+  // - SINGLE_AZ_2 / MULTI_AZ_1: 160, 320, 640, 1280, 2560, 3840, 5120, 7680, 10240
+  //
+  // Can be changed after creation to scale performance up or down.
+  int32 throughput_capacity = 3 [(buf.validate.field).int32.gt = 0];
+
+  // ---------------------------------------------------------------------------
+  // Networking (ForceNew)
+  // ---------------------------------------------------------------------------
+
+  // Subnet IDs for the file system's network interfaces. Required. ForceNew.
+  //
+  // - SINGLE_AZ_1 / SINGLE_AZ_2: exactly one subnet.
+  // - MULTI_AZ_1: exactly two subnets in different availability zones.
+  //
+  // All compute resources mounting this file system must have network
+  // connectivity to these subnets.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 4 [
+    (buf.validate.field).repeated.min_items = 1,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+  ];
+
+  // Security groups for the file system's network interfaces. ForceNew.
+  //
+  // Must allow NFS traffic between the file system and its clients:
+  // - TCP port 111 (portmapper)
+  // - TCP port 2049 (NFS)
+  // - TCP ports 20001-20003 (NFS mount)
+  //
+  // Up to 50 security groups.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 5 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // Preferred subnet for the active file server in a MULTI_AZ_1 deployment.
+  // ForceNew. Required when deployment_type is MULTI_AZ_1. Must be one of the
+  // subnets specified in subnet_ids.
+  //
+  // In a failover event, the standby file server in the other subnet takes over.
+  // Ignored for SINGLE_AZ deployments.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef preferred_subnet_id = 6 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[0].id"
+  ];
+
+  // IP address range for the file system endpoints in a MULTI_AZ_1 deployment.
+  // ForceNew. Must be a CIDR block within the VPC's CIDR range that does not
+  // overlap with any existing subnets. AWS assigns floating IPs from this range
+  // for seamless failover.
+  //
+  // Ignored for SINGLE_AZ deployments.
+  string endpoint_ip_address_range = 7;
+
+  // Route table IDs that need routes to the file system in a MULTI_AZ_1
+  // deployment. AWS automatically manages the routes. Up to 50 route tables.
+  //
+  // Ignored for SINGLE_AZ deployments.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef route_table_ids = 8;
+
+  // ---------------------------------------------------------------------------
+  // Encryption
+  // ---------------------------------------------------------------------------
+
+  // Customer-managed KMS key ARN for encryption at rest. ForceNew — the KMS key
+  // cannot be changed after creation. When omitted, the file system uses the
+  // AWS-managed FSx key. All OpenZFS file systems are encrypted at rest by
+  // default; this field upgrades to a customer-managed key.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 9 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Disk IOPS Configuration
+  // ---------------------------------------------------------------------------
+
+  // SSD IOPS configuration for the file system. Controls the total provisioned
+  // IOPS. When omitted, AWS uses AUTOMATIC mode which scales IOPS with storage.
+  AwsFsxOpenzfsFileSystemDiskIopsConfiguration disk_iops_configuration = 10;
+
+  // ---------------------------------------------------------------------------
+  // Root Volume Configuration
+  // ---------------------------------------------------------------------------
+
+  // Configuration for the file system's root volume. The root volume is
+  // automatically created with the file system and serves as the default NFS
+  // mount target. Settings here control compression, NFS access, quotas, and
+  // record size for the root volume.
+  //
+  // When omitted, the root volume uses defaults: no compression, no NFS access
+  // restrictions, 128 KiB record size.
+  AwsFsxOpenzfsFileSystemRootVolumeConfiguration root_volume_configuration = 11;
+
+  // ---------------------------------------------------------------------------
+  // Backup
+  // ---------------------------------------------------------------------------
+
+  // Number of days to retain automatic backups. Range: 0-90. Set to 0 to
+  // disable automatic backups.
+  //
+  // Default: 0 (no automatic backups)
+  optional int32 automatic_backup_retention_days = 12 [(org.openmcf.shared.options.default) = "0"];
+
+  // Daily UTC time to start automatic backups, in HH:MM format (e.g., "05:00").
+  // If not specified and backups are enabled, AWS chooses a default window.
+  string daily_automatic_backup_start_time = 13;
+
+  // Copy tags from the file system to backups.
+  bool copy_tags_to_backups = 14;
+
+  // Copy tags from the file system to volumes. When true, tags are propagated
+  // to the root volume and any child volumes created on this file system.
+  bool copy_tags_to_volumes = 15;
+
+  // Skip creating a final backup when the file system is deleted.
+  //
+  // Default: true
+  optional bool skip_final_backup = 16 [(org.openmcf.shared.options.default) = "true"];
+
+  // ---------------------------------------------------------------------------
+  // Maintenance
+  // ---------------------------------------------------------------------------
+
+  // Weekly UTC maintenance window in the format "d:HH:MM" where d is the day of
+  // the week (1=Monday, 7=Sunday). Example: "1:05:00" for Monday at 05:00 UTC.
+  // If not specified, AWS chooses a default window.
+  string weekly_maintenance_start_time = 17;
+
+  // ---------------------------------------------------------------------------
+  // CEL Validations
+  // ---------------------------------------------------------------------------
+
+  // deployment_type valid values.
+  option (buf.validate.message).cel = {
+    id: "deployment_type_valid"
+    message: "deployment_type must be 'SINGLE_AZ_1', 'SINGLE_AZ_2', or 'MULTI_AZ_1'"
+    expression: "this.deployment_type == '' || this.deployment_type in ['SINGLE_AZ_1', 'SINGLE_AZ_2', 'MULTI_AZ_1']"
+  };
+
+  // preferred_subnet_id only valid for MULTI_AZ_1.
+  option (buf.validate.message).cel = {
+    id: "preferred_subnet_requires_multi_az"
+    message: "preferred_subnet_id can only be set for MULTI_AZ_1 deployment type"
+    expression: "!has(this.preferred_subnet_id) || this.deployment_type == 'MULTI_AZ_1'"
+  };
+
+  // endpoint_ip_address_range only valid for MULTI_AZ_1.
+  option (buf.validate.message).cel = {
+    id: "endpoint_ip_range_requires_multi_az"
+    message: "endpoint_ip_address_range can only be set for MULTI_AZ_1 deployment type"
+    expression: "this.endpoint_ip_address_range == '' || this.deployment_type == 'MULTI_AZ_1'"
+  };
+
+  // route_table_ids only valid for MULTI_AZ_1.
+  option (buf.validate.message).cel = {
+    id: "route_tables_require_multi_az"
+    message: "route_table_ids can only be set for MULTI_AZ_1 deployment type"
+    expression: "size(this.route_table_ids) == 0 || this.deployment_type == 'MULTI_AZ_1'"
+  };
+}
+
+// AwsFsxOpenzfsFileSystemDiskIopsConfiguration controls the SSD IOPS provisioned
+// for the file system. In AUTOMATIC mode, IOPS scale with storage capacity. In
+// USER_PROVISIONED mode, you specify the exact IOPS independently of storage.
+message AwsFsxOpenzfsFileSystemDiskIopsConfiguration {
+  // IOPS provisioning mode.
+  //
+  // - "AUTOMATIC": IOPS scale automatically based on storage capacity.
+  //   Provides 3 IOPS per GiB of storage, up to the deployment type limit.
+  // - "USER_PROVISIONED": you specify the exact IOPS via the `iops` field.
+  //   Allows higher performance independent of storage size but at extra cost.
+  //
+  // Default: AUTOMATIC
+  optional string mode = 1 [(org.openmcf.shared.options.default) = "AUTOMATIC"];
+
+  // Total SSD IOPS provisioned. Only valid when mode is "USER_PROVISIONED".
+  //
+  // Valid ranges depend on deployment type:
+  // - SINGLE_AZ_1: up to 160,000
+  // - SINGLE_AZ_2 / MULTI_AZ_1: up to 400,000
+  int32 iops = 2;
+
+  // mode valid values.
+  option (buf.validate.message).cel = {
+    id: "iops_mode_valid"
+    message: "mode must be 'AUTOMATIC' or 'USER_PROVISIONED'"
+    expression: "this.mode == '' || this.mode in ['AUTOMATIC', 'USER_PROVISIONED']"
+  };
+
+  // iops requires USER_PROVISIONED mode.
+  option (buf.validate.message).cel = {
+    id: "iops_requires_user_provisioned"
+    message: "iops can only be set when mode is 'USER_PROVISIONED'"
+    expression: "this.iops == 0 || this.mode == 'USER_PROVISIONED'"
+  };
+}
+
+// AwsFsxOpenzfsFileSystemRootVolumeConfiguration defines the configuration for
+// the file system's root volume. The root volume is the default NFS mount target
+// and is always created with the file system. These settings control data
+// compression, NFS exports, access control, and storage quotas.
+message AwsFsxOpenzfsFileSystemRootVolumeConfiguration {
+  // Data compression type applied to all data on the root volume. Reduces
+  // storage consumption and can improve throughput for compressible data.
+  //
+  // - "NONE": no compression (default).
+  // - "ZSTD": Zstandard compression. Best compression ratio.
+  // - "LZ4": LZ4 compression. Faster with lower CPU overhead.
+  //
+  // Default: NONE
+  optional string data_compression_type = 1 [(org.openmcf.shared.options.default) = "NONE"];
+
+  // NFS export configuration for the root volume. Controls which clients can
+  // mount the volume and with what permissions. When omitted, the volume uses
+  // default NFS settings (accessible from within the VPC).
+  AwsFsxOpenzfsFileSystemNfsExports nfs_exports = 2;
+
+  // Whether the root volume is read-only. When true, clients can mount the
+  // volume but cannot write to it. Useful for shared reference data.
+  bool read_only = 3;
+
+  // ZFS record size in KiB. Affects read/write performance characteristics.
+  // Larger record sizes are better for sequential I/O (analytics, streaming).
+  // Smaller record sizes are better for random I/O (databases, OLTP).
+  //
+  // Valid values: 4, 8, 16, 32, 64, 128, 256, 512, 1024.
+  //
+  // Default: 128
+  optional int32 record_size_kib = 4 [(org.openmcf.shared.options.default) = "128"];
+
+  // Per-user and per-group storage quotas for the root volume. Limits how much
+  // storage individual users or groups can consume. Up to 100 quota entries.
+  repeated AwsFsxOpenzfsFileSystemUserAndGroupQuota user_and_group_quotas = 5;
+
+  // Copy tags from the root volume to snapshots created from it.
+  bool copy_tags_to_snapshots = 6;
+
+  // data_compression_type valid values.
+  option (buf.validate.message).cel = {
+    id: "data_compression_type_valid"
+    message: "data_compression_type must be 'NONE', 'ZSTD', or 'LZ4'"
+    expression: "this.data_compression_type == '' || this.data_compression_type in ['NONE', 'ZSTD', 'LZ4']"
+  };
+
+  // record_size_kib valid values.
+  option (buf.validate.message).cel = {
+    id: "record_size_kib_valid"
+    message: "record_size_kib must be one of: 4, 8, 16, 32, 64, 128, 256, 512, 1024"
+    expression: "this.record_size_kib == 0 || this.record_size_kib in [4, 8, 16, 32, 64, 128, 256, 512, 1024]"
+  };
+}
+
+// AwsFsxOpenzfsFileSystemNfsExports defines the NFS export configuration for a
+// volume. Each client configuration specifies an IP range and the NFS mount
+// options for that range.
+message AwsFsxOpenzfsFileSystemNfsExports {
+  // NFS client configurations. Each entry defines which clients can access the
+  // volume and with what mount options. Up to 25 client configurations.
+  repeated AwsFsxOpenzfsFileSystemNfsClientConfiguration client_configurations = 1 [(buf.validate.field).repeated.max_items = 25];
+}
+
+// AwsFsxOpenzfsFileSystemNfsClientConfiguration defines NFS access control for
+// a specific set of clients identified by IP address, CIDR range, or wildcard.
+message AwsFsxOpenzfsFileSystemNfsClientConfiguration {
+  // Client specification: an IP address, CIDR block, or wildcard (*).
+  //
+  // Examples: "*" (all clients), "10.0.0.0/16", "192.168.1.100"
+  string clients = 1 [(buf.validate.field).string.min_len = 1];
+
+  // NFS mount options for the specified clients. At least one option is required.
+  //
+  // Common options:
+  // - "rw" (read-write) or "ro" (read-only)
+  // - "crossmnt" (allow traversal into child volumes)
+  // - "root_squash" (map root to anonymous) or "no_root_squash"
+  // - "sync" or "async"
+  //
+  // Up to 20 options.
+  repeated string options = 2 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.max_items = 20
+  ];
+}
+
+// AwsFsxOpenzfsFileSystemUserAndGroupQuota defines a storage quota for a
+// specific user or group on the volume. Quotas limit how much storage
+// individual users or groups can consume.
+message AwsFsxOpenzfsFileSystemUserAndGroupQuota {
+  // The numeric user ID (UID) or group ID (GID). Range: 0-2147483647.
+  //
+  // Common values: 0 (root), 1000+ (regular users/groups).
+  int32 id = 1 [(buf.validate.field).int32.gte = 0];
+
+  // Storage capacity quota in GiB. The maximum amount of storage this user or
+  // group can consume on the volume. Range: 0-2147483647.
+  //
+  // Set to 0 to remove quota restrictions for this user/group.
+  int32 storage_capacity_quota_gib = 2 [(buf.validate.field).int32.gte = 0];
+
+  // Quota type: "USER" for per-user quota, "GROUP" for per-group quota.
+  string type = 3 [(buf.validate.field).string.min_len = 1];
+
+  // type valid values.
+  option (buf.validate.message).cel = {
+    id: "quota_type_valid"
+    message: "type must be 'USER' or 'GROUP'"
+    expression: "this.type in ['USER', 'GROUP']"
+  };
+}

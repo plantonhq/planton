@@ -1,0 +1,19 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesMongodb
+metadata:
+  name: my-mongodb
+spec:
+  namespace:
+    value: "<your-namespace>"
+  createNamespace: false
+  container:
+    replicas: 3
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+    persistenceEnabled: true
+    diskSize: 20Gi

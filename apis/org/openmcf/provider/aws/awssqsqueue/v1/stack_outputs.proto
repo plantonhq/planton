@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awssqsqueue.v1;
+
+// AwsSqsQueueStackOutputs captures observable identifiers from a provisioned SQS queue.
+// These outputs are used by downstream resources (e.g., Lambda event source mappings,
+// SNS subscriptions, EventBridge targets) to wire dependencies via StringValueOrRef.
+message AwsSqsQueueStackOutputs {
+  // The URL of the SQS queue. This is the primary identifier used in the SQS
+  // API for sending, receiving, and deleting messages.
+  string queue_url = 1;
+
+  // The Amazon Resource Name (ARN) of the queue. Used for IAM policies,
+  // cross-service permissions, and as a target reference in other resources
+  // (e.g., dead letter queue targets, SNS subscription endpoints).
+  string queue_arn = 2;
+
+  // The name of the SQS queue. For FIFO queues this includes the `.fifo` suffix.
+  string queue_name = 3;
+}

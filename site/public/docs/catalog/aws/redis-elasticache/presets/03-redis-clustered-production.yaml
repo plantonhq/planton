@@ -1,0 +1,41 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsRedisElasticache
+metadata:
+  name: my-redis-clustered
+spec:
+  engine: redis
+  engineVersion: "7.1"
+  description: Clustered Redis for high-throughput production workloads
+  nodeType: cache.r7g.xlarge
+  numNodeGroups: 3
+  replicasPerNodeGroup: 2
+  automaticFailoverEnabled: true
+  multiAzEnabled: true
+  atRestEncryptionEnabled: true
+  transitEncryptionEnabled: true
+  transitEncryptionMode: required
+  kmsKeyId:
+    value: <kms-key-arn>
+  subnetIds:
+    - value: <private-subnet-id-az1>
+    - value: <private-subnet-id-az2>
+    - value: <private-subnet-id-az3>
+  securityGroupIds:
+    - value: <security-group-id>
+  snapshotRetentionLimit: 14
+  snapshotWindow: "02:00-03:00"
+  maintenanceWindow: "wed:04:00-wed:05:00"
+  parameterGroupFamily: redis7
+  parameters:
+    - name: maxmemory-policy
+      value: volatile-lru
+    - name: timeout
+      value: "300"
+  logDeliveryConfigurations:
+    - destinationType: cloudwatch-logs
+      destination:
+        value: <cloudwatch-log-group-name>
+      logFormat: json
+      logType: slow-log
+  notificationTopicArn:
+    value: <sns-topic-arn>

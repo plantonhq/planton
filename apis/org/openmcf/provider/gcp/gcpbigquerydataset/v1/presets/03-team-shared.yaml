@@ -1,0 +1,18 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpBigQueryDataset
+metadata:
+  name: my-team-dataset
+spec:
+  projectId:
+    value: "<project-id>"  # e.g., my-gcp-project
+  datasetId: <your_dataset_id>  # e.g., analytics_shared
+  location: US
+  friendlyName: "<display name>"  # e.g., Shared Analytics
+  description: "<dataset description>"
+  access:
+    - role: OWNER
+      specialGroup: projectOwners
+    - role: WRITER
+      groupByEmail: "<editors-group>@example.com"  # e.g., data-engineers@example.com
+    - role: READER
+      groupByEmail: "<viewers-group>@example.com"  # e.g., data-analysts@example.com

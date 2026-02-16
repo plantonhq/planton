@@ -1,0 +1,28 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesSolr
+metadata:
+  name: my-solr
+spec:
+  namespace:
+    value: "<your-namespace>"
+  createNamespace: false
+  solrContainer:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+    diskSize: 10Gi
+  zookeeperContainer:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 100Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    diskSize: 1Gi

@@ -1,0 +1,30 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsTransitGateway
+metadata:
+  name: my-transit-gateway
+spec:
+  description: Production multi-VPC connectivity hub
+  amazonSideAsn: 64512
+  defaultRouteTableAssociation: true
+  defaultRouteTablePropagation: true
+  dnsSupport: true
+  vpnEcmpSupport: true
+  vpcAttachments:
+    - name: app-vpc
+      vpcId:
+        value: <app-vpc-id>
+      subnetIds:
+        - value: <app-private-subnet-az1>
+        - value: <app-private-subnet-az2>
+      dnsSupport: true
+      defaultRouteTableAssociation: true
+      defaultRouteTablePropagation: true
+    - name: shared-services-vpc
+      vpcId:
+        value: <shared-services-vpc-id>
+      subnetIds:
+        - value: <shared-private-subnet-az1>
+        - value: <shared-private-subnet-az2>
+      dnsSupport: true
+      defaultRouteTableAssociation: true
+      defaultRouteTablePropagation: true

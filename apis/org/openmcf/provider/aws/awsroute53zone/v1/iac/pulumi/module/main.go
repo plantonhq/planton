@@ -77,7 +77,7 @@ func Resources(ctx *pulumi.Context, stackInput *awsroute53zonev1.AwsRoute53ZoneS
 		vpcs := route53.HostedZoneVpcArray{}
 		for _, vpcAssoc := range awsRoute53Zone.Spec.VpcAssociations {
 			vpcs = append(vpcs, &route53.HostedZoneVpcArgs{
-				VpcId:     pulumi.String(vpcAssoc.VpcId),
+				VpcId:     pulumi.String(vpcAssoc.VpcId.GetValue()),
 				VpcRegion: pulumi.String(vpcAssoc.VpcRegion),
 			})
 		}

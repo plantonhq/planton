@@ -1,0 +1,12 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsCloudwatchLogGroup
+metadata:
+  name: ${name}
+spec:
+  retentionInDays: 365
+  logGroupClass: INFREQUENT_ACCESS
+  kmsKeyId:
+    valueFrom:
+      kind: AwsKmsKey
+      name: ${kms_key_name}
+      fieldPath: status.outputs.key_arn

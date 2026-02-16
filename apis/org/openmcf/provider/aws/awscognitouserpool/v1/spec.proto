@@ -1,0 +1,577 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awscognitouserpool.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// AwsCognitoUserPoolSpec defines the desired configuration for an AWS Cognito User Pool
+// with bundled app clients and an optional hosted UI domain.
+//
+// A Cognito User Pool provides user directory and authentication services for web and
+// mobile applications. This component bundles three tightly coupled resources:
+//
+// - **User Pool**: the user directory with password policy, MFA, email config, and
+//   optional Lambda triggers for custom auth flows.
+// - **App Clients** (repeated): application-specific OAuth/OIDC configurations that
+//   control how each application authenticates against the pool.
+// - **Domain** (optional): a Cognito-hosted or custom domain prefix for the hosted
+//   sign-in UI and OAuth endpoints.
+//
+// Key design choices:
+// - Identity model fields (`username_attributes`, `alias_attributes`, `username_case_sensitive`)
+//   are **ForceNew** in AWS — changing them destroys and recreates the pool with all users.
+// - App clients are bundled because they cannot exist without a pool and are always
+//   configured together. Each client's `name` field serves as a key in the `client_ids`
+//   and `client_secrets` output maps.
+// - Identity providers (social/OIDC/SAML) are intentionally excluded from v1 —
+//   they have independent lifecycles and warrant a separate AwsCognitoIdentityProvider component.
+// - SMS configuration is excluded from v1 — most deployments use email-only verification
+//   and adding SMS requires a separate IAM role and SNS setup.
+//
+// Credentials, region, and deployment workflow live outside this spec in stack inputs.
+message AwsCognitoUserPoolSpec {
+  // ---------------------------------------------------------------------------
+  // Identity model (ForceNew — choose carefully, cannot change after creation)
+  // ---------------------------------------------------------------------------
+
+  // Attributes that users can use as their username when signing in. When set,
+  // the chosen attribute(s) become the sign-in identifier. Common choice: ["email"]
+  // to let users sign in with their email address.
+  //
+  // Valid values: "email", "phone_number".
+  // Mutually exclusive with `alias_attributes`. ForceNew.
+  repeated string username_attributes = 1;
+
+  // Attributes that can be used as aliases for the username. Unlike `username_attributes`,
+  // users always have a separate username and the alias attributes are alternative sign-in
+  // identifiers. Common choice: ["email", "preferred_username"].
+  //
+  // Valid values: "email", "phone_number", "preferred_username".
+  // Mutually exclusive with `username_attributes`. ForceNew.
+  repeated string alias_attributes = 2;
+
+  // Whether usernames are case-sensitive. When false (default in AWS), "User" and "user"
+  // are treated as the same username. ForceNew — cannot be changed after pool creation.
+  bool username_case_sensitive = 3;
+
+  // ---------------------------------------------------------------------------
+  // Password policy
+  // ---------------------------------------------------------------------------
+
+  // Password policy configuration. Controls password strength requirements for
+  // user self-registration and admin-created passwords.
+  AwsCognitoUserPoolPasswordPolicy password_policy = 4;
+
+  // ---------------------------------------------------------------------------
+  // MFA
+  // ---------------------------------------------------------------------------
+
+  // Multi-factor authentication enforcement level.
+  // - "OFF": MFA is not used (default).
+  // - "OPTIONAL": Users can opt in to MFA.
+  // - "ON": MFA is required for all users.
+  string mfa_configuration = 5;
+
+  // Enable TOTP-based (time-based one-time password) software token MFA. When
+  // true, users can configure authenticator apps like Google Authenticator or
+  // Authy. Requires `mfa_configuration` to be "OPTIONAL" or "ON".
+  bool software_token_mfa_enabled = 6;
+
+  // ---------------------------------------------------------------------------
+  // Verification and recovery
+  // ---------------------------------------------------------------------------
+
+  // Attributes to auto-verify when users sign up. Cognito sends a verification
+  // code to these attributes. Common values: ["email"].
+  // Valid values: "email", "phone_number".
+  repeated string auto_verified_attributes = 7;
+
+  // Account recovery mechanisms in priority order. Each mechanism defines a
+  // fallback method for users who forget their password.
+  repeated AwsCognitoUserPoolRecoveryMechanism account_recovery_mechanisms = 8;
+
+  // ---------------------------------------------------------------------------
+  // Email configuration
+  // ---------------------------------------------------------------------------
+
+  // Email sending configuration. Controls whether Cognito sends emails using
+  // its built-in service (limited to 50/day in sandbox) or your verified SES
+  // identity (production sending).
+  AwsCognitoUserPoolEmailConfig email_configuration = 9;
+
+  // ---------------------------------------------------------------------------
+  // Admin and user management
+  // ---------------------------------------------------------------------------
+
+  // When true, only administrators can create users — self-registration is
+  // disabled. Users must be created via the admin API or AWS console.
+  bool allow_admin_create_user_only = 10;
+
+  // Enable deletion protection. When "ACTIVE", the user pool cannot be deleted
+  // without first disabling this setting. Recommended for production pools.
+  bool deletion_protection = 11;
+
+  // ---------------------------------------------------------------------------
+  // Custom attributes
+  // ---------------------------------------------------------------------------
+
+  // Custom user attributes beyond the standard set (email, phone, name, etc.).
+  // Each attribute is added to the pool's schema. Note: the `mutable` and
+  // `required` flags are ForceNew — they cannot be changed after creation.
+  // Maximum 50 custom attributes per pool.
+  repeated AwsCognitoUserPoolSchemaAttribute custom_attributes = 12;
+
+  // ---------------------------------------------------------------------------
+  // Lambda triggers
+  // ---------------------------------------------------------------------------
+
+  // Lambda trigger configuration for custom authentication and user lifecycle
+  // hooks. Each trigger is an optional Lambda function ARN that Cognito invokes
+  // at the corresponding lifecycle point.
+  AwsCognitoUserPoolLambdaConfig lambda_config = 13;
+
+  // ---------------------------------------------------------------------------
+  // App clients (bundled)
+  // ---------------------------------------------------------------------------
+
+  // Application clients that authenticate against this user pool. Each client
+  // defines an OAuth/OIDC configuration for a specific application (e.g., a
+  // web frontend, a mobile app, a server-side backend).
+  //
+  // At least one client is required — a pool without clients cannot authenticate
+  // any application. The client `name` field serves as a key in the `client_ids`
+  // and `client_secrets` output maps.
+  repeated AwsCognitoUserPoolClient clients = 14 [(buf.validate.field).repeated.min_items = 1];
+
+  // ---------------------------------------------------------------------------
+  // Domain (optional)
+  // ---------------------------------------------------------------------------
+
+  // Domain configuration for the hosted sign-in UI and OAuth2 endpoints. When
+  // set, Cognito provides a hosted login page at:
+  //   https://{domain}.auth.{region}.amazoncognito.com
+  // (for Cognito prefix domains) or at the custom domain you specify.
+  //
+  // Required for OAuth flows that use the Authorization Code grant with a
+  // hosted UI redirect.
+  AwsCognitoUserPoolDomainConfig domain = 15;
+
+  // ---------------------------------------------------------------------------
+  // CEL validations
+  // ---------------------------------------------------------------------------
+
+  // username_attributes and alias_attributes are mutually exclusive.
+  option (buf.validate.message).cel = {
+    id: "username_or_alias_attributes"
+    message: "username_attributes and alias_attributes are mutually exclusive; set one or neither, not both"
+    expression: "this.username_attributes.size() == 0 || this.alias_attributes.size() == 0"
+  };
+
+  // username_attributes valid values.
+  option (buf.validate.message).cel = {
+    id: "username_attributes_valid"
+    message: "username_attributes must contain only 'email' and/or 'phone_number'"
+    expression: "this.username_attributes.all(a, a in ['email', 'phone_number'])"
+  };
+
+  // alias_attributes valid values.
+  option (buf.validate.message).cel = {
+    id: "alias_attributes_valid"
+    message: "alias_attributes must contain only 'email', 'phone_number', and/or 'preferred_username'"
+    expression: "this.alias_attributes.all(a, a in ['email', 'phone_number', 'preferred_username'])"
+  };
+
+  // auto_verified_attributes valid values.
+  option (buf.validate.message).cel = {
+    id: "auto_verified_attributes_valid"
+    message: "auto_verified_attributes must contain only 'email' and/or 'phone_number'"
+    expression: "this.auto_verified_attributes.all(a, a in ['email', 'phone_number'])"
+  };
+
+  // mfa_configuration valid values.
+  option (buf.validate.message).cel = {
+    id: "mfa_configuration_valid"
+    message: "mfa_configuration must be 'OFF', 'OPTIONAL', or 'ON' when set"
+    expression: "this.mfa_configuration == '' || this.mfa_configuration in ['OFF', 'OPTIONAL', 'ON']"
+  };
+
+  // software_token_mfa_enabled requires MFA not OFF.
+  option (buf.validate.message).cel = {
+    id: "software_token_mfa_requires_mfa"
+    message: "software_token_mfa_enabled requires mfa_configuration to be 'OPTIONAL' or 'ON'"
+    expression: "!this.software_token_mfa_enabled || this.mfa_configuration in ['OPTIONAL', 'ON']"
+  };
+
+  // Client names must be unique.
+  option (buf.validate.message).cel = {
+    id: "client_names_unique"
+    message: "client names must be unique across all clients"
+    expression: "this.clients.map(c, c.name).unique()"
+  };
+
+  // Account recovery mechanism names must be valid.
+  option (buf.validate.message).cel = {
+    id: "account_recovery_name_valid"
+    message: "account_recovery_mechanisms name must be 'verified_email', 'verified_phone_number', or 'admin_only'"
+    expression: "this.account_recovery_mechanisms.all(m, m.name in ['verified_email', 'verified_phone_number', 'admin_only'])"
+  };
+
+  // Account recovery mechanism priorities must be 1 or 2.
+  option (buf.validate.message).cel = {
+    id: "account_recovery_priority_range"
+    message: "account_recovery_mechanisms priority must be 1 or 2"
+    expression: "this.account_recovery_mechanisms.all(m, m.priority >= 1 && m.priority <= 2)"
+  };
+
+  // Custom domain requires certificate_arn.
+  option (buf.validate.message).cel = {
+    id: "custom_domain_requires_certificate"
+    message: "a custom domain (containing '.') requires certificate_arn to be set"
+    expression: "!has(this.domain) || this.domain.domain == '' || !this.domain.domain.contains('.') || has(this.domain.certificate_arn)"
+  };
+}
+
+// AwsCognitoUserPoolPasswordPolicy controls password strength requirements.
+message AwsCognitoUserPoolPasswordPolicy {
+  // Minimum password length. Range: 6-99. AWS default: 8.
+  int32 minimum_length = 1 [(buf.validate.field).int32 = {
+    gte: 6
+    lte: 99
+  }];
+
+  // Require at least one lowercase letter.
+  bool require_lowercase = 2;
+
+  // Require at least one uppercase letter.
+  bool require_uppercase = 3;
+
+  // Require at least one digit.
+  bool require_numbers = 4;
+
+  // Require at least one special character.
+  bool require_symbols = 5;
+
+  // Number of days temporary passwords (admin-created) are valid.
+  // Range: 0-365 (0 means no expiration). AWS default: 7.
+  int32 temporary_password_validity_days = 6 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 365
+  }];
+}
+
+// AwsCognitoUserPoolRecoveryMechanism defines a single account recovery option.
+// Up to 2 mechanisms can be configured in priority order.
+message AwsCognitoUserPoolRecoveryMechanism {
+  // Recovery method name. Valid values:
+  // - "verified_email": send a recovery code to the verified email
+  // - "verified_phone_number": send a recovery code via SMS
+  // - "admin_only": only administrators can reset passwords
+  string name = 1 [(buf.validate.field).required = true];
+
+  // Priority of this recovery method. 1 = primary, 2 = fallback.
+  int32 priority = 2 [(buf.validate.field).required = true];
+}
+
+// AwsCognitoUserPoolEmailConfig controls how Cognito sends verification and
+// invitation emails.
+message AwsCognitoUserPoolEmailConfig {
+  // Email sending mode. Valid values:
+  // - "COGNITO_DEFAULT": Cognito sends emails using its built-in service.
+  //   Limited to 50 emails/day in sandbox mode. No SES setup required.
+  // - "DEVELOPER": Cognito sends emails through your verified SES identity.
+  //   Requires `source_arn`. Supports production-level sending volumes.
+  string email_sending_account = 1;
+
+  // SES verified identity ARN for sending emails. Required when
+  // `email_sending_account` is "DEVELOPER". Example:
+  // "arn:aws:ses:us-east-1:123456789012:identity/noreply@example.com"
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef source_arn = 2;
+
+  // "From" email address shown to recipients. Only applicable when using
+  // DEVELOPER mode with SES. Example: "No Reply <noreply@example.com>"
+  string from_email_address = 3;
+
+  // Reply-to email address. When set, user replies go to this address
+  // instead of the "from" address.
+  string reply_to_email_address = 4;
+
+  // SES configuration set name for tracking email delivery metrics.
+  string configuration_set = 5;
+
+  // email_sending_account valid values.
+  option (buf.validate.message).cel = {
+    id: "email_sending_account_valid"
+    message: "email_sending_account must be 'COGNITO_DEFAULT' or 'DEVELOPER' when set"
+    expression: "this.email_sending_account == '' || this.email_sending_account in ['COGNITO_DEFAULT', 'DEVELOPER']"
+  };
+
+  // DEVELOPER mode requires source_arn.
+  option (buf.validate.message).cel = {
+    id: "developer_email_requires_source_arn"
+    message: "source_arn is required when email_sending_account is 'DEVELOPER'"
+    expression: "this.email_sending_account != 'DEVELOPER' || has(this.source_arn)"
+  };
+}
+
+// AwsCognitoUserPoolSchemaAttribute defines a custom user attribute added to the
+// pool's schema. Custom attributes are prefixed with "custom:" in Cognito (e.g.,
+// a name of "tenant_id" becomes "custom:tenant_id").
+message AwsCognitoUserPoolSchemaAttribute {
+  // Attribute name (1-20 characters). Cognito auto-prefixes with "custom:".
+  string name = 1 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 20
+  }];
+
+  // Data type. Valid values: "String", "Number", "DateTime", "Boolean".
+  string attribute_data_type = 2 [(buf.validate.field).required = true];
+
+  // Whether the attribute value can be changed after creation. ForceNew — this
+  // flag itself cannot be changed after the attribute is added to the pool.
+  bool mutable = 3;
+
+  // Whether the attribute is required during user registration. ForceNew.
+  bool required = 4;
+
+  // Minimum string length (for String attributes). Leave at 0 for no minimum.
+  string string_min_length = 5;
+
+  // Maximum string length (for String attributes). Leave empty for no maximum.
+  string string_max_length = 6;
+
+  // Minimum numeric value (for Number attributes). Leave empty for no minimum.
+  string number_min_value = 7;
+
+  // Maximum numeric value (for Number attributes). Leave empty for no maximum.
+  string number_max_value = 8;
+
+  // attribute_data_type valid values.
+  option (buf.validate.message).cel = {
+    id: "attribute_data_type_valid"
+    message: "attribute_data_type must be 'String', 'Number', 'DateTime', or 'Boolean'"
+    expression: "this.attribute_data_type in ['String', 'Number', 'DateTime', 'Boolean']"
+  };
+}
+
+// AwsCognitoUserPoolLambdaConfig defines Lambda function triggers for custom
+// authentication and user lifecycle hooks. Each field is an optional Lambda
+// function ARN that Cognito invokes at the corresponding lifecycle point.
+//
+// All fields accept a direct ARN or a reference to an AwsLambda resource.
+// Note: Lambda functions must grant Cognito permission to invoke them
+// (aws_lambda_permission with principal "cognito-idp.amazonaws.com").
+message AwsCognitoUserPoolLambdaConfig {
+  // Invoked before user sign-up to perform custom validation or auto-confirm.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef pre_sign_up = 1 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsLambda,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.function_arn"
+  ];
+
+  // Invoked before authentication to perform custom validation.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef pre_authentication = 2 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsLambda,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.function_arn"
+  ];
+
+  // Invoked after successful authentication for logging or custom logic.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef post_authentication = 3 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsLambda,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.function_arn"
+  ];
+
+  // Invoked after user confirmation to trigger welcome emails or provisioning.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef post_confirmation = 4 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsLambda,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.function_arn"
+  ];
+
+  // Invoked before token generation to add, remove, or modify claims.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef pre_token_generation = 5 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsLambda,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.function_arn"
+  ];
+
+  // Invoked to customize verification and invitation messages.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef custom_message = 6 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsLambda,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.function_arn"
+  ];
+
+  // Invoked during user migration from an external identity provider.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef user_migration = 7 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsLambda,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.function_arn"
+  ];
+
+  // Invoked to define a custom authentication challenge (custom auth flow).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef define_auth_challenge = 8 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsLambda,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.function_arn"
+  ];
+
+  // Invoked to create a custom authentication challenge (custom auth flow).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef create_auth_challenge = 9 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsLambda,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.function_arn"
+  ];
+
+  // Invoked to verify the response to a custom authentication challenge.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef verify_auth_challenge_response = 10 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsLambda,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.function_arn"
+  ];
+}
+
+// AwsCognitoUserPoolClient defines an application client that authenticates
+// against the user pool. Each client controls how a specific application
+// (web, mobile, server) interacts with the pool via OAuth 2.0 / OIDC.
+//
+// The client `name` field is used as a key in the `client_ids` and
+// `client_secrets` output maps.
+message AwsCognitoUserPoolClient {
+  // Unique name for this client. Used as the key in output maps and as the
+  // Cognito app client name. Must be unique across all clients in this spec.
+  string name = 1 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 128
+  }];
+
+  // Whether to generate a client secret. ForceNew — cannot be changed after
+  // creation. Set to true for server-side applications that can securely store
+  // the secret. Set to false for SPAs and mobile apps.
+  bool generate_secret = 2;
+
+  // ---------------------------------------------------------------------------
+  // OAuth/OIDC
+  // ---------------------------------------------------------------------------
+
+  // Enable OAuth 2.0 flows for this client. Must be true for `allowed_oauth_flows`
+  // and `allowed_oauth_scopes` to take effect.
+  bool allowed_oauth_flows_user_pool_client = 3;
+
+  // OAuth 2.0 grant types this client can use. Valid values:
+  // - "code": Authorization Code grant (recommended for most apps)
+  // - "implicit": Implicit grant (legacy, not recommended)
+  // - "client_credentials": Client Credentials grant (machine-to-machine)
+  repeated string allowed_oauth_flows = 4;
+
+  // OAuth 2.0 scopes this client can request. Common values:
+  // "openid", "email", "profile", "phone", "aws.cognito.signin.user.admin".
+  // Custom scopes from resource servers use format: "{identifier}/{scope_name}".
+  repeated string allowed_oauth_scopes = 5;
+
+  // Callback URLs for OAuth redirects after authentication. Required for
+  // Authorization Code and Implicit grants. At least one URL must be provided
+  // when OAuth flows are enabled.
+  repeated string callback_urls = 6;
+
+  // URLs where Cognito redirects after sign-out.
+  repeated string logout_urls = 7;
+
+  // Default redirect URI. Must be one of the `callback_urls`. Used when no
+  // redirect_uri is specified in the authorization request.
+  string default_redirect_uri = 8;
+
+  // Identity providers supported by this client. Defaults to ["COGNITO"] for
+  // user pool authentication. Add social/OIDC/SAML provider names to enable
+  // federated sign-in (e.g., "Google", "Facebook", "SignInWithApple").
+  repeated string supported_identity_providers = 9;
+
+  // ---------------------------------------------------------------------------
+  // Authentication flows
+  // ---------------------------------------------------------------------------
+
+  // Explicit authentication flows enabled for this client. Controls which
+  // authentication APIs the client can use. Common values:
+  // - "ALLOW_USER_SRP_AUTH": Secure Remote Password (recommended)
+  // - "ALLOW_REFRESH_TOKEN_AUTH": Enable token refresh (always recommended)
+  // - "ALLOW_USER_PASSWORD_AUTH": Direct username/password (less secure)
+  // - "ALLOW_ADMIN_USER_PASSWORD_AUTH": Admin-initiated auth
+  // - "ALLOW_CUSTOM_AUTH": Custom auth flow via Lambda triggers
+  repeated string explicit_auth_flows = 10;
+
+  // ---------------------------------------------------------------------------
+  // Token validity
+  // ---------------------------------------------------------------------------
+
+  // Access token validity in minutes. Range: 5-1440 (5 min to 24 hours).
+  // AWS default: 60 minutes.
+  int32 access_token_validity_minutes = 11 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 1440
+  }];
+
+  // ID token validity in minutes. Range: 5-1440 (5 min to 24 hours).
+  // AWS default: 60 minutes.
+  int32 id_token_validity_minutes = 12 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 1440
+  }];
+
+  // Refresh token validity in days. Range: 1-3650 (1 day to 10 years).
+  // AWS default: 30 days.
+  int32 refresh_token_validity_days = 13 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 3650
+  }];
+
+  // ---------------------------------------------------------------------------
+  // Security
+  // ---------------------------------------------------------------------------
+
+  // Enable token revocation. When true, Cognito revokes all of a user's tokens
+  // when they sign out. Recommended for security.
+  bool enable_token_revocation = 14;
+
+  // How to handle requests for non-existent users. Valid values:
+  // - "ENABLED": Return the same error for non-existent and incorrect-password
+  //   users to prevent user enumeration attacks.
+  // - "LEGACY": Return different errors (reveals whether user exists).
+  string prevent_user_existence_errors = 15;
+
+  // ---------------------------------------------------------------------------
+  // Client-level CEL validations
+  // ---------------------------------------------------------------------------
+
+  // allowed_oauth_flows valid values.
+  option (buf.validate.message).cel = {
+    id: "allowed_oauth_flows_valid"
+    message: "allowed_oauth_flows must contain only 'code', 'implicit', or 'client_credentials'"
+    expression: "this.allowed_oauth_flows.all(f, f in ['code', 'implicit', 'client_credentials'])"
+  };
+
+  // explicit_auth_flows valid values.
+  option (buf.validate.message).cel = {
+    id: "explicit_auth_flows_valid"
+    message: "explicit_auth_flows must contain valid flow types"
+    expression: "this.explicit_auth_flows.all(f, f in ['ALLOW_USER_SRP_AUTH', 'ALLOW_REFRESH_TOKEN_AUTH', 'ALLOW_USER_PASSWORD_AUTH', 'ALLOW_ADMIN_USER_PASSWORD_AUTH', 'ALLOW_CUSTOM_AUTH'])"
+  };
+
+  // prevent_user_existence_errors valid values.
+  option (buf.validate.message).cel = {
+    id: "prevent_user_existence_errors_valid"
+    message: "prevent_user_existence_errors must be 'ENABLED' or 'LEGACY' when set"
+    expression: "this.prevent_user_existence_errors == '' || this.prevent_user_existence_errors in ['ENABLED', 'LEGACY']"
+  };
+}
+
+// AwsCognitoUserPoolDomainConfig configures the hosted UI domain for the user pool.
+// This enables the Cognito-hosted sign-in/sign-up pages and OAuth2 endpoints.
+message AwsCognitoUserPoolDomainConfig {
+  // Domain prefix (for Cognito-hosted domains) or fully-qualified domain name
+  // (for custom domains). For Cognito-hosted: provide a unique prefix like
+  // "myapp-auth" which creates "myapp-auth.auth.{region}.amazoncognito.com".
+  // For custom domains: provide the FQDN like "auth.example.com".
+  // ForceNew — the domain cannot be changed after creation.
+  string domain = 1 [(buf.validate.field).string.min_len = 1];
+
+  // ACM certificate ARN for custom domains. Required when `domain` contains
+  // a dot (custom domain). The certificate must be in us-east-1 regardless
+  // of the user pool's region (Cognito uses CloudFront for custom domains).
+  // Not applicable for Cognito-hosted prefix domains.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef certificate_arn = 2 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsCertManagerCert,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.certificate_arn"
+  ];
+}

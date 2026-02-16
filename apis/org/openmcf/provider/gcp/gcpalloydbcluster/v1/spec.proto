@@ -1,0 +1,396 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpalloydbcluster.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// GcpAlloydbClusterInitialUser defines the initial database superuser
+// created during cluster provisioning. AlloyDB is PostgreSQL-compatible,
+// so this user has full superuser privileges in the cluster.
+//
+// If not specified, no initial user is created and access must be configured
+// manually after provisioning (e.g., via AlloyDB Auth Proxy + IAM).
+message GcpAlloydbClusterInitialUser {
+  // Password for the initial user. Must be at least 8 characters.
+  // This value is sensitive and should be handled accordingly.
+  string password = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 8
+  ];
+
+  // Username for the initial user. If not specified, defaults to "postgres"
+  // per GCP AlloyDB conventions.
+  string user = 2;
+}
+
+// GcpAlloydbClusterBackupSchedule defines when automated backups are taken.
+// AlloyDB supports weekly schedules with configurable start times.
+message GcpAlloydbClusterBackupSchedule {
+  // Days of the week to take backups.
+  // If not specified, GCP defaults to daily backups.
+  repeated string days_of_week = 1 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      string: {
+        in: [
+          "MONDAY",
+          "TUESDAY",
+          "WEDNESDAY",
+          "THURSDAY",
+          "FRIDAY",
+          "SATURDAY",
+          "SUNDAY"
+        ]
+      }
+    }
+  }];
+
+  // Hour of day (0-23 UTC) to start backups. GCP's TimeOfDay structure
+  // is simplified here since minutes/seconds/nanos are always zero for
+  // AlloyDB backup schedules.
+  int32 start_hour = 2 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 23
+  }];
+}
+
+// GcpAlloydbClusterAutomatedBackupPolicy configures periodic snapshot backups
+// for the AlloyDB cluster. These are point-in-time full backups stored in
+// the specified (or default) location.
+//
+// When this block is not specified, GCP uses its default automated backup
+// policy (enabled, daily, 14-day time-based retention).
+//
+// Retention can be either quantity-based (keep N backups) or time-based
+// (keep backups for N seconds). These are mutually exclusive.
+message GcpAlloydbClusterAutomatedBackupPolicy {
+  // Whether automated backups are enabled. Set to false to explicitly
+  // disable automated backups.
+  bool enabled = 1;
+
+  // Length of the time window during which a backup can be taken.
+  // Duration in seconds with 's' suffix, e.g., "3600s" (1 hour).
+  // Default: "3600s".
+  string backup_window = 2 [(buf.validate.field).cel = {
+    id: "backup_window_format"
+    expression: "this == '' || this.matches('^[0-9]+s$')"
+    message: "backup_window must be a duration in seconds (e.g., '3600s')"
+  }];
+
+  // GCP region where backups will be stored. If not specified,
+  // backups are stored in the same region as the cluster.
+  string location = 3;
+
+  // Number of backups to retain. Mutually exclusive with
+  // time_based_retention_period.
+  int32 quantity_based_retention_count = 4;
+
+  // How long to retain backups. Duration in seconds with 's' suffix,
+  // e.g., "1209600s" (14 days). Mutually exclusive with
+  // quantity_based_retention_count.
+  string time_based_retention_period = 5 [(buf.validate.field).cel = {
+    id: "time_based_retention_period_format"
+    expression: "this == '' || this.matches('^[0-9]+s$')"
+    message: "time_based_retention_period must be a duration in seconds (e.g., '1209600s')"
+  }];
+
+  // Weekly schedule defining when backups are taken.
+  GcpAlloydbClusterBackupSchedule weekly_schedule = 6;
+
+  // Cloud KMS key for encrypting automated backups. If not specified,
+  // backups use Google-managed encryption. When using a different key
+  // from the cluster's encryption, this enables independent backup
+  // encryption lifecycle management.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef encryption_kms_key_name = 7 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // Quantity-based and time-based retention are mutually exclusive.
+  option (buf.validate.message).cel = {
+    id: "retention_mutual_exclusion"
+    expression: "this.quantity_based_retention_count == 0 || this.time_based_retention_period == ''"
+    message: "only one of quantity_based_retention_count or time_based_retention_period may be set"
+  };
+}
+
+// GcpAlloydbClusterContinuousBackupConfig configures continuous backup
+// (write-ahead log streaming) that enables point-in-time recovery (PITR).
+//
+// Continuous backup is enabled by default with a 14-day recovery window.
+// This is separate from automated backups: automated backups are periodic
+// snapshots, while continuous backups capture every write for PITR.
+message GcpAlloydbClusterContinuousBackupConfig {
+  // Whether continuous backup is enabled. Defaults to true.
+  // Set to false only if you do not need point-in-time recovery.
+  bool enabled = 1;
+
+  // Number of days for which continuous backup data is retained,
+  // enabling PITR within this window. Range: 1-35. Default: 14.
+  int32 recovery_window_days = 2 [(buf.validate.field).cel = {
+    id: "recovery_window_days_range"
+    expression: "this == 0 || (this >= 1 && this <= 35)"
+    message: "recovery_window_days must be between 1 and 35"
+  }];
+
+  // Cloud KMS key for encrypting continuous backup data. If not specified,
+  // continuous backups use Google-managed encryption.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef encryption_kms_key_name = 3 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+}
+
+// GcpAlloydbClusterMaintenanceWindow defines the preferred time for
+// GCP to apply system updates and patches to the AlloyDB cluster.
+// Currently AlloyDB supports a single maintenance window per cluster.
+message GcpAlloydbClusterMaintenanceWindow {
+  // Day of the week for maintenance.
+  string day = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY",
+        "SUNDAY"
+      ]
+    }
+  ];
+
+  // Hour of day (0-23, UTC) when the maintenance window starts.
+  int32 start_hour = 2 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 23
+  }];
+}
+
+// GcpAlloydbClusterQueryInsightsConfig configures query performance
+// monitoring for the primary instance. Query insights captures execution
+// plans, application context, and client information to help diagnose
+// slow queries and performance issues.
+message GcpAlloydbClusterQueryInsightsConfig {
+  // Number of query execution plans captured per minute.
+  // Range: 0-20. Default: 5. Set to 0 to disable plan capture.
+  int32 query_plans_per_minute = 1 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 20
+  }];
+
+  // Maximum length of the query string stored in insights.
+  // Range: 256-4500. Default: 1024. Longer strings help debug
+  // complex queries but use more storage.
+  int32 query_string_length = 2 [(buf.validate.field).int32 = {
+    gte: 256
+    lte: 4500
+  }];
+
+  // Whether to record application tags set via
+  // pg_stat_statements.track_activity_query_size.
+  // Useful for tagging queries by application or feature.
+  bool record_application_tags = 3;
+
+  // Whether to record the client IP address for each query.
+  // Useful for identifying which application instances generate load.
+  bool record_client_address = 4;
+}
+
+// GcpAlloydbClusterPrimaryInstance defines the configuration for the
+// primary compute instance bundled with the AlloyDB cluster.
+//
+// A cluster without a primary instance cannot serve queries. This is why
+// the primary instance is bundled rather than being a separate component.
+// Read pool instances have independent scaling lifecycles and are NOT
+// included here.
+//
+// Machine configuration can be specified via either cpu_count (simpler,
+// lets GCP choose the machine family) or machine_type (explicit machine
+// family selection). These are mutually exclusive.
+message GcpAlloydbClusterPrimaryInstance {
+  // ID for the primary instance. This becomes the GCP resource name.
+  // Must start with a lowercase letter, can contain lowercase letters,
+  // numbers, and hyphens, and must end with a lowercase letter or number.
+  // Maximum 63 characters. Immutable after creation.
+  string instance_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z][a-z0-9-]{0,61}[a-z0-9]$",
+    (buf.validate.field).string.min_len = 2,
+    (buf.validate.field).string.max_len = 63
+  ];
+
+  // Number of CPUs for the instance. Valid values: 2, 4, 8, 16, 32, 64, 96, 128.
+  // GCP selects the appropriate machine family automatically.
+  // Mutually exclusive with machine_type.
+  int32 cpu_count = 2;
+
+  // Explicit machine type (e.g., "n2-highmem-4", "c4a-highmem-4-lssd").
+  // Use this for advanced scenarios where you need a specific machine family.
+  // Mutually exclusive with cpu_count.
+  string machine_type = 3;
+
+  // Availability type controlling the placement of the instance.
+  // ZONAL: single-zone deployment (lower cost, single zone of failure).
+  // REGIONAL: multi-zone deployment with automatic failover (recommended
+  // for production). Default: determined by GCP.
+  string availability_type = 4 [(buf.validate.field).cel = {
+    id: "availability_type_valid_value"
+    expression: "this == '' || this in ['ZONAL', 'REGIONAL']"
+    message: "availability_type must be ZONAL or REGIONAL"
+  }];
+
+  // PostgreSQL database flags as key-value pairs.
+  // These correspond to PostgreSQL server parameters (e.g.,
+  // "max_connections", "work_mem", "shared_buffers").
+  // See GCP AlloyDB documentation for supported flags.
+  map<string, string> database_flags = 5;
+
+  // Human-readable display name for the primary instance.
+  string display_name = 6;
+
+  // Query insights configuration for performance monitoring.
+  // If not specified, GCP uses default query insights settings
+  // (enabled with sensible defaults).
+  GcpAlloydbClusterQueryInsightsConfig query_insights_config = 7;
+
+  // Whether to require the AlloyDB Auth Proxy or AlloyDB Language Connectors
+  // for all connections. When true, direct IP connections are rejected.
+  // This enforces IAM-based authentication for all database access.
+  bool require_connectors = 8;
+
+  // SSL mode for client connections.
+  // ENCRYPTED_ONLY: all connections must use TLS (recommended for production).
+  // ALLOW_UNENCRYPTED_AND_ENCRYPTED: both TLS and plaintext allowed.
+  string ssl_mode = 9 [(buf.validate.field).cel = {
+    id: "ssl_mode_valid_value"
+    expression: "this == '' || this in ['ENCRYPTED_ONLY', 'ALLOW_UNENCRYPTED_AND_ENCRYPTED']"
+    message: "ssl_mode must be ENCRYPTED_ONLY or ALLOW_UNENCRYPTED_AND_ENCRYPTED"
+  }];
+
+  // cpu_count and machine_type are mutually exclusive.
+  option (buf.validate.message).cel = {
+    id: "machine_config_mutual_exclusion"
+    expression: "this.cpu_count == 0 || this.machine_type == ''"
+    message: "only one of cpu_count or machine_type may be set"
+  };
+}
+
+// GcpAlloydbClusterSpec defines the configuration for an AlloyDB cluster
+// with a bundled primary instance.
+//
+// AlloyDB is Google Cloud's fully managed, PostgreSQL-compatible database
+// designed for demanding enterprise workloads requiring high performance,
+// high availability, and strong consistency. It combines the familiarity
+// of PostgreSQL with Google's infrastructure for superior throughput and
+// lower latency compared to standard PostgreSQL.
+//
+// This component bundles a cluster (the logical container with backup,
+// encryption, and networking configuration) with a primary instance (the
+// compute node that serves queries). A cluster without a primary instance
+// cannot serve any traffic, which is why they are bundled together.
+//
+// Networking uses VPC peering via Private Service Access. The cluster's
+// network field references a VPC that must have Private Service Access
+// configured (typically done via GcpVpc's private_services_access setting).
+//
+// Important behavioral notes:
+//
+//   - The cluster_name, location, network, and kms_key_name fields are
+//     immutable after creation. Changing them requires recreating the cluster.
+//
+//   - The primary_instance.instance_id field is immutable after creation.
+//
+//   - AlloyDB supports both automated periodic backups and continuous
+//     backup (WAL streaming for point-in-time recovery). Both can be
+//     configured independently with separate CMEK keys.
+//
+//   - deletion_protection defaults to true. You must explicitly set it
+//     to false before destroying a cluster that contains data.
+message GcpAlloydbClusterSpec {
+  // GCP project where the AlloyDB cluster will be created.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpProject,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Name of the AlloyDB cluster. This becomes the GCP resource cluster_id.
+  // Must start with a lowercase letter, can contain lowercase letters,
+  // numbers, and hyphens, and must end with a lowercase letter or number.
+  // Maximum 63 characters. Immutable after creation.
+  string cluster_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z][a-z0-9-]{0,61}[a-z0-9]$",
+    (buf.validate.field).string.min_len = 2,
+    (buf.validate.field).string.max_len = 63
+  ];
+
+  // GCP region where the cluster will be deployed (e.g., "us-central1").
+  // Immutable after creation.
+  string location = 3 [(buf.validate.field).required = true];
+
+  // VPC network for the cluster's private connectivity. The VPC must have
+  // Private Service Access configured. Expects a VPC network self-link or
+  // resource reference.
+  // Immutable after creation.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef network = 4 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_self_link"
+  ];
+
+  // Name of the allocated IP range for Private Service Access.
+  // When set, the cluster uses this specific IP range for its private
+  // connectivity instead of an auto-allocated range. This is common in
+  // enterprise setups where IP ranges are pre-planned.
+  string allocated_ip_range = 5;
+
+  // PostgreSQL major version for the cluster.
+  // Supported values: "POSTGRES_14", "POSTGRES_15", "POSTGRES_16".
+  // If not specified, GCP selects the latest stable version.
+  string database_version = 6 [(buf.validate.field).cel = {
+    id: "database_version_valid_value"
+    expression: "this == '' || this in ['POSTGRES_14', 'POSTGRES_15', 'POSTGRES_16']"
+    message: "database_version must be POSTGRES_14, POSTGRES_15, or POSTGRES_16"
+  }];
+
+  // Human-readable display name for the cluster.
+  string display_name = 7;
+
+  // Initial database user created during cluster provisioning.
+  // If not specified, no initial user is created. Access must then be
+  // configured via AlloyDB Auth Proxy with IAM authentication.
+  GcpAlloydbClusterInitialUser initial_user = 8;
+
+  // Automated backup policy for periodic snapshot backups.
+  // When not specified, GCP uses its default policy (enabled, daily, 14-day retention).
+  GcpAlloydbClusterAutomatedBackupPolicy automated_backup_policy = 9;
+
+  // Continuous backup configuration for point-in-time recovery (PITR).
+  // Enabled by default with a 14-day recovery window.
+  GcpAlloydbClusterContinuousBackupConfig continuous_backup_config = 10;
+
+  // Cloud KMS key for encrypting the cluster's data at rest (CMEK).
+  // Format: projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{key}
+  // If not specified, data is encrypted with Google-managed keys.
+  // Immutable after creation.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_name = 11 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // Preferred maintenance window for system updates.
+  GcpAlloydbClusterMaintenanceWindow maintenance_window = 12;
+
+  // Whether deletion protection is enabled. When true (the default),
+  // the cluster cannot be destroyed without first setting this to false.
+  // Strongly recommended for production clusters.
+  bool deletion_protection = 13;
+
+  // Primary instance configuration. Required -- a cluster without a
+  // primary instance cannot serve queries.
+  GcpAlloydbClusterPrimaryInstance primary_instance = 14 [(buf.validate.field).required = true];
+}

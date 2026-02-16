@@ -1,0 +1,16 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsElasticFileSystem
+metadata:
+  org: example-org
+  env: prod
+  name: app-efs-regional
+  id: app-efs-regional-id
+spec:
+  encrypted: true
+  throughput_mode: bursting
+  backup_enabled: true
+  subnet_ids:
+    - value: "<subnet-id-az-a>"
+    - value: "<subnet-id-az-b>"
+  security_group_ids:
+    - value: "<security-group-id>"

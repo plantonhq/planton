@@ -16,7 +16,7 @@ resource "aws_security_group" "this" {
       to_port          = ingress.value.to_port
       cidr_blocks      = ingress.value.ipv4_cidrs
       ipv6_cidr_blocks = ingress.value.ipv6_cidrs
-      security_groups  = ingress.value.source_security_group_ids
+      security_groups  = [for sg in ingress.value.source_security_group_ids : sg.value]
       self             = ingress.value.self_reference
     }
   }
@@ -32,7 +32,7 @@ resource "aws_security_group" "this" {
       to_port          = egress.value.to_port
       cidr_blocks      = egress.value.ipv4_cidrs
       ipv6_cidr_blocks = egress.value.ipv6_cidrs
-      security_groups  = egress.value.destination_security_group_ids
+      security_groups  = [for sg in egress.value.destination_security_group_ids : sg.value]
       self             = egress.value.self_reference
     }
   }

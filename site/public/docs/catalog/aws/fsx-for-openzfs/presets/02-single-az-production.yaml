@@ -1,0 +1,32 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsFsxOpenzfsFileSystem
+metadata:
+  org: example-org
+  env: production
+  name: prod-openzfs
+  id: awsfxz-prod-openzfs-production
+spec:
+  deployment_type: SINGLE_AZ_2
+  storage_capacity_gib: 512
+  throughput_capacity: 640
+  subnet_ids:
+    - value: subnet-0123456789abcdef0
+  security_group_ids:
+    - value: sg-0123456789abcdef0
+  kms_key_id:
+    value: arn:aws:kms:us-east-1:123456789012:key/your-kms-key-id
+  root_volume_configuration:
+    data_compression_type: ZSTD
+    record_size_kib: 128
+    nfs_exports:
+      client_configurations:
+        - clients: "*"
+          options:
+            - rw
+            - crossmnt
+            - no_root_squash
+  automatic_backup_retention_days: 7
+  daily_automatic_backup_start_time: "05:00"
+  copy_tags_to_backups: true
+  copy_tags_to_volumes: true
+  weekly_maintenance_start_time: "7:02:00"

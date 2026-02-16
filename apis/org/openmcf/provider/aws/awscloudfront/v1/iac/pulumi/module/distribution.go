@@ -65,9 +65,9 @@ func createDistribution(ctx *pulumi.Context, locals *Locals, provider *aws.Provi
 
 	// Viewer certificate
 	var viewerCert *cloudfront.DistributionViewerCertificateArgs
-	if spec.CertificateArn != "" {
+	if spec.CertificateArn != nil && spec.CertificateArn.GetValue() != "" {
 		viewerCert = &cloudfront.DistributionViewerCertificateArgs{
-			AcmCertificateArn:      pulumi.String(spec.CertificateArn),
+			AcmCertificateArn:      pulumi.String(spec.CertificateArn.GetValue()),
 			SslSupportMethod:       pulumi.String("sni-only"),
 			MinimumProtocolVersion: pulumi.String("TLSv1.2_2021"),
 		}

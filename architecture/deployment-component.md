@@ -130,6 +130,7 @@ A deployment component with 10 well-researched, documented, and tested fields is
 - ✅ Both IaC modules have feature parity
 - ✅ Examples are tested and current
 - ✅ Documentation answers "why these choices?"
+- ✅ Presets provide ready-to-deploy starting points for common patterns
 
 **Incompleteness Indicators:**
 - ❌ Proto has fields that aren't used in IaC modules
@@ -137,6 +138,7 @@ A deployment component with 10 well-researched, documented, and tested fields is
 - ❌ Examples fail validation against current schema
 - ❌ No research justifying scope decisions
 - ❌ Missing Terraform or Pulumi implementation
+- ❌ No presets, or presets reference stale fields from an older spec.proto
 
 ---
 
@@ -217,6 +219,11 @@ apis/org/openmcf/provider/gcp/gcpcertmanagercert/v1/
 ├── examples.md
 ├── docs/
 │   └── README.md
+├── presets/
+│   ├── 01-managed-dns-validated.yaml
+│   ├── 01-managed-dns-validated.md
+│   ├── 02-load-balancer-cert.yaml
+│   └── 02-load-balancer-cert.md
 └── iac/
     ├── hack/
     │   └── manifest.yaml
@@ -799,6 +806,61 @@ variable "alternate_domain_names" {
 
 ---
 
+### 9. Presets
+
+**Location:** `v1/presets/`
+
+**Purpose:** Production-quality, directly deployable YAML manifests representing the most common real-world configuration patterns for the component. Each preset is a ranked starting point that users can deploy immediately (after replacing placeholders) without needing to understand every field in `spec.proto`.
+
+**Reference:** See `architecture/presets.md` for the full convention specification and `.cursor/info/presets.md` for the concise authoring guide.
+
+**Requirements:**
+
+- [ ] **Directory Exists** - `v1/presets/` directory is present
+- [ ] **At Least One Preset** - Minimum 1 YAML + companion MD pair (rank 01 = the "30-second decision" configuration)
+- [ ] **KRM Envelope Correct** - Every preset YAML has `apiVersion` and `kind` matching the exact constants in `api.proto`
+- [ ] **Metadata Convention** - `metadata.name` is prefixed with `my-` (signals a template, not a live resource)
+- [ ] **StringValueOrRef Compliance** - All `StringValueOrRef` fields use the `value:` wrapper form with descriptive angle-bracket placeholders
+- [ ] **Naming Convention** - Files follow `{NN}-{kebab-case-description}.yaml` + `.md` pattern:
+  - Rank is a zero-padded two-digit number (`01`-`99`)
+  - Description is lowercase, hyphenated, no spaces or underscores
+- [ ] **Companion Markdown** - Every `.yaml` has a companion `.md` with required sections:
+  - Title (H1)
+  - Description (2-4 sentences)
+  - When to Use (bulleted list)
+  - Key Configuration Choices (bulleted list with field references)
+  - Placeholders to Replace (table)
+- [ ] **No Duplicate Ranks** - Each rank number is unique within the component's `presets/` directory
+- [ ] **Schema Consistency** - All field names in preset YAML files exist in the current `spec.proto` (no stale references to renamed or removed fields)
+- [ ] **Default Annotations Honored** - Fields with `recommended_default` or `default` proto annotations use the annotated value with a citing comment
+- [ ] **No Status Section** - Presets must not include a `status` block (status is system-managed)
+
+**Quality Guidelines:**
+
+- **Quantity**: 1-5 presets per component. Simple components (3-5 spec fields) need only 1. Complex components with distinct deployment patterns (e.g., internal vs external, dev vs production) benefit from 2-4.
+- **Ranking**: Rank 01 = the configuration you'd deploy with 30 seconds to decide. Lower ranks represent progressively more specialized patterns.
+- **No Forced Patterns**: Do not create presets for hypothetical use cases. Every preset should represent a configuration that users actually deploy.
+- **Deployable**: Every preset must be structurally valid and deployable after replacing angle-bracket placeholders.
+
+**Relationship to Other Artifacts:**
+
+| Artifact | Purpose | Presets Difference |
+|----------|---------|-------------------|
+| `examples.md` | Documentation with realistic values | Presets use placeholders, are standalone files |
+| `iac/hack/manifest.yaml` | Minimal test manifest for CI/CD | Presets are production-quality, not minimal test configs |
+| `docs/README.md` | Research and design rationale | Presets are actionable starting points, not explanation |
+
+**Example:**
+```
+v1/presets/
+├── 01-internet-facing-https.yaml    # Most common: HTTPS ALB with SSL
+├── 01-internet-facing-https.md
+├── 02-internal-http.yaml            # Internal-only, no SSL
+└── 02-internal-http.md
+```
+
+---
+
 ## Completeness Assessment Criteria
 
 When evaluating whether a deployment component is "complete," assess each category:
@@ -819,7 +881,7 @@ These are non-negotiable for a component to be considered functional:
 
 **Note:** Test execution is now explicitly part of critical items. Failing tests = incomplete component.
 
-### Important (Should Have - 36.36%)
+### Important (Should Have - 41.36%)
 
 These significantly improve quality and usability:
 
@@ -829,14 +891,15 @@ These significantly improve quality and usability:
 13. ✅ Pulumi supporting documentation (README, overview) (5.05%)
 14. ✅ Terraform supporting documentation (README) (2.52%)
 15. ✅ Supporting files (hack manifest, debug scripts) (2.52%)
+16. ✅ Presets with companion documentation (v1/presets/) (5.00%)
 
-### Nice to Have (Polish - 15%)
+### Nice to Have (Polish - 10%)
 
 These add polish and maintainability:
 
-16. ✅ Extensive examples covering edge cases (5%)
-17. ✅ Additional architecture documentation (5%)
-18. ✅ Extra supporting files and helpers (5%)
+17. ✅ Extensive examples covering edge cases (3.33%)
+18. ✅ Additional architecture documentation (3.33%)
+19. ✅ Extra supporting files and helpers (3.34%)
 
 ### Percentage Calculation
 
@@ -853,8 +916,15 @@ These add polish and maintainability:
   - Pulumi entrypoint: 6.66%
   - Terraform module: 4.24%
   
-- Important items: **36.36%** weight (6 major items)
-- Nice to Have: **15%** weight (polish items)
+- Important items: **41.36%** weight (7 major items)
+  - Research docs: 13.18%
+  - Examples: 6.55%
+  - User-facing README: 6.54%
+  - Pulumi supporting docs: 5.05%
+  - Terraform supporting docs: 2.52%
+  - Supporting files: 2.52%
+  - **Presets: 5.00%** ← New
+- Nice to Have: **10%** weight (polish items)
 
 **Interpretation:**
 - 100% - Fully complete, production-ready
@@ -909,8 +979,14 @@ This document serves as the specification for an automated audit tool. The tool 
    - Terraform module: Check provider.tf has provider configuration
    - Terraform module: Check locals.tf has local value definitions
    - Terraform module: Check outputs.tf has output blocks
-9. Calculate completion percentage based on **implementation**, not just file presence
-10. Generate a report showing:
+9. **Verify preset coverage and correctness**:
+   - Check `v1/presets/` directory exists with at least one YAML + MD pair
+   - Verify `apiVersion` and `kind` match `api.proto` constants
+   - Verify all `StringValueOrRef` fields use `value:` wrapper
+   - Verify preset field names exist in current `spec.proto` (detect stale presets)
+   - Verify naming convention and companion file pairing
+10. Calculate completion percentage based on **implementation**, not just file presence
+11. Generate a report showing:
    - Overall completion percentage (considering implementation)
    - Missing items by category
    - Empty/stub files that need implementation
@@ -923,7 +999,7 @@ This document serves as the specification for an automated audit tool. The tool 
 
 ## Conclusion
 
-A "complete" deployment component in OpenMCF is not simply a collection of files. It's a well-researched, thoughtfully-scoped, fully-implemented package that serves real-world deployment needs with both Pulumi and Terraform, backed by comprehensive documentation that explains both "how" and "why."
+A "complete" deployment component in OpenMCF is not simply a collection of files. It's a well-researched, thoughtfully-scoped, fully-implemented package that serves real-world deployment needs with both Pulumi and Terraform, backed by comprehensive documentation that explains both "how" and "why," and equipped with ready-to-deploy presets that give users an immediate starting point.
 
 This document provides the definitive reference for what completeness means, enabling both human developers and automated tools to assess and improve deployment components systematically.
 

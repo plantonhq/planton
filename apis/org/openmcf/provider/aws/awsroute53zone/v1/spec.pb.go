@@ -8,6 +8,7 @@ package awsroute53zonev1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	dnsrecordtype "github.com/plantonhq/openmcf/apis/org/openmcf/shared/networking/enums/dnsrecordtype"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -198,7 +199,8 @@ type Route53VpcAssociation struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The VPC ID to associate with the private hosted zone.
 	// Example: "vpc-12345678"
-	VpcId string `protobuf:"bytes,1,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
+	// Can reference an AwsVpc resource.
+	VpcId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
 	// The AWS region where the VPC is located.
 	// Example: "us-east-1"
 	VpcRegion     string `protobuf:"bytes,2,opt,name=vpc_region,json=vpcRegion,proto3" json:"vpc_region,omitempty"`
@@ -236,11 +238,11 @@ func (*Route53VpcAssociation) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsroute53zone_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Route53VpcAssociation) GetVpcId() string {
+func (x *Route53VpcAssociation) GetVpcId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VpcId
 	}
-	return ""
+	return nil
 }
 
 func (x *Route53VpcAssociation) GetVpcRegion() string {
@@ -878,7 +880,7 @@ var File_org_openmcf_provider_aws_awsroute53zone_v1_spec_proto protoreflect.File
 
 const file_org_openmcf_provider_aws_awsroute53zone_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"5org/openmcf/provider/aws/awsroute53zone/v1/spec.proto\x12*org.openmcf.provider.aws.awsroute53zone.v1\x1a\x1bbuf/validate/validate.proto\x1aGorg/openmcf/shared/networking/enums/dnsrecordtype/dns_record_type.proto\"\x81\x03\n" +
+	"5org/openmcf/provider/aws/awsroute53zone/v1/spec.proto\x12*org.openmcf.provider.aws.awsroute53zone.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1aGorg/openmcf/shared/networking/enums/dnsrecordtype/dns_record_type.proto\"\x81\x03\n" +
 	"\x12AwsRoute53ZoneSpec\x12\x1d\n" +
 	"\n" +
 	"is_private\x18\x01 \x01(\bR\tisPrivate\x12l\n" +
@@ -886,9 +888,9 @@ const file_org_openmcf_provider_aws_awsroute53zone_v1_spec_proto_rawDesc = "" +
 	"\x14enable_query_logging\x18\x03 \x01(\bR\x12enableQueryLogging\x12/\n" +
 	"\x14query_log_group_name\x18\x04 \x01(\tR\x11queryLogGroupName\x12#\n" +
 	"\renable_dnssec\x18\x05 \x01(\bR\fenableDnssec\x12V\n" +
-	"\arecords\x18\x06 \x03(\v2<.org.openmcf.provider.aws.awsroute53zone.v1.Route53DnsRecordR\arecords\"]\n" +
-	"\x15Route53VpcAssociation\x12\x1d\n" +
-	"\x06vpc_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05vpcId\x12%\n" +
+	"\arecords\x18\x06 \x03(\v2<.org.openmcf.provider.aws.awsroute53zone.v1.Route53DnsRecordR\arecords\"\xaf\x01\n" +
+	"\x15Route53VpcAssociation\x12o\n" +
+	"\x06vpc_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12%\n" +
 	"\n" +
 	"vpc_region\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\tvpcRegion\"\xbb\x04\n" +
 	"\x10Route53DnsRecord\x12i\n" +
@@ -954,24 +956,26 @@ var file_org_openmcf_provider_aws_awsroute53zone_v1_spec_proto_goTypes = []any{
 	(*Route53LatencyRoutingPolicy)(nil),                  // 7: org.openmcf.provider.aws.awsroute53zone.v1.Route53LatencyRoutingPolicy
 	(*Route53FailoverRoutingPolicy)(nil),                 // 8: org.openmcf.provider.aws.awsroute53zone.v1.Route53FailoverRoutingPolicy
 	(*Route53GeolocationRoutingPolicy)(nil),              // 9: org.openmcf.provider.aws.awsroute53zone.v1.Route53GeolocationRoutingPolicy
-	(dnsrecordtype.DnsRecordType)(0),                     // 10: org.openmcf.shared.networking.enums.dnsrecordtype.DnsRecordType
+	(*v1.StringValueOrRef)(nil),                          // 10: org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	(dnsrecordtype.DnsRecordType)(0),                     // 11: org.openmcf.shared.networking.enums.dnsrecordtype.DnsRecordType
 }
 var file_org_openmcf_provider_aws_awsroute53zone_v1_spec_proto_depIdxs = []int32{
 	2,  // 0: org.openmcf.provider.aws.awsroute53zone.v1.AwsRoute53ZoneSpec.vpc_associations:type_name -> org.openmcf.provider.aws.awsroute53zone.v1.Route53VpcAssociation
 	3,  // 1: org.openmcf.provider.aws.awsroute53zone.v1.AwsRoute53ZoneSpec.records:type_name -> org.openmcf.provider.aws.awsroute53zone.v1.Route53DnsRecord
-	10, // 2: org.openmcf.provider.aws.awsroute53zone.v1.Route53DnsRecord.record_type:type_name -> org.openmcf.shared.networking.enums.dnsrecordtype.DnsRecordType
-	4,  // 3: org.openmcf.provider.aws.awsroute53zone.v1.Route53DnsRecord.alias_target:type_name -> org.openmcf.provider.aws.awsroute53zone.v1.Route53AliasTarget
-	5,  // 4: org.openmcf.provider.aws.awsroute53zone.v1.Route53DnsRecord.routing_policy:type_name -> org.openmcf.provider.aws.awsroute53zone.v1.Route53RoutingPolicy
-	6,  // 5: org.openmcf.provider.aws.awsroute53zone.v1.Route53RoutingPolicy.weighted:type_name -> org.openmcf.provider.aws.awsroute53zone.v1.Route53WeightedRoutingPolicy
-	7,  // 6: org.openmcf.provider.aws.awsroute53zone.v1.Route53RoutingPolicy.latency:type_name -> org.openmcf.provider.aws.awsroute53zone.v1.Route53LatencyRoutingPolicy
-	8,  // 7: org.openmcf.provider.aws.awsroute53zone.v1.Route53RoutingPolicy.failover:type_name -> org.openmcf.provider.aws.awsroute53zone.v1.Route53FailoverRoutingPolicy
-	9,  // 8: org.openmcf.provider.aws.awsroute53zone.v1.Route53RoutingPolicy.geolocation:type_name -> org.openmcf.provider.aws.awsroute53zone.v1.Route53GeolocationRoutingPolicy
-	0,  // 9: org.openmcf.provider.aws.awsroute53zone.v1.Route53FailoverRoutingPolicy.type:type_name -> org.openmcf.provider.aws.awsroute53zone.v1.Route53FailoverRoutingPolicy.FailoverRecordType
-	10, // [10:10] is the sub-list for method output_type
-	10, // [10:10] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	10, // 2: org.openmcf.provider.aws.awsroute53zone.v1.Route53VpcAssociation.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	11, // 3: org.openmcf.provider.aws.awsroute53zone.v1.Route53DnsRecord.record_type:type_name -> org.openmcf.shared.networking.enums.dnsrecordtype.DnsRecordType
+	4,  // 4: org.openmcf.provider.aws.awsroute53zone.v1.Route53DnsRecord.alias_target:type_name -> org.openmcf.provider.aws.awsroute53zone.v1.Route53AliasTarget
+	5,  // 5: org.openmcf.provider.aws.awsroute53zone.v1.Route53DnsRecord.routing_policy:type_name -> org.openmcf.provider.aws.awsroute53zone.v1.Route53RoutingPolicy
+	6,  // 6: org.openmcf.provider.aws.awsroute53zone.v1.Route53RoutingPolicy.weighted:type_name -> org.openmcf.provider.aws.awsroute53zone.v1.Route53WeightedRoutingPolicy
+	7,  // 7: org.openmcf.provider.aws.awsroute53zone.v1.Route53RoutingPolicy.latency:type_name -> org.openmcf.provider.aws.awsroute53zone.v1.Route53LatencyRoutingPolicy
+	8,  // 8: org.openmcf.provider.aws.awsroute53zone.v1.Route53RoutingPolicy.failover:type_name -> org.openmcf.provider.aws.awsroute53zone.v1.Route53FailoverRoutingPolicy
+	9,  // 9: org.openmcf.provider.aws.awsroute53zone.v1.Route53RoutingPolicy.geolocation:type_name -> org.openmcf.provider.aws.awsroute53zone.v1.Route53GeolocationRoutingPolicy
+	0,  // 10: org.openmcf.provider.aws.awsroute53zone.v1.Route53FailoverRoutingPolicy.type:type_name -> org.openmcf.provider.aws.awsroute53zone.v1.Route53FailoverRoutingPolicy.FailoverRecordType
+	11, // [11:11] is the sub-list for method output_type
+	11, // [11:11] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_aws_awsroute53zone_v1_spec_proto_init() }

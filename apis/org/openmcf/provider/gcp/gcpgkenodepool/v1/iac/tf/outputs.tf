@@ -35,3 +35,8 @@ output "current_node_count" {
   value       = google_container_node_pool.node_pool.node_count
 }
 
+output "node_pool_id" {
+  description = "Fully qualified GKE node pool resource ID (projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{nodePool})"
+  value       = google_container_node_pool.node_pool.id
+}
+

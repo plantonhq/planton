@@ -7,6 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	dnsrecordtype "github.com/plantonhq/openmcf/apis/org/openmcf/shared/networking/enums/dnsrecordtype"
 )
 
@@ -341,7 +342,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						IsPrivate: true,
 						VpcAssociations: []*Route53VpcAssociation{
 							{
-								VpcId:     "vpc-12345678",
+								VpcId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "vpc-12345678"}},
 								VpcRegion: "us-east-1",
 							},
 						},

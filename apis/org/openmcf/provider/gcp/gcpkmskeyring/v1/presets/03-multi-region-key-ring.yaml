@@ -1,0 +1,9 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpKmsKeyRing
+metadata:
+  name: my-multi-region-key-ring
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  keyRingName: <your-key-ring-name>  # e.g., us-compliance-keys
+  location: us  # multi-region: "us", "europe", or "asia"

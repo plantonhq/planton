@@ -166,17 +166,30 @@ function buildStructure(dirPath: string, relativePath = ''): DocItem[] {
     const itemRelativePath = path.join(relativePath, item);
 
     if (stat.isDirectory()) {
+      // In the catalog section, skip "presets" subdirectories inside
+      // component directories so they don't appear in the sidebar.
+      // Preset pages are still generated via the full structure in fileSystem.ts.
+      const relParts = relativePath.split('/').filter(Boolean);
+      if (item === 'presets' && relParts.length === 3 && relParts[0] === 'catalog') {
+        continue;
+      }
+
       const children = buildStructure(fullPath, itemRelativePath);
-      if (children.length > 0) {
+      const indexFiles = ['index.md', 'README.md'];
+      const hasIndex = indexFiles.some((f) => fs.existsSync(path.join(fullPath, f)));
+
+      if (children.length > 0 || hasIndex) {
         let metadata: Record<string, unknown> = {};
-        const indexFiles = ['index.md', 'README.md'];
+        let dirExcerpt = '';
 
         for (const indexFile of indexFiles) {
           const indexPath = path.join(fullPath, indexFile);
           if (fs.existsSync(indexPath)) {
             try {
-              const { data } = matter(fs.readFileSync(indexPath, 'utf-8'));
+              const fileContent = fs.readFileSync(indexPath, 'utf-8');
+              const { data } = matter(fileContent);
               metadata = data;
+              dirExcerpt = generateExcerptFromContent(fileContent);
               break;
             } catch (error) {
               console.warn(`Failed to parse metadata from ${indexPath}:`, error);
@@ -185,7 +198,6 @@ function buildStructure(dirPath: string, relativePath = ''): DocItem[] {
         }
 
         const category = relativePath.split('/')[0] || item;
-        const hasIndex = indexFiles.some((f) => fs.existsSync(path.join(fullPath, f)));
 
         structure.push({
           name: item,
@@ -201,7 +213,8 @@ function buildStructure(dirPath: string, relativePath = ''): DocItem[] {
           isExternal: (metadata.isExternal as boolean) || false,
           externalUrl: metadata.externalUrl as string | undefined,
           hasIndex,
-          excerpt: '',
+          excerpt: dirExcerpt,
+          componentName: metadata.componentName as string | undefined,
         });
       }
     } else if (item.endsWith('.md')) {

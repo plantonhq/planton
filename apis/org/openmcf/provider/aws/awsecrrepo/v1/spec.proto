@@ -3,6 +3,7 @@ syntax = "proto3";
 package org.openmcf.provider.aws.awsecrrepo.v1;
 
 import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
 // AwsEcrRepoSpec defines the configuration for creating an AWS ECR repository
@@ -40,7 +41,11 @@ message AwsEcrRepoSpec {
   // kmsKeyId is the ARN or ID of a KMS key used when encryption_type = KMS.
   // If omitted, AWS uses the default service-managed key for ECR.
   // Ignored if encryption_type = AES256.
-  string kms_key_id = 4;
+  // Can reference an AwsKmsKey resource.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 4 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
 
   // forceDelete, if true, allows deleting the repository even when it contains
   // images (all images get removed on delete). By default, it is false, preventing

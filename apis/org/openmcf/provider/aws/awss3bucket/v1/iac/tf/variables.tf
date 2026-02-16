@@ -33,8 +33,8 @@ variable "spec" {
     # Encryption type for objects in the bucket (SSE_S3 or SSE_KMS)
     encryption_type = optional(string, "SSE_S3")
 
-    # KMS key ID or ARN for SSE-KMS encryption (required when encryption_type is SSE_KMS)
-    kms_key_id = optional(string, "")
+    # KMS key ID or ARN for SSE-KMS encryption (required when encryption_type is SSE_KMS) (StringValueOrRef)
+    kms_key_id = optional(object({ value = string }), null)
 
     # Tags for resource governance, cost allocation, and organization
     tags = optional(map(string), {})
@@ -54,7 +54,7 @@ variable "spec" {
     # Replication configuration for disaster recovery or compliance
     replication = optional(object({
       enabled = bool
-      role_arn = string
+      role_arn = object({ value = string })
       destination = object({
         bucket_arn    = string
         storage_class = optional(string, "")

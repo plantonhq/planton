@@ -1,0 +1,10 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpArtifactRegistryRepo
+metadata:
+  name: my-npm-repo
+spec:
+  repoFormat: NPM
+  projectId:
+    value: "<gcp-project-id>"
+  region: <gcp-region>
+  enablePublicAccess: false  # private repository

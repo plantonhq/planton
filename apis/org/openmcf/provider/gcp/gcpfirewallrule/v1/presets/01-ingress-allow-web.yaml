@@ -1,0 +1,21 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpFirewallRule
+metadata:
+  name: my-allow-web-ingress
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  network:
+    value: "<vpc-network-name-or-self-link>"
+  ruleName: <your-rule-name>  # e.g., allow-http-https-ingress
+  direction: INGRESS
+  action: ALLOW
+  rules:
+    - protocol: tcp
+      ports:
+        - "80"
+        - "443"
+  sourceRanges:
+    - 0.0.0.0/0  # all IPv4 traffic; restrict to specific CIDRs for non-public services
+  priority: 1000  # default priority; lower number = higher precedence
+  description: Allow HTTP and HTTPS traffic from the internet

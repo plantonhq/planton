@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpcloudschedulerjob.v1;
+
+// Outputs produced after provisioning a GCP Cloud Scheduler job.
+message GcpCloudSchedulerJobStackOutputs {
+  // The fully qualified job ID.
+  // Format: projects/{project}/locations/{location}/jobs/{name}
+  // This is the value downstream resources use to reference this job.
+  string job_id = 1;
+
+  // The short job name (same as the spec's job_name input, or metadata.name
+  // if job_name was not specified).
+  string job_name = 2;
+
+  // The current state of the job.
+  // Possible values: ENABLED, PAUSED, DISABLED, UPDATE_FAILED.
+  string state = 3;
+}

@@ -48,7 +48,8 @@ const SidebarItem: FC<SidebarItemProps> = ({
   const renderIcon = () => {
     // Check if this is a component page under catalog/{provider}/{component}
     const pathParts = item.path.split('/');
-    if (pathParts.length === 3 && pathParts[0] === 'catalog' && item.type === 'file') {
+    if (pathParts.length === 3 && pathParts[0] === 'catalog' &&
+        (item.type === 'file' || (item.type === 'directory' && item.hasIndex))) {
       // Use componentName from item data for icon path (survives URL slug changes)
       const provider = pathParts[1];
       const componentName = (item as DocItem & { componentName?: string }).componentName || pathParts[2];
@@ -122,7 +123,12 @@ const SidebarItem: FC<SidebarItemProps> = ({
     );
   };
 
-  if (item.type === 'directory') {
+  // Leaf directory: has an index page but no visible children.
+  // Render like a file (clickable link, component icon, no expand arrow).
+  const isLeafDirectory = item.type === 'directory' && item.hasIndex &&
+      (!item.children || item.children.length === 0);
+
+  if (item.type === 'directory' && !isLeafDirectory) {
     const isExpanded = expandedPaths.has(item.path);
     return (
       <Box>

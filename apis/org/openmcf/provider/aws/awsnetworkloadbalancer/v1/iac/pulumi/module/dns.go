@@ -1,0 +1,52 @@
+package module
+
+import (
+	"fmt"
+
+	"github.com/pkg/errors"
+	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws"
+	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws/lb"
+	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws/route53"
+	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
+)
+
+// dns configures Route53 alias A records for the NLB when dns.enabled is true.
+// Each hostname gets its own alias record pointing to the NLB's DNS name.
+func dns(
+	ctx *pulumi.Context,
+	locals *Locals,
+	provider *aws.Provider,
+	nlbResource *lb.LoadBalancer,
+) error {
+	dnsSpec := locals.Nlb.Spec.Dns
+
+	if dnsSpec.Route53ZoneId.GetValue() == "" {
+		return errors.New("dns.enabled is true but route53_zone_id is not provided")
+	}
+
+	if len(dnsSpec.Hostnames) == 0 {
+		return errors.New("dns.enabled is true but no hostnames provided")
+	}
+
+	for i, hostname := range dnsSpec.Hostnames {
+		recordName := fmt.Sprintf("%s-dns-%d", locals.Nlb.Metadata.Name, i)
+
+		_, err := route53.NewRecord(ctx, recordName, &route53.RecordArgs{
+			Name:   pulumi.String(hostname),
+			Type:   pulumi.String("A"),
+			ZoneId: pulumi.String(dnsSpec.Route53ZoneId.GetValue()),
+			Aliases: route53.RecordAliasArray{
+				route53.RecordAliasArgs{
+					Name:                 nlbResource.DnsName,
+					ZoneId:               nlbResource.ZoneId,
+					EvaluateTargetHealth: pulumi.Bool(true),
+				},
+			},
+		}, pulumi.Provider(provider))
+		if err != nil {
+			return errors.Wrapf(err, "failed to create Route53 record for %s", hostname)
+		}
+	}
+
+	return nil
+}

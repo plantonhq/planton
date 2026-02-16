@@ -8,6 +8,7 @@ package awscloudfrontv1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -82,8 +83,9 @@ type AwsCloudFrontSpec struct {
 	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	// Aliases (CNAMEs) for the distribution, e.g., "cdn.example.com".
 	Aliases []string `protobuf:"bytes,2,rep,name=aliases,proto3" json:"aliases,omitempty"`
-	// ACM certificate ARN for custom domains in the us-east-1 region.
-	CertificateArn string                       `protobuf:"bytes,3,opt,name=certificate_arn,json=certificateArn,proto3" json:"certificate_arn,omitempty"`
+	// ACM certificate ARN for custom domains. Must be in the us-east-1 region.
+	// Required when aliases are provided. Can reference an AwsCertManagerCert resource.
+	CertificateArn *v1.StringValueOrRef         `protobuf:"bytes,3,opt,name=certificate_arn,json=certificateArn,proto3" json:"certificate_arn,omitempty"`
 	PriceClass     AwsCloudFrontSpec_PriceClass `protobuf:"varint,4,opt,name=price_class,json=priceClass,proto3,enum=org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec_PriceClass" json:"price_class,omitempty"`
 	// List of origins available to the distribution.
 	// Must contain at least one origin with exactly one marked as default.
@@ -138,11 +140,11 @@ func (x *AwsCloudFrontSpec) GetAliases() []string {
 	return nil
 }
 
-func (x *AwsCloudFrontSpec) GetCertificateArn() string {
+func (x *AwsCloudFrontSpec) GetCertificateArn() *v1.StringValueOrRef {
 	if x != nil {
 		return x.CertificateArn
 	}
-	return ""
+	return nil
 }
 
 func (x *AwsCloudFrontSpec) GetPriceClass() AwsCloudFrontSpec_PriceClass {
@@ -235,11 +237,11 @@ var File_org_openmcf_provider_aws_awscloudfront_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_aws_awscloudfront_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/aws/awscloudfront/v1/spec.proto\x12)org.openmcf.provider.aws.awscloudfront.v1\x1a\x1bbuf/validate/validate.proto\"\xf2\b\n" +
+	"4org/openmcf/provider/aws/awscloudfront/v1/spec.proto\x12)org.openmcf.provider.aws.awscloudfront.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xd8\b\n" +
 	"\x11AwsCloudFrontSpec\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12H\n" +
-	"\aaliases\x18\x02 \x03(\tB.\xbaH+\x92\x01(\x18\x01\"$r\"2 ^[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,}$R\aaliases\x12\x9d\x01\n" +
-	"\x0fcertificate_arn\x18\x03 \x01(\tBt\xbaHqro2m^$|^arn:aws:acm:us-east-1:[0-9]{12}:certificate/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$R\x0ecertificateArn\x12r\n" +
+	"\aaliases\x18\x02 \x03(\tB.\xbaH+\x92\x01(\x18\x01\"$r\"2 ^[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,}$R\aaliases\x12\x84\x01\n" +
+	"\x0fcertificate_arn\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\x88\xd4a\xc9\x01\x92\xd4a\x1estatus.outputs.certificate_arnR\x0ecertificateArn\x12r\n" +
 	"\vprice_class\x18\x04 \x01(\x0e2G.org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.PriceClassB\b\xbaH\x05\x82\x01\x02\x10\x01R\n" +
 	"priceClass\x12g\n" +
 	"\aorigins\x18\x05 \x03(\v2C.org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.OriginB\b\xbaH\x05\x92\x01\x02\b\x01R\aorigins\x12K\n" +
@@ -256,8 +258,8 @@ const file_org_openmcf_provider_aws_awscloudfront_v1_spec_proto_rawDesc = "" +
 	"\x17PRICE_CLASS_UNSPECIFIED\x10\x00\x12\x13\n" +
 	"\x0fPRICE_CLASS_100\x10\x01\x12\x13\n" +
 	"\x0fPRICE_CLASS_200\x10\x02\x12\x13\n" +
-	"\x0fPRICE_CLASS_ALL\x10\x03:\x8a\x02\xbaH\x86\x02\x1a\x85\x01\n" +
-	"\x14aliases_require_cert\x125certificate_arn must be set when aliases are provided\x1a6this.aliases.size() == 0 || this.certificate_arn != \"\"\x1a|\n" +
+	"\x0fPRICE_CLASS_ALL\x10\x03:\x89\x02\xbaH\x85\x02\x1a\x84\x01\n" +
+	"\x14aliases_require_cert\x125certificate_arn must be set when aliases are provided\x1a5this.aliases.size() == 0 || has(this.certificate_arn)\x1a|\n" +
 	"\x1aexactly_one_default_origin\x12,exactly one origin must be marked as default\x1a0this.origins.filter(o, o.is_default).size() == 1B\xe2\x02\n" +
 	"-com.org.openmcf.provider.aws.awscloudfront.v1B\tSpecProtoP\x01Z[github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awscloudfront/v1;awscloudfrontv1\xa2\x02\x05OOPAA\xaa\x02)Org.Openmcf.Provider.Aws.Awscloudfront.V1\xca\x02)Org\\Openmcf\\Provider\\Aws\\Awscloudfront\\V1\xe2\x025Org\\Openmcf\\Provider\\Aws\\Awscloudfront\\V1\\GPBMetadata\xea\x02.Org::Openmcf::Provider::Aws::Awscloudfront::V1b\x06proto3"
 
@@ -279,15 +281,17 @@ var file_org_openmcf_provider_aws_awscloudfront_v1_spec_proto_goTypes = []any{
 	(AwsCloudFrontSpec_PriceClass)(0), // 0: org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.PriceClass
 	(*AwsCloudFrontSpec)(nil),         // 1: org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec
 	(*AwsCloudFrontSpec_Origin)(nil),  // 2: org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.Origin
+	(*v1.StringValueOrRef)(nil),       // 3: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_aws_awscloudfront_v1_spec_proto_depIdxs = []int32{
-	0, // 0: org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.price_class:type_name -> org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.PriceClass
-	2, // 1: org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.origins:type_name -> org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.Origin
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	3, // 0: org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.certificate_arn:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	0, // 1: org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.price_class:type_name -> org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.PriceClass
+	2, // 2: org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.origins:type_name -> org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.Origin
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_aws_awscloudfront_v1_spec_proto_init() }

@@ -35,7 +35,12 @@ func ecrRepo(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) error 
 		EncryptionConfigurations: ecr.RepositoryEncryptionConfigurationArray{
 			&ecr.RepositoryEncryptionConfigurationArgs{
 				EncryptionType: pulumi.String(spec.GetEncryptionType()),
-				KmsKey:         pulumi.String(spec.KmsKeyId),
+				KmsKey: func() pulumi.StringInput {
+					if spec.KmsKeyId != nil && spec.KmsKeyId.GetValue() != "" {
+						return pulumi.String(spec.KmsKeyId.GetValue())
+					}
+					return pulumi.String("")
+				}(),
 			},
 		},
 	}, pulumi.Provider(provider))

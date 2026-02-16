@@ -1,0 +1,25 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCloudArmorPolicy
+metadata:
+  name: basic-ip-allowlist
+spec:
+  projectId:
+    value: my-gcp-project
+  policyName: basic-ip-allowlist
+  description: Allow corporate network IP ranges, deny everything else
+  rules:
+    - action: allow
+      priority: 1000
+      description: Allow corporate network (10.x and 172.16-31.x)
+      match:
+        versionedExpr: SRC_IPS_V1
+        srcIpRanges:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+    - action: deny(403)
+      priority: 2147483647
+      description: Default deny all other traffic
+      match:
+        versionedExpr: SRC_IPS_V1
+        srcIpRanges:
+          - "*"

@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpvertexainotebook.v1;
+
+// Outputs produced after provisioning a GCP Vertex AI Workbench instance.
+message GcpVertexAiNotebookStackOutputs {
+  // The fully qualified instance ID.
+  // Format: projects/{project}/locations/{location}/instances/{instance_id}
+  string instance_id = 1;
+
+  // The short instance name (same as the spec's instance_name input,
+  // or metadata.name if instance_name was not specified).
+  string instance_name = 2;
+
+  // The proxy URI for accessing JupyterLab.
+  // This is the primary endpoint users use to access their notebook.
+  // Empty if disable_proxy_access is true.
+  string proxy_uri = 3;
+
+  // The current state of the instance.
+  // Possible values: ACTIVE, STOPPED, DELETED, UPGRADING, INITIALIZING,
+  // SUSPENDING, SUSPENDED, STARTING, STOPPING.
+  string state = 4;
+
+  // Email address of the entity that sent the original CreateInstance request.
+  string creator = 5;
+
+  // RFC3339 timestamp of when the instance was created.
+  string create_time = 6;
+}

@@ -1,0 +1,12 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsRedisElasticache
+metadata:
+  name: my-redis
+spec:
+  engine: redis
+  engineVersion: "7.1"
+  description: Single-node Redis cache for development
+  nodeType: cache.t3.micro
+  numCacheClusters: 1
+  atRestEncryptionEnabled: true
+  transitEncryptionEnabled: true

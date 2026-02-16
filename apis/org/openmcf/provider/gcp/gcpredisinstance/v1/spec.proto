@@ -1,0 +1,237 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpredisinstance.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// GcpRedisInstanceMaintenanceWindow defines a weekly maintenance window for
+// the Redis instance. GCP uses this to schedule updates and patches.
+// The maintenance window is fixed at 1 hour duration.
+message GcpRedisInstanceMaintenanceWindow {
+  // Day of the week for the maintenance window.
+  string day = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY",
+        "SUNDAY"
+      ]
+    }
+  ];
+
+  // Hour of day (0-23, UTC) when the maintenance window starts.
+  int32 hour = 2 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 23
+  }];
+}
+
+// GcpRedisInstancePersistenceConfig controls RDB snapshot persistence for
+// the Redis instance. When enabled, data is periodically written to disk,
+// providing durability across restarts and failovers.
+//
+// Persistence is only meaningful for STANDARD_HA tier instances.
+message GcpRedisInstancePersistenceConfig {
+  // Persistence mode. DISABLED turns off persistence entirely.
+  // RDB enables periodic RDB snapshots.
+  string persistence_mode = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "DISABLED",
+        "RDB"
+      ]
+    }
+  ];
+
+  // How often RDB snapshots are taken. Required when persistence_mode is RDB.
+  string rdb_snapshot_period = 2 [(buf.validate.field).cel = {
+    id: "rdb_snapshot_period_valid_value"
+    expression: "this == '' || this in ['ONE_HOUR', 'SIX_HOURS', 'TWELVE_HOURS', 'TWENTY_FOUR_HOURS']"
+    message: "rdb_snapshot_period must be ONE_HOUR, SIX_HOURS, TWELVE_HOURS, or TWENTY_FOUR_HOURS"
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "rdb_snapshot_period_requires_rdb_mode"
+    expression: "this.persistence_mode != 'RDB' || size(this.rdb_snapshot_period) > 0"
+    message: "rdb_snapshot_period is required when persistence_mode is RDB"
+  };
+}
+
+// GcpRedisInstanceSpec defines the configuration for a Google Cloud Memorystore
+// for Redis instance.
+//
+// Memorystore for Redis provides a fully managed, in-memory data store backed
+// by the Redis protocol. It is used for caching, session management, real-time
+// analytics, rate limiting, leaderboards, and pub/sub messaging.
+//
+// Instances come in two tiers:
+//   - BASIC: standalone single-node instance, no replication, no SLA
+//   - STANDARD_HA: primary node with automatic failover to a replica in a
+//     different zone, 99.9% availability SLA
+//
+// Important behavioral notes:
+//
+//   - The instance_name, tier, connect_mode, transit_encryption_mode,
+//     authorized_network, reserved_ip_range, and customer_managed_key fields
+//     are immutable after creation. Changing them requires replacing the instance.
+//
+//   - When auth_enabled is true, GCP generates a random AUTH string that is
+//     rotated automatically. The current AUTH string is exported in stack outputs.
+//
+//   - Read replicas are only available with STANDARD_HA tier and require
+//     read_replicas_mode to be set to READ_REPLICAS_ENABLED.
+message GcpRedisInstanceSpec {
+  // GCP project where the Redis instance will be created.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpProject,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Name of the Redis instance. This becomes the GCP resource name.
+  // Must start with a lowercase letter, contain only lowercase letters, numbers,
+  // and hyphens, and end with a lowercase letter or number. Maximum 40 characters.
+  // Immutable after creation.
+  string instance_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z][a-z0-9-]{0,38}[a-z0-9]$",
+    (buf.validate.field).string.min_len = 2,
+    (buf.validate.field).string.max_len = 40
+  ];
+
+  // GCP region where the instance will be deployed (e.g., "us-central1").
+  string region = 3 [(buf.validate.field).required = true];
+
+  // Service tier controlling availability and replication.
+  // BASIC: standalone instance, no replication, no SLA.
+  // STANDARD_HA: primary + replica with automatic failover, 99.9% SLA.
+  string tier = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "BASIC",
+        "STANDARD_HA"
+      ]
+    }
+  ];
+
+  // Memory size in GiB for the Redis instance. This is the total memory
+  // available for storing data. Minimum 1 GiB.
+  int32 memory_size_gb = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {gte: 1}
+  ];
+
+  // Redis engine version (e.g., "REDIS_7_0", "REDIS_7_2", "REDIS_6_X").
+  // If not specified, the latest supported version is used.
+  string redis_version = 6;
+
+  // Human-readable display name for the instance.
+  string display_name = 7;
+
+  // Zone within the region where the instance will be placed.
+  // For STANDARD_HA, this is the primary zone. GCP automatically selects
+  // a different zone for the replica. If not specified, GCP picks a zone.
+  string location_id = 8;
+
+  // VPC network to which the instance is connected.
+  // If not specified, the default network is used.
+  // Immutable after creation.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef authorized_network = 9 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_self_link"
+  ];
+
+  // How the instance connects to the VPC network.
+  // DIRECT_PEERING: VPC peering (default). Simpler setup.
+  // PRIVATE_SERVICE_ACCESS: uses a private services connection. Required for
+  // Shared VPC and some network configurations.
+  // Immutable after creation.
+  string connect_mode = 10 [(buf.validate.field).cel = {
+    id: "connect_mode_valid_value"
+    expression: "this == '' || this in ['DIRECT_PEERING', 'PRIVATE_SERVICE_ACCESS']"
+    message: "connect_mode must be DIRECT_PEERING or PRIVATE_SERVICE_ACCESS"
+  }];
+
+  // CIDR range of internal addresses reserved for this instance (e.g., "10.0.0.0/29").
+  // Must be a /29 block, unique and non-overlapping with existing subnets.
+  // If not specified, GCP automatically selects an unused /29 block.
+  // Immutable after creation.
+  string reserved_ip_range = 11;
+
+  // Whether Redis AUTH is enabled. When true, clients must provide
+  // the AUTH string (exported in stack outputs) to connect.
+  // AUTH provides an additional layer of security beyond network controls.
+  bool auth_enabled = 12;
+
+  // TLS encryption mode for client-to-server traffic.
+  // DISABLED: no encryption (default).
+  // SERVER_AUTHENTICATION: clients verify the server's identity via TLS.
+  // Immutable after creation.
+  string transit_encryption_mode = 13 [(buf.validate.field).cel = {
+    id: "transit_encryption_mode_valid_value"
+    expression: "this == '' || this in ['DISABLED', 'SERVER_AUTHENTICATION']"
+    message: "transit_encryption_mode must be DISABLED or SERVER_AUTHENTICATION"
+  }];
+
+  // Redis configuration parameters as key-value pairs.
+  // See https://cloud.google.com/memorystore/docs/redis/reference/rest/v1/projects.locations.instances#Instance.FIELDS.redis_configs
+  // for the list of supported parameters (e.g., "maxmemory-policy", "notify-keyspace-events").
+  map<string, string> redis_configs = 14;
+
+  // Weekly maintenance window. If not specified, GCP schedules maintenance
+  // at its discretion.
+  GcpRedisInstanceMaintenanceWindow maintenance_window = 15;
+
+  // Read replica mode. Can only be set at creation time.
+  // READ_REPLICAS_DISABLED (default): no read endpoint, no scaling.
+  // READ_REPLICAS_ENABLED: read endpoint provided, instance can scale replicas.
+  // Only available with STANDARD_HA tier.
+  string read_replicas_mode = 16 [(buf.validate.field).cel = {
+    id: "read_replicas_mode_valid_value"
+    expression: "this == '' || this in ['READ_REPLICAS_DISABLED', 'READ_REPLICAS_ENABLED']"
+    message: "read_replicas_mode must be READ_REPLICAS_DISABLED or READ_REPLICAS_ENABLED"
+  }];
+
+  // Number of read replicas. Valid range is 1-5 when read_replicas_mode is
+  // READ_REPLICAS_ENABLED and tier is STANDARD_HA.
+  int32 replica_count = 17;
+
+  // Persistence configuration for RDB snapshots.
+  GcpRedisInstancePersistenceConfig persistence_config = 18;
+
+  // Cloud KMS key for customer-managed encryption at rest (CMEK).
+  // Format: projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{key}
+  // If not specified, data is encrypted with Google-managed keys.
+  // Immutable after creation.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef customer_managed_key = 19 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // Whether Terraform/Pulumi deletion protection is enabled.
+  // When true, the instance cannot be destroyed without first disabling
+  // this flag. Recommended for production instances.
+  bool deletion_protection = 20;
+
+  // -- Cross-field validations --
+
+  option (buf.validate.message).cel = {
+    id: "read_replicas_require_ha_tier"
+    expression: "this.read_replicas_mode != 'READ_REPLICAS_ENABLED' || this.tier == 'STANDARD_HA'"
+    message: "read_replicas_mode READ_REPLICAS_ENABLED requires tier STANDARD_HA"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "replica_count_requires_ha_with_read_replicas"
+    expression: "this.replica_count == 0 || (this.tier == 'STANDARD_HA' && this.read_replicas_mode == 'READ_REPLICAS_ENABLED' && this.replica_count >= 1 && this.replica_count <= 5)"
+    message: "replica_count (1-5) requires tier STANDARD_HA with read_replicas_mode READ_REPLICAS_ENABLED"
+  };
+}

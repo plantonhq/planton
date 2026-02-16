@@ -1,0 +1,13 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpBigQueryDataset
+metadata:
+  name: my-encrypted-dataset
+spec:
+  projectId:
+    value: "<project-id>"  # e.g., my-prod-project
+  datasetId: <your_dataset_id>  # e.g., financial_data_prod
+  location: us-central1  # Regional for data residency
+  description: "<dataset description>"
+  storageBillingModel: PHYSICAL
+  kmsKeyName:
+    value: "<kms-key-name>"  # e.g., projects/my-project/locations/us-central1/keyRings/ring/cryptoKeys/key

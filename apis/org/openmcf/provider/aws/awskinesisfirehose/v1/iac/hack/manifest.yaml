@@ -1,0 +1,24 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsKinesisFirehose
+metadata:
+  name: test-firehose
+  org: test-org
+  env: dev
+  id: test-firehose-dev
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: test-org
+    pulumi.openmcf.org/project: test-project
+    pulumi.openmcf.org/stack.name: dev.AwsKinesisFirehose.test-firehose
+spec:
+  # Extended S3 destination: data lake storage with Direct PUT source
+  extendedS3:
+    bucketArn:
+      value: arn:aws:s3:::my-data-lake-bucket
+    roleArn:
+      value: arn:aws:iam::123456789012:role/firehose-s3-role
+    prefix: firehose/events/
+    compressionFormat: GZIP
+    buffering:
+      intervalInSeconds: 60
+      sizeInMbs: 5

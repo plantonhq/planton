@@ -83,31 +83,80 @@ const (
 	CloudResourceKind_MongodbAtlas      CloudResourceKind = 51
 	CloudResourceKind_SnowflakeDatabase CloudResourceKind = 52
 	// 200–399: AWS resources
-	CloudResourceKind_AwsAlb              CloudResourceKind = 200
-	CloudResourceKind_AwsCertManagerCert  CloudResourceKind = 201
-	CloudResourceKind_AwsCloudFront       CloudResourceKind = 202
-	CloudResourceKind_AwsDynamodb         CloudResourceKind = 203
-	CloudResourceKind_AwsEcrRepo          CloudResourceKind = 204
-	CloudResourceKind_AwsEcsCluster       CloudResourceKind = 205
-	CloudResourceKind_AwsEcsService       CloudResourceKind = 206
-	CloudResourceKind_AwsEksCluster       CloudResourceKind = 207
-	CloudResourceKind_AwsIamRole          CloudResourceKind = 208
-	CloudResourceKind_AwsLambda           CloudResourceKind = 209
-	CloudResourceKind_AwsRdsCluster       CloudResourceKind = 210
-	CloudResourceKind_AwsRdsInstance      CloudResourceKind = 211
-	CloudResourceKind_AwsRoute53Zone      CloudResourceKind = 212
-	CloudResourceKind_AwsS3Bucket         CloudResourceKind = 213
-	CloudResourceKind_AwsSecretsManager   CloudResourceKind = 214
-	CloudResourceKind_AwsSecurityGroup    CloudResourceKind = 215
-	CloudResourceKind_AwsVpc              CloudResourceKind = 216
-	CloudResourceKind_AwsEksNodeGroup     CloudResourceKind = 217
-	CloudResourceKind_AwsIamUser          CloudResourceKind = 218
-	CloudResourceKind_AwsKmsKey           CloudResourceKind = 219
-	CloudResourceKind_AwsEc2Instance      CloudResourceKind = 220
-	CloudResourceKind_AwsClientVpn        CloudResourceKind = 221
-	CloudResourceKind_AwsDocumentDb       CloudResourceKind = 222
-	CloudResourceKind_AwsRoute53DnsRecord CloudResourceKind = 223
-	CloudResourceKind_AwsS3ObjectSet      CloudResourceKind = 224
+	CloudResourceKind_AwsAlb                           CloudResourceKind = 200
+	CloudResourceKind_AwsCertManagerCert               CloudResourceKind = 201
+	CloudResourceKind_AwsCloudFront                    CloudResourceKind = 202
+	CloudResourceKind_AwsDynamodb                      CloudResourceKind = 203
+	CloudResourceKind_AwsEcrRepo                       CloudResourceKind = 204
+	CloudResourceKind_AwsEcsCluster                    CloudResourceKind = 205
+	CloudResourceKind_AwsEcsService                    CloudResourceKind = 206
+	CloudResourceKind_AwsEksCluster                    CloudResourceKind = 207
+	CloudResourceKind_AwsIamRole                       CloudResourceKind = 208
+	CloudResourceKind_AwsLambda                        CloudResourceKind = 209
+	CloudResourceKind_AwsRdsCluster                    CloudResourceKind = 210
+	CloudResourceKind_AwsRdsInstance                   CloudResourceKind = 211
+	CloudResourceKind_AwsRoute53Zone                   CloudResourceKind = 212
+	CloudResourceKind_AwsS3Bucket                      CloudResourceKind = 213
+	CloudResourceKind_AwsSecretsManager                CloudResourceKind = 214
+	CloudResourceKind_AwsSecurityGroup                 CloudResourceKind = 215
+	CloudResourceKind_AwsVpc                           CloudResourceKind = 216
+	CloudResourceKind_AwsEksNodeGroup                  CloudResourceKind = 217
+	CloudResourceKind_AwsIamUser                       CloudResourceKind = 218
+	CloudResourceKind_AwsKmsKey                        CloudResourceKind = 219
+	CloudResourceKind_AwsEc2Instance                   CloudResourceKind = 220
+	CloudResourceKind_AwsClientVpn                     CloudResourceKind = 221
+	CloudResourceKind_AwsDocumentDb                    CloudResourceKind = 222
+	CloudResourceKind_AwsRoute53DnsRecord              CloudResourceKind = 223
+	CloudResourceKind_AwsS3ObjectSet                   CloudResourceKind = 224
+	CloudResourceKind_AwsSqsQueue                      CloudResourceKind = 225
+	CloudResourceKind_AwsSnsTopic                      CloudResourceKind = 226
+	CloudResourceKind_AwsEventBridgeBus                CloudResourceKind = 227
+	CloudResourceKind_AwsEventBridgeRule               CloudResourceKind = 228
+	CloudResourceKind_AwsHttpApiGateway                CloudResourceKind = 240
+	CloudResourceKind_AwsStepFunction                  CloudResourceKind = 241
+	CloudResourceKind_AwsRedisElasticache              CloudResourceKind = 250
+	CloudResourceKind_AwsOpenSearchDomain              CloudResourceKind = 251
+	CloudResourceKind_AwsMemcachedElasticache          CloudResourceKind = 252
+	CloudResourceKind_AwsServerlessElasticache         CloudResourceKind = 253
+	CloudResourceKind_AwsNetworkLoadBalancer           CloudResourceKind = 280
+	CloudResourceKind_AwsElasticIp                     CloudResourceKind = 281
+	CloudResourceKind_AwsTransitGateway                CloudResourceKind = 282
+	CloudResourceKind_AwsGlobalAccelerator             CloudResourceKind = 283
+	CloudResourceKind_AwsElasticFileSystem             CloudResourceKind = 290
+	CloudResourceKind_AwsFsxLustreFileSystem           CloudResourceKind = 291
+	CloudResourceKind_AwsFsxOpenzfsFileSystem          CloudResourceKind = 292
+	CloudResourceKind_AwsFsxWindowsFileSystem          CloudResourceKind = 293
+	CloudResourceKind_AwsFsxOntapFileSystem            CloudResourceKind = 294
+	CloudResourceKind_AwsFsxOntapStorageVirtualMachine CloudResourceKind = 295
+	CloudResourceKind_AwsFsxOntapVolume                CloudResourceKind = 296
+	CloudResourceKind_AwsCognitoUserPool               CloudResourceKind = 300
+	CloudResourceKind_AwsCognitoIdentityProvider       CloudResourceKind = 302
+	CloudResourceKind_AwsWafWebAcl                     CloudResourceKind = 301
+	CloudResourceKind_AwsCloudwatchLogGroup            CloudResourceKind = 310
+	CloudResourceKind_AwsCloudwatchAlarm               CloudResourceKind = 311
+	CloudResourceKind_AwsKinesisStream                 CloudResourceKind = 260
+	CloudResourceKind_AwsKinesisFirehose               CloudResourceKind = 261
+	CloudResourceKind_AwsKinesisStreamConsumer         CloudResourceKind = 262
+	CloudResourceKind_AwsAthenaWorkgroup               CloudResourceKind = 263
+	CloudResourceKind_AwsGlueCatalogDatabase           CloudResourceKind = 264
+	CloudResourceKind_AwsRedshiftCluster               CloudResourceKind = 265
+	// AI/ML
+	CloudResourceKind_AwsSagemakerDomain CloudResourceKind = 270
+	// Containers
+	CloudResourceKind_AwsAppRunnerService CloudResourceKind = 320
+	// Batch Processing
+	CloudResourceKind_AwsBatchComputeEnvironment CloudResourceKind = 321
+	// CI/CD
+	CloudResourceKind_AwsCodeBuildProject CloudResourceKind = 330
+	CloudResourceKind_AwsCodePipeline     CloudResourceKind = 331
+	// Workflow / Orchestration
+	CloudResourceKind_AwsMwaaEnvironment CloudResourceKind = 340
+	// Graph Database
+	CloudResourceKind_AwsNeptuneCluster CloudResourceKind = 341
+	// In-Memory Database
+	CloudResourceKind_AwsMemorydbCluster CloudResourceKind = 342
+	// Streaming
+	CloudResourceKind_AwsMskCluster CloudResourceKind = 350
 	// 400–599: Azure resources
 	CloudResourceKind_AzureResourceGroup            CloudResourceKind = 400
 	CloudResourceKind_AzureAksCluster               CloudResourceKind = 401
@@ -163,6 +212,29 @@ const (
 	CloudResourceKind_GcpCertManagerCert            CloudResourceKind = 616
 	CloudResourceKind_GcpComputeInstance            CloudResourceKind = 617
 	CloudResourceKind_GcpDnsRecord                  CloudResourceKind = 618
+	CloudResourceKind_GcpFirewallRule               CloudResourceKind = 620
+	CloudResourceKind_GcpGlobalAddress              CloudResourceKind = 621
+	CloudResourceKind_GcpCloudArmorPolicy           CloudResourceKind = 622
+	CloudResourceKind_GcpAlloydbCluster             CloudResourceKind = 630
+	CloudResourceKind_GcpRedisInstance              CloudResourceKind = 631
+	CloudResourceKind_GcpFirestoreDatabase          CloudResourceKind = 632
+	CloudResourceKind_GcpSpannerInstance            CloudResourceKind = 633
+	CloudResourceKind_GcpSpannerDatabase            CloudResourceKind = 634
+	CloudResourceKind_GcpBigtableInstance           CloudResourceKind = 635
+	CloudResourceKind_GcpMemorystoreInstance        CloudResourceKind = 636
+	CloudResourceKind_GcpBigQueryDataset            CloudResourceKind = 650
+	CloudResourceKind_GcpDataprocCluster            CloudResourceKind = 651
+	CloudResourceKind_GcpDataprocVirtualCluster     CloudResourceKind = 652
+	CloudResourceKind_GcpPubSubTopic                CloudResourceKind = 660
+	CloudResourceKind_GcpPubSubSubscription         CloudResourceKind = 661
+	CloudResourceKind_GcpCloudTasksQueue            CloudResourceKind = 662
+	CloudResourceKind_GcpCloudSchedulerJob          CloudResourceKind = 663
+	CloudResourceKind_GcpVertexAiNotebook           CloudResourceKind = 670
+	CloudResourceKind_GcpVertexAiEndpoint           CloudResourceKind = 671
+	CloudResourceKind_GcpCloudComposerEnvironment   CloudResourceKind = 680
+	CloudResourceKind_GcpKmsKeyRing                 CloudResourceKind = 690
+	CloudResourceKind_GcpKmsKey                     CloudResourceKind = 691
+	CloudResourceKind_GcpFilestoreInstance          CloudResourceKind = 700
 	// 800–999: Kubernetes resources
 	CloudResourceKind_KubernetesArgocd                      CloudResourceKind = 800
 	CloudResourceKind_KubernetesCronJob                     CloudResourceKind = 801
@@ -347,6 +419,47 @@ var (
 		222:  "AwsDocumentDb",
 		223:  "AwsRoute53DnsRecord",
 		224:  "AwsS3ObjectSet",
+		225:  "AwsSqsQueue",
+		226:  "AwsSnsTopic",
+		227:  "AwsEventBridgeBus",
+		228:  "AwsEventBridgeRule",
+		240:  "AwsHttpApiGateway",
+		241:  "AwsStepFunction",
+		250:  "AwsRedisElasticache",
+		251:  "AwsOpenSearchDomain",
+		252:  "AwsMemcachedElasticache",
+		253:  "AwsServerlessElasticache",
+		280:  "AwsNetworkLoadBalancer",
+		281:  "AwsElasticIp",
+		282:  "AwsTransitGateway",
+		283:  "AwsGlobalAccelerator",
+		290:  "AwsElasticFileSystem",
+		291:  "AwsFsxLustreFileSystem",
+		292:  "AwsFsxOpenzfsFileSystem",
+		293:  "AwsFsxWindowsFileSystem",
+		294:  "AwsFsxOntapFileSystem",
+		295:  "AwsFsxOntapStorageVirtualMachine",
+		296:  "AwsFsxOntapVolume",
+		300:  "AwsCognitoUserPool",
+		302:  "AwsCognitoIdentityProvider",
+		301:  "AwsWafWebAcl",
+		310:  "AwsCloudwatchLogGroup",
+		311:  "AwsCloudwatchAlarm",
+		260:  "AwsKinesisStream",
+		261:  "AwsKinesisFirehose",
+		262:  "AwsKinesisStreamConsumer",
+		263:  "AwsAthenaWorkgroup",
+		264:  "AwsGlueCatalogDatabase",
+		265:  "AwsRedshiftCluster",
+		270:  "AwsSagemakerDomain",
+		320:  "AwsAppRunnerService",
+		321:  "AwsBatchComputeEnvironment",
+		330:  "AwsCodeBuildProject",
+		331:  "AwsCodePipeline",
+		340:  "AwsMwaaEnvironment",
+		341:  "AwsNeptuneCluster",
+		342:  "AwsMemorydbCluster",
+		350:  "AwsMskCluster",
 		400:  "AzureResourceGroup",
 		401:  "AzureAksCluster",
 		402:  "AzureAksNodePool",
@@ -400,6 +513,29 @@ var (
 		616:  "GcpCertManagerCert",
 		617:  "GcpComputeInstance",
 		618:  "GcpDnsRecord",
+		620:  "GcpFirewallRule",
+		621:  "GcpGlobalAddress",
+		622:  "GcpCloudArmorPolicy",
+		630:  "GcpAlloydbCluster",
+		631:  "GcpRedisInstance",
+		632:  "GcpFirestoreDatabase",
+		633:  "GcpSpannerInstance",
+		634:  "GcpSpannerDatabase",
+		635:  "GcpBigtableInstance",
+		636:  "GcpMemorystoreInstance",
+		650:  "GcpBigQueryDataset",
+		651:  "GcpDataprocCluster",
+		652:  "GcpDataprocVirtualCluster",
+		660:  "GcpPubSubTopic",
+		661:  "GcpPubSubSubscription",
+		662:  "GcpCloudTasksQueue",
+		663:  "GcpCloudSchedulerJob",
+		670:  "GcpVertexAiNotebook",
+		671:  "GcpVertexAiEndpoint",
+		680:  "GcpCloudComposerEnvironment",
+		690:  "GcpKmsKeyRing",
+		691:  "GcpKmsKey",
+		700:  "GcpFilestoreInstance",
 		800:  "KubernetesArgocd",
 		801:  "KubernetesCronJob",
 		802:  "KubernetesElasticsearch",
@@ -572,6 +708,47 @@ var (
 		"AwsDocumentDb":                         222,
 		"AwsRoute53DnsRecord":                   223,
 		"AwsS3ObjectSet":                        224,
+		"AwsSqsQueue":                           225,
+		"AwsSnsTopic":                           226,
+		"AwsEventBridgeBus":                     227,
+		"AwsEventBridgeRule":                    228,
+		"AwsHttpApiGateway":                     240,
+		"AwsStepFunction":                       241,
+		"AwsRedisElasticache":                   250,
+		"AwsOpenSearchDomain":                   251,
+		"AwsMemcachedElasticache":               252,
+		"AwsServerlessElasticache":              253,
+		"AwsNetworkLoadBalancer":                280,
+		"AwsElasticIp":                          281,
+		"AwsTransitGateway":                     282,
+		"AwsGlobalAccelerator":                  283,
+		"AwsElasticFileSystem":                  290,
+		"AwsFsxLustreFileSystem":                291,
+		"AwsFsxOpenzfsFileSystem":               292,
+		"AwsFsxWindowsFileSystem":               293,
+		"AwsFsxOntapFileSystem":                 294,
+		"AwsFsxOntapStorageVirtualMachine":      295,
+		"AwsFsxOntapVolume":                     296,
+		"AwsCognitoUserPool":                    300,
+		"AwsCognitoIdentityProvider":            302,
+		"AwsWafWebAcl":                          301,
+		"AwsCloudwatchLogGroup":                 310,
+		"AwsCloudwatchAlarm":                    311,
+		"AwsKinesisStream":                      260,
+		"AwsKinesisFirehose":                    261,
+		"AwsKinesisStreamConsumer":              262,
+		"AwsAthenaWorkgroup":                    263,
+		"AwsGlueCatalogDatabase":                264,
+		"AwsRedshiftCluster":                    265,
+		"AwsSagemakerDomain":                    270,
+		"AwsAppRunnerService":                   320,
+		"AwsBatchComputeEnvironment":            321,
+		"AwsCodeBuildProject":                   330,
+		"AwsCodePipeline":                       331,
+		"AwsMwaaEnvironment":                    340,
+		"AwsNeptuneCluster":                     341,
+		"AwsMemorydbCluster":                    342,
+		"AwsMskCluster":                         350,
 		"AzureResourceGroup":                    400,
 		"AzureAksCluster":                       401,
 		"AzureAksNodePool":                      402,
@@ -625,6 +802,29 @@ var (
 		"GcpCertManagerCert":                    616,
 		"GcpComputeInstance":                    617,
 		"GcpDnsRecord":                          618,
+		"GcpFirewallRule":                       620,
+		"GcpGlobalAddress":                      621,
+		"GcpCloudArmorPolicy":                   622,
+		"GcpAlloydbCluster":                     630,
+		"GcpRedisInstance":                      631,
+		"GcpFirestoreDatabase":                  632,
+		"GcpSpannerInstance":                    633,
+		"GcpSpannerDatabase":                    634,
+		"GcpBigtableInstance":                   635,
+		"GcpMemorystoreInstance":                636,
+		"GcpBigQueryDataset":                    650,
+		"GcpDataprocCluster":                    651,
+		"GcpDataprocVirtualCluster":             652,
+		"GcpPubSubTopic":                        660,
+		"GcpPubSubSubscription":                 661,
+		"GcpCloudTasksQueue":                    662,
+		"GcpCloudSchedulerJob":                  663,
+		"GcpVertexAiNotebook":                   670,
+		"GcpVertexAiEndpoint":                   671,
+		"GcpCloudComposerEnvironment":           680,
+		"GcpKmsKeyRing":                         690,
+		"GcpKmsKey":                             691,
+		"GcpFilestoreInstance":                  700,
 		"KubernetesArgocd":                      800,
 		"KubernetesCronJob":                     801,
 		"KubernetesElasticsearch":               802,
@@ -907,7 +1107,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\x90K\n" +
+	"\x02v1\x10\x01*\x93a\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -947,7 +1147,48 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\fAwsClientVpn\x10\xdd\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsvpn\x12#\n" +
 	"\rAwsDocumentDb\x10\xde\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05docdb\x12*\n" +
 	"\x13AwsRoute53DnsRecord\x10\xdf\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06r53rec\x12%\n" +
-	"\x0eAwsS3ObjectSet\x10\xe0\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06s3objs\x12'\n" +
+	"\x0eAwsS3ObjectSet\x10\xe0\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06s3objs\x12\"\n" +
+	"\vAwsSqsQueue\x10\xe1\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssqs\x12\"\n" +
+	"\vAwsSnsTopic\x10\xe2\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssns\x12'\n" +
+	"\x11AwsEventBridgeBus\x10\xe3\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awseb\x12)\n" +
+	"\x12AwsEventBridgeRule\x10\xe4\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsebr\x12.\n" +
+	"\x11AwsHttpApiGateway\x10\xf0\x01\x1a\x16\xa2\xf7\x04\x12\b\f\x10\x01\"\fawshttpapigw\x12&\n" +
+	"\x0fAwsStepFunction\x10\xf1\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssfn\x12,\n" +
+	"\x13AwsRedisElasticache\x10\xfa\x01\x1a\x12\xa2\xf7\x04\x0e\b\f\x10\x01\"\bawsredis\x12)\n" +
+	"\x13AwsOpenSearchDomain\x10\xfb\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awsos\x124\n" +
+	"\x17AwsMemcachedElasticache\x10\xfc\x01\x1a\x16\xa2\xf7\x04\x12\b\f\x10\x01\"\fawsmemcached\x122\n" +
+	"\x18AwsServerlessElasticache\x10\xfd\x01\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawsslselc\x12-\n" +
+	"\x16AwsNetworkLoadBalancer\x10\x98\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsnlb\x12#\n" +
+	"\fAwsElasticIp\x10\x99\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awseip\x12(\n" +
+	"\x11AwsTransitGateway\x10\x9a\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awstgw\x12*\n" +
+	"\x14AwsGlobalAccelerator\x10\x9b\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awsga\x12+\n" +
+	"\x14AwsElasticFileSystem\x10\xa2\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsefs\x12-\n" +
+	"\x16AwsFsxLustreFileSystem\x10\xa3\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxl\x12.\n" +
+	"\x17AwsFsxOpenzfsFileSystem\x10\xa4\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxz\x12.\n" +
+	"\x17AwsFsxWindowsFileSystem\x10\xa5\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxw\x12,\n" +
+	"\x15AwsFsxOntapFileSystem\x10\xa6\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxo\x12:\n" +
+	" AwsFsxOntapStorageVirtualMachine\x10\xa7\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawsfxosvm\x12)\n" +
+	"\x11AwsFsxOntapVolume\x10\xa8\x02\x1a\x11\xa2\xf7\x04\r\b\f\x10\x01\"\aawsfxov\x12)\n" +
+	"\x12AwsCognitoUserPool\x10\xac\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awscog\x124\n" +
+	"\x1aAwsCognitoIdentityProvider\x10\xae\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawscogidp\x12#\n" +
+	"\fAwsWafWebAcl\x10\xad\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awswaf\x12-\n" +
+	"\x15AwsCloudwatchLogGroup\x10\xb6\x02\x1a\x11\xa2\xf7\x04\r\b\f\x10\x01\"\aawscwlg\x12)\n" +
+	"\x12AwsCloudwatchAlarm\x10\xb7\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awscwa\x12'\n" +
+	"\x10AwsKinesisStream\x10\x84\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awskin\x12)\n" +
+	"\x12AwsKinesisFirehose\x10\x85\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awskfh\x122\n" +
+	"\x18AwsKinesisStreamConsumer\x10\x86\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawskincon\x12)\n" +
+	"\x12AwsAthenaWorkgroup\x10\x87\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsath\x12.\n" +
+	"\x16AwsGlueCatalogDatabase\x10\x88\x02\x1a\x11\xa2\xf7\x04\r\b\f\x10\x01\"\aawsglue\x12(\n" +
+	"\x12AwsRedshiftCluster\x10\x89\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awsrs\x12(\n" +
+	"\x12AwsSagemakerDomain\x10\x8e\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05sgmkd\x12)\n" +
+	"\x13AwsAppRunnerService\x10\xc0\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awsar\x121\n" +
+	"\x1aAwsBatchComputeEnvironment\x10\xc1\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsbat\x12)\n" +
+	"\x13AwsCodeBuildProject\x10\xca\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awscb\x12%\n" +
+	"\x0fAwsCodePipeline\x10\xcb\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awscp\x12*\n" +
+	"\x12AwsMwaaEnvironment\x10\xd4\x02\x1a\x11\xa2\xf7\x04\r\b\f\x10\x01\"\aawsmwaa\x12(\n" +
+	"\x11AwsNeptuneCluster\x10\xd5\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsnep\x12)\n" +
+	"\x12AwsMemorydbCluster\x10\xd6\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsmdb\x12$\n" +
+	"\rAwsMskCluster\x10\xde\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsmsk\x12'\n" +
 	"\x12AzureResourceGroup\x10\x90\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azrg\x12#\n" +
 	"\x0fAzureAksCluster\x10\x91\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03aks\x12&\n" +
@@ -1017,7 +1258,30 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x1dGcpGkeWorkloadIdentityBinding\x10\xe7\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gkewib\x12*\n" +
 	"\x12GcpCertManagerCert\x10\xe8\x04\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpcert\x12(\n" +
 	"\x12GcpComputeInstance\x10\xe9\x04\x1a\x0f\xa2\xf7\x04\v\b\x12\x10\x01\"\x05gcpvm\x12$\n" +
-	"\fGcpDnsRecord\x10\xea\x04\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpdrec\x12(\n" +
+	"\fGcpDnsRecord\x10\xea\x04\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpdrec\x12&\n" +
+	"\x0fGcpFirewallRule\x10\xec\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpfwr\x12'\n" +
+	"\x10GcpGlobalAddress\x10\xed\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpgip\x12*\n" +
+	"\x13GcpCloudArmorPolicy\x10\xee\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpcap\x12(\n" +
+	"\x11GcpAlloydbCluster\x10\xf6\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpadb\x12'\n" +
+	"\x10GcpRedisInstance\x10\xf7\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpred\x12+\n" +
+	"\x14GcpFirestoreDatabase\x10\xf8\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpfst\x12)\n" +
+	"\x12GcpSpannerInstance\x10\xf9\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpspn\x12*\n" +
+	"\x12GcpSpannerDatabase\x10\xfa\x04\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpspdb\x12)\n" +
+	"\x13GcpBigtableInstance\x10\xfb\x04\x1a\x0f\xa2\xf7\x04\v\b\x12\x10\x01\"\x05gcpbt\x12-\n" +
+	"\x16GcpMemorystoreInstance\x10\xfc\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpmsi\x12*\n" +
+	"\x12GcpBigQueryDataset\x10\x8a\x05\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpbqds\x12)\n" +
+	"\x12GcpDataprocCluster\x10\x8b\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpdpc\x120\n" +
+	"\x19GcpDataprocVirtualCluster\x10\x8c\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpdvc\x12%\n" +
+	"\x0eGcpPubSubTopic\x10\x94\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcppst\x12,\n" +
+	"\x15GcpPubSubSubscription\x10\x95\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcppss\x12(\n" +
+	"\x12GcpCloudTasksQueue\x10\x96\x05\x1a\x0f\xa2\xf7\x04\v\b\x12\x10\x01\"\x05gcptq\x12+\n" +
+	"\x14GcpCloudSchedulerJob\x10\x97\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpcsj\x12*\n" +
+	"\x13GcpVertexAiNotebook\x10\x9e\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpvnb\x12*\n" +
+	"\x13GcpVertexAiEndpoint\x10\x9f\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpvep\x122\n" +
+	"\x1bGcpCloudComposerEnvironment\x10\xa8\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpcce\x12#\n" +
+	"\rGcpKmsKeyRing\x10\xb2\x05\x1a\x0f\xa2\xf7\x04\v\b\x12\x10\x01\"\x05gcpkr\x12 \n" +
+	"\tGcpKmsKey\x10\xb3\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpkms\x12+\n" +
+	"\x14GcpFilestoreInstance\x10\xbc\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpnfs\x12(\n" +
 	"\x10KubernetesArgocd\x10\xa0\x06\x1a\x11\xa2\xf7\x04\r\b\x13\x10\x01\"\ak8sargo\x12)\n" +
 	"\x11KubernetesCronJob\x10\xa1\x06\x1a\x11\xa2\xf7\x04\r\b\x13\x10\x01\"\ak8scron\x12-\n" +
 	"\x17KubernetesElasticsearch\x10\xa2\x06\x1a\x0f\xa2\xf7\x04\v\b\x13\x10\x01\"\x05k8ses\x12&\n" +

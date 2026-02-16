@@ -1,4 +1,4 @@
-# AWS Certificate Manager Certificate
+# AWS Certificate
 
 Deploys a public SSL/TLS certificate through AWS Certificate Manager (ACM) with automatic DNS validation via Route53. OpenMCF creates the certificate, provisions the required CNAME validation records in the specified hosted zone, and waits for ACM to confirm domain ownership before marking the deployment complete.
 

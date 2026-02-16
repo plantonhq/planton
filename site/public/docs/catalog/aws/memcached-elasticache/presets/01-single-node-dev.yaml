@@ -1,0 +1,8 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsMemcachedElasticache
+metadata:
+  name: my-memcached
+spec:
+  engineVersion: "1.6.22"
+  nodeType: cache.t3.micro
+  numCacheNodes: 1

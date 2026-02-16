@@ -1,0 +1,12 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsHttpApiGateway
+metadata:
+  name: test-http-api
+spec:
+  description: Test HTTP API Gateway
+  routes:
+    - route_key: "$default"
+      integration:
+        integration_type: "AWS_PROXY"
+        integration_uri:
+          value: "arn:aws:lambda:us-east-1:123456789012:function:test-function"

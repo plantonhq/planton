@@ -1,0 +1,15 @@
+apiVersion: scaleway.openmcf.org/v1
+kind: ScalewayServerlessFunction
+metadata:
+  name: my-function
+spec:
+  region: fr-par
+  runtime: python311
+  handler: handler.handle
+  privacy: private
+  memoryLimitMb: 256  # recommended_default from spec
+  maxScale: 1  # Single instance for scheduled jobs
+  timeoutSeconds: 300  # recommended_default from spec
+  cronTriggers:
+    - name: daily-cleanup
+      schedule: "0 2 * * *"

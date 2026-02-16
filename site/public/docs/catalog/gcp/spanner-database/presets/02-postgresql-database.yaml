@@ -1,0 +1,12 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpSpannerDatabase
+metadata:
+  name: my-pg-database
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  instance:
+    value: "<spanner-instance-name>"
+  databaseName: <database-name>
+  databaseDialect: POSTGRESQL
+  versionRetentionPeriod: "7d"

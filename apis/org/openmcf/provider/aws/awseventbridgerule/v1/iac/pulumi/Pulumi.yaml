@@ -1,0 +1,3 @@
+name: aws-event-bridge-rule
+runtime: go
+description: Deploy an AWS EventBridge rule with targets using OpenMCF

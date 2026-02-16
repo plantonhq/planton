@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsstepfunction.v1;
+
+// AwsStepFunctionStackOutputs captures observable identifiers from a provisioned
+// Step Functions state machine. These outputs are used by downstream resources
+// (e.g., EventBridge rule targets, API Gateway integrations, Lambda invocations)
+// to wire dependencies via StringValueOrRef.
+message AwsStepFunctionStackOutputs {
+  // The Amazon Resource Name (ARN) of the state machine. This is the primary
+  // identifier used for invoking the state machine and for cross-service
+  // references (EventBridge targets, API Gateway integrations, IAM policies).
+  string state_machine_arn = 1;
+
+  // The name of the state machine. Useful for dashboards, monitoring, and
+  // human-readable references in logs and alerts.
+  string state_machine_name = 2;
+}

@@ -1,0 +1,17 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsEc2Instance
+metadata:
+  name: my-ssm-instance
+spec:
+  instanceName: <instance-name>
+  amiId: <ami-id>
+  instanceType: t3.small
+  subnetId:
+    value: "<private-subnet-id>"
+  securityGroupIds:
+    - value: "<security-group-id>"
+  connectionMethod: SSM  # default from spec; no SSH key needed
+  iamInstanceProfileArn:
+    value: "<ssm-instance-profile-arn>"
+  rootVolumeSizeGb: 30  # default from spec
+  disableApiTermination: true  # Recommended for production

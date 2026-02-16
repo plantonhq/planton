@@ -1,0 +1,7 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsGlueCatalogDatabase
+metadata:
+  name: data_warehouse
+spec:
+  description: "Production data warehouse — curated datasets from ETL pipelines"
+  locationUri: "s3://prod-data-lake/databases/data_warehouse/"

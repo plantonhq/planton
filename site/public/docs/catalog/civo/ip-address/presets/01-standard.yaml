@@ -1,0 +1,7 @@
+apiVersion: civo.openmcf.org/v1
+kind: CivoIpAddress
+metadata:
+  name: my-reserved-ip
+spec:
+  region: lon1
+  description: Reserved IP for production workload

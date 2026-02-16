@@ -1,0 +1,8 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpPubSubTopic
+metadata:
+  name: test-pubsub-topic
+spec:
+  projectId:
+    value: "test-project"
+  topicName: test-events-topic

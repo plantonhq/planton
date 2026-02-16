@@ -1,0 +1,9 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpKmsKeyRing
+metadata:
+  name: my-regional-key-ring
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  keyRingName: <your-key-ring-name>  # e.g., prod-encryption
+  location: us-central1  # change to your workload region

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package org.openmcf.provider.gcp.gcpalloydbcluster.v1;
+
+// Outputs produced after provisioning an AlloyDB cluster with its primary instance.
+message GcpAlloydbClusterStackOutputs {
+  // Fully qualified cluster resource name.
+  // Format: projects/{project}/locations/{location}/clusters/{cluster}
+  // Used by downstream resources (read pool instances, backups) that reference this cluster.
+  string cluster_id = 1;
+
+  // Short name of the cluster (same as the spec's cluster_name input).
+  // Useful for display, logging, and human-readable references.
+  string cluster_name = 2;
+
+  // Private IP address of the primary instance.
+  // This is the primary connection endpoint for applications.
+  // Applications connect to this IP on port 5432 (PostgreSQL default).
+  string primary_instance_ip = 3;
+
+  // Fully qualified primary instance resource name.
+  // Format: projects/{project}/locations/{location}/clusters/{cluster}/instances/{instance}
+  // Used for AlloyDB Auth Proxy connections and monitoring.
+  string primary_instance_name = 4;
+
+  // Computed database engine version (e.g., "POSTGRES_15").
+  // Reflects the actual version running, which may differ from the
+  // requested version if GCP selected a default.
+  string database_version = 5;
+
+  // Current state of the cluster (e.g., "READY", "CREATING", "MAINTENANCE").
+  string state = 6;
+}
