@@ -67,12 +67,18 @@ message SecurityGroupRule {
   repeated string ipv6_cidrs = 5;
 
   // source_security_group_ids is the list of Security Group IDs that can send traffic (for ingress).
-  // Typically used for internal traffic between resources. For egress, this field is less common.
-  repeated string source_security_group_ids = 6;
+  // Typically used for internal traffic between resources. Can reference other AwsSecurityGroup resources.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef source_security_group_ids = 6 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
 
   // destination_security_group_ids is the list of Security Group IDs that receive traffic (for egress).
-  // Not typically used for ingress. Useful for restricting outbound traffic to specific groups.
-  repeated string destination_security_group_ids = 7;
+  // Useful for restricting outbound traffic to specific groups. Can reference other AwsSecurityGroup resources.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef destination_security_group_ids = 7 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
 
   // self_reference indicates whether to allow traffic from/to the same Security Group.
   // This is equivalent to referencing the group’s own ID.

@@ -8,6 +8,7 @@ package awss3bucketv1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -183,8 +184,8 @@ type AwsS3BucketSpec struct {
 	// KMS key ID or ARN for SSE-KMS encryption.
 	// Required when encryption_type is ENCRYPTION_TYPE_SSE_KMS.
 	// Leave empty for ENCRYPTION_TYPE_SSE_S3.
-	// Example: "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
-	KmsKeyId string `protobuf:"bytes,5,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	// Can reference an AwsKmsKey resource.
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// Tags for resource governance, cost allocation, and organization.
 	// Common tags: Environment (prod/staging), Project, Owner, CostCenter.
 	// AWS allows up to 50 tags per bucket.
@@ -277,11 +278,11 @@ func (x *AwsS3BucketSpec) GetEncryptionType() AwsS3BucketSpec_EncryptionType {
 	return AwsS3BucketSpec_ENCRYPTION_TYPE_UNSPECIFIED
 }
 
-func (x *AwsS3BucketSpec) GetKmsKeyId() string {
+func (x *AwsS3BucketSpec) GetKmsKeyId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.KmsKeyId
 	}
-	return ""
+	return nil
 }
 
 func (x *AwsS3BucketSpec) GetTags() map[string]string {
@@ -443,7 +444,8 @@ type AwsS3BucketSpec_ReplicationConfiguration struct {
 	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	// ARN of the IAM role that S3 assumes to replicate objects.
 	// The role must have permissions to read from source bucket and write to destination.
-	RoleArn string `protobuf:"bytes,2,opt,name=role_arn,json=roleArn,proto3" json:"role_arn,omitempty"`
+	// Can reference an AwsIamRole resource.
+	RoleArn *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=role_arn,json=roleArn,proto3" json:"role_arn,omitempty"`
 	// Destination configuration.
 	Destination *AwsS3BucketSpec_ReplicationConfiguration_Destination `protobuf:"bytes,3,opt,name=destination,proto3" json:"destination,omitempty"`
 	// Prefix filter for objects to replicate. Empty string replicates all objects.
@@ -491,11 +493,11 @@ func (x *AwsS3BucketSpec_ReplicationConfiguration) GetEnabled() bool {
 	return false
 }
 
-func (x *AwsS3BucketSpec_ReplicationConfiguration) GetRoleArn() string {
+func (x *AwsS3BucketSpec_ReplicationConfiguration) GetRoleArn() *v1.StringValueOrRef {
 	if x != nil {
 		return x.RoleArn
 	}
-	return ""
+	return nil
 }
 
 func (x *AwsS3BucketSpec_ReplicationConfiguration) GetDestination() *AwsS3BucketSpec_ReplicationConfiguration_Destination {
@@ -779,15 +781,15 @@ var File_org_openmcf_provider_aws_awss3bucket_v1_spec_proto protoreflect.FileDes
 
 const file_org_openmcf_provider_aws_awss3bucket_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2org/openmcf/provider/aws/awss3bucket/v1/spec.proto\x12'org.openmcf.provider.aws.awss3bucket.v1\x1a\x1bbuf/validate/validate.proto\"\xe1\x15\n" +
+	"2org/openmcf/provider/aws/awss3bucket/v1/spec.proto\x12'org.openmcf.provider.aws.awss3bucket.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x89\x17\n" +
 	"\x0fAwsS3BucketSpec\x12&\n" +
 	"\n" +
 	"aws_region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\tawsRegion\x12\x1b\n" +
 	"\tis_public\x18\x02 \x01(\bR\bisPublic\x12-\n" +
 	"\x12versioning_enabled\x18\x03 \x01(\bR\x11versioningEnabled\x12z\n" +
-	"\x0fencryption_type\x18\x04 \x01(\x0e2G.org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.EncryptionTypeB\b\xbaH\x05\x82\x01\x02\x10\x01R\x0eencryptionType\x12\x1c\n" +
+	"\x0fencryption_type\x18\x04 \x01(\x0e2G.org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.EncryptionTypeB\b\xbaH\x05\x82\x01\x02\x10\x01R\x0eencryptionType\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\x05 \x01(\tR\bkmsKeyId\x12V\n" +
+	"kms_key_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12V\n" +
 	"\x04tags\x18\x06 \x03(\v2B.org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.TagsEntryR\x04tags\x12o\n" +
 	"\x0flifecycle_rules\x18\a \x03(\v2F.org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.LifecycleRuleR\x0elifecycleRules\x12s\n" +
 	"\vreplication\x18\b \x01(\v2Q.org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.ReplicationConfigurationR\vreplication\x12g\n" +
@@ -803,10 +805,10 @@ const file_org_openmcf_provider_aws_awss3bucket_v1_spec_proto_rawDesc = "" +
 	"\x18transition_storage_class\x18\x05 \x01(\x0e2E.org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.StorageClassB\b\xbaH\x05\x82\x01\x02\x10\x01R\x16transitionStorageClass\x12'\n" +
 	"\x0fexpiration_days\x18\x06 \x01(\x05R\x0eexpirationDays\x12K\n" +
 	"\"noncurrent_version_expiration_days\x18\a \x01(\x05R\x1fnoncurrentVersionExpirationDays\x12R\n" +
-	"&abort_incomplete_multipart_upload_days\x18\b \x01(\x05R\"abortIncompleteMultipartUploadDays\x1a\xe3\x03\n" +
+	"&abort_incomplete_multipart_upload_days\x18\b \x01(\x05R\"abortIncompleteMultipartUploadDays\x1a\xb6\x04\n" +
 	"\x18ReplicationConfiguration\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\"\n" +
-	"\brole_arn\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\aroleArn\x12\x87\x01\n" +
+	"\aenabled\x18\x01 \x01(\bR\aenabled\x12u\n" +
+	"\brole_arn\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\aroleArn\x12\x87\x01\n" +
 	"\vdestination\x18\x03 \x01(\v2].org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.ReplicationConfiguration.DestinationB\x06\xbaH\x03\xc8\x01\x01R\vdestination\x12\x16\n" +
 	"\x06prefix\x18\x04 \x01(\tR\x06prefix\x12\x1a\n" +
 	"\bpriority\x18\x05 \x01(\x05R\bpriority\x1a\xca\x01\n" +
@@ -872,23 +874,26 @@ var file_org_openmcf_provider_aws_awss3bucket_v1_spec_proto_goTypes = []any{
 	nil, // 7: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.TagsEntry
 	(*AwsS3BucketSpec_ReplicationConfiguration_Destination)(nil), // 8: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.ReplicationConfiguration.Destination
 	(*AwsS3BucketSpec_CorsConfiguration_CorsRule)(nil),           // 9: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.CorsConfiguration.CorsRule
+	(*v1.StringValueOrRef)(nil),                                  // 10: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_aws_awss3bucket_v1_spec_proto_depIdxs = []int32{
 	0,  // 0: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.encryption_type:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.EncryptionType
-	7,  // 1: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.tags:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.TagsEntry
-	3,  // 2: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.lifecycle_rules:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.LifecycleRule
-	4,  // 3: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.replication:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.ReplicationConfiguration
-	5,  // 4: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.logging:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.LoggingConfiguration
-	6,  // 5: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.cors:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.CorsConfiguration
-	1,  // 6: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.LifecycleRule.transition_storage_class:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.StorageClass
-	8,  // 7: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.ReplicationConfiguration.destination:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.ReplicationConfiguration.Destination
-	9,  // 8: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.CorsConfiguration.cors_rules:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.CorsConfiguration.CorsRule
-	1,  // 9: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.ReplicationConfiguration.Destination.storage_class:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.StorageClass
-	10, // [10:10] is the sub-list for method output_type
-	10, // [10:10] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	10, // 1: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.kms_key_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	7,  // 2: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.tags:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.TagsEntry
+	3,  // 3: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.lifecycle_rules:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.LifecycleRule
+	4,  // 4: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.replication:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.ReplicationConfiguration
+	5,  // 5: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.logging:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.LoggingConfiguration
+	6,  // 6: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.cors:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.CorsConfiguration
+	1,  // 7: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.LifecycleRule.transition_storage_class:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.StorageClass
+	10, // 8: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.ReplicationConfiguration.role_arn:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	8,  // 9: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.ReplicationConfiguration.destination:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.ReplicationConfiguration.Destination
+	9,  // 10: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.CorsConfiguration.cors_rules:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.CorsConfiguration.CorsRule
+	1,  // 11: org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.ReplicationConfiguration.Destination.storage_class:type_name -> org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.StorageClass
+	12, // [12:12] is the sub-list for method output_type
+	12, // [12:12] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_aws_awss3bucket_v1_spec_proto_init() }

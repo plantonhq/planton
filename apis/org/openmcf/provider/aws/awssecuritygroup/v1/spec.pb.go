@@ -127,11 +127,11 @@ type SecurityGroupRule struct {
 	// If empty, no IPv6 CIDRs are included in this rule.
 	Ipv6Cidrs []string `protobuf:"bytes,5,rep,name=ipv6_cidrs,json=ipv6Cidrs,proto3" json:"ipv6_cidrs,omitempty"`
 	// source_security_group_ids is the list of Security Group IDs that can send traffic (for ingress).
-	// Typically used for internal traffic between resources. For egress, this field is less common.
-	SourceSecurityGroupIds []string `protobuf:"bytes,6,rep,name=source_security_group_ids,json=sourceSecurityGroupIds,proto3" json:"source_security_group_ids,omitempty"`
+	// Typically used for internal traffic between resources. Can reference other AwsSecurityGroup resources.
+	SourceSecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,6,rep,name=source_security_group_ids,json=sourceSecurityGroupIds,proto3" json:"source_security_group_ids,omitempty"`
 	// destination_security_group_ids is the list of Security Group IDs that receive traffic (for egress).
-	// Not typically used for ingress. Useful for restricting outbound traffic to specific groups.
-	DestinationSecurityGroupIds []string `protobuf:"bytes,7,rep,name=destination_security_group_ids,json=destinationSecurityGroupIds,proto3" json:"destination_security_group_ids,omitempty"`
+	// Useful for restricting outbound traffic to specific groups. Can reference other AwsSecurityGroup resources.
+	DestinationSecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,7,rep,name=destination_security_group_ids,json=destinationSecurityGroupIds,proto3" json:"destination_security_group_ids,omitempty"`
 	// self_reference indicates whether to allow traffic from/to the same Security Group.
 	// This is equivalent to referencing the group’s own ID.
 	SelfReference bool `protobuf:"varint,8,opt,name=self_reference,json=selfReference,proto3" json:"self_reference,omitempty"`
@@ -207,14 +207,14 @@ func (x *SecurityGroupRule) GetIpv6Cidrs() []string {
 	return nil
 }
 
-func (x *SecurityGroupRule) GetSourceSecurityGroupIds() []string {
+func (x *SecurityGroupRule) GetSourceSecurityGroupIds() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.SourceSecurityGroupIds
 	}
 	return nil
 }
 
-func (x *SecurityGroupRule) GetDestinationSecurityGroupIds() []string {
+func (x *SecurityGroupRule) GetDestinationSecurityGroupIds() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.DestinationSecurityGroupIds
 	}
@@ -245,7 +245,7 @@ const file_org_openmcf_provider_aws_awssecuritygroup_v1_spec_proto_rawDesc = "" 
 	"\vdescription\x18\x02 \x01(\tBb\xbaH_\xba\x01Y\n" +
 	"\x18description_length_check\x12*Description must not exceed 255 characters\x1a\x11size(this) <= 255\xc8\x01\x01R\vdescription\x12Y\n" +
 	"\aingress\x18\x03 \x03(\v2?.org.openmcf.provider.aws.awssecuritygroup.v1.SecurityGroupRuleR\aingress\x12W\n" +
-	"\x06egress\x18\x04 \x03(\v2?.org.openmcf.provider.aws.awssecuritygroup.v1.SecurityGroupRuleR\x06egress\"\xe0\x03\n" +
+	"\x06egress\x18\x04 \x03(\v2?.org.openmcf.provider.aws.awssecuritygroup.v1.SecurityGroupRuleR\x06egress\"\xa0\x05\n" +
 	"\x11SecurityGroupRule\x12\"\n" +
 	"\bprotocol\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bprotocol\x12\x1b\n" +
 	"\tfrom_port\x18\x02 \x01(\x05R\bfromPort\x12\x17\n" +
@@ -253,9 +253,9 @@ const file_org_openmcf_provider_aws_awssecuritygroup_v1_spec_proto_rawDesc = "" 
 	"\n" +
 	"ipv4_cidrs\x18\x04 \x03(\tR\tipv4Cidrs\x12\x1d\n" +
 	"\n" +
-	"ipv6_cidrs\x18\x05 \x03(\tR\tipv6Cidrs\x129\n" +
-	"\x19source_security_group_ids\x18\x06 \x03(\tR\x16sourceSecurityGroupIds\x12C\n" +
-	"\x1edestination_security_group_ids\x18\a \x03(\tR\x1bdestinationSecurityGroupIds\x12%\n" +
+	"ipv6_cidrs\x18\x05 \x03(\tR\tipv6Cidrs\x12\x98\x01\n" +
+	"\x19source_security_group_ids\x18\x06 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x16sourceSecurityGroupIds\x12\xa2\x01\n" +
+	"\x1edestination_security_group_ids\x18\a \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x1bdestinationSecurityGroupIds\x12%\n" +
 	"\x0eself_reference\x18\b \x01(\bR\rselfReference\x12\x8b\x01\n" +
 	"\vdescription\x18\t \x01(\tBi\xbaHf\xba\x01c\n" +
 	"\x1drule_description_length_check\x12/Rule description must not exceed 255 characters\x1a\x11size(this) <= 255R\vdescriptionB\xf7\x02\n" +
@@ -283,11 +283,13 @@ var file_org_openmcf_provider_aws_awssecuritygroup_v1_spec_proto_depIdxs = []int
 	2, // 0: org.openmcf.provider.aws.awssecuritygroup.v1.AwsSecurityGroupSpec.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
 	1, // 1: org.openmcf.provider.aws.awssecuritygroup.v1.AwsSecurityGroupSpec.ingress:type_name -> org.openmcf.provider.aws.awssecuritygroup.v1.SecurityGroupRule
 	1, // 2: org.openmcf.provider.aws.awssecuritygroup.v1.AwsSecurityGroupSpec.egress:type_name -> org.openmcf.provider.aws.awssecuritygroup.v1.SecurityGroupRule
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	2, // 3: org.openmcf.provider.aws.awssecuritygroup.v1.SecurityGroupRule.source_security_group_ids:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	2, // 4: org.openmcf.provider.aws.awssecuritygroup.v1.SecurityGroupRule.destination_security_group_ids:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_aws_awssecuritygroup_v1_spec_proto_init() }

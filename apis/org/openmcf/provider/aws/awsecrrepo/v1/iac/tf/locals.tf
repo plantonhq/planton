@@ -11,7 +11,7 @@ locals {
   # encryption settings
   encryption_type     = upper(try(var.spec.encryption_type, "AES256"))
   is_kms_encryption   = local.encryption_type == "KMS"
-  kms_key_id          = local.is_kms_encryption ? try(var.spec.kms_key_id, null) : null
+  kms_key_id          = local.is_kms_encryption ? try(var.spec.kms_key_id.value, null) : null
 }
 
 

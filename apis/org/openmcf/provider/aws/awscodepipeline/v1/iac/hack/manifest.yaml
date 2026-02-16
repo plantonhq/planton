@@ -1,0 +1,47 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsCodePipeline
+metadata:
+  name: test-pipeline
+  id: test-pipeline
+  org: test-org
+  env: dev
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: test
+    pulumi.openmcf.org/project: test
+    pulumi.openmcf.org/stack.name: dev.AwsCodePipeline.test-pipeline
+spec:
+  pipelineType: V2
+  executionMode: SUPERSEDED
+  roleArn:
+    value: arn:aws:iam::123456789012:role/codepipeline-role
+  artifactStores:
+    - location:
+        value: my-artifact-bucket
+  stages:
+    - name: Source
+      actions:
+        - name: SourceAction
+          category: Source
+          owner: AWS
+          provider: CodeStarSourceConnection
+          version: "1"
+          outputArtifacts:
+            - SourceOutput
+          configuration:
+            ConnectionArn: arn:aws:codestar-connections:us-east-1:123456789012:connection/abc
+            FullRepositoryId: my-org/my-repo
+            BranchName: main
+    - name: Build
+      actions:
+        - name: BuildAction
+          category: Build
+          owner: AWS
+          provider: CodeBuild
+          version: "1"
+          inputArtifacts:
+            - SourceOutput
+          outputArtifacts:
+            - BuildOutput
+          configuration:
+            ProjectName: my-build-project

@@ -219,7 +219,7 @@ Protocol Buffers
 
 syntax \= "proto3";
 
-package project.planton.kubernetes.namespace.v1;
+package org.openmcf.kubernetes.namespace.v1;
 
 message NamespaceSpec {  
  // The unique name of the namespace.  

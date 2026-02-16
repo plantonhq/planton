@@ -6,6 +6,7 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
 func TestAwsCloudFrontSpec(t *testing.T) {
@@ -18,9 +19,13 @@ var _ = ginkgo.Describe("AwsCloudFrontSpec validations", func() {
 
 	ginkgo.BeforeEach(func() {
 		spec = &AwsCloudFrontSpec{
-			Enabled:        true,
-			Aliases:        []string{"cdn.example.com"},
-			CertificateArn: "arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012",
+			Enabled: true,
+			Aliases: []string{"cdn.example.com"},
+			CertificateArn: &foreignkeyv1.StringValueOrRef{
+				LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
+					Value: "arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012",
+				},
+			},
 			PriceClass:     AwsCloudFrontSpec_PRICE_CLASS_100,
 			Origins: []*AwsCloudFrontSpec_Origin{
 				{
@@ -45,7 +50,7 @@ var _ = ginkgo.Describe("AwsCloudFrontSpec validations", func() {
 
 	ginkgo.It("accepts a valid spec without aliases and certificate", func() {
 		spec.Aliases = []string{}
-		spec.CertificateArn = ""
+		spec.CertificateArn = nil
 		err := protovalidate.Validate(spec)
 		gomega.Expect(err).To(gomega.BeNil())
 	})
@@ -75,10 +80,14 @@ var _ = ginkgo.Describe("AwsCloudFrontSpec validations", func() {
 		gomega.Expect(err).NotTo(gomega.BeNil())
 	})
 
-	ginkgo.It("fails when certificate_arn has invalid format", func() {
-		spec.CertificateArn = "invalid-arn"
+	ginkgo.It("accepts a valid spec with certificate_arn as StringValueOrRef", func() {
+		spec.CertificateArn = &foreignkeyv1.StringValueOrRef{
+			LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
+				Value: "arn:aws:acm:us-east-1:123456789012:certificate/abcdef01-2345-6789-abcd-ef0123456789",
+			},
+		}
 		err := protovalidate.Validate(spec)
-		gomega.Expect(err).NotTo(gomega.BeNil())
+		gomega.Expect(err).To(gomega.BeNil())
 	})
 
 	ginkgo.It("fails when price_class is undefined", func() {
@@ -118,23 +127,27 @@ var _ = ginkgo.Describe("AwsCloudFrontSpec validations", func() {
 	})
 
 	// CEL expression tests
-	ginkgo.It("fails when aliases are provided but certificate_arn is empty (aliases_require_cert)", func() {
+	ginkgo.It("fails when aliases are provided but certificate_arn is nil (aliases_require_cert)", func() {
 		spec.Aliases = []string{"cdn.example.com"}
-		spec.CertificateArn = ""
+		spec.CertificateArn = nil
 		err := protovalidate.Validate(spec)
 		gomega.Expect(err).NotTo(gomega.BeNil())
 	})
 
-	ginkgo.It("passes when aliases are empty and certificate_arn is empty (aliases_require_cert)", func() {
+	ginkgo.It("passes when aliases are empty and certificate_arn is nil (aliases_require_cert)", func() {
 		spec.Aliases = []string{}
-		spec.CertificateArn = ""
+		spec.CertificateArn = nil
 		err := protovalidate.Validate(spec)
 		gomega.Expect(err).To(gomega.BeNil())
 	})
 
 	ginkgo.It("passes when aliases are provided and certificate_arn is set (aliases_require_cert)", func() {
 		spec.Aliases = []string{"cdn.example.com"}
-		spec.CertificateArn = "arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012"
+		spec.CertificateArn = &foreignkeyv1.StringValueOrRef{
+			LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
+				Value: "arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012",
+			},
+		}
 		err := protovalidate.Validate(spec)
 		gomega.Expect(err).To(gomega.BeNil())
 	})

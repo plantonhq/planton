@@ -1,3 +1,11 @@
+---
+title: "Glue Catalog Database"
+description: "Glue Catalog Database deployment documentation"
+icon: "package"
+order: 100
+componentName: "awsgluecatalogdatabase"
+---
+
 # AWS Glue Catalog Database
 
 Deploys an AWS Glue Data Catalog database — a metadata namespace that organizes table definitions for data stored in S3, Redshift, RDS, and other data stores. The database is the namespace that Amazon Athena, Glue Crawlers, Glue ETL jobs, and Redshift Spectrum use to discover and query data via `database.table` naming.

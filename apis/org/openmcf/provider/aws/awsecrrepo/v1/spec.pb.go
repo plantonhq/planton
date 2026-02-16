@@ -8,6 +8,7 @@ package awsecrrepov1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -43,7 +44,8 @@ type AwsEcrRepoSpec struct {
 	// kmsKeyId is the ARN or ID of a KMS key used when encryption_type = KMS.
 	// If omitted, AWS uses the default service-managed key for ECR.
 	// Ignored if encryption_type = AES256.
-	KmsKeyId string `protobuf:"bytes,4,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	// Can reference an AwsKmsKey resource.
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// forceDelete, if true, allows deleting the repository even when it contains
 	// images (all images get removed on delete). By default, it is false, preventing
 	// accidental data loss.
@@ -111,11 +113,11 @@ func (x *AwsEcrRepoSpec) GetEncryptionType() string {
 	return ""
 }
 
-func (x *AwsEcrRepoSpec) GetKmsKeyId() string {
+func (x *AwsEcrRepoSpec) GetKmsKeyId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.KmsKeyId
 	}
-	return ""
+	return nil
 }
 
 func (x *AwsEcrRepoSpec) GetForceDelete() bool {
@@ -203,14 +205,14 @@ var File_org_openmcf_provider_aws_awsecrrepo_v1_spec_proto protoreflect.FileDesc
 
 const file_org_openmcf_provider_aws_awsecrrepo_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"1org/openmcf/provider/aws/awsecrrepo/v1/spec.proto\x12&org.openmcf.provider.aws.awsecrrepo.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xdf\x03\n" +
+	"1org/openmcf/provider/aws/awsecrrepo/v1/spec.proto\x12&org.openmcf.provider.aws.awsecrrepo.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb4\x04\n" +
 	"\x0eAwsEcrRepoSpec\x126\n" +
 	"\x0frepository_name\x18\x01 \x01(\tB\r\xbaH\n" +
 	"\xc8\x01\x01r\x05\x10\x02\x18\x80\x02R\x0erepositoryName\x12'\n" +
 	"\x0fimage_immutable\x18\x02 \x01(\bR\x0eimageImmutable\x12M\n" +
-	"\x0fencryption_type\x18\x03 \x01(\tB\x1f\xbaH\x12\xd8\x01\x01r\rR\x06AES256R\x03KMS\x8a\xa6\x1d\x06AES256H\x00R\x0eencryptionType\x88\x01\x01\x12\x1c\n" +
+	"\x0fencryption_type\x18\x03 \x01(\tB\x1f\xbaH\x12\xd8\x01\x01r\rR\x06AES256R\x03KMS\x8a\xa6\x1d\x06AES256H\x00R\x0eencryptionType\x88\x01\x01\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\x04 \x01(\tR\bkmsKeyId\x12!\n" +
+	"kms_key_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12!\n" +
 	"\fforce_delete\x18\x05 \x01(\bR\vforceDelete\x12/\n" +
 	"\fscan_on_push\x18\x06 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\n" +
 	"scanOnPush\x88\x01\x01\x12q\n" +
@@ -243,14 +245,16 @@ var file_org_openmcf_provider_aws_awsecrrepo_v1_spec_proto_msgTypes = make([]pro
 var file_org_openmcf_provider_aws_awsecrrepo_v1_spec_proto_goTypes = []any{
 	(*AwsEcrRepoSpec)(nil),            // 0: org.openmcf.provider.aws.awsecrrepo.v1.AwsEcrRepoSpec
 	(*AwsEcrRepoLifecyclePolicy)(nil), // 1: org.openmcf.provider.aws.awsecrrepo.v1.AwsEcrRepoLifecyclePolicy
+	(*v1.StringValueOrRef)(nil),       // 2: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_aws_awsecrrepo_v1_spec_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.aws.awsecrrepo.v1.AwsEcrRepoSpec.lifecycle_policy:type_name -> org.openmcf.provider.aws.awsecrrepo.v1.AwsEcrRepoLifecyclePolicy
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 0: org.openmcf.provider.aws.awsecrrepo.v1.AwsEcrRepoSpec.kms_key_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	1, // 1: org.openmcf.provider.aws.awsecrrepo.v1.AwsEcrRepoSpec.lifecycle_policy:type_name -> org.openmcf.provider.aws.awsecrrepo.v1.AwsEcrRepoLifecyclePolicy
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_aws_awsecrrepo_v1_spec_proto_init() }

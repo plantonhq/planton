@@ -1,3 +1,11 @@
+---
+title: "App Runner Service"
+description: "App Runner Service deployment documentation"
+icon: "package"
+order: 100
+componentName: "awsapprunnerservice"
+---
+
 # AWS App Runner Service
 
 Deploys an AWS App Runner Service from a container image or GitHub repository with automatic HTTPS, concurrency-based auto scaling, optional VPC egress via an inline VPC Connector, and optional customer-managed KMS encryption. The component supports two mutually exclusive source types: ECR image or GitHub code repository.

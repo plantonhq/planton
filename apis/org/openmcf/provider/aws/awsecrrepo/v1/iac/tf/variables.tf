@@ -60,8 +60,8 @@ variable "spec" {
 
     # kmsKeyId is the ARN or ID of a KMS key used when encryption_type = KMS.
     # If omitted, AWS uses the default service-managed key for ECR.
-    # Ignored if encryption_type = AES256.
-    kms_key_id = string
+    # Ignored if encryption_type = AES256 (StringValueOrRef).
+    kms_key_id = optional(object({ value = string }))
 
     # forceDelete, if true, allows deleting the repository even when it contains
     # images (all images get removed on delete). By default, it is false, preventing

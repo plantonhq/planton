@@ -59,6 +59,10 @@ func buildEgress(rules []*awssecuritygroupv1.SecurityGroupRule) ec2.SecurityGrou
 
 // ruleToIngress maps a single SecurityGroupRule to one or more SecurityGroupIngressArgs entries.
 func ruleToIngress(r *awssecuritygroupv1.SecurityGroupRule) ec2.SecurityGroupIngressArray {
+	var sourceSGs pulumi.StringArray
+	for _, sg := range r.SourceSecurityGroupIds {
+		sourceSGs = append(sourceSGs, pulumi.String(sg.GetValue()))
+	}
 	return ec2.SecurityGroupIngressArray{
 		&ec2.SecurityGroupIngressArgs{
 			Protocol:       pulumi.String(r.Protocol),
@@ -66,7 +70,7 @@ func ruleToIngress(r *awssecuritygroupv1.SecurityGroupRule) ec2.SecurityGroupIng
 			ToPort:         pulumi.Int(int(r.ToPort)),
 			CidrBlocks:     pulumi.ToStringArray(r.Ipv4Cidrs),
 			Ipv6CidrBlocks: pulumi.ToStringArray(r.Ipv6Cidrs),
-			SecurityGroups: pulumi.ToStringArray(r.SourceSecurityGroupIds),
+			SecurityGroups: sourceSGs,
 			Self:           pulumi.Bool(r.SelfReference),
 			Description:    pulumi.String(r.Description),
 		},
@@ -75,6 +79,10 @@ func ruleToIngress(r *awssecuritygroupv1.SecurityGroupRule) ec2.SecurityGroupIng
 
 // ruleToEgress maps a single SecurityGroupRule to one or more SecurityGroupEgressArgs entries.
 func ruleToEgress(r *awssecuritygroupv1.SecurityGroupRule) ec2.SecurityGroupEgressArray {
+	var destSGs pulumi.StringArray
+	for _, sg := range r.DestinationSecurityGroupIds {
+		destSGs = append(destSGs, pulumi.String(sg.GetValue()))
+	}
 	return ec2.SecurityGroupEgressArray{
 		&ec2.SecurityGroupEgressArgs{
 			Protocol:       pulumi.String(r.Protocol),
@@ -82,7 +90,7 @@ func ruleToEgress(r *awssecuritygroupv1.SecurityGroupRule) ec2.SecurityGroupEgre
 			ToPort:         pulumi.Int(int(r.ToPort)),
 			CidrBlocks:     pulumi.ToStringArray(r.Ipv4Cidrs),
 			Ipv6CidrBlocks: pulumi.ToStringArray(r.Ipv6Cidrs),
-			SecurityGroups: pulumi.ToStringArray(r.DestinationSecurityGroupIds),
+			SecurityGroups: destSGs,
 			Self:           pulumi.Bool(r.SelfReference),
 			Description:    pulumi.String(r.Description),
 		},

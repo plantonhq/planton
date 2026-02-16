@@ -52,16 +52,16 @@ resource "aws_cloudfront_distribution" "this" {
   }
 
   dynamic "viewer_certificate" {
-    for_each = var.spec.certificate_arn != null && var.spec.certificate_arn != "" ? [1] : []
+    for_each = try(var.spec.certificate_arn.value, "") != "" ? [1] : []
     content {
-      acm_certificate_arn      = var.spec.certificate_arn
+      acm_certificate_arn      = var.spec.certificate_arn.value
       ssl_support_method       = "sni-only"
       minimum_protocol_version = "TLSv1.2_2021"
     }
   }
 
   dynamic "viewer_certificate" {
-    for_each = var.spec.certificate_arn == null || var.spec.certificate_arn == "" ? [1] : []
+    for_each = try(var.spec.certificate_arn.value, "") == "" ? [1] : []
     content {
       cloudfront_default_certificate = true
     }

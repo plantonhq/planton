@@ -3,6 +3,7 @@ syntax = "proto3";
 package org.openmcf.provider.aws.awscloudfront.v1;
 
 import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 
 // AwsCloudFrontSpec captures common fields used to configure a CloudFront distribution.
 message AwsCloudFrontSpec {
@@ -17,8 +18,12 @@ message AwsCloudFrontSpec {
     }
   ];
 
-  // ACM certificate ARN for custom domains in the us-east-1 region.
-  string certificate_arn = 3 [(buf.validate.field).string.pattern = "^$|^arn:aws:acm:us-east-1:[0-9]{12}:certificate/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"];
+  // ACM certificate ARN for custom domains. Must be in the us-east-1 region.
+  // Required when aliases are provided. Can reference an AwsCertManagerCert resource.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef certificate_arn = 3 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsCertManagerCert,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.certificate_arn"
+  ];
 
   // Price class for edge locations.
   enum PriceClass {
@@ -56,7 +61,7 @@ message AwsCloudFrontSpec {
   option (buf.validate.message).cel = {
     id: "aliases_require_cert"
     message: "certificate_arn must be set when aliases are provided"
-    expression: "this.aliases.size() == 0 || this.certificate_arn != \"\""
+    expression: "this.aliases.size() == 0 || has(this.certificate_arn)"
   };
 
   option (buf.validate.message).cel = {

@@ -8,6 +8,7 @@ package awsecsclusterv1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -252,7 +253,8 @@ type ExecConfiguration struct {
 	LogConfiguration *ExecLogConfiguration `protobuf:"bytes,2,opt,name=log_configuration,json=logConfiguration,proto3" json:"log_configuration,omitempty"`
 	// kms_key_id is an optional KMS key ID for encrypting exec session data.
 	// Applies to both CloudWatch Logs and S3 if specified.
-	KmsKeyId      string `protobuf:"bytes,3,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	// Can reference an AwsKmsKey resource.
+	KmsKeyId      *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -301,11 +303,11 @@ func (x *ExecConfiguration) GetLogConfiguration() *ExecLogConfiguration {
 	return nil
 }
 
-func (x *ExecConfiguration) GetKmsKeyId() string {
+func (x *ExecConfiguration) GetKmsKeyId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.KmsKeyId
 	}
-	return ""
+	return nil
 }
 
 // ExecLogConfiguration specifies custom destinations for Exec audit logs,
@@ -400,7 +402,7 @@ var File_org_openmcf_provider_aws_awsecscluster_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_aws_awsecscluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/aws/awsecscluster/v1/spec.proto\x12)org.openmcf.provider.aws.awsecscluster.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xc3\x03\n" +
+	"4org/openmcf/provider/aws/awsecscluster/v1/spec.proto\x12)org.openmcf.provider.aws.awsecscluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xc3\x03\n" +
 	"\x11AwsEcsClusterSpec\x12D\n" +
 	"\x19enable_container_insights\x18\x01 \x01(\bB\b\x92\xa6\x1d\x04trueR\x17enableContainerInsights\x12R\n" +
 	"\x12capacity_providers\x18\x02 \x03(\tB#\xbaH \x92\x01\x1d\x18\x01\"\x19r\x17R\aFARGATER\fFARGATE_SPOTR\x11capacityProviders\x12\x90\x01\n" +
@@ -409,12 +411,12 @@ const file_org_openmcf_provider_aws_awsecscluster_v1_spec_proto_rawDesc = "" +
 	"\x18CapacityProviderStrategy\x12I\n" +
 	"\x11capacity_provider\x18\x01 \x01(\tB\x1c\xbaH\x19r\x17R\aFARGATER\fFARGATE_SPOTR\x10capacityProvider\x12\x1b\n" +
 	"\x04base\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00R\x04base\x12\x1f\n" +
-	"\x06weight\x18\x03 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x06weight\"\xc8\x02\n" +
+	"\x06weight\x18\x03 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x06weight\"\x9d\x03\n" +
 	"\x11ExecConfiguration\x12^\n" +
 	"\alogging\x18\x01 \x01(\x0e2D.org.openmcf.provider.aws.awsecscluster.v1.ExecConfiguration.LoggingR\alogging\x12l\n" +
-	"\x11log_configuration\x18\x02 \x01(\v2?.org.openmcf.provider.aws.awsecscluster.v1.ExecLogConfigurationR\x10logConfiguration\x12\x1c\n" +
+	"\x11log_configuration\x18\x02 \x01(\v2?.org.openmcf.provider.aws.awsecscluster.v1.ExecLogConfigurationR\x10logConfiguration\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\x03 \x01(\tR\bkmsKeyId\"G\n" +
+	"kms_key_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\"G\n" +
 	"\aLogging\x12\x17\n" +
 	"\x13LOGGING_UNSPECIFIED\x10\x00\x12\v\n" +
 	"\aDEFAULT\x10\x01\x12\b\n" +
@@ -448,17 +450,19 @@ var file_org_openmcf_provider_aws_awsecscluster_v1_spec_proto_goTypes = []any{
 	(*CapacityProviderStrategy)(nil), // 2: org.openmcf.provider.aws.awsecscluster.v1.CapacityProviderStrategy
 	(*ExecConfiguration)(nil),        // 3: org.openmcf.provider.aws.awsecscluster.v1.ExecConfiguration
 	(*ExecLogConfiguration)(nil),     // 4: org.openmcf.provider.aws.awsecscluster.v1.ExecLogConfiguration
+	(*v1.StringValueOrRef)(nil),      // 5: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_aws_awsecscluster_v1_spec_proto_depIdxs = []int32{
 	2, // 0: org.openmcf.provider.aws.awsecscluster.v1.AwsEcsClusterSpec.default_capacity_provider_strategy:type_name -> org.openmcf.provider.aws.awsecscluster.v1.CapacityProviderStrategy
 	3, // 1: org.openmcf.provider.aws.awsecscluster.v1.AwsEcsClusterSpec.execute_command_configuration:type_name -> org.openmcf.provider.aws.awsecscluster.v1.ExecConfiguration
 	0, // 2: org.openmcf.provider.aws.awsecscluster.v1.ExecConfiguration.logging:type_name -> org.openmcf.provider.aws.awsecscluster.v1.ExecConfiguration.Logging
 	4, // 3: org.openmcf.provider.aws.awsecscluster.v1.ExecConfiguration.log_configuration:type_name -> org.openmcf.provider.aws.awsecscluster.v1.ExecLogConfiguration
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	5, // 4: org.openmcf.provider.aws.awsecscluster.v1.ExecConfiguration.kms_key_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_aws_awsecscluster_v1_spec_proto_init() }

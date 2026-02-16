@@ -1,0 +1,53 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsSagemakerDomain
+metadata:
+  name: ml-team-custom-images
+spec:
+  authMode: SSO
+  appNetworkAccessType: VpcOnly
+  vpcId:
+    value: "<vpc-id>"
+  subnetIds:
+    - value: "<private-subnet-id-az1>"
+    - value: "<private-subnet-id-az2>"
+  kmsKeyId:
+    value: "<kms-key-arn>"
+  dockerSettings:
+    enableDockerAccess: ENABLED
+    vpcOnlyTrustedAccounts:
+      - "<aws-account-id>"
+  defaultUserSettings:
+    executionRoleArn:
+      value: "<sagemaker-execution-role-arn>"
+    securityGroupIds:
+      - value: "<user-security-group-id>"
+    defaultLandingUri: "studio::relative/JupyterLab"
+    jupyterLabAppSettings:
+      defaultResourceSpec:
+        instanceType: ml.m5.large
+      idleSettings:
+        lifecycleManagement: ENABLED
+        idleTimeoutInMinutes: 180
+      codeRepositories:
+        - repositoryUrl: "https://github.com/team/ml-platform.git"
+        - repositoryUrl: "https://github.com/team/shared-notebooks.git"
+      customImages:
+        - appImageConfigName: pytorch-gpu-config
+          imageName: pytorch-gpu
+          imageVersionNumber: 2
+        - appImageConfigName: tensorflow-config
+          imageName: tensorflow-custom
+    kernelGatewayAppSettings:
+      defaultResourceSpec:
+        instanceType: ml.g4dn.xlarge
+      customImages:
+        - appImageConfigName: custom-ml-framework
+          imageName: ml-framework-gpu
+    sharingSettings:
+      notebookOutputOption: Allowed
+      s3OutputPath: "s3://ml-team-bucket/notebook-outputs/"
+      s3KmsKeyId:
+        value: "<kms-key-arn>"
+    spaceStorageSettings:
+      defaultEbsVolumeSizeInGb: 50
+      maximumEbsVolumeSizeInGb: 500

@@ -49,8 +49,8 @@ variable "spec" {
     # Description for aliases
     aliases = list(string)
 
-    # Description for certificate_arn
-    certificate_arn = string
+    # ACM certificate ARN for custom domains (StringValueOrRef).
+    certificate_arn = optional(object({ value = string }))
 
     # Description for price_class
     price_class = string

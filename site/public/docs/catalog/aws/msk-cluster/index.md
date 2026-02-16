@@ -1,3 +1,11 @@
+---
+title: "MSK Cluster"
+description: "MSK Cluster deployment documentation"
+icon: "package"
+order: 100
+componentName: "awsmskcluster"
+---
+
 # AWS MSK Cluster
 
 Deploys an Amazon MSK (Managed Streaming for Apache Kafka) cluster with configurable broker nodes, multi-method authentication (SASL/IAM, SASL/SCRAM, mTLS), encryption at rest and in transit, inline Kafka configuration management, and broker log delivery to CloudWatch Logs, Kinesis Data Firehose, and S3. The component creates a managed security group with Kafka and ZooKeeper port rules when ingress sources are specified.
@@ -293,8 +301,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AwsVpc](/docs/catalog/aws/awsvpc) — provides subnets for broker placement and VPC ID for managed security group
-- [AwsSecurityGroup](/docs/catalog/aws/awssecuritygroup) — controls network access to Kafka and ZooKeeper ports
-- [AwsKmsKey](/docs/catalog/aws/awskmskey) — provides customer-managed encryption key for data at rest
-- [AwsCloudwatchLogGroup](/docs/catalog/aws/awscloudwatchloggroup) — receives broker logs via CloudWatch Logs integration
-- [AwsKinesisFirehose](/docs/catalog/aws/awskinesisfirehose) — receives broker logs for analytics pipeline delivery
+- [AwsVpc](/docs/catalog/aws/vpc) — provides subnets for broker placement and VPC ID for managed security group
+- [AwsSecurityGroup](/docs/catalog/aws/security-group) — controls network access to Kafka and ZooKeeper ports
+- [AwsKmsKey](/docs/catalog/aws/kms-key) — provides customer-managed encryption key for data at rest
+- [AwsCloudwatchLogGroup](/docs/catalog/aws/cloudwatch-log-group) — receives broker logs via CloudWatch Logs integration
+- [AwsKinesisFirehose](/docs/catalog/aws/kinesis-firehose) — receives broker logs for analytics pipeline delivery
