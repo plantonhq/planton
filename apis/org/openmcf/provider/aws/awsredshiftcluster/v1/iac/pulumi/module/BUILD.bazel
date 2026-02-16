@@ -1,0 +1,25 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "cluster.go",
+        "locals.go",
+        "logging.go",
+        "main.go",
+        "outputs.go",
+        "parameter_group.go",
+        "security_group.go",
+        "subnet_group.go",
+    ],
+    importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsredshiftcluster/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/org/openmcf/provider/aws/awsredshiftcluster/v1:awsredshiftcluster",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws",
+        "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/ec2",
+        "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/redshift",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

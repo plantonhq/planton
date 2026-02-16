@@ -333,6 +333,12 @@ enum CloudResourceKind {
     id_prefix: "awsglue"
   }];
 
+  AwsRedshiftCluster = 265 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsrs"
+  }];
+
   // 400–599: Azure resources
   AzureResourceGroup = 400 [(kind_meta) = {
     provider: azure
@@ -613,6 +619,11 @@ enum CloudResourceKind {
     provider: gcp
     version: v1
     id_prefix: "gcpgip"
+  }];
+  GcpCloudArmorPolicy = 622 [(kind_meta) = {
+    provider: gcp
+    version: v1
+    id_prefix: "gcpcap"
   }];
   GcpAlloydbCluster = 630 [(kind_meta) = {
     provider: gcp

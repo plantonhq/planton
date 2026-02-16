@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsredshiftcluster.v1;
+
+import "org/openmcf/provider/aws/awsredshiftcluster/v1/api.proto";
+import "org/openmcf/provider/aws/provider.proto";
+
+// aws-redshift-cluster stack-input
+message AwsRedshiftClusterStackInput {
+  // target cloud-resource
+  AwsRedshiftCluster target = 1;
+  // provider-credential
+  org.openmcf.provider.aws.AwsProviderConfig provider_config = 2;
+}

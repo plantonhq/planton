@@ -1,0 +1,15 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsRedshiftCluster
+metadata:
+  name: test-redshift
+spec:
+  nodeType: dc2.large
+  numberOfNodes: 1
+  databaseName: dev
+  masterUsername: admin
+  manageMasterPassword: true
+  subnetIds:
+    - value: "<private-subnet-id-az1>"
+    - value: "<private-subnet-id-az2>"
+  encrypted: true
+  skipFinalSnapshot: true

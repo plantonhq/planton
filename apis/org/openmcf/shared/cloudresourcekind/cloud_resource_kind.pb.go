@@ -131,6 +131,7 @@ const (
 	CloudResourceKind_AwsKinesisStreamConsumer   CloudResourceKind = 262
 	CloudResourceKind_AwsAthenaWorkgroup         CloudResourceKind = 263
 	CloudResourceKind_AwsGlueCatalogDatabase     CloudResourceKind = 264
+	CloudResourceKind_AwsRedshiftCluster         CloudResourceKind = 265
 	// 400–599: Azure resources
 	CloudResourceKind_AzureResourceGroup            CloudResourceKind = 400
 	CloudResourceKind_AzureAksCluster               CloudResourceKind = 401
@@ -188,6 +189,7 @@ const (
 	CloudResourceKind_GcpDnsRecord                  CloudResourceKind = 618
 	CloudResourceKind_GcpFirewallRule               CloudResourceKind = 620
 	CloudResourceKind_GcpGlobalAddress              CloudResourceKind = 621
+	CloudResourceKind_GcpCloudArmorPolicy           CloudResourceKind = 622
 	CloudResourceKind_GcpAlloydbCluster             CloudResourceKind = 630
 	CloudResourceKind_GcpRedisInstance              CloudResourceKind = 631
 	CloudResourceKind_GcpFirestoreDatabase          CloudResourceKind = 632
@@ -415,6 +417,7 @@ var (
 		262:  "AwsKinesisStreamConsumer",
 		263:  "AwsAthenaWorkgroup",
 		264:  "AwsGlueCatalogDatabase",
+		265:  "AwsRedshiftCluster",
 		400:  "AzureResourceGroup",
 		401:  "AzureAksCluster",
 		402:  "AzureAksNodePool",
@@ -470,6 +473,7 @@ var (
 		618:  "GcpDnsRecord",
 		620:  "GcpFirewallRule",
 		621:  "GcpGlobalAddress",
+		622:  "GcpCloudArmorPolicy",
 		630:  "GcpAlloydbCluster",
 		631:  "GcpRedisInstance",
 		632:  "GcpFirestoreDatabase",
@@ -685,6 +689,7 @@ var (
 		"AwsKinesisStreamConsumer":              262,
 		"AwsAthenaWorkgroup":                    263,
 		"AwsGlueCatalogDatabase":                264,
+		"AwsRedshiftCluster":                    265,
 		"AzureResourceGroup":                    400,
 		"AzureAksCluster":                       401,
 		"AzureAksNodePool":                      402,
@@ -740,6 +745,7 @@ var (
 		"GcpDnsRecord":                          618,
 		"GcpFirewallRule":                       620,
 		"GcpGlobalAddress":                      621,
+		"GcpCloudArmorPolicy":                   622,
 		"GcpAlloydbCluster":                     630,
 		"GcpRedisInstance":                      631,
 		"GcpFirestoreDatabase":                  632,
@@ -1042,7 +1048,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xc2Z\n" +
+	"\x02v1\x10\x01*\x98[\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1105,7 +1111,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x12AwsKinesisFirehose\x10\x85\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awskfh\x122\n" +
 	"\x18AwsKinesisStreamConsumer\x10\x86\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawskincon\x12)\n" +
 	"\x12AwsAthenaWorkgroup\x10\x87\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsath\x12.\n" +
-	"\x16AwsGlueCatalogDatabase\x10\x88\x02\x1a\x11\xa2\xf7\x04\r\b\f\x10\x01\"\aawsglue\x12'\n" +
+	"\x16AwsGlueCatalogDatabase\x10\x88\x02\x1a\x11\xa2\xf7\x04\r\b\f\x10\x01\"\aawsglue\x12(\n" +
+	"\x12AwsRedshiftCluster\x10\x89\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awsrs\x12'\n" +
 	"\x12AzureResourceGroup\x10\x90\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\r\x10\x01\"\x04azrg\x12#\n" +
 	"\x0fAzureAksCluster\x10\x91\x03\x1a\r\xa2\xf7\x04\t\b\r\x10\x01\"\x03aks\x12&\n" +
@@ -1177,7 +1184,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x12GcpComputeInstance\x10\xe9\x04\x1a\x0f\xa2\xf7\x04\v\b\x12\x10\x01\"\x05gcpvm\x12$\n" +
 	"\fGcpDnsRecord\x10\xea\x04\x1a\x11\xa2\xf7\x04\r\b\x12\x10\x01\"\agcpdrec\x12&\n" +
 	"\x0fGcpFirewallRule\x10\xec\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpfwr\x12'\n" +
-	"\x10GcpGlobalAddress\x10\xed\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpgip\x12(\n" +
+	"\x10GcpGlobalAddress\x10\xed\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpgip\x12*\n" +
+	"\x13GcpCloudArmorPolicy\x10\xee\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpcap\x12(\n" +
 	"\x11GcpAlloydbCluster\x10\xf6\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpadb\x12'\n" +
 	"\x10GcpRedisInstance\x10\xf7\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpred\x12+\n" +
 	"\x14GcpFirestoreDatabase\x10\xf8\x04\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpfst\x12)\n" +
