@@ -346,6 +346,13 @@ enum CloudResourceKind {
     id_prefix: "sgmkd"
   }];
 
+  // Containers
+  AwsAppRunnerService = 320 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsar"
+  }];
+
   // Streaming
   AwsMskCluster = 350 [(kind_meta) = {
     provider: aws

@@ -1,0 +1,17 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsAppRunnerService
+metadata:
+  name: my-web-app
+spec:
+  # ECR Public image -- no IAM access role needed for pulling
+  imageSource:
+    imageIdentifier: "<ecr-public-image-uri>"
+    imageRepositoryType: "ECR_PUBLIC"
+  # Port your application listens on (App Runner routes HTTPS:443 → this port)
+  port: "<application-port>"
+  # Default instance size: 1 vCPU / 2 GB RAM
+  cpu: "1024"
+  memory: "2048"
+  # Auto scaling defaults: 1 min, 25 max, 100 concurrent requests per instance
+  # Health check defaults: TCP on the configured port
+  # Auto-deploy: enabled (redeploys on new image push to the same tag)

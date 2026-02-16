@@ -1,0 +1,6 @@
+name: aws-app-runner-service
+runtime:
+  name: go
+  options:
+    binary: main
+description: Pulumi module for AWS App Runner Service

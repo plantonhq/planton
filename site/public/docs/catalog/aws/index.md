@@ -10,6 +10,7 @@ order: 10
 The following AWS resources can be deployed using OpenMCF:
 
 - [ALB](/docs/catalog/aws/alb)
+- [App Runner Service](/docs/catalog/aws/app-runner-service)
 - [Athena Workgroup](/docs/catalog/aws/athena-workgroup)
 - [AwsMskCluster — Technical Reference](/docs/catalog/aws/awsmskcluster-technical-reference)
 - [Certificate Manager Certificate](/docs/catalog/aws/certificate-manager-certificate)
