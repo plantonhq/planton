@@ -211,7 +211,8 @@ function buildStructure(dirPath: string, relativePath: string = ''): DocItem[] {
           isExternal: (metadata.isExternal as boolean) || false,
           externalUrl: metadata.externalUrl as string | undefined,
           hasIndex,
-          excerpt: '' // Directories don't have content to generate excerpts from
+          excerpt: '', // Directories don't have content to generate excerpts from
+          componentName: metadata.componentName as string | undefined,
         });
       }
     } else if (item.endsWith('.md')) {

@@ -211,6 +211,7 @@ function buildStructure(dirPath: string, relativePath = ''): DocItem[] {
           externalUrl: metadata.externalUrl as string | undefined,
           hasIndex,
           excerpt: '',
+          componentName: metadata.componentName as string | undefined,
         });
       }
     } else if (item.endsWith('.md')) {
