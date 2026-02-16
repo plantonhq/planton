@@ -1,0 +1,6 @@
+name: aws-msk-cluster
+runtime:
+  name: go
+  options:
+    binary: main
+description: AWS MSK Cluster deployment component

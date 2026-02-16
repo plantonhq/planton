@@ -339,6 +339,13 @@ enum CloudResourceKind {
     id_prefix: "awsrs"
   }];
 
+  // Streaming
+  AwsMskCluster = 350 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsmsk"
+  }];
+
   // 400–599: Azure resources
   AzureResourceGroup = 400 [(kind_meta) = {
     provider: azure
