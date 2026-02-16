@@ -126,6 +126,7 @@ const (
 	CloudResourceKind_AwsFsxLustreFileSystem     CloudResourceKind = 291
 	CloudResourceKind_AwsFsxOpenzfsFileSystem    CloudResourceKind = 292
 	CloudResourceKind_AwsFsxWindowsFileSystem    CloudResourceKind = 293
+	CloudResourceKind_AwsFsxOntapFileSystem      CloudResourceKind = 294
 	CloudResourceKind_AwsCognitoUserPool         CloudResourceKind = 300
 	CloudResourceKind_AwsCognitoIdentityProvider CloudResourceKind = 302
 	CloudResourceKind_AwsWafWebAcl               CloudResourceKind = 301
@@ -145,6 +146,7 @@ const (
 	CloudResourceKind_AwsBatchComputeEnvironment CloudResourceKind = 321
 	// CI/CD
 	CloudResourceKind_AwsCodeBuildProject CloudResourceKind = 330
+	CloudResourceKind_AwsCodePipeline     CloudResourceKind = 331
 	// Workflow / Orchestration
 	CloudResourceKind_AwsMwaaEnvironment CloudResourceKind = 340
 	// Graph Database
@@ -433,6 +435,7 @@ var (
 		291:  "AwsFsxLustreFileSystem",
 		292:  "AwsFsxOpenzfsFileSystem",
 		293:  "AwsFsxWindowsFileSystem",
+		294:  "AwsFsxOntapFileSystem",
 		300:  "AwsCognitoUserPool",
 		302:  "AwsCognitoIdentityProvider",
 		301:  "AwsWafWebAcl",
@@ -448,6 +451,7 @@ var (
 		320:  "AwsAppRunnerService",
 		321:  "AwsBatchComputeEnvironment",
 		330:  "AwsCodeBuildProject",
+		331:  "AwsCodePipeline",
 		340:  "AwsMwaaEnvironment",
 		341:  "AwsNeptuneCluster",
 		342:  "AwsMemorydbCluster",
@@ -718,6 +722,7 @@ var (
 		"AwsFsxLustreFileSystem":                291,
 		"AwsFsxOpenzfsFileSystem":               292,
 		"AwsFsxWindowsFileSystem":               293,
+		"AwsFsxOntapFileSystem":                 294,
 		"AwsCognitoUserPool":                    300,
 		"AwsCognitoIdentityProvider":            302,
 		"AwsWafWebAcl":                          301,
@@ -733,6 +738,7 @@ var (
 		"AwsAppRunnerService":                   320,
 		"AwsBatchComputeEnvironment":            321,
 		"AwsCodeBuildProject":                   330,
+		"AwsCodePipeline":                       331,
 		"AwsMwaaEnvironment":                    340,
 		"AwsNeptuneCluster":                     341,
 		"AwsMemorydbCluster":                    342,
@@ -1095,7 +1101,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xd7_\n" +
+	"\x02v1\x10\x01*\xac`\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1153,7 +1159,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x14AwsElasticFileSystem\x10\xa2\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsefs\x12-\n" +
 	"\x16AwsFsxLustreFileSystem\x10\xa3\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxl\x12.\n" +
 	"\x17AwsFsxOpenzfsFileSystem\x10\xa4\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxz\x12.\n" +
-	"\x17AwsFsxWindowsFileSystem\x10\xa5\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxw\x12)\n" +
+	"\x17AwsFsxWindowsFileSystem\x10\xa5\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxw\x12,\n" +
+	"\x15AwsFsxOntapFileSystem\x10\xa6\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxo\x12)\n" +
 	"\x12AwsCognitoUserPool\x10\xac\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awscog\x124\n" +
 	"\x1aAwsCognitoIdentityProvider\x10\xae\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\tawscogidp\x12#\n" +
 	"\fAwsWafWebAcl\x10\xad\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awswaf\x12-\n" +
@@ -1168,7 +1175,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x12AwsSagemakerDomain\x10\x8e\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05sgmkd\x12)\n" +
 	"\x13AwsAppRunnerService\x10\xc0\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awsar\x121\n" +
 	"\x1aAwsBatchComputeEnvironment\x10\xc1\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsbat\x12)\n" +
-	"\x13AwsCodeBuildProject\x10\xca\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awscb\x12*\n" +
+	"\x13AwsCodeBuildProject\x10\xca\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awscb\x12%\n" +
+	"\x0fAwsCodePipeline\x10\xcb\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awscp\x12*\n" +
 	"\x12AwsMwaaEnvironment\x10\xd4\x02\x1a\x11\xa2\xf7\x04\r\b\f\x10\x01\"\aawsmwaa\x12(\n" +
 	"\x11AwsNeptuneCluster\x10\xd5\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsnep\x12)\n" +
 	"\x12AwsMemorydbCluster\x10\xd6\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsmdb\x12$\n" +

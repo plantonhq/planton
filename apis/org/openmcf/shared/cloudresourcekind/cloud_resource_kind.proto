@@ -293,6 +293,12 @@ enum CloudResourceKind {
     id_prefix: "awsfxw"
   }];
 
+  AwsFsxOntapFileSystem = 294 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsfxo"
+  }];
+
   // --- Auth / Identity ---
 
   AwsCognitoUserPool = 300 [(kind_meta) = {
@@ -393,6 +399,12 @@ enum CloudResourceKind {
     provider: aws
     version: v1
     id_prefix: "awscb"
+  }];
+
+  AwsCodePipeline = 331 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awscp"
   }];
 
   // Workflow / Orchestration
