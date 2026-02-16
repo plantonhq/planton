@@ -1,0 +1,36 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCloudArmorPolicy
+metadata:
+  name: rate-limiting-api
+spec:
+  projectId:
+    value: my-gcp-project
+  policyName: rate-limiting-api
+  description: Per-IP rate limiting with ban escalation for API abuse
+  type: CLOUD_ARMOR
+  rules:
+    - action: rate_based_ban
+      priority: 1000
+      description: Throttle 100 req/60s per IP (429), ban 500 req/300s for 1 hour
+      match:
+        versionedExpr: SRC_IPS_V1
+        srcIpRanges:
+          - "*"
+      rateLimitOptions:
+        conformAction: allow
+        exceedAction: deny(429)
+        enforceOnKey: IP
+        rateLimitThreshold:
+          count: 100
+          intervalSec: 60
+        banThreshold:
+          count: 500
+          intervalSec: 300
+        banDurationSec: 3600
+    - action: allow
+      priority: 2147483647
+      description: Default allow all other traffic
+      match:
+        versionedExpr: SRC_IPS_V1
+        srcIpRanges:
+          - "*"
