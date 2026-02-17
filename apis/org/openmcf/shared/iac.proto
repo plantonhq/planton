@@ -6,5 +6,5 @@ enum IacProvisioner {
   iac_provisioner_unspecified = 0;
   terraform = 1;
   pulumi = 2;
-  opentofu = 3;
+  tofu = 3;
 }

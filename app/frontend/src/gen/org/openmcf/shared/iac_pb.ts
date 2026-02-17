@@ -9,7 +9,7 @@ import { enumDesc, fileDesc } from "@bufbuild/protobuf/codegenv1";
  * Describes the file org/openmcf/shared/iac.proto.
  */
 export const file_org_openmcf_shared_iac: GenFile = /*@__PURE__*/
-  fileDesc("Chxvcmcvb3Blbm1jZi9zaGFyZWQvaWFjLnByb3RvEhJvcmcub3Blbm1jZi5zaGFyZWQqTAoOSWFjUHJvdmlzaW9uZXISHwobaWFjX3Byb3Zpc2lvbmVyX3Vuc3BlY2lmaWVkEAASDQoJdGVycmFmb3JtEAESCgoGcHVsdW1pEAJCwgEKFmNvbS5vcmcub3Blbm1jZi5zaGFyZWRCCElhY1Byb3RvUAFaNGdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9zaGFyZWSiAgNPT1OqAhJPcmcuT3Blbm1jZi5TaGFyZWTKAhJPcmdcT3Blbm1jZlxTaGFyZWTiAh5PcmdcT3Blbm1jZlxTaGFyZWRcR1BCTWV0YWRhdGHqAhRPcmc6Ok9wZW5tY2Y6OlNoYXJlZGIGcHJvdG8z");
+  fileDesc("Chxvcmcvb3Blbm1jZi9zaGFyZWQvaWFjLnByb3RvEhJvcmcub3Blbm1jZi5zaGFyZWQqVgoOSWFjUHJvdmlzaW9uZXISHwobaWFjX3Byb3Zpc2lvbmVyX3Vuc3BlY2lmaWVkEAASDQoJdGVycmFmb3JtEAESCgoGcHVsdW1pEAISCAoEdG9mdRADQsIBChZjb20ub3JnLm9wZW5tY2Yuc2hhcmVkQghJYWNQcm90b1ABWjRnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2Yvc2hhcmVkogIDT09TqgIST3JnLk9wZW5tY2YuU2hhcmVkygIST3JnXE9wZW5tY2ZcU2hhcmVk4gIeT3JnXE9wZW5tY2ZcU2hhcmVkXEdQQk1ldGFkYXRh6gIUT3JnOjpPcGVubWNmOjpTaGFyZWRiBnByb3RvMw");
 
 /**
  * @generated from enum org.openmcf.shared.IacProvisioner
@@ -29,6 +29,11 @@ export enum IacProvisioner {
    * @generated from enum value: pulumi = 2;
    */
   pulumi = 2,
+
+  /**
+   * @generated from enum value: tofu = 3;
+   */
+  tofu = 3,
 }
 
 /**

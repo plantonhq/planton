@@ -27,6 +27,7 @@ const (
 	IacProvisioner_iac_provisioner_unspecified IacProvisioner = 0
 	IacProvisioner_terraform                   IacProvisioner = 1
 	IacProvisioner_pulumi                      IacProvisioner = 2
+	IacProvisioner_tofu                        IacProvisioner = 3
 )
 
 // Enum value maps for IacProvisioner.
@@ -35,11 +36,13 @@ var (
 		0: "iac_provisioner_unspecified",
 		1: "terraform",
 		2: "pulumi",
+		3: "tofu",
 	}
 	IacProvisioner_value = map[string]int32{
 		"iac_provisioner_unspecified": 0,
 		"terraform":                   1,
 		"pulumi":                      2,
+		"tofu":                        3,
 	}
 )
 
@@ -74,12 +77,13 @@ var File_org_openmcf_shared_iac_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_shared_iac_proto_rawDesc = "" +
 	"\n" +
-	"\x1corg/openmcf/shared/iac.proto\x12\x12org.openmcf.shared*L\n" +
+	"\x1corg/openmcf/shared/iac.proto\x12\x12org.openmcf.shared*V\n" +
 	"\x0eIacProvisioner\x12\x1f\n" +
 	"\x1biac_provisioner_unspecified\x10\x00\x12\r\n" +
 	"\tterraform\x10\x01\x12\n" +
 	"\n" +
-	"\x06pulumi\x10\x02B\xc2\x01\n" +
+	"\x06pulumi\x10\x02\x12\b\n" +
+	"\x04tofu\x10\x03B\xc2\x01\n" +
 	"\x16com.org.openmcf.sharedB\bIacProtoP\x01Z4github.com/plantonhq/openmcf/apis/org/openmcf/shared\xa2\x02\x03OOS\xaa\x02\x12Org.Openmcf.Shared\xca\x02\x12Org\\Openmcf\\Shared\xe2\x02\x1eOrg\\Openmcf\\Shared\\GPBMetadata\xea\x02\x14Org::Openmcf::Sharedb\x06proto3"
 
 var (
