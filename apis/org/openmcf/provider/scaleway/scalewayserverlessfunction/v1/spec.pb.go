@@ -33,24 +33,24 @@ const (
 	ScalewayServerlessFunctionPrivacy_scaleway_serverless_function_privacy_unspecified ScalewayServerlessFunctionPrivacy = 0
 	// Public: the function endpoint is publicly accessible without
 	// authentication.
-	ScalewayServerlessFunctionPrivacy_public ScalewayServerlessFunctionPrivacy = 1
+	ScalewayServerlessFunctionPrivacy_privacy_public ScalewayServerlessFunctionPrivacy = 1
 	// Private: the function endpoint requires a valid authentication
 	// token. Tokens are managed separately via the Scaleway console or
 	// API (not bundled in this resource).
-	ScalewayServerlessFunctionPrivacy_private ScalewayServerlessFunctionPrivacy = 2
+	ScalewayServerlessFunctionPrivacy_privacy_private ScalewayServerlessFunctionPrivacy = 2
 )
 
 // Enum value maps for ScalewayServerlessFunctionPrivacy.
 var (
 	ScalewayServerlessFunctionPrivacy_name = map[int32]string{
 		0: "scaleway_serverless_function_privacy_unspecified",
-		1: "public",
-		2: "private",
+		1: "privacy_public",
+		2: "privacy_private",
 	}
 	ScalewayServerlessFunctionPrivacy_value = map[string]int32{
 		"scaleway_serverless_function_privacy_unspecified": 0,
-		"public":  1,
-		"private": 2,
+		"privacy_public":  1,
+		"privacy_private": 2,
 	}
 )
 
@@ -669,12 +669,11 @@ const file_org_openmcf_provider_scaleway_scalewayserverlessfunction_v1_spec_prot
 	"%ScalewayServerlessFunctionCronTrigger\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12#\n" +
 	"\bschedule\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bschedule\x12\x1b\n" +
-	"\x04args\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x04args*r\n" +
+	"\x04args\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x04args*\x82\x01\n" +
 	"!ScalewayServerlessFunctionPrivacy\x124\n" +
-	"0scaleway_serverless_function_privacy_unspecified\x10\x00\x12\n" +
-	"\n" +
-	"\x06public\x10\x01\x12\v\n" +
-	"\aprivate\x10\x02*}\n" +
+	"0scaleway_serverless_function_privacy_unspecified\x10\x00\x12\x12\n" +
+	"\x0eprivacy_public\x10\x01\x12\x13\n" +
+	"\x0fprivacy_private\x10\x02*}\n" +
 	"$ScalewayServerlessFunctionHttpOption\x128\n" +
 	"4scaleway_serverless_function_http_option_unspecified\x10\x00\x12\v\n" +
 	"\aenabled\x10\x01\x12\x0e\n" +

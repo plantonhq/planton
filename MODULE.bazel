@@ -82,5 +82,27 @@ use_repo(
     "org_golang_x_tools",
 )
 
+# ─── Java rules (for Java stub compilation check) ────────────────────────────
+# Generated Java protobuf stubs are compiled as a build-time gate to catch
+# reserved keyword conflicts (e.g., "public", "class") before they reach
+# downstream consumers.
+bazel_dep(name = "rules_jvm_external", version = "6.9")
+
+maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
+maven.install(
+    name = "maven",
+    artifacts = [
+        "javax.annotation:javax.annotation-api:1.3.2",
+        "com.google.protobuf:protobuf-java:4.30.1",
+        "io.grpc:grpc-api:1.66.0",
+        "io.grpc:grpc-stub:1.66.0",
+        "io.grpc:grpc-protobuf:1.66.0",
+        "build.buf:protovalidate:1.0.0",
+        "com.google.guava:guava:33.4.0-jre",
+    ],
+    repositories = ["https://repo.maven.apache.org/maven2"],
+)
+use_repo(maven, "maven")
+
 # NOTE: Run `bazel mod tidy` to expand the required use_repo(...) entries below.
 # Bazel will add the repositories provided by the extensions above.

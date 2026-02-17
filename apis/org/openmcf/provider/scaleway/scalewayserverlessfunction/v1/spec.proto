@@ -194,11 +194,11 @@ enum ScalewayServerlessFunctionPrivacy {
   scaleway_serverless_function_privacy_unspecified = 0;
   // Public: the function endpoint is publicly accessible without
   // authentication.
-  public = 1;
+  privacy_public = 1;
   // Private: the function endpoint requires a valid authentication
   // token. Tokens are managed separately via the Scaleway console or
   // API (not bundled in this resource).
-  private = 2;
+  privacy_private = 2;
 }
 
 // ScalewayServerlessFunctionHttpOption controls HTTP/HTTPS behavior

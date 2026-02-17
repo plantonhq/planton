@@ -8,6 +8,7 @@ exports_files([".bazelrc"])
 # You can still enable per-package if needed later.
 # gazelle:proto disable
 # gazelle:prefix github.com/plantonhq/openmcf
+# gazelle:exclude apis/generated
 
 gazelle(
     name = "gazelle",

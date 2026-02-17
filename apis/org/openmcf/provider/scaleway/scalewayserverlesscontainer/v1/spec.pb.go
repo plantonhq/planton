@@ -33,24 +33,24 @@ const (
 	ScalewayServerlessContainerPrivacy_scaleway_serverless_container_privacy_unspecified ScalewayServerlessContainerPrivacy = 0
 	// Public: the container endpoint is publicly accessible without
 	// authentication.
-	ScalewayServerlessContainerPrivacy_public ScalewayServerlessContainerPrivacy = 1
+	ScalewayServerlessContainerPrivacy_privacy_public ScalewayServerlessContainerPrivacy = 1
 	// Private: the container endpoint requires a valid authentication
 	// token. Tokens are managed separately via the Scaleway console or
 	// API (not bundled in this resource).
-	ScalewayServerlessContainerPrivacy_private ScalewayServerlessContainerPrivacy = 2
+	ScalewayServerlessContainerPrivacy_privacy_private ScalewayServerlessContainerPrivacy = 2
 )
 
 // Enum value maps for ScalewayServerlessContainerPrivacy.
 var (
 	ScalewayServerlessContainerPrivacy_name = map[int32]string{
 		0: "scaleway_serverless_container_privacy_unspecified",
-		1: "public",
-		2: "private",
+		1: "privacy_public",
+		2: "privacy_private",
 	}
 	ScalewayServerlessContainerPrivacy_value = map[string]int32{
 		"scaleway_serverless_container_privacy_unspecified": 0,
-		"public":  1,
-		"private": 2,
+		"privacy_public":  1,
+		"privacy_private": 2,
 	}
 )
 
@@ -1110,12 +1110,11 @@ const file_org_openmcf_provider_scaleway_scalewayserverlesscontainer_v1_spec_pro
 	"(ScalewayServerlessContainerScalingOption\x12B\n" +
 	"\x1dconcurrent_requests_threshold\x18\x01 \x01(\rR\x1bconcurrentRequestsThreshold\x12.\n" +
 	"\x13cpu_usage_threshold\x18\x02 \x01(\rR\x11cpuUsageThreshold\x124\n" +
-	"\x16memory_usage_threshold\x18\x03 \x01(\rR\x14memoryUsageThreshold*t\n" +
+	"\x16memory_usage_threshold\x18\x03 \x01(\rR\x14memoryUsageThreshold*\x84\x01\n" +
 	"\"ScalewayServerlessContainerPrivacy\x125\n" +
-	"1scaleway_serverless_container_privacy_unspecified\x10\x00\x12\n" +
-	"\n" +
-	"\x06public\x10\x01\x12\v\n" +
-	"\aprivate\x10\x02*\x7f\n" +
+	"1scaleway_serverless_container_privacy_unspecified\x10\x00\x12\x12\n" +
+	"\x0eprivacy_public\x10\x01\x12\x13\n" +
+	"\x0fprivacy_private\x10\x02*\x7f\n" +
 	"%ScalewayServerlessContainerHttpOption\x129\n" +
 	"5scaleway_serverless_container_http_option_unspecified\x10\x00\x12\v\n" +
 	"\aenabled\x10\x01\x12\x0e\n" +

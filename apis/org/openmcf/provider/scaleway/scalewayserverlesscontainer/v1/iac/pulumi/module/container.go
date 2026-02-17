@@ -13,8 +13,8 @@ import (
 // privacyEnumToString maps the proto privacy enum to the string
 // values expected by the Scaleway API.
 var privacyEnumToString = map[string]string{
-	"public":  "public",
-	"private": "private",
+	"privacy_public":  "public",
+	"privacy_private": "private",
 }
 
 // httpOptionEnumToString maps the proto HTTP option enum to the string

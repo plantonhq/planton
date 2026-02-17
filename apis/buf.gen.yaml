@@ -8,6 +8,12 @@ managed:
       module: google/protobuf/timestamp
     - file_option: go_package
       module: buf.build/bufbuild/protovalidate
+    # Prevent managed mode from overriding the java_package for protovalidate.
+    # The protovalidate Maven artifact (build.buf:protovalidate) uses
+    # build.buf.validate as its Java package. Without this disable, managed
+    # mode transforms it to com.buf.validate, causing a classpath mismatch.
+    - file_option: java_package
+      module: buf.build/bufbuild/protovalidate
   override:
     - file_option: optimize_for
       value: SPEED

@@ -49,6 +49,8 @@ buf-generate: protos
 .PHONY: protos
 protos:
 	pushd apis;make build;popd
+	@echo "Verifying generated Java stubs compile..."
+	${BAZEL} build ${BAZEL_REMOTE_FLAGS} //apis/generated/stubs/java:java
 	${BAZEL} run //:gazelle
 
 .PHONY: buf-lint
