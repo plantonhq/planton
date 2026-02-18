@@ -17,6 +17,7 @@ import (
 	azurev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure"
 	gcpv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
 	alicloudv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud"
+	ociv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci"
 	openstackv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack"
 	scalewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway"
 	"go.mongodb.org/mongo-driver/bson"
@@ -67,6 +68,8 @@ func (s *CredentialService) Create(
 		return s.createScalewayCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
 	case credentialv1.Credential_ALICLOUD:
 		return s.createAlicloudCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
+	case credentialv1.Credential_OCI:
+		return s.createOciCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
 	default:
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unsupported provider: %v", req.Msg.Provider))
 	}
@@ -339,6 +342,8 @@ func (s *CredentialService) List(
 			provider = "scaleway"
 		case credentialv1.Credential_ALICLOUD:
 			provider = "alicloud"
+		case credentialv1.Credential_OCI:
+			provider = "oci"
 		}
 		if provider != "" {
 			providerFilter = &provider
@@ -376,6 +381,8 @@ func (s *CredentialService) List(
 			summary.Provider = credentialv1.Credential_SCALEWAY
 		case "alicloud":
 			summary.Provider = credentialv1.Credential_ALICLOUD
+		case "oci":
+			summary.Provider = credentialv1.Credential_OCI
 		}
 
 		// Add timestamps if present
@@ -584,6 +591,23 @@ func (s *CredentialService) Get(
 		if !aliCred.UpdatedAt.IsZero() {
 			protoCredential.UpdatedAt = timestamppb.New(aliCred.UpdatedAt)
 		}
+	case "oci":
+		ociCred, err := convertBsonToOciCredential(doc)
+		if err != nil {
+			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to convert credential: %w", err))
+		}
+		protoCredential = &credentialv1.Credential{
+			Id:             ociCred.ID.Hex(),
+			Name:           ociCred.Name,
+			Provider:       credentialv1.Credential_OCI,
+			ProviderConfig: ociModelToProtoConfig(ociCred),
+		}
+		if !ociCred.CreatedAt.IsZero() {
+			protoCredential.CreatedAt = timestamppb.New(ociCred.CreatedAt)
+		}
+		if !ociCred.UpdatedAt.IsZero() {
+			protoCredential.UpdatedAt = timestamppb.New(ociCred.UpdatedAt)
+		}
 	default:
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unsupported provider: %s", providerStr))
 	}
@@ -624,6 +648,8 @@ func (s *CredentialService) Update(
 		return s.updateScalewayCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
 	case credentialv1.Credential_ALICLOUD:
 		return s.updateAlicloudCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
+	case credentialv1.Credential_OCI:
+		return s.updateOciCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
 	default:
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unsupported provider: %v", req.Msg.Provider))
 	}
@@ -1844,6 +1870,242 @@ func convertBsonToAlicloudCredential(doc bson.M) (*models.AlicloudCredential, er
 	}
 	if v, ok := doc["credentials_uri"].(string); ok {
 		cred.CredentialsUri = v
+	}
+
+	return cred, nil
+}
+
+// createOciCredential creates an OCI credential.
+func (s *CredentialService) createOciCredential(
+	ctx context.Context,
+	name string,
+	providerConfig *credentialv1.CredentialProviderConfig,
+	now time.Time,
+) (*connect.Response[credentialv1.CreateCredentialResponse], error) {
+	if providerConfig == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("provider_config is required"))
+	}
+	ociConfig, ok := providerConfig.Data.(*credentialv1.CredentialProviderConfig_Oci)
+	if !ok || ociConfig == nil || ociConfig.Oci == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("oci provider_config is required"))
+	}
+
+	credModel, err := ociProtoToModel(name, ociConfig.Oci)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, err)
+	}
+
+	createdCredential, err := s.credentialRepo.CreateOci(ctx, credModel)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create OCI credential: %w", err))
+	}
+
+	protoCredential := &credentialv1.Credential{
+		Id:             createdCredential.ID.Hex(),
+		Name:           createdCredential.Name,
+		Provider:       credentialv1.Credential_OCI,
+		ProviderConfig: ociModelToProtoConfig(createdCredential),
+	}
+	if !createdCredential.CreatedAt.IsZero() {
+		protoCredential.CreatedAt = timestamppb.New(createdCredential.CreatedAt)
+	}
+	if !createdCredential.UpdatedAt.IsZero() {
+		protoCredential.UpdatedAt = timestamppb.New(createdCredential.UpdatedAt)
+	}
+
+	return connect.NewResponse(&credentialv1.CreateCredentialResponse{
+		Credential: protoCredential,
+	}), nil
+}
+
+// updateOciCredential updates an OCI credential.
+func (s *CredentialService) updateOciCredential(
+	ctx context.Context,
+	id, name string,
+	providerConfig *credentialv1.CredentialProviderConfig,
+) (*connect.Response[credentialv1.UpdateCredentialResponse], error) {
+	if providerConfig == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("provider_config is required"))
+	}
+	ociConfig, ok := providerConfig.Data.(*credentialv1.CredentialProviderConfig_Oci)
+	if !ok || ociConfig == nil || ociConfig.Oci == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("oci provider_config is required"))
+	}
+
+	credModel, err := ociProtoToModel(name, ociConfig.Oci)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, err)
+	}
+
+	updatedCredential, err := s.credentialRepo.UpdateOci(ctx, id, credModel)
+	if err != nil {
+		if err.Error() == fmt.Sprintf("OCI credential with ID '%s' not found", id) {
+			return nil, connect.NewError(connect.CodeNotFound, err)
+		}
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to update OCI credential: %w", err))
+	}
+
+	protoCredential := &credentialv1.Credential{
+		Id:             updatedCredential.ID.Hex(),
+		Name:           updatedCredential.Name,
+		Provider:       credentialv1.Credential_OCI,
+		ProviderConfig: ociModelToProtoConfig(updatedCredential),
+	}
+	if !updatedCredential.CreatedAt.IsZero() {
+		protoCredential.CreatedAt = timestamppb.New(updatedCredential.CreatedAt)
+	}
+	if !updatedCredential.UpdatedAt.IsZero() {
+		protoCredential.UpdatedAt = timestamppb.New(updatedCredential.UpdatedAt)
+	}
+
+	return connect.NewResponse(&credentialv1.UpdateCredentialResponse{
+		Credential: protoCredential,
+	}), nil
+}
+
+// ociProtoToModel converts an OciProviderConfig proto to the database model.
+func ociProtoToModel(name string, cfg *ociv1.OciProviderConfig) (*models.OciCredential, error) {
+	cred := &models.OciCredential{
+		Name:   name,
+		Region: cfg.Region,
+	}
+
+	switch cfg.AuthenticationType {
+	case ociv1.AuthenticationType_api_key:
+		if cfg.ApiKey == nil {
+			return nil, fmt.Errorf("api_key message is required when authentication_type is api_key")
+		}
+		if cfg.ApiKey.TenancyOcid == "" {
+			return nil, fmt.Errorf("tenancy_ocid is required for API key authentication")
+		}
+		if cfg.ApiKey.UserOcid == "" {
+			return nil, fmt.Errorf("user_ocid is required for API key authentication")
+		}
+		if cfg.ApiKey.Fingerprint == "" {
+			return nil, fmt.Errorf("fingerprint is required for API key authentication")
+		}
+		if cfg.ApiKey.PrivateKey == "" && cfg.ApiKey.PrivateKeyPath == "" {
+			return nil, fmt.Errorf("either private_key or private_key_path is required for API key authentication")
+		}
+		cred.AuthMethod = "api_key"
+		cred.TenancyOcid = cfg.ApiKey.TenancyOcid
+		cred.UserOcid = cfg.ApiKey.UserOcid
+		cred.Fingerprint = cfg.ApiKey.Fingerprint
+		cred.PrivateKey = cfg.ApiKey.PrivateKey
+		cred.PrivateKeyPassword = cfg.ApiKey.PrivateKeyPassword
+
+	case ociv1.AuthenticationType_security_token:
+		if cfg.SecurityToken == nil {
+			return nil, fmt.Errorf("security_token message is required when authentication_type is security_token")
+		}
+		if cfg.SecurityToken.ConfigFileProfile == "" {
+			return nil, fmt.Errorf("config_file_profile is required for security token authentication")
+		}
+		cred.AuthMethod = "security_token"
+		cred.ConfigFileProfile = cfg.SecurityToken.ConfigFileProfile
+		cred.PrivateKeyPassword = cfg.SecurityToken.PrivateKeyPassword
+
+	case ociv1.AuthenticationType_instance_principal:
+		cred.AuthMethod = "instance_principal"
+
+	case ociv1.AuthenticationType_resource_principal:
+		cred.AuthMethod = "resource_principal"
+
+	case ociv1.AuthenticationType_oke_workload_identity:
+		cred.AuthMethod = "oke_workload_identity"
+
+	default:
+		return nil, fmt.Errorf("authentication_type is required: specify one of api_key, instance_principal, security_token, resource_principal, or oke_workload_identity")
+	}
+
+	return cred, nil
+}
+
+// ociModelToProtoConfig converts an OciCredential model back to proto CredentialProviderConfig.
+func ociModelToProtoConfig(cred *models.OciCredential) *credentialv1.CredentialProviderConfig {
+	cfg := &ociv1.OciProviderConfig{
+		Region: cred.Region,
+	}
+
+	switch cred.AuthMethod {
+	case "api_key":
+		cfg.AuthenticationType = ociv1.AuthenticationType_api_key
+		cfg.ApiKey = &ociv1.OciApiKeyAuth{
+			TenancyOcid:        cred.TenancyOcid,
+			UserOcid:           cred.UserOcid,
+			Fingerprint:        cred.Fingerprint,
+			PrivateKey:         cred.PrivateKey,
+			PrivateKeyPassword: cred.PrivateKeyPassword,
+		}
+	case "security_token":
+		cfg.AuthenticationType = ociv1.AuthenticationType_security_token
+		cfg.SecurityToken = &ociv1.OciSecurityTokenAuth{
+			ConfigFileProfile:  cred.ConfigFileProfile,
+			PrivateKeyPassword: cred.PrivateKeyPassword,
+		}
+	case "instance_principal":
+		cfg.AuthenticationType = ociv1.AuthenticationType_instance_principal
+	case "resource_principal":
+		cfg.AuthenticationType = ociv1.AuthenticationType_resource_principal
+	case "oke_workload_identity":
+		cfg.AuthenticationType = ociv1.AuthenticationType_oke_workload_identity
+	}
+
+	return &credentialv1.CredentialProviderConfig{
+		Data: &credentialv1.CredentialProviderConfig_Oci{
+			Oci: cfg,
+		},
+	}
+}
+
+func convertBsonToOciCredential(doc bson.M) (*models.OciCredential, error) {
+	id, ok := doc["_id"].(primitive.ObjectID)
+	if !ok {
+		return nil, fmt.Errorf("invalid _id field")
+	}
+
+	var createdAt, updatedAt time.Time
+	if dt, ok := doc["created_at"].(primitive.DateTime); ok {
+		createdAt = dt.Time()
+	} else if t, ok := doc["created_at"].(time.Time); ok {
+		createdAt = t
+	}
+	if dt, ok := doc["updated_at"].(primitive.DateTime); ok {
+		updatedAt = dt.Time()
+	} else if t, ok := doc["updated_at"].(time.Time); ok {
+		updatedAt = t
+	}
+
+	cred := &models.OciCredential{
+		ID:        id,
+		Name:      doc["name"].(string),
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
+	}
+
+	if v, ok := doc["auth_method"].(string); ok {
+		cred.AuthMethod = v
+	}
+	if v, ok := doc["region"].(string); ok {
+		cred.Region = v
+	}
+	if v, ok := doc["tenancy_ocid"].(string); ok {
+		cred.TenancyOcid = v
+	}
+	if v, ok := doc["user_ocid"].(string); ok {
+		cred.UserOcid = v
+	}
+	if v, ok := doc["fingerprint"].(string); ok {
+		cred.Fingerprint = v
+	}
+	if v, ok := doc["private_key"].(string); ok {
+		cred.PrivateKey = v
+	}
+	if v, ok := doc["private_key_password"].(string); ok {
+		cred.PrivateKeyPassword = v
+	}
+	if v, ok := doc["config_file_profile"].(string); ok {
+		cred.ConfigFileProfile = v
 	}
 
 	return cred, nil

@@ -192,6 +192,26 @@ type AlicloudCredential struct {
 	UpdatedAt      time.Time `bson:"updated_at" json:"updated_at"`
 }
 
+// OciCredential represents Oracle Cloud Infrastructure credentials.
+// Supports five authentication methods via an AuthMethod string discriminator.
+// Only the fields relevant to the active auth method are populated.
+type OciCredential struct {
+	ID         primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	Name       string             `bson:"name" json:"name"`
+	AuthMethod string             `bson:"auth_method" json:"auth_method"`
+	Region     string             `bson:"region,omitempty" json:"region,omitempty"`
+	// API Key fields
+	TenancyOcid        string `bson:"tenancy_ocid,omitempty" json:"tenancy_ocid,omitempty"`
+	UserOcid           string `bson:"user_ocid,omitempty" json:"user_ocid,omitempty"`
+	Fingerprint        string `bson:"fingerprint,omitempty" json:"fingerprint,omitempty"`
+	PrivateKey         string `bson:"private_key,omitempty" json:"private_key,omitempty"`
+	PrivateKeyPassword string `bson:"private_key_password,omitempty" json:"private_key_password,omitempty"`
+	// Security Token fields
+	ConfigFileProfile string    `bson:"config_file_profile,omitempty" json:"config_file_profile,omitempty"`
+	CreatedAt         time.Time `bson:"created_at" json:"created_at"`
+	UpdatedAt         time.Time `bson:"updated_at" json:"updated_at"`
+}
+
 // KubernetesCredential represents Kubernetes cluster credentials.
 type KubernetesCredential struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty" json:"id"`

@@ -85,4 +85,8 @@ enum CloudResourceProvider {
     group: "alicloud.openmcf.org"
     display_name: "Alibaba Cloud"
   }];
+  oci = 26 [(provider_meta) = {
+    group: "oci.openmcf.org"
+    display_name: "OCI"
+  }];
 }

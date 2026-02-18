@@ -53,5 +53,10 @@ export const providerConfig: Record<Credential_CredentialProvider, ProviderConfi
     description: 'Link your Alibaba Cloud account to deploy cloud infrastructure',
     icon: undefined,
   },
+  [Credential_CredentialProvider.OCI]: {
+    label: 'OCI',
+    description: 'Link your Oracle Cloud Infrastructure account to deploy cloud resources',
+    icon: undefined,
+  },
 };
 

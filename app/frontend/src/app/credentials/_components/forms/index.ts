@@ -6,5 +6,6 @@ export * from './azure';
 export * from './openstack';
 export * from './scaleway';
 export * from './alicloud';
+export * from './oci';
 export * from './credential-drawer';
 

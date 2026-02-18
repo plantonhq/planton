@@ -17,6 +17,7 @@ import (
 	confluentprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/confluent"
 	gcpprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
 	kubernetesprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
+	ociprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci"
 	openfgaprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga"
 	openstackprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack"
 	scalewayprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway"
@@ -75,6 +76,8 @@ func getProviderConfigProto(provider cloudresourcekind.CloudResourceProvider) (p
 		return new(scalewayprovider.ScalewayProviderConfig), nil
 	case cloudresourcekind.CloudResourceProvider_alicloud:
 		return new(alicloudprovider.AlicloudProviderConfig), nil
+	case cloudresourcekind.CloudResourceProvider_oci:
+		return new(ociprovider.OciProviderConfig), nil
 	default:
 		return nil, errors.Errorf("unsupported provider: %s", provider.String())
 	}
