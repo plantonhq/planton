@@ -246,6 +246,8 @@ import (
 	kubernetestektonoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestektonoperator/v1"
 	kubernetestemporalv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestemporal/v1"
 	kuberneteszalandopostgresoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kuberneteszalandopostgresoperator/v1"
+	ocisubnetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocisubnet/v1"
+	ocivcnv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocivcn/v1"
 	openfgaauthorizationmodelv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga/openfgaauthorizationmodel/v1"
 	openfgarelationshiptuplev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga/openfgarelationshiptuple/v1"
 	openfgastorev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga/openfgastore/v1"
@@ -579,6 +581,11 @@ var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 	cloudresourcekind.CloudResourceKind_KubernetesZalandoPostgresOperator:     &kuberneteszalandopostgresoperatorv1.KubernetesZalandoPostgresOperator{},
 }
 
+var ProviderOciMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
+	cloudresourcekind.CloudResourceKind_OciSubnet: &ocisubnetv1.OciSubnet{},
+	cloudresourcekind.CloudResourceKind_OciVcn:    &ocivcnv1.OciVcn{},
+}
+
 var ProviderOpenFgaMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_OpenFgaAuthorizationModel: &openfgaauthorizationmodelv1.OpenFgaAuthorizationModel{},
 	cloudresourcekind.CloudResourceKind_OpenFgaRelationshipTuple:  &openfgarelationshiptuplev1.OpenFgaRelationshipTuple{},
@@ -652,6 +659,7 @@ var ToMessageMap = merge(
 	ProviderDigitalOceanMap,
 	ProviderGcpMap,
 	ProviderKubernetesMap,
+	ProviderOciMap,
 	ProviderOpenFgaMap,
 	ProviderOpenstackMap,
 	ProviderScalewayMap,

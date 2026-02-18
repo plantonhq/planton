@@ -1,0 +1,15 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciVcn
+metadata:
+  name: my-production-vcn
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  cidrBlocks:
+    - 10.0.0.0/16
+  displayName: production-vcn
+  dnsLabel: prodvcn
+  isIpv6Enabled: false
+  isInternetGatewayEnabled: true # Public subnets can receive inbound traffic
+  isNatGatewayEnabled: true # Private subnets can initiate outbound internet connections
+  isServiceGatewayEnabled: true # Private access to OCI services without internet transit

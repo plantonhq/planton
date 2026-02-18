@@ -1567,4 +1567,28 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "scwscn"
   }];
+
+  // 3300–3499: OCI resources
+
+  // --- Networking ---
+
+  OciVcn = 3300 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocivcn"
+  }];
+
+  OciSubnet = 3301 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocisub"
+  }];
+
+  // --- Identity ---
+
+  OciCompartment = 3303 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocicmp"
+  }];
 }
