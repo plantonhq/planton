@@ -412,6 +412,8 @@ func (r *CredentialRepository) FindFirstByProvider(ctx context.Context, provider
 		return convertToScalewayCredential(result)
 	case "alicloud":
 		return convertToAlicloudCredential(result)
+	case "oci":
+		return convertToOciCredential(result)
 	default:
 		return nil, fmt.Errorf("unsupported provider: %s", provider)
 	}
@@ -1066,6 +1068,137 @@ func convertToAlicloudCredential(doc bson.M) (*models.AlicloudCredential, error)
 	}
 	if v, ok := doc["credentials_uri"].(string); ok {
 		cred.CredentialsUri = v
+	}
+
+	return cred, nil
+}
+
+// CreateOci creates a new OCI credential.
+func (r *CredentialRepository) CreateOci(ctx context.Context, cred *models.OciCredential) (*models.OciCredential, error) {
+	exists, err := r.ExistsByProvider(ctx, "oci")
+	if err != nil {
+		return nil, fmt.Errorf("failed to check for existing OCI credential: %w", err)
+	}
+	if exists {
+		return nil, fmt.Errorf("credential for provider 'oci' already exists")
+	}
+
+	now := time.Now()
+	cred.ID = primitive.NewObjectID()
+	cred.CreatedAt = now
+	cred.UpdatedAt = now
+
+	doc := bson.M{
+		"_id":         cred.ID,
+		"name":        cred.Name,
+		"provider":    "oci",
+		"auth_method": cred.AuthMethod,
+		"created_at":  cred.CreatedAt,
+		"updated_at":  cred.UpdatedAt,
+	}
+
+	setOptionalString(doc, "region", cred.Region)
+	setOptionalString(doc, "tenancy_ocid", cred.TenancyOcid)
+	setOptionalString(doc, "user_ocid", cred.UserOcid)
+	setOptionalString(doc, "fingerprint", cred.Fingerprint)
+	setOptionalString(doc, "private_key", cred.PrivateKey)
+	setOptionalString(doc, "private_key_password", cred.PrivateKeyPassword)
+	setOptionalString(doc, "config_file_profile", cred.ConfigFileProfile)
+
+	_, err = r.collection.InsertOne(ctx, doc)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create OCI credential: %w", err)
+	}
+
+	return cred, nil
+}
+
+// UpdateOci updates an existing OCI credential.
+func (r *CredentialRepository) UpdateOci(ctx context.Context, id string, cred *models.OciCredential) (*models.OciCredential, error) {
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, fmt.Errorf("invalid ID format: %w", err)
+	}
+
+	now := time.Now()
+	setFields := bson.M{
+		"name":                 cred.Name,
+		"auth_method":          cred.AuthMethod,
+		"updated_at":           now,
+		"region":               cred.Region,
+		"tenancy_ocid":         cred.TenancyOcid,
+		"user_ocid":            cred.UserOcid,
+		"fingerprint":          cred.Fingerprint,
+		"private_key":          cred.PrivateKey,
+		"private_key_password": cred.PrivateKeyPassword,
+		"config_file_profile":  cred.ConfigFileProfile,
+	}
+
+	update := bson.M{"$set": setFields}
+
+	result := r.collection.FindOneAndUpdate(ctx, bson.M{"_id": objectID, "provider": "oci"}, update)
+	if result.Err() == mongo.ErrNoDocuments {
+		return nil, fmt.Errorf("OCI credential with ID '%s' not found", id)
+	}
+	if result.Err() != nil {
+		return nil, fmt.Errorf("failed to update OCI credential: %w", result.Err())
+	}
+
+	doc, err := r.FindByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	if doc == nil {
+		return nil, fmt.Errorf("credential not found after update")
+	}
+
+	return convertToOciCredential(doc)
+}
+
+func convertToOciCredential(doc bson.M) (*models.OciCredential, error) {
+	id, ok := doc["_id"].(primitive.ObjectID)
+	if !ok {
+		return nil, fmt.Errorf("invalid _id field")
+	}
+
+	var createdAt, updatedAt time.Time
+	if dt, ok := doc["created_at"].(primitive.DateTime); ok {
+		createdAt = dt.Time()
+	}
+	if dt, ok := doc["updated_at"].(primitive.DateTime); ok {
+		updatedAt = dt.Time()
+	}
+
+	cred := &models.OciCredential{
+		ID:        id,
+		Name:      doc["name"].(string),
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
+	}
+
+	if v, ok := doc["auth_method"].(string); ok {
+		cred.AuthMethod = v
+	}
+	if v, ok := doc["region"].(string); ok {
+		cred.Region = v
+	}
+	if v, ok := doc["tenancy_ocid"].(string); ok {
+		cred.TenancyOcid = v
+	}
+	if v, ok := doc["user_ocid"].(string); ok {
+		cred.UserOcid = v
+	}
+	if v, ok := doc["fingerprint"].(string); ok {
+		cred.Fingerprint = v
+	}
+	if v, ok := doc["private_key"].(string); ok {
+		cred.PrivateKey = v
+	}
+	if v, ok := doc["private_key_password"].(string); ok {
+		cred.PrivateKeyPassword = v
+	}
+	if v, ok := doc["config_file_profile"].(string); ok {
+		cred.ConfigFileProfile = v
 	}
 
 	return cred, nil

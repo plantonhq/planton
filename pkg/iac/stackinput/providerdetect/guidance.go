@@ -15,6 +15,7 @@ import (
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/digitalocean"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
+	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway"
@@ -55,6 +56,8 @@ func ProviderConfigExample(provider cloudresourcekind.CloudResourceProvider) str
 		return scaleway.ConfigFileExample
 	case cloudresourcekind.CloudResourceProvider_alicloud:
 		return alicloud.ConfigFileExample
+	case cloudresourcekind.CloudResourceProvider_oci:
+		return oci.ConfigFileExample
 	default:
 		return "# Provider config format not available"
 	}
@@ -93,6 +96,8 @@ func ProviderConfigFilename(provider cloudresourcekind.CloudResourceProvider) st
 		return scaleway.ConfigFileName
 	case cloudresourcekind.CloudResourceProvider_alicloud:
 		return alicloud.ConfigFileName
+	case cloudresourcekind.CloudResourceProvider_oci:
+		return oci.ConfigFileName
 	default:
 		return "provider-config.yaml"
 	}
@@ -131,6 +136,8 @@ func ProviderEnvironmentVariablesHelp(provider cloudresourcekind.CloudResourcePr
 		return scaleway.EnvironmentVariablesHelp
 	case cloudresourcekind.CloudResourceProvider_alicloud:
 		return alicloud.EnvironmentVariablesHelp
+	case cloudresourcekind.CloudResourceProvider_oci:
+		return oci.EnvironmentVariablesHelp
 	default:
 		return "# Environment variables not available for this provider"
 	}
@@ -169,6 +176,8 @@ func ProviderDocsURL(provider cloudresourcekind.CloudResourceProvider) string {
 		return scaleway.ProviderDocsURL
 	case cloudresourcekind.CloudResourceProvider_alicloud:
 		return alicloud.ProviderDocsURL
+	case cloudresourcekind.CloudResourceProvider_oci:
+		return oci.ProviderDocsURL
 	default:
 		return ""
 	}

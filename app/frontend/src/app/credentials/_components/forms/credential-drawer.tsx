@@ -20,6 +20,7 @@ import {
   OpenStackCredentialForm,
   ScalewayCredentialForm,
   AlicloudCredentialForm,
+  OciCredentialForm,
 } from '@/app/credentials/_components/forms';
 import { useCredentialCommand } from '@/app/credentials/_services';
 import {
@@ -52,7 +53,13 @@ import {
   AlicloudSidecarCredentialsSchema,
   AuthenticationType,
 } from '@/gen/org/openmcf/provider/alicloud/provider_pb';
-import type { OpenStackFormData, ScalewayFormData, AlicloudFormData, AlicloudAuthMethod } from '@/app/credentials/_components/forms/types';
+import {
+  OciProviderConfigSchema,
+  OciApiKeyAuthSchema,
+  OciSecurityTokenAuthSchema,
+  AuthenticationType as OciAuthenticationType,
+} from '@/gen/org/openmcf/provider/oci/provider_pb';
+import type { OpenStackFormData, ScalewayFormData, AlicloudFormData, AlicloudAuthMethod, OciFormData, OciAuthMethod } from '@/app/credentials/_components/forms/types';
 import { create } from '@bufbuild/protobuf';
 import { providerConfig } from '@/app/credentials/_components/utils';
 
@@ -92,6 +99,8 @@ export function CredentialDrawer({
       scaleway: {},
       alicloud: {},
       alicloudAuthMethod: 'static_credentials',
+      oci: {},
+      ociAuthMethod: 'api_key',
     },
   });
 
@@ -131,6 +140,8 @@ export function CredentialDrawer({
         scaleway: {},
         alicloud: {},
         alicloudAuthMethod: 'static_credentials',
+        oci: {},
+        ociAuthMethod: 'api_key',
       };
       if (providerConfigData?.data?.case === 'auth0') {
         formData.auth0 = {
@@ -250,6 +261,32 @@ export function CredentialDrawer({
           aliData.credentialsUri = ali.sidecarCredentials.credentialsUri;
         }
         formData.alicloud = aliData;
+      } else if (providerConfigData?.data?.case === 'oci') {
+        const ociData: OciFormData = {};
+        const ociConfig = providerConfigData.data.value;
+        ociData.region = ociConfig.region;
+
+        const ociAuthTypeMap: Record<number, OciAuthMethod> = {
+          [OciAuthenticationType.api_key]: 'api_key',
+          [OciAuthenticationType.instance_principal]: 'instance_principal',
+          [OciAuthenticationType.security_token]: 'security_token',
+          [OciAuthenticationType.resource_principal]: 'resource_principal',
+          [OciAuthenticationType.oke_workload_identity]: 'oke_workload_identity',
+        };
+        formData.ociAuthMethod = ociAuthTypeMap[ociConfig.authenticationType] || 'api_key';
+
+        if (ociConfig.apiKey) {
+          ociData.tenancyOcid = ociConfig.apiKey.tenancyOcid;
+          ociData.userOcid = ociConfig.apiKey.userOcid;
+          ociData.fingerprint = ociConfig.apiKey.fingerprint;
+          ociData.privateKey = ociConfig.apiKey.privateKey;
+          ociData.privateKeyPassword = ociConfig.apiKey.privateKeyPassword;
+        }
+        if (ociConfig.securityToken) {
+          ociData.configFileProfile = ociConfig.securityToken.configFileProfile;
+          ociData.privateKeyPassword = ociConfig.securityToken.privateKeyPassword;
+        }
+        formData.oci = ociData;
       }
       reset(formData);
     } else if (mode === 'create') {
@@ -265,6 +302,8 @@ export function CredentialDrawer({
         scaleway: {},
         alicloud: {},
         alicloudAuthMethod: 'static_credentials',
+        oci: {},
+        ociAuthMethod: 'api_key',
       });
     }
   }, [selectedCredential, mode, initialProvider, reset]);
@@ -472,6 +511,51 @@ export function CredentialDrawer({
             value: create(AlicloudProviderConfigSchema, configFields),
           },
         });
+      } else if (
+        formData.provider == Credential_CredentialProvider.OCI &&
+        formData.oci
+      ) {
+        const method = formData.ociAuthMethod || 'api_key';
+        const ociFormData = formData.oci;
+
+        const ociAuthTypeEnumMap: Record<string, OciAuthenticationType> = {
+          api_key: OciAuthenticationType.api_key,
+          instance_principal: OciAuthenticationType.instance_principal,
+          security_token: OciAuthenticationType.security_token,
+          resource_principal: OciAuthenticationType.resource_principal,
+          oke_workload_identity: OciAuthenticationType.oke_workload_identity,
+        };
+
+        const configFields: Record<string, unknown> = {
+          authenticationType: ociAuthTypeEnumMap[method],
+          region: ociFormData.region || '',
+        };
+
+        if (method === 'api_key' && ociFormData.tenancyOcid && ociFormData.userOcid && ociFormData.fingerprint && ociFormData.privateKey) {
+          configFields.apiKey = create(OciApiKeyAuthSchema, {
+            tenancyOcid: ociFormData.tenancyOcid,
+            userOcid: ociFormData.userOcid,
+            fingerprint: ociFormData.fingerprint,
+            privateKey: ociFormData.privateKey,
+            privateKeyPassword: ociFormData.privateKeyPassword || '',
+          });
+        } else if (method === 'security_token' && ociFormData.configFileProfile) {
+          configFields.securityToken = create(OciSecurityTokenAuthSchema, {
+            configFileProfile: ociFormData.configFileProfile,
+            privateKeyPassword: ociFormData.privateKeyPassword || '',
+          });
+        } else if (method === 'instance_principal' || method === 'resource_principal' || method === 'oke_workload_identity') {
+          // Ambient methods have no additional fields
+        } else {
+          return;
+        }
+
+        providerConfig = create(CredentialProviderConfigSchema, {
+          data: {
+            case: 'oci',
+            value: create(OciProviderConfigSchema, configFields),
+          },
+        });
       } else {
         return;
       }
@@ -504,6 +588,8 @@ export function CredentialDrawer({
       scaleway: {},
       alicloud: {},
       alicloudAuthMethod: 'static_credentials',
+      oci: {},
+      ociAuthMethod: 'api_key',
     });
     onClose();
   };
@@ -522,6 +608,8 @@ export function CredentialDrawer({
       setValue('scaleway', {});
       setValue('alicloud', {});
       setValue('alicloudAuthMethod', 'static_credentials');
+      setValue('oci', {});
+      setValue('ociAuthMethod', 'api_key');
     },
     [setValue, isView, initialProvider]
   );
@@ -589,6 +677,14 @@ export function CredentialDrawer({
               )}
               {formProvider == Credential_CredentialProvider.ALICLOUD && (
                 <AlicloudCredentialForm
+                  register={register}
+                  setValue={setValue}
+                  watch={watch}
+                  disabled={isView}
+                />
+              )}
+              {formProvider == Credential_CredentialProvider.OCI && (
+                <OciCredentialForm
                   register={register}
                   setValue={setValue}
                   watch={watch}

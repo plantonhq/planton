@@ -8,6 +8,7 @@ import (
 	credentialv1 "github.com/plantonhq/openmcf/apis/org/openmcf/app/credential/v1"
 	alicloudv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud"
 	auth0v1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0"
+	ociv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci"
 	awsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
 	azurev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure"
 	gcpv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
@@ -238,6 +239,40 @@ func (r *CredentialResolver) ResolveProviderConfig(
 		return &credentialv1.CredentialProviderConfig{
 			Data: &credentialv1.CredentialProviderConfig_Alicloud{
 				Alicloud: cfg,
+			},
+		}, nil
+
+	case cloudresourcekind.CloudResourceProvider_oci:
+		ociCred := credInterface.(*models.OciCredential)
+		cfg := &ociv1.OciProviderConfig{
+			Region: ociCred.Region,
+		}
+		switch ociCred.AuthMethod {
+		case "api_key":
+			cfg.AuthenticationType = ociv1.AuthenticationType_api_key
+			cfg.ApiKey = &ociv1.OciApiKeyAuth{
+				TenancyOcid:        ociCred.TenancyOcid,
+				UserOcid:           ociCred.UserOcid,
+				Fingerprint:        ociCred.Fingerprint,
+				PrivateKey:         ociCred.PrivateKey,
+				PrivateKeyPassword: ociCred.PrivateKeyPassword,
+			}
+		case "security_token":
+			cfg.AuthenticationType = ociv1.AuthenticationType_security_token
+			cfg.SecurityToken = &ociv1.OciSecurityTokenAuth{
+				ConfigFileProfile:  ociCred.ConfigFileProfile,
+				PrivateKeyPassword: ociCred.PrivateKeyPassword,
+			}
+		case "instance_principal":
+			cfg.AuthenticationType = ociv1.AuthenticationType_instance_principal
+		case "resource_principal":
+			cfg.AuthenticationType = ociv1.AuthenticationType_resource_principal
+		case "oke_workload_identity":
+			cfg.AuthenticationType = ociv1.AuthenticationType_oke_workload_identity
+		}
+		return &credentialv1.CredentialProviderConfig{
+			Data: &credentialv1.CredentialProviderConfig_Oci{
+				Oci: cfg,
 			},
 		}, nil
 

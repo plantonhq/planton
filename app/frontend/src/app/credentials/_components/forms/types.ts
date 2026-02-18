@@ -87,6 +87,29 @@ export type AlicloudAuthMethod =
   | 'shared_credentials'
   | 'sidecar_credentials';
 
+// Flattened form data for OCI credentials.
+// All auth method fields are combined into a single flat interface.
+// The ociAuthMethod discriminator selects which fields are active.
+export interface OciFormData {
+  // Common
+  region?: string;
+  // API Key
+  tenancyOcid?: string;
+  userOcid?: string;
+  fingerprint?: string;
+  privateKey?: string;
+  privateKeyPassword?: string;
+  // Security Token
+  configFileProfile?: string;
+}
+
+export type OciAuthMethod =
+  | 'api_key'
+  | 'instance_principal'
+  | 'security_token'
+  | 'resource_principal'
+  | 'oke_workload_identity';
+
 // Form-friendly type based on CreateCredentialRequest fields (without the protobuf Message wrapper)
 export type CredentialFormData = {
   name: string;
@@ -101,5 +124,7 @@ export type CredentialFormData = {
   scaleway?: ScalewayFormData;
   alicloud?: AlicloudFormData;
   alicloudAuthMethod?: AlicloudAuthMethod;
+  oci?: OciFormData;
+  ociAuthMethod?: OciAuthMethod;
 };
 
