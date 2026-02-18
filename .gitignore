@@ -44,3 +44,4 @@ web-app/src/gen/
 _aacursor/
 backend.tf
 /pulumi
+bazel-openmcf-hetzner-cloud

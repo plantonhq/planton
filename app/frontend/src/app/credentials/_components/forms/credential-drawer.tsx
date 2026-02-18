@@ -21,6 +21,7 @@ import {
   ScalewayCredentialForm,
   AlicloudCredentialForm,
   OciCredentialForm,
+  HetznercloudCredentialForm,
 } from '@/app/credentials/_components/forms';
 import { useCredentialCommand } from '@/app/credentials/_services';
 import {
@@ -59,7 +60,10 @@ import {
   OciSecurityTokenAuthSchema,
   AuthenticationType as OciAuthenticationType,
 } from '@/gen/org/openmcf/provider/oci/provider_pb';
-import type { OpenStackFormData, ScalewayFormData, AlicloudFormData, AlicloudAuthMethod, OciFormData, OciAuthMethod } from '@/app/credentials/_components/forms/types';
+import {
+  HetznercloudProviderConfigSchema,
+} from '@/gen/org/openmcf/provider/hetznercloud/provider_pb';
+import type { OpenStackFormData, ScalewayFormData, AlicloudFormData, AlicloudAuthMethod, OciFormData, OciAuthMethod, HetznercloudFormData } from '@/app/credentials/_components/forms/types';
 import { create } from '@bufbuild/protobuf';
 import { providerConfig } from '@/app/credentials/_components/utils';
 
@@ -101,6 +105,7 @@ export function CredentialDrawer({
       alicloudAuthMethod: 'static_credentials',
       oci: {},
       ociAuthMethod: 'api_key',
+      hetznercloud: {},
     },
   });
 
@@ -142,6 +147,7 @@ export function CredentialDrawer({
         alicloudAuthMethod: 'static_credentials',
         oci: {},
         ociAuthMethod: 'api_key',
+        hetznercloud: {},
       };
       if (providerConfigData?.data?.case === 'auth0') {
         formData.auth0 = {
@@ -287,6 +293,15 @@ export function CredentialDrawer({
           ociData.privateKeyPassword = ociConfig.securityToken.privateKeyPassword;
         }
         formData.oci = ociData;
+      } else if (providerConfigData?.data?.case === 'hetznercloud') {
+        const hc = providerConfigData.data.value;
+        formData.hetznercloud = {
+          token: hc.token,
+          endpoint: hc.endpoint,
+          endpointHetzner: hc.endpointHetzner,
+          pollInterval: hc.pollInterval,
+          pollFunction: hc.pollFunction,
+        };
       }
       reset(formData);
     } else if (mode === 'create') {
@@ -304,6 +319,7 @@ export function CredentialDrawer({
         alicloudAuthMethod: 'static_credentials',
         oci: {},
         ociAuthMethod: 'api_key',
+        hetznercloud: {},
       });
     }
   }, [selectedCredential, mode, initialProvider, reset]);
@@ -556,6 +572,22 @@ export function CredentialDrawer({
             value: create(OciProviderConfigSchema, configFields),
           },
         });
+      } else if (
+        formData.provider == Credential_CredentialProvider.HETZNER_CLOUD &&
+        formData.hetznercloud?.token
+      ) {
+        providerConfig = create(CredentialProviderConfigSchema, {
+          data: {
+            case: 'hetznercloud',
+            value: create(HetznercloudProviderConfigSchema, {
+              token: formData.hetznercloud.token,
+              endpoint: formData.hetznercloud.endpoint || '',
+              endpointHetzner: formData.hetznercloud.endpointHetzner || '',
+              pollInterval: formData.hetznercloud.pollInterval || '',
+              pollFunction: formData.hetznercloud.pollFunction || '',
+            }),
+          },
+        });
       } else {
         return;
       }
@@ -590,6 +622,7 @@ export function CredentialDrawer({
       alicloudAuthMethod: 'static_credentials',
       oci: {},
       ociAuthMethod: 'api_key',
+      hetznercloud: {},
     });
     onClose();
   };
@@ -610,6 +643,7 @@ export function CredentialDrawer({
       setValue('alicloudAuthMethod', 'static_credentials');
       setValue('oci', {});
       setValue('ociAuthMethod', 'api_key');
+      setValue('hetznercloud', {});
     },
     [setValue, isView, initialProvider]
   );
@@ -690,6 +724,9 @@ export function CredentialDrawer({
                   watch={watch}
                   disabled={isView}
                 />
+              )}
+              {formProvider == Credential_CredentialProvider.HETZNER_CLOUD && (
+                <HetznercloudCredentialForm register={register} disabled={isView} />
               )}
             </Stack>
           </Stack>

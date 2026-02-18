@@ -58,5 +58,10 @@ export const providerConfig: Record<Credential_CredentialProvider, ProviderConfi
     description: 'Link your Oracle Cloud Infrastructure account to deploy cloud resources',
     icon: undefined,
   },
+  [Credential_CredentialProvider.HETZNER_CLOUD]: {
+    label: 'Hetzner Cloud',
+    description: 'Link your Hetzner Cloud account to deploy cloud infrastructure',
+    icon: undefined,
+  },
 };
 
