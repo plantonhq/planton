@@ -271,7 +271,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 			Kind:       "AwsCognitoIdentityProvider",
 			Metadata:   &shared.CloudResourceMetadata{Name: "google-ref"},
 			Spec: &AwsCognitoIdentityProviderSpec{
-				Region:       "us-west-2",
+				Region: "us-west-2",
 				UserPoolId: &fkv1.StringValueOrRef{
 					LiteralOrRef: &fkv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &fkv1.ValueFromRef{

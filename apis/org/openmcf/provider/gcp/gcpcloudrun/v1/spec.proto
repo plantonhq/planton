@@ -239,7 +239,6 @@ message GcpCloudRunVpcAccess {
   // VPC network name for Direct VPC Egress.
   // Can be a direct value or a reference to a GcpVpc resource.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef network = 1 [
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (org.openmcf.shared.foreignkey.v1.default_kind) = GcpVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_name"
   ];
@@ -247,7 +246,6 @@ message GcpCloudRunVpcAccess {
   // VPC subnet name for Direct VPC Egress.
   // Can be a direct value or a reference to a GcpSubnetwork resource.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet = 2 [
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (org.openmcf.shared.foreignkey.v1.default_kind) = GcpSubnetwork,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetwork_name"
   ];

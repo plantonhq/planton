@@ -31,8 +31,7 @@ message AzureVirtualMachineSpec {
   // Examples: "Standard_D2s_v3" (2 vCPUs, 8 GiB RAM), "Standard_D4s_v5" (4 vCPUs, 16 GiB RAM).
   optional string vm_size = 3 [
     (org.openmcf.shared.options.recommended_default) = "Standard_D2s_v3",
-    (buf.validate.field).string.min_len = 1,
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+    (buf.validate.field).string.min_len = 1
   ];
 
   // The Azure resource ID of the subnet where this VM will be attached.
@@ -58,8 +57,7 @@ message AzureVirtualMachineSpec {
   optional string admin_username = 8 [
     (org.openmcf.shared.options.default) = "azureuser",
     (buf.validate.field).string.min_len = 1,
-    (buf.validate.field).string.max_len = 64,
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+    (buf.validate.field).string.max_len = 64
   ];
 
   // SSH public key for Linux VMs. Required for Linux VMs when password authentication is disabled.
@@ -153,8 +151,7 @@ message AzureVirtualMachineImage {
   // Use "latest" for auto-updates or a specific version for stability.
   optional string version = 4 [
     (org.openmcf.shared.options.default) = "latest",
-    (buf.validate.field).string.min_len = 1,
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+    (buf.validate.field).string.min_len = 1
   ];
 
   // Custom image ID (Azure resource ID of a custom or shared image).

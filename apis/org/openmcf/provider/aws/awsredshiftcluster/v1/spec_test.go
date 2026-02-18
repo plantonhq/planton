@@ -28,7 +28,7 @@ var _ = ginkgo.Describe("AwsRedshiftClusterSpec Custom Validation Tests", func()
 						Name: "test-redshift-cluster",
 					},
 					Spec: &AwsRedshiftClusterSpec{
-						Region: "us-west-2",
+						Region:   "us-west-2",
 						NodeType: "dc2.large",
 						SubnetIds: []*foreignkeyv1.StringValueOrRef{
 							{
@@ -58,7 +58,7 @@ var _ = ginkgo.Describe("AwsRedshiftClusterSpec Custom Validation Tests", func()
 						Name: "test-redshift-cluster",
 					},
 					Spec: &AwsRedshiftClusterSpec{
-						Region: "us-west-2",
+						Region:   "us-west-2",
 						NodeType: "dc2.large",
 						SubnetIds: []*foreignkeyv1.StringValueOrRef{
 							{
@@ -88,7 +88,7 @@ var _ = ginkgo.Describe("AwsRedshiftClusterSpec Custom Validation Tests", func()
 						Name: "test-redshift-cluster",
 					},
 					Spec: &AwsRedshiftClusterSpec{
-						Region: "us-west-2",
+						Region:   "us-west-2",
 						NodeType: "dc2.large",
 						SubnetIds: []*foreignkeyv1.StringValueOrRef{
 							{
@@ -117,7 +117,7 @@ var _ = ginkgo.Describe("AwsRedshiftClusterSpec Custom Validation Tests", func()
 						Name: "test-redshift-cluster",
 					},
 					Spec: &AwsRedshiftClusterSpec{
-						Region: "us-west-2",
+						Region:                  "us-west-2",
 						NodeType:                "dc2.large",
 						SkipFinalSnapshot:       true,
 						FinalSnapshotIdentifier: "",
@@ -138,7 +138,7 @@ var _ = ginkgo.Describe("AwsRedshiftClusterSpec Custom Validation Tests", func()
 						Name: "test-redshift-cluster",
 					},
 					Spec: &AwsRedshiftClusterSpec{
-						Region: "us-west-2",
+						Region:   "us-west-2",
 						NodeType: "dc2.large",
 						SubnetIds: []*foreignkeyv1.StringValueOrRef{
 							{
@@ -170,7 +170,7 @@ var _ = ginkgo.Describe("AwsRedshiftClusterSpec Custom Validation Tests", func()
 						Name: "test-redshift-cluster",
 					},
 					Spec: &AwsRedshiftClusterSpec{
-						Region: "us-west-2",
+						Region:   "us-west-2",
 						NodeType: "dc2.large",
 						SubnetIds: []*foreignkeyv1.StringValueOrRef{
 							{

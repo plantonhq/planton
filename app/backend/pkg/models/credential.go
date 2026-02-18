@@ -157,6 +157,41 @@ type ScalewayCredential struct {
 	UpdatedAt      time.Time          `bson:"updated_at" json:"updated_at"`
 }
 
+// AlicloudCredential represents Alibaba Cloud credentials.
+// Supports seven authentication methods via an AuthMethod string discriminator.
+// Only the fields relevant to the active auth method are populated.
+type AlicloudCredential struct {
+	ID          primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	Name        string             `bson:"name" json:"name"`
+	AuthMethod  string             `bson:"auth_method" json:"auth_method"`
+	Region      string             `bson:"region,omitempty" json:"region,omitempty"`
+	AccountId   string             `bson:"account_id,omitempty" json:"account_id,omitempty"`
+	AccountType string             `bson:"account_type,omitempty" json:"account_type,omitempty"`
+	// Static / STS / AssumeRole credentials
+	AccessKey     string `bson:"access_key,omitempty" json:"access_key,omitempty"`
+	SecretKey     string `bson:"secret_key,omitempty" json:"secret_key,omitempty"`
+	SecurityToken string `bson:"security_token,omitempty" json:"security_token,omitempty"`
+	// ECS role
+	EcsRoleName string `bson:"ecs_role_name,omitempty" json:"ecs_role_name,omitempty"`
+	// Assume role / OIDC shared fields
+	RoleArn          string `bson:"role_arn,omitempty" json:"role_arn,omitempty"`
+	SessionName      string `bson:"session_name,omitempty" json:"session_name,omitempty"`
+	Policy           string `bson:"policy,omitempty" json:"policy,omitempty"`
+	SessionExpiration int32  `bson:"session_expiration,omitempty" json:"session_expiration,omitempty"`
+	ExternalId       string `bson:"external_id,omitempty" json:"external_id,omitempty"`
+	// OIDC-specific
+	OidcProviderArn string `bson:"oidc_provider_arn,omitempty" json:"oidc_provider_arn,omitempty"`
+	OidcToken       string `bson:"oidc_token,omitempty" json:"oidc_token,omitempty"`
+	OidcTokenFile   string `bson:"oidc_token_file,omitempty" json:"oidc_token_file,omitempty"`
+	// Shared credentials
+	CredentialsFile string `bson:"credentials_file,omitempty" json:"credentials_file,omitempty"`
+	Profile         string `bson:"profile,omitempty" json:"profile,omitempty"`
+	// Sidecar credentials
+	CredentialsUri string    `bson:"credentials_uri,omitempty" json:"credentials_uri,omitempty"`
+	CreatedAt      time.Time `bson:"created_at" json:"created_at"`
+	UpdatedAt      time.Time `bson:"updated_at" json:"updated_at"`
+}
+
 // KubernetesCredential represents Kubernetes cluster credentials.
 type KubernetesCredential struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty" json:"id"`

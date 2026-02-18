@@ -36,9 +36,9 @@ var _ = ginkgo.Describe("AwsEcrRepoSpec Custom Validation Tests", func() {
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "valid-repo-metadata",
 					},
-				Spec: &AwsEcrRepoSpec{
-					Region:         "us-west-2",
-					RepositoryName: "my-valid-repo",
+					Spec: &AwsEcrRepoSpec{
+						Region:         "us-west-2",
+						RepositoryName: "my-valid-repo",
 						ImageImmutable: true,
 						EncryptionType: proto.String("AES256"),
 						ForceDelete:    false,

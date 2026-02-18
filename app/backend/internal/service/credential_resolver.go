@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	credentialv1 "github.com/plantonhq/openmcf/apis/org/openmcf/app/credential/v1"
+	alicloudv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud"
 	auth0v1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0"
 	awsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
 	azurev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure"
@@ -171,6 +172,72 @@ func (r *CredentialResolver) ResolveProviderConfig(
 					Region:         scwCred.Region,
 					Zone:           scwCred.Zone,
 				},
+			},
+		}, nil
+
+	case cloudresourcekind.CloudResourceProvider_alicloud:
+		aliCred := credInterface.(*models.AlicloudCredential)
+		cfg := &alicloudv1.AlicloudProviderConfig{
+			Region:      aliCred.Region,
+			AccountId:   aliCred.AccountId,
+			AccountType: aliCred.AccountType,
+		}
+		switch aliCred.AuthMethod {
+		case "static_credentials":
+			cfg.AuthenticationType = alicloudv1.AuthenticationType_static_credentials
+			cfg.StaticCredentials = &alicloudv1.AlicloudStaticCredentials{
+				AccessKey: aliCred.AccessKey,
+				SecretKey: aliCred.SecretKey,
+			}
+		case "sts_token":
+			cfg.AuthenticationType = alicloudv1.AuthenticationType_sts_token
+			cfg.StsToken = &alicloudv1.AlicloudStsTokenCredentials{
+				AccessKey:     aliCred.AccessKey,
+				SecretKey:     aliCred.SecretKey,
+				SecurityToken: aliCred.SecurityToken,
+			}
+		case "ecs_role":
+			cfg.AuthenticationType = alicloudv1.AuthenticationType_ecs_role
+			cfg.EcsRole = &alicloudv1.AlicloudEcsRoleCredentials{
+				EcsRoleName: aliCred.EcsRoleName,
+			}
+		case "assume_role":
+			cfg.AuthenticationType = alicloudv1.AuthenticationType_assume_role
+			cfg.AssumeRole = &alicloudv1.AlicloudAssumeRoleCredentials{
+				AccessKey:         aliCred.AccessKey,
+				SecretKey:         aliCred.SecretKey,
+				RoleArn:           aliCred.RoleArn,
+				SessionName:       aliCred.SessionName,
+				Policy:            aliCred.Policy,
+				SessionExpiration: aliCred.SessionExpiration,
+				ExternalId:        aliCred.ExternalId,
+			}
+		case "assume_role_with_oidc":
+			cfg.AuthenticationType = alicloudv1.AuthenticationType_assume_role_with_oidc
+			cfg.AssumeRoleWithOidc = &alicloudv1.AlicloudAssumeRoleWithOidcCredentials{
+				OidcProviderArn:   aliCred.OidcProviderArn,
+				RoleArn:           aliCred.RoleArn,
+				OidcToken:         aliCred.OidcToken,
+				OidcTokenFile:     aliCred.OidcTokenFile,
+				SessionName:       aliCred.SessionName,
+				Policy:            aliCred.Policy,
+				SessionExpiration: aliCred.SessionExpiration,
+			}
+		case "shared_credentials":
+			cfg.AuthenticationType = alicloudv1.AuthenticationType_shared_credentials
+			cfg.SharedCredentials = &alicloudv1.AlicloudSharedCredentials{
+				CredentialsFile: aliCred.CredentialsFile,
+				Profile:         aliCred.Profile,
+			}
+		case "sidecar_credentials":
+			cfg.AuthenticationType = alicloudv1.AuthenticationType_sidecar_credentials
+			cfg.SidecarCredentials = &alicloudv1.AlicloudSidecarCredentials{
+				CredentialsUri: aliCred.CredentialsUri,
+			}
+		}
+		return &credentialv1.CredentialProviderConfig{
+			Data: &credentialv1.CredentialProviderConfig_Alicloud{
+				Alicloud: cfg,
 			},
 		}, nil
 

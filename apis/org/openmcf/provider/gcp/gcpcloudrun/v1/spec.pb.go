@@ -738,10 +738,10 @@ const file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_rawDesc = "" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12p\n" +
 	"\thostnames\x18\x02 \x03(\tBR\xbaHO\xd8\x01\x01\x92\x01I\x18\x01\"ErC2A^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$R\thostnames\x12!\n" +
 	"\fmanaged_zone\x18\x03 \x01(\tR\vmanagedZone:\xad\x01\xbaH\xa9\x01\x1a\xa6\x01\n" +
-	"\x1bdns.enabled-requires-fields\x12?hostnames and managed_zone must be set when dns.enabled is true\x1aF!this.enabled || (size(this.hostnames) > 0 && this.managed_zone != '')\"\xd1\x02\n" +
-	"\x14GcpCloudRunVpcAccess\x12x\n" +
-	"\anetwork\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB*\xbaH\x03\xd8\x01\x01\x88\xd4a\xe2\x04\x92\xd4a\x1bstatus.outputs.network_nameR\anetwork\x12y\n" +
-	"\x06subnet\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB-\xbaH\x03\xd8\x01\x01\x88\xd4a\xe3\x04\x92\xd4a\x1estatus.outputs.subnetwork_nameR\x06subnet\x12D\n" +
+	"\x1bdns.enabled-requires-fields\x12?hostnames and managed_zone must be set when dns.enabled is true\x1aF!this.enabled || (size(this.hostnames) > 0 && this.managed_zone != '')\"\xc5\x02\n" +
+	"\x14GcpCloudRunVpcAccess\x12r\n" +
+	"\anetwork\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\xe2\x04\x92\xd4a\x1bstatus.outputs.network_nameR\anetwork\x12s\n" +
+	"\x06subnet\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\x88\xd4a\xe3\x04\x92\xd4a\x1estatus.outputs.subnetwork_nameR\x06subnet\x12D\n" +
 	"\x06egress\x18\x03 \x01(\tB,\xbaH)\xd8\x01\x01r$R\x00R\vALL_TRAFFICR\x13PRIVATE_RANGES_ONLYR\x06egress*\x9d\x01\n" +
 	"\x12GcpCloudRunIngress\x12\x1f\n" +
 	"\x1bINGRESS_TRAFFIC_UNSPECIFIED\x10\x00\x12\x17\n" +

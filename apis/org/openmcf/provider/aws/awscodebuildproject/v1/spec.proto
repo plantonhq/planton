@@ -263,7 +263,6 @@ message AwsCodeBuildEnvironment {
   //   SERVICE_ROLE: CodeBuild uses the project's service role (for ECR private images)
   optional string image_pull_credentials_type = 5 [
     (org.openmcf.shared.options.default) = "CODEBUILD",
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
       in: [
         "CODEBUILD",
@@ -299,7 +298,6 @@ message AwsCodeBuildEnvironmentVariable {
   //   SECRETS_MANAGER: Value is a Secrets Manager secret ARN or name
   optional string type = 3 [
     (org.openmcf.shared.options.default) = "PLAINTEXT",
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
       in: [
         "PLAINTEXT",
@@ -394,7 +392,6 @@ message AwsCodeBuildCache {
   //   LOCAL:    Cache stored on the build host (ephemeral, useful for Docker layers)
   optional string type = 1 [
     (org.openmcf.shared.options.default) = "NO_CACHE",
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
       in: [
         "NO_CACHE",
@@ -433,7 +430,6 @@ message AwsCodeBuildCloudWatchLogs {
   // Default: ENABLED.
   optional string status = 1 [
     (org.openmcf.shared.options.default) = "ENABLED",
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
       in: [
         "ENABLED",
@@ -460,7 +456,6 @@ message AwsCodeBuildS3Logs {
   // Default: DISABLED.
   optional string status = 1 [
     (org.openmcf.shared.options.default) = "DISABLED",
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
       in: [
         "ENABLED",

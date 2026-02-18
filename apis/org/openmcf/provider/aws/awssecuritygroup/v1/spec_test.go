@@ -28,9 +28,9 @@ var _ = ginkgo.Describe("AwsSecurityGroupSpec Custom Validation Tests", func() {
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-security-group",
 					},
-				Spec: &AwsSecurityGroupSpec{
-					Region: "us-west-2",
-					VpcId:  &foreignkeyv1.StringValueOrRef{
+					Spec: &AwsSecurityGroupSpec{
+						Region: "us-west-2",
+						VpcId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "vpc-12345678"},
 						},
 						Description: "Test security group for validation",

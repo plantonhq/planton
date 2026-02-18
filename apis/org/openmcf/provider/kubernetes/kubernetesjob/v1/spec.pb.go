@@ -388,7 +388,7 @@ var File_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto protoreflec
 
 const file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	";org/openmcf/provider/kubernetes/kubernetesjob/v1/spec.proto\x120org.openmcf.provider.kubernetes.kubernetesjob.v1\x1a\x1bbuf/validate/validate.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a7org/openmcf/provider/kubernetes/kubernetes_secret.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/provider/kubernetes/volume_mount.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x8a\f\n" +
+	";org/openmcf/provider/kubernetes/kubernetesjob/v1/spec.proto\x120org.openmcf.provider.kubernetes.kubernetesjob.v1\x1a\x1bbuf/validate/validate.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a7org/openmcf/provider/kubernetes/kubernetes_secret.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/provider/kubernetes/volume_mount.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xec\v\n" +
 	"\x11KubernetesJobSpec\x12a\n" +
 	"\x0etarget_cluster\x18\x01 \x01(\v2:.org.openmcf.provider.kubernetes.KubernetesClusterSelectorR\rtargetCluster\x12j\n" +
 	"\tnamespace\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xc4\x06\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
@@ -398,13 +398,13 @@ const file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_rawDesc =
 	"\f\n" +
 	"\x051000m\x12\x031Gi\x12\f\n" +
 	"\x0350m\x12\x05100MiR\tresources\x12`\n" +
-	"\x03env\x18\x06 \x01(\v2N.org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobContainerAppEnvR\x03env\x122\n" +
-	"\vparallelism\x18\a \x01(\rB\v\xbaH\x03\xd8\x01\x01\x8a\xa6\x1d\x011H\x00R\vparallelism\x88\x01\x01\x122\n" +
-	"\vcompletions\x18\b \x01(\rB\v\xbaH\x03\xd8\x01\x01\x8a\xa6\x1d\x011H\x01R\vcompletions\x88\x01\x01\x125\n" +
-	"\rbackoff_limit\x18\t \x01(\rB\v\xbaH\x03\xd8\x01\x01\x8a\xa6\x1d\x016H\x02R\fbackoffLimit\x88\x01\x01\x12H\n" +
+	"\x03env\x18\x06 \x01(\v2N.org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobContainerAppEnvR\x03env\x12,\n" +
+	"\vparallelism\x18\a \x01(\rB\x05\x8a\xa6\x1d\x011H\x00R\vparallelism\x88\x01\x01\x12,\n" +
+	"\vcompletions\x18\b \x01(\rB\x05\x8a\xa6\x1d\x011H\x01R\vcompletions\x88\x01\x01\x12/\n" +
+	"\rbackoff_limit\x18\t \x01(\rB\x05\x8a\xa6\x1d\x016H\x02R\fbackoffLimit\x88\x01\x01\x12B\n" +
 	"\x17active_deadline_seconds\x18\n" +
-	" \x01(\x04B\v\xbaH\x03\xd8\x01\x01\x8a\xa6\x1d\x010H\x03R\x15activeDeadlineSeconds\x88\x01\x01\x12M\n" +
-	"\x1attl_seconds_after_finished\x18\v \x01(\rB\v\xbaH\x03\xd8\x01\x01\x8a\xa6\x1d\x010H\x04R\x17ttlSecondsAfterFinished\x88\x01\x01\x12V\n" +
+	" \x01(\x04B\x05\x8a\xa6\x1d\x010H\x03R\x15activeDeadlineSeconds\x88\x01\x01\x12G\n" +
+	"\x1attl_seconds_after_finished\x18\v \x01(\rB\x05\x8a\xa6\x1d\x010H\x04R\x17ttlSecondsAfterFinished\x88\x01\x01\x12V\n" +
 	"\x0fcompletion_mode\x18\f \x01(\tB(\xbaH\x17r\x15R\n" +
 	"NonIndexedR\aIndexed\x8a\xa6\x1d\n" +
 	"NonIndexedH\x05R\x0ecompletionMode\x88\x01\x01\x12L\n" +

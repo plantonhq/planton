@@ -215,13 +215,13 @@ var File_org_openmcf_provider_aws_awsecrrepo_v1_spec_proto protoreflect.FileDesc
 
 const file_org_openmcf_provider_aws_awsecrrepo_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"1org/openmcf/provider/aws/awsecrrepo/v1/spec.proto\x12&org.openmcf.provider.aws.awsecrrepo.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd5\x04\n" +
+	"1org/openmcf/provider/aws/awsecrrepo/v1/spec.proto\x12&org.openmcf.provider.aws.awsecrrepo.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd2\x04\n" +
 	"\x0eAwsEcrRepoSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x126\n" +
 	"\x0frepository_name\x18\x02 \x01(\tB\r\xbaH\n" +
 	"\xc8\x01\x01r\x05\x10\x02\x18\x80\x02R\x0erepositoryName\x12'\n" +
-	"\x0fimage_immutable\x18\x03 \x01(\bR\x0eimageImmutable\x12M\n" +
-	"\x0fencryption_type\x18\x04 \x01(\tB\x1f\xbaH\x12\xd8\x01\x01r\rR\x06AES256R\x03KMS\x8a\xa6\x1d\x06AES256H\x00R\x0eencryptionType\x88\x01\x01\x12q\n" +
+	"\x0fimage_immutable\x18\x03 \x01(\bR\x0eimageImmutable\x12J\n" +
+	"\x0fencryption_type\x18\x04 \x01(\tB\x1c\xbaH\x0fr\rR\x06AES256R\x03KMS\x8a\xa6\x1d\x06AES256H\x00R\x0eencryptionType\x88\x01\x01\x12q\n" +
 	"\n" +
 	"kms_key_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12!\n" +
 	"\fforce_delete\x18\x06 \x01(\bR\vforceDelete\x12/\n" +
@@ -230,12 +230,10 @@ const file_org_openmcf_provider_aws_awsecrrepo_v1_spec_proto_rawDesc = "" +
 	"\x10lifecycle_policy\x18\b \x01(\v2A.org.openmcf.provider.aws.awsecrrepo.v1.AwsEcrRepoLifecyclePolicyH\x02R\x0flifecyclePolicy\x88\x01\x01B\x12\n" +
 	"\x10_encryption_typeB\x0f\n" +
 	"\r_scan_on_pushB\x13\n" +
-	"\x11_lifecycle_policy\"\xe7\x01\n" +
-	"\x19AwsEcrRepoLifecyclePolicy\x12U\n" +
-	"\x1aexpire_untagged_after_days\x18\x01 \x01(\x05B\x13\xbaH\n" +
-	"\xd8\x01\x01\x1a\x05\x18\xed\x02(\x01\x8a\xa6\x1d\x0214H\x00R\x17expireUntaggedAfterDays\x88\x01\x01\x12@\n" +
-	"\x0fmax_image_count\x18\x02 \x01(\x05B\x13\xbaH\n" +
-	"\xd8\x01\x01\x1a\x05\x18\xe8\a(\x01\x8a\xa6\x1d\x0230H\x01R\rmaxImageCount\x88\x01\x01B\x1d\n" +
+	"\x11_lifecycle_policy\"\xe1\x01\n" +
+	"\x19AwsEcrRepoLifecyclePolicy\x12R\n" +
+	"\x1aexpire_untagged_after_days\x18\x01 \x01(\x05B\x10\xbaH\a\x1a\x05\x18\xed\x02(\x01\x8a\xa6\x1d\x0214H\x00R\x17expireUntaggedAfterDays\x88\x01\x01\x12=\n" +
+	"\x0fmax_image_count\x18\x02 \x01(\x05B\x10\xbaH\a\x1a\x05\x18\xe8\a(\x01\x8a\xa6\x1d\x0230H\x01R\rmaxImageCount\x88\x01\x01B\x1d\n" +
 	"\x1b_expire_untagged_after_daysB\x12\n" +
 	"\x10_max_image_countB\xcd\x02\n" +
 	"*com.org.openmcf.provider.aws.awsecrrepo.v1B\tSpecProtoP\x01ZUgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsecrrepo/v1;awsecrrepov1\xa2\x02\x05OOPAA\xaa\x02&Org.Openmcf.Provider.Aws.Awsecrrepo.V1\xca\x02&Org\\Openmcf\\Provider\\Aws\\Awsecrrepo\\V1\xe2\x022Org\\Openmcf\\Provider\\Aws\\Awsecrrepo\\V1\\GPBMetadata\xea\x02+Org::Openmcf::Provider::Aws::Awsecrrepo::V1b\x06proto3"

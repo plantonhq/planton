@@ -8,6 +8,7 @@ import (
 	"github.com/plantonhq/openmcf/pkg/protobufyaml"
 	"google.golang.org/protobuf/proto"
 
+	alicloudprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud"
 	atlasprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/atlas"
 	auth0provider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0"
 	awsprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
@@ -72,6 +73,8 @@ func getProviderConfigProto(provider cloudresourcekind.CloudResourceProvider) (p
 		return new(openstackprovider.OpenStackProviderConfig), nil
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return new(scalewayprovider.ScalewayProviderConfig), nil
+	case cloudresourcekind.CloudResourceProvider_alicloud:
+		return new(alicloudprovider.AlicloudProviderConfig), nil
 	default:
 		return nil, errors.Errorf("unsupported provider: %s", provider.String())
 	}

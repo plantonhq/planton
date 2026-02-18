@@ -16,6 +16,7 @@ import (
 	awsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
 	azurev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure"
 	gcpv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
+	alicloudv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud"
 	openstackv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack"
 	scalewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway"
 	"go.mongodb.org/mongo-driver/bson"
@@ -64,6 +65,8 @@ func (s *CredentialService) Create(
 		return s.createOpenStackCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
 	case credentialv1.Credential_SCALEWAY:
 		return s.createScalewayCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
+	case credentialv1.Credential_ALICLOUD:
+		return s.createAlicloudCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
 	default:
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unsupported provider: %v", req.Msg.Provider))
 	}
@@ -334,6 +337,8 @@ func (s *CredentialService) List(
 			provider = "openstack"
 		case credentialv1.Credential_SCALEWAY:
 			provider = "scaleway"
+		case credentialv1.Credential_ALICLOUD:
+			provider = "alicloud"
 		}
 		if provider != "" {
 			providerFilter = &provider
@@ -369,6 +374,8 @@ func (s *CredentialService) List(
 			summary.Provider = credentialv1.Credential_OPENSTACK
 		case "scaleway":
 			summary.Provider = credentialv1.Credential_SCALEWAY
+		case "alicloud":
+			summary.Provider = credentialv1.Credential_ALICLOUD
 		}
 
 		// Add timestamps if present
@@ -560,6 +567,23 @@ func (s *CredentialService) Get(
 		if !scwCred.UpdatedAt.IsZero() {
 			protoCredential.UpdatedAt = timestamppb.New(scwCred.UpdatedAt)
 		}
+	case "alicloud":
+		aliCred, err := convertBsonToAlicloudCredential(doc)
+		if err != nil {
+			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to convert credential: %w", err))
+		}
+		protoCredential = &credentialv1.Credential{
+			Id:             aliCred.ID.Hex(),
+			Name:           aliCred.Name,
+			Provider:       credentialv1.Credential_ALICLOUD,
+			ProviderConfig: alicloudModelToProtoConfig(aliCred),
+		}
+		if !aliCred.CreatedAt.IsZero() {
+			protoCredential.CreatedAt = timestamppb.New(aliCred.CreatedAt)
+		}
+		if !aliCred.UpdatedAt.IsZero() {
+			protoCredential.UpdatedAt = timestamppb.New(aliCred.UpdatedAt)
+		}
 	default:
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unsupported provider: %s", providerStr))
 	}
@@ -598,6 +622,8 @@ func (s *CredentialService) Update(
 		return s.updateOpenStackCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
 	case credentialv1.Credential_SCALEWAY:
 		return s.updateScalewayCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
+	case credentialv1.Credential_ALICLOUD:
+		return s.updateAlicloudCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
 	default:
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unsupported provider: %v", req.Msg.Provider))
 	}
@@ -1453,6 +1479,371 @@ func convertBsonToOpenStackCredential(doc bson.M) (*models.OpenStackCredential, 
 	}
 	if v, ok := doc["endpoint_type"].(string); ok {
 		cred.EndpointType = v
+	}
+
+	return cred, nil
+}
+
+// createAlicloudCredential creates an Alibaba Cloud credential.
+func (s *CredentialService) createAlicloudCredential(
+	ctx context.Context,
+	name string,
+	providerConfig *credentialv1.CredentialProviderConfig,
+	now time.Time,
+) (*connect.Response[credentialv1.CreateCredentialResponse], error) {
+	if providerConfig == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("provider_config is required"))
+	}
+	aliConfig, ok := providerConfig.Data.(*credentialv1.CredentialProviderConfig_Alicloud)
+	if !ok || aliConfig == nil || aliConfig.Alicloud == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("alicloud provider_config is required"))
+	}
+
+	credModel, err := alicloudProtoToModel(name, aliConfig.Alicloud)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, err)
+	}
+
+	createdCredential, err := s.credentialRepo.CreateAlicloud(ctx, credModel)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create Alibaba Cloud credential: %w", err))
+	}
+
+	protoCredential := &credentialv1.Credential{
+		Id:             createdCredential.ID.Hex(),
+		Name:           createdCredential.Name,
+		Provider:       credentialv1.Credential_ALICLOUD,
+		ProviderConfig: alicloudModelToProtoConfig(createdCredential),
+	}
+	if !createdCredential.CreatedAt.IsZero() {
+		protoCredential.CreatedAt = timestamppb.New(createdCredential.CreatedAt)
+	}
+	if !createdCredential.UpdatedAt.IsZero() {
+		protoCredential.UpdatedAt = timestamppb.New(createdCredential.UpdatedAt)
+	}
+
+	return connect.NewResponse(&credentialv1.CreateCredentialResponse{
+		Credential: protoCredential,
+	}), nil
+}
+
+// updateAlicloudCredential updates an Alibaba Cloud credential.
+func (s *CredentialService) updateAlicloudCredential(
+	ctx context.Context,
+	id, name string,
+	providerConfig *credentialv1.CredentialProviderConfig,
+) (*connect.Response[credentialv1.UpdateCredentialResponse], error) {
+	if providerConfig == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("provider_config is required"))
+	}
+	aliConfig, ok := providerConfig.Data.(*credentialv1.CredentialProviderConfig_Alicloud)
+	if !ok || aliConfig == nil || aliConfig.Alicloud == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("alicloud provider_config is required"))
+	}
+
+	credModel, err := alicloudProtoToModel(name, aliConfig.Alicloud)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, err)
+	}
+
+	updatedCredential, err := s.credentialRepo.UpdateAlicloud(ctx, id, credModel)
+	if err != nil {
+		if err.Error() == fmt.Sprintf("Alibaba Cloud credential with ID '%s' not found", id) {
+			return nil, connect.NewError(connect.CodeNotFound, err)
+		}
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to update Alibaba Cloud credential: %w", err))
+	}
+
+	protoCredential := &credentialv1.Credential{
+		Id:             updatedCredential.ID.Hex(),
+		Name:           updatedCredential.Name,
+		Provider:       credentialv1.Credential_ALICLOUD,
+		ProviderConfig: alicloudModelToProtoConfig(updatedCredential),
+	}
+	if !updatedCredential.CreatedAt.IsZero() {
+		protoCredential.CreatedAt = timestamppb.New(updatedCredential.CreatedAt)
+	}
+	if !updatedCredential.UpdatedAt.IsZero() {
+		protoCredential.UpdatedAt = timestamppb.New(updatedCredential.UpdatedAt)
+	}
+
+	return connect.NewResponse(&credentialv1.UpdateCredentialResponse{
+		Credential: protoCredential,
+	}), nil
+}
+
+// alicloudProtoToModel converts an AlicloudProviderConfig proto to the database model.
+// Switches on the AuthenticationType enum to extract fields from the correct sub-message.
+func alicloudProtoToModel(name string, cfg *alicloudv1.AlicloudProviderConfig) (*models.AlicloudCredential, error) {
+	cred := &models.AlicloudCredential{
+		Name:        name,
+		Region:      cfg.Region,
+		AccountId:   cfg.AccountId,
+		AccountType: cfg.AccountType,
+	}
+
+	switch cfg.AuthenticationType {
+	case alicloudv1.AuthenticationType_static_credentials:
+		if cfg.StaticCredentials == nil {
+			return nil, fmt.Errorf("static_credentials message is required when authentication_type is static_credentials")
+		}
+		if cfg.StaticCredentials.AccessKey == "" {
+			return nil, fmt.Errorf("access_key is required for static credentials")
+		}
+		if cfg.StaticCredentials.SecretKey == "" {
+			return nil, fmt.Errorf("secret_key is required for static credentials")
+		}
+		cred.AuthMethod = "static_credentials"
+		cred.AccessKey = cfg.StaticCredentials.AccessKey
+		cred.SecretKey = cfg.StaticCredentials.SecretKey
+
+	case alicloudv1.AuthenticationType_sts_token:
+		if cfg.StsToken == nil {
+			return nil, fmt.Errorf("sts_token message is required when authentication_type is sts_token")
+		}
+		if cfg.StsToken.AccessKey == "" {
+			return nil, fmt.Errorf("access_key is required for STS token authentication")
+		}
+		if cfg.StsToken.SecretKey == "" {
+			return nil, fmt.Errorf("secret_key is required for STS token authentication")
+		}
+		if cfg.StsToken.SecurityToken == "" {
+			return nil, fmt.Errorf("security_token is required for STS token authentication")
+		}
+		cred.AuthMethod = "sts_token"
+		cred.AccessKey = cfg.StsToken.AccessKey
+		cred.SecretKey = cfg.StsToken.SecretKey
+		cred.SecurityToken = cfg.StsToken.SecurityToken
+
+	case alicloudv1.AuthenticationType_ecs_role:
+		if cfg.EcsRole == nil {
+			return nil, fmt.Errorf("ecs_role message is required when authentication_type is ecs_role")
+		}
+		if cfg.EcsRole.EcsRoleName == "" {
+			return nil, fmt.Errorf("ecs_role_name is required for ECS role authentication")
+		}
+		cred.AuthMethod = "ecs_role"
+		cred.EcsRoleName = cfg.EcsRole.EcsRoleName
+
+	case alicloudv1.AuthenticationType_assume_role:
+		if cfg.AssumeRole == nil {
+			return nil, fmt.Errorf("assume_role message is required when authentication_type is assume_role")
+		}
+		if cfg.AssumeRole.AccessKey == "" {
+			return nil, fmt.Errorf("access_key is required for assume role authentication")
+		}
+		if cfg.AssumeRole.SecretKey == "" {
+			return nil, fmt.Errorf("secret_key is required for assume role authentication")
+		}
+		if cfg.AssumeRole.RoleArn == "" {
+			return nil, fmt.Errorf("role_arn is required for assume role authentication")
+		}
+		cred.AuthMethod = "assume_role"
+		cred.AccessKey = cfg.AssumeRole.AccessKey
+		cred.SecretKey = cfg.AssumeRole.SecretKey
+		cred.RoleArn = cfg.AssumeRole.RoleArn
+		cred.SessionName = cfg.AssumeRole.SessionName
+		cred.Policy = cfg.AssumeRole.Policy
+		cred.SessionExpiration = cfg.AssumeRole.SessionExpiration
+		cred.ExternalId = cfg.AssumeRole.ExternalId
+
+	case alicloudv1.AuthenticationType_assume_role_with_oidc:
+		if cfg.AssumeRoleWithOidc == nil {
+			return nil, fmt.Errorf("assume_role_with_oidc message is required when authentication_type is assume_role_with_oidc")
+		}
+		if cfg.AssumeRoleWithOidc.OidcProviderArn == "" {
+			return nil, fmt.Errorf("oidc_provider_arn is required for OIDC authentication")
+		}
+		if cfg.AssumeRoleWithOidc.RoleArn == "" {
+			return nil, fmt.Errorf("role_arn is required for OIDC authentication")
+		}
+		if cfg.AssumeRoleWithOidc.OidcToken == "" && cfg.AssumeRoleWithOidc.OidcTokenFile == "" {
+			return nil, fmt.Errorf("either oidc_token or oidc_token_file is required for OIDC authentication")
+		}
+		cred.AuthMethod = "assume_role_with_oidc"
+		cred.OidcProviderArn = cfg.AssumeRoleWithOidc.OidcProviderArn
+		cred.RoleArn = cfg.AssumeRoleWithOidc.RoleArn
+		cred.OidcToken = cfg.AssumeRoleWithOidc.OidcToken
+		cred.OidcTokenFile = cfg.AssumeRoleWithOidc.OidcTokenFile
+		cred.SessionName = cfg.AssumeRoleWithOidc.SessionName
+		cred.Policy = cfg.AssumeRoleWithOidc.Policy
+		cred.SessionExpiration = cfg.AssumeRoleWithOidc.SessionExpiration
+
+	case alicloudv1.AuthenticationType_shared_credentials:
+		if cfg.SharedCredentials == nil {
+			return nil, fmt.Errorf("shared_credentials message is required when authentication_type is shared_credentials")
+		}
+		cred.AuthMethod = "shared_credentials"
+		cred.CredentialsFile = cfg.SharedCredentials.CredentialsFile
+		cred.Profile = cfg.SharedCredentials.Profile
+
+	case alicloudv1.AuthenticationType_sidecar_credentials:
+		if cfg.SidecarCredentials == nil {
+			return nil, fmt.Errorf("sidecar_credentials message is required when authentication_type is sidecar_credentials")
+		}
+		if cfg.SidecarCredentials.CredentialsUri == "" {
+			return nil, fmt.Errorf("credentials_uri is required for sidecar credentials")
+		}
+		cred.AuthMethod = "sidecar_credentials"
+		cred.CredentialsUri = cfg.SidecarCredentials.CredentialsUri
+
+	default:
+		return nil, fmt.Errorf("authentication_type is required: specify one of static_credentials, sts_token, ecs_role, assume_role, assume_role_with_oidc, shared_credentials, or sidecar_credentials")
+	}
+
+	return cred, nil
+}
+
+// alicloudModelToProtoConfig converts an AlicloudCredential model back to proto CredentialProviderConfig.
+func alicloudModelToProtoConfig(cred *models.AlicloudCredential) *credentialv1.CredentialProviderConfig {
+	cfg := &alicloudv1.AlicloudProviderConfig{
+		Region:      cred.Region,
+		AccountId:   cred.AccountId,
+		AccountType: cred.AccountType,
+	}
+
+	switch cred.AuthMethod {
+	case "static_credentials":
+		cfg.AuthenticationType = alicloudv1.AuthenticationType_static_credentials
+		cfg.StaticCredentials = &alicloudv1.AlicloudStaticCredentials{
+			AccessKey: cred.AccessKey,
+			SecretKey: cred.SecretKey,
+		}
+	case "sts_token":
+		cfg.AuthenticationType = alicloudv1.AuthenticationType_sts_token
+		cfg.StsToken = &alicloudv1.AlicloudStsTokenCredentials{
+			AccessKey:     cred.AccessKey,
+			SecretKey:     cred.SecretKey,
+			SecurityToken: cred.SecurityToken,
+		}
+	case "ecs_role":
+		cfg.AuthenticationType = alicloudv1.AuthenticationType_ecs_role
+		cfg.EcsRole = &alicloudv1.AlicloudEcsRoleCredentials{
+			EcsRoleName: cred.EcsRoleName,
+		}
+	case "assume_role":
+		cfg.AuthenticationType = alicloudv1.AuthenticationType_assume_role
+		cfg.AssumeRole = &alicloudv1.AlicloudAssumeRoleCredentials{
+			AccessKey:         cred.AccessKey,
+			SecretKey:         cred.SecretKey,
+			RoleArn:           cred.RoleArn,
+			SessionName:       cred.SessionName,
+			Policy:            cred.Policy,
+			SessionExpiration: cred.SessionExpiration,
+			ExternalId:        cred.ExternalId,
+		}
+	case "assume_role_with_oidc":
+		cfg.AuthenticationType = alicloudv1.AuthenticationType_assume_role_with_oidc
+		cfg.AssumeRoleWithOidc = &alicloudv1.AlicloudAssumeRoleWithOidcCredentials{
+			OidcProviderArn:   cred.OidcProviderArn,
+			RoleArn:           cred.RoleArn,
+			OidcToken:         cred.OidcToken,
+			OidcTokenFile:     cred.OidcTokenFile,
+			SessionName:       cred.SessionName,
+			Policy:            cred.Policy,
+			SessionExpiration: cred.SessionExpiration,
+		}
+	case "shared_credentials":
+		cfg.AuthenticationType = alicloudv1.AuthenticationType_shared_credentials
+		cfg.SharedCredentials = &alicloudv1.AlicloudSharedCredentials{
+			CredentialsFile: cred.CredentialsFile,
+			Profile:         cred.Profile,
+		}
+	case "sidecar_credentials":
+		cfg.AuthenticationType = alicloudv1.AuthenticationType_sidecar_credentials
+		cfg.SidecarCredentials = &alicloudv1.AlicloudSidecarCredentials{
+			CredentialsUri: cred.CredentialsUri,
+		}
+	}
+
+	return &credentialv1.CredentialProviderConfig{
+		Data: &credentialv1.CredentialProviderConfig_Alicloud{
+			Alicloud: cfg,
+		},
+	}
+}
+
+func convertBsonToAlicloudCredential(doc bson.M) (*models.AlicloudCredential, error) {
+	id, ok := doc["_id"].(primitive.ObjectID)
+	if !ok {
+		return nil, fmt.Errorf("invalid _id field")
+	}
+
+	var createdAt, updatedAt time.Time
+	if dt, ok := doc["created_at"].(primitive.DateTime); ok {
+		createdAt = dt.Time()
+	} else if t, ok := doc["created_at"].(time.Time); ok {
+		createdAt = t
+	}
+	if dt, ok := doc["updated_at"].(primitive.DateTime); ok {
+		updatedAt = dt.Time()
+	} else if t, ok := doc["updated_at"].(time.Time); ok {
+		updatedAt = t
+	}
+
+	cred := &models.AlicloudCredential{
+		ID:        id,
+		Name:      doc["name"].(string),
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
+	}
+
+	if v, ok := doc["auth_method"].(string); ok {
+		cred.AuthMethod = v
+	}
+	if v, ok := doc["region"].(string); ok {
+		cred.Region = v
+	}
+	if v, ok := doc["account_id"].(string); ok {
+		cred.AccountId = v
+	}
+	if v, ok := doc["account_type"].(string); ok {
+		cred.AccountType = v
+	}
+	if v, ok := doc["access_key"].(string); ok {
+		cred.AccessKey = v
+	}
+	if v, ok := doc["secret_key"].(string); ok {
+		cred.SecretKey = v
+	}
+	if v, ok := doc["security_token"].(string); ok {
+		cred.SecurityToken = v
+	}
+	if v, ok := doc["ecs_role_name"].(string); ok {
+		cred.EcsRoleName = v
+	}
+	if v, ok := doc["role_arn"].(string); ok {
+		cred.RoleArn = v
+	}
+	if v, ok := doc["session_name"].(string); ok {
+		cred.SessionName = v
+	}
+	if v, ok := doc["policy"].(string); ok {
+		cred.Policy = v
+	}
+	if v, ok := doc["session_expiration"].(int32); ok {
+		cred.SessionExpiration = v
+	}
+	if v, ok := doc["external_id"].(string); ok {
+		cred.ExternalId = v
+	}
+	if v, ok := doc["oidc_provider_arn"].(string); ok {
+		cred.OidcProviderArn = v
+	}
+	if v, ok := doc["oidc_token"].(string); ok {
+		cred.OidcToken = v
+	}
+	if v, ok := doc["oidc_token_file"].(string); ok {
+		cred.OidcTokenFile = v
+	}
+	if v, ok := doc["credentials_file"].(string); ok {
+		cred.CredentialsFile = v
+	}
+	if v, ok := doc["profile"].(string); ok {
+		cred.Profile = v
+	}
+	if v, ok := doc["credentials_uri"].(string); ok {
+		cred.CredentialsUri = v
 	}
 
 	return cred, nil

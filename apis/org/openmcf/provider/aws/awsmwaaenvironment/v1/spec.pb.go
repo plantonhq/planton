@@ -538,7 +538,7 @@ var File_org_openmcf_provider_aws_awsmwaaenvironment_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_aws_awsmwaaenvironment_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/aws/awsmwaaenvironment/v1/spec.proto\x12.org.openmcf.provider.aws.awsmwaaenvironment.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x98\x1d\n" +
+	"9org/openmcf/provider/aws/awsmwaaenvironment/v1/spec.proto\x12.org.openmcf.provider.aws.awsmwaaenvironment.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x95\x1d\n" +
 	"\x16AwsMwaaEnvironmentSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12'\n" +
 	"\x0fairflow_version\x18\x02 \x01(\tR\x0eairflowVersion\x12\xab\x01\n" +
@@ -573,8 +573,8 @@ const file_org_openmcf_provider_aws_awsmwaaenvironment_v1_spec_proto_rawDesc = "
 	"\x0emax_webservers\x18\x17 \x01(\x05B\f\xbaH\t\xd8\x01\x01\x1a\x04\x18\x05(\x01R\rmaxWebservers\x12,\n" +
 	"\n" +
 	"schedulers\x18\x18 \x01(\x05B\f\xbaH\t\xd8\x01\x01\x1a\x04\x18\x05(\x02R\n" +
-	"schedulers\x12l\n" +
-	"\x15webserver_access_mode\x18\x19 \x01(\tB3\xbaH \xd8\x01\x01r\x1bR\fPRIVATE_ONLYR\vPUBLIC_ONLY\x8a\xa6\x1d\fPRIVATE_ONLYH\x00R\x13webserverAccessMode\x88\x01\x01\x12L\n" +
+	"schedulers\x12i\n" +
+	"\x15webserver_access_mode\x18\x19 \x01(\tB0\xbaH\x1dr\x1bR\fPRIVATE_ONLYR\vPUBLIC_ONLY\x8a\xa6\x1d\fPRIVATE_ONLYH\x00R\x13webserverAccessMode\x88\x01\x01\x12L\n" +
 	"\x13endpoint_management\x18\x1a \x01(\tB\x1b\xbaH\x18\xd8\x01\x01r\x13R\aSERVICER\bCUSTOMERR\x12endpointManagement\x12\x8b\x01\n" +
 	"\x15logging_configuration\x18\x1b \x01(\v2V.org.openmcf.provider.aws.awsmwaaenvironment.v1.AwsMwaaEnvironmentLoggingConfigurationR\x14loggingConfiguration\x12E\n" +
 	"\x1fweekly_maintenance_window_start\x18\x1c \x01(\tR\x1cweeklyMaintenanceWindowStart\x12Z\n" +
