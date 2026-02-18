@@ -17,7 +17,9 @@ func Resources(ctx *pulumi.Context, stackInput *awscertv1.AwsCertManagerCertStac
 	awsProviderConfig := stackInput.ProviderConfig
 
 	if awsProviderConfig == nil {
-		provider, err = aws.NewProvider(ctx, "classic-provider", &aws.ProviderArgs{})
+		provider, err = aws.NewProvider(ctx, "classic-provider", &aws.ProviderArgs{
+			Region: pulumi.String(locals.AwsCertManagerCert.Spec.Region),
+		})
 		if err != nil {
 			return errors.Wrap(err, "failed to create default AWS provider")
 		}
@@ -25,7 +27,7 @@ func Resources(ctx *pulumi.Context, stackInput *awscertv1.AwsCertManagerCertStac
 		provider, err = aws.NewProvider(ctx, "classic-provider", &aws.ProviderArgs{
 			AccessKey: pulumi.String(awsProviderConfig.AccessKeyId),
 			SecretKey: pulumi.String(awsProviderConfig.SecretAccessKey),
-			Region:    pulumi.String(awsProviderConfig.GetRegion()),
+			Region:    pulumi.String(locals.AwsCertManagerCert.Spec.Region),
 			Token:     pulumi.StringPtr(awsProviderConfig.SessionToken),
 		})
 		if err != nil {

@@ -6,6 +6,7 @@ metadata:
   name: my-lustre-fs
   id: awsfxl-my-lustre-fs-dev
 spec:
+  region: us-west-2
   deployment_type: SCRATCH_2
   storage_capacity_gib: 1200
   storage_type: SSD

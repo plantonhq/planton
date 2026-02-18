@@ -10,9 +10,9 @@ kind: AwsS3ObjectSet
 metadata:
   name: app-config
 spec:
+  region: us-east-1
   bucket:
     value: my-app-bucket
-  awsRegion: us-east-1
   objects:
     - key: config/app.json
       content: |
@@ -28,10 +28,10 @@ kind: AwsS3ObjectSet
 metadata:
   name: website-content
 spec:
+  region: us-west-2
   bucket:
     valueFrom:
       name: my-s3-bucket
-  awsRegion: us-west-2
   tags:
     environment: production
   objects:

@@ -43,6 +43,9 @@ variable "spec" {
   description = "spec holds the core configuration data defining how the ECS cluster is deployed."
   type = object({
 
+    # The AWS region where the resource will be created.
+    region = string
+
     # enable_container_insights determines whether to enable CloudWatch
     # Container Insights for this cluster. This is highly recommended
     # for production monitoring, though it incurs CloudWatch costs.

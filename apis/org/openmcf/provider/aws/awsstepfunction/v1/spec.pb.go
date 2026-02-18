@@ -45,12 +45,15 @@ const (
 //   - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 type AwsStepFunctionSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// State machine type. Determines execution semantics and pricing model.
 	// - "STANDARD": Long-running, exactly-once, full execution history.
 	// - "EXPRESS": High-volume, short-duration, at-most-once.
 	// Cannot be changed after creation (forces replacement).
 	// When omitted the IaC module defaults to "STANDARD".
-	Type string `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
+	Type string `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
 	// State machine definition in Amazon States Language (ASL). Write the
 	// definition as native YAML; the IaC module serializes it to JSON for the
 	// AWS API. ASL key casing (StartAt, States, Type, Resource, etc.) is
@@ -60,28 +63,28 @@ type AwsStepFunctionSpec struct {
 	//
 	// Use AWS Step Functions Workflow Studio, CDK, or the ASL specification
 	// to author complex workflows, then express the result as YAML here.
-	Definition *structpb.Struct `protobuf:"bytes,2,opt,name=definition,proto3" json:"definition,omitempty"`
+	Definition *structpb.Struct `protobuf:"bytes,3,opt,name=definition,proto3" json:"definition,omitempty"`
 	// IAM execution role ARN. The role must have a trust policy for
 	// states.amazonaws.com and policies granting access to all services
 	// invoked by the workflow (Lambda:InvokeFunction, SQS:SendMessage, etc.).
-	RoleArn *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=role_arn,json=roleArn,proto3" json:"role_arn,omitempty"`
+	RoleArn *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=role_arn,json=roleArn,proto3" json:"role_arn,omitempty"`
 	// Free-form description visible in the AWS Console. Useful for documenting
 	// the workflow's purpose and behavior.
-	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
 	// Logging configuration for execution history events. When omitted, logging
 	// is disabled (level OFF). Logging is supported for both STANDARD and EXPRESS
 	// state machines.
-	Logging *AwsStepFunctionLoggingConfig `protobuf:"bytes,5,opt,name=logging,proto3" json:"logging,omitempty"`
+	Logging *AwsStepFunctionLoggingConfig `protobuf:"bytes,6,opt,name=logging,proto3" json:"logging,omitempty"`
 	// Enable AWS X-Ray tracing for the state machine. When true, Step Functions
 	// sends trace data to X-Ray for visualizing request flows. Ensure the
 	// execution role has xray:PutTraceSegments and xray:PutTelemetryRecords
 	// permissions.
-	TracingEnabled bool `protobuf:"varint,6,opt,name=tracing_enabled,json=tracingEnabled,proto3" json:"tracing_enabled,omitempty"`
+	TracingEnabled bool `protobuf:"varint,7,opt,name=tracing_enabled,json=tracingEnabled,proto3" json:"tracing_enabled,omitempty"`
 	// Encryption configuration for data at rest. When omitted, AWS uses
 	// AWS-owned keys (default, no additional cost). Provide this block to
 	// use a customer-managed KMS key for encrypting state machine data,
 	// execution history, and input/output payloads.
-	Encryption    *AwsStepFunctionEncryptionConfig `protobuf:"bytes,7,opt,name=encryption,proto3" json:"encryption,omitempty"`
+	Encryption    *AwsStepFunctionEncryptionConfig `protobuf:"bytes,8,opt,name=encryption,proto3" json:"encryption,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -114,6 +117,13 @@ func (x *AwsStepFunctionSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsStepFunctionSpec.ProtoReflect.Descriptor instead.
 func (*AwsStepFunctionSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsstepfunction_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsStepFunctionSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsStepFunctionSpec) GetType() string {
@@ -311,18 +321,19 @@ var File_org_openmcf_provider_aws_awsstepfunction_v1_spec_proto protoreflect.Fil
 
 const file_org_openmcf_provider_aws_awsstepfunction_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"6org/openmcf/provider/aws/awsstepfunction/v1/spec.proto\x12+org.openmcf.provider.aws.awsstepfunction.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xea\x06\n" +
-	"\x13AwsStepFunctionSpec\x12\x12\n" +
-	"\x04type\x18\x01 \x01(\tR\x04type\x12?\n" +
+	"6org/openmcf/provider/aws/awsstepfunction/v1/spec.proto\x12+org.openmcf.provider.aws.awsstepfunction.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x8b\a\n" +
+	"\x13AwsStepFunctionSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x12\n" +
+	"\x04type\x18\x02 \x01(\tR\x04type\x12?\n" +
 	"\n" +
-	"definition\x18\x02 \x01(\v2\x17.google.protobuf.StructB\x06\xbaH\x03\xc8\x01\x01R\n" +
+	"definition\x18\x03 \x01(\v2\x17.google.protobuf.StructB\x06\xbaH\x03\xc8\x01\x01R\n" +
 	"definition\x12u\n" +
-	"\brole_arn\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\aroleArn\x12 \n" +
-	"\vdescription\x18\x04 \x01(\tR\vdescription\x12c\n" +
-	"\alogging\x18\x05 \x01(\v2I.org.openmcf.provider.aws.awsstepfunction.v1.AwsStepFunctionLoggingConfigR\alogging\x12'\n" +
-	"\x0ftracing_enabled\x18\x06 \x01(\bR\x0etracingEnabled\x12l\n" +
+	"\brole_arn\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\aroleArn\x12 \n" +
+	"\vdescription\x18\x05 \x01(\tR\vdescription\x12c\n" +
+	"\alogging\x18\x06 \x01(\v2I.org.openmcf.provider.aws.awsstepfunction.v1.AwsStepFunctionLoggingConfigR\alogging\x12'\n" +
+	"\x0ftracing_enabled\x18\a \x01(\bR\x0etracingEnabled\x12l\n" +
 	"\n" +
-	"encryption\x18\a \x01(\v2L.org.openmcf.provider.aws.awsstepfunction.v1.AwsStepFunctionEncryptionConfigR\n" +
+	"encryption\x18\b \x01(\v2L.org.openmcf.provider.aws.awsstepfunction.v1.AwsStepFunctionEncryptionConfigR\n" +
 	"encryption:\xe8\x02\xbaH\xe4\x02\x1a{\n" +
 	"\x11type_valid_values\x12-type must be 'STANDARD' or 'EXPRESS' when set\x1a7this.type == '' || this.type in ['STANDARD', 'EXPRESS']\x1a\xe4\x01\n" +
 	")logging_destination_required_when_enabled\x12Clogging.log_destination is required when logging.level is not 'OFF'\x1ar!has(this.logging) || this.logging.level == '' || this.logging.level == 'OFF' || has(this.logging.log_destination)\"\x9b\x03\n" +

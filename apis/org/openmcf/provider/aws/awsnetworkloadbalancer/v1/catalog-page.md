@@ -35,6 +35,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsNetworkLoadBalancer.my-nlb
 spec:
+  region: us-west-2
   subnetMappings:
     - subnetId: subnet-0a1b2c3d4e5f00001
     - subnetId: subnet-0a1b2c3d4e5f00002
@@ -61,6 +62,7 @@ This creates an internet-facing NLB with a TCP listener on port 80 forwarding to
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the Network Load Balancer will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `subnetMappings` | `object[]` | Subnet mappings defining where NLB nodes are placed and optional static IPs | Minimum 1 item required |
 | `subnetMappings[].subnetId` | `string` | Subnet ID for the NLB node. Can reference an AwsVpc resource via `valueFrom` | Required |
 | `listeners` | `object[]` | Listener configurations with inline target groups | Minimum 1 item required |
@@ -124,6 +126,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsNetworkLoadBalancer.internal-tcp-nlb
 spec:
+  region: us-west-2
   subnetMappings:
     - subnetId: subnet-private-az1
     - subnetId: subnet-private-az2
@@ -152,6 +155,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsNetworkLoadBalancer.tls-nlb
 spec:
+  region: us-east-1
   subnetMappings:
     - subnetId: subnet-public-az1
     - subnetId: subnet-public-az2
@@ -187,6 +191,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsNetworkLoadBalancer.static-ip-nlb
 spec:
+  region: us-west-2
   subnetMappings:
     - subnetId: subnet-public-az1
       allocationId: eipalloc-abc123
@@ -218,6 +223,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsNetworkLoadBalancer.prod-nlb
 spec:
+  region: us-west-2
   subnetMappings:
     - subnetId:
         valueFrom:

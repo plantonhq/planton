@@ -43,6 +43,9 @@ variable "spec" {
   description = "spec"
   type = object({
 
+    # The AWS region where the resource will be created.
+    region = string
+
     # Description for subnet_ids
     subnet_ids = list(object({
 

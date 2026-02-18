@@ -28,6 +28,10 @@ import "org/openmcf/shared/options/options.proto";
 //
 // Credentials, region, and deployment workflow live outside this spec in stack inputs.
 message AwsCloudwatchLogGroupSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Retention
   // ---------------------------------------------------------------------------
@@ -44,7 +48,7 @@ message AwsCloudwatchLogGroupSpec {
   //
   // Recommended: Set an explicit retention for cost control. Indefinite retention
   // (0) accumulates storage costs over time.
-  int32 retention_in_days = 1 [(org.openmcf.shared.options.recommended_default) = "30"];
+  int32 retention_in_days = 2 [(org.openmcf.shared.options.recommended_default) = "30"];
 
   // ---------------------------------------------------------------------------
   // Encryption
@@ -60,7 +64,7 @@ message AwsCloudwatchLogGroupSpec {
   // - Compliance with regulations requiring customer-controlled encryption keys
   //
   // The KMS key must be in the same region as the log group.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 2 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 3 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -85,7 +89,7 @@ message AwsCloudwatchLogGroupSpec {
   //   and retention_in_days must not be set.
   //
   // This field is ForceNew: changing it requires replacing the log group.
-  string log_group_class = 3;
+  string log_group_class = 4;
 
   // ---------------------------------------------------------------------------
   // Deletion protection
@@ -95,7 +99,7 @@ message AwsCloudwatchLogGroupSpec {
   // the log group (including via IaC destroy) will fail until this flag is set
   // to false. Useful for protecting production log groups from accidental
   // deletion.
-  bool deletion_protection_enabled = 4;
+  bool deletion_protection_enabled = 5;
 
   // ---------------------------------------------------------------------------
   // CEL validations

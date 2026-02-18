@@ -10,6 +10,7 @@ kind: AwsMemorydbCluster
 metadata:
   name: dev-memorydb
 spec:
+  region: us-east-1
   engine: redis
   engineVersion: "7.1"
   nodeType: db.t4g.small
@@ -29,6 +30,7 @@ kind: AwsMemorydbCluster
 metadata:
   name: session-store
 spec:
+  region: us-east-1
   engine: redis
   engineVersion: "7.1"
   description: Production session store with HA
@@ -82,6 +84,7 @@ kind: AwsMemorydbCluster
 metadata:
   name: analytics-store
 spec:
+  region: us-east-1
   engine: redis
   engineVersion: "7.1"
   description: High-throughput analytics store with data tiering
@@ -125,6 +128,7 @@ kind: AwsMemorydbCluster
 metadata:
   name: app-memorydb
 spec:
+  region: us-east-1
   engine: redis
   engineVersion: "7.1"
   nodeType: db.r7g.large

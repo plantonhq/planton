@@ -13,6 +13,7 @@ metadata:
   env: dev
   id: hello-world-dev
 spec:
+  region: us-east-1
   roleArn:
     value: arn:aws:iam::123456789012:role/StepFunctionsExecRole
   definition:
@@ -37,6 +38,7 @@ metadata:
   env: staging
   id: process-order-staging
 spec:
+  region: us-east-1
   type: STANDARD
   roleArn:
     valueFrom:
@@ -65,6 +67,7 @@ metadata:
   env: prod
   id: order-pipeline-prod
 spec:
+  region: us-east-1
   type: STANDARD
   description: Multi-step order processing with retries and error handling
   roleArn:
@@ -121,6 +124,7 @@ metadata:
   env: prod
   id: event-processor-prod
 spec:
+  region: us-east-1
   type: EXPRESS
   description: High-throughput event processing pipeline
   roleArn:
@@ -176,6 +180,7 @@ metadata:
   env: prod
   id: data-pipeline-prod
 spec:
+  region: us-east-1
   type: STANDARD
   description: Production data pipeline with full observability and encryption
   roleArn:
@@ -234,6 +239,7 @@ metadata:
   env: dev
   id: parallel-processor-dev
 spec:
+  region: us-east-1
   roleArn:
     value: arn:aws:iam::123456789012:role/StepFunctionsExecRole
   definition:
@@ -279,6 +285,7 @@ metadata:
   env: "{{ values.env }}"
   id: "{{ values.env }}-workflow"
 spec:
+  region: us-east-1
   type: STANDARD
   roleArn:
     valueFrom:

@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awskinesisstream/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awskinesisstream_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjdvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdza2luZXNpc3N0cmVhbS92MS9zcGVjLnByb3RvEixvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdza2luZXNpc3N0cmVhbS52MSKgDQoUQXdzS2luZXNpc1N0cmVhbVNwZWMSEwoLc3RyZWFtX21vZGUYASABKAkSEwoLc2hhcmRfY291bnQYAiABKAUSHgoWcmV0ZW50aW9uX3BlcmlvZF9ob3VycxgDIAEoBRJnCgprbXNfa2V5X2lkGAQgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybhIeChZtYXhfcmVjb3JkX3NpemVfaW5fa2liGAUgASgFEhsKE3NoYXJkX2xldmVsX21ldHJpY3MYBiADKAkSIQoZZW5mb3JjZV9jb25zdW1lcl9kZWxldGlvbhgHIAEoCDr0CrpI8AoaigEKFHN0cmVhbV9tb2RlX3JlcXVpcmVkEkBzdHJlYW1fbW9kZSBpcyByZXF1aXJlZCBhbmQgbXVzdCBiZSAnUFJPVklTSU9ORUQnIG9yICdPTl9ERU1BTkQnGjB0aGlzLnN0cmVhbV9tb2RlIGluIFsnUFJPVklTSU9ORUQnLCAnT05fREVNQU5EJ10apAEKJHNoYXJkX2NvdW50X3JlcXVpcmVkX2Zvcl9wcm92aXNpb25lZBJAc2hhcmRfY291bnQgbXVzdCBiZSBhdCBsZWFzdCAxIHdoZW4gc3RyZWFtX21vZGUgaXMgJ1BST1ZJU0lPTkVEJxo6dGhpcy5zdHJlYW1fbW9kZSAhPSAnUFJPVklTSU9ORUQnIHx8IHRoaXMuc2hhcmRfY291bnQgPj0gMRq5AQojc2hhcmRfY291bnRfZm9yYmlkZGVuX2Zvcl9vbl9kZW1hbmQSWHNoYXJkX2NvdW50IG11c3QgYmUgMCB3aGVuIHN0cmVhbV9tb2RlIGlzICdPTl9ERU1BTkQnIChBV1MgbWFuYWdlcyBzaGFyZHMgYXV0b21hdGljYWxseSkaOHRoaXMuc3RyZWFtX21vZGUgIT0gJ09OX0RFTUFORCcgfHwgdGhpcy5zaGFyZF9jb3VudCA9PSAwGtkBChZyZXRlbnRpb25fcGVyaW9kX3JhbmdlEk9yZXRlbnRpb25fcGVyaW9kX2hvdXJzIG11c3QgYmUgYmV0d2VlbiAyNCBhbmQgODc2MCAoMSBkYXkgdG8gMzY1IGRheXMpIHdoZW4gc2V0Gm50aGlzLnJldGVudGlvbl9wZXJpb2RfaG91cnMgPT0gMCB8fCAodGhpcy5yZXRlbnRpb25fcGVyaW9kX2hvdXJzID49IDI0ICYmIHRoaXMucmV0ZW50aW9uX3BlcmlvZF9ob3VycyA8PSA4NzYwKRrcAQoVbWF4X3JlY29yZF9zaXplX3JhbmdlElBtYXhfcmVjb3JkX3NpemVfaW5fa2liIG11c3QgYmUgYmV0d2VlbiAxMDI0IGFuZCAxMDI0MCAoMSBNaUIgdG8gMTAgTWlCKSB3aGVuIHNldBpxdGhpcy5tYXhfcmVjb3JkX3NpemVfaW5fa2liID09IDAgfHwgKHRoaXMubWF4X3JlY29yZF9zaXplX2luX2tpYiA+PSAxMDI0ICYmIHRoaXMubWF4X3JlY29yZF9zaXplX2luX2tpYiA8PSAxMDI0MCkawgMKGXNoYXJkX2xldmVsX21ldHJpY3NfdmFsaWQSzQFlYWNoIHNoYXJkX2xldmVsX21ldHJpY3MgdmFsdWUgbXVzdCBiZSBvbmUgb2Y6IEluY29taW5nQnl0ZXMsIEluY29taW5nUmVjb3JkcywgT3V0Z29pbmdCeXRlcywgT3V0Z29pbmdSZWNvcmRzLCBXcml0ZVByb3Zpc2lvbmVkVGhyb3VnaHB1dEV4Y2VlZGVkLCBSZWFkUHJvdmlzaW9uZWRUaHJvdWdocHV0RXhjZWVkZWQsIEl0ZXJhdG9yQWdlTWlsbGlzZWNvbmRzGtQBdGhpcy5zaGFyZF9sZXZlbF9tZXRyaWNzLmFsbChtLCBtIGluIFsnSW5jb21pbmdCeXRlcycsICdJbmNvbWluZ1JlY29yZHMnLCAnT3V0Z29pbmdCeXRlcycsICdPdXRnb2luZ1JlY29yZHMnLCAnV3JpdGVQcm92aXNpb25lZFRocm91Z2hwdXRFeGNlZWRlZCcsICdSZWFkUHJvdmlzaW9uZWRUaHJvdWdocHV0RXhjZWVkZWQnLCAnSXRlcmF0b3JBZ2VNaWxsaXNlY29uZHMnXSlC9wIKMGNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdza2luZXNpc3N0cmVhbS52MUIJU3BlY1Byb3RvUAFaYWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdza2luZXNpc3N0cmVhbS92MTthd3NraW5lc2lzc3RyZWFtdjGiAgVPT1BBQaoCLE9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NraW5lc2lzc3RyZWFtLlYxygIsT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2tpbmVzaXNzdHJlYW1cVjHiAjhPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdza2luZXNpc3N0cmVhbVxWMVxHUEJNZXRhZGF0YeoCMU9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdza2luZXNpc3N0cmVhbTo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
+  fileDesc("Cjdvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdza2luZXNpc3N0cmVhbS92MS9zcGVjLnByb3RvEixvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdza2luZXNpc3N0cmVhbS52MSK5DQoUQXdzS2luZXNpc1N0cmVhbVNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEhMKC3N0cmVhbV9tb2RlGAIgASgJEhMKC3NoYXJkX2NvdW50GAMgASgFEh4KFnJldGVudGlvbl9wZXJpb2RfaG91cnMYBCABKAUSZwoKa21zX2tleV9pZBgFIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SHgoWbWF4X3JlY29yZF9zaXplX2luX2tpYhgGIAEoBRIbChNzaGFyZF9sZXZlbF9tZXRyaWNzGAcgAygJEiEKGWVuZm9yY2VfY29uc3VtZXJfZGVsZXRpb24YCCABKAg69Aq6SPAKGooBChRzdHJlYW1fbW9kZV9yZXF1aXJlZBJAc3RyZWFtX21vZGUgaXMgcmVxdWlyZWQgYW5kIG11c3QgYmUgJ1BST1ZJU0lPTkVEJyBvciAnT05fREVNQU5EJxowdGhpcy5zdHJlYW1fbW9kZSBpbiBbJ1BST1ZJU0lPTkVEJywgJ09OX0RFTUFORCddGqQBCiRzaGFyZF9jb3VudF9yZXF1aXJlZF9mb3JfcHJvdmlzaW9uZWQSQHNoYXJkX2NvdW50IG11c3QgYmUgYXQgbGVhc3QgMSB3aGVuIHN0cmVhbV9tb2RlIGlzICdQUk9WSVNJT05FRCcaOnRoaXMuc3RyZWFtX21vZGUgIT0gJ1BST1ZJU0lPTkVEJyB8fCB0aGlzLnNoYXJkX2NvdW50ID49IDEauQEKI3NoYXJkX2NvdW50X2ZvcmJpZGRlbl9mb3Jfb25fZGVtYW5kElhzaGFyZF9jb3VudCBtdXN0IGJlIDAgd2hlbiBzdHJlYW1fbW9kZSBpcyAnT05fREVNQU5EJyAoQVdTIG1hbmFnZXMgc2hhcmRzIGF1dG9tYXRpY2FsbHkpGjh0aGlzLnN0cmVhbV9tb2RlICE9ICdPTl9ERU1BTkQnIHx8IHRoaXMuc2hhcmRfY291bnQgPT0gMBrZAQoWcmV0ZW50aW9uX3BlcmlvZF9yYW5nZRJPcmV0ZW50aW9uX3BlcmlvZF9ob3VycyBtdXN0IGJlIGJldHdlZW4gMjQgYW5kIDg3NjAgKDEgZGF5IHRvIDM2NSBkYXlzKSB3aGVuIHNldBpudGhpcy5yZXRlbnRpb25fcGVyaW9kX2hvdXJzID09IDAgfHwgKHRoaXMucmV0ZW50aW9uX3BlcmlvZF9ob3VycyA+PSAyNCAmJiB0aGlzLnJldGVudGlvbl9wZXJpb2RfaG91cnMgPD0gODc2MCka3AEKFW1heF9yZWNvcmRfc2l6ZV9yYW5nZRJQbWF4X3JlY29yZF9zaXplX2luX2tpYiBtdXN0IGJlIGJldHdlZW4gMTAyNCBhbmQgMTAyNDAgKDEgTWlCIHRvIDEwIE1pQikgd2hlbiBzZXQacXRoaXMubWF4X3JlY29yZF9zaXplX2luX2tpYiA9PSAwIHx8ICh0aGlzLm1heF9yZWNvcmRfc2l6ZV9pbl9raWIgPj0gMTAyNCAmJiB0aGlzLm1heF9yZWNvcmRfc2l6ZV9pbl9raWIgPD0gMTAyNDApGsIDChlzaGFyZF9sZXZlbF9tZXRyaWNzX3ZhbGlkEs0BZWFjaCBzaGFyZF9sZXZlbF9tZXRyaWNzIHZhbHVlIG11c3QgYmUgb25lIG9mOiBJbmNvbWluZ0J5dGVzLCBJbmNvbWluZ1JlY29yZHMsIE91dGdvaW5nQnl0ZXMsIE91dGdvaW5nUmVjb3JkcywgV3JpdGVQcm92aXNpb25lZFRocm91Z2hwdXRFeGNlZWRlZCwgUmVhZFByb3Zpc2lvbmVkVGhyb3VnaHB1dEV4Y2VlZGVkLCBJdGVyYXRvckFnZU1pbGxpc2Vjb25kcxrUAXRoaXMuc2hhcmRfbGV2ZWxfbWV0cmljcy5hbGwobSwgbSBpbiBbJ0luY29taW5nQnl0ZXMnLCAnSW5jb21pbmdSZWNvcmRzJywgJ091dGdvaW5nQnl0ZXMnLCAnT3V0Z29pbmdSZWNvcmRzJywgJ1dyaXRlUHJvdmlzaW9uZWRUaHJvdWdocHV0RXhjZWVkZWQnLCAnUmVhZFByb3Zpc2lvbmVkVGhyb3VnaHB1dEV4Y2VlZGVkJywgJ0l0ZXJhdG9yQWdlTWlsbGlzZWNvbmRzJ10pQvcCCjBjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2tpbmVzaXNzdHJlYW0udjFCCVNwZWNQcm90b1ABWmFnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c2tpbmVzaXNzdHJlYW0vdjE7YXdza2luZXNpc3N0cmVhbXYxogIFT09QQUGqAixPcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdza2luZXNpc3N0cmVhbS5WMcoCLE9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NraW5lc2lzc3RyZWFtXFYx4gI4T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2tpbmVzaXNzdHJlYW1cVjFcR1BCTWV0YWRhdGHqAjFPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c2tpbmVzaXNzdHJlYW06OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
 
 /**
  * AwsKinesisStreamSpec defines the desired configuration for an Amazon Kinesis Data Stream.
@@ -38,13 +38,17 @@ export const file_org_openmcf_provider_aws_awskinesisstream_v1_spec: GenFile = /
  * - Enhanced shard-level CloudWatch metrics are available for production observability.
  * - Credentials, region, and deployment workflow live outside this spec in stack inputs.
  *
- * ---------------------------------------------------------------------------
- * Capacity mode
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awskinesisstream.v1.AwsKinesisStreamSpec
  */
 export type AwsKinesisStreamSpec = Message<"org.openmcf.provider.aws.awskinesisstream.v1.AwsKinesisStreamSpec"> & {
+  /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * Capacity mode for the stream. This is a fundamental design choice that
    * determines pricing model, scaling behavior, and operational overhead.
@@ -61,7 +65,7 @@ export type AwsKinesisStreamSpec = Message<"org.openmcf.provider.aws.awskinesiss
    * choice because the two modes have fundamentally different cost and
    * operational characteristics.
    *
-   * @generated from field: string stream_mode = 1;
+   * @generated from field: string stream_mode = 2;
    */
   streamMode: string;
 
@@ -76,7 +80,7 @@ export type AwsKinesisStreamSpec = Message<"org.openmcf.provider.aws.awskinesiss
    * Can be updated after creation to scale provisioned streams. AWS uses
    * uniform scaling (UpdateShardCount with UNIFORM_SCALING strategy).
    *
-   * @generated from field: int32 shard_count = 2;
+   * @generated from field: int32 shard_count = 3;
    */
   shardCount: number;
 
@@ -91,7 +95,7 @@ export type AwsKinesisStreamSpec = Message<"org.openmcf.provider.aws.awskinesiss
    * Increasing retention is useful for reprocessing scenarios and late-arriving
    * consumers. Note: extended retention (beyond 24h) incurs additional cost.
    *
-   * @generated from field: int32 retention_period_hours = 3;
+   * @generated from field: int32 retention_period_hours = 4;
    */
   retentionPeriodHours: number;
 
@@ -105,7 +109,7 @@ export type AwsKinesisStreamSpec = Message<"org.openmcf.provider.aws.awskinesiss
    *
    * Encryption can be enabled or disabled after stream creation (not ForceNew).
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 4;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 5;
    */
   kmsKeyId?: StringValueOrRef;
 
@@ -119,7 +123,7 @@ export type AwsKinesisStreamSpec = Message<"org.openmcf.provider.aws.awskinesiss
    * Larger record sizes are useful for aggregated events, rich JSON payloads,
    * or binary data. Note: larger records consume more shard capacity.
    *
-   * @generated from field: int32 max_record_size_in_kib = 5;
+   * @generated from field: int32 max_record_size_in_kib = 6;
    */
   maxRecordSizeInKib: number;
 
@@ -141,7 +145,7 @@ export type AwsKinesisStreamSpec = Message<"org.openmcf.provider.aws.awskinesiss
    * Enhanced metrics incur additional CloudWatch cost per metric per shard.
    * Leave empty to use stream-level metrics only (no additional cost).
    *
-   * @generated from field: repeated string shard_level_metrics = 6;
+   * @generated from field: repeated string shard_level_metrics = 7;
    */
   shardLevelMetrics: string[];
 
@@ -153,7 +157,7 @@ export type AwsKinesisStreamSpec = Message<"org.openmcf.provider.aws.awskinesiss
    * This is an operational setting that only affects stream deletion. It has
    * no impact on the running stream.
    *
-   * @generated from field: bool enforce_consumer_deletion = 7;
+   * @generated from field: bool enforce_consumer_deletion = 8;
    */
   enforceConsumerDeletion: boolean;
 };

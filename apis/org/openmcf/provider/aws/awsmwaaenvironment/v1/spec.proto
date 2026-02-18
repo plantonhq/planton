@@ -11,26 +11,30 @@ import "org/openmcf/shared/options/options.proto";
 // handling scheduler, worker, and webserver infrastructure so teams can author, schedule,
 // and monitor data pipelines using Airflow DAGs stored in Amazon S3.
 message AwsMwaaEnvironmentSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // --- Airflow Configuration ---
 
   // airflow_version is the Apache Airflow version for the environment.
   // Examples: "2.10.1", "2.9.2", "2.8.1". If omitted, AWS uses the latest supported version.
   // Minor version upgrades are applied in-place; major version changes force environment replacement.
-  string airflow_version = 1;
+  string airflow_version = 2;
 
   // airflow_configuration_options overrides specific Apache Airflow configuration properties.
   // Keys use the Airflow "section.property" format, e.g., "core.default_timezone",
   // "webserver.dag_default_view", "celery.worker_autoscale".
   // Values may contain sensitive information (database URIs, API keys) -- treat as confidential.
   // See https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-env-variables.html for allowed keys.
-  map<string, string> airflow_configuration_options = 2;
+  map<string, string> airflow_configuration_options = 3;
 
   // --- S3 Source ---
 
   // source_bucket_arn is the ARN of the S3 bucket containing DAGs, plugins, and requirements.
   // The bucket must have versioning enabled and a bucket policy granting MWAA access.
   // The execution role must have permissions to read from this bucket.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef source_bucket_arn = 3 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef source_bucket_arn = 4 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsS3Bucket,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_arn"
@@ -38,42 +42,42 @@ message AwsMwaaEnvironmentSpec {
 
   // dag_s3_path is the relative path within the S3 bucket to the folder containing DAG files.
   // Example: "dags/" or "airflow/dags/". Must not start with "/".
-  string dag_s3_path = 4 [(buf.validate.field).required = true];
+  string dag_s3_path = 5 [(buf.validate.field).required = true];
 
   // plugins_s3_path is the relative path within the S3 bucket to a plugins.zip file.
   // The zip contains custom Airflow plugins (operators, hooks, sensors, macros).
   // Example: "plugins/plugins.zip".
-  string plugins_s3_path = 5;
+  string plugins_s3_path = 6;
 
   // plugins_s3_object_version pins the plugins.zip to a specific S3 object version.
   // Ensures deterministic deployments. If omitted, the latest version is used.
-  string plugins_s3_object_version = 6;
+  string plugins_s3_object_version = 7;
 
   // requirements_s3_path is the relative path within the S3 bucket to a requirements.txt file.
   // Lists additional Python packages to install in the Airflow environment.
   // Example: "requirements/requirements.txt".
-  string requirements_s3_path = 7;
+  string requirements_s3_path = 8;
 
   // requirements_s3_object_version pins the requirements.txt to a specific S3 object version.
   // Ensures deterministic deployments. If omitted, the latest version is used.
-  string requirements_s3_object_version = 8;
+  string requirements_s3_object_version = 9;
 
   // startup_script_s3_path is the relative path within the S3 bucket to a startup shell script.
   // Runs at environment startup for OS-level setup (install system packages, set environment
   // variables, configure authentication) that requirements.txt cannot handle.
   // Available for Airflow 2.x+. Example: "scripts/startup.sh".
-  string startup_script_s3_path = 9;
+  string startup_script_s3_path = 10;
 
   // startup_script_s3_object_version pins the startup script to a specific S3 object version.
   // Ensures deterministic deployments. If omitted, the latest version is used.
-  string startup_script_s3_object_version = 10;
+  string startup_script_s3_object_version = 11;
 
   // --- IAM ---
 
   // execution_role_arn is the ARN of the IAM role that MWAA assumes to access AWS resources.
   // This role needs permissions for S3 (DAGs bucket), CloudWatch Logs, SQS (Celery backend),
   // and any AWS services your DAGs interact with (e.g., Glue, EMR, Redshift, Lambda).
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef execution_role_arn = 11 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef execution_role_arn = 12 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsIamRole,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
@@ -86,7 +90,7 @@ message AwsMwaaEnvironmentSpec {
   // subnet_ids are the private VPC subnets where MWAA creates network interfaces.
   // Requires exactly 2 subnets in different Availability Zones. Must be private subnets
   // (no direct route to an internet gateway). ForceNew: changing subnets forces replacement.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 12 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 13 [
     (buf.validate.field).repeated.min_items = 2,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
@@ -97,7 +101,7 @@ message AwsMwaaEnvironmentSpec {
   //   - Self-referencing inbound rule (all traffic) for MWAA component intercommunication
   //   - Ingress on port 443 (HTTPS) from these source security groups for Airflow UI access
   //   - Full egress to allow outbound connectivity
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 13 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 14 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
@@ -105,7 +109,7 @@ message AwsMwaaEnvironmentSpec {
   // allowed_cidr_blocks are IPv4 CIDR ranges allowed to reach the MWAA VPC endpoints on port 443.
   // When provided (along with vpc_id), a managed security group is created with ingress rules
   // permitting HTTPS traffic from these CIDRs.
-  repeated string allowed_cidr_blocks = 14 [
+  repeated string allowed_cidr_blocks = 15 [
     (buf.validate.field).repeated.items.string.pattern = "^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$",
     (buf.validate.field).repeated.unique = true
   ];
@@ -114,14 +118,14 @@ message AwsMwaaEnvironmentSpec {
   // MWAA environment alongside the managed security group (if created).
   // Use this when you already have a security group configured for MWAA's self-referencing
   // pattern and want to attach it directly without managed SG creation.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef associate_security_group_ids = 15 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef associate_security_group_ids = 16 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
 
   // vpc_id is the VPC in which to create the managed security group.
   // Required when security_group_ids or allowed_cidr_blocks are provided.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 16 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 17 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
   ];
@@ -132,7 +136,7 @@ message AwsMwaaEnvironmentSpec {
   // (metadata database, DAG logs, SQS queue, web server logs).
   // If omitted, AWS uses the default aws/airflow service key.
   // ForceNew: changing the KMS key forces environment replacement.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_arn = 17 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_arn = 18 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -146,7 +150,7 @@ message AwsMwaaEnvironmentSpec {
   // "mw1.large": 4 vCPU, 8 GB (large workloads).
   // "mw1.xlarge": 8 vCPU, 16 GB (very large workloads).
   // "mw1.2xlarge": 16 vCPU, 32 GB (maximum capacity).
-  string environment_class = 18 [
+  string environment_class = 19 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
       in: [
@@ -163,21 +167,21 @@ message AwsMwaaEnvironmentSpec {
   // min_workers is the minimum number of Celery workers for auto-scaling.
   // Range: >= 1. Workers process DAG tasks. MWAA scales between min_workers and max_workers
   // based on task queue depth. Default: 1.
-  int32 min_workers = 19 [
+  int32 min_workers = 20 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).int32.gte = 1
   ];
 
   // max_workers is the maximum number of Celery workers for auto-scaling.
   // Range: >= 1. Must be >= min_workers. Default: 10.
-  int32 max_workers = 20 [
+  int32 max_workers = 21 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).int32.gte = 1
   ];
 
   // min_webservers is the minimum number of Airflow webservers.
   // Range: 2-5 (1 for mw1.micro). Default: 2.
-  int32 min_webservers = 21 [
+  int32 min_webservers = 22 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).int32 = {
       gte: 1
@@ -187,7 +191,7 @@ message AwsMwaaEnvironmentSpec {
 
   // max_webservers is the maximum number of Airflow webservers.
   // Range: 2-5 (1 for mw1.micro). Must be >= min_webservers. Default: 2.
-  int32 max_webservers = 22 [
+  int32 max_webservers = 23 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).int32 = {
       gte: 1
@@ -197,7 +201,7 @@ message AwsMwaaEnvironmentSpec {
 
   // schedulers is the number of Airflow schedulers.
   // Range: 2-5. Default: 2. More schedulers improve DAG parsing and scheduling throughput.
-  int32 schedulers = 23 [
+  int32 schedulers = 24 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).int32 = {
       gte: 2
@@ -210,7 +214,7 @@ message AwsMwaaEnvironmentSpec {
   // webserver_access_mode controls how the Airflow web UI is accessed.
   // "PRIVATE_ONLY" (default): accessible only within the VPC via VPC endpoint.
   // "PUBLIC_ONLY": accessible over the internet with IAM-based login.
-  optional string webserver_access_mode = 24 [
+  optional string webserver_access_mode = 25 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
       in: [
@@ -225,7 +229,7 @@ message AwsMwaaEnvironmentSpec {
   // "SERVICE" (default): AWS creates and manages VPC endpoints automatically.
   // "CUSTOMER": you create and manage VPC endpoints yourself (advanced, <5% adoption).
   // ForceNew: changing this forces environment replacement.
-  string endpoint_management = 25 [
+  string endpoint_management = 26 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
       in: [
@@ -242,21 +246,21 @@ message AwsMwaaEnvironmentSpec {
   // Each module can be independently enabled with its own log level.
   // CloudWatch Logs groups are auto-created by MWAA in the format:
   // /aws/mwaa/{environment-name}/{module-name}
-  AwsMwaaEnvironmentLoggingConfiguration logging_configuration = 26;
+  AwsMwaaEnvironmentLoggingConfiguration logging_configuration = 27;
 
   // --- Maintenance ---
 
   // weekly_maintenance_window_start is the preferred start time for weekly maintenance.
   // Format: "DAY:HH:MM" in UTC (e.g., "TUE:03:30", "SUN:00:00").
   // During maintenance, MWAA may apply patches or updates. If omitted, AWS selects a window.
-  string weekly_maintenance_window_start = 27;
+  string weekly_maintenance_window_start = 28;
 
   // --- Operations ---
 
   // worker_replacement_strategy controls how workers are replaced during environment updates.
   // "FORCED": replaces workers immediately (faster updates, may interrupt running tasks).
   // "GRACEFUL": waits for running tasks to complete before replacing workers (slower, no data loss).
-  string worker_replacement_strategy = 28 [
+  string worker_replacement_strategy = 29 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
       in: [

@@ -21,39 +21,43 @@ import "org/openmcf/shared/options/options.proto";
 // application-level workloads with independent lifecycles (versioned, frequently
 // updated, reusable across queues).
 message AwsBatchComputeEnvironmentSpec {
+  // The AWS region where the Batch compute environment will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // state controls whether the compute environment accepts jobs.
   // When DISABLED, the compute environment does not accept new jobs but
   // existing running jobs continue to completion.
-  optional string state = 1 [(org.openmcf.shared.options.default) = "ENABLED"];
+  optional string state = 2 [(org.openmcf.shared.options.default) = "ENABLED"];
 
   // service_role is the IAM role ARN that allows AWS Batch to make API calls
   // to other AWS services on your behalf. If omitted, AWS Batch uses the
   // AWSServiceRoleForBatch service-linked role (recommended for most use cases).
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef service_role = 2 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef service_role = 3 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsIamRole,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
   ];
 
   // compute_resources defines the infrastructure backing this compute
   // environment: instance types, vCPU limits, VPC networking, and scaling.
-  AwsBatchComputeResources compute_resources = 3 [(buf.validate.field).required = true];
+  AwsBatchComputeResources compute_resources = 4 [(buf.validate.field).required = true];
 
   // update_policy controls the behavior of infrastructure updates when the
   // compute environment is modified. Relevant for EC2/SPOT types where
   // running instances may need replacement.
-  AwsBatchUpdatePolicy update_policy = 4;
+  AwsBatchUpdatePolicy update_policy = 5;
 
   // job_queues defines one or more job queues that route submitted jobs to this
   // compute environment. At least one queue is required. Each queue has its own
   // priority, state, and optional time-limit actions.
-  repeated AwsBatchJobQueue job_queues = 5 [(buf.validate.field).repeated.min_items = 1];
+  repeated AwsBatchJobQueue job_queues = 6 [(buf.validate.field).repeated.min_items = 1];
 
   // scheduling_policy defines an optional fair-share scheduling policy. When
   // provided, a scheduling policy resource is created and attached to all
   // bundled job queues. Fair-share scheduling divides compute capacity across
   // share identifiers, preventing any single workload from monopolizing the
   // compute environment.
-  AwsBatchSchedulingPolicy scheduling_policy = 6;
+  AwsBatchSchedulingPolicy scheduling_policy = 7;
 }
 
 // AwsBatchComputeResources defines the compute infrastructure for a MANAGED

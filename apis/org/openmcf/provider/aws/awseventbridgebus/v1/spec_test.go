@@ -25,8 +25,9 @@ var _ = ginkgo.Describe("AwsEventBridgeBusSpec validations", func() {
 	var spec *AwsEventBridgeBusSpec
 
 	ginkgo.BeforeEach(func() {
-		// Minimal valid spec: an empty custom bus with AWS defaults.
-		spec = &AwsEventBridgeBusSpec{}
+		spec = &AwsEventBridgeBusSpec{
+			Region: "us-east-1",
+		}
 	})
 
 	// -------------------------------------------------------------------------

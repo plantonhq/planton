@@ -30,76 +30,79 @@ const (
 // and monitor data pipelines using Airflow DAGs stored in Amazon S3.
 type AwsMwaaEnvironmentSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// airflow_version is the Apache Airflow version for the environment.
 	// Examples: "2.10.1", "2.9.2", "2.8.1". If omitted, AWS uses the latest supported version.
 	// Minor version upgrades are applied in-place; major version changes force environment replacement.
-	AirflowVersion string `protobuf:"bytes,1,opt,name=airflow_version,json=airflowVersion,proto3" json:"airflow_version,omitempty"`
+	AirflowVersion string `protobuf:"bytes,2,opt,name=airflow_version,json=airflowVersion,proto3" json:"airflow_version,omitempty"`
 	// airflow_configuration_options overrides specific Apache Airflow configuration properties.
 	// Keys use the Airflow "section.property" format, e.g., "core.default_timezone",
 	// "webserver.dag_default_view", "celery.worker_autoscale".
 	// Values may contain sensitive information (database URIs, API keys) -- treat as confidential.
 	// See https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-env-variables.html for allowed keys.
-	AirflowConfigurationOptions map[string]string `protobuf:"bytes,2,rep,name=airflow_configuration_options,json=airflowConfigurationOptions,proto3" json:"airflow_configuration_options,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	AirflowConfigurationOptions map[string]string `protobuf:"bytes,3,rep,name=airflow_configuration_options,json=airflowConfigurationOptions,proto3" json:"airflow_configuration_options,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// source_bucket_arn is the ARN of the S3 bucket containing DAGs, plugins, and requirements.
 	// The bucket must have versioning enabled and a bucket policy granting MWAA access.
 	// The execution role must have permissions to read from this bucket.
-	SourceBucketArn *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=source_bucket_arn,json=sourceBucketArn,proto3" json:"source_bucket_arn,omitempty"`
+	SourceBucketArn *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=source_bucket_arn,json=sourceBucketArn,proto3" json:"source_bucket_arn,omitempty"`
 	// dag_s3_path is the relative path within the S3 bucket to the folder containing DAG files.
 	// Example: "dags/" or "airflow/dags/". Must not start with "/".
-	DagS3Path string `protobuf:"bytes,4,opt,name=dag_s3_path,json=dagS3Path,proto3" json:"dag_s3_path,omitempty"`
+	DagS3Path string `protobuf:"bytes,5,opt,name=dag_s3_path,json=dagS3Path,proto3" json:"dag_s3_path,omitempty"`
 	// plugins_s3_path is the relative path within the S3 bucket to a plugins.zip file.
 	// The zip contains custom Airflow plugins (operators, hooks, sensors, macros).
 	// Example: "plugins/plugins.zip".
-	PluginsS3Path string `protobuf:"bytes,5,opt,name=plugins_s3_path,json=pluginsS3Path,proto3" json:"plugins_s3_path,omitempty"`
+	PluginsS3Path string `protobuf:"bytes,6,opt,name=plugins_s3_path,json=pluginsS3Path,proto3" json:"plugins_s3_path,omitempty"`
 	// plugins_s3_object_version pins the plugins.zip to a specific S3 object version.
 	// Ensures deterministic deployments. If omitted, the latest version is used.
-	PluginsS3ObjectVersion string `protobuf:"bytes,6,opt,name=plugins_s3_object_version,json=pluginsS3ObjectVersion,proto3" json:"plugins_s3_object_version,omitempty"`
+	PluginsS3ObjectVersion string `protobuf:"bytes,7,opt,name=plugins_s3_object_version,json=pluginsS3ObjectVersion,proto3" json:"plugins_s3_object_version,omitempty"`
 	// requirements_s3_path is the relative path within the S3 bucket to a requirements.txt file.
 	// Lists additional Python packages to install in the Airflow environment.
 	// Example: "requirements/requirements.txt".
-	RequirementsS3Path string `protobuf:"bytes,7,opt,name=requirements_s3_path,json=requirementsS3Path,proto3" json:"requirements_s3_path,omitempty"`
+	RequirementsS3Path string `protobuf:"bytes,8,opt,name=requirements_s3_path,json=requirementsS3Path,proto3" json:"requirements_s3_path,omitempty"`
 	// requirements_s3_object_version pins the requirements.txt to a specific S3 object version.
 	// Ensures deterministic deployments. If omitted, the latest version is used.
-	RequirementsS3ObjectVersion string `protobuf:"bytes,8,opt,name=requirements_s3_object_version,json=requirementsS3ObjectVersion,proto3" json:"requirements_s3_object_version,omitempty"`
+	RequirementsS3ObjectVersion string `protobuf:"bytes,9,opt,name=requirements_s3_object_version,json=requirementsS3ObjectVersion,proto3" json:"requirements_s3_object_version,omitempty"`
 	// startup_script_s3_path is the relative path within the S3 bucket to a startup shell script.
 	// Runs at environment startup for OS-level setup (install system packages, set environment
 	// variables, configure authentication) that requirements.txt cannot handle.
 	// Available for Airflow 2.x+. Example: "scripts/startup.sh".
-	StartupScriptS3Path string `protobuf:"bytes,9,opt,name=startup_script_s3_path,json=startupScriptS3Path,proto3" json:"startup_script_s3_path,omitempty"`
+	StartupScriptS3Path string `protobuf:"bytes,10,opt,name=startup_script_s3_path,json=startupScriptS3Path,proto3" json:"startup_script_s3_path,omitempty"`
 	// startup_script_s3_object_version pins the startup script to a specific S3 object version.
 	// Ensures deterministic deployments. If omitted, the latest version is used.
-	StartupScriptS3ObjectVersion string `protobuf:"bytes,10,opt,name=startup_script_s3_object_version,json=startupScriptS3ObjectVersion,proto3" json:"startup_script_s3_object_version,omitempty"`
+	StartupScriptS3ObjectVersion string `protobuf:"bytes,11,opt,name=startup_script_s3_object_version,json=startupScriptS3ObjectVersion,proto3" json:"startup_script_s3_object_version,omitempty"`
 	// execution_role_arn is the ARN of the IAM role that MWAA assumes to access AWS resources.
 	// This role needs permissions for S3 (DAGs bucket), CloudWatch Logs, SQS (Celery backend),
 	// and any AWS services your DAGs interact with (e.g., Glue, EMR, Redshift, Lambda).
-	ExecutionRoleArn *v1.StringValueOrRef `protobuf:"bytes,11,opt,name=execution_role_arn,json=executionRoleArn,proto3" json:"execution_role_arn,omitempty"`
+	ExecutionRoleArn *v1.StringValueOrRef `protobuf:"bytes,12,opt,name=execution_role_arn,json=executionRoleArn,proto3" json:"execution_role_arn,omitempty"`
 	// subnet_ids are the private VPC subnets where MWAA creates network interfaces.
 	// Requires exactly 2 subnets in different Availability Zones. Must be private subnets
 	// (no direct route to an internet gateway). ForceNew: changing subnets forces replacement.
-	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,12,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
+	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,13,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// security_group_ids are source security groups allowed to reach the MWAA VPC endpoints.
 	// When provided (along with vpc_id), a managed security group is created with:
 	//   - Self-referencing inbound rule (all traffic) for MWAA component intercommunication
 	//   - Ingress on port 443 (HTTPS) from these source security groups for Airflow UI access
 	//   - Full egress to allow outbound connectivity
-	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,13,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
+	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,14,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
 	// allowed_cidr_blocks are IPv4 CIDR ranges allowed to reach the MWAA VPC endpoints on port 443.
 	// When provided (along with vpc_id), a managed security group is created with ingress rules
 	// permitting HTTPS traffic from these CIDRs.
-	AllowedCidrBlocks []string `protobuf:"bytes,14,rep,name=allowed_cidr_blocks,json=allowedCidrBlocks,proto3" json:"allowed_cidr_blocks,omitempty"`
+	AllowedCidrBlocks []string `protobuf:"bytes,15,rep,name=allowed_cidr_blocks,json=allowedCidrBlocks,proto3" json:"allowed_cidr_blocks,omitempty"`
 	// associate_security_group_ids are existing security groups attached directly to the
 	// MWAA environment alongside the managed security group (if created).
 	// Use this when you already have a security group configured for MWAA's self-referencing
 	// pattern and want to attach it directly without managed SG creation.
-	AssociateSecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,15,rep,name=associate_security_group_ids,json=associateSecurityGroupIds,proto3" json:"associate_security_group_ids,omitempty"`
+	AssociateSecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,16,rep,name=associate_security_group_ids,json=associateSecurityGroupIds,proto3" json:"associate_security_group_ids,omitempty"`
 	// vpc_id is the VPC in which to create the managed security group.
 	// Required when security_group_ids or allowed_cidr_blocks are provided.
-	VpcId *v1.StringValueOrRef `protobuf:"bytes,16,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
+	VpcId *v1.StringValueOrRef `protobuf:"bytes,17,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
 	// kms_key_arn is the KMS key ARN for encrypting environment data at rest
 	// (metadata database, DAG logs, SQS queue, web server logs).
 	// If omitted, AWS uses the default aws/airflow service key.
 	// ForceNew: changing the KMS key forces environment replacement.
-	KmsKeyArn *v1.StringValueOrRef `protobuf:"bytes,17,opt,name=kms_key_arn,json=kmsKeyArn,proto3" json:"kms_key_arn,omitempty"`
+	KmsKeyArn *v1.StringValueOrRef `protobuf:"bytes,18,opt,name=kms_key_arn,json=kmsKeyArn,proto3" json:"kms_key_arn,omitempty"`
 	// environment_class determines the compute and memory capacity of the Airflow components.
 	// "mw1.micro": 0.5 vCPU, 1 GB (dev/test, limited to 1 webserver).
 	// "mw1.small" (default): 1 vCPU, 2 GB (small-medium workloads).
@@ -107,46 +110,46 @@ type AwsMwaaEnvironmentSpec struct {
 	// "mw1.large": 4 vCPU, 8 GB (large workloads).
 	// "mw1.xlarge": 8 vCPU, 16 GB (very large workloads).
 	// "mw1.2xlarge": 16 vCPU, 32 GB (maximum capacity).
-	EnvironmentClass string `protobuf:"bytes,18,opt,name=environment_class,json=environmentClass,proto3" json:"environment_class,omitempty"`
+	EnvironmentClass string `protobuf:"bytes,19,opt,name=environment_class,json=environmentClass,proto3" json:"environment_class,omitempty"`
 	// min_workers is the minimum number of Celery workers for auto-scaling.
 	// Range: >= 1. Workers process DAG tasks. MWAA scales between min_workers and max_workers
 	// based on task queue depth. Default: 1.
-	MinWorkers int32 `protobuf:"varint,19,opt,name=min_workers,json=minWorkers,proto3" json:"min_workers,omitempty"`
+	MinWorkers int32 `protobuf:"varint,20,opt,name=min_workers,json=minWorkers,proto3" json:"min_workers,omitempty"`
 	// max_workers is the maximum number of Celery workers for auto-scaling.
 	// Range: >= 1. Must be >= min_workers. Default: 10.
-	MaxWorkers int32 `protobuf:"varint,20,opt,name=max_workers,json=maxWorkers,proto3" json:"max_workers,omitempty"`
+	MaxWorkers int32 `protobuf:"varint,21,opt,name=max_workers,json=maxWorkers,proto3" json:"max_workers,omitempty"`
 	// min_webservers is the minimum number of Airflow webservers.
 	// Range: 2-5 (1 for mw1.micro). Default: 2.
-	MinWebservers int32 `protobuf:"varint,21,opt,name=min_webservers,json=minWebservers,proto3" json:"min_webservers,omitempty"`
+	MinWebservers int32 `protobuf:"varint,22,opt,name=min_webservers,json=minWebservers,proto3" json:"min_webservers,omitempty"`
 	// max_webservers is the maximum number of Airflow webservers.
 	// Range: 2-5 (1 for mw1.micro). Must be >= min_webservers. Default: 2.
-	MaxWebservers int32 `protobuf:"varint,22,opt,name=max_webservers,json=maxWebservers,proto3" json:"max_webservers,omitempty"`
+	MaxWebservers int32 `protobuf:"varint,23,opt,name=max_webservers,json=maxWebservers,proto3" json:"max_webservers,omitempty"`
 	// schedulers is the number of Airflow schedulers.
 	// Range: 2-5. Default: 2. More schedulers improve DAG parsing and scheduling throughput.
-	Schedulers int32 `protobuf:"varint,23,opt,name=schedulers,proto3" json:"schedulers,omitempty"`
+	Schedulers int32 `protobuf:"varint,24,opt,name=schedulers,proto3" json:"schedulers,omitempty"`
 	// webserver_access_mode controls how the Airflow web UI is accessed.
 	// "PRIVATE_ONLY" (default): accessible only within the VPC via VPC endpoint.
 	// "PUBLIC_ONLY": accessible over the internet with IAM-based login.
-	WebserverAccessMode *string `protobuf:"bytes,24,opt,name=webserver_access_mode,json=webserverAccessMode,proto3,oneof" json:"webserver_access_mode,omitempty"`
+	WebserverAccessMode *string `protobuf:"bytes,25,opt,name=webserver_access_mode,json=webserverAccessMode,proto3,oneof" json:"webserver_access_mode,omitempty"`
 	// endpoint_management controls who manages the VPC endpoints for the environment.
 	// "SERVICE" (default): AWS creates and manages VPC endpoints automatically.
 	// "CUSTOMER": you create and manage VPC endpoints yourself (advanced, <5% adoption).
 	// ForceNew: changing this forces environment replacement.
-	EndpointManagement string `protobuf:"bytes,25,opt,name=endpoint_management,json=endpointManagement,proto3" json:"endpoint_management,omitempty"`
+	EndpointManagement string `protobuf:"bytes,26,opt,name=endpoint_management,json=endpointManagement,proto3" json:"endpoint_management,omitempty"`
 	// logging_configuration controls per-module Airflow log delivery to CloudWatch Logs.
 	// MWAA supports 5 log modules: DAG processing, scheduler, task, webserver, and worker.
 	// Each module can be independently enabled with its own log level.
 	// CloudWatch Logs groups are auto-created by MWAA in the format:
 	// /aws/mwaa/{environment-name}/{module-name}
-	LoggingConfiguration *AwsMwaaEnvironmentLoggingConfiguration `protobuf:"bytes,26,opt,name=logging_configuration,json=loggingConfiguration,proto3" json:"logging_configuration,omitempty"`
+	LoggingConfiguration *AwsMwaaEnvironmentLoggingConfiguration `protobuf:"bytes,27,opt,name=logging_configuration,json=loggingConfiguration,proto3" json:"logging_configuration,omitempty"`
 	// weekly_maintenance_window_start is the preferred start time for weekly maintenance.
 	// Format: "DAY:HH:MM" in UTC (e.g., "TUE:03:30", "SUN:00:00").
 	// During maintenance, MWAA may apply patches or updates. If omitted, AWS selects a window.
-	WeeklyMaintenanceWindowStart string `protobuf:"bytes,27,opt,name=weekly_maintenance_window_start,json=weeklyMaintenanceWindowStart,proto3" json:"weekly_maintenance_window_start,omitempty"`
+	WeeklyMaintenanceWindowStart string `protobuf:"bytes,28,opt,name=weekly_maintenance_window_start,json=weeklyMaintenanceWindowStart,proto3" json:"weekly_maintenance_window_start,omitempty"`
 	// worker_replacement_strategy controls how workers are replaced during environment updates.
 	// "FORCED": replaces workers immediately (faster updates, may interrupt running tasks).
 	// "GRACEFUL": waits for running tasks to complete before replacing workers (slower, no data loss).
-	WorkerReplacementStrategy string `protobuf:"bytes,28,opt,name=worker_replacement_strategy,json=workerReplacementStrategy,proto3" json:"worker_replacement_strategy,omitempty"`
+	WorkerReplacementStrategy string `protobuf:"bytes,29,opt,name=worker_replacement_strategy,json=workerReplacementStrategy,proto3" json:"worker_replacement_strategy,omitempty"`
 	unknownFields             protoimpl.UnknownFields
 	sizeCache                 protoimpl.SizeCache
 }
@@ -179,6 +182,13 @@ func (x *AwsMwaaEnvironmentSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsMwaaEnvironmentSpec.ProtoReflect.Descriptor instead.
 func (*AwsMwaaEnvironmentSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsmwaaenvironment_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsMwaaEnvironmentSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsMwaaEnvironmentSpec) GetAirflowVersion() string {
@@ -528,46 +538,47 @@ var File_org_openmcf_provider_aws_awsmwaaenvironment_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_aws_awsmwaaenvironment_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/aws/awsmwaaenvironment/v1/spec.proto\x12.org.openmcf.provider.aws.awsmwaaenvironment.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xf7\x1c\n" +
-	"\x16AwsMwaaEnvironmentSpec\x12'\n" +
-	"\x0fairflow_version\x18\x01 \x01(\tR\x0eairflowVersion\x12\xab\x01\n" +
-	"\x1dairflow_configuration_options\x18\x02 \x03(\v2g.org.openmcf.provider.aws.awsmwaaenvironment.v1.AwsMwaaEnvironmentSpec.AirflowConfigurationOptionsEntryR\x1bairflowConfigurationOptions\x12\x88\x01\n" +
-	"\x11source_bucket_arn\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xd5\x01\x92\xd4a\x19status.outputs.bucket_arnR\x0fsourceBucketArn\x12&\n" +
-	"\vdag_s3_path\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\tdagS3Path\x12&\n" +
-	"\x0fplugins_s3_path\x18\x05 \x01(\tR\rpluginsS3Path\x129\n" +
-	"\x19plugins_s3_object_version\x18\x06 \x01(\tR\x16pluginsS3ObjectVersion\x120\n" +
-	"\x14requirements_s3_path\x18\a \x01(\tR\x12requirementsS3Path\x12C\n" +
-	"\x1erequirements_s3_object_version\x18\b \x01(\tR\x1brequirementsS3ObjectVersion\x123\n" +
-	"\x16startup_script_s3_path\x18\t \x01(\tR\x13startupScriptS3Path\x12F\n" +
-	" startup_script_s3_object_version\x18\n" +
-	" \x01(\tR\x1cstartupScriptS3ObjectVersion\x12\x88\x01\n" +
-	"\x12execution_role_arn\x18\v \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\x10executionRoleArn\x12\x89\x01\n" +
+	"9org/openmcf/provider/aws/awsmwaaenvironment/v1/spec.proto\x12.org.openmcf.provider.aws.awsmwaaenvironment.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x98\x1d\n" +
+	"\x16AwsMwaaEnvironmentSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12'\n" +
+	"\x0fairflow_version\x18\x02 \x01(\tR\x0eairflowVersion\x12\xab\x01\n" +
+	"\x1dairflow_configuration_options\x18\x03 \x03(\v2g.org.openmcf.provider.aws.awsmwaaenvironment.v1.AwsMwaaEnvironmentSpec.AirflowConfigurationOptionsEntryR\x1bairflowConfigurationOptions\x12\x88\x01\n" +
+	"\x11source_bucket_arn\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xd5\x01\x92\xd4a\x19status.outputs.bucket_arnR\x0fsourceBucketArn\x12&\n" +
+	"\vdag_s3_path\x18\x05 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\tdagS3Path\x12&\n" +
+	"\x0fplugins_s3_path\x18\x06 \x01(\tR\rpluginsS3Path\x129\n" +
+	"\x19plugins_s3_object_version\x18\a \x01(\tR\x16pluginsS3ObjectVersion\x120\n" +
+	"\x14requirements_s3_path\x18\b \x01(\tR\x12requirementsS3Path\x12C\n" +
+	"\x1erequirements_s3_object_version\x18\t \x01(\tR\x1brequirementsS3ObjectVersion\x123\n" +
+	"\x16startup_script_s3_path\x18\n" +
+	" \x01(\tR\x13startupScriptS3Path\x12F\n" +
+	" startup_script_s3_object_version\x18\v \x01(\tR\x1cstartupScriptS3ObjectVersion\x12\x88\x01\n" +
+	"\x12execution_role_arn\x18\f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\x10executionRoleArn\x12\x89\x01\n" +
 	"\n" +
-	"subnet_ids\x18\f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x05\x92\x01\x02\b\x02\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
-	"\x12security_group_ids\x18\r \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12\xa1\x01\n" +
-	"\x13allowed_cidr_blocks\x18\x0e \x03(\tBq\xbaHn\x92\x01k\x18\x01\"gre2c^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$R\x11allowedCidrBlocks\x12\x9e\x01\n" +
-	"\x1cassociate_security_group_ids\x18\x0f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x19associateSecurityGroupIds\x12i\n" +
-	"\x06vpc_id\x18\x10 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12s\n" +
-	"\vkms_key_arn\x18\x11 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\tkmsKeyArn\x12{\n" +
-	"\x11environment_class\x18\x12 \x01(\tBN\xbaHK\xd8\x01\x01rFR\tmw1.microR\tmw1.smallR\n" +
+	"subnet_ids\x18\r \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x05\x92\x01\x02\b\x02\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
+	"\x12security_group_ids\x18\x0e \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12\xa1\x01\n" +
+	"\x13allowed_cidr_blocks\x18\x0f \x03(\tBq\xbaHn\x92\x01k\x18\x01\"gre2c^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$R\x11allowedCidrBlocks\x12\x9e\x01\n" +
+	"\x1cassociate_security_group_ids\x18\x10 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x19associateSecurityGroupIds\x12i\n" +
+	"\x06vpc_id\x18\x11 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12s\n" +
+	"\vkms_key_arn\x18\x12 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\tkmsKeyArn\x12{\n" +
+	"\x11environment_class\x18\x13 \x01(\tBN\xbaHK\xd8\x01\x01rFR\tmw1.microR\tmw1.smallR\n" +
 	"mw1.mediumR\tmw1.largeR\n" +
 	"mw1.xlargeR\vmw1.2xlargeR\x10environmentClass\x12+\n" +
-	"\vmin_workers\x18\x13 \x01(\x05B\n" +
+	"\vmin_workers\x18\x14 \x01(\x05B\n" +
 	"\xbaH\a\xd8\x01\x01\x1a\x02(\x01R\n" +
 	"minWorkers\x12+\n" +
-	"\vmax_workers\x18\x14 \x01(\x05B\n" +
+	"\vmax_workers\x18\x15 \x01(\x05B\n" +
 	"\xbaH\a\xd8\x01\x01\x1a\x02(\x01R\n" +
 	"maxWorkers\x123\n" +
-	"\x0emin_webservers\x18\x15 \x01(\x05B\f\xbaH\t\xd8\x01\x01\x1a\x04\x18\x05(\x01R\rminWebservers\x123\n" +
-	"\x0emax_webservers\x18\x16 \x01(\x05B\f\xbaH\t\xd8\x01\x01\x1a\x04\x18\x05(\x01R\rmaxWebservers\x12,\n" +
+	"\x0emin_webservers\x18\x16 \x01(\x05B\f\xbaH\t\xd8\x01\x01\x1a\x04\x18\x05(\x01R\rminWebservers\x123\n" +
+	"\x0emax_webservers\x18\x17 \x01(\x05B\f\xbaH\t\xd8\x01\x01\x1a\x04\x18\x05(\x01R\rmaxWebservers\x12,\n" +
 	"\n" +
-	"schedulers\x18\x17 \x01(\x05B\f\xbaH\t\xd8\x01\x01\x1a\x04\x18\x05(\x02R\n" +
+	"schedulers\x18\x18 \x01(\x05B\f\xbaH\t\xd8\x01\x01\x1a\x04\x18\x05(\x02R\n" +
 	"schedulers\x12l\n" +
-	"\x15webserver_access_mode\x18\x18 \x01(\tB3\xbaH \xd8\x01\x01r\x1bR\fPRIVATE_ONLYR\vPUBLIC_ONLY\x8a\xa6\x1d\fPRIVATE_ONLYH\x00R\x13webserverAccessMode\x88\x01\x01\x12L\n" +
-	"\x13endpoint_management\x18\x19 \x01(\tB\x1b\xbaH\x18\xd8\x01\x01r\x13R\aSERVICER\bCUSTOMERR\x12endpointManagement\x12\x8b\x01\n" +
-	"\x15logging_configuration\x18\x1a \x01(\v2V.org.openmcf.provider.aws.awsmwaaenvironment.v1.AwsMwaaEnvironmentLoggingConfigurationR\x14loggingConfiguration\x12E\n" +
-	"\x1fweekly_maintenance_window_start\x18\x1b \x01(\tR\x1cweeklyMaintenanceWindowStart\x12Z\n" +
-	"\x1bworker_replacement_strategy\x18\x1c \x01(\tB\x1a\xbaH\x17\xd8\x01\x01r\x12R\x06FORCEDR\bGRACEFULR\x19workerReplacementStrategy\x1aN\n" +
+	"\x15webserver_access_mode\x18\x19 \x01(\tB3\xbaH \xd8\x01\x01r\x1bR\fPRIVATE_ONLYR\vPUBLIC_ONLY\x8a\xa6\x1d\fPRIVATE_ONLYH\x00R\x13webserverAccessMode\x88\x01\x01\x12L\n" +
+	"\x13endpoint_management\x18\x1a \x01(\tB\x1b\xbaH\x18\xd8\x01\x01r\x13R\aSERVICER\bCUSTOMERR\x12endpointManagement\x12\x8b\x01\n" +
+	"\x15logging_configuration\x18\x1b \x01(\v2V.org.openmcf.provider.aws.awsmwaaenvironment.v1.AwsMwaaEnvironmentLoggingConfigurationR\x14loggingConfiguration\x12E\n" +
+	"\x1fweekly_maintenance_window_start\x18\x1c \x01(\tR\x1cweeklyMaintenanceWindowStart\x12Z\n" +
+	"\x1bworker_replacement_strategy\x18\x1d \x01(\tB\x1a\xbaH\x17\xd8\x01\x01r\x12R\x06FORCEDR\bGRACEFULR\x19workerReplacementStrategy\x1aN\n" +
 	" AirflowConfigurationOptionsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xeb\a\xbaH\xe7\a\x1a\xb7\x01\n" +

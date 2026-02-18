@@ -11,6 +11,7 @@ metadata:
   labels:
     app: shop
 spec:
+  region: us-east-1
   billingMode: BILLING_MODE_PAY_PER_REQUEST
   attributeDefinitions:
     - name: pk
@@ -29,6 +30,7 @@ kind: AwsDynamodb
 metadata:
   name: orders
 spec:
+  region: us-east-1
   billingMode: BILLING_MODE_PROVISIONED
   provisionedThroughput:
     readCapacityUnits: 10

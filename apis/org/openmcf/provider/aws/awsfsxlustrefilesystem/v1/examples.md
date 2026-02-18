@@ -27,6 +27,7 @@ metadata:
   name: dev-scratch-fsx
   org: my-org
 spec:
+  region: us-west-2
   storage_capacity_gib: 1200
   subnet_id:
     value: subnet-0a1b2c3d4e5f00001
@@ -57,6 +58,7 @@ metadata:
   labels:
     workload: etl-pipeline
 spec:
+  region: us-west-2
   storage_capacity_gib: 2400
   data_compression_type: LZ4
   import_path: s3://my-data-lake/raw-datasets/
@@ -93,6 +95,7 @@ metadata:
     environment: production
     workload: ml-training
 spec:
+  region: us-west-2
   deployment_type: PERSISTENT_2
   storage_capacity_gib: 4800
   storage_type: SSD
@@ -149,6 +152,7 @@ metadata:
     environment: production
     workload: data-lake
 spec:
+  region: us-west-2
   deployment_type: PERSISTENT_1
   storage_capacity_gib: 12000
   storage_type: HDD
@@ -189,6 +193,7 @@ metadata:
   labels:
     environment: staging
 spec:
+  region: us-west-2
   deployment_type: PERSISTENT_2
   storage_capacity_gib: 2400
   per_unit_storage_throughput: 250

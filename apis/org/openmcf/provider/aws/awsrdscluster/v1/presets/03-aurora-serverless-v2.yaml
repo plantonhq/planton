@@ -3,6 +3,7 @@ kind: AwsRdsCluster
 metadata:
   name: my-aurora-serverless-v2
 spec:
+  region: us-west-2
   subnetIds:
     - value: "<private-subnet-id-az1>"
     - value: "<private-subnet-id-az2>"

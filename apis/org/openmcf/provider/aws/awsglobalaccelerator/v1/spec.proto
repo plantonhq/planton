@@ -34,6 +34,10 @@ import "org/openmcf/shared/options/options.proto";
 // Credentials, region, and deployment workflow live outside this spec in
 // stack inputs.
 message AwsGlobalAcceleratorSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Core configuration
   // ---------------------------------------------------------------------------
@@ -42,12 +46,12 @@ message AwsGlobalAcceleratorSpec {
   // the accelerator's DNS name stops resolving and no traffic is routed.
   // Useful for temporarily disabling an accelerator during maintenance without
   // destroying it.
-  optional bool enabled = 1 [(org.openmcf.shared.options.default) = "true"];
+  optional bool enabled = 2 [(org.openmcf.shared.options.default) = "true"];
 
   // IP address type for the accelerator.
   // - "IPV4": Two static IPv4 anycast addresses (default).
   // - "DUAL_STACK": IPv4 + IPv6 anycast addresses for clients on IPv6 networks.
-  optional string ip_address_type = 2 [(org.openmcf.shared.options.default) = "IPV4"];
+  optional string ip_address_type = 3 [(org.openmcf.shared.options.default) = "IPV4"];
 
   // Bring-Your-Own-IP (BYOIP) addresses to assign to the accelerator instead
   // of AWS-allocated anycast IPs. Provide exactly 1 or 2 IPv4 addresses from
@@ -55,7 +59,7 @@ message AwsGlobalAcceleratorSpec {
   //
   // ForceNew — changing this destroys and recreates the accelerator.
   // Leave empty to use AWS-allocated IPs (the default for most deployments).
-  repeated string ip_addresses = 3;
+  repeated string ip_addresses = 4;
 
   // ---------------------------------------------------------------------------
   // Flow logs
@@ -63,7 +67,7 @@ message AwsGlobalAcceleratorSpec {
 
   // Optional flow log configuration for traffic analysis. When enabled,
   // Global Accelerator publishes flow logs to the specified S3 bucket.
-  AwsGlobalAcceleratorFlowLogs flow_logs = 4;
+  AwsGlobalAcceleratorFlowLogs flow_logs = 5;
 
   // ---------------------------------------------------------------------------
   // Listeners
@@ -74,7 +78,7 @@ message AwsGlobalAcceleratorSpec {
   //
   // At least one listener is required — an accelerator without listeners
   // serves no purpose beyond reserving static IPs.
-  repeated AwsGlobalAcceleratorListener listeners = 5 [
+  repeated AwsGlobalAcceleratorListener listeners = 6 [
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 1
   ];

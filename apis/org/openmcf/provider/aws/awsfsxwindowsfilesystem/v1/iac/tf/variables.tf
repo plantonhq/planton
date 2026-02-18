@@ -21,6 +21,8 @@ variable "metadata" {
 variable "spec" {
   description = "AwsFsxWindowsFileSystem spec"
   type = object({
+    # The AWS region where the resource will be created.
+    region = string
     deployment_type    = optional(string, "SINGLE_AZ_2")
     storage_capacity_gib = number
     storage_type       = optional(string, "SSD")

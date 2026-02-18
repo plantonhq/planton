@@ -28,58 +28,62 @@ import "org/openmcf/shared/options/options.proto";
 //   - kms_key_arn (encryption_configuration)
 //   - service_name (derived from metadata, not user-provided)
 message AwsAppRunnerServiceSpec {
+  // The AWS region where the App Runner service will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // --- Source (exactly one of image_source or code_source must be set) ---
 
   // Image-based deployment source. Use this to deploy from a container image
   // stored in Amazon ECR (private) or ECR Public Gallery.
-  AwsAppRunnerServiceImageSource image_source = 1;
+  AwsAppRunnerServiceImageSource image_source = 2;
 
   // Code-based deployment source. Use this to deploy from a GitHub repository.
   // App Runner clones the repo, builds the application using the specified runtime,
   // and deploys the resulting container.
-  AwsAppRunnerServiceCodeSource code_source = 2;
+  AwsAppRunnerServiceCodeSource code_source = 3;
 
   // --- Runtime configuration (common to both source types) ---
 
   // Port that the application listens on inside the container. App Runner routes
   // incoming HTTPS traffic on port 443 to this port.
-  optional string port = 3 [(org.openmcf.shared.options.default) = "8080"];
+  optional string port = 4 [(org.openmcf.shared.options.default) = "8080"];
 
   // Override the container start command. For image source, this overrides the
   // image ENTRYPOINT/CMD. For code source with configuration_source="API",
   // this is the command that starts the application.
-  string start_command = 4;
+  string start_command = 5;
 
   // Environment variables injected into every instance at runtime. Keys are
   // variable names, values are plaintext strings. Avoid embedding secrets
   // here; use environment_secrets for sensitive values.
   // Keys prefixed with "AWSAPPRUNNER" are reserved by the service.
-  map<string, string> environment_variables = 5;
+  map<string, string> environment_variables = 6;
 
   // Environment secrets injected at runtime. Keys are variable names, values
   // are full ARNs of AWS Secrets Manager secrets or SSM Parameter Store parameters.
   // App Runner retrieves the secret value at deploy time and injects it as a
   // plaintext environment variable. The instance_role_arn must have permission
   // to read these secrets.
-  map<string, string> environment_secrets = 6;
+  map<string, string> environment_secrets = 7;
 
   // --- Instance configuration ---
 
   // CPU allocation per instance. Accepts numeric millicore strings or human-readable vCPU format.
   // Numeric: "256", "512", "1024", "2048", "4096"
   // Human-readable: "0.25 vCPU", "0.5 vCPU", "1 vCPU", "2 vCPU", "4 vCPU"
-  optional string cpu = 7 [(org.openmcf.shared.options.default) = "1024"];
+  optional string cpu = 8 [(org.openmcf.shared.options.default) = "1024"];
 
   // Memory allocation per instance. Accepts numeric megabyte strings or human-readable GB format.
   // Numeric: "512", "1024", "2048", "3072", "4096", "6144", "8192", "10240", "12288"
   // Human-readable: "0.5 GB", "1 GB", "2 GB", "3 GB", "4 GB", "6 GB", "8 GB", "10 GB", "12 GB"
   // Note: Not all CPU/memory combinations are valid. See AWS documentation for valid pairings.
-  optional string memory = 8 [(org.openmcf.shared.options.default) = "2048"];
+  optional string memory = 9 [(org.openmcf.shared.options.default) = "2048"];
 
   // IAM role that service instances assume at runtime to call AWS APIs.
   // This is the role your application code uses (e.g., to read from S3, write to DynamoDB).
   // This is NOT the role used to pull images from ECR (that is access_role_arn in image_source).
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef instance_role_arn = 9 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef instance_role_arn = 10 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsIamRole,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
   ];
@@ -89,34 +93,34 @@ message AwsAppRunnerServiceSpec {
   // Health check configuration. App Runner uses health checks to monitor instance
   // readiness. If not provided, App Runner uses default TCP health checks on the
   // configured port.
-  AwsAppRunnerServiceHealthCheck health_check = 10;
+  AwsAppRunnerServiceHealthCheck health_check = 11;
 
   // --- Auto scaling ---
 
   // Auto scaling configuration controls how App Runner scales the number of
   // instances based on incoming request concurrency. If not provided, App Runner
   // uses defaults: 1 min, 25 max, 100 max concurrency per instance.
-  AwsAppRunnerServiceAutoScaling auto_scaling = 11;
+  AwsAppRunnerServiceAutoScaling auto_scaling = 12;
 
   // --- VPC egress networking ---
 
   // ARN of an existing VPC Connector for outbound VPC access. Use this when
   // you want to share a single VPC Connector across multiple App Runner services.
   // Mutually exclusive with subnet_ids/security_group_ids (which create an inline connector).
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_connector_arn = 12;
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_connector_arn = 13;
 
   // VPC subnet IDs for creating an inline VPC Connector. When provided, the module
   // automatically creates a VPC Connector so the service can reach resources in
   // your VPC (databases, caches, internal APIs). Provide subnets in at least two
   // Availability Zones for high availability. Mutually exclusive with vpc_connector_arn.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 13 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 14 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
   ];
 
   // Security group IDs for the inline VPC Connector. Controls what VPC resources
   // the service can reach. Only used when subnet_ids is provided (ignored otherwise).
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 14 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 15 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
@@ -127,18 +131,18 @@ message AwsAppRunnerServiceSpec {
   // When true (default), the service gets a public HTTPS URL. When false,
   // the service is only reachable via a VPC Ingress Connection (a separate
   // resource not managed by this component).
-  optional bool is_publicly_accessible = 15 [(org.openmcf.shared.options.default) = "true"];
+  optional bool is_publicly_accessible = 16 [(org.openmcf.shared.options.default) = "true"];
 
   // IP address type for the service endpoint.
   // "IPV4": IPv4-only (default). "DUAL_STACK": IPv4 + IPv6.
-  optional string ip_address_type = 16 [(org.openmcf.shared.options.default) = "IPV4"];
+  optional string ip_address_type = 17 [(org.openmcf.shared.options.default) = "IPV4"];
 
   // --- Encryption ---
 
   // Customer-managed KMS key ARN for encrypting the service's stored copy of
   // the container image and data logs. If omitted, App Runner uses an AWS-managed key.
   // ForceNew: changing this value requires replacing the service.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_arn = 17 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_arn = 18 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -147,19 +151,19 @@ message AwsAppRunnerServiceSpec {
 
   // Whether to enable observability (AWS X-Ray tracing) for the service.
   // When true, observability_configuration_arn must also be provided.
-  bool observability_enabled = 18;
+  bool observability_enabled = 19;
 
   // ARN of an App Runner Observability Configuration resource. Required when
   // observability_enabled is true. Observability configurations are created
   // separately (via AWS Console or CLI) and can be shared across services.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef observability_configuration_arn = 19;
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef observability_configuration_arn = 20;
 
   // --- Deployment behavior ---
 
   // Whether App Runner automatically triggers a new deployment when the source changes.
   // For image source: redeploys when a new image is pushed to the same tag.
   // For code source: redeploys when a new commit is pushed to the configured branch.
-  optional bool auto_deployments_enabled = 20 [(org.openmcf.shared.options.default) = "true"];
+  optional bool auto_deployments_enabled = 21 [(org.openmcf.shared.options.default) = "true"];
 
   // --- Validations ---
 

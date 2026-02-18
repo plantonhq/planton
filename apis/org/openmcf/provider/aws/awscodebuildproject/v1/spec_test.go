@@ -30,6 +30,7 @@ func svRef(val string) *foreignkeyv1.StringValueOrRef {
 
 func minimalGitHubSpec() *AwsCodeBuildProjectSpec {
 	return &AwsCodeBuildProjectSpec{
+		Region: "us-west-2",
 		Source: &AwsCodeBuildSource{
 			Type:     "GITHUB",
 			Location: "https://github.com/example/repo.git",
@@ -48,6 +49,7 @@ func minimalGitHubSpec() *AwsCodeBuildProjectSpec {
 
 func minimalCodePipelineSpec() *AwsCodeBuildProjectSpec {
 	return &AwsCodeBuildProjectSpec{
+		Region: "us-west-2",
 		Source: &AwsCodeBuildSource{
 			Type: "CODEPIPELINE",
 		},
@@ -125,6 +127,7 @@ var _ = ginkgo.Describe("AwsCodeBuildProjectSpec validations", func() {
 		ginkgo.Context("with all optional fields populated", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsCodeBuildProjectSpec{
+					Region: "us-west-2",
 					Source: &AwsCodeBuildSource{
 						Type:              "GITHUB",
 						Location:          "https://github.com/example/repo.git",

@@ -21,7 +21,9 @@ func Resources(ctx *pulumi.Context, stackInput *awsroute53dnsrecordv1.AwsRoute53
 	if awsProviderConfig == nil {
 		provider, err = awsclassic.NewProvider(ctx,
 			"aws-provider",
-			&awsclassic.ProviderArgs{})
+			&awsclassic.ProviderArgs{
+				Region: pulumi.String(locals.AwsRoute53DnsRecord.Spec.Region),
+			})
 		if err != nil {
 			return errors.Wrap(err, "failed to create default AWS provider")
 		}
@@ -31,7 +33,7 @@ func Resources(ctx *pulumi.Context, stackInput *awsroute53dnsrecordv1.AwsRoute53
 			&awsclassic.ProviderArgs{
 				AccessKey: pulumi.String(awsProviderConfig.AccessKeyId),
 				SecretKey: pulumi.String(awsProviderConfig.SecretAccessKey),
-				Region:    pulumi.String(awsProviderConfig.GetRegion()),
+				Region:    pulumi.String(locals.AwsRoute53DnsRecord.Spec.Region),
 				Token:     pulumi.StringPtr(awsProviderConfig.SessionToken),
 			})
 		if err != nil {

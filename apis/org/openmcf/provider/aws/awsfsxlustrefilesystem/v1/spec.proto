@@ -28,6 +28,10 @@ import "org/openmcf/shared/options/options.proto";
 //   use a separate data repository association resource.
 // - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 message AwsFsxLustreFileSystemSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // File System Core
   // ---------------------------------------------------------------------------
@@ -45,7 +49,7 @@ message AwsFsxLustreFileSystemSpec {
   //   workloads requiring persistent storage.
   //
   // Default: SCRATCH_2
-  optional string deployment_type = 1 [(org.openmcf.shared.options.default) = "SCRATCH_2"];
+  optional string deployment_type = 2 [(org.openmcf.shared.options.default) = "SCRATCH_2"];
 
   // Storage capacity in GiB. Minimum 1200 GiB. Exact valid values depend on
   // deployment type and storage type:
@@ -57,7 +61,7 @@ message AwsFsxLustreFileSystemSpec {
   //
   // Can be increased after creation but never decreased. Increasing storage on
   // SCRATCH_1 forces replacement.
-  int32 storage_capacity_gib = 2 [(buf.validate.field).int32.gte = 1200];
+  int32 storage_capacity_gib = 3 [(buf.validate.field).int32.gte = 1200];
 
   // Storage media type. ForceNew — cannot be changed after creation.
   //
@@ -67,7 +71,7 @@ message AwsFsxLustreFileSystemSpec {
   //   PERSISTENT_1 deployments. Requires `per_unit_storage_throughput` of 12 or 40.
   //
   // Default: SSD
-  optional string storage_type = 3 [(org.openmcf.shared.options.default) = "SSD"];
+  optional string storage_type = 4 [(org.openmcf.shared.options.default) = "SSD"];
 
   // Throughput per unit of storage in MB/s/TiB. Required for PERSISTENT_1 and
   // PERSISTENT_2 deployments. Invalid for SCRATCH types.
@@ -76,7 +80,7 @@ message AwsFsxLustreFileSystemSpec {
   // - PERSISTENT_1 + SSD: 50, 100, 200
   // - PERSISTENT_1 + HDD: 12, 40
   // - PERSISTENT_2 + SSD: 125, 250, 500, 1000
-  int32 per_unit_storage_throughput = 4;
+  int32 per_unit_storage_throughput = 5;
 
   // Enable LZ4 data compression for all data on the file system. Reduces storage
   // consumption and can improve throughput for compressible data. Can be changed
@@ -84,14 +88,14 @@ message AwsFsxLustreFileSystemSpec {
   // Lustre operations.
   //
   // Default: NONE
-  optional string data_compression_type = 5 [(org.openmcf.shared.options.default) = "NONE"];
+  optional string data_compression_type = 6 [(org.openmcf.shared.options.default) = "NONE"];
 
   // Lustre file system type version. ForceNew — cannot be changed after creation.
   // Format: "x.y" (e.g., "2.12", "2.15").
   //
   // Leave empty to use the latest version supported by the deployment type.
   // Explicitly set only if workload compatibility requires a specific version.
-  string file_system_type_version = 6;
+  string file_system_type_version = 7;
 
   // ---------------------------------------------------------------------------
   // Networking (ForceNew)
@@ -102,7 +106,7 @@ message AwsFsxLustreFileSystemSpec {
   // Lustre file systems are single-AZ — exactly one subnet is supported. The
   // file system's ENI is created in this subnet. All compute resources mounting
   // this file system must have network connectivity to this subnet.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 7 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 8 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[0].id"
@@ -115,7 +119,7 @@ message AwsFsxLustreFileSystemSpec {
   // - TCP ports 1018-1023 (Lustre data channels)
   //
   // Up to 50 security groups.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 8 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 9 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
@@ -128,7 +132,7 @@ message AwsFsxLustreFileSystemSpec {
   // cannot be changed after creation. When omitted, the file system uses the
   // AWS-managed FSx key. All Lustre file systems are encrypted at rest by default
   // using AWS-managed keys; this field upgrades to a customer-managed key.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 9 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 10 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -143,13 +147,13 @@ message AwsFsxLustreFileSystemSpec {
   // When set, the file system automatically imports file metadata from S3. File
   // data is lazy-loaded on first access. For more flexible S3 integration on
   // PERSISTENT deployments, use a separate data repository association.
-  string import_path = 10;
+  string import_path = 11;
 
   // S3 URI for exporting data back to S3 (e.g., "s3://my-bucket/output/").
   // ForceNew. Requires `import_path` to be set.
   //
   // When set, changes made on the file system are automatically exported to S3.
-  string export_path = 11;
+  string export_path = 12;
 
   // ---------------------------------------------------------------------------
   // Logging
@@ -157,7 +161,7 @@ message AwsFsxLustreFileSystemSpec {
 
   // CloudWatch logging configuration for Lustre audit events (file access,
   // file creation, deletion). Useful for compliance and debugging.
-  AwsFsxLustreFileSystemLogConfiguration log_configuration = 12;
+  AwsFsxLustreFileSystemLogConfiguration log_configuration = 13;
 
   // ---------------------------------------------------------------------------
   // Backup (PERSISTENT deployments only)
@@ -170,20 +174,20 @@ message AwsFsxLustreFileSystemSpec {
   // automatic backups.
   //
   // Default: 0 (no automatic backups)
-  optional int32 automatic_backup_retention_days = 13 [(org.openmcf.shared.options.default) = "0"];
+  optional int32 automatic_backup_retention_days = 14 [(org.openmcf.shared.options.default) = "0"];
 
   // Daily UTC time to start automatic backups, in HH:MM format (e.g., "05:00").
   // If not specified and backups are enabled, AWS chooses a default window.
-  string daily_automatic_backup_start_time = 14;
+  string daily_automatic_backup_start_time = 15;
 
   // Copy tags from the file system to backups. ForceNew.
-  bool copy_tags_to_backups = 15;
+  bool copy_tags_to_backups = 16;
 
   // Skip creating a final backup when the file system is deleted. Applies only to
   // PERSISTENT deployments with backup support.
   //
   // Default: true
-  optional bool skip_final_backup = 16 [(org.openmcf.shared.options.default) = "true"];
+  optional bool skip_final_backup = 17 [(org.openmcf.shared.options.default) = "true"];
 
   // ---------------------------------------------------------------------------
   // Maintenance
@@ -191,7 +195,7 @@ message AwsFsxLustreFileSystemSpec {
 
   // Weekly UTC maintenance window in the format "d:HH:MM" where d is the day of
   // the week (1=Monday, 7=Sunday). Example: "1:05:00" for Monday at 05:00 UTC.
-  string weekly_maintenance_start_time = 17;
+  string weekly_maintenance_start_time = 18;
 
   // ---------------------------------------------------------------------------
   // Metadata Configuration (PERSISTENT_2 only)
@@ -200,7 +204,7 @@ message AwsFsxLustreFileSystemSpec {
   // Metadata performance configuration. Only supported on PERSISTENT_2 deployments.
   // Controls the metadata IOPS available for file creation, listing, and similar
   // operations. Most workloads perform well with AUTOMATIC mode.
-  AwsFsxLustreFileSystemMetadataConfiguration metadata_configuration = 18;
+  AwsFsxLustreFileSystemMetadataConfiguration metadata_configuration = 19;
 
   // ---------------------------------------------------------------------------
   // CEL Validations

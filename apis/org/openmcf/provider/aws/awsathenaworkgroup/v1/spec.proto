@@ -34,6 +34,10 @@ import "org/openmcf/shared/options/options.proto";
 // - Credentials, region, and deployment workflow live outside this spec in stack
 //   inputs.
 message AwsAthenaWorkgroupSpec {
+  // The AWS region where the Athena workgroup will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Result storage
   // ---------------------------------------------------------------------------
@@ -41,7 +45,7 @@ message AwsAthenaWorkgroupSpec {
   // Configuration for query result storage, encryption, and access control.
   // When omitted, queries must specify their own result location or will use the
   // AWS account-level Athena settings.
-  AwsAthenaWorkgroupResultConfig result_configuration = 1;
+  AwsAthenaWorkgroupResultConfig result_configuration = 2;
 
   // ---------------------------------------------------------------------------
   // Cost controls
@@ -57,7 +61,7 @@ message AwsAthenaWorkgroupSpec {
   //
   // Recommended for production: set to a reasonable ceiling based on your
   // dataset sizes (e.g., 10737418240 for 10 GB).
-  int64 bytes_scanned_cutoff_per_query = 2;
+  int64 bytes_scanned_cutoff_per_query = 3;
 
   // ---------------------------------------------------------------------------
   // Governance
@@ -70,16 +74,16 @@ message AwsAthenaWorkgroupSpec {
   // When false, queries can override workgroup settings. Useful for development
   // workgroups where engineers need flexibility, but not recommended for
   // production where consistent encryption and result locations are required.
-  optional bool enforce_workgroup_configuration = 3 [(org.openmcf.shared.options.default) = "true"];
+  optional bool enforce_workgroup_configuration = 4 [(org.openmcf.shared.options.default) = "true"];
 
   // When true, Athena publishes query execution metrics (data scanned, execution
   // time, etc.) to CloudWatch. Useful for monitoring query performance and cost
   // trends across the workgroup.
-  optional bool publish_cloudwatch_metrics_enabled = 4 [(org.openmcf.shared.options.default) = "true"];
+  optional bool publish_cloudwatch_metrics_enabled = 5 [(org.openmcf.shared.options.default) = "true"];
 
   // When true, the requester pays for data access charges when querying data in
   // requester-pays S3 buckets. Default is false (the bucket owner pays).
-  bool requester_pays_enabled = 5;
+  bool requester_pays_enabled = 6;
 
   // When true, enforces a minimum encryption level (at least SSE_S3) for all
   // query results written by this workgroup. Queries that do not specify
@@ -87,7 +91,7 @@ message AwsAthenaWorkgroupSpec {
   //
   // Useful as a compliance guardrail to ensure no query results are ever written
   // unencrypted, even if result_configuration.encryption_option is not set.
-  bool enable_minimum_encryption_configuration = 6;
+  bool enable_minimum_encryption_configuration = 7;
 
   // ---------------------------------------------------------------------------
   // Engine version
@@ -102,7 +106,7 @@ message AwsAthenaWorkgroupSpec {
   //
   // Valid values depend on the AWS region and change over time as AWS releases
   // new engine versions. AWS validates at apply time.
-  string selected_engine_version = 7;
+  string selected_engine_version = 8;
 
   // ---------------------------------------------------------------------------
   // Operational
@@ -112,7 +116,7 @@ message AwsAthenaWorkgroupSpec {
   // workgroup are deleted when the workgroup is destroyed. When false (the
   // default), destroying a workgroup that contains named queries or prepared
   // statements will fail.
-  bool force_destroy = 8;
+  bool force_destroy = 9;
 
   // ---------------------------------------------------------------------------
   // Spark execution
@@ -124,7 +128,7 @@ message AwsAthenaWorkgroupSpec {
   //
   // The role must have permissions to read from S3 data sources, write results,
   // and access the AWS Glue Data Catalog.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef execution_role = 9 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef execution_role = 10 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsIamRole,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
   ];

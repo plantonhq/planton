@@ -43,6 +43,9 @@ variable "spec" {
   description = "spec holds the core configuration data defining how the ECS service is deployed."
   type = object({
 
+    # The AWS region where the resource will be created.
+    region = string
+
     # cluster_arn is the ARN of the ECS cluster where this service will run.
     # This must already exist (created by a separate EcsCluster resource or otherwise).
     # Example: "arn:aws:ecs:us-east-1:123456789012:cluster/my-mixed-cluster"

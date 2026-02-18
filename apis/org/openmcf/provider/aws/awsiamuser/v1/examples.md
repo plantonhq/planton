@@ -9,6 +9,7 @@ metadata:
   name: basic-iam-user
   org: my-org
 spec:
+  region: us-east-1
   userName: "basic-user"
   managedPolicyArns:
     - "arn:aws:iam::aws:policy/ReadOnlyAccess"
@@ -26,6 +27,7 @@ metadata:
     purpose: cicd
     team: devops
 spec:
+  region: us-east-1
   userName: "cicd-deployment-user"
   managedPolicyArns:
     - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
@@ -60,6 +62,7 @@ metadata:
     app: payment-processor
     env: prod
 spec:
+  region: us-east-1
   userName: "payment-app-user"
   managedPolicyArns:
     - "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
@@ -90,6 +93,7 @@ metadata:
   name: identity-only-user
   org: my-org
 spec:
+  region: us-east-1
   userName: "audit-user"
   managedPolicyArns:
     - "arn:aws:iam::aws:policy/ReadOnlyAccess"
@@ -108,6 +112,7 @@ metadata:
     environment: development
     team: engineering
 spec:
+  region: us-west-2
   userName: "developer-sandbox-user"
   managedPolicyArns:
     - "arn:aws:iam::aws:policy/PowerUserAccess"
@@ -140,6 +145,7 @@ metadata:
   tags:
     purpose: monitoring
 spec:
+  region: us-east-1
   userName: "datadog-integration-user"
   managedPolicyArns:
     - "arn:aws:iam::aws:policy/ReadOnlyAccess"
@@ -169,6 +175,7 @@ metadata:
   tags:
     purpose: backup
 spec:
+  region: us-west-2
   userName: "backup-service-user"
   managedPolicyArns:
     - "arn:aws:iam::aws:policy/AWSBackupFullAccess"
@@ -197,6 +204,7 @@ metadata:
   name: cross-account-user
   org: my-org
 spec:
+  region: us-east-1
   userName: "cross-account-automation-user"
   inlinePolicies:
     assumeRoleAccess:

@@ -20,6 +20,9 @@ variable "metadata" {
 variable "spec" {
   description = "AwsNeptuneClusterSpec configuration"
   type = object({
+    # The AWS region where the Neptune cluster will be created.
+    region = string
+
     # Subnet IDs for the Neptune subnet group
     subnet_ids = list(object({
       value = string

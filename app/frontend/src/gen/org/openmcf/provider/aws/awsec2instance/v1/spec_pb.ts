@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsec2instance/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsec2instance_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjVvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWMyaW5zdGFuY2UvdjEvc3BlYy5wcm90bxIqb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2VjMmluc3RhbmNlLnYxIpkLChJBd3NFYzJJbnN0YW5jZVNwZWMSIQoNaW5zdGFuY2VfbmFtZRgBIAEoCUIKukgHyAEBcgIQARIhCgZhbWlfaWQYAiABKAlCEbpIDsgBAXIJEAEyBV5hbWktEiEKDWluc3RhbmNlX3R5cGUYAyABKAlCCrpIB8gBAXICEAESdwoJc3VibmV0X2lkGAQgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIwukgDyAEBiNRh2AGS1GEhc3RhdHVzLm91dHB1dHMucHJpdmF0ZV9zdWJuZXRzLmlkEoQBChJzZWN1cml0eV9ncm91cF9pZHMYBSADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQjS6SAjIAQGSAQIIAYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEnsKEWNvbm5lY3Rpb25fbWV0aG9kGAYgASgOMkoub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2VjMmluc3RhbmNlLnYxLkF3c0VjMkluc3RhbmNlQ29ubmVjdGlvbk1ldGhvZEIPukgFggECEAGKph0DU1NNSACIAQESdgoYaWFtX2luc3RhbmNlX3Byb2ZpbGVfYXJuGAcgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIgiNRh0AGS1GEXc3RhdHVzLm91dHB1dHMucm9sZV9hcm4SEAoIa2V5X25hbWUYCCABKAkSLwoTcm9vdF92b2x1bWVfc2l6ZV9nYhgJIAEoBUINukgEGgIgAIqmHQIzMEgBiAEBElYKBHRhZ3MYCiADKAsySC5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWMyaW5zdGFuY2UudjEuQXdzRWMySW5zdGFuY2VTcGVjLlRhZ3NFbnRyeRIcCgl1c2VyX2RhdGEYCyABKAlCCbpIBnIEKICAAhIVCg1lYnNfb3B0aW1pemVkGAwgASgIEh8KF2Rpc2FibGVfYXBpX3Rlcm1pbmF0aW9uGA0gASgIGisKCVRhZ3NFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBOtgDukjUAxqQAgoYc3NtX3JlcXVpcmVzX2lhbV9wcm9maWxlEkJpYW1faW5zdGFuY2VfcHJvZmlsZV9hcm4gbXVzdCBiZSBzZXQgd2hlbiBjb25uZWN0aW9uX21ldGhvZCBpcyBTU00arwF0aGlzLmNvbm5lY3Rpb25fbWV0aG9kID09IDAgPyAoKGhhcyh0aGlzLmlhbV9pbnN0YW5jZV9wcm9maWxlX2Fybi52YWx1ZSkgJiYgdGhpcy5pYW1faW5zdGFuY2VfcHJvZmlsZV9hcm4udmFsdWUgIT0gIiIpIHx8IGhhcyh0aGlzLmlhbV9pbnN0YW5jZV9wcm9maWxlX2Fybi52YWx1ZV9mcm9tKSkgOiB0cnVlGr4BChVzc2hfcmVxdWlyZXNfa2V5X25hbWUSSmtleV9uYW1lIG11c3QgYmUgc2V0IHdoZW4gY29ubmVjdGlvbl9tZXRob2QgaXMgQkFTVElPTiBvciBJTlNUQU5DRV9DT05ORUNUGlkodGhpcy5jb25uZWN0aW9uX21ldGhvZCA9PSAxIHx8IHRoaXMuY29ubmVjdGlvbl9tZXRob2QgPT0gMikgPyB0aGlzLmtleV9uYW1lICE9ICIiIDogdHJ1ZUIUChJfY29ubmVjdGlvbl9tZXRob2RCFgoUX3Jvb3Rfdm9sdW1lX3NpemVfZ2IqTAoeQXdzRWMySW5zdGFuY2VDb25uZWN0aW9uTWV0aG9kEgcKA1NTTRAAEgsKB0JBU1RJT04QARIUChBJTlNUQU5DRV9DT05ORUNUEAJC6QIKLmNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWMyaW5zdGFuY2UudjFCCVNwZWNQcm90b1ABWl1naXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c2VjMmluc3RhbmNlL3YxO2F3c2VjMmluc3RhbmNldjGiAgVPT1BBQaoCKk9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NlYzJpbnN0YW5jZS5WMcoCKk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NlYzJpbnN0YW5jZVxWMeICNk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NlYzJpbnN0YW5jZVxWMVxHUEJNZXRhZGF0YeoCL09yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzZWMyaW5zdGFuY2U6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("CjVvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWMyaW5zdGFuY2UvdjEvc3BlYy5wcm90bxIqb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2VjMmluc3RhbmNlLnYxIrILChJBd3NFYzJJbnN0YW5jZVNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEiEKDWluc3RhbmNlX25hbWUYAiABKAlCCrpIB8gBAXICEAESIQoGYW1pX2lkGAMgASgJQhG6SA7IAQFyCRABMgVeYW1pLRIhCg1pbnN0YW5jZV90eXBlGAQgASgJQgq6SAfIAQFyAhABEncKCXN1Ym5ldF9pZBgFIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCMLpIA8gBAYjUYdgBktRhIXN0YXR1cy5vdXRwdXRzLnByaXZhdGVfc3VibmV0cy5pZBKEAQoSc2VjdXJpdHlfZ3JvdXBfaWRzGAYgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkI0ukgIyAEBkgECCAGI1GHXAZLUYSBzdGF0dXMub3V0cHV0cy5zZWN1cml0eV9ncm91cF9pZBJ7ChFjb25uZWN0aW9uX21ldGhvZBgHIAEoDjJKLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NlYzJpbnN0YW5jZS52MS5Bd3NFYzJJbnN0YW5jZUNvbm5lY3Rpb25NZXRob2RCD7pIBYIBAhABiqYdA1NTTUgAiAEBEnYKGGlhbV9pbnN0YW5jZV9wcm9maWxlX2FybhgIIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCIIjUYdABktRhF3N0YXR1cy5vdXRwdXRzLnJvbGVfYXJuEhAKCGtleV9uYW1lGAkgASgJEi8KE3Jvb3Rfdm9sdW1lX3NpemVfZ2IYCiABKAVCDbpIBBoCIACKph0CMzBIAYgBARJWCgR0YWdzGAsgAygLMkgub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2VjMmluc3RhbmNlLnYxLkF3c0VjMkluc3RhbmNlU3BlYy5UYWdzRW50cnkSHAoJdXNlcl9kYXRhGAwgASgJQgm6SAZyBCiAgAISFQoNZWJzX29wdGltaXplZBgNIAEoCBIfChdkaXNhYmxlX2FwaV90ZXJtaW5hdGlvbhgOIAEoCBorCglUYWdzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ATrYA7pI1AMakAIKGHNzbV9yZXF1aXJlc19pYW1fcHJvZmlsZRJCaWFtX2luc3RhbmNlX3Byb2ZpbGVfYXJuIG11c3QgYmUgc2V0IHdoZW4gY29ubmVjdGlvbl9tZXRob2QgaXMgU1NNGq8BdGhpcy5jb25uZWN0aW9uX21ldGhvZCA9PSAwID8gKChoYXModGhpcy5pYW1faW5zdGFuY2VfcHJvZmlsZV9hcm4udmFsdWUpICYmIHRoaXMuaWFtX2luc3RhbmNlX3Byb2ZpbGVfYXJuLnZhbHVlICE9ICIiKSB8fCBoYXModGhpcy5pYW1faW5zdGFuY2VfcHJvZmlsZV9hcm4udmFsdWVfZnJvbSkpIDogdHJ1ZRq+AQoVc3NoX3JlcXVpcmVzX2tleV9uYW1lEkprZXlfbmFtZSBtdXN0IGJlIHNldCB3aGVuIGNvbm5lY3Rpb25fbWV0aG9kIGlzIEJBU1RJT04gb3IgSU5TVEFOQ0VfQ09OTkVDVBpZKHRoaXMuY29ubmVjdGlvbl9tZXRob2QgPT0gMSB8fCB0aGlzLmNvbm5lY3Rpb25fbWV0aG9kID09IDIpID8gdGhpcy5rZXlfbmFtZSAhPSAiIiA6IHRydWVCFAoSX2Nvbm5lY3Rpb25fbWV0aG9kQhYKFF9yb290X3ZvbHVtZV9zaXplX2diKkwKHkF3c0VjMkluc3RhbmNlQ29ubmVjdGlvbk1ldGhvZBIHCgNTU00QABILCgdCQVNUSU9OEAESFAoQSU5TVEFOQ0VfQ09OTkVDVBACQukCCi5jb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2VjMmluc3RhbmNlLnYxQglTcGVjUHJvdG9QAVpdZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NlYzJpbnN0YW5jZS92MTthd3NlYzJpbnN0YW5jZXYxogIFT09QQUGqAipPcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzZWMyaW5zdGFuY2UuVjHKAipPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZWMyaW5zdGFuY2VcVjHiAjZPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZWMyaW5zdGFuY2VcVjFcR1BCTWV0YWRhdGHqAi9Pcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c2VjMmluc3RhbmNlOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsEc2InstanceSpec defines the user configuration for launching a single EC2 virtual machine instance in a private subnet.
@@ -31,9 +31,17 @@ export const file_org_openmcf_provider_aws_awsec2instance_v1_spec: GenFile = /*@
  */
 export type AwsEc2InstanceSpec = Message<"org.openmcf.provider.aws.awsec2instance.v1.AwsEc2InstanceSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * name of the EC2 instance.
    *
-   * @generated from field: string instance_name = 1;
+   * @generated from field: string instance_name = 2;
    */
   instanceName: string;
 
@@ -42,7 +50,7 @@ export type AwsEc2InstanceSpec = Message<"org.openmcf.provider.aws.awsec2instanc
    * This is the unique identifier of the OS image (AMI) that the EC2 will run.
    * Example: "ami-0abcdef1234567890" for an Ubuntu or Amazon Linux image.
    *
-   * @generated from field: string ami_id = 2;
+   * @generated from field: string ami_id = 3;
    */
   amiId: string;
 
@@ -50,7 +58,7 @@ export type AwsEc2InstanceSpec = Message<"org.openmcf.provider.aws.awsec2instanc
    * EC2 instance type (flavor) determining vCPU count and memory.
    * Example: "t3.small" (2 vCPUs, 2 GiB RAM) or "m5.large" (2 vCPUs, 8 GiB RAM).
    *
-   * @generated from field: string instance_type = 3;
+   * @generated from field: string instance_type = 4;
    */
   instanceType: string;
 
@@ -59,7 +67,7 @@ export type AwsEc2InstanceSpec = Message<"org.openmcf.provider.aws.awsec2instanc
    * This should be a private subnet within an existing VPC.
    * The default kind expects an AwsVpc resource, using one of its private subnet IDs.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 4;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 5;
    */
   subnetId?: StringValueOrRef;
 
@@ -68,7 +76,7 @@ export type AwsEc2InstanceSpec = Message<"org.openmcf.provider.aws.awsec2instanc
    * These security groups control inbound/outbound traffic for the instance.
    * Typically includes at least one security group for application or SSH access.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 5;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 6;
    */
   securityGroupIds: StringValueOrRef[];
 
@@ -78,7 +86,7 @@ export type AwsEc2InstanceSpec = Message<"org.openmcf.provider.aws.awsec2instanc
    * - BASTION: Use a traditional SSH method with a key pair (requires a key_name for the EC2 instance).
    * - INSTANCE_CONNECT: Use AWS EC2 Instance Connect (temporary key injection, also requires a key_name).
    *
-   * @generated from field: optional org.openmcf.provider.aws.awsec2instance.v1.AwsEc2InstanceConnectionMethod connection_method = 6;
+   * @generated from field: optional org.openmcf.provider.aws.awsec2instance.v1.AwsEc2InstanceConnectionMethod connection_method = 7;
    */
   connectionMethod?: AwsEc2InstanceConnectionMethod;
 
@@ -87,7 +95,7 @@ export type AwsEc2InstanceSpec = Message<"org.openmcf.provider.aws.awsec2instanc
    * This profile should include an IAM role with necessary permissions (for example, SSM Session Manager access if using SSM).
    * **Required if** connection_method is SSM; optional otherwise.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef iam_instance_profile_arn = 7;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef iam_instance_profile_arn = 8;
    */
   iamInstanceProfileArn?: StringValueOrRef;
 
@@ -96,7 +104,7 @@ export type AwsEc2InstanceSpec = Message<"org.openmcf.provider.aws.awsec2instanc
    * This is the key pair name as created in AWS (not the public key material).
    * **Required if** connection_method is BASTION or INSTANCE_CONNECT; not used for SSM.
    *
-   * @generated from field: string key_name = 8;
+   * @generated from field: string key_name = 9;
    */
   keyName: string;
 
@@ -105,7 +113,7 @@ export type AwsEc2InstanceSpec = Message<"org.openmcf.provider.aws.awsec2instanc
    * This defines the storage capacity for the instance's root filesystem.
    * Defaults to 30 GiB if not specified.
    *
-   * @generated from field: optional int32 root_volume_size_gb = 9;
+   * @generated from field: optional int32 root_volume_size_gb = 10;
    */
   rootVolumeSizeGb?: number;
 
@@ -113,7 +121,7 @@ export type AwsEc2InstanceSpec = Message<"org.openmcf.provider.aws.awsec2instanc
    * Map of tags to apply to the EC2 instance.
    * Tags are key-value pairs for metadata and organization of AWS resources (e.g., {"env": "production", "app": "web"}).
    *
-   * @generated from field: map<string, string> tags = 10;
+   * @generated from field: map<string, string> tags = 11;
    */
   tags: { [key: string]: string };
 
@@ -122,7 +130,7 @@ export type AwsEc2InstanceSpec = Message<"org.openmcf.provider.aws.awsec2instanc
    * This can be a plaintext or base64-encoded string, up to 32 KiB.
    * Use this to perform initial configuration on boot (install packages, configure software, etc.).
    *
-   * @generated from field: string user_data = 11;
+   * @generated from field: string user_data = 12;
    */
   userData: string;
 
@@ -130,7 +138,7 @@ export type AwsEc2InstanceSpec = Message<"org.openmcf.provider.aws.awsec2instanc
    * Enable EBS optimization for the instance (if supported by the instance type).
    * When true, the instance uses dedicated throughput for EBS I/O, which can improve performance for I/O-intensive workloads.
    *
-   * @generated from field: bool ebs_optimized = 12;
+   * @generated from field: bool ebs_optimized = 13;
    */
   ebsOptimized: boolean;
 
@@ -138,7 +146,7 @@ export type AwsEc2InstanceSpec = Message<"org.openmcf.provider.aws.awsec2instanc
    * If true, prevents the instance from being terminated via the AWS API (enables termination protection).
    * This adds a safety measure against accidental deletion of the instance.
    *
-   * @generated from field: bool disable_api_termination = 13;
+   * @generated from field: bool disable_api_termination = 14;
    */
   disableApiTermination: boolean;
 };

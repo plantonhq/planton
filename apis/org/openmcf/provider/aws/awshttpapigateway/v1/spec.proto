@@ -26,20 +26,24 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 //
 // Credentials, region, and deployment workflow live outside this spec in stack inputs.
 message AwsHttpApiGatewaySpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // API configuration
   // ---------------------------------------------------------------------------
 
   // Human-readable description of the API (max 1024 characters).
-  string description = 1 [(buf.validate.field).string.max_len = 1024];
+  string description = 2 [(buf.validate.field).string.max_len = 1024];
 
   // CORS configuration for cross-origin requests. When not set, no CORS
   // headers are returned by the API.
-  AwsHttpApiGatewayCorsConfig cors_configuration = 2;
+  AwsHttpApiGatewayCorsConfig cors_configuration = 3;
 
   // Disable the default execute-api endpoint. Set to true when a custom domain
   // is configured externally to prevent direct access via the default endpoint.
-  bool disable_execute_api_endpoint = 3;
+  bool disable_execute_api_endpoint = 4;
 
   // ---------------------------------------------------------------------------
   // Stage configuration
@@ -48,7 +52,7 @@ message AwsHttpApiGatewaySpec {
   // Stage configuration for the deployed API. When not set, a "$default" stage
   // with auto_deploy=true is created automatically, which is the recommended
   // configuration for most HTTP APIs.
-  AwsHttpApiGatewayStageConfig stage = 4;
+  AwsHttpApiGatewayStageConfig stage = 5;
 
   // ---------------------------------------------------------------------------
   // Routes and integrations
@@ -63,7 +67,7 @@ message AwsHttpApiGatewaySpec {
   // create a single integration resource.
   //
   // At least one route is required -- an API without routes has no function.
-  repeated AwsHttpApiGatewayRoute routes = 5 [(buf.validate.field).repeated.min_items = 1];
+  repeated AwsHttpApiGatewayRoute routes = 6 [(buf.validate.field).repeated.min_items = 1];
 
   // ---------------------------------------------------------------------------
   // Authorizers
@@ -72,7 +76,7 @@ message AwsHttpApiGatewaySpec {
   // Named authorizers that can be referenced by routes. Define JWT authorizers
   // for Cognito/Auth0/OIDC integration, or Lambda (REQUEST) authorizers for
   // custom authorization logic. Routes reference authorizers by name.
-  repeated AwsHttpApiGatewayAuthorizer authorizers = 6;
+  repeated AwsHttpApiGatewayAuthorizer authorizers = 7;
 
   // ---------------------------------------------------------------------------
   // CEL validations

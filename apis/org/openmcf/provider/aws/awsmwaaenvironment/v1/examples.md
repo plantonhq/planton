@@ -14,6 +14,7 @@ kind: AwsMwaaEnvironment
 metadata:
   name: dev-airflow
 spec:
+  region: us-west-2
   sourceBucketArn:
     value: arn:aws:s3:::dev-airflow-dags-bucket
   dagS3Path: dags/
@@ -45,6 +46,7 @@ kind: AwsMwaaEnvironment
 metadata:
   name: prod-data-pipelines
 spec:
+  region: us-east-1
   airflowVersion: "2.10.1"
   sourceBucketArn:
     value: arn:aws:s3:::prod-airflow-artifacts
@@ -114,6 +116,7 @@ kind: AwsMwaaEnvironment
 metadata:
   name: analytics-airflow
 spec:
+  region: us-west-2
   airflowVersion: "2.9.2"
   sourceBucketArn:
     value: arn:aws:s3:::analytics-airflow-bucket
@@ -160,6 +163,7 @@ kind: AwsMwaaEnvironment
 metadata:
   name: tuned-airflow
 spec:
+  region: us-west-2
   airflowVersion: "2.10.1"
   sourceBucketArn:
     value: arn:aws:s3:::tuned-airflow-dags
@@ -224,6 +228,7 @@ kind: AwsMwaaEnvironment
 metadata:
   name: platform-airflow
 spec:
+  region: us-west-2
   sourceBucketArn:
     value: arn:aws:s3:::platform-airflow-dags
   dagS3Path: dags/
@@ -270,6 +275,7 @@ kind: AwsMwaaEnvironment
 metadata:
   name: prod-etl-airflow
 spec:
+  region: us-east-1
   airflowVersion: "2.10.1"
   sourceBucketArn:
     valueFrom:

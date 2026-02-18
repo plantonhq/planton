@@ -12,6 +12,7 @@ metadata:
   labels:
     app: maintenance
 spec:
+  region: us-east-1
   description: Trigger cleanup function every hour
   scheduleExpression: "rate(1 hour)"
   targets:
@@ -33,6 +34,7 @@ kind: AwsEventBridgeRule
 metadata:
   name: ec2-state-monitor
 spec:
+  region: us-east-1
   description: Route EC2 state changes to processing queue
   eventPattern:
     source:
@@ -69,6 +71,7 @@ kind: AwsEventBridgeRule
 metadata:
   name: order-processor
 spec:
+  region: us-east-1
   eventBusName:
     valueFrom:
       kind: AwsEventBridgeBus
@@ -105,6 +108,7 @@ kind: AwsEventBridgeRule
 metadata:
   name: payment-router
 spec:
+  region: us-east-1
   eventBusName:
     valueFrom:
       kind: AwsEventBridgeBus
@@ -151,6 +155,7 @@ kind: AwsEventBridgeRule
 metadata:
   name: order-workflow
 spec:
+  region: us-east-1
   description: Start order fulfillment workflow on new orders
   eventPattern:
     source:
@@ -178,6 +183,7 @@ kind: AwsEventBridgeRule
 metadata:
   name: daily-report
 spec:
+  region: us-east-1
   description: Generate daily report at midnight UTC
   scheduleExpression: "cron(0 0 * * ? *)"
   targets:
@@ -200,6 +206,7 @@ kind: AwsEventBridgeRule
 metadata:
   name: ordered-events
 spec:
+  region: us-east-1
   description: Route events to FIFO queue with ordering
   eventPattern:
     source:

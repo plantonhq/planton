@@ -3,6 +3,7 @@ kind: AwsOpenSearchDomain
 metadata:
   name: my-search
 spec:
+  region: us-west-2
   engineVersion: "OpenSearch_2.11"
   clusterConfig:
     instanceType: t3.small.search

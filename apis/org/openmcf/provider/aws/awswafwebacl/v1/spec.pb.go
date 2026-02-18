@@ -62,6 +62,9 @@ const (
 // stack inputs.
 type AwsWafWebAclSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Scope determines where the Web ACL can be used.
 	//
 	// "REGIONAL" — protects ALB, API Gateway, AppSync, Cognito, App Runner
@@ -70,41 +73,41 @@ type AwsWafWebAclSpec struct {
 	// "CLOUDFRONT" — protects CloudFront distributions. The Web ACL MUST be
 	// created in the us-east-1 region. Ensure your provider configuration
 	// targets us-east-1 when using CLOUDFRONT scope.
-	Scope string `protobuf:"bytes,1,opt,name=scope,proto3" json:"scope,omitempty"`
+	Scope string `protobuf:"bytes,2,opt,name=scope,proto3" json:"scope,omitempty"`
 	// Action to take when no rule matches a request. This is the "baseline"
 	// security posture:
 	//   - "allow" (permissive): allow all traffic unless a rule blocks it.
 	//     Use when most traffic is legitimate (e.g., public website).
 	//   - "block" (restrictive): block all traffic unless a rule allows it.
 	//     Use when most traffic should be denied (e.g., private API).
-	DefaultAction *AwsWafWebAclDefaultAction `protobuf:"bytes,2,opt,name=default_action,json=defaultAction,proto3" json:"default_action,omitempty"`
+	DefaultAction *AwsWafWebAclDefaultAction `protobuf:"bytes,3,opt,name=default_action,json=defaultAction,proto3" json:"default_action,omitempty"`
 	// Human-readable description of the Web ACL. Max 256 characters.
-	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	// Ordered set of rules evaluated against each incoming request. Rules are
 	// evaluated by priority (lowest number first). When a rule matches, its
 	// action is taken and evaluation stops for that request.
 	//
 	// When no rules are provided, only the default_action applies. This is
 	// valid but uncommon — most Web ACLs have at least one managed rule group.
-	Rules []*AwsWafWebAclRule `protobuf:"bytes,4,rep,name=rules,proto3" json:"rules,omitempty"`
+	Rules []*AwsWafWebAclRule `protobuf:"bytes,5,rep,name=rules,proto3" json:"rules,omitempty"`
 	// CloudWatch metrics configuration for the Web ACL itself.
 	//
 	// When omitted, the IaC module applies sensible defaults:
 	// - cloudwatch_metrics_enabled = true
 	// - sampled_requests_enabled = true
 	// - metric_name = resource name
-	VisibilityConfig *AwsWafWebAclVisibilityConfig `protobuf:"bytes,5,opt,name=visibility_config,json=visibilityConfig,proto3" json:"visibility_config,omitempty"`
+	VisibilityConfig *AwsWafWebAclVisibilityConfig `protobuf:"bytes,6,opt,name=visibility_config,json=visibilityConfig,proto3" json:"visibility_config,omitempty"`
 	// Reusable response body templates that can be referenced by block actions
 	// via custom_response_body_key. Define branded error pages or structured
 	// error responses here and reference them by key from individual rules.
 	//
 	// Each entry requires a unique key (used as the reference), content string,
 	// and content_type.
-	CustomResponseBodies []*AwsWafWebAclCustomResponseBody `protobuf:"bytes,6,rep,name=custom_response_bodies,json=customResponseBodies,proto3" json:"custom_response_bodies,omitempty"`
+	CustomResponseBodies []*AwsWafWebAclCustomResponseBody `protobuf:"bytes,7,rep,name=custom_response_bodies,json=customResponseBodies,proto3" json:"custom_response_bodies,omitempty"`
 	// Domains to accept in web request tokens for CAPTCHA and Challenge actions.
 	// Required when using CAPTCHA/Challenge with multiple domains that share
 	// the same Web ACL. When omitted, tokens are scoped to the request domain.
-	TokenDomains []string `protobuf:"bytes,7,rep,name=token_domains,json=tokenDomains,proto3" json:"token_domains,omitempty"`
+	TokenDomains []string `protobuf:"bytes,8,rep,name=token_domains,json=tokenDomains,proto3" json:"token_domains,omitempty"`
 	// Optional logging configuration. When provided, WAF sends detailed request
 	// logs to the specified destination (CloudWatch Logs, S3, or Kinesis
 	// Firehose).
@@ -114,7 +117,7 @@ type AwsWafWebAclSpec struct {
 	// - CloudWatch Log Group: "aws-waf-logs-my-acl"
 	// - S3 Bucket: "aws-waf-logs-my-acl"
 	// - Kinesis Firehose: "aws-waf-logs-my-acl"
-	Logging       *AwsWafWebAclLoggingConfig `protobuf:"bytes,8,opt,name=logging,proto3" json:"logging,omitempty"`
+	Logging       *AwsWafWebAclLoggingConfig `protobuf:"bytes,9,opt,name=logging,proto3" json:"logging,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,6 +150,13 @@ func (x *AwsWafWebAclSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsWafWebAclSpec.ProtoReflect.Descriptor instead.
 func (*AwsWafWebAclSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awswafwebacl_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsWafWebAclSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsWafWebAclSpec) GetScope() string {
@@ -1427,16 +1437,17 @@ var File_org_openmcf_provider_aws_awswafwebacl_v1_spec_proto protoreflect.FileDe
 
 const file_org_openmcf_provider_aws_awswafwebacl_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"3org/openmcf/provider/aws/awswafwebacl/v1/spec.proto\x12(org.openmcf.provider.aws.awswafwebacl.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x83\x06\n" +
-	"\x10AwsWafWebAclSpec\x12\x1c\n" +
-	"\x05scope\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05scope\x12r\n" +
-	"\x0edefault_action\x18\x02 \x01(\v2C.org.openmcf.provider.aws.awswafwebacl.v1.AwsWafWebAclDefaultActionB\x06\xbaH\x03\xc8\x01\x01R\rdefaultAction\x12*\n" +
-	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x02R\vdescription\x12P\n" +
-	"\x05rules\x18\x04 \x03(\v2:.org.openmcf.provider.aws.awswafwebacl.v1.AwsWafWebAclRuleR\x05rules\x12s\n" +
-	"\x11visibility_config\x18\x05 \x01(\v2F.org.openmcf.provider.aws.awswafwebacl.v1.AwsWafWebAclVisibilityConfigR\x10visibilityConfig\x12~\n" +
-	"\x16custom_response_bodies\x18\x06 \x03(\v2H.org.openmcf.provider.aws.awswafwebacl.v1.AwsWafWebAclCustomResponseBodyR\x14customResponseBodies\x12#\n" +
-	"\rtoken_domains\x18\a \x03(\tR\ftokenDomains\x12]\n" +
-	"\alogging\x18\b \x01(\v2C.org.openmcf.provider.aws.awswafwebacl.v1.AwsWafWebAclLoggingConfigR\alogging:f\xbaHc\x1aa\n" +
+	"3org/openmcf/provider/aws/awswafwebacl/v1/spec.proto\x12(org.openmcf.provider.aws.awswafwebacl.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xa4\x06\n" +
+	"\x10AwsWafWebAclSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x1c\n" +
+	"\x05scope\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05scope\x12r\n" +
+	"\x0edefault_action\x18\x03 \x01(\v2C.org.openmcf.provider.aws.awswafwebacl.v1.AwsWafWebAclDefaultActionB\x06\xbaH\x03\xc8\x01\x01R\rdefaultAction\x12*\n" +
+	"\vdescription\x18\x04 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x02R\vdescription\x12P\n" +
+	"\x05rules\x18\x05 \x03(\v2:.org.openmcf.provider.aws.awswafwebacl.v1.AwsWafWebAclRuleR\x05rules\x12s\n" +
+	"\x11visibility_config\x18\x06 \x01(\v2F.org.openmcf.provider.aws.awswafwebacl.v1.AwsWafWebAclVisibilityConfigR\x10visibilityConfig\x12~\n" +
+	"\x16custom_response_bodies\x18\a \x03(\v2H.org.openmcf.provider.aws.awswafwebacl.v1.AwsWafWebAclCustomResponseBodyR\x14customResponseBodies\x12#\n" +
+	"\rtoken_domains\x18\b \x03(\tR\ftokenDomains\x12]\n" +
+	"\alogging\x18\t \x01(\v2C.org.openmcf.provider.aws.awswafwebacl.v1.AwsWafWebAclLoggingConfigR\alogging:f\xbaHc\x1aa\n" +
 	"\vscope_valid\x12(scope must be 'REGIONAL' or 'CLOUDFRONT'\x1a(this.scope in ['REGIONAL', 'CLOUDFRONT']\"\xd4\x05\n" +
 	"\x19AwsWafWebAclDefaultAction\x12\x1a\n" +
 	"\x04type\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04type\x12m\n" +

@@ -49,6 +49,9 @@ const (
 // inputs.
 type AwsCloudwatchAlarmSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Arithmetic operation to compare the statistic against the threshold.
 	//
 	// Standard comparison operators:
@@ -61,14 +64,14 @@ type AwsCloudwatchAlarmSpec struct {
 	// - "LessThanLowerOrGreaterThanUpperThreshold"
 	// - "LessThanLowerThreshold"
 	// - "GreaterThanUpperThreshold"
-	ComparisonOperator string `protobuf:"bytes,1,opt,name=comparison_operator,json=comparisonOperator,proto3" json:"comparison_operator,omitempty"`
+	ComparisonOperator string `protobuf:"bytes,2,opt,name=comparison_operator,json=comparisonOperator,proto3" json:"comparison_operator,omitempty"`
 	// Number of consecutive periods over which the metric is compared to the
 	// threshold. Must be at least 1.
 	//
 	// Combined with `datapoints_to_alarm` this creates an M-of-N evaluation
 	// window. For example, evaluation_periods=5 with datapoints_to_alarm=3
 	// means "3 out of the last 5 periods must breach to trigger the alarm."
-	EvaluationPeriods int32 `protobuf:"varint,2,opt,name=evaluation_periods,json=evaluationPeriods,proto3" json:"evaluation_periods,omitempty"`
+	EvaluationPeriods int32 `protobuf:"varint,3,opt,name=evaluation_periods,json=evaluationPeriods,proto3" json:"evaluation_periods,omitempty"`
 	// Number of data points within the evaluation window that must breach the
 	// threshold to trigger the alarm. Must be less than or equal to
 	// `evaluation_periods`. When omitted, defaults to `evaluation_periods`
@@ -76,19 +79,19 @@ type AwsCloudwatchAlarmSpec struct {
 	//
 	// Use a value lower than `evaluation_periods` for M-of-N evaluation to
 	// reduce false positives caused by transient spikes.
-	DatapointsToAlarm int32 `protobuf:"varint,3,opt,name=datapoints_to_alarm,json=datapointsToAlarm,proto3" json:"datapoints_to_alarm,omitempty"`
+	DatapointsToAlarm int32 `protobuf:"varint,4,opt,name=datapoints_to_alarm,json=datapointsToAlarm,proto3" json:"datapoints_to_alarm,omitempty"`
 	// Static threshold value. The statistic (or metric math result) is compared
 	// against this value using `comparison_operator`.
 	//
 	// Required for static threshold alarms. Must not be set for anomaly
 	// detection alarms (use `threshold_metric_id` instead).
-	Threshold float64 `protobuf:"fixed64,4,opt,name=threshold,proto3" json:"threshold,omitempty"`
+	Threshold float64 `protobuf:"fixed64,5,opt,name=threshold,proto3" json:"threshold,omitempty"`
 	// For anomaly detection alarms, set this to the ID of the
 	// ANOMALY_DETECTION_BAND function defined in `metric_queries`. The anomaly
 	// band serves as a dynamic threshold instead of a static `threshold` value.
 	//
 	// Mutually exclusive with `threshold`.
-	ThresholdMetricId string `protobuf:"bytes,5,opt,name=threshold_metric_id,json=thresholdMetricId,proto3" json:"threshold_metric_id,omitempty"`
+	ThresholdMetricId string `protobuf:"bytes,6,opt,name=threshold_metric_id,json=thresholdMetricId,proto3" json:"threshold_metric_id,omitempty"`
 	// How the alarm treats missing data points during evaluation.
 	//
 	// Valid values:
@@ -101,11 +104,11 @@ type AwsCloudwatchAlarmSpec struct {
 	//     that must always report (e.g., heartbeat checks).
 	//   - "ignore"       — The current alarm state is maintained regardless of
 	//     missing data.
-	TreatMissingData string `protobuf:"bytes,6,opt,name=treat_missing_data,json=treatMissingData,proto3" json:"treat_missing_data,omitempty"`
+	TreatMissingData string `protobuf:"bytes,7,opt,name=treat_missing_data,json=treatMissingData,proto3" json:"treat_missing_data,omitempty"`
 	// Whether actions execute during alarm state transitions. Defaults to true
 	// in the IaC module when not set. Set to false to suppress actions during
 	// maintenance windows or alarm tuning.
-	ActionsEnabled bool `protobuf:"varint,7,opt,name=actions_enabled,json=actionsEnabled,proto3" json:"actions_enabled,omitempty"`
+	ActionsEnabled bool `protobuf:"varint,8,opt,name=actions_enabled,json=actionsEnabled,proto3" json:"actions_enabled,omitempty"`
 	// Name of the CloudWatch metric to alarm on (e.g., "CPUUtilization",
 	// "4xxErrorRate", "ApproximateNumberOfMessagesVisible").
 	//
@@ -113,12 +116,12 @@ type AwsCloudwatchAlarmSpec struct {
 	// `extended_statistic` must also be set.
 	//
 	// Mutually exclusive with `metric_queries`.
-	MetricName string `protobuf:"bytes,8,opt,name=metric_name,json=metricName,proto3" json:"metric_name,omitempty"`
+	MetricName string `protobuf:"bytes,9,opt,name=metric_name,json=metricName,proto3" json:"metric_name,omitempty"`
 	// Namespace of the metric (e.g., "AWS/EC2", "AWS/ECS", "AWS/SQS",
 	// "AWS/ApplicationELB"). Custom namespaces are also supported.
 	//
 	// Required when `metric_name` is set. Must not start with a colon.
-	Namespace string `protobuf:"bytes,9,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	Namespace string `protobuf:"bytes,10,opt,name=namespace,proto3" json:"namespace,omitempty"`
 	// Period in seconds over which the statistic is applied. Defines the
 	// granularity of the alarm evaluation.
 	//
@@ -127,14 +130,14 @@ type AwsCloudwatchAlarmSpec struct {
 	// Standard-resolution metrics require multiples of 60.
 	//
 	// Required when `metric_name` is set.
-	Period int32 `protobuf:"varint,10,opt,name=period,proto3" json:"period,omitempty"`
+	Period int32 `protobuf:"varint,11,opt,name=period,proto3" json:"period,omitempty"`
 	// Standard statistic to apply to the metric.
 	//
 	// Valid values: "SampleCount", "Average", "Sum", "Minimum", "Maximum".
 	//
 	// Mutually exclusive with `extended_statistic`. Exactly one must be set
 	// when using simple metric mode.
-	Statistic string `protobuf:"bytes,11,opt,name=statistic,proto3" json:"statistic,omitempty"`
+	Statistic string `protobuf:"bytes,12,opt,name=statistic,proto3" json:"statistic,omitempty"`
 	// Percentile or extended statistic to apply to the metric. Used for
 	// percentile-based alarms (e.g., p95 latency, p99 error rate).
 	//
@@ -142,7 +145,7 @@ type AwsCloudwatchAlarmSpec struct {
 	//
 	// Mutually exclusive with `statistic`. Exactly one must be set when
 	// using simple metric mode.
-	ExtendedStatistic string `protobuf:"bytes,12,opt,name=extended_statistic,json=extendedStatistic,proto3" json:"extended_statistic,omitempty"`
+	ExtendedStatistic string `protobuf:"bytes,13,opt,name=extended_statistic,json=extendedStatistic,proto3" json:"extended_statistic,omitempty"`
 	// Dimensions that identify the specific metric stream to alarm on.
 	// Dimensions narrow the metric to a specific resource or subset.
 	//
@@ -150,11 +153,11 @@ type AwsCloudwatchAlarmSpec struct {
 	// Example for ECS service: {"ClusterName": "prod", "ServiceName": "api"}
 	//
 	// Mutually exclusive with `metric_queries`.
-	Dimensions map[string]string `protobuf:"bytes,13,rep,name=dimensions,proto3" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Dimensions map[string]string `protobuf:"bytes,14,rep,name=dimensions,proto3" json:"dimensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Unit for the metric. When specified, only data points with a matching unit
 	// are used for evaluation. Most alarms omit this and use the metric's
 	// published unit.
-	Unit string `protobuf:"bytes,14,opt,name=unit,proto3" json:"unit,omitempty"`
+	Unit string `protobuf:"bytes,15,opt,name=unit,proto3" json:"unit,omitempty"`
 	// Metric math expressions or multi-metric queries. Use this mode for:
 	// - Metric math (e.g., error rate = errors / total * 100)
 	// - Anomaly detection (ANOMALY_DETECTION_BAND function)
@@ -166,23 +169,23 @@ type AwsCloudwatchAlarmSpec struct {
 	//
 	// Mutually exclusive with simple metric fields (`metric_name`,
 	// `namespace`, `period`, `statistic`, `extended_statistic`, `dimensions`).
-	MetricQueries []*AwsCloudwatchAlarmMetricQuery `protobuf:"bytes,15,rep,name=metric_queries,json=metricQueries,proto3" json:"metric_queries,omitempty"`
+	MetricQueries []*AwsCloudwatchAlarmMetricQuery `protobuf:"bytes,16,rep,name=metric_queries,json=metricQueries,proto3" json:"metric_queries,omitempty"`
 	// Actions to execute when the alarm transitions to ALARM state. Each action
 	// is an ARN — typically an SNS topic ARN, but can also be an Auto Scaling
 	// policy, EC2 automation action, Lambda function, or SSM OpsItem.
 	//
 	// Maximum 5 actions.
-	AlarmActions []*v1.StringValueOrRef `protobuf:"bytes,16,rep,name=alarm_actions,json=alarmActions,proto3" json:"alarm_actions,omitempty"`
+	AlarmActions []*v1.StringValueOrRef `protobuf:"bytes,17,rep,name=alarm_actions,json=alarmActions,proto3" json:"alarm_actions,omitempty"`
 	// Actions to execute when the alarm transitions to OK state.
 	// Maximum 5 actions.
-	OkActions []*v1.StringValueOrRef `protobuf:"bytes,17,rep,name=ok_actions,json=okActions,proto3" json:"ok_actions,omitempty"`
+	OkActions []*v1.StringValueOrRef `protobuf:"bytes,18,rep,name=ok_actions,json=okActions,proto3" json:"ok_actions,omitempty"`
 	// Actions to execute when the alarm transitions to INSUFFICIENT_DATA state.
 	// Maximum 5 actions.
-	InsufficientDataActions []*v1.StringValueOrRef `protobuf:"bytes,18,rep,name=insufficient_data_actions,json=insufficientDataActions,proto3" json:"insufficient_data_actions,omitempty"`
+	InsufficientDataActions []*v1.StringValueOrRef `protobuf:"bytes,19,rep,name=insufficient_data_actions,json=insufficientDataActions,proto3" json:"insufficient_data_actions,omitempty"`
 	// Human-readable description of the alarm's purpose. Include details about
 	// what the alarm monitors, expected thresholds, and remediation steps.
 	// Maximum 1024 characters.
-	AlarmDescription string `protobuf:"bytes,19,opt,name=alarm_description,json=alarmDescription,proto3" json:"alarm_description,omitempty"`
+	AlarmDescription string `protobuf:"bytes,20,opt,name=alarm_description,json=alarmDescription,proto3" json:"alarm_description,omitempty"`
 	// Controls alarm behavior during periods with too few data points for
 	// statistically significant percentile calculations.
 	//
@@ -192,7 +195,7 @@ type AwsCloudwatchAlarmSpec struct {
 	//
 	// Only meaningful when using percentile statistics (extended_statistic or
 	// a percentile stat in metric_queries).
-	EvaluateLowSampleCountPercentiles string `protobuf:"bytes,20,opt,name=evaluate_low_sample_count_percentiles,json=evaluateLowSampleCountPercentiles,proto3" json:"evaluate_low_sample_count_percentiles,omitempty"`
+	EvaluateLowSampleCountPercentiles string `protobuf:"bytes,21,opt,name=evaluate_low_sample_count_percentiles,json=evaluateLowSampleCountPercentiles,proto3" json:"evaluate_low_sample_count_percentiles,omitempty"`
 	unknownFields                     protoimpl.UnknownFields
 	sizeCache                         protoimpl.SizeCache
 }
@@ -225,6 +228,13 @@ func (x *AwsCloudwatchAlarmSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsCloudwatchAlarmSpec.ProtoReflect.Descriptor instead.
 func (*AwsCloudwatchAlarmSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awscloudwatchalarm_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsCloudwatchAlarmSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsCloudwatchAlarmSpec) GetComparisonOperator() string {
@@ -604,33 +614,34 @@ var File_org_openmcf_provider_aws_awscloudwatchalarm_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_aws_awscloudwatchalarm_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/aws/awscloudwatchalarm/v1/spec.proto\x12.org.openmcf.provider.aws.awscloudwatchalarm.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xa0!\n" +
-	"\x16AwsCloudwatchAlarmSpec\x127\n" +
-	"\x13comparison_operator\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x12comparisonOperator\x126\n" +
-	"\x12evaluation_periods\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01R\x11evaluationPeriods\x12.\n" +
-	"\x13datapoints_to_alarm\x18\x03 \x01(\x05R\x11datapointsToAlarm\x12\x1c\n" +
-	"\tthreshold\x18\x04 \x01(\x01R\tthreshold\x128\n" +
-	"\x13threshold_metric_id\x18\x05 \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01R\x11thresholdMetricId\x12,\n" +
-	"\x12treat_missing_data\x18\x06 \x01(\tR\x10treatMissingData\x12'\n" +
-	"\x0factions_enabled\x18\a \x01(\bR\x0eactionsEnabled\x12)\n" +
-	"\vmetric_name\x18\b \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01R\n" +
+	"9org/openmcf/provider/aws/awscloudwatchalarm/v1/spec.proto\x12.org.openmcf.provider.aws.awscloudwatchalarm.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xc1!\n" +
+	"\x16AwsCloudwatchAlarmSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x127\n" +
+	"\x13comparison_operator\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x12comparisonOperator\x126\n" +
+	"\x12evaluation_periods\x18\x03 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01R\x11evaluationPeriods\x12.\n" +
+	"\x13datapoints_to_alarm\x18\x04 \x01(\x05R\x11datapointsToAlarm\x12\x1c\n" +
+	"\tthreshold\x18\x05 \x01(\x01R\tthreshold\x128\n" +
+	"\x13threshold_metric_id\x18\x06 \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01R\x11thresholdMetricId\x12,\n" +
+	"\x12treat_missing_data\x18\a \x01(\tR\x10treatMissingData\x12'\n" +
+	"\x0factions_enabled\x18\b \x01(\bR\x0eactionsEnabled\x12)\n" +
+	"\vmetric_name\x18\t \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01R\n" +
 	"metricName\x12&\n" +
-	"\tnamespace\x18\t \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01R\tnamespace\x12\x16\n" +
-	"\x06period\x18\n" +
-	" \x01(\x05R\x06period\x12\x1c\n" +
-	"\tstatistic\x18\v \x01(\tR\tstatistic\x12-\n" +
-	"\x12extended_statistic\x18\f \x01(\tR\x11extendedStatistic\x12v\n" +
+	"\tnamespace\x18\n" +
+	" \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01R\tnamespace\x12\x16\n" +
+	"\x06period\x18\v \x01(\x05R\x06period\x12\x1c\n" +
+	"\tstatistic\x18\f \x01(\tR\tstatistic\x12-\n" +
+	"\x12extended_statistic\x18\r \x01(\tR\x11extendedStatistic\x12v\n" +
 	"\n" +
-	"dimensions\x18\r \x03(\v2V.org.openmcf.provider.aws.awscloudwatchalarm.v1.AwsCloudwatchAlarmSpec.DimensionsEntryR\n" +
+	"dimensions\x18\x0e \x03(\v2V.org.openmcf.provider.aws.awscloudwatchalarm.v1.AwsCloudwatchAlarmSpec.DimensionsEntryR\n" +
 	"dimensions\x12\x12\n" +
-	"\x04unit\x18\x0e \x01(\tR\x04unit\x12t\n" +
-	"\x0emetric_queries\x18\x0f \x03(\v2M.org.openmcf.provider.aws.awscloudwatchalarm.v1.AwsCloudwatchAlarmMetricQueryR\rmetricQueries\x12z\n" +
-	"\ralarm_actions\x18\x10 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe2\x01\x92\xd4a\x18status.outputs.topic_arnR\falarmActions\x12t\n" +
+	"\x04unit\x18\x0f \x01(\tR\x04unit\x12t\n" +
+	"\x0emetric_queries\x18\x10 \x03(\v2M.org.openmcf.provider.aws.awscloudwatchalarm.v1.AwsCloudwatchAlarmMetricQueryR\rmetricQueries\x12z\n" +
+	"\ralarm_actions\x18\x11 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe2\x01\x92\xd4a\x18status.outputs.topic_arnR\falarmActions\x12t\n" +
 	"\n" +
-	"ok_actions\x18\x11 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe2\x01\x92\xd4a\x18status.outputs.topic_arnR\tokActions\x12\x91\x01\n" +
-	"\x19insufficient_data_actions\x18\x12 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe2\x01\x92\xd4a\x18status.outputs.topic_arnR\x17insufficientDataActions\x125\n" +
-	"\x11alarm_description\x18\x13 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\x10alarmDescription\x12P\n" +
-	"%evaluate_low_sample_count_percentiles\x18\x14 \x01(\tR!evaluateLowSampleCountPercentiles\x1a=\n" +
+	"ok_actions\x18\x12 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe2\x01\x92\xd4a\x18status.outputs.topic_arnR\tokActions\x12\x91\x01\n" +
+	"\x19insufficient_data_actions\x18\x13 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe2\x01\x92\xd4a\x18status.outputs.topic_arnR\x17insufficientDataActions\x125\n" +
+	"\x11alarm_description\x18\x14 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\x10alarmDescription\x12P\n" +
+	"%evaluate_low_sample_count_percentiles\x18\x15 \x01(\tR!evaluateLowSampleCountPercentiles\x1a=\n" +
 	"\x0fDimensionsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xad\x16\xbaH\xa9\x16\x1a\xef\x03\n" +

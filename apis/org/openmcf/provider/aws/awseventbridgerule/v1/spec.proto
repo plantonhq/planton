@@ -26,6 +26,10 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 // - Credentials, region, and deployment workflow live outside this spec in
 //   stack inputs.
 message AwsEventBridgeRuleSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Event bus reference
   // ---------------------------------------------------------------------------
@@ -35,7 +39,7 @@ message AwsEventBridgeRuleSpec {
   // AwsEventBridgeBus resource via `valueFrom`.
   //
   // Changing this field forces rule replacement (delete + recreate).
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef event_bus_name = 1 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef event_bus_name = 2 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsEventBridgeBus,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bus_name"
   ];
@@ -45,7 +49,7 @@ message AwsEventBridgeRuleSpec {
   // ---------------------------------------------------------------------------
 
   // Human-readable description of the rule. Maximum 512 characters.
-  string description = 2 [(buf.validate.field).string.max_len = 512];
+  string description = 3 [(buf.validate.field).string.max_len = 512];
 
   // JSON event pattern that this rule matches against. Events that match the
   // pattern are routed to the rule's targets. Expressed as a structured object
@@ -58,7 +62,7 @@ message AwsEventBridgeRuleSpec {
   //   detail-type: ["EC2 Instance State-change Notification"]
   //   detail:
   //     state: ["running", "stopped"]
-  google.protobuf.Struct event_pattern = 3;
+  google.protobuf.Struct event_pattern = 4;
 
   // Schedule expression for time-based rule triggering. Supports cron and rate
   // expressions.
@@ -70,12 +74,12 @@ message AwsEventBridgeRuleSpec {
   //   "rate(1 hour)"           — fire every hour
   //   "cron(0 12 * * ? *)"     — fire at noon UTC every day
   //   "cron(0/15 * * * ? *)"   — fire every 15 minutes
-  string schedule_expression = 4 [(buf.validate.field).string.max_len = 256];
+  string schedule_expression = 5 [(buf.validate.field).string.max_len = 256];
 
   // Rule state. Controls whether the rule is actively matching events.
   // Valid values: "ENABLED", "DISABLED". Defaults to "ENABLED" in the IaC
   // module when not set.
-  string state = 5;
+  string state = 6;
 
   // ---------------------------------------------------------------------------
   // Targets
@@ -87,7 +91,7 @@ message AwsEventBridgeRuleSpec {
   // dead letter queue configuration.
   //
   // AWS limits: maximum 5 targets per rule.
-  repeated AwsEventBridgeTarget targets = 6;
+  repeated AwsEventBridgeTarget targets = 7;
 
   // ---------------------------------------------------------------------------
   // CEL validations

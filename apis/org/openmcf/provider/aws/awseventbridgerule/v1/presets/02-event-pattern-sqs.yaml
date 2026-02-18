@@ -3,6 +3,7 @@ kind: AwsEventBridgeRule
 metadata:
   name: my-event-rule
 spec:
+  region: <aws-region>
   description: Route matching events to an SQS queue with dead letter queue
   eventPattern:
     source:

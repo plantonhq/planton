@@ -59,24 +59,27 @@ const (
 //     stack inputs.
 type AwsKinesisFirehoseSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Kinesis Data Stream source configuration. When set, Firehose reads from
 	// the specified stream instead of accepting Direct PUT calls. The entire
 	// source configuration is ForceNew -- it cannot be changed after creation.
 	//
 	// When a Kinesis source is configured, server-side encryption (sse_enabled)
 	// must NOT be set -- the source stream handles its own encryption.
-	KinesisStreamSource *AwsKinesisFirehoseKinesisStreamSource `protobuf:"bytes,1,opt,name=kinesis_stream_source,json=kinesisStreamSource,proto3" json:"kinesis_stream_source,omitempty"`
+	KinesisStreamSource *AwsKinesisFirehoseKinesisStreamSource `protobuf:"bytes,2,opt,name=kinesis_stream_source,json=kinesisStreamSource,proto3" json:"kinesis_stream_source,omitempty"`
 	// Enable server-side encryption for data at rest in the delivery stream
 	// buffer. Only valid for Direct PUT sources -- when using a Kinesis stream
 	// source, encryption is handled by the source stream.
 	//
 	// When true and sse_kms_key_arn is absent, uses the AWS-owned CMK.
 	// When true and sse_kms_key_arn is present, uses a customer-managed CMK.
-	SseEnabled bool `protobuf:"varint,2,opt,name=sse_enabled,json=sseEnabled,proto3" json:"sse_enabled,omitempty"`
+	SseEnabled bool `protobuf:"varint,3,opt,name=sse_enabled,json=sseEnabled,proto3" json:"sse_enabled,omitempty"`
 	// Customer-managed KMS key ARN for server-side encryption. When set,
 	// Firehose uses this key instead of the AWS-owned CMK. Requires
 	// sse_enabled to be true.
-	SseKmsKeyArn *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=sse_kms_key_arn,json=sseKmsKeyArn,proto3" json:"sse_kms_key_arn,omitempty"`
+	SseKmsKeyArn *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=sse_kms_key_arn,json=sseKmsKeyArn,proto3" json:"sse_kms_key_arn,omitempty"`
 	// Exactly one destination must be configured. The destination type is
 	// ForceNew -- changing it requires replacing the entire delivery stream.
 	// The IaC modules derive the Terraform/Pulumi destination string from
@@ -121,6 +124,13 @@ func (x *AwsKinesisFirehoseSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsKinesisFirehoseSpec.ProtoReflect.Descriptor instead.
 func (*AwsKinesisFirehoseSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awskinesisfirehose_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsKinesisFirehoseSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsKinesisFirehoseSpec) GetKinesisStreamSource() *AwsKinesisFirehoseKinesisStreamSource {
@@ -195,14 +205,14 @@ type AwsKinesisFirehoseSpec_ExtendedS3 struct {
 	// Extended S3 destination for data lake storage. Supports compression,
 	// Lambda transformation, dynamic partitioning, and Parquet/ORC format
 	// conversion via AWS Glue Data Catalog. The most feature-rich destination.
-	ExtendedS3 *AwsKinesisFirehoseExtendedS3Destination `protobuf:"bytes,4,opt,name=extended_s3,json=extendedS3,proto3,oneof"`
+	ExtendedS3 *AwsKinesisFirehoseExtendedS3Destination `protobuf:"bytes,5,opt,name=extended_s3,json=extendedS3,proto3,oneof"`
 }
 
 type AwsKinesisFirehoseSpec_Opensearch struct {
 	// OpenSearch destination for direct indexing into an Amazon OpenSearch
 	// Service domain. Supports index rotation, VPC delivery, and Lambda
 	// transformation. Failed documents are backed up to S3.
-	Opensearch *AwsKinesisFirehoseOpenSearchDestination `protobuf:"bytes,5,opt,name=opensearch,proto3,oneof"`
+	Opensearch *AwsKinesisFirehoseOpenSearchDestination `protobuf:"bytes,6,opt,name=opensearch,proto3,oneof"`
 }
 
 type AwsKinesisFirehoseSpec_HttpEndpoint struct {
@@ -210,14 +220,14 @@ type AwsKinesisFirehoseSpec_HttpEndpoint struct {
 	// custom headers, content encoding, and Lambda transformation. Commonly
 	// used for third-party integrations (Datadog, New Relic, Sumo Logic).
 	// Failed deliveries are backed up to S3.
-	HttpEndpoint *AwsKinesisFirehoseHttpEndpointDestination `protobuf:"bytes,6,opt,name=http_endpoint,json=httpEndpoint,proto3,oneof"`
+	HttpEndpoint *AwsKinesisFirehoseHttpEndpointDestination `protobuf:"bytes,7,opt,name=http_endpoint,json=httpEndpoint,proto3,oneof"`
 }
 
 type AwsKinesisFirehoseSpec_Redshift struct {
 	// Redshift destination for data warehouse loading. Firehose stages data
 	// in S3, then issues a Redshift COPY command to load it. Supports Lambda
 	// transformation and optional S3 backup of source records.
-	Redshift *AwsKinesisFirehoseRedshiftDestination `protobuf:"bytes,7,opt,name=redshift,proto3,oneof"`
+	Redshift *AwsKinesisFirehoseRedshiftDestination `protobuf:"bytes,8,opt,name=redshift,proto3,oneof"`
 }
 
 func (*AwsKinesisFirehoseSpec_ExtendedS3) isAwsKinesisFirehoseSpec_DestinationConfig() {}
@@ -1862,19 +1872,20 @@ var File_org_openmcf_provider_aws_awskinesisfirehose_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_aws_awskinesisfirehose_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/aws/awskinesisfirehose/v1/spec.proto\x12.org.openmcf.provider.aws.awskinesisfirehose.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x99\t\n" +
-	"\x16AwsKinesisFirehoseSpec\x12\x89\x01\n" +
-	"\x15kinesis_stream_source\x18\x01 \x01(\v2U.org.openmcf.provider.aws.awskinesisfirehose.v1.AwsKinesisFirehoseKinesisStreamSourceR\x13kinesisStreamSource\x12\x1f\n" +
-	"\vsse_enabled\x18\x02 \x01(\bR\n" +
+	"9org/openmcf/provider/aws/awskinesisfirehose/v1/spec.proto\x12.org.openmcf.provider.aws.awskinesisfirehose.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xba\t\n" +
+	"\x16AwsKinesisFirehoseSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x89\x01\n" +
+	"\x15kinesis_stream_source\x18\x02 \x01(\v2U.org.openmcf.provider.aws.awskinesisfirehose.v1.AwsKinesisFirehoseKinesisStreamSourceR\x13kinesisStreamSource\x12\x1f\n" +
+	"\vsse_enabled\x18\x03 \x01(\bR\n" +
 	"sseEnabled\x12z\n" +
-	"\x0fsse_kms_key_arn\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\fsseKmsKeyArn\x12z\n" +
-	"\vextended_s3\x18\x04 \x01(\v2W.org.openmcf.provider.aws.awskinesisfirehose.v1.AwsKinesisFirehoseExtendedS3DestinationH\x00R\n" +
+	"\x0fsse_kms_key_arn\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\fsseKmsKeyArn\x12z\n" +
+	"\vextended_s3\x18\x05 \x01(\v2W.org.openmcf.provider.aws.awskinesisfirehose.v1.AwsKinesisFirehoseExtendedS3DestinationH\x00R\n" +
 	"extendedS3\x12y\n" +
 	"\n" +
-	"opensearch\x18\x05 \x01(\v2W.org.openmcf.provider.aws.awskinesisfirehose.v1.AwsKinesisFirehoseOpenSearchDestinationH\x00R\n" +
+	"opensearch\x18\x06 \x01(\v2W.org.openmcf.provider.aws.awskinesisfirehose.v1.AwsKinesisFirehoseOpenSearchDestinationH\x00R\n" +
 	"opensearch\x12\x80\x01\n" +
-	"\rhttp_endpoint\x18\x06 \x01(\v2Y.org.openmcf.provider.aws.awskinesisfirehose.v1.AwsKinesisFirehoseHttpEndpointDestinationH\x00R\fhttpEndpoint\x12s\n" +
-	"\bredshift\x18\a \x01(\v2U.org.openmcf.provider.aws.awskinesisfirehose.v1.AwsKinesisFirehoseRedshiftDestinationH\x00R\bredshift:\xc9\x02\xbaH\xc5\x02\x1a\xc5\x01\n" +
+	"\rhttp_endpoint\x18\a \x01(\v2Y.org.openmcf.provider.aws.awskinesisfirehose.v1.AwsKinesisFirehoseHttpEndpointDestinationH\x00R\fhttpEndpoint\x12s\n" +
+	"\bredshift\x18\b \x01(\v2U.org.openmcf.provider.aws.awskinesisfirehose.v1.AwsKinesisFirehoseRedshiftDestinationH\x00R\bredshift:\xc9\x02\xbaH\xc5\x02\x1a\xc5\x01\n" +
 	"!sse_conflicts_with_kinesis_source\x12isse_enabled must be false when kinesis_stream_source is configured (the source stream handles encryption)\x1a5!has(this.kinesis_stream_source) || !this.sse_enabled\x1a{\n" +
 	"\x18sse_key_requires_enabled\x12/sse_kms_key_arn requires sse_enabled to be true\x1a.!has(this.sse_kms_key_arn) || this.sse_enabledB\x1b\n" +
 	"\x12destination_config\x12\x05\xbaH\x02\b\x01\"\x9b\x02\n" +

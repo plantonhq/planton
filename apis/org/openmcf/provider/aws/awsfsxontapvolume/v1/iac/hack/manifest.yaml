@@ -6,6 +6,7 @@ metadata:
   org: test-org
   env: test
 spec:
+  region: us-west-2
   storage_virtual_machine_id:
     value: svm-0123456789abcdef0
   name: vol_test

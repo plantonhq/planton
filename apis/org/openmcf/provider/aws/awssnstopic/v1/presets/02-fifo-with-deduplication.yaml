@@ -3,6 +3,7 @@ kind: AwsSnsTopic
 metadata:
   name: my-fifo-topic
 spec:
+  region: <aws-region>
   fifoTopic: true
   contentBasedDeduplication: true
   fifoThroughputScope: MessageGroup

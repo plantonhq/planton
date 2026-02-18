@@ -6,6 +6,7 @@ kind: AwsRedisElasticache
 metadata:
   name: my-redis
 spec:
+  region: us-west-2
   engine: redis
   engineVersion: "7.1"
   description: Development Redis cache
@@ -23,6 +24,7 @@ kind: AwsRedisElasticache
 metadata:
   name: session-cache
 spec:
+  region: us-west-2
   engine: redis
   engineVersion: "7.1"
   description: Session cache with automatic failover
@@ -60,6 +62,7 @@ kind: AwsRedisElasticache
 metadata:
   name: product-catalog
 spec:
+  region: us-west-2
   engine: redis
   engineVersion: "7.1"
   description: Product catalog cache with horizontal sharding
@@ -116,6 +119,7 @@ kind: AwsRedisElasticache
 metadata:
   name: valkey-cache
 spec:
+  region: us-west-2
   engine: valkey
   engineVersion: "7.2"
   description: Valkey in-memory cache

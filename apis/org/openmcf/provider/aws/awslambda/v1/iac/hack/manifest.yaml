@@ -3,6 +3,7 @@ kind: AwsLambda
 metadata:
   name: awslambda-demo
 spec:
+  region: us-west-2
   function_name: awslambda-demo
   description: Example Lambda function
   role_arn:

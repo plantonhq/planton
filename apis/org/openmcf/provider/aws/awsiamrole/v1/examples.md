@@ -9,6 +9,7 @@ metadata:
   name: lambda-execution-role
   org: my-org
 spec:
+  region: us-east-1
   description: "IAM role for Lambda function execution"
   trustPolicy:
     Version: "2012-10-17"
@@ -33,6 +34,7 @@ metadata:
     app: web-api
     env: prod
 spec:
+  region: us-east-1
   description: "IAM role for ECS task execution"
   path: "/ecs/"
   trustPolicy:
@@ -74,6 +76,7 @@ metadata:
   name: ec2-instance-role
   org: my-org
 spec:
+  region: us-west-2
   description: "IAM role for EC2 instances with Systems Manager access"
   trustPolicy:
     Version: "2012-10-17"
@@ -96,6 +99,7 @@ metadata:
   name: cross-account-reader
   org: my-org
 spec:
+  region: us-east-1
   description: "Role for trusted external account to read S3 data"
   trustPolicy:
     Version: "2012-10-17"
@@ -132,6 +136,7 @@ metadata:
     service: data-processor
     team: backend
 spec:
+  region: us-east-1
   description: "Lambda role with VPC access and multi-service permissions"
   path: "/service-roles/"
   trustPolicy:
@@ -188,7 +193,7 @@ openmcf pulumi stack output role_arn --stack my-org/project/dev
 openmcf pulumi stack output role_name --stack my-org/project/dev
 ```
 
-Note: Provider credentials (AWS access key, secret, region) are supplied via stack input, not in the spec.
+Note: Provider credentials (AWS access key, secret) are supplied via stack input, not in the spec.
 
 ## References
 

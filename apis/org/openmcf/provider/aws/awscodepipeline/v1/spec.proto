@@ -25,11 +25,15 @@ import "org/openmcf/shared/options/options.proto";
 // triggers (superior to the legacy webhook mechanism). Custom action types
 // are account-level resources with independent lifecycles and are excluded.
 message AwsCodePipelineSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // pipeline_type selects the pipeline version.
   //   V1: Legacy pipeline (no triggers, no variables, SUPERSEDED execution only)
   //   V2: Modern pipeline with triggers, variables, and advanced execution modes
   // Default: V2 (recommended for all new pipelines).
-  optional string pipeline_type = 1 [
+  optional string pipeline_type = 2 [
     (org.openmcf.shared.options.default) = "V2",
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
@@ -45,7 +49,7 @@ message AwsCodePipelineSpec {
   //   QUEUED:     New executions queue behind the current one (V2 only)
   //   PARALLEL:   Executions run simultaneously without waiting (V2 only)
   // Default: SUPERSEDED.
-  optional string execution_mode = 2 [
+  optional string execution_mode = 3 [
     (org.openmcf.shared.options.default) = "SUPERSEDED",
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
@@ -61,7 +65,7 @@ message AwsCodePipelineSpec {
   // access source providers, invoke build/deploy actions, and manage
   // artifacts in S3. This role must have policies for every action provider
   // used in the pipeline (e.g., CodeBuild, S3, ECS, Lambda).
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef role_arn = 3 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef role_arn = 4 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsIamRole,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
@@ -72,7 +76,7 @@ message AwsCodePipelineSpec {
   // For cross-region pipelines, provide one store per region (each with a
   // region field) so that actions in different regions have local artifact
   // access.
-  repeated AwsCodePipelineArtifactStore artifact_stores = 4 [
+  repeated AwsCodePipelineArtifactStore artifact_stores = 5 [
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 1
   ];
@@ -82,7 +86,7 @@ message AwsCodePipelineSpec {
   // or sequentially (different run_order values).
   // A pipeline requires at minimum two stages: a source stage and at
   // least one build, test, deploy, or approval stage.
-  repeated AwsCodePipelineStage stages = 5 [
+  repeated AwsCodePipelineStage stages = 6 [
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 2
   ];
@@ -91,12 +95,12 @@ message AwsCodePipelineSpec {
   // V2 pipelines only. Triggers use CodeStar Connections to listen for
   // push or pull request events on source repositories with branch, tag,
   // and file path filtering.
-  repeated AwsCodePipelineTrigger triggers = 6 [(buf.validate.field).repeated.max_items = 50];
+  repeated AwsCodePipelineTrigger triggers = 7 [(buf.validate.field).repeated.max_items = 50];
 
   // variables define pipeline-level parameters that can be referenced in
   // action configurations using #{variables.VariableName} syntax.
   // V2 pipelines only.
-  repeated AwsCodePipelineVariable variables = 7;
+  repeated AwsCodePipelineVariable variables = 8;
 
   // Cross-field validations
 

@@ -337,6 +337,7 @@ kind: AwsRdsCluster
 metadata:
   name: app-production-db
 spec:
+  region: us-west-2
   engine: aurora-postgresql
   engineVersion: "14.7"
   subnetIds:
@@ -369,6 +370,7 @@ For serverless:
 
 ```yaml
 spec:
+  region: us-west-2
   engine: aurora-mysql
   serverlessV2Scaling:
     minCapacity: 0.5

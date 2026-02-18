@@ -204,10 +204,11 @@ Just as APIs should focus on the 20% of configuration that 80% of users need, EC
 
 ### The Essential 80%
 
-1. **repository_name**: The only truly required field
-2. **image_tag_mutability**: Default to `IMMUTABLE` for production stability
-3. **scan_on_push**: Default to `true` for security
-4. **encryption_type**: Default to `AES256` (sufficient for most use cases)
+1. **region**: The AWS region where the repository will be created
+2. **repository_name**: The repository name (unique within account and region)
+3. **image_tag_mutability**: Default to `IMMUTABLE` for production stability
+4. **scan_on_push**: Default to `true` for security
+5. **encryption_type**: Default to `AES256` (sufficient for most use cases)
 
 ### The Advanced 20%
 
@@ -369,7 +370,8 @@ The `AwsEcrRepo` API in OpenMCF follows the principle of **secure defaults with 
 
 ### What's Included
 
-- **Repository Name**: The only required field (with validation for length and format)
+- **Region**: The AWS region where the ECR repository will be created (required)
+- **Repository Name**: The name of the ECR repository (required, with validation for length and format)
 - **Image Immutability**: Boolean flag to enforce immutable tags (recommended for production)
 - **Encryption**: Defaults to AES256, with KMS option via `kms_key_id` for compliance scenarios
 - **Force Delete**: Safety flag to prevent accidental deletion of repositories with images
@@ -378,7 +380,7 @@ The `AwsEcrRepo` API in OpenMCF follows the principle of **secure defaults with 
 
 OpenMCF's API design prioritizes:
 
-1. **Minimal Required Configuration**: Only `repository_name` is mandatory
+1. **Minimal Required Configuration**: Only `region` and `repository_name` are mandatory
 2. **Secure Defaults**: Encryption enabled by default (AES256)
 3. **Flexibility for Compliance**: KMS encryption available when needed
 4. **Safety First**: Force delete disabled by default to prevent data loss

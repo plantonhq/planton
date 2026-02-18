@@ -13,6 +13,7 @@ metadata:
   name: dev-nfs
   id: awsfxz-dev-nfs-dev
 spec:
+  region: us-east-1
   storage_capacity_gib: 64
   throughput_capacity: 160
   subnet_ids:
@@ -32,6 +33,7 @@ metadata:
   name: app-data
   id: awsfxz-app-data-production
 spec:
+  region: us-east-1
   deployment_type: SINGLE_AZ_2
   storage_capacity_gib: 1024
   throughput_capacity: 640
@@ -71,6 +73,7 @@ metadata:
   name: ha-shared-fs
   id: awsfxz-ha-shared-fs-production
 spec:
+  region: us-east-1
   deployment_type: MULTI_AZ_1
   storage_capacity_gib: 2048
   throughput_capacity: 2560
@@ -130,6 +133,7 @@ metadata:
   name: shared-nfs
   id: awsfxz-shared-nfs-production
 spec:
+  region: us-east-1
   deployment_type: SINGLE_AZ_2
   storage_capacity_gib: 512
   throughput_capacity: 320
@@ -171,6 +175,7 @@ metadata:
   name: analytics-data
   id: awsfxz-analytics-data-production
 spec:
+  region: us-east-1
   deployment_type: SINGLE_AZ_2
   storage_capacity_gib: 4096
   throughput_capacity: 2560

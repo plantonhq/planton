@@ -85,25 +85,28 @@ func (ExecConfiguration_Logging) EnumDescriptor() ([]byte, []int) {
 // an AWS ECS cluster that supports Fargate workloads with cost optimization.
 type AwsEcsClusterSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// enable_container_insights determines whether to enable CloudWatch
 	// Container Insights for this cluster. This is highly recommended
 	// for production monitoring, though it incurs CloudWatch costs.
 	// If omitted, it is recommended to be "true".
-	EnableContainerInsights bool `protobuf:"varint,1,opt,name=enable_container_insights,json=enableContainerInsights,proto3" json:"enable_container_insights,omitempty"`
+	EnableContainerInsights bool `protobuf:"varint,2,opt,name=enable_container_insights,json=enableContainerInsights,proto3" json:"enable_container_insights,omitempty"`
 	// capacity_providers is a list of capacity providers attached
 	// to this cluster. For a Fargate-only cluster, typically ["FARGATE"]
 	// or ["FARGATE", "FARGATE_SPOT"] for cost-optimized Spot usage.
-	CapacityProviders []string `protobuf:"bytes,2,rep,name=capacity_providers,json=capacityProviders,proto3" json:"capacity_providers,omitempty"`
+	CapacityProviders []string `protobuf:"bytes,3,rep,name=capacity_providers,json=capacityProviders,proto3" json:"capacity_providers,omitempty"`
 	// default_capacity_provider_strategy defines the base/weight
 	// distribution for tasks across capacity providers. This is the
 	// primary cost-optimization lever for Fargate workloads.
 	// Example: FARGATE (base: 1, weight: 1) + FARGATE_SPOT (weight: 4)
 	// results in 20% on-demand, 80% Spot for scaled tasks.
-	DefaultCapacityProviderStrategy []*CapacityProviderStrategy `protobuf:"bytes,3,rep,name=default_capacity_provider_strategy,json=defaultCapacityProviderStrategy,proto3" json:"default_capacity_provider_strategy,omitempty"`
+	DefaultCapacityProviderStrategy []*CapacityProviderStrategy `protobuf:"bytes,4,rep,name=default_capacity_provider_strategy,json=defaultCapacityProviderStrategy,proto3" json:"default_capacity_provider_strategy,omitempty"`
 	// execute_command_configuration defines cluster-level auditing
 	// settings for ECS Exec. This controls logging and encryption
 	// for exec sessions. If not specified, exec is disabled.
-	ExecuteCommandConfiguration *ExecConfiguration `protobuf:"bytes,4,opt,name=execute_command_configuration,json=executeCommandConfiguration,proto3" json:"execute_command_configuration,omitempty"`
+	ExecuteCommandConfiguration *ExecConfiguration `protobuf:"bytes,5,opt,name=execute_command_configuration,json=executeCommandConfiguration,proto3" json:"execute_command_configuration,omitempty"`
 	unknownFields               protoimpl.UnknownFields
 	sizeCache                   protoimpl.SizeCache
 }
@@ -136,6 +139,13 @@ func (x *AwsEcsClusterSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsEcsClusterSpec.ProtoReflect.Descriptor instead.
 func (*AwsEcsClusterSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsecscluster_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsEcsClusterSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsEcsClusterSpec) GetEnableContainerInsights() bool {
@@ -402,12 +412,13 @@ var File_org_openmcf_provider_aws_awsecscluster_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_aws_awsecscluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/aws/awsecscluster/v1/spec.proto\x12)org.openmcf.provider.aws.awsecscluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xc3\x03\n" +
-	"\x11AwsEcsClusterSpec\x12D\n" +
-	"\x19enable_container_insights\x18\x01 \x01(\bB\b\x92\xa6\x1d\x04trueR\x17enableContainerInsights\x12R\n" +
-	"\x12capacity_providers\x18\x02 \x03(\tB#\xbaH \x92\x01\x1d\x18\x01\"\x19r\x17R\aFARGATER\fFARGATE_SPOTR\x11capacityProviders\x12\x90\x01\n" +
-	"\"default_capacity_provider_strategy\x18\x03 \x03(\v2C.org.openmcf.provider.aws.awsecscluster.v1.CapacityProviderStrategyR\x1fdefaultCapacityProviderStrategy\x12\x80\x01\n" +
-	"\x1dexecute_command_configuration\x18\x04 \x01(\v2<.org.openmcf.provider.aws.awsecscluster.v1.ExecConfigurationR\x1bexecuteCommandConfiguration\"\xa3\x01\n" +
+	"4org/openmcf/provider/aws/awsecscluster/v1/spec.proto\x12)org.openmcf.provider.aws.awsecscluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xe4\x03\n" +
+	"\x11AwsEcsClusterSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12D\n" +
+	"\x19enable_container_insights\x18\x02 \x01(\bB\b\x92\xa6\x1d\x04trueR\x17enableContainerInsights\x12R\n" +
+	"\x12capacity_providers\x18\x03 \x03(\tB#\xbaH \x92\x01\x1d\x18\x01\"\x19r\x17R\aFARGATER\fFARGATE_SPOTR\x11capacityProviders\x12\x90\x01\n" +
+	"\"default_capacity_provider_strategy\x18\x04 \x03(\v2C.org.openmcf.provider.aws.awsecscluster.v1.CapacityProviderStrategyR\x1fdefaultCapacityProviderStrategy\x12\x80\x01\n" +
+	"\x1dexecute_command_configuration\x18\x05 \x01(\v2<.org.openmcf.provider.aws.awsecscluster.v1.ExecConfigurationR\x1bexecuteCommandConfiguration\"\xa3\x01\n" +
 	"\x18CapacityProviderStrategy\x12I\n" +
 	"\x11capacity_provider\x18\x01 \x01(\tB\x1c\xbaH\x19r\x17R\aFARGATER\fFARGATE_SPOTR\x10capacityProvider\x12\x1b\n" +
 	"\x04base\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00R\x04base\x12\x1f\n" +

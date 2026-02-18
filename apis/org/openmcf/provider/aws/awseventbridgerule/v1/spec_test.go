@@ -44,6 +44,7 @@ var _ = ginkgo.Describe("AwsEventBridgeRuleSpec validations", func() {
 	ginkgo.BeforeEach(func() {
 		// Minimal valid spec: event pattern + one target.
 		spec = &AwsEventBridgeRuleSpec{
+			Region:       "us-west-2",
 			EventPattern: minimalEventPattern(),
 			Targets:      []*AwsEventBridgeTarget{minimalTarget()},
 		}

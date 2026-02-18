@@ -38,6 +38,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsKinesisFirehose.my-firehose
 spec:
+  region: us-east-1
   extendedS3:
     bucketArn: arn:aws:s3:::my-data-bucket
     roleArn: arn:aws:iam::123456789012:role/firehose-s3-role
@@ -54,6 +55,10 @@ This creates a Direct PUT delivery stream that writes raw records to S3 with no 
 ## Configuration Reference
 
 ### Required Fields
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `region` | `string` | AWS region where the Firehose delivery stream will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 
 Exactly one destination must be configured. The destination type is ForceNew — changing it requires replacing the delivery stream.
 
@@ -163,6 +168,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsKinesisFirehose.data-lake-firehose
 spec:
+  region: us-east-1
   extendedS3:
     bucketArn: arn:aws:s3:::my-data-lake-bucket
     roleArn: arn:aws:iam::123456789012:role/firehose-s3-delivery-role
@@ -189,6 +195,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsKinesisFirehose.log-analytics-firehose
 spec:
+  region: us-east-1
   opensearch:
     domainArn:
       valueFrom:
@@ -224,6 +231,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsKinesisFirehose.analytics-parquet-firehose
 spec:
+  region: us-east-1
   kinesisStreamSource:
     streamArn:
       valueFrom:

@@ -13,6 +13,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsSqsQueue.my-queue
 spec:
+  region: us-east-1
   sqsManagedSseEnabled: true
 ```
 
@@ -29,6 +30,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsSqsQueue.order-events
 spec:
+  region: us-east-1
   fifoQueue: true
   contentBasedDeduplication: true
   sqsManagedSseEnabled: true

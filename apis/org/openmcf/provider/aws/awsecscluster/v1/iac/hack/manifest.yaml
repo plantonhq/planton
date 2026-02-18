@@ -3,4 +3,5 @@ kind: AwsEcsCluster
 metadata:
   name: awsecscluster-demo
 spec:
+  region: us-west-2
   enableContainerInsights: true

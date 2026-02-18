@@ -28,6 +28,7 @@ var _ = ginkgo.Describe("AwsRdsClusterSpec Custom Validation Tests", func() {
 						Name: "test-rds-cluster",
 					},
 					Spec: &AwsRdsClusterSpec{
+						Region: "us-west-2",
 						SubnetIds: []*foreignkeyv1.StringValueOrRef{
 							{
 								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"},

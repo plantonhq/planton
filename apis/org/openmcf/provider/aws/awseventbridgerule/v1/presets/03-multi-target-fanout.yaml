@@ -3,6 +3,7 @@ kind: AwsEventBridgeRule
 metadata:
   name: my-fanout-rule
 spec:
+  region: <aws-region>
   description: Route events to multiple targets with transformation and reliability
   eventBusName:
     value: <custom-bus-name>

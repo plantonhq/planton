@@ -29,35 +29,38 @@ const (
 // defaults aligned to best practices (immutable tags, scanning enabled, encryption).
 type AwsEcrRepoSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// repositoryName is the name of the ECR repository. Must be unique within
 	// the AWS account and region. Commonly includes the microservice or project name.
 	// Example: "github.com/team-blue/my-microservice"
-	RepositoryName string `protobuf:"bytes,1,opt,name=repository_name,json=repositoryName,proto3" json:"repository_name,omitempty"`
+	RepositoryName string `protobuf:"bytes,2,opt,name=repository_name,json=repositoryName,proto3" json:"repository_name,omitempty"`
 	// indicates whether image tags can be overwritten (MUTABLE) or not (IMMUTABLE).
-	ImageImmutable bool `protobuf:"varint,2,opt,name=image_immutable,json=imageImmutable,proto3" json:"image_immutable,omitempty"`
+	ImageImmutable bool `protobuf:"varint,3,opt,name=image_immutable,json=imageImmutable,proto3" json:"image_immutable,omitempty"`
 	// encryptionType determines how ECR encrypts images at rest. Default is AES256,
 	// using AWS-managed encryption. Use KMS to specify your own KMS key for compliance.
 	// EncryptionType determines how images are encrypted at rest in ECR.
 	// By default, AWS uses AES-256 (service-managed keys). Choose KMS to use
 	// a customer-managed key (CMK).
-	EncryptionType *string `protobuf:"bytes,3,opt,name=encryption_type,json=encryptionType,proto3,oneof" json:"encryption_type,omitempty"`
+	EncryptionType *string `protobuf:"bytes,4,opt,name=encryption_type,json=encryptionType,proto3,oneof" json:"encryption_type,omitempty"`
 	// kmsKeyId is the ARN or ID of a KMS key used when encryption_type = KMS.
 	// If omitted, AWS uses the default service-managed key for ECR.
 	// Ignored if encryption_type = AES256.
 	// Can reference an AwsKmsKey resource.
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// forceDelete, if true, allows deleting the repository even when it contains
 	// images (all images get removed on delete). By default, it is false, preventing
 	// accidental data loss.
-	ForceDelete bool `protobuf:"varint,5,opt,name=force_delete,json=forceDelete,proto3" json:"force_delete,omitempty"`
+	ForceDelete bool `protobuf:"varint,6,opt,name=force_delete,json=forceDelete,proto3" json:"force_delete,omitempty"`
 	// scanOnPush enables automatic image scanning when images are pushed to the repository.
 	// This is a production security essential - enables shift-left vulnerability detection.
 	// Defaults to true for security best practices.
-	ScanOnPush *bool `protobuf:"varint,6,opt,name=scan_on_push,json=scanOnPush,proto3,oneof" json:"scan_on_push,omitempty"`
+	ScanOnPush *bool `protobuf:"varint,7,opt,name=scan_on_push,json=scanOnPush,proto3,oneof" json:"scan_on_push,omitempty"`
 	// lifecyclePolicyRules defines automated image lifecycle management rules for cost control.
 	// This is essential for production to prevent uncontrolled storage costs.
 	// If not specified, no lifecycle policy is applied (not recommended for production).
-	LifecyclePolicy *AwsEcrRepoLifecyclePolicy `protobuf:"bytes,7,opt,name=lifecycle_policy,json=lifecyclePolicy,proto3,oneof" json:"lifecycle_policy,omitempty"`
+	LifecyclePolicy *AwsEcrRepoLifecyclePolicy `protobuf:"bytes,8,opt,name=lifecycle_policy,json=lifecyclePolicy,proto3,oneof" json:"lifecycle_policy,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -90,6 +93,13 @@ func (x *AwsEcrRepoSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsEcrRepoSpec.ProtoReflect.Descriptor instead.
 func (*AwsEcrRepoSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsecrrepo_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsEcrRepoSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsEcrRepoSpec) GetRepositoryName() string {
@@ -205,18 +215,19 @@ var File_org_openmcf_provider_aws_awsecrrepo_v1_spec_proto protoreflect.FileDesc
 
 const file_org_openmcf_provider_aws_awsecrrepo_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"1org/openmcf/provider/aws/awsecrrepo/v1/spec.proto\x12&org.openmcf.provider.aws.awsecrrepo.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb4\x04\n" +
-	"\x0eAwsEcrRepoSpec\x126\n" +
-	"\x0frepository_name\x18\x01 \x01(\tB\r\xbaH\n" +
+	"1org/openmcf/provider/aws/awsecrrepo/v1/spec.proto\x12&org.openmcf.provider.aws.awsecrrepo.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd5\x04\n" +
+	"\x0eAwsEcrRepoSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x126\n" +
+	"\x0frepository_name\x18\x02 \x01(\tB\r\xbaH\n" +
 	"\xc8\x01\x01r\x05\x10\x02\x18\x80\x02R\x0erepositoryName\x12'\n" +
-	"\x0fimage_immutable\x18\x02 \x01(\bR\x0eimageImmutable\x12M\n" +
-	"\x0fencryption_type\x18\x03 \x01(\tB\x1f\xbaH\x12\xd8\x01\x01r\rR\x06AES256R\x03KMS\x8a\xa6\x1d\x06AES256H\x00R\x0eencryptionType\x88\x01\x01\x12q\n" +
+	"\x0fimage_immutable\x18\x03 \x01(\bR\x0eimageImmutable\x12M\n" +
+	"\x0fencryption_type\x18\x04 \x01(\tB\x1f\xbaH\x12\xd8\x01\x01r\rR\x06AES256R\x03KMS\x8a\xa6\x1d\x06AES256H\x00R\x0eencryptionType\x88\x01\x01\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12!\n" +
-	"\fforce_delete\x18\x05 \x01(\bR\vforceDelete\x12/\n" +
-	"\fscan_on_push\x18\x06 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\n" +
+	"kms_key_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12!\n" +
+	"\fforce_delete\x18\x06 \x01(\bR\vforceDelete\x12/\n" +
+	"\fscan_on_push\x18\a \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\n" +
 	"scanOnPush\x88\x01\x01\x12q\n" +
-	"\x10lifecycle_policy\x18\a \x01(\v2A.org.openmcf.provider.aws.awsecrrepo.v1.AwsEcrRepoLifecyclePolicyH\x02R\x0flifecyclePolicy\x88\x01\x01B\x12\n" +
+	"\x10lifecycle_policy\x18\b \x01(\v2A.org.openmcf.provider.aws.awsecrrepo.v1.AwsEcrRepoLifecyclePolicyH\x02R\x0flifecyclePolicy\x88\x01\x01B\x12\n" +
 	"\x10_encryption_typeB\x0f\n" +
 	"\r_scan_on_pushB\x13\n" +
 	"\x11_lifecycle_policy\"\xe7\x01\n" +

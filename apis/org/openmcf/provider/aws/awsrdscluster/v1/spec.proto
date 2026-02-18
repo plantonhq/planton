@@ -11,70 +11,74 @@ import "org/openmcf/shared/options/options.proto";
 // the cluster-level configuration. Instance-level settings (class, monitoring, etc.)
 // are modeled separately by instance resources.
 message AwsRdsClusterSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // subnet_ids is the list of subnet IDs used by the DB subnet group for the cluster.
   // Provide at least two subnets in distinct Availability Zones for high availability.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 1 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 2 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
   ];
 
   // Optional name of an existing DB subnet group to use instead of providing subnet_ids.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef db_subnet_group_name = 2;
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef db_subnet_group_name = 3;
 
   // vpc_security_group_ids are additional security groups attached to the cluster.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 3 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 4 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
 
   // allowed_cidr_blocks are IPv4 CIDRs to allow ingress to the cluster SG (if created/managed here).
   // Example: "10.0.0.0/16", "0.0.0.0/0"
-  repeated string allowed_cidr_blocks = 4 [
+  repeated string allowed_cidr_blocks = 5 [
     (buf.validate.field).repeated.items.string.pattern = "^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$",
     (buf.validate.field).repeated.unique = true
   ];
 
   // associate_security_group_ids lists existing SGs to associate (alongside any created/managed SG).
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef associate_security_group_ids = 5 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef associate_security_group_ids = 6 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
 
   // database_name is the name of the initial database to create in the cluster.
-  string database_name = 6;
+  string database_name = 7;
 
   // manage_master_user_password, when true, lets RDS manage the master user password in AWS Secrets Manager.
-  bool manage_master_user_password = 7 [(org.openmcf.shared.options.recommended_default) = "true"];
+  bool manage_master_user_password = 8 [(org.openmcf.shared.options.recommended_default) = "true"];
 
   // master_user_secret_kms_key_id is the KMS key identifier (ARN/alias) for encrypting the managed secret.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef master_user_secret_kms_key_id = 8 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef master_user_secret_kms_key_id = 9 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
 
   // username is the master database user name.
-  optional string username = 9 [(org.openmcf.shared.options.default) = "master"];
+  optional string username = 10 [(org.openmcf.shared.options.default) = "master"];
 
   // password is the master user password. Cannot be set when manage_master_user_password is true.
-  string password = 10;
+  string password = 11;
 
   // port on which the cluster accepts connections.
-  int32 port = 11 [
+  int32 port = 12 [
     (buf.validate.field).int32.gte = 0,
     (buf.validate.field).int32.lte = 65535
   ];
 
   // engine for the cluster. Examples: "aurora-mysql", "aurora-postgresql".
-  string engine = 12 [(buf.validate.field).required = true];
+  string engine = 13 [(buf.validate.field).required = true];
 
   // engine_version to deploy. Example: "8.0.mysql_aurora.3.05.2" or "14.6" for Aurora PostgreSQL.
-  string engine_version = 13 [(buf.validate.field).required = true];
+  string engine_version = 14 [(buf.validate.field).required = true];
 
   // storage_encrypted indicates whether to enable storage encryption for the cluster.
-  bool storage_encrypted = 14;
+  bool storage_encrypted = 15;
 
   // kms_key_id KMS key ARN to use for storage encryption when storage_encrypted is true.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 15 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 16 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -82,64 +86,64 @@ message AwsRdsClusterSpec {
   // enabled_cloudwatch_logs_exports lists database logs to export to CloudWatch Logs.
   // Aurora MySQL: [audit, error, general, slowquery]
   // Aurora PostgreSQL: [postgresql, upgrade]
-  repeated string enabled_cloudwatch_logs_exports = 16 [(buf.validate.field).repeated.unique = true];
+  repeated string enabled_cloudwatch_logs_exports = 17 [(buf.validate.field).repeated.unique = true];
 
   // deletion_protection prevents accidental deletion.
-  bool deletion_protection = 17;
+  bool deletion_protection = 18;
 
   // preferred_maintenance_window in UTC, format 'ddd:hh24:mi-ddd:hh24:mi'.
-  string preferred_maintenance_window = 18 [(buf.validate.field).string.pattern = "^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$"];
+  string preferred_maintenance_window = 19 [(buf.validate.field).string.pattern = "^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$"];
 
   // backup_retention_period in days (> 0 to enable automated backups).
-  int32 backup_retention_period = 19 [
+  int32 backup_retention_period = 20 [
     (buf.validate.field).int32.gte = 0,
     (buf.validate.field).int32.lte = 35
   ];
 
   // preferred_backup_window in UTC, format 'hh24:mi-hh24:mi'. Must not overlap maintenance window.
-  string preferred_backup_window = 20 [(buf.validate.field).string.pattern = "^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$"];
+  string preferred_backup_window = 21 [(buf.validate.field).string.pattern = "^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$"];
 
   // copy_tags_to_snapshot copies tags from the cluster to snapshots.
-  bool copy_tags_to_snapshot = 21;
+  bool copy_tags_to_snapshot = 22;
 
   // skip_final_snapshot controls whether a final snapshot is created before cluster deletion.
-  bool skip_final_snapshot = 22;
+  bool skip_final_snapshot = 23;
 
   // final_snapshot_identifier is the identifier to use for the final snapshot when skip_final_snapshot is false.
-  string final_snapshot_identifier = 23;
+  string final_snapshot_identifier = 24;
 
   // iam_database_authentication_enabled enables mapping of IAM users/roles to database logins.
-  bool iam_database_authentication_enabled = 24;
+  bool iam_database_authentication_enabled = 25;
 
   // enable_http_endpoint enables the Data API for Aurora Serverless (where supported).
-  bool enable_http_endpoint = 25;
+  bool enable_http_endpoint = 26;
 
   // serverless_v2_scaling controls Aurora Serverless v2 capacity scaling (if supported by engine/engine_version).
-  AwsRdsClusterServerlessV2ScalingConfiguration serverless_v2_scaling = 26;
+  AwsRdsClusterServerlessV2ScalingConfiguration serverless_v2_scaling = 27;
 
   // snapshot_identifier creates the cluster from the specified snapshot, when provided.
-  string snapshot_identifier = 27;
+  string snapshot_identifier = 28;
 
   // replication_source_identifier creates a read replica of another cluster when provided (ARN or identifier).
-  string replication_source_identifier = 28;
+  string replication_source_identifier = 29;
 
   // db_cluster_parameter_group_name is the cluster-level parameter group to associate.
-  string db_cluster_parameter_group_name = 29;
+  string db_cluster_parameter_group_name = 30;
 
   // cluster-level parameters to apply (depends on DB family).
-  repeated AwsRdsClusterParameter parameters = 30;
+  repeated AwsRdsClusterParameter parameters = 31;
 
   // vpc_id for the cluster networking context (optional; generally derivable from subnet_ids/subnet group).
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 31 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 32 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
   ];
 
   // Optional engine mode. For Aurora Serverless v1 use "serverless"; otherwise "provisioned".
-  string engine_mode = 32;
+  string engine_mode = 33;
 
   // storage_type for Aurora (if supported): "aurora" or "aurora-iopt1".
-  string storage_type = 33 [
+  string storage_type = 34 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
       in: [

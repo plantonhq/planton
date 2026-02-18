@@ -28,6 +28,10 @@ import "org/openmcf/shared/options/options.proto";
 //
 // Credentials, region, and deployment workflow live outside this spec in stack inputs.
 message AwsNetworkLoadBalancerSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Networking
   // ---------------------------------------------------------------------------
@@ -43,7 +47,7 @@ message AwsNetworkLoadBalancerSpec {
   //
   // At least one subnet mapping is required. AWS recommends at least two for
   // high availability across Availability Zones.
-  repeated AwsNetworkLoadBalancerSubnetMapping subnet_mappings = 1 [
+  repeated AwsNetworkLoadBalancerSubnetMapping subnet_mappings = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 1
   ];
@@ -54,14 +58,14 @@ message AwsNetworkLoadBalancerSpec {
   //
   // Important: once security groups are attached to an NLB, they cannot be
   // fully removed -- at least one must remain. Plan accordingly.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_groups = 2 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_groups = 3 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
 
   // When true, creates an internal NLB accessible only within the VPC.
   // When false (default), creates an internet-facing NLB with public DNS.
-  bool internal = 3;
+  bool internal = 4;
 
   // ---------------------------------------------------------------------------
   // Protection and behavior
@@ -69,18 +73,18 @@ message AwsNetworkLoadBalancerSpec {
 
   // Prevents accidental deletion of the NLB when enabled. Recommended for
   // production workloads.
-  bool delete_protection_enabled = 4;
+  bool delete_protection_enabled = 5;
 
   // Distribute traffic evenly across all registered targets in all enabled
   // Availability Zones. Default is false for NLB (unlike ALB where cross-zone
   // is always enabled). Enable this when target distribution across AZs is
   // uneven or when you need consistent per-target traffic distribution.
-  bool cross_zone_load_balancing_enabled = 5;
+  bool cross_zone_load_balancing_enabled = 6;
 
   // IP address type for the NLB. Controls whether the NLB uses IPv4 only or
   // dual-stack (IPv4 + IPv6).
   // Valid values: "ipv4" (default), "dualstack".
-  string ip_address_type = 6 [(org.openmcf.shared.options.recommended_default) = "ipv4"];
+  string ip_address_type = 7 [(org.openmcf.shared.options.recommended_default) = "ipv4"];
 
   // Controls how DNS queries from clients are routed to NLB nodes across
   // Availability Zones. Affects latency and cross-zone traffic costs.
@@ -93,7 +97,7 @@ message AwsNetworkLoadBalancerSpec {
   // - "partial_availability_zone_affinity": 85% of requests stay in the
   //   resolver's AZ, 15% spill to other AZs. Balances affinity with
   //   availability.
-  string dns_record_client_routing_policy = 7;
+  string dns_record_client_routing_policy = 8;
 
   // ---------------------------------------------------------------------------
   // Listeners
@@ -105,7 +109,7 @@ message AwsNetworkLoadBalancerSpec {
   //
   // At least one listener is required. A common pattern is a single TLS
   // listener on port 443 forwarding to TCP targets on an application port.
-  repeated AwsNetworkLoadBalancerListener listeners = 8 [
+  repeated AwsNetworkLoadBalancerListener listeners = 9 [
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 1
   ];
@@ -116,7 +120,7 @@ message AwsNetworkLoadBalancerSpec {
 
   // Optional Route53 DNS configuration. When enabled, creates alias A records
   // pointing the specified hostnames to the NLB's DNS name.
-  AwsNetworkLoadBalancerDns dns = 9;
+  AwsNetworkLoadBalancerDns dns = 10;
 
   // ---------------------------------------------------------------------------
   // Spec-level CEL validations

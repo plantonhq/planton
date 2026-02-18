@@ -26,18 +26,21 @@ const (
 // AwsIamUserSpec defines the configuration for a long-lived AWS IAM user (for CI/CD use).
 type AwsIamUserSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// user_name is the IAM user name. Must be 1-64 characters and match the regex
 	// pattern "^[a-zA-Z0-9+=,.@_-]{1,64}$" (letters, digits, and +=,.@_-).
-	UserName string `protobuf:"bytes,1,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
+	UserName string `protobuf:"bytes,2,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
 	// managed_policy_arns is a list of IAM managed policy ARNs to attach to the user.
 	// Each ARN must start with "arn:aws:iam::". The list must be unique.
-	ManagedPolicyArns []string `protobuf:"bytes,2,rep,name=managed_policy_arns,json=managedPolicyArns,proto3" json:"managed_policy_arns,omitempty"`
+	ManagedPolicyArns []string `protobuf:"bytes,3,rep,name=managed_policy_arns,json=managedPolicyArns,proto3" json:"managed_policy_arns,omitempty"`
 	// inline_policies is a map of inline policy documents to attach to the user.
 	// Keys are policy names (max 128 characters); values are the IAM policy JSON (as a Struct).
-	InlinePolicies map[string]*structpb.Struct `protobuf:"bytes,3,rep,name=inline_policies,json=inlinePolicies,proto3" json:"inline_policies,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	InlinePolicies map[string]*structpb.Struct `protobuf:"bytes,4,rep,name=inline_policies,json=inlinePolicies,proto3" json:"inline_policies,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// disable_access_keys, if true, prevents creation of access keys for this user.
 	// If false (default), one active access key will be created for the user.
-	DisableAccessKeys bool `protobuf:"varint,4,opt,name=disable_access_keys,json=disableAccessKeys,proto3" json:"disable_access_keys,omitempty"`
+	DisableAccessKeys bool `protobuf:"varint,5,opt,name=disable_access_keys,json=disableAccessKeys,proto3" json:"disable_access_keys,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -72,6 +75,13 @@ func (*AwsIamUserSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsiamuser_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
+func (x *AwsIamUserSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
 func (x *AwsIamUserSpec) GetUserName() string {
 	if x != nil {
 		return x.UserName
@@ -104,13 +114,14 @@ var File_org_openmcf_provider_aws_awsiamuser_v1_spec_proto protoreflect.FileDesc
 
 const file_org_openmcf_provider_aws_awsiamuser_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"1org/openmcf/provider/aws/awsiamuser/v1/spec.proto\x12&org.openmcf.provider.aws.awsiamuser.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\"\xb2\x03\n" +
-	"\x0eAwsIamUserSpec\x12A\n" +
-	"\tuser_name\x18\x01 \x01(\tB$\xbaH!\xc8\x01\x01r\x1c2\x1a^[a-zA-Z0-9+=,.@_-]{1,64}$R\buserName\x12L\n" +
-	"\x13managed_policy_arns\x18\x02 \x03(\tB\x1c\xbaH\x19\x92\x01\x16\x18\x01\"\x12r\x102\x0e^arn:aws:iam::R\x11managedPolicyArns\x12\x82\x01\n" +
-	"\x0finline_policies\x18\x03 \x03(\v2J.org.openmcf.provider.aws.awsiamuser.v1.AwsIamUserSpec.InlinePoliciesEntryB\r\xbaH\n" +
+	"1org/openmcf/provider/aws/awsiamuser/v1/spec.proto\x12&org.openmcf.provider.aws.awsiamuser.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\"\xd3\x03\n" +
+	"\x0eAwsIamUserSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12A\n" +
+	"\tuser_name\x18\x02 \x01(\tB$\xbaH!\xc8\x01\x01r\x1c2\x1a^[a-zA-Z0-9+=,.@_-]{1,64}$R\buserName\x12L\n" +
+	"\x13managed_policy_arns\x18\x03 \x03(\tB\x1c\xbaH\x19\x92\x01\x16\x18\x01\"\x12r\x102\x0e^arn:aws:iam::R\x11managedPolicyArns\x12\x82\x01\n" +
+	"\x0finline_policies\x18\x04 \x03(\v2J.org.openmcf.provider.aws.awsiamuser.v1.AwsIamUserSpec.InlinePoliciesEntryB\r\xbaH\n" +
 	"\x9a\x01\a\"\x05r\x03\x18\x80\x01R\x0einlinePolicies\x12.\n" +
-	"\x13disable_access_keys\x18\x04 \x01(\bR\x11disableAccessKeys\x1aZ\n" +
+	"\x13disable_access_keys\x18\x05 \x01(\bR\x11disableAccessKeys\x1aZ\n" +
 	"\x13InlinePoliciesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12-\n" +
 	"\x05value\x18\x02 \x01(\v2\x17.google.protobuf.StructR\x05value:\x028\x01B\xcd\x02\n" +

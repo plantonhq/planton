@@ -18,7 +18,9 @@ func Resources(ctx *pulumi.Context, stackInput *awsec2instancev1.AwsEc2InstanceS
 	awsProviderConfig := stackInput.ProviderConfig
 
 	if awsProviderConfig == nil {
-		provider, err = aws.NewProvider(ctx, "classic-provider", &aws.ProviderArgs{})
+		provider, err = aws.NewProvider(ctx, "classic-provider", &aws.ProviderArgs{
+			Region: pulumi.String(locals.AwsEc2Instance.Spec.Region),
+		})
 		if err != nil {
 			return errors.Wrap(err, "failed to create default AWS provider")
 		}
@@ -26,7 +28,7 @@ func Resources(ctx *pulumi.Context, stackInput *awsec2instancev1.AwsEc2InstanceS
 		provider, err = aws.NewProvider(ctx, "classic-provider", &aws.ProviderArgs{
 			AccessKey: pulumi.String(awsProviderConfig.AccessKeyId),
 			SecretKey: pulumi.String(awsProviderConfig.SecretAccessKey),
-			Region:    pulumi.String(awsProviderConfig.GetRegion()),
+			Region:    pulumi.String(locals.AwsEc2Instance.Spec.Region),
 			Token:     pulumi.StringPtr(awsProviderConfig.SessionToken),
 		})
 		if err != nil {

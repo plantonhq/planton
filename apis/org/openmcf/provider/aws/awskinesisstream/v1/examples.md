@@ -13,6 +13,7 @@ metadata:
   env: dev
   id: clickstream-events-dev
 spec:
+  region: us-east-1
   streamMode: ON_DEMAND
 ```
 
@@ -29,6 +30,7 @@ metadata:
   env: staging
   id: order-events-staging
 spec:
+  region: us-east-1
   streamMode: PROVISIONED
   shardCount: 2
 ```
@@ -46,6 +48,7 @@ metadata:
   env: production
   id: payment-events-prod
 spec:
+  region: us-east-1
   streamMode: ON_DEMAND
   retentionPeriodHours: 168
   kmsKeyId:
@@ -65,6 +68,7 @@ metadata:
   env: production
   id: audit-events-prod
 spec:
+  region: us-east-1
   streamMode: ON_DEMAND
   retentionPeriodHours: 8760  # 365 days
   kmsKeyId:
@@ -87,6 +91,7 @@ metadata:
   env: production
   id: telemetry-stream-prod
 spec:
+  region: us-east-1
   streamMode: PROVISIONED
   shardCount: 8
   retentionPeriodHours: 48
@@ -109,6 +114,7 @@ metadata:
   env: production
   id: aggregated-events-prod
 spec:
+  region: us-east-1
   streamMode: ON_DEMAND
   maxRecordSizeInKib: 5120
   retentionPeriodHours: 72
@@ -130,6 +136,7 @@ metadata:
     team: data-engineering
     cost-center: analytics
 spec:
+  region: us-east-1
   streamMode: ON_DEMAND
   retentionPeriodHours: 168
   kmsKeyId:

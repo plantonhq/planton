@@ -24,6 +24,7 @@ func strRef(val string) *foreignkeyv1.StringValueOrRef {
 // helper to create a minimal valid spec with a single $default route.
 func minimalValidSpec() *AwsHttpApiGatewaySpec {
 	return &AwsHttpApiGatewaySpec{
+		Region: "us-west-2",
 		Routes: []*AwsHttpApiGatewayRoute{
 			{
 				RouteKey: "$default",

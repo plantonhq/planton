@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package org.openmcf.provider.aws.awsgluecatalogdatabase.v1;
 
+import "buf/validate/validate.proto";
+
 // AwsGlueCatalogDatabaseSpec defines the desired configuration for an AWS Glue
 // Data Catalog database.
 //
@@ -38,6 +40,10 @@ package org.openmcf.provider.aws.awsgluecatalogdatabase.v1;
 //   Resource Access Manager. ~5% adoption.
 // - parameters: Generic key-value metadata map. Rarely set by users directly.
 message AwsGlueCatalogDatabaseSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Metadata
   // ---------------------------------------------------------------------------
@@ -50,7 +56,7 @@ message AwsGlueCatalogDatabaseSpec {
   // Examples:
   // - "Sales analytics data lake — raw and curated tables from the sales pipeline"
   // - "Clickstream events from web and mobile applications"
-  string description = 1;
+  string description = 2;
 
   // ---------------------------------------------------------------------------
   // Storage location
@@ -68,5 +74,5 @@ message AwsGlueCatalogDatabaseSpec {
   //
   // This is a plain string (not StringValueOrRef) because it is an S3 URI with
   // a user-defined path prefix, not a direct resource identifier.
-  string location_uri = 2;
+  string location_uri = 3;
 }

@@ -17,6 +17,7 @@ kind: AwsEc2Instance
 metadata:
   name: basic-ec2
 spec:
+  region: us-west-2
   instanceName: web-server-1
   amiId: ami-0123456789abcdef0
   instanceType: t3.small
@@ -49,6 +50,7 @@ kind: AwsEc2Instance
 metadata:
   name: ssh-ec2
 spec:
+  region: us-west-2
   instanceName: bastion-host
   amiId: ami-0123456789abcdef0
   instanceType: t3.micro
@@ -81,6 +83,7 @@ kind: AwsEc2Instance
 metadata:
   name: instance-connect-ec2
 spec:
+  region: us-west-2
   instanceName: app-server
   amiId: ami-0123456789abcdef0
   instanceType: t3.medium
@@ -113,6 +116,7 @@ kind: AwsEc2Instance
 metadata:
   name: userdata-ec2
 spec:
+  region: us-west-2
   instanceName: web-app
   amiId: ami-0123456789abcdef0
   instanceType: t3.large
@@ -152,6 +156,7 @@ kind: AwsEc2Instance
 metadata:
   name: production-ec2
 spec:
+  region: us-west-2
   instanceName: production-app-server
   amiId: ami-0123456789abcdef0
   instanceType: m5.large
@@ -197,6 +202,7 @@ kind: AwsEc2Instance
 metadata:
   name: minimal-ec2
 spec:
+  region: us-west-2
   instanceName: test-instance
   amiId: ami-0123456789abcdef0
   instanceType: t3.nano

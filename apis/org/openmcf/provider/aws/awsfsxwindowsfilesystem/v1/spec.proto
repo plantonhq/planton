@@ -36,6 +36,10 @@ import "org/openmcf/shared/options/options.proto";
 //   Logs for compliance and security monitoring.
 // - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 message AwsFsxWindowsFileSystemSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // File System Core
   // ---------------------------------------------------------------------------
@@ -50,7 +54,7 @@ message AwsFsxWindowsFileSystemSpec {
   //   two subnets and a preferred_subnet_id. Supports HDD storage.
   //
   // Default: SINGLE_AZ_2
-  optional string deployment_type = 1 [(org.openmcf.shared.options.default) = "SINGLE_AZ_2"];
+  optional string deployment_type = 2 [(org.openmcf.shared.options.default) = "SINGLE_AZ_2"];
 
   // Storage capacity in GiB. Required.
   //
@@ -59,7 +63,7 @@ message AwsFsxWindowsFileSystemSpec {
   // - HDD: 2000–65536 GiB
   //
   // Storage can be increased after creation but never decreased.
-  int32 storage_capacity_gib = 2 [(buf.validate.field).int32.gte = 32];
+  int32 storage_capacity_gib = 3 [(buf.validate.field).int32.gte = 32];
 
   // Storage media type. ForceNew — cannot be changed after creation.
   //
@@ -70,7 +74,7 @@ message AwsFsxWindowsFileSystemSpec {
   //   storage capacity.
   //
   // Default: SSD
-  optional string storage_type = 3 [(org.openmcf.shared.options.default) = "SSD"];
+  optional string storage_type = 4 [(org.openmcf.shared.options.default) = "SSD"];
 
   // Throughput capacity in MB/s. Required.
   //
@@ -78,7 +82,7 @@ message AwsFsxWindowsFileSystemSpec {
   // The maximum available throughput depends on the deployment type.
   //
   // Throughput can be changed after creation to scale performance up or down.
-  int32 throughput_capacity = 4 [(buf.validate.field).int32.gt = 0];
+  int32 throughput_capacity = 5 [(buf.validate.field).int32.gt = 0];
 
   // ---------------------------------------------------------------------------
   // Networking (ForceNew)
@@ -91,7 +95,7 @@ message AwsFsxWindowsFileSystemSpec {
   //
   // All compute resources mounting this file system must have SMB network
   // connectivity to these subnets (TCP port 445).
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 5 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 6 [
     (buf.validate.field).repeated.min_items = 1,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
@@ -103,7 +107,7 @@ message AwsFsxWindowsFileSystemSpec {
   //
   // In a failover event, the standby file server in the other subnet takes over.
   // Ignored for SINGLE_AZ deployments.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef preferred_subnet_id = 6 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef preferred_subnet_id = 7 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[0].id"
   ];
@@ -119,7 +123,7 @@ message AwsFsxWindowsFileSystemSpec {
   //   TCP port 389 (LDAP), TCP port 636 (LDAPS)
   //
   // Up to 50 security groups.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 7 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 8 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
@@ -132,7 +136,7 @@ message AwsFsxWindowsFileSystemSpec {
   // cannot be changed after creation. When omitted, the file system uses the
   // AWS-managed FSx key. All Windows file systems are encrypted at rest by
   // default; this field upgrades to a customer-managed key.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 8 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 9 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -146,14 +150,14 @@ message AwsFsxWindowsFileSystemSpec {
   //
   // Use this when you have an AWS Directory Service managed AD already
   // provisioned. The file system joins the domain automatically.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef active_directory_id = 9;
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef active_directory_id = 10;
 
   // Self-managed Active Directory configuration for joining an on-premises or
   // EC2-hosted AD domain. Mutually exclusive with `active_directory_id`.
   //
   // Use this when your AD domain controller runs outside AWS Directory Service
   // (e.g., on-premises AD, AD on EC2, or Azure AD DS).
-  AwsFsxWindowsFileSystemSelfManagedActiveDirectory self_managed_active_directory = 10;
+  AwsFsxWindowsFileSystemSelfManagedActiveDirectory self_managed_active_directory = 11;
 
   // ---------------------------------------------------------------------------
   // DNS Aliases
@@ -168,7 +172,7 @@ message AwsFsxWindowsFileSystemSpec {
   //
   // Each alias must be a valid DNS name (4-253 characters). You must create a
   // DNS CNAME record pointing each alias to the file system's DNS name.
-  repeated string aliases = 11 [(buf.validate.field).repeated.max_items = 50];
+  repeated string aliases = 12 [(buf.validate.field).repeated.max_items = 50];
 
   // ---------------------------------------------------------------------------
   // Audit Logging
@@ -177,7 +181,7 @@ message AwsFsxWindowsFileSystemSpec {
   // Audit log configuration for tracking file access and file share access
   // events. Logs are sent to CloudWatch Logs for compliance and security
   // monitoring. When omitted, audit logging is disabled.
-  AwsFsxWindowsFileSystemAuditLogConfiguration audit_log_configuration = 12;
+  AwsFsxWindowsFileSystemAuditLogConfiguration audit_log_configuration = 13;
 
   // ---------------------------------------------------------------------------
   // Disk IOPS Configuration
@@ -186,7 +190,7 @@ message AwsFsxWindowsFileSystemSpec {
   // SSD IOPS configuration for the file system. Controls the total provisioned
   // IOPS. When omitted, AWS uses AUTOMATIC mode which scales IOPS with storage.
   // Only applicable to SSD storage type.
-  AwsFsxWindowsFileSystemDiskIopsConfiguration disk_iops_configuration = 13;
+  AwsFsxWindowsFileSystemDiskIopsConfiguration disk_iops_configuration = 14;
 
   // ---------------------------------------------------------------------------
   // Backup
@@ -196,19 +200,19 @@ message AwsFsxWindowsFileSystemSpec {
   // disable automatic backups.
   //
   // Default: 7
-  optional int32 automatic_backup_retention_days = 14 [(org.openmcf.shared.options.default) = "7"];
+  optional int32 automatic_backup_retention_days = 15 [(org.openmcf.shared.options.default) = "7"];
 
   // Daily UTC time to start automatic backups, in HH:MM format (e.g., "01:00").
   // If not specified and backups are enabled, AWS chooses a default window.
-  string daily_automatic_backup_start_time = 15;
+  string daily_automatic_backup_start_time = 16;
 
   // Copy tags from the file system to backups. ForceNew.
-  bool copy_tags_to_backups = 16;
+  bool copy_tags_to_backups = 17;
 
   // Skip creating a final backup when the file system is deleted.
   //
   // Default: true
-  optional bool skip_final_backup = 17 [(org.openmcf.shared.options.default) = "true"];
+  optional bool skip_final_backup = 18 [(org.openmcf.shared.options.default) = "true"];
 
   // ---------------------------------------------------------------------------
   // Maintenance
@@ -217,7 +221,7 @@ message AwsFsxWindowsFileSystemSpec {
   // Weekly UTC maintenance window in the format "d:HH:MM" where d is the day of
   // the week (1=Monday, 7=Sunday). Example: "7:02:00" for Sunday at 02:00 UTC.
   // If not specified, AWS chooses a default window.
-  string weekly_maintenance_start_time = 18;
+  string weekly_maintenance_start_time = 19;
 
   // ---------------------------------------------------------------------------
   // CEL Validations

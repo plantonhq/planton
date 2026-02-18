@@ -26,9 +26,10 @@ var _ = ginkgo.Describe("AwsKmsKeySpec Custom Validation Tests", func() {
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-kms-key",
 					},
-					Spec: &AwsKmsKeySpec{
-						DeletionWindowDays: 30,               // Valid value between 7-30
-						AliasName:          "alias/test-key", // Valid alias format
+				Spec: &AwsKmsKeySpec{
+					Region:             "us-west-2",
+					DeletionWindowDays: 30,               // Valid value between 7-30
+					AliasName:          "alias/test-key", // Valid alias format
 					},
 				}
 				err := protovalidate.Validate(input)

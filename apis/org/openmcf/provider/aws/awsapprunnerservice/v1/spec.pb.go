@@ -47,87 +47,90 @@ const (
 //   - service_name (derived from metadata, not user-provided)
 type AwsAppRunnerServiceSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the App Runner service will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Image-based deployment source. Use this to deploy from a container image
 	// stored in Amazon ECR (private) or ECR Public Gallery.
-	ImageSource *AwsAppRunnerServiceImageSource `protobuf:"bytes,1,opt,name=image_source,json=imageSource,proto3" json:"image_source,omitempty"`
+	ImageSource *AwsAppRunnerServiceImageSource `protobuf:"bytes,2,opt,name=image_source,json=imageSource,proto3" json:"image_source,omitempty"`
 	// Code-based deployment source. Use this to deploy from a GitHub repository.
 	// App Runner clones the repo, builds the application using the specified runtime,
 	// and deploys the resulting container.
-	CodeSource *AwsAppRunnerServiceCodeSource `protobuf:"bytes,2,opt,name=code_source,json=codeSource,proto3" json:"code_source,omitempty"`
+	CodeSource *AwsAppRunnerServiceCodeSource `protobuf:"bytes,3,opt,name=code_source,json=codeSource,proto3" json:"code_source,omitempty"`
 	// Port that the application listens on inside the container. App Runner routes
 	// incoming HTTPS traffic on port 443 to this port.
-	Port *string `protobuf:"bytes,3,opt,name=port,proto3,oneof" json:"port,omitempty"`
+	Port *string `protobuf:"bytes,4,opt,name=port,proto3,oneof" json:"port,omitempty"`
 	// Override the container start command. For image source, this overrides the
 	// image ENTRYPOINT/CMD. For code source with configuration_source="API",
 	// this is the command that starts the application.
-	StartCommand string `protobuf:"bytes,4,opt,name=start_command,json=startCommand,proto3" json:"start_command,omitempty"`
+	StartCommand string `protobuf:"bytes,5,opt,name=start_command,json=startCommand,proto3" json:"start_command,omitempty"`
 	// Environment variables injected into every instance at runtime. Keys are
 	// variable names, values are plaintext strings. Avoid embedding secrets
 	// here; use environment_secrets for sensitive values.
 	// Keys prefixed with "AWSAPPRUNNER" are reserved by the service.
-	EnvironmentVariables map[string]string `protobuf:"bytes,5,rep,name=environment_variables,json=environmentVariables,proto3" json:"environment_variables,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	EnvironmentVariables map[string]string `protobuf:"bytes,6,rep,name=environment_variables,json=environmentVariables,proto3" json:"environment_variables,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Environment secrets injected at runtime. Keys are variable names, values
 	// are full ARNs of AWS Secrets Manager secrets or SSM Parameter Store parameters.
 	// App Runner retrieves the secret value at deploy time and injects it as a
 	// plaintext environment variable. The instance_role_arn must have permission
 	// to read these secrets.
-	EnvironmentSecrets map[string]string `protobuf:"bytes,6,rep,name=environment_secrets,json=environmentSecrets,proto3" json:"environment_secrets,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	EnvironmentSecrets map[string]string `protobuf:"bytes,7,rep,name=environment_secrets,json=environmentSecrets,proto3" json:"environment_secrets,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// CPU allocation per instance. Accepts numeric millicore strings or human-readable vCPU format.
 	// Numeric: "256", "512", "1024", "2048", "4096"
 	// Human-readable: "0.25 vCPU", "0.5 vCPU", "1 vCPU", "2 vCPU", "4 vCPU"
-	Cpu *string `protobuf:"bytes,7,opt,name=cpu,proto3,oneof" json:"cpu,omitempty"`
+	Cpu *string `protobuf:"bytes,8,opt,name=cpu,proto3,oneof" json:"cpu,omitempty"`
 	// Memory allocation per instance. Accepts numeric megabyte strings or human-readable GB format.
 	// Numeric: "512", "1024", "2048", "3072", "4096", "6144", "8192", "10240", "12288"
 	// Human-readable: "0.5 GB", "1 GB", "2 GB", "3 GB", "4 GB", "6 GB", "8 GB", "10 GB", "12 GB"
 	// Note: Not all CPU/memory combinations are valid. See AWS documentation for valid pairings.
-	Memory *string `protobuf:"bytes,8,opt,name=memory,proto3,oneof" json:"memory,omitempty"`
+	Memory *string `protobuf:"bytes,9,opt,name=memory,proto3,oneof" json:"memory,omitempty"`
 	// IAM role that service instances assume at runtime to call AWS APIs.
 	// This is the role your application code uses (e.g., to read from S3, write to DynamoDB).
 	// This is NOT the role used to pull images from ECR (that is access_role_arn in image_source).
-	InstanceRoleArn *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=instance_role_arn,json=instanceRoleArn,proto3" json:"instance_role_arn,omitempty"`
+	InstanceRoleArn *v1.StringValueOrRef `protobuf:"bytes,10,opt,name=instance_role_arn,json=instanceRoleArn,proto3" json:"instance_role_arn,omitempty"`
 	// Health check configuration. App Runner uses health checks to monitor instance
 	// readiness. If not provided, App Runner uses default TCP health checks on the
 	// configured port.
-	HealthCheck *AwsAppRunnerServiceHealthCheck `protobuf:"bytes,10,opt,name=health_check,json=healthCheck,proto3" json:"health_check,omitempty"`
+	HealthCheck *AwsAppRunnerServiceHealthCheck `protobuf:"bytes,11,opt,name=health_check,json=healthCheck,proto3" json:"health_check,omitempty"`
 	// Auto scaling configuration controls how App Runner scales the number of
 	// instances based on incoming request concurrency. If not provided, App Runner
 	// uses defaults: 1 min, 25 max, 100 max concurrency per instance.
-	AutoScaling *AwsAppRunnerServiceAutoScaling `protobuf:"bytes,11,opt,name=auto_scaling,json=autoScaling,proto3" json:"auto_scaling,omitempty"`
+	AutoScaling *AwsAppRunnerServiceAutoScaling `protobuf:"bytes,12,opt,name=auto_scaling,json=autoScaling,proto3" json:"auto_scaling,omitempty"`
 	// ARN of an existing VPC Connector for outbound VPC access. Use this when
 	// you want to share a single VPC Connector across multiple App Runner services.
 	// Mutually exclusive with subnet_ids/security_group_ids (which create an inline connector).
-	VpcConnectorArn *v1.StringValueOrRef `protobuf:"bytes,12,opt,name=vpc_connector_arn,json=vpcConnectorArn,proto3" json:"vpc_connector_arn,omitempty"`
+	VpcConnectorArn *v1.StringValueOrRef `protobuf:"bytes,13,opt,name=vpc_connector_arn,json=vpcConnectorArn,proto3" json:"vpc_connector_arn,omitempty"`
 	// VPC subnet IDs for creating an inline VPC Connector. When provided, the module
 	// automatically creates a VPC Connector so the service can reach resources in
 	// your VPC (databases, caches, internal APIs). Provide subnets in at least two
 	// Availability Zones for high availability. Mutually exclusive with vpc_connector_arn.
-	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,13,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
+	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,14,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// Security group IDs for the inline VPC Connector. Controls what VPC resources
 	// the service can reach. Only used when subnet_ids is provided (ignored otherwise).
-	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,14,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
+	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,15,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
 	// Whether the service endpoint is publicly accessible from the internet.
 	// When true (default), the service gets a public HTTPS URL. When false,
 	// the service is only reachable via a VPC Ingress Connection (a separate
 	// resource not managed by this component).
-	IsPubliclyAccessible *bool `protobuf:"varint,15,opt,name=is_publicly_accessible,json=isPubliclyAccessible,proto3,oneof" json:"is_publicly_accessible,omitempty"`
+	IsPubliclyAccessible *bool `protobuf:"varint,16,opt,name=is_publicly_accessible,json=isPubliclyAccessible,proto3,oneof" json:"is_publicly_accessible,omitempty"`
 	// IP address type for the service endpoint.
 	// "IPV4": IPv4-only (default). "DUAL_STACK": IPv4 + IPv6.
-	IpAddressType *string `protobuf:"bytes,16,opt,name=ip_address_type,json=ipAddressType,proto3,oneof" json:"ip_address_type,omitempty"`
+	IpAddressType *string `protobuf:"bytes,17,opt,name=ip_address_type,json=ipAddressType,proto3,oneof" json:"ip_address_type,omitempty"`
 	// Customer-managed KMS key ARN for encrypting the service's stored copy of
 	// the container image and data logs. If omitted, App Runner uses an AWS-managed key.
 	// ForceNew: changing this value requires replacing the service.
-	KmsKeyArn *v1.StringValueOrRef `protobuf:"bytes,17,opt,name=kms_key_arn,json=kmsKeyArn,proto3" json:"kms_key_arn,omitempty"`
+	KmsKeyArn *v1.StringValueOrRef `protobuf:"bytes,18,opt,name=kms_key_arn,json=kmsKeyArn,proto3" json:"kms_key_arn,omitempty"`
 	// Whether to enable observability (AWS X-Ray tracing) for the service.
 	// When true, observability_configuration_arn must also be provided.
-	ObservabilityEnabled bool `protobuf:"varint,18,opt,name=observability_enabled,json=observabilityEnabled,proto3" json:"observability_enabled,omitempty"`
+	ObservabilityEnabled bool `protobuf:"varint,19,opt,name=observability_enabled,json=observabilityEnabled,proto3" json:"observability_enabled,omitempty"`
 	// ARN of an App Runner Observability Configuration resource. Required when
 	// observability_enabled is true. Observability configurations are created
 	// separately (via AWS Console or CLI) and can be shared across services.
-	ObservabilityConfigurationArn *v1.StringValueOrRef `protobuf:"bytes,19,opt,name=observability_configuration_arn,json=observabilityConfigurationArn,proto3" json:"observability_configuration_arn,omitempty"`
+	ObservabilityConfigurationArn *v1.StringValueOrRef `protobuf:"bytes,20,opt,name=observability_configuration_arn,json=observabilityConfigurationArn,proto3" json:"observability_configuration_arn,omitempty"`
 	// Whether App Runner automatically triggers a new deployment when the source changes.
 	// For image source: redeploys when a new image is pushed to the same tag.
 	// For code source: redeploys when a new commit is pushed to the configured branch.
-	AutoDeploymentsEnabled *bool `protobuf:"varint,20,opt,name=auto_deployments_enabled,json=autoDeploymentsEnabled,proto3,oneof" json:"auto_deployments_enabled,omitempty"`
+	AutoDeploymentsEnabled *bool `protobuf:"varint,21,opt,name=auto_deployments_enabled,json=autoDeploymentsEnabled,proto3,oneof" json:"auto_deployments_enabled,omitempty"`
 	unknownFields          protoimpl.UnknownFields
 	sizeCache              protoimpl.SizeCache
 }
@@ -160,6 +163,13 @@ func (x *AwsAppRunnerServiceSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsAppRunnerServiceSpec.ProtoReflect.Descriptor instead.
 func (*AwsAppRunnerServiceSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsapprunnerservice_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsAppRunnerServiceSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsAppRunnerServiceSpec) GetImageSource() *AwsAppRunnerServiceImageSource {
@@ -666,31 +676,32 @@ var File_org_openmcf_provider_aws_awsapprunnerservice_v1_spec_proto protoreflect
 
 const file_org_openmcf_provider_aws_awsapprunnerservice_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	":org/openmcf/provider/aws/awsapprunnerservice/v1/spec.proto\x12/org.openmcf.provider.aws.awsapprunnerservice.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x80\x1b\n" +
-	"\x17AwsAppRunnerServiceSpec\x12r\n" +
-	"\fimage_source\x18\x01 \x01(\v2O.org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceImageSourceR\vimageSource\x12o\n" +
-	"\vcode_source\x18\x02 \x01(\v2N.org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceCodeSourceR\n" +
+	":org/openmcf/provider/aws/awsapprunnerservice/v1/spec.proto\x12/org.openmcf.provider.aws.awsapprunnerservice.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa1\x1b\n" +
+	"\x17AwsAppRunnerServiceSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12r\n" +
+	"\fimage_source\x18\x02 \x01(\v2O.org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceImageSourceR\vimageSource\x12o\n" +
+	"\vcode_source\x18\x03 \x01(\v2N.org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceCodeSourceR\n" +
 	"codeSource\x12!\n" +
-	"\x04port\x18\x03 \x01(\tB\b\x8a\xa6\x1d\x048080H\x00R\x04port\x88\x01\x01\x12#\n" +
-	"\rstart_command\x18\x04 \x01(\tR\fstartCommand\x12\x97\x01\n" +
-	"\x15environment_variables\x18\x05 \x03(\v2b.org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceSpec.EnvironmentVariablesEntryR\x14environmentVariables\x12\x91\x01\n" +
-	"\x13environment_secrets\x18\x06 \x03(\v2`.org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceSpec.EnvironmentSecretsEntryR\x12environmentSecrets\x12\x1f\n" +
-	"\x03cpu\x18\a \x01(\tB\b\x8a\xa6\x1d\x041024H\x01R\x03cpu\x88\x01\x01\x12%\n" +
-	"\x06memory\x18\b \x01(\tB\b\x8a\xa6\x1d\x042048H\x02R\x06memory\x88\x01\x01\x12\x80\x01\n" +
-	"\x11instance_role_arn\x18\t \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\x0finstanceRoleArn\x12r\n" +
-	"\fhealth_check\x18\n" +
-	" \x01(\v2O.org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceHealthCheckR\vhealthCheck\x12r\n" +
-	"\fauto_scaling\x18\v \x01(\v2O.org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceAutoScalingR\vautoScaling\x12^\n" +
-	"\x11vpc_connector_arn\x18\f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x0fvpcConnectorArn\x12\x81\x01\n" +
+	"\x04port\x18\x04 \x01(\tB\b\x8a\xa6\x1d\x048080H\x00R\x04port\x88\x01\x01\x12#\n" +
+	"\rstart_command\x18\x05 \x01(\tR\fstartCommand\x12\x97\x01\n" +
+	"\x15environment_variables\x18\x06 \x03(\v2b.org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceSpec.EnvironmentVariablesEntryR\x14environmentVariables\x12\x91\x01\n" +
+	"\x13environment_secrets\x18\a \x03(\v2`.org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceSpec.EnvironmentSecretsEntryR\x12environmentSecrets\x12\x1f\n" +
+	"\x03cpu\x18\b \x01(\tB\b\x8a\xa6\x1d\x041024H\x01R\x03cpu\x88\x01\x01\x12%\n" +
+	"\x06memory\x18\t \x01(\tB\b\x8a\xa6\x1d\x042048H\x02R\x06memory\x88\x01\x01\x12\x80\x01\n" +
+	"\x11instance_role_arn\x18\n" +
+	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\x0finstanceRoleArn\x12r\n" +
+	"\fhealth_check\x18\v \x01(\v2O.org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceHealthCheckR\vhealthCheck\x12r\n" +
+	"\fauto_scaling\x18\f \x01(\v2O.org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceAutoScalingR\vautoScaling\x12^\n" +
+	"\x11vpc_connector_arn\x18\r \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x0fvpcConnectorArn\x12\x81\x01\n" +
 	"\n" +
-	"subnet_ids\x18\r \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
-	"\x12security_group_ids\x18\x0e \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12C\n" +
-	"\x16is_publicly_accessible\x18\x0f \x01(\bB\b\x8a\xa6\x1d\x04trueH\x03R\x14isPubliclyAccessible\x88\x01\x01\x125\n" +
-	"\x0fip_address_type\x18\x10 \x01(\tB\b\x8a\xa6\x1d\x04IPV4H\x04R\ripAddressType\x88\x01\x01\x12s\n" +
-	"\vkms_key_arn\x18\x11 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\tkmsKeyArn\x123\n" +
-	"\x15observability_enabled\x18\x12 \x01(\bR\x14observabilityEnabled\x12z\n" +
-	"\x1fobservability_configuration_arn\x18\x13 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x1dobservabilityConfigurationArn\x12G\n" +
-	"\x18auto_deployments_enabled\x18\x14 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x05R\x16autoDeploymentsEnabled\x88\x01\x01\x1aG\n" +
+	"subnet_ids\x18\x0e \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
+	"\x12security_group_ids\x18\x0f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12C\n" +
+	"\x16is_publicly_accessible\x18\x10 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x03R\x14isPubliclyAccessible\x88\x01\x01\x125\n" +
+	"\x0fip_address_type\x18\x11 \x01(\tB\b\x8a\xa6\x1d\x04IPV4H\x04R\ripAddressType\x88\x01\x01\x12s\n" +
+	"\vkms_key_arn\x18\x12 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\tkmsKeyArn\x123\n" +
+	"\x15observability_enabled\x18\x13 \x01(\bR\x14observabilityEnabled\x12z\n" +
+	"\x1fobservability_configuration_arn\x18\x14 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x1dobservabilityConfigurationArn\x12G\n" +
+	"\x18auto_deployments_enabled\x18\x15 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x05R\x16autoDeploymentsEnabled\x88\x01\x01\x1aG\n" +
 	"\x19EnvironmentVariablesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aE\n" +

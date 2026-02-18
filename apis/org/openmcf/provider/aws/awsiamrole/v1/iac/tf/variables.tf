@@ -43,6 +43,9 @@ variable "spec" {
   description = "spec holds the core configuration data defining how the ECS service is deployed."
   type = object({
 
+    # The AWS region where the resource will be created.
+    region = string
+
     # description is an optional description of the IAM role.
     description = string
 

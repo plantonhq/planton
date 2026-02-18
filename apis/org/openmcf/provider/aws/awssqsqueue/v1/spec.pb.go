@@ -42,69 +42,72 @@ const (
 //   - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 type AwsSqsQueueSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Whether to create a FIFO queue. Standard queues are created when false.
 	// FIFO queues guarantee exactly-once processing and strict ordering within
 	// each message group. This setting cannot be changed after queue creation.
-	FifoQueue bool `protobuf:"varint,1,opt,name=fifo_queue,json=fifoQueue,proto3" json:"fifo_queue,omitempty"`
+	FifoQueue bool `protobuf:"varint,2,opt,name=fifo_queue,json=fifoQueue,proto3" json:"fifo_queue,omitempty"`
 	// Time in seconds that a received message is hidden from subsequent receive
 	// requests. After the timeout expires the message becomes visible again unless
 	// it was deleted. Range: 0–43200 (0s to 12h). AWS default: 30.
-	VisibilityTimeoutSeconds int32 `protobuf:"varint,2,opt,name=visibility_timeout_seconds,json=visibilityTimeoutSeconds,proto3" json:"visibility_timeout_seconds,omitempty"`
+	VisibilityTimeoutSeconds int32 `protobuf:"varint,3,opt,name=visibility_timeout_seconds,json=visibilityTimeoutSeconds,proto3" json:"visibility_timeout_seconds,omitempty"`
 	// Duration in seconds that SQS retains a message. After the retention period
 	// expires SQS deletes the message regardless of whether it was consumed.
 	// Range: 60–1209600 (1 min to 14 days). AWS default: 345600 (4 days).
 	// Leave at 0 to use the AWS default.
-	MessageRetentionSeconds int32 `protobuf:"varint,3,opt,name=message_retention_seconds,json=messageRetentionSeconds,proto3" json:"message_retention_seconds,omitempty"`
+	MessageRetentionSeconds int32 `protobuf:"varint,4,opt,name=message_retention_seconds,json=messageRetentionSeconds,proto3" json:"message_retention_seconds,omitempty"`
 	// Maximum size of a message body in bytes. Messages exceeding this limit are
 	// rejected by SQS. Range: 1024–1048576 (1 KB to 1 MB). AWS default: 262144 (256 KB).
 	// Leave at 0 to use the AWS default.
-	MaxMessageSizeBytes int32 `protobuf:"varint,4,opt,name=max_message_size_bytes,json=maxMessageSizeBytes,proto3" json:"max_message_size_bytes,omitempty"`
+	MaxMessageSizeBytes int32 `protobuf:"varint,5,opt,name=max_message_size_bytes,json=maxMessageSizeBytes,proto3" json:"max_message_size_bytes,omitempty"`
 	// Delay in seconds before a newly sent message becomes visible in the queue.
 	// Useful for implementing delayed processing patterns.
 	// Range: 0–900 (0s to 15 min). AWS default: 0.
-	DelaySeconds int32 `protobuf:"varint,5,opt,name=delay_seconds,json=delaySeconds,proto3" json:"delay_seconds,omitempty"`
+	DelaySeconds int32 `protobuf:"varint,6,opt,name=delay_seconds,json=delaySeconds,proto3" json:"delay_seconds,omitempty"`
 	// Wait time in seconds for the ReceiveMessage API call. A value greater than
 	// 0 enables long polling, which reduces the number of empty responses and
 	// lowers cost. Range: 0–20. AWS default: 0 (short polling).
-	ReceiveWaitTimeSeconds int32 `protobuf:"varint,6,opt,name=receive_wait_time_seconds,json=receiveWaitTimeSeconds,proto3" json:"receive_wait_time_seconds,omitempty"`
+	ReceiveWaitTimeSeconds int32 `protobuf:"varint,7,opt,name=receive_wait_time_seconds,json=receiveWaitTimeSeconds,proto3" json:"receive_wait_time_seconds,omitempty"`
 	// Enable content-based deduplication for FIFO queues. When enabled SQS uses
 	// a SHA-256 hash of the message body as the deduplication ID, removing the
 	// need for the producer to supply an explicit deduplication ID.
 	// Only valid when `fifo_queue` is true.
-	ContentBasedDeduplication bool `protobuf:"varint,7,opt,name=content_based_deduplication,json=contentBasedDeduplication,proto3" json:"content_based_deduplication,omitempty"`
+	ContentBasedDeduplication bool `protobuf:"varint,8,opt,name=content_based_deduplication,json=contentBasedDeduplication,proto3" json:"content_based_deduplication,omitempty"`
 	// Deduplication scope for FIFO queues. Controls whether deduplication is
 	// applied per message group or across the entire queue.
 	// Valid values: "messageGroup", "queue". Only valid when `fifo_queue` is true.
-	DeduplicationScope string `protobuf:"bytes,8,opt,name=deduplication_scope,json=deduplicationScope,proto3" json:"deduplication_scope,omitempty"`
+	DeduplicationScope string `protobuf:"bytes,9,opt,name=deduplication_scope,json=deduplicationScope,proto3" json:"deduplication_scope,omitempty"`
 	// Throughput limit for FIFO queues. Controls whether throughput quota applies
 	// per message group ID or per queue. Set to "perMessageGroupId" to enable
 	// high throughput mode for FIFO queues.
 	// Valid values: "perMessageGroupId", "perQueue". Only valid when `fifo_queue` is true.
-	FifoThroughputLimit string `protobuf:"bytes,9,opt,name=fifo_throughput_limit,json=fifoThroughputLimit,proto3" json:"fifo_throughput_limit,omitempty"`
+	FifoThroughputLimit string `protobuf:"bytes,10,opt,name=fifo_throughput_limit,json=fifoThroughputLimit,proto3" json:"fifo_throughput_limit,omitempty"`
 	// Dead letter queue configuration. When a message is received more than
 	// `max_receive_count` times without being deleted, SQS moves it to the
 	// specified target queue for investigation and reprocessing.
-	DeadLetterConfig *AwsSqsQueueDeadLetterConfig `protobuf:"bytes,10,opt,name=dead_letter_config,json=deadLetterConfig,proto3" json:"dead_letter_config,omitempty"`
+	DeadLetterConfig *AwsSqsQueueDeadLetterConfig `protobuf:"bytes,11,opt,name=dead_letter_config,json=deadLetterConfig,proto3" json:"dead_letter_config,omitempty"`
 	// Customer-managed KMS key for server-side encryption. When set SQS encrypts
 	// message bodies using this key. Accepts a direct KMS key ID/ARN or a
 	// reference to an AwsKmsKey resource. Mutually exclusive with
 	// `sqs_managed_sse_enabled`.
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,11,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,12,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// Duration in seconds that SQS reuses a data encryption key before calling
 	// KMS again. Higher values reduce KMS costs but increase the window for key
 	// reuse. Range: 60–86400 (1 min to 24h). AWS default: 300 (5 min).
 	// Only relevant when `kms_key_id` is set.
-	KmsDataKeyReusePeriodSeconds int32 `protobuf:"varint,12,opt,name=kms_data_key_reuse_period_seconds,json=kmsDataKeyReusePeriodSeconds,proto3" json:"kms_data_key_reuse_period_seconds,omitempty"`
+	KmsDataKeyReusePeriodSeconds int32 `protobuf:"varint,13,opt,name=kms_data_key_reuse_period_seconds,json=kmsDataKeyReusePeriodSeconds,proto3" json:"kms_data_key_reuse_period_seconds,omitempty"`
 	// Enable SQS-managed server-side encryption (SSE-SQS). SQS manages the
 	// encryption key automatically with no additional cost. Mutually exclusive
 	// with `kms_key_id`.
-	SqsManagedSseEnabled bool `protobuf:"varint,13,opt,name=sqs_managed_sse_enabled,json=sqsManagedSseEnabled,proto3" json:"sqs_managed_sse_enabled,omitempty"`
+	SqsManagedSseEnabled bool `protobuf:"varint,14,opt,name=sqs_managed_sse_enabled,json=sqsManagedSseEnabled,proto3" json:"sqs_managed_sse_enabled,omitempty"`
 	// IAM access policy for the queue. Controls which AWS principals can perform
 	// actions on this queue (e.g., SendMessage, ReceiveMessage). Expressed as a
 	// standard IAM policy document structure. Common use cases include granting
 	// SNS topics permission to publish to this queue or allowing cross-account
 	// access.
-	Policy        *structpb.Struct `protobuf:"bytes,14,opt,name=policy,proto3" json:"policy,omitempty"`
+	Policy        *structpb.Struct `protobuf:"bytes,15,opt,name=policy,proto3" json:"policy,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,6 +140,13 @@ func (x *AwsSqsQueueSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsSqsQueueSpec.ProtoReflect.Descriptor instead.
 func (*AwsSqsQueueSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awssqsqueue_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsSqsQueueSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsSqsQueueSpec) GetFifoQueue() bool {
@@ -302,26 +312,27 @@ var File_org_openmcf_provider_aws_awssqsqueue_v1_spec_proto protoreflect.FileDes
 
 const file_org_openmcf_provider_aws_awssqsqueue_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2org/openmcf/provider/aws/awssqsqueue/v1/spec.proto\x12'org.openmcf.provider.aws.awssqsqueue.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x83\x15\n" +
-	"\x0fAwsSqsQueueSpec\x12\x1d\n" +
+	"2org/openmcf/provider/aws/awssqsqueue/v1/spec.proto\x12'org.openmcf.provider.aws.awssqsqueue.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xa4\x15\n" +
+	"\x0fAwsSqsQueueSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x1d\n" +
 	"\n" +
-	"fifo_queue\x18\x01 \x01(\bR\tfifoQueue\x12I\n" +
-	"\x1avisibility_timeout_seconds\x18\x02 \x01(\x05B\v\xbaH\b\x1a\x06\x18\xc0\xd1\x02(\x00R\x18visibilityTimeoutSeconds\x12:\n" +
-	"\x19message_retention_seconds\x18\x03 \x01(\x05R\x17messageRetentionSeconds\x123\n" +
-	"\x16max_message_size_bytes\x18\x04 \x01(\x05R\x13maxMessageSizeBytes\x12/\n" +
-	"\rdelay_seconds\x18\x05 \x01(\x05B\n" +
+	"fifo_queue\x18\x02 \x01(\bR\tfifoQueue\x12I\n" +
+	"\x1avisibility_timeout_seconds\x18\x03 \x01(\x05B\v\xbaH\b\x1a\x06\x18\xc0\xd1\x02(\x00R\x18visibilityTimeoutSeconds\x12:\n" +
+	"\x19message_retention_seconds\x18\x04 \x01(\x05R\x17messageRetentionSeconds\x123\n" +
+	"\x16max_message_size_bytes\x18\x05 \x01(\x05R\x13maxMessageSizeBytes\x12/\n" +
+	"\rdelay_seconds\x18\x06 \x01(\x05B\n" +
 	"\xbaH\a\x1a\x05\x18\x84\a(\x00R\fdelaySeconds\x12D\n" +
-	"\x19receive_wait_time_seconds\x18\x06 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x14(\x00R\x16receiveWaitTimeSeconds\x12>\n" +
-	"\x1bcontent_based_deduplication\x18\a \x01(\bR\x19contentBasedDeduplication\x12/\n" +
-	"\x13deduplication_scope\x18\b \x01(\tR\x12deduplicationScope\x122\n" +
-	"\x15fifo_throughput_limit\x18\t \x01(\tR\x13fifoThroughputLimit\x12r\n" +
-	"\x12dead_letter_config\x18\n" +
-	" \x01(\v2D.org.openmcf.provider.aws.awssqsqueue.v1.AwsSqsQueueDeadLetterConfigR\x10deadLetterConfig\x12q\n" +
+	"\x19receive_wait_time_seconds\x18\a \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x14(\x00R\x16receiveWaitTimeSeconds\x12>\n" +
+	"\x1bcontent_based_deduplication\x18\b \x01(\bR\x19contentBasedDeduplication\x12/\n" +
+	"\x13deduplication_scope\x18\t \x01(\tR\x12deduplicationScope\x122\n" +
+	"\x15fifo_throughput_limit\x18\n" +
+	" \x01(\tR\x13fifoThroughputLimit\x12r\n" +
+	"\x12dead_letter_config\x18\v \x01(\v2D.org.openmcf.provider.aws.awssqsqueue.v1.AwsSqsQueueDeadLetterConfigR\x10deadLetterConfig\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\v \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12G\n" +
-	"!kms_data_key_reuse_period_seconds\x18\f \x01(\x05R\x1ckmsDataKeyReusePeriodSeconds\x125\n" +
-	"\x17sqs_managed_sse_enabled\x18\r \x01(\bR\x14sqsManagedSseEnabled\x12/\n" +
-	"\x06policy\x18\x0e \x01(\v2\x17.google.protobuf.StructR\x06policy:\xe0\r\xbaH\xdc\r\x1a\xbb\x01\n" +
+	"kms_key_id\x18\f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12G\n" +
+	"!kms_data_key_reuse_period_seconds\x18\r \x01(\x05R\x1ckmsDataKeyReusePeriodSeconds\x125\n" +
+	"\x17sqs_managed_sse_enabled\x18\x0e \x01(\bR\x14sqsManagedSseEnabled\x12/\n" +
+	"\x06policy\x18\x0f \x01(\v2\x17.google.protobuf.StructR\x06policy:\xe0\r\xbaH\xdc\r\x1a\xbb\x01\n" +
 	")content_based_deduplication_requires_fifo\x12Xcontent_based_deduplication can only be enabled on FIFO queues (fifo_queue must be true)\x1a4!this.content_based_deduplication || this.fifo_queue\x1a\xea\x01\n" +
 	"!deduplication_scope_requires_fifo\x12Wdeduplication_scope is only valid for FIFO queues and must be 'messageGroup' or 'queue'\x1althis.deduplication_scope == '' || (this.fifo_queue && this.deduplication_scope in ['messageGroup', 'queue'])\x1a\x82\x02\n" +
 	"#fifo_throughput_limit_requires_fifo\x12afifo_throughput_limit is only valid for FIFO queues and must be 'perMessageGroupId' or 'perQueue'\x1axthis.fifo_throughput_limit == '' || (this.fifo_queue && this.fifo_throughput_limit in ['perMessageGroupId', 'perQueue'])\x1a\xb3\x01\n" +

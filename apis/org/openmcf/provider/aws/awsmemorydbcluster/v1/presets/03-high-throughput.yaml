@@ -3,6 +3,7 @@ kind: AwsMemorydbCluster
 metadata:
   name: my-memorydb-ht
 spec:
+  region: <aws-region>
   engine: redis
   engineVersion: "7.1"
   description: High-throughput MemoryDB with data tiering

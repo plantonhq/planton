@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awscloudwatchloggroup/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awscloudwatchloggroup_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjxvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzY2xvdWR3YXRjaGxvZ2dyb3VwL3YxL3NwZWMucHJvdG8SMW9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NjbG91ZHdhdGNobG9nZ3JvdXAudjEi5gcKGUF3c0Nsb3Vkd2F0Y2hMb2dHcm91cFNwZWMSIQoRcmV0ZW50aW9uX2luX2RheXMYASABKAVCBpKmHQIzMBJnCgprbXNfa2V5X2lkGAIgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybhIXCg9sb2dfZ3JvdXBfY2xhc3MYAyABKAkSIwobZGVsZXRpb25fcHJvdGVjdGlvbl9lbmFibGVkGAQgASgIOv4Fukj6BRq4AgoecmV0ZW50aW9uX2luX2RheXNfdmFsaWRfdmFsdWVzEowBcmV0ZW50aW9uX2luX2RheXMgbXVzdCBiZSBvbmUgb2Y6IDAsIDEsIDMsIDUsIDcsIDE0LCAzMCwgNjAsIDkwLCAxMjAsIDE1MCwgMTgwLCAzNjUsIDQwMCwgNTQ1LCA3MzEsIDEwOTYsIDE4MjcsIDIxOTIsIDI1NTcsIDI5MjIsIDMyODgsIDM2NTMahgF0aGlzLnJldGVudGlvbl9pbl9kYXlzIGluIFswLCAxLCAzLCA1LCA3LCAxNCwgMzAsIDYwLCA5MCwgMTIwLCAxNTAsIDE4MCwgMzY1LCA0MDAsIDU0NSwgNzMxLCAxMDk2LCAxODI3LCAyMTkyLCAyNTU3LCAyOTIyLCAzMjg4LCAzNjUzXRrUAQocbG9nX2dyb3VwX2NsYXNzX3ZhbGlkX3ZhbHVlcxJPbG9nX2dyb3VwX2NsYXNzIG11c3QgYmUgJ1NUQU5EQVJEJywgJ0lORlJFUVVFTlRfQUNDRVNTJywgb3IgJ0RFTElWRVJZJyB3aGVuIHNldBpjdGhpcy5sb2dfZ3JvdXBfY2xhc3MgPT0gJycgfHwgdGhpcy5sb2dfZ3JvdXBfY2xhc3MgaW4gWydTVEFOREFSRCcsICdJTkZSRVFVRU5UX0FDQ0VTUycsICdERUxJVkVSWSddGuUBChtkZWxpdmVyeV9jbGFzc19ub19yZXRlbnRpb24SggFyZXRlbnRpb25faW5fZGF5cyBtdXN0IG5vdCBiZSBzZXQgKG11c3QgYmUgMCkgd2hlbiBsb2dfZ3JvdXBfY2xhc3MgaXMgJ0RFTElWRVJZJyDigJQgQVdTIG1hbmFnZXMgcmV0ZW50aW9uIGZvciBEZWxpdmVyeSBsb2cgZ3JvdXBzGkF0aGlzLmxvZ19ncm91cF9jbGFzcyAhPSAnREVMSVZFUlknIHx8IHRoaXMucmV0ZW50aW9uX2luX2RheXMgPT0gMEKaAwo1Y29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NjbG91ZHdhdGNobG9nZ3JvdXAudjFCCVNwZWNQcm90b1ABWmtnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c2Nsb3Vkd2F0Y2hsb2dncm91cC92MTthd3NjbG91ZHdhdGNobG9nZ3JvdXB2MaICBU9PUEFBqgIxT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2Nsb3Vkd2F0Y2hsb2dncm91cC5WMcoCMU9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NjbG91ZHdhdGNobG9nZ3JvdXBcVjHiAj1PcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzY2xvdWR3YXRjaGxvZ2dyb3VwXFYxXEdQQk1ldGFkYXRh6gI2T3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NjbG91ZHdhdGNobG9nZ3JvdXA6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("Cjxvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzY2xvdWR3YXRjaGxvZ2dyb3VwL3YxL3NwZWMucHJvdG8SMW9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NjbG91ZHdhdGNobG9nZ3JvdXAudjEi/wcKGUF3c0Nsb3Vkd2F0Y2hMb2dHcm91cFNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEiEKEXJldGVudGlvbl9pbl9kYXlzGAIgASgFQgaSph0CMzASZwoKa21zX2tleV9pZBgDIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SFwoPbG9nX2dyb3VwX2NsYXNzGAQgASgJEiMKG2RlbGV0aW9uX3Byb3RlY3Rpb25fZW5hYmxlZBgFIAEoCDr+BbpI+gUauAIKHnJldGVudGlvbl9pbl9kYXlzX3ZhbGlkX3ZhbHVlcxKMAXJldGVudGlvbl9pbl9kYXlzIG11c3QgYmUgb25lIG9mOiAwLCAxLCAzLCA1LCA3LCAxNCwgMzAsIDYwLCA5MCwgMTIwLCAxNTAsIDE4MCwgMzY1LCA0MDAsIDU0NSwgNzMxLCAxMDk2LCAxODI3LCAyMTkyLCAyNTU3LCAyOTIyLCAzMjg4LCAzNjUzGoYBdGhpcy5yZXRlbnRpb25faW5fZGF5cyBpbiBbMCwgMSwgMywgNSwgNywgMTQsIDMwLCA2MCwgOTAsIDEyMCwgMTUwLCAxODAsIDM2NSwgNDAwLCA1NDUsIDczMSwgMTA5NiwgMTgyNywgMjE5MiwgMjU1NywgMjkyMiwgMzI4OCwgMzY1M10a1AEKHGxvZ19ncm91cF9jbGFzc192YWxpZF92YWx1ZXMST2xvZ19ncm91cF9jbGFzcyBtdXN0IGJlICdTVEFOREFSRCcsICdJTkZSRVFVRU5UX0FDQ0VTUycsIG9yICdERUxJVkVSWScgd2hlbiBzZXQaY3RoaXMubG9nX2dyb3VwX2NsYXNzID09ICcnIHx8IHRoaXMubG9nX2dyb3VwX2NsYXNzIGluIFsnU1RBTkRBUkQnLCAnSU5GUkVRVUVOVF9BQ0NFU1MnLCAnREVMSVZFUlknXRrlAQobZGVsaXZlcnlfY2xhc3Nfbm9fcmV0ZW50aW9uEoIBcmV0ZW50aW9uX2luX2RheXMgbXVzdCBub3QgYmUgc2V0IChtdXN0IGJlIDApIHdoZW4gbG9nX2dyb3VwX2NsYXNzIGlzICdERUxJVkVSWScg4oCUIEFXUyBtYW5hZ2VzIHJldGVudGlvbiBmb3IgRGVsaXZlcnkgbG9nIGdyb3VwcxpBdGhpcy5sb2dfZ3JvdXBfY2xhc3MgIT0gJ0RFTElWRVJZJyB8fCB0aGlzLnJldGVudGlvbl9pbl9kYXlzID09IDBCmgMKNWNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzY2xvdWR3YXRjaGxvZ2dyb3VwLnYxQglTcGVjUHJvdG9QAVprZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NjbG91ZHdhdGNobG9nZ3JvdXAvdjE7YXdzY2xvdWR3YXRjaGxvZ2dyb3VwdjGiAgVPT1BBQaoCMU9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NjbG91ZHdhdGNobG9nZ3JvdXAuVjHKAjFPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzY2xvdWR3YXRjaGxvZ2dyb3VwXFYx4gI9T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2Nsb3Vkd2F0Y2hsb2dncm91cFxWMVxHUEJNZXRhZGF0YeoCNk9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzY2xvdWR3YXRjaGxvZ2dyb3VwOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsCloudwatchLogGroupSpec defines the desired configuration for an AWS
@@ -39,13 +39,17 @@ export const file_org_openmcf_provider_aws_awscloudwatchloggroup_v1_spec: GenFil
  *
  * Credentials, region, and deployment workflow live outside this spec in stack inputs.
  *
- * ---------------------------------------------------------------------------
- * Retention
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awscloudwatchloggroup.v1.AwsCloudwatchLogGroupSpec
  */
 export type AwsCloudwatchLogGroupSpec = Message<"org.openmcf.provider.aws.awscloudwatchloggroup.v1.AwsCloudwatchLogGroupSpec"> & {
+  /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * Number of days to retain log events. After this period, log events are
    * automatically deleted. Set to 0 (the default) to retain log events
@@ -60,7 +64,7 @@ export type AwsCloudwatchLogGroupSpec = Message<"org.openmcf.provider.aws.awsclo
    * Recommended: Set an explicit retention for cost control. Indefinite retention
    * (0) accumulates storage costs over time.
    *
-   * @generated from field: int32 retention_in_days = 1;
+   * @generated from field: int32 retention_in_days = 2;
    */
   retentionInDays: number;
 
@@ -76,7 +80,7 @@ export type AwsCloudwatchLogGroupSpec = Message<"org.openmcf.provider.aws.awsclo
    *
    * The KMS key must be in the same region as the log group.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 2;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 3;
    */
   kmsKeyId?: StringValueOrRef;
 
@@ -98,7 +102,7 @@ export type AwsCloudwatchLogGroupSpec = Message<"org.openmcf.provider.aws.awsclo
    *
    * This field is ForceNew: changing it requires replacing the log group.
    *
-   * @generated from field: string log_group_class = 3;
+   * @generated from field: string log_group_class = 4;
    */
   logGroupClass: string;
 
@@ -108,7 +112,7 @@ export type AwsCloudwatchLogGroupSpec = Message<"org.openmcf.provider.aws.awsclo
    * to false. Useful for protecting production log groups from accidental
    * deletion.
    *
-   * @generated from field: bool deletion_protection_enabled = 4;
+   * @generated from field: bool deletion_protection_enabled = 5;
    */
   deletionProtectionEnabled: boolean;
 };

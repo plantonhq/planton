@@ -22,6 +22,8 @@ variable "metadata" {
 variable "spec" {
   description = "AwsTransitGateway spec"
   type = object({
+    # The AWS region where the resource will be created.
+    region                            = string
     description                       = optional(string, "")
     amazon_side_asn                   = optional(number, 64512)
     default_route_table_association   = optional(bool, true)

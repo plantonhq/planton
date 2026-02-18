@@ -10,37 +10,41 @@ import "org/openmcf/shared/options/options.proto";
 // into an existing ECS cluster. It focuses on an 80/20 approach with an ALB-based ingress
 // that can be path-based or hostname-based.
 message AwsEcsServiceSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // cluster_arn is the ARN of the ECS cluster where this service will run.
   // This must already exist (created by a separate EcsCluster resource or otherwise).
   // Example: "arn:aws:ecs:us-east-1:123456789012:cluster/my-mixed-cluster"
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_arn = 1 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_arn = 2 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsEcsCluster,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cluster_arn"
   ];
 
   // AWS ECS Service container configuration.
-  AwsEcsServiceContainer container = 2 [(buf.validate.field).required = true];
+  AwsEcsServiceContainer container = 3 [(buf.validate.field).required = true];
 
   // ECS service network configuration.
-  AwsEcsServiceNetwork network = 3 [(buf.validate.field).required = true];
+  AwsEcsServiceNetwork network = 4 [(buf.validate.field).required = true];
 
   // IAM configuration for the ECS service.
-  AwsEcsServiceIam iam = 4;
+  AwsEcsServiceIam iam = 5;
 
   // alb defines how an ALB fronts traffic to this ECS service, supporting path- or hostname-based routing.
-  AwsEcsServiceAlb alb = 5;
+  AwsEcsServiceAlb alb = 6;
 
   // health_check_grace_period_seconds is the number of seconds ECS will ignore ALB health check failures
   // during container startup. This prevents a race condition where the ALB marks a task unhealthy
   // before the application has finished booting. Recommended: 60-120 seconds for typical apps.
   // Only valid when alb.enabled = true.
-  optional int32 health_check_grace_period_seconds = 6 [(org.openmcf.shared.options.default) = "60"];
+  optional int32 health_check_grace_period_seconds = 7 [(org.openmcf.shared.options.default) = "60"];
 
   // autoscaling configuration for the ECS service using target tracking.
   // When enabled, AWS Application Auto Scaling automatically adjusts the desired task count
   // based on CPU or memory utilization.
-  AwsEcsServiceAutoscaling autoscaling = 7;
+  AwsEcsServiceAutoscaling autoscaling = 8;
 }
 
 // AwsEcsServiceContainer is a wrapper for the container spec.

@@ -25,6 +25,7 @@ Volumes are the atomic data containers. Each volume has its own:
 
 | OpenMCF Field | Terraform Attribute | Notes |
 |---|---|---|
+| `region` | Provider `region` | Required |
 | `storage_virtual_machine_id` | `storage_virtual_machine_id` | Required, ForceNew |
 | `name` | `name` | Required, ForceNew, 1-203 chars |
 | `size_in_megabytes` | `size_in_megabytes` | Minimum 20 |

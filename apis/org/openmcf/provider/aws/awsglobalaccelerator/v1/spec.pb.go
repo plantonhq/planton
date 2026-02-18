@@ -53,31 +53,34 @@ const (
 // stack inputs.
 type AwsGlobalAcceleratorSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Whether the accelerator is enabled and accepting traffic. When disabled,
 	// the accelerator's DNS name stops resolving and no traffic is routed.
 	// Useful for temporarily disabling an accelerator during maintenance without
 	// destroying it.
-	Enabled *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
+	Enabled *bool `protobuf:"varint,2,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	// IP address type for the accelerator.
 	// - "IPV4": Two static IPv4 anycast addresses (default).
 	// - "DUAL_STACK": IPv4 + IPv6 anycast addresses for clients on IPv6 networks.
-	IpAddressType *string `protobuf:"bytes,2,opt,name=ip_address_type,json=ipAddressType,proto3,oneof" json:"ip_address_type,omitempty"`
+	IpAddressType *string `protobuf:"bytes,3,opt,name=ip_address_type,json=ipAddressType,proto3,oneof" json:"ip_address_type,omitempty"`
 	// Bring-Your-Own-IP (BYOIP) addresses to assign to the accelerator instead
 	// of AWS-allocated anycast IPs. Provide exactly 1 or 2 IPv4 addresses from
 	// a BYOIP address pool registered with AWS.
 	//
 	// ForceNew — changing this destroys and recreates the accelerator.
 	// Leave empty to use AWS-allocated IPs (the default for most deployments).
-	IpAddresses []string `protobuf:"bytes,3,rep,name=ip_addresses,json=ipAddresses,proto3" json:"ip_addresses,omitempty"`
+	IpAddresses []string `protobuf:"bytes,4,rep,name=ip_addresses,json=ipAddresses,proto3" json:"ip_addresses,omitempty"`
 	// Optional flow log configuration for traffic analysis. When enabled,
 	// Global Accelerator publishes flow logs to the specified S3 bucket.
-	FlowLogs *AwsGlobalAcceleratorFlowLogs `protobuf:"bytes,4,opt,name=flow_logs,json=flowLogs,proto3" json:"flow_logs,omitempty"`
+	FlowLogs *AwsGlobalAcceleratorFlowLogs `protobuf:"bytes,5,opt,name=flow_logs,json=flowLogs,proto3" json:"flow_logs,omitempty"`
 	// Listeners define the ports and protocols the accelerator accepts traffic on.
 	// Each listener routes traffic to one or more regional endpoint groups.
 	//
 	// At least one listener is required — an accelerator without listeners
 	// serves no purpose beyond reserving static IPs.
-	Listeners     []*AwsGlobalAcceleratorListener `protobuf:"bytes,5,rep,name=listeners,proto3" json:"listeners,omitempty"`
+	Listeners     []*AwsGlobalAcceleratorListener `protobuf:"bytes,6,rep,name=listeners,proto3" json:"listeners,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -110,6 +113,13 @@ func (x *AwsGlobalAcceleratorSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsGlobalAcceleratorSpec.ProtoReflect.Descriptor instead.
 func (*AwsGlobalAcceleratorSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsglobalaccelerator_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsGlobalAcceleratorSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsGlobalAcceleratorSpec) GetEnabled() bool {
@@ -690,13 +700,14 @@ var File_org_openmcf_provider_aws_awsglobalaccelerator_v1_spec_proto protoreflec
 
 const file_org_openmcf_provider_aws_awsglobalaccelerator_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	";org/openmcf/provider/aws/awsglobalaccelerator/v1/spec.proto\x120org.openmcf.provider.aws.awsglobalaccelerator.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xae\x05\n" +
-	"\x18AwsGlobalAcceleratorSpec\x12'\n" +
-	"\aenabled\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x125\n" +
-	"\x0fip_address_type\x18\x02 \x01(\tB\b\x8a\xa6\x1d\x04IPV4H\x01R\ripAddressType\x88\x01\x01\x12!\n" +
-	"\fip_addresses\x18\x03 \x03(\tR\vipAddresses\x12k\n" +
-	"\tflow_logs\x18\x04 \x01(\v2N.org.openmcf.provider.aws.awsglobalaccelerator.v1.AwsGlobalAcceleratorFlowLogsR\bflowLogs\x12y\n" +
-	"\tlisteners\x18\x05 \x03(\v2N.org.openmcf.provider.aws.awsglobalaccelerator.v1.AwsGlobalAcceleratorListenerB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01R\tlisteners:\x86\x02\xbaH\x82\x02\x1a\x95\x01\n" +
+	";org/openmcf/provider/aws/awsglobalaccelerator/v1/spec.proto\x120org.openmcf.provider.aws.awsglobalaccelerator.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xcf\x05\n" +
+	"\x18AwsGlobalAcceleratorSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12'\n" +
+	"\aenabled\x18\x02 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x125\n" +
+	"\x0fip_address_type\x18\x03 \x01(\tB\b\x8a\xa6\x1d\x04IPV4H\x01R\ripAddressType\x88\x01\x01\x12!\n" +
+	"\fip_addresses\x18\x04 \x03(\tR\vipAddresses\x12k\n" +
+	"\tflow_logs\x18\x05 \x01(\v2N.org.openmcf.provider.aws.awsglobalaccelerator.v1.AwsGlobalAcceleratorFlowLogsR\bflowLogs\x12y\n" +
+	"\tlisteners\x18\x06 \x03(\v2N.org.openmcf.provider.aws.awsglobalaccelerator.v1.AwsGlobalAcceleratorListenerB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01R\tlisteners:\x86\x02\xbaH\x82\x02\x1a\x95\x01\n" +
 	"\x15ip_address_type_valid\x12.ip_address_type must be 'IPV4' or 'DUAL_STACK'\x1aL!has(this.ip_address_type) || this.ip_address_type in ['IPV4', 'DUAL_STACK']\x1ah\n" +
 	"\x12ip_addresses_max_2\x124ip_addresses supports a maximum of 2 BYOIP addresses\x1a\x1csize(this.ip_addresses) <= 2B\n" +
 	"\n" +

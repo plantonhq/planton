@@ -79,36 +79,39 @@ func (AwsEksNodeGroupCapacityType) EnumDescriptor() ([]byte, []int) {
 // AwsEksCluster resource.
 type AwsEksNodeGroupSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// cluster_name is the name of the EKS cluster to attach this node group to.
 	// The cluster must already exist (e.g., created by an AwsEksCluster resource).
 	// If referencing an AwsEksCluster resource, this pulls its metadata.name.
-	ClusterName *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=cluster_name,json=clusterName,proto3" json:"cluster_name,omitempty"`
+	ClusterName *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=cluster_name,json=clusterName,proto3" json:"cluster_name,omitempty"`
 	// node_role_arn is the ARN of the IAM role to associate with the EC2 nodes.
 	// This role must have the necessary EKS worker node policies. If referencing
 	// an AwsIamRole resource, this uses its status.outputs.role_arn.
-	NodeRoleArn *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=node_role_arn,json=nodeRoleArn,proto3" json:"node_role_arn,omitempty"`
+	NodeRoleArn *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=node_role_arn,json=nodeRoleArn,proto3" json:"node_role_arn,omitempty"`
 	// subnet_ids are the IDs of at least two subnets where the worker nodes will be launched.
 	// Typically these are private subnets in the cluster's VPC to ensure high availability.
 	// If referencing an AwsVpc resource, this defaults to its status.outputs.private_subnets[*].id.
-	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,3,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
+	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,4,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// instance_type is the EC2 instance type for the worker nodes.
 	// Example values: "t3.small", "m5.xlarge". Must match the pattern "<family>.<size>",
 	// e.g., a letter family and size like nano, micro, small, medium, large, xlarge or Nxlarge.
-	InstanceType string `protobuf:"bytes,4,opt,name=instance_type,json=instanceType,proto3" json:"instance_type,omitempty"`
+	InstanceType string `protobuf:"bytes,5,opt,name=instance_type,json=instanceType,proto3" json:"instance_type,omitempty"`
 	// scaling defines the auto-scaling configuration (min, max, desired node counts) for the node group.
-	Scaling *AwsEksNodeGroupScalingConfig `protobuf:"bytes,5,opt,name=scaling,proto3" json:"scaling,omitempty"`
+	Scaling *AwsEksNodeGroupScalingConfig `protobuf:"bytes,6,opt,name=scaling,proto3" json:"scaling,omitempty"`
 	// capacity_type specifies whether to use on-demand or Spot instances for this node group.
 	// If not set, it defaults to on_demand.
-	CapacityType AwsEksNodeGroupCapacityType `protobuf:"varint,6,opt,name=capacity_type,json=capacityType,proto3,enum=org.openmcf.provider.aws.awseksnodegroup.v1.AwsEksNodeGroupCapacityType" json:"capacity_type,omitempty"`
+	CapacityType AwsEksNodeGroupCapacityType `protobuf:"varint,7,opt,name=capacity_type,json=capacityType,proto3,enum=org.openmcf.provider.aws.awseksnodegroup.v1.AwsEksNodeGroupCapacityType" json:"capacity_type,omitempty"`
 	// disk_size_gb is the EBS volume size (in GiB) for each node's root disk.
 	// If omitted, it is recommended to use 100 GiB by default.
-	DiskSizeGb int32 `protobuf:"varint,7,opt,name=disk_size_gb,json=diskSizeGb,proto3" json:"disk_size_gb,omitempty"`
+	DiskSizeGb int32 `protobuf:"varint,8,opt,name=disk_size_gb,json=diskSizeGb,proto3" json:"disk_size_gb,omitempty"`
 	// ssh_key_name is the name of an existing EC2 Key Pair to enable SSH access to nodes.
 	// If provided, nodes will allow SSH using this key. Max length is 255 characters.
-	SshKeyName string `protobuf:"bytes,8,opt,name=ssh_key_name,json=sshKeyName,proto3" json:"ssh_key_name,omitempty"`
+	SshKeyName string `protobuf:"bytes,9,opt,name=ssh_key_name,json=sshKeyName,proto3" json:"ssh_key_name,omitempty"`
 	// labels is a set of Kubernetes labels to apply to the node group (and its nodes).
 	// Keys and values can be at most 63 characters each.
-	Labels        map[string]string `protobuf:"bytes,9,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Labels        map[string]string `protobuf:"bytes,10,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -141,6 +144,13 @@ func (x *AwsEksNodeGroupSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsEksNodeGroupSpec.ProtoReflect.Descriptor instead.
 func (*AwsEksNodeGroupSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awseksnodegroup_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsEksNodeGroupSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsEksNodeGroupSpec) GetClusterName() *v1.StringValueOrRef {
@@ -276,20 +286,22 @@ var File_org_openmcf_provider_aws_awseksnodegroup_v1_spec_proto protoreflect.Fil
 
 const file_org_openmcf_provider_aws_awseksnodegroup_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"6org/openmcf/provider/aws/awseksnodegroup/v1/spec.proto\x12+org.openmcf.provider.aws.awseksnodegroup.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xbd\a\n" +
-	"\x13AwsEksNodeGroupSpec\x12s\n" +
-	"\fcluster_name\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1c\xbaH\x03\xc8\x01\x01\x88\xd4a\xcf\x01\x92\xd4a\rmetadata.nameR\vclusterName\x12~\n" +
-	"\rnode_role_arn\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\vnodeRoleArn\x12\x8c\x01\n" +
+	"6org/openmcf/provider/aws/awseksnodegroup/v1/spec.proto\x12+org.openmcf.provider.aws.awseksnodegroup.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xde\a\n" +
+	"\x13AwsEksNodeGroupSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12s\n" +
+	"\fcluster_name\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1c\xbaH\x03\xc8\x01\x01\x88\xd4a\xcf\x01\x92\xd4a\rmetadata.nameR\vclusterName\x12~\n" +
+	"\rnode_role_arn\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\vnodeRoleArn\x12\x8c\x01\n" +
 	"\n" +
-	"subnet_ids\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB9\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x02\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12+\n" +
-	"\rinstance_type\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\finstanceType\x12k\n" +
-	"\ascaling\x18\x05 \x01(\v2I.org.openmcf.provider.aws.awseksnodegroup.v1.AwsEksNodeGroupScalingConfigB\x06\xbaH\x03\xc8\x01\x01R\ascaling\x12|\n" +
-	"\rcapacity_type\x18\x06 \x01(\x0e2H.org.openmcf.provider.aws.awseksnodegroup.v1.AwsEksNodeGroupCapacityTypeB\r\x92\xa6\x1d\ton_demandR\fcapacityType\x12)\n" +
-	"\fdisk_size_gb\x18\a \x01(\x05B\a\x92\xa6\x1d\x03100R\n" +
+	"subnet_ids\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB9\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x02\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12+\n" +
+	"\rinstance_type\x18\x05 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\finstanceType\x12k\n" +
+	"\ascaling\x18\x06 \x01(\v2I.org.openmcf.provider.aws.awseksnodegroup.v1.AwsEksNodeGroupScalingConfigB\x06\xbaH\x03\xc8\x01\x01R\ascaling\x12|\n" +
+	"\rcapacity_type\x18\a \x01(\x0e2H.org.openmcf.provider.aws.awseksnodegroup.v1.AwsEksNodeGroupCapacityTypeB\r\x92\xa6\x1d\ton_demandR\fcapacityType\x12)\n" +
+	"\fdisk_size_gb\x18\b \x01(\x05B\a\x92\xa6\x1d\x03100R\n" +
 	"diskSizeGb\x12*\n" +
-	"\fssh_key_name\x18\b \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01R\n" +
+	"\fssh_key_name\x18\t \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01R\n" +
 	"sshKeyName\x12x\n" +
-	"\x06labels\x18\t \x03(\v2L.org.openmcf.provider.aws.awseksnodegroup.v1.AwsEksNodeGroupSpec.LabelsEntryB\x12\xbaH\x0f\x9a\x01\f\"\x04r\x02\x18?*\x04r\x02\x18?R\x06labels\x1a9\n" +
+	"\x06labels\x18\n" +
+	" \x03(\v2L.org.openmcf.provider.aws.awseksnodegroup.v1.AwsEksNodeGroupSpec.LabelsEntryB\x12\xbaH\x0f\x9a\x01\f\"\x04r\x02\x18?*\x04r\x02\x18?R\x06labels\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x92\x01\n" +

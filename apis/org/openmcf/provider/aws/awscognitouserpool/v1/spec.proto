@@ -31,6 +31,10 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 //
 // Credentials, region, and deployment workflow live outside this spec in stack inputs.
 message AwsCognitoUserPoolSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Identity model (ForceNew — choose carefully, cannot change after creation)
   // ---------------------------------------------------------------------------
@@ -41,7 +45,7 @@ message AwsCognitoUserPoolSpec {
   //
   // Valid values: "email", "phone_number".
   // Mutually exclusive with `alias_attributes`. ForceNew.
-  repeated string username_attributes = 1;
+  repeated string username_attributes = 2;
 
   // Attributes that can be used as aliases for the username. Unlike `username_attributes`,
   // users always have a separate username and the alias attributes are alternative sign-in
@@ -49,11 +53,11 @@ message AwsCognitoUserPoolSpec {
   //
   // Valid values: "email", "phone_number", "preferred_username".
   // Mutually exclusive with `username_attributes`. ForceNew.
-  repeated string alias_attributes = 2;
+  repeated string alias_attributes = 3;
 
   // Whether usernames are case-sensitive. When false (default in AWS), "User" and "user"
   // are treated as the same username. ForceNew — cannot be changed after pool creation.
-  bool username_case_sensitive = 3;
+  bool username_case_sensitive = 4;
 
   // ---------------------------------------------------------------------------
   // Password policy
@@ -61,7 +65,7 @@ message AwsCognitoUserPoolSpec {
 
   // Password policy configuration. Controls password strength requirements for
   // user self-registration and admin-created passwords.
-  AwsCognitoUserPoolPasswordPolicy password_policy = 4;
+  AwsCognitoUserPoolPasswordPolicy password_policy = 5;
 
   // ---------------------------------------------------------------------------
   // MFA
@@ -71,12 +75,12 @@ message AwsCognitoUserPoolSpec {
   // - "OFF": MFA is not used (default).
   // - "OPTIONAL": Users can opt in to MFA.
   // - "ON": MFA is required for all users.
-  string mfa_configuration = 5;
+  string mfa_configuration = 6;
 
   // Enable TOTP-based (time-based one-time password) software token MFA. When
   // true, users can configure authenticator apps like Google Authenticator or
   // Authy. Requires `mfa_configuration` to be "OPTIONAL" or "ON".
-  bool software_token_mfa_enabled = 6;
+  bool software_token_mfa_enabled = 7;
 
   // ---------------------------------------------------------------------------
   // Verification and recovery
@@ -85,11 +89,11 @@ message AwsCognitoUserPoolSpec {
   // Attributes to auto-verify when users sign up. Cognito sends a verification
   // code to these attributes. Common values: ["email"].
   // Valid values: "email", "phone_number".
-  repeated string auto_verified_attributes = 7;
+  repeated string auto_verified_attributes = 8;
 
   // Account recovery mechanisms in priority order. Each mechanism defines a
   // fallback method for users who forget their password.
-  repeated AwsCognitoUserPoolRecoveryMechanism account_recovery_mechanisms = 8;
+  repeated AwsCognitoUserPoolRecoveryMechanism account_recovery_mechanisms = 9;
 
   // ---------------------------------------------------------------------------
   // Email configuration
@@ -98,7 +102,7 @@ message AwsCognitoUserPoolSpec {
   // Email sending configuration. Controls whether Cognito sends emails using
   // its built-in service (limited to 50/day in sandbox) or your verified SES
   // identity (production sending).
-  AwsCognitoUserPoolEmailConfig email_configuration = 9;
+  AwsCognitoUserPoolEmailConfig email_configuration = 10;
 
   // ---------------------------------------------------------------------------
   // Admin and user management
@@ -106,11 +110,11 @@ message AwsCognitoUserPoolSpec {
 
   // When true, only administrators can create users — self-registration is
   // disabled. Users must be created via the admin API or AWS console.
-  bool allow_admin_create_user_only = 10;
+  bool allow_admin_create_user_only = 11;
 
   // Enable deletion protection. When "ACTIVE", the user pool cannot be deleted
   // without first disabling this setting. Recommended for production pools.
-  bool deletion_protection = 11;
+  bool deletion_protection = 12;
 
   // ---------------------------------------------------------------------------
   // Custom attributes
@@ -120,7 +124,7 @@ message AwsCognitoUserPoolSpec {
   // Each attribute is added to the pool's schema. Note: the `mutable` and
   // `required` flags are ForceNew — they cannot be changed after creation.
   // Maximum 50 custom attributes per pool.
-  repeated AwsCognitoUserPoolSchemaAttribute custom_attributes = 12;
+  repeated AwsCognitoUserPoolSchemaAttribute custom_attributes = 13;
 
   // ---------------------------------------------------------------------------
   // Lambda triggers
@@ -129,7 +133,7 @@ message AwsCognitoUserPoolSpec {
   // Lambda trigger configuration for custom authentication and user lifecycle
   // hooks. Each trigger is an optional Lambda function ARN that Cognito invokes
   // at the corresponding lifecycle point.
-  AwsCognitoUserPoolLambdaConfig lambda_config = 13;
+  AwsCognitoUserPoolLambdaConfig lambda_config = 14;
 
   // ---------------------------------------------------------------------------
   // App clients (bundled)
@@ -142,7 +146,7 @@ message AwsCognitoUserPoolSpec {
   // At least one client is required — a pool without clients cannot authenticate
   // any application. The client `name` field serves as a key in the `client_ids`
   // and `client_secrets` output maps.
-  repeated AwsCognitoUserPoolClient clients = 14 [(buf.validate.field).repeated.min_items = 1];
+  repeated AwsCognitoUserPoolClient clients = 15 [(buf.validate.field).repeated.min_items = 1];
 
   // ---------------------------------------------------------------------------
   // Domain (optional)
@@ -155,7 +159,7 @@ message AwsCognitoUserPoolSpec {
   //
   // Required for OAuth flows that use the Authorization Code grant with a
   // hosted UI redirect.
-  AwsCognitoUserPoolDomainConfig domain = 15;
+  AwsCognitoUserPoolDomainConfig domain = 16;
 
   // ---------------------------------------------------------------------------
   // CEL validations

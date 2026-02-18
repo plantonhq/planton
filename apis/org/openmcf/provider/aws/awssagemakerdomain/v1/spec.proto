@@ -14,6 +14,10 @@ import "org/openmcf/shared/options/options.proto";
 // training traffic, and establishes IAM execution roles that govern what AWS resources
 // users can access from their Studio sessions.
 message AwsSagemakerDomainSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // --- Core (ForceNew) ---
 
   // auth_mode determines how users authenticate to the SageMaker Domain.
@@ -22,13 +26,13 @@ message AwsSagemakerDomainSpec {
   // "SSO": users authenticate via AWS IAM Identity Center (formerly AWS SSO). Recommended
   //   for enterprise teams with centralized identity management.
   // ForceNew: changing auth_mode forces domain replacement.
-  string auth_mode = 1 [(buf.validate.field).required = true];
+  string auth_mode = 2 [(buf.validate.field).required = true];
 
   // vpc_id is the VPC in which the SageMaker Domain is created.
   // All domain network interfaces (for notebooks, training, and app traffic) are placed
   // in this VPC. The VPC must have DNS resolution and DNS hostnames enabled.
   // ForceNew: changing the VPC forces domain replacement.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 2 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 3 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
@@ -38,7 +42,7 @@ message AwsSagemakerDomainSpec {
   // for notebook and training traffic. For high availability, provide subnets in at least
   // two Availability Zones. Maximum 16 subnets.
   // ForceNew: changing subnets forces domain replacement.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 3 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 4 [
     (buf.validate.field).repeated.min_items = 1,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
@@ -48,7 +52,7 @@ message AwsSagemakerDomainSpec {
   // Each SageMaker Domain creates a dedicated EFS file system for user home directories.
   // If omitted, AWS uses the default aws/elasticfilesystem service key.
   // ForceNew: changing the KMS key forces domain replacement.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 4 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 5 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -60,7 +64,7 @@ message AwsSagemakerDomainSpec {
   // "VpcOnly": all traffic stays within the VPC; internet access requires a NAT gateway.
   // "VpcOnly" is recommended for production to prevent data exfiltration and satisfy
   // compliance requirements. Docker trusted accounts only work in VpcOnly mode.
-  optional string app_network_access_type = 5 [(org.openmcf.shared.options.default) = "PublicInternetOnly"];
+  optional string app_network_access_type = 6 [(org.openmcf.shared.options.default) = "PublicInternetOnly"];
 
   // --- User Settings ---
 
@@ -68,7 +72,7 @@ message AwsSagemakerDomainSpec {
   // in the domain. These settings control the execution environment, app configurations,
   // security boundaries, and storage defaults. Individual user profiles can override these
   // defaults via AwsSagemakerUserProfile (not in v1 scope).
-  AwsSagemakerDomainDefaultUserSettings default_user_settings = 6 [(buf.validate.field).required = true];
+  AwsSagemakerDomainDefaultUserSettings default_user_settings = 7 [(buf.validate.field).required = true];
 
   // --- Domain Settings ---
 
@@ -76,7 +80,7 @@ message AwsSagemakerDomainSpec {
   // domain-scoped apps and shared resources. These are separate from user-level security
   // groups (default_user_settings.security_group_ids) and control domain-wide network boundaries.
   // Maximum 3 security groups. ForceNew: changing these forces domain replacement.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef domain_security_group_ids = 7 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef domain_security_group_ids = 8 [
     (buf.validate.field).repeated.max_items = 3,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
@@ -86,7 +90,7 @@ message AwsSagemakerDomainSpec {
   // When enabled, users can build and run custom Docker containers directly in their
   // notebooks and terminals -- essential for custom training containers, inference
   // endpoints, and reproducible ML pipelines.
-  AwsSagemakerDomainDockerSettings docker_settings = 8;
+  AwsSagemakerDomainDockerSettings docker_settings = 9;
 
   // --- Cross-field validations ---
 

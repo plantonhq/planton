@@ -45,18 +45,21 @@ const (
 // Credentials, region, and deployment workflow live outside this spec in stack inputs.
 type AwsHttpApiGatewaySpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Human-readable description of the API (max 1024 characters).
-	Description string `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	// CORS configuration for cross-origin requests. When not set, no CORS
 	// headers are returned by the API.
-	CorsConfiguration *AwsHttpApiGatewayCorsConfig `protobuf:"bytes,2,opt,name=cors_configuration,json=corsConfiguration,proto3" json:"cors_configuration,omitempty"`
+	CorsConfiguration *AwsHttpApiGatewayCorsConfig `protobuf:"bytes,3,opt,name=cors_configuration,json=corsConfiguration,proto3" json:"cors_configuration,omitempty"`
 	// Disable the default execute-api endpoint. Set to true when a custom domain
 	// is configured externally to prevent direct access via the default endpoint.
-	DisableExecuteApiEndpoint bool `protobuf:"varint,3,opt,name=disable_execute_api_endpoint,json=disableExecuteApiEndpoint,proto3" json:"disable_execute_api_endpoint,omitempty"`
+	DisableExecuteApiEndpoint bool `protobuf:"varint,4,opt,name=disable_execute_api_endpoint,json=disableExecuteApiEndpoint,proto3" json:"disable_execute_api_endpoint,omitempty"`
 	// Stage configuration for the deployed API. When not set, a "$default" stage
 	// with auto_deploy=true is created automatically, which is the recommended
 	// configuration for most HTTP APIs.
-	Stage *AwsHttpApiGatewayStageConfig `protobuf:"bytes,4,opt,name=stage,proto3" json:"stage,omitempty"`
+	Stage *AwsHttpApiGatewayStageConfig `protobuf:"bytes,5,opt,name=stage,proto3" json:"stage,omitempty"`
 	// API routes mapping request patterns to backend integrations. Each route
 	// specifies a route key (e.g., "GET /users", "$default") and an inline
 	// integration that defines the backend target.
@@ -66,11 +69,11 @@ type AwsHttpApiGatewaySpec struct {
 	// create a single integration resource.
 	//
 	// At least one route is required -- an API without routes has no function.
-	Routes []*AwsHttpApiGatewayRoute `protobuf:"bytes,5,rep,name=routes,proto3" json:"routes,omitempty"`
+	Routes []*AwsHttpApiGatewayRoute `protobuf:"bytes,6,rep,name=routes,proto3" json:"routes,omitempty"`
 	// Named authorizers that can be referenced by routes. Define JWT authorizers
 	// for Cognito/Auth0/OIDC integration, or Lambda (REQUEST) authorizers for
 	// custom authorization logic. Routes reference authorizers by name.
-	Authorizers   []*AwsHttpApiGatewayAuthorizer `protobuf:"bytes,6,rep,name=authorizers,proto3" json:"authorizers,omitempty"`
+	Authorizers   []*AwsHttpApiGatewayAuthorizer `protobuf:"bytes,7,rep,name=authorizers,proto3" json:"authorizers,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -103,6 +106,13 @@ func (x *AwsHttpApiGatewaySpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsHttpApiGatewaySpec.ProtoReflect.Descriptor instead.
 func (*AwsHttpApiGatewaySpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awshttpapigateway_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsHttpApiGatewaySpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsHttpApiGatewaySpec) GetDescription() string {
@@ -845,14 +855,15 @@ var File_org_openmcf_provider_aws_awshttpapigateway_v1_spec_proto protoreflect.F
 
 const file_org_openmcf_provider_aws_awshttpapigateway_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8org/openmcf/provider/aws/awshttpapigateway/v1/spec.proto\x12-org.openmcf.provider.aws.awshttpapigateway.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xf7\x15\n" +
-	"\x15AwsHttpApiGatewaySpec\x12*\n" +
-	"\vdescription\x18\x01 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\vdescription\x12y\n" +
-	"\x12cors_configuration\x18\x02 \x01(\v2J.org.openmcf.provider.aws.awshttpapigateway.v1.AwsHttpApiGatewayCorsConfigR\x11corsConfiguration\x12?\n" +
-	"\x1cdisable_execute_api_endpoint\x18\x03 \x01(\bR\x19disableExecuteApiEndpoint\x12a\n" +
-	"\x05stage\x18\x04 \x01(\v2K.org.openmcf.provider.aws.awshttpapigateway.v1.AwsHttpApiGatewayStageConfigR\x05stage\x12g\n" +
-	"\x06routes\x18\x05 \x03(\v2E.org.openmcf.provider.aws.awshttpapigateway.v1.AwsHttpApiGatewayRouteB\b\xbaH\x05\x92\x01\x02\b\x01R\x06routes\x12l\n" +
-	"\vauthorizers\x18\x06 \x03(\v2J.org.openmcf.provider.aws.awshttpapigateway.v1.AwsHttpApiGatewayAuthorizerR\vauthorizers:\xbb\x11\xbaH\xb7\x11\x1a\xcd\x01\n" +
+	"8org/openmcf/provider/aws/awshttpapigateway/v1/spec.proto\x12-org.openmcf.provider.aws.awshttpapigateway.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x98\x16\n" +
+	"\x15AwsHttpApiGatewaySpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12*\n" +
+	"\vdescription\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\vdescription\x12y\n" +
+	"\x12cors_configuration\x18\x03 \x01(\v2J.org.openmcf.provider.aws.awshttpapigateway.v1.AwsHttpApiGatewayCorsConfigR\x11corsConfiguration\x12?\n" +
+	"\x1cdisable_execute_api_endpoint\x18\x04 \x01(\bR\x19disableExecuteApiEndpoint\x12a\n" +
+	"\x05stage\x18\x05 \x01(\v2K.org.openmcf.provider.aws.awshttpapigateway.v1.AwsHttpApiGatewayStageConfigR\x05stage\x12g\n" +
+	"\x06routes\x18\x06 \x03(\v2E.org.openmcf.provider.aws.awshttpapigateway.v1.AwsHttpApiGatewayRouteB\b\xbaH\x05\x92\x01\x02\b\x01R\x06routes\x12l\n" +
+	"\vauthorizers\x18\a \x03(\v2J.org.openmcf.provider.aws.awshttpapigateway.v1.AwsHttpApiGatewayAuthorizerR\vauthorizers:\xbb\x11\xbaH\xb7\x11\x1a\xcd\x01\n" +
 	"\x1eroute_authorization_type_valid\x12Eroute authorization_type must be 'NONE', 'JWT', or 'AWS_IAM' when set\x1adthis.routes.all(r, r.authorization_type == '' || r.authorization_type in ['NONE', 'JWT', 'AWS_IAM'])\x1a\xb8\x01\n" +
 	"\"jwt_route_requires_authorizer_name\x12Droutes with authorization_type 'JWT' must specify an authorizer_name\x1aLthis.routes.all(r, r.authorization_type != 'JWT' || r.authorizer_name != '')\x1a\xc6\x01\n" +
 	" route_authorizer_name_must_exist\x12:route authorizer_name must match a defined authorizer name\x1afthis.routes.all(r, r.authorizer_name == '' || this.authorizers.exists(a, a.name == r.authorizer_name))\x1a\x90\x01\n" +

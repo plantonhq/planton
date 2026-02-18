@@ -296,6 +296,7 @@ Of the hundreds of EC2 parameters, which do users actually set?
 
 ### Essential (80% of Use Cases)
 
+- `region`: The AWS region where the instance will be created (e.g., `us-west-2`)
 - `ami_id`: The OS image
 - `instance_type`: The VM size (e.g., `t3.micro`)
 - `subnet_id`: Where to place the instance (forces a conscious networking decision)

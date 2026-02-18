@@ -3,6 +3,7 @@ kind: AwsRoute53Zone
 metadata:
   name: awsroute53zone-demo
 spec:
+  region: us-east-1
   records:
     - recordType: A
       name: example.com

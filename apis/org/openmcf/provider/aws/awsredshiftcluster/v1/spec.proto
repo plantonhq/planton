@@ -10,46 +10,50 @@ import "org/openmcf/shared/options/options.proto";
 // Redshift is a petabyte-scale columnar data warehouse optimized for analytical queries (OLAP)
 // on structured and semi-structured data using standard SQL.
 message AwsRedshiftClusterSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // node_type determines the compute and storage capacity of each node.
   // Common types: dc2.large (dense compute SSD), ra3.xlplus / ra3.4xlarge / ra3.16xlarge
   // (managed storage with automatic data tiering between SSD and S3).
   // RA3 nodes are recommended for most workloads due to decoupled compute and storage.
-  string node_type = 1 [(buf.validate.field).required = true];
+  string node_type = 2 [(buf.validate.field).required = true];
 
   // number_of_nodes determines the cluster topology.
   // 1 = single-node (leader and compute combined); >1 = multi-node (separate leader + compute nodes).
   // Multi-node clusters are required for production workloads.
-  optional int32 number_of_nodes = 2 [
+  optional int32 number_of_nodes = 3 [
     (buf.validate.field).int32.gte = 1,
     (org.openmcf.shared.options.default) = "1"
   ];
 
   // database_name is the name of the first database created in the cluster.
   // 1-64 characters, lowercase alphanumeric and underscores only, must start with a letter or underscore.
-  optional string database_name = 3 [(org.openmcf.shared.options.default) = "dev"];
+  optional string database_name = 4 [(org.openmcf.shared.options.default) = "dev"];
 
   // master_username is the admin user for the cluster. Required for new clusters.
   // 1-128 characters, must start with a letter.
-  optional string master_username = 4 [(org.openmcf.shared.options.default) = "admin"];
+  optional string master_username = 5 [(org.openmcf.shared.options.default) = "admin"];
 
   // master_password is the admin password (8-64 chars, at least one uppercase, one lowercase, one digit).
   // Mutually exclusive with manage_master_password.
-  string master_password = 5;
+  string master_password = 6;
 
   // manage_master_password delegates password lifecycle to AWS Secrets Manager.
   // When true, AWS generates, rotates, and stores the password automatically.
   // Recommended for production. Mutually exclusive with master_password.
-  bool manage_master_password = 6 [(org.openmcf.shared.options.recommended_default) = "true"];
+  bool manage_master_password = 7 [(org.openmcf.shared.options.recommended_default) = "true"];
 
   // master_password_secret_kms_key_id encrypts the Secrets Manager secret holding the managed password.
   // Only applicable when manage_master_password is true.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef master_password_secret_kms_key_id = 7 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef master_password_secret_kms_key_id = 8 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
 
   // port for client connections. Redshift default is 5439. Range: 1115-65535.
-  optional int32 port = 8 [
+  optional int32 port = 9 [
     (buf.validate.field).int32.gte = 1115,
     (buf.validate.field).int32.lte = 65535,
     (org.openmcf.shared.options.default) = "5439"
@@ -59,62 +63,62 @@ message AwsRedshiftClusterSpec {
 
   // subnet_ids for automatic Redshift subnet group creation.
   // Provide at least two subnets in distinct Availability Zones for high availability.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 9 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 10 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
   ];
 
   // cluster_subnet_group_name uses an existing Redshift subnet group instead of creating one from subnet_ids.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_subnet_group_name = 10;
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_subnet_group_name = 11;
 
   // security_group_ids triggers creation of a managed security group with ingress rules
   // allowing traffic from these source security groups on the cluster port.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 11 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 12 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
 
   // allowed_cidr_blocks triggers creation of a managed security group with ingress rules
   // allowing traffic from these IPv4 CIDR ranges on the cluster port.
-  repeated string allowed_cidr_blocks = 12 [
+  repeated string allowed_cidr_blocks = 13 [
     (buf.validate.field).repeated.items.string.pattern = "^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$",
     (buf.validate.field).repeated.unique = true
   ];
 
   // associate_security_group_ids are existing security groups attached directly to the cluster
   // (alongside the managed security group, if one is created from security_group_ids/allowed_cidr_blocks).
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef associate_security_group_ids = 13 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef associate_security_group_ids = 14 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
 
   // vpc_id is required when security_group_ids or allowed_cidr_blocks are provided,
   // as the managed security group must be created within a specific VPC.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 14 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 15 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
   ];
 
   // publicly_accessible controls whether the cluster has a public IP and can be accessed from outside the VPC.
-  bool publicly_accessible = 15;
+  bool publicly_accessible = 16;
 
   // enhanced_vpc_routing forces all COPY and UNLOAD traffic between the cluster and data repositories
   // through the VPC, enabling VPC flow logs and other network security controls.
-  bool enhanced_vpc_routing = 16;
+  bool enhanced_vpc_routing = 17;
 
   // multi_az enables Multi-AZ deployment for automatic failover to a standby in a different AZ.
   // Requires RA3 node types (ra3.xlplus, ra3.4xlarge, ra3.16xlarge).
-  bool multi_az = 17;
+  bool multi_az = 18;
 
   // --- Encryption ---
 
   // encrypted enables at-rest encryption for the cluster data.
   // AWS defaults to true. Uses the AWS-managed Redshift service key unless kms_key_id is specified.
-  optional bool encrypted = 18 [(org.openmcf.shared.options.default) = "true"];
+  optional bool encrypted = 19 [(org.openmcf.shared.options.default) = "true"];
 
   // kms_key_id is the ARN of a customer-managed KMS key for cluster encryption.
   // Requires encrypted to be true. If omitted, AWS uses the default Redshift service key.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 19 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 20 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -124,14 +128,14 @@ message AwsRedshiftClusterSpec {
   // iam_roles attaches IAM roles to the cluster for accessing other AWS services
   // (S3, DynamoDB, Glue Data Catalog, etc.) during COPY, UNLOAD, and Spectrum queries.
   // Maximum 10 roles per cluster.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef iam_roles = 20 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef iam_roles = 21 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsIamRole,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
   ];
 
   // default_iam_role_arn is the IAM role used by default when SQL commands access AWS services
   // without explicitly specifying a role (e.g., unqualified COPY/UNLOAD).
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef default_iam_role_arn = 21 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef default_iam_role_arn = 22 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsIamRole,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
   ];
@@ -140,7 +144,7 @@ message AwsRedshiftClusterSpec {
 
   // automated_snapshot_retention_period is the number of days to retain automated cluster snapshots.
   // 0 disables automated snapshots. Maximum: 35.
-  optional int32 automated_snapshot_retention_period = 22 [
+  optional int32 automated_snapshot_retention_period = 23 [
     (buf.validate.field).int32.gte = 0,
     (buf.validate.field).int32.lte = 35,
     (org.openmcf.shared.options.default) = "1"
@@ -148,28 +152,28 @@ message AwsRedshiftClusterSpec {
 
   // skip_final_snapshot controls whether a final manual snapshot is created before cluster deletion.
   // Set to true only for ephemeral development/test clusters.
-  bool skip_final_snapshot = 23;
+  bool skip_final_snapshot = 24;
 
   // final_snapshot_identifier is the name for the final snapshot created on deletion.
   // Required when skip_final_snapshot is false.
-  string final_snapshot_identifier = 24;
+  string final_snapshot_identifier = 25;
 
   // --- Maintenance ---
 
   // preferred_maintenance_window is the weekly UTC time range for system maintenance.
   // Format: ddd:hh:mi-ddd:hh:mi (e.g., "sat:03:00-sat:04:00").
-  string preferred_maintenance_window = 25 [
+  string preferred_maintenance_window = 26 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string.pattern = "^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$"
   ];
 
   // allow_version_upgrade permits AWS to automatically apply major engine version upgrades
   // during the maintenance window.
-  optional bool allow_version_upgrade = 26 [(org.openmcf.shared.options.default) = "true"];
+  optional bool allow_version_upgrade = 27 [(org.openmcf.shared.options.default) = "true"];
 
   // maintenance_track_name determines the cluster maintenance version track.
   // "current" applies the latest approved version; "trailing" uses the previous major version.
-  string maintenance_track_name = 27 [
+  string maintenance_track_name = 28 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
       in: [
@@ -181,23 +185,23 @@ message AwsRedshiftClusterSpec {
 
   // apply_immediately controls whether modifications are applied immediately or deferred
   // to the next maintenance window.
-  bool apply_immediately = 28;
+  bool apply_immediately = 29;
 
   // --- Logging ---
 
   // logging configures audit logging for the cluster.
   // Redshift can send connection, user activity, and user logs to S3 or CloudWatch Logs.
-  AwsRedshiftClusterLogging logging = 29;
+  AwsRedshiftClusterLogging logging = 30;
 
   // --- Parameter Group ---
 
   // cluster_parameter_group_name associates an existing Redshift parameter group with the cluster.
   // Ignored when inline parameters are provided (a new group is created instead).
-  string cluster_parameter_group_name = 30;
+  string cluster_parameter_group_name = 31;
 
   // parameters creates an inline parameter group (family: redshift-1.0) with these parameters.
   // Common parameters: require_ssl, enable_user_activity_logging, max_concurrency_scaling_clusters.
-  repeated AwsRedshiftClusterParameter parameters = 31;
+  repeated AwsRedshiftClusterParameter parameters = 32;
 
   // --- Cross-field validations ---
 

@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awstransitgateway/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awstransitgateway_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjhvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzdHJhbnNpdGdhdGV3YXkvdjEvc3BlYy5wcm90bxItb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3RyYW5zaXRnYXRld2F5LnYxIs0HChVBd3NUcmFuc2l0R2F0ZXdheVNwZWMSEwoLZGVzY3JpcHRpb24YASABKAkSIgoPYW1hem9uX3NpZGVfYXNuGAIgASgDQgmSph0FNjQ1MTISMQofZGVmYXVsdF9yb3V0ZV90YWJsZV9hc3NvY2lhdGlvbhgDIAEoCEIIkqYdBHRydWUSMQofZGVmYXVsdF9yb3V0ZV90YWJsZV9wcm9wYWdhdGlvbhgEIAEoCEIIkqYdBHRydWUSHQoLZG5zX3N1cHBvcnQYBSABKAhCCJKmHQR0cnVlEiIKEHZwbl9lY21wX3N1cHBvcnQYBiABKAhCCJKmHQR0cnVlEiYKHmF1dG9fYWNjZXB0X3NoYXJlZF9hdHRhY2htZW50cxgHIAEoCBIqCiJzZWN1cml0eV9ncm91cF9yZWZlcmVuY2luZ19zdXBwb3J0GAggASgIEhkKEW11bHRpY2FzdF9zdXBwb3J0GAkgASgIEiMKG3RyYW5zaXRfZ2F0ZXdheV9jaWRyX2Jsb2NrcxgKIAMoCRJzCg92cGNfYXR0YWNobWVudHMYCyADKAsyTS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzdHJhbnNpdGdhdGV3YXkudjEuQXdzVHJhbnNpdEdhdGV3YXlWcGNBdHRhY2htZW50Qgu6SAjIAQGSAQIIATrIA7pIxAMakQEKIXRyYW5zaXRfZ2F0ZXdheV9jaWRyX2Jsb2Nrc19tYXhfNRI/dHJhbnNpdF9nYXRld2F5X2NpZHJfYmxvY2tzIHN1cHBvcnRzIGEgbWF4aW11bSBvZiA1IENJRFIgYmxvY2tzGitzaXplKHRoaXMudHJhbnNpdF9nYXRld2F5X2NpZHJfYmxvY2tzKSA8PSA1Gq0CChthbWF6b25fc2lkZV9hc25fdmFsaWRfcmFuZ2USYGFtYXpvbl9zaWRlX2FzbiBtdXN0IGJlIGluIHJhbmdlIDY0NTEyLTY1NTM0ICgxNi1iaXQpIG9yIDQyMDAwMDAwMDAtNDI5NDk2NzI5NCAoMzItYml0KSB3aGVuIHNldBqrAXRoaXMuYW1hem9uX3NpZGVfYXNuID09IDAgfHwgKHRoaXMuYW1hem9uX3NpZGVfYXNuID49IDY0NTEyICYmIHRoaXMuYW1hem9uX3NpZGVfYXNuIDw9IDY1NTM0KSB8fCAodGhpcy5hbWF6b25fc2lkZV9hc24gPj0gNDIwMDAwMDAwMCAmJiB0aGlzLmFtYXpvbl9zaWRlX2FzbiA8PSA0Mjk0OTY3Mjk0KSLtBAoeQXdzVHJhbnNpdEdhdGV3YXlWcGNBdHRhY2htZW50EssBCgRuYW1lGAEgASgJQrwBuki4AboBsQEKFmF0dGFjaG1lbnRfbmFtZV9mb3JtYXQSb25hbWUgbXVzdCBzdGFydCB3aXRoIGEgbG93ZXJjYXNlIGxldHRlciBhbmQgY29udGFpbiBvbmx5IGxvd2VyY2FzZSBsZXR0ZXJzLCBudW1iZXJzLCBhbmQgaHlwaGVucyAobWF4IDYzIGNoYXJzKRomdGhpcy5tYXRjaGVzKCdeW2Etel1bYS16MC05LV17MCw2Mn0kJynIAQESaAoGdnBjX2lkGAIgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIkukgDyAEBiNRh2AGS1GEVc3RhdHVzLm91dHB1dHMudnBjX2lkElgKCnN1Ym5ldF9pZHMYAyADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQhC6SAjIAQGSAQIIAYjUYdgBEh0KC2Ruc19zdXBwb3J0GAQgASgIQgiSph0EdHJ1ZRIUCgxpcHY2X3N1cHBvcnQYBSABKAgSHgoWYXBwbGlhbmNlX21vZGVfc3VwcG9ydBgGIAEoCBIxCh9kZWZhdWx0X3JvdXRlX3RhYmxlX2Fzc29jaWF0aW9uGAcgASgIQgiSph0EdHJ1ZRIxCh9kZWZhdWx0X3JvdXRlX3RhYmxlX3Byb3BhZ2F0aW9uGAggASgIQgiSph0EdHJ1ZUL+AgoxY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3N0cmFuc2l0Z2F0ZXdheS52MUIJU3BlY1Byb3RvUAFaY2dpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzdHJhbnNpdGdhdGV3YXkvdjE7YXdzdHJhbnNpdGdhdGV3YXl2MaICBU9PUEFBqgItT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c3RyYW5zaXRnYXRld2F5LlYxygItT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c3RyYW5zaXRnYXRld2F5XFYx4gI5T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c3RyYW5zaXRnYXRld2F5XFYxXEdQQk1ldGFkYXRh6gIyT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3N0cmFuc2l0Z2F0ZXdheTo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("Cjhvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzdHJhbnNpdGdhdGV3YXkvdjEvc3BlYy5wcm90bxItb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3RyYW5zaXRnYXRld2F5LnYxIuYHChVBd3NUcmFuc2l0R2F0ZXdheVNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEhMKC2Rlc2NyaXB0aW9uGAIgASgJEiIKD2FtYXpvbl9zaWRlX2FzbhgDIAEoA0IJkqYdBTY0NTEyEjEKH2RlZmF1bHRfcm91dGVfdGFibGVfYXNzb2NpYXRpb24YBCABKAhCCJKmHQR0cnVlEjEKH2RlZmF1bHRfcm91dGVfdGFibGVfcHJvcGFnYXRpb24YBSABKAhCCJKmHQR0cnVlEh0KC2Ruc19zdXBwb3J0GAYgASgIQgiSph0EdHJ1ZRIiChB2cG5fZWNtcF9zdXBwb3J0GAcgASgIQgiSph0EdHJ1ZRImCh5hdXRvX2FjY2VwdF9zaGFyZWRfYXR0YWNobWVudHMYCCABKAgSKgoic2VjdXJpdHlfZ3JvdXBfcmVmZXJlbmNpbmdfc3VwcG9ydBgJIAEoCBIZChFtdWx0aWNhc3Rfc3VwcG9ydBgKIAEoCBIjCht0cmFuc2l0X2dhdGV3YXlfY2lkcl9ibG9ja3MYCyADKAkScwoPdnBjX2F0dGFjaG1lbnRzGAwgAygLMk0ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3RyYW5zaXRnYXRld2F5LnYxLkF3c1RyYW5zaXRHYXRld2F5VnBjQXR0YWNobWVudEILukgIyAEBkgECCAE6yAO6SMQDGpEBCiF0cmFuc2l0X2dhdGV3YXlfY2lkcl9ibG9ja3NfbWF4XzUSP3RyYW5zaXRfZ2F0ZXdheV9jaWRyX2Jsb2NrcyBzdXBwb3J0cyBhIG1heGltdW0gb2YgNSBDSURSIGJsb2Nrcxorc2l6ZSh0aGlzLnRyYW5zaXRfZ2F0ZXdheV9jaWRyX2Jsb2NrcykgPD0gNRqtAgobYW1hem9uX3NpZGVfYXNuX3ZhbGlkX3JhbmdlEmBhbWF6b25fc2lkZV9hc24gbXVzdCBiZSBpbiByYW5nZSA2NDUxMi02NTUzNCAoMTYtYml0KSBvciA0MjAwMDAwMDAwLTQyOTQ5NjcyOTQgKDMyLWJpdCkgd2hlbiBzZXQaqwF0aGlzLmFtYXpvbl9zaWRlX2FzbiA9PSAwIHx8ICh0aGlzLmFtYXpvbl9zaWRlX2FzbiA+PSA2NDUxMiAmJiB0aGlzLmFtYXpvbl9zaWRlX2FzbiA8PSA2NTUzNCkgfHwgKHRoaXMuYW1hem9uX3NpZGVfYXNuID49IDQyMDAwMDAwMDAgJiYgdGhpcy5hbWF6b25fc2lkZV9hc24gPD0gNDI5NDk2NzI5NCki7QQKHkF3c1RyYW5zaXRHYXRld2F5VnBjQXR0YWNobWVudBLLAQoEbmFtZRgBIAEoCUK8AbpIuAG6AbEBChZhdHRhY2htZW50X25hbWVfZm9ybWF0Em9uYW1lIG11c3Qgc3RhcnQgd2l0aCBhIGxvd2VyY2FzZSBsZXR0ZXIgYW5kIGNvbnRhaW4gb25seSBsb3dlcmNhc2UgbGV0dGVycywgbnVtYmVycywgYW5kIGh5cGhlbnMgKG1heCA2MyBjaGFycykaJnRoaXMubWF0Y2hlcygnXlthLXpdW2EtejAtOS1dezAsNjJ9JCcpyAEBEmgKBnZwY19pZBgCIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCJLpIA8gBAYjUYdgBktRhFXN0YXR1cy5vdXRwdXRzLnZwY19pZBJYCgpzdWJuZXRfaWRzGAMgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIQukgIyAEBkgECCAGI1GHYARIdCgtkbnNfc3VwcG9ydBgEIAEoCEIIkqYdBHRydWUSFAoMaXB2Nl9zdXBwb3J0GAUgASgIEh4KFmFwcGxpYW5jZV9tb2RlX3N1cHBvcnQYBiABKAgSMQofZGVmYXVsdF9yb3V0ZV90YWJsZV9hc3NvY2lhdGlvbhgHIAEoCEIIkqYdBHRydWUSMQofZGVmYXVsdF9yb3V0ZV90YWJsZV9wcm9wYWdhdGlvbhgIIAEoCEIIkqYdBHRydWVC/gIKMWNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzdHJhbnNpdGdhdGV3YXkudjFCCVNwZWNQcm90b1ABWmNnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c3RyYW5zaXRnYXRld2F5L3YxO2F3c3RyYW5zaXRnYXRld2F5djGiAgVPT1BBQaoCLU9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3N0cmFuc2l0Z2F0ZXdheS5WMcoCLU9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3N0cmFuc2l0Z2F0ZXdheVxWMeICOU9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3N0cmFuc2l0Z2F0ZXdheVxWMVxHUEJNZXRhZGF0YeoCMk9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzdHJhbnNpdGdhdGV3YXk6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsTransitGatewaySpec defines the desired configuration for an AWS Transit
@@ -42,18 +42,22 @@ export const file_org_openmcf_provider_aws_awstransitgateway_v1_spec: GenFile = 
  * Credentials, region, and deployment workflow live outside this spec in
  * stack inputs.
  *
- * ---------------------------------------------------------------------------
- * Core configuration
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awstransitgateway.v1.AwsTransitGatewaySpec
  */
 export type AwsTransitGatewaySpec = Message<"org.openmcf.provider.aws.awstransitgateway.v1.AwsTransitGatewaySpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * Human-readable description for the Transit Gateway. Appears in the AWS
    * console and CLI output.
    *
-   * @generated from field: string description = 1;
+   * @generated from field: string description = 2;
    */
   description: string;
 
@@ -64,7 +68,7 @@ export type AwsTransitGatewaySpec = Message<"org.openmcf.provider.aws.awstransit
    * Valid ranges: 64512-65534 (16-bit private) or 4200000000-4294967294
    * (32-bit private). Default: 64512.
    *
-   * @generated from field: int64 amazon_side_asn = 2;
+   * @generated from field: int64 amazon_side_asn = 3;
    */
   amazonSideAsn: bigint;
 
@@ -76,7 +80,7 @@ export type AwsTransitGatewaySpec = Message<"org.openmcf.provider.aws.awstransit
    * Disable this for hub-and-spoke topologies where you manage route table
    * associations explicitly via separate resources.
    *
-   * @generated from field: bool default_route_table_association = 3;
+   * @generated from field: bool default_route_table_association = 4;
    */
   defaultRouteTableAssociation: boolean;
 
@@ -88,7 +92,7 @@ export type AwsTransitGatewaySpec = Message<"org.openmcf.provider.aws.awstransit
    * Disable this for isolated routing domains where not all VPCs should
    * reach each other.
    *
-   * @generated from field: bool default_route_table_propagation = 4;
+   * @generated from field: bool default_route_table_propagation = 5;
    */
   defaultRouteTablePropagation: boolean;
 
@@ -97,7 +101,7 @@ export type AwsTransitGatewaySpec = Message<"org.openmcf.provider.aws.awstransit
    * queries to public DNS hostnames of instances in other attached VPCs
    * resolve to their private IP addresses.
    *
-   * @generated from field: bool dns_support = 5;
+   * @generated from field: bool dns_support = 6;
    */
   dnsSupport: boolean;
 
@@ -106,7 +110,7 @@ export type AwsTransitGatewaySpec = Message<"org.openmcf.provider.aws.awstransit
    * enabled and multiple VPN tunnels advertise the same routes, traffic is
    * distributed across all tunnels for higher aggregate throughput.
    *
-   * @generated from field: bool vpn_ecmp_support = 6;
+   * @generated from field: bool vpn_ecmp_support = 7;
    */
   vpnEcmpSupport: boolean;
 
@@ -115,7 +119,7 @@ export type AwsTransitGatewaySpec = Message<"org.openmcf.provider.aws.awstransit
    * Resource Access Manager (RAM). When disabled (default), shared
    * attachments require manual acceptance.
    *
-   * @generated from field: bool auto_accept_shared_attachments = 7;
+   * @generated from field: bool auto_accept_shared_attachments = 8;
    */
   autoAcceptSharedAttachments: boolean;
 
@@ -125,7 +129,7 @@ export type AwsTransitGatewaySpec = Message<"org.openmcf.provider.aws.awstransit
    * connected through this Transit Gateway, simplifying firewall management
    * across VPCs.
    *
-   * @generated from field: bool security_group_referencing_support = 8;
+   * @generated from field: bool security_group_referencing_support = 9;
    */
   securityGroupReferencingSupport: boolean;
 
@@ -135,7 +139,7 @@ export type AwsTransitGatewaySpec = Message<"org.openmcf.provider.aws.awstransit
    * replacing the entire Transit Gateway. Only enable if you have a clear
    * multicast use case (e.g., financial market data, media streaming).
    *
-   * @generated from field: bool multicast_support = 9;
+   * @generated from field: bool multicast_support = 10;
    */
   multicastSupport: boolean;
 
@@ -150,7 +154,7 @@ export type AwsTransitGatewaySpec = Message<"org.openmcf.provider.aws.awstransit
    * Maximum 5 blocks. Supports both IPv4 (/24 or larger) and IPv6 (/64 or
    * larger).
    *
-   * @generated from field: repeated string transit_gateway_cidr_blocks = 10;
+   * @generated from field: repeated string transit_gateway_cidr_blocks = 11;
    */
   transitGatewayCidrBlocks: string[];
 
@@ -162,7 +166,7 @@ export type AwsTransitGatewaySpec = Message<"org.openmcf.provider.aws.awstransit
    * Each attachment corresponds to one `aws_ec2_transit_gateway_vpc_attachment`
    * resource. Modifications to one attachment do not affect others.
    *
-   * @generated from field: repeated org.openmcf.provider.aws.awstransitgateway.v1.AwsTransitGatewayVpcAttachment vpc_attachments = 11;
+   * @generated from field: repeated org.openmcf.provider.aws.awstransitgateway.v1.AwsTransitGatewayVpcAttachment vpc_attachments = 12;
    */
   vpcAttachments: AwsTransitGatewayVpcAttachment[];
 };

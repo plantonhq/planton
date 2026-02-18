@@ -3,6 +3,7 @@ kind: AwsCertManagerCert
 metadata:
   name: awscertmanagercert-demo
 spec:
+  region: us-east-1
   primaryDomainName: example.com
   alternateDomainNames:
     - www.example.com

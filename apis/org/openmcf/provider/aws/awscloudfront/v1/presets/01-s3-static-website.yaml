@@ -3,6 +3,7 @@ kind: AwsCloudFront
 metadata:
   name: my-s3-static-website
 spec:
+  region: <aws-region>
   enabled: true
   priceClass: PRICE_CLASS_100  # US, Canada, Europe; lowest cost
   origins:

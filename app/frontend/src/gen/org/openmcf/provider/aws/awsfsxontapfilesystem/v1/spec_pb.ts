@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsfsxontapfilesystem/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsfsxontapfilesystem_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjxvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZnN4b250YXBmaWxlc3lzdGVtL3YxL3NwZWMucHJvdG8SMW9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Nmc3hvbnRhcGZpbGVzeXN0ZW0udjEi2hgKGUF3c0ZzeE9udGFwRmlsZVN5c3RlbVNwZWMSLQoPZGVwbG95bWVudF90eXBlGAEgASgJQg+Kph0LU0lOR0xFX0FaXzJIAIgBARIqChRzdG9yYWdlX2NhcGFjaXR5X2dpYhgCIAEoBUIMukgJGgcYgIBAKIAIEiIKDHN0b3JhZ2VfdHlwZRgDIAEoCUIHiqYdA1NTREgBiAEBEjAKH3Rocm91Z2hwdXRfY2FwYWNpdHlfcGVyX2hhX3BhaXIYBCABKAVCB7pIBBoCIAASJQoIaGFfcGFpcnMYBSABKAVCDrpIBhoEGAwoAYqmHQExSAKIAQESfgoKc3VibmV0X2lkcxgGIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCNrpIBZIBAggBiNRh2AGS1GElc3RhdHVzLm91dHB1dHMucHJpdmF0ZV9zdWJuZXRzLlsqXS5pZBJ/ChNwcmVmZXJyZWRfc3VibmV0X2lkGAcgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIuiNRh2AGS1GElc3RhdHVzLm91dHB1dHMucHJpdmF0ZV9zdWJuZXRzLlswXS5pZBJ5ChJzZWN1cml0eV9ncm91cF9pZHMYCCADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQimI1GHXAZLUYSBzdGF0dXMub3V0cHV0cy5zZWN1cml0eV9ncm91cF9pZBIhChllbmRwb2ludF9pcF9hZGRyZXNzX3JhbmdlGAkgASgJEksKD3JvdXRlX3RhYmxlX2lkcxgKIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWYSZwoKa21zX2tleV9pZBgLIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SGgoSZnN4X2FkbWluX3Bhc3N3b3JkGAwgASgJEn4KF2Rpc2tfaW9wc19jb25maWd1cmF0aW9uGA0gASgLMl0ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2ZzeG9udGFwZmlsZXN5c3RlbS52MS5Bd3NGc3hPbnRhcEZpbGVTeXN0ZW1EaXNrSW9wc0NvbmZpZ3VyYXRpb24SPAofYXV0b21hdGljX2JhY2t1cF9yZXRlbnRpb25fZGF5cxgOIAEoBUIOukgGGgQYWigAiqYdATBIA4gBARIpCiFkYWlseV9hdXRvbWF0aWNfYmFja3VwX3N0YXJ0X3RpbWUYDyABKAkSHAoUY29weV90YWdzX3RvX2JhY2t1cHMYECABKAgSKAoRc2tpcF9maW5hbF9iYWNrdXAYESABKAhCCIqmHQR0cnVlSASIAQESJQodd2Vla2x5X21haW50ZW5hbmNlX3N0YXJ0X3RpbWUYEiABKAk6rw66SKsOGt4BChVkZXBsb3ltZW50X3R5cGVfdmFsaWQSU2RlcGxveW1lbnRfdHlwZSBtdXN0IGJlICdTSU5HTEVfQVpfMScsICdTSU5HTEVfQVpfMicsICdNVUxUSV9BWl8xJywgb3IgJ01VTFRJX0FaXzInGnB0aGlzLmRlcGxveW1lbnRfdHlwZSA9PSAnJyB8fCB0aGlzLmRlcGxveW1lbnRfdHlwZSBpbiBbJ1NJTkdMRV9BWl8xJywgJ1NJTkdMRV9BWl8yJywgJ01VTFRJX0FaXzEnLCAnTVVMVElfQVpfMiddGnkKEnN0b3JhZ2VfdHlwZV92YWxpZBIjc3RvcmFnZV90eXBlIG11c3QgYmUgJ1NTRCcgb3IgJ0hERCcaPnRoaXMuc3RvcmFnZV90eXBlID09ICcnIHx8IHRoaXMuc3RvcmFnZV90eXBlIGluIFsnU1NEJywgJ0hERCddGuYBChB0aHJvdWdocHV0X3ZhbGlkEmt0aHJvdWdocHV0X2NhcGFjaXR5X3Blcl9oYV9wYWlyIG11c3QgYmUgb25lIG9mOiAxMjgsIDI1NiwgMzg0LCA1MTIsIDc2OCwgMTAyNCwgMTUzNiwgMjA0OCwgMzA3MiwgNDA5NiwgNjE0NBpldGhpcy50aHJvdWdocHV0X2NhcGFjaXR5X3Blcl9oYV9wYWlyIGluIFsxMjgsIDI1NiwgMzg0LCA1MTIsIDc2OCwgMTAyNCwgMTUzNiwgMjA0OCwgMzA3MiwgNDA5NiwgNjE0NF0a2QEKF2hhX3BhaXJzX3NpbmdsZV9hel9vbmx5EnBoYV9wYWlycyA+IDEgaXMgb25seSBzdXBwb3J0ZWQgZm9yIFNJTkdMRV9BWl8xIGFuZCBTSU5HTEVfQVpfMiBkZXBsb3ltZW50IHR5cGVzIChtdWx0aS1BWiBpcyBmaXhlZCBhdCAxIEhBIHBhaXIpGkx0aGlzLmhhX3BhaXJzIDw9IDEgfHwgdGhpcy5kZXBsb3ltZW50X3R5cGUgaW4gWydTSU5HTEVfQVpfMScsICdTSU5HTEVfQVpfMiddGs8BCiJwcmVmZXJyZWRfc3VibmV0X3JlcXVpcmVzX211bHRpX2F6ElFwcmVmZXJyZWRfc3VibmV0X2lkIGNhbiBvbmx5IGJlIHNldCBmb3IgTVVMVElfQVpfMSBvciBNVUxUSV9BWl8yIGRlcGxveW1lbnQgdHlwZXMaViFoYXModGhpcy5wcmVmZXJyZWRfc3VibmV0X2lkKSB8fCB0aGlzLmRlcGxveW1lbnRfdHlwZSBpbiBbJ01VTFRJX0FaXzEnLCAnTVVMVElfQVpfMiddGtwBCiNlbmRwb2ludF9pcF9yYW5nZV9yZXF1aXJlc19tdWx0aV9hehJXZW5kcG9pbnRfaXBfYWRkcmVzc19yYW5nZSBjYW4gb25seSBiZSBzZXQgZm9yIE1VTFRJX0FaXzEgb3IgTVVMVElfQVpfMiBkZXBsb3ltZW50IHR5cGVzGlx0aGlzLmVuZHBvaW50X2lwX2FkZHJlc3NfcmFuZ2UgPT0gJycgfHwgdGhpcy5kZXBsb3ltZW50X3R5cGUgaW4gWydNVUxUSV9BWl8xJywgJ01VTFRJX0FaXzInXRrHAQodcm91dGVfdGFibGVzX3JlcXVpcmVfbXVsdGlfYXoSTXJvdXRlX3RhYmxlX2lkcyBjYW4gb25seSBiZSBzZXQgZm9yIE1VTFRJX0FaXzEgb3IgTVVMVElfQVpfMiBkZXBsb3ltZW50IHR5cGVzGldzaXplKHRoaXMucm91dGVfdGFibGVfaWRzKSA9PSAwIHx8IHRoaXMuZGVwbG95bWVudF90eXBlIGluIFsnTVVMVElfQVpfMScsICdNVUxUSV9BWl8yJ10avwEKFWFkbWluX3Bhc3N3b3JkX2xlbmd0aBI4ZnN4X2FkbWluX3Bhc3N3b3JkIG11c3QgYmUgOC01MCBjaGFyYWN0ZXJzIHdoZW4gcHJvdmlkZWQabHRoaXMuZnN4X2FkbWluX3Bhc3N3b3JkID09ICcnIHx8IChzaXplKHRoaXMuZnN4X2FkbWluX3Bhc3N3b3JkKSA+PSA4ICYmIHNpemUodGhpcy5mc3hfYWRtaW5fcGFzc3dvcmQpIDw9IDUwKRrKAQoeYmFja3VwX3RpbWVfcmVxdWlyZXNfcmV0ZW50aW9uEk5kYWlseV9hdXRvbWF0aWNfYmFja3VwX3N0YXJ0X3RpbWUgcmVxdWlyZXMgYXV0b21hdGljX2JhY2t1cF9yZXRlbnRpb25fZGF5cyA+IDAaWHRoaXMuZGFpbHlfYXV0b21hdGljX2JhY2t1cF9zdGFydF90aW1lID09ICcnIHx8IHRoaXMuYXV0b21hdGljX2JhY2t1cF9yZXRlbnRpb25fZGF5cyA+IDBCEgoQX2RlcGxveW1lbnRfdHlwZUIPCg1fc3RvcmFnZV90eXBlQgsKCV9oYV9wYWlyc0IiCiBfYXV0b21hdGljX2JhY2t1cF9yZXRlbnRpb25fZGF5c0IUChJfc2tpcF9maW5hbF9iYWNrdXAi/wIKKkF3c0ZzeE9udGFwRmlsZVN5c3RlbURpc2tJb3BzQ29uZmlndXJhdGlvbhIgCgRtb2RlGAEgASgJQg2Kph0JQVVUT01BVElDSACIAQESDAoEaW9wcxgCIAEoBTqXArpIkwIahAEKD2lvcHNfbW9kZV92YWxpZBIubW9kZSBtdXN0IGJlICdBVVRPTUFUSUMnIG9yICdVU0VSX1BST1ZJU0lPTkVEJxpBdGhpcy5tb2RlID09ICcnIHx8IHRoaXMubW9kZSBpbiBbJ0FVVE9NQVRJQycsICdVU0VSX1BST1ZJU0lPTkVEJ10aiQEKHmlvcHNfcmVxdWlyZXNfdXNlcl9wcm92aXNpb25lZBI0aW9wcyBjYW4gb25seSBiZSBzZXQgd2hlbiBtb2RlIGlzICdVU0VSX1BST1ZJU0lPTkVEJxoxdGhpcy5pb3BzID09IDAgfHwgdGhpcy5tb2RlID09ICdVU0VSX1BST1ZJU0lPTkVEJ0IHCgVfbW9kZUKaAwo1Y29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Nmc3hvbnRhcGZpbGVzeXN0ZW0udjFCCVNwZWNQcm90b1ABWmtnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c2ZzeG9udGFwZmlsZXN5c3RlbS92MTthd3Nmc3hvbnRhcGZpbGVzeXN0ZW12MaICBU9PUEFBqgIxT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2ZzeG9udGFwZmlsZXN5c3RlbS5WMcoCMU9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3Nmc3hvbnRhcGZpbGVzeXN0ZW1cVjHiAj1PcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZnN4b250YXBmaWxlc3lzdGVtXFYxXEdQQk1ldGFkYXRh6gI2T3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3Nmc3hvbnRhcGZpbGVzeXN0ZW06OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("Cjxvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZnN4b250YXBmaWxlc3lzdGVtL3YxL3NwZWMucHJvdG8SMW9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Nmc3hvbnRhcGZpbGVzeXN0ZW0udjEi8xgKGUF3c0ZzeE9udGFwRmlsZVN5c3RlbVNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEi0KD2RlcGxveW1lbnRfdHlwZRgCIAEoCUIPiqYdC1NJTkdMRV9BWl8ySACIAQESKgoUc3RvcmFnZV9jYXBhY2l0eV9naWIYAyABKAVCDLpICRoHGICAQCiACBIiCgxzdG9yYWdlX3R5cGUYBCABKAlCB4qmHQNTU0RIAYgBARIwCh90aHJvdWdocHV0X2NhcGFjaXR5X3Blcl9oYV9wYWlyGAUgASgFQge6SAQaAiAAEiUKCGhhX3BhaXJzGAYgASgFQg66SAYaBBgMKAGKph0BMUgCiAEBEn4KCnN1Ym5ldF9pZHMYByADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQja6SAWSAQIIAYjUYdgBktRhJXN0YXR1cy5vdXRwdXRzLnByaXZhdGVfc3VibmV0cy5bKl0uaWQSfwoTcHJlZmVycmVkX3N1Ym5ldF9pZBgIIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCLojUYdgBktRhJXN0YXR1cy5vdXRwdXRzLnByaXZhdGVfc3VibmV0cy5bMF0uaWQSeQoSc2VjdXJpdHlfZ3JvdXBfaWRzGAkgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIpiNRh1wGS1GEgc3RhdHVzLm91dHB1dHMuc2VjdXJpdHlfZ3JvdXBfaWQSIQoZZW5kcG9pbnRfaXBfYWRkcmVzc19yYW5nZRgKIAEoCRJLCg9yb3V0ZV90YWJsZV9pZHMYCyADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmEmcKCmttc19rZXlfaWQYDCABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQh+I1GHbAZLUYRZzdGF0dXMub3V0cHV0cy5rZXlfYXJuEhoKEmZzeF9hZG1pbl9wYXNzd29yZBgNIAEoCRJ+ChdkaXNrX2lvcHNfY29uZmlndXJhdGlvbhgOIAEoCzJdLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Nmc3hvbnRhcGZpbGVzeXN0ZW0udjEuQXdzRnN4T250YXBGaWxlU3lzdGVtRGlza0lvcHNDb25maWd1cmF0aW9uEjwKH2F1dG9tYXRpY19iYWNrdXBfcmV0ZW50aW9uX2RheXMYDyABKAVCDrpIBhoEGFooAIqmHQEwSAOIAQESKQohZGFpbHlfYXV0b21hdGljX2JhY2t1cF9zdGFydF90aW1lGBAgASgJEhwKFGNvcHlfdGFnc190b19iYWNrdXBzGBEgASgIEigKEXNraXBfZmluYWxfYmFja3VwGBIgASgIQgiKph0EdHJ1ZUgEiAEBEiUKHXdlZWtseV9tYWludGVuYW5jZV9zdGFydF90aW1lGBMgASgJOq8OukirDhreAQoVZGVwbG95bWVudF90eXBlX3ZhbGlkElNkZXBsb3ltZW50X3R5cGUgbXVzdCBiZSAnU0lOR0xFX0FaXzEnLCAnU0lOR0xFX0FaXzInLCAnTVVMVElfQVpfMScsIG9yICdNVUxUSV9BWl8yJxpwdGhpcy5kZXBsb3ltZW50X3R5cGUgPT0gJycgfHwgdGhpcy5kZXBsb3ltZW50X3R5cGUgaW4gWydTSU5HTEVfQVpfMScsICdTSU5HTEVfQVpfMicsICdNVUxUSV9BWl8xJywgJ01VTFRJX0FaXzInXRp5ChJzdG9yYWdlX3R5cGVfdmFsaWQSI3N0b3JhZ2VfdHlwZSBtdXN0IGJlICdTU0QnIG9yICdIREQnGj50aGlzLnN0b3JhZ2VfdHlwZSA9PSAnJyB8fCB0aGlzLnN0b3JhZ2VfdHlwZSBpbiBbJ1NTRCcsICdIREQnXRrmAQoQdGhyb3VnaHB1dF92YWxpZBJrdGhyb3VnaHB1dF9jYXBhY2l0eV9wZXJfaGFfcGFpciBtdXN0IGJlIG9uZSBvZjogMTI4LCAyNTYsIDM4NCwgNTEyLCA3NjgsIDEwMjQsIDE1MzYsIDIwNDgsIDMwNzIsIDQwOTYsIDYxNDQaZXRoaXMudGhyb3VnaHB1dF9jYXBhY2l0eV9wZXJfaGFfcGFpciBpbiBbMTI4LCAyNTYsIDM4NCwgNTEyLCA3NjgsIDEwMjQsIDE1MzYsIDIwNDgsIDMwNzIsIDQwOTYsIDYxNDRdGtkBChdoYV9wYWlyc19zaW5nbGVfYXpfb25seRJwaGFfcGFpcnMgPiAxIGlzIG9ubHkgc3VwcG9ydGVkIGZvciBTSU5HTEVfQVpfMSBhbmQgU0lOR0xFX0FaXzIgZGVwbG95bWVudCB0eXBlcyAobXVsdGktQVogaXMgZml4ZWQgYXQgMSBIQSBwYWlyKRpMdGhpcy5oYV9wYWlycyA8PSAxIHx8IHRoaXMuZGVwbG95bWVudF90eXBlIGluIFsnU0lOR0xFX0FaXzEnLCAnU0lOR0xFX0FaXzInXRrPAQoicHJlZmVycmVkX3N1Ym5ldF9yZXF1aXJlc19tdWx0aV9hehJRcHJlZmVycmVkX3N1Ym5ldF9pZCBjYW4gb25seSBiZSBzZXQgZm9yIE1VTFRJX0FaXzEgb3IgTVVMVElfQVpfMiBkZXBsb3ltZW50IHR5cGVzGlYhaGFzKHRoaXMucHJlZmVycmVkX3N1Ym5ldF9pZCkgfHwgdGhpcy5kZXBsb3ltZW50X3R5cGUgaW4gWydNVUxUSV9BWl8xJywgJ01VTFRJX0FaXzInXRrcAQojZW5kcG9pbnRfaXBfcmFuZ2VfcmVxdWlyZXNfbXVsdGlfYXoSV2VuZHBvaW50X2lwX2FkZHJlc3NfcmFuZ2UgY2FuIG9ubHkgYmUgc2V0IGZvciBNVUxUSV9BWl8xIG9yIE1VTFRJX0FaXzIgZGVwbG95bWVudCB0eXBlcxpcdGhpcy5lbmRwb2ludF9pcF9hZGRyZXNzX3JhbmdlID09ICcnIHx8IHRoaXMuZGVwbG95bWVudF90eXBlIGluIFsnTVVMVElfQVpfMScsICdNVUxUSV9BWl8yJ10axwEKHXJvdXRlX3RhYmxlc19yZXF1aXJlX211bHRpX2F6Ek1yb3V0ZV90YWJsZV9pZHMgY2FuIG9ubHkgYmUgc2V0IGZvciBNVUxUSV9BWl8xIG9yIE1VTFRJX0FaXzIgZGVwbG95bWVudCB0eXBlcxpXc2l6ZSh0aGlzLnJvdXRlX3RhYmxlX2lkcykgPT0gMCB8fCB0aGlzLmRlcGxveW1lbnRfdHlwZSBpbiBbJ01VTFRJX0FaXzEnLCAnTVVMVElfQVpfMiddGr8BChVhZG1pbl9wYXNzd29yZF9sZW5ndGgSOGZzeF9hZG1pbl9wYXNzd29yZCBtdXN0IGJlIDgtNTAgY2hhcmFjdGVycyB3aGVuIHByb3ZpZGVkGmx0aGlzLmZzeF9hZG1pbl9wYXNzd29yZCA9PSAnJyB8fCAoc2l6ZSh0aGlzLmZzeF9hZG1pbl9wYXNzd29yZCkgPj0gOCAmJiBzaXplKHRoaXMuZnN4X2FkbWluX3Bhc3N3b3JkKSA8PSA1MCkaygEKHmJhY2t1cF90aW1lX3JlcXVpcmVzX3JldGVudGlvbhJOZGFpbHlfYXV0b21hdGljX2JhY2t1cF9zdGFydF90aW1lIHJlcXVpcmVzIGF1dG9tYXRpY19iYWNrdXBfcmV0ZW50aW9uX2RheXMgPiAwGlh0aGlzLmRhaWx5X2F1dG9tYXRpY19iYWNrdXBfc3RhcnRfdGltZSA9PSAnJyB8fCB0aGlzLmF1dG9tYXRpY19iYWNrdXBfcmV0ZW50aW9uX2RheXMgPiAwQhIKEF9kZXBsb3ltZW50X3R5cGVCDwoNX3N0b3JhZ2VfdHlwZUILCglfaGFfcGFpcnNCIgogX2F1dG9tYXRpY19iYWNrdXBfcmV0ZW50aW9uX2RheXNCFAoSX3NraXBfZmluYWxfYmFja3VwIv8CCipBd3NGc3hPbnRhcEZpbGVTeXN0ZW1EaXNrSW9wc0NvbmZpZ3VyYXRpb24SIAoEbW9kZRgBIAEoCUINiqYdCUFVVE9NQVRJQ0gAiAEBEgwKBGlvcHMYAiABKAU6lwK6SJMCGoQBCg9pb3BzX21vZGVfdmFsaWQSLm1vZGUgbXVzdCBiZSAnQVVUT01BVElDJyBvciAnVVNFUl9QUk9WSVNJT05FRCcaQXRoaXMubW9kZSA9PSAnJyB8fCB0aGlzLm1vZGUgaW4gWydBVVRPTUFUSUMnLCAnVVNFUl9QUk9WSVNJT05FRCddGokBCh5pb3BzX3JlcXVpcmVzX3VzZXJfcHJvdmlzaW9uZWQSNGlvcHMgY2FuIG9ubHkgYmUgc2V0IHdoZW4gbW9kZSBpcyAnVVNFUl9QUk9WSVNJT05FRCcaMXRoaXMuaW9wcyA9PSAwIHx8IHRoaXMubW9kZSA9PSAnVVNFUl9QUk9WSVNJT05FRCdCBwoFX21vZGVCmgMKNWNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZnN4b250YXBmaWxlc3lzdGVtLnYxQglTcGVjUHJvdG9QAVprZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3Nmc3hvbnRhcGZpbGVzeXN0ZW0vdjE7YXdzZnN4b250YXBmaWxlc3lzdGVtdjGiAgVPT1BBQaoCMU9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3Nmc3hvbnRhcGZpbGVzeXN0ZW0uVjHKAjFPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZnN4b250YXBmaWxlc3lzdGVtXFYx4gI9T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2ZzeG9udGFwZmlsZXN5c3RlbVxWMVxHUEJNZXRhZGF0YeoCNk9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzZnN4b250YXBmaWxlc3lzdGVtOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsFsxOntapFileSystemSpec defines the desired configuration for an Amazon FSx
@@ -48,13 +48,17 @@ export const file_org_openmcf_provider_aws_awsfsxontapfilesystem_v1_spec: GenFil
  *   (SnapMirror replication between file systems).
  * - Credentials, region, and deployment workflow live outside this spec in stack inputs.
  *
- * ---------------------------------------------------------------------------
- * File System Core
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awsfsxontapfilesystem.v1.AwsFsxOntapFileSystemSpec
  */
 export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsxontapfilesystem.v1.AwsFsxOntapFileSystemSpec"> & {
+  /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * Deployment type controlling availability, performance, and scale-out
    * characteristics. ForceNew — cannot be changed after creation.
@@ -70,7 +74,7 @@ export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsx
    *
    * Default: SINGLE_AZ_2
    *
-   * @generated from field: optional string deployment_type = 1;
+   * @generated from field: optional string deployment_type = 2;
    */
   deploymentType?: string;
 
@@ -81,7 +85,7 @@ export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsx
    * after creation but never decreased. Choose based on data size; ONTAP's
    * built-in compression and deduplication typically achieve 2-5x data reduction.
    *
-   * @generated from field: int32 storage_capacity_gib = 2;
+   * @generated from field: int32 storage_capacity_gib = 3;
    */
   storageCapacityGib: number;
 
@@ -96,7 +100,7 @@ export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsx
    *
    * Default: SSD
    *
-   * @generated from field: optional string storage_type = 3;
+   * @generated from field: optional string storage_type = 4;
    */
   storageType?: string;
 
@@ -114,7 +118,7 @@ export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsx
    * types. For SINGLE_AZ_1 and MULTI_AZ_1, increasing throughput requires
    * replacement.
    *
-   * @generated from field: int32 throughput_capacity_per_ha_pair = 4;
+   * @generated from field: int32 throughput_capacity_per_ha_pair = 5;
    */
   throughputCapacityPerHaPair: number;
 
@@ -129,7 +133,7 @@ export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsx
    *
    * Default: 1
    *
-   * @generated from field: optional int32 ha_pairs = 5;
+   * @generated from field: optional int32 ha_pairs = 6;
    */
   haPairs?: number;
 
@@ -142,7 +146,7 @@ export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsx
    * All compute resources accessing this file system (via NFS, SMB, or iSCSI)
    * must have network connectivity to these subnets.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 6;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 7;
    */
   subnetIds: StringValueOrRef[];
 
@@ -154,7 +158,7 @@ export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsx
    * In a failover event, the standby file server in the other subnet takes over
    * automatically. Ignored for single-AZ deployments.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef preferred_subnet_id = 7;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef preferred_subnet_id = 8;
    */
   preferredSubnetId?: StringValueOrRef;
 
@@ -172,7 +176,7 @@ export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsx
    *
    * Up to 50 security groups.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 8;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 9;
    */
   securityGroupIds: StringValueOrRef[];
 
@@ -184,7 +188,7 @@ export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsx
    *
    * Ignored for single-AZ deployments.
    *
-   * @generated from field: string endpoint_ip_address_range = 9;
+   * @generated from field: string endpoint_ip_address_range = 10;
    */
   endpointIpAddressRange: string;
 
@@ -195,7 +199,7 @@ export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsx
    *
    * Ignored for single-AZ deployments.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef route_table_ids = 10;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef route_table_ids = 11;
    */
   routeTableIds: StringValueOrRef[];
 
@@ -205,7 +209,7 @@ export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsx
    * AWS-managed FSx key. All ONTAP file systems are encrypted at rest by
    * default; this field upgrades to a customer-managed key.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 11;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 12;
    */
   kmsKeyId?: StringValueOrRef;
 
@@ -217,7 +221,7 @@ export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsx
    * Length: 8-50 characters. Optional — omit if ONTAP CLI access is not needed.
    * This value is sensitive and will not be returned in read operations.
    *
-   * @generated from field: string fsx_admin_password = 12;
+   * @generated from field: string fsx_admin_password = 13;
    */
   fsxAdminPassword: string;
 
@@ -227,7 +231,7 @@ export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsx
    * of storage capacity. Use USER_PROVISIONED mode for workloads requiring IOPS
    * beyond what AUTOMATIC provides.
    *
-   * @generated from field: org.openmcf.provider.aws.awsfsxontapfilesystem.v1.AwsFsxOntapFileSystemDiskIopsConfiguration disk_iops_configuration = 13;
+   * @generated from field: org.openmcf.provider.aws.awsfsxontapfilesystem.v1.AwsFsxOntapFileSystemDiskIopsConfiguration disk_iops_configuration = 14;
    */
   diskIopsConfiguration?: AwsFsxOntapFileSystemDiskIopsConfiguration;
 
@@ -238,7 +242,7 @@ export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsx
    *
    * Default: 0 (no automatic backups)
    *
-   * @generated from field: optional int32 automatic_backup_retention_days = 14;
+   * @generated from field: optional int32 automatic_backup_retention_days = 15;
    */
   automaticBackupRetentionDays?: number;
 
@@ -246,14 +250,14 @@ export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsx
    * Daily UTC time to start automatic backups, in HH:MM format (e.g., "05:00").
    * If not specified and backups are enabled, AWS chooses a default window.
    *
-   * @generated from field: string daily_automatic_backup_start_time = 15;
+   * @generated from field: string daily_automatic_backup_start_time = 16;
    */
   dailyAutomaticBackupStartTime: string;
 
   /**
    * Copy tags from the file system to backups.
    *
-   * @generated from field: bool copy_tags_to_backups = 16;
+   * @generated from field: bool copy_tags_to_backups = 17;
    */
   copyTagsToBackups: boolean;
 
@@ -262,7 +266,7 @@ export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsx
    *
    * Default: true
    *
-   * @generated from field: optional bool skip_final_backup = 17;
+   * @generated from field: optional bool skip_final_backup = 18;
    */
   skipFinalBackup?: boolean;
 
@@ -271,7 +275,7 @@ export type AwsFsxOntapFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsx
    * the week (1=Monday, 7=Sunday). Example: "7:02:00" for Sunday at 02:00 UTC.
    * If not specified, AWS chooses a default window.
    *
-   * @generated from field: string weekly_maintenance_start_time = 18;
+   * @generated from field: string weekly_maintenance_start_time = 19;
    */
   weeklyMaintenanceStartTime: string;
 };

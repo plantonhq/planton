@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsfsxlustrefilesystem/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsfsxlustrefilesystem_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cj1vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZnN4bHVzdHJlZmlsZXN5c3RlbS92MS9zcGVjLnByb3RvEjJvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZnN4bHVzdHJlZmlsZXN5c3RlbS52MSKSFQoaQXdzRnN4THVzdHJlRmlsZVN5c3RlbVNwZWMSKwoPZGVwbG95bWVudF90eXBlGAEgASgJQg2Kph0JU0NSQVRDSF8ySACIAQESJgoUc3RvcmFnZV9jYXBhY2l0eV9naWIYAiABKAVCCLpIBRoDKLAJEiIKDHN0b3JhZ2VfdHlwZRgDIAEoCUIHiqYdA1NTREgBiAEBEiMKG3Blcl91bml0X3N0b3JhZ2VfdGhyb3VnaHB1dBgEIAEoBRIsChVkYXRhX2NvbXByZXNzaW9uX3R5cGUYBSABKAlCCIqmHQROT05FSAKIAQESIAoYZmlsZV9zeXN0ZW1fdHlwZV92ZXJzaW9uGAYgASgJEnsKCXN1Ym5ldF9pZBgHIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCNLpIA8gBAYjUYdgBktRhJXN0YXR1cy5vdXRwdXRzLnByaXZhdGVfc3VibmV0cy5bMF0uaWQSeQoSc2VjdXJpdHlfZ3JvdXBfaWRzGAggAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIpiNRh1wGS1GEgc3RhdHVzLm91dHB1dHMuc2VjdXJpdHlfZ3JvdXBfaWQSZwoKa21zX2tleV9pZBgJIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SEwoLaW1wb3J0X3BhdGgYCiABKAkSEwoLZXhwb3J0X3BhdGgYCyABKAkSdQoRbG9nX2NvbmZpZ3VyYXRpb24YDCABKAsyWi5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZnN4bHVzdHJlZmlsZXN5c3RlbS52MS5Bd3NGc3hMdXN0cmVGaWxlU3lzdGVtTG9nQ29uZmlndXJhdGlvbhIzCh9hdXRvbWF0aWNfYmFja3VwX3JldGVudGlvbl9kYXlzGA0gASgFQgWKph0BMEgDiAEBEikKIWRhaWx5X2F1dG9tYXRpY19iYWNrdXBfc3RhcnRfdGltZRgOIAEoCRIcChRjb3B5X3RhZ3NfdG9fYmFja3VwcxgPIAEoCBIoChFza2lwX2ZpbmFsX2JhY2t1cBgQIAEoCEIIiqYdBHRydWVIBIgBARIlCh13ZWVrbHlfbWFpbnRlbmFuY2Vfc3RhcnRfdGltZRgRIAEoCRJ/ChZtZXRhZGF0YV9jb25maWd1cmF0aW9uGBIgASgLMl8ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2ZzeGx1c3RyZWZpbGVzeXN0ZW0udjEuQXdzRnN4THVzdHJlRmlsZVN5c3RlbU1ldGFkYXRhQ29uZmlndXJhdGlvbjq6C7pItgsa3gEKFWRlcGxveW1lbnRfdHlwZV92YWxpZBJTZGVwbG95bWVudF90eXBlIG11c3QgYmUgJ1NDUkFUQ0hfMScsICdTQ1JBVENIXzInLCAnUEVSU0lTVEVOVF8xJywgb3IgJ1BFUlNJU1RFTlRfMicacHRoaXMuZGVwbG95bWVudF90eXBlID09ICcnIHx8IHRoaXMuZGVwbG95bWVudF90eXBlIGluIFsnU0NSQVRDSF8xJywgJ1NDUkFUQ0hfMicsICdQRVJTSVNURU5UXzEnLCAnUEVSU0lTVEVOVF8yJ10aeQoSc3RvcmFnZV90eXBlX3ZhbGlkEiNzdG9yYWdlX3R5cGUgbXVzdCBiZSAnU1NEJyBvciAnSEREJxo+dGhpcy5zdG9yYWdlX3R5cGUgPT0gJycgfHwgdGhpcy5zdG9yYWdlX3R5cGUgaW4gWydTU0QnLCAnSEREJ10aqwEKGWhkZF9yZXF1aXJlc19wZXJzaXN0ZW50XzESSHN0b3JhZ2VfdHlwZSAnSEREJyBpcyBvbmx5IHN1cHBvcnRlZCB3aXRoIGRlcGxveW1lbnRfdHlwZSAnUEVSU0lTVEVOVF8xJxpEdGhpcy5zdG9yYWdlX3R5cGUgIT0gJ0hERCcgfHwgdGhpcy5kZXBsb3ltZW50X3R5cGUgPT0gJ1BFUlNJU1RFTlRfMSca4gEKHnRocm91Z2hwdXRfcmVxdWlyZXNfcGVyc2lzdGVudBJdcGVyX3VuaXRfc3RvcmFnZV90aHJvdWdocHV0IGNhbiBvbmx5IGJlIHNldCBmb3IgUEVSU0lTVEVOVF8xIG9yIFBFUlNJU1RFTlRfMiBkZXBsb3ltZW50IHR5cGVzGmF0aGlzLnBlcl91bml0X3N0b3JhZ2VfdGhyb3VnaHB1dCA9PSAwIHx8IHRoaXMuZGVwbG95bWVudF90eXBlIGluIFsnUEVSU0lTVEVOVF8xJywgJ1BFUlNJU1RFTlRfMiddGp8BChtkYXRhX2NvbXByZXNzaW9uX3R5cGVfdmFsaWQSLWRhdGFfY29tcHJlc3Npb25fdHlwZSBtdXN0IGJlICdOT05FJyBvciAnTFo0JxpRdGhpcy5kYXRhX2NvbXByZXNzaW9uX3R5cGUgPT0gJycgfHwgdGhpcy5kYXRhX2NvbXByZXNzaW9uX3R5cGUgaW4gWydOT05FJywgJ0xaNCddGukBChxpbXBvcnRfcGF0aF9yZXF1aXJlc19zY3JhdGNoEntpbXBvcnRfcGF0aCBpcyBvbmx5IHN1cHBvcnRlZCBvbiBTQ1JBVENIXzEgYW5kIFNDUkFUQ0hfMiBkZXBsb3ltZW50IHR5cGVzICh1c2UgZGF0YSByZXBvc2l0b3J5IGFzc29jaWF0aW9ucyBmb3IgUEVSU0lTVEVOVCkaTHRoaXMuaW1wb3J0X3BhdGggPT0gJycgfHwgdGhpcy5kZXBsb3ltZW50X3R5cGUgaW4gWydTQ1JBVENIXzEnLCAnU0NSQVRDSF8yJ10adgoWZXhwb3J0X3JlcXVpcmVzX2ltcG9ydBIqZXhwb3J0X3BhdGggcmVxdWlyZXMgaW1wb3J0X3BhdGggdG8gYmUgc2V0GjB0aGlzLmV4cG9ydF9wYXRoID09ICcnIHx8IHRoaXMuaW1wb3J0X3BhdGggIT0gJycavgEKJW1ldGFkYXRhX2NvbmZpZ19yZXF1aXJlc19wZXJzaXN0ZW50XzISSG1ldGFkYXRhX2NvbmZpZ3VyYXRpb24gaXMgb25seSBzdXBwb3J0ZWQgb24gUEVSU0lTVEVOVF8yIGRlcGxveW1lbnQgdHlwZRpLIWhhcyh0aGlzLm1ldGFkYXRhX2NvbmZpZ3VyYXRpb24pIHx8IHRoaXMuZGVwbG95bWVudF90eXBlID09ICdQRVJTSVNURU5UXzInQhIKEF9kZXBsb3ltZW50X3R5cGVCDwoNX3N0b3JhZ2VfdHlwZUIYChZfZGF0YV9jb21wcmVzc2lvbl90eXBlQiIKIF9hdXRvbWF0aWNfYmFja3VwX3JldGVudGlvbl9kYXlzQhQKEl9za2lwX2ZpbmFsX2JhY2t1cCKAAwomQXdzRnN4THVzdHJlRmlsZVN5c3RlbUxvZ0NvbmZpZ3VyYXRpb24SbgoLZGVzdGluYXRpb24YASABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQiWI1GG2ApLUYRxzdGF0dXMub3V0cHV0cy5sb2dfZ3JvdXBfYXJuEiIKBWxldmVsGAIgASgJQg6Kph0KV0FSTl9FUlJPUkgAiAEBOrcBukizARqwAQoPbG9nX2xldmVsX3ZhbGlkEkRsZXZlbCBtdXN0IGJlICdESVNBQkxFRCcsICdXQVJOX09OTFknLCAnRVJST1JfT05MWScsIG9yICdXQVJOX0VSUk9SJxpXdGhpcy5sZXZlbCA9PSAnJyB8fCB0aGlzLmxldmVsIGluIFsnRElTQUJMRUQnLCAnV0FSTl9PTkxZJywgJ0VSUk9SX09OTFknLCAnV0FSTl9FUlJPUiddQggKBl9sZXZlbCKEAworQXdzRnN4THVzdHJlRmlsZVN5c3RlbU1ldGFkYXRhQ29uZmlndXJhdGlvbhIgCgRtb2RlGAEgASgJQg2Kph0JQVVUT01BVElDSACIAQESDAoEaW9wcxgCIAEoBTqbArpIlwIaiAEKE21ldGFkYXRhX21vZGVfdmFsaWQSLm1vZGUgbXVzdCBiZSAnQVVUT01BVElDJyBvciAnVVNFUl9QUk9WSVNJT05FRCcaQXRoaXMubW9kZSA9PSAnJyB8fCB0aGlzLm1vZGUgaW4gWydBVVRPTUFUSUMnLCAnVVNFUl9QUk9WSVNJT05FRCddGokBCh5pb3BzX3JlcXVpcmVzX3VzZXJfcHJvdmlzaW9uZWQSNGlvcHMgY2FuIG9ubHkgYmUgc2V0IHdoZW4gbW9kZSBpcyAnVVNFUl9QUk9WSVNJT05FRCcaMXRoaXMuaW9wcyA9PSAwIHx8IHRoaXMubW9kZSA9PSAnVVNFUl9QUk9WSVNJT05FRCdCBwoFX21vZGVCoQMKNmNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZnN4bHVzdHJlZmlsZXN5c3RlbS52MUIJU3BlY1Byb3RvUAFabWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZnN4bHVzdHJlZmlsZXN5c3RlbS92MTthd3Nmc3hsdXN0cmVmaWxlc3lzdGVtdjGiAgVPT1BBQaoCMk9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3Nmc3hsdXN0cmVmaWxlc3lzdGVtLlYxygIyT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2ZzeGx1c3RyZWZpbGVzeXN0ZW1cVjHiAj5PcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZnN4bHVzdHJlZmlsZXN5c3RlbVxWMVxHUEJNZXRhZGF0YeoCN09yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzZnN4bHVzdHJlZmlsZXN5c3RlbTo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("Cj1vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZnN4bHVzdHJlZmlsZXN5c3RlbS92MS9zcGVjLnByb3RvEjJvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZnN4bHVzdHJlZmlsZXN5c3RlbS52MSKrFQoaQXdzRnN4THVzdHJlRmlsZVN5c3RlbVNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEisKD2RlcGxveW1lbnRfdHlwZRgCIAEoCUINiqYdCVNDUkFUQ0hfMkgAiAEBEiYKFHN0b3JhZ2VfY2FwYWNpdHlfZ2liGAMgASgFQgi6SAUaAyiwCRIiCgxzdG9yYWdlX3R5cGUYBCABKAlCB4qmHQNTU0RIAYgBARIjChtwZXJfdW5pdF9zdG9yYWdlX3Rocm91Z2hwdXQYBSABKAUSLAoVZGF0YV9jb21wcmVzc2lvbl90eXBlGAYgASgJQgiKph0ETk9ORUgCiAEBEiAKGGZpbGVfc3lzdGVtX3R5cGVfdmVyc2lvbhgHIAEoCRJ7CglzdWJuZXRfaWQYCCABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQjS6SAPIAQGI1GHYAZLUYSVzdGF0dXMub3V0cHV0cy5wcml2YXRlX3N1Ym5ldHMuWzBdLmlkEnkKEnNlY3VyaXR5X2dyb3VwX2lkcxgJIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEmcKCmttc19rZXlfaWQYCiABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQh+I1GHbAZLUYRZzdGF0dXMub3V0cHV0cy5rZXlfYXJuEhMKC2ltcG9ydF9wYXRoGAsgASgJEhMKC2V4cG9ydF9wYXRoGAwgASgJEnUKEWxvZ19jb25maWd1cmF0aW9uGA0gASgLMloub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2ZzeGx1c3RyZWZpbGVzeXN0ZW0udjEuQXdzRnN4THVzdHJlRmlsZVN5c3RlbUxvZ0NvbmZpZ3VyYXRpb24SMwofYXV0b21hdGljX2JhY2t1cF9yZXRlbnRpb25fZGF5cxgOIAEoBUIFiqYdATBIA4gBARIpCiFkYWlseV9hdXRvbWF0aWNfYmFja3VwX3N0YXJ0X3RpbWUYDyABKAkSHAoUY29weV90YWdzX3RvX2JhY2t1cHMYECABKAgSKAoRc2tpcF9maW5hbF9iYWNrdXAYESABKAhCCIqmHQR0cnVlSASIAQESJQodd2Vla2x5X21haW50ZW5hbmNlX3N0YXJ0X3RpbWUYEiABKAkSfwoWbWV0YWRhdGFfY29uZmlndXJhdGlvbhgTIAEoCzJfLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Nmc3hsdXN0cmVmaWxlc3lzdGVtLnYxLkF3c0ZzeEx1c3RyZUZpbGVTeXN0ZW1NZXRhZGF0YUNvbmZpZ3VyYXRpb246ugu6SLYLGt4BChVkZXBsb3ltZW50X3R5cGVfdmFsaWQSU2RlcGxveW1lbnRfdHlwZSBtdXN0IGJlICdTQ1JBVENIXzEnLCAnU0NSQVRDSF8yJywgJ1BFUlNJU1RFTlRfMScsIG9yICdQRVJTSVNURU5UXzInGnB0aGlzLmRlcGxveW1lbnRfdHlwZSA9PSAnJyB8fCB0aGlzLmRlcGxveW1lbnRfdHlwZSBpbiBbJ1NDUkFUQ0hfMScsICdTQ1JBVENIXzInLCAnUEVSU0lTVEVOVF8xJywgJ1BFUlNJU1RFTlRfMiddGnkKEnN0b3JhZ2VfdHlwZV92YWxpZBIjc3RvcmFnZV90eXBlIG11c3QgYmUgJ1NTRCcgb3IgJ0hERCcaPnRoaXMuc3RvcmFnZV90eXBlID09ICcnIHx8IHRoaXMuc3RvcmFnZV90eXBlIGluIFsnU1NEJywgJ0hERCddGqsBChloZGRfcmVxdWlyZXNfcGVyc2lzdGVudF8xEkhzdG9yYWdlX3R5cGUgJ0hERCcgaXMgb25seSBzdXBwb3J0ZWQgd2l0aCBkZXBsb3ltZW50X3R5cGUgJ1BFUlNJU1RFTlRfMScaRHRoaXMuc3RvcmFnZV90eXBlICE9ICdIREQnIHx8IHRoaXMuZGVwbG95bWVudF90eXBlID09ICdQRVJTSVNURU5UXzEnGuIBCh50aHJvdWdocHV0X3JlcXVpcmVzX3BlcnNpc3RlbnQSXXBlcl91bml0X3N0b3JhZ2VfdGhyb3VnaHB1dCBjYW4gb25seSBiZSBzZXQgZm9yIFBFUlNJU1RFTlRfMSBvciBQRVJTSVNURU5UXzIgZGVwbG95bWVudCB0eXBlcxphdGhpcy5wZXJfdW5pdF9zdG9yYWdlX3Rocm91Z2hwdXQgPT0gMCB8fCB0aGlzLmRlcGxveW1lbnRfdHlwZSBpbiBbJ1BFUlNJU1RFTlRfMScsICdQRVJTSVNURU5UXzInXRqfAQobZGF0YV9jb21wcmVzc2lvbl90eXBlX3ZhbGlkEi1kYXRhX2NvbXByZXNzaW9uX3R5cGUgbXVzdCBiZSAnTk9ORScgb3IgJ0xaNCcaUXRoaXMuZGF0YV9jb21wcmVzc2lvbl90eXBlID09ICcnIHx8IHRoaXMuZGF0YV9jb21wcmVzc2lvbl90eXBlIGluIFsnTk9ORScsICdMWjQnXRrpAQocaW1wb3J0X3BhdGhfcmVxdWlyZXNfc2NyYXRjaBJ7aW1wb3J0X3BhdGggaXMgb25seSBzdXBwb3J0ZWQgb24gU0NSQVRDSF8xIGFuZCBTQ1JBVENIXzIgZGVwbG95bWVudCB0eXBlcyAodXNlIGRhdGEgcmVwb3NpdG9yeSBhc3NvY2lhdGlvbnMgZm9yIFBFUlNJU1RFTlQpGkx0aGlzLmltcG9ydF9wYXRoID09ICcnIHx8IHRoaXMuZGVwbG95bWVudF90eXBlIGluIFsnU0NSQVRDSF8xJywgJ1NDUkFUQ0hfMiddGnYKFmV4cG9ydF9yZXF1aXJlc19pbXBvcnQSKmV4cG9ydF9wYXRoIHJlcXVpcmVzIGltcG9ydF9wYXRoIHRvIGJlIHNldBowdGhpcy5leHBvcnRfcGF0aCA9PSAnJyB8fCB0aGlzLmltcG9ydF9wYXRoICE9ICcnGr4BCiVtZXRhZGF0YV9jb25maWdfcmVxdWlyZXNfcGVyc2lzdGVudF8yEkhtZXRhZGF0YV9jb25maWd1cmF0aW9uIGlzIG9ubHkgc3VwcG9ydGVkIG9uIFBFUlNJU1RFTlRfMiBkZXBsb3ltZW50IHR5cGUaSyFoYXModGhpcy5tZXRhZGF0YV9jb25maWd1cmF0aW9uKSB8fCB0aGlzLmRlcGxveW1lbnRfdHlwZSA9PSAnUEVSU0lTVEVOVF8yJ0ISChBfZGVwbG95bWVudF90eXBlQg8KDV9zdG9yYWdlX3R5cGVCGAoWX2RhdGFfY29tcHJlc3Npb25fdHlwZUIiCiBfYXV0b21hdGljX2JhY2t1cF9yZXRlbnRpb25fZGF5c0IUChJfc2tpcF9maW5hbF9iYWNrdXAigAMKJkF3c0ZzeEx1c3RyZUZpbGVTeXN0ZW1Mb2dDb25maWd1cmF0aW9uEm4KC2Rlc3RpbmF0aW9uGAEgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIliNRhtgKS1GEcc3RhdHVzLm91dHB1dHMubG9nX2dyb3VwX2FybhIiCgVsZXZlbBgCIAEoCUIOiqYdCldBUk5fRVJST1JIAIgBATq3AbpIswEasAEKD2xvZ19sZXZlbF92YWxpZBJEbGV2ZWwgbXVzdCBiZSAnRElTQUJMRUQnLCAnV0FSTl9PTkxZJywgJ0VSUk9SX09OTFknLCBvciAnV0FSTl9FUlJPUicaV3RoaXMubGV2ZWwgPT0gJycgfHwgdGhpcy5sZXZlbCBpbiBbJ0RJU0FCTEVEJywgJ1dBUk5fT05MWScsICdFUlJPUl9PTkxZJywgJ1dBUk5fRVJST1InXUIICgZfbGV2ZWwihAMKK0F3c0ZzeEx1c3RyZUZpbGVTeXN0ZW1NZXRhZGF0YUNvbmZpZ3VyYXRpb24SIAoEbW9kZRgBIAEoCUINiqYdCUFVVE9NQVRJQ0gAiAEBEgwKBGlvcHMYAiABKAU6mwK6SJcCGogBChNtZXRhZGF0YV9tb2RlX3ZhbGlkEi5tb2RlIG11c3QgYmUgJ0FVVE9NQVRJQycgb3IgJ1VTRVJfUFJPVklTSU9ORUQnGkF0aGlzLm1vZGUgPT0gJycgfHwgdGhpcy5tb2RlIGluIFsnQVVUT01BVElDJywgJ1VTRVJfUFJPVklTSU9ORUQnXRqJAQoeaW9wc19yZXF1aXJlc191c2VyX3Byb3Zpc2lvbmVkEjRpb3BzIGNhbiBvbmx5IGJlIHNldCB3aGVuIG1vZGUgaXMgJ1VTRVJfUFJPVklTSU9ORUQnGjF0aGlzLmlvcHMgPT0gMCB8fCB0aGlzLm1vZGUgPT0gJ1VTRVJfUFJPVklTSU9ORUQnQgcKBV9tb2RlQqEDCjZjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2ZzeGx1c3RyZWZpbGVzeXN0ZW0udjFCCVNwZWNQcm90b1ABWm1naXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c2ZzeGx1c3RyZWZpbGVzeXN0ZW0vdjE7YXdzZnN4bHVzdHJlZmlsZXN5c3RlbXYxogIFT09QQUGqAjJPcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzZnN4bHVzdHJlZmlsZXN5c3RlbS5WMcoCMk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3Nmc3hsdXN0cmVmaWxlc3lzdGVtXFYx4gI+T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2ZzeGx1c3RyZWZpbGVzeXN0ZW1cVjFcR1BCTWV0YWRhdGHqAjdPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c2ZzeGx1c3RyZWZpbGVzeXN0ZW06OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsFsxLustreFileSystemSpec defines the desired configuration for an Amazon FSx
@@ -39,13 +39,17 @@ export const file_org_openmcf_provider_aws_awsfsxlustrefilesystem_v1_spec: GenFi
  *   use a separate data repository association resource.
  * - Credentials, region, and deployment workflow live outside this spec in stack inputs.
  *
- * ---------------------------------------------------------------------------
- * File System Core
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awsfsxlustrefilesystem.v1.AwsFsxLustreFileSystemSpec
  */
 export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfsxlustrefilesystem.v1.AwsFsxLustreFileSystemSpec"> & {
+  /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * Deployment type controlling data durability and performance characteristics.
    * ForceNew — cannot be changed after creation.
@@ -61,7 +65,7 @@ export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfs
    *
    * Default: SCRATCH_2
    *
-   * @generated from field: optional string deployment_type = 1;
+   * @generated from field: optional string deployment_type = 2;
    */
   deploymentType?: string;
 
@@ -77,7 +81,7 @@ export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfs
    * Can be increased after creation but never decreased. Increasing storage on
    * SCRATCH_1 forces replacement.
    *
-   * @generated from field: int32 storage_capacity_gib = 2;
+   * @generated from field: int32 storage_capacity_gib = 3;
    */
   storageCapacityGib: number;
 
@@ -91,7 +95,7 @@ export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfs
    *
    * Default: SSD
    *
-   * @generated from field: optional string storage_type = 3;
+   * @generated from field: optional string storage_type = 4;
    */
   storageType?: string;
 
@@ -104,7 +108,7 @@ export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfs
    * - PERSISTENT_1 + HDD: 12, 40
    * - PERSISTENT_2 + SSD: 125, 250, 500, 1000
    *
-   * @generated from field: int32 per_unit_storage_throughput = 4;
+   * @generated from field: int32 per_unit_storage_throughput = 5;
    */
   perUnitStorageThroughput: number;
 
@@ -116,7 +120,7 @@ export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfs
    *
    * Default: NONE
    *
-   * @generated from field: optional string data_compression_type = 5;
+   * @generated from field: optional string data_compression_type = 6;
    */
   dataCompressionType?: string;
 
@@ -127,7 +131,7 @@ export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfs
    * Leave empty to use the latest version supported by the deployment type.
    * Explicitly set only if workload compatibility requires a specific version.
    *
-   * @generated from field: string file_system_type_version = 6;
+   * @generated from field: string file_system_type_version = 7;
    */
   fileSystemTypeVersion: string;
 
@@ -138,7 +142,7 @@ export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfs
    * file system's ENI is created in this subnet. All compute resources mounting
    * this file system must have network connectivity to this subnet.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 7;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 8;
    */
   subnetId?: StringValueOrRef;
 
@@ -151,7 +155,7 @@ export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfs
    *
    * Up to 50 security groups.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 8;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 9;
    */
   securityGroupIds: StringValueOrRef[];
 
@@ -161,7 +165,7 @@ export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfs
    * AWS-managed FSx key. All Lustre file systems are encrypted at rest by default
    * using AWS-managed keys; this field upgrades to a customer-managed key.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 9;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 10;
    */
   kmsKeyId?: StringValueOrRef;
 
@@ -173,7 +177,7 @@ export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfs
    * data is lazy-loaded on first access. For more flexible S3 integration on
    * PERSISTENT deployments, use a separate data repository association.
    *
-   * @generated from field: string import_path = 10;
+   * @generated from field: string import_path = 11;
    */
   importPath: string;
 
@@ -183,7 +187,7 @@ export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfs
    *
    * When set, changes made on the file system are automatically exported to S3.
    *
-   * @generated from field: string export_path = 11;
+   * @generated from field: string export_path = 12;
    */
   exportPath: string;
 
@@ -191,7 +195,7 @@ export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfs
    * CloudWatch logging configuration for Lustre audit events (file access,
    * file creation, deletion). Useful for compliance and debugging.
    *
-   * @generated from field: org.openmcf.provider.aws.awsfsxlustrefilesystem.v1.AwsFsxLustreFileSystemLogConfiguration log_configuration = 12;
+   * @generated from field: org.openmcf.provider.aws.awsfsxlustrefilesystem.v1.AwsFsxLustreFileSystemLogConfiguration log_configuration = 13;
    */
   logConfiguration?: AwsFsxLustreFileSystemLogConfiguration;
 
@@ -201,7 +205,7 @@ export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfs
    *
    * Default: 0 (no automatic backups)
    *
-   * @generated from field: optional int32 automatic_backup_retention_days = 13;
+   * @generated from field: optional int32 automatic_backup_retention_days = 14;
    */
   automaticBackupRetentionDays?: number;
 
@@ -209,14 +213,14 @@ export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfs
    * Daily UTC time to start automatic backups, in HH:MM format (e.g., "05:00").
    * If not specified and backups are enabled, AWS chooses a default window.
    *
-   * @generated from field: string daily_automatic_backup_start_time = 14;
+   * @generated from field: string daily_automatic_backup_start_time = 15;
    */
   dailyAutomaticBackupStartTime: string;
 
   /**
    * Copy tags from the file system to backups. ForceNew.
    *
-   * @generated from field: bool copy_tags_to_backups = 15;
+   * @generated from field: bool copy_tags_to_backups = 16;
    */
   copyTagsToBackups: boolean;
 
@@ -226,7 +230,7 @@ export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfs
    *
    * Default: true
    *
-   * @generated from field: optional bool skip_final_backup = 16;
+   * @generated from field: optional bool skip_final_backup = 17;
    */
   skipFinalBackup?: boolean;
 
@@ -234,7 +238,7 @@ export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfs
    * Weekly UTC maintenance window in the format "d:HH:MM" where d is the day of
    * the week (1=Monday, 7=Sunday). Example: "1:05:00" for Monday at 05:00 UTC.
    *
-   * @generated from field: string weekly_maintenance_start_time = 17;
+   * @generated from field: string weekly_maintenance_start_time = 18;
    */
   weeklyMaintenanceStartTime: string;
 
@@ -243,7 +247,7 @@ export type AwsFsxLustreFileSystemSpec = Message<"org.openmcf.provider.aws.awsfs
    * Controls the metadata IOPS available for file creation, listing, and similar
    * operations. Most workloads perform well with AUTOMATIC mode.
    *
-   * @generated from field: org.openmcf.provider.aws.awsfsxlustrefilesystem.v1.AwsFsxLustreFileSystemMetadataConfiguration metadata_configuration = 18;
+   * @generated from field: org.openmcf.provider.aws.awsfsxlustrefilesystem.v1.AwsFsxLustreFileSystemMetadataConfiguration metadata_configuration = 19;
    */
   metadataConfiguration?: AwsFsxLustreFileSystemMetadataConfiguration;
 };

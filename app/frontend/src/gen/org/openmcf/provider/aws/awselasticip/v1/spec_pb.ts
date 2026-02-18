@@ -11,7 +11,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awselasticip/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awselasticip_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjNvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWxhc3RpY2lwL3YxL3NwZWMucHJvdG8SKG9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NlbGFzdGljaXAudjEimQIKEEF3c0VsYXN0aWNJcFNwZWMSGAoQcHVibGljX2lwdjRfcG9vbBgBIAEoCRIPCgdhZGRyZXNzGAIgASgJEhwKFG5ldHdvcmtfYm9yZGVyX2dyb3VwGAMgASgJOrsBuki3ARq0AQobYWRkcmVzc19yZXF1aXJlc19ieW9pcF9wb29sEmJhZGRyZXNzIHJlcXVpcmVzIHB1YmxpY19pcHY0X3Bvb2wgdG8gYmUgc2V0IChzcGVjaWZpYyBJUHMgY2FuIG9ubHkgYmUgcmVxdWVzdGVkIGZyb20gYSBCWU9JUCBwb29sKRoxdGhpcy5hZGRyZXNzID09ICcnIHx8IHRoaXMucHVibGljX2lwdjRfcG9vbCAhPSAnJ0LbAgosY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NlbGFzdGljaXAudjFCCVNwZWNQcm90b1ABWllnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c2VsYXN0aWNpcC92MTthd3NlbGFzdGljaXB2MaICBU9PUEFBqgIoT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2VsYXN0aWNpcC5WMcoCKE9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NlbGFzdGljaXBcVjHiAjRPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZWxhc3RpY2lwXFYxXEdQQk1ldGFkYXRh6gItT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NlbGFzdGljaXA6OlYxYgZwcm90bzM", [file_buf_validate_validate]);
+  fileDesc("CjNvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWxhc3RpY2lwL3YxL3NwZWMucHJvdG8SKG9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NlbGFzdGljaXAudjEisgIKEEF3c0VsYXN0aWNJcFNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEhgKEHB1YmxpY19pcHY0X3Bvb2wYAiABKAkSDwoHYWRkcmVzcxgDIAEoCRIcChRuZXR3b3JrX2JvcmRlcl9ncm91cBgEIAEoCTq7AbpItwEatAEKG2FkZHJlc3NfcmVxdWlyZXNfYnlvaXBfcG9vbBJiYWRkcmVzcyByZXF1aXJlcyBwdWJsaWNfaXB2NF9wb29sIHRvIGJlIHNldCAoc3BlY2lmaWMgSVBzIGNhbiBvbmx5IGJlIHJlcXVlc3RlZCBmcm9tIGEgQllPSVAgcG9vbCkaMXRoaXMuYWRkcmVzcyA9PSAnJyB8fCB0aGlzLnB1YmxpY19pcHY0X3Bvb2wgIT0gJydC2wIKLGNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWxhc3RpY2lwLnYxQglTcGVjUHJvdG9QAVpZZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NlbGFzdGljaXAvdjE7YXdzZWxhc3RpY2lwdjGiAgVPT1BBQaoCKE9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NlbGFzdGljaXAuVjHKAihPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZWxhc3RpY2lwXFYx4gI0T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2VsYXN0aWNpcFxWMVxHUEJNZXRhZGF0YeoCLU9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzZWxhc3RpY2lwOjpWMWIGcHJvdG8z", [file_buf_validate_validate]);
 
 /**
  * AwsElasticIpSpec defines the desired configuration for an AWS Elastic IP address.
@@ -36,13 +36,17 @@ export const file_org_openmcf_provider_aws_awselasticip_v1_spec: GenFile = /*@__
  *
  * Credentials, region, and deployment workflow live outside this spec in stack inputs.
  *
- * ---------------------------------------------------------------------------
- * BYOIP (Bring Your Own IP) settings
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awselasticip.v1.AwsElasticIpSpec
  */
 export type AwsElasticIpSpec = Message<"org.openmcf.provider.aws.awselasticip.v1.AwsElasticIpSpec"> & {
+  /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * EC2 IPv4 address pool identifier to allocate from. Set this to a BYOIP pool
    * ID when you want the EIP to come from your own registered IP address range
@@ -50,7 +54,7 @@ export type AwsElasticIpSpec = Message<"org.openmcf.provider.aws.awselasticip.v1
    *
    * This field is ForceNew: changing it requires replacing the EIP.
    *
-   * @generated from field: string public_ipv4_pool = 1;
+   * @generated from field: string public_ipv4_pool = 2;
    */
   publicIpv4Pool: string;
 
@@ -61,7 +65,7 @@ export type AwsElasticIpSpec = Message<"org.openmcf.provider.aws.awselasticip.v1
    *
    * This field is ForceNew: changing it requires replacing the EIP.
    *
-   * @generated from field: string address = 2;
+   * @generated from field: string address = 3;
    */
   address: string;
 
@@ -75,7 +79,7 @@ export type AwsElasticIpSpec = Message<"org.openmcf.provider.aws.awselasticip.v1
    *
    * This field is ForceNew: changing it requires replacing the EIP.
    *
-   * @generated from field: string network_border_group = 3;
+   * @generated from field: string network_border_group = 4;
    */
   networkBorderGroup: string;
 };

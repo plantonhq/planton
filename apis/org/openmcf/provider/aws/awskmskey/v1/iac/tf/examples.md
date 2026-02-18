@@ -17,6 +17,7 @@ kind: AwsKmsKey
 metadata:
   name: basic-kms-key
 spec:
+  region: us-west-2
   description: "Basic symmetric KMS key for general encryption"
   keySpec: "symmetric"
   disableKeyRotation: false
@@ -39,6 +40,7 @@ kind: AwsKmsKey
 metadata:
   name: eks-secrets-kms-key
 spec:
+  region: us-west-2
   description: "KMS key for EKS cluster secrets encryption"
   keySpec: "symmetric"
   disableKeyRotation: false
@@ -62,6 +64,7 @@ kind: AwsKmsKey
 metadata:
   name: app-encryption-kms-key
 spec:
+  region: us-west-2
   description: "KMS key for application data encryption"
   keySpec: "symmetric"
   disableKeyRotation: false
@@ -85,6 +88,7 @@ kind: AwsKmsKey
 metadata:
   name: rsa-kms-key
 spec:
+  region: us-west-2
   description: "RSA 2048 KMS key for asymmetric encryption"
   keySpec: "rsa_2048"
   disableKeyRotation: false
@@ -108,6 +112,7 @@ kind: AwsKmsKey
 metadata:
   name: ecc-kms-key
 spec:
+  region: us-west-2
   description: "ECC NIST P-256 KMS key for high-performance encryption"
   keySpec: "ecc_nist_p256"
   disableKeyRotation: false
@@ -131,6 +136,7 @@ kind: AwsKmsKey
 metadata:
   name: no-rotation-kms-key
 spec:
+  region: us-west-2
   description: "KMS key with disabled rotation for compliance"
   keySpec: "symmetric"
   disableKeyRotation: true
@@ -154,6 +160,7 @@ kind: AwsKmsKey
 metadata:
   name: short-deletion-kms-key
 spec:
+  region: us-west-2
   description: "KMS key with short deletion window for development"
   keySpec: "symmetric"
   disableKeyRotation: false
@@ -177,6 +184,7 @@ kind: AwsKmsKey
 metadata:
   name: production-kms-key
 spec:
+  region: us-west-2
   description: "Production KMS key for critical data encryption"
   keySpec: "symmetric"
   disableKeyRotation: false
@@ -201,6 +209,7 @@ kind: AwsKmsKey
 metadata:
   name: minimal-kms-key
 spec:
+  region: us-west-2
   description: "Minimal KMS key configuration"
 ```
 

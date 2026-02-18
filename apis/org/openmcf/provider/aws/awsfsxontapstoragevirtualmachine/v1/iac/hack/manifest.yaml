@@ -6,6 +6,7 @@ metadata:
   org: test-org
   env: dev
 spec:
+  region: us-west-2
   file_system_id:
     value: fs-0123456789abcdef0
   name: svm_test

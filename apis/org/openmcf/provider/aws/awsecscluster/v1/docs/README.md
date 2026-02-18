@@ -228,15 +228,18 @@ The `capacity_providers` field specifies *which* capacity providers are availabl
 
 ```protobuf
 message AwsEcsClusterSpec {
+  // region is the AWS region where the ECS cluster will be created.
+  string region = 1;
+
   // enable_container_insights determines whether to enable CloudWatch
   // Container Insights for this cluster. Highly recommended for
   // production monitoring (incurs CloudWatch costs).
-  bool enable_container_insights = 1;
+  bool enable_container_insights = 2;
 
   // capacity_providers is a list of capacity providers attached
   // to this cluster. For Fargate-only: ["FARGATE"] or
   // ["FARGATE", "FARGATE_SPOT"] for Spot cost optimization.
-  repeated string capacity_providers = 2;
+  repeated string capacity_providers = 3;
 
   // default_capacity_provider_strategy defines the base/weight
   // distribution for tasks across capacity providers. This is the
@@ -314,6 +317,7 @@ kind: AwsEcsCluster
 metadata:
   name: dev-cluster
 spec:
+  region: us-east-1
   capacity_providers:
     - FARGATE
   enable_container_insights: false
@@ -331,6 +335,7 @@ kind: AwsEcsCluster
 metadata:
   name: prod-cluster
 spec:
+  region: us-east-1
   capacity_providers:
     - FARGATE
     - FARGATE_SPOT

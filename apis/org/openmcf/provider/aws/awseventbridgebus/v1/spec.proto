@@ -26,13 +26,17 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 // - Credentials, region, and deployment workflow live outside this spec in stack
 //   inputs.
 message AwsEventBridgeBusSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Core configuration
   // ---------------------------------------------------------------------------
 
   // Human-readable description of the event bus.
   // Maximum length is 512 characters.
-  string description = 1 [(buf.validate.field).string.max_len = 512];
+  string description = 2 [(buf.validate.field).string.max_len = 512];
 
   // ---------------------------------------------------------------------------
   // Encryption
@@ -43,7 +47,7 @@ message AwsEventBridgeBusSpec {
   // encrypted with an AWS-owned key at no additional cost.
   //
   // Accepts a direct value or a reference to an AwsKmsKey resource.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_identifier = 2 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_identifier = 3 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -59,7 +63,7 @@ message AwsEventBridgeBusSpec {
   // name (`metadata.name`) must match this value exactly.
   //
   // This field is immutable — changing it forces bus replacement.
-  string event_source_name = 3;
+  string event_source_name = 4;
 
   // ---------------------------------------------------------------------------
   // Dead letter queue
@@ -72,7 +76,7 @@ message AwsEventBridgeBusSpec {
   // This is the bus-level DLQ — it catches events that cannot be delivered
   // to ANY target on any rule attached to this bus. Individual rules can also
   // have their own DLQ configuration (configured on AwsEventBridgeRule).
-  AwsEventBridgeBusDeadLetterConfig dead_letter_config = 4;
+  AwsEventBridgeBusDeadLetterConfig dead_letter_config = 5;
 
   // ---------------------------------------------------------------------------
   // Logging
@@ -81,7 +85,7 @@ message AwsEventBridgeBusSpec {
   // Logging configuration for the event bus. When set, EventBridge writes
   // event delivery logs to CloudWatch Logs. Useful for debugging event
   // routing, monitoring delivery failures, and auditing event traffic.
-  AwsEventBridgeBusLogConfig log_config = 5;
+  AwsEventBridgeBusLogConfig log_config = 6;
 
   // ---------------------------------------------------------------------------
   // CEL validations

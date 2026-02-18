@@ -17,6 +17,7 @@ kind: AwsRoute53Zone
 metadata:
   name: example.com
 spec:
+  region: us-east-1
   records:
     - recordType: "A"
       name: "example.com."
@@ -41,6 +42,7 @@ kind: AwsRoute53Zone
 metadata:
   name: example-multi.com
 spec:
+  region: us-east-1
   records:
     - recordType: "A"
       name: "www.example-multi.com."
@@ -75,6 +77,7 @@ kind: AwsRoute53Zone
 metadata:
   name: mail-example.com
 spec:
+  region: us-east-1
   records:
     - recordType: "MX"
       name: "mail-example.com."
@@ -110,6 +113,7 @@ kind: AwsRoute53Zone
 metadata:
   name: app-example.com
 spec:
+  region: us-east-1
   records:
     - recordType: "A"
       name: "app-example.com."
@@ -144,6 +148,7 @@ kind: AwsRoute53Zone
 metadata:
   name: cdn-example.com
 spec:
+  region: us-east-1
   records:
     - recordType: "A"
       name: "cdn-example.com."
@@ -178,6 +183,7 @@ kind: AwsRoute53Zone
 metadata:
   name: subdomain-example.com
 spec:
+  region: us-east-1
   records:
     - recordType: "A"
       name: "subdomain-example.com."
@@ -222,6 +228,7 @@ kind: AwsRoute53Zone
 metadata:
   name: secure-example.com
 spec:
+  region: us-east-1
   records:
     - recordType: "A"
       name: "secure-example.com."
@@ -264,6 +271,7 @@ kind: AwsRoute53Zone
 metadata:
   name: services-example.com
 spec:
+  region: us-east-1
   records:
     - recordType: "A"
       name: "services-example.com."
@@ -308,6 +316,7 @@ kind: AwsRoute53Zone
 metadata:
   name: geo-example.com
 spec:
+  region: us-east-1
   records:
     - recordType: "A"
       name: "geo-example.com."

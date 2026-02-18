@@ -137,53 +137,56 @@ func (AwsClientVpnTransportProtocol) EnumDescriptor() ([]byte, []int) {
 // (certificate-based authentication for mutual TLS, single VPC, basic logging and networking options).
 type AwsClientVpnSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the Client VPN endpoint will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// (Optional) A human-friendly description for the Client VPN endpoint. This is stored for clarity and is typically visible in the AWS Console as the description of the endpoint.
-	Description string `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	// The target AWS VPC in which to create the Client VPN endpoint. This should reference
 	// an existing AwsVpc resource. The Client VPN will be attached to this VPC's network.
 	// **Must** be a VPC in the same AWS region as the provided credentials.
-	VpcId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
+	VpcId *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
 	// The list of subnet IDs in the above VPC to associate as target networks for the Client VPN.
 	// Each subnet association enables VPN clients to access resources in that subnet’s Availability Zone.
 	// At least one subnet ID is required (the first association will activate the endpoint). All subnets must belong to the given VPC.
-	Subnets []*v1.StringValueOrRef `protobuf:"bytes,3,rep,name=subnets,proto3" json:"subnets,omitempty"`
+	Subnets []*v1.StringValueOrRef `protobuf:"bytes,4,rep,name=subnets,proto3" json:"subnets,omitempty"`
 	// The IPv4 address range, in CIDR notation, from which to assign client IP addresses. For example, "10.0.0.0/22".
 	// This client CIDR block must not overlap with the VPC’s CIDR or any routes in the VPC.
 	// It defines the pool of IPs that VPN clients will receive. Note: The CIDR block size must be between /22 (inclusive) and /12 (inclusive).
-	ClientCidrBlock string `protobuf:"bytes,4,opt,name=client_cidr_block,json=clientCidrBlock,proto3" json:"client_cidr_block,omitempty"`
+	ClientCidrBlock string `protobuf:"bytes,5,opt,name=client_cidr_block,json=clientCidrBlock,proto3" json:"client_cidr_block,omitempty"`
 	// The authentication method for clients connecting to this VPN endpoint.
 	// defaults to `certificate` (mutual TLS authentication using client certificates).
-	AuthenticationType AwsClientVpnAuthenticationType `protobuf:"varint,5,opt,name=authentication_type,json=authenticationType,proto3,enum=org.openmcf.provider.aws.awsclientvpn.v1.AwsClientVpnAuthenticationType" json:"authentication_type,omitempty"`
+	AuthenticationType AwsClientVpnAuthenticationType `protobuf:"varint,6,opt,name=authentication_type,json=authenticationType,proto3,enum=org.openmcf.provider.aws.awsclientvpn.v1.AwsClientVpnAuthenticationType" json:"authentication_type,omitempty"`
 	// The ARN of the ACM server certificate to use for the Client VPN endpoint. This TLS certificate is presented by the VPN server to clients upon connection.
 	// The certificate must be present in AWS Certificate Manager in the same region. This field is **required** for establishing the VPN (mutual TLS requires a server cert, and user-based auth still needs a server certificate for encryption).
-	ServerCertificateArn *v1.StringValueOrRef `protobuf:"bytes,6,opt,name=server_certificate_arn,json=serverCertificateArn,proto3" json:"server_certificate_arn,omitempty"`
+	ServerCertificateArn *v1.StringValueOrRef `protobuf:"bytes,7,opt,name=server_certificate_arn,json=serverCertificateArn,proto3" json:"server_certificate_arn,omitempty"`
 	// A list of IPv4 network CIDR ranges that VPN clients are authorized to access through this endpoint.
 	// Typically, these correspond to private subnet ranges within the VPC (e.g., "10.0.0.0/16") or other networks.
 	// For each CIDR here, an authorization rule will be created to allow clients to access that network.
 	// If omitted, no default authorization rule is set (clients would not have access to any network until one is added).
-	CidrAuthorizationRules []string `protobuf:"bytes,7,rep,name=cidr_authorization_rules,json=cidrAuthorizationRules,proto3" json:"cidr_authorization_rules,omitempty"`
+	CidrAuthorizationRules []string `protobuf:"bytes,8,rep,name=cidr_authorization_rules,json=cidrAuthorizationRules,proto3" json:"cidr_authorization_rules,omitempty"`
 	// Enables or disables split-tunnel routing for the VPN. When `false`, only traffic destined for the above authorized CIDRs (internal networks) will go through the VPN, while all other Internet traffic stays local to the client.
 	// When `true` (full-tunnel), all client traffic is routed through the VPN. Default is `false` (split-tunnel enabled) to limit VPN to internal traffic.
-	DisableSplitTunnel bool `protobuf:"varint,8,opt,name=disable_split_tunnel,json=disableSplitTunnel,proto3" json:"disable_split_tunnel,omitempty"`
+	DisableSplitTunnel bool `protobuf:"varint,9,opt,name=disable_split_tunnel,json=disableSplitTunnel,proto3" json:"disable_split_tunnel,omitempty"`
 	// The port number on which the Client VPN endpoint will accept connections. The default (443) is commonly used for OpenVPN over TLS.
 	// Using port 443 allows VPN traffic to more easily traverse corporate firewalls.
 	// If a different port (e.g., 1194) is needed, it can be specified here.
-	VpnPort *int32 `protobuf:"varint,9,opt,name=vpn_port,json=vpnPort,proto3,oneof" json:"vpn_port,omitempty"`
+	VpnPort *int32 `protobuf:"varint,10,opt,name=vpn_port,json=vpnPort,proto3,oneof" json:"vpn_port,omitempty"`
 	// The transport protocol for VPN connections. Can be `tcp` or `udp`.
-	TransportProtocol AwsClientVpnTransportProtocol `protobuf:"varint,10,opt,name=transport_protocol,json=transportProtocol,proto3,enum=org.openmcf.provider.aws.awsclientvpn.v1.AwsClientVpnTransportProtocol" json:"transport_protocol,omitempty"`
+	TransportProtocol AwsClientVpnTransportProtocol `protobuf:"varint,11,opt,name=transport_protocol,json=transportProtocol,proto3,enum=org.openmcf.provider.aws.awsclientvpn.v1.AwsClientVpnTransportProtocol" json:"transport_protocol,omitempty"`
 	// The CloudWatch Logs group name for VPN connection logs. If specified, connection logging is enabled for this Client VPN endpoint.
 	// The VPN service will send connection events to the given log group (a log stream is created automatically if not provided).
 	// If left blank, connection logging is disabled.
-	LogGroupName string `protobuf:"bytes,11,opt,name=log_group_name,json=logGroupName,proto3" json:"log_group_name,omitempty"`
+	LogGroupName string `protobuf:"bytes,12,opt,name=log_group_name,json=logGroupName,proto3" json:"log_group_name,omitempty"`
 	// (Optional) One or more security group IDs to apply to the Client VPN endpoint's network associations.
 	// These security groups control traffic between VPN clients and VPC resources.
 	// If not provided, the VPC’s default security group will be applied to the Client VPN endpoint.
 	// If provided, ensure the security group rules allow the intended traffic (for example, allowing inbound traffic from clients to target services).
 	// By default, OpenMCF may create a dedicated security group for the endpoint if none are specified.
-	SecurityGroups []*v1.StringValueOrRef `protobuf:"bytes,12,rep,name=security_groups,json=securityGroups,proto3" json:"security_groups,omitempty"`
+	SecurityGroups []*v1.StringValueOrRef `protobuf:"bytes,13,rep,name=security_groups,json=securityGroups,proto3" json:"security_groups,omitempty"`
 	// (Optional) Custom DNS server IP addresses for VPN clients. Up to two IP addresses can be specified.
 	// If set, connected clients will use these DNS servers for name resolution while connected. If not set, clients default to the VPC’s DNS (AmazonProvidedDNS) for name resolution.
-	DnsServers    []string `protobuf:"bytes,13,rep,name=dns_servers,json=dnsServers,proto3" json:"dns_servers,omitempty"`
+	DnsServers    []string `protobuf:"bytes,14,rep,name=dns_servers,json=dnsServers,proto3" json:"dns_servers,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -216,6 +219,13 @@ func (x *AwsClientVpnSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsClientVpnSpec.ProtoReflect.Descriptor instead.
 func (*AwsClientVpnSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsclientvpn_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsClientVpnSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsClientVpnSpec) GetDescription() string {
@@ -313,22 +323,23 @@ var File_org_openmcf_provider_aws_awsclientvpn_v1_spec_proto protoreflect.FileDe
 
 const file_org_openmcf_provider_aws_awsclientvpn_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"3org/openmcf/provider/aws/awsclientvpn/v1/spec.proto\x12(org.openmcf.provider.aws.awsclientvpn.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xf9\x0f\n" +
-	"\x10AwsClientVpnSpec\x12 \n" +
-	"\vdescription\x18\x01 \x01(\tR\vdescription\x12o\n" +
-	"\x06vpc_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12^\n" +
-	"\asubnets\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x10\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\x88\xd4a\xd8\x01R\asubnets\x12m\n" +
-	"\x11client_cidr_block\x18\x04 \x01(\tBA\xbaH>\xc8\x01\x01r927^([0-9]{1,3}\\.){3}[0-9]{1,3}/([0-9]|[1-2][0-9]|3[0-2])$R\x0fclientCidrBlock\x12\x83\x01\n" +
-	"\x13authentication_type\x18\x05 \x01(\x0e2H.org.openmcf.provider.aws.awsclientvpn.v1.AwsClientVpnAuthenticationTypeB\b\xbaH\x05\x82\x01\x02\x10\x01R\x12authenticationType\x12\x90\x01\n" +
-	"\x16server_certificate_arn\x18\x06 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xc9\x01\x92\xd4a\x17status.outputs.cert_arnR\x14serverCertificateArn\x12B\n" +
-	"\x18cidr_authorization_rules\x18\a \x03(\tB\b\xbaH\x05\x92\x01\x02\x18\x01R\x16cidrAuthorizationRules\x120\n" +
-	"\x14disable_split_tunnel\x18\b \x01(\bR\x12disableSplitTunnel\x12'\n" +
-	"\bvpn_port\x18\t \x01(\x05B\a\x8a\xa6\x1d\x03443H\x00R\avpnPort\x88\x01\x01\x12\x87\x01\n" +
-	"\x12transport_protocol\x18\n" +
-	" \x01(\x0e2G.org.openmcf.provider.aws.awsclientvpn.v1.AwsClientVpnTransportProtocolB\x0f\xbaH\x05\x82\x01\x02\x10\x01\x92\xa6\x1d\x03tcpR\x11transportProtocol\x12$\n" +
-	"\x0elog_group_name\x18\v \x01(\tR\flogGroupName\x12\x86\x01\n" +
-	"\x0fsecurity_groups\x18\f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x0esecurityGroups\x12+\n" +
-	"\vdns_servers\x18\r \x03(\tB\n" +
+	"3org/openmcf/provider/aws/awsclientvpn/v1/spec.proto\x12(org.openmcf.provider.aws.awsclientvpn.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x9a\x10\n" +
+	"\x10AwsClientVpnSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12 \n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\x12o\n" +
+	"\x06vpc_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12^\n" +
+	"\asubnets\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x10\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\x88\xd4a\xd8\x01R\asubnets\x12m\n" +
+	"\x11client_cidr_block\x18\x05 \x01(\tBA\xbaH>\xc8\x01\x01r927^([0-9]{1,3}\\.){3}[0-9]{1,3}/([0-9]|[1-2][0-9]|3[0-2])$R\x0fclientCidrBlock\x12\x83\x01\n" +
+	"\x13authentication_type\x18\x06 \x01(\x0e2H.org.openmcf.provider.aws.awsclientvpn.v1.AwsClientVpnAuthenticationTypeB\b\xbaH\x05\x82\x01\x02\x10\x01R\x12authenticationType\x12\x90\x01\n" +
+	"\x16server_certificate_arn\x18\a \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xc9\x01\x92\xd4a\x17status.outputs.cert_arnR\x14serverCertificateArn\x12B\n" +
+	"\x18cidr_authorization_rules\x18\b \x03(\tB\b\xbaH\x05\x92\x01\x02\x18\x01R\x16cidrAuthorizationRules\x120\n" +
+	"\x14disable_split_tunnel\x18\t \x01(\bR\x12disableSplitTunnel\x12'\n" +
+	"\bvpn_port\x18\n" +
+	" \x01(\x05B\a\x8a\xa6\x1d\x03443H\x00R\avpnPort\x88\x01\x01\x12\x87\x01\n" +
+	"\x12transport_protocol\x18\v \x01(\x0e2G.org.openmcf.provider.aws.awsclientvpn.v1.AwsClientVpnTransportProtocolB\x0f\xbaH\x05\x82\x01\x02\x10\x01\x92\xa6\x1d\x03tcpR\x11transportProtocol\x12$\n" +
+	"\x0elog_group_name\x18\f \x01(\tR\flogGroupName\x12\x86\x01\n" +
+	"\x0fsecurity_groups\x18\r \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x0esecurityGroups\x12+\n" +
+	"\vdns_servers\x18\x0e \x03(\tB\n" +
 	"\xbaH\a\x92\x01\x04\x10\x02\x18\x01R\n" +
 	"dnsServers:\xd7\x06\xbaH\xd3\x06\x1ay\n" +
 	"\x10vpn_port_allowed\x121vpn_port must be 443 (TCP) or 1194 (UDP) when set\x1a2this.vpn_port == 0 || this.vpn_port in [443, 1194]\x1a\x94\x02\n" +

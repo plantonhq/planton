@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsekscluster/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsekscluster_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjRvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWtzY2x1c3Rlci92MS9zcGVjLnByb3RvEilvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWtzY2x1c3Rlci52MSLbBAoRQXdzRWtzQ2x1c3RlclNwZWMSgQEKCnN1Ym5ldF9pZHMYASADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQjm6SAjIAQGSAQIIAojUYdgBktRhJXN0YXR1cy5vdXRwdXRzLnByaXZhdGVfc3VibmV0cy5bKl0uaWQSdAoQY2x1c3Rlcl9yb2xlX2FybhgCIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCJrpIA8gBAYjUYdABktRhF3N0YXR1cy5vdXRwdXRzLnJvbGVfYXJuEg8KB3ZlcnNpb24YAyABKAkSHwoXZGlzYWJsZV9wdWJsaWNfZW5kcG9pbnQYBCABKAgSjAEKE3B1YmxpY19hY2Nlc3NfY2lkcnMYBSADKAlCb7pIbJIBaSJncmUyY14oPzoyNVswLTVdfDJbMC00XVxkfFswLTFdP1xkP1xkKSg/OlwuKD86MjVbMC01XXwyWzAtNF1cZHxbMC0xXT9cZD9cZCkpezN9Lyg/OlswLTldfFsxMl1cZHwzWzAtMl0pJBIhChllbmFibGVfY29udHJvbF9wbGFuZV9sb2dzGAYgASgIEmgKC2ttc19rZXlfYXJuGAcgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybkLiAgotY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Nla3NjbHVzdGVyLnYxQglTcGVjUHJvdG9QAVpbZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3Nla3NjbHVzdGVyL3YxO2F3c2Vrc2NsdXN0ZXJ2MaICBU9PUEFBqgIpT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2Vrc2NsdXN0ZXIuVjHKAilPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZWtzY2x1c3RlclxWMeICNU9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3Nla3NjbHVzdGVyXFYxXEdQQk1ldGFkYXRh6gIuT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3Nla3NjbHVzdGVyOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
+  fileDesc("CjRvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWtzY2x1c3Rlci92MS9zcGVjLnByb3RvEilvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWtzY2x1c3Rlci52MSL0BAoRQXdzRWtzQ2x1c3RlclNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEoEBCgpzdWJuZXRfaWRzGAIgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkI5ukgIyAEBkgECCAKI1GHYAZLUYSVzdGF0dXMub3V0cHV0cy5wcml2YXRlX3N1Ym5ldHMuWypdLmlkEnQKEGNsdXN0ZXJfcm9sZV9hcm4YAyABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQia6SAPIAQGI1GHQAZLUYRdzdGF0dXMub3V0cHV0cy5yb2xlX2FybhIPCgd2ZXJzaW9uGAQgASgJEh8KF2Rpc2FibGVfcHVibGljX2VuZHBvaW50GAUgASgIEowBChNwdWJsaWNfYWNjZXNzX2NpZHJzGAYgAygJQm+6SGySAWkiZ3JlMmNeKD86MjVbMC01XXwyWzAtNF1cZHxbMC0xXT9cZD9cZCkoPzpcLig/OjI1WzAtNV18MlswLTRdXGR8WzAtMV0/XGQ/XGQpKXszfS8oPzpbMC05XXxbMTJdXGR8M1swLTJdKSQSIQoZZW5hYmxlX2NvbnRyb2xfcGxhbmVfbG9ncxgHIAEoCBJoCgtrbXNfa2V5X2FybhgIIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm5C4gIKLWNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWtzY2x1c3Rlci52MUIJU3BlY1Byb3RvUAFaW2dpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWtzY2x1c3Rlci92MTthd3Nla3NjbHVzdGVydjGiAgVPT1BBQaoCKU9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3Nla3NjbHVzdGVyLlYxygIpT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2Vrc2NsdXN0ZXJcVjHiAjVPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZWtzY2x1c3RlclxWMVxHUEJNZXRhZGF0YeoCLk9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzZWtzY2x1c3Rlcjo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
 
 /**
  * AwsEksClusterSpec defines the specification for an AWS EKS (Elastic Kubernetes Service) cluster control plane.
@@ -23,10 +23,18 @@ export const file_org_openmcf_provider_aws_awsekscluster_v1_spec: GenFile = /*@_
  */
 export type AwsEksClusterSpec = Message<"org.openmcf.provider.aws.awsekscluster.v1.AwsEksClusterSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * subnet_ids is the list of subnet IDs (in the cluster's VPC) where the EKS control plane will attach network interfaces.
    * Provide at least two subnets in distinct Availability Zones for high availability.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 1;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 2;
    */
   subnetIds: StringValueOrRef[];
 
@@ -35,7 +43,7 @@ export type AwsEksClusterSpec = Message<"org.openmcf.provider.aws.awsekscluster.
    * This role must have the AmazonEKSClusterPolicy attached.
    * Example: "arn:aws:iam::123456789012:role/EksClusterServiceRole"
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_role_arn = 2;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_role_arn = 3;
    */
   clusterRoleArn?: StringValueOrRef;
 
@@ -43,7 +51,7 @@ export type AwsEksClusterSpec = Message<"org.openmcf.provider.aws.awsekscluster.
    * version is the Kubernetes version of the cluster control plane to deploy (e.g., "1.25").
    * Must match the pattern ^1\.(2[4-9]|3[0-9])$ (for example, "1.24", "1.25", etc.). If not set, the latest supported version is used.
    *
-   * @generated from field: string version = 3;
+   * @generated from field: string version = 4;
    */
   version: string;
 
@@ -51,7 +59,7 @@ export type AwsEksClusterSpec = Message<"org.openmcf.provider.aws.awsekscluster.
    * disable_public_endpoint determines if the cluster's API endpoint should be private-only.
    * If false (default), the cluster API endpoint is publicly accessible; if true, the endpoint is accessible only within the VPC.
    *
-   * @generated from field: bool disable_public_endpoint = 4;
+   * @generated from field: bool disable_public_endpoint = 5;
    */
   disablePublicEndpoint: boolean;
 
@@ -59,7 +67,7 @@ export type AwsEksClusterSpec = Message<"org.openmcf.provider.aws.awsekscluster.
    * public_access_cidrs restricts which IPv4 CIDR blocks can access the cluster's public API endpoint.
    * If this list is empty, AWS defaults to 0.0.0.0/0 (all IPv4 addresses). Each entry must be a valid IPv4 CIDR (e.g., "203.0.113.0/24").
    *
-   * @generated from field: repeated string public_access_cidrs = 5;
+   * @generated from field: repeated string public_access_cidrs = 6;
    */
   publicAccessCidrs: string[];
 
@@ -67,7 +75,7 @@ export type AwsEksClusterSpec = Message<"org.openmcf.provider.aws.awsekscluster.
    * enable_control_plane_logs, if true, enables all control plane log types for the cluster (API, audit, authenticator, controller manager, scheduler) to CloudWatch.
    * Default is false, meaning control plane logging is disabled unless explicitly enabled.
    *
-   * @generated from field: bool enable_control_plane_logs = 6;
+   * @generated from field: bool enable_control_plane_logs = 7;
    */
   enableControlPlaneLogs: boolean;
 
@@ -75,7 +83,7 @@ export type AwsEksClusterSpec = Message<"org.openmcf.provider.aws.awsekscluster.
    * kms_key_arn is an optional KMS Key ARN to use for envelope encryption of Kubernetes secrets.
    * If provided, this customer-managed KMS key will encrypt secrets; if not set, the cluster uses the default AWS-managed EKS key.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_arn = 7;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_arn = 8;
    */
   kmsKeyArn?: StringValueOrRef;
 };

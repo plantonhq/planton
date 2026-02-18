@@ -43,6 +43,10 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 // Credentials, region, and deployment workflow live outside this spec in
 // stack inputs.
 message AwsWafWebAclSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Scope and identity
   // ---------------------------------------------------------------------------
@@ -55,7 +59,7 @@ message AwsWafWebAclSpec {
   // "CLOUDFRONT" — protects CloudFront distributions. The Web ACL MUST be
   // created in the us-east-1 region. Ensure your provider configuration
   // targets us-east-1 when using CLOUDFRONT scope.
-  string scope = 1 [(buf.validate.field).required = true];
+  string scope = 2 [(buf.validate.field).required = true];
 
   // ---------------------------------------------------------------------------
   // Default action
@@ -67,10 +71,10 @@ message AwsWafWebAclSpec {
   //   Use when most traffic is legitimate (e.g., public website).
   // - "block" (restrictive): block all traffic unless a rule allows it.
   //   Use when most traffic should be denied (e.g., private API).
-  AwsWafWebAclDefaultAction default_action = 2 [(buf.validate.field).required = true];
+  AwsWafWebAclDefaultAction default_action = 3 [(buf.validate.field).required = true];
 
   // Human-readable description of the Web ACL. Max 256 characters.
-  string description = 3 [(buf.validate.field).string.max_len = 256];
+  string description = 4 [(buf.validate.field).string.max_len = 256];
 
   // ---------------------------------------------------------------------------
   // Rules
@@ -82,7 +86,7 @@ message AwsWafWebAclSpec {
   //
   // When no rules are provided, only the default_action applies. This is
   // valid but uncommon — most Web ACLs have at least one managed rule group.
-  repeated AwsWafWebAclRule rules = 4;
+  repeated AwsWafWebAclRule rules = 5;
 
   // ---------------------------------------------------------------------------
   // Visibility (CloudWatch metrics)
@@ -94,7 +98,7 @@ message AwsWafWebAclSpec {
   // - cloudwatch_metrics_enabled = true
   // - sampled_requests_enabled = true
   // - metric_name = resource name
-  AwsWafWebAclVisibilityConfig visibility_config = 5;
+  AwsWafWebAclVisibilityConfig visibility_config = 6;
 
   // ---------------------------------------------------------------------------
   // Custom response bodies
@@ -106,7 +110,7 @@ message AwsWafWebAclSpec {
   //
   // Each entry requires a unique key (used as the reference), content string,
   // and content_type.
-  repeated AwsWafWebAclCustomResponseBody custom_response_bodies = 6;
+  repeated AwsWafWebAclCustomResponseBody custom_response_bodies = 7;
 
   // ---------------------------------------------------------------------------
   // Token domains
@@ -115,7 +119,7 @@ message AwsWafWebAclSpec {
   // Domains to accept in web request tokens for CAPTCHA and Challenge actions.
   // Required when using CAPTCHA/Challenge with multiple domains that share
   // the same Web ACL. When omitted, tokens are scoped to the request domain.
-  repeated string token_domains = 7;
+  repeated string token_domains = 8;
 
   // ---------------------------------------------------------------------------
   // Logging
@@ -130,7 +134,7 @@ message AwsWafWebAclSpec {
   // - CloudWatch Log Group: "aws-waf-logs-my-acl"
   // - S3 Bucket: "aws-waf-logs-my-acl"
   // - Kinesis Firehose: "aws-waf-logs-my-acl"
-  AwsWafWebAclLoggingConfig logging = 8;
+  AwsWafWebAclLoggingConfig logging = 9;
 
   // ---------------------------------------------------------------------------
   // Spec-level CEL validations

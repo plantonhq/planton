@@ -26,7 +26,7 @@ func minimalValidSpec() *AwsS3ObjectSetSpec {
 				Value: "my-test-bucket",
 			},
 		},
-		AwsRegion: "us-east-1",
+		Region: "us-east-1",
 		Objects: []*AwsS3Object{
 			{
 				Key: "config/app.json",
@@ -122,9 +122,9 @@ var _ = ginkgo.Describe("AwsS3ObjectSetSpec Validation Tests", func() {
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 
-			ginkgo.It("should return a validation error when aws_region is empty", func() {
+			ginkgo.It("should return a validation error when region is empty", func() {
 				spec := minimalValidSpec()
-				spec.AwsRegion = ""
+				spec.Region = ""
 				err := protovalidate.Validate(spec)
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})

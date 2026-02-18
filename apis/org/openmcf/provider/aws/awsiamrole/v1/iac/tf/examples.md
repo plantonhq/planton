@@ -17,6 +17,7 @@ kind: AwsIamRole
 metadata:
   name: basic-iam-role
 spec:
+  region: us-east-1
   description: "Basic IAM role for application access"
   path: "/"
   trustPolicy:
@@ -46,6 +47,7 @@ kind: AwsIamRole
 metadata:
   name: lambda-execution-role
 spec:
+  region: us-east-1
   description: "IAM role for Lambda function execution"
   path: "/service-roles/"
   trustPolicy:
@@ -85,6 +87,7 @@ kind: AwsIamRole
 metadata:
   name: ecs-task-role
 spec:
+  region: us-east-1
   description: "IAM role for ECS task execution"
   path: "/ecs/"
   trustPolicy:
@@ -125,6 +128,7 @@ kind: AwsIamRole
 metadata:
   name: eks-node-role
 spec:
+  region: us-east-1
   description: "IAM role for EKS worker nodes"
   path: "/eks/"
   trustPolicy:
@@ -165,6 +169,7 @@ kind: AwsIamRole
 metadata:
   name: cross-account-role
 spec:
+  region: us-east-1
   description: "IAM role for cross-account access"
   path: "/cross-account/"
   trustPolicy:
@@ -208,6 +213,7 @@ kind: AwsIamRole
 metadata:
   name: application-service-role
 spec:
+  region: us-east-1
   description: "IAM role for application services"
   path: "/applications/"
   trustPolicy:
@@ -253,6 +259,7 @@ kind: AwsIamRole
 metadata:
   name: minimal-iam-role
 spec:
+  region: us-east-1
   trustPolicy:
     Version: "2012-10-17"
     Statement:

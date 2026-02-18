@@ -35,6 +35,10 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 // - Credentials, region, and deployment workflow live outside this spec in
 //   stack inputs.
 message AwsKinesisStreamConsumerSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ARN of the Kinesis Data Stream to register this consumer with. The consumer
   // receives a dedicated 2 MB/s read throughput pipe for every shard in the
   // stream, independent of other consumers.
@@ -44,7 +48,7 @@ message AwsKinesisStreamConsumerSpec {
   //
   // Accepts a direct ARN string or a reference to an AwsKinesisStream resource
   // via valueFrom.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef stream_arn = 1 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef stream_arn = 2 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKinesisStream,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.stream_arn"

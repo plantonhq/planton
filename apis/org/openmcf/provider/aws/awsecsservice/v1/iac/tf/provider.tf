@@ -11,6 +11,8 @@ terraform {
 
 # AWS provider configuration
 # Region and other settings should be configured by the caller
-provider "aws" {}
+provider "aws" {
+  region = var.spec.region
+}
 
 

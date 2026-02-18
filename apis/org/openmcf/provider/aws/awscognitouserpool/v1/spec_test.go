@@ -34,6 +34,7 @@ var _ = ginkgo.Describe("AwsCognitoUserPoolSpec validations", func() {
 	ginkgo.BeforeEach(func() {
 		// Minimal valid spec: email sign-in, one app client.
 		spec = &AwsCognitoUserPoolSpec{
+			Region:             "us-west-2",
 			UsernameAttributes: []string{"email"},
 			Clients: []*AwsCognitoUserPoolClient{
 				minimalClient("web-app"),

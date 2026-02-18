@@ -16,15 +16,19 @@ import "org/openmcf/shared/options/options.proto";
 // By keeping the API minimal and focused, this resource can be easily composed with other resources (like VPCs, security groups, and IAM roles)
 // to deploy an EC2 instance according to typical infrastructure patterns.
 message AwsEc2InstanceSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   //name of the EC2 instance.
-  string instance_name = 1 [
+  string instance_name = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.min_len = 1
   ];
   // Amazon Machine Image ID to use for launching the instance.
   // This is the unique identifier of the OS image (AMI) that the EC2 will run.
   // Example: "ami-0abcdef1234567890" for an Ubuntu or Amazon Linux image.
-  string ami_id = 2 [
+  string ami_id = 3 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.min_len = 1,
     (buf.validate.field).string.pattern = "^ami-"
@@ -32,7 +36,7 @@ message AwsEc2InstanceSpec {
 
   // EC2 instance type (flavor) determining vCPU count and memory.
   // Example: "t3.small" (2 vCPUs, 2 GiB RAM) or "m5.large" (2 vCPUs, 8 GiB RAM).
-  string instance_type = 3 [
+  string instance_type = 4 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.min_len = 1
   ];
@@ -40,7 +44,7 @@ message AwsEc2InstanceSpec {
   // Reference to the target subnet where this instance will reside.
   // This should be a private subnet within an existing VPC.
   // The default kind expects an AwsVpc resource, using one of its private subnet IDs.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 4 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 5 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.id"
@@ -49,7 +53,7 @@ message AwsEc2InstanceSpec {
   // One or more security group IDs to attach to the instance's network interface.
   // These security groups control inbound/outbound traffic for the instance.
   // Typically includes at least one security group for application or SSH access.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 5 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 6 [
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 1,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
@@ -60,7 +64,7 @@ message AwsEc2InstanceSpec {
   // - SSM: Use AWS Systems Manager Session Manager (no SSH key needed, requires an IAM instance profile with SSM permissions).
   // - BASTION: Use a traditional SSH method with a key pair (requires a key_name for the EC2 instance).
   // - INSTANCE_CONNECT: Use AWS EC2 Instance Connect (temporary key injection, also requires a key_name).
-  optional AwsEc2InstanceConnectionMethod connection_method = 6 [
+  optional AwsEc2InstanceConnectionMethod connection_method = 7 [
     (org.openmcf.shared.options.default) = "SSM",
     (buf.validate.field).enum.defined_only = true
   ];
@@ -68,7 +72,7 @@ message AwsEc2InstanceSpec {
   // The ARN of an IAM instance profile to attach to the EC2 instance.
   // This profile should include an IAM role with necessary permissions (for example, SSM Session Manager access if using SSM).
   // **Required if** connection_method is SSM; optional otherwise.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef iam_instance_profile_arn = 7 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef iam_instance_profile_arn = 8 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsIamRole,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
   ];
@@ -76,32 +80,32 @@ message AwsEc2InstanceSpec {
   // The name of an EC2 Key Pair to associate with the instance for SSH access.
   // This is the key pair name as created in AWS (not the public key material).
   // **Required if** connection_method is BASTION or INSTANCE_CONNECT; not used for SSM.
-  string key_name = 8;
+  string key_name = 9;
 
   // Size of the root EBS volume in GiB.
   // This defines the storage capacity for the instance's root filesystem.
   // Defaults to 30 GiB if not specified.
-  optional int32 root_volume_size_gb = 9 [
+  optional int32 root_volume_size_gb = 10 [
     (org.openmcf.shared.options.default) = "30",
     (buf.validate.field).int32.gt = 0
   ];
 
   // Map of tags to apply to the EC2 instance.
   // Tags are key-value pairs for metadata and organization of AWS resources (e.g., {"env": "production", "app": "web"}).
-  map<string, string> tags = 10;
+  map<string, string> tags = 11;
 
   // User data script to provide when launching the instance (cloud-init or shell script).
   // This can be a plaintext or base64-encoded string, up to 32 KiB.
   // Use this to perform initial configuration on boot (install packages, configure software, etc.).
-  string user_data = 11 [(buf.validate.field).string.max_bytes = 32768];
+  string user_data = 12 [(buf.validate.field).string.max_bytes = 32768];
 
   // Enable EBS optimization for the instance (if supported by the instance type).
   // When true, the instance uses dedicated throughput for EBS I/O, which can improve performance for I/O-intensive workloads.
-  bool ebs_optimized = 12;
+  bool ebs_optimized = 13;
 
   // If true, prevents the instance from being terminated via the AWS API (enables termination protection).
   // This adds a safety measure against accidental deletion of the instance.
-  bool disable_api_termination = 13;
+  bool disable_api_termination = 14;
 
   option (buf.validate.message).cel = {
     id: "ssm_requires_iam_profile"

@@ -5,6 +5,7 @@ kind: AwsRdsInstance
 metadata:
   name: db-postgres-dev
 spec:
+  region: us-west-2
   subnetIds:
     - valueFrom:
         kind: AwsVpc
@@ -35,6 +36,7 @@ kind: AwsRdsInstance
 metadata:
   name: db-mysql-public
 spec:
+  region: us-west-2
   dbSubnetGroupName:
     value: app-db-subnet-group
   securityGroupIds:

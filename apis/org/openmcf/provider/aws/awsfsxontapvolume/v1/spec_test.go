@@ -38,6 +38,7 @@ var _ = ginkgo.Describe("AwsFsxOntapVolumeSpec validations", func() {
 
 	ginkgo.BeforeEach(func() {
 		spec = &AwsFsxOntapVolumeSpec{
+			Region:                  "us-west-2",
 			StorageVirtualMachineId: strRef("svm-0123456789abcdef0"),
 			Name:                    "vol_default",
 			SizeInMegabytes:         1024,

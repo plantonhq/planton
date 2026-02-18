@@ -17,6 +17,7 @@ kind: AwsCloudFront
 metadata:
   name: basic-cdn
 spec:
+  region: us-east-1
   enabled: true
   priceClass: PRICE_CLASS_100
   origins:
@@ -41,6 +42,7 @@ kind: AwsCloudFront
 metadata:
   name: custom-domain-cdn
 spec:
+  region: us-east-1
   enabled: true
   aliases:
     - cdn.example.com
@@ -69,6 +71,7 @@ kind: AwsCloudFront
 metadata:
   name: multi-origin-cdn
 spec:
+  region: us-east-1
   enabled: true
   priceClass: PRICE_CLASS_ALL
   origins:
@@ -99,6 +102,7 @@ kind: AwsCloudFront
 metadata:
   name: static-website-cdn
 spec:
+  region: us-east-1
   enabled: true
   aliases:
     - www.example.com
@@ -127,6 +131,7 @@ kind: AwsCloudFront
 metadata:
   name: minimal-cdn
 spec:
+  region: us-east-1
   enabled: true
   origins:
     - domainName: my-bucket.s3.amazonaws.com

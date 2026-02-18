@@ -32,6 +32,7 @@ metadata:
   org: my-org
   env: dev
 spec:
+  region: us-east-1
   storage_capacity_gib: 1024
   throughput_capacity_per_ha_pair: 128
   subnet_ids:
@@ -59,6 +60,7 @@ metadata:
   labels:
     environment: production
 spec:
+  region: us-east-1
   deployment_type: SINGLE_AZ_2
   storage_capacity_gib: 2048
   storage_type: SSD
@@ -94,6 +96,7 @@ metadata:
   labels:
     workload: high-throughput
 spec:
+  region: us-east-1
   deployment_type: SINGLE_AZ_2
   storage_capacity_gib: 8192
   storage_type: SSD
@@ -129,6 +132,7 @@ metadata:
   labels:
     tier: critical
 spec:
+  region: us-east-1
   deployment_type: MULTI_AZ_2
   storage_capacity_gib: 2048
   storage_type: SSD
@@ -168,6 +172,7 @@ metadata:
   org: my-org
   env: production
 spec:
+  region: us-east-1
   deployment_type: SINGLE_AZ_2
   storage_capacity_gib: 2048
   storage_type: SSD
@@ -199,6 +204,7 @@ spec:
 
 ```yaml
 spec:
+  region: us-east-1
   deployment_type: MULTI_AZ_2
   subnet_ids:
     - valueFrom:

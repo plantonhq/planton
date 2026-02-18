@@ -29,20 +29,24 @@ import "org/openmcf/shared/options/options.proto";
 // - `auth_token` and `user_group_ids` are mutually exclusive authentication methods.
 // - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 message AwsRedisElasticacheSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Engine
   // ---------------------------------------------------------------------------
 
   // Cache engine to use. Redis is the dominant choice; Valkey is the open-source
   // Redis-compatible alternative. Values: "redis", "valkey".
-  string engine = 1 [(buf.validate.field).required = true];
+  string engine = 2 [(buf.validate.field).required = true];
 
   // Engine version to deploy. Examples: "7.1", "7.0", "6.2" for Redis;
   // "7.2" for Valkey. Leave empty to use the provider default.
-  string engine_version = 2;
+  string engine_version = 3;
 
   // Human-readable description for the replication group. Required by AWS.
-  string description = 3 [(buf.validate.field).required = true];
+  string description = 4 [(buf.validate.field).required = true];
 
   // ---------------------------------------------------------------------------
   // Node configuration
@@ -51,11 +55,11 @@ message AwsRedisElasticacheSpec {
   // ElastiCache node type. Determines CPU, memory, and network capacity.
   // Examples: "cache.t3.micro" (dev), "cache.r7g.large" (production),
   // "cache.r6gd.xlarge" (data tiering).
-  string node_type = 4 [(buf.validate.field).required = true];
+  string node_type = 5 [(buf.validate.field).required = true];
 
   // Port on which the cluster accepts connections. Default: 6379.
   // This is a ForceNew attribute — changing it destroys and recreates the cluster.
-  optional int32 port = 5 [
+  optional int32 port = 6 [
     (org.openmcf.shared.options.default) = "6379",
     (buf.validate.field).int32 = {
       gte: 1
@@ -70,7 +74,7 @@ message AwsRedisElasticacheSpec {
   // Total number of cache clusters (nodes) in the replication group. This includes
   // the primary and all read replicas. For example, 3 means 1 primary + 2 replicas.
   // Range: 1–6. Mutually exclusive with `num_node_groups`.
-  int32 num_cache_clusters = 6;
+  int32 num_cache_clusters = 7;
 
   // ---------------------------------------------------------------------------
   // Topology — Clustered Mode (Cluster Mode Enabled)
@@ -78,11 +82,11 @@ message AwsRedisElasticacheSpec {
 
   // Number of node groups (shards) for Cluster Mode Enabled. Each shard holds a
   // partition of the keyspace. Mutually exclusive with `num_cache_clusters`.
-  int32 num_node_groups = 7;
+  int32 num_node_groups = 8;
 
   // Number of read replicas per shard. Range: 0–5. Only valid when
   // `num_node_groups` is set.
-  int32 replicas_per_node_group = 8 [(buf.validate.field).int32 = {
+  int32 replicas_per_node_group = 9 [(buf.validate.field).int32 = {
     gte: 0
     lte: 5
   }];
@@ -94,11 +98,11 @@ message AwsRedisElasticacheSpec {
   // Enable automatic failover to a read replica if the primary fails.
   // Requires `num_cache_clusters >= 2` (non-clustered) or `num_node_groups > 0`
   // (clustered mode, where failover is always on).
-  bool automatic_failover_enabled = 9;
+  bool automatic_failover_enabled = 10;
 
   // Deploy replicas across multiple Availability Zones for resilience against
   // AZ-level failures. Requires `automatic_failover_enabled` to be true.
-  bool multi_az_enabled = 10;
+  bool multi_az_enabled = 11;
 
   // ---------------------------------------------------------------------------
   // Networking
@@ -107,14 +111,14 @@ message AwsRedisElasticacheSpec {
   // Subnet IDs for the ElastiCache subnet group. Provide subnets in at least two
   // AZs for multi-AZ deployments. A subnet group is created automatically from
   // these subnets.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 11 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 12 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
   ];
 
   // VPC security groups to attach to the cluster nodes. Controls network-level
   // access to the Redis/Valkey endpoint.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 12 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 13 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
@@ -125,21 +129,21 @@ message AwsRedisElasticacheSpec {
 
   // Enable encryption at rest for data stored on disk and in snapshots.
   // ForceNew — changing this destroys and recreates the cluster.
-  bool at_rest_encryption_enabled = 13 [(org.openmcf.shared.options.recommended_default) = "true"];
+  bool at_rest_encryption_enabled = 14 [(org.openmcf.shared.options.recommended_default) = "true"];
 
   // Enable encryption in transit (TLS) for all client connections and
   // replication traffic. Strongly recommended for production.
-  bool transit_encryption_enabled = 14 [(org.openmcf.shared.options.recommended_default) = "true"];
+  bool transit_encryption_enabled = 15 [(org.openmcf.shared.options.recommended_default) = "true"];
 
   // TLS enforcement mode. "preferred" allows both TLS and non-TLS connections
   // (useful during migration); "required" enforces TLS for all connections.
   // Only valid when `transit_encryption_enabled` is true.
-  string transit_encryption_mode = 15;
+  string transit_encryption_mode = 16;
 
   // Customer-managed KMS key for at-rest encryption. When set, ElastiCache uses
   // this key instead of the AWS-managed key. ForceNew — changing this destroys
   // and recreates the cluster.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 16 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 17 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -151,12 +155,12 @@ message AwsRedisElasticacheSpec {
   // Redis AUTH token (password) for client authentication. Requires
   // `transit_encryption_enabled` to be true. 16–128 printable characters.
   // Mutually exclusive with `user_group_ids`.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef auth_token = 17;
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef auth_token = 18;
 
   // Redis ACL user group IDs for fine-grained access control. Each user group
   // defines users with specific command and key permissions. Mutually exclusive
   // with `auth_token`.
-  repeated string user_group_ids = 18;
+  repeated string user_group_ids = 19;
 
   // ---------------------------------------------------------------------------
   // Maintenance and snapshots
@@ -164,32 +168,32 @@ message AwsRedisElasticacheSpec {
 
   // Weekly maintenance window in UTC. Format: "ddd:hh24:mi-ddd:hh24:mi".
   // Example: "sun:05:00-sun:06:00". Leave empty for AWS-assigned default.
-  string maintenance_window = 19 [
+  string maintenance_window = 20 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string.pattern = "^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$"
   ];
 
   // Number of days to retain automatic snapshots before deletion. 0 disables
   // automatic snapshots. Range: 0–35.
-  int32 snapshot_retention_limit = 20 [(buf.validate.field).int32 = {
+  int32 snapshot_retention_limit = 21 [(buf.validate.field).int32 = {
     gte: 0
     lte: 35
   }];
 
   // Daily snapshot window in UTC. Format: "hh24:mi-hh24:mi".
   // Example: "03:00-04:00". Leave empty for AWS-assigned default.
-  string snapshot_window = 21 [
+  string snapshot_window = 22 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string.pattern = "^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$"
   ];
 
   // Identifier for the final snapshot taken when the cluster is deleted. If not
   // provided, no final snapshot is created.
-  string final_snapshot_identifier = 22;
+  string final_snapshot_identifier = 23;
 
   // Apply changes immediately instead of waiting for the next maintenance window.
   // May cause brief downtime for some operations.
-  bool apply_immediately = 23;
+  bool apply_immediately = 24;
 
   // ---------------------------------------------------------------------------
   // Parameter group (bundled)
@@ -197,11 +201,11 @@ message AwsRedisElasticacheSpec {
 
   // Parameter group family for custom parameters. Required when `parameters` is
   // provided. Examples: "redis7", "redis6.x", "valkey7".
-  string parameter_group_family = 24;
+  string parameter_group_family = 25;
 
   // Custom cache parameters to apply via a managed parameter group. Common
   // examples: maxmemory-policy, timeout, tcp-keepalive.
-  repeated AwsRedisElasticacheParameter parameters = 25;
+  repeated AwsRedisElasticacheParameter parameters = 26;
 
   // ---------------------------------------------------------------------------
   // Logging
@@ -210,7 +214,7 @@ message AwsRedisElasticacheSpec {
   // Log delivery configurations for slow-log and/or engine-log. At most 2
   // entries — one per log type. Logs can be delivered to CloudWatch Logs or
   // Kinesis Data Firehose.
-  repeated AwsRedisElasticacheLogDeliveryConfig log_delivery_configurations = 26;
+  repeated AwsRedisElasticacheLogDeliveryConfig log_delivery_configurations = 27;
 
   // ---------------------------------------------------------------------------
   // Advanced
@@ -218,18 +222,18 @@ message AwsRedisElasticacheSpec {
 
   // SNS topic ARN for cluster event notifications (failover, maintenance,
   // configuration changes, etc.).
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef notification_topic_arn = 27 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef notification_topic_arn = 28 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSnsTopic,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.topic_arn"
   ];
 
   // Automatically apply minor engine version upgrades during maintenance windows.
-  bool auto_minor_version_upgrade = 28;
+  bool auto_minor_version_upgrade = 29;
 
   // Enable data tiering — automatically moves less-frequently-accessed data to
   // SSD storage for up to 5x more data per node. Only available on r6gd node
   // types. ForceNew — cannot be changed after creation.
-  bool data_tiering_enabled = 29;
+  bool data_tiering_enabled = 30;
 
   // ---------------------------------------------------------------------------
   // CEL validations

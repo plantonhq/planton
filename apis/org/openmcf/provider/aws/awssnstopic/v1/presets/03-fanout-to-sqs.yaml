@@ -3,6 +3,7 @@ kind: AwsSnsTopic
 metadata:
   name: order-events
 spec:
+  region: <aws-region>
   signatureVersion: 2
   subscriptions:
     - name: fulfillment-queue

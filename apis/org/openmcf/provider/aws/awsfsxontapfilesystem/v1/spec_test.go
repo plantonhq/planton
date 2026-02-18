@@ -34,6 +34,7 @@ var _ = ginkgo.Describe("AwsFsxOntapFileSystemSpec validations", func() {
 
 	ginkgo.BeforeEach(func() {
 		spec = &AwsFsxOntapFileSystemSpec{
+			Region:                      "us-west-2",
 			SubnetIds:                   []*foreignkeyv1.StringValueOrRef{strRef("subnet-abc123")},
 			StorageCapacityGib:          1024,
 			ThroughputCapacityPerHaPair: 128,

@@ -11,7 +11,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awssecretsmanager/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awssecretsmanager_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjhvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzc2VjcmV0c21hbmFnZXIvdjEvc3BlYy5wcm90bxItb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3NlY3JldHNtYW5hZ2VyLnYxIj8KFUF3c1NlY3JldHNNYW5hZ2VyU3BlYxImCgxzZWNyZXRfbmFtZXMYASADKAlCELpIDZIBCggBGAEiBHICEAFC/gIKMWNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzc2VjcmV0c21hbmFnZXIudjFCCVNwZWNQcm90b1ABWmNnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c3NlY3JldHNtYW5hZ2VyL3YxO2F3c3NlY3JldHNtYW5hZ2VydjGiAgVPT1BBQaoCLU9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NzZWNyZXRzbWFuYWdlci5WMcoCLU9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NzZWNyZXRzbWFuYWdlclxWMeICOU9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NzZWNyZXRzbWFuYWdlclxWMVxHUEJNZXRhZGF0YeoCMk9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzc2VjcmV0c21hbmFnZXI6OlYxYgZwcm90bzM", [file_buf_validate_validate]);
+  fileDesc("Cjhvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzc2VjcmV0c21hbmFnZXIvdjEvc3BlYy5wcm90bxItb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3NlY3JldHNtYW5hZ2VyLnYxIlgKFUF3c1NlY3JldHNNYW5hZ2VyU3BlYxIXCgZyZWdpb24YASABKAlCB7pIBHICEAESJgoMc2VjcmV0X25hbWVzGAIgAygJQhC6SA2SAQoIARgBIgRyAhABQv4CCjFjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3NlY3JldHNtYW5hZ2VyLnYxQglTcGVjUHJvdG9QAVpjZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NzZWNyZXRzbWFuYWdlci92MTthd3NzZWNyZXRzbWFuYWdlcnYxogIFT09QQUGqAi1PcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzc2VjcmV0c21hbmFnZXIuVjHKAi1PcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzc2VjcmV0c21hbmFnZXJcVjHiAjlPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzc2VjcmV0c21hbmFnZXJcVjFcR1BCTWV0YWRhdGHqAjJPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c3NlY3JldHNtYW5hZ2VyOjpWMWIGcHJvdG8z", [file_buf_validate_validate]);
 
 /**
  * AwsSecretsManagerSpec defines the specification required to create and manage secrets in AWS Secrets Manager.
@@ -25,11 +25,19 @@ export const file_org_openmcf_provider_aws_awssecretsmanager_v1_spec: GenFile = 
  */
 export type AwsSecretsManagerSpec = Message<"org.openmcf.provider.aws.awssecretsmanager.v1.AwsSecretsManagerSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * List of secret names to create in AWS Secrets Manager.
    * Each name corresponds to a unique secret that will be securely stored and managed.
    * Secret names must be unique within your AWS account and region.
    *
-   * @generated from field: repeated string secret_names = 1;
+   * @generated from field: repeated string secret_names = 2;
    */
   secretNames: string[];
 };

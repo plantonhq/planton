@@ -3,7 +3,8 @@ apiVersion: aws.openmcf.org/v1
 kind: AwsKmsKey
 metadata:
   name: example
-spec: {}
+spec:
+  region: us-west-2
 ```
 
 CLI:

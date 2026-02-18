@@ -3,6 +3,6 @@ kind: AwsS3Bucket
 metadata:
   name: awss3bucket-demo
 spec:
-  awsRegion: us-east-1
+  region: us-east-1
   isPublic: false
 

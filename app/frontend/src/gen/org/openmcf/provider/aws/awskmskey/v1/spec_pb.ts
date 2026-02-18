@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awskmskey/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awskmskey_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjBvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdza21za2V5L3YxL3NwZWMucHJvdG8SJW9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NrbXNrZXkudjEi/QEKDUF3c0ttc0tleVNwZWMSRgoIa2V5X3NwZWMYASABKA4yNC5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdza21za2V5LnYxLkF3c0ttc0tleVR5cGUSHQoLZGVzY3JpcHRpb24YAiABKAlCCLpIBXIDGPoBEhwKFGRpc2FibGVfa2V5X3JvdGF0aW9uGAMgASgIEi0KFGRlbGV0aW9uX3dpbmRvd19kYXlzGAQgASgFQg+6SAYaBBgeKAeSph0CMzASOAoKYWxpYXNfbmFtZRgFIAEoCUIkukghch8yHV5hbGlhcy9bQS1aYS16MC05L18tXXsxLDI1MH0kKk0KDUF3c0ttc0tleVR5cGUSDQoJc3ltbWV0cmljEAASDAoIcnNhXzIwNDgQARIMCghyc2FfNDA5NhACEhEKDWVjY19uaXN0X3AyNTYQA0LGAgopY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NrbXNrZXkudjFCCVNwZWNQcm90b1ABWlNnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c2ttc2tleS92MTthd3NrbXNrZXl2MaICBU9PUEFBqgIlT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2ttc2tleS5WMcoCJU9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NrbXNrZXlcVjHiAjFPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdza21za2V5XFYxXEdQQk1ldGFkYXRh6gIqT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NrbXNrZXk6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_options_options]);
+  fileDesc("CjBvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdza21za2V5L3YxL3NwZWMucHJvdG8SJW9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NrbXNrZXkudjEilgIKDUF3c0ttc0tleVNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEkYKCGtleV9zcGVjGAIgASgOMjQub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2ttc2tleS52MS5Bd3NLbXNLZXlUeXBlEh0KC2Rlc2NyaXB0aW9uGAMgASgJQgi6SAVyAxj6ARIcChRkaXNhYmxlX2tleV9yb3RhdGlvbhgEIAEoCBItChRkZWxldGlvbl93aW5kb3dfZGF5cxgFIAEoBUIPukgGGgQYHigHkqYdAjMwEjgKCmFsaWFzX25hbWUYBiABKAlCJLpIIXIfMh1eYWxpYXMvW0EtWmEtejAtOS9fLV17MSwyNTB9JCpNCg1Bd3NLbXNLZXlUeXBlEg0KCXN5bW1ldHJpYxAAEgwKCHJzYV8yMDQ4EAESDAoIcnNhXzQwOTYQAhIRCg1lY2NfbmlzdF9wMjU2EANCxgIKKWNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdza21za2V5LnYxQglTcGVjUHJvdG9QAVpTZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NrbXNrZXkvdjE7YXdza21za2V5djGiAgVPT1BBQaoCJU9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NrbXNrZXkuVjHKAiVPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdza21za2V5XFYx4gIxT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2ttc2tleVxWMVxHUEJNZXRhZGF0YeoCKk9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdza21za2V5OjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsKmsKeySpec captures the essential fields to create a customer-managed AWS KMS key.
@@ -21,10 +21,18 @@ export const file_org_openmcf_provider_aws_awskmskey_v1_spec: GenFile = /*@__PUR
  */
 export type AwsKmsKeySpec = Message<"org.openmcf.provider.aws.awskmskey.v1.AwsKmsKeySpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * key_spec specifies the type of KMS key to create.
    * If not provided, defaults to symmetric_default.
    *
-   * @generated from field: org.openmcf.provider.aws.awskmskey.v1.AwsKmsKeyType key_spec = 1;
+   * @generated from field: org.openmcf.provider.aws.awskmskey.v1.AwsKmsKeyType key_spec = 2;
    */
   keySpec: AwsKmsKeyType;
 
@@ -32,7 +40,7 @@ export type AwsKmsKeySpec = Message<"org.openmcf.provider.aws.awskmskey.v1.AwsKm
    * description is an optional description for the KMS key.
    * Maximum length is 250 characters.
    *
-   * @generated from field: string description = 2;
+   * @generated from field: string description = 3;
    */
   description: string;
 
@@ -40,7 +48,7 @@ export type AwsKmsKeySpec = Message<"org.openmcf.provider.aws.awskmskey.v1.AwsKm
    * disable_key_rotation, if true, will disable the key's automatic annual rotation.
    * If false (default), rotation is enabled.
    *
-   * @generated from field: bool disable_key_rotation = 3;
+   * @generated from field: bool disable_key_rotation = 4;
    */
   disableKeyRotation: boolean;
 
@@ -48,7 +56,7 @@ export type AwsKmsKeySpec = Message<"org.openmcf.provider.aws.awskmskey.v1.AwsKm
    * deletion_window_days is the waiting period (in days) before deletion of the KMS key.
    * Allowed range is 7–30 days (inclusive). Default is 30 days.
    *
-   * @generated from field: int32 deletion_window_days = 4;
+   * @generated from field: int32 deletion_window_days = 5;
    */
   deletionWindowDays: number;
 
@@ -56,7 +64,7 @@ export type AwsKmsKeySpec = Message<"org.openmcf.provider.aws.awskmskey.v1.AwsKm
    * alias_name is an optional alias to assign to the KMS key.
    * It must begin with "alias/" and contain 1–250 allowed characters (letters, numbers, underscore, or hyphen).
    *
-   * @generated from field: string alias_name = 5;
+   * @generated from field: string alias_name = 6;
    */
   aliasName: string;
 };

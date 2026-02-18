@@ -53,6 +53,7 @@ No fields in `spec` are strictly required. A minimal `spec: {}` creates a public
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `spec.region` | `string` | The AWS region where the resource will be created. |
 | `metadata.name` | `string` | The domain name for the hosted zone (e.g., `example.com`). Also used as the zone name in Route53. |
 
 ### Optional Fields
@@ -106,6 +107,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsRoute53Zone.example-com
 spec:
+  region: us-east-1
   records:
     - recordType: A
       name: example.com
@@ -145,6 +147,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsRoute53Zone.internal-example-com
 spec:
+  region: us-east-1
   isPrivate: true
   vpcAssociations:
     - vpcId: vpc-0a1b2c3d4e5f00001
@@ -179,6 +182,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsRoute53Zone.example-com
 spec:
+  region: us-east-1
   enableDnssec: true
   records:
     - recordType: A
@@ -215,6 +219,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsRoute53Zone.example-com
 spec:
+  region: us-east-1
   records:
     - recordType: A
       name: api.example.com
@@ -251,6 +256,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsRoute53Zone.example-com
 spec:
+  region: us-east-1
   enableQueryLogging: true
   queryLogGroupName: /aws/route53/example-com
   records:

@@ -39,6 +39,10 @@ import "org/openmcf/shared/options/options.proto";
 // - Credentials, region, and deployment workflow live outside this spec in stack
 //   inputs.
 message AwsFsxOntapVolumeSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Parent Reference
   // ---------------------------------------------------------------------------
@@ -48,7 +52,7 @@ message AwsFsxOntapVolumeSpec {
   //
   // The SVM provides the network endpoints, protocol configuration, and Active
   // Directory integration. All volumes within an SVM share its protocol stack.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef storage_virtual_machine_id = 1 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef storage_virtual_machine_id = 2 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsFsxOntapStorageVirtualMachine,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.svm_id"
@@ -66,7 +70,7 @@ message AwsFsxOntapVolumeSpec {
   // output.
   //
   // Constraints: 1-203 characters, alphanumeric and underscore only.
-  string name = 2 [
+  string name = 3 [
     (buf.validate.field).string.min_len = 1,
     (buf.validate.field).string.max_len = 203
   ];
@@ -84,7 +88,7 @@ message AwsFsxOntapVolumeSpec {
   //
   // Covers volumes up to ~2.1 PB (int32 max). For the extremely rare case of
   // volumes exceeding 2 PB, use the AWS console or CLI with size_in_bytes.
-  int32 size_in_megabytes = 3 [(buf.validate.field).int32.gte = 20];
+  int32 size_in_megabytes = 4 [(buf.validate.field).int32.gte = 20];
 
   // ---------------------------------------------------------------------------
   // Volume Configuration
@@ -100,7 +104,7 @@ message AwsFsxOntapVolumeSpec {
   // "/data/prod", "/shares/finance".
   //
   // Constraints: 1-255 characters.
-  string junction_path = 4;
+  string junction_path = 5;
 
   // The ONTAP volume type. ForceNew.
   //
@@ -110,7 +114,7 @@ message AwsFsxOntapVolumeSpec {
   //   relationship is broken or the volume is converted.
   //
   // Default: RW
-  optional string ontap_volume_type = 5 [(org.openmcf.shared.options.default) = "RW"];
+  optional string ontap_volume_type = 6 [(org.openmcf.shared.options.default) = "RW"];
 
   // The volume style. ForceNew.
   //
@@ -121,7 +125,7 @@ message AwsFsxOntapVolumeSpec {
   //   aggregate_configuration. Ideal for data lakes, genomics, and media.
   //
   // Default: FLEXVOL
-  optional string volume_style = 6 [(org.openmcf.shared.options.default) = "FLEXVOL"];
+  optional string volume_style = 7 [(org.openmcf.shared.options.default) = "FLEXVOL"];
 
   // The security style for this volume's root directory. Controls how file
   // permissions are evaluated.
@@ -132,7 +136,7 @@ message AwsFsxOntapVolumeSpec {
   //   depends on which protocol last set permissions on a file.
   //
   // If omitted, inherits from the parent SVM's root_volume_security_style.
-  string security_style = 7;
+  string security_style = 8;
 
   // The name of the ONTAP snapshot policy to apply to this volume. Snapshot
   // policies control automatic snapshot creation and retention.
@@ -141,7 +145,7 @@ message AwsFsxOntapVolumeSpec {
   // (no automatic snapshots). Custom policies can be created via the ONTAP CLI.
   //
   // Constraints: 1-255 characters.
-  string snapshot_policy = 8;
+  string snapshot_policy = 9;
 
   // Enable ONTAP storage efficiency features: deduplication, compression, and
   // compaction. These features reduce physical storage consumption by
@@ -150,12 +154,12 @@ message AwsFsxOntapVolumeSpec {
   // Recommended for most workloads. Disable only for workloads that are
   // already compressed or deduplicated (e.g., encrypted data, pre-compressed
   // media files) where the CPU overhead provides no benefit.
-  bool storage_efficiency_enabled = 9;
+  bool storage_efficiency_enabled = 10;
 
   // Whether to copy resource tags to automatic volume backups.
   //
   // Default: false
-  optional bool copy_tags_to_backups = 10 [(org.openmcf.shared.options.default) = "false"];
+  optional bool copy_tags_to_backups = 11 [(org.openmcf.shared.options.default) = "false"];
 
   // ---------------------------------------------------------------------------
   // Deletion Behavior
@@ -166,14 +170,14 @@ message AwsFsxOntapVolumeSpec {
   // unnecessary.
   //
   // Default: false (a final backup is taken)
-  optional bool skip_final_backup = 11 [(org.openmcf.shared.options.default) = "false"];
+  optional bool skip_final_backup = 12 [(org.openmcf.shared.options.default) = "false"];
 
   // Whether to allow deletion of a SnapLock Enterprise volume that contains
   // WORM files with unexpired retention periods. Only relevant for SnapLock
   // Enterprise volumes — Compliance volumes can never bypass retention.
   //
   // Default: false
-  optional bool bypass_snaplock_enterprise_retention = 12 [(org.openmcf.shared.options.default) = "false"];
+  optional bool bypass_snaplock_enterprise_retention = 13 [(org.openmcf.shared.options.default) = "false"];
 
   // ---------------------------------------------------------------------------
   // Tiering Policy (optional)
@@ -182,7 +186,7 @@ message AwsFsxOntapVolumeSpec {
   // Data tiering policy that controls when and how data moves from primary
   // SSD storage to lower-cost capacity pool storage. If omitted, the volume
   // uses the default tiering policy (SNAPSHOT_ONLY).
-  AwsFsxOntapVolumeTieringPolicy tiering_policy = 13;
+  AwsFsxOntapVolumeTieringPolicy tiering_policy = 14;
 
   // ---------------------------------------------------------------------------
   // SnapLock Configuration (optional)
@@ -201,7 +205,7 @@ message AwsFsxOntapVolumeSpec {
   //
   // Once set, the snaplock_type cannot be changed. Choosing the wrong type
   // requires deleting and recreating the volume.
-  AwsFsxOntapVolumeSnaplockConfiguration snaplock_configuration = 14;
+  AwsFsxOntapVolumeSnaplockConfiguration snaplock_configuration = 15;
 
   // ---------------------------------------------------------------------------
   // Aggregate Configuration (optional — for FLEXGROUP volumes)
@@ -213,7 +217,7 @@ message AwsFsxOntapVolumeSpec {
   //
   // All fields in this block are ForceNew — changing the aggregate layout
   // requires recreating the volume.
-  AwsFsxOntapVolumeAggregateConfiguration aggregate_configuration = 15;
+  AwsFsxOntapVolumeAggregateConfiguration aggregate_configuration = 16;
 
   // ---------------------------------------------------------------------------
   // CEL Validations

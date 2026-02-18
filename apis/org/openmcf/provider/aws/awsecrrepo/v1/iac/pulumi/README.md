@@ -20,7 +20,7 @@ The AWS ECR Repo Pulumi Module provides a standardized and efficient way to defi
 
 - **DNS Settings**: Provides options to enable or disable DNS hostnames and DNS support within the ECR, offering control over name resolution behavior.
 
-- **Credential Management**: Securely handles AWS credentials via the `awsProviderConfigId` field, ensuring authenticated and authorized resource deployments.
+- **Credential Management**: Securely handles AWS credentials via provider configuration, ensuring authenticated and authorized resource deployments.
 
 - **Status Reporting**: Captures and stores outputs such as ECR IDs, Internet Gateway IDs, and subnet details in `status.outputs` for easy reference and further automation.
 
@@ -32,7 +32,7 @@ The module operates by accepting an AWS ECR Repo API resource definition as inpu
 
 - **Pulumi Module**: Written in Go, the module reads the API resource and uses Pulumi's AWS SDK to provision ECR resources based on the provided specifications.
 
-- **AWS Provider Initialization**: The module initializes the AWS provider within Pulumi using the credentials specified by `awsProviderConfigId`.
+- **AWS Provider Initialization**: The module initializes the AWS provider within Pulumi using the region from `spec.region` and optional provider credentials.
 
 - **Resource Creation**: Provisions the ECR and associated resources as defined in the `spec`, including subnets, Internet Gateways, NAT Gateways, and route tables.
 

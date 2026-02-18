@@ -35,6 +35,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsFsxOntapStorageVirtualMachine.my-svm
 spec:
+  region: us-east-1
   fileSystemId: fs-0123456789abcdef0
   name: svm_default
 ```
@@ -53,6 +54,7 @@ This creates an NFS/iSCSI-only SVM with UNIX security style (the default) on the
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the SVM will be created (e.g., `us-east-1`). | Required; non-empty |
 | `fileSystemId` | `StringValueOrRef` | ID of the parent FSx ONTAP file system. ForceNew. | Required. Can reference AwsFsxOntapFileSystem via `valueFrom`. |
 | `name` | `string` | ONTAP SVM name. ForceNew. This is the ONTAP identity, not the OpenMCF metadata name. | 1-47 characters, alphanumeric and underscore only. |
 
@@ -87,6 +89,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsFsxOntapStorageVirtualMachine.nfs-svm
 spec:
+  region: us-east-1
   fileSystemId: fs-0123456789abcdef0
   name: svm_nfs
   rootVolumeSecurityStyle: UNIX
@@ -107,6 +110,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsFsxOntapStorageVirtualMachine.smb-svm
 spec:
+  region: us-east-1
   fileSystemId: fs-0123456789abcdef0
   name: svm_windows
   rootVolumeSecurityStyle: NTFS
@@ -137,6 +141,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsFsxOntapStorageVirtualMachine.multi-svm
 spec:
+  region: us-east-1
   fileSystemId: fs-0123456789abcdef0
   name: svm_shared
   rootVolumeSecurityStyle: MIXED
@@ -168,6 +173,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsFsxOntapStorageVirtualMachine.linked-svm
 spec:
+  region: us-east-1
   fileSystemId:
     valueFrom:
       kind: AwsFsxOntapFileSystem

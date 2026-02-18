@@ -36,6 +36,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsCodePipeline.my-app-pipeline
 spec:
+  region: us-west-2
   roleArn: arn:aws:iam::123456789012:role/codepipeline-service-role
   artifactStores:
     - location: my-pipeline-artifacts-bucket
@@ -195,6 +196,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsCodePipeline.my-app-ci
 spec:
+  region: us-west-2
   pipelineType: V2
   executionMode: QUEUED
   roleArn: arn:aws:iam::123456789012:role/codepipeline-service-role
@@ -254,6 +256,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsCodePipeline.my-service-deploy
 spec:
+  region: us-west-2
   pipelineType: V2
   executionMode: QUEUED
   roleArn: arn:aws:iam::123456789012:role/codepipeline-service-role
@@ -315,6 +318,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsCodePipeline.my-lambda-deploy
 spec:
+  region: us-west-2
   pipelineType: V2
   executionMode: SUPERSEDED
   roleArn: arn:aws:iam::123456789012:role/codepipeline-service-role
@@ -363,6 +367,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsCodePipeline.prod-release-pipeline
 spec:
+  region: us-west-2
   pipelineType: V2
   executionMode: QUEUED
   roleArn: arn:aws:iam::123456789012:role/codepipeline-service-role
@@ -464,6 +469,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsCodePipeline.ref-pipeline
 spec:
+  region: us-west-2
   roleArn:
     valueFrom:
       kind: AwsIamRole

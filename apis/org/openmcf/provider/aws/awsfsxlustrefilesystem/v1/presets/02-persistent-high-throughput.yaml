@@ -6,6 +6,7 @@ metadata:
   name: ml-training-fsx
   id: ml-training-fsx-id
 spec:
+  region: <aws-region>
   deployment_type: PERSISTENT_2
   storage_capacity_gib: 2400
   storage_type: SSD

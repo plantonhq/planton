@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsrdsinstance/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsrdsinstance_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjVvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzcmRzaW5zdGFuY2UvdjEvc3BlYy5wcm90bxIqb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3Jkc2luc3RhbmNlLnYxIrUHChJBd3NSZHNJbnN0YW5jZVNwZWMSdgoKc3VibmV0X2lkcxgBIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCLojUYdgBktRhJXN0YXR1cy5vdXRwdXRzLnByaXZhdGVfc3VibmV0cy5bKl0uaWQSUAoUZGJfc3VibmV0X2dyb3VwX25hbWUYAiABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmEnkKEnNlY3VyaXR5X2dyb3VwX2lkcxgDIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEhcKBmVuZ2luZRgEIAEoCUIHukgEcgIQARIfCg5lbmdpbmVfdmVyc2lvbhgFIAEoCUIHukgEcgIQARImCg5pbnN0YW5jZV9jbGFzcxgGIAEoCUIOukgLcgkQATIFXmRiXC4SJQoUYWxsb2NhdGVkX3N0b3JhZ2VfZ2IYByABKAVCB7pIBBoCIAASGQoRc3RvcmFnZV9lbmNyeXB0ZWQYCCABKAgSZwoKa21zX2tleV9pZBgJIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SGQoIdXNlcm5hbWUYCiABKAlCB7pIBHICEAESGQoIcGFzc3dvcmQYCyABKAlCB7pIBHICEAESGQoEcG9ydBgMIAEoBUILukgIGgYY//8DKAASGwoTcHVibGljbHlfYWNjZXNzaWJsZRgNIAEoCBIQCghtdWx0aV9hehgOIAEoCBIcChRwYXJhbWV0ZXJfZ3JvdXBfbmFtZRgPIAEoCRIZChFvcHRpb25fZ3JvdXBfbmFtZRgQIAEoCTqTAbpIjwEajAEKEHN1Ym5ldHNfb3JfZ3JvdXASN1Byb3ZpZGUgZWl0aGVyIHN1Ym5ldF9pZHMgKD49Mikgb3IgZGJfc3VibmV0X2dyb3VwX25hbWUaPyh0aGlzLnN1Ym5ldF9pZHMuc2l6ZSgpID49IDIpIHx8IGhhcyh0aGlzLmRiX3N1Ym5ldF9ncm91cF9uYW1lKULpAgouY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NyZHNpbnN0YW5jZS52MUIJU3BlY1Byb3RvUAFaXWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzcmRzaW5zdGFuY2UvdjE7YXdzcmRzaW5zdGFuY2V2MaICBU9PUEFBqgIqT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c3Jkc2luc3RhbmNlLlYxygIqT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c3Jkc2luc3RhbmNlXFYx4gI2T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c3Jkc2luc3RhbmNlXFYxXEdQQk1ldGFkYXRh6gIvT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NyZHNpbnN0YW5jZTo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
+  fileDesc("CjVvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzcmRzaW5zdGFuY2UvdjEvc3BlYy5wcm90bxIqb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3Jkc2luc3RhbmNlLnYxIs4HChJBd3NSZHNJbnN0YW5jZVNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEnYKCnN1Ym5ldF9pZHMYAiADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQi6I1GHYAZLUYSVzdGF0dXMub3V0cHV0cy5wcml2YXRlX3N1Ym5ldHMuWypdLmlkElAKFGRiX3N1Ym5ldF9ncm91cF9uYW1lGAMgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZhJ5ChJzZWN1cml0eV9ncm91cF9pZHMYBCADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQimI1GHXAZLUYSBzdGF0dXMub3V0cHV0cy5zZWN1cml0eV9ncm91cF9pZBIXCgZlbmdpbmUYBSABKAlCB7pIBHICEAESHwoOZW5naW5lX3ZlcnNpb24YBiABKAlCB7pIBHICEAESJgoOaW5zdGFuY2VfY2xhc3MYByABKAlCDrpIC3IJEAEyBV5kYlwuEiUKFGFsbG9jYXRlZF9zdG9yYWdlX2diGAggASgFQge6SAQaAiAAEhkKEXN0b3JhZ2VfZW5jcnlwdGVkGAkgASgIEmcKCmttc19rZXlfaWQYCiABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQh+I1GHbAZLUYRZzdGF0dXMub3V0cHV0cy5rZXlfYXJuEhkKCHVzZXJuYW1lGAsgASgJQge6SARyAhABEhkKCHBhc3N3b3JkGAwgASgJQge6SARyAhABEhkKBHBvcnQYDSABKAVCC7pICBoGGP//AygAEhsKE3B1YmxpY2x5X2FjY2Vzc2libGUYDiABKAgSEAoIbXVsdGlfYXoYDyABKAgSHAoUcGFyYW1ldGVyX2dyb3VwX25hbWUYECABKAkSGQoRb3B0aW9uX2dyb3VwX25hbWUYESABKAk6kwG6SI8BGowBChBzdWJuZXRzX29yX2dyb3VwEjdQcm92aWRlIGVpdGhlciBzdWJuZXRfaWRzICg+PTIpIG9yIGRiX3N1Ym5ldF9ncm91cF9uYW1lGj8odGhpcy5zdWJuZXRfaWRzLnNpemUoKSA+PSAyKSB8fCBoYXModGhpcy5kYl9zdWJuZXRfZ3JvdXBfbmFtZSlC6QIKLmNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzcmRzaW5zdGFuY2UudjFCCVNwZWNQcm90b1ABWl1naXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c3Jkc2luc3RhbmNlL3YxO2F3c3Jkc2luc3RhbmNldjGiAgVPT1BBQaoCKk9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NyZHNpbnN0YW5jZS5WMcoCKk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NyZHNpbnN0YW5jZVxWMeICNk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NyZHNpbnN0YW5jZVxWMVxHUEJNZXRhZGF0YeoCL09yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzcmRzaW5zdGFuY2U6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
 
 /**
  * AwsRdsInstanceSpec defines the minimal configuration to create a single AWS RDS DB instance
@@ -25,113 +25,121 @@ export const file_org_openmcf_provider_aws_awsrdsinstance_v1_spec: GenFile = /*@
  */
 export type AwsRdsInstanceSpec = Message<"org.openmcf.provider.aws.awsrdsinstance.v1.AwsRdsInstanceSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * Subnets for the DB subnet group. Provide at least two private subnets for high availability.
    * Alternatively, provide an existing DB subnet group name via db_subnet_group_name.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 1;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 2;
    */
   subnetIds: StringValueOrRef[];
 
   /**
    * Name of an existing DB subnet group to use instead of specifying subnet_ids.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef db_subnet_group_name = 2;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef db_subnet_group_name = 3;
    */
   dbSubnetGroupName?: StringValueOrRef;
 
   /**
    * Security groups to associate with the instance's network interface.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 3;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 4;
    */
   securityGroupIds: StringValueOrRef[];
 
   /**
    * Database engine (e.g., "postgres", "mysql", "mariadb", "oracle-se2", "sqlserver-ex").
    *
-   * @generated from field: string engine = 4;
+   * @generated from field: string engine = 5;
    */
   engine: string;
 
   /**
    * Desired engine version (e.g., "14.10" for Postgres, or a version string appropriate to the engine).
    *
-   * @generated from field: string engine_version = 5;
+   * @generated from field: string engine_version = 6;
    */
   engineVersion: string;
 
   /**
    * Instance class (size), e.g., "db.t3.micro", "db.m6g.large".
    *
-   * @generated from field: string instance_class = 6;
+   * @generated from field: string instance_class = 7;
    */
   instanceClass: string;
 
   /**
    * Allocated storage size in GiB for the primary storage.
    *
-   * @generated from field: int32 allocated_storage_gb = 7;
+   * @generated from field: int32 allocated_storage_gb = 8;
    */
   allocatedStorageGb: number;
 
   /**
    * Enable storage encryption for the instance.
    *
-   * @generated from field: bool storage_encrypted = 8;
+   * @generated from field: bool storage_encrypted = 9;
    */
   storageEncrypted: boolean;
 
   /**
    * Customer-managed KMS key ARN/alias for storage encryption when enabled.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 9;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 10;
    */
   kmsKeyId?: StringValueOrRef;
 
   /**
    * Master user credentials. When using platform-managed secrets, a later rule will define validations.
    *
-   * @generated from field: string username = 10;
+   * @generated from field: string username = 11;
    */
   username: string;
 
   /**
-   * @generated from field: string password = 11;
+   * @generated from field: string password = 12;
    */
   password: string;
 
   /**
    * Database port.
    *
-   * @generated from field: int32 port = 12;
+   * @generated from field: int32 port = 13;
    */
   port: number;
 
   /**
    * Whether the instance has a public IP address.
    *
-   * @generated from field: bool publicly_accessible = 13;
+   * @generated from field: bool publicly_accessible = 14;
    */
   publiclyAccessible: boolean;
 
   /**
    * Whether to deploy the instance in Multi-AZ mode.
    *
-   * @generated from field: bool multi_az = 14;
+   * @generated from field: bool multi_az = 15;
    */
   multiAz: boolean;
 
   /**
    * Optional parameter group name to associate with the instance.
    *
-   * @generated from field: string parameter_group_name = 15;
+   * @generated from field: string parameter_group_name = 16;
    */
   parameterGroupName: string;
 
   /**
    * Optional option group name to associate with the instance (for certain engines).
    *
-   * @generated from field: string option_group_name = 16;
+   * @generated from field: string option_group_name = 17;
    */
   optionGroupName: string;
 };

@@ -43,6 +43,9 @@ variable "spec" {
   description = "spec"
   type = object({
 
+    # The AWS region where the resource will be created.
+    region = string
+
     # List of secret names to create in AWS Secrets Manager.
     # Each name corresponds to a unique secret that will be securely stored and managed.
     # Secret names must be unique within your AWS account and region.

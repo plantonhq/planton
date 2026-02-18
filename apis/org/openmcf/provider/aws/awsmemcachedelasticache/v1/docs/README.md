@@ -104,9 +104,10 @@ CREATE                          UPDATE                          DELETE
 
 Both Pulumi and Terraform modules follow the same structure:
 
-1. **Conditional subnet group** — Only created when `subnetIds` are provided
-2. **Conditional parameter group** — Only created when `parameters` and `parameterGroupFamily` are provided
-3. **Cluster** — Always created, references the conditional resources above
+1. **Region configuration** — The `region` field on the spec determines which AWS region the provider targets
+2. **Conditional subnet group** — Only created when `subnetIds` are provided
+3. **Conditional parameter group** — Only created when `parameters` and `parameterGroupFamily` are provided
+4. **Cluster** — Always created, references the conditional resources above
 
 The engine is hardcoded to `"memcached"` in the IaC modules. Unlike AwsRedisElasticache where the user selects between `redis` and `valkey`, the Memcached component always creates a Memcached cluster.
 

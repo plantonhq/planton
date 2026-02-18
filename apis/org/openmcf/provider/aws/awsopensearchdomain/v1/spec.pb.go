@@ -48,59 +48,62 @@ const (
 // - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 type AwsOpenSearchDomainSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// OpenSearch or Elasticsearch engine version. Format: "OpenSearch_X.Y" (e.g.,
 	// "OpenSearch_2.11") or "Elasticsearch_X.Y" (e.g., "Elasticsearch_7.10").
 	// Changing to an incompatible version forces domain recreation.
-	EngineVersion string `protobuf:"bytes,1,opt,name=engine_version,json=engineVersion,proto3" json:"engine_version,omitempty"`
+	EngineVersion string `protobuf:"bytes,2,opt,name=engine_version,json=engineVersion,proto3" json:"engine_version,omitempty"`
 	// Cluster topology: data nodes, dedicated masters, zone awareness, warm/cold storage.
-	ClusterConfig *AwsOpenSearchDomainClusterConfig `protobuf:"bytes,2,opt,name=cluster_config,json=clusterConfig,proto3" json:"cluster_config,omitempty"`
+	ClusterConfig *AwsOpenSearchDomainClusterConfig `protobuf:"bytes,3,opt,name=cluster_config,json=clusterConfig,proto3" json:"cluster_config,omitempty"`
 	// EBS volume configuration for data node storage. Required for most instance types
 	// (all except certain storage-optimized types that use instance storage).
-	EbsOptions *AwsOpenSearchDomainEbsOptions `protobuf:"bytes,3,opt,name=ebs_options,json=ebsOptions,proto3" json:"ebs_options,omitempty"`
+	EbsOptions *AwsOpenSearchDomainEbsOptions `protobuf:"bytes,4,opt,name=ebs_options,json=ebsOptions,proto3" json:"ebs_options,omitempty"`
 	// Enable encryption at rest for indices and automated snapshots. Uses the
 	// AWS-managed `aws/es` key unless `kms_key_id` is provided.
 	// ForceNew when disabling on older engine versions.
-	EncryptAtRestEnabled bool `protobuf:"varint,4,opt,name=encrypt_at_rest_enabled,json=encryptAtRestEnabled,proto3" json:"encrypt_at_rest_enabled,omitempty"`
+	EncryptAtRestEnabled bool `protobuf:"varint,5,opt,name=encrypt_at_rest_enabled,json=encryptAtRestEnabled,proto3" json:"encrypt_at_rest_enabled,omitempty"`
 	// Customer-managed KMS key ARN or ID for at-rest encryption. ForceNew — the
 	// KMS key cannot be changed after domain creation.
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,6,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// Enable TLS encryption for all traffic between nodes in the cluster.
 	// Strongly recommended for production.
-	NodeToNodeEncryptionEnabled bool `protobuf:"varint,6,opt,name=node_to_node_encryption_enabled,json=nodeToNodeEncryptionEnabled,proto3" json:"node_to_node_encryption_enabled,omitempty"`
+	NodeToNodeEncryptionEnabled bool `protobuf:"varint,7,opt,name=node_to_node_encryption_enabled,json=nodeToNodeEncryptionEnabled,proto3" json:"node_to_node_encryption_enabled,omitempty"`
 	// VPC placement configuration. When provided, the domain is deployed into VPC
 	// subnets and is not publicly accessible. ForceNew — adding or removing VPC
 	// options destroys and recreates the domain.
-	VpcOptions *AwsOpenSearchDomainVpcOptions `protobuf:"bytes,7,opt,name=vpc_options,json=vpcOptions,proto3" json:"vpc_options,omitempty"`
+	VpcOptions *AwsOpenSearchDomainVpcOptions `protobuf:"bytes,8,opt,name=vpc_options,json=vpcOptions,proto3" json:"vpc_options,omitempty"`
 	// HTTPS enforcement, TLS policy, and custom endpoint configuration.
-	DomainEndpointOptions *AwsOpenSearchDomainEndpointOptions `protobuf:"bytes,8,opt,name=domain_endpoint_options,json=domainEndpointOptions,proto3" json:"domain_endpoint_options,omitempty"`
+	DomainEndpointOptions *AwsOpenSearchDomainEndpointOptions `protobuf:"bytes,9,opt,name=domain_endpoint_options,json=domainEndpointOptions,proto3" json:"domain_endpoint_options,omitempty"`
 	// Advanced security options enable fine-grained access control: internal user
 	// database, IAM-based authentication, and role-based index-level permissions.
 	// Once enabled, FGAC cannot be disabled (ForceNew).
-	AdvancedSecurityOptions *AwsOpenSearchDomainAdvancedSecurityOptions `protobuf:"bytes,9,opt,name=advanced_security_options,json=advancedSecurityOptions,proto3" json:"advanced_security_options,omitempty"`
+	AdvancedSecurityOptions *AwsOpenSearchDomainAdvancedSecurityOptions `protobuf:"bytes,10,opt,name=advanced_security_options,json=advancedSecurityOptions,proto3" json:"advanced_security_options,omitempty"`
 	// Publish domain logs to CloudWatch Logs for monitoring and troubleshooting.
 	// Up to 4 configurations — one per log type (INDEX_SLOW_LOGS, SEARCH_SLOW_LOGS,
 	// ES_APPLICATION_LOGS, AUDIT_LOGS).
-	LogPublishingOptions []*AwsOpenSearchDomainLogPublishingOption `protobuf:"bytes,10,rep,name=log_publishing_options,json=logPublishingOptions,proto3" json:"log_publishing_options,omitempty"`
+	LogPublishingOptions []*AwsOpenSearchDomainLogPublishingOption `protobuf:"bytes,11,rep,name=log_publishing_options,json=logPublishingOptions,proto3" json:"log_publishing_options,omitempty"`
 	// IAM-based access policy for the domain. Serialized to JSON by the IaC modules.
 	// Controls who can perform actions on the domain and its indices.
 	// For VPC domains, this works in conjunction with security groups.
 	// For public domains, this is the primary access control mechanism (unless FGAC is enabled).
-	AccessPolicies *structpb.Struct `protobuf:"bytes,11,opt,name=access_policies,json=accessPolicies,proto3" json:"access_policies,omitempty"`
+	AccessPolicies *structpb.Struct `protobuf:"bytes,12,opt,name=access_policies,json=accessPolicies,proto3" json:"access_policies,omitempty"`
 	// Enable AWS Auto-Tune to automatically optimize JVM heap size, disk I/O,
 	// and other performance settings based on cluster metrics.
-	AutoTuneEnabled bool `protobuf:"varint,12,opt,name=auto_tune_enabled,json=autoTuneEnabled,proto3" json:"auto_tune_enabled,omitempty"`
+	AutoTuneEnabled bool `protobuf:"varint,13,opt,name=auto_tune_enabled,json=autoTuneEnabled,proto3" json:"auto_tune_enabled,omitempty"`
 	// Enable automatic service software updates. When true, AWS applies mandatory
 	// and optional service software updates during the off-peak window.
-	AutoSoftwareUpdateEnabled bool `protobuf:"varint,13,opt,name=auto_software_update_enabled,json=autoSoftwareUpdateEnabled,proto3" json:"auto_software_update_enabled,omitempty"`
+	AutoSoftwareUpdateEnabled bool `protobuf:"varint,14,opt,name=auto_software_update_enabled,json=autoSoftwareUpdateEnabled,proto3" json:"auto_software_update_enabled,omitempty"`
 	// IP address type for the domain. "ipv4" (default) or "dualstack" (IPv4 + IPv6).
 	// Changing from "dualstack" to "ipv4" forces domain recreation.
-	IpAddressType string `protobuf:"bytes,14,opt,name=ip_address_type,json=ipAddressType,proto3" json:"ip_address_type,omitempty"`
+	IpAddressType string `protobuf:"bytes,15,opt,name=ip_address_type,json=ipAddressType,proto3" json:"ip_address_type,omitempty"`
 	// Low-level key-value configuration options. Common options:
 	// - "rest.action.multi.allow_explicit_index": "true" (default)
 	// - "indices.fielddata.cache.size": percentage of heap
 	// - "indices.query.bool.max_clause_count": max boolean clauses
 	// Values must be strings.
-	AdvancedOptions map[string]string `protobuf:"bytes,15,rep,name=advanced_options,json=advancedOptions,proto3" json:"advanced_options,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	AdvancedOptions map[string]string `protobuf:"bytes,16,rep,name=advanced_options,json=advancedOptions,proto3" json:"advanced_options,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -133,6 +136,13 @@ func (x *AwsOpenSearchDomainSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsOpenSearchDomainSpec.ProtoReflect.Descriptor instead.
 func (*AwsOpenSearchDomainSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsopensearchdomain_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsOpenSearchDomainSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsOpenSearchDomainSpec) GetEngineVersion() string {
@@ -803,27 +813,28 @@ var File_org_openmcf_provider_aws_awsopensearchdomain_v1_spec_proto protoreflect
 
 const file_org_openmcf_provider_aws_awsopensearchdomain_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	":org/openmcf/provider/aws/awsopensearchdomain/v1/spec.proto\x12/org.openmcf.provider.aws.awsopensearchdomain.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa6\x13\n" +
-	"\x17AwsOpenSearchDomainSpec\x12-\n" +
-	"\x0eengine_version\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\rengineVersion\x12\x80\x01\n" +
-	"\x0ecluster_config\x18\x02 \x01(\v2Q.org.openmcf.provider.aws.awsopensearchdomain.v1.AwsOpenSearchDomainClusterConfigB\x06\xbaH\x03\xc8\x01\x01R\rclusterConfig\x12w\n" +
-	"\vebs_options\x18\x03 \x01(\v2N.org.openmcf.provider.aws.awsopensearchdomain.v1.AwsOpenSearchDomainEbsOptionsB\x06\xbaH\x03\xc8\x01\x01R\n" +
+	":org/openmcf/provider/aws/awsopensearchdomain/v1/spec.proto\x12/org.openmcf.provider.aws.awsopensearchdomain.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xc7\x13\n" +
+	"\x17AwsOpenSearchDomainSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12-\n" +
+	"\x0eengine_version\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\rengineVersion\x12\x80\x01\n" +
+	"\x0ecluster_config\x18\x03 \x01(\v2Q.org.openmcf.provider.aws.awsopensearchdomain.v1.AwsOpenSearchDomainClusterConfigB\x06\xbaH\x03\xc8\x01\x01R\rclusterConfig\x12w\n" +
+	"\vebs_options\x18\x04 \x01(\v2N.org.openmcf.provider.aws.awsopensearchdomain.v1.AwsOpenSearchDomainEbsOptionsB\x06\xbaH\x03\xc8\x01\x01R\n" +
 	"ebsOptions\x12?\n" +
-	"\x17encrypt_at_rest_enabled\x18\x04 \x01(\bB\b\x92\xa6\x1d\x04trueR\x14encryptAtRestEnabled\x12q\n" +
+	"\x17encrypt_at_rest_enabled\x18\x05 \x01(\bB\b\x92\xa6\x1d\x04trueR\x14encryptAtRestEnabled\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12N\n" +
-	"\x1fnode_to_node_encryption_enabled\x18\x06 \x01(\bB\b\x92\xa6\x1d\x04trueR\x1bnodeToNodeEncryptionEnabled\x12o\n" +
-	"\vvpc_options\x18\a \x01(\v2N.org.openmcf.provider.aws.awsopensearchdomain.v1.AwsOpenSearchDomainVpcOptionsR\n" +
+	"kms_key_id\x18\x06 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12N\n" +
+	"\x1fnode_to_node_encryption_enabled\x18\a \x01(\bB\b\x92\xa6\x1d\x04trueR\x1bnodeToNodeEncryptionEnabled\x12o\n" +
+	"\vvpc_options\x18\b \x01(\v2N.org.openmcf.provider.aws.awsopensearchdomain.v1.AwsOpenSearchDomainVpcOptionsR\n" +
 	"vpcOptions\x12\x8b\x01\n" +
-	"\x17domain_endpoint_options\x18\b \x01(\v2S.org.openmcf.provider.aws.awsopensearchdomain.v1.AwsOpenSearchDomainEndpointOptionsR\x15domainEndpointOptions\x12\x97\x01\n" +
-	"\x19advanced_security_options\x18\t \x01(\v2[.org.openmcf.provider.aws.awsopensearchdomain.v1.AwsOpenSearchDomainAdvancedSecurityOptionsR\x17advancedSecurityOptions\x12\x8d\x01\n" +
-	"\x16log_publishing_options\x18\n" +
-	" \x03(\v2W.org.openmcf.provider.aws.awsopensearchdomain.v1.AwsOpenSearchDomainLogPublishingOptionR\x14logPublishingOptions\x12@\n" +
-	"\x0faccess_policies\x18\v \x01(\v2\x17.google.protobuf.StructR\x0eaccessPolicies\x12*\n" +
-	"\x11auto_tune_enabled\x18\f \x01(\bR\x0fautoTuneEnabled\x12?\n" +
-	"\x1cauto_software_update_enabled\x18\r \x01(\bR\x19autoSoftwareUpdateEnabled\x12&\n" +
-	"\x0fip_address_type\x18\x0e \x01(\tR\ripAddressType\x12\x88\x01\n" +
-	"\x10advanced_options\x18\x0f \x03(\v2].org.openmcf.provider.aws.awsopensearchdomain.v1.AwsOpenSearchDomainSpec.AdvancedOptionsEntryR\x0fadvancedOptions\x1aB\n" +
+	"\x17domain_endpoint_options\x18\t \x01(\v2S.org.openmcf.provider.aws.awsopensearchdomain.v1.AwsOpenSearchDomainEndpointOptionsR\x15domainEndpointOptions\x12\x97\x01\n" +
+	"\x19advanced_security_options\x18\n" +
+	" \x01(\v2[.org.openmcf.provider.aws.awsopensearchdomain.v1.AwsOpenSearchDomainAdvancedSecurityOptionsR\x17advancedSecurityOptions\x12\x8d\x01\n" +
+	"\x16log_publishing_options\x18\v \x03(\v2W.org.openmcf.provider.aws.awsopensearchdomain.v1.AwsOpenSearchDomainLogPublishingOptionR\x14logPublishingOptions\x12@\n" +
+	"\x0faccess_policies\x18\f \x01(\v2\x17.google.protobuf.StructR\x0eaccessPolicies\x12*\n" +
+	"\x11auto_tune_enabled\x18\r \x01(\bR\x0fautoTuneEnabled\x12?\n" +
+	"\x1cauto_software_update_enabled\x18\x0e \x01(\bR\x19autoSoftwareUpdateEnabled\x12&\n" +
+	"\x0fip_address_type\x18\x0f \x01(\tR\ripAddressType\x12\x88\x01\n" +
+	"\x10advanced_options\x18\x10 \x03(\v2].org.openmcf.provider.aws.awsopensearchdomain.v1.AwsOpenSearchDomainSpec.AdvancedOptionsEntryR\x0fadvancedOptions\x1aB\n" +
 	"\x14AdvancedOptionsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x8c\a\xbaH\x88\a\x1a\xde\x01\n" +

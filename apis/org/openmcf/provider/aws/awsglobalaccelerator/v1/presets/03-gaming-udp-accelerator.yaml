@@ -5,6 +5,7 @@ metadata:
   labels:
     openmcf.org/provisioner: pulumi
 spec:
+  region: <aws-region>
   listeners:
     - name: udp-game
       protocol: UDP

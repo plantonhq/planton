@@ -13,6 +13,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsSnsTopic.my-notifications
 spec:
+  region: us-east-1
   signatureVersion: 2
 ```
 
@@ -29,6 +30,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsSnsTopic.order-events
 spec:
+  region: us-east-1
   subscriptions:
     - name: order-queue
       protocol: sqs

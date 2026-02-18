@@ -32,6 +32,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsRdsInstance.my-db
 spec:
+  region: us-west-2
   subnetIds:
     - subnet-0a1b2c3d4e5f00001
     - subnet-0a1b2c3d4e5f00002
@@ -57,6 +58,7 @@ This creates a single PostgreSQL 14.10 instance on a `db.t3.micro` with 20 GiB o
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the RDS instance will be created. Example: `us-west-2`, `eu-west-1`. | |
 | `subnetIds` | `string[]` | Subnet IDs for the DB subnet group. Provide at least two private subnets for high availability. Required unless `dbSubnetGroupName` is set. | Minimum 2 items when used |
 | `subnetIds[].value` | `string` | Direct subnet ID value | — |
 | `subnetIds[].valueFrom` | `object` | Foreign key reference to an AwsVpc resource | Default kind: `AwsVpc`, field: `status.outputs.private_subnets.[*].id` |
@@ -98,6 +100,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: staging.AwsRdsInstance.app-db
 spec:
+  region: us-west-2
   subnetIds:
     - subnet-private-az1
     - subnet-private-az2
@@ -128,6 +131,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsRdsInstance.ha-mysql
 spec:
+  region: us-west-2
   dbSubnetGroupName: existing-db-subnet-group
   securityGroupIds:
     - sg-mysql-access
@@ -158,6 +162,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsRdsInstance.prod-db
 spec:
+  region: us-west-2
   subnetIds:
     - subnet-private-az1
     - subnet-private-az2
@@ -192,6 +197,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsRdsInstance.ref-db
 spec:
+  region: us-west-2
   subnetIds:
     - valueFrom:
         kind: AwsVpc

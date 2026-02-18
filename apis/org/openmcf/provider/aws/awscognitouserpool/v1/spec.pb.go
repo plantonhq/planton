@@ -50,61 +50,64 @@ const (
 // Credentials, region, and deployment workflow live outside this spec in stack inputs.
 type AwsCognitoUserPoolSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Attributes that users can use as their username when signing in. When set,
 	// the chosen attribute(s) become the sign-in identifier. Common choice: ["email"]
 	// to let users sign in with their email address.
 	//
 	// Valid values: "email", "phone_number".
 	// Mutually exclusive with `alias_attributes`. ForceNew.
-	UsernameAttributes []string `protobuf:"bytes,1,rep,name=username_attributes,json=usernameAttributes,proto3" json:"username_attributes,omitempty"`
+	UsernameAttributes []string `protobuf:"bytes,2,rep,name=username_attributes,json=usernameAttributes,proto3" json:"username_attributes,omitempty"`
 	// Attributes that can be used as aliases for the username. Unlike `username_attributes`,
 	// users always have a separate username and the alias attributes are alternative sign-in
 	// identifiers. Common choice: ["email", "preferred_username"].
 	//
 	// Valid values: "email", "phone_number", "preferred_username".
 	// Mutually exclusive with `username_attributes`. ForceNew.
-	AliasAttributes []string `protobuf:"bytes,2,rep,name=alias_attributes,json=aliasAttributes,proto3" json:"alias_attributes,omitempty"`
+	AliasAttributes []string `protobuf:"bytes,3,rep,name=alias_attributes,json=aliasAttributes,proto3" json:"alias_attributes,omitempty"`
 	// Whether usernames are case-sensitive. When false (default in AWS), "User" and "user"
 	// are treated as the same username. ForceNew — cannot be changed after pool creation.
-	UsernameCaseSensitive bool `protobuf:"varint,3,opt,name=username_case_sensitive,json=usernameCaseSensitive,proto3" json:"username_case_sensitive,omitempty"`
+	UsernameCaseSensitive bool `protobuf:"varint,4,opt,name=username_case_sensitive,json=usernameCaseSensitive,proto3" json:"username_case_sensitive,omitempty"`
 	// Password policy configuration. Controls password strength requirements for
 	// user self-registration and admin-created passwords.
-	PasswordPolicy *AwsCognitoUserPoolPasswordPolicy `protobuf:"bytes,4,opt,name=password_policy,json=passwordPolicy,proto3" json:"password_policy,omitempty"`
+	PasswordPolicy *AwsCognitoUserPoolPasswordPolicy `protobuf:"bytes,5,opt,name=password_policy,json=passwordPolicy,proto3" json:"password_policy,omitempty"`
 	// Multi-factor authentication enforcement level.
 	// - "OFF": MFA is not used (default).
 	// - "OPTIONAL": Users can opt in to MFA.
 	// - "ON": MFA is required for all users.
-	MfaConfiguration string `protobuf:"bytes,5,opt,name=mfa_configuration,json=mfaConfiguration,proto3" json:"mfa_configuration,omitempty"`
+	MfaConfiguration string `protobuf:"bytes,6,opt,name=mfa_configuration,json=mfaConfiguration,proto3" json:"mfa_configuration,omitempty"`
 	// Enable TOTP-based (time-based one-time password) software token MFA. When
 	// true, users can configure authenticator apps like Google Authenticator or
 	// Authy. Requires `mfa_configuration` to be "OPTIONAL" or "ON".
-	SoftwareTokenMfaEnabled bool `protobuf:"varint,6,opt,name=software_token_mfa_enabled,json=softwareTokenMfaEnabled,proto3" json:"software_token_mfa_enabled,omitempty"`
+	SoftwareTokenMfaEnabled bool `protobuf:"varint,7,opt,name=software_token_mfa_enabled,json=softwareTokenMfaEnabled,proto3" json:"software_token_mfa_enabled,omitempty"`
 	// Attributes to auto-verify when users sign up. Cognito sends a verification
 	// code to these attributes. Common values: ["email"].
 	// Valid values: "email", "phone_number".
-	AutoVerifiedAttributes []string `protobuf:"bytes,7,rep,name=auto_verified_attributes,json=autoVerifiedAttributes,proto3" json:"auto_verified_attributes,omitempty"`
+	AutoVerifiedAttributes []string `protobuf:"bytes,8,rep,name=auto_verified_attributes,json=autoVerifiedAttributes,proto3" json:"auto_verified_attributes,omitempty"`
 	// Account recovery mechanisms in priority order. Each mechanism defines a
 	// fallback method for users who forget their password.
-	AccountRecoveryMechanisms []*AwsCognitoUserPoolRecoveryMechanism `protobuf:"bytes,8,rep,name=account_recovery_mechanisms,json=accountRecoveryMechanisms,proto3" json:"account_recovery_mechanisms,omitempty"`
+	AccountRecoveryMechanisms []*AwsCognitoUserPoolRecoveryMechanism `protobuf:"bytes,9,rep,name=account_recovery_mechanisms,json=accountRecoveryMechanisms,proto3" json:"account_recovery_mechanisms,omitempty"`
 	// Email sending configuration. Controls whether Cognito sends emails using
 	// its built-in service (limited to 50/day in sandbox) or your verified SES
 	// identity (production sending).
-	EmailConfiguration *AwsCognitoUserPoolEmailConfig `protobuf:"bytes,9,opt,name=email_configuration,json=emailConfiguration,proto3" json:"email_configuration,omitempty"`
+	EmailConfiguration *AwsCognitoUserPoolEmailConfig `protobuf:"bytes,10,opt,name=email_configuration,json=emailConfiguration,proto3" json:"email_configuration,omitempty"`
 	// When true, only administrators can create users — self-registration is
 	// disabled. Users must be created via the admin API or AWS console.
-	AllowAdminCreateUserOnly bool `protobuf:"varint,10,opt,name=allow_admin_create_user_only,json=allowAdminCreateUserOnly,proto3" json:"allow_admin_create_user_only,omitempty"`
+	AllowAdminCreateUserOnly bool `protobuf:"varint,11,opt,name=allow_admin_create_user_only,json=allowAdminCreateUserOnly,proto3" json:"allow_admin_create_user_only,omitempty"`
 	// Enable deletion protection. When "ACTIVE", the user pool cannot be deleted
 	// without first disabling this setting. Recommended for production pools.
-	DeletionProtection bool `protobuf:"varint,11,opt,name=deletion_protection,json=deletionProtection,proto3" json:"deletion_protection,omitempty"`
+	DeletionProtection bool `protobuf:"varint,12,opt,name=deletion_protection,json=deletionProtection,proto3" json:"deletion_protection,omitempty"`
 	// Custom user attributes beyond the standard set (email, phone, name, etc.).
 	// Each attribute is added to the pool's schema. Note: the `mutable` and
 	// `required` flags are ForceNew — they cannot be changed after creation.
 	// Maximum 50 custom attributes per pool.
-	CustomAttributes []*AwsCognitoUserPoolSchemaAttribute `protobuf:"bytes,12,rep,name=custom_attributes,json=customAttributes,proto3" json:"custom_attributes,omitempty"`
+	CustomAttributes []*AwsCognitoUserPoolSchemaAttribute `protobuf:"bytes,13,rep,name=custom_attributes,json=customAttributes,proto3" json:"custom_attributes,omitempty"`
 	// Lambda trigger configuration for custom authentication and user lifecycle
 	// hooks. Each trigger is an optional Lambda function ARN that Cognito invokes
 	// at the corresponding lifecycle point.
-	LambdaConfig *AwsCognitoUserPoolLambdaConfig `protobuf:"bytes,13,opt,name=lambda_config,json=lambdaConfig,proto3" json:"lambda_config,omitempty"`
+	LambdaConfig *AwsCognitoUserPoolLambdaConfig `protobuf:"bytes,14,opt,name=lambda_config,json=lambdaConfig,proto3" json:"lambda_config,omitempty"`
 	// Application clients that authenticate against this user pool. Each client
 	// defines an OAuth/OIDC configuration for a specific application (e.g., a
 	// web frontend, a mobile app, a server-side backend).
@@ -112,7 +115,7 @@ type AwsCognitoUserPoolSpec struct {
 	// At least one client is required — a pool without clients cannot authenticate
 	// any application. The client `name` field serves as a key in the `client_ids`
 	// and `client_secrets` output maps.
-	Clients []*AwsCognitoUserPoolClient `protobuf:"bytes,14,rep,name=clients,proto3" json:"clients,omitempty"`
+	Clients []*AwsCognitoUserPoolClient `protobuf:"bytes,15,rep,name=clients,proto3" json:"clients,omitempty"`
 	// Domain configuration for the hosted sign-in UI and OAuth2 endpoints. When
 	// set, Cognito provides a hosted login page at:
 	//
@@ -122,7 +125,7 @@ type AwsCognitoUserPoolSpec struct {
 	//
 	// Required for OAuth flows that use the Authorization Code grant with a
 	// hosted UI redirect.
-	Domain        *AwsCognitoUserPoolDomainConfig `protobuf:"bytes,15,opt,name=domain,proto3" json:"domain,omitempty"`
+	Domain        *AwsCognitoUserPoolDomainConfig `protobuf:"bytes,16,opt,name=domain,proto3" json:"domain,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -155,6 +158,13 @@ func (x *AwsCognitoUserPoolSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsCognitoUserPoolSpec.ProtoReflect.Descriptor instead.
 func (*AwsCognitoUserPoolSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awscognitouserpool_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsCognitoUserPoolSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsCognitoUserPoolSpec) GetUsernameAttributes() []string {
@@ -1020,24 +1030,25 @@ var File_org_openmcf_provider_aws_awscognitouserpool_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_aws_awscognitouserpool_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/aws/awscognitouserpool/v1/spec.proto\x12.org.openmcf.provider.aws.awscognitouserpool.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xee\x18\n" +
-	"\x16AwsCognitoUserPoolSpec\x12/\n" +
-	"\x13username_attributes\x18\x01 \x03(\tR\x12usernameAttributes\x12)\n" +
-	"\x10alias_attributes\x18\x02 \x03(\tR\x0faliasAttributes\x126\n" +
-	"\x17username_case_sensitive\x18\x03 \x01(\bR\x15usernameCaseSensitive\x12y\n" +
-	"\x0fpassword_policy\x18\x04 \x01(\v2P.org.openmcf.provider.aws.awscognitouserpool.v1.AwsCognitoUserPoolPasswordPolicyR\x0epasswordPolicy\x12+\n" +
-	"\x11mfa_configuration\x18\x05 \x01(\tR\x10mfaConfiguration\x12;\n" +
-	"\x1asoftware_token_mfa_enabled\x18\x06 \x01(\bR\x17softwareTokenMfaEnabled\x128\n" +
-	"\x18auto_verified_attributes\x18\a \x03(\tR\x16autoVerifiedAttributes\x12\x93\x01\n" +
-	"\x1baccount_recovery_mechanisms\x18\b \x03(\v2S.org.openmcf.provider.aws.awscognitouserpool.v1.AwsCognitoUserPoolRecoveryMechanismR\x19accountRecoveryMechanisms\x12~\n" +
-	"\x13email_configuration\x18\t \x01(\v2M.org.openmcf.provider.aws.awscognitouserpool.v1.AwsCognitoUserPoolEmailConfigR\x12emailConfiguration\x12>\n" +
-	"\x1callow_admin_create_user_only\x18\n" +
-	" \x01(\bR\x18allowAdminCreateUserOnly\x12/\n" +
-	"\x13deletion_protection\x18\v \x01(\bR\x12deletionProtection\x12~\n" +
-	"\x11custom_attributes\x18\f \x03(\v2Q.org.openmcf.provider.aws.awscognitouserpool.v1.AwsCognitoUserPoolSchemaAttributeR\x10customAttributes\x12s\n" +
-	"\rlambda_config\x18\r \x01(\v2N.org.openmcf.provider.aws.awscognitouserpool.v1.AwsCognitoUserPoolLambdaConfigR\flambdaConfig\x12l\n" +
-	"\aclients\x18\x0e \x03(\v2H.org.openmcf.provider.aws.awscognitouserpool.v1.AwsCognitoUserPoolClientB\b\xbaH\x05\x92\x01\x02\b\x01R\aclients\x12f\n" +
-	"\x06domain\x18\x0f \x01(\v2N.org.openmcf.provider.aws.awscognitouserpool.v1.AwsCognitoUserPoolDomainConfigR\x06domain:\xce\x0e\xbaH\xca\x0e\x1a\xc8\x01\n" +
+	"9org/openmcf/provider/aws/awscognitouserpool/v1/spec.proto\x12.org.openmcf.provider.aws.awscognitouserpool.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x8f\x19\n" +
+	"\x16AwsCognitoUserPoolSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12/\n" +
+	"\x13username_attributes\x18\x02 \x03(\tR\x12usernameAttributes\x12)\n" +
+	"\x10alias_attributes\x18\x03 \x03(\tR\x0faliasAttributes\x126\n" +
+	"\x17username_case_sensitive\x18\x04 \x01(\bR\x15usernameCaseSensitive\x12y\n" +
+	"\x0fpassword_policy\x18\x05 \x01(\v2P.org.openmcf.provider.aws.awscognitouserpool.v1.AwsCognitoUserPoolPasswordPolicyR\x0epasswordPolicy\x12+\n" +
+	"\x11mfa_configuration\x18\x06 \x01(\tR\x10mfaConfiguration\x12;\n" +
+	"\x1asoftware_token_mfa_enabled\x18\a \x01(\bR\x17softwareTokenMfaEnabled\x128\n" +
+	"\x18auto_verified_attributes\x18\b \x03(\tR\x16autoVerifiedAttributes\x12\x93\x01\n" +
+	"\x1baccount_recovery_mechanisms\x18\t \x03(\v2S.org.openmcf.provider.aws.awscognitouserpool.v1.AwsCognitoUserPoolRecoveryMechanismR\x19accountRecoveryMechanisms\x12~\n" +
+	"\x13email_configuration\x18\n" +
+	" \x01(\v2M.org.openmcf.provider.aws.awscognitouserpool.v1.AwsCognitoUserPoolEmailConfigR\x12emailConfiguration\x12>\n" +
+	"\x1callow_admin_create_user_only\x18\v \x01(\bR\x18allowAdminCreateUserOnly\x12/\n" +
+	"\x13deletion_protection\x18\f \x01(\bR\x12deletionProtection\x12~\n" +
+	"\x11custom_attributes\x18\r \x03(\v2Q.org.openmcf.provider.aws.awscognitouserpool.v1.AwsCognitoUserPoolSchemaAttributeR\x10customAttributes\x12s\n" +
+	"\rlambda_config\x18\x0e \x01(\v2N.org.openmcf.provider.aws.awscognitouserpool.v1.AwsCognitoUserPoolLambdaConfigR\flambdaConfig\x12l\n" +
+	"\aclients\x18\x0f \x03(\v2H.org.openmcf.provider.aws.awscognitouserpool.v1.AwsCognitoUserPoolClientB\b\xbaH\x05\x92\x01\x02\b\x01R\aclients\x12f\n" +
+	"\x06domain\x18\x10 \x01(\v2N.org.openmcf.provider.aws.awscognitouserpool.v1.AwsCognitoUserPoolDomainConfigR\x06domain:\xce\x0e\xbaH\xca\x0e\x1a\xc8\x01\n" +
 	"\x1cusername_or_alias_attributes\x12]username_attributes and alias_attributes are mutually exclusive; set one or neither, not both\x1aIthis.username_attributes.size() == 0 || this.alias_attributes.size() == 0\x1a\xa1\x01\n" +
 	"\x19username_attributes_valid\x12Cusername_attributes must contain only 'email' and/or 'phone_number'\x1a?this.username_attributes.all(a, a in ['email', 'phone_number'])\x1a\xc5\x01\n" +
 	"\x16alias_attributes_valid\x12Walias_attributes must contain only 'email', 'phone_number', and/or 'preferred_username'\x1aRthis.alias_attributes.all(a, a in ['email', 'phone_number', 'preferred_username'])\x1a\xb0\x01\n" +

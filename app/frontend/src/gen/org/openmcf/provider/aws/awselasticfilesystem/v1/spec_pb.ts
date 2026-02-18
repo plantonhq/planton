@@ -15,7 +15,7 @@ import type { JsonObject, Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awselasticfilesystem/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awselasticfilesystem_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjtvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWxhc3RpY2ZpbGVzeXN0ZW0vdjEvc3BlYy5wcm90bxIwb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2VsYXN0aWNmaWxlc3lzdGVtLnYxIt8XChhBd3NFbGFzdGljRmlsZVN5c3RlbVNwZWMSGwoJZW5jcnlwdGVkGAEgASgIQgiSph0EdHJ1ZRJnCgprbXNfa2V5X2lkGAIgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybhIYChBwZXJmb3JtYW5jZV9tb2RlGAMgASgJEhcKD3Rocm91Z2hwdXRfbW9kZRgEIAEoCRInCh9wcm92aXNpb25lZF90aHJvdWdocHV0X2luX21pYnBzGAUgASgBEh4KFmF2YWlsYWJpbGl0eV96b25lX25hbWUYBiABKAkSGAoQdHJhbnNpdGlvbl90b19pYRgHIAEoCRIdChV0cmFuc2l0aW9uX3RvX2FyY2hpdmUYCCABKAkSKwojdHJhbnNpdGlvbl90b19wcmltYXJ5X3N0b3JhZ2VfY2xhc3MYCSABKAkSFgoOYmFja3VwX2VuYWJsZWQYCiABKAgSgQEKCnN1Ym5ldF9pZHMYCyADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQjm6SAjIAQGSAQIIAYjUYdgBktRhJXN0YXR1cy5vdXRwdXRzLnByaXZhdGVfc3VibmV0cy5bKl0uaWQSeQoSc2VjdXJpdHlfZ3JvdXBfaWRzGAwgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIpiNRh1wGS1GEgc3RhdHVzLm91dHB1dHMuc2VjdXJpdHlfZ3JvdXBfaWQSaAoNYWNjZXNzX3BvaW50cxgNIAMoCzJRLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NlbGFzdGljZmlsZXN5c3RlbS52MS5Bd3NFbGFzdGljRmlsZVN5c3RlbUFjY2Vzc1BvaW50EicKBnBvbGljeRgOIAEoCzIXLmdvb2dsZS5wcm90b2J1Zi5TdHJ1Y3Q6sBG6SKwRGqwBChZwZXJmb3JtYW5jZV9tb2RlX3ZhbGlkEj1wZXJmb3JtYW5jZV9tb2RlIG11c3QgYmUgJ2dlbmVyYWxQdXJwb3NlJyBvciAnbWF4SU8nIHdoZW4gc2V0GlN0aGlzLnBlcmZvcm1hbmNlX21vZGUgPT0gJycgfHwgdGhpcy5wZXJmb3JtYW5jZV9tb2RlIGluIFsnZ2VuZXJhbFB1cnBvc2UnLCAnbWF4SU8nXRq/AQoVdGhyb3VnaHB1dF9tb2RlX3ZhbGlkEkh0aHJvdWdocHV0X21vZGUgbXVzdCBiZSAnYnVyc3RpbmcnLCAncHJvdmlzaW9uZWQnLCBvciAnZWxhc3RpYycgd2hlbiBzZXQaXHRoaXMudGhyb3VnaHB1dF9tb2RlID09ICcnIHx8IHRoaXMudGhyb3VnaHB1dF9tb2RlIGluIFsnYnVyc3RpbmcnLCAncHJvdmlzaW9uZWQnLCAnZWxhc3RpYyddGtMBCiRwcm92aXNpb25lZF90aHJvdWdocHV0X3JlcXVpcmVzX21vZGUSVXByb3Zpc2lvbmVkX3Rocm91Z2hwdXRfaW5fbWlicHMgY2FuIG9ubHkgYmUgc2V0IHdoZW4gdGhyb3VnaHB1dF9tb2RlIGlzICdwcm92aXNpb25lZCcaVHRoaXMucHJvdmlzaW9uZWRfdGhyb3VnaHB1dF9pbl9taWJwcyA9PSAwLjAgfHwgdGhpcy50aHJvdWdocHV0X21vZGUgPT0gJ3Byb3Zpc2lvbmVkJxrZAQokcHJvdmlzaW9uZWRfbW9kZV9yZXF1aXJlc190aHJvdWdocHV0Elxwcm92aXNpb25lZF90aHJvdWdocHV0X2luX21pYnBzIG11c3QgYmUgZ3JlYXRlciB0aGFuIDAgd2hlbiB0aHJvdWdocHV0X21vZGUgaXMgJ3Byb3Zpc2lvbmVkJxpTdGhpcy50aHJvdWdocHV0X21vZGUgIT0gJ3Byb3Zpc2lvbmVkJyB8fCB0aGlzLnByb3Zpc2lvbmVkX3Rocm91Z2hwdXRfaW5fbWlicHMgPiAwLjAapQEKFmttc19yZXF1aXJlc19lbmNyeXB0ZWQSYmttc19rZXlfaWQgcmVxdWlyZXMgZW5jcnlwdGVkIHRvIGJlIHRydWUgKGNhbm5vdCB1c2UgYSBjdXN0b20gS01TIGtleSB3aXRob3V0IGVuYWJsaW5nIGVuY3J5cHRpb24pGichaGFzKHRoaXMua21zX2tleV9pZCkgfHwgdGhpcy5lbmNyeXB0ZWQawwEKE2FyY2hpdmVfcmVxdWlyZXNfaWESa3RyYW5zaXRpb25fdG9fYXJjaGl2ZSByZXF1aXJlcyB0cmFuc2l0aW9uX3RvX2lhIHRvIGJlIHNldCAoZmlsZXMgbXVzdCB0cmFuc2l0aW9uIHRocm91Z2ggSUEgYmVmb3JlIEFyY2hpdmUpGj90aGlzLnRyYW5zaXRpb25fdG9fYXJjaGl2ZSA9PSAnJyB8fCB0aGlzLnRyYW5zaXRpb25fdG9faWEgIT0gJycalQMKFnRyYW5zaXRpb25fdG9faWFfdmFsaWQSpgF0cmFuc2l0aW9uX3RvX2lhIG11c3QgYmUgb25lIG9mOiBBRlRFUl8xX0RBWSwgQUZURVJfN19EQVlTLCBBRlRFUl8xNF9EQVlTLCBBRlRFUl8zMF9EQVlTLCBBRlRFUl82MF9EQVlTLCBBRlRFUl85MF9EQVlTLCBBRlRFUl8xODBfREFZUywgQUZURVJfMjcwX0RBWVMsIEFGVEVSXzM2NV9EQVlTGtEBdGhpcy50cmFuc2l0aW9uX3RvX2lhID09ICcnIHx8IHRoaXMudHJhbnNpdGlvbl90b19pYSBpbiBbJ0FGVEVSXzFfREFZJywgJ0FGVEVSXzdfREFZUycsICdBRlRFUl8xNF9EQVlTJywgJ0FGVEVSXzMwX0RBWVMnLCAnQUZURVJfNjBfREFZUycsICdBRlRFUl85MF9EQVlTJywgJ0FGVEVSXzE4MF9EQVlTJywgJ0FGVEVSXzI3MF9EQVlTJywgJ0FGVEVSXzM2NV9EQVlTJ10aqQMKG3RyYW5zaXRpb25fdG9fYXJjaGl2ZV92YWxpZBKrAXRyYW5zaXRpb25fdG9fYXJjaGl2ZSBtdXN0IGJlIG9uZSBvZjogQUZURVJfMV9EQVksIEFGVEVSXzdfREFZUywgQUZURVJfMTRfREFZUywgQUZURVJfMzBfREFZUywgQUZURVJfNjBfREFZUywgQUZURVJfOTBfREFZUywgQUZURVJfMTgwX0RBWVMsIEFGVEVSXzI3MF9EQVlTLCBBRlRFUl8zNjVfREFZUxrbAXRoaXMudHJhbnNpdGlvbl90b19hcmNoaXZlID09ICcnIHx8IHRoaXMudHJhbnNpdGlvbl90b19hcmNoaXZlIGluIFsnQUZURVJfMV9EQVknLCAnQUZURVJfN19EQVlTJywgJ0FGVEVSXzE0X0RBWVMnLCAnQUZURVJfMzBfREFZUycsICdBRlRFUl82MF9EQVlTJywgJ0FGVEVSXzkwX0RBWVMnLCAnQUZURVJfMTgwX0RBWVMnLCAnQUZURVJfMjcwX0RBWVMnLCAnQUZURVJfMzY1X0RBWVMnXRrUAQobdHJhbnNpdGlvbl90b19wcmltYXJ5X3ZhbGlkEkV0cmFuc2l0aW9uX3RvX3ByaW1hcnlfc3RvcmFnZV9jbGFzcyBtdXN0IGJlICdBRlRFUl8xX0FDQ0VTUycgd2hlbiBzZXQabnRoaXMudHJhbnNpdGlvbl90b19wcmltYXJ5X3N0b3JhZ2VfY2xhc3MgPT0gJycgfHwgdGhpcy50cmFuc2l0aW9uX3RvX3ByaW1hcnlfc3RvcmFnZV9jbGFzcyA9PSAnQUZURVJfMV9BQ0NFU1MnIp8CCh9Bd3NFbGFzdGljRmlsZVN5c3RlbUFjY2Vzc1BvaW50EhQKBG5hbWUYASABKAlCBrpIA8gBARJuCgpwb3NpeF91c2VyGAIgASgLMloub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2VsYXN0aWNmaWxlc3lzdGVtLnYxLkF3c0VsYXN0aWNGaWxlU3lzdGVtQWNjZXNzUG9pbnRQb3NpeFVzZXISdgoOcm9vdF9kaXJlY3RvcnkYAyABKAsyXi5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWxhc3RpY2ZpbGVzeXN0ZW0udjEuQXdzRWxhc3RpY0ZpbGVTeXN0ZW1BY2Nlc3NQb2ludFJvb3REaXJlY3RvcnkibAooQXdzRWxhc3RpY0ZpbGVTeXN0ZW1BY2Nlc3NQb2ludFBvc2l4VXNlchITCgN1aWQYASABKAVCBrpIA8gBARITCgNnaWQYAiABKAVCBrpIA8gBARIWCg5zZWNvbmRhcnlfZ2lkcxgDIAMoBSK6AQosQXdzRWxhc3RpY0ZpbGVTeXN0ZW1BY2Nlc3NQb2ludFJvb3REaXJlY3RvcnkSFAoEcGF0aBgBIAEoCUIGukgDyAEBEnQKDWNyZWF0aW9uX2luZm8YAiABKAsyXS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWxhc3RpY2ZpbGVzeXN0ZW0udjEuQXdzRWxhc3RpY0ZpbGVTeXN0ZW1BY2Nlc3NQb2ludENyZWF0aW9uSW5mbyKPAQorQXdzRWxhc3RpY0ZpbGVTeXN0ZW1BY2Nlc3NQb2ludENyZWF0aW9uSW5mbxIZCglvd25lcl91aWQYASABKAVCBrpIA8gBARIZCglvd25lcl9naWQYAiABKAVCBrpIA8gBARIqCgtwZXJtaXNzaW9ucxgDIAEoCUIVukgSyAEBcg0yC14wWzAtN117M30kQpMDCjRjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2VsYXN0aWNmaWxlc3lzdGVtLnYxQglTcGVjUHJvdG9QAVppZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NlbGFzdGljZmlsZXN5c3RlbS92MTthd3NlbGFzdGljZmlsZXN5c3RlbXYxogIFT09QQUGqAjBPcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzZWxhc3RpY2ZpbGVzeXN0ZW0uVjHKAjBPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZWxhc3RpY2ZpbGVzeXN0ZW1cVjHiAjxPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZWxhc3RpY2ZpbGVzeXN0ZW1cVjFcR1BCTWV0YWRhdGHqAjVPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c2VsYXN0aWNmaWxlc3lzdGVtOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_google_protobuf_struct, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("Cjtvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWxhc3RpY2ZpbGVzeXN0ZW0vdjEvc3BlYy5wcm90bxIwb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2VsYXN0aWNmaWxlc3lzdGVtLnYxIvgXChhBd3NFbGFzdGljRmlsZVN5c3RlbVNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEhsKCWVuY3J5cHRlZBgCIAEoCEIIkqYdBHRydWUSZwoKa21zX2tleV9pZBgDIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SGAoQcGVyZm9ybWFuY2VfbW9kZRgEIAEoCRIXCg90aHJvdWdocHV0X21vZGUYBSABKAkSJwofcHJvdmlzaW9uZWRfdGhyb3VnaHB1dF9pbl9taWJwcxgGIAEoARIeChZhdmFpbGFiaWxpdHlfem9uZV9uYW1lGAcgASgJEhgKEHRyYW5zaXRpb25fdG9faWEYCCABKAkSHQoVdHJhbnNpdGlvbl90b19hcmNoaXZlGAkgASgJEisKI3RyYW5zaXRpb25fdG9fcHJpbWFyeV9zdG9yYWdlX2NsYXNzGAogASgJEhYKDmJhY2t1cF9lbmFibGVkGAsgASgIEoEBCgpzdWJuZXRfaWRzGAwgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkI5ukgIyAEBkgECCAGI1GHYAZLUYSVzdGF0dXMub3V0cHV0cy5wcml2YXRlX3N1Ym5ldHMuWypdLmlkEnkKEnNlY3VyaXR5X2dyb3VwX2lkcxgNIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEmgKDWFjY2Vzc19wb2ludHMYDiADKAsyUS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWxhc3RpY2ZpbGVzeXN0ZW0udjEuQXdzRWxhc3RpY0ZpbGVTeXN0ZW1BY2Nlc3NQb2ludBInCgZwb2xpY3kYDyABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0OrARukisERqsAQoWcGVyZm9ybWFuY2VfbW9kZV92YWxpZBI9cGVyZm9ybWFuY2VfbW9kZSBtdXN0IGJlICdnZW5lcmFsUHVycG9zZScgb3IgJ21heElPJyB3aGVuIHNldBpTdGhpcy5wZXJmb3JtYW5jZV9tb2RlID09ICcnIHx8IHRoaXMucGVyZm9ybWFuY2VfbW9kZSBpbiBbJ2dlbmVyYWxQdXJwb3NlJywgJ21heElPJ10avwEKFXRocm91Z2hwdXRfbW9kZV92YWxpZBJIdGhyb3VnaHB1dF9tb2RlIG11c3QgYmUgJ2J1cnN0aW5nJywgJ3Byb3Zpc2lvbmVkJywgb3IgJ2VsYXN0aWMnIHdoZW4gc2V0Glx0aGlzLnRocm91Z2hwdXRfbW9kZSA9PSAnJyB8fCB0aGlzLnRocm91Z2hwdXRfbW9kZSBpbiBbJ2J1cnN0aW5nJywgJ3Byb3Zpc2lvbmVkJywgJ2VsYXN0aWMnXRrTAQokcHJvdmlzaW9uZWRfdGhyb3VnaHB1dF9yZXF1aXJlc19tb2RlElVwcm92aXNpb25lZF90aHJvdWdocHV0X2luX21pYnBzIGNhbiBvbmx5IGJlIHNldCB3aGVuIHRocm91Z2hwdXRfbW9kZSBpcyAncHJvdmlzaW9uZWQnGlR0aGlzLnByb3Zpc2lvbmVkX3Rocm91Z2hwdXRfaW5fbWlicHMgPT0gMC4wIHx8IHRoaXMudGhyb3VnaHB1dF9tb2RlID09ICdwcm92aXNpb25lZCca2QEKJHByb3Zpc2lvbmVkX21vZGVfcmVxdWlyZXNfdGhyb3VnaHB1dBJccHJvdmlzaW9uZWRfdGhyb3VnaHB1dF9pbl9taWJwcyBtdXN0IGJlIGdyZWF0ZXIgdGhhbiAwIHdoZW4gdGhyb3VnaHB1dF9tb2RlIGlzICdwcm92aXNpb25lZCcaU3RoaXMudGhyb3VnaHB1dF9tb2RlICE9ICdwcm92aXNpb25lZCcgfHwgdGhpcy5wcm92aXNpb25lZF90aHJvdWdocHV0X2luX21pYnBzID4gMC4wGqUBChZrbXNfcmVxdWlyZXNfZW5jcnlwdGVkEmJrbXNfa2V5X2lkIHJlcXVpcmVzIGVuY3J5cHRlZCB0byBiZSB0cnVlIChjYW5ub3QgdXNlIGEgY3VzdG9tIEtNUyBrZXkgd2l0aG91dCBlbmFibGluZyBlbmNyeXB0aW9uKRonIWhhcyh0aGlzLmttc19rZXlfaWQpIHx8IHRoaXMuZW5jcnlwdGVkGsMBChNhcmNoaXZlX3JlcXVpcmVzX2lhEmt0cmFuc2l0aW9uX3RvX2FyY2hpdmUgcmVxdWlyZXMgdHJhbnNpdGlvbl90b19pYSB0byBiZSBzZXQgKGZpbGVzIG11c3QgdHJhbnNpdGlvbiB0aHJvdWdoIElBIGJlZm9yZSBBcmNoaXZlKRo/dGhpcy50cmFuc2l0aW9uX3RvX2FyY2hpdmUgPT0gJycgfHwgdGhpcy50cmFuc2l0aW9uX3RvX2lhICE9ICcnGpUDChZ0cmFuc2l0aW9uX3RvX2lhX3ZhbGlkEqYBdHJhbnNpdGlvbl90b19pYSBtdXN0IGJlIG9uZSBvZjogQUZURVJfMV9EQVksIEFGVEVSXzdfREFZUywgQUZURVJfMTRfREFZUywgQUZURVJfMzBfREFZUywgQUZURVJfNjBfREFZUywgQUZURVJfOTBfREFZUywgQUZURVJfMTgwX0RBWVMsIEFGVEVSXzI3MF9EQVlTLCBBRlRFUl8zNjVfREFZUxrRAXRoaXMudHJhbnNpdGlvbl90b19pYSA9PSAnJyB8fCB0aGlzLnRyYW5zaXRpb25fdG9faWEgaW4gWydBRlRFUl8xX0RBWScsICdBRlRFUl83X0RBWVMnLCAnQUZURVJfMTRfREFZUycsICdBRlRFUl8zMF9EQVlTJywgJ0FGVEVSXzYwX0RBWVMnLCAnQUZURVJfOTBfREFZUycsICdBRlRFUl8xODBfREFZUycsICdBRlRFUl8yNzBfREFZUycsICdBRlRFUl8zNjVfREFZUyddGqkDCht0cmFuc2l0aW9uX3RvX2FyY2hpdmVfdmFsaWQSqwF0cmFuc2l0aW9uX3RvX2FyY2hpdmUgbXVzdCBiZSBvbmUgb2Y6IEFGVEVSXzFfREFZLCBBRlRFUl83X0RBWVMsIEFGVEVSXzE0X0RBWVMsIEFGVEVSXzMwX0RBWVMsIEFGVEVSXzYwX0RBWVMsIEFGVEVSXzkwX0RBWVMsIEFGVEVSXzE4MF9EQVlTLCBBRlRFUl8yNzBfREFZUywgQUZURVJfMzY1X0RBWVMa2wF0aGlzLnRyYW5zaXRpb25fdG9fYXJjaGl2ZSA9PSAnJyB8fCB0aGlzLnRyYW5zaXRpb25fdG9fYXJjaGl2ZSBpbiBbJ0FGVEVSXzFfREFZJywgJ0FGVEVSXzdfREFZUycsICdBRlRFUl8xNF9EQVlTJywgJ0FGVEVSXzMwX0RBWVMnLCAnQUZURVJfNjBfREFZUycsICdBRlRFUl85MF9EQVlTJywgJ0FGVEVSXzE4MF9EQVlTJywgJ0FGVEVSXzI3MF9EQVlTJywgJ0FGVEVSXzM2NV9EQVlTJ10a1AEKG3RyYW5zaXRpb25fdG9fcHJpbWFyeV92YWxpZBJFdHJhbnNpdGlvbl90b19wcmltYXJ5X3N0b3JhZ2VfY2xhc3MgbXVzdCBiZSAnQUZURVJfMV9BQ0NFU1MnIHdoZW4gc2V0Gm50aGlzLnRyYW5zaXRpb25fdG9fcHJpbWFyeV9zdG9yYWdlX2NsYXNzID09ICcnIHx8IHRoaXMudHJhbnNpdGlvbl90b19wcmltYXJ5X3N0b3JhZ2VfY2xhc3MgPT0gJ0FGVEVSXzFfQUNDRVNTJyKfAgofQXdzRWxhc3RpY0ZpbGVTeXN0ZW1BY2Nlc3NQb2ludBIUCgRuYW1lGAEgASgJQga6SAPIAQESbgoKcG9zaXhfdXNlchgCIAEoCzJaLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NlbGFzdGljZmlsZXN5c3RlbS52MS5Bd3NFbGFzdGljRmlsZVN5c3RlbUFjY2Vzc1BvaW50UG9zaXhVc2VyEnYKDnJvb3RfZGlyZWN0b3J5GAMgASgLMl4ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2VsYXN0aWNmaWxlc3lzdGVtLnYxLkF3c0VsYXN0aWNGaWxlU3lzdGVtQWNjZXNzUG9pbnRSb290RGlyZWN0b3J5ImwKKEF3c0VsYXN0aWNGaWxlU3lzdGVtQWNjZXNzUG9pbnRQb3NpeFVzZXISEwoDdWlkGAEgASgFQga6SAPIAQESEwoDZ2lkGAIgASgFQga6SAPIAQESFgoOc2Vjb25kYXJ5X2dpZHMYAyADKAUiugEKLEF3c0VsYXN0aWNGaWxlU3lzdGVtQWNjZXNzUG9pbnRSb290RGlyZWN0b3J5EhQKBHBhdGgYASABKAlCBrpIA8gBARJ0Cg1jcmVhdGlvbl9pbmZvGAIgASgLMl0ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2VsYXN0aWNmaWxlc3lzdGVtLnYxLkF3c0VsYXN0aWNGaWxlU3lzdGVtQWNjZXNzUG9pbnRDcmVhdGlvbkluZm8ijwEKK0F3c0VsYXN0aWNGaWxlU3lzdGVtQWNjZXNzUG9pbnRDcmVhdGlvbkluZm8SGQoJb3duZXJfdWlkGAEgASgFQga6SAPIAQESGQoJb3duZXJfZ2lkGAIgASgFQga6SAPIAQESKgoLcGVybWlzc2lvbnMYAyABKAlCFbpIEsgBAXINMgteMFswLTddezN9JEKTAwo0Y29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NlbGFzdGljZmlsZXN5c3RlbS52MUIJU3BlY1Byb3RvUAFaaWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWxhc3RpY2ZpbGVzeXN0ZW0vdjE7YXdzZWxhc3RpY2ZpbGVzeXN0ZW12MaICBU9PUEFBqgIwT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2VsYXN0aWNmaWxlc3lzdGVtLlYxygIwT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2VsYXN0aWNmaWxlc3lzdGVtXFYx4gI8T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2VsYXN0aWNmaWxlc3lzdGVtXFYxXEdQQk1ldGFkYXRh6gI1T3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NlbGFzdGljZmlsZXN5c3RlbTo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_google_protobuf_struct, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsElasticFileSystemSpec defines the desired configuration for an AWS Elastic
@@ -42,19 +42,23 @@ export const file_org_openmcf_provider_aws_awselasticfilesystem_v1_spec: GenFile
  * - Security groups must allow NFS traffic (TCP port 2049) from the clients.
  * - Credentials, region, and deployment workflow live outside this spec in stack inputs.
  *
- * ---------------------------------------------------------------------------
- * File System Core
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awselasticfilesystem.v1.AwsElasticFileSystemSpec
  */
 export type AwsElasticFileSystemSpec = Message<"org.openmcf.provider.aws.awselasticfilesystem.v1.AwsElasticFileSystemSpec"> & {
+  /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * Enable encryption at rest for all data and metadata stored in the file system.
    * ForceNew — cannot be added after creation. Production environments should
    * always enable encryption.
    *
-   * @generated from field: bool encrypted = 1;
+   * @generated from field: bool encrypted = 2;
    */
   encrypted: boolean;
 
@@ -63,7 +67,7 @@ export type AwsElasticFileSystemSpec = Message<"org.openmcf.provider.aws.awselas
    * AWS-managed key `aws/elasticfilesystem`. ForceNew — the KMS key cannot be
    * changed after creation. Requires `encrypted` to be true.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 2;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 3;
    */
   kmsKeyId?: StringValueOrRef;
 
@@ -76,7 +80,7 @@ export type AwsElasticFileSystemSpec = Message<"org.openmcf.provider.aws.awselas
    *   (thousands of EC2 instances). Slightly higher per-operation latency.
    *   Note: AWS recommends generalPurpose + elastic throughput as a replacement.
    *
-   * @generated from field: string performance_mode = 3;
+   * @generated from field: string performance_mode = 4;
    */
   performanceMode: string;
 
@@ -91,7 +95,7 @@ export type AwsElasticFileSystemSpec = Message<"org.openmcf.provider.aws.awselas
    *   Recommended for unpredictable or spiky access patterns. Requires
    *   generalPurpose performance mode.
    *
-   * @generated from field: string throughput_mode = 4;
+   * @generated from field: string throughput_mode = 5;
    */
   throughputMode: string;
 
@@ -99,7 +103,7 @@ export type AwsElasticFileSystemSpec = Message<"org.openmcf.provider.aws.awselas
    * Provisioned throughput in MiB/s. Only applicable when `throughput_mode` is
    * "provisioned". Range: 1.0–3414.0 for generalPurpose; 1.0–1024.0 for maxIO.
    *
-   * @generated from field: double provisioned_throughput_in_mibps = 5;
+   * @generated from field: double provisioned_throughput_in_mibps = 6;
    */
   provisionedThroughputInMibps: number;
 
@@ -112,7 +116,7 @@ export type AwsElasticFileSystemSpec = Message<"org.openmcf.provider.aws.awselas
    * When set, only a single mount target can be created (in a subnet belonging
    * to this AZ).
    *
-   * @generated from field: string availability_zone_name = 6;
+   * @generated from field: string availability_zone_name = 7;
    */
   availabilityZoneName: string;
 
@@ -124,7 +128,7 @@ export type AwsElasticFileSystemSpec = Message<"org.openmcf.provider.aws.awselas
    * Valid values: AFTER_1_DAY, AFTER_7_DAYS, AFTER_14_DAYS, AFTER_30_DAYS,
    * AFTER_60_DAYS, AFTER_90_DAYS, AFTER_180_DAYS, AFTER_270_DAYS, AFTER_365_DAYS.
    *
-   * @generated from field: string transition_to_ia = 7;
+   * @generated from field: string transition_to_ia = 8;
    */
   transitionToIa: string;
 
@@ -135,7 +139,7 @@ export type AwsElasticFileSystemSpec = Message<"org.openmcf.provider.aws.awselas
    *
    * Same valid values as transition_to_ia.
    *
-   * @generated from field: string transition_to_archive = 8;
+   * @generated from field: string transition_to_archive = 9;
    */
   transitionToArchive: string;
 
@@ -146,7 +150,7 @@ export type AwsElasticFileSystemSpec = Message<"org.openmcf.provider.aws.awselas
    * Only valid value: "AFTER_1_ACCESS". Leave empty to keep files in IA/Archive
    * even after access.
    *
-   * @generated from field: string transition_to_primary_storage_class = 9;
+   * @generated from field: string transition_to_primary_storage_class = 10;
    */
   transitionToPrimaryStorageClass: string;
 
@@ -154,7 +158,7 @@ export type AwsElasticFileSystemSpec = Message<"org.openmcf.provider.aws.awselas
    * Enable automatic daily backups via AWS Backup. AWS recommends enabling
    * backups for all production file systems. Mutable — can be toggled at any time.
    *
-   * @generated from field: bool backup_enabled = 10;
+   * @generated from field: bool backup_enabled = 11;
    */
   backupEnabled: boolean;
 
@@ -167,7 +171,7 @@ export type AwsElasticFileSystemSpec = Message<"org.openmcf.provider.aws.awselas
    * availability. For One Zone file systems, provide exactly one subnet in the
    * AZ specified by `availability_zone_name`.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 11;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 12;
    */
   subnetIds: StringValueOrRef[];
 
@@ -175,7 +179,7 @@ export type AwsElasticFileSystemSpec = Message<"org.openmcf.provider.aws.awselas
    * Security groups to apply to all mount targets. These must allow inbound NFS
    * traffic (TCP port 2049) from the clients that will mount the file system.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 12;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 13;
    */
   securityGroupIds: StringValueOrRef[];
 
@@ -187,7 +191,7 @@ export type AwsElasticFileSystemSpec = Message<"org.openmcf.provider.aws.awselas
    * Each access point must have a unique `name` which serves as the map key in
    * the `access_point_ids` and `access_point_arns` stack outputs.
    *
-   * @generated from field: repeated org.openmcf.provider.aws.awselasticfilesystem.v1.AwsElasticFileSystemAccessPoint access_points = 13;
+   * @generated from field: repeated org.openmcf.provider.aws.awselasticfilesystem.v1.AwsElasticFileSystemAccessPoint access_points = 14;
    */
   accessPoints: AwsElasticFileSystemAccessPoint[];
 
@@ -200,7 +204,7 @@ export type AwsElasticFileSystemSpec = Message<"org.openmcf.provider.aws.awselas
    * Provide as a JSON object structure. Serialized to JSON by IaC modules.
    * Consistent with SQS policy, SNS policy, and EventBridge event_pattern.
    *
-   * @generated from field: google.protobuf.Struct policy = 14;
+   * @generated from field: google.protobuf.Struct policy = 15;
    */
   policy?: JsonObject;
 };

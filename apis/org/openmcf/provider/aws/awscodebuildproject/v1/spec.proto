@@ -19,37 +19,41 @@ import "org/openmcf/shared/options/options.proto";
 // CodePipeline-triggered and manual projects omit it. Source credentials,
 // report groups, and fleets have independent lifecycles and are excluded.
 message AwsCodeBuildProjectSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // source defines where the build input comes from and how to fetch it.
-  AwsCodeBuildSource source = 1 [(buf.validate.field).required = true];
+  AwsCodeBuildSource source = 2 [(buf.validate.field).required = true];
 
   // environment defines the build container: image, compute, and variables.
-  AwsCodeBuildEnvironment environment = 2 [(buf.validate.field).required = true];
+  AwsCodeBuildEnvironment environment = 3 [(buf.validate.field).required = true];
 
   // artifacts defines where the build output goes.
-  AwsCodeBuildArtifacts artifacts = 3 [(buf.validate.field).required = true];
+  AwsCodeBuildArtifacts artifacts = 4 [(buf.validate.field).required = true];
 
   // service_role is the IAM role ARN that grants CodeBuild permission to
   // access source code, write artifacts, publish logs, and interact with
   // other AWS services during the build.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef service_role = 4 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef service_role = 5 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsIamRole,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
   ];
 
   // description is a human-readable description of the project (max 255 chars).
-  string description = 5 [(buf.validate.field).string.max_len = 255];
+  string description = 6 [(buf.validate.field).string.max_len = 255];
 
   // encryption_key is the ARN of a KMS key used to encrypt build artifacts.
   // If omitted, CodeBuild uses the AWS-managed key for S3.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef encryption_key = 6 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef encryption_key = 7 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
 
   // build_timeout is the maximum duration of a single build, in minutes.
   // Range: 5-2160 (36 hours). Default: 60.
-  optional int32 build_timeout = 7 [
+  optional int32 build_timeout = 8 [
     (org.openmcf.shared.options.default) = "60",
     (buf.validate.field).int32 = {
       gte: 5
@@ -59,7 +63,7 @@ message AwsCodeBuildProjectSpec {
 
   // queued_timeout is the maximum time a build can wait in the queue before
   // timing out, in minutes. Range: 5-480 (8 hours). Default: 480.
-  optional int32 queued_timeout = 8 [
+  optional int32 queued_timeout = 9 [
     (org.openmcf.shared.options.default) = "480",
     (buf.validate.field).int32 = {
       gte: 5
@@ -69,7 +73,7 @@ message AwsCodeBuildProjectSpec {
 
   // concurrent_build_limit caps the number of concurrent builds. Useful for
   // cost control. Minimum 1. Omit to allow unlimited concurrency.
-  int32 concurrent_build_limit = 9 [
+  int32 concurrent_build_limit = 10 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).int32.gte = 1
   ];
@@ -77,23 +81,23 @@ message AwsCodeBuildProjectSpec {
   // source_version is the default branch, tag, or commit ID to build.
   // For GitHub: branch name, tag, or full commit SHA.
   // For S3: object version ID.
-  string source_version = 10;
+  string source_version = 11;
 
   // cache configures build caching to speed up subsequent builds.
-  AwsCodeBuildCache cache = 11;
+  AwsCodeBuildCache cache = 12;
 
   // logs_config controls where build logs are sent.
-  AwsCodeBuildLogsConfig logs_config = 12;
+  AwsCodeBuildLogsConfig logs_config = 13;
 
   // vpc_config places the build in a VPC, giving it access to private
   // resources such as RDS databases, ElastiCache clusters, or internal APIs.
-  AwsCodeBuildVpcConfig vpc_config = 13;
+  AwsCodeBuildVpcConfig vpc_config = 14;
 
   // webhook configures automatic build triggers from the source provider.
   // Only valid when source type supports webhooks: GITHUB, BITBUCKET,
   // GITHUB_ENTERPRISE, GITLAB, GITLAB_SELF_MANAGED, CODECOMMIT.
   // Omit for CodePipeline-triggered or manual-only projects.
-  AwsCodeBuildWebhook webhook = 14;
+  AwsCodeBuildWebhook webhook = 15;
 
   // Cross-field validations
 

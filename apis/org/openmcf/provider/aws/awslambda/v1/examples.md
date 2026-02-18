@@ -7,6 +7,7 @@ metadata:
   name: hello-lambda
   org: my-org
 spec:
+  region: us-east-1
   function_name: hello-lambda
   role_arn: arn:aws:iam::123456789012:role/service-role/hello-role
   code_source_type: CODE_SOURCE_TYPE_S3
@@ -29,6 +30,7 @@ metadata:
     app: payments
     env: prod
 spec:
+  region: us-east-1
   function_name: payments-worker
   description: Processes payment events from the queue
   role_arn: arn:aws:iam::123456789012:role/service-role/payments-role

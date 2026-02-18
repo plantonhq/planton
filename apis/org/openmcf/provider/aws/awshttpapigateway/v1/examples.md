@@ -22,6 +22,7 @@ kind: AwsHttpApiGateway
 metadata:
   name: minimal-api
 spec:
+  region: us-east-1
   routes:
     - route_key: "$default"
       integration:
@@ -51,6 +52,7 @@ kind: AwsHttpApiGateway
 metadata:
   name: multi-route-api
 spec:
+  region: us-east-1
   description: Multi-route API with CORS support
   cors_configuration:
     allow_origins:
@@ -124,6 +126,7 @@ kind: AwsHttpApiGateway
 metadata:
   name: jwt-protected-api
 spec:
+  region: us-east-1
   description: API with JWT authorization via Cognito
   cors_configuration:
     allow_origins:
@@ -195,6 +198,7 @@ kind: AwsHttpApiGateway
 metadata:
   name: lambda-authorizer-api
 spec:
+  region: us-east-1
   description: API with Lambda REQUEST authorizer
   routes:
     - route_key: "GET /data"
@@ -258,6 +262,7 @@ kind: AwsHttpApiGateway
 metadata:
   name: production-api
 spec:
+  region: us-east-1
   description: Production API with comprehensive configuration
   cors_configuration:
     allow_origins:
@@ -405,6 +410,7 @@ kind: AwsHttpApiGateway
 metadata:
   name: http-proxy-api
 spec:
+  region: us-east-1
   description: API Gateway proxying to upstream HTTP service
   routes:
     - route_key: "GET /api/*"
@@ -450,6 +456,7 @@ kind: AwsHttpApiGateway
 metadata:
   name: mixed-auth-api
 spec:
+  region: us-east-1
   description: API with multiple authorization types
   routes:
     - route_key: "GET /public"
@@ -502,6 +509,7 @@ kind: AwsHttpApiGateway
 metadata:
   name: ref-api
 spec:
+  region: us-east-1
   stage:
     access_log:
       destination_arn:

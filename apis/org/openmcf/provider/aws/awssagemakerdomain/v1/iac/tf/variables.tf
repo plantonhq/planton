@@ -21,6 +21,8 @@ variable "metadata" {
 variable "spec" {
   description = "AwsSagemakerDomainSpec - desired state of the SageMaker domain"
   type = object({
+    # The AWS region where the resource will be created.
+    region                 = string
     auth_mode              = string
     vpc_id                 = string
     subnet_ids             = list(string)

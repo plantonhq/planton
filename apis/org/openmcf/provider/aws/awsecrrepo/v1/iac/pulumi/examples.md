@@ -16,6 +16,7 @@ kind: AwsEcrRepo
 metadata:
   name: my-basic-repo
 spec:
+  region: us-east-1
   repository_name: my-app/backend
   image_immutable: true
 ```
@@ -30,6 +31,7 @@ kind: AwsEcrRepo
 metadata:
   name: my-app-with-lifecycle
 spec:
+  region: us-east-1
   repository_name: my-app/frontend
   image_immutable: true
   scan_on_push: true
@@ -48,6 +50,7 @@ kind: AwsEcrRepo
 metadata:
   name: my-compliant-repo
 spec:
+  region: us-east-1
   repository_name: my-org/secure-service
   image_immutable: true
   scan_on_push: true
@@ -68,6 +71,7 @@ kind: AwsEcrRepo
 metadata:
   name: ${REPO_NAME}
 spec:
+  region: us-east-1
   repository_name: ${ORG_NAME}/${SERVICE_NAME}
   image_immutable: ${IMAGE_IMMUTABLE}
   scan_on_push: ${SCAN_ON_PUSH}
@@ -89,6 +93,7 @@ kind: AwsEcrRepo
 metadata:
   name: my-secret-repo
 spec:
+  region: us-east-1
   repository_name: my-org/confidential-service
   image_immutable: true
   scan_on_push: true
@@ -119,6 +124,7 @@ kind: AwsEcrRepo
 metadata:
   name: production-service-repo
 spec:
+  region: us-east-1
   repository_name: my-company/production-api
   image_immutable: true
   scan_on_push: true
@@ -143,6 +149,7 @@ kind: AwsEcrRepo
 metadata:
   name: dev-service-repo
 spec:
+  region: us-east-1
   repository_name: my-company/dev-api
   image_immutable: false
   scan_on_push: true

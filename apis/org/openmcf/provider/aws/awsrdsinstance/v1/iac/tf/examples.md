@@ -6,6 +6,7 @@ kind: AwsRdsInstance
 metadata:
   name: example-db
 spec:
+  region: us-west-2
   # provide either 2+ subnet_ids or a db_subnet_group_name
   subnetIds:
     - value: subnet-aaaa
@@ -29,6 +30,7 @@ kind: AwsRdsInstance
 metadata:
   name: example-db
 spec:
+  region: us-west-2
   dbSubnetGroupName:
     valueFrom:
       kind: AwsVpc

@@ -12,6 +12,7 @@ kind: AwsRoute53DnsRecord
 metadata:
   name: www-a-record
 spec:
+  region: us-east-1
   zone_id:
     value: Z1234567890ABC
   name: www.example.com
@@ -31,6 +32,7 @@ kind: AwsRoute53DnsRecord
 metadata:
   name: www-a-record
 spec:
+  region: us-east-1
   zone_id:
     value_from:
       name: my-zone  # References AwsRoute53Zone named "my-zone"
@@ -131,6 +133,7 @@ kind: AwsRoute53DnsRecord
 metadata:
   name: wildcard-record
 spec:
+  region: us-east-1
   zone_id:
     value: Z1234567890ABC
   name: "*.example.com"
@@ -313,6 +316,7 @@ kind: AwsRoute53DnsRecord
 metadata:
   name: www-failover-primary
 spec:
+  region: us-east-1
   zone_id:
     value: Z1234567890ABC
   name: www.example.com
@@ -335,6 +339,7 @@ kind: AwsRoute53DnsRecord
 metadata:
   name: www-failover-secondary
 spec:
+  region: us-east-1
   zone_id:
     value: Z1234567890ABC
   name: www.example.com
@@ -360,6 +365,7 @@ kind: AwsRoute53DnsRecord
 metadata:
   name: api-geo-eu
 spec:
+  region: us-east-1
   zone_id:
     value: Z1234567890ABC
   name: api.example.com
@@ -381,6 +387,7 @@ kind: AwsRoute53DnsRecord
 metadata:
   name: api-geo-us
 spec:
+  region: us-east-1
   zone_id:
     value: Z1234567890ABC
   name: api.example.com
@@ -404,6 +411,7 @@ kind: AwsRoute53DnsRecord
 metadata:
   name: caa-record
 spec:
+  region: us-east-1
   zone_id:
     value: Z1234567890ABC
   name: example.com

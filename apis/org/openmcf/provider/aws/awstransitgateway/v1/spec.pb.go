@@ -50,51 +50,54 @@ const (
 // stack inputs.
 type AwsTransitGatewaySpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Human-readable description for the Transit Gateway. Appears in the AWS
 	// console and CLI output.
-	Description string `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	// Private Autonomous System Number (ASN) for the Amazon side of BGP
 	// sessions. Used when connecting VPNs or Direct Connect gateways.
 	//
 	// Valid ranges: 64512-65534 (16-bit private) or 4200000000-4294967294
 	// (32-bit private). Default: 64512.
-	AmazonSideAsn int64 `protobuf:"varint,2,opt,name=amazon_side_asn,json=amazonSideAsn,proto3" json:"amazon_side_asn,omitempty"`
+	AmazonSideAsn int64 `protobuf:"varint,3,opt,name=amazon_side_asn,json=amazonSideAsn,proto3" json:"amazon_side_asn,omitempty"`
 	// Automatically associate new attachments with the default route table.
 	// When enabled (default), every new VPC attachment is associated with the
 	// TGW's default route table without manual intervention.
 	//
 	// Disable this for hub-and-spoke topologies where you manage route table
 	// associations explicitly via separate resources.
-	DefaultRouteTableAssociation bool `protobuf:"varint,3,opt,name=default_route_table_association,json=defaultRouteTableAssociation,proto3" json:"default_route_table_association,omitempty"`
+	DefaultRouteTableAssociation bool `protobuf:"varint,4,opt,name=default_route_table_association,json=defaultRouteTableAssociation,proto3" json:"default_route_table_association,omitempty"`
 	// Automatically propagate routes from new attachments to the default route
 	// table. When enabled (default), every attached VPC's CIDR blocks are
 	// propagated, creating a full-mesh connectivity pattern.
 	//
 	// Disable this for isolated routing domains where not all VPCs should
 	// reach each other.
-	DefaultRouteTablePropagation bool `protobuf:"varint,4,opt,name=default_route_table_propagation,json=defaultRouteTablePropagation,proto3" json:"default_route_table_propagation,omitempty"`
+	DefaultRouteTablePropagation bool `protobuf:"varint,5,opt,name=default_route_table_propagation,json=defaultRouteTablePropagation,proto3" json:"default_route_table_propagation,omitempty"`
 	// Enable DNS resolution for instances in attached VPCs. When enabled,
 	// queries to public DNS hostnames of instances in other attached VPCs
 	// resolve to their private IP addresses.
-	DnsSupport bool `protobuf:"varint,5,opt,name=dns_support,json=dnsSupport,proto3" json:"dns_support,omitempty"`
+	DnsSupport bool `protobuf:"varint,6,opt,name=dns_support,json=dnsSupport,proto3" json:"dns_support,omitempty"`
 	// Enable Equal Cost Multi-Path (ECMP) routing for VPN connections. When
 	// enabled and multiple VPN tunnels advertise the same routes, traffic is
 	// distributed across all tunnels for higher aggregate throughput.
-	VpnEcmpSupport bool `protobuf:"varint,6,opt,name=vpn_ecmp_support,json=vpnEcmpSupport,proto3" json:"vpn_ecmp_support,omitempty"`
+	VpnEcmpSupport bool `protobuf:"varint,7,opt,name=vpn_ecmp_support,json=vpnEcmpSupport,proto3" json:"vpn_ecmp_support,omitempty"`
 	// Automatically accept cross-account attachment requests shared via AWS
 	// Resource Access Manager (RAM). When disabled (default), shared
 	// attachments require manual acceptance.
-	AutoAcceptSharedAttachments bool `protobuf:"varint,7,opt,name=auto_accept_shared_attachments,json=autoAcceptSharedAttachments,proto3" json:"auto_accept_shared_attachments,omitempty"`
+	AutoAcceptSharedAttachments bool `protobuf:"varint,8,opt,name=auto_accept_shared_attachments,json=autoAcceptSharedAttachments,proto3" json:"auto_accept_shared_attachments,omitempty"`
 	// Enable cross-VPC security group referencing. When enabled, security
 	// group rules in one VPC can reference security groups in another VPC
 	// connected through this Transit Gateway, simplifying firewall management
 	// across VPCs.
-	SecurityGroupReferencingSupport bool `protobuf:"varint,8,opt,name=security_group_referencing_support,json=securityGroupReferencingSupport,proto3" json:"security_group_referencing_support,omitempty"`
+	SecurityGroupReferencingSupport bool `protobuf:"varint,9,opt,name=security_group_referencing_support,json=securityGroupReferencingSupport,proto3" json:"security_group_referencing_support,omitempty"`
 	// Enable multicast traffic routing through the Transit Gateway. This is
 	// a ForceNew field in the underlying provider -- changing it requires
 	// replacing the entire Transit Gateway. Only enable if you have a clear
 	// multicast use case (e.g., financial market data, media streaming).
-	MulticastSupport bool `protobuf:"varint,9,opt,name=multicast_support,json=multicastSupport,proto3" json:"multicast_support,omitempty"`
+	MulticastSupport bool `protobuf:"varint,10,opt,name=multicast_support,json=multicastSupport,proto3" json:"multicast_support,omitempty"`
 	// CIDR blocks to associate with the Transit Gateway. Used for advanced
 	// features like TGW Connect (SD-WAN/third-party appliance integration)
 	// and GRE-based attachments.
@@ -104,14 +107,14 @@ type AwsTransitGatewaySpec struct {
 	//
 	// Maximum 5 blocks. Supports both IPv4 (/24 or larger) and IPv6 (/64 or
 	// larger).
-	TransitGatewayCidrBlocks []string `protobuf:"bytes,10,rep,name=transit_gateway_cidr_blocks,json=transitGatewayCidrBlocks,proto3" json:"transit_gateway_cidr_blocks,omitempty"`
+	TransitGatewayCidrBlocks []string `protobuf:"bytes,11,rep,name=transit_gateway_cidr_blocks,json=transitGatewayCidrBlocks,proto3" json:"transit_gateway_cidr_blocks,omitempty"`
 	// VPC attachments that connect VPCs to this Transit Gateway. At least one
 	// attachment is required -- a Transit Gateway without attachments serves
 	// no purpose.
 	//
 	// Each attachment corresponds to one `aws_ec2_transit_gateway_vpc_attachment`
 	// resource. Modifications to one attachment do not affect others.
-	VpcAttachments []*AwsTransitGatewayVpcAttachment `protobuf:"bytes,11,rep,name=vpc_attachments,json=vpcAttachments,proto3" json:"vpc_attachments,omitempty"`
+	VpcAttachments []*AwsTransitGatewayVpcAttachment `protobuf:"bytes,12,rep,name=vpc_attachments,json=vpcAttachments,proto3" json:"vpc_attachments,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -144,6 +147,13 @@ func (x *AwsTransitGatewaySpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsTransitGatewaySpec.ProtoReflect.Descriptor instead.
 func (*AwsTransitGatewaySpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awstransitgateway_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsTransitGatewaySpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsTransitGatewaySpec) GetDescription() string {
@@ -367,21 +377,22 @@ var File_org_openmcf_provider_aws_awstransitgateway_v1_spec_proto protoreflect.F
 
 const file_org_openmcf_provider_aws_awstransitgateway_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8org/openmcf/provider/aws/awstransitgateway/v1/spec.proto\x12-org.openmcf.provider.aws.awstransitgateway.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xbc\t\n" +
-	"\x15AwsTransitGatewaySpec\x12 \n" +
-	"\vdescription\x18\x01 \x01(\tR\vdescription\x121\n" +
-	"\x0famazon_side_asn\x18\x02 \x01(\x03B\t\x92\xa6\x1d\x0564512R\ramazonSideAsn\x12O\n" +
-	"\x1fdefault_route_table_association\x18\x03 \x01(\bB\b\x92\xa6\x1d\x04trueR\x1cdefaultRouteTableAssociation\x12O\n" +
-	"\x1fdefault_route_table_propagation\x18\x04 \x01(\bB\b\x92\xa6\x1d\x04trueR\x1cdefaultRouteTablePropagation\x12)\n" +
-	"\vdns_support\x18\x05 \x01(\bB\b\x92\xa6\x1d\x04trueR\n" +
+	"8org/openmcf/provider/aws/awstransitgateway/v1/spec.proto\x12-org.openmcf.provider.aws.awstransitgateway.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xdd\t\n" +
+	"\x15AwsTransitGatewaySpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12 \n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\x121\n" +
+	"\x0famazon_side_asn\x18\x03 \x01(\x03B\t\x92\xa6\x1d\x0564512R\ramazonSideAsn\x12O\n" +
+	"\x1fdefault_route_table_association\x18\x04 \x01(\bB\b\x92\xa6\x1d\x04trueR\x1cdefaultRouteTableAssociation\x12O\n" +
+	"\x1fdefault_route_table_propagation\x18\x05 \x01(\bB\b\x92\xa6\x1d\x04trueR\x1cdefaultRouteTablePropagation\x12)\n" +
+	"\vdns_support\x18\x06 \x01(\bB\b\x92\xa6\x1d\x04trueR\n" +
 	"dnsSupport\x122\n" +
-	"\x10vpn_ecmp_support\x18\x06 \x01(\bB\b\x92\xa6\x1d\x04trueR\x0evpnEcmpSupport\x12C\n" +
-	"\x1eauto_accept_shared_attachments\x18\a \x01(\bR\x1bautoAcceptSharedAttachments\x12K\n" +
-	"\"security_group_referencing_support\x18\b \x01(\bR\x1fsecurityGroupReferencingSupport\x12+\n" +
-	"\x11multicast_support\x18\t \x01(\bR\x10multicastSupport\x12=\n" +
-	"\x1btransit_gateway_cidr_blocks\x18\n" +
-	" \x03(\tR\x18transitGatewayCidrBlocks\x12\x83\x01\n" +
-	"\x0fvpc_attachments\x18\v \x03(\v2M.org.openmcf.provider.aws.awstransitgateway.v1.AwsTransitGatewayVpcAttachmentB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01R\x0evpcAttachments:\xc8\x03\xbaH\xc4\x03\x1a\x91\x01\n" +
+	"\x10vpn_ecmp_support\x18\a \x01(\bB\b\x92\xa6\x1d\x04trueR\x0evpnEcmpSupport\x12C\n" +
+	"\x1eauto_accept_shared_attachments\x18\b \x01(\bR\x1bautoAcceptSharedAttachments\x12K\n" +
+	"\"security_group_referencing_support\x18\t \x01(\bR\x1fsecurityGroupReferencingSupport\x12+\n" +
+	"\x11multicast_support\x18\n" +
+	" \x01(\bR\x10multicastSupport\x12=\n" +
+	"\x1btransit_gateway_cidr_blocks\x18\v \x03(\tR\x18transitGatewayCidrBlocks\x12\x83\x01\n" +
+	"\x0fvpc_attachments\x18\f \x03(\v2M.org.openmcf.provider.aws.awstransitgateway.v1.AwsTransitGatewayVpcAttachmentB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01R\x0evpcAttachments:\xc8\x03\xbaH\xc4\x03\x1a\x91\x01\n" +
 	"!transit_gateway_cidr_blocks_max_5\x12?transit_gateway_cidr_blocks supports a maximum of 5 CIDR blocks\x1a+size(this.transit_gateway_cidr_blocks) <= 5\x1a\xad\x02\n" +
 	"\x1bamazon_side_asn_valid_range\x12`amazon_side_asn must be in range 64512-65534 (16-bit) or 4200000000-4294967294 (32-bit) when set\x1a\xab\x01this.amazon_side_asn == 0 || (this.amazon_side_asn >= 64512 && this.amazon_side_asn <= 65534) || (this.amazon_side_asn >= 4200000000 && this.amazon_side_asn <= 4294967294)\"\xf0\x05\n" +
 	"\x1eAwsTransitGatewayVpcAttachment\x12\xd1\x01\n" +

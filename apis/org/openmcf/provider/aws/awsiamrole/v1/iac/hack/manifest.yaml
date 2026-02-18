@@ -3,6 +3,7 @@ kind: AwsIamRole
 metadata:
   name: lambda-execution-role-demo
 spec:
+  region: us-west-2
   description: "Demo IAM role for Lambda function execution"
   path: "/service-roles/"
   trustPolicy:

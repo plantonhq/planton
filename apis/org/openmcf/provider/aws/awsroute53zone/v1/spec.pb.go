@@ -90,33 +90,36 @@ func (Route53FailoverRoutingPolicy_FailoverRecordType) EnumDescriptor() ([]byte,
 // traffic routing and high availability features.
 type AwsRoute53ZoneSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Flag to indicate if this is a private hosted zone.
 	// Private zones are used for split-horizon DNS and only resolve within associated VPCs.
 	// Public zones (is_private=false) resolve globally on the internet.
 	// Default: false (public zone)
-	IsPrivate bool `protobuf:"varint,1,opt,name=is_private,json=isPrivate,proto3" json:"is_private,omitempty"`
+	IsPrivate bool `protobuf:"varint,2,opt,name=is_private,json=isPrivate,proto3" json:"is_private,omitempty"`
 	// VPC associations for private hosted zones.
 	// Only applicable when is_private is true.
 	// Each association allows the private zone to resolve DNS queries from the specified VPC.
 	// You must enable enableDnsHostnames and enableDnsSupport in your VPC settings.
-	VpcAssociations []*Route53VpcAssociation `protobuf:"bytes,2,rep,name=vpc_associations,json=vpcAssociations,proto3" json:"vpc_associations,omitempty"`
+	VpcAssociations []*Route53VpcAssociation `protobuf:"bytes,3,rep,name=vpc_associations,json=vpcAssociations,proto3" json:"vpc_associations,omitempty"`
 	// Enable query logging for this hosted zone.
 	// Query logs are sent to CloudWatch Logs and can be used for debugging,
 	// security monitoring, and understanding query patterns.
 	// Warning: High-traffic domains generate large log volumes.
-	EnableQueryLogging bool `protobuf:"varint,3,opt,name=enable_query_logging,json=enableQueryLogging,proto3" json:"enable_query_logging,omitempty"`
+	EnableQueryLogging bool `protobuf:"varint,4,opt,name=enable_query_logging,json=enableQueryLogging,proto3" json:"enable_query_logging,omitempty"`
 	// CloudWatch Log Group name for query logs (required if enable_query_logging is true).
 	// The log group must exist before enabling query logging.
-	QueryLogGroupName string `protobuf:"bytes,4,opt,name=query_log_group_name,json=queryLogGroupName,proto3" json:"query_log_group_name,omitempty"`
+	QueryLogGroupName string `protobuf:"bytes,5,opt,name=query_log_group_name,json=queryLogGroupName,proto3" json:"query_log_group_name,omitempty"`
 	// Enable DNSSEC for the hosted zone.
 	// DNSSEC adds cryptographic signatures to DNS records to prevent spoofing attacks.
 	// Note: Requires additional configuration at domain registrar level.
-	EnableDnssec bool `protobuf:"varint,5,opt,name=enable_dnssec,json=enableDnssec,proto3" json:"enable_dnssec,omitempty"`
+	EnableDnssec bool `protobuf:"varint,6,opt,name=enable_dnssec,json=enableDnssec,proto3" json:"enable_dnssec,omitempty"`
 	// The DNS records that are added to the zone.
 	// Each record represents a DNS resource record with support for basic records (A, AAAA, CNAME, MX, TXT),
 	// alias records (pointing to AWS resources), and advanced routing policies.
 	// These records define how your domain or subdomains are routed to your resources.
-	Records       []*Route53DnsRecord `protobuf:"bytes,6,rep,name=records,proto3" json:"records,omitempty"`
+	Records       []*Route53DnsRecord `protobuf:"bytes,7,rep,name=records,proto3" json:"records,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,6 +152,13 @@ func (x *AwsRoute53ZoneSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsRoute53ZoneSpec.ProtoReflect.Descriptor instead.
 func (*AwsRoute53ZoneSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsroute53zone_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsRoute53ZoneSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsRoute53ZoneSpec) GetIsPrivate() bool {
@@ -880,15 +890,16 @@ var File_org_openmcf_provider_aws_awsroute53zone_v1_spec_proto protoreflect.File
 
 const file_org_openmcf_provider_aws_awsroute53zone_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"5org/openmcf/provider/aws/awsroute53zone/v1/spec.proto\x12*org.openmcf.provider.aws.awsroute53zone.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1aGorg/openmcf/shared/networking/enums/dnsrecordtype/dns_record_type.proto\"\x81\x03\n" +
-	"\x12AwsRoute53ZoneSpec\x12\x1d\n" +
+	"5org/openmcf/provider/aws/awsroute53zone/v1/spec.proto\x12*org.openmcf.provider.aws.awsroute53zone.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1aGorg/openmcf/shared/networking/enums/dnsrecordtype/dns_record_type.proto\"\xa2\x03\n" +
+	"\x12AwsRoute53ZoneSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x1d\n" +
 	"\n" +
-	"is_private\x18\x01 \x01(\bR\tisPrivate\x12l\n" +
-	"\x10vpc_associations\x18\x02 \x03(\v2A.org.openmcf.provider.aws.awsroute53zone.v1.Route53VpcAssociationR\x0fvpcAssociations\x120\n" +
-	"\x14enable_query_logging\x18\x03 \x01(\bR\x12enableQueryLogging\x12/\n" +
-	"\x14query_log_group_name\x18\x04 \x01(\tR\x11queryLogGroupName\x12#\n" +
-	"\renable_dnssec\x18\x05 \x01(\bR\fenableDnssec\x12V\n" +
-	"\arecords\x18\x06 \x03(\v2<.org.openmcf.provider.aws.awsroute53zone.v1.Route53DnsRecordR\arecords\"\xaf\x01\n" +
+	"is_private\x18\x02 \x01(\bR\tisPrivate\x12l\n" +
+	"\x10vpc_associations\x18\x03 \x03(\v2A.org.openmcf.provider.aws.awsroute53zone.v1.Route53VpcAssociationR\x0fvpcAssociations\x120\n" +
+	"\x14enable_query_logging\x18\x04 \x01(\bR\x12enableQueryLogging\x12/\n" +
+	"\x14query_log_group_name\x18\x05 \x01(\tR\x11queryLogGroupName\x12#\n" +
+	"\renable_dnssec\x18\x06 \x01(\bR\fenableDnssec\x12V\n" +
+	"\arecords\x18\a \x03(\v2<.org.openmcf.provider.aws.awsroute53zone.v1.Route53DnsRecordR\arecords\"\xaf\x01\n" +
 	"\x15Route53VpcAssociation\x12o\n" +
 	"\x06vpc_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12%\n" +
 	"\n" +

@@ -28,6 +28,7 @@ var _ = ginkgo.Describe("AwsCertManagerCert", func() {
 				Name: "a-test-name",
 			},
 			Spec: &AwsCertManagerCertSpec{
+				Region:            "us-west-2",
 				PrimaryDomainName: "example.com",
 				AlternateDomainNames: []string{
 					"www.example.com",

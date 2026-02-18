@@ -3,6 +3,7 @@ kind: AwsMskCluster
 metadata:
   name: test-msk-cluster
 spec:
+  region: us-west-2
   kafkaVersion: "3.6.0"
   numberOfBrokerNodes: 3
   instanceType: kafka.m5.large

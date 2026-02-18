@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsrediselasticache/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsrediselasticache_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjpvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzcmVkaXNlbGFzdGljYWNoZS92MS9zcGVjLnByb3RvEi9vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzcmVkaXNlbGFzdGljYWNoZS52MSKHHgoXQXdzUmVkaXNFbGFzdGljYWNoZVNwZWMSFgoGZW5naW5lGAEgASgJQga6SAPIAQESFgoOZW5naW5lX3ZlcnNpb24YAiABKAkSGwoLZGVzY3JpcHRpb24YAyABKAlCBrpIA8gBARIZCglub2RlX3R5cGUYBCABKAlCBrpIA8gBARImCgRwb3J0GAUgASgFQhO6SAgaBhj//wMoAYqmHQQ2Mzc5SACIAQESGgoSbnVtX2NhY2hlX2NsdXN0ZXJzGAYgASgFEhcKD251bV9ub2RlX2dyb3VwcxgHIAEoBRIqChdyZXBsaWNhc19wZXJfbm9kZV9ncm91cBgIIAEoBUIJukgGGgQYBSgAEiIKGmF1dG9tYXRpY19mYWlsb3Zlcl9lbmFibGVkGAkgASgIEhgKEG11bHRpX2F6X2VuYWJsZWQYCiABKAgSdgoKc3VibmV0X2lkcxgLIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCLojUYdgBktRhJXN0YXR1cy5vdXRwdXRzLnByaXZhdGVfc3VibmV0cy5bKl0uaWQSeQoSc2VjdXJpdHlfZ3JvdXBfaWRzGAwgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIpiNRh1wGS1GEgc3RhdHVzLm91dHB1dHMuc2VjdXJpdHlfZ3JvdXBfaWQSLAoaYXRfcmVzdF9lbmNyeXB0aW9uX2VuYWJsZWQYDSABKAhCCJKmHQR0cnVlEiwKGnRyYW5zaXRfZW5jcnlwdGlvbl9lbmFibGVkGA4gASgIQgiSph0EdHJ1ZRIfChd0cmFuc2l0X2VuY3J5cHRpb25fbW9kZRgPIAEoCRJnCgprbXNfa2V5X2lkGBAgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybhJGCgphdXRoX3Rva2VuGBEgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZhIWCg51c2VyX2dyb3VwX2lkcxgSIAMoCRKhAQoSbWFpbnRlbmFuY2Vfd2luZG93GBMgASgJQoQBukiAAdgBAXJ7MnleKG1vbnx0dWV8d2VkfHRodXxmcml8c2F0fHN1bik6KFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0tKG1vbnx0dWV8d2VkfHRodXxmcml8c2F0fHN1bik6KFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0kEisKGHNuYXBzaG90X3JldGVudGlvbl9saW1pdBgUIAEoBUIJukgGGgQYIygAEmAKD3NuYXBzaG90X3dpbmRvdxgVIAEoCUJHukhE2AEBcj8yPV4oWzAxXVswLTldfDJbMC0zXSk6WzAtNV1bMC05XS0oWzAxXVswLTldfDJbMC0zXSk6WzAtNV1bMC05XSQSIQoZZmluYWxfc25hcHNob3RfaWRlbnRpZmllchgWIAEoCRIZChFhcHBseV9pbW1lZGlhdGVseRgXIAEoCBIeChZwYXJhbWV0ZXJfZ3JvdXBfZmFtaWx5GBggASgJEmEKCnBhcmFtZXRlcnMYGSADKAsyTS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzcmVkaXNlbGFzdGljYWNoZS52MS5Bd3NSZWRpc0VsYXN0aWNhY2hlUGFyYW1ldGVyEnoKG2xvZ19kZWxpdmVyeV9jb25maWd1cmF0aW9ucxgaIAMoCzJVLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NyZWRpc2VsYXN0aWNhY2hlLnYxLkF3c1JlZGlzRWxhc3RpY2FjaGVMb2dEZWxpdmVyeUNvbmZpZxJ1ChZub3RpZmljYXRpb25fdG9waWNfYXJuGBsgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIhiNRh4gGS1GEYc3RhdHVzLm91dHB1dHMudG9waWNfYXJuEiIKGmF1dG9fbWlub3JfdmVyc2lvbl91cGdyYWRlGBwgASgIEhwKFGRhdGFfdGllcmluZ19lbmFibGVkGB0gASgIOtEQukjNEBpdChNlbmdpbmVfdmFsaWRfdmFsdWVzEiJlbmdpbmUgbXVzdCBiZSAncmVkaXMnIG9yICd2YWxrZXknGiJ0aGlzLmVuZ2luZSBpbiBbJ3JlZGlzJywgJ3ZhbGtleSddGsIBChd0b3BvbG9neV9tb2RlX3NlbGVjdGlvbhJqc3BlY2lmeSBlaXRoZXIgbnVtX2NhY2hlX2NsdXN0ZXJzIChub24tY2x1c3RlcmVkKSBvciBudW1fbm9kZV9ncm91cHMgKGNsdXN0ZXJlZCksIG5vdCBib3RoIGFuZCBub3QgbmVpdGhlcho7KHRoaXMubnVtX2NhY2hlX2NsdXN0ZXJzID4gMCkgIT0gKHRoaXMubnVtX25vZGVfZ3JvdXBzID4gMCkarwEKGG51bV9jYWNoZV9jbHVzdGVyc19yYW5nZRIzbnVtX2NhY2hlX2NsdXN0ZXJzIG11c3QgYmUgYmV0d2VlbiAxIGFuZCA2IHdoZW4gc2V0Gl50aGlzLm51bV9jYWNoZV9jbHVzdGVycyA9PSAwIHx8ICh0aGlzLm51bV9jYWNoZV9jbHVzdGVycyA+PSAxICYmIHRoaXMubnVtX2NhY2hlX2NsdXN0ZXJzIDw9IDYpGpoBCh1yZXBsaWNhc19yZXF1aXJlc19ub2RlX2dyb3VwcxI6cmVwbGljYXNfcGVyX25vZGVfZ3JvdXAgcmVxdWlyZXMgbnVtX25vZGVfZ3JvdXBzIHRvIGJlIHNldBo9dGhpcy5yZXBsaWNhc19wZXJfbm9kZV9ncm91cCA9PSAwIHx8IHRoaXMubnVtX25vZGVfZ3JvdXBzID4gMBrjAQocZmFpbG92ZXJfcmVxdWlyZXNfbXVsdGlfbm9kZRJjYXV0b21hdGljX2ZhaWxvdmVyX2VuYWJsZWQgcmVxdWlyZXMgbnVtX2NhY2hlX2NsdXN0ZXJzID49IDIgb3IgY2x1c3RlcmVkIG1vZGUgKG51bV9ub2RlX2dyb3VwcyA+IDApGl4hdGhpcy5hdXRvbWF0aWNfZmFpbG92ZXJfZW5hYmxlZCB8fCAodGhpcy5udW1fY2FjaGVfY2x1c3RlcnMgPj0gMiB8fCB0aGlzLm51bV9ub2RlX2dyb3VwcyA+IDApGpgBChptdWx0aV9hel9yZXF1aXJlc19mYWlsb3ZlchI/bXVsdGlfYXpfZW5hYmxlZCByZXF1aXJlcyBhdXRvbWF0aWNfZmFpbG92ZXJfZW5hYmxlZCB0byBiZSB0cnVlGjkhdGhpcy5tdWx0aV9hel9lbmFibGVkIHx8IHRoaXMuYXV0b21hdGljX2ZhaWxvdmVyX2VuYWJsZWQaqgEKFWF1dGhfbXV0dWFsX2V4Y2x1c2lvbhJWYXV0aF90b2tlbiBhbmQgdXNlcl9ncm91cF9pZHMgYXJlIG11dHVhbGx5IGV4Y2x1c2l2ZTsgY2hvb3NlIG9uZSBhdXRoZW50aWNhdGlvbiBtZXRob2QaOSEoaGFzKHRoaXMuYXV0aF90b2tlbikgJiYgdGhpcy51c2VyX2dyb3VwX2lkcy5zaXplKCkgPiAwKRqxAQogdHJhbnNpdF9tb2RlX3JlcXVpcmVzX2VuY3J5cHRpb24SRnRyYW5zaXRfZW5jcnlwdGlvbl9tb2RlIHJlcXVpcmVzIHRyYW5zaXRfZW5jcnlwdGlvbl9lbmFibGVkIHRvIGJlIHRydWUaRXRoaXMudHJhbnNpdF9lbmNyeXB0aW9uX21vZGUgPT0gJycgfHwgdGhpcy50cmFuc2l0X2VuY3J5cHRpb25fZW5hYmxlZBrAAQoZdHJhbnNpdF9tb2RlX3ZhbGlkX3ZhbHVlcxJCdHJhbnNpdF9lbmNyeXB0aW9uX21vZGUgbXVzdCBiZSAncHJlZmVycmVkJyBvciAncmVxdWlyZWQnIHdoZW4gc2V0Gl90aGlzLnRyYW5zaXRfZW5jcnlwdGlvbl9tb2RlID09ICcnIHx8IHRoaXMudHJhbnNpdF9lbmNyeXB0aW9uX21vZGUgaW4gWydwcmVmZXJyZWQnLCAncmVxdWlyZWQnXRqeAQoZcGFyYW1ldGVyc19yZXF1aXJlX2ZhbWlseRI/cGFyYW1ldGVyX2dyb3VwX2ZhbWlseSBpcyByZXF1aXJlZCB3aGVuIHBhcmFtZXRlcnMgYXJlIHByb3ZpZGVkGkB0aGlzLnBhcmFtZXRlcnMuc2l6ZSgpID09IDAgfHwgdGhpcy5wYXJhbWV0ZXJfZ3JvdXBfZmFtaWx5ICE9ICcnGooBChRsb2dfZGVsaXZlcnlfbWF4X3R3bxJEYXQgbW9zdCAyIGxvZyBkZWxpdmVyeSBjb25maWd1cmF0aW9ucyBhcmUgYWxsb3dlZCAob25lIHBlciBsb2dfdHlwZSkaLHRoaXMubG9nX2RlbGl2ZXJ5X2NvbmZpZ3VyYXRpb25zLnNpemUoKSA8PSAyGoQCChlsb2dfZGVsaXZlcnlfdW5pcXVlX3R5cGVzElhlYWNoIGxvZ190eXBlIChzbG93LWxvZywgZW5naW5lLWxvZykgY2FuIG9ubHkgYXBwZWFyIG9uY2UgaW4gbG9nX2RlbGl2ZXJ5X2NvbmZpZ3VyYXRpb25zGowBdGhpcy5sb2dfZGVsaXZlcnlfY29uZmlndXJhdGlvbnMuc2l6ZSgpIDw9IDEgfHwgdGhpcy5sb2dfZGVsaXZlcnlfY29uZmlndXJhdGlvbnNbMF0ubG9nX3R5cGUgIT0gdGhpcy5sb2dfZGVsaXZlcnlfY29uZmlndXJhdGlvbnNbMV0ubG9nX3R5cGVCBwoFX3BvcnQiSwocQXdzUmVkaXNFbGFzdGljYWNoZVBhcmFtZXRlchIUCgRuYW1lGAEgASgJQga6SAPIAQESFQoFdmFsdWUYAiABKAlCBrpIA8gBASK/BAokQXdzUmVkaXNFbGFzdGljYWNoZUxvZ0RlbGl2ZXJ5Q29uZmlnEiAKEGRlc3RpbmF0aW9uX3R5cGUYASABKAlCBrpIA8gBARJPCgtkZXN0aW5hdGlvbhgCIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCBrpIA8gBARIaCgpsb2dfZm9ybWF0GAMgASgJQga6SAPIAQESGAoIbG9nX3R5cGUYBCABKAlCBrpIA8gBATrtArpI6QIanAEKFmRlc3RpbmF0aW9uX3R5cGVfdmFsaWQSQGRlc3RpbmF0aW9uX3R5cGUgbXVzdCBiZSAnY2xvdWR3YXRjaC1sb2dzJyBvciAna2luZXNpcy1maXJlaG9zZScaQHRoaXMuZGVzdGluYXRpb25fdHlwZSBpbiBbJ2Nsb3Vkd2F0Y2gtbG9ncycsICdraW5lc2lzLWZpcmVob3NlJ10aXAoQbG9nX2Zvcm1hdF92YWxpZBIjbG9nX2Zvcm1hdCBtdXN0IGJlICd0ZXh0JyBvciAnanNvbicaI3RoaXMubG9nX2Zvcm1hdCBpbiBbJ3RleHQnLCAnanNvbiddGmoKDmxvZ190eXBlX3ZhbGlkEitsb2dfdHlwZSBtdXN0IGJlICdzbG93LWxvZycgb3IgJ2VuZ2luZS1sb2cnGit0aGlzLmxvZ190eXBlIGluIFsnc2xvdy1sb2cnLCAnZW5naW5lLWxvZyddQowDCjNjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3JlZGlzZWxhc3RpY2FjaGUudjFCCVNwZWNQcm90b1ABWmdnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c3JlZGlzZWxhc3RpY2FjaGUvdjE7YXdzcmVkaXNlbGFzdGljYWNoZXYxogIFT09QQUGqAi9PcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzcmVkaXNlbGFzdGljYWNoZS5WMcoCL09yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NyZWRpc2VsYXN0aWNhY2hlXFYx4gI7T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c3JlZGlzZWxhc3RpY2FjaGVcVjFcR1BCTWV0YWRhdGHqAjRPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c3JlZGlzZWxhc3RpY2FjaGU6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("Cjpvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzcmVkaXNlbGFzdGljYWNoZS92MS9zcGVjLnByb3RvEi9vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzcmVkaXNlbGFzdGljYWNoZS52MSKgHgoXQXdzUmVkaXNFbGFzdGljYWNoZVNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEhYKBmVuZ2luZRgCIAEoCUIGukgDyAEBEhYKDmVuZ2luZV92ZXJzaW9uGAMgASgJEhsKC2Rlc2NyaXB0aW9uGAQgASgJQga6SAPIAQESGQoJbm9kZV90eXBlGAUgASgJQga6SAPIAQESJgoEcG9ydBgGIAEoBUITukgIGgYY//8DKAGKph0ENjM3OUgAiAEBEhoKEm51bV9jYWNoZV9jbHVzdGVycxgHIAEoBRIXCg9udW1fbm9kZV9ncm91cHMYCCABKAUSKgoXcmVwbGljYXNfcGVyX25vZGVfZ3JvdXAYCSABKAVCCbpIBhoEGAUoABIiChphdXRvbWF0aWNfZmFpbG92ZXJfZW5hYmxlZBgKIAEoCBIYChBtdWx0aV9hel9lbmFibGVkGAsgASgIEnYKCnN1Ym5ldF9pZHMYDCADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQi6I1GHYAZLUYSVzdGF0dXMub3V0cHV0cy5wcml2YXRlX3N1Ym5ldHMuWypdLmlkEnkKEnNlY3VyaXR5X2dyb3VwX2lkcxgNIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEiwKGmF0X3Jlc3RfZW5jcnlwdGlvbl9lbmFibGVkGA4gASgIQgiSph0EdHJ1ZRIsChp0cmFuc2l0X2VuY3J5cHRpb25fZW5hYmxlZBgPIAEoCEIIkqYdBHRydWUSHwoXdHJhbnNpdF9lbmNyeXB0aW9uX21vZGUYECABKAkSZwoKa21zX2tleV9pZBgRIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SRgoKYXV0aF90b2tlbhgSIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWYSFgoOdXNlcl9ncm91cF9pZHMYEyADKAkSoQEKEm1haW50ZW5hbmNlX3dpbmRvdxgUIAEoCUKEAbpIgAHYAQFyezJ5Xihtb258dHVlfHdlZHx0aHV8ZnJpfHNhdHxzdW4pOihbMDFdWzAtOV18MlswLTNdKTpbMC01XVswLTldLShtb258dHVlfHdlZHx0aHV8ZnJpfHNhdHxzdW4pOihbMDFdWzAtOV18MlswLTNdKTpbMC01XVswLTldJBIrChhzbmFwc2hvdF9yZXRlbnRpb25fbGltaXQYFSABKAVCCbpIBhoEGCMoABJgCg9zbmFwc2hvdF93aW5kb3cYFiABKAlCR7pIRNgBAXI/Mj1eKFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0tKFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0kEiEKGWZpbmFsX3NuYXBzaG90X2lkZW50aWZpZXIYFyABKAkSGQoRYXBwbHlfaW1tZWRpYXRlbHkYGCABKAgSHgoWcGFyYW1ldGVyX2dyb3VwX2ZhbWlseRgZIAEoCRJhCgpwYXJhbWV0ZXJzGBogAygLMk0ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3JlZGlzZWxhc3RpY2FjaGUudjEuQXdzUmVkaXNFbGFzdGljYWNoZVBhcmFtZXRlchJ6Chtsb2dfZGVsaXZlcnlfY29uZmlndXJhdGlvbnMYGyADKAsyVS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzcmVkaXNlbGFzdGljYWNoZS52MS5Bd3NSZWRpc0VsYXN0aWNhY2hlTG9nRGVsaXZlcnlDb25maWcSdQoWbm90aWZpY2F0aW9uX3RvcGljX2FybhgcIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCIYjUYeIBktRhGHN0YXR1cy5vdXRwdXRzLnRvcGljX2FybhIiChphdXRvX21pbm9yX3ZlcnNpb25fdXBncmFkZRgdIAEoCBIcChRkYXRhX3RpZXJpbmdfZW5hYmxlZBgeIAEoCDrRELpIzRAaXQoTZW5naW5lX3ZhbGlkX3ZhbHVlcxIiZW5naW5lIG11c3QgYmUgJ3JlZGlzJyBvciAndmFsa2V5JxoidGhpcy5lbmdpbmUgaW4gWydyZWRpcycsICd2YWxrZXknXRrCAQoXdG9wb2xvZ3lfbW9kZV9zZWxlY3Rpb24SanNwZWNpZnkgZWl0aGVyIG51bV9jYWNoZV9jbHVzdGVycyAobm9uLWNsdXN0ZXJlZCkgb3IgbnVtX25vZGVfZ3JvdXBzIChjbHVzdGVyZWQpLCBub3QgYm90aCBhbmQgbm90IG5laXRoZXIaOyh0aGlzLm51bV9jYWNoZV9jbHVzdGVycyA+IDApICE9ICh0aGlzLm51bV9ub2RlX2dyb3VwcyA+IDApGq8BChhudW1fY2FjaGVfY2x1c3RlcnNfcmFuZ2USM251bV9jYWNoZV9jbHVzdGVycyBtdXN0IGJlIGJldHdlZW4gMSBhbmQgNiB3aGVuIHNldBpedGhpcy5udW1fY2FjaGVfY2x1c3RlcnMgPT0gMCB8fCAodGhpcy5udW1fY2FjaGVfY2x1c3RlcnMgPj0gMSAmJiB0aGlzLm51bV9jYWNoZV9jbHVzdGVycyA8PSA2KRqaAQodcmVwbGljYXNfcmVxdWlyZXNfbm9kZV9ncm91cHMSOnJlcGxpY2FzX3Blcl9ub2RlX2dyb3VwIHJlcXVpcmVzIG51bV9ub2RlX2dyb3VwcyB0byBiZSBzZXQaPXRoaXMucmVwbGljYXNfcGVyX25vZGVfZ3JvdXAgPT0gMCB8fCB0aGlzLm51bV9ub2RlX2dyb3VwcyA+IDAa4wEKHGZhaWxvdmVyX3JlcXVpcmVzX211bHRpX25vZGUSY2F1dG9tYXRpY19mYWlsb3Zlcl9lbmFibGVkIHJlcXVpcmVzIG51bV9jYWNoZV9jbHVzdGVycyA+PSAyIG9yIGNsdXN0ZXJlZCBtb2RlIChudW1fbm9kZV9ncm91cHMgPiAwKRpeIXRoaXMuYXV0b21hdGljX2ZhaWxvdmVyX2VuYWJsZWQgfHwgKHRoaXMubnVtX2NhY2hlX2NsdXN0ZXJzID49IDIgfHwgdGhpcy5udW1fbm9kZV9ncm91cHMgPiAwKRqYAQoabXVsdGlfYXpfcmVxdWlyZXNfZmFpbG92ZXISP211bHRpX2F6X2VuYWJsZWQgcmVxdWlyZXMgYXV0b21hdGljX2ZhaWxvdmVyX2VuYWJsZWQgdG8gYmUgdHJ1ZRo5IXRoaXMubXVsdGlfYXpfZW5hYmxlZCB8fCB0aGlzLmF1dG9tYXRpY19mYWlsb3Zlcl9lbmFibGVkGqoBChVhdXRoX211dHVhbF9leGNsdXNpb24SVmF1dGhfdG9rZW4gYW5kIHVzZXJfZ3JvdXBfaWRzIGFyZSBtdXR1YWxseSBleGNsdXNpdmU7IGNob29zZSBvbmUgYXV0aGVudGljYXRpb24gbWV0aG9kGjkhKGhhcyh0aGlzLmF1dGhfdG9rZW4pICYmIHRoaXMudXNlcl9ncm91cF9pZHMuc2l6ZSgpID4gMCkasQEKIHRyYW5zaXRfbW9kZV9yZXF1aXJlc19lbmNyeXB0aW9uEkZ0cmFuc2l0X2VuY3J5cHRpb25fbW9kZSByZXF1aXJlcyB0cmFuc2l0X2VuY3J5cHRpb25fZW5hYmxlZCB0byBiZSB0cnVlGkV0aGlzLnRyYW5zaXRfZW5jcnlwdGlvbl9tb2RlID09ICcnIHx8IHRoaXMudHJhbnNpdF9lbmNyeXB0aW9uX2VuYWJsZWQawAEKGXRyYW5zaXRfbW9kZV92YWxpZF92YWx1ZXMSQnRyYW5zaXRfZW5jcnlwdGlvbl9tb2RlIG11c3QgYmUgJ3ByZWZlcnJlZCcgb3IgJ3JlcXVpcmVkJyB3aGVuIHNldBpfdGhpcy50cmFuc2l0X2VuY3J5cHRpb25fbW9kZSA9PSAnJyB8fCB0aGlzLnRyYW5zaXRfZW5jcnlwdGlvbl9tb2RlIGluIFsncHJlZmVycmVkJywgJ3JlcXVpcmVkJ10angEKGXBhcmFtZXRlcnNfcmVxdWlyZV9mYW1pbHkSP3BhcmFtZXRlcl9ncm91cF9mYW1pbHkgaXMgcmVxdWlyZWQgd2hlbiBwYXJhbWV0ZXJzIGFyZSBwcm92aWRlZBpAdGhpcy5wYXJhbWV0ZXJzLnNpemUoKSA9PSAwIHx8IHRoaXMucGFyYW1ldGVyX2dyb3VwX2ZhbWlseSAhPSAnJxqKAQoUbG9nX2RlbGl2ZXJ5X21heF90d28SRGF0IG1vc3QgMiBsb2cgZGVsaXZlcnkgY29uZmlndXJhdGlvbnMgYXJlIGFsbG93ZWQgKG9uZSBwZXIgbG9nX3R5cGUpGix0aGlzLmxvZ19kZWxpdmVyeV9jb25maWd1cmF0aW9ucy5zaXplKCkgPD0gMhqEAgoZbG9nX2RlbGl2ZXJ5X3VuaXF1ZV90eXBlcxJYZWFjaCBsb2dfdHlwZSAoc2xvdy1sb2csIGVuZ2luZS1sb2cpIGNhbiBvbmx5IGFwcGVhciBvbmNlIGluIGxvZ19kZWxpdmVyeV9jb25maWd1cmF0aW9ucxqMAXRoaXMubG9nX2RlbGl2ZXJ5X2NvbmZpZ3VyYXRpb25zLnNpemUoKSA8PSAxIHx8IHRoaXMubG9nX2RlbGl2ZXJ5X2NvbmZpZ3VyYXRpb25zWzBdLmxvZ190eXBlICE9IHRoaXMubG9nX2RlbGl2ZXJ5X2NvbmZpZ3VyYXRpb25zWzFdLmxvZ190eXBlQgcKBV9wb3J0IksKHEF3c1JlZGlzRWxhc3RpY2FjaGVQYXJhbWV0ZXISFAoEbmFtZRgBIAEoCUIGukgDyAEBEhUKBXZhbHVlGAIgASgJQga6SAPIAQEivwQKJEF3c1JlZGlzRWxhc3RpY2FjaGVMb2dEZWxpdmVyeUNvbmZpZxIgChBkZXN0aW5hdGlvbl90eXBlGAEgASgJQga6SAPIAQESTwoLZGVzdGluYXRpb24YAiABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQga6SAPIAQESGgoKbG9nX2Zvcm1hdBgDIAEoCUIGukgDyAEBEhgKCGxvZ190eXBlGAQgASgJQga6SAPIAQE67QK6SOkCGpwBChZkZXN0aW5hdGlvbl90eXBlX3ZhbGlkEkBkZXN0aW5hdGlvbl90eXBlIG11c3QgYmUgJ2Nsb3Vkd2F0Y2gtbG9ncycgb3IgJ2tpbmVzaXMtZmlyZWhvc2UnGkB0aGlzLmRlc3RpbmF0aW9uX3R5cGUgaW4gWydjbG91ZHdhdGNoLWxvZ3MnLCAna2luZXNpcy1maXJlaG9zZSddGlwKEGxvZ19mb3JtYXRfdmFsaWQSI2xvZ19mb3JtYXQgbXVzdCBiZSAndGV4dCcgb3IgJ2pzb24nGiN0aGlzLmxvZ19mb3JtYXQgaW4gWyd0ZXh0JywgJ2pzb24nXRpqCg5sb2dfdHlwZV92YWxpZBIrbG9nX3R5cGUgbXVzdCBiZSAnc2xvdy1sb2cnIG9yICdlbmdpbmUtbG9nJxordGhpcy5sb2dfdHlwZSBpbiBbJ3Nsb3ctbG9nJywgJ2VuZ2luZS1sb2cnXUKMAwozY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NyZWRpc2VsYXN0aWNhY2hlLnYxQglTcGVjUHJvdG9QAVpnZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NyZWRpc2VsYXN0aWNhY2hlL3YxO2F3c3JlZGlzZWxhc3RpY2FjaGV2MaICBU9PUEFBqgIvT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c3JlZGlzZWxhc3RpY2FjaGUuVjHKAi9PcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzcmVkaXNlbGFzdGljYWNoZVxWMeICO09yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NyZWRpc2VsYXN0aWNhY2hlXFYxXEdQQk1ldGFkYXRh6gI0T3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NyZWRpc2VsYXN0aWNhY2hlOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsRedisElasticacheSpec defines the desired configuration for an AWS ElastiCache
@@ -40,18 +40,22 @@ export const file_org_openmcf_provider_aws_awsrediselasticache_v1_spec: GenFile 
  * - `auth_token` and `user_group_ids` are mutually exclusive authentication methods.
  * - Credentials, region, and deployment workflow live outside this spec in stack inputs.
  *
- * ---------------------------------------------------------------------------
- * Engine
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awsrediselasticache.v1.AwsRedisElasticacheSpec
  */
 export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsrediselasticache.v1.AwsRedisElasticacheSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * Cache engine to use. Redis is the dominant choice; Valkey is the open-source
    * Redis-compatible alternative. Values: "redis", "valkey".
    *
-   * @generated from field: string engine = 1;
+   * @generated from field: string engine = 2;
    */
   engine: string;
 
@@ -59,14 +63,14 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * Engine version to deploy. Examples: "7.1", "7.0", "6.2" for Redis;
    * "7.2" for Valkey. Leave empty to use the provider default.
    *
-   * @generated from field: string engine_version = 2;
+   * @generated from field: string engine_version = 3;
    */
   engineVersion: string;
 
   /**
    * Human-readable description for the replication group. Required by AWS.
    *
-   * @generated from field: string description = 3;
+   * @generated from field: string description = 4;
    */
   description: string;
 
@@ -75,7 +79,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * Examples: "cache.t3.micro" (dev), "cache.r7g.large" (production),
    * "cache.r6gd.xlarge" (data tiering).
    *
-   * @generated from field: string node_type = 4;
+   * @generated from field: string node_type = 5;
    */
   nodeType: string;
 
@@ -83,7 +87,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * Port on which the cluster accepts connections. Default: 6379.
    * This is a ForceNew attribute — changing it destroys and recreates the cluster.
    *
-   * @generated from field: optional int32 port = 5;
+   * @generated from field: optional int32 port = 6;
    */
   port?: number;
 
@@ -92,7 +96,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * the primary and all read replicas. For example, 3 means 1 primary + 2 replicas.
    * Range: 1–6. Mutually exclusive with `num_node_groups`.
    *
-   * @generated from field: int32 num_cache_clusters = 6;
+   * @generated from field: int32 num_cache_clusters = 7;
    */
   numCacheClusters: number;
 
@@ -100,7 +104,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * Number of node groups (shards) for Cluster Mode Enabled. Each shard holds a
    * partition of the keyspace. Mutually exclusive with `num_cache_clusters`.
    *
-   * @generated from field: int32 num_node_groups = 7;
+   * @generated from field: int32 num_node_groups = 8;
    */
   numNodeGroups: number;
 
@@ -108,7 +112,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * Number of read replicas per shard. Range: 0–5. Only valid when
    * `num_node_groups` is set.
    *
-   * @generated from field: int32 replicas_per_node_group = 8;
+   * @generated from field: int32 replicas_per_node_group = 9;
    */
   replicasPerNodeGroup: number;
 
@@ -117,7 +121,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * Requires `num_cache_clusters >= 2` (non-clustered) or `num_node_groups > 0`
    * (clustered mode, where failover is always on).
    *
-   * @generated from field: bool automatic_failover_enabled = 9;
+   * @generated from field: bool automatic_failover_enabled = 10;
    */
   automaticFailoverEnabled: boolean;
 
@@ -125,7 +129,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * Deploy replicas across multiple Availability Zones for resilience against
    * AZ-level failures. Requires `automatic_failover_enabled` to be true.
    *
-   * @generated from field: bool multi_az_enabled = 10;
+   * @generated from field: bool multi_az_enabled = 11;
    */
   multiAzEnabled: boolean;
 
@@ -134,7 +138,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * AZs for multi-AZ deployments. A subnet group is created automatically from
    * these subnets.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 11;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 12;
    */
   subnetIds: StringValueOrRef[];
 
@@ -142,7 +146,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * VPC security groups to attach to the cluster nodes. Controls network-level
    * access to the Redis/Valkey endpoint.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 12;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 13;
    */
   securityGroupIds: StringValueOrRef[];
 
@@ -150,7 +154,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * Enable encryption at rest for data stored on disk and in snapshots.
    * ForceNew — changing this destroys and recreates the cluster.
    *
-   * @generated from field: bool at_rest_encryption_enabled = 13;
+   * @generated from field: bool at_rest_encryption_enabled = 14;
    */
   atRestEncryptionEnabled: boolean;
 
@@ -158,7 +162,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * Enable encryption in transit (TLS) for all client connections and
    * replication traffic. Strongly recommended for production.
    *
-   * @generated from field: bool transit_encryption_enabled = 14;
+   * @generated from field: bool transit_encryption_enabled = 15;
    */
   transitEncryptionEnabled: boolean;
 
@@ -167,7 +171,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * (useful during migration); "required" enforces TLS for all connections.
    * Only valid when `transit_encryption_enabled` is true.
    *
-   * @generated from field: string transit_encryption_mode = 15;
+   * @generated from field: string transit_encryption_mode = 16;
    */
   transitEncryptionMode: string;
 
@@ -176,7 +180,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * this key instead of the AWS-managed key. ForceNew — changing this destroys
    * and recreates the cluster.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 16;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 17;
    */
   kmsKeyId?: StringValueOrRef;
 
@@ -185,7 +189,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * `transit_encryption_enabled` to be true. 16–128 printable characters.
    * Mutually exclusive with `user_group_ids`.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef auth_token = 17;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef auth_token = 18;
    */
   authToken?: StringValueOrRef;
 
@@ -194,7 +198,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * defines users with specific command and key permissions. Mutually exclusive
    * with `auth_token`.
    *
-   * @generated from field: repeated string user_group_ids = 18;
+   * @generated from field: repeated string user_group_ids = 19;
    */
   userGroupIds: string[];
 
@@ -202,7 +206,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * Weekly maintenance window in UTC. Format: "ddd:hh24:mi-ddd:hh24:mi".
    * Example: "sun:05:00-sun:06:00". Leave empty for AWS-assigned default.
    *
-   * @generated from field: string maintenance_window = 19;
+   * @generated from field: string maintenance_window = 20;
    */
   maintenanceWindow: string;
 
@@ -210,7 +214,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * Number of days to retain automatic snapshots before deletion. 0 disables
    * automatic snapshots. Range: 0–35.
    *
-   * @generated from field: int32 snapshot_retention_limit = 20;
+   * @generated from field: int32 snapshot_retention_limit = 21;
    */
   snapshotRetentionLimit: number;
 
@@ -218,7 +222,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * Daily snapshot window in UTC. Format: "hh24:mi-hh24:mi".
    * Example: "03:00-04:00". Leave empty for AWS-assigned default.
    *
-   * @generated from field: string snapshot_window = 21;
+   * @generated from field: string snapshot_window = 22;
    */
   snapshotWindow: string;
 
@@ -226,7 +230,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * Identifier for the final snapshot taken when the cluster is deleted. If not
    * provided, no final snapshot is created.
    *
-   * @generated from field: string final_snapshot_identifier = 22;
+   * @generated from field: string final_snapshot_identifier = 23;
    */
   finalSnapshotIdentifier: string;
 
@@ -234,7 +238,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * Apply changes immediately instead of waiting for the next maintenance window.
    * May cause brief downtime for some operations.
    *
-   * @generated from field: bool apply_immediately = 23;
+   * @generated from field: bool apply_immediately = 24;
    */
   applyImmediately: boolean;
 
@@ -242,7 +246,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * Parameter group family for custom parameters. Required when `parameters` is
    * provided. Examples: "redis7", "redis6.x", "valkey7".
    *
-   * @generated from field: string parameter_group_family = 24;
+   * @generated from field: string parameter_group_family = 25;
    */
   parameterGroupFamily: string;
 
@@ -250,7 +254,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * Custom cache parameters to apply via a managed parameter group. Common
    * examples: maxmemory-policy, timeout, tcp-keepalive.
    *
-   * @generated from field: repeated org.openmcf.provider.aws.awsrediselasticache.v1.AwsRedisElasticacheParameter parameters = 25;
+   * @generated from field: repeated org.openmcf.provider.aws.awsrediselasticache.v1.AwsRedisElasticacheParameter parameters = 26;
    */
   parameters: AwsRedisElasticacheParameter[];
 
@@ -259,7 +263,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * entries — one per log type. Logs can be delivered to CloudWatch Logs or
    * Kinesis Data Firehose.
    *
-   * @generated from field: repeated org.openmcf.provider.aws.awsrediselasticache.v1.AwsRedisElasticacheLogDeliveryConfig log_delivery_configurations = 26;
+   * @generated from field: repeated org.openmcf.provider.aws.awsrediselasticache.v1.AwsRedisElasticacheLogDeliveryConfig log_delivery_configurations = 27;
    */
   logDeliveryConfigurations: AwsRedisElasticacheLogDeliveryConfig[];
 
@@ -267,14 +271,14 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * SNS topic ARN for cluster event notifications (failover, maintenance,
    * configuration changes, etc.).
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef notification_topic_arn = 27;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef notification_topic_arn = 28;
    */
   notificationTopicArn?: StringValueOrRef;
 
   /**
    * Automatically apply minor engine version upgrades during maintenance windows.
    *
-   * @generated from field: bool auto_minor_version_upgrade = 28;
+   * @generated from field: bool auto_minor_version_upgrade = 29;
    */
   autoMinorVersionUpgrade: boolean;
 
@@ -283,7 +287,7 @@ export type AwsRedisElasticacheSpec = Message<"org.openmcf.provider.aws.awsredis
    * SSD storage for up to 5x more data per node. Only available on r6gd node
    * types. ForceNew — cannot be changed after creation.
    *
-   * @generated from field: bool data_tiering_enabled = 29;
+   * @generated from field: bool data_tiering_enabled = 30;
    */
   dataTieringEnabled: boolean;
 };

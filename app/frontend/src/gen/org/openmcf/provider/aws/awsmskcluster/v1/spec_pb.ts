@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsmskcluster/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsmskcluster_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjRvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzbXNrY2x1c3Rlci92MS9zcGVjLnByb3RvEilvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzbXNrY2x1c3Rlci52MSLuEwoRQXdzTXNrQ2x1c3RlclNwZWMSHQoNa2Fma2FfdmVyc2lvbhgBIAEoCUIGukgDyAEBEioKFm51bWJlcl9vZl9icm9rZXJfbm9kZXMYAiABKAVCCrpIB8gBARoCKAESHQoNaW5zdGFuY2VfdHlwZRgDIAEoCUIGukgDyAEBEn4KCnN1Ym5ldF9pZHMYBCADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQja6SAWSAQIIAYjUYdgBktRhJXN0YXR1cy5vdXRwdXRzLnByaXZhdGVfc3VibmV0cy5bKl0uaWQSeQoSc2VjdXJpdHlfZ3JvdXBfaWRzGAUgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIpiNRh1wGS1GEgc3RhdHVzLm91dHB1dHMuc2VjdXJpdHlfZ3JvdXBfaWQSjgEKE2FsbG93ZWRfY2lkcl9ibG9ja3MYBiADKAlCcbpIbpIBaxgBImdyZTJjXig/OjI1WzAtNV18MlswLTRdXGR8WzAtMV0/XGQ/XGQpKD86XC4oPzoyNVswLTVdfDJbMC00XVxkfFswLTFdP1xkP1xkKSl7M30vKD86WzAtOV18WzEyXVxkfDNbMC0yXSkkEoMBChxhc3NvY2lhdGVfc2VjdXJpdHlfZ3JvdXBfaWRzGAcgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIpiNRh1wGS1GEgc3RhdHVzLm91dHB1dHMuc2VjdXJpdHlfZ3JvdXBfaWQSYgoGdnBjX2lkGAggASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIeiNRh2AGS1GEVc3RhdHVzLm91dHB1dHMudnBjX2lkEi0KE2Vic192b2x1bWVfc2l6ZV9naWIYCSABKAVCC7pICBoGGICAASgBSACIAQESJgoecHJvdmlzaW9uZWRfdGhyb3VnaHB1dF9lbmFibGVkGAogASgIEjIKGnByb3Zpc2lvbmVkX3Rocm91Z2hwdXRfbWJzGAsgASgFQg66SAvYAQEaBhjHEij6ARItCgxzdG9yYWdlX21vZGUYDCABKAlCF7pIFNgBAXIPUgVMT0NBTFIGVElFUkVEEmgKC2ttc19rZXlfYXJuGA0gASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybhJVChhjbGllbnRfYnJva2VyX2VuY3J5cHRpb24YDiABKAlCLrpIJNgBAXIfUgNUTFNSDVRMU19QTEFJTlRFWFRSCVBMQUlOVEVYVIqmHQNUTFNIAYgBARIsChVpbl9jbHVzdGVyX2VuY3J5cHRpb24YDyABKAhCCIqmHQR0cnVlSAKIAQESXgoOYXV0aGVudGljYXRpb24YECABKAsyRi5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzbXNrY2x1c3Rlci52MS5Bd3NNc2tDbHVzdGVyQXV0aGVudGljYXRpb24SGQoRY29uZmlndXJhdGlvbl9hcm4YESABKAkSKgoWY29uZmlndXJhdGlvbl9yZXZpc2lvbhgSIAEoBUIKukgH2AEBGgIoARJtChFzZXJ2ZXJfcHJvcGVydGllcxgTIAMoCzJSLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Ntc2tjbHVzdGVyLnYxLkF3c01za0NsdXN0ZXJTcGVjLlNlcnZlclByb3BlcnRpZXNFbnRyeRJQCgdsb2dnaW5nGBQgASgLMj8ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c21za2NsdXN0ZXIudjEuQXdzTXNrQ2x1c3RlckxvZ2dpbmcSaQoTZW5oYW5jZWRfbW9uaXRvcmluZxgVIAEoCUJMukhJ2AEBckRSB0RFRkFVTFRSClBFUl9CUk9LRVJSFFBFUl9UT1BJQ19QRVJfQlJPS0VSUhdQRVJfVE9QSUNfUEVSX1BBUlRJVElPThIcChRqbXhfZXhwb3J0ZXJfZW5hYmxlZBgWIAEoCBIdChVub2RlX2V4cG9ydGVyX2VuYWJsZWQYFyABKAgSRQoScHVibGljX2FjY2Vzc190eXBlGBggASgJQim6SCbYAQFyIVIIRElTQUJMRURSFVNFUlZJQ0VfUFJPVklERURfRUlQUxo3ChVTZXJ2ZXJQcm9wZXJ0aWVzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ATrwBLpI7AQahwIKI3Byb3Zpc2lvbmVkX3Rocm91Z2hwdXRfcmVxdWlyZXNfbWJzEl1wcm92aXNpb25lZF90aHJvdWdocHV0X21icyBtdXN0IGJlIHNldCAoMjUwLTIzNzUpIHdoZW4gcHJvdmlzaW9uZWRfdGhyb3VnaHB1dF9lbmFibGVkIGlzIHRydWUagAF0aGlzLnByb3Zpc2lvbmVkX3Rocm91Z2hwdXRfZW5hYmxlZCA/ICh0aGlzLnByb3Zpc2lvbmVkX3Rocm91Z2hwdXRfbWJzID49IDI1MCAmJiB0aGlzLnByb3Zpc2lvbmVkX3Rocm91Z2hwdXRfbWJzIDw9IDIzNzUpIDogdHJ1ZRqqAQoeY29uZmlndXJhdGlvbl9tdXR1YWxfZXhjbHVzaW9uEj5jb25maWd1cmF0aW9uX2FybiBhbmQgc2VydmVyX3Byb3BlcnRpZXMgYXJlIG11dHVhbGx5IGV4Y2x1c2l2ZRpIdGhpcy5jb25maWd1cmF0aW9uX2FybiAhPSAnJyA/IHRoaXMuc2VydmVyX3Byb3BlcnRpZXMuc2l6ZSgpID09IDAgOiB0cnVlGrIBCh9jb25maWd1cmF0aW9uX3JldmlzaW9uX3JlcXVpcmVkEkdjb25maWd1cmF0aW9uX3JldmlzaW9uIGlzIHJlcXVpcmVkICg+PSAxKSB3aGVuIGNvbmZpZ3VyYXRpb25fYXJuIGlzIHNldBpGdGhpcy5jb25maWd1cmF0aW9uX2FybiAhPSAnJyA/IHRoaXMuY29uZmlndXJhdGlvbl9yZXZpc2lvbiA+PSAxIDogdHJ1ZUIWChRfZWJzX3ZvbHVtZV9zaXplX2dpYkIbChlfY2xpZW50X2Jyb2tlcl9lbmNyeXB0aW9uQhgKFl9pbl9jbHVzdGVyX2VuY3J5cHRpb24i3QEKG0F3c01za0NsdXN0ZXJBdXRoZW50aWNhdGlvbhIYChBzYXNsX2lhbV9lbmFibGVkGAEgASgIEhoKEnNhc2xfc2NyYW1fZW5hYmxlZBgCIAEoCBITCgt0bHNfZW5hYmxlZBgDIAEoCBJaCh50bHNfY2VydGlmaWNhdGVfYXV0aG9yaXR5X2FybnMYBCADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmEhcKD3VuYXV0aGVudGljYXRlZBgFIAEoCCKkAgoUQXdzTXNrQ2x1c3RlckxvZ2dpbmcSYgoPY2xvdWR3YXRjaF9sb2dzGAEgASgLMkkub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c21za2NsdXN0ZXIudjEuQXdzTXNrQ2x1c3RlckNsb3Vkd2F0Y2hMb2dnaW5nElkKCGZpcmVob3NlGAIgASgLMkcub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c21za2NsdXN0ZXIudjEuQXdzTXNrQ2x1c3RlckZpcmVob3NlTG9nZ2luZxJNCgJzMxgDIAEoCzJBLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Ntc2tjbHVzdGVyLnYxLkF3c01za0NsdXN0ZXJTM0xvZ2dpbmcisAIKHkF3c01za0NsdXN0ZXJDbG91ZHdhdGNoTG9nZ2luZxIPCgdlbmFibGVkGAEgASgIEm0KCWxvZ19ncm91cBgCIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCJojUYbYCktRhHXN0YXR1cy5vdXRwdXRzLmxvZ19ncm91cF9uYW1lOo0BukiJARqGAQofbG9nX2dyb3VwX3JlcXVpcmVkX3doZW5fZW5hYmxlZBI4bG9nX2dyb3VwIGlzIHJlcXVpcmVkIHdoZW4gQ2xvdWRXYXRjaCBsb2dnaW5nIGlzIGVuYWJsZWQaKXRoaXMuZW5hYmxlZCA/IGhhcyh0aGlzLmxvZ19ncm91cCkgOiB0cnVlIsoCChxBd3NNc2tDbHVzdGVyRmlyZWhvc2VMb2dnaW5nEg8KB2VuYWJsZWQYASABKAgSeQoPZGVsaXZlcnlfc3RyZWFtGAIgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIsiNRhhQKS1GEjc3RhdHVzLm91dHB1dHMuZGVsaXZlcnlfc3RyZWFtX25hbWU6nQG6SJkBGpYBCiVkZWxpdmVyeV9zdHJlYW1fcmVxdWlyZWRfd2hlbl9lbmFibGVkEjxkZWxpdmVyeV9zdHJlYW0gaXMgcmVxdWlyZWQgd2hlbiBGaXJlaG9zZSBsb2dnaW5nIGlzIGVuYWJsZWQaL3RoaXMuZW5hYmxlZCA/IGhhcyh0aGlzLmRlbGl2ZXJ5X3N0cmVhbSkgOiB0cnVlIp4CChZBd3NNc2tDbHVzdGVyUzNMb2dnaW5nEg8KB2VuYWJsZWQYASABKAgSZwoGYnVja2V0GAIgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIjiNRh1QGS1GEac3RhdHVzLm91dHB1dHMuYnVja2V0X25hbWUSDgoGcHJlZml4GAMgASgJOnq6SHcadQocYnVja2V0X3JlcXVpcmVkX3doZW5fZW5hYmxlZBItYnVja2V0IGlzIHJlcXVpcmVkIHdoZW4gUzMgbG9nZ2luZyBpcyBlbmFibGVkGiZ0aGlzLmVuYWJsZWQgPyBoYXModGhpcy5idWNrZXQpIDogdHJ1ZULiAgotY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Ntc2tjbHVzdGVyLnYxQglTcGVjUHJvdG9QAVpbZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3Ntc2tjbHVzdGVyL3YxO2F3c21za2NsdXN0ZXJ2MaICBU9PUEFBqgIpT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c21za2NsdXN0ZXIuVjHKAilPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzbXNrY2x1c3RlclxWMeICNU9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3Ntc2tjbHVzdGVyXFYxXEdQQk1ldGFkYXRh6gIuT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3Ntc2tjbHVzdGVyOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("CjRvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzbXNrY2x1c3Rlci92MS9zcGVjLnByb3RvEilvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzbXNrY2x1c3Rlci52MSKHFAoRQXdzTXNrQ2x1c3RlclNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEh0KDWthZmthX3ZlcnNpb24YAiABKAlCBrpIA8gBARIqChZudW1iZXJfb2ZfYnJva2VyX25vZGVzGAMgASgFQgq6SAfIAQEaAigBEh0KDWluc3RhbmNlX3R5cGUYBCABKAlCBrpIA8gBARJ+CgpzdWJuZXRfaWRzGAUgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkI2ukgFkgECCAGI1GHYAZLUYSVzdGF0dXMub3V0cHV0cy5wcml2YXRlX3N1Ym5ldHMuWypdLmlkEnkKEnNlY3VyaXR5X2dyb3VwX2lkcxgGIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEo4BChNhbGxvd2VkX2NpZHJfYmxvY2tzGAcgAygJQnG6SG6SAWsYASJncmUyY14oPzoyNVswLTVdfDJbMC00XVxkfFswLTFdP1xkP1xkKSg/OlwuKD86MjVbMC01XXwyWzAtNF1cZHxbMC0xXT9cZD9cZCkpezN9Lyg/OlswLTldfFsxMl1cZHwzWzAtMl0pJBKDAQocYXNzb2NpYXRlX3NlY3VyaXR5X2dyb3VwX2lkcxgIIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEmIKBnZwY19pZBgJIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCHojUYdgBktRhFXN0YXR1cy5vdXRwdXRzLnZwY19pZBItChNlYnNfdm9sdW1lX3NpemVfZ2liGAogASgFQgu6SAgaBhiAgAEoAUgAiAEBEiYKHnByb3Zpc2lvbmVkX3Rocm91Z2hwdXRfZW5hYmxlZBgLIAEoCBIyChpwcm92aXNpb25lZF90aHJvdWdocHV0X21icxgMIAEoBUIOukgL2AEBGgYYxxIo+gESLQoMc3RvcmFnZV9tb2RlGA0gASgJQhe6SBTYAQFyD1IFTE9DQUxSBlRJRVJFRBJoCgtrbXNfa2V5X2FybhgOIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SVQoYY2xpZW50X2Jyb2tlcl9lbmNyeXB0aW9uGA8gASgJQi66SCTYAQFyH1IDVExTUg1UTFNfUExBSU5URVhUUglQTEFJTlRFWFSKph0DVExTSAGIAQESLAoVaW5fY2x1c3Rlcl9lbmNyeXB0aW9uGBAgASgIQgiKph0EdHJ1ZUgCiAEBEl4KDmF1dGhlbnRpY2F0aW9uGBEgASgLMkYub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c21za2NsdXN0ZXIudjEuQXdzTXNrQ2x1c3RlckF1dGhlbnRpY2F0aW9uEhkKEWNvbmZpZ3VyYXRpb25fYXJuGBIgASgJEioKFmNvbmZpZ3VyYXRpb25fcmV2aXNpb24YEyABKAVCCrpIB9gBARoCKAESbQoRc2VydmVyX3Byb3BlcnRpZXMYFCADKAsyUi5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzbXNrY2x1c3Rlci52MS5Bd3NNc2tDbHVzdGVyU3BlYy5TZXJ2ZXJQcm9wZXJ0aWVzRW50cnkSUAoHbG9nZ2luZxgVIAEoCzI/Lm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Ntc2tjbHVzdGVyLnYxLkF3c01za0NsdXN0ZXJMb2dnaW5nEmkKE2VuaGFuY2VkX21vbml0b3JpbmcYFiABKAlCTLpISdgBAXJEUgdERUZBVUxUUgpQRVJfQlJPS0VSUhRQRVJfVE9QSUNfUEVSX0JST0tFUlIXUEVSX1RPUElDX1BFUl9QQVJUSVRJT04SHAoUam14X2V4cG9ydGVyX2VuYWJsZWQYFyABKAgSHQoVbm9kZV9leHBvcnRlcl9lbmFibGVkGBggASgIEkUKEnB1YmxpY19hY2Nlc3NfdHlwZRgZIAEoCUIpukgm2AEBciFSCERJU0FCTEVEUhVTRVJWSUNFX1BST1ZJREVEX0VJUFMaNwoVU2VydmVyUHJvcGVydGllc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAE68AS6SOwEGocCCiNwcm92aXNpb25lZF90aHJvdWdocHV0X3JlcXVpcmVzX21icxJdcHJvdmlzaW9uZWRfdGhyb3VnaHB1dF9tYnMgbXVzdCBiZSBzZXQgKDI1MC0yMzc1KSB3aGVuIHByb3Zpc2lvbmVkX3Rocm91Z2hwdXRfZW5hYmxlZCBpcyB0cnVlGoABdGhpcy5wcm92aXNpb25lZF90aHJvdWdocHV0X2VuYWJsZWQgPyAodGhpcy5wcm92aXNpb25lZF90aHJvdWdocHV0X21icyA+PSAyNTAgJiYgdGhpcy5wcm92aXNpb25lZF90aHJvdWdocHV0X21icyA8PSAyMzc1KSA6IHRydWUaqgEKHmNvbmZpZ3VyYXRpb25fbXV0dWFsX2V4Y2x1c2lvbhI+Y29uZmlndXJhdGlvbl9hcm4gYW5kIHNlcnZlcl9wcm9wZXJ0aWVzIGFyZSBtdXR1YWxseSBleGNsdXNpdmUaSHRoaXMuY29uZmlndXJhdGlvbl9hcm4gIT0gJycgPyB0aGlzLnNlcnZlcl9wcm9wZXJ0aWVzLnNpemUoKSA9PSAwIDogdHJ1ZRqyAQofY29uZmlndXJhdGlvbl9yZXZpc2lvbl9yZXF1aXJlZBJHY29uZmlndXJhdGlvbl9yZXZpc2lvbiBpcyByZXF1aXJlZCAoPj0gMSkgd2hlbiBjb25maWd1cmF0aW9uX2FybiBpcyBzZXQaRnRoaXMuY29uZmlndXJhdGlvbl9hcm4gIT0gJycgPyB0aGlzLmNvbmZpZ3VyYXRpb25fcmV2aXNpb24gPj0gMSA6IHRydWVCFgoUX2Vic192b2x1bWVfc2l6ZV9naWJCGwoZX2NsaWVudF9icm9rZXJfZW5jcnlwdGlvbkIYChZfaW5fY2x1c3Rlcl9lbmNyeXB0aW9uIt0BChtBd3NNc2tDbHVzdGVyQXV0aGVudGljYXRpb24SGAoQc2FzbF9pYW1fZW5hYmxlZBgBIAEoCBIaChJzYXNsX3NjcmFtX2VuYWJsZWQYAiABKAgSEwoLdGxzX2VuYWJsZWQYAyABKAgSWgoedGxzX2NlcnRpZmljYXRlX2F1dGhvcml0eV9hcm5zGAQgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZhIXCg91bmF1dGhlbnRpY2F0ZWQYBSABKAgipAIKFEF3c01za0NsdXN0ZXJMb2dnaW5nEmIKD2Nsb3Vkd2F0Y2hfbG9ncxgBIAEoCzJJLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Ntc2tjbHVzdGVyLnYxLkF3c01za0NsdXN0ZXJDbG91ZHdhdGNoTG9nZ2luZxJZCghmaXJlaG9zZRgCIAEoCzJHLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Ntc2tjbHVzdGVyLnYxLkF3c01za0NsdXN0ZXJGaXJlaG9zZUxvZ2dpbmcSTQoCczMYAyABKAsyQS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzbXNrY2x1c3Rlci52MS5Bd3NNc2tDbHVzdGVyUzNMb2dnaW5nIrACCh5Bd3NNc2tDbHVzdGVyQ2xvdWR3YXRjaExvZ2dpbmcSDwoHZW5hYmxlZBgBIAEoCBJtCglsb2dfZ3JvdXAYAiABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQiaI1GG2ApLUYR1zdGF0dXMub3V0cHV0cy5sb2dfZ3JvdXBfbmFtZTqNAbpIiQEahgEKH2xvZ19ncm91cF9yZXF1aXJlZF93aGVuX2VuYWJsZWQSOGxvZ19ncm91cCBpcyByZXF1aXJlZCB3aGVuIENsb3VkV2F0Y2ggbG9nZ2luZyBpcyBlbmFibGVkGil0aGlzLmVuYWJsZWQgPyBoYXModGhpcy5sb2dfZ3JvdXApIDogdHJ1ZSLKAgocQXdzTXNrQ2x1c3RlckZpcmVob3NlTG9nZ2luZxIPCgdlbmFibGVkGAEgASgIEnkKD2RlbGl2ZXJ5X3N0cmVhbRgCIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCLIjUYYUCktRhI3N0YXR1cy5vdXRwdXRzLmRlbGl2ZXJ5X3N0cmVhbV9uYW1lOp0BukiZARqWAQolZGVsaXZlcnlfc3RyZWFtX3JlcXVpcmVkX3doZW5fZW5hYmxlZBI8ZGVsaXZlcnlfc3RyZWFtIGlzIHJlcXVpcmVkIHdoZW4gRmlyZWhvc2UgbG9nZ2luZyBpcyBlbmFibGVkGi90aGlzLmVuYWJsZWQgPyBoYXModGhpcy5kZWxpdmVyeV9zdHJlYW0pIDogdHJ1ZSKeAgoWQXdzTXNrQ2x1c3RlclMzTG9nZ2luZxIPCgdlbmFibGVkGAEgASgIEmcKBmJ1Y2tldBgCIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCI4jUYdUBktRhGnN0YXR1cy5vdXRwdXRzLmJ1Y2tldF9uYW1lEg4KBnByZWZpeBgDIAEoCTp6ukh3GnUKHGJ1Y2tldF9yZXF1aXJlZF93aGVuX2VuYWJsZWQSLWJ1Y2tldCBpcyByZXF1aXJlZCB3aGVuIFMzIGxvZ2dpbmcgaXMgZW5hYmxlZBomdGhpcy5lbmFibGVkID8gaGFzKHRoaXMuYnVja2V0KSA6IHRydWVC4gIKLWNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzbXNrY2x1c3Rlci52MUIJU3BlY1Byb3RvUAFaW2dpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzbXNrY2x1c3Rlci92MTthd3Ntc2tjbHVzdGVydjGiAgVPT1BBQaoCKU9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3Ntc2tjbHVzdGVyLlYxygIpT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c21za2NsdXN0ZXJcVjHiAjVPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzbXNrY2x1c3RlclxWMVxHUEJNZXRhZGF0YeoCLk9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzbXNrY2x1c3Rlcjo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsMskClusterSpec defines the desired state of an Amazon MSK (Managed Streaming for Apache Kafka) cluster.
@@ -22,17 +22,23 @@ export const file_org_openmcf_provider_aws_awsmskcluster_v1_spec: GenFile = /*@_
  * handling broker infrastructure, ZooKeeper coordination, and storage so teams can focus on producing
  * and consuming streaming data rather than operating Kafka infrastructure.
  *
- * --- Core ---
- *
  * @generated from message org.openmcf.provider.aws.awsmskcluster.v1.AwsMskClusterSpec
  */
 export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.v1.AwsMskClusterSpec"> & {
+  /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * kafka_version is the Apache Kafka version for all brokers in the cluster.
    * Examples: "3.6.0", "3.5.1", "3.4.0", "2.8.1".
    * Upgrades are applied via rolling restart; downgrades force cluster replacement.
    *
-   * @generated from field: string kafka_version = 1;
+   * @generated from field: string kafka_version = 2;
    */
   kafkaVersion: string;
 
@@ -41,7 +47,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * Must be a multiple of the number of subnets provided in subnet_ids so that
    * brokers are evenly distributed across Availability Zones.
    *
-   * @generated from field: int32 number_of_broker_nodes = 2;
+   * @generated from field: int32 number_of_broker_nodes = 3;
    */
   numberOfBrokerNodes: number;
 
@@ -51,7 +57,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * Graviton types: kafka.m7g.large, kafka.m7g.xlarge (better price-performance).
    * Small/dev types: kafka.t3.small.
    *
-   * @generated from field: string instance_type = 3;
+   * @generated from field: string instance_type = 4;
    */
   instanceType: string;
 
@@ -61,7 +67,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * must be a multiple of the number of subnets for even AZ distribution.
    * ForceNew: changing subnets forces cluster replacement.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 4;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 5;
    */
   subnetIds: StringValueOrRef[];
 
@@ -70,7 +76,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * When provided (along with vpc_id), a managed security group is created with ingress rules
    * permitting TCP traffic from these source security groups on ports 9092-9098 (Kafka) and 2181-2182 (ZooKeeper).
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 5;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 6;
    */
   securityGroupIds: StringValueOrRef[];
 
@@ -79,7 +85,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * When provided (along with vpc_id), a managed security group is created with ingress rules
    * permitting TCP traffic from these CIDRs on ports 9092-9098 (Kafka) and 2181-2182 (ZooKeeper).
    *
-   * @generated from field: repeated string allowed_cidr_blocks = 6;
+   * @generated from field: repeated string allowed_cidr_blocks = 7;
    */
   allowedCidrBlocks: string[];
 
@@ -89,7 +95,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * IMPORTANT: The broker_node_group_info.security_groups field in AWS is ForceNew.
    * Adding or removing entries here after cluster creation forces cluster replacement.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef associate_security_group_ids = 7;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef associate_security_group_ids = 8;
    */
   associateSecurityGroupIds: StringValueOrRef[];
 
@@ -97,7 +103,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * vpc_id is the VPC in which to create the managed security group.
    * Required when security_group_ids or allowed_cidr_blocks are provided.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 8;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 9;
    */
   vpcId?: StringValueOrRef;
 
@@ -105,7 +111,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * ebs_volume_size_gib is the size of the EBS volume per broker, in GiB.
    * Range: 1-16384. If omitted, AWS uses the instance-type-specific default.
    *
-   * @generated from field: optional int32 ebs_volume_size_gib = 9;
+   * @generated from field: optional int32 ebs_volume_size_gib = 10;
    */
   ebsVolumeSizeGib?: number;
 
@@ -113,7 +119,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * provisioned_throughput_enabled enables provisioned EBS throughput for higher streaming performance.
    * Only supported on kafka.m5.4xlarge and larger instance types with ebs_volume_size_gib >= 10 GiB.
    *
-   * @generated from field: bool provisioned_throughput_enabled = 10;
+   * @generated from field: bool provisioned_throughput_enabled = 11;
    */
   provisionedThroughputEnabled: boolean;
 
@@ -121,7 +127,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * provisioned_throughput_mbs is the provisioned EBS throughput in MiB/s per broker.
    * Range: 250-2375. Required when provisioned_throughput_enabled is true.
    *
-   * @generated from field: int32 provisioned_throughput_mbs = 11;
+   * @generated from field: int32 provisioned_throughput_mbs = 12;
    */
   provisionedThroughputMbs: number;
 
@@ -131,7 +137,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * "TIERED": hot data on EBS, warm data automatically offloaded to S3 for cost optimization.
    * Tiered storage requires Kafka 2.8.2.tiered+ and supported instance types.
    *
-   * @generated from field: string storage_mode = 12;
+   * @generated from field: string storage_mode = 13;
    */
   storageMode: string;
 
@@ -140,7 +146,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * If omitted, AWS uses the default aws/msk service key.
    * ForceNew: changing the KMS key forces cluster replacement.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_arn = 13;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_arn = 14;
    */
   kmsKeyArn?: StringValueOrRef;
 
@@ -150,7 +156,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * "TLS_PLAINTEXT": both TLS (9094) and plaintext (9092) are available.
    * "PLAINTEXT": all client-broker traffic is unencrypted (port 9092).
    *
-   * @generated from field: optional string client_broker_encryption = 14;
+   * @generated from field: optional string client_broker_encryption = 15;
    */
   clientBrokerEncryption?: string;
 
@@ -158,7 +164,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * in_cluster_encryption enables TLS encryption for data in transit between brokers.
    * Strongly recommended for production. ForceNew: changing this forces cluster replacement.
    *
-   * @generated from field: optional bool in_cluster_encryption = 15;
+   * @generated from field: optional bool in_cluster_encryption = 16;
    */
   inClusterEncryption?: boolean;
 
@@ -167,7 +173,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * Multiple methods can be enabled simultaneously (e.g., SASL/IAM + TLS).
    * If no authentication is configured, the cluster accepts unauthenticated connections.
    *
-   * @generated from field: org.openmcf.provider.aws.awsmskcluster.v1.AwsMskClusterAuthentication authentication = 16;
+   * @generated from field: org.openmcf.provider.aws.awsmskcluster.v1.AwsMskClusterAuthentication authentication = 17;
    */
   authentication?: AwsMskClusterAuthentication;
 
@@ -176,7 +182,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * MSK Configurations hold Apache Kafka server.properties overrides (e.g., replication factor,
    * min ISR, log retention). Mutually exclusive with server_properties.
    *
-   * @generated from field: string configuration_arn = 17;
+   * @generated from field: string configuration_arn = 18;
    */
   configurationArn: string;
 
@@ -184,7 +190,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * configuration_revision is the revision number of the external MSK Configuration.
    * Required when configuration_arn is set. Must be >= 1.
    *
-   * @generated from field: int32 configuration_revision = 18;
+   * @generated from field: int32 configuration_revision = 19;
    */
   configurationRevision: number;
 
@@ -195,7 +201,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * num.partitions, log.retention.hours, log.retention.bytes.
    * Mutually exclusive with configuration_arn.
    *
-   * @generated from field: map<string, string> server_properties = 19;
+   * @generated from field: map<string, string> server_properties = 20;
    */
   serverProperties: { [key: string]: string };
 
@@ -204,7 +210,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * All three destinations (CloudWatch Logs, Kinesis Data Firehose, S3) can be
    * enabled simultaneously for different operational workflows.
    *
-   * @generated from field: org.openmcf.provider.aws.awsmskcluster.v1.AwsMskClusterLogging logging = 20;
+   * @generated from field: org.openmcf.provider.aws.awsmskcluster.v1.AwsMskClusterLogging logging = 21;
    */
   logging?: AwsMskClusterLogging;
 
@@ -215,7 +221,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * "PER_TOPIC_PER_BROKER": adds per-topic-per-broker metrics.
    * "PER_TOPIC_PER_PARTITION": most granular, adds per-partition metrics.
    *
-   * @generated from field: string enhanced_monitoring = 21;
+   * @generated from field: string enhanced_monitoring = 22;
    */
   enhancedMonitoring: string;
 
@@ -224,7 +230,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * When enabled, JMX metrics are available on port 11001 for Prometheus scraping.
    * Provides detailed JVM and Kafka broker metrics.
    *
-   * @generated from field: bool jmx_exporter_enabled = 22;
+   * @generated from field: bool jmx_exporter_enabled = 23;
    */
   jmxExporterEnabled: boolean;
 
@@ -233,7 +239,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * When enabled, host-level metrics (CPU, memory, disk, network) are available
    * on port 11002 for Prometheus scraping.
    *
-   * @generated from field: bool node_exporter_enabled = 23;
+   * @generated from field: bool node_exporter_enabled = 24;
    */
   nodeExporterEnabled: boolean;
 
@@ -243,7 +249,7 @@ export type AwsMskClusterSpec = Message<"org.openmcf.provider.aws.awsmskcluster.
    * "SERVICE_PROVIDED_EIPS": AWS assigns Elastic IPs to brokers for public access.
    * Public access requires specific authentication (SASL/IAM or SASL/SCRAM) and TLS encryption.
    *
-   * @generated from field: string public_access_type = 24;
+   * @generated from field: string public_access_type = 25;
    */
   publicAccessType: string;
 };

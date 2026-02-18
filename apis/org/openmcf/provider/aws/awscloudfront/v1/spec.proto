@@ -7,11 +7,15 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 
 // AwsCloudFrontSpec captures common fields used to configure a CloudFront distribution.
 message AwsCloudFrontSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // Whether the distribution is enabled.
-  bool enabled = 1;
+  bool enabled = 2;
 
   // Aliases (CNAMEs) for the distribution, e.g., "cdn.example.com".
-  repeated string aliases = 2 [
+  repeated string aliases = 3 [
     (buf.validate.field).repeated.unique = true,
     (buf.validate.field).repeated.items = {
       string: {pattern: "^[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,}$"}
@@ -20,7 +24,7 @@ message AwsCloudFrontSpec {
 
   // ACM certificate ARN for custom domains. Must be in the us-east-1 region.
   // Required when aliases are provided. Can reference an AwsCertManagerCert resource.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef certificate_arn = 3 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef certificate_arn = 4 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsCertManagerCert,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.certificate_arn"
   ];
@@ -32,7 +36,7 @@ message AwsCloudFrontSpec {
     PRICE_CLASS_200 = 2;
     PRICE_CLASS_ALL = 3;
   }
-  PriceClass price_class = 4 [(buf.validate.field).enum.defined_only = true];
+  PriceClass price_class = 5 [(buf.validate.field).enum.defined_only = true];
 
   // Origin definition.
   message Origin {
@@ -52,10 +56,10 @@ message AwsCloudFrontSpec {
 
   // List of origins available to the distribution.
   // Must contain at least one origin with exactly one marked as default.
-  repeated Origin origins = 5 [(buf.validate.field).repeated.min_items = 1];
+  repeated Origin origins = 6 [(buf.validate.field).repeated.min_items = 1];
 
   // Default root object, e.g., "index.html".
-  string default_root_object = 6 [(buf.validate.field).string.pattern = "^[A-Za-z0-9\\-\\.\\_]*$"];
+  string default_root_object = 7 [(buf.validate.field).string.pattern = "^[A-Za-z0-9\\-\\.\\_]*$"];
 
   // Conditional validations
   option (buf.validate.message).cel = {

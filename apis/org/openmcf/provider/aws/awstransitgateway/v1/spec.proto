@@ -31,20 +31,24 @@ import "org/openmcf/shared/options/options.proto";
 // Credentials, region, and deployment workflow live outside this spec in
 // stack inputs.
 message AwsTransitGatewaySpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Core configuration
   // ---------------------------------------------------------------------------
 
   // Human-readable description for the Transit Gateway. Appears in the AWS
   // console and CLI output.
-  string description = 1;
+  string description = 2;
 
   // Private Autonomous System Number (ASN) for the Amazon side of BGP
   // sessions. Used when connecting VPNs or Direct Connect gateways.
   //
   // Valid ranges: 64512-65534 (16-bit private) or 4200000000-4294967294
   // (32-bit private). Default: 64512.
-  int64 amazon_side_asn = 2 [(org.openmcf.shared.options.recommended_default) = "64512"];
+  int64 amazon_side_asn = 3 [(org.openmcf.shared.options.recommended_default) = "64512"];
 
   // ---------------------------------------------------------------------------
   // Routing behavior
@@ -56,7 +60,7 @@ message AwsTransitGatewaySpec {
   //
   // Disable this for hub-and-spoke topologies where you manage route table
   // associations explicitly via separate resources.
-  bool default_route_table_association = 3 [(org.openmcf.shared.options.recommended_default) = "true"];
+  bool default_route_table_association = 4 [(org.openmcf.shared.options.recommended_default) = "true"];
 
   // Automatically propagate routes from new attachments to the default route
   // table. When enabled (default), every attached VPC's CIDR blocks are
@@ -64,7 +68,7 @@ message AwsTransitGatewaySpec {
   //
   // Disable this for isolated routing domains where not all VPCs should
   // reach each other.
-  bool default_route_table_propagation = 4 [(org.openmcf.shared.options.recommended_default) = "true"];
+  bool default_route_table_propagation = 5 [(org.openmcf.shared.options.recommended_default) = "true"];
 
   // ---------------------------------------------------------------------------
   // Feature toggles
@@ -73,29 +77,29 @@ message AwsTransitGatewaySpec {
   // Enable DNS resolution for instances in attached VPCs. When enabled,
   // queries to public DNS hostnames of instances in other attached VPCs
   // resolve to their private IP addresses.
-  bool dns_support = 5 [(org.openmcf.shared.options.recommended_default) = "true"];
+  bool dns_support = 6 [(org.openmcf.shared.options.recommended_default) = "true"];
 
   // Enable Equal Cost Multi-Path (ECMP) routing for VPN connections. When
   // enabled and multiple VPN tunnels advertise the same routes, traffic is
   // distributed across all tunnels for higher aggregate throughput.
-  bool vpn_ecmp_support = 6 [(org.openmcf.shared.options.recommended_default) = "true"];
+  bool vpn_ecmp_support = 7 [(org.openmcf.shared.options.recommended_default) = "true"];
 
   // Automatically accept cross-account attachment requests shared via AWS
   // Resource Access Manager (RAM). When disabled (default), shared
   // attachments require manual acceptance.
-  bool auto_accept_shared_attachments = 7;
+  bool auto_accept_shared_attachments = 8;
 
   // Enable cross-VPC security group referencing. When enabled, security
   // group rules in one VPC can reference security groups in another VPC
   // connected through this Transit Gateway, simplifying firewall management
   // across VPCs.
-  bool security_group_referencing_support = 8;
+  bool security_group_referencing_support = 9;
 
   // Enable multicast traffic routing through the Transit Gateway. This is
   // a ForceNew field in the underlying provider -- changing it requires
   // replacing the entire Transit Gateway. Only enable if you have a clear
   // multicast use case (e.g., financial market data, media streaming).
-  bool multicast_support = 9;
+  bool multicast_support = 10;
 
   // ---------------------------------------------------------------------------
   // CIDR blocks
@@ -110,7 +114,7 @@ message AwsTransitGatewaySpec {
   //
   // Maximum 5 blocks. Supports both IPv4 (/24 or larger) and IPv6 (/64 or
   // larger).
-  repeated string transit_gateway_cidr_blocks = 10;
+  repeated string transit_gateway_cidr_blocks = 11;
 
   // ---------------------------------------------------------------------------
   // VPC attachments
@@ -122,7 +126,7 @@ message AwsTransitGatewaySpec {
   //
   // Each attachment corresponds to one `aws_ec2_transit_gateway_vpc_attachment`
   // resource. Modifications to one attachment do not affect others.
-  repeated AwsTransitGatewayVpcAttachment vpc_attachments = 11 [
+  repeated AwsTransitGatewayVpcAttachment vpc_attachments = 12 [
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 1
   ];

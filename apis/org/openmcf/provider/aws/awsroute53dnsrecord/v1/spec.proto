@@ -45,7 +45,11 @@ message AwsRoute53DnsRecordSpec {
   // Example value_from:
   //   value_from:
   //     name: my-zone
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef zone_id = 1 [
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef zone_id = 2 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsRoute53Zone,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
@@ -57,14 +61,14 @@ message AwsRoute53DnsRecordSpec {
   //   - "www.example.com" for subdomain
   //   - "*.example.com" for wildcard
   // Route53 automatically appends a trailing dot if not provided.
-  string name = 2 [
+  string name = 3 [
     (buf.validate.field).required = true,
     (buf.validate.field).string = {pattern: "^(?:\\*\\.[A-Za-z0-9\\-\\.]+|[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,}|[A-Za-z0-9\\-\\.]+)$"}
   ];
 
   // The type of DNS record to create.
   // Common types: A (IPv4), AAAA (IPv6), CNAME, MX, TXT, NS, SRV, CAA
-  RecordType type = 3 [
+  RecordType type = 4 [
     (buf.validate.field).required = true,
     (buf.validate.field).enum.defined_only = true,
     (buf.validate.field).cel = {
@@ -82,7 +86,7 @@ message AwsRoute53DnsRecordSpec {
   //   - 86400: For static records (1 day)
   // Note: TTL is ignored for alias records (uses target resource's TTL).
   // Default: 300 seconds.
-  int32 ttl = 4 [(buf.validate.field).cel = {
+  int32 ttl = 5 [(buf.validate.field).cel = {
     id: "ttl.valid_range"
     message: "ttl must be 0 (for alias) or between 1 and 604800 seconds (1 week max)"
     expression: "this >= 0 && this <= 604800"
@@ -96,7 +100,7 @@ message AwsRoute53DnsRecordSpec {
   //   - MX record: Priority and mail server (e.g., ["10 mail1.example.com", "20 mail2.example.com"])
   //   - TXT record: Text values (e.g., ["v=spf1 include:_spf.google.com ~all"])
   // Note: Mutually exclusive with alias_target. Use one or the other.
-  repeated string values = 5;
+  repeated string values = 6;
 
   // Alias target configuration for Route53 alias records.
   // Alias records are Route53's killer feature - they allow:
@@ -106,7 +110,7 @@ message AwsRoute53DnsRecordSpec {
   //
   // Common targets: CloudFront, ALB/NLB, S3 website, API Gateway, another Route53 record.
   // Note: Mutually exclusive with values. Use one or the other.
-  AwsRoute53AliasTarget alias_target = 6;
+  AwsRoute53AliasTarget alias_target = 7;
 
   // Routing policy configuration for advanced traffic management.
   // Route53 supports multiple routing strategies:
@@ -117,19 +121,19 @@ message AwsRoute53DnsRecordSpec {
   //   - Geolocation: Route based on user location (GDPR, localization)
   //
   // If not specified, simple routing is used.
-  AwsRoute53RoutingPolicy routing_policy = 7;
+  AwsRoute53RoutingPolicy routing_policy = 8;
 
   // Health check ID to attach for failover routing.
   // Health checks monitor endpoint availability and trigger automatic failover.
   // Create health checks separately in Route53 and reference by ID.
   // Only used with failover routing policy.
-  string health_check_id = 8;
+  string health_check_id = 9;
 
   // Set identifier for routing policies.
   // Required for weighted, latency, failover, and geolocation routing.
   // Must be unique among records with the same name and type.
   // Example: "primary", "secondary", "us-east-1", "weight-70"
-  string set_identifier = 9;
+  string set_identifier = 10;
 
   // Cross-field validation: values and alias_target are mutually exclusive
   option (buf.validate.message).cel = {

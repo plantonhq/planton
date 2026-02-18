@@ -27,6 +27,7 @@ var _ = ginkgo.Describe("AwsServerlessElasticacheSpec validations", func() {
 	ginkgo.BeforeEach(func() {
 		// Minimal valid spec: Redis serverless cache with only required field.
 		spec = &AwsServerlessElasticacheSpec{
+			Region: "us-west-2",
 			Engine: "redis",
 		}
 	})

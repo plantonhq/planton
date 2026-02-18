@@ -20,6 +20,9 @@ variable "metadata" {
 variable "spec" {
   description = "AwsCodePipelineSpec configuration"
   type = object({
+    # The AWS region where the resource will be created.
+    region = string
+
     pipeline_type  = string
     execution_mode = string
 

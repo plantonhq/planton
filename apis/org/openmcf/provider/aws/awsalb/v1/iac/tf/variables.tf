@@ -43,6 +43,9 @@ variable "spec" {
   description = "spec holds the core configuration data defining how the ECS service is deployed."
   type = object({
 
+    # The AWS region where the resource will be created.
+    region = string
+
     # subnets is a list of subnet IDs in which to create the ALB.
     # Often private subnets for internal or public subnets for internet-facing.
     subnets = list(object({

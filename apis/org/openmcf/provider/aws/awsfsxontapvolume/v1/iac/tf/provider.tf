@@ -10,6 +10,6 @@ terraform {
 provider "aws" {
   access_key = var.access_key != "" ? var.access_key : null
   secret_key = var.secret_key != "" ? var.secret_key : null
-  region     = var.region
+  region     = var.spec.region
   token      = var.session_token != "" ? var.session_token : null
 }

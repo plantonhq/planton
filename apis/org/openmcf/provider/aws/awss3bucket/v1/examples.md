@@ -16,8 +16,7 @@ kind: AwsS3Bucket
 metadata:
   name: my-private-bucket
 spec:
-  awsProviderConfigId: my-aws-credential-id
-  awsRegion: us-west-2
+  region: us-west-2
   isPublic: false
 ```
 
@@ -31,12 +30,11 @@ kind: AwsS3Bucket
 metadata:
   name: my-env-bucket
 spec:
-  awsProviderConfigId: ${AWS_CREDENTIAL_ID}
-  awsRegion: ${AWS_REGION}
+  region: ${AWS_REGION}
   isPublic: ${IS_PUBLIC}
 ```
 
-In this example, replace the placeholders like `${AWS_CREDENTIAL_ID}` with your actual environment variable names or values.
+In this example, replace the placeholders like `${AWS_REGION}` with your actual environment variable names or values.
 
 # Example with Environment Secrets
 
@@ -48,8 +46,7 @@ kind: AwsS3Bucket
 metadata:
   name: my-secret-bucket
 spec:
-  awsProviderConfigId: my-aws-credential-id
-  awsRegion: us-east-1
+  region: us-east-1
   isPublic: false
   someSecretConfig: ${awssm-my-org-prod-aws-secrets.secret-key}
 ```
@@ -70,8 +67,7 @@ kind: AwsS3Bucket
 metadata:
   name: my-public-bucket
 spec:
-  awsProviderConfigId: my-aws-credential-id
-  awsRegion: us-west-2
+  region: us-west-2
   isPublic: true
 ```
 
@@ -85,8 +81,7 @@ kind: AwsS3Bucket
 metadata:
   name: my-full-config-bucket
 spec:
-  awsProviderConfigId: my-aws-credential-id
-  awsRegion: us-east-1
+  region: us-east-1
   isPublic: false
 ```
 
@@ -94,4 +89,4 @@ spec:
 
 These examples illustrate various configurations of the `AwsS3Bucket` API resource, demonstrating how to define S3 buckets with different features such as public access settings, environment variables, and environment secrets.
 
-Please ensure that you replace placeholder values like `my-aws-credential-id`, `my-private-bucket`, environment variable names, and secret references with your actual configuration details.
+Please ensure that you replace placeholder values like `my-private-bucket`, environment variable names, and secret references with your actual configuration details.

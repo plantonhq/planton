@@ -10,6 +10,7 @@ kind: AwsWafWebAcl
 metadata:
   name: basic-waf
 spec:
+  region: us-east-1
   scope: REGIONAL
   defaultAction:
     type: allow
@@ -32,6 +33,7 @@ kind: AwsWafWebAcl
 metadata:
   name: rate-limited-api
 spec:
+  region: us-east-1
   scope: REGIONAL
   defaultAction:
     type: allow
@@ -53,6 +55,7 @@ kind: AwsWafWebAcl
 metadata:
   name: geo-restricted
 spec:
+  region: us-east-1
   scope: REGIONAL
   defaultAction:
     type: allow
@@ -77,6 +80,7 @@ kind: AwsWafWebAcl
 metadata:
   name: ip-filtered
 spec:
+  region: us-east-1
   scope: REGIONAL
   defaultAction:
     type: allow
@@ -98,6 +102,7 @@ kind: AwsWafWebAcl
 metadata:
   name: sqli-protected
 spec:
+  region: us-east-1
   scope: REGIONAL
   defaultAction:
     type: allow
@@ -126,6 +131,7 @@ kind: AwsWafWebAcl
 metadata:
   name: tuned-waf
 spec:
+  region: us-east-1
   scope: REGIONAL
   defaultAction:
     type: allow
@@ -154,6 +160,7 @@ kind: AwsWafWebAcl
 metadata:
   name: production-waf
 spec:
+  region: us-east-1
   scope: REGIONAL
   description: Production Web ACL for public API
   defaultAction:

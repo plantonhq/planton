@@ -11,6 +11,7 @@ kind: AwsAthenaWorkgroup
 metadata:
   name: analytics-team
 spec:
+  region: us-east-1
   resultConfiguration:
     outputLocation: "s3://my-athena-results/analytics-team/"
 ```
@@ -26,6 +27,7 @@ kind: AwsAthenaWorkgroup
 metadata:
   name: data-science
 spec:
+  region: us-east-1
   resultConfiguration:
     outputLocation: "s3://data-science-results/queries/"
     encryptionOption: SSE_S3
@@ -44,6 +46,7 @@ kind: AwsAthenaWorkgroup
 metadata:
   name: prod-analytics
 spec:
+  region: us-east-1
   resultConfiguration:
     outputLocation: "s3://prod-athena-results/queries/"
     encryptionOption: SSE_KMS
@@ -67,6 +70,7 @@ kind: AwsAthenaWorkgroup
 metadata:
   name: prod-analytics-ref
 spec:
+  region: us-east-1
   resultConfiguration:
     outputLocation: "s3://prod-athena-results/queries/"
     encryptionOption: SSE_KMS
@@ -91,6 +95,7 @@ kind: AwsAthenaWorkgroup
 metadata:
   name: shared-analytics
 spec:
+  region: us-east-1
   resultConfiguration:
     outputLocation: "s3://central-data-lake/athena-results/"
     encryptionOption: SSE_S3
@@ -110,6 +115,7 @@ kind: AwsAthenaWorkgroup
 metadata:
   name: dev-sandbox
 spec:
+  region: us-east-1
   resultConfiguration:
     outputLocation: "s3://dev-athena-results/sandbox/"
   enforceWorkgroupConfiguration: false
@@ -127,6 +133,7 @@ kind: AwsAthenaWorkgroup
 metadata:
   name: spark-notebooks
 spec:
+  region: us-east-1
   resultConfiguration:
     outputLocation: "s3://spark-results/notebooks/"
     encryptionOption: SSE_S3

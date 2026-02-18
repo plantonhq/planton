@@ -33,6 +33,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsAthenaWorkgroup.analytics
 spec:
+  region: us-east-1
   resultConfiguration:
     outputLocation: "s3://my-athena-results/analytics/"
 ```
@@ -49,7 +50,11 @@ This creates an Athena workgroup named `analytics` with query results stored in 
 
 ### Required Fields
 
-No fields are strictly required. A minimal empty `spec: {}` creates a workgroup with all AWS defaults. However, most practical deployments set at least `resultConfiguration.outputLocation`.
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `region` | `string` | AWS region where the workgroup will be created (e.g., `us-east-1`, `eu-west-1`). | Required; non-empty |
+
+However, most practical deployments set at least `resultConfiguration.outputLocation`.
 
 ### Optional Fields
 
@@ -87,6 +92,7 @@ metadata:
     pulumi.openmcf.org/project: analytics
     pulumi.openmcf.org/stack.name: dev.AwsAthenaWorkgroup.analytics-team
 spec:
+  region: us-east-1
   resultConfiguration:
     outputLocation: "s3://my-athena-results/analytics-team/"
 ```
@@ -106,6 +112,7 @@ metadata:
     pulumi.openmcf.org/project: data
     pulumi.openmcf.org/stack.name: prod.AwsAthenaWorkgroup.data-science
 spec:
+  region: us-east-1
   resultConfiguration:
     outputLocation: "s3://data-science-results/queries/"
     encryptionOption: SSE_S3
@@ -128,6 +135,7 @@ metadata:
     pulumi.openmcf.org/project: analytics
     pulumi.openmcf.org/stack.name: prod.AwsAthenaWorkgroup.prod-analytics
 spec:
+  region: us-east-1
   resultConfiguration:
     outputLocation: "s3://prod-athena-results/queries/"
     encryptionOption: SSE_KMS

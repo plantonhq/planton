@@ -27,6 +27,7 @@ var _ = ginkgo.Describe("AwsKinesisStreamSpec validations", func() {
 	ginkgo.BeforeEach(func() {
 		// Minimal valid spec: ON_DEMAND stream with all AWS defaults.
 		spec = &AwsKinesisStreamSpec{
+			Region:     "us-west-2",
 			StreamMode: "ON_DEMAND",
 		}
 	})

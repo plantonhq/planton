@@ -9,6 +9,7 @@ metadata:
   name: my-web-app
   org: my-org
 spec:
+  region: us-east-1
   image_source:
     image_identifier: public.ecr.aws/nginx/nginx:latest
     image_repository_type: ECR_PUBLIC
@@ -29,6 +30,7 @@ metadata:
     app: api
     env: prod
 spec:
+  region: us-east-1
   image_source:
     image_identifier: 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:v1.2.3
     image_repository_type: ECR
@@ -77,6 +79,7 @@ metadata:
   name: nodejs-api
   org: my-org
 spec:
+  region: us-east-1
   code_source:
     repository_url: https://github.com/my-org/my-api
     branch: main

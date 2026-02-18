@@ -64,6 +64,7 @@ The `aws_cloudwatch_event_bus_policy` is a separate Terraform resource (unlike S
 The primary Terraform resource is `aws_cloudwatch_event_bus` from the `hashicorp/aws` provider.
 
 Key attributes:
+- `region` (Required) — AWS region where the EventBridge bus will be created
 - `name` (ForceNew) — bus name is immutable
 - `event_source_name` (ForceNew) — partner source is immutable
 - `kms_key_identifier` — KMS key ARN, key ID, key alias, or key alias ARN

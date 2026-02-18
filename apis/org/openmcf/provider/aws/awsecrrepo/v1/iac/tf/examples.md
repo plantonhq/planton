@@ -17,6 +17,7 @@ kind: AwsEcrRepo
 metadata:
   name: basic-ecr-repo
 spec:
+  region: us-east-1
   repositoryName: my-app
 ```
 
@@ -36,6 +37,7 @@ kind: AwsEcrRepo
 metadata:
   name: immutable-ecr-repo
 spec:
+  region: us-east-1
   repositoryName: production-app
   imageImmutable: true
   encryptionType: AES256
@@ -57,6 +59,7 @@ kind: AwsEcrRepo
 metadata:
   name: kms-encrypted-ecr-repo
 spec:
+  region: us-east-1
   repositoryName: secure-app
   imageImmutable: true
   encryptionType: KMS
@@ -79,6 +82,7 @@ kind: AwsEcrRepo
 metadata:
   name: force-delete-ecr-repo
 spec:
+  region: us-west-2
   repositoryName: development-app
   imageImmutable: false
   forceDelete: true
@@ -101,6 +105,7 @@ kind: AwsEcrRepo
 metadata:
   name: production-ecr-repo
 spec:
+  region: us-east-1
   repositoryName: production-microservice
   imageImmutable: true
   encryptionType: KMS
@@ -124,6 +129,7 @@ kind: AwsEcrRepo
 metadata:
   name: development-ecr-repo
 spec:
+  region: us-west-2
   repositoryName: dev-app
   imageImmutable: false
   encryptionType: AES256
@@ -146,6 +152,7 @@ kind: AwsEcrRepo
 metadata:
   name: multi-env-ecr-repo
 spec:
+  region: us-east-1
   repositoryName: github.com/myorg/myapp
   imageImmutable: true
   encryptionType: AES256

@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsalb/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsalb_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Ci1vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzYWxiL3YxL3NwZWMucHJvdG8SIm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NhbGIudjEirgMKCkF3c0FsYlNwZWMSVQoHc3VibmV0cxgBIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCELpICMgBAZIBAggCiNRh2AESdgoPc2VjdXJpdHlfZ3JvdXBzGAIgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIpiNRh1wGS1GEgc3RhdHVzLm91dHB1dHMuc2VjdXJpdHlfZ3JvdXBfaWQSEAoIaW50ZXJuYWwYAyABKAgSIQoZZGVsZXRlX3Byb3RlY3Rpb25fZW5hYmxlZBgFIAEoCBIkChRpZGxlX3RpbWVvdXRfc2Vjb25kcxgGIAEoBUIGkqYdAjYwEjoKA2RucxgHIAEoCzItLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NhbGIudjEuQXdzQWxiRG5zEjoKA3NzbBgIIAEoCzItLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NhbGIudjEuQXdzQWxiU3NsIqcBCglBd3NBbGJEbnMSDwoHZW5hYmxlZBgBIAEoCBJsCg9yb3V0ZTUzX3pvbmVfaWQYAiABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQh+I1GHUAZLUYRZzdGF0dXMub3V0cHV0cy56b25lX2lkEhsKCWhvc3RuYW1lcxgDIAMoCUIIukgFkgECGAEiiwEKCUF3c0FsYlNzbBIPCgdlbmFibGVkGAEgASgIEm0KD2NlcnRpZmljYXRlX2FybhgCIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCIIjUYckBktRhF3N0YXR1cy5vdXRwdXRzLmNlcnRfYXJuQrECCiZjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2FsYi52MUIJU3BlY1Byb3RvUAFaTWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzYWxiL3YxO2F3c2FsYnYxogIFT09QQUGqAiJPcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzYWxiLlYxygIiT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2FsYlxWMeICLk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NhbGJcVjFcR1BCTWV0YWRhdGHqAidPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c2FsYjo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("Ci1vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzYWxiL3YxL3NwZWMucHJvdG8SIm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NhbGIudjEixwMKCkF3c0FsYlNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABElUKB3N1Ym5ldHMYAiADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQhC6SAjIAQGSAQIIAojUYdgBEnYKD3NlY3VyaXR5X2dyb3VwcxgDIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEhAKCGludGVybmFsGAQgASgIEiEKGWRlbGV0ZV9wcm90ZWN0aW9uX2VuYWJsZWQYBSABKAgSJAoUaWRsZV90aW1lb3V0X3NlY29uZHMYBiABKAVCBpKmHQI2MBI6CgNkbnMYByABKAsyLS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzYWxiLnYxLkF3c0FsYkRucxI6CgNzc2wYCCABKAsyLS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzYWxiLnYxLkF3c0FsYlNzbCKnAQoJQXdzQWxiRG5zEg8KB2VuYWJsZWQYASABKAgSbAoPcm91dGU1M196b25lX2lkGAIgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh1AGS1GEWc3RhdHVzLm91dHB1dHMuem9uZV9pZBIbCglob3N0bmFtZXMYAyADKAlCCLpIBZIBAhgBIosBCglBd3NBbGJTc2wSDwoHZW5hYmxlZBgBIAEoCBJtCg9jZXJ0aWZpY2F0ZV9hcm4YAiABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQiCI1GHJAZLUYRdzdGF0dXMub3V0cHV0cy5jZXJ0X2FybkKxAgomY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NhbGIudjFCCVNwZWNQcm90b1ABWk1naXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c2FsYi92MTthd3NhbGJ2MaICBU9PUEFBqgIiT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2FsYi5WMcoCIk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NhbGJcVjHiAi5PcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzYWxiXFYxXEdQQk1ldGFkYXRh6gInT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NhbGI6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsAlbSpec captures the essential fields to create an Application Load Balancer on AWS.
@@ -23,18 +23,26 @@ export const file_org_openmcf_provider_aws_awsalb_v1_spec: GenFile = /*@__PURE__
  */
 export type AwsAlbSpec = Message<"org.openmcf.provider.aws.awsalb.v1.AwsAlbSpec"> & {
   /**
+   * The AWS region where the ALB will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * list of subnet IDs in which to create the ALB. AWS requires at least two subnets
    * for ALBs, which also ensures high availability across multiple Availability Zones.
    * Typically use private subnets for internal ALBs or public subnets for internet-facing ALBs.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnets = 1;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnets = 2;
    */
   subnets: StringValueOrRef[];
 
   /**
    * list of security group IDs to attach to the ALB.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_groups = 2;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_groups = 3;
    */
   securityGroups: StringValueOrRef[];
 
@@ -42,7 +50,7 @@ export type AwsAlbSpec = Message<"org.openmcf.provider.aws.awsalb.v1.AwsAlbSpec"
    * indicates whether the ALB is internal or internet-facing.
    * If true, the ALB is internal; if false (or not set), it is internet-facing.
    *
-   * @generated from field: bool internal = 3;
+   * @generated from field: bool internal = 4;
    */
   internal: boolean;
 

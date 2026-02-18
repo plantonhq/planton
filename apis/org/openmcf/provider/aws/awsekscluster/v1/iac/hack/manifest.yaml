@@ -3,6 +3,7 @@ kind: AwsEksCluster
 metadata:
   name: awsekscluster-demo
 spec:
+  region: us-west-2
   subnetIds:
     - value: subnet-aaa111
     - value: subnet-bbb222

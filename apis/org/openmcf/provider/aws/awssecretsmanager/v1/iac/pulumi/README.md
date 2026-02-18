@@ -24,7 +24,7 @@ Refer to the example section for usage instructions.
 
 The module expects an `api-resource.yaml` file defining the desired state of the AWS Secrets Manager resources. The key components of this file include:
 
-- **`awsProviderConfigId`** (required): The identifier for the AWS credentials used to authenticate with AWS services.
+- **`region`** (required): The AWS region where the resource will be created.
 - **`secretNames`** (optional): A list of secret names to be created in AWS Secrets Manager.
 - **`environmentInfo`**: Contains environment-specific information (can be ignored if not used).
 - **`stackUpdateSettings`**: Settings related to the stack-update execution (can be ignored if not used).

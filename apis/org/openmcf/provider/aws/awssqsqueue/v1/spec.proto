@@ -23,6 +23,10 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 //   for investigation and reprocessing.
 // - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 message AwsSqsQueueSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Queue type
   // ---------------------------------------------------------------------------
@@ -30,7 +34,7 @@ message AwsSqsQueueSpec {
   // Whether to create a FIFO queue. Standard queues are created when false.
   // FIFO queues guarantee exactly-once processing and strict ordering within
   // each message group. This setting cannot be changed after queue creation.
-  bool fifo_queue = 1;
+  bool fifo_queue = 2;
 
   // ---------------------------------------------------------------------------
   // Delivery settings
@@ -39,7 +43,7 @@ message AwsSqsQueueSpec {
   // Time in seconds that a received message is hidden from subsequent receive
   // requests. After the timeout expires the message becomes visible again unless
   // it was deleted. Range: 0–43200 (0s to 12h). AWS default: 30.
-  int32 visibility_timeout_seconds = 2 [(buf.validate.field).int32 = {
+  int32 visibility_timeout_seconds = 3 [(buf.validate.field).int32 = {
     gte: 0
     lte: 43200
   }];
@@ -48,17 +52,17 @@ message AwsSqsQueueSpec {
   // expires SQS deletes the message regardless of whether it was consumed.
   // Range: 60–1209600 (1 min to 14 days). AWS default: 345600 (4 days).
   // Leave at 0 to use the AWS default.
-  int32 message_retention_seconds = 3;
+  int32 message_retention_seconds = 4;
 
   // Maximum size of a message body in bytes. Messages exceeding this limit are
   // rejected by SQS. Range: 1024–1048576 (1 KB to 1 MB). AWS default: 262144 (256 KB).
   // Leave at 0 to use the AWS default.
-  int32 max_message_size_bytes = 4;
+  int32 max_message_size_bytes = 5;
 
   // Delay in seconds before a newly sent message becomes visible in the queue.
   // Useful for implementing delayed processing patterns.
   // Range: 0–900 (0s to 15 min). AWS default: 0.
-  int32 delay_seconds = 5 [(buf.validate.field).int32 = {
+  int32 delay_seconds = 6 [(buf.validate.field).int32 = {
     gte: 0
     lte: 900
   }];
@@ -66,7 +70,7 @@ message AwsSqsQueueSpec {
   // Wait time in seconds for the ReceiveMessage API call. A value greater than
   // 0 enables long polling, which reduces the number of empty responses and
   // lowers cost. Range: 0–20. AWS default: 0 (short polling).
-  int32 receive_wait_time_seconds = 6 [(buf.validate.field).int32 = {
+  int32 receive_wait_time_seconds = 7 [(buf.validate.field).int32 = {
     gte: 0
     lte: 20
   }];
@@ -79,18 +83,18 @@ message AwsSqsQueueSpec {
   // a SHA-256 hash of the message body as the deduplication ID, removing the
   // need for the producer to supply an explicit deduplication ID.
   // Only valid when `fifo_queue` is true.
-  bool content_based_deduplication = 7;
+  bool content_based_deduplication = 8;
 
   // Deduplication scope for FIFO queues. Controls whether deduplication is
   // applied per message group or across the entire queue.
   // Valid values: "messageGroup", "queue". Only valid when `fifo_queue` is true.
-  string deduplication_scope = 8;
+  string deduplication_scope = 9;
 
   // Throughput limit for FIFO queues. Controls whether throughput quota applies
   // per message group ID or per queue. Set to "perMessageGroupId" to enable
   // high throughput mode for FIFO queues.
   // Valid values: "perMessageGroupId", "perQueue". Only valid when `fifo_queue` is true.
-  string fifo_throughput_limit = 9;
+  string fifo_throughput_limit = 10;
 
   // ---------------------------------------------------------------------------
   // Dead letter queue
@@ -99,7 +103,7 @@ message AwsSqsQueueSpec {
   // Dead letter queue configuration. When a message is received more than
   // `max_receive_count` times without being deleted, SQS moves it to the
   // specified target queue for investigation and reprocessing.
-  AwsSqsQueueDeadLetterConfig dead_letter_config = 10;
+  AwsSqsQueueDeadLetterConfig dead_letter_config = 11;
 
   // ---------------------------------------------------------------------------
   // Encryption
@@ -109,7 +113,7 @@ message AwsSqsQueueSpec {
   // message bodies using this key. Accepts a direct KMS key ID/ARN or a
   // reference to an AwsKmsKey resource. Mutually exclusive with
   // `sqs_managed_sse_enabled`.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 11 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 12 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -118,12 +122,12 @@ message AwsSqsQueueSpec {
   // KMS again. Higher values reduce KMS costs but increase the window for key
   // reuse. Range: 60–86400 (1 min to 24h). AWS default: 300 (5 min).
   // Only relevant when `kms_key_id` is set.
-  int32 kms_data_key_reuse_period_seconds = 12;
+  int32 kms_data_key_reuse_period_seconds = 13;
 
   // Enable SQS-managed server-side encryption (SSE-SQS). SQS manages the
   // encryption key automatically with no additional cost. Mutually exclusive
   // with `kms_key_id`.
-  bool sqs_managed_sse_enabled = 13;
+  bool sqs_managed_sse_enabled = 14;
 
   // ---------------------------------------------------------------------------
   // Access policy
@@ -134,7 +138,7 @@ message AwsSqsQueueSpec {
   // standard IAM policy document structure. Common use cases include granting
   // SNS topics permission to publish to this queue or allowing cross-account
   // access.
-  google.protobuf.Struct policy = 14;
+  google.protobuf.Struct policy = 15;
 
   // ---------------------------------------------------------------------------
   // CEL validations

@@ -12,7 +12,7 @@ or
 openmcf tofu apply --manifest <yaml-path> --auto-approve
 ```
 
-Provider credentials (AWS access key, secret, region) are supplied via stack input, not in the spec.
+Provider credentials (AWS access key, secret) are supplied via stack input. Region is specified in the spec.
 
 ---
 
@@ -27,6 +27,7 @@ metadata:
   name: dev-windows-fs
   org: my-org
 spec:
+  region: us-west-2
   storage_capacity_gib: 32
   throughput_capacity: 32
   subnet_ids:
@@ -61,6 +62,7 @@ metadata:
     environment: production
     department: engineering
 spec:
+  region: us-east-1
   deployment_type: SINGLE_AZ_2
   storage_capacity_gib: 500
   storage_type: SSD
@@ -108,6 +110,7 @@ metadata:
     environment: production
     tier: critical
 spec:
+  region: us-east-1
   deployment_type: MULTI_AZ_1
   storage_capacity_gib: 1000
   storage_type: SSD
@@ -158,6 +161,7 @@ metadata:
     environment: production
     workload: file-archive
 spec:
+  region: us-east-1
   deployment_type: SINGLE_AZ_2
   storage_capacity_gib: 2000
   storage_type: HDD
@@ -193,6 +197,7 @@ metadata:
   labels:
     environment: production
 spec:
+  region: us-east-1
   deployment_type: MULTI_AZ_1
   storage_capacity_gib: 500
   storage_type: SSD

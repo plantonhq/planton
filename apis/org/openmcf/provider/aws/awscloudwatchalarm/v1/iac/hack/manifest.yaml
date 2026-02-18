@@ -11,6 +11,7 @@ metadata:
     pulumi.openmcf.org/project: test-project
     pulumi.openmcf.org/stack.name: dev.AwsCloudwatchAlarm.test-cpu-alarm
 spec:
+  region: us-west-2
   comparisonOperator: GreaterThanThreshold
   evaluationPeriods: 3
   datapointsToAlarm: 2

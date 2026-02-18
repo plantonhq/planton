@@ -28,6 +28,11 @@ variable "session_token" {
   sensitive   = true
 }
 
+variable "spec" {
+  description = "AwsFsxLustreFileSystemSpec — desired configuration passed from the manifest."
+  type        = any
+}
+
 # ---------------------------------------------------------------------------
 # Resource Metadata
 # ---------------------------------------------------------------------------

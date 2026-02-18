@@ -31,6 +31,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsCertManagerCert.my-cert
 spec:
+  region: us-east-1
   primaryDomainName: example.com
   route53HostedZoneId: Z0123456789ABCDEFGHIJ
 ```
@@ -49,6 +50,7 @@ This creates an ACM certificate for `example.com`, adds the DNS validation CNAME
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the certificate will be created (e.g., `us-east-1`, `eu-west-1`). | Required; non-empty |
 | `primaryDomainName` | `string` | Main domain name for the certificate. Supports wildcard prefixes (e.g., `*.example.com`). | Must match pattern `^(?:\*\.[A-Za-z0-9\-\.]+\|[A-Za-z0-9\-\.]+\.[A-Za-z]{2,})$` |
 | `route53HostedZoneId` | `StringValueOrRef` | ID of the Route53 public hosted zone where DNS validation records are created. Can reference an AwsRoute53Zone resource via `valueFrom`. | Required |
 
@@ -76,6 +78,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsCertManagerCert.apex-cert
 spec:
+  region: us-east-1
   primaryDomainName: example.com
   route53HostedZoneId: Z0123456789ABCDEFGHIJ
 ```
@@ -95,6 +98,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsCertManagerCert.wildcard-cert
 spec:
+  region: us-east-1
   primaryDomainName: "*.example.com"
   route53HostedZoneId: Z0123456789ABCDEFGHIJ
 ```
@@ -114,6 +118,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsCertManagerCert.multi-domain-cert
 spec:
+  region: us-east-1
   primaryDomainName: example.com
   alternateDomainNames:
     - www.example.com
@@ -137,6 +142,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsCertManagerCert.ref-cert
 spec:
+  region: us-east-1
   primaryDomainName: "*.example.com"
   alternateDomainNames:
     - example.com

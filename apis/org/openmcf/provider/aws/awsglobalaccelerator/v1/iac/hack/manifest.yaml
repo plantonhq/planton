@@ -8,6 +8,7 @@ metadata:
     pulumi.openmcf.org/project: test-project
     pulumi.openmcf.org/stack.name: dev.AwsGlobalAccelerator.test-ga
 spec:
+  region: us-west-2
   enabled: true
   ipAddressType: IPV4
   listeners:

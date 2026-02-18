@@ -18,7 +18,7 @@ metadata:
   name: my-private-bucket
 spec:
   isPublic: false
-  awsRegion: "us-east-1"
+  region: "us-east-1"
 ```
 
 This example creates a basic private S3 bucket:
@@ -38,7 +38,7 @@ metadata:
   name: my-public-website-bucket
 spec:
   isPublic: true
-  awsRegion: "us-west-2"
+  region: "us-west-2"
 ```
 
 This example creates a public S3 bucket:
@@ -58,7 +58,7 @@ metadata:
   name: app-data-bucket
 spec:
   isPublic: false
-  awsRegion: "eu-west-1"
+  region: "eu-west-1"
 ```
 
 This example creates a private application data bucket:
@@ -78,7 +78,7 @@ metadata:
   name: backup-storage-bucket
 spec:
   isPublic: false
-  awsRegion: "us-east-1"
+  region: "us-east-1"
 ```
 
 This example creates a backup storage bucket:
@@ -98,7 +98,7 @@ metadata:
   name: media-storage-bucket
 spec:
   isPublic: true
-  awsRegion: "us-east-1"
+  region: "us-east-1"
 ```
 
 This example creates a public media storage bucket:
@@ -118,7 +118,7 @@ metadata:
   name: log-storage-bucket
 spec:
   isPublic: false
-  awsRegion: "us-west-2"
+  region: "us-west-2"
 ```
 
 This example creates a log storage bucket:
@@ -138,7 +138,7 @@ metadata:
   name: dev-assets-bucket
 spec:
   isPublic: false
-  awsRegion: "us-east-1"
+  region: "us-east-1"
 ```
 
 This example creates a development assets bucket:
@@ -158,7 +158,7 @@ metadata:
   name: prod-assets-bucket
 spec:
   isPublic: false
-  awsRegion: "us-east-1"
+  region: "us-east-1"
 ```
 
 This example creates a production assets bucket:
@@ -178,7 +178,7 @@ metadata:
   name: cdn-content-bucket
 spec:
   isPublic: true
-  awsRegion: "us-east-1"
+  region: "us-east-1"
 ```
 
 This example creates a CDN content bucket:
@@ -198,7 +198,7 @@ metadata:
   name: analytics-data-bucket
 spec:
   isPublic: false
-  awsRegion: "us-east-1"
+  region: "us-east-1"
 ```
 
 This example creates an analytics data bucket:

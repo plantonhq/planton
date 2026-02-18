@@ -9,16 +9,20 @@ import "org/openmcf/shared/options/options.proto";
 // AwsAwsEcsClusterSpec defines the production-ready configuration for creating
 // an AWS ECS cluster that supports Fargate workloads with cost optimization.
 message AwsEcsClusterSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // enable_container_insights determines whether to enable CloudWatch
   // Container Insights for this cluster. This is highly recommended
   // for production monitoring, though it incurs CloudWatch costs.
   // If omitted, it is recommended to be "true".
-  bool enable_container_insights = 1 [(org.openmcf.shared.options.recommended_default) = "true"];
+  bool enable_container_insights = 2 [(org.openmcf.shared.options.recommended_default) = "true"];
 
   // capacity_providers is a list of capacity providers attached
   // to this cluster. For a Fargate-only cluster, typically ["FARGATE"]
   // or ["FARGATE", "FARGATE_SPOT"] for cost-optimized Spot usage.
-  repeated string capacity_providers = 2 [(buf.validate.field).repeated = {
+  repeated string capacity_providers = 3 [(buf.validate.field).repeated = {
     unique: true
     items: {
       string: {
@@ -35,12 +39,12 @@ message AwsEcsClusterSpec {
   // primary cost-optimization lever for Fargate workloads.
   // Example: FARGATE (base: 1, weight: 1) + FARGATE_SPOT (weight: 4)
   // results in 20% on-demand, 80% Spot for scaled tasks.
-  repeated CapacityProviderStrategy default_capacity_provider_strategy = 3;
+  repeated CapacityProviderStrategy default_capacity_provider_strategy = 4;
 
   // execute_command_configuration defines cluster-level auditing
   // settings for ECS Exec. This controls logging and encryption
   // for exec sessions. If not specified, exec is disabled.
-  ExecConfiguration execute_command_configuration = 4;
+  ExecConfiguration execute_command_configuration = 5;
 }
 
 // CapacityProviderStrategy defines the base/weight model for

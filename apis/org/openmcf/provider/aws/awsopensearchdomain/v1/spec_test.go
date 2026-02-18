@@ -26,6 +26,7 @@ func strRef(val string) *foreignkeyv1.StringValueOrRef {
 // minimalValidSpec returns a minimal valid AwsOpenSearchDomainSpec.
 func minimalValidSpec() *AwsOpenSearchDomainSpec {
 	return &AwsOpenSearchDomainSpec{
+		Region:        "us-west-2",
 		EngineVersion: "OpenSearch_2.11",
 		ClusterConfig: &AwsOpenSearchDomainClusterConfig{
 			InstanceType: "r6g.large.search",

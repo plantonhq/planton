@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsclientvpn/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsclientvpn_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjNvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzY2xpZW50dnBuL3YxL3NwZWMucHJvdG8SKG9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NjbGllbnR2cG4udjEiqw4KEEF3c0NsaWVudFZwblNwZWMSEwoLZGVzY3JpcHRpb24YASABKAkSaAoGdnBjX2lkGAIgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIkukgDyAEBiNRh2AGS1GEVc3RhdHVzLm91dHB1dHMudnBjX2lkElUKB3N1Ym5ldHMYAyADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQhC6SAjIAQGSAQIIAYjUYdgBElwKEWNsaWVudF9jaWRyX2Jsb2NrGAQgASgJQkG6SD7IAQFyOTI3XihbMC05XXsxLDN9XC4pezN9WzAtOV17MSwzfS8oWzAtOV18WzEtMl1bMC05XXwzWzAtMl0pJBJvChNhdXRoZW50aWNhdGlvbl90eXBlGAUgASgOMkgub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2NsaWVudHZwbi52MS5Bd3NDbGllbnRWcG5BdXRoZW50aWNhdGlvblR5cGVCCLpIBYIBAhABEnoKFnNlcnZlcl9jZXJ0aWZpY2F0ZV9hcm4YBiABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQia6SAPIAQGI1GHJAZLUYRdzdGF0dXMub3V0cHV0cy5jZXJ0X2FybhIqChhjaWRyX2F1dGhvcml6YXRpb25fcnVsZXMYByADKAlCCLpIBZIBAhgBEhwKFGRpc2FibGVfc3BsaXRfdHVubmVsGAggASgIEh4KCHZwbl9wb3J0GAkgASgFQgeKph0DNDQzSACIAQESdAoSdHJhbnNwb3J0X3Byb3RvY29sGAogASgOMkcub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2NsaWVudHZwbi52MS5Bd3NDbGllbnRWcG5UcmFuc3BvcnRQcm90b2NvbEIPukgFggECEAGSph0DdGNwEhYKDmxvZ19ncm91cF9uYW1lGAsgASgJEnYKD3NlY3VyaXR5X2dyb3VwcxgMIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEh8KC2Ruc19zZXJ2ZXJzGA0gAygJQgq6SAeSAQQQAhgBOtcGukjTBhp5ChB2cG5fcG9ydF9hbGxvd2VkEjF2cG5fcG9ydCBtdXN0IGJlIDQ0MyAoVENQKSBvciAxMTk0IChVRFApIHdoZW4gc2V0GjJ0aGlzLnZwbl9wb3J0ID09IDAgfHwgdGhpcy52cG5fcG9ydCBpbiBbNDQzLCAxMTk0XRqUAgoVcHJvdG9jb2xfcG9ydF9wYWlyaW5nElF3aGVuIGJvdGggYXJlIHNldCwgdHJhbnNwb3J0X3Byb3RvY29sIG11c3QgbWF0Y2ggdnBuX3BvcnQgKFRDUOKGlDQ0MywgVURQ4oaUMTE5NCkapwF0aGlzLnZwbl9wb3J0ID09IDAgfHwgdGhpcy50cmFuc3BvcnRfcHJvdG9jb2wgPT0gMCB8fCAodGhpcy50cmFuc3BvcnRfcHJvdG9jb2wgPT0gMiAmJiB0aGlzLnZwbl9wb3J0ID09IDQ0MykgfHwgKHRoaXMudHJhbnNwb3J0X3Byb3RvY29sID09IDEgJiYgdGhpcy52cG5fcG9ydCA9PSAxMTk0KRppCg5hdXRoX3N1cHBvcnRlZBI4b25seSBjZXJ0aWZpY2F0ZS1iYXNlZCBhdXRoZW50aWNhdGlvbiBpcyBzdXBwb3J0ZWQgaW4gdjEaHXRoaXMuYXV0aGVudGljYXRpb25fdHlwZSA9PSAwGsQBChZjaWRyX2F1dGhfcnVsZXNfZm9ybWF0Ej1lYWNoIGNpZHJfYXV0aG9yaXphdGlvbl9ydWxlcyBlbnRyeSBtdXN0IGJlIGEgdmFsaWQgSVB2NCBDSURSGmt0aGlzLmNpZHJfYXV0aG9yaXphdGlvbl9ydWxlcy5hbGwoYywgYy5tYXRjaGVzKCJeKFswLTldezEsM31cXC4pezN9WzAtOV17MSwzfS8oWzAtOV18WzEtMl1bMC05XXwzWzAtMl0pJCIpKRqMAQoSZG5zX3NlcnZlcnNfZm9ybWF0EjBkbnNfc2VydmVycyBtdXN0IGJlIHZhbGlkIElQdjQgYWRkcmVzc2VzIChtYXggMikaRHRoaXMuZG5zX3NlcnZlcnMuYWxsKHMsIHMubWF0Y2hlcygiXihbMC05XXsxLDN9XFwuKXszfVswLTldezEsM30kIikpQgsKCV92cG5fcG9ydCpNCh5Bd3NDbGllbnRWcG5BdXRoZW50aWNhdGlvblR5cGUSDwoLY2VydGlmaWNhdGUQABINCglkaXJlY3RvcnkQAhILCgdjb2duaXRvEAMqZAodQXdzQ2xpZW50VnBuVHJhbnNwb3J0UHJvdG9jb2wSMQotYXdzX2NsaWVudF92cG5fdHJhbnNwb3J0X3Byb3RvY29sX3Vuc3BlY2lmaWVkEAASBwoDdWRwEAESBwoDdGNwEAJC2wIKLGNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzY2xpZW50dnBuLnYxQglTcGVjUHJvdG9QAVpZZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NjbGllbnR2cG4vdjE7YXdzY2xpZW50dnBudjGiAgVPT1BBQaoCKE9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NjbGllbnR2cG4uVjHKAihPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzY2xpZW50dnBuXFYx4gI0T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2NsaWVudHZwblxWMVxHUEJNZXRhZGF0YeoCLU9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzY2xpZW50dnBuOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("CjNvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzY2xpZW50dnBuL3YxL3NwZWMucHJvdG8SKG9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NjbGllbnR2cG4udjEixA4KEEF3c0NsaWVudFZwblNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEhMKC2Rlc2NyaXB0aW9uGAIgASgJEmgKBnZwY19pZBgDIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCJLpIA8gBAYjUYdgBktRhFXN0YXR1cy5vdXRwdXRzLnZwY19pZBJVCgdzdWJuZXRzGAQgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIQukgIyAEBkgECCAGI1GHYARJcChFjbGllbnRfY2lkcl9ibG9jaxgFIAEoCUJBukg+yAEBcjkyN14oWzAtOV17MSwzfVwuKXszfVswLTldezEsM30vKFswLTldfFsxLTJdWzAtOV18M1swLTJdKSQSbwoTYXV0aGVudGljYXRpb25fdHlwZRgGIAEoDjJILm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NjbGllbnR2cG4udjEuQXdzQ2xpZW50VnBuQXV0aGVudGljYXRpb25UeXBlQgi6SAWCAQIQARJ6ChZzZXJ2ZXJfY2VydGlmaWNhdGVfYXJuGAcgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkImukgDyAEBiNRhyQGS1GEXc3RhdHVzLm91dHB1dHMuY2VydF9hcm4SKgoYY2lkcl9hdXRob3JpemF0aW9uX3J1bGVzGAggAygJQgi6SAWSAQIYARIcChRkaXNhYmxlX3NwbGl0X3R1bm5lbBgJIAEoCBIeCgh2cG5fcG9ydBgKIAEoBUIHiqYdAzQ0M0gAiAEBEnQKEnRyYW5zcG9ydF9wcm90b2NvbBgLIAEoDjJHLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NjbGllbnR2cG4udjEuQXdzQ2xpZW50VnBuVHJhbnNwb3J0UHJvdG9jb2xCD7pIBYIBAhABkqYdA3RjcBIWCg5sb2dfZ3JvdXBfbmFtZRgMIAEoCRJ2Cg9zZWN1cml0eV9ncm91cHMYDSADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQimI1GHXAZLUYSBzdGF0dXMub3V0cHV0cy5zZWN1cml0eV9ncm91cF9pZBIfCgtkbnNfc2VydmVycxgOIAMoCUIKukgHkgEEEAIYATrXBrpI0wYaeQoQdnBuX3BvcnRfYWxsb3dlZBIxdnBuX3BvcnQgbXVzdCBiZSA0NDMgKFRDUCkgb3IgMTE5NCAoVURQKSB3aGVuIHNldBoydGhpcy52cG5fcG9ydCA9PSAwIHx8IHRoaXMudnBuX3BvcnQgaW4gWzQ0MywgMTE5NF0alAIKFXByb3RvY29sX3BvcnRfcGFpcmluZxJRd2hlbiBib3RoIGFyZSBzZXQsIHRyYW5zcG9ydF9wcm90b2NvbCBtdXN0IG1hdGNoIHZwbl9wb3J0IChUQ1DihpQ0NDMsIFVEUOKGlDExOTQpGqcBdGhpcy52cG5fcG9ydCA9PSAwIHx8IHRoaXMudHJhbnNwb3J0X3Byb3RvY29sID09IDAgfHwgKHRoaXMudHJhbnNwb3J0X3Byb3RvY29sID09IDIgJiYgdGhpcy52cG5fcG9ydCA9PSA0NDMpIHx8ICh0aGlzLnRyYW5zcG9ydF9wcm90b2NvbCA9PSAxICYmIHRoaXMudnBuX3BvcnQgPT0gMTE5NCkaaQoOYXV0aF9zdXBwb3J0ZWQSOG9ubHkgY2VydGlmaWNhdGUtYmFzZWQgYXV0aGVudGljYXRpb24gaXMgc3VwcG9ydGVkIGluIHYxGh10aGlzLmF1dGhlbnRpY2F0aW9uX3R5cGUgPT0gMBrEAQoWY2lkcl9hdXRoX3J1bGVzX2Zvcm1hdBI9ZWFjaCBjaWRyX2F1dGhvcml6YXRpb25fcnVsZXMgZW50cnkgbXVzdCBiZSBhIHZhbGlkIElQdjQgQ0lEUhprdGhpcy5jaWRyX2F1dGhvcml6YXRpb25fcnVsZXMuYWxsKGMsIGMubWF0Y2hlcygiXihbMC05XXsxLDN9XFwuKXszfVswLTldezEsM30vKFswLTldfFsxLTJdWzAtOV18M1swLTJdKSQiKSkajAEKEmRuc19zZXJ2ZXJzX2Zvcm1hdBIwZG5zX3NlcnZlcnMgbXVzdCBiZSB2YWxpZCBJUHY0IGFkZHJlc3NlcyAobWF4IDIpGkR0aGlzLmRuc19zZXJ2ZXJzLmFsbChzLCBzLm1hdGNoZXMoIl4oWzAtOV17MSwzfVxcLil7M31bMC05XXsxLDN9JCIpKUILCglfdnBuX3BvcnQqTQoeQXdzQ2xpZW50VnBuQXV0aGVudGljYXRpb25UeXBlEg8KC2NlcnRpZmljYXRlEAASDQoJZGlyZWN0b3J5EAISCwoHY29nbml0bxADKmQKHUF3c0NsaWVudFZwblRyYW5zcG9ydFByb3RvY29sEjEKLWF3c19jbGllbnRfdnBuX3RyYW5zcG9ydF9wcm90b2NvbF91bnNwZWNpZmllZBAAEgcKA3VkcBABEgcKA3RjcBACQtsCCixjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2NsaWVudHZwbi52MUIJU3BlY1Byb3RvUAFaWWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzY2xpZW50dnBuL3YxO2F3c2NsaWVudHZwbnYxogIFT09QQUGqAihPcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzY2xpZW50dnBuLlYxygIoT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2NsaWVudHZwblxWMeICNE9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NjbGllbnR2cG5cVjFcR1BCTWV0YWRhdGHqAi1Pcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c2NsaWVudHZwbjo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsClientVpnSpec defines the configuration for an AWS Client VPN endpoint,
@@ -28,9 +28,17 @@ export const file_org_openmcf_provider_aws_awsclientvpn_v1_spec: GenFile = /*@__
  */
 export type AwsClientVpnSpec = Message<"org.openmcf.provider.aws.awsclientvpn.v1.AwsClientVpnSpec"> & {
   /**
+   * The AWS region where the Client VPN endpoint will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * (Optional) A human-friendly description for the Client VPN endpoint. This is stored for clarity and is typically visible in the AWS Console as the description of the endpoint.
    *
-   * @generated from field: string description = 1;
+   * @generated from field: string description = 2;
    */
   description: string;
 
@@ -39,7 +47,7 @@ export type AwsClientVpnSpec = Message<"org.openmcf.provider.aws.awsclientvpn.v1
    * an existing AwsVpc resource. The Client VPN will be attached to this VPC's network.
    * **Must** be a VPC in the same AWS region as the provided credentials.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 2;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 3;
    */
   vpcId?: StringValueOrRef;
 
@@ -48,7 +56,7 @@ export type AwsClientVpnSpec = Message<"org.openmcf.provider.aws.awsclientvpn.v1
    * Each subnet association enables VPN clients to access resources in that subnet’s Availability Zone.
    * At least one subnet ID is required (the first association will activate the endpoint). All subnets must belong to the given VPC.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnets = 3;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnets = 4;
    */
   subnets: StringValueOrRef[];
 
@@ -57,7 +65,7 @@ export type AwsClientVpnSpec = Message<"org.openmcf.provider.aws.awsclientvpn.v1
    * This client CIDR block must not overlap with the VPC’s CIDR or any routes in the VPC.
    * It defines the pool of IPs that VPN clients will receive. Note: The CIDR block size must be between /22 (inclusive) and /12 (inclusive).
    *
-   * @generated from field: string client_cidr_block = 4;
+   * @generated from field: string client_cidr_block = 5;
    */
   clientCidrBlock: string;
 
@@ -65,7 +73,7 @@ export type AwsClientVpnSpec = Message<"org.openmcf.provider.aws.awsclientvpn.v1
    * The authentication method for clients connecting to this VPN endpoint.
    * defaults to `certificate` (mutual TLS authentication using client certificates).
    *
-   * @generated from field: org.openmcf.provider.aws.awsclientvpn.v1.AwsClientVpnAuthenticationType authentication_type = 5;
+   * @generated from field: org.openmcf.provider.aws.awsclientvpn.v1.AwsClientVpnAuthenticationType authentication_type = 6;
    */
   authenticationType: AwsClientVpnAuthenticationType;
 
@@ -73,7 +81,7 @@ export type AwsClientVpnSpec = Message<"org.openmcf.provider.aws.awsclientvpn.v1
    * The ARN of the ACM server certificate to use for the Client VPN endpoint. This TLS certificate is presented by the VPN server to clients upon connection.
    * The certificate must be present in AWS Certificate Manager in the same region. This field is **required** for establishing the VPN (mutual TLS requires a server cert, and user-based auth still needs a server certificate for encryption).
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef server_certificate_arn = 6;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef server_certificate_arn = 7;
    */
   serverCertificateArn?: StringValueOrRef;
 
@@ -83,7 +91,7 @@ export type AwsClientVpnSpec = Message<"org.openmcf.provider.aws.awsclientvpn.v1
    * For each CIDR here, an authorization rule will be created to allow clients to access that network.
    * If omitted, no default authorization rule is set (clients would not have access to any network until one is added).
    *
-   * @generated from field: repeated string cidr_authorization_rules = 7;
+   * @generated from field: repeated string cidr_authorization_rules = 8;
    */
   cidrAuthorizationRules: string[];
 
@@ -91,7 +99,7 @@ export type AwsClientVpnSpec = Message<"org.openmcf.provider.aws.awsclientvpn.v1
    * Enables or disables split-tunnel routing for the VPN. When `false`, only traffic destined for the above authorized CIDRs (internal networks) will go through the VPN, while all other Internet traffic stays local to the client.
    * When `true` (full-tunnel), all client traffic is routed through the VPN. Default is `false` (split-tunnel enabled) to limit VPN to internal traffic.
    *
-   * @generated from field: bool disable_split_tunnel = 8;
+   * @generated from field: bool disable_split_tunnel = 9;
    */
   disableSplitTunnel: boolean;
 
@@ -100,14 +108,14 @@ export type AwsClientVpnSpec = Message<"org.openmcf.provider.aws.awsclientvpn.v1
    * Using port 443 allows VPN traffic to more easily traverse corporate firewalls.
    * If a different port (e.g., 1194) is needed, it can be specified here.
    *
-   * @generated from field: optional int32 vpn_port = 9;
+   * @generated from field: optional int32 vpn_port = 10;
    */
   vpnPort?: number;
 
   /**
    * The transport protocol for VPN connections. Can be `tcp` or `udp`.
    *
-   * @generated from field: org.openmcf.provider.aws.awsclientvpn.v1.AwsClientVpnTransportProtocol transport_protocol = 10;
+   * @generated from field: org.openmcf.provider.aws.awsclientvpn.v1.AwsClientVpnTransportProtocol transport_protocol = 11;
    */
   transportProtocol: AwsClientVpnTransportProtocol;
 
@@ -116,7 +124,7 @@ export type AwsClientVpnSpec = Message<"org.openmcf.provider.aws.awsclientvpn.v1
    * The VPN service will send connection events to the given log group (a log stream is created automatically if not provided).
    * If left blank, connection logging is disabled.
    *
-   * @generated from field: string log_group_name = 11;
+   * @generated from field: string log_group_name = 12;
    */
   logGroupName: string;
 
@@ -127,7 +135,7 @@ export type AwsClientVpnSpec = Message<"org.openmcf.provider.aws.awsclientvpn.v1
    * If provided, ensure the security group rules allow the intended traffic (for example, allowing inbound traffic from clients to target services).
    * By default, OpenMCF may create a dedicated security group for the endpoint if none are specified.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_groups = 12;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_groups = 13;
    */
   securityGroups: StringValueOrRef[];
 
@@ -135,7 +143,7 @@ export type AwsClientVpnSpec = Message<"org.openmcf.provider.aws.awsclientvpn.v1
    * (Optional) Custom DNS server IP addresses for VPN clients. Up to two IP addresses can be specified.
    * If set, connected clients will use these DNS servers for name resolution while connected. If not set, clients default to the VPC’s DNS (AmazonProvidedDNS) for name resolution.
    *
-   * @generated from field: repeated string dns_servers = 13;
+   * @generated from field: repeated string dns_servers = 14;
    */
   dnsServers: string[];
 };

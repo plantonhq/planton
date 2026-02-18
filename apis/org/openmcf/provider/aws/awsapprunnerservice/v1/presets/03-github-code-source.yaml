@@ -3,6 +3,7 @@ kind: AwsAppRunnerService
 metadata:
   name: my-nodejs-app
 spec:
+  region: <aws-region>
   # GitHub code source -- App Runner clones, builds, and deploys from the repository
   codeSource:
     repositoryUrl: "<github-repository-url>"

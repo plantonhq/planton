@@ -29,25 +29,28 @@ const (
 // domain from any alternate domains for clarity.
 type AwsCertManagerCertSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the ACM certificate will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// primaryDomainName is a required field representing the main (apex or wildcard) domain name.
 	// Examples include "example.com" or "*.example.com" (wildcard).
 	// This domain will be set as the 'DomainName' in the AWS ACM certificate.
 	//
 	// The pattern enforces a domain-like structure, allowing an optional wildcard prefix.
 	// The string is mandatory, so users must always supply a primary domain.
-	PrimaryDomainName string `protobuf:"bytes,1,opt,name=primary_domain_name,json=primaryDomainName,proto3" json:"primary_domain_name,omitempty"`
+	PrimaryDomainName string `protobuf:"bytes,2,opt,name=primary_domain_name,json=primaryDomainName,proto3" json:"primary_domain_name,omitempty"`
 	// alternateDomainNames is an optional list of Subject Alternative Names (SANs) for the certificate.
 	// Each entry must follow the same pattern as primary_domain_name and cannot contain duplicates.
 	// Primary domain should not be added to this list.
-	AlternateDomainNames []string `protobuf:"bytes,2,rep,name=alternate_domain_names,json=alternateDomainNames,proto3" json:"alternate_domain_names,omitempty"`
+	AlternateDomainNames []string `protobuf:"bytes,3,rep,name=alternate_domain_names,json=alternateDomainNames,proto3" json:"alternate_domain_names,omitempty"`
 	// route53_hosted_zone_id is the identifier of the Route53 hosted zone
 	// where DNS validation records will be created automatically.
 	// Must be a public hosted zone matching the domain names.
 	// Example: "Z123456ABCXYZ".
-	Route53HostedZoneId *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=route53_hosted_zone_id,json=route53HostedZoneId,proto3" json:"route53_hosted_zone_id,omitempty"`
+	Route53HostedZoneId *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=route53_hosted_zone_id,json=route53HostedZoneId,proto3" json:"route53_hosted_zone_id,omitempty"`
 	// validation_method indicates how ACM verifies domain ownership.
 	// By default, DNS is recommended.
-	ValidationMethod *string `protobuf:"bytes,4,opt,name=validation_method,json=validationMethod,proto3,oneof" json:"validation_method,omitempty"`
+	ValidationMethod *string `protobuf:"bytes,5,opt,name=validation_method,json=validationMethod,proto3,oneof" json:"validation_method,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -82,6 +85,13 @@ func (*AwsCertManagerCertSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awscertmanagercert_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
+func (x *AwsCertManagerCertSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
 func (x *AwsCertManagerCertSpec) GetPrimaryDomainName() string {
 	if x != nil {
 		return x.PrimaryDomainName
@@ -114,12 +124,13 @@ var File_org_openmcf_provider_aws_awscertmanagercert_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_aws_awscertmanagercert_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/aws/awscertmanagercert/v1/spec.proto\x12.org.openmcf.provider.aws.awscertmanagercert.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xff\x03\n" +
-	"\x16AwsCertManagerCertSpec\x12s\n" +
-	"\x13primary_domain_name\x18\x01 \x01(\tBC\xbaH@\xc8\x01\x01r;29^(?:\\*\\.[A-Za-z0-9\\-\\.]+|[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,})$R\x11primaryDomainName\x12}\n" +
-	"\x16alternate_domain_names\x18\x02 \x03(\tBG\xbaHD\x92\x01A\x18\x01\"=r;29^(?:\\*\\.[A-Za-z0-9\\-\\.]+|[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,})$R\x14alternateDomainNames\x12\x8e\x01\n" +
-	"\x16route53_hosted_zone_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\xbaH\x03\xc8\x01\x01\x88\xd4a\xd4\x01\x92\xd4a\x16status.outputs.zone_idR\x13route53HostedZoneId\x12J\n" +
-	"\x11validation_method\x18\x04 \x01(\tB\x18\xbaH\x0er\fR\x03DNSR\x05EMAIL\x8a\xa6\x1d\x03DNSH\x00R\x10validationMethod\x88\x01\x01B\x14\n" +
+	"9org/openmcf/provider/aws/awscertmanagercert/v1/spec.proto\x12.org.openmcf.provider.aws.awscertmanagercert.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa0\x04\n" +
+	"\x16AwsCertManagerCertSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12s\n" +
+	"\x13primary_domain_name\x18\x02 \x01(\tBC\xbaH@\xc8\x01\x01r;29^(?:\\*\\.[A-Za-z0-9\\-\\.]+|[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,})$R\x11primaryDomainName\x12}\n" +
+	"\x16alternate_domain_names\x18\x03 \x03(\tBG\xbaHD\x92\x01A\x18\x01\"=r;29^(?:\\*\\.[A-Za-z0-9\\-\\.]+|[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,})$R\x14alternateDomainNames\x12\x8e\x01\n" +
+	"\x16route53_hosted_zone_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\xbaH\x03\xc8\x01\x01\x88\xd4a\xd4\x01\x92\xd4a\x16status.outputs.zone_idR\x13route53HostedZoneId\x12J\n" +
+	"\x11validation_method\x18\x05 \x01(\tB\x18\xbaH\x0er\fR\x03DNSR\x05EMAIL\x8a\xa6\x1d\x03DNSH\x00R\x10validationMethod\x88\x01\x01B\x14\n" +
 	"\x12_validation_methodB\x85\x03\n" +
 	"2com.org.openmcf.provider.aws.awscertmanagercert.v1B\tSpecProtoP\x01Zegithub.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awscertmanagercert/v1;awscertmanagercertv1\xa2\x02\x05OOPAA\xaa\x02.Org.Openmcf.Provider.Aws.Awscertmanagercert.V1\xca\x02.Org\\Openmcf\\Provider\\Aws\\Awscertmanagercert\\V1\xe2\x02:Org\\Openmcf\\Provider\\Aws\\Awscertmanagercert\\V1\\GPBMetadata\xea\x023Org::Openmcf::Provider::Aws::Awscertmanagercert::V1b\x06proto3"
 

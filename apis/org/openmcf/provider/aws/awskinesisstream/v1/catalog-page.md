@@ -30,6 +30,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsKinesisStream.my-stream
 spec:
+  region: us-east-1
   streamMode: ON_DEMAND
 ```
 
@@ -47,6 +48,7 @@ This creates an on-demand Kinesis stream with 24-hour default retention, no encr
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the Kinesis stream will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `streamMode` | `string` | Capacity mode: `"PROVISIONED"` or `"ON_DEMAND"`. Provisioned requires explicit shard count; on-demand auto-scales up to 200 MB/s write. | Must be one of the two valid values |
 | `shardCount` | `int` | Number of shards. Each shard provides 1 MB/s write and 2 MB/s read. | Required when `streamMode` is `"PROVISIONED"` (>= 1). Must be 0 when `"ON_DEMAND"`. |
 
@@ -77,6 +79,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: staging.AwsKinesisStream.order-events
 spec:
+  region: us-east-1
   streamMode: PROVISIONED
   shardCount: 4
   retentionPeriodHours: 48
@@ -99,6 +102,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsKinesisStream.analytics-pipeline
 spec:
+  region: us-east-1
   streamMode: ON_DEMAND
   retentionPeriodHours: 168
   kmsKeyId:
@@ -129,6 +133,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsKinesisStream.audit-stream
 spec:
+  region: us-east-1
   streamMode: ON_DEMAND
   retentionPeriodHours: 8760
   kmsKeyId:

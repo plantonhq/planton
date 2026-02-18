@@ -3,6 +3,7 @@ kind: AwsMwaaEnvironment
 metadata:
   name: basic-private-airflow
 spec:
+  region: <aws-region>
   airflowVersion: "2.10.1"
   sourceBucketArn:
     value: "<s3-bucket-arn>"

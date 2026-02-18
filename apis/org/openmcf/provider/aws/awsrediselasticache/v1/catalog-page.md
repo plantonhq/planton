@@ -33,6 +33,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsRedisElasticache.my-redis
 spec:
+  region: us-west-2
   engine: redis
   engineVersion: "7.1"
   description: Development Redis cache
@@ -59,6 +60,7 @@ This creates a single-node Redis 7.1 cluster (non-clustered mode) in the specifi
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the ElastiCache cluster will be created. Example: `us-west-2`, `eu-west-1`. | Required |
 | `engine` | `string` | Cache engine. Values: `redis`, `valkey`. | Must be `redis` or `valkey` |
 | `description` | `string` | Human-readable description for the replication group. | Required by AWS |
 | `nodeType` | `string` | ElastiCache node type determining CPU, memory, and network capacity. Examples: `cache.t3.micro`, `cache.r7g.large`, `cache.r6gd.xlarge`. | Required |
@@ -119,6 +121,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsRedisElasticache.session-cache
 spec:
+  region: us-west-2
   engine: redis
   engineVersion: "7.1"
   description: Session cache with HA
@@ -155,6 +158,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsRedisElasticache.analytics-cache
 spec:
+  region: us-west-2
   engine: redis
   engineVersion: "7.1"
   description: Sharded analytics cache
@@ -200,6 +204,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsRedisElasticache.tiered-cache
 spec:
+  region: us-west-2
   engine: valkey
   engineVersion: "7.2"
   description: Valkey cache with data tiering

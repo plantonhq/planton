@@ -20,6 +20,9 @@ variable "metadata" {
 variable "spec" {
   description = "AwsBatchComputeEnvironmentSpec configuration"
   type = object({
+    # The AWS region where the resource will be created.
+    region = string
+
     # Compute environment state: ENABLED or DISABLED
     state = string
 

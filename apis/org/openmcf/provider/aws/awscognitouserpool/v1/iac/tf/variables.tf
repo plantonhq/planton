@@ -10,5 +10,8 @@ variable "metadata" {
 
 variable "spec" {
   description = "AwsCognitoUserPoolSpec configuration"
-  type        = any
+  type = object({
+    # The AWS region where the resource will be created.
+    region = string
+  })
 }

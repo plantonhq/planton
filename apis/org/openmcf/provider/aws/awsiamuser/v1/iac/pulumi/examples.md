@@ -3,7 +3,8 @@ apiVersion: aws.openmcf.org/v1
 kind: AwsIamUser
 metadata:
   name: example
-spec: {}
+spec:
+  region: us-east-1
 ```
 
 CLI:

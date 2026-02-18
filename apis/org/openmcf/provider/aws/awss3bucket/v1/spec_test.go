@@ -27,7 +27,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-s3-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion: "us-east-1",
+						Region: "us-east-1",
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -44,7 +44,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-versioned-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion:         "us-west-2",
+						Region:         "us-west-2",
 						IsPublic:          false,
 						VersioningEnabled: true,
 					},
@@ -63,7 +63,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-public-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion: "eu-west-1",
+						Region: "eu-west-1",
 						IsPublic:  true,
 					},
 				}
@@ -81,7 +81,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-encrypted-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion:      "us-east-1",
+						Region:      "us-east-1",
 						EncryptionType: AwsS3BucketSpec_ENCRYPTION_TYPE_SSE_S3,
 					},
 				}
@@ -99,7 +99,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-kms-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion:      "us-east-1",
+						Region:      "us-east-1",
 						EncryptionType: AwsS3BucketSpec_ENCRYPTION_TYPE_SSE_KMS,
 						KmsKeyId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
@@ -122,7 +122,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-tagged-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion: "us-east-1",
+						Region: "us-east-1",
 						Tags: map[string]string{
 							"Environment": "production",
 							"Project":     "myproject",
@@ -144,7 +144,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-lifecycle-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion: "us-east-1",
+						Region: "us-east-1",
 						LifecycleRules: []*AwsS3BucketSpec_LifecycleRule{
 							{
 								Id:                                 "transition-to-ia",
@@ -172,7 +172,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-replicated-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion:         "us-east-1",
+						Region:         "us-east-1",
 						VersioningEnabled: true,
 						Replication: &AwsS3BucketSpec_ReplicationConfiguration{
 							Enabled: true,
@@ -198,7 +198,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-logged-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion: "us-east-1",
+						Region: "us-east-1",
 						Logging: &AwsS3BucketSpec_LoggingConfiguration{
 							Enabled:      true,
 							TargetBucket: "logging-bucket",
@@ -220,7 +220,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-cors-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion: "us-east-1",
+						Region: "us-east-1",
 						Cors: &AwsS3BucketSpec_CorsConfiguration{
 							CorsRules: []*AwsS3BucketSpec_CorsConfiguration_CorsRule{
 								{
@@ -249,7 +249,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion: "", // Empty region should fail
+						Region: "", // Empty region should fail
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -266,7 +266,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion:      "us-east-1",
+						Region:      "us-east-1",
 						EncryptionType: AwsS3BucketSpec_EncryptionType(999), // Invalid enum value
 					},
 				}
@@ -284,7 +284,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion: "us-east-1",
+						Region: "us-east-1",
 						LifecycleRules: []*AwsS3BucketSpec_LifecycleRule{
 							{
 								Id:             "", // Empty ID should fail
@@ -306,7 +306,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion: "us-east-1",
+						Region: "us-east-1",
 						LifecycleRules: []*AwsS3BucketSpec_LifecycleRule{
 							{
 								Id:                     "test-rule",
@@ -331,7 +331,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion:         "us-east-1",
+						Region:         "us-east-1",
 						VersioningEnabled: true,
 						Replication: &AwsS3BucketSpec_ReplicationConfiguration{
 							Enabled: true,
@@ -354,7 +354,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion:         "us-east-1",
+						Region:         "us-east-1",
 						VersioningEnabled: true,
 						Replication: &AwsS3BucketSpec_ReplicationConfiguration{
 							Enabled:     true,
@@ -375,7 +375,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion:         "us-east-1",
+						Region:         "us-east-1",
 						VersioningEnabled: true,
 						Replication: &AwsS3BucketSpec_ReplicationConfiguration{
 							Enabled: true,
@@ -398,7 +398,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion:         "us-east-1",
+						Region:         "us-east-1",
 						VersioningEnabled: true,
 						Replication: &AwsS3BucketSpec_ReplicationConfiguration{
 							Enabled: true,
@@ -424,7 +424,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion: "us-east-1",
+						Region: "us-east-1",
 						Logging: &AwsS3BucketSpec_LoggingConfiguration{
 							Enabled:      true,
 							TargetBucket: "", // Empty target bucket should fail
@@ -445,7 +445,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion: "us-east-1",
+						Region: "us-east-1",
 						Cors: &AwsS3BucketSpec_CorsConfiguration{
 							CorsRules: []*AwsS3BucketSpec_CorsConfiguration_CorsRule{
 								{
@@ -468,7 +468,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						AwsRegion: "us-east-1",
+						Region: "us-east-1",
 						Cors: &AwsS3BucketSpec_CorsConfiguration{
 							CorsRules: []*AwsS3BucketSpec_CorsConfiguration_CorsRule{
 								{

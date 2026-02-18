@@ -35,6 +35,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-a-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "www.example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -54,6 +55,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-aaaa-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "www.example.com",
 						Type:   AwsRoute53DnsRecordSpec_AAAA,
@@ -73,6 +75,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-cname-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "app.example.com",
 						Type:   AwsRoute53DnsRecordSpec_CNAME,
@@ -92,6 +95,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-mx-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "example.com",
 						Type:   AwsRoute53DnsRecordSpec_MX,
@@ -111,6 +115,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-txt-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "example.com",
 						Type:   AwsRoute53DnsRecordSpec_TXT,
@@ -130,6 +135,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-multi-a-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "www.example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -149,6 +155,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-alias-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -170,6 +177,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-alb-alias-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "api.example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -192,6 +200,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-wildcard-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "*.example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -211,6 +220,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-weighted-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "www.example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -238,6 +248,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-latency-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "api.example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -265,6 +276,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-failover-primary",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "www.example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -293,6 +305,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-geo-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "www.example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -320,6 +333,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-geo-continent-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "www.example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -347,6 +361,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-caa-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "example.com",
 						Type:   AwsRoute53DnsRecordSpec_CAA,
@@ -371,6 +386,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						Name:   "www.example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
 						Ttl:    300,
@@ -389,6 +405,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Type:   AwsRoute53DnsRecordSpec_A,
 						Ttl:    300,
@@ -407,6 +424,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "www.example.com",
 						Type:   AwsRoute53DnsRecordSpec_record_type_unspecified,
@@ -426,6 +444,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "www.example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -444,6 +463,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "www.example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -467,6 +487,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "www.example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -486,6 +507,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -506,6 +528,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -526,6 +549,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "www.example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -552,6 +576,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "www.example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -577,6 +602,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "www.example.com",
 						Type:   AwsRoute53DnsRecordSpec_A,
@@ -604,6 +630,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec Custom Validation Tests", func(
 						Name: "test-record",
 					},
 					Spec: &AwsRoute53DnsRecordSpec{
+						Region: "us-east-1",
 						ZoneId: stringValue("Z1234567890ABC"),
 						Name:   "invalid name with spaces",
 						Type:   AwsRoute53DnsRecordSpec_A,

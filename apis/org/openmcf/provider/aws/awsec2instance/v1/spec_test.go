@@ -32,6 +32,7 @@ var _ = ginkgo.Describe("AwsEc2InstanceSpec validations", func() {
 
 	ginkgo.BeforeEach(func() {
 		spec = &AwsEc2InstanceSpec{
+			Region:       "us-west-2",
 			InstanceName: "web-1",
 			AmiId:        "ami-0123456789abcdef0",
 			InstanceType: "t3.small",

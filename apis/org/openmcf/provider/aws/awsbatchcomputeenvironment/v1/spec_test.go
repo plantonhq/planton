@@ -30,6 +30,7 @@ func svRef(val string) *foreignkeyv1.StringValueOrRef {
 
 func minimalFargateSpec() *AwsBatchComputeEnvironmentSpec {
 	return &AwsBatchComputeEnvironmentSpec{
+		Region: "us-west-2",
 		ComputeResources: &AwsBatchComputeResources{
 			Type:             "FARGATE",
 			MaxVcpus:         256,
@@ -44,6 +45,7 @@ func minimalFargateSpec() *AwsBatchComputeEnvironmentSpec {
 
 func minimalEc2Spec() *AwsBatchComputeEnvironmentSpec {
 	return &AwsBatchComputeEnvironmentSpec{
+		Region: "us-west-2",
 		ComputeResources: &AwsBatchComputeResources{
 			Type:          "EC2",
 			MaxVcpus:      256,
@@ -78,6 +80,7 @@ var _ = ginkgo.Describe("AwsBatchComputeEnvironmentSpec validations", func() {
 		ginkgo.Context("with SPOT configuration including required fields", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsBatchComputeEnvironmentSpec{
+					Region: "us-west-2",
 					ComputeResources: &AwsBatchComputeResources{
 						Type:               "SPOT",
 						MaxVcpus:           512,
@@ -101,6 +104,7 @@ var _ = ginkgo.Describe("AwsBatchComputeEnvironmentSpec validations", func() {
 		ginkgo.Context("with FARGATE_SPOT configuration", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsBatchComputeEnvironmentSpec{
+					Region: "us-west-2",
 					ComputeResources: &AwsBatchComputeResources{
 						Type:             "FARGATE_SPOT",
 						MaxVcpus:         128,
@@ -209,6 +213,7 @@ var _ = ginkgo.Describe("AwsBatchComputeEnvironmentSpec validations", func() {
 		ginkgo.Context("with no job queues", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsBatchComputeEnvironmentSpec{
+					Region: "us-west-2",
 					ComputeResources: &AwsBatchComputeResources{
 						Type:             "FARGATE",
 						MaxVcpus:         256,
@@ -225,6 +230,7 @@ var _ = ginkgo.Describe("AwsBatchComputeEnvironmentSpec validations", func() {
 		ginkgo.Context("with no compute_resources", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsBatchComputeEnvironmentSpec{
+					Region: "us-west-2",
 					JobQueues: []*AwsBatchJobQueue{
 						{Name: "default", Priority: 1},
 					},
@@ -237,6 +243,7 @@ var _ = ginkgo.Describe("AwsBatchComputeEnvironmentSpec validations", func() {
 		ginkgo.Context("with invalid compute resource type", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsBatchComputeEnvironmentSpec{
+					Region: "us-west-2",
 					ComputeResources: &AwsBatchComputeResources{
 						Type:      "INVALID_TYPE",
 						MaxVcpus:  256,
@@ -263,6 +270,7 @@ var _ = ginkgo.Describe("AwsBatchComputeEnvironmentSpec validations", func() {
 		ginkgo.Context("with no subnets", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsBatchComputeEnvironmentSpec{
+					Region: "us-west-2",
 					ComputeResources: &AwsBatchComputeResources{
 						Type:             "FARGATE",
 						MaxVcpus:         256,
@@ -281,6 +289,7 @@ var _ = ginkgo.Describe("AwsBatchComputeEnvironmentSpec validations", func() {
 		ginkgo.Context("with EC2 type missing instance_role", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsBatchComputeEnvironmentSpec{
+					Region: "us-west-2",
 					ComputeResources: &AwsBatchComputeResources{
 						Type:      "EC2",
 						MaxVcpus:  256,
@@ -298,6 +307,7 @@ var _ = ginkgo.Describe("AwsBatchComputeEnvironmentSpec validations", func() {
 		ginkgo.Context("with SPOT type missing spot_iam_fleet_role", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsBatchComputeEnvironmentSpec{
+					Region: "us-west-2",
 					ComputeResources: &AwsBatchComputeResources{
 						Type:         "SPOT",
 						MaxVcpus:     256,

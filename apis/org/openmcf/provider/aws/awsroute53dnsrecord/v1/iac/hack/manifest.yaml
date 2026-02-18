@@ -3,6 +3,7 @@ kind: AwsRoute53DnsRecord
 metadata:
   name: test-dns-record
 spec:
+  region: us-east-1
   zone_id:
     value: Z0123456789ABCDEFGHIJ
   name: test.example.com

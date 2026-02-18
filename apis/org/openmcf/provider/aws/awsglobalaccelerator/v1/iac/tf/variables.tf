@@ -11,6 +11,8 @@ variable "metadata" {
 variable "spec" {
   description = "AwsGlobalAccelerator spec"
   type = object({
+    # The AWS region where the resource will be created.
+    region = string
     enabled           = optional(bool, true)
     ip_address_type   = optional(string, "IPV4")
     ip_addresses      = optional(list(string), [])

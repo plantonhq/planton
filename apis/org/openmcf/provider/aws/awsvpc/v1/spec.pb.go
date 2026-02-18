@@ -33,31 +33,35 @@ const (
 // and repeatable setup for your AWS environment.
 type AwsVpcSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the VPC will be created.
+	// Example: "us-west-2", "eu-west-1", "ap-southeast-1"
+	// For a list of AWS regions, see: https://aws.amazon.com/about-aws/global-infrastructure/regions_az/
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// The CIDR (Classless Inter-Domain Routing) block for the VPC.
 	// This defines the IP address range for the VPC.
 	// Example: "10.0.0.0/16" allows IP addresses from 10.0.0.0 to 10.0.255.255.
-	VpcCidr string `protobuf:"bytes,1,opt,name=vpc_cidr,json=vpcCidr,proto3" json:"vpc_cidr,omitempty"`
+	VpcCidr string `protobuf:"bytes,2,opt,name=vpc_cidr,json=vpcCidr,proto3" json:"vpc_cidr,omitempty"`
 	// The list of availability zones where the VPC will be spanned.
 	// AWS regions are divided into multiple availability zones (AZs) for high availability.
 	// Example: ["us-west-2a", "us-west-2b"] indicates that resources will be spread across these two AZs.
-	AvailabilityZones []string `protobuf:"bytes,2,rep,name=availability_zones,json=availabilityZones,proto3" json:"availability_zones,omitempty"`
+	AvailabilityZones []string `protobuf:"bytes,3,rep,name=availability_zones,json=availabilityZones,proto3" json:"availability_zones,omitempty"`
 	// The number of subnets to be created in each availability zone.
 	// Subnets are segments of the VPC's IP address range where you can place groups of isolated resources.
-	SubnetsPerAvailabilityZone int32 `protobuf:"varint,3,opt,name=subnets_per_availability_zone,json=subnetsPerAvailabilityZone,proto3" json:"subnets_per_availability_zone,omitempty"`
+	SubnetsPerAvailabilityZone int32 `protobuf:"varint,4,opt,name=subnets_per_availability_zone,json=subnetsPerAvailabilityZone,proto3" json:"subnets_per_availability_zone,omitempty"`
 	// The number of hosts (IP addresses) in each subnet.
 	// This determines the size of each subnet's CIDR block.
-	SubnetSize int32 `protobuf:"varint,4,opt,name=subnet_size,json=subnetSize,proto3" json:"subnet_size,omitempty"`
+	SubnetSize int32 `protobuf:"varint,5,opt,name=subnet_size,json=subnetSize,proto3" json:"subnet_size,omitempty"`
 	// Toggle to enable or disable a NAT (Network Address Translation) gateway for private subnets created in the VPC.
 	// A NAT gateway allows instances in a private subnet to connect to the internet or other AWS services, but prevents
 	// the internet from initiating a connection with those instances.
-	IsNatGatewayEnabled bool `protobuf:"varint,5,opt,name=is_nat_gateway_enabled,json=isNatGatewayEnabled,proto3" json:"is_nat_gateway_enabled,omitempty"`
+	IsNatGatewayEnabled bool `protobuf:"varint,6,opt,name=is_nat_gateway_enabled,json=isNatGatewayEnabled,proto3" json:"is_nat_gateway_enabled,omitempty"`
 	// Toggle to enable or disable DNS hostnames in the VPC.
 	// When enabled, instances with public IP addresses receive corresponding public DNS hostnames.
 	// See AWS documentation: https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html#vpc-dns-hostnames
-	IsDnsHostnamesEnabled bool `protobuf:"varint,6,opt,name=is_dns_hostnames_enabled,json=isDnsHostnamesEnabled,proto3" json:"is_dns_hostnames_enabled,omitempty"`
+	IsDnsHostnamesEnabled bool `protobuf:"varint,7,opt,name=is_dns_hostnames_enabled,json=isDnsHostnamesEnabled,proto3" json:"is_dns_hostnames_enabled,omitempty"`
 	// Toggle to enable or disable DNS resolution in the VPC through the Amazon-provided DNS server.
 	// When enabled, the Amazon DNS server resolves DNS hostnames for your instances.
-	IsDnsSupportEnabled bool `protobuf:"varint,7,opt,name=is_dns_support_enabled,json=isDnsSupportEnabled,proto3" json:"is_dns_support_enabled,omitempty"`
+	IsDnsSupportEnabled bool `protobuf:"varint,8,opt,name=is_dns_support_enabled,json=isDnsSupportEnabled,proto3" json:"is_dns_support_enabled,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -90,6 +94,13 @@ func (x *AwsVpcSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsVpcSpec.ProtoReflect.Descriptor instead.
 func (*AwsVpcSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsvpc_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsVpcSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsVpcSpec) GetVpcCidr() string {
@@ -145,17 +156,18 @@ var File_org_openmcf_provider_aws_awsvpc_v1_spec_proto protoreflect.FileDescript
 
 const file_org_openmcf_provider_aws_awsvpc_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"-org/openmcf/provider/aws/awsvpc/v1/spec.proto\x12\"org.openmcf.provider.aws.awsvpc.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xff\x02\n" +
+	"-org/openmcf/provider/aws/awsvpc/v1/spec.proto\x12\"org.openmcf.provider.aws.awsvpc.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xa0\x03\n" +
 	"\n" +
-	"AwsVpcSpec\x12!\n" +
-	"\bvpc_cidr\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\avpcCidr\x12-\n" +
-	"\x12availability_zones\x18\x02 \x03(\tR\x11availabilityZones\x12N\n" +
-	"\x1dsubnets_per_availability_zone\x18\x03 \x01(\x05B\v\xbaH\x03\xc8\x01\x01\x92\xa6\x1d\x011R\x1asubnetsPerAvailabilityZone\x12,\n" +
-	"\vsubnet_size\x18\x04 \x01(\x05B\v\xbaH\x03\xc8\x01\x01\x92\xa6\x1d\x011R\n" +
+	"AwsVpcSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12!\n" +
+	"\bvpc_cidr\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\avpcCidr\x12-\n" +
+	"\x12availability_zones\x18\x03 \x03(\tR\x11availabilityZones\x12N\n" +
+	"\x1dsubnets_per_availability_zone\x18\x04 \x01(\x05B\v\xbaH\x03\xc8\x01\x01\x92\xa6\x1d\x011R\x1asubnetsPerAvailabilityZone\x12,\n" +
+	"\vsubnet_size\x18\x05 \x01(\x05B\v\xbaH\x03\xc8\x01\x01\x92\xa6\x1d\x011R\n" +
 	"subnetSize\x123\n" +
-	"\x16is_nat_gateway_enabled\x18\x05 \x01(\bR\x13isNatGatewayEnabled\x127\n" +
-	"\x18is_dns_hostnames_enabled\x18\x06 \x01(\bR\x15isDnsHostnamesEnabled\x123\n" +
-	"\x16is_dns_support_enabled\x18\a \x01(\bR\x13isDnsSupportEnabledB\xb1\x02\n" +
+	"\x16is_nat_gateway_enabled\x18\x06 \x01(\bR\x13isNatGatewayEnabled\x127\n" +
+	"\x18is_dns_hostnames_enabled\x18\a \x01(\bR\x15isDnsHostnamesEnabled\x123\n" +
+	"\x16is_dns_support_enabled\x18\b \x01(\bR\x13isDnsSupportEnabledB\xb1\x02\n" +
 	"&com.org.openmcf.provider.aws.awsvpc.v1B\tSpecProtoP\x01ZMgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsvpc/v1;awsvpcv1\xa2\x02\x05OOPAA\xaa\x02\"Org.Openmcf.Provider.Aws.Awsvpc.V1\xca\x02\"Org\\Openmcf\\Provider\\Aws\\Awsvpc\\V1\xe2\x02.Org\\Openmcf\\Provider\\Aws\\Awsvpc\\V1\\GPBMetadata\xea\x02'Org::Openmcf::Provider::Aws::Awsvpc::V1b\x06proto3"
 
 var (

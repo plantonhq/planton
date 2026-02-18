@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awscloudfront/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awscloudfront_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjRvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzY2xvdWRmcm9udC92MS9zcGVjLnByb3RvEilvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzY2xvdWRmcm9udC52MSLqBwoRQXdzQ2xvdWRGcm9udFNwZWMSDwoHZW5hYmxlZBgBIAEoCBI/CgdhbGlhc2VzGAIgAygJQi66SCuSASgYASIkciIyIF5bQS1aYS16MC05XC1cLl0rXC5bQS1aYS16XXsyLH0kEnQKD2NlcnRpZmljYXRlX2FybhgDIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCJ4jUYckBktRhHnN0YXR1cy5vdXRwdXRzLmNlcnRpZmljYXRlX2FybhJmCgtwcmljZV9jbGFzcxgEIAEoDjJHLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NjbG91ZGZyb250LnYxLkF3c0Nsb3VkRnJvbnRTcGVjLlByaWNlQ2xhc3NCCLpIBYIBAhABEl4KB29yaWdpbnMYBSADKAsyQy5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzY2xvdWRmcm9udC52MS5Bd3NDbG91ZEZyb250U3BlYy5PcmlnaW5CCLpIBZIBAggBEjgKE2RlZmF1bHRfcm9vdF9vYmplY3QYBiABKAlCG7pIGHIWMhReW0EtWmEtejAtOVwtXC5cX10qJBqUAQoGT3JpZ2luEj4KC2RvbWFpbl9uYW1lGAEgASgJQim6SCZyJBABMiBeW0EtWmEtejAtOVwtXC5dK1wuW0EtWmEtel17Mix9JBI2CgtvcmlnaW5fcGF0aBgCIAEoCUIhukgechwyGl4kfF4vW0EtWmEtejAtOVwtXF9cL1wuXSokEhIKCmlzX2RlZmF1bHQYAyABKAgiaAoKUHJpY2VDbGFzcxIbChdQUklDRV9DTEFTU19VTlNQRUNJRklFRBAAEhMKD1BSSUNFX0NMQVNTXzEwMBABEhMKD1BSSUNFX0NMQVNTXzIwMBACEhMKD1BSSUNFX0NMQVNTX0FMTBADOokCukiFAhqEAQoUYWxpYXNlc19yZXF1aXJlX2NlcnQSNWNlcnRpZmljYXRlX2FybiBtdXN0IGJlIHNldCB3aGVuIGFsaWFzZXMgYXJlIHByb3ZpZGVkGjV0aGlzLmFsaWFzZXMuc2l6ZSgpID09IDAgfHwgaGFzKHRoaXMuY2VydGlmaWNhdGVfYXJuKRp8ChpleGFjdGx5X29uZV9kZWZhdWx0X29yaWdpbhIsZXhhY3RseSBvbmUgb3JpZ2luIG11c3QgYmUgbWFya2VkIGFzIGRlZmF1bHQaMHRoaXMub3JpZ2lucy5maWx0ZXIobywgby5pc19kZWZhdWx0KS5zaXplKCkgPT0gMULiAgotY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NjbG91ZGZyb250LnYxQglTcGVjUHJvdG9QAVpbZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NjbG91ZGZyb250L3YxO2F3c2Nsb3VkZnJvbnR2MaICBU9PUEFBqgIpT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2Nsb3VkZnJvbnQuVjHKAilPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzY2xvdWRmcm9udFxWMeICNU9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NjbG91ZGZyb250XFYxXEdQQk1ldGFkYXRh6gIuT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NjbG91ZGZyb250OjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
+  fileDesc("CjRvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzY2xvdWRmcm9udC92MS9zcGVjLnByb3RvEilvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzY2xvdWRmcm9udC52MSKDCAoRQXdzQ2xvdWRGcm9udFNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEg8KB2VuYWJsZWQYAiABKAgSPwoHYWxpYXNlcxgDIAMoCUIuukgrkgEoGAEiJHIiMiBeW0EtWmEtejAtOVwtXC5dK1wuW0EtWmEtel17Mix9JBJ0Cg9jZXJ0aWZpY2F0ZV9hcm4YBCABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQieI1GHJAZLUYR5zdGF0dXMub3V0cHV0cy5jZXJ0aWZpY2F0ZV9hcm4SZgoLcHJpY2VfY2xhc3MYBSABKA4yRy5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzY2xvdWRmcm9udC52MS5Bd3NDbG91ZEZyb250U3BlYy5QcmljZUNsYXNzQgi6SAWCAQIQARJeCgdvcmlnaW5zGAYgAygLMkMub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2Nsb3VkZnJvbnQudjEuQXdzQ2xvdWRGcm9udFNwZWMuT3JpZ2luQgi6SAWSAQIIARI4ChNkZWZhdWx0X3Jvb3Rfb2JqZWN0GAcgASgJQhu6SBhyFjIUXltBLVphLXowLTlcLVwuXF9dKiQalAEKBk9yaWdpbhI+Cgtkb21haW5fbmFtZRgBIAEoCUIpukgmciQQATIgXltBLVphLXowLTlcLVwuXStcLltBLVphLXpdezIsfSQSNgoLb3JpZ2luX3BhdGgYAiABKAlCIbpIHnIcMhpeJHxeL1tBLVphLXowLTlcLVxfXC9cLl0qJBISCgppc19kZWZhdWx0GAMgASgIImgKClByaWNlQ2xhc3MSGwoXUFJJQ0VfQ0xBU1NfVU5TUEVDSUZJRUQQABITCg9QUklDRV9DTEFTU18xMDAQARITCg9QUklDRV9DTEFTU18yMDAQAhITCg9QUklDRV9DTEFTU19BTEwQAzqJArpIhQIahAEKFGFsaWFzZXNfcmVxdWlyZV9jZXJ0EjVjZXJ0aWZpY2F0ZV9hcm4gbXVzdCBiZSBzZXQgd2hlbiBhbGlhc2VzIGFyZSBwcm92aWRlZBo1dGhpcy5hbGlhc2VzLnNpemUoKSA9PSAwIHx8IGhhcyh0aGlzLmNlcnRpZmljYXRlX2FybikafAoaZXhhY3RseV9vbmVfZGVmYXVsdF9vcmlnaW4SLGV4YWN0bHkgb25lIG9yaWdpbiBtdXN0IGJlIG1hcmtlZCBhcyBkZWZhdWx0GjB0aGlzLm9yaWdpbnMuZmlsdGVyKG8sIG8uaXNfZGVmYXVsdCkuc2l6ZSgpID09IDFC4gIKLWNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzY2xvdWRmcm9udC52MUIJU3BlY1Byb3RvUAFaW2dpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzY2xvdWRmcm9udC92MTthd3NjbG91ZGZyb250djGiAgVPT1BBQaoCKU9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NjbG91ZGZyb250LlYxygIpT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2Nsb3VkZnJvbnRcVjHiAjVPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzY2xvdWRmcm9udFxWMVxHUEJNZXRhZGF0YeoCLk9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzY2xvdWRmcm9udDo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
 
 /**
  * AwsCloudFrontSpec captures common fields used to configure a CloudFront distribution.
@@ -22,16 +22,24 @@ export const file_org_openmcf_provider_aws_awscloudfront_v1_spec: GenFile = /*@_
  */
 export type AwsCloudFrontSpec = Message<"org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * Whether the distribution is enabled.
    *
-   * @generated from field: bool enabled = 1;
+   * @generated from field: bool enabled = 2;
    */
   enabled: boolean;
 
   /**
    * Aliases (CNAMEs) for the distribution, e.g., "cdn.example.com".
    *
-   * @generated from field: repeated string aliases = 2;
+   * @generated from field: repeated string aliases = 3;
    */
   aliases: string[];
 
@@ -39,12 +47,12 @@ export type AwsCloudFrontSpec = Message<"org.openmcf.provider.aws.awscloudfront.
    * ACM certificate ARN for custom domains. Must be in the us-east-1 region.
    * Required when aliases are provided. Can reference an AwsCertManagerCert resource.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef certificate_arn = 3;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef certificate_arn = 4;
    */
   certificateArn?: StringValueOrRef;
 
   /**
-   * @generated from field: org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.PriceClass price_class = 4;
+   * @generated from field: org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.PriceClass price_class = 5;
    */
   priceClass: AwsCloudFrontSpec_PriceClass;
 
@@ -52,14 +60,14 @@ export type AwsCloudFrontSpec = Message<"org.openmcf.provider.aws.awscloudfront.
    * List of origins available to the distribution.
    * Must contain at least one origin with exactly one marked as default.
    *
-   * @generated from field: repeated org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.Origin origins = 5;
+   * @generated from field: repeated org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.Origin origins = 6;
    */
   origins: AwsCloudFrontSpec_Origin[];
 
   /**
    * Default root object, e.g., "index.html".
    *
-   * @generated from field: string default_root_object = 6;
+   * @generated from field: string default_root_object = 7;
    */
   defaultRootObject: string;
 };

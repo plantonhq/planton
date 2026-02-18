@@ -3,6 +3,7 @@ kind: AwsDocumentDb
 metadata:
   name: my-production-docdb
 spec:
+  region: <aws-region>
   subnets:
     - value: "<private-subnet-id-az1>"
     - value: "<private-subnet-id-az2>"

@@ -13,6 +13,7 @@ metadata:
   env: dev
   id: app-logs-dev
 spec:
+  region: us-west-2
   retentionInDays: 30
 ```
 
@@ -32,7 +33,8 @@ metadata:
   org: acme
   env: prod
   id: audit-trail-prod
-spec: {}
+spec:
+  region: us-west-2
 ```
 
 **What this creates:** A STANDARD class log group with indefinite retention (retention_in_days defaults to 0). Log events are never automatically deleted.
@@ -52,6 +54,7 @@ metadata:
   env: prod
   id: prod-app-logs-prod
 spec:
+  region: us-west-2
   retentionInDays: 90
   kmsKeyId:
     valueFrom:
@@ -77,6 +80,7 @@ metadata:
   env: prod
   id: vpc-flow-logs-prod
 spec:
+  region: us-west-2
   retentionInDays: 365
   logGroupClass: INFREQUENT_ACCESS
   kmsKeyId:
@@ -103,6 +107,7 @@ metadata:
   env: prod
   id: sfn-execution-logs-prod
 spec:
+  region: us-west-2
   retentionInDays: 30
 ---
 apiVersion: aws.openmcf.org/v1
@@ -148,6 +153,7 @@ metadata:
   env: prod
   id: api-access-logs-prod
 spec:
+  region: us-west-2
   retentionInDays: 60
 ---
 apiVersion: aws.openmcf.org/v1
@@ -193,6 +199,7 @@ metadata:
   env: prod
   id: cloudtrail-delivery-prod
 spec:
+  region: us-west-2
   logGroupClass: DELIVERY
 ```
 

@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsfsxontapstoragevirtualmachine/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsfsxontapstoragevirtualmachine_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Ckdvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZnN4b250YXBzdG9yYWdldmlydHVhbG1hY2hpbmUvdjEvc3BlYy5wcm90bxI8b3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2ZzeG9udGFwc3RvcmFnZXZpcnR1YWxtYWNoaW5lLnYxIokICiRBd3NGc3hPbnRhcFN0b3JhZ2VWaXJ0dWFsTWFjaGluZVNwZWMSeAoOZmlsZV9zeXN0ZW1faWQYASABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQiy6SAPIAQGI1GGmApLUYR1zdGF0dXMub3V0cHV0cy5maWxlX3N5c3RlbV9pZBIXCgRuYW1lGAIgASgJQgm6SAZyBBABGC8SMQoacm9vdF92b2x1bWVfc2VjdXJpdHlfc3R5bGUYAyABKAlCCIqmHQRVTklYSACIAQESGgoSc3ZtX2FkbWluX3Bhc3N3b3JkGAQgASgJEqIBCh5hY3RpdmVfZGlyZWN0b3J5X2NvbmZpZ3VyYXRpb24YBSABKAsyei5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZnN4b250YXBzdG9yYWdldmlydHVhbG1hY2hpbmUudjEuQXdzRnN4T250YXBTdG9yYWdlVmlydHVhbE1hY2hpbmVBY3RpdmVEaXJlY3RvcnlDb25maWd1cmF0aW9uOroEuki2BBq8AQoUc2VjdXJpdHlfc3R5bGVfdmFsaWQSPXJvb3Rfdm9sdW1lX3NlY3VyaXR5X3N0eWxlIG11c3QgYmUgJ1VOSVgnLCAnTlRGUycsIG9yICdNSVhFRCcaZXRoaXMucm9vdF92b2x1bWVfc2VjdXJpdHlfc3R5bGUgPT0gJycgfHwgdGhpcy5yb290X3ZvbHVtZV9zZWN1cml0eV9zdHlsZSBpbiBbJ1VOSVgnLCAnTlRGUycsICdNSVhFRCddGr8BChVhZG1pbl9wYXNzd29yZF9sZW5ndGgSOHN2bV9hZG1pbl9wYXNzd29yZCBtdXN0IGJlIDgtNTAgY2hhcmFjdGVycyB3aGVuIHByb3ZpZGVkGmx0aGlzLnN2bV9hZG1pbl9wYXNzd29yZCA9PSAnJyB8fCAoc2l6ZSh0aGlzLnN2bV9hZG1pbl9wYXNzd29yZCkgPj0gOCAmJiBzaXplKHRoaXMuc3ZtX2FkbWluX3Bhc3N3b3JkKSA8PSA1MCkasgEKC25hbWVfZm9ybWF0EmpuYW1lIG11c3QgY29udGFpbiBvbmx5IGFscGhhbnVtZXJpYyBjaGFyYWN0ZXJzIGFuZCB1bmRlcnNjb3JlcyAobm8gaHlwaGVucywgc3BhY2VzLCBvciBzcGVjaWFsIGNoYXJhY3RlcnMpGjd0aGlzLm5hbWUgPT0gJycgfHwgdGhpcy5uYW1lLm1hdGNoZXMoJ15bYS16QS1aMC05X10rJCcpQh0KG19yb290X3ZvbHVtZV9zZWN1cml0eV9zdHlsZSKLBAo8QXdzRnN4T250YXBTdG9yYWdlVmlydHVhbE1hY2hpbmVBY3RpdmVEaXJlY3RvcnlDb25maWd1cmF0aW9uEhQKDG5ldGJpb3NfbmFtZRgBIAEoCRIcCgtkb21haW5fbmFtZRgCIAEoCUIHukgEcgIQARIbCgdkbnNfaXBzGAMgAygJQgq6SAeSAQQIARADEhkKCHVzZXJuYW1lGAQgASgJQge6SARyAhABEhkKCHBhc3N3b3JkGAUgASgJQge6SARyAhABEkAKIGZpbGVfc3lzdGVtX2FkbWluaXN0cmF0b3JzX2dyb3VwGAYgASgJQhGKph0NRG9tYWluIEFkbWluc0gAiAEBEi4KJm9yZ2FuaXphdGlvbmFsX3VuaXRfZGlzdGluZ3Vpc2hlZF9uYW1lGAcgASgJOqwBukioARqlAQoTbmV0Ymlvc19uYW1lX2xlbmd0aBIybmV0Ymlvc19uYW1lIG11c3QgYmUgMS0xNSBjaGFyYWN0ZXJzIHdoZW4gcHJvdmlkZWQaWnRoaXMubmV0Ymlvc19uYW1lID09ICcnIHx8IChzaXplKHRoaXMubmV0Ymlvc19uYW1lKSA+PSAxICYmIHNpemUodGhpcy5uZXRiaW9zX25hbWUpIDw9IDE1KUIjCiFfZmlsZV9zeXN0ZW1fYWRtaW5pc3RyYXRvcnNfZ3JvdXBC6AMKQGNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZnN4b250YXBzdG9yYWdldmlydHVhbG1hY2hpbmUudjFCCVNwZWNQcm90b1ABWoEBZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3Nmc3hvbnRhcHN0b3JhZ2V2aXJ0dWFsbWFjaGluZS92MTthd3Nmc3hvbnRhcHN0b3JhZ2V2aXJ0dWFsbWFjaGluZXYxogIFT09QQUGqAjxPcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzZnN4b250YXBzdG9yYWdldmlydHVhbG1hY2hpbmUuVjHKAjxPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZnN4b250YXBzdG9yYWdldmlydHVhbG1hY2hpbmVcVjHiAkhPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZnN4b250YXBzdG9yYWdldmlydHVhbG1hY2hpbmVcVjFcR1BCTWV0YWRhdGHqAkFPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c2ZzeG9udGFwc3RvcmFnZXZpcnR1YWxtYWNoaW5lOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("Ckdvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZnN4b250YXBzdG9yYWdldmlydHVhbG1hY2hpbmUvdjEvc3BlYy5wcm90bxI8b3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2ZzeG9udGFwc3RvcmFnZXZpcnR1YWxtYWNoaW5lLnYxIqIICiRBd3NGc3hPbnRhcFN0b3JhZ2VWaXJ0dWFsTWFjaGluZVNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEngKDmZpbGVfc3lzdGVtX2lkGAIgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIsukgDyAEBiNRhpgKS1GEdc3RhdHVzLm91dHB1dHMuZmlsZV9zeXN0ZW1faWQSFwoEbmFtZRgDIAEoCUIJukgGcgQQARgvEjEKGnJvb3Rfdm9sdW1lX3NlY3VyaXR5X3N0eWxlGAQgASgJQgiKph0EVU5JWEgAiAEBEhoKEnN2bV9hZG1pbl9wYXNzd29yZBgFIAEoCRKiAQoeYWN0aXZlX2RpcmVjdG9yeV9jb25maWd1cmF0aW9uGAYgASgLMnoub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2ZzeG9udGFwc3RvcmFnZXZpcnR1YWxtYWNoaW5lLnYxLkF3c0ZzeE9udGFwU3RvcmFnZVZpcnR1YWxNYWNoaW5lQWN0aXZlRGlyZWN0b3J5Q29uZmlndXJhdGlvbjq6BLpItgQavAEKFHNlY3VyaXR5X3N0eWxlX3ZhbGlkEj1yb290X3ZvbHVtZV9zZWN1cml0eV9zdHlsZSBtdXN0IGJlICdVTklYJywgJ05URlMnLCBvciAnTUlYRUQnGmV0aGlzLnJvb3Rfdm9sdW1lX3NlY3VyaXR5X3N0eWxlID09ICcnIHx8IHRoaXMucm9vdF92b2x1bWVfc2VjdXJpdHlfc3R5bGUgaW4gWydVTklYJywgJ05URlMnLCAnTUlYRUQnXRq/AQoVYWRtaW5fcGFzc3dvcmRfbGVuZ3RoEjhzdm1fYWRtaW5fcGFzc3dvcmQgbXVzdCBiZSA4LTUwIGNoYXJhY3RlcnMgd2hlbiBwcm92aWRlZBpsdGhpcy5zdm1fYWRtaW5fcGFzc3dvcmQgPT0gJycgfHwgKHNpemUodGhpcy5zdm1fYWRtaW5fcGFzc3dvcmQpID49IDggJiYgc2l6ZSh0aGlzLnN2bV9hZG1pbl9wYXNzd29yZCkgPD0gNTApGrIBCgtuYW1lX2Zvcm1hdBJqbmFtZSBtdXN0IGNvbnRhaW4gb25seSBhbHBoYW51bWVyaWMgY2hhcmFjdGVycyBhbmQgdW5kZXJzY29yZXMgKG5vIGh5cGhlbnMsIHNwYWNlcywgb3Igc3BlY2lhbCBjaGFyYWN0ZXJzKRo3dGhpcy5uYW1lID09ICcnIHx8IHRoaXMubmFtZS5tYXRjaGVzKCdeW2EtekEtWjAtOV9dKyQnKUIdChtfcm9vdF92b2x1bWVfc2VjdXJpdHlfc3R5bGUiiwQKPEF3c0ZzeE9udGFwU3RvcmFnZVZpcnR1YWxNYWNoaW5lQWN0aXZlRGlyZWN0b3J5Q29uZmlndXJhdGlvbhIUCgxuZXRiaW9zX25hbWUYASABKAkSHAoLZG9tYWluX25hbWUYAiABKAlCB7pIBHICEAESGwoHZG5zX2lwcxgDIAMoCUIKukgHkgEECAEQAxIZCgh1c2VybmFtZRgEIAEoCUIHukgEcgIQARIZCghwYXNzd29yZBgFIAEoCUIHukgEcgIQARJACiBmaWxlX3N5c3RlbV9hZG1pbmlzdHJhdG9yc19ncm91cBgGIAEoCUIRiqYdDURvbWFpbiBBZG1pbnNIAIgBARIuCiZvcmdhbml6YXRpb25hbF91bml0X2Rpc3Rpbmd1aXNoZWRfbmFtZRgHIAEoCTqsAbpIqAEapQEKE25ldGJpb3NfbmFtZV9sZW5ndGgSMm5ldGJpb3NfbmFtZSBtdXN0IGJlIDEtMTUgY2hhcmFjdGVycyB3aGVuIHByb3ZpZGVkGlp0aGlzLm5ldGJpb3NfbmFtZSA9PSAnJyB8fCAoc2l6ZSh0aGlzLm5ldGJpb3NfbmFtZSkgPj0gMSAmJiBzaXplKHRoaXMubmV0Ymlvc19uYW1lKSA8PSAxNSlCIwohX2ZpbGVfc3lzdGVtX2FkbWluaXN0cmF0b3JzX2dyb3VwQugDCkBjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2ZzeG9udGFwc3RvcmFnZXZpcnR1YWxtYWNoaW5lLnYxQglTcGVjUHJvdG9QAVqBAWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZnN4b250YXBzdG9yYWdldmlydHVhbG1hY2hpbmUvdjE7YXdzZnN4b250YXBzdG9yYWdldmlydHVhbG1hY2hpbmV2MaICBU9PUEFBqgI8T3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2ZzeG9udGFwc3RvcmFnZXZpcnR1YWxtYWNoaW5lLlYxygI8T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2ZzeG9udGFwc3RvcmFnZXZpcnR1YWxtYWNoaW5lXFYx4gJIT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2ZzeG9udGFwc3RvcmFnZXZpcnR1YWxtYWNoaW5lXFYxXEdQQk1ldGFkYXRh6gJBT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3Nmc3hvbnRhcHN0b3JhZ2V2aXJ0dWFsbWFjaGluZTo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsFsxOntapStorageVirtualMachineSpec defines the desired configuration for an
@@ -50,13 +50,17 @@ export const file_org_openmcf_provider_aws_awsfsxontapstoragevirtualmachine_v1_s
  * - Credentials, region, and deployment workflow live outside this spec in stack
  *   inputs.
  *
- * ---------------------------------------------------------------------------
- * Parent Reference
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awsfsxontapstoragevirtualmachine.v1.AwsFsxOntapStorageVirtualMachineSpec
  */
 export type AwsFsxOntapStorageVirtualMachineSpec = Message<"org.openmcf.provider.aws.awsfsxontapstoragevirtualmachine.v1.AwsFsxOntapStorageVirtualMachineSpec"> & {
+  /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * The ID of the FSx for ONTAP file system that this SVM belongs to. Required.
    * ForceNew — the SVM cannot be moved to a different file system.
@@ -65,7 +69,7 @@ export type AwsFsxOntapStorageVirtualMachineSpec = Message<"org.openmcf.provider
    * and HA infrastructure. Multiple SVMs can share a single file system for
    * multi-tenancy scenarios.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef file_system_id = 1;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef file_system_id = 2;
    */
   fileSystemId?: StringValueOrRef;
 
@@ -79,7 +83,7 @@ export type AwsFsxOntapStorageVirtualMachineSpec = Message<"org.openmcf.provider
    * Constraints: 1-47 characters, alphanumeric and underscore only (no hyphens,
    * no spaces, no special characters).
    *
-   * @generated from field: string name = 2;
+   * @generated from field: string name = 3;
    */
   name: string;
 
@@ -97,7 +101,7 @@ export type AwsFsxOntapStorageVirtualMachineSpec = Message<"org.openmcf.provider
    *
    * Default: UNIX
    *
-   * @generated from field: optional string root_volume_security_style = 3;
+   * @generated from field: optional string root_volume_security_style = 4;
    */
   rootVolumeSecurityStyle?: string;
 
@@ -112,7 +116,7 @@ export type AwsFsxOntapStorageVirtualMachineSpec = Message<"org.openmcf.provider
    * Length: 8-50 characters. Optional — omit if SVM CLI access is not needed.
    * This value is sensitive and will not be returned in read operations.
    *
-   * @generated from field: string svm_admin_password = 4;
+   * @generated from field: string svm_admin_password = 5;
    */
   svmAdminPassword: string;
 
@@ -126,7 +130,7 @@ export type AwsFsxOntapStorageVirtualMachineSpec = Message<"org.openmcf.provider
    * ONTAP SVMs support only self-managed Active Directory (on-premises, on EC2,
    * or Azure AD DS). AWS Managed Microsoft AD is not supported for ONTAP SVMs.
    *
-   * @generated from field: org.openmcf.provider.aws.awsfsxontapstoragevirtualmachine.v1.AwsFsxOntapStorageVirtualMachineActiveDirectoryConfiguration active_directory_configuration = 5;
+   * @generated from field: org.openmcf.provider.aws.awsfsxontapstoragevirtualmachine.v1.AwsFsxOntapStorageVirtualMachineActiveDirectoryConfiguration active_directory_configuration = 6;
    */
   activeDirectoryConfiguration?: AwsFsxOntapStorageVirtualMachineActiveDirectoryConfiguration;
 };

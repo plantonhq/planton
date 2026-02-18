@@ -6,7 +6,7 @@ metadata:
 spec:
   # example minimal spec; adjust as needed per your use case
   isPublic: false
-  awsRegion: us-east-1
+  region: us-east-1
 ```
 
 CLI:
@@ -31,7 +31,7 @@ metadata:
   name: example-s3
 spec:
   isPublic: false
-  awsRegion: us-east-1
+  region: us-east-1
 ```
 
 CLI:
@@ -67,8 +67,7 @@ kind: AwsS3Bucket
 metadata:
   name: my-private-bucket
 spec:
-  awsProviderConfigId: my-aws-credential-id
-  awsRegion: us-west-2
+  region: us-west-2
   isPublic: false
 ```
 
@@ -82,8 +81,7 @@ kind: AwsS3Bucket
 metadata:
   name: my-env-bucket
 spec:
-  awsProviderConfigId: ${AWS_CREDENTIAL_ID}
-  awsRegion: ${AWS_REGION}
+  region: ${AWS_REGION}
   isPublic: ${IS_PUBLIC}
 ```
 
@@ -99,8 +97,7 @@ kind: AwsS3Bucket
 metadata:
   name: my-secret-bucket
 spec:
-  awsProviderConfigId: my-aws-credential-id
-  awsRegion: us-east-1
+  region: us-east-1
   isPublic: false
   someSecretConfig: ${awssm-my-org-prod-aws-secrets.secret-key}
 ```
@@ -121,8 +118,7 @@ kind: AwsS3Bucket
 metadata:
   name: my-public-bucket
 spec:
-  awsProviderConfigId: my-aws-credential-id
-  awsRegion: us-west-2
+  region: us-west-2
   isPublic: true
 ```
 
@@ -136,8 +132,7 @@ kind: AwsS3Bucket
 metadata:
   name: my-full-config-bucket
 spec:
-  awsProviderConfigId: my-aws-credential-id
-  awsRegion: us-east-1
+  region: us-east-1
   isPublic: false
 ```
 

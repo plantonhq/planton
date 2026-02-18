@@ -31,6 +31,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsIamUser.my-ci-user
 spec:
+  region: us-east-1
   userName: my-ci-user
 ```
 
@@ -48,6 +49,7 @@ This creates an IAM user named `my-ci-user` with one active access key pair and 
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | The AWS region where the resource will be created. | Required |
 | `userName` | `string` | IAM user name. Must be 1-64 characters. | Pattern: `^[a-zA-Z0-9+=,.@_-]{1,64}$` |
 
 ### Optional Fields
@@ -75,6 +77,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsIamUser.ci-deploy-user
 spec:
+  region: us-east-1
   userName: ci-deploy-user
   managedPolicyArns:
     - arn:aws:iam::aws:policy/AmazonS3FullAccess
@@ -95,6 +98,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsIamUser.analytics-service
 spec:
+  region: us-east-1
   userName: analytics-service
   inlinePolicies:
     dynamodb-read:
@@ -123,6 +127,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsIamUser.audit-viewer
 spec:
+  region: us-east-1
   userName: audit-viewer
   disableAccessKeys: true
   managedPolicyArns:
@@ -144,6 +149,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsIamUser.worker-service
 spec:
+  region: us-east-1
   userName: worker-service
   managedPolicyArns:
     - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess

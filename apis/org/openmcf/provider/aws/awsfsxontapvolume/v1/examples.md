@@ -13,6 +13,7 @@ metadata:
   org: my-org
   env: dev
 spec:
+  region: us-east-1
   storage_virtual_machine_id:
     value: svm-0123456789abcdef0
   name: vol_minimal
@@ -32,6 +33,7 @@ metadata:
   org: my-org
   env: prod
 spec:
+  region: us-east-1
   storage_virtual_machine_id:
     value: svm-0123456789abcdef0
   name: vol_prod_data
@@ -59,6 +61,7 @@ metadata:
   org: my-org
   env: prod
 spec:
+  region: us-east-1
   storage_virtual_machine_id:
     value: svm-0123456789abcdef0
   name: vol_windows_share
@@ -83,6 +86,7 @@ metadata:
   org: my-org
   env: prod
 spec:
+  region: us-east-1
   storage_virtual_machine_id:
     value: svm-0123456789abcdef0
   name: vol_sec17a4
@@ -122,6 +126,7 @@ metadata:
   org: my-org
   env: prod
 spec:
+  region: us-east-1
   storage_virtual_machine_id:
     valueFrom:
       kind: AwsFsxOntapStorageVirtualMachine

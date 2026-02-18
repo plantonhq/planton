@@ -10,6 +10,7 @@ kind: AwsAppRunnerService
 metadata:
   name: hello-apprunner
 spec:
+  region: us-east-1
   imageSource:
     imageIdentifier: "public.ecr.aws/nginx/nginx:latest"
     imageRepositoryType: "ECR_PUBLIC"
@@ -26,6 +27,7 @@ kind: AwsAppRunnerService
 metadata:
   name: my-api-service
 spec:
+  region: us-east-1
   imageSource:
     imageIdentifier: "123456789012.dkr.ecr.us-east-1.amazonaws.com/my-api:v2.1.0"
     imageRepositoryType: "ECR"
@@ -67,6 +69,7 @@ metadata:
     env: production
     cost-center: CC-1234
 spec:
+  region: us-east-1
   imageSource:
     imageIdentifier: "123456789012.dkr.ecr.us-east-1.amazonaws.com/payments-api:v5.0.3"
     imageRepositoryType: "ECR"
@@ -131,6 +134,7 @@ kind: AwsAppRunnerService
 metadata:
   name: my-frontend-app
 spec:
+  region: us-east-1
   codeSource:
     repositoryUrl: "https://github.com/my-org/frontend-app"
     branch: "main"
@@ -159,6 +163,7 @@ kind: AwsAppRunnerService
 metadata:
   name: my-python-api
 spec:
+  region: us-east-1
   codeSource:
     repositoryUrl: "https://github.com/my-org/python-api"
     branch: "production"
@@ -204,6 +209,7 @@ kind: AwsAppRunnerService
 metadata:
   name: my-order-service
 spec:
+  region: us-east-1
   imageSource:
     imageIdentifier: "123456789012.dkr.ecr.us-east-1.amazonaws.com/order-service:v1.0.0"
     imageRepositoryType: "ECR"

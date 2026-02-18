@@ -27,6 +27,7 @@ var _ = ginkgo.Describe("AwsMemcachedElasticacheSpec validations", func() {
 	ginkgo.BeforeEach(func() {
 		// Minimal valid spec: single-node Memcached cluster.
 		spec = &AwsMemcachedElasticacheSpec{
+			Region:        "us-west-2",
 			EngineVersion: "1.6.22",
 			NodeType:      "cache.t3.micro",
 			NumCacheNodes: 1,
@@ -116,6 +117,7 @@ var _ = ginkgo.Describe("AwsMemcachedElasticacheSpec validations", func() {
 
 	ginkgo.It("accepts a production-ready configuration", func() {
 		port := int32(11211)
+		spec.Region = "us-west-2"
 		spec.EngineVersion = "1.6.22"
 		spec.NodeType = "cache.r7g.large"
 		spec.NumCacheNodes = 3

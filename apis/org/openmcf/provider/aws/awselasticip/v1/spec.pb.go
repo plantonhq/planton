@@ -45,18 +45,21 @@ const (
 // Credentials, region, and deployment workflow live outside this spec in stack inputs.
 type AwsElasticIpSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// EC2 IPv4 address pool identifier to allocate from. Set this to a BYOIP pool
 	// ID when you want the EIP to come from your own registered IP address range
 	// instead of Amazon's pool. When omitted, Amazon allocates from its own pool.
 	//
 	// This field is ForceNew: changing it requires replacing the EIP.
-	PublicIpv4Pool string `protobuf:"bytes,1,opt,name=public_ipv4_pool,json=publicIpv4Pool,proto3" json:"public_ipv4_pool,omitempty"`
+	PublicIpv4Pool string `protobuf:"bytes,2,opt,name=public_ipv4_pool,json=publicIpv4Pool,proto3" json:"public_ipv4_pool,omitempty"`
 	// Request a specific IP address from the BYOIP pool identified by
 	// `public_ipv4_pool`. The address must belong to the specified pool.
 	// Only meaningful when `public_ipv4_pool` is set.
 	//
 	// This field is ForceNew: changing it requires replacing the EIP.
-	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	Address string `protobuf:"bytes,3,opt,name=address,proto3" json:"address,omitempty"`
 	// Network border group that controls the location scope of this EIP. Used for
 	// allocating EIPs in AWS Local Zones or Wavelength zones. When omitted, the
 	// EIP is scoped to the Region.
@@ -65,7 +68,7 @@ type AwsElasticIpSpec struct {
 	// "us-west-2-lax-1a" (Local Zone).
 	//
 	// This field is ForceNew: changing it requires replacing the EIP.
-	NetworkBorderGroup string `protobuf:"bytes,3,opt,name=network_border_group,json=networkBorderGroup,proto3" json:"network_border_group,omitempty"`
+	NetworkBorderGroup string `protobuf:"bytes,4,opt,name=network_border_group,json=networkBorderGroup,proto3" json:"network_border_group,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -100,6 +103,13 @@ func (*AwsElasticIpSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awselasticip_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
+func (x *AwsElasticIpSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
 func (x *AwsElasticIpSpec) GetPublicIpv4Pool() string {
 	if x != nil {
 		return x.PublicIpv4Pool
@@ -125,11 +135,12 @@ var File_org_openmcf_provider_aws_awselasticip_v1_spec_proto protoreflect.FileDe
 
 const file_org_openmcf_provider_aws_awselasticip_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"3org/openmcf/provider/aws/awselasticip/v1/spec.proto\x12(org.openmcf.provider.aws.awselasticip.v1\x1a\x1bbuf/validate/validate.proto\"\xc6\x02\n" +
-	"\x10AwsElasticIpSpec\x12(\n" +
-	"\x10public_ipv4_pool\x18\x01 \x01(\tR\x0epublicIpv4Pool\x12\x18\n" +
-	"\aaddress\x18\x02 \x01(\tR\aaddress\x120\n" +
-	"\x14network_border_group\x18\x03 \x01(\tR\x12networkBorderGroup:\xbb\x01\xbaH\xb7\x01\x1a\xb4\x01\n" +
+	"3org/openmcf/provider/aws/awselasticip/v1/spec.proto\x12(org.openmcf.provider.aws.awselasticip.v1\x1a\x1bbuf/validate/validate.proto\"\xe7\x02\n" +
+	"\x10AwsElasticIpSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12(\n" +
+	"\x10public_ipv4_pool\x18\x02 \x01(\tR\x0epublicIpv4Pool\x12\x18\n" +
+	"\aaddress\x18\x03 \x01(\tR\aaddress\x120\n" +
+	"\x14network_border_group\x18\x04 \x01(\tR\x12networkBorderGroup:\xbb\x01\xbaH\xb7\x01\x1a\xb4\x01\n" +
 	"\x1baddress_requires_byoip_pool\x12baddress requires public_ipv4_pool to be set (specific IPs can only be requested from a BYOIP pool)\x1a1this.address == '' || this.public_ipv4_pool != ''B\xdb\x02\n" +
 	",com.org.openmcf.provider.aws.awselasticip.v1B\tSpecProtoP\x01ZYgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awselasticip/v1;awselasticipv1\xa2\x02\x05OOPAA\xaa\x02(Org.Openmcf.Provider.Aws.Awselasticip.V1\xca\x02(Org\\Openmcf\\Provider\\Aws\\Awselasticip\\V1\xe2\x024Org\\Openmcf\\Provider\\Aws\\Awselasticip\\V1\\GPBMetadata\xea\x02-Org::Openmcf::Provider::Aws::Awselasticip::V1b\x06proto3"
 

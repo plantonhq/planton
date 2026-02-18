@@ -29,7 +29,8 @@ func minimalAcl(spec *AwsWafWebAclSpec) *AwsWafWebAcl {
 // helper to create a minimal valid spec with allow default action.
 func minimalSpec() *AwsWafWebAclSpec {
 	return &AwsWafWebAclSpec{
-		Scope: "REGIONAL",
+		Region: "us-west-2",
+		Scope:  "REGIONAL",
 		DefaultAction: &AwsWafWebAclDefaultAction{
 			Type: "allow",
 		},

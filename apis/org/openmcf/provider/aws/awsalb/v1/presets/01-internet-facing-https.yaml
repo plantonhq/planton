@@ -3,6 +3,7 @@ kind: AwsAlb
 metadata:
   name: my-internet-facing-alb
 spec:
+  region: <aws-region>
   subnets:
     - value: "<public-subnet-id-az1>"
     - value: "<public-subnet-id-az2>"

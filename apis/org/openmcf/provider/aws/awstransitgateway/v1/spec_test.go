@@ -33,6 +33,7 @@ var _ = ginkgo.Describe("AwsTransitGatewaySpec validations", func() {
 
 	ginkgo.BeforeEach(func() {
 		spec = &AwsTransitGatewaySpec{
+			Region: "us-west-2",
 			VpcAttachments: []*AwsTransitGatewayVpcAttachment{
 				minimalAttachment("primary-vpc", "vpc-abc123", "subnet-abc123"),
 			},
@@ -161,6 +162,7 @@ var _ = ginkgo.Describe("AwsTransitGatewaySpec validations", func() {
 
 	ginkgo.It("accepts a production-ready multi-VPC configuration", func() {
 		spec = &AwsTransitGatewaySpec{
+			Region:                       "us-west-2",
 			Description:                  "Production hub connecting application and shared-services VPCs",
 			AmazonSideAsn:                64512,
 			DefaultRouteTableAssociation: true,

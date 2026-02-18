@@ -3,6 +3,7 @@ kind: AwsWafWebAcl
 metadata:
   name: test-waf-acl
 spec:
+  region: us-west-2
   scope: REGIONAL
   defaultAction:
     type: allow

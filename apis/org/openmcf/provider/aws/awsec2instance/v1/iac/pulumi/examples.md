@@ -3,7 +3,8 @@ apiVersion: aws.openmcf.org/v1
 kind: AwsEc2Instance
 metadata:
   name: example
-spec: {}
+spec:
+  region: us-west-2
 ```
 
 CLI:
@@ -30,6 +31,7 @@ kind: AwsEc2Instance
 metadata:
   name: my-ec2
 spec:
+  region: us-west-2
   instanceName: web-1
   amiId: ami-0123456789abcdef0
   instanceType: t3.small
@@ -52,6 +54,7 @@ kind: AwsEc2Instance
 metadata:
   name: my-ec2-ssh
 spec:
+  region: us-west-2
   instanceName: web-ssh
   amiId: ami-0123456789abcdef0
   instanceType: t3.small

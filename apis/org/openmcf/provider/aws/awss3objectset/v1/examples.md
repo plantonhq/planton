@@ -16,9 +16,9 @@ kind: AwsS3ObjectSet
 metadata:
   name: app-config-objects
 spec:
+  region: us-east-1
   bucket:
     value: my-app-bucket
-  awsRegion: us-east-1
   objects:
     - key: config/app.json
       content: |
@@ -40,10 +40,10 @@ kind: AwsS3ObjectSet
 metadata:
   name: static-assets
 spec:
+  region: us-west-2
   bucket:
     valueFrom:
       name: my-s3-bucket
-  awsRegion: us-west-2
   objects:
     - key: index.html
       content: |
@@ -63,9 +63,9 @@ kind: AwsS3ObjectSet
 metadata:
   name: website-assets
 spec:
+  region: us-east-1
   bucket:
     value: my-website-bucket
-  awsRegion: us-east-1
   tags:
     environment: production
     project: website
@@ -97,9 +97,9 @@ kind: AwsS3ObjectSet
 metadata:
   name: binary-assets
 spec:
+  region: us-west-2
   bucket:
     value: my-assets-bucket
-  awsRegion: us-west-2
   objects:
     - key: images/favicon.ico
       contentBase64: AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQ...
@@ -117,9 +117,9 @@ kind: AwsS3ObjectSet
 metadata:
   name: mixed-access-objects
 spec:
+  region: us-east-1
   bucket:
     value: my-mixed-bucket
-  awsRegion: us-east-1
   tags:
     team: platform
   objects:

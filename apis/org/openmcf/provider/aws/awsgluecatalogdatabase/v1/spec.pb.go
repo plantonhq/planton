@@ -7,6 +7,7 @@
 package awsgluecatalogdatabasev1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -58,6 +59,9 @@ const (
 //   - parameters: Generic key-value metadata map. Rarely set by users directly.
 type AwsGlueCatalogDatabaseSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Human-readable description of the database. Helps teams understand the
 	// purpose and contents of this catalog namespace.
 	//
@@ -66,7 +70,7 @@ type AwsGlueCatalogDatabaseSpec struct {
 	// Examples:
 	// - "Sales analytics data lake — raw and curated tables from the sales pipeline"
 	// - "Clickstream events from web and mobile applications"
-	Description string `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	// Default S3 URI for tables created in this database. When a Glue Crawler or
 	// CREATE TABLE statement does not specify a location, this path is used as the
 	// base directory.
@@ -79,7 +83,7 @@ type AwsGlueCatalogDatabaseSpec struct {
 	//
 	// This is a plain string (not StringValueOrRef) because it is an S3 URI with
 	// a user-defined path prefix, not a direct resource identifier.
-	LocationUri   string `protobuf:"bytes,2,opt,name=location_uri,json=locationUri,proto3" json:"location_uri,omitempty"`
+	LocationUri   string `protobuf:"bytes,3,opt,name=location_uri,json=locationUri,proto3" json:"location_uri,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -114,6 +118,13 @@ func (*AwsGlueCatalogDatabaseSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsgluecatalogdatabase_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
+func (x *AwsGlueCatalogDatabaseSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
 func (x *AwsGlueCatalogDatabaseSpec) GetDescription() string {
 	if x != nil {
 		return x.Description
@@ -132,10 +143,11 @@ var File_org_openmcf_provider_aws_awsgluecatalogdatabase_v1_spec_proto protorefl
 
 const file_org_openmcf_provider_aws_awsgluecatalogdatabase_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"=org/openmcf/provider/aws/awsgluecatalogdatabase/v1/spec.proto\x122org.openmcf.provider.aws.awsgluecatalogdatabase.v1\"a\n" +
-	"\x1aAwsGlueCatalogDatabaseSpec\x12 \n" +
-	"\vdescription\x18\x01 \x01(\tR\vdescription\x12!\n" +
-	"\flocation_uri\x18\x02 \x01(\tR\vlocationUriB\xa1\x03\n" +
+	"=org/openmcf/provider/aws/awsgluecatalogdatabase/v1/spec.proto\x122org.openmcf.provider.aws.awsgluecatalogdatabase.v1\x1a\x1bbuf/validate/validate.proto\"\x82\x01\n" +
+	"\x1aAwsGlueCatalogDatabaseSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12 \n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\x12!\n" +
+	"\flocation_uri\x18\x03 \x01(\tR\vlocationUriB\xa1\x03\n" +
 	"6com.org.openmcf.provider.aws.awsgluecatalogdatabase.v1B\tSpecProtoP\x01Zmgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsgluecatalogdatabase/v1;awsgluecatalogdatabasev1\xa2\x02\x05OOPAA\xaa\x022Org.Openmcf.Provider.Aws.Awsgluecatalogdatabase.V1\xca\x022Org\\Openmcf\\Provider\\Aws\\Awsgluecatalogdatabase\\V1\xe2\x02>Org\\Openmcf\\Provider\\Aws\\Awsgluecatalogdatabase\\V1\\GPBMetadata\xea\x027Org::Openmcf::Provider::Aws::Awsgluecatalogdatabase::V1b\x06proto3"
 
 var (

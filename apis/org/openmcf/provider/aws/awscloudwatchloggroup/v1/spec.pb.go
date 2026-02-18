@@ -47,6 +47,9 @@ const (
 // Credentials, region, and deployment workflow live outside this spec in stack inputs.
 type AwsCloudwatchLogGroupSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Number of days to retain log events. After this period, log events are
 	// automatically deleted. Set to 0 (the default) to retain log events
 	// indefinitely — they will never expire.
@@ -59,7 +62,7 @@ type AwsCloudwatchLogGroupSpec struct {
 	//
 	// Recommended: Set an explicit retention for cost control. Indefinite retention
 	// (0) accumulates storage costs over time.
-	RetentionInDays int32 `protobuf:"varint,1,opt,name=retention_in_days,json=retentionInDays,proto3" json:"retention_in_days,omitempty"`
+	RetentionInDays int32 `protobuf:"varint,2,opt,name=retention_in_days,json=retentionInDays,proto3" json:"retention_in_days,omitempty"`
 	// ARN of the KMS key to use for encrypting log data at rest. When omitted,
 	// CloudWatch Logs uses its default server-side encryption (SSE-CWL).
 	//
@@ -70,7 +73,7 @@ type AwsCloudwatchLogGroupSpec struct {
 	// - Compliance with regulations requiring customer-controlled encryption keys
 	//
 	// The KMS key must be in the same region as the log group.
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// The class of the log group, which determines pricing, feature availability,
 	// and data durability characteristics.
 	//
@@ -87,12 +90,12 @@ type AwsCloudwatchLogGroupSpec struct {
 	//     and retention_in_days must not be set.
 	//
 	// This field is ForceNew: changing it requires replacing the log group.
-	LogGroupClass string `protobuf:"bytes,3,opt,name=log_group_class,json=logGroupClass,proto3" json:"log_group_class,omitempty"`
+	LogGroupClass string `protobuf:"bytes,4,opt,name=log_group_class,json=logGroupClass,proto3" json:"log_group_class,omitempty"`
 	// When true, the log group is protected from deletion. Any attempt to delete
 	// the log group (including via IaC destroy) will fail until this flag is set
 	// to false. Useful for protecting production log groups from accidental
 	// deletion.
-	DeletionProtectionEnabled bool `protobuf:"varint,4,opt,name=deletion_protection_enabled,json=deletionProtectionEnabled,proto3" json:"deletion_protection_enabled,omitempty"`
+	DeletionProtectionEnabled bool `protobuf:"varint,5,opt,name=deletion_protection_enabled,json=deletionProtectionEnabled,proto3" json:"deletion_protection_enabled,omitempty"`
 	unknownFields             protoimpl.UnknownFields
 	sizeCache                 protoimpl.SizeCache
 }
@@ -127,6 +130,13 @@ func (*AwsCloudwatchLogGroupSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awscloudwatchloggroup_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
+func (x *AwsCloudwatchLogGroupSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
 func (x *AwsCloudwatchLogGroupSpec) GetRetentionInDays() int32 {
 	if x != nil {
 		return x.RetentionInDays
@@ -159,13 +169,14 @@ var File_org_openmcf_provider_aws_awscloudwatchloggroup_v1_spec_proto protorefle
 
 const file_org_openmcf_provider_aws_awscloudwatchloggroup_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"<org/openmcf/provider/aws/awscloudwatchloggroup/v1/spec.proto\x121org.openmcf.provider.aws.awscloudwatchloggroup.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xab\b\n" +
-	"\x19AwsCloudwatchLogGroupSpec\x122\n" +
-	"\x11retention_in_days\x18\x01 \x01(\x05B\x06\x92\xa6\x1d\x0230R\x0fretentionInDays\x12q\n" +
+	"<org/openmcf/provider/aws/awscloudwatchloggroup/v1/spec.proto\x121org.openmcf.provider.aws.awscloudwatchloggroup.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xcc\b\n" +
+	"\x19AwsCloudwatchLogGroupSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x122\n" +
+	"\x11retention_in_days\x18\x02 \x01(\x05B\x06\x92\xa6\x1d\x0230R\x0fretentionInDays\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12&\n" +
-	"\x0flog_group_class\x18\x03 \x01(\tR\rlogGroupClass\x12>\n" +
-	"\x1bdeletion_protection_enabled\x18\x04 \x01(\bR\x19deletionProtectionEnabled:\xfe\x05\xbaH\xfa\x05\x1a\xb8\x02\n" +
+	"kms_key_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12&\n" +
+	"\x0flog_group_class\x18\x04 \x01(\tR\rlogGroupClass\x12>\n" +
+	"\x1bdeletion_protection_enabled\x18\x05 \x01(\bR\x19deletionProtectionEnabled:\xfe\x05\xbaH\xfa\x05\x1a\xb8\x02\n" +
 	"\x1eretention_in_days_valid_values\x12\x8c\x01retention_in_days must be one of: 0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1096, 1827, 2192, 2557, 2922, 3288, 3653\x1a\x86\x01this.retention_in_days in [0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1096, 1827, 2192, 2557, 2922, 3288, 3653]\x1a\xd4\x01\n" +
 	"\x1clog_group_class_valid_values\x12Olog_group_class must be 'STANDARD', 'INFREQUENT_ACCESS', or 'DELIVERY' when set\x1acthis.log_group_class == '' || this.log_group_class in ['STANDARD', 'INFREQUENT_ACCESS', 'DELIVERY']\x1a\xe5\x01\n" +
 	"\x1bdelivery_class_no_retention\x12\x82\x01retention_in_days must not be set (must be 0) when log_group_class is 'DELIVERY' — AWS manages retention for Delivery log groups\x1aAthis.log_group_class != 'DELIVERY' || this.retention_in_days == 0B\x9a\x03\n" +

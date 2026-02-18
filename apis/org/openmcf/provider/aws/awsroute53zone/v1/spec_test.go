@@ -28,6 +28,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
+						Region: "us-east-1",
 						// Public zone by default (is_private=false)
 						// No records required
 					},
@@ -46,6 +47,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
+						Region: "us-east-1",
 						Records: []*Route53DnsRecord{
 							{
 								RecordType: dnsrecordtype.DnsRecordType_A,
@@ -68,6 +70,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
+						Region: "us-east-1",
 						Records: []*Route53DnsRecord{
 							{
 								RecordType: dnsrecordtype.DnsRecordType_CNAME,
@@ -90,6 +93,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
+						Region: "us-west-2",
 						Records: []*Route53DnsRecord{
 							{
 								RecordType: dnsrecordtype.DnsRecordType_MX,
@@ -112,6 +116,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
+						Region: "us-east-1",
 						Records: []*Route53DnsRecord{
 							{
 								RecordType: dnsrecordtype.DnsRecordType_TXT,
@@ -136,6 +141,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
+						Region: "us-east-1",
 						Records: []*Route53DnsRecord{
 							{
 								RecordType: dnsrecordtype.DnsRecordType_A,
@@ -161,6 +167,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
+						Region: "us-east-1",
 						Records: []*Route53DnsRecord{
 							{
 								RecordType: dnsrecordtype.DnsRecordType_A,
@@ -188,6 +195,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
+						Region: "us-east-1",
 						Records: []*Route53DnsRecord{
 							{
 								RecordType:    dnsrecordtype.DnsRecordType_A,
@@ -232,6 +240,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
+						Region: "us-east-1",
 						Records: []*Route53DnsRecord{
 							{
 								RecordType:    dnsrecordtype.DnsRecordType_A,
@@ -262,6 +271,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
+						Region: "us-east-1",
 						Records: []*Route53DnsRecord{
 							{
 								RecordType:    dnsrecordtype.DnsRecordType_A,
@@ -307,6 +317,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
+						Region: "us-east-1",
 						Records: []*Route53DnsRecord{
 							{
 								RecordType:    dnsrecordtype.DnsRecordType_A,
@@ -339,6 +350,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "internal.example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
+						Region: "us-east-1",
 						IsPrivate: true,
 						VpcAssociations: []*Route53VpcAssociation{
 							{
@@ -370,6 +382,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "secure.example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
+						Region: "us-east-1",
 						EnableDnssec: true,
 					},
 				}
@@ -385,6 +398,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "monitored.example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
+						Region: "us-east-1",
 						EnableQueryLogging: true,
 						QueryLogGroupName:  "/aws/route53/monitored.example.com",
 					},
@@ -405,6 +419,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
+						Region: "us-east-1",
 						Records: []*Route53DnsRecord{
 							{
 								RecordType: dnsrecordtype.DnsRecordType_A,
@@ -428,6 +443,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
+						Region: "us-east-1",
 						Records: []*Route53DnsRecord{
 							{
 								RecordType:    dnsrecordtype.DnsRecordType_A,

@@ -35,6 +35,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsSagemakerDomain.my-domain
 spec:
+  region: us-east-1
   authMode: IAM
   vpcId: vpc-0123456789abcdef0
   subnetIds:
@@ -58,6 +59,7 @@ This creates a SageMaker Domain with IAM authentication, public internet access 
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | The AWS region where the resource will be created. | Required |
 | `authMode` | `string` | Authentication mode for the domain. ForceNew. | Must be `IAM` or `SSO` |
 | `vpcId` | `StringValueOrRef` | VPC where the domain is created. ForceNew. Can reference AwsVpc via `valueFrom`. | Required |
 | `subnetIds` | `StringValueOrRef[]` | Subnets for SageMaker network interfaces. ForceNew. Can reference AwsVpc via `valueFrom`. | Minimum 1 item |
@@ -114,6 +116,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsSagemakerDomain.ml-team
 spec:
+  region: us-east-1
   authMode: IAM
   vpcId: vpc-0123456789abcdef0
   subnetIds:
@@ -145,6 +148,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsSagemakerDomain.enterprise-ml
 spec:
+  region: us-east-1
   authMode: SSO
   vpcId: vpc-0123456789abcdef0
   subnetIds:
@@ -184,6 +188,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsSagemakerDomain.data-science
 spec:
+  region: us-east-1
   authMode: SSO
   vpcId: vpc-0123456789abcdef0
   subnetIds:
@@ -242,6 +247,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsSagemakerDomain.ref-domain
 spec:
+  region: us-east-1
   authMode: IAM
   vpcId:
     valueFrom:

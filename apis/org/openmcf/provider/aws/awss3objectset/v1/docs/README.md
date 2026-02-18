@@ -247,7 +247,7 @@ This pattern mirrors how `KubernetesDeployment` references `KubernetesNamespace`
 | Field | Rationale |
 |-------|-----------|
 | `bucket` | Required target. Foreign key enables component wiring. |
-| `aws_region` | Required for provider configuration. |
+| `region` | Required for provider configuration. |
 | `objects[].key` | Required S3 object path. |
 | `objects[].content` | Inline text for config files, HTML, JSON, YAML. |
 | `objects[].content_base64` | Binary support for images, compiled assets. |

@@ -8,6 +8,8 @@ variable "metadata" {
 variable "spec" {
   description = "AWS Route53 DNS Record specification"
   type = object({
+    # The AWS region where the resource will be created.
+    region = string
     # zone_id as StringValueOrRef - for Terraform we accept the resolved value
     # The OpenMCF CLI resolves value_from references before passing to Terraform
     zone_id = object({

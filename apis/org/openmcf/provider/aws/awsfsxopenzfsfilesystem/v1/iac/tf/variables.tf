@@ -28,6 +28,11 @@ variable "session_token" {
   sensitive   = true
 }
 
+variable "spec" {
+  description = "AwsFsxOpenzfsFileSystemSpec — desired configuration passed from the manifest."
+  type        = any
+}
+
 # ---------------------------------------------------------------------------
 # Resource Metadata
 # ---------------------------------------------------------------------------

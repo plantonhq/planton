@@ -22,6 +22,7 @@ kind: AwsClientVpn
 metadata:
   name: minimal-vpn
 spec:
+  region: us-east-1
   vpcId:
     value: vpc-12345678
   subnets:
@@ -51,6 +52,7 @@ kind: AwsClientVpn
 metadata:
   name: split-tunnel-vpn
 spec:
+  region: us-east-1
   description: Remote developer access to production VPC
   vpcId:
     value: vpc-prod123
@@ -90,6 +92,7 @@ kind: AwsClientVpn
 metadata:
   name: full-tunnel-vpn
 spec:
+  region: us-east-1
   description: Secure full-tunnel VPN for compliance requirements
   vpcId:
     value: vpc-secure123
@@ -127,6 +130,7 @@ kind: AwsClientVpn
 metadata:
   name: udp-vpn
 spec:
+  region: us-east-1
   description: Low-latency VPN for real-time applications
   vpcId:
     value: vpc-apps123
@@ -159,6 +163,7 @@ kind: AwsClientVpn
 metadata:
   name: ha-vpn
 spec:
+  region: us-east-1
   description: High-availability VPN across three availability zones
   vpcId:
     value: vpc-ha123
@@ -198,6 +203,7 @@ kind: AwsClientVpn
 metadata:
   name: vpn-with-refs
 spec:
+  region: us-east-1
   description: VPN with dynamic resource references
   vpcId:
     valueFrom:

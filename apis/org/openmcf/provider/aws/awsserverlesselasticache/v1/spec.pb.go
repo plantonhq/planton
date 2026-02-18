@@ -51,47 +51,50 @@ const (
 //     stack inputs.
 type AwsServerlessElasticacheSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Cache engine to use. Values: "redis", "valkey", "memcached".
 	// Switching between redis and valkey is an in-place update. Switching
 	// to/from memcached forces recreation.
-	Engine string `protobuf:"bytes,1,opt,name=engine,proto3" json:"engine,omitempty"`
+	Engine string `protobuf:"bytes,2,opt,name=engine,proto3" json:"engine,omitempty"`
 	// Major engine version. Examples: "7", "8" for Redis/Valkey; "1.6" for
 	// Memcached. Leave empty to use the provider default for the chosen engine.
-	MajorEngineVersion string `protobuf:"bytes,2,opt,name=major_engine_version,json=majorEngineVersion,proto3" json:"major_engine_version,omitempty"`
+	MajorEngineVersion string `protobuf:"bytes,3,opt,name=major_engine_version,json=majorEngineVersion,proto3" json:"major_engine_version,omitempty"`
 	// Human-readable description of the serverless cache.
-	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	// Maximum data storage in GB. AWS auto-scales storage up to this limit.
 	// Range: 1–5000. Leave as 0 to use the AWS default for the engine.
-	DataStorageMaxGb int32 `protobuf:"varint,4,opt,name=data_storage_max_gb,json=dataStorageMaxGb,proto3" json:"data_storage_max_gb,omitempty"`
+	DataStorageMaxGb int32 `protobuf:"varint,5,opt,name=data_storage_max_gb,json=dataStorageMaxGb,proto3" json:"data_storage_max_gb,omitempty"`
 	// Minimum data storage in GB. AWS guarantees at least this capacity is
 	// always provisioned. Range: 1–5000. Leave as 0 to use the AWS default.
-	DataStorageMinGb int32 `protobuf:"varint,5,opt,name=data_storage_min_gb,json=dataStorageMinGb,proto3" json:"data_storage_min_gb,omitempty"`
+	DataStorageMinGb int32 `protobuf:"varint,6,opt,name=data_storage_min_gb,json=dataStorageMinGb,proto3" json:"data_storage_min_gb,omitempty"`
 	// Maximum ElastiCache Processing Units per second. AWS auto-scales compute
 	// up to this limit. Range: 1000–15000000. Leave as 0 for AWS default.
-	EcpuMax int32 `protobuf:"varint,6,opt,name=ecpu_max,json=ecpuMax,proto3" json:"ecpu_max,omitempty"`
+	EcpuMax int32 `protobuf:"varint,7,opt,name=ecpu_max,json=ecpuMax,proto3" json:"ecpu_max,omitempty"`
 	// Minimum ElastiCache Processing Units per second. AWS guarantees at least
 	// this compute capacity. Range: 1000–15000000. Leave as 0 for AWS default.
-	EcpuMin int32 `protobuf:"varint,7,opt,name=ecpu_min,json=ecpuMin,proto3" json:"ecpu_min,omitempty"`
+	EcpuMin int32 `protobuf:"varint,8,opt,name=ecpu_min,json=ecpuMin,proto3" json:"ecpu_min,omitempty"`
 	// Subnet IDs for the serverless cache's VPC endpoint. The cache creates
 	// VPC endpoints in these subnets. ForceNew — changing this destroys and
 	// recreates the cache.
-	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,8,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
+	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,9,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// VPC security groups to attach to the serverless cache endpoint.
 	// Controls network-level access.
-	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,9,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
+	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,10,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
 	// Customer-managed KMS key ARN for at-rest encryption. When set, ElastiCache
 	// Serverless uses this key instead of the AWS-managed key. ForceNew —
 	// changing this destroys and recreates the cache.
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,10,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,11,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// Daily automatic snapshot time in UTC. Format: "HH:mm" (e.g., "05:00").
 	// Only valid for Redis/Valkey engines. Memcached has no persistence.
-	DailySnapshotTime string `protobuf:"bytes,11,opt,name=daily_snapshot_time,json=dailySnapshotTime,proto3" json:"daily_snapshot_time,omitempty"`
+	DailySnapshotTime string `protobuf:"bytes,12,opt,name=daily_snapshot_time,json=dailySnapshotTime,proto3" json:"daily_snapshot_time,omitempty"`
 	// Number of days to retain automatic snapshots. Range: 0–35. 0 disables
 	// snapshots. Only valid for Redis/Valkey engines.
-	SnapshotRetentionLimit int32 `protobuf:"varint,12,opt,name=snapshot_retention_limit,json=snapshotRetentionLimit,proto3" json:"snapshot_retention_limit,omitempty"`
+	SnapshotRetentionLimit int32 `protobuf:"varint,13,opt,name=snapshot_retention_limit,json=snapshotRetentionLimit,proto3" json:"snapshot_retention_limit,omitempty"`
 	// Redis ACL user group ID for fine-grained access control. Only valid for
 	// Redis/Valkey engines. Memcached has no authentication mechanism.
-	UserGroupId   string `protobuf:"bytes,13,opt,name=user_group_id,json=userGroupId,proto3" json:"user_group_id,omitempty"`
+	UserGroupId   string `protobuf:"bytes,14,opt,name=user_group_id,json=userGroupId,proto3" json:"user_group_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -124,6 +127,13 @@ func (x *AwsServerlessElasticacheSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsServerlessElasticacheSpec.ProtoReflect.Descriptor instead.
 func (*AwsServerlessElasticacheSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsserverlesselasticache_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsServerlessElasticacheSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsServerlessElasticacheSpec) GetEngine() string {
@@ -221,26 +231,27 @@ var File_org_openmcf_provider_aws_awsserverlesselasticache_v1_spec_proto protore
 
 const file_org_openmcf_provider_aws_awsserverlesselasticache_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"?org/openmcf/provider/aws/awsserverlesselasticache/v1/spec.proto\x124org.openmcf.provider.aws.awsserverlesselasticache.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xba\x12\n" +
-	"\x1cAwsServerlessElasticacheSpec\x12\x1e\n" +
-	"\x06engine\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06engine\x120\n" +
-	"\x14major_engine_version\x18\x02 \x01(\tR\x12majorEngineVersion\x12 \n" +
-	"\vdescription\x18\x03 \x01(\tR\vdescription\x129\n" +
-	"\x13data_storage_max_gb\x18\x04 \x01(\x05B\n" +
+	"?org/openmcf/provider/aws/awsserverlesselasticache/v1/spec.proto\x124org.openmcf.provider.aws.awsserverlesselasticache.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xdb\x12\n" +
+	"\x1cAwsServerlessElasticacheSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x1e\n" +
+	"\x06engine\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06engine\x120\n" +
+	"\x14major_engine_version\x18\x03 \x01(\tR\x12majorEngineVersion\x12 \n" +
+	"\vdescription\x18\x04 \x01(\tR\vdescription\x129\n" +
+	"\x13data_storage_max_gb\x18\x05 \x01(\x05B\n" +
 	"\xbaH\a\x1a\x05\x18\x88'(\x00R\x10dataStorageMaxGb\x129\n" +
-	"\x13data_storage_min_gb\x18\x05 \x01(\x05B\n" +
+	"\x13data_storage_min_gb\x18\x06 \x01(\x05B\n" +
 	"\xbaH\a\x1a\x05\x18\x88'(\x00R\x10dataStorageMinGb\x12'\n" +
-	"\becpu_max\x18\x06 \x01(\x05B\f\xbaH\t\x1a\a\x18\xc0Ó\a(\x00R\aecpuMax\x12'\n" +
-	"\becpu_min\x18\a \x01(\x05B\f\xbaH\t\x1a\a\x18\xc0Ó\a(\x00R\aecpuMin\x12\x81\x01\n" +
+	"\becpu_max\x18\a \x01(\x05B\f\xbaH\t\x1a\a\x18\xc0Ó\a(\x00R\aecpuMax\x12'\n" +
+	"\becpu_min\x18\b \x01(\x05B\f\xbaH\t\x1a\a\x18\xc0Ó\a(\x00R\aecpuMin\x12\x81\x01\n" +
 	"\n" +
-	"subnet_ids\x18\b \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
-	"\x12security_group_ids\x18\t \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12q\n" +
+	"subnet_ids\x18\t \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
+	"\x12security_group_ids\x18\n" +
+	" \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\n" +
-	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12.\n" +
-	"\x13daily_snapshot_time\x18\v \x01(\tR\x11dailySnapshotTime\x12C\n" +
-	"\x18snapshot_retention_limit\x18\f \x01(\x05B\t\xbaH\x06\x1a\x04\x18#(\x00R\x16snapshotRetentionLimit\x12\"\n" +
-	"\ruser_group_id\x18\r \x01(\tR\vuserGroupId:\xbf\v\xbaH\xbb\v\x1ax\n" +
+	"kms_key_id\x18\v \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12.\n" +
+	"\x13daily_snapshot_time\x18\f \x01(\tR\x11dailySnapshotTime\x12C\n" +
+	"\x18snapshot_retention_limit\x18\r \x01(\x05B\t\xbaH\x06\x1a\x04\x18#(\x00R\x16snapshotRetentionLimit\x12\"\n" +
+	"\ruser_group_id\x18\x0e \x01(\tR\vuserGroupId:\xbf\v\xbaH\xbb\v\x1ax\n" +
 	"\x13engine_valid_values\x120engine must be 'redis', 'valkey', or 'memcached'\x1a/this.engine in ['redis', 'valkey', 'memcached']\x1a\xd9\x01\n" +
 	"\x14data_storage_min_max\x12Idata_storage_min_gb must not exceed data_storage_max_gb when both are set\x1avthis.data_storage_min_gb == 0 || this.data_storage_max_gb == 0 || this.data_storage_min_gb <= this.data_storage_max_gb\x1a\x8f\x01\n" +
 	"\fecpu_min_max\x123ecpu_min must not exceed ecpu_max when both are set\x1aJthis.ecpu_min == 0 || this.ecpu_max == 0 || this.ecpu_min <= this.ecpu_max\x1a\xa1\x01\n" +

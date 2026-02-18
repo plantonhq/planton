@@ -3,6 +3,7 @@ kind: AwsDocumentDb
 metadata:
   name: awsdocumentdb-demo
 spec:
+  region: us-west-2
   # Provide either 2+ subnets or a dbSubnetGroup
   subnets:
     - subnet-aaaa

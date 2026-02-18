@@ -178,6 +178,10 @@ message AwsCognitoIdpSamlConfig {
 // Credentials, region, and deployment workflow live outside this spec in
 // stack inputs.
 message AwsCognitoIdentityProviderSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Parent reference
   // ---------------------------------------------------------------------------
@@ -186,7 +190,7 @@ message AwsCognitoIdentityProviderSpec {
   // Format: "{region}_{poolId}" (e.g., "us-east-1_Ab1Cd2EfG").
   //
   // This field is ForceNew: changing it requires replacing the identity provider.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef user_pool_id = 1 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef user_pool_id = 2 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsCognitoUserPool,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.user_pool_id"
@@ -203,7 +207,7 @@ message AwsCognitoIdentityProviderSpec {
   // Examples: "Google", "CorpOkta", "AzureAD-SAML"
   //
   // 1-32 UTF-8 characters. This field is ForceNew.
-  string provider_name = 2 [
+  string provider_name = 3 [
     (buf.validate.field).string.min_len = 1,
     (buf.validate.field).string.max_len = 32
   ];
@@ -213,7 +217,7 @@ message AwsCognitoIdentityProviderSpec {
   // oidc, or saml).
   //
   // This field is ForceNew: changing it requires replacing the identity provider.
-  AwsCognitoIdentityProviderType provider_type = 3 [(buf.validate.field).enum = {
+  AwsCognitoIdentityProviderType provider_type = 4 [(buf.validate.field).enum = {
     defined_only: true
     not_in: [0]
   }];
@@ -224,22 +228,22 @@ message AwsCognitoIdentityProviderSpec {
 
   oneof provider_config {
     // Google OAuth 2.0 configuration. Set when provider_type is Google.
-    AwsCognitoIdpGoogleConfig google = 4;
+    AwsCognitoIdpGoogleConfig google = 5;
 
     // Facebook Login configuration. Set when provider_type is Facebook.
-    AwsCognitoIdpFacebookConfig facebook = 5;
+    AwsCognitoIdpFacebookConfig facebook = 6;
 
     // Login with Amazon configuration. Set when provider_type is LoginWithAmazon.
-    AwsCognitoIdpLoginWithAmazonConfig login_with_amazon = 6;
+    AwsCognitoIdpLoginWithAmazonConfig login_with_amazon = 7;
 
     // Sign in with Apple configuration. Set when provider_type is SignInWithApple.
-    AwsCognitoIdpSignInWithAppleConfig sign_in_with_apple = 7;
+    AwsCognitoIdpSignInWithAppleConfig sign_in_with_apple = 8;
 
     // Generic OIDC configuration. Set when provider_type is OIDC.
-    AwsCognitoIdpOidcConfig oidc = 8;
+    AwsCognitoIdpOidcConfig oidc = 9;
 
     // SAML 2.0 configuration. Set when provider_type is SAML.
-    AwsCognitoIdpSamlConfig saml = 9;
+    AwsCognitoIdpSamlConfig saml = 10;
   }
 
   // ---------------------------------------------------------------------------
@@ -252,14 +256,14 @@ message AwsCognitoIdentityProviderSpec {
   // (e.g., "sub", "email").
   //
   // When omitted, AWS applies default mappings based on the provider type.
-  map<string, string> attribute_mapping = 10;
+  map<string, string> attribute_mapping = 11;
 
   // Alternative identifiers for this identity provider. These can be used
   // in the login endpoint's `idp_identifier` parameter to redirect to this
   // provider without exposing the provider_name.
   //
   // Maximum 50 identifiers, each 1-40 characters.
-  repeated string idp_identifiers = 11 [(buf.validate.field).repeated.max_items = 50];
+  repeated string idp_identifiers = 12 [(buf.validate.field).repeated.max_items = 50];
 
   // ---------------------------------------------------------------------------
   // CEL validations

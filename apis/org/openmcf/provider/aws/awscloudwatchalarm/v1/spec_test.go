@@ -30,6 +30,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "cpu-high",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanOrEqualToThreshold",
 				EvaluationPeriods:  1,
 				Threshold:          80.0,
@@ -51,6 +52,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "cpu-gt",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  1,
 				Threshold:          90.0,
@@ -72,6 +74,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "free-mem-low",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "LessThanThreshold",
 				EvaluationPeriods:  3,
 				Threshold:          100000000,
@@ -93,6 +96,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "disk-space-low",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "LessThanOrEqualToThreshold",
 				EvaluationPeriods:  2,
 				Threshold:          10.0,
@@ -114,6 +118,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "latency-p95",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  3,
 				Threshold:          500.0,
@@ -135,6 +140,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "ec2-cpu-instance",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanOrEqualToThreshold",
 				EvaluationPeriods:  2,
 				Threshold:          85.0,
@@ -159,6 +165,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "error-rate-alarm",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  3,
 				Threshold:          5.0,
@@ -204,6 +211,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "cpu-anomaly",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "LessThanLowerOrGreaterThanUpperThreshold",
 				EvaluationPeriods:  3,
 				ThresholdMetricId:  "ad1",
@@ -244,6 +252,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "full-actions-alarm",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:                  "us-west-2",
 				ComparisonOperator:      "GreaterThanOrEqualToThreshold",
 				EvaluationPeriods:       1,
 				Threshold:               80.0,
@@ -268,6 +277,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "ref-actions-alarm",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanOrEqualToThreshold",
 				EvaluationPeriods:  1,
 				Threshold:          80.0,
@@ -300,6 +310,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "m-of-n-alarm",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanOrEqualToThreshold",
 				EvaluationPeriods:  5,
 				DatapointsToAlarm:  3,
@@ -322,6 +333,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "heartbeat-alarm",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "LessThanThreshold",
 				EvaluationPeriods:  1,
 				Threshold:          1.0,
@@ -344,6 +356,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "intermittent-errors",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  3,
 				Threshold:          10.0,
@@ -366,6 +379,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "maintenance-alarm",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanOrEqualToThreshold",
 				EvaluationPeriods:  1,
 				Threshold:          80.0,
@@ -388,6 +402,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "high-res-alarm",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  6,
 				Threshold:          95.0,
@@ -409,6 +424,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "percentile-ignore",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:                            "us-west-2",
 				ComparisonOperator:                "GreaterThanThreshold",
 				EvaluationPeriods:                 3,
 				Threshold:                         500.0,
@@ -440,6 +456,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "prod-cpu-alarm",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanOrEqualToThreshold",
 				EvaluationPeriods:  5,
 				DatapointsToAlarm:  3,
@@ -476,6 +493,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "bad-operator",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "EqualTo",
 				EvaluationPeriods:  1,
 				MetricName:         "CPUUtilization",
@@ -500,6 +518,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "bad-eval-periods",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  0,
 				MetricName:         "CPUUtilization",
@@ -524,6 +543,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "bad-stat",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  1,
 				MetricName:         "CPUUtilization",
@@ -548,6 +568,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "bad-missing-data",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  1,
 				MetricName:         "CPUUtilization",
@@ -573,6 +594,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "bad-low-sample",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:                            "us-west-2",
 				ComparisonOperator:                "GreaterThanThreshold",
 				EvaluationPeriods:                 1,
 				MetricName:                        "TargetResponseTime",
@@ -598,6 +620,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "both-stats",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  1,
 				MetricName:         "CPUUtilization",
@@ -623,6 +646,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "both-modes",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  1,
 				MetricName:         "CPUUtilization",
@@ -659,6 +683,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "no-metric-source",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  1,
 			},
@@ -679,6 +704,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "no-namespace",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  1,
 				MetricName:         "CPUUtilization",
@@ -702,6 +728,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "no-period",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  1,
 				MetricName:         "CPUUtilization",
@@ -725,6 +752,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "no-statistic",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  1,
 				MetricName:         "CPUUtilization",
@@ -748,6 +776,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "bad-period-45",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  1,
 				MetricName:         "CPUUtilization",
@@ -768,6 +797,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "bad-period-100",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  1,
 				MetricName:         "CPUUtilization",
@@ -792,6 +822,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "bad-datapoints",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  3,
 				DatapointsToAlarm:  5,
@@ -830,6 +861,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "too-many-queries",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  1,
 				MetricQueries:      queries,
@@ -859,6 +891,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "too-many-alarm-actions",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  1,
 				MetricName:         "CPUUtilization",
@@ -892,6 +925,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "too-many-ok-actions",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  1,
 				MetricName:         "CPUUtilization",
@@ -925,6 +959,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "too-many-insuf-actions",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:                  "us-west-2",
 				ComparisonOperator:      "GreaterThanThreshold",
 				EvaluationPeriods:       1,
 				MetricName:              "CPUUtilization",
@@ -950,6 +985,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "bad-version",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  1,
 				MetricName:         "CPUUtilization",
@@ -970,6 +1006,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 				Name: "bad-kind",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  1,
 				MetricName:         "CPUUtilization",
@@ -987,6 +1024,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 			ApiVersion: "aws.openmcf.org/v1",
 			Kind:       "AwsCloudwatchAlarm",
 			Spec: &AwsCloudwatchAlarmSpec{
+				Region:             "us-west-2",
 				ComparisonOperator: "GreaterThanThreshold",
 				EvaluationPeriods:  1,
 				MetricName:         "CPUUtilization",

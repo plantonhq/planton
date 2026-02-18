@@ -27,6 +27,7 @@ var _ = ginkgo.Describe("AwsSecretsManagerSpec Custom Validation Tests", func() 
 						Name: "test-secrets-manager",
 					},
 					Spec: &AwsSecretsManagerSpec{
+						Region:      "us-west-2",
 						SecretNames: []string{"test-secret"},
 					},
 				}

@@ -27,13 +27,17 @@ func Resources(ctx *pulumi.Context, stackInput *awsroute53zonev1.AwsRoute53ZoneS
 	if awsProviderConfig == nil {
 		provider, err = aws.NewProvider(ctx,
 			"native-provider",
-			&aws.ProviderArgs{})
+			&aws.ProviderArgs{
+				Region: pulumi.String(locals.AwsRoute53Zone.Spec.Region),
+			})
 		if err != nil {
 			return errors.Wrap(err, "failed to create default AWS provider")
 		}
 		classicProvider, err = awsclassic.NewProvider(ctx,
 			"classic-provider",
-			&awsclassic.ProviderArgs{})
+			&awsclassic.ProviderArgs{
+				Region: pulumi.String(locals.AwsRoute53Zone.Spec.Region),
+			})
 		if err != nil {
 			return errors.Wrap(err, "failed to create default AWS classic provider")
 		}
@@ -43,7 +47,7 @@ func Resources(ctx *pulumi.Context, stackInput *awsroute53zonev1.AwsRoute53ZoneS
 			&aws.ProviderArgs{
 				AccessKey: pulumi.String(awsProviderConfig.AccessKeyId),
 				SecretKey: pulumi.String(awsProviderConfig.SecretAccessKey),
-				Region:    pulumi.String(awsProviderConfig.GetRegion()),
+				Region:    pulumi.String(locals.AwsRoute53Zone.Spec.Region),
 			})
 		if err != nil {
 			return errors.Wrap(err, "failed to create AWS provider with custom credentials")
@@ -53,7 +57,7 @@ func Resources(ctx *pulumi.Context, stackInput *awsroute53zonev1.AwsRoute53ZoneS
 			&awsclassic.ProviderArgs{
 				AccessKey: pulumi.String(awsProviderConfig.AccessKeyId),
 				SecretKey: pulumi.String(awsProviderConfig.SecretAccessKey),
-				Region:    pulumi.String(awsProviderConfig.GetRegion()),
+				Region:    pulumi.String(locals.AwsRoute53Zone.Spec.Region),
 				Token:     pulumi.StringPtr(awsProviderConfig.SessionToken),
 			})
 		if err != nil {
@@ -129,8 +133,8 @@ func Resources(ctx *pulumi.Context, stackInput *awsroute53zonev1.AwsRoute53ZoneS
 		_, err = awsclassicroute53.NewQueryLog(ctx,
 			fmt.Sprintf("%s-query-log", managedZoneName),
 			&awsclassicroute53.QueryLogArgs{
-				CloudwatchLogGroupArn: pulumi.Sprintf("arn:aws:logs:%s:%s:log-group:%s",
-					awsProviderConfig.GetRegion(),
+			CloudwatchLogGroupArn: pulumi.Sprintf("arn:aws:logs:%s:%s:log-group:%s",
+				locals.AwsRoute53Zone.Spec.Region,
 					"AWS::AccountId", // Pulumi will resolve this
 					awsRoute53Zone.Spec.QueryLogGroupName),
 				ZoneId: createdHostedZone.ID(),

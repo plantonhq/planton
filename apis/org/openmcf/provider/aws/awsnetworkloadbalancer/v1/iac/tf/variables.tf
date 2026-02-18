@@ -11,6 +11,9 @@ variable "metadata" {
 variable "spec" {
   description = "AwsNetworkLoadBalancerSpec configuration"
   type = object({
+    # The AWS region where the Network Load Balancer will be created.
+    region = string
+
     subnet_mappings = list(object({
       subnet_id            = string
       allocation_id        = optional(string)

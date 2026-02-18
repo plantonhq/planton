@@ -28,6 +28,7 @@ metadata:
   version:
     message: "Initial AWS Security Group"
 spec:
+  region: us-west-2
   vpcId: "vpc-12345abcde"
   description: "Basic security group allowing inbound HTTP"
   ingress:
@@ -63,6 +64,7 @@ metadata:
   version:
     message: "Multiple inbound rules"
 spec:
+  region: us-west-2
   vpcId: "vpc-67890fghij"
   description: "Multiple ingress ports for web and SSH"
   ingress:
@@ -104,6 +106,7 @@ metadata:
   version:
     message: "Inbound rules using IPv6"
 spec:
+  region: us-west-2
   vpcId: "vpc-13579abcd"
   description: "Allow inbound IPv4 and IPv6 traffic for HTTP"
   ingress:
@@ -141,6 +144,7 @@ metadata:
   version:
     message: "Security group with self-referencing"
 spec:
+  region: us-west-2
   vpcId: "vpc-abcdef1234"
   description: "Allows traffic from the same security group"
   ingress:
@@ -172,6 +176,7 @@ metadata:
   version:
     message: "Ingress from another security group"
 spec:
+  region: us-west-2
   vpcId: "vpc-ghijklmn12"
   description: "Allows inbound traffic only from specific security group"
   ingress:
@@ -205,6 +210,7 @@ metadata:
   version:
     message: "Minimal SG example"
 spec:
+  region: us-west-2
   vpcId: "vpc-zz99xx88yy"
   description: "Just enough config for a valid SG"
 ```

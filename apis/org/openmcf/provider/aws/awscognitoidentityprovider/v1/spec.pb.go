@@ -632,11 +632,14 @@ func (x *AwsCognitoIdpSamlConfig) GetRequestSigningAlgorithm() string {
 // stack inputs.
 type AwsCognitoIdentityProviderSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// The ID of the Cognito User Pool to attach this identity provider to.
 	// Format: "{region}_{poolId}" (e.g., "us-east-1_Ab1Cd2EfG").
 	//
 	// This field is ForceNew: changing it requires replacing the identity provider.
-	UserPoolId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=user_pool_id,json=userPoolId,proto3" json:"user_pool_id,omitempty"`
+	UserPoolId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=user_pool_id,json=userPoolId,proto3" json:"user_pool_id,omitempty"`
 	// Display name for this identity provider within the User Pool. Must be
 	// unique within the pool. Referenced by User Pool Clients in their
 	// `supported_identity_providers` list.
@@ -644,13 +647,13 @@ type AwsCognitoIdentityProviderSpec struct {
 	// Examples: "Google", "CorpOkta", "AzureAD-SAML"
 	//
 	// 1-32 UTF-8 characters. This field is ForceNew.
-	ProviderName string `protobuf:"bytes,2,opt,name=provider_name,json=providerName,proto3" json:"provider_name,omitempty"`
+	ProviderName string `protobuf:"bytes,3,opt,name=provider_name,json=providerName,proto3" json:"provider_name,omitempty"`
 	// The type of identity provider. Determines which provider configuration
 	// field to populate (google, facebook, login_with_amazon, sign_in_with_apple,
 	// oidc, or saml).
 	//
 	// This field is ForceNew: changing it requires replacing the identity provider.
-	ProviderType AwsCognitoIdentityProviderType `protobuf:"varint,3,opt,name=provider_type,json=providerType,proto3,enum=org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdentityProviderType" json:"provider_type,omitempty"`
+	ProviderType AwsCognitoIdentityProviderType `protobuf:"varint,4,opt,name=provider_type,json=providerType,proto3,enum=org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdentityProviderType" json:"provider_type,omitempty"`
 	// Types that are valid to be assigned to ProviderConfig:
 	//
 	//	*AwsCognitoIdentityProviderSpec_Google
@@ -666,13 +669,13 @@ type AwsCognitoIdentityProviderSpec struct {
 	// (e.g., "sub", "email").
 	//
 	// When omitted, AWS applies default mappings based on the provider type.
-	AttributeMapping map[string]string `protobuf:"bytes,10,rep,name=attribute_mapping,json=attributeMapping,proto3" json:"attribute_mapping,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	AttributeMapping map[string]string `protobuf:"bytes,11,rep,name=attribute_mapping,json=attributeMapping,proto3" json:"attribute_mapping,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Alternative identifiers for this identity provider. These can be used
 	// in the login endpoint's `idp_identifier` parameter to redirect to this
 	// provider without exposing the provider_name.
 	//
 	// Maximum 50 identifiers, each 1-40 characters.
-	IdpIdentifiers []string `protobuf:"bytes,11,rep,name=idp_identifiers,json=idpIdentifiers,proto3" json:"idp_identifiers,omitempty"`
+	IdpIdentifiers []string `protobuf:"bytes,12,rep,name=idp_identifiers,json=idpIdentifiers,proto3" json:"idp_identifiers,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -705,6 +708,13 @@ func (x *AwsCognitoIdentityProviderSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsCognitoIdentityProviderSpec.ProtoReflect.Descriptor instead.
 func (*AwsCognitoIdentityProviderSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awscognitoidentityprovider_v1_spec_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *AwsCognitoIdentityProviderSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsCognitoIdentityProviderSpec) GetUserPoolId() *v1.StringValueOrRef {
@@ -809,32 +819,32 @@ type isAwsCognitoIdentityProviderSpec_ProviderConfig interface {
 
 type AwsCognitoIdentityProviderSpec_Google struct {
 	// Google OAuth 2.0 configuration. Set when provider_type is Google.
-	Google *AwsCognitoIdpGoogleConfig `protobuf:"bytes,4,opt,name=google,proto3,oneof"`
+	Google *AwsCognitoIdpGoogleConfig `protobuf:"bytes,5,opt,name=google,proto3,oneof"`
 }
 
 type AwsCognitoIdentityProviderSpec_Facebook struct {
 	// Facebook Login configuration. Set when provider_type is Facebook.
-	Facebook *AwsCognitoIdpFacebookConfig `protobuf:"bytes,5,opt,name=facebook,proto3,oneof"`
+	Facebook *AwsCognitoIdpFacebookConfig `protobuf:"bytes,6,opt,name=facebook,proto3,oneof"`
 }
 
 type AwsCognitoIdentityProviderSpec_LoginWithAmazon struct {
 	// Login with Amazon configuration. Set when provider_type is LoginWithAmazon.
-	LoginWithAmazon *AwsCognitoIdpLoginWithAmazonConfig `protobuf:"bytes,6,opt,name=login_with_amazon,json=loginWithAmazon,proto3,oneof"`
+	LoginWithAmazon *AwsCognitoIdpLoginWithAmazonConfig `protobuf:"bytes,7,opt,name=login_with_amazon,json=loginWithAmazon,proto3,oneof"`
 }
 
 type AwsCognitoIdentityProviderSpec_SignInWithApple struct {
 	// Sign in with Apple configuration. Set when provider_type is SignInWithApple.
-	SignInWithApple *AwsCognitoIdpSignInWithAppleConfig `protobuf:"bytes,7,opt,name=sign_in_with_apple,json=signInWithApple,proto3,oneof"`
+	SignInWithApple *AwsCognitoIdpSignInWithAppleConfig `protobuf:"bytes,8,opt,name=sign_in_with_apple,json=signInWithApple,proto3,oneof"`
 }
 
 type AwsCognitoIdentityProviderSpec_Oidc struct {
 	// Generic OIDC configuration. Set when provider_type is OIDC.
-	Oidc *AwsCognitoIdpOidcConfig `protobuf:"bytes,8,opt,name=oidc,proto3,oneof"`
+	Oidc *AwsCognitoIdpOidcConfig `protobuf:"bytes,9,opt,name=oidc,proto3,oneof"`
 }
 
 type AwsCognitoIdentityProviderSpec_Saml struct {
 	// SAML 2.0 configuration. Set when provider_type is SAML.
-	Saml *AwsCognitoIdpSamlConfig `protobuf:"bytes,9,opt,name=saml,proto3,oneof"`
+	Saml *AwsCognitoIdpSamlConfig `protobuf:"bytes,10,opt,name=saml,proto3,oneof"`
 }
 
 func (*AwsCognitoIdentityProviderSpec_Google) isAwsCognitoIdentityProviderSpec_ProviderConfig() {}
@@ -895,22 +905,23 @@ const file_org_openmcf_provider_aws_awscognitoidentityprovider_v1_spec_proto_raw
 	"idpSignOut\x12\x19\n" +
 	"\bidp_init\x18\x04 \x01(\bR\aidpInit\x12/\n" +
 	"\x13encrypted_responses\x18\x05 \x01(\bR\x12encryptedResponses\x12:\n" +
-	"\x19request_signing_algorithm\x18\x06 \x01(\tR\x17requestSigningAlgorithm\"\xd9\x13\n" +
-	"\x1eAwsCognitoIdentityProviderSpec\x12\x80\x01\n" +
-	"\fuser_pool_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB*\xbaH\x03\xc8\x01\x01\x88\xd4a\xac\x02\x92\xd4a\x1bstatus.outputs.user_pool_idR\n" +
+	"\x19request_signing_algorithm\x18\x06 \x01(\tR\x17requestSigningAlgorithm\"\xfa\x13\n" +
+	"\x1eAwsCognitoIdentityProviderSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x80\x01\n" +
+	"\fuser_pool_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB*\xbaH\x03\xc8\x01\x01\x88\xd4a\xac\x02\x92\xd4a\x1bstatus.outputs.user_pool_idR\n" +
 	"userPoolId\x12.\n" +
-	"\rprovider_name\x18\x02 \x01(\tB\t\xbaH\x06r\x04\x10\x01\x18 R\fproviderName\x12\x87\x01\n" +
-	"\rprovider_type\x18\x03 \x01(\x0e2V.org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdentityProviderTypeB\n" +
+	"\rprovider_name\x18\x03 \x01(\tB\t\xbaH\x06r\x04\x10\x01\x18 R\fproviderName\x12\x87\x01\n" +
+	"\rprovider_type\x18\x04 \x01(\x0e2V.org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdentityProviderTypeB\n" +
 	"\xbaH\a\x82\x01\x04\x10\x01 \x00R\fproviderType\x12k\n" +
-	"\x06google\x18\x04 \x01(\v2Q.org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpGoogleConfigH\x00R\x06google\x12q\n" +
-	"\bfacebook\x18\x05 \x01(\v2S.org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpFacebookConfigH\x00R\bfacebook\x12\x88\x01\n" +
-	"\x11login_with_amazon\x18\x06 \x01(\v2Z.org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpLoginWithAmazonConfigH\x00R\x0floginWithAmazon\x12\x89\x01\n" +
-	"\x12sign_in_with_apple\x18\a \x01(\v2Z.org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpSignInWithAppleConfigH\x00R\x0fsignInWithApple\x12e\n" +
-	"\x04oidc\x18\b \x01(\v2O.org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpOidcConfigH\x00R\x04oidc\x12e\n" +
-	"\x04saml\x18\t \x01(\v2O.org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpSamlConfigH\x00R\x04saml\x12\x99\x01\n" +
-	"\x11attribute_mapping\x18\n" +
-	" \x03(\v2l.org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdentityProviderSpec.AttributeMappingEntryR\x10attributeMapping\x121\n" +
-	"\x0fidp_identifiers\x18\v \x03(\tB\b\xbaH\x05\x92\x01\x02\x102R\x0eidpIdentifiers\x1aC\n" +
+	"\x06google\x18\x05 \x01(\v2Q.org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpGoogleConfigH\x00R\x06google\x12q\n" +
+	"\bfacebook\x18\x06 \x01(\v2S.org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpFacebookConfigH\x00R\bfacebook\x12\x88\x01\n" +
+	"\x11login_with_amazon\x18\a \x01(\v2Z.org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpLoginWithAmazonConfigH\x00R\x0floginWithAmazon\x12\x89\x01\n" +
+	"\x12sign_in_with_apple\x18\b \x01(\v2Z.org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpSignInWithAppleConfigH\x00R\x0fsignInWithApple\x12e\n" +
+	"\x04oidc\x18\t \x01(\v2O.org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpOidcConfigH\x00R\x04oidc\x12e\n" +
+	"\x04saml\x18\n" +
+	" \x01(\v2O.org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpSamlConfigH\x00R\x04saml\x12\x99\x01\n" +
+	"\x11attribute_mapping\x18\v \x03(\v2l.org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdentityProviderSpec.AttributeMappingEntryR\x10attributeMapping\x121\n" +
+	"\x0fidp_identifiers\x18\f \x03(\tB\b\xbaH\x05\x92\x01\x02\x102R\x0eidpIdentifiers\x1aC\n" +
 	"\x15AttributeMappingEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x8d\t\xbaH\x89\t\x1a\xce\x04\n" +

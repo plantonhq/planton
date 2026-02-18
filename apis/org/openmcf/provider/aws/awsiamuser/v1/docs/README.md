@@ -223,6 +223,7 @@ kind: AwsIamUser
 metadata:
   name: cicd-deployer
 spec:
+  region: us-east-1
   userName: github-actions-deployer
   managedPolicyArns:
     - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess
@@ -247,6 +248,7 @@ kind: AwsIamUser
 metadata:
   name: payment-service-user
 spec:
+  region: us-east-1
   userName: payment-service-prod
   inlinePolicies:
     PaymentServiceAccess:
@@ -276,6 +278,7 @@ kind: AwsIamUser
 metadata:
   name: compliance-auditor
 spec:
+  region: us-east-1
   userName: compliance-readonly
   managedPolicyArns:
     - arn:aws:iam::aws:policy/ReadOnlyAccess

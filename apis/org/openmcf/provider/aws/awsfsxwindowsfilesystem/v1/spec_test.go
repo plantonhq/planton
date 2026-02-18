@@ -42,6 +42,7 @@ var _ = ginkgo.Describe("AwsFsxWindowsFileSystemSpec validations", func() {
 		// - throughput_capacity in valid set
 		// - active_directory_id set (satisfies ad_required)
 		spec = &AwsFsxWindowsFileSystemSpec{
+			Region:             "us-west-2",
 			SubnetIds:          []*foreignkeyv1.StringValueOrRef{strRef("subnet-abc123")},
 			StorageCapacityGib: 256,
 			ThroughputCapacity: 64,

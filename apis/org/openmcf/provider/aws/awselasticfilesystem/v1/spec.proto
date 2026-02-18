@@ -31,6 +31,10 @@ import "org/openmcf/shared/options/options.proto";
 // - Security groups must allow NFS traffic (TCP port 2049) from the clients.
 // - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 message AwsElasticFileSystemSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // File System Core
   // ---------------------------------------------------------------------------
@@ -38,12 +42,12 @@ message AwsElasticFileSystemSpec {
   // Enable encryption at rest for all data and metadata stored in the file system.
   // ForceNew — cannot be added after creation. Production environments should
   // always enable encryption.
-  bool encrypted = 1 [(org.openmcf.shared.options.recommended_default) = "true"];
+  bool encrypted = 2 [(org.openmcf.shared.options.recommended_default) = "true"];
 
   // Customer-managed KMS key for encryption at rest. When omitted, EFS uses the
   // AWS-managed key `aws/elasticfilesystem`. ForceNew — the KMS key cannot be
   // changed after creation. Requires `encrypted` to be true.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 2 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 3 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -55,7 +59,7 @@ message AwsElasticFileSystemSpec {
   // - "maxIO": higher aggregate throughput for highly parallelized workloads
   //   (thousands of EC2 instances). Slightly higher per-operation latency.
   //   Note: AWS recommends generalPurpose + elastic throughput as a replacement.
-  string performance_mode = 3;
+  string performance_mode = 4;
 
   // Throughput mode controlling how EFS delivers read/write bandwidth.
   //
@@ -66,11 +70,11 @@ message AwsElasticFileSystemSpec {
   // - "elastic": automatically scales throughput up/down based on workload.
   //   Recommended for unpredictable or spiky access patterns. Requires
   //   generalPurpose performance mode.
-  string throughput_mode = 4;
+  string throughput_mode = 5;
 
   // Provisioned throughput in MiB/s. Only applicable when `throughput_mode` is
   // "provisioned". Range: 1.0–3414.0 for generalPurpose; 1.0–1024.0 for maxIO.
-  double provisioned_throughput_in_mibps = 5;
+  double provisioned_throughput_in_mibps = 6;
 
   // AWS Availability Zone name for One Zone storage classes (e.g., "us-east-1a").
   // ForceNew — cannot be changed after creation. One Zone storage is ~47% cheaper
@@ -79,7 +83,7 @@ message AwsElasticFileSystemSpec {
   //
   // When set, only a single mount target can be created (in a subnet belonging
   // to this AZ).
-  string availability_zone_name = 6;
+  string availability_zone_name = 7;
 
   // ---------------------------------------------------------------------------
   // Lifecycle Policies
@@ -91,21 +95,21 @@ message AwsElasticFileSystemSpec {
   //
   // Valid values: AFTER_1_DAY, AFTER_7_DAYS, AFTER_14_DAYS, AFTER_30_DAYS,
   // AFTER_60_DAYS, AFTER_90_DAYS, AFTER_180_DAYS, AFTER_270_DAYS, AFTER_365_DAYS.
-  string transition_to_ia = 7;
+  string transition_to_ia = 8;
 
   // Transition IA files to Archive storage after the specified period. Archive
   // storage costs ~96% less than Standard. Requires `transition_to_ia` to be set
   // (files must pass through IA before reaching Archive).
   //
   // Same valid values as transition_to_ia.
-  string transition_to_archive = 8;
+  string transition_to_archive = 9;
 
   // Transition files back to Standard storage when accessed from IA or Archive.
   // This enables automatic "warming" of frequently accessed files.
   //
   // Only valid value: "AFTER_1_ACCESS". Leave empty to keep files in IA/Archive
   // even after access.
-  string transition_to_primary_storage_class = 9;
+  string transition_to_primary_storage_class = 10;
 
   // ---------------------------------------------------------------------------
   // Backup
@@ -113,7 +117,7 @@ message AwsElasticFileSystemSpec {
 
   // Enable automatic daily backups via AWS Backup. AWS recommends enabling
   // backups for all production file systems. Mutable — can be toggled at any time.
-  bool backup_enabled = 10;
+  bool backup_enabled = 11;
 
   // ---------------------------------------------------------------------------
   // Mount Targets (Networking)
@@ -126,7 +130,7 @@ message AwsElasticFileSystemSpec {
   // For regional (multi-AZ) file systems, provide one subnet per AZ for maximum
   // availability. For One Zone file systems, provide exactly one subnet in the
   // AZ specified by `availability_zone_name`.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 11 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 12 [
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 1,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
@@ -135,7 +139,7 @@ message AwsElasticFileSystemSpec {
 
   // Security groups to apply to all mount targets. These must allow inbound NFS
   // traffic (TCP port 2049) from the clients that will mount the file system.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 12 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 13 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
@@ -150,7 +154,7 @@ message AwsElasticFileSystemSpec {
   //
   // Each access point must have a unique `name` which serves as the map key in
   // the `access_point_ids` and `access_point_arns` stack outputs.
-  repeated AwsElasticFileSystemAccessPoint access_points = 13;
+  repeated AwsElasticFileSystemAccessPoint access_points = 14;
 
   // ---------------------------------------------------------------------------
   // Resource Policy (optional)
@@ -163,7 +167,7 @@ message AwsElasticFileSystemSpec {
   //
   // Provide as a JSON object structure. Serialized to JSON by IaC modules.
   // Consistent with SQS policy, SNS policy, and EventBridge event_pattern.
-  google.protobuf.Struct policy = 14;
+  google.protobuf.Struct policy = 15;
 
   // ---------------------------------------------------------------------------
   // CEL Validations

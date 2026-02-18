@@ -40,31 +40,34 @@ const (
 // updated, reusable across queues).
 type AwsBatchComputeEnvironmentSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the Batch compute environment will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// state controls whether the compute environment accepts jobs.
 	// When DISABLED, the compute environment does not accept new jobs but
 	// existing running jobs continue to completion.
-	State *string `protobuf:"bytes,1,opt,name=state,proto3,oneof" json:"state,omitempty"`
+	State *string `protobuf:"bytes,2,opt,name=state,proto3,oneof" json:"state,omitempty"`
 	// service_role is the IAM role ARN that allows AWS Batch to make API calls
 	// to other AWS services on your behalf. If omitted, AWS Batch uses the
 	// AWSServiceRoleForBatch service-linked role (recommended for most use cases).
-	ServiceRole *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=service_role,json=serviceRole,proto3" json:"service_role,omitempty"`
+	ServiceRole *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=service_role,json=serviceRole,proto3" json:"service_role,omitempty"`
 	// compute_resources defines the infrastructure backing this compute
 	// environment: instance types, vCPU limits, VPC networking, and scaling.
-	ComputeResources *AwsBatchComputeResources `protobuf:"bytes,3,opt,name=compute_resources,json=computeResources,proto3" json:"compute_resources,omitempty"`
+	ComputeResources *AwsBatchComputeResources `protobuf:"bytes,4,opt,name=compute_resources,json=computeResources,proto3" json:"compute_resources,omitempty"`
 	// update_policy controls the behavior of infrastructure updates when the
 	// compute environment is modified. Relevant for EC2/SPOT types where
 	// running instances may need replacement.
-	UpdatePolicy *AwsBatchUpdatePolicy `protobuf:"bytes,4,opt,name=update_policy,json=updatePolicy,proto3" json:"update_policy,omitempty"`
+	UpdatePolicy *AwsBatchUpdatePolicy `protobuf:"bytes,5,opt,name=update_policy,json=updatePolicy,proto3" json:"update_policy,omitempty"`
 	// job_queues defines one or more job queues that route submitted jobs to this
 	// compute environment. At least one queue is required. Each queue has its own
 	// priority, state, and optional time-limit actions.
-	JobQueues []*AwsBatchJobQueue `protobuf:"bytes,5,rep,name=job_queues,json=jobQueues,proto3" json:"job_queues,omitempty"`
+	JobQueues []*AwsBatchJobQueue `protobuf:"bytes,6,rep,name=job_queues,json=jobQueues,proto3" json:"job_queues,omitempty"`
 	// scheduling_policy defines an optional fair-share scheduling policy. When
 	// provided, a scheduling policy resource is created and attached to all
 	// bundled job queues. Fair-share scheduling divides compute capacity across
 	// share identifiers, preventing any single workload from monopolizing the
 	// compute environment.
-	SchedulingPolicy *AwsBatchSchedulingPolicy `protobuf:"bytes,6,opt,name=scheduling_policy,json=schedulingPolicy,proto3" json:"scheduling_policy,omitempty"`
+	SchedulingPolicy *AwsBatchSchedulingPolicy `protobuf:"bytes,7,opt,name=scheduling_policy,json=schedulingPolicy,proto3" json:"scheduling_policy,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -97,6 +100,13 @@ func (x *AwsBatchComputeEnvironmentSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsBatchComputeEnvironmentSpec.ProtoReflect.Descriptor instead.
 func (*AwsBatchComputeEnvironmentSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsbatchcomputeenvironment_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsBatchComputeEnvironmentSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsBatchComputeEnvironmentSpec) GetState() string {
@@ -831,15 +841,16 @@ var File_org_openmcf_provider_aws_awsbatchcomputeenvironment_v1_spec_proto proto
 
 const file_org_openmcf_provider_aws_awsbatchcomputeenvironment_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Aorg/openmcf/provider/aws/awsbatchcomputeenvironment/v1/spec.proto\x126org.openmcf.provider.aws.awsbatchcomputeenvironment.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb8\x05\n" +
-	"\x1eAwsBatchComputeEnvironmentSpec\x12&\n" +
-	"\x05state\x18\x01 \x01(\tB\v\x8a\xa6\x1d\aENABLEDH\x00R\x05state\x88\x01\x01\x12w\n" +
-	"\fservice_role\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\vserviceRole\x12\x85\x01\n" +
-	"\x11compute_resources\x18\x03 \x01(\v2P.org.openmcf.provider.aws.awsbatchcomputeenvironment.v1.AwsBatchComputeResourcesB\x06\xbaH\x03\xc8\x01\x01R\x10computeResources\x12q\n" +
-	"\rupdate_policy\x18\x04 \x01(\v2L.org.openmcf.provider.aws.awsbatchcomputeenvironment.v1.AwsBatchUpdatePolicyR\fupdatePolicy\x12q\n" +
+	"Aorg/openmcf/provider/aws/awsbatchcomputeenvironment/v1/spec.proto\x126org.openmcf.provider.aws.awsbatchcomputeenvironment.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd9\x05\n" +
+	"\x1eAwsBatchComputeEnvironmentSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12&\n" +
+	"\x05state\x18\x02 \x01(\tB\v\x8a\xa6\x1d\aENABLEDH\x00R\x05state\x88\x01\x01\x12w\n" +
+	"\fservice_role\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\vserviceRole\x12\x85\x01\n" +
+	"\x11compute_resources\x18\x04 \x01(\v2P.org.openmcf.provider.aws.awsbatchcomputeenvironment.v1.AwsBatchComputeResourcesB\x06\xbaH\x03\xc8\x01\x01R\x10computeResources\x12q\n" +
+	"\rupdate_policy\x18\x05 \x01(\v2L.org.openmcf.provider.aws.awsbatchcomputeenvironment.v1.AwsBatchUpdatePolicyR\fupdatePolicy\x12q\n" +
 	"\n" +
-	"job_queues\x18\x05 \x03(\v2H.org.openmcf.provider.aws.awsbatchcomputeenvironment.v1.AwsBatchJobQueueB\b\xbaH\x05\x92\x01\x02\b\x01R\tjobQueues\x12}\n" +
-	"\x11scheduling_policy\x18\x06 \x01(\v2P.org.openmcf.provider.aws.awsbatchcomputeenvironment.v1.AwsBatchSchedulingPolicyR\x10schedulingPolicyB\b\n" +
+	"job_queues\x18\x06 \x03(\v2H.org.openmcf.provider.aws.awsbatchcomputeenvironment.v1.AwsBatchJobQueueB\b\xbaH\x05\x92\x01\x02\b\x01R\tjobQueues\x12}\n" +
+	"\x11scheduling_policy\x18\a \x01(\v2P.org.openmcf.provider.aws.awsbatchcomputeenvironment.v1.AwsBatchSchedulingPolicyR\x10schedulingPolicyB\b\n" +
 	"\x06_state\"\xc9\x0e\n" +
 	"\x18AwsBatchComputeResources\x12;\n" +
 	"\x04type\x18\x01 \x01(\tB'\xbaH$r\"R\x03EC2R\x04SPOTR\aFARGATER\fFARGATE_SPOTR\x04type\x12'\n" +

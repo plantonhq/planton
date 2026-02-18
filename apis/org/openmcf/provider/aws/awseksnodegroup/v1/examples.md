@@ -23,6 +23,7 @@ kind: AwsEksNodeGroup
 metadata:
   name: basic-node-group
 spec:
+  region: us-west-2
   clusterName:
     value: "my-eks-cluster"
   nodeRoleArn:
@@ -58,6 +59,7 @@ kind: AwsEksNodeGroup
 metadata:
   name: spot-node-group
 spec:
+  region: us-west-2
   clusterName:
     value: "my-eks-cluster"
   nodeRoleArn:
@@ -96,6 +98,7 @@ kind: AwsEksNodeGroup
 metadata:
   name: ssh-node-group
 spec:
+  region: us-west-2
   clusterName:
     value: "my-eks-cluster"
   nodeRoleArn:
@@ -136,6 +139,7 @@ kind: AwsEksNodeGroup
 metadata:
   name: production-node-group
 spec:
+  region: us-west-2
   clusterName:
     value: "production-eks-cluster"
   nodeRoleArn:
@@ -177,6 +181,7 @@ kind: AwsEksNodeGroup
 metadata:
   name: development-node-group
 spec:
+  region: us-west-2
   clusterName:
     value: "dev-eks-cluster"
   nodeRoleArn:
@@ -218,6 +223,7 @@ kind: AwsEksNodeGroup
 metadata:
   name: mixed-capacity-node-group
 spec:
+  region: us-west-2
   clusterName:
     value: "mixed-eks-cluster"
   nodeRoleArn:
@@ -257,6 +263,7 @@ kind: AwsEksNodeGroup
 metadata:
   name: ref-node-group
 spec:
+  region: us-west-2
   clusterName:
     valueFrom:
       kind: AwsEksCluster
@@ -305,6 +312,7 @@ kind: AwsEksNodeGroup
 metadata:
   name: prod-node-group
 spec:
+  region: us-west-2
   clusterName:
     value: "my-eks-cluster"
   nodeRoleArn:
@@ -327,6 +335,7 @@ kind: AwsEksNodeGroup
 metadata:
   name: dev-node-group
 spec:
+  region: us-west-2
   clusterName:
     value: "my-eks-cluster"
   nodeRoleArn:

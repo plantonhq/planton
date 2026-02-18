@@ -17,6 +17,7 @@ kind: AwsVpc
 metadata:
   name: my-basic-vpc
 spec:
+  region: "us-west-2"
   vpcCidr: "10.0.0.0/16"
   availabilityZones:
     - "us-west-2a"
@@ -46,6 +47,7 @@ kind: AwsVpc
 metadata:
   name: my-production-vpc
 spec:
+  region: "us-east-1"
   vpcCidr: "10.1.0.0/16"
   availabilityZones:
     - "us-east-1a"
@@ -76,6 +78,7 @@ kind: AwsVpc
 metadata:
   name: my-development-vpc
 spec:
+  region: "us-west-2"
   vpcCidr: "10.2.0.0/16"
   availabilityZones:
     - "us-west-2a"
@@ -104,6 +107,7 @@ kind: AwsVpc
 metadata:
   name: my-multi-tier-vpc
 spec:
+  region: "us-east-1"
   vpcCidr: "10.3.0.0/16"
   availabilityZones:
     - "us-east-1a"
@@ -133,6 +137,7 @@ kind: AwsVpc
 metadata:
   name: my-ha-vpc
 spec:
+  region: "us-west-2"
   vpcCidr: "10.4.0.0/16"
   availabilityZones:
     - "us-west-2a"
@@ -163,6 +168,7 @@ kind: AwsVpc
 metadata:
   name: my-microservices-vpc
 spec:
+  region: "us-east-1"
   vpcCidr: "10.5.0.0/16"
   availabilityZones:
     - "us-east-1a"
@@ -192,6 +198,7 @@ kind: AwsVpc
 metadata:
   name: my-database-vpc
 spec:
+  region: "us-east-1"
   vpcCidr: "10.6.0.0/16"
   availabilityZones:
     - "us-east-1a"
@@ -222,6 +229,7 @@ kind: AwsVpc
 metadata:
   name: my-container-vpc
 spec:
+  region: "us-west-2"
   vpcCidr: "10.7.0.0/16"
   availabilityZones:
     - "us-west-2a"
@@ -250,6 +258,7 @@ kind: AwsVpc
 metadata:
   name: my-minimal-vpc
 spec:
+  region: "us-east-1"
   vpcCidr: "10.8.0.0/16"
   availabilityZones:
     - "us-east-1a"

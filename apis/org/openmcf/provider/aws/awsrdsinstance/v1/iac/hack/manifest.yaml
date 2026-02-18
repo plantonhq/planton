@@ -3,6 +3,7 @@ kind: AwsRdsInstance
 metadata:
   name: awsrdsinstance-demo
 spec:
+  region: us-west-2
   # Provide either 2+ subnetIds or a dbSubnetGroupName
   subnetIds:
     - value: subnet-aaaa

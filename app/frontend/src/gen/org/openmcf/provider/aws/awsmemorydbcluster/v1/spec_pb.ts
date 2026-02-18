@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsmemorydbcluster/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsmemorydbcluster_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjlvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzbWVtb3J5ZGJjbHVzdGVyL3YxL3NwZWMucHJvdG8SLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NtZW1vcnlkYmNsdXN0ZXIudjEi3BAKFkF3c01lbW9yeWRiQ2x1c3RlclNwZWMSFgoGZW5naW5lGAEgASgJQga6SAPIAQESFgoOZW5naW5lX3ZlcnNpb24YAiABKAkSEwoLZGVzY3JpcHRpb24YAyABKAkSGQoJbm9kZV90eXBlGAQgASgJQga6SAPIAQESJgoEcG9ydBgFIAEoBUITukgIGgYY//8DKAGKph0ENjM3OUgAiAEBEiUKCm51bV9zaGFyZHMYBiABKAVCDLpIBBoCKAGKph0BMUgBiAEBEjMKFm51bV9yZXBsaWNhc19wZXJfc2hhcmQYByABKAVCDrpIBhoEGAUoAIqmHQExSAKIAQESLQoIYWNsX25hbWUYCCABKAlCFrpIBHICEAGKph0Lb3Blbi1hY2Nlc3NIA4gBARJ2CgpzdWJuZXRfaWRzGAkgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIuiNRh2AGS1GElc3RhdHVzLm91dHB1dHMucHJpdmF0ZV9zdWJuZXRzLlsqXS5pZBJ5ChJzZWN1cml0eV9ncm91cF9pZHMYCiADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQimI1GHXAZLUYSBzdGF0dXMub3V0cHV0cy5zZWN1cml0eV9ncm91cF9pZBIiCgt0bHNfZW5hYmxlZBgLIAEoCEIIiqYdBHRydWVIBIgBARJnCgprbXNfa2V5X2lkGAwgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybhKhAQoSbWFpbnRlbmFuY2Vfd2luZG93GA0gASgJQoQBukiAAdgBAXJ7MnleKG1vbnx0dWV8d2VkfHRodXxmcml8c2F0fHN1bik6KFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0tKG1vbnx0dWV8d2VkfHRodXxmcml8c2F0fHN1bik6KFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0kEisKGHNuYXBzaG90X3JldGVudGlvbl9saW1pdBgOIAEoBUIJukgGGgQYIygAEmAKD3NuYXBzaG90X3dpbmRvdxgPIAEoCUJHukhE2AEBcj8yPV4oWzAxXVswLTldfDJbMC0zXSk6WzAtNV1bMC05XS0oWzAxXVswLTldfDJbMC0zXSk6WzAtNV1bMC05XSQSGwoTZmluYWxfc25hcHNob3RfbmFtZRgQIAEoCRIVCg1zbmFwc2hvdF9hcm5zGBEgAygJEhUKDXNuYXBzaG90X25hbWUYEiABKAkSHgoWcGFyYW1ldGVyX2dyb3VwX2ZhbWlseRgTIAEoCRJfCgpwYXJhbWV0ZXJzGBQgAygLMksub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c21lbW9yeWRiY2x1c3Rlci52MS5Bd3NNZW1vcnlkYkNsdXN0ZXJQYXJhbWV0ZXISbAoNc25zX3RvcGljX2FybhgVIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCIYjUYeIBktRhGHN0YXR1cy5vdXRwdXRzLnRvcGljX2FybhIxChphdXRvX21pbm9yX3ZlcnNpb25fdXBncmFkZRgWIAEoCEIIiqYdBHRydWVIBYgBARIUCgxkYXRhX3RpZXJpbmcYFyABKAg6iQW6SIUFGl0KE2VuZ2luZV92YWxpZF92YWx1ZXMSImVuZ2luZSBtdXN0IGJlICdyZWRpcycgb3IgJ3ZhbGtleScaInRoaXMuZW5naW5lIGluIFsncmVkaXMnLCAndmFsa2V5J10aywEKIXRsc19kaXNhYmxlZF9yZXF1aXJlc19vcGVuX2FjY2VzcxI5d2hlbiB0bHNfZW5hYmxlZCBpcyBmYWxzZSwgYWNsX25hbWUgbXVzdCBiZSAnb3Blbi1hY2Nlc3MnGmshaGFzKHRoaXMudGxzX2VuYWJsZWQpIHx8IHRoaXMudGxzX2VuYWJsZWQgPT0gdHJ1ZSB8fCAhaGFzKHRoaXMuYWNsX25hbWUpIHx8IHRoaXMuYWNsX25hbWUgPT0gJ29wZW4tYWNjZXNzJxqeAQoZcGFyYW1ldGVyc19yZXF1aXJlX2ZhbWlseRI/cGFyYW1ldGVyX2dyb3VwX2ZhbWlseSBpcyByZXF1aXJlZCB3aGVuIHBhcmFtZXRlcnMgYXJlIHByb3ZpZGVkGkB0aGlzLnBhcmFtZXRlcnMuc2l6ZSgpID09IDAgfHwgdGhpcy5wYXJhbWV0ZXJfZ3JvdXBfZmFtaWx5ICE9ICcnGrQBCiFzbmFwc2hvdF9yZXN0b3JlX211dHVhbF9leGNsdXNpb24SUXNuYXBzaG90X2FybnMgYW5kIHNuYXBzaG90X25hbWUgYXJlIG11dHVhbGx5IGV4Y2x1c2l2ZTsgY2hvb3NlIG9uZSByZXN0b3JlIHNvdXJjZRo8ISh0aGlzLnNuYXBzaG90X2FybnMuc2l6ZSgpID4gMCAmJiB0aGlzLnNuYXBzaG90X25hbWUgIT0gJycpQgcKBV9wb3J0Qg0KC19udW1fc2hhcmRzQhkKF19udW1fcmVwbGljYXNfcGVyX3NoYXJkQgsKCV9hY2xfbmFtZUIOCgxfdGxzX2VuYWJsZWRCHQobX2F1dG9fbWlub3JfdmVyc2lvbl91cGdyYWRlIkoKG0F3c01lbW9yeWRiQ2x1c3RlclBhcmFtZXRlchIUCgRuYW1lGAEgASgJQga6SAPIAQESFQoFdmFsdWUYAiABKAlCBrpIA8gBAUKFAwoyY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NtZW1vcnlkYmNsdXN0ZXIudjFCCVNwZWNQcm90b1ABWmVnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c21lbW9yeWRiY2x1c3Rlci92MTthd3NtZW1vcnlkYmNsdXN0ZXJ2MaICBU9PUEFBqgIuT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c21lbW9yeWRiY2x1c3Rlci5WMcoCLk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NtZW1vcnlkYmNsdXN0ZXJcVjHiAjpPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzbWVtb3J5ZGJjbHVzdGVyXFYxXEdQQk1ldGFkYXRh6gIzT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NtZW1vcnlkYmNsdXN0ZXI6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("Cjlvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzbWVtb3J5ZGJjbHVzdGVyL3YxL3NwZWMucHJvdG8SLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NtZW1vcnlkYmNsdXN0ZXIudjEi9RAKFkF3c01lbW9yeWRiQ2x1c3RlclNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEhYKBmVuZ2luZRgCIAEoCUIGukgDyAEBEhYKDmVuZ2luZV92ZXJzaW9uGAMgASgJEhMKC2Rlc2NyaXB0aW9uGAQgASgJEhkKCW5vZGVfdHlwZRgFIAEoCUIGukgDyAEBEiYKBHBvcnQYBiABKAVCE7pICBoGGP//AygBiqYdBDYzNzlIAIgBARIlCgpudW1fc2hhcmRzGAcgASgFQgy6SAQaAigBiqYdATFIAYgBARIzChZudW1fcmVwbGljYXNfcGVyX3NoYXJkGAggASgFQg66SAYaBBgFKACKph0BMUgCiAEBEi0KCGFjbF9uYW1lGAkgASgJQha6SARyAhABiqYdC29wZW4tYWNjZXNzSAOIAQESdgoKc3VibmV0X2lkcxgKIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCLojUYdgBktRhJXN0YXR1cy5vdXRwdXRzLnByaXZhdGVfc3VibmV0cy5bKl0uaWQSeQoSc2VjdXJpdHlfZ3JvdXBfaWRzGAsgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIpiNRh1wGS1GEgc3RhdHVzLm91dHB1dHMuc2VjdXJpdHlfZ3JvdXBfaWQSIgoLdGxzX2VuYWJsZWQYDCABKAhCCIqmHQR0cnVlSASIAQESZwoKa21zX2tleV9pZBgNIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SoQEKEm1haW50ZW5hbmNlX3dpbmRvdxgOIAEoCUKEAbpIgAHYAQFyezJ5Xihtb258dHVlfHdlZHx0aHV8ZnJpfHNhdHxzdW4pOihbMDFdWzAtOV18MlswLTNdKTpbMC01XVswLTldLShtb258dHVlfHdlZHx0aHV8ZnJpfHNhdHxzdW4pOihbMDFdWzAtOV18MlswLTNdKTpbMC01XVswLTldJBIrChhzbmFwc2hvdF9yZXRlbnRpb25fbGltaXQYDyABKAVCCbpIBhoEGCMoABJgCg9zbmFwc2hvdF93aW5kb3cYECABKAlCR7pIRNgBAXI/Mj1eKFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0tKFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0kEhsKE2ZpbmFsX3NuYXBzaG90X25hbWUYESABKAkSFQoNc25hcHNob3RfYXJucxgSIAMoCRIVCg1zbmFwc2hvdF9uYW1lGBMgASgJEh4KFnBhcmFtZXRlcl9ncm91cF9mYW1pbHkYFCABKAkSXwoKcGFyYW1ldGVycxgVIAMoCzJLLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NtZW1vcnlkYmNsdXN0ZXIudjEuQXdzTWVtb3J5ZGJDbHVzdGVyUGFyYW1ldGVyEmwKDXNuc190b3BpY19hcm4YFiABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQiGI1GHiAZLUYRhzdGF0dXMub3V0cHV0cy50b3BpY19hcm4SMQoaYXV0b19taW5vcl92ZXJzaW9uX3VwZ3JhZGUYFyABKAhCCIqmHQR0cnVlSAWIAQESFAoMZGF0YV90aWVyaW5nGBggASgIOokFukiFBRpdChNlbmdpbmVfdmFsaWRfdmFsdWVzEiJlbmdpbmUgbXVzdCBiZSAncmVkaXMnIG9yICd2YWxrZXknGiJ0aGlzLmVuZ2luZSBpbiBbJ3JlZGlzJywgJ3ZhbGtleSddGssBCiF0bHNfZGlzYWJsZWRfcmVxdWlyZXNfb3Blbl9hY2Nlc3MSOXdoZW4gdGxzX2VuYWJsZWQgaXMgZmFsc2UsIGFjbF9uYW1lIG11c3QgYmUgJ29wZW4tYWNjZXNzJxprIWhhcyh0aGlzLnRsc19lbmFibGVkKSB8fCB0aGlzLnRsc19lbmFibGVkID09IHRydWUgfHwgIWhhcyh0aGlzLmFjbF9uYW1lKSB8fCB0aGlzLmFjbF9uYW1lID09ICdvcGVuLWFjY2VzcycangEKGXBhcmFtZXRlcnNfcmVxdWlyZV9mYW1pbHkSP3BhcmFtZXRlcl9ncm91cF9mYW1pbHkgaXMgcmVxdWlyZWQgd2hlbiBwYXJhbWV0ZXJzIGFyZSBwcm92aWRlZBpAdGhpcy5wYXJhbWV0ZXJzLnNpemUoKSA9PSAwIHx8IHRoaXMucGFyYW1ldGVyX2dyb3VwX2ZhbWlseSAhPSAnJxq0AQohc25hcHNob3RfcmVzdG9yZV9tdXR1YWxfZXhjbHVzaW9uElFzbmFwc2hvdF9hcm5zIGFuZCBzbmFwc2hvdF9uYW1lIGFyZSBtdXR1YWxseSBleGNsdXNpdmU7IGNob29zZSBvbmUgcmVzdG9yZSBzb3VyY2UaPCEodGhpcy5zbmFwc2hvdF9hcm5zLnNpemUoKSA+IDAgJiYgdGhpcy5zbmFwc2hvdF9uYW1lICE9ICcnKUIHCgVfcG9ydEINCgtfbnVtX3NoYXJkc0IZChdfbnVtX3JlcGxpY2FzX3Blcl9zaGFyZEILCglfYWNsX25hbWVCDgoMX3Rsc19lbmFibGVkQh0KG19hdXRvX21pbm9yX3ZlcnNpb25fdXBncmFkZSJKChtBd3NNZW1vcnlkYkNsdXN0ZXJQYXJhbWV0ZXISFAoEbmFtZRgBIAEoCUIGukgDyAEBEhUKBXZhbHVlGAIgASgJQga6SAPIAQFChQMKMmNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzbWVtb3J5ZGJjbHVzdGVyLnYxQglTcGVjUHJvdG9QAVplZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NtZW1vcnlkYmNsdXN0ZXIvdjE7YXdzbWVtb3J5ZGJjbHVzdGVydjGiAgVPT1BBQaoCLk9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NtZW1vcnlkYmNsdXN0ZXIuVjHKAi5PcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzbWVtb3J5ZGJjbHVzdGVyXFYx4gI6T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c21lbW9yeWRiY2x1c3RlclxWMVxHUEJNZXRhZGF0YeoCM09yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzbWVtb3J5ZGJjbHVzdGVyOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsMemorydbClusterSpec defines the desired configuration for an Amazon MemoryDB
@@ -43,18 +43,22 @@ export const file_org_openmcf_provider_aws_awsmemorydbcluster_v1_spec: GenFile =
  * - `data_tiering` is ForceNew — only available on specific node types (db.r6gd.*).
  * - Credentials, region, and deployment workflow live outside this spec in stack inputs.
  *
- * ---------------------------------------------------------------------------
- * Engine
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awsmemorydbcluster.v1.AwsMemorydbClusterSpec
  */
 export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemorydbcluster.v1.AwsMemorydbClusterSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * Cache engine to use. Redis is the standard choice; Valkey is the
    * open-source Redis-compatible alternative. Values: "redis", "valkey".
    *
-   * @generated from field: string engine = 1;
+   * @generated from field: string engine = 2;
    */
   engine: string;
 
@@ -62,14 +66,14 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * Engine version to deploy. Examples: "7.1", "7.0", "6.2" for Redis;
    * "7.2" for Valkey. Leave empty to use the provider default.
    *
-   * @generated from field: string engine_version = 2;
+   * @generated from field: string engine_version = 3;
    */
   engineVersion: string;
 
   /**
    * Human-readable description for the cluster.
    *
-   * @generated from field: string description = 3;
+   * @generated from field: string description = 4;
    */
   description: string;
 
@@ -78,7 +82,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * Examples: "db.t4g.small" (dev), "db.r7g.large" (production),
    * "db.r6gd.xlarge" (data tiering).
    *
-   * @generated from field: string node_type = 4;
+   * @generated from field: string node_type = 5;
    */
   nodeType: string;
 
@@ -86,7 +90,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * Port on which the cluster accepts connections. Default: 6379.
    * ForceNew — changing it destroys and recreates the cluster.
    *
-   * @generated from field: optional int32 port = 5;
+   * @generated from field: optional int32 port = 6;
    */
   port?: number;
 
@@ -94,7 +98,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * Number of shards (data partitions) in the cluster. Each shard holds a
    * portion of the keyspace. Default: 1.
    *
-   * @generated from field: optional int32 num_shards = 6;
+   * @generated from field: optional int32 num_shards = 7;
    */
   numShards?: number;
 
@@ -102,7 +106,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * Number of read replicas per shard. Range: 0–5. Default: 1 (i.e., each
    * shard has 1 primary + 1 replica = 2 nodes).
    *
-   * @generated from field: optional int32 num_replicas_per_shard = 7;
+   * @generated from field: optional int32 num_replicas_per_shard = 8;
    */
   numReplicasPerShard?: number;
 
@@ -113,7 +117,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * TLS is enabled) or reference a custom ACL for production.
    * When tls_enabled is false, this must be "open-access".
    *
-   * @generated from field: optional string acl_name = 8;
+   * @generated from field: optional string acl_name = 9;
    */
   aclName?: string;
 
@@ -122,7 +126,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * AZs for multi-AZ resilience. A subnet group is created automatically from
    * these subnets.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 9;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 10;
    */
   subnetIds: StringValueOrRef[];
 
@@ -130,7 +134,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * VPC security groups to attach to the cluster nodes. Controls network-level
    * access to the MemoryDB endpoint.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 10;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 11;
    */
   securityGroupIds: StringValueOrRef[];
 
@@ -139,7 +143,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * acl_name must be "open-access". ForceNew — changing it destroys and
    * recreates the cluster.
    *
-   * @generated from field: optional bool tls_enabled = 11;
+   * @generated from field: optional bool tls_enabled = 12;
    */
   tlsEnabled?: boolean;
 
@@ -148,7 +152,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * data at rest; this field optionally specifies your own key instead of the
    * AWS-managed key. ForceNew — changing it destroys and recreates the cluster.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 12;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 13;
    */
   kmsKeyId?: StringValueOrRef;
 
@@ -156,7 +160,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * Weekly maintenance window in UTC. Format: "ddd:hh24:mi-ddd:hh24:mi".
    * Example: "sun:05:00-sun:06:00". Leave empty for AWS-assigned default.
    *
-   * @generated from field: string maintenance_window = 13;
+   * @generated from field: string maintenance_window = 14;
    */
   maintenanceWindow: string;
 
@@ -164,7 +168,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * Number of days to retain automatic snapshots. 0 disables automatic snapshots.
    * Range: 0–35.
    *
-   * @generated from field: int32 snapshot_retention_limit = 14;
+   * @generated from field: int32 snapshot_retention_limit = 15;
    */
   snapshotRetentionLimit: number;
 
@@ -172,7 +176,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * Daily snapshot window in UTC. Format: "hh24:mi-hh24:mi".
    * Example: "05:00-09:00". Leave empty for AWS-assigned default.
    *
-   * @generated from field: string snapshot_window = 15;
+   * @generated from field: string snapshot_window = 16;
    */
   snapshotWindow: string;
 
@@ -180,7 +184,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * Name of the final snapshot to create when the cluster is deleted. If not
    * provided, no final snapshot is created.
    *
-   * @generated from field: string final_snapshot_name = 16;
+   * @generated from field: string final_snapshot_name = 17;
    */
   finalSnapshotName: string;
 
@@ -189,7 +193,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * ForceNew — only used at cluster creation time. Mutually exclusive with
    * snapshot_name.
    *
-   * @generated from field: repeated string snapshot_arns = 17;
+   * @generated from field: repeated string snapshot_arns = 18;
    */
   snapshotArns: string[];
 
@@ -197,7 +201,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * Name of a MemoryDB snapshot to restore from. ForceNew — only used at
    * cluster creation time. Mutually exclusive with snapshot_arns.
    *
-   * @generated from field: string snapshot_name = 18;
+   * @generated from field: string snapshot_name = 19;
    */
   snapshotName: string;
 
@@ -205,7 +209,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * Parameter group family. Required when `parameters` is provided.
    * Examples: "memorydb_redis7", "memorydb_redis6".
    *
-   * @generated from field: string parameter_group_family = 19;
+   * @generated from field: string parameter_group_family = 20;
    */
   parameterGroupFamily: string;
 
@@ -213,7 +217,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * Custom MemoryDB parameters to apply via a managed parameter group.
    * Common examples: activedefrag, maxmemory-policy.
    *
-   * @generated from field: repeated org.openmcf.provider.aws.awsmemorydbcluster.v1.AwsMemorydbClusterParameter parameters = 20;
+   * @generated from field: repeated org.openmcf.provider.aws.awsmemorydbcluster.v1.AwsMemorydbClusterParameter parameters = 21;
    */
   parameters: AwsMemorydbClusterParameter[];
 
@@ -221,7 +225,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * SNS topic ARN for cluster event notifications (failover, maintenance,
    * configuration changes, etc.).
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef sns_topic_arn = 21;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef sns_topic_arn = 22;
    */
   snsTopicArn?: StringValueOrRef;
 
@@ -229,7 +233,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * Automatically apply minor engine version upgrades during maintenance windows.
    * Default: true.
    *
-   * @generated from field: optional bool auto_minor_version_upgrade = 22;
+   * @generated from field: optional bool auto_minor_version_upgrade = 23;
    */
   autoMinorVersionUpgrade?: boolean;
 
@@ -238,7 +242,7 @@ export type AwsMemorydbClusterSpec = Message<"org.openmcf.provider.aws.awsmemory
    * SSD storage for cost efficiency with large datasets. Only available on
    * specific node types (db.r6gd.*). ForceNew — cannot be changed after creation.
    *
-   * @generated from field: bool data_tiering = 23;
+   * @generated from field: bool data_tiering = 24;
    */
   dataTiering: boolean;
 };

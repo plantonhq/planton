@@ -19,6 +19,7 @@ This preset creates an EC2 instance accessible via traditional SSH through a bas
 
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
+| `<aws-region>` | AWS region where the instance will be created (e.g., `us-west-2`) | AWS region list |
 | `<instance-name>` | Name tag for the EC2 instance (e.g., `dev-server-01`) | Your naming convention |
 | `<ami-id>` | Amazon Machine Image ID (e.g., `ami-0abcdef1234567890`) | AWS EC2 AMI catalog |
 | `<private-subnet-id>` | Subnet ID where the instance will launch | AWS VPC console or `AwsVpc` status outputs |

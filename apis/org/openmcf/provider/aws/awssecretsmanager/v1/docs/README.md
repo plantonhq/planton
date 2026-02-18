@@ -433,6 +433,7 @@ kind: AwsSecretsManager
 metadata:
   name: myapp-prod-secrets
 spec:
+  region: us-west-2
   secretNames:
     - myapp/prod/DB_PASSWORD
     - myapp/prod/API_KEY

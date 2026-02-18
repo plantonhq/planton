@@ -39,7 +39,6 @@ kind: AwsEksCluster
 metadata:
   name: my-basic-aws-eks-cluster
 spec:
-  awsProviderConfigId: my-aws-credential-id
   region: us-west-2
   workersManagementMode: MANAGED
 ```
@@ -81,7 +80,6 @@ kind: AwsEksCluster
 metadata:
   name: my-env-aws-eks-cluster
 spec:
-  awsProviderConfigId: ${AWS_CREDENTIAL_ID}
   region: ${AWS_REGION}
   workersManagementMode: ${WORKERS_MANAGEMENT_MODE}
 ```
@@ -98,7 +96,6 @@ kind: AwsEksCluster
 metadata:
   name: my-secret-aws-eks-cluster
 spec:
-  awsProviderConfigId: my-aws-credential-id
   region: us-west-2
   workersManagementMode: MANAGED
   someSecretConfig: ${awssm-my-org-prod-aws-secrets.secret-key}
@@ -114,4 +111,4 @@ In this example:
 
 These examples illustrate how to define an AWS EKS Cluster using the `AwsEksCluster` API resource. Since the `spec` is minimal, we have provided a few examples to demonstrate how to specify different configurations.
 
-Please ensure that you replace placeholder values like `my-aws-credential-id`, `vpc-0123456789abcdef0`, environment variable names, and secret references with your actual configuration details.
+Please ensure that you replace placeholder values like `vpc-0123456789abcdef0`, environment variable names, and secret references with your actual configuration details.

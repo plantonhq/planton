@@ -28,6 +28,7 @@ var _ = ginkgo.Describe("AwsEksClusterSpec Custom Validation Tests", func() {
 						Name: "test-eks-cluster",
 					},
 					Spec: &AwsEksClusterSpec{
+						Region: "us-west-2",
 						SubnetIds: []*foreignkeyv1.StringValueOrRef{
 							{
 								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-abc123"},

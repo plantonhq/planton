@@ -34,6 +34,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsFsxOpenzfsFileSystem.my-openzfs
 spec:
+  region: us-east-1
   storageCapacityGib: 256
   throughputCapacity: 160
   subnetIds:
@@ -54,6 +55,7 @@ This creates a SINGLE_AZ_2 OpenZFS file system with 256 GiB SSD storage, 160 MB/
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the FSx OpenZFS file system will be created (e.g., `us-east-1`). | Required; non-empty |
 | `storageCapacityGib` | `int32` | Storage capacity in GiB | Minimum 64 |
 | `throughputCapacity` | `int32` | Throughput in MB/s. Valid values depend on deployment type. SINGLE_AZ_1: 64–4096. SINGLE_AZ_2/MULTI_AZ_1: 160–10240. | Must be greater than 0 |
 | `subnetIds` | `StringValueOrRef[]` | Subnet IDs. 1 for SINGLE_AZ, 2 for MULTI_AZ. Can reference AwsVpc via `valueFrom`. | Minimum 1 item |
@@ -100,6 +102,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsFsxOpenzfsFileSystem.app-storage
 spec:
+  region: us-east-1
   deploymentType: SINGLE_AZ_2
   storageCapacityGib: 1024
   throughputCapacity: 640
@@ -137,6 +140,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsFsxOpenzfsFileSystem.ha-nfs
 spec:
+  region: us-east-1
   deploymentType: MULTI_AZ_1
   storageCapacityGib: 2048
   throughputCapacity: 1280
@@ -190,6 +194,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsFsxOpenzfsFileSystem.ref-nfs
 spec:
+  region: us-east-1
   storageCapacityGib: 512
   throughputCapacity: 320
   subnetIds:

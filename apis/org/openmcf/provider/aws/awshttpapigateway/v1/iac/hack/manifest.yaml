@@ -3,6 +3,7 @@ kind: AwsHttpApiGateway
 metadata:
   name: test-http-api
 spec:
+  region: us-west-2
   description: Test HTTP API Gateway
   routes:
     - route_key: "$default"

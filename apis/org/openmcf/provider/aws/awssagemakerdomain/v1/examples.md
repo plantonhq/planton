@@ -14,6 +14,7 @@ kind: AwsSagemakerDomain
 metadata:
   name: dev-ml-sandbox
 spec:
+  region: us-east-1
   authMode: IAM
   vpcId:
     value: vpc-0abc123def456789
@@ -43,6 +44,7 @@ kind: AwsSagemakerDomain
 metadata:
   name: secure-ml-domain
 spec:
+  region: us-east-1
   authMode: IAM
   vpcId:
     value: vpc-0secure987654321
@@ -82,6 +84,7 @@ kind: AwsSagemakerDomain
 metadata:
   name: team-notebooks
 spec:
+  region: us-east-1
   authMode: IAM
   vpcId:
     value: vpc-0team123456789
@@ -130,6 +133,7 @@ kind: AwsSagemakerDomain
 metadata:
   name: custom-kernels-domain
 spec:
+  region: us-east-1
   authMode: IAM
   vpcId:
     value: vpc-0kernels123456
@@ -183,6 +187,7 @@ kind: AwsSagemakerDomain
 metadata:
   name: docker-ml-dev
 spec:
+  region: us-east-1
   authMode: IAM
   vpcId:
     value: vpc-0docker123456789
@@ -235,6 +240,7 @@ kind: AwsSagemakerDomain
 metadata:
   name: prod-ml-platform
 spec:
+  region: us-east-1
   authMode: SSO
   vpcId:
     valueFrom:

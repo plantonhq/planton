@@ -29,6 +29,7 @@ var _ = ginkgo.Describe("AwsAlbSpec Custom Validation Tests", func() {
 						Name: "test-alb-resource",
 					},
 					Spec: &AwsAlbSpec{
+						Region: "us-west-2",
 						Subnets: []*foreignkeyv1.StringValueOrRef{
 							{
 								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"},

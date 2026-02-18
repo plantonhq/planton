@@ -14,7 +14,7 @@ import type { JsonObject, Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awssnstopic/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awssnstopic_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjJvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzc25zdG9waWMvdjEvc3BlYy5wcm90bxInb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3Nuc3RvcGljLnYxIqsJCg9Bd3NTbnNUb3BpY1NwZWMSEgoKZmlmb190b3BpYxgBIAEoCBIjChtjb250ZW50X2Jhc2VkX2RlZHVwbGljYXRpb24YAiABKAgSHQoVZmlmb190aHJvdWdocHV0X3Njb3BlGAMgASgJEhQKDGRpc3BsYXlfbmFtZRgEIAEoCRJnCgprbXNfa2V5X2lkGAUgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybhInCgZwb2xpY3kYBiABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0EhcKD2RlbGl2ZXJ5X3BvbGljeRgHIAEoCRIWCg50cmFjaW5nX2NvbmZpZxgIIAEoCRIZChFzaWduYXR1cmVfdmVyc2lvbhgJIAEoBRJXCg1zdWJzY3JpcHRpb25zGAogAygLMkAub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3Nuc3RvcGljLnYxLkF3c1Nuc1RvcGljU3Vic2NyaXB0aW9uOvIFukjuBRq7AQopY29udGVudF9iYXNlZF9kZWR1cGxpY2F0aW9uX3JlcXVpcmVzX2ZpZm8SWGNvbnRlbnRfYmFzZWRfZGVkdXBsaWNhdGlvbiBjYW4gb25seSBiZSBlbmFibGVkIG9uIEZJRk8gdG9waWNzIChmaWZvX3RvcGljIG11c3QgYmUgdHJ1ZSkaNCF0aGlzLmNvbnRlbnRfYmFzZWRfZGVkdXBsaWNhdGlvbiB8fCB0aGlzLmZpZm9fdG9waWMa8gEKI2ZpZm9fdGhyb3VnaHB1dF9zY29wZV9yZXF1aXJlc19maWZvEllmaWZvX3Rocm91Z2hwdXRfc2NvcGUgaXMgb25seSB2YWxpZCBmb3IgRklGTyB0b3BpY3MgYW5kIG11c3QgYmUgJ1RvcGljJyBvciAnTWVzc2FnZUdyb3VwJxpwdGhpcy5maWZvX3Rocm91Z2hwdXRfc2NvcGUgPT0gJycgfHwgKHRoaXMuZmlmb190b3BpYyAmJiB0aGlzLmZpZm9fdGhyb3VnaHB1dF9zY29wZSBpbiBbJ1RvcGljJywgJ01lc3NhZ2VHcm91cCddKRqVAQoXc2lnbmF0dXJlX3ZlcnNpb25fdmFsaWQSOXNpZ25hdHVyZV92ZXJzaW9uIG11c3QgYmUgMSAoU0hBMSkgb3IgMiAoU0hBMjU2KSB3aGVuIHNldBo/dGhpcy5zaWduYXR1cmVfdmVyc2lvbiA9PSAwIHx8IHRoaXMuc2lnbmF0dXJlX3ZlcnNpb24gaW4gWzEsIDJdGqABChR0cmFjaW5nX2NvbmZpZ192YWxpZBI5dHJhY2luZ19jb25maWcgbXVzdCBiZSAnQWN0aXZlJyBvciAnUGFzc1Rocm91Z2gnIHdoZW4gc2V0Gk10aGlzLnRyYWNpbmdfY29uZmlnID09ICcnIHx8IHRoaXMudHJhY2luZ19jb25maWcgaW4gWydBY3RpdmUnLCAnUGFzc1Rocm91Z2gnXSLfCQoXQXdzU25zVG9waWNTdWJzY3JpcHRpb24SFAoEbmFtZRgBIAEoCUIGukgDyAEBEhgKCHByb3RvY29sGAIgASgJQga6SAPIAQESTAoIZW5kcG9pbnQYAyABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQga6SAPIAQESLgoNZmlsdGVyX3BvbGljeRgEIAEoCzIXLmdvb2dsZS5wcm90b2J1Zi5TdHJ1Y3QSGwoTZmlsdGVyX3BvbGljeV9zY29wZRgFIAEoCRIcChRyYXdfbWVzc2FnZV9kZWxpdmVyeRgGIAEoCBJgCg5yZWRyaXZlX2NvbmZpZxgHIAEoCzJILm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NzbnN0b3BpYy52MS5Bd3NTbnNTdWJzY3JpcHRpb25SZWRyaXZlQ29uZmlnEnMKFXN1YnNjcmlwdGlvbl9yb2xlX2FybhgIIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCIIjUYdABktRhF3N0YXR1cy5vdXRwdXRzLnJvbGVfYXJuOoMGukj/BRrgAQoOcHJvdG9jb2xfdmFsaWQSYHByb3RvY29sIG11c3QgYmUgb25lIG9mOiBzcXMsIGxhbWJkYSwgaHR0cCwgaHR0cHMsIGVtYWlsLCBlbWFpbC1qc29uLCBzbXMsIGZpcmVob3NlLCBhcHBsaWNhdGlvbhpsdGhpcy5wcm90b2NvbCBpbiBbJ3NxcycsICdsYW1iZGEnLCAnaHR0cCcsICdodHRwcycsICdlbWFpbCcsICdlbWFpbC1qc29uJywgJ3NtcycsICdmaXJlaG9zZScsICdhcHBsaWNhdGlvbiddGsoBChlmaWx0ZXJfcG9saWN5X3Njb3BlX3ZhbGlkEklmaWx0ZXJfcG9saWN5X3Njb3BlIG11c3QgYmUgJ01lc3NhZ2VBdHRyaWJ1dGVzJyBvciAnTWVzc2FnZUJvZHknIHdoZW4gc2V0GmJ0aGlzLmZpbHRlcl9wb2xpY3lfc2NvcGUgPT0gJycgfHwgdGhpcy5maWx0ZXJfcG9saWN5X3Njb3BlIGluIFsnTWVzc2FnZUF0dHJpYnV0ZXMnLCAnTWVzc2FnZUJvZHknXRqdAQoqZmlsdGVyX3BvbGljeV9zY29wZV9yZXF1aXJlc19maWx0ZXJfcG9saWN5EjRmaWx0ZXJfcG9saWN5X3Njb3BlIHJlcXVpcmVzIGZpbHRlcl9wb2xpY3kgdG8gYmUgc2V0Gjl0aGlzLmZpbHRlcl9wb2xpY3lfc2NvcGUgPT0gJycgfHwgaGFzKHRoaXMuZmlsdGVyX3BvbGljeSkarAEKK3N1YnNjcmlwdGlvbl9yb2xlX2Fybl9yZXF1aXJlZF9mb3JfZmlyZWhvc2USPXN1YnNjcmlwdGlvbl9yb2xlX2FybiBpcyByZXF1aXJlZCB3aGVuIHByb3RvY29sIGlzICdmaXJlaG9zZScaPnRoaXMucHJvdG9jb2wgIT0gJ2ZpcmVob3NlJyB8fCBoYXModGhpcy5zdWJzY3JpcHRpb25fcm9sZV9hcm4pIp4BCh9Bd3NTbnNTdWJzY3JpcHRpb25SZWRyaXZlQ29uZmlnEnsKFmRlYWRfbGV0dGVyX3RhcmdldF9hcm4YASABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQie6SAPIAQGI1GHhAZLUYRhzdGF0dXMub3V0cHV0cy5xdWV1ZV9hcm5C1AIKK2NvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzc25zdG9waWMudjFCCVNwZWNQcm90b1ABWldnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c3Nuc3RvcGljL3YxO2F3c3Nuc3RvcGljdjGiAgVPT1BBQaoCJ09yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NzbnN0b3BpYy5WMcoCJ09yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NzbnN0b3BpY1xWMeICM09yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NzbnN0b3BpY1xWMVxHUEJNZXRhZGF0YeoCLE9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzc25zdG9waWM6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_google_protobuf_struct, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
+  fileDesc("CjJvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzc25zdG9waWMvdjEvc3BlYy5wcm90bxInb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3Nuc3RvcGljLnYxIsQJCg9Bd3NTbnNUb3BpY1NwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEhIKCmZpZm9fdG9waWMYAiABKAgSIwobY29udGVudF9iYXNlZF9kZWR1cGxpY2F0aW9uGAMgASgIEh0KFWZpZm9fdGhyb3VnaHB1dF9zY29wZRgEIAEoCRIUCgxkaXNwbGF5X25hbWUYBSABKAkSZwoKa21zX2tleV9pZBgGIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SJwoGcG9saWN5GAcgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdBIXCg9kZWxpdmVyeV9wb2xpY3kYCCABKAkSFgoOdHJhY2luZ19jb25maWcYCSABKAkSGQoRc2lnbmF0dXJlX3ZlcnNpb24YCiABKAUSVwoNc3Vic2NyaXB0aW9ucxgLIAMoCzJALm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NzbnN0b3BpYy52MS5Bd3NTbnNUb3BpY1N1YnNjcmlwdGlvbjryBbpI7gUauwEKKWNvbnRlbnRfYmFzZWRfZGVkdXBsaWNhdGlvbl9yZXF1aXJlc19maWZvElhjb250ZW50X2Jhc2VkX2RlZHVwbGljYXRpb24gY2FuIG9ubHkgYmUgZW5hYmxlZCBvbiBGSUZPIHRvcGljcyAoZmlmb190b3BpYyBtdXN0IGJlIHRydWUpGjQhdGhpcy5jb250ZW50X2Jhc2VkX2RlZHVwbGljYXRpb24gfHwgdGhpcy5maWZvX3RvcGljGvIBCiNmaWZvX3Rocm91Z2hwdXRfc2NvcGVfcmVxdWlyZXNfZmlmbxJZZmlmb190aHJvdWdocHV0X3Njb3BlIGlzIG9ubHkgdmFsaWQgZm9yIEZJRk8gdG9waWNzIGFuZCBtdXN0IGJlICdUb3BpYycgb3IgJ01lc3NhZ2VHcm91cCcacHRoaXMuZmlmb190aHJvdWdocHV0X3Njb3BlID09ICcnIHx8ICh0aGlzLmZpZm9fdG9waWMgJiYgdGhpcy5maWZvX3Rocm91Z2hwdXRfc2NvcGUgaW4gWydUb3BpYycsICdNZXNzYWdlR3JvdXAnXSkalQEKF3NpZ25hdHVyZV92ZXJzaW9uX3ZhbGlkEjlzaWduYXR1cmVfdmVyc2lvbiBtdXN0IGJlIDEgKFNIQTEpIG9yIDIgKFNIQTI1Nikgd2hlbiBzZXQaP3RoaXMuc2lnbmF0dXJlX3ZlcnNpb24gPT0gMCB8fCB0aGlzLnNpZ25hdHVyZV92ZXJzaW9uIGluIFsxLCAyXRqgAQoUdHJhY2luZ19jb25maWdfdmFsaWQSOXRyYWNpbmdfY29uZmlnIG11c3QgYmUgJ0FjdGl2ZScgb3IgJ1Bhc3NUaHJvdWdoJyB3aGVuIHNldBpNdGhpcy50cmFjaW5nX2NvbmZpZyA9PSAnJyB8fCB0aGlzLnRyYWNpbmdfY29uZmlnIGluIFsnQWN0aXZlJywgJ1Bhc3NUaHJvdWdoJ10i3wkKF0F3c1Nuc1RvcGljU3Vic2NyaXB0aW9uEhQKBG5hbWUYASABKAlCBrpIA8gBARIYCghwcm90b2NvbBgCIAEoCUIGukgDyAEBEkwKCGVuZHBvaW50GAMgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIGukgDyAEBEi4KDWZpbHRlcl9wb2xpY3kYBCABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0EhsKE2ZpbHRlcl9wb2xpY3lfc2NvcGUYBSABKAkSHAoUcmF3X21lc3NhZ2VfZGVsaXZlcnkYBiABKAgSYAoOcmVkcml2ZV9jb25maWcYByABKAsySC5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzc25zdG9waWMudjEuQXdzU25zU3Vic2NyaXB0aW9uUmVkcml2ZUNvbmZpZxJzChVzdWJzY3JpcHRpb25fcm9sZV9hcm4YCCABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQiCI1GHQAZLUYRdzdGF0dXMub3V0cHV0cy5yb2xlX2FybjqDBrpI/wUa4AEKDnByb3RvY29sX3ZhbGlkEmBwcm90b2NvbCBtdXN0IGJlIG9uZSBvZjogc3FzLCBsYW1iZGEsIGh0dHAsIGh0dHBzLCBlbWFpbCwgZW1haWwtanNvbiwgc21zLCBmaXJlaG9zZSwgYXBwbGljYXRpb24abHRoaXMucHJvdG9jb2wgaW4gWydzcXMnLCAnbGFtYmRhJywgJ2h0dHAnLCAnaHR0cHMnLCAnZW1haWwnLCAnZW1haWwtanNvbicsICdzbXMnLCAnZmlyZWhvc2UnLCAnYXBwbGljYXRpb24nXRrKAQoZZmlsdGVyX3BvbGljeV9zY29wZV92YWxpZBJJZmlsdGVyX3BvbGljeV9zY29wZSBtdXN0IGJlICdNZXNzYWdlQXR0cmlidXRlcycgb3IgJ01lc3NhZ2VCb2R5JyB3aGVuIHNldBpidGhpcy5maWx0ZXJfcG9saWN5X3Njb3BlID09ICcnIHx8IHRoaXMuZmlsdGVyX3BvbGljeV9zY29wZSBpbiBbJ01lc3NhZ2VBdHRyaWJ1dGVzJywgJ01lc3NhZ2VCb2R5J10anQEKKmZpbHRlcl9wb2xpY3lfc2NvcGVfcmVxdWlyZXNfZmlsdGVyX3BvbGljeRI0ZmlsdGVyX3BvbGljeV9zY29wZSByZXF1aXJlcyBmaWx0ZXJfcG9saWN5IHRvIGJlIHNldBo5dGhpcy5maWx0ZXJfcG9saWN5X3Njb3BlID09ICcnIHx8IGhhcyh0aGlzLmZpbHRlcl9wb2xpY3kpGqwBCitzdWJzY3JpcHRpb25fcm9sZV9hcm5fcmVxdWlyZWRfZm9yX2ZpcmVob3NlEj1zdWJzY3JpcHRpb25fcm9sZV9hcm4gaXMgcmVxdWlyZWQgd2hlbiBwcm90b2NvbCBpcyAnZmlyZWhvc2UnGj50aGlzLnByb3RvY29sICE9ICdmaXJlaG9zZScgfHwgaGFzKHRoaXMuc3Vic2NyaXB0aW9uX3JvbGVfYXJuKSKeAQofQXdzU25zU3Vic2NyaXB0aW9uUmVkcml2ZUNvbmZpZxJ7ChZkZWFkX2xldHRlcl90YXJnZXRfYXJuGAEgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkInukgDyAEBiNRh4QGS1GEYc3RhdHVzLm91dHB1dHMucXVldWVfYXJuQtQCCitjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3Nuc3RvcGljLnYxQglTcGVjUHJvdG9QAVpXZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NzbnN0b3BpYy92MTthd3NzbnN0b3BpY3YxogIFT09QQUGqAidPcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzc25zdG9waWMuVjHKAidPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzc25zdG9waWNcVjHiAjNPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzc25zdG9waWNcVjFcR1BCTWV0YWRhdGHqAixPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c3Nuc3RvcGljOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_google_protobuf_struct, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
 
 /**
  * AwsSnsTopicSpec defines the desired configuration for an AWS SNS topic.
@@ -35,19 +35,23 @@ export const file_org_openmcf_provider_aws_awssnstopic_v1_spec: GenFile = /*@__P
  *   map for downstream reference.
  * - Credentials, region, and deployment workflow live outside this spec in stack inputs.
  *
- * ---------------------------------------------------------------------------
- * Topic type
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awssnstopic.v1.AwsSnsTopicSpec
  */
 export type AwsSnsTopicSpec = Message<"org.openmcf.provider.aws.awssnstopic.v1.AwsSnsTopicSpec"> & {
+  /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * Whether to create a FIFO topic. Standard topics are created when false.
    * FIFO topics guarantee strict ordering and exactly-once delivery to SQS FIFO
    * queue subscribers. This setting cannot be changed after topic creation.
    *
-   * @generated from field: bool fifo_topic = 1;
+   * @generated from field: bool fifo_topic = 2;
    */
   fifoTopic: boolean;
 
@@ -57,7 +61,7 @@ export type AwsSnsTopicSpec = Message<"org.openmcf.provider.aws.awssnstopic.v1.A
    * need for the publisher to supply an explicit deduplication ID.
    * Only valid when `fifo_topic` is true.
    *
-   * @generated from field: bool content_based_deduplication = 2;
+   * @generated from field: bool content_based_deduplication = 3;
    */
   contentBasedDeduplication: boolean;
 
@@ -66,7 +70,7 @@ export type AwsSnsTopicSpec = Message<"org.openmcf.provider.aws.awssnstopic.v1.A
    * applies per topic or per message group.
    * Valid values: "Topic", "MessageGroup". Only valid when `fifo_topic` is true.
    *
-   * @generated from field: string fifo_throughput_scope = 3;
+   * @generated from field: string fifo_throughput_scope = 4;
    */
   fifoThroughputScope: string;
 
@@ -75,7 +79,7 @@ export type AwsSnsTopicSpec = Message<"org.openmcf.provider.aws.awssnstopic.v1.A
    * messages and as a readable identifier in the AWS console. Maximum 256
    * characters for Standard topics, 10 characters for SMS display names.
    *
-   * @generated from field: string display_name = 4;
+   * @generated from field: string display_name = 5;
    */
   displayName: string;
 
@@ -86,7 +90,7 @@ export type AwsSnsTopicSpec = Message<"org.openmcf.provider.aws.awssnstopic.v1.A
    * messages at rest (unlike SQS, SNS has no "managed SSE" option — encryption
    * requires an explicit KMS key).
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 5;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 6;
    */
   kmsKeyId?: StringValueOrRef;
 
@@ -97,7 +101,7 @@ export type AwsSnsTopicSpec = Message<"org.openmcf.provider.aws.awssnstopic.v1.A
    * permission to publish, allowing cross-account subscriptions, or restricting
    * publishing to specific IAM roles.
    *
-   * @generated from field: google.protobuf.Struct policy = 6;
+   * @generated from field: google.protobuf.Struct policy = 7;
    */
   policy?: JsonObject;
 
@@ -107,7 +111,7 @@ export type AwsSnsTopicSpec = Message<"org.openmcf.provider.aws.awssnstopic.v1.A
    * and throttle behavior for HTTP/S subscriptions. Most users do not need to
    * customize this. When not set, AWS applies its default delivery policy.
    *
-   * @generated from field: string delivery_policy = 7;
+   * @generated from field: string delivery_policy = 8;
    */
   deliveryPolicy: string;
 
@@ -117,7 +121,7 @@ export type AwsSnsTopicSpec = Message<"org.openmcf.provider.aws.awssnstopic.v1.A
    * header but does not sample. Leave empty to use the AWS default (PassThrough).
    * Valid values: "Active", "PassThrough".
    *
-   * @generated from field: string tracing_config = 8;
+   * @generated from field: string tracing_config = 9;
    */
   tracingConfig: string;
 
@@ -126,7 +130,7 @@ export type AwsSnsTopicSpec = Message<"org.openmcf.provider.aws.awssnstopic.v1.A
    * SHA256 (version 2) is recommended for new topics. Leave at 0 to use the
    * AWS default (version 1).
    *
-   * @generated from field: int32 signature_version = 9;
+   * @generated from field: int32 signature_version = 10;
    */
   signatureVersion: number;
 
@@ -136,7 +140,7 @@ export type AwsSnsTopicSpec = Message<"org.openmcf.provider.aws.awssnstopic.v1.A
    * is used as the key in the `subscription_arns` output map, enabling downstream
    * resources to reference specific subscription ARNs via `valueFrom`.
    *
-   * @generated from field: repeated org.openmcf.provider.aws.awssnstopic.v1.AwsSnsTopicSubscription subscriptions = 10;
+   * @generated from field: repeated org.openmcf.provider.aws.awssnstopic.v1.AwsSnsTopicSubscription subscriptions = 11;
    */
   subscriptions: AwsSnsTopicSubscription[];
 };

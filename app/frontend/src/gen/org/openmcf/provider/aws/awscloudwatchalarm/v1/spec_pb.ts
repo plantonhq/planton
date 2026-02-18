@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awscloudwatchalarm/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awscloudwatchalarm_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjlvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzY2xvdWR3YXRjaGFsYXJtL3YxL3NwZWMucHJvdG8SLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NjbG91ZHdhdGNoYWxhcm0udjEi1B4KFkF3c0Nsb3Vkd2F0Y2hBbGFybVNwZWMSIwoTY29tcGFyaXNvbl9vcGVyYXRvchgBIAEoCUIGukgDyAEBEiMKEmV2YWx1YXRpb25fcGVyaW9kcxgCIAEoBUIHukgEGgIoARIbChNkYXRhcG9pbnRzX3RvX2FsYXJtGAMgASgFEhEKCXRocmVzaG9sZBgEIAEoARIlChN0aHJlc2hvbGRfbWV0cmljX2lkGAUgASgJQgi6SAVyAxj/ARIaChJ0cmVhdF9taXNzaW5nX2RhdGEYBiABKAkSFwoPYWN0aW9uc19lbmFibGVkGAcgASgIEh0KC21ldHJpY19uYW1lGAggASgJQgi6SAVyAxj/ARIbCgluYW1lc3BhY2UYCSABKAlCCLpIBXIDGP8BEg4KBnBlcmlvZBgKIAEoBRIRCglzdGF0aXN0aWMYCyABKAkSGgoSZXh0ZW5kZWRfc3RhdGlzdGljGAwgASgJEmoKCmRpbWVuc2lvbnMYDSADKAsyVi5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzY2xvdWR3YXRjaGFsYXJtLnYxLkF3c0Nsb3Vkd2F0Y2hBbGFybVNwZWMuRGltZW5zaW9uc0VudHJ5EgwKBHVuaXQYDiABKAkSZQoObWV0cmljX3F1ZXJpZXMYDyADKAsyTS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzY2xvdWR3YXRjaGFsYXJtLnYxLkF3c0Nsb3Vkd2F0Y2hBbGFybU1ldHJpY1F1ZXJ5EmwKDWFsYXJtX2FjdGlvbnMYECADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQiGI1GHiAZLUYRhzdGF0dXMub3V0cHV0cy50b3BpY19hcm4SaQoKb2tfYWN0aW9ucxgRIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCIYjUYeIBktRhGHN0YXR1cy5vdXRwdXRzLnRvcGljX2FybhJ4ChlpbnN1ZmZpY2llbnRfZGF0YV9hY3Rpb25zGBIgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIhiNRh4gGS1GEYc3RhdHVzLm91dHB1dHMudG9waWNfYXJuEiMKEWFsYXJtX2Rlc2NyaXB0aW9uGBMgASgJQgi6SAVyAxiACBItCiVldmFsdWF0ZV9sb3dfc2FtcGxlX2NvdW50X3BlcmNlbnRpbGVzGBQgASgJGjEKD0RpbWVuc2lvbnNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBOq0WukipFhrvAwoZY29tcGFyaXNvbl9vcGVyYXRvcl92YWxpZBLjAWNvbXBhcmlzb25fb3BlcmF0b3IgbXVzdCBiZSBvbmUgb2Y6IEdyZWF0ZXJUaGFuT3JFcXVhbFRvVGhyZXNob2xkLCBHcmVhdGVyVGhhblRocmVzaG9sZCwgTGVzc1RoYW5UaHJlc2hvbGQsIExlc3NUaGFuT3JFcXVhbFRvVGhyZXNob2xkLCBMZXNzVGhhbkxvd2VyT3JHcmVhdGVyVGhhblVwcGVyVGhyZXNob2xkLCBMZXNzVGhhbkxvd2VyVGhyZXNob2xkLCBHcmVhdGVyVGhhblVwcGVyVGhyZXNob2xkGusBdGhpcy5jb21wYXJpc29uX29wZXJhdG9yIGluIFsnR3JlYXRlclRoYW5PckVxdWFsVG9UaHJlc2hvbGQnLCAnR3JlYXRlclRoYW5UaHJlc2hvbGQnLCAnTGVzc1RoYW5UaHJlc2hvbGQnLCAnTGVzc1RoYW5PckVxdWFsVG9UaHJlc2hvbGQnLCAnTGVzc1RoYW5Mb3dlck9yR3JlYXRlclRoYW5VcHBlclRocmVzaG9sZCcsICdMZXNzVGhhbkxvd2VyVGhyZXNob2xkJywgJ0dyZWF0ZXJUaGFuVXBwZXJUaHJlc2hvbGQnXRrEAQoPc3RhdGlzdGljX3ZhbGlkEk5zdGF0aXN0aWMgbXVzdCBiZSBvbmUgb2Y6IFNhbXBsZUNvdW50LCBBdmVyYWdlLCBTdW0sIE1pbmltdW0sIE1heGltdW0gd2hlbiBzZXQaYXRoaXMuc3RhdGlzdGljID09ICcnIHx8IHRoaXMuc3RhdGlzdGljIGluIFsnU2FtcGxlQ291bnQnLCAnQXZlcmFnZScsICdTdW0nLCAnTWluaW11bScsICdNYXhpbXVtJ10a4AEKGHRyZWF0X21pc3NpbmdfZGF0YV92YWxpZBJUdHJlYXRfbWlzc2luZ19kYXRhIG11c3QgYmUgb25lIG9mOiBtaXNzaW5nLCBpZ25vcmUsIGJyZWFjaGluZywgbm90QnJlYWNoaW5nIHdoZW4gc2V0Gm50aGlzLnRyZWF0X21pc3NpbmdfZGF0YSA9PSAnJyB8fCB0aGlzLnRyZWF0X21pc3NpbmdfZGF0YSBpbiBbJ21pc3NpbmcnLCAnaWdub3JlJywgJ2JyZWFjaGluZycsICdub3RCcmVhY2hpbmcnXRr2AQorZXZhbHVhdGVfbG93X3NhbXBsZV9jb3VudF9wZXJjZW50aWxlc192YWxpZBJNZXZhbHVhdGVfbG93X3NhbXBsZV9jb3VudF9wZXJjZW50aWxlcyBtdXN0IGJlICdldmFsdWF0ZScgb3IgJ2lnbm9yZScgd2hlbiBzZXQaeHRoaXMuZXZhbHVhdGVfbG93X3NhbXBsZV9jb3VudF9wZXJjZW50aWxlcyA9PSAnJyB8fCB0aGlzLmV2YWx1YXRlX2xvd19zYW1wbGVfY291bnRfcGVyY2VudGlsZXMgaW4gWydldmFsdWF0ZScsICdpZ25vcmUnXRqXAQomc3RhdGlzdGljX2V4dGVuZGVkX3N0YXRpc3RpY19leGNsdXNpdmUSNm9ubHkgb25lIG9mIHN0YXRpc3RpYyBvciBleHRlbmRlZF9zdGF0aXN0aWMgbWF5IGJlIHNldBo1dGhpcy5zdGF0aXN0aWMgPT0gJycgfHwgdGhpcy5leHRlbmRlZF9zdGF0aXN0aWMgPT0gJycasAEKH3NpbXBsZV9tZXRyaWNfb3JfbWV0cmljX3F1ZXJpZXMSU21ldHJpY19uYW1lIGFuZCBtZXRyaWNfcXVlcmllcyBhcmUgbXV0dWFsbHkgZXhjbHVzaXZlIOKAlCB1c2Ugb25lIG1vZGUgb3IgdGhlIG90aGVyGjh0aGlzLm1ldHJpY19uYW1lID09ICcnIHx8IHNpemUodGhpcy5tZXRyaWNfcXVlcmllcykgPT0gMBqDAQoWbWV0cmljX3NvdXJjZV9yZXF1aXJlZBIwZWl0aGVyIG1ldHJpY19uYW1lIG9yIG1ldHJpY19xdWVyaWVzIG11c3QgYmUgc2V0Gjd0aGlzLm1ldHJpY19uYW1lICE9ICcnIHx8IHNpemUodGhpcy5tZXRyaWNfcXVlcmllcykgPiAwGoQBCiNuYW1lc3BhY2VfcmVxdWlyZWRfd2l0aF9tZXRyaWNfbmFtZRItbmFtZXNwYWNlIGlzIHJlcXVpcmVkIHdoZW4gbWV0cmljX25hbWUgaXMgc2V0Gi50aGlzLm1ldHJpY19uYW1lID09ICcnIHx8IHRoaXMubmFtZXNwYWNlICE9ICcnGnkKIHBlcmlvZF9yZXF1aXJlZF93aXRoX21ldHJpY19uYW1lEipwZXJpb2QgaXMgcmVxdWlyZWQgd2hlbiBtZXRyaWNfbmFtZSBpcyBzZXQaKXRoaXMubWV0cmljX25hbWUgPT0gJycgfHwgdGhpcy5wZXJpb2QgPiAwGsIBCiNzdGF0aXN0aWNfcmVxdWlyZWRfd2l0aF9tZXRyaWNfbmFtZRJKb25lIG9mIHN0YXRpc3RpYyBvciBleHRlbmRlZF9zdGF0aXN0aWMgaXMgcmVxdWlyZWQgd2hlbiBtZXRyaWNfbmFtZSBpcyBzZXQaT3RoaXMubWV0cmljX25hbWUgPT0gJycgfHwgdGhpcy5zdGF0aXN0aWMgIT0gJycgfHwgdGhpcy5leHRlbmRlZF9zdGF0aXN0aWMgIT0gJycarwEKE3BlcmlvZF92YWxpZF92YWx1ZXMSN3BlcmlvZCBtdXN0IGJlIDEwLCAyMCwgMzAsIG9yIGEgbXVsdGlwbGUgb2YgNjAgd2hlbiBzZXQaX3RoaXMucGVyaW9kID09IDAgfHwgdGhpcy5wZXJpb2QgaW4gWzEwLCAyMCwgMzBdIHx8ICh0aGlzLnBlcmlvZCA+PSA2MCAmJiB0aGlzLnBlcmlvZCAlIDYwID09IDApGsgBCipkYXRhcG9pbnRzX3RvX2FsYXJtX2x0ZV9ldmFsdWF0aW9uX3BlcmlvZHMSRGRhdGFwb2ludHNfdG9fYWxhcm0gbXVzdCBiZSBsZXNzIHRoYW4gb3IgZXF1YWwgdG8gZXZhbHVhdGlvbl9wZXJpb2RzGlR0aGlzLmRhdGFwb2ludHNfdG9fYWxhcm0gPT0gMCB8fCB0aGlzLmRhdGFwb2ludHNfdG9fYWxhcm0gPD0gdGhpcy5ldmFsdWF0aW9uX3BlcmlvZHMaWwoVbWV0cmljX3F1ZXJpZXNfbWF4XzIwEiFtYXhpbXVtIDIwIG1ldHJpY19xdWVyaWVzIGFsbG93ZWQaH3NpemUodGhpcy5tZXRyaWNfcXVlcmllcykgPD0gMjAaVQoTYWxhcm1fYWN0aW9uc19tYXhfNRIfbWF4aW11bSA1IGFsYXJtX2FjdGlvbnMgYWxsb3dlZBodc2l6ZSh0aGlzLmFsYXJtX2FjdGlvbnMpIDw9IDUaTAoQb2tfYWN0aW9uc19tYXhfNRIcbWF4aW11bSA1IG9rX2FjdGlvbnMgYWxsb3dlZBoac2l6ZSh0aGlzLm9rX2FjdGlvbnMpIDw9IDUaeQofaW5zdWZmaWNpZW50X2RhdGFfYWN0aW9uc19tYXhfNRIrbWF4aW11bSA1IGluc3VmZmljaWVudF9kYXRhX2FjdGlvbnMgYWxsb3dlZBopc2l6ZSh0aGlzLmluc3VmZmljaWVudF9kYXRhX2FjdGlvbnMpIDw9IDUijQIKHUF3c0Nsb3Vkd2F0Y2hBbGFybU1ldHJpY1F1ZXJ5EhcKAmlkGAEgASgJQgu6SAjIAQFyAxj/ARIcCgpleHByZXNzaW9uGAIgASgJQgi6SAVyAxiACBJjCgZtZXRyaWMYAyABKAsyUy5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzY2xvdWR3YXRjaGFsYXJtLnYxLkF3c0Nsb3Vkd2F0Y2hBbGFybU1ldHJpY1F1ZXJ5TWV0cmljEg0KBWxhYmVsGAQgASgJEg4KBnBlcmlvZBgFIAEoBRITCgtyZXR1cm5fZGF0YRgGIAEoCBIcCgphY2NvdW50X2lkGAcgASgJQgi6SAVyAxj/ASLQAgojQXdzQ2xvdWR3YXRjaEFsYXJtTWV0cmljUXVlcnlNZXRyaWMSIAoLbWV0cmljX25hbWUYASABKAlCC7pICMgBAXIDGP8BEh4KCW5hbWVzcGFjZRgCIAEoCUILukgIyAEBcgMY/wESFwoGcGVyaW9kGAMgASgFQge6SAQaAigBEhQKBHN0YXQYBCABKAlCBrpIA8gBARJ3CgpkaW1lbnNpb25zGAUgAygLMmMub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2Nsb3Vkd2F0Y2hhbGFybS52MS5Bd3NDbG91ZHdhdGNoQWxhcm1NZXRyaWNRdWVyeU1ldHJpYy5EaW1lbnNpb25zRW50cnkSDAoEdW5pdBgGIAEoCRoxCg9EaW1lbnNpb25zRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4AUKFAwoyY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NjbG91ZHdhdGNoYWxhcm0udjFCCVNwZWNQcm90b1ABWmVnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c2Nsb3Vkd2F0Y2hhbGFybS92MTthd3NjbG91ZHdhdGNoYWxhcm12MaICBU9PUEFBqgIuT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2Nsb3Vkd2F0Y2hhbGFybS5WMcoCLk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NjbG91ZHdhdGNoYWxhcm1cVjHiAjpPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzY2xvdWR3YXRjaGFsYXJtXFYxXEdQQk1ldGFkYXRh6gIzT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NjbG91ZHdhdGNoYWxhcm06OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
+  fileDesc("Cjlvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzY2xvdWR3YXRjaGFsYXJtL3YxL3NwZWMucHJvdG8SLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NjbG91ZHdhdGNoYWxhcm0udjEi7R4KFkF3c0Nsb3Vkd2F0Y2hBbGFybVNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEiMKE2NvbXBhcmlzb25fb3BlcmF0b3IYAiABKAlCBrpIA8gBARIjChJldmFsdWF0aW9uX3BlcmlvZHMYAyABKAVCB7pIBBoCKAESGwoTZGF0YXBvaW50c190b19hbGFybRgEIAEoBRIRCgl0aHJlc2hvbGQYBSABKAESJQoTdGhyZXNob2xkX21ldHJpY19pZBgGIAEoCUIIukgFcgMY/wESGgoSdHJlYXRfbWlzc2luZ19kYXRhGAcgASgJEhcKD2FjdGlvbnNfZW5hYmxlZBgIIAEoCBIdCgttZXRyaWNfbmFtZRgJIAEoCUIIukgFcgMY/wESGwoJbmFtZXNwYWNlGAogASgJQgi6SAVyAxj/ARIOCgZwZXJpb2QYCyABKAUSEQoJc3RhdGlzdGljGAwgASgJEhoKEmV4dGVuZGVkX3N0YXRpc3RpYxgNIAEoCRJqCgpkaW1lbnNpb25zGA4gAygLMlYub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2Nsb3Vkd2F0Y2hhbGFybS52MS5Bd3NDbG91ZHdhdGNoQWxhcm1TcGVjLkRpbWVuc2lvbnNFbnRyeRIMCgR1bml0GA8gASgJEmUKDm1ldHJpY19xdWVyaWVzGBAgAygLMk0ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2Nsb3Vkd2F0Y2hhbGFybS52MS5Bd3NDbG91ZHdhdGNoQWxhcm1NZXRyaWNRdWVyeRJsCg1hbGFybV9hY3Rpb25zGBEgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIhiNRh4gGS1GEYc3RhdHVzLm91dHB1dHMudG9waWNfYXJuEmkKCm9rX2FjdGlvbnMYEiADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQiGI1GHiAZLUYRhzdGF0dXMub3V0cHV0cy50b3BpY19hcm4SeAoZaW5zdWZmaWNpZW50X2RhdGFfYWN0aW9ucxgTIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCIYjUYeIBktRhGHN0YXR1cy5vdXRwdXRzLnRvcGljX2FybhIjChFhbGFybV9kZXNjcmlwdGlvbhgUIAEoCUIIukgFcgMYgAgSLQolZXZhbHVhdGVfbG93X3NhbXBsZV9jb3VudF9wZXJjZW50aWxlcxgVIAEoCRoxCg9EaW1lbnNpb25zRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ATqtFrpIqRYa7wMKGWNvbXBhcmlzb25fb3BlcmF0b3JfdmFsaWQS4wFjb21wYXJpc29uX29wZXJhdG9yIG11c3QgYmUgb25lIG9mOiBHcmVhdGVyVGhhbk9yRXF1YWxUb1RocmVzaG9sZCwgR3JlYXRlclRoYW5UaHJlc2hvbGQsIExlc3NUaGFuVGhyZXNob2xkLCBMZXNzVGhhbk9yRXF1YWxUb1RocmVzaG9sZCwgTGVzc1RoYW5Mb3dlck9yR3JlYXRlclRoYW5VcHBlclRocmVzaG9sZCwgTGVzc1RoYW5Mb3dlclRocmVzaG9sZCwgR3JlYXRlclRoYW5VcHBlclRocmVzaG9sZBrrAXRoaXMuY29tcGFyaXNvbl9vcGVyYXRvciBpbiBbJ0dyZWF0ZXJUaGFuT3JFcXVhbFRvVGhyZXNob2xkJywgJ0dyZWF0ZXJUaGFuVGhyZXNob2xkJywgJ0xlc3NUaGFuVGhyZXNob2xkJywgJ0xlc3NUaGFuT3JFcXVhbFRvVGhyZXNob2xkJywgJ0xlc3NUaGFuTG93ZXJPckdyZWF0ZXJUaGFuVXBwZXJUaHJlc2hvbGQnLCAnTGVzc1RoYW5Mb3dlclRocmVzaG9sZCcsICdHcmVhdGVyVGhhblVwcGVyVGhyZXNob2xkJ10axAEKD3N0YXRpc3RpY192YWxpZBJOc3RhdGlzdGljIG11c3QgYmUgb25lIG9mOiBTYW1wbGVDb3VudCwgQXZlcmFnZSwgU3VtLCBNaW5pbXVtLCBNYXhpbXVtIHdoZW4gc2V0GmF0aGlzLnN0YXRpc3RpYyA9PSAnJyB8fCB0aGlzLnN0YXRpc3RpYyBpbiBbJ1NhbXBsZUNvdW50JywgJ0F2ZXJhZ2UnLCAnU3VtJywgJ01pbmltdW0nLCAnTWF4aW11bSddGuABChh0cmVhdF9taXNzaW5nX2RhdGFfdmFsaWQSVHRyZWF0X21pc3NpbmdfZGF0YSBtdXN0IGJlIG9uZSBvZjogbWlzc2luZywgaWdub3JlLCBicmVhY2hpbmcsIG5vdEJyZWFjaGluZyB3aGVuIHNldBpudGhpcy50cmVhdF9taXNzaW5nX2RhdGEgPT0gJycgfHwgdGhpcy50cmVhdF9taXNzaW5nX2RhdGEgaW4gWydtaXNzaW5nJywgJ2lnbm9yZScsICdicmVhY2hpbmcnLCAnbm90QnJlYWNoaW5nJ10a9gEKK2V2YWx1YXRlX2xvd19zYW1wbGVfY291bnRfcGVyY2VudGlsZXNfdmFsaWQSTWV2YWx1YXRlX2xvd19zYW1wbGVfY291bnRfcGVyY2VudGlsZXMgbXVzdCBiZSAnZXZhbHVhdGUnIG9yICdpZ25vcmUnIHdoZW4gc2V0Gnh0aGlzLmV2YWx1YXRlX2xvd19zYW1wbGVfY291bnRfcGVyY2VudGlsZXMgPT0gJycgfHwgdGhpcy5ldmFsdWF0ZV9sb3dfc2FtcGxlX2NvdW50X3BlcmNlbnRpbGVzIGluIFsnZXZhbHVhdGUnLCAnaWdub3JlJ10alwEKJnN0YXRpc3RpY19leHRlbmRlZF9zdGF0aXN0aWNfZXhjbHVzaXZlEjZvbmx5IG9uZSBvZiBzdGF0aXN0aWMgb3IgZXh0ZW5kZWRfc3RhdGlzdGljIG1heSBiZSBzZXQaNXRoaXMuc3RhdGlzdGljID09ICcnIHx8IHRoaXMuZXh0ZW5kZWRfc3RhdGlzdGljID09ICcnGrABCh9zaW1wbGVfbWV0cmljX29yX21ldHJpY19xdWVyaWVzElNtZXRyaWNfbmFtZSBhbmQgbWV0cmljX3F1ZXJpZXMgYXJlIG11dHVhbGx5IGV4Y2x1c2l2ZSDigJQgdXNlIG9uZSBtb2RlIG9yIHRoZSBvdGhlcho4dGhpcy5tZXRyaWNfbmFtZSA9PSAnJyB8fCBzaXplKHRoaXMubWV0cmljX3F1ZXJpZXMpID09IDAagwEKFm1ldHJpY19zb3VyY2VfcmVxdWlyZWQSMGVpdGhlciBtZXRyaWNfbmFtZSBvciBtZXRyaWNfcXVlcmllcyBtdXN0IGJlIHNldBo3dGhpcy5tZXRyaWNfbmFtZSAhPSAnJyB8fCBzaXplKHRoaXMubWV0cmljX3F1ZXJpZXMpID4gMBqEAQojbmFtZXNwYWNlX3JlcXVpcmVkX3dpdGhfbWV0cmljX25hbWUSLW5hbWVzcGFjZSBpcyByZXF1aXJlZCB3aGVuIG1ldHJpY19uYW1lIGlzIHNldBoudGhpcy5tZXRyaWNfbmFtZSA9PSAnJyB8fCB0aGlzLm5hbWVzcGFjZSAhPSAnJxp5CiBwZXJpb2RfcmVxdWlyZWRfd2l0aF9tZXRyaWNfbmFtZRIqcGVyaW9kIGlzIHJlcXVpcmVkIHdoZW4gbWV0cmljX25hbWUgaXMgc2V0Gil0aGlzLm1ldHJpY19uYW1lID09ICcnIHx8IHRoaXMucGVyaW9kID4gMBrCAQojc3RhdGlzdGljX3JlcXVpcmVkX3dpdGhfbWV0cmljX25hbWUSSm9uZSBvZiBzdGF0aXN0aWMgb3IgZXh0ZW5kZWRfc3RhdGlzdGljIGlzIHJlcXVpcmVkIHdoZW4gbWV0cmljX25hbWUgaXMgc2V0Gk90aGlzLm1ldHJpY19uYW1lID09ICcnIHx8IHRoaXMuc3RhdGlzdGljICE9ICcnIHx8IHRoaXMuZXh0ZW5kZWRfc3RhdGlzdGljICE9ICcnGq8BChNwZXJpb2RfdmFsaWRfdmFsdWVzEjdwZXJpb2QgbXVzdCBiZSAxMCwgMjAsIDMwLCBvciBhIG11bHRpcGxlIG9mIDYwIHdoZW4gc2V0Gl90aGlzLnBlcmlvZCA9PSAwIHx8IHRoaXMucGVyaW9kIGluIFsxMCwgMjAsIDMwXSB8fCAodGhpcy5wZXJpb2QgPj0gNjAgJiYgdGhpcy5wZXJpb2QgJSA2MCA9PSAwKRrIAQoqZGF0YXBvaW50c190b19hbGFybV9sdGVfZXZhbHVhdGlvbl9wZXJpb2RzEkRkYXRhcG9pbnRzX3RvX2FsYXJtIG11c3QgYmUgbGVzcyB0aGFuIG9yIGVxdWFsIHRvIGV2YWx1YXRpb25fcGVyaW9kcxpUdGhpcy5kYXRhcG9pbnRzX3RvX2FsYXJtID09IDAgfHwgdGhpcy5kYXRhcG9pbnRzX3RvX2FsYXJtIDw9IHRoaXMuZXZhbHVhdGlvbl9wZXJpb2RzGlsKFW1ldHJpY19xdWVyaWVzX21heF8yMBIhbWF4aW11bSAyMCBtZXRyaWNfcXVlcmllcyBhbGxvd2VkGh9zaXplKHRoaXMubWV0cmljX3F1ZXJpZXMpIDw9IDIwGlUKE2FsYXJtX2FjdGlvbnNfbWF4XzUSH21heGltdW0gNSBhbGFybV9hY3Rpb25zIGFsbG93ZWQaHXNpemUodGhpcy5hbGFybV9hY3Rpb25zKSA8PSA1GkwKEG9rX2FjdGlvbnNfbWF4XzUSHG1heGltdW0gNSBva19hY3Rpb25zIGFsbG93ZWQaGnNpemUodGhpcy5va19hY3Rpb25zKSA8PSA1GnkKH2luc3VmZmljaWVudF9kYXRhX2FjdGlvbnNfbWF4XzUSK21heGltdW0gNSBpbnN1ZmZpY2llbnRfZGF0YV9hY3Rpb25zIGFsbG93ZWQaKXNpemUodGhpcy5pbnN1ZmZpY2llbnRfZGF0YV9hY3Rpb25zKSA8PSA1Io0CCh1Bd3NDbG91ZHdhdGNoQWxhcm1NZXRyaWNRdWVyeRIXCgJpZBgBIAEoCUILukgIyAEBcgMY/wESHAoKZXhwcmVzc2lvbhgCIAEoCUIIukgFcgMYgAgSYwoGbWV0cmljGAMgASgLMlMub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2Nsb3Vkd2F0Y2hhbGFybS52MS5Bd3NDbG91ZHdhdGNoQWxhcm1NZXRyaWNRdWVyeU1ldHJpYxINCgVsYWJlbBgEIAEoCRIOCgZwZXJpb2QYBSABKAUSEwoLcmV0dXJuX2RhdGEYBiABKAgSHAoKYWNjb3VudF9pZBgHIAEoCUIIukgFcgMY/wEi0AIKI0F3c0Nsb3Vkd2F0Y2hBbGFybU1ldHJpY1F1ZXJ5TWV0cmljEiAKC21ldHJpY19uYW1lGAEgASgJQgu6SAjIAQFyAxj/ARIeCgluYW1lc3BhY2UYAiABKAlCC7pICMgBAXIDGP8BEhcKBnBlcmlvZBgDIAEoBUIHukgEGgIoARIUCgRzdGF0GAQgASgJQga6SAPIAQESdwoKZGltZW5zaW9ucxgFIAMoCzJjLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NjbG91ZHdhdGNoYWxhcm0udjEuQXdzQ2xvdWR3YXRjaEFsYXJtTWV0cmljUXVlcnlNZXRyaWMuRGltZW5zaW9uc0VudHJ5EgwKBHVuaXQYBiABKAkaMQoPRGltZW5zaW9uc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAFChQMKMmNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzY2xvdWR3YXRjaGFsYXJtLnYxQglTcGVjUHJvdG9QAVplZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NjbG91ZHdhdGNoYWxhcm0vdjE7YXdzY2xvdWR3YXRjaGFsYXJtdjGiAgVPT1BBQaoCLk9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NjbG91ZHdhdGNoYWxhcm0uVjHKAi5PcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzY2xvdWR3YXRjaGFsYXJtXFYx4gI6T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2Nsb3Vkd2F0Y2hhbGFybVxWMVxHUEJNZXRhZGF0YeoCM09yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzY2xvdWR3YXRjaGFsYXJtOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
 
 /**
  * AwsCloudwatchAlarmSpec defines the desired configuration for an AWS
@@ -41,13 +41,17 @@ export const file_org_openmcf_provider_aws_awscloudwatchalarm_v1_spec: GenFile =
  * Credentials, region, and deployment workflow live outside this spec in stack
  * inputs.
  *
- * ===========================================================================
- * Alarm evaluation
- * ===========================================================================
- *
  * @generated from message org.openmcf.provider.aws.awscloudwatchalarm.v1.AwsCloudwatchAlarmSpec
  */
 export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudwatchalarm.v1.AwsCloudwatchAlarmSpec"> & {
+  /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * Arithmetic operation to compare the statistic against the threshold.
    *
@@ -62,7 +66,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    * - "LessThanLowerThreshold"
    * - "GreaterThanUpperThreshold"
    *
-   * @generated from field: string comparison_operator = 1;
+   * @generated from field: string comparison_operator = 2;
    */
   comparisonOperator: string;
 
@@ -74,7 +78,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    * window. For example, evaluation_periods=5 with datapoints_to_alarm=3
    * means "3 out of the last 5 periods must breach to trigger the alarm."
    *
-   * @generated from field: int32 evaluation_periods = 2;
+   * @generated from field: int32 evaluation_periods = 3;
    */
   evaluationPeriods: number;
 
@@ -87,7 +91,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    * Use a value lower than `evaluation_periods` for M-of-N evaluation to
    * reduce false positives caused by transient spikes.
    *
-   * @generated from field: int32 datapoints_to_alarm = 3;
+   * @generated from field: int32 datapoints_to_alarm = 4;
    */
   datapointsToAlarm: number;
 
@@ -98,7 +102,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    * Required for static threshold alarms. Must not be set for anomaly
    * detection alarms (use `threshold_metric_id` instead).
    *
-   * @generated from field: double threshold = 4;
+   * @generated from field: double threshold = 5;
    */
   threshold: number;
 
@@ -109,7 +113,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    *
    * Mutually exclusive with `threshold`.
    *
-   * @generated from field: string threshold_metric_id = 5;
+   * @generated from field: string threshold_metric_id = 6;
    */
   thresholdMetricId: string;
 
@@ -127,7 +131,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    * - "ignore"       — The current alarm state is maintained regardless of
    *                     missing data.
    *
-   * @generated from field: string treat_missing_data = 6;
+   * @generated from field: string treat_missing_data = 7;
    */
   treatMissingData: string;
 
@@ -136,7 +140,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    * in the IaC module when not set. Set to false to suppress actions during
    * maintenance windows or alarm tuning.
    *
-   * @generated from field: bool actions_enabled = 7;
+   * @generated from field: bool actions_enabled = 8;
    */
   actionsEnabled: boolean;
 
@@ -149,7 +153,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    *
    * Mutually exclusive with `metric_queries`.
    *
-   * @generated from field: string metric_name = 8;
+   * @generated from field: string metric_name = 9;
    */
   metricName: string;
 
@@ -159,7 +163,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    *
    * Required when `metric_name` is set. Must not start with a colon.
    *
-   * @generated from field: string namespace = 9;
+   * @generated from field: string namespace = 10;
    */
   namespace: string;
 
@@ -173,7 +177,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    *
    * Required when `metric_name` is set.
    *
-   * @generated from field: int32 period = 10;
+   * @generated from field: int32 period = 11;
    */
   period: number;
 
@@ -185,7 +189,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    * Mutually exclusive with `extended_statistic`. Exactly one must be set
    * when using simple metric mode.
    *
-   * @generated from field: string statistic = 11;
+   * @generated from field: string statistic = 12;
    */
   statistic: string;
 
@@ -198,7 +202,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    * Mutually exclusive with `statistic`. Exactly one must be set when
    * using simple metric mode.
    *
-   * @generated from field: string extended_statistic = 12;
+   * @generated from field: string extended_statistic = 13;
    */
   extendedStatistic: string;
 
@@ -211,7 +215,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    *
    * Mutually exclusive with `metric_queries`.
    *
-   * @generated from field: map<string, string> dimensions = 13;
+   * @generated from field: map<string, string> dimensions = 14;
    */
   dimensions: { [key: string]: string };
 
@@ -220,7 +224,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    * are used for evaluation. Most alarms omit this and use the metric's
    * published unit.
    *
-   * @generated from field: string unit = 14;
+   * @generated from field: string unit = 15;
    */
   unit: string;
 
@@ -237,7 +241,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    * Mutually exclusive with simple metric fields (`metric_name`,
    * `namespace`, `period`, `statistic`, `extended_statistic`, `dimensions`).
    *
-   * @generated from field: repeated org.openmcf.provider.aws.awscloudwatchalarm.v1.AwsCloudwatchAlarmMetricQuery metric_queries = 15;
+   * @generated from field: repeated org.openmcf.provider.aws.awscloudwatchalarm.v1.AwsCloudwatchAlarmMetricQuery metric_queries = 16;
    */
   metricQueries: AwsCloudwatchAlarmMetricQuery[];
 
@@ -248,7 +252,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    *
    * Maximum 5 actions.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef alarm_actions = 16;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef alarm_actions = 17;
    */
   alarmActions: StringValueOrRef[];
 
@@ -256,7 +260,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    * Actions to execute when the alarm transitions to OK state.
    * Maximum 5 actions.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef ok_actions = 17;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef ok_actions = 18;
    */
   okActions: StringValueOrRef[];
 
@@ -264,7 +268,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    * Actions to execute when the alarm transitions to INSUFFICIENT_DATA state.
    * Maximum 5 actions.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef insufficient_data_actions = 18;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef insufficient_data_actions = 19;
    */
   insufficientDataActions: StringValueOrRef[];
 
@@ -273,7 +277,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    * what the alarm monitors, expected thresholds, and remediation steps.
    * Maximum 1024 characters.
    *
-   * @generated from field: string alarm_description = 19;
+   * @generated from field: string alarm_description = 20;
    */
   alarmDescription: string;
 
@@ -288,7 +292,7 @@ export type AwsCloudwatchAlarmSpec = Message<"org.openmcf.provider.aws.awscloudw
    * Only meaningful when using percentile statistics (extended_statistic or
    * a percentile stat in metric_queries).
    *
-   * @generated from field: string evaluate_low_sample_count_percentiles = 20;
+   * @generated from field: string evaluate_low_sample_count_percentiles = 21;
    */
   evaluateLowSampleCountPercentiles: string;
 };

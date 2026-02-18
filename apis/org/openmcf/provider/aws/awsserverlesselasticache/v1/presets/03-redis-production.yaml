@@ -6,6 +6,7 @@ metadata:
   env: prod
   id: ${name}-prod
 spec:
+  region: us-east-1
   engine: redis
   majorEngineVersion: "7"
   description: Production Redis cache with encryption, snapshots, and access control

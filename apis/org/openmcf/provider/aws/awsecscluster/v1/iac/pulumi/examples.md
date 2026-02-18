@@ -32,6 +32,7 @@ metadata:
   version:
     message: "First ECS cluster"
 spec:
+  region: us-east-1
   enable_container_insights: true
   capacity_providers:
     - FARGATE
@@ -57,6 +58,7 @@ metadata:
   version:
     message: "Using multiple capacity providers"
 spec:
+  region: us-east-1
   enable_container_insights: true
   capacity_providers:
     - FARGATE
@@ -83,6 +85,7 @@ metadata:
   version:
     message: "Debugging with ECS Exec"
 spec:
+  region: us-east-1
   enable_container_insights: true
   capacity_providers:
     - FARGATE
@@ -109,6 +112,7 @@ metadata:
   version:
     message: "Minimal ECS cluster example"
 spec:
+  region: us-east-1
 # No capacity_providers or ECS Exec enabled, which means basic defaults apply
 ```
 

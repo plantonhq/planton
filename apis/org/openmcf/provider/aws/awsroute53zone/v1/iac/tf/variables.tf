@@ -43,6 +43,9 @@ variable "spec" {
   description = "aws-route53-zone spec"
   type = object({
 
+    # The AWS region where the resource will be created.
+    region = string
+
     # The DNS records that are added to the zone.
     # Each record represents a DNS resource record, such as A, AAAA, CNAME, MX, TXT, etc.
     # These records define how your domain or subdomains are routed to your resources.

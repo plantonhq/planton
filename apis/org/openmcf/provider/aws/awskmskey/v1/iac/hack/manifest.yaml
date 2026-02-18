@@ -3,6 +3,7 @@ kind: AwsKmsKey
 metadata:
   name: app-encryption-key-demo
 spec:
+  region: us-west-2
   description: "Demo encryption key for application data"
   aliasName: "alias/demo/app-data"
   deletionWindowDays: 30
