@@ -5,5 +5,6 @@ export * from './aws';
 export * from './azure';
 export * from './openstack';
 export * from './scaleway';
+export * from './alicloud';
 export * from './credential-drawer';
 

@@ -33,7 +33,6 @@ message AwsEcrRepoSpec {
   // a customer-managed key (CMK).
   optional string encryption_type = 4 [
     (org.openmcf.shared.options.default) = "AES256",
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
       in: [
         "AES256",
@@ -75,7 +74,6 @@ message AwsEcrRepoLifecyclePolicy {
   // Recommended: 1-14 days. Default: 14 days if not specified.
   optional int32 expire_untagged_after_days = 1 [
     (org.openmcf.shared.options.default) = "14",
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).int32 = {
       gte: 1
       lte: 365
@@ -87,7 +85,6 @@ message AwsEcrRepoLifecyclePolicy {
   // Recommended: 30-100 depending on deployment frequency. Default: 30 if not specified.
   optional int32 max_image_count = 2 [
     (org.openmcf.shared.options.default) = "30",
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).int32 = {
       gte: 1
       lte: 1000

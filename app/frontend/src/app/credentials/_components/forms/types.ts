@@ -47,6 +47,46 @@ export interface ScalewayFormData {
   zone?: string;
 }
 
+// Flattened form data for Alibaba Cloud credentials.
+// All auth method fields are combined into a single flat interface.
+// The alicloudAuthMethod discriminator selects which fields are active.
+export interface AlicloudFormData {
+  // Common
+  region?: string;
+  accountId?: string;
+  accountType?: string;
+  // Static / STS / AssumeRole
+  accessKey?: string;
+  secretKey?: string;
+  // STS
+  securityToken?: string;
+  // ECS role
+  ecsRoleName?: string;
+  // AssumeRole / OIDC shared
+  roleArn?: string;
+  sessionName?: string;
+  policy?: string;
+  externalId?: string;
+  // OIDC
+  oidcProviderArn?: string;
+  oidcToken?: string;
+  oidcTokenFile?: string;
+  // Shared credentials
+  credentialsFile?: string;
+  profile?: string;
+  // Sidecar
+  credentialsUri?: string;
+}
+
+export type AlicloudAuthMethod =
+  | 'static_credentials'
+  | 'sts_token'
+  | 'ecs_role'
+  | 'assume_role'
+  | 'assume_role_with_oidc'
+  | 'shared_credentials'
+  | 'sidecar_credentials';
+
 // Form-friendly type based on CreateCredentialRequest fields (without the protobuf Message wrapper)
 export type CredentialFormData = {
   name: string;
@@ -59,5 +99,7 @@ export type CredentialFormData = {
   // Auth method discriminator for the OpenStack credential form (not part of the proto)
   openstackAuthMethod?: 'password' | 'application_credential' | 'token';
   scaleway?: ScalewayFormData;
+  alicloud?: AlicloudFormData;
+  alicloudAuthMethod?: AlicloudAuthMethod;
 };
 

@@ -66,10 +66,7 @@ message KubernetesJobSpec {
    * Default is 1 (sequential execution).
    * Set higher for parallel batch processing.
    */
-  optional uint32 parallelism = 7 [
-    (org.openmcf.shared.options.default) = "1",
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
-  ];
+  optional uint32 parallelism = 7 [(org.openmcf.shared.options.default) = "1"];
 
   /**
    * Number of successful completions required before the job is considered complete.
@@ -77,19 +74,13 @@ message KubernetesJobSpec {
    * For parallel jobs, this specifies the total number of successful pods needed.
    * For indexed jobs, this equals the number of indexes (0 to completions-1).
    */
-  optional uint32 completions = 8 [
-    (org.openmcf.shared.options.default) = "1",
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
-  ];
+  optional uint32 completions = 8 [(org.openmcf.shared.options.default) = "1"];
 
   /**
    * Number of retries before marking this job as failed.
    * Default is 6.
    */
-  optional uint32 backoff_limit = 9 [
-    (org.openmcf.shared.options.default) = "6",
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
-  ];
+  optional uint32 backoff_limit = 9 [(org.openmcf.shared.options.default) = "6"];
 
   /**
    * Maximum duration in seconds for the job to run.
@@ -97,10 +88,7 @@ message KubernetesJobSpec {
    * Set to 0 for no deadline (default).
    * Useful for preventing runaway jobs.
    */
-  optional uint64 active_deadline_seconds = 10 [
-    (org.openmcf.shared.options.default) = "0",
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
-  ];
+  optional uint64 active_deadline_seconds = 10 [(org.openmcf.shared.options.default) = "0"];
 
   /**
    * Time in seconds to retain the job after completion (either success or failure).
@@ -108,10 +96,7 @@ message KubernetesJobSpec {
    * Useful for cleanup of completed jobs.
    * Default is 0 (no automatic cleanup).
    */
-  optional uint32 ttl_seconds_after_finished = 11 [
-    (org.openmcf.shared.options.default) = "0",
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
-  ];
+  optional uint32 ttl_seconds_after_finished = 11 [(org.openmcf.shared.options.default) = "0"];
 
   /**
    * Completion mode for the job.

@@ -133,8 +133,8 @@ func Resources(ctx *pulumi.Context, stackInput *awsroute53zonev1.AwsRoute53ZoneS
 		_, err = awsclassicroute53.NewQueryLog(ctx,
 			fmt.Sprintf("%s-query-log", managedZoneName),
 			&awsclassicroute53.QueryLogArgs{
-			CloudwatchLogGroupArn: pulumi.Sprintf("arn:aws:logs:%s:%s:log-group:%s",
-				locals.AwsRoute53Zone.Spec.Region,
+				CloudwatchLogGroupArn: pulumi.Sprintf("arn:aws:logs:%s:%s:log-group:%s",
+					locals.AwsRoute53Zone.Spec.Region,
 					"AWS::AccountId", // Pulumi will resolve this
 					awsRoute53Zone.Spec.QueryLogGroupName),
 				ZoneId: createdHostedZone.ID(),

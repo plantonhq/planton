@@ -684,7 +684,7 @@ var File_org_openmcf_provider_aws_awsmskcluster_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_aws_awsmskcluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/aws/awsmskcluster/v1/spec.proto\x12)org.openmcf.provider.aws.awsmskcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd2\x17\n" +
+	"4org/openmcf/provider/aws/awsmskcluster/v1/spec.proto\x12)org.openmcf.provider.aws.awsmskcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xcf\x17\n" +
 	"\x11AwsMskClusterSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12+\n" +
 	"\rkafka_version\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\fkafkaVersion\x12?\n" +
@@ -702,8 +702,8 @@ const file_org_openmcf_provider_aws_awsmskcluster_v1_spec_proto_rawDesc = "" +
 	"\x1eprovisioned_throughput_enabled\x18\v \x01(\bR\x1cprovisionedThroughputEnabled\x12L\n" +
 	"\x1aprovisioned_throughput_mbs\x18\f \x01(\x05B\x0e\xbaH\v\xd8\x01\x01\x1a\x06\x18\xc7\x12(\xfa\x01R\x18provisionedThroughputMbs\x12:\n" +
 	"\fstorage_mode\x18\r \x01(\tB\x17\xbaH\x14\xd8\x01\x01r\x0fR\x05LOCALR\x06TIEREDR\vstorageMode\x12s\n" +
-	"\vkms_key_arn\x18\x0e \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\tkmsKeyArn\x12m\n" +
-	"\x18client_broker_encryption\x18\x0f \x01(\tB.\xbaH$\xd8\x01\x01r\x1fR\x03TLSR\rTLS_PLAINTEXTR\tPLAINTEXT\x8a\xa6\x1d\x03TLSH\x01R\x16clientBrokerEncryption\x88\x01\x01\x12A\n" +
+	"\vkms_key_arn\x18\x0e \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\tkmsKeyArn\x12j\n" +
+	"\x18client_broker_encryption\x18\x0f \x01(\tB+\xbaH!r\x1fR\x03TLSR\rTLS_PLAINTEXTR\tPLAINTEXT\x8a\xa6\x1d\x03TLSH\x01R\x16clientBrokerEncryption\x88\x01\x01\x12A\n" +
 	"\x15in_cluster_encryption\x18\x10 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x02R\x13inClusterEncryption\x88\x01\x01\x12n\n" +
 	"\x0eauthentication\x18\x11 \x01(\v2F.org.openmcf.provider.aws.awsmskcluster.v1.AwsMskClusterAuthenticationR\x0eauthentication\x12+\n" +
 	"\x11configuration_arn\x18\x12 \x01(\tR\x10configurationArn\x12A\n" +

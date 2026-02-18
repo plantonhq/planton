@@ -890,11 +890,12 @@ var File_org_openmcf_provider_aws_awscodepipeline_v1_spec_proto protoreflect.Fil
 
 const file_org_openmcf_provider_aws_awscodepipeline_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"6org/openmcf/provider/aws/awscodepipeline/v1/spec.proto\x12+org.openmcf.provider.aws.awscodepipeline.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa0\f\n" +
+	"6org/openmcf/provider/aws/awscodepipeline/v1/spec.proto\x12+org.openmcf.provider.aws.awscodepipeline.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x9a\f\n" +
 	"\x13AwsCodePipelineSpec\x12\x1f\n" +
-	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12@\n" +
-	"\rpipeline_type\x18\x02 \x01(\tB\x16\xbaH\r\xd8\x01\x01r\bR\x02V1R\x02V2\x8a\xa6\x1d\x02V2H\x00R\fpipelineType\x88\x01\x01\x12`\n" +
-	"\x0eexecution_mode\x18\x03 \x01(\tB4\xbaH#\xd8\x01\x01r\x1eR\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12=\n" +
+	"\rpipeline_type\x18\x02 \x01(\tB\x13\xbaH\n" +
+	"r\bR\x02V1R\x02V2\x8a\xa6\x1d\x02V2H\x00R\fpipelineType\x88\x01\x01\x12]\n" +
+	"\x0eexecution_mode\x18\x03 \x01(\tB1\xbaH r\x1eR\n" +
 	"SUPERSEDEDR\x06QUEUEDR\bPARALLEL\x8a\xa6\x1d\n" +
 	"SUPERSEDEDH\x01R\rexecutionMode\x88\x01\x01\x12u\n" +
 	"\brole_arn\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\aroleArn\x12\x7f\n" +

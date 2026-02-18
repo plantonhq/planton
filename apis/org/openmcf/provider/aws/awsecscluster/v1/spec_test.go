@@ -28,7 +28,7 @@ var _ = ginkgo.Describe("AwsEcsCluster Validation Tests", func() {
 						Name: "valid-name",
 					},
 					Spec: &AwsEcsClusterSpec{
-						Region:                 "us-west-2",
+						Region:                  "us-west-2",
 						EnableContainerInsights: true,
 					},
 				}
@@ -51,7 +51,7 @@ var _ = ginkgo.Describe("AwsEcsCluster Validation Tests", func() {
 						Name: "valid-name",
 					},
 					Spec: &AwsEcsClusterSpec{
-						Region:                 "us-west-2",
+						Region:                  "us-west-2",
 						EnableContainerInsights: true,
 						CapacityProviders:       []string{"FARGATE", "FARGATE_SPOT"},
 					},
@@ -75,7 +75,7 @@ var _ = ginkgo.Describe("AwsEcsCluster Validation Tests", func() {
 						Name: "production-cluster",
 					},
 					Spec: &AwsEcsClusterSpec{
-						Region:                 "us-west-2",
+						Region:                  "us-west-2",
 						EnableContainerInsights: true,
 						CapacityProviders:       []string{"FARGATE", "FARGATE_SPOT"},
 						DefaultCapacityProviderStrategy: []*CapacityProviderStrategy{
@@ -111,7 +111,7 @@ var _ = ginkgo.Describe("AwsEcsCluster Validation Tests", func() {
 						Name: "debug-cluster",
 					},
 					Spec: &AwsEcsClusterSpec{
-						Region:                 "us-west-2",
+						Region:                  "us-west-2",
 						EnableContainerInsights: true,
 						ExecuteCommandConfiguration: &ExecConfiguration{
 							Logging: ExecConfiguration_DEFAULT,
@@ -137,7 +137,7 @@ var _ = ginkgo.Describe("AwsEcsCluster Validation Tests", func() {
 						Name: "audit-cluster",
 					},
 					Spec: &AwsEcsClusterSpec{
-						Region:                 "us-west-2",
+						Region:                  "us-west-2",
 						EnableContainerInsights: true,
 						ExecuteCommandConfiguration: &ExecConfiguration{
 							Logging: ExecConfiguration_OVERRIDE,
@@ -172,7 +172,7 @@ var _ = ginkgo.Describe("AwsEcsCluster Validation Tests", func() {
 						Name: "compliance-cluster",
 					},
 					Spec: &AwsEcsClusterSpec{
-						Region:                 "us-west-2",
+						Region:                  "us-west-2",
 						EnableContainerInsights: true,
 						ExecuteCommandConfiguration: &ExecConfiguration{
 							Logging: ExecConfiguration_OVERRIDE,
@@ -208,7 +208,7 @@ var _ = ginkgo.Describe("AwsEcsCluster Validation Tests", func() {
 						Name: "production-full",
 					},
 					Spec: &AwsEcsClusterSpec{
-						Region:                 "us-west-2",
+						Region:                  "us-west-2",
 						EnableContainerInsights: true,
 						CapacityProviders:       []string{"FARGATE", "FARGATE_SPOT"},
 						DefaultCapacityProviderStrategy: []*CapacityProviderStrategy{

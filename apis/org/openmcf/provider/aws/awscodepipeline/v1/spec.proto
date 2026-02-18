@@ -35,7 +35,6 @@ message AwsCodePipelineSpec {
   // Default: V2 (recommended for all new pipelines).
   optional string pipeline_type = 2 [
     (org.openmcf.shared.options.default) = "V2",
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
       in: [
         "V1",
@@ -51,7 +50,6 @@ message AwsCodePipelineSpec {
   // Default: SUPERSEDED.
   optional string execution_mode = 3 [
     (org.openmcf.shared.options.default) = "SUPERSEDED",
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
       in: [
         "SUPERSEDED",

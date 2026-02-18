@@ -71,10 +71,7 @@ message KubernetesCronJobSpec {
    * Optional deadline in seconds for starting the job if it misses its scheduled time.
    * If set to 0, no deadline is enforced.
    */
-  optional uint64 starting_deadline_seconds = 8 [
-    (org.openmcf.shared.options.default) = "0",
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
-  ];
+  optional uint64 starting_deadline_seconds = 8 [(org.openmcf.shared.options.default) = "0"];
 
   /**
    * Concurrency policy specifies how concurrent job runs are handled.

@@ -215,7 +215,6 @@ message AwsMwaaEnvironmentSpec {
   // "PRIVATE_ONLY" (default): accessible only within the VPC via VPC endpoint.
   // "PUBLIC_ONLY": accessible over the internet with IAM-based login.
   optional string webserver_access_mode = 25 [
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
       in: [
         "PRIVATE_ONLY",

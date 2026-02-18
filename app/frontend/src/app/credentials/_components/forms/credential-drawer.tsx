@@ -19,6 +19,7 @@ import {
   AzureCredentialForm,
   OpenStackCredentialForm,
   ScalewayCredentialForm,
+  AlicloudCredentialForm,
 } from '@/app/credentials/_components/forms';
 import { useCredentialCommand } from '@/app/credentials/_services';
 import {
@@ -40,7 +41,18 @@ import {
 import {
   ScalewayProviderConfigSchema,
 } from '@/gen/org/openmcf/provider/scaleway/provider_pb';
-import type { OpenStackFormData, ScalewayFormData } from '@/app/credentials/_components/forms/types';
+import {
+  AlicloudProviderConfigSchema,
+  AlicloudStaticCredentialsSchema,
+  AlicloudStsTokenCredentialsSchema,
+  AlicloudEcsRoleCredentialsSchema,
+  AlicloudAssumeRoleCredentialsSchema,
+  AlicloudAssumeRoleWithOidcCredentialsSchema,
+  AlicloudSharedCredentialsSchema,
+  AlicloudSidecarCredentialsSchema,
+  AuthenticationType,
+} from '@/gen/org/openmcf/provider/alicloud/provider_pb';
+import type { OpenStackFormData, ScalewayFormData, AlicloudFormData, AlicloudAuthMethod } from '@/app/credentials/_components/forms/types';
 import { create } from '@bufbuild/protobuf';
 import { providerConfig } from '@/app/credentials/_components/utils';
 
@@ -78,6 +90,8 @@ export function CredentialDrawer({
       openstack: {},
       openstackAuthMethod: 'application_credential',
       scaleway: {},
+      alicloud: {},
+      alicloudAuthMethod: 'static_credentials',
     },
   });
 
@@ -115,6 +129,8 @@ export function CredentialDrawer({
         openstack: {},
         openstackAuthMethod: 'application_credential',
         scaleway: {},
+        alicloud: {},
+        alicloudAuthMethod: 'static_credentials',
       };
       if (providerConfigData?.data?.case === 'auth0') {
         formData.auth0 = {
@@ -181,6 +197,59 @@ export function CredentialDrawer({
           region: scw.region,
           zone: scw.zone,
         };
+      } else if (providerConfigData?.data?.case === 'alicloud') {
+        const ali = providerConfigData.data.value;
+        const aliData: AlicloudFormData = {
+          region: ali.region,
+          accountId: ali.accountId,
+          accountType: ali.accountType,
+        };
+        const authTypeMap: Record<number, AlicloudAuthMethod> = {
+          [AuthenticationType.static_credentials]: 'static_credentials',
+          [AuthenticationType.sts_token]: 'sts_token',
+          [AuthenticationType.ecs_role]: 'ecs_role',
+          [AuthenticationType.assume_role]: 'assume_role',
+          [AuthenticationType.assume_role_with_oidc]: 'assume_role_with_oidc',
+          [AuthenticationType.shared_credentials]: 'shared_credentials',
+          [AuthenticationType.sidecar_credentials]: 'sidecar_credentials',
+        };
+        formData.alicloudAuthMethod = authTypeMap[ali.authenticationType] || 'static_credentials';
+        if (ali.staticCredentials) {
+          aliData.accessKey = ali.staticCredentials.accessKey;
+          aliData.secretKey = ali.staticCredentials.secretKey;
+        }
+        if (ali.stsToken) {
+          aliData.accessKey = ali.stsToken.accessKey;
+          aliData.secretKey = ali.stsToken.secretKey;
+          aliData.securityToken = ali.stsToken.securityToken;
+        }
+        if (ali.ecsRole) {
+          aliData.ecsRoleName = ali.ecsRole.ecsRoleName;
+        }
+        if (ali.assumeRole) {
+          aliData.accessKey = ali.assumeRole.accessKey;
+          aliData.secretKey = ali.assumeRole.secretKey;
+          aliData.roleArn = ali.assumeRole.roleArn;
+          aliData.sessionName = ali.assumeRole.sessionName;
+          aliData.policy = ali.assumeRole.policy;
+          aliData.externalId = ali.assumeRole.externalId;
+        }
+        if (ali.assumeRoleWithOidc) {
+          aliData.oidcProviderArn = ali.assumeRoleWithOidc.oidcProviderArn;
+          aliData.roleArn = ali.assumeRoleWithOidc.roleArn;
+          aliData.oidcToken = ali.assumeRoleWithOidc.oidcToken;
+          aliData.oidcTokenFile = ali.assumeRoleWithOidc.oidcTokenFile;
+          aliData.sessionName = ali.assumeRoleWithOidc.sessionName;
+          aliData.policy = ali.assumeRoleWithOidc.policy;
+        }
+        if (ali.sharedCredentials) {
+          aliData.credentialsFile = ali.sharedCredentials.credentialsFile;
+          aliData.profile = ali.sharedCredentials.profile;
+        }
+        if (ali.sidecarCredentials) {
+          aliData.credentialsUri = ali.sidecarCredentials.credentialsUri;
+        }
+        formData.alicloud = aliData;
       }
       reset(formData);
     } else if (mode === 'create') {
@@ -194,6 +263,8 @@ export function CredentialDrawer({
         openstack: {},
         openstackAuthMethod: 'application_credential',
         scaleway: {},
+        alicloud: {},
+        alicloudAuthMethod: 'static_credentials',
       });
     }
   }, [selectedCredential, mode, initialProvider, reset]);
@@ -324,6 +395,83 @@ export function CredentialDrawer({
             }),
           },
         });
+      } else if (
+        formData.provider == Credential_CredentialProvider.ALICLOUD &&
+        formData.alicloud
+      ) {
+        const method = formData.alicloudAuthMethod || 'static_credentials';
+        const ali = formData.alicloud;
+
+        const authTypeEnumMap: Record<string, AuthenticationType> = {
+          static_credentials: AuthenticationType.static_credentials,
+          sts_token: AuthenticationType.sts_token,
+          ecs_role: AuthenticationType.ecs_role,
+          assume_role: AuthenticationType.assume_role,
+          assume_role_with_oidc: AuthenticationType.assume_role_with_oidc,
+          shared_credentials: AuthenticationType.shared_credentials,
+          sidecar_credentials: AuthenticationType.sidecar_credentials,
+        };
+
+        // Build method-specific sub-message
+        const configFields: Record<string, unknown> = {
+          authenticationType: authTypeEnumMap[method],
+          region: ali.region || '',
+          accountId: ali.accountId || '',
+          accountType: ali.accountType || '',
+        };
+
+        if (method === 'static_credentials' && ali.accessKey && ali.secretKey) {
+          configFields.staticCredentials = create(AlicloudStaticCredentialsSchema, {
+            accessKey: ali.accessKey,
+            secretKey: ali.secretKey,
+          });
+        } else if (method === 'sts_token' && ali.accessKey && ali.secretKey && ali.securityToken) {
+          configFields.stsToken = create(AlicloudStsTokenCredentialsSchema, {
+            accessKey: ali.accessKey,
+            secretKey: ali.secretKey,
+            securityToken: ali.securityToken,
+          });
+        } else if (method === 'ecs_role' && ali.ecsRoleName) {
+          configFields.ecsRole = create(AlicloudEcsRoleCredentialsSchema, {
+            ecsRoleName: ali.ecsRoleName,
+          });
+        } else if (method === 'assume_role' && ali.accessKey && ali.secretKey && ali.roleArn) {
+          configFields.assumeRole = create(AlicloudAssumeRoleCredentialsSchema, {
+            accessKey: ali.accessKey,
+            secretKey: ali.secretKey,
+            roleArn: ali.roleArn,
+            sessionName: ali.sessionName || '',
+            policy: ali.policy || '',
+            externalId: ali.externalId || '',
+          });
+        } else if (method === 'assume_role_with_oidc' && ali.oidcProviderArn && ali.roleArn) {
+          configFields.assumeRoleWithOidc = create(AlicloudAssumeRoleWithOidcCredentialsSchema, {
+            oidcProviderArn: ali.oidcProviderArn,
+            roleArn: ali.roleArn,
+            oidcToken: ali.oidcToken || '',
+            oidcTokenFile: ali.oidcTokenFile || '',
+            sessionName: ali.sessionName || '',
+            policy: ali.policy || '',
+          });
+        } else if (method === 'shared_credentials') {
+          configFields.sharedCredentials = create(AlicloudSharedCredentialsSchema, {
+            credentialsFile: ali.credentialsFile || '',
+            profile: ali.profile || '',
+          });
+        } else if (method === 'sidecar_credentials' && ali.credentialsUri) {
+          configFields.sidecarCredentials = create(AlicloudSidecarCredentialsSchema, {
+            credentialsUri: ali.credentialsUri,
+          });
+        } else {
+          return;
+        }
+
+        providerConfig = create(CredentialProviderConfigSchema, {
+          data: {
+            case: 'alicloud',
+            value: create(AlicloudProviderConfigSchema, configFields),
+          },
+        });
       } else {
         return;
       }
@@ -354,6 +502,8 @@ export function CredentialDrawer({
       openstack: {},
       openstackAuthMethod: 'application_credential',
       scaleway: {},
+      alicloud: {},
+      alicloudAuthMethod: 'static_credentials',
     });
     onClose();
   };
@@ -370,6 +520,8 @@ export function CredentialDrawer({
       setValue('openstack', {});
       setValue('openstackAuthMethod', 'application_credential');
       setValue('scaleway', {});
+      setValue('alicloud', {});
+      setValue('alicloudAuthMethod', 'static_credentials');
     },
     [setValue, isView, initialProvider]
   );
@@ -434,6 +586,14 @@ export function CredentialDrawer({
               )}
               {formProvider == Credential_CredentialProvider.SCALEWAY && (
                 <ScalewayCredentialForm register={register} disabled={isView} />
+              )}
+              {formProvider == Credential_CredentialProvider.ALICLOUD && (
+                <AlicloudCredentialForm
+                  register={register}
+                  setValue={setValue}
+                  watch={watch}
+                  disabled={isView}
+                />
               )}
             </Stack>
           </Stack>

@@ -26,12 +26,12 @@ var _ = ginkgo.Describe("AwsVpcSpec Custom Validation Tests", func() {
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-vpc",
 					},
-				Spec: &AwsVpcSpec{
-					Region:                     "us-west-2",
-					VpcCidr:                    "10.0.0.0/16",
-					SubnetsPerAvailabilityZone: 1,
-					SubnetSize:                 256,
-				},
+					Spec: &AwsVpcSpec{
+						Region:                     "us-west-2",
+						VpcCidr:                    "10.0.0.0/16",
+						SubnetsPerAvailabilityZone: 1,
+						SubnetSize:                 256,
+					},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())

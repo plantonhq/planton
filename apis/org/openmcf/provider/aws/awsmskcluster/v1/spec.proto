@@ -132,7 +132,6 @@ message AwsMskClusterSpec {
   // "TLS_PLAINTEXT": both TLS (9094) and plaintext (9092) are available.
   // "PLAINTEXT": all client-broker traffic is unencrypted (port 9092).
   optional string client_broker_encryption = 15 [
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
       in: [
         "TLS",

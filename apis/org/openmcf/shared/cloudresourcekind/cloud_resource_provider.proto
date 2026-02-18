@@ -81,4 +81,8 @@ enum CloudResourceProvider {
     group: "scaleway.openmcf.org"
     display_name: "Scaleway"
   }];
+  alicloud = 25 [(provider_meta) = {
+    group: "alicloud.openmcf.org"
+    display_name: "Alibaba Cloud"
+  }];
 }

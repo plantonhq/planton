@@ -10,6 +10,7 @@ go_library(
     importpath = "github.com/plantonhq/openmcf/pkg/iac/stackinput/providerdetect",
     visibility = ["//visibility:public"],
     deps = [
+        "//apis/org/openmcf/provider/alicloud",
         "//apis/org/openmcf/provider/atlas",
         "//apis/org/openmcf/provider/auth0",
         "//apis/org/openmcf/provider/aws",

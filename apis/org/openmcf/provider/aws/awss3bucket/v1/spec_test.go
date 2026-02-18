@@ -44,7 +44,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-versioned-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						Region:         "us-west-2",
+						Region:            "us-west-2",
 						IsPublic:          false,
 						VersioningEnabled: true,
 					},
@@ -63,8 +63,8 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-public-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						Region: "eu-west-1",
-						IsPublic:  true,
+						Region:   "eu-west-1",
+						IsPublic: true,
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -81,7 +81,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-encrypted-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						Region:      "us-east-1",
+						Region:         "us-east-1",
 						EncryptionType: AwsS3BucketSpec_ENCRYPTION_TYPE_SSE_S3,
 					},
 				}
@@ -99,7 +99,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-kms-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						Region:      "us-east-1",
+						Region:         "us-east-1",
 						EncryptionType: AwsS3BucketSpec_ENCRYPTION_TYPE_SSE_KMS,
 						KmsKeyId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
@@ -172,7 +172,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-replicated-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						Region:         "us-east-1",
+						Region:            "us-east-1",
 						VersioningEnabled: true,
 						Replication: &AwsS3BucketSpec_ReplicationConfiguration{
 							Enabled: true,
@@ -266,7 +266,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						Region:      "us-east-1",
+						Region:         "us-east-1",
 						EncryptionType: AwsS3BucketSpec_EncryptionType(999), // Invalid enum value
 					},
 				}
@@ -331,7 +331,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						Region:         "us-east-1",
+						Region:            "us-east-1",
 						VersioningEnabled: true,
 						Replication: &AwsS3BucketSpec_ReplicationConfiguration{
 							Enabled: true,
@@ -354,7 +354,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						Region:         "us-east-1",
+						Region:            "us-east-1",
 						VersioningEnabled: true,
 						Replication: &AwsS3BucketSpec_ReplicationConfiguration{
 							Enabled:     true,
@@ -375,7 +375,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						Region:         "us-east-1",
+						Region:            "us-east-1",
 						VersioningEnabled: true,
 						Replication: &AwsS3BucketSpec_ReplicationConfiguration{
 							Enabled: true,
@@ -398,7 +398,7 @@ var _ = ginkgo.Describe("AwsS3BucketSpec Custom Validation Tests", func() {
 						Name: "test-bucket",
 					},
 					Spec: &AwsS3BucketSpec{
-						Region:         "us-east-1",
+						Region:            "us-east-1",
 						VersioningEnabled: true,
 						Replication: &AwsS3BucketSpec_ReplicationConfiguration{
 							Enabled: true,

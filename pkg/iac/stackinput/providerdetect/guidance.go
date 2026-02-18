@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/atlas"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
@@ -52,6 +53,8 @@ func ProviderConfigExample(provider cloudresourcekind.CloudResourceProvider) str
 		return openstack.ConfigFileExample
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return scaleway.ConfigFileExample
+	case cloudresourcekind.CloudResourceProvider_alicloud:
+		return alicloud.ConfigFileExample
 	default:
 		return "# Provider config format not available"
 	}
@@ -88,6 +91,8 @@ func ProviderConfigFilename(provider cloudresourcekind.CloudResourceProvider) st
 		return openstack.ConfigFileName
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return scaleway.ConfigFileName
+	case cloudresourcekind.CloudResourceProvider_alicloud:
+		return alicloud.ConfigFileName
 	default:
 		return "provider-config.yaml"
 	}
@@ -124,6 +129,8 @@ func ProviderEnvironmentVariablesHelp(provider cloudresourcekind.CloudResourcePr
 		return openstack.EnvironmentVariablesHelp
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return scaleway.EnvironmentVariablesHelp
+	case cloudresourcekind.CloudResourceProvider_alicloud:
+		return alicloud.EnvironmentVariablesHelp
 	default:
 		return "# Environment variables not available for this provider"
 	}
@@ -160,6 +167,8 @@ func ProviderDocsURL(provider cloudresourcekind.CloudResourceProvider) string {
 		return openstack.ProviderDocsURL
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return scaleway.ProviderDocsURL
+	case cloudresourcekind.CloudResourceProvider_alicloud:
+		return alicloud.ProviderDocsURL
 	default:
 		return ""
 	}

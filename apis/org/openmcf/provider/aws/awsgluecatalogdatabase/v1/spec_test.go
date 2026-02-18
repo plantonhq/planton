@@ -123,11 +123,11 @@ var _ = ginkgo.Describe("AwsGlueCatalogDatabaseSpec validations", func() {
 			ApiVersion: "aws.openmcf.org/v1",
 			Kind:       "AwsGlueCatalogDatabase",
 			Metadata:   &shared.CloudResourceMetadata{Name: "analytics-db"},
-		Spec: &AwsGlueCatalogDatabaseSpec{
-			Region:      "us-west-2",
-			Description: "Analytics data catalog",
-			LocationUri: "s3://analytics-lake/databases/analytics/",
-		},
+			Spec: &AwsGlueCatalogDatabaseSpec{
+				Region:      "us-west-2",
+				Description: "Analytics data catalog",
+				LocationUri: "s3://analytics-lake/databases/analytics/",
+			},
 		}
 		err := protovalidate.Validate(envelope)
 		gomega.Expect(err).To(gomega.BeNil())

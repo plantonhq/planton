@@ -889,18 +889,18 @@ var File_org_openmcf_provider_azure_azurevirtualmachine_v1_spec_proto protorefle
 
 const file_org_openmcf_provider_azure_azurevirtualmachine_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"<org/openmcf/provider/azure/azurevirtualmachine/v1/spec.proto\x121org.openmcf.provider.azure.azurevirtualmachine.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa7\x10\n" +
+	"<org/openmcf/provider/azure/azurevirtualmachine/v1/spec.proto\x121org.openmcf.provider.azure.azurevirtualmachine.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa1\x10\n" +
 	"\x17AzureVirtualMachineSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\x8c\x01\n" +
-	"\x0eresource_group\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\x90\x03\x92\xd4a\"status.outputs.resource_group_nameR\rresourceGroup\x12;\n" +
-	"\avm_size\x18\x03 \x01(\tB\x1d\xbaH\a\xd8\x01\x01r\x02\x10\x01\x92\xa6\x1d\x0fStandard_D2s_v3H\x00R\x06vmSize\x88\x01\x01\x12~\n" +
+	"\x0eresource_group\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\x90\x03\x92\xd4a\"status.outputs.resource_group_nameR\rresourceGroup\x128\n" +
+	"\avm_size\x18\x03 \x01(\tB\x1a\xbaH\x04r\x02\x10\x01\x92\xa6\x1d\x0fStandard_D2s_v3H\x00R\x06vmSize\x88\x01\x01\x12~\n" +
 	"\tsubnet_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB-\xbaH\x03\xc8\x01\x01\x88\xd4a\x96\x03\x92\xd4a\x1estatus.outputs.nodes_subnet_idR\bsubnetId\x12i\n" +
 	"\x05image\x18\x05 \x01(\v2K.org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineImageB\x06\xbaH\x03\xc8\x01\x01R\x05image\x12e\n" +
 	"\aos_disk\x18\x06 \x01(\v2L.org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineOsDiskR\x06osDisk\x12m\n" +
 	"\n" +
-	"data_disks\x18\a \x03(\v2N.org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineDataDiskR\tdataDisks\x12E\n" +
-	"\x0eadmin_username\x18\b \x01(\tB\x19\xbaH\t\xd8\x01\x01r\x04\x10\x01\x18@\x8a\xa6\x1d\tazureuserH\x01R\radminUsername\x88\x01\x01\x12$\n" +
+	"data_disks\x18\a \x03(\v2N.org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineDataDiskR\tdataDisks\x12B\n" +
+	"\x0eadmin_username\x18\b \x01(\tB\x16\xbaH\x06r\x04\x10\x01\x18@\x8a\xa6\x1d\tazureuserH\x01R\radminUsername\x88\x01\x01\x12$\n" +
 	"\x0essh_public_key\x18\t \x01(\tR\fsshPublicKey\x12|\n" +
 	"\x0eadmin_password\x18\n" +
 	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x95\x03\x92\xd4a\x18status.outputs.vault_uriR\radminPassword\x12m\n" +
@@ -922,12 +922,12 @@ const file_org_openmcf_provider_azure_azurevirtualmachine_v1_spec_proto_rawDesc 
 	"\n" +
 	"\b_vm_sizeB\x11\n" +
 	"\x0f_admin_usernameB\x1a\n" +
-	"\x18_enable_boot_diagnostics\"\x9c\x03\n" +
+	"\x18_enable_boot_diagnostics\"\x99\x03\n" +
 	"\x18AzureVirtualMachineImage\x12\x1c\n" +
 	"\tpublisher\x18\x01 \x01(\tR\tpublisher\x12\x14\n" +
 	"\x05offer\x18\x02 \x01(\tR\x05offer\x12\x10\n" +
-	"\x03sku\x18\x03 \x01(\tR\x03sku\x123\n" +
-	"\aversion\x18\x04 \x01(\tB\x14\xbaH\a\xd8\x01\x01r\x02\x10\x01\x8a\xa6\x1d\x06latestH\x00R\aversion\x88\x01\x01\x12&\n" +
+	"\x03sku\x18\x03 \x01(\tR\x03sku\x120\n" +
+	"\aversion\x18\x04 \x01(\tB\x11\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\x06latestH\x00R\aversion\x88\x01\x01\x12&\n" +
 	"\x0fcustom_image_id\x18\x05 \x01(\tR\rcustomImageId:\xd0\x01\xbaH\xcc\x01\x1a\xc9\x01\n" +
 	"\x15image_source_required\x12TEither marketplace image (publisher, offer, sku) or custom_image_id must be provided\x1aZ(this.publisher != '' && this.offer != '' && this.sku != '') || this.custom_image_id != ''B\n" +
 	"\n" +

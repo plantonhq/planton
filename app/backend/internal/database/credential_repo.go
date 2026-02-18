@@ -410,6 +410,8 @@ func (r *CredentialRepository) FindFirstByProvider(ctx context.Context, provider
 		return convertToOpenStackCredential(result)
 	case "scaleway":
 		return convertToScalewayCredential(result)
+	case "alicloud":
+		return convertToAlicloudCredential(result)
 	default:
 		return nil, fmt.Errorf("unsupported provider: %s", provider)
 	}
@@ -876,6 +878,194 @@ func convertToScalewayCredential(doc bson.M) (*models.ScalewayCredential, error)
 	}
 	if v, ok := doc["zone"].(string); ok {
 		cred.Zone = v
+	}
+
+	return cred, nil
+}
+
+// CreateAlicloud creates a new Alibaba Cloud credential.
+func (r *CredentialRepository) CreateAlicloud(ctx context.Context, cred *models.AlicloudCredential) (*models.AlicloudCredential, error) {
+	exists, err := r.ExistsByProvider(ctx, "alicloud")
+	if err != nil {
+		return nil, fmt.Errorf("failed to check for existing Alibaba Cloud credential: %w", err)
+	}
+	if exists {
+		return nil, fmt.Errorf("credential for provider 'alicloud' already exists")
+	}
+
+	now := time.Now()
+	cred.ID = primitive.NewObjectID()
+	cred.CreatedAt = now
+	cred.UpdatedAt = now
+
+	doc := bson.M{
+		"_id":         cred.ID,
+		"name":        cred.Name,
+		"provider":    "alicloud",
+		"auth_method": cred.AuthMethod,
+		"created_at":  cred.CreatedAt,
+		"updated_at":  cred.UpdatedAt,
+	}
+
+	setOptionalString(doc, "region", cred.Region)
+	setOptionalString(doc, "account_id", cred.AccountId)
+	setOptionalString(doc, "account_type", cred.AccountType)
+	setOptionalString(doc, "access_key", cred.AccessKey)
+	setOptionalString(doc, "secret_key", cred.SecretKey)
+	setOptionalString(doc, "security_token", cred.SecurityToken)
+	setOptionalString(doc, "ecs_role_name", cred.EcsRoleName)
+	setOptionalString(doc, "role_arn", cred.RoleArn)
+	setOptionalString(doc, "session_name", cred.SessionName)
+	setOptionalString(doc, "policy", cred.Policy)
+	if cred.SessionExpiration != 0 {
+		doc["session_expiration"] = cred.SessionExpiration
+	}
+	setOptionalString(doc, "external_id", cred.ExternalId)
+	setOptionalString(doc, "oidc_provider_arn", cred.OidcProviderArn)
+	setOptionalString(doc, "oidc_token", cred.OidcToken)
+	setOptionalString(doc, "oidc_token_file", cred.OidcTokenFile)
+	setOptionalString(doc, "credentials_file", cred.CredentialsFile)
+	setOptionalString(doc, "profile", cred.Profile)
+	setOptionalString(doc, "credentials_uri", cred.CredentialsUri)
+
+	_, err = r.collection.InsertOne(ctx, doc)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create Alibaba Cloud credential: %w", err)
+	}
+
+	return cred, nil
+}
+
+// UpdateAlicloud updates an existing Alibaba Cloud credential.
+func (r *CredentialRepository) UpdateAlicloud(ctx context.Context, id string, cred *models.AlicloudCredential) (*models.AlicloudCredential, error) {
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, fmt.Errorf("invalid ID format: %w", err)
+	}
+
+	now := time.Now()
+	setFields := bson.M{
+		"name":               cred.Name,
+		"auth_method":        cred.AuthMethod,
+		"updated_at":         now,
+		"region":             cred.Region,
+		"account_id":         cred.AccountId,
+		"account_type":       cred.AccountType,
+		"access_key":         cred.AccessKey,
+		"secret_key":         cred.SecretKey,
+		"security_token":     cred.SecurityToken,
+		"ecs_role_name":      cred.EcsRoleName,
+		"role_arn":           cred.RoleArn,
+		"session_name":       cred.SessionName,
+		"policy":             cred.Policy,
+		"session_expiration": cred.SessionExpiration,
+		"external_id":        cred.ExternalId,
+		"oidc_provider_arn":  cred.OidcProviderArn,
+		"oidc_token":         cred.OidcToken,
+		"oidc_token_file":    cred.OidcTokenFile,
+		"credentials_file":   cred.CredentialsFile,
+		"profile":            cred.Profile,
+		"credentials_uri":    cred.CredentialsUri,
+	}
+
+	update := bson.M{"$set": setFields}
+
+	result := r.collection.FindOneAndUpdate(ctx, bson.M{"_id": objectID, "provider": "alicloud"}, update)
+	if result.Err() == mongo.ErrNoDocuments {
+		return nil, fmt.Errorf("Alibaba Cloud credential with ID '%s' not found", id)
+	}
+	if result.Err() != nil {
+		return nil, fmt.Errorf("failed to update Alibaba Cloud credential: %w", result.Err())
+	}
+
+	doc, err := r.FindByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	if doc == nil {
+		return nil, fmt.Errorf("credential not found after update")
+	}
+
+	return convertToAlicloudCredential(doc)
+}
+
+func convertToAlicloudCredential(doc bson.M) (*models.AlicloudCredential, error) {
+	id, ok := doc["_id"].(primitive.ObjectID)
+	if !ok {
+		return nil, fmt.Errorf("invalid _id field")
+	}
+
+	var createdAt, updatedAt time.Time
+	if dt, ok := doc["created_at"].(primitive.DateTime); ok {
+		createdAt = dt.Time()
+	}
+	if dt, ok := doc["updated_at"].(primitive.DateTime); ok {
+		updatedAt = dt.Time()
+	}
+
+	cred := &models.AlicloudCredential{
+		ID:        id,
+		Name:      doc["name"].(string),
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
+	}
+
+	if v, ok := doc["auth_method"].(string); ok {
+		cred.AuthMethod = v
+	}
+	if v, ok := doc["region"].(string); ok {
+		cred.Region = v
+	}
+	if v, ok := doc["account_id"].(string); ok {
+		cred.AccountId = v
+	}
+	if v, ok := doc["account_type"].(string); ok {
+		cred.AccountType = v
+	}
+	if v, ok := doc["access_key"].(string); ok {
+		cred.AccessKey = v
+	}
+	if v, ok := doc["secret_key"].(string); ok {
+		cred.SecretKey = v
+	}
+	if v, ok := doc["security_token"].(string); ok {
+		cred.SecurityToken = v
+	}
+	if v, ok := doc["ecs_role_name"].(string); ok {
+		cred.EcsRoleName = v
+	}
+	if v, ok := doc["role_arn"].(string); ok {
+		cred.RoleArn = v
+	}
+	if v, ok := doc["session_name"].(string); ok {
+		cred.SessionName = v
+	}
+	if v, ok := doc["policy"].(string); ok {
+		cred.Policy = v
+	}
+	if v, ok := doc["session_expiration"].(int32); ok {
+		cred.SessionExpiration = v
+	}
+	if v, ok := doc["external_id"].(string); ok {
+		cred.ExternalId = v
+	}
+	if v, ok := doc["oidc_provider_arn"].(string); ok {
+		cred.OidcProviderArn = v
+	}
+	if v, ok := doc["oidc_token"].(string); ok {
+		cred.OidcToken = v
+	}
+	if v, ok := doc["oidc_token_file"].(string); ok {
+		cred.OidcTokenFile = v
+	}
+	if v, ok := doc["credentials_file"].(string); ok {
+		cred.CredentialsFile = v
+	}
+	if v, ok := doc["profile"].(string); ok {
+		cred.Profile = v
+	}
+	if v, ok := doc["credentials_uri"].(string); ok {
+		cred.CredentialsUri = v
 	}
 
 	return cred, nil

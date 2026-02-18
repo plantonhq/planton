@@ -1247,20 +1247,20 @@ const file_org_openmcf_provider_aws_awscodebuildproject_v1_spec_proto_rawDesc = 
 	"\tbuildspec\x18\x03 \x01(\tR\tbuildspec\x12/\n" +
 	"\x0fgit_clone_depth\x18\x04 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00R\rgitCloneDepth\x12.\n" +
 	"\x13report_build_status\x18\x05 \x01(\bR\x11reportBuildStatus\x12)\n" +
-	"\x10fetch_submodules\x18\x06 \x01(\bR\x0ffetchSubmodules\"\xc0\a\n" +
+	"\x10fetch_submodules\x18\x06 \x01(\bR\x0ffetchSubmodules\"\xbd\a\n" +
 	"\x17AwsCodeBuildEnvironment\x12\xc0\x01\n" +
 	"\x04type\x18\x01 \x01(\tB\xab\x01\xbaH\xa7\x01\xc8\x01\x01r\xa1\x01R\x0fLINUX_CONTAINERR\x13LINUX_GPU_CONTAINERR\rARM_CONTAINERR\x1dWINDOWS_SERVER_2019_CONTAINERR\x1dWINDOWS_SERVER_2022_CONTAINERR\x16LINUX_LAMBDA_CONTAINERR\x14ARM_LAMBDA_CONTAINERR\x04type\x12\xfb\x01\n" +
 	"\fcompute_type\x18\x02 \x01(\tB\xd7\x01\xbaH\xd3\x01\xc8\x01\x01r\xcd\x01R\x14BUILD_GENERAL1_SMALLR\x15BUILD_GENERAL1_MEDIUMR\x14BUILD_GENERAL1_LARGER\x15BUILD_GENERAL1_XLARGER\x16BUILD_GENERAL1_2XLARGER\x10BUILD_LAMBDA_1GBR\x10BUILD_LAMBDA_2GBR\x10BUILD_LAMBDA_4GBR\x10BUILD_LAMBDA_8GBR\x11BUILD_LAMBDA_10GBR\vcomputeType\x12\x1c\n" +
 	"\x05image\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05image\x12'\n" +
-	"\x0fprivileged_mode\x18\x04 \x01(\bR\x0eprivilegedMode\x12r\n" +
-	"\x1bimage_pull_credentials_type\x18\x05 \x01(\tB.\xbaH\x1e\xd8\x01\x01r\x19R\tCODEBUILDR\fSERVICE_ROLE\x8a\xa6\x1d\tCODEBUILDH\x00R\x18imagePullCredentialsType\x88\x01\x01\x12\x85\x01\n" +
+	"\x0fprivileged_mode\x18\x04 \x01(\bR\x0eprivilegedMode\x12o\n" +
+	"\x1bimage_pull_credentials_type\x18\x05 \x01(\tB+\xbaH\x1br\x19R\tCODEBUILDR\fSERVICE_ROLE\x8a\xa6\x1d\tCODEBUILDH\x00R\x18imagePullCredentialsType\x88\x01\x01\x12\x85\x01\n" +
 	"\x15environment_variables\x18\x06 \x03(\v2P.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildEnvironmentVariableR\x14environmentVariables\x12\x80\x01\n" +
 	"\x13registry_credential\x18\a \x01(\v2O.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildRegistryCredentialR\x12registryCredentialB\x1e\n" +
-	"\x1c_image_pull_credentials_type\"\xc1\x01\n" +
+	"\x1c_image_pull_credentials_type\"\xbe\x01\n" +
 	"\x1fAwsCodeBuildEnvironmentVariable\x12\x1a\n" +
 	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12\x1c\n" +
-	"\x05value\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05value\x12[\n" +
-	"\x04type\x18\x03 \x01(\tBB\xbaH2\xd8\x01\x01r-R\tPLAINTEXTR\x0fPARAMETER_STORER\x0fSECRETS_MANAGER\x8a\xa6\x1d\tPLAINTEXTH\x00R\x04type\x88\x01\x01B\a\n" +
+	"\x05value\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05value\x12X\n" +
+	"\x04type\x18\x03 \x01(\tB?\xbaH/r-R\tPLAINTEXTR\x0fPARAMETER_STORER\x0fSECRETS_MANAGER\x8a\xa6\x1d\tPLAINTEXTH\x00R\x04type\x88\x01\x01B\a\n" +
 	"\x05_type\"\x94\x01\n" +
 	"\x1eAwsCodeBuildRegistryCredential\x12&\n" +
 	"\n" +
@@ -1275,24 +1275,24 @@ const file_org_openmcf_provider_aws_awscodebuildproject_v1_spec_proto_rawDesc = 
 	"\x04path\x18\x04 \x01(\tR\x04path\x121\n" +
 	"\tpackaging\x18\x05 \x01(\tB\x13\xbaH\x10\xd8\x01\x01r\vR\x04NONER\x03ZIPR\tpackaging\x12?\n" +
 	"\x0enamespace_type\x18\x06 \x01(\tB\x18\xbaH\x15\xd8\x01\x01r\x10R\x04NONER\bBUILD_IDR\rnamespaceType\x12/\n" +
-	"\x13encryption_disabled\x18\a \x01(\bR\x12encryptionDisabled\"\xeb\x01\n" +
-	"\x11AwsCodeBuildCache\x12B\n" +
-	"\x04type\x18\x01 \x01(\tB)\xbaH\x1a\xd8\x01\x01r\x15R\bNO_CACHER\x02S3R\x05LOCAL\x8a\xa6\x1d\bNO_CACHEH\x00R\x04type\x88\x01\x01\x12s\n" +
+	"\x13encryption_disabled\x18\a \x01(\bR\x12encryptionDisabled\"\xe8\x01\n" +
+	"\x11AwsCodeBuildCache\x12?\n" +
+	"\x04type\x18\x01 \x01(\tB&\xbaH\x17r\x15R\bNO_CACHER\x02S3R\x05LOCAL\x8a\xa6\x1d\bNO_CACHEH\x00R\x04type\x88\x01\x01\x12s\n" +
 	"\blocation\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB#\x88\xd4a\xd5\x01\x92\xd4a\x1astatus.outputs.bucket_nameR\blocation\x12\x14\n" +
 	"\x05modes\x18\x03 \x03(\tR\x05modesB\a\n" +
 	"\x05_type\"\xec\x01\n" +
 	"\x16AwsCodeBuildLogsConfig\x12t\n" +
 	"\x0fcloudwatch_logs\x18\x01 \x01(\v2K.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildCloudWatchLogsR\x0ecloudwatchLogs\x12\\\n" +
-	"\as3_logs\x18\x02 \x01(\v2C.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildS3LogsR\x06s3Logs\"\x88\x02\n" +
-	"\x1aAwsCodeBuildCloudWatchLogs\x12C\n" +
-	"\x06status\x18\x01 \x01(\tB&\xbaH\x18\xd8\x01\x01r\x13R\aENABLEDR\bDISABLED\x8a\xa6\x1d\aENABLEDH\x00R\x06status\x88\x01\x01\x12y\n" +
+	"\as3_logs\x18\x02 \x01(\v2C.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildS3LogsR\x06s3Logs\"\x85\x02\n" +
+	"\x1aAwsCodeBuildCloudWatchLogs\x12@\n" +
+	"\x06status\x18\x01 \x01(\tB#\xbaH\x15r\x13R\aENABLEDR\bDISABLED\x8a\xa6\x1d\aENABLEDH\x00R\x06status\x88\x01\x01\x12y\n" +
 	"\n" +
 	"group_name\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\xb6\x02\x92\xd4a\x1dstatus.outputs.log_group_nameR\tgroupName\x12\x1f\n" +
 	"\vstream_name\x18\x03 \x01(\tR\n" +
 	"streamNameB\t\n" +
-	"\a_status\"\x8b\x02\n" +
-	"\x12AwsCodeBuildS3Logs\x12D\n" +
-	"\x06status\x18\x01 \x01(\tB'\xbaH\x18\xd8\x01\x01r\x13R\aENABLEDR\bDISABLED\x8a\xa6\x1d\bDISABLEDH\x00R\x06status\x88\x01\x01\x12s\n" +
+	"\a_status\"\x88\x02\n" +
+	"\x12AwsCodeBuildS3Logs\x12A\n" +
+	"\x06status\x18\x01 \x01(\tB$\xbaH\x15r\x13R\aENABLEDR\bDISABLED\x8a\xa6\x1d\bDISABLEDH\x00R\x06status\x88\x01\x01\x12s\n" +
 	"\blocation\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB#\x88\xd4a\xd5\x01\x92\xd4a\x1astatus.outputs.bucket_nameR\blocation\x12/\n" +
 	"\x13encryption_disabled\x18\x03 \x01(\bR\x12encryptionDisabledB\t\n" +
 	"\a_status\"\xb4\x03\n" +

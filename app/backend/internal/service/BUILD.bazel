@@ -14,6 +14,7 @@ go_library(
         "//apis/org/openmcf/app/cloudresource/v1:cloudresource",
         "//apis/org/openmcf/app/credential/v1:credential",
         "//apis/org/openmcf/app/stackupdate/v1:stackupdate",
+        "//apis/org/openmcf/provider/alicloud",
         "//apis/org/openmcf/provider/auth0",
         "//apis/org/openmcf/provider/aws",
         "//apis/org/openmcf/provider/azure",

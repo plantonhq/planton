@@ -48,5 +48,10 @@ export const providerConfig: Record<Credential_CredentialProvider, ProviderConfi
     description: 'Link your Scaleway account to deploy cloud infrastructure',
     icon: undefined,
   },
+  [Credential_CredentialProvider.ALICLOUD]: {
+    label: 'Alibaba Cloud',
+    description: 'Link your Alibaba Cloud account to deploy cloud infrastructure',
+    icon: undefined,
+  },
 };
 

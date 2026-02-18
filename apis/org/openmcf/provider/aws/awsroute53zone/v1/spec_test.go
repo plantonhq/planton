@@ -350,7 +350,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "internal.example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
-						Region: "us-east-1",
+						Region:    "us-east-1",
 						IsPrivate: true,
 						VpcAssociations: []*Route53VpcAssociation{
 							{
@@ -382,7 +382,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "secure.example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
-						Region: "us-east-1",
+						Region:       "us-east-1",
 						EnableDnssec: true,
 					},
 				}
@@ -398,7 +398,7 @@ var _ = ginkgo.Describe("AwsRoute53ZoneSpec Custom Validation Tests", func() {
 						Name: "monitored.example.com",
 					},
 					Spec: &AwsRoute53ZoneSpec{
-						Region: "us-east-1",
+						Region:             "us-east-1",
 						EnableQueryLogging: true,
 						QueryLogGroupName:  "/aws/route53/monitored.example.com",
 					},
