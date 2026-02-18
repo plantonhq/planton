@@ -38,5 +38,12 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesopenbaov1.KubernetesOp
 		return errors.Wrap(err, "failed to create helm-chart resources")
 	}
 
+	// ----------------------------- ingress --------------------------------
+	if locals.KubernetesOpenBao.Spec.Ingress != nil && locals.KubernetesOpenBao.Spec.Ingress.Enabled {
+		if err := ingress(ctx, locals, kubernetesProvider, namespaceDeps); err != nil {
+			return errors.Wrap(err, "failed to create ingress resources")
+		}
+	}
+
 	return nil
 }

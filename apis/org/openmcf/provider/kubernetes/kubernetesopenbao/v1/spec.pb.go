@@ -294,22 +294,15 @@ func (x *KubernetesOpenBaoHighAvailability) GetReplicas() int32 {
 
 // *
 // KubernetesOpenBaoIngress defines ingress configuration for OpenBao.
+// When enabled, deploys Istio Gateway API resources (Certificate, Gateway, HTTPRoutes)
+// for TLS-terminated external access with automatic HTTP-to-HTTPS redirect.
 type KubernetesOpenBaoIngress struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Enable ingress for external access.
 	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	// Hostname for external access (e.g., "openbao.example.com").
-	// Required when ingress is enabled.
-	Hostname string `protobuf:"bytes,2,opt,name=hostname,proto3" json:"hostname,omitempty"`
-	// Ingress class name (e.g., "nginx", "traefik").
-	// If not specified, uses the cluster default ingress class.
-	IngressClassName string `protobuf:"bytes,3,opt,name=ingress_class_name,json=ingressClassName,proto3" json:"ingress_class_name,omitempty"`
-	// Enable TLS for ingress.
-	// When enabled, TLS termination happens at the ingress controller.
-	TlsEnabled bool `protobuf:"varint,4,opt,name=tls_enabled,json=tlsEnabled,proto3" json:"tls_enabled,omitempty"`
-	// Name of the Kubernetes secret containing TLS certificate.
-	// Required when tls_enabled is true unless cert-manager annotations are used.
-	TlsSecretName string `protobuf:"bytes,5,opt,name=tls_secret_name,json=tlsSecretName,proto3" json:"tls_secret_name,omitempty"`
+	// The full hostname for external access (e.g., "openbao.example.com").
+	// Required when enabled is true.
+	Hostname      string `protobuf:"bytes,2,opt,name=hostname,proto3" json:"hostname,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -354,27 +347,6 @@ func (x *KubernetesOpenBaoIngress) GetEnabled() bool {
 func (x *KubernetesOpenBaoIngress) GetHostname() string {
 	if x != nil {
 		return x.Hostname
-	}
-	return ""
-}
-
-func (x *KubernetesOpenBaoIngress) GetIngressClassName() string {
-	if x != nil {
-		return x.IngressClassName
-	}
-	return ""
-}
-
-func (x *KubernetesOpenBaoIngress) GetTlsEnabled() bool {
-	if x != nil {
-		return x.TlsEnabled
-	}
-	return false
-}
-
-func (x *KubernetesOpenBaoIngress) GetTlsSecretName() string {
-	if x != nil {
-		return x.TlsSecretName
 	}
 	return ""
 }
@@ -489,14 +461,10 @@ const file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_rawDe
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12/\n" +
 	"\breplicas\x18\x02 \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18\n" +
 	"(\x03\x8a\xa6\x1d\x013H\x00R\breplicas\x88\x01\x01B\v\n" +
-	"\t_replicas\"\xc6\x02\n" +
+	"\t_replicas\"\xcf\x01\n" +
 	"\x18KubernetesOpenBaoIngress\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\x1a\n" +
-	"\bhostname\x18\x02 \x01(\tR\bhostname\x12,\n" +
-	"\x12ingress_class_name\x18\x03 \x01(\tR\x10ingressClassName\x12\x1f\n" +
-	"\vtls_enabled\x18\x04 \x01(\bR\n" +
-	"tlsEnabled\x12&\n" +
-	"\x0ftls_secret_name\x18\x05 \x01(\tR\rtlsSecretName:}\xbaHz\x1ax\n" +
+	"\bhostname\x18\x02 \x01(\tR\bhostname:}\xbaHz\x1ax\n" +
 	"\x1espec.ingress.hostname.required\x12,hostname is required when ingress is enabled\x1a(!this.enabled || size(this.hostname) > 0\"s\n" +
 	"\x19KubernetesOpenBaoInjector\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12/\n" +

@@ -58,12 +58,6 @@ variable "spec" {
       enabled = optional(bool)
       # Hostname for external access.
       hostname = optional(string)
-      # Ingress class name.
-      ingress_class_name = optional(string)
-      # Enable TLS for ingress.
-      tls_enabled = optional(bool)
-      # TLS secret name.
-      tls_secret_name = optional(string)
     }))
 
     # Enable OpenBao UI.

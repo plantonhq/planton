@@ -1,0 +1,31 @@
+target:
+    apiVersion: kubernetes.openmcf.org/v1
+    kind: KubernetesOpenBao
+    metadata:
+        env: app-prod
+        labels:
+            openmcf.org/provisioner: pulumi
+            pulumi.openmcf.org/organization: organization
+            pulumi.openmcf.org/project: planton-cloud
+            pulumi.openmcf.org/stack.name: app-prod.KubernetesOpenBao.main
+        name: main
+        org: planton-cloud
+    spec:
+        createNamespace: true
+        helmChartVersion: 0.23.3
+        ingress:
+            enabled: true
+            hostname: openbao-app-prod-main.planton.live
+        namespace:
+            value: openbao-app-prod-main
+        serverContainer:
+            dataStorageSize: 10Gi
+            replicas: 1
+            resources:
+                limits:
+                    cpu: 1000m
+                    memory: 1Gi
+                requests:
+                    cpu: 100m
+                    memory: 256Mi
+        uiEnabled: true

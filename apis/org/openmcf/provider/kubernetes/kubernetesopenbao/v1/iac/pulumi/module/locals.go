@@ -3,6 +3,7 @@ package module
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	kubernetesopenbaov1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesopenbao/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
@@ -22,6 +23,14 @@ type Locals struct {
 	HaReplicas              int32
 	ServerReplicas          int32
 	HelmChartVersion        string
+
+	IngressCertClusterIssuerName string
+	IngressCertSecretName        string
+	IngressHostnames             []string
+	IngressCertificateName       string
+	IngressGatewayName           string
+	IngressHttpRedirectRouteName string
+	IngressHttpsRouteName        string
 }
 
 func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesopenbaov1.KubernetesOpenBaoStackInput) *Locals {
@@ -110,12 +119,32 @@ func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesopenbaov1.Kuber
 	ctx.Export(OpPortForwardCommand, pulumi.String(locals.KubePortForwardCommand))
 
 	// Ingress configuration
-	if target.Spec.Ingress != nil &&
-		target.Spec.Ingress.Enabled &&
-		target.Spec.Ingress.Hostname != "" {
-		locals.IngressExternalHostname = target.Spec.Ingress.Hostname
-		ctx.Export(OpExternalHostname, pulumi.String(locals.IngressExternalHostname))
+	if target.Spec.Ingress == nil ||
+		!target.Spec.Ingress.Enabled ||
+		target.Spec.Ingress.Hostname == "" {
+		return locals
 	}
+
+	locals.IngressExternalHostname = target.Spec.Ingress.Hostname
+
+	locals.IngressHostnames = []string{
+		locals.IngressExternalHostname,
+	}
+
+	ctx.Export(OpExternalHostname, pulumi.String(locals.IngressExternalHostname))
+
+	// Derive ClusterIssuer name from hostname domain.
+	// Example: "openbao.example.com" -> "example.com"
+	parts := strings.Split(locals.IngressExternalHostname, ".")
+	if len(parts) > 1 {
+		locals.IngressCertClusterIssuerName = strings.Join(parts[1:], ".")
+	}
+
+	locals.IngressCertSecretName = fmt.Sprintf("%s-tls", target.Metadata.Name)
+	locals.IngressCertificateName = fmt.Sprintf("%s-certificate", target.Metadata.Name)
+	locals.IngressGatewayName = fmt.Sprintf("%s-external", target.Metadata.Name)
+	locals.IngressHttpRedirectRouteName = fmt.Sprintf("%s-http-redirect", target.Metadata.Name)
+	locals.IngressHttpsRouteName = fmt.Sprintf("%s-https", target.Metadata.Name)
 
 	return locals
 }

@@ -72,6 +72,20 @@ locals {
   injector_replicas = local.injector_enabled ? coalesce(try(var.spec.injector.replicas, null), 1) : 0
 
   # Ingress configuration
-  ingress_enabled  = try(var.spec.ingress.enabled, false)
-  ingress_hostname = try(var.spec.ingress.hostname, null)
+  ingress_is_enabled        = try(var.spec.ingress.enabled, false)
+  ingress_external_hostname = try(var.spec.ingress.hostname, null)
+
+  # Extract domain from hostname for certificate issuer
+  # Example: "openbao.example.com" -> "example.com"
+  ingress_cert_cluster_issuer_name = local.ingress_external_hostname != null ? (
+    join(".", slice(split(".", local.ingress_external_hostname), 1,
+      length(split(".", local.ingress_external_hostname))))
+  ) : null
+
+  # Computed resource names to avoid conflicts when multiple instances share a namespace
+  ingress_cert_secret_name         = "${var.metadata.name}-tls"
+  ingress_certificate_name         = "${var.metadata.name}-certificate"
+  ingress_gateway_name             = "${var.metadata.name}-external"
+  ingress_http_redirect_route_name = "${var.metadata.name}-http-redirect"
+  ingress_https_route_name         = "${var.metadata.name}-https"
 }

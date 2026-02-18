@@ -20,7 +20,7 @@ output "kube_endpoint" {
 
 output "external_hostname" {
   description = "External hostname for OpenBao (when ingress is enabled)"
-  value       = local.ingress_enabled ? local.ingress_hostname : null
+  value       = local.ingress_is_enabled ? local.ingress_external_hostname : null
 }
 
 output "api_address" {

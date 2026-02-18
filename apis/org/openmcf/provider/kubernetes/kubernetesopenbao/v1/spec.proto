@@ -121,28 +121,17 @@ message KubernetesOpenBaoHighAvailability {
 
 /**
  * KubernetesOpenBaoIngress defines ingress configuration for OpenBao.
+ * When enabled, deploys Istio Gateway API resources (Certificate, Gateway, HTTPRoutes)
+ * for TLS-terminated external access with automatic HTTP-to-HTTPS redirect.
  */
 message KubernetesOpenBaoIngress {
   // Enable ingress for external access.
   bool enabled = 1;
 
-  // Hostname for external access (e.g., "openbao.example.com").
-  // Required when ingress is enabled.
+  // The full hostname for external access (e.g., "openbao.example.com").
+  // Required when enabled is true.
   string hostname = 2;
 
-  // Ingress class name (e.g., "nginx", "traefik").
-  // If not specified, uses the cluster default ingress class.
-  string ingress_class_name = 3;
-
-  // Enable TLS for ingress.
-  // When enabled, TLS termination happens at the ingress controller.
-  bool tls_enabled = 4;
-
-  // Name of the Kubernetes secret containing TLS certificate.
-  // Required when tls_enabled is true unless cert-manager annotations are used.
-  string tls_secret_name = 5;
-
-  // Hostname is required when ingress is enabled.
   option (buf.validate.message).cel = {
     id: "spec.ingress.hostname.required"
     expression: "!this.enabled || size(this.hostname) > 0"

@@ -114,37 +114,6 @@ storage "file" {
 		}
 	}
 
-	// Configure ingress if enabled
-	if spec.Ingress != nil && spec.Ingress.Enabled && spec.Ingress.Hostname != "" {
-		ingressConfig := pulumi.Map{
-			"enabled": pulumi.Bool(true),
-			"hosts": pulumi.Array{
-				pulumi.Map{
-					"host":  pulumi.String(spec.Ingress.Hostname),
-					"paths": pulumi.Array{},
-				},
-			},
-		}
-
-		if spec.Ingress.IngressClassName != "" {
-			ingressConfig["ingressClassName"] = pulumi.String(spec.Ingress.IngressClassName)
-		}
-
-		if spec.Ingress.TlsEnabled {
-			ingressConfig["tls"] = pulumi.Array{
-				pulumi.Map{
-					"secretName": pulumi.String(spec.Ingress.TlsSecretName),
-					"hosts": pulumi.Array{
-						pulumi.String(spec.Ingress.Hostname),
-					},
-				},
-			}
-		}
-
-		serverMap := helmValues["server"].(pulumi.Map)
-		serverMap["ingress"] = ingressConfig
-	}
-
 	// Install helm chart
 	chartOpts := []pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}
 	chartOpts = append(chartOpts, namespaceDeps...)

@@ -1,5 +1,5 @@
 #name should be updated based on the choice of 'project' name in pulumi backend
-name: planton
+name: planton-cloud
 runtime:
   name: go
 #  options:

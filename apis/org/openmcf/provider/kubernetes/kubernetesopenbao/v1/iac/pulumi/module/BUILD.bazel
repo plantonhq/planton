@@ -4,6 +4,7 @@ go_library(
     name = "module",
     srcs = [
         "helm_chart.go",
+        "ingress.go",
         "locals.go",
         "main.go",
         "namespace.go",
@@ -19,6 +20,8 @@ go_library(
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/containerresources",
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
+        "//pkg/kubernetes/kubernetestypes/certmanager/kubernetes/cert_manager/v1:cert_manager",
+        "//pkg/kubernetes/kubernetestypes/gatewayapis/kubernetes/gateway/v1:gateway",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/core/v1:core",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/helm/v3:helm",

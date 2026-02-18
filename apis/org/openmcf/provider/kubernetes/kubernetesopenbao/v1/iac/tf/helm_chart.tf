@@ -113,44 +113,4 @@ resource "helm_release" "openbao" {
     }
   }
 
-  # Ingress configuration
-  dynamic "set" {
-    for_each = local.ingress_enabled ? [1] : []
-    content {
-      name  = "server.ingress.enabled"
-      value = "true"
-    }
-  }
-
-  dynamic "set" {
-    for_each = local.ingress_enabled && local.ingress_hostname != null ? [1] : []
-    content {
-      name  = "server.ingress.hosts[0].host"
-      value = local.ingress_hostname
-    }
-  }
-
-  dynamic "set" {
-    for_each = local.ingress_enabled && try(var.spec.ingress.ingress_class_name, null) != null ? [1] : []
-    content {
-      name  = "server.ingress.ingressClassName"
-      value = var.spec.ingress.ingress_class_name
-    }
-  }
-
-  dynamic "set" {
-    for_each = local.ingress_enabled && try(var.spec.ingress.tls_enabled, false) ? [1] : []
-    content {
-      name  = "server.ingress.tls[0].secretName"
-      value = var.spec.ingress.tls_secret_name
-    }
-  }
-
-  dynamic "set" {
-    for_each = local.ingress_enabled && try(var.spec.ingress.tls_enabled, false) ? [1] : []
-    content {
-      name  = "server.ingress.tls[0].hosts[0]"
-      value = local.ingress_hostname
-    }
-  }
 }
