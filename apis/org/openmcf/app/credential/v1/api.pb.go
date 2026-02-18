@@ -17,6 +17,7 @@ import (
 	confluent "github.com/plantonhq/openmcf/apis/org/openmcf/provider/confluent"
 	digitalocean "github.com/plantonhq/openmcf/apis/org/openmcf/provider/digitalocean"
 	gcp "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
+	hetznercloud "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud"
 	kubernetes "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
 	oci "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci"
 	openfga "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga"
@@ -52,21 +53,23 @@ const (
 	Credential_SCALEWAY                        Credential_CredentialProvider = 7
 	Credential_ALICLOUD                        Credential_CredentialProvider = 8
 	Credential_OCI                             Credential_CredentialProvider = 9
+	Credential_HETZNER_CLOUD                   Credential_CredentialProvider = 10
 )
 
 // Enum value maps for Credential_CredentialProvider.
 var (
 	Credential_CredentialProvider_name = map[int32]string{
-		0: "CREDENTIAL_PROVIDER_UNSPECIFIED",
-		1: "GCP",
-		2: "AWS",
-		3: "AZURE",
-		4: "AUTH0",
-		5: "OPEN_FGA",
-		6: "OPENSTACK",
-		7: "SCALEWAY",
-		8: "ALICLOUD",
-		9: "OCI",
+		0:  "CREDENTIAL_PROVIDER_UNSPECIFIED",
+		1:  "GCP",
+		2:  "AWS",
+		3:  "AZURE",
+		4:  "AUTH0",
+		5:  "OPEN_FGA",
+		6:  "OPENSTACK",
+		7:  "SCALEWAY",
+		8:  "ALICLOUD",
+		9:  "OCI",
+		10: "HETZNER_CLOUD",
 	}
 	Credential_CredentialProvider_value = map[string]int32{
 		"CREDENTIAL_PROVIDER_UNSPECIFIED": 0,
@@ -79,6 +82,7 @@ var (
 		"SCALEWAY":                        7,
 		"ALICLOUD":                        8,
 		"OCI":                             9,
+		"HETZNER_CLOUD":                   10,
 	}
 )
 
@@ -221,6 +225,7 @@ type CredentialProviderConfig struct {
 	//	*CredentialProviderConfig_Scaleway
 	//	*CredentialProviderConfig_Alicloud
 	//	*CredentialProviderConfig_Oci
+	//	*CredentialProviderConfig_Hetznercloud
 	Data          isCredentialProviderConfig_Data `protobuf_oneof:"data"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -407,6 +412,15 @@ func (x *CredentialProviderConfig) GetOci() *oci.OciProviderConfig {
 	return nil
 }
 
+func (x *CredentialProviderConfig) GetHetznercloud() *hetznercloud.HetznercloudProviderConfig {
+	if x != nil {
+		if x, ok := x.Data.(*CredentialProviderConfig_Hetznercloud); ok {
+			return x.Hetznercloud
+		}
+	}
+	return nil
+}
+
 type isCredentialProviderConfig_Data interface {
 	isCredentialProviderConfig_Data()
 }
@@ -475,6 +489,10 @@ type CredentialProviderConfig_Oci struct {
 	Oci *oci.OciProviderConfig `protobuf:"bytes,16,opt,name=oci,proto3,oneof"`
 }
 
+type CredentialProviderConfig_Hetznercloud struct {
+	Hetznercloud *hetznercloud.HetznercloudProviderConfig `protobuf:"bytes,17,opt,name=hetznercloud,proto3,oneof"`
+}
+
 func (*CredentialProviderConfig_Atlas) isCredentialProviderConfig_Data() {}
 
 func (*CredentialProviderConfig_Aws) isCredentialProviderConfig_Data() {}
@@ -507,11 +525,13 @@ func (*CredentialProviderConfig_Alicloud) isCredentialProviderConfig_Data() {}
 
 func (*CredentialProviderConfig_Oci) isCredentialProviderConfig_Data() {}
 
+func (*CredentialProviderConfig_Hetznercloud) isCredentialProviderConfig_Data() {}
+
 var File_org_openmcf_app_credential_v1_api_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_app_credential_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"'org/openmcf/app/credential/v1/api.proto\x12\x19org.openmcf.credential.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a,org/openmcf/provider/alicloud/provider.proto\x1a)org/openmcf/provider/atlas/provider.proto\x1a)org/openmcf/provider/auth0/provider.proto\x1a'org/openmcf/provider/aws/provider.proto\x1a)org/openmcf/provider/azure/provider.proto\x1a(org/openmcf/provider/civo/provider.proto\x1a.org/openmcf/provider/cloudflare/provider.proto\x1a-org/openmcf/provider/confluent/provider.proto\x1a0org/openmcf/provider/digitalocean/provider.proto\x1a'org/openmcf/provider/gcp/provider.proto\x1a.org/openmcf/provider/kubernetes/provider.proto\x1a'org/openmcf/provider/oci/provider.proto\x1a+org/openmcf/provider/openfga/provider.proto\x1a-org/openmcf/provider/openstack/provider.proto\x1a,org/openmcf/provider/scaleway/provider.proto\x1a-org/openmcf/provider/snowflake/provider.proto\"\x80\x04\n" +
+	"'org/openmcf/app/credential/v1/api.proto\x12\x19org.openmcf.credential.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a,org/openmcf/provider/alicloud/provider.proto\x1a)org/openmcf/provider/atlas/provider.proto\x1a)org/openmcf/provider/auth0/provider.proto\x1a'org/openmcf/provider/aws/provider.proto\x1a)org/openmcf/provider/azure/provider.proto\x1a(org/openmcf/provider/civo/provider.proto\x1a.org/openmcf/provider/cloudflare/provider.proto\x1a-org/openmcf/provider/confluent/provider.proto\x1a0org/openmcf/provider/digitalocean/provider.proto\x1a'org/openmcf/provider/gcp/provider.proto\x1a0org/openmcf/provider/hetznercloud/provider.proto\x1a.org/openmcf/provider/kubernetes/provider.proto\x1a'org/openmcf/provider/oci/provider.proto\x1a+org/openmcf/provider/openfga/provider.proto\x1a-org/openmcf/provider/openstack/provider.proto\x1a,org/openmcf/provider/scaleway/provider.proto\x1a-org/openmcf/provider/snowflake/provider.proto\"\x93\x04\n" +
 	"\n" +
 	"Credential\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
@@ -521,7 +541,7 @@ const file_org_openmcf_app_credential_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\xa3\x01\n" +
+	"updated_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\xb6\x01\n" +
 	"\x12CredentialProvider\x12#\n" +
 	"\x1fCREDENTIAL_PROVIDER_UNSPECIFIED\x10\x00\x12\a\n" +
 	"\x03GCP\x10\x01\x12\a\n" +
@@ -532,8 +552,9 @@ const file_org_openmcf_app_credential_v1_api_proto_rawDesc = "" +
 	"\tOPENSTACK\x10\x06\x12\f\n" +
 	"\bSCALEWAY\x10\a\x12\f\n" +
 	"\bALICLOUD\x10\b\x12\a\n" +
-	"\x03OCI\x10\t\"\xaa\n" +
-	"\n" +
+	"\x03OCI\x10\t\x12\x11\n" +
+	"\rHETZNER_CLOUD\x10\n" +
+	"\"\x8f\v\n" +
 	"\x18CredentialProviderConfig\x12G\n" +
 	"\x05atlas\x18\x01 \x01(\v2/.org.openmcf.provider.atlas.AtlasProviderConfigH\x00R\x05atlas\x12?\n" +
 	"\x03aws\x18\x02 \x01(\v2+.org.openmcf.provider.aws.AwsProviderConfigH\x00R\x03aws\x12G\n" +
@@ -555,7 +576,8 @@ const file_org_openmcf_app_credential_v1_api_proto_rawDesc = "" +
 	"\topenstack\x18\r \x01(\v27.org.openmcf.provider.openstack.OpenStackProviderConfigH\x00R\topenstack\x12S\n" +
 	"\bscaleway\x18\x0e \x01(\v25.org.openmcf.provider.scaleway.ScalewayProviderConfigH\x00R\bscaleway\x12S\n" +
 	"\balicloud\x18\x0f \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigH\x00R\balicloud\x12?\n" +
-	"\x03oci\x18\x10 \x01(\v2+.org.openmcf.provider.oci.OciProviderConfigH\x00R\x03ociB\x06\n" +
+	"\x03oci\x18\x10 \x01(\v2+.org.openmcf.provider.oci.OciProviderConfigH\x00R\x03oci\x12c\n" +
+	"\fhetznercloud\x18\x11 \x01(\v2=.org.openmcf.provider.hetznercloud.HetznercloudProviderConfigH\x00R\fhetznercloudB\x06\n" +
 	"\x04dataB\xfe\x01\n" +
 	"\x1dcom.org.openmcf.credential.v1B\bApiProtoP\x01ZLgithub.com/plantonhq/openmcf/apis/org/openmcf/app/credential/v1;credentialv1\xa2\x02\x03OOC\xaa\x02\x19Org.Openmcf.Credential.V1\xca\x02\x19Org\\Openmcf\\Credential\\V1\xe2\x02%Org\\Openmcf\\Credential\\V1\\GPBMetadata\xea\x02\x1cOrg::Openmcf::Credential::V1b\x06proto3"
 
@@ -594,6 +616,7 @@ var file_org_openmcf_app_credential_v1_api_proto_goTypes = []any{
 	(*scaleway.ScalewayProviderConfig)(nil),         // 17: org.openmcf.provider.scaleway.ScalewayProviderConfig
 	(*alicloud.AlicloudProviderConfig)(nil),         // 18: org.openmcf.provider.alicloud.AlicloudProviderConfig
 	(*oci.OciProviderConfig)(nil),                   // 19: org.openmcf.provider.oci.OciProviderConfig
+	(*hetznercloud.HetznercloudProviderConfig)(nil), // 20: org.openmcf.provider.hetznercloud.HetznercloudProviderConfig
 }
 var file_org_openmcf_app_credential_v1_api_proto_depIdxs = []int32{
 	0,  // 0: org.openmcf.credential.v1.Credential.provider:type_name -> org.openmcf.credential.v1.Credential.CredentialProvider
@@ -616,11 +639,12 @@ var file_org_openmcf_app_credential_v1_api_proto_depIdxs = []int32{
 	17, // 17: org.openmcf.credential.v1.CredentialProviderConfig.scaleway:type_name -> org.openmcf.provider.scaleway.ScalewayProviderConfig
 	18, // 18: org.openmcf.credential.v1.CredentialProviderConfig.alicloud:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
 	19, // 19: org.openmcf.credential.v1.CredentialProviderConfig.oci:type_name -> org.openmcf.provider.oci.OciProviderConfig
-	20, // [20:20] is the sub-list for method output_type
-	20, // [20:20] is the sub-list for method input_type
-	20, // [20:20] is the sub-list for extension type_name
-	20, // [20:20] is the sub-list for extension extendee
-	0,  // [0:20] is the sub-list for field type_name
+	20, // 20: org.openmcf.credential.v1.CredentialProviderConfig.hetznercloud:type_name -> org.openmcf.provider.hetznercloud.HetznercloudProviderConfig
+	21, // [21:21] is the sub-list for method output_type
+	21, // [21:21] is the sub-list for method input_type
+	21, // [21:21] is the sub-list for extension type_name
+	21, // [21:21] is the sub-list for extension extendee
+	0,  // [0:21] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_app_credential_v1_api_proto_init() }
@@ -645,6 +669,7 @@ func file_org_openmcf_app_credential_v1_api_proto_init() {
 		(*CredentialProviderConfig_Scaleway)(nil),
 		(*CredentialProviderConfig_Alicloud)(nil),
 		(*CredentialProviderConfig_Oci)(nil),
+		(*CredentialProviderConfig_Hetznercloud)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

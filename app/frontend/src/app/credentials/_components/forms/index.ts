@@ -7,5 +7,6 @@ export * from './openstack';
 export * from './scaleway';
 export * from './alicloud';
 export * from './oci';
+export * from './hetznercloud';
 export * from './credential-drawer';
 

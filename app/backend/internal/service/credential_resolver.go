@@ -8,6 +8,7 @@ import (
 	credentialv1 "github.com/plantonhq/openmcf/apis/org/openmcf/app/credential/v1"
 	alicloudv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud"
 	auth0v1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0"
+	hetznercloudv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud"
 	ociv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci"
 	awsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
 	azurev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure"
@@ -273,6 +274,20 @@ func (r *CredentialResolver) ResolveProviderConfig(
 		return &credentialv1.CredentialProviderConfig{
 			Data: &credentialv1.CredentialProviderConfig_Oci{
 				Oci: cfg,
+			},
+		}, nil
+
+	case cloudresourcekind.CloudResourceProvider_hetznercloud:
+		hcCred := credInterface.(*models.HetznercloudCredential)
+		return &credentialv1.CredentialProviderConfig{
+			Data: &credentialv1.CredentialProviderConfig_Hetznercloud{
+				Hetznercloud: &hetznercloudv1.HetznercloudProviderConfig{
+					Token:           hcCred.Token,
+					Endpoint:        hcCred.Endpoint,
+					EndpointHetzner: hcCred.EndpointHetzner,
+					PollInterval:    hcCred.PollInterval,
+					PollFunction:    hcCred.PollFunction,
+				},
 			},
 		}, nil
 
