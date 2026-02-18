@@ -20,6 +20,9 @@ variable "metadata" {
 variable "spec" {
   description = "AwsDocumentDbSpec configuration"
   type = object({
+    # The AWS region where the resource will be created.
+    region = string
+
     # Subnets for the DB subnet group
     subnets = list(object({
       value = string

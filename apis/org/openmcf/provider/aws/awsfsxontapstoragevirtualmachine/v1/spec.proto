@@ -39,6 +39,10 @@ import "org/openmcf/shared/options/options.proto";
 // - Credentials, region, and deployment workflow live outside this spec in stack
 //   inputs.
 message AwsFsxOntapStorageVirtualMachineSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Parent Reference
   // ---------------------------------------------------------------------------
@@ -49,7 +53,7 @@ message AwsFsxOntapStorageVirtualMachineSpec {
   // The file system provides the underlying storage, throughput, networking,
   // and HA infrastructure. Multiple SVMs can share a single file system for
   // multi-tenancy scenarios.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef file_system_id = 1 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef file_system_id = 2 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsFsxOntapFileSystem,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.file_system_id"
@@ -67,7 +71,7 @@ message AwsFsxOntapStorageVirtualMachineSpec {
   //
   // Constraints: 1-47 characters, alphanumeric and underscore only (no hyphens,
   // no spaces, no special characters).
-  string name = 2 [
+  string name = 3 [
     (buf.validate.field).string.min_len = 1,
     (buf.validate.field).string.max_len = 47
   ];
@@ -88,7 +92,7 @@ message AwsFsxOntapStorageVirtualMachineSpec {
   //   access patterns (advanced use case).
   //
   // Default: UNIX
-  optional string root_volume_security_style = 3 [(org.openmcf.shared.options.default) = "UNIX"];
+  optional string root_volume_security_style = 4 [(org.openmcf.shared.options.default) = "UNIX"];
 
   // ---------------------------------------------------------------------------
   // SVM Administration
@@ -103,7 +107,7 @@ message AwsFsxOntapStorageVirtualMachineSpec {
   //
   // Length: 8-50 characters. Optional — omit if SVM CLI access is not needed.
   // This value is sensitive and will not be returned in read operations.
-  string svm_admin_password = 4;
+  string svm_admin_password = 5;
 
   // ---------------------------------------------------------------------------
   // Active Directory (optional — for SMB access)
@@ -117,7 +121,7 @@ message AwsFsxOntapStorageVirtualMachineSpec {
   //
   // ONTAP SVMs support only self-managed Active Directory (on-premises, on EC2,
   // or Azure AD DS). AWS Managed Microsoft AD is not supported for ONTAP SVMs.
-  AwsFsxOntapStorageVirtualMachineActiveDirectoryConfiguration active_directory_configuration = 5;
+  AwsFsxOntapStorageVirtualMachineActiveDirectoryConfiguration active_directory_configuration = 6;
 
   // ---------------------------------------------------------------------------
   // CEL Validations

@@ -34,6 +34,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsStepFunction.my-step-function
 spec:
+  region: us-east-1
   roleArn: arn:aws:iam::123456789012:role/step-functions-exec
   definition:
     StartAt: Hello
@@ -58,6 +59,7 @@ This creates a STANDARD state machine with a single Pass state that returns a st
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | The AWS region where the state machine will be created. | Required |
 | `definition` | `object` | State machine definition in Amazon States Language (ASL). Write as native YAML; the module serializes it to JSON for the AWS API. ASL key casing (`StartAt`, `States`, `Type`, `Resource`) is preserved. | Required. Max 1 MB after JSON serialization. |
 | `roleArn` | `string` | IAM execution role ARN. The role must trust `states.amazonaws.com` and grant access to all services the workflow invokes. Can reference an AwsIamRole resource via `valueFrom`. | Required |
 
@@ -91,6 +93,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsStepFunction.order-processor
 spec:
+  region: us-east-1
   roleArn: arn:aws:iam::123456789012:role/step-functions-exec
   definition:
     StartAt: ProcessOrder
@@ -126,6 +129,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsStepFunction.event-ingest
 spec:
+  region: us-east-1
   type: EXPRESS
   roleArn: arn:aws:iam::123456789012:role/step-functions-express-exec
   tracingEnabled: true
@@ -166,6 +170,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsStepFunction.payment-workflow
 spec:
+  region: us-east-1
   roleArn: arn:aws:iam::123456789012:role/payment-sfn-exec
   description: Processes payment transactions with PCI-compliant encryption.
   tracingEnabled: true
@@ -204,6 +209,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsStepFunction.ref-step-function
 spec:
+  region: us-east-1
   roleArn:
     valueFrom:
       kind: AwsIamRole

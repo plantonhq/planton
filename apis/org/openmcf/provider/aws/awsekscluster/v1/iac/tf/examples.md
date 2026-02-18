@@ -17,6 +17,7 @@ kind: AwsEksCluster
 metadata:
   name: basic-eks-cluster
 spec:
+  region: us-west-2
   subnetIds:
     - value: "subnet-1234567890abcdef0"
     - value: "subnet-0987654321fedcba0"
@@ -42,6 +43,7 @@ kind: AwsEksCluster
 metadata:
   name: private-eks-cluster
 spec:
+  region: us-west-2
   subnetIds:
     - value: "subnet-private-1a"
     - value: "subnet-private-1b"
@@ -67,6 +69,7 @@ kind: AwsEksCluster
 metadata:
   name: restricted-eks-cluster
 spec:
+  region: us-west-2
   subnetIds:
     - value: "subnet-private-1a"
     - value: "subnet-private-1b"
@@ -96,6 +99,7 @@ kind: AwsEksCluster
 metadata:
   name: logging-eks-cluster
 spec:
+  region: us-west-2
   subnetIds:
     - value: "subnet-private-1a"
     - value: "subnet-private-1b"
@@ -121,6 +125,7 @@ kind: AwsEksCluster
 metadata:
   name: encrypted-eks-cluster
 spec:
+  region: us-east-1
   subnetIds:
     - value: "subnet-private-1a"
     - value: "subnet-private-1b"
@@ -147,6 +152,7 @@ kind: AwsEksCluster
 metadata:
   name: production-eks-cluster
 spec:
+  region: us-east-1
   subnetIds:
     - value: "subnet-private-1a"
     - value: "subnet-private-1b"
@@ -179,6 +185,7 @@ kind: AwsEksCluster
 metadata:
   name: development-eks-cluster
 spec:
+  region: us-west-2
   subnetIds:
     - value: "subnet-private-1a"
     - value: "subnet-private-1b"
@@ -205,6 +212,7 @@ kind: AwsEksCluster
 metadata:
   name: vpc-ref-eks-cluster
 spec:
+  region: us-west-2
   subnetIds:
     - valueFrom:
         kind: AwsVpc

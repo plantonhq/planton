@@ -8,24 +8,28 @@ import "org/openmcf/shared/options/options.proto";
 
 // AwsAlbSpec captures the essential fields to create an Application Load Balancer on AWS.
 message AwsAlbSpec {
+  // The AWS region where the ALB will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // list of subnet IDs in which to create the ALB. AWS requires at least two subnets
   // for ALBs, which also ensures high availability across multiple Availability Zones.
   // Typically use private subnets for internal ALBs or public subnets for internet-facing ALBs.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnets = 1 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnets = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 2,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc
   ];
 
   // list of security group IDs to attach to the ALB.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_groups = 2 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_groups = 3 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
 
   // indicates whether the ALB is internal or internet-facing.
   // If true, the ALB is internal; if false (or not set), it is internet-facing.
-  bool internal = 3;
+  bool internal = 4;
 
   // indicates whether the ALB should have deletion protection enabled.
   // This prevents accidental deletion.

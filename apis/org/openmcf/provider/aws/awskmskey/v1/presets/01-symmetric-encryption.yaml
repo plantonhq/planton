@@ -3,6 +3,7 @@ kind: AwsKmsKey
 metadata:
   name: my-symmetric-key
 spec:
+  region: <aws-region>
   keySpec: symmetric
   description: <key-description>
   disableKeyRotation: false  # Annual rotation enabled (recommended)

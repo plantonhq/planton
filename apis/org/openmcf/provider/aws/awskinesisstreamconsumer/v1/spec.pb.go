@@ -54,6 +54,9 @@ const (
 //     stack inputs.
 type AwsKinesisStreamConsumerSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// ARN of the Kinesis Data Stream to register this consumer with. The consumer
 	// receives a dedicated 2 MB/s read throughput pipe for every shard in the
 	// stream, independent of other consumers.
@@ -63,7 +66,7 @@ type AwsKinesisStreamConsumerSpec struct {
 	//
 	// Accepts a direct ARN string or a reference to an AwsKinesisStream resource
 	// via valueFrom.
-	StreamArn     *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=stream_arn,json=streamArn,proto3" json:"stream_arn,omitempty"`
+	StreamArn     *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=stream_arn,json=streamArn,proto3" json:"stream_arn,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -98,6 +101,13 @@ func (*AwsKinesisStreamConsumerSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awskinesisstreamconsumer_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
+func (x *AwsKinesisStreamConsumerSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
 func (x *AwsKinesisStreamConsumerSpec) GetStreamArn() *v1.StringValueOrRef {
 	if x != nil {
 		return x.StreamArn
@@ -109,10 +119,11 @@ var File_org_openmcf_provider_aws_awskinesisstreamconsumer_v1_spec_proto protore
 
 const file_org_openmcf_provider_aws_awskinesisstreamconsumer_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"?org/openmcf/provider/aws/awskinesisstreamconsumer/v1/spec.proto\x124org.openmcf.provider.aws.awskinesisstreamconsumer.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x9b\x01\n" +
-	"\x1cAwsKinesisStreamConsumerSpec\x12{\n" +
+	"?org/openmcf/provider/aws/awskinesisstreamconsumer/v1/spec.proto\x124org.openmcf.provider.aws.awskinesisstreamconsumer.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xbc\x01\n" +
+	"\x1cAwsKinesisStreamConsumerSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12{\n" +
 	"\n" +
-	"stream_arn\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\x84\x02\x92\xd4a\x19status.outputs.stream_arnR\tstreamArnB\xaf\x03\n" +
+	"stream_arn\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\x84\x02\x92\xd4a\x19status.outputs.stream_arnR\tstreamArnB\xaf\x03\n" +
 	"8com.org.openmcf.provider.aws.awskinesisstreamconsumer.v1B\tSpecProtoP\x01Zqgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awskinesisstreamconsumer/v1;awskinesisstreamconsumerv1\xa2\x02\x05OOPAA\xaa\x024Org.Openmcf.Provider.Aws.Awskinesisstreamconsumer.V1\xca\x024Org\\Openmcf\\Provider\\Aws\\Awskinesisstreamconsumer\\V1\xe2\x02@Org\\Openmcf\\Provider\\Aws\\Awskinesisstreamconsumer\\V1\\GPBMetadata\xea\x029Org::Openmcf::Provider::Aws::Awskinesisstreamconsumer::V1b\x06proto3"
 
 var (

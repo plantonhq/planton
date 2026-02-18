@@ -33,85 +33,88 @@ const (
 // network-level security (VPC, security groups).
 type AwsNeptuneClusterSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// subnet_ids is the list of subnet IDs for the Neptune subnet group.
 	// Provide at least two subnets in distinct Availability Zones for high availability.
-	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,1,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
+	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,2,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// neptune_subnet_group_name is an optional name of an existing Neptune subnet group
 	// to use instead of creating one from subnet_ids.
-	NeptuneSubnetGroupName *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=neptune_subnet_group_name,json=neptuneSubnetGroupName,proto3" json:"neptune_subnet_group_name,omitempty"`
+	NeptuneSubnetGroupName *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=neptune_subnet_group_name,json=neptuneSubnetGroupName,proto3" json:"neptune_subnet_group_name,omitempty"`
 	// security_group_ids are the VPC security groups to associate with the cluster.
 	// Ingress rules are created on a managed security group for these source SGs.
-	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,3,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
+	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,4,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
 	// allowed_cidr_blocks are IPv4 CIDRs to allow ingress to the cluster security group
 	// on the Neptune port.
-	AllowedCidrBlocks []string `protobuf:"bytes,4,rep,name=allowed_cidr_blocks,json=allowedCidrBlocks,proto3" json:"allowed_cidr_blocks,omitempty"`
+	AllowedCidrBlocks []string `protobuf:"bytes,5,rep,name=allowed_cidr_blocks,json=allowedCidrBlocks,proto3" json:"allowed_cidr_blocks,omitempty"`
 	// vpc_id is the VPC where the cluster will be deployed. Required when creating
 	// a managed security group via security_group_ids or allowed_cidr_blocks.
-	VpcId *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
+	VpcId *v1.StringValueOrRef `protobuf:"bytes,6,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
 	// engine_version is the Neptune engine version to deploy.
 	// Examples: "1.2.1.0", "1.3.0.0", "1.3.1.0"
-	EngineVersion *string `protobuf:"bytes,6,opt,name=engine_version,json=engineVersion,proto3,oneof" json:"engine_version,omitempty"`
+	EngineVersion *string `protobuf:"bytes,7,opt,name=engine_version,json=engineVersion,proto3,oneof" json:"engine_version,omitempty"`
 	// port is the TCP port on which the cluster accepts connections.
-	Port *int32 `protobuf:"varint,7,opt,name=port,proto3,oneof" json:"port,omitempty"`
+	Port *int32 `protobuf:"varint,8,opt,name=port,proto3,oneof" json:"port,omitempty"`
 	// storage_type controls the storage I/O model for the cluster.
 	// "standard" is the default; "iopt1" enables I/O-Optimized storage for
 	// read-heavy workloads with higher throughput and predictable pricing.
-	StorageType string `protobuf:"bytes,8,opt,name=storage_type,json=storageType,proto3" json:"storage_type,omitempty"`
+	StorageType string `protobuf:"bytes,9,opt,name=storage_type,json=storageType,proto3" json:"storage_type,omitempty"`
 	// instance_count is the number of instances to create in the cluster.
 	// The first instance is the primary writer; additional instances are read replicas.
-	InstanceCount *int32 `protobuf:"varint,9,opt,name=instance_count,json=instanceCount,proto3,oneof" json:"instance_count,omitempty"`
+	InstanceCount *int32 `protobuf:"varint,10,opt,name=instance_count,json=instanceCount,proto3,oneof" json:"instance_count,omitempty"`
 	// instance_class is the compute and memory capacity of the DB instances.
 	// Examples: "db.r6g.large", "db.r6g.xlarge", "db.r5.large"
 	// Use "db.serverless" for Neptune Serverless (requires serverless_v2_scaling).
-	InstanceClass *string `protobuf:"bytes,10,opt,name=instance_class,json=instanceClass,proto3,oneof" json:"instance_class,omitempty"`
+	InstanceClass *string `protobuf:"bytes,11,opt,name=instance_class,json=instanceClass,proto3,oneof" json:"instance_class,omitempty"`
 	// serverless_v2_scaling configures Neptune Serverless capacity scaling.
 	// When set, instance_class should be "db.serverless".
 	// Neptune Capacity Units (NCUs): min 1.0, max 128.0.
-	ServerlessV2Scaling *AwsNeptuneClusterServerlessV2ScalingConfiguration `protobuf:"bytes,11,opt,name=serverless_v2_scaling,json=serverlessV2Scaling,proto3" json:"serverless_v2_scaling,omitempty"`
+	ServerlessV2Scaling *AwsNeptuneClusterServerlessV2ScalingConfiguration `protobuf:"bytes,12,opt,name=serverless_v2_scaling,json=serverlessV2Scaling,proto3" json:"serverless_v2_scaling,omitempty"`
 	// storage_encrypted indicates whether to encrypt the cluster storage at rest.
-	StorageEncrypted *bool `protobuf:"varint,12,opt,name=storage_encrypted,json=storageEncrypted,proto3,oneof" json:"storage_encrypted,omitempty"`
+	StorageEncrypted *bool `protobuf:"varint,13,opt,name=storage_encrypted,json=storageEncrypted,proto3,oneof" json:"storage_encrypted,omitempty"`
 	// kms_key_id is the ARN of the KMS key for storage encryption.
 	// When storage_encrypted is true and this is not set, the AWS-managed key is used.
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,13,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,14,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// iam_database_authentication_enabled enables IAM database authentication,
 	// allowing IAM users and roles to authenticate to Neptune using temporary credentials.
-	IamDatabaseAuthenticationEnabled bool `protobuf:"varint,14,opt,name=iam_database_authentication_enabled,json=iamDatabaseAuthenticationEnabled,proto3" json:"iam_database_authentication_enabled,omitempty"`
+	IamDatabaseAuthenticationEnabled bool `protobuf:"varint,15,opt,name=iam_database_authentication_enabled,json=iamDatabaseAuthenticationEnabled,proto3" json:"iam_database_authentication_enabled,omitempty"`
 	// iam_roles is a list of IAM role ARNs to associate with the Neptune cluster.
 	// These roles allow Neptune to access other AWS services (e.g., S3 for bulk data loading).
-	IamRoles []*v1.StringValueOrRef `protobuf:"bytes,15,rep,name=iam_roles,json=iamRoles,proto3" json:"iam_roles,omitempty"`
+	IamRoles []*v1.StringValueOrRef `protobuf:"bytes,16,rep,name=iam_roles,json=iamRoles,proto3" json:"iam_roles,omitempty"`
 	// backup_retention_period is the number of days to retain automated backups (1-35).
-	BackupRetentionPeriod *int32 `protobuf:"varint,16,opt,name=backup_retention_period,json=backupRetentionPeriod,proto3,oneof" json:"backup_retention_period,omitempty"`
+	BackupRetentionPeriod *int32 `protobuf:"varint,17,opt,name=backup_retention_period,json=backupRetentionPeriod,proto3,oneof" json:"backup_retention_period,omitempty"`
 	// preferred_backup_window is the daily time range for automated backups in UTC.
 	// Format: "hh24:mi-hh24:mi" (e.g., "03:00-04:00").
-	PreferredBackupWindow string `protobuf:"bytes,17,opt,name=preferred_backup_window,json=preferredBackupWindow,proto3" json:"preferred_backup_window,omitempty"`
+	PreferredBackupWindow string `protobuf:"bytes,18,opt,name=preferred_backup_window,json=preferredBackupWindow,proto3" json:"preferred_backup_window,omitempty"`
 	// preferred_maintenance_window is the weekly time range for maintenance in UTC.
 	// Format: "ddd:hh24:mi-ddd:hh24:mi" (e.g., "sun:05:00-sun:06:00").
-	PreferredMaintenanceWindow string `protobuf:"bytes,18,opt,name=preferred_maintenance_window,json=preferredMaintenanceWindow,proto3" json:"preferred_maintenance_window,omitempty"`
+	PreferredMaintenanceWindow string `protobuf:"bytes,19,opt,name=preferred_maintenance_window,json=preferredMaintenanceWindow,proto3" json:"preferred_maintenance_window,omitempty"`
 	// deletion_protection prevents accidental cluster deletion when enabled.
-	DeletionProtection bool `protobuf:"varint,19,opt,name=deletion_protection,json=deletionProtection,proto3" json:"deletion_protection,omitempty"`
+	DeletionProtection bool `protobuf:"varint,20,opt,name=deletion_protection,json=deletionProtection,proto3" json:"deletion_protection,omitempty"`
 	// skip_final_snapshot controls whether a final snapshot is created on deletion.
-	SkipFinalSnapshot *bool `protobuf:"varint,20,opt,name=skip_final_snapshot,json=skipFinalSnapshot,proto3,oneof" json:"skip_final_snapshot,omitempty"`
+	SkipFinalSnapshot *bool `protobuf:"varint,21,opt,name=skip_final_snapshot,json=skipFinalSnapshot,proto3,oneof" json:"skip_final_snapshot,omitempty"`
 	// final_snapshot_identifier is the identifier for the final snapshot when
 	// skip_final_snapshot is false.
-	FinalSnapshotIdentifier string `protobuf:"bytes,21,opt,name=final_snapshot_identifier,json=finalSnapshotIdentifier,proto3" json:"final_snapshot_identifier,omitempty"`
+	FinalSnapshotIdentifier string `protobuf:"bytes,22,opt,name=final_snapshot_identifier,json=finalSnapshotIdentifier,proto3" json:"final_snapshot_identifier,omitempty"`
 	// enabled_cloudwatch_logs_exports lists log types to export to CloudWatch Logs.
 	// Valid values for Neptune: "audit", "slowquery"
-	EnabledCloudwatchLogsExports []string `protobuf:"bytes,22,rep,name=enabled_cloudwatch_logs_exports,json=enabledCloudwatchLogsExports,proto3" json:"enabled_cloudwatch_logs_exports,omitempty"`
+	EnabledCloudwatchLogsExports []string `protobuf:"bytes,23,rep,name=enabled_cloudwatch_logs_exports,json=enabledCloudwatchLogsExports,proto3" json:"enabled_cloudwatch_logs_exports,omitempty"`
 	// apply_immediately specifies whether modifications are applied immediately
 	// or during the next maintenance window.
-	ApplyImmediately bool `protobuf:"varint,23,opt,name=apply_immediately,json=applyImmediately,proto3" json:"apply_immediately,omitempty"`
+	ApplyImmediately bool `protobuf:"varint,24,opt,name=apply_immediately,json=applyImmediately,proto3" json:"apply_immediately,omitempty"`
 	// copy_tags_to_snapshot copies cluster tags to snapshots when enabled.
-	CopyTagsToSnapshot bool `protobuf:"varint,24,opt,name=copy_tags_to_snapshot,json=copyTagsToSnapshot,proto3" json:"copy_tags_to_snapshot,omitempty"`
+	CopyTagsToSnapshot bool `protobuf:"varint,25,opt,name=copy_tags_to_snapshot,json=copyTagsToSnapshot,proto3" json:"copy_tags_to_snapshot,omitempty"`
 	// allow_major_version_upgrade allows major engine version upgrades when applying
 	// changes. Required when updating engine_version to a new major version.
-	AllowMajorVersionUpgrade bool `protobuf:"varint,25,opt,name=allow_major_version_upgrade,json=allowMajorVersionUpgrade,proto3" json:"allow_major_version_upgrade,omitempty"`
+	AllowMajorVersionUpgrade bool `protobuf:"varint,26,opt,name=allow_major_version_upgrade,json=allowMajorVersionUpgrade,proto3" json:"allow_major_version_upgrade,omitempty"`
 	// cluster_parameter_group_name is the name of an existing Neptune cluster
 	// parameter group to use.
-	ClusterParameterGroupName string `protobuf:"bytes,26,opt,name=cluster_parameter_group_name,json=clusterParameterGroupName,proto3" json:"cluster_parameter_group_name,omitempty"`
+	ClusterParameterGroupName string `protobuf:"bytes,27,opt,name=cluster_parameter_group_name,json=clusterParameterGroupName,proto3" json:"cluster_parameter_group_name,omitempty"`
 	// cluster_parameters are custom parameters for the cluster parameter group.
 	// When provided (and cluster_parameter_group_name is not set), a new parameter
 	// group is created with these parameters.
-	ClusterParameters []*AwsNeptuneClusterParameter `protobuf:"bytes,27,rep,name=cluster_parameters,json=clusterParameters,proto3" json:"cluster_parameters,omitempty"`
+	ClusterParameters []*AwsNeptuneClusterParameter `protobuf:"bytes,28,rep,name=cluster_parameters,json=clusterParameters,proto3" json:"cluster_parameters,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -144,6 +147,13 @@ func (x *AwsNeptuneClusterSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsNeptuneClusterSpec.ProtoReflect.Descriptor instead.
 func (*AwsNeptuneClusterSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsneptunecluster_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsNeptuneClusterSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsNeptuneClusterSpec) GetSubnetIds() []*v1.StringValueOrRef {
@@ -462,39 +472,40 @@ var File_org_openmcf_provider_aws_awsneptunecluster_v1_spec_proto protoreflect.F
 
 const file_org_openmcf_provider_aws_awsneptunecluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8org/openmcf/provider/aws/awsneptunecluster/v1/spec.proto\x12-org.openmcf.provider.aws.awsneptunecluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xcc\x1a\n" +
-	"\x15AwsNeptuneClusterSpec\x12\x81\x01\n" +
+	"8org/openmcf/provider/aws/awsneptunecluster/v1/spec.proto\x12-org.openmcf.provider.aws.awsneptunecluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xed\x1a\n" +
+	"\x15AwsNeptuneClusterSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x81\x01\n" +
 	"\n" +
-	"subnet_ids\x18\x01 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12m\n" +
-	"\x19neptune_subnet_group_name\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x16neptuneSubnetGroupName\x12\x8b\x01\n" +
-	"\x12security_group_ids\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12\xa1\x01\n" +
-	"\x13allowed_cidr_blocks\x18\x04 \x03(\tBq\xbaHn\x92\x01k\x18\x01\"gre2c^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$R\x11allowedCidrBlocks\x12i\n" +
-	"\x06vpc_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12>\n" +
-	"\x0eengine_version\x18\x06 \x01(\tB\x12\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\a1.3.0.0H\x00R\rengineVersion\x88\x01\x01\x12,\n" +
-	"\x04port\x18\a \x01(\x05B\x13\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01\x8a\xa6\x1d\x048182H\x01R\x04port\x88\x01\x01\x12<\n" +
-	"\fstorage_type\x18\b \x01(\tB\x19\xbaH\x16\xd8\x01\x01r\x11R\bstandardR\x05iopt1R\vstorageType\x128\n" +
-	"\x0einstance_count\x18\t \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x02R\rinstanceCount\x88\x01\x01\x12C\n" +
-	"\x0einstance_class\x18\n" +
-	" \x01(\tB\x17\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\fdb.r6g.largeH\x03R\rinstanceClass\x88\x01\x01\x12\x94\x01\n" +
-	"\x15serverless_v2_scaling\x18\v \x01(\v2`.org.openmcf.provider.aws.awsneptunecluster.v1.AwsNeptuneClusterServerlessV2ScalingConfigurationR\x13serverlessV2Scaling\x12:\n" +
-	"\x11storage_encrypted\x18\f \x01(\bB\b\x8a\xa6\x1d\x04trueH\x04R\x10storageEncrypted\x88\x01\x01\x12q\n" +
+	"subnet_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12m\n" +
+	"\x19neptune_subnet_group_name\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x16neptuneSubnetGroupName\x12\x8b\x01\n" +
+	"\x12security_group_ids\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12\xa1\x01\n" +
+	"\x13allowed_cidr_blocks\x18\x05 \x03(\tBq\xbaHn\x92\x01k\x18\x01\"gre2c^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$R\x11allowedCidrBlocks\x12i\n" +
+	"\x06vpc_id\x18\x06 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12>\n" +
+	"\x0eengine_version\x18\a \x01(\tB\x12\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\a1.3.0.0H\x00R\rengineVersion\x88\x01\x01\x12,\n" +
+	"\x04port\x18\b \x01(\x05B\x13\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01\x8a\xa6\x1d\x048182H\x01R\x04port\x88\x01\x01\x12<\n" +
+	"\fstorage_type\x18\t \x01(\tB\x19\xbaH\x16\xd8\x01\x01r\x11R\bstandardR\x05iopt1R\vstorageType\x128\n" +
+	"\x0einstance_count\x18\n" +
+	" \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x02R\rinstanceCount\x88\x01\x01\x12C\n" +
+	"\x0einstance_class\x18\v \x01(\tB\x17\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\fdb.r6g.largeH\x03R\rinstanceClass\x88\x01\x01\x12\x94\x01\n" +
+	"\x15serverless_v2_scaling\x18\f \x01(\v2`.org.openmcf.provider.aws.awsneptunecluster.v1.AwsNeptuneClusterServerlessV2ScalingConfigurationR\x13serverlessV2Scaling\x12:\n" +
+	"\x11storage_encrypted\x18\r \x01(\bB\b\x8a\xa6\x1d\x04trueH\x04R\x10storageEncrypted\x88\x01\x01\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\r \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12M\n" +
-	"#iam_database_authentication_enabled\x18\x0e \x01(\bR iamDatabaseAuthenticationEnabled\x12q\n" +
-	"\tiam_roles\x18\x0f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\biamRoles\x12K\n" +
-	"\x17backup_retention_period\x18\x10 \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18#(\x01\x8a\xa6\x1d\x017H\x05R\x15backupRetentionPeriod\x88\x01\x01\x12\x7f\n" +
-	"\x17preferred_backup_window\x18\x11 \x01(\tBG\xbaHD\xd8\x01\x01r?2=^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$R\x15preferredBackupWindow\x12\xc7\x01\n" +
-	"\x1cpreferred_maintenance_window\x18\x12 \x01(\tB\x84\x01\xbaH\x80\x01\xd8\x01\x01r{2y^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$R\x1apreferredMaintenanceWindow\x12/\n" +
-	"\x13deletion_protection\x18\x13 \x01(\bR\x12deletionProtection\x12>\n" +
-	"\x13skip_final_snapshot\x18\x14 \x01(\bB\t\x8a\xa6\x1d\x05falseH\x06R\x11skipFinalSnapshot\x88\x01\x01\x12F\n" +
-	"\x19final_snapshot_identifier\x18\x15 \x01(\tB\n" +
+	"kms_key_id\x18\x0e \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12M\n" +
+	"#iam_database_authentication_enabled\x18\x0f \x01(\bR iamDatabaseAuthenticationEnabled\x12q\n" +
+	"\tiam_roles\x18\x10 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\biamRoles\x12K\n" +
+	"\x17backup_retention_period\x18\x11 \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18#(\x01\x8a\xa6\x1d\x017H\x05R\x15backupRetentionPeriod\x88\x01\x01\x12\x7f\n" +
+	"\x17preferred_backup_window\x18\x12 \x01(\tBG\xbaHD\xd8\x01\x01r?2=^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$R\x15preferredBackupWindow\x12\xc7\x01\n" +
+	"\x1cpreferred_maintenance_window\x18\x13 \x01(\tB\x84\x01\xbaH\x80\x01\xd8\x01\x01r{2y^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$R\x1apreferredMaintenanceWindow\x12/\n" +
+	"\x13deletion_protection\x18\x14 \x01(\bR\x12deletionProtection\x12>\n" +
+	"\x13skip_final_snapshot\x18\x15 \x01(\bB\t\x8a\xa6\x1d\x05falseH\x06R\x11skipFinalSnapshot\x88\x01\x01\x12F\n" +
+	"\x19final_snapshot_identifier\x18\x16 \x01(\tB\n" +
 	"\xbaH\a\xd8\x01\x01r\x02\x10\x01R\x17finalSnapshotIdentifier\x12O\n" +
-	"\x1fenabled_cloudwatch_logs_exports\x18\x16 \x03(\tB\b\xbaH\x05\x92\x01\x02\x18\x01R\x1cenabledCloudwatchLogsExports\x12+\n" +
-	"\x11apply_immediately\x18\x17 \x01(\bR\x10applyImmediately\x121\n" +
-	"\x15copy_tags_to_snapshot\x18\x18 \x01(\bR\x12copyTagsToSnapshot\x12=\n" +
-	"\x1ballow_major_version_upgrade\x18\x19 \x01(\bR\x18allowMajorVersionUpgrade\x12?\n" +
-	"\x1ccluster_parameter_group_name\x18\x1a \x01(\tR\x19clusterParameterGroupName\x12x\n" +
-	"\x12cluster_parameters\x18\x1b \x03(\v2I.org.openmcf.provider.aws.awsneptunecluster.v1.AwsNeptuneClusterParameterR\x11clusterParameters:\xe7\x05\xbaH\xe3\x05\x1a\x96\x01\n" +
+	"\x1fenabled_cloudwatch_logs_exports\x18\x17 \x03(\tB\b\xbaH\x05\x92\x01\x02\x18\x01R\x1cenabledCloudwatchLogsExports\x12+\n" +
+	"\x11apply_immediately\x18\x18 \x01(\bR\x10applyImmediately\x121\n" +
+	"\x15copy_tags_to_snapshot\x18\x19 \x01(\bR\x12copyTagsToSnapshot\x12=\n" +
+	"\x1ballow_major_version_upgrade\x18\x1a \x01(\bR\x18allowMajorVersionUpgrade\x12?\n" +
+	"\x1ccluster_parameter_group_name\x18\x1b \x01(\tR\x19clusterParameterGroupName\x12x\n" +
+	"\x12cluster_parameters\x18\x1c \x03(\v2I.org.openmcf.provider.aws.awsneptunecluster.v1.AwsNeptuneClusterParameterR\x11clusterParameters:\xe7\x05\xbaH\xe3\x05\x1a\x96\x01\n" +
 	"\x10subnets_or_group\x12<Provide either subnet_ids (>=2) or neptune_subnet_group_name\x1aD(this.subnet_ids.size() >= 2) || has(this.neptune_subnet_group_name)\x1a\xbf\x01\n" +
 	",final_snapshot_id_required_when_not_skipping\x12Gfinal_snapshot_identifier must be set when skip_final_snapshot is false\x1aFthis.skip_final_snapshot ? true : this.final_snapshot_identifier != \"\"\x1a\xbc\x01\n" +
 	"\x19logs_exports_valid_values\x12Penabled_cloudwatch_logs_exports must contain only valid values: audit, slowquery\x1aMthis.enabled_cloudwatch_logs_exports.all(x, x == \"audit\" || x == \"slowquery\")\x1a\xc6\x01\n" +

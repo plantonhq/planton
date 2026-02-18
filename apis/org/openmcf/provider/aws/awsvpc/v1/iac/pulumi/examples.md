@@ -16,7 +16,7 @@ kind: AwsVpc
 metadata:
   name: my-basic-vpc
 spec:
-  awsProviderConfigId: my-aws-credential-id
+  region: us-west-2
   vpcCidr: 10.0.0.0/16
   availabilityZones:
     - us-west-2a
@@ -38,7 +38,7 @@ kind: AwsVpc
 metadata:
   name: my-env-vpc
 spec:
-  awsProviderConfigId: ${AWS_CREDENTIAL_ID}
+  region: ${AWS_REGION}
   vpcCidr: ${VPC_CIDR}
   availabilityZones:
     - ${AVAILABILITY_ZONE_1}
@@ -62,7 +62,7 @@ kind: AwsVpc
 metadata:
   name: my-secret-vpc
 spec:
-  awsProviderConfigId: my-aws-credential-id
+  region: us-east-1
   vpcCidr: 10.1.0.0/16
   availabilityZones:
     - us-east-1a
@@ -91,7 +91,7 @@ kind: AwsVpc
 metadata:
   name: my-full-config-vpc
 spec:
-  awsProviderConfigId: my-aws-credential-id
+  region: us-east-1
   vpcCidr: 10.2.0.0/16
   availabilityZones:
     - us-east-1a

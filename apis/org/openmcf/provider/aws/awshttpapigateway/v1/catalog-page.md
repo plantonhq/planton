@@ -36,6 +36,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsHttpApiGateway.my-api
 spec:
+  region: us-east-1
   routes:
     - routeKey: "$default"
       integration:
@@ -58,6 +59,7 @@ This creates an HTTP API with a single catch-all route (`$default`) that forward
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | The AWS region where the resource will be created (e.g., `"us-west-2"`, `"eu-west-1"`) | Non-empty |
 | `routes` | `AwsHttpApiGatewayRoute[]` | API routes mapping request patterns to backend integrations | Minimum 1 item |
 | `routes[].routeKey` | `string` | Route key defining the request pattern (e.g., `"GET /users"`, `"POST /orders/{id}"`, `"$default"`) | Non-empty |
 | `routes[].integration` | `object` | Backend integration that processes requests matching this route | Required |
@@ -117,6 +119,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsHttpApiGateway.users-api
 spec:
+  region: us-east-1
   description: "Users service API"
   corsConfiguration:
     allowOrigins:
@@ -165,6 +168,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsHttpApiGateway.secure-api
 spec:
+  region: us-east-1
   description: "Secured API with Cognito JWT authorization"
   corsConfiguration:
     allowOrigins:
@@ -227,6 +231,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsHttpApiGateway.proxy-api
 spec:
+  region: us-east-1
   description: "HTTP proxy to internal microservices"
   stage:
     name: "$default"
@@ -265,6 +270,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsHttpApiGateway.ref-api
 spec:
+  region: us-east-1
   routes:
     - routeKey: "GET /items"
       authorizationType: "JWT"

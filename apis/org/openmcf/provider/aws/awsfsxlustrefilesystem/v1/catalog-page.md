@@ -50,6 +50,7 @@ This creates a SCRATCH_2 SSD file system with 1200 GiB in the specified subnet. 
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the FSx Lustre file system will be created (e.g., `us-east-1`). | Required; non-empty |
 | `storageCapacityGib` | `int32` | Storage capacity in GiB. Valid increments depend on deployment type and storage type. Can be increased after creation but never decreased. | Minimum 1200 |
 | `subnetId` | `string` | Subnet ID for the file system's network interface. Lustre is single-AZ — exactly one subnet. ForceNew. | Required |
 | `subnetId.value` | `string` | Direct subnet ID value | — |
@@ -95,6 +96,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsFsxLustreFileSystem.batch-fsx
 spec:
+  region: us-west-2
   storageCapacityGib: 3600
   subnetId: subnet-private-az1
   securityGroupIds:
@@ -119,6 +121,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsFsxLustreFileSystem.ml-training-fsx
 spec:
+  region: us-east-1
   deploymentType: PERSISTENT_2
   storageCapacityGib: 4800
   storageType: SSD
@@ -183,6 +186,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsFsxLustreFileSystem.prod-fsx
 spec:
+  region: us-east-1
   deploymentType: PERSISTENT_2
   storageCapacityGib: 7200
   storageType: SSD
@@ -222,6 +226,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsFsxLustreFileSystem.ref-fsx
 spec:
+  region: us-west-2
   deploymentType: PERSISTENT_2
   storageCapacityGib: 2400
   storageType: SSD

@@ -20,7 +20,8 @@ var _ = ginkgo.Describe("AwsClientVpnSpec validations", func() {
 
 	ginkgo.BeforeEach(func() {
 		spec = &AwsClientVpnSpec{
-			VpcId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "vpc-12345678"}},
+			Region: "us-west-2",
+			VpcId:  &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "vpc-12345678"}},
 			Subnets: []*foreignkeyv1.StringValueOrRef{
 				{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-abc123"}},
 			},

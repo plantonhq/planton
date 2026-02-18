@@ -3,9 +3,9 @@ kind: AwsS3ObjectSet
 metadata:
   name: my-config-files
 spec:
+  region: <aws-region>
   bucket:
     value: "<s3-bucket-name>"
-  awsRegion: <aws-region>
   objects:
     - key: config/app.json
       content: |

@@ -12,7 +12,7 @@ import type { JsonObject, Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsiamuser/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsiamuser_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjFvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzaWFtdXNlci92MS9zcGVjLnByb3RvEiZvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzaWFtdXNlci52MSLlAgoOQXdzSWFtVXNlclNwZWMSNwoJdXNlcl9uYW1lGAEgASgJQiS6SCHIAQFyHDIaXlthLXpBLVowLTkrPSwuQF8tXXsxLDY0fSQSOQoTbWFuYWdlZF9wb2xpY3lfYXJucxgCIAMoCUIcukgZkgEWGAEiEnIQMg5eYXJuOmF3czppYW06OhJyCg9pbmxpbmVfcG9saWNpZXMYAyADKAsySi5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzaWFtdXNlci52MS5Bd3NJYW1Vc2VyU3BlYy5JbmxpbmVQb2xpY2llc0VudHJ5Qg26SAqaAQciBXIDGIABEhsKE2Rpc2FibGVfYWNjZXNzX2tleXMYBCABKAgaTgoTSW5saW5lUG9saWNpZXNFbnRyeRILCgNrZXkYASABKAkSJgoFdmFsdWUYAiABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0OgI4AULNAgoqY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NpYW11c2VyLnYxQglTcGVjUHJvdG9QAVpVZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NpYW11c2VyL3YxO2F3c2lhbXVzZXJ2MaICBU9PUEFBqgImT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2lhbXVzZXIuVjHKAiZPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzaWFtdXNlclxWMeICMk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NpYW11c2VyXFYxXEdQQk1ldGFkYXRh6gIrT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NpYW11c2VyOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_google_protobuf_struct]);
+  fileDesc("CjFvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzaWFtdXNlci92MS9zcGVjLnByb3RvEiZvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzaWFtdXNlci52MSL+AgoOQXdzSWFtVXNlclNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEjcKCXVzZXJfbmFtZRgCIAEoCUIkukghyAEBchwyGl5bYS16QS1aMC05Kz0sLkBfLV17MSw2NH0kEjkKE21hbmFnZWRfcG9saWN5X2FybnMYAyADKAlCHLpIGZIBFhgBIhJyEDIOXmFybjphd3M6aWFtOjoScgoPaW5saW5lX3BvbGljaWVzGAQgAygLMkoub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2lhbXVzZXIudjEuQXdzSWFtVXNlclNwZWMuSW5saW5lUG9saWNpZXNFbnRyeUINukgKmgEHIgVyAxiAARIbChNkaXNhYmxlX2FjY2Vzc19rZXlzGAUgASgIGk4KE0lubGluZVBvbGljaWVzRW50cnkSCwoDa2V5GAEgASgJEiYKBXZhbHVlGAIgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdDoCOAFCzQIKKmNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzaWFtdXNlci52MUIJU3BlY1Byb3RvUAFaVWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzaWFtdXNlci92MTthd3NpYW11c2VydjGiAgVPT1BBQaoCJk9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NpYW11c2VyLlYxygImT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2lhbXVzZXJcVjHiAjJPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzaWFtdXNlclxWMVxHUEJNZXRhZGF0YeoCK09yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzaWFtdXNlcjo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_google_protobuf_struct]);
 
 /**
  * AwsIamUserSpec defines the configuration for a long-lived AWS IAM user (for CI/CD use).
@@ -21,10 +21,18 @@ export const file_org_openmcf_provider_aws_awsiamuser_v1_spec: GenFile = /*@__PU
  */
 export type AwsIamUserSpec = Message<"org.openmcf.provider.aws.awsiamuser.v1.AwsIamUserSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * user_name is the IAM user name. Must be 1-64 characters and match the regex
    * pattern "^[a-zA-Z0-9+=,.@_-]{1,64}$" (letters, digits, and +=,.@_-).
    *
-   * @generated from field: string user_name = 1;
+   * @generated from field: string user_name = 2;
    */
   userName: string;
 
@@ -32,7 +40,7 @@ export type AwsIamUserSpec = Message<"org.openmcf.provider.aws.awsiamuser.v1.Aws
    * managed_policy_arns is a list of IAM managed policy ARNs to attach to the user.
    * Each ARN must start with "arn:aws:iam::". The list must be unique.
    *
-   * @generated from field: repeated string managed_policy_arns = 2;
+   * @generated from field: repeated string managed_policy_arns = 3;
    */
   managedPolicyArns: string[];
 
@@ -40,7 +48,7 @@ export type AwsIamUserSpec = Message<"org.openmcf.provider.aws.awsiamuser.v1.Aws
    * inline_policies is a map of inline policy documents to attach to the user.
    * Keys are policy names (max 128 characters); values are the IAM policy JSON (as a Struct).
    *
-   * @generated from field: map<string, google.protobuf.Struct> inline_policies = 3;
+   * @generated from field: map<string, google.protobuf.Struct> inline_policies = 4;
    */
   inlinePolicies: { [key: string]: JsonObject };
 
@@ -48,7 +56,7 @@ export type AwsIamUserSpec = Message<"org.openmcf.provider.aws.awsiamuser.v1.Aws
    * disable_access_keys, if true, prevents creation of access keys for this user.
    * If false (default), one active access key will be created for the user.
    *
-   * @generated from field: bool disable_access_keys = 4;
+   * @generated from field: bool disable_access_keys = 5;
    */
   disableAccessKeys: boolean;
 };

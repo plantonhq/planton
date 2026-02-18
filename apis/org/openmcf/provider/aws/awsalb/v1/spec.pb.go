@@ -27,15 +27,18 @@ const (
 // AwsAlbSpec captures the essential fields to create an Application Load Balancer on AWS.
 type AwsAlbSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the ALB will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// list of subnet IDs in which to create the ALB. AWS requires at least two subnets
 	// for ALBs, which also ensures high availability across multiple Availability Zones.
 	// Typically use private subnets for internal ALBs or public subnets for internet-facing ALBs.
-	Subnets []*v1.StringValueOrRef `protobuf:"bytes,1,rep,name=subnets,proto3" json:"subnets,omitempty"`
+	Subnets []*v1.StringValueOrRef `protobuf:"bytes,2,rep,name=subnets,proto3" json:"subnets,omitempty"`
 	// list of security group IDs to attach to the ALB.
-	SecurityGroups []*v1.StringValueOrRef `protobuf:"bytes,2,rep,name=security_groups,json=securityGroups,proto3" json:"security_groups,omitempty"`
+	SecurityGroups []*v1.StringValueOrRef `protobuf:"bytes,3,rep,name=security_groups,json=securityGroups,proto3" json:"security_groups,omitempty"`
 	// indicates whether the ALB is internal or internet-facing.
 	// If true, the ALB is internal; if false (or not set), it is internet-facing.
-	Internal bool `protobuf:"varint,3,opt,name=internal,proto3" json:"internal,omitempty"`
+	Internal bool `protobuf:"varint,4,opt,name=internal,proto3" json:"internal,omitempty"`
 	// indicates whether the ALB should have deletion protection enabled.
 	// This prevents accidental deletion.
 	DeleteProtectionEnabled bool `protobuf:"varint,5,opt,name=delete_protection_enabled,json=deleteProtectionEnabled,proto3" json:"delete_protection_enabled,omitempty"`
@@ -78,6 +81,13 @@ func (x *AwsAlbSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsAlbSpec.ProtoReflect.Descriptor instead.
 func (*AwsAlbSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsalb_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsAlbSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsAlbSpec) GetSubnets() []*v1.StringValueOrRef {
@@ -269,12 +279,13 @@ var File_org_openmcf_provider_aws_awsalb_v1_spec_proto protoreflect.FileDescript
 
 const file_org_openmcf_provider_aws_awsalb_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"-org/openmcf/provider/aws/awsalb/v1/spec.proto\x12\"org.openmcf.provider.aws.awsalb.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x89\x04\n" +
+	"-org/openmcf/provider/aws/awsalb/v1/spec.proto\x12\"org.openmcf.provider.aws.awsalb.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xaa\x04\n" +
 	"\n" +
-	"AwsAlbSpec\x12^\n" +
-	"\asubnets\x18\x01 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x10\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x02\x88\xd4a\xd8\x01R\asubnets\x12\x86\x01\n" +
-	"\x0fsecurity_groups\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x0esecurityGroups\x12\x1a\n" +
-	"\binternal\x18\x03 \x01(\bR\binternal\x12:\n" +
+	"AwsAlbSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12^\n" +
+	"\asubnets\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x10\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x02\x88\xd4a\xd8\x01R\asubnets\x12\x86\x01\n" +
+	"\x0fsecurity_groups\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x0esecurityGroups\x12\x1a\n" +
+	"\binternal\x18\x04 \x01(\bR\binternal\x12:\n" +
 	"\x19delete_protection_enabled\x18\x05 \x01(\bR\x17deleteProtectionEnabled\x128\n" +
 	"\x14idle_timeout_seconds\x18\x06 \x01(\x05B\x06\x92\xa6\x1d\x0260R\x12idleTimeoutSeconds\x12?\n" +
 	"\x03dns\x18\a \x01(\v2-.org.openmcf.provider.aws.awsalb.v1.AwsAlbDnsR\x03dns\x12?\n" +

@@ -3,6 +3,7 @@ kind: AwsEc2Instance
 metadata:
   name: my-ssh-instance
 spec:
+  region: <aws-region>
   instanceName: <instance-name>
   amiId: <ami-id>
   instanceType: t3.small

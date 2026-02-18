@@ -27,6 +27,8 @@ metadata:
   version:
     message: "Development cluster"
 spec:
+  region: us-east-1
+
   # Recommended to be true for production, enabling CloudWatch Container Insights
   enable_container_insights: true
 
@@ -49,6 +51,8 @@ metadata:
   version:
     message: "Production cluster with cost optimization"
 spec:
+  region: us-east-1
+
   # Enable CloudWatch insights for comprehensive monitoring
   enable_container_insights: true
 
@@ -84,6 +88,8 @@ metadata:
   version:
     message: "Cluster with ECS Exec for debugging"
 spec:
+  region: us-east-1
+
   # Container Insights are highly recommended for monitoring
   enable_container_insights: true
 
@@ -111,6 +117,8 @@ metadata:
   version:
     message: "Cluster with custom exec auditing"
 spec:
+  region: us-east-1
+
   # Enable CloudWatch insights for monitoring
   enable_container_insights: true
 
@@ -143,6 +151,8 @@ metadata:
   version:
     message: "Cluster with S3 exec audit logging"
 spec:
+  region: us-east-1
+
   # Enable CloudWatch insights for monitoring
   enable_container_insights: true
 
@@ -174,6 +184,8 @@ metadata:
   version:
     message: "Production cluster with all features"
 spec:
+  region: us-east-1
+
   # Enable CloudWatch Container Insights for comprehensive monitoring
   enable_container_insights: true
 
@@ -221,6 +233,7 @@ metadata:
   version:
     message: "Minimal development cluster"
 spec:
+  region: us-east-1
   # Accept defaults; Container Insights recommended default is true
   # No capacity providers (can be added later)
   # No exec configuration (disabled by default)

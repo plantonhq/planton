@@ -26,6 +26,10 @@ import "buf/validate/validate.proto";
 //
 // Credentials, region, and deployment workflow live outside this spec in stack inputs.
 message AwsElasticIpSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // BYOIP (Bring Your Own IP) settings
   // ---------------------------------------------------------------------------
@@ -35,14 +39,14 @@ message AwsElasticIpSpec {
   // instead of Amazon's pool. When omitted, Amazon allocates from its own pool.
   //
   // This field is ForceNew: changing it requires replacing the EIP.
-  string public_ipv4_pool = 1;
+  string public_ipv4_pool = 2;
 
   // Request a specific IP address from the BYOIP pool identified by
   // `public_ipv4_pool`. The address must belong to the specified pool.
   // Only meaningful when `public_ipv4_pool` is set.
   //
   // This field is ForceNew: changing it requires replacing the EIP.
-  string address = 2;
+  string address = 3;
 
   // ---------------------------------------------------------------------------
   // Location / zone scope
@@ -56,7 +60,7 @@ message AwsElasticIpSpec {
   // "us-west-2-lax-1a" (Local Zone).
   //
   // This field is ForceNew: changing it requires replacing the EIP.
-  string network_border_group = 3;
+  string network_border_group = 4;
 
   // ---------------------------------------------------------------------------
   // CEL validations

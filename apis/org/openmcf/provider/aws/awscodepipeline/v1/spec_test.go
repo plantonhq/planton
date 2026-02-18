@@ -28,6 +28,7 @@ func svRef(val string) *foreignkeyv1.StringValueOrRef {
 // source stage and a CodeBuild build stage.
 func minimalV2Spec() *AwsCodePipelineSpec {
 	return &AwsCodePipelineSpec{
+		Region:  "us-west-2",
 		RoleArn: svRef("arn:aws:iam::123456789012:role/codepipeline-role"),
 		ArtifactStores: []*AwsCodePipelineArtifactStore{
 			{Location: svRef("my-artifact-bucket")},

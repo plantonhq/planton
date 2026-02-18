@@ -13,6 +13,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsOpenSearchDomain.dev-search
 spec:
+  region: us-west-2
   engineVersion: "OpenSearch_2.11"
   clusterConfig:
     instanceType: t3.small.search
@@ -39,6 +40,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsOpenSearchDomain.prod-search
 spec:
+  region: us-east-1
   engineVersion: "OpenSearch_2.11"
   clusterConfig:
     instanceType: r6g.large.search
@@ -100,6 +102,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsOpenSearchDomain.fgac-search
 spec:
+  region: us-east-1
   engineVersion: "OpenSearch_2.11"
   clusterConfig:
     instanceType: r6g.large.search
@@ -144,6 +147,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsOpenSearchDomain.iam-search
 spec:
+  region: us-east-1
   engineVersion: "OpenSearch_2.11"
   clusterConfig:
     instanceType: r6g.xlarge.search
@@ -212,6 +216,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsOpenSearchDomain.analytics-search
 spec:
+  region: us-east-1
   engineVersion: "OpenSearch_2.11"
   clusterConfig:
     instanceType: r6g.xlarge.search
@@ -276,6 +281,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsOpenSearchDomain.branded-search
 spec:
+  region: us-west-2
   engineVersion: "OpenSearch_2.11"
   clusterConfig:
     instanceType: r6g.large.search
@@ -330,6 +336,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsOpenSearchDomain.logged-search
 spec:
+  region: us-east-1
   engineVersion: "OpenSearch_2.11"
   clusterConfig:
     instanceType: r6g.large.search

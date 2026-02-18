@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awscognitoidentityprovider/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awscognitoidentityprovider_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CkFvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzY29nbml0b2lkZW50aXR5cHJvdmlkZXIvdjEvc3BlYy5wcm90bxI2b3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2NvZ25pdG9pZGVudGl0eXByb3ZpZGVyLnYxInoKGUF3c0NvZ25pdG9JZHBHb29nbGVDb25maWcSGgoJY2xpZW50X2lkGAEgASgJQge6SARyAhABEh4KDWNsaWVudF9zZWNyZXQYAiABKAlCB7pIBHICEAESIQoQYXV0aG9yaXplX3Njb3BlcxgDIAEoCUIHukgEcgIQASKRAQobQXdzQ29nbml0b0lkcEZhY2Vib29rQ29uZmlnEhoKCWNsaWVudF9pZBgBIAEoCUIHukgEcgIQARIeCg1jbGllbnRfc2VjcmV0GAIgASgJQge6SARyAhABEiEKEGF1dGhvcml6ZV9zY29wZXMYAyABKAlCB7pIBHICEAESEwoLYXBpX3ZlcnNpb24YBCABKAkigwEKIkF3c0NvZ25pdG9JZHBMb2dpbldpdGhBbWF6b25Db25maWcSGgoJY2xpZW50X2lkGAEgASgJQge6SARyAhABEh4KDWNsaWVudF9zZWNyZXQYAiABKAlCB7pIBHICEAESIQoQYXV0aG9yaXplX3Njb3BlcxgDIAEoCUIHukgEcgIQASK0AQoiQXdzQ29nbml0b0lkcFNpZ25JbldpdGhBcHBsZUNvbmZpZxIaCgljbGllbnRfaWQYASABKAlCB7pIBHICEAESGAoHdGVhbV9pZBgCIAEoCUIHukgEcgIQARIXCgZrZXlfaWQYAyABKAlCB7pIBHICEAESHAoLcHJpdmF0ZV9rZXkYBCABKAlCB7pIBHICEAESIQoQYXV0aG9yaXplX3Njb3BlcxgFIAEoCUIHukgEcgIQASL7AQoXQXdzQ29nbml0b0lkcE9pZGNDb25maWcSGgoJY2xpZW50X2lkGAEgASgJQge6SARyAhABEhwKC29pZGNfaXNzdWVyGAIgASgJQge6SARyAhABEhgKEGF1dGhvcml6ZV9zY29wZXMYAyABKAkSFQoNY2xpZW50X3NlY3JldBgEIAEoCRIhChlhdHRyaWJ1dGVzX3JlcXVlc3RfbWV0aG9kGAUgASgJEhUKDWF1dGhvcml6ZV91cmwYBiABKAkSEQoJdG9rZW5fdXJsGAcgASgJEhYKDmF0dHJpYnV0ZXNfdXJsGAggASgJEhAKCGp3a3NfdXJpGAkgASgJIq4BChdBd3NDb2duaXRvSWRwU2FtbENvbmZpZxIVCg1tZXRhZGF0YV9maWxlGAEgASgJEhQKDG1ldGFkYXRhX3VybBgCIAEoCRIUCgxpZHBfc2lnbl9vdXQYAyABKAgSEAoIaWRwX2luaXQYBCABKAgSGwoTZW5jcnlwdGVkX3Jlc3BvbnNlcxgFIAEoCBIhChlyZXF1ZXN0X3NpZ25pbmdfYWxnb3JpdGhtGAYgASgJIr8SCh5Bd3NDb2duaXRvSWRlbnRpdHlQcm92aWRlclNwZWMSdAoMdXNlcl9wb29sX2lkGAEgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIqukgDyAEBiNRhrAKS1GEbc3RhdHVzLm91dHB1dHMudXNlcl9wb29sX2lkEiAKDXByb3ZpZGVyX25hbWUYAiABKAlCCbpIBnIEEAEYIBJ5Cg1wcm92aWRlcl90eXBlGAMgASgOMlYub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2NvZ25pdG9pZGVudGl0eXByb3ZpZGVyLnYxLkF3c0NvZ25pdG9JZGVudGl0eVByb3ZpZGVyVHlwZUIKukgHggEEEAEgABJjCgZnb29nbGUYBCABKAsyUS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzY29nbml0b2lkZW50aXR5cHJvdmlkZXIudjEuQXdzQ29nbml0b0lkcEdvb2dsZUNvbmZpZ0gAEmcKCGZhY2Vib29rGAUgASgLMlMub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2NvZ25pdG9pZGVudGl0eXByb3ZpZGVyLnYxLkF3c0NvZ25pdG9JZHBGYWNlYm9va0NvbmZpZ0gAEncKEWxvZ2luX3dpdGhfYW1hem9uGAYgASgLMloub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2NvZ25pdG9pZGVudGl0eXByb3ZpZGVyLnYxLkF3c0NvZ25pdG9JZHBMb2dpbldpdGhBbWF6b25Db25maWdIABJ4ChJzaWduX2luX3dpdGhfYXBwbGUYByABKAsyWi5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzY29nbml0b2lkZW50aXR5cHJvdmlkZXIudjEuQXdzQ29nbml0b0lkcFNpZ25JbldpdGhBcHBsZUNvbmZpZ0gAEl8KBG9pZGMYCCABKAsyTy5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzY29nbml0b2lkZW50aXR5cHJvdmlkZXIudjEuQXdzQ29nbml0b0lkcE9pZGNDb25maWdIABJfCgRzYW1sGAkgASgLMk8ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2NvZ25pdG9pZGVudGl0eXByb3ZpZGVyLnYxLkF3c0NvZ25pdG9JZHBTYW1sQ29uZmlnSAAShwEKEWF0dHJpYnV0ZV9tYXBwaW5nGAogAygLMmwub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2NvZ25pdG9pZGVudGl0eXByb3ZpZGVyLnYxLkF3c0NvZ25pdG9JZGVudGl0eVByb3ZpZGVyU3BlYy5BdHRyaWJ1dGVNYXBwaW5nRW50cnkSIQoPaWRwX2lkZW50aWZpZXJzGAsgAygJQgi6SAWSAQIQMho3ChVBdHRyaWJ1dGVNYXBwaW5nRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ATqNCbpIiQkazgQKGnByb3ZpZGVyX3R5cGVfY29uZmlnX21hdGNoEvUBcHJvdmlkZXJfdHlwZSBtdXN0IG1hdGNoIHRoZSBwcm92aWRlciBjb25maWd1cmF0aW9uIGZpZWxkOiBHb29nbGUgcmVxdWlyZXMgJ2dvb2dsZScsIEZhY2Vib29rIHJlcXVpcmVzICdmYWNlYm9vaycsIExvZ2luV2l0aEFtYXpvbiByZXF1aXJlcyAnbG9naW5XaXRoQW1hem9uJywgU2lnbkluV2l0aEFwcGxlIHJlcXVpcmVzICdzaWduSW5XaXRoQXBwbGUnLCBPSURDIHJlcXVpcmVzICdvaWRjJywgU0FNTCByZXF1aXJlcyAnc2FtbCcatwIodGhpcy5wcm92aWRlcl90eXBlID09IDEgJiYgaGFzKHRoaXMuZ29vZ2xlKSkgfHwgKHRoaXMucHJvdmlkZXJfdHlwZSA9PSAyICYmIGhhcyh0aGlzLmZhY2Vib29rKSkgfHwgKHRoaXMucHJvdmlkZXJfdHlwZSA9PSAzICYmIGhhcyh0aGlzLmxvZ2luX3dpdGhfYW1hem9uKSkgfHwgKHRoaXMucHJvdmlkZXJfdHlwZSA9PSA0ICYmIGhhcyh0aGlzLnNpZ25faW5fd2l0aF9hcHBsZSkpIHx8ICh0aGlzLnByb3ZpZGVyX3R5cGUgPT0gNSAmJiBoYXModGhpcy5vaWRjKSkgfHwgKHRoaXMucHJvdmlkZXJfdHlwZSA9PSA2ICYmIGhhcyh0aGlzLnNhbWwpKRqhAQoWc2FtbF9tZXRhZGF0YV9yZXF1aXJlZBI1U0FNTCBwcm92aWRlcnMgbXVzdCBzZXQgbWV0YWRhdGFfZmlsZSBvciBtZXRhZGF0YV91cmwaUCFoYXModGhpcy5zYW1sKSB8fCB0aGlzLnNhbWwubWV0YWRhdGFfZmlsZSAhPSAnJyB8fCB0aGlzLnNhbWwubWV0YWRhdGFfdXJsICE9ICcnGrgBChdzYW1sX21ldGFkYXRhX2V4Y2x1c2l2ZRJLU0FNTCBwcm92aWRlcnMgbXVzdCBzZXQgb25seSBvbmUgb2YgbWV0YWRhdGFfZmlsZSBvciBtZXRhZGF0YV91cmwsIG5vdCBib3RoGlAhaGFzKHRoaXMuc2FtbCkgfHwgdGhpcy5zYW1sLm1ldGFkYXRhX2ZpbGUgPT0gJycgfHwgdGhpcy5zYW1sLm1ldGFkYXRhX3VybCA9PSAnJxrWAQokb2lkY19hdHRyaWJ1dGVzX3JlcXVlc3RfbWV0aG9kX3ZhbGlkEjZPSURDIGF0dHJpYnV0ZXNfcmVxdWVzdF9tZXRob2QgbXVzdCBiZSAnR0VUJyBvciAnUE9TVCcadiFoYXModGhpcy5vaWRjKSB8fCB0aGlzLm9pZGMuYXR0cmlidXRlc19yZXF1ZXN0X21ldGhvZCA9PSAnJyB8fCB0aGlzLm9pZGMuYXR0cmlidXRlc19yZXF1ZXN0X21ldGhvZCBpbiBbJ0dFVCcsICdQT1NUJ11CEQoPcHJvdmlkZXJfY29uZmlnKokBCh5Bd3NDb2duaXRvSWRlbnRpdHlQcm92aWRlclR5cGUSDwoLdW5zcGVjaWZpZWQQABIKCgZHb29nbGUQARIMCghGYWNlYm9vaxACEhMKD0xvZ2luV2l0aEFtYXpvbhADEhMKD1NpZ25JbldpdGhBcHBsZRAEEggKBE9JREMQBRIICgRTQU1MEAZCvQMKOmNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzY29nbml0b2lkZW50aXR5cHJvdmlkZXIudjFCCVNwZWNQcm90b1ABWnVnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c2NvZ25pdG9pZGVudGl0eXByb3ZpZGVyL3YxO2F3c2NvZ25pdG9pZGVudGl0eXByb3ZpZGVydjGiAgVPT1BBQaoCNk9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3Njb2duaXRvaWRlbnRpdHlwcm92aWRlci5WMcoCNk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3Njb2duaXRvaWRlbnRpdHlwcm92aWRlclxWMeICQk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3Njb2duaXRvaWRlbnRpdHlwcm92aWRlclxWMVxHUEJNZXRhZGF0YeoCO09yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzY29nbml0b2lkZW50aXR5cHJvdmlkZXI6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
+  fileDesc("CkFvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzY29nbml0b2lkZW50aXR5cHJvdmlkZXIvdjEvc3BlYy5wcm90bxI2b3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2NvZ25pdG9pZGVudGl0eXByb3ZpZGVyLnYxInoKGUF3c0NvZ25pdG9JZHBHb29nbGVDb25maWcSGgoJY2xpZW50X2lkGAEgASgJQge6SARyAhABEh4KDWNsaWVudF9zZWNyZXQYAiABKAlCB7pIBHICEAESIQoQYXV0aG9yaXplX3Njb3BlcxgDIAEoCUIHukgEcgIQASKRAQobQXdzQ29nbml0b0lkcEZhY2Vib29rQ29uZmlnEhoKCWNsaWVudF9pZBgBIAEoCUIHukgEcgIQARIeCg1jbGllbnRfc2VjcmV0GAIgASgJQge6SARyAhABEiEKEGF1dGhvcml6ZV9zY29wZXMYAyABKAlCB7pIBHICEAESEwoLYXBpX3ZlcnNpb24YBCABKAkigwEKIkF3c0NvZ25pdG9JZHBMb2dpbldpdGhBbWF6b25Db25maWcSGgoJY2xpZW50X2lkGAEgASgJQge6SARyAhABEh4KDWNsaWVudF9zZWNyZXQYAiABKAlCB7pIBHICEAESIQoQYXV0aG9yaXplX3Njb3BlcxgDIAEoCUIHukgEcgIQASK0AQoiQXdzQ29nbml0b0lkcFNpZ25JbldpdGhBcHBsZUNvbmZpZxIaCgljbGllbnRfaWQYASABKAlCB7pIBHICEAESGAoHdGVhbV9pZBgCIAEoCUIHukgEcgIQARIXCgZrZXlfaWQYAyABKAlCB7pIBHICEAESHAoLcHJpdmF0ZV9rZXkYBCABKAlCB7pIBHICEAESIQoQYXV0aG9yaXplX3Njb3BlcxgFIAEoCUIHukgEcgIQASL7AQoXQXdzQ29nbml0b0lkcE9pZGNDb25maWcSGgoJY2xpZW50X2lkGAEgASgJQge6SARyAhABEhwKC29pZGNfaXNzdWVyGAIgASgJQge6SARyAhABEhgKEGF1dGhvcml6ZV9zY29wZXMYAyABKAkSFQoNY2xpZW50X3NlY3JldBgEIAEoCRIhChlhdHRyaWJ1dGVzX3JlcXVlc3RfbWV0aG9kGAUgASgJEhUKDWF1dGhvcml6ZV91cmwYBiABKAkSEQoJdG9rZW5fdXJsGAcgASgJEhYKDmF0dHJpYnV0ZXNfdXJsGAggASgJEhAKCGp3a3NfdXJpGAkgASgJIq4BChdBd3NDb2duaXRvSWRwU2FtbENvbmZpZxIVCg1tZXRhZGF0YV9maWxlGAEgASgJEhQKDG1ldGFkYXRhX3VybBgCIAEoCRIUCgxpZHBfc2lnbl9vdXQYAyABKAgSEAoIaWRwX2luaXQYBCABKAgSGwoTZW5jcnlwdGVkX3Jlc3BvbnNlcxgFIAEoCBIhChlyZXF1ZXN0X3NpZ25pbmdfYWxnb3JpdGhtGAYgASgJItgSCh5Bd3NDb2duaXRvSWRlbnRpdHlQcm92aWRlclNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEnQKDHVzZXJfcG9vbF9pZBgCIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKrpIA8gBAYjUYawCktRhG3N0YXR1cy5vdXRwdXRzLnVzZXJfcG9vbF9pZBIgCg1wcm92aWRlcl9uYW1lGAMgASgJQgm6SAZyBBABGCASeQoNcHJvdmlkZXJfdHlwZRgEIAEoDjJWLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Njb2duaXRvaWRlbnRpdHlwcm92aWRlci52MS5Bd3NDb2duaXRvSWRlbnRpdHlQcm92aWRlclR5cGVCCrpIB4IBBBABIAASYwoGZ29vZ2xlGAUgASgLMlEub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2NvZ25pdG9pZGVudGl0eXByb3ZpZGVyLnYxLkF3c0NvZ25pdG9JZHBHb29nbGVDb25maWdIABJnCghmYWNlYm9vaxgGIAEoCzJTLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Njb2duaXRvaWRlbnRpdHlwcm92aWRlci52MS5Bd3NDb2duaXRvSWRwRmFjZWJvb2tDb25maWdIABJ3ChFsb2dpbl93aXRoX2FtYXpvbhgHIAEoCzJaLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Njb2duaXRvaWRlbnRpdHlwcm92aWRlci52MS5Bd3NDb2duaXRvSWRwTG9naW5XaXRoQW1hem9uQ29uZmlnSAASeAoSc2lnbl9pbl93aXRoX2FwcGxlGAggASgLMloub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2NvZ25pdG9pZGVudGl0eXByb3ZpZGVyLnYxLkF3c0NvZ25pdG9JZHBTaWduSW5XaXRoQXBwbGVDb25maWdIABJfCgRvaWRjGAkgASgLMk8ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2NvZ25pdG9pZGVudGl0eXByb3ZpZGVyLnYxLkF3c0NvZ25pdG9JZHBPaWRjQ29uZmlnSAASXwoEc2FtbBgKIAEoCzJPLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Njb2duaXRvaWRlbnRpdHlwcm92aWRlci52MS5Bd3NDb2duaXRvSWRwU2FtbENvbmZpZ0gAEocBChFhdHRyaWJ1dGVfbWFwcGluZxgLIAMoCzJsLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Njb2duaXRvaWRlbnRpdHlwcm92aWRlci52MS5Bd3NDb2duaXRvSWRlbnRpdHlQcm92aWRlclNwZWMuQXR0cmlidXRlTWFwcGluZ0VudHJ5EiEKD2lkcF9pZGVudGlmaWVycxgMIAMoCUIIukgFkgECEDIaNwoVQXR0cmlidXRlTWFwcGluZ0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAE6jQm6SIkJGs4EChpwcm92aWRlcl90eXBlX2NvbmZpZ19tYXRjaBL1AXByb3ZpZGVyX3R5cGUgbXVzdCBtYXRjaCB0aGUgcHJvdmlkZXIgY29uZmlndXJhdGlvbiBmaWVsZDogR29vZ2xlIHJlcXVpcmVzICdnb29nbGUnLCBGYWNlYm9vayByZXF1aXJlcyAnZmFjZWJvb2snLCBMb2dpbldpdGhBbWF6b24gcmVxdWlyZXMgJ2xvZ2luV2l0aEFtYXpvbicsIFNpZ25JbldpdGhBcHBsZSByZXF1aXJlcyAnc2lnbkluV2l0aEFwcGxlJywgT0lEQyByZXF1aXJlcyAnb2lkYycsIFNBTUwgcmVxdWlyZXMgJ3NhbWwnGrcCKHRoaXMucHJvdmlkZXJfdHlwZSA9PSAxICYmIGhhcyh0aGlzLmdvb2dsZSkpIHx8ICh0aGlzLnByb3ZpZGVyX3R5cGUgPT0gMiAmJiBoYXModGhpcy5mYWNlYm9vaykpIHx8ICh0aGlzLnByb3ZpZGVyX3R5cGUgPT0gMyAmJiBoYXModGhpcy5sb2dpbl93aXRoX2FtYXpvbikpIHx8ICh0aGlzLnByb3ZpZGVyX3R5cGUgPT0gNCAmJiBoYXModGhpcy5zaWduX2luX3dpdGhfYXBwbGUpKSB8fCAodGhpcy5wcm92aWRlcl90eXBlID09IDUgJiYgaGFzKHRoaXMub2lkYykpIHx8ICh0aGlzLnByb3ZpZGVyX3R5cGUgPT0gNiAmJiBoYXModGhpcy5zYW1sKSkaoQEKFnNhbWxfbWV0YWRhdGFfcmVxdWlyZWQSNVNBTUwgcHJvdmlkZXJzIG11c3Qgc2V0IG1ldGFkYXRhX2ZpbGUgb3IgbWV0YWRhdGFfdXJsGlAhaGFzKHRoaXMuc2FtbCkgfHwgdGhpcy5zYW1sLm1ldGFkYXRhX2ZpbGUgIT0gJycgfHwgdGhpcy5zYW1sLm1ldGFkYXRhX3VybCAhPSAnJxq4AQoXc2FtbF9tZXRhZGF0YV9leGNsdXNpdmUSS1NBTUwgcHJvdmlkZXJzIG11c3Qgc2V0IG9ubHkgb25lIG9mIG1ldGFkYXRhX2ZpbGUgb3IgbWV0YWRhdGFfdXJsLCBub3QgYm90aBpQIWhhcyh0aGlzLnNhbWwpIHx8IHRoaXMuc2FtbC5tZXRhZGF0YV9maWxlID09ICcnIHx8IHRoaXMuc2FtbC5tZXRhZGF0YV91cmwgPT0gJyca1gEKJG9pZGNfYXR0cmlidXRlc19yZXF1ZXN0X21ldGhvZF92YWxpZBI2T0lEQyBhdHRyaWJ1dGVzX3JlcXVlc3RfbWV0aG9kIG11c3QgYmUgJ0dFVCcgb3IgJ1BPU1QnGnYhaGFzKHRoaXMub2lkYykgfHwgdGhpcy5vaWRjLmF0dHJpYnV0ZXNfcmVxdWVzdF9tZXRob2QgPT0gJycgfHwgdGhpcy5vaWRjLmF0dHJpYnV0ZXNfcmVxdWVzdF9tZXRob2QgaW4gWydHRVQnLCAnUE9TVCddQhEKD3Byb3ZpZGVyX2NvbmZpZyqJAQoeQXdzQ29nbml0b0lkZW50aXR5UHJvdmlkZXJUeXBlEg8KC3Vuc3BlY2lmaWVkEAASCgoGR29vZ2xlEAESDAoIRmFjZWJvb2sQAhITCg9Mb2dpbldpdGhBbWF6b24QAxITCg9TaWduSW5XaXRoQXBwbGUQBBIICgRPSURDEAUSCAoEU0FNTBAGQr0DCjpjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2NvZ25pdG9pZGVudGl0eXByb3ZpZGVyLnYxQglTcGVjUHJvdG9QAVp1Z2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3Njb2duaXRvaWRlbnRpdHlwcm92aWRlci92MTthd3Njb2duaXRvaWRlbnRpdHlwcm92aWRlcnYxogIFT09QQUGqAjZPcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzY29nbml0b2lkZW50aXR5cHJvdmlkZXIuVjHKAjZPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzY29nbml0b2lkZW50aXR5cHJvdmlkZXJcVjHiAkJPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzY29nbml0b2lkZW50aXR5cHJvdmlkZXJcVjFcR1BCTWV0YWRhdGHqAjtPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c2NvZ25pdG9pZGVudGl0eXByb3ZpZGVyOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
 
 /**
  * AwsCognitoIdpGoogleConfig holds the OAuth 2.0 configuration for a Google
@@ -355,20 +355,24 @@ export const AwsCognitoIdpSamlConfigSchema: GenMessage<AwsCognitoIdpSamlConfig> 
  * Credentials, region, and deployment workflow live outside this spec in
  * stack inputs.
  *
- * ---------------------------------------------------------------------------
- * Parent reference
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdentityProviderSpec
  */
 export type AwsCognitoIdentityProviderSpec = Message<"org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdentityProviderSpec"> & {
+  /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * The ID of the Cognito User Pool to attach this identity provider to.
    * Format: "{region}_{poolId}" (e.g., "us-east-1_Ab1Cd2EfG").
    *
    * This field is ForceNew: changing it requires replacing the identity provider.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef user_pool_id = 1;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef user_pool_id = 2;
    */
   userPoolId?: StringValueOrRef;
 
@@ -381,7 +385,7 @@ export type AwsCognitoIdentityProviderSpec = Message<"org.openmcf.provider.aws.a
    *
    * 1-32 UTF-8 characters. This field is ForceNew.
    *
-   * @generated from field: string provider_name = 2;
+   * @generated from field: string provider_name = 3;
    */
   providerName: string;
 
@@ -392,7 +396,7 @@ export type AwsCognitoIdentityProviderSpec = Message<"org.openmcf.provider.aws.a
    *
    * This field is ForceNew: changing it requires replacing the identity provider.
    *
-   * @generated from field: org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdentityProviderType provider_type = 3;
+   * @generated from field: org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdentityProviderType provider_type = 4;
    */
   providerType: AwsCognitoIdentityProviderType;
 
@@ -403,7 +407,7 @@ export type AwsCognitoIdentityProviderSpec = Message<"org.openmcf.provider.aws.a
     /**
      * Google OAuth 2.0 configuration. Set when provider_type is Google.
      *
-     * @generated from field: org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpGoogleConfig google = 4;
+     * @generated from field: org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpGoogleConfig google = 5;
      */
     value: AwsCognitoIdpGoogleConfig;
     case: "google";
@@ -411,7 +415,7 @@ export type AwsCognitoIdentityProviderSpec = Message<"org.openmcf.provider.aws.a
     /**
      * Facebook Login configuration. Set when provider_type is Facebook.
      *
-     * @generated from field: org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpFacebookConfig facebook = 5;
+     * @generated from field: org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpFacebookConfig facebook = 6;
      */
     value: AwsCognitoIdpFacebookConfig;
     case: "facebook";
@@ -419,7 +423,7 @@ export type AwsCognitoIdentityProviderSpec = Message<"org.openmcf.provider.aws.a
     /**
      * Login with Amazon configuration. Set when provider_type is LoginWithAmazon.
      *
-     * @generated from field: org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpLoginWithAmazonConfig login_with_amazon = 6;
+     * @generated from field: org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpLoginWithAmazonConfig login_with_amazon = 7;
      */
     value: AwsCognitoIdpLoginWithAmazonConfig;
     case: "loginWithAmazon";
@@ -427,7 +431,7 @@ export type AwsCognitoIdentityProviderSpec = Message<"org.openmcf.provider.aws.a
     /**
      * Sign in with Apple configuration. Set when provider_type is SignInWithApple.
      *
-     * @generated from field: org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpSignInWithAppleConfig sign_in_with_apple = 7;
+     * @generated from field: org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpSignInWithAppleConfig sign_in_with_apple = 8;
      */
     value: AwsCognitoIdpSignInWithAppleConfig;
     case: "signInWithApple";
@@ -435,7 +439,7 @@ export type AwsCognitoIdentityProviderSpec = Message<"org.openmcf.provider.aws.a
     /**
      * Generic OIDC configuration. Set when provider_type is OIDC.
      *
-     * @generated from field: org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpOidcConfig oidc = 8;
+     * @generated from field: org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpOidcConfig oidc = 9;
      */
     value: AwsCognitoIdpOidcConfig;
     case: "oidc";
@@ -443,7 +447,7 @@ export type AwsCognitoIdentityProviderSpec = Message<"org.openmcf.provider.aws.a
     /**
      * SAML 2.0 configuration. Set when provider_type is SAML.
      *
-     * @generated from field: org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpSamlConfig saml = 9;
+     * @generated from field: org.openmcf.provider.aws.awscognitoidentityprovider.v1.AwsCognitoIdpSamlConfig saml = 10;
      */
     value: AwsCognitoIdpSamlConfig;
     case: "saml";
@@ -457,7 +461,7 @@ export type AwsCognitoIdentityProviderSpec = Message<"org.openmcf.provider.aws.a
    *
    * When omitted, AWS applies default mappings based on the provider type.
    *
-   * @generated from field: map<string, string> attribute_mapping = 10;
+   * @generated from field: map<string, string> attribute_mapping = 11;
    */
   attributeMapping: { [key: string]: string };
 
@@ -468,7 +472,7 @@ export type AwsCognitoIdentityProviderSpec = Message<"org.openmcf.provider.aws.a
    *
    * Maximum 50 identifiers, each 1-40 characters.
    *
-   * @generated from field: repeated string idp_identifiers = 11;
+   * @generated from field: repeated string idp_identifiers = 12;
    */
   idpIdentifiers: string[];
 };

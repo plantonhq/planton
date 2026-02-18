@@ -34,6 +34,7 @@ var _ = ginkgo.Describe("AwsFsxLustreFileSystemSpec validations", func() {
 	ginkgo.BeforeEach(func() {
 		// Minimal valid spec: subnet_id required, storage_capacity_gib >= 1200.
 		spec = &AwsFsxLustreFileSystemSpec{
+			Region:             "us-west-2",
 			SubnetId:           strRef("subnet-abc123"),
 			StorageCapacityGib: 1200,
 		}

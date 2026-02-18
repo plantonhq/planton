@@ -6,6 +6,7 @@ metadata:
   env: dev
   id: awscog-test-001
 spec:
+  region: us-west-2
   usernameAttributes:
     - email
   passwordPolicy:

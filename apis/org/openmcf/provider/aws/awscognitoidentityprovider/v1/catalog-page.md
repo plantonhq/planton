@@ -29,6 +29,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsCognitoIdentityProvider.google-idp
 spec:
+  region: us-west-2
   userPoolId:
     valueFrom:
       kind: AwsCognitoUserPool
@@ -59,6 +60,7 @@ Then add `Google` to the User Pool Client's `supportedIdentityProviders` list.
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the resource will be created (e.g., `us-west-2`). | Required |
 | `userPoolId` | `StringValueOrRef` | User Pool ID (e.g., `us-east-1_Ab1Cd2EfG`). Can reference AwsCognitoUserPool via `valueFrom`. | Required. ForceNew. |
 | `providerName` | `string` | Display name for this IdP. Referenced in User Pool Client `supportedIdentityProviders`. | 1-32 UTF-8 chars. ForceNew. |
 | `providerType` | `AwsCognitoIdentityProviderType` | Provider type: `Google`, `Facebook`, `LoginWithAmazon`, `SignInWithApple`, `OIDC`, `SAML`. | Required. ForceNew. |
@@ -100,6 +102,7 @@ metadata:
     pulumi.openmcf.org/project: auth
     pulumi.openmcf.org/stack.name: prod.AwsCognitoIdentityProvider.google-idp
 spec:
+  region: us-west-2
   userPoolId:
     valueFrom:
       kind: AwsCognitoUserPool
@@ -131,6 +134,7 @@ metadata:
     pulumi.openmcf.org/project: auth
     pulumi.openmcf.org/stack.name: prod.AwsCognitoIdentityProvider.corp-oidc-idp
 spec:
+  region: us-west-2
   userPoolId:
     valueFrom:
       kind: AwsCognitoUserPool
@@ -163,6 +167,7 @@ metadata:
     pulumi.openmcf.org/project: auth
     pulumi.openmcf.org/stack.name: prod.AwsCognitoIdentityProvider.corp-saml-idp
 spec:
+  region: us-west-2
   userPoolId:
     valueFrom:
       kind: AwsCognitoUserPool

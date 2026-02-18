@@ -6,6 +6,7 @@ kind: AwsRdsCluster
 metadata:
   name: aurora-mysql-cluster
 spec:
+  region: us-west-2
   # provide either 2+ subnet_ids or a db_subnet_group_name
   subnetIds:
     - subnet-aaaa
@@ -26,6 +27,7 @@ kind: AwsRdsCluster
 metadata:
   name: aurora-pg-cluster
 spec:
+  region: us-west-2
   dbSubnetGroupName:
     valueFrom:
       kind: AwsVpc

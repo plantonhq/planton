@@ -13,6 +13,7 @@ metadata:
   env: dev
   id: api-cache-dev
 spec:
+  region: us-west-2
   engine: redis
 ```
 
@@ -29,6 +30,7 @@ metadata:
   env: dev
   id: session-cache-dev
 spec:
+  region: us-west-2
   engine: memcached
   majorEngineVersion: "1.6"
 ```
@@ -46,6 +48,7 @@ metadata:
   env: staging
   id: app-cache-staging
 spec:
+  region: us-west-2
   engine: redis
   majorEngineVersion: "7"
   description: Application cache with bounded scaling
@@ -68,6 +71,7 @@ metadata:
   env: prod
   id: secure-cache-prod
 spec:
+  region: us-east-1
   engine: redis
   majorEngineVersion: "7"
   description: VPC-placed cache with CMK encryption
@@ -105,6 +109,7 @@ metadata:
   env: prod
   id: prod-cache-prod
 spec:
+  region: us-east-1
   engine: redis
   majorEngineVersion: "7"
   description: Production session and API response cache
@@ -153,6 +158,7 @@ metadata:
   env: staging
   id: valkey-cache-staging
 spec:
+  region: us-west-2
   engine: valkey
   majorEngineVersion: "8"
   description: Valkey cache for OSS compatibility
@@ -175,6 +181,7 @@ metadata:
   env: prod
   id: web-cache-prod
 spec:
+  region: us-east-1
   engine: memcached
   description: Web response cache for the frontend tier
   dataStorageMinGb: 1

@@ -125,45 +125,49 @@ message AwsDynamodbSpec {
     string attribute_name = 2; // Attribute storing TTL epoch time (in seconds)
   }
 
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // Billing configuration for the table.
-  BillingMode billing_mode = 1 [(buf.validate.field).enum.defined_only = true];
+  BillingMode billing_mode = 2 [(buf.validate.field).enum.defined_only = true];
 
   // Provisioned throughput for the table (used when billing_mode is PROVISIONED).
-  ProvisionedThroughput provisioned_throughput = 2;
+  ProvisionedThroughput provisioned_throughput = 3;
 
   // Attribute definitions referenced by the primary key and indexes.
-  repeated AttributeDefinition attribute_definitions = 3 [(buf.validate.field).repeated.min_items = 1];
+  repeated AttributeDefinition attribute_definitions = 4 [(buf.validate.field).repeated.min_items = 1];
 
   // Primary key schema for the table: includes HASH and optional RANGE.
-  repeated KeySchemaElement key_schema = 4 [(buf.validate.field).repeated.min_items = 1];
+  repeated KeySchemaElement key_schema = 5 [(buf.validate.field).repeated.min_items = 1];
 
   // Global secondary indexes.
-  repeated GlobalSecondaryIndex global_secondary_indexes = 5;
+  repeated GlobalSecondaryIndex global_secondary_indexes = 6;
 
   // Local secondary indexes.
-  repeated LocalSecondaryIndex local_secondary_indexes = 6;
+  repeated LocalSecondaryIndex local_secondary_indexes = 7;
 
   // Time-to-live configuration.
-  TimeToLive ttl = 7;
+  TimeToLive ttl = 8;
 
   // DynamoDB Streams configuration.
-  bool stream_enabled = 8;
-  StreamViewType stream_view_type = 9 [(buf.validate.field).enum.defined_only = true];
+  bool stream_enabled = 9;
+  StreamViewType stream_view_type = 10 [(buf.validate.field).enum.defined_only = true];
 
   // Point-in-time recovery (PITR) setting.
-  bool point_in_time_recovery_enabled = 10;
+  bool point_in_time_recovery_enabled = 11;
 
   // Server-side encryption settings.
-  ServerSideEncryption server_side_encryption = 11;
+  ServerSideEncryption server_side_encryption = 12;
 
   // Table storage class.
-  TableClass table_class = 12 [(buf.validate.field).enum.defined_only = true];
+  TableClass table_class = 13 [(buf.validate.field).enum.defined_only = true];
 
   // Deletion protection setting.
-  bool deletion_protection_enabled = 13;
+  bool deletion_protection_enabled = 14;
 
   // Contributor Insights setting.
-  bool contributor_insights_enabled = 14;
+  bool contributor_insights_enabled = 15;
 
   // Message-level validations
   option (buf.validate.message).cel = {

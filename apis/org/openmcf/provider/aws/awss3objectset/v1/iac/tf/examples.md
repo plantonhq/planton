@@ -15,8 +15,8 @@ module "config" {
     tags = []
   }
   spec = {
-    bucket     = "my-dev-bucket"
-    aws_region = "us-east-1"
+    region  = "us-east-1"
+    bucket  = "my-dev-bucket"
     objects = [{
       key          = "config/app.json"
       content      = "{\"debug\": true}"
@@ -41,9 +41,9 @@ module "website" {
     tags = []
   }
   spec = {
-    bucket     = "my-website-bucket"
-    aws_region = "us-west-2"
-    tags = { environment = "production" }
+    region  = "us-west-2"
+    bucket  = "my-website-bucket"
+    tags    = { environment = "production" }
     objects = [
       {
         key           = "index.html"

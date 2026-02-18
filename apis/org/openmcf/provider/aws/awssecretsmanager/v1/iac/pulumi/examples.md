@@ -14,7 +14,7 @@ kind: AwsSecretsManager
 metadata:
   name: my-aws-secrets
 spec:
-  awsProviderConfigId: my-aws-credential-id
+  region: us-west-2
   secretNames:
     - database-password
     - api-key
@@ -28,7 +28,7 @@ kind: AwsSecretsManager
 metadata:
   name: my-aws-secrets
 spec:
-  awsProviderConfigId: my-aws-credential-id
+  region: us-west-2
   environmentInfo:
     envId: production
   secretNames:
@@ -45,7 +45,7 @@ kind: AwsSecretsManager
 metadata:
   name: my-aws-secrets
 spec:
-  awsProviderConfigId: my-aws-credential-id
+  region: us-west-2
   stackUpdateSettings:
     jobTimeout: 3600
   secretNames:
@@ -61,7 +61,7 @@ kind: AwsSecretsManager
 metadata:
   name: my-aws-secrets
 spec:
-  awsProviderConfigId: my-aws-credential-id
+  region: us-west-2
 ```
 
 # Example Using Created Secrets in a Microservice

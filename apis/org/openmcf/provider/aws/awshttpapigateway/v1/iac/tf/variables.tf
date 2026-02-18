@@ -12,6 +12,8 @@ variable "metadata" {
 variable "spec" {
   description = "AwsHttpApiGatewaySpec — desired configuration for the HTTP API Gateway."
   type = object({
+    # The AWS region where the resource will be created.
+    region = string
     description = optional(string, "")
     cors_configuration = optional(object({
       allow_origins     = optional(list(string), [])

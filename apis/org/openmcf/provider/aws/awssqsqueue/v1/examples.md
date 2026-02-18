@@ -12,6 +12,7 @@ metadata:
   labels:
     app: shop
 spec:
+  region: us-east-1
   sqsManagedSseEnabled: true
 ```
 
@@ -25,6 +26,7 @@ kind: AwsSqsQueue
 metadata:
   name: order-events-dlq
 spec:
+  region: us-east-1
   sqsManagedSseEnabled: true
   messageRetentionSeconds: 1209600  # 14 days — keep DLQ messages longer for investigation
 ---
@@ -33,6 +35,7 @@ kind: AwsSqsQueue
 metadata:
   name: order-events
 spec:
+  region: us-east-1
   sqsManagedSseEnabled: true
   visibilityTimeoutSeconds: 60
   receiveWaitTimeSeconds: 20
@@ -55,6 +58,7 @@ kind: AwsSqsQueue
 metadata:
   name: payment-processing
 spec:
+  region: us-east-1
   fifoQueue: true
   contentBasedDeduplication: true
   deduplicationScope: messageGroup
@@ -73,6 +77,7 @@ kind: AwsSqsQueue
 metadata:
   name: audit-log-ingest
 spec:
+  region: us-east-1
   kmsKeyId:
     valueFrom:
       kind: AwsKmsKey
@@ -95,6 +100,7 @@ kind: AwsSqsQueue
 metadata:
   name: notification-handler
 spec:
+  region: us-east-1
   sqsManagedSseEnabled: true
   receiveWaitTimeSeconds: 10
   policy:

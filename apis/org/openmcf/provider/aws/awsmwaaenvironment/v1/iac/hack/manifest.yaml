@@ -3,6 +3,7 @@ kind: AwsMwaaEnvironment
 metadata:
   name: test-mwaa-environment
 spec:
+  region: us-west-2
   airflowVersion: "2.10.1"
   sourceBucketArn:
     value: "<s3-bucket-arn>"

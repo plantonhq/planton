@@ -342,33 +342,36 @@ func (AwsDynamodbSpec_KeySchemaElement_KeyType) EnumDescriptor() ([]byte, []int)
 // AwsDynamodbSpec captures common fields for an AWS DynamoDB table.
 type AwsDynamodbSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Billing configuration for the table.
-	BillingMode AwsDynamodbSpec_BillingMode `protobuf:"varint,1,opt,name=billing_mode,json=billingMode,proto3,enum=org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec_BillingMode" json:"billing_mode,omitempty"`
+	BillingMode AwsDynamodbSpec_BillingMode `protobuf:"varint,2,opt,name=billing_mode,json=billingMode,proto3,enum=org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec_BillingMode" json:"billing_mode,omitempty"`
 	// Provisioned throughput for the table (used when billing_mode is PROVISIONED).
-	ProvisionedThroughput *AwsDynamodbSpec_ProvisionedThroughput `protobuf:"bytes,2,opt,name=provisioned_throughput,json=provisionedThroughput,proto3" json:"provisioned_throughput,omitempty"`
+	ProvisionedThroughput *AwsDynamodbSpec_ProvisionedThroughput `protobuf:"bytes,3,opt,name=provisioned_throughput,json=provisionedThroughput,proto3" json:"provisioned_throughput,omitempty"`
 	// Attribute definitions referenced by the primary key and indexes.
-	AttributeDefinitions []*AwsDynamodbSpec_AttributeDefinition `protobuf:"bytes,3,rep,name=attribute_definitions,json=attributeDefinitions,proto3" json:"attribute_definitions,omitempty"`
+	AttributeDefinitions []*AwsDynamodbSpec_AttributeDefinition `protobuf:"bytes,4,rep,name=attribute_definitions,json=attributeDefinitions,proto3" json:"attribute_definitions,omitempty"`
 	// Primary key schema for the table: includes HASH and optional RANGE.
-	KeySchema []*AwsDynamodbSpec_KeySchemaElement `protobuf:"bytes,4,rep,name=key_schema,json=keySchema,proto3" json:"key_schema,omitempty"`
+	KeySchema []*AwsDynamodbSpec_KeySchemaElement `protobuf:"bytes,5,rep,name=key_schema,json=keySchema,proto3" json:"key_schema,omitempty"`
 	// Global secondary indexes.
-	GlobalSecondaryIndexes []*AwsDynamodbSpec_GlobalSecondaryIndex `protobuf:"bytes,5,rep,name=global_secondary_indexes,json=globalSecondaryIndexes,proto3" json:"global_secondary_indexes,omitempty"`
+	GlobalSecondaryIndexes []*AwsDynamodbSpec_GlobalSecondaryIndex `protobuf:"bytes,6,rep,name=global_secondary_indexes,json=globalSecondaryIndexes,proto3" json:"global_secondary_indexes,omitempty"`
 	// Local secondary indexes.
-	LocalSecondaryIndexes []*AwsDynamodbSpec_LocalSecondaryIndex `protobuf:"bytes,6,rep,name=local_secondary_indexes,json=localSecondaryIndexes,proto3" json:"local_secondary_indexes,omitempty"`
+	LocalSecondaryIndexes []*AwsDynamodbSpec_LocalSecondaryIndex `protobuf:"bytes,7,rep,name=local_secondary_indexes,json=localSecondaryIndexes,proto3" json:"local_secondary_indexes,omitempty"`
 	// Time-to-live configuration.
-	Ttl *AwsDynamodbSpec_TimeToLive `protobuf:"bytes,7,opt,name=ttl,proto3" json:"ttl,omitempty"`
+	Ttl *AwsDynamodbSpec_TimeToLive `protobuf:"bytes,8,opt,name=ttl,proto3" json:"ttl,omitempty"`
 	// DynamoDB Streams configuration.
-	StreamEnabled  bool                           `protobuf:"varint,8,opt,name=stream_enabled,json=streamEnabled,proto3" json:"stream_enabled,omitempty"`
-	StreamViewType AwsDynamodbSpec_StreamViewType `protobuf:"varint,9,opt,name=stream_view_type,json=streamViewType,proto3,enum=org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec_StreamViewType" json:"stream_view_type,omitempty"`
+	StreamEnabled  bool                           `protobuf:"varint,9,opt,name=stream_enabled,json=streamEnabled,proto3" json:"stream_enabled,omitempty"`
+	StreamViewType AwsDynamodbSpec_StreamViewType `protobuf:"varint,10,opt,name=stream_view_type,json=streamViewType,proto3,enum=org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec_StreamViewType" json:"stream_view_type,omitempty"`
 	// Point-in-time recovery (PITR) setting.
-	PointInTimeRecoveryEnabled bool `protobuf:"varint,10,opt,name=point_in_time_recovery_enabled,json=pointInTimeRecoveryEnabled,proto3" json:"point_in_time_recovery_enabled,omitempty"`
+	PointInTimeRecoveryEnabled bool `protobuf:"varint,11,opt,name=point_in_time_recovery_enabled,json=pointInTimeRecoveryEnabled,proto3" json:"point_in_time_recovery_enabled,omitempty"`
 	// Server-side encryption settings.
-	ServerSideEncryption *AwsDynamodbSpec_ServerSideEncryption `protobuf:"bytes,11,opt,name=server_side_encryption,json=serverSideEncryption,proto3" json:"server_side_encryption,omitempty"`
+	ServerSideEncryption *AwsDynamodbSpec_ServerSideEncryption `protobuf:"bytes,12,opt,name=server_side_encryption,json=serverSideEncryption,proto3" json:"server_side_encryption,omitempty"`
 	// Table storage class.
-	TableClass AwsDynamodbSpec_TableClass `protobuf:"varint,12,opt,name=table_class,json=tableClass,proto3,enum=org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec_TableClass" json:"table_class,omitempty"`
+	TableClass AwsDynamodbSpec_TableClass `protobuf:"varint,13,opt,name=table_class,json=tableClass,proto3,enum=org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec_TableClass" json:"table_class,omitempty"`
 	// Deletion protection setting.
-	DeletionProtectionEnabled bool `protobuf:"varint,13,opt,name=deletion_protection_enabled,json=deletionProtectionEnabled,proto3" json:"deletion_protection_enabled,omitempty"`
+	DeletionProtectionEnabled bool `protobuf:"varint,14,opt,name=deletion_protection_enabled,json=deletionProtectionEnabled,proto3" json:"deletion_protection_enabled,omitempty"`
 	// Contributor Insights setting.
-	ContributorInsightsEnabled bool `protobuf:"varint,14,opt,name=contributor_insights_enabled,json=contributorInsightsEnabled,proto3" json:"contributor_insights_enabled,omitempty"`
+	ContributorInsightsEnabled bool `protobuf:"varint,15,opt,name=contributor_insights_enabled,json=contributorInsightsEnabled,proto3" json:"contributor_insights_enabled,omitempty"`
 	unknownFields              protoimpl.UnknownFields
 	sizeCache                  protoimpl.SizeCache
 }
@@ -401,6 +404,13 @@ func (x *AwsDynamodbSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsDynamodbSpec.ProtoReflect.Descriptor instead.
 func (*AwsDynamodbSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsdynamodb_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsDynamodbSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsDynamodbSpec) GetBillingMode() AwsDynamodbSpec_BillingMode {
@@ -953,25 +963,26 @@ var File_org_openmcf_provider_aws_awsdynamodb_v1_spec_proto protoreflect.FileDes
 
 const file_org_openmcf_provider_aws_awsdynamodb_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2org/openmcf/provider/aws/awsdynamodb/v1/spec.proto\x12'org.openmcf.provider.aws.awsdynamodb.v1\x1a\x1bbuf/validate/validate.proto\"\xd8/\n" +
-	"\x0fAwsDynamodbSpec\x12q\n" +
-	"\fbilling_mode\x18\x01 \x01(\x0e2D.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.BillingModeB\b\xbaH\x05\x82\x01\x02\x10\x01R\vbillingMode\x12\x85\x01\n" +
-	"\x16provisioned_throughput\x18\x02 \x01(\v2N.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.ProvisionedThroughputR\x15provisionedThroughput\x12\x8b\x01\n" +
-	"\x15attribute_definitions\x18\x03 \x03(\v2L.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.AttributeDefinitionB\b\xbaH\x05\x92\x01\x02\b\x01R\x14attributeDefinitions\x12r\n" +
+	"2org/openmcf/provider/aws/awsdynamodb/v1/spec.proto\x12'org.openmcf.provider.aws.awsdynamodb.v1\x1a\x1bbuf/validate/validate.proto\"\xf9/\n" +
+	"\x0fAwsDynamodbSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12q\n" +
+	"\fbilling_mode\x18\x02 \x01(\x0e2D.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.BillingModeB\b\xbaH\x05\x82\x01\x02\x10\x01R\vbillingMode\x12\x85\x01\n" +
+	"\x16provisioned_throughput\x18\x03 \x01(\v2N.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.ProvisionedThroughputR\x15provisionedThroughput\x12\x8b\x01\n" +
+	"\x15attribute_definitions\x18\x04 \x03(\v2L.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.AttributeDefinitionB\b\xbaH\x05\x92\x01\x02\b\x01R\x14attributeDefinitions\x12r\n" +
 	"\n" +
-	"key_schema\x18\x04 \x03(\v2I.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.KeySchemaElementB\b\xbaH\x05\x92\x01\x02\b\x01R\tkeySchema\x12\x87\x01\n" +
-	"\x18global_secondary_indexes\x18\x05 \x03(\v2M.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.GlobalSecondaryIndexR\x16globalSecondaryIndexes\x12\x84\x01\n" +
-	"\x17local_secondary_indexes\x18\x06 \x03(\v2L.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.LocalSecondaryIndexR\x15localSecondaryIndexes\x12U\n" +
-	"\x03ttl\x18\a \x01(\v2C.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.TimeToLiveR\x03ttl\x12%\n" +
-	"\x0estream_enabled\x18\b \x01(\bR\rstreamEnabled\x12{\n" +
-	"\x10stream_view_type\x18\t \x01(\x0e2G.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.StreamViewTypeB\b\xbaH\x05\x82\x01\x02\x10\x01R\x0estreamViewType\x12B\n" +
-	"\x1epoint_in_time_recovery_enabled\x18\n" +
-	" \x01(\bR\x1apointInTimeRecoveryEnabled\x12\x83\x01\n" +
-	"\x16server_side_encryption\x18\v \x01(\v2M.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.ServerSideEncryptionR\x14serverSideEncryption\x12n\n" +
-	"\vtable_class\x18\f \x01(\x0e2C.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.TableClassB\b\xbaH\x05\x82\x01\x02\x10\x01R\n" +
+	"key_schema\x18\x05 \x03(\v2I.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.KeySchemaElementB\b\xbaH\x05\x92\x01\x02\b\x01R\tkeySchema\x12\x87\x01\n" +
+	"\x18global_secondary_indexes\x18\x06 \x03(\v2M.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.GlobalSecondaryIndexR\x16globalSecondaryIndexes\x12\x84\x01\n" +
+	"\x17local_secondary_indexes\x18\a \x03(\v2L.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.LocalSecondaryIndexR\x15localSecondaryIndexes\x12U\n" +
+	"\x03ttl\x18\b \x01(\v2C.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.TimeToLiveR\x03ttl\x12%\n" +
+	"\x0estream_enabled\x18\t \x01(\bR\rstreamEnabled\x12{\n" +
+	"\x10stream_view_type\x18\n" +
+	" \x01(\x0e2G.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.StreamViewTypeB\b\xbaH\x05\x82\x01\x02\x10\x01R\x0estreamViewType\x12B\n" +
+	"\x1epoint_in_time_recovery_enabled\x18\v \x01(\bR\x1apointInTimeRecoveryEnabled\x12\x83\x01\n" +
+	"\x16server_side_encryption\x18\f \x01(\v2M.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.ServerSideEncryptionR\x14serverSideEncryption\x12n\n" +
+	"\vtable_class\x18\r \x01(\x0e2C.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.TableClassB\b\xbaH\x05\x82\x01\x02\x10\x01R\n" +
 	"tableClass\x12>\n" +
-	"\x1bdeletion_protection_enabled\x18\r \x01(\bR\x19deletionProtectionEnabled\x12@\n" +
-	"\x1ccontributor_insights_enabled\x18\x0e \x01(\bR\x1acontributorInsightsEnabled\x1a\x98\x01\n" +
+	"\x1bdeletion_protection_enabled\x18\x0e \x01(\bR\x19deletionProtectionEnabled\x12@\n" +
+	"\x1ccontributor_insights_enabled\x18\x0f \x01(\bR\x1acontributorInsightsEnabled\x1a\x98\x01\n" +
 	"\x13AttributeDefinition\x12\x1b\n" +
 	"\x04name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x04name\x12d\n" +
 	"\x04type\x18\x02 \x01(\x0e2F.org.openmcf.provider.aws.awsdynamodb.v1.AwsDynamodbSpec.AttributeTypeB\b\xbaH\x05\x82\x01\x02\x10\x01R\x04type\x1a\xf4\x01\n" +

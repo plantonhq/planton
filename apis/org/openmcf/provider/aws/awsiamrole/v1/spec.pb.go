@@ -28,19 +28,22 @@ const (
 // It includes the trust policy JSON, managed policies, inline policies, and more.
 type AwsIamRoleSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// description is an optional description of the IAM role.
-	Description string `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	// path is the IAM path for the role. Defaults to "/" if omitted.
-	Path string `protobuf:"bytes,2,opt,name=path,proto3" json:"path,omitempty"`
+	Path string `protobuf:"bytes,3,opt,name=path,proto3" json:"path,omitempty"`
 	// trust_policy_json is the JSON string describing the trust relationship for the role.
 	// Example: a trust policy allowing ECS tasks to assume this role.
-	TrustPolicy *structpb.Struct `protobuf:"bytes,3,opt,name=trust_policy,json=trustPolicy,proto3" json:"trust_policy,omitempty"`
+	TrustPolicy *structpb.Struct `protobuf:"bytes,4,opt,name=trust_policy,json=trustPolicy,proto3" json:"trust_policy,omitempty"`
 	// managed_policy_arns is a list of ARNs for AWS-managed or customer-managed IAM policies
 	// you want to attach to this role.
-	ManagedPolicyArns []string `protobuf:"bytes,4,rep,name=managed_policy_arns,json=managedPolicyArns,proto3" json:"managed_policy_arns,omitempty"`
+	ManagedPolicyArns []string `protobuf:"bytes,5,rep,name=managed_policy_arns,json=managedPolicyArns,proto3" json:"managed_policy_arns,omitempty"`
 	// inline_policy_jsons is a map of inline policy names to a JSON policy doc.
 	// Key is policy name. Value is the raw JSON for that policy.
-	InlinePolicies map[string]*structpb.Struct `protobuf:"bytes,5,rep,name=inline_policies,json=inlinePolicies,proto3" json:"inline_policies,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	InlinePolicies map[string]*structpb.Struct `protobuf:"bytes,6,rep,name=inline_policies,json=inlinePolicies,proto3" json:"inline_policies,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -73,6 +76,13 @@ func (x *AwsIamRoleSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsIamRoleSpec.ProtoReflect.Descriptor instead.
 func (*AwsIamRoleSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsiamrole_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsIamRoleSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsIamRoleSpec) GetDescription() string {
@@ -114,13 +124,14 @@ var File_org_openmcf_provider_aws_awsiamrole_v1_spec_proto protoreflect.FileDesc
 
 const file_org_openmcf_provider_aws_awsiamrole_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"1org/openmcf/provider/aws/awsiamrole/v1/spec.proto\x12&org.openmcf.provider.aws.awsiamrole.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a(org/openmcf/shared/options/options.proto\"\x9c\x03\n" +
-	"\x0eAwsIamRoleSpec\x12 \n" +
-	"\vdescription\x18\x01 \x01(\tR\vdescription\x12\x19\n" +
-	"\x04path\x18\x02 \x01(\tB\x05\x92\xa6\x1d\x01/R\x04path\x12B\n" +
-	"\ftrust_policy\x18\x03 \x01(\v2\x17.google.protobuf.StructB\x06\xbaH\x03\xc8\x01\x01R\vtrustPolicy\x128\n" +
-	"\x13managed_policy_arns\x18\x04 \x03(\tB\b\xbaH\x05\x92\x01\x02\x18\x01R\x11managedPolicyArns\x12s\n" +
-	"\x0finline_policies\x18\x05 \x03(\v2J.org.openmcf.provider.aws.awsiamrole.v1.AwsIamRoleSpec.InlinePoliciesEntryR\x0einlinePolicies\x1aZ\n" +
+	"1org/openmcf/provider/aws/awsiamrole/v1/spec.proto\x12&org.openmcf.provider.aws.awsiamrole.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a(org/openmcf/shared/options/options.proto\"\xbd\x03\n" +
+	"\x0eAwsIamRoleSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12 \n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\x12\x19\n" +
+	"\x04path\x18\x03 \x01(\tB\x05\x92\xa6\x1d\x01/R\x04path\x12B\n" +
+	"\ftrust_policy\x18\x04 \x01(\v2\x17.google.protobuf.StructB\x06\xbaH\x03\xc8\x01\x01R\vtrustPolicy\x128\n" +
+	"\x13managed_policy_arns\x18\x05 \x03(\tB\b\xbaH\x05\x92\x01\x02\x18\x01R\x11managedPolicyArns\x12s\n" +
+	"\x0finline_policies\x18\x06 \x03(\v2J.org.openmcf.provider.aws.awsiamrole.v1.AwsIamRoleSpec.InlinePoliciesEntryR\x0einlinePolicies\x1aZ\n" +
 	"\x13InlinePoliciesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12-\n" +
 	"\x05value\x18\x02 \x01(\v2\x17.google.protobuf.StructR\x05value:\x028\x01B\xcd\x02\n" +

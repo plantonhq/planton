@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awskinesisstreamconsumer/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awskinesisstreamconsumer_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cj9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdza2luZXNpc3N0cmVhbWNvbnN1bWVyL3YxL3NwZWMucHJvdG8SNG9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NraW5lc2lzc3RyZWFtY29uc3VtZXIudjEikAEKHEF3c0tpbmVzaXNTdHJlYW1Db25zdW1lclNwZWMScAoKc3RyZWFtX2FybhgBIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKLpIA8gBAYjUYYQCktRhGXN0YXR1cy5vdXRwdXRzLnN0cmVhbV9hcm5CrwMKOGNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdza2luZXNpc3N0cmVhbWNvbnN1bWVyLnYxQglTcGVjUHJvdG9QAVpxZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NraW5lc2lzc3RyZWFtY29uc3VtZXIvdjE7YXdza2luZXNpc3N0cmVhbWNvbnN1bWVydjGiAgVPT1BBQaoCNE9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NraW5lc2lzc3RyZWFtY29uc3VtZXIuVjHKAjRPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdza2luZXNpc3N0cmVhbWNvbnN1bWVyXFYx4gJAT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2tpbmVzaXNzdHJlYW1jb25zdW1lclxWMVxHUEJNZXRhZGF0YeoCOU9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdza2luZXNpc3N0cmVhbWNvbnN1bWVyOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
+  fileDesc("Cj9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdza2luZXNpc3N0cmVhbWNvbnN1bWVyL3YxL3NwZWMucHJvdG8SNG9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NraW5lc2lzc3RyZWFtY29uc3VtZXIudjEiqQEKHEF3c0tpbmVzaXNTdHJlYW1Db25zdW1lclNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEnAKCnN0cmVhbV9hcm4YAiABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQii6SAPIAQGI1GGEApLUYRlzdGF0dXMub3V0cHV0cy5zdHJlYW1fYXJuQq8DCjhjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2tpbmVzaXNzdHJlYW1jb25zdW1lci52MUIJU3BlY1Byb3RvUAFacWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdza2luZXNpc3N0cmVhbWNvbnN1bWVyL3YxO2F3c2tpbmVzaXNzdHJlYW1jb25zdW1lcnYxogIFT09QQUGqAjRPcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdza2luZXNpc3N0cmVhbWNvbnN1bWVyLlYxygI0T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2tpbmVzaXNzdHJlYW1jb25zdW1lclxWMeICQE9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NraW5lc2lzc3RyZWFtY29uc3VtZXJcVjFcR1BCTWV0YWRhdGHqAjlPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c2tpbmVzaXNzdHJlYW1jb25zdW1lcjo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
 
 /**
  * AwsKinesisStreamConsumerSpec defines the desired configuration for an Amazon
@@ -50,6 +50,14 @@ export const file_org_openmcf_provider_aws_awskinesisstreamconsumer_v1_spec: Gen
  */
 export type AwsKinesisStreamConsumerSpec = Message<"org.openmcf.provider.aws.awskinesisstreamconsumer.v1.AwsKinesisStreamConsumerSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * ARN of the Kinesis Data Stream to register this consumer with. The consumer
    * receives a dedicated 2 MB/s read throughput pipe for every shard in the
    * stream, independent of other consumers.
@@ -60,7 +68,7 @@ export type AwsKinesisStreamConsumerSpec = Message<"org.openmcf.provider.aws.aws
    * Accepts a direct ARN string or a reference to an AwsKinesisStream resource
    * via valueFrom.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef stream_arn = 1;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef stream_arn = 2;
    */
   streamArn?: StringValueOrRef;
 };

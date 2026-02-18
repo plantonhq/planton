@@ -3,6 +3,7 @@ kind: AwsEksCluster
 metadata:
   name: my-private-eks-cluster
 spec:
+  region: <aws-region>
   subnetIds:
     - value: "<private-subnet-id-az1>"
     - value: "<private-subnet-id-az2>"

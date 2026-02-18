@@ -34,7 +34,6 @@ kind: AwsRoute53Zone
 metadata:
   name: public-dns-zone
 spec:
-  aws_credential_id: aws-cred-id
   region: us-east-1
   zone_config:
     domain_name: example.com
@@ -53,8 +52,7 @@ kind: AwsRoute53Zone
 metadata:
   name: private-dns-zone
 spec:
-  aws_credential_id: aws-cred-id
-  region: us-west-2
+  region: us-east-1
   zone_config:
     domain_name: internal.example.com
     private_zone: true
@@ -75,7 +73,6 @@ kind: AwsRoute53Zone
 metadata:
   name: website-dns-zone
 spec:
-  aws_credential_id: aws-cred-id
   region: us-east-1
   zone_config:
     domain_name: example.com
@@ -100,7 +97,6 @@ kind: AwsRoute53Zone
 metadata:
   name: subdomain-dns-zone
 spec:
-  aws_credential_id: aws-cred-id
   region: us-east-1
   zone_config:
     domain_name: example.com
@@ -125,7 +121,6 @@ kind: AwsRoute53Zone
 metadata:
   name: elb-alias-dns-zone
 spec:
-  aws_credential_id: aws-cred-id
   region: us-east-1
   zone_config:
     domain_name: example.com
@@ -151,7 +146,6 @@ kind: AwsRoute53Zone
 metadata:
   name: multi-region-dns-zone
 spec:
-  aws_credential_id: aws-cred-id
   region: us-east-1
   zone_config:
     domain_name: example.com
@@ -181,7 +175,6 @@ kind: AwsRoute53Zone
 metadata:
   name: email-dns-zone
 spec:
-  aws_credential_id: aws-cred-id
   region: us-east-1
   zone_config:
     domain_name: example.com
@@ -206,7 +199,6 @@ kind: AwsRoute53Zone
 metadata:
   name: domain-verification-dns-zone
 spec:
-  aws_credential_id: aws-cred-id
   region: us-east-1
   zone_config:
     domain_name: example.com
@@ -231,7 +223,6 @@ kind: AwsRoute53Zone
 metadata:
   name: service-discovery-dns-zone
 spec:
-  aws_credential_id: aws-cred-id
   region: us-east-1
   zone_config:
     domain_name: example.com
@@ -256,7 +247,6 @@ kind: AwsRoute53Zone
 metadata:
   name: subdomain-delegation-dns-zone
 spec:
-  aws_credential_id: aws-cred-id
   region: us-east-1
   zone_config:
     domain_name: example.com

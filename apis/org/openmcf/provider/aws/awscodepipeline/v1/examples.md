@@ -10,6 +10,7 @@ kind: AwsCodePipeline
 metadata:
   name: my-app-ci
 spec:
+  region: us-west-2
   roleArn:
     value: arn:aws:iam::123456789012:role/codepipeline-service-role
   artifactStores:
@@ -55,6 +56,7 @@ kind: AwsCodePipeline
 metadata:
   name: my-service-cicd
 spec:
+  region: us-west-2
   pipelineType: V2
   executionMode: QUEUED
   roleArn:
@@ -140,6 +142,7 @@ kind: AwsCodePipeline
 metadata:
   name: my-api-ci
 spec:
+  region: us-west-2
   pipelineType: V2
   executionMode: QUEUED
   roleArn:
@@ -251,6 +254,7 @@ kind: AwsCodePipeline
 metadata:
   name: my-lambda-deploy
 spec:
+  region: us-west-2
   pipelineType: V1
   roleArn:
     value: arn:aws:iam::123456789012:role/codepipeline-lambda-role
@@ -296,6 +300,7 @@ kind: AwsCodePipeline
 metadata:
   name: cross-account-deploy
 spec:
+  region: us-west-2
   pipelineType: V2
   executionMode: QUEUED
   roleArn:
@@ -414,6 +419,7 @@ kind: AwsCodePipeline
 metadata:
   name: connected-pipeline
 spec:
+  region: us-west-2
   pipelineType: V2
   roleArn:
     valueFrom:

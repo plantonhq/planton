@@ -3,6 +3,7 @@ kind: AwsRoute53DnsRecord
 metadata:
   name: my-alb-dns-record
 spec:
+  region: us-east-1
   zoneId:
     value: "<route53-hosted-zone-id>"
   name: <your-domain.com>

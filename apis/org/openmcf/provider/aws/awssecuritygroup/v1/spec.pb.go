@@ -26,20 +26,23 @@ const (
 // AwsSecurityGroupSpec defines the primary configuration for creating an AWS EC2 Security Group in a specified VPC.
 type AwsSecurityGroupSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// vpc_id is the ID of the VPC where this Security Group will be created.
 	// Example: "vpc-12345abcde"
 	// This field is required because every Security Group must belong to one VPC.
-	VpcId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
+	VpcId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
 	// description provides a short explanation of this Security Group’s purpose.
 	// This field is required by AWS and cannot be modified once created without a replacement.
 	// Example: "Allows inbound HTTP and SSH for web tier"
-	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 	// ingress_rules define the inbound traffic rules for this Security Group.
 	// If empty, inbound traffic is fully restricted (deny all).
-	Ingress []*SecurityGroupRule `protobuf:"bytes,3,rep,name=ingress,proto3" json:"ingress,omitempty"`
+	Ingress []*SecurityGroupRule `protobuf:"bytes,4,rep,name=ingress,proto3" json:"ingress,omitempty"`
 	// egress_rules define the outbound traffic rules for this Security Group.
 	// If empty, AWS defaults to allow all outbound traffic unless configured otherwise.
-	Egress        []*SecurityGroupRule `protobuf:"bytes,4,rep,name=egress,proto3" json:"egress,omitempty"`
+	Egress        []*SecurityGroupRule `protobuf:"bytes,5,rep,name=egress,proto3" json:"egress,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -72,6 +75,13 @@ func (x *AwsSecurityGroupSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsSecurityGroupSpec.ProtoReflect.Descriptor instead.
 func (*AwsSecurityGroupSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awssecuritygroup_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsSecurityGroupSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsSecurityGroupSpec) GetVpcId() *v1.StringValueOrRef {
@@ -239,13 +249,14 @@ var File_org_openmcf_provider_aws_awssecuritygroup_v1_spec_proto protoreflect.Fi
 
 const file_org_openmcf_provider_aws_awssecuritygroup_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"7org/openmcf/provider/aws/awssecuritygroup/v1/spec.proto\x12,org.openmcf.provider.aws.awssecuritygroup.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xc2\x03\n" +
-	"\x14AwsSecurityGroupSpec\x12o\n" +
-	"\x06vpc_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12\x84\x01\n" +
-	"\vdescription\x18\x02 \x01(\tBb\xbaH_\xba\x01Y\n" +
+	"7org/openmcf/provider/aws/awssecuritygroup/v1/spec.proto\x12,org.openmcf.provider.aws.awssecuritygroup.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xe3\x03\n" +
+	"\x14AwsSecurityGroupSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12o\n" +
+	"\x06vpc_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12\x84\x01\n" +
+	"\vdescription\x18\x03 \x01(\tBb\xbaH_\xba\x01Y\n" +
 	"\x18description_length_check\x12*Description must not exceed 255 characters\x1a\x11size(this) <= 255\xc8\x01\x01R\vdescription\x12Y\n" +
-	"\aingress\x18\x03 \x03(\v2?.org.openmcf.provider.aws.awssecuritygroup.v1.SecurityGroupRuleR\aingress\x12W\n" +
-	"\x06egress\x18\x04 \x03(\v2?.org.openmcf.provider.aws.awssecuritygroup.v1.SecurityGroupRuleR\x06egress\"\xa0\x05\n" +
+	"\aingress\x18\x04 \x03(\v2?.org.openmcf.provider.aws.awssecuritygroup.v1.SecurityGroupRuleR\aingress\x12W\n" +
+	"\x06egress\x18\x05 \x03(\v2?.org.openmcf.provider.aws.awssecuritygroup.v1.SecurityGroupRuleR\x06egress\"\xa0\x05\n" +
 	"\x11SecurityGroupRule\x12\"\n" +
 	"\bprotocol\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bprotocol\x12\x1b\n" +
 	"\tfrom_port\x18\x02 \x01(\x05R\bfromPort\x12\x17\n" +

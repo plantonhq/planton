@@ -3,6 +3,7 @@ kind: AwsEksNodeGroup
 metadata:
   name: my-general-node-group
 spec:
+  region: <aws-region>
   clusterName:
     value: "<eks-cluster-name>"
   nodeRoleArn:

@@ -43,6 +43,9 @@ variable "spec" {
   description = "spec"
   type = object({
 
+    # The AWS region where the resource will be created.
+    region = string
+
     # Name of the database engine to be used for this DB cluster. Valid Values: `aurora-mysql`,
     # `aurora-postgresql`, `mysql`, `postgres`. (Note that `mysql` and `postgres` are Multi-AZ RDS clusters).
     engine = string

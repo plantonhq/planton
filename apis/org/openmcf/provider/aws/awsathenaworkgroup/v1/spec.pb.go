@@ -53,10 +53,13 @@ const (
 //     inputs.
 type AwsAthenaWorkgroupSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the Athena workgroup will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Configuration for query result storage, encryption, and access control.
 	// When omitted, queries must specify their own result location or will use the
 	// AWS account-level Athena settings.
-	ResultConfiguration *AwsAthenaWorkgroupResultConfig `protobuf:"bytes,1,opt,name=result_configuration,json=resultConfiguration,proto3" json:"result_configuration,omitempty"`
+	ResultConfiguration *AwsAthenaWorkgroupResultConfig `protobuf:"bytes,2,opt,name=result_configuration,json=resultConfiguration,proto3" json:"result_configuration,omitempty"`
 	// Maximum number of bytes a single query is allowed to scan. Queries that
 	// exceed this limit are cancelled automatically. This is the primary cost
 	// control mechanism for Athena workgroups.
@@ -67,7 +70,7 @@ type AwsAthenaWorkgroupSpec struct {
 	//
 	// Recommended for production: set to a reasonable ceiling based on your
 	// dataset sizes (e.g., 10737418240 for 10 GB).
-	BytesScannedCutoffPerQuery int64 `protobuf:"varint,2,opt,name=bytes_scanned_cutoff_per_query,json=bytesScannedCutoffPerQuery,proto3" json:"bytes_scanned_cutoff_per_query,omitempty"`
+	BytesScannedCutoffPerQuery int64 `protobuf:"varint,3,opt,name=bytes_scanned_cutoff_per_query,json=bytesScannedCutoffPerQuery,proto3" json:"bytes_scanned_cutoff_per_query,omitempty"`
 	// When true (the default), workgroup settings override client-side settings
 	// for result location, encryption, and other configuration. Individual queries
 	// cannot override these values.
@@ -75,21 +78,21 @@ type AwsAthenaWorkgroupSpec struct {
 	// When false, queries can override workgroup settings. Useful for development
 	// workgroups where engineers need flexibility, but not recommended for
 	// production where consistent encryption and result locations are required.
-	EnforceWorkgroupConfiguration *bool `protobuf:"varint,3,opt,name=enforce_workgroup_configuration,json=enforceWorkgroupConfiguration,proto3,oneof" json:"enforce_workgroup_configuration,omitempty"`
+	EnforceWorkgroupConfiguration *bool `protobuf:"varint,4,opt,name=enforce_workgroup_configuration,json=enforceWorkgroupConfiguration,proto3,oneof" json:"enforce_workgroup_configuration,omitempty"`
 	// When true, Athena publishes query execution metrics (data scanned, execution
 	// time, etc.) to CloudWatch. Useful for monitoring query performance and cost
 	// trends across the workgroup.
-	PublishCloudwatchMetricsEnabled *bool `protobuf:"varint,4,opt,name=publish_cloudwatch_metrics_enabled,json=publishCloudwatchMetricsEnabled,proto3,oneof" json:"publish_cloudwatch_metrics_enabled,omitempty"`
+	PublishCloudwatchMetricsEnabled *bool `protobuf:"varint,5,opt,name=publish_cloudwatch_metrics_enabled,json=publishCloudwatchMetricsEnabled,proto3,oneof" json:"publish_cloudwatch_metrics_enabled,omitempty"`
 	// When true, the requester pays for data access charges when querying data in
 	// requester-pays S3 buckets. Default is false (the bucket owner pays).
-	RequesterPaysEnabled bool `protobuf:"varint,5,opt,name=requester_pays_enabled,json=requesterPaysEnabled,proto3" json:"requester_pays_enabled,omitempty"`
+	RequesterPaysEnabled bool `protobuf:"varint,6,opt,name=requester_pays_enabled,json=requesterPaysEnabled,proto3" json:"requester_pays_enabled,omitempty"`
 	// When true, enforces a minimum encryption level (at least SSE_S3) for all
 	// query results written by this workgroup. Queries that do not specify
 	// encryption will default to SSE_S3.
 	//
 	// Useful as a compliance guardrail to ensure no query results are ever written
 	// unencrypted, even if result_configuration.encryption_option is not set.
-	EnableMinimumEncryptionConfiguration bool `protobuf:"varint,6,opt,name=enable_minimum_encryption_configuration,json=enableMinimumEncryptionConfiguration,proto3" json:"enable_minimum_encryption_configuration,omitempty"`
+	EnableMinimumEncryptionConfiguration bool `protobuf:"varint,7,opt,name=enable_minimum_encryption_configuration,json=enableMinimumEncryptionConfiguration,proto3" json:"enable_minimum_encryption_configuration,omitempty"`
 	// The Athena engine version to use for queries in this workgroup. Leave empty
 	// or set to "AUTO" (the default) to use the latest available engine version.
 	//
@@ -99,19 +102,19 @@ type AwsAthenaWorkgroupSpec struct {
 	//
 	// Valid values depend on the AWS region and change over time as AWS releases
 	// new engine versions. AWS validates at apply time.
-	SelectedEngineVersion string `protobuf:"bytes,7,opt,name=selected_engine_version,json=selectedEngineVersion,proto3" json:"selected_engine_version,omitempty"`
+	SelectedEngineVersion string `protobuf:"bytes,8,opt,name=selected_engine_version,json=selectedEngineVersion,proto3" json:"selected_engine_version,omitempty"`
 	// When true, all named queries and prepared statements associated with the
 	// workgroup are deleted when the workgroup is destroyed. When false (the
 	// default), destroying a workgroup that contains named queries or prepared
 	// statements will fail.
-	ForceDestroy bool `protobuf:"varint,8,opt,name=force_destroy,json=forceDestroy,proto3" json:"force_destroy,omitempty"`
+	ForceDestroy bool `protobuf:"varint,9,opt,name=force_destroy,json=forceDestroy,proto3" json:"force_destroy,omitempty"`
 	// IAM role ARN for Apache Spark workloads. Required only for workgroups that
 	// run PySpark notebooks or Spark SQL — standard Athena SQL workgroups do not
 	// need this field.
 	//
 	// The role must have permissions to read from S3 data sources, write results,
 	// and access the AWS Glue Data Catalog.
-	ExecutionRole *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=execution_role,json=executionRole,proto3" json:"execution_role,omitempty"`
+	ExecutionRole *v1.StringValueOrRef `protobuf:"bytes,10,opt,name=execution_role,json=executionRole,proto3" json:"execution_role,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,6 +147,13 @@ func (x *AwsAthenaWorkgroupSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsAthenaWorkgroupSpec.ProtoReflect.Descriptor instead.
 func (*AwsAthenaWorkgroupSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsathenaworkgroup_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsAthenaWorkgroupSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsAthenaWorkgroupSpec) GetResultConfiguration() *AwsAthenaWorkgroupResultConfig {
@@ -322,17 +332,19 @@ var File_org_openmcf_provider_aws_awsathenaworkgroup_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_aws_awsathenaworkgroup_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/aws/awsathenaworkgroup/v1/spec.proto\x12.org.openmcf.provider.aws.awsathenaworkgroup.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xc8\f\n" +
-	"\x16AwsAthenaWorkgroupSpec\x12\x81\x01\n" +
-	"\x14result_configuration\x18\x01 \x01(\v2N.org.openmcf.provider.aws.awsathenaworkgroup.v1.AwsAthenaWorkgroupResultConfigR\x13resultConfiguration\x12B\n" +
-	"\x1ebytes_scanned_cutoff_per_query\x18\x02 \x01(\x03R\x1abytesScannedCutoffPerQuery\x12U\n" +
-	"\x1fenforce_workgroup_configuration\x18\x03 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\x1denforceWorkgroupConfiguration\x88\x01\x01\x12Z\n" +
-	"\"publish_cloudwatch_metrics_enabled\x18\x04 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\x1fpublishCloudwatchMetricsEnabled\x88\x01\x01\x124\n" +
-	"\x16requester_pays_enabled\x18\x05 \x01(\bR\x14requesterPaysEnabled\x12U\n" +
-	"'enable_minimum_encryption_configuration\x18\x06 \x01(\bR$enableMinimumEncryptionConfiguration\x126\n" +
-	"\x17selected_engine_version\x18\a \x01(\tR\x15selectedEngineVersion\x12#\n" +
-	"\rforce_destroy\x18\b \x01(\bR\fforceDestroy\x12{\n" +
-	"\x0eexecution_role\x18\t \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\rexecutionRole:\x80\x06\xbaH\xfc\x05\x1a\xcb\x01\n" +
+	"9org/openmcf/provider/aws/awsathenaworkgroup/v1/spec.proto\x12.org.openmcf.provider.aws.awsathenaworkgroup.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xe9\f\n" +
+	"\x16AwsAthenaWorkgroupSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x81\x01\n" +
+	"\x14result_configuration\x18\x02 \x01(\v2N.org.openmcf.provider.aws.awsathenaworkgroup.v1.AwsAthenaWorkgroupResultConfigR\x13resultConfiguration\x12B\n" +
+	"\x1ebytes_scanned_cutoff_per_query\x18\x03 \x01(\x03R\x1abytesScannedCutoffPerQuery\x12U\n" +
+	"\x1fenforce_workgroup_configuration\x18\x04 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\x1denforceWorkgroupConfiguration\x88\x01\x01\x12Z\n" +
+	"\"publish_cloudwatch_metrics_enabled\x18\x05 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\x1fpublishCloudwatchMetricsEnabled\x88\x01\x01\x124\n" +
+	"\x16requester_pays_enabled\x18\x06 \x01(\bR\x14requesterPaysEnabled\x12U\n" +
+	"'enable_minimum_encryption_configuration\x18\a \x01(\bR$enableMinimumEncryptionConfiguration\x126\n" +
+	"\x17selected_engine_version\x18\b \x01(\tR\x15selectedEngineVersion\x12#\n" +
+	"\rforce_destroy\x18\t \x01(\bR\fforceDestroy\x12{\n" +
+	"\x0eexecution_role\x18\n" +
+	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\rexecutionRole:\x80\x06\xbaH\xfc\x05\x1a\xcb\x01\n" +
 	"\x1abytes_scanned_cutoff_range\x12Pbytes_scanned_cutoff_per_query must be 0 (no limit) or at least 10485760 (10 MB)\x1a[this.bytes_scanned_cutoff_per_query == 0 || this.bytes_scanned_cutoff_per_query >= 10485760\x1a\xa5\x02\n" +
 	"\x1eresult_encryption_option_valid\x12Yresult_configuration.encryption_option must be 'SSE_S3', 'SSE_KMS', or 'CSE_KMS' when set\x1a\xa7\x01!has(this.result_configuration) || this.result_configuration.encryption_option == '' || this.result_configuration.encryption_option in ['SSE_S3', 'SSE_KMS', 'CSE_KMS']\x1a\x83\x02\n" +
 	"\x13s3_acl_option_valid\x12Oresult_configuration.s3_acl_option must be 'BUCKET_OWNER_FULL_CONTROL' when set\x1a\x9a\x01!has(this.result_configuration) || this.result_configuration.s3_acl_option == '' || this.result_configuration.s3_acl_option == 'BUCKET_OWNER_FULL_CONTROL'B\"\n" +

@@ -3,6 +3,7 @@ kind: AwsClientVpn
 metadata:
   name: awsclientvpn-demo
 spec:
+  region: us-east-1
   vpcId:
     value: vpc-0123456789abcdef0
   subnets:

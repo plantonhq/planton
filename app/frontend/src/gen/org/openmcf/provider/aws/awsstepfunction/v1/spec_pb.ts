@@ -14,7 +14,7 @@ import type { JsonObject, Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsstepfunction/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsstepfunction_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjZvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzc3RlcGZ1bmN0aW9uL3YxL3NwZWMucHJvdG8SK29yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NzdGVwZnVuY3Rpb24udjEinQYKE0F3c1N0ZXBGdW5jdGlvblNwZWMSDAoEdHlwZRgBIAEoCRIzCgpkZWZpbml0aW9uGAIgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdEIGukgDyAEBEmwKCHJvbGVfYXJuGAMgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkImukgDyAEBiNRh0AGS1GEXc3RhdHVzLm91dHB1dHMucm9sZV9hcm4SEwoLZGVzY3JpcHRpb24YBCABKAkSWgoHbG9nZ2luZxgFIAEoCzJJLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NzdGVwZnVuY3Rpb24udjEuQXdzU3RlcEZ1bmN0aW9uTG9nZ2luZ0NvbmZpZxIXCg90cmFjaW5nX2VuYWJsZWQYBiABKAgSYAoKZW5jcnlwdGlvbhgHIAEoCzJMLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NzdGVwZnVuY3Rpb24udjEuQXdzU3RlcEZ1bmN0aW9uRW5jcnlwdGlvbkNvbmZpZzroArpI5AIaewoRdHlwZV92YWxpZF92YWx1ZXMSLXR5cGUgbXVzdCBiZSAnU1RBTkRBUkQnIG9yICdFWFBSRVNTJyB3aGVuIHNldBo3dGhpcy50eXBlID09ICcnIHx8IHRoaXMudHlwZSBpbiBbJ1NUQU5EQVJEJywgJ0VYUFJFU1MnXRrkAQopbG9nZ2luZ19kZXN0aW5hdGlvbl9yZXF1aXJlZF93aGVuX2VuYWJsZWQSQ2xvZ2dpbmcubG9nX2Rlc3RpbmF0aW9uIGlzIHJlcXVpcmVkIHdoZW4gbG9nZ2luZy5sZXZlbCBpcyBub3QgJ09GRicaciFoYXModGhpcy5sb2dnaW5nKSB8fCB0aGlzLmxvZ2dpbmcubGV2ZWwgPT0gJycgfHwgdGhpcy5sb2dnaW5nLmxldmVsID09ICdPRkYnIHx8IGhhcyh0aGlzLmxvZ2dpbmcubG9nX2Rlc3RpbmF0aW9uKSLtAgocQXdzU3RlcEZ1bmN0aW9uTG9nZ2luZ0NvbmZpZxINCgVsZXZlbBgBIAEoCRIeChZpbmNsdWRlX2V4ZWN1dGlvbl9kYXRhGAIgASgIEnIKD2xvZ19kZXN0aW5hdGlvbhgDIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCJYjUYbYCktRhHHN0YXR1cy5vdXRwdXRzLmxvZ19ncm91cF9hcm46qQG6SKUBGqIBChpsb2dnaW5nX2xldmVsX3ZhbGlkX3ZhbHVlcxJAbG9nZ2luZy5sZXZlbCBtdXN0IGJlICdBTEwnLCAnRVJST1InLCAnRkFUQUwnLCBvciAnT0ZGJyB3aGVuIHNldBpCdGhpcy5sZXZlbCA9PSAnJyB8fCB0aGlzLmxldmVsIGluIFsnQUxMJywgJ0VSUk9SJywgJ0ZBVEFMJywgJ09GRiddIrcDCh9Bd3NTdGVwRnVuY3Rpb25FbmNyeXB0aW9uQ29uZmlnEm0KCmttc19rZXlfaWQYASABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQiW6SAPIAQGI1GHbAZLUYRZzdGF0dXMub3V0cHV0cy5rZXlfYXJuEikKIWttc19kYXRhX2tleV9yZXVzZV9wZXJpb2Rfc2Vjb25kcxgCIAEoBTr5AbpI9QEa8gEKGGttc19kYXRhX2tleV9yZXVzZV9yYW5nZRJFa21zX2RhdGFfa2V5X3JldXNlX3BlcmlvZF9zZWNvbmRzIG11c3QgYmUgYmV0d2VlbiA2MCBhbmQgOTAwIHdoZW4gc2V0Go4BdGhpcy5rbXNfZGF0YV9rZXlfcmV1c2VfcGVyaW9kX3NlY29uZHMgPT0gMCB8fCAodGhpcy5rbXNfZGF0YV9rZXlfcmV1c2VfcGVyaW9kX3NlY29uZHMgPj0gNjAgJiYgdGhpcy5rbXNfZGF0YV9rZXlfcmV1c2VfcGVyaW9kX3NlY29uZHMgPD0gOTAwKULwAgovY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NzdGVwZnVuY3Rpb24udjFCCVNwZWNQcm90b1ABWl9naXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c3N0ZXBmdW5jdGlvbi92MTthd3NzdGVwZnVuY3Rpb252MaICBU9PUEFBqgIrT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c3N0ZXBmdW5jdGlvbi5WMcoCK09yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NzdGVwZnVuY3Rpb25cVjHiAjdPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzc3RlcGZ1bmN0aW9uXFYxXEdQQk1ldGFkYXRh6gIwT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NzdGVwZnVuY3Rpb246OlYxYgZwcm90bzM", [file_buf_validate_validate, file_google_protobuf_struct, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
+  fileDesc("CjZvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzc3RlcGZ1bmN0aW9uL3YxL3NwZWMucHJvdG8SK29yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NzdGVwZnVuY3Rpb24udjEitgYKE0F3c1N0ZXBGdW5jdGlvblNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEgwKBHR5cGUYAiABKAkSMwoKZGVmaW5pdGlvbhgDIAEoCzIXLmdvb2dsZS5wcm90b2J1Zi5TdHJ1Y3RCBrpIA8gBARJsCghyb2xlX2FybhgEIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCJrpIA8gBAYjUYdABktRhF3N0YXR1cy5vdXRwdXRzLnJvbGVfYXJuEhMKC2Rlc2NyaXB0aW9uGAUgASgJEloKB2xvZ2dpbmcYBiABKAsySS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzc3RlcGZ1bmN0aW9uLnYxLkF3c1N0ZXBGdW5jdGlvbkxvZ2dpbmdDb25maWcSFwoPdHJhY2luZ19lbmFibGVkGAcgASgIEmAKCmVuY3J5cHRpb24YCCABKAsyTC5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzc3RlcGZ1bmN0aW9uLnYxLkF3c1N0ZXBGdW5jdGlvbkVuY3J5cHRpb25Db25maWc66AK6SOQCGnsKEXR5cGVfdmFsaWRfdmFsdWVzEi10eXBlIG11c3QgYmUgJ1NUQU5EQVJEJyBvciAnRVhQUkVTUycgd2hlbiBzZXQaN3RoaXMudHlwZSA9PSAnJyB8fCB0aGlzLnR5cGUgaW4gWydTVEFOREFSRCcsICdFWFBSRVNTJ10a5AEKKWxvZ2dpbmdfZGVzdGluYXRpb25fcmVxdWlyZWRfd2hlbl9lbmFibGVkEkNsb2dnaW5nLmxvZ19kZXN0aW5hdGlvbiBpcyByZXF1aXJlZCB3aGVuIGxvZ2dpbmcubGV2ZWwgaXMgbm90ICdPRkYnGnIhaGFzKHRoaXMubG9nZ2luZykgfHwgdGhpcy5sb2dnaW5nLmxldmVsID09ICcnIHx8IHRoaXMubG9nZ2luZy5sZXZlbCA9PSAnT0ZGJyB8fCBoYXModGhpcy5sb2dnaW5nLmxvZ19kZXN0aW5hdGlvbiki7QIKHEF3c1N0ZXBGdW5jdGlvbkxvZ2dpbmdDb25maWcSDQoFbGV2ZWwYASABKAkSHgoWaW5jbHVkZV9leGVjdXRpb25fZGF0YRgCIAEoCBJyCg9sb2dfZGVzdGluYXRpb24YAyABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQiWI1GG2ApLUYRxzdGF0dXMub3V0cHV0cy5sb2dfZ3JvdXBfYXJuOqkBukilARqiAQoabG9nZ2luZ19sZXZlbF92YWxpZF92YWx1ZXMSQGxvZ2dpbmcubGV2ZWwgbXVzdCBiZSAnQUxMJywgJ0VSUk9SJywgJ0ZBVEFMJywgb3IgJ09GRicgd2hlbiBzZXQaQnRoaXMubGV2ZWwgPT0gJycgfHwgdGhpcy5sZXZlbCBpbiBbJ0FMTCcsICdFUlJPUicsICdGQVRBTCcsICdPRkYnXSK3AwofQXdzU3RlcEZ1bmN0aW9uRW5jcnlwdGlvbkNvbmZpZxJtCgprbXNfa2V5X2lkGAEgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIlukgDyAEBiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybhIpCiFrbXNfZGF0YV9rZXlfcmV1c2VfcGVyaW9kX3NlY29uZHMYAiABKAU6+QG6SPUBGvIBChhrbXNfZGF0YV9rZXlfcmV1c2VfcmFuZ2USRWttc19kYXRhX2tleV9yZXVzZV9wZXJpb2Rfc2Vjb25kcyBtdXN0IGJlIGJldHdlZW4gNjAgYW5kIDkwMCB3aGVuIHNldBqOAXRoaXMua21zX2RhdGFfa2V5X3JldXNlX3BlcmlvZF9zZWNvbmRzID09IDAgfHwgKHRoaXMua21zX2RhdGFfa2V5X3JldXNlX3BlcmlvZF9zZWNvbmRzID49IDYwICYmIHRoaXMua21zX2RhdGFfa2V5X3JldXNlX3BlcmlvZF9zZWNvbmRzIDw9IDkwMClC8AIKL2NvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzc3RlcGZ1bmN0aW9uLnYxQglTcGVjUHJvdG9QAVpfZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NzdGVwZnVuY3Rpb24vdjE7YXdzc3RlcGZ1bmN0aW9udjGiAgVPT1BBQaoCK09yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NzdGVwZnVuY3Rpb24uVjHKAitPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzc3RlcGZ1bmN0aW9uXFYx4gI3T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c3N0ZXBmdW5jdGlvblxWMVxHUEJNZXRhZGF0YeoCME9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzc3RlcGZ1bmN0aW9uOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_google_protobuf_struct, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
 
 /**
  * AwsStepFunctionSpec defines the desired configuration for an AWS Step Functions
@@ -37,13 +37,17 @@ export const file_org_openmcf_provider_aws_awsstepfunction_v1_spec: GenFile = /*
  *   Type, etc.) is preserved through serialization.
  * - Credentials, region, and deployment workflow live outside this spec in stack inputs.
  *
- * ---------------------------------------------------------------------------
- * State machine configuration
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awsstepfunction.v1.AwsStepFunctionSpec
  */
 export type AwsStepFunctionSpec = Message<"org.openmcf.provider.aws.awsstepfunction.v1.AwsStepFunctionSpec"> & {
+  /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * State machine type. Determines execution semantics and pricing model.
    * - "STANDARD": Long-running, exactly-once, full execution history.
@@ -51,7 +55,7 @@ export type AwsStepFunctionSpec = Message<"org.openmcf.provider.aws.awsstepfunct
    * Cannot be changed after creation (forces replacement).
    * When omitted the IaC module defaults to "STANDARD".
    *
-   * @generated from field: string type = 1;
+   * @generated from field: string type = 2;
    */
   type: string;
 
@@ -66,7 +70,7 @@ export type AwsStepFunctionSpec = Message<"org.openmcf.provider.aws.awsstepfunct
    * Use AWS Step Functions Workflow Studio, CDK, or the ASL specification
    * to author complex workflows, then express the result as YAML here.
    *
-   * @generated from field: google.protobuf.Struct definition = 2;
+   * @generated from field: google.protobuf.Struct definition = 3;
    */
   definition?: JsonObject;
 
@@ -75,7 +79,7 @@ export type AwsStepFunctionSpec = Message<"org.openmcf.provider.aws.awsstepfunct
    * states.amazonaws.com and policies granting access to all services
    * invoked by the workflow (Lambda:InvokeFunction, SQS:SendMessage, etc.).
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef role_arn = 3;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef role_arn = 4;
    */
   roleArn?: StringValueOrRef;
 
@@ -83,7 +87,7 @@ export type AwsStepFunctionSpec = Message<"org.openmcf.provider.aws.awsstepfunct
    * Free-form description visible in the AWS Console. Useful for documenting
    * the workflow's purpose and behavior.
    *
-   * @generated from field: string description = 4;
+   * @generated from field: string description = 5;
    */
   description: string;
 
@@ -92,7 +96,7 @@ export type AwsStepFunctionSpec = Message<"org.openmcf.provider.aws.awsstepfunct
    * is disabled (level OFF). Logging is supported for both STANDARD and EXPRESS
    * state machines.
    *
-   * @generated from field: org.openmcf.provider.aws.awsstepfunction.v1.AwsStepFunctionLoggingConfig logging = 5;
+   * @generated from field: org.openmcf.provider.aws.awsstepfunction.v1.AwsStepFunctionLoggingConfig logging = 6;
    */
   logging?: AwsStepFunctionLoggingConfig;
 
@@ -102,7 +106,7 @@ export type AwsStepFunctionSpec = Message<"org.openmcf.provider.aws.awsstepfunct
    * execution role has xray:PutTraceSegments and xray:PutTelemetryRecords
    * permissions.
    *
-   * @generated from field: bool tracing_enabled = 6;
+   * @generated from field: bool tracing_enabled = 7;
    */
   tracingEnabled: boolean;
 
@@ -112,7 +116,7 @@ export type AwsStepFunctionSpec = Message<"org.openmcf.provider.aws.awsstepfunct
    * use a customer-managed KMS key for encrypting state machine data,
    * execution history, and input/output payloads.
    *
-   * @generated from field: org.openmcf.provider.aws.awsstepfunction.v1.AwsStepFunctionEncryptionConfig encryption = 7;
+   * @generated from field: org.openmcf.provider.aws.awsstepfunction.v1.AwsStepFunctionEncryptionConfig encryption = 8;
    */
   encryption?: AwsStepFunctionEncryptionConfig;
 };

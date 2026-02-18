@@ -6,6 +6,7 @@ metadata:
   org: <REPLACE>
   env: <REPLACE>
 spec:
+  region: <aws-region>
   storage_virtual_machine_id:
     value: svm-0123456789abcdef0
   name: vol_compliance

@@ -69,7 +69,7 @@ The AWS AWS S3 Bucket Pulumi Module provides a standardized and efficient way to
 
 - **Public Access Control**: Allows the bucket to be configured as public or private by setting the `isPublic` field in the `spec`, providing control over bucket accessibility.
 
-- **Region Specification**: Enables deployment of the S3 bucket in any valid AWS region by specifying the `awsRegion` field, offering flexibility in geographical placement.
+- **Region Specification**: Enables deployment of the S3 bucket in any valid AWS region by specifying the `region` field, offering flexibility in geographical placement.
 
 - **Credential Management**: Securely handles AWS credentials via the `provider_config` in the stack input, creating an explicit Pulumi AWS provider with the supplied access key, secret key, region, and optional session token.
 

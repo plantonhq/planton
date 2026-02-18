@@ -56,6 +56,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with minimal required fields", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region:    "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{minimalListener()},
 				}
 				err := protovalidate.Validate(spec)
@@ -66,6 +67,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with full production configuration", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region:        "us-west-2",
 					Enabled:       boolPtr(true),
 					IpAddressType: stringPtr("DUAL_STACK"),
 					FlowLogs: &AwsGlobalAcceleratorFlowLogs{
@@ -124,6 +126,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with UDP protocol and SOURCE_IP affinity", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region: "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{
 						{
 							Name:           "gaming-udp",
@@ -151,6 +154,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with BYOIP addresses", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region:      "us-west-2",
 					IpAddresses: []string{"198.51.100.10", "198.51.100.11"},
 					Listeners:   []*AwsGlobalAcceleratorListener{minimalListener()},
 				}
@@ -162,6 +166,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with HTTPS health check and path", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region: "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{
 						{
 							Name:     "web",
@@ -188,6 +193,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with health check interval 10 seconds", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region: "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{
 						{
 							Name:     "fast-health",
@@ -212,6 +218,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with traffic dial at zero (drain region)", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region: "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{
 						{
 							Name:     "web",
@@ -236,6 +243,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with multiple port ranges", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region: "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{
 						{
 							Name:     "multi-port",
@@ -259,6 +267,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with endpoint group using valueFrom reference", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region: "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{
 						{
 							Name:     "web",
@@ -296,6 +305,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with accelerator disabled", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region:    "us-west-2",
 					Enabled:   boolPtr(false),
 					Listeners: []*AwsGlobalAcceleratorListener{minimalListener()},
 				}
@@ -313,6 +323,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with no listeners", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region:    "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{},
 				}
 				err := protovalidate.Validate(spec)
@@ -323,6 +334,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with invalid protocol", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region: "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{
 						{
 							Name:     "bad",
@@ -344,6 +356,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with missing listener name", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region: "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{
 						{
 							Protocol: "TCP",
@@ -364,6 +377,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with missing port ranges", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region: "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{
 						{
 							Name:       "web",
@@ -383,6 +397,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with missing endpoint groups", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region: "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{
 						{
 							Name:     "web",
@@ -402,6 +417,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with invalid ip_address_type", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region:        "us-west-2",
 					IpAddressType: stringPtr("IPV6_ONLY"),
 					Listeners:     []*AwsGlobalAcceleratorListener{minimalListener()},
 				}
@@ -413,6 +429,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with too many BYOIP addresses", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region:      "us-west-2",
 					IpAddresses: []string{"198.51.100.10", "198.51.100.11", "198.51.100.12"},
 					Listeners:   []*AwsGlobalAcceleratorListener{minimalListener()},
 				}
@@ -424,6 +441,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with invalid health check interval (not 10 or 30)", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region: "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{
 						{
 							Name:     "web",
@@ -448,6 +466,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with HTTP health check but no path", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region: "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{
 						{
 							Name:     "web",
@@ -472,6 +491,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with endpoint weight out of range", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region: "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{
 						{
 							Name:     "web",
@@ -498,6 +518,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with port out of range", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region: "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{
 						{
 							Name:     "web",
@@ -519,6 +540,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 		ginkgo.Context("with invalid client affinity", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsGlobalAcceleratorSpec{
+					Region: "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{
 						{
 							Name:           "web",
@@ -548,6 +570,7 @@ var _ = ginkgo.Describe("AwsGlobalAccelerator API envelope validations", func() 
 				ApiVersion: "aws.openmcf.org/v1",
 				Kind:       "AwsGlobalAccelerator",
 				Spec: &AwsGlobalAcceleratorSpec{
+					Region:    "us-west-2",
 					Listeners: []*AwsGlobalAcceleratorListener{minimalListener()},
 				},
 			}

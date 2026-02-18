@@ -13,6 +13,7 @@ metadata:
   env: prod
   id: ec2-high-cpu-prod
 spec:
+  region: us-west-2
   comparisonOperator: GreaterThanThreshold
   evaluationPeriods: 3
   threshold: 80.0
@@ -45,6 +46,7 @@ metadata:
   env: prod
   id: ecs-memory-high-prod
 spec:
+  region: us-west-2
   comparisonOperator: GreaterThanOrEqualToThreshold
   evaluationPeriods: 5
   datapointsToAlarm: 3
@@ -82,6 +84,7 @@ metadata:
   env: prod
   id: alb-5xx-rate-prod
 spec:
+  region: us-west-2
   comparisonOperator: GreaterThanThreshold
   evaluationPeriods: 3
   datapointsToAlarm: 2
@@ -132,6 +135,7 @@ metadata:
   env: prod
   id: orders-queue-depth-prod
 spec:
+  region: us-west-2
   comparisonOperator: GreaterThanOrEqualToThreshold
   evaluationPeriods: 2
   threshold: 1000.0
@@ -172,6 +176,7 @@ metadata:
   env: prod
   id: api-latency-anomaly-prod
 spec:
+  region: us-west-2
   comparisonOperator: LessThanLowerOrGreaterThanUpperThreshold
   evaluationPeriods: 3
   thresholdMetricId: ad1
@@ -215,6 +220,7 @@ metadata:
   env: prod
   id: lambda-errors-hires-prod
 spec:
+  region: us-west-2
   comparisonOperator: GreaterThanThreshold
   evaluationPeriods: 6
   datapointsToAlarm: 4
@@ -248,6 +254,7 @@ metadata:
   env: prod
   id: rds-connections-critical-prod
 spec:
+  region: us-west-2
   comparisonOperator: GreaterThanOrEqualToThreshold
   evaluationPeriods: 5
   datapointsToAlarm: 3

@@ -43,6 +43,9 @@ variable "spec" {
   description = "spec"
   type = object({
 
+    # The AWS region where the resource will be created.
+    region = string
+
     # List of subnet IDs for the DB. DB instance will be created in the VPC associated with the DB subnet group provisioned using the subnet IDs.
     # Specify one of `subnet_ids`, `db_subnet_group_name` or `availability_zone`
     subnet_ids = list(object({

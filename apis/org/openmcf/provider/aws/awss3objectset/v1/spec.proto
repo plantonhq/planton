@@ -11,18 +11,18 @@ import "org/openmcf/shared/options/options.proto";
 // or base64-encoded binary content. It is designed for configuration files, static assets, seed data,
 // and any scenario where objects need to be declaratively managed alongside infrastructure.
 message AwsS3ObjectSetSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // The target S3 bucket where objects will be uploaded.
   // Can be a literal bucket name or a reference to an AwsS3Bucket component.
   // When referencing an AwsS3Bucket, the bucket_id is resolved from status.outputs.bucket_id.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef bucket = 1 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef bucket = 2 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsS3Bucket,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_id"
   ];
-
-  // The AWS region where the S3 bucket is located.
-  // Must match the bucket's region for optimal performance and to avoid cross-region transfer costs.
-  string aws_region = 2 [(buf.validate.field).string.min_len = 1];
 
   // The list of S3 objects to upload to the target bucket.
   // At least one object must be specified.

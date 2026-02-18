@@ -24,6 +24,7 @@ metadata:
   labels:
     openmcf.org/provisioner: pulumi
 spec:
+  region: us-west-2
   subnetMappings:
     - subnetId: subnet-0a1b2c3d4e5f00001
     - subnetId: subnet-0a1b2c3d4e5f00002
@@ -54,6 +55,7 @@ metadata:
   labels:
     openmcf.org/provisioner: pulumi
 spec:
+  region: us-west-2
   subnetMappings:
     - subnetId: subnet-private-az1
     - subnetId: subnet-private-az2
@@ -85,6 +87,7 @@ metadata:
   labels:
     openmcf.org/provisioner: pulumi
 spec:
+  region: us-west-2
   subnetMappings:
     - subnetId: subnet-public-az1
       allocationId: eipalloc-0a1b2c3d4e5f00001
@@ -116,6 +119,7 @@ metadata:
   labels:
     openmcf.org/provisioner: pulumi
 spec:
+  region: us-east-1
   subnetMappings:
     - subnetId: subnet-public-az1
     - subnetId: subnet-public-az2
@@ -148,6 +152,7 @@ metadata:
   labels:
     openmcf.org/provisioner: pulumi
 spec:
+  region: us-west-2
   subnetMappings:
     - subnetId: subnet-public-az1
     - subnetId: subnet-public-az2
@@ -185,6 +190,7 @@ metadata:
   labels:
     openmcf.org/provisioner: pulumi
 spec:
+  region: us-west-2
   subnetMappings:
     - subnetId: subnet-az1
     - subnetId: subnet-az2
@@ -234,6 +240,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsNetworkLoadBalancer.prod-api-nlb
 spec:
+  region: us-west-2
   subnetMappings:
     - subnetId:
         valueFrom:

@@ -30,6 +30,10 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 // Credentials, region, and deployment workflow live outside this spec in stack
 // inputs.
 message AwsCloudwatchAlarmSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ===========================================================================
   // Alarm evaluation
   // ===========================================================================
@@ -46,7 +50,7 @@ message AwsCloudwatchAlarmSpec {
   // - "LessThanLowerOrGreaterThanUpperThreshold"
   // - "LessThanLowerThreshold"
   // - "GreaterThanUpperThreshold"
-  string comparison_operator = 1 [(buf.validate.field).required = true];
+  string comparison_operator = 2 [(buf.validate.field).required = true];
 
   // Number of consecutive periods over which the metric is compared to the
   // threshold. Must be at least 1.
@@ -54,7 +58,7 @@ message AwsCloudwatchAlarmSpec {
   // Combined with `datapoints_to_alarm` this creates an M-of-N evaluation
   // window. For example, evaluation_periods=5 with datapoints_to_alarm=3
   // means "3 out of the last 5 periods must breach to trigger the alarm."
-  int32 evaluation_periods = 2 [(buf.validate.field).int32.gte = 1];
+  int32 evaluation_periods = 3 [(buf.validate.field).int32.gte = 1];
 
   // Number of data points within the evaluation window that must breach the
   // threshold to trigger the alarm. Must be less than or equal to
@@ -63,21 +67,21 @@ message AwsCloudwatchAlarmSpec {
   //
   // Use a value lower than `evaluation_periods` for M-of-N evaluation to
   // reduce false positives caused by transient spikes.
-  int32 datapoints_to_alarm = 3;
+  int32 datapoints_to_alarm = 4;
 
   // Static threshold value. The statistic (or metric math result) is compared
   // against this value using `comparison_operator`.
   //
   // Required for static threshold alarms. Must not be set for anomaly
   // detection alarms (use `threshold_metric_id` instead).
-  double threshold = 4;
+  double threshold = 5;
 
   // For anomaly detection alarms, set this to the ID of the
   // ANOMALY_DETECTION_BAND function defined in `metric_queries`. The anomaly
   // band serves as a dynamic threshold instead of a static `threshold` value.
   //
   // Mutually exclusive with `threshold`.
-  string threshold_metric_id = 5 [(buf.validate.field).string.max_len = 255];
+  string threshold_metric_id = 6 [(buf.validate.field).string.max_len = 255];
 
   // How the alarm treats missing data points during evaluation.
   //
@@ -91,12 +95,12 @@ message AwsCloudwatchAlarmSpec {
   //                     that must always report (e.g., heartbeat checks).
   // - "ignore"       — The current alarm state is maintained regardless of
   //                     missing data.
-  string treat_missing_data = 6;
+  string treat_missing_data = 7;
 
   // Whether actions execute during alarm state transitions. Defaults to true
   // in the IaC module when not set. Set to false to suppress actions during
   // maintenance windows or alarm tuning.
-  bool actions_enabled = 7;
+  bool actions_enabled = 8;
 
   // ===========================================================================
   // Simple metric mode (mutually exclusive with metric_queries)
@@ -109,13 +113,13 @@ message AwsCloudwatchAlarmSpec {
   // `extended_statistic` must also be set.
   //
   // Mutually exclusive with `metric_queries`.
-  string metric_name = 8 [(buf.validate.field).string.max_len = 255];
+  string metric_name = 9 [(buf.validate.field).string.max_len = 255];
 
   // Namespace of the metric (e.g., "AWS/EC2", "AWS/ECS", "AWS/SQS",
   // "AWS/ApplicationELB"). Custom namespaces are also supported.
   //
   // Required when `metric_name` is set. Must not start with a colon.
-  string namespace = 9 [(buf.validate.field).string.max_len = 255];
+  string namespace = 10 [(buf.validate.field).string.max_len = 255];
 
   // Period in seconds over which the statistic is applied. Defines the
   // granularity of the alarm evaluation.
@@ -125,7 +129,7 @@ message AwsCloudwatchAlarmSpec {
   // Standard-resolution metrics require multiples of 60.
   //
   // Required when `metric_name` is set.
-  int32 period = 10;
+  int32 period = 11;
 
   // Standard statistic to apply to the metric.
   //
@@ -133,7 +137,7 @@ message AwsCloudwatchAlarmSpec {
   //
   // Mutually exclusive with `extended_statistic`. Exactly one must be set
   // when using simple metric mode.
-  string statistic = 11;
+  string statistic = 12;
 
   // Percentile or extended statistic to apply to the metric. Used for
   // percentile-based alarms (e.g., p95 latency, p99 error rate).
@@ -142,7 +146,7 @@ message AwsCloudwatchAlarmSpec {
   //
   // Mutually exclusive with `statistic`. Exactly one must be set when
   // using simple metric mode.
-  string extended_statistic = 12;
+  string extended_statistic = 13;
 
   // Dimensions that identify the specific metric stream to alarm on.
   // Dimensions narrow the metric to a specific resource or subset.
@@ -151,12 +155,12 @@ message AwsCloudwatchAlarmSpec {
   // Example for ECS service: {"ClusterName": "prod", "ServiceName": "api"}
   //
   // Mutually exclusive with `metric_queries`.
-  map<string, string> dimensions = 13;
+  map<string, string> dimensions = 14;
 
   // Unit for the metric. When specified, only data points with a matching unit
   // are used for evaluation. Most alarms omit this and use the metric's
   // published unit.
-  string unit = 14;
+  string unit = 15;
 
   // ===========================================================================
   // Metric query mode (mutually exclusive with simple metric fields)
@@ -173,7 +177,7 @@ message AwsCloudwatchAlarmSpec {
   //
   // Mutually exclusive with simple metric fields (`metric_name`,
   // `namespace`, `period`, `statistic`, `extended_statistic`, `dimensions`).
-  repeated AwsCloudwatchAlarmMetricQuery metric_queries = 15;
+  repeated AwsCloudwatchAlarmMetricQuery metric_queries = 16;
 
   // ===========================================================================
   // Actions
@@ -184,21 +188,21 @@ message AwsCloudwatchAlarmSpec {
   // policy, EC2 automation action, Lambda function, or SSM OpsItem.
   //
   // Maximum 5 actions.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef alarm_actions = 16 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef alarm_actions = 17 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSnsTopic,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.topic_arn"
   ];
 
   // Actions to execute when the alarm transitions to OK state.
   // Maximum 5 actions.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef ok_actions = 17 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef ok_actions = 18 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSnsTopic,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.topic_arn"
   ];
 
   // Actions to execute when the alarm transitions to INSUFFICIENT_DATA state.
   // Maximum 5 actions.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef insufficient_data_actions = 18 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef insufficient_data_actions = 19 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSnsTopic,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.topic_arn"
   ];
@@ -210,7 +214,7 @@ message AwsCloudwatchAlarmSpec {
   // Human-readable description of the alarm's purpose. Include details about
   // what the alarm monitors, expected thresholds, and remediation steps.
   // Maximum 1024 characters.
-  string alarm_description = 19 [(buf.validate.field).string.max_len = 1024];
+  string alarm_description = 20 [(buf.validate.field).string.max_len = 1024];
 
   // ===========================================================================
   // Percentile handling
@@ -225,7 +229,7 @@ message AwsCloudwatchAlarmSpec {
   //
   // Only meaningful when using percentile statistics (extended_statistic or
   // a percentile stat in metric_queries).
-  string evaluate_low_sample_count_percentiles = 20;
+  string evaluate_low_sample_count_percentiles = 21;
 
   // ===========================================================================
   // CEL validations

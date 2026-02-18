@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awssecuritygroup/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awssecuritygroup_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjdvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzc2VjdXJpdHlncm91cC92MS9zcGVjLnByb3RvEixvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzc2VjdXJpdHlncm91cC52MSKcAwoUQXdzU2VjdXJpdHlHcm91cFNwZWMSaAoGdnBjX2lkGAEgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIkukgDyAEBiNRh2AGS1GEVc3RhdHVzLm91dHB1dHMudnBjX2lkEncKC2Rlc2NyaXB0aW9uGAIgASgJQmK6SF+6AVkKGGRlc2NyaXB0aW9uX2xlbmd0aF9jaGVjaxIqRGVzY3JpcHRpb24gbXVzdCBub3QgZXhjZWVkIDI1NSBjaGFyYWN0ZXJzGhFzaXplKHRoaXMpIDw9IDI1NcgBARJQCgdpbmdyZXNzGAMgAygLMj8ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3NlY3VyaXR5Z3JvdXAudjEuU2VjdXJpdHlHcm91cFJ1bGUSTwoGZWdyZXNzGAQgAygLMj8ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3NlY3VyaXR5Z3JvdXAudjEuU2VjdXJpdHlHcm91cFJ1bGUinAQKEVNlY3VyaXR5R3JvdXBSdWxlEhgKCHByb3RvY29sGAEgASgJQga6SAPIAQESEQoJZnJvbV9wb3J0GAIgASgFEg8KB3RvX3BvcnQYAyABKAUSEgoKaXB2NF9jaWRycxgEIAMoCRISCgppcHY2X2NpZHJzGAUgAygJEoABChlzb3VyY2Vfc2VjdXJpdHlfZ3JvdXBfaWRzGAYgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIpiNRh1wGS1GEgc3RhdHVzLm91dHB1dHMuc2VjdXJpdHlfZ3JvdXBfaWQShQEKHmRlc3RpbmF0aW9uX3NlY3VyaXR5X2dyb3VwX2lkcxgHIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEhYKDnNlbGZfcmVmZXJlbmNlGAggASgIEn4KC2Rlc2NyaXB0aW9uGAkgASgJQmm6SGa6AWMKHXJ1bGVfZGVzY3JpcHRpb25fbGVuZ3RoX2NoZWNrEi9SdWxlIGRlc2NyaXB0aW9uIG11c3Qgbm90IGV4Y2VlZCAyNTUgY2hhcmFjdGVycxoRc2l6ZSh0aGlzKSA8PSAyNTVC9wIKMGNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzc2VjdXJpdHlncm91cC52MUIJU3BlY1Byb3RvUAFaYWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzc2VjdXJpdHlncm91cC92MTthd3NzZWN1cml0eWdyb3VwdjGiAgVPT1BBQaoCLE9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NzZWN1cml0eWdyb3VwLlYxygIsT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c3NlY3VyaXR5Z3JvdXBcVjHiAjhPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzc2VjdXJpdHlncm91cFxWMVxHUEJNZXRhZGF0YeoCMU9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzc2VjdXJpdHlncm91cDo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
+  fileDesc("Cjdvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzc2VjdXJpdHlncm91cC92MS9zcGVjLnByb3RvEixvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzc2VjdXJpdHlncm91cC52MSK1AwoUQXdzU2VjdXJpdHlHcm91cFNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEmgKBnZwY19pZBgCIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCJLpIA8gBAYjUYdgBktRhFXN0YXR1cy5vdXRwdXRzLnZwY19pZBJ3CgtkZXNjcmlwdGlvbhgDIAEoCUJiukhfugFZChhkZXNjcmlwdGlvbl9sZW5ndGhfY2hlY2sSKkRlc2NyaXB0aW9uIG11c3Qgbm90IGV4Y2VlZCAyNTUgY2hhcmFjdGVycxoRc2l6ZSh0aGlzKSA8PSAyNTXIAQESUAoHaW5ncmVzcxgEIAMoCzI/Lm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NzZWN1cml0eWdyb3VwLnYxLlNlY3VyaXR5R3JvdXBSdWxlEk8KBmVncmVzcxgFIAMoCzI/Lm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NzZWN1cml0eWdyb3VwLnYxLlNlY3VyaXR5R3JvdXBSdWxlIpwEChFTZWN1cml0eUdyb3VwUnVsZRIYCghwcm90b2NvbBgBIAEoCUIGukgDyAEBEhEKCWZyb21fcG9ydBgCIAEoBRIPCgd0b19wb3J0GAMgASgFEhIKCmlwdjRfY2lkcnMYBCADKAkSEgoKaXB2Nl9jaWRycxgFIAMoCRKAAQoZc291cmNlX3NlY3VyaXR5X2dyb3VwX2lkcxgGIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEoUBCh5kZXN0aW5hdGlvbl9zZWN1cml0eV9ncm91cF9pZHMYByADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQimI1GHXAZLUYSBzdGF0dXMub3V0cHV0cy5zZWN1cml0eV9ncm91cF9pZBIWCg5zZWxmX3JlZmVyZW5jZRgIIAEoCBJ+CgtkZXNjcmlwdGlvbhgJIAEoCUJpukhmugFjCh1ydWxlX2Rlc2NyaXB0aW9uX2xlbmd0aF9jaGVjaxIvUnVsZSBkZXNjcmlwdGlvbiBtdXN0IG5vdCBleGNlZWQgMjU1IGNoYXJhY3RlcnMaEXNpemUodGhpcykgPD0gMjU1QvcCCjBjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3NlY3VyaXR5Z3JvdXAudjFCCVNwZWNQcm90b1ABWmFnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c3NlY3VyaXR5Z3JvdXAvdjE7YXdzc2VjdXJpdHlncm91cHYxogIFT09QQUGqAixPcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzc2VjdXJpdHlncm91cC5WMcoCLE9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NzZWN1cml0eWdyb3VwXFYx4gI4T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c3NlY3VyaXR5Z3JvdXBcVjFcR1BCTWV0YWRhdGHqAjFPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c3NlY3VyaXR5Z3JvdXA6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
 
 /**
  * AwsSecurityGroupSpec defines the primary configuration for creating an AWS EC2 Security Group in a specified VPC.
@@ -22,11 +22,19 @@ export const file_org_openmcf_provider_aws_awssecuritygroup_v1_spec: GenFile = /
  */
 export type AwsSecurityGroupSpec = Message<"org.openmcf.provider.aws.awssecuritygroup.v1.AwsSecurityGroupSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * vpc_id is the ID of the VPC where this Security Group will be created.
    * Example: "vpc-12345abcde"
    * This field is required because every Security Group must belong to one VPC.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 1;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 2;
    */
   vpcId?: StringValueOrRef;
 
@@ -35,7 +43,7 @@ export type AwsSecurityGroupSpec = Message<"org.openmcf.provider.aws.awssecurity
    * This field is required by AWS and cannot be modified once created without a replacement.
    * Example: "Allows inbound HTTP and SSH for web tier"
    *
-   * @generated from field: string description = 2;
+   * @generated from field: string description = 3;
    */
   description: string;
 
@@ -43,7 +51,7 @@ export type AwsSecurityGroupSpec = Message<"org.openmcf.provider.aws.awssecurity
    * ingress_rules define the inbound traffic rules for this Security Group.
    * If empty, inbound traffic is fully restricted (deny all).
    *
-   * @generated from field: repeated org.openmcf.provider.aws.awssecuritygroup.v1.SecurityGroupRule ingress = 3;
+   * @generated from field: repeated org.openmcf.provider.aws.awssecuritygroup.v1.SecurityGroupRule ingress = 4;
    */
   ingress: SecurityGroupRule[];
 
@@ -51,7 +59,7 @@ export type AwsSecurityGroupSpec = Message<"org.openmcf.provider.aws.awssecurity
    * egress_rules define the outbound traffic rules for this Security Group.
    * If empty, AWS defaults to allow all outbound traffic unless configured otherwise.
    *
-   * @generated from field: repeated org.openmcf.provider.aws.awssecuritygroup.v1.SecurityGroupRule egress = 4;
+   * @generated from field: repeated org.openmcf.provider.aws.awssecuritygroup.v1.SecurityGroupRule egress = 5;
    */
   egress: SecurityGroupRule[];
 };

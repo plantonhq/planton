@@ -29,27 +29,30 @@ const (
 // that can be path-based or hostname-based.
 type AwsEcsServiceSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// cluster_arn is the ARN of the ECS cluster where this service will run.
 	// This must already exist (created by a separate EcsCluster resource or otherwise).
 	// Example: "arn:aws:ecs:us-east-1:123456789012:cluster/my-mixed-cluster"
-	ClusterArn *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=cluster_arn,json=clusterArn,proto3" json:"cluster_arn,omitempty"`
+	ClusterArn *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=cluster_arn,json=clusterArn,proto3" json:"cluster_arn,omitempty"`
 	// AWS ECS Service container configuration.
-	Container *AwsEcsServiceContainer `protobuf:"bytes,2,opt,name=container,proto3" json:"container,omitempty"`
+	Container *AwsEcsServiceContainer `protobuf:"bytes,3,opt,name=container,proto3" json:"container,omitempty"`
 	// ECS service network configuration.
-	Network *AwsEcsServiceNetwork `protobuf:"bytes,3,opt,name=network,proto3" json:"network,omitempty"`
+	Network *AwsEcsServiceNetwork `protobuf:"bytes,4,opt,name=network,proto3" json:"network,omitempty"`
 	// IAM configuration for the ECS service.
-	Iam *AwsEcsServiceIam `protobuf:"bytes,4,opt,name=iam,proto3" json:"iam,omitempty"`
+	Iam *AwsEcsServiceIam `protobuf:"bytes,5,opt,name=iam,proto3" json:"iam,omitempty"`
 	// alb defines how an ALB fronts traffic to this ECS service, supporting path- or hostname-based routing.
-	Alb *AwsEcsServiceAlb `protobuf:"bytes,5,opt,name=alb,proto3" json:"alb,omitempty"`
+	Alb *AwsEcsServiceAlb `protobuf:"bytes,6,opt,name=alb,proto3" json:"alb,omitempty"`
 	// health_check_grace_period_seconds is the number of seconds ECS will ignore ALB health check failures
 	// during container startup. This prevents a race condition where the ALB marks a task unhealthy
 	// before the application has finished booting. Recommended: 60-120 seconds for typical apps.
 	// Only valid when alb.enabled = true.
-	HealthCheckGracePeriodSeconds *int32 `protobuf:"varint,6,opt,name=health_check_grace_period_seconds,json=healthCheckGracePeriodSeconds,proto3,oneof" json:"health_check_grace_period_seconds,omitempty"`
+	HealthCheckGracePeriodSeconds *int32 `protobuf:"varint,7,opt,name=health_check_grace_period_seconds,json=healthCheckGracePeriodSeconds,proto3,oneof" json:"health_check_grace_period_seconds,omitempty"`
 	// autoscaling configuration for the ECS service using target tracking.
 	// When enabled, AWS Application Auto Scaling automatically adjusts the desired task count
 	// based on CPU or memory utilization.
-	Autoscaling   *AwsEcsServiceAutoscaling `protobuf:"bytes,7,opt,name=autoscaling,proto3" json:"autoscaling,omitempty"`
+	Autoscaling   *AwsEcsServiceAutoscaling `protobuf:"bytes,8,opt,name=autoscaling,proto3" json:"autoscaling,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -82,6 +85,13 @@ func (x *AwsEcsServiceSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsEcsServiceSpec.ProtoReflect.Descriptor instead.
 func (*AwsEcsServiceSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsecsservice_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsEcsServiceSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsEcsServiceSpec) GetClusterArn() *v1.StringValueOrRef {
@@ -834,16 +844,17 @@ var File_org_openmcf_provider_aws_awsecsservice_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_aws_awsecsservice_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/aws/awsecsservice/v1/spec.proto\x12)org.openmcf.provider.aws.awsecsservice.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xe1\x05\n" +
-	"\x11AwsEcsServiceSpec\x12~\n" +
-	"\vcluster_arn\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x03\xc8\x01\x01\x88\xd4a\xcd\x01\x92\xd4a\x1astatus.outputs.cluster_arnR\n" +
+	"4org/openmcf/provider/aws/awsecsservice/v1/spec.proto\x12)org.openmcf.provider.aws.awsecsservice.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x82\x06\n" +
+	"\x11AwsEcsServiceSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12~\n" +
+	"\vcluster_arn\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x03\xc8\x01\x01\x88\xd4a\xcd\x01\x92\xd4a\x1astatus.outputs.cluster_arnR\n" +
 	"clusterArn\x12g\n" +
-	"\tcontainer\x18\x02 \x01(\v2A.org.openmcf.provider.aws.awsecsservice.v1.AwsEcsServiceContainerB\x06\xbaH\x03\xc8\x01\x01R\tcontainer\x12a\n" +
-	"\anetwork\x18\x03 \x01(\v2?.org.openmcf.provider.aws.awsecsservice.v1.AwsEcsServiceNetworkB\x06\xbaH\x03\xc8\x01\x01R\anetwork\x12M\n" +
-	"\x03iam\x18\x04 \x01(\v2;.org.openmcf.provider.aws.awsecsservice.v1.AwsEcsServiceIamR\x03iam\x12M\n" +
-	"\x03alb\x18\x05 \x01(\v2;.org.openmcf.provider.aws.awsecsservice.v1.AwsEcsServiceAlbR\x03alb\x12U\n" +
-	"!health_check_grace_period_seconds\x18\x06 \x01(\x05B\x06\x8a\xa6\x1d\x0260H\x00R\x1dhealthCheckGracePeriodSeconds\x88\x01\x01\x12e\n" +
-	"\vautoscaling\x18\a \x01(\v2C.org.openmcf.provider.aws.awsecsservice.v1.AwsEcsServiceAutoscalingR\vautoscalingB$\n" +
+	"\tcontainer\x18\x03 \x01(\v2A.org.openmcf.provider.aws.awsecsservice.v1.AwsEcsServiceContainerB\x06\xbaH\x03\xc8\x01\x01R\tcontainer\x12a\n" +
+	"\anetwork\x18\x04 \x01(\v2?.org.openmcf.provider.aws.awsecsservice.v1.AwsEcsServiceNetworkB\x06\xbaH\x03\xc8\x01\x01R\anetwork\x12M\n" +
+	"\x03iam\x18\x05 \x01(\v2;.org.openmcf.provider.aws.awsecsservice.v1.AwsEcsServiceIamR\x03iam\x12M\n" +
+	"\x03alb\x18\x06 \x01(\v2;.org.openmcf.provider.aws.awsecsservice.v1.AwsEcsServiceAlbR\x03alb\x12U\n" +
+	"!health_check_grace_period_seconds\x18\a \x01(\x05B\x06\x8a\xa6\x1d\x0260H\x00R\x1dhealthCheckGracePeriodSeconds\x88\x01\x01\x12e\n" +
+	"\vautoscaling\x18\b \x01(\v2C.org.openmcf.provider.aws.awsecsservice.v1.AwsEcsServiceAutoscalingR\vautoscalingB$\n" +
 	"\"_health_check_grace_period_seconds\"\xa3\x03\n" +
 	"\x16AwsEcsServiceContainer\x12\\\n" +
 	"\x05image\x18\x01 \x01(\v2F.org.openmcf.provider.aws.awsecsservice.v1.AwsEcsServiceContainerImageR\x05image\x12V\n" +

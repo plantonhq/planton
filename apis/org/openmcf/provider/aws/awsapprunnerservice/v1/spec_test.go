@@ -49,6 +49,7 @@ func validEnvelope(spec *AwsAppRunnerServiceSpec) *AwsAppRunnerService {
 
 func minimalImageSpec() *AwsAppRunnerServiceSpec {
 	return &AwsAppRunnerServiceSpec{
+		Region: "us-west-2",
 		ImageSource: &AwsAppRunnerServiceImageSource{
 			ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 			ImageRepositoryType: "ECR_PUBLIC",
@@ -71,6 +72,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept image source with private ECR and access_role_arn", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:v1.0",
 					ImageRepositoryType: "ECR",
@@ -83,6 +85,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept image source with custom port, start_command, and env vars", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -100,6 +103,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept image source with environment secrets", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -115,6 +119,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept code source with API configuration", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				CodeSource: &AwsAppRunnerServiceCodeSource{
 					RepositoryUrl:       "https://github.com/my-org/my-app",
 					Branch:              "main",
@@ -131,6 +136,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept code source with REPOSITORY configuration", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				CodeSource: &AwsAppRunnerServiceCodeSource{
 					RepositoryUrl:       "https://github.com/my-org/my-app",
 					Branch:              "production",
@@ -145,6 +151,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept full production spec with image source + VPC + KMS + auto scaling + health check", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod-app:v2.1",
 					ImageRepositoryType: "ECR",
@@ -194,6 +201,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept VPC egress with inline subnet_ids and security_group_ids", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -213,6 +221,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept VPC egress with vpc_connector_arn only", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -225,6 +234,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept auto scaling with custom values", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -241,6 +251,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept health check with HTTP protocol", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -258,6 +269,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept health check with TCP protocol (default)", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -274,6 +286,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept observability enabled with configuration ARN", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -287,6 +300,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept DUAL_STACK ip address type", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -299,6 +313,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept auto_deployments_enabled set to false", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -311,6 +326,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept human-readable CPU format '1 vCPU'", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -323,6 +339,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept human-readable memory format '2 GB'", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -335,6 +352,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept StringValueOrRef with valueFrom references", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest",
 					ImageRepositoryType: "ECR",
@@ -389,6 +407,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should accept is_publicly_accessible set to false", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -413,6 +432,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when both image_source and code_source are set", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -430,6 +450,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when image_repository_type is invalid", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "DOCKER_HUB",
@@ -441,6 +462,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when ECR is used without access_role_arn", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest",
 					ImageRepositoryType: "ECR",
@@ -452,6 +474,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when code source is missing connection_arn", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				CodeSource: &AwsAppRunnerServiceCodeSource{
 					RepositoryUrl:       "https://github.com/my-org/my-app",
 					Branch:              "main",
@@ -464,6 +487,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when configuration_source is invalid", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				CodeSource: &AwsAppRunnerServiceCodeSource{
 					RepositoryUrl:       "https://github.com/my-org/my-app",
 					Branch:              "main",
@@ -477,6 +501,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when API configuration is used without runtime", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				CodeSource: &AwsAppRunnerServiceCodeSource{
 					RepositoryUrl:       "https://github.com/my-org/my-app",
 					Branch:              "main",
@@ -491,6 +516,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when CPU value is invalid", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -503,6 +529,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when memory value is invalid", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -515,6 +542,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when health check protocol is invalid", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -529,6 +557,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when health check interval_seconds is 0 (below range)", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -543,6 +572,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when health check interval_seconds is 21 (above range)", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -557,6 +587,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when health check timeout_seconds is out of range", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -571,6 +602,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when auto scaling min_size > max_size", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -586,6 +618,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when auto scaling max_concurrency is 0 (below range)", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -600,6 +633,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when auto scaling max_concurrency is 201 (above range)", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -614,6 +648,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when ip_address_type is invalid", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -626,6 +661,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when both vpc_connector_arn and subnet_ids are provided", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -641,6 +677,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when observability_enabled is true without configuration ARN", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -653,6 +690,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when image_identifier is empty", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -664,6 +702,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when image_repository_type is empty", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "",
@@ -675,6 +714,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when auto scaling min_size is 0 (below range)", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -689,6 +729,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when auto scaling max_size is 26 (above range)", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				ImageSource: &AwsAppRunnerServiceImageSource{
 					ImageIdentifier:     "public.ecr.aws/nginx/nginx:latest",
 					ImageRepositoryType: "ECR_PUBLIC",
@@ -703,6 +744,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when code source repository_url is empty", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				CodeSource: &AwsAppRunnerServiceCodeSource{
 					RepositoryUrl:       "",
 					Branch:              "main",
@@ -716,6 +758,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 
 		ginkgo.It("should fail when code source branch is empty", func() {
 			input := validEnvelope(&AwsAppRunnerServiceSpec{
+				Region: "us-west-2",
 				CodeSource: &AwsAppRunnerServiceCodeSource{
 					RepositoryUrl:       "https://github.com/my-org/my-app",
 					Branch:              "",

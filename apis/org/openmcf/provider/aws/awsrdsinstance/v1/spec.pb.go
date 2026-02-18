@@ -29,38 +29,41 @@ const (
 // omitted in this rule; a later rule will add them.
 type AwsRdsInstanceSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Subnets for the DB subnet group. Provide at least two private subnets for high availability.
 	// Alternatively, provide an existing DB subnet group name via db_subnet_group_name.
-	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,1,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
+	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,2,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// Name of an existing DB subnet group to use instead of specifying subnet_ids.
-	DbSubnetGroupName *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=db_subnet_group_name,json=dbSubnetGroupName,proto3" json:"db_subnet_group_name,omitempty"`
+	DbSubnetGroupName *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=db_subnet_group_name,json=dbSubnetGroupName,proto3" json:"db_subnet_group_name,omitempty"`
 	// Security groups to associate with the instance's network interface.
-	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,3,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
+	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,4,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
 	// Database engine (e.g., "postgres", "mysql", "mariadb", "oracle-se2", "sqlserver-ex").
-	Engine string `protobuf:"bytes,4,opt,name=engine,proto3" json:"engine,omitempty"`
+	Engine string `protobuf:"bytes,5,opt,name=engine,proto3" json:"engine,omitempty"`
 	// Desired engine version (e.g., "14.10" for Postgres, or a version string appropriate to the engine).
-	EngineVersion string `protobuf:"bytes,5,opt,name=engine_version,json=engineVersion,proto3" json:"engine_version,omitempty"`
+	EngineVersion string `protobuf:"bytes,6,opt,name=engine_version,json=engineVersion,proto3" json:"engine_version,omitempty"`
 	// Instance class (size), e.g., "db.t3.micro", "db.m6g.large".
-	InstanceClass string `protobuf:"bytes,6,opt,name=instance_class,json=instanceClass,proto3" json:"instance_class,omitempty"`
+	InstanceClass string `protobuf:"bytes,7,opt,name=instance_class,json=instanceClass,proto3" json:"instance_class,omitempty"`
 	// Allocated storage size in GiB for the primary storage.
-	AllocatedStorageGb int32 `protobuf:"varint,7,opt,name=allocated_storage_gb,json=allocatedStorageGb,proto3" json:"allocated_storage_gb,omitempty"`
+	AllocatedStorageGb int32 `protobuf:"varint,8,opt,name=allocated_storage_gb,json=allocatedStorageGb,proto3" json:"allocated_storage_gb,omitempty"`
 	// Enable storage encryption for the instance.
-	StorageEncrypted bool `protobuf:"varint,8,opt,name=storage_encrypted,json=storageEncrypted,proto3" json:"storage_encrypted,omitempty"`
+	StorageEncrypted bool `protobuf:"varint,9,opt,name=storage_encrypted,json=storageEncrypted,proto3" json:"storage_encrypted,omitempty"`
 	// Customer-managed KMS key ARN/alias for storage encryption when enabled.
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,10,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// Master user credentials. When using platform-managed secrets, a later rule will define validations.
-	Username string `protobuf:"bytes,10,opt,name=username,proto3" json:"username,omitempty"`
-	Password string `protobuf:"bytes,11,opt,name=password,proto3" json:"password,omitempty"`
+	Username string `protobuf:"bytes,11,opt,name=username,proto3" json:"username,omitempty"`
+	Password string `protobuf:"bytes,12,opt,name=password,proto3" json:"password,omitempty"`
 	// Database port.
-	Port int32 `protobuf:"varint,12,opt,name=port,proto3" json:"port,omitempty"`
+	Port int32 `protobuf:"varint,13,opt,name=port,proto3" json:"port,omitempty"`
 	// Whether the instance has a public IP address.
-	PubliclyAccessible bool `protobuf:"varint,13,opt,name=publicly_accessible,json=publiclyAccessible,proto3" json:"publicly_accessible,omitempty"`
+	PubliclyAccessible bool `protobuf:"varint,14,opt,name=publicly_accessible,json=publiclyAccessible,proto3" json:"publicly_accessible,omitempty"`
 	// Whether to deploy the instance in Multi-AZ mode.
-	MultiAz bool `protobuf:"varint,14,opt,name=multi_az,json=multiAz,proto3" json:"multi_az,omitempty"`
+	MultiAz bool `protobuf:"varint,15,opt,name=multi_az,json=multiAz,proto3" json:"multi_az,omitempty"`
 	// Optional parameter group name to associate with the instance.
-	ParameterGroupName string `protobuf:"bytes,15,opt,name=parameter_group_name,json=parameterGroupName,proto3" json:"parameter_group_name,omitempty"`
+	ParameterGroupName string `protobuf:"bytes,16,opt,name=parameter_group_name,json=parameterGroupName,proto3" json:"parameter_group_name,omitempty"`
 	// Optional option group name to associate with the instance (for certain engines).
-	OptionGroupName string `protobuf:"bytes,16,opt,name=option_group_name,json=optionGroupName,proto3" json:"option_group_name,omitempty"`
+	OptionGroupName string `protobuf:"bytes,17,opt,name=option_group_name,json=optionGroupName,proto3" json:"option_group_name,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -93,6 +96,13 @@ func (x *AwsRdsInstanceSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsRdsInstanceSpec.ProtoReflect.Descriptor instead.
 func (*AwsRdsInstanceSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsrdsinstance_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsRdsInstanceSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsRdsInstanceSpec) GetSubnetIds() []*v1.StringValueOrRef {
@@ -211,27 +221,28 @@ var File_org_openmcf_provider_aws_awsrdsinstance_v1_spec_proto protoreflect.File
 
 const file_org_openmcf_provider_aws_awsrdsinstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"5org/openmcf/provider/aws/awsrdsinstance/v1/spec.proto\x12*org.openmcf.provider.aws.awsrdsinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x99\t\n" +
-	"\x12AwsRdsInstanceSpec\x12\x81\x01\n" +
+	"5org/openmcf/provider/aws/awsrdsinstance/v1/spec.proto\x12*org.openmcf.provider.aws.awsrdsinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xba\t\n" +
+	"\x12AwsRdsInstanceSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x81\x01\n" +
 	"\n" +
-	"subnet_ids\x18\x01 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12c\n" +
-	"\x14db_subnet_group_name\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x11dbSubnetGroupName\x12\x8b\x01\n" +
-	"\x12security_group_ids\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12\x1f\n" +
-	"\x06engine\x18\x04 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06engine\x12.\n" +
-	"\x0eengine_version\x18\x05 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\rengineVersion\x125\n" +
-	"\x0einstance_class\x18\x06 \x01(\tB\x0e\xbaH\vr\t\x10\x012\x05^db\\.R\rinstanceClass\x129\n" +
-	"\x14allocated_storage_gb\x18\a \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x12allocatedStorageGb\x12+\n" +
-	"\x11storage_encrypted\x18\b \x01(\bR\x10storageEncrypted\x12q\n" +
+	"subnet_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12c\n" +
+	"\x14db_subnet_group_name\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x11dbSubnetGroupName\x12\x8b\x01\n" +
+	"\x12security_group_ids\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12\x1f\n" +
+	"\x06engine\x18\x05 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06engine\x12.\n" +
+	"\x0eengine_version\x18\x06 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\rengineVersion\x125\n" +
+	"\x0einstance_class\x18\a \x01(\tB\x0e\xbaH\vr\t\x10\x012\x05^db\\.R\rinstanceClass\x129\n" +
+	"\x14allocated_storage_gb\x18\b \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x12allocatedStorageGb\x12+\n" +
+	"\x11storage_encrypted\x18\t \x01(\bR\x10storageEncrypted\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\t \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12#\n" +
-	"\busername\x18\n" +
-	" \x01(\tB\a\xbaH\x04r\x02\x10\x01R\busername\x12#\n" +
-	"\bpassword\x18\v \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bpassword\x12\x1f\n" +
-	"\x04port\x18\f \x01(\x05B\v\xbaH\b\x1a\x06\x18\xff\xff\x03(\x00R\x04port\x12/\n" +
-	"\x13publicly_accessible\x18\r \x01(\bR\x12publiclyAccessible\x12\x19\n" +
-	"\bmulti_az\x18\x0e \x01(\bR\amultiAz\x120\n" +
-	"\x14parameter_group_name\x18\x0f \x01(\tR\x12parameterGroupName\x12*\n" +
-	"\x11option_group_name\x18\x10 \x01(\tR\x0foptionGroupName:\x93\x01\xbaH\x8f\x01\x1a\x8c\x01\n" +
+	"kms_key_id\x18\n" +
+	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12#\n" +
+	"\busername\x18\v \x01(\tB\a\xbaH\x04r\x02\x10\x01R\busername\x12#\n" +
+	"\bpassword\x18\f \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bpassword\x12\x1f\n" +
+	"\x04port\x18\r \x01(\x05B\v\xbaH\b\x1a\x06\x18\xff\xff\x03(\x00R\x04port\x12/\n" +
+	"\x13publicly_accessible\x18\x0e \x01(\bR\x12publiclyAccessible\x12\x19\n" +
+	"\bmulti_az\x18\x0f \x01(\bR\amultiAz\x120\n" +
+	"\x14parameter_group_name\x18\x10 \x01(\tR\x12parameterGroupName\x12*\n" +
+	"\x11option_group_name\x18\x11 \x01(\tR\x0foptionGroupName:\x93\x01\xbaH\x8f\x01\x1a\x8c\x01\n" +
 	"\x10subnets_or_group\x127Provide either subnet_ids (>=2) or db_subnet_group_name\x1a?(this.subnet_ids.size() >= 2) || has(this.db_subnet_group_name)B\xe9\x02\n" +
 	".com.org.openmcf.provider.aws.awsrdsinstance.v1B\tSpecProtoP\x01Z]github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsrdsinstance/v1;awsrdsinstancev1\xa2\x02\x05OOPAA\xaa\x02*Org.Openmcf.Provider.Aws.Awsrdsinstance.V1\xca\x02*Org\\Openmcf\\Provider\\Aws\\Awsrdsinstance\\V1\xe2\x026Org\\Openmcf\\Provider\\Aws\\Awsrdsinstance\\V1\\GPBMetadata\xea\x02/Org::Openmcf::Provider::Aws::Awsrdsinstance::V1b\x06proto3"
 

@@ -16,6 +16,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     openmcf.org/stack: dev.AwsCognitoUserPool.my-auth
 spec:
+  region: us-east-1
   usernameAttributes:
     - email
   autoVerifiedAttributes:
@@ -43,6 +44,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     openmcf.org/stack: staging.AwsCognitoUserPool.webapp-auth
 spec:
+  region: us-east-1
   usernameAttributes:
     - email
   passwordPolicy:
@@ -97,6 +99,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     openmcf.org/stack: prod.AwsCognitoUserPool.prod-auth
 spec:
+  region: us-east-1
   usernameAttributes:
     - email
   passwordPolicy:
@@ -235,6 +238,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     openmcf.org/stack: prod.AwsCognitoUserPool.saas-auth
 spec:
+  region: us-east-1
   usernameAttributes:
     - email
   passwordPolicy:
@@ -303,6 +307,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     openmcf.org/stack: prod.AwsCognitoUserPool.branded-auth
 spec:
+  region: us-east-1
   usernameAttributes:
     - email
   autoVerifiedAttributes:
@@ -346,6 +351,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     openmcf.org/stack: dev.AwsCognitoUserPool.alias-auth
 spec:
+  region: us-east-1
   aliasAttributes:
     - email
     - preferred_username

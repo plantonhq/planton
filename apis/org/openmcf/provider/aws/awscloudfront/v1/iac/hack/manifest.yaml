@@ -3,6 +3,7 @@ kind: AwsCloudFront
 metadata:
   name: awscloudfront-demo
 spec:
+  region: us-west-2
   enabled: true
   priceClass: PRICE_CLASS_100
   origins:

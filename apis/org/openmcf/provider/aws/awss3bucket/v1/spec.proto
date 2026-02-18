@@ -125,11 +125,9 @@ message AwsS3BucketSpec {
     repeated CorsRule cors_rules = 1;
   }
 
-  // The AWS region where the S3 bucket will be created.
-  // This must be a valid AWS region where S3 is available.
-  // Specifying the region is important because it affects data latency and costs.
-  // For a list of AWS regions, see: https://aws.amazon.com/about-aws/global-infrastructure/regions_az/
-  string aws_region = 1 [(buf.validate.field).string.min_len = 1];
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
 
   // Flag to indicate if the S3 bucket should have external (public) access.
   // When set to `true`, the bucket will be publicly accessible over the internet.

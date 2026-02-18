@@ -45,14 +45,17 @@ const (
 //     stack inputs.
 type AwsEventBridgeRuleSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Name of the event bus to attach this rule to. Defaults to "default" (the
 	// built-in AWS event bus) when not specified. Can reference an
 	// AwsEventBridgeBus resource via `valueFrom`.
 	//
 	// Changing this field forces rule replacement (delete + recreate).
-	EventBusName *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=event_bus_name,json=eventBusName,proto3" json:"event_bus_name,omitempty"`
+	EventBusName *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=event_bus_name,json=eventBusName,proto3" json:"event_bus_name,omitempty"`
 	// Human-readable description of the rule. Maximum 512 characters.
-	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 	// JSON event pattern that this rule matches against. Events that match the
 	// pattern are routed to the rule's targets. Expressed as a structured object
 	// in YAML — the IaC module serializes it to JSON.
@@ -65,7 +68,7 @@ type AwsEventBridgeRuleSpec struct {
 	//	detail-type: ["EC2 Instance State-change Notification"]
 	//	detail:
 	//	  state: ["running", "stopped"]
-	EventPattern *structpb.Struct `protobuf:"bytes,3,opt,name=event_pattern,json=eventPattern,proto3" json:"event_pattern,omitempty"`
+	EventPattern *structpb.Struct `protobuf:"bytes,4,opt,name=event_pattern,json=eventPattern,proto3" json:"event_pattern,omitempty"`
 	// Schedule expression for time-based rule triggering. Supports cron and rate
 	// expressions.
 	//
@@ -77,18 +80,18 @@ type AwsEventBridgeRuleSpec struct {
 	//	"rate(1 hour)"           — fire every hour
 	//	"cron(0 12 * * ? *)"     — fire at noon UTC every day
 	//	"cron(0/15 * * * ? *)"   — fire every 15 minutes
-	ScheduleExpression string `protobuf:"bytes,4,opt,name=schedule_expression,json=scheduleExpression,proto3" json:"schedule_expression,omitempty"`
+	ScheduleExpression string `protobuf:"bytes,5,opt,name=schedule_expression,json=scheduleExpression,proto3" json:"schedule_expression,omitempty"`
 	// Rule state. Controls whether the rule is actively matching events.
 	// Valid values: "ENABLED", "DISABLED". Defaults to "ENABLED" in the IaC
 	// module when not set.
-	State string `protobuf:"bytes,5,opt,name=state,proto3" json:"state,omitempty"`
+	State string `protobuf:"bytes,6,opt,name=state,proto3" json:"state,omitempty"`
 	// Targets to invoke when the rule matches an event. At least one target is
 	// required. Each target specifies a destination (Lambda, SQS, SNS, Step
 	// Functions, etc.) and optional input transformation, retry policy, and
 	// dead letter queue configuration.
 	//
 	// AWS limits: maximum 5 targets per rule.
-	Targets       []*AwsEventBridgeTarget `protobuf:"bytes,6,rep,name=targets,proto3" json:"targets,omitempty"`
+	Targets       []*AwsEventBridgeTarget `protobuf:"bytes,7,rep,name=targets,proto3" json:"targets,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -121,6 +124,13 @@ func (x *AwsEventBridgeRuleSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsEventBridgeRuleSpec.ProtoReflect.Descriptor instead.
 func (*AwsEventBridgeRuleSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awseventbridgerule_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsEventBridgeRuleSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsEventBridgeRuleSpec) GetEventBusName() *v1.StringValueOrRef {
@@ -550,14 +560,15 @@ var File_org_openmcf_provider_aws_awseventbridgerule_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_aws_awseventbridgerule_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/aws/awseventbridgerule/v1/spec.proto\x12.org.openmcf.provider.aws.awseventbridgerule.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xea\x06\n" +
-	"\x16AwsEventBridgeRuleSpec\x12z\n" +
-	"\x0eevent_bus_name\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xe3\x01\x92\xd4a\x17status.outputs.bus_nameR\feventBusName\x12*\n" +
-	"\vdescription\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x04R\vdescription\x12<\n" +
-	"\revent_pattern\x18\x03 \x01(\v2\x17.google.protobuf.StructR\feventPattern\x129\n" +
-	"\x13schedule_expression\x18\x04 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x02R\x12scheduleExpression\x12\x14\n" +
-	"\x05state\x18\x05 \x01(\tR\x05state\x12^\n" +
-	"\atargets\x18\x06 \x03(\v2D.org.openmcf.provider.aws.awseventbridgerule.v1.AwsEventBridgeTargetR\atargets:\xb8\x03\xbaH\xb4\x03\x1a\xe2\x01\n" +
+	"9org/openmcf/provider/aws/awseventbridgerule/v1/spec.proto\x12.org.openmcf.provider.aws.awseventbridgerule.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x8b\a\n" +
+	"\x16AwsEventBridgeRuleSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12z\n" +
+	"\x0eevent_bus_name\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xe3\x01\x92\xd4a\x17status.outputs.bus_nameR\feventBusName\x12*\n" +
+	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x04R\vdescription\x12<\n" +
+	"\revent_pattern\x18\x04 \x01(\v2\x17.google.protobuf.StructR\feventPattern\x129\n" +
+	"\x13schedule_expression\x18\x05 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x02R\x12scheduleExpression\x12\x14\n" +
+	"\x05state\x18\x06 \x01(\tR\x05state\x12^\n" +
+	"\atargets\x18\a \x03(\v2D.org.openmcf.provider.aws.awseventbridgerule.v1.AwsEventBridgeTargetR\atargets:\xb8\x03\xbaH\xb4\x03\x1a\xe2\x01\n" +
 	"\"event_pattern_or_schedule_required\x12?exactly one of event_pattern or schedule_expression must be set\x1a{(has(this.event_pattern) && this.schedule_expression == '') || (!has(this.event_pattern) && this.schedule_expression != '')\x1a\x7f\n" +
 	"\x12state_valid_values\x12.state must be 'ENABLED' or 'DISABLED' when set\x1a9this.state == '' || this.state in ['ENABLED', 'DISABLED']\x1aL\n" +
 	"\x11targets_not_empty\x12\x1fat least one target is required\x1a\x16size(this.targets) > 0\"\x82\b\n" +

@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsneptunecluster/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsneptunecluster_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjhvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzbmVwdHVuZWNsdXN0ZXIvdjEvc3BlYy5wcm90bxItb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c25lcHR1bmVjbHVzdGVyLnYxIscWChVBd3NOZXB0dW5lQ2x1c3RlclNwZWMSdgoKc3VibmV0X2lkcxgBIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCLojUYdgBktRhJXN0YXR1cy5vdXRwdXRzLnByaXZhdGVfc3VibmV0cy5bKl0uaWQSVQoZbmVwdHVuZV9zdWJuZXRfZ3JvdXBfbmFtZRgCIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWYSeQoSc2VjdXJpdHlfZ3JvdXBfaWRzGAMgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIpiNRh1wGS1GEgc3RhdHVzLm91dHB1dHMuc2VjdXJpdHlfZ3JvdXBfaWQSjgEKE2FsbG93ZWRfY2lkcl9ibG9ja3MYBCADKAlCcbpIbpIBaxgBImdyZTJjXig/OjI1WzAtNV18MlswLTRdXGR8WzAtMV0/XGQ/XGQpKD86XC4oPzoyNVswLTVdfDJbMC00XVxkfFswLTFdP1xkP1xkKSl7M30vKD86WzAtOV18WzEyXVxkfDNbMC0yXSkkEmIKBnZwY19pZBgFIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCHojUYdgBktRhFXN0YXR1cy5vdXRwdXRzLnZwY19pZBIvCg5lbmdpbmVfdmVyc2lvbhgGIAEoCUISukgEcgIQAYqmHQcxLjMuMC4wSACIAQESJgoEcG9ydBgHIAEoBUITukgIGgYY//8DKAGKph0EODE4MkgBiAEBEi8KDHN0b3JhZ2VfdHlwZRgIIAEoCUIZukgW2AEBchFSCHN0YW5kYXJkUgVpb3B0MRIpCg5pbnN0YW5jZV9jb3VudBgJIAEoBUIMukgEGgIoAYqmHQExSAKIAQESNAoOaW5zdGFuY2VfY2xhc3MYCiABKAlCF7pIBHICEAGKph0MZGIucjZnLmxhcmdlSAOIAQESfwoVc2VydmVybGVzc192Ml9zY2FsaW5nGAsgASgLMmAub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c25lcHR1bmVjbHVzdGVyLnYxLkF3c05lcHR1bmVDbHVzdGVyU2VydmVybGVzc1YyU2NhbGluZ0NvbmZpZ3VyYXRpb24SKAoRc3RvcmFnZV9lbmNyeXB0ZWQYDCABKAhCCIqmHQR0cnVlSASIAQESZwoKa21zX2tleV9pZBgNIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SKwojaWFtX2RhdGFiYXNlX2F1dGhlbnRpY2F0aW9uX2VuYWJsZWQYDiABKAgSZwoJaWFtX3JvbGVzGA8gAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIgiNRh0AGS1GEXc3RhdHVzLm91dHB1dHMucm9sZV9hcm4SNAoXYmFja3VwX3JldGVudGlvbl9wZXJpb2QYECABKAVCDrpIBhoEGCMoAYqmHQE3SAWIAQESaAoXcHJlZmVycmVkX2JhY2t1cF93aW5kb3cYESABKAlCR7pIRNgBAXI/Mj1eKFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0tKFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0kEqsBChxwcmVmZXJyZWRfbWFpbnRlbmFuY2Vfd2luZG93GBIgASgJQoQBukiAAdgBAXJ7MnleKG1vbnx0dWV8d2VkfHRodXxmcml8c2F0fHN1bik6KFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0tKG1vbnx0dWV8d2VkfHRodXxmcml8c2F0fHN1bik6KFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0kEhsKE2RlbGV0aW9uX3Byb3RlY3Rpb24YEyABKAgSKwoTc2tpcF9maW5hbF9zbmFwc2hvdBgUIAEoCEIJiqYdBWZhbHNlSAaIAQESLQoZZmluYWxfc25hcHNob3RfaWRlbnRpZmllchgVIAEoCUIKukgH2AEBcgIQARIxCh9lbmFibGVkX2Nsb3Vkd2F0Y2hfbG9nc19leHBvcnRzGBYgAygJQgi6SAWSAQIYARIZChFhcHBseV9pbW1lZGlhdGVseRgXIAEoCBIdChVjb3B5X3RhZ3NfdG9fc25hcHNob3QYGCABKAgSIwobYWxsb3dfbWFqb3JfdmVyc2lvbl91cGdyYWRlGBkgASgIEiQKHGNsdXN0ZXJfcGFyYW1ldGVyX2dyb3VwX25hbWUYGiABKAkSZQoSY2x1c3Rlcl9wYXJhbWV0ZXJzGBsgAygLMkkub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c25lcHR1bmVjbHVzdGVyLnYxLkF3c05lcHR1bmVDbHVzdGVyUGFyYW1ldGVyOucFukjjBRqWAQoQc3VibmV0c19vcl9ncm91cBI8UHJvdmlkZSBlaXRoZXIgc3VibmV0X2lkcyAoPj0yKSBvciBuZXB0dW5lX3N1Ym5ldF9ncm91cF9uYW1lGkQodGhpcy5zdWJuZXRfaWRzLnNpemUoKSA+PSAyKSB8fCBoYXModGhpcy5uZXB0dW5lX3N1Ym5ldF9ncm91cF9uYW1lKRq/AQosZmluYWxfc25hcHNob3RfaWRfcmVxdWlyZWRfd2hlbl9ub3Rfc2tpcHBpbmcSR2ZpbmFsX3NuYXBzaG90X2lkZW50aWZpZXIgbXVzdCBiZSBzZXQgd2hlbiBza2lwX2ZpbmFsX3NuYXBzaG90IGlzIGZhbHNlGkZ0aGlzLnNraXBfZmluYWxfc25hcHNob3QgPyB0cnVlIDogdGhpcy5maW5hbF9zbmFwc2hvdF9pZGVudGlmaWVyICE9ICIiGrwBChlsb2dzX2V4cG9ydHNfdmFsaWRfdmFsdWVzElBlbmFibGVkX2Nsb3Vkd2F0Y2hfbG9nc19leHBvcnRzIG11c3QgY29udGFpbiBvbmx5IHZhbGlkIHZhbHVlczogYXVkaXQsIHNsb3dxdWVyeRpNdGhpcy5lbmFibGVkX2Nsb3Vkd2F0Y2hfbG9nc19leHBvcnRzLmFsbCh4LCB4ID09ICJhdWRpdCIgfHwgeCA9PSAic2xvd3F1ZXJ5IikaxgEKJ3NlcnZlcmxlc3NfcmVxdWlyZXNfZGJfc2VydmVybGVzc19jbGFzcxJPaW5zdGFuY2VfY2xhc3MgbXVzdCBiZSAnZGIuc2VydmVybGVzcycgd2hlbiBzZXJ2ZXJsZXNzX3YyX3NjYWxpbmcgaXMgY29uZmlndXJlZBpKIWhhcyh0aGlzLnNlcnZlcmxlc3NfdjJfc2NhbGluZykgfHwgdGhpcy5pbnN0YW5jZV9jbGFzcyA9PSAiZGIuc2VydmVybGVzcyJCEQoPX2VuZ2luZV92ZXJzaW9uQgcKBV9wb3J0QhEKD19pbnN0YW5jZV9jb3VudEIRCg9faW5zdGFuY2VfY2xhc3NCFAoSX3N0b3JhZ2VfZW5jcnlwdGVkQhoKGF9iYWNrdXBfcmV0ZW50aW9uX3BlcmlvZEIWChRfc2tpcF9maW5hbF9zbmFwc2hvdCKGAQoaQXdzTmVwdHVuZUNsdXN0ZXJQYXJhbWV0ZXISFQoEbmFtZRgBIAEoCUIHukgEcgIQARIWCgV2YWx1ZRgCIAEoCUIHukgEcgIQARI5CgxhcHBseV9tZXRob2QYAyABKAlCI7pIINgBAXIbUglpbW1lZGlhdGVSDnBlbmRpbmctcmVib290IvIBCjFBd3NOZXB0dW5lQ2x1c3RlclNlcnZlcmxlc3NWMlNjYWxpbmdDb25maWd1cmF0aW9uEiQKDG1pbl9jYXBhY2l0eRgBIAEoAUIOukgLEgkpAAAAAAAA8D8SJAoMbWF4X2NhcGFjaXR5GAIgASgBQg66SAsSCRkAAAAAAABgQDpxukhuGmwKHHNlcnZlcmxlc3NfdjJfc2NhbGluZ19ib3VuZHMSJG1heF9jYXBhY2l0eSBtdXN0IGJlID49IG1pbl9jYXBhY2l0eRomdGhpcy5tYXhfY2FwYWNpdHkgPj0gdGhpcy5taW5fY2FwYWNpdHlC/gIKMWNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzbmVwdHVuZWNsdXN0ZXIudjFCCVNwZWNQcm90b1ABWmNnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c25lcHR1bmVjbHVzdGVyL3YxO2F3c25lcHR1bmVjbHVzdGVydjGiAgVPT1BBQaoCLU9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NuZXB0dW5lY2x1c3Rlci5WMcoCLU9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NuZXB0dW5lY2x1c3RlclxWMeICOU9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NuZXB0dW5lY2x1c3RlclxWMVxHUEJNZXRhZGF0YeoCMk9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzbmVwdHVuZWNsdXN0ZXI6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("Cjhvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzbmVwdHVuZWNsdXN0ZXIvdjEvc3BlYy5wcm90bxItb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c25lcHR1bmVjbHVzdGVyLnYxIuAWChVBd3NOZXB0dW5lQ2x1c3RlclNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEnYKCnN1Ym5ldF9pZHMYAiADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQi6I1GHYAZLUYSVzdGF0dXMub3V0cHV0cy5wcml2YXRlX3N1Ym5ldHMuWypdLmlkElUKGW5lcHR1bmVfc3VibmV0X2dyb3VwX25hbWUYAyABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmEnkKEnNlY3VyaXR5X2dyb3VwX2lkcxgEIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEo4BChNhbGxvd2VkX2NpZHJfYmxvY2tzGAUgAygJQnG6SG6SAWsYASJncmUyY14oPzoyNVswLTVdfDJbMC00XVxkfFswLTFdP1xkP1xkKSg/OlwuKD86MjVbMC01XXwyWzAtNF1cZHxbMC0xXT9cZD9cZCkpezN9Lyg/OlswLTldfFsxMl1cZHwzWzAtMl0pJBJiCgZ2cGNfaWQYBiABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQh6I1GHYAZLUYRVzdGF0dXMub3V0cHV0cy52cGNfaWQSLwoOZW5naW5lX3ZlcnNpb24YByABKAlCErpIBHICEAGKph0HMS4zLjAuMEgAiAEBEiYKBHBvcnQYCCABKAVCE7pICBoGGP//AygBiqYdBDgxODJIAYgBARIvCgxzdG9yYWdlX3R5cGUYCSABKAlCGbpIFtgBAXIRUghzdGFuZGFyZFIFaW9wdDESKQoOaW5zdGFuY2VfY291bnQYCiABKAVCDLpIBBoCKAGKph0BMUgCiAEBEjQKDmluc3RhbmNlX2NsYXNzGAsgASgJQhe6SARyAhABiqYdDGRiLnI2Zy5sYXJnZUgDiAEBEn8KFXNlcnZlcmxlc3NfdjJfc2NhbGluZxgMIAEoCzJgLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NuZXB0dW5lY2x1c3Rlci52MS5Bd3NOZXB0dW5lQ2x1c3RlclNlcnZlcmxlc3NWMlNjYWxpbmdDb25maWd1cmF0aW9uEigKEXN0b3JhZ2VfZW5jcnlwdGVkGA0gASgIQgiKph0EdHJ1ZUgEiAEBEmcKCmttc19rZXlfaWQYDiABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQh+I1GHbAZLUYRZzdGF0dXMub3V0cHV0cy5rZXlfYXJuEisKI2lhbV9kYXRhYmFzZV9hdXRoZW50aWNhdGlvbl9lbmFibGVkGA8gASgIEmcKCWlhbV9yb2xlcxgQIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCIIjUYdABktRhF3N0YXR1cy5vdXRwdXRzLnJvbGVfYXJuEjQKF2JhY2t1cF9yZXRlbnRpb25fcGVyaW9kGBEgASgFQg66SAYaBBgjKAGKph0BN0gFiAEBEmgKF3ByZWZlcnJlZF9iYWNrdXBfd2luZG93GBIgASgJQke6SETYAQFyPzI9XihbMDFdWzAtOV18MlswLTNdKTpbMC01XVswLTldLShbMDFdWzAtOV18MlswLTNdKTpbMC01XVswLTldJBKrAQoccHJlZmVycmVkX21haW50ZW5hbmNlX3dpbmRvdxgTIAEoCUKEAbpIgAHYAQFyezJ5Xihtb258dHVlfHdlZHx0aHV8ZnJpfHNhdHxzdW4pOihbMDFdWzAtOV18MlswLTNdKTpbMC01XVswLTldLShtb258dHVlfHdlZHx0aHV8ZnJpfHNhdHxzdW4pOihbMDFdWzAtOV18MlswLTNdKTpbMC01XVswLTldJBIbChNkZWxldGlvbl9wcm90ZWN0aW9uGBQgASgIEisKE3NraXBfZmluYWxfc25hcHNob3QYFSABKAhCCYqmHQVmYWxzZUgGiAEBEi0KGWZpbmFsX3NuYXBzaG90X2lkZW50aWZpZXIYFiABKAlCCrpIB9gBAXICEAESMQofZW5hYmxlZF9jbG91ZHdhdGNoX2xvZ3NfZXhwb3J0cxgXIAMoCUIIukgFkgECGAESGQoRYXBwbHlfaW1tZWRpYXRlbHkYGCABKAgSHQoVY29weV90YWdzX3RvX3NuYXBzaG90GBkgASgIEiMKG2FsbG93X21ham9yX3ZlcnNpb25fdXBncmFkZRgaIAEoCBIkChxjbHVzdGVyX3BhcmFtZXRlcl9ncm91cF9uYW1lGBsgASgJEmUKEmNsdXN0ZXJfcGFyYW1ldGVycxgcIAMoCzJJLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NuZXB0dW5lY2x1c3Rlci52MS5Bd3NOZXB0dW5lQ2x1c3RlclBhcmFtZXRlcjrnBbpI4wUalgEKEHN1Ym5ldHNfb3JfZ3JvdXASPFByb3ZpZGUgZWl0aGVyIHN1Ym5ldF9pZHMgKD49Mikgb3IgbmVwdHVuZV9zdWJuZXRfZ3JvdXBfbmFtZRpEKHRoaXMuc3VibmV0X2lkcy5zaXplKCkgPj0gMikgfHwgaGFzKHRoaXMubmVwdHVuZV9zdWJuZXRfZ3JvdXBfbmFtZSkavwEKLGZpbmFsX3NuYXBzaG90X2lkX3JlcXVpcmVkX3doZW5fbm90X3NraXBwaW5nEkdmaW5hbF9zbmFwc2hvdF9pZGVudGlmaWVyIG11c3QgYmUgc2V0IHdoZW4gc2tpcF9maW5hbF9zbmFwc2hvdCBpcyBmYWxzZRpGdGhpcy5za2lwX2ZpbmFsX3NuYXBzaG90ID8gdHJ1ZSA6IHRoaXMuZmluYWxfc25hcHNob3RfaWRlbnRpZmllciAhPSAiIhq8AQoZbG9nc19leHBvcnRzX3ZhbGlkX3ZhbHVlcxJQZW5hYmxlZF9jbG91ZHdhdGNoX2xvZ3NfZXhwb3J0cyBtdXN0IGNvbnRhaW4gb25seSB2YWxpZCB2YWx1ZXM6IGF1ZGl0LCBzbG93cXVlcnkaTXRoaXMuZW5hYmxlZF9jbG91ZHdhdGNoX2xvZ3NfZXhwb3J0cy5hbGwoeCwgeCA9PSAiYXVkaXQiIHx8IHggPT0gInNsb3dxdWVyeSIpGsYBCidzZXJ2ZXJsZXNzX3JlcXVpcmVzX2RiX3NlcnZlcmxlc3NfY2xhc3MST2luc3RhbmNlX2NsYXNzIG11c3QgYmUgJ2RiLnNlcnZlcmxlc3MnIHdoZW4gc2VydmVybGVzc192Ml9zY2FsaW5nIGlzIGNvbmZpZ3VyZWQaSiFoYXModGhpcy5zZXJ2ZXJsZXNzX3YyX3NjYWxpbmcpIHx8IHRoaXMuaW5zdGFuY2VfY2xhc3MgPT0gImRiLnNlcnZlcmxlc3MiQhEKD19lbmdpbmVfdmVyc2lvbkIHCgVfcG9ydEIRCg9faW5zdGFuY2VfY291bnRCEQoPX2luc3RhbmNlX2NsYXNzQhQKEl9zdG9yYWdlX2VuY3J5cHRlZEIaChhfYmFja3VwX3JldGVudGlvbl9wZXJpb2RCFgoUX3NraXBfZmluYWxfc25hcHNob3QihgEKGkF3c05lcHR1bmVDbHVzdGVyUGFyYW1ldGVyEhUKBG5hbWUYASABKAlCB7pIBHICEAESFgoFdmFsdWUYAiABKAlCB7pIBHICEAESOQoMYXBwbHlfbWV0aG9kGAMgASgJQiO6SCDYAQFyG1IJaW1tZWRpYXRlUg5wZW5kaW5nLXJlYm9vdCLyAQoxQXdzTmVwdHVuZUNsdXN0ZXJTZXJ2ZXJsZXNzVjJTY2FsaW5nQ29uZmlndXJhdGlvbhIkCgxtaW5fY2FwYWNpdHkYASABKAFCDrpICxIJKQAAAAAAAPA/EiQKDG1heF9jYXBhY2l0eRgCIAEoAUIOukgLEgkZAAAAAAAAYEA6cbpIbhpsChxzZXJ2ZXJsZXNzX3YyX3NjYWxpbmdfYm91bmRzEiRtYXhfY2FwYWNpdHkgbXVzdCBiZSA+PSBtaW5fY2FwYWNpdHkaJnRoaXMubWF4X2NhcGFjaXR5ID49IHRoaXMubWluX2NhcGFjaXR5Qv4CCjFjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c25lcHR1bmVjbHVzdGVyLnYxQglTcGVjUHJvdG9QAVpjZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NuZXB0dW5lY2x1c3Rlci92MTthd3NuZXB0dW5lY2x1c3RlcnYxogIFT09QQUGqAi1PcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzbmVwdHVuZWNsdXN0ZXIuVjHKAi1PcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzbmVwdHVuZWNsdXN0ZXJcVjHiAjlPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzbmVwdHVuZWNsdXN0ZXJcVjFcR1BCTWV0YWRhdGHqAjJPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c25lcHR1bmVjbHVzdGVyOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsNeptuneClusterSpec defines the specification for deploying an Amazon Neptune
@@ -29,10 +29,18 @@ export const file_org_openmcf_provider_aws_awsneptunecluster_v1_spec: GenFile = 
  */
 export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptunecluster.v1.AwsNeptuneClusterSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * subnet_ids is the list of subnet IDs for the Neptune subnet group.
    * Provide at least two subnets in distinct Availability Zones for high availability.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 1;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 2;
    */
   subnetIds: StringValueOrRef[];
 
@@ -40,7 +48,7 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * neptune_subnet_group_name is an optional name of an existing Neptune subnet group
    * to use instead of creating one from subnet_ids.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef neptune_subnet_group_name = 2;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef neptune_subnet_group_name = 3;
    */
   neptuneSubnetGroupName?: StringValueOrRef;
 
@@ -48,7 +56,7 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * security_group_ids are the VPC security groups to associate with the cluster.
    * Ingress rules are created on a managed security group for these source SGs.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 3;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 4;
    */
   securityGroupIds: StringValueOrRef[];
 
@@ -56,7 +64,7 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * allowed_cidr_blocks are IPv4 CIDRs to allow ingress to the cluster security group
    * on the Neptune port.
    *
-   * @generated from field: repeated string allowed_cidr_blocks = 4;
+   * @generated from field: repeated string allowed_cidr_blocks = 5;
    */
   allowedCidrBlocks: string[];
 
@@ -64,7 +72,7 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * vpc_id is the VPC where the cluster will be deployed. Required when creating
    * a managed security group via security_group_ids or allowed_cidr_blocks.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 5;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 6;
    */
   vpcId?: StringValueOrRef;
 
@@ -72,14 +80,14 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * engine_version is the Neptune engine version to deploy.
    * Examples: "1.2.1.0", "1.3.0.0", "1.3.1.0"
    *
-   * @generated from field: optional string engine_version = 6;
+   * @generated from field: optional string engine_version = 7;
    */
   engineVersion?: string;
 
   /**
    * port is the TCP port on which the cluster accepts connections.
    *
-   * @generated from field: optional int32 port = 7;
+   * @generated from field: optional int32 port = 8;
    */
   port?: number;
 
@@ -88,7 +96,7 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * "standard" is the default; "iopt1" enables I/O-Optimized storage for
    * read-heavy workloads with higher throughput and predictable pricing.
    *
-   * @generated from field: string storage_type = 8;
+   * @generated from field: string storage_type = 9;
    */
   storageType: string;
 
@@ -96,7 +104,7 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * instance_count is the number of instances to create in the cluster.
    * The first instance is the primary writer; additional instances are read replicas.
    *
-   * @generated from field: optional int32 instance_count = 9;
+   * @generated from field: optional int32 instance_count = 10;
    */
   instanceCount?: number;
 
@@ -105,7 +113,7 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * Examples: "db.r6g.large", "db.r6g.xlarge", "db.r5.large"
    * Use "db.serverless" for Neptune Serverless (requires serverless_v2_scaling).
    *
-   * @generated from field: optional string instance_class = 10;
+   * @generated from field: optional string instance_class = 11;
    */
   instanceClass?: string;
 
@@ -114,14 +122,14 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * When set, instance_class should be "db.serverless".
    * Neptune Capacity Units (NCUs): min 1.0, max 128.0.
    *
-   * @generated from field: org.openmcf.provider.aws.awsneptunecluster.v1.AwsNeptuneClusterServerlessV2ScalingConfiguration serverless_v2_scaling = 11;
+   * @generated from field: org.openmcf.provider.aws.awsneptunecluster.v1.AwsNeptuneClusterServerlessV2ScalingConfiguration serverless_v2_scaling = 12;
    */
   serverlessV2Scaling?: AwsNeptuneClusterServerlessV2ScalingConfiguration;
 
   /**
    * storage_encrypted indicates whether to encrypt the cluster storage at rest.
    *
-   * @generated from field: optional bool storage_encrypted = 12;
+   * @generated from field: optional bool storage_encrypted = 13;
    */
   storageEncrypted?: boolean;
 
@@ -129,7 +137,7 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * kms_key_id is the ARN of the KMS key for storage encryption.
    * When storage_encrypted is true and this is not set, the AWS-managed key is used.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 13;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 14;
    */
   kmsKeyId?: StringValueOrRef;
 
@@ -137,7 +145,7 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * iam_database_authentication_enabled enables IAM database authentication,
    * allowing IAM users and roles to authenticate to Neptune using temporary credentials.
    *
-   * @generated from field: bool iam_database_authentication_enabled = 14;
+   * @generated from field: bool iam_database_authentication_enabled = 15;
    */
   iamDatabaseAuthenticationEnabled: boolean;
 
@@ -145,14 +153,14 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * iam_roles is a list of IAM role ARNs to associate with the Neptune cluster.
    * These roles allow Neptune to access other AWS services (e.g., S3 for bulk data loading).
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef iam_roles = 15;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef iam_roles = 16;
    */
   iamRoles: StringValueOrRef[];
 
   /**
    * backup_retention_period is the number of days to retain automated backups (1-35).
    *
-   * @generated from field: optional int32 backup_retention_period = 16;
+   * @generated from field: optional int32 backup_retention_period = 17;
    */
   backupRetentionPeriod?: number;
 
@@ -160,7 +168,7 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * preferred_backup_window is the daily time range for automated backups in UTC.
    * Format: "hh24:mi-hh24:mi" (e.g., "03:00-04:00").
    *
-   * @generated from field: string preferred_backup_window = 17;
+   * @generated from field: string preferred_backup_window = 18;
    */
   preferredBackupWindow: string;
 
@@ -168,21 +176,21 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * preferred_maintenance_window is the weekly time range for maintenance in UTC.
    * Format: "ddd:hh24:mi-ddd:hh24:mi" (e.g., "sun:05:00-sun:06:00").
    *
-   * @generated from field: string preferred_maintenance_window = 18;
+   * @generated from field: string preferred_maintenance_window = 19;
    */
   preferredMaintenanceWindow: string;
 
   /**
    * deletion_protection prevents accidental cluster deletion when enabled.
    *
-   * @generated from field: bool deletion_protection = 19;
+   * @generated from field: bool deletion_protection = 20;
    */
   deletionProtection: boolean;
 
   /**
    * skip_final_snapshot controls whether a final snapshot is created on deletion.
    *
-   * @generated from field: optional bool skip_final_snapshot = 20;
+   * @generated from field: optional bool skip_final_snapshot = 21;
    */
   skipFinalSnapshot?: boolean;
 
@@ -190,7 +198,7 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * final_snapshot_identifier is the identifier for the final snapshot when
    * skip_final_snapshot is false.
    *
-   * @generated from field: string final_snapshot_identifier = 21;
+   * @generated from field: string final_snapshot_identifier = 22;
    */
   finalSnapshotIdentifier: string;
 
@@ -198,7 +206,7 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * enabled_cloudwatch_logs_exports lists log types to export to CloudWatch Logs.
    * Valid values for Neptune: "audit", "slowquery"
    *
-   * @generated from field: repeated string enabled_cloudwatch_logs_exports = 22;
+   * @generated from field: repeated string enabled_cloudwatch_logs_exports = 23;
    */
   enabledCloudwatchLogsExports: string[];
 
@@ -206,14 +214,14 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * apply_immediately specifies whether modifications are applied immediately
    * or during the next maintenance window.
    *
-   * @generated from field: bool apply_immediately = 23;
+   * @generated from field: bool apply_immediately = 24;
    */
   applyImmediately: boolean;
 
   /**
    * copy_tags_to_snapshot copies cluster tags to snapshots when enabled.
    *
-   * @generated from field: bool copy_tags_to_snapshot = 24;
+   * @generated from field: bool copy_tags_to_snapshot = 25;
    */
   copyTagsToSnapshot: boolean;
 
@@ -221,7 +229,7 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * allow_major_version_upgrade allows major engine version upgrades when applying
    * changes. Required when updating engine_version to a new major version.
    *
-   * @generated from field: bool allow_major_version_upgrade = 25;
+   * @generated from field: bool allow_major_version_upgrade = 26;
    */
   allowMajorVersionUpgrade: boolean;
 
@@ -229,7 +237,7 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * cluster_parameter_group_name is the name of an existing Neptune cluster
    * parameter group to use.
    *
-   * @generated from field: string cluster_parameter_group_name = 26;
+   * @generated from field: string cluster_parameter_group_name = 27;
    */
   clusterParameterGroupName: string;
 
@@ -238,7 +246,7 @@ export type AwsNeptuneClusterSpec = Message<"org.openmcf.provider.aws.awsneptune
    * When provided (and cluster_parameter_group_name is not set), a new parameter
    * group is created with these parameters.
    *
-   * @generated from field: repeated org.openmcf.provider.aws.awsneptunecluster.v1.AwsNeptuneClusterParameter cluster_parameters = 27;
+   * @generated from field: repeated org.openmcf.provider.aws.awsneptunecluster.v1.AwsNeptuneClusterParameter cluster_parameters = 28;
    */
   clusterParameters: AwsNeptuneClusterParameter[];
 };

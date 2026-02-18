@@ -10,6 +10,7 @@ kind: AwsCodeBuildProject
 metadata:
   name: my-app-ci
 spec:
+  region: us-west-2
   source:
     type: GITHUB
     location: https://github.com/my-org/my-app.git
@@ -41,6 +42,7 @@ kind: AwsCodeBuildProject
 metadata:
   name: docker-builder
 spec:
+  region: us-west-2
   source:
     type: GITHUB
     location: https://github.com/my-org/my-service.git
@@ -90,6 +92,7 @@ kind: AwsCodeBuildProject
 metadata:
   name: pipeline-build
 spec:
+  region: us-west-2
   source:
     type: CODEPIPELINE
     buildspec: buildspec.yml
@@ -121,6 +124,7 @@ kind: AwsCodeBuildProject
 metadata:
   name: integration-tests
 spec:
+  region: us-west-2
   source:
     type: GITHUB
     location: https://github.com/my-org/backend-api.git
@@ -180,6 +184,7 @@ kind: AwsCodeBuildProject
 metadata:
   name: connected-build
 spec:
+  region: us-west-2
   source:
     type: GITHUB
     location: https://github.com/my-org/my-app.git

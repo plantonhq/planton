@@ -50,14 +50,17 @@ const (
 //   - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 type AwsElasticFileSystemSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Enable encryption at rest for all data and metadata stored in the file system.
 	// ForceNew — cannot be added after creation. Production environments should
 	// always enable encryption.
-	Encrypted bool `protobuf:"varint,1,opt,name=encrypted,proto3" json:"encrypted,omitempty"`
+	Encrypted bool `protobuf:"varint,2,opt,name=encrypted,proto3" json:"encrypted,omitempty"`
 	// Customer-managed KMS key for encryption at rest. When omitted, EFS uses the
 	// AWS-managed key `aws/elasticfilesystem`. ForceNew — the KMS key cannot be
 	// changed after creation. Requires `encrypted` to be true.
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// File system performance mode. ForceNew — cannot be changed after creation.
 	//
 	//   - "generalPurpose" (default): lowest latency, suitable for most workloads.
@@ -65,7 +68,7 @@ type AwsElasticFileSystemSpec struct {
 	//   - "maxIO": higher aggregate throughput for highly parallelized workloads
 	//     (thousands of EC2 instances). Slightly higher per-operation latency.
 	//     Note: AWS recommends generalPurpose + elastic throughput as a replacement.
-	PerformanceMode string `protobuf:"bytes,3,opt,name=performance_mode,json=performanceMode,proto3" json:"performance_mode,omitempty"`
+	PerformanceMode string `protobuf:"bytes,4,opt,name=performance_mode,json=performanceMode,proto3" json:"performance_mode,omitempty"`
 	// Throughput mode controlling how EFS delivers read/write bandwidth.
 	//
 	//   - "bursting" (default): throughput scales with file system size. 50 MiB/s
@@ -75,10 +78,10 @@ type AwsElasticFileSystemSpec struct {
 	//   - "elastic": automatically scales throughput up/down based on workload.
 	//     Recommended for unpredictable or spiky access patterns. Requires
 	//     generalPurpose performance mode.
-	ThroughputMode string `protobuf:"bytes,4,opt,name=throughput_mode,json=throughputMode,proto3" json:"throughput_mode,omitempty"`
+	ThroughputMode string `protobuf:"bytes,5,opt,name=throughput_mode,json=throughputMode,proto3" json:"throughput_mode,omitempty"`
 	// Provisioned throughput in MiB/s. Only applicable when `throughput_mode` is
 	// "provisioned". Range: 1.0–3414.0 for generalPurpose; 1.0–1024.0 for maxIO.
-	ProvisionedThroughputInMibps float64 `protobuf:"fixed64,5,opt,name=provisioned_throughput_in_mibps,json=provisionedThroughputInMibps,proto3" json:"provisioned_throughput_in_mibps,omitempty"`
+	ProvisionedThroughputInMibps float64 `protobuf:"fixed64,6,opt,name=provisioned_throughput_in_mibps,json=provisionedThroughputInMibps,proto3" json:"provisioned_throughput_in_mibps,omitempty"`
 	// AWS Availability Zone name for One Zone storage classes (e.g., "us-east-1a").
 	// ForceNew — cannot be changed after creation. One Zone storage is ~47% cheaper
 	// than Standard (multi-AZ) but data is stored in a single AZ with no cross-AZ
@@ -86,29 +89,29 @@ type AwsElasticFileSystemSpec struct {
 	//
 	// When set, only a single mount target can be created (in a subnet belonging
 	// to this AZ).
-	AvailabilityZoneName string `protobuf:"bytes,6,opt,name=availability_zone_name,json=availabilityZoneName,proto3" json:"availability_zone_name,omitempty"`
+	AvailabilityZoneName string `protobuf:"bytes,7,opt,name=availability_zone_name,json=availabilityZoneName,proto3" json:"availability_zone_name,omitempty"`
 	// Transition files to Infrequent Access (IA) storage after the specified period
 	// of not being accessed. IA storage costs ~92% less than Standard but charges
 	// per-access fees.
 	//
 	// Valid values: AFTER_1_DAY, AFTER_7_DAYS, AFTER_14_DAYS, AFTER_30_DAYS,
 	// AFTER_60_DAYS, AFTER_90_DAYS, AFTER_180_DAYS, AFTER_270_DAYS, AFTER_365_DAYS.
-	TransitionToIa string `protobuf:"bytes,7,opt,name=transition_to_ia,json=transitionToIa,proto3" json:"transition_to_ia,omitempty"`
+	TransitionToIa string `protobuf:"bytes,8,opt,name=transition_to_ia,json=transitionToIa,proto3" json:"transition_to_ia,omitempty"`
 	// Transition IA files to Archive storage after the specified period. Archive
 	// storage costs ~96% less than Standard. Requires `transition_to_ia` to be set
 	// (files must pass through IA before reaching Archive).
 	//
 	// Same valid values as transition_to_ia.
-	TransitionToArchive string `protobuf:"bytes,8,opt,name=transition_to_archive,json=transitionToArchive,proto3" json:"transition_to_archive,omitempty"`
+	TransitionToArchive string `protobuf:"bytes,9,opt,name=transition_to_archive,json=transitionToArchive,proto3" json:"transition_to_archive,omitempty"`
 	// Transition files back to Standard storage when accessed from IA or Archive.
 	// This enables automatic "warming" of frequently accessed files.
 	//
 	// Only valid value: "AFTER_1_ACCESS". Leave empty to keep files in IA/Archive
 	// even after access.
-	TransitionToPrimaryStorageClass string `protobuf:"bytes,9,opt,name=transition_to_primary_storage_class,json=transitionToPrimaryStorageClass,proto3" json:"transition_to_primary_storage_class,omitempty"`
+	TransitionToPrimaryStorageClass string `protobuf:"bytes,10,opt,name=transition_to_primary_storage_class,json=transitionToPrimaryStorageClass,proto3" json:"transition_to_primary_storage_class,omitempty"`
 	// Enable automatic daily backups via AWS Backup. AWS recommends enabling
 	// backups for all production file systems. Mutable — can be toggled at any time.
-	BackupEnabled bool `protobuf:"varint,10,opt,name=backup_enabled,json=backupEnabled,proto3" json:"backup_enabled,omitempty"`
+	BackupEnabled bool `protobuf:"varint,11,opt,name=backup_enabled,json=backupEnabled,proto3" json:"backup_enabled,omitempty"`
 	// Subnet IDs to create mount targets in. Required (min 1). One mount target is
 	// created per subnet. AWS allows at most one mount target per Availability Zone
 	// — providing two subnets in the same AZ will cause an API error at deploy time.
@@ -116,17 +119,17 @@ type AwsElasticFileSystemSpec struct {
 	// For regional (multi-AZ) file systems, provide one subnet per AZ for maximum
 	// availability. For One Zone file systems, provide exactly one subnet in the
 	// AZ specified by `availability_zone_name`.
-	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,11,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
+	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,12,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// Security groups to apply to all mount targets. These must allow inbound NFS
 	// traffic (TCP port 2049) from the clients that will mount the file system.
-	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,12,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
+	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,13,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
 	// Access points provide application-specific entry points into the file system,
 	// each with its own POSIX user/group identity and root directory. Commonly used
 	// with ECS tasks and Lambda functions to enforce least-privilege file access.
 	//
 	// Each access point must have a unique `name` which serves as the map key in
 	// the `access_point_ids` and `access_point_arns` stack outputs.
-	AccessPoints []*AwsElasticFileSystemAccessPoint `protobuf:"bytes,13,rep,name=access_points,json=accessPoints,proto3" json:"access_points,omitempty"`
+	AccessPoints []*AwsElasticFileSystemAccessPoint `protobuf:"bytes,14,rep,name=access_points,json=accessPoints,proto3" json:"access_points,omitempty"`
 	// IAM resource policy for the file system. Common uses:
 	// - Enforce encryption in transit (deny unencrypted NFS connections)
 	// - Restrict access to specific IAM principals or VPCs
@@ -134,7 +137,7 @@ type AwsElasticFileSystemSpec struct {
 	//
 	// Provide as a JSON object structure. Serialized to JSON by IaC modules.
 	// Consistent with SQS policy, SNS policy, and EventBridge event_pattern.
-	Policy        *structpb.Struct `protobuf:"bytes,14,opt,name=policy,proto3" json:"policy,omitempty"`
+	Policy        *structpb.Struct `protobuf:"bytes,15,opt,name=policy,proto3" json:"policy,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -167,6 +170,13 @@ func (x *AwsElasticFileSystemSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsElasticFileSystemSpec.ProtoReflect.Descriptor instead.
 func (*AwsElasticFileSystemSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awselasticfilesystem_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsElasticFileSystemSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsElasticFileSystemSpec) GetEncrypted() bool {
@@ -543,25 +553,26 @@ var File_org_openmcf_provider_aws_awselasticfilesystem_v1_spec_proto protoreflec
 
 const file_org_openmcf_provider_aws_awselasticfilesystem_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	";org/openmcf/provider/aws/awselasticfilesystem/v1/spec.proto\x120org.openmcf.provider.aws.awselasticfilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd2\x19\n" +
-	"\x18AwsElasticFileSystemSpec\x12&\n" +
-	"\tencrypted\x18\x01 \x01(\bB\b\x92\xa6\x1d\x04trueR\tencrypted\x12q\n" +
+	";org/openmcf/provider/aws/awselasticfilesystem/v1/spec.proto\x120org.openmcf.provider.aws.awselasticfilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xf3\x19\n" +
+	"\x18AwsElasticFileSystemSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12&\n" +
+	"\tencrypted\x18\x02 \x01(\bB\b\x92\xa6\x1d\x04trueR\tencrypted\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12)\n" +
-	"\x10performance_mode\x18\x03 \x01(\tR\x0fperformanceMode\x12'\n" +
-	"\x0fthroughput_mode\x18\x04 \x01(\tR\x0ethroughputMode\x12E\n" +
-	"\x1fprovisioned_throughput_in_mibps\x18\x05 \x01(\x01R\x1cprovisionedThroughputInMibps\x124\n" +
-	"\x16availability_zone_name\x18\x06 \x01(\tR\x14availabilityZoneName\x12(\n" +
-	"\x10transition_to_ia\x18\a \x01(\tR\x0etransitionToIa\x122\n" +
-	"\x15transition_to_archive\x18\b \x01(\tR\x13transitionToArchive\x12L\n" +
-	"#transition_to_primary_storage_class\x18\t \x01(\tR\x1ftransitionToPrimaryStorageClass\x12%\n" +
-	"\x0ebackup_enabled\x18\n" +
-	" \x01(\bR\rbackupEnabled\x12\x8c\x01\n" +
+	"kms_key_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12)\n" +
+	"\x10performance_mode\x18\x04 \x01(\tR\x0fperformanceMode\x12'\n" +
+	"\x0fthroughput_mode\x18\x05 \x01(\tR\x0ethroughputMode\x12E\n" +
+	"\x1fprovisioned_throughput_in_mibps\x18\x06 \x01(\x01R\x1cprovisionedThroughputInMibps\x124\n" +
+	"\x16availability_zone_name\x18\a \x01(\tR\x14availabilityZoneName\x12(\n" +
+	"\x10transition_to_ia\x18\b \x01(\tR\x0etransitionToIa\x122\n" +
+	"\x15transition_to_archive\x18\t \x01(\tR\x13transitionToArchive\x12L\n" +
+	"#transition_to_primary_storage_class\x18\n" +
+	" \x01(\tR\x1ftransitionToPrimaryStorageClass\x12%\n" +
+	"\x0ebackup_enabled\x18\v \x01(\bR\rbackupEnabled\x12\x8c\x01\n" +
 	"\n" +
-	"subnet_ids\x18\v \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB9\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
-	"\x12security_group_ids\x18\f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12v\n" +
-	"\raccess_points\x18\r \x03(\v2Q.org.openmcf.provider.aws.awselasticfilesystem.v1.AwsElasticFileSystemAccessPointR\faccessPoints\x12/\n" +
-	"\x06policy\x18\x0e \x01(\v2\x17.google.protobuf.StructR\x06policy:\xb0\x11\xbaH\xac\x11\x1a\xac\x01\n" +
+	"subnet_ids\x18\f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB9\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
+	"\x12security_group_ids\x18\r \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12v\n" +
+	"\raccess_points\x18\x0e \x03(\v2Q.org.openmcf.provider.aws.awselasticfilesystem.v1.AwsElasticFileSystemAccessPointR\faccessPoints\x12/\n" +
+	"\x06policy\x18\x0f \x01(\v2\x17.google.protobuf.StructR\x06policy:\xb0\x11\xbaH\xac\x11\x1a\xac\x01\n" +
 	"\x16performance_mode_valid\x12=performance_mode must be 'generalPurpose' or 'maxIO' when set\x1aSthis.performance_mode == '' || this.performance_mode in ['generalPurpose', 'maxIO']\x1a\xbf\x01\n" +
 	"\x15throughput_mode_valid\x12Hthroughput_mode must be 'bursting', 'provisioned', or 'elastic' when set\x1a\\this.throughput_mode == '' || this.throughput_mode in ['bursting', 'provisioned', 'elastic']\x1a\xd3\x01\n" +
 	"$provisioned_throughput_requires_mode\x12Uprovisioned_throughput_in_mibps can only be set when throughput_mode is 'provisioned'\x1aTthis.provisioned_throughput_in_mibps == 0.0 || this.throughput_mode == 'provisioned'\x1a\xd9\x01\n" +

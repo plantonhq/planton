@@ -33,6 +33,9 @@ const (
 // users can access from their Studio sessions.
 type AwsSagemakerDomainSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// auth_mode determines how users authenticate to the SageMaker Domain.
 	// "IAM": users authenticate with AWS IAM credentials. Suitable for single-account teams
 	//
@@ -43,43 +46,43 @@ type AwsSagemakerDomainSpec struct {
 	//	for enterprise teams with centralized identity management.
 	//
 	// ForceNew: changing auth_mode forces domain replacement.
-	AuthMode string `protobuf:"bytes,1,opt,name=auth_mode,json=authMode,proto3" json:"auth_mode,omitempty"`
+	AuthMode string `protobuf:"bytes,2,opt,name=auth_mode,json=authMode,proto3" json:"auth_mode,omitempty"`
 	// vpc_id is the VPC in which the SageMaker Domain is created.
 	// All domain network interfaces (for notebooks, training, and app traffic) are placed
 	// in this VPC. The VPC must have DNS resolution and DNS hostnames enabled.
 	// ForceNew: changing the VPC forces domain replacement.
-	VpcId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
+	VpcId *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
 	// subnet_ids are the VPC subnets where SageMaker provisions elastic network interfaces
 	// for notebook and training traffic. For high availability, provide subnets in at least
 	// two Availability Zones. Maximum 16 subnets.
 	// ForceNew: changing subnets forces domain replacement.
-	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,3,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
+	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,4,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// kms_key_id is the KMS key ARN used to encrypt the EFS volume attached to the domain.
 	// Each SageMaker Domain creates a dedicated EFS file system for user home directories.
 	// If omitted, AWS uses the default aws/elasticfilesystem service key.
 	// ForceNew: changing the KMS key forces domain replacement.
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// app_network_access_type controls whether notebook and training traffic can reach the internet.
 	// "PublicInternetOnly" (default): ENIs have internet access via VPC routing.
 	// "VpcOnly": all traffic stays within the VPC; internet access requires a NAT gateway.
 	// "VpcOnly" is recommended for production to prevent data exfiltration and satisfy
 	// compliance requirements. Docker trusted accounts only work in VpcOnly mode.
-	AppNetworkAccessType *string `protobuf:"bytes,5,opt,name=app_network_access_type,json=appNetworkAccessType,proto3,oneof" json:"app_network_access_type,omitempty"`
+	AppNetworkAccessType *string `protobuf:"bytes,6,opt,name=app_network_access_type,json=appNetworkAccessType,proto3,oneof" json:"app_network_access_type,omitempty"`
 	// default_user_settings defines the default configuration inherited by all user profiles
 	// in the domain. These settings control the execution environment, app configurations,
 	// security boundaries, and storage defaults. Individual user profiles can override these
 	// defaults via AwsSagemakerUserProfile (not in v1 scope).
-	DefaultUserSettings *AwsSagemakerDomainDefaultUserSettings `protobuf:"bytes,6,opt,name=default_user_settings,json=defaultUserSettings,proto3" json:"default_user_settings,omitempty"`
+	DefaultUserSettings *AwsSagemakerDomainDefaultUserSettings `protobuf:"bytes,7,opt,name=default_user_settings,json=defaultUserSettings,proto3" json:"default_user_settings,omitempty"`
 	// domain_security_group_ids are security groups applied at the domain level for
 	// domain-scoped apps and shared resources. These are separate from user-level security
 	// groups (default_user_settings.security_group_ids) and control domain-wide network boundaries.
 	// Maximum 3 security groups. ForceNew: changing these forces domain replacement.
-	DomainSecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,7,rep,name=domain_security_group_ids,json=domainSecurityGroupIds,proto3" json:"domain_security_group_ids,omitempty"`
+	DomainSecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,8,rep,name=domain_security_group_ids,json=domainSecurityGroupIds,proto3" json:"domain_security_group_ids,omitempty"`
 	// docker_settings controls Docker access within the SageMaker Domain.
 	// When enabled, users can build and run custom Docker containers directly in their
 	// notebooks and terminals -- essential for custom training containers, inference
 	// endpoints, and reproducible ML pipelines.
-	DockerSettings *AwsSagemakerDomainDockerSettings `protobuf:"bytes,8,opt,name=docker_settings,json=dockerSettings,proto3" json:"docker_settings,omitempty"`
+	DockerSettings *AwsSagemakerDomainDockerSettings `protobuf:"bytes,9,opt,name=docker_settings,json=dockerSettings,proto3" json:"docker_settings,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -112,6 +115,13 @@ func (x *AwsSagemakerDomainSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsSagemakerDomainSpec.ProtoReflect.Descriptor instead.
 func (*AwsSagemakerDomainSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awssagemakerdomain_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsSagemakerDomainSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsSagemakerDomainSpec) GetAuthMode() string {
@@ -962,18 +972,20 @@ var File_org_openmcf_provider_aws_awssagemakerdomain_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_aws_awssagemakerdomain_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/aws/awssagemakerdomain/v1/spec.proto\x12.org.openmcf.provider.aws.awssagemakerdomain.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xfb\t\n" +
-	"\x16AwsSagemakerDomainSpec\x12#\n" +
-	"\tauth_mode\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bauthMode\x12o\n" +
-	"\x06vpc_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12\x89\x01\n" +
+	"9org/openmcf/provider/aws/awssagemakerdomain/v1/spec.proto\x12.org.openmcf.provider.aws.awssagemakerdomain.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x9c\n" +
 	"\n" +
-	"subnet_ids\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12q\n" +
+	"\x16AwsSagemakerDomainSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12#\n" +
+	"\tauth_mode\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bauthMode\x12o\n" +
+	"\x06vpc_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12\x89\x01\n" +
 	"\n" +
-	"kms_key_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12R\n" +
-	"\x17app_network_access_type\x18\x05 \x01(\tB\x16\x8a\xa6\x1d\x12PublicInternetOnlyH\x00R\x14appNetworkAccessType\x88\x01\x01\x12\x91\x01\n" +
-	"\x15default_user_settings\x18\x06 \x01(\v2U.org.openmcf.provider.aws.awssagemakerdomain.v1.AwsSagemakerDomainDefaultUserSettingsB\x06\xbaH\x03\xc8\x01\x01R\x13defaultUserSettings\x12\xa0\x01\n" +
-	"\x19domain_security_group_ids\x18\a \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x05\x92\x01\x02\x10\x03\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x16domainSecurityGroupIds\x12y\n" +
-	"\x0fdocker_settings\x18\b \x01(\v2P.org.openmcf.provider.aws.awssagemakerdomain.v1.AwsSagemakerDomainDockerSettingsR\x0edockerSettings:\xa9\x02\xbaH\xa5\x02\x1aU\n" +
+	"subnet_ids\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12q\n" +
+	"\n" +
+	"kms_key_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12R\n" +
+	"\x17app_network_access_type\x18\x06 \x01(\tB\x16\x8a\xa6\x1d\x12PublicInternetOnlyH\x00R\x14appNetworkAccessType\x88\x01\x01\x12\x91\x01\n" +
+	"\x15default_user_settings\x18\a \x01(\v2U.org.openmcf.provider.aws.awssagemakerdomain.v1.AwsSagemakerDomainDefaultUserSettingsB\x06\xbaH\x03\xc8\x01\x01R\x13defaultUserSettings\x12\xa0\x01\n" +
+	"\x19domain_security_group_ids\x18\b \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x05\x92\x01\x02\x10\x03\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x16domainSecurityGroupIds\x12y\n" +
+	"\x0fdocker_settings\x18\t \x01(\v2P.org.openmcf.provider.aws.awssagemakerdomain.v1.AwsSagemakerDomainDockerSettingsR\x0edockerSettings:\xa9\x02\xbaH\xa5\x02\x1aU\n" +
 	"\x0fauth_mode_valid\x12 auth_mode must be 'IAM' or 'SSO'\x1a this.auth_mode in ['IAM', 'SSO']\x1a\xcb\x01\n" +
 	"\x1dapp_network_access_type_valid\x12Aapp_network_access_type must be 'PublicInternetOnly' or 'VpcOnly'\x1ag!has(this.app_network_access_type) || this.app_network_access_type in ['PublicInternetOnly', 'VpcOnly']B\x1a\n" +
 	"\x18_app_network_access_type\"\xb1\t\n" +

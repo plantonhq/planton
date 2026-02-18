@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsapprunnerservice/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsapprunnerservice_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjpvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzYXBwcnVubmVyc2VydmljZS92MS9zcGVjLnByb3RvEi9vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzYXBwcnVubmVyc2VydmljZS52MSKqGAoXQXdzQXBwUnVubmVyU2VydmljZVNwZWMSZQoMaW1hZ2Vfc291cmNlGAEgASgLMk8ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2FwcHJ1bm5lcnNlcnZpY2UudjEuQXdzQXBwUnVubmVyU2VydmljZUltYWdlU291cmNlEmMKC2NvZGVfc291cmNlGAIgASgLMk4ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2FwcHJ1bm5lcnNlcnZpY2UudjEuQXdzQXBwUnVubmVyU2VydmljZUNvZGVTb3VyY2USGwoEcG9ydBgDIAEoCUIIiqYdBDgwODBIAIgBARIVCg1zdGFydF9jb21tYW5kGAQgASgJEoEBChVlbnZpcm9ubWVudF92YXJpYWJsZXMYBSADKAsyYi5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzYXBwcnVubmVyc2VydmljZS52MS5Bd3NBcHBSdW5uZXJTZXJ2aWNlU3BlYy5FbnZpcm9ubWVudFZhcmlhYmxlc0VudHJ5En0KE2Vudmlyb25tZW50X3NlY3JldHMYBiADKAsyYC5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzYXBwcnVubmVyc2VydmljZS52MS5Bd3NBcHBSdW5uZXJTZXJ2aWNlU3BlYy5FbnZpcm9ubWVudFNlY3JldHNFbnRyeRIaCgNjcHUYByABKAlCCIqmHQQxMDI0SAGIAQESHQoGbWVtb3J5GAggASgJQgiKph0EMjA0OEgCiAEBEm8KEWluc3RhbmNlX3JvbGVfYXJuGAkgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIgiNRh0AGS1GEXc3RhdHVzLm91dHB1dHMucm9sZV9hcm4SZQoMaGVhbHRoX2NoZWNrGAogASgLMk8ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2FwcHJ1bm5lcnNlcnZpY2UudjEuQXdzQXBwUnVubmVyU2VydmljZUhlYWx0aENoZWNrEmUKDGF1dG9fc2NhbGluZxgLIAEoCzJPLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NhcHBydW5uZXJzZXJ2aWNlLnYxLkF3c0FwcFJ1bm5lclNlcnZpY2VBdXRvU2NhbGluZxJNChF2cGNfY29ubmVjdG9yX2FybhgMIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWYSdgoKc3VibmV0X2lkcxgNIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCLojUYdgBktRhJXN0YXR1cy5vdXRwdXRzLnByaXZhdGVfc3VibmV0cy5bKl0uaWQSeQoSc2VjdXJpdHlfZ3JvdXBfaWRzGA4gAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIpiNRh1wGS1GEgc3RhdHVzLm91dHB1dHMuc2VjdXJpdHlfZ3JvdXBfaWQSLQoWaXNfcHVibGljbHlfYWNjZXNzaWJsZRgPIAEoCEIIiqYdBHRydWVIA4gBARImCg9pcF9hZGRyZXNzX3R5cGUYECABKAlCCIqmHQRJUFY0SASIAQESaAoLa21zX2tleV9hcm4YESABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQh+I1GHbAZLUYRZzdGF0dXMub3V0cHV0cy5rZXlfYXJuEh0KFW9ic2VydmFiaWxpdHlfZW5hYmxlZBgSIAEoCBJbCh9vYnNlcnZhYmlsaXR5X2NvbmZpZ3VyYXRpb25fYXJuGBMgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZhIvChhhdXRvX2RlcGxveW1lbnRzX2VuYWJsZWQYFCABKAhCCIqmHQR0cnVlSAWIAQEaOwoZRW52aXJvbm1lbnRWYXJpYWJsZXNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBGjkKF0Vudmlyb25tZW50U2VjcmV0c0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAE6gQq6SP0JGrYBChJleGFjdGx5X29uZV9zb3VyY2USNmV4YWN0bHkgb25lIG9mIGltYWdlX3NvdXJjZSBvciBjb2RlX3NvdXJjZSBtdXN0IGJlIHNldBpoKGhhcyh0aGlzLmltYWdlX3NvdXJjZSkgJiYgIWhhcyh0aGlzLmNvZGVfc291cmNlKSkgfHwgKCFoYXModGhpcy5pbWFnZV9zb3VyY2UpICYmIGhhcyh0aGlzLmNvZGVfc291cmNlKSkaqwEKG3ZwY19lZ3Jlc3NfbXV0dWFsX2V4Y2x1c2lvbhJPdnBjX2Nvbm5lY3Rvcl9hcm4gYW5kIHN1Ym5ldF9pZHMgYXJlIG11dHVhbGx5IGV4Y2x1c2l2ZTsgcHJvdmlkZSBvbmUgb3IgbmVpdGhlcho7IShoYXModGhpcy52cGNfY29ubmVjdG9yX2FybikgJiYgc2l6ZSh0aGlzLnN1Ym5ldF9pZHMpID4gMCkauQEKHW9ic2VydmFiaWxpdHlfY29uZmlnX3JlcXVpcmVkEk5vYnNlcnZhYmlsaXR5X2NvbmZpZ3VyYXRpb25fYXJuIGlzIHJlcXVpcmVkIHdoZW4gb2JzZXJ2YWJpbGl0eV9lbmFibGVkIGlzIHRydWUaSCF0aGlzLm9ic2VydmFiaWxpdHlfZW5hYmxlZCB8fCBoYXModGhpcy5vYnNlcnZhYmlsaXR5X2NvbmZpZ3VyYXRpb25fYXJuKRqVAQoVdmFsaWRfaXBfYWRkcmVzc190eXBlEi5pcF9hZGRyZXNzX3R5cGUgbXVzdCBiZSAnSVBWNCcgb3IgJ0RVQUxfU1RBQ0snGkwhaGFzKHRoaXMuaXBfYWRkcmVzc190eXBlKSB8fCB0aGlzLmlwX2FkZHJlc3NfdHlwZSBpbiBbJ0lQVjQnLCAnRFVBTF9TVEFDSyddGucBCgl2YWxpZF9jcHUSZmNwdSBtdXN0IGJlIG9uZSBvZjogJzI1NicsJzUxMicsJzEwMjQnLCcyMDQ4JywnNDA5NicsJzAuMjUgdkNQVScsJzAuNSB2Q1BVJywnMSB2Q1BVJywnMiB2Q1BVJywnNCB2Q1BVJxpyIWhhcyh0aGlzLmNwdSkgfHwgdGhpcy5jcHUgaW4gWycyNTYnLCc1MTInLCcxMDI0JywnMjA0OCcsJzQwOTYnLCcwLjI1IHZDUFUnLCcwLjUgdkNQVScsJzEgdkNQVScsJzIgdkNQVScsJzQgdkNQVSddGtUCCgx2YWxpZF9tZW1vcnkSmQFtZW1vcnkgbXVzdCBiZSBvbmUgb2Y6ICc1MTInLCcxMDI0JywnMjA0OCcsJzMwNzInLCc0MDk2JywnNjE0NCcsJzgxOTInLCcxMDI0MCcsJzEyMjg4JywnMC41IEdCJywnMSBHQicsJzIgR0InLCczIEdCJywnNCBHQicsJzYgR0InLCc4IEdCJywnMTAgR0InLCcxMiBHQicaqAEhaGFzKHRoaXMubWVtb3J5KSB8fCB0aGlzLm1lbW9yeSBpbiBbJzUxMicsJzEwMjQnLCcyMDQ4JywnMzA3MicsJzQwOTYnLCc2MTQ0JywnODE5MicsJzEwMjQwJywnMTIyODgnLCcwLjUgR0InLCcxIEdCJywnMiBHQicsJzMgR0InLCc0IEdCJywnNiBHQicsJzggR0InLCcxMCBHQicsJzEyIEdCJ11CBwoFX3BvcnRCBgoEX2NwdUIJCgdfbWVtb3J5QhkKF19pc19wdWJsaWNseV9hY2Nlc3NpYmxlQhIKEF9pcF9hZGRyZXNzX3R5cGVCGwoZX2F1dG9fZGVwbG95bWVudHNfZW5hYmxlZCKLBAoeQXdzQXBwUnVubmVyU2VydmljZUltYWdlU291cmNlEiEKEGltYWdlX2lkZW50aWZpZXIYASABKAlCB7pIBHICEAESJgoVaW1hZ2VfcmVwb3NpdG9yeV90eXBlGAIgASgJQge6SARyAhABEm0KD2FjY2Vzc19yb2xlX2FybhgDIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCIIjUYdABktRhF3N0YXR1cy5vdXRwdXRzLnJvbGVfYXJuOq4CukiqAhqHAQobdmFsaWRfaW1hZ2VfcmVwb3NpdG9yeV90eXBlEjNpbWFnZV9yZXBvc2l0b3J5X3R5cGUgbXVzdCBiZSAnRUNSJyBvciAnRUNSX1BVQkxJQycaM3RoaXMuaW1hZ2VfcmVwb3NpdG9yeV90eXBlIGluIFsnRUNSJywgJ0VDUl9QVUJMSUMnXRqdAQoYZWNyX3JlcXVpcmVzX2FjY2Vzc19yb2xlEj9hY2Nlc3Nfcm9sZV9hcm4gaXMgcmVxdWlyZWQgd2hlbiBpbWFnZV9yZXBvc2l0b3J5X3R5cGUgaXMgJ0VDUicaQHRoaXMuaW1hZ2VfcmVwb3NpdG9yeV90eXBlICE9ICdFQ1InIHx8IGhhcyh0aGlzLmFjY2Vzc19yb2xlX2FybikitgQKHUF3c0FwcFJ1bm5lclNlcnZpY2VDb2RlU291cmNlEh8KDnJlcG9zaXRvcnlfdXJsGAEgASgJQge6SARyAhABEhcKBmJyYW5jaBgCIAEoCUIHukgEcgIQARIYChBzb3VyY2VfZGlyZWN0b3J5GAMgASgJElIKDmNvbm5lY3Rpb25fYXJuGAQgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIGukgDyAEBEiUKFGNvbmZpZ3VyYXRpb25fc291cmNlGAUgASgJQge6SARyAhABEg8KB3J1bnRpbWUYBiABKAkSFQoNYnVpbGRfY29tbWFuZBgHIAEoCTqdArpImQIahAEKGnZhbGlkX2NvbmZpZ3VyYXRpb25fc291cmNlEjJjb25maWd1cmF0aW9uX3NvdXJjZSBtdXN0IGJlICdBUEknIG9yICdSRVBPU0lUT1JZJxoydGhpcy5jb25maWd1cmF0aW9uX3NvdXJjZSBpbiBbJ0FQSScsICdSRVBPU0lUT1JZJ10ajwEKG2FwaV9jb25maWdfcmVxdWlyZXNfcnVudGltZRI2cnVudGltZSBpcyByZXF1aXJlZCB3aGVuIGNvbmZpZ3VyYXRpb25fc291cmNlIGlzICdBUEknGjh0aGlzLmNvbmZpZ3VyYXRpb25fc291cmNlICE9ICdBUEknIHx8IHRoaXMucnVudGltZSAhPSAnJyKVBAoeQXdzQXBwUnVubmVyU2VydmljZUhlYWx0aENoZWNrEh4KCHByb3RvY29sGAEgASgJQgeKph0DVENQSACIAQESGAoEcGF0aBgCIAEoCUIFiqYdAS9IAYgBARItChBpbnRlcnZhbF9zZWNvbmRzGAMgASgFQg66SAYaBBgUKAGKph0BNUgCiAEBEiwKD3RpbWVvdXRfc2Vjb25kcxgEIAEoBUIOukgGGgQYFCgBiqYdATJIA4gBARIuChFoZWFsdGh5X3RocmVzaG9sZBgFIAEoBUIOukgGGgQYFCgBiqYdATFIBIgBARIwChN1bmhlYWx0aHlfdGhyZXNob2xkGAYgASgFQg66SAYaBBgUKAGKph0BNUgFiAEBOowBukiIARqFAQobdmFsaWRfaGVhbHRoX2NoZWNrX3Byb3RvY29sEi1oZWFsdGggY2hlY2sgcHJvdG9jb2wgbXVzdCBiZSAnVENQJyBvciAnSFRUUCcaNyFoYXModGhpcy5wcm90b2NvbCkgfHwgdGhpcy5wcm90b2NvbCBpbiBbJ1RDUCcsICdIVFRQJ11CCwoJX3Byb3RvY29sQgcKBV9wYXRoQhMKEV9pbnRlcnZhbF9zZWNvbmRzQhIKEF90aW1lb3V0X3NlY29uZHNCFAoSX2hlYWx0aHlfdGhyZXNob2xkQhYKFF91bmhlYWx0aHlfdGhyZXNob2xkIucCCh5Bd3NBcHBSdW5uZXJTZXJ2aWNlQXV0b1NjYWxpbmcSJQoIbWluX3NpemUYASABKAVCDrpIBhoEGBkoAYqmHQExSACIAQESJgoIbWF4X3NpemUYAiABKAVCD7pIBhoEGBkoAYqmHQIyNUgBiAEBEi8KD21heF9jb25jdXJyZW5jeRgDIAEoBUIRukgHGgUYyAEoAYqmHQMxMDBIAogBATqWAbpIkgEajwEKC21heF9ndGVfbWluEjJtYXhfc2l6ZSBtdXN0IGJlIGdyZWF0ZXIgdGhhbiBvciBlcXVhbCB0byBtaW5fc2l6ZRpMIWhhcyh0aGlzLm1pbl9zaXplKSB8fCAhaGFzKHRoaXMubWF4X3NpemUpIHx8IHRoaXMubWF4X3NpemUgPj0gdGhpcy5taW5fc2l6ZUILCglfbWluX3NpemVCCwoJX21heF9zaXplQhIKEF9tYXhfY29uY3VycmVuY3lCjAMKM2NvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzYXBwcnVubmVyc2VydmljZS52MUIJU3BlY1Byb3RvUAFaZ2dpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzYXBwcnVubmVyc2VydmljZS92MTthd3NhcHBydW5uZXJzZXJ2aWNldjGiAgVPT1BBQaoCL09yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NhcHBydW5uZXJzZXJ2aWNlLlYxygIvT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2FwcHJ1bm5lcnNlcnZpY2VcVjHiAjtPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzYXBwcnVubmVyc2VydmljZVxWMVxHUEJNZXRhZGF0YeoCNE9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzYXBwcnVubmVyc2VydmljZTo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("Cjpvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzYXBwcnVubmVyc2VydmljZS92MS9zcGVjLnByb3RvEi9vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzYXBwcnVubmVyc2VydmljZS52MSLDGAoXQXdzQXBwUnVubmVyU2VydmljZVNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEmUKDGltYWdlX3NvdXJjZRgCIAEoCzJPLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NhcHBydW5uZXJzZXJ2aWNlLnYxLkF3c0FwcFJ1bm5lclNlcnZpY2VJbWFnZVNvdXJjZRJjCgtjb2RlX3NvdXJjZRgDIAEoCzJOLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NhcHBydW5uZXJzZXJ2aWNlLnYxLkF3c0FwcFJ1bm5lclNlcnZpY2VDb2RlU291cmNlEhsKBHBvcnQYBCABKAlCCIqmHQQ4MDgwSACIAQESFQoNc3RhcnRfY29tbWFuZBgFIAEoCRKBAQoVZW52aXJvbm1lbnRfdmFyaWFibGVzGAYgAygLMmIub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2FwcHJ1bm5lcnNlcnZpY2UudjEuQXdzQXBwUnVubmVyU2VydmljZVNwZWMuRW52aXJvbm1lbnRWYXJpYWJsZXNFbnRyeRJ9ChNlbnZpcm9ubWVudF9zZWNyZXRzGAcgAygLMmAub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2FwcHJ1bm5lcnNlcnZpY2UudjEuQXdzQXBwUnVubmVyU2VydmljZVNwZWMuRW52aXJvbm1lbnRTZWNyZXRzRW50cnkSGgoDY3B1GAggASgJQgiKph0EMTAyNEgBiAEBEh0KBm1lbW9yeRgJIAEoCUIIiqYdBDIwNDhIAogBARJvChFpbnN0YW5jZV9yb2xlX2FybhgKIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCIIjUYdABktRhF3N0YXR1cy5vdXRwdXRzLnJvbGVfYXJuEmUKDGhlYWx0aF9jaGVjaxgLIAEoCzJPLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NhcHBydW5uZXJzZXJ2aWNlLnYxLkF3c0FwcFJ1bm5lclNlcnZpY2VIZWFsdGhDaGVjaxJlCgxhdXRvX3NjYWxpbmcYDCABKAsyTy5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzYXBwcnVubmVyc2VydmljZS52MS5Bd3NBcHBSdW5uZXJTZXJ2aWNlQXV0b1NjYWxpbmcSTQoRdnBjX2Nvbm5lY3Rvcl9hcm4YDSABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmEnYKCnN1Ym5ldF9pZHMYDiADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQi6I1GHYAZLUYSVzdGF0dXMub3V0cHV0cy5wcml2YXRlX3N1Ym5ldHMuWypdLmlkEnkKEnNlY3VyaXR5X2dyb3VwX2lkcxgPIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEi0KFmlzX3B1YmxpY2x5X2FjY2Vzc2libGUYECABKAhCCIqmHQR0cnVlSAOIAQESJgoPaXBfYWRkcmVzc190eXBlGBEgASgJQgiKph0ESVBWNEgEiAEBEmgKC2ttc19rZXlfYXJuGBIgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybhIdChVvYnNlcnZhYmlsaXR5X2VuYWJsZWQYEyABKAgSWwofb2JzZXJ2YWJpbGl0eV9jb25maWd1cmF0aW9uX2FybhgUIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWYSLwoYYXV0b19kZXBsb3ltZW50c19lbmFibGVkGBUgASgIQgiKph0EdHJ1ZUgFiAEBGjsKGUVudmlyb25tZW50VmFyaWFibGVzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ARo5ChdFbnZpcm9ubWVudFNlY3JldHNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBOoEKukj9CRq2AQoSZXhhY3RseV9vbmVfc291cmNlEjZleGFjdGx5IG9uZSBvZiBpbWFnZV9zb3VyY2Ugb3IgY29kZV9zb3VyY2UgbXVzdCBiZSBzZXQaaChoYXModGhpcy5pbWFnZV9zb3VyY2UpICYmICFoYXModGhpcy5jb2RlX3NvdXJjZSkpIHx8ICghaGFzKHRoaXMuaW1hZ2Vfc291cmNlKSAmJiBoYXModGhpcy5jb2RlX3NvdXJjZSkpGqsBCht2cGNfZWdyZXNzX211dHVhbF9leGNsdXNpb24ST3ZwY19jb25uZWN0b3JfYXJuIGFuZCBzdWJuZXRfaWRzIGFyZSBtdXR1YWxseSBleGNsdXNpdmU7IHByb3ZpZGUgb25lIG9yIG5laXRoZXIaOyEoaGFzKHRoaXMudnBjX2Nvbm5lY3Rvcl9hcm4pICYmIHNpemUodGhpcy5zdWJuZXRfaWRzKSA+IDApGrkBCh1vYnNlcnZhYmlsaXR5X2NvbmZpZ19yZXF1aXJlZBJOb2JzZXJ2YWJpbGl0eV9jb25maWd1cmF0aW9uX2FybiBpcyByZXF1aXJlZCB3aGVuIG9ic2VydmFiaWxpdHlfZW5hYmxlZCBpcyB0cnVlGkghdGhpcy5vYnNlcnZhYmlsaXR5X2VuYWJsZWQgfHwgaGFzKHRoaXMub2JzZXJ2YWJpbGl0eV9jb25maWd1cmF0aW9uX2FybikalQEKFXZhbGlkX2lwX2FkZHJlc3NfdHlwZRIuaXBfYWRkcmVzc190eXBlIG11c3QgYmUgJ0lQVjQnIG9yICdEVUFMX1NUQUNLJxpMIWhhcyh0aGlzLmlwX2FkZHJlc3NfdHlwZSkgfHwgdGhpcy5pcF9hZGRyZXNzX3R5cGUgaW4gWydJUFY0JywgJ0RVQUxfU1RBQ0snXRrnAQoJdmFsaWRfY3B1EmZjcHUgbXVzdCBiZSBvbmUgb2Y6ICcyNTYnLCc1MTInLCcxMDI0JywnMjA0OCcsJzQwOTYnLCcwLjI1IHZDUFUnLCcwLjUgdkNQVScsJzEgdkNQVScsJzIgdkNQVScsJzQgdkNQVScaciFoYXModGhpcy5jcHUpIHx8IHRoaXMuY3B1IGluIFsnMjU2JywnNTEyJywnMTAyNCcsJzIwNDgnLCc0MDk2JywnMC4yNSB2Q1BVJywnMC41IHZDUFUnLCcxIHZDUFUnLCcyIHZDUFUnLCc0IHZDUFUnXRrVAgoMdmFsaWRfbWVtb3J5EpkBbWVtb3J5IG11c3QgYmUgb25lIG9mOiAnNTEyJywnMTAyNCcsJzIwNDgnLCczMDcyJywnNDA5NicsJzYxNDQnLCc4MTkyJywnMTAyNDAnLCcxMjI4OCcsJzAuNSBHQicsJzEgR0InLCcyIEdCJywnMyBHQicsJzQgR0InLCc2IEdCJywnOCBHQicsJzEwIEdCJywnMTIgR0InGqgBIWhhcyh0aGlzLm1lbW9yeSkgfHwgdGhpcy5tZW1vcnkgaW4gWyc1MTInLCcxMDI0JywnMjA0OCcsJzMwNzInLCc0MDk2JywnNjE0NCcsJzgxOTInLCcxMDI0MCcsJzEyMjg4JywnMC41IEdCJywnMSBHQicsJzIgR0InLCczIEdCJywnNCBHQicsJzYgR0InLCc4IEdCJywnMTAgR0InLCcxMiBHQiddQgcKBV9wb3J0QgYKBF9jcHVCCQoHX21lbW9yeUIZChdfaXNfcHVibGljbHlfYWNjZXNzaWJsZUISChBfaXBfYWRkcmVzc190eXBlQhsKGV9hdXRvX2RlcGxveW1lbnRzX2VuYWJsZWQiiwQKHkF3c0FwcFJ1bm5lclNlcnZpY2VJbWFnZVNvdXJjZRIhChBpbWFnZV9pZGVudGlmaWVyGAEgASgJQge6SARyAhABEiYKFWltYWdlX3JlcG9zaXRvcnlfdHlwZRgCIAEoCUIHukgEcgIQARJtCg9hY2Nlc3Nfcm9sZV9hcm4YAyABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQiCI1GHQAZLUYRdzdGF0dXMub3V0cHV0cy5yb2xlX2FybjquArpIqgIahwEKG3ZhbGlkX2ltYWdlX3JlcG9zaXRvcnlfdHlwZRIzaW1hZ2VfcmVwb3NpdG9yeV90eXBlIG11c3QgYmUgJ0VDUicgb3IgJ0VDUl9QVUJMSUMnGjN0aGlzLmltYWdlX3JlcG9zaXRvcnlfdHlwZSBpbiBbJ0VDUicsICdFQ1JfUFVCTElDJ10anQEKGGVjcl9yZXF1aXJlc19hY2Nlc3Nfcm9sZRI/YWNjZXNzX3JvbGVfYXJuIGlzIHJlcXVpcmVkIHdoZW4gaW1hZ2VfcmVwb3NpdG9yeV90eXBlIGlzICdFQ1InGkB0aGlzLmltYWdlX3JlcG9zaXRvcnlfdHlwZSAhPSAnRUNSJyB8fCBoYXModGhpcy5hY2Nlc3Nfcm9sZV9hcm4pIrYECh1Bd3NBcHBSdW5uZXJTZXJ2aWNlQ29kZVNvdXJjZRIfCg5yZXBvc2l0b3J5X3VybBgBIAEoCUIHukgEcgIQARIXCgZicmFuY2gYAiABKAlCB7pIBHICEAESGAoQc291cmNlX2RpcmVjdG9yeRgDIAEoCRJSCg5jb25uZWN0aW9uX2FybhgEIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCBrpIA8gBARIlChRjb25maWd1cmF0aW9uX3NvdXJjZRgFIAEoCUIHukgEcgIQARIPCgdydW50aW1lGAYgASgJEhUKDWJ1aWxkX2NvbW1hbmQYByABKAk6nQK6SJkCGoQBChp2YWxpZF9jb25maWd1cmF0aW9uX3NvdXJjZRIyY29uZmlndXJhdGlvbl9zb3VyY2UgbXVzdCBiZSAnQVBJJyBvciAnUkVQT1NJVE9SWScaMnRoaXMuY29uZmlndXJhdGlvbl9zb3VyY2UgaW4gWydBUEknLCAnUkVQT1NJVE9SWSddGo8BChthcGlfY29uZmlnX3JlcXVpcmVzX3J1bnRpbWUSNnJ1bnRpbWUgaXMgcmVxdWlyZWQgd2hlbiBjb25maWd1cmF0aW9uX3NvdXJjZSBpcyAnQVBJJxo4dGhpcy5jb25maWd1cmF0aW9uX3NvdXJjZSAhPSAnQVBJJyB8fCB0aGlzLnJ1bnRpbWUgIT0gJycilQQKHkF3c0FwcFJ1bm5lclNlcnZpY2VIZWFsdGhDaGVjaxIeCghwcm90b2NvbBgBIAEoCUIHiqYdA1RDUEgAiAEBEhgKBHBhdGgYAiABKAlCBYqmHQEvSAGIAQESLQoQaW50ZXJ2YWxfc2Vjb25kcxgDIAEoBUIOukgGGgQYFCgBiqYdATVIAogBARIsCg90aW1lb3V0X3NlY29uZHMYBCABKAVCDrpIBhoEGBQoAYqmHQEySAOIAQESLgoRaGVhbHRoeV90aHJlc2hvbGQYBSABKAVCDrpIBhoEGBQoAYqmHQExSASIAQESMAoTdW5oZWFsdGh5X3RocmVzaG9sZBgGIAEoBUIOukgGGgQYFCgBiqYdATVIBYgBATqMAbpIiAEahQEKG3ZhbGlkX2hlYWx0aF9jaGVja19wcm90b2NvbBItaGVhbHRoIGNoZWNrIHByb3RvY29sIG11c3QgYmUgJ1RDUCcgb3IgJ0hUVFAnGjchaGFzKHRoaXMucHJvdG9jb2wpIHx8IHRoaXMucHJvdG9jb2wgaW4gWydUQ1AnLCAnSFRUUCddQgsKCV9wcm90b2NvbEIHCgVfcGF0aEITChFfaW50ZXJ2YWxfc2Vjb25kc0ISChBfdGltZW91dF9zZWNvbmRzQhQKEl9oZWFsdGh5X3RocmVzaG9sZEIWChRfdW5oZWFsdGh5X3RocmVzaG9sZCLnAgoeQXdzQXBwUnVubmVyU2VydmljZUF1dG9TY2FsaW5nEiUKCG1pbl9zaXplGAEgASgFQg66SAYaBBgZKAGKph0BMUgAiAEBEiYKCG1heF9zaXplGAIgASgFQg+6SAYaBBgZKAGKph0CMjVIAYgBARIvCg9tYXhfY29uY3VycmVuY3kYAyABKAVCEbpIBxoFGMgBKAGKph0DMTAwSAKIAQE6lgG6SJIBGo8BCgttYXhfZ3RlX21pbhIybWF4X3NpemUgbXVzdCBiZSBncmVhdGVyIHRoYW4gb3IgZXF1YWwgdG8gbWluX3NpemUaTCFoYXModGhpcy5taW5fc2l6ZSkgfHwgIWhhcyh0aGlzLm1heF9zaXplKSB8fCB0aGlzLm1heF9zaXplID49IHRoaXMubWluX3NpemVCCwoJX21pbl9zaXplQgsKCV9tYXhfc2l6ZUISChBfbWF4X2NvbmN1cnJlbmN5QowDCjNjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2FwcHJ1bm5lcnNlcnZpY2UudjFCCVNwZWNQcm90b1ABWmdnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c2FwcHJ1bm5lcnNlcnZpY2UvdjE7YXdzYXBwcnVubmVyc2VydmljZXYxogIFT09QQUGqAi9PcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzYXBwcnVubmVyc2VydmljZS5WMcoCL09yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NhcHBydW5uZXJzZXJ2aWNlXFYx4gI7T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2FwcHJ1bm5lcnNlcnZpY2VcVjFcR1BCTWV0YWRhdGHqAjRPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c2FwcHJ1bm5lcnNlcnZpY2U6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsAppRunnerServiceSpec defines the desired state of an AWS App Runner Service.
@@ -39,16 +39,22 @@ export const file_org_openmcf_provider_aws_awsapprunnerservice_v1_spec: GenFile 
  *   - kms_key_arn (encryption_configuration)
  *   - service_name (derived from metadata, not user-provided)
  *
- * --- Source (exactly one of image_source or code_source must be set) ---
- *
  * @generated from message org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceSpec
  */
 export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceSpec"> & {
   /**
+   * The AWS region where the App Runner service will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * Image-based deployment source. Use this to deploy from a container image
    * stored in Amazon ECR (private) or ECR Public Gallery.
    *
-   * @generated from field: org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceImageSource image_source = 1;
+   * @generated from field: org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceImageSource image_source = 2;
    */
   imageSource?: AwsAppRunnerServiceImageSource;
 
@@ -57,7 +63,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * App Runner clones the repo, builds the application using the specified runtime,
    * and deploys the resulting container.
    *
-   * @generated from field: org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceCodeSource code_source = 2;
+   * @generated from field: org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceCodeSource code_source = 3;
    */
   codeSource?: AwsAppRunnerServiceCodeSource;
 
@@ -65,7 +71,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * Port that the application listens on inside the container. App Runner routes
    * incoming HTTPS traffic on port 443 to this port.
    *
-   * @generated from field: optional string port = 3;
+   * @generated from field: optional string port = 4;
    */
   port?: string;
 
@@ -74,7 +80,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * image ENTRYPOINT/CMD. For code source with configuration_source="API",
    * this is the command that starts the application.
    *
-   * @generated from field: string start_command = 4;
+   * @generated from field: string start_command = 5;
    */
   startCommand: string;
 
@@ -84,7 +90,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * here; use environment_secrets for sensitive values.
    * Keys prefixed with "AWSAPPRUNNER" are reserved by the service.
    *
-   * @generated from field: map<string, string> environment_variables = 5;
+   * @generated from field: map<string, string> environment_variables = 6;
    */
   environmentVariables: { [key: string]: string };
 
@@ -95,7 +101,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * plaintext environment variable. The instance_role_arn must have permission
    * to read these secrets.
    *
-   * @generated from field: map<string, string> environment_secrets = 6;
+   * @generated from field: map<string, string> environment_secrets = 7;
    */
   environmentSecrets: { [key: string]: string };
 
@@ -104,7 +110,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * Numeric: "256", "512", "1024", "2048", "4096"
    * Human-readable: "0.25 vCPU", "0.5 vCPU", "1 vCPU", "2 vCPU", "4 vCPU"
    *
-   * @generated from field: optional string cpu = 7;
+   * @generated from field: optional string cpu = 8;
    */
   cpu?: string;
 
@@ -114,7 +120,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * Human-readable: "0.5 GB", "1 GB", "2 GB", "3 GB", "4 GB", "6 GB", "8 GB", "10 GB", "12 GB"
    * Note: Not all CPU/memory combinations are valid. See AWS documentation for valid pairings.
    *
-   * @generated from field: optional string memory = 8;
+   * @generated from field: optional string memory = 9;
    */
   memory?: string;
 
@@ -123,7 +129,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * This is the role your application code uses (e.g., to read from S3, write to DynamoDB).
    * This is NOT the role used to pull images from ECR (that is access_role_arn in image_source).
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef instance_role_arn = 9;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef instance_role_arn = 10;
    */
   instanceRoleArn?: StringValueOrRef;
 
@@ -132,7 +138,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * readiness. If not provided, App Runner uses default TCP health checks on the
    * configured port.
    *
-   * @generated from field: org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceHealthCheck health_check = 10;
+   * @generated from field: org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceHealthCheck health_check = 11;
    */
   healthCheck?: AwsAppRunnerServiceHealthCheck;
 
@@ -141,7 +147,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * instances based on incoming request concurrency. If not provided, App Runner
    * uses defaults: 1 min, 25 max, 100 max concurrency per instance.
    *
-   * @generated from field: org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceAutoScaling auto_scaling = 11;
+   * @generated from field: org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceAutoScaling auto_scaling = 12;
    */
   autoScaling?: AwsAppRunnerServiceAutoScaling;
 
@@ -150,7 +156,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * you want to share a single VPC Connector across multiple App Runner services.
    * Mutually exclusive with subnet_ids/security_group_ids (which create an inline connector).
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_connector_arn = 12;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_connector_arn = 13;
    */
   vpcConnectorArn?: StringValueOrRef;
 
@@ -160,7 +166,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * your VPC (databases, caches, internal APIs). Provide subnets in at least two
    * Availability Zones for high availability. Mutually exclusive with vpc_connector_arn.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 13;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 14;
    */
   subnetIds: StringValueOrRef[];
 
@@ -168,7 +174,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * Security group IDs for the inline VPC Connector. Controls what VPC resources
    * the service can reach. Only used when subnet_ids is provided (ignored otherwise).
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 14;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 15;
    */
   securityGroupIds: StringValueOrRef[];
 
@@ -178,7 +184,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * the service is only reachable via a VPC Ingress Connection (a separate
    * resource not managed by this component).
    *
-   * @generated from field: optional bool is_publicly_accessible = 15;
+   * @generated from field: optional bool is_publicly_accessible = 16;
    */
   isPubliclyAccessible?: boolean;
 
@@ -186,7 +192,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * IP address type for the service endpoint.
    * "IPV4": IPv4-only (default). "DUAL_STACK": IPv4 + IPv6.
    *
-   * @generated from field: optional string ip_address_type = 16;
+   * @generated from field: optional string ip_address_type = 17;
    */
   ipAddressType?: string;
 
@@ -195,7 +201,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * the container image and data logs. If omitted, App Runner uses an AWS-managed key.
    * ForceNew: changing this value requires replacing the service.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_arn = 17;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_arn = 18;
    */
   kmsKeyArn?: StringValueOrRef;
 
@@ -203,7 +209,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * Whether to enable observability (AWS X-Ray tracing) for the service.
    * When true, observability_configuration_arn must also be provided.
    *
-   * @generated from field: bool observability_enabled = 18;
+   * @generated from field: bool observability_enabled = 19;
    */
   observabilityEnabled: boolean;
 
@@ -212,7 +218,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * observability_enabled is true. Observability configurations are created
    * separately (via AWS Console or CLI) and can be shared across services.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef observability_configuration_arn = 19;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef observability_configuration_arn = 20;
    */
   observabilityConfigurationArn?: StringValueOrRef;
 
@@ -221,7 +227,7 @@ export type AwsAppRunnerServiceSpec = Message<"org.openmcf.provider.aws.awsappru
    * For image source: redeploys when a new image is pushed to the same tag.
    * For code source: redeploys when a new commit is pushed to the configured branch.
    *
-   * @generated from field: optional bool auto_deployments_enabled = 20;
+   * @generated from field: optional bool auto_deployments_enabled = 21;
    */
   autoDeploymentsEnabled?: boolean;
 };

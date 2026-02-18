@@ -32,6 +32,10 @@ import "org/openmcf/shared/options/options.proto";
 //   only, no explicit storage capacity) is deferred to a future version.
 // - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 message AwsFsxOpenzfsFileSystemSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // File System Core
   // ---------------------------------------------------------------------------
@@ -49,13 +53,13 @@ message AwsFsxOpenzfsFileSystemSpec {
   //   range as SINGLE_AZ_2.
   //
   // Default: SINGLE_AZ_2
-  optional string deployment_type = 1 [(org.openmcf.shared.options.default) = "SINGLE_AZ_2"];
+  optional string deployment_type = 2 [(org.openmcf.shared.options.default) = "SINGLE_AZ_2"];
 
   // Storage capacity in GiB. Required.
   //
   // Valid range: 64–524288 GiB. Choose based on data size and throughput needs.
   // Storage can be increased after creation but never decreased.
-  int32 storage_capacity_gib = 2 [(buf.validate.field).int32.gte = 64];
+  int32 storage_capacity_gib = 3 [(buf.validate.field).int32.gte = 64];
 
   // Throughput capacity in MB/s. Required.
   //
@@ -64,7 +68,7 @@ message AwsFsxOpenzfsFileSystemSpec {
   // - SINGLE_AZ_2 / MULTI_AZ_1: 160, 320, 640, 1280, 2560, 3840, 5120, 7680, 10240
   //
   // Can be changed after creation to scale performance up or down.
-  int32 throughput_capacity = 3 [(buf.validate.field).int32.gt = 0];
+  int32 throughput_capacity = 4 [(buf.validate.field).int32.gt = 0];
 
   // ---------------------------------------------------------------------------
   // Networking (ForceNew)
@@ -77,7 +81,7 @@ message AwsFsxOpenzfsFileSystemSpec {
   //
   // All compute resources mounting this file system must have network
   // connectivity to these subnets.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 4 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 5 [
     (buf.validate.field).repeated.min_items = 1,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
@@ -91,7 +95,7 @@ message AwsFsxOpenzfsFileSystemSpec {
   // - TCP ports 20001-20003 (NFS mount)
   //
   // Up to 50 security groups.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 5 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 6 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
@@ -102,7 +106,7 @@ message AwsFsxOpenzfsFileSystemSpec {
   //
   // In a failover event, the standby file server in the other subnet takes over.
   // Ignored for SINGLE_AZ deployments.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef preferred_subnet_id = 6 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef preferred_subnet_id = 7 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[0].id"
   ];
@@ -113,13 +117,13 @@ message AwsFsxOpenzfsFileSystemSpec {
   // for seamless failover.
   //
   // Ignored for SINGLE_AZ deployments.
-  string endpoint_ip_address_range = 7;
+  string endpoint_ip_address_range = 8;
 
   // Route table IDs that need routes to the file system in a MULTI_AZ_1
   // deployment. AWS automatically manages the routes. Up to 50 route tables.
   //
   // Ignored for SINGLE_AZ deployments.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef route_table_ids = 8;
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef route_table_ids = 9;
 
   // ---------------------------------------------------------------------------
   // Encryption
@@ -129,7 +133,7 @@ message AwsFsxOpenzfsFileSystemSpec {
   // cannot be changed after creation. When omitted, the file system uses the
   // AWS-managed FSx key. All OpenZFS file systems are encrypted at rest by
   // default; this field upgrades to a customer-managed key.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 9 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 10 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -140,7 +144,7 @@ message AwsFsxOpenzfsFileSystemSpec {
 
   // SSD IOPS configuration for the file system. Controls the total provisioned
   // IOPS. When omitted, AWS uses AUTOMATIC mode which scales IOPS with storage.
-  AwsFsxOpenzfsFileSystemDiskIopsConfiguration disk_iops_configuration = 10;
+  AwsFsxOpenzfsFileSystemDiskIopsConfiguration disk_iops_configuration = 11;
 
   // ---------------------------------------------------------------------------
   // Root Volume Configuration
@@ -153,7 +157,7 @@ message AwsFsxOpenzfsFileSystemSpec {
   //
   // When omitted, the root volume uses defaults: no compression, no NFS access
   // restrictions, 128 KiB record size.
-  AwsFsxOpenzfsFileSystemRootVolumeConfiguration root_volume_configuration = 11;
+  AwsFsxOpenzfsFileSystemRootVolumeConfiguration root_volume_configuration = 12;
 
   // ---------------------------------------------------------------------------
   // Backup
@@ -163,23 +167,23 @@ message AwsFsxOpenzfsFileSystemSpec {
   // disable automatic backups.
   //
   // Default: 0 (no automatic backups)
-  optional int32 automatic_backup_retention_days = 12 [(org.openmcf.shared.options.default) = "0"];
+  optional int32 automatic_backup_retention_days = 13 [(org.openmcf.shared.options.default) = "0"];
 
   // Daily UTC time to start automatic backups, in HH:MM format (e.g., "05:00").
   // If not specified and backups are enabled, AWS chooses a default window.
-  string daily_automatic_backup_start_time = 13;
+  string daily_automatic_backup_start_time = 14;
 
   // Copy tags from the file system to backups.
-  bool copy_tags_to_backups = 14;
+  bool copy_tags_to_backups = 15;
 
   // Copy tags from the file system to volumes. When true, tags are propagated
   // to the root volume and any child volumes created on this file system.
-  bool copy_tags_to_volumes = 15;
+  bool copy_tags_to_volumes = 16;
 
   // Skip creating a final backup when the file system is deleted.
   //
   // Default: true
-  optional bool skip_final_backup = 16 [(org.openmcf.shared.options.default) = "true"];
+  optional bool skip_final_backup = 17 [(org.openmcf.shared.options.default) = "true"];
 
   // ---------------------------------------------------------------------------
   // Maintenance
@@ -188,7 +192,7 @@ message AwsFsxOpenzfsFileSystemSpec {
   // Weekly UTC maintenance window in the format "d:HH:MM" where d is the day of
   // the week (1=Monday, 7=Sunday). Example: "1:05:00" for Monday at 05:00 UTC.
   // If not specified, AWS chooses a default window.
-  string weekly_maintenance_start_time = 17;
+  string weekly_maintenance_start_time = 18;
 
   // ---------------------------------------------------------------------------
   // CEL Validations

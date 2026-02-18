@@ -43,6 +43,9 @@ variable "spec" {
   description = "spec holds the core configuration data defining how the ECS service is deployed."
   type = object({
 
+    # The AWS region where the resource will be created.
+    region = string
+
     # primaryDomainName is a required field representing the main (apex or wildcard) domain name.
     # Examples include "example.com" or "*.example.com" (wildcard).
     # This domain will be set as the 'DomainName' in the AWS ACM certificate.

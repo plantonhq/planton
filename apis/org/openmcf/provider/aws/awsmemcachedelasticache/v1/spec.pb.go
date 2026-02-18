@@ -63,62 +63,65 @@ const (
 //     stack inputs.
 type AwsMemcachedElasticacheSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Memcached engine version to deploy. Uses three-part versioning:
 	// "1.6.22", "1.6.17", "1.5.16", etc.
 	// Transit encryption requires version 1.6.12 or later.
-	EngineVersion string `protobuf:"bytes,1,opt,name=engine_version,json=engineVersion,proto3" json:"engine_version,omitempty"`
+	EngineVersion string `protobuf:"bytes,2,opt,name=engine_version,json=engineVersion,proto3" json:"engine_version,omitempty"`
 	// ElastiCache node type. Determines CPU, memory, and network capacity.
 	// Examples: "cache.t3.micro" (dev), "cache.r7g.large" (production).
 	// Changing node_type forces cluster recreation — Memcached does not support
 	// vertical scaling in-place.
-	NodeType string `protobuf:"bytes,2,opt,name=node_type,json=nodeType,proto3" json:"node_type,omitempty"`
+	NodeType string `protobuf:"bytes,3,opt,name=node_type,json=nodeType,proto3" json:"node_type,omitempty"`
 	// Number of cache nodes in the cluster. Memcached distributes keys across
 	// all nodes via consistent hashing. Range: 1–40. Default: 1.
-	NumCacheNodes int32 `protobuf:"varint,3,opt,name=num_cache_nodes,json=numCacheNodes,proto3" json:"num_cache_nodes,omitempty"`
+	NumCacheNodes int32 `protobuf:"varint,4,opt,name=num_cache_nodes,json=numCacheNodes,proto3" json:"num_cache_nodes,omitempty"`
 	// AZ distribution mode. "single-az" places all nodes in one AZ (default).
 	// "cross-az" distributes nodes across multiple AZs for resilience.
 	// cross-az requires num_cache_nodes > 1.
-	AzMode string `protobuf:"bytes,4,opt,name=az_mode,json=azMode,proto3" json:"az_mode,omitempty"`
+	AzMode string `protobuf:"bytes,5,opt,name=az_mode,json=azMode,proto3" json:"az_mode,omitempty"`
 	// Port on which the cluster accepts connections. Default: 11211.
 	// This is a ForceNew attribute — changing it destroys and recreates the
 	// cluster.
-	Port *int32 `protobuf:"varint,5,opt,name=port,proto3,oneof" json:"port,omitempty"`
+	Port *int32 `protobuf:"varint,6,opt,name=port,proto3,oneof" json:"port,omitempty"`
 	// Enable encryption in transit (TLS) for all client connections.
 	// Requires Memcached engine version 1.6.12 or later. Attempting to enable
 	// this on earlier versions will result in an AWS API error.
 	// Note: Memcached does NOT support encryption at rest.
-	TransitEncryptionEnabled bool `protobuf:"varint,6,opt,name=transit_encryption_enabled,json=transitEncryptionEnabled,proto3" json:"transit_encryption_enabled,omitempty"`
+	TransitEncryptionEnabled bool `protobuf:"varint,7,opt,name=transit_encryption_enabled,json=transitEncryptionEnabled,proto3" json:"transit_encryption_enabled,omitempty"`
 	// Subnet IDs for the ElastiCache subnet group. Provide subnets in at least
 	// two AZs when using cross-az mode. A subnet group is created automatically
 	// from these subnets.
-	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,7,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
+	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,8,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// VPC security groups to attach to the cluster nodes. Controls network-level
 	// access to the Memcached endpoint. Since Memcached has no authentication,
 	// security groups are the primary access control mechanism.
-	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,8,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
+	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,9,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
 	// Parameter group family for custom parameters. Required when `parameters`
 	// is provided. Examples: "memcached1.6", "memcached1.5", "memcached1.4".
-	ParameterGroupFamily string `protobuf:"bytes,9,opt,name=parameter_group_family,json=parameterGroupFamily,proto3" json:"parameter_group_family,omitempty"`
+	ParameterGroupFamily string `protobuf:"bytes,10,opt,name=parameter_group_family,json=parameterGroupFamily,proto3" json:"parameter_group_family,omitempty"`
 	// Custom cache parameters to apply via a managed parameter group. Common
 	// Memcached parameters include: chunk_size, chunk_size_growth_factor,
 	// max_simultaneous_connections, binding_protocol.
-	Parameters []*AwsMemcachedElasticacheParameter `protobuf:"bytes,10,rep,name=parameters,proto3" json:"parameters,omitempty"`
+	Parameters []*AwsMemcachedElasticacheParameter `protobuf:"bytes,11,rep,name=parameters,proto3" json:"parameters,omitempty"`
 	// Weekly maintenance window in UTC. Format: "ddd:hh24:mi-ddd:hh24:mi".
 	// Example: "sun:05:00-sun:06:00". Leave empty for AWS-assigned default.
-	MaintenanceWindow string `protobuf:"bytes,11,opt,name=maintenance_window,json=maintenanceWindow,proto3" json:"maintenance_window,omitempty"`
+	MaintenanceWindow string `protobuf:"bytes,12,opt,name=maintenance_window,json=maintenanceWindow,proto3" json:"maintenance_window,omitempty"`
 	// Apply changes immediately instead of waiting for the next maintenance
 	// window. May cause brief downtime for some operations.
-	ApplyImmediately bool `protobuf:"varint,12,opt,name=apply_immediately,json=applyImmediately,proto3" json:"apply_immediately,omitempty"`
+	ApplyImmediately bool `protobuf:"varint,13,opt,name=apply_immediately,json=applyImmediately,proto3" json:"apply_immediately,omitempty"`
 	// Automatically apply minor engine version upgrades during maintenance
 	// windows. Recommended for staying on supported versions.
-	AutoMinorVersionUpgrade bool `protobuf:"varint,13,opt,name=auto_minor_version_upgrade,json=autoMinorVersionUpgrade,proto3" json:"auto_minor_version_upgrade,omitempty"`
+	AutoMinorVersionUpgrade bool `protobuf:"varint,14,opt,name=auto_minor_version_upgrade,json=autoMinorVersionUpgrade,proto3" json:"auto_minor_version_upgrade,omitempty"`
 	// SNS topic ARN for cluster event notifications (node additions, removals,
 	// maintenance events, etc.).
-	NotificationTopicArn *v1.StringValueOrRef `protobuf:"bytes,14,opt,name=notification_topic_arn,json=notificationTopicArn,proto3" json:"notification_topic_arn,omitempty"`
+	NotificationTopicArn *v1.StringValueOrRef `protobuf:"bytes,15,opt,name=notification_topic_arn,json=notificationTopicArn,proto3" json:"notification_topic_arn,omitempty"`
 	// Preferred Availability Zones for the cache nodes. When provided, the list
 	// length must match num_cache_nodes. Nodes are placed in the specified AZs
 	// in order. Leave empty for AWS-managed AZ distribution.
-	PreferredAvailabilityZones []string `protobuf:"bytes,15,rep,name=preferred_availability_zones,json=preferredAvailabilityZones,proto3" json:"preferred_availability_zones,omitempty"`
+	PreferredAvailabilityZones []string `protobuf:"bytes,16,rep,name=preferred_availability_zones,json=preferredAvailabilityZones,proto3" json:"preferred_availability_zones,omitempty"`
 	unknownFields              protoimpl.UnknownFields
 	sizeCache                  protoimpl.SizeCache
 }
@@ -151,6 +154,13 @@ func (x *AwsMemcachedElasticacheSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsMemcachedElasticacheSpec.ProtoReflect.Descriptor instead.
 func (*AwsMemcachedElasticacheSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsmemcachedelasticache_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsMemcachedElasticacheSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsMemcachedElasticacheSpec) GetEngineVersion() string {
@@ -319,27 +329,28 @@ var File_org_openmcf_provider_aws_awsmemcachedelasticache_v1_spec_proto protoref
 
 const file_org_openmcf_provider_aws_awsmemcachedelasticache_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	">org/openmcf/provider/aws/awsmemcachedelasticache/v1/spec.proto\x123org.openmcf.provider.aws.awsmemcachedelasticache.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x8d\x0f\n" +
-	"\x1bAwsMemcachedElasticacheSpec\x12-\n" +
-	"\x0eengine_version\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\rengineVersion\x12#\n" +
-	"\tnode_type\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bnodeType\x121\n" +
-	"\x0fnum_cache_nodes\x18\x03 \x01(\x05B\t\xbaH\x06\x1a\x04\x18((\x01R\rnumCacheNodes\x12\x17\n" +
-	"\aaz_mode\x18\x04 \x01(\tR\x06azMode\x12-\n" +
-	"\x04port\x18\x05 \x01(\x05B\x14\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01\x8a\xa6\x1d\x0511211H\x00R\x04port\x88\x01\x01\x12<\n" +
-	"\x1atransit_encryption_enabled\x18\x06 \x01(\bR\x18transitEncryptionEnabled\x12\x81\x01\n" +
+	">org/openmcf/provider/aws/awsmemcachedelasticache/v1/spec.proto\x123org.openmcf.provider.aws.awsmemcachedelasticache.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xae\x0f\n" +
+	"\x1bAwsMemcachedElasticacheSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12-\n" +
+	"\x0eengine_version\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\rengineVersion\x12#\n" +
+	"\tnode_type\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bnodeType\x121\n" +
+	"\x0fnum_cache_nodes\x18\x04 \x01(\x05B\t\xbaH\x06\x1a\x04\x18((\x01R\rnumCacheNodes\x12\x17\n" +
+	"\aaz_mode\x18\x05 \x01(\tR\x06azMode\x12-\n" +
+	"\x04port\x18\x06 \x01(\x05B\x14\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01\x8a\xa6\x1d\x0511211H\x00R\x04port\x88\x01\x01\x12<\n" +
+	"\x1atransit_encryption_enabled\x18\a \x01(\bR\x18transitEncryptionEnabled\x12\x81\x01\n" +
 	"\n" +
-	"subnet_ids\x18\a \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
-	"\x12security_group_ids\x18\b \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x124\n" +
-	"\x16parameter_group_family\x18\t \x01(\tR\x14parameterGroupFamily\x12u\n" +
+	"subnet_ids\x18\b \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
+	"\x12security_group_ids\x18\t \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x124\n" +
+	"\x16parameter_group_family\x18\n" +
+	" \x01(\tR\x14parameterGroupFamily\x12u\n" +
 	"\n" +
-	"parameters\x18\n" +
-	" \x03(\v2U.org.openmcf.provider.aws.awsmemcachedelasticache.v1.AwsMemcachedElasticacheParameterR\n" +
+	"parameters\x18\v \x03(\v2U.org.openmcf.provider.aws.awsmemcachedelasticache.v1.AwsMemcachedElasticacheParameterR\n" +
 	"parameters\x12\xb4\x01\n" +
-	"\x12maintenance_window\x18\v \x01(\tB\x84\x01\xbaH\x80\x01\xd8\x01\x01r{2y^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$R\x11maintenanceWindow\x12+\n" +
-	"\x11apply_immediately\x18\f \x01(\bR\x10applyImmediately\x12E\n" +
-	"\x1aauto_minor_version_upgrade\x18\r \x01(\bB\b\x92\xa6\x1d\x04trueR\x17autoMinorVersionUpgrade\x12\x8b\x01\n" +
-	"\x16notification_topic_arn\x18\x0e \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe2\x01\x92\xd4a\x18status.outputs.topic_arnR\x14notificationTopicArn\x12@\n" +
-	"\x1cpreferred_availability_zones\x18\x0f \x03(\tR\x1apreferredAvailabilityZones:\x9d\x05\xbaH\x99\x05\x1a\x8b\x01\n" +
+	"\x12maintenance_window\x18\f \x01(\tB\x84\x01\xbaH\x80\x01\xd8\x01\x01r{2y^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$R\x11maintenanceWindow\x12+\n" +
+	"\x11apply_immediately\x18\r \x01(\bR\x10applyImmediately\x12E\n" +
+	"\x1aauto_minor_version_upgrade\x18\x0e \x01(\bB\b\x92\xa6\x1d\x04trueR\x17autoMinorVersionUpgrade\x12\x8b\x01\n" +
+	"\x16notification_topic_arn\x18\x0f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe2\x01\x92\xd4a\x18status.outputs.topic_arnR\x14notificationTopicArn\x12@\n" +
+	"\x1cpreferred_availability_zones\x18\x10 \x03(\tR\x1apreferredAvailabilityZones:\x9d\x05\xbaH\x99\x05\x1a\x8b\x01\n" +
 	"\x14az_mode_valid_values\x122az_mode must be 'single-az' or 'cross-az' when set\x1a?this.az_mode == '' || this.az_mode in ['single-az', 'cross-az']\x1a\x87\x01\n" +
 	"\x1ccross_az_requires_multi_node\x12/az_mode 'cross-az' requires num_cache_nodes > 1\x1a6this.az_mode != 'cross-az' || this.num_cache_nodes > 1\x1a\xdd\x01\n" +
 	"\x1aaz_list_matches_node_count\x12Lpreferred_availability_zones length must match num_cache_nodes when provided\x1aqthis.preferred_availability_zones.size() == 0 || this.preferred_availability_zones.size() == this.num_cache_nodes\x1a\x9e\x01\n" +

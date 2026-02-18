@@ -287,6 +287,7 @@ Unlike higher-level abstractions (like AWS CDK's L2 constructs), OpenMCF's `AwsD
 The `AwsDynamodbSpec` protobuf message includes:
 
 **Essential Configuration**:
+- `region`: The AWS region where the resource will be created (required)
 - `billing_mode`: Enum for `PROVISIONED` or `PAY_PER_REQUEST`
 - `attribute_definitions`: Explicit definition of key attributes (name + type: S/N/B)
 - `key_schema`: Primary key structure (HASH and optional RANGE)

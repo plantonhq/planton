@@ -30,13 +30,13 @@ const (
 // and any scenario where objects need to be declaratively managed alongside infrastructure.
 type AwsS3ObjectSetSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// The target S3 bucket where objects will be uploaded.
 	// Can be a literal bucket name or a reference to an AwsS3Bucket component.
 	// When referencing an AwsS3Bucket, the bucket_id is resolved from status.outputs.bucket_id.
-	Bucket *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=bucket,proto3" json:"bucket,omitempty"`
-	// The AWS region where the S3 bucket is located.
-	// Must match the bucket's region for optimal performance and to avoid cross-region transfer costs.
-	AwsRegion string `protobuf:"bytes,2,opt,name=aws_region,json=awsRegion,proto3" json:"aws_region,omitempty"`
+	Bucket *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
 	// The list of S3 objects to upload to the target bucket.
 	// At least one object must be specified.
 	Objects []*AwsS3Object `protobuf:"bytes,3,rep,name=objects,proto3" json:"objects,omitempty"`
@@ -77,18 +77,18 @@ func (*AwsS3ObjectSetSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awss3objectset_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
+func (x *AwsS3ObjectSetSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
 func (x *AwsS3ObjectSetSpec) GetBucket() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Bucket
 	}
 	return nil
-}
-
-func (x *AwsS3ObjectSetSpec) GetAwsRegion() string {
-	if x != nil {
-		return x.AwsRegion
-	}
-	return ""
 }
 
 func (x *AwsS3ObjectSetSpec) GetObjects() []*AwsS3Object {
@@ -257,11 +257,10 @@ var File_org_openmcf_provider_aws_awss3objectset_v1_spec_proto protoreflect.File
 
 const file_org_openmcf_provider_aws_awss3objectset_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"5org/openmcf/provider/aws/awss3objectset/v1/spec.proto\x12*org.openmcf.provider.aws.awss3objectset.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa5\x03\n" +
-	"\x12AwsS3ObjectSetSpec\x12s\n" +
-	"\x06bucket\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xd5\x01\x92\xd4a\x18status.outputs.bucket_idR\x06bucket\x12&\n" +
-	"\n" +
-	"aws_region\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\tawsRegion\x12[\n" +
+	"5org/openmcf/provider/aws/awss3objectset/v1/spec.proto\x12*org.openmcf.provider.aws.awss3objectset.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x9e\x03\n" +
+	"\x12AwsS3ObjectSetSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12s\n" +
+	"\x06bucket\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xd5\x01\x92\xd4a\x18status.outputs.bucket_idR\x06bucket\x12[\n" +
 	"\aobjects\x18\x03 \x03(\v27.org.openmcf.provider.aws.awss3objectset.v1.AwsS3ObjectB\b\xbaH\x05\x92\x01\x02\b\x01R\aobjects\x12\\\n" +
 	"\x04tags\x18\x04 \x03(\v2H.org.openmcf.provider.aws.awss3objectset.v1.AwsS3ObjectSetSpec.TagsEntryR\x04tags\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +

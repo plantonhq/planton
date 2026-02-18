@@ -3,9 +3,9 @@ kind: AwsS3ObjectSet
 metadata:
   name: awss3objectset-demo
 spec:
+  region: us-east-1
   bucket:
     value: my-demo-bucket
-  awsRegion: us-east-1
   tags:
     environment: demo
   objects:

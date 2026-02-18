@@ -35,6 +35,7 @@ var _ = ginkgo.Describe("AwsFsxOpenzfsFileSystemSpec validations", func() {
 		// Minimal valid spec: subnet_ids (at least 1), storage_capacity_gib >= 64,
 		// throughput_capacity > 0.
 		spec = &AwsFsxOpenzfsFileSystemSpec{
+			Region:             "us-west-2",
 			SubnetIds:          []*foreignkeyv1.StringValueOrRef{strRef("subnet-abc123")},
 			StorageCapacityGib: 256,
 			ThroughputCapacity: 160,

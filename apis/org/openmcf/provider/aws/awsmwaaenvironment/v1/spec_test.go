@@ -25,6 +25,7 @@ func validMinimalSpec() *AwsMwaaEnvironment {
 			Name: "test-mwaa-env",
 		},
 		Spec: &AwsMwaaEnvironmentSpec{
+			Region: "us-west-2",
 			SourceBucketArn: &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "arn:aws:s3:::my-airflow-bucket"},
 			},

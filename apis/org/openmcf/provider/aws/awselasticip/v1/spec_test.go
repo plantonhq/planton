@@ -27,7 +27,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "my-eip",
 			},
-			Spec: &AwsElasticIpSpec{},
+			Spec: &AwsElasticIpSpec{Region: "us-east-1"},
 		}
 		err := protovalidate.Validate(input)
 		gomega.Expect(err).To(gomega.BeNil())
@@ -41,6 +41,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 				Name: "wavelength-eip",
 			},
 			Spec: &AwsElasticIpSpec{
+				Region:             "us-east-1",
 				NetworkBorderGroup: "us-east-1-wl1-bos-wlz-1",
 			},
 		}
@@ -56,6 +57,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 				Name: "byoip-eip",
 			},
 			Spec: &AwsElasticIpSpec{
+				Region:         "us-east-1",
 				PublicIpv4Pool: "ipv4pool-ec2-0123456789abcdef0",
 			},
 		}
@@ -71,6 +73,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 				Name: "byoip-specific-eip",
 			},
 			Spec: &AwsElasticIpSpec{
+				Region:         "us-east-1",
 				PublicIpv4Pool: "ipv4pool-ec2-0123456789abcdef0",
 				Address:        "198.51.100.10",
 			},
@@ -87,6 +90,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 				Name: "full-config-eip",
 			},
 			Spec: &AwsElasticIpSpec{
+				Region:             "us-east-1",
 				PublicIpv4Pool:     "ipv4pool-ec2-0123456789abcdef0",
 				Address:            "198.51.100.10",
 				NetworkBorderGroup: "us-east-1",
@@ -108,6 +112,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 				Name: "bad-address-eip",
 			},
 			Spec: &AwsElasticIpSpec{
+				Region:  "us-east-1",
 				Address: "198.51.100.10",
 			},
 		}
@@ -126,7 +131,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "test-eip",
 			},
-			Spec: &AwsElasticIpSpec{},
+			Spec: &AwsElasticIpSpec{Region: "us-east-1"},
 		}
 		err := protovalidate.Validate(input)
 		gomega.Expect(err).NotTo(gomega.BeNil())
@@ -139,7 +144,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "test-eip",
 			},
-			Spec: &AwsElasticIpSpec{},
+			Spec: &AwsElasticIpSpec{Region: "us-east-1"},
 		}
 		err := protovalidate.Validate(input)
 		gomega.Expect(err).NotTo(gomega.BeNil())
@@ -149,7 +154,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 		input := &AwsElasticIp{
 			ApiVersion: "aws.openmcf.org/v1",
 			Kind:       "AwsElasticIp",
-			Spec:       &AwsElasticIpSpec{},
+			Spec:       &AwsElasticIpSpec{Region: "us-east-1"},
 		}
 		err := protovalidate.Validate(input)
 		gomega.Expect(err).NotTo(gomega.BeNil())

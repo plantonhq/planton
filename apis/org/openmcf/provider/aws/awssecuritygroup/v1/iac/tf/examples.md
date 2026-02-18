@@ -17,6 +17,7 @@ kind: AwsSecurityGroup
 metadata:
   name: my-basic-security-group
 spec:
+  region: us-west-2
   vpcId:
     value: "vpc-12345abcde"
   description: "Basic security group allowing inbound HTTP"
@@ -52,6 +53,7 @@ kind: AwsSecurityGroup
 metadata:
   name: web-server-sg
 spec:
+  region: us-west-2
   vpcId:
     value: "vpc-67890fghij"
   description: "Security group for web servers with HTTP, HTTPS, and SSH access"
@@ -99,6 +101,7 @@ kind: AwsSecurityGroup
 metadata:
   name: database-sg
 spec:
+  region: us-west-2
   vpcId:
     value: "vpc-13579abcd"
   description: "Security group for database servers with restricted access"
@@ -140,6 +143,7 @@ kind: AwsSecurityGroup
 metadata:
   name: application-sg
 spec:
+  region: us-west-2
   vpcId:
     value: "vpc-abcdef1234"
   description: "Security group for application servers"
@@ -188,6 +192,7 @@ kind: AwsSecurityGroup
 metadata:
   name: load-balancer-sg
 spec:
+  region: us-west-2
   vpcId:
     value: "vpc-ghijklmn12"
   description: "Security group for application load balancer"
@@ -229,6 +234,7 @@ kind: AwsSecurityGroup
 metadata:
   name: bastion-host-sg
 spec:
+  region: us-west-2
   vpcId:
     value: "vpc-1234567890"
   description: "Security group for bastion host with restricted SSH access"
@@ -270,6 +276,7 @@ kind: AwsSecurityGroup
 metadata:
   name: redis-sg
 spec:
+  region: us-west-2
   vpcId:
     value: "vpc-redis123456"
   description: "Security group for Redis cache servers"
@@ -305,6 +312,7 @@ kind: AwsSecurityGroup
 metadata:
   name: monitoring-sg
 spec:
+  region: us-west-2
   vpcId:
     value: "vpc-monitoring123"
   description: "Security group for monitoring and logging servers"
@@ -346,6 +354,7 @@ kind: AwsSecurityGroup
 metadata:
   name: cluster-sg
 spec:
+  region: us-west-2
   vpcId:
     value: "vpc-cluster123"
   description: "Security group allowing internal cluster communication"
@@ -384,6 +393,7 @@ kind: AwsSecurityGroup
 metadata:
   name: ipv6-sg
 spec:
+  region: us-west-2
   vpcId:
     value: "vpc-ipv6-enabled"
   description: "Security group with IPv6 support for dual-stack networking"

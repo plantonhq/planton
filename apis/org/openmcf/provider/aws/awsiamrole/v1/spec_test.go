@@ -26,8 +26,9 @@ var _ = ginkgo.Describe("AwsIamRole Custom Validation Tests", func() {
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "valid-name",
 					},
-					Spec: &AwsIamRoleSpec{
-						TrustPolicy: &structpb.Struct{},
+				Spec: &AwsIamRoleSpec{
+					Region:      "us-west-2",
+					TrustPolicy: &structpb.Struct{},
 						ManagedPolicyArns: []string{
 							"arn:aws:iam::123456789012:policy/testPolicy",
 						},

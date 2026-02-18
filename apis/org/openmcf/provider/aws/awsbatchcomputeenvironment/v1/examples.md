@@ -10,6 +10,7 @@ kind: AwsBatchComputeEnvironment
 metadata:
   name: dev-batch
 spec:
+  region: us-west-2
   computeResources:
     type: FARGATE
     maxVcpus: 256
@@ -33,6 +34,7 @@ kind: AwsBatchComputeEnvironment
 metadata:
   name: prod-batch
 spec:
+  region: us-west-2
   computeResources:
     type: EC2
     maxVcpus: 512
@@ -75,6 +77,7 @@ kind: AwsBatchComputeEnvironment
 metadata:
   name: ml-batch
 spec:
+  region: us-west-2
   computeResources:
     type: SPOT
     maxVcpus: 1024
@@ -120,6 +123,7 @@ kind: AwsBatchComputeEnvironment
 metadata:
   name: connected-batch
 spec:
+  region: us-west-2
   computeResources:
     type: FARGATE
     maxVcpus: 256

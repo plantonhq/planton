@@ -38,46 +38,49 @@ const (
 // report groups, and fleets have independent lifecycles and are excluded.
 type AwsCodeBuildProjectSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// source defines where the build input comes from and how to fetch it.
-	Source *AwsCodeBuildSource `protobuf:"bytes,1,opt,name=source,proto3" json:"source,omitempty"`
+	Source *AwsCodeBuildSource `protobuf:"bytes,2,opt,name=source,proto3" json:"source,omitempty"`
 	// environment defines the build container: image, compute, and variables.
-	Environment *AwsCodeBuildEnvironment `protobuf:"bytes,2,opt,name=environment,proto3" json:"environment,omitempty"`
+	Environment *AwsCodeBuildEnvironment `protobuf:"bytes,3,opt,name=environment,proto3" json:"environment,omitempty"`
 	// artifacts defines where the build output goes.
-	Artifacts *AwsCodeBuildArtifacts `protobuf:"bytes,3,opt,name=artifacts,proto3" json:"artifacts,omitempty"`
+	Artifacts *AwsCodeBuildArtifacts `protobuf:"bytes,4,opt,name=artifacts,proto3" json:"artifacts,omitempty"`
 	// service_role is the IAM role ARN that grants CodeBuild permission to
 	// access source code, write artifacts, publish logs, and interact with
 	// other AWS services during the build.
-	ServiceRole *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=service_role,json=serviceRole,proto3" json:"service_role,omitempty"`
+	ServiceRole *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=service_role,json=serviceRole,proto3" json:"service_role,omitempty"`
 	// description is a human-readable description of the project (max 255 chars).
-	Description string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,6,opt,name=description,proto3" json:"description,omitempty"`
 	// encryption_key is the ARN of a KMS key used to encrypt build artifacts.
 	// If omitted, CodeBuild uses the AWS-managed key for S3.
-	EncryptionKey *v1.StringValueOrRef `protobuf:"bytes,6,opt,name=encryption_key,json=encryptionKey,proto3" json:"encryption_key,omitempty"`
+	EncryptionKey *v1.StringValueOrRef `protobuf:"bytes,7,opt,name=encryption_key,json=encryptionKey,proto3" json:"encryption_key,omitempty"`
 	// build_timeout is the maximum duration of a single build, in minutes.
 	// Range: 5-2160 (36 hours). Default: 60.
-	BuildTimeout *int32 `protobuf:"varint,7,opt,name=build_timeout,json=buildTimeout,proto3,oneof" json:"build_timeout,omitempty"`
+	BuildTimeout *int32 `protobuf:"varint,8,opt,name=build_timeout,json=buildTimeout,proto3,oneof" json:"build_timeout,omitempty"`
 	// queued_timeout is the maximum time a build can wait in the queue before
 	// timing out, in minutes. Range: 5-480 (8 hours). Default: 480.
-	QueuedTimeout *int32 `protobuf:"varint,8,opt,name=queued_timeout,json=queuedTimeout,proto3,oneof" json:"queued_timeout,omitempty"`
+	QueuedTimeout *int32 `protobuf:"varint,9,opt,name=queued_timeout,json=queuedTimeout,proto3,oneof" json:"queued_timeout,omitempty"`
 	// concurrent_build_limit caps the number of concurrent builds. Useful for
 	// cost control. Minimum 1. Omit to allow unlimited concurrency.
-	ConcurrentBuildLimit int32 `protobuf:"varint,9,opt,name=concurrent_build_limit,json=concurrentBuildLimit,proto3" json:"concurrent_build_limit,omitempty"`
+	ConcurrentBuildLimit int32 `protobuf:"varint,10,opt,name=concurrent_build_limit,json=concurrentBuildLimit,proto3" json:"concurrent_build_limit,omitempty"`
 	// source_version is the default branch, tag, or commit ID to build.
 	// For GitHub: branch name, tag, or full commit SHA.
 	// For S3: object version ID.
-	SourceVersion string `protobuf:"bytes,10,opt,name=source_version,json=sourceVersion,proto3" json:"source_version,omitempty"`
+	SourceVersion string `protobuf:"bytes,11,opt,name=source_version,json=sourceVersion,proto3" json:"source_version,omitempty"`
 	// cache configures build caching to speed up subsequent builds.
-	Cache *AwsCodeBuildCache `protobuf:"bytes,11,opt,name=cache,proto3" json:"cache,omitempty"`
+	Cache *AwsCodeBuildCache `protobuf:"bytes,12,opt,name=cache,proto3" json:"cache,omitempty"`
 	// logs_config controls where build logs are sent.
-	LogsConfig *AwsCodeBuildLogsConfig `protobuf:"bytes,12,opt,name=logs_config,json=logsConfig,proto3" json:"logs_config,omitempty"`
+	LogsConfig *AwsCodeBuildLogsConfig `protobuf:"bytes,13,opt,name=logs_config,json=logsConfig,proto3" json:"logs_config,omitempty"`
 	// vpc_config places the build in a VPC, giving it access to private
 	// resources such as RDS databases, ElastiCache clusters, or internal APIs.
-	VpcConfig *AwsCodeBuildVpcConfig `protobuf:"bytes,13,opt,name=vpc_config,json=vpcConfig,proto3" json:"vpc_config,omitempty"`
+	VpcConfig *AwsCodeBuildVpcConfig `protobuf:"bytes,14,opt,name=vpc_config,json=vpcConfig,proto3" json:"vpc_config,omitempty"`
 	// webhook configures automatic build triggers from the source provider.
 	// Only valid when source type supports webhooks: GITHUB, BITBUCKET,
 	// GITHUB_ENTERPRISE, GITLAB, GITLAB_SELF_MANAGED, CODECOMMIT.
 	// Omit for CodePipeline-triggered or manual-only projects.
-	Webhook       *AwsCodeBuildWebhook `protobuf:"bytes,14,opt,name=webhook,proto3" json:"webhook,omitempty"`
+	Webhook       *AwsCodeBuildWebhook `protobuf:"bytes,15,opt,name=webhook,proto3" json:"webhook,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -110,6 +113,13 @@ func (x *AwsCodeBuildProjectSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsCodeBuildProjectSpec.ProtoReflect.Descriptor instead.
 func (*AwsCodeBuildProjectSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awscodebuildproject_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsCodeBuildProjectSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsCodeBuildProjectSpec) GetSource() *AwsCodeBuildSource {
@@ -1201,26 +1211,27 @@ var File_org_openmcf_provider_aws_awscodebuildproject_v1_spec_proto protoreflect
 
 const file_org_openmcf_provider_aws_awscodebuildproject_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	":org/openmcf/provider/aws/awscodebuildproject/v1/spec.proto\x12/org.openmcf.provider.aws.awscodebuildproject.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xc3\x13\n" +
-	"\x17AwsCodeBuildProjectSpec\x12c\n" +
-	"\x06source\x18\x01 \x01(\v2C.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildSourceB\x06\xbaH\x03\xc8\x01\x01R\x06source\x12r\n" +
-	"\venvironment\x18\x02 \x01(\v2H.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildEnvironmentB\x06\xbaH\x03\xc8\x01\x01R\venvironment\x12l\n" +
-	"\tartifacts\x18\x03 \x01(\v2F.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildArtifactsB\x06\xbaH\x03\xc8\x01\x01R\tartifacts\x12}\n" +
-	"\fservice_role\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\vserviceRole\x12*\n" +
-	"\vdescription\x18\x05 \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01R\vdescription\x12z\n" +
-	"\x0eencryption_key\x18\x06 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\rencryptionKey\x12:\n" +
-	"\rbuild_timeout\x18\a \x01(\x05B\x10\xbaH\a\x1a\x05\x18\xf0\x10(\x05\x8a\xa6\x1d\x0260H\x00R\fbuildTimeout\x88\x01\x01\x12=\n" +
-	"\x0equeued_timeout\x18\b \x01(\x05B\x11\xbaH\a\x1a\x05\x18\xe0\x03(\x05\x8a\xa6\x1d\x03480H\x01R\rqueuedTimeout\x88\x01\x01\x12@\n" +
-	"\x16concurrent_build_limit\x18\t \x01(\x05B\n" +
+	":org/openmcf/provider/aws/awscodebuildproject/v1/spec.proto\x12/org.openmcf.provider.aws.awscodebuildproject.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xe4\x13\n" +
+	"\x17AwsCodeBuildProjectSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12c\n" +
+	"\x06source\x18\x02 \x01(\v2C.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildSourceB\x06\xbaH\x03\xc8\x01\x01R\x06source\x12r\n" +
+	"\venvironment\x18\x03 \x01(\v2H.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildEnvironmentB\x06\xbaH\x03\xc8\x01\x01R\venvironment\x12l\n" +
+	"\tartifacts\x18\x04 \x01(\v2F.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildArtifactsB\x06\xbaH\x03\xc8\x01\x01R\tartifacts\x12}\n" +
+	"\fservice_role\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\vserviceRole\x12*\n" +
+	"\vdescription\x18\x06 \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01R\vdescription\x12z\n" +
+	"\x0eencryption_key\x18\a \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\rencryptionKey\x12:\n" +
+	"\rbuild_timeout\x18\b \x01(\x05B\x10\xbaH\a\x1a\x05\x18\xf0\x10(\x05\x8a\xa6\x1d\x0260H\x00R\fbuildTimeout\x88\x01\x01\x12=\n" +
+	"\x0equeued_timeout\x18\t \x01(\x05B\x11\xbaH\a\x1a\x05\x18\xe0\x03(\x05\x8a\xa6\x1d\x03480H\x01R\rqueuedTimeout\x88\x01\x01\x12@\n" +
+	"\x16concurrent_build_limit\x18\n" +
+	" \x01(\x05B\n" +
 	"\xbaH\a\xd8\x01\x01\x1a\x02(\x01R\x14concurrentBuildLimit\x12%\n" +
-	"\x0esource_version\x18\n" +
-	" \x01(\tR\rsourceVersion\x12X\n" +
-	"\x05cache\x18\v \x01(\v2B.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildCacheR\x05cache\x12h\n" +
-	"\vlogs_config\x18\f \x01(\v2G.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildLogsConfigR\n" +
+	"\x0esource_version\x18\v \x01(\tR\rsourceVersion\x12X\n" +
+	"\x05cache\x18\f \x01(\v2B.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildCacheR\x05cache\x12h\n" +
+	"\vlogs_config\x18\r \x01(\v2G.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildLogsConfigR\n" +
 	"logsConfig\x12e\n" +
 	"\n" +
-	"vpc_config\x18\r \x01(\v2F.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildVpcConfigR\tvpcConfig\x12^\n" +
-	"\awebhook\x18\x0e \x01(\v2D.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildWebhookR\awebhook:\xa5\t\xbaH\xa1\t\x1a\xd3\x01\n" +
+	"vpc_config\x18\x0e \x01(\v2F.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildVpcConfigR\tvpcConfig\x12^\n" +
+	"\awebhook\x18\x0f \x01(\v2D.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildWebhookR\awebhook:\xa5\t\xbaH\xa1\t\x1a\xd3\x01\n" +
 	"#codepipeline_source_artifacts_match\x12[when source.type is CODEPIPELINE, artifacts.type must also be CODEPIPELINE (and vice versa)\x1aO(this.source.type == 'CODEPIPELINE') == (this.artifacts.type == 'CODEPIPELINE')\x1a\xba\x01\n" +
 	"\x18source_location_required\x12Msource.location is required when source.type is not CODEPIPELINE or NO_SOURCE\x1aOthis.source.type in ['CODEPIPELINE', 'NO_SOURCE'] || this.source.location != ''\x1a\x9e\x01\n" +
 	" buildspec_required_for_no_source\x12:source.buildspec is required when source.type is NO_SOURCE\x1a>this.source.type != 'NO_SOURCE' || this.source.buildspec != ''\x1a\x96\x01\n" +

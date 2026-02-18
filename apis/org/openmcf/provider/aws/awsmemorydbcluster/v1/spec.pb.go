@@ -51,83 +51,86 @@ const (
 // - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 type AwsMemorydbClusterSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Cache engine to use. Redis is the standard choice; Valkey is the
 	// open-source Redis-compatible alternative. Values: "redis", "valkey".
-	Engine string `protobuf:"bytes,1,opt,name=engine,proto3" json:"engine,omitempty"`
+	Engine string `protobuf:"bytes,2,opt,name=engine,proto3" json:"engine,omitempty"`
 	// Engine version to deploy. Examples: "7.1", "7.0", "6.2" for Redis;
 	// "7.2" for Valkey. Leave empty to use the provider default.
-	EngineVersion string `protobuf:"bytes,2,opt,name=engine_version,json=engineVersion,proto3" json:"engine_version,omitempty"`
+	EngineVersion string `protobuf:"bytes,3,opt,name=engine_version,json=engineVersion,proto3" json:"engine_version,omitempty"`
 	// Human-readable description for the cluster.
-	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	// MemoryDB node type. Determines CPU, memory, and network capacity.
 	// Examples: "db.t4g.small" (dev), "db.r7g.large" (production),
 	// "db.r6gd.xlarge" (data tiering).
-	NodeType string `protobuf:"bytes,4,opt,name=node_type,json=nodeType,proto3" json:"node_type,omitempty"`
+	NodeType string `protobuf:"bytes,5,opt,name=node_type,json=nodeType,proto3" json:"node_type,omitempty"`
 	// Port on which the cluster accepts connections. Default: 6379.
 	// ForceNew — changing it destroys and recreates the cluster.
-	Port *int32 `protobuf:"varint,5,opt,name=port,proto3,oneof" json:"port,omitempty"`
+	Port *int32 `protobuf:"varint,6,opt,name=port,proto3,oneof" json:"port,omitempty"`
 	// Number of shards (data partitions) in the cluster. Each shard holds a
 	// portion of the keyspace. Default: 1.
-	NumShards *int32 `protobuf:"varint,6,opt,name=num_shards,json=numShards,proto3,oneof" json:"num_shards,omitempty"`
+	NumShards *int32 `protobuf:"varint,7,opt,name=num_shards,json=numShards,proto3,oneof" json:"num_shards,omitempty"`
 	// Number of read replicas per shard. Range: 0–5. Default: 1 (i.e., each
 	// shard has 1 primary + 1 replica = 2 nodes).
-	NumReplicasPerShard *int32 `protobuf:"varint,7,opt,name=num_replicas_per_shard,json=numReplicasPerShard,proto3,oneof" json:"num_replicas_per_shard,omitempty"`
+	NumReplicasPerShard *int32 `protobuf:"varint,8,opt,name=num_replicas_per_shard,json=numReplicasPerShard,proto3,oneof" json:"num_replicas_per_shard,omitempty"`
 	// Name of the MemoryDB Access Control List (ACL) to associate with the cluster.
 	// The ACL defines which users can access the cluster and what commands they can
 	// execute. Use "open-access" for development (no authentication required when
 	// TLS is enabled) or reference a custom ACL for production.
 	// When tls_enabled is false, this must be "open-access".
-	AclName *string `protobuf:"bytes,8,opt,name=acl_name,json=aclName,proto3,oneof" json:"acl_name,omitempty"`
+	AclName *string `protobuf:"bytes,9,opt,name=acl_name,json=aclName,proto3,oneof" json:"acl_name,omitempty"`
 	// Subnet IDs for the MemoryDB subnet group. Provide subnets in at least two
 	// AZs for multi-AZ resilience. A subnet group is created automatically from
 	// these subnets.
-	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,9,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
+	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,10,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// VPC security groups to attach to the cluster nodes. Controls network-level
 	// access to the MemoryDB endpoint.
-	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,10,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
+	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,11,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
 	// Enable TLS for in-transit encryption on all client connections. When false,
 	// acl_name must be "open-access". ForceNew — changing it destroys and
 	// recreates the cluster.
-	TlsEnabled *bool `protobuf:"varint,11,opt,name=tls_enabled,json=tlsEnabled,proto3,oneof" json:"tls_enabled,omitempty"`
+	TlsEnabled *bool `protobuf:"varint,12,opt,name=tls_enabled,json=tlsEnabled,proto3,oneof" json:"tls_enabled,omitempty"`
 	// Customer-managed KMS key ARN for at-rest encryption. MemoryDB always encrypts
 	// data at rest; this field optionally specifies your own key instead of the
 	// AWS-managed key. ForceNew — changing it destroys and recreates the cluster.
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,12,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,13,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// Weekly maintenance window in UTC. Format: "ddd:hh24:mi-ddd:hh24:mi".
 	// Example: "sun:05:00-sun:06:00". Leave empty for AWS-assigned default.
-	MaintenanceWindow string `protobuf:"bytes,13,opt,name=maintenance_window,json=maintenanceWindow,proto3" json:"maintenance_window,omitempty"`
+	MaintenanceWindow string `protobuf:"bytes,14,opt,name=maintenance_window,json=maintenanceWindow,proto3" json:"maintenance_window,omitempty"`
 	// Number of days to retain automatic snapshots. 0 disables automatic snapshots.
 	// Range: 0–35.
-	SnapshotRetentionLimit int32 `protobuf:"varint,14,opt,name=snapshot_retention_limit,json=snapshotRetentionLimit,proto3" json:"snapshot_retention_limit,omitempty"`
+	SnapshotRetentionLimit int32 `protobuf:"varint,15,opt,name=snapshot_retention_limit,json=snapshotRetentionLimit,proto3" json:"snapshot_retention_limit,omitempty"`
 	// Daily snapshot window in UTC. Format: "hh24:mi-hh24:mi".
 	// Example: "05:00-09:00". Leave empty for AWS-assigned default.
-	SnapshotWindow string `protobuf:"bytes,15,opt,name=snapshot_window,json=snapshotWindow,proto3" json:"snapshot_window,omitempty"`
+	SnapshotWindow string `protobuf:"bytes,16,opt,name=snapshot_window,json=snapshotWindow,proto3" json:"snapshot_window,omitempty"`
 	// Name of the final snapshot to create when the cluster is deleted. If not
 	// provided, no final snapshot is created.
-	FinalSnapshotName string `protobuf:"bytes,16,opt,name=final_snapshot_name,json=finalSnapshotName,proto3" json:"final_snapshot_name,omitempty"`
+	FinalSnapshotName string `protobuf:"bytes,17,opt,name=final_snapshot_name,json=finalSnapshotName,proto3" json:"final_snapshot_name,omitempty"`
 	// ARN(s) of RDB snapshot files stored in S3 to restore data from.
 	// ForceNew — only used at cluster creation time. Mutually exclusive with
 	// snapshot_name.
-	SnapshotArns []string `protobuf:"bytes,17,rep,name=snapshot_arns,json=snapshotArns,proto3" json:"snapshot_arns,omitempty"`
+	SnapshotArns []string `protobuf:"bytes,18,rep,name=snapshot_arns,json=snapshotArns,proto3" json:"snapshot_arns,omitempty"`
 	// Name of a MemoryDB snapshot to restore from. ForceNew — only used at
 	// cluster creation time. Mutually exclusive with snapshot_arns.
-	SnapshotName string `protobuf:"bytes,18,opt,name=snapshot_name,json=snapshotName,proto3" json:"snapshot_name,omitempty"`
+	SnapshotName string `protobuf:"bytes,19,opt,name=snapshot_name,json=snapshotName,proto3" json:"snapshot_name,omitempty"`
 	// Parameter group family. Required when `parameters` is provided.
 	// Examples: "memorydb_redis7", "memorydb_redis6".
-	ParameterGroupFamily string `protobuf:"bytes,19,opt,name=parameter_group_family,json=parameterGroupFamily,proto3" json:"parameter_group_family,omitempty"`
+	ParameterGroupFamily string `protobuf:"bytes,20,opt,name=parameter_group_family,json=parameterGroupFamily,proto3" json:"parameter_group_family,omitempty"`
 	// Custom MemoryDB parameters to apply via a managed parameter group.
 	// Common examples: activedefrag, maxmemory-policy.
-	Parameters []*AwsMemorydbClusterParameter `protobuf:"bytes,20,rep,name=parameters,proto3" json:"parameters,omitempty"`
+	Parameters []*AwsMemorydbClusterParameter `protobuf:"bytes,21,rep,name=parameters,proto3" json:"parameters,omitempty"`
 	// SNS topic ARN for cluster event notifications (failover, maintenance,
 	// configuration changes, etc.).
-	SnsTopicArn *v1.StringValueOrRef `protobuf:"bytes,21,opt,name=sns_topic_arn,json=snsTopicArn,proto3" json:"sns_topic_arn,omitempty"`
+	SnsTopicArn *v1.StringValueOrRef `protobuf:"bytes,22,opt,name=sns_topic_arn,json=snsTopicArn,proto3" json:"sns_topic_arn,omitempty"`
 	// Automatically apply minor engine version upgrades during maintenance windows.
 	// Default: true.
-	AutoMinorVersionUpgrade *bool `protobuf:"varint,22,opt,name=auto_minor_version_upgrade,json=autoMinorVersionUpgrade,proto3,oneof" json:"auto_minor_version_upgrade,omitempty"`
+	AutoMinorVersionUpgrade *bool `protobuf:"varint,23,opt,name=auto_minor_version_upgrade,json=autoMinorVersionUpgrade,proto3,oneof" json:"auto_minor_version_upgrade,omitempty"`
 	// Enable data tiering — automatically moves less-frequently-accessed data to
 	// SSD storage for cost efficiency with large datasets. Only available on
 	// specific node types (db.r6gd.*). ForceNew — cannot be changed after creation.
-	DataTiering   bool `protobuf:"varint,23,opt,name=data_tiering,json=dataTiering,proto3" json:"data_tiering,omitempty"`
+	DataTiering   bool `protobuf:"varint,24,opt,name=data_tiering,json=dataTiering,proto3" json:"data_tiering,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -160,6 +163,13 @@ func (x *AwsMemorydbClusterSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsMemorydbClusterSpec.ProtoReflect.Descriptor instead.
 func (*AwsMemorydbClusterSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsmemorydbcluster_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsMemorydbClusterSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsMemorydbClusterSpec) GetEngine() string {
@@ -384,38 +394,39 @@ var File_org_openmcf_provider_aws_awsmemorydbcluster_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_aws_awsmemorydbcluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/aws/awsmemorydbcluster/v1/spec.proto\x12.org.openmcf.provider.aws.awsmemorydbcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xad\x13\n" +
-	"\x16AwsMemorydbClusterSpec\x12\x1e\n" +
-	"\x06engine\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06engine\x12%\n" +
-	"\x0eengine_version\x18\x02 \x01(\tR\rengineVersion\x12 \n" +
-	"\vdescription\x18\x03 \x01(\tR\vdescription\x12#\n" +
-	"\tnode_type\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bnodeType\x12,\n" +
-	"\x04port\x18\x05 \x01(\x05B\x13\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01\x8a\xa6\x1d\x046379H\x00R\x04port\x88\x01\x01\x120\n" +
+	"9org/openmcf/provider/aws/awsmemorydbcluster/v1/spec.proto\x12.org.openmcf.provider.aws.awsmemorydbcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xce\x13\n" +
+	"\x16AwsMemorydbClusterSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x1e\n" +
+	"\x06engine\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06engine\x12%\n" +
+	"\x0eengine_version\x18\x03 \x01(\tR\rengineVersion\x12 \n" +
+	"\vdescription\x18\x04 \x01(\tR\vdescription\x12#\n" +
+	"\tnode_type\x18\x05 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bnodeType\x12,\n" +
+	"\x04port\x18\x06 \x01(\x05B\x13\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01\x8a\xa6\x1d\x046379H\x00R\x04port\x88\x01\x01\x120\n" +
 	"\n" +
-	"num_shards\x18\x06 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x01R\tnumShards\x88\x01\x01\x12H\n" +
-	"\x16num_replicas_per_shard\x18\a \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18\x05(\x00\x8a\xa6\x1d\x011H\x02R\x13numReplicasPerShard\x88\x01\x01\x126\n" +
-	"\bacl_name\x18\b \x01(\tB\x16\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\vopen-accessH\x03R\aaclName\x88\x01\x01\x12\x81\x01\n" +
+	"num_shards\x18\a \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x01R\tnumShards\x88\x01\x01\x12H\n" +
+	"\x16num_replicas_per_shard\x18\b \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18\x05(\x00\x8a\xa6\x1d\x011H\x02R\x13numReplicasPerShard\x88\x01\x01\x126\n" +
+	"\bacl_name\x18\t \x01(\tB\x16\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\vopen-accessH\x03R\aaclName\x88\x01\x01\x12\x81\x01\n" +
 	"\n" +
-	"subnet_ids\x18\t \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
-	"\x12security_group_ids\x18\n" +
-	" \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12.\n" +
-	"\vtls_enabled\x18\v \x01(\bB\b\x8a\xa6\x1d\x04trueH\x04R\n" +
+	"subnet_ids\x18\n" +
+	" \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
+	"\x12security_group_ids\x18\v \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12.\n" +
+	"\vtls_enabled\x18\f \x01(\bB\b\x8a\xa6\x1d\x04trueH\x04R\n" +
 	"tlsEnabled\x88\x01\x01\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12\xb4\x01\n" +
-	"\x12maintenance_window\x18\r \x01(\tB\x84\x01\xbaH\x80\x01\xd8\x01\x01r{2y^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$R\x11maintenanceWindow\x12C\n" +
-	"\x18snapshot_retention_limit\x18\x0e \x01(\x05B\t\xbaH\x06\x1a\x04\x18#(\x00R\x16snapshotRetentionLimit\x12p\n" +
-	"\x0fsnapshot_window\x18\x0f \x01(\tBG\xbaHD\xd8\x01\x01r?2=^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$R\x0esnapshotWindow\x12.\n" +
-	"\x13final_snapshot_name\x18\x10 \x01(\tR\x11finalSnapshotName\x12#\n" +
-	"\rsnapshot_arns\x18\x11 \x03(\tR\fsnapshotArns\x12#\n" +
-	"\rsnapshot_name\x18\x12 \x01(\tR\fsnapshotName\x124\n" +
-	"\x16parameter_group_family\x18\x13 \x01(\tR\x14parameterGroupFamily\x12k\n" +
+	"kms_key_id\x18\r \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12\xb4\x01\n" +
+	"\x12maintenance_window\x18\x0e \x01(\tB\x84\x01\xbaH\x80\x01\xd8\x01\x01r{2y^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$R\x11maintenanceWindow\x12C\n" +
+	"\x18snapshot_retention_limit\x18\x0f \x01(\x05B\t\xbaH\x06\x1a\x04\x18#(\x00R\x16snapshotRetentionLimit\x12p\n" +
+	"\x0fsnapshot_window\x18\x10 \x01(\tBG\xbaHD\xd8\x01\x01r?2=^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$R\x0esnapshotWindow\x12.\n" +
+	"\x13final_snapshot_name\x18\x11 \x01(\tR\x11finalSnapshotName\x12#\n" +
+	"\rsnapshot_arns\x18\x12 \x03(\tR\fsnapshotArns\x12#\n" +
+	"\rsnapshot_name\x18\x13 \x01(\tR\fsnapshotName\x124\n" +
+	"\x16parameter_group_family\x18\x14 \x01(\tR\x14parameterGroupFamily\x12k\n" +
 	"\n" +
-	"parameters\x18\x14 \x03(\v2K.org.openmcf.provider.aws.awsmemorydbcluster.v1.AwsMemorydbClusterParameterR\n" +
+	"parameters\x18\x15 \x03(\v2K.org.openmcf.provider.aws.awsmemorydbcluster.v1.AwsMemorydbClusterParameterR\n" +
 	"parameters\x12y\n" +
-	"\rsns_topic_arn\x18\x15 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe2\x01\x92\xd4a\x18status.outputs.topic_arnR\vsnsTopicArn\x12J\n" +
-	"\x1aauto_minor_version_upgrade\x18\x16 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x05R\x17autoMinorVersionUpgrade\x88\x01\x01\x12!\n" +
-	"\fdata_tiering\x18\x17 \x01(\bR\vdataTiering:\x89\x05\xbaH\x85\x05\x1a]\n" +
+	"\rsns_topic_arn\x18\x16 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe2\x01\x92\xd4a\x18status.outputs.topic_arnR\vsnsTopicArn\x12J\n" +
+	"\x1aauto_minor_version_upgrade\x18\x17 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x05R\x17autoMinorVersionUpgrade\x88\x01\x01\x12!\n" +
+	"\fdata_tiering\x18\x18 \x01(\bR\vdataTiering:\x89\x05\xbaH\x85\x05\x1a]\n" +
 	"\x13engine_valid_values\x12\"engine must be 'redis' or 'valkey'\x1a\"this.engine in ['redis', 'valkey']\x1a\xcb\x01\n" +
 	"!tls_disabled_requires_open_access\x129when tls_enabled is false, acl_name must be 'open-access'\x1ak!has(this.tls_enabled) || this.tls_enabled == true || !has(this.acl_name) || this.acl_name == 'open-access'\x1a\x9e\x01\n" +
 	"\x19parameters_require_family\x12?parameter_group_family is required when parameters are provided\x1a@this.parameters.size() == 0 || this.parameter_group_family != ''\x1a\xb4\x01\n" +

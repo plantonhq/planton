@@ -31,6 +31,7 @@ var _ = ginkgo.Describe("AwsEcsService Custom Validation Tests", func() {
 						Name: "test-service",
 					},
 					Spec: &AwsEcsServiceSpec{
+						Region: "us-east-1",
 						ClusterArn: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 								Value: "arn:aws:ecs:us-east-1:123456789012:cluster/my-cluster"},
@@ -82,6 +83,7 @@ var _ = ginkgo.Describe("AwsEcsService Custom Validation Tests", func() {
 					Name: "test-service",
 				},
 				Spec: &AwsEcsServiceSpec{
+					Region: "us-east-1",
 					ClusterArn: &foreignkeyv1.StringValueOrRef{
 						LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 							Value: "arn:aws:ecs:us-east-1:123456789012:cluster/test-cluster"},
@@ -123,6 +125,7 @@ var _ = ginkgo.Describe("AwsEcsService Custom Validation Tests", func() {
 					Name: "test-service",
 				},
 				Spec: &AwsEcsServiceSpec{
+					Region: "us-east-1",
 					ClusterArn: &foreignkeyv1.StringValueOrRef{
 						LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 							Value: "arn:aws:ecs:us-east-1:123456789012:cluster/test-cluster"},
@@ -164,6 +167,7 @@ var _ = ginkgo.Describe("AwsEcsService Custom Validation Tests", func() {
 					Name: "test-service",
 				},
 				Spec: &AwsEcsServiceSpec{
+					Region: "us-east-1",
 					ClusterArn: &foreignkeyv1.StringValueOrRef{
 						LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 							Value: "arn:aws:ecs:us-east-1:123456789012:cluster/test-cluster"},
@@ -227,6 +231,7 @@ var _ = ginkgo.Describe("AwsEcsService Custom Validation Tests", func() {
 					Name: "test-service",
 				},
 				Spec: &AwsEcsServiceSpec{
+					Region: "us-east-1",
 					ClusterArn: &foreignkeyv1.StringValueOrRef{
 						LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 							Value: "arn:aws:ecs:us-east-1:123456789012:cluster/test-cluster"},
@@ -310,6 +315,7 @@ var _ = ginkgo.Describe("AwsEcsService Custom Validation Tests", func() {
 					Name: "test-service",
 				},
 				Spec: &AwsEcsServiceSpec{
+					Region: "us-east-1",
 					ClusterArn: &foreignkeyv1.StringValueOrRef{
 						LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 							Value: "arn:aws:ecs:us-east-1:123456789012:cluster/test-cluster"},

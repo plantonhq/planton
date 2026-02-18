@@ -11,6 +11,7 @@ kind: AwsRedshiftCluster
 metadata:
   name: dev-analytics
 spec:
+  region: us-west-2
   nodeType: dc2.large
   numberOfNodes: 1
   databaseName: dev
@@ -42,6 +43,7 @@ kind: AwsRedshiftCluster
 metadata:
   name: prod-warehouse
 spec:
+  region: us-west-2
   nodeType: ra3.xlplus
   numberOfNodes: 2
   databaseName: warehouse

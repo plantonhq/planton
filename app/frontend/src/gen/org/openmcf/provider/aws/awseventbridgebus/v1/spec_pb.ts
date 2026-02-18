@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awseventbridgebus/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awseventbridgebus_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjhvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZXZlbnRicmlkZ2VidXMvdjEvc3BlYy5wcm90bxItb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2V2ZW50YnJpZGdlYnVzLnYxIpkFChVBd3NFdmVudEJyaWRnZUJ1c1NwZWMSHQoLZGVzY3JpcHRpb24YASABKAlCCLpIBXIDGIAEEm8KEmttc19rZXlfaWRlbnRpZmllchgCIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SGQoRZXZlbnRfc291cmNlX25hbWUYAyABKAkSbAoSZGVhZF9sZXR0ZXJfY29uZmlnGAQgASgLMlAub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2V2ZW50YnJpZGdlYnVzLnYxLkF3c0V2ZW50QnJpZGdlQnVzRGVhZExldHRlckNvbmZpZxJdCgpsb2dfY29uZmlnGAUgASgLMkkub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2V2ZW50YnJpZGdlYnVzLnYxLkF3c0V2ZW50QnJpZGdlQnVzTG9nQ29uZmlnOocCukiDAhqAAgoZZXZlbnRfc291cmNlX25hbWVfcGF0dGVybhJ4ZXZlbnRfc291cmNlX25hbWUgbXVzdCBtYXRjaCB0aGUgcGF0dGVybiBhd3MucGFydG5lci97cGFydG5lcn0vey4uLn0gKGUuZy4sIGF3cy5wYXJ0bmVyL2V4YW1wbGUuY29tL3RlbmFudC9ldmVudC1zb3VyY2UpGml0aGlzLmV2ZW50X3NvdXJjZV9uYW1lID09ICcnIHx8IHRoaXMuZXZlbnRfc291cmNlX25hbWUubWF0Y2hlcygnXmF3c1xcLnBhcnRuZXIoL1suXFwtX0EtWmEtejAtOV0rKXsyLH0kJykijQEKIUF3c0V2ZW50QnJpZGdlQnVzRGVhZExldHRlckNvbmZpZxJoCgNhcm4YASABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQie6SAPIAQGI1GHhAZLUYRhzdGF0dXMub3V0cHV0cy5xdWV1ZV9hcm4i0QIKGkF3c0V2ZW50QnJpZGdlQnVzTG9nQ29uZmlnEhUKBWxldmVsGAEgASgJQga6SAPIAQESFgoOaW5jbHVkZV9kZXRhaWwYAiABKAk6gwK6SP8BGnIKEGxvZ19sZXZlbF92YWx1ZXMSLWxldmVsIG11c3QgYmUgb25lIG9mOiBPRkYsIEVSUk9SLCBJTkZPLCBUUkFDRRovdGhpcy5sZXZlbCBpbiBbJ09GRicsICdFUlJPUicsICdJTkZPJywgJ1RSQUNFJ10aiAEKFWluY2x1ZGVfZGV0YWlsX3ZhbHVlcxIpaW5jbHVkZV9kZXRhaWwgbXVzdCBiZSBvbmUgb2Y6IE5PTkUsIEZVTEwaRHRoaXMuaW5jbHVkZV9kZXRhaWwgPT0gJycgfHwgdGhpcy5pbmNsdWRlX2RldGFpbCBpbiBbJ05PTkUnLCAnRlVMTCddQv4CCjFjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2V2ZW50YnJpZGdlYnVzLnYxQglTcGVjUHJvdG9QAVpjZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NldmVudGJyaWRnZWJ1cy92MTthd3NldmVudGJyaWRnZWJ1c3YxogIFT09QQUGqAi1PcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzZXZlbnRicmlkZ2VidXMuVjHKAi1PcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZXZlbnRicmlkZ2VidXNcVjHiAjlPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZXZlbnRicmlkZ2VidXNcVjFcR1BCTWV0YWRhdGHqAjJPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c2V2ZW50YnJpZGdlYnVzOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
+  fileDesc("Cjhvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZXZlbnRicmlkZ2VidXMvdjEvc3BlYy5wcm90bxItb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2V2ZW50YnJpZGdlYnVzLnYxIrIFChVBd3NFdmVudEJyaWRnZUJ1c1NwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEh0KC2Rlc2NyaXB0aW9uGAIgASgJQgi6SAVyAxiABBJvChJrbXNfa2V5X2lkZW50aWZpZXIYAyABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQh+I1GHbAZLUYRZzdGF0dXMub3V0cHV0cy5rZXlfYXJuEhkKEWV2ZW50X3NvdXJjZV9uYW1lGAQgASgJEmwKEmRlYWRfbGV0dGVyX2NvbmZpZxgFIAEoCzJQLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NldmVudGJyaWRnZWJ1cy52MS5Bd3NFdmVudEJyaWRnZUJ1c0RlYWRMZXR0ZXJDb25maWcSXQoKbG9nX2NvbmZpZxgGIAEoCzJJLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NldmVudGJyaWRnZWJ1cy52MS5Bd3NFdmVudEJyaWRnZUJ1c0xvZ0NvbmZpZzqHArpIgwIagAIKGWV2ZW50X3NvdXJjZV9uYW1lX3BhdHRlcm4SeGV2ZW50X3NvdXJjZV9uYW1lIG11c3QgbWF0Y2ggdGhlIHBhdHRlcm4gYXdzLnBhcnRuZXIve3BhcnRuZXJ9L3suLi59IChlLmcuLCBhd3MucGFydG5lci9leGFtcGxlLmNvbS90ZW5hbnQvZXZlbnQtc291cmNlKRppdGhpcy5ldmVudF9zb3VyY2VfbmFtZSA9PSAnJyB8fCB0aGlzLmV2ZW50X3NvdXJjZV9uYW1lLm1hdGNoZXMoJ15hd3NcXC5wYXJ0bmVyKC9bLlxcLV9BLVphLXowLTldKyl7Mix9JCcpIo0BCiFBd3NFdmVudEJyaWRnZUJ1c0RlYWRMZXR0ZXJDb25maWcSaAoDYXJuGAEgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkInukgDyAEBiNRh4QGS1GEYc3RhdHVzLm91dHB1dHMucXVldWVfYXJuItECChpBd3NFdmVudEJyaWRnZUJ1c0xvZ0NvbmZpZxIVCgVsZXZlbBgBIAEoCUIGukgDyAEBEhYKDmluY2x1ZGVfZGV0YWlsGAIgASgJOoMCukj/ARpyChBsb2dfbGV2ZWxfdmFsdWVzEi1sZXZlbCBtdXN0IGJlIG9uZSBvZjogT0ZGLCBFUlJPUiwgSU5GTywgVFJBQ0UaL3RoaXMubGV2ZWwgaW4gWydPRkYnLCAnRVJST1InLCAnSU5GTycsICdUUkFDRSddGogBChVpbmNsdWRlX2RldGFpbF92YWx1ZXMSKWluY2x1ZGVfZGV0YWlsIG11c3QgYmUgb25lIG9mOiBOT05FLCBGVUxMGkR0aGlzLmluY2x1ZGVfZGV0YWlsID09ICcnIHx8IHRoaXMuaW5jbHVkZV9kZXRhaWwgaW4gWydOT05FJywgJ0ZVTEwnXUL+AgoxY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NldmVudGJyaWRnZWJ1cy52MUIJU3BlY1Byb3RvUAFaY2dpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZXZlbnRicmlkZ2VidXMvdjE7YXdzZXZlbnRicmlkZ2VidXN2MaICBU9PUEFBqgItT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2V2ZW50YnJpZGdlYnVzLlYxygItT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2V2ZW50YnJpZGdlYnVzXFYx4gI5T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2V2ZW50YnJpZGdlYnVzXFYxXEdQQk1ldGFkYXRh6gIyT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NldmVudGJyaWRnZWJ1czo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
 
 /**
  * AwsEventBridgeBusSpec defines the desired configuration for an AWS EventBridge
@@ -37,18 +37,22 @@ export const file_org_openmcf_provider_aws_awseventbridgebus_v1_spec: GenFile = 
  * - Credentials, region, and deployment workflow live outside this spec in stack
  *   inputs.
  *
- * ---------------------------------------------------------------------------
- * Core configuration
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awseventbridgebus.v1.AwsEventBridgeBusSpec
  */
 export type AwsEventBridgeBusSpec = Message<"org.openmcf.provider.aws.awseventbridgebus.v1.AwsEventBridgeBusSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * Human-readable description of the event bus.
    * Maximum length is 512 characters.
    *
-   * @generated from field: string description = 1;
+   * @generated from field: string description = 2;
    */
   description: string;
 
@@ -59,7 +63,7 @@ export type AwsEventBridgeBusSpec = Message<"org.openmcf.provider.aws.awseventbr
    *
    * Accepts a direct value or a reference to an AwsKmsKey resource.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_identifier = 2;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_identifier = 3;
    */
   kmsKeyIdentifier?: StringValueOrRef;
 
@@ -72,7 +76,7 @@ export type AwsEventBridgeBusSpec = Message<"org.openmcf.provider.aws.awseventbr
    *
    * This field is immutable — changing it forces bus replacement.
    *
-   * @generated from field: string event_source_name = 3;
+   * @generated from field: string event_source_name = 4;
    */
   eventSourceName: string;
 
@@ -85,7 +89,7 @@ export type AwsEventBridgeBusSpec = Message<"org.openmcf.provider.aws.awseventbr
    * to ANY target on any rule attached to this bus. Individual rules can also
    * have their own DLQ configuration (configured on AwsEventBridgeRule).
    *
-   * @generated from field: org.openmcf.provider.aws.awseventbridgebus.v1.AwsEventBridgeBusDeadLetterConfig dead_letter_config = 4;
+   * @generated from field: org.openmcf.provider.aws.awseventbridgebus.v1.AwsEventBridgeBusDeadLetterConfig dead_letter_config = 5;
    */
   deadLetterConfig?: AwsEventBridgeBusDeadLetterConfig;
 
@@ -94,7 +98,7 @@ export type AwsEventBridgeBusSpec = Message<"org.openmcf.provider.aws.awseventbr
    * event delivery logs to CloudWatch Logs. Useful for debugging event
    * routing, monitoring delivery failures, and auditing event traffic.
    *
-   * @generated from field: org.openmcf.provider.aws.awseventbridgebus.v1.AwsEventBridgeBusLogConfig log_config = 5;
+   * @generated from field: org.openmcf.provider.aws.awseventbridgebus.v1.AwsEventBridgeBusLogConfig log_config = 6;
    */
   logConfig?: AwsEventBridgeBusLogConfig;
 };

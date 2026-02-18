@@ -3,6 +3,7 @@ kind: AwsRedisElasticache
 metadata:
   name: my-redis
 spec:
+  region: us-west-2
   engine: redis
   engineVersion: "7.1"
   description: Single-node Redis cache for development

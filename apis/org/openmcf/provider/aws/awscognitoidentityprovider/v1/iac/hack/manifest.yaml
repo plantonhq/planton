@@ -6,6 +6,7 @@ metadata:
   env: dev
   id: awscogidp-test-google-idp
 spec:
+  region: us-west-2
   userPoolId: "us-east-1_TestPool123"
   providerName: Google
   providerType: Google

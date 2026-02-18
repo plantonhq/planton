@@ -47,6 +47,9 @@ const (
 // Credentials, region, and deployment workflow live outside this spec in stack inputs.
 type AwsNetworkLoadBalancerSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Subnet mappings define where NLB nodes are placed and optionally assign
 	// static IP addresses. Each mapping corresponds to one Availability Zone.
 	//
@@ -58,29 +61,29 @@ type AwsNetworkLoadBalancerSpec struct {
 	//
 	// At least one subnet mapping is required. AWS recommends at least two for
 	// high availability across Availability Zones.
-	SubnetMappings []*AwsNetworkLoadBalancerSubnetMapping `protobuf:"bytes,1,rep,name=subnet_mappings,json=subnetMappings,proto3" json:"subnet_mappings,omitempty"`
+	SubnetMappings []*AwsNetworkLoadBalancerSubnetMapping `protobuf:"bytes,2,rep,name=subnet_mappings,json=subnetMappings,proto3" json:"subnet_mappings,omitempty"`
 	// Security group IDs to attach to the NLB. Unlike ALB, security groups are
 	// optional for NLB. When omitted, the NLB accepts all traffic on configured
 	// listener ports. When provided, security group rules filter inbound traffic.
 	//
 	// Important: once security groups are attached to an NLB, they cannot be
 	// fully removed -- at least one must remain. Plan accordingly.
-	SecurityGroups []*v1.StringValueOrRef `protobuf:"bytes,2,rep,name=security_groups,json=securityGroups,proto3" json:"security_groups,omitempty"`
+	SecurityGroups []*v1.StringValueOrRef `protobuf:"bytes,3,rep,name=security_groups,json=securityGroups,proto3" json:"security_groups,omitempty"`
 	// When true, creates an internal NLB accessible only within the VPC.
 	// When false (default), creates an internet-facing NLB with public DNS.
-	Internal bool `protobuf:"varint,3,opt,name=internal,proto3" json:"internal,omitempty"`
+	Internal bool `protobuf:"varint,4,opt,name=internal,proto3" json:"internal,omitempty"`
 	// Prevents accidental deletion of the NLB when enabled. Recommended for
 	// production workloads.
-	DeleteProtectionEnabled bool `protobuf:"varint,4,opt,name=delete_protection_enabled,json=deleteProtectionEnabled,proto3" json:"delete_protection_enabled,omitempty"`
+	DeleteProtectionEnabled bool `protobuf:"varint,5,opt,name=delete_protection_enabled,json=deleteProtectionEnabled,proto3" json:"delete_protection_enabled,omitempty"`
 	// Distribute traffic evenly across all registered targets in all enabled
 	// Availability Zones. Default is false for NLB (unlike ALB where cross-zone
 	// is always enabled). Enable this when target distribution across AZs is
 	// uneven or when you need consistent per-target traffic distribution.
-	CrossZoneLoadBalancingEnabled bool `protobuf:"varint,5,opt,name=cross_zone_load_balancing_enabled,json=crossZoneLoadBalancingEnabled,proto3" json:"cross_zone_load_balancing_enabled,omitempty"`
+	CrossZoneLoadBalancingEnabled bool `protobuf:"varint,6,opt,name=cross_zone_load_balancing_enabled,json=crossZoneLoadBalancingEnabled,proto3" json:"cross_zone_load_balancing_enabled,omitempty"`
 	// IP address type for the NLB. Controls whether the NLB uses IPv4 only or
 	// dual-stack (IPv4 + IPv6).
 	// Valid values: "ipv4" (default), "dualstack".
-	IpAddressType string `protobuf:"bytes,6,opt,name=ip_address_type,json=ipAddressType,proto3" json:"ip_address_type,omitempty"`
+	IpAddressType string `protobuf:"bytes,7,opt,name=ip_address_type,json=ipAddressType,proto3" json:"ip_address_type,omitempty"`
 	// Controls how DNS queries from clients are routed to NLB nodes across
 	// Availability Zones. Affects latency and cross-zone traffic costs.
 	//
@@ -92,17 +95,17 @@ type AwsNetworkLoadBalancerSpec struct {
 	//   - "partial_availability_zone_affinity": 85% of requests stay in the
 	//     resolver's AZ, 15% spill to other AZs. Balances affinity with
 	//     availability.
-	DnsRecordClientRoutingPolicy string `protobuf:"bytes,7,opt,name=dns_record_client_routing_policy,json=dnsRecordClientRoutingPolicy,proto3" json:"dns_record_client_routing_policy,omitempty"`
+	DnsRecordClientRoutingPolicy string `protobuf:"bytes,8,opt,name=dns_record_client_routing_policy,json=dnsRecordClientRoutingPolicy,proto3" json:"dns_record_client_routing_policy,omitempty"`
 	// Listeners define the ports and protocols the NLB accepts traffic on.
 	// Each listener includes an inline target group that receives forwarded
 	// connections.
 	//
 	// At least one listener is required. A common pattern is a single TLS
 	// listener on port 443 forwarding to TCP targets on an application port.
-	Listeners []*AwsNetworkLoadBalancerListener `protobuf:"bytes,8,rep,name=listeners,proto3" json:"listeners,omitempty"`
+	Listeners []*AwsNetworkLoadBalancerListener `protobuf:"bytes,9,rep,name=listeners,proto3" json:"listeners,omitempty"`
 	// Optional Route53 DNS configuration. When enabled, creates alias A records
 	// pointing the specified hostnames to the NLB's DNS name.
-	Dns           *AwsNetworkLoadBalancerDns `protobuf:"bytes,9,opt,name=dns,proto3" json:"dns,omitempty"`
+	Dns           *AwsNetworkLoadBalancerDns `protobuf:"bytes,10,opt,name=dns,proto3" json:"dns,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -135,6 +138,13 @@ func (x *AwsNetworkLoadBalancerSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsNetworkLoadBalancerSpec.ProtoReflect.Descriptor instead.
 func (*AwsNetworkLoadBalancerSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsnetworkloadbalancer_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsNetworkLoadBalancerSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsNetworkLoadBalancerSpec) GetSubnetMappings() []*AwsNetworkLoadBalancerSubnetMapping {
@@ -837,18 +847,20 @@ var File_org_openmcf_provider_aws_awsnetworkloadbalancer_v1_spec_proto protorefl
 
 const file_org_openmcf_provider_aws_awsnetworkloadbalancer_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"=org/openmcf/provider/aws/awsnetworkloadbalancer/v1/spec.proto\x122org.openmcf.provider.aws.awsnetworkloadbalancer.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xcd\n" +
+	"=org/openmcf/provider/aws/awsnetworkloadbalancer/v1/spec.proto\x122org.openmcf.provider.aws.awsnetworkloadbalancer.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xee\n" +
 	"\n" +
-	"\x1aAwsNetworkLoadBalancerSpec\x12\x8d\x01\n" +
-	"\x0fsubnet_mappings\x18\x01 \x03(\v2W.org.openmcf.provider.aws.awsnetworkloadbalancer.v1.AwsNetworkLoadBalancerSubnetMappingB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01R\x0esubnetMappings\x12\x86\x01\n" +
-	"\x0fsecurity_groups\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x0esecurityGroups\x12\x1a\n" +
-	"\binternal\x18\x03 \x01(\bR\binternal\x12:\n" +
-	"\x19delete_protection_enabled\x18\x04 \x01(\bR\x17deleteProtectionEnabled\x12H\n" +
-	"!cross_zone_load_balancing_enabled\x18\x05 \x01(\bR\x1dcrossZoneLoadBalancingEnabled\x120\n" +
-	"\x0fip_address_type\x18\x06 \x01(\tB\b\x92\xa6\x1d\x04ipv4R\ripAddressType\x12F\n" +
-	" dns_record_client_routing_policy\x18\a \x01(\tR\x1cdnsRecordClientRoutingPolicy\x12}\n" +
-	"\tlisteners\x18\b \x03(\v2R.org.openmcf.provider.aws.awsnetworkloadbalancer.v1.AwsNetworkLoadBalancerListenerB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01R\tlisteners\x12_\n" +
-	"\x03dns\x18\t \x01(\v2M.org.openmcf.provider.aws.awsnetworkloadbalancer.v1.AwsNetworkLoadBalancerDnsR\x03dns:\x99\x04\xbaH\x95\x04\x1a\x9c\x01\n" +
+	"\x1aAwsNetworkLoadBalancerSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x8d\x01\n" +
+	"\x0fsubnet_mappings\x18\x02 \x03(\v2W.org.openmcf.provider.aws.awsnetworkloadbalancer.v1.AwsNetworkLoadBalancerSubnetMappingB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01R\x0esubnetMappings\x12\x86\x01\n" +
+	"\x0fsecurity_groups\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x0esecurityGroups\x12\x1a\n" +
+	"\binternal\x18\x04 \x01(\bR\binternal\x12:\n" +
+	"\x19delete_protection_enabled\x18\x05 \x01(\bR\x17deleteProtectionEnabled\x12H\n" +
+	"!cross_zone_load_balancing_enabled\x18\x06 \x01(\bR\x1dcrossZoneLoadBalancingEnabled\x120\n" +
+	"\x0fip_address_type\x18\a \x01(\tB\b\x92\xa6\x1d\x04ipv4R\ripAddressType\x12F\n" +
+	" dns_record_client_routing_policy\x18\b \x01(\tR\x1cdnsRecordClientRoutingPolicy\x12}\n" +
+	"\tlisteners\x18\t \x03(\v2R.org.openmcf.provider.aws.awsnetworkloadbalancer.v1.AwsNetworkLoadBalancerListenerB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01R\tlisteners\x12_\n" +
+	"\x03dns\x18\n" +
+	" \x01(\v2M.org.openmcf.provider.aws.awsnetworkloadbalancer.v1.AwsNetworkLoadBalancerDnsR\x03dns:\x99\x04\xbaH\x95\x04\x1a\x9c\x01\n" +
 	"\x15ip_address_type_valid\x126ip_address_type must be 'ipv4' or 'dualstack' when set\x1aKthis.ip_address_type == '' || this.ip_address_type in ['ipv4', 'dualstack']\x1a\xf3\x02\n" +
 	"&dns_record_client_routing_policy_valid\x12\x90\x01dns_record_client_routing_policy must be 'any_availability_zone', 'availability_zone_affinity', or 'partial_availability_zone_affinity' when set\x1a\xb5\x01this.dns_record_client_routing_policy == '' || this.dns_record_client_routing_policy in ['any_availability_zone', 'availability_zone_affinity', 'partial_availability_zone_affinity']\"\xb5\x02\n" +
 	"#AwsNetworkLoadBalancerSubnetMapping\x12\\\n" +

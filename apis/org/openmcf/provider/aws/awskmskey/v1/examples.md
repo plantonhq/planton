@@ -9,6 +9,7 @@ metadata:
   name: app-data-key
   org: my-org
 spec:
+  region: us-east-1
   description: "Encryption key for application data"
   aliasName: "alias/app/data"
 ```
@@ -25,6 +26,7 @@ metadata:
     environment: production
     purpose: rds-encryption
 spec:
+  region: us-east-1
   description: "Production RDS database encryption key"
   aliasName: "alias/prod/rds/main"
   deletionWindowDays: 30
@@ -43,6 +45,7 @@ metadata:
     app: document-storage
     team: backend
 spec:
+  region: us-east-1
   description: "S3 bucket server-side encryption key"
   aliasName: "alias/s3/documents"
   deletionWindowDays: 30
@@ -60,6 +63,7 @@ metadata:
     purpose: ebs-encryption
     environment: production
 spec:
+  region: us-east-1
   description: "EBS volume encryption for EC2 instances"
   aliasName: "alias/ec2/ebs-volumes"
   deletionWindowDays: 30
@@ -74,6 +78,7 @@ metadata:
   name: secrets-manager-key
   org: my-org
 spec:
+  region: us-east-1
   description: "Encryption key for AWS Secrets Manager secrets"
   aliasName: "alias/secrets/app-config"
   deletionWindowDays: 30
@@ -88,6 +93,7 @@ metadata:
   name: rsa-encryption-key
   org: my-org
 spec:
+  region: us-east-1
   keySpec: rsa_2048
   description: "RSA key for asymmetric encryption operations"
   aliasName: "alias/rsa/app-encryption"
@@ -106,6 +112,7 @@ metadata:
   tags:
     purpose: digital-signatures
 spec:
+  region: us-east-1
   keySpec: ecc_nist_p256
   description: "ECC key for signing and verification"
   aliasName: "alias/signing/app-tokens"
@@ -124,6 +131,7 @@ metadata:
   tags:
     environment: development
 spec:
+  region: us-east-1
   description: "Development environment encryption key"
   aliasName: "alias/dev/test"
   deletionWindowDays: 7  # Minimum allowed, use for dev/test only
@@ -138,6 +146,7 @@ metadata:
   name: rsa-4096-key
   org: my-org
 spec:
+  region: us-east-1
   keySpec: rsa_4096
   description: "RSA-4096 key for high-security encryption"
   aliasName: "alias/rsa/high-security"
@@ -158,6 +167,7 @@ metadata:
     environment: production
     app: customer-portal
 spec:
+  region: us-east-1
   description: "Production encryption key for customer data"
   aliasName: "alias/prod/customer-data"
   deletionWindowDays: 30
@@ -172,6 +182,7 @@ metadata:
     environment: staging
     app: customer-portal
 spec:
+  region: us-east-1
   description: "Staging encryption key for customer data"
   aliasName: "alias/staging/customer-data"
   deletionWindowDays: 30
@@ -251,6 +262,7 @@ metadata:
   name: envelope-master-key
   org: my-org
 spec:
+  region: us-east-1
   description: "Master key for envelope encryption (generates DEKs)"
   aliasName: "alias/app/envelope-master"
   deletionWindowDays: 30
@@ -280,6 +292,7 @@ metadata:
   name: shared-snapshots-key
   org: my-org
 spec:
+  region: us-east-1
   description: "Encryption key for cross-account RDS snapshot sharing"
   aliasName: "alias/shared/rds-snapshots"
   deletionWindowDays: 30

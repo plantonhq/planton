@@ -149,7 +149,7 @@ The module supports two provider authentication modes:
 provider, err = aws.NewProvider(ctx, "classic-provider", &aws.ProviderArgs{
     AccessKey: pulumi.String(awsProviderConfig.AccessKeyId),
     SecretKey: pulumi.String(awsProviderConfig.SecretAccessKey),
-    Region:    pulumi.String(awsProviderConfig.GetRegion()),
+    Region:    pulumi.String(locals.AwsRdsCluster.Spec.Region),
     Token:     pulumi.StringPtr(awsProviderConfig.SessionToken),
 })
 ```

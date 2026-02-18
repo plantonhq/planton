@@ -7,6 +7,7 @@ kind: AwsNeptuneCluster
 metadata:
   name: neptune-dev
 spec:
+  region: us-west-2
   subnetIds:
     - value: subnet-0a1b2c3d4e5f00001
     - value: subnet-0a1b2c3d4e5f00002
@@ -21,6 +22,7 @@ kind: AwsNeptuneCluster
 metadata:
   name: neptune-prod
 spec:
+  region: us-west-2
   subnetIds:
     - value: subnet-0a1b2c3d4e5f00001
     - value: subnet-0a1b2c3d4e5f00002
@@ -53,6 +55,7 @@ kind: AwsNeptuneCluster
 metadata:
   name: neptune-serverless
 spec:
+  region: us-west-2
   subnetIds:
     - value: subnet-0a1b2c3d4e5f00001
     - value: subnet-0a1b2c3d4e5f00002
@@ -75,6 +78,7 @@ kind: AwsNeptuneCluster
 metadata:
   name: neptune-app
 spec:
+  region: us-west-2
   subnetIds:
     - valueFrom:
         kind: AwsVpc

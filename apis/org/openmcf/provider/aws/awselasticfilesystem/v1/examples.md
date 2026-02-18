@@ -27,6 +27,7 @@ metadata:
   name: minimal-efs
   org: my-org
 spec:
+  region: us-east-1
   subnet_ids:
     - value: subnet-0a1b2c3d4e5f00001
     - value: subnet-0a1b2c3d4e5f00002
@@ -47,6 +48,7 @@ metadata:
   name: encrypted-elastic-efs
   org: my-org
 spec:
+  region: us-east-1
   encrypted: true
   kms_key_id:
     valueFrom:
@@ -87,6 +89,7 @@ metadata:
   labels:
     environment: development
 spec:
+  region: us-east-1
   availability_zone_name: us-east-1a
   subnet_ids:
     - value: subnet-0a1b2c3d4e5f00001
@@ -109,6 +112,7 @@ metadata:
   name: lifecycle-efs
   org: my-org
 spec:
+  region: us-east-1
   transition_to_ia: AFTER_30_DAYS
   transition_to_archive: AFTER_90_DAYS
   transition_to_primary_storage_class: AFTER_1_ACCESS
@@ -143,6 +147,7 @@ metadata:
   name: ecs-shared-efs
   org: my-org
 spec:
+  region: us-east-1
   subnet_ids:
     - valueFrom:
         kind: AwsVpc
@@ -185,6 +190,7 @@ metadata:
   name: lambda-efs
   org: my-org
 spec:
+  region: us-east-1
   subnet_ids:
     - value: subnet-0a1b2c3d4e5f00001
     - value: subnet-0a1b2c3d4e5f00002
@@ -232,6 +238,7 @@ metadata:
     environment: production
     app: shared-storage
 spec:
+  region: us-east-1
   encrypted: true
   kms_key_id:
     valueFrom:

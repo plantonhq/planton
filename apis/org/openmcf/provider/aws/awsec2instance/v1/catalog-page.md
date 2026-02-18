@@ -34,6 +34,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsEc2Instance.my-instance
 spec:
+  region: us-west-2
   instanceName: my-instance
   amiId: ami-0abcdef1234567890
   instanceType: t3.small
@@ -57,6 +58,7 @@ This creates an EC2 instance in a private subnet using SSM (the default connecti
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the resource will be created (e.g., `us-west-2`) | Must be a valid AWS region |
 | `instanceName` | `string` | Name tag for the EC2 instance | Min length 1 |
 | `amiId` | `string` | Amazon Machine Image ID (e.g., `ami-0abcdef1234567890`) | Must start with `ami-` |
 | `instanceType` | `string` | EC2 instance type determining vCPU and memory (e.g., `t3.small`, `m5.large`) | Min length 1 |
@@ -93,6 +95,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsEc2Instance.backend-server
 spec:
+  region: us-west-2
   instanceName: backend-server
   amiId: ami-0abcdef1234567890
   instanceType: t3.medium
@@ -117,6 +120,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsEc2Instance.bastion
 spec:
+  region: us-west-2
   instanceName: bastion
   amiId: ami-0abcdef1234567890
   instanceType: t3.micro
@@ -143,6 +147,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsEc2Instance.dev-box
 spec:
+  region: us-west-2
   instanceName: dev-box
   amiId: ami-0abcdef1234567890
   instanceType: m5.large
@@ -174,6 +179,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsEc2Instance.prod-api
 spec:
+  region: us-west-2
   instanceName: prod-api
   amiId: ami-0abcdef1234567890
   instanceType: c5.xlarge
@@ -207,6 +213,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsEc2Instance.ref-instance
 spec:
+  region: us-west-2
   instanceName: ref-instance
   amiId: ami-0abcdef1234567890
   instanceType: t3.small

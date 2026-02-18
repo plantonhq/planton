@@ -19,6 +19,7 @@ metadata:
   version:
     message: "Initial cluster"
 spec:
+  region: us-east-1
   enableContainerInsights: true
   capacityProviders:
     - FARGATE
@@ -43,6 +44,7 @@ metadata:
   version:
     message: "Multi capacity providers cluster"
 spec:
+  region: us-east-1
   enableContainerInsights: true
   capacityProviders:
     - FARGATE
@@ -68,6 +70,7 @@ metadata:
   version:
     message: "Exec debugging example"
 spec:
+  region: us-east-1
   enableContainerInsights: true
   capacityProviders:
     - FARGATE
@@ -92,6 +95,7 @@ metadata:
   version:
     message: "Production cluster with full monitoring"
 spec:
+  region: us-east-1
   enableContainerInsights: true
   capacityProviders:
     - FARGATE
@@ -117,6 +121,7 @@ metadata:
   version:
     message: "Development cluster"
 spec:
+  region: us-east-1
   enableContainerInsights: true
   capacityProviders:
     - FARGATE
@@ -141,6 +146,7 @@ metadata:
   version:
     message: "Minimal cluster example"
 spec:
+  region: us-east-1
   enableContainerInsights: true
 ```
 

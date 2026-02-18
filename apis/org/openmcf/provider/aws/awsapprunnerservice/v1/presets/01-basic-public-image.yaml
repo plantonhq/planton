@@ -3,6 +3,7 @@ kind: AwsAppRunnerService
 metadata:
   name: my-web-app
 spec:
+  region: <aws-region>
   # ECR Public image -- no IAM access role needed for pulling
   imageSource:
     imageIdentifier: "<ecr-public-image-uri>"

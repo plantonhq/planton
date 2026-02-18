@@ -21,6 +21,9 @@ variable "metadata" {
 variable "spec" {
   description = "AwsMwaaEnvironmentSpec - desired state of the MWAA environment"
   type = object({
+    # The AWS region where the MWAA environment will be created.
+    region = string
+
     airflow_version                  = optional(string, "")
     airflow_configuration_options    = optional(map(string), {})
 

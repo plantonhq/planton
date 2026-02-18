@@ -34,6 +34,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsMwaaEnvironment.my-airflow
 spec:
+  region: us-west-2
   sourceBucketArn:
     value: arn:aws:s3:::my-airflow-dags
   dagS3Path: dags/
@@ -60,6 +61,7 @@ This creates a private Airflow environment with the default `mw1.small` instance
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the MWAA environment will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `sourceBucketArn` | `StringValueOrRef` | ARN of the S3 bucket containing DAGs, plugins, and requirements. Bucket must have versioning enabled. | Required |
 | `sourceBucketArn.value` | `string` | Direct S3 bucket ARN value | — |
 | `sourceBucketArn.valueFrom` | `object` | Foreign key reference to an AwsS3Bucket resource | Default field: `status.outputs.bucket_arn` |
@@ -129,6 +131,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsMwaaEnvironment.dev-airflow
 spec:
+  region: us-west-2
   sourceBucketArn:
     value: arn:aws:s3:::dev-airflow-bucket
   dagS3Path: dags/
@@ -156,6 +159,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsMwaaEnvironment.prod-airflow
 spec:
+  region: us-east-1
   airflowVersion: "2.10.1"
   sourceBucketArn:
     value: arn:aws:s3:::prod-airflow-bucket
@@ -217,6 +221,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: staging.AwsMwaaEnvironment.team-airflow
 spec:
+  region: us-west-2
   sourceBucketArn:
     valueFrom:
       kind: AwsS3Bucket

@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsvpc/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsvpc_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Ci1vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzdnBjL3YxL3NwZWMucHJvdG8SIm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3N2cGMudjEi+gEKCkF3c1ZwY1NwZWMSGAoIdnBjX2NpZHIYASABKAlCBrpIA8gBARIaChJhdmFpbGFiaWxpdHlfem9uZXMYAiADKAkSMgodc3VibmV0c19wZXJfYXZhaWxhYmlsaXR5X3pvbmUYAyABKAVCC7pIA8gBAZKmHQExEiAKC3N1Ym5ldF9zaXplGAQgASgFQgu6SAPIAQGSph0BMRIeChZpc19uYXRfZ2F0ZXdheV9lbmFibGVkGAUgASgIEiAKGGlzX2Ruc19ob3N0bmFtZXNfZW5hYmxlZBgGIAEoCBIeChZpc19kbnNfc3VwcG9ydF9lbmFibGVkGAcgASgIQrECCiZjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3ZwYy52MUIJU3BlY1Byb3RvUAFaTWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzdnBjL3YxO2F3c3ZwY3YxogIFT09QQUGqAiJPcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzdnBjLlYxygIiT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c3ZwY1xWMeICLk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3N2cGNcVjFcR1BCTWV0YWRhdGHqAidPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c3ZwYzo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_options_options]);
+  fileDesc("Ci1vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzdnBjL3YxL3NwZWMucHJvdG8SIm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3N2cGMudjEikwIKCkF3c1ZwY1NwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEhgKCHZwY19jaWRyGAIgASgJQga6SAPIAQESGgoSYXZhaWxhYmlsaXR5X3pvbmVzGAMgAygJEjIKHXN1Ym5ldHNfcGVyX2F2YWlsYWJpbGl0eV96b25lGAQgASgFQgu6SAPIAQGSph0BMRIgCgtzdWJuZXRfc2l6ZRgFIAEoBUILukgDyAEBkqYdATESHgoWaXNfbmF0X2dhdGV3YXlfZW5hYmxlZBgGIAEoCBIgChhpc19kbnNfaG9zdG5hbWVzX2VuYWJsZWQYByABKAgSHgoWaXNfZG5zX3N1cHBvcnRfZW5hYmxlZBgIIAEoCEKxAgomY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3N2cGMudjFCCVNwZWNQcm90b1ABWk1naXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c3ZwYy92MTthd3N2cGN2MaICBU9PUEFBqgIiT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c3ZwYy5WMcoCIk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3N2cGNcVjHiAi5PcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzdnBjXFYxXEdQQk1ldGFkYXRh6gInT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3N2cGM6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsVpcSpec defines the specification required to deploy an AWS Virtual Private Cloud (VPC).
@@ -28,11 +28,20 @@ export const file_org_openmcf_provider_aws_awsvpc_v1_spec: GenFile = /*@__PURE__
  */
 export type AwsVpcSpec = Message<"org.openmcf.provider.aws.awsvpc.v1.AwsVpcSpec"> & {
   /**
+   * The AWS region where the VPC will be created.
+   * Example: "us-west-2", "eu-west-1", "ap-southeast-1"
+   * For a list of AWS regions, see: https://aws.amazon.com/about-aws/global-infrastructure/regions_az/
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * The CIDR (Classless Inter-Domain Routing) block for the VPC.
    * This defines the IP address range for the VPC.
    * Example: "10.0.0.0/16" allows IP addresses from 10.0.0.0 to 10.0.255.255.
    *
-   * @generated from field: string vpc_cidr = 1;
+   * @generated from field: string vpc_cidr = 2;
    */
   vpcCidr: string;
 
@@ -41,7 +50,7 @@ export type AwsVpcSpec = Message<"org.openmcf.provider.aws.awsvpc.v1.AwsVpcSpec"
    * AWS regions are divided into multiple availability zones (AZs) for high availability.
    * Example: ["us-west-2a", "us-west-2b"] indicates that resources will be spread across these two AZs.
    *
-   * @generated from field: repeated string availability_zones = 2;
+   * @generated from field: repeated string availability_zones = 3;
    */
   availabilityZones: string[];
 
@@ -49,7 +58,7 @@ export type AwsVpcSpec = Message<"org.openmcf.provider.aws.awsvpc.v1.AwsVpcSpec"
    * The number of subnets to be created in each availability zone.
    * Subnets are segments of the VPC's IP address range where you can place groups of isolated resources.
    *
-   * @generated from field: int32 subnets_per_availability_zone = 3;
+   * @generated from field: int32 subnets_per_availability_zone = 4;
    */
   subnetsPerAvailabilityZone: number;
 
@@ -57,7 +66,7 @@ export type AwsVpcSpec = Message<"org.openmcf.provider.aws.awsvpc.v1.AwsVpcSpec"
    * The number of hosts (IP addresses) in each subnet.
    * This determines the size of each subnet's CIDR block.
    *
-   * @generated from field: int32 subnet_size = 4;
+   * @generated from field: int32 subnet_size = 5;
    */
   subnetSize: number;
 
@@ -66,7 +75,7 @@ export type AwsVpcSpec = Message<"org.openmcf.provider.aws.awsvpc.v1.AwsVpcSpec"
    * A NAT gateway allows instances in a private subnet to connect to the internet or other AWS services, but prevents
    * the internet from initiating a connection with those instances.
    *
-   * @generated from field: bool is_nat_gateway_enabled = 5;
+   * @generated from field: bool is_nat_gateway_enabled = 6;
    */
   isNatGatewayEnabled: boolean;
 
@@ -75,7 +84,7 @@ export type AwsVpcSpec = Message<"org.openmcf.provider.aws.awsvpc.v1.AwsVpcSpec"
    * When enabled, instances with public IP addresses receive corresponding public DNS hostnames.
    * See AWS documentation: https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html#vpc-dns-hostnames
    *
-   * @generated from field: bool is_dns_hostnames_enabled = 6;
+   * @generated from field: bool is_dns_hostnames_enabled = 7;
    */
   isDnsHostnamesEnabled: boolean;
 
@@ -83,7 +92,7 @@ export type AwsVpcSpec = Message<"org.openmcf.provider.aws.awsvpc.v1.AwsVpcSpec"
    * Toggle to enable or disable DNS resolution in the VPC through the Amazon-provided DNS server.
    * When enabled, the Amazon DNS server resolves DNS hostnames for your instances.
    *
-   * @generated from field: bool is_dns_support_enabled = 7;
+   * @generated from field: bool is_dns_support_enabled = 8;
    */
   isDnsSupportEnabled: boolean;
 };

@@ -3,6 +3,7 @@ kind: AwsRdsCluster
 metadata:
   name: awsrdscluster-demo
 spec:
+  region: us-west-2
   # Provide either 2+ subnetIds or a dbSubnetGroupName
   subnetIds:
     - subnet-aaaa

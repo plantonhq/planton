@@ -20,7 +20,9 @@ func Resources(ctx *pulumi.Context, stackInput *awss3bucketv1.AwsS3BucketStackIn
 	awsProviderConfig := stackInput.ProviderConfig
 
 	if awsProviderConfig == nil {
-		provider, err = aws.NewProvider(ctx, "classic-provider", &aws.ProviderArgs{})
+		provider, err = aws.NewProvider(ctx, "classic-provider", &aws.ProviderArgs{
+			Region: pulumi.String(locals.AwsS3Bucket.Spec.Region),
+		})
 		if err != nil {
 			return errors.Wrap(err, "failed to create default AWS provider")
 		}
@@ -28,7 +30,7 @@ func Resources(ctx *pulumi.Context, stackInput *awss3bucketv1.AwsS3BucketStackIn
 		provider, err = aws.NewProvider(ctx, "classic-provider", &aws.ProviderArgs{
 			AccessKey: pulumi.String(awsProviderConfig.AccessKeyId),
 			SecretKey: pulumi.String(awsProviderConfig.SecretAccessKey),
-			Region:    pulumi.String(awsProviderConfig.GetRegion()),
+			Region:    pulumi.String(locals.AwsS3Bucket.Spec.Region),
 			Token:     pulumi.StringPtr(awsProviderConfig.SessionToken),
 		})
 		if err != nil {
@@ -284,7 +286,7 @@ func Resources(ctx *pulumi.Context, stackInput *awss3bucketv1.AwsS3BucketStackIn
 	// Export outputs
 	ctx.Export(OpBucketId, bucket.Bucket)
 	ctx.Export(OpBucketArn, bucket.Arn)
-	ctx.Export(OpRegion, pulumi.String(spec.AwsRegion))
+	ctx.Export(OpRegion, pulumi.String(spec.Region))
 	ctx.Export(OpBucketRegionalDomainName, bucket.BucketRegionalDomainName)
 	ctx.Export(OpHostedZoneId, bucket.HostedZoneId)
 

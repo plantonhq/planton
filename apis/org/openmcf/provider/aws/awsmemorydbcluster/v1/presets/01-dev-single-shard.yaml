@@ -3,6 +3,7 @@ kind: AwsMemorydbCluster
 metadata:
   name: my-memorydb
 spec:
+  region: <aws-region>
   engine: redis
   engineVersion: "7.1"
   description: Single-shard MemoryDB for development

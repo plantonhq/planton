@@ -30,6 +30,7 @@ var _ = ginkgo.Describe("AwsKinesisStreamConsumerSpec validations", func() {
 				Name: "my-consumer",
 			},
 			Spec: &AwsKinesisStreamConsumerSpec{
+				Region: "us-west-2",
 				StreamArn: &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 						Value: "arn:aws:kinesis:us-east-1:123456789012:stream/my-stream",
@@ -49,6 +50,7 @@ var _ = ginkgo.Describe("AwsKinesisStreamConsumerSpec validations", func() {
 				Name: "analytics-consumer",
 			},
 			Spec: &AwsKinesisStreamConsumerSpec{
+				Region: "us-west-2",
 				StreamArn: &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -79,6 +81,7 @@ var _ = ginkgo.Describe("AwsKinesisStreamConsumerSpec validations", func() {
 				},
 			},
 			Spec: &AwsKinesisStreamConsumerSpec{
+				Region: "us-west-2",
 				StreamArn: &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 						Value: "arn:aws:kinesis:us-west-2:123456789012:stream/audit-stream",
@@ -101,7 +104,9 @@ var _ = ginkgo.Describe("AwsKinesisStreamConsumerSpec validations", func() {
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "bad-consumer",
 			},
-			Spec: &AwsKinesisStreamConsumerSpec{},
+			Spec: &AwsKinesisStreamConsumerSpec{
+				Region: "us-west-2",
+			},
 		}
 		err := protovalidate.Validate(input)
 		gomega.Expect(err).NotTo(gomega.BeNil())
@@ -119,6 +124,7 @@ var _ = ginkgo.Describe("AwsKinesisStreamConsumerSpec validations", func() {
 				Name: "test-consumer",
 			},
 			Spec: &AwsKinesisStreamConsumerSpec{
+				Region: "us-west-2",
 				StreamArn: &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 						Value: "arn:aws:kinesis:us-east-1:123456789012:stream/test",
@@ -138,6 +144,7 @@ var _ = ginkgo.Describe("AwsKinesisStreamConsumerSpec validations", func() {
 				Name: "test-consumer",
 			},
 			Spec: &AwsKinesisStreamConsumerSpec{
+				Region: "us-west-2",
 				StreamArn: &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 						Value: "arn:aws:kinesis:us-east-1:123456789012:stream/test",
@@ -154,6 +161,7 @@ var _ = ginkgo.Describe("AwsKinesisStreamConsumerSpec validations", func() {
 			ApiVersion: "aws.openmcf.org/v1",
 			Kind:       "AwsKinesisStreamConsumer",
 			Spec: &AwsKinesisStreamConsumerSpec{
+				Region: "us-west-2",
 				StreamArn: &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 						Value: "arn:aws:kinesis:us-east-1:123456789012:stream/test",

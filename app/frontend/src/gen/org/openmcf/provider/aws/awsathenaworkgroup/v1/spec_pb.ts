@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsathenaworkgroup/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsathenaworkgroup_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjlvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzYXRoZW5hd29ya2dyb3VwL3YxL3NwZWMucHJvdG8SLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NhdGhlbmF3b3JrZ3JvdXAudjEi5goKFkF3c0F0aGVuYVdvcmtncm91cFNwZWMSbAoUcmVzdWx0X2NvbmZpZ3VyYXRpb24YASABKAsyTi5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzYXRoZW5hd29ya2dyb3VwLnYxLkF3c0F0aGVuYVdvcmtncm91cFJlc3VsdENvbmZpZxImCh5ieXRlc19zY2FubmVkX2N1dG9mZl9wZXJfcXVlcnkYAiABKAMSNgofZW5mb3JjZV93b3JrZ3JvdXBfY29uZmlndXJhdGlvbhgDIAEoCEIIiqYdBHRydWVIAIgBARI5CiJwdWJsaXNoX2Nsb3Vkd2F0Y2hfbWV0cmljc19lbmFibGVkGAQgASgIQgiKph0EdHJ1ZUgBiAEBEh4KFnJlcXVlc3Rlcl9wYXlzX2VuYWJsZWQYBSABKAgSLwonZW5hYmxlX21pbmltdW1fZW5jcnlwdGlvbl9jb25maWd1cmF0aW9uGAYgASgIEh8KF3NlbGVjdGVkX2VuZ2luZV92ZXJzaW9uGAcgASgJEhUKDWZvcmNlX2Rlc3Ryb3kYCCABKAgSbAoOZXhlY3V0aW9uX3JvbGUYCSABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQiCI1GHQAZLUYRdzdGF0dXMub3V0cHV0cy5yb2xlX2FybjqABrpI/AUaywEKGmJ5dGVzX3NjYW5uZWRfY3V0b2ZmX3JhbmdlElBieXRlc19zY2FubmVkX2N1dG9mZl9wZXJfcXVlcnkgbXVzdCBiZSAwIChubyBsaW1pdCkgb3IgYXQgbGVhc3QgMTA0ODU3NjAgKDEwIE1CKRpbdGhpcy5ieXRlc19zY2FubmVkX2N1dG9mZl9wZXJfcXVlcnkgPT0gMCB8fCB0aGlzLmJ5dGVzX3NjYW5uZWRfY3V0b2ZmX3Blcl9xdWVyeSA+PSAxMDQ4NTc2MBqlAgoecmVzdWx0X2VuY3J5cHRpb25fb3B0aW9uX3ZhbGlkEllyZXN1bHRfY29uZmlndXJhdGlvbi5lbmNyeXB0aW9uX29wdGlvbiBtdXN0IGJlICdTU0VfUzMnLCAnU1NFX0tNUycsIG9yICdDU0VfS01TJyB3aGVuIHNldBqnASFoYXModGhpcy5yZXN1bHRfY29uZmlndXJhdGlvbikgfHwgdGhpcy5yZXN1bHRfY29uZmlndXJhdGlvbi5lbmNyeXB0aW9uX29wdGlvbiA9PSAnJyB8fCB0aGlzLnJlc3VsdF9jb25maWd1cmF0aW9uLmVuY3J5cHRpb25fb3B0aW9uIGluIFsnU1NFX1MzJywgJ1NTRV9LTVMnLCAnQ1NFX0tNUyddGoMCChNzM19hY2xfb3B0aW9uX3ZhbGlkEk9yZXN1bHRfY29uZmlndXJhdGlvbi5zM19hY2xfb3B0aW9uIG11c3QgYmUgJ0JVQ0tFVF9PV05FUl9GVUxMX0NPTlRST0wnIHdoZW4gc2V0GpoBIWhhcyh0aGlzLnJlc3VsdF9jb25maWd1cmF0aW9uKSB8fCB0aGlzLnJlc3VsdF9jb25maWd1cmF0aW9uLnMzX2FjbF9vcHRpb24gPT0gJycgfHwgdGhpcy5yZXN1bHRfY29uZmlndXJhdGlvbi5zM19hY2xfb3B0aW9uID09ICdCVUNLRVRfT1dORVJfRlVMTF9DT05UUk9MJ0IiCiBfZW5mb3JjZV93b3JrZ3JvdXBfY29uZmlndXJhdGlvbkIlCiNfcHVibGlzaF9jbG91ZHdhdGNoX21ldHJpY3NfZW5hYmxlZCL0AQoeQXdzQXRoZW5hV29ya2dyb3VwUmVzdWx0Q29uZmlnEhcKD291dHB1dF9sb2NhdGlvbhgBIAEoCRIZChFlbmNyeXB0aW9uX29wdGlvbhgCIAEoCRJoCgtrbXNfa2V5X2FybhgDIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SHQoVZXhwZWN0ZWRfYnVja2V0X293bmVyGAQgASgJEhUKDXMzX2FjbF9vcHRpb24YBSABKAlChQMKMmNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzYXRoZW5hd29ya2dyb3VwLnYxQglTcGVjUHJvdG9QAVplZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NhdGhlbmF3b3JrZ3JvdXAvdjE7YXdzYXRoZW5hd29ya2dyb3VwdjGiAgVPT1BBQaoCLk9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NhdGhlbmF3b3JrZ3JvdXAuVjHKAi5PcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzYXRoZW5hd29ya2dyb3VwXFYx4gI6T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2F0aGVuYXdvcmtncm91cFxWMVxHUEJNZXRhZGF0YeoCM09yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzYXRoZW5hd29ya2dyb3VwOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("Cjlvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzYXRoZW5hd29ya2dyb3VwL3YxL3NwZWMucHJvdG8SLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NhdGhlbmF3b3JrZ3JvdXAudjEi/woKFkF3c0F0aGVuYVdvcmtncm91cFNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEmwKFHJlc3VsdF9jb25maWd1cmF0aW9uGAIgASgLMk4ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2F0aGVuYXdvcmtncm91cC52MS5Bd3NBdGhlbmFXb3JrZ3JvdXBSZXN1bHRDb25maWcSJgoeYnl0ZXNfc2Nhbm5lZF9jdXRvZmZfcGVyX3F1ZXJ5GAMgASgDEjYKH2VuZm9yY2Vfd29ya2dyb3VwX2NvbmZpZ3VyYXRpb24YBCABKAhCCIqmHQR0cnVlSACIAQESOQoicHVibGlzaF9jbG91ZHdhdGNoX21ldHJpY3NfZW5hYmxlZBgFIAEoCEIIiqYdBHRydWVIAYgBARIeChZyZXF1ZXN0ZXJfcGF5c19lbmFibGVkGAYgASgIEi8KJ2VuYWJsZV9taW5pbXVtX2VuY3J5cHRpb25fY29uZmlndXJhdGlvbhgHIAEoCBIfChdzZWxlY3RlZF9lbmdpbmVfdmVyc2lvbhgIIAEoCRIVCg1mb3JjZV9kZXN0cm95GAkgASgIEmwKDmV4ZWN1dGlvbl9yb2xlGAogASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIgiNRh0AGS1GEXc3RhdHVzLm91dHB1dHMucm9sZV9hcm46gAa6SPwFGssBChpieXRlc19zY2FubmVkX2N1dG9mZl9yYW5nZRJQYnl0ZXNfc2Nhbm5lZF9jdXRvZmZfcGVyX3F1ZXJ5IG11c3QgYmUgMCAobm8gbGltaXQpIG9yIGF0IGxlYXN0IDEwNDg1NzYwICgxMCBNQikaW3RoaXMuYnl0ZXNfc2Nhbm5lZF9jdXRvZmZfcGVyX3F1ZXJ5ID09IDAgfHwgdGhpcy5ieXRlc19zY2FubmVkX2N1dG9mZl9wZXJfcXVlcnkgPj0gMTA0ODU3NjAapQIKHnJlc3VsdF9lbmNyeXB0aW9uX29wdGlvbl92YWxpZBJZcmVzdWx0X2NvbmZpZ3VyYXRpb24uZW5jcnlwdGlvbl9vcHRpb24gbXVzdCBiZSAnU1NFX1MzJywgJ1NTRV9LTVMnLCBvciAnQ1NFX0tNUycgd2hlbiBzZXQapwEhaGFzKHRoaXMucmVzdWx0X2NvbmZpZ3VyYXRpb24pIHx8IHRoaXMucmVzdWx0X2NvbmZpZ3VyYXRpb24uZW5jcnlwdGlvbl9vcHRpb24gPT0gJycgfHwgdGhpcy5yZXN1bHRfY29uZmlndXJhdGlvbi5lbmNyeXB0aW9uX29wdGlvbiBpbiBbJ1NTRV9TMycsICdTU0VfS01TJywgJ0NTRV9LTVMnXRqDAgoTczNfYWNsX29wdGlvbl92YWxpZBJPcmVzdWx0X2NvbmZpZ3VyYXRpb24uczNfYWNsX29wdGlvbiBtdXN0IGJlICdCVUNLRVRfT1dORVJfRlVMTF9DT05UUk9MJyB3aGVuIHNldBqaASFoYXModGhpcy5yZXN1bHRfY29uZmlndXJhdGlvbikgfHwgdGhpcy5yZXN1bHRfY29uZmlndXJhdGlvbi5zM19hY2xfb3B0aW9uID09ICcnIHx8IHRoaXMucmVzdWx0X2NvbmZpZ3VyYXRpb24uczNfYWNsX29wdGlvbiA9PSAnQlVDS0VUX09XTkVSX0ZVTExfQ09OVFJPTCdCIgogX2VuZm9yY2Vfd29ya2dyb3VwX2NvbmZpZ3VyYXRpb25CJQojX3B1Ymxpc2hfY2xvdWR3YXRjaF9tZXRyaWNzX2VuYWJsZWQi9AEKHkF3c0F0aGVuYVdvcmtncm91cFJlc3VsdENvbmZpZxIXCg9vdXRwdXRfbG9jYXRpb24YASABKAkSGQoRZW5jcnlwdGlvbl9vcHRpb24YAiABKAkSaAoLa21zX2tleV9hcm4YAyABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQh+I1GHbAZLUYRZzdGF0dXMub3V0cHV0cy5rZXlfYXJuEh0KFWV4cGVjdGVkX2J1Y2tldF9vd25lchgEIAEoCRIVCg1zM19hY2xfb3B0aW9uGAUgASgJQoUDCjJjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2F0aGVuYXdvcmtncm91cC52MUIJU3BlY1Byb3RvUAFaZWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzYXRoZW5hd29ya2dyb3VwL3YxO2F3c2F0aGVuYXdvcmtncm91cHYxogIFT09QQUGqAi5PcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzYXRoZW5hd29ya2dyb3VwLlYxygIuT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2F0aGVuYXdvcmtncm91cFxWMeICOk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NhdGhlbmF3b3JrZ3JvdXBcVjFcR1BCTWV0YWRhdGHqAjNPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c2F0aGVuYXdvcmtncm91cDo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsAthenaWorkgroupSpec defines the desired configuration for an Amazon Athena
@@ -45,19 +45,23 @@ export const file_org_openmcf_provider_aws_awsathenaworkgroup_v1_spec: GenFile =
  * - Credentials, region, and deployment workflow live outside this spec in stack
  *   inputs.
  *
- * ---------------------------------------------------------------------------
- * Result storage
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awsathenaworkgroup.v1.AwsAthenaWorkgroupSpec
  */
 export type AwsAthenaWorkgroupSpec = Message<"org.openmcf.provider.aws.awsathenaworkgroup.v1.AwsAthenaWorkgroupSpec"> & {
+  /**
+   * The AWS region where the Athena workgroup will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * Configuration for query result storage, encryption, and access control.
    * When omitted, queries must specify their own result location or will use the
    * AWS account-level Athena settings.
    *
-   * @generated from field: org.openmcf.provider.aws.awsathenaworkgroup.v1.AwsAthenaWorkgroupResultConfig result_configuration = 1;
+   * @generated from field: org.openmcf.provider.aws.awsathenaworkgroup.v1.AwsAthenaWorkgroupResultConfig result_configuration = 2;
    */
   resultConfiguration?: AwsAthenaWorkgroupResultConfig;
 
@@ -73,7 +77,7 @@ export type AwsAthenaWorkgroupSpec = Message<"org.openmcf.provider.aws.awsathena
    * Recommended for production: set to a reasonable ceiling based on your
    * dataset sizes (e.g., 10737418240 for 10 GB).
    *
-   * @generated from field: int64 bytes_scanned_cutoff_per_query = 2;
+   * @generated from field: int64 bytes_scanned_cutoff_per_query = 3;
    */
   bytesScannedCutoffPerQuery: bigint;
 
@@ -86,7 +90,7 @@ export type AwsAthenaWorkgroupSpec = Message<"org.openmcf.provider.aws.awsathena
    * workgroups where engineers need flexibility, but not recommended for
    * production where consistent encryption and result locations are required.
    *
-   * @generated from field: optional bool enforce_workgroup_configuration = 3;
+   * @generated from field: optional bool enforce_workgroup_configuration = 4;
    */
   enforceWorkgroupConfiguration?: boolean;
 
@@ -95,7 +99,7 @@ export type AwsAthenaWorkgroupSpec = Message<"org.openmcf.provider.aws.awsathena
    * time, etc.) to CloudWatch. Useful for monitoring query performance and cost
    * trends across the workgroup.
    *
-   * @generated from field: optional bool publish_cloudwatch_metrics_enabled = 4;
+   * @generated from field: optional bool publish_cloudwatch_metrics_enabled = 5;
    */
   publishCloudwatchMetricsEnabled?: boolean;
 
@@ -103,7 +107,7 @@ export type AwsAthenaWorkgroupSpec = Message<"org.openmcf.provider.aws.awsathena
    * When true, the requester pays for data access charges when querying data in
    * requester-pays S3 buckets. Default is false (the bucket owner pays).
    *
-   * @generated from field: bool requester_pays_enabled = 5;
+   * @generated from field: bool requester_pays_enabled = 6;
    */
   requesterPaysEnabled: boolean;
 
@@ -115,7 +119,7 @@ export type AwsAthenaWorkgroupSpec = Message<"org.openmcf.provider.aws.awsathena
    * Useful as a compliance guardrail to ensure no query results are ever written
    * unencrypted, even if result_configuration.encryption_option is not set.
    *
-   * @generated from field: bool enable_minimum_encryption_configuration = 6;
+   * @generated from field: bool enable_minimum_encryption_configuration = 7;
    */
   enableMinimumEncryptionConfiguration: boolean;
 
@@ -130,7 +134,7 @@ export type AwsAthenaWorkgroupSpec = Message<"org.openmcf.provider.aws.awsathena
    * Valid values depend on the AWS region and change over time as AWS releases
    * new engine versions. AWS validates at apply time.
    *
-   * @generated from field: string selected_engine_version = 7;
+   * @generated from field: string selected_engine_version = 8;
    */
   selectedEngineVersion: string;
 
@@ -140,7 +144,7 @@ export type AwsAthenaWorkgroupSpec = Message<"org.openmcf.provider.aws.awsathena
    * default), destroying a workgroup that contains named queries or prepared
    * statements will fail.
    *
-   * @generated from field: bool force_destroy = 8;
+   * @generated from field: bool force_destroy = 9;
    */
   forceDestroy: boolean;
 
@@ -152,7 +156,7 @@ export type AwsAthenaWorkgroupSpec = Message<"org.openmcf.provider.aws.awsathena
    * The role must have permissions to read from S3 data sources, write results,
    * and access the AWS Glue Data Catalog.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef execution_role = 9;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef execution_role = 10;
    */
   executionRole?: StringValueOrRef;
 };

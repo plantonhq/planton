@@ -11,6 +11,8 @@ variable "metadata" {
 variable "spec" {
   description = "AwsRedshiftCluster spec"
   type = object({
+    # The AWS region where the resource will be created.
+    region                   = string
     # Core
     node_type                = string
     number_of_nodes          = optional(number, 1)

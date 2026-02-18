@@ -37,6 +37,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsDocumentDb.my-docdb
 spec:
+  region: us-east-1
   subnets:
     - subnet-0a1b2c3d4e5f00001
     - subnet-0a1b2c3d4e5f00002
@@ -58,6 +59,7 @@ This creates a single-instance DocumentDB 5.0 cluster with encrypted storage, a 
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | The AWS region where the resource will be created. | Must be set. |
 | `masterPassword` | `string` | Master user password for the cluster. | Must be set. |
 | `subnets` | `StringValueOrRef[]` | Subnet IDs for the DB subnet group. Provide at least two in distinct AZs. | Minimum 2 items unless `dbSubnetGroup` is set. Can reference AwsVpc resource via `valueFrom`. |
 | `finalSnapshotIdentifier` | `string` | Identifier for the final snapshot on deletion. | Required when `skipFinalSnapshot` is `false` (the default). |
@@ -105,6 +107,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsDocumentDb.dev-docdb
 spec:
+  region: us-east-1
   subnets:
     - subnet-private-az1
     - subnet-private-az2
@@ -128,6 +131,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsDocumentDb.prod-docdb
 spec:
+  region: us-east-1
   subnets:
     - subnet-private-az1
     - subnet-private-az2
@@ -164,6 +168,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsDocumentDb.secured-docdb
 spec:
+  region: us-east-1
   subnets:
     - subnet-private-az1
     - subnet-private-az2
@@ -195,6 +200,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: staging.AwsDocumentDb.custom-docdb
 spec:
+  region: us-east-1
   subnets:
     - subnet-private-az1
     - subnet-private-az2
@@ -232,6 +238,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsDocumentDb.ref-docdb
 spec:
+  region: us-east-1
   subnets:
     - valueFrom:
         kind: AwsVpc

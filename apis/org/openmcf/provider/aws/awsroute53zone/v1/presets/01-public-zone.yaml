@@ -3,4 +3,5 @@ kind: AwsRoute53Zone
 metadata:
   name: my-public-dns-zone
 spec:
+  region: us-east-1
   isPrivate: false

@@ -27,6 +27,7 @@ var _ = ginkgo.Describe("AwsRedisElasticacheSpec validations", func() {
 	ginkgo.BeforeEach(func() {
 		// Minimal valid spec: single-node Redis cluster.
 		spec = &AwsRedisElasticacheSpec{
+			Region:           "us-west-2",
 			Engine:           "redis",
 			Description:      "test cluster",
 			NodeType:         "cache.t3.micro",

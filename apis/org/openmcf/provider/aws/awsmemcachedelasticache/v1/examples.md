@@ -10,6 +10,7 @@ kind: AwsMemcachedElasticache
 metadata:
   name: dev-cache
 spec:
+  region: us-west-2
   engineVersion: "1.6.22"
   nodeType: cache.t3.micro
   numCacheNodes: 1
@@ -25,6 +26,7 @@ kind: AwsMemcachedElasticache
 metadata:
   name: session-cache
 spec:
+  region: us-east-1
   engineVersion: "1.6.22"
   nodeType: cache.t3.medium
   numCacheNodes: 3
@@ -45,6 +47,7 @@ kind: AwsMemcachedElasticache
 metadata:
   name: app-cache
 spec:
+  region: us-west-2
   engineVersion: "1.6.22"
   nodeType: cache.r7g.large
   numCacheNodes: 3
@@ -79,6 +82,7 @@ kind: AwsMemcachedElasticache
 metadata:
   name: encrypted-cache
 spec:
+  region: us-west-2
   engineVersion: "1.6.22"
   nodeType: cache.t3.medium
   numCacheNodes: 2
@@ -96,6 +100,7 @@ kind: AwsMemcachedElasticache
 metadata:
   name: tuned-cache
 spec:
+  region: us-west-2
   engineVersion: "1.6.22"
   nodeType: cache.r7g.large
   numCacheNodes: 3
@@ -120,6 +125,7 @@ kind: AwsMemcachedElasticache
 metadata:
   name: prod-session-cache
 spec:
+  region: us-east-1
   engineVersion: "1.6.22"
   nodeType: cache.r7g.xlarge
   numCacheNodes: 5
@@ -173,6 +179,7 @@ kind: AwsMemcachedElasticache
 metadata:
   name: "{{ values.env }}-session-cache"
 spec:
+  region: us-west-2
   engineVersion: "{{ values.memcached_version | default: '1.6.22' }}"
   nodeType: "{{ values.cache_node_type | default: 'cache.t3.medium' }}"
   numCacheNodes: "{{ values.cache_node_count | default: 3 }}"

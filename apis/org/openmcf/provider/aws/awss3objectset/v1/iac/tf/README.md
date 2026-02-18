@@ -21,8 +21,8 @@ module "s3_objects" {
   }
 
   spec = {
-    bucket     = "my-app-bucket"
-    aws_region = "us-east-1"
+    region = "us-east-1"
+    bucket = "my-app-bucket"
     tags = {
       environment = "production"
     }
@@ -48,7 +48,7 @@ module "s3_objects" {
 | Name | Description | Type | Required |
 |------|-------------|------|----------|
 | metadata | Resource metadata (name, id, org, env, labels) | object | yes |
-| spec | Resource specification (bucket, aws_region, objects) | object | yes |
+| spec | Resource specification (region, bucket, objects) | object | yes |
 
 ## Outputs
 

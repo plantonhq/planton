@@ -3,6 +3,7 @@ kind: AwsEksNodeGroup
 metadata:
   name: test-node-group
 spec:
+  region: us-west-2
   clusterName:
     value: "test-eks-cluster"
   nodeRoleArn:

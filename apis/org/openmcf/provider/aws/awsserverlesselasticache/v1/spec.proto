@@ -32,6 +32,10 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 // - Credentials, region, and deployment workflow live outside this spec in
 //   stack inputs.
 message AwsServerlessElasticacheSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Engine
   // ---------------------------------------------------------------------------
@@ -39,14 +43,14 @@ message AwsServerlessElasticacheSpec {
   // Cache engine to use. Values: "redis", "valkey", "memcached".
   // Switching between redis and valkey is an in-place update. Switching
   // to/from memcached forces recreation.
-  string engine = 1 [(buf.validate.field).required = true];
+  string engine = 2 [(buf.validate.field).required = true];
 
   // Major engine version. Examples: "7", "8" for Redis/Valkey; "1.6" for
   // Memcached. Leave empty to use the provider default for the chosen engine.
-  string major_engine_version = 2;
+  string major_engine_version = 3;
 
   // Human-readable description of the serverless cache.
-  string description = 3;
+  string description = 4;
 
   // ---------------------------------------------------------------------------
   // Scaling limits — data storage
@@ -54,14 +58,14 @@ message AwsServerlessElasticacheSpec {
 
   // Maximum data storage in GB. AWS auto-scales storage up to this limit.
   // Range: 1–5000. Leave as 0 to use the AWS default for the engine.
-  int32 data_storage_max_gb = 4 [(buf.validate.field).int32 = {
+  int32 data_storage_max_gb = 5 [(buf.validate.field).int32 = {
     gte: 0
     lte: 5000
   }];
 
   // Minimum data storage in GB. AWS guarantees at least this capacity is
   // always provisioned. Range: 1–5000. Leave as 0 to use the AWS default.
-  int32 data_storage_min_gb = 5 [(buf.validate.field).int32 = {
+  int32 data_storage_min_gb = 6 [(buf.validate.field).int32 = {
     gte: 0
     lte: 5000
   }];
@@ -72,14 +76,14 @@ message AwsServerlessElasticacheSpec {
 
   // Maximum ElastiCache Processing Units per second. AWS auto-scales compute
   // up to this limit. Range: 1000–15000000. Leave as 0 for AWS default.
-  int32 ecpu_max = 6 [(buf.validate.field).int32 = {
+  int32 ecpu_max = 7 [(buf.validate.field).int32 = {
     gte: 0
     lte: 15000000
   }];
 
   // Minimum ElastiCache Processing Units per second. AWS guarantees at least
   // this compute capacity. Range: 1000–15000000. Leave as 0 for AWS default.
-  int32 ecpu_min = 7 [(buf.validate.field).int32 = {
+  int32 ecpu_min = 8 [(buf.validate.field).int32 = {
     gte: 0
     lte: 15000000
   }];
@@ -91,14 +95,14 @@ message AwsServerlessElasticacheSpec {
   // Subnet IDs for the serverless cache's VPC endpoint. The cache creates
   // VPC endpoints in these subnets. ForceNew — changing this destroys and
   // recreates the cache.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 8 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 9 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
   ];
 
   // VPC security groups to attach to the serverless cache endpoint.
   // Controls network-level access.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 9 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 10 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
@@ -110,7 +114,7 @@ message AwsServerlessElasticacheSpec {
   // Customer-managed KMS key ARN for at-rest encryption. When set, ElastiCache
   // Serverless uses this key instead of the AWS-managed key. ForceNew —
   // changing this destroys and recreates the cache.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 10 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 11 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -121,11 +125,11 @@ message AwsServerlessElasticacheSpec {
 
   // Daily automatic snapshot time in UTC. Format: "HH:mm" (e.g., "05:00").
   // Only valid for Redis/Valkey engines. Memcached has no persistence.
-  string daily_snapshot_time = 11;
+  string daily_snapshot_time = 12;
 
   // Number of days to retain automatic snapshots. Range: 0–35. 0 disables
   // snapshots. Only valid for Redis/Valkey engines.
-  int32 snapshot_retention_limit = 12 [(buf.validate.field).int32 = {
+  int32 snapshot_retention_limit = 13 [(buf.validate.field).int32 = {
     gte: 0
     lte: 35
   }];
@@ -136,7 +140,7 @@ message AwsServerlessElasticacheSpec {
 
   // Redis ACL user group ID for fine-grained access control. Only valid for
   // Redis/Valkey engines. Memcached has no authentication mechanism.
-  string user_group_id = 13;
+  string user_group_id = 14;
 
   // ---------------------------------------------------------------------------
   // CEL validations

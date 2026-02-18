@@ -21,6 +21,9 @@ variable "metadata" {
 variable "spec" {
   description = "AwsMskClusterSpec - desired state of the MSK cluster"
   type = object({
+    # The AWS region where the MSK cluster will be created.
+    region = string
+
     kafka_version          = string
     number_of_broker_nodes = number
     instance_type          = string

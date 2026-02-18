@@ -24,6 +24,7 @@ kind: AwsCertManagerCert
 metadata:
   name: single-cert-example
 spec:
+  region: us-east-1
   primaryDomainName: example.com
   route53HostedZoneId: Z123456ABCXYZ
 ```
@@ -40,6 +41,7 @@ kind: AwsCertManagerCert
 metadata:
   name: multi-cert-example
 spec:
+  region: us-east-1
   primaryDomainName: myapp.io
   alternateDomainNames:
     - api.myapp.io
@@ -61,6 +63,7 @@ kind: AwsCertManagerCert
 metadata:
   name: wildcard-example
 spec:
+  region: us-east-1
   primaryDomainName: '*.example.com'
   route53HostedZoneId: Z999999EXAMPLE
 ```
@@ -77,6 +80,7 @@ kind: AwsCertManagerCert
 metadata:
   name: wildcard-plus-root
 spec:
+  region: us-east-1
   primaryDomainName: '*.production.com'
   alternateDomainNames:
     - production.com
@@ -95,6 +99,7 @@ kind: AwsCertManagerCert
 metadata:
   name: minimal-cert
 spec:
+  region: us-east-1
   primaryDomainName: simple.io
   route53HostedZoneId: Z222222222222
 ```
@@ -111,6 +116,7 @@ kind: AwsCertManagerCert
 metadata:
   name: cert-with-ref
 spec:
+  region: us-east-1
   primaryDomainName: app.mydomain.com
   alternateDomainNames:
     - api.mydomain.com
@@ -133,6 +139,7 @@ kind: AwsCertManagerCert
 metadata:
   name: email-validation-cert
 spec:
+  region: us-east-1
   primaryDomainName: legacy.com
   route53HostedZoneId: Z333333333333
   validationMethod: EMAIL

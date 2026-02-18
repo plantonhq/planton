@@ -3,6 +3,7 @@ kind: AwsClientVpn
 metadata:
   name: my-full-tunnel-vpn
 spec:
+  region: <aws-region>
   description: Full-tunnel VPN routing all traffic through VPN
   vpcId:
     value: "<vpc-id>"

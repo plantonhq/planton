@@ -13,6 +13,7 @@ metadata:
   env: dev
   id: events-to-s3-dev
 spec:
+  region: us-east-1
   extendedS3:
     bucketArn:
       value: arn:aws:s3:::acme-data-lake-dev
@@ -40,6 +41,7 @@ metadata:
   env: production
   id: analytics-parquet-prod
 spec:
+  region: us-east-1
   extendedS3:
     bucketArn:
       valueFrom:
@@ -85,6 +87,7 @@ metadata:
   env: production
   id: multi-tenant-pipeline-prod
 spec:
+  region: us-east-1
   kinesisStreamSource:
     streamArn:
       valueFrom:
@@ -146,6 +149,7 @@ metadata:
   env: production
   id: app-logs-to-opensearch-prod
 spec:
+  region: us-east-1
   sseEnabled: true
   opensearch:
     domainArn:
@@ -208,6 +212,7 @@ metadata:
   env: production
   id: metrics-to-datadog-prod
 spec:
+  region: us-east-1
   sseEnabled: true
   httpEndpoint:
     url: "https://aws-kinesis-http-intake.logs.datadoghq.com/v1/input"
@@ -264,6 +269,7 @@ metadata:
   env: production
   id: orders-to-redshift-prod
 spec:
+  region: us-east-1
   sseEnabled: true
   sseKmsKeyArn:
     valueFrom:
@@ -336,6 +342,7 @@ metadata:
     cost-center: analytics
     compliance: gdpr
 spec:
+  region: us-east-1
   # Kinesis source — reads from the clickstream events stream.
   # SSE is NOT set here because the source stream handles encryption.
   kinesisStreamSource:

@@ -11,6 +11,7 @@ metadata:
     pulumi.openmcf.org/project: test
     pulumi.openmcf.org/stack.name: dev.AwsBatchComputeEnvironment.test-batch
 spec:
+  region: us-west-2
   computeResources:
     type: FARGATE
     maxVcpus: 256

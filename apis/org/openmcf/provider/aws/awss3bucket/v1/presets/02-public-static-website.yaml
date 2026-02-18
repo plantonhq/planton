@@ -3,7 +3,7 @@ kind: AwsS3Bucket
 metadata:
   name: my-public-website-bucket
 spec:
-  awsRegion: <aws-region>
+  region: <aws-region>
   isPublic: true
   versioningEnabled: false
   encryptionType: ENCRYPTION_TYPE_SSE_S3

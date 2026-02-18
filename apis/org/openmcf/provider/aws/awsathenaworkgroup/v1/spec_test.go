@@ -25,8 +25,9 @@ var _ = ginkgo.Describe("AwsAthenaWorkgroupSpec validations", func() {
 	var spec *AwsAthenaWorkgroupSpec
 
 	ginkgo.BeforeEach(func() {
-		// Minimal valid spec: empty spec (all optional, all have sane defaults).
-		spec = &AwsAthenaWorkgroupSpec{}
+		spec = &AwsAthenaWorkgroupSpec{
+			Region: "us-west-2",
+		}
 	})
 
 	// -------------------------------------------------------------------------

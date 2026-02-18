@@ -24,8 +24,8 @@ variable "spec" {
     # The target S3 bucket name (resolved from foreign key)
     bucket = string
 
-    # The AWS region where the S3 bucket is located
-    aws_region = string
+    # The AWS region where the S3 bucket is located.
+    region = string
 
     # Tags applied to all objects in the set
     tags = optional(map(string), {})

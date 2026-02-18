@@ -14,7 +14,7 @@ kind: AwsSecretsManager
 metadata:
   name: my-aws-secrets
 spec:
-  awsProviderConfigId: my-aws-credential-id
+  region: us-west-2
   secretNames:
     - database-password
     - api-key
@@ -28,7 +28,7 @@ kind: AwsSecretsManager
 metadata:
   name: my-aws-secrets
 spec:
-  awsProviderConfigId: my-aws-credential-id
+  region: us-west-2
   environmentInfo:
     envId: production
   secretNames:
@@ -45,7 +45,7 @@ kind: AwsSecretsManager
 metadata:
   name: my-aws-secrets
 spec:
-  awsProviderConfigId: my-aws-credential-id
+  region: us-west-2
   stackUpdateSettings:
     jobTimeout: 3600
   secretNames:
@@ -61,7 +61,7 @@ kind: AwsSecretsManager
 metadata:
   name: my-aws-secrets
 spec:
-  awsProviderConfigId: my-aws-credential-id
+  region: us-west-2
 ```
 
 # Example Using Created Secrets in a Microservice
@@ -107,4 +107,4 @@ spec:
 
 These examples demonstrate how to structure your YAML configuration files to create and manage secrets in AWS Secrets Manager using the `AwsSecretsManager` API resource. You can specify one or more secret names under `secretNames` in the `spec` section. If `secretNames` is omitted or left empty, no secrets will be created. Additionally, you can integrate these secrets into other resources like `MicroserviceKubernetes` by referencing them in the configuration.
 
-Remember to replace placeholders like `my-aws-credential-id`, `my-aws-secrets`, and secret names with your actual resource IDs and desired secret names.
+Remember to replace placeholders like `my-aws-secrets` and secret names with your actual resource IDs and desired secret names.

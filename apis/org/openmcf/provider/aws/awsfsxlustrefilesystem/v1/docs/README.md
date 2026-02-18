@@ -599,6 +599,7 @@ For API reference and examples, see the parent [README.md](../README.md) and [ex
 
 | Spec Field | Default | ForceNew |
 |------------|---------|----------|
+| region | (required) | Yes |
 | deployment_type | SCRATCH_2 | Yes |
 | storage_capacity_gib | (required) | No (increase only) |
 | storage_type | SSD | Yes |

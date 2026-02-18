@@ -17,6 +17,7 @@ kind: AwsIamUser
 metadata:
   name: basic-iam-user
 spec:
+  region: us-east-1
   userName: "basic-user"
   managedPolicyArns:
     - "arn:aws:iam::aws:policy/ReadOnlyAccess"
@@ -38,6 +39,7 @@ kind: AwsIamUser
 metadata:
   name: cicd-iam-user
 spec:
+  region: us-east-1
   userName: "cicd-user"
   managedPolicyArns:
     - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
@@ -72,6 +74,7 @@ kind: AwsIamUser
 metadata:
   name: app-iam-user
 spec:
+  region: us-east-1
   userName: "application-user"
   managedPolicyArns:
     - "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
@@ -106,6 +109,7 @@ kind: AwsIamUser
 metadata:
   name: console-only-user
 spec:
+  region: us-east-1
   userName: "console-user"
   managedPolicyArns:
     - "arn:aws:iam::aws:policy/ReadOnlyAccess"
@@ -128,6 +132,7 @@ kind: AwsIamUser
 metadata:
   name: dev-iam-user
 spec:
+  region: us-west-2
   userName: "developer-user"
   managedPolicyArns:
     - "arn:aws:iam::aws:policy/PowerUserAccess"
@@ -166,6 +171,7 @@ kind: AwsIamUser
 metadata:
   name: monitoring-iam-user
 spec:
+  region: us-east-1
   userName: "monitoring-user"
   managedPolicyArns:
     - "arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess"
@@ -201,6 +207,7 @@ kind: AwsIamUser
 metadata:
   name: backup-iam-user
 spec:
+  region: us-west-2
   userName: "backup-user"
   managedPolicyArns:
     - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
@@ -240,6 +247,7 @@ kind: AwsIamUser
 metadata:
   name: minimal-iam-user
 spec:
+  region: us-east-1
   userName: "minimal-user"
 ```
 

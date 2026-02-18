@@ -12,6 +12,7 @@ metadata:
   labels:
     app: shop
 spec:
+  region: us-east-1
   description: Custom bus for order processing events
 ```
 
@@ -25,6 +26,7 @@ kind: AwsEventBridgeBus
 metadata:
   name: payment-events
 spec:
+  region: us-east-1
   description: Payment processing event bus with encryption and DLQ
   kmsKeyIdentifier:
     valueFrom:
@@ -52,6 +54,7 @@ kind: AwsEventBridgeBus
 metadata:
   name: dev-events
 spec:
+  region: us-east-1
   description: Development event bus with trace logging
   logConfig:
     level: TRACE
@@ -68,6 +71,7 @@ kind: AwsEventBridgeBus
 metadata:
   name: aws.partner/example.com/tenant123/orders
 spec:
+  region: us-east-1
   eventSourceName: aws.partner/example.com/tenant123/orders
 ```
 
@@ -81,6 +85,7 @@ kind: AwsEventBridgeBus
 metadata:
   name: notification-events
 spec:
+  region: us-east-1
   description: Notification bus with dead letter queue
   deadLetterConfig:
     arn:

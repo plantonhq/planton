@@ -79,19 +79,22 @@ func (AwsCloudFrontSpec_PriceClass) EnumDescriptor() ([]byte, []int) {
 // AwsCloudFrontSpec captures common fields used to configure a CloudFront distribution.
 type AwsCloudFrontSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Whether the distribution is enabled.
-	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	Enabled bool `protobuf:"varint,2,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	// Aliases (CNAMEs) for the distribution, e.g., "cdn.example.com".
-	Aliases []string `protobuf:"bytes,2,rep,name=aliases,proto3" json:"aliases,omitempty"`
+	Aliases []string `protobuf:"bytes,3,rep,name=aliases,proto3" json:"aliases,omitempty"`
 	// ACM certificate ARN for custom domains. Must be in the us-east-1 region.
 	// Required when aliases are provided. Can reference an AwsCertManagerCert resource.
-	CertificateArn *v1.StringValueOrRef         `protobuf:"bytes,3,opt,name=certificate_arn,json=certificateArn,proto3" json:"certificate_arn,omitempty"`
-	PriceClass     AwsCloudFrontSpec_PriceClass `protobuf:"varint,4,opt,name=price_class,json=priceClass,proto3,enum=org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec_PriceClass" json:"price_class,omitempty"`
+	CertificateArn *v1.StringValueOrRef         `protobuf:"bytes,4,opt,name=certificate_arn,json=certificateArn,proto3" json:"certificate_arn,omitempty"`
+	PriceClass     AwsCloudFrontSpec_PriceClass `protobuf:"varint,5,opt,name=price_class,json=priceClass,proto3,enum=org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec_PriceClass" json:"price_class,omitempty"`
 	// List of origins available to the distribution.
 	// Must contain at least one origin with exactly one marked as default.
-	Origins []*AwsCloudFrontSpec_Origin `protobuf:"bytes,5,rep,name=origins,proto3" json:"origins,omitempty"`
+	Origins []*AwsCloudFrontSpec_Origin `protobuf:"bytes,6,rep,name=origins,proto3" json:"origins,omitempty"`
 	// Default root object, e.g., "index.html".
-	DefaultRootObject string `protobuf:"bytes,6,opt,name=default_root_object,json=defaultRootObject,proto3" json:"default_root_object,omitempty"`
+	DefaultRootObject string `protobuf:"bytes,7,opt,name=default_root_object,json=defaultRootObject,proto3" json:"default_root_object,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -124,6 +127,13 @@ func (x *AwsCloudFrontSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsCloudFrontSpec.ProtoReflect.Descriptor instead.
 func (*AwsCloudFrontSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awscloudfront_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsCloudFrontSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsCloudFrontSpec) GetEnabled() bool {
@@ -237,15 +247,16 @@ var File_org_openmcf_provider_aws_awscloudfront_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_aws_awscloudfront_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/aws/awscloudfront/v1/spec.proto\x12)org.openmcf.provider.aws.awscloudfront.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xd8\b\n" +
-	"\x11AwsCloudFrontSpec\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\x12H\n" +
-	"\aaliases\x18\x02 \x03(\tB.\xbaH+\x92\x01(\x18\x01\"$r\"2 ^[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,}$R\aaliases\x12\x84\x01\n" +
-	"\x0fcertificate_arn\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\x88\xd4a\xc9\x01\x92\xd4a\x1estatus.outputs.certificate_arnR\x0ecertificateArn\x12r\n" +
-	"\vprice_class\x18\x04 \x01(\x0e2G.org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.PriceClassB\b\xbaH\x05\x82\x01\x02\x10\x01R\n" +
+	"4org/openmcf/provider/aws/awscloudfront/v1/spec.proto\x12)org.openmcf.provider.aws.awscloudfront.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xf9\b\n" +
+	"\x11AwsCloudFrontSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x18\n" +
+	"\aenabled\x18\x02 \x01(\bR\aenabled\x12H\n" +
+	"\aaliases\x18\x03 \x03(\tB.\xbaH+\x92\x01(\x18\x01\"$r\"2 ^[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,}$R\aaliases\x12\x84\x01\n" +
+	"\x0fcertificate_arn\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\x88\xd4a\xc9\x01\x92\xd4a\x1estatus.outputs.certificate_arnR\x0ecertificateArn\x12r\n" +
+	"\vprice_class\x18\x05 \x01(\x0e2G.org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.PriceClassB\b\xbaH\x05\x82\x01\x02\x10\x01R\n" +
 	"priceClass\x12g\n" +
-	"\aorigins\x18\x05 \x03(\v2C.org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.OriginB\b\xbaH\x05\x92\x01\x02\b\x01R\aorigins\x12K\n" +
-	"\x13default_root_object\x18\x06 \x01(\tB\x1b\xbaH\x18r\x162\x14^[A-Za-z0-9\\-\\.\\_]*$R\x11defaultRootObject\x1a\xb7\x01\n" +
+	"\aorigins\x18\x06 \x03(\v2C.org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.OriginB\b\xbaH\x05\x92\x01\x02\b\x01R\aorigins\x12K\n" +
+	"\x13default_root_object\x18\a \x01(\tB\x1b\xbaH\x18r\x162\x14^[A-Za-z0-9\\-\\.\\_]*$R\x11defaultRootObject\x1a\xb7\x01\n" +
 	"\x06Origin\x12J\n" +
 	"\vdomain_name\x18\x01 \x01(\tB)\xbaH&r$\x10\x012 ^[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,}$R\n" +
 	"domainName\x12B\n" +

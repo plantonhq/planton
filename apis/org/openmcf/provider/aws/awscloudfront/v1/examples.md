@@ -7,6 +7,7 @@ kind: AwsCloudFront
 metadata:
   name: my-cdn
 spec:
+  region: us-east-1
   enabled: true
   priceClass: PRICE_CLASS_100
   origins:
@@ -22,6 +23,7 @@ kind: AwsCloudFront
 metadata:
   name: my-cdn
 spec:
+  region: us-east-1
   enabled: true
   aliases:
     - cdn.example.com

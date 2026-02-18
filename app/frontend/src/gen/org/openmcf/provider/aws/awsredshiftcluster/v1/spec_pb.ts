@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsredshiftcluster/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsredshiftcluster_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjlvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzcmVkc2hpZnRjbHVzdGVyL3YxL3NwZWMucHJvdG8SLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NyZWRzaGlmdGNsdXN0ZXIudjEirxYKFkF3c1JlZHNoaWZ0Q2x1c3RlclNwZWMSGQoJbm9kZV90eXBlGAEgASgJQga6SAPIAQESKgoPbnVtYmVyX29mX25vZGVzGAIgASgFQgy6SAQaAigBiqYdATFIAIgBARIjCg1kYXRhYmFzZV9uYW1lGAMgASgJQgeKph0DZGV2SAGIAQESJwoPbWFzdGVyX3VzZXJuYW1lGAQgASgJQgmKph0FYWRtaW5IAogBARIXCg9tYXN0ZXJfcGFzc3dvcmQYBSABKAkSKAoWbWFuYWdlX21hc3Rlcl9wYXNzd29yZBgGIAEoCEIIkqYdBHRydWUSfgohbWFzdGVyX3Bhc3N3b3JkX3NlY3JldF9rbXNfa2V5X2lkGAcgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybhInCgRwb3J0GAggASgFQhS6SAkaBxj//wMo2wiKph0ENTQzOUgDiAEBEnYKCnN1Ym5ldF9pZHMYCSADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQi6I1GHYAZLUYSVzdGF0dXMub3V0cHV0cy5wcml2YXRlX3N1Ym5ldHMuWypdLmlkElUKGWNsdXN0ZXJfc3VibmV0X2dyb3VwX25hbWUYCiABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmEnkKEnNlY3VyaXR5X2dyb3VwX2lkcxgLIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEo4BChNhbGxvd2VkX2NpZHJfYmxvY2tzGAwgAygJQnG6SG6SAWsYASJncmUyY14oPzoyNVswLTVdfDJbMC00XVxkfFswLTFdP1xkP1xkKSg/OlwuKD86MjVbMC01XXwyWzAtNF1cZHxbMC0xXT9cZD9cZCkpezN9Lyg/OlswLTldfFsxMl1cZHwzWzAtMl0pJBKDAQocYXNzb2NpYXRlX3NlY3VyaXR5X2dyb3VwX2lkcxgNIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEmIKBnZwY19pZBgOIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCHojUYdgBktRhFXN0YXR1cy5vdXRwdXRzLnZwY19pZBIbChNwdWJsaWNseV9hY2Nlc3NpYmxlGA8gASgIEhwKFGVuaGFuY2VkX3ZwY19yb3V0aW5nGBAgASgIEhAKCG11bHRpX2F6GBEgASgIEiAKCWVuY3J5cHRlZBgSIAEoCEIIiqYdBHRydWVIBIgBARJnCgprbXNfa2V5X2lkGBMgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybhJnCglpYW1fcm9sZXMYFCADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQiCI1GHQAZLUYRdzdGF0dXMub3V0cHV0cy5yb2xlX2FybhJyChRkZWZhdWx0X2lhbV9yb2xlX2FybhgVIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCIIjUYdABktRhF3N0YXR1cy5vdXRwdXRzLnJvbGVfYXJuEkAKI2F1dG9tYXRlZF9zbmFwc2hvdF9yZXRlbnRpb25fcGVyaW9kGBYgASgFQg66SAYaBBgjKACKph0BMUgFiAEBEhsKE3NraXBfZmluYWxfc25hcHNob3QYFyABKAgSIQoZZmluYWxfc25hcHNob3RfaWRlbnRpZmllchgYIAEoCRKrAQoccHJlZmVycmVkX21haW50ZW5hbmNlX3dpbmRvdxgZIAEoCUKEAbpIgAHYAQFyezJ5Xihtb258dHVlfHdlZHx0aHV8ZnJpfHNhdHxzdW4pOihbMDFdWzAtOV18MlswLTNdKTpbMC01XVswLTldLShtb258dHVlfHdlZHx0aHV8ZnJpfHNhdHxzdW4pOihbMDFdWzAtOV18MlswLTNdKTpbMC01XVswLTldJBIsChVhbGxvd192ZXJzaW9uX3VwZ3JhZGUYGiABKAhCCIqmHQR0cnVlSAaIAQESOwoWbWFpbnRlbmFuY2VfdHJhY2tfbmFtZRgbIAEoCUIbukgY2AEBchNSB2N1cnJlbnRSCHRyYWlsaW5nEhkKEWFwcGx5X2ltbWVkaWF0ZWx5GBwgASgIEloKB2xvZ2dpbmcYHSABKAsySS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzcmVkc2hpZnRjbHVzdGVyLnYxLkF3c1JlZHNoaWZ0Q2x1c3RlckxvZ2dpbmcSJAocY2x1c3Rlcl9wYXJhbWV0ZXJfZ3JvdXBfbmFtZRgeIAEoCRJfCgpwYXJhbWV0ZXJzGB8gAygLMksub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3JlZHNoaWZ0Y2x1c3Rlci52MS5Bd3NSZWRzaGlmdENsdXN0ZXJQYXJhbWV0ZXI67QO6SOkDGp8BChlwYXNzd29yZF9tdXR1YWxfZXhjbHVzaW9uEkFtYXN0ZXJfcGFzc3dvcmQgY2Fubm90IGJlIHNldCB3aGVuIG1hbmFnZV9tYXN0ZXJfcGFzc3dvcmQgaXMgdHJ1ZRo/dGhpcy5tYW5hZ2VfbWFzdGVyX3Bhc3N3b3JkID8gdGhpcy5tYXN0ZXJfcGFzc3dvcmQgPT0gIiIgOiB0cnVlGpcBChBzdWJuZXRzX29yX2dyb3VwEj1wcm92aWRlIGVpdGhlciBzdWJuZXRfaWRzICg+PSAyKSBvciBjbHVzdGVyX3N1Ym5ldF9ncm91cF9uYW1lGkQodGhpcy5zdWJuZXRfaWRzLnNpemUoKSA+PSAyKSB8fCBoYXModGhpcy5jbHVzdGVyX3N1Ym5ldF9ncm91cF9uYW1lKRqqAQoXZmluYWxfc25hcHNob3RfcmVxdWlyZWQSR2ZpbmFsX3NuYXBzaG90X2lkZW50aWZpZXIgaXMgcmVxdWlyZWQgd2hlbiBza2lwX2ZpbmFsX3NuYXBzaG90IGlzIGZhbHNlGkZ0aGlzLnNraXBfZmluYWxfc25hcHNob3QgPyB0cnVlIDogdGhpcy5maW5hbF9zbmFwc2hvdF9pZGVudGlmaWVyICE9ICIiQhIKEF9udW1iZXJfb2Zfbm9kZXNCEAoOX2RhdGFiYXNlX25hbWVCEgoQX21hc3Rlcl91c2VybmFtZUIHCgVfcG9ydEIMCgpfZW5jcnlwdGVkQiYKJF9hdXRvbWF0ZWRfc25hcHNob3RfcmV0ZW50aW9uX3BlcmlvZEIYChZfYWxsb3dfdmVyc2lvbl91cGdyYWRlIrQEChlBd3NSZWRzaGlmdENsdXN0ZXJMb2dnaW5nEjYKFGxvZ19kZXN0aW5hdGlvbl90eXBlGAEgASgJQhi6SBXIAQFyEFICczNSCmNsb3Vkd2F0Y2gSFgoOczNfYnVja2V0X25hbWUYAiABKAkSFQoNczNfa2V5X3ByZWZpeBgDIAEoCRJKCgtsb2dfZXhwb3J0cxgEIAMoCUI1ukgykgEvGAEiK3IpUg1jb25uZWN0aW9ubG9nUg91c2VyYWN0aXZpdHlsb2dSB3VzZXJsb2c64wK6SN8CGpgBChJzM19idWNrZXRfcmVxdWlyZWQSPHMzX2J1Y2tldF9uYW1lIGlzIHJlcXVpcmVkIHdoZW4gbG9nX2Rlc3RpbmF0aW9uX3R5cGUgaXMgJ3MzJxpEdGhpcy5sb2dfZGVzdGluYXRpb25fdHlwZSA9PSAnczMnID8gdGhpcy5zM19idWNrZXRfbmFtZSAhPSAnJyA6IHRydWUawQEKG2Nsb3Vkd2F0Y2hfZXhwb3J0c19yZXF1aXJlZBJSbG9nX2V4cG9ydHMgbXVzdCBoYXZlIGF0IGxlYXN0IG9uZSBlbnRyeSB3aGVuIGxvZ19kZXN0aW5hdGlvbl90eXBlIGlzICdjbG91ZHdhdGNoJxpOdGhpcy5sb2dfZGVzdGluYXRpb25fdHlwZSA9PSAnY2xvdWR3YXRjaCcgPyB0aGlzLmxvZ19leHBvcnRzLnNpemUoKSA+IDAgOiB0cnVlIkoKG0F3c1JlZHNoaWZ0Q2x1c3RlclBhcmFtZXRlchIUCgRuYW1lGAEgASgJQga6SAPIAQESFQoFdmFsdWUYAiABKAlCBrpIA8gBAUKFAwoyY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NyZWRzaGlmdGNsdXN0ZXIudjFCCVNwZWNQcm90b1ABWmVnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c3JlZHNoaWZ0Y2x1c3Rlci92MTthd3NyZWRzaGlmdGNsdXN0ZXJ2MaICBU9PUEFBqgIuT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c3JlZHNoaWZ0Y2x1c3Rlci5WMcoCLk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NyZWRzaGlmdGNsdXN0ZXJcVjHiAjpPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzcmVkc2hpZnRjbHVzdGVyXFYxXEdQQk1ldGFkYXRh6gIzT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NyZWRzaGlmdGNsdXN0ZXI6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("Cjlvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzcmVkc2hpZnRjbHVzdGVyL3YxL3NwZWMucHJvdG8SLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NyZWRzaGlmdGNsdXN0ZXIudjEiyBYKFkF3c1JlZHNoaWZ0Q2x1c3RlclNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEhkKCW5vZGVfdHlwZRgCIAEoCUIGukgDyAEBEioKD251bWJlcl9vZl9ub2RlcxgDIAEoBUIMukgEGgIoAYqmHQExSACIAQESIwoNZGF0YWJhc2VfbmFtZRgEIAEoCUIHiqYdA2RldkgBiAEBEicKD21hc3Rlcl91c2VybmFtZRgFIAEoCUIJiqYdBWFkbWluSAKIAQESFwoPbWFzdGVyX3Bhc3N3b3JkGAYgASgJEigKFm1hbmFnZV9tYXN0ZXJfcGFzc3dvcmQYByABKAhCCJKmHQR0cnVlEn4KIW1hc3Rlcl9wYXNzd29yZF9zZWNyZXRfa21zX2tleV9pZBgIIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SJwoEcG9ydBgJIAEoBUIUukgJGgcY//8DKNsIiqYdBDU0MzlIA4gBARJ2CgpzdWJuZXRfaWRzGAogAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIuiNRh2AGS1GElc3RhdHVzLm91dHB1dHMucHJpdmF0ZV9zdWJuZXRzLlsqXS5pZBJVChljbHVzdGVyX3N1Ym5ldF9ncm91cF9uYW1lGAsgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZhJ5ChJzZWN1cml0eV9ncm91cF9pZHMYDCADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQimI1GHXAZLUYSBzdGF0dXMub3V0cHV0cy5zZWN1cml0eV9ncm91cF9pZBKOAQoTYWxsb3dlZF9jaWRyX2Jsb2NrcxgNIAMoCUJxukhukgFrGAEiZ3JlMmNeKD86MjVbMC01XXwyWzAtNF1cZHxbMC0xXT9cZD9cZCkoPzpcLig/OjI1WzAtNV18MlswLTRdXGR8WzAtMV0/XGQ/XGQpKXszfS8oPzpbMC05XXxbMTJdXGR8M1swLTJdKSQSgwEKHGFzc29jaWF0ZV9zZWN1cml0eV9ncm91cF9pZHMYDiADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQimI1GHXAZLUYSBzdGF0dXMub3V0cHV0cy5zZWN1cml0eV9ncm91cF9pZBJiCgZ2cGNfaWQYDyABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQh6I1GHYAZLUYRVzdGF0dXMub3V0cHV0cy52cGNfaWQSGwoTcHVibGljbHlfYWNjZXNzaWJsZRgQIAEoCBIcChRlbmhhbmNlZF92cGNfcm91dGluZxgRIAEoCBIQCghtdWx0aV9hehgSIAEoCBIgCgllbmNyeXB0ZWQYEyABKAhCCIqmHQR0cnVlSASIAQESZwoKa21zX2tleV9pZBgUIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SZwoJaWFtX3JvbGVzGBUgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIgiNRh0AGS1GEXc3RhdHVzLm91dHB1dHMucm9sZV9hcm4ScgoUZGVmYXVsdF9pYW1fcm9sZV9hcm4YFiABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQiCI1GHQAZLUYRdzdGF0dXMub3V0cHV0cy5yb2xlX2FybhJACiNhdXRvbWF0ZWRfc25hcHNob3RfcmV0ZW50aW9uX3BlcmlvZBgXIAEoBUIOukgGGgQYIygAiqYdATFIBYgBARIbChNza2lwX2ZpbmFsX3NuYXBzaG90GBggASgIEiEKGWZpbmFsX3NuYXBzaG90X2lkZW50aWZpZXIYGSABKAkSqwEKHHByZWZlcnJlZF9tYWludGVuYW5jZV93aW5kb3cYGiABKAlChAG6SIAB2AEBcnsyeV4obW9ufHR1ZXx3ZWR8dGh1fGZyaXxzYXR8c3VuKTooWzAxXVswLTldfDJbMC0zXSk6WzAtNV1bMC05XS0obW9ufHR1ZXx3ZWR8dGh1fGZyaXxzYXR8c3VuKTooWzAxXVswLTldfDJbMC0zXSk6WzAtNV1bMC05XSQSLAoVYWxsb3dfdmVyc2lvbl91cGdyYWRlGBsgASgIQgiKph0EdHJ1ZUgGiAEBEjsKFm1haW50ZW5hbmNlX3RyYWNrX25hbWUYHCABKAlCG7pIGNgBAXITUgdjdXJyZW50Ugh0cmFpbGluZxIZChFhcHBseV9pbW1lZGlhdGVseRgdIAEoCBJaCgdsb2dnaW5nGB4gASgLMkkub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3JlZHNoaWZ0Y2x1c3Rlci52MS5Bd3NSZWRzaGlmdENsdXN0ZXJMb2dnaW5nEiQKHGNsdXN0ZXJfcGFyYW1ldGVyX2dyb3VwX25hbWUYHyABKAkSXwoKcGFyYW1ldGVycxggIAMoCzJLLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NyZWRzaGlmdGNsdXN0ZXIudjEuQXdzUmVkc2hpZnRDbHVzdGVyUGFyYW1ldGVyOu0DukjpAxqfAQoZcGFzc3dvcmRfbXV0dWFsX2V4Y2x1c2lvbhJBbWFzdGVyX3Bhc3N3b3JkIGNhbm5vdCBiZSBzZXQgd2hlbiBtYW5hZ2VfbWFzdGVyX3Bhc3N3b3JkIGlzIHRydWUaP3RoaXMubWFuYWdlX21hc3Rlcl9wYXNzd29yZCA/IHRoaXMubWFzdGVyX3Bhc3N3b3JkID09ICIiIDogdHJ1ZRqXAQoQc3VibmV0c19vcl9ncm91cBI9cHJvdmlkZSBlaXRoZXIgc3VibmV0X2lkcyAoPj0gMikgb3IgY2x1c3Rlcl9zdWJuZXRfZ3JvdXBfbmFtZRpEKHRoaXMuc3VibmV0X2lkcy5zaXplKCkgPj0gMikgfHwgaGFzKHRoaXMuY2x1c3Rlcl9zdWJuZXRfZ3JvdXBfbmFtZSkaqgEKF2ZpbmFsX3NuYXBzaG90X3JlcXVpcmVkEkdmaW5hbF9zbmFwc2hvdF9pZGVudGlmaWVyIGlzIHJlcXVpcmVkIHdoZW4gc2tpcF9maW5hbF9zbmFwc2hvdCBpcyBmYWxzZRpGdGhpcy5za2lwX2ZpbmFsX3NuYXBzaG90ID8gdHJ1ZSA6IHRoaXMuZmluYWxfc25hcHNob3RfaWRlbnRpZmllciAhPSAiIkISChBfbnVtYmVyX29mX25vZGVzQhAKDl9kYXRhYmFzZV9uYW1lQhIKEF9tYXN0ZXJfdXNlcm5hbWVCBwoFX3BvcnRCDAoKX2VuY3J5cHRlZEImCiRfYXV0b21hdGVkX3NuYXBzaG90X3JldGVudGlvbl9wZXJpb2RCGAoWX2FsbG93X3ZlcnNpb25fdXBncmFkZSK0BAoZQXdzUmVkc2hpZnRDbHVzdGVyTG9nZ2luZxI2ChRsb2dfZGVzdGluYXRpb25fdHlwZRgBIAEoCUIYukgVyAEBchBSAnMzUgpjbG91ZHdhdGNoEhYKDnMzX2J1Y2tldF9uYW1lGAIgASgJEhUKDXMzX2tleV9wcmVmaXgYAyABKAkSSgoLbG9nX2V4cG9ydHMYBCADKAlCNbpIMpIBLxgBIityKVINY29ubmVjdGlvbmxvZ1IPdXNlcmFjdGl2aXR5bG9nUgd1c2VybG9nOuMCukjfAhqYAQoSczNfYnVja2V0X3JlcXVpcmVkEjxzM19idWNrZXRfbmFtZSBpcyByZXF1aXJlZCB3aGVuIGxvZ19kZXN0aW5hdGlvbl90eXBlIGlzICdzMycaRHRoaXMubG9nX2Rlc3RpbmF0aW9uX3R5cGUgPT0gJ3MzJyA/IHRoaXMuczNfYnVja2V0X25hbWUgIT0gJycgOiB0cnVlGsEBChtjbG91ZHdhdGNoX2V4cG9ydHNfcmVxdWlyZWQSUmxvZ19leHBvcnRzIG11c3QgaGF2ZSBhdCBsZWFzdCBvbmUgZW50cnkgd2hlbiBsb2dfZGVzdGluYXRpb25fdHlwZSBpcyAnY2xvdWR3YXRjaCcaTnRoaXMubG9nX2Rlc3RpbmF0aW9uX3R5cGUgPT0gJ2Nsb3Vkd2F0Y2gnID8gdGhpcy5sb2dfZXhwb3J0cy5zaXplKCkgPiAwIDogdHJ1ZSJKChtBd3NSZWRzaGlmdENsdXN0ZXJQYXJhbWV0ZXISFAoEbmFtZRgBIAEoCUIGukgDyAEBEhUKBXZhbHVlGAIgASgJQga6SAPIAQFChQMKMmNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzcmVkc2hpZnRjbHVzdGVyLnYxQglTcGVjUHJvdG9QAVplZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NyZWRzaGlmdGNsdXN0ZXIvdjE7YXdzcmVkc2hpZnRjbHVzdGVydjGiAgVPT1BBQaoCLk9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NyZWRzaGlmdGNsdXN0ZXIuVjHKAi5PcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzcmVkc2hpZnRjbHVzdGVyXFYx4gI6T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c3JlZHNoaWZ0Y2x1c3RlclxWMVxHUEJNZXRhZGF0YeoCM09yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzcmVkc2hpZnRjbHVzdGVyOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsRedshiftClusterSpec defines the desired state of an Amazon Redshift data warehouse cluster.
@@ -25,12 +25,20 @@ export const file_org_openmcf_provider_aws_awsredshiftcluster_v1_spec: GenFile =
  */
 export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshiftcluster.v1.AwsRedshiftClusterSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * node_type determines the compute and storage capacity of each node.
    * Common types: dc2.large (dense compute SSD), ra3.xlplus / ra3.4xlarge / ra3.16xlarge
    * (managed storage with automatic data tiering between SSD and S3).
    * RA3 nodes are recommended for most workloads due to decoupled compute and storage.
    *
-   * @generated from field: string node_type = 1;
+   * @generated from field: string node_type = 2;
    */
   nodeType: string;
 
@@ -39,7 +47,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * 1 = single-node (leader and compute combined); >1 = multi-node (separate leader + compute nodes).
    * Multi-node clusters are required for production workloads.
    *
-   * @generated from field: optional int32 number_of_nodes = 2;
+   * @generated from field: optional int32 number_of_nodes = 3;
    */
   numberOfNodes?: number;
 
@@ -47,7 +55,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * database_name is the name of the first database created in the cluster.
    * 1-64 characters, lowercase alphanumeric and underscores only, must start with a letter or underscore.
    *
-   * @generated from field: optional string database_name = 3;
+   * @generated from field: optional string database_name = 4;
    */
   databaseName?: string;
 
@@ -55,7 +63,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * master_username is the admin user for the cluster. Required for new clusters.
    * 1-128 characters, must start with a letter.
    *
-   * @generated from field: optional string master_username = 4;
+   * @generated from field: optional string master_username = 5;
    */
   masterUsername?: string;
 
@@ -63,7 +71,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * master_password is the admin password (8-64 chars, at least one uppercase, one lowercase, one digit).
    * Mutually exclusive with manage_master_password.
    *
-   * @generated from field: string master_password = 5;
+   * @generated from field: string master_password = 6;
    */
   masterPassword: string;
 
@@ -72,7 +80,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * When true, AWS generates, rotates, and stores the password automatically.
    * Recommended for production. Mutually exclusive with master_password.
    *
-   * @generated from field: bool manage_master_password = 6;
+   * @generated from field: bool manage_master_password = 7;
    */
   manageMasterPassword: boolean;
 
@@ -80,14 +88,14 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * master_password_secret_kms_key_id encrypts the Secrets Manager secret holding the managed password.
    * Only applicable when manage_master_password is true.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef master_password_secret_kms_key_id = 7;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef master_password_secret_kms_key_id = 8;
    */
   masterPasswordSecretKmsKeyId?: StringValueOrRef;
 
   /**
    * port for client connections. Redshift default is 5439. Range: 1115-65535.
    *
-   * @generated from field: optional int32 port = 8;
+   * @generated from field: optional int32 port = 9;
    */
   port?: number;
 
@@ -95,14 +103,14 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * subnet_ids for automatic Redshift subnet group creation.
    * Provide at least two subnets in distinct Availability Zones for high availability.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 9;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 10;
    */
   subnetIds: StringValueOrRef[];
 
   /**
    * cluster_subnet_group_name uses an existing Redshift subnet group instead of creating one from subnet_ids.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_subnet_group_name = 10;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_subnet_group_name = 11;
    */
   clusterSubnetGroupName?: StringValueOrRef;
 
@@ -110,7 +118,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * security_group_ids triggers creation of a managed security group with ingress rules
    * allowing traffic from these source security groups on the cluster port.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 11;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 12;
    */
   securityGroupIds: StringValueOrRef[];
 
@@ -118,7 +126,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * allowed_cidr_blocks triggers creation of a managed security group with ingress rules
    * allowing traffic from these IPv4 CIDR ranges on the cluster port.
    *
-   * @generated from field: repeated string allowed_cidr_blocks = 12;
+   * @generated from field: repeated string allowed_cidr_blocks = 13;
    */
   allowedCidrBlocks: string[];
 
@@ -126,7 +134,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * associate_security_group_ids are existing security groups attached directly to the cluster
    * (alongside the managed security group, if one is created from security_group_ids/allowed_cidr_blocks).
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef associate_security_group_ids = 13;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef associate_security_group_ids = 14;
    */
   associateSecurityGroupIds: StringValueOrRef[];
 
@@ -134,14 +142,14 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * vpc_id is required when security_group_ids or allowed_cidr_blocks are provided,
    * as the managed security group must be created within a specific VPC.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 14;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 15;
    */
   vpcId?: StringValueOrRef;
 
   /**
    * publicly_accessible controls whether the cluster has a public IP and can be accessed from outside the VPC.
    *
-   * @generated from field: bool publicly_accessible = 15;
+   * @generated from field: bool publicly_accessible = 16;
    */
   publiclyAccessible: boolean;
 
@@ -149,7 +157,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * enhanced_vpc_routing forces all COPY and UNLOAD traffic between the cluster and data repositories
    * through the VPC, enabling VPC flow logs and other network security controls.
    *
-   * @generated from field: bool enhanced_vpc_routing = 16;
+   * @generated from field: bool enhanced_vpc_routing = 17;
    */
   enhancedVpcRouting: boolean;
 
@@ -157,7 +165,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * multi_az enables Multi-AZ deployment for automatic failover to a standby in a different AZ.
    * Requires RA3 node types (ra3.xlplus, ra3.4xlarge, ra3.16xlarge).
    *
-   * @generated from field: bool multi_az = 17;
+   * @generated from field: bool multi_az = 18;
    */
   multiAz: boolean;
 
@@ -165,7 +173,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * encrypted enables at-rest encryption for the cluster data.
    * AWS defaults to true. Uses the AWS-managed Redshift service key unless kms_key_id is specified.
    *
-   * @generated from field: optional bool encrypted = 18;
+   * @generated from field: optional bool encrypted = 19;
    */
   encrypted?: boolean;
 
@@ -173,7 +181,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * kms_key_id is the ARN of a customer-managed KMS key for cluster encryption.
    * Requires encrypted to be true. If omitted, AWS uses the default Redshift service key.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 19;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 20;
    */
   kmsKeyId?: StringValueOrRef;
 
@@ -182,7 +190,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * (S3, DynamoDB, Glue Data Catalog, etc.) during COPY, UNLOAD, and Spectrum queries.
    * Maximum 10 roles per cluster.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef iam_roles = 20;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef iam_roles = 21;
    */
   iamRoles: StringValueOrRef[];
 
@@ -190,7 +198,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * default_iam_role_arn is the IAM role used by default when SQL commands access AWS services
    * without explicitly specifying a role (e.g., unqualified COPY/UNLOAD).
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef default_iam_role_arn = 21;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef default_iam_role_arn = 22;
    */
   defaultIamRoleArn?: StringValueOrRef;
 
@@ -198,7 +206,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * automated_snapshot_retention_period is the number of days to retain automated cluster snapshots.
    * 0 disables automated snapshots. Maximum: 35.
    *
-   * @generated from field: optional int32 automated_snapshot_retention_period = 22;
+   * @generated from field: optional int32 automated_snapshot_retention_period = 23;
    */
   automatedSnapshotRetentionPeriod?: number;
 
@@ -206,7 +214,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * skip_final_snapshot controls whether a final manual snapshot is created before cluster deletion.
    * Set to true only for ephemeral development/test clusters.
    *
-   * @generated from field: bool skip_final_snapshot = 23;
+   * @generated from field: bool skip_final_snapshot = 24;
    */
   skipFinalSnapshot: boolean;
 
@@ -214,7 +222,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * final_snapshot_identifier is the name for the final snapshot created on deletion.
    * Required when skip_final_snapshot is false.
    *
-   * @generated from field: string final_snapshot_identifier = 24;
+   * @generated from field: string final_snapshot_identifier = 25;
    */
   finalSnapshotIdentifier: string;
 
@@ -222,7 +230,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * preferred_maintenance_window is the weekly UTC time range for system maintenance.
    * Format: ddd:hh:mi-ddd:hh:mi (e.g., "sat:03:00-sat:04:00").
    *
-   * @generated from field: string preferred_maintenance_window = 25;
+   * @generated from field: string preferred_maintenance_window = 26;
    */
   preferredMaintenanceWindow: string;
 
@@ -230,7 +238,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * allow_version_upgrade permits AWS to automatically apply major engine version upgrades
    * during the maintenance window.
    *
-   * @generated from field: optional bool allow_version_upgrade = 26;
+   * @generated from field: optional bool allow_version_upgrade = 27;
    */
   allowVersionUpgrade?: boolean;
 
@@ -238,7 +246,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * maintenance_track_name determines the cluster maintenance version track.
    * "current" applies the latest approved version; "trailing" uses the previous major version.
    *
-   * @generated from field: string maintenance_track_name = 27;
+   * @generated from field: string maintenance_track_name = 28;
    */
   maintenanceTrackName: string;
 
@@ -246,7 +254,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * apply_immediately controls whether modifications are applied immediately or deferred
    * to the next maintenance window.
    *
-   * @generated from field: bool apply_immediately = 28;
+   * @generated from field: bool apply_immediately = 29;
    */
   applyImmediately: boolean;
 
@@ -254,7 +262,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * logging configures audit logging for the cluster.
    * Redshift can send connection, user activity, and user logs to S3 or CloudWatch Logs.
    *
-   * @generated from field: org.openmcf.provider.aws.awsredshiftcluster.v1.AwsRedshiftClusterLogging logging = 29;
+   * @generated from field: org.openmcf.provider.aws.awsredshiftcluster.v1.AwsRedshiftClusterLogging logging = 30;
    */
   logging?: AwsRedshiftClusterLogging;
 
@@ -262,7 +270,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * cluster_parameter_group_name associates an existing Redshift parameter group with the cluster.
    * Ignored when inline parameters are provided (a new group is created instead).
    *
-   * @generated from field: string cluster_parameter_group_name = 30;
+   * @generated from field: string cluster_parameter_group_name = 31;
    */
   clusterParameterGroupName: string;
 
@@ -270,7 +278,7 @@ export type AwsRedshiftClusterSpec = Message<"org.openmcf.provider.aws.awsredshi
    * parameters creates an inline parameter group (family: redshift-1.0) with these parameters.
    * Common parameters: require_ssl, enable_user_activity_logging, max_concurrency_scaling_clusters.
    *
-   * @generated from field: repeated org.openmcf.provider.aws.awsredshiftcluster.v1.AwsRedshiftClusterParameter parameters = 31;
+   * @generated from field: repeated org.openmcf.provider.aws.awsredshiftcluster.v1.AwsRedshiftClusterParameter parameters = 32;
    */
   parameters: AwsRedshiftClusterParameter[];
 };

@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "aws" {
-  # Region is expected to be configured via environment or backend, keeping module generic
+  region = var.spec.region
 }
 
 

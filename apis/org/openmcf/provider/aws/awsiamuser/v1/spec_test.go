@@ -27,6 +27,7 @@ var _ = ginkgo.Describe("AwsIamUserSpec Custom Validation Tests", func() {
 						Name: "test-iam-user",
 					},
 					Spec: &AwsIamUserSpec{
+						Region:   "us-west-2",
 						UserName: "test-ci-user",
 					},
 				}

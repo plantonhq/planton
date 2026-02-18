@@ -58,12 +58,15 @@ const (
 //     inputs.
 type AwsFsxOntapVolumeSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// The ID of the Storage Virtual Machine that this volume belongs to. Required.
 	// ForceNew — the volume cannot be moved to a different SVM after creation.
 	//
 	// The SVM provides the network endpoints, protocol configuration, and Active
 	// Directory integration. All volumes within an SVM share its protocol stack.
-	StorageVirtualMachineId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=storage_virtual_machine_id,json=storageVirtualMachineId,proto3" json:"storage_virtual_machine_id,omitempty"`
+	StorageVirtualMachineId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=storage_virtual_machine_id,json=storageVirtualMachineId,proto3" json:"storage_virtual_machine_id,omitempty"`
 	// The name of the volume within the ONTAP file system. Required. ForceNew.
 	//
 	// This is the ONTAP volume name (not the OpenMCF metadata name). ONTAP volume
@@ -72,7 +75,7 @@ type AwsFsxOntapVolumeSpec struct {
 	// output.
 	//
 	// Constraints: 1-203 characters, alphanumeric and underscore only.
-	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	// The size of the volume in megabytes. Required.
 	//
 	// Minimum 20 MB. Maximum is constrained by the file system's total storage
@@ -82,7 +85,7 @@ type AwsFsxOntapVolumeSpec struct {
 	//
 	// Covers volumes up to ~2.1 PB (int32 max). For the extremely rare case of
 	// volumes exceeding 2 PB, use the AWS console or CLI with size_in_bytes.
-	SizeInMegabytes int32 `protobuf:"varint,3,opt,name=size_in_megabytes,json=sizeInMegabytes,proto3" json:"size_in_megabytes,omitempty"`
+	SizeInMegabytes int32 `protobuf:"varint,4,opt,name=size_in_megabytes,json=sizeInMegabytes,proto3" json:"size_in_megabytes,omitempty"`
 	// The location in the SVM namespace where this volume is mounted. Clients
 	// access the volume at this path (e.g., mount nfs.svm.example.com:/vol1).
 	//
@@ -93,7 +96,7 @@ type AwsFsxOntapVolumeSpec struct {
 	// "/data/prod", "/shares/finance".
 	//
 	// Constraints: 1-255 characters.
-	JunctionPath string `protobuf:"bytes,4,opt,name=junction_path,json=junctionPath,proto3" json:"junction_path,omitempty"`
+	JunctionPath string `protobuf:"bytes,5,opt,name=junction_path,json=junctionPath,proto3" json:"junction_path,omitempty"`
 	// The ONTAP volume type. ForceNew.
 	//
 	//   - "RW": Read-write volume. The standard type for serving data to clients.
@@ -102,7 +105,7 @@ type AwsFsxOntapVolumeSpec struct {
 	//     relationship is broken or the volume is converted.
 	//
 	// Default: RW
-	OntapVolumeType *string `protobuf:"bytes,5,opt,name=ontap_volume_type,json=ontapVolumeType,proto3,oneof" json:"ontap_volume_type,omitempty"`
+	OntapVolumeType *string `protobuf:"bytes,6,opt,name=ontap_volume_type,json=ontapVolumeType,proto3,oneof" json:"ontap_volume_type,omitempty"`
 	// The volume style. ForceNew.
 	//
 	//   - "FLEXVOL": Traditional ONTAP volume on a single aggregate. Suitable for
@@ -112,7 +115,7 @@ type AwsFsxOntapVolumeSpec struct {
 	//     aggregate_configuration. Ideal for data lakes, genomics, and media.
 	//
 	// Default: FLEXVOL
-	VolumeStyle *string `protobuf:"bytes,6,opt,name=volume_style,json=volumeStyle,proto3,oneof" json:"volume_style,omitempty"`
+	VolumeStyle *string `protobuf:"bytes,7,opt,name=volume_style,json=volumeStyle,proto3,oneof" json:"volume_style,omitempty"`
 	// The security style for this volume's root directory. Controls how file
 	// permissions are evaluated.
 	//
@@ -122,7 +125,7 @@ type AwsFsxOntapVolumeSpec struct {
 	//     depends on which protocol last set permissions on a file.
 	//
 	// If omitted, inherits from the parent SVM's root_volume_security_style.
-	SecurityStyle string `protobuf:"bytes,7,opt,name=security_style,json=securityStyle,proto3" json:"security_style,omitempty"`
+	SecurityStyle string `protobuf:"bytes,8,opt,name=security_style,json=securityStyle,proto3" json:"security_style,omitempty"`
 	// The name of the ONTAP snapshot policy to apply to this volume. Snapshot
 	// policies control automatic snapshot creation and retention.
 	//
@@ -130,7 +133,7 @@ type AwsFsxOntapVolumeSpec struct {
 	// (no automatic snapshots). Custom policies can be created via the ONTAP CLI.
 	//
 	// Constraints: 1-255 characters.
-	SnapshotPolicy string `protobuf:"bytes,8,opt,name=snapshot_policy,json=snapshotPolicy,proto3" json:"snapshot_policy,omitempty"`
+	SnapshotPolicy string `protobuf:"bytes,9,opt,name=snapshot_policy,json=snapshotPolicy,proto3" json:"snapshot_policy,omitempty"`
 	// Enable ONTAP storage efficiency features: deduplication, compression, and
 	// compaction. These features reduce physical storage consumption by
 	// identifying and eliminating redundant data blocks.
@@ -138,27 +141,27 @@ type AwsFsxOntapVolumeSpec struct {
 	// Recommended for most workloads. Disable only for workloads that are
 	// already compressed or deduplicated (e.g., encrypted data, pre-compressed
 	// media files) where the CPU overhead provides no benefit.
-	StorageEfficiencyEnabled bool `protobuf:"varint,9,opt,name=storage_efficiency_enabled,json=storageEfficiencyEnabled,proto3" json:"storage_efficiency_enabled,omitempty"`
+	StorageEfficiencyEnabled bool `protobuf:"varint,10,opt,name=storage_efficiency_enabled,json=storageEfficiencyEnabled,proto3" json:"storage_efficiency_enabled,omitempty"`
 	// Whether to copy resource tags to automatic volume backups.
 	//
 	// Default: false
-	CopyTagsToBackups *bool `protobuf:"varint,10,opt,name=copy_tags_to_backups,json=copyTagsToBackups,proto3,oneof" json:"copy_tags_to_backups,omitempty"`
+	CopyTagsToBackups *bool `protobuf:"varint,11,opt,name=copy_tags_to_backups,json=copyTagsToBackups,proto3,oneof" json:"copy_tags_to_backups,omitempty"`
 	// Whether to skip the automatic backup that AWS takes when the volume is
 	// deleted. Set to true for development/test volumes where the backup is
 	// unnecessary.
 	//
 	// Default: false (a final backup is taken)
-	SkipFinalBackup *bool `protobuf:"varint,11,opt,name=skip_final_backup,json=skipFinalBackup,proto3,oneof" json:"skip_final_backup,omitempty"`
+	SkipFinalBackup *bool `protobuf:"varint,12,opt,name=skip_final_backup,json=skipFinalBackup,proto3,oneof" json:"skip_final_backup,omitempty"`
 	// Whether to allow deletion of a SnapLock Enterprise volume that contains
 	// WORM files with unexpired retention periods. Only relevant for SnapLock
 	// Enterprise volumes — Compliance volumes can never bypass retention.
 	//
 	// Default: false
-	BypassSnaplockEnterpriseRetention *bool `protobuf:"varint,12,opt,name=bypass_snaplock_enterprise_retention,json=bypassSnaplockEnterpriseRetention,proto3,oneof" json:"bypass_snaplock_enterprise_retention,omitempty"`
+	BypassSnaplockEnterpriseRetention *bool `protobuf:"varint,13,opt,name=bypass_snaplock_enterprise_retention,json=bypassSnaplockEnterpriseRetention,proto3,oneof" json:"bypass_snaplock_enterprise_retention,omitempty"`
 	// Data tiering policy that controls when and how data moves from primary
 	// SSD storage to lower-cost capacity pool storage. If omitted, the volume
 	// uses the default tiering policy (SNAPSHOT_ONLY).
-	TieringPolicy *AwsFsxOntapVolumeTieringPolicy `protobuf:"bytes,13,opt,name=tiering_policy,json=tieringPolicy,proto3" json:"tiering_policy,omitempty"`
+	TieringPolicy *AwsFsxOntapVolumeTieringPolicy `protobuf:"bytes,14,opt,name=tiering_policy,json=tieringPolicy,proto3" json:"tiering_policy,omitempty"`
 	// SnapLock configuration for WORM (Write Once Read Many) compliance storage.
 	// When configured, files committed to this volume become immutable for their
 	// retention period. ForceNew for snaplock_type.
@@ -172,14 +175,14 @@ type AwsFsxOntapVolumeSpec struct {
 	//
 	// Once set, the snaplock_type cannot be changed. Choosing the wrong type
 	// requires deleting and recreating the volume.
-	SnaplockConfiguration *AwsFsxOntapVolumeSnaplockConfiguration `protobuf:"bytes,14,opt,name=snaplock_configuration,json=snaplockConfiguration,proto3" json:"snaplock_configuration,omitempty"`
+	SnaplockConfiguration *AwsFsxOntapVolumeSnaplockConfiguration `protobuf:"bytes,15,opt,name=snaplock_configuration,json=snaplockConfiguration,proto3" json:"snaplock_configuration,omitempty"`
 	// Aggregate configuration for FLEXGROUP volumes. Controls how the volume is
 	// distributed across the file system's aggregates. Ignored for FLEXVOL
 	// volumes.
 	//
 	// All fields in this block are ForceNew — changing the aggregate layout
 	// requires recreating the volume.
-	AggregateConfiguration *AwsFsxOntapVolumeAggregateConfiguration `protobuf:"bytes,15,opt,name=aggregate_configuration,json=aggregateConfiguration,proto3" json:"aggregate_configuration,omitempty"`
+	AggregateConfiguration *AwsFsxOntapVolumeAggregateConfiguration `protobuf:"bytes,16,opt,name=aggregate_configuration,json=aggregateConfiguration,proto3" json:"aggregate_configuration,omitempty"`
 	unknownFields          protoimpl.UnknownFields
 	sizeCache              protoimpl.SizeCache
 }
@@ -212,6 +215,13 @@ func (x *AwsFsxOntapVolumeSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsFsxOntapVolumeSpec.ProtoReflect.Descriptor instead.
 func (*AwsFsxOntapVolumeSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsfsxontapvolume_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsFsxOntapVolumeSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsFsxOntapVolumeSpec) GetStorageVirtualMachineId() *v1.StringValueOrRef {
@@ -797,25 +807,26 @@ var File_org_openmcf_provider_aws_awsfsxontapvolume_v1_spec_proto protoreflect.F
 
 const file_org_openmcf_provider_aws_awsfsxontapvolume_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8org/openmcf/provider/aws/awsfsxontapvolume/v1/spec.proto\x12-org.openmcf.provider.aws.awsfsxontapvolume.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xcb\x12\n" +
-	"\x15AwsFsxOntapVolumeSpec\x12\x95\x01\n" +
-	"\x1astorage_virtual_machine_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xa7\x02\x92\xd4a\x15status.outputs.svm_idR\x17storageVirtualMachineId\x12\x1e\n" +
-	"\x04name\x18\x02 \x01(\tB\n" +
+	"8org/openmcf/provider/aws/awsfsxontapvolume/v1/spec.proto\x12-org.openmcf.provider.aws.awsfsxontapvolume.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xec\x12\n" +
+	"\x15AwsFsxOntapVolumeSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x95\x01\n" +
+	"\x1astorage_virtual_machine_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xa7\x02\x92\xd4a\x15status.outputs.svm_idR\x17storageVirtualMachineId\x12\x1e\n" +
+	"\x04name\x18\x03 \x01(\tB\n" +
 	"\xbaH\ar\x05\x10\x01\x18\xcb\x01R\x04name\x123\n" +
-	"\x11size_in_megabytes\x18\x03 \x01(\x05B\a\xbaH\x04\x1a\x02(\x14R\x0fsizeInMegabytes\x12#\n" +
-	"\rjunction_path\x18\x04 \x01(\tR\fjunctionPath\x127\n" +
-	"\x11ontap_volume_type\x18\x05 \x01(\tB\x06\x8a\xa6\x1d\x02RWH\x00R\x0fontapVolumeType\x88\x01\x01\x123\n" +
-	"\fvolume_style\x18\x06 \x01(\tB\v\x8a\xa6\x1d\aFLEXVOLH\x01R\vvolumeStyle\x88\x01\x01\x12%\n" +
-	"\x0esecurity_style\x18\a \x01(\tR\rsecurityStyle\x12'\n" +
-	"\x0fsnapshot_policy\x18\b \x01(\tR\x0esnapshotPolicy\x12<\n" +
-	"\x1astorage_efficiency_enabled\x18\t \x01(\bR\x18storageEfficiencyEnabled\x12?\n" +
-	"\x14copy_tags_to_backups\x18\n" +
-	" \x01(\bB\t\x8a\xa6\x1d\x05falseH\x02R\x11copyTagsToBackups\x88\x01\x01\x12:\n" +
-	"\x11skip_final_backup\x18\v \x01(\bB\t\x8a\xa6\x1d\x05falseH\x03R\x0fskipFinalBackup\x88\x01\x01\x12_\n" +
-	"$bypass_snaplock_enterprise_retention\x18\f \x01(\bB\t\x8a\xa6\x1d\x05falseH\x04R!bypassSnaplockEnterpriseRetention\x88\x01\x01\x12t\n" +
-	"\x0etiering_policy\x18\r \x01(\v2M.org.openmcf.provider.aws.awsfsxontapvolume.v1.AwsFsxOntapVolumeTieringPolicyR\rtieringPolicy\x12\x8c\x01\n" +
-	"\x16snaplock_configuration\x18\x0e \x01(\v2U.org.openmcf.provider.aws.awsfsxontapvolume.v1.AwsFsxOntapVolumeSnaplockConfigurationR\x15snaplockConfiguration\x12\x8f\x01\n" +
-	"\x17aggregate_configuration\x18\x0f \x01(\v2V.org.openmcf.provider.aws.awsfsxontapvolume.v1.AwsFsxOntapVolumeAggregateConfigurationR\x16aggregateConfiguration:\xaf\b\xbaH\xab\b\x1a\xb2\x01\n" +
+	"\x11size_in_megabytes\x18\x04 \x01(\x05B\a\xbaH\x04\x1a\x02(\x14R\x0fsizeInMegabytes\x12#\n" +
+	"\rjunction_path\x18\x05 \x01(\tR\fjunctionPath\x127\n" +
+	"\x11ontap_volume_type\x18\x06 \x01(\tB\x06\x8a\xa6\x1d\x02RWH\x00R\x0fontapVolumeType\x88\x01\x01\x123\n" +
+	"\fvolume_style\x18\a \x01(\tB\v\x8a\xa6\x1d\aFLEXVOLH\x01R\vvolumeStyle\x88\x01\x01\x12%\n" +
+	"\x0esecurity_style\x18\b \x01(\tR\rsecurityStyle\x12'\n" +
+	"\x0fsnapshot_policy\x18\t \x01(\tR\x0esnapshotPolicy\x12<\n" +
+	"\x1astorage_efficiency_enabled\x18\n" +
+	" \x01(\bR\x18storageEfficiencyEnabled\x12?\n" +
+	"\x14copy_tags_to_backups\x18\v \x01(\bB\t\x8a\xa6\x1d\x05falseH\x02R\x11copyTagsToBackups\x88\x01\x01\x12:\n" +
+	"\x11skip_final_backup\x18\f \x01(\bB\t\x8a\xa6\x1d\x05falseH\x03R\x0fskipFinalBackup\x88\x01\x01\x12_\n" +
+	"$bypass_snaplock_enterprise_retention\x18\r \x01(\bB\t\x8a\xa6\x1d\x05falseH\x04R!bypassSnaplockEnterpriseRetention\x88\x01\x01\x12t\n" +
+	"\x0etiering_policy\x18\x0e \x01(\v2M.org.openmcf.provider.aws.awsfsxontapvolume.v1.AwsFsxOntapVolumeTieringPolicyR\rtieringPolicy\x12\x8c\x01\n" +
+	"\x16snaplock_configuration\x18\x0f \x01(\v2U.org.openmcf.provider.aws.awsfsxontapvolume.v1.AwsFsxOntapVolumeSnaplockConfigurationR\x15snaplockConfiguration\x12\x8f\x01\n" +
+	"\x17aggregate_configuration\x18\x10 \x01(\v2V.org.openmcf.provider.aws.awsfsxontapvolume.v1.AwsFsxOntapVolumeAggregateConfigurationR\x16aggregateConfiguration:\xaf\b\xbaH\xab\b\x1a\xb2\x01\n" +
 	"\vname_format\x12jname must contain only alphanumeric characters and underscores (no hyphens, spaces, or special characters)\x1a7this.name == '' || this.name.matches('^[a-zA-Z0-9_]+$')\x1a\x89\x01\n" +
 	"\x17ontap_volume_type_valid\x12&ontap_volume_type must be 'RW' or 'DP'\x1aFthis.ontap_volume_type == '' || this.ontap_volume_type in ['RW', 'DP']\x1a\x8d\x01\n" +
 	"\x12volume_style_valid\x12-volume_style must be 'FLEXVOL' or 'FLEXGROUP'\x1aHthis.volume_style == '' || this.volume_style in ['FLEXVOL', 'FLEXGROUP']\x1a\x98\x01\n" +

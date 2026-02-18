@@ -43,54 +43,57 @@ const (
 //   - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 type AwsSnsTopicSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Whether to create a FIFO topic. Standard topics are created when false.
 	// FIFO topics guarantee strict ordering and exactly-once delivery to SQS FIFO
 	// queue subscribers. This setting cannot be changed after topic creation.
-	FifoTopic bool `protobuf:"varint,1,opt,name=fifo_topic,json=fifoTopic,proto3" json:"fifo_topic,omitempty"`
+	FifoTopic bool `protobuf:"varint,2,opt,name=fifo_topic,json=fifoTopic,proto3" json:"fifo_topic,omitempty"`
 	// Enable content-based deduplication for FIFO topics. When enabled, SNS uses
 	// a SHA-256 hash of the message body as the deduplication ID, removing the
 	// need for the publisher to supply an explicit deduplication ID.
 	// Only valid when `fifo_topic` is true.
-	ContentBasedDeduplication bool `protobuf:"varint,2,opt,name=content_based_deduplication,json=contentBasedDeduplication,proto3" json:"content_based_deduplication,omitempty"`
+	ContentBasedDeduplication bool `protobuf:"varint,3,opt,name=content_based_deduplication,json=contentBasedDeduplication,proto3" json:"content_based_deduplication,omitempty"`
 	// Throughput scope for FIFO topics. Controls whether the throughput quota
 	// applies per topic or per message group.
 	// Valid values: "Topic", "MessageGroup". Only valid when `fifo_topic` is true.
-	FifoThroughputScope string `protobuf:"bytes,3,opt,name=fifo_throughput_scope,json=fifoThroughputScope,proto3" json:"fifo_throughput_scope,omitempty"`
+	FifoThroughputScope string `protobuf:"bytes,4,opt,name=fifo_throughput_scope,json=fifoThroughputScope,proto3" json:"fifo_throughput_scope,omitempty"`
 	// Human-readable display name for the topic. Used as the "from" label in SMS
 	// messages and as a readable identifier in the AWS console. Maximum 256
 	// characters for Standard topics, 10 characters for SMS display names.
-	DisplayName string `protobuf:"bytes,4,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
+	DisplayName string `protobuf:"bytes,5,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
 	// Customer-managed KMS key for server-side encryption. When set, SNS encrypts
 	// message bodies using this key. Accepts a direct KMS key ID/ARN or a
 	// reference to an AwsKmsKey resource. When not set, SNS does not encrypt
 	// messages at rest (unlike SQS, SNS has no "managed SSE" option — encryption
 	// requires an explicit KMS key).
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,6,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// IAM access policy for the topic. Controls which AWS principals can perform
 	// actions on this topic (e.g., Publish, Subscribe). Expressed as a standard
 	// IAM policy document structure. Common use cases include granting EventBridge
 	// permission to publish, allowing cross-account subscriptions, or restricting
 	// publishing to specific IAM roles.
-	Policy *structpb.Struct `protobuf:"bytes,6,opt,name=policy,proto3" json:"policy,omitempty"`
+	Policy *structpb.Struct `protobuf:"bytes,7,opt,name=policy,proto3" json:"policy,omitempty"`
 	// HTTP/HTTPS delivery retry policy for the topic. Expressed as a JSON string
 	// matching the SNS delivery policy format. Controls retry backoff, max retries,
 	// and throttle behavior for HTTP/S subscriptions. Most users do not need to
 	// customize this. When not set, AWS applies its default delivery policy.
-	DeliveryPolicy string `protobuf:"bytes,7,opt,name=delivery_policy,json=deliveryPolicy,proto3" json:"delivery_policy,omitempty"`
+	DeliveryPolicy string `protobuf:"bytes,8,opt,name=delivery_policy,json=deliveryPolicy,proto3" json:"delivery_policy,omitempty"`
 	// AWS X-Ray tracing configuration. When set to "Active", SNS publishes trace
 	// data for messages. When set to "PassThrough", SNS passes through the trace
 	// header but does not sample. Leave empty to use the AWS default (PassThrough).
 	// Valid values: "Active", "PassThrough".
-	TracingConfig string `protobuf:"bytes,8,opt,name=tracing_config,json=tracingConfig,proto3" json:"tracing_config,omitempty"`
+	TracingConfig string `protobuf:"bytes,9,opt,name=tracing_config,json=tracingConfig,proto3" json:"tracing_config,omitempty"`
 	// SNS message signature version. Version 1 uses SHA1, version 2 uses SHA256.
 	// SHA256 (version 2) is recommended for new topics. Leave at 0 to use the
 	// AWS default (version 1).
-	SignatureVersion int32 `protobuf:"varint,9,opt,name=signature_version,json=signatureVersion,proto3" json:"signature_version,omitempty"`
+	SignatureVersion int32 `protobuf:"varint,10,opt,name=signature_version,json=signatureVersion,proto3" json:"signature_version,omitempty"`
 	// Inline subscriptions for this topic. Each subscription defines a protocol,
 	// endpoint, and optional filtering configuration. The subscription `name` field
 	// is used as the key in the `subscription_arns` output map, enabling downstream
 	// resources to reference specific subscription ARNs via `valueFrom`.
-	Subscriptions []*AwsSnsTopicSubscription `protobuf:"bytes,10,rep,name=subscriptions,proto3" json:"subscriptions,omitempty"`
+	Subscriptions []*AwsSnsTopicSubscription `protobuf:"bytes,11,rep,name=subscriptions,proto3" json:"subscriptions,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -123,6 +126,13 @@ func (x *AwsSnsTopicSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsSnsTopicSpec.ProtoReflect.Descriptor instead.
 func (*AwsSnsTopicSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awssnstopic_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsSnsTopicSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsSnsTopicSpec) GetFifoTopic() bool {
@@ -394,22 +404,23 @@ var File_org_openmcf_provider_aws_awssnstopic_v1_spec_proto protoreflect.FileDes
 
 const file_org_openmcf_provider_aws_awssnstopic_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2org/openmcf/provider/aws/awssnstopic/v1/spec.proto\x12'org.openmcf.provider.aws.awssnstopic.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xc5\n" +
+	"2org/openmcf/provider/aws/awssnstopic/v1/spec.proto\x12'org.openmcf.provider.aws.awssnstopic.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xe6\n" +
 	"\n" +
-	"\x0fAwsSnsTopicSpec\x12\x1d\n" +
+	"\x0fAwsSnsTopicSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x1d\n" +
 	"\n" +
-	"fifo_topic\x18\x01 \x01(\bR\tfifoTopic\x12>\n" +
-	"\x1bcontent_based_deduplication\x18\x02 \x01(\bR\x19contentBasedDeduplication\x122\n" +
-	"\x15fifo_throughput_scope\x18\x03 \x01(\tR\x13fifoThroughputScope\x12!\n" +
-	"\fdisplay_name\x18\x04 \x01(\tR\vdisplayName\x12q\n" +
+	"fifo_topic\x18\x02 \x01(\bR\tfifoTopic\x12>\n" +
+	"\x1bcontent_based_deduplication\x18\x03 \x01(\bR\x19contentBasedDeduplication\x122\n" +
+	"\x15fifo_throughput_scope\x18\x04 \x01(\tR\x13fifoThroughputScope\x12!\n" +
+	"\fdisplay_name\x18\x05 \x01(\tR\vdisplayName\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12/\n" +
-	"\x06policy\x18\x06 \x01(\v2\x17.google.protobuf.StructR\x06policy\x12'\n" +
-	"\x0fdelivery_policy\x18\a \x01(\tR\x0edeliveryPolicy\x12%\n" +
-	"\x0etracing_config\x18\b \x01(\tR\rtracingConfig\x12+\n" +
-	"\x11signature_version\x18\t \x01(\x05R\x10signatureVersion\x12f\n" +
-	"\rsubscriptions\x18\n" +
-	" \x03(\v2@.org.openmcf.provider.aws.awssnstopic.v1.AwsSnsTopicSubscriptionR\rsubscriptions:\xf2\x05\xbaH\xee\x05\x1a\xbb\x01\n" +
+	"kms_key_id\x18\x06 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12/\n" +
+	"\x06policy\x18\a \x01(\v2\x17.google.protobuf.StructR\x06policy\x12'\n" +
+	"\x0fdelivery_policy\x18\b \x01(\tR\x0edeliveryPolicy\x12%\n" +
+	"\x0etracing_config\x18\t \x01(\tR\rtracingConfig\x12+\n" +
+	"\x11signature_version\x18\n" +
+	" \x01(\x05R\x10signatureVersion\x12f\n" +
+	"\rsubscriptions\x18\v \x03(\v2@.org.openmcf.provider.aws.awssnstopic.v1.AwsSnsTopicSubscriptionR\rsubscriptions:\xf2\x05\xbaH\xee\x05\x1a\xbb\x01\n" +
 	")content_based_deduplication_requires_fifo\x12Xcontent_based_deduplication can only be enabled on FIFO topics (fifo_topic must be true)\x1a4!this.content_based_deduplication || this.fifo_topic\x1a\xf2\x01\n" +
 	"#fifo_throughput_scope_requires_fifo\x12Yfifo_throughput_scope is only valid for FIFO topics and must be 'Topic' or 'MessageGroup'\x1apthis.fifo_throughput_scope == '' || (this.fifo_topic && this.fifo_throughput_scope in ['Topic', 'MessageGroup'])\x1a\x95\x01\n" +
 	"\x17signature_version_valid\x129signature_version must be 1 (SHA1) or 2 (SHA256) when set\x1a?this.signature_version == 0 || this.signature_version in [1, 2]\x1a\xa0\x01\n" +

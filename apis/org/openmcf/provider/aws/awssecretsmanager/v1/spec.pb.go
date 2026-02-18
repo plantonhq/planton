@@ -30,10 +30,13 @@ const (
 // manage access through fine-grained permissions.
 type AwsSecretsManagerSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// List of secret names to create in AWS Secrets Manager.
 	// Each name corresponds to a unique secret that will be securely stored and managed.
 	// Secret names must be unique within your AWS account and region.
-	SecretNames   []string `protobuf:"bytes,1,rep,name=secret_names,json=secretNames,proto3" json:"secret_names,omitempty"`
+	SecretNames   []string `protobuf:"bytes,2,rep,name=secret_names,json=secretNames,proto3" json:"secret_names,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -68,6 +71,13 @@ func (*AwsSecretsManagerSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awssecretsmanager_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
+func (x *AwsSecretsManagerSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
 func (x *AwsSecretsManagerSpec) GetSecretNames() []string {
 	if x != nil {
 		return x.SecretNames
@@ -79,9 +89,10 @@ var File_org_openmcf_provider_aws_awssecretsmanager_v1_spec_proto protoreflect.F
 
 const file_org_openmcf_provider_aws_awssecretsmanager_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8org/openmcf/provider/aws/awssecretsmanager/v1/spec.proto\x12-org.openmcf.provider.aws.awssecretsmanager.v1\x1a\x1bbuf/validate/validate.proto\"L\n" +
-	"\x15AwsSecretsManagerSpec\x123\n" +
-	"\fsecret_names\x18\x01 \x03(\tB\x10\xbaH\r\x92\x01\n" +
+	"8org/openmcf/provider/aws/awssecretsmanager/v1/spec.proto\x12-org.openmcf.provider.aws.awssecretsmanager.v1\x1a\x1bbuf/validate/validate.proto\"m\n" +
+	"\x15AwsSecretsManagerSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x123\n" +
+	"\fsecret_names\x18\x02 \x03(\tB\x10\xbaH\r\x92\x01\n" +
 	"\b\x01\x18\x01\"\x04r\x02\x10\x01R\vsecretNamesB\xfe\x02\n" +
 	"1com.org.openmcf.provider.aws.awssecretsmanager.v1B\tSpecProtoP\x01Zcgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awssecretsmanager/v1;awssecretsmanagerv1\xa2\x02\x05OOPAA\xaa\x02-Org.Openmcf.Provider.Aws.Awssecretsmanager.V1\xca\x02-Org\\Openmcf\\Provider\\Aws\\Awssecretsmanager\\V1\xe2\x029Org\\Openmcf\\Provider\\Aws\\Awssecretsmanager\\V1\\GPBMetadata\xea\x022Org::Openmcf::Provider::Aws::Awssecretsmanager::V1b\x06proto3"
 

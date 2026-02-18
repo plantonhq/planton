@@ -30,7 +30,8 @@ metadata:
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsEcsCluster.my-cluster
-spec: {}
+spec:
+  region: us-east-1
 ```
 
 Deploy:
@@ -45,7 +46,9 @@ This creates a basic ECS cluster with no capacity providers attached and Contain
 
 ### Required Fields
 
-The `AwsEcsClusterSpec` has no strictly required fields. An empty `spec: {}` creates a valid cluster. All fields below are optional.
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `region` | `string` | — | The AWS region where the ECS cluster will be created (e.g., `us-east-1`). |
 
 ### Optional Fields
 
@@ -82,6 +85,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsEcsCluster.prod-cluster
 spec:
+  region: us-east-1
   enableContainerInsights: true
   capacityProviders:
     - FARGATE
@@ -102,6 +106,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsEcsCluster.cost-optimized-cluster
 spec:
+  region: us-east-1
   enableContainerInsights: true
   capacityProviders:
     - FARGATE
@@ -130,6 +135,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsEcsCluster.debug-cluster
 spec:
+  region: us-east-1
   enableContainerInsights: true
   capacityProviders:
     - FARGATE
@@ -152,6 +158,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsEcsCluster.full-cluster
 spec:
+  region: us-east-1
   enableContainerInsights: true
   capacityProviders:
     - FARGATE

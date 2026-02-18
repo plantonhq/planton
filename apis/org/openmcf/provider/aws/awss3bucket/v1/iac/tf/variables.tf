@@ -21,8 +21,8 @@ variable "metadata" {
 variable "spec" {
   description = "spec"
   type = object({
-    # The AWS region where the S3 bucket will be created
-    aws_region = string
+    # The AWS region where the S3 bucket will be created.
+    region = string
 
     # Flag to indicate if the S3 bucket should have external (public) access
     is_public = optional(bool, false)

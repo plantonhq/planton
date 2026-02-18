@@ -3,6 +3,7 @@ kind: AwsLambda
 metadata:
   name: my-container-lambda
 spec:
+  region: <aws-region>
   functionName: <function-name>
   roleArn:
     value: "<lambda-execution-role-arn>"

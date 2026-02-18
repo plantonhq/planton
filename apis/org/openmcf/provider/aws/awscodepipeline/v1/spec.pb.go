@@ -44,13 +44,16 @@ const (
 // are account-level resources with independent lifecycles and are excluded.
 type AwsCodePipelineSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// pipeline_type selects the pipeline version.
 	//
 	//	V1: Legacy pipeline (no triggers, no variables, SUPERSEDED execution only)
 	//	V2: Modern pipeline with triggers, variables, and advanced execution modes
 	//
 	// Default: V2 (recommended for all new pipelines).
-	PipelineType *string `protobuf:"bytes,1,opt,name=pipeline_type,json=pipelineType,proto3,oneof" json:"pipeline_type,omitempty"`
+	PipelineType *string `protobuf:"bytes,2,opt,name=pipeline_type,json=pipelineType,proto3,oneof" json:"pipeline_type,omitempty"`
 	// execution_mode controls how concurrent pipeline executions are handled.
 	//
 	//	SUPERSEDED: New execution supersedes any in-progress execution (default)
@@ -58,33 +61,33 @@ type AwsCodePipelineSpec struct {
 	//	PARALLEL:   Executions run simultaneously without waiting (V2 only)
 	//
 	// Default: SUPERSEDED.
-	ExecutionMode *string `protobuf:"bytes,2,opt,name=execution_mode,json=executionMode,proto3,oneof" json:"execution_mode,omitempty"`
+	ExecutionMode *string `protobuf:"bytes,3,opt,name=execution_mode,json=executionMode,proto3,oneof" json:"execution_mode,omitempty"`
 	// role_arn is the IAM role ARN that grants CodePipeline permission to
 	// access source providers, invoke build/deploy actions, and manage
 	// artifacts in S3. This role must have policies for every action provider
 	// used in the pipeline (e.g., CodeBuild, S3, ECS, Lambda).
-	RoleArn *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=role_arn,json=roleArn,proto3" json:"role_arn,omitempty"`
+	RoleArn *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=role_arn,json=roleArn,proto3" json:"role_arn,omitempty"`
 	// artifact_stores define S3 buckets where pipeline artifacts are stored.
 	// For single-region pipelines, provide exactly one store without a region.
 	// For cross-region pipelines, provide one store per region (each with a
 	// region field) so that actions in different regions have local artifact
 	// access.
-	ArtifactStores []*AwsCodePipelineArtifactStore `protobuf:"bytes,4,rep,name=artifact_stores,json=artifactStores,proto3" json:"artifact_stores,omitempty"`
+	ArtifactStores []*AwsCodePipelineArtifactStore `protobuf:"bytes,5,rep,name=artifact_stores,json=artifactStores,proto3" json:"artifact_stores,omitempty"`
 	// stages define the ordered sequence of pipeline stages. Each stage
 	// contains one or more actions that run in parallel (same run_order)
 	// or sequentially (different run_order values).
 	// A pipeline requires at minimum two stages: a source stage and at
 	// least one build, test, deploy, or approval stage.
-	Stages []*AwsCodePipelineStage `protobuf:"bytes,5,rep,name=stages,proto3" json:"stages,omitempty"`
+	Stages []*AwsCodePipelineStage `protobuf:"bytes,6,rep,name=stages,proto3" json:"stages,omitempty"`
 	// triggers define automatic pipeline execution rules based on git events.
 	// V2 pipelines only. Triggers use CodeStar Connections to listen for
 	// push or pull request events on source repositories with branch, tag,
 	// and file path filtering.
-	Triggers []*AwsCodePipelineTrigger `protobuf:"bytes,6,rep,name=triggers,proto3" json:"triggers,omitempty"`
+	Triggers []*AwsCodePipelineTrigger `protobuf:"bytes,7,rep,name=triggers,proto3" json:"triggers,omitempty"`
 	// variables define pipeline-level parameters that can be referenced in
 	// action configurations using #{variables.VariableName} syntax.
 	// V2 pipelines only.
-	Variables     []*AwsCodePipelineVariable `protobuf:"bytes,7,rep,name=variables,proto3" json:"variables,omitempty"`
+	Variables     []*AwsCodePipelineVariable `protobuf:"bytes,8,rep,name=variables,proto3" json:"variables,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -117,6 +120,13 @@ func (x *AwsCodePipelineSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsCodePipelineSpec.ProtoReflect.Descriptor instead.
 func (*AwsCodePipelineSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awscodepipeline_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsCodePipelineSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsCodePipelineSpec) GetPipelineType() string {
@@ -880,17 +890,18 @@ var File_org_openmcf_provider_aws_awscodepipeline_v1_spec_proto protoreflect.Fil
 
 const file_org_openmcf_provider_aws_awscodepipeline_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"6org/openmcf/provider/aws/awscodepipeline/v1/spec.proto\x12+org.openmcf.provider.aws.awscodepipeline.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xff\v\n" +
-	"\x13AwsCodePipelineSpec\x12@\n" +
-	"\rpipeline_type\x18\x01 \x01(\tB\x16\xbaH\r\xd8\x01\x01r\bR\x02V1R\x02V2\x8a\xa6\x1d\x02V2H\x00R\fpipelineType\x88\x01\x01\x12`\n" +
-	"\x0eexecution_mode\x18\x02 \x01(\tB4\xbaH#\xd8\x01\x01r\x1eR\n" +
+	"6org/openmcf/provider/aws/awscodepipeline/v1/spec.proto\x12+org.openmcf.provider.aws.awscodepipeline.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa0\f\n" +
+	"\x13AwsCodePipelineSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12@\n" +
+	"\rpipeline_type\x18\x02 \x01(\tB\x16\xbaH\r\xd8\x01\x01r\bR\x02V1R\x02V2\x8a\xa6\x1d\x02V2H\x00R\fpipelineType\x88\x01\x01\x12`\n" +
+	"\x0eexecution_mode\x18\x03 \x01(\tB4\xbaH#\xd8\x01\x01r\x1eR\n" +
 	"SUPERSEDEDR\x06QUEUEDR\bPARALLEL\x8a\xa6\x1d\n" +
 	"SUPERSEDEDH\x01R\rexecutionMode\x88\x01\x01\x12u\n" +
-	"\brole_arn\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\aroleArn\x12\x7f\n" +
-	"\x0fartifact_stores\x18\x04 \x03(\v2I.org.openmcf.provider.aws.awscodepipeline.v1.AwsCodePipelineArtifactStoreB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01R\x0eartifactStores\x12f\n" +
-	"\x06stages\x18\x05 \x03(\v2A.org.openmcf.provider.aws.awscodepipeline.v1.AwsCodePipelineStageB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x02R\x06stages\x12i\n" +
-	"\btriggers\x18\x06 \x03(\v2C.org.openmcf.provider.aws.awscodepipeline.v1.AwsCodePipelineTriggerB\b\xbaH\x05\x92\x01\x02\x102R\btriggers\x12b\n" +
-	"\tvariables\x18\a \x03(\v2D.org.openmcf.provider.aws.awscodepipeline.v1.AwsCodePipelineVariableR\tvariables:\xef\x05\xbaH\xeb\x05\x1a\xde\x01\n" +
+	"\brole_arn\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\aroleArn\x12\x7f\n" +
+	"\x0fartifact_stores\x18\x05 \x03(\v2I.org.openmcf.provider.aws.awscodepipeline.v1.AwsCodePipelineArtifactStoreB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01R\x0eartifactStores\x12f\n" +
+	"\x06stages\x18\x06 \x03(\v2A.org.openmcf.provider.aws.awscodepipeline.v1.AwsCodePipelineStageB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x02R\x06stages\x12i\n" +
+	"\btriggers\x18\a \x03(\v2C.org.openmcf.provider.aws.awscodepipeline.v1.AwsCodePipelineTriggerB\b\xbaH\x05\x92\x01\x02\x102R\btriggers\x12b\n" +
+	"\tvariables\x18\b \x03(\v2D.org.openmcf.provider.aws.awscodepipeline.v1.AwsCodePipelineVariableR\tvariables:\xef\x05\xbaH\xeb\x05\x1a\xde\x01\n" +
 	"\x13triggers_require_v2\x12Wtriggers are only supported on V2 pipelines; set pipeline_type to V2 or remove triggers\x1ansize(this.triggers) == 0 || !has(this.pipeline_type) || this.pipeline_type == '' || this.pipeline_type == 'V2'\x1a\xe2\x01\n" +
 	"\x14variables_require_v2\x12Yvariables are only supported on V2 pipelines; set pipeline_type to V2 or remove variables\x1aosize(this.variables) == 0 || !has(this.pipeline_type) || this.pipeline_type == '' || this.pipeline_type == 'V2'\x1a\xa2\x02\n" +
 	"#advanced_execution_mode_requires_v2\x12Eexecution_mode QUEUED and PARALLEL are only supported on V2 pipelines\x1a\xb3\x01!has(this.execution_mode) || this.execution_mode == '' || this.execution_mode == 'SUPERSEDED' || !has(this.pipeline_type) || this.pipeline_type == '' || this.pipeline_type == 'V2'B\x10\n" +

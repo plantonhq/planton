@@ -11,6 +11,8 @@ variable "metadata" {
 variable "spec" {
   description = "AwsGlueCatalogDatabase spec"
   type = object({
+    # The AWS region where the resource will be created.
+    region = string
     description  = optional(string, "")
     location_uri = optional(string, "")
   })

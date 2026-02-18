@@ -379,6 +379,9 @@ AWS DocumentDB exposes dozens of configuration parameters. Most teams need about
 
 ### Essential Fields (What OpenMCF Exposes)
 
+#### Region
+- **region**: The AWS region where the resource will be created (required)
+
 #### Networking
 - **subnetIds**: Private subnets for the DB subnet group (>=2 for HA)
 - **dbSubnetGroupName**: Alternative to subnet_ids if group already exists
@@ -452,6 +455,7 @@ DocumentDB clusters support up to 15 instances (1 primary, up to 15 replicas). F
 
 ```yaml
 spec:
+  region: us-east-1
   instanceCount: 3
   instanceClass: db.r6g.large
 ```
@@ -479,6 +483,7 @@ Production DocumentDB clusters should **never** have public access:
 
 ```yaml
 spec:
+  region: us-east-1
   storageEncrypted: true
   kmsKeyId:
     valueFrom:
@@ -505,6 +510,7 @@ spec:
 
 ```yaml
 spec:
+  region: us-east-1
   backupRetentionPeriod: 14
   preferredBackupWindow: "03:00-04:00"
   skipFinalSnapshot: false
@@ -521,6 +527,7 @@ spec:
 
 ```yaml
 spec:
+  region: us-east-1
   masterPassword: ${secrets-group/docdb/MASTER_PASSWORD}
 ```
 
@@ -539,6 +546,7 @@ spec:
 
 ```yaml
 spec:
+  region: us-east-1
   enabledCloudwatchLogsExports:
     - audit
     - profiler

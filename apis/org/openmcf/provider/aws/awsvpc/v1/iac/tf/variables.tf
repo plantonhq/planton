@@ -43,6 +43,10 @@ variable "spec" {
   description = "spec"
   type = object({
 
+    # The AWS region where the VPC will be created.
+    # Example: "us-west-2", "eu-west-1"
+    region = string
+
     # The CIDR (Classless Inter-Domain Routing) block for the VPC.
     # This defines the IP address range for the VPC.
     # Example: "10.0.0.0/16" allows IP addresses from 10.0.0.0 to 10.0.255.255.

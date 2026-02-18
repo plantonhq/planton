@@ -58,13 +58,16 @@ const (
 //     inputs.
 type AwsFsxOntapStorageVirtualMachineSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// The ID of the FSx for ONTAP file system that this SVM belongs to. Required.
 	// ForceNew — the SVM cannot be moved to a different file system.
 	//
 	// The file system provides the underlying storage, throughput, networking,
 	// and HA infrastructure. Multiple SVMs can share a single file system for
 	// multi-tenancy scenarios.
-	FileSystemId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=file_system_id,json=fileSystemId,proto3" json:"file_system_id,omitempty"`
+	FileSystemId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=file_system_id,json=fileSystemId,proto3" json:"file_system_id,omitempty"`
 	// The name of the SVM within the ONTAP file system. Required. ForceNew.
 	//
 	// This is the ONTAP SVM name (not the OpenMCF metadata name). It must be
@@ -73,7 +76,7 @@ type AwsFsxOntapStorageVirtualMachineSpec struct {
 	//
 	// Constraints: 1-47 characters, alphanumeric and underscore only (no hyphens,
 	// no spaces, no special characters).
-	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	// The security style for the root volume and the default for all volumes
 	// created under this SVM. ForceNew — cannot be changed after creation.
 	//
@@ -86,7 +89,7 @@ type AwsFsxOntapStorageVirtualMachineSpec struct {
 	//     access patterns (advanced use case).
 	//
 	// Default: UNIX
-	RootVolumeSecurityStyle *string `protobuf:"bytes,3,opt,name=root_volume_security_style,json=rootVolumeSecurityStyle,proto3,oneof" json:"root_volume_security_style,omitempty"`
+	RootVolumeSecurityStyle *string `protobuf:"bytes,4,opt,name=root_volume_security_style,json=rootVolumeSecurityStyle,proto3,oneof" json:"root_volume_security_style,omitempty"`
 	// Password for the SVM administrative user ("vsadmin"). Enables SSH access
 	// to the SVM management endpoint for ONTAP CLI operations scoped to this SVM.
 	//
@@ -96,7 +99,7 @@ type AwsFsxOntapStorageVirtualMachineSpec struct {
 	//
 	// Length: 8-50 characters. Optional — omit if SVM CLI access is not needed.
 	// This value is sensitive and will not be returned in read operations.
-	SvmAdminPassword string `protobuf:"bytes,4,opt,name=svm_admin_password,json=svmAdminPassword,proto3" json:"svm_admin_password,omitempty"`
+	SvmAdminPassword string `protobuf:"bytes,5,opt,name=svm_admin_password,json=svmAdminPassword,proto3" json:"svm_admin_password,omitempty"`
 	// Active Directory configuration for enabling SMB protocol access. Optional.
 	//
 	// When configured, the SVM joins the specified AD domain and an SMB endpoint
@@ -105,7 +108,7 @@ type AwsFsxOntapStorageVirtualMachineSpec struct {
 	//
 	// ONTAP SVMs support only self-managed Active Directory (on-premises, on EC2,
 	// or Azure AD DS). AWS Managed Microsoft AD is not supported for ONTAP SVMs.
-	ActiveDirectoryConfiguration *AwsFsxOntapStorageVirtualMachineActiveDirectoryConfiguration `protobuf:"bytes,5,opt,name=active_directory_configuration,json=activeDirectoryConfiguration,proto3" json:"active_directory_configuration,omitempty"`
+	ActiveDirectoryConfiguration *AwsFsxOntapStorageVirtualMachineActiveDirectoryConfiguration `protobuf:"bytes,6,opt,name=active_directory_configuration,json=activeDirectoryConfiguration,proto3" json:"active_directory_configuration,omitempty"`
 	unknownFields                protoimpl.UnknownFields
 	sizeCache                    protoimpl.SizeCache
 }
@@ -138,6 +141,13 @@ func (x *AwsFsxOntapStorageVirtualMachineSpec) ProtoReflect() protoreflect.Messa
 // Deprecated: Use AwsFsxOntapStorageVirtualMachineSpec.ProtoReflect.Descriptor instead.
 func (*AwsFsxOntapStorageVirtualMachineSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsfsxontapstoragevirtualmachine_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsFsxOntapStorageVirtualMachineSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsFsxOntapStorageVirtualMachineSpec) GetFileSystemId() *v1.StringValueOrRef {
@@ -315,13 +325,14 @@ var File_org_openmcf_provider_aws_awsfsxontapstoragevirtualmachine_v1_spec_proto
 
 const file_org_openmcf_provider_aws_awsfsxontapstoragevirtualmachine_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Gorg/openmcf/provider/aws/awsfsxontapstoragevirtualmachine/v1/spec.proto\x12<org.openmcf.provider.aws.awsfsxontapstoragevirtualmachine.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xe7\b\n" +
-	"$AwsFsxOntapStorageVirtualMachineSpec\x12\x86\x01\n" +
-	"\x0efile_system_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xa6\x02\x92\xd4a\x1dstatus.outputs.file_system_idR\ffileSystemId\x12\x1d\n" +
-	"\x04name\x18\x02 \x01(\tB\t\xbaH\x06r\x04\x10\x01\x18/R\x04name\x12J\n" +
-	"\x1aroot_volume_security_style\x18\x03 \x01(\tB\b\x8a\xa6\x1d\x04UNIXH\x00R\x17rootVolumeSecurityStyle\x88\x01\x01\x12,\n" +
-	"\x12svm_admin_password\x18\x04 \x01(\tR\x10svmAdminPassword\x12\xc0\x01\n" +
-	"\x1eactive_directory_configuration\x18\x05 \x01(\v2z.org.openmcf.provider.aws.awsfsxontapstoragevirtualmachine.v1.AwsFsxOntapStorageVirtualMachineActiveDirectoryConfigurationR\x1cactiveDirectoryConfiguration:\xba\x04\xbaH\xb6\x04\x1a\xbc\x01\n" +
+	"Gorg/openmcf/provider/aws/awsfsxontapstoragevirtualmachine/v1/spec.proto\x12<org.openmcf.provider.aws.awsfsxontapstoragevirtualmachine.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x88\t\n" +
+	"$AwsFsxOntapStorageVirtualMachineSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x86\x01\n" +
+	"\x0efile_system_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xa6\x02\x92\xd4a\x1dstatus.outputs.file_system_idR\ffileSystemId\x12\x1d\n" +
+	"\x04name\x18\x03 \x01(\tB\t\xbaH\x06r\x04\x10\x01\x18/R\x04name\x12J\n" +
+	"\x1aroot_volume_security_style\x18\x04 \x01(\tB\b\x8a\xa6\x1d\x04UNIXH\x00R\x17rootVolumeSecurityStyle\x88\x01\x01\x12,\n" +
+	"\x12svm_admin_password\x18\x05 \x01(\tR\x10svmAdminPassword\x12\xc0\x01\n" +
+	"\x1eactive_directory_configuration\x18\x06 \x01(\v2z.org.openmcf.provider.aws.awsfsxontapstoragevirtualmachine.v1.AwsFsxOntapStorageVirtualMachineActiveDirectoryConfigurationR\x1cactiveDirectoryConfiguration:\xba\x04\xbaH\xb6\x04\x1a\xbc\x01\n" +
 	"\x14security_style_valid\x12=root_volume_security_style must be 'UNIX', 'NTFS', or 'MIXED'\x1aethis.root_volume_security_style == '' || this.root_volume_security_style in ['UNIX', 'NTFS', 'MIXED']\x1a\xbf\x01\n" +
 	"\x15admin_password_length\x128svm_admin_password must be 8-50 characters when provided\x1althis.svm_admin_password == '' || (size(this.svm_admin_password) >= 8 && size(this.svm_admin_password) <= 50)\x1a\xb2\x01\n" +
 	"\vname_format\x12jname must contain only alphanumeric characters and underscores (no hyphens, spaces, or special characters)\x1a7this.name == '' || this.name.matches('^[a-zA-Z0-9_]+$')B\x1d\n" +

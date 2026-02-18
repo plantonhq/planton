@@ -32,6 +32,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsEventBridgeBus.my-events
 spec:
+  region: us-east-1
   description: Custom event bus for application events
 ```
 
@@ -47,7 +48,9 @@ This creates a custom EventBridge bus with AWS-managed encryption and no dead le
 
 ### Required Fields
 
-There are no required fields in the spec. All configuration is optional, producing a custom event bus with AWS defaults when no fields are set.
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `region` | `string` | AWS region where the EventBridge bus will be created (e.g., `us-east-1`, `eu-west-1`). | Required; non-empty |
 
 ### Optional Fields
 
@@ -77,6 +80,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsEventBridgeBus.payment-events
 spec:
+  region: us-east-1
   description: Payment processing event bus
   kmsKeyIdentifier: arn:aws:kms:us-east-1:123456789012:key/abcd-1234-efgh-5678
   deadLetterConfig:
@@ -100,6 +104,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsEventBridgeBus.dev-events
 spec:
+  region: us-east-1
   description: Development bus with verbose logging
   logConfig:
     level: TRACE
@@ -121,6 +126,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsEventBridgeBus.order-events
 spec:
+  region: us-east-1
   description: Order processing event bus with referenced resources
   kmsKeyIdentifier:
     valueFrom:

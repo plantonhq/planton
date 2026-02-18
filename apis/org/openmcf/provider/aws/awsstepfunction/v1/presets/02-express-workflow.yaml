@@ -6,6 +6,7 @@ metadata:
   env: <environment>
   id: <resource-id>
 spec:
+  region: <aws-region>
   type: EXPRESS
   roleArn:
     value: <iam-execution-role-arn>

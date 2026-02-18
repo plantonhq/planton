@@ -19,6 +19,7 @@ var _ = ginkgo.Describe("AwsCloudFrontSpec validations", func() {
 
 	ginkgo.BeforeEach(func() {
 		spec = &AwsCloudFrontSpec{
+			Region:  "us-west-2",
 			Enabled: true,
 			Aliases: []string{"cdn.example.com"},
 			CertificateArn: &foreignkeyv1.StringValueOrRef{

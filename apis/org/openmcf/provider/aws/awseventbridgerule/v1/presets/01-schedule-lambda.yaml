@@ -3,6 +3,7 @@ kind: AwsEventBridgeRule
 metadata:
   name: my-schedule
 spec:
+  region: <aws-region>
   description: Trigger Lambda function on a recurring schedule
   scheduleExpression: "rate(1 hour)"
   targets:

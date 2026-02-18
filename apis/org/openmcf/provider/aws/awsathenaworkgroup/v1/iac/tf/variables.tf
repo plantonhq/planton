@@ -11,6 +11,9 @@ variable "metadata" {
 variable "spec" {
   description = "AwsAthenaWorkgroup spec"
   type = object({
+    # The AWS region where the resource will be created.
+    region = string
+
     result_configuration = optional(object({
       output_location        = optional(string, "")
       encryption_option      = optional(string, "")

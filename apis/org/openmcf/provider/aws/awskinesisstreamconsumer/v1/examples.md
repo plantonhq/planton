@@ -13,6 +13,7 @@ metadata:
   env: dev
   id: my-consumer-dev
 spec:
+  region: us-east-1
   streamArn:
     value: arn:aws:kinesis:us-east-1:123456789012:stream/my-stream
 ```
@@ -30,6 +31,7 @@ metadata:
   env: production
   id: analytics-consumer-prod
 spec:
+  region: us-east-1
   streamArn:
     valueFrom:
       kind: AwsKinesisStream
@@ -54,6 +56,7 @@ metadata:
   labels:
     team: frontend
 spec:
+  region: us-east-1
   streamArn:
     valueFrom:
       kind: AwsKinesisStream
@@ -74,6 +77,7 @@ metadata:
   labels:
     team: compliance
 spec:
+  region: us-east-1
   streamArn:
     valueFrom:
       kind: AwsKinesisStream
@@ -94,6 +98,7 @@ metadata:
   labels:
     team: data-engineering
 spec:
+  region: us-east-1
   streamArn:
     valueFrom:
       kind: AwsKinesisStream
@@ -114,6 +119,7 @@ metadata:
   env: production
   id: lambda-processor-prod
 spec:
+  region: us-east-1
   streamArn:
     valueFrom:
       kind: AwsKinesisStream
@@ -143,6 +149,7 @@ metadata:
     pulumi.openmcf.org/project: streaming
     pulumi.openmcf.org/stack.name: prod.AwsKinesisStreamConsumer.telemetry-consumer
 spec:
+  region: us-east-1
   streamArn:
     valueFrom:
       kind: AwsKinesisStream

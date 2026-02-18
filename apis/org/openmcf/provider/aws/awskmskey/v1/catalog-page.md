@@ -28,7 +28,8 @@ metadata:
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsKmsKey.my-key
-spec: {}
+spec:
+  region: us-east-1
 ```
 
 Deploy:
@@ -43,7 +44,11 @@ This creates a symmetric KMS key with automatic annual rotation enabled and a 30
 
 ### Required Fields
 
-All spec fields are optional. An empty `spec: {}` creates a symmetric key with sensible defaults.
+All spec fields except `region` are optional. An empty `spec: {}` (without `region`) is not valid — you must specify the AWS region.
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `region` | `string` | AWS region where the KMS key will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 
 ### Optional Fields
 
@@ -71,7 +76,8 @@ metadata:
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsKmsKey.default-key
-spec: {}
+spec:
+  region: us-east-1
 ```
 
 ### Symmetric Key with Alias and Description
@@ -89,6 +95,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsKmsKey.app-encryption-key
 spec:
+  region: us-east-1
   description: "Encryption key for application secrets"
   aliasName: alias/app-encryption
 ```
@@ -108,6 +115,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsKmsKey.rsa-signing-key
 spec:
+  region: us-east-1
   keySpec: rsa_4096
   description: "RSA key for JWT signing"
   aliasName: alias/jwt-signing
@@ -129,6 +137,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: staging.AwsKmsKey.ecc-signing-key
 spec:
+  region: us-east-1
   keySpec: ecc_nist_p256
   description: "ECDSA P-256 signing key"
   aliasName: alias/ecdsa-signing
@@ -151,6 +160,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsKmsKey.prod-master-key
 spec:
+  region: us-east-1
   keySpec: symmetric
   description: "Master encryption key for production data"
   disableKeyRotation: false

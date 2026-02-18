@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsmemcachedelasticache/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsmemcachedelasticache_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cj5vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzbWVtY2FjaGVkZWxhc3RpY2FjaGUvdjEvc3BlYy5wcm90bxIzb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c21lbWNhY2hlZGVsYXN0aWNhY2hlLnYxIosNChtBd3NNZW1jYWNoZWRFbGFzdGljYWNoZVNwZWMSHgoOZW5naW5lX3ZlcnNpb24YASABKAlCBrpIA8gBARIZCglub2RlX3R5cGUYAiABKAlCBrpIA8gBARIiCg9udW1fY2FjaGVfbm9kZXMYAyABKAVCCbpIBhoEGCgoARIPCgdhel9tb2RlGAQgASgJEicKBHBvcnQYBSABKAVCFLpICBoGGP//AygBiqYdBTExMjExSACIAQESIgoadHJhbnNpdF9lbmNyeXB0aW9uX2VuYWJsZWQYBiABKAgSdgoKc3VibmV0X2lkcxgHIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCLojUYdgBktRhJXN0YXR1cy5vdXRwdXRzLnByaXZhdGVfc3VibmV0cy5bKl0uaWQSeQoSc2VjdXJpdHlfZ3JvdXBfaWRzGAggAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIpiNRh1wGS1GEgc3RhdHVzLm91dHB1dHMuc2VjdXJpdHlfZ3JvdXBfaWQSHgoWcGFyYW1ldGVyX2dyb3VwX2ZhbWlseRgJIAEoCRJpCgpwYXJhbWV0ZXJzGAogAygLMlUub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c21lbWNhY2hlZGVsYXN0aWNhY2hlLnYxLkF3c01lbWNhY2hlZEVsYXN0aWNhY2hlUGFyYW1ldGVyEqEBChJtYWludGVuYW5jZV93aW5kb3cYCyABKAlChAG6SIAB2AEBcnsyeV4obW9ufHR1ZXx3ZWR8dGh1fGZyaXxzYXR8c3VuKTooWzAxXVswLTldfDJbMC0zXSk6WzAtNV1bMC05XS0obW9ufHR1ZXx3ZWR8dGh1fGZyaXxzYXR8c3VuKTooWzAxXVswLTldfDJbMC0zXSk6WzAtNV1bMC05XSQSGQoRYXBwbHlfaW1tZWRpYXRlbHkYDCABKAgSLAoaYXV0b19taW5vcl92ZXJzaW9uX3VwZ3JhZGUYDSABKAhCCJKmHQR0cnVlEnUKFm5vdGlmaWNhdGlvbl90b3BpY19hcm4YDiABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQiGI1GHiAZLUYRhzdGF0dXMub3V0cHV0cy50b3BpY19hcm4SJAoccHJlZmVycmVkX2F2YWlsYWJpbGl0eV96b25lcxgPIAMoCTqdBbpImQUaiwEKFGF6X21vZGVfdmFsaWRfdmFsdWVzEjJhel9tb2RlIG11c3QgYmUgJ3NpbmdsZS1heicgb3IgJ2Nyb3NzLWF6JyB3aGVuIHNldBo/dGhpcy5hel9tb2RlID09ICcnIHx8IHRoaXMuYXpfbW9kZSBpbiBbJ3NpbmdsZS1heicsICdjcm9zcy1heiddGocBChxjcm9zc19hel9yZXF1aXJlc19tdWx0aV9ub2RlEi9hel9tb2RlICdjcm9zcy1heicgcmVxdWlyZXMgbnVtX2NhY2hlX25vZGVzID4gMRo2dGhpcy5hel9tb2RlICE9ICdjcm9zcy1heicgfHwgdGhpcy5udW1fY2FjaGVfbm9kZXMgPiAxGt0BChphel9saXN0X21hdGNoZXNfbm9kZV9jb3VudBJMcHJlZmVycmVkX2F2YWlsYWJpbGl0eV96b25lcyBsZW5ndGggbXVzdCBtYXRjaCBudW1fY2FjaGVfbm9kZXMgd2hlbiBwcm92aWRlZBpxdGhpcy5wcmVmZXJyZWRfYXZhaWxhYmlsaXR5X3pvbmVzLnNpemUoKSA9PSAwIHx8IHRoaXMucHJlZmVycmVkX2F2YWlsYWJpbGl0eV96b25lcy5zaXplKCkgPT0gdGhpcy5udW1fY2FjaGVfbm9kZXMangEKGXBhcmFtZXRlcnNfcmVxdWlyZV9mYW1pbHkSP3BhcmFtZXRlcl9ncm91cF9mYW1pbHkgaXMgcmVxdWlyZWQgd2hlbiBwYXJhbWV0ZXJzIGFyZSBwcm92aWRlZBpAdGhpcy5wYXJhbWV0ZXJzLnNpemUoKSA9PSAwIHx8IHRoaXMucGFyYW1ldGVyX2dyb3VwX2ZhbWlseSAhPSAnJ0IHCgVfcG9ydCJPCiBBd3NNZW1jYWNoZWRFbGFzdGljYWNoZVBhcmFtZXRlchIUCgRuYW1lGAEgASgJQga6SAPIAQESFQoFdmFsdWUYAiABKAlCBrpIA8gBAUKoAwo3Y29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NtZW1jYWNoZWRlbGFzdGljYWNoZS52MUIJU3BlY1Byb3RvUAFab2dpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzbWVtY2FjaGVkZWxhc3RpY2FjaGUvdjE7YXdzbWVtY2FjaGVkZWxhc3RpY2FjaGV2MaICBU9PUEFBqgIzT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c21lbWNhY2hlZGVsYXN0aWNhY2hlLlYxygIzT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c21lbWNhY2hlZGVsYXN0aWNhY2hlXFYx4gI/T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c21lbWNhY2hlZGVsYXN0aWNhY2hlXFYxXEdQQk1ldGFkYXRh6gI4T3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NtZW1jYWNoZWRlbGFzdGljYWNoZTo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("Cj5vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzbWVtY2FjaGVkZWxhc3RpY2FjaGUvdjEvc3BlYy5wcm90bxIzb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c21lbWNhY2hlZGVsYXN0aWNhY2hlLnYxIqQNChtBd3NNZW1jYWNoZWRFbGFzdGljYWNoZVNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEh4KDmVuZ2luZV92ZXJzaW9uGAIgASgJQga6SAPIAQESGQoJbm9kZV90eXBlGAMgASgJQga6SAPIAQESIgoPbnVtX2NhY2hlX25vZGVzGAQgASgFQgm6SAYaBBgoKAESDwoHYXpfbW9kZRgFIAEoCRInCgRwb3J0GAYgASgFQhS6SAgaBhj//wMoAYqmHQUxMTIxMUgAiAEBEiIKGnRyYW5zaXRfZW5jcnlwdGlvbl9lbmFibGVkGAcgASgIEnYKCnN1Ym5ldF9pZHMYCCADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQi6I1GHYAZLUYSVzdGF0dXMub3V0cHV0cy5wcml2YXRlX3N1Ym5ldHMuWypdLmlkEnkKEnNlY3VyaXR5X2dyb3VwX2lkcxgJIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEh4KFnBhcmFtZXRlcl9ncm91cF9mYW1pbHkYCiABKAkSaQoKcGFyYW1ldGVycxgLIAMoCzJVLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NtZW1jYWNoZWRlbGFzdGljYWNoZS52MS5Bd3NNZW1jYWNoZWRFbGFzdGljYWNoZVBhcmFtZXRlchKhAQoSbWFpbnRlbmFuY2Vfd2luZG93GAwgASgJQoQBukiAAdgBAXJ7MnleKG1vbnx0dWV8d2VkfHRodXxmcml8c2F0fHN1bik6KFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0tKG1vbnx0dWV8d2VkfHRodXxmcml8c2F0fHN1bik6KFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0kEhkKEWFwcGx5X2ltbWVkaWF0ZWx5GA0gASgIEiwKGmF1dG9fbWlub3JfdmVyc2lvbl91cGdyYWRlGA4gASgIQgiSph0EdHJ1ZRJ1ChZub3RpZmljYXRpb25fdG9waWNfYXJuGA8gASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIhiNRh4gGS1GEYc3RhdHVzLm91dHB1dHMudG9waWNfYXJuEiQKHHByZWZlcnJlZF9hdmFpbGFiaWxpdHlfem9uZXMYECADKAk6nQW6SJkFGosBChRhel9tb2RlX3ZhbGlkX3ZhbHVlcxIyYXpfbW9kZSBtdXN0IGJlICdzaW5nbGUtYXonIG9yICdjcm9zcy1heicgd2hlbiBzZXQaP3RoaXMuYXpfbW9kZSA9PSAnJyB8fCB0aGlzLmF6X21vZGUgaW4gWydzaW5nbGUtYXonLCAnY3Jvc3MtYXonXRqHAQocY3Jvc3NfYXpfcmVxdWlyZXNfbXVsdGlfbm9kZRIvYXpfbW9kZSAnY3Jvc3MtYXonIHJlcXVpcmVzIG51bV9jYWNoZV9ub2RlcyA+IDEaNnRoaXMuYXpfbW9kZSAhPSAnY3Jvc3MtYXonIHx8IHRoaXMubnVtX2NhY2hlX25vZGVzID4gMRrdAQoaYXpfbGlzdF9tYXRjaGVzX25vZGVfY291bnQSTHByZWZlcnJlZF9hdmFpbGFiaWxpdHlfem9uZXMgbGVuZ3RoIG11c3QgbWF0Y2ggbnVtX2NhY2hlX25vZGVzIHdoZW4gcHJvdmlkZWQacXRoaXMucHJlZmVycmVkX2F2YWlsYWJpbGl0eV96b25lcy5zaXplKCkgPT0gMCB8fCB0aGlzLnByZWZlcnJlZF9hdmFpbGFiaWxpdHlfem9uZXMuc2l6ZSgpID09IHRoaXMubnVtX2NhY2hlX25vZGVzGp4BChlwYXJhbWV0ZXJzX3JlcXVpcmVfZmFtaWx5Ej9wYXJhbWV0ZXJfZ3JvdXBfZmFtaWx5IGlzIHJlcXVpcmVkIHdoZW4gcGFyYW1ldGVycyBhcmUgcHJvdmlkZWQaQHRoaXMucGFyYW1ldGVycy5zaXplKCkgPT0gMCB8fCB0aGlzLnBhcmFtZXRlcl9ncm91cF9mYW1pbHkgIT0gJydCBwoFX3BvcnQiTwogQXdzTWVtY2FjaGVkRWxhc3RpY2FjaGVQYXJhbWV0ZXISFAoEbmFtZRgBIAEoCUIGukgDyAEBEhUKBXZhbHVlGAIgASgJQga6SAPIAQFCqAMKN2NvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzbWVtY2FjaGVkZWxhc3RpY2FjaGUudjFCCVNwZWNQcm90b1ABWm9naXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c21lbWNhY2hlZGVsYXN0aWNhY2hlL3YxO2F3c21lbWNhY2hlZGVsYXN0aWNhY2hldjGiAgVPT1BBQaoCM09yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NtZW1jYWNoZWRlbGFzdGljYWNoZS5WMcoCM09yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NtZW1jYWNoZWRlbGFzdGljYWNoZVxWMeICP09yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NtZW1jYWNoZWRlbGFzdGljYWNoZVxWMVxHUEJNZXRhZGF0YeoCOE9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzbWVtY2FjaGVkZWxhc3RpY2FjaGU6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsMemcachedElasticacheSpec defines the desired configuration for an AWS
@@ -55,19 +55,23 @@ export const file_org_openmcf_provider_aws_awsmemcachedelasticache_v1_spec: GenF
  * - Credentials, region, and deployment workflow live outside this spec in
  *   stack inputs.
  *
- * ---------------------------------------------------------------------------
- * Engine
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awsmemcachedelasticache.v1.AwsMemcachedElasticacheSpec
  */
 export type AwsMemcachedElasticacheSpec = Message<"org.openmcf.provider.aws.awsmemcachedelasticache.v1.AwsMemcachedElasticacheSpec"> & {
+  /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * Memcached engine version to deploy. Uses three-part versioning:
    * "1.6.22", "1.6.17", "1.5.16", etc.
    * Transit encryption requires version 1.6.12 or later.
    *
-   * @generated from field: string engine_version = 1;
+   * @generated from field: string engine_version = 2;
    */
   engineVersion: string;
 
@@ -77,7 +81,7 @@ export type AwsMemcachedElasticacheSpec = Message<"org.openmcf.provider.aws.awsm
    * Changing node_type forces cluster recreation — Memcached does not support
    * vertical scaling in-place.
    *
-   * @generated from field: string node_type = 2;
+   * @generated from field: string node_type = 3;
    */
   nodeType: string;
 
@@ -85,7 +89,7 @@ export type AwsMemcachedElasticacheSpec = Message<"org.openmcf.provider.aws.awsm
    * Number of cache nodes in the cluster. Memcached distributes keys across
    * all nodes via consistent hashing. Range: 1–40. Default: 1.
    *
-   * @generated from field: int32 num_cache_nodes = 3;
+   * @generated from field: int32 num_cache_nodes = 4;
    */
   numCacheNodes: number;
 
@@ -94,7 +98,7 @@ export type AwsMemcachedElasticacheSpec = Message<"org.openmcf.provider.aws.awsm
    * "cross-az" distributes nodes across multiple AZs for resilience.
    * cross-az requires num_cache_nodes > 1.
    *
-   * @generated from field: string az_mode = 4;
+   * @generated from field: string az_mode = 5;
    */
   azMode: string;
 
@@ -103,7 +107,7 @@ export type AwsMemcachedElasticacheSpec = Message<"org.openmcf.provider.aws.awsm
    * This is a ForceNew attribute — changing it destroys and recreates the
    * cluster.
    *
-   * @generated from field: optional int32 port = 5;
+   * @generated from field: optional int32 port = 6;
    */
   port?: number;
 
@@ -113,7 +117,7 @@ export type AwsMemcachedElasticacheSpec = Message<"org.openmcf.provider.aws.awsm
    * this on earlier versions will result in an AWS API error.
    * Note: Memcached does NOT support encryption at rest.
    *
-   * @generated from field: bool transit_encryption_enabled = 6;
+   * @generated from field: bool transit_encryption_enabled = 7;
    */
   transitEncryptionEnabled: boolean;
 
@@ -122,7 +126,7 @@ export type AwsMemcachedElasticacheSpec = Message<"org.openmcf.provider.aws.awsm
    * two AZs when using cross-az mode. A subnet group is created automatically
    * from these subnets.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 7;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 8;
    */
   subnetIds: StringValueOrRef[];
 
@@ -131,7 +135,7 @@ export type AwsMemcachedElasticacheSpec = Message<"org.openmcf.provider.aws.awsm
    * access to the Memcached endpoint. Since Memcached has no authentication,
    * security groups are the primary access control mechanism.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 8;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 9;
    */
   securityGroupIds: StringValueOrRef[];
 
@@ -139,7 +143,7 @@ export type AwsMemcachedElasticacheSpec = Message<"org.openmcf.provider.aws.awsm
    * Parameter group family for custom parameters. Required when `parameters`
    * is provided. Examples: "memcached1.6", "memcached1.5", "memcached1.4".
    *
-   * @generated from field: string parameter_group_family = 9;
+   * @generated from field: string parameter_group_family = 10;
    */
   parameterGroupFamily: string;
 
@@ -148,7 +152,7 @@ export type AwsMemcachedElasticacheSpec = Message<"org.openmcf.provider.aws.awsm
    * Memcached parameters include: chunk_size, chunk_size_growth_factor,
    * max_simultaneous_connections, binding_protocol.
    *
-   * @generated from field: repeated org.openmcf.provider.aws.awsmemcachedelasticache.v1.AwsMemcachedElasticacheParameter parameters = 10;
+   * @generated from field: repeated org.openmcf.provider.aws.awsmemcachedelasticache.v1.AwsMemcachedElasticacheParameter parameters = 11;
    */
   parameters: AwsMemcachedElasticacheParameter[];
 
@@ -156,7 +160,7 @@ export type AwsMemcachedElasticacheSpec = Message<"org.openmcf.provider.aws.awsm
    * Weekly maintenance window in UTC. Format: "ddd:hh24:mi-ddd:hh24:mi".
    * Example: "sun:05:00-sun:06:00". Leave empty for AWS-assigned default.
    *
-   * @generated from field: string maintenance_window = 11;
+   * @generated from field: string maintenance_window = 12;
    */
   maintenanceWindow: string;
 
@@ -164,7 +168,7 @@ export type AwsMemcachedElasticacheSpec = Message<"org.openmcf.provider.aws.awsm
    * Apply changes immediately instead of waiting for the next maintenance
    * window. May cause brief downtime for some operations.
    *
-   * @generated from field: bool apply_immediately = 12;
+   * @generated from field: bool apply_immediately = 13;
    */
   applyImmediately: boolean;
 
@@ -172,7 +176,7 @@ export type AwsMemcachedElasticacheSpec = Message<"org.openmcf.provider.aws.awsm
    * Automatically apply minor engine version upgrades during maintenance
    * windows. Recommended for staying on supported versions.
    *
-   * @generated from field: bool auto_minor_version_upgrade = 13;
+   * @generated from field: bool auto_minor_version_upgrade = 14;
    */
   autoMinorVersionUpgrade: boolean;
 
@@ -180,7 +184,7 @@ export type AwsMemcachedElasticacheSpec = Message<"org.openmcf.provider.aws.awsm
    * SNS topic ARN for cluster event notifications (node additions, removals,
    * maintenance events, etc.).
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef notification_topic_arn = 14;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef notification_topic_arn = 15;
    */
   notificationTopicArn?: StringValueOrRef;
 
@@ -189,7 +193,7 @@ export type AwsMemcachedElasticacheSpec = Message<"org.openmcf.provider.aws.awsm
    * length must match num_cache_nodes. Nodes are placed in the specified AZs
    * in order. Leave empty for AWS-managed AZ distribution.
    *
-   * @generated from field: repeated string preferred_availability_zones = 15;
+   * @generated from field: repeated string preferred_availability_zones = 16;
    */
   preferredAvailabilityZones: string[];
 };

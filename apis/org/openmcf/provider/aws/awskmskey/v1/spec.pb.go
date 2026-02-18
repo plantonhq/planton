@@ -79,21 +79,24 @@ func (AwsKmsKeyType) EnumDescriptor() ([]byte, []int) {
 // AwsKmsKeySpec captures the essential fields to create a customer-managed AWS KMS key.
 type AwsKmsKeySpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// key_spec specifies the type of KMS key to create.
 	// If not provided, defaults to symmetric_default.
-	KeySpec AwsKmsKeyType `protobuf:"varint,1,opt,name=key_spec,json=keySpec,proto3,enum=org.openmcf.provider.aws.awskmskey.v1.AwsKmsKeyType" json:"key_spec,omitempty"`
+	KeySpec AwsKmsKeyType `protobuf:"varint,2,opt,name=key_spec,json=keySpec,proto3,enum=org.openmcf.provider.aws.awskmskey.v1.AwsKmsKeyType" json:"key_spec,omitempty"`
 	// description is an optional description for the KMS key.
 	// Maximum length is 250 characters.
-	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 	// disable_key_rotation, if true, will disable the key's automatic annual rotation.
 	// If false (default), rotation is enabled.
-	DisableKeyRotation bool `protobuf:"varint,3,opt,name=disable_key_rotation,json=disableKeyRotation,proto3" json:"disable_key_rotation,omitempty"`
+	DisableKeyRotation bool `protobuf:"varint,4,opt,name=disable_key_rotation,json=disableKeyRotation,proto3" json:"disable_key_rotation,omitempty"`
 	// deletion_window_days is the waiting period (in days) before deletion of the KMS key.
 	// Allowed range is 7–30 days (inclusive). Default is 30 days.
-	DeletionWindowDays int32 `protobuf:"varint,4,opt,name=deletion_window_days,json=deletionWindowDays,proto3" json:"deletion_window_days,omitempty"`
+	DeletionWindowDays int32 `protobuf:"varint,5,opt,name=deletion_window_days,json=deletionWindowDays,proto3" json:"deletion_window_days,omitempty"`
 	// alias_name is an optional alias to assign to the KMS key.
 	// It must begin with "alias/" and contain 1–250 allowed characters (letters, numbers, underscore, or hyphen).
-	AliasName     string `protobuf:"bytes,5,opt,name=alias_name,json=aliasName,proto3" json:"alias_name,omitempty"`
+	AliasName     string `protobuf:"bytes,6,opt,name=alias_name,json=aliasName,proto3" json:"alias_name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -126,6 +129,13 @@ func (x *AwsKmsKeySpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsKmsKeySpec.ProtoReflect.Descriptor instead.
 func (*AwsKmsKeySpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awskmskey_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsKmsKeySpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsKmsKeySpec) GetKeySpec() AwsKmsKeyType {
@@ -167,14 +177,15 @@ var File_org_openmcf_provider_aws_awskmskey_v1_spec_proto protoreflect.FileDescr
 
 const file_org_openmcf_provider_aws_awskmskey_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"0org/openmcf/provider/aws/awskmskey/v1/spec.proto\x12%org.openmcf.provider.aws.awskmskey.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xc6\x02\n" +
-	"\rAwsKmsKeySpec\x12O\n" +
-	"\bkey_spec\x18\x01 \x01(\x0e24.org.openmcf.provider.aws.awskmskey.v1.AwsKmsKeyTypeR\akeySpec\x12*\n" +
-	"\vdescription\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\xfa\x01R\vdescription\x120\n" +
-	"\x14disable_key_rotation\x18\x03 \x01(\bR\x12disableKeyRotation\x12A\n" +
-	"\x14deletion_window_days\x18\x04 \x01(\x05B\x0f\xbaH\x06\x1a\x04\x18\x1e(\a\x92\xa6\x1d\x0230R\x12deletionWindowDays\x12C\n" +
+	"0org/openmcf/provider/aws/awskmskey/v1/spec.proto\x12%org.openmcf.provider.aws.awskmskey.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xe7\x02\n" +
+	"\rAwsKmsKeySpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12O\n" +
+	"\bkey_spec\x18\x02 \x01(\x0e24.org.openmcf.provider.aws.awskmskey.v1.AwsKmsKeyTypeR\akeySpec\x12*\n" +
+	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\xfa\x01R\vdescription\x120\n" +
+	"\x14disable_key_rotation\x18\x04 \x01(\bR\x12disableKeyRotation\x12A\n" +
+	"\x14deletion_window_days\x18\x05 \x01(\x05B\x0f\xbaH\x06\x1a\x04\x18\x1e(\a\x92\xa6\x1d\x0230R\x12deletionWindowDays\x12C\n" +
 	"\n" +
-	"alias_name\x18\x05 \x01(\tB$\xbaH!r\x1f2\x1d^alias/[A-Za-z0-9/_-]{1,250}$R\taliasName*M\n" +
+	"alias_name\x18\x06 \x01(\tB$\xbaH!r\x1f2\x1d^alias/[A-Za-z0-9/_-]{1,250}$R\taliasName*M\n" +
 	"\rAwsKmsKeyType\x12\r\n" +
 	"\tsymmetric\x10\x00\x12\f\n" +
 	"\brsa_2048\x10\x01\x12\f\n" +

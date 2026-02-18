@@ -55,6 +55,9 @@ const (
 //   - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 type AwsFsxWindowsFileSystemSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Deployment type controlling availability and performance characteristics.
 	// ForceNew — cannot be changed after creation.
 	//
@@ -65,7 +68,7 @@ type AwsFsxWindowsFileSystemSpec struct {
 	//     two subnets and a preferred_subnet_id. Supports HDD storage.
 	//
 	// Default: SINGLE_AZ_2
-	DeploymentType *string `protobuf:"bytes,1,opt,name=deployment_type,json=deploymentType,proto3,oneof" json:"deployment_type,omitempty"`
+	DeploymentType *string `protobuf:"bytes,2,opt,name=deployment_type,json=deploymentType,proto3,oneof" json:"deployment_type,omitempty"`
 	// Storage capacity in GiB. Required.
 	//
 	// Valid ranges depend on storage type:
@@ -73,7 +76,7 @@ type AwsFsxWindowsFileSystemSpec struct {
 	// - HDD: 2000–65536 GiB
 	//
 	// Storage can be increased after creation but never decreased.
-	StorageCapacityGib int32 `protobuf:"varint,2,opt,name=storage_capacity_gib,json=storageCapacityGib,proto3" json:"storage_capacity_gib,omitempty"`
+	StorageCapacityGib int32 `protobuf:"varint,3,opt,name=storage_capacity_gib,json=storageCapacityGib,proto3" json:"storage_capacity_gib,omitempty"`
 	// Storage media type. ForceNew — cannot be changed after creation.
 	//
 	//   - "SSD": solid-state drives. Sub-millisecond latency. Required for
@@ -83,14 +86,14 @@ type AwsFsxWindowsFileSystemSpec struct {
 	//     storage capacity.
 	//
 	// Default: SSD
-	StorageType *string `protobuf:"bytes,3,opt,name=storage_type,json=storageType,proto3,oneof" json:"storage_type,omitempty"`
+	StorageType *string `protobuf:"bytes,4,opt,name=storage_type,json=storageType,proto3,oneof" json:"storage_type,omitempty"`
 	// Throughput capacity in MB/s. Required.
 	//
 	// Valid values: 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4608, 6144, 9216, 12288.
 	// The maximum available throughput depends on the deployment type.
 	//
 	// Throughput can be changed after creation to scale performance up or down.
-	ThroughputCapacity int32 `protobuf:"varint,4,opt,name=throughput_capacity,json=throughputCapacity,proto3" json:"throughput_capacity,omitempty"`
+	ThroughputCapacity int32 `protobuf:"varint,5,opt,name=throughput_capacity,json=throughputCapacity,proto3" json:"throughput_capacity,omitempty"`
 	// Subnet IDs for the file system's network interfaces. Required. ForceNew.
 	//
 	// - SINGLE_AZ_1 / SINGLE_AZ_2: exactly one subnet.
@@ -98,14 +101,14 @@ type AwsFsxWindowsFileSystemSpec struct {
 	//
 	// All compute resources mounting this file system must have SMB network
 	// connectivity to these subnets (TCP port 445).
-	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,5,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
+	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,6,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// Preferred subnet for the active file server in a MULTI_AZ_1 deployment.
 	// ForceNew. Required when deployment_type is MULTI_AZ_1. Must be one of the
 	// subnets specified in subnet_ids.
 	//
 	// In a failover event, the standby file server in the other subnet takes over.
 	// Ignored for SINGLE_AZ deployments.
-	PreferredSubnetId *v1.StringValueOrRef `protobuf:"bytes,6,opt,name=preferred_subnet_id,json=preferredSubnetId,proto3" json:"preferred_subnet_id,omitempty"`
+	PreferredSubnetId *v1.StringValueOrRef `protobuf:"bytes,7,opt,name=preferred_subnet_id,json=preferredSubnetId,proto3" json:"preferred_subnet_id,omitempty"`
 	// Security groups for the file system's network interfaces. ForceNew.
 	//
 	// Must allow SMB traffic between the file system and its clients:
@@ -117,24 +120,24 @@ type AwsFsxWindowsFileSystemSpec struct {
 	//     TCP port 389 (LDAP), TCP port 636 (LDAPS)
 	//
 	// Up to 50 security groups.
-	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,7,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
+	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,8,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
 	// Customer-managed KMS key ARN for encryption at rest. ForceNew — the KMS key
 	// cannot be changed after creation. When omitted, the file system uses the
 	// AWS-managed FSx key. All Windows file systems are encrypted at rest by
 	// default; this field upgrades to a customer-managed key.
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,8,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// ID of an existing AWS Managed Microsoft AD (Directory Service) to join.
 	// ForceNew. Mutually exclusive with `self_managed_active_directory`.
 	//
 	// Use this when you have an AWS Directory Service managed AD already
 	// provisioned. The file system joins the domain automatically.
-	ActiveDirectoryId *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=active_directory_id,json=activeDirectoryId,proto3" json:"active_directory_id,omitempty"`
+	ActiveDirectoryId *v1.StringValueOrRef `protobuf:"bytes,10,opt,name=active_directory_id,json=activeDirectoryId,proto3" json:"active_directory_id,omitempty"`
 	// Self-managed Active Directory configuration for joining an on-premises or
 	// EC2-hosted AD domain. Mutually exclusive with `active_directory_id`.
 	//
 	// Use this when your AD domain controller runs outside AWS Directory Service
 	// (e.g., on-premises AD, AD on EC2, or Azure AD DS).
-	SelfManagedActiveDirectory *AwsFsxWindowsFileSystemSelfManagedActiveDirectory `protobuf:"bytes,10,opt,name=self_managed_active_directory,json=selfManagedActiveDirectory,proto3" json:"self_managed_active_directory,omitempty"`
+	SelfManagedActiveDirectory *AwsFsxWindowsFileSystemSelfManagedActiveDirectory `protobuf:"bytes,11,opt,name=self_managed_active_directory,json=selfManagedActiveDirectory,proto3" json:"self_managed_active_directory,omitempty"`
 	// DNS alias names to associate with the file system. Up to 50 aliases.
 	//
 	// Aliases allow the file system to be accessed via custom DNS names
@@ -144,33 +147,33 @@ type AwsFsxWindowsFileSystemSpec struct {
 	//
 	// Each alias must be a valid DNS name (4-253 characters). You must create a
 	// DNS CNAME record pointing each alias to the file system's DNS name.
-	Aliases []string `protobuf:"bytes,11,rep,name=aliases,proto3" json:"aliases,omitempty"`
+	Aliases []string `protobuf:"bytes,12,rep,name=aliases,proto3" json:"aliases,omitempty"`
 	// Audit log configuration for tracking file access and file share access
 	// events. Logs are sent to CloudWatch Logs for compliance and security
 	// monitoring. When omitted, audit logging is disabled.
-	AuditLogConfiguration *AwsFsxWindowsFileSystemAuditLogConfiguration `protobuf:"bytes,12,opt,name=audit_log_configuration,json=auditLogConfiguration,proto3" json:"audit_log_configuration,omitempty"`
+	AuditLogConfiguration *AwsFsxWindowsFileSystemAuditLogConfiguration `protobuf:"bytes,13,opt,name=audit_log_configuration,json=auditLogConfiguration,proto3" json:"audit_log_configuration,omitempty"`
 	// SSD IOPS configuration for the file system. Controls the total provisioned
 	// IOPS. When omitted, AWS uses AUTOMATIC mode which scales IOPS with storage.
 	// Only applicable to SSD storage type.
-	DiskIopsConfiguration *AwsFsxWindowsFileSystemDiskIopsConfiguration `protobuf:"bytes,13,opt,name=disk_iops_configuration,json=diskIopsConfiguration,proto3" json:"disk_iops_configuration,omitempty"`
+	DiskIopsConfiguration *AwsFsxWindowsFileSystemDiskIopsConfiguration `protobuf:"bytes,14,opt,name=disk_iops_configuration,json=diskIopsConfiguration,proto3" json:"disk_iops_configuration,omitempty"`
 	// Number of days to retain automatic backups. Range: 0-90. Set to 0 to
 	// disable automatic backups.
 	//
 	// Default: 7
-	AutomaticBackupRetentionDays *int32 `protobuf:"varint,14,opt,name=automatic_backup_retention_days,json=automaticBackupRetentionDays,proto3,oneof" json:"automatic_backup_retention_days,omitempty"`
+	AutomaticBackupRetentionDays *int32 `protobuf:"varint,15,opt,name=automatic_backup_retention_days,json=automaticBackupRetentionDays,proto3,oneof" json:"automatic_backup_retention_days,omitempty"`
 	// Daily UTC time to start automatic backups, in HH:MM format (e.g., "01:00").
 	// If not specified and backups are enabled, AWS chooses a default window.
-	DailyAutomaticBackupStartTime string `protobuf:"bytes,15,opt,name=daily_automatic_backup_start_time,json=dailyAutomaticBackupStartTime,proto3" json:"daily_automatic_backup_start_time,omitempty"`
+	DailyAutomaticBackupStartTime string `protobuf:"bytes,16,opt,name=daily_automatic_backup_start_time,json=dailyAutomaticBackupStartTime,proto3" json:"daily_automatic_backup_start_time,omitempty"`
 	// Copy tags from the file system to backups. ForceNew.
-	CopyTagsToBackups bool `protobuf:"varint,16,opt,name=copy_tags_to_backups,json=copyTagsToBackups,proto3" json:"copy_tags_to_backups,omitempty"`
+	CopyTagsToBackups bool `protobuf:"varint,17,opt,name=copy_tags_to_backups,json=copyTagsToBackups,proto3" json:"copy_tags_to_backups,omitempty"`
 	// Skip creating a final backup when the file system is deleted.
 	//
 	// Default: true
-	SkipFinalBackup *bool `protobuf:"varint,17,opt,name=skip_final_backup,json=skipFinalBackup,proto3,oneof" json:"skip_final_backup,omitempty"`
+	SkipFinalBackup *bool `protobuf:"varint,18,opt,name=skip_final_backup,json=skipFinalBackup,proto3,oneof" json:"skip_final_backup,omitempty"`
 	// Weekly UTC maintenance window in the format "d:HH:MM" where d is the day of
 	// the week (1=Monday, 7=Sunday). Example: "7:02:00" for Sunday at 02:00 UTC.
 	// If not specified, AWS chooses a default window.
-	WeeklyMaintenanceStartTime string `protobuf:"bytes,18,opt,name=weekly_maintenance_start_time,json=weeklyMaintenanceStartTime,proto3" json:"weekly_maintenance_start_time,omitempty"`
+	WeeklyMaintenanceStartTime string `protobuf:"bytes,19,opt,name=weekly_maintenance_start_time,json=weeklyMaintenanceStartTime,proto3" json:"weekly_maintenance_start_time,omitempty"`
 	unknownFields              protoimpl.UnknownFields
 	sizeCache                  protoimpl.SizeCache
 }
@@ -203,6 +206,13 @@ func (x *AwsFsxWindowsFileSystemSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsFsxWindowsFileSystemSpec.ProtoReflect.Descriptor instead.
 func (*AwsFsxWindowsFileSystemSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsfsxwindowsfilesystem_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsFsxWindowsFileSystemSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsFsxWindowsFileSystemSpec) GetDeploymentType() string {
@@ -622,29 +632,30 @@ var File_org_openmcf_provider_aws_awsfsxwindowsfilesystem_v1_spec_proto protoref
 
 const file_org_openmcf_provider_aws_awsfsxwindowsfilesystem_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	">org/openmcf/provider/aws/awsfsxwindowsfilesystem/v1/spec.proto\x123org.openmcf.provider.aws.awsfsxwindowsfilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x94\x1e\n" +
-	"\x1bAwsFsxWindowsFileSystemSpec\x12=\n" +
-	"\x0fdeployment_type\x18\x01 \x01(\tB\x0f\x8a\xa6\x1d\vSINGLE_AZ_2H\x00R\x0edeploymentType\x88\x01\x01\x129\n" +
-	"\x14storage_capacity_gib\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02( R\x12storageCapacityGib\x12/\n" +
-	"\fstorage_type\x18\x03 \x01(\tB\a\x8a\xa6\x1d\x03SSDH\x01R\vstorageType\x88\x01\x01\x128\n" +
-	"\x13throughput_capacity\x18\x04 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x12throughputCapacity\x12\x89\x01\n" +
+	">org/openmcf/provider/aws/awsfsxwindowsfilesystem/v1/spec.proto\x123org.openmcf.provider.aws.awsfsxwindowsfilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb5\x1e\n" +
+	"\x1bAwsFsxWindowsFileSystemSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12=\n" +
+	"\x0fdeployment_type\x18\x02 \x01(\tB\x0f\x8a\xa6\x1d\vSINGLE_AZ_2H\x00R\x0edeploymentType\x88\x01\x01\x129\n" +
+	"\x14storage_capacity_gib\x18\x03 \x01(\x05B\a\xbaH\x04\x1a\x02( R\x12storageCapacityGib\x12/\n" +
+	"\fstorage_type\x18\x04 \x01(\tB\a\x8a\xa6\x1d\x03SSDH\x01R\vstorageType\x88\x01\x01\x128\n" +
+	"\x13throughput_capacity\x18\x05 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x12throughputCapacity\x12\x89\x01\n" +
 	"\n" +
-	"subnet_ids\x18\x05 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x92\x01\n" +
-	"\x13preferred_subnet_id\x18\x06 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[0].idR\x11preferredSubnetId\x12\x8b\x01\n" +
-	"\x12security_group_ids\x18\a \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12q\n" +
+	"subnet_ids\x18\x06 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x92\x01\n" +
+	"\x13preferred_subnet_id\x18\a \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[0].idR\x11preferredSubnetId\x12\x8b\x01\n" +
+	"\x12security_group_ids\x18\b \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12b\n" +
-	"\x13active_directory_id\x18\t \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x11activeDirectoryId\x12\xa9\x01\n" +
-	"\x1dself_managed_active_directory\x18\n" +
-	" \x01(\v2f.org.openmcf.provider.aws.awsfsxwindowsfilesystem.v1.AwsFsxWindowsFileSystemSelfManagedActiveDirectoryR\x1aselfManagedActiveDirectory\x12\"\n" +
-	"\aaliases\x18\v \x03(\tB\b\xbaH\x05\x92\x01\x02\x102R\aaliases\x12\x99\x01\n" +
-	"\x17audit_log_configuration\x18\f \x01(\v2a.org.openmcf.provider.aws.awsfsxwindowsfilesystem.v1.AwsFsxWindowsFileSystemAuditLogConfigurationR\x15auditLogConfiguration\x12\x99\x01\n" +
-	"\x17disk_iops_configuration\x18\r \x01(\v2a.org.openmcf.provider.aws.awsfsxwindowsfilesystem.v1.AwsFsxWindowsFileSystemDiskIopsConfigurationR\x15diskIopsConfiguration\x12Q\n" +
-	"\x1fautomatic_backup_retention_days\x18\x0e \x01(\x05B\x05\x8a\xa6\x1d\x017H\x02R\x1cautomaticBackupRetentionDays\x88\x01\x01\x12H\n" +
-	"!daily_automatic_backup_start_time\x18\x0f \x01(\tR\x1ddailyAutomaticBackupStartTime\x12/\n" +
-	"\x14copy_tags_to_backups\x18\x10 \x01(\bR\x11copyTagsToBackups\x129\n" +
-	"\x11skip_final_backup\x18\x11 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x03R\x0fskipFinalBackup\x88\x01\x01\x12A\n" +
-	"\x1dweekly_maintenance_start_time\x18\x12 \x01(\tR\x1aweeklyMaintenanceStartTime:\xd6\x0f\xbaH\xd2\x0f\x1a\xc2\x01\n" +
+	"kms_key_id\x18\t \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12b\n" +
+	"\x13active_directory_id\x18\n" +
+	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x11activeDirectoryId\x12\xa9\x01\n" +
+	"\x1dself_managed_active_directory\x18\v \x01(\v2f.org.openmcf.provider.aws.awsfsxwindowsfilesystem.v1.AwsFsxWindowsFileSystemSelfManagedActiveDirectoryR\x1aselfManagedActiveDirectory\x12\"\n" +
+	"\aaliases\x18\f \x03(\tB\b\xbaH\x05\x92\x01\x02\x102R\aaliases\x12\x99\x01\n" +
+	"\x17audit_log_configuration\x18\r \x01(\v2a.org.openmcf.provider.aws.awsfsxwindowsfilesystem.v1.AwsFsxWindowsFileSystemAuditLogConfigurationR\x15auditLogConfiguration\x12\x99\x01\n" +
+	"\x17disk_iops_configuration\x18\x0e \x01(\v2a.org.openmcf.provider.aws.awsfsxwindowsfilesystem.v1.AwsFsxWindowsFileSystemDiskIopsConfigurationR\x15diskIopsConfiguration\x12Q\n" +
+	"\x1fautomatic_backup_retention_days\x18\x0f \x01(\x05B\x05\x8a\xa6\x1d\x017H\x02R\x1cautomaticBackupRetentionDays\x88\x01\x01\x12H\n" +
+	"!daily_automatic_backup_start_time\x18\x10 \x01(\tR\x1ddailyAutomaticBackupStartTime\x12/\n" +
+	"\x14copy_tags_to_backups\x18\x11 \x01(\bR\x11copyTagsToBackups\x129\n" +
+	"\x11skip_final_backup\x18\x12 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x03R\x0fskipFinalBackup\x88\x01\x01\x12A\n" +
+	"\x1dweekly_maintenance_start_time\x18\x13 \x01(\tR\x1aweeklyMaintenanceStartTime:\xd6\x0f\xbaH\xd2\x0f\x1a\xc2\x01\n" +
 	"\x15deployment_type_valid\x12Edeployment_type must be 'SINGLE_AZ_1', 'SINGLE_AZ_2', or 'MULTI_AZ_1'\x1abthis.deployment_type == '' || this.deployment_type in ['SINGLE_AZ_1', 'SINGLE_AZ_2', 'MULTI_AZ_1']\x1ay\n" +
 	"\x12storage_type_valid\x12#storage_type must be 'SSD' or 'HDD'\x1a>this.storage_type == '' || this.storage_type in ['SSD', 'HDD']\x1a\xd2\x01\n" +
 	"\"hdd_requires_compatible_deployment\x12Wstorage_type 'HDD' is only supported with deployment_type 'SINGLE_AZ_2' or 'MULTI_AZ_1'\x1aSthis.storage_type != 'HDD' || this.deployment_type in ['SINGLE_AZ_2', 'MULTI_AZ_1']\x1a\x90\x01\n" +

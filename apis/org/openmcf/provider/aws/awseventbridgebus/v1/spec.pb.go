@@ -45,15 +45,18 @@ const (
 //     inputs.
 type AwsEventBridgeBusSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Human-readable description of the event bus.
 	// Maximum length is 512 characters.
-	Description string `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	// KMS key identifier for encrypting events on this bus. Accepts a KMS key
 	// ARN, key ID, key alias, or key alias ARN. When omitted, events are
 	// encrypted with an AWS-owned key at no additional cost.
 	//
 	// Accepts a direct value or a reference to an AwsKmsKey resource.
-	KmsKeyIdentifier *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=kms_key_identifier,json=kmsKeyIdentifier,proto3" json:"kms_key_identifier,omitempty"`
+	KmsKeyIdentifier *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=kms_key_identifier,json=kmsKeyIdentifier,proto3" json:"kms_key_identifier,omitempty"`
 	// Partner event source name. Set this only when creating a bus for a SaaS
 	// partner integration (e.g., Datadog, Zendesk, PagerDuty).
 	//
@@ -61,7 +64,7 @@ type AwsEventBridgeBusSpec struct {
 	// name (`metadata.name`) must match this value exactly.
 	//
 	// This field is immutable — changing it forces bus replacement.
-	EventSourceName string `protobuf:"bytes,3,opt,name=event_source_name,json=eventSourceName,proto3" json:"event_source_name,omitempty"`
+	EventSourceName string `protobuf:"bytes,4,opt,name=event_source_name,json=eventSourceName,proto3" json:"event_source_name,omitempty"`
 	// Dead letter queue configuration for the event bus. When set, events that
 	// fail delivery to any rule target on this bus are routed to the specified
 	// SQS queue for investigation and reprocessing.
@@ -69,11 +72,11 @@ type AwsEventBridgeBusSpec struct {
 	// This is the bus-level DLQ — it catches events that cannot be delivered
 	// to ANY target on any rule attached to this bus. Individual rules can also
 	// have their own DLQ configuration (configured on AwsEventBridgeRule).
-	DeadLetterConfig *AwsEventBridgeBusDeadLetterConfig `protobuf:"bytes,4,opt,name=dead_letter_config,json=deadLetterConfig,proto3" json:"dead_letter_config,omitempty"`
+	DeadLetterConfig *AwsEventBridgeBusDeadLetterConfig `protobuf:"bytes,5,opt,name=dead_letter_config,json=deadLetterConfig,proto3" json:"dead_letter_config,omitempty"`
 	// Logging configuration for the event bus. When set, EventBridge writes
 	// event delivery logs to CloudWatch Logs. Useful for debugging event
 	// routing, monitoring delivery failures, and auditing event traffic.
-	LogConfig     *AwsEventBridgeBusLogConfig `protobuf:"bytes,5,opt,name=log_config,json=logConfig,proto3" json:"log_config,omitempty"`
+	LogConfig     *AwsEventBridgeBusLogConfig `protobuf:"bytes,6,opt,name=log_config,json=logConfig,proto3" json:"log_config,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -106,6 +109,13 @@ func (x *AwsEventBridgeBusSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsEventBridgeBusSpec.ProtoReflect.Descriptor instead.
 func (*AwsEventBridgeBusSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awseventbridgebus_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsEventBridgeBusSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsEventBridgeBusSpec) GetDescription() string {
@@ -267,14 +277,15 @@ var File_org_openmcf_provider_aws_awseventbridgebus_v1_spec_proto protoreflect.F
 
 const file_org_openmcf_provider_aws_awseventbridgebus_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8org/openmcf/provider/aws/awseventbridgebus/v1/spec.proto\x12-org.openmcf.provider.aws.awseventbridgebus.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xe7\x05\n" +
-	"\x15AwsEventBridgeBusSpec\x12*\n" +
-	"\vdescription\x18\x01 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x04R\vdescription\x12\x81\x01\n" +
-	"\x12kms_key_identifier\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\x10kmsKeyIdentifier\x12*\n" +
-	"\x11event_source_name\x18\x03 \x01(\tR\x0feventSourceName\x12~\n" +
-	"\x12dead_letter_config\x18\x04 \x01(\v2P.org.openmcf.provider.aws.awseventbridgebus.v1.AwsEventBridgeBusDeadLetterConfigR\x10deadLetterConfig\x12h\n" +
+	"8org/openmcf/provider/aws/awseventbridgebus/v1/spec.proto\x12-org.openmcf.provider.aws.awseventbridgebus.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x88\x06\n" +
+	"\x15AwsEventBridgeBusSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12*\n" +
+	"\vdescription\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x04R\vdescription\x12\x81\x01\n" +
+	"\x12kms_key_identifier\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\x10kmsKeyIdentifier\x12*\n" +
+	"\x11event_source_name\x18\x04 \x01(\tR\x0feventSourceName\x12~\n" +
+	"\x12dead_letter_config\x18\x05 \x01(\v2P.org.openmcf.provider.aws.awseventbridgebus.v1.AwsEventBridgeBusDeadLetterConfigR\x10deadLetterConfig\x12h\n" +
 	"\n" +
-	"log_config\x18\x05 \x01(\v2I.org.openmcf.provider.aws.awseventbridgebus.v1.AwsEventBridgeBusLogConfigR\tlogConfig:\x87\x02\xbaH\x83\x02\x1a\x80\x02\n" +
+	"log_config\x18\x06 \x01(\v2I.org.openmcf.provider.aws.awseventbridgebus.v1.AwsEventBridgeBusLogConfigR\tlogConfig:\x87\x02\xbaH\x83\x02\x1a\x80\x02\n" +
 	"\x19event_source_name_pattern\x12xevent_source_name must match the pattern aws.partner/{partner}/{...} (e.g., aws.partner/example.com/tenant/event-source)\x1aithis.event_source_name == '' || this.event_source_name.matches('^aws\\\\.partner(/[.\\\\-_A-Za-z0-9]+){2,}$')\"\x92\x01\n" +
 	"!AwsEventBridgeBusDeadLetterConfig\x12m\n" +
 	"\x03arn\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xe1\x01\x92\xd4a\x18status.outputs.queue_arnR\x03arn\"\xe7\x02\n" +

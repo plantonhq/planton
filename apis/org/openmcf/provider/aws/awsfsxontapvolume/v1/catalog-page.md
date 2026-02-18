@@ -31,6 +31,7 @@ metadata:
   org: my-org
   env: dev
 spec:
+  region: us-east-1
   storageVirtualMachineId:
     value: svm-0123456789abcdef0
   name: vol_data
@@ -54,6 +55,7 @@ This creates a 100 GB read-write volume mounted at `/data` with UNIX security an
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the ONTAP volume will be created (e.g., `us-east-1`). | Required; non-empty |
 | `storageVirtualMachineId` | `StringValueOrRef` | Parent SVM ID. ForceNew. | Required |
 | `storageVirtualMachineId.value` | `string` | Direct SVM ID value | — |
 | `storageVirtualMachineId.valueFrom` | `object` | Reference to an AwsFsxOntapStorageVirtualMachine resource | Default field: `status.outputs.svm_id` |
@@ -122,6 +124,7 @@ metadata:
   org: my-org
   env: prod
 spec:
+  region: us-east-1
   storageVirtualMachineId:
     value: svm-0123456789abcdef0
   name: vol_prod_data
@@ -149,6 +152,7 @@ metadata:
   org: my-org
   env: prod
 spec:
+  region: us-east-1
   storageVirtualMachineId:
     value: svm-0123456789abcdef0
   name: vol_sec17a4
@@ -188,6 +192,7 @@ metadata:
   org: my-org
   env: prod
 spec:
+  region: us-east-1
   storageVirtualMachineId:
     value: svm-0123456789abcdef0
   name: vol_datalake
@@ -218,6 +223,7 @@ metadata:
   org: my-org
   env: prod
 spec:
+  region: us-east-1
   storageVirtualMachineId:
     valueFrom:
       kind: AwsFsxOntapStorageVirtualMachine

@@ -32,6 +32,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsEksNodeGroup.my-nodegroup
 spec:
+  region: us-west-2
   clusterName: my-eks-cluster
   nodeRoleArn: arn:aws:iam::123456789012:role/eks-node-role
   subnetIds:
@@ -58,6 +59,7 @@ This creates a managed node group with two `t3.medium` on-demand instances in th
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the node group will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `clusterName` | `StringValueOrRef` | Name of the EKS cluster to attach this node group to. Can reference an AwsEksCluster resource via `valueFrom`. | Required |
 | `nodeRoleArn` | `StringValueOrRef` | ARN of the IAM role for the EC2 worker nodes. Must have EKS worker node policies. Can reference an AwsIamRole resource via `valueFrom`. | Required |
 | `subnetIds` | `StringValueOrRef[]` | Subnet IDs where worker nodes are launched. Typically private subnets across multiple AZs. Can reference an AwsVpc resource via `valueFrom`. | Minimum 2 items |
@@ -93,6 +95,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsEksNodeGroup.spot-nodegroup
 spec:
+  region: us-west-2
   clusterName: my-eks-cluster
   nodeRoleArn: arn:aws:iam::123456789012:role/eks-node-role
   subnetIds:
@@ -121,6 +124,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: staging.AwsEksNodeGroup.labeled-nodegroup
 spec:
+  region: us-west-2
   clusterName: my-eks-cluster
   nodeRoleArn: arn:aws:iam::123456789012:role/eks-node-role
   subnetIds:
@@ -154,6 +158,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsEksNodeGroup.prod-nodegroup
 spec:
+  region: us-west-2
   clusterName: prod-eks-cluster
   nodeRoleArn: arn:aws:iam::123456789012:role/prod-eks-node-role
   subnetIds:
@@ -187,6 +192,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsEksNodeGroup.ref-nodegroup
 spec:
+  region: us-west-2
   clusterName:
     valueFrom:
       kind: AwsEksCluster

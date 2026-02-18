@@ -3,6 +3,7 @@ kind: AwsOpenSearchDomain
 metadata:
   name: awsopensearchdomain-demo
 spec:
+  region: us-west-2
   engineVersion: "OpenSearch_2.11"
   clusterConfig:
     instanceType: r6g.large.search

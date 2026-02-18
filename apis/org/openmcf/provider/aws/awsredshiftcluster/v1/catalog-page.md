@@ -37,6 +37,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsRedshiftCluster.my-warehouse
 spec:
+  region: us-west-2
   nodeType: dc2.large
   subnetIds:
     - value: "<private-subnet-id-az1>"
@@ -60,6 +61,7 @@ This creates a single-node dc2.large Redshift cluster across two subnets with AW
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `region` | `string` | AWS region where the Redshift cluster will be created. Example: `us-west-2`, `eu-west-1`. |
 | `nodeType` | `string` | Compute and storage capacity of each node. Common values: `dc2.large`, `ra3.xlplus`, `ra3.4xlarge`, `ra3.16xlarge`. RA3 nodes are recommended for most workloads (decoupled compute and storage). |
 | `subnetIds` | `StringValueOrRef[]` | Subnet IDs for automatic Redshift subnet group creation. Provide at least two in distinct AZs. Can reference `AwsVpc` outputs via `valueFrom`. Not required when `clusterSubnetGroupName` is set. |
 | `finalSnapshotIdentifier` | `string` | Identifier for the final snapshot created on cluster deletion. Required when `skipFinalSnapshot` is `false`. |
@@ -118,6 +120,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsRedshiftCluster.dev-warehouse
 spec:
+  region: us-west-2
   nodeType: dc2.large
   numberOfNodes: 1
   databaseName: dev
@@ -146,6 +149,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsRedshiftCluster.prod-warehouse
 spec:
+  region: us-west-2
   nodeType: ra3.xlplus
   numberOfNodes: 2
   databaseName: analytics
@@ -195,6 +199,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsRedshiftCluster.analytics-cluster
 spec:
+  region: us-west-2
   nodeType: ra3.4xlarge
   numberOfNodes: 4
   databaseName: datalake

@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awseksnodegroup/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awseksnodegroup_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjZvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWtzbm9kZWdyb3VwL3YxL3NwZWMucHJvdG8SK29yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Nla3Nub2RlZ3JvdXAudjEixwYKE0F3c0Vrc05vZGVHcm91cFNwZWMSZgoMY2x1c3Rlcl9uYW1lGAEgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIcukgDyAEBiNRhzwGS1GENbWV0YWRhdGEubmFtZRJxCg1ub2RlX3JvbGVfYXJuGAIgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkImukgDyAEBiNRh0AGS1GEXc3RhdHVzLm91dHB1dHMucm9sZV9hcm4SgQEKCnN1Ym5ldF9pZHMYAyADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQjm6SAjIAQGSAQIIAojUYdgBktRhJXN0YXR1cy5vdXRwdXRzLnByaXZhdGVfc3VibmV0cy5bKl0uaWQSHQoNaW5zdGFuY2VfdHlwZRgEIAEoCUIGukgDyAEBEmIKB3NjYWxpbmcYBSABKAsySS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWtzbm9kZWdyb3VwLnYxLkF3c0Vrc05vZGVHcm91cFNjYWxpbmdDb25maWdCBrpIA8gBARJuCg1jYXBhY2l0eV90eXBlGAYgASgOMkgub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2Vrc25vZGVncm91cC52MS5Bd3NFa3NOb2RlR3JvdXBDYXBhY2l0eVR5cGVCDZKmHQlvbl9kZW1hbmQSHQoMZGlza19zaXplX2diGAcgASgFQgeSph0DMTAwEh4KDHNzaF9rZXlfbmFtZRgIIAEoCUIIukgFcgMY/wEScAoGbGFiZWxzGAkgAygLMkwub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2Vrc25vZGVncm91cC52MS5Bd3NFa3NOb2RlR3JvdXBTcGVjLkxhYmVsc0VudHJ5QhK6SA+aAQwiBHICGD8qBHICGD8aLQoLTGFiZWxzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASJzChxBd3NFa3NOb2RlR3JvdXBTY2FsaW5nQ29uZmlnEhkKCG1pbl9zaXplGAEgASgFQge6SAQaAigBEhkKCG1heF9zaXplGAIgASgFQge6SAQaAigBEh0KDGRlc2lyZWRfc2l6ZRgDIAEoBUIHukgEGgIoASo2ChtBd3NFa3NOb2RlR3JvdXBDYXBhY2l0eVR5cGUSDQoJb25fZGVtYW5kEAASCAoEc3BvdBABQvACCi9jb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2Vrc25vZGVncm91cC52MUIJU3BlY1Byb3RvUAFaX2dpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWtzbm9kZWdyb3VwL3YxO2F3c2Vrc25vZGVncm91cHYxogIFT09QQUGqAitPcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzZWtzbm9kZWdyb3VwLlYxygIrT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2Vrc25vZGVncm91cFxWMeICN09yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3Nla3Nub2RlZ3JvdXBcVjFcR1BCTWV0YWRhdGHqAjBPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c2Vrc25vZGVncm91cDo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("CjZvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWtzbm9kZWdyb3VwL3YxL3NwZWMucHJvdG8SK29yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Nla3Nub2RlZ3JvdXAudjEi4AYKE0F3c0Vrc05vZGVHcm91cFNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEmYKDGNsdXN0ZXJfbmFtZRgCIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCHLpIA8gBAYjUYc8BktRhDW1ldGFkYXRhLm5hbWUScQoNbm9kZV9yb2xlX2FybhgDIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCJrpIA8gBAYjUYdABktRhF3N0YXR1cy5vdXRwdXRzLnJvbGVfYXJuEoEBCgpzdWJuZXRfaWRzGAQgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkI5ukgIyAEBkgECCAKI1GHYAZLUYSVzdGF0dXMub3V0cHV0cy5wcml2YXRlX3N1Ym5ldHMuWypdLmlkEh0KDWluc3RhbmNlX3R5cGUYBSABKAlCBrpIA8gBARJiCgdzY2FsaW5nGAYgASgLMkkub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2Vrc25vZGVncm91cC52MS5Bd3NFa3NOb2RlR3JvdXBTY2FsaW5nQ29uZmlnQga6SAPIAQESbgoNY2FwYWNpdHlfdHlwZRgHIAEoDjJILm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Nla3Nub2RlZ3JvdXAudjEuQXdzRWtzTm9kZUdyb3VwQ2FwYWNpdHlUeXBlQg2Sph0Jb25fZGVtYW5kEh0KDGRpc2tfc2l6ZV9nYhgIIAEoBUIHkqYdAzEwMBIeCgxzc2hfa2V5X25hbWUYCSABKAlCCLpIBXIDGP8BEnAKBmxhYmVscxgKIAMoCzJMLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Nla3Nub2RlZ3JvdXAudjEuQXdzRWtzTm9kZUdyb3VwU3BlYy5MYWJlbHNFbnRyeUISukgPmgEMIgRyAhg/KgRyAhg/Gi0KC0xhYmVsc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEicwocQXdzRWtzTm9kZUdyb3VwU2NhbGluZ0NvbmZpZxIZCghtaW5fc2l6ZRgBIAEoBUIHukgEGgIoARIZCghtYXhfc2l6ZRgCIAEoBUIHukgEGgIoARIdCgxkZXNpcmVkX3NpemUYAyABKAVCB7pIBBoCKAEqNgobQXdzRWtzTm9kZUdyb3VwQ2FwYWNpdHlUeXBlEg0KCW9uX2RlbWFuZBAAEggKBHNwb3QQAULwAgovY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Nla3Nub2RlZ3JvdXAudjFCCVNwZWNQcm90b1ABWl9naXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c2Vrc25vZGVncm91cC92MTthd3Nla3Nub2RlZ3JvdXB2MaICBU9PUEFBqgIrT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2Vrc25vZGVncm91cC5WMcoCK09yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3Nla3Nub2RlZ3JvdXBcVjHiAjdPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZWtzbm9kZWdyb3VwXFYxXEdQQk1ldGFkYXRh6gIwT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3Nla3Nub2RlZ3JvdXA6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsEksNodeGroupSpec captures the configuration for a managed EKS node group
@@ -26,11 +26,19 @@ export const file_org_openmcf_provider_aws_awseksnodegroup_v1_spec: GenFile = /*
  */
 export type AwsEksNodeGroupSpec = Message<"org.openmcf.provider.aws.awseksnodegroup.v1.AwsEksNodeGroupSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * cluster_name is the name of the EKS cluster to attach this node group to.
    * The cluster must already exist (e.g., created by an AwsEksCluster resource).
    * If referencing an AwsEksCluster resource, this pulls its metadata.name.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_name = 1;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_name = 2;
    */
   clusterName?: StringValueOrRef;
 
@@ -39,7 +47,7 @@ export type AwsEksNodeGroupSpec = Message<"org.openmcf.provider.aws.awseksnodegr
    * This role must have the necessary EKS worker node policies. If referencing
    * an AwsIamRole resource, this uses its status.outputs.role_arn.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef node_role_arn = 2;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef node_role_arn = 3;
    */
   nodeRoleArn?: StringValueOrRef;
 
@@ -48,7 +56,7 @@ export type AwsEksNodeGroupSpec = Message<"org.openmcf.provider.aws.awseksnodegr
    * Typically these are private subnets in the cluster's VPC to ensure high availability.
    * If referencing an AwsVpc resource, this defaults to its status.outputs.private_subnets[*].id.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 3;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 4;
    */
   subnetIds: StringValueOrRef[];
 
@@ -57,14 +65,14 @@ export type AwsEksNodeGroupSpec = Message<"org.openmcf.provider.aws.awseksnodegr
    * Example values: "t3.small", "m5.xlarge". Must match the pattern "<family>.<size>",
    * e.g., a letter family and size like nano, micro, small, medium, large, xlarge or Nxlarge.
    *
-   * @generated from field: string instance_type = 4;
+   * @generated from field: string instance_type = 5;
    */
   instanceType: string;
 
   /**
    * scaling defines the auto-scaling configuration (min, max, desired node counts) for the node group.
    *
-   * @generated from field: org.openmcf.provider.aws.awseksnodegroup.v1.AwsEksNodeGroupScalingConfig scaling = 5;
+   * @generated from field: org.openmcf.provider.aws.awseksnodegroup.v1.AwsEksNodeGroupScalingConfig scaling = 6;
    */
   scaling?: AwsEksNodeGroupScalingConfig;
 
@@ -72,7 +80,7 @@ export type AwsEksNodeGroupSpec = Message<"org.openmcf.provider.aws.awseksnodegr
    * capacity_type specifies whether to use on-demand or Spot instances for this node group.
    * If not set, it defaults to on_demand.
    *
-   * @generated from field: org.openmcf.provider.aws.awseksnodegroup.v1.AwsEksNodeGroupCapacityType capacity_type = 6;
+   * @generated from field: org.openmcf.provider.aws.awseksnodegroup.v1.AwsEksNodeGroupCapacityType capacity_type = 7;
    */
   capacityType: AwsEksNodeGroupCapacityType;
 
@@ -80,7 +88,7 @@ export type AwsEksNodeGroupSpec = Message<"org.openmcf.provider.aws.awseksnodegr
    * disk_size_gb is the EBS volume size (in GiB) for each node's root disk.
    * If omitted, it is recommended to use 100 GiB by default.
    *
-   * @generated from field: int32 disk_size_gb = 7;
+   * @generated from field: int32 disk_size_gb = 8;
    */
   diskSizeGb: number;
 
@@ -88,7 +96,7 @@ export type AwsEksNodeGroupSpec = Message<"org.openmcf.provider.aws.awseksnodegr
    * ssh_key_name is the name of an existing EC2 Key Pair to enable SSH access to nodes.
    * If provided, nodes will allow SSH using this key. Max length is 255 characters.
    *
-   * @generated from field: string ssh_key_name = 8;
+   * @generated from field: string ssh_key_name = 9;
    */
   sshKeyName: string;
 
@@ -96,7 +104,7 @@ export type AwsEksNodeGroupSpec = Message<"org.openmcf.provider.aws.awseksnodegr
    * labels is a set of Kubernetes labels to apply to the node group (and its nodes).
    * Keys and values can be at most 63 characters each.
    *
-   * @generated from field: map<string, string> labels = 9;
+   * @generated from field: map<string, string> labels = 10;
    */
   labels: { [key: string]: string };
 };

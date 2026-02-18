@@ -40,6 +40,10 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 // - Credentials, region, and deployment workflow live outside this spec in
 //   stack inputs.
 message AwsKinesisFirehoseSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Source configuration (optional -- Direct PUT when absent)
   // ---------------------------------------------------------------------------
@@ -50,7 +54,7 @@ message AwsKinesisFirehoseSpec {
   //
   // When a Kinesis source is configured, server-side encryption (sse_enabled)
   // must NOT be set -- the source stream handles its own encryption.
-  AwsKinesisFirehoseKinesisStreamSource kinesis_stream_source = 1;
+  AwsKinesisFirehoseKinesisStreamSource kinesis_stream_source = 2;
 
   // ---------------------------------------------------------------------------
   // Server-side encryption (Direct PUT only)
@@ -62,12 +66,12 @@ message AwsKinesisFirehoseSpec {
   //
   // When true and sse_kms_key_arn is absent, uses the AWS-owned CMK.
   // When true and sse_kms_key_arn is present, uses a customer-managed CMK.
-  bool sse_enabled = 2;
+  bool sse_enabled = 3;
 
   // Customer-managed KMS key ARN for server-side encryption. When set,
   // Firehose uses this key instead of the AWS-owned CMK. Requires
   // sse_enabled to be true.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef sse_kms_key_arn = 3 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef sse_kms_key_arn = 4 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -86,23 +90,23 @@ message AwsKinesisFirehoseSpec {
     // Extended S3 destination for data lake storage. Supports compression,
     // Lambda transformation, dynamic partitioning, and Parquet/ORC format
     // conversion via AWS Glue Data Catalog. The most feature-rich destination.
-    AwsKinesisFirehoseExtendedS3Destination extended_s3 = 4;
+    AwsKinesisFirehoseExtendedS3Destination extended_s3 = 5;
 
     // OpenSearch destination for direct indexing into an Amazon OpenSearch
     // Service domain. Supports index rotation, VPC delivery, and Lambda
     // transformation. Failed documents are backed up to S3.
-    AwsKinesisFirehoseOpenSearchDestination opensearch = 5;
+    AwsKinesisFirehoseOpenSearchDestination opensearch = 6;
 
     // HTTP endpoint destination for delivery to any HTTPS endpoint. Supports
     // custom headers, content encoding, and Lambda transformation. Commonly
     // used for third-party integrations (Datadog, New Relic, Sumo Logic).
     // Failed deliveries are backed up to S3.
-    AwsKinesisFirehoseHttpEndpointDestination http_endpoint = 6;
+    AwsKinesisFirehoseHttpEndpointDestination http_endpoint = 7;
 
     // Redshift destination for data warehouse loading. Firehose stages data
     // in S3, then issues a Redshift COPY command to load it. Supports Lambda
     // transformation and optional S3 backup of source records.
-    AwsKinesisFirehoseRedshiftDestination redshift = 7;
+    AwsKinesisFirehoseRedshiftDestination redshift = 8;
   }
 
   // ---------------------------------------------------------------------------

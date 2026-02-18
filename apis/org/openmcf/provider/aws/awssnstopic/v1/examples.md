@@ -11,7 +11,8 @@ metadata:
   name: order-events
   labels:
     app: shop
-spec: {}
+spec:
+  region: us-east-1
 ```
 
 ## Standard Topic with KMS Encryption
@@ -24,6 +25,7 @@ kind: AwsSnsTopic
 metadata:
   name: audit-events
 spec:
+  region: us-east-1
   kmsKeyId:
     valueFrom:
       kind: AwsKmsKey
@@ -42,6 +44,7 @@ kind: AwsSnsTopic
 metadata:
   name: order-notifications
 spec:
+  region: us-east-1
   subscriptions:
     - name: fulfillment-queue
       protocol: sqs
@@ -81,6 +84,7 @@ kind: AwsSnsTopic
 metadata:
   name: image-processing
 spec:
+  region: us-east-1
   tracingConfig: Active
   subscriptions:
     - name: resize-processor
@@ -108,6 +112,7 @@ kind: AwsSnsTopic
 metadata:
   name: payment-events
 spec:
+  region: us-east-1
   fifoTopic: true
   contentBasedDeduplication: true
   fifoThroughputScope: MessageGroup
@@ -132,6 +137,7 @@ kind: AwsSnsTopic
 metadata:
   name: system-alerts
 spec:
+  region: us-east-1
   displayName: SystemAlerts
   subscriptions:
     - name: alert-queue
@@ -163,6 +169,7 @@ kind: AwsSnsTopic
 metadata:
   name: cross-service-events
 spec:
+  region: us-east-1
   policy:
     Version: "2012-10-17"
     Statement:

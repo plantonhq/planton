@@ -13,7 +13,7 @@ When you deploy an AwsS3ObjectSet resource, OpenMCF provisions:
 
 - **AWS credentials** configured via environment variables or OpenMCF provider config
 - **An existing S3 bucket** — either a literal bucket name or a deployed AwsS3Bucket resource to reference via `valueFrom`
-- **The bucket's AWS region** — must match the region specified in `awsRegion`
+- **The bucket's AWS region** — must match the region specified in `region`
 
 ## Quick Start
 
@@ -30,8 +30,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsS3ObjectSet.my-objects
 spec:
+  region: us-east-1
   bucket: my-app-bucket
-  awsRegion: us-east-1
   objects:
     - key: config/app.json
       content: '{"env": "dev", "debug": true}'
@@ -52,7 +52,7 @@ This uploads a single JSON configuration file to the `config/app.json` key in th
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
 | `bucket` | `StringValueOrRef` | The target S3 bucket where objects will be uploaded. Can be a literal bucket name or a reference to an AwsS3Bucket resource. | Required. Can reference `AwsS3Bucket` resource via `valueFrom` (resolves `status.outputs.bucket_id`). |
-| `awsRegion` | `string` | The AWS region where the S3 bucket is located. | Minimum length 1 |
+| `region` | `string` | The AWS region where the S3 bucket is located (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `objects` | `AwsS3Object[]` | The list of S3 objects to upload to the target bucket. | Minimum 1 item |
 | `objects[].key` | `string` | The S3 object key (path within the bucket). | Minimum length 1 |
 | `objects[].content` | `string` | Inline UTF-8 text content for the object. Exactly one of `content` or `contentBase64` must be set. | — |
@@ -86,8 +86,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsS3ObjectSet.app-config
 spec:
+  region: us-east-1
   bucket: my-app-bucket
-  awsRegion: us-east-1
   objects:
     - key: config/app.json
       content: '{"env": "dev", "logLevel": "debug"}'
@@ -117,8 +117,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsS3ObjectSet.website-assets
 spec:
+  region: us-west-2
   bucket: my-website-bucket
-  awsRegion: us-west-2
   tags:
     project: website
     managed-by: openmcf
@@ -153,8 +153,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: staging.AwsS3ObjectSet.binary-assets
 spec:
+  region: eu-west-1
   bucket: my-assets-bucket
-  awsRegion: eu-west-1
   objects:
     - key: images/favicon.ico
       contentBase64: AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAA...
@@ -183,12 +183,12 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsS3ObjectSet.ref-objects
 spec:
+  region: us-east-1
   bucket:
     valueFrom:
       kind: AwsS3Bucket
       name: my-bucket
       field: status.outputs.bucket_id
-  awsRegion: us-east-1
   objects:
     - key: deploy/manifest.json
       content: '{"version": "1.2.0", "timestamp": "2025-01-15T00:00:00Z"}'
@@ -210,8 +210,8 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsS3ObjectSet.mixed-access
 spec:
+  region: us-east-1
   bucket: shared-bucket
-  awsRegion: us-east-1
   tags:
     team: platform
   objects:

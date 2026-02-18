@@ -14,7 +14,7 @@ import type { JsonObject, Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awssqsqueue/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awssqsqueue_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjJvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzc3FzcXVldWUvdjEvc3BlYy5wcm90bxInb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3Nxc3F1ZXVlLnYxIu4SCg9Bd3NTcXNRdWV1ZVNwZWMSEgoKZmlmb19xdWV1ZRgBIAEoCBIvChp2aXNpYmlsaXR5X3RpbWVvdXRfc2Vjb25kcxgCIAEoBUILukgIGgYYwNECKAASIQoZbWVzc2FnZV9yZXRlbnRpb25fc2Vjb25kcxgDIAEoBRIeChZtYXhfbWVzc2FnZV9zaXplX2J5dGVzGAQgASgFEiEKDWRlbGF5X3NlY29uZHMYBSABKAVCCrpIBxoFGIQHKAASLAoZcmVjZWl2ZV93YWl0X3RpbWVfc2Vjb25kcxgGIAEoBUIJukgGGgQYFCgAEiMKG2NvbnRlbnRfYmFzZWRfZGVkdXBsaWNhdGlvbhgHIAEoCBIbChNkZWR1cGxpY2F0aW9uX3Njb3BlGAggASgJEh0KFWZpZm9fdGhyb3VnaHB1dF9saW1pdBgJIAEoCRJgChJkZWFkX2xldHRlcl9jb25maWcYCiABKAsyRC5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzc3FzcXVldWUudjEuQXdzU3FzUXVldWVEZWFkTGV0dGVyQ29uZmlnEmcKCmttc19rZXlfaWQYCyABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQh+I1GHbAZLUYRZzdGF0dXMub3V0cHV0cy5rZXlfYXJuEikKIWttc19kYXRhX2tleV9yZXVzZV9wZXJpb2Rfc2Vjb25kcxgMIAEoBRIfChdzcXNfbWFuYWdlZF9zc2VfZW5hYmxlZBgNIAEoCBInCgZwb2xpY3kYDiABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0OuANukjcDRq7AQopY29udGVudF9iYXNlZF9kZWR1cGxpY2F0aW9uX3JlcXVpcmVzX2ZpZm8SWGNvbnRlbnRfYmFzZWRfZGVkdXBsaWNhdGlvbiBjYW4gb25seSBiZSBlbmFibGVkIG9uIEZJRk8gcXVldWVzIChmaWZvX3F1ZXVlIG11c3QgYmUgdHJ1ZSkaNCF0aGlzLmNvbnRlbnRfYmFzZWRfZGVkdXBsaWNhdGlvbiB8fCB0aGlzLmZpZm9fcXVldWUa6gEKIWRlZHVwbGljYXRpb25fc2NvcGVfcmVxdWlyZXNfZmlmbxJXZGVkdXBsaWNhdGlvbl9zY29wZSBpcyBvbmx5IHZhbGlkIGZvciBGSUZPIHF1ZXVlcyBhbmQgbXVzdCBiZSAnbWVzc2FnZUdyb3VwJyBvciAncXVldWUnGmx0aGlzLmRlZHVwbGljYXRpb25fc2NvcGUgPT0gJycgfHwgKHRoaXMuZmlmb19xdWV1ZSAmJiB0aGlzLmRlZHVwbGljYXRpb25fc2NvcGUgaW4gWydtZXNzYWdlR3JvdXAnLCAncXVldWUnXSkaggIKI2ZpZm9fdGhyb3VnaHB1dF9saW1pdF9yZXF1aXJlc19maWZvEmFmaWZvX3Rocm91Z2hwdXRfbGltaXQgaXMgb25seSB2YWxpZCBmb3IgRklGTyBxdWV1ZXMgYW5kIG11c3QgYmUgJ3Blck1lc3NhZ2VHcm91cElkJyBvciAncGVyUXVldWUnGnh0aGlzLmZpZm9fdGhyb3VnaHB1dF9saW1pdCA9PSAnJyB8fCAodGhpcy5maWZvX3F1ZXVlICYmIHRoaXMuZmlmb190aHJvdWdocHV0X2xpbWl0IGluIFsncGVyTWVzc2FnZUdyb3VwSWQnLCAncGVyUXVldWUnXSkaswEKG2VuY3J5cHRpb25fbXV0dWFsX2V4Y2x1c2lvbhJba21zX2tleV9pZCBhbmQgc3FzX21hbmFnZWRfc3NlX2VuYWJsZWQgYXJlIG11dHVhbGx5IGV4Y2x1c2l2ZTsgY2hvb3NlIG9uZSBlbmNyeXB0aW9uIG1ldGhvZBo3IShoYXModGhpcy5rbXNfa2V5X2lkKSAmJiB0aGlzLnNxc19tYW5hZ2VkX3NzZV9lbmFibGVkKRqrAQoja21zX2RhdGFfa2V5X3JldXNlX3JlcXVpcmVzX2ttc19rZXkSP2ttc19kYXRhX2tleV9yZXVzZV9wZXJpb2Rfc2Vjb25kcyByZXF1aXJlcyBrbXNfa2V5X2lkIHRvIGJlIHNldBpDdGhpcy5rbXNfZGF0YV9rZXlfcmV1c2VfcGVyaW9kX3NlY29uZHMgPT0gMCB8fCBoYXModGhpcy5rbXNfa2V5X2lkKRrrAQoXbWVzc2FnZV9yZXRlbnRpb25fcmFuZ2USVG1lc3NhZ2VfcmV0ZW50aW9uX3NlY29uZHMgbXVzdCBiZSBiZXR3ZWVuIDYwIGFuZCAxMjA5NjAwICgxIG1pbiB0byAxNCBkYXlzKSB3aGVuIHNldBp6dGhpcy5tZXNzYWdlX3JldGVudGlvbl9zZWNvbmRzID09IDAgfHwgKHRoaXMubWVzc2FnZV9yZXRlbnRpb25fc2Vjb25kcyA+PSA2MCAmJiB0aGlzLm1lc3NhZ2VfcmV0ZW50aW9uX3NlY29uZHMgPD0gMTIwOTYwMCka3gEKFm1heF9tZXNzYWdlX3NpemVfcmFuZ2UST21heF9tZXNzYWdlX3NpemVfYnl0ZXMgbXVzdCBiZSBiZXR3ZWVuIDEwMjQgYW5kIDEwNDg1NzYgKDEgS0IgdG8gMSBNQikgd2hlbiBzZXQac3RoaXMubWF4X21lc3NhZ2Vfc2l6ZV9ieXRlcyA9PSAwIHx8ICh0aGlzLm1heF9tZXNzYWdlX3NpemVfYnl0ZXMgPj0gMTAyNCAmJiB0aGlzLm1heF9tZXNzYWdlX3NpemVfYnl0ZXMgPD0gMTA0ODU3Nika9gEKGGttc19kYXRhX2tleV9yZXVzZV9yYW5nZRJHa21zX2RhdGFfa2V5X3JldXNlX3BlcmlvZF9zZWNvbmRzIG11c3QgYmUgYmV0d2VlbiA2MCBhbmQgODY0MDAgd2hlbiBzZXQakAF0aGlzLmttc19kYXRhX2tleV9yZXVzZV9wZXJpb2Rfc2Vjb25kcyA9PSAwIHx8ICh0aGlzLmttc19kYXRhX2tleV9yZXVzZV9wZXJpb2Rfc2Vjb25kcyA+PSA2MCAmJiB0aGlzLmttc19kYXRhX2tleV9yZXVzZV9wZXJpb2Rfc2Vjb25kcyA8PSA4NjQwMCkitQEKG0F3c1Nxc1F1ZXVlRGVhZExldHRlckNvbmZpZxJvCgp0YXJnZXRfYXJuGAEgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkInukgDyAEBiNRh4QGS1GEYc3RhdHVzLm91dHB1dHMucXVldWVfYXJuEiUKEW1heF9yZWNlaXZlX2NvdW50GAIgASgFQgq6SAcaBRjoBygBQtQCCitjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3Nxc3F1ZXVlLnYxQglTcGVjUHJvdG9QAVpXZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NzcXNxdWV1ZS92MTthd3NzcXNxdWV1ZXYxogIFT09QQUGqAidPcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzc3FzcXVldWUuVjHKAidPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzc3FzcXVldWVcVjHiAjNPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzc3FzcXVldWVcVjFcR1BCTWV0YWRhdGHqAixPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c3Nxc3F1ZXVlOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_google_protobuf_struct, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
+  fileDesc("CjJvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzc3FzcXVldWUvdjEvc3BlYy5wcm90bxInb3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3Nxc3F1ZXVlLnYxIocTCg9Bd3NTcXNRdWV1ZVNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEhIKCmZpZm9fcXVldWUYAiABKAgSLwoadmlzaWJpbGl0eV90aW1lb3V0X3NlY29uZHMYAyABKAVCC7pICBoGGMDRAigAEiEKGW1lc3NhZ2VfcmV0ZW50aW9uX3NlY29uZHMYBCABKAUSHgoWbWF4X21lc3NhZ2Vfc2l6ZV9ieXRlcxgFIAEoBRIhCg1kZWxheV9zZWNvbmRzGAYgASgFQgq6SAcaBRiEBygAEiwKGXJlY2VpdmVfd2FpdF90aW1lX3NlY29uZHMYByABKAVCCbpIBhoEGBQoABIjChtjb250ZW50X2Jhc2VkX2RlZHVwbGljYXRpb24YCCABKAgSGwoTZGVkdXBsaWNhdGlvbl9zY29wZRgJIAEoCRIdChVmaWZvX3Rocm91Z2hwdXRfbGltaXQYCiABKAkSYAoSZGVhZF9sZXR0ZXJfY29uZmlnGAsgASgLMkQub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3Nxc3F1ZXVlLnYxLkF3c1Nxc1F1ZXVlRGVhZExldHRlckNvbmZpZxJnCgprbXNfa2V5X2lkGAwgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybhIpCiFrbXNfZGF0YV9rZXlfcmV1c2VfcGVyaW9kX3NlY29uZHMYDSABKAUSHwoXc3FzX21hbmFnZWRfc3NlX2VuYWJsZWQYDiABKAgSJwoGcG9saWN5GA8gASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdDrgDbpI3A0auwEKKWNvbnRlbnRfYmFzZWRfZGVkdXBsaWNhdGlvbl9yZXF1aXJlc19maWZvElhjb250ZW50X2Jhc2VkX2RlZHVwbGljYXRpb24gY2FuIG9ubHkgYmUgZW5hYmxlZCBvbiBGSUZPIHF1ZXVlcyAoZmlmb19xdWV1ZSBtdXN0IGJlIHRydWUpGjQhdGhpcy5jb250ZW50X2Jhc2VkX2RlZHVwbGljYXRpb24gfHwgdGhpcy5maWZvX3F1ZXVlGuoBCiFkZWR1cGxpY2F0aW9uX3Njb3BlX3JlcXVpcmVzX2ZpZm8SV2RlZHVwbGljYXRpb25fc2NvcGUgaXMgb25seSB2YWxpZCBmb3IgRklGTyBxdWV1ZXMgYW5kIG11c3QgYmUgJ21lc3NhZ2VHcm91cCcgb3IgJ3F1ZXVlJxpsdGhpcy5kZWR1cGxpY2F0aW9uX3Njb3BlID09ICcnIHx8ICh0aGlzLmZpZm9fcXVldWUgJiYgdGhpcy5kZWR1cGxpY2F0aW9uX3Njb3BlIGluIFsnbWVzc2FnZUdyb3VwJywgJ3F1ZXVlJ10pGoICCiNmaWZvX3Rocm91Z2hwdXRfbGltaXRfcmVxdWlyZXNfZmlmbxJhZmlmb190aHJvdWdocHV0X2xpbWl0IGlzIG9ubHkgdmFsaWQgZm9yIEZJRk8gcXVldWVzIGFuZCBtdXN0IGJlICdwZXJNZXNzYWdlR3JvdXBJZCcgb3IgJ3BlclF1ZXVlJxp4dGhpcy5maWZvX3Rocm91Z2hwdXRfbGltaXQgPT0gJycgfHwgKHRoaXMuZmlmb19xdWV1ZSAmJiB0aGlzLmZpZm9fdGhyb3VnaHB1dF9saW1pdCBpbiBbJ3Blck1lc3NhZ2VHcm91cElkJywgJ3BlclF1ZXVlJ10pGrMBChtlbmNyeXB0aW9uX211dHVhbF9leGNsdXNpb24SW2ttc19rZXlfaWQgYW5kIHNxc19tYW5hZ2VkX3NzZV9lbmFibGVkIGFyZSBtdXR1YWxseSBleGNsdXNpdmU7IGNob29zZSBvbmUgZW5jcnlwdGlvbiBtZXRob2QaNyEoaGFzKHRoaXMua21zX2tleV9pZCkgJiYgdGhpcy5zcXNfbWFuYWdlZF9zc2VfZW5hYmxlZCkaqwEKI2ttc19kYXRhX2tleV9yZXVzZV9yZXF1aXJlc19rbXNfa2V5Ej9rbXNfZGF0YV9rZXlfcmV1c2VfcGVyaW9kX3NlY29uZHMgcmVxdWlyZXMga21zX2tleV9pZCB0byBiZSBzZXQaQ3RoaXMua21zX2RhdGFfa2V5X3JldXNlX3BlcmlvZF9zZWNvbmRzID09IDAgfHwgaGFzKHRoaXMua21zX2tleV9pZCka6wEKF21lc3NhZ2VfcmV0ZW50aW9uX3JhbmdlElRtZXNzYWdlX3JldGVudGlvbl9zZWNvbmRzIG11c3QgYmUgYmV0d2VlbiA2MCBhbmQgMTIwOTYwMCAoMSBtaW4gdG8gMTQgZGF5cykgd2hlbiBzZXQaenRoaXMubWVzc2FnZV9yZXRlbnRpb25fc2Vjb25kcyA9PSAwIHx8ICh0aGlzLm1lc3NhZ2VfcmV0ZW50aW9uX3NlY29uZHMgPj0gNjAgJiYgdGhpcy5tZXNzYWdlX3JldGVudGlvbl9zZWNvbmRzIDw9IDEyMDk2MDApGt4BChZtYXhfbWVzc2FnZV9zaXplX3JhbmdlEk9tYXhfbWVzc2FnZV9zaXplX2J5dGVzIG11c3QgYmUgYmV0d2VlbiAxMDI0IGFuZCAxMDQ4NTc2ICgxIEtCIHRvIDEgTUIpIHdoZW4gc2V0GnN0aGlzLm1heF9tZXNzYWdlX3NpemVfYnl0ZXMgPT0gMCB8fCAodGhpcy5tYXhfbWVzc2FnZV9zaXplX2J5dGVzID49IDEwMjQgJiYgdGhpcy5tYXhfbWVzc2FnZV9zaXplX2J5dGVzIDw9IDEwNDg1NzYpGvYBChhrbXNfZGF0YV9rZXlfcmV1c2VfcmFuZ2USR2ttc19kYXRhX2tleV9yZXVzZV9wZXJpb2Rfc2Vjb25kcyBtdXN0IGJlIGJldHdlZW4gNjAgYW5kIDg2NDAwIHdoZW4gc2V0GpABdGhpcy5rbXNfZGF0YV9rZXlfcmV1c2VfcGVyaW9kX3NlY29uZHMgPT0gMCB8fCAodGhpcy5rbXNfZGF0YV9rZXlfcmV1c2VfcGVyaW9kX3NlY29uZHMgPj0gNjAgJiYgdGhpcy5rbXNfZGF0YV9rZXlfcmV1c2VfcGVyaW9kX3NlY29uZHMgPD0gODY0MDApIrUBChtBd3NTcXNRdWV1ZURlYWRMZXR0ZXJDb25maWcSbwoKdGFyZ2V0X2FybhgBIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCJ7pIA8gBAYjUYeEBktRhGHN0YXR1cy5vdXRwdXRzLnF1ZXVlX2FybhIlChFtYXhfcmVjZWl2ZV9jb3VudBgCIAEoBUIKukgHGgUY6AcoAULUAgorY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NzcXNxdWV1ZS52MUIJU3BlY1Byb3RvUAFaV2dpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzc3FzcXVldWUvdjE7YXdzc3FzcXVldWV2MaICBU9PUEFBqgInT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c3Nxc3F1ZXVlLlYxygInT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c3Nxc3F1ZXVlXFYx4gIzT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c3Nxc3F1ZXVlXFYxXEdQQk1ldGFkYXRh6gIsT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NzcXNxdWV1ZTo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_google_protobuf_struct, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
 
 /**
  * AwsSqsQueueSpec defines the desired configuration for an AWS SQS queue.
@@ -34,19 +34,23 @@ export const file_org_openmcf_provider_aws_awssqsqueue_v1_spec: GenFile = /*@__P
  *   for investigation and reprocessing.
  * - Credentials, region, and deployment workflow live outside this spec in stack inputs.
  *
- * ---------------------------------------------------------------------------
- * Queue type
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awssqsqueue.v1.AwsSqsQueueSpec
  */
 export type AwsSqsQueueSpec = Message<"org.openmcf.provider.aws.awssqsqueue.v1.AwsSqsQueueSpec"> & {
+  /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * Whether to create a FIFO queue. Standard queues are created when false.
    * FIFO queues guarantee exactly-once processing and strict ordering within
    * each message group. This setting cannot be changed after queue creation.
    *
-   * @generated from field: bool fifo_queue = 1;
+   * @generated from field: bool fifo_queue = 2;
    */
   fifoQueue: boolean;
 
@@ -55,7 +59,7 @@ export type AwsSqsQueueSpec = Message<"org.openmcf.provider.aws.awssqsqueue.v1.A
    * requests. After the timeout expires the message becomes visible again unless
    * it was deleted. Range: 0–43200 (0s to 12h). AWS default: 30.
    *
-   * @generated from field: int32 visibility_timeout_seconds = 2;
+   * @generated from field: int32 visibility_timeout_seconds = 3;
    */
   visibilityTimeoutSeconds: number;
 
@@ -65,7 +69,7 @@ export type AwsSqsQueueSpec = Message<"org.openmcf.provider.aws.awssqsqueue.v1.A
    * Range: 60–1209600 (1 min to 14 days). AWS default: 345600 (4 days).
    * Leave at 0 to use the AWS default.
    *
-   * @generated from field: int32 message_retention_seconds = 3;
+   * @generated from field: int32 message_retention_seconds = 4;
    */
   messageRetentionSeconds: number;
 
@@ -74,7 +78,7 @@ export type AwsSqsQueueSpec = Message<"org.openmcf.provider.aws.awssqsqueue.v1.A
    * rejected by SQS. Range: 1024–1048576 (1 KB to 1 MB). AWS default: 262144 (256 KB).
    * Leave at 0 to use the AWS default.
    *
-   * @generated from field: int32 max_message_size_bytes = 4;
+   * @generated from field: int32 max_message_size_bytes = 5;
    */
   maxMessageSizeBytes: number;
 
@@ -83,7 +87,7 @@ export type AwsSqsQueueSpec = Message<"org.openmcf.provider.aws.awssqsqueue.v1.A
    * Useful for implementing delayed processing patterns.
    * Range: 0–900 (0s to 15 min). AWS default: 0.
    *
-   * @generated from field: int32 delay_seconds = 5;
+   * @generated from field: int32 delay_seconds = 6;
    */
   delaySeconds: number;
 
@@ -92,7 +96,7 @@ export type AwsSqsQueueSpec = Message<"org.openmcf.provider.aws.awssqsqueue.v1.A
    * 0 enables long polling, which reduces the number of empty responses and
    * lowers cost. Range: 0–20. AWS default: 0 (short polling).
    *
-   * @generated from field: int32 receive_wait_time_seconds = 6;
+   * @generated from field: int32 receive_wait_time_seconds = 7;
    */
   receiveWaitTimeSeconds: number;
 
@@ -102,7 +106,7 @@ export type AwsSqsQueueSpec = Message<"org.openmcf.provider.aws.awssqsqueue.v1.A
    * need for the producer to supply an explicit deduplication ID.
    * Only valid when `fifo_queue` is true.
    *
-   * @generated from field: bool content_based_deduplication = 7;
+   * @generated from field: bool content_based_deduplication = 8;
    */
   contentBasedDeduplication: boolean;
 
@@ -111,7 +115,7 @@ export type AwsSqsQueueSpec = Message<"org.openmcf.provider.aws.awssqsqueue.v1.A
    * applied per message group or across the entire queue.
    * Valid values: "messageGroup", "queue". Only valid when `fifo_queue` is true.
    *
-   * @generated from field: string deduplication_scope = 8;
+   * @generated from field: string deduplication_scope = 9;
    */
   deduplicationScope: string;
 
@@ -121,7 +125,7 @@ export type AwsSqsQueueSpec = Message<"org.openmcf.provider.aws.awssqsqueue.v1.A
    * high throughput mode for FIFO queues.
    * Valid values: "perMessageGroupId", "perQueue". Only valid when `fifo_queue` is true.
    *
-   * @generated from field: string fifo_throughput_limit = 9;
+   * @generated from field: string fifo_throughput_limit = 10;
    */
   fifoThroughputLimit: string;
 
@@ -130,7 +134,7 @@ export type AwsSqsQueueSpec = Message<"org.openmcf.provider.aws.awssqsqueue.v1.A
    * `max_receive_count` times without being deleted, SQS moves it to the
    * specified target queue for investigation and reprocessing.
    *
-   * @generated from field: org.openmcf.provider.aws.awssqsqueue.v1.AwsSqsQueueDeadLetterConfig dead_letter_config = 10;
+   * @generated from field: org.openmcf.provider.aws.awssqsqueue.v1.AwsSqsQueueDeadLetterConfig dead_letter_config = 11;
    */
   deadLetterConfig?: AwsSqsQueueDeadLetterConfig;
 
@@ -140,7 +144,7 @@ export type AwsSqsQueueSpec = Message<"org.openmcf.provider.aws.awssqsqueue.v1.A
    * reference to an AwsKmsKey resource. Mutually exclusive with
    * `sqs_managed_sse_enabled`.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 11;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 12;
    */
   kmsKeyId?: StringValueOrRef;
 
@@ -150,7 +154,7 @@ export type AwsSqsQueueSpec = Message<"org.openmcf.provider.aws.awssqsqueue.v1.A
    * reuse. Range: 60–86400 (1 min to 24h). AWS default: 300 (5 min).
    * Only relevant when `kms_key_id` is set.
    *
-   * @generated from field: int32 kms_data_key_reuse_period_seconds = 12;
+   * @generated from field: int32 kms_data_key_reuse_period_seconds = 13;
    */
   kmsDataKeyReusePeriodSeconds: number;
 
@@ -159,7 +163,7 @@ export type AwsSqsQueueSpec = Message<"org.openmcf.provider.aws.awssqsqueue.v1.A
    * encryption key automatically with no additional cost. Mutually exclusive
    * with `kms_key_id`.
    *
-   * @generated from field: bool sqs_managed_sse_enabled = 13;
+   * @generated from field: bool sqs_managed_sse_enabled = 14;
    */
   sqsManagedSseEnabled: boolean;
 
@@ -170,7 +174,7 @@ export type AwsSqsQueueSpec = Message<"org.openmcf.provider.aws.awssqsqueue.v1.A
    * SNS topics permission to publish to this queue or allowing cross-account
    * access.
    *
-   * @generated from field: google.protobuf.Struct policy = 14;
+   * @generated from field: google.protobuf.Struct policy = 15;
    */
   policy?: JsonObject;
 };

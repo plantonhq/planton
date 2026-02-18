@@ -43,6 +43,9 @@ variable "spec" {
   description = "spec"
   type = object({
 
+    # The AWS region where the resource will be created.
+    region = string
+
     # repositoryName is the name of the ECR repository. Must be unique within
     # the AWS account and region. Commonly includes the microservice or project name.
     # Example: "github.com/team-blue/my-microservice"

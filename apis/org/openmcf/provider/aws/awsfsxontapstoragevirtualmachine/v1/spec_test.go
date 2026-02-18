@@ -31,6 +31,7 @@ var _ = ginkgo.Describe("AwsFsxOntapStorageVirtualMachineSpec validations", func
 
 	ginkgo.BeforeEach(func() {
 		spec = &AwsFsxOntapStorageVirtualMachineSpec{
+			Region:       "us-west-2",
 			FileSystemId: strRef("fs-0123456789abcdef0"),
 			Name:         "svm_default",
 		}

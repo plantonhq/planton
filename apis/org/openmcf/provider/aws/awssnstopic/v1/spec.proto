@@ -24,6 +24,10 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 //   map for downstream reference.
 // - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 message AwsSnsTopicSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Topic type
   // ---------------------------------------------------------------------------
@@ -31,7 +35,7 @@ message AwsSnsTopicSpec {
   // Whether to create a FIFO topic. Standard topics are created when false.
   // FIFO topics guarantee strict ordering and exactly-once delivery to SQS FIFO
   // queue subscribers. This setting cannot be changed after topic creation.
-  bool fifo_topic = 1;
+  bool fifo_topic = 2;
 
   // ---------------------------------------------------------------------------
   // FIFO-specific settings (ignored for Standard topics)
@@ -41,12 +45,12 @@ message AwsSnsTopicSpec {
   // a SHA-256 hash of the message body as the deduplication ID, removing the
   // need for the publisher to supply an explicit deduplication ID.
   // Only valid when `fifo_topic` is true.
-  bool content_based_deduplication = 2;
+  bool content_based_deduplication = 3;
 
   // Throughput scope for FIFO topics. Controls whether the throughput quota
   // applies per topic or per message group.
   // Valid values: "Topic", "MessageGroup". Only valid when `fifo_topic` is true.
-  string fifo_throughput_scope = 3;
+  string fifo_throughput_scope = 4;
 
   // ---------------------------------------------------------------------------
   // Display and identity
@@ -55,7 +59,7 @@ message AwsSnsTopicSpec {
   // Human-readable display name for the topic. Used as the "from" label in SMS
   // messages and as a readable identifier in the AWS console. Maximum 256
   // characters for Standard topics, 10 characters for SMS display names.
-  string display_name = 4;
+  string display_name = 5;
 
   // ---------------------------------------------------------------------------
   // Encryption
@@ -66,7 +70,7 @@ message AwsSnsTopicSpec {
   // reference to an AwsKmsKey resource. When not set, SNS does not encrypt
   // messages at rest (unlike SQS, SNS has no "managed SSE" option — encryption
   // requires an explicit KMS key).
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 5 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 6 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -80,7 +84,7 @@ message AwsSnsTopicSpec {
   // IAM policy document structure. Common use cases include granting EventBridge
   // permission to publish, allowing cross-account subscriptions, or restricting
   // publishing to specific IAM roles.
-  google.protobuf.Struct policy = 6;
+  google.protobuf.Struct policy = 7;
 
   // ---------------------------------------------------------------------------
   // Delivery configuration
@@ -90,7 +94,7 @@ message AwsSnsTopicSpec {
   // matching the SNS delivery policy format. Controls retry backoff, max retries,
   // and throttle behavior for HTTP/S subscriptions. Most users do not need to
   // customize this. When not set, AWS applies its default delivery policy.
-  string delivery_policy = 7;
+  string delivery_policy = 8;
 
   // ---------------------------------------------------------------------------
   // Observability
@@ -100,12 +104,12 @@ message AwsSnsTopicSpec {
   // data for messages. When set to "PassThrough", SNS passes through the trace
   // header but does not sample. Leave empty to use the AWS default (PassThrough).
   // Valid values: "Active", "PassThrough".
-  string tracing_config = 8;
+  string tracing_config = 9;
 
   // SNS message signature version. Version 1 uses SHA1, version 2 uses SHA256.
   // SHA256 (version 2) is recommended for new topics. Leave at 0 to use the
   // AWS default (version 1).
-  int32 signature_version = 9;
+  int32 signature_version = 10;
 
   // ---------------------------------------------------------------------------
   // Subscriptions
@@ -115,7 +119,7 @@ message AwsSnsTopicSpec {
   // endpoint, and optional filtering configuration. The subscription `name` field
   // is used as the key in the `subscription_arns` output map, enabling downstream
   // resources to reference specific subscription ARNs via `valueFrom`.
-  repeated AwsSnsTopicSubscription subscriptions = 10;
+  repeated AwsSnsTopicSubscription subscriptions = 11;
 
   // ---------------------------------------------------------------------------
   // CEL validations

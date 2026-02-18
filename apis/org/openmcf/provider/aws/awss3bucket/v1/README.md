@@ -25,7 +25,7 @@ Managing S3 buckets directly can be cumbersome due to the various configuration 
 ### Customizable Bucket Specifications
 
 - **Public Access Control**: The `is_public` flag allows you to specify whether the S3 bucket should have external (public) access. By default, this is set to `false` to enhance security.
-- **AWS Region Specification**: Define the AWS region (`aws_region`) where the S3 bucket will be created, allowing for data locality and compliance with regional regulations.
+- **AWS Region Specification**: Define the AWS region (`region`) where the S3 bucket will be created, allowing for data locality and compliance with regional regulations.
 
 ## Security and Compliance
 

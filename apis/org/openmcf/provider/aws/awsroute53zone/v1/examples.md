@@ -26,6 +26,7 @@ kind: AwsRoute53Zone
 metadata:
   name: example.com
 spec:
+  region: us-east-1
   records:
     - recordType: A
       name: example.com.
@@ -47,6 +48,7 @@ kind: AwsRoute53Zone
 metadata:
   name: example-multi.com
 spec:
+  region: us-east-1
   records:
     - recordType: A
       name: www.example-multi.com.
@@ -74,6 +76,7 @@ kind: AwsRoute53Zone
 metadata:
   name: mail-example.com
 spec:
+  region: us-east-1
   records:
     - recordType: MX
       name: mail-example.com.
@@ -97,6 +100,7 @@ kind: AwsRoute53Zone
 metadata:
   name: txt-example.com
 spec:
+  region: us-east-1
   records:
     - recordType: TXT
       name: txt-example.com.
@@ -118,6 +122,7 @@ kind: AwsRoute53Zone
 metadata:
   name: minimal.com
 spec:
+  region: us-east-1
   records: [ ]
 ```
 
@@ -134,6 +139,7 @@ kind: AwsRoute53Zone
 metadata:
   name: cdn.example.com
 spec:
+  region: us-east-1
   records:
     - recordType: A
       name: cdn.example.com
@@ -155,6 +161,7 @@ kind: AwsRoute53Zone
 metadata:
   name: api.example.com
 spec:
+  region: us-east-1
   records:
     - recordType: A
       name: api.example.com
@@ -176,6 +183,7 @@ kind: AwsRoute53Zone
 metadata:
   name: app.example.com
 spec:
+  region: us-east-1
   records:
     # 90% of traffic to old version (blue)
     - recordType: A
@@ -211,6 +219,7 @@ kind: AwsRoute53Zone
 metadata:
   name: global.example.com
 spec:
+  region: us-east-1
   records:
     # US East region
     - recordType: A
@@ -256,6 +265,7 @@ kind: AwsRoute53Zone
 metadata:
   name: api.example.com
 spec:
+  region: us-east-1
   records:
     # Primary endpoint with health check
     - recordType: A
@@ -294,6 +304,7 @@ kind: AwsRoute53Zone
 metadata:
   name: www.example.com
 spec:
+  region: us-east-1
   records:
     # EU users go to EU endpoint (GDPR compliance)
     - recordType: A
@@ -336,6 +347,7 @@ kind: AwsRoute53Zone
 metadata:
   name: internal.example.com
 spec:
+  region: us-east-1
   isPrivate: true
   vpcAssociations:
     - vpcId: vpc-12345678
@@ -371,6 +383,7 @@ kind: AwsRoute53Zone
 metadata:
   name: secure.example.com
 spec:
+  region: us-east-1
   enableQueryLogging: true
   queryLogGroupName: /aws/route53/secure.example.com
   enableDnssec: true
@@ -402,6 +415,7 @@ kind: AwsRoute53Zone
 metadata:
   name: production.example.com
 spec:
+  region: us-east-1
   enableQueryLogging: true
   queryLogGroupName: /aws/route53/production
   records:

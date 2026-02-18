@@ -3,6 +3,7 @@ kind: AwsClientVpn
 metadata:
   name: my-split-tunnel-vpn
 spec:
+  region: <aws-region>
   description: Split-tunnel VPN for secure VPC access
   vpcId:
     value: "<vpc-id>"

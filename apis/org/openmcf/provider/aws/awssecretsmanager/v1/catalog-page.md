@@ -49,6 +49,7 @@ This creates a single secret in AWS Secrets Manager. After deployment, populate 
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | The AWS region where the resource will be created. | Minimum length 1 |
 | `secretNames` | `string[]` | List of logical secret names to create. Each name becomes a separate secret in AWS Secrets Manager, stored with a unique ID of `{metadata.id}-{name}`. | Minimum 1 item, all items unique, each item minimum length 1 |
 
 ### Optional Fields
@@ -113,6 +114,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsSecretsManager.prod-platform-secrets
 spec:
+  region: us-west-2
   secretNames:
     - RDS_MASTER_PASSWORD
     - ELASTICACHE_AUTH_TOKEN

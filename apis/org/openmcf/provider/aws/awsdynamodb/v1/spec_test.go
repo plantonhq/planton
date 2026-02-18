@@ -18,6 +18,7 @@ var _ = ginkgo.Describe("AwsDynamodbSpec validations", func() {
 
 	ginkgo.BeforeEach(func() {
 		spec = &AwsDynamodbSpec{
+			Region:      "us-west-2",
 			BillingMode: AwsDynamodbSpec_PAY_PER_REQUEST,
 			AttributeDefinitions: []*AwsDynamodbSpec_AttributeDefinition{
 				{Name: "pk", Type: AwsDynamodbSpec_S},

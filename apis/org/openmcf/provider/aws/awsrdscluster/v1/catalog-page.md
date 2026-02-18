@@ -37,6 +37,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsRdsCluster.my-aurora-cluster
 spec:
+  region: us-west-2
   engine: aurora-mysql
   engineVersion: "8.0.mysql_aurora.3.05.2"
   subnetIds:
@@ -60,6 +61,7 @@ This creates an Aurora MySQL cluster across two subnets with RDS-managed master 
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the RDS cluster will be created. Example: `us-west-2`, `eu-west-1`. | Must be set. |
 | `engine` | `string` | Aurora engine identifier. | Must be set. Examples: `aurora-mysql`, `aurora-postgresql`. |
 | `engineVersion` | `string` | Engine version to deploy. | Must be set. Examples: `8.0.mysql_aurora.3.05.2`, `14.6`. |
 | `subnetIds` | `StringValueOrRef[]` | Subnet IDs for the DB subnet group. Provide at least two in distinct AZs. | Minimum 2 items unless `dbSubnetGroupName` is set. Can reference AwsVpc resource via `valueFrom`. |
@@ -117,6 +119,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsRdsCluster.app-db
 spec:
+  region: us-west-2
   engine: aurora-mysql
   engineVersion: "8.0.mysql_aurora.3.05.2"
   subnetIds:
@@ -142,6 +145,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsRdsCluster.analytics-db
 spec:
+  region: us-west-2
   engine: aurora-postgresql
   engineVersion: "14.6"
   subnetIds:
@@ -179,6 +183,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsRdsCluster.serverless-db
 spec:
+  region: us-west-2
   engine: aurora-mysql
   engineVersion: "8.0.mysql_aurora.3.05.2"
   subnetIds:
@@ -207,6 +212,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsRdsCluster.secured-db
 spec:
+  region: us-west-2
   engine: aurora-postgresql
   engineVersion: "15.4"
   subnetIds:
@@ -244,6 +250,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsRdsCluster.ref-db
 spec:
+  region: us-west-2
   engine: aurora-mysql
   engineVersion: "8.0.mysql_aurora.3.05.2"
   subnetIds:

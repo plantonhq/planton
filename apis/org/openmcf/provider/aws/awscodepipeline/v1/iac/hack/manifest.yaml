@@ -11,6 +11,7 @@ metadata:
     pulumi.openmcf.org/project: test
     pulumi.openmcf.org/stack.name: dev.AwsCodePipeline.test-pipeline
 spec:
+  region: us-west-2
   pipelineType: V2
   executionMode: SUPERSEDED
   roleArn:

@@ -24,6 +24,7 @@ kind: AwsGlobalAccelerator
 metadata:
   name: minimal-tcp-ga
 spec:
+  region: us-east-1
   listeners:
     - name: tcp-443
       protocol: TCP
@@ -59,6 +60,7 @@ metadata:
   labels:
     openmcf.org/provisioner: pulumi
 spec:
+  region: us-east-1
   enabled: true
   ipAddressType: IPV4
   flowLogs:
@@ -116,6 +118,7 @@ kind: AwsGlobalAccelerator
 metadata:
   name: game-server-ga
 spec:
+  region: us-east-1
   listeners:
     - name: udp-game
       protocol: UDP
@@ -159,6 +162,7 @@ kind: AwsGlobalAccelerator
 metadata:
   name: ga-with-refs
 spec:
+  region: us-east-1
   flowLogs:
     enabled: true
     s3Bucket:
@@ -217,6 +221,7 @@ kind: AwsGlobalAccelerator
 metadata:
   name: port-override-ga
 spec:
+  region: us-east-1
   listeners:
     - name: https-override
       protocol: TCP

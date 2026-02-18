@@ -142,21 +142,24 @@ func (CodeSourceType) EnumDescriptor() ([]byte, []int) {
 // - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 type AwsLambdaSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Human-readable function name shown in the AWS Console and APIs.
 	// Must be unique per account/region. If omitted, the platform may derive a
 	// stable name from the resource metadata (e.g., org, environment, resource name).
 	// Allowed characters and length are enforced by AWS; keep it concise and DNS-like.
-	FunctionName string `protobuf:"bytes,1,opt,name=function_name,json=functionName,proto3" json:"function_name,omitempty"`
+	FunctionName string `protobuf:"bytes,2,opt,name=function_name,json=functionName,proto3" json:"function_name,omitempty"`
 	// Free-form description visible in the AWS Console to document the purpose
 	// and behavior of the function. Useful for operational context and search.
-	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 	// Execution role for the function. Accepts a direct role ARN (value) or a reference
 	// to another resource that surfaces a role ARN in its outputs (e.g., AwsIamRole).
-	RoleArn *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=role_arn,json=roleArn,proto3" json:"role_arn,omitempty"`
+	RoleArn *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=role_arn,json=roleArn,proto3" json:"role_arn,omitempty"`
 	// Language/runtime for zip/S3 deployments. Ignored for container image code.
 	// Examples: "nodejs18.x", "python3.11", "java21", "go1.x", "dotnet8", "ruby3.3", "provided.al2".
 	// Use "provided.al2" for custom runtimes or native binaries packaged in the zip.
-	Runtime string `protobuf:"bytes,4,opt,name=runtime,proto3" json:"runtime,omitempty"`
+	Runtime string `protobuf:"bytes,5,opt,name=runtime,proto3" json:"runtime,omitempty"`
 	// Entrypoint for zip/S3 deployments. Format is language-specific, e.g.:
 	// - Node.js:    "index.handler"
 	// - Python:     "module.function"
@@ -164,54 +167,54 @@ type AwsLambdaSpec struct {
 	// - .NET:       "Assembly::Namespace.Class::Method"
 	// - Go/custom:  usually "bootstrap" when using a custom runtime
 	// Ignored for container image code where the image CMD/ENTRYPOINT defines it.
-	Handler string `protobuf:"bytes,5,opt,name=handler,proto3" json:"handler,omitempty"`
+	Handler string `protobuf:"bytes,6,opt,name=handler,proto3" json:"handler,omitempty"`
 	// Memory allocation in megabytes. CPU, network, and some I/O scale with this
 	// value. Choose the smallest value that meets performance goals to control cost.
 	// Typical AWS-supported range is 128–10240 MB.
-	MemoryMb int32 `protobuf:"varint,6,opt,name=memory_mb,json=memoryMb,proto3" json:"memory_mb,omitempty"`
+	MemoryMb int32 `protobuf:"varint,7,opt,name=memory_mb,json=memoryMb,proto3" json:"memory_mb,omitempty"`
 	// Maximum execution time per invocation in seconds. Set slightly higher than
 	// the worst-case expected runtime. Typical AWS-supported range is 1–900 seconds.
-	TimeoutSeconds int32 `protobuf:"varint,7,opt,name=timeout_seconds,json=timeoutSeconds,proto3" json:"timeout_seconds,omitempty"`
+	TimeoutSeconds int32 `protobuf:"varint,8,opt,name=timeout_seconds,json=timeoutSeconds,proto3" json:"timeout_seconds,omitempty"`
 	// Hard limit on concurrent executions for this function. Behavior:
 	// - Omit or set to -1 to use the unreserved account pool (no dedicated cap).
 	// - Set to 0 to effectively disable invocations (useful for maintenance).
 	// - Set to a positive integer to reserve that many concurrent executions.
-	ReservedConcurrency int32 `protobuf:"varint,8,opt,name=reserved_concurrency,json=reservedConcurrency,proto3" json:"reserved_concurrency,omitempty"`
+	ReservedConcurrency int32 `protobuf:"varint,9,opt,name=reserved_concurrency,json=reservedConcurrency,proto3" json:"reserved_concurrency,omitempty"`
 	// Key/value environment variables available to the function at runtime.
 	// Avoid embedding sensitive values directly; prefer external secret sources.
 	// When `kms_key_arn` is set, AWS encrypts these at rest using the specified key.
-	Environment map[string]string `protobuf:"bytes,9,rep,name=environment,proto3" json:"environment,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Environment map[string]string `protobuf:"bytes,10,rep,name=environment,proto3" json:"environment,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Subnets in which the Lambda function will create network interfaces.
 	// Typically private subnets. Provide at least two across different AZs for HA.
 	// Accepts either literal subnet IDs (value) or references to other resources
 	// that expose subnet IDs via their status/outputs.
-	Subnets []*v1.StringValueOrRef `protobuf:"bytes,10,rep,name=subnets,proto3" json:"subnets,omitempty"`
+	Subnets []*v1.StringValueOrRef `protobuf:"bytes,11,rep,name=subnets,proto3" json:"subnets,omitempty"`
 	// Security groups attached to the Lambda ENIs. Ensure outbound rules allow
 	// access to required services (e.g., databases, AWS endpoints, the Internet
 	// via NAT if needed). Accepts either literal security group IDs (value) or
 	// references to a resource that provides a security group ID output.
-	SecurityGroups []*v1.StringValueOrRef `protobuf:"bytes,11,rep,name=security_groups,json=securityGroups,proto3" json:"security_groups,omitempty"`
+	SecurityGroups []*v1.StringValueOrRef `protobuf:"bytes,12,rep,name=security_groups,json=securityGroups,proto3" json:"security_groups,omitempty"`
 	// Processor architecture of the execution environment. Use ARM64 for better
 	// price/performance when your language/runtime supports it; use X86_64 for
 	// legacy dependencies or runtimes not available on ARM64.
-	Architecture Architecture `protobuf:"varint,12,opt,name=architecture,proto3,enum=org.openmcf.provider.aws.awslambda.v1.Architecture" json:"architecture,omitempty"`
+	Architecture Architecture `protobuf:"varint,13,opt,name=architecture,proto3,enum=org.openmcf.provider.aws.awslambda.v1.Architecture" json:"architecture,omitempty"`
 	// Layer ARNs to include. Accepts direct ARNs (value) or references to resources
 	// that provide layer ARNs as outputs. Up to five layers may be attached; order matters.
-	LayerArns []*v1.StringValueOrRef `protobuf:"bytes,13,rep,name=layer_arns,json=layerArns,proto3" json:"layer_arns,omitempty"`
+	LayerArns []*v1.StringValueOrRef `protobuf:"bytes,14,rep,name=layer_arns,json=layerArns,proto3" json:"layer_arns,omitempty"`
 	// Customer-managed KMS key used to encrypt environment variables at rest.
 	// Accepts a direct key ARN (value) or a reference to a KMS key resource output.
-	KmsKeyArn *v1.StringValueOrRef `protobuf:"bytes,14,opt,name=kms_key_arn,json=kmsKeyArn,proto3" json:"kms_key_arn,omitempty"`
+	KmsKeyArn *v1.StringValueOrRef `protobuf:"bytes,15,opt,name=kms_key_arn,json=kmsKeyArn,proto3" json:"kms_key_arn,omitempty"`
 	// Source of the function code. Select the type and populate the corresponding
 	// fields below. Validation is applied downstream to ensure consistency.
-	CodeSourceType CodeSourceType `protobuf:"varint,15,opt,name=code_source_type,json=codeSourceType,proto3,enum=org.openmcf.provider.aws.awslambda.v1.CodeSourceType" json:"code_source_type,omitempty"`
+	CodeSourceType CodeSourceType `protobuf:"varint,16,opt,name=code_source_type,json=codeSourceType,proto3,enum=org.openmcf.provider.aws.awslambda.v1.CodeSourceType" json:"code_source_type,omitempty"`
 	// S3 location of the deployment package (zip archive) for zip-based code.
 	// The archive should contain your compiled artifacts and the handler.
 	// Prefer a bucket in the same region as the function to avoid cross-region copies.
-	S3 *S3Code `protobuf:"bytes,16,opt,name=s3,proto3" json:"s3,omitempty"`
+	S3 *S3Code `protobuf:"bytes,17,opt,name=s3,proto3" json:"s3,omitempty"`
 	// Reference to an image stored in ECR for container-based code. The image
 	// defines the runtime and handler via its entrypoint/CMD. Example:
 	// "123456789012.dkr.ecr.us-east-1.amazonaws.com/repo:tag".
-	ImageUri      string `protobuf:"bytes,17,opt,name=image_uri,json=imageUri,proto3" json:"image_uri,omitempty"`
+	ImageUri      string `protobuf:"bytes,18,opt,name=image_uri,json=imageUri,proto3" json:"image_uri,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -244,6 +247,13 @@ func (x *AwsLambdaSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsLambdaSpec.ProtoReflect.Descriptor instead.
 func (*AwsLambdaSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awslambda_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsLambdaSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsLambdaSpec) GetFunctionName() string {
@@ -435,27 +445,28 @@ var File_org_openmcf_provider_aws_awslambda_v1_spec_proto protoreflect.FileDescr
 
 const file_org_openmcf_provider_aws_awslambda_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"0org/openmcf/provider/aws/awslambda/v1/spec.proto\x12%org.openmcf.provider.aws.awslambda.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x8d\x12\n" +
-	"\rAwsLambdaSpec\x12,\n" +
-	"\rfunction_name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\ffunctionName\x12 \n" +
-	"\vdescription\x18\x02 \x01(\tR\vdescription\x12u\n" +
-	"\brole_arn\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\aroleArn\x12\x18\n" +
-	"\aruntime\x18\x04 \x01(\tR\aruntime\x12\x18\n" +
-	"\ahandler\x18\x05 \x01(\tR\ahandler\x12\x1b\n" +
-	"\tmemory_mb\x18\x06 \x01(\x05R\bmemoryMb\x12'\n" +
-	"\x0ftimeout_seconds\x18\a \x01(\x05R\x0etimeoutSeconds\x121\n" +
-	"\x14reserved_concurrency\x18\b \x01(\x05R\x13reservedConcurrency\x12g\n" +
-	"\venvironment\x18\t \x03(\v2E.org.openmcf.provider.aws.awslambda.v1.AwsLambdaSpec.EnvironmentEntryR\venvironment\x12S\n" +
-	"\asubnets\x18\n" +
-	" \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x05\x88\xd4a\xd8\x01R\asubnets\x12\x86\x01\n" +
-	"\x0fsecurity_groups\x18\v \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x0esecurityGroups\x12a\n" +
-	"\farchitecture\x18\f \x01(\x0e23.org.openmcf.provider.aws.awslambda.v1.ArchitectureB\b\xbaH\x05\x82\x01\x02\x10\x01R\farchitecture\x12Q\n" +
+	"0org/openmcf/provider/aws/awslambda/v1/spec.proto\x12%org.openmcf.provider.aws.awslambda.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xae\x12\n" +
+	"\rAwsLambdaSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12,\n" +
+	"\rfunction_name\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\ffunctionName\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12u\n" +
+	"\brole_arn\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\aroleArn\x12\x18\n" +
+	"\aruntime\x18\x05 \x01(\tR\aruntime\x12\x18\n" +
+	"\ahandler\x18\x06 \x01(\tR\ahandler\x12\x1b\n" +
+	"\tmemory_mb\x18\a \x01(\x05R\bmemoryMb\x12'\n" +
+	"\x0ftimeout_seconds\x18\b \x01(\x05R\x0etimeoutSeconds\x121\n" +
+	"\x14reserved_concurrency\x18\t \x01(\x05R\x13reservedConcurrency\x12g\n" +
+	"\venvironment\x18\n" +
+	" \x03(\v2E.org.openmcf.provider.aws.awslambda.v1.AwsLambdaSpec.EnvironmentEntryR\venvironment\x12S\n" +
+	"\asubnets\x18\v \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x05\x88\xd4a\xd8\x01R\asubnets\x12\x86\x01\n" +
+	"\x0fsecurity_groups\x18\f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x0esecurityGroups\x12a\n" +
+	"\farchitecture\x18\r \x01(\x0e23.org.openmcf.provider.aws.awslambda.v1.ArchitectureB\b\xbaH\x05\x82\x01\x02\x10\x01R\farchitecture\x12Q\n" +
 	"\n" +
-	"layer_arns\x18\r \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\tlayerArns\x12s\n" +
-	"\vkms_key_arn\x18\x0e \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\tkmsKeyArn\x12i\n" +
-	"\x10code_source_type\x18\x0f \x01(\x0e25.org.openmcf.provider.aws.awslambda.v1.CodeSourceTypeB\b\xbaH\x05\x82\x01\x02\x10\x01R\x0ecodeSourceType\x12=\n" +
-	"\x02s3\x18\x10 \x01(\v2-.org.openmcf.provider.aws.awslambda.v1.S3CodeR\x02s3\x12\x1b\n" +
-	"\timage_uri\x18\x11 \x01(\tR\bimageUri\x1a>\n" +
+	"layer_arns\x18\x0e \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\tlayerArns\x12s\n" +
+	"\vkms_key_arn\x18\x0f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\tkmsKeyArn\x12i\n" +
+	"\x10code_source_type\x18\x10 \x01(\x0e25.org.openmcf.provider.aws.awslambda.v1.CodeSourceTypeB\b\xbaH\x05\x82\x01\x02\x10\x01R\x0ecodeSourceType\x12=\n" +
+	"\x02s3\x18\x11 \x01(\v2-.org.openmcf.provider.aws.awslambda.v1.S3CodeR\x02s3\x12\x1b\n" +
+	"\timage_uri\x18\x12 \x01(\tR\bimageUri\x1a>\n" +
 	"\x10EnvironmentEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x8e\b\xbaH\x8a\b\x1aU\n" +

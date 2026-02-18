@@ -34,6 +34,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsWafWebAcl.my-web-acl
 spec:
+  region: us-east-1
   scope: REGIONAL
   defaultAction:
     type: allow
@@ -60,6 +61,7 @@ This creates a REGIONAL Web ACL that allows all traffic by default and blocks kn
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | The AWS region where the Web ACL will be created. Use `us-east-1` for CLOUDFRONT scope. | Required |
 | `scope` | `string` | Where the Web ACL can be used: `REGIONAL` or `CLOUDFRONT` | Must be one of the two valid values |
 | `defaultAction.type` | `string` | Baseline action when no rule matches: `allow` or `block` | Must be `allow` or `block` |
 
@@ -114,6 +116,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsWafWebAcl.api-protection
 spec:
+  region: us-east-1
   scope: REGIONAL
   defaultAction:
     type: allow
@@ -150,6 +153,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsWafWebAcl.geo-restricted
 spec:
+  region: us-east-1
   scope: REGIONAL
   defaultAction:
     type: allow
@@ -181,6 +185,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsWafWebAcl.prod-waf
 spec:
+  region: us-east-1
   scope: REGIONAL
   description: Production Web ACL
   defaultAction:

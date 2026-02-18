@@ -3,6 +3,7 @@ kind: AwsSagemakerDomain
 metadata:
   name: basic-jupyter-domain
 spec:
+  region: us-west-2
   authMode: IAM
   vpcId:
     value: "<vpc-id>"

@@ -29,7 +29,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "my-logs",
 			},
-			Spec: &AwsCloudwatchLogGroupSpec{},
+			Spec: &AwsCloudwatchLogGroupSpec{Region: "us-west-2"},
 		}
 		err := protovalidate.Validate(input)
 		gomega.Expect(err).To(gomega.BeNil())
@@ -43,6 +43,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 				Name: "short-lived-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
+				Region:          "us-west-2",
 				RetentionInDays: 1,
 			},
 		}
@@ -58,6 +59,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 				Name: "standard-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
+				Region:          "us-west-2",
 				RetentionInDays: 30,
 			},
 		}
@@ -73,6 +75,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 				Name: "annual-retention-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
+				Region:          "us-west-2",
 				RetentionInDays: 365,
 			},
 		}
@@ -88,6 +91,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 				Name: "decade-retention-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
+				Region:          "us-west-2",
 				RetentionInDays: 3653,
 			},
 		}
@@ -103,6 +107,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 				Name: "encrypted-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
+				Region:          "us-west-2",
 				RetentionInDays: 90,
 				KmsKeyId: &fkv1.StringValueOrRef{
 					LiteralOrRef: &fkv1.StringValueOrRef_Value{
@@ -123,6 +128,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 				Name: "encrypted-logs-ref",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
+				Region:          "us-west-2",
 				RetentionInDays: 90,
 				KmsKeyId: &fkv1.StringValueOrRef{
 					LiteralOrRef: &fkv1.StringValueOrRef_ValueFrom{
@@ -147,6 +153,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 				Name: "standard-class-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
+				Region:          "us-west-2",
 				RetentionInDays: 30,
 				LogGroupClass:   "STANDARD",
 			},
@@ -163,6 +170,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 				Name: "ia-class-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
+				Region:          "us-west-2",
 				RetentionInDays: 365,
 				LogGroupClass:   "INFREQUENT_ACCESS",
 			},
@@ -179,6 +187,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 				Name: "delivery-class-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
+				Region:        "us-west-2",
 				LogGroupClass: "DELIVERY",
 			},
 		}
@@ -194,6 +203,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 				Name: "protected-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
+				Region:                    "us-west-2",
 				RetentionInDays:           90,
 				DeletionProtectionEnabled: true,
 			},
@@ -210,6 +220,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 				Name: "prod-app-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
+				Region:          "us-west-2",
 				RetentionInDays: 90,
 				KmsKeyId: &fkv1.StringValueOrRef{
 					LiteralOrRef: &fkv1.StringValueOrRef_ValueFrom{
@@ -372,7 +383,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "test-logs",
 			},
-			Spec: &AwsCloudwatchLogGroupSpec{},
+			Spec: &AwsCloudwatchLogGroupSpec{Region: "us-west-2"},
 		}
 		err := protovalidate.Validate(input)
 		gomega.Expect(err).NotTo(gomega.BeNil())
@@ -385,7 +396,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "test-logs",
 			},
-			Spec: &AwsCloudwatchLogGroupSpec{},
+			Spec: &AwsCloudwatchLogGroupSpec{Region: "us-west-2"},
 		}
 		err := protovalidate.Validate(input)
 		gomega.Expect(err).NotTo(gomega.BeNil())
@@ -395,7 +406,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.openmcf.org/v1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Spec:       &AwsCloudwatchLogGroupSpec{},
+			Spec:       &AwsCloudwatchLogGroupSpec{Region: "us-west-2"},
 		}
 		err := protovalidate.Validate(input)
 		gomega.Expect(err).NotTo(gomega.BeNil())

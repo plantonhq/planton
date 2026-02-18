@@ -13,7 +13,7 @@ import type { JsonObject, Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsiamrole/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsiamrole_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjFvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzaWFtcm9sZS92MS9zcGVjLnByb3RvEiZvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzaWFtcm9sZS52MSLNAgoOQXdzSWFtUm9sZVNwZWMSEwoLZGVzY3JpcHRpb24YASABKAkSEwoEcGF0aBgCIAEoCUIFkqYdAS8SNQoMdHJ1c3RfcG9saWN5GAMgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdEIGukgDyAEBEiUKE21hbmFnZWRfcG9saWN5X2FybnMYBCADKAlCCLpIBZIBAhgBEmMKD2lubGluZV9wb2xpY2llcxgFIAMoCzJKLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NpYW1yb2xlLnYxLkF3c0lhbVJvbGVTcGVjLklubGluZVBvbGljaWVzRW50cnkaTgoTSW5saW5lUG9saWNpZXNFbnRyeRILCgNrZXkYASABKAkSJgoFdmFsdWUYAiABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0OgI4AULNAgoqY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NpYW1yb2xlLnYxQglTcGVjUHJvdG9QAVpVZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NpYW1yb2xlL3YxO2F3c2lhbXJvbGV2MaICBU9PUEFBqgImT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2lhbXJvbGUuVjHKAiZPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzaWFtcm9sZVxWMeICMk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NpYW1yb2xlXFYxXEdQQk1ldGFkYXRh6gIrT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NpYW1yb2xlOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_google_protobuf_struct, file_org_openmcf_shared_options_options]);
+  fileDesc("CjFvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzaWFtcm9sZS92MS9zcGVjLnByb3RvEiZvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzaWFtcm9sZS52MSLmAgoOQXdzSWFtUm9sZVNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEhMKC2Rlc2NyaXB0aW9uGAIgASgJEhMKBHBhdGgYAyABKAlCBZKmHQEvEjUKDHRydXN0X3BvbGljeRgEIAEoCzIXLmdvb2dsZS5wcm90b2J1Zi5TdHJ1Y3RCBrpIA8gBARIlChNtYW5hZ2VkX3BvbGljeV9hcm5zGAUgAygJQgi6SAWSAQIYARJjCg9pbmxpbmVfcG9saWNpZXMYBiADKAsySi5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzaWFtcm9sZS52MS5Bd3NJYW1Sb2xlU3BlYy5JbmxpbmVQb2xpY2llc0VudHJ5Gk4KE0lubGluZVBvbGljaWVzRW50cnkSCwoDa2V5GAEgASgJEiYKBXZhbHVlGAIgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdDoCOAFCzQIKKmNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzaWFtcm9sZS52MUIJU3BlY1Byb3RvUAFaVWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzaWFtcm9sZS92MTthd3NpYW1yb2xldjGiAgVPT1BBQaoCJk9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NpYW1yb2xlLlYxygImT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2lhbXJvbGVcVjHiAjJPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzaWFtcm9sZVxWMVxHUEJNZXRhZGF0YeoCK09yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzaWFtcm9sZTo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_google_protobuf_struct, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsIamRoleSpec defines the minimal fields needed to create an AWS IAM Role.
@@ -23,16 +23,24 @@ export const file_org_openmcf_provider_aws_awsiamrole_v1_spec: GenFile = /*@__PU
  */
 export type AwsIamRoleSpec = Message<"org.openmcf.provider.aws.awsiamrole.v1.AwsIamRoleSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * description is an optional description of the IAM role.
    *
-   * @generated from field: string description = 1;
+   * @generated from field: string description = 2;
    */
   description: string;
 
   /**
    * path is the IAM path for the role. Defaults to "/" if omitted.
    *
-   * @generated from field: string path = 2;
+   * @generated from field: string path = 3;
    */
   path: string;
 
@@ -40,7 +48,7 @@ export type AwsIamRoleSpec = Message<"org.openmcf.provider.aws.awsiamrole.v1.Aws
    * trust_policy_json is the JSON string describing the trust relationship for the role.
    * Example: a trust policy allowing ECS tasks to assume this role.
    *
-   * @generated from field: google.protobuf.Struct trust_policy = 3;
+   * @generated from field: google.protobuf.Struct trust_policy = 4;
    */
   trustPolicy?: JsonObject;
 
@@ -48,7 +56,7 @@ export type AwsIamRoleSpec = Message<"org.openmcf.provider.aws.awsiamrole.v1.Aws
    * managed_policy_arns is a list of ARNs for AWS-managed or customer-managed IAM policies
    * you want to attach to this role.
    *
-   * @generated from field: repeated string managed_policy_arns = 4;
+   * @generated from field: repeated string managed_policy_arns = 5;
    */
   managedPolicyArns: string[];
 
@@ -56,7 +64,7 @@ export type AwsIamRoleSpec = Message<"org.openmcf.provider.aws.awsiamrole.v1.Aws
    * inline_policy_jsons is a map of inline policy names to a JSON policy doc.
    * Key is policy name. Value is the raw JSON for that policy.
    *
-   * @generated from field: map<string, google.protobuf.Struct> inline_policies = 5;
+   * @generated from field: map<string, google.protobuf.Struct> inline_policies = 6;
    */
   inlinePolicies: { [key: string]: JsonObject };
 };

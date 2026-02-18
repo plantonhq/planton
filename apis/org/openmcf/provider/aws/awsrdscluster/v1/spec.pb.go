@@ -30,76 +30,79 @@ const (
 // are modeled separately by instance resources.
 type AwsRdsClusterSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// subnet_ids is the list of subnet IDs used by the DB subnet group for the cluster.
 	// Provide at least two subnets in distinct Availability Zones for high availability.
-	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,1,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
+	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,2,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// Optional name of an existing DB subnet group to use instead of providing subnet_ids.
-	DbSubnetGroupName *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=db_subnet_group_name,json=dbSubnetGroupName,proto3" json:"db_subnet_group_name,omitempty"`
+	DbSubnetGroupName *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=db_subnet_group_name,json=dbSubnetGroupName,proto3" json:"db_subnet_group_name,omitempty"`
 	// vpc_security_group_ids are additional security groups attached to the cluster.
-	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,3,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
+	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,4,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
 	// allowed_cidr_blocks are IPv4 CIDRs to allow ingress to the cluster SG (if created/managed here).
 	// Example: "10.0.0.0/16", "0.0.0.0/0"
-	AllowedCidrBlocks []string `protobuf:"bytes,4,rep,name=allowed_cidr_blocks,json=allowedCidrBlocks,proto3" json:"allowed_cidr_blocks,omitempty"`
+	AllowedCidrBlocks []string `protobuf:"bytes,5,rep,name=allowed_cidr_blocks,json=allowedCidrBlocks,proto3" json:"allowed_cidr_blocks,omitempty"`
 	// associate_security_group_ids lists existing SGs to associate (alongside any created/managed SG).
-	AssociateSecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,5,rep,name=associate_security_group_ids,json=associateSecurityGroupIds,proto3" json:"associate_security_group_ids,omitempty"`
+	AssociateSecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,6,rep,name=associate_security_group_ids,json=associateSecurityGroupIds,proto3" json:"associate_security_group_ids,omitempty"`
 	// database_name is the name of the initial database to create in the cluster.
-	DatabaseName string `protobuf:"bytes,6,opt,name=database_name,json=databaseName,proto3" json:"database_name,omitempty"`
+	DatabaseName string `protobuf:"bytes,7,opt,name=database_name,json=databaseName,proto3" json:"database_name,omitempty"`
 	// manage_master_user_password, when true, lets RDS manage the master user password in AWS Secrets Manager.
-	ManageMasterUserPassword bool `protobuf:"varint,7,opt,name=manage_master_user_password,json=manageMasterUserPassword,proto3" json:"manage_master_user_password,omitempty"`
+	ManageMasterUserPassword bool `protobuf:"varint,8,opt,name=manage_master_user_password,json=manageMasterUserPassword,proto3" json:"manage_master_user_password,omitempty"`
 	// master_user_secret_kms_key_id is the KMS key identifier (ARN/alias) for encrypting the managed secret.
-	MasterUserSecretKmsKeyId *v1.StringValueOrRef `protobuf:"bytes,8,opt,name=master_user_secret_kms_key_id,json=masterUserSecretKmsKeyId,proto3" json:"master_user_secret_kms_key_id,omitempty"`
+	MasterUserSecretKmsKeyId *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=master_user_secret_kms_key_id,json=masterUserSecretKmsKeyId,proto3" json:"master_user_secret_kms_key_id,omitempty"`
 	// username is the master database user name.
-	Username *string `protobuf:"bytes,9,opt,name=username,proto3,oneof" json:"username,omitempty"`
+	Username *string `protobuf:"bytes,10,opt,name=username,proto3,oneof" json:"username,omitempty"`
 	// password is the master user password. Cannot be set when manage_master_user_password is true.
-	Password string `protobuf:"bytes,10,opt,name=password,proto3" json:"password,omitempty"`
+	Password string `protobuf:"bytes,11,opt,name=password,proto3" json:"password,omitempty"`
 	// port on which the cluster accepts connections.
-	Port int32 `protobuf:"varint,11,opt,name=port,proto3" json:"port,omitempty"`
+	Port int32 `protobuf:"varint,12,opt,name=port,proto3" json:"port,omitempty"`
 	// engine for the cluster. Examples: "aurora-mysql", "aurora-postgresql".
-	Engine string `protobuf:"bytes,12,opt,name=engine,proto3" json:"engine,omitempty"`
+	Engine string `protobuf:"bytes,13,opt,name=engine,proto3" json:"engine,omitempty"`
 	// engine_version to deploy. Example: "8.0.mysql_aurora.3.05.2" or "14.6" for Aurora PostgreSQL.
-	EngineVersion string `protobuf:"bytes,13,opt,name=engine_version,json=engineVersion,proto3" json:"engine_version,omitempty"`
+	EngineVersion string `protobuf:"bytes,14,opt,name=engine_version,json=engineVersion,proto3" json:"engine_version,omitempty"`
 	// storage_encrypted indicates whether to enable storage encryption for the cluster.
-	StorageEncrypted bool `protobuf:"varint,14,opt,name=storage_encrypted,json=storageEncrypted,proto3" json:"storage_encrypted,omitempty"`
+	StorageEncrypted bool `protobuf:"varint,15,opt,name=storage_encrypted,json=storageEncrypted,proto3" json:"storage_encrypted,omitempty"`
 	// kms_key_id KMS key ARN to use for storage encryption when storage_encrypted is true.
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,15,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,16,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// enabled_cloudwatch_logs_exports lists database logs to export to CloudWatch Logs.
 	// Aurora MySQL: [audit, error, general, slowquery]
 	// Aurora PostgreSQL: [postgresql, upgrade]
-	EnabledCloudwatchLogsExports []string `protobuf:"bytes,16,rep,name=enabled_cloudwatch_logs_exports,json=enabledCloudwatchLogsExports,proto3" json:"enabled_cloudwatch_logs_exports,omitempty"`
+	EnabledCloudwatchLogsExports []string `protobuf:"bytes,17,rep,name=enabled_cloudwatch_logs_exports,json=enabledCloudwatchLogsExports,proto3" json:"enabled_cloudwatch_logs_exports,omitempty"`
 	// deletion_protection prevents accidental deletion.
-	DeletionProtection bool `protobuf:"varint,17,opt,name=deletion_protection,json=deletionProtection,proto3" json:"deletion_protection,omitempty"`
+	DeletionProtection bool `protobuf:"varint,18,opt,name=deletion_protection,json=deletionProtection,proto3" json:"deletion_protection,omitempty"`
 	// preferred_maintenance_window in UTC, format 'ddd:hh24:mi-ddd:hh24:mi'.
-	PreferredMaintenanceWindow string `protobuf:"bytes,18,opt,name=preferred_maintenance_window,json=preferredMaintenanceWindow,proto3" json:"preferred_maintenance_window,omitempty"`
+	PreferredMaintenanceWindow string `protobuf:"bytes,19,opt,name=preferred_maintenance_window,json=preferredMaintenanceWindow,proto3" json:"preferred_maintenance_window,omitempty"`
 	// backup_retention_period in days (> 0 to enable automated backups).
-	BackupRetentionPeriod int32 `protobuf:"varint,19,opt,name=backup_retention_period,json=backupRetentionPeriod,proto3" json:"backup_retention_period,omitempty"`
+	BackupRetentionPeriod int32 `protobuf:"varint,20,opt,name=backup_retention_period,json=backupRetentionPeriod,proto3" json:"backup_retention_period,omitempty"`
 	// preferred_backup_window in UTC, format 'hh24:mi-hh24:mi'. Must not overlap maintenance window.
-	PreferredBackupWindow string `protobuf:"bytes,20,opt,name=preferred_backup_window,json=preferredBackupWindow,proto3" json:"preferred_backup_window,omitempty"`
+	PreferredBackupWindow string `protobuf:"bytes,21,opt,name=preferred_backup_window,json=preferredBackupWindow,proto3" json:"preferred_backup_window,omitempty"`
 	// copy_tags_to_snapshot copies tags from the cluster to snapshots.
-	CopyTagsToSnapshot bool `protobuf:"varint,21,opt,name=copy_tags_to_snapshot,json=copyTagsToSnapshot,proto3" json:"copy_tags_to_snapshot,omitempty"`
+	CopyTagsToSnapshot bool `protobuf:"varint,22,opt,name=copy_tags_to_snapshot,json=copyTagsToSnapshot,proto3" json:"copy_tags_to_snapshot,omitempty"`
 	// skip_final_snapshot controls whether a final snapshot is created before cluster deletion.
-	SkipFinalSnapshot bool `protobuf:"varint,22,opt,name=skip_final_snapshot,json=skipFinalSnapshot,proto3" json:"skip_final_snapshot,omitempty"`
+	SkipFinalSnapshot bool `protobuf:"varint,23,opt,name=skip_final_snapshot,json=skipFinalSnapshot,proto3" json:"skip_final_snapshot,omitempty"`
 	// final_snapshot_identifier is the identifier to use for the final snapshot when skip_final_snapshot is false.
-	FinalSnapshotIdentifier string `protobuf:"bytes,23,opt,name=final_snapshot_identifier,json=finalSnapshotIdentifier,proto3" json:"final_snapshot_identifier,omitempty"`
+	FinalSnapshotIdentifier string `protobuf:"bytes,24,opt,name=final_snapshot_identifier,json=finalSnapshotIdentifier,proto3" json:"final_snapshot_identifier,omitempty"`
 	// iam_database_authentication_enabled enables mapping of IAM users/roles to database logins.
-	IamDatabaseAuthenticationEnabled bool `protobuf:"varint,24,opt,name=iam_database_authentication_enabled,json=iamDatabaseAuthenticationEnabled,proto3" json:"iam_database_authentication_enabled,omitempty"`
+	IamDatabaseAuthenticationEnabled bool `protobuf:"varint,25,opt,name=iam_database_authentication_enabled,json=iamDatabaseAuthenticationEnabled,proto3" json:"iam_database_authentication_enabled,omitempty"`
 	// enable_http_endpoint enables the Data API for Aurora Serverless (where supported).
-	EnableHttpEndpoint bool `protobuf:"varint,25,opt,name=enable_http_endpoint,json=enableHttpEndpoint,proto3" json:"enable_http_endpoint,omitempty"`
+	EnableHttpEndpoint bool `protobuf:"varint,26,opt,name=enable_http_endpoint,json=enableHttpEndpoint,proto3" json:"enable_http_endpoint,omitempty"`
 	// serverless_v2_scaling controls Aurora Serverless v2 capacity scaling (if supported by engine/engine_version).
-	ServerlessV2Scaling *AwsRdsClusterServerlessV2ScalingConfiguration `protobuf:"bytes,26,opt,name=serverless_v2_scaling,json=serverlessV2Scaling,proto3" json:"serverless_v2_scaling,omitempty"`
+	ServerlessV2Scaling *AwsRdsClusterServerlessV2ScalingConfiguration `protobuf:"bytes,27,opt,name=serverless_v2_scaling,json=serverlessV2Scaling,proto3" json:"serverless_v2_scaling,omitempty"`
 	// snapshot_identifier creates the cluster from the specified snapshot, when provided.
-	SnapshotIdentifier string `protobuf:"bytes,27,opt,name=snapshot_identifier,json=snapshotIdentifier,proto3" json:"snapshot_identifier,omitempty"`
+	SnapshotIdentifier string `protobuf:"bytes,28,opt,name=snapshot_identifier,json=snapshotIdentifier,proto3" json:"snapshot_identifier,omitempty"`
 	// replication_source_identifier creates a read replica of another cluster when provided (ARN or identifier).
-	ReplicationSourceIdentifier string `protobuf:"bytes,28,opt,name=replication_source_identifier,json=replicationSourceIdentifier,proto3" json:"replication_source_identifier,omitempty"`
+	ReplicationSourceIdentifier string `protobuf:"bytes,29,opt,name=replication_source_identifier,json=replicationSourceIdentifier,proto3" json:"replication_source_identifier,omitempty"`
 	// db_cluster_parameter_group_name is the cluster-level parameter group to associate.
-	DbClusterParameterGroupName string `protobuf:"bytes,29,opt,name=db_cluster_parameter_group_name,json=dbClusterParameterGroupName,proto3" json:"db_cluster_parameter_group_name,omitempty"`
+	DbClusterParameterGroupName string `protobuf:"bytes,30,opt,name=db_cluster_parameter_group_name,json=dbClusterParameterGroupName,proto3" json:"db_cluster_parameter_group_name,omitempty"`
 	// cluster-level parameters to apply (depends on DB family).
-	Parameters []*AwsRdsClusterParameter `protobuf:"bytes,30,rep,name=parameters,proto3" json:"parameters,omitempty"`
+	Parameters []*AwsRdsClusterParameter `protobuf:"bytes,31,rep,name=parameters,proto3" json:"parameters,omitempty"`
 	// vpc_id for the cluster networking context (optional; generally derivable from subnet_ids/subnet group).
-	VpcId *v1.StringValueOrRef `protobuf:"bytes,31,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
+	VpcId *v1.StringValueOrRef `protobuf:"bytes,32,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
 	// Optional engine mode. For Aurora Serverless v1 use "serverless"; otherwise "provisioned".
-	EngineMode string `protobuf:"bytes,32,opt,name=engine_mode,json=engineMode,proto3" json:"engine_mode,omitempty"`
+	EngineMode string `protobuf:"bytes,33,opt,name=engine_mode,json=engineMode,proto3" json:"engine_mode,omitempty"`
 	// storage_type for Aurora (if supported): "aurora" or "aurora-iopt1".
-	StorageType   string `protobuf:"bytes,33,opt,name=storage_type,json=storageType,proto3" json:"storage_type,omitempty"`
+	StorageType   string `protobuf:"bytes,34,opt,name=storage_type,json=storageType,proto3" json:"storage_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -132,6 +135,13 @@ func (x *AwsRdsClusterSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsRdsClusterSpec.ProtoReflect.Descriptor instead.
 func (*AwsRdsClusterSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsrdscluster_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsRdsClusterSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsRdsClusterSpec) GetSubnetIds() []*v1.StringValueOrRef {
@@ -488,48 +498,49 @@ var File_org_openmcf_provider_aws_awsrdscluster_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_aws_awsrdscluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/aws/awsrdscluster/v1/spec.proto\x12)org.openmcf.provider.aws.awsrdscluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x87\x1e\n" +
-	"\x11AwsRdsClusterSpec\x12\x81\x01\n" +
+	"4org/openmcf/provider/aws/awsrdscluster/v1/spec.proto\x12)org.openmcf.provider.aws.awsrdscluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa8\x1e\n" +
+	"\x11AwsRdsClusterSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x81\x01\n" +
 	"\n" +
-	"subnet_ids\x18\x01 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12c\n" +
-	"\x14db_subnet_group_name\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x11dbSubnetGroupName\x12\x8b\x01\n" +
-	"\x12security_group_ids\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12\xa1\x01\n" +
-	"\x13allowed_cidr_blocks\x18\x04 \x03(\tBq\xbaHn\x92\x01k\x18\x01\"gre2c^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$R\x11allowedCidrBlocks\x12\x9e\x01\n" +
-	"\x1cassociate_security_group_ids\x18\x05 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x19associateSecurityGroupIds\x12#\n" +
-	"\rdatabase_name\x18\x06 \x01(\tR\fdatabaseName\x12G\n" +
-	"\x1bmanage_master_user_password\x18\a \x01(\bB\b\x92\xa6\x1d\x04trueR\x18manageMasterUserPassword\x12\x94\x01\n" +
-	"\x1dmaster_user_secret_kms_key_id\x18\b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\x18masterUserSecretKmsKeyId\x12+\n" +
-	"\busername\x18\t \x01(\tB\n" +
+	"subnet_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12c\n" +
+	"\x14db_subnet_group_name\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x11dbSubnetGroupName\x12\x8b\x01\n" +
+	"\x12security_group_ids\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12\xa1\x01\n" +
+	"\x13allowed_cidr_blocks\x18\x05 \x03(\tBq\xbaHn\x92\x01k\x18\x01\"gre2c^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$R\x11allowedCidrBlocks\x12\x9e\x01\n" +
+	"\x1cassociate_security_group_ids\x18\x06 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x19associateSecurityGroupIds\x12#\n" +
+	"\rdatabase_name\x18\a \x01(\tR\fdatabaseName\x12G\n" +
+	"\x1bmanage_master_user_password\x18\b \x01(\bB\b\x92\xa6\x1d\x04trueR\x18manageMasterUserPassword\x12\x94\x01\n" +
+	"\x1dmaster_user_secret_kms_key_id\x18\t \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\x18masterUserSecretKmsKeyId\x12+\n" +
+	"\busername\x18\n" +
+	" \x01(\tB\n" +
 	"\x8a\xa6\x1d\x06masterH\x00R\busername\x88\x01\x01\x12\x1a\n" +
-	"\bpassword\x18\n" +
-	" \x01(\tR\bpassword\x12\x1f\n" +
-	"\x04port\x18\v \x01(\x05B\v\xbaH\b\x1a\x06\x18\xff\xff\x03(\x00R\x04port\x12\x1e\n" +
-	"\x06engine\x18\f \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06engine\x12-\n" +
-	"\x0eengine_version\x18\r \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\rengineVersion\x12+\n" +
-	"\x11storage_encrypted\x18\x0e \x01(\bR\x10storageEncrypted\x12q\n" +
+	"\bpassword\x18\v \x01(\tR\bpassword\x12\x1f\n" +
+	"\x04port\x18\f \x01(\x05B\v\xbaH\b\x1a\x06\x18\xff\xff\x03(\x00R\x04port\x12\x1e\n" +
+	"\x06engine\x18\r \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06engine\x12-\n" +
+	"\x0eengine_version\x18\x0e \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\rengineVersion\x12+\n" +
+	"\x11storage_encrypted\x18\x0f \x01(\bR\x10storageEncrypted\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\x0f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12O\n" +
-	"\x1fenabled_cloudwatch_logs_exports\x18\x10 \x03(\tB\b\xbaH\x05\x92\x01\x02\x18\x01R\x1cenabledCloudwatchLogsExports\x12/\n" +
-	"\x13deletion_protection\x18\x11 \x01(\bR\x12deletionProtection\x12\xc3\x01\n" +
-	"\x1cpreferred_maintenance_window\x18\x12 \x01(\tB\x80\x01\xbaH}r{2y^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$R\x1apreferredMaintenanceWindow\x12A\n" +
-	"\x17backup_retention_period\x18\x13 \x01(\x05B\t\xbaH\x06\x1a\x04\x18#(\x00R\x15backupRetentionPeriod\x12|\n" +
-	"\x17preferred_backup_window\x18\x14 \x01(\tBD\xbaHAr?2=^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$R\x15preferredBackupWindow\x121\n" +
-	"\x15copy_tags_to_snapshot\x18\x15 \x01(\bR\x12copyTagsToSnapshot\x12.\n" +
-	"\x13skip_final_snapshot\x18\x16 \x01(\bR\x11skipFinalSnapshot\x12:\n" +
-	"\x19final_snapshot_identifier\x18\x17 \x01(\tR\x17finalSnapshotIdentifier\x12M\n" +
-	"#iam_database_authentication_enabled\x18\x18 \x01(\bR iamDatabaseAuthenticationEnabled\x120\n" +
-	"\x14enable_http_endpoint\x18\x19 \x01(\bR\x12enableHttpEndpoint\x12\x8c\x01\n" +
-	"\x15serverless_v2_scaling\x18\x1a \x01(\v2X.org.openmcf.provider.aws.awsrdscluster.v1.AwsRdsClusterServerlessV2ScalingConfigurationR\x13serverlessV2Scaling\x12/\n" +
-	"\x13snapshot_identifier\x18\x1b \x01(\tR\x12snapshotIdentifier\x12B\n" +
-	"\x1dreplication_source_identifier\x18\x1c \x01(\tR\x1breplicationSourceIdentifier\x12D\n" +
-	"\x1fdb_cluster_parameter_group_name\x18\x1d \x01(\tR\x1bdbClusterParameterGroupName\x12a\n" +
+	"kms_key_id\x18\x10 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12O\n" +
+	"\x1fenabled_cloudwatch_logs_exports\x18\x11 \x03(\tB\b\xbaH\x05\x92\x01\x02\x18\x01R\x1cenabledCloudwatchLogsExports\x12/\n" +
+	"\x13deletion_protection\x18\x12 \x01(\bR\x12deletionProtection\x12\xc3\x01\n" +
+	"\x1cpreferred_maintenance_window\x18\x13 \x01(\tB\x80\x01\xbaH}r{2y^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$R\x1apreferredMaintenanceWindow\x12A\n" +
+	"\x17backup_retention_period\x18\x14 \x01(\x05B\t\xbaH\x06\x1a\x04\x18#(\x00R\x15backupRetentionPeriod\x12|\n" +
+	"\x17preferred_backup_window\x18\x15 \x01(\tBD\xbaHAr?2=^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$R\x15preferredBackupWindow\x121\n" +
+	"\x15copy_tags_to_snapshot\x18\x16 \x01(\bR\x12copyTagsToSnapshot\x12.\n" +
+	"\x13skip_final_snapshot\x18\x17 \x01(\bR\x11skipFinalSnapshot\x12:\n" +
+	"\x19final_snapshot_identifier\x18\x18 \x01(\tR\x17finalSnapshotIdentifier\x12M\n" +
+	"#iam_database_authentication_enabled\x18\x19 \x01(\bR iamDatabaseAuthenticationEnabled\x120\n" +
+	"\x14enable_http_endpoint\x18\x1a \x01(\bR\x12enableHttpEndpoint\x12\x8c\x01\n" +
+	"\x15serverless_v2_scaling\x18\x1b \x01(\v2X.org.openmcf.provider.aws.awsrdscluster.v1.AwsRdsClusterServerlessV2ScalingConfigurationR\x13serverlessV2Scaling\x12/\n" +
+	"\x13snapshot_identifier\x18\x1c \x01(\tR\x12snapshotIdentifier\x12B\n" +
+	"\x1dreplication_source_identifier\x18\x1d \x01(\tR\x1breplicationSourceIdentifier\x12D\n" +
+	"\x1fdb_cluster_parameter_group_name\x18\x1e \x01(\tR\x1bdbClusterParameterGroupName\x12a\n" +
 	"\n" +
-	"parameters\x18\x1e \x03(\v2A.org.openmcf.provider.aws.awsrdscluster.v1.AwsRdsClusterParameterR\n" +
+	"parameters\x18\x1f \x03(\v2A.org.openmcf.provider.aws.awsrdscluster.v1.AwsRdsClusterParameterR\n" +
 	"parameters\x12i\n" +
-	"\x06vpc_id\x18\x1f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12\x1f\n" +
-	"\vengine_mode\x18  \x01(\tR\n" +
+	"\x06vpc_id\x18  \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12\x1f\n" +
+	"\vengine_mode\x18! \x01(\tR\n" +
 	"engineMode\x12A\n" +
-	"\fstorage_type\x18! \x01(\tB\x1e\xbaH\x1b\xd8\x01\x01r\x16R\x06auroraR\faurora-iopt1R\vstorageType:\xa5\b\xbaH\xa1\b\x1a\xbf\x01\n" +
+	"\fstorage_type\x18\" \x01(\tB\x1e\xbaH\x1b\xd8\x01\x01r\x16R\x06auroraR\faurora-iopt1R\vstorageType:\xa5\b\xbaH\xa1\b\x1a\xbf\x01\n" +
 	",final_snapshot_id_required_when_not_skipping\x12Gfinal_snapshot_identifier must be set when skip_final_snapshot is false\x1aFthis.skip_final_snapshot ? true : this.final_snapshot_identifier != \"\"\x1a\x8c\x01\n" +
 	"\x10subnets_or_group\x127Provide either subnet_ids (>=2) or db_subnet_group_name\x1a?(this.subnet_ids.size() >= 2) || has(this.db_subnet_group_name)\x1a\x9b\x01\n" +
 	"\x19password_mutual_exclusion\x12?password cannot be set when manage_master_user_password is true\x1a=this.manage_master_user_password ? this.password == \"\" : true\x1a\xb2\x01\n" +

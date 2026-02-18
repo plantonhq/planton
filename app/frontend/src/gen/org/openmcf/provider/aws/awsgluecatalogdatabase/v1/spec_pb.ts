@@ -4,13 +4,14 @@
 
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv1";
+import { file_buf_validate_validate } from "../../../../../../buf/validate/validate_pb";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file org/openmcf/provider/aws/awsgluecatalogdatabase/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsgluecatalogdatabase_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cj1vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZ2x1ZWNhdGFsb2dkYXRhYmFzZS92MS9zcGVjLnByb3RvEjJvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZ2x1ZWNhdGFsb2dkYXRhYmFzZS52MSJHChpBd3NHbHVlQ2F0YWxvZ0RhdGFiYXNlU3BlYxITCgtkZXNjcmlwdGlvbhgBIAEoCRIUCgxsb2NhdGlvbl91cmkYAiABKAlCoQMKNmNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZ2x1ZWNhdGFsb2dkYXRhYmFzZS52MUIJU3BlY1Byb3RvUAFabWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZ2x1ZWNhdGFsb2dkYXRhYmFzZS92MTthd3NnbHVlY2F0YWxvZ2RhdGFiYXNldjGiAgVPT1BBQaoCMk9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NnbHVlY2F0YWxvZ2RhdGFiYXNlLlYxygIyT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2dsdWVjYXRhbG9nZGF0YWJhc2VcVjHiAj5PcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZ2x1ZWNhdGFsb2dkYXRhYmFzZVxWMVxHUEJNZXRhZGF0YeoCN09yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzZ2x1ZWNhdGFsb2dkYXRhYmFzZTo6VjFiBnByb3RvMw");
+  fileDesc("Cj1vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZ2x1ZWNhdGFsb2dkYXRhYmFzZS92MS9zcGVjLnByb3RvEjJvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZ2x1ZWNhdGFsb2dkYXRhYmFzZS52MSJgChpBd3NHbHVlQ2F0YWxvZ0RhdGFiYXNlU3BlYxIXCgZyZWdpb24YASABKAlCB7pIBHICEAESEwoLZGVzY3JpcHRpb24YAiABKAkSFAoMbG9jYXRpb25fdXJpGAMgASgJQqEDCjZjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2dsdWVjYXRhbG9nZGF0YWJhc2UudjFCCVNwZWNQcm90b1ABWm1naXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c2dsdWVjYXRhbG9nZGF0YWJhc2UvdjE7YXdzZ2x1ZWNhdGFsb2dkYXRhYmFzZXYxogIFT09QQUGqAjJPcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzZ2x1ZWNhdGFsb2dkYXRhYmFzZS5WMcoCMk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NnbHVlY2F0YWxvZ2RhdGFiYXNlXFYx4gI+T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2dsdWVjYXRhbG9nZGF0YWJhc2VcVjFcR1BCTWV0YWRhdGHqAjdPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c2dsdWVjYXRhbG9nZGF0YWJhc2U6OlYxYgZwcm90bzM", [file_buf_validate_validate]);
 
 /**
  * AwsGlueCatalogDatabaseSpec defines the desired configuration for an AWS Glue
@@ -49,13 +50,17 @@ export const file_org_openmcf_provider_aws_awsgluecatalogdatabase_v1_spec: GenFi
  *   Resource Access Manager. ~5% adoption.
  * - parameters: Generic key-value metadata map. Rarely set by users directly.
  *
- * ---------------------------------------------------------------------------
- * Metadata
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awsgluecatalogdatabase.v1.AwsGlueCatalogDatabaseSpec
  */
 export type AwsGlueCatalogDatabaseSpec = Message<"org.openmcf.provider.aws.awsgluecatalogdatabase.v1.AwsGlueCatalogDatabaseSpec"> & {
+  /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * Human-readable description of the database. Helps teams understand the
    * purpose and contents of this catalog namespace.
@@ -66,7 +71,7 @@ export type AwsGlueCatalogDatabaseSpec = Message<"org.openmcf.provider.aws.awsgl
    * - "Sales analytics data lake — raw and curated tables from the sales pipeline"
    * - "Clickstream events from web and mobile applications"
    *
-   * @generated from field: string description = 1;
+   * @generated from field: string description = 2;
    */
   description: string;
 
@@ -84,7 +89,7 @@ export type AwsGlueCatalogDatabaseSpec = Message<"org.openmcf.provider.aws.awsgl
    * This is a plain string (not StringValueOrRef) because it is an S3 URI with
    * a user-defined path prefix, not a direct resource identifier.
    *
-   * @generated from field: string location_uri = 2;
+   * @generated from field: string location_uri = 3;
    */
   locationUri: string;
 };

@@ -29,6 +29,10 @@ import "org/openmcf/shared/options/options.proto";
 // - Engine version format: "OpenSearch_X.Y" or "Elasticsearch_X.Y".
 // - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 message AwsOpenSearchDomainSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // Engine
   // ---------------------------------------------------------------------------
@@ -36,14 +40,14 @@ message AwsOpenSearchDomainSpec {
   // OpenSearch or Elasticsearch engine version. Format: "OpenSearch_X.Y" (e.g.,
   // "OpenSearch_2.11") or "Elasticsearch_X.Y" (e.g., "Elasticsearch_7.10").
   // Changing to an incompatible version forces domain recreation.
-  string engine_version = 1 [(buf.validate.field).required = true];
+  string engine_version = 2 [(buf.validate.field).required = true];
 
   // ---------------------------------------------------------------------------
   // Cluster configuration
   // ---------------------------------------------------------------------------
 
   // Cluster topology: data nodes, dedicated masters, zone awareness, warm/cold storage.
-  AwsOpenSearchDomainClusterConfig cluster_config = 2 [(buf.validate.field).required = true];
+  AwsOpenSearchDomainClusterConfig cluster_config = 3 [(buf.validate.field).required = true];
 
   // ---------------------------------------------------------------------------
   // EBS storage
@@ -51,7 +55,7 @@ message AwsOpenSearchDomainSpec {
 
   // EBS volume configuration for data node storage. Required for most instance types
   // (all except certain storage-optimized types that use instance storage).
-  AwsOpenSearchDomainEbsOptions ebs_options = 3 [(buf.validate.field).required = true];
+  AwsOpenSearchDomainEbsOptions ebs_options = 4 [(buf.validate.field).required = true];
 
   // ---------------------------------------------------------------------------
   // Encryption
@@ -60,18 +64,18 @@ message AwsOpenSearchDomainSpec {
   // Enable encryption at rest for indices and automated snapshots. Uses the
   // AWS-managed `aws/es` key unless `kms_key_id` is provided.
   // ForceNew when disabling on older engine versions.
-  bool encrypt_at_rest_enabled = 4 [(org.openmcf.shared.options.recommended_default) = "true"];
+  bool encrypt_at_rest_enabled = 5 [(org.openmcf.shared.options.recommended_default) = "true"];
 
   // Customer-managed KMS key ARN or ID for at-rest encryption. ForceNew — the
   // KMS key cannot be changed after domain creation.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 5 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 6 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
 
   // Enable TLS encryption for all traffic between nodes in the cluster.
   // Strongly recommended for production.
-  bool node_to_node_encryption_enabled = 6 [(org.openmcf.shared.options.recommended_default) = "true"];
+  bool node_to_node_encryption_enabled = 7 [(org.openmcf.shared.options.recommended_default) = "true"];
 
   // ---------------------------------------------------------------------------
   // Networking (VPC)
@@ -80,14 +84,14 @@ message AwsOpenSearchDomainSpec {
   // VPC placement configuration. When provided, the domain is deployed into VPC
   // subnets and is not publicly accessible. ForceNew — adding or removing VPC
   // options destroys and recreates the domain.
-  AwsOpenSearchDomainVpcOptions vpc_options = 7;
+  AwsOpenSearchDomainVpcOptions vpc_options = 8;
 
   // ---------------------------------------------------------------------------
   // Domain endpoint
   // ---------------------------------------------------------------------------
 
   // HTTPS enforcement, TLS policy, and custom endpoint configuration.
-  AwsOpenSearchDomainEndpointOptions domain_endpoint_options = 8;
+  AwsOpenSearchDomainEndpointOptions domain_endpoint_options = 9;
 
   // ---------------------------------------------------------------------------
   // Fine-grained access control (FGAC)
@@ -96,7 +100,7 @@ message AwsOpenSearchDomainSpec {
   // Advanced security options enable fine-grained access control: internal user
   // database, IAM-based authentication, and role-based index-level permissions.
   // Once enabled, FGAC cannot be disabled (ForceNew).
-  AwsOpenSearchDomainAdvancedSecurityOptions advanced_security_options = 9;
+  AwsOpenSearchDomainAdvancedSecurityOptions advanced_security_options = 10;
 
   // ---------------------------------------------------------------------------
   // Log publishing
@@ -105,7 +109,7 @@ message AwsOpenSearchDomainSpec {
   // Publish domain logs to CloudWatch Logs for monitoring and troubleshooting.
   // Up to 4 configurations — one per log type (INDEX_SLOW_LOGS, SEARCH_SLOW_LOGS,
   // ES_APPLICATION_LOGS, AUDIT_LOGS).
-  repeated AwsOpenSearchDomainLogPublishingOption log_publishing_options = 10;
+  repeated AwsOpenSearchDomainLogPublishingOption log_publishing_options = 11;
 
   // ---------------------------------------------------------------------------
   // Access policies
@@ -115,7 +119,7 @@ message AwsOpenSearchDomainSpec {
   // Controls who can perform actions on the domain and its indices.
   // For VPC domains, this works in conjunction with security groups.
   // For public domains, this is the primary access control mechanism (unless FGAC is enabled).
-  google.protobuf.Struct access_policies = 11;
+  google.protobuf.Struct access_policies = 12;
 
   // ---------------------------------------------------------------------------
   // Auto-Tune and maintenance
@@ -123,11 +127,11 @@ message AwsOpenSearchDomainSpec {
 
   // Enable AWS Auto-Tune to automatically optimize JVM heap size, disk I/O,
   // and other performance settings based on cluster metrics.
-  bool auto_tune_enabled = 12;
+  bool auto_tune_enabled = 13;
 
   // Enable automatic service software updates. When true, AWS applies mandatory
   // and optional service software updates during the off-peak window.
-  bool auto_software_update_enabled = 13;
+  bool auto_software_update_enabled = 14;
 
   // ---------------------------------------------------------------------------
   // IP and advanced options
@@ -135,14 +139,14 @@ message AwsOpenSearchDomainSpec {
 
   // IP address type for the domain. "ipv4" (default) or "dualstack" (IPv4 + IPv6).
   // Changing from "dualstack" to "ipv4" forces domain recreation.
-  string ip_address_type = 14;
+  string ip_address_type = 15;
 
   // Low-level key-value configuration options. Common options:
   // - "rest.action.multi.allow_explicit_index": "true" (default)
   // - "indices.fielddata.cache.size": percentage of heap
   // - "indices.query.bool.max_clause_count": max boolean clauses
   // Values must be strings.
-  map<string, string> advanced_options = 15;
+  map<string, string> advanced_options = 16;
 
   // ---------------------------------------------------------------------------
   // CEL validations (cross-field)

@@ -7,6 +7,7 @@ kind: AwsDocumentDb
 metadata:
   name: docdb-dev
 spec:
+  region: us-east-1
   subnets:
     - valueFrom:
         kind: AwsVpc
@@ -27,6 +28,7 @@ kind: AwsDocumentDb
 metadata:
   name: docdb-prod
 spec:
+  region: us-east-1
   subnets:
     - valueFrom:
         kind: AwsVpc
@@ -74,6 +76,7 @@ kind: AwsDocumentDb
 metadata:
   name: docdb-ha
 spec:
+  region: us-east-1
   dbSubnetGroup:
     value: existing-db-subnet-group
   securityGroups:
@@ -98,6 +101,7 @@ kind: AwsDocumentDb
 metadata:
   name: docdb-dev-minimal
 spec:
+  region: us-east-1
   subnets:
     - value: subnet-12345678
     - value: subnet-87654321

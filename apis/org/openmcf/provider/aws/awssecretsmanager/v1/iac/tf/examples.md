@@ -17,6 +17,7 @@ kind: AwsSecretsManager
 metadata:
   name: my-aws-secrets
 spec:
+  region: us-west-2
   secretNames:
     - "database-password"
     - "api-key"
@@ -38,6 +39,7 @@ kind: AwsSecretsManager
 metadata:
   name: app-secrets
 spec:
+  region: us-west-2
   secretNames:
     - "database-password"
     - "database-username"
@@ -64,6 +66,7 @@ kind: AwsSecretsManager
 metadata:
   name: database-secrets
 spec:
+  region: us-west-2
   secretNames:
     - "postgres-password"
     - "postgres-username"
@@ -90,6 +93,7 @@ kind: AwsSecretsManager
 metadata:
   name: api-secrets
 spec:
+  region: us-west-2
   secretNames:
     - "github-token"
     - "slack-webhook-url"
@@ -117,6 +121,7 @@ kind: AwsSecretsManager
 metadata:
   name: production-secrets
 spec:
+  region: us-west-2
   secretNames:
     - "prod-database-password"
     - "prod-api-key"
@@ -148,6 +153,7 @@ kind: AwsSecretsManager
 metadata:
   name: development-secrets
 spec:
+  region: us-west-2
   secretNames:
     - "dev-database-password"
     - "dev-api-key"
@@ -174,6 +180,7 @@ kind: AwsSecretsManager
 metadata:
   name: microservice-secrets
 spec:
+  region: us-west-2
   secretNames:
     - "user-service-db-password"
     - "auth-service-jwt-secret"
@@ -202,6 +209,7 @@ kind: AwsSecretsManager
 metadata:
   name: security-secrets
 spec:
+  region: us-west-2
   secretNames:
     - "encryption-key"
     - "ssl-certificate-password"
@@ -230,6 +238,7 @@ kind: AwsSecretsManager
 metadata:
   name: monitoring-secrets
 spec:
+  region: us-west-2
   secretNames:
     - "datadog-api-key"
     - "newrelic-license-key"

@@ -37,6 +37,10 @@ import "org/openmcf/shared/options/options.proto";
 //   (SnapMirror replication between file systems).
 // - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 message AwsFsxOntapFileSystemSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // File System Core
   // ---------------------------------------------------------------------------
@@ -54,14 +58,14 @@ message AwsFsxOntapFileSystemSpec {
   //   Recommended for high-availability workloads.
   //
   // Default: SINGLE_AZ_2
-  optional string deployment_type = 1 [(org.openmcf.shared.options.default) = "SINGLE_AZ_2"];
+  optional string deployment_type = 2 [(org.openmcf.shared.options.default) = "SINGLE_AZ_2"];
 
   // Storage capacity in GiB. Required.
   //
   // Valid range: 1024–1048576 GiB (1 TiB – 1 PiB). Storage can be increased
   // after creation but never decreased. Choose based on data size; ONTAP's
   // built-in compression and deduplication typically achieve 2-5x data reduction.
-  int32 storage_capacity_gib = 2 [
+  int32 storage_capacity_gib = 3 [
     (buf.validate.field).int32.gte = 1024,
     (buf.validate.field).int32.lte = 1048576
   ];
@@ -75,7 +79,7 @@ message AwsFsxOntapFileSystemSpec {
   //   intelligent tiering automatically caches hot data on SSD.
   //
   // Default: SSD
-  optional string storage_type = 3 [(org.openmcf.shared.options.default) = "SSD"];
+  optional string storage_type = 4 [(org.openmcf.shared.options.default) = "SSD"];
 
   // Throughput capacity per HA pair in MB/s. Required.
   //
@@ -89,7 +93,7 @@ message AwsFsxOntapFileSystemSpec {
   // Can be changed after creation for SINGLE_AZ_2 and MULTI_AZ_2 deployment
   // types. For SINGLE_AZ_1 and MULTI_AZ_1, increasing throughput requires
   // replacement.
-  int32 throughput_capacity_per_ha_pair = 4 [(buf.validate.field).int32.gt = 0];
+  int32 throughput_capacity_per_ha_pair = 5 [(buf.validate.field).int32.gt = 0];
 
   // Number of high-availability pairs in the file system. Each HA pair adds
   // an independent pair of file servers providing throughput and IOPS capacity.
@@ -100,7 +104,7 @@ message AwsFsxOntapFileSystemSpec {
   // - MULTI_AZ_1 / MULTI_AZ_2: must be 1 (single HA pair with failover).
   //
   // Default: 1
-  optional int32 ha_pairs = 5 [
+  optional int32 ha_pairs = 6 [
     (org.openmcf.shared.options.default) = "1",
     (buf.validate.field).int32.gte = 1,
     (buf.validate.field).int32.lte = 12
@@ -117,7 +121,7 @@ message AwsFsxOntapFileSystemSpec {
   //
   // All compute resources accessing this file system (via NFS, SMB, or iSCSI)
   // must have network connectivity to these subnets.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 6 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 7 [
     (buf.validate.field).repeated.min_items = 1,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
@@ -129,7 +133,7 @@ message AwsFsxOntapFileSystemSpec {
   //
   // In a failover event, the standby file server in the other subnet takes over
   // automatically. Ignored for single-AZ deployments.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef preferred_subnet_id = 7 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef preferred_subnet_id = 8 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[0].id"
   ];
@@ -146,7 +150,7 @@ message AwsFsxOntapFileSystemSpec {
   // - TCP port 443 (ONTAP REST API)
   //
   // Up to 50 security groups.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 8 [
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 9 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
@@ -157,14 +161,14 @@ message AwsFsxOntapFileSystemSpec {
   // for seamless failover.
   //
   // Ignored for single-AZ deployments.
-  string endpoint_ip_address_range = 9;
+  string endpoint_ip_address_range = 10;
 
   // Route table IDs that need routes to the file system in a multi-AZ
   // deployment. AWS automatically manages the routes for failover. Up to 50
   // route tables.
   //
   // Ignored for single-AZ deployments.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef route_table_ids = 10;
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef route_table_ids = 11;
 
   // ---------------------------------------------------------------------------
   // Encryption
@@ -174,7 +178,7 @@ message AwsFsxOntapFileSystemSpec {
   // cannot be changed after creation. When omitted, the file system uses the
   // AWS-managed FSx key. All ONTAP file systems are encrypted at rest by
   // default; this field upgrades to a customer-managed key.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 11 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 12 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -189,7 +193,7 @@ message AwsFsxOntapFileSystemSpec {
   //
   // Length: 8-50 characters. Optional — omit if ONTAP CLI access is not needed.
   // This value is sensitive and will not be returned in read operations.
-  string fsx_admin_password = 12;
+  string fsx_admin_password = 13;
 
   // ---------------------------------------------------------------------------
   // Disk IOPS Configuration
@@ -199,7 +203,7 @@ message AwsFsxOntapFileSystemSpec {
   // IOPS. When omitted, AWS uses AUTOMATIC mode which provisions 3 IOPS per GiB
   // of storage capacity. Use USER_PROVISIONED mode for workloads requiring IOPS
   // beyond what AUTOMATIC provides.
-  AwsFsxOntapFileSystemDiskIopsConfiguration disk_iops_configuration = 13;
+  AwsFsxOntapFileSystemDiskIopsConfiguration disk_iops_configuration = 14;
 
   // ---------------------------------------------------------------------------
   // Backup
@@ -210,7 +214,7 @@ message AwsFsxOntapFileSystemSpec {
   // recovery independently of FSx backups.
   //
   // Default: 0 (no automatic backups)
-  optional int32 automatic_backup_retention_days = 14 [
+  optional int32 automatic_backup_retention_days = 15 [
     (org.openmcf.shared.options.default) = "0",
     (buf.validate.field).int32.gte = 0,
     (buf.validate.field).int32.lte = 90
@@ -218,15 +222,15 @@ message AwsFsxOntapFileSystemSpec {
 
   // Daily UTC time to start automatic backups, in HH:MM format (e.g., "05:00").
   // If not specified and backups are enabled, AWS chooses a default window.
-  string daily_automatic_backup_start_time = 15;
+  string daily_automatic_backup_start_time = 16;
 
   // Copy tags from the file system to backups.
-  bool copy_tags_to_backups = 16;
+  bool copy_tags_to_backups = 17;
 
   // Skip creating a final backup when the file system is deleted.
   //
   // Default: true
-  optional bool skip_final_backup = 17 [(org.openmcf.shared.options.default) = "true"];
+  optional bool skip_final_backup = 18 [(org.openmcf.shared.options.default) = "true"];
 
   // ---------------------------------------------------------------------------
   // Maintenance
@@ -235,7 +239,7 @@ message AwsFsxOntapFileSystemSpec {
   // Weekly UTC maintenance window in the format "d:HH:MM" where d is the day of
   // the week (1=Monday, 7=Sunday). Example: "7:02:00" for Sunday at 02:00 UTC.
   // If not specified, AWS chooses a default window.
-  string weekly_maintenance_start_time = 18;
+  string weekly_maintenance_start_time = 19;
 
   // ---------------------------------------------------------------------------
   // CEL Validations

@@ -10,6 +10,8 @@ terraform {
 }
 
 # Provider configuration is expected to be passed from the root module.
-provider "aws" {}
+provider "aws" {
+  region = var.spec.region
+}
 
 

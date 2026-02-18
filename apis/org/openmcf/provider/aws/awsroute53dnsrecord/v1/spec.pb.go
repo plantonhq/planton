@@ -173,7 +173,11 @@ type AwsRoute53DnsRecordSpec struct {
 	//
 	//	value_from:
 	//	  name: my-zone
-	ZoneId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=zone_id,json=zoneId,proto3" json:"zone_id,omitempty"`
+	//
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string               `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
+	ZoneId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=zone_id,json=zoneId,proto3" json:"zone_id,omitempty"`
 	// The name of the DNS record (fully qualified domain name or subdomain).
 	// Examples:
 	//   - "example.com" for zone apex
@@ -181,10 +185,10 @@ type AwsRoute53DnsRecordSpec struct {
 	//   - "*.example.com" for wildcard
 	//
 	// Route53 automatically appends a trailing dot if not provided.
-	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	// The type of DNS record to create.
 	// Common types: A (IPv4), AAAA (IPv6), CNAME, MX, TXT, NS, SRV, CAA
-	Type AwsRoute53DnsRecordSpec_RecordType `protobuf:"varint,3,opt,name=type,proto3,enum=org.openmcf.provider.aws.awsroute53dnsrecord.v1.AwsRoute53DnsRecordSpec_RecordType" json:"type,omitempty"`
+	Type AwsRoute53DnsRecordSpec_RecordType `protobuf:"varint,4,opt,name=type,proto3,enum=org.openmcf.provider.aws.awsroute53dnsrecord.v1.AwsRoute53DnsRecordSpec_RecordType" json:"type,omitempty"`
 	// Time to live (TTL) for the DNS record in seconds.
 	// TTL specifies how long DNS resolvers should cache the record.
 	// Common values:
@@ -194,7 +198,7 @@ type AwsRoute53DnsRecordSpec struct {
 	//
 	// Note: TTL is ignored for alias records (uses target resource's TTL).
 	// Default: 300 seconds.
-	Ttl int32 `protobuf:"varint,4,opt,name=ttl,proto3" json:"ttl,omitempty"`
+	Ttl int32 `protobuf:"varint,5,opt,name=ttl,proto3" json:"ttl,omitempty"`
 	// The values for the DNS record.
 	// Format depends on record type:
 	//   - A record: IPv4 addresses (e.g., ["192.0.2.1", "192.0.2.2"])
@@ -204,7 +208,7 @@ type AwsRoute53DnsRecordSpec struct {
 	//   - TXT record: Text values (e.g., ["v=spf1 include:_spf.google.com ~all"])
 	//
 	// Note: Mutually exclusive with alias_target. Use one or the other.
-	Values []string `protobuf:"bytes,5,rep,name=values,proto3" json:"values,omitempty"`
+	Values []string `protobuf:"bytes,6,rep,name=values,proto3" json:"values,omitempty"`
 	// Alias target configuration for Route53 alias records.
 	// Alias records are Route53's killer feature - they allow:
 	//  1. Pointing zone apex (example.com) to AWS resources without CNAME restrictions
@@ -213,7 +217,7 @@ type AwsRoute53DnsRecordSpec struct {
 	//
 	// Common targets: CloudFront, ALB/NLB, S3 website, API Gateway, another Route53 record.
 	// Note: Mutually exclusive with values. Use one or the other.
-	AliasTarget *AwsRoute53AliasTarget `protobuf:"bytes,6,opt,name=alias_target,json=aliasTarget,proto3" json:"alias_target,omitempty"`
+	AliasTarget *AwsRoute53AliasTarget `protobuf:"bytes,7,opt,name=alias_target,json=aliasTarget,proto3" json:"alias_target,omitempty"`
 	// Routing policy configuration for advanced traffic management.
 	// Route53 supports multiple routing strategies:
 	//   - Simple: Default single-value response (no config needed)
@@ -223,17 +227,17 @@ type AwsRoute53DnsRecordSpec struct {
 	//   - Geolocation: Route based on user location (GDPR, localization)
 	//
 	// If not specified, simple routing is used.
-	RoutingPolicy *AwsRoute53RoutingPolicy `protobuf:"bytes,7,opt,name=routing_policy,json=routingPolicy,proto3" json:"routing_policy,omitempty"`
+	RoutingPolicy *AwsRoute53RoutingPolicy `protobuf:"bytes,8,opt,name=routing_policy,json=routingPolicy,proto3" json:"routing_policy,omitempty"`
 	// Health check ID to attach for failover routing.
 	// Health checks monitor endpoint availability and trigger automatic failover.
 	// Create health checks separately in Route53 and reference by ID.
 	// Only used with failover routing policy.
-	HealthCheckId string `protobuf:"bytes,8,opt,name=health_check_id,json=healthCheckId,proto3" json:"health_check_id,omitempty"`
+	HealthCheckId string `protobuf:"bytes,9,opt,name=health_check_id,json=healthCheckId,proto3" json:"health_check_id,omitempty"`
 	// Set identifier for routing policies.
 	// Required for weighted, latency, failover, and geolocation routing.
 	// Must be unique among records with the same name and type.
 	// Example: "primary", "secondary", "us-east-1", "weight-70"
-	SetIdentifier string `protobuf:"bytes,9,opt,name=set_identifier,json=setIdentifier,proto3" json:"set_identifier,omitempty"`
+	SetIdentifier string `protobuf:"bytes,10,opt,name=set_identifier,json=setIdentifier,proto3" json:"set_identifier,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -266,6 +270,13 @@ func (x *AwsRoute53DnsRecordSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsRoute53DnsRecordSpec.ProtoReflect.Descriptor instead.
 func (*AwsRoute53DnsRecordSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsroute53dnsrecord_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsRoute53DnsRecordSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsRoute53DnsRecordSpec) GetZoneId() *v1.StringValueOrRef {
@@ -784,19 +795,21 @@ var File_org_openmcf_provider_aws_awsroute53dnsrecord_v1_spec_proto protoreflect
 
 const file_org_openmcf_provider_aws_awsroute53dnsrecord_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	":org/openmcf/provider/aws/awsroute53dnsrecord/v1/spec.proto\x12/org.openmcf.provider.aws.awsroute53dnsrecord.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x98\x0f\n" +
-	"\x17AwsRoute53DnsRecordSpec\x12r\n" +
-	"\azone_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\xbaH\x03\xc8\x01\x01\x88\xd4a\xd4\x01\x92\xd4a\x16status.outputs.zone_idR\x06zoneId\x12h\n" +
-	"\x04name\x18\x02 \x01(\tBT\xbaHQ\xc8\x01\x01rL2J^(?:\\*\\.[A-Za-z0-9\\-\\.]+|[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,}|[A-Za-z0-9\\-\\.]+)$R\x04name\x12\xd4\x01\n" +
-	"\x04type\x18\x03 \x01(\x0e2S.org.openmcf.provider.aws.awsroute53dnsrecord.v1.AwsRoute53DnsRecordSpec.RecordTypeBk\xbaHh\xba\x01]\n" +
+	":org/openmcf/provider/aws/awsroute53dnsrecord/v1/spec.proto\x12/org.openmcf.provider.aws.awsroute53dnsrecord.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xb9\x0f\n" +
+	"\x17AwsRoute53DnsRecordSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12r\n" +
+	"\azone_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\xbaH\x03\xc8\x01\x01\x88\xd4a\xd4\x01\x92\xd4a\x16status.outputs.zone_idR\x06zoneId\x12h\n" +
+	"\x04name\x18\x03 \x01(\tBT\xbaHQ\xc8\x01\x01rL2J^(?:\\*\\.[A-Za-z0-9\\-\\.]+|[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,}|[A-Za-z0-9\\-\\.]+)$R\x04name\x12\xd4\x01\n" +
+	"\x04type\x18\x04 \x01(\x0e2S.org.openmcf.provider.aws.awsroute53dnsrecord.v1.AwsRoute53DnsRecordSpec.RecordTypeBk\xbaHh\xba\x01]\n" +
 	"\x14type.not_unspecified\x12:type must be specified (cannot be record_type_unspecified)\x1a\tthis != 0\xc8\x01\x01\x82\x01\x02\x10\x01R\x04type\x12\x8e\x01\n" +
-	"\x03ttl\x18\x04 \x01(\x05B|\xbaHy\xba\x01v\n" +
+	"\x03ttl\x18\x05 \x01(\x05B|\xbaHy\xba\x01v\n" +
 	"\x0fttl.valid_range\x12Fttl must be 0 (for alias) or between 1 and 604800 seconds (1 week max)\x1a\x1bthis >= 0 && this <= 604800R\x03ttl\x12\x16\n" +
-	"\x06values\x18\x05 \x03(\tR\x06values\x12i\n" +
-	"\falias_target\x18\x06 \x01(\v2F.org.openmcf.provider.aws.awsroute53dnsrecord.v1.AwsRoute53AliasTargetR\valiasTarget\x12o\n" +
-	"\x0erouting_policy\x18\a \x01(\v2H.org.openmcf.provider.aws.awsroute53dnsrecord.v1.AwsRoute53RoutingPolicyR\rroutingPolicy\x12&\n" +
-	"\x0fhealth_check_id\x18\b \x01(\tR\rhealthCheckId\x12%\n" +
-	"\x0eset_identifier\x18\t \x01(\tR\rsetIdentifier\"p\n" +
+	"\x06values\x18\x06 \x03(\tR\x06values\x12i\n" +
+	"\falias_target\x18\a \x01(\v2F.org.openmcf.provider.aws.awsroute53dnsrecord.v1.AwsRoute53AliasTargetR\valiasTarget\x12o\n" +
+	"\x0erouting_policy\x18\b \x01(\v2H.org.openmcf.provider.aws.awsroute53dnsrecord.v1.AwsRoute53RoutingPolicyR\rroutingPolicy\x12&\n" +
+	"\x0fhealth_check_id\x18\t \x01(\tR\rhealthCheckId\x12%\n" +
+	"\x0eset_identifier\x18\n" +
+	" \x01(\tR\rsetIdentifier\"p\n" +
 	"\n" +
 	"RecordType\x12\x1b\n" +
 	"\x17record_type_unspecified\x10\x00\x12\x05\n" +

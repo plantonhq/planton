@@ -3,6 +3,7 @@ kind: AwsRedshiftCluster
 metadata:
   name: my-dev-warehouse
 spec:
+  region: us-west-2
   nodeType: dc2.large
   numberOfNodes: 1
   databaseName: dev

@@ -22,6 +22,7 @@ kind: AwsAlb
 metadata:
   name: basic-alb
 spec:
+  region: us-west-2
   subnets:
     - subnet-12345abc
     - subnet-67890def
@@ -44,6 +45,7 @@ kind: AwsAlb
 metadata:
   name: internal-alb
 spec:
+  region: us-west-2
   subnets:
     - subnet-internal1
     - subnet-internal2
@@ -66,6 +68,7 @@ kind: AwsAlb
 metadata:
   name: alb-with-ssl
 spec:
+  region: us-west-2
   subnets:
     - subnet-1111aaaa
     - subnet-2222bbbb
@@ -90,6 +93,7 @@ kind: AwsAlb
 metadata:
   name: alb-protected
 spec:
+  region: us-west-2
   subnets:
     - subnet-custom1
     - subnet-custom2
@@ -113,6 +117,7 @@ kind: AwsAlb
 metadata:
   name: alb-with-dns
 spec:
+  region: us-west-2
   subnets:
     - subnet-abc123
     - subnet-def456
@@ -141,6 +146,7 @@ kind: AwsAlb
 metadata:
   name: full-featured-alb
 spec:
+  region: us-west-2
   subnets:
     - subnet-prod1
     - subnet-prod2
@@ -177,6 +183,7 @@ kind: AwsAlb
 metadata:
   name: alb-with-refs
 spec:
+  region: us-west-2
   subnets:
     - valueFrom:
         kind: AwsVpc

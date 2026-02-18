@@ -43,6 +43,9 @@ variable "spec" {
   description = "spec"
   type = object({
 
+    # The AWS region where the resource will be created.
+    region = string
+
     # Controls how you are charged for read and write throughput and how you manage
     # capacity. The valid values are `PROVISIONED` and `PAY_PER_REQUEST`. Defaults
     # to `PROVISIONED`.

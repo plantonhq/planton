@@ -29,101 +29,104 @@ const (
 // on structured and semi-structured data using standard SQL.
 type AwsRedshiftClusterSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// node_type determines the compute and storage capacity of each node.
 	// Common types: dc2.large (dense compute SSD), ra3.xlplus / ra3.4xlarge / ra3.16xlarge
 	// (managed storage with automatic data tiering between SSD and S3).
 	// RA3 nodes are recommended for most workloads due to decoupled compute and storage.
-	NodeType string `protobuf:"bytes,1,opt,name=node_type,json=nodeType,proto3" json:"node_type,omitempty"`
+	NodeType string `protobuf:"bytes,2,opt,name=node_type,json=nodeType,proto3" json:"node_type,omitempty"`
 	// number_of_nodes determines the cluster topology.
 	// 1 = single-node (leader and compute combined); >1 = multi-node (separate leader + compute nodes).
 	// Multi-node clusters are required for production workloads.
-	NumberOfNodes *int32 `protobuf:"varint,2,opt,name=number_of_nodes,json=numberOfNodes,proto3,oneof" json:"number_of_nodes,omitempty"`
+	NumberOfNodes *int32 `protobuf:"varint,3,opt,name=number_of_nodes,json=numberOfNodes,proto3,oneof" json:"number_of_nodes,omitempty"`
 	// database_name is the name of the first database created in the cluster.
 	// 1-64 characters, lowercase alphanumeric and underscores only, must start with a letter or underscore.
-	DatabaseName *string `protobuf:"bytes,3,opt,name=database_name,json=databaseName,proto3,oneof" json:"database_name,omitempty"`
+	DatabaseName *string `protobuf:"bytes,4,opt,name=database_name,json=databaseName,proto3,oneof" json:"database_name,omitempty"`
 	// master_username is the admin user for the cluster. Required for new clusters.
 	// 1-128 characters, must start with a letter.
-	MasterUsername *string `protobuf:"bytes,4,opt,name=master_username,json=masterUsername,proto3,oneof" json:"master_username,omitempty"`
+	MasterUsername *string `protobuf:"bytes,5,opt,name=master_username,json=masterUsername,proto3,oneof" json:"master_username,omitempty"`
 	// master_password is the admin password (8-64 chars, at least one uppercase, one lowercase, one digit).
 	// Mutually exclusive with manage_master_password.
-	MasterPassword string `protobuf:"bytes,5,opt,name=master_password,json=masterPassword,proto3" json:"master_password,omitempty"`
+	MasterPassword string `protobuf:"bytes,6,opt,name=master_password,json=masterPassword,proto3" json:"master_password,omitempty"`
 	// manage_master_password delegates password lifecycle to AWS Secrets Manager.
 	// When true, AWS generates, rotates, and stores the password automatically.
 	// Recommended for production. Mutually exclusive with master_password.
-	ManageMasterPassword bool `protobuf:"varint,6,opt,name=manage_master_password,json=manageMasterPassword,proto3" json:"manage_master_password,omitempty"`
+	ManageMasterPassword bool `protobuf:"varint,7,opt,name=manage_master_password,json=manageMasterPassword,proto3" json:"manage_master_password,omitempty"`
 	// master_password_secret_kms_key_id encrypts the Secrets Manager secret holding the managed password.
 	// Only applicable when manage_master_password is true.
-	MasterPasswordSecretKmsKeyId *v1.StringValueOrRef `protobuf:"bytes,7,opt,name=master_password_secret_kms_key_id,json=masterPasswordSecretKmsKeyId,proto3" json:"master_password_secret_kms_key_id,omitempty"`
+	MasterPasswordSecretKmsKeyId *v1.StringValueOrRef `protobuf:"bytes,8,opt,name=master_password_secret_kms_key_id,json=masterPasswordSecretKmsKeyId,proto3" json:"master_password_secret_kms_key_id,omitempty"`
 	// port for client connections. Redshift default is 5439. Range: 1115-65535.
-	Port *int32 `protobuf:"varint,8,opt,name=port,proto3,oneof" json:"port,omitempty"`
+	Port *int32 `protobuf:"varint,9,opt,name=port,proto3,oneof" json:"port,omitempty"`
 	// subnet_ids for automatic Redshift subnet group creation.
 	// Provide at least two subnets in distinct Availability Zones for high availability.
-	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,9,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
+	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,10,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// cluster_subnet_group_name uses an existing Redshift subnet group instead of creating one from subnet_ids.
-	ClusterSubnetGroupName *v1.StringValueOrRef `protobuf:"bytes,10,opt,name=cluster_subnet_group_name,json=clusterSubnetGroupName,proto3" json:"cluster_subnet_group_name,omitempty"`
+	ClusterSubnetGroupName *v1.StringValueOrRef `protobuf:"bytes,11,opt,name=cluster_subnet_group_name,json=clusterSubnetGroupName,proto3" json:"cluster_subnet_group_name,omitempty"`
 	// security_group_ids triggers creation of a managed security group with ingress rules
 	// allowing traffic from these source security groups on the cluster port.
-	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,11,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
+	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,12,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
 	// allowed_cidr_blocks triggers creation of a managed security group with ingress rules
 	// allowing traffic from these IPv4 CIDR ranges on the cluster port.
-	AllowedCidrBlocks []string `protobuf:"bytes,12,rep,name=allowed_cidr_blocks,json=allowedCidrBlocks,proto3" json:"allowed_cidr_blocks,omitempty"`
+	AllowedCidrBlocks []string `protobuf:"bytes,13,rep,name=allowed_cidr_blocks,json=allowedCidrBlocks,proto3" json:"allowed_cidr_blocks,omitempty"`
 	// associate_security_group_ids are existing security groups attached directly to the cluster
 	// (alongside the managed security group, if one is created from security_group_ids/allowed_cidr_blocks).
-	AssociateSecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,13,rep,name=associate_security_group_ids,json=associateSecurityGroupIds,proto3" json:"associate_security_group_ids,omitempty"`
+	AssociateSecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,14,rep,name=associate_security_group_ids,json=associateSecurityGroupIds,proto3" json:"associate_security_group_ids,omitempty"`
 	// vpc_id is required when security_group_ids or allowed_cidr_blocks are provided,
 	// as the managed security group must be created within a specific VPC.
-	VpcId *v1.StringValueOrRef `protobuf:"bytes,14,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
+	VpcId *v1.StringValueOrRef `protobuf:"bytes,15,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
 	// publicly_accessible controls whether the cluster has a public IP and can be accessed from outside the VPC.
-	PubliclyAccessible bool `protobuf:"varint,15,opt,name=publicly_accessible,json=publiclyAccessible,proto3" json:"publicly_accessible,omitempty"`
+	PubliclyAccessible bool `protobuf:"varint,16,opt,name=publicly_accessible,json=publiclyAccessible,proto3" json:"publicly_accessible,omitempty"`
 	// enhanced_vpc_routing forces all COPY and UNLOAD traffic between the cluster and data repositories
 	// through the VPC, enabling VPC flow logs and other network security controls.
-	EnhancedVpcRouting bool `protobuf:"varint,16,opt,name=enhanced_vpc_routing,json=enhancedVpcRouting,proto3" json:"enhanced_vpc_routing,omitempty"`
+	EnhancedVpcRouting bool `protobuf:"varint,17,opt,name=enhanced_vpc_routing,json=enhancedVpcRouting,proto3" json:"enhanced_vpc_routing,omitempty"`
 	// multi_az enables Multi-AZ deployment for automatic failover to a standby in a different AZ.
 	// Requires RA3 node types (ra3.xlplus, ra3.4xlarge, ra3.16xlarge).
-	MultiAz bool `protobuf:"varint,17,opt,name=multi_az,json=multiAz,proto3" json:"multi_az,omitempty"`
+	MultiAz bool `protobuf:"varint,18,opt,name=multi_az,json=multiAz,proto3" json:"multi_az,omitempty"`
 	// encrypted enables at-rest encryption for the cluster data.
 	// AWS defaults to true. Uses the AWS-managed Redshift service key unless kms_key_id is specified.
-	Encrypted *bool `protobuf:"varint,18,opt,name=encrypted,proto3,oneof" json:"encrypted,omitempty"`
+	Encrypted *bool `protobuf:"varint,19,opt,name=encrypted,proto3,oneof" json:"encrypted,omitempty"`
 	// kms_key_id is the ARN of a customer-managed KMS key for cluster encryption.
 	// Requires encrypted to be true. If omitted, AWS uses the default Redshift service key.
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,19,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,20,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// iam_roles attaches IAM roles to the cluster for accessing other AWS services
 	// (S3, DynamoDB, Glue Data Catalog, etc.) during COPY, UNLOAD, and Spectrum queries.
 	// Maximum 10 roles per cluster.
-	IamRoles []*v1.StringValueOrRef `protobuf:"bytes,20,rep,name=iam_roles,json=iamRoles,proto3" json:"iam_roles,omitempty"`
+	IamRoles []*v1.StringValueOrRef `protobuf:"bytes,21,rep,name=iam_roles,json=iamRoles,proto3" json:"iam_roles,omitempty"`
 	// default_iam_role_arn is the IAM role used by default when SQL commands access AWS services
 	// without explicitly specifying a role (e.g., unqualified COPY/UNLOAD).
-	DefaultIamRoleArn *v1.StringValueOrRef `protobuf:"bytes,21,opt,name=default_iam_role_arn,json=defaultIamRoleArn,proto3" json:"default_iam_role_arn,omitempty"`
+	DefaultIamRoleArn *v1.StringValueOrRef `protobuf:"bytes,22,opt,name=default_iam_role_arn,json=defaultIamRoleArn,proto3" json:"default_iam_role_arn,omitempty"`
 	// automated_snapshot_retention_period is the number of days to retain automated cluster snapshots.
 	// 0 disables automated snapshots. Maximum: 35.
-	AutomatedSnapshotRetentionPeriod *int32 `protobuf:"varint,22,opt,name=automated_snapshot_retention_period,json=automatedSnapshotRetentionPeriod,proto3,oneof" json:"automated_snapshot_retention_period,omitempty"`
+	AutomatedSnapshotRetentionPeriod *int32 `protobuf:"varint,23,opt,name=automated_snapshot_retention_period,json=automatedSnapshotRetentionPeriod,proto3,oneof" json:"automated_snapshot_retention_period,omitempty"`
 	// skip_final_snapshot controls whether a final manual snapshot is created before cluster deletion.
 	// Set to true only for ephemeral development/test clusters.
-	SkipFinalSnapshot bool `protobuf:"varint,23,opt,name=skip_final_snapshot,json=skipFinalSnapshot,proto3" json:"skip_final_snapshot,omitempty"`
+	SkipFinalSnapshot bool `protobuf:"varint,24,opt,name=skip_final_snapshot,json=skipFinalSnapshot,proto3" json:"skip_final_snapshot,omitempty"`
 	// final_snapshot_identifier is the name for the final snapshot created on deletion.
 	// Required when skip_final_snapshot is false.
-	FinalSnapshotIdentifier string `protobuf:"bytes,24,opt,name=final_snapshot_identifier,json=finalSnapshotIdentifier,proto3" json:"final_snapshot_identifier,omitempty"`
+	FinalSnapshotIdentifier string `protobuf:"bytes,25,opt,name=final_snapshot_identifier,json=finalSnapshotIdentifier,proto3" json:"final_snapshot_identifier,omitempty"`
 	// preferred_maintenance_window is the weekly UTC time range for system maintenance.
 	// Format: ddd:hh:mi-ddd:hh:mi (e.g., "sat:03:00-sat:04:00").
-	PreferredMaintenanceWindow string `protobuf:"bytes,25,opt,name=preferred_maintenance_window,json=preferredMaintenanceWindow,proto3" json:"preferred_maintenance_window,omitempty"`
+	PreferredMaintenanceWindow string `protobuf:"bytes,26,opt,name=preferred_maintenance_window,json=preferredMaintenanceWindow,proto3" json:"preferred_maintenance_window,omitempty"`
 	// allow_version_upgrade permits AWS to automatically apply major engine version upgrades
 	// during the maintenance window.
-	AllowVersionUpgrade *bool `protobuf:"varint,26,opt,name=allow_version_upgrade,json=allowVersionUpgrade,proto3,oneof" json:"allow_version_upgrade,omitempty"`
+	AllowVersionUpgrade *bool `protobuf:"varint,27,opt,name=allow_version_upgrade,json=allowVersionUpgrade,proto3,oneof" json:"allow_version_upgrade,omitempty"`
 	// maintenance_track_name determines the cluster maintenance version track.
 	// "current" applies the latest approved version; "trailing" uses the previous major version.
-	MaintenanceTrackName string `protobuf:"bytes,27,opt,name=maintenance_track_name,json=maintenanceTrackName,proto3" json:"maintenance_track_name,omitempty"`
+	MaintenanceTrackName string `protobuf:"bytes,28,opt,name=maintenance_track_name,json=maintenanceTrackName,proto3" json:"maintenance_track_name,omitempty"`
 	// apply_immediately controls whether modifications are applied immediately or deferred
 	// to the next maintenance window.
-	ApplyImmediately bool `protobuf:"varint,28,opt,name=apply_immediately,json=applyImmediately,proto3" json:"apply_immediately,omitempty"`
+	ApplyImmediately bool `protobuf:"varint,29,opt,name=apply_immediately,json=applyImmediately,proto3" json:"apply_immediately,omitempty"`
 	// logging configures audit logging for the cluster.
 	// Redshift can send connection, user activity, and user logs to S3 or CloudWatch Logs.
-	Logging *AwsRedshiftClusterLogging `protobuf:"bytes,29,opt,name=logging,proto3" json:"logging,omitempty"`
+	Logging *AwsRedshiftClusterLogging `protobuf:"bytes,30,opt,name=logging,proto3" json:"logging,omitempty"`
 	// cluster_parameter_group_name associates an existing Redshift parameter group with the cluster.
 	// Ignored when inline parameters are provided (a new group is created instead).
-	ClusterParameterGroupName string `protobuf:"bytes,30,opt,name=cluster_parameter_group_name,json=clusterParameterGroupName,proto3" json:"cluster_parameter_group_name,omitempty"`
+	ClusterParameterGroupName string `protobuf:"bytes,31,opt,name=cluster_parameter_group_name,json=clusterParameterGroupName,proto3" json:"cluster_parameter_group_name,omitempty"`
 	// parameters creates an inline parameter group (family: redshift-1.0) with these parameters.
 	// Common parameters: require_ssl, enable_user_activity_logging, max_concurrency_scaling_clusters.
-	Parameters    []*AwsRedshiftClusterParameter `protobuf:"bytes,31,rep,name=parameters,proto3" json:"parameters,omitempty"`
+	Parameters    []*AwsRedshiftClusterParameter `protobuf:"bytes,32,rep,name=parameters,proto3" json:"parameters,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -156,6 +159,13 @@ func (x *AwsRedshiftClusterSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsRedshiftClusterSpec.ProtoReflect.Descriptor instead.
 func (*AwsRedshiftClusterSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsredshiftcluster_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsRedshiftClusterSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsRedshiftClusterSpec) GetNodeType() string {
@@ -513,43 +523,44 @@ var File_org_openmcf_provider_aws_awsredshiftcluster_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_aws_awsredshiftcluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/aws/awsredshiftcluster/v1/spec.proto\x12.org.openmcf.provider.aws.awsredshiftcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd8\x1a\n" +
-	"\x16AwsRedshiftClusterSpec\x12#\n" +
-	"\tnode_type\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bnodeType\x129\n" +
-	"\x0fnumber_of_nodes\x18\x02 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x00R\rnumberOfNodes\x88\x01\x01\x121\n" +
-	"\rdatabase_name\x18\x03 \x01(\tB\a\x8a\xa6\x1d\x03devH\x01R\fdatabaseName\x88\x01\x01\x127\n" +
-	"\x0fmaster_username\x18\x04 \x01(\tB\t\x8a\xa6\x1d\x05adminH\x02R\x0emasterUsername\x88\x01\x01\x12'\n" +
-	"\x0fmaster_password\x18\x05 \x01(\tR\x0emasterPassword\x12>\n" +
-	"\x16manage_master_password\x18\x06 \x01(\bB\b\x92\xa6\x1d\x04trueR\x14manageMasterPassword\x12\x9c\x01\n" +
-	"!master_password_secret_kms_key_id\x18\a \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\x1cmasterPasswordSecretKmsKeyId\x12-\n" +
-	"\x04port\x18\b \x01(\x05B\x14\xbaH\t\x1a\a\x18\xff\xff\x03(\xdb\b\x8a\xa6\x1d\x045439H\x03R\x04port\x88\x01\x01\x12\x81\x01\n" +
+	"9org/openmcf/provider/aws/awsredshiftcluster/v1/spec.proto\x12.org.openmcf.provider.aws.awsredshiftcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xf9\x1a\n" +
+	"\x16AwsRedshiftClusterSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12#\n" +
+	"\tnode_type\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bnodeType\x129\n" +
+	"\x0fnumber_of_nodes\x18\x03 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x00R\rnumberOfNodes\x88\x01\x01\x121\n" +
+	"\rdatabase_name\x18\x04 \x01(\tB\a\x8a\xa6\x1d\x03devH\x01R\fdatabaseName\x88\x01\x01\x127\n" +
+	"\x0fmaster_username\x18\x05 \x01(\tB\t\x8a\xa6\x1d\x05adminH\x02R\x0emasterUsername\x88\x01\x01\x12'\n" +
+	"\x0fmaster_password\x18\x06 \x01(\tR\x0emasterPassword\x12>\n" +
+	"\x16manage_master_password\x18\a \x01(\bB\b\x92\xa6\x1d\x04trueR\x14manageMasterPassword\x12\x9c\x01\n" +
+	"!master_password_secret_kms_key_id\x18\b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\x1cmasterPasswordSecretKmsKeyId\x12-\n" +
+	"\x04port\x18\t \x01(\x05B\x14\xbaH\t\x1a\a\x18\xff\xff\x03(\xdb\b\x8a\xa6\x1d\x045439H\x03R\x04port\x88\x01\x01\x12\x81\x01\n" +
 	"\n" +
-	"subnet_ids\x18\t \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12m\n" +
-	"\x19cluster_subnet_group_name\x18\n" +
-	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x16clusterSubnetGroupName\x12\x8b\x01\n" +
-	"\x12security_group_ids\x18\v \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12\xa1\x01\n" +
-	"\x13allowed_cidr_blocks\x18\f \x03(\tBq\xbaHn\x92\x01k\x18\x01\"gre2c^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$R\x11allowedCidrBlocks\x12\x9e\x01\n" +
-	"\x1cassociate_security_group_ids\x18\r \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x19associateSecurityGroupIds\x12i\n" +
-	"\x06vpc_id\x18\x0e \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12/\n" +
-	"\x13publicly_accessible\x18\x0f \x01(\bR\x12publiclyAccessible\x120\n" +
-	"\x14enhanced_vpc_routing\x18\x10 \x01(\bR\x12enhancedVpcRouting\x12\x19\n" +
-	"\bmulti_az\x18\x11 \x01(\bR\amultiAz\x12+\n" +
-	"\tencrypted\x18\x12 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x04R\tencrypted\x88\x01\x01\x12q\n" +
+	"subnet_ids\x18\n" +
+	" \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12m\n" +
+	"\x19cluster_subnet_group_name\x18\v \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x16clusterSubnetGroupName\x12\x8b\x01\n" +
+	"\x12security_group_ids\x18\f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12\xa1\x01\n" +
+	"\x13allowed_cidr_blocks\x18\r \x03(\tBq\xbaHn\x92\x01k\x18\x01\"gre2c^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$R\x11allowedCidrBlocks\x12\x9e\x01\n" +
+	"\x1cassociate_security_group_ids\x18\x0e \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x19associateSecurityGroupIds\x12i\n" +
+	"\x06vpc_id\x18\x0f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12/\n" +
+	"\x13publicly_accessible\x18\x10 \x01(\bR\x12publiclyAccessible\x120\n" +
+	"\x14enhanced_vpc_routing\x18\x11 \x01(\bR\x12enhancedVpcRouting\x12\x19\n" +
+	"\bmulti_az\x18\x12 \x01(\bR\amultiAz\x12+\n" +
+	"\tencrypted\x18\x13 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x04R\tencrypted\x88\x01\x01\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\x13 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12q\n" +
-	"\tiam_roles\x18\x14 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\biamRoles\x12\x85\x01\n" +
-	"\x14default_iam_role_arn\x18\x15 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\x11defaultIamRoleArn\x12b\n" +
-	"#automated_snapshot_retention_period\x18\x16 \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18#(\x00\x8a\xa6\x1d\x011H\x05R automatedSnapshotRetentionPeriod\x88\x01\x01\x12.\n" +
-	"\x13skip_final_snapshot\x18\x17 \x01(\bR\x11skipFinalSnapshot\x12:\n" +
-	"\x19final_snapshot_identifier\x18\x18 \x01(\tR\x17finalSnapshotIdentifier\x12\xc7\x01\n" +
-	"\x1cpreferred_maintenance_window\x18\x19 \x01(\tB\x84\x01\xbaH\x80\x01\xd8\x01\x01r{2y^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$R\x1apreferredMaintenanceWindow\x12A\n" +
-	"\x15allow_version_upgrade\x18\x1a \x01(\bB\b\x8a\xa6\x1d\x04trueH\x06R\x13allowVersionUpgrade\x88\x01\x01\x12Q\n" +
-	"\x16maintenance_track_name\x18\x1b \x01(\tB\x1b\xbaH\x18\xd8\x01\x01r\x13R\acurrentR\btrailingR\x14maintenanceTrackName\x12+\n" +
-	"\x11apply_immediately\x18\x1c \x01(\bR\x10applyImmediately\x12c\n" +
-	"\alogging\x18\x1d \x01(\v2I.org.openmcf.provider.aws.awsredshiftcluster.v1.AwsRedshiftClusterLoggingR\alogging\x12?\n" +
-	"\x1ccluster_parameter_group_name\x18\x1e \x01(\tR\x19clusterParameterGroupName\x12k\n" +
+	"kms_key_id\x18\x14 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12q\n" +
+	"\tiam_roles\x18\x15 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\biamRoles\x12\x85\x01\n" +
+	"\x14default_iam_role_arn\x18\x16 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\x11defaultIamRoleArn\x12b\n" +
+	"#automated_snapshot_retention_period\x18\x17 \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18#(\x00\x8a\xa6\x1d\x011H\x05R automatedSnapshotRetentionPeriod\x88\x01\x01\x12.\n" +
+	"\x13skip_final_snapshot\x18\x18 \x01(\bR\x11skipFinalSnapshot\x12:\n" +
+	"\x19final_snapshot_identifier\x18\x19 \x01(\tR\x17finalSnapshotIdentifier\x12\xc7\x01\n" +
+	"\x1cpreferred_maintenance_window\x18\x1a \x01(\tB\x84\x01\xbaH\x80\x01\xd8\x01\x01r{2y^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$R\x1apreferredMaintenanceWindow\x12A\n" +
+	"\x15allow_version_upgrade\x18\x1b \x01(\bB\b\x8a\xa6\x1d\x04trueH\x06R\x13allowVersionUpgrade\x88\x01\x01\x12Q\n" +
+	"\x16maintenance_track_name\x18\x1c \x01(\tB\x1b\xbaH\x18\xd8\x01\x01r\x13R\acurrentR\btrailingR\x14maintenanceTrackName\x12+\n" +
+	"\x11apply_immediately\x18\x1d \x01(\bR\x10applyImmediately\x12c\n" +
+	"\alogging\x18\x1e \x01(\v2I.org.openmcf.provider.aws.awsredshiftcluster.v1.AwsRedshiftClusterLoggingR\alogging\x12?\n" +
+	"\x1ccluster_parameter_group_name\x18\x1f \x01(\tR\x19clusterParameterGroupName\x12k\n" +
 	"\n" +
-	"parameters\x18\x1f \x03(\v2K.org.openmcf.provider.aws.awsredshiftcluster.v1.AwsRedshiftClusterParameterR\n" +
+	"parameters\x18  \x03(\v2K.org.openmcf.provider.aws.awsredshiftcluster.v1.AwsRedshiftClusterParameterR\n" +
 	"parameters:\xed\x03\xbaH\xe9\x03\x1a\x9f\x01\n" +
 	"\x19password_mutual_exclusion\x12Amaster_password cannot be set when manage_master_password is true\x1a?this.manage_master_password ? this.master_password == \"\" : true\x1a\x97\x01\n" +
 	"\x10subnets_or_group\x12=provide either subnet_ids (>= 2) or cluster_subnet_group_name\x1aD(this.subnet_ids.size() >= 2) || has(this.cluster_subnet_group_name)\x1a\xaa\x01\n" +

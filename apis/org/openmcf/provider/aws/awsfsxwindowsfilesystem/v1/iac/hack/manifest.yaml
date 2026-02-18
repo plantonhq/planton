@@ -6,6 +6,7 @@ metadata:
   name: test-windows-fs
   id: awsfxw-test-windows-fs-test
 spec:
+  region: us-west-2
   deployment_type: SINGLE_AZ_2
   storage_capacity_gib: 32
   storage_type: SSD

@@ -24,6 +24,7 @@ func validMinimalSpec() *AwsSagemakerDomain {
 			Name: "test-sagemaker-domain",
 		},
 		Spec: &AwsSagemakerDomainSpec{
+			Region:   "us-west-2",
 			AuthMode: "IAM",
 			VpcId: &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "vpc-0abc123def456"},

@@ -36,6 +36,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsRoute53DnsRecord.www-example
 spec:
+  region: us-east-1
   zoneId: Z1234567890ABCDEF
   name: www.example.com
   type: A
@@ -58,6 +59,7 @@ This creates an A record for `www.example.com` pointing to `203.0.113.10` with a
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | The AWS region where the resource will be created. | Required |
 | `zoneId` | `StringValueOrRef` | The Route53 hosted zone ID where this record is created. Can reference an AwsRoute53Zone resource via `valueFrom` (default kind: `AwsRoute53Zone`, default field: `status.outputs.zone_id`). | Required |
 | `name` | `string` | The fully qualified domain name or subdomain (e.g., `www.example.com`, `*.example.com`). | Required. Pattern: hostname, subdomain, or wildcard. |
 | `type` | `RecordType` | The DNS record type. Valid values: `A`, `AAAA`, `CNAME`, `MX`, `TXT`, `SRV`, `NS`, `CAA`. | Required. Cannot be `record_type_unspecified`. |
@@ -210,6 +212,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsRoute53DnsRecord.api-canary
 spec:
+  region: us-east-1
   zoneId: Z1234567890ABCDEF
   name: api.example.com
   type: A
@@ -239,6 +242,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsRoute53DnsRecord.app-primary
 spec:
+  region: us-east-1
   zoneId: Z1234567890ABCDEF
   name: app.example.com
   type: A
@@ -265,6 +269,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsRoute53DnsRecord.app-secondary
 spec:
+  region: us-east-1
   zoneId: Z1234567890ABCDEF
   name: app.example.com
   type: A

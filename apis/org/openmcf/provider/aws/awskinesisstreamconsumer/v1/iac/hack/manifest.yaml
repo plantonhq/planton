@@ -11,5 +11,6 @@ metadata:
     pulumi.openmcf.org/project: test-project
     pulumi.openmcf.org/stack.name: dev.AwsKinesisStreamConsumer.test-consumer
 spec:
+  region: us-west-2
   streamArn:
     value: arn:aws:kinesis:us-east-1:123456789012:stream/test-stream

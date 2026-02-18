@@ -48,101 +48,104 @@ const (
 //   - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 type AwsRedisElasticacheSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Cache engine to use. Redis is the dominant choice; Valkey is the open-source
 	// Redis-compatible alternative. Values: "redis", "valkey".
-	Engine string `protobuf:"bytes,1,opt,name=engine,proto3" json:"engine,omitempty"`
+	Engine string `protobuf:"bytes,2,opt,name=engine,proto3" json:"engine,omitempty"`
 	// Engine version to deploy. Examples: "7.1", "7.0", "6.2" for Redis;
 	// "7.2" for Valkey. Leave empty to use the provider default.
-	EngineVersion string `protobuf:"bytes,2,opt,name=engine_version,json=engineVersion,proto3" json:"engine_version,omitempty"`
+	EngineVersion string `protobuf:"bytes,3,opt,name=engine_version,json=engineVersion,proto3" json:"engine_version,omitempty"`
 	// Human-readable description for the replication group. Required by AWS.
-	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	// ElastiCache node type. Determines CPU, memory, and network capacity.
 	// Examples: "cache.t3.micro" (dev), "cache.r7g.large" (production),
 	// "cache.r6gd.xlarge" (data tiering).
-	NodeType string `protobuf:"bytes,4,opt,name=node_type,json=nodeType,proto3" json:"node_type,omitempty"`
+	NodeType string `protobuf:"bytes,5,opt,name=node_type,json=nodeType,proto3" json:"node_type,omitempty"`
 	// Port on which the cluster accepts connections. Default: 6379.
 	// This is a ForceNew attribute — changing it destroys and recreates the cluster.
-	Port *int32 `protobuf:"varint,5,opt,name=port,proto3,oneof" json:"port,omitempty"`
+	Port *int32 `protobuf:"varint,6,opt,name=port,proto3,oneof" json:"port,omitempty"`
 	// Total number of cache clusters (nodes) in the replication group. This includes
 	// the primary and all read replicas. For example, 3 means 1 primary + 2 replicas.
 	// Range: 1–6. Mutually exclusive with `num_node_groups`.
-	NumCacheClusters int32 `protobuf:"varint,6,opt,name=num_cache_clusters,json=numCacheClusters,proto3" json:"num_cache_clusters,omitempty"`
+	NumCacheClusters int32 `protobuf:"varint,7,opt,name=num_cache_clusters,json=numCacheClusters,proto3" json:"num_cache_clusters,omitempty"`
 	// Number of node groups (shards) for Cluster Mode Enabled. Each shard holds a
 	// partition of the keyspace. Mutually exclusive with `num_cache_clusters`.
-	NumNodeGroups int32 `protobuf:"varint,7,opt,name=num_node_groups,json=numNodeGroups,proto3" json:"num_node_groups,omitempty"`
+	NumNodeGroups int32 `protobuf:"varint,8,opt,name=num_node_groups,json=numNodeGroups,proto3" json:"num_node_groups,omitempty"`
 	// Number of read replicas per shard. Range: 0–5. Only valid when
 	// `num_node_groups` is set.
-	ReplicasPerNodeGroup int32 `protobuf:"varint,8,opt,name=replicas_per_node_group,json=replicasPerNodeGroup,proto3" json:"replicas_per_node_group,omitempty"`
+	ReplicasPerNodeGroup int32 `protobuf:"varint,9,opt,name=replicas_per_node_group,json=replicasPerNodeGroup,proto3" json:"replicas_per_node_group,omitempty"`
 	// Enable automatic failover to a read replica if the primary fails.
 	// Requires `num_cache_clusters >= 2` (non-clustered) or `num_node_groups > 0`
 	// (clustered mode, where failover is always on).
-	AutomaticFailoverEnabled bool `protobuf:"varint,9,opt,name=automatic_failover_enabled,json=automaticFailoverEnabled,proto3" json:"automatic_failover_enabled,omitempty"`
+	AutomaticFailoverEnabled bool `protobuf:"varint,10,opt,name=automatic_failover_enabled,json=automaticFailoverEnabled,proto3" json:"automatic_failover_enabled,omitempty"`
 	// Deploy replicas across multiple Availability Zones for resilience against
 	// AZ-level failures. Requires `automatic_failover_enabled` to be true.
-	MultiAzEnabled bool `protobuf:"varint,10,opt,name=multi_az_enabled,json=multiAzEnabled,proto3" json:"multi_az_enabled,omitempty"`
+	MultiAzEnabled bool `protobuf:"varint,11,opt,name=multi_az_enabled,json=multiAzEnabled,proto3" json:"multi_az_enabled,omitempty"`
 	// Subnet IDs for the ElastiCache subnet group. Provide subnets in at least two
 	// AZs for multi-AZ deployments. A subnet group is created automatically from
 	// these subnets.
-	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,11,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
+	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,12,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// VPC security groups to attach to the cluster nodes. Controls network-level
 	// access to the Redis/Valkey endpoint.
-	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,12,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
+	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,13,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
 	// Enable encryption at rest for data stored on disk and in snapshots.
 	// ForceNew — changing this destroys and recreates the cluster.
-	AtRestEncryptionEnabled bool `protobuf:"varint,13,opt,name=at_rest_encryption_enabled,json=atRestEncryptionEnabled,proto3" json:"at_rest_encryption_enabled,omitempty"`
+	AtRestEncryptionEnabled bool `protobuf:"varint,14,opt,name=at_rest_encryption_enabled,json=atRestEncryptionEnabled,proto3" json:"at_rest_encryption_enabled,omitempty"`
 	// Enable encryption in transit (TLS) for all client connections and
 	// replication traffic. Strongly recommended for production.
-	TransitEncryptionEnabled bool `protobuf:"varint,14,opt,name=transit_encryption_enabled,json=transitEncryptionEnabled,proto3" json:"transit_encryption_enabled,omitempty"`
+	TransitEncryptionEnabled bool `protobuf:"varint,15,opt,name=transit_encryption_enabled,json=transitEncryptionEnabled,proto3" json:"transit_encryption_enabled,omitempty"`
 	// TLS enforcement mode. "preferred" allows both TLS and non-TLS connections
 	// (useful during migration); "required" enforces TLS for all connections.
 	// Only valid when `transit_encryption_enabled` is true.
-	TransitEncryptionMode string `protobuf:"bytes,15,opt,name=transit_encryption_mode,json=transitEncryptionMode,proto3" json:"transit_encryption_mode,omitempty"`
+	TransitEncryptionMode string `protobuf:"bytes,16,opt,name=transit_encryption_mode,json=transitEncryptionMode,proto3" json:"transit_encryption_mode,omitempty"`
 	// Customer-managed KMS key for at-rest encryption. When set, ElastiCache uses
 	// this key instead of the AWS-managed key. ForceNew — changing this destroys
 	// and recreates the cluster.
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,16,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,17,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// Redis AUTH token (password) for client authentication. Requires
 	// `transit_encryption_enabled` to be true. 16–128 printable characters.
 	// Mutually exclusive with `user_group_ids`.
-	AuthToken *v1.StringValueOrRef `protobuf:"bytes,17,opt,name=auth_token,json=authToken,proto3" json:"auth_token,omitempty"`
+	AuthToken *v1.StringValueOrRef `protobuf:"bytes,18,opt,name=auth_token,json=authToken,proto3" json:"auth_token,omitempty"`
 	// Redis ACL user group IDs for fine-grained access control. Each user group
 	// defines users with specific command and key permissions. Mutually exclusive
 	// with `auth_token`.
-	UserGroupIds []string `protobuf:"bytes,18,rep,name=user_group_ids,json=userGroupIds,proto3" json:"user_group_ids,omitempty"`
+	UserGroupIds []string `protobuf:"bytes,19,rep,name=user_group_ids,json=userGroupIds,proto3" json:"user_group_ids,omitempty"`
 	// Weekly maintenance window in UTC. Format: "ddd:hh24:mi-ddd:hh24:mi".
 	// Example: "sun:05:00-sun:06:00". Leave empty for AWS-assigned default.
-	MaintenanceWindow string `protobuf:"bytes,19,opt,name=maintenance_window,json=maintenanceWindow,proto3" json:"maintenance_window,omitempty"`
+	MaintenanceWindow string `protobuf:"bytes,20,opt,name=maintenance_window,json=maintenanceWindow,proto3" json:"maintenance_window,omitempty"`
 	// Number of days to retain automatic snapshots before deletion. 0 disables
 	// automatic snapshots. Range: 0–35.
-	SnapshotRetentionLimit int32 `protobuf:"varint,20,opt,name=snapshot_retention_limit,json=snapshotRetentionLimit,proto3" json:"snapshot_retention_limit,omitempty"`
+	SnapshotRetentionLimit int32 `protobuf:"varint,21,opt,name=snapshot_retention_limit,json=snapshotRetentionLimit,proto3" json:"snapshot_retention_limit,omitempty"`
 	// Daily snapshot window in UTC. Format: "hh24:mi-hh24:mi".
 	// Example: "03:00-04:00". Leave empty for AWS-assigned default.
-	SnapshotWindow string `protobuf:"bytes,21,opt,name=snapshot_window,json=snapshotWindow,proto3" json:"snapshot_window,omitempty"`
+	SnapshotWindow string `protobuf:"bytes,22,opt,name=snapshot_window,json=snapshotWindow,proto3" json:"snapshot_window,omitempty"`
 	// Identifier for the final snapshot taken when the cluster is deleted. If not
 	// provided, no final snapshot is created.
-	FinalSnapshotIdentifier string `protobuf:"bytes,22,opt,name=final_snapshot_identifier,json=finalSnapshotIdentifier,proto3" json:"final_snapshot_identifier,omitempty"`
+	FinalSnapshotIdentifier string `protobuf:"bytes,23,opt,name=final_snapshot_identifier,json=finalSnapshotIdentifier,proto3" json:"final_snapshot_identifier,omitempty"`
 	// Apply changes immediately instead of waiting for the next maintenance window.
 	// May cause brief downtime for some operations.
-	ApplyImmediately bool `protobuf:"varint,23,opt,name=apply_immediately,json=applyImmediately,proto3" json:"apply_immediately,omitempty"`
+	ApplyImmediately bool `protobuf:"varint,24,opt,name=apply_immediately,json=applyImmediately,proto3" json:"apply_immediately,omitempty"`
 	// Parameter group family for custom parameters. Required when `parameters` is
 	// provided. Examples: "redis7", "redis6.x", "valkey7".
-	ParameterGroupFamily string `protobuf:"bytes,24,opt,name=parameter_group_family,json=parameterGroupFamily,proto3" json:"parameter_group_family,omitempty"`
+	ParameterGroupFamily string `protobuf:"bytes,25,opt,name=parameter_group_family,json=parameterGroupFamily,proto3" json:"parameter_group_family,omitempty"`
 	// Custom cache parameters to apply via a managed parameter group. Common
 	// examples: maxmemory-policy, timeout, tcp-keepalive.
-	Parameters []*AwsRedisElasticacheParameter `protobuf:"bytes,25,rep,name=parameters,proto3" json:"parameters,omitempty"`
+	Parameters []*AwsRedisElasticacheParameter `protobuf:"bytes,26,rep,name=parameters,proto3" json:"parameters,omitempty"`
 	// Log delivery configurations for slow-log and/or engine-log. At most 2
 	// entries — one per log type. Logs can be delivered to CloudWatch Logs or
 	// Kinesis Data Firehose.
-	LogDeliveryConfigurations []*AwsRedisElasticacheLogDeliveryConfig `protobuf:"bytes,26,rep,name=log_delivery_configurations,json=logDeliveryConfigurations,proto3" json:"log_delivery_configurations,omitempty"`
+	LogDeliveryConfigurations []*AwsRedisElasticacheLogDeliveryConfig `protobuf:"bytes,27,rep,name=log_delivery_configurations,json=logDeliveryConfigurations,proto3" json:"log_delivery_configurations,omitempty"`
 	// SNS topic ARN for cluster event notifications (failover, maintenance,
 	// configuration changes, etc.).
-	NotificationTopicArn *v1.StringValueOrRef `protobuf:"bytes,27,opt,name=notification_topic_arn,json=notificationTopicArn,proto3" json:"notification_topic_arn,omitempty"`
+	NotificationTopicArn *v1.StringValueOrRef `protobuf:"bytes,28,opt,name=notification_topic_arn,json=notificationTopicArn,proto3" json:"notification_topic_arn,omitempty"`
 	// Automatically apply minor engine version upgrades during maintenance windows.
-	AutoMinorVersionUpgrade bool `protobuf:"varint,28,opt,name=auto_minor_version_upgrade,json=autoMinorVersionUpgrade,proto3" json:"auto_minor_version_upgrade,omitempty"`
+	AutoMinorVersionUpgrade bool `protobuf:"varint,29,opt,name=auto_minor_version_upgrade,json=autoMinorVersionUpgrade,proto3" json:"auto_minor_version_upgrade,omitempty"`
 	// Enable data tiering — automatically moves less-frequently-accessed data to
 	// SSD storage for up to 5x more data per node. Only available on r6gd node
 	// types. ForceNew — cannot be changed after creation.
-	DataTieringEnabled bool `protobuf:"varint,29,opt,name=data_tiering_enabled,json=dataTieringEnabled,proto3" json:"data_tiering_enabled,omitempty"`
+	DataTieringEnabled bool `protobuf:"varint,30,opt,name=data_tiering_enabled,json=dataTieringEnabled,proto3" json:"data_tiering_enabled,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -175,6 +178,13 @@ func (x *AwsRedisElasticacheSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsRedisElasticacheSpec.ProtoReflect.Descriptor instead.
 func (*AwsRedisElasticacheSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsrediselasticache_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsRedisElasticacheSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsRedisElasticacheSpec) GetEngine() string {
@@ -518,43 +528,44 @@ var File_org_openmcf_provider_aws_awsrediselasticache_v1_spec_proto protoreflect
 
 const file_org_openmcf_provider_aws_awsrediselasticache_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	":org/openmcf/provider/aws/awsrediselasticache/v1/spec.proto\x12/org.openmcf.provider.aws.awsrediselasticache.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x90\"\n" +
-	"\x17AwsRedisElasticacheSpec\x12\x1e\n" +
-	"\x06engine\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06engine\x12%\n" +
-	"\x0eengine_version\x18\x02 \x01(\tR\rengineVersion\x12(\n" +
-	"\vdescription\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vdescription\x12#\n" +
-	"\tnode_type\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bnodeType\x12,\n" +
-	"\x04port\x18\x05 \x01(\x05B\x13\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01\x8a\xa6\x1d\x046379H\x00R\x04port\x88\x01\x01\x12,\n" +
-	"\x12num_cache_clusters\x18\x06 \x01(\x05R\x10numCacheClusters\x12&\n" +
-	"\x0fnum_node_groups\x18\a \x01(\x05R\rnumNodeGroups\x12@\n" +
-	"\x17replicas_per_node_group\x18\b \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x05(\x00R\x14replicasPerNodeGroup\x12<\n" +
-	"\x1aautomatic_failover_enabled\x18\t \x01(\bR\x18automaticFailoverEnabled\x12(\n" +
-	"\x10multi_az_enabled\x18\n" +
-	" \x01(\bR\x0emultiAzEnabled\x12\x81\x01\n" +
+	":org/openmcf/provider/aws/awsrediselasticache/v1/spec.proto\x12/org.openmcf.provider.aws.awsrediselasticache.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb1\"\n" +
+	"\x17AwsRedisElasticacheSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x1e\n" +
+	"\x06engine\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06engine\x12%\n" +
+	"\x0eengine_version\x18\x03 \x01(\tR\rengineVersion\x12(\n" +
+	"\vdescription\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vdescription\x12#\n" +
+	"\tnode_type\x18\x05 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bnodeType\x12,\n" +
+	"\x04port\x18\x06 \x01(\x05B\x13\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01\x8a\xa6\x1d\x046379H\x00R\x04port\x88\x01\x01\x12,\n" +
+	"\x12num_cache_clusters\x18\a \x01(\x05R\x10numCacheClusters\x12&\n" +
+	"\x0fnum_node_groups\x18\b \x01(\x05R\rnumNodeGroups\x12@\n" +
+	"\x17replicas_per_node_group\x18\t \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x05(\x00R\x14replicasPerNodeGroup\x12<\n" +
+	"\x1aautomatic_failover_enabled\x18\n" +
+	" \x01(\bR\x18automaticFailoverEnabled\x12(\n" +
+	"\x10multi_az_enabled\x18\v \x01(\bR\x0emultiAzEnabled\x12\x81\x01\n" +
 	"\n" +
-	"subnet_ids\x18\v \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
-	"\x12security_group_ids\x18\f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12E\n" +
-	"\x1aat_rest_encryption_enabled\x18\r \x01(\bB\b\x92\xa6\x1d\x04trueR\x17atRestEncryptionEnabled\x12F\n" +
-	"\x1atransit_encryption_enabled\x18\x0e \x01(\bB\b\x92\xa6\x1d\x04trueR\x18transitEncryptionEnabled\x126\n" +
-	"\x17transit_encryption_mode\x18\x0f \x01(\tR\x15transitEncryptionMode\x12q\n" +
+	"subnet_ids\x18\f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
+	"\x12security_group_ids\x18\r \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12E\n" +
+	"\x1aat_rest_encryption_enabled\x18\x0e \x01(\bB\b\x92\xa6\x1d\x04trueR\x17atRestEncryptionEnabled\x12F\n" +
+	"\x1atransit_encryption_enabled\x18\x0f \x01(\bB\b\x92\xa6\x1d\x04trueR\x18transitEncryptionEnabled\x126\n" +
+	"\x17transit_encryption_mode\x18\x10 \x01(\tR\x15transitEncryptionMode\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\x10 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12Q\n" +
+	"kms_key_id\x18\x11 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12Q\n" +
 	"\n" +
-	"auth_token\x18\x11 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\tauthToken\x12$\n" +
-	"\x0euser_group_ids\x18\x12 \x03(\tR\fuserGroupIds\x12\xb4\x01\n" +
-	"\x12maintenance_window\x18\x13 \x01(\tB\x84\x01\xbaH\x80\x01\xd8\x01\x01r{2y^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$R\x11maintenanceWindow\x12C\n" +
-	"\x18snapshot_retention_limit\x18\x14 \x01(\x05B\t\xbaH\x06\x1a\x04\x18#(\x00R\x16snapshotRetentionLimit\x12p\n" +
-	"\x0fsnapshot_window\x18\x15 \x01(\tBG\xbaHD\xd8\x01\x01r?2=^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$R\x0esnapshotWindow\x12:\n" +
-	"\x19final_snapshot_identifier\x18\x16 \x01(\tR\x17finalSnapshotIdentifier\x12+\n" +
-	"\x11apply_immediately\x18\x17 \x01(\bR\x10applyImmediately\x124\n" +
-	"\x16parameter_group_family\x18\x18 \x01(\tR\x14parameterGroupFamily\x12m\n" +
+	"auth_token\x18\x12 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\tauthToken\x12$\n" +
+	"\x0euser_group_ids\x18\x13 \x03(\tR\fuserGroupIds\x12\xb4\x01\n" +
+	"\x12maintenance_window\x18\x14 \x01(\tB\x84\x01\xbaH\x80\x01\xd8\x01\x01r{2y^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$R\x11maintenanceWindow\x12C\n" +
+	"\x18snapshot_retention_limit\x18\x15 \x01(\x05B\t\xbaH\x06\x1a\x04\x18#(\x00R\x16snapshotRetentionLimit\x12p\n" +
+	"\x0fsnapshot_window\x18\x16 \x01(\tBG\xbaHD\xd8\x01\x01r?2=^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$R\x0esnapshotWindow\x12:\n" +
+	"\x19final_snapshot_identifier\x18\x17 \x01(\tR\x17finalSnapshotIdentifier\x12+\n" +
+	"\x11apply_immediately\x18\x18 \x01(\bR\x10applyImmediately\x124\n" +
+	"\x16parameter_group_family\x18\x19 \x01(\tR\x14parameterGroupFamily\x12m\n" +
 	"\n" +
-	"parameters\x18\x19 \x03(\v2M.org.openmcf.provider.aws.awsrediselasticache.v1.AwsRedisElasticacheParameterR\n" +
+	"parameters\x18\x1a \x03(\v2M.org.openmcf.provider.aws.awsrediselasticache.v1.AwsRedisElasticacheParameterR\n" +
 	"parameters\x12\x95\x01\n" +
-	"\x1blog_delivery_configurations\x18\x1a \x03(\v2U.org.openmcf.provider.aws.awsrediselasticache.v1.AwsRedisElasticacheLogDeliveryConfigR\x19logDeliveryConfigurations\x12\x8b\x01\n" +
-	"\x16notification_topic_arn\x18\x1b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe2\x01\x92\xd4a\x18status.outputs.topic_arnR\x14notificationTopicArn\x12;\n" +
-	"\x1aauto_minor_version_upgrade\x18\x1c \x01(\bR\x17autoMinorVersionUpgrade\x120\n" +
-	"\x14data_tiering_enabled\x18\x1d \x01(\bR\x12dataTieringEnabled:\xd1\x10\xbaH\xcd\x10\x1a]\n" +
+	"\x1blog_delivery_configurations\x18\x1b \x03(\v2U.org.openmcf.provider.aws.awsrediselasticache.v1.AwsRedisElasticacheLogDeliveryConfigR\x19logDeliveryConfigurations\x12\x8b\x01\n" +
+	"\x16notification_topic_arn\x18\x1c \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe2\x01\x92\xd4a\x18status.outputs.topic_arnR\x14notificationTopicArn\x12;\n" +
+	"\x1aauto_minor_version_upgrade\x18\x1d \x01(\bR\x17autoMinorVersionUpgrade\x120\n" +
+	"\x14data_tiering_enabled\x18\x1e \x01(\bR\x12dataTieringEnabled:\xd1\x10\xbaH\xcd\x10\x1a]\n" +
 	"\x13engine_valid_values\x12\"engine must be 'redis' or 'valkey'\x1a\"this.engine in ['redis', 'valkey']\x1a\xc2\x01\n" +
 	"\x17topology_mode_selection\x12jspecify either num_cache_clusters (non-clustered) or num_node_groups (clustered), not both and not neither\x1a;(this.num_cache_clusters > 0) != (this.num_node_groups > 0)\x1a\xaf\x01\n" +
 	"\x18num_cache_clusters_range\x123num_cache_clusters must be between 1 and 6 when set\x1a^this.num_cache_clusters == 0 || (this.num_cache_clusters >= 1 && this.num_cache_clusters <= 6)\x1a\x9a\x01\n" +

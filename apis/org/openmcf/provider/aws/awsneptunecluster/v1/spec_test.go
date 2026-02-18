@@ -32,6 +32,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with minimal valid fields using subnet_ids", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -46,6 +47,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with neptune_subnet_group_name instead of subnet_ids", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					NeptuneSubnetGroupName: &foreignkeyv1.StringValueOrRef{
 						LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my-subnet-group"},
 					},
@@ -59,6 +61,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with final_snapshot_identifier when skip_final_snapshot is false", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -74,6 +77,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with valid cloudwatch logs exports", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -89,6 +93,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with valid CIDR blocks", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -104,6 +109,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with valid storage_type", func() {
 			ginkgo.It("should not return a validation error for iopt1", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -119,6 +125,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with valid cluster parameters", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -140,6 +147,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with serverless configuration", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -161,6 +169,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with only one subnet and no neptune_subnet_group_name", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 					},
@@ -174,6 +183,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with skip_final_snapshot false and missing final_snapshot_identifier", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -188,6 +198,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with invalid cloudwatch logs exports", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -203,6 +214,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with invalid CIDR block format", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -218,6 +230,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with duplicate CIDR blocks", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -233,6 +246,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with invalid backup_retention_period", func() {
 			ginkgo.It("should return a validation error when less than 1", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -246,6 +260,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 
 			ginkgo.It("should return a validation error when greater than 35", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -261,6 +276,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with invalid port", func() {
 			ginkgo.It("should return a validation error when port is 0", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -274,6 +290,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 
 			ginkgo.It("should return a validation error when port exceeds 65535", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -289,6 +306,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with invalid preferred_backup_window format", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -304,6 +322,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with invalid preferred_maintenance_window format", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -319,6 +338,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with invalid storage_type", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -334,6 +354,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with invalid apply_method in cluster_parameters", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},
@@ -355,6 +376,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec validations", func() {
 		ginkgo.Context("with serverless_v2_scaling where max < min", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsNeptuneClusterSpec{
+					Region: "us-west-2",
 					SubnetIds: []*foreignkeyv1.StringValueOrRef{
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-12345678"}},
 						{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "subnet-87654321"}},

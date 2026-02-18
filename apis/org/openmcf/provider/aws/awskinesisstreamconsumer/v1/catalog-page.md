@@ -31,6 +31,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsKinesisStreamConsumer.my-consumer
 spec:
+  region: us-east-1
   streamArn:
     value: arn:aws:kinesis:us-east-1:123456789012:stream/my-stream
 ```
@@ -49,6 +50,7 @@ This registers an enhanced fan-out consumer with the specified stream. The consu
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the consumer will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `streamArn` | `StringValueOrRef` | ARN of the parent Kinesis Data Stream to register with. ForceNew — changing the stream forces consumer replacement. | Required. Accepts literal ARN or `valueFrom` reference to AwsKinesisStream. |
 
 ### Optional Fields
@@ -72,6 +74,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsKinesisStreamConsumer.dashboard-consumer
 spec:
+  region: us-east-1
   streamArn:
     value: arn:aws:kinesis:us-east-1:123456789012:stream/order-events
 ```
@@ -91,6 +94,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsKinesisStreamConsumer.analytics-consumer
 spec:
+  region: us-east-1
   streamArn:
     valueFrom:
       kind: AwsKinesisStream
@@ -109,6 +113,7 @@ kind: AwsKinesisStreamConsumer
 metadata:
   name: dashboard-consumer
 spec:
+  region: us-east-1
   streamArn:
     valueFrom:
       kind: AwsKinesisStream
@@ -121,6 +126,7 @@ kind: AwsKinesisStreamConsumer
 metadata:
   name: audit-consumer
 spec:
+  region: us-east-1
   streamArn:
     valueFrom:
       kind: AwsKinesisStream

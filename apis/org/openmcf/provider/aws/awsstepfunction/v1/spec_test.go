@@ -57,6 +57,7 @@ var _ = ginkgo.Describe("AwsStepFunctionSpec validations", func() {
 	ginkgo.BeforeEach(func() {
 		// Minimal valid spec: definition + role_arn.
 		spec = &AwsStepFunctionSpec{
+			Region:     "us-west-2",
 			Definition: minimalDefinition(),
 			RoleArn:    strRef("arn:aws:iam::123456789012:role/StepFunctionsExecRole"),
 		}

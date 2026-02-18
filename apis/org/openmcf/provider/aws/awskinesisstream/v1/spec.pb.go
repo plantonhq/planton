@@ -46,6 +46,9 @@ const (
 //   - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 type AwsKinesisStreamSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Capacity mode for the stream. This is a fundamental design choice that
 	// determines pricing model, scaling behavior, and operational overhead.
 	//
@@ -60,7 +63,7 @@ type AwsKinesisStreamSpec struct {
 	// This field is required. There is no default -- you must make an explicit
 	// choice because the two modes have fundamentally different cost and
 	// operational characteristics.
-	StreamMode string `protobuf:"bytes,1,opt,name=stream_mode,json=streamMode,proto3" json:"stream_mode,omitempty"`
+	StreamMode string `protobuf:"bytes,2,opt,name=stream_mode,json=streamMode,proto3" json:"stream_mode,omitempty"`
 	// Number of open shards in the stream. Each shard provides 1 MB/s write
 	// (1,000 records/s) and 2 MB/s read capacity.
 	//
@@ -70,7 +73,7 @@ type AwsKinesisStreamSpec struct {
 	//
 	// Can be updated after creation to scale provisioned streams. AWS uses
 	// uniform scaling (UpdateShardCount with UNIFORM_SCALING strategy).
-	ShardCount int32 `protobuf:"varint,2,opt,name=shard_count,json=shardCount,proto3" json:"shard_count,omitempty"`
+	ShardCount int32 `protobuf:"varint,3,opt,name=shard_count,json=shardCount,proto3" json:"shard_count,omitempty"`
 	// Duration in hours that data records remain accessible after being added to
 	// the stream. After the retention period expires, records are no longer
 	// accessible via GetRecords.
@@ -80,7 +83,7 @@ type AwsKinesisStreamSpec struct {
 	//
 	// Increasing retention is useful for reprocessing scenarios and late-arriving
 	// consumers. Note: extended retention (beyond 24h) incurs additional cost.
-	RetentionPeriodHours int32 `protobuf:"varint,3,opt,name=retention_period_hours,json=retentionPeriodHours,proto3" json:"retention_period_hours,omitempty"`
+	RetentionPeriodHours int32 `protobuf:"varint,4,opt,name=retention_period_hours,json=retentionPeriodHours,proto3" json:"retention_period_hours,omitempty"`
 	// Customer-managed KMS key for server-side encryption of data at rest. When
 	// set, the IaC modules automatically configure KMS encryption (encryption_type
 	// = "KMS"). When absent, encryption is disabled (encryption_type = "NONE").
@@ -89,7 +92,7 @@ type AwsKinesisStreamSpec struct {
 	// alias ARN. Also accepts a reference to an AwsKmsKey resource.
 	//
 	// Encryption can be enabled or disabled after stream creation (not ForceNew).
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// Maximum size of a single data record in KiB (kibibytes). Records exceeding
 	// this limit are rejected by the PutRecord/PutRecords API.
 	//
@@ -98,7 +101,7 @@ type AwsKinesisStreamSpec struct {
 	//
 	// Larger record sizes are useful for aggregated events, rich JSON payloads,
 	// or binary data. Note: larger records consume more shard capacity.
-	MaxRecordSizeInKib int32 `protobuf:"varint,5,opt,name=max_record_size_in_kib,json=maxRecordSizeInKib,proto3" json:"max_record_size_in_kib,omitempty"`
+	MaxRecordSizeInKib int32 `protobuf:"varint,6,opt,name=max_record_size_in_kib,json=maxRecordSizeInKib,proto3" json:"max_record_size_in_kib,omitempty"`
 	// Shard-level CloudWatch metrics to enable. By default, Kinesis only provides
 	// stream-level metrics. Enabling shard-level metrics allows monitoring of
 	// individual shard performance, which is critical for identifying hot shards
@@ -115,14 +118,14 @@ type AwsKinesisStreamSpec struct {
 	//
 	// Enhanced metrics incur additional CloudWatch cost per metric per shard.
 	// Leave empty to use stream-level metrics only (no additional cost).
-	ShardLevelMetrics []string `protobuf:"bytes,6,rep,name=shard_level_metrics,json=shardLevelMetrics,proto3" json:"shard_level_metrics,omitempty"`
+	ShardLevelMetrics []string `protobuf:"bytes,7,rep,name=shard_level_metrics,json=shardLevelMetrics,proto3" json:"shard_level_metrics,omitempty"`
 	// When true, all registered enhanced fan-out consumers are automatically
 	// deregistered before the stream is deleted, preventing deletion errors.
 	// When false (default), deleting a stream with active consumers will fail.
 	//
 	// This is an operational setting that only affects stream deletion. It has
 	// no impact on the running stream.
-	EnforceConsumerDeletion bool `protobuf:"varint,7,opt,name=enforce_consumer_deletion,json=enforceConsumerDeletion,proto3" json:"enforce_consumer_deletion,omitempty"`
+	EnforceConsumerDeletion bool `protobuf:"varint,8,opt,name=enforce_consumer_deletion,json=enforceConsumerDeletion,proto3" json:"enforce_consumer_deletion,omitempty"`
 	unknownFields           protoimpl.UnknownFields
 	sizeCache               protoimpl.SizeCache
 }
@@ -155,6 +158,13 @@ func (x *AwsKinesisStreamSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsKinesisStreamSpec.ProtoReflect.Descriptor instead.
 func (*AwsKinesisStreamSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awskinesisstream_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsKinesisStreamSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsKinesisStreamSpec) GetStreamMode() string {
@@ -210,18 +220,19 @@ var File_org_openmcf_provider_aws_awskinesisstream_v1_spec_proto protoreflect.Fi
 
 const file_org_openmcf_provider_aws_awskinesisstream_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"7org/openmcf/provider/aws/awskinesisstream/v1/spec.proto\x12,org.openmcf.provider.aws.awskinesisstream.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x98\x0e\n" +
+	"7org/openmcf/provider/aws/awskinesisstream/v1/spec.proto\x12,org.openmcf.provider.aws.awskinesisstream.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xb9\x0e\n" +
 	"\x14AwsKinesisStreamSpec\x12\x1f\n" +
-	"\vstream_mode\x18\x01 \x01(\tR\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x1f\n" +
+	"\vstream_mode\x18\x02 \x01(\tR\n" +
 	"streamMode\x12\x1f\n" +
-	"\vshard_count\x18\x02 \x01(\x05R\n" +
+	"\vshard_count\x18\x03 \x01(\x05R\n" +
 	"shardCount\x124\n" +
-	"\x16retention_period_hours\x18\x03 \x01(\x05R\x14retentionPeriodHours\x12q\n" +
+	"\x16retention_period_hours\x18\x04 \x01(\x05R\x14retentionPeriodHours\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x122\n" +
-	"\x16max_record_size_in_kib\x18\x05 \x01(\x05R\x12maxRecordSizeInKib\x12.\n" +
-	"\x13shard_level_metrics\x18\x06 \x03(\tR\x11shardLevelMetrics\x12:\n" +
-	"\x19enforce_consumer_deletion\x18\a \x01(\bR\x17enforceConsumerDeletion:\xf4\n" +
+	"kms_key_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x122\n" +
+	"\x16max_record_size_in_kib\x18\x06 \x01(\x05R\x12maxRecordSizeInKib\x12.\n" +
+	"\x13shard_level_metrics\x18\a \x03(\tR\x11shardLevelMetrics\x12:\n" +
+	"\x19enforce_consumer_deletion\x18\b \x01(\bR\x17enforceConsumerDeletion:\xf4\n" +
 	"\xbaH\xf0\n" +
 	"\x1a\x8a\x01\n" +
 	"\x14stream_mode_required\x12@stream_mode is required and must be 'PROVISIONED' or 'ON_DEMAND'\x1a0this.stream_mode in ['PROVISIONED', 'ON_DEMAND']\x1a\xa4\x01\n" +

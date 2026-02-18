@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsdocumentdb/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsdocumentdb_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjRvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZG9jdW1lbnRkYi92MS9zcGVjLnByb3RvEilvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZG9jdW1lbnRkYi52MSLoEgoRQXdzRG9jdW1lbnREYlNwZWMScwoHc3VibmV0cxgBIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCLojUYdgBktRhJXN0YXR1cy5vdXRwdXRzLnByaXZhdGVfc3VibmV0cy5bKl0uaWQSSwoPZGJfc3VibmV0X2dyb3VwGAIgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZhJ2Cg9zZWN1cml0eV9ncm91cHMYAyADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQimI1GHXAZLUYSBzdGF0dXMub3V0cHV0cy5zZWN1cml0eV9ncm91cF9pZBKIAQoNYWxsb3dlZF9jaWRycxgEIAMoCUJxukhukgFrGAEiZ3JlMmNeKD86MjVbMC01XXwyWzAtNF1cZHxbMC0xXT9cZD9cZCkoPzpcLig/OjI1WzAtNV18MlswLTRdXGR8WzAtMV0/XGQ/XGQpKXszfS8oPzpbMC05XXxbMTJdXGR8M1swLTJdKSQSXwoDdnBjGAUgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIeiNRh2AGS1GEVc3RhdHVzLm91dHB1dHMudnBjX2lkEi0KDmVuZ2luZV92ZXJzaW9uGAYgASgJQhC6SARyAhABiqYdBTUuMC4wSACIAQESJwoEcG9ydBgHIAEoBUIUukgIGgYY//8DKAGKph0FMjcwMTdIAYgBARIzCg9tYXN0ZXJfdXNlcm5hbWUYCCABKAlCFbpIBHICEAGKph0KZG9jZGJhZG1pbkgCiAEBEh8KD21hc3Rlcl9wYXNzd29yZBgJIAEoCUIGukgDyAEBEikKDmluc3RhbmNlX2NvdW50GAogASgFQgy6SAQaAigBiqYdATFIA4gBARI0Cg5pbnN0YW5jZV9jbGFzcxgLIAEoCUIXukgEcgIQAYqmHQxkYi5yNmcubGFyZ2VIBIgBARIoChFzdG9yYWdlX2VuY3J5cHRlZBgMIAEoCEIIiqYdBHRydWVIBYgBARJkCgdrbXNfa2V5GA0gASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybhI0ChdiYWNrdXBfcmV0ZW50aW9uX3BlcmlvZBgOIAEoBUIOukgGGgQYIygBiqYdATdIBogBARJoChdwcmVmZXJyZWRfYmFja3VwX3dpbmRvdxgPIAEoCUJHukhE2AEBcj8yPV4oWzAxXVswLTldfDJbMC0zXSk6WzAtNV1bMC05XS0oWzAxXVswLTldfDJbMC0zXSk6WzAtNV1bMC05XSQSqwEKHHByZWZlcnJlZF9tYWludGVuYW5jZV93aW5kb3cYECABKAlChAG6SIAB2AEBcnsyeV4obW9ufHR1ZXx3ZWR8dGh1fGZyaXxzYXR8c3VuKTooWzAxXVswLTldfDJbMC0zXSk6WzAtNV1bMC05XS0obW9ufHR1ZXx3ZWR8dGh1fGZyaXxzYXR8c3VuKTooWzAxXVswLTldfDJbMC0zXSk6WzAtNV1bMC05XSQSGwoTZGVsZXRpb25fcHJvdGVjdGlvbhgRIAEoCBIrChNza2lwX2ZpbmFsX3NuYXBzaG90GBIgASgIQgmKph0FZmFsc2VIB4gBARItChlmaW5hbF9zbmFwc2hvdF9pZGVudGlmaWVyGBMgASgJQgq6SAfYAQFyAhABEjEKH2VuYWJsZWRfY2xvdWR3YXRjaF9sb2dzX2V4cG9ydHMYFCADKAlCCLpIBZIBAhgBEhkKEWFwcGx5X2ltbWVkaWF0ZWx5GBUgASgIEjEKGmF1dG9fbWlub3JfdmVyc2lvbl91cGdyYWRlGBYgASgIQgiKph0EdHJ1ZUgIiAEBEiQKHGNsdXN0ZXJfcGFyYW1ldGVyX2dyb3VwX25hbWUYFyABKAkSXQoSY2x1c3Rlcl9wYXJhbWV0ZXJzGBggAygLMkEub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2RvY3VtZW50ZGIudjEuQXdzRG9jdW1lbnREYlBhcmFtZXRlcjqBBLpI/QMafAoQc3VibmV0c19vcl9ncm91cBIvUHJvdmlkZSBlaXRoZXIgc3VibmV0cyAoPj0yKSBvciBkYl9zdWJuZXRfZ3JvdXAaNyh0aGlzLnN1Ym5ldHMuc2l6ZSgpID49IDIpIHx8IGhhcyh0aGlzLmRiX3N1Ym5ldF9ncm91cCkavwEKLGZpbmFsX3NuYXBzaG90X2lkX3JlcXVpcmVkX3doZW5fbm90X3NraXBwaW5nEkdmaW5hbF9zbmFwc2hvdF9pZGVudGlmaWVyIG11c3QgYmUgc2V0IHdoZW4gc2tpcF9maW5hbF9zbmFwc2hvdCBpcyBmYWxzZRpGdGhpcy5za2lwX2ZpbmFsX3NuYXBzaG90ID8gdHJ1ZSA6IHRoaXMuZmluYWxfc25hcHNob3RfaWRlbnRpZmllciAhPSAiIhq6AQoZbG9nc19leHBvcnRzX3ZhbGlkX3ZhbHVlcxJPZW5hYmxlZF9jbG91ZHdhdGNoX2xvZ3NfZXhwb3J0cyBtdXN0IGNvbnRhaW4gb25seSB2YWxpZCB2YWx1ZXM6IGF1ZGl0LCBwcm9maWxlchpMdGhpcy5lbmFibGVkX2Nsb3Vkd2F0Y2hfbG9nc19leHBvcnRzLmFsbCh4LCB4ID09ICJhdWRpdCIgfHwgeCA9PSAicHJvZmlsZXIiKUIRCg9fZW5naW5lX3ZlcnNpb25CBwoFX3BvcnRCEgoQX21hc3Rlcl91c2VybmFtZUIRCg9faW5zdGFuY2VfY291bnRCEQoPX2luc3RhbmNlX2NsYXNzQhQKEl9zdG9yYWdlX2VuY3J5cHRlZEIaChhfYmFja3VwX3JldGVudGlvbl9wZXJpb2RCFgoUX3NraXBfZmluYWxfc25hcHNob3RCHQobX2F1dG9fbWlub3JfdmVyc2lvbl91cGdyYWRlIoIBChZBd3NEb2N1bWVudERiUGFyYW1ldGVyEhUKBG5hbWUYASABKAlCB7pIBHICEAESFgoFdmFsdWUYAiABKAlCB7pIBHICEAESOQoMYXBwbHlfbWV0aG9kGAMgASgJQiO6SCDYAQFyG1IJaW1tZWRpYXRlUg5wZW5kaW5nLXJlYm9vdELiAgotY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Nkb2N1bWVudGRiLnYxQglTcGVjUHJvdG9QAVpbZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3Nkb2N1bWVudGRiL3YxO2F3c2RvY3VtZW50ZGJ2MaICBU9PUEFBqgIpT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2RvY3VtZW50ZGIuVjHKAilPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZG9jdW1lbnRkYlxWMeICNU9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3Nkb2N1bWVudGRiXFYxXEdQQk1ldGFkYXRh6gIuT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3Nkb2N1bWVudGRiOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("CjRvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZG9jdW1lbnRkYi92MS9zcGVjLnByb3RvEilvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZG9jdW1lbnRkYi52MSKBEwoRQXdzRG9jdW1lbnREYlNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEnMKB3N1Ym5ldHMYAiADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQi6I1GHYAZLUYSVzdGF0dXMub3V0cHV0cy5wcml2YXRlX3N1Ym5ldHMuWypdLmlkEksKD2RiX3N1Ym5ldF9ncm91cBgDIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWYSdgoPc2VjdXJpdHlfZ3JvdXBzGAQgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIpiNRh1wGS1GEgc3RhdHVzLm91dHB1dHMuc2VjdXJpdHlfZ3JvdXBfaWQSiAEKDWFsbG93ZWRfY2lkcnMYBSADKAlCcbpIbpIBaxgBImdyZTJjXig/OjI1WzAtNV18MlswLTRdXGR8WzAtMV0/XGQ/XGQpKD86XC4oPzoyNVswLTVdfDJbMC00XVxkfFswLTFdP1xkP1xkKSl7M30vKD86WzAtOV18WzEyXVxkfDNbMC0yXSkkEl8KA3ZwYxgGIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCHojUYdgBktRhFXN0YXR1cy5vdXRwdXRzLnZwY19pZBItCg5lbmdpbmVfdmVyc2lvbhgHIAEoCUIQukgEcgIQAYqmHQU1LjAuMEgAiAEBEicKBHBvcnQYCCABKAVCFLpICBoGGP//AygBiqYdBTI3MDE3SAGIAQESMwoPbWFzdGVyX3VzZXJuYW1lGAkgASgJQhW6SARyAhABiqYdCmRvY2RiYWRtaW5IAogBARIfCg9tYXN0ZXJfcGFzc3dvcmQYCiABKAlCBrpIA8gBARIpCg5pbnN0YW5jZV9jb3VudBgLIAEoBUIMukgEGgIoAYqmHQExSAOIAQESNAoOaW5zdGFuY2VfY2xhc3MYDCABKAlCF7pIBHICEAGKph0MZGIucjZnLmxhcmdlSASIAQESKAoRc3RvcmFnZV9lbmNyeXB0ZWQYDSABKAhCCIqmHQR0cnVlSAWIAQESZAoHa21zX2tleRgOIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SNAoXYmFja3VwX3JldGVudGlvbl9wZXJpb2QYDyABKAVCDrpIBhoEGCMoAYqmHQE3SAaIAQESaAoXcHJlZmVycmVkX2JhY2t1cF93aW5kb3cYECABKAlCR7pIRNgBAXI/Mj1eKFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0tKFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0kEqsBChxwcmVmZXJyZWRfbWFpbnRlbmFuY2Vfd2luZG93GBEgASgJQoQBukiAAdgBAXJ7MnleKG1vbnx0dWV8d2VkfHRodXxmcml8c2F0fHN1bik6KFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0tKG1vbnx0dWV8d2VkfHRodXxmcml8c2F0fHN1bik6KFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV0kEhsKE2RlbGV0aW9uX3Byb3RlY3Rpb24YEiABKAgSKwoTc2tpcF9maW5hbF9zbmFwc2hvdBgTIAEoCEIJiqYdBWZhbHNlSAeIAQESLQoZZmluYWxfc25hcHNob3RfaWRlbnRpZmllchgUIAEoCUIKukgH2AEBcgIQARIxCh9lbmFibGVkX2Nsb3Vkd2F0Y2hfbG9nc19leHBvcnRzGBUgAygJQgi6SAWSAQIYARIZChFhcHBseV9pbW1lZGlhdGVseRgWIAEoCBIxChphdXRvX21pbm9yX3ZlcnNpb25fdXBncmFkZRgXIAEoCEIIiqYdBHRydWVICIgBARIkChxjbHVzdGVyX3BhcmFtZXRlcl9ncm91cF9uYW1lGBggASgJEl0KEmNsdXN0ZXJfcGFyYW1ldGVycxgZIAMoCzJBLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Nkb2N1bWVudGRiLnYxLkF3c0RvY3VtZW50RGJQYXJhbWV0ZXI6gQS6SP0DGnwKEHN1Ym5ldHNfb3JfZ3JvdXASL1Byb3ZpZGUgZWl0aGVyIHN1Ym5ldHMgKD49Mikgb3IgZGJfc3VibmV0X2dyb3VwGjcodGhpcy5zdWJuZXRzLnNpemUoKSA+PSAyKSB8fCBoYXModGhpcy5kYl9zdWJuZXRfZ3JvdXApGr8BCixmaW5hbF9zbmFwc2hvdF9pZF9yZXF1aXJlZF93aGVuX25vdF9za2lwcGluZxJHZmluYWxfc25hcHNob3RfaWRlbnRpZmllciBtdXN0IGJlIHNldCB3aGVuIHNraXBfZmluYWxfc25hcHNob3QgaXMgZmFsc2UaRnRoaXMuc2tpcF9maW5hbF9zbmFwc2hvdCA/IHRydWUgOiB0aGlzLmZpbmFsX3NuYXBzaG90X2lkZW50aWZpZXIgIT0gIiIaugEKGWxvZ3NfZXhwb3J0c192YWxpZF92YWx1ZXMST2VuYWJsZWRfY2xvdWR3YXRjaF9sb2dzX2V4cG9ydHMgbXVzdCBjb250YWluIG9ubHkgdmFsaWQgdmFsdWVzOiBhdWRpdCwgcHJvZmlsZXIaTHRoaXMuZW5hYmxlZF9jbG91ZHdhdGNoX2xvZ3NfZXhwb3J0cy5hbGwoeCwgeCA9PSAiYXVkaXQiIHx8IHggPT0gInByb2ZpbGVyIilCEQoPX2VuZ2luZV92ZXJzaW9uQgcKBV9wb3J0QhIKEF9tYXN0ZXJfdXNlcm5hbWVCEQoPX2luc3RhbmNlX2NvdW50QhEKD19pbnN0YW5jZV9jbGFzc0IUChJfc3RvcmFnZV9lbmNyeXB0ZWRCGgoYX2JhY2t1cF9yZXRlbnRpb25fcGVyaW9kQhYKFF9za2lwX2ZpbmFsX3NuYXBzaG90Qh0KG19hdXRvX21pbm9yX3ZlcnNpb25fdXBncmFkZSKCAQoWQXdzRG9jdW1lbnREYlBhcmFtZXRlchIVCgRuYW1lGAEgASgJQge6SARyAhABEhYKBXZhbHVlGAIgASgJQge6SARyAhABEjkKDGFwcGx5X21ldGhvZBgDIAEoCUIjukgg2AEBchtSCWltbWVkaWF0ZVIOcGVuZGluZy1yZWJvb3RC4gIKLWNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZG9jdW1lbnRkYi52MUIJU3BlY1Byb3RvUAFaW2dpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZG9jdW1lbnRkYi92MTthd3Nkb2N1bWVudGRidjGiAgVPT1BBQaoCKU9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3Nkb2N1bWVudGRiLlYxygIpT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2RvY3VtZW50ZGJcVjHiAjVPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZG9jdW1lbnRkYlxWMVxHUEJNZXRhZGF0YeoCLk9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzZG9jdW1lbnRkYjo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsDocumentDbSpec defines the specification for deploying an AWS DocumentDB cluster.
@@ -25,10 +25,18 @@ export const file_org_openmcf_provider_aws_awsdocumentdb_v1_spec: GenFile = /*@_
  */
 export type AwsDocumentDbSpec = Message<"org.openmcf.provider.aws.awsdocumentdb.v1.AwsDocumentDbSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * subnets is the list of subnet IDs for the DB subnet group.
    * Provide at least two subnets in distinct Availability Zones for high availability.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnets = 1;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnets = 2;
    */
   subnets: StringValueOrRef[];
 
@@ -36,28 +44,28 @@ export type AwsDocumentDbSpec = Message<"org.openmcf.provider.aws.awsdocumentdb.
    * db_subnet_group is an optional name of an existing DB subnet group to use
    * instead of creating one from subnets.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef db_subnet_group = 2;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef db_subnet_group = 3;
    */
   dbSubnetGroup?: StringValueOrRef;
 
   /**
    * security_groups are the VPC security groups to associate with the cluster.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_groups = 3;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_groups = 4;
    */
   securityGroups: StringValueOrRef[];
 
   /**
    * allowed_cidrs are IPv4 CIDRs to allow ingress to the cluster security group.
    *
-   * @generated from field: repeated string allowed_cidrs = 4;
+   * @generated from field: repeated string allowed_cidrs = 5;
    */
   allowedCidrs: string[];
 
   /**
    * vpc is the VPC where the cluster will be deployed.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc = 5;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc = 6;
    */
   vpc?: StringValueOrRef;
 
@@ -65,35 +73,35 @@ export type AwsDocumentDbSpec = Message<"org.openmcf.provider.aws.awsdocumentdb.
    * engine_version is the DocumentDB engine version.
    * Examples: "4.0.0", "5.0.0"
    *
-   * @generated from field: optional string engine_version = 6;
+   * @generated from field: optional string engine_version = 7;
    */
   engineVersion?: string;
 
   /**
    * port is the TCP port on which the cluster accepts connections.
    *
-   * @generated from field: optional int32 port = 7;
+   * @generated from field: optional int32 port = 8;
    */
   port?: number;
 
   /**
    * master_username is the master user name for the cluster.
    *
-   * @generated from field: optional string master_username = 8;
+   * @generated from field: optional string master_username = 9;
    */
   masterUsername?: string;
 
   /**
    * master_password is the master user password. Required unless using Secrets Manager.
    *
-   * @generated from field: string master_password = 9;
+   * @generated from field: string master_password = 10;
    */
   masterPassword: string;
 
   /**
    * instance_count is the number of instances to create in the cluster.
    *
-   * @generated from field: optional int32 instance_count = 10;
+   * @generated from field: optional int32 instance_count = 11;
    */
   instanceCount?: number;
 
@@ -101,28 +109,28 @@ export type AwsDocumentDbSpec = Message<"org.openmcf.provider.aws.awsdocumentdb.
    * instance_class is the compute and memory capacity of the DB instances.
    * Examples: "db.r5.large", "db.r5.xlarge", "db.r6g.large"
    *
-   * @generated from field: optional string instance_class = 11;
+   * @generated from field: optional string instance_class = 12;
    */
   instanceClass?: string;
 
   /**
    * storage_encrypted indicates whether to encrypt the cluster storage at rest.
    *
-   * @generated from field: optional bool storage_encrypted = 12;
+   * @generated from field: optional bool storage_encrypted = 13;
    */
   storageEncrypted?: boolean;
 
   /**
    * kms_key is the ARN of the KMS key for storage encryption.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key = 13;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key = 14;
    */
   kmsKey?: StringValueOrRef;
 
   /**
    * backup_retention_period is the number of days to retain automated backups (1-35).
    *
-   * @generated from field: optional int32 backup_retention_period = 14;
+   * @generated from field: optional int32 backup_retention_period = 15;
    */
   backupRetentionPeriod?: number;
 
@@ -130,7 +138,7 @@ export type AwsDocumentDbSpec = Message<"org.openmcf.provider.aws.awsdocumentdb.
    * preferred_backup_window is the daily time range for automated backups in UTC.
    * Format: "hh24:mi-hh24:mi" (e.g., "03:00-04:00")
    *
-   * @generated from field: string preferred_backup_window = 15;
+   * @generated from field: string preferred_backup_window = 16;
    */
   preferredBackupWindow: string;
 
@@ -138,21 +146,21 @@ export type AwsDocumentDbSpec = Message<"org.openmcf.provider.aws.awsdocumentdb.
    * preferred_maintenance_window is the weekly time range for maintenance in UTC.
    * Format: "ddd:hh24:mi-ddd:hh24:mi" (e.g., "sun:05:00-sun:06:00")
    *
-   * @generated from field: string preferred_maintenance_window = 16;
+   * @generated from field: string preferred_maintenance_window = 17;
    */
   preferredMaintenanceWindow: string;
 
   /**
    * deletion_protection prevents accidental cluster deletion when enabled.
    *
-   * @generated from field: bool deletion_protection = 17;
+   * @generated from field: bool deletion_protection = 18;
    */
   deletionProtection: boolean;
 
   /**
    * skip_final_snapshot controls whether a final snapshot is created on deletion.
    *
-   * @generated from field: optional bool skip_final_snapshot = 18;
+   * @generated from field: optional bool skip_final_snapshot = 19;
    */
   skipFinalSnapshot?: boolean;
 
@@ -160,7 +168,7 @@ export type AwsDocumentDbSpec = Message<"org.openmcf.provider.aws.awsdocumentdb.
    * final_snapshot_identifier is the identifier for the final snapshot when
    * skip_final_snapshot is false.
    *
-   * @generated from field: string final_snapshot_identifier = 19;
+   * @generated from field: string final_snapshot_identifier = 20;
    */
   finalSnapshotIdentifier: string;
 
@@ -168,7 +176,7 @@ export type AwsDocumentDbSpec = Message<"org.openmcf.provider.aws.awsdocumentdb.
    * enabled_cloudwatch_logs_exports lists log types to export to CloudWatch.
    * Valid values: "audit", "profiler"
    *
-   * @generated from field: repeated string enabled_cloudwatch_logs_exports = 20;
+   * @generated from field: repeated string enabled_cloudwatch_logs_exports = 21;
    */
   enabledCloudwatchLogsExports: string[];
 
@@ -176,28 +184,28 @@ export type AwsDocumentDbSpec = Message<"org.openmcf.provider.aws.awsdocumentdb.
    * apply_immediately specifies whether modifications are applied immediately
    * or during the next maintenance window.
    *
-   * @generated from field: bool apply_immediately = 21;
+   * @generated from field: bool apply_immediately = 22;
    */
   applyImmediately: boolean;
 
   /**
    * auto_minor_version_upgrade enables automatic minor engine version upgrades.
    *
-   * @generated from field: optional bool auto_minor_version_upgrade = 22;
+   * @generated from field: optional bool auto_minor_version_upgrade = 23;
    */
   autoMinorVersionUpgrade?: boolean;
 
   /**
    * cluster_parameter_group_name is the name of the cluster parameter group.
    *
-   * @generated from field: string cluster_parameter_group_name = 23;
+   * @generated from field: string cluster_parameter_group_name = 24;
    */
   clusterParameterGroupName: string;
 
   /**
    * cluster_parameters are custom parameters for the cluster parameter group.
    *
-   * @generated from field: repeated org.openmcf.provider.aws.awsdocumentdb.v1.AwsDocumentDbParameter cluster_parameters = 24;
+   * @generated from field: repeated org.openmcf.provider.aws.awsdocumentdb.v1.AwsDocumentDbParameter cluster_parameters = 25;
    */
   clusterParameters: AwsDocumentDbParameter[];
 };

@@ -30,106 +30,109 @@ const (
 // and consuming streaming data rather than operating Kafka infrastructure.
 type AwsMskClusterSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// kafka_version is the Apache Kafka version for all brokers in the cluster.
 	// Examples: "3.6.0", "3.5.1", "3.4.0", "2.8.1".
 	// Upgrades are applied via rolling restart; downgrades force cluster replacement.
-	KafkaVersion string `protobuf:"bytes,1,opt,name=kafka_version,json=kafkaVersion,proto3" json:"kafka_version,omitempty"`
+	KafkaVersion string `protobuf:"bytes,2,opt,name=kafka_version,json=kafkaVersion,proto3" json:"kafka_version,omitempty"`
 	// number_of_broker_nodes is the total number of Kafka broker nodes in the cluster.
 	// Must be a multiple of the number of subnets provided in subnet_ids so that
 	// brokers are evenly distributed across Availability Zones.
-	NumberOfBrokerNodes int32 `protobuf:"varint,2,opt,name=number_of_broker_nodes,json=numberOfBrokerNodes,proto3" json:"number_of_broker_nodes,omitempty"`
+	NumberOfBrokerNodes int32 `protobuf:"varint,3,opt,name=number_of_broker_nodes,json=numberOfBrokerNodes,proto3" json:"number_of_broker_nodes,omitempty"`
 	// instance_type determines the compute and memory capacity of each broker node.
 	// Standard types: kafka.m5.large, kafka.m5.xlarge, kafka.m5.2xlarge, kafka.m5.4xlarge.
 	// Graviton types: kafka.m7g.large, kafka.m7g.xlarge (better price-performance).
 	// Small/dev types: kafka.t3.small.
-	InstanceType string `protobuf:"bytes,3,opt,name=instance_type,json=instanceType,proto3" json:"instance_type,omitempty"`
+	InstanceType string `protobuf:"bytes,4,opt,name=instance_type,json=instanceType,proto3" json:"instance_type,omitempty"`
 	// subnet_ids are the VPC subnets where broker nodes are placed.
 	// Brokers are distributed round-robin across subnets. The number of broker nodes
 	// must be a multiple of the number of subnets for even AZ distribution.
 	// ForceNew: changing subnets forces cluster replacement.
-	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,4,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
+	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,5,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// security_group_ids are source security groups allowed to reach brokers on Kafka and ZooKeeper ports.
 	// When provided (along with vpc_id), a managed security group is created with ingress rules
 	// permitting TCP traffic from these source security groups on ports 9092-9098 (Kafka) and 2181-2182 (ZooKeeper).
-	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,5,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
+	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,6,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
 	// allowed_cidr_blocks are IPv4 CIDR ranges allowed to reach brokers.
 	// When provided (along with vpc_id), a managed security group is created with ingress rules
 	// permitting TCP traffic from these CIDRs on ports 9092-9098 (Kafka) and 2181-2182 (ZooKeeper).
-	AllowedCidrBlocks []string `protobuf:"bytes,6,rep,name=allowed_cidr_blocks,json=allowedCidrBlocks,proto3" json:"allowed_cidr_blocks,omitempty"`
+	AllowedCidrBlocks []string `protobuf:"bytes,7,rep,name=allowed_cidr_blocks,json=allowedCidrBlocks,proto3" json:"allowed_cidr_blocks,omitempty"`
 	// associate_security_group_ids are existing security groups attached directly to the cluster
 	// alongside the managed security group (if one is created from security_group_ids/allowed_cidr_blocks).
 	// IMPORTANT: The broker_node_group_info.security_groups field in AWS is ForceNew.
 	// Adding or removing entries here after cluster creation forces cluster replacement.
-	AssociateSecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,7,rep,name=associate_security_group_ids,json=associateSecurityGroupIds,proto3" json:"associate_security_group_ids,omitempty"`
+	AssociateSecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,8,rep,name=associate_security_group_ids,json=associateSecurityGroupIds,proto3" json:"associate_security_group_ids,omitempty"`
 	// vpc_id is the VPC in which to create the managed security group.
 	// Required when security_group_ids or allowed_cidr_blocks are provided.
-	VpcId *v1.StringValueOrRef `protobuf:"bytes,8,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
+	VpcId *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
 	// ebs_volume_size_gib is the size of the EBS volume per broker, in GiB.
 	// Range: 1-16384. If omitted, AWS uses the instance-type-specific default.
-	EbsVolumeSizeGib *int32 `protobuf:"varint,9,opt,name=ebs_volume_size_gib,json=ebsVolumeSizeGib,proto3,oneof" json:"ebs_volume_size_gib,omitempty"`
+	EbsVolumeSizeGib *int32 `protobuf:"varint,10,opt,name=ebs_volume_size_gib,json=ebsVolumeSizeGib,proto3,oneof" json:"ebs_volume_size_gib,omitempty"`
 	// provisioned_throughput_enabled enables provisioned EBS throughput for higher streaming performance.
 	// Only supported on kafka.m5.4xlarge and larger instance types with ebs_volume_size_gib >= 10 GiB.
-	ProvisionedThroughputEnabled bool `protobuf:"varint,10,opt,name=provisioned_throughput_enabled,json=provisionedThroughputEnabled,proto3" json:"provisioned_throughput_enabled,omitempty"`
+	ProvisionedThroughputEnabled bool `protobuf:"varint,11,opt,name=provisioned_throughput_enabled,json=provisionedThroughputEnabled,proto3" json:"provisioned_throughput_enabled,omitempty"`
 	// provisioned_throughput_mbs is the provisioned EBS throughput in MiB/s per broker.
 	// Range: 250-2375. Required when provisioned_throughput_enabled is true.
-	ProvisionedThroughputMbs int32 `protobuf:"varint,11,opt,name=provisioned_throughput_mbs,json=provisionedThroughputMbs,proto3" json:"provisioned_throughput_mbs,omitempty"`
+	ProvisionedThroughputMbs int32 `protobuf:"varint,12,opt,name=provisioned_throughput_mbs,json=provisionedThroughputMbs,proto3" json:"provisioned_throughput_mbs,omitempty"`
 	// storage_mode controls data storage strategy.
 	// "LOCAL" (default): all data on broker EBS volumes.
 	// "TIERED": hot data on EBS, warm data automatically offloaded to S3 for cost optimization.
 	// Tiered storage requires Kafka 2.8.2.tiered+ and supported instance types.
-	StorageMode string `protobuf:"bytes,12,opt,name=storage_mode,json=storageMode,proto3" json:"storage_mode,omitempty"`
+	StorageMode string `protobuf:"bytes,13,opt,name=storage_mode,json=storageMode,proto3" json:"storage_mode,omitempty"`
 	// kms_key_arn is the KMS key ARN for encrypting data at rest on broker EBS volumes.
 	// If omitted, AWS uses the default aws/msk service key.
 	// ForceNew: changing the KMS key forces cluster replacement.
-	KmsKeyArn *v1.StringValueOrRef `protobuf:"bytes,13,opt,name=kms_key_arn,json=kmsKeyArn,proto3" json:"kms_key_arn,omitempty"`
+	KmsKeyArn *v1.StringValueOrRef `protobuf:"bytes,14,opt,name=kms_key_arn,json=kmsKeyArn,proto3" json:"kms_key_arn,omitempty"`
 	// client_broker_encryption controls encryption for data in transit between clients and brokers.
 	// "TLS" (default, recommended): all client-broker traffic is TLS-encrypted (port 9094).
 	// "TLS_PLAINTEXT": both TLS (9094) and plaintext (9092) are available.
 	// "PLAINTEXT": all client-broker traffic is unencrypted (port 9092).
-	ClientBrokerEncryption *string `protobuf:"bytes,14,opt,name=client_broker_encryption,json=clientBrokerEncryption,proto3,oneof" json:"client_broker_encryption,omitempty"`
+	ClientBrokerEncryption *string `protobuf:"bytes,15,opt,name=client_broker_encryption,json=clientBrokerEncryption,proto3,oneof" json:"client_broker_encryption,omitempty"`
 	// in_cluster_encryption enables TLS encryption for data in transit between brokers.
 	// Strongly recommended for production. ForceNew: changing this forces cluster replacement.
-	InClusterEncryption *bool `protobuf:"varint,15,opt,name=in_cluster_encryption,json=inClusterEncryption,proto3,oneof" json:"in_cluster_encryption,omitempty"`
+	InClusterEncryption *bool `protobuf:"varint,16,opt,name=in_cluster_encryption,json=inClusterEncryption,proto3,oneof" json:"in_cluster_encryption,omitempty"`
 	// authentication configures client authentication methods for the cluster.
 	// Multiple methods can be enabled simultaneously (e.g., SASL/IAM + TLS).
 	// If no authentication is configured, the cluster accepts unauthenticated connections.
-	Authentication *AwsMskClusterAuthentication `protobuf:"bytes,16,opt,name=authentication,proto3" json:"authentication,omitempty"`
+	Authentication *AwsMskClusterAuthentication `protobuf:"bytes,17,opt,name=authentication,proto3" json:"authentication,omitempty"`
 	// configuration_arn is the ARN of an externally managed MSK Configuration resource.
 	// MSK Configurations hold Apache Kafka server.properties overrides (e.g., replication factor,
 	// min ISR, log retention). Mutually exclusive with server_properties.
-	ConfigurationArn string `protobuf:"bytes,17,opt,name=configuration_arn,json=configurationArn,proto3" json:"configuration_arn,omitempty"`
+	ConfigurationArn string `protobuf:"bytes,18,opt,name=configuration_arn,json=configurationArn,proto3" json:"configuration_arn,omitempty"`
 	// configuration_revision is the revision number of the external MSK Configuration.
 	// Required when configuration_arn is set. Must be >= 1.
-	ConfigurationRevision int32 `protobuf:"varint,18,opt,name=configuration_revision,json=configurationRevision,proto3" json:"configuration_revision,omitempty"`
+	ConfigurationRevision int32 `protobuf:"varint,19,opt,name=configuration_revision,json=configurationRevision,proto3" json:"configuration_revision,omitempty"`
 	// server_properties defines Apache Kafka server.properties overrides as key-value pairs.
 	// When provided, an inline MSK Configuration resource is created and associated with the cluster.
 	// Common properties: auto.create.topics.enable, default.replication.factor, min.insync.replicas,
 	// num.partitions, log.retention.hours, log.retention.bytes.
 	// Mutually exclusive with configuration_arn.
-	ServerProperties map[string]string `protobuf:"bytes,19,rep,name=server_properties,json=serverProperties,proto3" json:"server_properties,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	ServerProperties map[string]string `protobuf:"bytes,20,rep,name=server_properties,json=serverProperties,proto3" json:"server_properties,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// logging configures broker log delivery to one or more destinations.
 	// All three destinations (CloudWatch Logs, Kinesis Data Firehose, S3) can be
 	// enabled simultaneously for different operational workflows.
-	Logging *AwsMskClusterLogging `protobuf:"bytes,20,opt,name=logging,proto3" json:"logging,omitempty"`
+	Logging *AwsMskClusterLogging `protobuf:"bytes,21,opt,name=logging,proto3" json:"logging,omitempty"`
 	// enhanced_monitoring sets the level of CloudWatch metrics published by the cluster.
 	// "DEFAULT": cluster-level and topic-level metrics.
 	// "PER_BROKER": adds per-broker metrics.
 	// "PER_TOPIC_PER_BROKER": adds per-topic-per-broker metrics.
 	// "PER_TOPIC_PER_PARTITION": most granular, adds per-partition metrics.
-	EnhancedMonitoring string `protobuf:"bytes,21,opt,name=enhanced_monitoring,json=enhancedMonitoring,proto3" json:"enhanced_monitoring,omitempty"`
+	EnhancedMonitoring string `protobuf:"bytes,22,opt,name=enhanced_monitoring,json=enhancedMonitoring,proto3" json:"enhanced_monitoring,omitempty"`
 	// jmx_exporter_enabled enables the Prometheus JMX Exporter on all brokers.
 	// When enabled, JMX metrics are available on port 11001 for Prometheus scraping.
 	// Provides detailed JVM and Kafka broker metrics.
-	JmxExporterEnabled bool `protobuf:"varint,22,opt,name=jmx_exporter_enabled,json=jmxExporterEnabled,proto3" json:"jmx_exporter_enabled,omitempty"`
+	JmxExporterEnabled bool `protobuf:"varint,23,opt,name=jmx_exporter_enabled,json=jmxExporterEnabled,proto3" json:"jmx_exporter_enabled,omitempty"`
 	// node_exporter_enabled enables the Prometheus Node Exporter on all brokers.
 	// When enabled, host-level metrics (CPU, memory, disk, network) are available
 	// on port 11002 for Prometheus scraping.
-	NodeExporterEnabled bool `protobuf:"varint,23,opt,name=node_exporter_enabled,json=nodeExporterEnabled,proto3" json:"node_exporter_enabled,omitempty"`
+	NodeExporterEnabled bool `protobuf:"varint,24,opt,name=node_exporter_enabled,json=nodeExporterEnabled,proto3" json:"node_exporter_enabled,omitempty"`
 	// public_access_type controls whether the cluster is reachable from the public internet.
 	// "DISABLED" (default): brokers are only reachable within the VPC.
 	// "SERVICE_PROVIDED_EIPS": AWS assigns Elastic IPs to brokers for public access.
 	// Public access requires specific authentication (SASL/IAM or SASL/SCRAM) and TLS encryption.
-	PublicAccessType string `protobuf:"bytes,24,opt,name=public_access_type,json=publicAccessType,proto3" json:"public_access_type,omitempty"`
+	PublicAccessType string `protobuf:"bytes,25,opt,name=public_access_type,json=publicAccessType,proto3" json:"public_access_type,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -162,6 +165,13 @@ func (x *AwsMskClusterSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsMskClusterSpec.ProtoReflect.Descriptor instead.
 func (*AwsMskClusterSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsmskcluster_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsMskClusterSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsMskClusterSpec) GetKafkaVersion() string {
@@ -674,37 +684,38 @@ var File_org_openmcf_provider_aws_awsmskcluster_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_aws_awsmskcluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/aws/awsmskcluster/v1/spec.proto\x12)org.openmcf.provider.aws.awsmskcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb1\x17\n" +
-	"\x11AwsMskClusterSpec\x12+\n" +
-	"\rkafka_version\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\fkafkaVersion\x12?\n" +
-	"\x16number_of_broker_nodes\x18\x02 \x01(\x05B\n" +
+	"4org/openmcf/provider/aws/awsmskcluster/v1/spec.proto\x12)org.openmcf.provider.aws.awsmskcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd2\x17\n" +
+	"\x11AwsMskClusterSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12+\n" +
+	"\rkafka_version\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\fkafkaVersion\x12?\n" +
+	"\x16number_of_broker_nodes\x18\x03 \x01(\x05B\n" +
 	"\xbaH\a\xc8\x01\x01\x1a\x02(\x01R\x13numberOfBrokerNodes\x12+\n" +
-	"\rinstance_type\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\finstanceType\x12\x89\x01\n" +
+	"\rinstance_type\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\finstanceType\x12\x89\x01\n" +
 	"\n" +
-	"subnet_ids\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
-	"\x12security_group_ids\x18\x05 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12\xa1\x01\n" +
-	"\x13allowed_cidr_blocks\x18\x06 \x03(\tBq\xbaHn\x92\x01k\x18\x01\"gre2c^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$R\x11allowedCidrBlocks\x12\x9e\x01\n" +
-	"\x1cassociate_security_group_ids\x18\a \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x19associateSecurityGroupIds\x12i\n" +
-	"\x06vpc_id\x18\b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12?\n" +
-	"\x13ebs_volume_size_gib\x18\t \x01(\x05B\v\xbaH\b\x1a\x06\x18\x80\x80\x01(\x01H\x00R\x10ebsVolumeSizeGib\x88\x01\x01\x12D\n" +
-	"\x1eprovisioned_throughput_enabled\x18\n" +
-	" \x01(\bR\x1cprovisionedThroughputEnabled\x12L\n" +
-	"\x1aprovisioned_throughput_mbs\x18\v \x01(\x05B\x0e\xbaH\v\xd8\x01\x01\x1a\x06\x18\xc7\x12(\xfa\x01R\x18provisionedThroughputMbs\x12:\n" +
-	"\fstorage_mode\x18\f \x01(\tB\x17\xbaH\x14\xd8\x01\x01r\x0fR\x05LOCALR\x06TIEREDR\vstorageMode\x12s\n" +
-	"\vkms_key_arn\x18\r \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\tkmsKeyArn\x12m\n" +
-	"\x18client_broker_encryption\x18\x0e \x01(\tB.\xbaH$\xd8\x01\x01r\x1fR\x03TLSR\rTLS_PLAINTEXTR\tPLAINTEXT\x8a\xa6\x1d\x03TLSH\x01R\x16clientBrokerEncryption\x88\x01\x01\x12A\n" +
-	"\x15in_cluster_encryption\x18\x0f \x01(\bB\b\x8a\xa6\x1d\x04trueH\x02R\x13inClusterEncryption\x88\x01\x01\x12n\n" +
-	"\x0eauthentication\x18\x10 \x01(\v2F.org.openmcf.provider.aws.awsmskcluster.v1.AwsMskClusterAuthenticationR\x0eauthentication\x12+\n" +
-	"\x11configuration_arn\x18\x11 \x01(\tR\x10configurationArn\x12A\n" +
-	"\x16configuration_revision\x18\x12 \x01(\x05B\n" +
+	"subnet_ids\x18\x05 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
+	"\x12security_group_ids\x18\x06 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12\xa1\x01\n" +
+	"\x13allowed_cidr_blocks\x18\a \x03(\tBq\xbaHn\x92\x01k\x18\x01\"gre2c^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$R\x11allowedCidrBlocks\x12\x9e\x01\n" +
+	"\x1cassociate_security_group_ids\x18\b \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x19associateSecurityGroupIds\x12i\n" +
+	"\x06vpc_id\x18\t \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12?\n" +
+	"\x13ebs_volume_size_gib\x18\n" +
+	" \x01(\x05B\v\xbaH\b\x1a\x06\x18\x80\x80\x01(\x01H\x00R\x10ebsVolumeSizeGib\x88\x01\x01\x12D\n" +
+	"\x1eprovisioned_throughput_enabled\x18\v \x01(\bR\x1cprovisionedThroughputEnabled\x12L\n" +
+	"\x1aprovisioned_throughput_mbs\x18\f \x01(\x05B\x0e\xbaH\v\xd8\x01\x01\x1a\x06\x18\xc7\x12(\xfa\x01R\x18provisionedThroughputMbs\x12:\n" +
+	"\fstorage_mode\x18\r \x01(\tB\x17\xbaH\x14\xd8\x01\x01r\x0fR\x05LOCALR\x06TIEREDR\vstorageMode\x12s\n" +
+	"\vkms_key_arn\x18\x0e \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\tkmsKeyArn\x12m\n" +
+	"\x18client_broker_encryption\x18\x0f \x01(\tB.\xbaH$\xd8\x01\x01r\x1fR\x03TLSR\rTLS_PLAINTEXTR\tPLAINTEXT\x8a\xa6\x1d\x03TLSH\x01R\x16clientBrokerEncryption\x88\x01\x01\x12A\n" +
+	"\x15in_cluster_encryption\x18\x10 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x02R\x13inClusterEncryption\x88\x01\x01\x12n\n" +
+	"\x0eauthentication\x18\x11 \x01(\v2F.org.openmcf.provider.aws.awsmskcluster.v1.AwsMskClusterAuthenticationR\x0eauthentication\x12+\n" +
+	"\x11configuration_arn\x18\x12 \x01(\tR\x10configurationArn\x12A\n" +
+	"\x16configuration_revision\x18\x13 \x01(\x05B\n" +
 	"\xbaH\a\xd8\x01\x01\x1a\x02(\x01R\x15configurationRevision\x12\x7f\n" +
-	"\x11server_properties\x18\x13 \x03(\v2R.org.openmcf.provider.aws.awsmskcluster.v1.AwsMskClusterSpec.ServerPropertiesEntryR\x10serverProperties\x12Y\n" +
-	"\alogging\x18\x14 \x01(\v2?.org.openmcf.provider.aws.awsmskcluster.v1.AwsMskClusterLoggingR\alogging\x12}\n" +
-	"\x13enhanced_monitoring\x18\x15 \x01(\tBL\xbaHI\xd8\x01\x01rDR\aDEFAULTR\n" +
+	"\x11server_properties\x18\x14 \x03(\v2R.org.openmcf.provider.aws.awsmskcluster.v1.AwsMskClusterSpec.ServerPropertiesEntryR\x10serverProperties\x12Y\n" +
+	"\alogging\x18\x15 \x01(\v2?.org.openmcf.provider.aws.awsmskcluster.v1.AwsMskClusterLoggingR\alogging\x12}\n" +
+	"\x13enhanced_monitoring\x18\x16 \x01(\tBL\xbaHI\xd8\x01\x01rDR\aDEFAULTR\n" +
 	"PER_BROKERR\x14PER_TOPIC_PER_BROKERR\x17PER_TOPIC_PER_PARTITIONR\x12enhancedMonitoring\x120\n" +
-	"\x14jmx_exporter_enabled\x18\x16 \x01(\bR\x12jmxExporterEnabled\x122\n" +
-	"\x15node_exporter_enabled\x18\x17 \x01(\bR\x13nodeExporterEnabled\x12W\n" +
-	"\x12public_access_type\x18\x18 \x01(\tB)\xbaH&\xd8\x01\x01r!R\bDISABLEDR\x15SERVICE_PROVIDED_EIPSR\x10publicAccessType\x1aC\n" +
+	"\x14jmx_exporter_enabled\x18\x17 \x01(\bR\x12jmxExporterEnabled\x122\n" +
+	"\x15node_exporter_enabled\x18\x18 \x01(\bR\x13nodeExporterEnabled\x12W\n" +
+	"\x12public_access_type\x18\x19 \x01(\tB)\xbaH&\xd8\x01\x01r!R\bDISABLEDR\x15SERVICE_PROVIDED_EIPSR\x10publicAccessType\x1aC\n" +
 	"\x15ServerPropertiesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xf0\x04\xbaH\xec\x04\x1a\x87\x02\n" +

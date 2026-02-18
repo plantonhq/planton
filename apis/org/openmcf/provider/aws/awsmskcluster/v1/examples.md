@@ -14,6 +14,7 @@ kind: AwsMskCluster
 metadata:
   name: dev-events
 spec:
+  region: us-west-2
   kafkaVersion: "3.6.0"
   numberOfBrokerNodes: 3
   instanceType: kafka.t3.small
@@ -43,6 +44,7 @@ kind: AwsMskCluster
 metadata:
   name: prod-orderstream
 spec:
+  region: us-east-1
   kafkaVersion: "3.6.0"
   numberOfBrokerNodes: 6
   instanceType: kafka.m7g.xlarge
@@ -99,6 +101,7 @@ kind: AwsMskCluster
 metadata:
   name: audit-kafka
 spec:
+  region: us-west-2
   kafkaVersion: "3.6.0"
   numberOfBrokerNodes: 3
   instanceType: kafka.m5.large
@@ -147,6 +150,7 @@ kind: AwsMskCluster
 metadata:
   name: platform-kafka
 spec:
+  region: us-east-1
   kafkaVersion: "3.6.0"
   numberOfBrokerNodes: 6
   instanceType: kafka.m5.xlarge
@@ -200,6 +204,7 @@ kind: AwsMskCluster
 metadata:
   name: analytics-kafka
 spec:
+  region: us-west-2
   kafkaVersion: "3.6.0"
   numberOfBrokerNodes: 9
   instanceType: kafka.m7g.2xlarge
@@ -288,6 +293,7 @@ kind: AwsMskCluster
 metadata:
   name: tuned-kafka
 spec:
+  region: us-west-2
   kafkaVersion: "3.5.1"
   numberOfBrokerNodes: 3
   instanceType: kafka.m5.2xlarge

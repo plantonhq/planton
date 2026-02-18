@@ -29,6 +29,7 @@ var _ = ginkgo.Describe("AwsLambdaSpec Custom Validation Tests", func() {
 						Name: "test-lambda-function",
 					},
 					Spec: &AwsLambdaSpec{
+						Region:       "us-west-2",
 						FunctionName: "test-function",
 						RoleArn: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "arn:aws:iam::123456789012:role/lambda-execution-role"},

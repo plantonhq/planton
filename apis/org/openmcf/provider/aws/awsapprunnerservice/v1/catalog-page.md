@@ -34,6 +34,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsAppRunnerService.my-api
 spec:
+  region: us-east-1
   imageSource:
     imageIdentifier: public.ecr.aws/nginx/nginx:latest
     imageRepositoryType: ECR_PUBLIC
@@ -53,6 +54,7 @@ This creates a publicly accessible App Runner service running an ECR Public imag
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the App Runner service will be created (e.g., `us-east-1`, `eu-west-1`). | Required; non-empty |
 | `imageSource` or `codeSource` | `object` | Deployment source. Exactly one must be provided. | CEL: `exactly_one_source` |
 | `imageSource.imageIdentifier` | `string` | Full container image URI including tag or digest (e.g., `ACCOUNT.dkr.ecr.REGION.amazonaws.com/REPO:TAG`). | Min length 1 |
 | `imageSource.imageRepositoryType` | `string` | Type of image repository: `ECR` (private) or `ECR_PUBLIC`. | Must be `ECR` or `ECR_PUBLIC` |
@@ -135,6 +137,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: staging.AwsAppRunnerService.backend-api
 spec:
+  region: us-east-1
   imageSource:
     imageIdentifier: 123456789012.dkr.ecr.us-east-1.amazonaws.com/backend:v1.2.0
     imageRepositoryType: ECR
@@ -177,6 +180,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsAppRunnerService.web-frontend
 spec:
+  region: us-east-1
   codeSource:
     repositoryUrl: https://github.com/my-org/web-frontend
     branch: main
@@ -209,6 +213,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsAppRunnerService.prod-api
 spec:
+  region: us-east-1
   imageSource:
     imageIdentifier: 123456789012.dkr.ecr.us-east-1.amazonaws.com/prod-api:v3.1.0
     imageRepositoryType: ECR
@@ -263,6 +268,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsAppRunnerService.ref-api
 spec:
+  region: us-east-1
   imageSource:
     imageIdentifier: 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-api:latest
     imageRepositoryType: ECR

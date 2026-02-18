@@ -32,6 +32,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsGlobalAccelerator.my-ga
 spec:
+  region: us-east-1
   listeners:
     - name: tcp-443
       protocol: TCP
@@ -56,6 +57,7 @@ This creates a Global Accelerator with a TCP listener on port 443 and one endpoi
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the global accelerator will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `listeners` | `object[]` | Listener definitions. Each defines a protocol, port ranges, and endpoint groups. | Minimum 1 item |
 | `listeners[].name` | `string` | Unique name for the listener. Used as key in output maps. | Lowercase alphanumeric and hyphens, starts with letter, max 63 chars |
 | `listeners[].protocol` | `string` | Layer 4 protocol: `TCP` or `UDP`. | Required |
@@ -108,6 +110,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsGlobalAccelerator.web-ga
 spec:
+  region: us-east-1
   listeners:
     - name: https
       protocol: TCP
@@ -140,6 +143,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsGlobalAccelerator.global-api
 spec:
+  region: us-east-1
   ipAddressType: DUAL_STACK
   flowLogs:
     enabled: true
@@ -191,6 +195,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsGlobalAccelerator.game-server
 spec:
+  region: us-west-2
   listeners:
     - name: game-udp
       protocol: UDP
@@ -223,6 +228,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsGlobalAccelerator.ref-ga
 spec:
+  region: us-east-1
   flowLogs:
     enabled: true
     s3Bucket:

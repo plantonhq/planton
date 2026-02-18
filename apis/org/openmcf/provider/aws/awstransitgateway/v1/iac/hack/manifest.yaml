@@ -8,6 +8,7 @@ metadata:
     pulumi.openmcf.org/project: test-project
     pulumi.openmcf.org/stack.name: dev.AwsTransitGateway.test-tgw
 spec:
+  region: us-west-2
   description: Test Transit Gateway
   dnsSupport: true
   defaultRouteTableAssociation: true

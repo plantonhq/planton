@@ -11,6 +11,8 @@ variable "metadata" {
 variable "spec" {
   description = "AwsMemorydbCluster specification"
   type = object({
+    # The AWS region where the resource will be created.
+    region                     = string
     engine                     = string
     engine_version             = optional(string)
     description                = optional(string)

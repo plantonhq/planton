@@ -161,11 +161,9 @@ func (AwsS3BucketSpec_StorageClass) EnumDescriptor() ([]byte, []int) {
 // or storing data for backup and archiving.
 type AwsS3BucketSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The AWS region where the S3 bucket will be created.
-	// This must be a valid AWS region where S3 is available.
-	// Specifying the region is important because it affects data latency and costs.
-	// For a list of AWS regions, see: https://aws.amazon.com/about-aws/global-infrastructure/regions_az/
-	AwsRegion string `protobuf:"bytes,1,opt,name=aws_region,json=awsRegion,proto3" json:"aws_region,omitempty"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Flag to indicate if the S3 bucket should have external (public) access.
 	// When set to `true`, the bucket will be publicly accessible over the internet.
 	// When set to `false` (default), Block Public Access is enabled (recommended for security).
@@ -250,9 +248,9 @@ func (*AwsS3BucketSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awss3bucket_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsS3BucketSpec) GetAwsRegion() string {
+func (x *AwsS3BucketSpec) GetRegion() string {
 	if x != nil {
-		return x.AwsRegion
+		return x.Region
 	}
 	return ""
 }
@@ -781,10 +779,9 @@ var File_org_openmcf_provider_aws_awss3bucket_v1_spec_proto protoreflect.FileDes
 
 const file_org_openmcf_provider_aws_awss3bucket_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2org/openmcf/provider/aws/awss3bucket/v1/spec.proto\x12'org.openmcf.provider.aws.awss3bucket.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x89\x17\n" +
-	"\x0fAwsS3BucketSpec\x12&\n" +
-	"\n" +
-	"aws_region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\tawsRegion\x12\x1b\n" +
+	"2org/openmcf/provider/aws/awss3bucket/v1/spec.proto\x12'org.openmcf.provider.aws.awss3bucket.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x82\x17\n" +
+	"\x0fAwsS3BucketSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x1b\n" +
 	"\tis_public\x18\x02 \x01(\bR\bisPublic\x12-\n" +
 	"\x12versioning_enabled\x18\x03 \x01(\bR\x11versioningEnabled\x12z\n" +
 	"\x0fencryption_type\x18\x04 \x01(\x0e2G.org.openmcf.provider.aws.awss3bucket.v1.AwsS3BucketSpec.EncryptionTypeB\b\xbaH\x05\x82\x01\x02\x10\x01R\x0eencryptionType\x12q\n" +

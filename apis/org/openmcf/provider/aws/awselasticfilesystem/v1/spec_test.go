@@ -28,6 +28,7 @@ var _ = ginkgo.Describe("AwsElasticFileSystemSpec validations", func() {
 	ginkgo.BeforeEach(func() {
 		// Minimal valid spec: subnet_ids required.
 		spec = &AwsElasticFileSystemSpec{
+			Region: "us-east-1",
 			SubnetIds: []*foreignkeyv1.StringValueOrRef{
 				strRef("subnet-abc123"),
 			},

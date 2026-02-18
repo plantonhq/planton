@@ -31,6 +31,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsSecurityGroup.my-sg
 spec:
+  region: us-west-2
   vpcId: vpc-0a1b2c3d4e5f00001
   description: Allow HTTP traffic
 ```
@@ -49,6 +50,7 @@ This creates a Security Group in the specified VPC with no ingress rules (all in
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | The AWS region where the resource will be created. | Required |
 | `vpcId` | `StringValueOrRef` | ID of the VPC where the Security Group is created. Can reference an AwsVpc resource via `valueFrom`. | Required |
 | `vpcId.value` | `string` | Direct VPC ID value (e.g., `vpc-12345abcde`) | — |
 | `vpcId.valueFrom` | `object` | Foreign key reference to an AwsVpc resource | Default kind: `AwsVpc`, default field: `status.outputs.vpc_id` |
@@ -92,6 +94,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsSecurityGroup.web-sg
 spec:
+  region: us-west-2
   vpcId: vpc-0a1b2c3d4e5f00001
   description: Web tier - HTTP and HTTPS
   ingress:
@@ -131,6 +134,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsSecurityGroup.bastion-sg
 spec:
+  region: us-west-2
   vpcId: vpc-0a1b2c3d4e5f00001
   description: Bastion host - SSH from corporate network
   ingress:
@@ -164,6 +168,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsSecurityGroup.internal-svc-sg
 spec:
+  region: us-west-2
   vpcId: vpc-0a1b2c3d4e5f00001
   description: Internal service mesh communication
   ingress:
@@ -201,6 +206,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsSecurityGroup.db-sg
 spec:
+  region: us-west-2
   vpcId: vpc-0a1b2c3d4e5f00001
   description: Database tier - PostgreSQL from app tier only
   ingress:
@@ -234,6 +240,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsSecurityGroup.ref-sg
 spec:
+  region: us-west-2
   vpcId:
     valueFrom:
       kind: AwsVpc

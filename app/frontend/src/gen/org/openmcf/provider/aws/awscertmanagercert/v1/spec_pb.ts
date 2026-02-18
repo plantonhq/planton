@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awscertmanagercert/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awscertmanagercert_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjlvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzY2VydG1hbmFnZXJjZXJ0L3YxL3NwZWMucHJvdG8SLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NjZXJ0bWFuYWdlcmNlcnQudjEirgMKFkF3c0NlcnRNYW5hZ2VyQ2VydFNwZWMSYAoTcHJpbWFyeV9kb21haW5fbmFtZRgBIAEoCUJDukhAyAEBcjsyOV4oPzpcKlwuW0EtWmEtejAtOVwtXC5dK3xbQS1aYS16MC05XC1cLl0rXC5bQS1aYS16XXsyLH0pJBJnChZhbHRlcm5hdGVfZG9tYWluX25hbWVzGAIgAygJQke6SESSAUEYASI9cjsyOV4oPzpcKlwuW0EtWmEtejAtOVwtXC5dK3xbQS1aYS16MC05XC1cLl0rXC5bQS1aYS16XXsyLH0pJBJ5ChZyb3V0ZTUzX2hvc3RlZF96b25lX2lkGAMgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIlukgDyAEBiNRh1AGS1GEWc3RhdHVzLm91dHB1dHMuem9uZV9pZBI4ChF2YWxpZGF0aW9uX21ldGhvZBgEIAEoCUIYukgOcgxSA0ROU1IFRU1BSUyKph0DRE5TSACIAQFCFAoSX3ZhbGlkYXRpb25fbWV0aG9kQoUDCjJjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2NlcnRtYW5hZ2VyY2VydC52MUIJU3BlY1Byb3RvUAFaZWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzY2VydG1hbmFnZXJjZXJ0L3YxO2F3c2NlcnRtYW5hZ2VyY2VydHYxogIFT09QQUGqAi5PcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzY2VydG1hbmFnZXJjZXJ0LlYxygIuT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2NlcnRtYW5hZ2VyY2VydFxWMeICOk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NjZXJ0bWFuYWdlcmNlcnRcVjFcR1BCTWV0YWRhdGHqAjNPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c2NlcnRtYW5hZ2VyY2VydDo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("Cjlvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzY2VydG1hbmFnZXJjZXJ0L3YxL3NwZWMucHJvdG8SLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NjZXJ0bWFuYWdlcmNlcnQudjEixwMKFkF3c0NlcnRNYW5hZ2VyQ2VydFNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEmAKE3ByaW1hcnlfZG9tYWluX25hbWUYAiABKAlCQ7pIQMgBAXI7MjleKD86XCpcLltBLVphLXowLTlcLVwuXSt8W0EtWmEtejAtOVwtXC5dK1wuW0EtWmEtel17Mix9KSQSZwoWYWx0ZXJuYXRlX2RvbWFpbl9uYW1lcxgDIAMoCUJHukhEkgFBGAEiPXI7MjleKD86XCpcLltBLVphLXowLTlcLVwuXSt8W0EtWmEtejAtOVwtXC5dK1wuW0EtWmEtel17Mix9KSQSeQoWcm91dGU1M19ob3N0ZWRfem9uZV9pZBgEIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCJbpIA8gBAYjUYdQBktRhFnN0YXR1cy5vdXRwdXRzLnpvbmVfaWQSOAoRdmFsaWRhdGlvbl9tZXRob2QYBSABKAlCGLpIDnIMUgNETlNSBUVNQUlMiqYdA0ROU0gAiAEBQhQKEl92YWxpZGF0aW9uX21ldGhvZEKFAwoyY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NjZXJ0bWFuYWdlcmNlcnQudjFCCVNwZWNQcm90b1ABWmVnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c2NlcnRtYW5hZ2VyY2VydC92MTthd3NjZXJ0bWFuYWdlcmNlcnR2MaICBU9PUEFBqgIuT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2NlcnRtYW5hZ2VyY2VydC5WMcoCLk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NjZXJ0bWFuYWdlcmNlcnRcVjHiAjpPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzY2VydG1hbmFnZXJjZXJ0XFYxXEdQQk1ldGFkYXRh6gIzT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NjZXJ0bWFuYWdlcmNlcnQ6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsCertManagerCertSpec defines the fields needed to provision a public SSL certificate
@@ -25,6 +25,14 @@ export const file_org_openmcf_provider_aws_awscertmanagercert_v1_spec: GenFile =
  */
 export type AwsCertManagerCertSpec = Message<"org.openmcf.provider.aws.awscertmanagercert.v1.AwsCertManagerCertSpec"> & {
   /**
+   * The AWS region where the ACM certificate will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * primaryDomainName is a required field representing the main (apex or wildcard) domain name.
    * Examples include "example.com" or "*.example.com" (wildcard).
    * This domain will be set as the 'DomainName' in the AWS ACM certificate.
@@ -32,7 +40,7 @@ export type AwsCertManagerCertSpec = Message<"org.openmcf.provider.aws.awscertma
    * The pattern enforces a domain-like structure, allowing an optional wildcard prefix.
    * The string is mandatory, so users must always supply a primary domain.
    *
-   * @generated from field: string primary_domain_name = 1;
+   * @generated from field: string primary_domain_name = 2;
    */
   primaryDomainName: string;
 
@@ -41,7 +49,7 @@ export type AwsCertManagerCertSpec = Message<"org.openmcf.provider.aws.awscertma
    * Each entry must follow the same pattern as primary_domain_name and cannot contain duplicates.
    * Primary domain should not be added to this list.
    *
-   * @generated from field: repeated string alternate_domain_names = 2;
+   * @generated from field: repeated string alternate_domain_names = 3;
    */
   alternateDomainNames: string[];
 
@@ -51,7 +59,7 @@ export type AwsCertManagerCertSpec = Message<"org.openmcf.provider.aws.awscertma
    * Must be a public hosted zone matching the domain names.
    * Example: "Z123456ABCXYZ".
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef route53_hosted_zone_id = 3;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef route53_hosted_zone_id = 4;
    */
   route53HostedZoneId?: StringValueOrRef;
 
@@ -59,7 +67,7 @@ export type AwsCertManagerCertSpec = Message<"org.openmcf.provider.aws.awscertma
    * validation_method indicates how ACM verifies domain ownership.
    * By default, DNS is recommended.
    *
-   * @generated from field: optional string validation_method = 4;
+   * @generated from field: optional string validation_method = 5;
    */
   validationMethod?: string;
 };

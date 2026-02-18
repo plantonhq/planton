@@ -6,6 +6,7 @@ metadata:
   name: test-efs
   id: test-efs-id
 spec:
+  region: us-east-1
   encrypted: true
   throughputMode: elastic
   subnetIds:

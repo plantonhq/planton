@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsserverlesselasticache/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsserverlesselasticache_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cj9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzc2VydmVybGVzc2VsYXN0aWNhY2hlL3YxL3NwZWMucHJvdG8SNG9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NzZXJ2ZXJsZXNzZWxhc3RpY2FjaGUudjEi+hAKHEF3c1NlcnZlcmxlc3NFbGFzdGljYWNoZVNwZWMSFgoGZW5naW5lGAEgASgJQga6SAPIAQESHAoUbWFqb3JfZW5naW5lX3ZlcnNpb24YAiABKAkSEwoLZGVzY3JpcHRpb24YAyABKAkSJwoTZGF0YV9zdG9yYWdlX21heF9nYhgEIAEoBUIKukgHGgUYiCcoABInChNkYXRhX3N0b3JhZ2VfbWluX2diGAUgASgFQgq6SAcaBRiIJygAEh4KCGVjcHVfbWF4GAYgASgFQgy6SAkaBxjAw5MHKAASHgoIZWNwdV9taW4YByABKAVCDLpICRoHGMDDkwcoABJ2CgpzdWJuZXRfaWRzGAggAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIuiNRh2AGS1GElc3RhdHVzLm91dHB1dHMucHJpdmF0ZV9zdWJuZXRzLlsqXS5pZBJ5ChJzZWN1cml0eV9ncm91cF9pZHMYCSADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQimI1GHXAZLUYSBzdGF0dXMub3V0cHV0cy5zZWN1cml0eV9ncm91cF9pZBJnCgprbXNfa2V5X2lkGAogASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybhIbChNkYWlseV9zbmFwc2hvdF90aW1lGAsgASgJEisKGHNuYXBzaG90X3JldGVudGlvbl9saW1pdBgMIAEoBUIJukgGGgQYIygAEhUKDXVzZXJfZ3JvdXBfaWQYDSABKAk6vwu6SLsLGngKE2VuZ2luZV92YWxpZF92YWx1ZXMSMGVuZ2luZSBtdXN0IGJlICdyZWRpcycsICd2YWxrZXknLCBvciAnbWVtY2FjaGVkJxovdGhpcy5lbmdpbmUgaW4gWydyZWRpcycsICd2YWxrZXknLCAnbWVtY2FjaGVkJ10a2QEKFGRhdGFfc3RvcmFnZV9taW5fbWF4EklkYXRhX3N0b3JhZ2VfbWluX2diIG11c3Qgbm90IGV4Y2VlZCBkYXRhX3N0b3JhZ2VfbWF4X2diIHdoZW4gYm90aCBhcmUgc2V0GnZ0aGlzLmRhdGFfc3RvcmFnZV9taW5fZ2IgPT0gMCB8fCB0aGlzLmRhdGFfc3RvcmFnZV9tYXhfZ2IgPT0gMCB8fCB0aGlzLmRhdGFfc3RvcmFnZV9taW5fZ2IgPD0gdGhpcy5kYXRhX3N0b3JhZ2VfbWF4X2diGo8BCgxlY3B1X21pbl9tYXgSM2VjcHVfbWluIG11c3Qgbm90IGV4Y2VlZCBlY3B1X21heCB3aGVuIGJvdGggYXJlIHNldBpKdGhpcy5lY3B1X21pbiA9PSAwIHx8IHRoaXMuZWNwdV9tYXggPT0gMCB8fCB0aGlzLmVjcHVfbWluIDw9IHRoaXMuZWNwdV9tYXgaoQEKGnNuYXBzaG90X3RpbWVfZW5naW5lX2d1YXJkEj1kYWlseV9zbmFwc2hvdF90aW1lIGlzIG9ubHkgdmFsaWQgZm9yIHJlZGlzIG9yIHZhbGtleSBlbmdpbmVzGkR0aGlzLmRhaWx5X3NuYXBzaG90X3RpbWUgPT0gJycgfHwgdGhpcy5lbmdpbmUgaW4gWydyZWRpcycsICd2YWxrZXknXRqvAQofc25hcHNob3RfcmV0ZW50aW9uX2VuZ2luZV9ndWFyZBJCc25hcHNob3RfcmV0ZW50aW9uX2xpbWl0IGlzIG9ubHkgdmFsaWQgZm9yIHJlZGlzIG9yIHZhbGtleSBlbmdpbmVzGkh0aGlzLnNuYXBzaG90X3JldGVudGlvbl9saW1pdCA9PSAwIHx8IHRoaXMuZW5naW5lIGluIFsncmVkaXMnLCAndmFsa2V5J10akgEKF3VzZXJfZ3JvdXBfZW5naW5lX2d1YXJkEjd1c2VyX2dyb3VwX2lkIGlzIG9ubHkgdmFsaWQgZm9yIHJlZGlzIG9yIHZhbGtleSBlbmdpbmVzGj50aGlzLnVzZXJfZ3JvdXBfaWQgPT0gJycgfHwgdGhpcy5lbmdpbmUgaW4gWydyZWRpcycsICd2YWxrZXknXRqJAQoWZGF0YV9zdG9yYWdlX21pbl9mbG9vchIvZGF0YV9zdG9yYWdlX21pbl9nYiBtdXN0IGJlIGF0IGxlYXN0IDEgd2hlbiBzZXQaPnRoaXMuZGF0YV9zdG9yYWdlX21pbl9nYiA9PSAwIHx8IHRoaXMuZGF0YV9zdG9yYWdlX21pbl9nYiA+PSAxGokBChZkYXRhX3N0b3JhZ2VfbWF4X2Zsb29yEi9kYXRhX3N0b3JhZ2VfbWF4X2diIG11c3QgYmUgYXQgbGVhc3QgMSB3aGVuIHNldBo+dGhpcy5kYXRhX3N0b3JhZ2VfbWF4X2diID09IDAgfHwgdGhpcy5kYXRhX3N0b3JhZ2VfbWF4X2diID49IDEaZgoOZWNwdV9taW5fZmxvb3ISJ2VjcHVfbWluIG11c3QgYmUgYXQgbGVhc3QgMTAwMCB3aGVuIHNldBordGhpcy5lY3B1X21pbiA9PSAwIHx8IHRoaXMuZWNwdV9taW4gPj0gMTAwMBpmCg5lY3B1X21heF9mbG9vchInZWNwdV9tYXggbXVzdCBiZSBhdCBsZWFzdCAxMDAwIHdoZW4gc2V0Git0aGlzLmVjcHVfbWF4ID09IDAgfHwgdGhpcy5lY3B1X21heCA+PSAxMDAwQq8DCjhjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c3NlcnZlcmxlc3NlbGFzdGljYWNoZS52MUIJU3BlY1Byb3RvUAFacWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzc2VydmVybGVzc2VsYXN0aWNhY2hlL3YxO2F3c3NlcnZlcmxlc3NlbGFzdGljYWNoZXYxogIFT09QQUGqAjRPcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzc2VydmVybGVzc2VsYXN0aWNhY2hlLlYxygI0T3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c3NlcnZlcmxlc3NlbGFzdGljYWNoZVxWMeICQE9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NzZXJ2ZXJsZXNzZWxhc3RpY2FjaGVcVjFcR1BCTWV0YWRhdGHqAjlPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c3NlcnZlcmxlc3NlbGFzdGljYWNoZTo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
+  fileDesc("Cj9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzc2VydmVybGVzc2VsYXN0aWNhY2hlL3YxL3NwZWMucHJvdG8SNG9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NzZXJ2ZXJsZXNzZWxhc3RpY2FjaGUudjEikxEKHEF3c1NlcnZlcmxlc3NFbGFzdGljYWNoZVNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEhYKBmVuZ2luZRgCIAEoCUIGukgDyAEBEhwKFG1ham9yX2VuZ2luZV92ZXJzaW9uGAMgASgJEhMKC2Rlc2NyaXB0aW9uGAQgASgJEicKE2RhdGFfc3RvcmFnZV9tYXhfZ2IYBSABKAVCCrpIBxoFGIgnKAASJwoTZGF0YV9zdG9yYWdlX21pbl9nYhgGIAEoBUIKukgHGgUYiCcoABIeCghlY3B1X21heBgHIAEoBUIMukgJGgcYwMOTBygAEh4KCGVjcHVfbWluGAggASgFQgy6SAkaBxjAw5MHKAASdgoKc3VibmV0X2lkcxgJIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCLojUYdgBktRhJXN0YXR1cy5vdXRwdXRzLnByaXZhdGVfc3VibmV0cy5bKl0uaWQSeQoSc2VjdXJpdHlfZ3JvdXBfaWRzGAogAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIpiNRh1wGS1GEgc3RhdHVzLm91dHB1dHMuc2VjdXJpdHlfZ3JvdXBfaWQSZwoKa21zX2tleV9pZBgLIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SGwoTZGFpbHlfc25hcHNob3RfdGltZRgMIAEoCRIrChhzbmFwc2hvdF9yZXRlbnRpb25fbGltaXQYDSABKAVCCbpIBhoEGCMoABIVCg11c2VyX2dyb3VwX2lkGA4gASgJOr8Luki7Cxp4ChNlbmdpbmVfdmFsaWRfdmFsdWVzEjBlbmdpbmUgbXVzdCBiZSAncmVkaXMnLCAndmFsa2V5Jywgb3IgJ21lbWNhY2hlZCcaL3RoaXMuZW5naW5lIGluIFsncmVkaXMnLCAndmFsa2V5JywgJ21lbWNhY2hlZCddGtkBChRkYXRhX3N0b3JhZ2VfbWluX21heBJJZGF0YV9zdG9yYWdlX21pbl9nYiBtdXN0IG5vdCBleGNlZWQgZGF0YV9zdG9yYWdlX21heF9nYiB3aGVuIGJvdGggYXJlIHNldBp2dGhpcy5kYXRhX3N0b3JhZ2VfbWluX2diID09IDAgfHwgdGhpcy5kYXRhX3N0b3JhZ2VfbWF4X2diID09IDAgfHwgdGhpcy5kYXRhX3N0b3JhZ2VfbWluX2diIDw9IHRoaXMuZGF0YV9zdG9yYWdlX21heF9nYhqPAQoMZWNwdV9taW5fbWF4EjNlY3B1X21pbiBtdXN0IG5vdCBleGNlZWQgZWNwdV9tYXggd2hlbiBib3RoIGFyZSBzZXQaSnRoaXMuZWNwdV9taW4gPT0gMCB8fCB0aGlzLmVjcHVfbWF4ID09IDAgfHwgdGhpcy5lY3B1X21pbiA8PSB0aGlzLmVjcHVfbWF4GqEBChpzbmFwc2hvdF90aW1lX2VuZ2luZV9ndWFyZBI9ZGFpbHlfc25hcHNob3RfdGltZSBpcyBvbmx5IHZhbGlkIGZvciByZWRpcyBvciB2YWxrZXkgZW5naW5lcxpEdGhpcy5kYWlseV9zbmFwc2hvdF90aW1lID09ICcnIHx8IHRoaXMuZW5naW5lIGluIFsncmVkaXMnLCAndmFsa2V5J10arwEKH3NuYXBzaG90X3JldGVudGlvbl9lbmdpbmVfZ3VhcmQSQnNuYXBzaG90X3JldGVudGlvbl9saW1pdCBpcyBvbmx5IHZhbGlkIGZvciByZWRpcyBvciB2YWxrZXkgZW5naW5lcxpIdGhpcy5zbmFwc2hvdF9yZXRlbnRpb25fbGltaXQgPT0gMCB8fCB0aGlzLmVuZ2luZSBpbiBbJ3JlZGlzJywgJ3ZhbGtleSddGpIBChd1c2VyX2dyb3VwX2VuZ2luZV9ndWFyZBI3dXNlcl9ncm91cF9pZCBpcyBvbmx5IHZhbGlkIGZvciByZWRpcyBvciB2YWxrZXkgZW5naW5lcxo+dGhpcy51c2VyX2dyb3VwX2lkID09ICcnIHx8IHRoaXMuZW5naW5lIGluIFsncmVkaXMnLCAndmFsa2V5J10aiQEKFmRhdGFfc3RvcmFnZV9taW5fZmxvb3ISL2RhdGFfc3RvcmFnZV9taW5fZ2IgbXVzdCBiZSBhdCBsZWFzdCAxIHdoZW4gc2V0Gj50aGlzLmRhdGFfc3RvcmFnZV9taW5fZ2IgPT0gMCB8fCB0aGlzLmRhdGFfc3RvcmFnZV9taW5fZ2IgPj0gMRqJAQoWZGF0YV9zdG9yYWdlX21heF9mbG9vchIvZGF0YV9zdG9yYWdlX21heF9nYiBtdXN0IGJlIGF0IGxlYXN0IDEgd2hlbiBzZXQaPnRoaXMuZGF0YV9zdG9yYWdlX21heF9nYiA9PSAwIHx8IHRoaXMuZGF0YV9zdG9yYWdlX21heF9nYiA+PSAxGmYKDmVjcHVfbWluX2Zsb29yEidlY3B1X21pbiBtdXN0IGJlIGF0IGxlYXN0IDEwMDAgd2hlbiBzZXQaK3RoaXMuZWNwdV9taW4gPT0gMCB8fCB0aGlzLmVjcHVfbWluID49IDEwMDAaZgoOZWNwdV9tYXhfZmxvb3ISJ2VjcHVfbWF4IG11c3QgYmUgYXQgbGVhc3QgMTAwMCB3aGVuIHNldBordGhpcy5lY3B1X21heCA9PSAwIHx8IHRoaXMuZWNwdV9tYXggPj0gMTAwMEKvAwo4Y29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NzZXJ2ZXJsZXNzZWxhc3RpY2FjaGUudjFCCVNwZWNQcm90b1ABWnFnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c3NlcnZlcmxlc3NlbGFzdGljYWNoZS92MTthd3NzZXJ2ZXJsZXNzZWxhc3RpY2FjaGV2MaICBU9PUEFBqgI0T3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c3NlcnZlcmxlc3NlbGFzdGljYWNoZS5WMcoCNE9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NzZXJ2ZXJsZXNzZWxhc3RpY2FjaGVcVjHiAkBPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzc2VydmVybGVzc2VsYXN0aWNhY2hlXFYxXEdQQk1ldGFkYXRh6gI5T3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NzZXJ2ZXJsZXNzZWxhc3RpY2FjaGU6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
 
 /**
  * AwsServerlessElasticacheSpec defines the desired configuration for an AWS
@@ -43,19 +43,23 @@ export const file_org_openmcf_provider_aws_awsserverlesselasticache_v1_spec: Gen
  * - Credentials, region, and deployment workflow live outside this spec in
  *   stack inputs.
  *
- * ---------------------------------------------------------------------------
- * Engine
- * ---------------------------------------------------------------------------
- *
  * @generated from message org.openmcf.provider.aws.awsserverlesselasticache.v1.AwsServerlessElasticacheSpec
  */
 export type AwsServerlessElasticacheSpec = Message<"org.openmcf.provider.aws.awsserverlesselasticache.v1.AwsServerlessElasticacheSpec"> & {
+  /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * Cache engine to use. Values: "redis", "valkey", "memcached".
    * Switching between redis and valkey is an in-place update. Switching
    * to/from memcached forces recreation.
    *
-   * @generated from field: string engine = 1;
+   * @generated from field: string engine = 2;
    */
   engine: string;
 
@@ -63,14 +67,14 @@ export type AwsServerlessElasticacheSpec = Message<"org.openmcf.provider.aws.aws
    * Major engine version. Examples: "7", "8" for Redis/Valkey; "1.6" for
    * Memcached. Leave empty to use the provider default for the chosen engine.
    *
-   * @generated from field: string major_engine_version = 2;
+   * @generated from field: string major_engine_version = 3;
    */
   majorEngineVersion: string;
 
   /**
    * Human-readable description of the serverless cache.
    *
-   * @generated from field: string description = 3;
+   * @generated from field: string description = 4;
    */
   description: string;
 
@@ -78,7 +82,7 @@ export type AwsServerlessElasticacheSpec = Message<"org.openmcf.provider.aws.aws
    * Maximum data storage in GB. AWS auto-scales storage up to this limit.
    * Range: 1–5000. Leave as 0 to use the AWS default for the engine.
    *
-   * @generated from field: int32 data_storage_max_gb = 4;
+   * @generated from field: int32 data_storage_max_gb = 5;
    */
   dataStorageMaxGb: number;
 
@@ -86,7 +90,7 @@ export type AwsServerlessElasticacheSpec = Message<"org.openmcf.provider.aws.aws
    * Minimum data storage in GB. AWS guarantees at least this capacity is
    * always provisioned. Range: 1–5000. Leave as 0 to use the AWS default.
    *
-   * @generated from field: int32 data_storage_min_gb = 5;
+   * @generated from field: int32 data_storage_min_gb = 6;
    */
   dataStorageMinGb: number;
 
@@ -94,7 +98,7 @@ export type AwsServerlessElasticacheSpec = Message<"org.openmcf.provider.aws.aws
    * Maximum ElastiCache Processing Units per second. AWS auto-scales compute
    * up to this limit. Range: 1000–15000000. Leave as 0 for AWS default.
    *
-   * @generated from field: int32 ecpu_max = 6;
+   * @generated from field: int32 ecpu_max = 7;
    */
   ecpuMax: number;
 
@@ -102,7 +106,7 @@ export type AwsServerlessElasticacheSpec = Message<"org.openmcf.provider.aws.aws
    * Minimum ElastiCache Processing Units per second. AWS guarantees at least
    * this compute capacity. Range: 1000–15000000. Leave as 0 for AWS default.
    *
-   * @generated from field: int32 ecpu_min = 7;
+   * @generated from field: int32 ecpu_min = 8;
    */
   ecpuMin: number;
 
@@ -111,7 +115,7 @@ export type AwsServerlessElasticacheSpec = Message<"org.openmcf.provider.aws.aws
    * VPC endpoints in these subnets. ForceNew — changing this destroys and
    * recreates the cache.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 8;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 9;
    */
   subnetIds: StringValueOrRef[];
 
@@ -119,7 +123,7 @@ export type AwsServerlessElasticacheSpec = Message<"org.openmcf.provider.aws.aws
    * VPC security groups to attach to the serverless cache endpoint.
    * Controls network-level access.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 9;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 10;
    */
   securityGroupIds: StringValueOrRef[];
 
@@ -128,7 +132,7 @@ export type AwsServerlessElasticacheSpec = Message<"org.openmcf.provider.aws.aws
    * Serverless uses this key instead of the AWS-managed key. ForceNew —
    * changing this destroys and recreates the cache.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 10;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 11;
    */
   kmsKeyId?: StringValueOrRef;
 
@@ -136,7 +140,7 @@ export type AwsServerlessElasticacheSpec = Message<"org.openmcf.provider.aws.aws
    * Daily automatic snapshot time in UTC. Format: "HH:mm" (e.g., "05:00").
    * Only valid for Redis/Valkey engines. Memcached has no persistence.
    *
-   * @generated from field: string daily_snapshot_time = 11;
+   * @generated from field: string daily_snapshot_time = 12;
    */
   dailySnapshotTime: string;
 
@@ -144,7 +148,7 @@ export type AwsServerlessElasticacheSpec = Message<"org.openmcf.provider.aws.aws
    * Number of days to retain automatic snapshots. Range: 0–35. 0 disables
    * snapshots. Only valid for Redis/Valkey engines.
    *
-   * @generated from field: int32 snapshot_retention_limit = 12;
+   * @generated from field: int32 snapshot_retention_limit = 13;
    */
   snapshotRetentionLimit: number;
 
@@ -152,7 +156,7 @@ export type AwsServerlessElasticacheSpec = Message<"org.openmcf.provider.aws.aws
    * Redis ACL user group ID for fine-grained access control. Only valid for
    * Redis/Valkey engines. Memcached has no authentication mechanism.
    *
-   * @generated from field: string user_group_id = 13;
+   * @generated from field: string user_group_id = 14;
    */
   userGroupId: string;
 };

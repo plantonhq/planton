@@ -72,6 +72,7 @@ var _ = ginkgo.Describe("AwsKinesisFirehoseSpec validations", func() {
 	ginkgo.BeforeEach(func() {
 		// Minimal valid spec: Extended S3 destination with Direct PUT source.
 		spec = &AwsKinesisFirehoseSpec{
+			Region: "us-west-2",
 			DestinationConfig: &AwsKinesisFirehoseSpec_ExtendedS3{
 				ExtendedS3: minimalExtendedS3(),
 			},

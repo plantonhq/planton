@@ -3,6 +3,7 @@ kind: AwsAppRunnerService
 metadata:
   name: apprunner-demo
 spec:
+  region: us-east-1
   imageSource:
     imageIdentifier: "public.ecr.aws/nginx/nginx:latest"
     imageRepositoryType: "ECR_PUBLIC"

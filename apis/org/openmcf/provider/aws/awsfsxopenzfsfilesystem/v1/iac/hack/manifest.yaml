@@ -6,6 +6,7 @@ metadata:
   name: my-openzfs-fs
   id: awsfxz-my-openzfs-fs-dev
 spec:
+  region: us-west-2
   deployment_type: SINGLE_AZ_2
   storage_capacity_gib: 256
   throughput_capacity: 160

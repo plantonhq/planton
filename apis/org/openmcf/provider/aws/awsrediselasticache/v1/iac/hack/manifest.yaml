@@ -11,6 +11,7 @@ metadata:
     pulumi.openmcf.org/project: test-project
     pulumi.openmcf.org/stack.name: dev.AwsRedisElasticache.test-redis
 spec:
+  region: us-west-2
   engine: redis
   engineVersion: "7.1"
   description: Test Redis cluster for development

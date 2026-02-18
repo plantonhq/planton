@@ -18,38 +18,42 @@ import "org/openmcf/shared/networking/enums/dnsrecordtype/dns_record_type.proto"
 // ensuring that your domain names are correctly mapped to your resources with support for advanced
 // traffic routing and high availability features.
 message AwsRoute53ZoneSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // Flag to indicate if this is a private hosted zone.
   // Private zones are used for split-horizon DNS and only resolve within associated VPCs.
   // Public zones (is_private=false) resolve globally on the internet.
   // Default: false (public zone)
-  bool is_private = 1;
+  bool is_private = 2;
 
   // VPC associations for private hosted zones.
   // Only applicable when is_private is true.
   // Each association allows the private zone to resolve DNS queries from the specified VPC.
   // You must enable enableDnsHostnames and enableDnsSupport in your VPC settings.
-  repeated Route53VpcAssociation vpc_associations = 2;
+  repeated Route53VpcAssociation vpc_associations = 3;
 
   // Enable query logging for this hosted zone.
   // Query logs are sent to CloudWatch Logs and can be used for debugging,
   // security monitoring, and understanding query patterns.
   // Warning: High-traffic domains generate large log volumes.
-  bool enable_query_logging = 3;
+  bool enable_query_logging = 4;
 
   // CloudWatch Log Group name for query logs (required if enable_query_logging is true).
   // The log group must exist before enabling query logging.
-  string query_log_group_name = 4;
+  string query_log_group_name = 5;
 
   // Enable DNSSEC for the hosted zone.
   // DNSSEC adds cryptographic signatures to DNS records to prevent spoofing attacks.
   // Note: Requires additional configuration at domain registrar level.
-  bool enable_dnssec = 5;
+  bool enable_dnssec = 6;
 
   // The DNS records that are added to the zone.
   // Each record represents a DNS resource record with support for basic records (A, AAAA, CNAME, MX, TXT),
   // alias records (pointing to AWS resources), and advanced routing policies.
   // These records define how your domain or subdomains are routed to your resources.
-  repeated Route53DnsRecord records = 6;
+  repeated Route53DnsRecord records = 7;
 }
 
 // Route53VpcAssociation represents a VPC association for a private hosted zone.

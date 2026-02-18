@@ -29,63 +29,66 @@ const (
 // provides fast, scalable, and highly available database operations.
 type AwsDocumentDbSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// subnets is the list of subnet IDs for the DB subnet group.
 	// Provide at least two subnets in distinct Availability Zones for high availability.
-	Subnets []*v1.StringValueOrRef `protobuf:"bytes,1,rep,name=subnets,proto3" json:"subnets,omitempty"`
+	Subnets []*v1.StringValueOrRef `protobuf:"bytes,2,rep,name=subnets,proto3" json:"subnets,omitempty"`
 	// db_subnet_group is an optional name of an existing DB subnet group to use
 	// instead of creating one from subnets.
-	DbSubnetGroup *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=db_subnet_group,json=dbSubnetGroup,proto3" json:"db_subnet_group,omitempty"`
+	DbSubnetGroup *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=db_subnet_group,json=dbSubnetGroup,proto3" json:"db_subnet_group,omitempty"`
 	// security_groups are the VPC security groups to associate with the cluster.
-	SecurityGroups []*v1.StringValueOrRef `protobuf:"bytes,3,rep,name=security_groups,json=securityGroups,proto3" json:"security_groups,omitempty"`
+	SecurityGroups []*v1.StringValueOrRef `protobuf:"bytes,4,rep,name=security_groups,json=securityGroups,proto3" json:"security_groups,omitempty"`
 	// allowed_cidrs are IPv4 CIDRs to allow ingress to the cluster security group.
-	AllowedCidrs []string `protobuf:"bytes,4,rep,name=allowed_cidrs,json=allowedCidrs,proto3" json:"allowed_cidrs,omitempty"`
+	AllowedCidrs []string `protobuf:"bytes,5,rep,name=allowed_cidrs,json=allowedCidrs,proto3" json:"allowed_cidrs,omitempty"`
 	// vpc is the VPC where the cluster will be deployed.
-	Vpc *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=vpc,proto3" json:"vpc,omitempty"`
+	Vpc *v1.StringValueOrRef `protobuf:"bytes,6,opt,name=vpc,proto3" json:"vpc,omitempty"`
 	// engine_version is the DocumentDB engine version.
 	// Examples: "4.0.0", "5.0.0"
-	EngineVersion *string `protobuf:"bytes,6,opt,name=engine_version,json=engineVersion,proto3,oneof" json:"engine_version,omitempty"`
+	EngineVersion *string `protobuf:"bytes,7,opt,name=engine_version,json=engineVersion,proto3,oneof" json:"engine_version,omitempty"`
 	// port is the TCP port on which the cluster accepts connections.
-	Port *int32 `protobuf:"varint,7,opt,name=port,proto3,oneof" json:"port,omitempty"`
+	Port *int32 `protobuf:"varint,8,opt,name=port,proto3,oneof" json:"port,omitempty"`
 	// master_username is the master user name for the cluster.
-	MasterUsername *string `protobuf:"bytes,8,opt,name=master_username,json=masterUsername,proto3,oneof" json:"master_username,omitempty"`
+	MasterUsername *string `protobuf:"bytes,9,opt,name=master_username,json=masterUsername,proto3,oneof" json:"master_username,omitempty"`
 	// master_password is the master user password. Required unless using Secrets Manager.
-	MasterPassword string `protobuf:"bytes,9,opt,name=master_password,json=masterPassword,proto3" json:"master_password,omitempty"`
+	MasterPassword string `protobuf:"bytes,10,opt,name=master_password,json=masterPassword,proto3" json:"master_password,omitempty"`
 	// instance_count is the number of instances to create in the cluster.
-	InstanceCount *int32 `protobuf:"varint,10,opt,name=instance_count,json=instanceCount,proto3,oneof" json:"instance_count,omitempty"`
+	InstanceCount *int32 `protobuf:"varint,11,opt,name=instance_count,json=instanceCount,proto3,oneof" json:"instance_count,omitempty"`
 	// instance_class is the compute and memory capacity of the DB instances.
 	// Examples: "db.r5.large", "db.r5.xlarge", "db.r6g.large"
-	InstanceClass *string `protobuf:"bytes,11,opt,name=instance_class,json=instanceClass,proto3,oneof" json:"instance_class,omitempty"`
+	InstanceClass *string `protobuf:"bytes,12,opt,name=instance_class,json=instanceClass,proto3,oneof" json:"instance_class,omitempty"`
 	// storage_encrypted indicates whether to encrypt the cluster storage at rest.
-	StorageEncrypted *bool `protobuf:"varint,12,opt,name=storage_encrypted,json=storageEncrypted,proto3,oneof" json:"storage_encrypted,omitempty"`
+	StorageEncrypted *bool `protobuf:"varint,13,opt,name=storage_encrypted,json=storageEncrypted,proto3,oneof" json:"storage_encrypted,omitempty"`
 	// kms_key is the ARN of the KMS key for storage encryption.
-	KmsKey *v1.StringValueOrRef `protobuf:"bytes,13,opt,name=kms_key,json=kmsKey,proto3" json:"kms_key,omitempty"`
+	KmsKey *v1.StringValueOrRef `protobuf:"bytes,14,opt,name=kms_key,json=kmsKey,proto3" json:"kms_key,omitempty"`
 	// backup_retention_period is the number of days to retain automated backups (1-35).
-	BackupRetentionPeriod *int32 `protobuf:"varint,14,opt,name=backup_retention_period,json=backupRetentionPeriod,proto3,oneof" json:"backup_retention_period,omitempty"`
+	BackupRetentionPeriod *int32 `protobuf:"varint,15,opt,name=backup_retention_period,json=backupRetentionPeriod,proto3,oneof" json:"backup_retention_period,omitempty"`
 	// preferred_backup_window is the daily time range for automated backups in UTC.
 	// Format: "hh24:mi-hh24:mi" (e.g., "03:00-04:00")
-	PreferredBackupWindow string `protobuf:"bytes,15,opt,name=preferred_backup_window,json=preferredBackupWindow,proto3" json:"preferred_backup_window,omitempty"`
+	PreferredBackupWindow string `protobuf:"bytes,16,opt,name=preferred_backup_window,json=preferredBackupWindow,proto3" json:"preferred_backup_window,omitempty"`
 	// preferred_maintenance_window is the weekly time range for maintenance in UTC.
 	// Format: "ddd:hh24:mi-ddd:hh24:mi" (e.g., "sun:05:00-sun:06:00")
-	PreferredMaintenanceWindow string `protobuf:"bytes,16,opt,name=preferred_maintenance_window,json=preferredMaintenanceWindow,proto3" json:"preferred_maintenance_window,omitempty"`
+	PreferredMaintenanceWindow string `protobuf:"bytes,17,opt,name=preferred_maintenance_window,json=preferredMaintenanceWindow,proto3" json:"preferred_maintenance_window,omitempty"`
 	// deletion_protection prevents accidental cluster deletion when enabled.
-	DeletionProtection bool `protobuf:"varint,17,opt,name=deletion_protection,json=deletionProtection,proto3" json:"deletion_protection,omitempty"`
+	DeletionProtection bool `protobuf:"varint,18,opt,name=deletion_protection,json=deletionProtection,proto3" json:"deletion_protection,omitempty"`
 	// skip_final_snapshot controls whether a final snapshot is created on deletion.
-	SkipFinalSnapshot *bool `protobuf:"varint,18,opt,name=skip_final_snapshot,json=skipFinalSnapshot,proto3,oneof" json:"skip_final_snapshot,omitempty"`
+	SkipFinalSnapshot *bool `protobuf:"varint,19,opt,name=skip_final_snapshot,json=skipFinalSnapshot,proto3,oneof" json:"skip_final_snapshot,omitempty"`
 	// final_snapshot_identifier is the identifier for the final snapshot when
 	// skip_final_snapshot is false.
-	FinalSnapshotIdentifier string `protobuf:"bytes,19,opt,name=final_snapshot_identifier,json=finalSnapshotIdentifier,proto3" json:"final_snapshot_identifier,omitempty"`
+	FinalSnapshotIdentifier string `protobuf:"bytes,20,opt,name=final_snapshot_identifier,json=finalSnapshotIdentifier,proto3" json:"final_snapshot_identifier,omitempty"`
 	// enabled_cloudwatch_logs_exports lists log types to export to CloudWatch.
 	// Valid values: "audit", "profiler"
-	EnabledCloudwatchLogsExports []string `protobuf:"bytes,20,rep,name=enabled_cloudwatch_logs_exports,json=enabledCloudwatchLogsExports,proto3" json:"enabled_cloudwatch_logs_exports,omitempty"`
+	EnabledCloudwatchLogsExports []string `protobuf:"bytes,21,rep,name=enabled_cloudwatch_logs_exports,json=enabledCloudwatchLogsExports,proto3" json:"enabled_cloudwatch_logs_exports,omitempty"`
 	// apply_immediately specifies whether modifications are applied immediately
 	// or during the next maintenance window.
-	ApplyImmediately bool `protobuf:"varint,21,opt,name=apply_immediately,json=applyImmediately,proto3" json:"apply_immediately,omitempty"`
+	ApplyImmediately bool `protobuf:"varint,22,opt,name=apply_immediately,json=applyImmediately,proto3" json:"apply_immediately,omitempty"`
 	// auto_minor_version_upgrade enables automatic minor engine version upgrades.
-	AutoMinorVersionUpgrade *bool `protobuf:"varint,22,opt,name=auto_minor_version_upgrade,json=autoMinorVersionUpgrade,proto3,oneof" json:"auto_minor_version_upgrade,omitempty"`
+	AutoMinorVersionUpgrade *bool `protobuf:"varint,23,opt,name=auto_minor_version_upgrade,json=autoMinorVersionUpgrade,proto3,oneof" json:"auto_minor_version_upgrade,omitempty"`
 	// cluster_parameter_group_name is the name of the cluster parameter group.
-	ClusterParameterGroupName string `protobuf:"bytes,23,opt,name=cluster_parameter_group_name,json=clusterParameterGroupName,proto3" json:"cluster_parameter_group_name,omitempty"`
+	ClusterParameterGroupName string `protobuf:"bytes,24,opt,name=cluster_parameter_group_name,json=clusterParameterGroupName,proto3" json:"cluster_parameter_group_name,omitempty"`
 	// cluster_parameters are custom parameters for the cluster parameter group.
-	ClusterParameters []*AwsDocumentDbParameter `protobuf:"bytes,24,rep,name=cluster_parameters,json=clusterParameters,proto3" json:"cluster_parameters,omitempty"`
+	ClusterParameters []*AwsDocumentDbParameter `protobuf:"bytes,25,rep,name=cluster_parameters,json=clusterParameters,proto3" json:"cluster_parameters,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -118,6 +121,13 @@ func (x *AwsDocumentDbSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsDocumentDbSpec.ProtoReflect.Descriptor instead.
 func (*AwsDocumentDbSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsdocumentdb_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsDocumentDbSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsDocumentDbSpec) GetSubnets() []*v1.StringValueOrRef {
@@ -356,35 +366,36 @@ var File_org_openmcf_provider_aws_awsdocumentdb_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_aws_awsdocumentdb_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/aws/awsdocumentdb/v1/spec.proto\x12)org.openmcf.provider.aws.awsdocumentdb.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x92\x16\n" +
-	"\x11AwsDocumentDbSpec\x12|\n" +
-	"\asubnets\x18\x01 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\asubnets\x12Z\n" +
-	"\x0fdb_subnet_group\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\rdbSubnetGroup\x12\x86\x01\n" +
-	"\x0fsecurity_groups\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x0esecurityGroups\x12\x96\x01\n" +
-	"\rallowed_cidrs\x18\x04 \x03(\tBq\xbaHn\x92\x01k\x18\x01\"gre2c^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$R\fallowedCidrs\x12d\n" +
-	"\x03vpc\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x03vpc\x12<\n" +
-	"\x0eengine_version\x18\x06 \x01(\tB\x10\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\x055.0.0H\x00R\rengineVersion\x88\x01\x01\x12-\n" +
-	"\x04port\x18\a \x01(\x05B\x14\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01\x8a\xa6\x1d\x0527017H\x01R\x04port\x88\x01\x01\x12C\n" +
-	"\x0fmaster_username\x18\b \x01(\tB\x15\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\n" +
+	"4org/openmcf/provider/aws/awsdocumentdb/v1/spec.proto\x12)org.openmcf.provider.aws.awsdocumentdb.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb3\x16\n" +
+	"\x11AwsDocumentDbSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12|\n" +
+	"\asubnets\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\asubnets\x12Z\n" +
+	"\x0fdb_subnet_group\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\rdbSubnetGroup\x12\x86\x01\n" +
+	"\x0fsecurity_groups\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x0esecurityGroups\x12\x96\x01\n" +
+	"\rallowed_cidrs\x18\x05 \x03(\tBq\xbaHn\x92\x01k\x18\x01\"gre2c^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$R\fallowedCidrs\x12d\n" +
+	"\x03vpc\x18\x06 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x03vpc\x12<\n" +
+	"\x0eengine_version\x18\a \x01(\tB\x10\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\x055.0.0H\x00R\rengineVersion\x88\x01\x01\x12-\n" +
+	"\x04port\x18\b \x01(\x05B\x14\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01\x8a\xa6\x1d\x0527017H\x01R\x04port\x88\x01\x01\x12C\n" +
+	"\x0fmaster_username\x18\t \x01(\tB\x15\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\n" +
 	"docdbadminH\x02R\x0emasterUsername\x88\x01\x01\x12/\n" +
-	"\x0fmaster_password\x18\t \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0emasterPassword\x128\n" +
-	"\x0einstance_count\x18\n" +
-	" \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x03R\rinstanceCount\x88\x01\x01\x12C\n" +
-	"\x0einstance_class\x18\v \x01(\tB\x17\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\fdb.r6g.largeH\x04R\rinstanceClass\x88\x01\x01\x12:\n" +
-	"\x11storage_encrypted\x18\f \x01(\bB\b\x8a\xa6\x1d\x04trueH\x05R\x10storageEncrypted\x88\x01\x01\x12l\n" +
-	"\akms_key\x18\r \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\x06kmsKey\x12K\n" +
-	"\x17backup_retention_period\x18\x0e \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18#(\x01\x8a\xa6\x1d\x017H\x06R\x15backupRetentionPeriod\x88\x01\x01\x12\x7f\n" +
-	"\x17preferred_backup_window\x18\x0f \x01(\tBG\xbaHD\xd8\x01\x01r?2=^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$R\x15preferredBackupWindow\x12\xc7\x01\n" +
-	"\x1cpreferred_maintenance_window\x18\x10 \x01(\tB\x84\x01\xbaH\x80\x01\xd8\x01\x01r{2y^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$R\x1apreferredMaintenanceWindow\x12/\n" +
-	"\x13deletion_protection\x18\x11 \x01(\bR\x12deletionProtection\x12>\n" +
-	"\x13skip_final_snapshot\x18\x12 \x01(\bB\t\x8a\xa6\x1d\x05falseH\aR\x11skipFinalSnapshot\x88\x01\x01\x12F\n" +
-	"\x19final_snapshot_identifier\x18\x13 \x01(\tB\n" +
+	"\x0fmaster_password\x18\n" +
+	" \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0emasterPassword\x128\n" +
+	"\x0einstance_count\x18\v \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x03R\rinstanceCount\x88\x01\x01\x12C\n" +
+	"\x0einstance_class\x18\f \x01(\tB\x17\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\fdb.r6g.largeH\x04R\rinstanceClass\x88\x01\x01\x12:\n" +
+	"\x11storage_encrypted\x18\r \x01(\bB\b\x8a\xa6\x1d\x04trueH\x05R\x10storageEncrypted\x88\x01\x01\x12l\n" +
+	"\akms_key\x18\x0e \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\x06kmsKey\x12K\n" +
+	"\x17backup_retention_period\x18\x0f \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18#(\x01\x8a\xa6\x1d\x017H\x06R\x15backupRetentionPeriod\x88\x01\x01\x12\x7f\n" +
+	"\x17preferred_backup_window\x18\x10 \x01(\tBG\xbaHD\xd8\x01\x01r?2=^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$R\x15preferredBackupWindow\x12\xc7\x01\n" +
+	"\x1cpreferred_maintenance_window\x18\x11 \x01(\tB\x84\x01\xbaH\x80\x01\xd8\x01\x01r{2y^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$R\x1apreferredMaintenanceWindow\x12/\n" +
+	"\x13deletion_protection\x18\x12 \x01(\bR\x12deletionProtection\x12>\n" +
+	"\x13skip_final_snapshot\x18\x13 \x01(\bB\t\x8a\xa6\x1d\x05falseH\aR\x11skipFinalSnapshot\x88\x01\x01\x12F\n" +
+	"\x19final_snapshot_identifier\x18\x14 \x01(\tB\n" +
 	"\xbaH\a\xd8\x01\x01r\x02\x10\x01R\x17finalSnapshotIdentifier\x12O\n" +
-	"\x1fenabled_cloudwatch_logs_exports\x18\x14 \x03(\tB\b\xbaH\x05\x92\x01\x02\x18\x01R\x1cenabledCloudwatchLogsExports\x12+\n" +
-	"\x11apply_immediately\x18\x15 \x01(\bR\x10applyImmediately\x12J\n" +
-	"\x1aauto_minor_version_upgrade\x18\x16 \x01(\bB\b\x8a\xa6\x1d\x04trueH\bR\x17autoMinorVersionUpgrade\x88\x01\x01\x12?\n" +
-	"\x1ccluster_parameter_group_name\x18\x17 \x01(\tR\x19clusterParameterGroupName\x12p\n" +
-	"\x12cluster_parameters\x18\x18 \x03(\v2A.org.openmcf.provider.aws.awsdocumentdb.v1.AwsDocumentDbParameterR\x11clusterParameters:\x81\x04\xbaH\xfd\x03\x1a|\n" +
+	"\x1fenabled_cloudwatch_logs_exports\x18\x15 \x03(\tB\b\xbaH\x05\x92\x01\x02\x18\x01R\x1cenabledCloudwatchLogsExports\x12+\n" +
+	"\x11apply_immediately\x18\x16 \x01(\bR\x10applyImmediately\x12J\n" +
+	"\x1aauto_minor_version_upgrade\x18\x17 \x01(\bB\b\x8a\xa6\x1d\x04trueH\bR\x17autoMinorVersionUpgrade\x88\x01\x01\x12?\n" +
+	"\x1ccluster_parameter_group_name\x18\x18 \x01(\tR\x19clusterParameterGroupName\x12p\n" +
+	"\x12cluster_parameters\x18\x19 \x03(\v2A.org.openmcf.provider.aws.awsdocumentdb.v1.AwsDocumentDbParameterR\x11clusterParameters:\x81\x04\xbaH\xfd\x03\x1a|\n" +
 	"\x10subnets_or_group\x12/Provide either subnets (>=2) or db_subnet_group\x1a7(this.subnets.size() >= 2) || has(this.db_subnet_group)\x1a\xbf\x01\n" +
 	",final_snapshot_id_required_when_not_skipping\x12Gfinal_snapshot_identifier must be set when skip_final_snapshot is false\x1aFthis.skip_final_snapshot ? true : this.final_snapshot_identifier != \"\"\x1a\xba\x01\n" +
 	"\x19logs_exports_valid_values\x12Oenabled_cloudwatch_logs_exports must contain only valid values: audit, profiler\x1aLthis.enabled_cloudwatch_logs_exports.all(x, x == \"audit\" || x == \"profiler\")B\x11\n" +

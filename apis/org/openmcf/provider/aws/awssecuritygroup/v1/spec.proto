@@ -7,10 +7,14 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 
 // AwsSecurityGroupSpec defines the primary configuration for creating an AWS EC2 Security Group in a specified VPC.
 message AwsSecurityGroupSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // vpc_id is the ID of the VPC where this Security Group will be created.
   // Example: "vpc-12345abcde"
   // This field is required because every Security Group must belong to one VPC.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 1 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 2 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
@@ -19,7 +23,7 @@ message AwsSecurityGroupSpec {
   // description provides a short explanation of this Security Group’s purpose.
   // This field is required by AWS and cannot be modified once created without a replacement.
   // Example: "Allows inbound HTTP and SSH for web tier"
-  string description = 2 [
+  string description = 3 [
     (buf.validate.field).required = true,
     // AWS max 255 chars for description.
     (buf.validate.field).cel = {
@@ -31,11 +35,11 @@ message AwsSecurityGroupSpec {
 
   // ingress_rules define the inbound traffic rules for this Security Group.
   // If empty, inbound traffic is fully restricted (deny all).
-  repeated SecurityGroupRule ingress = 3;
+  repeated SecurityGroupRule ingress = 4;
 
   // egress_rules define the outbound traffic rules for this Security Group.
   // If empty, AWS defaults to allow all outbound traffic unless configured otherwise.
-  repeated SecurityGroupRule egress = 4;
+  repeated SecurityGroupRule egress = 5;
 }
 
 // SecurityGroupRule represents a single inbound or outbound rule in the Security Group.

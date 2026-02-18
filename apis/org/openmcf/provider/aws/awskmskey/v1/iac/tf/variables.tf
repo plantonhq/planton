@@ -43,6 +43,9 @@ variable "spec" {
   description = "Specification for Deployment Component"
   type = object({
 
+    # The AWS region where the resource will be created.
+    region = string
+
     # Description for key_spec
     key_spec = string
 

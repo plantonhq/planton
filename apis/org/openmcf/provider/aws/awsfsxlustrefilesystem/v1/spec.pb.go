@@ -47,6 +47,9 @@ const (
 //   - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 type AwsFsxLustreFileSystemSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Deployment type controlling data durability and performance characteristics.
 	// ForceNew — cannot be changed after creation.
 	//
@@ -60,7 +63,7 @@ type AwsFsxLustreFileSystemSpec struct {
 	//     workloads requiring persistent storage.
 	//
 	// Default: SCRATCH_2
-	DeploymentType *string `protobuf:"bytes,1,opt,name=deployment_type,json=deploymentType,proto3,oneof" json:"deployment_type,omitempty"`
+	DeploymentType *string `protobuf:"bytes,2,opt,name=deployment_type,json=deploymentType,proto3,oneof" json:"deployment_type,omitempty"`
 	// Storage capacity in GiB. Minimum 1200 GiB. Exact valid values depend on
 	// deployment type and storage type:
 	//
@@ -71,7 +74,7 @@ type AwsFsxLustreFileSystemSpec struct {
 	//
 	// Can be increased after creation but never decreased. Increasing storage on
 	// SCRATCH_1 forces replacement.
-	StorageCapacityGib int32 `protobuf:"varint,2,opt,name=storage_capacity_gib,json=storageCapacityGib,proto3" json:"storage_capacity_gib,omitempty"`
+	StorageCapacityGib int32 `protobuf:"varint,3,opt,name=storage_capacity_gib,json=storageCapacityGib,proto3" json:"storage_capacity_gib,omitempty"`
 	// Storage media type. ForceNew — cannot be changed after creation.
 	//
 	//   - "SSD": solid-state drives. Sub-millisecond latency. Required for SCRATCH_2,
@@ -80,7 +83,7 @@ type AwsFsxLustreFileSystemSpec struct {
 	//     PERSISTENT_1 deployments. Requires `per_unit_storage_throughput` of 12 or 40.
 	//
 	// Default: SSD
-	StorageType *string `protobuf:"bytes,3,opt,name=storage_type,json=storageType,proto3,oneof" json:"storage_type,omitempty"`
+	StorageType *string `protobuf:"bytes,4,opt,name=storage_type,json=storageType,proto3,oneof" json:"storage_type,omitempty"`
 	// Throughput per unit of storage in MB/s/TiB. Required for PERSISTENT_1 and
 	// PERSISTENT_2 deployments. Invalid for SCRATCH types.
 	//
@@ -88,26 +91,26 @@ type AwsFsxLustreFileSystemSpec struct {
 	// - PERSISTENT_1 + SSD: 50, 100, 200
 	// - PERSISTENT_1 + HDD: 12, 40
 	// - PERSISTENT_2 + SSD: 125, 250, 500, 1000
-	PerUnitStorageThroughput int32 `protobuf:"varint,4,opt,name=per_unit_storage_throughput,json=perUnitStorageThroughput,proto3" json:"per_unit_storage_throughput,omitempty"`
+	PerUnitStorageThroughput int32 `protobuf:"varint,5,opt,name=per_unit_storage_throughput,json=perUnitStorageThroughput,proto3" json:"per_unit_storage_throughput,omitempty"`
 	// Enable LZ4 data compression for all data on the file system. Reduces storage
 	// consumption and can improve throughput for compressible data. Can be changed
 	// after creation. Compression does not affect file system performance for
 	// Lustre operations.
 	//
 	// Default: NONE
-	DataCompressionType *string `protobuf:"bytes,5,opt,name=data_compression_type,json=dataCompressionType,proto3,oneof" json:"data_compression_type,omitempty"`
+	DataCompressionType *string `protobuf:"bytes,6,opt,name=data_compression_type,json=dataCompressionType,proto3,oneof" json:"data_compression_type,omitempty"`
 	// Lustre file system type version. ForceNew — cannot be changed after creation.
 	// Format: "x.y" (e.g., "2.12", "2.15").
 	//
 	// Leave empty to use the latest version supported by the deployment type.
 	// Explicitly set only if workload compatibility requires a specific version.
-	FileSystemTypeVersion string `protobuf:"bytes,6,opt,name=file_system_type_version,json=fileSystemTypeVersion,proto3" json:"file_system_type_version,omitempty"`
+	FileSystemTypeVersion string `protobuf:"bytes,7,opt,name=file_system_type_version,json=fileSystemTypeVersion,proto3" json:"file_system_type_version,omitempty"`
 	// Subnet ID for the file system's network interface. Required. ForceNew.
 	//
 	// Lustre file systems are single-AZ — exactly one subnet is supported. The
 	// file system's ENI is created in this subnet. All compute resources mounting
 	// this file system must have network connectivity to this subnet.
-	SubnetId *v1.StringValueOrRef `protobuf:"bytes,7,opt,name=subnet_id,json=subnetId,proto3" json:"subnet_id,omitempty"`
+	SubnetId *v1.StringValueOrRef `protobuf:"bytes,8,opt,name=subnet_id,json=subnetId,proto3" json:"subnet_id,omitempty"`
 	// Security groups for the file system's network interface. ForceNew.
 	//
 	// Must allow Lustre traffic between the file system and its clients:
@@ -115,49 +118,49 @@ type AwsFsxLustreFileSystemSpec struct {
 	// - TCP ports 1018-1023 (Lustre data channels)
 	//
 	// Up to 50 security groups.
-	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,8,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
+	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,9,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
 	// Customer-managed KMS key ARN for encryption at rest. ForceNew — the KMS key
 	// cannot be changed after creation. When omitted, the file system uses the
 	// AWS-managed FSx key. All Lustre file systems are encrypted at rest by default
 	// using AWS-managed keys; this field upgrades to a customer-managed key.
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,10,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// S3 URI to import data from (e.g., "s3://my-bucket" or "s3://my-bucket/prefix").
 	// ForceNew. Only supported on SCRATCH_1 and SCRATCH_2 deployments.
 	//
 	// When set, the file system automatically imports file metadata from S3. File
 	// data is lazy-loaded on first access. For more flexible S3 integration on
 	// PERSISTENT deployments, use a separate data repository association.
-	ImportPath string `protobuf:"bytes,10,opt,name=import_path,json=importPath,proto3" json:"import_path,omitempty"`
+	ImportPath string `protobuf:"bytes,11,opt,name=import_path,json=importPath,proto3" json:"import_path,omitempty"`
 	// S3 URI for exporting data back to S3 (e.g., "s3://my-bucket/output/").
 	// ForceNew. Requires `import_path` to be set.
 	//
 	// When set, changes made on the file system are automatically exported to S3.
-	ExportPath string `protobuf:"bytes,11,opt,name=export_path,json=exportPath,proto3" json:"export_path,omitempty"`
+	ExportPath string `protobuf:"bytes,12,opt,name=export_path,json=exportPath,proto3" json:"export_path,omitempty"`
 	// CloudWatch logging configuration for Lustre audit events (file access,
 	// file creation, deletion). Useful for compliance and debugging.
-	LogConfiguration *AwsFsxLustreFileSystemLogConfiguration `protobuf:"bytes,12,opt,name=log_configuration,json=logConfiguration,proto3" json:"log_configuration,omitempty"`
+	LogConfiguration *AwsFsxLustreFileSystemLogConfiguration `protobuf:"bytes,13,opt,name=log_configuration,json=logConfiguration,proto3" json:"log_configuration,omitempty"`
 	// Number of days to retain automatic backups. Range: 0-90. Set to 0 to disable
 	// automatic backups.
 	//
 	// Default: 0 (no automatic backups)
-	AutomaticBackupRetentionDays *int32 `protobuf:"varint,13,opt,name=automatic_backup_retention_days,json=automaticBackupRetentionDays,proto3,oneof" json:"automatic_backup_retention_days,omitempty"`
+	AutomaticBackupRetentionDays *int32 `protobuf:"varint,14,opt,name=automatic_backup_retention_days,json=automaticBackupRetentionDays,proto3,oneof" json:"automatic_backup_retention_days,omitempty"`
 	// Daily UTC time to start automatic backups, in HH:MM format (e.g., "05:00").
 	// If not specified and backups are enabled, AWS chooses a default window.
-	DailyAutomaticBackupStartTime string `protobuf:"bytes,14,opt,name=daily_automatic_backup_start_time,json=dailyAutomaticBackupStartTime,proto3" json:"daily_automatic_backup_start_time,omitempty"`
+	DailyAutomaticBackupStartTime string `protobuf:"bytes,15,opt,name=daily_automatic_backup_start_time,json=dailyAutomaticBackupStartTime,proto3" json:"daily_automatic_backup_start_time,omitempty"`
 	// Copy tags from the file system to backups. ForceNew.
-	CopyTagsToBackups bool `protobuf:"varint,15,opt,name=copy_tags_to_backups,json=copyTagsToBackups,proto3" json:"copy_tags_to_backups,omitempty"`
+	CopyTagsToBackups bool `protobuf:"varint,16,opt,name=copy_tags_to_backups,json=copyTagsToBackups,proto3" json:"copy_tags_to_backups,omitempty"`
 	// Skip creating a final backup when the file system is deleted. Applies only to
 	// PERSISTENT deployments with backup support.
 	//
 	// Default: true
-	SkipFinalBackup *bool `protobuf:"varint,16,opt,name=skip_final_backup,json=skipFinalBackup,proto3,oneof" json:"skip_final_backup,omitempty"`
+	SkipFinalBackup *bool `protobuf:"varint,17,opt,name=skip_final_backup,json=skipFinalBackup,proto3,oneof" json:"skip_final_backup,omitempty"`
 	// Weekly UTC maintenance window in the format "d:HH:MM" where d is the day of
 	// the week (1=Monday, 7=Sunday). Example: "1:05:00" for Monday at 05:00 UTC.
-	WeeklyMaintenanceStartTime string `protobuf:"bytes,17,opt,name=weekly_maintenance_start_time,json=weeklyMaintenanceStartTime,proto3" json:"weekly_maintenance_start_time,omitempty"`
+	WeeklyMaintenanceStartTime string `protobuf:"bytes,18,opt,name=weekly_maintenance_start_time,json=weeklyMaintenanceStartTime,proto3" json:"weekly_maintenance_start_time,omitempty"`
 	// Metadata performance configuration. Only supported on PERSISTENT_2 deployments.
 	// Controls the metadata IOPS available for file creation, listing, and similar
 	// operations. Most workloads perform well with AUTOMATIC mode.
-	MetadataConfiguration *AwsFsxLustreFileSystemMetadataConfiguration `protobuf:"bytes,18,opt,name=metadata_configuration,json=metadataConfiguration,proto3" json:"metadata_configuration,omitempty"`
+	MetadataConfiguration *AwsFsxLustreFileSystemMetadataConfiguration `protobuf:"bytes,19,opt,name=metadata_configuration,json=metadataConfiguration,proto3" json:"metadata_configuration,omitempty"`
 	unknownFields         protoimpl.UnknownFields
 	sizeCache             protoimpl.SizeCache
 }
@@ -190,6 +193,13 @@ func (x *AwsFsxLustreFileSystemSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsFsxLustreFileSystemSpec.ProtoReflect.Descriptor instead.
 func (*AwsFsxLustreFileSystemSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsfsxlustrefilesystem_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsFsxLustreFileSystemSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsFsxLustreFileSystemSpec) GetDeploymentType() string {
@@ -455,30 +465,31 @@ var File_org_openmcf_provider_aws_awsfsxlustrefilesystem_v1_spec_proto protorefl
 
 const file_org_openmcf_provider_aws_awsfsxlustrefilesystem_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"=org/openmcf/provider/aws/awsfsxlustrefilesystem/v1/spec.proto\x122org.openmcf.provider.aws.awsfsxlustrefilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xf1\x17\n" +
-	"\x1aAwsFsxLustreFileSystemSpec\x12;\n" +
-	"\x0fdeployment_type\x18\x01 \x01(\tB\r\x8a\xa6\x1d\tSCRATCH_2H\x00R\x0edeploymentType\x88\x01\x01\x12:\n" +
-	"\x14storage_capacity_gib\x18\x02 \x01(\x05B\b\xbaH\x05\x1a\x03(\xb0\tR\x12storageCapacityGib\x12/\n" +
-	"\fstorage_type\x18\x03 \x01(\tB\a\x8a\xa6\x1d\x03SSDH\x01R\vstorageType\x88\x01\x01\x12=\n" +
-	"\x1bper_unit_storage_throughput\x18\x04 \x01(\x05R\x18perUnitStorageThroughput\x12A\n" +
-	"\x15data_compression_type\x18\x05 \x01(\tB\b\x8a\xa6\x1d\x04NONEH\x02R\x13dataCompressionType\x88\x01\x01\x127\n" +
-	"\x18file_system_type_version\x18\x06 \x01(\tR\x15fileSystemTypeVersion\x12\x85\x01\n" +
-	"\tsubnet_id\x18\a \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB4\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[0].idR\bsubnetId\x12\x8b\x01\n" +
-	"\x12security_group_ids\x18\b \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12q\n" +
+	"=org/openmcf/provider/aws/awsfsxlustrefilesystem/v1/spec.proto\x122org.openmcf.provider.aws.awsfsxlustrefilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x92\x18\n" +
+	"\x1aAwsFsxLustreFileSystemSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12;\n" +
+	"\x0fdeployment_type\x18\x02 \x01(\tB\r\x8a\xa6\x1d\tSCRATCH_2H\x00R\x0edeploymentType\x88\x01\x01\x12:\n" +
+	"\x14storage_capacity_gib\x18\x03 \x01(\x05B\b\xbaH\x05\x1a\x03(\xb0\tR\x12storageCapacityGib\x12/\n" +
+	"\fstorage_type\x18\x04 \x01(\tB\a\x8a\xa6\x1d\x03SSDH\x01R\vstorageType\x88\x01\x01\x12=\n" +
+	"\x1bper_unit_storage_throughput\x18\x05 \x01(\x05R\x18perUnitStorageThroughput\x12A\n" +
+	"\x15data_compression_type\x18\x06 \x01(\tB\b\x8a\xa6\x1d\x04NONEH\x02R\x13dataCompressionType\x88\x01\x01\x127\n" +
+	"\x18file_system_type_version\x18\a \x01(\tR\x15fileSystemTypeVersion\x12\x85\x01\n" +
+	"\tsubnet_id\x18\b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB4\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[0].idR\bsubnetId\x12\x8b\x01\n" +
+	"\x12security_group_ids\x18\t \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\t \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12\x1f\n" +
-	"\vimport_path\x18\n" +
-	" \x01(\tR\n" +
+	"kms_key_id\x18\n" +
+	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12\x1f\n" +
+	"\vimport_path\x18\v \x01(\tR\n" +
 	"importPath\x12\x1f\n" +
-	"\vexport_path\x18\v \x01(\tR\n" +
+	"\vexport_path\x18\f \x01(\tR\n" +
 	"exportPath\x12\x87\x01\n" +
-	"\x11log_configuration\x18\f \x01(\v2Z.org.openmcf.provider.aws.awsfsxlustrefilesystem.v1.AwsFsxLustreFileSystemLogConfigurationR\x10logConfiguration\x12Q\n" +
-	"\x1fautomatic_backup_retention_days\x18\r \x01(\x05B\x05\x8a\xa6\x1d\x010H\x03R\x1cautomaticBackupRetentionDays\x88\x01\x01\x12H\n" +
-	"!daily_automatic_backup_start_time\x18\x0e \x01(\tR\x1ddailyAutomaticBackupStartTime\x12/\n" +
-	"\x14copy_tags_to_backups\x18\x0f \x01(\bR\x11copyTagsToBackups\x129\n" +
-	"\x11skip_final_backup\x18\x10 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x04R\x0fskipFinalBackup\x88\x01\x01\x12A\n" +
-	"\x1dweekly_maintenance_start_time\x18\x11 \x01(\tR\x1aweeklyMaintenanceStartTime\x12\x96\x01\n" +
-	"\x16metadata_configuration\x18\x12 \x01(\v2_.org.openmcf.provider.aws.awsfsxlustrefilesystem.v1.AwsFsxLustreFileSystemMetadataConfigurationR\x15metadataConfiguration:\xba\v\xbaH\xb6\v\x1a\xde\x01\n" +
+	"\x11log_configuration\x18\r \x01(\v2Z.org.openmcf.provider.aws.awsfsxlustrefilesystem.v1.AwsFsxLustreFileSystemLogConfigurationR\x10logConfiguration\x12Q\n" +
+	"\x1fautomatic_backup_retention_days\x18\x0e \x01(\x05B\x05\x8a\xa6\x1d\x010H\x03R\x1cautomaticBackupRetentionDays\x88\x01\x01\x12H\n" +
+	"!daily_automatic_backup_start_time\x18\x0f \x01(\tR\x1ddailyAutomaticBackupStartTime\x12/\n" +
+	"\x14copy_tags_to_backups\x18\x10 \x01(\bR\x11copyTagsToBackups\x129\n" +
+	"\x11skip_final_backup\x18\x11 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x04R\x0fskipFinalBackup\x88\x01\x01\x12A\n" +
+	"\x1dweekly_maintenance_start_time\x18\x12 \x01(\tR\x1aweeklyMaintenanceStartTime\x12\x96\x01\n" +
+	"\x16metadata_configuration\x18\x13 \x01(\v2_.org.openmcf.provider.aws.awsfsxlustrefilesystem.v1.AwsFsxLustreFileSystemMetadataConfigurationR\x15metadataConfiguration:\xba\v\xbaH\xb6\v\x1a\xde\x01\n" +
 	"\x15deployment_type_valid\x12Sdeployment_type must be 'SCRATCH_1', 'SCRATCH_2', 'PERSISTENT_1', or 'PERSISTENT_2'\x1apthis.deployment_type == '' || this.deployment_type in ['SCRATCH_1', 'SCRATCH_2', 'PERSISTENT_1', 'PERSISTENT_2']\x1ay\n" +
 	"\x12storage_type_valid\x12#storage_type must be 'SSD' or 'HDD'\x1a>this.storage_type == '' || this.storage_type in ['SSD', 'HDD']\x1a\xab\x01\n" +
 	"\x19hdd_requires_persistent_1\x12Hstorage_type 'HDD' is only supported with deployment_type 'PERSISTENT_1'\x1aDthis.storage_type != 'HDD' || this.deployment_type == 'PERSISTENT_1'\x1a\xe2\x01\n" +

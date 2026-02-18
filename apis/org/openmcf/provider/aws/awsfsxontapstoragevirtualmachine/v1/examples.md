@@ -13,6 +13,7 @@ metadata:
   org: engineering
   env: dev
 spec:
+  region: us-east-1
   file_system_id:
     value: fs-0123456789abcdef0
   name: svm_dev
@@ -32,6 +33,7 @@ metadata:
   org: engineering
   env: prod
 spec:
+  region: us-east-1
   file_system_id:
     value: fs-0123456789abcdef0
   name: svm_prod
@@ -53,6 +55,7 @@ metadata:
   org: engineering
   env: prod
 spec:
+  region: us-east-1
   file_system_id:
     value: fs-0123456789abcdef0
   name: svm_windows
@@ -83,6 +86,7 @@ metadata:
   org: platform
   env: prod
 spec:
+  region: us-east-1
   file_system_id:
     value: fs-0123456789abcdef0
   name: svm_shared
@@ -114,6 +118,7 @@ metadata:
   org: data-team
   env: prod
 spec:
+  region: us-east-1
   file_system_id:
     valueFrom:
       kind: AwsFsxOntapFileSystem

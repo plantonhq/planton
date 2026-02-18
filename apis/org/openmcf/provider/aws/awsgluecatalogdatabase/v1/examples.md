@@ -10,7 +10,8 @@ apiVersion: aws.openmcf.org/v1
 kind: AwsGlueCatalogDatabase
 metadata:
   name: experiments
-spec: {}
+spec:
+  region: us-east-1
 ```
 
 ## Descriptive — Database with Purpose Documentation
@@ -23,6 +24,7 @@ kind: AwsGlueCatalogDatabase
 metadata:
   name: sales_analytics
 spec:
+  region: us-east-1
   description: >-
     Sales pipeline data lake containing raw ingestion tables, curated
     transformations, and aggregated datasets for BI dashboards.
@@ -39,6 +41,7 @@ kind: AwsGlueCatalogDatabase
 metadata:
   name: clickstream
 spec:
+  region: us-east-1
   description: "Web and mobile clickstream events for product analytics"
   locationUri: "s3://analytics-data-lake-us-east-1/clickstream/"
 ```
@@ -56,6 +59,7 @@ metadata:
   org: acme-corp
   env: production
 spec:
+  region: us-east-1
   description: >-
     Production data warehouse — curated datasets from ETL pipelines.
     Tables are populated by Glue crawlers and ETL jobs on a daily schedule.
@@ -77,6 +81,7 @@ metadata:
   name: orders_dev
   env: development
 spec:
+  region: us-west-2
   description: "Development environment for orders data pipeline"
   locationUri: "s3://dev-data-lake/orders/"
 ---
@@ -87,6 +92,7 @@ metadata:
   name: orders_prod
   env: production
 spec:
+  region: us-east-1
   description: "Production orders data — DO NOT modify table schemas without approval"
   locationUri: "s3://prod-data-lake/orders/"
 ```
@@ -105,6 +111,7 @@ metadata:
   org: "{{ values.org }}"
   env: "{{ values.env }}"
 spec:
+  region: "{{ values.region }}"
   description: "{{ values.description }}"
   locationUri: "s3://{{ values.data_lake_bucket }}/{{ values.database_name }}/"
 ```

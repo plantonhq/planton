@@ -42,6 +42,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with minimal required fields", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region:   "us-west-2",
 					Engine:   "redis",
 					NodeType: "db.t4g.small",
 				}
@@ -53,6 +54,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with full production configuration", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region:              "us-west-2",
 					Engine:              "redis",
 					EngineVersion:       "7.1",
 					Description:         "Production session store",
@@ -89,6 +91,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with valkey engine", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region:   "us-west-2",
 					Engine:   "valkey",
 					NodeType: "db.r7g.large",
 				}
@@ -100,6 +103,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with tls_enabled=false and open-access ACL", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region:     "us-west-2",
 					Engine:     "redis",
 					NodeType:   "db.t4g.small",
 					TlsEnabled: boolPtr(false),
@@ -113,6 +117,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with snapshot restore from ARNs", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region:       "us-west-2",
 					Engine:       "redis",
 					NodeType:     "db.r7g.large",
 					SnapshotArns: []string{"arn:aws:s3:::my-bucket/snapshot.rdb"},
@@ -125,6 +130,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with data tiering enabled", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region:      "us-west-2",
 					Engine:      "redis",
 					NodeType:    "db.r6gd.xlarge",
 					DataTiering: true,
@@ -143,6 +149,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with missing engine", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region:   "us-west-2",
 					NodeType: "db.t4g.small",
 				}
 				err := protovalidate.Validate(spec)
@@ -153,6 +160,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with missing node_type", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region: "us-west-2",
 					Engine: "redis",
 				}
 				err := protovalidate.Validate(spec)
@@ -163,6 +171,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with invalid engine value", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region:   "us-west-2",
 					Engine:   "memcached",
 					NodeType: "db.t4g.small",
 				}
@@ -174,6 +183,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with tls_enabled=false and non-open-access ACL", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region:     "us-west-2",
 					Engine:     "redis",
 					NodeType:   "db.t4g.small",
 					TlsEnabled: boolPtr(false),
@@ -187,6 +197,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with parameters but no parameter_group_family", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region:   "us-west-2",
 					Engine:   "redis",
 					NodeType: "db.t4g.small",
 					Parameters: []*AwsMemorydbClusterParameter{
@@ -201,6 +212,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with both snapshot_arns and snapshot_name", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region:       "us-west-2",
 					Engine:       "redis",
 					NodeType:     "db.t4g.small",
 					SnapshotArns: []string{"arn:aws:s3:::bucket/snap.rdb"},
@@ -214,6 +226,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with invalid port (out of range)", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region:   "us-west-2",
 					Engine:   "redis",
 					NodeType: "db.t4g.small",
 					Port:     int32Ptr(0),
@@ -226,6 +239,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with num_replicas_per_shard out of range", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region:              "us-west-2",
 					Engine:              "redis",
 					NodeType:            "db.t4g.small",
 					NumReplicasPerShard: int32Ptr(6),
@@ -238,6 +252,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with snapshot_retention_limit out of range", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region:                 "us-west-2",
 					Engine:                 "redis",
 					NodeType:               "db.t4g.small",
 					SnapshotRetentionLimit: 36,
@@ -250,6 +265,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with invalid maintenance_window format", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region:            "us-west-2",
 					Engine:            "redis",
 					NodeType:          "db.t4g.small",
 					MaintenanceWindow: "invalid-format",
@@ -262,6 +278,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with invalid snapshot_window format", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region:         "us-west-2",
 					Engine:         "redis",
 					NodeType:       "db.t4g.small",
 					SnapshotWindow: "bad-window",
@@ -274,6 +291,7 @@ var _ = ginkgo.Describe("AwsMemorydbClusterSpec validations", func() {
 		ginkgo.Context("with parameter missing name", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec := &AwsMemorydbClusterSpec{
+					Region:               "us-west-2",
 					Engine:               "redis",
 					NodeType:             "db.t4g.small",
 					ParameterGroupFamily: "memorydb_redis7",

@@ -28,8 +28,9 @@ var _ = ginkgo.Describe("AwsEksNodeGroupSpec Custom Validation Tests", func() {
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "test-node-group",
 					},
-					Spec: &AwsEksNodeGroupSpec{
-						ClusterName: &foreignkeyv1.StringValueOrRef{
+				Spec: &AwsEksNodeGroupSpec{
+					Region: "us-west-2",
+					ClusterName: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-eks-cluster"},
 						},
 						NodeRoleArn: &foreignkeyv1.StringValueOrRef{

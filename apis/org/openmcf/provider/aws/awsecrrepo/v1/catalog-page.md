@@ -29,6 +29,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsEcrRepo.my-service
 spec:
+  region: us-east-1
   repositoryName: my-org/my-service
 ```
 
@@ -46,6 +47,7 @@ This creates an ECR repository with mutable tags, AES256 encryption, and scan-on
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | The AWS region where the ECR repository will be created. | Valid AWS region |
 | `repositoryName` | `string` | Name of the ECR repository. Must be unique within the AWS account and region. Commonly includes the organization or project prefix, e.g., `team-blue/my-microservice`. | 2–256 characters |
 
 ### Optional Fields
@@ -78,6 +80,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsEcrRepo.prod-api
 spec:
+  region: us-east-1
   repositoryName: my-org/api-server
   imageImmutable: true
 ```
@@ -97,6 +100,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsEcrRepo.compliant-repo
 spec:
+  region: us-east-1
   repositoryName: my-org/compliant-service
   encryptionType: KMS
   kmsKeyId: arn:aws:kms:us-east-1:123456789012:key/abcd-1234-efgh-5678
@@ -118,6 +122,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsEcrRepo.ci-images
 spec:
+  region: us-east-1
   repositoryName: my-org/ci-runner
   lifecyclePolicy:
     expireUntaggedAfterDays: 7
@@ -139,6 +144,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsEcrRepo.prod-frontend
 spec:
+  region: us-east-1
   repositoryName: my-org/frontend
   imageImmutable: true
   encryptionType: KMS
@@ -165,6 +171,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsEcrRepo.dev-scratch
 spec:
+  region: us-west-2
   repositoryName: my-org/scratch
   forceDelete: true
   lifecyclePolicy:

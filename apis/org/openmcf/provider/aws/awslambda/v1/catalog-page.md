@@ -32,6 +32,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsLambda.my-function
 spec:
+  region: us-east-1
   functionName: my-function
   roleArn: arn:aws:iam::123456789012:role/lambda-exec-role
   codeSourceType: CODE_SOURCE_TYPE_S3
@@ -56,6 +57,7 @@ This creates a Node.js Lambda function using code from the specified S3 bucket, 
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the Lambda function will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `functionName` | `string` | Human-readable function name shown in the AWS Console. Must be unique per account/region. | Min length 1 |
 | `roleArn` | `StringValueOrRef` | Execution role ARN for the function. Can reference an AwsIamRole resource via `valueFrom`. | Required |
 | `codeSourceType` | `enum` | How function code is supplied. Valid values: `CODE_SOURCE_TYPE_S3`, `CODE_SOURCE_TYPE_IMAGE`. | Required |
@@ -99,6 +101,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsLambda.image-function
 spec:
+  region: us-east-1
   functionName: image-function
   roleArn: arn:aws:iam::123456789012:role/lambda-exec-role
   codeSourceType: CODE_SOURCE_TYPE_IMAGE
@@ -123,6 +126,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: staging.AwsLambda.vpc-function
 spec:
+  region: us-east-1
   functionName: vpc-function
   roleArn: arn:aws:iam::123456789012:role/lambda-vpc-role
   codeSourceType: CODE_SOURCE_TYPE_S3
@@ -158,6 +162,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsLambda.prod-function
 spec:
+  region: us-east-1
   functionName: prod-function
   description: Production order processing function
   roleArn: arn:aws:iam::123456789012:role/prod-lambda-role
@@ -201,6 +206,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsLambda.ref-function
 spec:
+  region: us-east-1
   functionName: ref-function
   roleArn:
     valueFrom:

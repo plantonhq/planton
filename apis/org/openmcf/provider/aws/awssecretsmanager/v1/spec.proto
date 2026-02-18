@@ -11,10 +11,14 @@ import "buf/validate/validate.proto";
 // provides secure, scalable, and auditable storage for these secrets, supports automatic rotation, and helps
 // manage access through fine-grained permissions.
 message AwsSecretsManagerSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // List of secret names to create in AWS Secrets Manager.
   // Each name corresponds to a unique secret that will be securely stored and managed.
   // Secret names must be unique within your AWS account and region.
-  repeated string secret_names = 1 [
+  repeated string secret_names = 2 [
     (buf.validate.field).repeated = {
       min_items: 1
       unique: true

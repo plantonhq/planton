@@ -33,7 +33,9 @@ var _ = ginkgo.Describe("AwsSnsTopicSpec validations", func() {
 
 	ginkgo.BeforeEach(func() {
 		// Minimal valid spec: a standard topic with all AWS defaults.
-		spec = &AwsSnsTopicSpec{}
+		spec = &AwsSnsTopicSpec{
+			Region: "us-west-2",
+		}
 	})
 
 	// -------------------------------------------------------------------------

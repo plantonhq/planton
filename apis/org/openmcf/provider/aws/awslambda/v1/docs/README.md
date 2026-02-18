@@ -243,6 +243,7 @@ Lambda functions have dozens of configuration options, but a core subset covers 
 
 These fields appear in virtually every Lambda function:
 
+- **Region**: AWS region where the Lambda function will be deployed (e.g., `us-west-2`, `eu-west-1`)
 - **Function Name**: Unique identifier within your AWS account/region
 - **Runtime**: Language/runtime version (e.g., `python3.11`, `nodejs18.x`) or `provided.al2` for custom/container
 - **Handler**: Entry point for ZIP functions (e.g., `index.handler` for Node.js, `app.lambda_handler` for Python)
@@ -380,6 +381,7 @@ Both approaches benefit from robust state management, dependency tracking, and i
 
 **Simple API Function:**
 ```yaml
+region: us-east-1
 function_name: hello-world-api
 runtime: nodejs18.x
 handler: index.handler
@@ -397,6 +399,7 @@ environment:
 
 **VPC-Integrated Data Processor:**
 ```yaml
+region: us-east-1
 function_name: image-processor
 runtime: python3.11
 handler: process_image.lambda_handler
@@ -421,6 +424,7 @@ architecture: ARM64  # 20% cost savings
 
 **Containerized ML Function:**
 ```yaml
+region: us-east-1
 function_name: analytics-job
 memory_mb: 3072
 timeout_seconds: 900

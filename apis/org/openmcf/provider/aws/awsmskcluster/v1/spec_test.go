@@ -25,6 +25,7 @@ func validMinimalSpec() *AwsMskCluster {
 			Name: "test-msk-cluster",
 		},
 		Spec: &AwsMskClusterSpec{
+			Region:              "us-west-2",
 			KafkaVersion:        "3.6.0",
 			NumberOfBrokerNodes: 3,
 			InstanceType:        "kafka.m5.large",

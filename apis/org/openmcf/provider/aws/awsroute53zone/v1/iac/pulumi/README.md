@@ -73,7 +73,7 @@ This module leverages both the AWS Native and AWS Classic Pulumi providers:
 This dual-provider setup ensures that developers can utilize the latest AWS features while maintaining compatibility with older services.
 
 ### Seamless AWS Credential Integration
-The module integrates AWS credentials securely by using the `awsProviderConfigId`. This allows the module to authenticate and interact with AWS services, ensuring that only authorized actions are performed within your AWS account.
+The module integrates AWS credentials securely via the provider configuration. This allows the module to authenticate and interact with AWS services, ensuring that only authorized actions are performed within your AWS account.
 
 ### Automated and Scalable DNS Management
 By abstracting away the complexity of AWS Route53, the module enables the automatic creation and scaling of DNS zones and records without manual intervention. Once the YAML configuration is defined, the infrastructure is provisioned automatically via Pulumi, saving significant time and effort.

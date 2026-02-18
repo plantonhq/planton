@@ -31,6 +31,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsSqsQueue.my-queue
 spec:
+  region: us-east-1
   sqsManagedSseEnabled: true
 ```
 
@@ -46,7 +47,11 @@ This creates a Standard SQS queue with SQS-managed encryption and all other sett
 
 ### Required Fields
 
-No required spec fields. All configuration is optional with AWS defaults.
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `region` | `string` | The AWS region where the SQS queue will be created. | Required |
+
+All other configuration is optional with AWS defaults.
 
 ### Optional Fields
 
@@ -85,6 +90,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsSqsQueue.payment-events
 spec:
+  region: us-east-1
   fifoQueue: true
   contentBasedDeduplication: true
   sqsManagedSseEnabled: true
@@ -113,6 +119,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsSqsQueue.task-queue
 spec:
+  region: us-east-1
   sqsManagedSseEnabled: true
   receiveWaitTimeSeconds: 20
   visibilityTimeoutSeconds: 60
@@ -134,6 +141,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsSqsQueue.notifications-queue
 spec:
+  region: us-east-1
   kmsKeyId:
     valueFrom:
       kind: AwsKmsKey

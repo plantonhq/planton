@@ -287,12 +287,14 @@ if g.Projection != nil {
 **Implementation**:
 ```go
 if awsProviderConfig == nil {
-    provider, err = aws.NewProvider(ctx, "classic-provider", &aws.ProviderArgs{})
+    provider, err = aws.NewProvider(ctx, "classic-provider", &aws.ProviderArgs{
+        Region: pulumi.String(locals.Spec.Region),
+    })
 } else {
     provider, err = aws.NewProvider(ctx, "classic-provider", &aws.ProviderArgs{
         AccessKey: pulumi.String(awsProviderConfig.AccessKeyId),
         SecretKey: pulumi.String(awsProviderConfig.SecretAccessKey),
-        Region:    pulumi.String(awsProviderConfig.GetRegion()),
+        Region:    pulumi.String(locals.Spec.Region),
         Token:     pulumi.StringPtr(awsProviderConfig.SessionToken),
     })
 }

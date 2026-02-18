@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsecscluster/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsecscluster_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjRvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWNzY2x1c3Rlci92MS9zcGVjLnByb3RvEilvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWNzY2x1c3Rlci52MSLXAgoRQXdzRWNzQ2x1c3RlclNwZWMSKwoZZW5hYmxlX2NvbnRhaW5lcl9pbnNpZ2h0cxgBIAEoCEIIkqYdBHRydWUSPwoSY2FwYWNpdHlfcHJvdmlkZXJzGAIgAygJQiO6SCCSAR0YASIZchdSB0ZBUkdBVEVSDEZBUkdBVEVfU1BPVBJvCiJkZWZhdWx0X2NhcGFjaXR5X3Byb3ZpZGVyX3N0cmF0ZWd5GAMgAygLMkMub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2Vjc2NsdXN0ZXIudjEuQ2FwYWNpdHlQcm92aWRlclN0cmF0ZWd5EmMKHWV4ZWN1dGVfY29tbWFuZF9jb25maWd1cmF0aW9uGAQgASgLMjwub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2Vjc2NsdXN0ZXIudjEuRXhlY0NvbmZpZ3VyYXRpb24igwEKGENhcGFjaXR5UHJvdmlkZXJTdHJhdGVneRI3ChFjYXBhY2l0eV9wcm92aWRlchgBIAEoCUIcukgZchdSB0ZBUkdBVEVSDEZBUkdBVEVfU1BPVBIVCgRiYXNlGAIgASgFQge6SAQaAigAEhcKBndlaWdodBgDIAEoBUIHukgEGgIgACL4AgoRRXhlY0NvbmZpZ3VyYXRpb24SVQoHbG9nZ2luZxgBIAEoDjJELm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NlY3NjbHVzdGVyLnYxLkV4ZWNDb25maWd1cmF0aW9uLkxvZ2dpbmcSWgoRbG9nX2NvbmZpZ3VyYXRpb24YAiABKAsyPy5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWNzY2x1c3Rlci52MS5FeGVjTG9nQ29uZmlndXJhdGlvbhJnCgprbXNfa2V5X2lkGAMgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybiJHCgdMb2dnaW5nEhcKE0xPR0dJTkdfVU5TUEVDSUZJRUQQABILCgdERUZBVUxUEAESCAoETk9ORRACEgwKCE9WRVJSSURFEAMisAEKFEV4ZWNMb2dDb25maWd1cmF0aW9uEiIKGmNsb3VkX3dhdGNoX2xvZ19ncm91cF9uYW1lGAEgASgJEiYKHmNsb3VkX3dhdGNoX2VuY3J5cHRpb25fZW5hYmxlZBgCIAEoCBIWCg5zM19idWNrZXRfbmFtZRgDIAEoCRIVCg1zM19rZXlfcHJlZml4GAQgASgJEh0KFXMzX2VuY3J5cHRpb25fZW5hYmxlZBgFIAEoCELiAgotY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NlY3NjbHVzdGVyLnYxQglTcGVjUHJvdG9QAVpbZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NlY3NjbHVzdGVyL3YxO2F3c2Vjc2NsdXN0ZXJ2MaICBU9PUEFBqgIpT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2Vjc2NsdXN0ZXIuVjHKAilPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZWNzY2x1c3RlclxWMeICNU9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NlY3NjbHVzdGVyXFYxXEdQQk1ldGFkYXRh6gIuT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NlY3NjbHVzdGVyOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("CjRvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWNzY2x1c3Rlci92MS9zcGVjLnByb3RvEilvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWNzY2x1c3Rlci52MSLwAgoRQXdzRWNzQ2x1c3RlclNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEisKGWVuYWJsZV9jb250YWluZXJfaW5zaWdodHMYAiABKAhCCJKmHQR0cnVlEj8KEmNhcGFjaXR5X3Byb3ZpZGVycxgDIAMoCUIjukggkgEdGAEiGXIXUgdGQVJHQVRFUgxGQVJHQVRFX1NQT1QSbwoiZGVmYXVsdF9jYXBhY2l0eV9wcm92aWRlcl9zdHJhdGVneRgEIAMoCzJDLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NlY3NjbHVzdGVyLnYxLkNhcGFjaXR5UHJvdmlkZXJTdHJhdGVneRJjCh1leGVjdXRlX2NvbW1hbmRfY29uZmlndXJhdGlvbhgFIAEoCzI8Lm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NlY3NjbHVzdGVyLnYxLkV4ZWNDb25maWd1cmF0aW9uIoMBChhDYXBhY2l0eVByb3ZpZGVyU3RyYXRlZ3kSNwoRY2FwYWNpdHlfcHJvdmlkZXIYASABKAlCHLpIGXIXUgdGQVJHQVRFUgxGQVJHQVRFX1NQT1QSFQoEYmFzZRgCIAEoBUIHukgEGgIoABIXCgZ3ZWlnaHQYAyABKAVCB7pIBBoCIAAi+AIKEUV4ZWNDb25maWd1cmF0aW9uElUKB2xvZ2dpbmcYASABKA4yRC5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWNzY2x1c3Rlci52MS5FeGVjQ29uZmlndXJhdGlvbi5Mb2dnaW5nEloKEWxvZ19jb25maWd1cmF0aW9uGAIgASgLMj8ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2Vjc2NsdXN0ZXIudjEuRXhlY0xvZ0NvbmZpZ3VyYXRpb24SZwoKa21zX2tleV9pZBgDIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4iRwoHTG9nZ2luZxIXChNMT0dHSU5HX1VOU1BFQ0lGSUVEEAASCwoHREVGQVVMVBABEggKBE5PTkUQAhIMCghPVkVSUklERRADIrABChRFeGVjTG9nQ29uZmlndXJhdGlvbhIiChpjbG91ZF93YXRjaF9sb2dfZ3JvdXBfbmFtZRgBIAEoCRImCh5jbG91ZF93YXRjaF9lbmNyeXB0aW9uX2VuYWJsZWQYAiABKAgSFgoOczNfYnVja2V0X25hbWUYAyABKAkSFQoNczNfa2V5X3ByZWZpeBgEIAEoCRIdChVzM19lbmNyeXB0aW9uX2VuYWJsZWQYBSABKAhC4gIKLWNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWNzY2x1c3Rlci52MUIJU3BlY1Byb3RvUAFaW2dpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWNzY2x1c3Rlci92MTthd3NlY3NjbHVzdGVydjGiAgVPT1BBQaoCKU9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NlY3NjbHVzdGVyLlYxygIpT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2Vjc2NsdXN0ZXJcVjHiAjVPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZWNzY2x1c3RlclxWMVxHUEJNZXRhZGF0YeoCLk9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzZWNzY2x1c3Rlcjo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsAwsEcsClusterSpec defines the production-ready configuration for creating
@@ -24,12 +24,20 @@ export const file_org_openmcf_provider_aws_awsecscluster_v1_spec: GenFile = /*@_
  */
 export type AwsEcsClusterSpec = Message<"org.openmcf.provider.aws.awsecscluster.v1.AwsEcsClusterSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * enable_container_insights determines whether to enable CloudWatch
    * Container Insights for this cluster. This is highly recommended
    * for production monitoring, though it incurs CloudWatch costs.
    * If omitted, it is recommended to be "true".
    *
-   * @generated from field: bool enable_container_insights = 1;
+   * @generated from field: bool enable_container_insights = 2;
    */
   enableContainerInsights: boolean;
 
@@ -38,7 +46,7 @@ export type AwsEcsClusterSpec = Message<"org.openmcf.provider.aws.awsecscluster.
    * to this cluster. For a Fargate-only cluster, typically ["FARGATE"]
    * or ["FARGATE", "FARGATE_SPOT"] for cost-optimized Spot usage.
    *
-   * @generated from field: repeated string capacity_providers = 2;
+   * @generated from field: repeated string capacity_providers = 3;
    */
   capacityProviders: string[];
 
@@ -49,7 +57,7 @@ export type AwsEcsClusterSpec = Message<"org.openmcf.provider.aws.awsecscluster.
    * Example: FARGATE (base: 1, weight: 1) + FARGATE_SPOT (weight: 4)
    * results in 20% on-demand, 80% Spot for scaled tasks.
    *
-   * @generated from field: repeated org.openmcf.provider.aws.awsecscluster.v1.CapacityProviderStrategy default_capacity_provider_strategy = 3;
+   * @generated from field: repeated org.openmcf.provider.aws.awsecscluster.v1.CapacityProviderStrategy default_capacity_provider_strategy = 4;
    */
   defaultCapacityProviderStrategy: CapacityProviderStrategy[];
 
@@ -58,7 +66,7 @@ export type AwsEcsClusterSpec = Message<"org.openmcf.provider.aws.awsecscluster.
    * settings for ECS Exec. This controls logging and encryption
    * for exec sessions. If not specified, exec is disabled.
    *
-   * @generated from field: org.openmcf.provider.aws.awsecscluster.v1.ExecConfiguration execute_command_configuration = 4;
+   * @generated from field: org.openmcf.provider.aws.awsecscluster.v1.ExecConfiguration execute_command_configuration = 5;
    */
   executeCommandConfiguration?: ExecConfiguration;
 };

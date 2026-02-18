@@ -10,6 +10,7 @@ kind: AwsTransitGateway
 metadata:
   name: dev-tgw
 spec:
+  region: us-east-1
   description: Development Transit Gateway
   dnsSupport: true
   vpcAttachments:
@@ -30,6 +31,7 @@ kind: AwsTransitGateway
 metadata:
   name: prod-tgw
 spec:
+  region: us-east-1
   description: Production multi-VPC connectivity hub
   amazonSideAsn: 64512
   defaultRouteTableAssociation: true
@@ -70,6 +72,7 @@ kind: AwsTransitGateway
 metadata:
   name: connected-tgw
 spec:
+  region: us-east-1
   description: TGW with cross-resource references
   dnsSupport: true
   vpcAttachments:
@@ -111,6 +114,7 @@ kind: AwsTransitGateway
 metadata:
   name: inspection-tgw
 spec:
+  region: us-east-1
   description: Hub-and-spoke with centralized firewall
   dnsSupport: true
   vpcAttachments:

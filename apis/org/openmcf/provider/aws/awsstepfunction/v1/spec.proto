@@ -26,6 +26,10 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 //   Type, etc.) is preserved through serialization.
 // - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 message AwsStepFunctionSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
   // ---------------------------------------------------------------------------
   // State machine configuration
   // ---------------------------------------------------------------------------
@@ -35,7 +39,7 @@ message AwsStepFunctionSpec {
   // - "EXPRESS": High-volume, short-duration, at-most-once.
   // Cannot be changed after creation (forces replacement).
   // When omitted the IaC module defaults to "STANDARD".
-  string type = 1;
+  string type = 2;
 
   // State machine definition in Amazon States Language (ASL). Write the
   // definition as native YAML; the IaC module serializes it to JSON for the
@@ -46,12 +50,12 @@ message AwsStepFunctionSpec {
   //
   // Use AWS Step Functions Workflow Studio, CDK, or the ASL specification
   // to author complex workflows, then express the result as YAML here.
-  google.protobuf.Struct definition = 2 [(buf.validate.field).required = true];
+  google.protobuf.Struct definition = 3 [(buf.validate.field).required = true];
 
   // IAM execution role ARN. The role must have a trust policy for
   // states.amazonaws.com and policies granting access to all services
   // invoked by the workflow (Lambda:InvokeFunction, SQS:SendMessage, etc.).
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef role_arn = 3 [
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef role_arn = 4 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsIamRole,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
@@ -59,7 +63,7 @@ message AwsStepFunctionSpec {
 
   // Free-form description visible in the AWS Console. Useful for documenting
   // the workflow's purpose and behavior.
-  string description = 4;
+  string description = 5;
 
   // ---------------------------------------------------------------------------
   // Observability
@@ -68,13 +72,13 @@ message AwsStepFunctionSpec {
   // Logging configuration for execution history events. When omitted, logging
   // is disabled (level OFF). Logging is supported for both STANDARD and EXPRESS
   // state machines.
-  AwsStepFunctionLoggingConfig logging = 5;
+  AwsStepFunctionLoggingConfig logging = 6;
 
   // Enable AWS X-Ray tracing for the state machine. When true, Step Functions
   // sends trace data to X-Ray for visualizing request flows. Ensure the
   // execution role has xray:PutTraceSegments and xray:PutTelemetryRecords
   // permissions.
-  bool tracing_enabled = 6;
+  bool tracing_enabled = 7;
 
   // ---------------------------------------------------------------------------
   // Encryption
@@ -84,7 +88,7 @@ message AwsStepFunctionSpec {
   // AWS-owned keys (default, no additional cost). Provide this block to
   // use a customer-managed KMS key for encrypting state machine data,
   // execution history, and input/output payloads.
-  AwsStepFunctionEncryptionConfig encryption = 7;
+  AwsStepFunctionEncryptionConfig encryption = 8;
 
   // ---------------------------------------------------------------------------
   // CEL validations

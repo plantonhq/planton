@@ -56,6 +56,9 @@ const (
 //   - Credentials, region, and deployment workflow live outside this spec in stack inputs.
 type AwsFsxOntapFileSystemSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// The AWS region where the resource will be created.
+	// Example: "us-west-2", "eu-west-1"
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// Deployment type controlling availability, performance, and scale-out
 	// characteristics. ForceNew — cannot be changed after creation.
 	//
@@ -69,13 +72,13 @@ type AwsFsxOntapFileSystemSpec struct {
 	//     Recommended for high-availability workloads.
 	//
 	// Default: SINGLE_AZ_2
-	DeploymentType *string `protobuf:"bytes,1,opt,name=deployment_type,json=deploymentType,proto3,oneof" json:"deployment_type,omitempty"`
+	DeploymentType *string `protobuf:"bytes,2,opt,name=deployment_type,json=deploymentType,proto3,oneof" json:"deployment_type,omitempty"`
 	// Storage capacity in GiB. Required.
 	//
 	// Valid range: 1024–1048576 GiB (1 TiB – 1 PiB). Storage can be increased
 	// after creation but never decreased. Choose based on data size; ONTAP's
 	// built-in compression and deduplication typically achieve 2-5x data reduction.
-	StorageCapacityGib int32 `protobuf:"varint,2,opt,name=storage_capacity_gib,json=storageCapacityGib,proto3" json:"storage_capacity_gib,omitempty"`
+	StorageCapacityGib int32 `protobuf:"varint,3,opt,name=storage_capacity_gib,json=storageCapacityGib,proto3" json:"storage_capacity_gib,omitempty"`
 	// Storage media type. ForceNew — cannot be changed after creation.
 	//
 	//   - "SSD": solid-state drives. Sub-millisecond latency. Suitable for
@@ -85,7 +88,7 @@ type AwsFsxOntapFileSystemSpec struct {
 	//     intelligent tiering automatically caches hot data on SSD.
 	//
 	// Default: SSD
-	StorageType *string `protobuf:"bytes,3,opt,name=storage_type,json=storageType,proto3,oneof" json:"storage_type,omitempty"`
+	StorageType *string `protobuf:"bytes,4,opt,name=storage_type,json=storageType,proto3,oneof" json:"storage_type,omitempty"`
 	// Throughput capacity per HA pair in MB/s. Required.
 	//
 	// Valid values: 128, 256, 384, 512, 768, 1024, 1536, 2048, 3072, 4096, 6144.
@@ -98,7 +101,7 @@ type AwsFsxOntapFileSystemSpec struct {
 	// Can be changed after creation for SINGLE_AZ_2 and MULTI_AZ_2 deployment
 	// types. For SINGLE_AZ_1 and MULTI_AZ_1, increasing throughput requires
 	// replacement.
-	ThroughputCapacityPerHaPair int32 `protobuf:"varint,4,opt,name=throughput_capacity_per_ha_pair,json=throughputCapacityPerHaPair,proto3" json:"throughput_capacity_per_ha_pair,omitempty"`
+	ThroughputCapacityPerHaPair int32 `protobuf:"varint,5,opt,name=throughput_capacity_per_ha_pair,json=throughputCapacityPerHaPair,proto3" json:"throughput_capacity_per_ha_pair,omitempty"`
 	// Number of high-availability pairs in the file system. Each HA pair adds
 	// an independent pair of file servers providing throughput and IOPS capacity.
 	//
@@ -108,7 +111,7 @@ type AwsFsxOntapFileSystemSpec struct {
 	//   - MULTI_AZ_1 / MULTI_AZ_2: must be 1 (single HA pair with failover).
 	//
 	// Default: 1
-	HaPairs *int32 `protobuf:"varint,5,opt,name=ha_pairs,json=haPairs,proto3,oneof" json:"ha_pairs,omitempty"`
+	HaPairs *int32 `protobuf:"varint,6,opt,name=ha_pairs,json=haPairs,proto3,oneof" json:"ha_pairs,omitempty"`
 	// Subnet IDs for the file system's network interfaces. Required. ForceNew.
 	//
 	// - SINGLE_AZ_1 / SINGLE_AZ_2: exactly one subnet.
@@ -116,14 +119,14 @@ type AwsFsxOntapFileSystemSpec struct {
 	//
 	// All compute resources accessing this file system (via NFS, SMB, or iSCSI)
 	// must have network connectivity to these subnets.
-	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,6,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
+	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,7,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// Preferred subnet for the active file server in a multi-AZ deployment.
 	// ForceNew. Required when deployment_type is MULTI_AZ_1 or MULTI_AZ_2.
 	// Must be one of the subnets specified in subnet_ids.
 	//
 	// In a failover event, the standby file server in the other subnet takes over
 	// automatically. Ignored for single-AZ deployments.
-	PreferredSubnetId *v1.StringValueOrRef `protobuf:"bytes,7,opt,name=preferred_subnet_id,json=preferredSubnetId,proto3" json:"preferred_subnet_id,omitempty"`
+	PreferredSubnetId *v1.StringValueOrRef `protobuf:"bytes,8,opt,name=preferred_subnet_id,json=preferredSubnetId,proto3" json:"preferred_subnet_id,omitempty"`
 	// Security groups for the file system's network interfaces. ForceNew.
 	//
 	// Must allow traffic between the file system and its clients:
@@ -136,56 +139,56 @@ type AwsFsxOntapFileSystemSpec struct {
 	// - TCP port 443 (ONTAP REST API)
 	//
 	// Up to 50 security groups.
-	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,8,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
+	SecurityGroupIds []*v1.StringValueOrRef `protobuf:"bytes,9,rep,name=security_group_ids,json=securityGroupIds,proto3" json:"security_group_ids,omitempty"`
 	// IP address range for the file system endpoints in a multi-AZ deployment.
 	// ForceNew. Must be a CIDR block within the VPC's CIDR range that does not
 	// overlap with any existing subnets. AWS assigns floating IPs from this range
 	// for seamless failover.
 	//
 	// Ignored for single-AZ deployments.
-	EndpointIpAddressRange string `protobuf:"bytes,9,opt,name=endpoint_ip_address_range,json=endpointIpAddressRange,proto3" json:"endpoint_ip_address_range,omitempty"`
+	EndpointIpAddressRange string `protobuf:"bytes,10,opt,name=endpoint_ip_address_range,json=endpointIpAddressRange,proto3" json:"endpoint_ip_address_range,omitempty"`
 	// Route table IDs that need routes to the file system in a multi-AZ
 	// deployment. AWS automatically manages the routes for failover. Up to 50
 	// route tables.
 	//
 	// Ignored for single-AZ deployments.
-	RouteTableIds []*v1.StringValueOrRef `protobuf:"bytes,10,rep,name=route_table_ids,json=routeTableIds,proto3" json:"route_table_ids,omitempty"`
+	RouteTableIds []*v1.StringValueOrRef `protobuf:"bytes,11,rep,name=route_table_ids,json=routeTableIds,proto3" json:"route_table_ids,omitempty"`
 	// Customer-managed KMS key ARN for encryption at rest. ForceNew — the KMS key
 	// cannot be changed after creation. When omitted, the file system uses the
 	// AWS-managed FSx key. All ONTAP file systems are encrypted at rest by
 	// default; this field upgrades to a customer-managed key.
-	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,11,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,12,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// Password for the ONTAP administrative user ("fsxadmin"). Enables SSH and
 	// REST API access to the file system for advanced administration such as LIF
 	// management, SnapMirror configuration, and aggregate monitoring.
 	//
 	// Length: 8-50 characters. Optional — omit if ONTAP CLI access is not needed.
 	// This value is sensitive and will not be returned in read operations.
-	FsxAdminPassword string `protobuf:"bytes,12,opt,name=fsx_admin_password,json=fsxAdminPassword,proto3" json:"fsx_admin_password,omitempty"`
+	FsxAdminPassword string `protobuf:"bytes,13,opt,name=fsx_admin_password,json=fsxAdminPassword,proto3" json:"fsx_admin_password,omitempty"`
 	// SSD IOPS configuration for the file system. Controls the total provisioned
 	// IOPS. When omitted, AWS uses AUTOMATIC mode which provisions 3 IOPS per GiB
 	// of storage capacity. Use USER_PROVISIONED mode for workloads requiring IOPS
 	// beyond what AUTOMATIC provides.
-	DiskIopsConfiguration *AwsFsxOntapFileSystemDiskIopsConfiguration `protobuf:"bytes,13,opt,name=disk_iops_configuration,json=diskIopsConfiguration,proto3" json:"disk_iops_configuration,omitempty"`
+	DiskIopsConfiguration *AwsFsxOntapFileSystemDiskIopsConfiguration `protobuf:"bytes,14,opt,name=disk_iops_configuration,json=diskIopsConfiguration,proto3" json:"disk_iops_configuration,omitempty"`
 	// Number of days to retain automatic backups. Range: 0-90. Set to 0 to
 	// disable automatic backups. ONTAP's built-in snapshots provide point-in-time
 	// recovery independently of FSx backups.
 	//
 	// Default: 0 (no automatic backups)
-	AutomaticBackupRetentionDays *int32 `protobuf:"varint,14,opt,name=automatic_backup_retention_days,json=automaticBackupRetentionDays,proto3,oneof" json:"automatic_backup_retention_days,omitempty"`
+	AutomaticBackupRetentionDays *int32 `protobuf:"varint,15,opt,name=automatic_backup_retention_days,json=automaticBackupRetentionDays,proto3,oneof" json:"automatic_backup_retention_days,omitempty"`
 	// Daily UTC time to start automatic backups, in HH:MM format (e.g., "05:00").
 	// If not specified and backups are enabled, AWS chooses a default window.
-	DailyAutomaticBackupStartTime string `protobuf:"bytes,15,opt,name=daily_automatic_backup_start_time,json=dailyAutomaticBackupStartTime,proto3" json:"daily_automatic_backup_start_time,omitempty"`
+	DailyAutomaticBackupStartTime string `protobuf:"bytes,16,opt,name=daily_automatic_backup_start_time,json=dailyAutomaticBackupStartTime,proto3" json:"daily_automatic_backup_start_time,omitempty"`
 	// Copy tags from the file system to backups.
-	CopyTagsToBackups bool `protobuf:"varint,16,opt,name=copy_tags_to_backups,json=copyTagsToBackups,proto3" json:"copy_tags_to_backups,omitempty"`
+	CopyTagsToBackups bool `protobuf:"varint,17,opt,name=copy_tags_to_backups,json=copyTagsToBackups,proto3" json:"copy_tags_to_backups,omitempty"`
 	// Skip creating a final backup when the file system is deleted.
 	//
 	// Default: true
-	SkipFinalBackup *bool `protobuf:"varint,17,opt,name=skip_final_backup,json=skipFinalBackup,proto3,oneof" json:"skip_final_backup,omitempty"`
+	SkipFinalBackup *bool `protobuf:"varint,18,opt,name=skip_final_backup,json=skipFinalBackup,proto3,oneof" json:"skip_final_backup,omitempty"`
 	// Weekly UTC maintenance window in the format "d:HH:MM" where d is the day of
 	// the week (1=Monday, 7=Sunday). Example: "7:02:00" for Sunday at 02:00 UTC.
 	// If not specified, AWS chooses a default window.
-	WeeklyMaintenanceStartTime string `protobuf:"bytes,18,opt,name=weekly_maintenance_start_time,json=weeklyMaintenanceStartTime,proto3" json:"weekly_maintenance_start_time,omitempty"`
+	WeeklyMaintenanceStartTime string `protobuf:"bytes,19,opt,name=weekly_maintenance_start_time,json=weeklyMaintenanceStartTime,proto3" json:"weekly_maintenance_start_time,omitempty"`
 	unknownFields              protoimpl.UnknownFields
 	sizeCache                  protoimpl.SizeCache
 }
@@ -218,6 +221,13 @@ func (x *AwsFsxOntapFileSystemSpec) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsFsxOntapFileSystemSpec.ProtoReflect.Descriptor instead.
 func (*AwsFsxOntapFileSystemSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_aws_awsfsxontapfilesystem_v1_spec_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AwsFsxOntapFileSystemSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
 }
 
 func (x *AwsFsxOntapFileSystemSpec) GetDeploymentType() string {
@@ -418,29 +428,30 @@ var File_org_openmcf_provider_aws_awsfsxontapfilesystem_v1_spec_proto protorefle
 
 const file_org_openmcf_provider_aws_awsfsxontapfilesystem_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"<org/openmcf/provider/aws/awsfsxontapfilesystem/v1/spec.proto\x121org.openmcf.provider.aws.awsfsxontapfilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xbc\x1b\n" +
-	"\x19AwsFsxOntapFileSystemSpec\x12=\n" +
-	"\x0fdeployment_type\x18\x01 \x01(\tB\x0f\x8a\xa6\x1d\vSINGLE_AZ_2H\x00R\x0edeploymentType\x88\x01\x01\x12>\n" +
-	"\x14storage_capacity_gib\x18\x02 \x01(\x05B\f\xbaH\t\x1a\a\x18\x80\x80@(\x80\bR\x12storageCapacityGib\x12/\n" +
-	"\fstorage_type\x18\x03 \x01(\tB\a\x8a\xa6\x1d\x03SSDH\x01R\vstorageType\x88\x01\x01\x12M\n" +
-	"\x1fthroughput_capacity_per_ha_pair\x18\x04 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x1bthroughputCapacityPerHaPair\x12.\n" +
-	"\bha_pairs\x18\x05 \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18\f(\x01\x8a\xa6\x1d\x011H\x02R\ahaPairs\x88\x01\x01\x12\x89\x01\n" +
+	"<org/openmcf/provider/aws/awsfsxontapfilesystem/v1/spec.proto\x121org.openmcf.provider.aws.awsfsxontapfilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xdd\x1b\n" +
+	"\x19AwsFsxOntapFileSystemSpec\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12=\n" +
+	"\x0fdeployment_type\x18\x02 \x01(\tB\x0f\x8a\xa6\x1d\vSINGLE_AZ_2H\x00R\x0edeploymentType\x88\x01\x01\x12>\n" +
+	"\x14storage_capacity_gib\x18\x03 \x01(\x05B\f\xbaH\t\x1a\a\x18\x80\x80@(\x80\bR\x12storageCapacityGib\x12/\n" +
+	"\fstorage_type\x18\x04 \x01(\tB\a\x8a\xa6\x1d\x03SSDH\x01R\vstorageType\x88\x01\x01\x12M\n" +
+	"\x1fthroughput_capacity_per_ha_pair\x18\x05 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x1bthroughputCapacityPerHaPair\x12.\n" +
+	"\bha_pairs\x18\x06 \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18\f(\x01\x8a\xa6\x1d\x011H\x02R\ahaPairs\x88\x01\x01\x12\x89\x01\n" +
 	"\n" +
-	"subnet_ids\x18\x06 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x92\x01\n" +
-	"\x13preferred_subnet_id\x18\a \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[0].idR\x11preferredSubnetId\x12\x8b\x01\n" +
-	"\x12security_group_ids\x18\b \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x129\n" +
-	"\x19endpoint_ip_address_range\x18\t \x01(\tR\x16endpointIpAddressRange\x12Z\n" +
-	"\x0froute_table_ids\x18\n" +
-	" \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\rrouteTableIds\x12q\n" +
+	"subnet_ids\x18\a \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x92\x01\n" +
+	"\x13preferred_subnet_id\x18\b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[0].idR\x11preferredSubnetId\x12\x8b\x01\n" +
+	"\x12security_group_ids\x18\t \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x129\n" +
+	"\x19endpoint_ip_address_range\x18\n" +
+	" \x01(\tR\x16endpointIpAddressRange\x12Z\n" +
+	"\x0froute_table_ids\x18\v \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\rrouteTableIds\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\v \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12,\n" +
-	"\x12fsx_admin_password\x18\f \x01(\tR\x10fsxAdminPassword\x12\x95\x01\n" +
-	"\x17disk_iops_configuration\x18\r \x01(\v2].org.openmcf.provider.aws.awsfsxontapfilesystem.v1.AwsFsxOntapFileSystemDiskIopsConfigurationR\x15diskIopsConfiguration\x12Z\n" +
-	"\x1fautomatic_backup_retention_days\x18\x0e \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18Z(\x00\x8a\xa6\x1d\x010H\x03R\x1cautomaticBackupRetentionDays\x88\x01\x01\x12H\n" +
-	"!daily_automatic_backup_start_time\x18\x0f \x01(\tR\x1ddailyAutomaticBackupStartTime\x12/\n" +
-	"\x14copy_tags_to_backups\x18\x10 \x01(\bR\x11copyTagsToBackups\x129\n" +
-	"\x11skip_final_backup\x18\x11 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x04R\x0fskipFinalBackup\x88\x01\x01\x12A\n" +
-	"\x1dweekly_maintenance_start_time\x18\x12 \x01(\tR\x1aweeklyMaintenanceStartTime:\xaf\x0e\xbaH\xab\x0e\x1a\xde\x01\n" +
+	"kms_key_id\x18\f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12,\n" +
+	"\x12fsx_admin_password\x18\r \x01(\tR\x10fsxAdminPassword\x12\x95\x01\n" +
+	"\x17disk_iops_configuration\x18\x0e \x01(\v2].org.openmcf.provider.aws.awsfsxontapfilesystem.v1.AwsFsxOntapFileSystemDiskIopsConfigurationR\x15diskIopsConfiguration\x12Z\n" +
+	"\x1fautomatic_backup_retention_days\x18\x0f \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18Z(\x00\x8a\xa6\x1d\x010H\x03R\x1cautomaticBackupRetentionDays\x88\x01\x01\x12H\n" +
+	"!daily_automatic_backup_start_time\x18\x10 \x01(\tR\x1ddailyAutomaticBackupStartTime\x12/\n" +
+	"\x14copy_tags_to_backups\x18\x11 \x01(\bR\x11copyTagsToBackups\x129\n" +
+	"\x11skip_final_backup\x18\x12 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x04R\x0fskipFinalBackup\x88\x01\x01\x12A\n" +
+	"\x1dweekly_maintenance_start_time\x18\x13 \x01(\tR\x1aweeklyMaintenanceStartTime:\xaf\x0e\xbaH\xab\x0e\x1a\xde\x01\n" +
 	"\x15deployment_type_valid\x12Sdeployment_type must be 'SINGLE_AZ_1', 'SINGLE_AZ_2', 'MULTI_AZ_1', or 'MULTI_AZ_2'\x1apthis.deployment_type == '' || this.deployment_type in ['SINGLE_AZ_1', 'SINGLE_AZ_2', 'MULTI_AZ_1', 'MULTI_AZ_2']\x1ay\n" +
 	"\x12storage_type_valid\x12#storage_type must be 'SSD' or 'HDD'\x1a>this.storage_type == '' || this.storage_type in ['SSD', 'HDD']\x1a\xe6\x01\n" +
 	"\x10throughput_valid\x12kthroughput_capacity_per_ha_pair must be one of: 128, 256, 384, 512, 768, 1024, 1536, 2048, 3072, 4096, 6144\x1aethis.throughput_capacity_per_ha_pair in [128, 256, 384, 512, 768, 1024, 1536, 2048, 3072, 4096, 6144]\x1a\xd9\x01\n" +

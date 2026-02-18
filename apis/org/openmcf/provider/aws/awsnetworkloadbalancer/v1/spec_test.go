@@ -47,6 +47,7 @@ var _ = ginkgo.Describe("AwsNetworkLoadBalancerSpec validations", func() {
 	ginkgo.BeforeEach(func() {
 		// Minimal valid spec: one subnet, one TCP listener.
 		spec = &AwsNetworkLoadBalancerSpec{
+			Region: "us-west-2",
 			SubnetMappings: []*AwsNetworkLoadBalancerSubnetMapping{
 				minimalSubnetMapping("subnet-abc123"),
 			},
@@ -348,6 +349,7 @@ var _ = ginkgo.Describe("AwsNetworkLoadBalancerSpec validations", func() {
 
 	ginkgo.It("accepts a production-ready configuration", func() {
 		spec = &AwsNetworkLoadBalancerSpec{
+			Region: "us-west-2",
 			SubnetMappings: []*AwsNetworkLoadBalancerSubnetMapping{
 				{
 					SubnetId:     strRef("subnet-public1"),

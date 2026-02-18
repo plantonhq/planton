@@ -3,6 +3,7 @@ kind: AwsEc2Instance
 metadata:
   name: awsec2instance-demo
 spec:
+  region: us-west-2
   instanceName: web-1
   amiId: ami-0123456789abcdef0 # replace with a valid AMI in your region
   instanceType: t3.small

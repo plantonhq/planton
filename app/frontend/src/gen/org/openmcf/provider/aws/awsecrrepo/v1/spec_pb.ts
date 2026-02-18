@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsecrrepo/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsecrrepo_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjFvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWNycmVwby92MS9zcGVjLnByb3RvEiZvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWNycmVwby52MSLQAwoOQXdzRWNyUmVwb1NwZWMSJgoPcmVwb3NpdG9yeV9uYW1lGAEgASgJQg26SArIAQFyBRACGIACEhcKD2ltYWdlX2ltbXV0YWJsZRgCIAEoCBI9Cg9lbmNyeXB0aW9uX3R5cGUYAyABKAlCH7pIEtgBAXINUgZBRVMyNTZSA0tNU4qmHQZBRVMyNTZIAIgBARJnCgprbXNfa2V5X2lkGAQgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkIfiNRh2wGS1GEWc3RhdHVzLm91dHB1dHMua2V5X2FybhIUCgxmb3JjZV9kZWxldGUYBSABKAgSIwoMc2Nhbl9vbl9wdXNoGAYgASgIQgiKph0EdHJ1ZUgBiAEBEmAKEGxpZmVjeWNsZV9wb2xpY3kYByABKAsyQS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWNycmVwby52MS5Bd3NFY3JSZXBvTGlmZWN5Y2xlUG9saWN5SAKIAQFCEgoQX2VuY3J5cHRpb25fdHlwZUIPCg1fc2Nhbl9vbl9wdXNoQhMKEV9saWZlY3ljbGVfcG9saWN5Ir8BChlBd3NFY3JSZXBvTGlmZWN5Y2xlUG9saWN5EjwKGmV4cGlyZV91bnRhZ2dlZF9hZnRlcl9kYXlzGAEgASgFQhO6SArYAQEaBRjtAigBiqYdAjE0SACIAQESMQoPbWF4X2ltYWdlX2NvdW50GAIgASgFQhO6SArYAQEaBRjoBygBiqYdAjMwSAGIAQFCHQobX2V4cGlyZV91bnRhZ2dlZF9hZnRlcl9kYXlzQhIKEF9tYXhfaW1hZ2VfY291bnRCzQIKKmNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWNycmVwby52MUIJU3BlY1Byb3RvUAFaVWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWNycmVwby92MTthd3NlY3JyZXBvdjGiAgVPT1BBQaoCJk9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NlY3JyZXBvLlYxygImT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2VjcnJlcG9cVjHiAjJPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzZWNycmVwb1xWMVxHUEJNZXRhZGF0YeoCK09yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzZWNycmVwbzo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("CjFvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzZWNycmVwby92MS9zcGVjLnByb3RvEiZvcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzZWNycmVwby52MSLpAwoOQXdzRWNyUmVwb1NwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEiYKD3JlcG9zaXRvcnlfbmFtZRgCIAEoCUINukgKyAEBcgUQAhiAAhIXCg9pbWFnZV9pbW11dGFibGUYAyABKAgSPQoPZW5jcnlwdGlvbl90eXBlGAQgASgJQh+6SBLYAQFyDVIGQUVTMjU2UgNLTVOKph0GQUVTMjU2SACIAQESZwoKa21zX2tleV9pZBgFIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SFAoMZm9yY2VfZGVsZXRlGAYgASgIEiMKDHNjYW5fb25fcHVzaBgHIAEoCEIIiqYdBHRydWVIAYgBARJgChBsaWZlY3ljbGVfcG9saWN5GAggASgLMkEub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2VjcnJlcG8udjEuQXdzRWNyUmVwb0xpZmVjeWNsZVBvbGljeUgCiAEBQhIKEF9lbmNyeXB0aW9uX3R5cGVCDwoNX3NjYW5fb25fcHVzaEITChFfbGlmZWN5Y2xlX3BvbGljeSK/AQoZQXdzRWNyUmVwb0xpZmVjeWNsZVBvbGljeRI8ChpleHBpcmVfdW50YWdnZWRfYWZ0ZXJfZGF5cxgBIAEoBUITukgK2AEBGgUY7QIoAYqmHQIxNEgAiAEBEjEKD21heF9pbWFnZV9jb3VudBgCIAEoBUITukgK2AEBGgUY6AcoAYqmHQIzMEgBiAEBQh0KG19leHBpcmVfdW50YWdnZWRfYWZ0ZXJfZGF5c0ISChBfbWF4X2ltYWdlX2NvdW50Qs0CCipjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2VjcnJlcG8udjFCCVNwZWNQcm90b1ABWlVnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c2VjcnJlcG8vdjE7YXdzZWNycmVwb3YxogIFT09QQUGqAiZPcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzZWNycmVwby5WMcoCJk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NlY3JyZXBvXFYx4gIyT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2VjcnJlcG9cVjFcR1BCTWV0YWRhdGHqAitPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c2VjcnJlcG86OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsEcrRepoSpec defines the configuration for creating an AWS ECR repository
@@ -25,18 +25,26 @@ export const file_org_openmcf_provider_aws_awsecrrepo_v1_spec: GenFile = /*@__PU
  */
 export type AwsEcrRepoSpec = Message<"org.openmcf.provider.aws.awsecrrepo.v1.AwsEcrRepoSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * repositoryName is the name of the ECR repository. Must be unique within
    * the AWS account and region. Commonly includes the microservice or project name.
    * Example: "github.com/team-blue/my-microservice"
    *
-   * @generated from field: string repository_name = 1;
+   * @generated from field: string repository_name = 2;
    */
   repositoryName: string;
 
   /**
    * indicates whether image tags can be overwritten (MUTABLE) or not (IMMUTABLE).
    *
-   * @generated from field: bool image_immutable = 2;
+   * @generated from field: bool image_immutable = 3;
    */
   imageImmutable: boolean;
 
@@ -47,7 +55,7 @@ export type AwsEcrRepoSpec = Message<"org.openmcf.provider.aws.awsecrrepo.v1.Aws
    * By default, AWS uses AES-256 (service-managed keys). Choose KMS to use
    * a customer-managed key (CMK).
    *
-   * @generated from field: optional string encryption_type = 3;
+   * @generated from field: optional string encryption_type = 4;
    */
   encryptionType?: string;
 
@@ -57,7 +65,7 @@ export type AwsEcrRepoSpec = Message<"org.openmcf.provider.aws.awsecrrepo.v1.Aws
    * Ignored if encryption_type = AES256.
    * Can reference an AwsKmsKey resource.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 4;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 5;
    */
   kmsKeyId?: StringValueOrRef;
 
@@ -66,7 +74,7 @@ export type AwsEcrRepoSpec = Message<"org.openmcf.provider.aws.awsecrrepo.v1.Aws
    * images (all images get removed on delete). By default, it is false, preventing
    * accidental data loss.
    *
-   * @generated from field: bool force_delete = 5;
+   * @generated from field: bool force_delete = 6;
    */
   forceDelete: boolean;
 
@@ -75,7 +83,7 @@ export type AwsEcrRepoSpec = Message<"org.openmcf.provider.aws.awsecrrepo.v1.Aws
    * This is a production security essential - enables shift-left vulnerability detection.
    * Defaults to true for security best practices.
    *
-   * @generated from field: optional bool scan_on_push = 6;
+   * @generated from field: optional bool scan_on_push = 7;
    */
   scanOnPush?: boolean;
 
@@ -84,7 +92,7 @@ export type AwsEcrRepoSpec = Message<"org.openmcf.provider.aws.awsecrrepo.v1.Aws
    * This is essential for production to prevent uncontrolled storage costs.
    * If not specified, no lifecycle policy is applied (not recommended for production).
    *
-   * @generated from field: optional org.openmcf.provider.aws.awsecrrepo.v1.AwsEcrRepoLifecyclePolicy lifecycle_policy = 7;
+   * @generated from field: optional org.openmcf.provider.aws.awsecrrepo.v1.AwsEcrRepoLifecyclePolicy lifecycle_policy = 8;
    */
   lifecyclePolicy?: AwsEcrRepoLifecyclePolicy;
 };

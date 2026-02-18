@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awslambda/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awslambda_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("CjBvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzbGFtYmRhL3YxL3NwZWMucHJvdG8SJW9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NsYW1iZGEudjEisxAKDUF3c0xhbWJkYVNwZWMSHgoNZnVuY3Rpb25fbmFtZRgBIAEoCUIHukgEcgIQARITCgtkZXNjcmlwdGlvbhgCIAEoCRJsCghyb2xlX2FybhgDIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCJrpIA8gBAYjUYdABktRhF3N0YXR1cy5vdXRwdXRzLnJvbGVfYXJuEg8KB3J1bnRpbWUYBCABKAkSDwoHaGFuZGxlchgFIAEoCRIRCgltZW1vcnlfbWIYBiABKAUSFwoPdGltZW91dF9zZWNvbmRzGAcgASgFEhwKFHJlc2VydmVkX2NvbmN1cnJlbmN5GAggASgFEloKC2Vudmlyb25tZW50GAkgAygLMkUub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2xhbWJkYS52MS5Bd3NMYW1iZGFTcGVjLkVudmlyb25tZW50RW50cnkSSgoHc3VibmV0cxgKIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCBYjUYdgBEnYKD3NlY3VyaXR5X2dyb3VwcxgLIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkElMKDGFyY2hpdGVjdHVyZRgMIAEoDjIzLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NsYW1iZGEudjEuQXJjaGl0ZWN0dXJlQgi6SAWCAQIQARJGCgpsYXllcl9hcm5zGA0gAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZhJoCgtrbXNfa2V5X2FybhgOIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SWQoQY29kZV9zb3VyY2VfdHlwZRgPIAEoDjI1Lm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NsYW1iZGEudjEuQ29kZVNvdXJjZVR5cGVCCLpIBYIBAhABEjkKAnMzGBAgASgLMi0ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c2xhbWJkYS52MS5TM0NvZGUSEQoJaW1hZ2VfdXJpGBEgASgJGjIKEEVudmlyb25tZW50RW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ATqOCLpIiggaVQoZY29kZV9zb3VyY2VfdHlwZV9yZXF1aXJlZBIcY29kZV9zb3VyY2VfdHlwZSBtdXN0IGJlIHNldBoadGhpcy5jb2RlX3NvdXJjZV90eXBlICE9IDAa9gEKLnMzX3JlcXVpcmVzX3J1bnRpbWVfaGFuZGxlcl9hbmRfZXhjbHVkZXNfaW1hZ2USUndoZW4gY29kZV9zb3VyY2VfdHlwZSBpcyBTMywgc2V0IHMzLCBydW50aW1lLCBhbmQgaGFuZGxlcjsgaW1hZ2VfdXJpIG11c3QgYmUgZW1wdHkacHRoaXMuY29kZV9zb3VyY2VfdHlwZSAhPSAxIHx8IChoYXModGhpcy5zMykgJiYgdGhpcy5pbWFnZV91cmkgPT0gJycgJiYgdGhpcy5ydW50aW1lICE9ICcnICYmIHRoaXMuaGFuZGxlciAhPSAnJykasgEKKGltYWdlX3JlcXVpcmVzX2ltYWdlX3VyaV9hbmRfZXhjbHVkZXNfczMSP3doZW4gY29kZV9zb3VyY2VfdHlwZSBpcyBJTUFHRSwgc2V0IGltYWdlX3VyaSBhbmQgZG8gbm90IHNldCBzMxpFdGhpcy5jb2RlX3NvdXJjZV90eXBlICE9IDIgfHwgKHRoaXMuaW1hZ2VfdXJpICE9ICcnICYmICFoYXModGhpcy5zMykpGpYBChdtZW1vcnlfcmFuZ2Vfb3JfZGVmYXVsdBIwbWVtb3J5X21iIG11c3QgYmUgYmV0d2VlbiAxMjggYW5kIDEwMjQwIHdoZW4gc2V0Gkl0aGlzLm1lbW9yeV9tYiA9PSAwIHx8ICh0aGlzLm1lbW9yeV9tYiA+PSAxMjggJiYgdGhpcy5tZW1vcnlfbWIgPD0gMTAyNDApGqcBChh0aW1lb3V0X3JhbmdlX29yX2RlZmF1bHQSMnRpbWVvdXRfc2Vjb25kcyBtdXN0IGJlIGJldHdlZW4gMSBhbmQgOTAwIHdoZW4gc2V0Gld0aGlzLnRpbWVvdXRfc2Vjb25kcyA9PSAwIHx8ICh0aGlzLnRpbWVvdXRfc2Vjb25kcyA+PSAxICYmIHRoaXMudGltZW91dF9zZWNvbmRzIDw9IDkwMCkavwEKHnJlc2VydmVkX2NvbmN1cnJlbmN5X3NlbWFudGljcxI5cmVzZXJ2ZWRfY29uY3VycmVuY3kgbXVzdCBiZSAtMSwgMCwgb3IgYSBwb3NpdGl2ZSBpbnRlZ2VyGmJ0aGlzLnJlc2VydmVkX2NvbmN1cnJlbmN5ID09IC0xIHx8IHRoaXMucmVzZXJ2ZWRfY29uY3VycmVuY3kgPT0gMCB8fCB0aGlzLnJlc2VydmVkX2NvbmN1cnJlbmN5ID4gMCJPCgZTM0NvZGUSFwoGYnVja2V0GAEgASgJQge6SARyAhABEhQKA2tleRgCIAEoCUIHukgEcgIQARIWCg5vYmplY3RfdmVyc2lvbhgDIAEoCSpDCgxBcmNoaXRlY3R1cmUSHAoYQVJDSElURUNUVVJFX1VOU1BFQ0lGSUVEEAASCgoGWDg2XzY0EAESCQoFQVJNNjQQAipnCg5Db2RlU291cmNlVHlwZRIgChxDT0RFX1NPVVJDRV9UWVBFX1VOU1BFQ0lGSUVEEAASFwoTQ09ERV9TT1VSQ0VfVFlQRV9TMxABEhoKFkNPREVfU09VUkNFX1RZUEVfSU1BR0UQAkLGAgopY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NsYW1iZGEudjFCCVNwZWNQcm90b1ABWlNnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c2xhbWJkYS92MTthd3NsYW1iZGF2MaICBU9PUEFBqgIlT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c2xhbWJkYS5WMcoCJU9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3NsYW1iZGFcVjHiAjFPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzbGFtYmRhXFYxXEdQQk1ldGFkYXRh6gIqT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3NsYW1iZGE6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
+  fileDesc("CjBvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzbGFtYmRhL3YxL3NwZWMucHJvdG8SJW9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NsYW1iZGEudjEizBAKDUF3c0xhbWJkYVNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEh4KDWZ1bmN0aW9uX25hbWUYAiABKAlCB7pIBHICEAESEwoLZGVzY3JpcHRpb24YAyABKAkSbAoIcm9sZV9hcm4YBCABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQia6SAPIAQGI1GHQAZLUYRdzdGF0dXMub3V0cHV0cy5yb2xlX2FybhIPCgdydW50aW1lGAUgASgJEg8KB2hhbmRsZXIYBiABKAkSEQoJbWVtb3J5X21iGAcgASgFEhcKD3RpbWVvdXRfc2Vjb25kcxgIIAEoBRIcChRyZXNlcnZlZF9jb25jdXJyZW5jeRgJIAEoBRJaCgtlbnZpcm9ubWVudBgKIAMoCzJFLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NsYW1iZGEudjEuQXdzTGFtYmRhU3BlYy5FbnZpcm9ubWVudEVudHJ5EkoKB3N1Ym5ldHMYCyADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQgWI1GHYARJ2Cg9zZWN1cml0eV9ncm91cHMYDCADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQimI1GHXAZLUYSBzdGF0dXMub3V0cHV0cy5zZWN1cml0eV9ncm91cF9pZBJTCgxhcmNoaXRlY3R1cmUYDSABKA4yMy5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzbGFtYmRhLnYxLkFyY2hpdGVjdHVyZUIIukgFggECEAESRgoKbGF5ZXJfYXJucxgOIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWYSaAoLa21zX2tleV9hcm4YDyABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQh+I1GHbAZLUYRZzdGF0dXMub3V0cHV0cy5rZXlfYXJuElkKEGNvZGVfc291cmNlX3R5cGUYECABKA4yNS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzbGFtYmRhLnYxLkNvZGVTb3VyY2VUeXBlQgi6SAWCAQIQARI5CgJzMxgRIAEoCzItLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3NsYW1iZGEudjEuUzNDb2RlEhEKCWltYWdlX3VyaRgSIAEoCRoyChBFbnZpcm9ubWVudEVudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAE6jgi6SIoIGlUKGWNvZGVfc291cmNlX3R5cGVfcmVxdWlyZWQSHGNvZGVfc291cmNlX3R5cGUgbXVzdCBiZSBzZXQaGnRoaXMuY29kZV9zb3VyY2VfdHlwZSAhPSAwGvYBCi5zM19yZXF1aXJlc19ydW50aW1lX2hhbmRsZXJfYW5kX2V4Y2x1ZGVzX2ltYWdlElJ3aGVuIGNvZGVfc291cmNlX3R5cGUgaXMgUzMsIHNldCBzMywgcnVudGltZSwgYW5kIGhhbmRsZXI7IGltYWdlX3VyaSBtdXN0IGJlIGVtcHR5GnB0aGlzLmNvZGVfc291cmNlX3R5cGUgIT0gMSB8fCAoaGFzKHRoaXMuczMpICYmIHRoaXMuaW1hZ2VfdXJpID09ICcnICYmIHRoaXMucnVudGltZSAhPSAnJyAmJiB0aGlzLmhhbmRsZXIgIT0gJycpGrIBCihpbWFnZV9yZXF1aXJlc19pbWFnZV91cmlfYW5kX2V4Y2x1ZGVzX3MzEj93aGVuIGNvZGVfc291cmNlX3R5cGUgaXMgSU1BR0UsIHNldCBpbWFnZV91cmkgYW5kIGRvIG5vdCBzZXQgczMaRXRoaXMuY29kZV9zb3VyY2VfdHlwZSAhPSAyIHx8ICh0aGlzLmltYWdlX3VyaSAhPSAnJyAmJiAhaGFzKHRoaXMuczMpKRqWAQoXbWVtb3J5X3JhbmdlX29yX2RlZmF1bHQSMG1lbW9yeV9tYiBtdXN0IGJlIGJldHdlZW4gMTI4IGFuZCAxMDI0MCB3aGVuIHNldBpJdGhpcy5tZW1vcnlfbWIgPT0gMCB8fCAodGhpcy5tZW1vcnlfbWIgPj0gMTI4ICYmIHRoaXMubWVtb3J5X21iIDw9IDEwMjQwKRqnAQoYdGltZW91dF9yYW5nZV9vcl9kZWZhdWx0EjJ0aW1lb3V0X3NlY29uZHMgbXVzdCBiZSBiZXR3ZWVuIDEgYW5kIDkwMCB3aGVuIHNldBpXdGhpcy50aW1lb3V0X3NlY29uZHMgPT0gMCB8fCAodGhpcy50aW1lb3V0X3NlY29uZHMgPj0gMSAmJiB0aGlzLnRpbWVvdXRfc2Vjb25kcyA8PSA5MDApGr8BCh5yZXNlcnZlZF9jb25jdXJyZW5jeV9zZW1hbnRpY3MSOXJlc2VydmVkX2NvbmN1cnJlbmN5IG11c3QgYmUgLTEsIDAsIG9yIGEgcG9zaXRpdmUgaW50ZWdlchpidGhpcy5yZXNlcnZlZF9jb25jdXJyZW5jeSA9PSAtMSB8fCB0aGlzLnJlc2VydmVkX2NvbmN1cnJlbmN5ID09IDAgfHwgdGhpcy5yZXNlcnZlZF9jb25jdXJyZW5jeSA+IDAiTwoGUzNDb2RlEhcKBmJ1Y2tldBgBIAEoCUIHukgEcgIQARIUCgNrZXkYAiABKAlCB7pIBHICEAESFgoOb2JqZWN0X3ZlcnNpb24YAyABKAkqQwoMQXJjaGl0ZWN0dXJlEhwKGEFSQ0hJVEVDVFVSRV9VTlNQRUNJRklFRBAAEgoKBlg4Nl82NBABEgkKBUFSTTY0EAIqZwoOQ29kZVNvdXJjZVR5cGUSIAocQ09ERV9TT1VSQ0VfVFlQRV9VTlNQRUNJRklFRBAAEhcKE0NPREVfU09VUkNFX1RZUEVfUzMQARIaChZDT0RFX1NPVVJDRV9UWVBFX0lNQUdFEAJCxgIKKWNvbS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzbGFtYmRhLnYxQglTcGVjUHJvdG9QAVpTZ2l0aHViLmNvbS9wbGFudG9uaHEvb3Blbm1jZi9hcGlzL29yZy9vcGVubWNmL3Byb3ZpZGVyL2F3cy9hd3NsYW1iZGEvdjE7YXdzbGFtYmRhdjGiAgVPT1BBQaoCJU9yZy5PcGVubWNmLlByb3ZpZGVyLkF3cy5Bd3NsYW1iZGEuVjHKAiVPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzbGFtYmRhXFYx4gIxT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c2xhbWJkYVxWMVxHUEJNZXRhZGF0YeoCKk9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkF3czo6QXdzbGFtYmRhOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key]);
 
 /**
  * AwsLambdaSpec defines the desired configuration for an AWS Lambda function.
@@ -31,12 +31,20 @@ export const file_org_openmcf_provider_aws_awslambda_v1_spec: GenFile = /*@__PUR
  */
 export type AwsLambdaSpec = Message<"org.openmcf.provider.aws.awslambda.v1.AwsLambdaSpec"> & {
   /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
+  /**
    * Human-readable function name shown in the AWS Console and APIs.
    * Must be unique per account/region. If omitted, the platform may derive a
    * stable name from the resource metadata (e.g., org, environment, resource name).
    * Allowed characters and length are enforced by AWS; keep it concise and DNS-like.
    *
-   * @generated from field: string function_name = 1;
+   * @generated from field: string function_name = 2;
    */
   functionName: string;
 
@@ -44,7 +52,7 @@ export type AwsLambdaSpec = Message<"org.openmcf.provider.aws.awslambda.v1.AwsLa
    * Free-form description visible in the AWS Console to document the purpose
    * and behavior of the function. Useful for operational context and search.
    *
-   * @generated from field: string description = 2;
+   * @generated from field: string description = 3;
    */
   description: string;
 
@@ -52,7 +60,7 @@ export type AwsLambdaSpec = Message<"org.openmcf.provider.aws.awslambda.v1.AwsLa
    * Execution role for the function. Accepts a direct role ARN (value) or a reference
    * to another resource that surfaces a role ARN in its outputs (e.g., AwsIamRole).
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef role_arn = 3;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef role_arn = 4;
    */
   roleArn?: StringValueOrRef;
 
@@ -61,7 +69,7 @@ export type AwsLambdaSpec = Message<"org.openmcf.provider.aws.awslambda.v1.AwsLa
    * Examples: "nodejs18.x", "python3.11", "java21", "go1.x", "dotnet8", "ruby3.3", "provided.al2".
    * Use "provided.al2" for custom runtimes or native binaries packaged in the zip.
    *
-   * @generated from field: string runtime = 4;
+   * @generated from field: string runtime = 5;
    */
   runtime: string;
 
@@ -74,7 +82,7 @@ export type AwsLambdaSpec = Message<"org.openmcf.provider.aws.awslambda.v1.AwsLa
    * - Go/custom:  usually "bootstrap" when using a custom runtime
    * Ignored for container image code where the image CMD/ENTRYPOINT defines it.
    *
-   * @generated from field: string handler = 5;
+   * @generated from field: string handler = 6;
    */
   handler: string;
 
@@ -83,7 +91,7 @@ export type AwsLambdaSpec = Message<"org.openmcf.provider.aws.awslambda.v1.AwsLa
    * value. Choose the smallest value that meets performance goals to control cost.
    * Typical AWS-supported range is 128–10240 MB.
    *
-   * @generated from field: int32 memory_mb = 6;
+   * @generated from field: int32 memory_mb = 7;
    */
   memoryMb: number;
 
@@ -91,7 +99,7 @@ export type AwsLambdaSpec = Message<"org.openmcf.provider.aws.awslambda.v1.AwsLa
    * Maximum execution time per invocation in seconds. Set slightly higher than
    * the worst-case expected runtime. Typical AWS-supported range is 1–900 seconds.
    *
-   * @generated from field: int32 timeout_seconds = 7;
+   * @generated from field: int32 timeout_seconds = 8;
    */
   timeoutSeconds: number;
 
@@ -101,7 +109,7 @@ export type AwsLambdaSpec = Message<"org.openmcf.provider.aws.awslambda.v1.AwsLa
    * - Set to 0 to effectively disable invocations (useful for maintenance).
    * - Set to a positive integer to reserve that many concurrent executions.
    *
-   * @generated from field: int32 reserved_concurrency = 8;
+   * @generated from field: int32 reserved_concurrency = 9;
    */
   reservedConcurrency: number;
 
@@ -110,7 +118,7 @@ export type AwsLambdaSpec = Message<"org.openmcf.provider.aws.awslambda.v1.AwsLa
    * Avoid embedding sensitive values directly; prefer external secret sources.
    * When `kms_key_arn` is set, AWS encrypts these at rest using the specified key.
    *
-   * @generated from field: map<string, string> environment = 9;
+   * @generated from field: map<string, string> environment = 10;
    */
   environment: { [key: string]: string };
 
@@ -120,7 +128,7 @@ export type AwsLambdaSpec = Message<"org.openmcf.provider.aws.awslambda.v1.AwsLa
    * Accepts either literal subnet IDs (value) or references to other resources
    * that expose subnet IDs via their status/outputs.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnets = 10;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnets = 11;
    */
   subnets: StringValueOrRef[];
 
@@ -130,7 +138,7 @@ export type AwsLambdaSpec = Message<"org.openmcf.provider.aws.awslambda.v1.AwsLa
    * via NAT if needed). Accepts either literal security group IDs (value) or
    * references to a resource that provides a security group ID output.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_groups = 11;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_groups = 12;
    */
   securityGroups: StringValueOrRef[];
 
@@ -139,7 +147,7 @@ export type AwsLambdaSpec = Message<"org.openmcf.provider.aws.awslambda.v1.AwsLa
    * price/performance when your language/runtime supports it; use X86_64 for
    * legacy dependencies or runtimes not available on ARM64.
    *
-   * @generated from field: org.openmcf.provider.aws.awslambda.v1.Architecture architecture = 12;
+   * @generated from field: org.openmcf.provider.aws.awslambda.v1.Architecture architecture = 13;
    */
   architecture: Architecture;
 
@@ -147,7 +155,7 @@ export type AwsLambdaSpec = Message<"org.openmcf.provider.aws.awslambda.v1.AwsLa
    * Layer ARNs to include. Accepts direct ARNs (value) or references to resources
    * that provide layer ARNs as outputs. Up to five layers may be attached; order matters.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef layer_arns = 13;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef layer_arns = 14;
    */
   layerArns: StringValueOrRef[];
 
@@ -155,7 +163,7 @@ export type AwsLambdaSpec = Message<"org.openmcf.provider.aws.awslambda.v1.AwsLa
    * Customer-managed KMS key used to encrypt environment variables at rest.
    * Accepts a direct key ARN (value) or a reference to a KMS key resource output.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_arn = 14;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_arn = 15;
    */
   kmsKeyArn?: StringValueOrRef;
 
@@ -163,7 +171,7 @@ export type AwsLambdaSpec = Message<"org.openmcf.provider.aws.awslambda.v1.AwsLa
    * Source of the function code. Select the type and populate the corresponding
    * fields below. Validation is applied downstream to ensure consistency.
    *
-   * @generated from field: org.openmcf.provider.aws.awslambda.v1.CodeSourceType code_source_type = 15;
+   * @generated from field: org.openmcf.provider.aws.awslambda.v1.CodeSourceType code_source_type = 16;
    */
   codeSourceType: CodeSourceType;
 
@@ -172,7 +180,7 @@ export type AwsLambdaSpec = Message<"org.openmcf.provider.aws.awslambda.v1.AwsLa
    * The archive should contain your compiled artifacts and the handler.
    * Prefer a bucket in the same region as the function to avoid cross-region copies.
    *
-   * @generated from field: org.openmcf.provider.aws.awslambda.v1.S3Code s3 = 16;
+   * @generated from field: org.openmcf.provider.aws.awslambda.v1.S3Code s3 = 17;
    */
   s3?: S3Code;
 
@@ -181,7 +189,7 @@ export type AwsLambdaSpec = Message<"org.openmcf.provider.aws.awslambda.v1.AwsLa
    * defines the runtime and handler via its entrypoint/CMD. Example:
    * "123456789012.dkr.ecr.us-east-1.amazonaws.com/repo:tag".
    *
-   * @generated from field: string image_uri = 17;
+   * @generated from field: string image_uri = 18;
    */
   imageUri: string;
 };

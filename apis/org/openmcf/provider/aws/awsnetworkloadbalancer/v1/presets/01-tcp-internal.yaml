@@ -3,6 +3,7 @@ kind: AwsNetworkLoadBalancer
 metadata:
   name: <nlb-name>
 spec:
+  region: <aws-region>
   internal: true
   subnetMappings:
     - subnetId:

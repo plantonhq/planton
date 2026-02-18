@@ -17,6 +17,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     app.kubernetes.io/component: auth
 spec:
+  region: us-west-2
   # User Pool ID — pool must exist before creating this IdP
   userPoolId:
     value: us-east-1_Ab1Cd2EfG
@@ -47,6 +48,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     app.kubernetes.io/component: auth
 spec:
+  region: us-west-2
   userPoolId:
     value: us-east-1_Ab1Cd2EfG
   providerName: Facebook
@@ -78,6 +80,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     app.kubernetes.io/component: auth
 spec:
+  region: us-west-2
   userPoolId:
     value: us-east-1_Ab1Cd2EfG
   providerName: SignInWithApple
@@ -115,6 +118,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     app.kubernetes.io/component: auth
 spec:
+  region: us-west-2
   userPoolId:
     value: us-east-1_Ab1Cd2EfG
   providerName: CorpOkta
@@ -145,6 +149,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     app.kubernetes.io/component: auth
 spec:
+  region: us-west-2
   userPoolId:
     value: us-east-1_Ab1Cd2EfG
   providerName: AzureAD
@@ -183,6 +188,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     app.kubernetes.io/component: auth
 spec:
+  region: us-west-2
   userPoolId:
     value: us-east-1_Ab1Cd2EfG
   providerName: CorpAD
@@ -217,6 +223,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     app.kubernetes.io/component: auth
 spec:
+  region: us-west-2
   # Reference AwsCognitoUserPool outputs — resolves at deploy time
   userPoolId:
     valueFrom:

@@ -26,7 +26,9 @@ var _ = ginkgo.Describe("AwsSqsQueueSpec validations", func() {
 
 	ginkgo.BeforeEach(func() {
 		// Minimal valid spec: a standard queue with all AWS defaults.
-		spec = &AwsSqsQueueSpec{}
+		spec = &AwsSqsQueueSpec{
+			Region: "us-west-2",
+		}
 	})
 
 	// -------------------------------------------------------------------------

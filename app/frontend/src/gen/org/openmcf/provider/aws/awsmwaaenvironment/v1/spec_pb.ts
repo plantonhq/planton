@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/aws/awsmwaaenvironment/v1/spec.proto.
  */
 export const file_org_openmcf_provider_aws_awsmwaaenvironment_v1_spec: GenFile = /*@__PURE__*/
-  fileDesc("Cjlvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzbXdhYWVudmlyb25tZW50L3YxL3NwZWMucHJvdG8SLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Ntd2FhZW52aXJvbm1lbnQudjEi1xgKFkF3c013YWFFbnZpcm9ubWVudFNwZWMSFwoPYWlyZmxvd192ZXJzaW9uGAEgASgJEo4BCh1haXJmbG93X2NvbmZpZ3VyYXRpb25fb3B0aW9ucxgCIAMoCzJnLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Ntd2FhZW52aXJvbm1lbnQudjEuQXdzTXdhYUVudmlyb25tZW50U3BlYy5BaXJmbG93Q29uZmlndXJhdGlvbk9wdGlvbnNFbnRyeRJ3ChFzb3VyY2VfYnVja2V0X2FybhgDIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKLpIA8gBAYjUYdUBktRhGXN0YXR1cy5vdXRwdXRzLmJ1Y2tldF9hcm4SGwoLZGFnX3MzX3BhdGgYBCABKAlCBrpIA8gBARIXCg9wbHVnaW5zX3MzX3BhdGgYBSABKAkSIQoZcGx1Z2luc19zM19vYmplY3RfdmVyc2lvbhgGIAEoCRIcChRyZXF1aXJlbWVudHNfczNfcGF0aBgHIAEoCRImCh5yZXF1aXJlbWVudHNfczNfb2JqZWN0X3ZlcnNpb24YCCABKAkSHgoWc3RhcnR1cF9zY3JpcHRfczNfcGF0aBgJIAEoCRIoCiBzdGFydHVwX3NjcmlwdF9zM19vYmplY3RfdmVyc2lvbhgKIAEoCRJ2ChJleGVjdXRpb25fcm9sZV9hcm4YCyABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQia6SAPIAQGI1GHQAZLUYRdzdGF0dXMub3V0cHV0cy5yb2xlX2FybhJ+CgpzdWJuZXRfaWRzGAwgAygLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkI2ukgFkgECCAKI1GHYAZLUYSVzdGF0dXMub3V0cHV0cy5wcml2YXRlX3N1Ym5ldHMuWypdLmlkEnkKEnNlY3VyaXR5X2dyb3VwX2lkcxgNIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEo4BChNhbGxvd2VkX2NpZHJfYmxvY2tzGA4gAygJQnG6SG6SAWsYASJncmUyY14oPzoyNVswLTVdfDJbMC00XVxkfFswLTFdP1xkP1xkKSg/OlwuKD86MjVbMC01XXwyWzAtNF1cZHxbMC0xXT9cZD9cZCkpezN9Lyg/OlswLTldfFsxMl1cZHwzWzAtMl0pJBKDAQocYXNzb2NpYXRlX3NlY3VyaXR5X2dyb3VwX2lkcxgPIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCKYjUYdcBktRhIHN0YXR1cy5vdXRwdXRzLnNlY3VyaXR5X2dyb3VwX2lkEmIKBnZwY19pZBgQIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCHojUYdgBktRhFXN0YXR1cy5vdXRwdXRzLnZwY19pZBJoCgtrbXNfa2V5X2FybhgRIAEoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCH4jUYdsBktRhFnN0YXR1cy5vdXRwdXRzLmtleV9hcm4SaQoRZW52aXJvbm1lbnRfY2xhc3MYEiABKAlCTrpIS9gBAXJGUgltdzEubWljcm9SCW13MS5zbWFsbFIKbXcxLm1lZGl1bVIJbXcxLmxhcmdlUgptdzEueGxhcmdlUgttdzEuMnhsYXJnZRIfCgttaW5fd29ya2VycxgTIAEoBUIKukgH2AEBGgIoARIfCgttYXhfd29ya2VycxgUIAEoBUIKukgH2AEBGgIoARIkCg5taW5fd2Vic2VydmVycxgVIAEoBUIMukgJ2AEBGgQYBSgBEiQKDm1heF93ZWJzZXJ2ZXJzGBYgASgFQgy6SAnYAQEaBBgFKAESIAoKc2NoZWR1bGVycxgXIAEoBUIMukgJ2AEBGgQYBSgCElcKFXdlYnNlcnZlcl9hY2Nlc3NfbW9kZRgYIAEoCUIzukgg2AEBchtSDFBSSVZBVEVfT05MWVILUFVCTElDX09OTFmKph0MUFJJVkFURV9PTkxZSACIAQESOAoTZW5kcG9pbnRfbWFuYWdlbWVudBgZIAEoCUIbukgY2AEBchNSB1NFUlZJQ0VSCENVU1RPTUVSEnUKFWxvZ2dpbmdfY29uZmlndXJhdGlvbhgaIAEoCzJWLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Ntd2FhZW52aXJvbm1lbnQudjEuQXdzTXdhYUVudmlyb25tZW50TG9nZ2luZ0NvbmZpZ3VyYXRpb24SJwofd2Vla2x5X21haW50ZW5hbmNlX3dpbmRvd19zdGFydBgbIAEoCRI/Cht3b3JrZXJfcmVwbGFjZW1lbnRfc3RyYXRlZ3kYHCABKAlCGrpIF9gBAXISUgZGT1JDRURSCEdSQUNFRlVMGkIKIEFpcmZsb3dDb25maWd1cmF0aW9uT3B0aW9uc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAE66we6SOcHGrcBChttYXhfd29ya2Vyc19ndGVfbWluX3dvcmtlcnMSOm1heF93b3JrZXJzIG11c3QgYmUgPj0gbWluX3dvcmtlcnMgd2hlbiBib3RoIGFyZSBzcGVjaWZpZWQaXCh0aGlzLm1pbl93b3JrZXJzID4gMCAmJiB0aGlzLm1heF93b3JrZXJzID4gMCkgPyB0aGlzLm1heF93b3JrZXJzID49IHRoaXMubWluX3dvcmtlcnMgOiB0cnVlGs8BCiFtYXhfd2Vic2VydmVyc19ndGVfbWluX3dlYnNlcnZlcnMSQG1heF93ZWJzZXJ2ZXJzIG11c3QgYmUgPj0gbWluX3dlYnNlcnZlcnMgd2hlbiBib3RoIGFyZSBzcGVjaWZpZWQaaCh0aGlzLm1pbl93ZWJzZXJ2ZXJzID4gMCAmJiB0aGlzLm1heF93ZWJzZXJ2ZXJzID4gMCkgPyB0aGlzLm1heF93ZWJzZXJ2ZXJzID49IHRoaXMubWluX3dlYnNlcnZlcnMgOiB0cnVlGoABChxkYWdfczNfcGF0aF9ub19sZWFkaW5nX3NsYXNoEj1kYWdfczNfcGF0aCBtdXN0IGJlIGEgcmVsYXRpdmUgcGF0aCAobXVzdCBub3Qgc3RhcnQgd2l0aCAnLycpGiEhdGhpcy5kYWdfczNfcGF0aC5zdGFydHNXaXRoKCcvJyka+wEKHnZwY19pZF9yZXF1aXJlZF9mb3JfbWFuYWdlZF9zZxJydnBjX2lkIGlzIHJlcXVpcmVkIHdoZW4gc2VjdXJpdHlfZ3JvdXBfaWRzIG9yIGFsbG93ZWRfY2lkcl9ibG9ja3MgYXJlIHByb3ZpZGVkIGZvciBtYW5hZ2VkIHNlY3VyaXR5IGdyb3VwIGNyZWF0aW9uGmUodGhpcy5zZWN1cml0eV9ncm91cF9pZHMuc2l6ZSgpID4gMCB8fCB0aGlzLmFsbG93ZWRfY2lkcl9ibG9ja3Muc2l6ZSgpID4gMCkgPyBoYXModGhpcy52cGNfaWQpIDogdHJ1ZRrXAQoac2VjdXJpdHlfY292ZXJhZ2VfcmVxdWlyZWQSd2F0IGxlYXN0IG9uZSBvZiB2cGNfaWQgKGZvciBtYW5hZ2VkIFNHKSBvciBhc3NvY2lhdGVfc2VjdXJpdHlfZ3JvdXBfaWRzIG11c3QgYmUgcHJvdmlkZWQgZm9yIE1XQUEgVlBDIGVuZHBvaW50IHNlY3VyaXR5GkBoYXModGhpcy52cGNfaWQpIHx8IHRoaXMuYXNzb2NpYXRlX3NlY3VyaXR5X2dyb3VwX2lkcy5zaXplKCkgPiAwQhgKFl93ZWJzZXJ2ZXJfYWNjZXNzX21vZGUi0AQKJkF3c013YWFFbnZpcm9ubWVudExvZ2dpbmdDb25maWd1cmF0aW9uEnIKE2RhZ19wcm9jZXNzaW5nX2xvZ3MYASABKAsyVS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzbXdhYWVudmlyb25tZW50LnYxLkF3c013YWFFbnZpcm9ubWVudExvZ2dpbmdNb2R1bGVDb25maWcSbQoOc2NoZWR1bGVyX2xvZ3MYAiABKAsyVS5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzbXdhYWVudmlyb25tZW50LnYxLkF3c013YWFFbnZpcm9ubWVudExvZ2dpbmdNb2R1bGVDb25maWcSaAoJdGFza19sb2dzGAMgASgLMlUub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c213YWFlbnZpcm9ubWVudC52MS5Bd3NNd2FhRW52aXJvbm1lbnRMb2dnaW5nTW9kdWxlQ29uZmlnEm0KDndlYnNlcnZlcl9sb2dzGAQgASgLMlUub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c213YWFlbnZpcm9ubWVudC52MS5Bd3NNd2FhRW52aXJvbm1lbnRMb2dnaW5nTW9kdWxlQ29uZmlnEmoKC3dvcmtlcl9sb2dzGAUgASgLMlUub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c213YWFlbnZpcm9ubWVudC52MS5Bd3NNd2FhRW52aXJvbm1lbnRMb2dnaW5nTW9kdWxlQ29uZmlnInwKJUF3c013YWFFbnZpcm9ubWVudExvZ2dpbmdNb2R1bGVDb25maWcSDwoHZW5hYmxlZBgBIAEoCBJCCglsb2dfbGV2ZWwYAiABKAlCL7pILNgBAXInUghDUklUSUNBTFIFRVJST1JSB1dBUk5JTkdSBElORk9SBURFQlVHQoUDCjJjb20ub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c213YWFlbnZpcm9ubWVudC52MUIJU3BlY1Byb3RvUAFaZWdpdGh1Yi5jb20vcGxhbnRvbmhxL29wZW5tY2YvYXBpcy9vcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzbXdhYWVudmlyb25tZW50L3YxO2F3c213YWFlbnZpcm9ubWVudHYxogIFT09QQUGqAi5PcmcuT3Blbm1jZi5Qcm92aWRlci5Bd3MuQXdzbXdhYWVudmlyb25tZW50LlYxygIuT3JnXE9wZW5tY2ZcUHJvdmlkZXJcQXdzXEF3c213YWFlbnZpcm9ubWVudFxWMeICOk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3Ntd2FhZW52aXJvbm1lbnRcVjFcR1BCTWV0YWRhdGHqAjNPcmc6Ok9wZW5tY2Y6OlByb3ZpZGVyOjpBd3M6OkF3c213YWFlbnZpcm9ubWVudDo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
+  fileDesc("Cjlvcmcvb3Blbm1jZi9wcm92aWRlci9hd3MvYXdzbXdhYWVudmlyb25tZW50L3YxL3NwZWMucHJvdG8SLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Ntd2FhZW52aXJvbm1lbnQudjEi8BgKFkF3c013YWFFbnZpcm9ubWVudFNwZWMSFwoGcmVnaW9uGAEgASgJQge6SARyAhABEhcKD2FpcmZsb3dfdmVyc2lvbhgCIAEoCRKOAQodYWlyZmxvd19jb25maWd1cmF0aW9uX29wdGlvbnMYAyADKAsyZy5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzbXdhYWVudmlyb25tZW50LnYxLkF3c013YWFFbnZpcm9ubWVudFNwZWMuQWlyZmxvd0NvbmZpZ3VyYXRpb25PcHRpb25zRW50cnkSdwoRc291cmNlX2J1Y2tldF9hcm4YBCABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQii6SAPIAQGI1GHVAZLUYRlzdGF0dXMub3V0cHV0cy5idWNrZXRfYXJuEhsKC2RhZ19zM19wYXRoGAUgASgJQga6SAPIAQESFwoPcGx1Z2luc19zM19wYXRoGAYgASgJEiEKGXBsdWdpbnNfczNfb2JqZWN0X3ZlcnNpb24YByABKAkSHAoUcmVxdWlyZW1lbnRzX3MzX3BhdGgYCCABKAkSJgoecmVxdWlyZW1lbnRzX3MzX29iamVjdF92ZXJzaW9uGAkgASgJEh4KFnN0YXJ0dXBfc2NyaXB0X3MzX3BhdGgYCiABKAkSKAogc3RhcnR1cF9zY3JpcHRfczNfb2JqZWN0X3ZlcnNpb24YCyABKAkSdgoSZXhlY3V0aW9uX3JvbGVfYXJuGAwgASgLMjIub3JnLm9wZW5tY2Yuc2hhcmVkLmZvcmVpZ25rZXkudjEuU3RyaW5nVmFsdWVPclJlZkImukgDyAEBiNRh0AGS1GEXc3RhdHVzLm91dHB1dHMucm9sZV9hcm4SfgoKc3VibmV0X2lkcxgNIAMoCzIyLm9yZy5vcGVubWNmLnNoYXJlZC5mb3JlaWdua2V5LnYxLlN0cmluZ1ZhbHVlT3JSZWZCNrpIBZIBAggCiNRh2AGS1GElc3RhdHVzLm91dHB1dHMucHJpdmF0ZV9zdWJuZXRzLlsqXS5pZBJ5ChJzZWN1cml0eV9ncm91cF9pZHMYDiADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQimI1GHXAZLUYSBzdGF0dXMub3V0cHV0cy5zZWN1cml0eV9ncm91cF9pZBKOAQoTYWxsb3dlZF9jaWRyX2Jsb2NrcxgPIAMoCUJxukhukgFrGAEiZ3JlMmNeKD86MjVbMC01XXwyWzAtNF1cZHxbMC0xXT9cZD9cZCkoPzpcLig/OjI1WzAtNV18MlswLTRdXGR8WzAtMV0/XGQ/XGQpKXszfS8oPzpbMC05XXxbMTJdXGR8M1swLTJdKSQSgwEKHGFzc29jaWF0ZV9zZWN1cml0eV9ncm91cF9pZHMYECADKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQimI1GHXAZLUYSBzdGF0dXMub3V0cHV0cy5zZWN1cml0eV9ncm91cF9pZBJiCgZ2cGNfaWQYESABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQh6I1GHYAZLUYRVzdGF0dXMub3V0cHV0cy52cGNfaWQSaAoLa21zX2tleV9hcm4YEiABKAsyMi5vcmcub3Blbm1jZi5zaGFyZWQuZm9yZWlnbmtleS52MS5TdHJpbmdWYWx1ZU9yUmVmQh+I1GHbAZLUYRZzdGF0dXMub3V0cHV0cy5rZXlfYXJuEmkKEWVudmlyb25tZW50X2NsYXNzGBMgASgJQk66SEvYAQFyRlIJbXcxLm1pY3JvUgltdzEuc21hbGxSCm13MS5tZWRpdW1SCW13MS5sYXJnZVIKbXcxLnhsYXJnZVILbXcxLjJ4bGFyZ2USHwoLbWluX3dvcmtlcnMYFCABKAVCCrpIB9gBARoCKAESHwoLbWF4X3dvcmtlcnMYFSABKAVCCrpIB9gBARoCKAESJAoObWluX3dlYnNlcnZlcnMYFiABKAVCDLpICdgBARoEGAUoARIkCg5tYXhfd2Vic2VydmVycxgXIAEoBUIMukgJ2AEBGgQYBSgBEiAKCnNjaGVkdWxlcnMYGCABKAVCDLpICdgBARoEGAUoAhJXChV3ZWJzZXJ2ZXJfYWNjZXNzX21vZGUYGSABKAlCM7pIINgBAXIbUgxQUklWQVRFX09OTFlSC1BVQkxJQ19PTkxZiqYdDFBSSVZBVEVfT05MWUgAiAEBEjgKE2VuZHBvaW50X21hbmFnZW1lbnQYGiABKAlCG7pIGNgBAXITUgdTRVJWSUNFUghDVVNUT01FUhJ1ChVsb2dnaW5nX2NvbmZpZ3VyYXRpb24YGyABKAsyVi5vcmcub3Blbm1jZi5wcm92aWRlci5hd3MuYXdzbXdhYWVudmlyb25tZW50LnYxLkF3c013YWFFbnZpcm9ubWVudExvZ2dpbmdDb25maWd1cmF0aW9uEicKH3dlZWtseV9tYWludGVuYW5jZV93aW5kb3dfc3RhcnQYHCABKAkSPwobd29ya2VyX3JlcGxhY2VtZW50X3N0cmF0ZWd5GB0gASgJQhq6SBfYAQFyElIGRk9SQ0VEUghHUkFDRUZVTBpCCiBBaXJmbG93Q29uZmlndXJhdGlvbk9wdGlvbnNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBOusHukjnBxq3AQobbWF4X3dvcmtlcnNfZ3RlX21pbl93b3JrZXJzEjptYXhfd29ya2VycyBtdXN0IGJlID49IG1pbl93b3JrZXJzIHdoZW4gYm90aCBhcmUgc3BlY2lmaWVkGlwodGhpcy5taW5fd29ya2VycyA+IDAgJiYgdGhpcy5tYXhfd29ya2VycyA+IDApID8gdGhpcy5tYXhfd29ya2VycyA+PSB0aGlzLm1pbl93b3JrZXJzIDogdHJ1ZRrPAQohbWF4X3dlYnNlcnZlcnNfZ3RlX21pbl93ZWJzZXJ2ZXJzEkBtYXhfd2Vic2VydmVycyBtdXN0IGJlID49IG1pbl93ZWJzZXJ2ZXJzIHdoZW4gYm90aCBhcmUgc3BlY2lmaWVkGmgodGhpcy5taW5fd2Vic2VydmVycyA+IDAgJiYgdGhpcy5tYXhfd2Vic2VydmVycyA+IDApID8gdGhpcy5tYXhfd2Vic2VydmVycyA+PSB0aGlzLm1pbl93ZWJzZXJ2ZXJzIDogdHJ1ZRqAAQocZGFnX3MzX3BhdGhfbm9fbGVhZGluZ19zbGFzaBI9ZGFnX3MzX3BhdGggbXVzdCBiZSBhIHJlbGF0aXZlIHBhdGggKG11c3Qgbm90IHN0YXJ0IHdpdGggJy8nKRohIXRoaXMuZGFnX3MzX3BhdGguc3RhcnRzV2l0aCgnLycpGvsBCh52cGNfaWRfcmVxdWlyZWRfZm9yX21hbmFnZWRfc2cScnZwY19pZCBpcyByZXF1aXJlZCB3aGVuIHNlY3VyaXR5X2dyb3VwX2lkcyBvciBhbGxvd2VkX2NpZHJfYmxvY2tzIGFyZSBwcm92aWRlZCBmb3IgbWFuYWdlZCBzZWN1cml0eSBncm91cCBjcmVhdGlvbhplKHRoaXMuc2VjdXJpdHlfZ3JvdXBfaWRzLnNpemUoKSA+IDAgfHwgdGhpcy5hbGxvd2VkX2NpZHJfYmxvY2tzLnNpemUoKSA+IDApID8gaGFzKHRoaXMudnBjX2lkKSA6IHRydWUa1wEKGnNlY3VyaXR5X2NvdmVyYWdlX3JlcXVpcmVkEndhdCBsZWFzdCBvbmUgb2YgdnBjX2lkIChmb3IgbWFuYWdlZCBTRykgb3IgYXNzb2NpYXRlX3NlY3VyaXR5X2dyb3VwX2lkcyBtdXN0IGJlIHByb3ZpZGVkIGZvciBNV0FBIFZQQyBlbmRwb2ludCBzZWN1cml0eRpAaGFzKHRoaXMudnBjX2lkKSB8fCB0aGlzLmFzc29jaWF0ZV9zZWN1cml0eV9ncm91cF9pZHMuc2l6ZSgpID4gMEIYChZfd2Vic2VydmVyX2FjY2Vzc19tb2RlItAECiZBd3NNd2FhRW52aXJvbm1lbnRMb2dnaW5nQ29uZmlndXJhdGlvbhJyChNkYWdfcHJvY2Vzc2luZ19sb2dzGAEgASgLMlUub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c213YWFlbnZpcm9ubWVudC52MS5Bd3NNd2FhRW52aXJvbm1lbnRMb2dnaW5nTW9kdWxlQ29uZmlnEm0KDnNjaGVkdWxlcl9sb2dzGAIgASgLMlUub3JnLm9wZW5tY2YucHJvdmlkZXIuYXdzLmF3c213YWFlbnZpcm9ubWVudC52MS5Bd3NNd2FhRW52aXJvbm1lbnRMb2dnaW5nTW9kdWxlQ29uZmlnEmgKCXRhc2tfbG9ncxgDIAEoCzJVLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Ntd2FhZW52aXJvbm1lbnQudjEuQXdzTXdhYUVudmlyb25tZW50TG9nZ2luZ01vZHVsZUNvbmZpZxJtCg53ZWJzZXJ2ZXJfbG9ncxgEIAEoCzJVLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Ntd2FhZW52aXJvbm1lbnQudjEuQXdzTXdhYUVudmlyb25tZW50TG9nZ2luZ01vZHVsZUNvbmZpZxJqCgt3b3JrZXJfbG9ncxgFIAEoCzJVLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Ntd2FhZW52aXJvbm1lbnQudjEuQXdzTXdhYUVudmlyb25tZW50TG9nZ2luZ01vZHVsZUNvbmZpZyJ8CiVBd3NNd2FhRW52aXJvbm1lbnRMb2dnaW5nTW9kdWxlQ29uZmlnEg8KB2VuYWJsZWQYASABKAgSQgoJbG9nX2xldmVsGAIgASgJQi+6SCzYAQFyJ1IIQ1JJVElDQUxSBUVSUk9SUgdXQVJOSU5HUgRJTkZPUgVERUJVR0KFAwoyY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmF3cy5hd3Ntd2FhZW52aXJvbm1lbnQudjFCCVNwZWNQcm90b1ABWmVnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvYXdzL2F3c213YWFlbnZpcm9ubWVudC92MTthd3Ntd2FhZW52aXJvbm1lbnR2MaICBU9PUEFBqgIuT3JnLk9wZW5tY2YuUHJvdmlkZXIuQXdzLkF3c213YWFlbnZpcm9ubWVudC5WMcoCLk9yZ1xPcGVubWNmXFByb3ZpZGVyXEF3c1xBd3Ntd2FhZW52aXJvbm1lbnRcVjHiAjpPcmdcT3Blbm1jZlxQcm92aWRlclxBd3NcQXdzbXdhYWVudmlyb25tZW50XFYxXEdQQk1ldGFkYXRh6gIzT3JnOjpPcGVubWNmOjpQcm92aWRlcjo6QXdzOjpBd3Ntd2FhZW52aXJvbm1lbnQ6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_org_openmcf_shared_foreignkey_v1_foreign_key, file_org_openmcf_shared_options_options]);
 
 /**
  * AwsMwaaEnvironmentSpec defines the desired state of an Amazon MWAA (Managed Workflows for Apache Airflow) environment.
@@ -22,17 +22,23 @@ export const file_org_openmcf_provider_aws_awsmwaaenvironment_v1_spec: GenFile =
  * handling scheduler, worker, and webserver infrastructure so teams can author, schedule,
  * and monitor data pipelines using Airflow DAGs stored in Amazon S3.
  *
- * --- Airflow Configuration ---
- *
  * @generated from message org.openmcf.provider.aws.awsmwaaenvironment.v1.AwsMwaaEnvironmentSpec
  */
 export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaenvironment.v1.AwsMwaaEnvironmentSpec"> & {
+  /**
+   * The AWS region where the resource will be created.
+   * Example: "us-west-2", "eu-west-1"
+   *
+   * @generated from field: string region = 1;
+   */
+  region: string;
+
   /**
    * airflow_version is the Apache Airflow version for the environment.
    * Examples: "2.10.1", "2.9.2", "2.8.1". If omitted, AWS uses the latest supported version.
    * Minor version upgrades are applied in-place; major version changes force environment replacement.
    *
-   * @generated from field: string airflow_version = 1;
+   * @generated from field: string airflow_version = 2;
    */
   airflowVersion: string;
 
@@ -43,7 +49,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * Values may contain sensitive information (database URIs, API keys) -- treat as confidential.
    * See https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-env-variables.html for allowed keys.
    *
-   * @generated from field: map<string, string> airflow_configuration_options = 2;
+   * @generated from field: map<string, string> airflow_configuration_options = 3;
    */
   airflowConfigurationOptions: { [key: string]: string };
 
@@ -52,7 +58,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * The bucket must have versioning enabled and a bucket policy granting MWAA access.
    * The execution role must have permissions to read from this bucket.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef source_bucket_arn = 3;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef source_bucket_arn = 4;
    */
   sourceBucketArn?: StringValueOrRef;
 
@@ -60,7 +66,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * dag_s3_path is the relative path within the S3 bucket to the folder containing DAG files.
    * Example: "dags/" or "airflow/dags/". Must not start with "/".
    *
-   * @generated from field: string dag_s3_path = 4;
+   * @generated from field: string dag_s3_path = 5;
    */
   dagS3Path: string;
 
@@ -69,7 +75,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * The zip contains custom Airflow plugins (operators, hooks, sensors, macros).
    * Example: "plugins/plugins.zip".
    *
-   * @generated from field: string plugins_s3_path = 5;
+   * @generated from field: string plugins_s3_path = 6;
    */
   pluginsS3Path: string;
 
@@ -77,7 +83,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * plugins_s3_object_version pins the plugins.zip to a specific S3 object version.
    * Ensures deterministic deployments. If omitted, the latest version is used.
    *
-   * @generated from field: string plugins_s3_object_version = 6;
+   * @generated from field: string plugins_s3_object_version = 7;
    */
   pluginsS3ObjectVersion: string;
 
@@ -86,7 +92,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * Lists additional Python packages to install in the Airflow environment.
    * Example: "requirements/requirements.txt".
    *
-   * @generated from field: string requirements_s3_path = 7;
+   * @generated from field: string requirements_s3_path = 8;
    */
   requirementsS3Path: string;
 
@@ -94,7 +100,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * requirements_s3_object_version pins the requirements.txt to a specific S3 object version.
    * Ensures deterministic deployments. If omitted, the latest version is used.
    *
-   * @generated from field: string requirements_s3_object_version = 8;
+   * @generated from field: string requirements_s3_object_version = 9;
    */
   requirementsS3ObjectVersion: string;
 
@@ -104,7 +110,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * variables, configure authentication) that requirements.txt cannot handle.
    * Available for Airflow 2.x+. Example: "scripts/startup.sh".
    *
-   * @generated from field: string startup_script_s3_path = 9;
+   * @generated from field: string startup_script_s3_path = 10;
    */
   startupScriptS3Path: string;
 
@@ -112,7 +118,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * startup_script_s3_object_version pins the startup script to a specific S3 object version.
    * Ensures deterministic deployments. If omitted, the latest version is used.
    *
-   * @generated from field: string startup_script_s3_object_version = 10;
+   * @generated from field: string startup_script_s3_object_version = 11;
    */
   startupScriptS3ObjectVersion: string;
 
@@ -121,7 +127,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * This role needs permissions for S3 (DAGs bucket), CloudWatch Logs, SQS (Celery backend),
    * and any AWS services your DAGs interact with (e.g., Glue, EMR, Redshift, Lambda).
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef execution_role_arn = 11;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef execution_role_arn = 12;
    */
   executionRoleArn?: StringValueOrRef;
 
@@ -130,7 +136,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * Requires exactly 2 subnets in different Availability Zones. Must be private subnets
    * (no direct route to an internet gateway). ForceNew: changing subnets forces replacement.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 12;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 13;
    */
   subnetIds: StringValueOrRef[];
 
@@ -141,7 +147,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    *   - Ingress on port 443 (HTTPS) from these source security groups for Airflow UI access
    *   - Full egress to allow outbound connectivity
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 13;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 14;
    */
   securityGroupIds: StringValueOrRef[];
 
@@ -150,7 +156,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * When provided (along with vpc_id), a managed security group is created with ingress rules
    * permitting HTTPS traffic from these CIDRs.
    *
-   * @generated from field: repeated string allowed_cidr_blocks = 14;
+   * @generated from field: repeated string allowed_cidr_blocks = 15;
    */
   allowedCidrBlocks: string[];
 
@@ -160,7 +166,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * Use this when you already have a security group configured for MWAA's self-referencing
    * pattern and want to attach it directly without managed SG creation.
    *
-   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef associate_security_group_ids = 15;
+   * @generated from field: repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef associate_security_group_ids = 16;
    */
   associateSecurityGroupIds: StringValueOrRef[];
 
@@ -168,7 +174,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * vpc_id is the VPC in which to create the managed security group.
    * Required when security_group_ids or allowed_cidr_blocks are provided.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 16;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 17;
    */
   vpcId?: StringValueOrRef;
 
@@ -178,7 +184,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * If omitted, AWS uses the default aws/airflow service key.
    * ForceNew: changing the KMS key forces environment replacement.
    *
-   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_arn = 17;
+   * @generated from field: org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_arn = 18;
    */
   kmsKeyArn?: StringValueOrRef;
 
@@ -191,7 +197,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * "mw1.xlarge": 8 vCPU, 16 GB (very large workloads).
    * "mw1.2xlarge": 16 vCPU, 32 GB (maximum capacity).
    *
-   * @generated from field: string environment_class = 18;
+   * @generated from field: string environment_class = 19;
    */
   environmentClass: string;
 
@@ -200,7 +206,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * Range: >= 1. Workers process DAG tasks. MWAA scales between min_workers and max_workers
    * based on task queue depth. Default: 1.
    *
-   * @generated from field: int32 min_workers = 19;
+   * @generated from field: int32 min_workers = 20;
    */
   minWorkers: number;
 
@@ -208,7 +214,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * max_workers is the maximum number of Celery workers for auto-scaling.
    * Range: >= 1. Must be >= min_workers. Default: 10.
    *
-   * @generated from field: int32 max_workers = 20;
+   * @generated from field: int32 max_workers = 21;
    */
   maxWorkers: number;
 
@@ -216,7 +222,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * min_webservers is the minimum number of Airflow webservers.
    * Range: 2-5 (1 for mw1.micro). Default: 2.
    *
-   * @generated from field: int32 min_webservers = 21;
+   * @generated from field: int32 min_webservers = 22;
    */
   minWebservers: number;
 
@@ -224,7 +230,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * max_webservers is the maximum number of Airflow webservers.
    * Range: 2-5 (1 for mw1.micro). Must be >= min_webservers. Default: 2.
    *
-   * @generated from field: int32 max_webservers = 22;
+   * @generated from field: int32 max_webservers = 23;
    */
   maxWebservers: number;
 
@@ -232,7 +238,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * schedulers is the number of Airflow schedulers.
    * Range: 2-5. Default: 2. More schedulers improve DAG parsing and scheduling throughput.
    *
-   * @generated from field: int32 schedulers = 23;
+   * @generated from field: int32 schedulers = 24;
    */
   schedulers: number;
 
@@ -241,7 +247,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * "PRIVATE_ONLY" (default): accessible only within the VPC via VPC endpoint.
    * "PUBLIC_ONLY": accessible over the internet with IAM-based login.
    *
-   * @generated from field: optional string webserver_access_mode = 24;
+   * @generated from field: optional string webserver_access_mode = 25;
    */
   webserverAccessMode?: string;
 
@@ -251,7 +257,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * "CUSTOMER": you create and manage VPC endpoints yourself (advanced, <5% adoption).
    * ForceNew: changing this forces environment replacement.
    *
-   * @generated from field: string endpoint_management = 25;
+   * @generated from field: string endpoint_management = 26;
    */
   endpointManagement: string;
 
@@ -262,7 +268,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * CloudWatch Logs groups are auto-created by MWAA in the format:
    * /aws/mwaa/{environment-name}/{module-name}
    *
-   * @generated from field: org.openmcf.provider.aws.awsmwaaenvironment.v1.AwsMwaaEnvironmentLoggingConfiguration logging_configuration = 26;
+   * @generated from field: org.openmcf.provider.aws.awsmwaaenvironment.v1.AwsMwaaEnvironmentLoggingConfiguration logging_configuration = 27;
    */
   loggingConfiguration?: AwsMwaaEnvironmentLoggingConfiguration;
 
@@ -271,7 +277,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * Format: "DAY:HH:MM" in UTC (e.g., "TUE:03:30", "SUN:00:00").
    * During maintenance, MWAA may apply patches or updates. If omitted, AWS selects a window.
    *
-   * @generated from field: string weekly_maintenance_window_start = 27;
+   * @generated from field: string weekly_maintenance_window_start = 28;
    */
   weeklyMaintenanceWindowStart: string;
 
@@ -280,7 +286,7 @@ export type AwsMwaaEnvironmentSpec = Message<"org.openmcf.provider.aws.awsmwaaen
    * "FORCED": replaces workers immediately (faster updates, may interrupt running tasks).
    * "GRACEFUL": waits for running tasks to complete before replacing workers (slower, no data loss).
    *
-   * @generated from field: string worker_replacement_strategy = 28;
+   * @generated from field: string worker_replacement_strategy = 29;
    */
   workerReplacementStrategy: string;
 };
