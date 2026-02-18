@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudrampolicy.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/alicloud/alicloudrampolicy/v1/spec.proto";
+import "org/openmcf/provider/alicloud/alicloudrampolicy/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// alicloud-ram-policy
+message AlicloudRamPolicy {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'alicloud.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AlicloudRamPolicy'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AlicloudRamPolicySpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AlicloudRamPolicyStatus status = 5;
+}
+
+// alicloud-ram-policy status
+message AlicloudRamPolicyStatus {
+  // stack-outputs
+  AlicloudRamPolicyStackOutputs outputs = 1;
+}

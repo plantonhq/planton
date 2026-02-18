@@ -382,6 +382,9 @@ const (
 	CloudResourceKind_ScalewayDnsRecord                 CloudResourceKind = 2861
 	CloudResourceKind_ScalewayServerlessFunction        CloudResourceKind = 2870
 	CloudResourceKind_ScalewayServerlessContainer       CloudResourceKind = 2871
+	CloudResourceKind_AlicloudLogProject                CloudResourceKind = 3000
+	CloudResourceKind_AlicloudRamRole                   CloudResourceKind = 3010
+	CloudResourceKind_AlicloudRamPolicy                 CloudResourceKind = 3011
 )
 
 // Enum value maps for CloudResourceKind.
@@ -674,6 +677,9 @@ var (
 		2861: "ScalewayDnsRecord",
 		2870: "ScalewayServerlessFunction",
 		2871: "ScalewayServerlessContainer",
+		3000: "AlicloudLogProject",
+		3010: "AlicloudRamRole",
+		3011: "AlicloudRamPolicy",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
@@ -963,6 +969,9 @@ var (
 		"ScalewayDnsRecord":                     2861,
 		"ScalewayServerlessFunction":            2870,
 		"ScalewayServerlessContainer":           2871,
+		"AlicloudLogProject":                    3000,
+		"AlicloudRamRole":                       3010,
+		"AlicloudRamPolicy":                     3011,
 	}
 )
 
@@ -1107,7 +1116,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\x93a\n" +
+	"\x02v1\x10\x01*\x8fb\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1445,7 +1454,10 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fScalewayDnsZone\x10\xac\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwdns\x12(\n" +
 	"\x11ScalewayDnsRecord\x10\xad\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwrec\x120\n" +
 	"\x1aScalewayServerlessFunction\x10\xb6\x16\x1a\x0f\xa2\xf7\x04\v\b\x18\x10\x01\"\x05scwfn\x122\n" +
-	"\x1bScalewayServerlessContainer\x10\xb7\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwscn:|\n" +
+	"\x1bScalewayServerlessContainer\x10\xb7\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwscn\x12(\n" +
+	"\x12AlicloudLogProject\x10\xb8\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05aclog\x12&\n" +
+	"\x0fAlicloudRamRole\x10\xc2\x17\x1a\x10\xa2\xf7\x04\f\b\x19\x10\x01\"\x06acramr\x12(\n" +
+	"\x11AlicloudRamPolicy\x10\xc3\x17\x1a\x10\xa2\xf7\x04\f\b\x19\x10\x01\"\x06acramp:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

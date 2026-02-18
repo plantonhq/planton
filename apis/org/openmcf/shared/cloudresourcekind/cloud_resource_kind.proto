@@ -1567,4 +1567,28 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "scwscn"
   }];
+
+  // 3000–3299: Alibaba Cloud resources
+
+  // --- Monitoring ---
+
+  AlicloudLogProject = 3000 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "aclog"
+  }];
+
+  // --- Identity ---
+
+  AlicloudRamRole = 3010 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acramr"
+  }];
+
+  AlicloudRamPolicy = 3011 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acramp"
+  }];
 }

@@ -1,0 +1,21 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudLogProject
+metadata:
+  name: my-production-log-project
+spec:
+  region: <alibaba-cloud-region>
+  projectName: <your-project-name>
+  description: Production logging with separate stores for application, audit, and access logs
+  logStores:
+    - name: app-logs
+      retentionDays: 90
+      shardCount: 4
+      enableIndex: true
+    - name: audit-logs
+      retentionDays: 365
+      shardCount: 2
+      enableIndex: true
+    - name: access-logs
+      retentionDays: 30
+      shardCount: 2
+      enableIndex: true

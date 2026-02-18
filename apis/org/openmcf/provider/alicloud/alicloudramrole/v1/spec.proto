@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudramrole.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// AlicloudRamRoleSpec defines the configuration for an Alibaba Cloud
+// Resource Access Management (RAM) role with optional policy attachments.
+//
+// A RAM role is a virtual identity that does not have permanent credentials.
+// Trusted entities (services, accounts, or federated identities) assume the
+// role via STS to obtain temporary security tokens. This is the standard
+// mechanism for granting Alibaba Cloud services (ECS, ACK, FC, SAE) the
+// permissions they need to operate on your behalf.
+//
+// Policy attachments are bundled (per DD07) because a role without policies
+// grants zero permissions and is non-functional.
+message AlicloudRamRoleSpec {
+  // Alibaba Cloud region for provider endpoint configuration.
+  // RAM is a global service, but the provider requires a region for API routing.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // RAM role name. Must be unique within the Alibaba Cloud account.
+  // 1-64 characters: letters, digits, periods (.), hyphens (-), and underscores (_).
+  string role_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 64
+  ];
+
+  // Human-readable description of the role's purpose.
+  string description = 3;
+
+  // JSON trust policy document defining which principals can assume this role.
+  // This controls who can call sts:AssumeRole to obtain temporary credentials.
+  //
+  // Example for allowing ECS service to assume the role:
+  //   {"Statement":[{"Action":"sts:AssumeRole","Effect":"Allow",
+  //    "Principal":{"Service":["ecs.aliyuncs.com"]}}],"Version":"1"}
+  string assume_role_policy_document = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Maximum session duration in seconds when assuming this role via STS.
+  // Longer durations are useful for CI/CD pipelines and batch workloads.
+  // Range: 3600-43200 (1 hour to 12 hours).
+  // Default: 3600
+  optional int32 max_session_duration = 5 [
+    (buf.validate.field).int32 = {
+      gte: 3600
+      lte: 43200
+    },
+    (org.openmcf.shared.options.default) = "3600"
+  ];
+
+  // Tags applied to the RAM role for organizational and cost-tracking purposes.
+  map<string, string> tags = 6;
+
+  // Force-detach all attached policies before deleting the role.
+  // When false (default), deletion fails if policies are still attached.
+  // Default: false
+  optional bool force = 7 [(org.openmcf.shared.options.default) = "false"];
+
+  // Policies to attach to this role. Each attachment grants the role a set
+  // of permissions defined by either a system-managed or custom policy.
+  repeated AlicloudRamRolePolicyAttachment policy_attachments = 8;
+}
+
+// AlicloudRamRolePolicyAttachment defines a policy to attach to the RAM role.
+message AlicloudRamRolePolicyAttachment {
+  // Name of the policy to attach.
+  // System policies: "AliyunECSFullAccess", "AliyunOSSReadOnlyAccess", etc.
+  // Custom policies: the name you gave when creating the policy.
+  string policy_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Policy type: "System" for Alibaba Cloud managed policies,
+  // "Custom" for user-created policies.
+  // Default: "System"
+  optional string policy_type = 2 [
+    (buf.validate.field).string.in = "System",
+    (buf.validate.field).string.in = "Custom",
+    (org.openmcf.shared.options.default) = "System"
+  ];
+}

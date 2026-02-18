@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudlogproject.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/alicloud/alicloudlogproject/v1/spec.proto";
+import "org/openmcf/provider/alicloud/alicloudlogproject/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// alicloud-log-project
+message AlicloudLogProject {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'alicloud.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AlicloudLogProject'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AlicloudLogProjectSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AlicloudLogProjectStatus status = 5;
+}
+
+// alicloud-log-project status
+message AlicloudLogProjectStatus {
+  // stack-outputs
+  AlicloudLogProjectStackOutputs outputs = 1;
+}
