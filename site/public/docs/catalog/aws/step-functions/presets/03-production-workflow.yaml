@@ -6,6 +6,7 @@ metadata:
   env: prod
   id: <resource-id>
 spec:
+  region: <aws-region>
   type: STANDARD
   description: <workflow-description>
   roleArn:

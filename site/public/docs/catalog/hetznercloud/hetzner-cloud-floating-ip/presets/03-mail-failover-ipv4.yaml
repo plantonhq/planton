@@ -1,0 +1,12 @@
+apiVersion: hetznercloud.openmcf.org/v1
+kind: HetznerCloudFloatingIp
+metadata:
+  name: my-mail-failover-ip
+spec:
+  type: ipv4
+  homeLocation: fsn1
+  description: Mail server failover IP with rDNS
+  serverId:
+    value: <hetzner-server-id>
+  dnsPtr: <mail-server-hostname>
+  deleteProtection: true

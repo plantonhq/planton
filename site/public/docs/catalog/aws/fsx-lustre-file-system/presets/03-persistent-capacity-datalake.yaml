@@ -6,6 +6,7 @@ metadata:
   name: datalake-fsx
   id: datalake-fsx-id
 spec:
+  region: <aws-region>
   deployment_type: PERSISTENT_1
   storage_capacity_gib: 6000
   storage_type: HDD

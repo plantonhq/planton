@@ -6,6 +6,7 @@ metadata:
   name: prod-efs-elastic
   id: prod-efs-elastic-id
 spec:
+  region: <aws-region>
   encrypted: true
   throughput_mode: elastic
   backup_enabled: true

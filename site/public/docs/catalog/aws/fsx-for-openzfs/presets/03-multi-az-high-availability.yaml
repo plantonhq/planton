@@ -6,6 +6,7 @@ metadata:
   name: ha-openzfs
   id: awsfxz-ha-openzfs-production
 spec:
+  region: <aws-region>
   deployment_type: MULTI_AZ_1
   storage_capacity_gib: 1024
   throughput_capacity: 1280

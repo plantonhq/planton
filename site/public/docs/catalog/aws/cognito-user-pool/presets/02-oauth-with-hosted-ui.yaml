@@ -9,6 +9,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     openmcf.org/stack: ${env}.AwsCognitoUserPool.${name}
 spec:
+  region: <aws-region>
   usernameAttributes:
     - email
   passwordPolicy:

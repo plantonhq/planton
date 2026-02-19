@@ -35,7 +35,8 @@ metadata:
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsElasticIp.my-eip
-spec: {}
+spec:
+  region: us-east-1
 ```
 
 Deploy:
@@ -44,13 +45,15 @@ Deploy:
 openmcf apply -f eip.yaml
 ```
 
-This allocates a VPC Elastic IP from Amazon's default pool. The `allocation_id` and `public_ip` outputs are immediately available for downstream references.
+This allocates a VPC Elastic IP from Amazon's default pool in `us-east-1`. The `allocation_id` and `public_ip` outputs are immediately available for downstream references.
 
 ## Configuration Reference
 
 ### Required Fields
 
-This component has no required spec fields. An empty `spec: {}` allocates a standard VPC Elastic IP from Amazon's pool.
+| Field | Type | Description |
+|-------|------|-------------|
+| `region` | `string` | AWS region where the Elastic IP will be allocated (e.g., `us-east-1`). |
 
 ### Optional Fields
 
@@ -76,7 +79,8 @@ metadata:
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsElasticIp.nlb-eip-az1
-spec: {}
+spec:
+  region: us-east-1
 ```
 
 ### Using Foreign Key References
@@ -136,6 +140,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsElasticIp.byoip-eip
 spec:
+  region: us-east-1
   publicIpv4Pool: ipv4pool-ec2-0123456789abcdef0
   address: "198.51.100.10"
 ```

@@ -3,6 +3,7 @@ kind: AwsKinesisStream
 metadata:
   name: example-stream
 spec:
+  region: <aws-region>
   streamMode: ON_DEMAND
   retentionPeriodHours: 168
   kmsKeyId:

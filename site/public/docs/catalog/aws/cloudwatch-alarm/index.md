@@ -40,6 +40,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsCloudwatchAlarm.cpu-high
 spec:
+  region: us-west-2
   comparisonOperator: GreaterThanThreshold
   evaluationPeriods: 3
   threshold: 80.0
@@ -63,6 +64,7 @@ This creates an alarm that triggers when EC2 CPU utilization exceeds 80% for 3 c
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the alarm will be created (e.g., `us-west-2`). | Required |
 | `comparisonOperator` | `string` | Arithmetic operation comparing the statistic to the threshold. | One of: `GreaterThanOrEqualToThreshold`, `GreaterThanThreshold`, `LessThanThreshold`, `LessThanOrEqualToThreshold`, `LessThanLowerOrGreaterThanUpperThreshold`, `LessThanLowerThreshold`, `GreaterThanUpperThreshold` |
 | `evaluationPeriods` | `int` | Number of consecutive periods over which data is compared to the threshold. | >= 1 |
 
@@ -136,6 +138,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsCloudwatchAlarm.ec2-cpu-alarm
 spec:
+  region: us-west-2
   comparisonOperator: GreaterThanThreshold
   evaluationPeriods: 3
   datapointsToAlarm: 2
@@ -167,6 +170,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsCloudwatchAlarm.error-rate-alarm
 spec:
+  region: us-west-2
   comparisonOperator: GreaterThanThreshold
   evaluationPeriods: 3
   datapointsToAlarm: 2
@@ -213,6 +217,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsCloudwatchAlarm.sqs-depth-alarm
 spec:
+  region: us-west-2
   comparisonOperator: GreaterThanOrEqualToThreshold
   evaluationPeriods: 5
   datapointsToAlarm: 3

@@ -6,6 +6,7 @@ metadata:
   name: dev-scratch-fsx
   id: dev-scratch-fsx-id
 spec:
+  region: <aws-region>
   deployment_type: SCRATCH_2
   storage_capacity_gib: 1200
   storage_type: SSD

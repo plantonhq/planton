@@ -3,5 +3,6 @@ kind: AwsKinesisStreamConsumer
 metadata:
   name: example-consumer
 spec:
+  region: <aws-region>
   streamArn:
     value: arn:aws:kinesis:us-east-1:123456789012:stream/my-stream

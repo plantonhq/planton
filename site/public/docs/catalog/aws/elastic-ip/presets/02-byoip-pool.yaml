@@ -3,4 +3,5 @@ kind: AwsElasticIp
 metadata:
   name: ${name}
 spec:
+  region: <aws-region>
   publicIpv4Pool: ${public_ipv4_pool}

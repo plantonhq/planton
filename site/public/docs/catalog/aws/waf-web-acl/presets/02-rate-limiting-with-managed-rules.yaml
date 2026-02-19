@@ -3,6 +3,7 @@ kind: AwsWafWebAcl
 metadata:
   name: <acl-name>
 spec:
+  region: <aws-region>
   scope: REGIONAL
   defaultAction:
     type: allow

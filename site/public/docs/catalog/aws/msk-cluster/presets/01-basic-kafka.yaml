@@ -3,6 +3,7 @@ kind: AwsMskCluster
 metadata:
   name: basic-kafka
 spec:
+  region: <aws-region>
   kafkaVersion: "3.6.0"
   numberOfBrokerNodes: 3
   instanceType: kafka.t3.small

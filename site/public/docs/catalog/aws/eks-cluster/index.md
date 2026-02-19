@@ -40,6 +40,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsEksCluster.my-cluster
 spec:
+  region: us-west-2
   subnetIds:
     - subnet-0a1b2c3d4e5f00001
     - subnet-0a1b2c3d4e5f00002
@@ -60,6 +61,7 @@ This creates an EKS cluster with a public API endpoint across two subnets, using
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the EKS cluster will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `subnetIds` | `string[]` | Subnet IDs in the cluster's VPC where the EKS control plane attaches network interfaces. Use at least two subnets in distinct Availability Zones. | Minimum 2 items required |
 | `subnetIds[].value` | `string` | Direct subnet ID value | — |
 | `subnetIds[].valueFrom` | `object` | Foreign key reference to an AwsVpc resource | Default kind: `AwsVpc`, field: `status.outputs.private_subnets.[*].id` |
@@ -94,6 +96,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsEksCluster.private-cluster
 spec:
+  region: us-west-2
   subnetIds:
     - subnet-private-az1
     - subnet-private-az2
@@ -117,6 +120,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: staging.AwsEksCluster.monitored-cluster
 spec:
+  region: us-west-2
   subnetIds:
     - subnet-private-az1
     - subnet-private-az2
@@ -144,6 +148,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsEksCluster.prod-cluster
 spec:
+  region: us-east-1
   subnetIds:
     - subnet-private-az1
     - subnet-private-az2
@@ -170,6 +175,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsEksCluster.ref-cluster
 spec:
+  region: us-west-2
   subnetIds:
     - valueFrom:
         kind: AwsVpc

@@ -3,6 +3,7 @@ kind: AwsMemorydbCluster
 metadata:
   name: my-memorydb-ha
 spec:
+  region: <aws-region>
   engine: redis
   engineVersion: "7.1"
   description: Production HA MemoryDB cluster

@@ -6,6 +6,7 @@ metadata:
   org: <REPLACE>
   env: <REPLACE>
 spec:
+  region: <aws-region>
   file_system_id:
     value: fs-0123456789abcdef0
   name: svm_smb

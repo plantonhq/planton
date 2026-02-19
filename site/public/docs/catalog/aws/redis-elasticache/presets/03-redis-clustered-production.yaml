@@ -3,6 +3,7 @@ kind: AwsRedisElasticache
 metadata:
   name: my-redis-clustered
 spec:
+  region: us-west-2
   engine: redis
   engineVersion: "7.1"
   description: Clustered Redis for high-throughput production workloads

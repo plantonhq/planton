@@ -42,6 +42,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsElasticFileSystem.my-efs
 spec:
+  region: us-east-1
   subnetIds:
     - subnet-0a1b2c3d4e5f00001
     - subnet-0a1b2c3d4e5f00002
@@ -63,6 +64,7 @@ This creates an unencrypted, bursting-throughput EFS file system with mount targ
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the file system will be created (e.g., `us-east-1`, `us-west-2`). | Required; non-empty |
 | `subnetIds` | `StringValueOrRef[]` | Subnet IDs where mount targets are created. One mount target per subnet (one per AZ). Can reference AwsVpc resource via `valueFrom`. | Minimum 1 item required |
 
 ### Optional Fields
@@ -108,6 +110,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsElasticFileSystem.prod-efs
 spec:
+  region: us-east-1
   encrypted: true
   subnetIds:
     - subnet-private-az1
@@ -131,6 +134,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsElasticFileSystem.dev-efs
 spec:
+  region: us-east-1
   availabilityZoneName: us-east-1a
   throughputMode: elastic
   transitionToIa: AFTER_30_DAYS
@@ -157,6 +161,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsElasticFileSystem.shared-efs
 spec:
+  region: us-east-1
   encrypted: true
   backupEnabled: true
   throughputMode: elastic
@@ -203,6 +208,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsElasticFileSystem.ref-efs
 spec:
+  region: us-east-1
   encrypted: true
   kmsKeyId:
     valueFrom:

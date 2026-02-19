@@ -6,6 +6,7 @@ metadata:
   env: ${env}
   id: ${name}-${env}
 spec:
+  region: us-west-2
   engine: memcached
   description: Memcached cache with explicit scaling bounds
   dataStorageMinGb: 1

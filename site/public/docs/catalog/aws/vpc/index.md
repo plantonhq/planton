@@ -44,6 +44,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsVpc.my-vpc
 spec:
+  region: us-west-2
   vpcCidr: "10.0.0.0/16"
   subnetsPerAvailabilityZone: 1
   subnetSize: 24
@@ -63,6 +64,7 @@ This creates a VPC with the `10.0.0.0/16` CIDR block. No subnets are created unt
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the VPC will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `vpcCidr` | `string` | CIDR block for the VPC (e.g., `10.0.0.0/16`). Defines the full IP address range. | Must be a valid CIDR notation |
 | `subnetsPerAvailabilityZone` | `int32` | Number of subnets to create in each Availability Zone. Recommended default: `1`. | Required |
 | `subnetSize` | `int32` | Subnet mask size (e.g., `24` for `/24` subnets with 256 addresses). Must not be larger than the VPC CIDR mask. Recommended default: `1`. | Required; must be >= VPC CIDR mask size |
@@ -93,6 +95,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsVpc.two-az-vpc
 spec:
+  region: us-east-1
   vpcCidr: "10.0.0.0/16"
   availabilityZones:
     - us-east-1a
@@ -116,6 +119,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: staging.AwsVpc.nat-vpc
 spec:
+  region: us-west-2
   vpcCidr: "10.1.0.0/16"
   availabilityZones:
     - us-west-2a
@@ -142,6 +146,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsVpc.prod-vpc
 spec:
+  region: eu-west-1
   vpcCidr: "10.10.0.0/16"
   availabilityZones:
     - eu-west-1a
@@ -169,6 +174,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsVpc.segmented-vpc
 spec:
+  region: ap-southeast-1
   vpcCidr: "172.16.0.0/20"
   availabilityZones:
     - ap-southeast-1a

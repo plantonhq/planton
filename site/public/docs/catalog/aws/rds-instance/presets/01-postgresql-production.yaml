@@ -3,6 +3,7 @@ kind: AwsRdsInstance
 metadata:
   name: my-postgresql-instance
 spec:
+  region: us-west-2
   subnetIds:
     - value: "<private-subnet-id-az1>"
     - value: "<private-subnet-id-az2>"

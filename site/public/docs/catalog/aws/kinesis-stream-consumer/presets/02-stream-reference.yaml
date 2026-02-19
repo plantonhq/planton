@@ -3,6 +3,7 @@ kind: AwsKinesisStreamConsumer
 metadata:
   name: analytics-consumer
 spec:
+  region: <aws-region>
   streamArn:
     valueFrom:
       kind: AwsKinesisStream
