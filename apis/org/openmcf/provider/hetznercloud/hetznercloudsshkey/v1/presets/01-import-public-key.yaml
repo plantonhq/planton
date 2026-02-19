@@ -1,0 +1,6 @@
+apiVersion: hetznercloud.openmcf.org/v1
+kind: HetznerCloudSshKey
+metadata:
+  name: my-ssh-key
+spec:
+  publicKey: <ssh-public-key>

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.hetznercloud.hetznercloudloadbalancer.v1;
+
+import "org/openmcf/provider/hetznercloud/hetznercloudloadbalancer/v1/api.proto";
+import "org/openmcf/provider/hetznercloud/provider.proto";
+
+//hetznercloud-load-balancer stack-input
+message HetznerCloudLoadBalancerStackInput {
+  //target cloud-resource
+  HetznerCloudLoadBalancer target = 1;
+  //provider-config
+  org.openmcf.provider.hetznercloud.HetznerCloudProviderConfig provider_config = 2;
+}

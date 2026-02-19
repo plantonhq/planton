@@ -5,14 +5,14 @@ import (
 	hetznercloudprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud"
 )
 
-// loadHetznercloudEnvVars loads Hetzner Cloud provider config and returns environment variables.
-// It maps the structured HetznercloudProviderConfig fields to the HCLOUD_*/HETZNER_* environment
+// loadHetznerCloudEnvVars loads Hetzner Cloud provider config and returns environment variables.
+// It maps the structured HetznerCloudProviderConfig fields to the HCLOUD_*/HETZNER_* environment
 // variables expected by the Terraform hcloud provider.
 //
 // poll_interval and poll_function are intentionally not emitted because the upstream Terraform
 // provider does not read them from environment variables.
-func loadHetznercloudEnvVars(providerConfigYaml []byte) (map[string]string, error) {
-	config := new(hetznercloudprovider.HetznercloudProviderConfig)
+func loadHetznerCloudEnvVars(providerConfigYaml []byte) (map[string]string, error) {
+	config := new(hetznercloudprovider.HetznerCloudProviderConfig)
 	if err := loadProviderConfigProto(providerConfigYaml, config); err != nil {
 		return nil, errors.Wrap(err, "failed to load Hetzner Cloud provider config")
 	}

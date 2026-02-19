@@ -6,7 +6,6 @@ import (
 
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/atlas"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure"
@@ -15,6 +14,7 @@ import (
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/confluent"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/digitalocean"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
+	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga"

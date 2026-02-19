@@ -1,0 +1,10 @@
+apiVersion: hetznercloud.openmcf.org/v1
+kind: HetznerCloudServer
+metadata:
+  name: my-quick-start-server
+spec:
+  serverType: cx22
+  image: ubuntu-24.04
+  location: fsn1
+  sshKeys:
+    - value: <ssh-key-name>

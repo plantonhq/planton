@@ -12,14 +12,14 @@ import (
 
 	"connectrpc.com/connect"
 	credentialv1 "github.com/plantonhq/openmcf/apis/org/openmcf/app/credential/v1"
+	alicloudv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud"
 	auth0v1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0"
 	awsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
 	azurev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure"
 	gcpv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
-	alicloudv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud"
+	hetznercloudv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud"
 	ociv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci"
 	openstackv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack"
-	hetznercloudv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud"
 	scalewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -72,7 +72,7 @@ func (s *CredentialService) Create(
 	case credentialv1.Credential_OCI:
 		return s.createOciCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
 	case credentialv1.Credential_HETZNER_CLOUD:
-		return s.createHetznercloudCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
+		return s.createHetznerCloudCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
 	default:
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unsupported provider: %v", req.Msg.Provider))
 	}
@@ -616,7 +616,7 @@ func (s *CredentialService) Get(
 			protoCredential.UpdatedAt = timestamppb.New(ociCred.UpdatedAt)
 		}
 	case "hetznercloud":
-		hcCred, err := convertBsonToHetznercloudCredential(doc)
+		hcCred, err := convertBsonToHetznerCloudCredential(doc)
 		if err != nil {
 			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to convert credential: %w", err))
 		}
@@ -675,7 +675,7 @@ func (s *CredentialService) Update(
 	case credentialv1.Credential_OCI:
 		return s.updateOciCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
 	case credentialv1.Credential_HETZNER_CLOUD:
-		return s.updateHetznercloudCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
+		return s.updateHetznerCloudCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
 	default:
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unsupported provider: %v", req.Msg.Provider))
 	}
@@ -2137,8 +2137,8 @@ func convertBsonToOciCredential(doc bson.M) (*models.OciCredential, error) {
 	return cred, nil
 }
 
-// createHetznercloudCredential creates a Hetzner Cloud credential.
-func (s *CredentialService) createHetznercloudCredential(
+// createHetznerCloudCredential creates a Hetzner Cloud credential.
+func (s *CredentialService) createHetznerCloudCredential(
 	ctx context.Context,
 	name string,
 	providerConfig *credentialv1.CredentialProviderConfig,
@@ -2157,7 +2157,7 @@ func (s *CredentialService) createHetznercloudCredential(
 
 	credModel := hetznercloudProtoToModel(name, hcConfig.Hetznercloud)
 
-	createdCredential, err := s.credentialRepo.CreateHetznercloud(ctx, credModel)
+	createdCredential, err := s.credentialRepo.CreateHetznerCloud(ctx, credModel)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create Hetzner Cloud credential: %w", err))
 	}
@@ -2180,8 +2180,8 @@ func (s *CredentialService) createHetznercloudCredential(
 	}), nil
 }
 
-// updateHetznercloudCredential updates a Hetzner Cloud credential.
-func (s *CredentialService) updateHetznercloudCredential(
+// updateHetznerCloudCredential updates a Hetzner Cloud credential.
+func (s *CredentialService) updateHetznerCloudCredential(
 	ctx context.Context,
 	id, name string,
 	providerConfig *credentialv1.CredentialProviderConfig,
@@ -2199,7 +2199,7 @@ func (s *CredentialService) updateHetznercloudCredential(
 
 	credModel := hetznercloudProtoToModel(name, hcConfig.Hetznercloud)
 
-	updatedCredential, err := s.credentialRepo.UpdateHetznercloud(ctx, id, credModel)
+	updatedCredential, err := s.credentialRepo.UpdateHetznerCloud(ctx, id, credModel)
 	if err != nil {
 		if err.Error() == fmt.Sprintf("Hetzner Cloud credential with ID '%s' not found", id) {
 			return nil, connect.NewError(connect.CodeNotFound, err)
@@ -2225,8 +2225,8 @@ func (s *CredentialService) updateHetznercloudCredential(
 	}), nil
 }
 
-func hetznercloudProtoToModel(name string, cfg *hetznercloudv1.HetznercloudProviderConfig) *models.HetznercloudCredential {
-	return &models.HetznercloudCredential{
+func hetznercloudProtoToModel(name string, cfg *hetznercloudv1.HetznerCloudProviderConfig) *models.HetznerCloudCredential {
+	return &models.HetznerCloudCredential{
 		Name:            name,
 		Token:           cfg.Token,
 		Endpoint:        cfg.Endpoint,
@@ -2236,10 +2236,10 @@ func hetznercloudProtoToModel(name string, cfg *hetznercloudv1.HetznercloudProvi
 	}
 }
 
-func hetznercloudModelToProtoConfig(cred *models.HetznercloudCredential) *credentialv1.CredentialProviderConfig {
+func hetznercloudModelToProtoConfig(cred *models.HetznerCloudCredential) *credentialv1.CredentialProviderConfig {
 	return &credentialv1.CredentialProviderConfig{
 		Data: &credentialv1.CredentialProviderConfig_Hetznercloud{
-			Hetznercloud: &hetznercloudv1.HetznercloudProviderConfig{
+			Hetznercloud: &hetznercloudv1.HetznerCloudProviderConfig{
 				Token:           cred.Token,
 				Endpoint:        cred.Endpoint,
 				EndpointHetzner: cred.EndpointHetzner,
@@ -2250,7 +2250,7 @@ func hetznercloudModelToProtoConfig(cred *models.HetznercloudCredential) *creden
 	}
 }
 
-func convertBsonToHetznercloudCredential(doc bson.M) (*models.HetznercloudCredential, error) {
+func convertBsonToHetznerCloudCredential(doc bson.M) (*models.HetznerCloudCredential, error) {
 	id, ok := doc["_id"].(primitive.ObjectID)
 	if !ok {
 		return nil, fmt.Errorf("invalid _id field")
@@ -2268,7 +2268,7 @@ func convertBsonToHetznercloudCredential(doc bson.M) (*models.HetznercloudCreden
 		updatedAt = t
 	}
 
-	cred := &models.HetznercloudCredential{
+	cred := &models.HetznerCloudCredential{
 		ID:        id,
 		Name:      doc["name"].(string),
 		Token:     doc["token"].(string),

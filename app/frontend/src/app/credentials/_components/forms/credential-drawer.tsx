@@ -21,7 +21,7 @@ import {
   ScalewayCredentialForm,
   AlicloudCredentialForm,
   OciCredentialForm,
-  HetznercloudCredentialForm,
+  HetznerCloudCredentialForm,
 } from '@/app/credentials/_components/forms';
 import { useCredentialCommand } from '@/app/credentials/_services';
 import {
@@ -61,9 +61,9 @@ import {
   AuthenticationType as OciAuthenticationType,
 } from '@/gen/org/openmcf/provider/oci/provider_pb';
 import {
-  HetznercloudProviderConfigSchema,
+  HetznerCloudProviderConfigSchema,
 } from '@/gen/org/openmcf/provider/hetznercloud/provider_pb';
-import type { OpenStackFormData, ScalewayFormData, AlicloudFormData, AlicloudAuthMethod, OciFormData, OciAuthMethod, HetznercloudFormData } from '@/app/credentials/_components/forms/types';
+import type { OpenStackFormData, ScalewayFormData, AlicloudFormData, AlicloudAuthMethod, OciFormData, OciAuthMethod, HetznerCloudFormData } from '@/app/credentials/_components/forms/types';
 import { create } from '@bufbuild/protobuf';
 import { providerConfig } from '@/app/credentials/_components/utils';
 
@@ -579,7 +579,7 @@ export function CredentialDrawer({
         providerConfig = create(CredentialProviderConfigSchema, {
           data: {
             case: 'hetznercloud',
-            value: create(HetznercloudProviderConfigSchema, {
+            value: create(HetznerCloudProviderConfigSchema, {
               token: formData.hetznercloud.token,
               endpoint: formData.hetznercloud.endpoint || '',
               endpointHetzner: formData.hetznercloud.endpointHetzner || '',
@@ -726,7 +726,7 @@ export function CredentialDrawer({
                 />
               )}
               {formProvider == Credential_CredentialProvider.HETZNER_CLOUD && (
-                <HetznercloudCredentialForm register={register} disabled={isView} />
+                <HetznerCloudCredentialForm register={register} disabled={isView} />
               )}
             </Stack>
           </Stack>

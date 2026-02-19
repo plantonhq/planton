@@ -11,10 +11,10 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file org/openmcf/provider/hetznercloud/provider.proto.
  */
 export const file_org_openmcf_provider_hetznercloud_provider: GenFile = /*@__PURE__*/
-  fileDesc("CjBvcmcvb3Blbm1jZi9wcm92aWRlci9oZXR6bmVyY2xvdWQvcHJvdmlkZXIucHJvdG8SIW9yZy5vcGVubWNmLnByb3ZpZGVyLmhldHpuZXJjbG91ZCKNAQoaSGV0em5lcmNsb3VkUHJvdmlkZXJDb25maWcSFQoFdG9rZW4YASABKAlCBrpIA8gBARIQCghlbmRwb2ludBgCIAEoCRIYChBlbmRwb2ludF9oZXR6bmVyGAMgASgJEhUKDXBvbGxfaW50ZXJ2YWwYBCABKAkSFQoNcG9sbF9mdW5jdGlvbhgFIAEoCUKjAgolY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmhldHpuZXJjbG91ZEINUHJvdmlkZXJQcm90b1ABWkNnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvaGV0em5lcmNsb3VkogIET09QSKoCIU9yZy5PcGVubWNmLlByb3ZpZGVyLkhldHpuZXJjbG91ZMoCIU9yZ1xPcGVubWNmXFByb3ZpZGVyXEhldHpuZXJjbG91ZOICLU9yZ1xPcGVubWNmXFByb3ZpZGVyXEhldHpuZXJjbG91ZFxHUEJNZXRhZGF0YeoCJE9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkhldHpuZXJjbG91ZGIGcHJvdG8z", [file_buf_validate_validate]);
+  fileDesc("CjBvcmcvb3Blbm1jZi9wcm92aWRlci9oZXR6bmVyY2xvdWQvcHJvdmlkZXIucHJvdG8SIW9yZy5vcGVubWNmLnByb3ZpZGVyLmhldHpuZXJjbG91ZCKNAQoaSGV0em5lckNsb3VkUHJvdmlkZXJDb25maWcSFQoFdG9rZW4YASABKAlCBrpIA8gBARIQCghlbmRwb2ludBgCIAEoCRIYChBlbmRwb2ludF9oZXR6bmVyGAMgASgJEhUKDXBvbGxfaW50ZXJ2YWwYBCABKAkSFQoNcG9sbF9mdW5jdGlvbhgFIAEoCUKjAgolY29tLm9yZy5vcGVubWNmLnByb3ZpZGVyLmhldHpuZXJjbG91ZEINUHJvdmlkZXJQcm90b1ABWkNnaXRodWIuY29tL3BsYW50b25ocS9vcGVubWNmL2FwaXMvb3JnL29wZW5tY2YvcHJvdmlkZXIvaGV0em5lcmNsb3VkogIET09QSKoCIU9yZy5PcGVubWNmLlByb3ZpZGVyLkhldHpuZXJjbG91ZMoCIU9yZ1xPcGVubWNmXFByb3ZpZGVyXEhldHpuZXJjbG91ZOICLU9yZ1xPcGVubWNmXFByb3ZpZGVyXEhldHpuZXJjbG91ZFxHUEJNZXRhZGF0YeoCJE9yZzo6T3Blbm1jZjo6UHJvdmlkZXI6OkhldHpuZXJjbG91ZGIGcHJvdG8z", [file_buf_validate_validate]);
 
 /**
- * HetznercloudProviderConfig defines the credentials and connection parameters required to
+ * HetznerCloudProviderConfig defines the credentials and connection parameters required to
  * interact with Hetzner Cloud infrastructure. This message maps directly to the authentication
  * fields accepted by the Terraform hcloud provider.
  *
@@ -38,9 +38,9 @@ export const file_org_openmcf_provider_hetznercloud_provider: GenFile = /*@__PUR
  * - Terraform provider docs: https://registry.terraform.io/providers/hetznercloud/hcloud/latest/docs
  * - Hetzner Cloud API: https://docs.hetzner.cloud/
  *
- * @generated from message org.openmcf.provider.hetznercloud.HetznercloudProviderConfig
+ * @generated from message org.openmcf.provider.hetznercloud.HetznerCloudProviderConfig
  */
-export type HetznercloudProviderConfig = Message<"org.openmcf.provider.hetznercloud.HetznercloudProviderConfig"> & {
+export type HetznerCloudProviderConfig = Message<"org.openmcf.provider.hetznercloud.HetznerCloudProviderConfig"> & {
   /**
    * token is the Hetzner Cloud API token used to authenticate all API requests.
    * Tokens are 64 characters long and are created per-project in the Hetzner Cloud Console
@@ -91,9 +91,9 @@ export type HetznercloudProviderConfig = Message<"org.openmcf.provider.hetznercl
 };
 
 /**
- * Describes the message org.openmcf.provider.hetznercloud.HetznercloudProviderConfig.
- * Use `create(HetznercloudProviderConfigSchema)` to create a new message.
+ * Describes the message org.openmcf.provider.hetznercloud.HetznerCloudProviderConfig.
+ * Use `create(HetznerCloudProviderConfigSchema)` to create a new message.
  */
-export const HetznercloudProviderConfigSchema: GenMessage<HetznercloudProviderConfig> = /*@__PURE__*/
+export const HetznerCloudProviderConfigSchema: GenMessage<HetznerCloudProviderConfig> = /*@__PURE__*/
   messageDesc(file_org_openmcf_provider_hetznercloud_provider, 0);
 

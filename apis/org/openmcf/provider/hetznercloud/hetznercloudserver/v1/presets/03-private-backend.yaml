@@ -1,0 +1,22 @@
+apiVersion: hetznercloud.openmcf.org/v1
+kind: HetznerCloudServer
+metadata:
+  name: my-private-backend-server
+spec:
+  serverType: cx22
+  image: ubuntu-24.04
+  location: fsn1
+  sshKeys:
+    - value: <ssh-key-name>
+  firewallIds:
+    - value: <firewall-id>
+  networks:
+    - networkId:
+        value: <network-id>
+  publicNet:
+    ipv4Enabled: false
+    ipv6Enabled: false
+  backups: true
+  deleteProtection: true
+  rebuildProtection: true
+  shutdownBeforeDeletion: true

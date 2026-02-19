@@ -415,7 +415,7 @@ func (r *CredentialRepository) FindFirstByProvider(ctx context.Context, provider
 	case "oci":
 		return convertToOciCredential(result)
 	case "hetznercloud":
-		return convertToHetznercloudCredential(result)
+		return convertToHetznerCloudCredential(result)
 	default:
 		return nil, fmt.Errorf("unsupported provider: %s", provider)
 	}
@@ -1206,8 +1206,8 @@ func convertToOciCredential(doc bson.M) (*models.OciCredential, error) {
 	return cred, nil
 }
 
-// CreateHetznercloud creates a new Hetzner Cloud credential.
-func (r *CredentialRepository) CreateHetznercloud(ctx context.Context, cred *models.HetznercloudCredential) (*models.HetznercloudCredential, error) {
+// CreateHetznerCloud creates a new Hetzner Cloud credential.
+func (r *CredentialRepository) CreateHetznerCloud(ctx context.Context, cred *models.HetznerCloudCredential) (*models.HetznerCloudCredential, error) {
 	exists, err := r.ExistsByProvider(ctx, "hetznercloud")
 	if err != nil {
 		return nil, fmt.Errorf("failed to check for existing Hetzner Cloud credential: %w", err)
@@ -1243,8 +1243,8 @@ func (r *CredentialRepository) CreateHetznercloud(ctx context.Context, cred *mod
 	return cred, nil
 }
 
-// UpdateHetznercloud updates an existing Hetzner Cloud credential.
-func (r *CredentialRepository) UpdateHetznercloud(ctx context.Context, id string, cred *models.HetznercloudCredential) (*models.HetznercloudCredential, error) {
+// UpdateHetznerCloud updates an existing Hetzner Cloud credential.
+func (r *CredentialRepository) UpdateHetznerCloud(ctx context.Context, id string, cred *models.HetznerCloudCredential) (*models.HetznerCloudCredential, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, fmt.Errorf("invalid ID format: %w", err)
@@ -1252,13 +1252,13 @@ func (r *CredentialRepository) UpdateHetznercloud(ctx context.Context, id string
 
 	now := time.Now()
 	setFields := bson.M{
-		"name":              cred.Name,
-		"token":             cred.Token,
-		"updated_at":        now,
-		"endpoint":          cred.Endpoint,
-		"endpoint_hetzner":  cred.EndpointHetzner,
-		"poll_interval":     cred.PollInterval,
-		"poll_function":     cred.PollFunction,
+		"name":             cred.Name,
+		"token":            cred.Token,
+		"updated_at":       now,
+		"endpoint":         cred.Endpoint,
+		"endpoint_hetzner": cred.EndpointHetzner,
+		"poll_interval":    cred.PollInterval,
+		"poll_function":    cred.PollFunction,
 	}
 
 	update := bson.M{"$set": setFields}
@@ -1279,10 +1279,10 @@ func (r *CredentialRepository) UpdateHetznercloud(ctx context.Context, id string
 		return nil, fmt.Errorf("credential not found after update")
 	}
 
-	return convertToHetznercloudCredential(doc)
+	return convertToHetznerCloudCredential(doc)
 }
 
-func convertToHetznercloudCredential(doc bson.M) (*models.HetznercloudCredential, error) {
+func convertToHetznerCloudCredential(doc bson.M) (*models.HetznerCloudCredential, error) {
 	id, ok := doc["_id"].(primitive.ObjectID)
 	if !ok {
 		return nil, fmt.Errorf("invalid _id field")
@@ -1296,7 +1296,7 @@ func convertToHetznercloudCredential(doc bson.M) (*models.HetznercloudCredential
 		updatedAt = dt.Time()
 	}
 
-	cred := &models.HetznercloudCredential{
+	cred := &models.HetznerCloudCredential{
 		ID:        id,
 		Name:      doc["name"].(string),
 		Token:     doc["token"].(string),

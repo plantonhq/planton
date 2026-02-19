@@ -32,7 +32,7 @@ The proto config includes 5 fields: the required `token` plus optional `endpoint
 flowchart TB
     subgraph proto [Proto Layer]
         ProviderEnum["cloud_resource_provider.proto\nhetznercloud = 27"]
-        ProviderConfig["provider/hetznercloud/provider.proto\nHetznercloudProviderConfig"]
+        ProviderConfig["provider/hetznercloud/provider.proto\nHetznerCloudProviderConfig"]
         CredentialAPI["credential/v1/api.proto\nHETZNER_CLOUD enum + oneof"]
     end
 
@@ -47,14 +47,14 @@ flowchart TB
     end
 
     subgraph backend [Backend Layer]
-        Model["HetznercloudCredential model"]
+        Model["HetznerCloudCredential model"]
         Repo["CRUD - flat fields"]
         Service["Create/Update/Get/List"]
         Resolver["enum-based switch"]
     end
 
     subgraph frontend [Frontend Layer]
-        Form["HetznercloudCredentialForm\n5 fields, no auth selector"]
+        Form["HetznerCloudCredentialForm\n5 fields, no auth selector"]
         Drawer["credential-drawer.tsx\nflat proto handling"]
     end
 
@@ -68,7 +68,7 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-    subgraph proto_flat ["HetznercloudProviderConfig (flat fields)"]
+    subgraph proto_flat ["HetznerCloudProviderConfig (flat fields)"]
         TK["token (required)"]
         EP["endpoint"]
         EPH["endpoint_hetzner"]
@@ -93,7 +93,7 @@ flowchart LR
 
 **Provider registration** (`cloud_resource_provider.proto`): `hetznercloud = 27`
 
-**Provider config** (`provider/hetznercloud/provider.proto`): `HetznercloudProviderConfig` with 5 flat fields -- `token` (required), `endpoint`, `endpoint_hetzner`, `poll_interval`, `poll_function`.
+**Provider config** (`provider/hetznercloud/provider.proto`): `HetznerCloudProviderConfig` with 5 flat fields -- `token` (required), `endpoint`, `endpoint_hetzner`, `poll_interval`, `poll_function`.
 
 **Credential API** (`credential/v1/api.proto`): Added `HETZNER_CLOUD = 10` to `CredentialProvider` enum and `hetznercloud = 17` to the `CredentialProviderConfig` oneof.
 
@@ -103,15 +103,15 @@ The `cli_help.go` constants document the 3 environment variables with export com
 
 ### 3. Env Var Mapping
 
-`loadHetznercloudEnvVars` maps 3 flat proto fields to environment variables. `poll_interval` and `poll_function` are intentionally skipped because the upstream Terraform provider does not read them from environment variables.
+`loadHetznerCloudEnvVars` maps 3 flat proto fields to environment variables. `poll_interval` and `poll_function` are intentionally skipped because the upstream Terraform provider does not read them from environment variables.
 
 ### 4. Backend Credential Management
 
-`HetznercloudCredential` model stores 5 flat fields in MongoDB. No `AuthMethod` discriminator needed (single auth method). The service layer validates that `token` is provided.
+`HetznerCloudCredential` model stores 5 flat fields in MongoDB. No `AuthMethod` discriminator needed (single auth method). The service layer validates that `token` is provided.
 
 ### 5. Frontend Credential Form
 
-`HetznercloudCredentialForm` renders 5 input fields. Token is required and rendered as a password field. No auth method selector needed.
+`HetznerCloudCredentialForm` renders 5 input fields. Token is required and rendered as a password field. No auth method selector needed.
 
 ### 6. Catalog Documentation
 

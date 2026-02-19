@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package org.openmcf.provider.hetznercloud.hetznercloudserver.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/hetznercloud/hetznercloudserver/v1/spec.proto";
+import "org/openmcf/provider/hetznercloud/hetznercloudserver/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// hetznercloud-server
+message HetznerCloudServer {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = "hetznercloud.openmcf.org/v1"];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = "HetznerCloudServer"];
+
+  //metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  HetznerCloudServerSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  HetznerCloudServerStatus status = 5;
+}
+
+// hetznercloud-server status
+message HetznerCloudServerStatus {
+  //stack-outputs
+  //  hetznercloud-server stack-outputs
+  HetznerCloudServerStackOutputs outputs = 1;
+}

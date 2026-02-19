@@ -1,0 +1,121 @@
+syntax = "proto3";
+
+package org.openmcf.provider.hetznercloud.hetznercloudvolume.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// HetznerCloudVolumeSpec defines the specification for a Hetzner Cloud block
+// storage volume.
+//
+// A volume is a network-attached block storage device that can be attached to
+// exactly one server at a time. Volumes persist independently of any server --
+// detaching or deleting the server does not affect the volume's data. This
+// makes them suitable for databases, application state, and any data that must
+// survive server replacement.
+//
+// Volumes are always created in a specific Hetzner Cloud location and can only
+// be attached to servers in the same location. Size can be increased after
+// creation but cannot be decreased (a provider-enforced constraint).
+//
+// An optional server attachment creates an `hcloud_volume_attachment` resource
+// that connects the volume to a server. The attachment is managed separately
+// from the volume itself, allowing the volume to be detached and reattached
+// to different servers without recreating the volume.
+//
+// Bundled provider resources:
+//   - hcloud_volume:             The block storage volume itself.
+//   - hcloud_volume_attachment:  Optional attachment to a server. Only created
+//                                when server_id is set.
+//
+// Fields not exposed in this spec (hardcoded or derived in IaC modules):
+//   - name:   Derived from metadata.name.
+//   - labels: Derived from metadata (CG01 pattern). Standard labels take
+//             precedence over user-specified metadata.labels.
+message HetznerCloudVolumeSpec {
+  // Volume size in GB. Minimum is 10 GB, maximum is 10240 GB (10 TB).
+  //
+  // Size can be increased after creation (the provider resizes the underlying
+  // block device), but it can never be decreased -- the Hetzner Cloud API
+  // rejects size reductions.
+  int32 size = 1 [(buf.validate.field).int32 = {
+    gte: 10
+    lte: 10240
+  }];
+
+  // Hetzner Cloud location where the volume is stored (e.g., "fsn1", "nbg1",
+  // "hel1", "ash", "hil", "sin"). Determines the physical datacenter for
+  // the block storage device.
+  //
+  // The volume can only be attached to servers in the same location.
+  //
+  // Changing this value forces replacement of the volume (data loss).
+  string location = 2 [(buf.validate.field).string.min_len = 1];
+
+  // Filesystem format applied when the volume is first created.
+  //
+  // If unspecified (format_unspecified / 0), the volume is created raw without
+  // a filesystem. A raw volume must be formatted manually from the server
+  // before it can be mounted.
+  //
+  // This is a create-time-only setting: the provider does not read it back
+  // after creation. Changing it in the spec after the initial apply has no
+  // effect on the existing volume.
+  Format format = 3 [(buf.validate.field).enum.defined_only = true];
+
+  // Server to attach this volume to. Optional.
+  //
+  // Accepts a literal Hetzner Cloud server ID (as a string) or a reference
+  // to a HetznerCloudServer resource's output via valueFrom. The referenced
+  // server must be in the same location as the volume.
+  //
+  // If omitted, the volume is created unattached (available). Attachment can
+  // be added later by updating the spec.
+  //
+  // When set, an hcloud_volume_attachment resource is created to manage the
+  // attachment lifecycle separately from the volume itself.
+  //
+  // Example (literal):
+  //   serverId:
+  //     value: "12345678"
+  //
+  // Example (reference):
+  //   serverId:
+  //     valueFrom:
+  //       kind: HetznerCloudServer
+  //       name: my-server
+  //       fieldPath: status.outputs.server_id
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef server_id = 4 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = HetznerCloudServer,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.server_id"
+  ];
+
+  // Automatically mount the volume on the server after attaching.
+  //
+  // Only meaningful when server_id is set. When true, Hetzner Cloud
+  // automatically mounts the volume at a system-assigned mount point
+  // after attachment.
+  //
+  // This is a create-time-only setting: the provider does not read it back
+  // after creation. Changing it in the spec after the initial apply has no
+  // effect.
+  bool automount = 5;
+
+  // Prevent accidental deletion of the volume via the Hetzner Cloud API.
+  // When enabled, the volume cannot be deleted until protection is removed.
+  bool delete_protection = 6;
+
+  // Format enumerates the supported filesystem formats for a Hetzner Cloud
+  // volume.
+  enum Format {
+    // Raw volume with no filesystem. Must be formatted manually from the
+    // server before mounting.
+    format_unspecified = 0;
+    // ext4 filesystem. The most common Linux filesystem; recommended for
+    // general-purpose workloads.
+    ext4 = 1;
+    // XFS filesystem. High-performance filesystem suited for large files
+    // and high-throughput workloads.
+    xfs = 2;
+  }
+}

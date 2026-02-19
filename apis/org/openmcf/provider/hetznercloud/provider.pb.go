@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// HetznercloudProviderConfig defines the credentials and connection parameters required to
+// HetznerCloudProviderConfig defines the credentials and connection parameters required to
 // interact with Hetzner Cloud infrastructure. This message maps directly to the authentication
 // fields accepted by the Terraform hcloud provider.
 //
@@ -46,7 +46,7 @@ const (
 // For more information:
 // - Terraform provider docs: https://registry.terraform.io/providers/hetznercloud/hcloud/latest/docs
 // - Hetzner Cloud API: https://docs.hetzner.cloud/
-type HetznercloudProviderConfig struct {
+type HetznerCloudProviderConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// token is the Hetzner Cloud API token used to authenticate all API requests.
 	// Tokens are 64 characters long and are created per-project in the Hetzner Cloud Console
@@ -75,20 +75,20 @@ type HetznercloudProviderConfig struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *HetznercloudProviderConfig) Reset() {
-	*x = HetznercloudProviderConfig{}
+func (x *HetznerCloudProviderConfig) Reset() {
+	*x = HetznerCloudProviderConfig{}
 	mi := &file_org_openmcf_provider_hetznercloud_provider_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *HetznercloudProviderConfig) String() string {
+func (x *HetznerCloudProviderConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HetznercloudProviderConfig) ProtoMessage() {}
+func (*HetznerCloudProviderConfig) ProtoMessage() {}
 
-func (x *HetznercloudProviderConfig) ProtoReflect() protoreflect.Message {
+func (x *HetznerCloudProviderConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_hetznercloud_provider_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -100,40 +100,40 @@ func (x *HetznercloudProviderConfig) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use HetznercloudProviderConfig.ProtoReflect.Descriptor instead.
-func (*HetznercloudProviderConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use HetznerCloudProviderConfig.ProtoReflect.Descriptor instead.
+func (*HetznerCloudProviderConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_hetznercloud_provider_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *HetznercloudProviderConfig) GetToken() string {
+func (x *HetznerCloudProviderConfig) GetToken() string {
 	if x != nil {
 		return x.Token
 	}
 	return ""
 }
 
-func (x *HetznercloudProviderConfig) GetEndpoint() string {
+func (x *HetznerCloudProviderConfig) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *HetznercloudProviderConfig) GetEndpointHetzner() string {
+func (x *HetznerCloudProviderConfig) GetEndpointHetzner() string {
 	if x != nil {
 		return x.EndpointHetzner
 	}
 	return ""
 }
 
-func (x *HetznercloudProviderConfig) GetPollInterval() string {
+func (x *HetznerCloudProviderConfig) GetPollInterval() string {
 	if x != nil {
 		return x.PollInterval
 	}
 	return ""
 }
 
-func (x *HetznercloudProviderConfig) GetPollFunction() string {
+func (x *HetznerCloudProviderConfig) GetPollFunction() string {
 	if x != nil {
 		return x.PollFunction
 	}
@@ -145,7 +145,7 @@ var File_org_openmcf_provider_hetznercloud_provider_proto protoreflect.FileDescr
 const file_org_openmcf_provider_hetznercloud_provider_proto_rawDesc = "" +
 	"\n" +
 	"0org/openmcf/provider/hetznercloud/provider.proto\x12!org.openmcf.provider.hetznercloud\x1a\x1bbuf/validate/validate.proto\"\xcb\x01\n" +
-	"\x1aHetznercloudProviderConfig\x12\x1c\n" +
+	"\x1aHetznerCloudProviderConfig\x12\x1c\n" +
 	"\x05token\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05token\x12\x1a\n" +
 	"\bendpoint\x18\x02 \x01(\tR\bendpoint\x12)\n" +
 	"\x10endpoint_hetzner\x18\x03 \x01(\tR\x0fendpointHetzner\x12#\n" +
@@ -167,7 +167,7 @@ func file_org_openmcf_provider_hetznercloud_provider_proto_rawDescGZIP() []byte 
 
 var file_org_openmcf_provider_hetznercloud_provider_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_hetznercloud_provider_proto_goTypes = []any{
-	(*HetznercloudProviderConfig)(nil), // 0: org.openmcf.provider.hetznercloud.HetznercloudProviderConfig
+	(*HetznerCloudProviderConfig)(nil), // 0: org.openmcf.provider.hetznercloud.HetznerCloudProviderConfig
 }
 var file_org_openmcf_provider_hetznercloud_provider_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

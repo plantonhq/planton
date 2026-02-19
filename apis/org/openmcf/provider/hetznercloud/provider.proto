@@ -4,7 +4,7 @@ package org.openmcf.provider.hetznercloud;
 
 import "buf/validate/validate.proto";
 
-// HetznercloudProviderConfig defines the credentials and connection parameters required to
+// HetznerCloudProviderConfig defines the credentials and connection parameters required to
 // interact with Hetzner Cloud infrastructure. This message maps directly to the authentication
 // fields accepted by the Terraform hcloud provider.
 //
@@ -27,7 +27,7 @@ import "buf/validate/validate.proto";
 // For more information:
 // - Terraform provider docs: https://registry.terraform.io/providers/hetznercloud/hcloud/latest/docs
 // - Hetzner Cloud API: https://docs.hetzner.cloud/
-message HetznercloudProviderConfig {
+message HetznerCloudProviderConfig {
   // token is the Hetzner Cloud API token used to authenticate all API requests.
   // Tokens are 64 characters long and are created per-project in the Hetzner Cloud Console
   // under Security > API Tokens.

@@ -1,0 +1,23 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "certificate.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+    ],
+    importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud/hetznercloudcertificate/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/org/openmcf/provider/hetznercloud",
+        "//apis/org/openmcf/provider/hetznercloud/hetznercloudcertificate/v1:hetznercloudcertificate",
+        "//apis/org/openmcf/shared/cloudresourcekind",
+        "//pkg/iac/pulumi/pulumimodule/provider/hetznercloud/hcloudlabelkeys",
+        "//pkg/iac/pulumi/pulumimodule/provider/hetznercloud/pulumihcloudprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_hcloud_sdk//go/hcloud",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

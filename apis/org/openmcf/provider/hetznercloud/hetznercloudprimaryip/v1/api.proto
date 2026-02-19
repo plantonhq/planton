@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package org.openmcf.provider.hetznercloud.hetznercloudprimaryip.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/hetznercloud/hetznercloudprimaryip/v1/spec.proto";
+import "org/openmcf/provider/hetznercloud/hetznercloudprimaryip/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// hetznercloud-primary-ip
+message HetznerCloudPrimaryIp {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = "hetznercloud.openmcf.org/v1"];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = "HetznerCloudPrimaryIp"];
+
+  //metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  HetznerCloudPrimaryIpSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  HetznerCloudPrimaryIpStatus status = 5;
+}
+
+// hetznercloud-primary-ip status
+message HetznerCloudPrimaryIpStatus {
+  //stack-outputs
+  //  hetznercloud-primary-ip stack-outputs
+  HetznerCloudPrimaryIpStackOutputs outputs = 1;
+}

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package org.openmcf.provider.hetznercloud.hetznerclouddnszone.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/hetznercloud/hetznerclouddnszone/v1/spec.proto";
+import "org/openmcf/provider/hetznercloud/hetznerclouddnszone/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// hetznercloud-dns-zone
+message HetznerCloudDnsZone {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = "hetznercloud.openmcf.org/v1"];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = "HetznerCloudDnsZone"];
+
+  //metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  HetznerCloudDnsZoneSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  HetznerCloudDnsZoneStatus status = 5;
+}
+
+// hetznercloud-dns-zone status
+message HetznerCloudDnsZoneStatus {
+  //stack-outputs
+  //  hetznercloud-dns-zone stack-outputs
+  HetznerCloudDnsZoneStackOutputs outputs = 1;
+}
