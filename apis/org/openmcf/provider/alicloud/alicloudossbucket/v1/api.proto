@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudossbucket.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/alicloud/alicloudossbucket/v1/spec.proto";
+import "org/openmcf/provider/alicloud/alicloudossbucket/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// alicloud-oss-bucket
+message AlicloudOssBucket {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'alicloud.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AlicloudOssBucket'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AlicloudOssBucketSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AlicloudOssBucketStatus status = 5;
+}
+
+// alicloud-oss-bucket status
+message AlicloudOssBucketStatus {
+  // stack-outputs
+  AlicloudOssBucketStackOutputs outputs = 1;
+}

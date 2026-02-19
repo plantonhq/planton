@@ -1,0 +1,16 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudOssBucket
+metadata:
+  name: my-prod-bucket
+  org: <your-org>
+  env: production
+spec:
+  region: <alibaba-cloud-region>
+  bucketName: <globally-unique-bucket-name>
+  redundancyType: ZRS
+  versioningEnabled: true
+  serverSideEncryption:
+    sseAlgorithm: AES256
+  tags:
+    team: <your-team>
+    costCenter: <your-cost-center>

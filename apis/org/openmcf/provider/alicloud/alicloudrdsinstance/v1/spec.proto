@@ -1,0 +1,332 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudrdsinstance.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// AlicloudRdsInstanceSpec defines the configuration for an Alibaba Cloud RDS
+// (Relational Database Service) instance with bundled databases, accounts, and
+// account privileges.
+//
+// RDS is a managed relational database service that supports multiple engines
+// (MySQL, PostgreSQL, SQL Server, MariaDB, PPAS) through a single resource
+// type. The engine is selected via the `engine` field, following the
+// provider-authentic pattern where `alicloud_db_instance` handles all engines
+// with the same schema (per DD02).
+//
+// This component bundles the instance with its databases, accounts, and account
+// privileges (per DD07 composite bundling) because an RDS instance without at
+// least one database and account is incomplete for application use.
+//
+// The bundled flow:
+//   1. Create the RDS instance in the specified VSwitch.
+//   2. Create databases within the instance.
+//   3. Create accounts with passwords.
+//   4. Grant account privileges on specific databases.
+//
+// The intranet connection string and port are exposed as stack outputs. Public
+// internet endpoints (alicloud_db_connection) are intentionally excluded --
+// exposing a database to the internet is a security-sensitive decision that
+// should be managed separately.
+//
+// Provider resources:
+//   Terraform: alicloud_db_instance + alicloud_db_database + alicloud_rds_account + alicloud_db_account_privilege
+//   Pulumi:    rds.Instance + rds.Database + rds.RdsAccount + rds.AccountPrivilege
+message AlicloudRdsInstanceSpec {
+  // Alibaba Cloud region where the RDS instance will be created.
+  // Must match the region of the VSwitch.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Database engine. Determines which relational database software runs on the
+  // instance. Each engine has its own set of valid versions, instance types,
+  // and character sets.
+  string engine = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "engine_valid"
+      message: "engine must be one of: MySQL, PostgreSQL, SQLServer, MariaDB, PPAS"
+      expression: "this in ['MySQL', 'PostgreSQL', 'SQLServer', 'MariaDB', 'PPAS']"
+    }
+  ];
+
+  // Database engine version. Must be a version supported by the selected
+  // engine. Examples: "8.0", "5.7" (MySQL), "16.0", "15.0" (PostgreSQL),
+  // "2019_ent" (SQL Server), "10.3" (MariaDB).
+  string engine_version = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // RDS instance class that determines CPU, memory, and I/O capacity.
+  // Examples: "rds.mysql.s2.large", "rds.pg.s2.large",
+  // "rds.mssql.s2.large", "rds.mysql.t1.small".
+  string instance_type = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Storage size in GB. The valid range depends on the engine, instance type,
+  // and storage type. Typical ranges: 20-6000 GB for cloud_essd.
+  int32 instance_storage = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32.gt = 0
+  ];
+
+  // VSwitch ID where the RDS instance is placed. The instance inherits the
+  // VPC and availability zone from the VSwitch.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 6 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
+  ];
+
+  // RDS instance name. 2-256 characters.
+  // If omitted, defaults to the metadata.name.
+  string instance_name = 7 [(buf.validate.field).cel = {
+    id: "instance_name_length"
+    message: "instance_name must be between 2 and 256 characters when set"
+    expression: "this == '' || (this.size() >= 2 && this.size() <= 256)"
+  }];
+
+  // Billing method. "Postpaid" for pay-as-you-go, "Prepaid" for subscription.
+  // Default: "Postpaid"
+  optional string instance_charge_type = 8 [
+    (buf.validate.field).cel = {
+      id: "instance_charge_type_valid"
+      message: "instance_charge_type must be one of: Postpaid, Prepaid"
+      expression: "this == '' || this in ['Postpaid', 'Prepaid']"
+    },
+    (org.openmcf.shared.options.default) = "Postpaid"
+  ];
+
+  // Instance category that determines the deployment architecture.
+  // "Basic" -- single node, suitable for dev/test.
+  // "HighAvailability" -- primary + standby with automatic failover.
+  // "AlwaysOn" -- SQL Server AlwaysOn Availability Group clusters.
+  // "Finance" -- three-node enterprise edition for financial scenarios.
+  // "cluster" -- MySQL NDB cluster mode.
+  // Default: "HighAvailability"
+  optional string category = 9 [
+    (buf.validate.field).cel = {
+      id: "category_valid"
+      message: "category must be one of: Basic, HighAvailability, AlwaysOn, Finance, cluster"
+      expression: "this == '' || this in ['Basic', 'HighAvailability', 'AlwaysOn', 'Finance', 'cluster']"
+    },
+    (org.openmcf.shared.options.default) = "HighAvailability"
+  ];
+
+  // Storage type for the instance's data disks.
+  // "local_ssd" -- local SSD (only for specific instance types).
+  // "cloud_ssd" -- standard cloud SSD.
+  // "cloud_essd" -- enhanced SSD (recommended for most workloads).
+  // "cloud_essd2" -- ESSD PL2 (higher IOPS).
+  // "cloud_essd3" -- ESSD PL3 (highest IOPS).
+  optional string db_instance_storage_type = 10 [(buf.validate.field).cel = {
+    id: "storage_type_valid"
+    message: "db_instance_storage_type must be one of: local_ssd, cloud_ssd, cloud_essd, cloud_essd2, cloud_essd3"
+    expression: "this == '' || this in ['local_ssd', 'cloud_ssd', 'cloud_essd', 'cloud_essd2', 'cloud_essd3']"
+  }];
+
+  // Availability zone ID for the primary instance.
+  // If omitted, Alibaba Cloud selects a zone from the VSwitch's region.
+  // Examples: "cn-hangzhou-a", "cn-shanghai-b".
+  string zone_id = 11;
+
+  // Availability zone ID for the standby instance in HA deployments.
+  // Must differ from zone_id for cross-AZ high availability.
+  // Only applicable when category is "HighAvailability" or "Finance".
+  string zone_id_slave_a = 12;
+
+  // IP addresses or CIDR blocks allowed to access the RDS instance.
+  // Default: ["127.0.0.1"] (no access). Set to ["0.0.0.0/0"] to allow all
+  // (not recommended for production).
+  repeated string security_ips = 13;
+
+  // VPC security group IDs to associate with the RDS instance.
+  // Provides network-level access control in addition to the IP whitelist.
+  repeated string security_group_ids = 14;
+
+  // Monitoring data collection interval in seconds.
+  // Valid values: 5, 10, 60, 300. Lower values provide finer granularity
+  // but may increase monitoring costs.
+  optional int32 monitoring_period = 15 [(buf.validate.field).cel = {
+    id: "monitoring_period_valid"
+    message: "monitoring_period must be one of: 5, 10, 60, 300"
+    expression: "this in [5, 10, 60, 300]"
+  }];
+
+  // Maintenance window in UTC. The RDS service may perform minor version
+  // upgrades or patches during this window.
+  // Format: "HH:mmZ-HH:mmZ" (e.g., "02:00Z-06:00Z").
+  string maintain_time = 16;
+
+  // Enable deletion protection to prevent accidental deletion via the
+  // console or API.
+  optional bool deletion_protection = 17;
+
+  // SSL/TLS configuration for encrypted client connections.
+  // "Open" enables SSL and generates server certificates.
+  // "Close" disables SSL (default).
+  optional string ssl_action = 18 [(buf.validate.field).cel = {
+    id: "ssl_action_valid"
+    message: "ssl_action must be one of: Open, Close"
+    expression: "this == '' || this in ['Open', 'Close']"
+  }];
+
+  // Transparent Data Encryption (TDE) status. TDE encrypts data at rest
+  // at the storage level. Once enabled, TDE cannot be disabled.
+  // "Enabled" turns on TDE. "Disabled" is the default.
+  optional string tde_status = 19 [(buf.validate.field).cel = {
+    id: "tde_status_valid"
+    message: "tde_status must be one of: Enabled, Disabled"
+    expression: "this == '' || this in ['Enabled', 'Disabled']"
+  }];
+
+  // KMS key ID for disk encryption. When set, the instance's storage is
+  // encrypted using this customer-managed key.
+  string encryption_key = 20;
+
+  // Auto-renewal for Prepaid instances. Ignored for Postpaid instances.
+  optional bool auto_renew = 21;
+
+  // Auto-renewal period in months (1-12). Only applicable when auto_renew
+  // is true and instance_charge_type is "Prepaid".
+  optional int32 auto_renew_period = 22 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 12
+  }];
+
+  // Subscription period in months. Only applicable when instance_charge_type
+  // is "Prepaid". Valid values: 1-9, 12, 24, 36.
+  optional int32 period = 23 [(buf.validate.field).cel = {
+    id: "period_valid"
+    message: "period must be one of: 1-9, 12, 24, 36"
+    expression: "(this >= 1 && this <= 9) || this in [12, 24, 36]"
+  }];
+
+  // Alibaba Cloud resource group ID for organizational grouping (per DD05).
+  // If omitted, the instance is placed in the account's default resource group.
+  string resource_group_id = 24;
+
+  // Tags to apply to the RDS instance resource.
+  map<string, string> tags = 25;
+
+  // Database parameter overrides. Each parameter sets a specific database
+  // engine configuration value, overriding the default from the parameter
+  // group. Refer to Alibaba Cloud documentation for valid parameter names
+  // and value ranges per engine.
+  repeated AlicloudRdsParameter parameters = 26;
+
+  // Databases to create within the RDS instance.
+  repeated AlicloudRdsDatabase databases = 27;
+
+  // Database accounts to create within the RDS instance.
+  repeated AlicloudRdsAccount accounts = 28;
+}
+
+// AlicloudRdsParameter represents a single database engine parameter override.
+message AlicloudRdsParameter {
+  // Parameter name (e.g., "innodb_buffer_pool_size", "max_connections",
+  // "shared_buffers").
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Parameter value as a string. The database engine interprets the value
+  // according to the parameter's type.
+  string value = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}
+
+// AlicloudRdsDatabase defines a database to create within the RDS instance.
+message AlicloudRdsDatabase {
+  // Database name. Must match the pattern [a-z][a-z0-9_-]*[a-z0-9] and
+  // be unique within the instance.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Character set for the database. Defaults vary by engine:
+  // MySQL: "utf8mb4", PostgreSQL: "UTF8", SQL Server: "Chinese_PRC_CI_AS",
+  // MariaDB: "utf8mb4". Set explicitly to override the engine default.
+  string character_set = 2;
+
+  // Human-readable description of the database.
+  string description = 3;
+}
+
+// AlicloudRdsAccount defines a database account to create within the RDS
+// instance.
+message AlicloudRdsAccount {
+  // Account login name. Must match [a-z][a-z0-9_]{0,61}[a-z0-9].
+  string account_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 2
+  ];
+
+  // Account password. Must meet the Alibaba Cloud password complexity
+  // requirements: 8-32 characters, containing at least three of uppercase,
+  // lowercase, digits, and special characters.
+  string account_password = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 8
+  ];
+
+  // Account type.
+  // "Normal" -- standard account with explicit database privileges.
+  // "Super" -- superuser with full privileges on all databases.
+  // Default: "Normal"
+  optional string account_type = 3 [
+    (buf.validate.field).cel = {
+      id: "account_type_valid"
+      message: "account_type must be one of: Normal, Super"
+      expression: "this == '' || this in ['Normal', 'Super']"
+    },
+    (org.openmcf.shared.options.default) = "Normal"
+  ];
+
+  // Human-readable description of the account's purpose.
+  string account_description = 4;
+
+  // Database privileges to grant to this account. Each entry grants a
+  // privilege level on a set of databases. Only applicable when account_type
+  // is "Normal"; Super accounts have implicit full access.
+  repeated AlicloudRdsAccountPrivilege privileges = 5;
+}
+
+// AlicloudRdsAccountPrivilege grants a single privilege level on a set of
+// databases to the owning account.
+message AlicloudRdsAccountPrivilege {
+  // Database names to grant access to. Each name must match a database
+  // defined in the spec's databases list.
+  repeated string database_names = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).repeated.min_items = 1
+  ];
+
+  // Privilege level to grant on the specified databases.
+  // "ReadOnly" -- SELECT access.
+  // "ReadWrite" -- SELECT, INSERT, UPDATE, DELETE access.
+  // "DDLOnly" -- DDL operations only (CREATE, ALTER, DROP).
+  // "DMLOnly" -- DML operations only (INSERT, UPDATE, DELETE).
+  // "DBOwner" -- full database ownership (SQL Server only).
+  // Default: "ReadOnly"
+  optional string privilege = 2 [
+    (buf.validate.field).cel = {
+      id: "privilege_valid"
+      message: "privilege must be one of: ReadOnly, ReadWrite, DDLOnly, DMLOnly, DBOwner"
+      expression: "this == '' || this in ['ReadOnly', 'ReadWrite', 'DDLOnly', 'DMLOnly', 'DBOwner']"
+    },
+    (org.openmcf.shared.options.default) = "ReadOnly"
+  ];
+}

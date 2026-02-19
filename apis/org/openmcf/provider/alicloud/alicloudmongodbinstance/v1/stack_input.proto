@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudmongodbinstance.v1;
+
+import "org/openmcf/provider/alicloud/alicloudmongodbinstance/v1/api.proto";
+import "org/openmcf/provider/alicloud/provider.proto";
+
+// alicloud-mongodb-instance stack-input
+message AlicloudMongodbInstanceStackInput {
+  // target cloud-resource
+  AlicloudMongodbInstance target = 1;
+  // provider-config
+  org.openmcf.provider.alicloud.AlicloudProviderConfig provider_config = 2;
+}

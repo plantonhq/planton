@@ -1,0 +1,16 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudEcsInstance
+metadata:
+  name: alicloudecsinstance-demo
+spec:
+  region: cn-hangzhou
+  instanceType: ecs.g7.large
+  imageId: ubuntu_22_04_x64_20G_alibase_20230515.vhd
+  vswitchId:
+    value: vsw-demo123
+  securityGroupIds:
+    - value: sg-demo123
+  keyName: demo-keypair
+  systemDisk:
+    category: cloud_essd
+    size: 40

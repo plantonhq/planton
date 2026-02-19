@@ -1,0 +1,132 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudprivatezone.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// AlicloudPrivateZoneSpec defines the configuration for an Alibaba Cloud
+// Private Zone (PrivateZone / PVTZ) that provides VPC-internal DNS resolution.
+//
+// A Private Zone is a private DNS hosted zone that resolves domain names
+// within one or more VPCs. Unlike public Alidns domains, Private Zone records
+// are only visible to resources inside the attached VPCs -- they are never
+// served to the public internet.
+//
+// This component bundles three provider resources:
+//   1. alicloud_pvtz_zone       -- the private hosted zone
+//   2. alicloud_pvtz_zone_attachment -- VPC binding(s)
+//   3. alicloud_pvtz_zone_record     -- DNS records within the zone
+//
+// At least one VPC attachment is required; without it the zone has no resolver
+// scope and records cannot be queried.
+//
+// Provider resources:
+//   Terraform: alicloud_pvtz_zone + alicloud_pvtz_zone_attachment + alicloud_pvtz_zone_record
+//   Pulumi:    pvtz.Zone + pvtz.ZoneAttachment + pvtz.ZoneRecord
+message AlicloudPrivateZoneSpec {
+  // Alibaba Cloud region for provider initialization.
+  // Private Zone is a global service, but the provider requires a region.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The private zone name (e.g., "internal.example.com", "db.corp").
+  // This is the DNS suffix that records in the zone are created under.
+  // Cannot be changed after creation (ForceNew).
+  string zone_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 253
+  ];
+
+  // Remark or description for the zone.
+  // Visible in the Private Zone console; useful for noting the zone's purpose.
+  string remark = 3;
+
+  // Alibaba Cloud resource group ID for access control and cost attribution.
+  // If omitted, the zone is placed in the account's default resource group.
+  // Cannot be changed after creation (ForceNew).
+  string resource_group_id = 4;
+
+  // VPCs to attach this private zone to. The zone will resolve DNS queries
+  // only within attached VPCs. At least one VPC attachment is required.
+  //
+  // Cross-region attachments are supported: set region_id on the attachment
+  // to attach a VPC in a different region than spec.region.
+  repeated AlicloudPrivateZoneVpcAttachment vpc_attachments = 5 [(buf.validate.field).repeated.min_items = 1];
+
+  // DNS records within the private zone.
+  // Each record maps a resource record name (rr) to a value (IP, hostname, etc.)
+  // that is resolvable only within the attached VPCs.
+  repeated AlicloudPrivateZoneRecord records = 6;
+
+  // Tags to apply to the private zone.
+  map<string, string> tags = 7;
+}
+
+// AlicloudPrivateZoneVpcAttachment defines a VPC to attach to the private zone.
+// Once attached, resources in the VPC can resolve records in this zone.
+message AlicloudPrivateZoneVpcAttachment {
+  // VPC ID to attach. References an AlicloudVpc component's output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // Region of the VPC. Defaults to the spec.region when omitted.
+  // Set this explicitly when attaching a VPC in a different region than
+  // the provider's region (cross-region private zone attachment).
+  string region_id = 2;
+}
+
+// AlicloudPrivateZoneRecord defines a DNS record within the private zone.
+//
+// Supported record types for Private Zone: A, CNAME, MX, PTR, SRV, TXT.
+// Note: AAAA and NS are not supported in Alibaba Cloud Private Zone
+// (unlike public Alidns which supports a broader set of types).
+message AlicloudPrivateZoneRecord {
+  // Resource record name -- the hostname part under the zone.
+  // Examples: "db" resolves as "db.internal.example.com" if zone is
+  // "internal.example.com"; "@" for the zone apex.
+  string rr = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // DNS record type. Must be a type supported by Private Zone.
+  string type = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "valid_pvtz_record_type"
+      message: "type must be one of: A, CNAME, MX, PTR, SRV, TXT"
+      expression: "this in ['A', 'CNAME', 'MX', 'PTR', 'SRV', 'TXT']"
+    }
+  ];
+
+  // Record value. Interpretation depends on the record type:
+  //   A     -> IPv4 address (e.g., "10.0.1.100")
+  //   CNAME -> target hostname (e.g., "db-master.internal.example.com")
+  //   MX    -> mail server hostname (e.g., "mail.internal.example.com")
+  //   PTR   -> pointer hostname
+  //   SRV   -> priority weight port target
+  //   TXT   -> text content
+  string value = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Time-to-live in seconds. Controls how long VPC resolvers cache this record.
+  // Default: 60.
+  int32 ttl = 4;
+
+  // Priority for MX records. Ignored for other record types.
+  // Range: 1 (highest priority) to 99 (lowest priority). Default: 1.
+  int32 priority = 5;
+
+  // Remark or description for the record.
+  string remark = 6;
+}

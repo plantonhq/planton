@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudvpc.v1;
+
+import "buf/validate/validate.proto";
+
+// AlicloudVpcSpec defines the configuration for an Alibaba Cloud Virtual
+// Private Cloud (VPC).
+//
+// A VPC is the networking foundation for nearly every other Alibaba Cloud
+// resource. It provides an isolated virtual network with its own CIDR block,
+// route table, and virtual router. VSwitches (subnets), security groups, NAT
+// gateways, load balancers, database instances, and Kubernetes clusters are
+// all deployed into a VPC.
+//
+// This component creates a single VPC. VSwitches, NAT gateways, and other
+// networking resources are managed as separate components, keeping the VPC
+// itself a clean, composable building block.
+message AlicloudVpcSpec {
+  // Alibaba Cloud region where the VPC will be created.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // VPC name. 1-128 characters; cannot start with http:// or https://.
+  // Maps to the provider field `vpc_name`.
+  string vpc_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 128
+  ];
+
+  // Primary IPv4 CIDR block for the VPC.
+  // Must be a valid private CIDR in one of the following ranges:
+  //   10.0.0.0/8   - 10.255.255.255
+  //   172.16.0.0/12 - 172.31.255.255
+  //   192.168.0.0/16 - 192.168.255.255
+  // Mask length: 8-28.
+  // Example: "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"
+  string cidr_block = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Human-readable description of the VPC.
+  // 1-256 characters; cannot start with http:// or https://.
+  string description = 4;
+
+  // Enable IPv6 for this VPC.
+  // When enabled, Alibaba Cloud allocates an IPv6 CIDR block (/56) to the VPC.
+  // VSwitches within this VPC can then be assigned IPv6 CIDR blocks.
+  // Default: false
+  bool enable_ipv6 = 5;
+
+  // Alibaba Cloud resource group ID for organizational grouping (per DD05).
+  // If omitted, the VPC is placed in the account's default resource group.
+  string resource_group_id = 6;
+
+  // Tags to apply to the VPC.
+  map<string, string> tags = 7;
+}

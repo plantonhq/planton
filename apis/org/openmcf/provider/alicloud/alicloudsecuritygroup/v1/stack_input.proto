@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudsecuritygroup.v1;
+
+import "org/openmcf/provider/alicloud/alicloudsecuritygroup/v1/api.proto";
+import "org/openmcf/provider/alicloud/provider.proto";
+
+// alicloud-security-group stack-input
+message AlicloudSecurityGroupStackInput {
+  // target cloud-resource
+  AlicloudSecurityGroup target = 1;
+  // provider-config
+  org.openmcf.provider.alicloud.AlicloudProviderConfig provider_config = 2;
+}

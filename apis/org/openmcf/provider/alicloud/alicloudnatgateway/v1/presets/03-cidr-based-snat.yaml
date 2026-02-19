@@ -1,0 +1,19 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudNatGateway
+metadata:
+  name: <your-nat-name>
+spec:
+  region: <alibaba-cloud-region>
+  vpcId:
+    value: <your-vpc-id>
+  vswitchId:
+    value: <your-nat-vswitch-id>
+  natGatewayName: <your-nat-name>
+  description: NAT Gateway with CIDR-based SNAT for fine-grained control
+  eipId:
+    value: <your-eip-id>
+  snatEntries:
+    - sourceCidr: "10.0.1.0/24"
+      snatEntryName: app-subnet
+    - sourceCidr: "10.0.2.0/24"
+      snatEntryName: worker-subnet

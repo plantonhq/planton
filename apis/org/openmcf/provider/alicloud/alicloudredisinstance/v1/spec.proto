@@ -1,0 +1,224 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudredisinstance.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// AlicloudRedisInstanceSpec defines the configuration for an Alibaba Cloud
+// Redis (KVStore) instance.
+//
+// Redis is a managed in-memory key-value store used for caching, session
+// management, real-time analytics, and message brokering. Alibaba Cloud's
+// KVStore service supports both Redis and Memcache engines through the same
+// resource type, with Redis being the default and dominant use case.
+//
+// This component wraps a single `alicloud_kvstore_instance` resource.
+// Unlike RDS, Redis does not bundle accounts -- the instance-level `password`
+// field handles authentication for 80% of use cases. Redis 6.0+ ACL accounts
+// (`alicloud_kvstore_account`) are an advanced feature that can be managed
+// separately if needed.
+//
+// Provider resources:
+//   Terraform: alicloud_kvstore_instance
+//   Pulumi:    kvstore.Instance
+message AlicloudRedisInstanceSpec {
+  // Alibaba Cloud region where the Redis instance will be created.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // VSwitch ID where the Redis instance is placed. The instance inherits the
+  // VPC and availability zone from the VSwitch.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
+  ];
+
+  // Instance specification class that determines memory capacity and
+  // performance tier. Examples: "redis.master.small.default",
+  // "redis.master.large.default", "redis.sharding.mid.default".
+  // See Alibaba Cloud documentation for the full list of instance classes.
+  string instance_class = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Instance authentication password. 8-32 characters, must contain at least
+  // three of: uppercase letters, lowercase letters, digits, special characters.
+  string password = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 8,
+    (buf.validate.field).string.max_len = 32
+  ];
+
+  // Redis engine version. Alibaba Cloud KVStore supports multiple versions.
+  // Default: "7.0"
+  optional string engine_version = 5 [
+    (buf.validate.field).cel = {
+      id: "engine_version_valid"
+      message: "engine_version must be one of: 2.8, 4.0, 5.0, 6.0, 7.0"
+      expression: "this == '' || this in ['2.8', '4.0', '5.0', '6.0', '7.0']"
+    },
+    (org.openmcf.shared.options.default) = "7.0"
+  ];
+
+  // KVStore engine type. "Redis" is the default and recommended engine.
+  // "Memcache" is supported but rare; the component is named RedisInstance
+  // because Redis represents 95%+ of KVStore usage.
+  // Default: "Redis"
+  optional string instance_type = 6 [
+    (buf.validate.field).cel = {
+      id: "instance_type_valid"
+      message: "instance_type must be one of: Redis, Memcache"
+      expression: "this == '' || this in ['Redis', 'Memcache']"
+    },
+    (org.openmcf.shared.options.default) = "Redis"
+  ];
+
+  // Instance display name. 2-256 characters.
+  // If omitted, defaults to the metadata.name.
+  string db_instance_name = 7 [(buf.validate.field).cel = {
+    id: "db_instance_name_length"
+    message: "db_instance_name must be between 2 and 256 characters when set"
+    expression: "this == '' || (this.size() >= 2 && this.size() <= 256)"
+  }];
+
+  // Primary availability zone ID. If omitted, Alibaba Cloud selects a zone
+  // from the VSwitch's region.
+  // Examples: "cn-hangzhou-a", "cn-shanghai-b".
+  string zone_id = 8;
+
+  // Secondary availability zone for multi-zone high availability deployments.
+  // When set, the standby node runs in this zone for cross-AZ failover.
+  // Must differ from zone_id.
+  string secondary_zone_id = 9;
+
+  // Billing method. "PostPaid" for pay-as-you-go, "PrePaid" for subscription.
+  // Default: "PostPaid"
+  optional string payment_type = 10 [
+    (buf.validate.field).cel = {
+      id: "payment_type_valid"
+      message: "payment_type must be one of: PostPaid, PrePaid"
+      expression: "this == '' || this in ['PostPaid', 'PrePaid']"
+    },
+    (org.openmcf.shared.options.default) = "PostPaid"
+  ];
+
+  // IP addresses or CIDR blocks allowed to access the Redis instance.
+  // Default: ["127.0.0.1"] (no access). Set to ["0.0.0.0/0"] to allow all
+  // (not recommended for production).
+  repeated string security_ips = 11;
+
+  // Security group ID to associate with the Redis instance. Multiple
+  // security group IDs can be provided as a comma-separated string.
+  string security_group_id = 12;
+
+  // Alibaba Cloud resource group ID for organizational grouping (per DD05).
+  // If omitted, the instance is placed in the account's default resource group.
+  string resource_group_id = 13;
+
+  // Tags to apply to the Redis instance.
+  map<string, string> tags = 14;
+
+  // Number of data shards for cluster (sharding) instances. Setting this to
+  // a value > 1 creates a cluster-mode Redis instance. Cluster mode is
+  // recommended for large-scale caching workloads that exceed the memory
+  // capacity or throughput of a single node.
+  // Valid range depends on the instance class; common values: 1, 2, 4, 8, 16, 32.
+  optional int32 shard_count = 15 [(buf.validate.field).int32.gte = 1];
+
+  // Number of read-only replicas in the primary zone (1-9). Read replicas
+  // enable read scaling by distributing read traffic across multiple nodes.
+  // Only available for master-slave and cluster instances.
+  optional int32 read_only_count = 16 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 9
+  }];
+
+  // SSL/TLS encryption for client connections.
+  // "Enable" turns on SSL. "Disable" turns off SSL.
+  // "Update" rotates the SSL certificate.
+  optional string ssl_enable = 17 [(buf.validate.field).cel = {
+    id: "ssl_enable_valid"
+    message: "ssl_enable must be one of: Enable, Disable, Update"
+    expression: "this == '' || this in ['Enable', 'Disable', 'Update']"
+  }];
+
+  // Transparent Data Encryption (TDE) status. Once enabled, TDE cannot be
+  // disabled. Encrypts data at rest at the storage level.
+  optional string tde_status = 18 [(buf.validate.field).cel = {
+    id: "tde_status_valid"
+    message: "tde_status must be Enabled"
+    expression: "this == '' || this == 'Enabled'"
+  }];
+
+  // Custom KMS key ID for TDE encryption. When set with tde_status = Enabled,
+  // uses a customer-managed key instead of the service-managed default.
+  string encryption_key = 19;
+
+  // VPC authentication mode. "Open" requires password authentication for
+  // VPC-internal connections. "Close" disables password authentication for
+  // VPC-internal connections (connections from within the VPC don't need a
+  // password). Default: "Open"
+  optional string vpc_auth_mode = 20 [
+    (buf.validate.field).cel = {
+      id: "vpc_auth_mode_valid"
+      message: "vpc_auth_mode must be one of: Open, Close"
+      expression: "this == '' || this in ['Open', 'Close']"
+    },
+    (org.openmcf.shared.options.default) = "Open"
+  ];
+
+  // Redis configuration parameters as key-value pairs. Allows tuning Redis
+  // engine settings such as maxmemory-policy, timeout, hz, etc.
+  // Refer to Alibaba Cloud documentation for valid parameter names.
+  map<string, string> config = 21;
+
+  // Enable release protection to prevent accidental deletion via the
+  // console or API.
+  optional bool instance_release_protection = 22;
+
+  // Maintenance window start time in UTC format (e.g., "02:00Z").
+  // The Redis service may perform minor version upgrades or patches
+  // during this window.
+  string maintain_start_time = 23;
+
+  // Maintenance window end time in UTC format (e.g., "06:00Z").
+  string maintain_end_time = 24;
+
+  // Backup days of the week. Each entry is a day name.
+  // Examples: ["Monday", "Wednesday", "Friday"].
+  repeated string backup_period = 25;
+
+  // Backup time window in UTC. Format: "HH:mmZ-HH:mmZ".
+  // Example: "02:00Z-03:00Z".
+  string backup_time = 26;
+
+  // Custom prefix for the private connection string.
+  // When set, the private connection domain uses this prefix instead of
+  // the auto-generated one.
+  string private_connection_prefix = 27;
+
+  // Auto-renewal for PrePaid instances. Ignored for PostPaid instances.
+  optional bool auto_renew = 28;
+
+  // Auto-renewal period in months (1-12). Only applicable when auto_renew
+  // is true and payment_type is "PrePaid".
+  optional int32 auto_renew_period = 29 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 12
+  }];
+
+  // Subscription period in months. Only applicable when payment_type
+  // is "PrePaid". Valid values: 1-9, 12, 24, 36.
+  optional string period = 30 [(buf.validate.field).cel = {
+    id: "period_valid"
+    message: "period must be one of: 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 24, 36"
+    expression: "this == '' || this in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '12', '24', '36']"
+  }];
+}

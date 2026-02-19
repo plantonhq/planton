@@ -1,0 +1,368 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudpolardbcluster.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// AlicloudPolardbClusterSpec defines the configuration for an Alibaba Cloud
+// PolarDB cluster with bundled databases, accounts, and account privileges.
+//
+// PolarDB is Alibaba Cloud's cloud-native relational database built on a
+// shared-storage, compute-storage-separated architecture. It supports MySQL,
+// PostgreSQL, and Oracle compatibility modes. Unlike RDS, PolarDB uses a
+// cluster model where one primary node and one or more read-only replicas
+// share a single distributed storage layer.
+//
+// This component is separate from AlicloudRdsInstance (per DD06) because
+// PolarDB has a fundamentally different resource schema: cluster-based
+// topology, node-class sizing, separate endpoint management, and different
+// Terraform/Pulumi resource types.
+//
+// The bundled flow (per DD07 composite bundling):
+//   1. Create the PolarDB cluster in the specified VSwitch.
+//   2. Create databases within the cluster.
+//   3. Create accounts with passwords.
+//   4. Grant account privileges on specific databases.
+//
+// PolarDB automatically provisions a primary endpoint and a cluster endpoint.
+// The primary endpoint's connection string and port are exposed as stack
+// outputs. Custom endpoints (read-only distribution, connection pooling) are
+// intentionally excluded -- they can be managed as a separate resource if
+// needed.
+//
+// Provider resources:
+//   Terraform: alicloud_polardb_cluster + alicloud_polardb_database + alicloud_polardb_account + alicloud_polardb_account_privilege
+//   Pulumi:    polardb.Cluster + polardb.Database + polardb.Account + polardb.AccountPrivilege
+message AlicloudPolardbClusterSpec {
+  // Alibaba Cloud region where the PolarDB cluster will be created.
+  // Must match the region of the VSwitch.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Database engine type. PolarDB supports three compatibility modes, each
+  // with its own set of valid versions and node classes.
+  string db_type = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "db_type_valid"
+      message: "db_type must be one of: MySQL, PostgreSQL, Oracle"
+      expression: "this in ['MySQL', 'PostgreSQL', 'Oracle']"
+    }
+  ];
+
+  // Database engine version. Must be a version supported by the selected
+  // db_type. Examples: "8.0", "5.7", "5.6" (MySQL), "14", "11" (PostgreSQL),
+  // "11" (Oracle).
+  string db_version = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // PolarDB node instance class that determines CPU and memory per node.
+  // Examples: "polar.mysql.x4.large", "polar.mysql.x4.xlarge",
+  // "polar.pg.x4.large", "polar.o.x4.large".
+  string db_node_class = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // VSwitch ID where the PolarDB cluster is placed. The cluster inherits
+  // the VPC and availability zone from the VSwitch.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 5 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
+  ];
+
+  // Number of nodes in the cluster. Includes 1 primary node and (N-1) read
+  // replicas. Minimum 1, maximum 16. Default: 2 (1 primary + 1 read replica).
+  optional int32 db_node_count = 6 [
+    (buf.validate.field).cel = {
+      id: "db_node_count_range"
+      message: "db_node_count must be between 1 and 16"
+      expression: "this >= 1 && this <= 16"
+    },
+    (org.openmcf.shared.options.default) = "2"
+  ];
+
+  // Cluster description. 2-256 characters.
+  string description = 7 [(buf.validate.field).cel = {
+    id: "description_length"
+    message: "description must be between 2 and 256 characters when set"
+    expression: "this == '' || (this.size() >= 2 && this.size() <= 256)"
+  }];
+
+  // Billing method. "PostPaid" for pay-as-you-go, "PrePaid" for subscription.
+  // Default: "PostPaid"
+  optional string pay_type = 8 [
+    (buf.validate.field).cel = {
+      id: "pay_type_valid"
+      message: "pay_type must be one of: PostPaid, PrePaid"
+      expression: "this == '' || this in ['PostPaid', 'PrePaid']"
+    },
+    (org.openmcf.shared.options.default) = "PostPaid"
+  ];
+
+  // Subscription period in months. Only applicable when pay_type is "PrePaid".
+  // Valid values: 1-9, 12, 24, 36.
+  optional int32 period = 9 [(buf.validate.field).cel = {
+    id: "period_valid"
+    message: "period must be one of: 1-9, 12, 24, 36"
+    expression: "(this >= 1 && this <= 9) || this in [12, 24, 36]"
+  }];
+
+  // Auto-renewal behavior for PrePaid clusters. Ignored for PostPaid clusters.
+  // "AutoRenewal" -- automatically renew before expiration.
+  // "Normal" -- send expiration notification but do not auto-renew.
+  // "NotRenewal" -- no notification, no auto-renew (default).
+  optional string renewal_status = 10 [(buf.validate.field).cel = {
+    id: "renewal_status_valid"
+    message: "renewal_status must be one of: AutoRenewal, Normal, NotRenewal"
+    expression: "this == '' || this in ['AutoRenewal', 'Normal', 'NotRenewal']"
+  }];
+
+  // Auto-renewal period in months. Only applicable when renewal_status is
+  // "AutoRenewal". Valid values: 1, 2, 3, 6, 12, 24, 36. Default: 1.
+  optional int32 auto_renew_period = 11 [(buf.validate.field).cel = {
+    id: "auto_renew_period_valid"
+    message: "auto_renew_period must be one of: 1, 2, 3, 6, 12, 24, 36"
+    expression: "this in [1, 2, 3, 6, 12, 24, 36]"
+  }];
+
+  // Availability zone ID for the primary node.
+  // If omitted, Alibaba Cloud selects a zone from the VSwitch's region.
+  // Examples: "cn-hangzhou-a", "cn-shanghai-b".
+  string zone_id = 12;
+
+  // IP addresses or CIDR blocks allowed to access the PolarDB cluster.
+  // Default: ["127.0.0.1"] (no access). Set to ["0.0.0.0/0"] to allow all
+  // (not recommended for production).
+  repeated string security_ips = 13;
+
+  // VPC security group IDs to associate with the PolarDB cluster.
+  // You can add a maximum of three security groups.
+  repeated string security_group_ids = 14;
+
+  // Maintenance window in UTC. PolarDB may perform minor version upgrades
+  // or patches during this window.
+  // Format: "HH:00Z-HH:00Z" (must be a 1-hour interval on the hour,
+  // e.g., "02:00Z-03:00Z").
+  string maintain_time = 15;
+
+  // Alibaba Cloud resource group ID for organizational grouping (per DD05).
+  // If omitted, the cluster is placed in the account's default resource group.
+  string resource_group_id = 16;
+
+  // Tags to apply to the PolarDB cluster resource.
+  map<string, string> tags = 17;
+
+  // PolarDB edition that determines the storage architecture.
+  // "Normal" -- Enterprise Edition with shared distributed storage.
+  // "Basic" -- single-node edition for dev/test.
+  // "ArchiveNormal" -- archival storage edition.
+  // "NormalMultimaster" -- multi-master edition (MySQL only).
+  // "SENormal" -- Standard Edition with local ESSD storage.
+  optional string creation_category = 18 [(buf.validate.field).cel = {
+    id: "creation_category_valid"
+    message: "creation_category must be one of: Normal, Basic, ArchiveNormal, NormalMultimaster, SENormal"
+    expression: "this == '' || this in ['Normal', 'Basic', 'ArchiveNormal', 'NormalMultimaster', 'SENormal']"
+  }];
+
+  // Sub-category for the cluster. Determines the resource allocation model.
+  // "Exclusive" -- dedicated resources (higher performance).
+  // "General" -- shared resources (lower cost).
+  // Only applicable to MySQL clusters.
+  optional string sub_category = 19 [(buf.validate.field).cel = {
+    id: "sub_category_valid"
+    message: "sub_category must be one of: Exclusive, General"
+    expression: "this == '' || this in ['Exclusive', 'General']"
+  }];
+
+  // Storage type. Determines the underlying storage medium.
+  // Enterprise Edition: "PSL5" (performance level 5), "PSL4" (performance level 4).
+  // Standard Edition: "ESSDPL0", "ESSDPL1", "ESSDPL2", "ESSDPL3" (ESSD performance levels),
+  // "ESSDAUTOPL" (auto performance level).
+  optional string storage_type = 20 [(buf.validate.field).cel = {
+    id: "storage_type_valid"
+    message: "storage_type must be one of: PSL5, PSL4, ESSDPL0, ESSDPL1, ESSDPL2, ESSDPL3, ESSDAUTOPL"
+    expression: "this == '' || this in ['PSL5', 'PSL4', 'ESSDPL0', 'ESSDPL1', 'ESSDPL2', 'ESSDPL3', 'ESSDAUTOPL']"
+  }];
+
+  // Storage space in GB. Only applicable for Standard Edition clusters
+  // (creation_category = "SENormal") where storage is pre-allocated.
+  // Enterprise Edition clusters use auto-scaling shared storage and do not
+  // need this field. Valid range: 20-100000 GB.
+  optional int32 storage_space = 21 [(buf.validate.field).cel = {
+    id: "storage_space_range"
+    message: "storage_space must be between 20 and 100000 when set"
+    expression: "this >= 20 && this <= 100000"
+  }];
+
+  // Transparent Data Encryption (TDE) status. TDE encrypts data at rest
+  // at the storage level. Once enabled, TDE cannot be disabled.
+  // "Enabled" turns on TDE. "Disabled" is the default.
+  optional string tde_status = 22 [(buf.validate.field).cel = {
+    id: "tde_status_valid"
+    message: "tde_status must be one of: Enabled, Disabled"
+    expression: "this == '' || this in ['Enabled', 'Disabled']"
+  }];
+
+  // KMS encryption key ID for TDE. Required when tde_status is "Enabled".
+  // Cannot be changed after TDE is enabled.
+  string encryption_key = 23;
+
+  // Deletion protection lock. Prevents accidental cluster deletion via
+  // console or API. Set to 1 to enable, 0 to disable.
+  optional int32 deletion_lock = 24 [(buf.validate.field).cel = {
+    id: "deletion_lock_valid"
+    message: "deletion_lock must be 0 or 1"
+    expression: "this in [0, 1]"
+  }];
+
+  // SQL audit log collector status.
+  // "Enable" turns on audit logging for compliance and troubleshooting.
+  // "Disabled" turns it off.
+  optional string collector_status = 25 [(buf.validate.field).cel = {
+    id: "collector_status_valid"
+    message: "collector_status must be one of: Enable, Disabled"
+    expression: "this == '' || this in ['Enable', 'Disabled']"
+  }];
+
+  // Backup retention policy when the cluster is deleted.
+  // "ALL" -- retain all backups.
+  // "LATEST" -- retain only the most recent backup.
+  // "NONE" -- delete all backups immediately.
+  optional string backup_retention_policy_on_cluster_deletion = 26 [(buf.validate.field).cel = {
+    id: "backup_retention_policy_valid"
+    message: "backup_retention_policy_on_cluster_deletion must be one of: ALL, LATEST, NONE"
+    expression: "this == '' || this in ['ALL', 'LATEST', 'NONE']"
+  }];
+
+  // Cluster parameter overrides. Each parameter sets a specific database
+  // engine configuration value. Refer to Alibaba Cloud documentation for
+  // valid parameter names and value ranges per engine.
+  repeated AlicloudPolardbParameter parameters = 27;
+
+  // Databases to create within the PolarDB cluster.
+  repeated AlicloudPolardbDatabase databases = 28;
+
+  // Database accounts to create within the PolarDB cluster.
+  repeated AlicloudPolardbAccount accounts = 29;
+}
+
+// AlicloudPolardbParameter represents a single cluster parameter override.
+message AlicloudPolardbParameter {
+  // Parameter name (e.g., "loose_innodb_buffer_pool_size", "max_connections").
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Parameter value as a string. The database engine interprets the value
+  // according to the parameter's type.
+  string value = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}
+
+// AlicloudPolardbDatabase defines a database to create within the PolarDB
+// cluster.
+message AlicloudPolardbDatabase {
+  // Database name. Must start with a letter, consist of lowercase letters,
+  // numbers, and underscores, and be no more than 64 characters.
+  string db_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Character set for the database. Default: "utf8" for MySQL, varies for
+  // PostgreSQL and Oracle. Common values: "utf8", "utf8mb4", "gbk" (MySQL),
+  // "UTF8", "SQL_ASCII" (PostgreSQL/Oracle).
+  string character_set_name = 2;
+
+  // Human-readable description of the database. 2-256 characters.
+  string db_description = 3;
+
+  // Collation rules for the database. Only applicable to PolarDB for
+  // PostgreSQL and Oracle compatibility modes. Must be compatible with
+  // the character_set_name. Default: "C".
+  string collate = 4;
+
+  // Character type setting. Only applicable to PolarDB for PostgreSQL and
+  // Oracle compatibility modes. Must be compatible with the
+  // character_set_name. Default: "C".
+  string ctype = 5;
+}
+
+// AlicloudPolardbAccount defines a database account to create within the
+// PolarDB cluster.
+message AlicloudPolardbAccount {
+  // Account login name. Must start with a lowercase letter, end with a
+  // letter or number, consist of lowercase letters, numbers, or underscores,
+  // and be 2-16 characters long.
+  string account_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 2
+  ];
+
+  // Account password. Must be 8-32 characters and contain at least three of:
+  // uppercase letters, lowercase letters, digits, and special characters
+  // (!@#$%^&*()_+-=).
+  string account_password = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 8
+  ];
+
+  // Account type.
+  // "Normal" -- standard account with explicit database privileges.
+  // "Super" -- superuser with full privileges on all databases.
+  // Default: "Normal"
+  optional string account_type = 3 [
+    (buf.validate.field).cel = {
+      id: "account_type_valid"
+      message: "account_type must be one of: Normal, Super"
+      expression: "this == '' || this in ['Normal', 'Super']"
+    },
+    (org.openmcf.shared.options.default) = "Normal"
+  ];
+
+  // Human-readable description of the account's purpose.
+  string account_description = 4;
+
+  // Database privileges to grant to this account. Each entry grants a
+  // privilege level on a set of databases. Only applicable when account_type
+  // is "Normal"; Super accounts have implicit full access.
+  repeated AlicloudPolardbAccountPrivilege privileges = 5;
+}
+
+// AlicloudPolardbAccountPrivilege grants a single privilege level on a set of
+// databases to the owning account.
+message AlicloudPolardbAccountPrivilege {
+  // Database names to grant access to. Each name must match a database
+  // defined in the spec's databases list.
+  repeated string db_names = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).repeated.min_items = 1
+  ];
+
+  // Privilege level to grant on the specified databases.
+  // "ReadOnly" -- SELECT access.
+  // "ReadWrite" -- SELECT, INSERT, UPDATE, DELETE access.
+  // "DDLOnly" -- DDL operations only (CREATE, ALTER, DROP).
+  // "DMLOnly" -- DML operations only (INSERT, UPDATE, DELETE).
+  // Default: "ReadOnly"
+  optional string account_privilege = 2 [
+    (buf.validate.field).cel = {
+      id: "account_privilege_valid"
+      message: "account_privilege must be one of: ReadOnly, ReadWrite, DDLOnly, DMLOnly"
+      expression: "this == '' || this in ['ReadOnly', 'ReadWrite', 'DDLOnly', 'DMLOnly']"
+    },
+    (org.openmcf.shared.options.default) = "ReadOnly"
+  ];
+}

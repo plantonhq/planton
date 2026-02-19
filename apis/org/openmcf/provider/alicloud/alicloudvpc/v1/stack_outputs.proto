@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudvpc.v1;
+
+// AlicloudVpcStackOutputs captures the outputs from deploying an
+// Alibaba Cloud VPC.
+message AlicloudVpcStackOutputs {
+  // The VPC ID assigned by Alibaba Cloud.
+  // Referenced by downstream components (VSwitch, SecurityGroup, NAT, ACK, etc.)
+  // via StringValueOrRef.
+  string vpc_id = 1;
+
+  // The VPC name as created.
+  string vpc_name = 2;
+
+  // The primary IPv4 CIDR block of the VPC.
+  // Useful for downstream VSwitch CIDR planning and security group rules.
+  string cidr_block = 3;
+
+  // The virtual router ID automatically created with the VPC.
+  // Each VPC gets one VRouter that manages route tables.
+  string router_id = 4;
+
+  // The system route table ID associated with the VPC.
+  // Every VPC has a default system route table that is auto-created.
+  string route_table_id = 5;
+}

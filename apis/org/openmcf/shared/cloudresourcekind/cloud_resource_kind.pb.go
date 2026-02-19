@@ -385,6 +385,25 @@ const (
 	CloudResourceKind_AlicloudLogProject                CloudResourceKind = 3000
 	CloudResourceKind_AlicloudRamRole                   CloudResourceKind = 3010
 	CloudResourceKind_AlicloudRamPolicy                 CloudResourceKind = 3011
+	CloudResourceKind_AlicloudVpc                       CloudResourceKind = 3020
+	CloudResourceKind_AlicloudVswitch                   CloudResourceKind = 3021
+	CloudResourceKind_AlicloudSecurityGroup             CloudResourceKind = 3022
+	CloudResourceKind_AlicloudEipAddress                CloudResourceKind = 3023
+	CloudResourceKind_AlicloudNatGateway                CloudResourceKind = 3024
+	CloudResourceKind_AlicloudAlbLoadBalancer           CloudResourceKind = 3025
+	CloudResourceKind_AlicloudNlbLoadBalancer           CloudResourceKind = 3026
+	CloudResourceKind_AlicloudVpnGateway                CloudResourceKind = 3027
+	CloudResourceKind_AlicloudDnsDomain                 CloudResourceKind = 3040
+	CloudResourceKind_AlicloudDnsRecord                 CloudResourceKind = 3041
+	CloudResourceKind_AlicloudPrivateZone               CloudResourceKind = 3042
+	CloudResourceKind_AlicloudOssBucket                 CloudResourceKind = 3050
+	CloudResourceKind_AlicloudNasFileSystem             CloudResourceKind = 3051
+	CloudResourceKind_AlicloudKmsKey                    CloudResourceKind = 3060
+	CloudResourceKind_AlicloudRdsInstance               CloudResourceKind = 3070
+	CloudResourceKind_AlicloudPolardbCluster            CloudResourceKind = 3071
+	CloudResourceKind_AlicloudRedisInstance             CloudResourceKind = 3072
+	CloudResourceKind_AlicloudMongodbInstance           CloudResourceKind = 3073
+	CloudResourceKind_AlicloudEcsInstance               CloudResourceKind = 3080
 )
 
 // Enum value maps for CloudResourceKind.
@@ -680,6 +699,25 @@ var (
 		3000: "AlicloudLogProject",
 		3010: "AlicloudRamRole",
 		3011: "AlicloudRamPolicy",
+		3020: "AlicloudVpc",
+		3021: "AlicloudVswitch",
+		3022: "AlicloudSecurityGroup",
+		3023: "AlicloudEipAddress",
+		3024: "AlicloudNatGateway",
+		3025: "AlicloudAlbLoadBalancer",
+		3026: "AlicloudNlbLoadBalancer",
+		3027: "AlicloudVpnGateway",
+		3040: "AlicloudDnsDomain",
+		3041: "AlicloudDnsRecord",
+		3042: "AlicloudPrivateZone",
+		3050: "AlicloudOssBucket",
+		3051: "AlicloudNasFileSystem",
+		3060: "AlicloudKmsKey",
+		3070: "AlicloudRdsInstance",
+		3071: "AlicloudPolardbCluster",
+		3072: "AlicloudRedisInstance",
+		3073: "AlicloudMongodbInstance",
+		3080: "AlicloudEcsInstance",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
@@ -972,6 +1010,25 @@ var (
 		"AlicloudLogProject":                    3000,
 		"AlicloudRamRole":                       3010,
 		"AlicloudRamPolicy":                     3011,
+		"AlicloudVpc":                           3020,
+		"AlicloudVswitch":                       3021,
+		"AlicloudSecurityGroup":                 3022,
+		"AlicloudEipAddress":                    3023,
+		"AlicloudNatGateway":                    3024,
+		"AlicloudAlbLoadBalancer":               3025,
+		"AlicloudNlbLoadBalancer":               3026,
+		"AlicloudVpnGateway":                    3027,
+		"AlicloudDnsDomain":                     3040,
+		"AlicloudDnsRecord":                     3041,
+		"AlicloudPrivateZone":                   3042,
+		"AlicloudOssBucket":                     3050,
+		"AlicloudNasFileSystem":                 3051,
+		"AlicloudKmsKey":                        3060,
+		"AlicloudRdsInstance":                   3070,
+		"AlicloudPolardbCluster":                3071,
+		"AlicloudRedisInstance":                 3072,
+		"AlicloudMongodbInstance":               3073,
+		"AlicloudEcsInstance":                   3080,
 	}
 )
 
@@ -1116,7 +1173,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\x8fb\n" +
+	"\x02v1\x10\x01*\xb8h\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1457,7 +1514,29 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x1bScalewayServerlessContainer\x10\xb7\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwscn\x12(\n" +
 	"\x12AlicloudLogProject\x10\xb8\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05aclog\x12&\n" +
 	"\x0fAlicloudRamRole\x10\xc2\x17\x1a\x10\xa2\xf7\x04\f\b\x19\x10\x01\"\x06acramr\x12(\n" +
-	"\x11AlicloudRamPolicy\x10\xc3\x17\x1a\x10\xa2\xf7\x04\f\b\x19\x10\x01\"\x06acramp:|\n" +
+	"\x11AlicloudRamPolicy\x10\xc3\x17\x1a\x10\xa2\xf7\x04\f\b\x19\x10\x01\"\x06acramp\x12!\n" +
+	"\vAlicloudVpc\x10\xcc\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acvpc\x12%\n" +
+	"\x0fAlicloudVswitch\x10\xcd\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acvsw\x12*\n" +
+	"\x15AlicloudSecurityGroup\x10\xce\x17\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x19\x10\x01\"\x04acsg\x12(\n" +
+	"\x12AlicloudEipAddress\x10\xcf\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05aceip\x12(\n" +
+	"\x12AlicloudNatGateway\x10\xd0\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acnat\x12-\n" +
+	"\x17AlicloudAlbLoadBalancer\x10\xd1\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acalb\x12-\n" +
+	"\x17AlicloudNlbLoadBalancer\x10\xd2\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acnlb\x12(\n" +
+	"\x12AlicloudVpnGateway\x10\xd3\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acvpn\x12'\n" +
+	"\x11AlicloudDnsDomain\x10\xe0\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acdns\x12&\n" +
+	"\x11AlicloudDnsRecord\x10\xe1\x17\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x19\x10\x01\"\x04acdr\x12(\n" +
+	"\x13AlicloudPrivateZone\x10\xe2\x17\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x19\x10\x01\"\x04acpz\x12'\n" +
+	"\x11AlicloudOssBucket\x10\xea\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acoss\x12+\n" +
+	"\x15AlicloudNasFileSystem\x10\xeb\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acnas\x12$\n" +
+	"\x0eAlicloudKmsKey\x10\xf4\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05ackms\x12)\n" +
+	"\x13AlicloudRdsInstance\x10\xfe\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acrds\x12,\n" +
+	"\x16AlicloudPolardbCluster\x10\xff\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acpdb\x12+\n" +
+	"\x15AlicloudRedisInstance\x10\x80\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acred\x12-\n" +
+	"\x17AlicloudMongodbInstance\x10\x81\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acmdb\x12)\n" +
+	"\x13AlicloudEcsInstance\x10\x88\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acecs:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

@@ -1,0 +1,35 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudSecurityGroup
+metadata:
+  name: <your-sg-name>
+spec:
+  region: <alibaba-cloud-region>
+  vpcId:
+    value: <your-vpc-id>
+  securityGroupName: <your-sg-name>
+  description: Bastion host security group allowing SSH from trusted IPs
+  rules:
+    - type: ingress
+      ipProtocol: tcp
+      portRange: "22/22"
+      cidrIp: <your-trusted-cidr>
+      priority: 1
+      description: Allow SSH from trusted network
+    - type: egress
+      ipProtocol: tcp
+      portRange: "22/22"
+      cidrIp: <your-vpc-cidr>
+      priority: 1
+      description: Allow SSH to VPC instances
+    - type: egress
+      ipProtocol: tcp
+      portRange: "3306/3306"
+      cidrIp: <your-vpc-cidr>
+      priority: 2
+      description: Allow MySQL connections to VPC databases
+    - type: egress
+      ipProtocol: tcp
+      portRange: "5432/5432"
+      cidrIp: <your-vpc-cidr>
+      priority: 3
+      description: Allow PostgreSQL connections to VPC databases

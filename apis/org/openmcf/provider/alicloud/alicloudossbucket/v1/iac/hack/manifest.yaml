@@ -1,0 +1,7 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudOssBucket
+metadata:
+  name: alicloudossbucket-demo
+spec:
+  region: cn-hangzhou
+  bucketName: alicloudossbucket-demo

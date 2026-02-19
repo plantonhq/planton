@@ -12,6 +12,28 @@ import (
 	testcloudresourceonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourceone/v1"
 	testcloudresourcethreev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourcethree/v1"
 	testcloudresourcetwov1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourcetwo/v1"
+	alicloudalbloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudalbloadbalancer/v1"
+	aliclouddnsdomainv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/aliclouddnsdomain/v1"
+	aliclouddnsrecordv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/aliclouddnsrecord/v1"
+	alicloudecsinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudecsinstance/v1"
+	alicloudeipaddressv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudeipaddress/v1"
+	alicloudkmskeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudkmskey/v1"
+	alicloudlogprojectv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudlogproject/v1"
+	alicloudmongodbinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudmongodbinstance/v1"
+	alicloudnasfilesystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudnasfilesystem/v1"
+	alicloudnatgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudnatgateway/v1"
+	alicloudnlbloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudnlbloadbalancer/v1"
+	alicloudossbucketv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudossbucket/v1"
+	alicloudpolardbclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudpolardbcluster/v1"
+	alicloudprivatezonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudprivatezone/v1"
+	alicloudrampolicyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudrampolicy/v1"
+	alicloudramrolev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudramrole/v1"
+	alicloudrdsinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudrdsinstance/v1"
+	alicloudredisinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudredisinstance/v1"
+	alicloudsecuritygroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudsecuritygroup/v1"
+	alicloudvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudvpc/v1"
+	alicloudvpngatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudvpngateway/v1"
+	alicloudvswitchv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudvswitch/v1"
 	mongodbatlasv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/atlas/mongodbatlas/v1"
 	auth0clientv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/auth0client/v1"
 	auth0connectionv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/auth0connection/v1"
@@ -313,6 +335,31 @@ var ProviderTestMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_TestCloudResourceOne:   &testcloudresourceonev1.TestCloudResourceOne{},
 	cloudresourcekind.CloudResourceKind_TestCloudResourceThree: &testcloudresourcethreev1.TestCloudResourceThree{},
 	cloudresourcekind.CloudResourceKind_TestCloudResourceTwo:   &testcloudresourcetwov1.TestCloudResourceTwo{},
+}
+
+var ProviderAlicloudMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
+	cloudresourcekind.CloudResourceKind_AlicloudAlbLoadBalancer: &alicloudalbloadbalancerv1.AlicloudAlbLoadBalancer{},
+	cloudresourcekind.CloudResourceKind_AlicloudDnsDomain:       &aliclouddnsdomainv1.AlicloudDnsDomain{},
+	cloudresourcekind.CloudResourceKind_AlicloudDnsRecord:       &aliclouddnsrecordv1.AlicloudDnsRecord{},
+	cloudresourcekind.CloudResourceKind_AlicloudEcsInstance:     &alicloudecsinstancev1.AlicloudEcsInstance{},
+	cloudresourcekind.CloudResourceKind_AlicloudEipAddress:      &alicloudeipaddressv1.AlicloudEipAddress{},
+	cloudresourcekind.CloudResourceKind_AlicloudKmsKey:          &alicloudkmskeyv1.AlicloudKmsKey{},
+	cloudresourcekind.CloudResourceKind_AlicloudLogProject:      &alicloudlogprojectv1.AlicloudLogProject{},
+	cloudresourcekind.CloudResourceKind_AlicloudMongodbInstance: &alicloudmongodbinstancev1.AlicloudMongodbInstance{},
+	cloudresourcekind.CloudResourceKind_AlicloudNasFileSystem:   &alicloudnasfilesystemv1.AlicloudNasFileSystem{},
+	cloudresourcekind.CloudResourceKind_AlicloudNatGateway:      &alicloudnatgatewayv1.AlicloudNatGateway{},
+	cloudresourcekind.CloudResourceKind_AlicloudNlbLoadBalancer: &alicloudnlbloadbalancerv1.AlicloudNlbLoadBalancer{},
+	cloudresourcekind.CloudResourceKind_AlicloudOssBucket:       &alicloudossbucketv1.AlicloudOssBucket{},
+	cloudresourcekind.CloudResourceKind_AlicloudPolardbCluster:  &alicloudpolardbclusterv1.AlicloudPolardbCluster{},
+	cloudresourcekind.CloudResourceKind_AlicloudPrivateZone:     &alicloudprivatezonev1.AlicloudPrivateZone{},
+	cloudresourcekind.CloudResourceKind_AlicloudRamPolicy:       &alicloudrampolicyv1.AlicloudRamPolicy{},
+	cloudresourcekind.CloudResourceKind_AlicloudRamRole:         &alicloudramrolev1.AlicloudRamRole{},
+	cloudresourcekind.CloudResourceKind_AlicloudRdsInstance:     &alicloudrdsinstancev1.AlicloudRdsInstance{},
+	cloudresourcekind.CloudResourceKind_AlicloudRedisInstance:   &alicloudredisinstancev1.AlicloudRedisInstance{},
+	cloudresourcekind.CloudResourceKind_AlicloudSecurityGroup:   &alicloudsecuritygroupv1.AlicloudSecurityGroup{},
+	cloudresourcekind.CloudResourceKind_AlicloudVpc:             &alicloudvpcv1.AlicloudVpc{},
+	cloudresourcekind.CloudResourceKind_AlicloudVpnGateway:      &alicloudvpngatewayv1.AlicloudVpnGateway{},
+	cloudresourcekind.CloudResourceKind_AlicloudVswitch:         &alicloudvswitchv1.AlicloudVswitch{},
 }
 
 var ProviderAtlasMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
@@ -642,6 +689,7 @@ var ProviderSnowflakeMap = map[cloudresourcekind.CloudResourceKind]proto.Message
 
 var ToMessageMap = merge(
 	ProviderTestMap,
+	ProviderAlicloudMap,
 	ProviderAtlasMap,
 	ProviderAuth0Map,
 	ProviderAwsMap,

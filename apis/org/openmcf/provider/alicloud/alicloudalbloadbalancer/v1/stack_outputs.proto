@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudalbloadbalancer.v1;
+
+// AlicloudAlbLoadBalancerStackOutputs captures the outputs from deploying
+// an Alibaba Cloud Application Load Balancer with its server groups and
+// listeners.
+message AlicloudAlbLoadBalancerStackOutputs {
+  // The ALB instance ID assigned by Alibaba Cloud (e.g., "alb-xxxxx").
+  string load_balancer_id = 1;
+
+  // The DNS name automatically assigned to the ALB.
+  // For internet-facing ALBs, this resolves to the ALB's public address.
+  // For intranet ALBs, it resolves to the private VPC address.
+  // Use this as a CNAME target for custom domain DNS records.
+  string dns_name = 2;
+
+  // Map of server group names to their IDs.
+  // Keys are the names specified in spec.server_groups[].name.
+  // Values are the Alibaba Cloud server group IDs (e.g., "sgp-xxxxx").
+  // Useful for downstream components that need to attach backends or
+  // create forwarding rules referencing specific server groups.
+  map<string, string> server_group_ids = 3;
+}

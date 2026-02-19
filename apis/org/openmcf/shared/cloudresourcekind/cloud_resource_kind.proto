@@ -1591,4 +1591,130 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "acramp"
   }];
+
+  // --- Networking ---
+
+  AlicloudVpc = 3020 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acvpc"
+  }];
+
+  AlicloudVswitch = 3021 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acvsw"
+  }];
+
+  AlicloudSecurityGroup = 3022 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acsg"
+  }];
+
+  AlicloudEipAddress = 3023 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "aceip"
+  }];
+
+  AlicloudNatGateway = 3024 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acnat"
+  }];
+
+  AlicloudAlbLoadBalancer = 3025 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acalb"
+  }];
+
+  AlicloudNlbLoadBalancer = 3026 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acnlb"
+  }];
+
+  AlicloudVpnGateway = 3027 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acvpn"
+  }];
+
+  // --- DNS ---
+
+  AlicloudDnsDomain = 3040 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acdns"
+  }];
+
+  AlicloudDnsRecord = 3041 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acdr"
+  }];
+
+  AlicloudPrivateZone = 3042 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acpz"
+  }];
+
+  // --- Storage ---
+
+  AlicloudOssBucket = 3050 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acoss"
+  }];
+
+  AlicloudNasFileSystem = 3051 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acnas"
+  }];
+
+  // --- Security ---
+
+  AlicloudKmsKey = 3060 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "ackms"
+  }];
+
+  // --- Database ---
+
+  AlicloudRdsInstance = 3070 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acrds"
+  }];
+
+  AlicloudPolardbCluster = 3071 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acpdb"
+  }];
+
+  AlicloudRedisInstance = 3072 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acred"
+  }];
+
+  AlicloudMongodbInstance = 3073 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acmdb"
+  }];
+
+  // --- Compute ---
+
+  AlicloudEcsInstance = 3080 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acecs"
+  }];
 }

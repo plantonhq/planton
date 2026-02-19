@@ -1,0 +1,36 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudMongodbInstance
+metadata:
+  name: prod-mongodb
+  org: my-org
+  env: production
+spec:
+  region: cn-shanghai
+  engineVersion: "6.0"
+  dbInstanceClass: mongo.x8.large
+  dbInstanceStorage: 200
+  accountPassword: "${MONGODB_PASSWORD}"
+  vswitchId:
+    value: vsw-prod-a
+  zoneId: cn-shanghai-a
+  secondaryZoneId: cn-shanghai-b
+  hiddenZoneId: cn-shanghai-c
+  replicationFactor: 5
+  readonlyReplicas: 2
+  storageType: cloud_essd2
+  provisionedIops: 3000
+  securityIpList:
+    - "10.0.0.0/8"
+  dbInstanceReleaseProtection: true
+  maintainStartTime: "02:00Z"
+  maintainEndTime: "06:00Z"
+  backupPeriod:
+    - Monday
+    - Wednesday
+    - Friday
+  backupTime: "03:00Z-04:00Z"
+  parameters:
+    operationProfiling.slowOpThresholdMs: "200"
+  tags:
+    team: platform
+    tier: production

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudvpngateway.v1;
+
+// AlicloudVpnGatewayStackOutputs captures the outputs from deploying an
+// Alibaba Cloud VPN Gateway with its bundled customer gateways and VPN
+// connections.
+message AlicloudVpnGatewayStackOutputs {
+  // The VPN Gateway ID assigned by Alibaba Cloud (e.g., "vpn-xxxxx").
+  string vpn_gateway_id = 1;
+
+  // The VPN Gateway's public internet IP address, used as the local endpoint
+  // for IPsec tunnels. Remote VPN devices connect to this IP.
+  string internet_ip = 2;
+
+  // The SSL VPN internet IP address, populated only when enable_ssl is true.
+  // SSL VPN clients connect to this IP for remote access.
+  string ssl_vpn_internet_ip = 3;
+
+  // Map of connection name to VPN connection ID.
+  // Keys are the names specified in spec.connections[].name.
+  map<string, string> connection_ids = 4;
+}

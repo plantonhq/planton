@@ -1,0 +1,7 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudOssBucket
+metadata:
+  name: my-bucket
+spec:
+  region: <alibaba-cloud-region>
+  bucketName: <globally-unique-bucket-name>

@@ -1,0 +1,15 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudVswitch
+metadata:
+  name: my-prod-app-vswitch
+spec:
+  region: <alibaba-cloud-region>
+  vpcId:
+    value: <your-vpc-id>
+  zoneId: <availability-zone>
+  cidrBlock: "10.1.0.0/20"
+  vswitchName: <your-prod-vswitch-name>
+  description: Production application tier VSwitch with a large CIDR for Kubernetes or ECS workloads
+  tags:
+    tier: application
+    team: platform

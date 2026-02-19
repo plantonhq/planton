@@ -1,0 +1,24 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudEcsInstance
+metadata:
+  name: batch-worker
+spec:
+  region: cn-hangzhou
+  instanceType: ecs.c7.2xlarge
+  imageId: ubuntu_22_04_x64_20G_alibase_20230515.vhd
+  vswitchId:
+    value: "${VSWITCH_ID}"
+  securityGroupIds:
+    - value: "${SECURITY_GROUP_ID}"
+  keyName: "${SSH_KEY_NAME}"
+  spotStrategy: SpotAsPriceGo
+  systemDisk:
+    category: cloud_essd
+    size: 40
+  dataDisks:
+    - size: 500
+      category: cloud_efficiency
+      name: scratch-space
+      deleteWithInstance: true
+  tags:
+    workload: batch

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudpolardbcluster.v1;
+
+import "org/openmcf/provider/alicloud/alicloudpolardbcluster/v1/api.proto";
+import "org/openmcf/provider/alicloud/provider.proto";
+
+// alicloud-polardb-cluster stack-input
+message AlicloudPolardbClusterStackInput {
+  // target cloud-resource
+  AlicloudPolardbCluster target = 1;
+  // provider-config
+  org.openmcf.provider.alicloud.AlicloudProviderConfig provider_config = 2;
+}

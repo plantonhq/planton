@@ -1,0 +1,21 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudRamRole
+metadata:
+  name: my-ecs-service-role
+spec:
+  region: <alibaba-cloud-region>
+  roleName: <your-ecs-role-name>
+  description: ECS instance role for accessing OSS, CloudMonitor, and Log Service
+  assumeRolePolicyDocument: |
+    {
+      "Statement": [{
+        "Action": "sts:AssumeRole",
+        "Effect": "Allow",
+        "Principal": {"Service": ["ecs.aliyuncs.com"]}
+      }],
+      "Version": "1"
+    }
+  policyAttachments:
+    - policyName: AliyunOSSFullAccess
+    - policyName: AliyunCloudMonitorFullAccess
+    - policyName: AliyunLogFullAccess

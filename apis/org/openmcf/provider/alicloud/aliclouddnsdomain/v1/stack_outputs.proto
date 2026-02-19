@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.aliclouddnsdomain.v1;
+
+// AlicloudDnsDomainStackOutputs captures the outputs from deploying an
+// Alibaba Cloud DNS domain.
+message AlicloudDnsDomainStackOutputs {
+  // The domain ID assigned by Alibaba Cloud.
+  string domain_id = 1;
+
+  // The domain name as registered in Alidns.
+  string domain_name = 2;
+
+  // The DNS server names assigned by Alibaba Cloud.
+  // Point your domain registrar's NS records to these servers
+  // for Alidns to serve DNS queries for the domain.
+  repeated string dns_servers = 3;
+
+  // The domain group name (computed from the group_id).
+  // Empty when the domain is in the default group.
+  string group_name = 4;
+
+  // Punycode representation of the domain name.
+  // Populated when the domain contains internationalized (non-ASCII) characters.
+  string puny_code = 5;
+}

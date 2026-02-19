@@ -41,6 +41,7 @@ use_repo(
     "com_github_onsi_gomega",
     "com_github_pkg_errors",
     "com_github_pseudomuto_protoc_gen_doc",
+    "com_github_pulumi_pulumi_alicloud_sdk_v3",
     "com_github_pulumi_pulumi_auth0_sdk_v3",
     "com_github_pulumi_pulumi_aws_native_sdk",
     "com_github_pulumi_pulumi_aws_sdk_v7",

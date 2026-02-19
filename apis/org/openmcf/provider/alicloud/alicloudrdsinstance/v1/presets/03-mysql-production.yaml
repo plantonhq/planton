@@ -1,0 +1,53 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudRdsInstance
+metadata:
+  name: <your-instance-name>
+  org: <your-org>
+  env: production
+spec:
+  region: <alibaba-cloud-region>
+  engine: MySQL
+  engineVersion: "8.0"
+  instanceType: rds.mysql.s2.xlarge
+  instanceStorage: 200
+  vswitchId:
+    value: <your-vswitch-id>
+  category: HighAvailability
+  dbInstanceStorageType: cloud_essd
+  zoneId: <primary-zone-id>
+  zoneIdSlaveA: <standby-zone-id>
+  securityIps:
+    - <your-vpc-cidr>
+  monitoringPeriod: 60
+  maintainTime: "02:00Z-06:00Z"
+  deletionProtection: true
+  sslAction: Open
+  tdeStatus: Enabled
+  encryptionKey: <your-kms-key-id>
+  resourceGroupId: <your-resource-group-id>
+  tags:
+    team: <your-team>
+    compliance: <compliance-standard>
+  parameters:
+    - name: innodb_buffer_pool_size
+      value: "4294967296"
+    - name: max_connections
+      value: "1000"
+  databases:
+    - name: <primary-database-name>
+      characterSet: utf8mb4
+    - name: <secondary-database-name>
+      characterSet: utf8mb4
+  accounts:
+    - accountName: <app-account-name>
+      accountPassword: <app-password>
+      accountDescription: Application service account
+      privileges:
+        - databaseNames: [<primary-database-name>]
+          privilege: ReadWrite
+        - databaseNames: [<secondary-database-name>]
+          privilege: ReadOnly
+    - accountName: <admin-account-name>
+      accountPassword: <admin-password>
+      accountType: Super
+      accountDescription: DBA administration account

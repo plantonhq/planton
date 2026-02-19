@@ -1,0 +1,32 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudRedisInstance
+metadata:
+  name: <your-instance-name>
+  org: <your-organization>
+  env: production
+spec:
+  region: <alibaba-cloud-region>
+  instanceClass: redis.sharding.mid.default
+  password: <your-password>
+  vswitchId:
+    valueFrom:
+      name: <your-vswitch-resource-name>
+  engineVersion: "7.0"
+  zoneId: <primary-zone-id>
+  secondaryZoneId: <standby-zone-id>
+  shardCount: 4
+  readOnlyCount: 2
+  securityIps:
+    - <your-application-cidr>
+  instanceReleaseProtection: true
+  maintainStartTime: "02:00Z"
+  maintainEndTime: "06:00Z"
+  backupPeriod:
+    - Monday
+    - Wednesday
+    - Friday
+  backupTime: "03:00Z-04:00Z"
+  config:
+    maxmemory-policy: allkeys-lru
+  tags:
+    team: <your-team>

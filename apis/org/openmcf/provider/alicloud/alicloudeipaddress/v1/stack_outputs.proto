@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudeipaddress.v1;
+
+// AlicloudEipAddressStackOutputs captures the outputs from allocating an
+// Alibaba Cloud Elastic IP Address.
+message AlicloudEipAddressStackOutputs {
+  // The EIP allocation ID assigned by Alibaba Cloud.
+  // Referenced by downstream components (NatGateway, ALB, VPN, etc.)
+  // via StringValueOrRef for EIP association.
+  string eip_id = 1;
+
+  // The public IPv4 address allocated to this EIP.
+  // This is the internet-routable address that external clients connect to.
+  string ip_address = 2;
+}

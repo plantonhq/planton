@@ -1,0 +1,11 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudEipAddress
+metadata:
+  name: my-eip
+spec:
+  region: <alibaba-cloud-region>
+  addressName: <your-eip-name>
+  description: EIP for NAT gateway or load balancer
+  tags:
+    team: <your-team>
+    purpose: <nat|alb|vpn>

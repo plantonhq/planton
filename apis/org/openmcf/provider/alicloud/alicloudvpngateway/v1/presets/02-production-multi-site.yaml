@@ -1,0 +1,60 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudVpnGateway
+metadata:
+  name: <your-vpn-name>
+  org: <your-org>
+  env: production
+spec:
+  region: <alibaba-cloud-region>
+  vpcId:
+    value: <your-vpc-id>
+  vswitchId:
+    value: <your-vswitch-id>
+  vpnGatewayName: <your-vpn-name>
+  description: Production VPN Gateway with multi-site connectivity
+  bandwidth: 100
+  tags:
+    team: <your-team>
+    costCenter: <cost-center>
+  connections:
+    - name: <primary-site-name>
+      customerGatewayIp: "<primary-site-ip>"
+      localSubnets:
+        - "<vpc-cidr-1>"
+        - "<vpc-cidr-2>"
+      remoteSubnets:
+        - "<primary-remote-cidr>"
+      ikeConfig:
+        psk: "<pre-shared-key-1>"
+        ikeVersion: ikev2
+        ikeEncAlg: aes256
+        ikeAuthAlg: sha256
+        ikePfs: group14
+      ipsecConfig:
+        ipsecEncAlg: aes256
+        ipsecAuthAlg: sha256
+        ipsecPfs: group14
+      healthCheckConfig:
+        enable: true
+        sip: "<local-probe-ip>"
+        dip: "<remote-probe-ip>"
+    - name: <secondary-site-name>
+      customerGatewayIp: "<secondary-site-ip>"
+      localSubnets:
+        - "<vpc-cidr-1>"
+      remoteSubnets:
+        - "<secondary-remote-cidr>"
+      ikeConfig:
+        psk: "<pre-shared-key-2>"
+        ikeVersion: ikev2
+        ikeEncAlg: aes256
+        ikeAuthAlg: sha256
+        ikePfs: group14
+      ipsecConfig:
+        ipsecEncAlg: aes256
+        ipsecAuthAlg: sha256
+        ipsecPfs: group14
+      healthCheckConfig:
+        enable: true
+        sip: "<local-probe-ip>"
+        dip: "<secondary-remote-probe-ip>"

@@ -1,0 +1,232 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudnasfilesystem.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// AlicloudNasFileSystemSpec defines the configuration for an Alibaba Cloud
+// Network Attached Storage (NAS) file system with a bundled access group and
+// VPC mount target.
+//
+// NAS provides fully managed, elastic, shared file storage that supports NFS
+// and SMB protocols. This component bundles the file system, an optional
+// access group with access rules, and a VPC mount target into a single
+// deployable unit (per DD07 composite bundling) because a file system without
+// a mount target is unreachable.
+//
+// The bundled flow:
+//   1. Create the NAS file system with the chosen protocol and storage type.
+//   2. (Conditional) If access_rules are specified, create a custom access
+//      group with those rules.
+//   3. Create a mount target in the specified VPC/VSwitch, associated with
+//      the custom access group or the default VPC group.
+//
+// When no access_rules are specified, the mount target uses the built-in
+// DEFAULT_VPC_GROUP_NAME access group, which grants full read-write access
+// from all IP addresses within the VPC.
+//
+// Two file system types are supported:
+//   - standard (default): auto-scaling capacity, general-purpose workloads.
+//     Storage types: "Performance", "Capacity", "Premium".
+//   - extreme: dedicated throughput with fixed pre-allocated capacity.
+//     Storage types: "standard", "advance". Requires zone_id and capacity.
+//
+// Important: protocol_type, storage_type, and file_system_type are immutable
+// after creation -- changing any of these requires destroying and recreating
+// the file system.
+//
+// Provider resources:
+//   Terraform: alicloud_nas_file_system + alicloud_nas_access_group
+//              + alicloud_nas_access_rule + alicloud_nas_mount_target
+//   Pulumi:    nas.FileSystem + nas.AccessGroup + nas.AccessRule
+//              + nas.MountTarget
+message AlicloudNasFileSystemSpec {
+  // Alibaba Cloud region where the file system will be created.
+  // Must match the region of the VPC and VSwitch used for the mount target.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // File system type. Determines the performance model and available
+  // storage types. This is immutable after creation (ForceNew).
+  //
+  //   "standard" -- auto-scaling capacity, general-purpose workloads.
+  //   "extreme"  -- dedicated throughput, fixed capacity, requires zone_id.
+  // Default: "standard"
+  optional string file_system_type = 2 [
+    (buf.validate.field).cel = {
+      id: "file_system_type_valid"
+      message: "file_system_type must be one of: standard, extreme"
+      expression: "this == '' || this in ['standard', 'extreme']"
+    },
+    (org.openmcf.shared.options.default) = "standard"
+  ];
+
+  // NAS protocol type. Determines how clients mount and access the file
+  // system. This is immutable after creation (ForceNew).
+  //
+  //   "NFS" -- Network File System, the standard Linux/Unix protocol.
+  //   "SMB" -- Server Message Block, for Windows compatibility.
+  string protocol_type = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "protocol_type_valid"
+      message: "protocol_type must be one of: NFS, SMB"
+      expression: "this in ['NFS', 'SMB']"
+    }
+  ];
+
+  // Storage type. Determines the IOPS, throughput, and latency
+  // characteristics. This is immutable after creation (ForceNew).
+  //
+  // For standard file systems:
+  //   "Performance" -- SSD-backed, low latency, up to 10 GiB/s throughput
+  //   "Capacity"    -- HDD-backed, cost-effective for warm/cold data
+  //   "Premium"     -- next-gen SSD, enhanced throughput and IOPS
+  //
+  // For extreme file systems:
+  //   "standard"    -- baseline extreme NAS
+  //   "advance"     -- higher throughput extreme NAS
+  string storage_type = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "storage_type_valid"
+      message: "storage_type must be one of: Performance, Capacity, Premium, standard, advance"
+      expression: "this in ['Performance', 'Capacity', 'Premium', 'standard', 'advance']"
+    }
+  ];
+
+  // Human-readable description of the file system's purpose.
+  string description = 5;
+
+  // Encryption configuration. When omitted, the file system is not encrypted.
+  // Encryption type is immutable after creation (ForceNew).
+  AlicloudNasEncryption encryption = 6;
+
+  // File system capacity in GiB.
+  // Required for extreme NAS (minimum 100 GiB). Ignored for standard NAS,
+  // which auto-scales capacity based on stored data.
+  int32 capacity = 7;
+
+  // Availability zone for the file system.
+  // Required for extreme NAS. Optional for standard NAS (the service
+  // auto-assigns a zone when omitted).
+  // Format: "{region}-{letter}", e.g. "cn-hangzhou-a", "cn-hangzhou-b".
+  string zone_id = 8;
+
+  // VPC ID for the mount target.
+  // The mount target is created in this VPC, making the file system
+  // accessible to resources within it.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 9 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // VSwitch ID for the mount target.
+  // Must be in the VPC specified by vpc_id. Determines which availability
+  // zone the mount target is placed in.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 10 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
+  ];
+
+  // Access rules that control which IP ranges can mount the file system and
+  // with what permissions.
+  //
+  // When one or more access_rules are specified, a custom access group is
+  // auto-created and associated with the mount target. This gives fine-grained
+  // control over which subnets or hosts can access the file system.
+  //
+  // When omitted (empty list), the mount target uses the built-in
+  // DEFAULT_VPC_GROUP_NAME access group, which allows full read-write access
+  // from all IP addresses within the VPC.
+  repeated AlicloudNasAccessRule access_rules = 11;
+
+  // Alibaba Cloud resource group ID for organizational grouping (per DD05).
+  // If omitted, the file system is placed in the account's default resource
+  // group.
+  string resource_group_id = 12;
+
+  // Tags to apply to the file system resource.
+  map<string, string> tags = 13;
+}
+
+// Encryption configuration for a NAS file system.
+message AlicloudNasEncryption {
+  // Encryption type.
+  //   1 = NAS-managed key: Alibaba Cloud manages the encryption key.
+  //       No additional configuration needed.
+  //   2 = Customer-managed KMS key: You manage the key via KMS.
+  //       Requires kms_key_id to be set.
+  int32 encrypt_type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "encrypt_type_valid"
+      message: "encrypt_type must be 1 (NAS-managed) or 2 (KMS customer-managed)"
+      expression: "this in [1, 2]"
+    }
+  ];
+
+  // KMS key ID for customer-managed encryption.
+  // Required when encrypt_type is 2. Ignored when encrypt_type is 1.
+  // Create one with AlicloudKmsKey and reference its key_id output.
+  string kms_key_id = 2;
+}
+
+// An access rule within a NAS access group that controls which IP ranges
+// can mount the file system and with what permissions.
+message AlicloudNasAccessRule {
+  // Source CIDR IP address or block.
+  // Allows traffic from this network range to access the file system.
+  // Examples: "0.0.0.0/0" for all IPs, "10.0.0.0/8" for a private range,
+  // "10.0.1.5" for a single host.
+  string source_cidr_ip = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Read-write access type.
+  //   "RDWR"   -- full read-write access (default)
+  //   "RDONLY" -- read-only access
+  // Default: "RDWR"
+  optional string rw_access_type = 2 [
+    (buf.validate.field).cel = {
+      id: "rw_access_type_valid"
+      message: "rw_access_type must be one of: RDWR, RDONLY"
+      expression: "this == '' || this in ['RDWR', 'RDONLY']"
+    },
+    (org.openmcf.shared.options.default) = "RDWR"
+  ];
+
+  // User identity mapping for NFS root access.
+  //   "no_squash"    -- preserve original user identity (default)
+  //   "root_squash"  -- map root (uid 0) to anonymous user
+  //   "all_squash"   -- map all users to anonymous user
+  // Default: "no_squash"
+  optional string user_access_type = 3 [
+    (buf.validate.field).cel = {
+      id: "user_access_type_valid"
+      message: "user_access_type must be one of: no_squash, root_squash, all_squash"
+      expression: "this == '' || this in ['no_squash', 'root_squash', 'all_squash']"
+    },
+    (org.openmcf.shared.options.default) = "no_squash"
+  ];
+
+  // Priority of this access rule. Lower values have higher precedence.
+  // Range: 1-100.
+  // Default: 1
+  optional int32 priority = 4 [
+    (buf.validate.field).cel = {
+      id: "priority_valid"
+      message: "priority must be between 1 and 100"
+      expression: "this == 0 || (this >= 1 && this <= 100)"
+    },
+    (org.openmcf.shared.options.default) = "1"
+  ];
+}

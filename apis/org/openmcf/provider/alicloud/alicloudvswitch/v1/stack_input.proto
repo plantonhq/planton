@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudvswitch.v1;
+
+import "org/openmcf/provider/alicloud/alicloudvswitch/v1/api.proto";
+import "org/openmcf/provider/alicloud/provider.proto";
+
+// alicloud-vswitch stack-input
+message AlicloudVswitchStackInput {
+  // target cloud-resource
+  AlicloudVswitch target = 1;
+  // provider-config
+  org.openmcf.provider.alicloud.AlicloudProviderConfig provider_config = 2;
+}
