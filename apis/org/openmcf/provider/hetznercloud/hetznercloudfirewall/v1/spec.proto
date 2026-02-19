@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package org.openmcf.provider.hetznercloud.hetznercloudfirewall.v1;
+
+import "buf/validate/validate.proto";
+
+// HetznerCloudFirewallSpec defines the specification for a Hetzner Cloud firewall.
+//
+// A firewall is a set of rules that control inbound and outbound network traffic
+// for servers. When applied to a server (via the server's firewall_ids field),
+// all inbound traffic not matching any rule is dropped, while outbound traffic
+// is allowed unless explicitly restricted by outbound rules.
+//
+// Rules are defined inline. Each rule specifies a direction, protocol, optional
+// port (required for TCP/UDP), and source or destination CIDR blocks. Hetzner
+// Cloud supports up to 50 rules per firewall.
+//
+// The firewall itself does not specify which servers it applies to. Instead,
+// servers reference firewalls via their firewall_ids field through
+// StringValueOrRef, keeping the dependency graph unidirectional.
+message HetznerCloudFirewallSpec {
+  // Firewall rules that define allowed traffic.
+  //
+  // Hetzner Cloud firewalls are deny-by-default for inbound traffic: when a
+  // firewall is applied to a server, all inbound packets not matching a rule
+  // are dropped. Outbound traffic is allowed by default unless explicitly
+  // restricted by outbound rules.
+  //
+  // An empty rules list creates a firewall that blocks all inbound traffic
+  // and allows all outbound traffic when applied to a server.
+  repeated Rule rules = 1;
+
+  // Rule defines a single firewall rule controlling traffic in one direction.
+  message Rule {
+    option (buf.validate.message).cel = {
+      id: "port_required_for_tcp_udp"
+      expression: "(this.protocol != 2 && this.protocol != 3) || this.port != ''"
+      message: "port is required when protocol is tcp or udp"
+    };
+
+    option (buf.validate.message).cel = {
+      id: "source_ips_required_for_inbound"
+      expression: "this.direction != 1 || this.source_ips.size() > 0"
+      message: "source_ips is required when direction is in"
+    };
+
+    option (buf.validate.message).cel = {
+      id: "destination_ips_required_for_outbound"
+      expression: "this.direction != 2 || this.destination_ips.size() > 0"
+      message: "destination_ips is required when direction is out"
+    };
+
+    // Traffic direction this rule applies to.
+    Direction direction = 1 [
+      (buf.validate.field).required = true,
+      (buf.validate.field).enum.defined_only = true
+    ];
+
+    // IP protocol this rule matches.
+    Protocol protocol = 2 [
+      (buf.validate.field).required = true,
+      (buf.validate.field).enum.defined_only = true
+    ];
+
+    // Port or port range for TCP and UDP rules.
+    //
+    // Accepts a single port ("80"), a range ("80-443"), or "any" for all ports.
+    // Required when protocol is tcp or udp. Must not be set for icmp, esp, or gre.
+    string port = 3;
+
+    // CIDR blocks allowed as traffic sources for inbound rules (direction = in).
+    //
+    // Use ["0.0.0.0/0", "::/0"] to allow all IPv4 and IPv6 traffic.
+    // Required when direction is in.
+    repeated string source_ips = 4;
+
+    // CIDR blocks allowed as traffic destinations for outbound rules (direction = out).
+    //
+    // Use ["0.0.0.0/0", "::/0"] to allow all IPv4 and IPv6 traffic.
+    // Required when direction is out.
+    repeated string destination_ips = 5;
+
+    // Human-readable description of what this rule allows.
+    string description = 6;
+
+    // Traffic direction.
+    enum Direction {
+      direction_unspecified = 0;
+      in = 1;
+      out = 2;
+    }
+
+    // IP protocol.
+    enum Protocol {
+      protocol_unspecified = 0;
+      icmp = 1;
+      tcp = 2;
+      udp = 3;
+      esp = 4;
+      gre = 5;
+    }
+  }
+}

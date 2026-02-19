@@ -412,7 +412,7 @@ func (x *CredentialProviderConfig) GetOci() *oci.OciProviderConfig {
 	return nil
 }
 
-func (x *CredentialProviderConfig) GetHetznercloud() *hetznercloud.HetznercloudProviderConfig {
+func (x *CredentialProviderConfig) GetHetznercloud() *hetznercloud.HetznerCloudProviderConfig {
 	if x != nil {
 		if x, ok := x.Data.(*CredentialProviderConfig_Hetznercloud); ok {
 			return x.Hetznercloud
@@ -490,7 +490,7 @@ type CredentialProviderConfig_Oci struct {
 }
 
 type CredentialProviderConfig_Hetznercloud struct {
-	Hetznercloud *hetznercloud.HetznercloudProviderConfig `protobuf:"bytes,17,opt,name=hetznercloud,proto3,oneof"`
+	Hetznercloud *hetznercloud.HetznerCloudProviderConfig `protobuf:"bytes,17,opt,name=hetznercloud,proto3,oneof"`
 }
 
 func (*CredentialProviderConfig_Atlas) isCredentialProviderConfig_Data() {}
@@ -577,7 +577,7 @@ const file_org_openmcf_app_credential_v1_api_proto_rawDesc = "" +
 	"\bscaleway\x18\x0e \x01(\v25.org.openmcf.provider.scaleway.ScalewayProviderConfigH\x00R\bscaleway\x12S\n" +
 	"\balicloud\x18\x0f \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigH\x00R\balicloud\x12?\n" +
 	"\x03oci\x18\x10 \x01(\v2+.org.openmcf.provider.oci.OciProviderConfigH\x00R\x03oci\x12c\n" +
-	"\fhetznercloud\x18\x11 \x01(\v2=.org.openmcf.provider.hetznercloud.HetznercloudProviderConfigH\x00R\fhetznercloudB\x06\n" +
+	"\fhetznercloud\x18\x11 \x01(\v2=.org.openmcf.provider.hetznercloud.HetznerCloudProviderConfigH\x00R\fhetznercloudB\x06\n" +
 	"\x04dataB\xfe\x01\n" +
 	"\x1dcom.org.openmcf.credential.v1B\bApiProtoP\x01ZLgithub.com/plantonhq/openmcf/apis/org/openmcf/app/credential/v1;credentialv1\xa2\x02\x03OOC\xaa\x02\x19Org.Openmcf.Credential.V1\xca\x02\x19Org\\Openmcf\\Credential\\V1\xe2\x02%Org\\Openmcf\\Credential\\V1\\GPBMetadata\xea\x02\x1cOrg::Openmcf::Credential::V1b\x06proto3"
 
@@ -616,7 +616,7 @@ var file_org_openmcf_app_credential_v1_api_proto_goTypes = []any{
 	(*scaleway.ScalewayProviderConfig)(nil),         // 17: org.openmcf.provider.scaleway.ScalewayProviderConfig
 	(*alicloud.AlicloudProviderConfig)(nil),         // 18: org.openmcf.provider.alicloud.AlicloudProviderConfig
 	(*oci.OciProviderConfig)(nil),                   // 19: org.openmcf.provider.oci.OciProviderConfig
-	(*hetznercloud.HetznercloudProviderConfig)(nil), // 20: org.openmcf.provider.hetznercloud.HetznercloudProviderConfig
+	(*hetznercloud.HetznerCloudProviderConfig)(nil), // 20: org.openmcf.provider.hetznercloud.HetznerCloudProviderConfig
 }
 var file_org_openmcf_app_credential_v1_api_proto_depIdxs = []int32{
 	0,  // 0: org.openmcf.credential.v1.Credential.provider:type_name -> org.openmcf.credential.v1.Credential.CredentialProvider
@@ -639,7 +639,7 @@ var file_org_openmcf_app_credential_v1_api_proto_depIdxs = []int32{
 	17, // 17: org.openmcf.credential.v1.CredentialProviderConfig.scaleway:type_name -> org.openmcf.provider.scaleway.ScalewayProviderConfig
 	18, // 18: org.openmcf.credential.v1.CredentialProviderConfig.alicloud:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
 	19, // 19: org.openmcf.credential.v1.CredentialProviderConfig.oci:type_name -> org.openmcf.provider.oci.OciProviderConfig
-	20, // 20: org.openmcf.credential.v1.CredentialProviderConfig.hetznercloud:type_name -> org.openmcf.provider.hetznercloud.HetznercloudProviderConfig
+	20, // 20: org.openmcf.credential.v1.CredentialProviderConfig.hetznercloud:type_name -> org.openmcf.provider.hetznercloud.HetznerCloudProviderConfig
 	21, // [21:21] is the sub-list for method output_type
 	21, // [21:21] is the sub-list for method input_type
 	21, // [21:21] is the sub-list for extension type_name

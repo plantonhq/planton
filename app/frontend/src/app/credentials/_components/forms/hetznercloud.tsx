@@ -4,15 +4,15 @@ import { SimpleInput } from '@/components/shared/simple-input';
 import { CredentialFormData } from '@/app/credentials/_components/forms/types';
 import { UseFormRegister } from 'react-hook-form';
 
-interface HetznercloudCredentialFormProps {
+interface HetznerCloudCredentialFormProps {
   register: UseFormRegister<CredentialFormData>;
   disabled?: boolean;
 }
 
-export function HetznercloudCredentialForm({
+export function HetznerCloudCredentialForm({
   register,
   disabled,
-}: HetznercloudCredentialFormProps) {
+}: HetznerCloudCredentialFormProps) {
   return (
     <>
       {/* Authentication (required) */}

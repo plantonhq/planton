@@ -1,0 +1,406 @@
+syntax = "proto3";
+
+package org.openmcf.provider.hetznercloud.hetznercloudloadbalancer.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// HetznerCloudLoadBalancerSpec defines the specification for a Hetzner Cloud
+// load balancer with its services, targets, and optional network attachment.
+//
+// A load balancer distributes incoming traffic across one or more backend
+// targets (servers, label-selected server groups, or external IPs). Each
+// service defines a listener that accepts traffic on a protocol/port
+// combination and forwards it to targets on a destination port. Services
+// support HTTP-level features such as sticky sessions, TLS termination with
+// Hetzner-managed or uploaded certificates, and HTTP-to-HTTPS redirection.
+//
+// Targets can be added per-server (via server_id), dynamically via Hetzner
+// Cloud label selectors, or as raw IP addresses for external backends. The
+// load balancer can optionally be attached to a private Hetzner Cloud network
+// so that target traffic flows over the private network instead of the public
+// internet.
+//
+// Bundled provider resources:
+//   - hcloud_load_balancer:         The load balancer itself.
+//   - hcloud_load_balancer_service: One per entry in the services list.
+//   - hcloud_load_balancer_target:  One per entry across all three target
+//                                   lists (server_targets, label_selector_targets,
+//                                   ip_targets).
+//   - hcloud_load_balancer_network: Created when the network attachment is set.
+//
+// Fields not exposed in this spec (hardcoded or derived in IaC modules):
+//   - name:   Derived from metadata.name.
+//   - labels: Derived from metadata (CG01 pattern). Standard labels take
+//             precedence over user-specified metadata.labels.
+message HetznerCloudLoadBalancerSpec {
+  // Load balancer size that determines connection and bandwidth limits.
+  //
+  // Available types: "lb11" (25 targets, 10k connections/s),
+  // "lb21" (75 targets, 20k connections/s), "lb31" (150 targets,
+  // 40k connections/s).
+  //
+  // Can be changed after creation (in-place resize).
+  string load_balancer_type = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Hetzner Cloud location for the load balancer (e.g., "fsn1", "nbg1",
+  // "hel1", "ash", "hil", "sin"). Determines the physical datacenter.
+  //
+  // Server targets must be reachable from this location. When using a
+  // private network, the network must have a subnet in the same network
+  // zone as this location.
+  //
+  // Changing this value forces replacement of the load balancer.
+  string location = 2 [(buf.validate.field).string.min_len = 1];
+
+  // Traffic distribution algorithm. Determines how the load balancer
+  // selects a target for each incoming connection.
+  //
+  // Default: round_robin (if unspecified or algorithm_unspecified).
+  Algorithm algorithm = 3 [(buf.validate.field).enum.defined_only = true];
+
+  // Services (listeners) that the load balancer exposes. Each service
+  // binds to a listen_port and forwards traffic to targets on a
+  // destination_port using the specified protocol.
+  //
+  // At least one service is required -- a load balancer without services
+  // cannot accept traffic.
+  repeated Service services = 4 [(buf.validate.field).repeated.min_items = 1];
+
+  // Server targets. Each entry adds a specific server as a backend.
+  // The server must be reachable from the load balancer's location.
+  repeated ServerTarget server_targets = 5;
+
+  // Label selector targets. Each entry dynamically adds all servers
+  // matching a Hetzner Cloud label selector as backends. Servers are
+  // auto-discovered and may change as labels are added or removed.
+  repeated LabelSelectorTarget label_selector_targets = 6;
+
+  // IP targets. Each entry adds an external IP address as a backend.
+  // Use this for targets outside of Hetzner Cloud.
+  repeated IpTarget ip_targets = 7;
+
+  // Private network attachment. Optional. When set, the load balancer
+  // is attached to the specified Hetzner Cloud network and receives a
+  // private IP within the network's subnet range. Target traffic can
+  // then flow over the private network instead of the public internet.
+  //
+  // A load balancer can be attached to at most one network.
+  NetworkAttachment network = 8;
+
+  // Prevent accidental deletion of the load balancer via the Hetzner
+  // Cloud API. When enabled, the load balancer cannot be deleted until
+  // protection is removed.
+  bool delete_protection = 9;
+
+  // Algorithm enumerates the supported load balancing algorithms.
+  enum Algorithm {
+    algorithm_unspecified = 0;
+
+    // Distribute connections evenly across all healthy targets in order.
+    round_robin = 1;
+
+    // Send each new connection to the target with the fewest active
+    // connections. Better for backends with varying response times.
+    least_connections = 2;
+  }
+
+  // ServiceProtocol enumerates the supported listener protocols.
+  enum ServiceProtocol {
+    service_protocol_unspecified = 0;
+
+    // Layer 7 HTTP. Enables sticky sessions, health check HTTP mode,
+    // and HTTP-specific features. Default listen_port: 80.
+    http = 1;
+
+    // Layer 7 HTTPS with TLS termination at the load balancer.
+    // Requires certificates in the http config. Enables HTTP-to-HTTPS
+    // redirect. Default listen_port: 443.
+    https = 2;
+
+    // Layer 4 TCP pass-through. No application-layer inspection.
+    // listen_port and destination_port are required.
+    tcp = 3;
+  }
+
+  // Service defines a listener on the load balancer that accepts traffic
+  // on a protocol/port combination and forwards it to targets.
+  //
+  // Each service binds to a unique listen_port on the load balancer. The
+  // combination of protocol + listen_port identifies the service (both are
+  // ForceNew in the provider -- changing either replaces the service).
+  message Service {
+    option (buf.validate.message).cel = {
+      id: "tcp_requires_listen_port"
+      expression: "this.protocol != 3 || (has(this.listen_port) && this.listen_port > 0)"
+      message: "listen_port is required when protocol is tcp"
+    };
+    option (buf.validate.message).cel = {
+      id: "tcp_requires_destination_port"
+      expression: "this.protocol != 3 || (has(this.destination_port) && this.destination_port > 0)"
+      message: "destination_port is required when protocol is tcp"
+    };
+
+    // Listener protocol. Determines how the load balancer processes
+    // incoming connections for this service.
+    ServiceProtocol protocol = 1 [
+      (buf.validate.field).required = true,
+      (buf.validate.field).enum.defined_only = true
+    ];
+
+    // Port the load balancer listens on for this service.
+    //
+    // Must be unique across all services on the same load balancer.
+    // Defaults to 80 for HTTP, 443 for HTTPS. Required for TCP.
+    //
+    // Changing this value forces replacement of the service.
+    optional int32 listen_port = 2;
+
+    // Port on the target servers that receives forwarded traffic.
+    //
+    // Defaults to the listen_port value for HTTP and HTTPS. Required
+    // for TCP.
+    optional int32 destination_port = 3;
+
+    // Enable PROXY protocol (v1) when forwarding to targets. The target
+    // application must support PROXY protocol to parse the original
+    // client IP from the PROXY header.
+    bool proxyprotocol = 4;
+
+    // HTTP-level configuration. Only applicable when protocol is http or
+    // https. Ignored for tcp services.
+    HttpConfig http = 5;
+
+    // Health check configuration for this service. Optional -- when not
+    // set, the provider creates a default health check matching the
+    // service protocol and destination port.
+    //
+    // Set this to customize the health check path, interval, thresholds,
+    // or to use a different protocol than the service (e.g., TCP health
+    // check on an HTTP service).
+    HealthCheck health_check = 6;
+  }
+
+  // HttpConfig holds HTTP-layer settings for http and https services.
+  message HttpConfig {
+    // Enable cookie-based session affinity. When true, the load balancer
+    // sets a cookie on the first response and routes subsequent requests
+    // with that cookie to the same target.
+    bool sticky_sessions = 1;
+
+    // Name of the sticky session cookie. Only used when sticky_sessions
+    // is true.
+    //
+    // Default: "HCLBSTICKY" (provider default when not specified).
+    string cookie_name = 2;
+
+    // Lifetime of the sticky session cookie in seconds. Only used when
+    // sticky_sessions is true.
+    //
+    // Default: 300 (provider default when not specified or 0).
+    int32 cookie_lifetime = 3;
+
+    // TLS certificates for HTTPS termination. Only used when the parent
+    // service protocol is https.
+    //
+    // Each entry accepts a literal Hetzner Cloud certificate ID (as a
+    // string) or a reference to a HetznerCloudCertificate resource's
+    // output via valueFrom.
+    //
+    // Example (reference):
+    //   certificateIds:
+    //     - valueFrom:
+    //         kind: HetznerCloudCertificate
+    //         name: my-cert
+    //         fieldPath: status.outputs.certificate_id
+    repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef certificate_ids = 4 [
+      (org.openmcf.shared.foreignkey.v1.default_kind) = HetznerCloudCertificate,
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.certificate_id"
+    ];
+
+    // Redirect all HTTP traffic to HTTPS. Only valid for https services
+    // that use the default listen port (443). When enabled, the load
+    // balancer automatically creates an HTTP-to-HTTPS redirect on port
+    // 80.
+    bool redirect_http = 5;
+  }
+
+  // HealthCheck configures how the load balancer verifies that targets
+  // are healthy and able to receive traffic.
+  //
+  // All fields except port are optional when the health check block is
+  // present. Unset fields receive sensible defaults documented on each
+  // field. This allows minimal overrides like:
+  //
+  //   healthCheck:
+  //     port: 8080
+  //     http:
+  //       path: /health
+  message HealthCheck {
+    // Health check protocol. Determines whether the check performs a TCP
+    // connection test or an HTTP request.
+    //
+    // Default: matches the parent service's protocol (http -> http,
+    // https -> http, tcp -> tcp). Handled in IaC modules.
+    ServiceProtocol protocol = 1;
+
+    // Port to health-check on the target. Required when the health check
+    // block is present.
+    //
+    // Default: matches the parent service's destination_port. Handled in
+    // IaC modules.
+    optional int32 port = 2;
+
+    // Time between health checks in seconds.
+    //
+    // Default: 15
+    optional int32 interval = 3 [(org.openmcf.shared.options.default) = "15"];
+
+    // Maximum time to wait for a health check response in seconds. Must
+    // be less than interval.
+    //
+    // Default: 10
+    optional int32 timeout = 4 [(org.openmcf.shared.options.default) = "10"];
+
+    // Number of consecutive failed checks before a target is marked
+    // unhealthy.
+    //
+    // Default: 3
+    optional int32 retries = 5 [(org.openmcf.shared.options.default) = "3"];
+
+    // HTTP-specific health check settings. Only used when the health
+    // check protocol is http or https.
+    HealthCheckHttp http = 6;
+  }
+
+  // HealthCheckHttp holds HTTP-specific settings for health checks.
+  message HealthCheckHttp {
+    // Domain name to send in the HTTP Host header for the health check
+    // request. If empty, the target's IP address is used.
+    string domain = 1;
+
+    // URL path for the health check request.
+    //
+    // Default: "/" (provider default when not specified).
+    string path = 2;
+
+    // Expected response body substring. If set, the health check only
+    // passes when the response body contains this string.
+    string response = 3;
+
+    // Verify the target's TLS certificate when performing the health
+    // check. Only meaningful when the health check protocol is https.
+    bool tls = 4;
+
+    // Expected HTTP status codes. The health check passes when the
+    // response status matches any code in this list.
+    //
+    // Default: ["2??", "3??"] (provider default when not specified).
+    // Uses wildcard notation: "2??" matches any 2xx status.
+    repeated string status_codes = 5;
+  }
+
+  // ServerTarget adds a specific Hetzner Cloud server as a load balancer
+  // backend. The server must be reachable from the load balancer's
+  // location.
+  message ServerTarget {
+    // Server to add as a target.
+    //
+    // Accepts a literal Hetzner Cloud server ID (as a string) or a
+    // reference to a HetznerCloudServer resource's output via valueFrom.
+    //
+    // Changing this value forces replacement of the target.
+    //
+    // Example (reference):
+    //   serverId:
+    //     valueFrom:
+    //       kind: HetznerCloudServer
+    //       name: web-1
+    //       fieldPath: status.outputs.server_id
+    org.openmcf.shared.foreignkey.v1.StringValueOrRef server_id = 1 [
+      (buf.validate.field).required = true,
+      (org.openmcf.shared.foreignkey.v1.default_kind) = HetznerCloudServer,
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.server_id"
+    ];
+
+    // Route traffic to the server's private IP instead of its public IP.
+    // Requires the load balancer and server to be attached to the same
+    // private network.
+    bool use_private_ip = 2;
+  }
+
+  // LabelSelectorTarget dynamically adds all Hetzner Cloud servers
+  // matching a label selector as load balancer backends.
+  //
+  // Servers are auto-discovered based on the selector expression. As
+  // server labels change, the target set updates automatically. This is
+  // useful for auto-scaling scenarios but means the exact target set is
+  // not captured in the manifest.
+  message LabelSelectorTarget {
+    // Hetzner Cloud label selector expression. All servers matching this
+    // selector are added as targets.
+    //
+    // Example: "env=production,role=web"
+    //
+    // Changing this value forces replacement of the target.
+    string selector = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Route traffic to servers' private IPs instead of their public IPs.
+    // Requires the load balancer and all matching servers to be attached
+    // to the same private network.
+    bool use_private_ip = 2;
+  }
+
+  // IpTarget adds an external IP address as a load balancer backend.
+  // Use this for targets outside of Hetzner Cloud.
+  message IpTarget {
+    // IP address of the external backend.
+    //
+    // Changing this value forces replacement of the target.
+    string ip = 1 [(buf.validate.field).string.min_len = 1];
+  }
+
+  // NetworkAttachment attaches the load balancer to a Hetzner Cloud
+  // private network. A load balancer can be attached to at most one
+  // network.
+  //
+  // When attached, the load balancer receives a private IP within the
+  // network's subnet range. Server targets with use_private_ip=true
+  // then receive traffic over the private network.
+  message NetworkAttachment {
+    // Network to attach the load balancer to.
+    //
+    // Accepts a literal Hetzner Cloud network ID (as a string) or a
+    // reference to a HetznerCloudNetwork resource's output via valueFrom.
+    //
+    // Changing this value forces replacement of the network attachment.
+    //
+    // Example (reference):
+    //   networkId:
+    //     valueFrom:
+    //       kind: HetznerCloudNetwork
+    //       name: main-vpc
+    //       fieldPath: status.outputs.network_id
+    org.openmcf.shared.foreignkey.v1.StringValueOrRef network_id = 1 [
+      (buf.validate.field).required = true,
+      (org.openmcf.shared.foreignkey.v1.default_kind) = HetznerCloudNetwork,
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
+    ];
+
+    // Specific IP address to assign to the load balancer within the
+    // network's subnet range. If omitted, Hetzner Cloud auto-assigns
+    // an IP.
+    string ip = 2;
+
+    // Enable the load balancer's public interface. When false, the load
+    // balancer is only reachable via its private network IP.
+    //
+    // Default: true
+    //
+    // IMPORTANT: This uses optional bool because proto3 bool defaults to
+    // false, which would silently disable the public interface. The
+    // optional keyword + default annotation ensures correct behavior.
+    optional bool enable_public_interface = 3 [(org.openmcf.shared.options.default) = "true"];
+  }
+}

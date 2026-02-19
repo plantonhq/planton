@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package org.openmcf.provider.hetznercloud.hetznercloudfloatingip.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// HetznerCloudFloatingIpSpec defines the specification for a Hetzner Cloud Floating IP.
+//
+// A Floating IP is a reassignable public IP address (IPv4 or IPv6) that can be
+// moved between servers in the same location. Unlike auto-assigned public IPs,
+// Floating IPs persist independently of any server and can be reassigned at any
+// time, making them ideal for failover scenarios where a stable endpoint must
+// survive server replacement.
+//
+// The IP address is allocated by Hetzner Cloud when the resource is created and
+// cannot be chosen. For IPv4, a single address is allocated. For IPv6, a /64
+// network block is allocated.
+//
+// An optional reverse DNS (rDNS) record can be set for the allocated IP address.
+// rDNS maps an IP to a hostname and is commonly required for mail servers and
+// services that perform reverse lookups for identity verification.
+//
+// An optional server assignment attaches the Floating IP to a server at creation
+// time. The assignment can be changed later without replacing the Floating IP.
+// The server must be in the same location as the Floating IP's home_location.
+//
+// Fields not exposed in this spec (hardcoded or derived in IaC modules):
+//   - name:   Derived from metadata.name.
+//   - labels: Derived from metadata (CG01 pattern). Standard labels take
+//             precedence over user-specified metadata.labels.
+message HetznerCloudFloatingIpSpec {
+  // IP address type. Determines whether an IPv4 address or an IPv6 /64
+  // network block is allocated.
+  //
+  // Changing this value forces replacement of the Floating IP resource.
+  IpType type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true
+  ];
+
+  // Hetzner Cloud location where the Floating IP is homed (e.g., "fsn1",
+  // "nbg1", "hel1", "ash", "hil", "sin"). The Floating IP can only be
+  // assigned to servers in the same location.
+  //
+  // Changing this value forces replacement of the Floating IP resource.
+  string home_location = 2 [(buf.validate.field).string.min_len = 1];
+
+  // Human-readable description for the Floating IP. Visible in the
+  // Hetzner Cloud console and API. Useful for documenting the IP's
+  // purpose (e.g., "Production web frontend failover IP").
+  string description = 3;
+
+  // Server to assign this Floating IP to. Optional.
+  //
+  // Accepts a literal Hetzner Cloud server ID (as a string) or a reference
+  // to a HetznerCloudServer resource's output via valueFrom. The referenced
+  // server must be in the same location as home_location.
+  //
+  // If omitted, the Floating IP is created unassigned (reserved). Assignment
+  // can be added later by updating the spec.
+  //
+  // Example (literal):
+  //   serverId:
+  //     value: "12345678"
+  //
+  // Example (reference, once HetznerCloudServer is available):
+  //   serverId:
+  //     valueFrom:
+  //       kind: HetznerCloudServer
+  //       name: my-server
+  //       fieldPath: status.outputs.server_id
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef server_id = 4;
+
+  // Reverse DNS pointer record for the allocated IP address. If set, an
+  // hcloud_rdns resource is created that maps the IP to this hostname.
+  //
+  // Commonly used for mail servers (SPF/DKIM verification relies on matching
+  // forward and reverse DNS) and any service where clients verify the server's
+  // identity via reverse lookup.
+  //
+  // Example: "mail.example.com"
+  string dns_ptr = 5;
+
+  // Prevent accidental deletion of the Floating IP via the Hetzner Cloud API.
+  // When enabled, the IP cannot be deleted until protection is removed.
+  bool delete_protection = 6;
+
+  // IpType enumerates the supported IP address types for a Hetzner Cloud
+  // Floating IP.
+  enum IpType {
+    ip_type_unspecified = 0;
+    ipv4 = 1;
+    ipv6 = 2;
+  }
+}

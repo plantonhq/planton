@@ -8,11 +8,11 @@ import (
 	credentialv1 "github.com/plantonhq/openmcf/apis/org/openmcf/app/credential/v1"
 	alicloudv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud"
 	auth0v1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0"
-	hetznercloudv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud"
-	ociv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci"
 	awsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
 	azurev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure"
 	gcpv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
+	hetznercloudv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud"
+	ociv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci"
 	openstackv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack"
 	scalewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
@@ -157,8 +157,8 @@ func (r *CredentialResolver) ResolveProviderConfig(
 			}
 		}
 		return &credentialv1.CredentialProviderConfig{
-		Data: &credentialv1.CredentialProviderConfig_Openstack{
-			Openstack: cfg,
+			Data: &credentialv1.CredentialProviderConfig_Openstack{
+				Openstack: cfg,
 			},
 		}, nil
 
@@ -278,10 +278,10 @@ func (r *CredentialResolver) ResolveProviderConfig(
 		}, nil
 
 	case cloudresourcekind.CloudResourceProvider_hetznercloud:
-		hcCred := credInterface.(*models.HetznercloudCredential)
+		hcCred := credInterface.(*models.HetznerCloudCredential)
 		return &credentialv1.CredentialProviderConfig{
 			Data: &credentialv1.CredentialProviderConfig_Hetznercloud{
-				Hetznercloud: &hetznercloudv1.HetznercloudProviderConfig{
+				Hetznercloud: &hetznercloudv1.HetznerCloudProviderConfig{
 					Token:           hcCred.Token,
 					Endpoint:        hcCred.Endpoint,
 					EndpointHetzner: hcCred.EndpointHetzner,

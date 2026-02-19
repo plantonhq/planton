@@ -382,6 +382,18 @@ const (
 	CloudResourceKind_ScalewayDnsRecord                 CloudResourceKind = 2861
 	CloudResourceKind_ScalewayServerlessFunction        CloudResourceKind = 2870
 	CloudResourceKind_ScalewayServerlessContainer       CloudResourceKind = 2871
+	CloudResourceKind_HetznerCloudSshKey                CloudResourceKind = 3500
+	CloudResourceKind_HetznerCloudPlacementGroup        CloudResourceKind = 3501
+	CloudResourceKind_HetznerCloudFirewall              CloudResourceKind = 3502
+	CloudResourceKind_HetznerCloudNetwork               CloudResourceKind = 3510
+	CloudResourceKind_HetznerCloudPrimaryIp             CloudResourceKind = 3511
+	CloudResourceKind_HetznerCloudFloatingIp            CloudResourceKind = 3512
+	CloudResourceKind_HetznerCloudServer                CloudResourceKind = 3520
+	CloudResourceKind_HetznerCloudVolume                CloudResourceKind = 3521
+	CloudResourceKind_HetznerCloudSnapshot              CloudResourceKind = 3522
+	CloudResourceKind_HetznerCloudCertificate           CloudResourceKind = 3530
+	CloudResourceKind_HetznerCloudLoadBalancer          CloudResourceKind = 3531
+	CloudResourceKind_HetznerCloudDnsZone               CloudResourceKind = 3540
 )
 
 // Enum value maps for CloudResourceKind.
@@ -674,6 +686,18 @@ var (
 		2861: "ScalewayDnsRecord",
 		2870: "ScalewayServerlessFunction",
 		2871: "ScalewayServerlessContainer",
+		3500: "HetznerCloudSshKey",
+		3501: "HetznerCloudPlacementGroup",
+		3502: "HetznerCloudFirewall",
+		3510: "HetznerCloudNetwork",
+		3511: "HetznerCloudPrimaryIp",
+		3512: "HetznerCloudFloatingIp",
+		3520: "HetznerCloudServer",
+		3521: "HetznerCloudVolume",
+		3522: "HetznerCloudSnapshot",
+		3530: "HetznerCloudCertificate",
+		3531: "HetznerCloudLoadBalancer",
+		3540: "HetznerCloudDnsZone",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
@@ -963,6 +987,18 @@ var (
 		"ScalewayDnsRecord":                     2861,
 		"ScalewayServerlessFunction":            2870,
 		"ScalewayServerlessContainer":           2871,
+		"HetznerCloudSshKey":                    3500,
+		"HetznerCloudPlacementGroup":            3501,
+		"HetznerCloudFirewall":                  3502,
+		"HetznerCloudNetwork":                   3510,
+		"HetznerCloudPrimaryIp":                 3511,
+		"HetznerCloudFloatingIp":                3512,
+		"HetznerCloudServer":                    3520,
+		"HetznerCloudVolume":                    3521,
+		"HetznerCloudSnapshot":                  3522,
+		"HetznerCloudCertificate":               3530,
+		"HetznerCloudLoadBalancer":              3531,
+		"HetznerCloudDnsZone":                   3540,
 	}
 )
 
@@ -1107,7 +1143,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\x93a\n" +
+	"\x02v1\x10\x01*\xa8e\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1445,7 +1481,22 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fScalewayDnsZone\x10\xac\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwdns\x12(\n" +
 	"\x11ScalewayDnsRecord\x10\xad\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwrec\x120\n" +
 	"\x1aScalewayServerlessFunction\x10\xb6\x16\x1a\x0f\xa2\xf7\x04\v\b\x18\x10\x01\"\x05scwfn\x122\n" +
-	"\x1bScalewayServerlessContainer\x10\xb7\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwscn:|\n" +
+	"\x1bScalewayServerlessContainer\x10\xb7\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwscn\x12(\n" +
+	"\x12HetznerCloudSshKey\x10\xac\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcssh\x12/\n" +
+	"\x1aHetznerCloudPlacementGroup\x10\xad\x1b\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x1b\x10\x01\"\x04hcpg\x12)\n" +
+	"\x14HetznerCloudFirewall\x10\xae\x1b\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x1b\x10\x01\"\x04hcfw\x12)\n" +
+	"\x13HetznerCloudNetwork\x10\xb6\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcnet\x12+\n" +
+	"\x15HetznerCloudPrimaryIp\x10\xb7\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcpip\x12,\n" +
+	"\x16HetznerCloudFloatingIp\x10\xb8\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcfip\x12(\n" +
+	"\x12HetznerCloudServer\x10\xc0\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcsrv\x12(\n" +
+	"\x12HetznerCloudVolume\x10\xc1\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcvol\x12*\n" +
+	"\x14HetznerCloudSnapshot\x10\xc2\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcsnp\x12-\n" +
+	"\x17HetznerCloudCertificate\x10\xca\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hccrt\x12-\n" +
+	"\x18HetznerCloudLoadBalancer\x10\xcb\x1b\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x1b\x10\x01\"\x04hclb\x12)\n" +
+	"\x13HetznerCloudDnsZone\x10\xd4\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcdns:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package org.openmcf.provider.hetznercloud.hetznercloudvolume.v1;
+
+// HetznerCloudVolumeStackOutputs captures the resulting volume identifiers
+// and device information after provisioning.
+message HetznerCloudVolumeStackOutputs {
+  // The Hetzner Cloud numeric ID of the created volume (as a string).
+  // Can be referenced by other components via StringValueOrRef.
+  string volume_id = 1;
+
+  // The Linux device path for the volume on the attached server
+  // (e.g., "/dev/disk/by-id/scsi-0HC_Volume_12345678"). Empty if the
+  // volume is not attached to a server.
+  //
+  // Use this path to mount the volume from within the server's OS.
+  string linux_device = 2;
+}

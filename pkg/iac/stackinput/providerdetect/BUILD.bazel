@@ -20,6 +20,7 @@ go_library(
         "//apis/org/openmcf/provider/confluent",
         "//apis/org/openmcf/provider/digitalocean",
         "//apis/org/openmcf/provider/gcp",
+        "//apis/org/openmcf/provider/hetznercloud",
         "//apis/org/openmcf/provider/kubernetes",
         "//apis/org/openmcf/provider/oci",
         "//apis/org/openmcf/provider/openfga",
