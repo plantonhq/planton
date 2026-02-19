@@ -1,0 +1,23 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "locals.go",
+        "main.go",
+        "nsg.go",
+        "outputs.go",
+        "security_rules.go",
+    ],
+    importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocinetworksecuritygroup/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/org/openmcf/provider/oci/ocinetworksecuritygroup/v1:ocinetworksecuritygroup",
+        "//apis/org/openmcf/shared/cloudresourcekind",
+        "//pkg/iac/pulumi/pulumimodule/provider/oci/pulumiociprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_oci_sdk_v4//go/oci",
+        "@com_github_pulumi_pulumi_oci_sdk_v4//go/oci/core",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

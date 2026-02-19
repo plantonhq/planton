@@ -1,0 +1,3 @@
+name: oci-object-storage-bucket
+runtime: go
+description: OCI Object Storage Bucket deployment component

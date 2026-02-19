@@ -1,0 +1,9 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciDynamicGroup
+metadata:
+  name: my-compute-instance-principal
+spec:
+  compartmentId:
+    value: <tenancy-ocid>
+  description: Dynamic group matching all compute instances in the target compartment for instance principal authentication
+  matchingRule: "Any {instance.compartment.id = '<compartment-ocid>'}"

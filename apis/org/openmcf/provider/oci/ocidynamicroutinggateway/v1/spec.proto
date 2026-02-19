@@ -1,0 +1,242 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocidynamicroutinggateway.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// OciDynamicRoutingGatewaySpec defines the specification for an Oracle Cloud
+// Infrastructure Dynamic Routing Gateway (DRG) and its sub-resources.
+//
+// A DRG is a virtual router that enables connectivity between a VCN and
+// networks outside the VCN's region: other VCNs (peering), on-premises
+// networks (Site-to-Site VPN via IPSec tunnels, FastConnect via virtual
+// circuits), and cross-region VCNs (remote peering connections). In a
+// hub-and-spoke topology the DRG acts as the hub.
+//
+// This component bundles the DRG with its attachments, route tables,
+// route distributions, distribution statements, and static route rules
+// into a single deployment unit. Sub-resources reference each other by
+// display_name rather than OCID, making the YAML experience clean and
+// self-contained.
+//
+// Excluded resources:
+//   - DrgAttachmentManagement: manages auto-created attachments for IPSec
+//     tunnels, virtual circuits, and remote peering connections. Those
+//     attachments are owned by the respective network resources.
+//   - DrgAttachmentsList: read-only data source.
+message OciDynamicRoutingGatewaySpec {
+  // OCID of the compartment where the DRG will be created.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+  ];
+
+  // Human-readable name for the DRG shown in the OCI Console.
+  // Falls back to metadata.name if not provided.
+  string display_name = 2;
+
+  // Network attachments that connect VCNs or other network resources to this
+  // DRG. Each attachment can optionally reference a custom route table and/or
+  // a custom export route distribution defined within this component.
+  repeated DrgAttachment attachments = 3;
+
+  // Custom DRG route tables for controlling traffic routing within the DRG.
+  // OCI automatically creates default route tables per network type; these
+  // are additional, user-defined tables. Route tables can import routes
+  // from a distribution and contain static route rules.
+  repeated DrgRouteTable route_tables = 4;
+
+  // Custom route distributions for controlling which routes are advertised
+  // to DRG route tables (import) or to DRG attachments (export). OCI
+  // automatically creates a default export distribution; these are
+  // additional, user-defined distributions.
+  repeated DrgRouteDistribution route_distributions = 5;
+
+  // ---------------------------------------------------------------------------
+  // Nested messages
+  // ---------------------------------------------------------------------------
+
+  // DrgAttachment connects a network resource (VCN, IPSec tunnel, virtual
+  // circuit, remote peering connection, or loopback) to the DRG.
+  //
+  // A VCN can be attached to only one DRG at a time, but a DRG can have
+  // multiple VCN attachments.
+  message DrgAttachment {
+    // Unique name for this attachment within the DRG component.
+    // Used by other sub-resources (route rules, distribution statements)
+    // to reference this attachment by name.
+    string display_name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Details of the network being attached.
+    NetworkDetails network_details = 2 [(buf.validate.field).required = true];
+
+    // Name of a DRG route table defined in this component's route_tables
+    // list. When set, the attachment uses this custom route table instead
+    // of the default route table for its network type.
+    string drg_route_table_name = 3;
+
+    // Name of a route distribution defined in this component's
+    // route_distributions list. When set, the attachment uses this
+    // distribution for exporting routes instead of the DRG's default
+    // export distribution.
+    string export_drg_route_distribution_name = 4;
+  }
+
+  // NetworkDetails describes the network resource being attached to the DRG.
+  message NetworkDetails {
+    // Type of network resource being attached.
+    NetworkType type = 1 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+
+    // OCID of the network resource (VCN, IPSec connection, virtual circuit,
+    // or remote peering connection). For VCN attachments this is the VCN
+    // OCID; for IPSec it is the IPSec connection OCID, etc.
+    //
+    // Uses StringValueOrRef without a default_kind because the referenced
+    // resource type depends on the attachment type.
+    org.openmcf.shared.foreignkey.v1.StringValueOrRef id = 2 [(buf.validate.field).required = true];
+
+    // OCID of the VCN route table to use for ingress routing (transit
+    // routing). Only applicable for VCN attachments. When set, traffic
+    // entering the VCN through this DRG attachment is routed according
+    // to this VCN route table rather than the VCN's default route table.
+    string route_table_id = 3;
+
+    // Controls whether VCN CIDRs or individual subnet CIDRs are imported
+    // into the DRG route table. Only applicable for VCN attachments.
+    VcnRouteType vcn_route_type = 4;
+
+    // Network type for DRG attachments.
+    enum NetworkType {
+      network_type_unspecified = 0;
+      vcn = 1;
+      ipsec_tunnel = 2;
+      remote_peering_connection = 3;
+      virtual_circuit = 4;
+      loopback = 5;
+    }
+
+    // Controls the granularity of route import for VCN attachments.
+    enum VcnRouteType {
+      vcn_route_type_unspecified = 0;
+      // Import the VCN's CIDR blocks as aggregate routes.
+      vcn_cidrs = 1;
+      // Import individual subnet CIDR blocks for finer-grained routing.
+      subnet_cidrs = 2;
+    }
+  }
+
+  // DrgRouteTable defines a custom route table within the DRG. Route tables
+  // determine how traffic is forwarded between DRG attachments.
+  message DrgRouteTable {
+    // Unique name for this route table within the DRG component.
+    // Attachments reference route tables by this name.
+    string display_name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Name of a route distribution defined in this component's
+    // route_distributions list. When set, routes from matching
+    // attachments are automatically imported into this route table.
+    string import_drg_route_distribution_name = 2;
+
+    // When true, enables Equal-Cost Multi-Path (ECMP) routing across
+    // multiple IPSec tunnels or virtual circuits. Traffic is distributed
+    // across paths with equal-cost routes.
+    bool is_ecmp_enabled = 3;
+
+    // Static route rules for this route table. Static routes take
+    // precedence over dynamically imported routes.
+    repeated StaticRouteRule static_route_rules = 4;
+  }
+
+  // StaticRouteRule defines a static route in a DRG route table, directing
+  // traffic for a specific CIDR block to a DRG attachment.
+  message StaticRouteRule {
+    // Destination CIDR block (IPv4 or IPv6) for this route.
+    // Example: "10.0.0.0/8", "192.168.1.0/24".
+    string destination = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Name of the DRG attachment (defined in this component's attachments
+    // list) that serves as the next hop for traffic matching this route.
+    string next_hop_attachment_name = 2 [(buf.validate.field).string.min_len = 1];
+  }
+
+  // DrgRouteDistribution defines a route distribution that controls which
+  // routes are advertised to route tables (import) or to attachments
+  // (export). Distributions contain prioritized statements that match
+  // against attachment criteria.
+  message DrgRouteDistribution {
+    // Unique name for this distribution within the DRG component.
+    // Route tables and attachments reference distributions by this name.
+    string display_name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Whether this distribution controls route import or export.
+    DistributionType distribution_type = 2 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+
+    // Prioritized statements that define which routes are accepted.
+    // Statements are evaluated in priority order (lowest number first);
+    // the first matching statement determines the action.
+    repeated DistributionStatement statements = 3;
+
+    // Distribution direction type.
+    enum DistributionType {
+      distribution_type_unspecified = 0;
+      // Import distribution: controls which routes are imported into
+      // a DRG route table from its associated attachments.
+      import_routes = 1;
+      // Export distribution: controls which routes are exported from
+      // the DRG to an attachment's connected network.
+      export_routes = 2;
+    }
+  }
+
+  // DistributionStatement defines a single rule within a route distribution.
+  // Each statement has a priority and match criteria. The action is always
+  // ACCEPT (the only OCI-supported action) and is hardcoded in the IaC
+  // modules.
+  message DistributionStatement {
+    // Priority of this statement (1-65535). Lower numbers are evaluated
+    // first. Priorities must be unique within a distribution.
+    int32 priority = 1 [(buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }];
+
+    // Criteria for matching routes. Determines which routes this
+    // statement applies to.
+    MatchCriteria match_criteria = 2 [(buf.validate.field).required = true];
+  }
+
+  // MatchCriteria defines how a distribution statement selects routes.
+  message MatchCriteria {
+    // How to match routes for this statement.
+    MatchType match_type = 1 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+
+    // Network attachment type to match against. Required when match_type
+    // is drg_attachment_type. Accepted values: "VCN", "IPSEC_TUNNEL",
+    // "VIRTUAL_CIRCUIT", "REMOTE_PEERING_CONNECTION".
+    string attachment_type = 2;
+
+    // Name of a DRG attachment (defined in this component's attachments
+    // list) to match against. Required when match_type is
+    // drg_attachment_id.
+    string drg_attachment_name = 3;
+
+    // Match type for route distribution statements.
+    enum MatchType {
+      match_type_unspecified = 0;
+      // Match all routes regardless of attachment.
+      match_all = 1;
+      // Match routes from attachments of a specific network type.
+      drg_attachment_type = 2;
+      // Match routes from a specific DRG attachment.
+      drg_attachment_id = 3;
+    }
+  }
+}

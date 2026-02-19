@@ -1,0 +1,361 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocidbsystem.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// OciDbSystemSpec defines the specification for an Oracle Cloud Infrastructure
+// Database System -- a managed Oracle Database running on Virtual Machine or
+// Bare Metal infrastructure.
+//
+// A DB System provisions the underlying compute and storage, a DB Home
+// containing the Oracle Database software, and an initial database instance.
+// These three layers (system, home, database) form an inseparable unit at
+// creation time and are modeled as nested messages rather than separate
+// resources.
+//
+// This component supports fresh creation only (source=NONE). Clone and
+// restore scenarios (source=DB_BACKUP, DATABASE, DB_SYSTEM) require
+// different field sets and may be added in a future version.
+//
+// Deprecated/excluded fields:
+//   - db_workload: deprecated by Oracle since November 2023
+//   - compute_model/compute_count: Exadata Cloud@Customer specific; VM/BM
+//     shapes use cpu_core_count
+//   - source and clone/restore fields: different operational workflow
+//   - backup_destination_details: advanced backup routing (DBRS default
+//     covers most cases)
+message OciDbSystemSpec {
+  option (buf.validate.message).cel = {
+    id: "db_home_version_mutual_exclusivity"
+    message: "db_home.db_version and db_home.database_software_image_id are mutually exclusive"
+    expression: "!(this.db_home.db_version != '' && has(this.db_home.database_software_image_id))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "db_home_version_required"
+    message: "either db_home.db_version or db_home.database_software_image_id must be provided"
+    expression: "this.db_home.db_version != '' || has(this.db_home.database_software_image_id)"
+  };
+
+  // OCID of the compartment where the DB System will be created.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+  ];
+
+  // Human-readable name for the DB System shown in the OCI Console.
+  // Falls back to metadata.name if not provided.
+  string display_name = 2;
+
+  // Availability domain where the DB System will be placed.
+  // Example: "Uocm:PHX-AD-1". Changing this forces recreation.
+  string availability_domain = 3 [(buf.validate.field).string.min_len = 1];
+
+  // Compute shape for the DB System nodes. Determines CPU architecture,
+  // core count range, and memory. Examples: "VM.Standard2.4",
+  // "VM.Standard.E4.Flex", "BM.DenseIO2.52".
+  string shape = 4 [(buf.validate.field).string.min_len = 1];
+
+  // OCID of the subnet where the DB System will be placed.
+  // Changing this forces recreation.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 5 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetId"
+  ];
+
+  // SSH public keys for administrative access to the DB System nodes.
+  // At least one key is required. Keys must be in OpenSSH format.
+  repeated string ssh_public_keys = 6 [(buf.validate.field).repeated.min_items = 1];
+
+  // Hostname for the DB System. Must be unique within the subnet.
+  // Combined with the domain to form the FQDN. Changing this forces recreation.
+  string hostname = 7 [(buf.validate.field).string.min_len = 1];
+
+  // Number of CPU cores to enable. For VM shapes, this is the number
+  // of OCPUs. For BM shapes, this is the total core count. When omitted,
+  // the shape's default is used.
+  int32 cpu_core_count = 8;
+
+  // Oracle Database edition. Determines available features and licensing
+  // tiers. Exadata and 2-node RAC require enterprise_edition_extreme_performance.
+  // Changing this forces recreation.
+  DatabaseEdition database_edition = 9;
+
+  // License model for the DB System. Determines whether existing Oracle
+  // licenses are applied (BYOL) or new licenses are included in the price.
+  LicenseModel license_model = 10;
+
+  // Initial data storage size in gigabytes. Required for VM DB Systems.
+  // Supported values depend on the shape (typically 256, 512, 1024, 2048,
+  // 4096, 6144, 8192, 10240, 12288, 14336, 16384, 20480, 24576, 28672,
+  // 32768, 36864, 40960).
+  int32 data_storage_size_in_gb = 11;
+
+  // Percentage of total storage allocated to data (as opposed to recovery).
+  // Valid values: 40 or 80. Only applicable for BM DB Systems.
+  // Changing this forces recreation.
+  int32 data_storage_percentage = 12;
+
+  // Disk redundancy level. "normal" provides 2-way mirroring; "high"
+  // provides 3-way mirroring. Only applicable for BM DB Systems.
+  // Changing this forces recreation.
+  DiskRedundancy disk_redundancy = 13;
+
+  // Number of DB System nodes. Use 1 for a single-node system or 2 for
+  // a 2-node RAC cluster. Changing this forces recreation.
+  int32 node_count = 14;
+
+  // Network domain name for the DB System. Defaults to the subnet's
+  // domain if not specified. Changing this forces recreation.
+  string domain = 15;
+
+  // Cluster name for the DB System. Used for RAC clusters.
+  // Maximum 11 characters. Changing this forces recreation.
+  string cluster_name = 16;
+
+  // Fault domains for distributing DB System nodes. Use for RAC to
+  // place nodes in different fault domains for high availability.
+  // Changing this forces recreation.
+  repeated string fault_domains = 17;
+
+  // OCIDs of network security groups to apply to the DB System VNIC.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef nsg_ids = 18 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciNetworkSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
+  ];
+
+  // OCID of the backup subnet for the DB System. Required for RAC
+  // configurations. Changing this forces recreation.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef backup_subnet_id = 19 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetId"
+  ];
+
+  // OCIDs of network security groups for the backup VNIC.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef backup_network_nsg_ids = 20 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciNetworkSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
+  ];
+
+  // OCID of the KMS key for encrypting the DB System's data at rest.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 21;
+
+  // OCID of the specific KMS key version. When omitted, the current
+  // key version is used.
+  string kms_key_version_id = 22;
+
+  // Time zone for the DB System. Example: "UTC", "US/Pacific".
+  // Changing this forces recreation.
+  string time_zone = 23;
+
+  // When true, configures a sparse disk group on the BM DB System.
+  // Only applicable for BM shapes. Changing this forces recreation.
+  optional bool sparse_diskgroup = 24;
+
+  // Storage volume performance mode. "balanced" is suitable for most
+  // workloads; "high_performance" provides lower latency at higher cost.
+  // Changing this forces recreation.
+  StorageVolumePerformanceMode storage_volume_performance_mode = 25;
+
+  // Specific private IP address for the DB System. When omitted,
+  // OCI auto-assigns an available IP from the subnet.
+  // Changing this forces recreation.
+  string private_ip = 26;
+
+  // Data collection options controlling OCI diagnostic telemetry.
+  DataCollectionOptions data_collection_options = 27;
+
+  // DB System options controlling storage management strategy.
+  DbSystemOptions db_system_options = 28;
+
+  // Maintenance window scheduling. When omitted or preference is
+  // no_preference, OCI selects the maintenance window automatically.
+  MaintenanceWindowDetails maintenance_window_details = 29;
+
+  // DB Home configuration. Contains the Oracle Database software version
+  // and the initial database to create. Exactly one DB Home is required
+  // at DB System creation time.
+  DbHome db_home = 30 [(buf.validate.field).required = true];
+
+  // ---------------------------------------------------------------------------
+  // Nested messages
+  // ---------------------------------------------------------------------------
+
+  // DataCollectionOptions controls diagnostic data collection for the
+  // DB System. All fields default to provider behavior when omitted.
+  message DataCollectionOptions {
+    // Whether to enable diagnostic event collection.
+    optional bool is_diagnostics_events_enabled = 1;
+    // Whether to enable health monitoring.
+    optional bool is_health_monitoring_enabled = 2;
+    // Whether to enable incident log collection.
+    optional bool is_incident_logs_enabled = 3;
+  }
+
+  // DbSystemOptions controls storage management for the DB System.
+  message DbSystemOptions {
+    // Storage management strategy. ASM (Automatic Storage Management) is
+    // the default for most shapes. LVM (Logical Volume Management) is
+    // available for single-node VM systems only.
+    // Changing this forces recreation.
+    StorageManagement storage_management = 1;
+  }
+
+  // MaintenanceWindowDetails configures the patching schedule for the
+  // DB System. When preference is no_preference, all other fields are
+  // ignored and OCI selects the window automatically.
+  message MaintenanceWindowDetails {
+    // Maintenance scheduling preference.
+    Preference preference = 1;
+    // Patching strategy. Rolling applies patches one node at a time
+    // (zero downtime for RAC). Nonrolling patches all nodes simultaneously.
+    PatchingMode patching_mode = 2;
+    // Weeks of advance notice before the maintenance window opens.
+    int32 lead_time_in_weeks = 3;
+    // Months when maintenance is allowed. Example: ["JANUARY", "APRIL",
+    // "JULY", "OCTOBER"] for quarterly patching.
+    repeated string months = 4;
+    // Weeks of the month (1-4) when maintenance is allowed.
+    repeated int32 weeks_of_month = 5;
+    // Days of the week when maintenance is allowed. Example: ["MONDAY"].
+    repeated string days_of_week = 6;
+    // Hours of the day (0-23) when maintenance may start.
+    repeated int32 hours_of_day = 7;
+    // Custom timeout for patching actions in minutes (0-120).
+    int32 custom_action_timeout_in_mins = 8;
+    // Whether the custom action timeout is enabled.
+    optional bool is_custom_action_timeout_enabled = 9;
+    // Whether monthly patching is enabled.
+    optional bool is_monthly_patching_enabled = 10;
+  }
+
+  // DbHome represents the Oracle Database Home -- a directory containing
+  // Oracle Database software of a specific version.
+  message DbHome {
+    // Oracle Database version. Example: "19.0.0.0", "21.0.0.0".
+    // Mutually exclusive with database_software_image_id.
+    // Changing this forces recreation.
+    string db_version = 1;
+    // Human-readable name for the DB Home.
+    string display_name = 2;
+    // OCID of a custom database software image to use instead of a
+    // standard db_version. Mutually exclusive with db_version.
+    // Changing this forces recreation.
+    org.openmcf.shared.foreignkey.v1.StringValueOrRef database_software_image_id = 3;
+    // The initial database to create within this DB Home.
+    Database database = 4 [(buf.validate.field).required = true];
+  }
+
+  // Database represents the Oracle Database instance created within a DB Home.
+  message Database {
+    // Administrator password for the SYS and SYSTEM users. Must be 2 to 30
+    // characters, contain at least one uppercase, one lowercase, and one
+    // numeric character. Cannot contain the double-quote character.
+    // This value is not returned by the API after creation.
+    string admin_password = 1 [(buf.validate.field).string.min_len = 2];
+    // Database name. Must be alphanumeric, begin with a letter, and be
+    // at most 8 characters for single-node or 30 characters otherwise.
+    // Changing this forces recreation.
+    string db_name = 2 [
+      (buf.validate.field).string.min_len = 1,
+      (buf.validate.field).string.max_len = 30,
+      (buf.validate.field).string.pattern = "^[a-zA-Z][a-zA-Z0-9]*$"
+    ];
+    // Character set for the database. Defaults to AL32UTF8 when omitted.
+    // Changing this forces recreation.
+    string character_set = 3;
+    // National character set. Defaults to AL16UTF16 when omitted.
+    // Valid values: AL16UTF16, UTF8. Changing this forces recreation.
+    string ncharacter_set = 4;
+    // Pluggable database name. Must begin with a letter and contain only
+    // alphanumeric characters. Changing this forces recreation.
+    string pdb_name = 5;
+    // Database domain. Defaults to the DB System's domain when omitted.
+    // Changing this forces recreation.
+    string db_domain = 6;
+    // OCID of the KMS key for Transparent Data Encryption (TDE).
+    // When omitted, Oracle-managed encryption is used.
+    // Changing this forces recreation.
+    org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 7;
+    // OCID of the specific KMS key version for TDE.
+    // Changing this forces recreation.
+    string kms_key_version_id = 8;
+    // OCID of the OCI Vault containing the TDE encryption key.
+    // Required when kms_key_id is set. Changing this forces recreation.
+    org.openmcf.shared.foreignkey.v1.StringValueOrRef vault_id = 9;
+    // Automatic backup configuration for the database.
+    DbBackupConfig db_backup_config = 10;
+  }
+
+  // DbBackupConfig configures automatic backups for the database.
+  message DbBackupConfig {
+    // Whether automatic backups are enabled.
+    optional bool auto_backup_enabled = 1;
+    // Preferred backup window. Values: SLOT_ONE through SLOT_TWELVE
+    // representing 2-hour windows starting from 00:00-02:00 UTC.
+    // Only applied when auto_backup_enabled is true.
+    string auto_backup_window = 2;
+    // Number of days to retain automatic backups (1-60).
+    // Only applied when auto_backup_enabled is true.
+    int32 recovery_window_in_days = 3;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Enums
+  // ---------------------------------------------------------------------------
+
+  // DatabaseEdition controls the feature set and licensing tier.
+  enum DatabaseEdition {
+    database_edition_unspecified = 0;
+    standard_edition = 1;
+    enterprise_edition = 2;
+    enterprise_edition_high_performance = 3;
+    enterprise_edition_extreme_performance = 4;
+  }
+
+  // LicenseModel determines how Oracle Database licensing is applied.
+  enum LicenseModel {
+    license_model_unspecified = 0;
+    bring_your_own_license = 1;
+    license_included = 2;
+  }
+
+  // DiskRedundancy sets the disk mirroring level for BM DB Systems.
+  enum DiskRedundancy {
+    disk_redundancy_unspecified = 0;
+    normal = 1;
+    high = 2;
+  }
+
+  // StorageVolumePerformanceMode controls I/O performance characteristics.
+  enum StorageVolumePerformanceMode {
+    storage_volume_performance_mode_unspecified = 0;
+    balanced = 1;
+    high_performance = 2;
+  }
+
+  // StorageManagement selects the storage management strategy.
+  enum StorageManagement {
+    storage_management_unspecified = 0;
+    asm = 1;
+    lvm = 2;
+  }
+
+  // Preference controls maintenance window scheduling behavior.
+  enum Preference {
+    preference_unspecified = 0;
+    no_preference = 1;
+    custom_preference = 2;
+  }
+
+  // PatchingMode controls how patches are applied to multi-node systems.
+  enum PatchingMode {
+    patching_mode_unspecified = 0;
+    rolling = 1;
+    nonrolling = 2;
+  }
+}

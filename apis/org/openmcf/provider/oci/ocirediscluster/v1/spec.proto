@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocirediscluster.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// OciRedisClusterSpec defines the specification for an OCI Cache (Redis)
+// cluster -- a fully managed, Redis-compatible in-memory caching service
+// that supports both sharded and non-sharded deployment modes.
+//
+// Non-sharded clusters provide a single primary with optional replicas
+// for high availability. Sharded clusters distribute data across multiple
+// shards for horizontal scaling, each with its own primary and replicas.
+//
+// This component manages the cluster resource itself. Config sets are
+// separate OCI resources with independent lifecycles and are referenced
+// by OCID when custom Redis configuration is needed.
+//
+// Excluded from v1:
+//   - defined_tags, system_tags -- managed by platform via freeform_tags
+//   - security_attributes -- specialized Oracle Zero-Trust Packet Routing
+//   - freeform_tags -- auto-populated from metadata labels
+message OciRedisClusterSpec {
+  option (buf.validate.message).cel = {
+    id: "shard_count_required_when_sharded"
+    message: "shard_count must be greater than zero when cluster_mode is sharded"
+    expression: "this.cluster_mode != 2 || this.shard_count > 0"
+  };
+
+  // OCID of the compartment where the Redis cluster will be created.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+  ];
+
+  // Human-readable name shown in the OCI Console.
+  // Falls back to metadata.name if not provided.
+  string display_name = 2;
+
+  // OCID of the subnet where the Redis cluster will be placed.
+  // Changing this forces recreation.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 3 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetId"
+  ];
+
+  // Number of nodes in the cluster. For non-sharded clusters this is the
+  // total node count (1 primary + N-1 replicas). For sharded clusters
+  // this is the number of nodes per shard. Updatable.
+  int32 node_count = 4 [(buf.validate.field).int32.gte = 1];
+
+  // Memory allocated to each node in gigabytes. Determines the total
+  // cache capacity. Updatable. Common values: 2, 4, 8, 16, 32.
+  float node_memory_in_gbs = 5 [(buf.validate.field).float.gt = 0];
+
+  // OCI Cache engine version (e.g. "V7.0.5", "V7.1.1").
+  // Available versions depend on the region. Updatable.
+  string software_version = 6 [(buf.validate.field).string.min_len = 1];
+
+  // Cluster topology mode. Changing this forces recreation.
+  // When unset, OCI defaults to NONSHARDED.
+  ClusterMode cluster_mode = 7;
+
+  // Number of shards in the cluster. Only applicable when cluster_mode
+  // is sharded. Each shard has node_count nodes. Updatable.
+  int32 shard_count = 8;
+
+  // OCIDs of network security groups controlling access to the cluster.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef nsg_ids = 9 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciNetworkSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
+  ];
+
+  // OCID of an OCI Cache Config Set providing custom Redis configuration
+  // parameters (e.g. maxmemory-policy, timeout). When omitted, the
+  // default configuration is used.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef config_set_id = 10;
+
+  // ClusterMode selects the cluster topology.
+  enum ClusterMode {
+    cluster_mode_unspecified = 0;
+    // Single shard with one primary and optional replicas.
+    nonsharded = 1;
+    // Multiple shards, each with its own primary and replicas.
+    sharded = 2;
+  }
+}

@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocicontainerenginenodepool.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/oci/ocicontainerenginenodepool/v1/spec.proto";
+import "org/openmcf/provider/oci/ocicontainerenginenodepool/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OciContainerEngineNodePool is the top-level resource representing an Oracle
+// Cloud Infrastructure Container Engine for Kubernetes (OKE) node pool.
+message OciContainerEngineNodePool {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciContainerEngineNodePool'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciContainerEngineNodePoolSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciContainerEngineNodePoolStatus status = 5;
+}
+
+// OciContainerEngineNodePoolStatus holds the outputs produced by deploying an
+// OciContainerEngineNodePool.
+message OciContainerEngineNodePoolStatus {
+  // stack-outputs
+  OciContainerEngineNodePoolStackOutputs outputs = 1;
+}

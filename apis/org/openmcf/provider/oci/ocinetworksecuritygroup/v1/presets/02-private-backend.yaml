@@ -1,0 +1,20 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciNetworkSecurityGroup
+metadata:
+  name: my-private-backend-nsg
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  vcnId:
+    value: <vcn-ocid>
+  displayName: private-backend-nsg
+  ingressRules:
+    - source: 10.0.0.0/16 # Adjust to match your VCN CIDR block
+      sourceType: cidr_block
+      protocol: all
+      description: Allow all traffic from within the VCN
+  egressRules:
+    - destination: 0.0.0.0/0
+      destinationType: cidr_block
+      protocol: all
+      description: Allow all outbound traffic

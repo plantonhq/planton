@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ociidentitypolicy.v1;
+
+// OciIdentityPolicyStackOutputs contains the outputs produced after deploying
+// an OciIdentityPolicy.
+message OciIdentityPolicyStackOutputs {
+  // OCID of the created policy.
+  string policy_id = 1;
+}

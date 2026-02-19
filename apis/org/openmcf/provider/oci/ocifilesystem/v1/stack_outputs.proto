@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocifilesystem.v1;
+
+// OciFileSystemStackOutputs contains the outputs produced after
+// deploying an OciFileSystem.
+// These values are used by downstream components for composability via
+// StringValueOrRef, and by end users for NFS mount commands.
+message OciFileSystemStackOutputs {
+  // OCID of the file system.
+  string file_system_id = 1;
+
+  // OCID of the mount target.
+  string mount_target_id = 2;
+
+  // Private IP address of the mount target. Used in NFS mount commands:
+  //   mount -t nfs <ip>:<export_path> /local/mount/point
+  string mount_target_ip_address = 3;
+
+  // OCID of the export set associated with the mount target.
+  string export_set_id = 4;
+}

@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ociautonomousdatabase.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/oci/ociautonomousdatabase/v1/spec.proto";
+import "org/openmcf/provider/oci/ociautonomousdatabase/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OciAutonomousDatabase is the top-level resource representing an Oracle Cloud
+// Infrastructure Autonomous Database -- a fully managed, self-driving database
+// service supporting OLTP, data warehouse, JSON, APEX, and lakehouse workloads.
+message OciAutonomousDatabase {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciAutonomousDatabase'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciAutonomousDatabaseSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciAutonomousDatabaseStatus status = 5;
+}
+
+// OciAutonomousDatabaseStatus holds the outputs produced by deploying an
+// OciAutonomousDatabase.
+message OciAutonomousDatabaseStatus {
+  // stack-outputs
+  OciAutonomousDatabaseStackOutputs outputs = 1;
+}

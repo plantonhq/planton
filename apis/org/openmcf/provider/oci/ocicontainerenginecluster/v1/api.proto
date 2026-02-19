@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocicontainerenginecluster.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/oci/ocicontainerenginecluster/v1/spec.proto";
+import "org/openmcf/provider/oci/ocicontainerenginecluster/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OciContainerEngineCluster is the top-level resource representing an Oracle
+// Cloud Infrastructure Container Engine for Kubernetes (OKE) cluster.
+message OciContainerEngineCluster {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciContainerEngineCluster'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciContainerEngineClusterSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciContainerEngineClusterStatus status = 5;
+}
+
+// OciContainerEngineClusterStatus holds the outputs produced by deploying an
+// OciContainerEngineCluster.
+message OciContainerEngineClusterStatus {
+  // stack-outputs
+  OciContainerEngineClusterStackOutputs outputs = 1;
+}

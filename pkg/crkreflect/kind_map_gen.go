@@ -246,6 +246,26 @@ import (
 	kubernetestektonoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestektonoperator/v1"
 	kubernetestemporalv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestemporal/v1"
 	kuberneteszalandopostgresoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kuberneteszalandopostgresoperator/v1"
+	ociautonomousdatabasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ociautonomousdatabase/v1"
+	ocicompartmentv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocicompartment/v1"
+	ocicomputeinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocicomputeinstance/v1"
+	ocicontainerengineclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocicontainerenginecluster/v1"
+	ocicontainerenginenodepoolv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocicontainerenginenodepool/v1"
+	ocicontainerinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocicontainerinstance/v1"
+	ocidbsystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocidbsystem/v1"
+	ocidynamicgroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocidynamicgroup/v1"
+	ocidynamicroutinggatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocidynamicroutinggateway/v1"
+	ocifilesystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocifilesystem/v1"
+	ociidentitypolicyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ociidentitypolicy/v1"
+	ociloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ociloadbalancer/v1"
+	ocimysqldbsystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocimysqldbsystem/v1"
+	ocinetworkloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocinetworkloadbalancer/v1"
+	ocinetworksecuritygroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocinetworksecuritygroup/v1"
+	ocinosqltablev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocinosqltable/v1"
+	ociobjectstoragebucketv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ociobjectstoragebucket/v1"
+	ocipostgresqldbsystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocipostgresqldbsystem/v1"
+	ocipublicipv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocipublicip/v1"
+	ociredisclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocirediscluster/v1"
 	ocisubnetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocisubnet/v1"
 	ocivcnv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocivcn/v1"
 	openfgaauthorizationmodelv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga/openfgaauthorizationmodel/v1"
@@ -582,8 +602,28 @@ var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 }
 
 var ProviderOciMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
-	cloudresourcekind.CloudResourceKind_OciSubnet: &ocisubnetv1.OciSubnet{},
-	cloudresourcekind.CloudResourceKind_OciVcn:    &ocivcnv1.OciVcn{},
+	cloudresourcekind.CloudResourceKind_OciAutonomousDatabase:      &ociautonomousdatabasev1.OciAutonomousDatabase{},
+	cloudresourcekind.CloudResourceKind_OciCompartment:             &ocicompartmentv1.OciCompartment{},
+	cloudresourcekind.CloudResourceKind_OciComputeInstance:         &ocicomputeinstancev1.OciComputeInstance{},
+	cloudresourcekind.CloudResourceKind_OciContainerEngineCluster:  &ocicontainerengineclusterv1.OciContainerEngineCluster{},
+	cloudresourcekind.CloudResourceKind_OciContainerEngineNodePool: &ocicontainerenginenodepoolv1.OciContainerEngineNodePool{},
+	cloudresourcekind.CloudResourceKind_OciContainerInstance:       &ocicontainerinstancev1.OciContainerInstance{},
+	cloudresourcekind.CloudResourceKind_OciDbSystem:                &ocidbsystemv1.OciDbSystem{},
+	cloudresourcekind.CloudResourceKind_OciDynamicGroup:            &ocidynamicgroupv1.OciDynamicGroup{},
+	cloudresourcekind.CloudResourceKind_OciDynamicRoutingGateway:   &ocidynamicroutinggatewayv1.OciDynamicRoutingGateway{},
+	cloudresourcekind.CloudResourceKind_OciFileSystem:              &ocifilesystemv1.OciFileSystem{},
+	cloudresourcekind.CloudResourceKind_OciIdentityPolicy:          &ociidentitypolicyv1.OciIdentityPolicy{},
+	cloudresourcekind.CloudResourceKind_OciLoadBalancer:            &ociloadbalancerv1.OciLoadBalancer{},
+	cloudresourcekind.CloudResourceKind_OciMysqlDbSystem:           &ocimysqldbsystemv1.OciMysqlDbSystem{},
+	cloudresourcekind.CloudResourceKind_OciNetworkLoadBalancer:     &ocinetworkloadbalancerv1.OciNetworkLoadBalancer{},
+	cloudresourcekind.CloudResourceKind_OciNetworkSecurityGroup:    &ocinetworksecuritygroupv1.OciNetworkSecurityGroup{},
+	cloudresourcekind.CloudResourceKind_OciNosqlTable:              &ocinosqltablev1.OciNosqlTable{},
+	cloudresourcekind.CloudResourceKind_OciObjectStorageBucket:     &ociobjectstoragebucketv1.OciObjectStorageBucket{},
+	cloudresourcekind.CloudResourceKind_OciPostgresqlDbSystem:      &ocipostgresqldbsystemv1.OciPostgresqlDbSystem{},
+	cloudresourcekind.CloudResourceKind_OciPublicIp:                &ocipublicipv1.OciPublicIp{},
+	cloudresourcekind.CloudResourceKind_OciRedisCluster:            &ociredisclusterv1.OciRedisCluster{},
+	cloudresourcekind.CloudResourceKind_OciSubnet:                  &ocisubnetv1.OciSubnet{},
+	cloudresourcekind.CloudResourceKind_OciVcn:                     &ocivcnv1.OciVcn{},
 }
 
 var ProviderOpenFgaMap = map[cloudresourcekind.CloudResourceKind]proto.Message{

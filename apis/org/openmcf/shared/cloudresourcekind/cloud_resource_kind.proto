@@ -1584,11 +1584,133 @@ enum CloudResourceKind {
     id_prefix: "ocisub"
   }];
 
+  OciNetworkSecurityGroup = 3302 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocinsg"
+  }];
+
   // --- Identity ---
 
   OciCompartment = 3303 [(kind_meta) = {
     provider: oci
     version: v1
     id_prefix: "ocicmp"
+  }];
+  OciIdentityPolicy = 3304 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ociply"
+  }];
+  OciDynamicGroup = 3305 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocidg"
+  }];
+
+  // --- Compute ---
+
+  OciComputeInstance = 3310 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocivm"
+  }];
+
+  // --- Containers ---
+
+  OciContainerEngineCluster = 3311 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocioke"
+  }];
+
+  OciContainerEngineNodePool = 3312 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocienp"
+  }];
+
+  OciContainerInstance = 3313 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocici"
+  }];
+
+  // --- OCI: Advanced Networking (3320-3329) ---
+
+  OciLoadBalancer = 3320 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocilb"
+  }];
+
+  OciNetworkLoadBalancer = 3321 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocinlb"
+  }];
+
+  OciDynamicRoutingGateway = 3322 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocidrg"
+  }];
+
+  OciPublicIp = 3323 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocipip"
+  }];
+
+  // --- OCI: Databases (3330-3339) ---
+
+  OciAutonomousDatabase = 3330 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ociadb"
+  }];
+
+  OciDbSystem = 3331 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocidb"
+  }];
+
+  OciMysqlDbSystem = 3332 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocimysql"
+  }];
+
+  OciPostgresqlDbSystem = 3333 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocipg"
+  }];
+
+  OciRedisCluster = 3334 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocired"
+  }];
+
+  OciNosqlTable = 3335 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocinosql"
+  }];
+
+  // ── Storage ───────────────────────────────────────────────────────
+
+  OciObjectStorageBucket = 3340 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ociobkt"
+  }];
+
+  OciFileSystem = 3341 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocifs"
   }];
 }

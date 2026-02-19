@@ -1,0 +1,24 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciComputeInstance
+metadata:
+  name: my-general-purpose-instance
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  availabilityDomain: <availability-domain>
+  shape: VM.Standard.E4.Flex
+  shapeConfig:
+    ocpus: 1
+    memoryInGbs: 16
+  sourceDetails:
+    sourceType: image
+    sourceId: <image-ocid>
+    bootVolumeSizeInGbs: 50
+    bootVolumeVpusPerGb: 10
+  createVnicDetails:
+    subnetId:
+      value: <subnet-ocid>
+    assignPublicIp: true
+    hostnameLabel: myinstance
+  metadata:
+    ssh_authorized_keys: <ssh-public-key>

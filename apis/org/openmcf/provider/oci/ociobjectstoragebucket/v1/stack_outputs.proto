@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ociobjectstoragebucket.v1;
+
+// OciObjectStorageBucketStackOutputs contains the outputs produced after
+// deploying an OciObjectStorageBucket.
+// These values are used by downstream components for composability via
+// StringValueOrRef.
+message OciObjectStorageBucketStackOutputs {
+  // OCID of the Object Storage bucket.
+  string bucket_id = 1;
+}

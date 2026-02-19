@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocirediscluster.v1;
+
+// OciRedisClusterStackOutputs contains the outputs produced after
+// deploying an OciRedisCluster.
+// These values are used by downstream components for composability via
+// StringValueOrRef.
+message OciRedisClusterStackOutputs {
+  // OCID of the Redis cluster.
+  string cluster_id = 1;
+
+  // FQDN of the primary (read-write) endpoint.
+  // This is the main connection point for non-sharded clusters.
+  string primary_fqdn = 2;
+
+  // Private IP address of the primary endpoint.
+  string primary_endpoint_ip_address = 3;
+
+  // FQDN of the replica (read-only) endpoint.
+  string replicas_fqdn = 4;
+
+  // FQDN of the discovery endpoint for sharded clusters.
+  // Clients use this to discover shard topology.
+  string discovery_fqdn = 5;
+}

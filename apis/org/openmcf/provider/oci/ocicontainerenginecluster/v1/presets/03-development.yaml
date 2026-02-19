@@ -1,0 +1,16 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciContainerEngineCluster
+metadata:
+  name: my-dev-oke-cluster
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  vcnId:
+    value: <vcn-ocid>
+  kubernetesVersion: <kubernetes-version>
+  type: basic_cluster # no enhanced features needed for dev; lower cost
+  cniType: flannel_overlay # simpler networking; no pod subnet requirements
+  endpointConfig:
+    subnetId:
+      value: <api-endpoint-subnet-ocid>
+    isPublicIpEnabled: true

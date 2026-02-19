@@ -384,7 +384,26 @@ const (
 	CloudResourceKind_ScalewayServerlessContainer       CloudResourceKind = 2871
 	CloudResourceKind_OciVcn                            CloudResourceKind = 3300
 	CloudResourceKind_OciSubnet                         CloudResourceKind = 3301
+	CloudResourceKind_OciNetworkSecurityGroup           CloudResourceKind = 3302
 	CloudResourceKind_OciCompartment                    CloudResourceKind = 3303
+	CloudResourceKind_OciIdentityPolicy                 CloudResourceKind = 3304
+	CloudResourceKind_OciDynamicGroup                   CloudResourceKind = 3305
+	CloudResourceKind_OciComputeInstance                CloudResourceKind = 3310
+	CloudResourceKind_OciContainerEngineCluster         CloudResourceKind = 3311
+	CloudResourceKind_OciContainerEngineNodePool        CloudResourceKind = 3312
+	CloudResourceKind_OciContainerInstance              CloudResourceKind = 3313
+	CloudResourceKind_OciLoadBalancer                   CloudResourceKind = 3320
+	CloudResourceKind_OciNetworkLoadBalancer            CloudResourceKind = 3321
+	CloudResourceKind_OciDynamicRoutingGateway          CloudResourceKind = 3322
+	CloudResourceKind_OciPublicIp                       CloudResourceKind = 3323
+	CloudResourceKind_OciAutonomousDatabase             CloudResourceKind = 3330
+	CloudResourceKind_OciDbSystem                       CloudResourceKind = 3331
+	CloudResourceKind_OciMysqlDbSystem                  CloudResourceKind = 3332
+	CloudResourceKind_OciPostgresqlDbSystem             CloudResourceKind = 3333
+	CloudResourceKind_OciRedisCluster                   CloudResourceKind = 3334
+	CloudResourceKind_OciNosqlTable                     CloudResourceKind = 3335
+	CloudResourceKind_OciObjectStorageBucket            CloudResourceKind = 3340
+	CloudResourceKind_OciFileSystem                     CloudResourceKind = 3341
 )
 
 // Enum value maps for CloudResourceKind.
@@ -679,7 +698,26 @@ var (
 		2871: "ScalewayServerlessContainer",
 		3300: "OciVcn",
 		3301: "OciSubnet",
+		3302: "OciNetworkSecurityGroup",
 		3303: "OciCompartment",
+		3304: "OciIdentityPolicy",
+		3305: "OciDynamicGroup",
+		3310: "OciComputeInstance",
+		3311: "OciContainerEngineCluster",
+		3312: "OciContainerEngineNodePool",
+		3313: "OciContainerInstance",
+		3320: "OciLoadBalancer",
+		3321: "OciNetworkLoadBalancer",
+		3322: "OciDynamicRoutingGateway",
+		3323: "OciPublicIp",
+		3330: "OciAutonomousDatabase",
+		3331: "OciDbSystem",
+		3332: "OciMysqlDbSystem",
+		3333: "OciPostgresqlDbSystem",
+		3334: "OciRedisCluster",
+		3335: "OciNosqlTable",
+		3340: "OciObjectStorageBucket",
+		3341: "OciFileSystem",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
@@ -971,7 +1009,26 @@ var (
 		"ScalewayServerlessContainer":           2871,
 		"OciVcn":                                3300,
 		"OciSubnet":                             3301,
+		"OciNetworkSecurityGroup":               3302,
 		"OciCompartment":                        3303,
+		"OciIdentityPolicy":                     3304,
+		"OciDynamicGroup":                       3305,
+		"OciComputeInstance":                    3310,
+		"OciContainerEngineCluster":             3311,
+		"OciContainerEngineNodePool":            3312,
+		"OciContainerInstance":                  3313,
+		"OciLoadBalancer":                       3320,
+		"OciNetworkLoadBalancer":                3321,
+		"OciDynamicRoutingGateway":              3322,
+		"OciPublicIp":                           3323,
+		"OciAutonomousDatabase":                 3330,
+		"OciDbSystem":                           3331,
+		"OciMysqlDbSystem":                      3332,
+		"OciPostgresqlDbSystem":                 3333,
+		"OciRedisCluster":                       3334,
+		"OciNosqlTable":                         3335,
+		"OciObjectStorageBucket":                3340,
+		"OciFileSystem":                         3341,
 	}
 )
 
@@ -1116,7 +1173,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xfba\n" +
+	"\x02v1\x10\x01*\xb0h\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1456,8 +1513,27 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x1aScalewayServerlessFunction\x10\xb6\x16\x1a\x0f\xa2\xf7\x04\v\b\x18\x10\x01\"\x05scwfn\x122\n" +
 	"\x1bScalewayServerlessContainer\x10\xb7\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwscn\x12\x1d\n" +
 	"\x06OciVcn\x10\xe4\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocivcn\x12 \n" +
-	"\tOciSubnet\x10\xe5\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocisub\x12%\n" +
-	"\x0eOciCompartment\x10\xe7\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocicmp:|\n" +
+	"\tOciSubnet\x10\xe5\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocisub\x12.\n" +
+	"\x17OciNetworkSecurityGroup\x10\xe6\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocinsg\x12%\n" +
+	"\x0eOciCompartment\x10\xe7\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocicmp\x12(\n" +
+	"\x11OciIdentityPolicy\x10\xe8\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ociply\x12%\n" +
+	"\x0fOciDynamicGroup\x10\xe9\x19\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocidg\x12(\n" +
+	"\x12OciComputeInstance\x10\xee\x19\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocivm\x120\n" +
+	"\x19OciContainerEngineCluster\x10\xef\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocioke\x121\n" +
+	"\x1aOciContainerEngineNodePool\x10\xf0\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocienp\x12*\n" +
+	"\x14OciContainerInstance\x10\xf1\x19\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocici\x12%\n" +
+	"\x0fOciLoadBalancer\x10\xf8\x19\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocilb\x12-\n" +
+	"\x16OciNetworkLoadBalancer\x10\xf9\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocinlb\x12/\n" +
+	"\x18OciDynamicRoutingGateway\x10\xfa\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocidrg\x12\"\n" +
+	"\vOciPublicIp\x10\xfb\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocipip\x12,\n" +
+	"\x15OciAutonomousDatabase\x10\x82\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ociadb\x12!\n" +
+	"\vOciDbSystem\x10\x83\x1a\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocidb\x12)\n" +
+	"\x10OciMysqlDbSystem\x10\x84\x1a\x1a\x12\xa2\xf7\x04\x0e\b\x1a\x10\x01\"\bocimysql\x12+\n" +
+	"\x15OciPostgresqlDbSystem\x10\x85\x1a\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocipg\x12&\n" +
+	"\x0fOciRedisCluster\x10\x86\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocired\x12&\n" +
+	"\rOciNosqlTable\x10\x87\x1a\x1a\x12\xa2\xf7\x04\x0e\b\x1a\x10\x01\"\bocinosql\x12.\n" +
+	"\x16OciObjectStorageBucket\x10\x8c\x1a\x1a\x11\xa2\xf7\x04\r\b\x1a\x10\x01\"\aociobkt\x12#\n" +
+	"\rOciFileSystem\x10\x8d\x1a\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocifs:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

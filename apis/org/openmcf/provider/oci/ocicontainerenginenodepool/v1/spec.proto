@@ -1,0 +1,275 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocicontainerenginenodepool.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// OciContainerEngineNodePoolSpec defines the specification for an Oracle Cloud
+// Infrastructure Container Engine for Kubernetes (OKE) node pool.
+//
+// A node pool is a set of worker nodes within an OKE cluster that share the
+// same configuration: compute shape, OS image, Kubernetes version, and
+// placement rules. Multiple node pools can be attached to a single cluster,
+// enabling heterogeneous workloads (e.g., GPU nodes for ML, ARM nodes for
+// cost-optimized services, preemptible nodes for batch jobs).
+//
+// Node placement is controlled via placement configs, each specifying an
+// availability domain, subnet, and optional fault domain constraints. For
+// regional subnets, provide one placement config per AD using the same subnet.
+//
+// Deprecated provider features intentionally omitted:
+//   - node_image_id / node_image_name: use node_source_details instead
+//   - subnet_ids / quantity_per_subnet: use node_config_details instead
+message OciContainerEngineNodePoolSpec {
+  // OCID of the compartment where the node pool will be created.
+  // Changing this after creation forces node pool recreation.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+  ];
+
+  // OCID of the OKE cluster to which this node pool is attached.
+  // Changing this after creation forces node pool recreation.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_id = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciContainerEngineCluster,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.clusterId"
+  ];
+
+  // Human-readable name for the node pool shown in the OCI Console.
+  // Falls back to metadata.name if not provided.
+  string name = 3;
+
+  // Kubernetes version for the nodes. When omitted, inherits the cluster's
+  // Kubernetes version. Set explicitly to pin a specific version or to
+  // perform a rolling version upgrade of worker nodes independently of the
+  // control plane.
+  // Example: "v1.28.2".
+  string kubernetes_version = 4;
+
+  // Compute shape for all nodes in this pool.
+  // Example: "VM.Standard.E4.Flex", "VM.Standard.A1.Flex", "VM.GPU.A10.1".
+  // For flex shapes, also set node_shape_config to specify OCPUs and memory.
+  string node_shape = 5 [(buf.validate.field).string.min_len = 1];
+
+  // Shape configuration for flex shapes. Required when node_shape is a
+  // flex shape (e.g., VM.Standard.E4.Flex). Ignored for fixed shapes.
+  NodeShapeConfig node_shape_config = 6;
+
+  // OS image and boot volume configuration for nodes.
+  // When omitted, OKE uses the default Oracle Linux image for the cluster's
+  // Kubernetes version.
+  NodeSourceDetails node_source_details = 7;
+
+  // Node placement, sizing, networking, and encryption configuration.
+  NodeConfigDetails node_config_details = 8 [(buf.validate.field).required = true];
+
+  // SSH public key installed on each node for debug access.
+  // The corresponding private key allows SSH to nodes via their private IP
+  // (or public IP if the subnet allows it).
+  string ssh_public_key = 9;
+
+  // Kubernetes labels applied to each node after it joins the cluster.
+  // Commonly used for scheduling constraints (nodeSelector, affinity rules).
+  // Example: [{ key: "workload-type", value: "gpu" }]
+  repeated NodeLabel initial_node_labels = 10;
+
+  // Key/value pairs added to each underlying OCI compute instance at launch.
+  // Used for cloud-init user data and instance metadata configuration.
+  map<string, string> node_metadata = 11;
+
+  // Controls graceful node eviction behavior during node pool operations
+  // (scale-down, version upgrades, shape changes).
+  NodeEvictionSettings node_eviction_settings = 12;
+
+  // Rolling update strategy for node pool operations. Controls how many
+  // nodes can be replaced simultaneously during upgrades.
+  NodePoolCyclingDetails node_pool_cycling_details = 13;
+
+  // ---------------------------------------------------------------------------
+  // Enums
+  // ---------------------------------------------------------------------------
+
+  // CniType selects the Container Network Interface plugin for pod networking
+  // at the node pool level. Must match the cluster's CNI configuration.
+  enum CniType {
+    cni_unspecified = 0;
+    flannel_overlay = 1;
+    oci_vcn_ip_native = 2;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Nested messages
+  // ---------------------------------------------------------------------------
+
+  // NodeShapeConfig specifies CPU and memory for flex compute shapes.
+  // Flex shapes allow independent scaling of OCPUs and memory within the
+  // shape's supported range. For example, VM.Standard.E4.Flex supports
+  // 1-64 OCPUs and 1-1024 GB memory (up to 64 GB per OCPU).
+  message NodeShapeConfig {
+    // Number of OCPUs allocated to each node.
+    // Example: 2.0 for a 2-OCPU flex instance.
+    float ocpus = 1;
+
+    // Memory in gigabytes allocated to each node.
+    // Example: 32.0 for 32 GB of RAM.
+    float memory_in_gbs = 2;
+  }
+
+  // NodeSourceDetails specifies the OS image for nodes.
+  // The source_type is always "IMAGE" (the only supported type) and is
+  // hardcoded by the IaC modules -- only image_id and boot volume size
+  // are user-configurable.
+  message NodeSourceDetails {
+    // OCID of the OCI platform image or custom image for the node OS.
+    // Use `oci ce node-pool-options get` to list available images for
+    // a given Kubernetes version.
+    string image_id = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Boot volume size in gigabytes. Minimum 50 GB. When omitted, uses
+    // the image's default boot volume size (typically 50 GB).
+    int64 boot_volume_size_in_gbs = 2;
+  }
+
+  // NodeConfigDetails controls node placement across availability domains,
+  // pool sizing, network security groups, encryption, and pod networking.
+  message NodeConfigDetails {
+    // Placement configurations determining which availability domains and
+    // subnets receive nodes. Provide one entry per AD for regional subnets,
+    // or one entry per AD-specific subnet.
+    repeated PlacementConfig placement_configs = 1 [(buf.validate.field).repeated.min_items = 1];
+
+    // Desired number of nodes in this pool. OKE distributes nodes across
+    // the placement configs as evenly as possible.
+    int32 size = 2 [(buf.validate.field).int32.gt = 0];
+
+    // OCIDs of network security groups applied to the node VNICs.
+    repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef nsg_ids = 3 [
+      (org.openmcf.shared.foreignkey.v1.default_kind) = OciNetworkSecurityGroup,
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
+    ];
+
+    // OCID of the KMS key for encrypting boot volumes at rest.
+    // default_kind will be updated when OciKmsKey (R25) is implemented.
+    org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 4;
+
+    // Whether to enable in-transit encryption for the data volume's
+    // paravirtualized attachment. Applies to both boot and block volumes.
+    bool is_pv_encryption_in_transit_enabled = 5;
+
+    // Pod networking configuration. Required when the cluster uses
+    // OCI VCN-native pod networking (oci_vcn_ip_native CNI).
+    PodNetworkOptionDetails pod_network_option_details = 6;
+  }
+
+  // PlacementConfig determines where nodes are placed within OCI's
+  // availability domain and fault domain topology.
+  message PlacementConfig {
+    // Availability domain name where nodes will be launched.
+    // Example: "Uocm:PHX-AD-1".
+    string availability_domain = 1 [(buf.validate.field).string.min_len = 1];
+
+    // OCID of the subnet in which to place nodes in this AD.
+    org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 2 [
+      (buf.validate.field).required = true,
+      (org.openmcf.shared.foreignkey.v1.default_kind) = OciSubnet,
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetId"
+    ];
+
+    // Fault domains within the AD to constrain node placement.
+    // When omitted, OKE distributes nodes across all fault domains.
+    // Example: ["FAULT-DOMAIN-1", "FAULT-DOMAIN-2"]
+    repeated string fault_domains = 3;
+
+    // OCID of a compute capacity reservation to use for nodes in this AD.
+    org.openmcf.shared.foreignkey.v1.StringValueOrRef capacity_reservation_id = 4;
+
+    // Preemptible node configuration. When set, nodes in this placement
+    // use preemptible (spot) instances that can be reclaimed by OCI.
+    // Suitable for fault-tolerant and batch workloads.
+    PreemptibleNodeConfig preemptible_node_config = 5;
+  }
+
+  // PreemptibleNodeConfig enables preemptible (spot) instances for a
+  // placement config. Preemptible nodes are terminated when OCI reclaims
+  // capacity. The preemption action is always TERMINATE (the only
+  // supported action); IaC modules hardcode this.
+  message PreemptibleNodeConfig {
+    // Whether to preserve the boot volume when the preemptible instance
+    // is terminated. Defaults to false (boot volume is deleted).
+    optional bool is_preserve_boot_volume = 1;
+  }
+
+  // PodNetworkOptionDetails configures CNI-level pod networking for the
+  // node pool. Required for VCN-native pod networking where each pod
+  // gets a VCN IP address.
+  message PodNetworkOptionDetails {
+    // CNI plugin type. Must match the cluster's CNI configuration.
+    CniType cni_type = 1 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+
+    // Maximum number of pods per node. Limited by the number of VNICs
+    // attachable to the node shape. Only applicable for oci_vcn_ip_native.
+    int32 max_pods_per_node = 2;
+
+    // OCIDs of NSGs applied to pod VNICs. Only applicable for
+    // oci_vcn_ip_native.
+    repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef pod_nsg_ids = 3 [
+      (org.openmcf.shared.foreignkey.v1.default_kind) = OciNetworkSecurityGroup,
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
+    ];
+
+    // OCIDs of subnets for pod IP allocation. Only applicable for
+    // oci_vcn_ip_native. Can be the same as or different from the node
+    // subnets.
+    repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef pod_subnet_ids = 4 [
+      (org.openmcf.shared.foreignkey.v1.default_kind) = OciSubnet,
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetId"
+    ];
+  }
+
+  // NodeLabel is a key/value pair applied as a Kubernetes label to each
+  // node after it joins the cluster.
+  message NodeLabel {
+    string key = 1;
+    string value = 2;
+  }
+
+  // NodeEvictionSettings controls how OKE drains pods from nodes during
+  // pool operations (scale-down, upgrades, shape changes).
+  message NodeEvictionSettings {
+    // Maximum time OKE will attempt to evict pods before giving up.
+    // ISO 8601 duration format. Default: PT60M. Range: PT0M to PT60M.
+    // PT0M means delete the node immediately without cordon and drain.
+    string eviction_grace_duration = 1;
+
+    // Whether to proceed with the node action if not all pods can be
+    // evicted within the grace period.
+    optional bool is_force_action_after_grace_duration = 2;
+
+    // Whether to delete the underlying compute instance if pods cannot
+    // be fully evicted within the grace period.
+    optional bool is_force_delete_after_grace_duration = 3;
+  }
+
+  // NodePoolCyclingDetails controls the rolling update strategy when
+  // nodes need to be replaced (e.g., during Kubernetes version upgrades
+  // or shape changes).
+  message NodePoolCyclingDetails {
+    // Whether node cycling is enabled for this pool.
+    bool is_node_cycling_enabled = 1;
+
+    // Maximum additional nodes that can be temporarily created during
+    // cycling. Accepts an integer ("1") or percentage ("25%").
+    // Default: "1".
+    string maximum_surge = 2;
+
+    // Maximum nodes that can be unavailable during cycling.
+    // Accepts an integer ("0") or percentage ("25%").
+    // Default: "0".
+    string maximum_unavailable = 3;
+  }
+}

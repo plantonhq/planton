@@ -1,0 +1,20 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciNetworkLoadBalancer
+metadata:
+  name: my-dev-nlb
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  subnetId:
+    value: <public-subnet-ocid>
+  backendSets:
+    - name: app-backend
+      policy: five_tuple
+      healthChecker:
+        protocol: tcp
+        port: 80
+  listeners:
+    - name: tcp
+      port: 80
+      protocol: tcp
+      defaultBackendSetName: app-backend

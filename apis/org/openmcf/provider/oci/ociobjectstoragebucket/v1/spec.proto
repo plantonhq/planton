@@ -1,0 +1,234 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ociobjectstoragebucket.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// OciObjectStorageBucketSpec defines the specification for an OCI Object
+// Storage bucket -- a durable, scalable object store with built-in retention
+// rules, lifecycle management, and cross-region replication.
+//
+// Retention rules are managed inline on the bucket resource (max 100).
+// Lifecycle rules control automatic archival, tiering, and deletion of
+// objects based on age and name patterns. Replication policies enable
+// cross-region disaster recovery by asynchronously copying objects to
+// a destination bucket in another OCI region.
+//
+// Excluded from v1:
+//   - defined_tags, system_tags -- managed by platform
+//   - freeform_tags -- auto-populated from metadata labels
+//   - pre-authenticated requests -- separate operational concern
+//   - private endpoints -- separate networking concern
+//   - individual objects -- application-level concern
+message OciObjectStorageBucketSpec {
+  // OCID of the compartment where the bucket will be created.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+  ];
+
+  // Object Storage namespace for the tenancy. This is a unique identifier
+  // assigned to each tenancy (e.g. "axe1234abc"). Retrieve it via
+  // `oci os ns get` or from the OCI Console.
+  string namespace = 2 [(buf.validate.field).string.min_len = 1];
+
+  // Bucket name. Must be unique within the namespace. Valid characters:
+  // uppercase/lowercase letters, numbers, hyphens, underscores, periods.
+  // Changing this forces recreation.
+  string name = 3 [(buf.validate.field).string.min_len = 1];
+
+  // Type of public access enabled on the bucket.
+  // When unspecified, defaults to no_public_access.
+  AccessType access_type = 4;
+
+  // Storage tier for the bucket. Immutable after creation.
+  // When unspecified, defaults to standard.
+  StorageTier storage_tier = 5;
+
+  // Versioning status. Objects in a version-enabled bucket are protected
+  // from overwrites and deletions by maintaining version history.
+  // On create: enabled or disabled. On update: enabled or suspended.
+  Versioning versioning = 6;
+
+  // Auto-tiering automatically transitions objects between Standard
+  // and InfrequentAccess tiers based on access patterns.
+  AutoTiering auto_tiering = 7;
+
+  // When true, events are emitted for object state changes in this bucket
+  // via the OCI Events service.
+  bool object_events_enabled = 8;
+
+  // OCID of a KMS master encryption key for server-side encryption.
+  // When unset, Oracle-managed keys are used.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 9;
+
+  // User-defined metadata as key-value pairs. Keys must be lowercase.
+  // Total size limit is 4KB.
+  map<string, string> metadata = 10;
+
+  // Retention rules enforce minimum retention periods on objects.
+  // A maximum of 100 rules are supported per bucket. Rules take
+  // effect within approximately 30 seconds.
+  repeated RetentionRule retention_rules = 11;
+
+  // Lifecycle rules automate object transitions and deletions based
+  // on age. Managed as a single lifecycle policy resource on the bucket.
+  repeated LifecycleRule lifecycle_rules = 12;
+
+  // Cross-region replication policies. Each policy replicates objects
+  // to a destination bucket in another OCI region. Destination buckets
+  // must exist before creating the policy. All fields are immutable
+  // after creation.
+  repeated ReplicationPolicy replication_policies = 13;
+
+  // AccessType controls public read access on the bucket.
+  enum AccessType {
+    access_type_unspecified = 0;
+    no_public_access = 1;
+    object_read = 2;
+    object_read_without_list = 3;
+  }
+
+  // StorageTier determines the storage class. Immutable after creation.
+  enum StorageTier {
+    storage_tier_unspecified = 0;
+    standard = 1;
+    archive = 2;
+  }
+
+  // Versioning controls object version history.
+  enum Versioning {
+    versioning_unspecified = 0;
+    enabled = 1;
+    disabled = 2;
+    suspended = 3;
+  }
+
+  // AutoTiering controls automatic object tier transitions.
+  enum AutoTiering {
+    auto_tiering_unspecified = 0;
+    auto_tiering_disabled = 1;
+    infrequent_access = 2;
+  }
+
+  // LifecycleAction is the action taken by a lifecycle rule.
+  enum LifecycleAction {
+    lifecycle_action_unspecified = 0;
+    lifecycle_archive = 1;
+    lifecycle_infrequent_access = 2;
+    lifecycle_delete = 3;
+    lifecycle_abort = 4;
+  }
+
+  // TimeUnit for retention and lifecycle durations.
+  enum TimeUnit {
+    time_unit_unspecified = 0;
+    days = 1;
+    years = 2;
+  }
+
+  // RetentionRule enforces a minimum retention period on objects.
+  message RetentionRule {
+    // User-specified name for the retention rule. Must be unique
+    // within the bucket. Changing this forces recreation.
+    string display_name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Retention duration. When omitted, the rule applies indefinitely.
+    Duration duration = 2;
+
+    // RFC 3339 datetime after which this rule becomes locked.
+    // Once locked, the rule can only be deleted by deleting the bucket,
+    // and only duration increases are allowed.
+    string time_rule_locked = 3;
+  }
+
+  // Duration defines a time period for retention and lifecycle rules.
+  message Duration {
+    // Time amount, interpreted in units defined by time_unit.
+    int64 time_amount = 1 [(buf.validate.field).int64.gte = 1];
+
+    // Unit of time for time_amount.
+    TimeUnit time_unit = 2 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+  }
+
+  // LifecycleRule defines an automatic action on objects based on age.
+  message LifecycleRule {
+    option (buf.validate.message).cel = {
+      id: "abort_requires_multipart_uploads_target"
+      message: "lifecycle rules with abort action must target 'multipart-uploads'"
+      expression: "this.action != 4 || this.target == 'multipart-uploads'"
+    };
+    option (buf.validate.message).cel = {
+      id: "multipart_uploads_target_no_name_filter"
+      message: "object_name_filter is not valid when target is 'multipart-uploads'"
+      expression: "this.target != 'multipart-uploads' || !has(this.object_name_filter)"
+    };
+
+    // Rule name. Must be unique within the lifecycle policy.
+    string name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Action to perform on matching objects.
+    LifecycleAction action = 2 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+
+    // Whether this rule is currently active.
+    bool is_enabled = 3;
+
+    // Age threshold. Objects older than this are acted upon.
+    int64 time_amount = 4 [(buf.validate.field).int64.gte = 1];
+
+    // Unit for time_amount.
+    TimeUnit time_unit = 5 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+
+    // Target object type. Valid values: "objects" (default),
+    // "multipart-uploads", "previous-object-versions".
+    // Uses plain strings because the values contain hyphens.
+    string target = 6 [(buf.validate.field).string = {
+      in: [
+        "objects",
+        "multipart-uploads",
+        "previous-object-versions",
+        ""
+      ]
+    }];
+
+    // Filter to narrow which objects the rule applies to.
+    // Not valid when target is "multipart-uploads".
+    ObjectNameFilter object_name_filter = 7;
+  }
+
+  // ObjectNameFilter selects objects by name pattern for lifecycle rules.
+  // Exclusion patterns take precedence over inclusion patterns.
+  message ObjectNameFilter {
+    // Glob patterns to include. An empty list includes all objects.
+    repeated string inclusion_patterns = 1;
+
+    // Object name prefixes to include. Kept for backward compatibility;
+    // prefer inclusion_patterns.
+    repeated string inclusion_prefixes = 2;
+
+    // Glob patterns to exclude. Takes precedence over inclusions.
+    repeated string exclusion_patterns = 3;
+  }
+
+  // ReplicationPolicy defines cross-region asynchronous replication
+  // to a destination bucket. All fields are immutable after creation.
+  message ReplicationPolicy {
+    // Policy name.
+    string name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Name of the destination bucket. Must already exist in the
+    // destination region.
+    string destination_bucket_name = 2 [(buf.validate.field).string.min_len = 1];
+
+    // OCI region identifier for the destination (e.g. "us-ashburn-1").
+    string destination_region_name = 3 [(buf.validate.field).string.min_len = 1];
+  }
+}

@@ -1,0 +1,41 @@
+package module
+
+import (
+	ocicompartmentv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocicompartment/v1"
+	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
+	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
+)
+
+type Locals struct {
+	OciCompartment *ocicompartmentv1.OciCompartment
+	Name           string
+	FreeformTags   map[string]string
+}
+
+func initializeLocals(_ *pulumi.Context, stackInput *ocicompartmentv1.OciCompartmentStackInput) *Locals {
+	locals := &Locals{}
+	locals.OciCompartment = stackInput.Target
+
+	if stackInput.Target.Spec.Name != "" {
+		locals.Name = stackInput.Target.Spec.Name
+	} else {
+		locals.Name = stackInput.Target.Metadata.Name
+	}
+
+	locals.FreeformTags = map[string]string{
+		"resource":      "true",
+		"resource_kind": cloudresourcekind.CloudResourceKind_OciCompartment.String(),
+		"resource_id":   stackInput.Target.Metadata.Id,
+	}
+	if stackInput.Target.Metadata.Org != "" {
+		locals.FreeformTags["organization"] = stackInput.Target.Metadata.Org
+	}
+	if stackInput.Target.Metadata.Env != "" {
+		locals.FreeformTags["environment"] = stackInput.Target.Metadata.Env
+	}
+	for k, v := range stackInput.Target.Metadata.Labels {
+		locals.FreeformTags[k] = v
+	}
+
+	return locals
+}
