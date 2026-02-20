@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocidnsrecord.v1;
+
+// OciDnsRecordStackOutputs contains the outputs produced after
+// deploying an OciDnsRecord.
+//
+// This message is intentionally empty. DNS record sets do not
+// produce an OCID or any composable identifier that downstream
+// components would reference. The resource is identified by the
+// (zone, domain, rtype) tuple, all of which are inputs.
+message OciDnsRecordStackOutputs {}

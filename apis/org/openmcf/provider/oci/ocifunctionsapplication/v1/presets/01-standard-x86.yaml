@@ -1,0 +1,16 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciFunctionsApplication
+metadata:
+  name: my-functions-app
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  subnetIds:
+    - value: <private-subnet-ocid>
+  displayName: functions-app
+  shape: generic_x86
+  networkSecurityGroupIds:
+    - value: <functions-nsg-ocid>
+  traceConfig:
+    isEnabled: true
+    domainId: <apm-domain-ocid>

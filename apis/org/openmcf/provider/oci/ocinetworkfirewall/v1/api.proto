@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocinetworkfirewall.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/oci/ocinetworkfirewall/v1/spec.proto";
+import "org/openmcf/provider/oci/ocinetworkfirewall/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OciNetworkFirewall is the top-level resource representing an OCI
+// Network Firewall bundled with an inline policy -- providing
+// next-generation firewall capabilities with L3/L4 network rules
+// and L7 URL filtering.
+message OciNetworkFirewall {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciNetworkFirewall'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciNetworkFirewallSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciNetworkFirewallStatus status = 5;
+}
+
+// OciNetworkFirewallStatus holds the outputs produced by deploying
+// an OciNetworkFirewall.
+message OciNetworkFirewallStatus {
+  // stack-outputs
+  OciNetworkFirewallStackOutputs outputs = 1;
+}

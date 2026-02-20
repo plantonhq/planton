@@ -1,0 +1,14 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciBastion
+metadata:
+  name: my-dns-bastion
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  targetSubnetId:
+    value: <private-subnet-ocid>
+  displayName: dns-bastion
+  clientCidrBlockAllowList:
+    - <allowed-cidr>
+  maxSessionTtlInSeconds: 10800 # 3 hours
+  isDnsProxyEnabled: true # Enables FQDN-based targeting and SOCKS5 proxy support

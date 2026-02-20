@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocidevopsproject.v1;
+
+import "org/openmcf/provider/oci/ocidevopsproject/v1/api.proto";
+import "org/openmcf/provider/oci/provider.proto";
+
+// OciDevopsProjectStackInput is the input to the IaC modules
+// (Pulumi / Terraform) that deploy an OciDevopsProject resource.
+message OciDevopsProjectStackInput {
+  // target cloud-resource
+  OciDevopsProject target = 1;
+  // provider-config
+  org.openmcf.provider.oci.OciProviderConfig provider_config = 2;
+}

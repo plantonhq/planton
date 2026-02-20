@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ociapigateway.v1;
+
+// OciApiGatewayStackOutputs contains the outputs produced after
+// deploying an OciApiGateway.
+message OciApiGatewayStackOutputs {
+  // OCID of the API gateway.
+  string gateway_id = 1;
+
+  // Hostname assigned to the gateway by OCI (e.g., "abc123.apigateway.us-ashburn-1.oci.customer-oci.com").
+  // Use this for DNS CNAME records or client configuration.
+  string hostname = 2;
+
+  // Full endpoint URL of the deployment (gateway hostname + path prefix).
+  string deployment_endpoint = 3;
+}

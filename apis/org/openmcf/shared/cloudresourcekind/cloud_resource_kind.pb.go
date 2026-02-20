@@ -409,6 +409,15 @@ const (
 	CloudResourceKind_OciKmsKey                         CloudResourceKind = 3351
 	CloudResourceKind_OciVaultSecret                    CloudResourceKind = 3352
 	CloudResourceKind_OciBastion                        CloudResourceKind = 3353
+	CloudResourceKind_OciFunctionsApplication           CloudResourceKind = 3360
+	CloudResourceKind_OciApiGateway                     CloudResourceKind = 3361
+	CloudResourceKind_OciStreamPool                     CloudResourceKind = 3370
+	CloudResourceKind_OciQueue                          CloudResourceKind = 3371
+	CloudResourceKind_OciAlarm                          CloudResourceKind = 3380
+	CloudResourceKind_OciLogGroup                       CloudResourceKind = 3381
+	CloudResourceKind_OciDnsZone                        CloudResourceKind = 3390
+	CloudResourceKind_OciNetworkFirewall                CloudResourceKind = 3395
+	CloudResourceKind_OciDevopsProject                  CloudResourceKind = 3396
 )
 
 // Enum value maps for CloudResourceKind.
@@ -728,6 +737,15 @@ var (
 		3351: "OciKmsKey",
 		3352: "OciVaultSecret",
 		3353: "OciBastion",
+		3360: "OciFunctionsApplication",
+		3361: "OciApiGateway",
+		3370: "OciStreamPool",
+		3371: "OciQueue",
+		3380: "OciAlarm",
+		3381: "OciLogGroup",
+		3390: "OciDnsZone",
+		3395: "OciNetworkFirewall",
+		3396: "OciDevopsProject",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
@@ -1044,6 +1062,15 @@ var (
 		"OciKmsKey":                             3351,
 		"OciVaultSecret":                        3352,
 		"OciBastion":                            3353,
+		"OciFunctionsApplication":               3360,
+		"OciApiGateway":                         3361,
+		"OciStreamPool":                         3370,
+		"OciQueue":                              3371,
+		"OciAlarm":                              3380,
+		"OciLogGroup":                           3381,
+		"OciDnsZone":                            3390,
+		"OciNetworkFirewall":                    3395,
+		"OciDevopsProject":                      3396,
 	}
 )
 
@@ -1188,7 +1215,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xeci\n" +
+	"\x02v1\x10\x01*\xc6l\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1554,7 +1581,17 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\tOciKmsKey\x10\x97\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocikey\x12%\n" +
 	"\x0eOciVaultSecret\x10\x98\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocisec\x12!\n" +
 	"\n" +
-	"OciBastion\x10\x99\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocibst:|\n" +
+	"OciBastion\x10\x99\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocibst\x120\n" +
+	"\x17OciFunctionsApplication\x10\xa0\x1a\x1a\x12\xa2\xf7\x04\x0e\b\x1a\x10\x01\"\bocifnapp\x12$\n" +
+	"\rOciApiGateway\x10\xa1\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ociagw\x12$\n" +
+	"\rOciStreamPool\x10\xaa\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocistr\x12\x1f\n" +
+	"\bOciQueue\x10\xab\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocique\x12\x1f\n" +
+	"\bOciAlarm\x10\xb4\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocialm\x12\"\n" +
+	"\vOciLogGroup\x10\xb5\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocilog\x12!\n" +
+	"\n" +
+	"OciDnsZone\x10\xbe\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocidns\x12(\n" +
+	"\x12OciNetworkFirewall\x10\xc3\x1a\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocifw\x12'\n" +
+	"\x10OciDevopsProject\x10\xc4\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocidev:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

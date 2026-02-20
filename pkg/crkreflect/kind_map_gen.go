@@ -246,6 +246,8 @@ import (
 	kubernetestektonoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestektonoperator/v1"
 	kubernetestemporalv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestemporal/v1"
 	kuberneteszalandopostgresoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kuberneteszalandopostgresoperator/v1"
+	ocialarmv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocialarm/v1"
+	ociapigatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ociapigateway/v1"
 	ociapplicationloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ociapplicationloadbalancer/v1"
 	ociautonomousdatabasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ociautonomousdatabase/v1"
 	ocibastionv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocibastion/v1"
@@ -256,20 +258,27 @@ import (
 	ocicontainerenginenodepoolv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocicontainerenginenodepool/v1"
 	ocicontainerinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocicontainerinstance/v1"
 	ocidbsystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocidbsystem/v1"
+	ocidevopsprojectv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocidevopsproject/v1"
+	ocidnszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocidnszone/v1"
 	ocidynamicgroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocidynamicgroup/v1"
 	ocidynamicroutinggatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocidynamicroutinggateway/v1"
 	ocifilesystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocifilesystem/v1"
+	ocifunctionsapplicationv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocifunctionsapplication/v1"
 	ociidentitypolicyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ociidentitypolicy/v1"
 	ocikmskeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocikmskey/v1"
 	ocikmsvaultv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocikmsvault/v1"
+	ociloggroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ociloggroup/v1"
 	ocimysqldbsystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocimysqldbsystem/v1"
+	ocinetworkfirewallv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocinetworkfirewall/v1"
 	ocinetworkloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocinetworkloadbalancer/v1"
 	ocinosqltablev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocinosqltable/v1"
 	ociobjectstoragebucketv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ociobjectstoragebucket/v1"
 	ocipostgresqldbsystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocipostgresqldbsystem/v1"
 	ocipublicipv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocipublicip/v1"
+	ociqueuev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ociqueue/v1"
 	ociredisclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocirediscluster/v1"
 	ocisecuritygroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocisecuritygroup/v1"
+	ocistreampoolv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocistreampool/v1"
 	ocisubnetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocisubnet/v1"
 	ocivaultsecretv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocivaultsecret/v1"
 	ocivcnv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocivcn/v1"
@@ -607,6 +616,8 @@ var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 }
 
 var ProviderOciMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
+	cloudresourcekind.CloudResourceKind_OciAlarm:                   &ocialarmv1.OciAlarm{},
+	cloudresourcekind.CloudResourceKind_OciApiGateway:              &ociapigatewayv1.OciApiGateway{},
 	cloudresourcekind.CloudResourceKind_OciApplicationLoadBalancer: &ociapplicationloadbalancerv1.OciApplicationLoadBalancer{},
 	cloudresourcekind.CloudResourceKind_OciAutonomousDatabase:      &ociautonomousdatabasev1.OciAutonomousDatabase{},
 	cloudresourcekind.CloudResourceKind_OciBastion:                 &ocibastionv1.OciBastion{},
@@ -617,20 +628,27 @@ var ProviderOciMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_OciContainerEngineNodePool: &ocicontainerenginenodepoolv1.OciContainerEngineNodePool{},
 	cloudresourcekind.CloudResourceKind_OciContainerInstance:       &ocicontainerinstancev1.OciContainerInstance{},
 	cloudresourcekind.CloudResourceKind_OciDbSystem:                &ocidbsystemv1.OciDbSystem{},
+	cloudresourcekind.CloudResourceKind_OciDevopsProject:           &ocidevopsprojectv1.OciDevopsProject{},
+	cloudresourcekind.CloudResourceKind_OciDnsZone:                 &ocidnszonev1.OciDnsZone{},
 	cloudresourcekind.CloudResourceKind_OciDynamicGroup:            &ocidynamicgroupv1.OciDynamicGroup{},
 	cloudresourcekind.CloudResourceKind_OciDynamicRoutingGateway:   &ocidynamicroutinggatewayv1.OciDynamicRoutingGateway{},
 	cloudresourcekind.CloudResourceKind_OciFileSystem:              &ocifilesystemv1.OciFileSystem{},
+	cloudresourcekind.CloudResourceKind_OciFunctionsApplication:    &ocifunctionsapplicationv1.OciFunctionsApplication{},
 	cloudresourcekind.CloudResourceKind_OciIdentityPolicy:          &ociidentitypolicyv1.OciIdentityPolicy{},
 	cloudresourcekind.CloudResourceKind_OciKmsKey:                  &ocikmskeyv1.OciKmsKey{},
 	cloudresourcekind.CloudResourceKind_OciKmsVault:                &ocikmsvaultv1.OciKmsVault{},
+	cloudresourcekind.CloudResourceKind_OciLogGroup:                &ociloggroupv1.OciLogGroup{},
 	cloudresourcekind.CloudResourceKind_OciMysqlDbSystem:           &ocimysqldbsystemv1.OciMysqlDbSystem{},
+	cloudresourcekind.CloudResourceKind_OciNetworkFirewall:         &ocinetworkfirewallv1.OciNetworkFirewall{},
 	cloudresourcekind.CloudResourceKind_OciNetworkLoadBalancer:     &ocinetworkloadbalancerv1.OciNetworkLoadBalancer{},
 	cloudresourcekind.CloudResourceKind_OciNosqlTable:              &ocinosqltablev1.OciNosqlTable{},
 	cloudresourcekind.CloudResourceKind_OciObjectStorageBucket:     &ociobjectstoragebucketv1.OciObjectStorageBucket{},
 	cloudresourcekind.CloudResourceKind_OciPostgresqlDbSystem:      &ocipostgresqldbsystemv1.OciPostgresqlDbSystem{},
 	cloudresourcekind.CloudResourceKind_OciPublicIp:                &ocipublicipv1.OciPublicIp{},
+	cloudresourcekind.CloudResourceKind_OciQueue:                   &ociqueuev1.OciQueue{},
 	cloudresourcekind.CloudResourceKind_OciRedisCluster:            &ociredisclusterv1.OciRedisCluster{},
 	cloudresourcekind.CloudResourceKind_OciSecurityGroup:           &ocisecuritygroupv1.OciSecurityGroup{},
+	cloudresourcekind.CloudResourceKind_OciStreamPool:              &ocistreampoolv1.OciStreamPool{},
 	cloudresourcekind.CloudResourceKind_OciSubnet:                  &ocisubnetv1.OciSubnet{},
 	cloudresourcekind.CloudResourceKind_OciVaultSecret:             &ocivaultsecretv1.OciVaultSecret{},
 	cloudresourcekind.CloudResourceKind_OciVcn:                     &ocivcnv1.OciVcn{},

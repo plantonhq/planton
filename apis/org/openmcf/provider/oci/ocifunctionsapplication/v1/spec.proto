@@ -1,0 +1,126 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocifunctionsapplication.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// OciFunctionsApplicationSpec defines the specification for an OCI Functions
+// Application -- the organizational container for serverless functions in
+// Oracle Cloud Infrastructure.
+//
+// An application provides the shared execution environment (subnets, NSGs,
+// processor architecture, config) for all functions deployed within it.
+// Individual functions are deployed as code artifacts (via `fn deploy` or
+// CI/CD), not managed by IaC.
+//
+// Key behaviors:
+//   - display_name, subnet_ids, and shape are immutable after creation (ForceNew)
+//   - config map entries are passed as environment variables to all functions
+//   - image_policy_config enables container image signature verification
+//   - trace_config integrates with OCI Application Performance Monitoring
+//
+// Excluded from v1:
+//   - defined_tags, system_tags -- managed by platform
+//   - freeform_tags -- auto-populated from metadata labels
+//   - security_attributes -- Oracle ZPR, very low adoption
+message OciFunctionsApplicationSpec {
+  option (buf.validate.message).cel = {
+    id: "image_policy_enabled_requires_keys"
+    message: "key_details must be non-empty when image_policy_config.is_policy_enabled is true"
+    expression: "!has(this.image_policy_config) || !this.image_policy_config.is_policy_enabled || size(this.image_policy_config.key_details) > 0"
+  };
+
+  // OCID of the compartment where the application will be created.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+  ];
+
+  // OCIDs of the subnets in which to run functions. At least one subnet
+  // is required. Functions execute in these subnets and can reach resources
+  // accessible from them. Immutable after creation.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 2 [
+    (buf.validate.field).repeated.min_items = 1,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetId"
+  ];
+
+  // Display name for the application. Must be unique within the compartment.
+  // When omitted, the metadata name is used. Immutable after creation.
+  string display_name = 3;
+
+  // Processor architecture for running functions. When omitted, OCI
+  // defaults to GENERIC_X86. Immutable after creation.
+  //   - generic_x86:     Intel/AMD x86-64
+  //   - generic_arm:     Arm-based (Ampere A1)
+  //   - generic_x86_arm: multi-architecture (runs on either)
+  Shape shape = 4;
+
+  // Application configuration passed as environment variables to all
+  // functions in this application. Keys must be ASCII strings consisting
+  // of letters, digits, and underscores; must not begin with a digit.
+  // Maximum total size for all keys and values is 4 KB.
+  map<string, string> config = 5;
+
+  // OCIDs of network security groups applied to the application.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef network_security_group_ids = 6 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
+  ];
+
+  // Syslog URL to send all function logs. Supports tcp, udp, and tcp+tls
+  // schemes (e.g., "tcp://logserver.example.com:514"). Must be reachable
+  // from the configured subnets. Ignored when OCI Logging service is enabled.
+  string syslog_url = 7;
+
+  // Image signature verification policy. When enabled, only container
+  // images signed by the specified KMS keys can be used for functions.
+  ImagePolicyConfig image_policy_config = 8;
+
+  // Distributed tracing configuration for integration with OCI
+  // Application Performance Monitoring (APM).
+  TraceConfig trace_config = 9;
+
+  // Shape determines the processor architecture for function execution.
+  enum Shape {
+    unspecified = 0;
+    generic_x86 = 1;
+    generic_arm = 2;
+    generic_x86_arm = 3;
+  }
+
+  // ImagePolicyConfig controls container image signature verification
+  // for functions deployed in this application.
+  message ImagePolicyConfig {
+    // Whether image signature verification is enabled.
+    bool is_policy_enabled = 1;
+
+    // KMS keys used to verify image signatures. Required when
+    // is_policy_enabled is true (enforced by CEL on the parent message).
+    repeated ImagePolicyKeyDetail key_details = 2;
+  }
+
+  // ImagePolicyKeyDetail identifies a KMS key used for image signature
+  // verification.
+  message ImagePolicyKeyDetail {
+    // OCID of the KMS key used to verify image signatures.
+    org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 1 [
+      (buf.validate.field).required = true,
+      (org.openmcf.shared.foreignkey.v1.default_kind) = OciKmsKey,
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.keyId"
+    ];
+  }
+
+  // TraceConfig configures distributed tracing via OCI Application
+  // Performance Monitoring (APM).
+  message TraceConfig {
+    // Whether tracing is enabled for this application.
+    optional bool is_enabled = 1;
+
+    // OCID of the APM domain (collector) where trace events are sent.
+    // Only meaningful when is_enabled is true.
+    string domain_id = 2;
+  }
+}
