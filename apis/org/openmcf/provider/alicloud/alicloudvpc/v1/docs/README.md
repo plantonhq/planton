@@ -284,9 +284,9 @@ AlicloudVpc.status.outputs.vpc_id
     ├── AlicloudVswitch.spec.vpc_id
     ├── AlicloudSecurityGroup.spec.vpc_id
     ├── AlicloudNatGateway.spec.vpc_id
-    ├── AlicloudAlbLoadBalancer.spec.vpc_id
-    ├── AlicloudNlbLoadBalancer.spec.vpc_id
-    ├── AlicloudPrivateZone.spec.vpc_id
+    ├── AlicloudApplicationLoadBalancer.spec.vpc_id
+    ├── AlicloudNetworkLoadBalancer.spec.vpc_id
+    ├── AlicloudPrivateDnsZone.spec.vpc_id
     └── ... (nearly every networking and compute resource)
 ```
 

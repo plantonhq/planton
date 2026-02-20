@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1;
+
+import "org/openmcf/provider/alicloud/alicloudapplicationloadbalancer/v1/api.proto";
+import "org/openmcf/provider/alicloud/provider.proto";
+
+// alicloud-application-load-balancer stack-input
+message AlicloudApplicationLoadBalancerStackInput {
+  // target cloud-resource
+  AlicloudApplicationLoadBalancer target = 1;
+  // provider-config
+  org.openmcf.provider.alicloud.AlicloudProviderConfig provider_config = 2;
+}

@@ -67,5 +67,5 @@ KMS keys are never deleted immediately. When a deletion is requested, the key en
 ## Related Components
 
 - **AlicloudRdsInstance** -- uses a KMS key for Transparent Data Encryption (TDE)
-- **AlicloudOssBucket** -- uses a KMS key for Server-Side Encryption (SSE-KMS)
+- **AlicloudStorageBucket** -- uses a KMS key for Server-Side Encryption (SSE-KMS)
 - **AlicloudEcsInstance** -- uses a KMS key for disk encryption

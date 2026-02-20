@@ -64,6 +64,6 @@ Both `internetChargeType` and `isp` are immutable after creation (changing them 
 ## Related Components
 
 - **AlicloudNatGateway** -- associates an EIP for SNAT outbound internet access
-- **AlicloudAlbLoadBalancer** -- uses EIPs for internet-facing load balancers
-- **AlicloudNlbLoadBalancer** -- uses EIPs for internet-facing L4 load balancers
+- **AlicloudApplicationLoadBalancer** -- uses EIPs for internet-facing load balancers
+- **AlicloudNetworkLoadBalancer** -- uses EIPs for internet-facing L4 load balancers
 - **AlicloudVpnGateway** -- uses an EIP for the VPN gateway public endpoint

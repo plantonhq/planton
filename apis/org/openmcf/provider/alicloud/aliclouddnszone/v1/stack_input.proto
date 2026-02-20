@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.aliclouddnszone.v1;
+
+import "org/openmcf/provider/alicloud/aliclouddnszone/v1/api.proto";
+import "org/openmcf/provider/alicloud/provider.proto";
+
+// alicloud-dns-zone stack-input
+message AlicloudDnsZoneStackInput {
+  // target cloud-resource
+  AlicloudDnsZone target = 1;
+  // provider-config
+  org.openmcf.provider.alicloud.AlicloudProviderConfig provider_config = 2;
+}

@@ -9,7 +9,7 @@
 
 Added the AlicloudDnsRecord deployment component -- manages DNS records within an Alibaba Cloud Alidns-hosted domain. Supports all standard record types (A, AAAA, CNAME, MX, TXT, NS, SRV, CAA) with configurable TTL, priority, DNS resolution lines, and record status.
 
-The parent domain must already exist in Alidns, either managed by the AlicloudDnsDomain component or added manually. This is a leaf resource -- nothing downstream depends on its outputs.
+The parent domain must already exist in Alidns, either managed by the AlicloudDnsZone component or added manually. This is a leaf resource -- nothing downstream depends on its outputs.
 
 ## What Was Created
 

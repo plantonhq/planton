@@ -1,7 +1,0 @@
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsDomain
-metadata:
-  name: my-domain
-spec:
-  region: <alibaba-cloud-region>
-  domainName: <your-domain-name>

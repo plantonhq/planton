@@ -1624,13 +1624,13 @@ enum CloudResourceKind {
     id_prefix: "acnat"
   }];
 
-  AlicloudAlbLoadBalancer = 3025 [(kind_meta) = {
+  AlicloudApplicationLoadBalancer = 3025 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acalb"
   }];
 
-  AlicloudNlbLoadBalancer = 3026 [(kind_meta) = {
+  AlicloudNetworkLoadBalancer = 3026 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acnlb"
@@ -1644,10 +1644,10 @@ enum CloudResourceKind {
 
   // --- DNS ---
 
-  AlicloudDnsDomain = 3040 [(kind_meta) = {
+  AlicloudDnsZone = 3040 [(kind_meta) = {
     provider: alicloud
     version: v1
-    id_prefix: "acdns"
+    id_prefix: "acdz"
   }];
 
   AlicloudDnsRecord = 3041 [(kind_meta) = {
@@ -1656,18 +1656,18 @@ enum CloudResourceKind {
     id_prefix: "acdr"
   }];
 
-  AlicloudPrivateZone = 3042 [(kind_meta) = {
+  AlicloudPrivateDnsZone = 3042 [(kind_meta) = {
     provider: alicloud
     version: v1
-    id_prefix: "acpz"
+    id_prefix: "acdpz"
   }];
 
   // --- Storage ---
 
-  AlicloudOssBucket = 3050 [(kind_meta) = {
+  AlicloudStorageBucket = 3050 [(kind_meta) = {
     provider: alicloud
     version: v1
-    id_prefix: "acoss"
+    id_prefix: "acbkt"
   }];
 
   AlicloudNasFileSystem = 3051 [(kind_meta) = {
@@ -1716,5 +1716,25 @@ enum CloudResourceKind {
     provider: alicloud
     version: v1
     id_prefix: "acecs"
+  }];
+
+  // --- Containers ---
+
+  AlicloudContainerRegistry = 3090 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "accr"
+  }];
+
+  AlicloudKubernetesCluster = 3091 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acack"
+  }];
+
+  AlicloudKubernetesNodePool = 3092 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acknp"
   }];
 }

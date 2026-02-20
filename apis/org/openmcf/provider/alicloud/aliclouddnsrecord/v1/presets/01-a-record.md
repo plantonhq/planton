@@ -19,7 +19,7 @@ This preset creates a DNS A record that maps a subdomain to an IPv4 address. A r
 | Placeholder | Description | Where to Find |
 |-------------|-------------|---------------|
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`, `cn-shanghai`). Alidns is global, but the provider requires a region. | Your deployment region strategy |
-| `<your-domain-name>` | The parent domain (e.g., `example.com`). Must already exist in Alidns. | Your AlicloudDnsDomain resource or Alidns console |
+| `<your-domain-name>` | The parent domain (e.g., `example.com`). Must already exist in Alidns. | Your AlicloudDnsZone resource or Alidns console |
 | `<host-record>` | Subdomain label (e.g., `www`, `api`, `@` for apex, `*` for wildcard) | Your DNS design |
 | `<ipv4-address>` | Target IPv4 address (e.g., `203.0.113.10`) | Your server or load balancer IP |
 

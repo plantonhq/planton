@@ -137,5 +137,5 @@ After deployment, the following outputs are available in `status.outputs`:
 - **AlicloudVpc** -- VPC that provides network isolation
 - **AlicloudSecurityGroup** -- Network security rules for cluster access
 - **AlicloudKmsKey** -- Customer-managed key for TDE encryption
-- **AlicloudPrivateZone** -- Private DNS resolution for the cluster endpoint
+- **AlicloudPrivateDnsZone** -- Private DNS resolution for the cluster endpoint
 - **AlicloudRdsInstance** -- Alternative: traditional RDS for non-cloud-native workloads

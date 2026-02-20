@@ -126,5 +126,5 @@ After deployment, the following outputs are available in `status.outputs`:
 ## Related Components
 
 - [AlicloudRdsInstance](/docs/catalog/alicloud/alicloudrdsinsstance) -- uses a KMS key for Transparent Data Encryption
-- [AlicloudOssBucket](/docs/catalog/alicloud/alicloudossbucket) -- uses a KMS key for Server-Side Encryption
+- [AlicloudStorageBucket](/docs/catalog/alicloud/alicloudstoragebucket) -- uses a KMS key for Server-Side Encryption
 - [AlicloudEcsInstance](/docs/catalog/alicloud/alicloudecsinstance) -- uses a KMS key for disk encryption

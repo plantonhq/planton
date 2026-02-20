@@ -19,7 +19,7 @@ This preset creates a DNS CNAME record that aliases a subdomain to another domai
 | Placeholder | Description | Where to Find |
 |-------------|-------------|---------------|
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`) | Your deployment region strategy |
-| `<your-domain-name>` | The parent domain (e.g., `example.com`). Must already exist in Alidns. | Your AlicloudDnsDomain resource or Alidns console |
+| `<your-domain-name>` | The parent domain (e.g., `example.com`). Must already exist in Alidns. | Your AlicloudDnsZone resource or Alidns console |
 | `<host-record>` | Subdomain label (e.g., `cdn`, `api`, `app`) | Your DNS design |
 | `<target-domain>` | The domain to alias to (e.g., `example.com.cdn-provider.com`) | Your CDN or service provider |
 

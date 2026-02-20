@@ -244,6 +244,6 @@ After deployment, the following outputs are available in `status.outputs`:
 ## Related Components
 
 - [AlicloudRamRole](/docs/catalog/alicloud/alicloudramrole) — attach this policy to a role via `policyAttachments` with `policyType: Custom`
-- [AlicloudOssBucket](/docs/catalog/alicloud/alicloudossbucket) — common target for fine-grained OSS access policies
+- [AlicloudStorageBucket](/docs/catalog/alicloud/alicloudstoragebucket) — common target for fine-grained OSS access policies
 - [AlicloudRdsInstance](/docs/catalog/alicloud/alicloudrdsinstance) — common target for database access policies
 - [AlicloudAckManagedCluster](/docs/catalog/alicloud/alicloudackmanagedcluster) — common target for container service access policies

@@ -4,7 +4,7 @@ Manages an Alibaba Cloud DNS record in the Alidns service.
 
 ## Overview
 
-A DNS record maps a host record (subdomain) to a value within a parent domain hosted in Alibaba Cloud Alidns. The parent domain must already exist in Alidns -- either managed by the AlicloudDnsDomain component or added manually via the console.
+A DNS record maps a host record (subdomain) to a value within a parent domain hosted in Alibaba Cloud Alidns. The parent domain must already exist in Alidns -- either managed by the AlicloudDnsZone component or added manually via the console.
 
 ### What Gets Created
 
@@ -40,5 +40,5 @@ A DNS record maps a host record (subdomain) to a value within a parent domain ho
 
 ## Related Components
 
-- **AlicloudDnsDomain** -- registers the parent domain in Alidns (prerequisite for records)
-- **AlicloudPrivateZone** -- for private DNS resolution within a VPC (separate from public Alidns)
+- **AlicloudDnsZone** -- registers the parent domain in Alidns (prerequisite for records)
+- **AlicloudPrivateDnsZone** -- for private DNS resolution within a VPC (separate from public Alidns)

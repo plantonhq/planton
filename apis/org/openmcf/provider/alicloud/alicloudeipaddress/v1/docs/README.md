@@ -231,7 +231,7 @@ The `AlicloudEipAddress` component follows a deliberate single-responsibility de
 
 Association is the downstream component's responsibility:
 - `AlicloudNatGateway` accepts an `eip_id` field (as `StringValueOrRef`) and creates the EIP association internally
-- `AlicloudAlbLoadBalancer` and `AlicloudVpnGateway` similarly accept EIP references
+- `AlicloudApplicationLoadBalancer` and `AlicloudVpnGateway` similarly accept EIP references
 
 This separation mirrors the Alibaba Cloud API's own resource boundaries and enables flexible topologies — one EIP can be pre-allocated and associated with different resources over time without modifying the EIP component itself.
 

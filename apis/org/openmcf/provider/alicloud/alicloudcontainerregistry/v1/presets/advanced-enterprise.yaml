@@ -1,0 +1,20 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudContainerRegistry
+metadata:
+  name: enterprise-registry
+spec:
+  region: cn-beijing
+  instanceName: enterprise-acr
+  instanceType: Advanced
+  paymentType: Subscription
+  period: 12
+  namespaces:
+    - name: internal
+      autoCreate: true
+      defaultVisibility: PRIVATE
+    - name: shared
+      autoCreate: false
+      defaultVisibility: PRIVATE
+    - name: public-images
+      autoCreate: false
+      defaultVisibility: PUBLIC

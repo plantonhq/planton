@@ -390,13 +390,13 @@ const (
 	CloudResourceKind_AlicloudSecurityGroup             CloudResourceKind = 3022
 	CloudResourceKind_AlicloudEipAddress                CloudResourceKind = 3023
 	CloudResourceKind_AlicloudNatGateway                CloudResourceKind = 3024
-	CloudResourceKind_AlicloudAlbLoadBalancer           CloudResourceKind = 3025
-	CloudResourceKind_AlicloudNlbLoadBalancer           CloudResourceKind = 3026
+	CloudResourceKind_AlicloudApplicationLoadBalancer   CloudResourceKind = 3025
+	CloudResourceKind_AlicloudNetworkLoadBalancer       CloudResourceKind = 3026
 	CloudResourceKind_AlicloudVpnGateway                CloudResourceKind = 3027
-	CloudResourceKind_AlicloudDnsDomain                 CloudResourceKind = 3040
+	CloudResourceKind_AlicloudDnsZone                   CloudResourceKind = 3040
 	CloudResourceKind_AlicloudDnsRecord                 CloudResourceKind = 3041
-	CloudResourceKind_AlicloudPrivateZone               CloudResourceKind = 3042
-	CloudResourceKind_AlicloudOssBucket                 CloudResourceKind = 3050
+	CloudResourceKind_AlicloudPrivateDnsZone            CloudResourceKind = 3042
+	CloudResourceKind_AlicloudStorageBucket             CloudResourceKind = 3050
 	CloudResourceKind_AlicloudNasFileSystem             CloudResourceKind = 3051
 	CloudResourceKind_AlicloudKmsKey                    CloudResourceKind = 3060
 	CloudResourceKind_AlicloudRdsInstance               CloudResourceKind = 3070
@@ -404,6 +404,9 @@ const (
 	CloudResourceKind_AlicloudRedisInstance             CloudResourceKind = 3072
 	CloudResourceKind_AlicloudMongodbInstance           CloudResourceKind = 3073
 	CloudResourceKind_AlicloudEcsInstance               CloudResourceKind = 3080
+	CloudResourceKind_AlicloudContainerRegistry         CloudResourceKind = 3090
+	CloudResourceKind_AlicloudKubernetesCluster         CloudResourceKind = 3091
+	CloudResourceKind_AlicloudKubernetesNodePool        CloudResourceKind = 3092
 )
 
 // Enum value maps for CloudResourceKind.
@@ -704,13 +707,13 @@ var (
 		3022: "AlicloudSecurityGroup",
 		3023: "AlicloudEipAddress",
 		3024: "AlicloudNatGateway",
-		3025: "AlicloudAlbLoadBalancer",
-		3026: "AlicloudNlbLoadBalancer",
+		3025: "AlicloudApplicationLoadBalancer",
+		3026: "AlicloudNetworkLoadBalancer",
 		3027: "AlicloudVpnGateway",
-		3040: "AlicloudDnsDomain",
+		3040: "AlicloudDnsZone",
 		3041: "AlicloudDnsRecord",
-		3042: "AlicloudPrivateZone",
-		3050: "AlicloudOssBucket",
+		3042: "AlicloudPrivateDnsZone",
+		3050: "AlicloudStorageBucket",
 		3051: "AlicloudNasFileSystem",
 		3060: "AlicloudKmsKey",
 		3070: "AlicloudRdsInstance",
@@ -718,6 +721,9 @@ var (
 		3072: "AlicloudRedisInstance",
 		3073: "AlicloudMongodbInstance",
 		3080: "AlicloudEcsInstance",
+		3090: "AlicloudContainerRegistry",
+		3091: "AlicloudKubernetesCluster",
+		3092: "AlicloudKubernetesNodePool",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
@@ -1015,13 +1021,13 @@ var (
 		"AlicloudSecurityGroup":                 3022,
 		"AlicloudEipAddress":                    3023,
 		"AlicloudNatGateway":                    3024,
-		"AlicloudAlbLoadBalancer":               3025,
-		"AlicloudNlbLoadBalancer":               3026,
+		"AlicloudApplicationLoadBalancer":       3025,
+		"AlicloudNetworkLoadBalancer":           3026,
 		"AlicloudVpnGateway":                    3027,
-		"AlicloudDnsDomain":                     3040,
+		"AlicloudDnsZone":                       3040,
 		"AlicloudDnsRecord":                     3041,
-		"AlicloudPrivateZone":                   3042,
-		"AlicloudOssBucket":                     3050,
+		"AlicloudPrivateDnsZone":                3042,
+		"AlicloudStorageBucket":                 3050,
 		"AlicloudNasFileSystem":                 3051,
 		"AlicloudKmsKey":                        3060,
 		"AlicloudRdsInstance":                   3070,
@@ -1029,6 +1035,9 @@ var (
 		"AlicloudRedisInstance":                 3072,
 		"AlicloudMongodbInstance":               3073,
 		"AlicloudEcsInstance":                   3080,
+		"AlicloudContainerRegistry":             3090,
+		"AlicloudKubernetesCluster":             3091,
+		"AlicloudKubernetesNodePool":            3092,
 	}
 )
 
@@ -1173,7 +1182,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xb8h\n" +
+	"\x02v1\x10\x01*\xdci\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1520,23 +1529,27 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x15AlicloudSecurityGroup\x10\xce\x17\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\x19\x10\x01\"\x04acsg\x12(\n" +
 	"\x12AlicloudEipAddress\x10\xcf\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05aceip\x12(\n" +
-	"\x12AlicloudNatGateway\x10\xd0\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acnat\x12-\n" +
-	"\x17AlicloudAlbLoadBalancer\x10\xd1\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acalb\x12-\n" +
-	"\x17AlicloudNlbLoadBalancer\x10\xd2\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acnlb\x12(\n" +
-	"\x12AlicloudVpnGateway\x10\xd3\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acvpn\x12'\n" +
-	"\x11AlicloudDnsDomain\x10\xe0\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acdns\x12&\n" +
+	"\x12AlicloudNatGateway\x10\xd0\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acnat\x125\n" +
+	"\x1fAlicloudApplicationLoadBalancer\x10\xd1\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acalb\x121\n" +
+	"\x1bAlicloudNetworkLoadBalancer\x10\xd2\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acnlb\x12(\n" +
+	"\x12AlicloudVpnGateway\x10\xd3\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acvpn\x12$\n" +
+	"\x0fAlicloudDnsZone\x10\xe0\x17\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x19\x10\x01\"\x04acdz\x12&\n" +
 	"\x11AlicloudDnsRecord\x10\xe1\x17\x1a\x0e\xa2\xf7\x04\n" +
-	"\b\x19\x10\x01\"\x04acdr\x12(\n" +
-	"\x13AlicloudPrivateZone\x10\xe2\x17\x1a\x0e\xa2\xf7\x04\n" +
-	"\b\x19\x10\x01\"\x04acpz\x12'\n" +
-	"\x11AlicloudOssBucket\x10\xea\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acoss\x12+\n" +
+	"\b\x19\x10\x01\"\x04acdr\x12,\n" +
+	"\x16AlicloudPrivateDnsZone\x10\xe2\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acdpz\x12+\n" +
+	"\x15AlicloudStorageBucket\x10\xea\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acbkt\x12+\n" +
 	"\x15AlicloudNasFileSystem\x10\xeb\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acnas\x12$\n" +
 	"\x0eAlicloudKmsKey\x10\xf4\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05ackms\x12)\n" +
 	"\x13AlicloudRdsInstance\x10\xfe\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acrds\x12,\n" +
 	"\x16AlicloudPolardbCluster\x10\xff\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acpdb\x12+\n" +
 	"\x15AlicloudRedisInstance\x10\x80\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acred\x12-\n" +
 	"\x17AlicloudMongodbInstance\x10\x81\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acmdb\x12)\n" +
-	"\x13AlicloudEcsInstance\x10\x88\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acecs:|\n" +
+	"\x13AlicloudEcsInstance\x10\x88\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acecs\x12.\n" +
+	"\x19AlicloudContainerRegistry\x10\x92\x18\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x19\x10\x01\"\x04accr\x12/\n" +
+	"\x19AlicloudKubernetesCluster\x10\x93\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acack\x120\n" +
+	"\x1aAlicloudKubernetesNodePool\x10\x94\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acknp:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

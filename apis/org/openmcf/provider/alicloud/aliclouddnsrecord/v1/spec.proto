@@ -9,7 +9,7 @@ import "buf/validate/validate.proto";
 //
 // A DNS record maps a host record (subdomain) to a value within a parent
 // domain. The parent domain must already exist in Alidns -- either managed
-// by the AlicloudDnsDomain component or added manually in the console.
+// by the AlicloudDnsZone component or added manually in the console.
 //
 // Common record types: A (IPv4 address), AAAA (IPv6), CNAME (alias),
 // MX (mail exchange with priority), TXT (verification / SPF / DKIM),

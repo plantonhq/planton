@@ -75,7 +75,7 @@ Alibaba Cloud DNS (Alidns) manages DNS records within domains hosted in the Alid
 - **`type`**: String with CEL validation instead of a proto enum. This avoids enum-to-string conversion and keeps values provider-authentic (exact casing the API expects).
 - **`line`**: Important for China multi-ISP deployments. Default `"default"` is correct for most users.
 - **`status`**: Enables the common pattern of disabling a record without deleting it.
-- **`remark`**: Consistent with AlicloudDnsDomain which also has a remark field.
+- **`remark`**: Consistent with AlicloudDnsZone which also has a remark field.
 
 ### Fields Excluded
 

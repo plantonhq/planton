@@ -156,5 +156,5 @@ After deployment, the following outputs are available in `status.outputs`:
 - [AlicloudVswitch](/docs/catalog/alicloud/alicloudvswitch) — creates VSwitches (subnets) within this VPC
 - [AlicloudSecurityGroup](/docs/catalog/alicloud/alicloudsecuritygroup) — creates security groups bound to this VPC
 - [AlicloudNatGateway](/docs/catalog/alicloud/alicloudnatgateway) — creates NAT gateways for outbound internet access from private VSwitches
-- [AlicloudAlbLoadBalancer](/docs/catalog/alicloud/alicloudalbloadbalancer) — deploys Application Load Balancers in this VPC
+- [AlicloudApplicationLoadBalancer](/docs/catalog/alicloud/alicloudapplicationloadbalancer) — deploys Application Load Balancers in this VPC
 - [AlicloudAckManagedCluster](/docs/catalog/alicloud/alicloudackmanagedcluster) — deploys managed Kubernetes clusters in this VPC

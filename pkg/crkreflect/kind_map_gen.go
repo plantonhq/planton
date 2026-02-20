@@ -12,8 +12,8 @@ import (
 	testcloudresourceonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourceone/v1"
 	testcloudresourcethreev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourcethree/v1"
 	testcloudresourcetwov1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourcetwo/v1"
-	alicloudalbloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudalbloadbalancer/v1"
-	aliclouddnsdomainv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/aliclouddnsdomain/v1"
+	alicloudapplicationloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudapplicationloadbalancer/v1"
+	aliclouddnszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/aliclouddnszone/v1"
 	aliclouddnsrecordv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/aliclouddnsrecord/v1"
 	alicloudecsinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudecsinstance/v1"
 	alicloudeipaddressv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudeipaddress/v1"
@@ -22,10 +22,10 @@ import (
 	alicloudmongodbinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudmongodbinstance/v1"
 	alicloudnasfilesystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudnasfilesystem/v1"
 	alicloudnatgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudnatgateway/v1"
-	alicloudnlbloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudnlbloadbalancer/v1"
-	alicloudossbucketv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudossbucket/v1"
+	alicloudnetworkloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudnetworkloadbalancer/v1"
+	alicloudstoragebucketv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudstoragebucket/v1"
 	alicloudpolardbclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudpolardbcluster/v1"
-	alicloudprivatezonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudprivatezone/v1"
+	alicloudprivatednszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudprivatednszone/v1"
 	alicloudrampolicyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudrampolicy/v1"
 	alicloudramrolev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudramrole/v1"
 	alicloudrdsinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudrdsinstance/v1"
@@ -338,8 +338,8 @@ var ProviderTestMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 }
 
 var ProviderAlicloudMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
-	cloudresourcekind.CloudResourceKind_AlicloudAlbLoadBalancer: &alicloudalbloadbalancerv1.AlicloudAlbLoadBalancer{},
-	cloudresourcekind.CloudResourceKind_AlicloudDnsDomain:       &aliclouddnsdomainv1.AlicloudDnsDomain{},
+	cloudresourcekind.CloudResourceKind_AlicloudApplicationLoadBalancer: &alicloudapplicationloadbalancerv1.AlicloudApplicationLoadBalancer{},
+	cloudresourcekind.CloudResourceKind_AlicloudDnsZone:       &aliclouddnszonev1.AlicloudDnsZone{},
 	cloudresourcekind.CloudResourceKind_AlicloudDnsRecord:       &aliclouddnsrecordv1.AlicloudDnsRecord{},
 	cloudresourcekind.CloudResourceKind_AlicloudEcsInstance:     &alicloudecsinstancev1.AlicloudEcsInstance{},
 	cloudresourcekind.CloudResourceKind_AlicloudEipAddress:      &alicloudeipaddressv1.AlicloudEipAddress{},
@@ -348,10 +348,10 @@ var ProviderAlicloudMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AlicloudMongodbInstance: &alicloudmongodbinstancev1.AlicloudMongodbInstance{},
 	cloudresourcekind.CloudResourceKind_AlicloudNasFileSystem:   &alicloudnasfilesystemv1.AlicloudNasFileSystem{},
 	cloudresourcekind.CloudResourceKind_AlicloudNatGateway:      &alicloudnatgatewayv1.AlicloudNatGateway{},
-	cloudresourcekind.CloudResourceKind_AlicloudNlbLoadBalancer: &alicloudnlbloadbalancerv1.AlicloudNlbLoadBalancer{},
-	cloudresourcekind.CloudResourceKind_AlicloudOssBucket:       &alicloudossbucketv1.AlicloudOssBucket{},
+	cloudresourcekind.CloudResourceKind_AlicloudNetworkLoadBalancer: &alicloudnetworkloadbalancerv1.AlicloudNetworkLoadBalancer{},
+	cloudresourcekind.CloudResourceKind_AlicloudStorageBucket:       &alicloudstoragebucketv1.AlicloudStorageBucket{},
 	cloudresourcekind.CloudResourceKind_AlicloudPolardbCluster:  &alicloudpolardbclusterv1.AlicloudPolardbCluster{},
-	cloudresourcekind.CloudResourceKind_AlicloudPrivateZone:     &alicloudprivatezonev1.AlicloudPrivateZone{},
+	cloudresourcekind.CloudResourceKind_AlicloudPrivateDnsZone:     &alicloudprivatednszonev1.AlicloudPrivateDnsZone{},
 	cloudresourcekind.CloudResourceKind_AlicloudRamPolicy:       &alicloudrampolicyv1.AlicloudRamPolicy{},
 	cloudresourcekind.CloudResourceKind_AlicloudRamRole:         &alicloudramrolev1.AlicloudRamRole{},
 	cloudresourcekind.CloudResourceKind_AlicloudRdsInstance:     &alicloudrdsinstancev1.AlicloudRdsInstance{},

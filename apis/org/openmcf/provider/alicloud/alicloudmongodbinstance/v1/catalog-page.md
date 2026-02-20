@@ -91,4 +91,4 @@ spec:
 - **AlicloudVswitch** -- VSwitch for subnet placement
 - **AlicloudSecurityGroup** -- Network access control
 - **AlicloudKmsKey** -- Encryption key for TDE
-- **AlicloudPrivateZone** -- Private DNS for internal resolution
+- **AlicloudPrivateDnsZone** -- Private DNS for internal resolution

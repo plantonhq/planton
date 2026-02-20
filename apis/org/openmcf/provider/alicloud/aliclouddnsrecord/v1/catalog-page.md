@@ -11,7 +11,7 @@ When you deploy an AlicloudDnsRecord resource, OpenMCF provisions:
 ## Prerequisites
 
 - **Alibaba Cloud credentials** configured via environment variables (`ALICLOUD_ACCESS_KEY`, `ALICLOUD_SECRET_KEY`) or OpenMCF provider config
-- **Parent domain** registered in Alidns -- either via the AlicloudDnsDomain component or manually in the console
+- **Parent domain** registered in Alidns -- either via the AlicloudDnsZone component or manually in the console
 - **OpenMCF CLI** installed with either Pulumi or Terraform (OpenTofu) backend
 
 ## Quick Start
@@ -139,5 +139,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudDnsDomain](/docs/catalog/alicloud/aliclouddnsdomain) -- registers the parent domain in Alidns (prerequisite for creating records)
-- [AlicloudPrivateZone](/docs/catalog/alicloud/alicloudprivatezone) -- manages private DNS zones for VPC-internal resolution (separate from public Alidns)
+- [AlicloudDnsZone](/docs/catalog/alicloud/aliclouddnszone) -- registers the parent domain in Alidns (prerequisite for creating records)
+- [AlicloudPrivateDnsZone](/docs/catalog/alicloud/alicloudprivatednszone) -- manages private DNS zones for VPC-internal resolution (separate from public Alidns)

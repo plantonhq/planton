@@ -78,6 +78,6 @@ Avoid overlapping CIDR blocks between VSwitches in the same VPC.
 - **AlicloudPolardbCluster** -- cloud-native database clusters in this VSwitch
 - **AlicloudRedisInstance** -- cache instances in this VSwitch
 - **AlicloudAckManagedCluster** -- Kubernetes clusters using this VSwitch for node placement
-- **AlicloudAlbLoadBalancer** -- ALB load balancers spanning this VSwitch
-- **AlicloudNlbLoadBalancer** -- NLB load balancers spanning this VSwitch
+- **AlicloudApplicationLoadBalancer** -- ALB load balancers spanning this VSwitch
+- **AlicloudNetworkLoadBalancer** -- NLB load balancers spanning this VSwitch
 - **AlicloudNasFileSystem** -- NAS mount targets in this VSwitch

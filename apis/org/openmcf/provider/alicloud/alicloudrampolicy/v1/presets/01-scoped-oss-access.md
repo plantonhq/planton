@@ -22,7 +22,7 @@ This preset creates a custom RAM policy that grants read/write access to a singl
 |-------------|-------------|---------------|
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`, `ap-southeast-1`) | Your deployment region strategy |
 | `<your-policy-name>` | RAM policy name, unique per account (1-128 chars: letters, digits, hyphens) | Choose a name following your naming convention (e.g., `app-data-bucket-rw`) |
-| `<your-bucket-name>` | The exact OSS bucket name to grant access to | OSS console or `AlicloudOssBucket` stack outputs |
+| `<your-bucket-name>` | The exact OSS bucket name to grant access to | OSS console or `AlicloudStorageBucket` stack outputs |
 
 ## Related Presets
 

@@ -75,6 +75,6 @@ Two file system types are supported:
 
 ## Related Components
 
-- **AlicloudOssBucket** -- object storage (S3-compatible), for unstructured data at scale
+- **AlicloudStorageBucket** -- object storage (S3-compatible), for unstructured data at scale
 - **AlicloudAckManagedCluster** -- Kubernetes clusters that can mount NAS for shared persistent storage
 - **AlicloudEcsInstance** -- compute instances that mount NAS via NFS/SMB

@@ -131,6 +131,6 @@ After deployment, the following outputs are available in `status.outputs`:
 ## Related Components
 
 - [AlicloudNatGateway](/docs/catalog/alicloud/alicloudnatgateway) -- associate this EIP for SNAT outbound internet access
-- [AlicloudAlbLoadBalancer](/docs/catalog/alicloud/alicloudalbloadbalancer) -- use this EIP for internet-facing ALB
-- [AlicloudNlbLoadBalancer](/docs/catalog/alicloud/alicloudnlbloadbalancer) -- use this EIP for internet-facing NLB
+- [AlicloudApplicationLoadBalancer](/docs/catalog/alicloud/alicloudapplicationloadbalancer) -- use this EIP for internet-facing ALB
+- [AlicloudNetworkLoadBalancer](/docs/catalog/alicloud/alicloudnetworkloadbalancer) -- use this EIP for internet-facing NLB
 - [AlicloudVpnGateway](/docs/catalog/alicloud/alicloudvpngateway) -- use this EIP for VPN gateway public endpoint

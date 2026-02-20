@@ -71,5 +71,5 @@ Alibaba Cloud RAM policy documents follow this structure:
 ## Related Components
 
 - **AlicloudRamRole** -- attach this policy to a role via `policyAttachments`
-- **AlicloudOssBucket** -- common target for fine-grained OSS access policies
+- **AlicloudStorageBucket** -- common target for fine-grained OSS access policies
 - **AlicloudRdsInstance** -- common target for database access policies

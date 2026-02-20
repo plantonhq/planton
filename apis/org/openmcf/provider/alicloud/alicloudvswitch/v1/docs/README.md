@@ -494,7 +494,7 @@ While VSwitches do not generate metrics directly, monitor these operational indi
 
 - **VSwitch isolation is not security isolation.** Resources in different VSwitches within the same VPC can communicate freely by default. Use security groups for access control between tiers.
 - **Database tier VSwitches** should be used exclusively for database resources. Avoid deploying application instances and database instances in the same VSwitch — this makes it harder to write precise security group rules.
-- **Do not expose VSwitches directly to the internet.** Use NAT Gateways (AlicloudNatGateway) for outbound access and load balancers (AlicloudAlbLoadBalancer, AlicloudNlbLoadBalancer) for inbound access.
+- **Do not expose VSwitches directly to the internet.** Use NAT Gateways (AlicloudNatGateway) for outbound access and load balancers (AlicloudApplicationLoadBalancer, AlicloudNetworkLoadBalancer) for inbound access.
 
 ## Conclusion
 

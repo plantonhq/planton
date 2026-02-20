@@ -157,5 +157,5 @@ After deployment, the following outputs are available in `status.outputs`:
 - [AlicloudVpc](/docs/catalog/alicloud/alicloudvpc) -- prerequisite VPC for the mount target
 - [AlicloudVswitch](/docs/catalog/alicloud/alicloudvswitch) -- prerequisite VSwitch for the mount target
 - [AlicloudKmsKey](/docs/catalog/alicloud/alicloudkmskey) -- for customer-managed encryption keys
-- [AlicloudOssBucket](/docs/catalog/alicloud/alicloudossbucket) -- object storage alternative for unstructured data
+- [AlicloudStorageBucket](/docs/catalog/alicloud/alicloudstoragebucket) -- object storage alternative for unstructured data
 - [AlicloudAckManagedCluster](/docs/catalog/alicloud/alicloudackmanagedcluster) -- Kubernetes clusters that mount NAS for shared persistent volumes

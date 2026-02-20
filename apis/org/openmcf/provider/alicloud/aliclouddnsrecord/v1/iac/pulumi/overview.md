@@ -37,13 +37,13 @@ AlicloudDnsRecordStackInput
 
 ## Design Decisions
 
-**No tags**: Unlike AlicloudDnsDomain, the DNS record resource does not support tags. The Locals struct and initializeLocals function are intentionally minimal.
+**No tags**: Unlike AlicloudDnsZone, the DNS record resource does not support tags. The Locals struct and initializeLocals function are intentionally minimal.
 
 **Conditional optional fields**: Optional spec fields (ttl, priority, line, status, remark) are only passed to the Pulumi SDK when non-zero/non-empty. This prevents sending default proto values (0 for int32, "" for string) to the API, which would override provider defaults.
 
 **Resource naming**: The Pulumi resource name uses `{rr}.{domain_name}` (e.g., `www.example.com`) for human-readable identification in Pulumi state.
 
-**Global service, regional provider**: Alidns is a global service -- records are not region-scoped. The `spec.region` field is used solely for provider initialization, consistent with AlicloudDnsDomain.
+**Global service, regional provider**: Alidns is a global service -- records are not region-scoped. The `spec.region` field is used solely for provider initialization, consistent with AlicloudDnsZone.
 
 ## Customization
 

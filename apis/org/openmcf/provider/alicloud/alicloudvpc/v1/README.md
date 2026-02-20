@@ -58,8 +58,8 @@ Choose a CIDR that does not overlap with other VPCs if you plan to use VPC peeri
 - **AlicloudVswitch** -- creates subnets within this VPC
 - **AlicloudSecurityGroup** -- creates security groups bound to this VPC
 - **AlicloudNatGateway** -- creates NAT gateways for outbound internet access
-- **AlicloudAlbLoadBalancer** -- deploys ALB load balancers in this VPC
-- **AlicloudNlbLoadBalancer** -- deploys NLB load balancers in this VPC
+- **AlicloudApplicationLoadBalancer** -- deploys ALB load balancers in this VPC
+- **AlicloudNetworkLoadBalancer** -- deploys NLB load balancers in this VPC
 - **AlicloudAckManagedCluster** -- deploys Kubernetes clusters in this VPC
 - **AlicloudRdsInstance** -- deploys database instances in this VPC (via VSwitch)
-- **AlicloudPrivateZone** -- attaches private DNS zones to this VPC
+- **AlicloudPrivateDnsZone** -- attaches private DNS zones to this VPC

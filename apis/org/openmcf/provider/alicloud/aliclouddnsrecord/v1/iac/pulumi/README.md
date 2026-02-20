@@ -39,7 +39,7 @@ openmcf pulumi destroy \
 
 - **DNS Record** (`dns.AlidnsRecord`) -- a single DNS record within the specified parent domain
 
-The module does not manage the parent domain. The domain must already exist in Alidns, managed by the AlicloudDnsDomain component or added manually.
+The module does not manage the parent domain. The domain must already exist in Alidns, managed by the AlicloudDnsZone component or added manually.
 
 ## Prerequisites
 
