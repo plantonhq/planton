@@ -10,7 +10,7 @@ import (
 
 type Locals struct {
 	AlicloudApplicationLoadBalancer *alicloudapplicationloadbalancerv1.AlicloudApplicationLoadBalancer
-	Tags                    map[string]string
+	Tags                            map[string]string
 }
 
 func initializeLocals(ctx *pulumi.Context, stackInput *alicloudapplicationloadbalancerv1.AlicloudApplicationLoadBalancerStackInput) *Locals {

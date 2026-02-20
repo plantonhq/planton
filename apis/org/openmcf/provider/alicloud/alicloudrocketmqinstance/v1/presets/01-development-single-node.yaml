@@ -1,0 +1,10 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudRocketmqInstance
+metadata:
+  name: my-dev-rocketmq
+spec:
+  region: <alibaba-cloud-region>
+  seriesCode: standard
+  subSeriesCode: single_node
+  vpcId:
+    value: <your-vpc-id>

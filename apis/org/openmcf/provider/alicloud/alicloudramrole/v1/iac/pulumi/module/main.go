@@ -22,12 +22,12 @@ func Resources(ctx *pulumi.Context, stackInput *alicloudramrolev1.AlicloudRamRol
 	}
 
 	role, err := ram.NewRole(ctx, spec.RoleName, &ram.RoleArgs{
-		RoleName:                  pulumi.String(spec.RoleName),
+		RoleName:                 pulumi.String(spec.RoleName),
 		AssumeRolePolicyDocument: pulumi.String(spec.AssumeRolePolicyDocument),
-		Description:               optionalString(spec.Description),
-		MaxSessionDuration:        pulumi.Int(maxSessionDuration(spec)),
-		Force:                     pulumi.Bool(forceDelete(spec)),
-		Tags:                      pulumi.ToStringMap(locals.Tags),
+		Description:              optionalString(spec.Description),
+		MaxSessionDuration:       pulumi.Int(maxSessionDuration(spec)),
+		Force:                    pulumi.Bool(forceDelete(spec)),
+		Tags:                     pulumi.ToStringMap(locals.Tags),
 	}, pulumi.Provider(alicloudProvider))
 	if err != nil {
 		return errors.Wrapf(err, "failed to create RAM role %s", spec.RoleName)

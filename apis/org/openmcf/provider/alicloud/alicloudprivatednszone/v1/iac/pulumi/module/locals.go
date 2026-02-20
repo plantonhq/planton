@@ -10,7 +10,7 @@ import (
 
 type Locals struct {
 	AlicloudPrivateDnsZone *alicloudprivatednszonev1.AlicloudPrivateDnsZone
-	Tags                map[string]string
+	Tags                   map[string]string
 }
 
 func initializeLocals(ctx *pulumi.Context, stackInput *alicloudprivatednszonev1.AlicloudPrivateDnsZoneStackInput) *Locals {

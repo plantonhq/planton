@@ -145,4 +145,3 @@ func optionalStringFromPtr(s *string) pulumi.StringPtrInput {
 	}
 	return pulumi.String(*s)
 }
-

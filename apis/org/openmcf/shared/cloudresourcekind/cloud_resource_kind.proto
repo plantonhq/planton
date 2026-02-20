@@ -1737,4 +1737,42 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "acknp"
   }];
+
+  // --- CDN ---
+
+  AlicloudCdnDomain = 3100 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "accdn"
+  }];
+
+  // --- Serverless ---
+
+  AlicloudFunction = 3110 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acfc"
+  }];
+
+  AlicloudSaeApplication = 3111 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acsae"
+  }];
+
+  // --- Messaging ---
+
+  AlicloudRocketmqInstance = 3120 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acrmq"
+  }];
+
+  // --- Enterprise Networking ---
+
+  AlicloudCenInstance = 3130 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "accen"
+  }];
 }

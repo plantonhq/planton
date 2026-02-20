@@ -1,12 +1,20 @@
-# AlicloudKubernetesNodePool Terraform Module
+# Terraform Module to Deploy AlicloudKubernetesNodePool
 
-Deploys an ACK Kubernetes node pool using the Alibaba Cloud Terraform provider.
+This module provisions an ACK Kubernetes node pool with configurable instance types, disk configuration, auto-scaling, managed lifecycle, spot instances, and Kubernetes scheduling properties.
 
-## Resources Created
-
-- `alicloud_cs_kubernetes_node_pool` -- ACK node pool with worker nodes
+Generated `variables.tf` reflects the proto schema for `AlicloudKubernetesNodePool`.
 
 ## Usage
 
-See the top-level [examples.md](../../examples.md) for YAML manifest examples
-showing the input structure.
+Use the OpenMCF CLI (tofu) with the default local backend:
+
+```shell
+openmcf tofu init --manifest hack/manifest.yaml
+openmcf tofu plan --manifest hack/manifest.yaml
+openmcf tofu apply --manifest hack/manifest.yaml --auto-approve
+openmcf tofu destroy --manifest hack/manifest.yaml --auto-approve
+```
+
+**Note**: Credentials are provided via stack input (CLI), not in the manifest `spec`.
+
+For more examples, see [`examples.md`](./examples.md) and [`hack/manifest.yaml`](../hack/manifest.yaml).

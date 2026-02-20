@@ -424,8 +424,8 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 					},
 					AccessRules: []*AlicloudNasAccessRule{
 						{
-							SourceCidrIp:  "10.0.0.0/8",
-							RwAccessType:  strPtr("WRITE_ONLY"),
+							SourceCidrIp: "10.0.0.0/8",
+							RwAccessType: strPtr("WRITE_ONLY"),
 						},
 					},
 				},

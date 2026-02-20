@@ -141,13 +141,13 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 			}
 			input.Spec.Listeners = []*AlicloudNetworkLoadBalancerListener{
 				{
-					ListenerPort:      443,
-					ListenerProtocol:  "TCPSSL",
-					ServerGroupName:   "ssl-backend",
-					CertificateIds:    []string{"cas-abc123"},
-					SecurityPolicyId:  "tls_cipher_policy_1_2_strict",
-					CaCertificateIds:  []string{"ca-abc123"},
-					CaEnabled:         proto.Bool(true),
+					ListenerPort:     443,
+					ListenerProtocol: "TCPSSL",
+					ServerGroupName:  "ssl-backend",
+					CertificateIds:   []string{"cas-abc123"},
+					SecurityPolicyId: "tls_cipher_policy_1_2_strict",
+					CaCertificateIds: []string{"ca-abc123"},
+					CaEnabled:        proto.Bool(true),
 				},
 			}
 			err := protovalidate.Validate(input)
@@ -260,8 +260,8 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 			input := minimalValidInput()
 			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
 				{
-					Name:                     "no-preserve",
-					PreserveClientIpEnabled:  proto.Bool(false),
+					Name:                    "no-preserve",
+					PreserveClientIpEnabled: proto.Bool(false),
 					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled: true,
 					},

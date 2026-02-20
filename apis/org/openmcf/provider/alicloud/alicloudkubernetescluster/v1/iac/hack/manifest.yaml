@@ -1,0 +1,15 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudKubernetesCluster
+metadata:
+  name: alicloudkubernetescluster-demo
+spec:
+  region: cn-hangzhou
+  vswitchIds:
+    - value: vsw-aaa111
+    - value: vsw-bbb222
+  serviceCidr: "172.21.0.0/20"
+  podCidr: "172.20.0.0/16"
+  addons:
+    - name: flannel
+    - name: csi-plugin
+    - name: csi-provisioner

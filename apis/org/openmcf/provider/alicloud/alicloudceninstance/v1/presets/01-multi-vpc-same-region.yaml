@@ -1,0 +1,17 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudCenInstance
+metadata:
+  name: my-intra-region-cen
+spec:
+  region: <alibaba-cloud-region>
+  cenInstanceName: <your-cen-name>
+  description: Connects multiple VPCs within the same region for private communication
+  tags:
+    team: <your-team>
+  attachments:
+    - childInstanceId:
+        value: <first-vpc-id>
+      childInstanceRegionId: <alibaba-cloud-region>
+    - childInstanceId:
+        value: <second-vpc-id>
+      childInstanceRegionId: <alibaba-cloud-region>

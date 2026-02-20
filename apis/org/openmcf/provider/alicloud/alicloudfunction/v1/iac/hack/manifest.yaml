@@ -1,0 +1,12 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudFunction
+metadata:
+  name: alicloudfunction-demo
+spec:
+  region: cn-hangzhou
+  functionName: openmcf-demo-func
+  handler: index.handler
+  runtime: python3.12
+  code:
+    ossBucketName: my-code-bucket
+    ossObjectName: functions/demo.zip

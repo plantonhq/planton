@@ -407,6 +407,11 @@ const (
 	CloudResourceKind_AlicloudContainerRegistry         CloudResourceKind = 3090
 	CloudResourceKind_AlicloudKubernetesCluster         CloudResourceKind = 3091
 	CloudResourceKind_AlicloudKubernetesNodePool        CloudResourceKind = 3092
+	CloudResourceKind_AlicloudCdnDomain                 CloudResourceKind = 3100
+	CloudResourceKind_AlicloudFunction                  CloudResourceKind = 3110
+	CloudResourceKind_AlicloudSaeApplication            CloudResourceKind = 3111
+	CloudResourceKind_AlicloudRocketmqInstance          CloudResourceKind = 3120
+	CloudResourceKind_AlicloudCenInstance               CloudResourceKind = 3130
 )
 
 // Enum value maps for CloudResourceKind.
@@ -724,6 +729,11 @@ var (
 		3090: "AlicloudContainerRegistry",
 		3091: "AlicloudKubernetesCluster",
 		3092: "AlicloudKubernetesNodePool",
+		3100: "AlicloudCdnDomain",
+		3110: "AlicloudFunction",
+		3111: "AlicloudSaeApplication",
+		3120: "AlicloudRocketmqInstance",
+		3130: "AlicloudCenInstance",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
@@ -1038,6 +1048,11 @@ var (
 		"AlicloudContainerRegistry":             3090,
 		"AlicloudKubernetesCluster":             3091,
 		"AlicloudKubernetesNodePool":            3092,
+		"AlicloudCdnDomain":                     3100,
+		"AlicloudFunction":                      3110,
+		"AlicloudSaeApplication":                3111,
+		"AlicloudRocketmqInstance":              3120,
+		"AlicloudCenInstance":                   3130,
 	}
 )
 
@@ -1182,7 +1197,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xdci\n" +
+	"\x02v1\x10\x01*\xb5k\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1549,7 +1564,13 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x19AlicloudContainerRegistry\x10\x92\x18\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\x19\x10\x01\"\x04accr\x12/\n" +
 	"\x19AlicloudKubernetesCluster\x10\x93\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acack\x120\n" +
-	"\x1aAlicloudKubernetesNodePool\x10\x94\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acknp:|\n" +
+	"\x1aAlicloudKubernetesNodePool\x10\x94\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acknp\x12'\n" +
+	"\x11AlicloudCdnDomain\x10\x9c\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05accdn\x12%\n" +
+	"\x10AlicloudFunction\x10\xa6\x18\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x19\x10\x01\"\x04acfc\x12,\n" +
+	"\x16AlicloudSaeApplication\x10\xa7\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acsae\x12.\n" +
+	"\x18AlicloudRocketmqInstance\x10\xb0\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acrmq\x12)\n" +
+	"\x13AlicloudCenInstance\x10\xba\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05accen:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

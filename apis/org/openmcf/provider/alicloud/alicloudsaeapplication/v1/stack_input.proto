@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudsaeapplication.v1;
+
+import "org/openmcf/provider/alicloud/alicloudsaeapplication/v1/api.proto";
+import "org/openmcf/provider/alicloud/provider.proto";
+
+// alicloud-sae-application stack-input
+message AlicloudSaeApplicationStackInput {
+  // target cloud-resource
+  AlicloudSaeApplication target = 1;
+  // provider-config
+  org.openmcf.provider.alicloud.AlicloudProviderConfig provider_config = 2;
+}

@@ -14,8 +14,8 @@ func TestAlicloudRamRoleSpec(t *testing.T) {
 	ginkgo.RunSpecs(t, "AlicloudRamRoleSpec Validation Tests")
 }
 
-func int32Ptr(i int32) *int32 { return &i }
-func boolPtr(b bool) *bool    { return &b }
+func int32Ptr(i int32) *int32    { return &i }
+func boolPtr(b bool) *bool       { return &b }
 func stringPtr(s string) *string { return &s }
 
 const validTrustPolicy = `{"Statement":[{"Action":"sts:AssumeRole","Effect":"Allow","Principal":{"Service":["ecs.aliyuncs.com"]}}],"Version":"1"}`
@@ -32,8 +32,8 @@ var _ = ginkgo.Describe("AlicloudRamRoleSpec Validation Tests", func() {
 					Name: "test-role",
 				},
 				Spec: &AlicloudRamRoleSpec{
-					Region:                    "cn-hangzhou",
-					RoleName:                  "my-ecs-role",
+					Region:                   "cn-hangzhou",
+					RoleName:                 "my-ecs-role",
 					AssumeRolePolicyDocument: validTrustPolicy,
 				},
 			}
@@ -49,9 +49,9 @@ var _ = ginkgo.Describe("AlicloudRamRoleSpec Validation Tests", func() {
 					Name: "test-role",
 				},
 				Spec: &AlicloudRamRoleSpec{
-					Region:                    "cn-shanghai",
-					RoleName:                  "ack-worker-role",
-					Description:               "Role for ACK worker nodes",
+					Region:                   "cn-shanghai",
+					RoleName:                 "ack-worker-role",
+					Description:              "Role for ACK worker nodes",
 					AssumeRolePolicyDocument: validTrustPolicy,
 					PolicyAttachments: []*AlicloudRamRolePolicyAttachment{
 						{
@@ -78,13 +78,13 @@ var _ = ginkgo.Describe("AlicloudRamRoleSpec Validation Tests", func() {
 					Env:  "production",
 				},
 				Spec: &AlicloudRamRoleSpec{
-					Region:                    "us-west-1",
-					RoleName:                  "full-config-role",
-					Description:               "Fully configured role",
+					Region:                   "us-west-1",
+					RoleName:                 "full-config-role",
+					Description:              "Fully configured role",
 					AssumeRolePolicyDocument: validTrustPolicy,
-					MaxSessionDuration:        int32Ptr(7200),
-					Tags:                      map[string]string{"team": "platform", "cost-center": "eng"},
-					Force:                     boolPtr(true),
+					MaxSessionDuration:       int32Ptr(7200),
+					Tags:                     map[string]string{"team": "platform", "cost-center": "eng"},
+					Force:                    boolPtr(true),
 					PolicyAttachments: []*AlicloudRamRolePolicyAttachment{
 						{
 							PolicyName: "AliyunECSFullAccess",
@@ -109,10 +109,10 @@ var _ = ginkgo.Describe("AlicloudRamRoleSpec Validation Tests", func() {
 					Name: "test",
 				},
 				Spec: &AlicloudRamRoleSpec{
-					Region:                    "cn-hangzhou",
-					RoleName:                  "boundary-test",
+					Region:                   "cn-hangzhou",
+					RoleName:                 "boundary-test",
 					AssumeRolePolicyDocument: validTrustPolicy,
-					MaxSessionDuration:        int32Ptr(43200),
+					MaxSessionDuration:       int32Ptr(43200),
 				},
 			}
 			err := protovalidate.Validate(input)
@@ -130,7 +130,7 @@ var _ = ginkgo.Describe("AlicloudRamRoleSpec Validation Tests", func() {
 					Name: "test",
 				},
 				Spec: &AlicloudRamRoleSpec{
-					RoleName:                  "my-role",
+					RoleName:                 "my-role",
 					AssumeRolePolicyDocument: validTrustPolicy,
 				},
 			}
@@ -146,7 +146,7 @@ var _ = ginkgo.Describe("AlicloudRamRoleSpec Validation Tests", func() {
 					Name: "test",
 				},
 				Spec: &AlicloudRamRoleSpec{
-					Region:                    "cn-hangzhou",
+					Region:                   "cn-hangzhou",
 					AssumeRolePolicyDocument: validTrustPolicy,
 				},
 			}
@@ -178,8 +178,8 @@ var _ = ginkgo.Describe("AlicloudRamRoleSpec Validation Tests", func() {
 					Name: "test",
 				},
 				Spec: &AlicloudRamRoleSpec{
-					Region:                    "cn-hangzhou",
-					RoleName:                  "this-role-name-is-intentionally-longer-than-sixty-four-characters-which-exceeds-the-maximum",
+					Region:                   "cn-hangzhou",
+					RoleName:                 "this-role-name-is-intentionally-longer-than-sixty-four-characters-which-exceeds-the-maximum",
 					AssumeRolePolicyDocument: validTrustPolicy,
 				},
 			}
@@ -195,10 +195,10 @@ var _ = ginkgo.Describe("AlicloudRamRoleSpec Validation Tests", func() {
 					Name: "test",
 				},
 				Spec: &AlicloudRamRoleSpec{
-					Region:                    "cn-hangzhou",
-					RoleName:                  "my-role",
+					Region:                   "cn-hangzhou",
+					RoleName:                 "my-role",
 					AssumeRolePolicyDocument: validTrustPolicy,
-					MaxSessionDuration:        int32Ptr(1800),
+					MaxSessionDuration:       int32Ptr(1800),
 				},
 			}
 			err := protovalidate.Validate(input)
@@ -213,10 +213,10 @@ var _ = ginkgo.Describe("AlicloudRamRoleSpec Validation Tests", func() {
 					Name: "test",
 				},
 				Spec: &AlicloudRamRoleSpec{
-					Region:                    "cn-hangzhou",
-					RoleName:                  "my-role",
+					Region:                   "cn-hangzhou",
+					RoleName:                 "my-role",
 					AssumeRolePolicyDocument: validTrustPolicy,
-					MaxSessionDuration:        int32Ptr(50000),
+					MaxSessionDuration:       int32Ptr(50000),
 				},
 			}
 			err := protovalidate.Validate(input)
@@ -231,8 +231,8 @@ var _ = ginkgo.Describe("AlicloudRamRoleSpec Validation Tests", func() {
 					Name: "test",
 				},
 				Spec: &AlicloudRamRoleSpec{
-					Region:                    "cn-hangzhou",
-					RoleName:                  "my-role",
+					Region:                   "cn-hangzhou",
+					RoleName:                 "my-role",
 					AssumeRolePolicyDocument: validTrustPolicy,
 					PolicyAttachments: []*AlicloudRamRolePolicyAttachment{
 						{
@@ -254,8 +254,8 @@ var _ = ginkgo.Describe("AlicloudRamRoleSpec Validation Tests", func() {
 					Name: "test",
 				},
 				Spec: &AlicloudRamRoleSpec{
-					Region:                    "cn-hangzhou",
-					RoleName:                  "my-role",
+					Region:                   "cn-hangzhou",
+					RoleName:                 "my-role",
 					AssumeRolePolicyDocument: validTrustPolicy,
 					PolicyAttachments: []*AlicloudRamRolePolicyAttachment{
 						{
@@ -276,8 +276,8 @@ var _ = ginkgo.Describe("AlicloudRamRoleSpec Validation Tests", func() {
 					Name: "test",
 				},
 				Spec: &AlicloudRamRoleSpec{
-					Region:                    "cn-hangzhou",
-					RoleName:                  "my-role",
+					Region:                   "cn-hangzhou",
+					RoleName:                 "my-role",
 					AssumeRolePolicyDocument: validTrustPolicy,
 				},
 			}
@@ -293,8 +293,8 @@ var _ = ginkgo.Describe("AlicloudRamRoleSpec Validation Tests", func() {
 					Name: "test",
 				},
 				Spec: &AlicloudRamRoleSpec{
-					Region:                    "cn-hangzhou",
-					RoleName:                  "my-role",
+					Region:                   "cn-hangzhou",
+					RoleName:                 "my-role",
 					AssumeRolePolicyDocument: validTrustPolicy,
 				},
 			}

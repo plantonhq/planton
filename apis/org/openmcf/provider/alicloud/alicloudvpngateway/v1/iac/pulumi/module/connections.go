@@ -33,7 +33,7 @@ func vpnConnection(
 	}
 
 	connArgs := &vpn.ConnectionArgs{
-		VpnGatewayId:    gateway.ID(),
+		VpnGatewayId:      gateway.ID(),
 		CustomerGatewayId: customerGateway.ID(),
 		VpnConnectionName: pulumi.StringPtr(conn.Name),
 		LocalSubnets:      pulumi.ToStringArray(conn.LocalSubnets),

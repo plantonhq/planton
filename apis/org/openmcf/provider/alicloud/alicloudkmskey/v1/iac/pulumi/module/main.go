@@ -22,16 +22,16 @@ func Resources(ctx *pulumi.Context, stackInput *alicloudkmskeyv1.AlicloudKmsKeyS
 	resourceName := stackInput.Target.Metadata.Name
 
 	key, err := kms.NewKey(ctx, resourceName, &kms.KeyArgs{
-		Description:                  optionalString(spec.Description),
-		KeySpec:                      pulumi.String(keySpec(spec)),
-		KeyUsage:                     pulumi.String(keyUsage(spec)),
-		ProtectionLevel:              pulumi.String(protectionLevel(spec)),
-		AutomaticRotation:            pulumi.String(automaticRotation(spec)),
-		RotationInterval:             optionalString(spec.RotationInterval),
-		PendingWindowInDays:          pulumi.Int(pendingWindowInDays(spec)),
-		DeletionProtection:           pulumi.String(deletionProtection(spec)),
+		Description:                   optionalString(spec.Description),
+		KeySpec:                       pulumi.String(keySpec(spec)),
+		KeyUsage:                      pulumi.String(keyUsage(spec)),
+		ProtectionLevel:               pulumi.String(protectionLevel(spec)),
+		AutomaticRotation:             pulumi.String(automaticRotation(spec)),
+		RotationInterval:              optionalString(spec.RotationInterval),
+		PendingWindowInDays:           pulumi.Int(pendingWindowInDays(spec)),
+		DeletionProtection:            pulumi.String(deletionProtection(spec)),
 		DeletionProtectionDescription: optionalString(spec.DeletionProtectionDescription),
-		Tags:                         pulumi.ToStringMap(locals.Tags),
+		Tags:                          pulumi.ToStringMap(locals.Tags),
 	}, pulumi.Provider(alicloudProvider))
 	if err != nil {
 		return errors.Wrapf(err, "failed to create KMS key %s", resourceName)

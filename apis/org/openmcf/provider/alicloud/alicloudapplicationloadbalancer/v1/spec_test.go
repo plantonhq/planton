@@ -126,7 +126,7 @@ var _ = ginkgo.Describe("AlicloudApplicationLoadBalancerSpec Validation Tests", 
 					ListenerPort:                 443,
 					ListenerProtocol:             "HTTPS",
 					DefaultActionServerGroupName: "api-backend",
-					CertificateId:               "cas-abc123",
+					CertificateId:                "cas-abc123",
 					SecurityPolicyId:             "tls_cipher_policy_1_2_strict",
 				},
 			}

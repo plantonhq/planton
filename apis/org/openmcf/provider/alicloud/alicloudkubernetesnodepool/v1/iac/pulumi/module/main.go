@@ -22,9 +22,9 @@ func Resources(ctx *pulumi.Context, stackInput *alicloudkubernetesnodepoolv1.Ali
 	}
 
 	args := &cs.NodePoolArgs{
-		ClusterId:    pulumi.String(locals.ClusterId),
-		NodePoolName: pulumi.String(spec.Name),
-		VswitchIds:   pulumi.ToStringArray(locals.VswitchIds),
+		ClusterId:     pulumi.String(locals.ClusterId),
+		NodePoolName:  pulumi.String(spec.Name),
+		VswitchIds:    pulumi.ToStringArray(locals.VswitchIds),
 		InstanceTypes: pulumi.ToStringArray(spec.InstanceTypes),
 		ImageType:     pulumi.String(imageType(spec)),
 		Tags:          pulumi.ToStringMap(locals.Tags),

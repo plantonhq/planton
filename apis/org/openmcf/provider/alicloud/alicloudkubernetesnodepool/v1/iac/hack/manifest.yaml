@@ -1,14 +1,15 @@
 apiVersion: alicloud.openmcf.org/v1
 kind: AlicloudKubernetesNodePool
 metadata:
-  name: test-pool
+  name: alicloudkubernetesnodepool-demo
 spec:
   region: cn-hangzhou
-  clusterId: c-test-cluster
-  name: test-pool
+  clusterId:
+    value: c-test-cluster
+  name: demo-pool
   vswitchIds:
-    - vsw-test-a
-    - vsw-test-b
+    - value: vsw-aaa111
+    - value: vsw-bbb222
   instanceTypes:
     - ecs.g7.xlarge
   desiredSize: 2

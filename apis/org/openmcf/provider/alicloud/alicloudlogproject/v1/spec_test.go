@@ -87,12 +87,12 @@ var _ = ginkgo.Describe("AlicloudLogProjectSpec Validation Tests", func() {
 					LogStores: []*AlicloudLogStore{
 						{
 							Name:               "request-logs",
-							RetentionDays:       int32Ptr(180),
-							ShardCount:          int32Ptr(8),
-							AutoSplit:           boolPtr(true),
-							MaxSplitShardCount:  int32Ptr(128),
-							EnableIndex:         boolPtr(true),
-							AppendMeta:          boolPtr(true),
+							RetentionDays:      int32Ptr(180),
+							ShardCount:         int32Ptr(8),
+							AutoSplit:          boolPtr(true),
+							MaxSplitShardCount: int32Ptr(128),
+							EnableIndex:        boolPtr(true),
+							AppendMeta:         boolPtr(true),
 						},
 					},
 				},

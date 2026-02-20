@@ -22,16 +22,16 @@ func Resources(ctx *pulumi.Context, stackInput *alicloudmongodbinstancev1.Aliclo
 	name := instanceName(locals)
 
 	instanceArgs := &mongodb.InstanceArgs{
-		EngineVersion:     pulumi.String(spec.EngineVersion),
-		DbInstanceClass:   pulumi.String(spec.DbInstanceClass),
-		DbInstanceStorage: pulumi.Int(int(spec.DbInstanceStorage)),
-		AccountPassword:   pulumi.String(spec.AccountPassword),
-		VswitchId:         pulumi.String(spec.VswitchId.GetValue()),
-		Name:              pulumi.String(name),
-		ReplicationFactor: pulumi.Int(replicationFactor(spec)),
-		StorageEngine:     pulumi.String(storageEngine(spec)),
+		EngineVersion:      pulumi.String(spec.EngineVersion),
+		DbInstanceClass:    pulumi.String(spec.DbInstanceClass),
+		DbInstanceStorage:  pulumi.Int(int(spec.DbInstanceStorage)),
+		AccountPassword:    pulumi.String(spec.AccountPassword),
+		VswitchId:          pulumi.String(spec.VswitchId.GetValue()),
+		Name:               pulumi.String(name),
+		ReplicationFactor:  pulumi.Int(replicationFactor(spec)),
+		StorageEngine:      pulumi.String(storageEngine(spec)),
 		InstanceChargeType: pulumi.String(instanceChargeType(spec)),
-		Tags:              pulumi.ToStringMap(locals.Tags),
+		Tags:               pulumi.ToStringMap(locals.Tags),
 	}
 
 	if spec.ZoneId != "" {

@@ -105,8 +105,8 @@ func buildDataDisks(disks []*alicloudecsinstancev1.AlicloudEcsDataDisk) ecs.Inst
 	result := ecs.InstanceDataDiskArray{}
 	for _, disk := range disks {
 		d := &ecs.InstanceDataDiskArgs{
-			Size:             pulumi.Int(int(disk.Size)),
-			Category:         pulumi.String(dataDiskCategory(disk)),
+			Size:               pulumi.Int(int(disk.Size)),
+			Category:           pulumi.String(dataDiskCategory(disk)),
 			DeleteWithInstance: pulumi.Bool(dataDiskDeleteWithInstance(disk)),
 		}
 

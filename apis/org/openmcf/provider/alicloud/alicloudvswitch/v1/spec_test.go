@@ -6,8 +6,8 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
 func TestAlicloudVswitchSpec(t *testing.T) {
@@ -54,15 +54,15 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 					Env:  "production",
 				},
 				Spec: &AlicloudVswitchSpec{
-					Region:             "cn-shanghai",
-					VpcId:              stringValueOrRef("vpc-prod-001"),
-					ZoneId:             "cn-shanghai-b",
-					CidrBlock:          "172.16.1.0/24",
-					VswitchName:        "prod-app-vswitch",
-					Description:        "Production application tier VSwitch",
-					EnableIpv6:         true,
-					Ipv6CidrBlockMask:  42,
-					Tags:               map[string]string{"team": "platform", "tier": "application"},
+					Region:            "cn-shanghai",
+					VpcId:             stringValueOrRef("vpc-prod-001"),
+					ZoneId:            "cn-shanghai-b",
+					CidrBlock:         "172.16.1.0/24",
+					VswitchName:       "prod-app-vswitch",
+					Description:       "Production application tier VSwitch",
+					EnableIpv6:        true,
+					Ipv6CidrBlockMask: 42,
+					Tags:              map[string]string{"team": "platform", "tier": "application"},
 				},
 			}
 			err := protovalidate.Validate(input)
@@ -96,13 +96,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 					Name: "ipv6-lower-bound",
 				},
 				Spec: &AlicloudVswitchSpec{
-					Region:             "cn-hangzhou",
-					VpcId:              stringValueOrRef("vpc-abc123"),
-					ZoneId:             "cn-hangzhou-a",
-					CidrBlock:          "10.0.1.0/24",
-					VswitchName:        "ipv6-vswitch",
-					EnableIpv6:         true,
-					Ipv6CidrBlockMask:  1,
+					Region:            "cn-hangzhou",
+					VpcId:             stringValueOrRef("vpc-abc123"),
+					ZoneId:            "cn-hangzhou-a",
+					CidrBlock:         "10.0.1.0/24",
+					VswitchName:       "ipv6-vswitch",
+					EnableIpv6:        true,
+					Ipv6CidrBlockMask: 1,
 				},
 			}
 			err := protovalidate.Validate(input)
@@ -117,13 +117,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 					Name: "ipv6-upper-bound",
 				},
 				Spec: &AlicloudVswitchSpec{
-					Region:             "cn-hangzhou",
-					VpcId:              stringValueOrRef("vpc-abc123"),
-					ZoneId:             "cn-hangzhou-a",
-					CidrBlock:          "10.0.2.0/24",
-					VswitchName:        "ipv6-max-vswitch",
-					EnableIpv6:         true,
-					Ipv6CidrBlockMask:  255,
+					Region:            "cn-hangzhou",
+					VpcId:             stringValueOrRef("vpc-abc123"),
+					ZoneId:            "cn-hangzhou-a",
+					CidrBlock:         "10.0.2.0/24",
+					VswitchName:       "ipv6-max-vswitch",
+					EnableIpv6:        true,
+					Ipv6CidrBlockMask: 255,
 				},
 			}
 			err := protovalidate.Validate(input)
@@ -333,13 +333,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 					Name: "test",
 				},
 				Spec: &AlicloudVswitchSpec{
-					Region:             "cn-hangzhou",
-					VpcId:              stringValueOrRef("vpc-abc123"),
-					ZoneId:             "cn-hangzhou-a",
-					CidrBlock:          "10.0.0.0/24",
-					VswitchName:        "my-vswitch",
-					EnableIpv6:         true,
-					Ipv6CidrBlockMask:  256,
+					Region:            "cn-hangzhou",
+					VpcId:             stringValueOrRef("vpc-abc123"),
+					ZoneId:            "cn-hangzhou-a",
+					CidrBlock:         "10.0.0.0/24",
+					VswitchName:       "my-vswitch",
+					EnableIpv6:        true,
+					Ipv6CidrBlockMask: 256,
 				},
 			}
 			err := protovalidate.Validate(input)
@@ -354,13 +354,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 					Name: "test",
 				},
 				Spec: &AlicloudVswitchSpec{
-					Region:             "cn-hangzhou",
-					VpcId:              stringValueOrRef("vpc-abc123"),
-					ZoneId:             "cn-hangzhou-a",
-					CidrBlock:          "10.0.0.0/24",
-					VswitchName:        "my-vswitch",
-					EnableIpv6:         true,
-					Ipv6CidrBlockMask:  -1,
+					Region:            "cn-hangzhou",
+					VpcId:             stringValueOrRef("vpc-abc123"),
+					ZoneId:            "cn-hangzhou-a",
+					CidrBlock:         "10.0.0.0/24",
+					VswitchName:       "my-vswitch",
+					EnableIpv6:        true,
+					Ipv6CidrBlockMask: -1,
 				},
 			}
 			err := protovalidate.Validate(input)

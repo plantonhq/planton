@@ -44,17 +44,17 @@ var _ = ginkgo.Describe("AlicloudKmsKeySpec Validation Tests", func() {
 					Env:  "production",
 				},
 				Spec: &AlicloudKmsKeySpec{
-					Region:                         "cn-shanghai",
-					Description:                    "Production encryption key for RDS and OSS",
-					KeySpec:                         proto.String("Aliyun_AES_256"),
-					KeyUsage:                        proto.String("ENCRYPT/DECRYPT"),
-					ProtectionLevel:                 proto.String("SOFTWARE"),
-					AutomaticRotation:               proto.Bool(true),
-					RotationInterval:                "365d",
-					PendingWindowInDays:             proto.Int32(30),
-					DeletionProtection:              proto.Bool(true),
-					DeletionProtectionDescription:   "Protects RDS TDE master key",
-					Tags:                            map[string]string{"team": "platform", "env": "prod"},
+					Region:                        "cn-shanghai",
+					Description:                   "Production encryption key for RDS and OSS",
+					KeySpec:                       proto.String("Aliyun_AES_256"),
+					KeyUsage:                      proto.String("ENCRYPT/DECRYPT"),
+					ProtectionLevel:               proto.String("SOFTWARE"),
+					AutomaticRotation:             proto.Bool(true),
+					RotationInterval:              "365d",
+					PendingWindowInDays:           proto.Int32(30),
+					DeletionProtection:            proto.Bool(true),
+					DeletionProtectionDescription: "Protects RDS TDE master key",
+					Tags:                          map[string]string{"team": "platform", "env": "prod"},
 				},
 			}
 			err := protovalidate.Validate(input)
@@ -142,8 +142,8 @@ var _ = ginkgo.Describe("AlicloudKmsKeySpec Validation Tests", func() {
 					Name: "no-rotation-key",
 				},
 				Spec: &AlicloudKmsKeySpec{
-					Region:             "us-west-1",
-					AutomaticRotation:  proto.Bool(false),
+					Region:            "us-west-1",
+					AutomaticRotation: proto.Bool(false),
 				},
 			}
 			err := protovalidate.Validate(input)

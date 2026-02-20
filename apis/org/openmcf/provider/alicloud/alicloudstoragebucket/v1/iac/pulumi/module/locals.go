@@ -10,7 +10,7 @@ import (
 
 type Locals struct {
 	AlicloudStorageBucket *alicloudstoragebucketv1.AlicloudStorageBucket
-	Tags              map[string]string
+	Tags                  map[string]string
 }
 
 func initializeLocals(ctx *pulumi.Context, stackInput *alicloudstoragebucketv1.AlicloudStorageBucketStackInput) *Locals {
