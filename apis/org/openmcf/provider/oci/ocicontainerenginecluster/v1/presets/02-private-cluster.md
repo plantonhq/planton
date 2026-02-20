@@ -27,7 +27,7 @@ This preset creates a fully private Enhanced OKE cluster with no public API endp
 | `<vcn-ocid>` | OCID of the VCN hosting the cluster | OCI Console > Networking > VCNs, or `OciVcn` status outputs |
 | `<kubernetes-version>` | Kubernetes version for the control plane (e.g., `v1.30.1`) | `oci ce cluster-options list --cluster-option-id all` or OCI Console > Developer Services > Kubernetes Clusters > Create |
 | `<private-api-endpoint-subnet-ocid>` | OCID of a private subnet hosting the API server endpoint | OCI Console > Networking > VCNs > Subnets, or `OciSubnet` status outputs |
-| `<api-endpoint-nsg-ocid>` | OCID of the NSG controlling access to the API server endpoint | OCI Console > Networking > VCNs > Network Security Groups, or `OciNetworkSecurityGroup` status outputs |
+| `<api-endpoint-nsg-ocid>` | OCID of the NSG controlling access to the API server endpoint | OCI Console > Networking > VCNs > Network Security Groups, or `OciSecurityGroup` status outputs |
 | `<service-lb-subnet-ocid>` | OCID of the subnet where Kubernetes Service load balancers will be placed | OCI Console > Networking > VCNs > Subnets, or `OciSubnet` status outputs |
 | `<kms-key-ocid>` | OCID of the KMS key for encrypting Kubernetes secrets at rest | OCI Console > Identity & Security > Vault > Keys, or `OciKmsKey` status outputs |
 | `<image-verification-kms-key-ocid>` | OCID of the KMS key used for container image signature verification | OCI Console > Identity & Security > Vault > Keys, or `OciKmsKey` status outputs |

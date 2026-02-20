@@ -30,9 +30,9 @@ This preset creates a general-purpose OKE node pool with E4.Flex compute shapes,
 | `<availability-domain-2>` | Second availability domain name (e.g., `Uocm:PHX-AD-2`) | Same as above |
 | `<availability-domain-3>` | Third availability domain name (e.g., `Uocm:PHX-AD-3`) | Same as above |
 | `<worker-subnet-ocid>` | OCID of the regional subnet for worker node VNICs | OCI Console > Networking > VCNs > Subnets, or `OciSubnet` status outputs |
-| `<worker-nsg-ocid>` | OCID of the NSG applied to worker node VNICs | OCI Console > Networking > Network Security Groups, or `OciNetworkSecurityGroup` status outputs |
+| `<worker-nsg-ocid>` | OCID of the NSG applied to worker node VNICs | OCI Console > Networking > Network Security Groups, or `OciSecurityGroup` status outputs |
 | `<pod-subnet-ocid>` | OCID of the subnet for pod IP allocation (VCN-native CNI) | OCI Console > Networking > VCNs > Subnets, or `OciSubnet` status outputs |
-| `<pod-nsg-ocid>` | OCID of the NSG applied to pod VNICs | OCI Console > Networking > Network Security Groups, or `OciNetworkSecurityGroup` status outputs |
+| `<pod-nsg-ocid>` | OCID of the NSG applied to pod VNICs | OCI Console > Networking > Network Security Groups, or `OciSecurityGroup` status outputs |
 
 ## Related Presets
 

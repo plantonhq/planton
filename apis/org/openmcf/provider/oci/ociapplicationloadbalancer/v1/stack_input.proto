@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ociapplicationloadbalancer.v1;
+
+import "org/openmcf/provider/oci/ociapplicationloadbalancer/v1/api.proto";
+import "org/openmcf/provider/oci/provider.proto";
+
+// OciApplicationLoadBalancerStackInput is the input to the IaC modules
+// (Pulumi / Terraform) that deploy an OciApplicationLoadBalancer resource.
+message OciApplicationLoadBalancerStackInput {
+  // target cloud-resource
+  OciApplicationLoadBalancer target = 1;
+  // provider-config
+  org.openmcf.provider.oci.OciProviderConfig provider_config = 2;
+}

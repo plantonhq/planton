@@ -34,10 +34,10 @@ This preset creates a security-hardened OKE node pool with customer-managed KMS 
 | `<availability-domain-2>` | Second availability domain name (e.g., `Uocm:PHX-AD-2`) | Same as above |
 | `<availability-domain-3>` | Third availability domain name (e.g., `Uocm:PHX-AD-3`) | Same as above |
 | `<private-worker-subnet-ocid>` | OCID of a private subnet for worker node VNICs (no Internet Gateway route) | OCI Console > Networking > VCNs > Subnets, or `OciSubnet` status outputs |
-| `<worker-nsg-ocid>` | OCID of the NSG applied to worker node VNICs | OCI Console > Networking > Network Security Groups, or `OciNetworkSecurityGroup` status outputs |
+| `<worker-nsg-ocid>` | OCID of the NSG applied to worker node VNICs | OCI Console > Networking > Network Security Groups, or `OciSecurityGroup` status outputs |
 | `<kms-key-ocid>` | OCID of the KMS key for boot volume encryption at rest | OCI Console > Identity & Security > Vault > Keys, or `OciKmsKey` status outputs |
 | `<pod-subnet-ocid>` | OCID of the subnet for pod IP allocation (VCN-native CNI) | OCI Console > Networking > VCNs > Subnets, or `OciSubnet` status outputs |
-| `<pod-nsg-ocid>` | OCID of the NSG applied to pod VNICs | OCI Console > Networking > Network Security Groups, or `OciNetworkSecurityGroup` status outputs |
+| `<pod-nsg-ocid>` | OCID of the NSG applied to pod VNICs | OCI Console > Networking > Network Security Groups, or `OciSecurityGroup` status outputs |
 
 ## Related Presets
 

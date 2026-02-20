@@ -67,8 +67,8 @@ Deployment component wrapping `oci_containerengine_node_pool` with the standard 
 - `compartmentId` references OciCompartment via StringValueOrRef
 - `clusterId` references OciContainerEngineCluster via StringValueOrRef
 - `nodeConfigDetails.placementConfigs[].subnetId` references OciSubnet
-- `nodeConfigDetails.nsgIds` references OciNetworkSecurityGroup
-- `nodeConfigDetails.podNetworkOptionDetails.podNsgIds` references OciNetworkSecurityGroup
+- `nodeConfigDetails.nsgIds` references OciSecurityGroup
+- `nodeConfigDetails.podNetworkOptionDetails.podNsgIds` references OciSecurityGroup
 - `nodeConfigDetails.podNetworkOptionDetails.podSubnetIds` references OciSubnet
 
 ## Implementation Details
@@ -139,7 +139,7 @@ Deployment component wrapping `oci_containerengine_node_pool` with the standard 
 ## Related Work
 
 - R08 OciContainerEngineCluster -- parent cluster that this node pool attaches to
-- R01 OciVcn, R02 OciSubnet, R03 OciNetworkSecurityGroup -- networking components referenced by placement configs and pod networking
+- R01 OciVcn, R02 OciSubnet, R03 OciSecurityGroup -- networking components referenced by placement configs and pod networking
 - R04 OciCompartment -- compartment for organizational isolation
 - DD03: OKE Cluster/NodePool Split -- design decision for separate components
 - R10 OciContainerInstance (next in queue) -- serverless container offering

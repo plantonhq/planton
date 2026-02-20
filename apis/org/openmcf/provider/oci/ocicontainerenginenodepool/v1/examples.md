@@ -136,7 +136,7 @@ spec:
             fieldPath: status.outputs.subnetId
     nsgIds:
       - valueFrom:
-          kind: OciNetworkSecurityGroup
+          kind: OciSecurityGroup
           name: worker-nsg
           fieldPath: status.outputs.networkSecurityGroupId
     kmsKeyId:
@@ -147,7 +147,7 @@ spec:
       maxPodsPerNode: 31
       podNsgIds:
         - valueFrom:
-            kind: OciNetworkSecurityGroup
+            kind: OciSecurityGroup
             name: pod-nsg
             fieldPath: status.outputs.networkSecurityGroupId
       podSubnetIds:

@@ -12,7 +12,7 @@ This preset creates a production-grade OCI Container Instance in a private subne
 ## Key Configuration Choices
 
 - **Private subnet with no public IP** (`vnics[0].isPublicIpAssigned: false`) -- The container instance is not reachable from the internet. Outbound internet access (for pulling images, calling external APIs) is available via the VCN's NAT Gateway. Inbound traffic is limited to sources within the VCN or connected via VPN/FastConnect. Use preset 01-web-service instead if the container needs direct public access.
-- **NSG association** (`vnics[0].nsgIds`) -- Associates the container instance's VNIC with a Network Security Group for stateful, fine-grained ingress and egress rules. This is more flexible than subnet-level security lists because NSGs can be shared across subnets and applied selectively. Use the `OciNetworkSecurityGroup` component to define the rules.
+- **NSG association** (`vnics[0].nsgIds`) -- Associates the container instance's VNIC with a Network Security Group for stateful, fine-grained ingress and egress rules. This is more flexible than subnet-level security lists because NSGs can be shared across subnets and applied selectively. Use the `OciSecurityGroup` component to define the rules.
 - **Non-root execution** (`securityContext.isNonRootUserCheckEnabled: true`, `runAsUser: 1000`, `runAsGroup: 1000`) -- The container process runs as UID/GID 1000 instead of root. OCI validates at runtime that the container does not run as UID 0 and fails the start if it does. This prevents container escape attacks that exploit root privileges. Your container image must support running as a non-root user; most production images already do.
 - **Read-only root filesystem** (`securityContext.isRootFileSystemReadonly: true`) -- The container's root filesystem is mounted read-only, preventing the process from writing to system directories. This mitigates attacks that modify binaries or inject malicious files into the container layer. If your application needs to write temporary files, mount an emptydir volume at the write path (see preset 03 for volume examples).
 - **All capabilities dropped** (`securityContext.capabilities.dropCapabilities: [ALL]`) -- Removes all Linux capabilities from the container process, enforcing the principle of least privilege. Most application containers do not need any capabilities. If your workload requires specific capabilities (e.g., `NET_BIND_SERVICE` to bind to ports below 1024), add them explicitly via `addCapabilities` while keeping the `ALL` drop.
@@ -29,7 +29,7 @@ This preset creates a production-grade OCI Container Instance in a private subne
 | `<availability-domain>` | Availability domain name (e.g., `Uocm:PHX-AD-1`) | `oci iam availability-domain list` or OCI Console > Compute > Instances > Create Instance |
 | `<container-image-url>` | Container image URL (e.g., `ghcr.io/org/app:v1.2`, `us-ashburn-1.ocir.io/namespace/repo:tag`) | Your container registry |
 | `<private-subnet-ocid>` | OCID of a private subnet for the container instance's VNIC (no Internet Gateway route) | OCI Console > Networking > VCNs > Subnets, or `OciSubnet` status outputs |
-| `<nsg-ocid>` | OCID of a Network Security Group to associate with the container instance's VNIC | OCI Console > Networking > Network Security Groups, or `OciNetworkSecurityGroup` status outputs |
+| `<nsg-ocid>` | OCID of a Network Security Group to associate with the container instance's VNIC | OCI Console > Networking > Network Security Groups, or `OciSecurityGroup` status outputs |
 
 ## Related Presets
 

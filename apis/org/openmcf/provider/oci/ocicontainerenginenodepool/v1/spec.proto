@@ -147,7 +147,7 @@ message OciContainerEngineNodePoolSpec {
 
     // OCIDs of network security groups applied to the node VNICs.
     repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef nsg_ids = 3 [
-      (org.openmcf.shared.foreignkey.v1.default_kind) = OciNetworkSecurityGroup,
+      (org.openmcf.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
       (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
     ];
 
@@ -218,7 +218,7 @@ message OciContainerEngineNodePoolSpec {
     // OCIDs of NSGs applied to pod VNICs. Only applicable for
     // oci_vcn_ip_native.
     repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef pod_nsg_ids = 3 [
-      (org.openmcf.shared.foreignkey.v1.default_kind) = OciNetworkSecurityGroup,
+      (org.openmcf.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
       (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
     ];
 

@@ -94,7 +94,7 @@ spec:
     isPublicIpEnabled: false
     nsgIds:
       - valueFrom:
-          kind: OciNetworkSecurityGroup
+          kind: OciSecurityGroup
           name: api-endpoint-nsg
           fieldPath: status.outputs.networkSecurityGroupId
   options:
@@ -113,7 +113,7 @@ spec:
     serviceLbConfig:
       backendNsgIds:
         - valueFrom:
-            kind: OciNetworkSecurityGroup
+            kind: OciSecurityGroup
             name: worker-nsg
             fieldPath: status.outputs.networkSecurityGroupId
       freeformTags:

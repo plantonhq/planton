@@ -17,7 +17,7 @@ Compute instances are the fundamental workload primitive on OCI. Without this co
 - No way to launch OCI compute instances through OpenMCF
 - OCI compute instances have 50+ provider fields across 11 nested blocks -- raw Terraform/Pulumi requires significant boilerplate
 - Flex shapes (the modern default) require separate shape_config blocks with OCPUs and memory, adding complexity
-- VNIC networking configuration requires careful coordination with OciSubnet and OciNetworkSecurityGroup
+- VNIC networking configuration requires careful coordination with OciSubnet and OciSecurityGroup
 - Preemptible instances, platform security features, and agent configuration are enterprise-critical but rarely configured correctly from scratch
 
 ## Solution / What's New
@@ -56,7 +56,7 @@ Comprehensive deployment component wrapping `oci_core_instance` with the standar
 ### Infra-Chart Composability
 
 - `createVnicDetails.subnetId` references OciSubnet via StringValueOrRef
-- `createVnicDetails.nsgIds` references OciNetworkSecurityGroup (max 5) via repeated StringValueOrRef
+- `createVnicDetails.nsgIds` references OciSecurityGroup (max 5) via repeated StringValueOrRef
 - `compartmentId` references OciCompartment via StringValueOrRef
 - `sourceDetails.kmsKeyId` uses StringValueOrRef (default_kind will be added when OciKmsKey R25 is implemented)
 

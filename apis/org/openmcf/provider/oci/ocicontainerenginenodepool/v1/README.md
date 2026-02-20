@@ -13,7 +13,7 @@ This API resource streamlines the deployment of OKE node pools by offering a uni
 - **Encrypt Boot Volumes at Rest and In Transit**: Specify a KMS key for boot volume encryption and enable in-transit encryption for paravirtualized attachments — meeting compliance requirements without per-node configuration.
 - **Control Rolling Upgrades**: Configure node pool cycling details (maximum surge, maximum unavailable) and eviction settings (grace duration, force actions) to control how OKE replaces nodes during Kubernetes version upgrades or shape changes.
 - **Label Nodes for Scheduling**: Apply Kubernetes labels to nodes at pool creation time, enabling workload scheduling via `nodeSelector` and affinity rules without post-creation label management.
-- **Compose with Other OCI Resources**: Reference OciContainerEngineCluster, OciCompartment, OciSubnet, and OciNetworkSecurityGroup outputs via `StringValueOrRef` for declarative, cross-resource dependency chains.
+- **Compose with Other OCI Resources**: Reference OciContainerEngineCluster, OciCompartment, OciSubnet, and OciSecurityGroup outputs via `StringValueOrRef` for declarative, cross-resource dependency chains.
 
 ## Key Features
 
@@ -86,4 +86,4 @@ This resource provides complete support for production-grade OKE node pool deplo
 - **Preemptible Cost Optimization**: Per-placement preemptible configuration enables mixed on-demand/preemptible pools. The `isPreserveBootVolume` option allows boot volume forensics when preemptible instances are terminated.
 - **Freeform Tagging**: Standard OpenMCF labels applied as OCI freeform tags on both the node pool resource and its node config for resource management, cost tracking, and compliance.
 - **Infrastructure as Code**: Full Pulumi (Go) and Terraform (HCL) implementations producing identical outputs.
-- **Infra-Chart Composability**: Designed to compose with OciContainerEngineCluster (upstream dependency), OciCompartment, OciSubnet, and OciNetworkSecurityGroup via `StringValueOrRef`.
+- **Infra-Chart Composability**: Designed to compose with OciContainerEngineCluster (upstream dependency), OciCompartment, OciSubnet, and OciSecurityGroup via `StringValueOrRef`.

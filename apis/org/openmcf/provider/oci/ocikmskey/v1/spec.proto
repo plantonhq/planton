@@ -1,0 +1,180 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocikmskey.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// OciKmsKeySpec defines the specification for an OCI KMS Key --
+// a cryptographic key stored inside an OCI KMS Vault, used to encrypt
+// data at rest across OCI services (Block Volume, Object Storage, Database,
+// File Storage, etc.).
+//
+// Key shape is immutable after creation -- algorithm, length, and curve
+// cannot be changed. Protection mode (HSM vs SOFTWARE vs EXTERNAL) is also
+// immutable and determines whether the key material is stored in a
+// hardware security module, software, or an external key manager.
+//
+// The management_endpoint ties this key to a specific vault. It must match
+// the vault's management endpoint output.
+//
+// Excluded from v1:
+//   - oci_kms_key_version -- creating a key version is manual rotation,
+//     an operational concern; auto-rotation handles this declaratively
+//   - desired_state -- operational toggle (ENABLED/DISABLED); keys always
+//     create as ENABLED
+//   - restore_from_file / restore_from_object_store / restore_trigger --
+//     operational restore, not a deployment concern
+//   - time_of_deletion -- deletion scheduling, operational concern
+//   - defined_tags, system_tags -- managed by platform
+//   - freeform_tags -- auto-populated from metadata labels
+message OciKmsKeySpec {
+  option (buf.validate.message).cel = {
+    id: "external_requires_key_reference"
+    message: "external_key_reference is required when protection_mode is external"
+    expression: "this.protection_mode != 3 || has(this.external_key_reference)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "non_external_forbids_key_reference"
+    message: "external_key_reference must not be set when protection_mode is not external"
+    expression: "this.protection_mode == 3 || !has(this.external_key_reference)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "auto_rotation_details_requires_enabled"
+    message: "auto_key_rotation_details can only be set when is_auto_rotation_enabled is true"
+    expression: "this.is_auto_rotation_enabled || !has(this.auto_key_rotation_details)"
+  };
+
+  // OCID of the compartment where the key will be created.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+  ];
+
+  // Display name for the key. When omitted, the metadata name is used.
+  string display_name = 2;
+
+  // Management endpoint of the vault that will contain this key.
+  // This is the vault-specific API endpoint for key management operations.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef management_endpoint = 3 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciKmsVault,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.managementEndpoint"
+  ];
+
+  // Cryptographic properties of the key. Immutable after creation.
+  KeyShape key_shape = 4 [(buf.validate.field).required = true];
+
+  // Protection mode determines where key material is stored.
+  // When omitted, OCI defaults to HSM (hardware security module).
+  // Immutable after creation.
+  ProtectionMode protection_mode = 5 [(buf.validate.field).enum.defined_only = true];
+
+  // Whether automatic key rotation is enabled.
+  bool is_auto_rotation_enabled = 6;
+
+  // Schedule configuration for automatic key rotation.
+  // Only valid when is_auto_rotation_enabled is true.
+  AutoKeyRotationDetails auto_key_rotation_details = 7;
+
+  // Reference to an external key on a third-party key manager.
+  // Required when protection_mode is external; must not be set otherwise.
+  ExternalKeyReference external_key_reference = 8;
+
+  // ProtectionMode determines where the key material is stored and
+  // the level of cryptographic isolation.
+  //   hsm      -- Hardware Security Module (FIPS 140-2 Level 3)
+  //   software -- Software-based key storage (lower cost, lower isolation)
+  //   external -- External key manager (BYOK/EKMS) via OCI KMS integration
+  enum ProtectionMode {
+    unspecified = 0;
+    hsm = 1;
+    software = 2;
+    external = 3;
+  }
+
+  // KeyShape defines the immutable cryptographic properties of the key.
+  message KeyShape {
+    option (buf.validate.message).cel = {
+      id: "aes_valid_lengths"
+      message: "AES key length must be 16 (128-bit), 24 (192-bit), or 32 (256-bit) bytes"
+      expression: "this.algorithm != 1 || this.length in [16, 24, 32]"
+    };
+
+    option (buf.validate.message).cel = {
+      id: "rsa_valid_lengths"
+      message: "RSA key length must be 256 (2048-bit), 384 (3072-bit), or 512 (4096-bit) bytes"
+      expression: "this.algorithm != 2 || this.length in [256, 384, 512]"
+    };
+
+    option (buf.validate.message).cel = {
+      id: "ecdsa_valid_curve_and_length"
+      message: "ECDSA key requires a matching curve_id and length: nist_p256/32, nist_p384/48, or nist_p521/66"
+      expression: "this.algorithm != 3 || ((this.curve_id == 1 && this.length == 32) || (this.curve_id == 2 && this.length == 48) || (this.curve_id == 3 && this.length == 66))"
+    };
+
+    option (buf.validate.message).cel = {
+      id: "non_ecdsa_forbids_curve_id"
+      message: "curve_id must not be set for AES or RSA algorithms"
+      expression: "this.algorithm == 3 || this.curve_id == 0"
+    };
+
+    // Encryption algorithm. Immutable after creation.
+    Algorithm algorithm = 1 [(buf.validate.field).enum = {
+      defined_only: true
+      not_in: [0]
+    }];
+
+    // Key length in bytes. Valid values depend on the algorithm:
+    //   AES:   16 (128-bit), 24 (192-bit), 32 (256-bit)
+    //   RSA:   256 (2048-bit), 384 (3072-bit), 512 (4096-bit)
+    //   ECDSA: 32 (P-256), 48 (P-384), 66 (P-521)
+    int32 length = 2 [(buf.validate.field).int32.gt = 0];
+
+    // Elliptic curve identifier. Required for ECDSA; must not be set
+    // for AES or RSA.
+    CurveId curve_id = 3 [(buf.validate.field).enum.defined_only = true];
+
+    // Algorithm selects the cryptographic algorithm for the key.
+    enum Algorithm {
+      unspecified = 0;
+      aes = 1;
+      rsa = 2;
+      ecdsa = 3;
+    }
+
+    // CurveId selects the elliptic curve for ECDSA keys.
+    // Zero-value prefixed with "curve_" to avoid C++ scoping collision
+    // with Algorithm.unspecified within the same enclosing message.
+    enum CurveId {
+      curve_unspecified = 0;
+      nist_p256 = 1;
+      nist_p384 = 2;
+      nist_p521 = 3;
+    }
+  }
+
+  // AutoKeyRotationDetails configures the schedule for automatic
+  // key rotation. Only the writable fields are exposed -- read-only
+  // status fields (last_rotation_message, last_rotation_status,
+  // time_of_last_rotation, time_of_next_rotation) are excluded.
+  message AutoKeyRotationDetails {
+    // Rotation interval in days. When omitted, OCI uses its default
+    // rotation interval.
+    int32 rotation_interval_in_days = 1;
+
+    // RFC 3339 timestamp for when the first automatic rotation should
+    // occur. When omitted, OCI schedules based on creation time.
+    string time_of_schedule_start = 2;
+  }
+
+  // ExternalKeyReference identifies the key material on an external
+  // key manager. Required when protection_mode is external.
+  message ExternalKeyReference {
+    // Identifier of the key on the external key manager.
+    string external_key_id = 1 [(buf.validate.field).string.min_len = 1];
+  }
+}

@@ -188,5 +188,5 @@ After deployment, the following outputs are available in `status.outputs`:
 ## Related Components
 
 - [OciSubnet](/docs/catalog/oci/ocisubnet) — creates subnets within this VCN, with route table attachments for gateway routing
-- [OciNetworkSecurityGroup](/docs/catalog/oci/ocinetworksecuritygroup) — manages network security rules for resources attached to this VCN
+- [OciSecurityGroup](/docs/catalog/oci/ocisecuritygroup) — manages network security rules for resources attached to this VCN
 - [OciCompartment](/docs/catalog/oci/ocicompartment) — provides the compartment referenced by `compartmentId` via `valueFrom`

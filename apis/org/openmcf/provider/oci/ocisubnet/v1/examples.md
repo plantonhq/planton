@@ -355,7 +355,7 @@ Three options for route table association:
 
 ### Use NSGs Instead of Security Lists for New Deployments
 
-Security lists (`securityListIds`) are supported for backward compatibility, but OCI recommends Network Security Groups (OciNetworkSecurityGroup) for new deployments. NSGs are:
+Security lists (`securityListIds`) are supported for backward compatibility, but OCI recommends Network Security Groups (OciSecurityGroup) for new deployments. NSGs are:
 - Stateful (security lists are also stateful, but NSGs are per-VNIC rather than per-subnet)
 - More granular (attach to specific VNICs, not entire subnets)
 - Easier to manage in multi-tier architectures

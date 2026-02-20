@@ -80,7 +80,7 @@ Single-resource deployment component that wraps `oci_identity_policy` with the s
 ## Impact
 
 - OCI provider: 5 of 37 resource kinds now implemented (13.5%)
-- Phase 1 (Foundation) is 83% complete: OciVcn, OciSubnet, OciNetworkSecurityGroup, OciCompartment, OciIdentityPolicy done; OciDynamicGroup remaining
+- Phase 1 (Foundation) is 83% complete: OciVcn, OciSubnet, OciSecurityGroup, OciCompartment, OciIdentityPolicy done; OciDynamicGroup remaining
 - Docs and Presets agents can now pick up OciIdentityPolicy for documentation and preset generation
 
 ## Related Work

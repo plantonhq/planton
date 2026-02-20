@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocisecuritygroup.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/oci/ocisecuritygroup/v1/spec.proto";
+import "org/openmcf/provider/oci/ocisecuritygroup/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OciSecurityGroup is the top-level resource representing an Oracle
+// Cloud Infrastructure Network Security Group with inline security rules.
+message OciSecurityGroup {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciSecurityGroup'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciSecurityGroupSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciSecurityGroupStatus status = 5;
+}
+
+// OciSecurityGroupStatus holds the outputs produced by deploying an
+// OciSecurityGroup.
+message OciSecurityGroupStatus {
+  // stack-outputs
+  OciSecurityGroupStackOutputs outputs = 1;
+}

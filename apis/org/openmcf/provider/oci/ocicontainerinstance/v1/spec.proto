@@ -313,7 +313,7 @@ message OciContainerInstanceSpec {
 
     // OCIDs of network security groups to add this VNIC to.
     repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef nsg_ids = 5 [
-      (org.openmcf.shared.foreignkey.v1.default_kind) = OciNetworkSecurityGroup,
+      (org.openmcf.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
       (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
     ];
 

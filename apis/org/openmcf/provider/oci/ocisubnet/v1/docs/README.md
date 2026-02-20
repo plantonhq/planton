@@ -181,7 +181,7 @@ OciSubnet
 ├── OciComputeInstance (VNIC attached to this subnet)
 ├── OciContainerEngineCluster (API endpoint subnet)
 ├── OciContainerEngineNodePool (worker node subnet)
-├── OciLoadBalancer (placed in this subnet)
+├── OciApplicationLoadBalancer (placed in this subnet)
 ├── OciNetworkLoadBalancer (placed in this subnet)
 ├── OciDbSystem (database system in private subnet)
 ├── OciAutonomousDatabase (private endpoint in this subnet)

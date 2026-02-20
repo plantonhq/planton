@@ -74,7 +74,7 @@ This creates a basic OKE cluster with the default flannel overlay CNI in the spe
 |-------|------|-------------|------------|
 | `subnetId` | `StringValueOrRef` | OCID of the regional subnet hosting the Kubernetes API server endpoint. Changing this after creation forces cluster recreation. Can reference an OciSubnet resource via `valueFrom`. | Required |
 | `isPublicIpEnabled` | `bool` | Whether to assign a public IP to the API server endpoint. Set to `false` for private clusters. Must be `false` when the subnet is private. When unset, uses the OCI default. | Optional |
-| `nsgIds` | `StringValueOrRef[]` | OCIDs of network security groups applied to the API server endpoint. Can reference OciNetworkSecurityGroup resources via `valueFrom`. | Optional |
+| `nsgIds` | `StringValueOrRef[]` | OCIDs of network security groups applied to the API server endpoint. Can reference OciSecurityGroup resources via `valueFrom`. | Optional |
 
 ### options Fields
 
@@ -99,7 +99,7 @@ This creates a basic OKE cluster with the default flannel overlay CNI in the spe
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `backendNsgIds` | `StringValueOrRef[]` | OCIDs of NSGs applied to service load balancer backends. Can reference OciNetworkSecurityGroup resources via `valueFrom`. |
+| `backendNsgIds` | `StringValueOrRef[]` | OCIDs of NSGs applied to service load balancer backends. Can reference OciSecurityGroup resources via `valueFrom`. |
 | `freeformTags` | `map<string, string>` | Freeform tags applied to service load balancers created by Kubernetes. |
 | `definedTags` | `map<string, string>` | Defined tags applied to service load balancers. Keys use the format `namespace.key` (e.g., `Operations.CostCenter`). |
 
@@ -198,7 +198,7 @@ spec:
     isPublicIpEnabled: false
     nsgIds:
       - valueFrom:
-          kind: OciNetworkSecurityGroup
+          kind: OciSecurityGroup
           name: api-endpoint-nsg
           fieldPath: status.outputs.networkSecurityGroupId
   options:
@@ -213,7 +213,7 @@ spec:
     serviceLbConfig:
       backendNsgIds:
         - valueFrom:
-            kind: OciNetworkSecurityGroup
+            kind: OciSecurityGroup
             name: worker-nsg
             fieldPath: status.outputs.networkSecurityGroupId
 ```
@@ -318,5 +318,5 @@ After deployment, the following outputs are available in `status.outputs`:
 - [OciCompartment](/docs/catalog/oci/ocicompartment) — provides the compartment referenced by `compartmentId` via `valueFrom`
 - [OciVcn](/docs/catalog/oci/ocivcn) — provides the VCN referenced by `vcnId` via `valueFrom`
 - [OciSubnet](/docs/catalog/oci/ocisubnet) — provides subnets for the API endpoint (`endpointConfig.subnetId`) and service load balancers (`options.serviceLbSubnetIds`) via `valueFrom`
-- [OciNetworkSecurityGroup](/docs/catalog/oci/ocinetworksecuritygroup) — manages network security rules for the API endpoint (`endpointConfig.nsgIds`) and service load balancer backends (`options.serviceLbConfig.backendNsgIds`) via `valueFrom`
+- [OciSecurityGroup](/docs/catalog/oci/ocisecuritygroup) — manages network security rules for the API endpoint (`endpointConfig.nsgIds`) and service load balancer backends (`options.serviceLbConfig.backendNsgIds`) via `valueFrom`
 - [OciContainerEngineNodePool](/docs/catalog/oci/ocicontainerenginenodepool) — creates worker nodes for this cluster using the `cluster_id` output

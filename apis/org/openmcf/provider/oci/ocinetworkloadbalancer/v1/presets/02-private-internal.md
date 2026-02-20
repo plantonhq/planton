@@ -6,7 +6,7 @@ This preset creates a private OCI Network Load Balancer for internal service-to-
 
 - Internal APIs or gRPC services that receive traffic from other services within the VCN
 - Database connection proxies or middleware that front multiple database instances behind a single endpoint
-- Backend services behind a public L7 load balancer (OciLoadBalancer) or public NLB that need internal load balancing for a second tier
+- Backend services behind a public L7 load balancer (OciApplicationLoadBalancer) or public NLB that need internal load balancing for a second tier
 - Any TCP service that must not be reachable from outside the VCN
 
 ## Key Configuration Choices
@@ -24,7 +24,7 @@ This preset creates a private OCI Network Load Balancer for internal service-to-
 |---|---|---|
 | `<compartment-ocid>` | OCID of the compartment where the NLB will be created | OCI Console > Identity > Compartments, or `OciCompartment` status outputs |
 | `<private-subnet-ocid>` | OCID of a private subnet for the NLB | OCI Console > Networking > VCNs > Subnets, or `OciSubnet` status outputs |
-| `<internal-nlb-nsg-ocid>` | OCID of the NSG controlling access to the NLB (allow TCP 8080 from internal CIDRs) | OCI Console > Networking > NSGs, or `OciNetworkSecurityGroup` status outputs |
+| `<internal-nlb-nsg-ocid>` | OCID of the NSG controlling access to the NLB (allow TCP 8080 from internal CIDRs) | OCI Console > Networking > NSGs, or `OciSecurityGroup` status outputs |
 | `<backend-ip-1>` | Private IP address of the first backend server | OCI Console > Compute > Instances, or `OciComputeInstance` status outputs |
 | `<backend-ip-2>` | Private IP address of the second backend server | OCI Console > Compute > Instances, or `OciComputeInstance` status outputs |
 

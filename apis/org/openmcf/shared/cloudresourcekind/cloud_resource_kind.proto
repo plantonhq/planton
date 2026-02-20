@@ -1584,10 +1584,10 @@ enum CloudResourceKind {
     id_prefix: "ocisub"
   }];
 
-  OciNetworkSecurityGroup = 3302 [(kind_meta) = {
+  OciSecurityGroup = 3302 [(kind_meta) = {
     provider: oci
     version: v1
-    id_prefix: "ocinsg"
+    id_prefix: "ocisg"
   }];
 
   // --- Identity ---
@@ -1638,10 +1638,10 @@ enum CloudResourceKind {
 
   // --- OCI: Advanced Networking (3320-3329) ---
 
-  OciLoadBalancer = 3320 [(kind_meta) = {
+  OciApplicationLoadBalancer = 3320 [(kind_meta) = {
     provider: oci
     version: v1
-    id_prefix: "ocilb"
+    id_prefix: "ocialb"
   }];
 
   OciNetworkLoadBalancer = 3321 [(kind_meta) = {
@@ -1712,5 +1712,37 @@ enum CloudResourceKind {
     provider: oci
     version: v1
     id_prefix: "ocifs"
+  }];
+
+  OciBlockVolume = 3342 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocibvol"
+  }];
+
+  // ── Security and Secrets ────────────────────────────────────────────
+
+  OciKmsVault = 3350 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocivlt"
+  }];
+
+  OciKmsKey = 3351 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocikey"
+  }];
+
+  OciVaultSecret = 3352 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocisec"
+  }];
+
+  OciBastion = 3353 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocibst"
   }];
 }

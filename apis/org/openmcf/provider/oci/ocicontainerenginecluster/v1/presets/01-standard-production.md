@@ -25,7 +25,7 @@ This preset creates an Enhanced OKE cluster with VCN-native pod networking and a
 | `<vcn-ocid>` | OCID of the VCN hosting the cluster | OCI Console > Networking > VCNs, or `OciVcn` status outputs |
 | `<kubernetes-version>` | Kubernetes version for the control plane (e.g., `v1.30.1`) | `oci ce cluster-options list --cluster-option-id all` or OCI Console > Developer Services > Kubernetes Clusters > Create |
 | `<api-endpoint-subnet-ocid>` | OCID of the regional subnet hosting the API server endpoint | OCI Console > Networking > VCNs > Subnets, or `OciSubnet` status outputs |
-| `<api-endpoint-nsg-ocid>` | OCID of the NSG controlling access to the API server endpoint | OCI Console > Networking > VCNs > Network Security Groups, or `OciNetworkSecurityGroup` status outputs |
+| `<api-endpoint-nsg-ocid>` | OCID of the NSG controlling access to the API server endpoint | OCI Console > Networking > VCNs > Network Security Groups, or `OciSecurityGroup` status outputs |
 | `<service-lb-subnet-ocid>` | OCID of the subnet where Kubernetes Service load balancers will be placed | OCI Console > Networking > VCNs > Subnets, or `OciSubnet` status outputs |
 
 ## Related Presets

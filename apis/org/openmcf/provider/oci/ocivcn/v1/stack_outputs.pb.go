@@ -22,7 +22,7 @@ const (
 )
 
 // OciVcnStackOutputs contains the outputs produced after deploying an OciVcn.
-// These values are used by downstream components (OciSubnet, OciNetworkSecurityGroup,
+// These values are used by downstream components (OciSubnet, OciSecurityGroup,
 // infra charts) for composability via StringValueOrRef.
 type OciVcnStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`

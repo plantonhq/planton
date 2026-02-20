@@ -103,7 +103,7 @@ Single resource in `main.tf` (`oci_identity_compartment`). The `locals.tf` uses 
 ## Related Work
 
 - Depends on: OCI provider integration (`2026-02-18-203551-oci-provider-integration.md`)
-- Predecessor: OciNetworkSecurityGroup R03 (`2026-02-19-053424-oci-network-security-group-deployment-component.md`)
+- Predecessor: OciSecurityGroup R03 (`2026-02-19-053424-oci-network-security-group-deployment-component.md`)
 - Next: R05 OciIdentityPolicy
 
 ---

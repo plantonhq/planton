@@ -122,7 +122,7 @@ message OciContainerEngineClusterSpec {
 
     // OCIDs of network security groups applied to the API server endpoint.
     repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef nsg_ids = 3 [
-      (org.openmcf.shared.foreignkey.v1.default_kind) = OciNetworkSecurityGroup,
+      (org.openmcf.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
       (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
     ];
   }
@@ -181,7 +181,7 @@ message OciContainerEngineClusterSpec {
   message ServiceLbConfig {
     // OCIDs of NSGs applied to load balancer backends.
     repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef backend_nsg_ids = 1 [
-      (org.openmcf.shared.foreignkey.v1.default_kind) = OciNetworkSecurityGroup,
+      (org.openmcf.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
       (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
     ];
 

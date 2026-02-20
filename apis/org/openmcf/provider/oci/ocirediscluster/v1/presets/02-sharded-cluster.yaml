@@ -1,0 +1,17 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciRedisCluster
+metadata:
+  name: my-redis-sharded
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  displayName: redis-sharded
+  subnetId:
+    value: <private-subnet-ocid>
+  nodeCount: 3 # 1 primary + 2 replicas per shard
+  nodeMemoryInGbs: 16
+  softwareVersion: V7.1.1
+  clusterMode: sharded
+  shardCount: 3 # Data distributed across 3 shards (9 nodes total)
+  nsgIds:
+    - value: <cache-nsg-ocid>

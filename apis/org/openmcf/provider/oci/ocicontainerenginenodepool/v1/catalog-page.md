@@ -102,7 +102,7 @@ This creates a 3-node pool using E4 Flex instances with 2 OCPUs and 32 GB of mem
 |-------|------|-------------|------------|
 | `placementConfigs` | `PlacementConfig[]` | Placement configurations determining which availability domains and subnets receive nodes. Provide one entry per AD for regional subnets, or one entry per AD-specific subnet. See [placementConfig fields](#placementconfig-fields). | Minimum 1 item |
 | `size` | `int32` | Desired number of nodes in this pool. OKE distributes nodes across the placement configs as evenly as possible. | Greater than 0 |
-| `nsgIds` | `StringValueOrRef[]` | OCIDs of network security groups applied to the node VNICs. Can reference OciNetworkSecurityGroup resources via `valueFrom`. | Optional |
+| `nsgIds` | `StringValueOrRef[]` | OCIDs of network security groups applied to the node VNICs. Can reference OciSecurityGroup resources via `valueFrom`. | Optional |
 | `kmsKeyId` | `StringValueOrRef` | OCID of the KMS key for encrypting boot volumes at rest. | Optional |
 | `isPvEncryptionInTransitEnabled` | `bool` | Whether to enable in-transit encryption for the data volume's paravirtualized attachment. Applies to both boot and block volumes. | Optional |
 | `podNetworkOptionDetails` | `PodNetworkOptionDetails` | Pod networking configuration. Required when the cluster uses OCI VCN-native pod networking (`oci_vcn_ip_native` CNI). See [podNetworkOptionDetails fields](#podnetworkoptiondetails-fields). | Optional |
@@ -129,7 +129,7 @@ This creates a 3-node pool using E4 Flex instances with 2 OCPUs and 32 GB of mem
 |-------|------|-------------|------------|
 | `cniType` | `enum` | CNI plugin type. Must match the cluster's CNI configuration. Values: `flannel_overlay`, `oci_vcn_ip_native`. | Required (cannot be unspecified) |
 | `maxPodsPerNode` | `int32` | Maximum number of pods per node. Limited by the number of VNICs attachable to the node shape. Only applicable for `oci_vcn_ip_native`. | Optional |
-| `podNsgIds` | `StringValueOrRef[]` | OCIDs of NSGs applied to pod VNICs. Only applicable for `oci_vcn_ip_native`. Can reference OciNetworkSecurityGroup resources via `valueFrom`. | Optional |
+| `podNsgIds` | `StringValueOrRef[]` | OCIDs of NSGs applied to pod VNICs. Only applicable for `oci_vcn_ip_native`. Can reference OciSecurityGroup resources via `valueFrom`. | Optional |
 | `podSubnetIds` | `StringValueOrRef[]` | OCIDs of subnets for pod IP allocation. Only applicable for `oci_vcn_ip_native`. Can be the same as or different from the node subnets. Can reference OciSubnet resources via `valueFrom`. | Optional |
 
 ### nodeLabel Fields
@@ -247,7 +247,7 @@ spec:
             fieldPath: status.outputs.subnetId
     nsgIds:
       - valueFrom:
-          kind: OciNetworkSecurityGroup
+          kind: OciSecurityGroup
           name: worker-nsg
           fieldPath: status.outputs.networkSecurityGroupId
     kmsKeyId:
@@ -258,7 +258,7 @@ spec:
       maxPodsPerNode: 31
       podNsgIds:
         - valueFrom:
-            kind: OciNetworkSecurityGroup
+            kind: OciSecurityGroup
             name: pod-nsg
             fieldPath: status.outputs.networkSecurityGroupId
       podSubnetIds:
@@ -392,4 +392,4 @@ After deployment, the following outputs are available in `status.outputs`:
 - [OciContainerEngineCluster](/docs/catalog/oci/ocicontainerenginecluster) — provides the cluster referenced by `clusterId` via `valueFrom`; every node pool must be attached to exactly one cluster
 - [OciCompartment](/docs/catalog/oci/ocicompartment) — provides the compartment referenced by `compartmentId` via `valueFrom`
 - [OciSubnet](/docs/catalog/oci/ocisubnet) — provides subnets for node placement (`placementConfigs[].subnetId`) and pod IP allocation (`podNetworkOptionDetails.podSubnetIds`) via `valueFrom`
-- [OciNetworkSecurityGroup](/docs/catalog/oci/ocinetworksecuritygroup) — manages network security rules for node VNICs (`nodeConfigDetails.nsgIds`) and pod VNICs (`podNetworkOptionDetails.podNsgIds`) via `valueFrom`
+- [OciSecurityGroup](/docs/catalog/oci/ocisecuritygroup) — manages network security rules for node VNICs (`nodeConfigDetails.nsgIds`) and pod VNICs (`podNetworkOptionDetails.podNsgIds`) via `valueFrom`

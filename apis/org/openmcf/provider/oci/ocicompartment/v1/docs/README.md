@@ -43,7 +43,7 @@ Every OCI component in OpenMCF must know its compartment. The component graph lo
 OciCompartment
 ├── OciVcn (compartmentId)
 │   ├── OciSubnet (compartmentId)
-│   └── OciNetworkSecurityGroup (compartmentId)
+│   └── OciSecurityGroup (compartmentId)
 ├── OciComputeInstance (compartmentId)
 ├── OciContainerEngineCluster (compartmentId)
 ├── OciAutonomousDatabase (compartmentId)

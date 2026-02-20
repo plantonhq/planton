@@ -11,7 +11,7 @@ This API resource streamlines the deployment of OCI compute instances by offerin
 - **Bootstrap with Cloud-Init**: Pass SSH keys and cloud-init scripts through the `metadata` map using the standard OCI keys (`ssh_authorized_keys`, `user_data`) without needing separate provisioner resources.
 - **Reduce Cost with Preemptible Instances**: Configure spot-like pricing via `preemptibleInstanceConfig` for fault-tolerant workloads, with control over whether the boot volume is preserved on preemption.
 - **Harden Security at the Platform Level**: Enable Secure Boot, Measured Boot, TPM, and memory encryption through `platformConfig` without navigating the complex matrix of platform types and shape families.
-- **Compose with Other OCI Resources**: Reference OciCompartment, OciSubnet, OciNetworkSecurityGroup, and OciKmsKey outputs via `StringValueOrRef` for declarative, cross-resource dependency chains.
+- **Compose with Other OCI Resources**: Reference OciCompartment, OciSubnet, OciSecurityGroup, and OciKmsKey outputs via `StringValueOrRef` for declarative, cross-resource dependency chains.
 
 ## Key Features
 
@@ -72,4 +72,4 @@ This resource provides complete support for production-grade compute instance de
 - **Availability and Recovery**: Configure live migration preference and recovery action (restore vs stop) for infrastructure maintenance events.
 - **Freeform Tagging**: Standard OpenMCF labels applied as OCI freeform tags for resource management, cost tracking, and compliance.
 - **Infrastructure as Code**: Full Pulumi (Go) and Terraform (HCL) implementations producing identical outputs.
-- **Infra-Chart Composability**: Designed to compose with OciCompartment, OciSubnet, OciNetworkSecurityGroup, and future OciBlockVolume and OciKmsKey components via `StringValueOrRef`.
+- **Infra-Chart Composability**: Designed to compose with OciCompartment, OciSubnet, OciSecurityGroup, and future OciBlockVolume and OciKmsKey components via `StringValueOrRef`.

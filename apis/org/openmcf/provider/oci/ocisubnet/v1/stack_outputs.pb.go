@@ -23,7 +23,7 @@ const (
 
 // OciSubnetStackOutputs contains the outputs produced after deploying an OciSubnet.
 // These values are used by downstream components (OciComputeInstance,
-// OciContainerEngineCluster, OciLoadBalancer, etc.) for composability via
+// OciContainerEngineCluster, OciApplicationLoadBalancer, etc.) for composability via
 // StringValueOrRef.
 type OciSubnetStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`

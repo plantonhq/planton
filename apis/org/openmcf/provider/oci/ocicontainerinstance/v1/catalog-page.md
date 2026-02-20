@@ -158,7 +158,7 @@ This creates a single-container instance running nginx on a 1-OCPU E4 Flex shape
 | `displayName` | `string` | Human-readable name for the VNIC. | Optional |
 | `hostnameLabel` | `string` | Hostname label for the VNIC's primary private IP in subnet DNS. | Optional |
 | `isPublicIpAssigned` | `bool` | Whether to assign a public IP to the VNIC. When omitted, uses the subnet's default public IP assignment setting. | Optional |
-| `nsgIds` | `StringValueOrRef[]` | OCIDs of network security groups to add this VNIC to. Can reference OciNetworkSecurityGroup resources via `valueFrom`. | Optional |
+| `nsgIds` | `StringValueOrRef[]` | OCIDs of network security groups to add this VNIC to. Can reference OciSecurityGroup resources via `valueFrom`. | Optional |
 | `privateIp` | `string` | Static private IP address within the subnet's CIDR. When omitted, OCI assigns one automatically. | Optional |
 | `skipSourceDestCheck` | `bool` | When true, disables source/destination checking on the VNIC. Required for NAT instances or virtual routers. | Optional |
 
@@ -292,7 +292,7 @@ spec:
           fieldPath: status.outputs.subnetId
       nsgIds:
         - valueFrom:
-            kind: OciNetworkSecurityGroup
+            kind: OciSecurityGroup
             name: app-nsg
             fieldPath: status.outputs.networkSecurityGroupId
   volumes:
@@ -385,7 +385,7 @@ spec:
       isPublicIpAssigned: false
       nsgIds:
         - valueFrom:
-            kind: OciNetworkSecurityGroup
+            kind: OciSecurityGroup
             name: api-nsg
             fieldPath: status.outputs.networkSecurityGroupId
   imagePullSecrets:
@@ -421,4 +421,4 @@ After deployment, the following outputs are available in `status.outputs`:
 
 - [OciCompartment](/docs/catalog/oci/ocicompartment) — provides the compartment referenced by `compartmentId` via `valueFrom`
 - [OciSubnet](/docs/catalog/oci/ocisubnet) — provides subnets for VNIC attachment (`vnics[].subnetId`) via `valueFrom`
-- [OciNetworkSecurityGroup](/docs/catalog/oci/ocinetworksecuritygroup) — manages network security rules for instance VNICs (`vnics[].nsgIds`) via `valueFrom`
+- [OciSecurityGroup](/docs/catalog/oci/ocisecuritygroup) — manages network security rules for instance VNICs (`vnics[].nsgIds`) via `valueFrom`

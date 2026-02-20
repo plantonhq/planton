@@ -160,7 +160,7 @@ message OciComputeInstanceSpec {
     // OCIDs of network security groups to associate with the VNIC.
     repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef nsg_ids = 2 [
       (buf.validate.field).repeated.max_items = 5,
-      (org.openmcf.shared.foreignkey.v1.default_kind) = OciNetworkSecurityGroup,
+      (org.openmcf.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
       (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
     ];
 

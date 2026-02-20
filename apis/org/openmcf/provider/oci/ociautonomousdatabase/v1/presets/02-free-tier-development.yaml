@@ -1,0 +1,16 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciAutonomousDatabase
+metadata:
+  name: my-free-atp
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  dbName: myfreedb
+  displayName: free-atp
+  dbWorkload: oltp
+  licenseModel: license_included
+  computeModel: ecpu
+  computeCount: 2 # Always Free minimum
+  dataStorageSizeInTbs: 1 # Always Free includes up to 20 GB usable
+  isFreeTier: true
+  adminPassword: <admin-password>

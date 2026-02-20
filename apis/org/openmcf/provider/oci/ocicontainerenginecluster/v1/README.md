@@ -13,7 +13,7 @@ This API resource streamlines the deployment of OKE clusters by offering a unifi
 - **Authenticate via External Identity Providers**: Configure OIDC token authentication for the API server, enabling `kubectl` and API access through enterprise identity providers (Okta, Azure AD, Auth0, Keycloak). Two modes are supported: inline field configuration and base64-encoded configuration file.
 - **Enforce Image Signing**: Enable image policy verification to require that all container images deployed to the cluster are signed with approved KMS keys — a supply chain security control.
 - **Tag Kubernetes-Created Resources**: Propagate freeform and defined tags to load balancers and persistent volumes created by Kubernetes, reducing tag drift and enabling cost tracking without per-workload tagging.
-- **Compose with Other OCI Resources**: Reference OciCompartment, OciVcn, OciSubnet, and OciNetworkSecurityGroup outputs via `StringValueOrRef` for declarative, cross-resource dependency chains.
+- **Compose with Other OCI Resources**: Reference OciCompartment, OciVcn, OciSubnet, and OciSecurityGroup outputs via `StringValueOrRef` for declarative, cross-resource dependency chains.
 
 ## Key Features
 
@@ -85,4 +85,4 @@ This resource provides complete support for production-grade OKE cluster deploym
 - **Dual-Stack Networking**: IPv4+IPv6 dual-stack support for clusters and pods when using VCN-native CNI.
 - **Freeform Tagging**: Standard OpenMCF labels applied as OCI freeform tags for resource management, cost tracking, and compliance.
 - **Infrastructure as Code**: Full Pulumi (Go) and Terraform (HCL) implementations producing identical outputs.
-- **Infra-Chart Composability**: Designed to compose with OciCompartment, OciVcn, OciSubnet, OciNetworkSecurityGroup, and OciContainerEngineNodePool via `StringValueOrRef`.
+- **Infra-Chart Composability**: Designed to compose with OciCompartment, OciVcn, OciSubnet, OciSecurityGroup, and OciContainerEngineNodePool via `StringValueOrRef`.

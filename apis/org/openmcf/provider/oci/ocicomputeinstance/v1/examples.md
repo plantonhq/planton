@@ -105,7 +105,7 @@ spec:
         fieldPath: status.outputs.subnetId
     nsgIds:
       - valueFrom:
-          kind: OciNetworkSecurityGroup
+          kind: OciSecurityGroup
           name: app-nsg
           fieldPath: status.outputs.networkSecurityGroupId
     assignPublicIp: false
@@ -264,7 +264,7 @@ spec:
         fieldPath: status.outputs.subnetId
     nsgIds:
       - valueFrom:
-          kind: OciNetworkSecurityGroup
+          kind: OciSecurityGroup
           name: secure-nsg
           fieldPath: status.outputs.networkSecurityGroupId
     assignPublicIp: false
@@ -338,7 +338,7 @@ spec:
         fieldPath: status.outputs.subnetId
     nsgIds:
       - valueFrom:
-          kind: OciNetworkSecurityGroup
+          kind: OciSecurityGroup
           name: db-nsg
           fieldPath: status.outputs.networkSecurityGroupId
     assignPublicIp: false

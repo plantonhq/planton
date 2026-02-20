@@ -25,7 +25,7 @@ This preset creates a public OCI Network Load Balancer that distributes TCP traf
 |---|---|---|
 | `<compartment-ocid>` | OCID of the compartment where the NLB will be created | OCI Console > Identity > Compartments, or `OciCompartment` status outputs |
 | `<public-subnet-ocid>` | OCID of a public subnet for the NLB | OCI Console > Networking > VCNs > Subnets, or `OciSubnet` status outputs |
-| `<nlb-nsg-ocid>` | OCID of the NSG controlling access to the NLB (allow TCP 80, 443 inbound) | OCI Console > Networking > NSGs, or `OciNetworkSecurityGroup` status outputs |
+| `<nlb-nsg-ocid>` | OCID of the NSG controlling access to the NLB (allow TCP 80, 443 inbound) | OCI Console > Networking > NSGs, or `OciSecurityGroup` status outputs |
 | `<backend-ip-1>` | Private IP address of the first backend server | OCI Console > Compute > Instances, or `OciComputeInstance` status outputs |
 | `<backend-ip-2>` | Private IP address of the second backend server | OCI Console > Compute > Instances, or `OciComputeInstance` status outputs |
 

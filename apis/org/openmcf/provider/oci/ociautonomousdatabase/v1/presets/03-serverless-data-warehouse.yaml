@@ -1,0 +1,25 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciAutonomousDatabase
+metadata:
+  name: my-adw
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  dbName: myadwdb
+  displayName: adw
+  dbWorkload: dw
+  databaseEdition: enterprise_edition # Partitioning and advanced compression for large analytic datasets
+  licenseModel: license_included
+  computeModel: ecpu
+  computeCount: 8
+  dataStorageSizeInTbs: 4
+  isAutoScalingEnabled: true
+  isAutoScalingForStorageEnabled: true
+  adminPassword: <admin-password>
+  subnetId:
+    value: <private-subnet-ocid>
+  nsgIds:
+    - value: <db-nsg-ocid>
+  privateEndpointLabel: adw
+  isMtlsConnectionRequired: false
+  autonomousMaintenanceScheduleType: regular

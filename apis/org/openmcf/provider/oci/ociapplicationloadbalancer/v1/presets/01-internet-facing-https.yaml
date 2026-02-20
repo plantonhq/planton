@@ -1,0 +1,63 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciApplicationLoadBalancer
+metadata:
+  name: my-internet-facing-lb
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  displayName: internet-facing-lb
+  shape: flexible
+  shapeDetails:
+    minimumBandwidthInMbps: 10
+    maximumBandwidthInMbps: 100
+  subnetIds:
+    - value: <public-subnet-ocid-ad1>
+    - value: <public-subnet-ocid-ad2>
+  isPrivate: false
+  networkSecurityGroupIds:
+    - value: <lb-nsg-ocid>
+  isDeleteProtectionEnabled: true
+  backendSets:
+    - name: web-backend
+      policy: round_robin
+      healthChecker:
+        protocol: http
+        port: 80
+        urlPath: /health
+        returnCode: 200
+        intervalMs: 30000 # 30 seconds
+        timeoutInMillis: 3000 # 3 seconds
+        retries: 3
+      backends:
+        - ipAddress: <backend-ip-1>
+          port: 80
+        - ipAddress: <backend-ip-2>
+          port: 80
+  listeners:
+    - name: https
+      port: 443
+      protocol: http
+      defaultBackendSetName: web-backend
+      sslConfiguration:
+        certificateIds:
+          - <oci-certificate-service-certificate-ocid>
+        protocols:
+          - TLSv1.2
+          - TLSv1.3
+    - name: http-redirect
+      port: 80
+      protocol: http
+      defaultBackendSetName: web-backend
+      ruleSetNames:
+        - http-to-https-redirect
+  ruleSets:
+    - name: http-to-https-redirect
+      items:
+        - action: redirect
+          responseCode: 301
+          redirectUri:
+            protocol: https
+            host: "{host}"
+            port: 443
+            path: "{path}"
+            query: "{query}"

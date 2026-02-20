@@ -12,7 +12,7 @@ This preset creates a production-hardened OCI compute instance in a private subn
 ## Key Configuration Choices
 
 - **Private subnet with no public IP** (`createVnicDetails.assignPublicIp: false`) -- The instance is not directly reachable from the internet. Outbound internet access is available via the VCN's NAT Gateway. SSH access requires a Bastion service, VPN, or jump host.
-- **NSG association** (`createVnicDetails.nsgIds`) -- Associates the VNIC with a Network Security Group for stateful, fine-grained ingress/egress rules. Use the `OciNetworkSecurityGroup` component's `02-private-backend` preset as a companion.
+- **NSG association** (`createVnicDetails.nsgIds`) -- Associates the VNIC with a Network Security Group for stateful, fine-grained ingress/egress rules. Use the `OciSecurityGroup` component's `02-private-backend` preset as a companion.
 - **Private DNS record** (`createVnicDetails.assignPrivateDnsRecord: true`) -- Registers a DNS hostname within the VCN's private DNS, enabling service discovery like `mybackend.<subnet-dns-label>.<vcn-dns-label>.oraclevcn.com` without external DNS configuration.
 - **2 OCPUs / 32 GiB memory** (`shapeConfig.ocpus: 2`, `shapeConfig.memoryInGbs: 32`) -- A production-appropriate starting point. Scale up as needed; E4 Flex supports up to 64 OCPUs with 1-64 GiB per OCPU.
 - **100 GiB boot volume at Higher Performance** (`bootVolumeSizeInGbs: 100`, `bootVolumeVpusPerGb: 20`) -- More headroom for application binaries, logs, and temporary data. 20 VPUs/GB provides the Higher Performance tier with better IOPS and throughput than the default Balanced tier.
@@ -29,7 +29,7 @@ This preset creates a production-hardened OCI compute instance in a private subn
 | `<availability-domain>` | Availability domain name (e.g., `Ixxj:US-ASHBURN-AD-1`) | OCI Console > Compute > Instances > Create Instance, or `oci iam availability-domain list` |
 | `<image-ocid>` | OCID of the OS image to boot from | OCI Console > Compute > Custom Images, or `oci compute image list --compartment-id <tenancy-ocid>` |
 | `<private-subnet-ocid>` | OCID of a private subnet for the primary VNIC | OCI Console > Networking > VCNs > Subnets, or `OciSubnet` status outputs |
-| `<nsg-ocid>` | OCID of a Network Security Group to associate with the VNIC | OCI Console > Networking > VCNs > Network Security Groups, or `OciNetworkSecurityGroup` status outputs |
+| `<nsg-ocid>` | OCID of a Network Security Group to associate with the VNIC | OCI Console > Networking > VCNs > Network Security Groups, or `OciSecurityGroup` status outputs |
 | `<ssh-public-key>` | SSH public key content (e.g., `ssh-rsa AAAA...`) | Your local `~/.ssh/id_rsa.pub` or equivalent |
 
 ## Related Presets

@@ -48,7 +48,7 @@ The gateway OCIDs are automatically exported as stack outputs, ready for route t
 ### What's NOT Bundled (and Why)
 
 - **Route tables** — left as OCI defaults. Custom route tables are configured per-subnet in the OciSubnet component, because different subnets need different routing (public subnets route to the Internet Gateway, private subnets route to the NAT Gateway).
-- **Security lists** — left as OCI defaults. OCI recommends using Network Security Groups (OciNetworkSecurityGroup) instead of security lists for new deployments. NSGs are stateful, per-VNIC, and more flexible.
+- **Security lists** — left as OCI defaults. OCI recommends using Network Security Groups (OciSecurityGroup) instead of security lists for new deployments. NSGs are stateful, per-VNIC, and more flexible.
 - **DHCP options** — left as OCI defaults. Custom DHCP options are uncommon and can be added as a future enhancement if demand emerges.
 
 ## OCI VCN vs AWS VPC: A Detailed Comparison
@@ -171,7 +171,7 @@ The OciVcn component covers the core VCN use case:
 Based on the 80/20 principle, the following features are not in the initial implementation:
 
 - **Custom route tables** — handled by OciSubnet, which creates per-subnet route tables with appropriate gateway references
-- **Custom security lists** — OCI recommends Network Security Groups (OciNetworkSecurityGroup) for new deployments
+- **Custom security lists** — OCI recommends Network Security Groups (OciSecurityGroup) for new deployments
 - **Custom DHCP options** — uncommon; the OCI default (internal DNS resolver) covers most use cases
 - **Local Peering Gateways** — cross-VCN peering within a region is handled by OciDrg (Dynamic Routing Gateway), which supports both local and remote peering
 - **DRG attachment** — managed by the OciDrg component, which creates the attachment to the VCN
@@ -184,8 +184,8 @@ The OciVcn component is consumed by virtually every other OCI networking and com
 ```
 OciVcn
 ├── OciSubnet (references vcn_id, gateway IDs for route rules)
-├── OciNetworkSecurityGroup (references vcn_id)
-├── OciLoadBalancer (deployed into subnets within this VCN)
+├── OciSecurityGroup (references vcn_id)
+├── OciApplicationLoadBalancer (deployed into subnets within this VCN)
 ├── OciContainerEngineCluster (API endpoint in a subnet within this VCN)
 ├── OciComputeInstance (VNIC attached to a subnet within this VCN)
 └── OciDrg (DRG attachment to this VCN for peering/VPN)

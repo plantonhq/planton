@@ -36,7 +36,7 @@ The component follows a strict creation order reflecting the dependency chain:
 
 ### Name-Based Cross-Referencing
 
-All sub-resources reference each other by display_name rather than OCID. The IaC modules resolve these names to OCIDs at deployment time. This mirrors the pattern established by OciLoadBalancer where listeners reference backend sets by name.
+All sub-resources reference each other by display_name rather than OCID. The IaC modules resolve these names to OCIDs at deployment time. This mirrors the pattern established by OciApplicationLoadBalancer where listeners reference backend sets by name.
 
 ### Design Simplifications
 
@@ -119,7 +119,7 @@ All sub-resources reference each other by display_name rather than OCID. The IaC
 
 ## Related Work
 
-- **R11 OciLoadBalancer** -- first Phase 3 component
+- **R11 OciApplicationLoadBalancer** -- first Phase 3 component
 - **R12 OciNetworkLoadBalancer** -- second Phase 3 component
 - **R14 OciPublicIp** -- next and final Phase 3 component
 

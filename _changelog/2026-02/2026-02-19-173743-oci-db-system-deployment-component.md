@@ -59,7 +59,7 @@ flowchart TB
 
 ### Single Resource, Not a Bundle
 
-Despite the plan stub describing "db_system + db_home + database", the Terraform provider models these as a single resource (`oci_database_db_system`) with required nested blocks. Both the Terraform schema and Pulumi SDK confirm: "The creation of a Database.DbSystem requires exactly one oci_database_db_home." This means one resource call in both IaC implementations -- simpler than OciLoadBalancer which creates 7 distinct resources.
+Despite the plan stub describing "db_system + db_home + database", the Terraform provider models these as a single resource (`oci_database_db_system`) with required nested blocks. Both the Terraform schema and Pulumi SDK confirm: "The creation of a Database.DbSystem requires exactly one oci_database_db_home." This means one resource call in both IaC implementations -- simpler than OciApplicationLoadBalancer which creates 7 distinct resources.
 
 ### Fresh Creation Only (source=NONE)
 
@@ -114,7 +114,7 @@ Two rules enforce version selection discipline:
 ## Related Work
 
 - R15 OciAutonomousDatabase (2026-02-19) -- sister database component for serverless workloads
-- R11 OciLoadBalancer (2026-02-19) -- similar complexity with nested sub-resources
+- R11 OciApplicationLoadBalancer (2026-02-19) -- similar complexity with nested sub-resources
 - R08 OciContainerEngineCluster (2026-02-19) -- similar builder pattern for nested Pulumi inputs
 
 ---

@@ -100,7 +100,7 @@ This creates a 1-OCPU, 16 GB VM on the E4 Flex shape in the specified availabili
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
 | `subnetId` | `StringValueOrRef` | OCID of the subnet for the primary VNIC. Can reference an OciSubnet resource via `valueFrom`. | Required |
-| `nsgIds` | `StringValueOrRef[]` | OCIDs of network security groups to associate with the VNIC. Can reference OciNetworkSecurityGroup resources via `valueFrom`. | Maximum 5 items |
+| `nsgIds` | `StringValueOrRef[]` | OCIDs of network security groups to associate with the VNIC. Can reference OciSecurityGroup resources via `valueFrom`. | Maximum 5 items |
 | `assignPublicIp` | `bool` | Whether to assign a public IP. When unset, uses the subnet default (public subnets assign; private subnets do not). | Optional |
 | `displayName` | `string` | Display name for the VNIC in the OCI Console. | Optional |
 | `hostnameLabel` | `string` | DNS hostname label within the subnet's DNS domain. Must be alphanumeric, start with a letter, max 63 characters. | Optional |
@@ -241,7 +241,7 @@ spec:
         fieldPath: status.outputs.subnetId
     nsgIds:
       - valueFrom:
-          kind: OciNetworkSecurityGroup
+          kind: OciSecurityGroup
           name: app-nsg
           fieldPath: status.outputs.networkSecurityGroupId
     assignPublicIp: false
@@ -329,7 +329,7 @@ spec:
         fieldPath: status.outputs.subnetId
     nsgIds:
       - valueFrom:
-          kind: OciNetworkSecurityGroup
+          kind: OciSecurityGroup
           name: secure-nsg
           fieldPath: status.outputs.networkSecurityGroupId
     assignPublicIp: false
@@ -366,6 +366,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 - [OciCompartment](/docs/catalog/oci/ocicompartment) — provides the compartment referenced by `compartmentId` via `valueFrom`
 - [OciSubnet](/docs/catalog/oci/ocisubnet) — provides the subnet referenced by `createVnicDetails.subnetId` via `valueFrom`
-- [OciNetworkSecurityGroup](/docs/catalog/oci/ocinetworksecuritygroup) — manages network security rules referenced by `createVnicDetails.nsgIds` via `valueFrom`
+- [OciSecurityGroup](/docs/catalog/oci/ocisecuritygroup) — manages network security rules referenced by `createVnicDetails.nsgIds` via `valueFrom`
 - [OciVcn](/docs/catalog/oci/ocivcn) — creates the virtual cloud network that subnets and security groups belong to
 - [OciBlockVolume](/docs/catalog/oci/ociblockvolume) — attaches additional block storage to the instance

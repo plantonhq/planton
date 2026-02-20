@@ -59,9 +59,9 @@ Deployment component wrapping `oci_containerengine_cluster` with the standard Op
 - `compartmentId` references OciCompartment via StringValueOrRef
 - `vcnId` references OciVcn via StringValueOrRef
 - `endpointConfig.subnetId` references OciSubnet
-- `endpointConfig.nsgIds` references OciNetworkSecurityGroup
+- `endpointConfig.nsgIds` references OciSecurityGroup
 - `options.serviceLbSubnetIds` references OciSubnet
-- `options.serviceLbConfig.backendNsgIds` references OciNetworkSecurityGroup
+- `options.serviceLbConfig.backendNsgIds` references OciSecurityGroup
 - `clusterId` output will be consumed by OciContainerEngineNodePool (R09)
 
 ## Implementation Details

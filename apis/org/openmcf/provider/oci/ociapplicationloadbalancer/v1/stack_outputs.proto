@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ociapplicationloadbalancer.v1;
+
+// OciApplicationLoadBalancerStackOutputs contains the outputs produced after
+// deploying an OciApplicationLoadBalancer.
+// These values are used by downstream components (DNS records, infra charts)
+// for composability via StringValueOrRef.
+message OciApplicationLoadBalancerStackOutputs {
+  // OCID of the load balancer.
+  string load_balancer_id = 1;
+
+  // Comma-separated IP addresses assigned to the load balancer.
+  // For public load balancers, this includes the public IP(s).
+  // For private load balancers, this includes the private IP(s).
+  string ip_addresses = 2;
+}

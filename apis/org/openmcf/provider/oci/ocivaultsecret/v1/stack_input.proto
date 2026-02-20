@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocivaultsecret.v1;
+
+import "org/openmcf/provider/oci/ocivaultsecret/v1/api.proto";
+import "org/openmcf/provider/oci/provider.proto";
+
+// OciVaultSecretStackInput is the input contract for the Pulumi
+// program that deploys an OciVaultSecret.
+message OciVaultSecretStackInput {
+  // The OciVaultSecret resource to deploy.
+  OciVaultSecret target = 1;
+
+  // OCI provider configuration (credentials, region, tenancy).
+  org.openmcf.provider.oci.OciProviderConfig provider_config = 2;
+}

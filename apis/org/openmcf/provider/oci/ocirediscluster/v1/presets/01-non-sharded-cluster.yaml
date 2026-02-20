@@ -1,0 +1,16 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciRedisCluster
+metadata:
+  name: my-redis
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  displayName: redis
+  subnetId:
+    value: <private-subnet-ocid>
+  nodeCount: 3 # 1 primary + 2 replicas for read scaling and failover
+  nodeMemoryInGbs: 8
+  softwareVersion: V7.1.1
+  clusterMode: nonsharded
+  nsgIds:
+    - value: <cache-nsg-ocid>

@@ -481,7 +481,7 @@ spec:
       hostnameLabel: "prod-api"
       nsgIds:
         - valueFrom:
-            kind: OciNetworkSecurityGroup
+            kind: OciSecurityGroup
             name: api-nsg
             fieldPath: status.outputs.networkSecurityGroupId
   imagePullSecrets:
@@ -517,7 +517,7 @@ spec:
 - Container-level resource limits subdivide the 4-OCPU / 16-GB instance: 12 GB / 6 vCPUs for the API and 2 GB / 1 vCPU for Envoy, leaving 2 GB / 1 vCPU as headroom.
 - Health checks monitor both containers independently. If either container becomes unhealthy, OCI kills and restarts it.
 - The configfile volume injects application config and Envoy config. Envoy uses the `subPath` mount to access only the `envoy/` subdirectory of the volume.
-- Infrastructure references use `valueFrom` to compose with OciCompartment, OciSubnet, and OciNetworkSecurityGroup — enabling infra-chart patterns.
+- Infrastructure references use `valueFrom` to compose with OciCompartment, OciSubnet, and OciSecurityGroup — enabling infra-chart patterns.
 - The 45-second graceful shutdown timeout allows both containers to drain connections before forced termination.
 
 ---

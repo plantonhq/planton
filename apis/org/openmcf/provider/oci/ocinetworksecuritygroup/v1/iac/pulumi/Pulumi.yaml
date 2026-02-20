@@ -1,3 +1,0 @@
-name: ocinetworksecuritygroup-pulumi-project
-runtime:
-  name: go

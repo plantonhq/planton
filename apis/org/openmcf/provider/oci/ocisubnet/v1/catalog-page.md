@@ -225,7 +225,7 @@ After deployment, the following outputs are available in `status.outputs`:
 ## Related Components
 
 - [OciVcn](/docs/catalog/oci/ocivcn) — provides the parent VCN, gateways (Internet, NAT, Service), and default route table referenced by this subnet
-- [OciNetworkSecurityGroup](/docs/catalog/oci/ocinetworksecuritygroup) — manages stateful security rules for VNICs attached to resources in this subnet
+- [OciSecurityGroup](/docs/catalog/oci/ocisecuritygroup) — manages stateful security rules for VNICs attached to resources in this subnet
 - [OciCompartment](/docs/catalog/oci/ocicompartment) — provides the compartment referenced by `compartmentId` via `valueFrom`
 - [OciComputeInstance](/docs/catalog/oci/ocicomputeinstance) — deploys VM instances with VNICs attached to this subnet
 - [OciContainerEngineCluster](/docs/catalog/oci/ocicontainerenginecluster) — uses subnets for OKE API endpoint and node pool placement

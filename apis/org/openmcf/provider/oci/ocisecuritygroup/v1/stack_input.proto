@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocisecuritygroup.v1;
+
+import "org/openmcf/provider/oci/ocisecuritygroup/v1/api.proto";
+import "org/openmcf/provider/oci/provider.proto";
+
+// OciSecurityGroupStackInput is the input to the IaC modules
+// (Pulumi / Terraform) that deploy an OciSecurityGroup resource.
+message OciSecurityGroupStackInput {
+  // target cloud-resource
+  OciSecurityGroup target = 1;
+  // provider-config
+  org.openmcf.provider.oci.OciProviderConfig provider_config = 2;
+}

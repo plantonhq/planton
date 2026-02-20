@@ -13,7 +13,7 @@ This API resource streamlines the deployment of OCI Container Instances by offer
 - **Harden Container Security**: Apply Linux security contexts per container — enforce non-root execution, read-only root filesystems, specific UID/GID, and Linux capability grants/revocations. Each container can have a different security posture within the same instance.
 - **Inject Configuration Files**: Mount configfile volumes containing base64-encoded file data directly into containers. This eliminates the need for config maps, secrets managers, or baked-in configuration for simple use cases.
 - **Pull from Private Registries**: Authenticate to private container registries using basic credentials or OCI Vault secrets. Supports OCI Container Registry (OCIR), Docker Hub, GitHub Container Registry, and any Docker-compatible registry.
-- **Compose with Other OCI Resources**: Reference OciCompartment, OciSubnet, and OciNetworkSecurityGroup outputs via `StringValueOrRef` for declarative, cross-resource dependency chains.
+- **Compose with Other OCI Resources**: Reference OciCompartment, OciSubnet, and OciSecurityGroup outputs via `StringValueOrRef` for declarative, cross-resource dependency chains.
 
 ## Key Features
 
@@ -90,4 +90,4 @@ This resource provides complete support for production-grade OCI Container Insta
 - **DNS Customization**: Override subnet DNS settings for containers that need to resolve internal service names or use custom DNS infrastructure.
 - **Freeform Tagging**: Standard OpenMCF labels applied as OCI freeform tags for resource management, cost tracking, and compliance.
 - **Infrastructure as Code**: Full Pulumi (Go) and Terraform (HCL) implementations producing identical outputs.
-- **Infra-Chart Composability**: Designed to compose with OciCompartment (upstream dependency), OciSubnet, and OciNetworkSecurityGroup via `StringValueOrRef`.
+- **Infra-Chart Composability**: Designed to compose with OciCompartment (upstream dependency), OciSubnet, and OciSecurityGroup via `StringValueOrRef`.

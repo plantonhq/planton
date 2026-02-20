@@ -8,7 +8,7 @@ The spec surface (13 top-level fields, 12 nested messages, 5 enums) mirrors OCI'
 
 ## Why This Is a Single-Resource Component
 
-The OciContainerInstance component creates exactly one cloud resource: `oci_container_instances_container_instance`. Unlike some OpenMCF components that bundle multiple tightly coupled resources (e.g., OciVcn bundles gateways, OciLoadBalancer bundles backend sets), the container instance stands alone because:
+The OciContainerInstance component creates exactly one cloud resource: `oci_container_instances_container_instance`. Unlike some OpenMCF components that bundle multiple tightly coupled resources (e.g., OciVcn bundles gateways, OciApplicationLoadBalancer bundles backend sets), the container instance stands alone because:
 
 1. **Self-contained by design.** OCI Container Instances embed containers, VNICs, volumes, and health checks as nested configuration within a single API call. There are no separate child resources to create — everything is part of the `CreateContainerInstance` API.
 

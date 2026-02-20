@@ -4,7 +4,7 @@ package org.openmcf.provider.oci.ocisubnet.v1;
 
 // OciSubnetStackOutputs contains the outputs produced after deploying an OciSubnet.
 // These values are used by downstream components (OciComputeInstance,
-// OciContainerEngineCluster, OciLoadBalancer, etc.) for composability via
+// OciContainerEngineCluster, OciApplicationLoadBalancer, etc.) for composability via
 // StringValueOrRef.
 message OciSubnetStackOutputs {
   // OCID of the subnet.

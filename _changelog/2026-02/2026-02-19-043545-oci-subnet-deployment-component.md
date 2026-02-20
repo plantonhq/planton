@@ -103,7 +103,7 @@ apis/org/openmcf/provider/oci/ocisubnet/v1/
 ## Related Work
 
 - R01 OciVcn: Parent networking component providing VCN, gateways, and default route table
-- R03 OciNetworkSecurityGroup: Next component in the queue
+- R03 OciSecurityGroup: Next component in the queue
 - DD02 (VCN bundles gateways): Established the gateway bundling pattern that informed route table bundling here
 
 ---

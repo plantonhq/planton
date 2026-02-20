@@ -94,7 +94,7 @@ A CEL expression enforces that ephemeral IPs must have a `private_ip_id` assigne
 
 ## Related Work
 
-- **R11 OciLoadBalancer** -- first Phase 3 component
+- **R11 OciApplicationLoadBalancer** -- first Phase 3 component
 - **R12 OciNetworkLoadBalancer** -- second Phase 3 component
 - **R13 OciDynamicRoutingGateway** -- third Phase 3 component
 - **R15 OciAutonomousDatabase** -- next component (Phase 4: Databases)

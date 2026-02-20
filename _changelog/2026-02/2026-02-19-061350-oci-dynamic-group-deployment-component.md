@@ -83,7 +83,7 @@ The `matchingRule` field is kept as a plain string rather than a structured prot
 ## Impact
 
 - OCI provider: 6 of 37 resource kinds now implemented (16.2%)
-- Phase 1 (Foundation) is now 100% complete: OciVcn, OciSubnet, OciNetworkSecurityGroup, OciCompartment, OciIdentityPolicy, OciDynamicGroup
+- Phase 1 (Foundation) is now 100% complete: OciVcn, OciSubnet, OciSecurityGroup, OciCompartment, OciIdentityPolicy, OciDynamicGroup
 - Next phase: Phase 2 (Compute and Containers) starting with R07 OciComputeInstance
 - Docs and Presets agents can now pick up OciDynamicGroup for documentation and preset generation
 

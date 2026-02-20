@@ -39,7 +39,7 @@ Deploy:
 openmcf apply -f compartment.yaml
 ```
 
-This creates a compartment named `my-compartment` under the specified tenancy. The compartment OCID is exported as a stack output for use as `compartmentId` in downstream resources such as OciVcn, OciSubnet, and OciNetworkSecurityGroup. Delete protection is enabled by default — destroying the IaC resource does not delete the compartment from OCI.
+This creates a compartment named `my-compartment` under the specified tenancy. The compartment OCID is exported as a stack output for use as `compartmentId` in downstream resources such as OciVcn, OciSubnet, and OciSecurityGroup. Delete protection is enabled by default — destroying the IaC resource does not delete the compartment from OCI.
 
 ## Configuration Reference
 
@@ -136,5 +136,5 @@ After deployment, the following outputs are available in `status.outputs`:
 - [OciVcn](/docs/catalog/oci/ocivcn) — creates virtual cloud networks within a compartment
 - [OciIdentityPolicy](/docs/catalog/oci/ociidentitypolicy) — defines IAM policies scoped to a compartment
 - [OciDynamicGroup](/docs/catalog/oci/ocidynamicgroup) — creates dynamic groups with compartment-scoped matching rules
-- [OciNetworkSecurityGroup](/docs/catalog/oci/ocinetworksecuritygroup) — manages network security rules within a compartment
+- [OciSecurityGroup](/docs/catalog/oci/ocisecuritygroup) — manages network security rules within a compartment
 - [OciSubnet](/docs/catalog/oci/ocisubnet) — creates subnets within a VCN that lives in a compartment

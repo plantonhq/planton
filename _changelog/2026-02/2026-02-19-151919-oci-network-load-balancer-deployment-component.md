@@ -6,11 +6,11 @@
 
 ## Summary
 
-Implemented the OciNetworkLoadBalancer deployment component (R12, enum 3321) -- an L4 TCP/UDP load balancer for Oracle Cloud Infrastructure. This is the second load balancer component in the OCI provider, complementing the existing L7 OciLoadBalancer (R11). The component bundles the NLB with backend sets, backends, and listeners into a single deployment unit with both Pulumi (Go) and Terraform (HCL) IaC modules.
+Implemented the OciNetworkLoadBalancer deployment component (R12, enum 3321) -- an L4 TCP/UDP load balancer for Oracle Cloud Infrastructure. This is the second load balancer component in the OCI provider, complementing the existing L7 OciApplicationLoadBalancer (R11). The component bundles the NLB with backend sets, backends, and listeners into a single deployment unit with both Pulumi (Go) and Terraform (HCL) IaC modules.
 
 ## Problem Statement / Motivation
 
-OpenMCF's OCI provider had an L7 application load balancer (OciLoadBalancer) but lacked L4 network load balancing capabilities. OCI Network Load Balancer is critical for:
+OpenMCF's OCI provider had an L7 application load balancer (OciApplicationLoadBalancer) but lacked L4 network load balancing capabilities. OCI Network Load Balancer is critical for:
 
 ### Pain Points
 
@@ -23,7 +23,7 @@ OpenMCF's OCI provider had an L7 application load balancer (OciLoadBalancer) but
 
 Designed and implemented a complete OciNetworkLoadBalancer component following the established forge workflow, with careful attention to the significant differences between L4 and L7 load balancing.
 
-### Key Differences from OciLoadBalancer (L7)
+### Key Differences from OciApplicationLoadBalancer (L7)
 
 The NLB is architecturally distinct from the L7 LB:
 
@@ -82,12 +82,12 @@ The NLB is architecturally distinct from the L7 LB:
 - **Source IP preservation** for security appliances and logging
 - **DNS health checking** -- unique to NLB, supports DNS-based backend health verification
 - **Instant failover** -- NLB-exclusive feature for minimal disruption during backend failures
-- **Infra-chart composability** -- all OCID fields use StringValueOrRef for wiring to OciCompartment, OciSubnet, OciNetworkSecurityGroup
+- **Infra-chart composability** -- all OCID fields use StringValueOrRef for wiring to OciCompartment, OciSubnet, OciSecurityGroup
 
 ## Impact
 
 - **OCI Provider**: 12th resource kind implemented (12/37 total)
-- **Phase 3 Progress**: 2 of 4 Advanced Networking components complete (OciLoadBalancer + OciNetworkLoadBalancer)
+- **Phase 3 Progress**: 2 of 4 Advanced Networking components complete (OciApplicationLoadBalancer + OciNetworkLoadBalancer)
 - **Users**: Can now deploy both L4 and L7 load balancers for OCI workloads through OpenMCF
 
 ## Validation Results
@@ -99,7 +99,7 @@ The NLB is architecturally distinct from the L7 LB:
 
 ## Related Work
 
-- **R11 OciLoadBalancer** -- L7 sibling component, used as the primary pattern reference
+- **R11 OciApplicationLoadBalancer** -- L7 sibling component, used as the primary pattern reference
 - **R13 OciDrg** -- next component in Phase 3 (Advanced Networking)
 
 ---

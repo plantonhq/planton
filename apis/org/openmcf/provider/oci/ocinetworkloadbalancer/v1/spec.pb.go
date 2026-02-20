@@ -201,7 +201,7 @@ func (OciNetworkLoadBalancerSpec_Listener_Protocol) EnumDescriptor() ([]byte, []
 //
 // An OCI network load balancer provides high-performance, low-latency traffic
 // distribution for TCP, UDP, and mixed-protocol workloads. Unlike the
-// application load balancer (OciLoadBalancer) which operates at Layer 7, the
+// application load balancer (OciApplicationLoadBalancer) which operates at Layer 7, the
 // network load balancer operates at Layer 4 and preserves the original source
 // IP address by default -- critical for firewalls, logging, and security
 // appliances that need to see the true client IP.
@@ -218,7 +218,7 @@ func (OciNetworkLoadBalancerSpec_Listener_Protocol) EnumDescriptor() ([]byte, []
 // backends, and listeners into a single deployment unit.
 //
 // For Layer 7 (HTTP/HTTPS) load balancing with SSL termination, virtual
-// hostname routing, and rule-based traffic manipulation, use OciLoadBalancer.
+// hostname routing, and rule-based traffic manipulation, use OciApplicationLoadBalancer.
 type OciNetworkLoadBalancerSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// OCID of the compartment where the network load balancer will be created.
