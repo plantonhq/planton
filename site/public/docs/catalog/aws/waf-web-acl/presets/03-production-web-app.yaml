@@ -3,6 +3,7 @@ kind: AwsWafWebAcl
 metadata:
   name: <acl-name>
 spec:
+  region: <aws-region>
   scope: REGIONAL
   description: Production Web ACL with comprehensive protection
   defaultAction:

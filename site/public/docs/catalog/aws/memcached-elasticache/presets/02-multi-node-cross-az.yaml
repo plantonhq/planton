@@ -3,6 +3,7 @@ kind: AwsMemcachedElasticache
 metadata:
   name: my-memcached
 spec:
+  region: <aws-region>
   engineVersion: "1.6.22"
   nodeType: cache.t3.medium
   numCacheNodes: 3

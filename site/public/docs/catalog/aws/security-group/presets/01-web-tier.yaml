@@ -3,6 +3,7 @@ kind: AwsSecurityGroup
 metadata:
   name: my-web-tier-sg
 spec:
+  region: us-west-2
   vpcId:
     value: "<vpc-id>"
   description: Allow inbound HTTP and HTTPS from the internet

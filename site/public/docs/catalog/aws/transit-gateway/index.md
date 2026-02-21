@@ -39,6 +39,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsTransitGateway.my-tgw
 spec:
+  region: us-east-1
   vpcAttachments:
     - name: app-vpc
       vpcId: vpc-0123456789abcdef0
@@ -61,6 +62,7 @@ This creates a Transit Gateway with default full-mesh routing and DNS support, a
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | The AWS region where the Transit Gateway will be created. | Required |
 | `vpcAttachments` | `object[]` | VPC attachments connecting VPCs to the Transit Gateway. | Minimum 1 item required |
 | `vpcAttachments[].name` | `string` | Unique name for the attachment. Used as key in `vpc_attachment_ids` output. | Lowercase alphanumeric and hyphens, starts with letter, max 63 chars |
 | `vpcAttachments[].vpcId` | `StringValueOrRef` | VPC ID to attach. ForceNew. Can reference AwsVpc via `valueFrom`. | Required |
@@ -103,6 +105,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsTransitGateway.hub-tgw
 spec:
+  region: us-east-1
   description: Production hub connecting application and database VPCs
   vpcAttachments:
     - name: app-vpc
@@ -137,6 +140,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsTransitGateway.inspection-tgw
 spec:
+  region: us-east-1
   description: Transit Gateway with centralized traffic inspection
   securityGroupReferencingSupport: true
   vpcAttachments:
@@ -168,6 +172,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsTransitGateway.enterprise-tgw
 spec:
+  region: us-east-1
   description: Enterprise Transit Gateway with hybrid connectivity
   amazonSideAsn: 65100
   autoAcceptSharedAttachments: true
@@ -204,6 +209,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsTransitGateway.ref-tgw
 spec:
+  region: us-east-1
   vpcAttachments:
     - name: app-vpc
       vpcId:

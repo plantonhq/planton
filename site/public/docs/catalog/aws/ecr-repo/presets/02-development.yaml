@@ -3,6 +3,7 @@ kind: AwsEcrRepo
 metadata:
   name: my-development-ecr-repo
 spec:
+  region: <aws-region>
   repositoryName: <repository-name>
   imageImmutable: false  # Allow tag overwriting for fast iteration
   encryptionType: AES256  # default from spec

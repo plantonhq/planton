@@ -40,6 +40,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsMemorydbCluster.my-memorydb
 spec:
+  region: us-east-1
   engine: redis
   engineVersion: "7.1"
   nodeType: db.t4g.small
@@ -63,6 +64,7 @@ This creates a single-shard, single-node MemoryDB cluster with Redis 7.1, TLS en
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the MemoryDB cluster will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `engine` | `string` | Cache engine: `"redis"` or `"valkey"` | Must be `redis` or `valkey` |
 | `nodeType` | `string` | Instance type determining CPU, memory, and network capacity (e.g., `"db.t4g.small"`, `"db.r7g.large"`, `"db.r6gd.xlarge"` for data tiering) | Required, non-empty |
 
@@ -109,6 +111,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsMemorydbCluster.dev-memorydb
 spec:
+  region: us-east-1
   engine: redis
   engineVersion: "7.1"
   nodeType: db.t4g.small
@@ -132,6 +135,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsMemorydbCluster.session-store
 spec:
+  region: us-east-1
   engine: redis
   engineVersion: "7.1"
   description: Production session store
@@ -168,6 +172,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsMemorydbCluster.analytics-store
 spec:
+  region: us-east-1
   engine: redis
   engineVersion: "7.1"
   description: High-throughput analytics store

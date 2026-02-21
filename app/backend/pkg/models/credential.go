@@ -212,6 +212,20 @@ type OciCredential struct {
 	UpdatedAt         time.Time `bson:"updated_at" json:"updated_at"`
 }
 
+// HetznerCloudCredential represents Hetzner Cloud credentials.
+// Uses a single API token authentication model.
+type HetznerCloudCredential struct {
+	ID              primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	Name            string             `bson:"name" json:"name"`
+	Token           string             `bson:"token" json:"token"`
+	Endpoint        string             `bson:"endpoint,omitempty" json:"endpoint,omitempty"`
+	EndpointHetzner string             `bson:"endpoint_hetzner,omitempty" json:"endpoint_hetzner,omitempty"`
+	PollInterval    string             `bson:"poll_interval,omitempty" json:"poll_interval,omitempty"`
+	PollFunction    string             `bson:"poll_function,omitempty" json:"poll_function,omitempty"`
+	CreatedAt       time.Time          `bson:"created_at" json:"created_at"`
+	UpdatedAt       time.Time          `bson:"updated_at" json:"updated_at"`
+}
+
 // KubernetesCredential represents Kubernetes cluster credentials.
 type KubernetesCredential struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty" json:"id"`

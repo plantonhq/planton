@@ -89,4 +89,8 @@ enum CloudResourceProvider {
     group: "oci.openmcf.org"
     display_name: "OCI"
   }];
+  hetznercloud = 27 [(provider_meta) = {
+    group: "hetznercloud.openmcf.org"
+    display_name: "Hetzner Cloud"
+  }];
 }

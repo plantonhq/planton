@@ -124,6 +124,8 @@ func loadProviderEnvVars(providerConfigYaml []byte, provider cloudresourcekind.C
 		return loadAliCloudEnvVars(providerConfigYaml)
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return loadOciEnvVars(providerConfigYaml)
+	case cloudresourcekind.CloudResourceProvider_hetznercloud:
+		return loadHetznerCloudEnvVars(providerConfigYaml)
 	default:
 		// Unknown or unspecified provider - no env vars needed
 		return map[string]string{}, nil

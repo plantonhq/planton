@@ -3,7 +3,7 @@ kind: AwsS3Bucket
 metadata:
   name: my-private-bucket
 spec:
-  awsRegion: <aws-region>
+  region: <aws-region>
   isPublic: false  # Block Public Access enabled
   versioningEnabled: true  # Recommended for production
   encryptionType: ENCRYPTION_TYPE_SSE_S3  # Free AES-256 encryption

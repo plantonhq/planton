@@ -1,0 +1,17 @@
+apiVersion: hetznercloud.openmcf.org/v1
+kind: HetznerCloudFirewall
+metadata:
+  name: my-private-network-firewall
+spec:
+  rules:
+    - direction: in
+      protocol: tcp
+      port: "22"
+      sourceIps:
+        - <private-network-cidr>
+      description: allow SSH from private network
+    - direction: in
+      protocol: icmp
+      sourceIps:
+        - <private-network-cidr>
+      description: allow ping from private network

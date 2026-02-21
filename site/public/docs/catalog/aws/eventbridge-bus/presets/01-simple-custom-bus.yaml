@@ -3,4 +3,5 @@ kind: AwsEventBridgeBus
 metadata:
   name: my-events
 spec:
+  region: <aws-region>
   description: Custom event bus for application events

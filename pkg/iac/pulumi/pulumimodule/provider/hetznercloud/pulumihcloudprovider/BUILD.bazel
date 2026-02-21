@@ -1,0 +1,14 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "pulumihcloudprovider",
+    srcs = ["provider.go"],
+    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/hetznercloud/pulumihcloudprovider",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/org/openmcf/provider/hetznercloud",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_hcloud_sdk//go/hcloud",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

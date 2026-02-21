@@ -44,6 +44,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsFsxWindowsFileSystem.my-windows-fs
 spec:
+  region: us-west-2
   storageCapacityGib: 32
   throughputCapacity: 32
   subnetIds:
@@ -66,6 +67,7 @@ This creates a SINGLE_AZ_2 Windows file system with 32 GiB SSD storage, 32 MB/s 
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the file system will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `storageCapacityGib` | `int` | Storage capacity in GiB. SSD: 32-65536. HDD: 2000-65536. | Minimum 32 |
 | `throughputCapacity` | `int` | Throughput in MB/s. | Must be one of: 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4608, 6144, 9216, 12288 |
 | `subnetIds` | `string[]` | Subnet IDs for the file system. 1 for single-AZ, 2 for MULTI_AZ_1. Can reference AwsVpc via `valueFrom`. | Minimum 1 item |
@@ -123,6 +125,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsFsxWindowsFileSystem.dev-windows-fs
 spec:
+  region: us-west-2
   storageCapacityGib: 32
   throughputCapacity: 32
   subnetIds:
@@ -149,6 +152,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsFsxWindowsFileSystem.prod-windows-fs
 spec:
+  region: us-east-1
   storageCapacityGib: 500
   throughputCapacity: 256
   subnetIds:
@@ -189,6 +193,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsFsxWindowsFileSystem.ha-windows-fs
 spec:
+  region: us-east-1
   deploymentType: MULTI_AZ_1
   storageCapacityGib: 1000
   throughputCapacity: 512
@@ -233,6 +238,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsFsxWindowsFileSystem.wired-windows-fs
 spec:
+  region: us-east-1
   storageCapacityGib: 200
   throughputCapacity: 128
   subnetIds:

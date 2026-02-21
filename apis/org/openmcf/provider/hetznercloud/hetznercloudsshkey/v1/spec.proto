@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package org.openmcf.provider.hetznercloud.hetznercloudsshkey.v1;
+
+import "buf/validate/validate.proto";
+
+// HetznerCloudSshKeySpec defines the specification for a Hetzner Cloud SSH key.
+//
+// An SSH key registered in Hetzner Cloud can be injected into servers at creation
+// time, providing secure, password-less access. The key is identified by its
+// metadata.name and referenced by other components (e.g., HetznerCloudServer)
+// via its ssh_key_id output through StringValueOrRef.
+//
+// Hetzner Cloud supports RSA (>= 1024 bits), ED25519, and ECDSA key types.
+// The public key must be in OpenSSH authorized_keys format.
+//
+// Changing the public_key after creation forces replacement of the resource
+// because Hetzner Cloud does not allow in-place updates to the key material.
+message HetznerCloudSshKeySpec {
+  // SSH public key content in OpenSSH authorized_keys format.
+  //
+  // Supports RSA (>= 1024 bits), ED25519, and ECDSA key types.
+  // Example: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... user@host"
+  //
+  // Changing this value forces replacement of the SSH key resource.
+  string public_key = 1 [(buf.validate.field).string.min_len = 1];
+}

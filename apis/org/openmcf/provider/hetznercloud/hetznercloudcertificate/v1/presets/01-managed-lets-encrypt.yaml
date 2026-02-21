@@ -1,0 +1,9 @@
+apiVersion: hetznercloud.openmcf.org/v1
+kind: HetznerCloudCertificate
+metadata:
+  name: my-managed-certificate
+spec:
+  managed:
+    domainNames:
+      - <primary-domain>
+      - <additional-domain>

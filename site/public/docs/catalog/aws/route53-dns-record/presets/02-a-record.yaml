@@ -3,6 +3,7 @@ kind: AwsRoute53DnsRecord
 metadata:
   name: my-a-record
 spec:
+  region: us-east-1
   zoneId:
     value: "<route53-hosted-zone-id>"
   name: <your-subdomain.your-domain.com>

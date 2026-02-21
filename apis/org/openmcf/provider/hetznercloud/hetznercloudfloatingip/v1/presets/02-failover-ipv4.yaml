@@ -1,0 +1,11 @@
+apiVersion: hetznercloud.openmcf.org/v1
+kind: HetznerCloudFloatingIp
+metadata:
+  name: my-failover-ip
+spec:
+  type: ipv4
+  homeLocation: fsn1
+  description: Production failover IP
+  serverId:
+    value: <hetzner-server-id>
+  deleteProtection: true

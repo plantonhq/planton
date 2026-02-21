@@ -39,6 +39,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsIamRole.my-ecs-task-role
 spec:
+  region: us-east-1
   trustPolicy:
     Version: "2012-10-17"
     Statement:
@@ -62,6 +63,7 @@ This creates an IAM role that can be assumed by ECS tasks, with no additional po
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | The AWS region where the resource will be created (e.g., `us-east-1`). | Required |
 | `trustPolicy` | `object` | JSON trust policy document defining which principals may assume this role. Serialized as a `google.protobuf.Struct`. | Required |
 
 ### Optional Fields
@@ -90,6 +92,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsIamRole.ec2-instance-role
 spec:
+  region: us-east-1
   description: Allows EC2 instances to call AWS services
   trustPolicy:
     Version: "2012-10-17"
@@ -117,6 +120,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsIamRole.lambda-exec-role
 spec:
+  region: us-east-1
   description: Execution role for order-processing Lambda
   path: /service-roles/
   trustPolicy:
@@ -155,6 +159,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsIamRole.cross-account-reader
 spec:
+  region: us-east-1
   description: Allows account 111111111111 to read S3 buckets in this account
   trustPolicy:
     Version: "2012-10-17"
@@ -185,6 +190,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsIamRole.ecs-worker-role
 spec:
+  region: us-east-1
   description: Worker task role with SQS and S3 permissions
   trustPolicy:
     Version: "2012-10-17"

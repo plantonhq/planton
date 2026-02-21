@@ -3,6 +3,7 @@ kind: AwsEventBridgeBus
 metadata:
   name: my-events
 spec:
+  region: <aws-region>
   description: Production event bus with encryption, DLQ, and logging
   kmsKeyIdentifier:
     value: <kms-key-arn>

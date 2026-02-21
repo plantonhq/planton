@@ -3,6 +3,7 @@ kind: AwsEcsService
 metadata:
   name: my-background-worker
 spec:
+  region: <aws-region>
   clusterArn:
     value: "<ecs-cluster-arn>"
   container:

@@ -1775,4 +1775,90 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "accen"
   }];
+
+  // =========================================================================
+  // Hetzner Cloud (provider: hetznercloud, range: 3500-3699)
+  // =========================================================================
+
+  // --- Foundation / Security ---
+
+  HetznerCloudSshKey = 3500 [(kind_meta) = {
+    provider: hetznercloud
+    version: v1
+    id_prefix: "hcssh"
+  }];
+
+  HetznerCloudPlacementGroup = 3501 [(kind_meta) = {
+    provider: hetznercloud
+    version: v1
+    id_prefix: "hcpg"
+  }];
+
+  HetznerCloudFirewall = 3502 [(kind_meta) = {
+    provider: hetznercloud
+    version: v1
+    id_prefix: "hcfw"
+  }];
+
+  // --- Networking ---
+
+  HetznerCloudNetwork = 3510 [(kind_meta) = {
+    provider: hetznercloud
+    version: v1
+    id_prefix: "hcnet"
+  }];
+
+  HetznerCloudPrimaryIp = 3511 [(kind_meta) = {
+    provider: hetznercloud
+    version: v1
+    id_prefix: "hcpip"
+  }];
+
+  HetznerCloudFloatingIp = 3512 [(kind_meta) = {
+    provider: hetznercloud
+    version: v1
+    id_prefix: "hcfip"
+  }];
+
+  // --- Compute ---
+
+  HetznerCloudServer = 3520 [(kind_meta) = {
+    provider: hetznercloud
+    version: v1
+    id_prefix: "hcsrv"
+  }];
+
+  HetznerCloudVolume = 3521 [(kind_meta) = {
+    provider: hetznercloud
+    version: v1
+    id_prefix: "hcvol"
+  }];
+
+  HetznerCloudSnapshot = 3522 [(kind_meta) = {
+    provider: hetznercloud
+    version: v1
+    id_prefix: "hcsnp"
+  }];
+
+  // --- Load Balancing ---
+
+  HetznerCloudCertificate = 3530 [(kind_meta) = {
+    provider: hetznercloud
+    version: v1
+    id_prefix: "hccrt"
+  }];
+
+  HetznerCloudLoadBalancer = 3531 [(kind_meta) = {
+    provider: hetznercloud
+    version: v1
+    id_prefix: "hclb"
+  }];
+
+  // --- DNS ---
+
+  HetznerCloudDnsZone = 3540 [(kind_meta) = {
+    provider: hetznercloud
+    version: v1
+    id_prefix: "hcdns"
+  }];
 }

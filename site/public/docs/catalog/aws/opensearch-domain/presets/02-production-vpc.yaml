@@ -3,6 +3,7 @@ kind: AwsOpenSearchDomain
 metadata:
   name: prod-search
 spec:
+  region: us-east-1
   engineVersion: "OpenSearch_2.11"
   clusterConfig:
     instanceType: r6g.large.search

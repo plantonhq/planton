@@ -1,0 +1,28 @@
+apiVersion: hetznercloud.openmcf.org/v1
+kind: HetznerCloudLoadBalancer
+metadata:
+  name: my-internal-lb
+spec:
+  loadBalancerType: lb11
+  location: fsn1
+  algorithm: round_robin
+  services:
+    - protocol: http
+      destinationPort: 8080
+      healthCheck:
+        protocol: http
+        port: 8080
+        http:
+          path: /health
+  serverTargets:
+    - serverId:
+        value: <backend-server-id-1>
+      usePrivateIp: true
+    - serverId:
+        value: <backend-server-id-2>
+      usePrivateIp: true
+  network:
+    networkId:
+      value: <network-id>
+    enablePublicInterface: false
+  deleteProtection: true

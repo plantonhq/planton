@@ -3,6 +3,7 @@ kind: AwsTransitGateway
 metadata:
   name: my-inspection-transit-gateway
 spec:
+  region: <aws-region>
   description: Hub-and-spoke Transit Gateway with centralized firewall inspection
   defaultRouteTableAssociation: true
   defaultRouteTablePropagation: true

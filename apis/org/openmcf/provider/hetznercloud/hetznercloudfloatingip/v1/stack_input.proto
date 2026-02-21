@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.hetznercloud.hetznercloudfloatingip.v1;
+
+import "org/openmcf/provider/hetznercloud/hetznercloudfloatingip/v1/api.proto";
+import "org/openmcf/provider/hetznercloud/provider.proto";
+
+//hetznercloud-floating-ip stack-input
+message HetznerCloudFloatingIpStackInput {
+  //target cloud-resource
+  HetznerCloudFloatingIp target = 1;
+  //provider-config
+  org.openmcf.provider.hetznercloud.HetznerCloudProviderConfig provider_config = 2;
+}

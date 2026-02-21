@@ -3,4 +3,5 @@ kind: AwsGlueCatalogDatabase
 metadata:
   name: analytics
 spec:
+  region: <aws-region>
   description: "Analytics data catalog for ad-hoc queries and BI dashboards"

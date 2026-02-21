@@ -41,6 +41,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsBatchComputeEnvironment.my-batch
 spec:
+  region: us-west-2
   computeResources:
     type: FARGATE
     maxVcpus: 256
@@ -68,6 +69,7 @@ This creates a serverless Fargate compute environment with up to 256 vCPUs of ca
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the compute environment will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `computeResources` | object | Infrastructure configuration for the compute environment | Required |
 | `computeResources.type` | string | Compute resource type | Must be `EC2`, `SPOT`, `FARGATE`, or `FARGATE_SPOT` |
 | `computeResources.maxVcpus` | int32 | Maximum vCPU capacity | >= 1 |

@@ -1,0 +1,24 @@
+apiVersion: hetznercloud.openmcf.org/v1
+kind: HetznerCloudCertificate
+metadata:
+  name: hetznercloudcertificate-uploaded-demo
+spec:
+  uploaded:
+    certificate: |
+      -----BEGIN CERTIFICATE-----
+      MIIBkTCB+wIJALExample...
+      -----END CERTIFICATE-----
+    privateKey: |
+      -----BEGIN PRIVATE KEY-----
+      MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDExample...
+      -----END PRIVATE KEY-----
+---
+apiVersion: hetznercloud.openmcf.org/v1
+kind: HetznerCloudCertificate
+metadata:
+  name: hetznercloudcertificate-managed-demo
+spec:
+  managed:
+    domainNames:
+      - example.com
+      - www.example.com

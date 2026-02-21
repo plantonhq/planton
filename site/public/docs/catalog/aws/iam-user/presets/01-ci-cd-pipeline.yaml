@@ -3,6 +3,7 @@ kind: AwsIamUser
 metadata:
   name: my-ci-cd-user
 spec:
+  region: <aws-region>
   userName: <ci-cd-user-name>
   managedPolicyArns:
     - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser

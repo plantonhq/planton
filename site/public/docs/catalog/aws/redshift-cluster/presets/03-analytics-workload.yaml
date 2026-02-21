@@ -3,6 +3,7 @@ kind: AwsRedshiftCluster
 metadata:
   name: my-analytics-cluster
 spec:
+  region: us-west-2
   nodeType: ra3.4xlarge
   numberOfNodes: 4
   databaseName: datalake

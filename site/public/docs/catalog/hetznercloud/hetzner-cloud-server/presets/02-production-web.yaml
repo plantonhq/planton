@@ -1,0 +1,24 @@
+apiVersion: hetznercloud.openmcf.org/v1
+kind: HetznerCloudServer
+metadata:
+  name: my-production-web-server
+spec:
+  serverType: cx32
+  image: ubuntu-24.04
+  location: fsn1
+  sshKeys:
+    - value: <ssh-key-name>
+  firewallIds:
+    - value: <firewall-id>
+  networks:
+    - networkId:
+        value: <network-id>
+  backups: true
+  deleteProtection: true
+  rebuildProtection: true
+  shutdownBeforeDeletion: true
+  userData: |
+    #!/bin/bash
+    apt-get update
+    apt-get upgrade -y
+    apt-get install -y unattended-upgrades

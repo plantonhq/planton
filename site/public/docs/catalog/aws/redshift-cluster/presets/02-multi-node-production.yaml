@@ -3,6 +3,7 @@ kind: AwsRedshiftCluster
 metadata:
   name: my-prod-warehouse
 spec:
+  region: us-west-2
   nodeType: ra3.xlplus
   numberOfNodes: 2
   databaseName: analytics

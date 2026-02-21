@@ -41,6 +41,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsClientVpn.my-vpn
 spec:
+  region: us-east-1
   vpcId: vpc-0a1b2c3d4e5f00001
   subnets:
     - subnet-0a1b2c3d4e5f00001
@@ -62,6 +63,7 @@ This creates a Client VPN endpoint with certificate-based authentication, split-
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the Client VPN endpoint will be created (e.g., `us-east-1`, `eu-west-1`). | Required; non-empty |
 | `vpcId` | `StringValueOrRef` | Target VPC for the Client VPN endpoint. Can reference an AwsVpc resource via `valueFrom`. | Required |
 | `subnets` | `StringValueOrRef[]` | Subnet IDs to associate as target networks. Each enables access in that subnet's Availability Zone. Can reference AwsVpc resources via `valueFrom`. | Minimum 1 item |
 | `clientCidrBlock` | `string` | IPv4 CIDR for client IP assignment (e.g., `10.100.0.0/22`). Must not overlap with the VPC CIDR. | Valid IPv4 CIDR, between /12 and /22 |
@@ -98,6 +100,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsClientVpn.dev-vpn
 spec:
+  region: us-east-1
   vpcId: vpc-dev-001
   subnets:
     - subnet-private-az1
@@ -122,6 +125,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: staging.AwsClientVpn.team-vpn
 spec:
+  region: us-east-1
   vpcId: vpc-staging-001
   subnets:
     - subnet-private-az1
@@ -150,6 +154,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsClientVpn.secure-vpn
 spec:
+  region: us-east-1
   vpcId: vpc-prod-001
   subnets:
     - subnet-private-az1
@@ -182,6 +187,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsClientVpn.low-latency-vpn
 spec:
+  region: us-east-1
   vpcId: vpc-prod-001
   subnets:
     - subnet-private-az1
@@ -208,6 +214,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsClientVpn.ref-vpn
 spec:
+  region: us-east-1
   vpcId:
     valueFrom:
       kind: AwsVpc

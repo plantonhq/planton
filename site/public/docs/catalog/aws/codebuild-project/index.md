@@ -42,6 +42,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsCodeBuildProject.my-build
 spec:
+  region: us-west-2
   source:
     type: GITHUB
     location: https://github.com/my-org/my-app.git
@@ -69,6 +70,7 @@ This creates a CodeBuild project that pulls from a GitHub repository, runs build
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the project will be created (e.g., `us-west-2`). | Required |
 | `source.type` | `string` | Source provider: `GITHUB`, `BITBUCKET`, `CODECOMMIT`, `CODEPIPELINE`, `GITHUB_ENTERPRISE`, `GITLAB`, `GITLAB_SELF_MANAGED`, `NO_SOURCE`, `S3` | Must be one of the listed values |
 | `source.location` | `string` | Repository URL or S3 path | Required unless type is `CODEPIPELINE` or `NO_SOURCE` |
 | `environment.type` | `string` | Container type: `LINUX_CONTAINER`, `LINUX_GPU_CONTAINER`, `ARM_CONTAINER`, `WINDOWS_SERVER_2019_CONTAINER`, `WINDOWS_SERVER_2022_CONTAINER`, `LINUX_LAMBDA_CONTAINER`, `ARM_LAMBDA_CONTAINER` | Must be one of the listed values |
@@ -133,6 +135,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsCodeBuildProject.app-ci
 spec:
+  region: us-west-2
   source:
     type: GITHUB
     location: https://github.com/my-org/my-app.git
@@ -169,6 +172,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsCodeBuildProject.docker-builder
 spec:
+  region: us-west-2
   source:
     type: GITHUB
     location: https://github.com/my-org/my-service.git
@@ -218,6 +222,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsCodeBuildProject.pipeline-build
 spec:
+  region: us-west-2
   source:
     type: CODEPIPELINE
     buildspec: buildspec.yml
@@ -254,6 +259,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsCodeBuildProject.connected-build
 spec:
+  region: us-west-2
   source:
     type: GITHUB
     location: https://github.com/my-org/my-app.git

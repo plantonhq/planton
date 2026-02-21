@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package org.openmcf.provider.hetznercloud.hetznercloudcertificate.v1;
+
+import "buf/validate/validate.proto";
+
+// HetznerCloudCertificateSpec defines the specification for a Hetzner Cloud
+// TLS certificate used by load balancer HTTPS services.
+//
+// Hetzner Cloud supports two distinct certificate types:
+//
+//   - **Uploaded**: You provide a PEM-encoded certificate chain and private key.
+//     Hetzner Cloud stores them and makes the certificate available for load
+//     balancer HTTPS listeners. You are responsible for renewal.
+//
+//   - **Managed**: You specify one or more domain names and Hetzner Cloud
+//     automatically obtains and renews a Let's Encrypt certificate. The domains
+//     must have DNS records pointing to a Hetzner Cloud load balancer before
+//     provisioning so that the ACME HTTP-01 challenge can succeed.
+//
+// Exactly one of `uploaded` or `managed` must be set. The proto oneof enforces
+// mutual exclusivity — it is structurally impossible to mix fields from both
+// types in the same manifest.
+//
+// Fields not exposed in this spec (derived in IaC modules):
+//   - name:   Derived from metadata.name.
+//   - labels: Derived from metadata (CG01 pattern). Standard labels take
+//             precedence over user-specified metadata.labels.
+message HetznerCloudCertificateSpec {
+  // Exactly one certificate variant must be provided.
+  oneof certificate {
+    option (buf.validate.oneof).required = true;
+
+    // Upload your own TLS certificate and private key.
+    UploadedCertificateConfig uploaded = 1;
+
+    // Let Hetzner Cloud obtain and manage a Let's Encrypt certificate.
+    ManagedCertificateConfig managed = 2;
+  }
+}
+
+// UploadedCertificateConfig holds the PEM-encoded certificate chain and
+// private key for a user-provided TLS certificate.
+//
+// Both fields are required and immutable — changing either forces replacement
+// of the certificate resource in Hetzner Cloud (ForceNew).
+//
+// The private_key field contains sensitive cryptographic material. IaC modules
+// treat it as a secret (Pulumi marks it with pulumi.ToSecret; Terraform marks
+// the corresponding variable as sensitive).
+message UploadedCertificateConfig {
+  // PEM-encoded TLS certificate chain.
+  //
+  // Must include the server certificate and, if applicable, intermediate CA
+  // certificates in order (server cert first, root last). Changing this value
+  // forces replacement of the certificate resource.
+  string certificate = 1 [(buf.validate.field).string.min_len = 1];
+
+  // PEM-encoded private key belonging to the certificate.
+  //
+  // SENSITIVE — this field contains secret cryptographic material.
+  // Changing this value forces replacement of the certificate resource.
+  string private_key = 2 [(buf.validate.field).string.min_len = 1];
+}
+
+// ManagedCertificateConfig specifies domain names for which Hetzner Cloud
+// automatically obtains and renews a Let's Encrypt TLS certificate.
+//
+// Prerequisites for successful provisioning:
+//   - Each domain must have a DNS A/AAAA record pointing to a Hetzner Cloud
+//     load balancer so the ACME HTTP-01 challenge can be completed.
+//   - The load balancer must have an HTTPS service configured that references
+//     this certificate.
+//
+// Changing the domain list forces replacement of the certificate resource
+// (ForceNew).
+message ManagedCertificateConfig {
+  // Domain names for which a certificate should be obtained.
+  //
+  // At least one domain is required. Hetzner Cloud issues a single certificate
+  // covering all listed domains (SAN certificate). Changing this list forces
+  // replacement of the certificate resource.
+  repeated string domain_names = 1 [(buf.validate.field).repeated.min_items = 1];
+}

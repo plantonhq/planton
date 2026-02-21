@@ -6,6 +6,7 @@ metadata:
   name: prod-openzfs
   id: awsfxz-prod-openzfs-production
 spec:
+  region: <aws-region>
   deployment_type: SINGLE_AZ_2
   storage_capacity_gib: 512
   throughput_capacity: 640

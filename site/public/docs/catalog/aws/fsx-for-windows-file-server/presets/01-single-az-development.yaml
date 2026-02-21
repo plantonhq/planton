@@ -6,6 +6,7 @@ metadata:
   name: dev-windows-fs
   id: awsfxw-dev-windows-fs-dev
 spec:
+  region: <aws-region>
   deployment_type: SINGLE_AZ_2
   storage_capacity_gib: 32
   storage_type: SSD

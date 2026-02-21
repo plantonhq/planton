@@ -225,6 +225,18 @@ import (
 	gcpvertexaiendpointv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpvertexaiendpoint/v1"
 	gcpvertexainotebookv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpvertexainotebook/v1"
 	gcpvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpvpc/v1"
+	hetznercloudcertificatev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud/hetznercloudcertificate/v1"
+	hetznerclouddnszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud/hetznerclouddnszone/v1"
+	hetznercloudfirewallv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud/hetznercloudfirewall/v1"
+	hetznercloudfloatingipv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud/hetznercloudfloatingip/v1"
+	hetznercloudloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud/hetznercloudloadbalancer/v1"
+	hetznercloudnetworkv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud/hetznercloudnetwork/v1"
+	hetznercloudplacementgroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud/hetznercloudplacementgroup/v1"
+	hetznercloudprimaryipv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud/hetznercloudprimaryip/v1"
+	hetznercloudserverv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud/hetznercloudserver/v1"
+	hetznercloudsnapshotv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud/hetznercloudsnapshot/v1"
+	hetznercloudsshkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud/hetznercloudsshkey/v1"
+	hetznercloudvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud/hetznercloudvolume/v1"
 	kubernetesaltinityoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesaltinityoperator/v1"
 	kubernetesargocdv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesargocd/v1"
 	kubernetescertmanagerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetescertmanager/v1"
@@ -588,6 +600,21 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpVpc:                        &gcpvpcv1.GcpVpc{},
 }
 
+var ProviderHetznercloudMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
+	cloudresourcekind.CloudResourceKind_HetznerCloudCertificate:    &hetznercloudcertificatev1.HetznerCloudCertificate{},
+	cloudresourcekind.CloudResourceKind_HetznerCloudDnsZone:        &hetznerclouddnszonev1.HetznerCloudDnsZone{},
+	cloudresourcekind.CloudResourceKind_HetznerCloudFirewall:       &hetznercloudfirewallv1.HetznerCloudFirewall{},
+	cloudresourcekind.CloudResourceKind_HetznerCloudFloatingIp:     &hetznercloudfloatingipv1.HetznerCloudFloatingIp{},
+	cloudresourcekind.CloudResourceKind_HetznerCloudLoadBalancer:   &hetznercloudloadbalancerv1.HetznerCloudLoadBalancer{},
+	cloudresourcekind.CloudResourceKind_HetznerCloudNetwork:        &hetznercloudnetworkv1.HetznerCloudNetwork{},
+	cloudresourcekind.CloudResourceKind_HetznerCloudPlacementGroup: &hetznercloudplacementgroupv1.HetznerCloudPlacementGroup{},
+	cloudresourcekind.CloudResourceKind_HetznerCloudPrimaryIp:      &hetznercloudprimaryipv1.HetznerCloudPrimaryIp{},
+	cloudresourcekind.CloudResourceKind_HetznerCloudServer:         &hetznercloudserverv1.HetznerCloudServer{},
+	cloudresourcekind.CloudResourceKind_HetznerCloudSnapshot:       &hetznercloudsnapshotv1.HetznerCloudSnapshot{},
+	cloudresourcekind.CloudResourceKind_HetznerCloudSshKey:         &hetznercloudsshkeyv1.HetznerCloudSshKey{},
+	cloudresourcekind.CloudResourceKind_HetznerCloudVolume:         &hetznercloudvolumev1.HetznerCloudVolume{},
+}
+
 var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_KubernetesAltinityOperator:            &kubernetesaltinityoperatorv1.KubernetesAltinityOperator{},
 	cloudresourcekind.CloudResourceKind_KubernetesArgocd:                      &kubernetesargocdv1.KubernetesArgocd{},
@@ -715,6 +742,7 @@ var ToMessageMap = merge(
 	ProviderConfluentMap,
 	ProviderDigitalOceanMap,
 	ProviderGcpMap,
+	ProviderHetznercloudMap,
 	ProviderKubernetesMap,
 	ProviderOpenFgaMap,
 	ProviderOpenstackMap,
