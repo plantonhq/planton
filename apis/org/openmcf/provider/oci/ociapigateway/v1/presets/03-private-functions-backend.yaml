@@ -1,0 +1,46 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciApiGateway
+metadata:
+  name: my-internal-api
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  endpointType: private
+  subnetId:
+    value: <private-subnet-ocid>
+  displayName: internal-api
+  networkSecurityGroupIds:
+    - value: <gateway-nsg-ocid>
+  deployment:
+    pathPrefix: /api
+    displayName: functions-api-deployment
+    loggingPolicies:
+      accessLog:
+        isEnabled: true
+      executionLog:
+        isEnabled: true
+        logLevel: info
+    routes:
+      - path: /health
+        methods:
+          - GET
+        backend:
+          type: stock_response
+          status: 200
+          body: '{"status":"ok"}'
+      - path: /process
+        methods:
+          - POST
+        backend:
+          type: oracle_functions
+          functionId: <process-function-ocid>
+          readTimeoutInSeconds: 120
+          sendTimeoutInSeconds: 30
+      - path: /query
+        methods:
+          - GET
+        backend:
+          type: oracle_functions
+          functionId: <query-function-ocid>
+          readTimeoutInSeconds: 60
+          sendTimeoutInSeconds: 10

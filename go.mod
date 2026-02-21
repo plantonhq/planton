@@ -37,6 +37,7 @@ require (
 	github.com/pulumi/pulumi-hcloud/sdk v1.32.1
 	github.com/pulumi/pulumi-kubernetes/sdk/v4 v4.18.4
 	github.com/pulumi/pulumi-mongodbatlas/sdk/v3 v3.36.1
+	github.com/pulumi/pulumi-oci/sdk/v4 v4.0.0-20260214044446-b221312c8fd5
 	github.com/pulumi/pulumi-openstack/sdk/v5 v5.4.1
 	github.com/pulumi/pulumi-random/sdk/v4 v4.16.7
 	github.com/pulumi/pulumi-snowflake/sdk/v2 v2.9.1

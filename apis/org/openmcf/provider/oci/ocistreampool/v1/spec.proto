@@ -1,0 +1,118 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocistreampool.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// OciStreamPoolSpec defines the specification for an OCI Stream Pool --
+// the organizational container for OCI Streaming, a Kafka-compatible
+// managed event-streaming service.
+//
+// A stream pool groups streams under shared Kafka compatibility settings,
+// optional KMS encryption, and optional private networking. Streams
+// within the pool inherit the pool's configuration and are bundled as
+// sub-resources.
+//
+// Key behaviors:
+//   - kafka_settings and kms_key_id are updatable after creation
+//   - private_endpoint_settings is entirely ForceNew (changing any field
+//     forces pool recreation)
+//   - Streams are ForceNew for name, partitions, and retention_in_hours
+//
+// Excluded from v1:
+//   - defined_tags, system_tags -- managed by platform
+//   - freeform_tags -- auto-populated from metadata labels
+//   - security_attributes -- Oracle ZPR, very low adoption
+message OciStreamPoolSpec {
+  // OCID of the compartment where the stream pool will be created.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+  ];
+
+  // Kafka compatibility settings for the stream pool. All fields are
+  // optional and updatable; OCI applies sensible defaults when omitted.
+  KafkaSettings kafka_settings = 2;
+
+  // OCID of the KMS master encryption key for encrypting streams in
+  // this pool. When omitted, Oracle-managed encryption is used.
+  // Updatable -- the pool can be re-encrypted with a different key.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 3 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.keyId"
+  ];
+
+  // Private endpoint configuration for the stream pool. When provided,
+  // the pool is accessible only from within the specified subnet.
+  // Entire block is ForceNew -- any change forces pool recreation.
+  PrivateEndpointSettings private_endpoint_settings = 4;
+
+  // Streams within this pool. Each stream is identified by its name,
+  // which is used as the resource key in IaC modules.
+  repeated Stream streams = 5;
+
+  // KafkaSettings controls the Kafka compatibility layer for the pool.
+  // All fields are optional; OCI applies defaults when omitted.
+  message KafkaSettings {
+    option (buf.validate.message).cel = {
+      id: "log_retention_hours_range"
+      message: "log_retention_hours must be between 24 and 168 when specified"
+      expression: "!has(this.log_retention_hours) || (this.log_retention_hours >= 24 && this.log_retention_hours <= 168)"
+    };
+
+    // Enable automatic topic creation when a Kafka producer publishes
+    // to a non-existent topic.
+    optional bool auto_create_topics_enable = 1;
+
+    // Default hours to retain log data before deletion (24-168).
+    // OCI defaults to 24 when omitted.
+    optional int32 log_retention_hours = 2;
+
+    // Default number of partitions for auto-created topics.
+    optional int32 num_partitions = 3;
+  }
+
+  // PrivateEndpointSettings configures private networking for the pool.
+  // All fields are ForceNew.
+  message PrivateEndpointSettings {
+    // OCID of the subnet for the private endpoint.
+    org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 1 [
+      (buf.validate.field).required = true,
+      (org.openmcf.shared.foreignkey.v1.default_kind) = OciSubnet,
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetId"
+    ];
+
+    // OCIDs of network security groups for the private endpoint.
+    repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef nsg_ids = 2 [
+      (org.openmcf.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
+    ];
+
+    // Specific IP address within the subnet CIDR for the private
+    // endpoint. When omitted, OCI auto-assigns an available IP.
+    string private_endpoint_ip = 3;
+  }
+
+  // Stream defines an individual stream within the pool.
+  // Streams are immutable -- changing name, partitions, or
+  // retention_in_hours forces recreation.
+  message Stream {
+    option (buf.validate.message).cel = {
+      id: "retention_in_hours_range"
+      message: "retention_in_hours must be between 24 and 168 when specified"
+      expression: "!has(this.retention_in_hours) || (this.retention_in_hours >= 24 && this.retention_in_hours <= 168)"
+    };
+
+    // Stream name. Used as the resource key in IaC modules. ForceNew.
+    string name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Number of partitions in the stream. ForceNew.
+    int32 partitions = 2 [(buf.validate.field).int32.gte = 1];
+
+    // Retention period in hours (24-168). ForceNew.
+    // When omitted, OCI defaults to 24 hours.
+    optional int32 retention_in_hours = 3;
+  }
+}

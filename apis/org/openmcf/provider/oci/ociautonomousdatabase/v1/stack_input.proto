@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ociautonomousdatabase.v1;
+
+import "org/openmcf/provider/oci/ociautonomousdatabase/v1/api.proto";
+import "org/openmcf/provider/oci/provider.proto";
+
+// OciAutonomousDatabaseStackInput is the input to the IaC modules
+// (Pulumi / Terraform) that deploy an OciAutonomousDatabase resource.
+message OciAutonomousDatabaseStackInput {
+  // target cloud-resource
+  OciAutonomousDatabase target = 1;
+  // provider-config
+  org.openmcf.provider.oci.OciProviderConfig provider_config = 2;
+}

@@ -1,0 +1,3 @@
+name: ocipublicip-pulumi-project
+runtime:
+  name: go

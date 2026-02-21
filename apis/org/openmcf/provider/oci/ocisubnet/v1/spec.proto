@@ -1,0 +1,111 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocisubnet.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// OciSubnetSpec defines the specification for an Oracle Cloud Infrastructure
+// subnet within a Virtual Cloud Network (VCN).
+//
+// A subnet is a subdivision of a VCN that provides a contiguous range of IP
+// addresses. Subnets can be regional (span all availability domains) or
+// AD-specific. Private subnets prevent public IP assignment on VNICs; public
+// subnets allow it.
+//
+// An optional custom route table can be created inline via route_rules. When
+// route_rules are provided, a dedicated route table is created and attached to
+// this subnet. Alternatively, an existing route table can be referenced via
+// route_table_id. If neither is provided, the VCN's default route table is
+// used. The two fields are mutually exclusive.
+message OciSubnetSpec {
+  // OCID of the compartment where the subnet will be created.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+  ];
+
+  // OCID of the VCN that this subnet belongs to.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vcn_id = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciVcn,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vcnId"
+  ];
+
+  // IPv4 CIDR block for the subnet (e.g. "10.0.1.0/24").
+  // Must be within one of the VCN's CIDR blocks and not overlap with other subnets.
+  string cidr_block = 3 [(buf.validate.field).required = true];
+
+  // Human-readable name shown in the OCI Console.
+  // Falls back to metadata.name if not provided.
+  string display_name = 4;
+
+  // DNS label for the subnet. Combined with the VCN and subnet domain, forms
+  // the FQDN: <dns_label>.<vcn_dns_label>.oraclevcn.com
+  // Must be alphanumeric, start with a letter, and be at most 15 characters.
+  string dns_label = 5;
+
+  // Availability domain name (e.g. "Iocq:US-ASHBURN-AD-1").
+  // When omitted, the subnet is regional and spans all ADs in the region.
+  // When set, the subnet is scoped to a single AD.
+  string availability_domain = 6;
+
+  // When true, VNICs in this subnet cannot have public IP addresses.
+  // This is the primary control for making a subnet private.
+  bool prohibit_public_ip_on_vnic = 7;
+
+  // When true, the subnet blocks all inbound internet traffic to VNICs,
+  // even if a security rule or NSG would otherwise allow it.
+  bool prohibit_internet_ingress = 8;
+
+  // OCID of custom DHCP options to use instead of the VCN's default.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef dhcp_options_id = 9;
+
+  // OCID of an existing route table to associate with this subnet.
+  // Mutually exclusive with route_rules. If neither is provided, the VCN's
+  // default route table is used.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef route_table_id = 10;
+
+  // Security list OCIDs to associate with this subnet. OCI allows a maximum
+  // of 5 security lists per subnet.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_list_ids = 11 [(buf.validate.field).repeated.max_items = 5];
+
+  // IPv6 CIDR block for dual-stack subnets (e.g. "2001:0db8:0123:1111::/64").
+  // Only valid when the parent VCN has IPv6 enabled.
+  string ipv6_cidr_block = 12;
+
+  // Route rules for a custom route table that will be created and owned by
+  // this subnet. Mutually exclusive with route_table_id.
+  repeated RouteRule route_rules = 13;
+
+  // RouteRule defines a single routing rule within a custom route table.
+  message RouteRule {
+    // Target IP range in CIDR notation (e.g. "0.0.0.0/0") or a service CIDR
+    // label (e.g. "all-iad-services-in-oracle-services-network").
+    string destination = 1 [(buf.validate.field).required = true];
+
+    // Whether destination is a CIDR block or a service CIDR block.
+    DestinationType destination_type = 2;
+
+    // OCID of the network entity to route matching traffic to
+    // (Internet Gateway, NAT Gateway, DRG, Service Gateway, Local Peering Gateway, etc.).
+    org.openmcf.shared.foreignkey.v1.StringValueOrRef network_entity_id = 3 [(buf.validate.field).required = true];
+
+    // Optional human-readable description for this rule.
+    string description = 4;
+
+    enum DestinationType {
+      unspecified = 0;
+      cidr_block = 1;
+      service_cidr_block = 2;
+    }
+  }
+
+  // route_table_id and route_rules are mutually exclusive.
+  option (buf.validate.message).cel = {
+    id: "route_table_mutual_exclusivity"
+    message: "route_table_id and route_rules are mutually exclusive; provide one or neither"
+    expression: "!has(this.route_table_id) || this.route_rules.size() == 0"
+  };
+}

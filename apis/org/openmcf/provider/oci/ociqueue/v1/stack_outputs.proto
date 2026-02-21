@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ociqueue.v1;
+
+// OciQueueStackOutputs contains the outputs produced after deploying
+// an OciQueue.
+// These values are used by downstream components for composability via
+// StringValueOrRef.
+message OciQueueStackOutputs {
+  // OCID of the queue.
+  string queue_id = 1;
+
+  // Endpoint URL for consuming or publishing messages in the queue.
+  string messages_endpoint = 2;
+}

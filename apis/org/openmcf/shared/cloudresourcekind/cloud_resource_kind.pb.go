@@ -412,6 +412,43 @@ const (
 	CloudResourceKind_AliCloudSaeApplication            CloudResourceKind = 3111
 	CloudResourceKind_AliCloudRocketmqInstance          CloudResourceKind = 3120
 	CloudResourceKind_AliCloudCenInstance               CloudResourceKind = 3130
+	CloudResourceKind_OciVcn                            CloudResourceKind = 3300
+	CloudResourceKind_OciSubnet                         CloudResourceKind = 3301
+	CloudResourceKind_OciSecurityGroup                  CloudResourceKind = 3302
+	CloudResourceKind_OciCompartment                    CloudResourceKind = 3303
+	CloudResourceKind_OciIdentityPolicy                 CloudResourceKind = 3304
+	CloudResourceKind_OciDynamicGroup                   CloudResourceKind = 3305
+	CloudResourceKind_OciComputeInstance                CloudResourceKind = 3310
+	CloudResourceKind_OciContainerEngineCluster         CloudResourceKind = 3311
+	CloudResourceKind_OciContainerEngineNodePool        CloudResourceKind = 3312
+	CloudResourceKind_OciContainerInstance              CloudResourceKind = 3313
+	CloudResourceKind_OciApplicationLoadBalancer        CloudResourceKind = 3320
+	CloudResourceKind_OciNetworkLoadBalancer            CloudResourceKind = 3321
+	CloudResourceKind_OciDynamicRoutingGateway          CloudResourceKind = 3322
+	CloudResourceKind_OciPublicIp                       CloudResourceKind = 3323
+	CloudResourceKind_OciAutonomousDatabase             CloudResourceKind = 3330
+	CloudResourceKind_OciDbSystem                       CloudResourceKind = 3331
+	CloudResourceKind_OciMysqlDbSystem                  CloudResourceKind = 3332
+	CloudResourceKind_OciPostgresqlDbSystem             CloudResourceKind = 3333
+	CloudResourceKind_OciRedisCluster                   CloudResourceKind = 3334
+	CloudResourceKind_OciNosqlTable                     CloudResourceKind = 3335
+	CloudResourceKind_OciObjectStorageBucket            CloudResourceKind = 3340
+	CloudResourceKind_OciFileSystem                     CloudResourceKind = 3341
+	CloudResourceKind_OciBlockVolume                    CloudResourceKind = 3342
+	CloudResourceKind_OciKmsVault                       CloudResourceKind = 3350
+	CloudResourceKind_OciKmsKey                         CloudResourceKind = 3351
+	CloudResourceKind_OciVaultSecret                    CloudResourceKind = 3352
+	CloudResourceKind_OciBastion                        CloudResourceKind = 3353
+	CloudResourceKind_OciFunctionsApplication           CloudResourceKind = 3360
+	CloudResourceKind_OciApiGateway                     CloudResourceKind = 3361
+	CloudResourceKind_OciStreamPool                     CloudResourceKind = 3370
+	CloudResourceKind_OciQueue                          CloudResourceKind = 3371
+	CloudResourceKind_OciAlarm                          CloudResourceKind = 3380
+	CloudResourceKind_OciLogGroup                       CloudResourceKind = 3381
+	CloudResourceKind_OciDnsZone                        CloudResourceKind = 3390
+	CloudResourceKind_OciDnsRecord                      CloudResourceKind = 3391
+	CloudResourceKind_OciNetworkFirewall                CloudResourceKind = 3395
+	CloudResourceKind_OciDevopsProject                  CloudResourceKind = 3396
 	CloudResourceKind_HetznerCloudSshKey                CloudResourceKind = 3500
 	CloudResourceKind_HetznerCloudPlacementGroup        CloudResourceKind = 3501
 	CloudResourceKind_HetznerCloudFirewall              CloudResourceKind = 3502
@@ -746,6 +783,43 @@ var (
 		3111: "AliCloudSaeApplication",
 		3120: "AliCloudRocketmqInstance",
 		3130: "AliCloudCenInstance",
+		3300: "OciVcn",
+		3301: "OciSubnet",
+		3302: "OciSecurityGroup",
+		3303: "OciCompartment",
+		3304: "OciIdentityPolicy",
+		3305: "OciDynamicGroup",
+		3310: "OciComputeInstance",
+		3311: "OciContainerEngineCluster",
+		3312: "OciContainerEngineNodePool",
+		3313: "OciContainerInstance",
+		3320: "OciApplicationLoadBalancer",
+		3321: "OciNetworkLoadBalancer",
+		3322: "OciDynamicRoutingGateway",
+		3323: "OciPublicIp",
+		3330: "OciAutonomousDatabase",
+		3331: "OciDbSystem",
+		3332: "OciMysqlDbSystem",
+		3333: "OciPostgresqlDbSystem",
+		3334: "OciRedisCluster",
+		3335: "OciNosqlTable",
+		3340: "OciObjectStorageBucket",
+		3341: "OciFileSystem",
+		3342: "OciBlockVolume",
+		3350: "OciKmsVault",
+		3351: "OciKmsKey",
+		3352: "OciVaultSecret",
+		3353: "OciBastion",
+		3360: "OciFunctionsApplication",
+		3361: "OciApiGateway",
+		3370: "OciStreamPool",
+		3371: "OciQueue",
+		3380: "OciAlarm",
+		3381: "OciLogGroup",
+		3390: "OciDnsZone",
+		3391: "OciDnsRecord",
+		3395: "OciNetworkFirewall",
+		3396: "OciDevopsProject",
 		3500: "HetznerCloudSshKey",
 		3501: "HetznerCloudPlacementGroup",
 		3502: "HetznerCloudFirewall",
@@ -1077,6 +1151,43 @@ var (
 		"AliCloudSaeApplication":                3111,
 		"AliCloudRocketmqInstance":              3120,
 		"AliCloudCenInstance":                   3130,
+		"OciVcn":                                3300,
+		"OciSubnet":                             3301,
+		"OciSecurityGroup":                      3302,
+		"OciCompartment":                        3303,
+		"OciIdentityPolicy":                     3304,
+		"OciDynamicGroup":                       3305,
+		"OciComputeInstance":                    3310,
+		"OciContainerEngineCluster":             3311,
+		"OciContainerEngineNodePool":            3312,
+		"OciContainerInstance":                  3313,
+		"OciApplicationLoadBalancer":            3320,
+		"OciNetworkLoadBalancer":                3321,
+		"OciDynamicRoutingGateway":              3322,
+		"OciPublicIp":                           3323,
+		"OciAutonomousDatabase":                 3330,
+		"OciDbSystem":                           3331,
+		"OciMysqlDbSystem":                      3332,
+		"OciPostgresqlDbSystem":                 3333,
+		"OciRedisCluster":                       3334,
+		"OciNosqlTable":                         3335,
+		"OciObjectStorageBucket":                3340,
+		"OciFileSystem":                         3341,
+		"OciBlockVolume":                        3342,
+		"OciKmsVault":                           3350,
+		"OciKmsKey":                             3351,
+		"OciVaultSecret":                        3352,
+		"OciBastion":                            3353,
+		"OciFunctionsApplication":               3360,
+		"OciApiGateway":                         3361,
+		"OciStreamPool":                         3370,
+		"OciQueue":                              3371,
+		"OciAlarm":                              3380,
+		"OciLogGroup":                           3381,
+		"OciDnsZone":                            3390,
+		"OciDnsRecord":                          3391,
+		"OciNetworkFirewall":                    3395,
+		"OciDevopsProject":                      3396,
 		"HetznerCloudSshKey":                    3500,
 		"HetznerCloudPlacementGroup":            3501,
 		"HetznerCloudFirewall":                  3502,
@@ -1233,7 +1344,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xcao\n" +
+	"\x02v1\x10\x01*\xa3{\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1606,7 +1717,46 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\b\x19\x10\x01\"\x04acfc\x12,\n" +
 	"\x16AliCloudSaeApplication\x10\xa7\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acsae\x12.\n" +
 	"\x18AliCloudRocketmqInstance\x10\xb0\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acrmq\x12)\n" +
-	"\x13AliCloudCenInstance\x10\xba\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05accen\x12(\n" +
+	"\x13AliCloudCenInstance\x10\xba\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05accen\x12\x1d\n" +
+	"\x06OciVcn\x10\xe4\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocivcn\x12 \n" +
+	"\tOciSubnet\x10\xe5\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocisub\x12&\n" +
+	"\x10OciSecurityGroup\x10\xe6\x19\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocisg\x12%\n" +
+	"\x0eOciCompartment\x10\xe7\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocicmp\x12(\n" +
+	"\x11OciIdentityPolicy\x10\xe8\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ociply\x12%\n" +
+	"\x0fOciDynamicGroup\x10\xe9\x19\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocidg\x12(\n" +
+	"\x12OciComputeInstance\x10\xee\x19\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocivm\x120\n" +
+	"\x19OciContainerEngineCluster\x10\xef\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocioke\x121\n" +
+	"\x1aOciContainerEngineNodePool\x10\xf0\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocienp\x12*\n" +
+	"\x14OciContainerInstance\x10\xf1\x19\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocici\x121\n" +
+	"\x1aOciApplicationLoadBalancer\x10\xf8\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocialb\x12-\n" +
+	"\x16OciNetworkLoadBalancer\x10\xf9\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocinlb\x12/\n" +
+	"\x18OciDynamicRoutingGateway\x10\xfa\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocidrg\x12\"\n" +
+	"\vOciPublicIp\x10\xfb\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocipip\x12,\n" +
+	"\x15OciAutonomousDatabase\x10\x82\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ociadb\x12!\n" +
+	"\vOciDbSystem\x10\x83\x1a\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocidb\x12)\n" +
+	"\x10OciMysqlDbSystem\x10\x84\x1a\x1a\x12\xa2\xf7\x04\x0e\b\x1a\x10\x01\"\bocimysql\x12+\n" +
+	"\x15OciPostgresqlDbSystem\x10\x85\x1a\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocipg\x12&\n" +
+	"\x0fOciRedisCluster\x10\x86\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocired\x12&\n" +
+	"\rOciNosqlTable\x10\x87\x1a\x1a\x12\xa2\xf7\x04\x0e\b\x1a\x10\x01\"\bocinosql\x12.\n" +
+	"\x16OciObjectStorageBucket\x10\x8c\x1a\x1a\x11\xa2\xf7\x04\r\b\x1a\x10\x01\"\aociobkt\x12#\n" +
+	"\rOciFileSystem\x10\x8d\x1a\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocifs\x12&\n" +
+	"\x0eOciBlockVolume\x10\x8e\x1a\x1a\x11\xa2\xf7\x04\r\b\x1a\x10\x01\"\aocibvol\x12\"\n" +
+	"\vOciKmsVault\x10\x96\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocivlt\x12 \n" +
+	"\tOciKmsKey\x10\x97\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocikey\x12%\n" +
+	"\x0eOciVaultSecret\x10\x98\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocisec\x12!\n" +
+	"\n" +
+	"OciBastion\x10\x99\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocibst\x120\n" +
+	"\x17OciFunctionsApplication\x10\xa0\x1a\x1a\x12\xa2\xf7\x04\x0e\b\x1a\x10\x01\"\bocifnapp\x12$\n" +
+	"\rOciApiGateway\x10\xa1\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ociagw\x12$\n" +
+	"\rOciStreamPool\x10\xaa\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocistr\x12\x1f\n" +
+	"\bOciQueue\x10\xab\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocique\x12\x1f\n" +
+	"\bOciAlarm\x10\xb4\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocialm\x12\"\n" +
+	"\vOciLogGroup\x10\xb5\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocilog\x12!\n" +
+	"\n" +
+	"OciDnsZone\x10\xbe\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocidns\x12$\n" +
+	"\fOciDnsRecord\x10\xbf\x1a\x1a\x11\xa2\xf7\x04\r\b\x1a\x10\x01\"\aocidnsr\x12(\n" +
+	"\x12OciNetworkFirewall\x10\xc3\x1a\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocifw\x12'\n" +
+	"\x10OciDevopsProject\x10\xc4\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocidev\x12(\n" +
 	"\x12HetznerCloudSshKey\x10\xac\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcssh\x12/\n" +
 	"\x1aHetznerCloudPlacementGroup\x10\xad\x1b\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\x1b\x10\x01\"\x04hcpg\x12)\n" +

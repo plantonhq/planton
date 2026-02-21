@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ociobjectstoragebucket.v1;
+
+import "org/openmcf/provider/oci/ociobjectstoragebucket/v1/api.proto";
+import "org/openmcf/provider/oci/provider.proto";
+
+// OciObjectStorageBucketStackInput is the input to the IaC modules
+// (Pulumi / Terraform) that deploy an OciObjectStorageBucket resource.
+message OciObjectStorageBucketStackInput {
+  // target cloud-resource
+  OciObjectStorageBucket target = 1;
+  // provider-config
+  org.openmcf.provider.oci.OciProviderConfig provider_config = 2;
+}

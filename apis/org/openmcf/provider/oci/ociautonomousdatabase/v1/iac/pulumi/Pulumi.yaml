@@ -1,0 +1,3 @@
+name: oci-autonomous-database
+runtime: go
+description: OCI Autonomous Database deployment component

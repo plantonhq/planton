@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocimysqldbsystem.v1;
+
+import "org/openmcf/provider/oci/ocimysqldbsystem/v1/api.proto";
+import "org/openmcf/provider/oci/provider.proto";
+
+// OciMysqlDbSystemStackInput is the input to the IaC modules
+// (Pulumi / Terraform) that deploy an OciMysqlDbSystem resource.
+message OciMysqlDbSystemStackInput {
+  // target cloud-resource
+  OciMysqlDbSystem target = 1;
+  // provider-config
+  org.openmcf.provider.oci.OciProviderConfig provider_config = 2;
+}

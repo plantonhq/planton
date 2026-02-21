@@ -1,0 +1,370 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocinetworkloadbalancer.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// OciNetworkLoadBalancerSpec defines the specification for an Oracle Cloud
+// Infrastructure Network Load Balancer (Layer 4).
+//
+// An OCI network load balancer provides high-performance, low-latency traffic
+// distribution for TCP, UDP, and mixed-protocol workloads. Unlike the
+// application load balancer (OciApplicationLoadBalancer) which operates at Layer 7, the
+// network load balancer operates at Layer 4 and preserves the original source
+// IP address by default -- critical for firewalls, logging, and security
+// appliances that need to see the true client IP.
+//
+// Key characteristics:
+//   - Fully elastic bandwidth (no shape configuration required)
+//   - Source IP preservation via is_preserve_source_destination
+//   - Tuple-based load balancing policies (FIVE_TUPLE, THREE_TUPLE, TWO_TUPLE)
+//   - Health checking via HTTP, HTTPS, TCP, UDP, and DNS protocols
+//   - Instant failover and fail-open capabilities
+//   - Single subnet deployment (unlike the L7 LB which supports multiple)
+//
+// This component bundles the network load balancer with its backend sets,
+// backends, and listeners into a single deployment unit.
+//
+// For Layer 7 (HTTP/HTTPS) load balancing with SSL termination, virtual
+// hostname routing, and rule-based traffic manipulation, use OciApplicationLoadBalancer.
+message OciNetworkLoadBalancerSpec {
+  // OCID of the compartment where the network load balancer will be created.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+  ];
+
+  // Human-readable name for the network load balancer shown in the OCI Console.
+  // Falls back to metadata.name if not provided.
+  string display_name = 2;
+
+  // OCID of the subnet where the network load balancer will be spawned.
+  // Unlike the L7 load balancer which accepts multiple subnets, the NLB
+  // is deployed into a single subnet. Changing this after creation forces
+  // recreation.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 3 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetId"
+  ];
+
+  // When true, creates a private network load balancer that is not accessible
+  // from the public internet. Private NLBs receive only private IP addresses.
+  // Note: OCI defaults NLBs to private (true). The proto3 default is false,
+  // so explicitly set this to true for private NLBs.
+  // Changing this after creation forces recreation.
+  bool is_private = 4;
+
+  // When true, the NLB preserves the source IP address and destination IP
+  // address in the IP header. This automatically enables skipSourceDestinationCheck
+  // on the NLB's VNIC, allowing packets to reach backends with the original
+  // client IP intact. Essential for firewalls, intrusion detection systems,
+  // and applications that need the true client IP.
+  bool is_preserve_source_destination = 5;
+
+  // When true, enables symmetric hashing for the NLB. This can only be enabled
+  // when the NLB is working in transparent mode with source/destination
+  // preservation enabled. Removes the dependency on backends (like firewalls)
+  // to perform SNAT.
+  bool is_symmetric_hash_enabled = 6;
+
+  // OCIDs of network security groups applied to the network load balancer.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef network_security_group_ids = 7 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
+  ];
+
+  // IP version for the network load balancer. Accepted values:
+  // "IPV4", "IPV6", "IPV4_AND_IPV6".
+  // When omitted, defaults to "IPV4".
+  string nlb_ip_version = 8;
+
+  // Pre-created reserved public IPs to assign to the network load balancer.
+  // When omitted, OCI assigns ephemeral public IPs (for public NLBs).
+  repeated ReservedIp reserved_ips = 9;
+
+  // Backend sets define groups of backend servers with load balancing
+  // policies and health checking. At least one backend set is required.
+  // Each listener routes traffic to exactly one default backend set.
+  repeated BackendSet backend_sets = 10 [(buf.validate.field).repeated.min_items = 1];
+
+  // Listeners define the ports and protocols on which the network load
+  // balancer accepts connections. At least one listener is required.
+  repeated Listener listeners = 11 [(buf.validate.field).repeated.min_items = 1];
+
+  // IPv6 address to assign to the network load balancer. Must be part of
+  // one of the prefixes supported by the subnet.
+  // Example: "2607:9b80:9a0a:9a7e:abcd:ef01:2345:6789"
+  string assigned_ipv6 = 12;
+
+  // Private IPv4 address to assign to the network load balancer. Must be
+  // in the CIDR range of the subnet. Changing this after creation forces
+  // recreation. Example: "10.0.0.1"
+  string assigned_private_ipv4 = 13;
+
+  // IPv6 subnet prefix selection. When provided, the NLB IPv6 address is
+  // assigned within this CIDR block.
+  string subnet_ipv6cidr = 14;
+
+  // ---------------------------------------------------------------------------
+  // Nested messages
+  // ---------------------------------------------------------------------------
+
+  // ReservedIp references a pre-created OCI reserved public IP.
+  message ReservedIp {
+    // OCID of the reserved public IP to assign to the network load balancer.
+    string id = 1 [(buf.validate.field).string.min_len = 1];
+  }
+
+  // BackendSet defines a group of backend servers that receive traffic from
+  // the network load balancer, along with the load balancing policy, health
+  // checking, and failover configuration.
+  message BackendSet {
+    // Unique name for this backend set within the network load balancer.
+    // Listeners reference backend sets by this name.
+    string name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Load balancing policy that determines how traffic is distributed
+    // across backends. NLB uses tuple-based hashing rather than the
+    // round-robin/least-connections policies of the L7 load balancer.
+    Policy policy = 2 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+
+    // Health checker configuration that monitors backend availability.
+    // The NLB removes unhealthy backends from the rotation until they
+    // pass health checks again.
+    HealthChecker health_checker = 3 [(buf.validate.field).required = true];
+
+    // Backend servers in this set. When omitted, the backend set is
+    // created without backends (useful when backends are added dynamically
+    // or via target_id references to compute instances).
+    repeated Backend backends = 4;
+
+    // When true, the NLB preserves the source IP of the packet when
+    // forwarding to backends in this set. Defaults to true in OCI.
+    bool is_preserve_source = 5;
+
+    // When true, the NLB continues distributing traffic to all backends
+    // even when all backends are marked unhealthy. Prevents total service
+    // outage at the cost of sending traffic to degraded backends.
+    bool is_fail_open = 6;
+
+    // When true, existing connections are immediately forwarded to an
+    // alternative healthy backend as soon as the current backend becomes
+    // unhealthy, rather than waiting for the connection to time out.
+    bool is_instant_failover_enabled = 7;
+
+    // When true (and instant failover is enabled), the NLB sends a TCP
+    // RST to clients for existing connections instead of silently failing
+    // over. Gives clients an immediate signal to reconnect.
+    bool is_instant_failover_tcp_reset_enabled = 8;
+
+    // When true, enables active-standby backend support. The NLB
+    // preferentially routes traffic to operationally active backends.
+    bool are_operationally_active_backends_preferred = 9;
+
+    // IP version for this backend set. When omitted, inherits from the
+    // NLB's nlb_ip_version setting.
+    string ip_version = 10;
+
+    // Load balancing policy for distributing traffic across backends.
+    // NLB policies are tuple-based:
+    //   - five_tuple: src IP, src port, dst IP, dst port, protocol
+    //   - three_tuple: src IP, dst IP, protocol
+    //   - two_tuple: src IP, dst IP
+    enum Policy {
+      policy_unspecified = 0;
+      five_tuple = 1;
+      three_tuple = 2;
+      two_tuple = 3;
+    }
+  }
+
+  // HealthChecker configures periodic health probes sent to backend servers.
+  // The NLB supports a broader set of health check protocols than the L7 LB,
+  // including HTTPS, UDP, and DNS probes.
+  message HealthChecker {
+    // Protocol used for health checks.
+    Protocol protocol = 1 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+
+    // Port on the backend server to probe. When omitted or set to 0,
+    // the health checker uses the backend's traffic port.
+    int32 port = 2;
+
+    // URL path for HTTP/HTTPS health checks (e.g., "/health", "/ready").
+    // Required when protocol is http or https. Ignored for other protocols.
+    string url_path = 3;
+
+    // Expected HTTP status code from healthy backends (e.g., 200).
+    // Used with http and https protocols.
+    int32 return_code = 4;
+
+    // Regex pattern to match against the response body. The backend is
+    // considered healthy only if the response body matches this pattern.
+    string response_body_regex = 5;
+
+    // Interval between consecutive health checks in milliseconds.
+    // When omitted, defaults to 10000 (10 seconds).
+    int32 interval_in_millis = 6;
+
+    // Maximum time to wait for a health check response in milliseconds.
+    // When omitted, defaults to 3000 (3 seconds).
+    int32 timeout_in_millis = 7;
+
+    // Number of consecutive failed health checks before marking a backend
+    // as unhealthy. When omitted, defaults to 3.
+    int32 retries = 8;
+
+    // Base64-encoded request data for UDP and TCP health checks.
+    // The NLB sends this data as the health check probe payload.
+    string request_data = 9;
+
+    // Base64-encoded expected response data for UDP and TCP health checks.
+    // The backend is healthy only if the response matches this data.
+    string response_data = 10;
+
+    // DNS health check configuration. Required when protocol is dns.
+    // Ignored for other protocols.
+    DnsHealthCheck dns_health_check = 11;
+
+    // Health check protocol. The NLB supports more protocols than the
+    // L7 LB, including HTTPS, UDP, and DNS.
+    enum Protocol {
+      protocol_unspecified = 0;
+      http = 1;
+      https = 2;
+      tcp = 3;
+      udp = 4;
+      dns = 5;
+    }
+  }
+
+  // DnsHealthCheck configures DNS-based health checking. The NLB sends
+  // DNS queries to backends and validates the response codes to determine
+  // health. Useful for DNS servers and services that expose health via DNS.
+  message DnsHealthCheck {
+    // Fully qualified domain name to query.
+    string domain_name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // DNS query class. Accepted values: "IN" (Internet), "CH" (Chaos).
+    // When omitted, defaults to "IN".
+    string query_class = 2;
+
+    // DNS query type. Accepted values: "A", "AAAA", "TXT".
+    // When omitted, defaults to "A".
+    string query_type = 3;
+
+    // Acceptable DNS response codes. The backend is healthy if the
+    // response code matches any value in this list.
+    // Example values: "NOERROR", "NXDOMAIN".
+    // When omitted, defaults to ["NOERROR"].
+    repeated string rcodes = 4;
+
+    // Transport protocol for DNS queries. Accepted values: "UDP", "TCP".
+    // When omitted, defaults to "UDP".
+    string transport_protocol = 5;
+  }
+
+  // Backend represents an individual server that receives traffic from
+  // the network load balancer through a backend set.
+  //
+  // Backends can be identified by IP address, by target ID (compute instance
+  // OCID or private IP OCID), or both. At least one of ip_address or
+  // target_id should be provided.
+  message Backend {
+    // Port on which the backend server listens for traffic.
+    int32 port = 1 [(buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }];
+
+    // IP address of the backend server. When omitted, target_id must be
+    // provided instead.
+    string ip_address = 2;
+
+    // OCID of a compute instance or private IP to use as the backend target.
+    // When provided, OCI resolves the IP address automatically. When omitted,
+    // ip_address must be provided instead.
+    string target_id = 3;
+
+    // Relative weight for traffic distribution. Higher weights receive
+    // proportionally more traffic. When omitted, defaults to 1.
+    int32 weight = 4;
+
+    // When true, this backend only receives traffic when all non-backup
+    // backends are unhealthy.
+    bool is_backup = 5;
+
+    // When true, the backend is in drain mode -- existing connections
+    // complete but no new connections are sent to this backend.
+    bool is_drain = 6;
+
+    // When true, the backend is temporarily taken offline. No traffic
+    // is sent to offline backends.
+    bool is_offline = 7;
+
+    // Optional unique name identifying the backend within the backend set.
+    // When omitted, OCI auto-generates a name in the format "IP:port".
+    string name = 8;
+  }
+
+  // Listener defines a port and protocol on which the network load balancer
+  // accepts incoming connections and routes them to a backend set.
+  //
+  // NLB listeners support L4 protocols (TCP, UDP, TCP_AND_UDP, ANY) and
+  // offer protocol-specific idle timeout configuration.
+  message Listener {
+    // Unique name for this listener within the network load balancer.
+    string name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Port on which the listener accepts connections.
+    int32 port = 2 [(buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }];
+
+    // Protocol for the listener. NLB supports Layer 4 protocols only.
+    Protocol protocol = 3 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+
+    // Name of the backend set that receives traffic from this listener.
+    // Must match a backend set defined in backend_sets.
+    string default_backend_set_name = 4 [(buf.validate.field).string.min_len = 1];
+
+    // IP version for this listener. When omitted, inherits from the
+    // NLB's nlb_ip_version setting.
+    string ip_version = 5;
+
+    // When true, enables Proxy Protocol v2 (PPv2) on this listener.
+    // PPv2 prepends connection metadata (source IP, port, protocol)
+    // to the TCP stream, allowing backends to see the original client
+    // information even when source IP preservation is not possible.
+    bool is_ppv2_enabled = 6;
+
+    // TCP idle timeout in seconds. Connections idle longer than this
+    // are closed by the NLB. When omitted, OCI uses its default.
+    int32 tcp_idle_timeout = 7;
+
+    // UDP idle timeout in seconds. When omitted, OCI uses its default.
+    int32 udp_idle_timeout = 8;
+
+    // L3IP idle timeout in seconds. Applies when the protocol is ANY.
+    // When omitted, OCI uses its default.
+    int32 l3ip_idle_timeout = 9;
+
+    // Listener protocol for L4 traffic.
+    enum Protocol {
+      protocol_unspecified = 0;
+      tcp = 1;
+      udp = 2;
+      tcp_and_udp = 3;
+      any = 4;
+    }
+  }
+}

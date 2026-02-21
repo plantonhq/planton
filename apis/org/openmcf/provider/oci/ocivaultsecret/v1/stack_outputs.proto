@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocivaultsecret.v1;
+
+// OciVaultSecretStackOutputs contains the outputs produced after
+// deploying an OciVaultSecret.
+// The secret_id enables downstream resources to reference this secret
+// via StringValueOrRef for composability.
+message OciVaultSecretStackOutputs {
+  // OCID of the Vault Secret.
+  string secret_id = 1;
+
+  // Version number of the currently active secret version.
+  string current_version_number = 2;
+}

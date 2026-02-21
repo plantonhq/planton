@@ -1,0 +1,3 @@
+name: ocidynamicroutinggateway-pulumi-project
+runtime:
+  name: go

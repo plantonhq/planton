@@ -1,0 +1,15 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciBlockVolume
+metadata:
+  name: my-data-volume
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  availabilityDomain: <availability-domain>
+  displayName: data-volume
+  sizeInGbs: 100
+  vpusPerGb: 10 # Balanced tier: 60 IOPS/GB, 480 KB/s/GB
+  backupPolicyId:
+    value: <backup-policy-ocid>
+  autotunePolicies:
+    - autotuneType: detached_volume # Drops to Lower Cost (VPUs=0) when detached; restores on reattach

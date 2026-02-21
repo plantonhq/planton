@@ -1776,6 +1776,254 @@ enum CloudResourceKind {
     id_prefix: "accen"
   }];
 
+  // 3300–3499: OCI resources
+
+  // --- Networking ---
+
+  OciVcn = 3300 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocivcn"
+  }];
+
+  OciSubnet = 3301 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocisub"
+  }];
+
+  OciSecurityGroup = 3302 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocisg"
+  }];
+
+  // --- Identity ---
+
+  OciCompartment = 3303 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocicmp"
+  }];
+  OciIdentityPolicy = 3304 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ociply"
+  }];
+  OciDynamicGroup = 3305 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocidg"
+  }];
+
+  // --- Compute ---
+
+  OciComputeInstance = 3310 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocivm"
+  }];
+
+  // --- Containers ---
+
+  OciContainerEngineCluster = 3311 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocioke"
+  }];
+
+  OciContainerEngineNodePool = 3312 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocienp"
+  }];
+
+  OciContainerInstance = 3313 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocici"
+  }];
+
+  // --- OCI: Advanced Networking (3320-3329) ---
+
+  OciApplicationLoadBalancer = 3320 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocialb"
+  }];
+
+  OciNetworkLoadBalancer = 3321 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocinlb"
+  }];
+
+  OciDynamicRoutingGateway = 3322 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocidrg"
+  }];
+
+  OciPublicIp = 3323 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocipip"
+  }];
+
+  // --- OCI: Databases (3330-3339) ---
+
+  OciAutonomousDatabase = 3330 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ociadb"
+  }];
+
+  OciDbSystem = 3331 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocidb"
+  }];
+
+  OciMysqlDbSystem = 3332 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocimysql"
+  }];
+
+  OciPostgresqlDbSystem = 3333 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocipg"
+  }];
+
+  OciRedisCluster = 3334 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocired"
+  }];
+
+  OciNosqlTable = 3335 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocinosql"
+  }];
+
+  // ── Storage ───────────────────────────────────────────────────────
+
+  OciObjectStorageBucket = 3340 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ociobkt"
+  }];
+
+  OciFileSystem = 3341 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocifs"
+  }];
+
+  OciBlockVolume = 3342 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocibvol"
+  }];
+
+  // ── Security and Secrets ────────────────────────────────────────────
+
+  OciKmsVault = 3350 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocivlt"
+  }];
+
+  OciKmsKey = 3351 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocikey"
+  }];
+
+  OciVaultSecret = 3352 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocisec"
+  }];
+
+  OciBastion = 3353 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocibst"
+  }];
+
+  // ── Serverless and Functions ────────────────────────────────────────
+
+  OciFunctionsApplication = 3360 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocifnapp"
+  }];
+
+  OciApiGateway = 3361 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ociagw"
+  }];
+
+  // ── Messaging and Streaming ─────────────────────────────────────────
+
+  OciStreamPool = 3370 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocistr"
+  }];
+
+  OciQueue = 3371 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocique"
+  }];
+
+  // ── Monitoring and Logging ──────────────────────────────────────────
+
+  OciAlarm = 3380 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocialm"
+  }];
+
+  OciLogGroup = 3381 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocilog"
+  }];
+
+  // ── DNS and Certificates ──────────────────────────────────────────
+
+  OciDnsZone = 3390 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocidns"
+  }];
+
+  OciDnsRecord = 3391 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocidnsr"
+  }];
+
+  // ── Additional Services ─────────────────────────────────────────────
+
+  OciNetworkFirewall = 3395 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocifw"
+  }];
+
+  OciDevopsProject = 3396 [(kind_meta) = {
+    provider: oci
+    version: v1
+    id_prefix: "ocidev"
+  }];
+
   // =========================================================================
   // Hetzner Cloud (provider: hetznercloud, range: 3500-3699)
   // =========================================================================

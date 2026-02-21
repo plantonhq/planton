@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocivcn.v1;
+
+// OciVcnStackOutputs contains the outputs produced after deploying an OciVcn.
+// These values are used by downstream components (OciSubnet, OciSecurityGroup,
+// infra charts) for composability via StringValueOrRef.
+message OciVcnStackOutputs {
+  // OCID of the VCN.
+  string vcn_id = 1;
+
+  // OCID of the default route table created with the VCN.
+  string default_route_table_id = 2;
+
+  // OCID of the default security list created with the VCN.
+  string default_security_list_id = 3;
+
+  // OCID of the default DHCP options created with the VCN.
+  string default_dhcp_options_id = 4;
+
+  // OCID of the Internet Gateway. Empty when is_internet_gateway_enabled is false.
+  string internet_gateway_id = 5;
+
+  // OCID of the NAT Gateway. Empty when is_nat_gateway_enabled is false.
+  string nat_gateway_id = 6;
+
+  // OCID of the Service Gateway. Empty when is_service_gateway_enabled is false.
+  string service_gateway_id = 7;
+}

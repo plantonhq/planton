@@ -1,0 +1,45 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciSecurityGroup
+metadata:
+  name: web-tier-nsg
+spec:
+  compartmentId:
+    value: "ocid1.compartment.oc1..example"
+  vcnId:
+    value: "ocid1.vcn.oc1.iad.example"
+  displayName: "Web Tier NSG"
+  ingressRules:
+    - source: "0.0.0.0/0"
+      sourceType: cidr_block
+      protocol: tcp
+      description: "Allow HTTPS from internet"
+      tcpOptions:
+        destinationPortRange:
+          min: 443
+          max: 443
+    - source: "0.0.0.0/0"
+      sourceType: cidr_block
+      protocol: tcp
+      description: "Allow HTTP from internet"
+      tcpOptions:
+        destinationPortRange:
+          min: 80
+          max: 80
+    - source: "10.0.0.0/16"
+      sourceType: cidr_block
+      protocol: icmp
+      description: "Allow ICMP type 3 code 4 from VCN (Path MTU Discovery)"
+      icmpOptions:
+        type: 3
+        code: 4
+    - source: "10.0.0.0/16"
+      sourceType: cidr_block
+      protocol: icmp
+      description: "Allow ICMP type 3 from VCN (Destination Unreachable)"
+      icmpOptions:
+        type: 3
+  egressRules:
+    - destination: "0.0.0.0/0"
+      destinationType: cidr_block
+      protocol: all
+      description: "Allow all outbound traffic"

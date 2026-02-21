@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocinosqltable.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/oci/ocinosqltable/v1/spec.proto";
+import "org/openmcf/provider/oci/ocinosqltable/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OciNosqlTable is the top-level resource representing an OCI NoSQL
+// table -- a fully managed, serverless NoSQL database with provisioned
+// or on-demand throughput capacity and DDL-defined schema.
+message OciNosqlTable {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciNosqlTable'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciNosqlTableSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciNosqlTableStatus status = 5;
+}
+
+// OciNosqlTableStatus holds the outputs produced by deploying an
+// OciNosqlTable.
+message OciNosqlTableStatus {
+  // stack-outputs
+  OciNosqlTableStackOutputs outputs = 1;
+}

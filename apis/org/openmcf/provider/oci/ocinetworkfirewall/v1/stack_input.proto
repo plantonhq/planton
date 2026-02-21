@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocinetworkfirewall.v1;
+
+import "org/openmcf/provider/oci/ocinetworkfirewall/v1/api.proto";
+import "org/openmcf/provider/oci/provider.proto";
+
+// OciNetworkFirewallStackInput is the input to the IaC modules
+// (Pulumi / Terraform) that deploy an OciNetworkFirewall resource.
+message OciNetworkFirewallStackInput {
+  // target cloud-resource
+  OciNetworkFirewall target = 1;
+  // provider-config
+  org.openmcf.provider.oci.OciProviderConfig provider_config = 2;
+}

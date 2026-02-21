@@ -1,0 +1,25 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciContainerEngineNodePool
+metadata:
+  name: my-dev-oke-node-pool
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  clusterId:
+    value: <oke-cluster-ocid>
+  nodeShape: VM.Standard.E4.Flex
+  nodeShapeConfig:
+    ocpus: 1
+    memoryInGbs: 16
+  nodeConfigDetails:
+    size: 2
+    placementConfigs:
+      - availabilityDomain: <availability-domain>
+        subnetId:
+          value: <worker-subnet-ocid>
+        preemptibleNodeConfig:
+          isPreserveBootVolume: false # dev data is ephemeral; delete boot volume on reclaim
+  sshPublicKey: <ssh-public-key>
+  initialNodeLabels:
+    - key: pool
+      value: dev

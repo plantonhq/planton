@@ -1,0 +1,31 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciContainerEngineCluster
+metadata:
+  name: my-private-oke-cluster
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  vcnId:
+    value: <vcn-ocid>
+  kubernetesVersion: <kubernetes-version>
+  type: enhanced_cluster
+  cniType: oci_vcn_ip_native
+  endpointConfig:
+    subnetId:
+      value: <private-api-endpoint-subnet-ocid>
+    isPublicIpEnabled: false
+    nsgIds:
+      - value: <api-endpoint-nsg-ocid>
+  options:
+    kubernetesNetworkConfig:
+      podsCidr: 10.244.0.0/16
+      servicesCidr: 10.96.0.0/16
+    serviceLbSubnetIds:
+      - value: <service-lb-subnet-ocid>
+  kmsKeyId:
+    value: <kms-key-ocid>
+  imagePolicyConfig:
+    isPolicyEnabled: true
+    keyDetails:
+      - kmsKeyId:
+          value: <image-verification-kms-key-ocid>

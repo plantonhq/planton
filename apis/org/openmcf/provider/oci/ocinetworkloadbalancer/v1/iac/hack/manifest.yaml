@@ -1,0 +1,29 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciNetworkLoadBalancer
+metadata:
+  name: ocinetworkloadbalancer-demo
+spec:
+  compartmentId:
+    value: "ocid1.compartment.oc1..example"
+  subnetId:
+    value: "ocid1.subnet.oc1.iad.example"
+  isPrivate: true
+  isPreserveSourceDestination: true
+  backendSets:
+    - name: tcp-backend
+      policy: five_tuple
+      healthChecker:
+        protocol: tcp
+        port: 8080
+      backends:
+        - ipAddress: "10.0.1.10"
+          port: 8080
+          weight: 1
+        - ipAddress: "10.0.1.11"
+          port: 8080
+          weight: 1
+  listeners:
+    - name: tcp-listener
+      port: 80
+      protocol: tcp
+      defaultBackendSetName: tcp-backend

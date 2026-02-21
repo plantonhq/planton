@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocibastion.v1;
+
+// OciBastionStackOutputs contains the outputs produced after
+// deploying an OciBastion.
+// The bastion_id enables external tooling (CLI, SDKs) to create
+// sessions against this bastion. The private_endpoint_ip_address
+// is useful for network troubleshooting and connectivity validation.
+message OciBastionStackOutputs {
+  // OCID of the bastion.
+  string bastion_id = 1;
+
+  // Private IP address of the bastion's endpoint in the target subnet.
+  string private_endpoint_ip_address = 2;
+}

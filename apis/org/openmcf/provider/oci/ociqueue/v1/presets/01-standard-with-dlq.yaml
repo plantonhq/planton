@@ -1,0 +1,11 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciQueue
+metadata:
+  name: my-queue
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  retentionInSeconds: 604800 # 7 days (OCI default)
+  visibilityInSeconds: 30
+  timeoutInSeconds: 30
+  deadLetterQueueDeliveryCount: 5

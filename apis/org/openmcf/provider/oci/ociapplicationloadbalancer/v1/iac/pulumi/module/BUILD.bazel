@@ -1,0 +1,27 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "backend_set.go",
+        "certificate.go",
+        "hostname.go",
+        "listener.go",
+        "load_balancer.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+        "rule_set.go",
+    ],
+    importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ociapplicationloadbalancer/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/org/openmcf/provider/oci/ociapplicationloadbalancer/v1:ociapplicationloadbalancer",
+        "//apis/org/openmcf/shared/cloudresourcekind",
+        "//pkg/iac/pulumi/pulumimodule/provider/oci/pulumiociprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_oci_sdk_v4//go/oci",
+        "@com_github_pulumi_pulumi_oci_sdk_v4//go/oci/loadbalancer",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

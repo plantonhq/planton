@@ -1,0 +1,39 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciNetworkLoadBalancer
+metadata:
+  name: my-public-tcp-nlb
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  subnetId:
+    value: <public-subnet-ocid>
+  isPrivate: false
+  isPreserveSourceDestination: true
+  networkSecurityGroupIds:
+    - value: <nlb-nsg-ocid>
+  backendSets:
+    - name: tcp-backend
+      policy: five_tuple
+      healthChecker:
+        protocol: http
+        port: 80
+        urlPath: /health
+        returnCode: 200
+        intervalInMillis: 10000 # 10 seconds
+        timeoutInMillis: 3000 # 3 seconds
+        retries: 3
+      isPreserveSource: true
+      backends:
+        - ipAddress: <backend-ip-1>
+          port: 80
+        - ipAddress: <backend-ip-2>
+          port: 80
+  listeners:
+    - name: tcp-443
+      port: 443
+      protocol: tcp
+      defaultBackendSetName: tcp-backend
+    - name: tcp-80
+      port: 80
+      protocol: tcp
+      defaultBackendSetName: tcp-backend

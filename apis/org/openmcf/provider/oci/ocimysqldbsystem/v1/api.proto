@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocimysqldbsystem.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/oci/ocimysqldbsystem/v1/spec.proto";
+import "org/openmcf/provider/oci/ocimysqldbsystem/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OciMysqlDbSystem is the top-level resource representing an Oracle Cloud
+// Infrastructure MySQL HeatWave Database System -- a fully managed MySQL
+// database service with optional in-memory analytics acceleration.
+message OciMysqlDbSystem {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciMysqlDbSystem'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciMysqlDbSystemSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciMysqlDbSystemStatus status = 5;
+}
+
+// OciMysqlDbSystemStatus holds the outputs produced by deploying an
+// OciMysqlDbSystem.
+message OciMysqlDbSystemStatus {
+  // stack-outputs
+  OciMysqlDbSystemStackOutputs outputs = 1;
+}

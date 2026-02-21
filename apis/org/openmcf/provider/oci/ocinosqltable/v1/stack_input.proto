@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocinosqltable.v1;
+
+import "org/openmcf/provider/oci/ocinosqltable/v1/api.proto";
+import "org/openmcf/provider/oci/provider.proto";
+
+// OciNosqlTableStackInput is the input to the IaC modules
+// (Pulumi / Terraform) that deploy an OciNosqlTable resource.
+message OciNosqlTableStackInput {
+  // target cloud-resource
+  OciNosqlTable target = 1;
+  // provider-config
+  org.openmcf.provider.oci.OciProviderConfig provider_config = 2;
+}

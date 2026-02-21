@@ -1,0 +1,12 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciIdentityPolicy
+metadata:
+  name: ociidentitypolicy-demo
+spec:
+  compartmentId:
+    value: "ocid1.compartment.oc1..example"
+  name: "demo-admin-policy"
+  description: "Demo policy granting admin access for testing OciIdentityPolicy deployment"
+  statements:
+    - "Allow group Admins to manage all-resources in compartment DemoCompartment"
+    - "Allow group Developers to use instances in compartment DemoCompartment"

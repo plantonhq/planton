@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocistreampool.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/oci/ocistreampool/v1/spec.proto";
+import "org/openmcf/provider/oci/ocistreampool/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OciStreamPool is the top-level resource representing an OCI Stream
+// Pool -- a Kafka-compatible managed streaming container that groups
+// streams under shared Kafka settings, encryption, and networking.
+message OciStreamPool {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciStreamPool'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciStreamPoolSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciStreamPoolStatus status = 5;
+}
+
+// OciStreamPoolStatus holds the outputs produced by deploying an
+// OciStreamPool.
+message OciStreamPoolStatus {
+  // stack-outputs
+  OciStreamPoolStackOutputs outputs = 1;
+}

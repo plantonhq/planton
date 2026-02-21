@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package org.openmcf.provider.oci.ocicontainerinstance.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/oci/ocicontainerinstance/v1/spec.proto";
+import "org/openmcf/provider/oci/ocicontainerinstance/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// OciContainerInstance is the top-level resource representing an Oracle
+// Cloud Infrastructure Container Instance -- OCI's serverless container
+// service for running containers without managing compute infrastructure.
+message OciContainerInstance {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciContainerInstance'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciContainerInstanceSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciContainerInstanceStatus status = 5;
+}
+
+// OciContainerInstanceStatus holds the outputs produced by deploying an
+// OciContainerInstance.
+message OciContainerInstanceStatus {
+  // stack-outputs
+  OciContainerInstanceStackOutputs outputs = 1;
+}

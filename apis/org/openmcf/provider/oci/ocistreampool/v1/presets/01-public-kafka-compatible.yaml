@@ -1,0 +1,18 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciStreamPool
+metadata:
+  name: my-stream-pool
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  kafkaSettings:
+    autoCreateTopicsEnable: true
+    logRetentionHours: 48
+    numPartitions: 3
+  streams:
+    - name: events
+      partitions: 5
+      retentionInHours: 48
+    - name: commands
+      partitions: 3
+      retentionInHours: 24
