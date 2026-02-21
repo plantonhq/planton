@@ -5,7 +5,7 @@
 The simplest configuration: snapshot a server by its literal ID. No description, no org/env metadata. The snapshot captures the full disk of server `12345678` at the moment of creation.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSnapshot
 metadata:
   name: quick-backup
@@ -21,7 +21,7 @@ spec:
 Adding a description makes the snapshot identifiable in the Hetzner Cloud console and API listings. Descriptions can be updated after creation without replacing the snapshot.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSnapshot
 metadata:
   name: pre-upgrade-baseline
@@ -40,7 +40,7 @@ spec:
 Using `valueFrom` to reference a `HetznerCloudServer` component's output establishes a dependency edge — the snapshot waits for the server to be created before attempting to capture its disk.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSnapshot
 metadata:
   name: app-server-snapshot
@@ -58,7 +58,7 @@ spec:
 The companion server manifest (deployed separately or in the same infra chart):
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: app-server
@@ -79,7 +79,7 @@ The golden image pattern: configure a server once, snapshot it, then stamp out i
 **Step 1** — Create and configure the template server (install packages, harden the OS, deploy application code):
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: golden-template
@@ -94,7 +94,7 @@ spec:
 **Step 2** — Snapshot the configured server:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSnapshot
 metadata:
   name: golden-image-v1
@@ -112,7 +112,7 @@ spec:
 **Step 3** — Create worker servers from the snapshot. Each server boots with the exact disk state captured in the snapshot:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: worker-01

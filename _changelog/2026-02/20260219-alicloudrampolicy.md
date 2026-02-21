@@ -1,13 +1,13 @@
-# AlicloudRamPolicy Component Added
+# AliCloudRamPolicy Component Added
 
 **Date**: 2026-02-19
-**Component**: AlicloudRamPolicy
+**Component**: AliCloudRamPolicy
 **Enum**: 3011
 **ID Prefix**: acramp
 
 ## Summary
 
-Added the AlicloudRamPolicy component for managing Alibaba Cloud RAM custom IAM policies.
+Added the AliCloudRamPolicy component for managing Alibaba Cloud RAM custom IAM policies.
 
 Custom policies fill the gap when Alibaba Cloud's system-managed policies don't provide the exact permission boundaries you need. Once created, a custom policy can be attached to RAM roles, users, or groups via their respective components.
 
@@ -15,7 +15,7 @@ Custom policies fill the gap when Alibaba Cloud's system-managed policies don't 
 
 ### API Definition
 - `apis/org/openmcf/provider/alicloud/alicloudrampolicy/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AlicloudRamPolicy = 3011` in `CloudResourceKind` enum
+- Registered `AliCloudRamPolicy = 3011` in `CloudResourceKind` enum
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider and RAM policy resource, exports policy_name and policy_type
@@ -32,10 +32,10 @@ Custom policies fill the gap when Alibaba Cloud's system-managed policies don't 
 
 ## Corrections from T02 Spec
 
-- **`name` -> `policy_name`**: Follows provider-authentic naming consistent with AlicloudRamRole's `role_name` pattern
+- **`name` -> `policy_name`**: Follows provider-authentic naming consistent with AliCloudRamRole's `role_name` pattern
 - **Added `rotate_strategy`**: Not in T02 but important for production policies hitting the 5-version limit
 - **Added `tags`**: Consistent with all other components in the catalog
-- **Output `policy_type`**: Closes the contract with AlicloudRamRole's policy_attachments (needs both name and type)
+- **Output `policy_type`**: Closes the contract with AliCloudRamRole's policy_attachments (needs both name and type)
 
 ## Verification
 

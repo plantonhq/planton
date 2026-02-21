@@ -1,4 +1,4 @@
-# AlicloudVpnGateway Pulumi Examples
+# AliCloudVpnGateway Pulumi Examples
 
 See [../../examples.md](../../examples.md) for YAML-based usage examples.
 

@@ -1,8 +1,8 @@
-# Pulumi Module to Deploy AlicloudDnsRecord
+# Pulumi Module to Deploy AliCloudDnsRecord
 
 This module creates an Alibaba Cloud DNS record in the Alidns service. It supports all standard record types (A, AAAA, CNAME, MX, TXT, NS, SRV, CAA) with configurable TTL, priority, resolution lines, and record status.
 
-Generated from the proto schema for `AlicloudDnsRecord`.
+Generated from the proto schema for `AliCloudDnsRecord`.
 
 ## CLI Usage (OpenMCF Pulumi)
 
@@ -39,7 +39,7 @@ openmcf pulumi destroy \
 
 - **DNS Record** (`dns.AlidnsRecord`) -- a single DNS record within the specified parent domain
 
-The module does not manage the parent domain. The domain must already exist in Alidns, managed by the AlicloudDnsZone component or added manually.
+The module does not manage the parent domain. The domain must already exist in Alidns, managed by the AliCloudDnsZone component or added manually.
 
 ## Prerequisites
 
@@ -53,8 +53,8 @@ The module does not manage the parent domain. The domain must already exist in A
 1. Create or edit a manifest:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsRecord
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsRecord
 metadata:
   name: my-record
 spec:

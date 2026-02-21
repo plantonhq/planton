@@ -1,4 +1,4 @@
-# AlicloudDnsZone Pulumi Examples
+# AliCloudDnsZone Pulumi Examples
 
 Create a YAML manifest using one of the examples below, then deploy with the OpenMCF CLI:
 
@@ -22,8 +22,8 @@ openmcf pulumi update \
 Register a domain in Alidns with only the required fields.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsZone
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsZone
 metadata:
   name: my-domain
 spec:
@@ -40,8 +40,8 @@ This adds the domain to the Alidns hosted zone. After deployment, point your dom
 A domain with organizational tags and resource group placement for access control and cost attribution.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsZone
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsZone
 metadata:
   name: platform-domain
   org: my-org
@@ -66,8 +66,8 @@ spec:
 A domain placed in a specific Alidns domain group for organizational grouping in the console.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsZone
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsZone
 metadata:
   name: grouped-domain
 spec:

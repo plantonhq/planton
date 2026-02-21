@@ -1,4 +1,4 @@
-# Pulumi Module to Deploy AlicloudKmsKey
+# Pulumi Module to Deploy AliCloudKmsKey
 
 This module provisions an Alibaba Cloud KMS customer-managed key (CMK) using
 the `kms.Key` Pulumi resource. The key can be used for data encryption

@@ -22,7 +22,7 @@ A minimal RocketMQ 5.x instance for development and testing. Uses the standard e
 | Placeholder | Description | Where to Find |
 |---|---|---|
 | `<alibaba-cloud-region>` | Alibaba Cloud region (e.g., `cn-hangzhou`, `ap-southeast-1`) | Your deployment region |
-| `<your-vpc-id>` | VPC ID where the instance is deployed | `AlicloudVpc` stack outputs |
+| `<your-vpc-id>` | VPC ID where the instance is deployed | `AliCloudVpc` stack outputs |
 
 ## Related Presets
 

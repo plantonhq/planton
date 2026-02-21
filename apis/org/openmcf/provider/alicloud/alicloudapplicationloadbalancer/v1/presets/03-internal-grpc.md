@@ -23,9 +23,9 @@ This preset creates a VPC-internal ALB for service-to-service GRPC communication
 | --- | --- | --- |
 | `<your-alb-name>` | ALB name (2-128 chars) | Choose a descriptive name |
 | `<alibaba-cloud-region>` | Region code | Your deployment region |
-| `<your-vpc-id>` | VPC ID | `AlicloudVpc` stack outputs |
+| `<your-vpc-id>` | VPC ID | `AliCloudVpc` stack outputs |
 | `<zone-a>`, `<zone-b>` | Availability zones | Region's available zones |
-| `<your-vswitch-id-a>`, `<your-vswitch-id-b>` | VSwitch IDs | `AlicloudVswitch` stack outputs |
+| `<your-vswitch-id-a>`, `<your-vswitch-id-b>` | VSwitch IDs | `AliCloudVswitch` stack outputs |
 | `<your-internal-cert-id>` | Internal certificate ID | Alibaba Cloud CAS or self-signed |
 
 ## Related Presets

@@ -1,8 +1,8 @@
-# Terraform Module to Deploy AlicloudVswitch
+# Terraform Module to Deploy AliCloudVswitch
 
 This module provisions an Alibaba Cloud VSwitch (subnet) within an existing VPC. It creates a single `alicloud_vswitch` resource bound to a specific Availability Zone with a configured IPv4 CIDR block, optional IPv6 support, and automatic tag management. It outputs the VSwitch ID, name, CIDR block, zone ID, and IPv6 CIDR block.
 
-Generated `variables.tf` reflects the proto schema for `AlicloudVswitch`.
+Generated `variables.tf` reflects the proto schema for `AliCloudVswitch`.
 
 ## Usage
 

@@ -24,7 +24,7 @@ This preset creates a private DNS zone for database endpoint discovery, shared a
 | `<zone-name>` | Private zone name (e.g., `db.corp`, `data.internal`) | Your naming convention |
 | `<description>` | Human-readable remark for the zone | -- |
 | `<resource-group-id>` | Resource group ID (e.g., `rg-prod-123`) | Resource Group console |
-| `<primary-vpc-id>` | First VPC to attach | VPC console or AlicloudVpc output |
+| `<primary-vpc-id>` | First VPC to attach | VPC console or AliCloudVpc output |
 | `<secondary-vpc-id>` | Second VPC to attach (can be in a different region) | VPC console |
 | `<secondary-region>` | Region of the secondary VPC (e.g., `cn-shanghai`) | Your DR/multi-region strategy |
 | `<database-name>` | Database hostname prefix (e.g., `mysql`, `redis`, `mongo`) | Your database inventory |

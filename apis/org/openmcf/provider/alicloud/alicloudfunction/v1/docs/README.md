@@ -144,8 +144,8 @@ The Go type system catches some misconfiguration at compile time (e.g., passing 
 OpenMCF operates one level above Terraform and Pulumi. Instead of declaring low-level resources, the operator writes a manifest that describes the desired function:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudFunction
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudFunction
 metadata:
   name: hello-world
 spec:
@@ -160,7 +160,7 @@ spec:
 
 OpenMCF validates the manifest against a protobuf schema before any infrastructure is touched. Invalid runtimes, out-of-range memory sizes, and missing required fields are caught at admission time — not during a 3-minute Terraform apply cycle. The manifest is IaC-engine agnostic: the same YAML drives either the Pulumi or Terraform module.
 
-Cross-component references use the `StringValueOrRef` pattern: instead of hardcoding a VPC ID, the manifest can reference an `AlicloudVpc` resource by name, and OpenMCF resolves the output value at deployment time.
+Cross-component references use the `StringValueOrRef` pattern: instead of hardcoding a VPC ID, the manifest can reference an `AliCloudVpc` resource by name, and OpenMCF resolves the output value at deployment time.
 
 ## Production Architecture: FC v3 in Depth
 
@@ -298,7 +298,7 @@ Available GPU types: `fc.gpu.tesla.1`, `fc.gpu.ampere.1`, `fc.gpu.ada.1`, `g1`. 
 
 FC v3 supports triggers (HTTP, timer, OSS events, MNS, Kafka), function aliases, versions, and provisioned concurrency configurations. These resources have independent lifecycles — an alias points to a function version, a trigger invokes a function or alias, and provisioned concurrency is configured per function/qualifier.
 
-OpenMCF intentionally excludes triggers, aliases, versions, and concurrency configs from the `AlicloudFunction` component. Each of these is a separate resource with its own create/update/delete lifecycle. Bundling them into the function component would create a monolithic resource where changing a trigger forces a full function redeployment plan. Separate components (when implemented) will reference the function by name or ARN.
+OpenMCF intentionally excludes triggers, aliases, versions, and concurrency configs from the `AliCloudFunction` component. Each of these is a separate resource with its own create/update/delete lifecycle. Bundling them into the function component would create a monolithic resource where changing a trigger forces a full function redeployment plan. Separate components (when implemented) will reference the function by name or ARN.
 
 ## Best Practices
 
@@ -320,7 +320,7 @@ OpenMCF intentionally excludes triggers, aliases, versions, and concurrency conf
 
 ### The 80/20 Design
 
-OpenMCF's `AlicloudFunction` component wraps a single `alicloud_fcv3_function` resource. It exposes the 80% of configuration that covers the vast majority of production deployments:
+OpenMCF's `AliCloudFunction` component wraps a single `alicloud_fcv3_function` resource. It exposes the 80% of configuration that covers the vast majority of production deployments:
 
 **Included**:
 - Function identity: name, handler, runtime, description
@@ -351,10 +351,10 @@ The component uses `StringValueOrRef` for cross-resource references:
 
 | Field | Default Kind | Default Output Path |
 |-------|-------------|-------------------|
-| `role` | `AlicloudRamRole` | `status.outputs.arn` |
-| `vpcConfig.vpcId` | `AlicloudVpc` | `status.outputs.vpc_id` |
-| `vpcConfig.securityGroupId` | `AlicloudSecurityGroup` | `status.outputs.security_group_id` |
-| `logConfig.project` | `AlicloudLogProject` | `status.outputs.project_name` |
+| `role` | `AliCloudRamRole` | `status.outputs.arn` |
+| `vpcConfig.vpcId` | `AliCloudVpc` | `status.outputs.vpc_id` |
+| `vpcConfig.securityGroupId` | `AliCloudSecurityGroup` | `status.outputs.security_group_id` |
+| `logConfig.project` | `AliCloudLogProject` | `status.outputs.project_name` |
 
 Each `StringValueOrRef` field accepts either a direct `value` (a string literal) or a `ref` (a reference to another OpenMCF resource's output). This allows both standalone deployment (hardcoded IDs) and orchestrated deployment (cross-resource wiring).
 
@@ -380,7 +380,7 @@ The Pulumi module creates a single `fc.V3Function` resource. Each optional confi
 | `locals.tf` | Tag merging: base tags + org/env tags + user tags |
 | `outputs.tf` | `function_id`, `function_name`, `function_arn` |
 | `variables.tf` | Typed variable definitions mirroring the protobuf spec |
-| `provider.tf` | Alicloud provider with region from spec |
+| `provider.tf` | AliCloud provider with region from spec |
 
 The Terraform module uses `dynamic` blocks extensively. Each optional configuration section (`code`, `vpc_config`, `log_config`, `custom_container_config`, `custom_runtime_config`, `instance_lifecycle_config`, `nas_config`, `gpu_config`) is wrapped in a `dynamic` block that only renders when the corresponding variable is non-null.
 
@@ -445,7 +445,7 @@ The `function_arn` is the primary value used by downstream resources: trigger co
 
 Deploying an FC v3 function involves a moderate number of configuration fields, but the real complexity lies in coordinating those fields correctly: matching handler formats to runtimes, wiring VPC/VSwitch/security-group IDs, pairing NAS mounts with VPC config, and ensuring SLS logging is always present in production.
 
-OpenMCF's `AlicloudFunction` component addresses this coordination problem by:
+OpenMCF's `AliCloudFunction` component addresses this coordination problem by:
 
 1. **Schema validation** — Protobuf-level constraints catch invalid configurations before any infrastructure is touched.
 2. **Foreign keys** — `StringValueOrRef` fields enable type-safe cross-resource references without hardcoding IDs.

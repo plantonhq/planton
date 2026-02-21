@@ -215,7 +215,7 @@ type CredentialProviderConfig struct {
 	//	*CredentialProviderConfig_Civo
 	//	*CredentialProviderConfig_Cloudflare
 	//	*CredentialProviderConfig_Confluent
-	//	*CredentialProviderConfig_Digitalocean
+	//	*CredentialProviderConfig_DigitalOcean
 	//	*CredentialProviderConfig_Gcp
 	//	*CredentialProviderConfig_Kubernetes
 	//	*CredentialProviderConfig_Snowflake
@@ -223,9 +223,9 @@ type CredentialProviderConfig struct {
 	//	*CredentialProviderConfig_Openfga
 	//	*CredentialProviderConfig_Openstack
 	//	*CredentialProviderConfig_Scaleway
-	//	*CredentialProviderConfig_Alicloud
+	//	*CredentialProviderConfig_AliCloud
 	//	*CredentialProviderConfig_Oci
-	//	*CredentialProviderConfig_Hetznercloud
+	//	*CredentialProviderConfig_HetznerCloud
 	Data          isCredentialProviderConfig_Data `protobuf_oneof:"data"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -322,10 +322,10 @@ func (x *CredentialProviderConfig) GetConfluent() *confluent.ConfluentProviderCo
 	return nil
 }
 
-func (x *CredentialProviderConfig) GetDigitalocean() *digitalocean.DigitalOceanProviderConfig {
+func (x *CredentialProviderConfig) GetDigitalOcean() *digitalocean.DigitalOceanProviderConfig {
 	if x != nil {
-		if x, ok := x.Data.(*CredentialProviderConfig_Digitalocean); ok {
-			return x.Digitalocean
+		if x, ok := x.Data.(*CredentialProviderConfig_DigitalOcean); ok {
+			return x.DigitalOcean
 		}
 	}
 	return nil
@@ -394,10 +394,10 @@ func (x *CredentialProviderConfig) GetScaleway() *scaleway.ScalewayProviderConfi
 	return nil
 }
 
-func (x *CredentialProviderConfig) GetAlicloud() *alicloud.AliCloudProviderConfig {
+func (x *CredentialProviderConfig) GetAliCloud() *alicloud.AliCloudProviderConfig {
 	if x != nil {
-		if x, ok := x.Data.(*CredentialProviderConfig_Alicloud); ok {
-			return x.Alicloud
+		if x, ok := x.Data.(*CredentialProviderConfig_AliCloud); ok {
+			return x.AliCloud
 		}
 	}
 	return nil
@@ -412,10 +412,10 @@ func (x *CredentialProviderConfig) GetOci() *oci.OciProviderConfig {
 	return nil
 }
 
-func (x *CredentialProviderConfig) GetHetznercloud() *hetznercloud.HetznerCloudProviderConfig {
+func (x *CredentialProviderConfig) GetHetznerCloud() *hetznercloud.HetznerCloudProviderConfig {
 	if x != nil {
-		if x, ok := x.Data.(*CredentialProviderConfig_Hetznercloud); ok {
-			return x.Hetznercloud
+		if x, ok := x.Data.(*CredentialProviderConfig_HetznerCloud); ok {
+			return x.HetznerCloud
 		}
 	}
 	return nil
@@ -449,8 +449,8 @@ type CredentialProviderConfig_Confluent struct {
 	Confluent *confluent.ConfluentProviderConfig `protobuf:"bytes,6,opt,name=confluent,proto3,oneof"`
 }
 
-type CredentialProviderConfig_Digitalocean struct {
-	Digitalocean *digitalocean.DigitalOceanProviderConfig `protobuf:"bytes,7,opt,name=digitalocean,proto3,oneof"`
+type CredentialProviderConfig_DigitalOcean struct {
+	DigitalOcean *digitalocean.DigitalOceanProviderConfig `protobuf:"bytes,7,opt,name=digital_ocean,json=digitalOcean,proto3,oneof"`
 }
 
 type CredentialProviderConfig_Gcp struct {
@@ -481,16 +481,16 @@ type CredentialProviderConfig_Scaleway struct {
 	Scaleway *scaleway.ScalewayProviderConfig `protobuf:"bytes,14,opt,name=scaleway,proto3,oneof"`
 }
 
-type CredentialProviderConfig_Alicloud struct {
-	Alicloud *alicloud.AliCloudProviderConfig `protobuf:"bytes,15,opt,name=alicloud,proto3,oneof"`
+type CredentialProviderConfig_AliCloud struct {
+	AliCloud *alicloud.AliCloudProviderConfig `protobuf:"bytes,15,opt,name=ali_cloud,json=aliCloud,proto3,oneof"`
 }
 
 type CredentialProviderConfig_Oci struct {
 	Oci *oci.OciProviderConfig `protobuf:"bytes,16,opt,name=oci,proto3,oneof"`
 }
 
-type CredentialProviderConfig_Hetznercloud struct {
-	Hetznercloud *hetznercloud.HetznerCloudProviderConfig `protobuf:"bytes,17,opt,name=hetznercloud,proto3,oneof"`
+type CredentialProviderConfig_HetznerCloud struct {
+	HetznerCloud *hetznercloud.HetznerCloudProviderConfig `protobuf:"bytes,17,opt,name=hetzner_cloud,json=hetznerCloud,proto3,oneof"`
 }
 
 func (*CredentialProviderConfig_Atlas) isCredentialProviderConfig_Data() {}
@@ -505,7 +505,7 @@ func (*CredentialProviderConfig_Cloudflare) isCredentialProviderConfig_Data() {}
 
 func (*CredentialProviderConfig_Confluent) isCredentialProviderConfig_Data() {}
 
-func (*CredentialProviderConfig_Digitalocean) isCredentialProviderConfig_Data() {}
+func (*CredentialProviderConfig_DigitalOcean) isCredentialProviderConfig_Data() {}
 
 func (*CredentialProviderConfig_Gcp) isCredentialProviderConfig_Data() {}
 
@@ -521,11 +521,11 @@ func (*CredentialProviderConfig_Openstack) isCredentialProviderConfig_Data() {}
 
 func (*CredentialProviderConfig_Scaleway) isCredentialProviderConfig_Data() {}
 
-func (*CredentialProviderConfig_Alicloud) isCredentialProviderConfig_Data() {}
+func (*CredentialProviderConfig_AliCloud) isCredentialProviderConfig_Data() {}
 
 func (*CredentialProviderConfig_Oci) isCredentialProviderConfig_Data() {}
 
-func (*CredentialProviderConfig_Hetznercloud) isCredentialProviderConfig_Data() {}
+func (*CredentialProviderConfig_HetznerCloud) isCredentialProviderConfig_Data() {}
 
 var File_org_openmcf_app_credential_v1_api_proto protoreflect.FileDescriptor
 
@@ -554,7 +554,7 @@ const file_org_openmcf_app_credential_v1_api_proto_rawDesc = "" +
 	"\bALICLOUD\x10\b\x12\a\n" +
 	"\x03OCI\x10\t\x12\x11\n" +
 	"\rHETZNER_CLOUD\x10\n" +
-	"\"\x8f\v\n" +
+	"\"\x92\v\n" +
 	"\x18CredentialProviderConfig\x12G\n" +
 	"\x05atlas\x18\x01 \x01(\v2/.org.openmcf.provider.atlas.AtlasProviderConfigH\x00R\x05atlas\x12?\n" +
 	"\x03aws\x18\x02 \x01(\v2+.org.openmcf.provider.aws.AwsProviderConfigH\x00R\x03aws\x12G\n" +
@@ -563,8 +563,8 @@ const file_org_openmcf_app_credential_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"cloudflare\x18\x05 \x01(\v29.org.openmcf.provider.cloudflare.CloudflareProviderConfigH\x00R\n" +
 	"cloudflare\x12W\n" +
-	"\tconfluent\x18\x06 \x01(\v27.org.openmcf.provider.confluent.ConfluentProviderConfigH\x00R\tconfluent\x12c\n" +
-	"\fdigitalocean\x18\a \x01(\v2=.org.openmcf.provider.digitalocean.DigitalOceanProviderConfigH\x00R\fdigitalocean\x12?\n" +
+	"\tconfluent\x18\x06 \x01(\v27.org.openmcf.provider.confluent.ConfluentProviderConfigH\x00R\tconfluent\x12d\n" +
+	"\rdigital_ocean\x18\a \x01(\v2=.org.openmcf.provider.digitalocean.DigitalOceanProviderConfigH\x00R\fdigitalOcean\x12?\n" +
 	"\x03gcp\x18\b \x01(\v2+.org.openmcf.provider.gcp.GcpProviderConfigH\x00R\x03gcp\x12[\n" +
 	"\n" +
 	"kubernetes\x18\t \x01(\v29.org.openmcf.provider.kubernetes.KubernetesProviderConfigH\x00R\n" +
@@ -574,10 +574,10 @@ const file_org_openmcf_app_credential_v1_api_proto_rawDesc = "" +
 	"\x05auth0\x18\v \x01(\v2/.org.openmcf.provider.auth0.Auth0ProviderConfigH\x00R\x05auth0\x12O\n" +
 	"\aopenfga\x18\f \x01(\v23.org.openmcf.provider.openfga.OpenFgaProviderConfigH\x00R\aopenfga\x12W\n" +
 	"\topenstack\x18\r \x01(\v27.org.openmcf.provider.openstack.OpenStackProviderConfigH\x00R\topenstack\x12S\n" +
-	"\bscaleway\x18\x0e \x01(\v25.org.openmcf.provider.scaleway.ScalewayProviderConfigH\x00R\bscaleway\x12S\n" +
-	"\balicloud\x18\x0f \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigH\x00R\balicloud\x12?\n" +
-	"\x03oci\x18\x10 \x01(\v2+.org.openmcf.provider.oci.OciProviderConfigH\x00R\x03oci\x12c\n" +
-	"\fhetznercloud\x18\x11 \x01(\v2=.org.openmcf.provider.hetznercloud.HetznerCloudProviderConfigH\x00R\fhetznercloudB\x06\n" +
+	"\bscaleway\x18\x0e \x01(\v25.org.openmcf.provider.scaleway.ScalewayProviderConfigH\x00R\bscaleway\x12T\n" +
+	"\tali_cloud\x18\x0f \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigH\x00R\baliCloud\x12?\n" +
+	"\x03oci\x18\x10 \x01(\v2+.org.openmcf.provider.oci.OciProviderConfigH\x00R\x03oci\x12d\n" +
+	"\rhetzner_cloud\x18\x11 \x01(\v2=.org.openmcf.provider.hetznercloud.HetznerCloudProviderConfigH\x00R\fhetznerCloudB\x06\n" +
 	"\x04dataB\xfe\x01\n" +
 	"\x1dcom.org.openmcf.credential.v1B\bApiProtoP\x01ZLgithub.com/plantonhq/openmcf/apis/org/openmcf/app/credential/v1;credentialv1\xa2\x02\x03OOC\xaa\x02\x19Org.Openmcf.Credential.V1\xca\x02\x19Org\\Openmcf\\Credential\\V1\xe2\x02%Org\\Openmcf\\Credential\\V1\\GPBMetadata\xea\x02\x1cOrg::Openmcf::Credential::V1b\x06proto3"
 
@@ -629,7 +629,7 @@ var file_org_openmcf_app_credential_v1_api_proto_depIdxs = []int32{
 	7,  // 7: org.openmcf.credential.v1.CredentialProviderConfig.civo:type_name -> org.openmcf.provider.civo.CivoProviderConfig
 	8,  // 8: org.openmcf.credential.v1.CredentialProviderConfig.cloudflare:type_name -> org.openmcf.provider.cloudflare.CloudflareProviderConfig
 	9,  // 9: org.openmcf.credential.v1.CredentialProviderConfig.confluent:type_name -> org.openmcf.provider.confluent.ConfluentProviderConfig
-	10, // 10: org.openmcf.credential.v1.CredentialProviderConfig.digitalocean:type_name -> org.openmcf.provider.digitalocean.DigitalOceanProviderConfig
+	10, // 10: org.openmcf.credential.v1.CredentialProviderConfig.digital_ocean:type_name -> org.openmcf.provider.digitalocean.DigitalOceanProviderConfig
 	11, // 11: org.openmcf.credential.v1.CredentialProviderConfig.gcp:type_name -> org.openmcf.provider.gcp.GcpProviderConfig
 	12, // 12: org.openmcf.credential.v1.CredentialProviderConfig.kubernetes:type_name -> org.openmcf.provider.kubernetes.KubernetesProviderConfig
 	13, // 13: org.openmcf.credential.v1.CredentialProviderConfig.snowflake:type_name -> org.openmcf.provider.snowflake.SnowflakeProviderConfig
@@ -637,9 +637,9 @@ var file_org_openmcf_app_credential_v1_api_proto_depIdxs = []int32{
 	15, // 15: org.openmcf.credential.v1.CredentialProviderConfig.openfga:type_name -> org.openmcf.provider.openfga.OpenFgaProviderConfig
 	16, // 16: org.openmcf.credential.v1.CredentialProviderConfig.openstack:type_name -> org.openmcf.provider.openstack.OpenStackProviderConfig
 	17, // 17: org.openmcf.credential.v1.CredentialProviderConfig.scaleway:type_name -> org.openmcf.provider.scaleway.ScalewayProviderConfig
-	18, // 18: org.openmcf.credential.v1.CredentialProviderConfig.alicloud:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
+	18, // 18: org.openmcf.credential.v1.CredentialProviderConfig.ali_cloud:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
 	19, // 19: org.openmcf.credential.v1.CredentialProviderConfig.oci:type_name -> org.openmcf.provider.oci.OciProviderConfig
-	20, // 20: org.openmcf.credential.v1.CredentialProviderConfig.hetznercloud:type_name -> org.openmcf.provider.hetznercloud.HetznerCloudProviderConfig
+	20, // 20: org.openmcf.credential.v1.CredentialProviderConfig.hetzner_cloud:type_name -> org.openmcf.provider.hetznercloud.HetznerCloudProviderConfig
 	21, // [21:21] is the sub-list for method output_type
 	21, // [21:21] is the sub-list for method input_type
 	21, // [21:21] is the sub-list for extension type_name
@@ -659,7 +659,7 @@ func file_org_openmcf_app_credential_v1_api_proto_init() {
 		(*CredentialProviderConfig_Civo)(nil),
 		(*CredentialProviderConfig_Cloudflare)(nil),
 		(*CredentialProviderConfig_Confluent)(nil),
-		(*CredentialProviderConfig_Digitalocean)(nil),
+		(*CredentialProviderConfig_DigitalOcean)(nil),
 		(*CredentialProviderConfig_Gcp)(nil),
 		(*CredentialProviderConfig_Kubernetes)(nil),
 		(*CredentialProviderConfig_Snowflake)(nil),
@@ -667,9 +667,9 @@ func file_org_openmcf_app_credential_v1_api_proto_init() {
 		(*CredentialProviderConfig_Openfga)(nil),
 		(*CredentialProviderConfig_Openstack)(nil),
 		(*CredentialProviderConfig_Scaleway)(nil),
-		(*CredentialProviderConfig_Alicloud)(nil),
+		(*CredentialProviderConfig_AliCloud)(nil),
 		(*CredentialProviderConfig_Oci)(nil),
-		(*CredentialProviderConfig_Hetznercloud)(nil),
+		(*CredentialProviderConfig_HetznerCloud)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

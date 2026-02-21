@@ -36,8 +36,8 @@ openmcf pulumi destroy \
 ## Minimal ECS Service Role
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamRole
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamRole
 metadata:
   name: my-ecs-role
 spec:
@@ -61,8 +61,8 @@ Creates a RAM role with an ECS service trust policy. No policies attached — th
 ## Service Role with System Policies
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamRole
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamRole
 metadata:
   name: ecs-worker-role
 spec:
@@ -94,8 +94,8 @@ Attaches three system-managed policies to the role. The 2-hour session duration 
 ## Cross-Account Role with Custom Policy
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamRole
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamRole
 metadata:
   name: cross-account-audit
 spec:

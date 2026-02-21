@@ -1,4 +1,4 @@
-# AlicloudDnsZone
+# AliCloudDnsZone
 
 Manages an Alibaba Cloud DNS domain in the Alidns service.
 
@@ -42,5 +42,5 @@ A DNS domain is the top-level container for DNS records in Alibaba Cloud's Alidn
 
 ## Related Components
 
-- **AlicloudDnsRecord** -- creates DNS records (A, AAAA, CNAME, MX, TXT, etc.) within this domain
-- **AlicloudPrivateDnsZone** -- for private DNS resolution within a VPC (separate from public Alidns)
+- **AliCloudDnsRecord** -- creates DNS records (A, AAAA, CNAME, MX, TXT, etc.) within this domain
+- **AliCloudPrivateDnsZone** -- for private DNS resolution within a VPC (separate from public Alidns)

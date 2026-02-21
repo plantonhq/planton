@@ -1,0 +1,28 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciStreamPool
+metadata:
+  name: my-private-stream-pool
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  kmsKeyId:
+    value: <kms-key-ocid>
+  kafkaSettings:
+    autoCreateTopicsEnable: false # Prevent accidental topic creation in production
+    logRetentionHours: 168 # Maximum 7-day retention
+    numPartitions: 5
+  privateEndpointSettings:
+    subnetId:
+      value: <private-subnet-ocid>
+    nsgIds:
+      - value: <streaming-nsg-ocid>
+  streams:
+    - name: events
+      partitions: 10
+      retentionInHours: 168
+    - name: commands
+      partitions: 5
+      retentionInHours: 72
+    - name: dead-letter
+      partitions: 3
+      retentionInHours: 168

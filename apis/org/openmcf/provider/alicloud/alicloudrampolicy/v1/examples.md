@@ -5,8 +5,8 @@
 A custom policy granting read-only access to all OSS buckets.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamPolicy
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamPolicy
 metadata:
   name: oss-reader
 spec:
@@ -35,8 +35,8 @@ spec:
 A policy granting full access to a specific OSS bucket and its objects. Includes description, tags, and automatic version rotation for policies that get updated frequently.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamPolicy
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamPolicy
 metadata:
   name: app-data-bucket-access
   org: my-org
@@ -70,8 +70,8 @@ spec:
 A comprehensive policy granting cross-service permissions for a CI/CD pipeline role. Uses `force: true` to allow clean teardown even when the policy is still attached to roles.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamPolicy
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamPolicy
 metadata:
   name: cicd-pipeline-policy
   org: my-org

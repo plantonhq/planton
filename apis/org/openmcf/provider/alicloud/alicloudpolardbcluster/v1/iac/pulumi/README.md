@@ -1,4 +1,4 @@
-# AlicloudPolardbCluster -- Pulumi Module
+# AliCloudPolardbCluster -- Pulumi Module
 
 ## Overview
 

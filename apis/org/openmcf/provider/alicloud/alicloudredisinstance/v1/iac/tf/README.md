@@ -1,4 +1,4 @@
-# AlicloudRedisInstance Terraform Module
+# AliCloudRedisInstance Terraform Module
 
 This Terraform module provisions an Alibaba Cloud Redis (KVStore) instance.
 

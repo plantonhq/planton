@@ -36,6 +36,7 @@ function extractCatalogProviders(structure: DocItem[]): CatalogProvider[] {
     .filter((item) => item.type === 'directory')
     .map((provider) => ({
       name: provider.name,
+      title: provider.title || provider.name.toUpperCase(),
       path: provider.path,
       componentCount:
         provider.children?.length ?? 0,

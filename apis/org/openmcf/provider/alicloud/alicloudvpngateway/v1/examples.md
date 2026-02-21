@@ -1,12 +1,12 @@
-# AlicloudVpnGateway Examples
+# AliCloudVpnGateway Examples
 
 ## Minimal: Single Site-to-Site Connection
 
 The simplest VPN setup: one gateway with a single IPsec connection to a remote office.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpnGateway
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpnGateway
 metadata:
   name: office-vpn
 spec:
@@ -31,8 +31,8 @@ spec:
 VPN Gateway connecting to two remote sites with strong encryption and health checks.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpnGateway
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpnGateway
 metadata:
   name: prod-vpn
   org: acme-corp
@@ -103,8 +103,8 @@ spec:
 VPN Gateway with SSL VPN for remote client access alongside a site-to-site connection.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpnGateway
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpnGateway
 metadata:
   name: hybrid-vpn
 spec:
@@ -131,8 +131,8 @@ spec:
 VPN Gateway referencing VPC and VSwitch from other OpenMCF resources.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpnGateway
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpnGateway
 metadata:
   name: ref-vpn
 spec:

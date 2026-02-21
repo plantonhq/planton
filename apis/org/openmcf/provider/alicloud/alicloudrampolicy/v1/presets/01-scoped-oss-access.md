@@ -7,7 +7,7 @@ This preset creates a custom RAM policy that grants read/write access to a singl
 - Application roles that need to read/write objects in a specific OSS bucket without access to other buckets
 - Production environments where system-wide OSS policies are too permissive
 - Microservice architectures where each service has its own data bucket and should not access other services' storage
-- Attaching to an `AlicloudRamRole` via `policyAttachments` with `policyType: Custom`
+- Attaching to an `AliCloudRamRole` via `policyAttachments` with `policyType: Custom`
 
 ## Key Configuration Choices
 
@@ -22,7 +22,7 @@ This preset creates a custom RAM policy that grants read/write access to a singl
 |-------------|-------------|---------------|
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`, `ap-southeast-1`) | Your deployment region strategy |
 | `<your-policy-name>` | RAM policy name, unique per account (1-128 chars: letters, digits, hyphens) | Choose a name following your naming convention (e.g., `app-data-bucket-rw`) |
-| `<your-bucket-name>` | The exact OSS bucket name to grant access to | OSS console or `AlicloudStorageBucket` stack outputs |
+| `<your-bucket-name>` | The exact OSS bucket name to grant access to | OSS console or `AliCloudStorageBucket` stack outputs |
 
 ## Related Presets
 

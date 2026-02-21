@@ -240,11 +240,11 @@ Control planes bring continuous reconciliation to VSwitch management.
 
 ## What OpenMCF Supports
 
-OpenMCF provides a Kubernetes-style API for deploying individual Alibaba Cloud VSwitches. Each `AlicloudVswitch` resource creates one VSwitch in one Availability Zone — the fundamental building block for multi-AZ network topologies.
+OpenMCF provides a Kubernetes-style API for deploying individual Alibaba Cloud VSwitches. Each `AliCloudVswitch` resource creates one VSwitch in one Availability Zone — the fundamental building block for multi-AZ network topologies.
 
 ### The 80% Case: What Is Included
 
-The `AlicloudVswitchSpec` proto exposes nine fields:
+The `AliCloudVswitchSpec` proto exposes nine fields:
 
 | Field | Type | Required | Default | Rationale |
 |-------|------|----------|---------|-----------|
@@ -262,14 +262,14 @@ This covers the vast majority of VSwitch creation scenarios. A developer can dep
 
 ### Design Decision: One VSwitch Per Resource
 
-OpenMCF models each VSwitch as a separate resource (`AlicloudVswitch`), rather than embedding VSwitches as a repeated field inside `AlicloudVpc`. This is a deliberate choice:
+OpenMCF models each VSwitch as a separate resource (`AliCloudVswitch`), rather than embedding VSwitches as a repeated field inside `AliCloudVpc`. This is a deliberate choice:
 
 - **Independent Lifecycle**: VSwitches can be created, updated, and deleted independently of their parent VPC
 - **Separate State Management**: Each VSwitch has its own stack state, preventing a single large state file from becoming a bottleneck
 - **Composability**: Different teams can own different VSwitches within the same VPC
 - **Clarity**: A single resource creates a single VSwitch. No hidden iteration or implicit looping.
 
-The trade-off is verbosity — a three-AZ deployment requires three separate `AlicloudVswitch` manifests. This is intentional. Explicit is better than implicit for infrastructure that is immutable after creation.
+The trade-off is verbosity — a three-AZ deployment requires three separate `AliCloudVswitch` manifests. This is intentional. Explicit is better than implicit for infrastructure that is immutable after creation.
 
 ### What Was Left Out (and Why)
 
@@ -320,7 +320,7 @@ spec:
 
 The `valueFrom` reference is resolved by the OpenMCF platform before the IaC module executes. At runtime, `spec.vpc_id.GetValue()` always returns a literal VPC ID string. This pattern enables declarative dependency graphs without requiring the VSwitch module to know how to look up VPC IDs.
 
-The `default_kind` annotation on the proto field (`AlicloudVpc`) and `default_kind_field_path` (`status.outputs.vpc_id`) tell the platform which resource type and output field to resolve against.
+The `default_kind` annotation on the proto field (`AliCloudVpc`) and `default_kind_field_path` (`status.outputs.vpc_id`) tell the platform which resource type and output field to resolve against.
 
 ## Implementation Landscape
 
@@ -360,7 +360,7 @@ The `optionalString()` helper converts empty strings to `nil`, preventing Alibab
 
 **`outputs.go`** — Defines output constant names as Go constants (`OpVswitchId`, `OpVswitchName`, `OpCidrBlock`, `OpZoneId`, `OpIpv6CidrBlock`), ensuring consistency between the module and the `stack_outputs.proto` definition.
 
-The entry point (`iac/pulumi/main.go`) loads the stack input from Pulumi config, deserializes it into the protobuf `AlicloudVswitchStackInput`, and calls `module.Resources()`.
+The entry point (`iac/pulumi/main.go`) loads the stack input from Pulumi config, deserializes it into the protobuf `AliCloudVswitchStackInput`, and calls `module.Resources()`.
 
 ### Terraform Module Architecture
 
@@ -494,13 +494,13 @@ While VSwitches do not generate metrics directly, monitor these operational indi
 
 - **VSwitch isolation is not security isolation.** Resources in different VSwitches within the same VPC can communicate freely by default. Use security groups for access control between tiers.
 - **Database tier VSwitches** should be used exclusively for database resources. Avoid deploying application instances and database instances in the same VSwitch — this makes it harder to write precise security group rules.
-- **Do not expose VSwitches directly to the internet.** Use NAT Gateways (AlicloudNatGateway) for outbound access and load balancers (AlicloudApplicationLoadBalancer, AlicloudNetworkLoadBalancer) for inbound access.
+- **Do not expose VSwitches directly to the internet.** Use NAT Gateways (AliCloudNatGateway) for outbound access and load balancers (AliCloudApplicationLoadBalancer, AliCloudNetworkLoadBalancer) for inbound access.
 
 ## Conclusion
 
 The Alibaba Cloud VSwitch is architecturally simple — a single resource with a handful of fields — but operationally consequential. Its immutable properties (VPC, zone, CIDR) mean that mistakes in planning are expensive to fix. Its position as the mandatory placement target for every VPC-aware resource means that VSwitch topology shapes the entire deployment architecture.
 
-OpenMCF's AlicloudVswitch component reflects this with a focused API: five required fields that force explicit decisions about VPC, zone, CIDR, and naming, plus four optional fields for IPv6, description, and tags. The `StringValueOrRef` pattern for `vpc_id` enables declarative dependency management without sacrificing simplicity.
+OpenMCF's AliCloudVswitch component reflects this with a focused API: five required fields that force explicit decisions about VPC, zone, CIDR, and naming, plus four optional fields for IPv6, description, and tags. The `StringValueOrRef` pattern for `vpc_id` enables declarative dependency management without sacrificing simplicity.
 
 For production deployments: plan CIDRs carefully with growth in mind, deploy in at least two Availability Zones, size application-tier VSwitches generously for Kubernetes workloads, and use consistent naming and tagging for operational hygiene. These decisions are trivial to make at creation time and painful to fix later.
 
@@ -509,5 +509,5 @@ For production deployments: plan CIDRs carefully with growth in mind, deploy in 
 - [Alibaba Cloud VSwitch Documentation](https://www.alibabacloud.com/help/en/vpc/user-guide/create-a-vswitch)
 - [Alibaba Cloud VSwitch API Reference](https://www.alibabacloud.com/help/en/vpc/developer-reference/api-vpc-2016-04-28-createvswitch)
 - [Terraform alicloud_vswitch Resource](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/vswitch)
-- [Pulumi Alicloud vpc.Switch Resource](https://www.pulumi.com/registry/packages/alicloud/api-docs/vpc/switch/)
+- [Pulumi AliCloud vpc.Switch Resource](https://www.pulumi.com/registry/packages/alicloud/api-docs/vpc/switch/)
 - [Alibaba Cloud VPC CIDR Block Planning](https://www.alibabacloud.com/help/en/vpc/user-guide/plan-cidr-blocks-for-a-vpc)

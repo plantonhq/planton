@@ -1,4 +1,4 @@
-# Hetzner Cloud Certificate — Research Documentation
+# HetznerCloud Certificate — Research Documentation
 
 ## Introduction
 

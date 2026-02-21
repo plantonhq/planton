@@ -1,4 +1,4 @@
-# Terraform Module to Deploy AlicloudDnsRecord
+# Terraform Module to Deploy AliCloudDnsRecord
 
 This module creates an Alibaba Cloud DNS record in the Alidns service. It supports all standard record types with configurable TTL, priority, resolution lines, and record status.
 

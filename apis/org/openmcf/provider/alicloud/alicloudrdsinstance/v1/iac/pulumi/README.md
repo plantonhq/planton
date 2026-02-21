@@ -1,4 +1,4 @@
-# AlicloudRdsInstance Pulumi Module
+# AliCloudRdsInstance Pulumi Module
 
 This Pulumi module provisions an Alibaba Cloud RDS instance with bundled databases, accounts, and account privileges.
 

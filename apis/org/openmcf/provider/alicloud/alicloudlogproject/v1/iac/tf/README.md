@@ -1,11 +1,11 @@
-# Terraform Module to Deploy AlicloudLogProject
+# Terraform Module to Deploy AliCloudLogProject
 
 This module provisions an Alibaba Cloud SLS project with bundled log stores and
 full-text indexes. The `for_each` pattern in `main.tf` creates one
 `alicloud_log_store` per entry in `spec.log_stores` and one
 `alicloud_log_store_index` for each store where `enable_index` is true.
 
-Generated `variables.tf` reflects the proto schema for `AlicloudLogProject`.
+Generated `variables.tf` reflects the proto schema for `AliCloudLogProject`.
 
 ## Usage
 

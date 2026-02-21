@@ -1,0 +1,33 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciDynamicRoutingGateway
+metadata:
+  name: my-hub-drg
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  displayName: hub-drg
+  attachments:
+    - displayName: spoke-vcn-a
+      networkDetails:
+        type: vcn
+        id:
+          value: <spoke-vcn-a-ocid>
+      drgRouteTableName: spoke-route-table
+    - displayName: spoke-vcn-b
+      networkDetails:
+        type: vcn
+        id:
+          value: <spoke-vcn-b-ocid>
+      drgRouteTableName: spoke-route-table
+  routeTables:
+    - displayName: spoke-route-table
+      importDrgRouteDistributionName: import-all-vcn-routes
+      isEcmpEnabled: false
+  routeDistributions:
+    - displayName: import-all-vcn-routes
+      distributionType: import_routes
+      statements:
+        - priority: 10
+          matchCriteria:
+            matchType: drg_attachment_type
+            attachmentType: VCN

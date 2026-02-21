@@ -1,5 +1,5 @@
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudLogProject
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudLogProject
 metadata:
   name: alicloudlogproject-demo
 spec:

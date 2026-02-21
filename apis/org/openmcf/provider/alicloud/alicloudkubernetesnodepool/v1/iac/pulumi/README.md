@@ -1,4 +1,4 @@
-# Pulumi Module to Deploy AlicloudKubernetesNodePool
+# Pulumi Module to Deploy AliCloudKubernetesNodePool
 
 ## CLI usage (OpenMCF pulumi)
 
@@ -53,7 +53,7 @@ openmcf pulumi preview \
 
 ## Module Overview
 
-This Pulumi module deploys an ACK Kubernetes node pool using a single `cs.NodePool` resource. The module reads an `AlicloudKubernetesNodePoolStackInput` protobuf message, resolves foreign key references (cluster ID, VSwitch IDs, security group IDs), and provisions a node pool with configurable instance types, disk configuration, auto-scaling, managed lifecycle, spot instances, and Kubernetes scheduling properties (labels, taints).
+This Pulumi module deploys an ACK Kubernetes node pool using a single `cs.NodePool` resource. The module reads an `AliCloudKubernetesNodePoolStackInput` protobuf message, resolves foreign key references (cluster ID, VSwitch IDs, security group IDs), and provisions a node pool with configurable instance types, disk configuration, auto-scaling, managed lifecycle, spot instances, and Kubernetes scheduling properties (labels, taints).
 
 ---
 

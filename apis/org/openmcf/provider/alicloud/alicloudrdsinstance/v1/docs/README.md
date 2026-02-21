@@ -1,4 +1,4 @@
-# AlicloudRdsInstance Research Documentation
+# AliCloudRdsInstance Research Documentation
 
 ## Provider Resource Analysis
 
@@ -43,7 +43,7 @@ The `alicloud_db_connection` resource creates a public internet endpoint for the
 
 ### Structured Account Privileges
 
-The initial spec design used `repeated string database_privileges` which was unstructured. The provider models privileges as a separate resource (`alicloud_db_account_privilege`) with explicit fields. The structured `AlicloudRdsAccountPrivilege` message provides a clean YAML experience while accurately mapping to the provider's resource model.
+The initial spec design used `repeated string database_privileges` which was unstructured. The provider models privileges as a separate resource (`alicloud_db_account_privilege`) with explicit fields. The structured `AliCloudRdsAccountPrivilege` message provides a clean YAML experience while accurately mapping to the provider's resource model.
 
 ### Category over Boolean HA
 

@@ -157,10 +157,10 @@ var File_org_openmcf_provider_hetznercloud_hetznercloudfloatingip_v1_api_proto p
 
 const file_org_openmcf_provider_hetznercloud_hetznercloudfloatingip_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"Eorg/openmcf/provider/hetznercloud/hetznercloudfloatingip/v1/api.proto\x12;org.openmcf.provider.hetznercloud.hetznercloudfloatingip.v1\x1a\x1bbuf/validate/validate.proto\x1aForg/openmcf/provider/hetznercloud/hetznercloudfloatingip/v1/spec.proto\x1aOorg/openmcf/provider/hetznercloud/hetznercloudfloatingip/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xc7\x03\n" +
-	"\x16HetznerCloudFloatingIp\x12C\n" +
-	"\vapi_version\x18\x01 \x01(\tB\"\xbaH\x1fr\x1d\n" +
-	"\x1bhetznercloud.openmcf.org/v1R\n" +
+	"Eorg/openmcf/provider/hetznercloud/hetznercloudfloatingip/v1/api.proto\x12;org.openmcf.provider.hetznercloud.hetznercloudfloatingip.v1\x1a\x1bbuf/validate/validate.proto\x1aForg/openmcf/provider/hetznercloud/hetznercloudfloatingip/v1/spec.proto\x1aOorg/openmcf/provider/hetznercloud/hetznercloudfloatingip/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xc8\x03\n" +
+	"\x16HetznerCloudFloatingIp\x12D\n" +
+	"\vapi_version\x18\x01 \x01(\tB#\xbaH r\x1e\n" +
+	"\x1chetzner-cloud.openmcf.org/v1R\n" +
 	"apiVersion\x121\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1d\xbaH\x1ar\x18\n" +
 	"\x16HetznerCloudFloatingIpR\x04kind\x12M\n" +

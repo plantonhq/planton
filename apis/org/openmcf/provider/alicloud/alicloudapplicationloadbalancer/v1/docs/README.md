@@ -1,10 +1,10 @@
-# AlicloudApplicationLoadBalancer Research Documentation
+# AliCloudApplicationLoadBalancer Research Documentation
 
 ## Provider Resources
 
 | OpenMCF Component | Terraform Resource | Pulumi Resource |
 | --- | --- | --- |
-| AlicloudApplicationLoadBalancer | `alicloud_alb_load_balancer` | `alb.LoadBalancer` |
+| AliCloudApplicationLoadBalancer | `alicloud_alb_load_balancer` | `alb.LoadBalancer` |
 | (bundled) Server Groups | `alicloud_alb_server_group` | `alb.ServerGroup` |
 | (bundled) Listeners | `alicloud_alb_listener` | `alb.Listener` |
 

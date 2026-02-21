@@ -19,7 +19,7 @@ This preset creates a VSwitch sized for production application workloads using a
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`, `cn-shanghai`) | Your deployment region |
-| `<your-vpc-id>` | VPC ID that this VSwitch belongs to | Alibaba Cloud VPC console or `AlicloudVpc` stack outputs |
+| `<your-vpc-id>` | VPC ID that this VSwitch belongs to | Alibaba Cloud VPC console or `AliCloudVpc` stack outputs |
 | `<availability-zone>` | Availability zone within the region (e.g., `cn-hangzhou-b`) | Alibaba Cloud ECS console > Zones |
 | `<your-prod-vswitch-name>` | VSwitch name (1-128 characters) | Choose a descriptive name |
 

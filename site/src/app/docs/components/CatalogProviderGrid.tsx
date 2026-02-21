@@ -8,6 +8,8 @@ import { ProviderIcon } from '@/app/docs/components/ProviderIcon';
 export interface CatalogProvider {
   /** Provider directory name (e.g. "aws", "gcp", "openfga"). */
   name: string;
+  /** Human-readable display title (e.g. "AWS", "HETZNER CLOUD"). */
+  title: string;
   /** Relative docs path (e.g. "catalog/aws"). */
   path: string;
   /** Number of component pages under this provider. */
@@ -40,7 +42,7 @@ export const CatalogProviderGrid: FC<CatalogProviderGridProps> = ({ providers })
           <ProviderIcon provider={provider.name} size={32} />
           <div>
             <div className="font-semibold text-white">
-              {provider.name.toUpperCase()}
+              {provider.title}
             </div>
             <div className="text-sm text-slate-400">
               {provider.componentCount} component{provider.componentCount !== 1 ? 's' : ''}

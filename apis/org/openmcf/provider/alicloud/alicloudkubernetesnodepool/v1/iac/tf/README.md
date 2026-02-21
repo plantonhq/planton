@@ -1,8 +1,8 @@
-# Terraform Module to Deploy AlicloudKubernetesNodePool
+# Terraform Module to Deploy AliCloudKubernetesNodePool
 
 This module provisions an ACK Kubernetes node pool with configurable instance types, disk configuration, auto-scaling, managed lifecycle, spot instances, and Kubernetes scheduling properties.
 
-Generated `variables.tf` reflects the proto schema for `AlicloudKubernetesNodePool`.
+Generated `variables.tf` reflects the proto schema for `AliCloudKubernetesNodePool`.
 
 ## Usage
 

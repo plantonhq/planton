@@ -5,7 +5,7 @@
 The simplest working network: a single `/16` block with one cloud subnet in `eu-central`. Suitable for single-region deployments where all servers are in the same Hetzner data center.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudNetwork
 metadata:
   name: simple-net
@@ -24,7 +24,7 @@ spec:
 A network spanning two zones for geographic redundancy. Servers in `eu-central` and `us-east` can communicate over private IPs through the same network. Each zone gets its own subnet with non-overlapping CIDR ranges.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudNetwork
 metadata:
   name: multi-zone
@@ -49,7 +49,7 @@ spec:
 A network with a static route directing traffic for a remote network through a VPN gateway server within the network. The gateway server at `10.0.1.1` must have IP forwarding enabled at the OS level.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudNetwork
 metadata:
   name: routed-net
@@ -81,7 +81,7 @@ spec:
 A network combining cloud servers and Hetzner Robot dedicated servers via a vSwitch subnet. The `cloud` subnet hosts regular cloud servers, while the `vswitch` subnet bridges to a Robot vSwitch (ID `12345`) for hybrid connectivity. The `exposeRoutesToVswitch` flag makes custom routes visible to the dedicated servers.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudNetwork
 metadata:
   name: hybrid-net
@@ -115,7 +115,7 @@ In an infra chart, a `HetznerCloudServer` references the network via `valueFrom`
 Network manifest:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudNetwork
 metadata:
   name: app-network
@@ -133,7 +133,7 @@ spec:
 Server manifest referencing the network output:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: app-01

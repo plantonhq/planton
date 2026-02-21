@@ -7,7 +7,7 @@ import { CredentialFormData } from '@/app/credentials/_components/forms/types';
 import { UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { Typography, Divider, Stack } from '@mui/material';
 
-interface AlicloudCredentialFormProps {
+interface AliCloudCredentialFormProps {
   register: UseFormRegister<CredentialFormData>;
   setValue: UseFormSetValue<CredentialFormData>;
   watch: UseFormWatch<CredentialFormData>;
@@ -24,12 +24,12 @@ const AUTH_METHOD_OPTIONS = [
   { label: 'Sidecar Credentials', value: 'sidecar_credentials' },
 ];
 
-export function AlicloudCredentialForm({
+export function AliCloudCredentialForm({
   register,
   setValue,
   watch,
   disabled,
-}: AlicloudCredentialFormProps) {
+}: AliCloudCredentialFormProps) {
   const authMethod = watch('alicloudAuthMethod') || 'static_credentials';
 
   const onAuthMethodChange = useCallback(

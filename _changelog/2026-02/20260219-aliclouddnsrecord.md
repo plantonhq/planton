@@ -1,21 +1,21 @@
-# AlicloudDnsRecord Component Added
+# AliCloudDnsRecord Component Added
 
 **Date**: 2026-02-19
-**Component**: AlicloudDnsRecord
+**Component**: AliCloudDnsRecord
 **Enum**: 3041
 **ID Prefix**: acdr
 
 ## Summary
 
-Added the AlicloudDnsRecord deployment component -- manages DNS records within an Alibaba Cloud Alidns-hosted domain. Supports all standard record types (A, AAAA, CNAME, MX, TXT, NS, SRV, CAA) with configurable TTL, priority, DNS resolution lines, and record status.
+Added the AliCloudDnsRecord deployment component -- manages DNS records within an Alibaba Cloud Alidns-hosted domain. Supports all standard record types (A, AAAA, CNAME, MX, TXT, NS, SRV, CAA) with configurable TTL, priority, DNS resolution lines, and record status.
 
-The parent domain must already exist in Alidns, either managed by the AlicloudDnsZone component or added manually. This is a leaf resource -- nothing downstream depends on its outputs.
+The parent domain must already exist in Alidns, either managed by the AliCloudDnsZone component or added manually. This is a leaf resource -- nothing downstream depends on its outputs.
 
 ## What Was Created
 
 ### API Definition
 - `apis/org/openmcf/provider/alicloud/aliclouddnsrecord/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AlicloudDnsRecord = 3041` in `CloudResourceKind` enum under the DNS category
+- Registered `AliCloudDnsRecord = 3041` in `CloudResourceKind` enum under the DNS category
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider and a single `dns.AlidnsRecord` resource with all spec fields mapped. No tag computation (resource does not support tags).

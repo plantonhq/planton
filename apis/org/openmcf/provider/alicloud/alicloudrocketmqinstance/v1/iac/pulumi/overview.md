@@ -1,4 +1,4 @@
-# AlicloudRocketmqInstance Pulumi Module Overview
+# AliCloudRocketmqInstance Pulumi Module Overview
 
 ## Architecture
 
@@ -8,7 +8,7 @@ provider fields (`commodity_code`, `service_code`, `internet_spec`, `flow_out_ty
 are derived from user-facing spec fields in `locals.go`.
 
 ```
-AlicloudRocketmqInstanceStackInput
+AliCloudRocketmqInstanceStackInput
 ├── spec.region → alicloud.Provider
 ├── spec.* → rocketmq.RocketMQInstance
 │   ├── networkInfo.vpcInfo (from spec.vpcId, vswitchId, securityGroupId)
@@ -26,7 +26,7 @@ AlicloudRocketmqInstanceStackInput
 ### Controller (`module/main.go`)
 
 Entry point for resource creation. Orchestrates:
-1. Creates the Alicloud provider scoped to `spec.region`
+1. Creates the AliCloud provider scoped to `spec.region`
 2. Builds the `RocketMQInstanceArgs` with VPC info, internet info, and optional product info
 3. Creates the instance resource
 4. Loops over `spec.topics` calling `topic()` for each, collecting ID outputs

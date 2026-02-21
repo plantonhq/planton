@@ -6,7 +6,7 @@ An Elastic IP Address (EIP) on Alibaba Cloud is a standalone, static public IPv4
 
 This independence makes EIPs a foundational networking primitive. Every internet-facing architecture on Alibaba Cloud — whether it routes outbound traffic through a NAT gateway, terminates inbound traffic on an ALB, or connects on-premise networks through a VPN gateway — depends on at least one EIP. Despite this ubiquity, EIP management is rife with subtle decisions around bandwidth metering, ISP line selection, and immutable-after-creation constraints that catch operators off guard when misconfigured.
 
-This document surveys the full landscape of EIP deployment methods on Alibaba Cloud, from manual console allocation through scripted CLI workflows to modern Infrastructure as Code approaches. It explains the design decisions behind the OpenMCF `AlicloudEipAddress` component, documents the 80/20 scoping rationale, and provides production best practices for bandwidth planning, cost optimization, and lifecycle management.
+This document surveys the full landscape of EIP deployment methods on Alibaba Cloud, from manual console allocation through scripted CLI workflows to modern Infrastructure as Code approaches. It explains the design decisions behind the OpenMCF `AliCloudEipAddress` component, documents the 80/20 scoping rationale, and provides production best practices for bandwidth planning, cost optimization, and lifecycle management.
 
 ## Evolution and Historical Context
 
@@ -206,7 +206,7 @@ Control planes extend the IaC pattern from "run a CLI tool, apply changes, exit"
 
 **Crossplane**: Defines Alibaba Cloud EIPs as Kubernetes Custom Resources. A cluster-resident controller watches for EIP resources and provisions/reconciles them through the Alibaba Cloud API. Drift is automatically corrected.
 
-**OpenMCF**: Takes the control plane approach further by defining a protobuf-native API schema for each resource kind. The schema includes validation rules (`buf.validate`), default annotations, and typed output contracts. The `AlicloudEipAddress` resource kind can be deployed through either the Pulumi or Terraform backend, with the same manifest YAML driving both.
+**OpenMCF**: Takes the control plane approach further by defining a protobuf-native API schema for each resource kind. The schema includes validation rules (`buf.validate`), default annotations, and typed output contracts. The `AliCloudEipAddress` resource kind can be deployed through either the Pulumi or Terraform backend, with the same manifest YAML driving both.
 
 **The Key Advantage**: A manifest-driven approach means the EIP's configuration is a versionable, auditable YAML document. Changes flow through code review. The control plane ensures the actual state matches the declared state continuously.
 
@@ -227,11 +227,11 @@ Control planes extend the IaC pattern from "run a CLI tool, apply changes, exit"
 
 ### Design Philosophy: Standalone Allocation, Downstream Association
 
-The `AlicloudEipAddress` component follows a deliberate single-responsibility design: it allocates an EIP and exports its `eip_id` and `ip_address`. It does **not** handle association with a target resource.
+The `AliCloudEipAddress` component follows a deliberate single-responsibility design: it allocates an EIP and exports its `eip_id` and `ip_address`. It does **not** handle association with a target resource.
 
 Association is the downstream component's responsibility:
-- `AlicloudNatGateway` accepts an `eip_id` field (as `StringValueOrRef`) and creates the EIP association internally
-- `AlicloudApplicationLoadBalancer` and `AlicloudVpnGateway` similarly accept EIP references
+- `AliCloudNatGateway` accepts an `eip_id` field (as `StringValueOrRef`) and creates the EIP association internally
+- `AliCloudApplicationLoadBalancer` and `AliCloudVpnGateway` similarly accept EIP references
 
 This separation mirrors the Alibaba Cloud API's own resource boundaries and enables flexible topologies — one EIP can be pre-allocated and associated with different resources over time without modifying the EIP component itself.
 
@@ -282,10 +282,10 @@ These defaults mean a minimal manifest needs only `region` to produce a working 
 
 ### Foreign Key Pattern
 
-The `AlicloudEipAddress` stack outputs (`eip_id`, `ip_address`) serve as foreign keys for downstream components. The `StringValueOrRef` pattern in downstream specs (like `AlicloudNatGateway.spec.eip_id`) enables two reference modes:
+The `AliCloudEipAddress` stack outputs (`eip_id`, `ip_address`) serve as foreign keys for downstream components. The `StringValueOrRef` pattern in downstream specs (like `AliCloudNatGateway.spec.eip_id`) enables two reference modes:
 
 1. **Direct value**: `eip_id: { value: "eip-abc123" }` — for pre-existing EIPs or cross-stack references
-2. **Resource reference**: `eip_id: { ref: { kind: "AlicloudEipAddress", name: "my-eip", output: "eip_id" } }` — for control-plane-managed dependency resolution
+2. **Resource reference**: `eip_id: { ref: { kind: "AliCloudEipAddress", name: "my-eip", output: "eip_id" } }` — for control-plane-managed dependency resolution
 
 ## Implementation Landscape
 
@@ -392,7 +392,7 @@ EIPs are one of the resources most prone to becoming "orphaned" — allocated bu
 
 **Release unused EIPs**: An unassociated EIP still incurs a small hourly charge (the "idle EIP fee"). In accounts with many development/testing EIPs, these charges accumulate.
 
-**Consider bandwidth packages**: For accounts with multiple EIPs (e.g., one per NAT gateway across multiple VPCs), Alibaba Cloud's Common Bandwidth Package lets multiple EIPs share a single bandwidth pool. This is outside the OpenMCF `AlicloudEipAddress` scope but is worth evaluating at the account level.
+**Consider bandwidth packages**: For accounts with multiple EIPs (e.g., one per NAT gateway across multiple VPCs), Alibaba Cloud's Common Bandwidth Package lets multiple EIPs share a single bandwidth pool. This is outside the OpenMCF `AliCloudEipAddress` scope but is worth evaluating at the account level.
 
 ### Security Considerations
 
@@ -423,7 +423,7 @@ EIPs are one of the resources most prone to becoming "orphaned" — allocated bu
 
 The Alibaba Cloud Elastic IP Address is a deceptively simple resource — allocate a public IP, associate it with something — but production management involves nuanced decisions around ISP selection, bandwidth metering, immutability constraints, and lifecycle planning. The gap between "working in dev" and "reliable in production" lies entirely in these operational details.
 
-OpenMCF's `AlicloudEipAddress` component addresses this gap by:
+OpenMCF's `AliCloudEipAddress` component addresses this gap by:
 
 - **Enforcing validation at the API boundary** — bandwidth range, ISP enum, and charge type enum are validated before any cloud API call
 - **Providing safe defaults** — 5 Mbps, PayByTraffic, BGP is the lowest-risk starting configuration
@@ -438,6 +438,6 @@ The component deliberately excludes bandwidth packages, IPv6 EIPs, prepaid billi
 - [Alibaba Cloud EIP Product Overview](https://www.alibabacloud.com/help/en/vpc/product-overview/overview-3)
 - [EIP API Reference — AllocateEipAddress](https://www.alibabacloud.com/help/en/vpc/developer-reference/api-vpc-2016-04-28-allocateeipaddress)
 - [Terraform alicloud_eip_address Resource](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/eip_address)
-- [Pulumi Alicloud ecs.EipAddress](https://www.pulumi.com/registry/packages/alicloud/api-docs/ecs/eipaddress/)
+- [Pulumi AliCloud ecs.EipAddress](https://www.pulumi.com/registry/packages/alicloud/api-docs/ecs/eipaddress/)
 - [Common Bandwidth Package](https://www.alibabacloud.com/help/en/vpc/product-overview/overview-2)
 - [Anti-DDoS Basic](https://www.alibabacloud.com/help/en/ddos/anti-ddos-basic/product-overview/what-is-anti-ddos-origin-basic)

@@ -5,8 +5,8 @@
 Creates a standard NAS file system with NFS protocol and Performance storage. No custom access rules -- all VPC IPs get full read-write access via the default VPC access group.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNasFileSystem
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNasFileSystem
 metadata:
   name: shared-data
 spec:
@@ -22,8 +22,8 @@ spec:
 A production-grade file system with NAS-managed encryption and restrictive access rules. Only the application subnet gets read-write access, while the monitoring subnet gets read-only access with root squashing.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNasFileSystem
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNasFileSystem
 metadata:
   name: prod-shared-storage
   org: my-org
@@ -57,8 +57,8 @@ spec:
 An extreme NAS file system with 500 GiB pre-allocated capacity, advanced storage tier, and KMS encryption. Suitable for ML training, media processing, or HPC workloads requiring dedicated throughput.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNasFileSystem
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNasFileSystem
 metadata:
   name: hpc-scratch
   env: production
@@ -89,8 +89,8 @@ spec:
 A Capacity-tier file system for warm/cold data that doesn't require high IOPS. Uses SMB protocol for Windows client compatibility.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNasFileSystem
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNasFileSystem
 metadata:
   name: archive-share
 spec:

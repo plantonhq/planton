@@ -5,7 +5,7 @@
 The simplest useful firewall: allow SSH from anywhere, block everything else inbound. Outbound traffic is unrestricted by default.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFirewall
 metadata:
   name: ssh-only
@@ -27,7 +27,7 @@ spec:
 A typical firewall for a public-facing web server: SSH for administration, HTTP and HTTPS for application traffic, and ICMP for diagnostics (ping, PMTU discovery).
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFirewall
 metadata:
   name: web-server
@@ -71,7 +71,7 @@ spec:
 A firewall for a database server that should only accept connections from a private subnet. No public SSH — administration is done via a bastion host on the same network.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFirewall
 metadata:
   name: db-restricted
@@ -108,7 +108,7 @@ spec:
 A hardened firewall for a high-security environment. Inbound is limited to specific services; outbound is restricted to prevent a compromised server from reaching arbitrary destinations.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFirewall
 metadata:
   name: hardened-app
@@ -177,7 +177,7 @@ In an infra chart, a `HetznerCloudServer` references the firewall via `valueFrom
 Firewall manifest:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFirewall
 metadata:
   name: web-firewall
@@ -211,7 +211,7 @@ spec:
 Server manifest referencing the firewall output:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: web-01

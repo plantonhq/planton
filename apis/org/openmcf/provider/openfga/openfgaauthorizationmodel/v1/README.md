@@ -24,7 +24,7 @@ An **authorization model** in OpenFGA defines the types, relations, and access r
 Authorization models require an existing OpenFGA store. Deploy an `OpenFgaStore` first:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: my-store
@@ -37,7 +37,7 @@ spec:
 ### 2. Deploy the Model
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: my-model-v1

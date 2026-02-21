@@ -39,12 +39,12 @@ const (
 	CloudResourceProvider_kubernetes                          CloudResourceProvider = 19
 	CloudResourceProvider_snowflake                           CloudResourceProvider = 20
 	CloudResourceProvider_auth0                               CloudResourceProvider = 21
-	CloudResourceProvider_open_fga                            CloudResourceProvider = 22
+	CloudResourceProvider_openfga                             CloudResourceProvider = 22
 	CloudResourceProvider_openstack                           CloudResourceProvider = 23
 	CloudResourceProvider_scaleway                            CloudResourceProvider = 24
-	CloudResourceProvider_alicloud                            CloudResourceProvider = 25
+	CloudResourceProvider_ali_cloud                           CloudResourceProvider = 25
 	CloudResourceProvider_oci                                 CloudResourceProvider = 26
-	CloudResourceProvider_hetznercloud                        CloudResourceProvider = 27
+	CloudResourceProvider_hetzner_cloud                       CloudResourceProvider = 27
 )
 
 // Enum value maps for CloudResourceProvider.
@@ -63,12 +63,12 @@ var (
 		19: "kubernetes",
 		20: "snowflake",
 		21: "auth0",
-		22: "open_fga",
+		22: "openfga",
 		23: "openstack",
 		24: "scaleway",
-		25: "alicloud",
+		25: "ali_cloud",
 		26: "oci",
-		27: "hetznercloud",
+		27: "hetzner_cloud",
 	}
 	CloudResourceProvider_value = map[string]int32{
 		"cloud_resource_provider_unspecified": 0,
@@ -84,12 +84,12 @@ var (
 		"kubernetes":                          19,
 		"snowflake":                           20,
 		"auth0":                               21,
-		"open_fga":                            22,
+		"openfga":                             22,
 		"openstack":                           23,
 		"scaleway":                            24,
-		"alicloud":                            25,
+		"ali_cloud":                           25,
 		"oci":                                 26,
-		"hetznercloud":                        27,
+		"hetzner_cloud":                       27,
 	}
 )
 
@@ -199,7 +199,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_provider_proto_ra
 	"Borg/openmcf/shared/cloudresourcekind/cloud_resource_provider.proto\x12$org.openmcf.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\"T\n" +
 	"\x19CloudResourceProviderMeta\x12\x14\n" +
 	"\x05group\x18\x01 \x01(\tR\x05group\x12!\n" +
-	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName*\xd6\a\n" +
+	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName*\xd8\a\n" +
 	"\x15CloudResourceProvider\x12'\n" +
 	"#cloud_resource_provider_unspecified\x10\x00\x128\n" +
 	"\x05_test\x10\x01\x1a-\xea\xcc')\n" +
@@ -229,19 +229,19 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_provider_proto_ra
 	"\tsnowflake\x10\x14\x1a&\xea\xcc'\"\n" +
 	"\x15snowflake.openmcf.org\x12\tSnowflake\x12)\n" +
 	"\x05auth0\x10\x15\x1a\x1e\xea\xcc'\x1a\n" +
-	"\x11auth0.openmcf.org\x12\x05Auth0\x121\n" +
-	"\bopen_fga\x10\x16\x1a#\xea\xcc'\x1f\n" +
-	"\x14open-fga.openmcf.org\x12\aOpenFGA\x125\n" +
+	"\x11auth0.openmcf.org\x12\x05Auth0\x12/\n" +
+	"\aopenfga\x10\x16\x1a\"\xea\xcc'\x1e\n" +
+	"\x13openfga.openmcf.org\x12\aOpenFGA\x125\n" +
 	"\topenstack\x10\x17\x1a&\xea\xcc'\"\n" +
 	"\x15openstack.openmcf.org\x12\tOpenStack\x122\n" +
 	"\bscaleway\x10\x18\x1a$\xea\xcc' \n" +
-	"\x14scaleway.openmcf.org\x12\bScaleway\x127\n" +
-	"\balicloud\x10\x19\x1a)\xea\xcc'%\n" +
-	"\x14alicloud.openmcf.org\x12\rAlibaba Cloud\x12#\n" +
+	"\x14scaleway.openmcf.org\x12\bScaleway\x129\n" +
+	"\tali_cloud\x10\x19\x1a*\xea\xcc'&\n" +
+	"\x15ali-cloud.openmcf.org\x12\rAlibaba Cloud\x12#\n" +
 	"\x03oci\x10\x1a\x1a\x1a\xea\xcc'\x16\n" +
-	"\x0foci.openmcf.org\x12\x03OCI\x12?\n" +
-	"\fhetznercloud\x10\x1b\x1a-\xea\xcc')\n" +
-	"\x18hetznercloud.openmcf.org\x12\rHetzner Cloud:\x89\x01\n" +
+	"\x0foci.openmcf.org\x12\x03OCI\x12A\n" +
+	"\rhetzner_cloud\x10\x1b\x1a.\xea\xcc'*\n" +
+	"\x19hetzner-cloud.openmcf.org\x12\rHetzner Cloud:\x89\x01\n" +
 	"\rprovider_meta\x12!.google.protobuf.EnumValueOptions\x18\xcd\xf9\x04 \x01(\v2?.org.openmcf.shared.cloudresourcekind.CloudResourceProviderMetaR\fproviderMetaB\xc2\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x1aCloudResourceProviderProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

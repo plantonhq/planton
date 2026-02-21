@@ -10,7 +10,7 @@ Terraform IaC module for provisioning Hetzner Cloud DNS zones with record sets. 
 ├── outputs.tf        # Stack output definitions
 ├── variables.tf      # Input variable definitions (metadata, spec, hcloud_token)
 ├── locals.tf         # Standard label computation, record set map for for_each
-└── provider.tf       # Hetzner Cloud provider configuration (~> 1.60)
+└── provider.tf       # HetznerCloud provider configuration (~> 1.60)
 ```
 
 ## Resources Created

@@ -4,7 +4,7 @@ Deploys an Alibaba Cloud RAM role with bundled policy attachments and a configur
 
 ## What Gets Created
 
-When you deploy an AlicloudRamRole resource, OpenMCF provisions:
+When you deploy an AliCloudRamRole resource, OpenMCF provisions:
 
 - **RAM Role** — an `alicloud_ram_role` resource with the specified trust policy, session duration, and tags
 - **Policy Attachments** — one `alicloud_ram_role_policy_attachment` per entry in `policyAttachments`, granting the role permissions defined by system-managed or custom policies
@@ -13,22 +13,22 @@ When you deploy an AlicloudRamRole resource, OpenMCF provisions:
 
 - **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
 - **An Alibaba Cloud account** with RAM service enabled
-- **Custom policies** must already exist before referencing them with `policyType: Custom` — create them with AlicloudRamPolicy
+- **Custom policies** must already exist before referencing them with `policyType: Custom` — create them with AliCloudRamPolicy
 
 ## Quick Start
 
 Create a file `ram-role.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamRole
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamRole
 metadata:
   name: my-ecs-role
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudRamRole.my-ecs-role
+    pulumi.openmcf.org/stack.name: dev.AliCloudRamRole.my-ecs-role
 spec:
   region: cn-hangzhou
   roleName: my-ecs-service-role
@@ -80,15 +80,15 @@ This creates a RAM role that ECS instances can assume via STS. No policies are a
 A role for ECS instances that need access to OSS and log services, with a 2-hour session duration:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamRole
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamRole
 metadata:
   name: ecs-worker-role
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudRamRole.ecs-worker-role
+    pulumi.openmcf.org/stack.name: prod.AliCloudRamRole.ecs-worker-role
 spec:
   region: cn-shanghai
   roleName: ecs-worker-role
@@ -117,15 +117,15 @@ spec:
 A role that another Alibaba Cloud account can assume for read-only audit access, with both system and custom policies:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamRole
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamRole
 metadata:
   name: cross-account-audit
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudRamRole.cross-account-audit
+    pulumi.openmcf.org/stack.name: prod.AliCloudRamRole.cross-account-audit
 spec:
   region: cn-hangzhou
   roleName: cross-account-audit-role
@@ -155,15 +155,15 @@ spec:
 A role for Function Compute functions that need VPC access and log service integration:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamRole
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamRole
 metadata:
   name: fc-execution-role
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AlicloudRamRole.fc-execution-role
+    pulumi.openmcf.org/stack.name: staging.AliCloudRamRole.fc-execution-role
 spec:
   region: cn-hangzhou
   roleName: fc-execution-role
@@ -195,7 +195,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudRamPolicy](/docs/catalog/alicloud/alicloudrampolicy) — create custom policies to attach to this role
-- [AlicloudAckManagedCluster](/docs/catalog/alicloud/alicloudackmanagedcluster) — references this role for cluster service authentication
-- [AlicloudFcFunction](/docs/catalog/alicloud/alicloudfcfunction) — references the role ARN for function execution permissions
-- [AlicloudEcsInstance](/docs/catalog/alicloud/alicloudecsinstance) — references this role for instance profile attachment
+- [AliCloudRamPolicy](/docs/catalog/alicloud/alicloudrampolicy) — create custom policies to attach to this role
+- [AliCloudAckManagedCluster](/docs/catalog/alicloud/alicloudackmanagedcluster) — references this role for cluster service authentication
+- [AliCloudFcFunction](/docs/catalog/alicloud/alicloudfcfunction) — references the role ARN for function execution permissions
+- [AliCloudEcsInstance](/docs/catalog/alicloud/alicloudecsinstance) — references this role for instance profile attachment

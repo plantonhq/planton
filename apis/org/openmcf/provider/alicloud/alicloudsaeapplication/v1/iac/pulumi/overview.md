@@ -23,7 +23,7 @@ iac/pulumi/
 **Controller (`module/main.go`)**: The `Resources` function is the main orchestrator. It creates an Alibaba Cloud provider scoped to the spec's region, builds the `ApplicationArgs` with required fields (app name, package type, replicas, CPU, memory), then conditionally sets each optional field group: networking (VPC, VSwitch, security group), deployment (image URL, package URL, command, command args, envs), runtime (JDK, JVM options, programming language, timezone, graceful shutdown), health checks (liveness_v2, readiness_v2), custom host aliases, update strategy, SLS configs, and tags.
 
 Helper functions handle type-specific conversions:
-- `healthCheckArgs` / `readinessCheckArgs` — maps the proto `AlicloudSaeApplicationHealthCheck` to the provider's `ApplicationLivenessV2Args` / `ApplicationReadinessV2Args`
+- `healthCheckArgs` / `readinessCheckArgs` — maps the proto `AliCloudSaeApplicationHealthCheck` to the provider's `ApplicationLivenessV2Args` / `ApplicationReadinessV2Args`
 - `customHostAliasArgs` — converts the proto's repeated host alias messages to `ApplicationCustomHostAliasV2Array`
 - `updateStrategyArgs` — maps the proto update strategy to `ApplicationUpdateStrategyV2Args`
 

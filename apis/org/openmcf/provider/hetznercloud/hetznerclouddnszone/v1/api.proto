@@ -10,7 +10,7 @@ import "org/openmcf/shared/metadata.proto";
 // hetznercloud-dns-zone
 message HetznerCloudDnsZone {
   //api-version
-  string api_version = 1 [(buf.validate.field).string.const = "hetznercloud.openmcf.org/v1"];
+  string api_version = 1 [(buf.validate.field).string.const = "hetzner-cloud.openmcf.org/v1"];
 
   //resource-kind
   string kind = 2 [(buf.validate.field).string.const = "HetznerCloudDnsZone"];

@@ -1,4 +1,4 @@
-# AlicloudFunction
+# AliCloudFunction
 
 Manages an Alibaba Cloud Function Compute v3 function.
 
@@ -51,7 +51,7 @@ This component wraps a single `alicloud_fcv3_function` resource. Triggers, alias
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `description` | string | `""` | Human-readable description |
-| `role` | StringValueOrRef | | RAM role ARN for execution (references AlicloudRamRole) |
+| `role` | StringValueOrRef | | RAM role ARN for execution (references AliCloudRamRole) |
 | `internetAccess` | bool | | Whether function can access the public internet |
 | `layers` | list | `[]` | Layer ARNs (max 5) |
 | `environmentVariables` | map | `{}` | Environment variables |
@@ -79,8 +79,8 @@ This component wraps a single `alicloud_fcv3_function` resource. Triggers, alias
 
 ## Related Components
 
-- **AlicloudRamRole** -- provides the execution role for the function
-- **AlicloudLogProject** -- provides the SLS project for function logging
-- **AlicloudVpc** / **AlicloudVswitch** / **AlicloudSecurityGroup** -- VPC networking for private resource access
-- **AlicloudNasFileSystem** -- NAS mount target for shared file storage
-- **AlicloudStorageBucket** -- OSS bucket for function code packages
+- **AliCloudRamRole** -- provides the execution role for the function
+- **AliCloudLogProject** -- provides the SLS project for function logging
+- **AliCloudVpc** / **AliCloudVswitch** / **AliCloudSecurityGroup** -- VPC networking for private resource access
+- **AliCloudNasFileSystem** -- NAS mount target for shared file storage
+- **AliCloudStorageBucket** -- OSS bucket for function code packages

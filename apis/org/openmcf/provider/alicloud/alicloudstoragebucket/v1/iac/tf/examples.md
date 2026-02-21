@@ -1,4 +1,4 @@
-# AlicloudStorageBucket Terraform Examples
+# AliCloudStorageBucket Terraform Examples
 
 ## Minimal Bucket
 

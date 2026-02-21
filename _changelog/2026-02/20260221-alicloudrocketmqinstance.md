@@ -1,20 +1,20 @@
-# AlicloudRocketmqInstance Component Added
+# AliCloudRocketmqInstance Component Added
 
 **Date**: 2026-02-21
-**Component**: AlicloudRocketmqInstance
+**Component**: AliCloudRocketmqInstance
 **Enum**: 3120
 **ID Prefix**: acrmq
 
 ## Summary
 
-Added the AlicloudRocketmqInstance deployment component -- manages a RocketMQ 5.x instance with bundled topics and consumer groups in Alibaba Cloud. RocketMQ is a distributed messaging and streaming platform supporting normal, FIFO, delayed, and transactional messages. The component uses the newer RocketMQ 5.x API (2022-08-01) rather than the legacy ONS API, providing VPC-integrated instances with configurable throughput tiers, billing modes, and optional internet access.
+Added the AliCloudRocketmqInstance deployment component -- manages a RocketMQ 5.x instance with bundled topics and consumer groups in Alibaba Cloud. RocketMQ is a distributed messaging and streaming platform supporting normal, FIFO, delayed, and transactional messages. The component uses the newer RocketMQ 5.x API (2022-08-01) rather than the legacy ONS API, providing VPC-integrated instances with configurable throughput tiers, billing modes, and optional internet access.
 
 ## What Was Created
 
 ### API Definition
 - `apis/org/openmcf/provider/alicloud/alicloudrocketmqinstance/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AlicloudRocketmqInstance = 3120` in `CloudResourceKind` enum under a new Messaging category
-- Nested messages: `AlicloudRocketmqTopic`, `AlicloudRocketmqConsumerGroup`, `AlicloudRocketmqConsumeRetryPolicy`, `AlicloudRocketmqInternetInfo`, `AlicloudRocketmqProductInfo`
+- Registered `AliCloudRocketmqInstance = 3120` in `CloudResourceKind` enum under a new Messaging category
+- Nested messages: `AliCloudRocketmqTopic`, `AliCloudRocketmqConsumerGroup`, `AliCloudRocketmqConsumeRetryPolicy`, `AliCloudRocketmqInternetInfo`, `AliCloudRocketmqProductInfo`
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider, RocketMQ instance with nested network_info (VPC + internet) and product_info blocks, then iterates topics and consumer groups as child resources. Extracts VPC and internet endpoints from computed `network_info.endpoints`.
@@ -31,7 +31,7 @@ Added the AlicloudRocketmqInstance deployment component -- manages a RocketMQ 5.
 ## Design Decisions (Deviations from T02)
 
 - **RocketMQ v5 instead of ONS**: T02 designed around the legacy ONS API (`alicloud_ons_instance`). Switched to RocketMQ 5.x (`alicloud_rocketmq_instance`) which provides VPC integration, edition tiers, billing configuration, and richer consumer group semantics. This is a significant scope increase but the right choice for a production platform.
-- **Flattened VPC networking**: The provider's deeply nested `network_info.vpc_info` block is flattened -- `vpc_id` and `vswitch_id` are promoted to spec root with `StringValueOrRef`, consistent with every other Alicloud component.
+- **Flattened VPC networking**: The provider's deeply nested `network_info.vpc_info` block is flattened -- `vpc_id` and `vswitch_id` are promoted to spec root with `StringValueOrRef`, consistent with every other AliCloud component.
 - **Internet access as optional nested message**: `internet_info` stays nested because `flow_out_type` is conditionally relevant. When omitted, defaults to internet disabled (`internet_spec: "disable"`, `flow_out_type: "uninvolved"`).
 - **`msg_process_spec` at top level**: Promoted from `product_info` to spec root as the primary sizing knob.
 - **`service_code` hardcoded**: Always "rmq" for RocketMQ. Not exposed to users.

@@ -1,4 +1,4 @@
-# AlicloudVpnGateway Terraform Module
+# AliCloudVpnGateway Terraform Module
 
 This Terraform module provisions an Alibaba Cloud VPN Gateway with customer gateways and IPsec VPN connections.
 

@@ -191,7 +191,7 @@ Added OpenFGA to the credential provider configuration to fix build:
 ### Create Store
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: production-authz

@@ -1,4 +1,4 @@
-# AlicloudVpnGateway
+# AliCloudVpnGateway
 
 **Date**: 2026-02-19
 **Type**: New Resource
@@ -7,11 +7,11 @@
 
 ## Summary
 
-Added `AlicloudVpnGateway` -- an Alibaba Cloud VPN Gateway component that bundles VPN gateway creation with customer gateways and IPsec VPN connections into a single deployable unit.
+Added `AliCloudVpnGateway` -- an Alibaba Cloud VPN Gateway component that bundles VPN gateway creation with customer gateways and IPsec VPN connections into a single deployable unit.
 
 ## What's Included
 
-- **Proto API** -- spec.proto with 5 messages (AlicloudVpnGatewaySpec, AlicloudVpnConnection, AlicloudIkeConfig, AlicloudIpsecConfig, AlicloudVpnHealthCheckConfig), full buf.validate + CEL validation
+- **Proto API** -- spec.proto with 5 messages (AliCloudVpnGatewaySpec, AliCloudVpnConnection, AliCloudIkeConfig, AliCloudIpsecConfig, AliCloudVpnHealthCheckConfig), full buf.validate + CEL validation
 - **Pulumi module** -- Go implementation with provider setup, gateway creation, and per-connection customer gateway + VPN connection bundling
 - **Terraform module** -- HCL implementation with `for_each` for connections, dynamic blocks for IKE/IPsec/health-check config
 - **33 validation tests** -- comprehensive spec_test.go covering valid and invalid inputs

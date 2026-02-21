@@ -22,7 +22,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with minimal required fields and no rules", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-sg",
@@ -41,7 +41,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with all optional SG-level fields populated", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "full-sg",
@@ -66,7 +66,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with inner_access_policy Accept", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "accept-sg",
@@ -86,7 +86,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with a complete ingress rule", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "web-sg",
@@ -116,7 +116,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with mixed ingress and egress rules", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "mixed-sg",
@@ -155,7 +155,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with a SG-to-SG rule using source_security_group_id", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "sg-to-sg",
@@ -183,7 +183,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with a drop-policy rule", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "deny-sg",
@@ -211,7 +211,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with priority at boundary values", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "priority-sg",
@@ -247,7 +247,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with vpc_id as a reference", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "ref-sg",
@@ -273,7 +273,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -291,7 +291,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when vpc_id is missing", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -307,7 +307,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when security_group_name is missing", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -325,7 +325,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when security_group_name is too short", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -348,7 +348,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 				longName += "a"
 			}
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -386,7 +386,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when kind is wrong", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -405,7 +405,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when metadata is missing", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Spec: &AliCloudSecurityGroupSpec{
 					Region: "cn-hangzhou",
@@ -421,7 +421,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when inner_access_policy has invalid value", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -441,7 +441,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when rule type is invalid", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -467,7 +467,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when rule ip_protocol is invalid", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -493,7 +493,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when rule ip_protocol is missing", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -518,7 +518,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when rule type is missing", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -543,7 +543,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when rule policy has invalid value", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -570,7 +570,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when rule priority is below minimum", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -597,7 +597,7 @@ var _ = ginkgo.Describe("AliCloudSecurityGroupSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when rule priority exceeds maximum", func() {
 			input := &AliCloudSecurityGroup{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudSecurityGroup",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",

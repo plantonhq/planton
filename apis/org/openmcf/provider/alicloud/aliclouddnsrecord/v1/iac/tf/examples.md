@@ -1,4 +1,4 @@
-# AlicloudDnsRecord Terraform Examples
+# AliCloudDnsRecord Terraform Examples
 
 ## A Record
 

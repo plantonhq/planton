@@ -27,15 +27,15 @@ Accelerate a website with a single IP-based origin. This is the simplest
 configuration — only the required fields are specified.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCdnDomain
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCdnDomain
 metadata:
   name: my-cdn
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: cdn-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudCdnDomain.my-cdn
+    pulumi.openmcf.org/stack.name: dev.AliCloudCdnDomain.my-cdn
 spec:
   region: cn-hangzhou
   domainName: cdn.example.com
@@ -62,8 +62,8 @@ standby origin for failover. Includes tags and a resource group for
 production tracking.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCdnDomain
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCdnDomain
 metadata:
   name: assets-cdn
   org: platform-team
@@ -72,7 +72,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: platform-team
     pulumi.openmcf.org/project: cdn-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudCdnDomain.assets-cdn
+    pulumi.openmcf.org/stack.name: prod.AliCloudCdnDomain.assets-cdn
 spec:
   region: cn-shanghai
   domainName: assets.example.com
@@ -113,8 +113,8 @@ Certificate Management Service. Uses multiple weighted origins for load
 distribution.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCdnDomain
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCdnDomain
 metadata:
   name: secure-cdn
   org: my-org
@@ -123,7 +123,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: cdn-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudCdnDomain.secure-cdn
+    pulumi.openmcf.org/stack.name: prod.AliCloudCdnDomain.secure-cdn
 spec:
   region: cn-hangzhou
   domainName: secure.example.com
@@ -168,4 +168,4 @@ spec:
 
 - [Pulumi README](./README.md) — CLI reference and debugging guide.
 - [Module Overview](./overview.md) — architecture and design decisions.
-- [AlicloudCdnDomain Overview](../../../README.md) — full field reference.
+- [AliCloudCdnDomain Overview](../../../README.md) — full field reference.

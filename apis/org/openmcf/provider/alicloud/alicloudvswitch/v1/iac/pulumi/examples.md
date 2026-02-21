@@ -1,4 +1,4 @@
-# AlicloudVswitch Pulumi Examples
+# AliCloudVswitch Pulumi Examples
 
 Create a YAML manifest using one of the examples below, then deploy with the OpenMCF CLI:
 
@@ -22,8 +22,8 @@ openmcf pulumi update \
 A VSwitch with only the required fields. Suitable for development or quick testing.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVswitch
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVswitch
 metadata:
   name: dev-vswitch
 spec:
@@ -43,8 +43,8 @@ This creates a VSwitch with a `/24` CIDR block in the `cn-hangzhou-a` Availabili
 A production VSwitch using a large CIDR block for Kubernetes node pools, with organizational tags.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVswitch
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVswitch
 metadata:
   name: prod-app-vswitch
   org: my-org
@@ -69,11 +69,11 @@ spec:
 
 ## VSwitch with Cross-Resource Reference
 
-Uses a `valueFrom` reference to resolve the VPC ID from an existing AlicloudVpc component.
+Uses a `valueFrom` reference to resolve the VPC ID from an existing AliCloudVpc component.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVswitch
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVswitch
 metadata:
   name: db-vswitch
   env: staging
@@ -89,7 +89,7 @@ spec:
 ```
 
 - The `valueFrom` reference is resolved by the platform before Pulumi executes
-- At runtime, `vpc_id.GetValue()` returns the literal VPC ID from the referenced AlicloudVpc's outputs
+- At runtime, `vpc_id.GetValue()` returns the literal VPC ID from the referenced AliCloudVpc's outputs
 
 ---
 
@@ -98,8 +98,8 @@ spec:
 A dual-stack VSwitch with IPv6 support. The parent VPC must also have IPv6 enabled for this to take effect.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVswitch
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVswitch
 metadata:
   name: ipv6-vswitch
 spec:

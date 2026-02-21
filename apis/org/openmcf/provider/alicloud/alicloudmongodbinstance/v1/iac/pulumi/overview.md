@@ -1,4 +1,4 @@
-# AlicloudMongodbInstance Pulumi Module Overview
+# AliCloudMongodbInstance Pulumi Module Overview
 
 ## Module Structure
 

@@ -21,11 +21,11 @@ This preset creates a public-facing ALB with a single HTTP listener and one serv
 | --- | --- | --- |
 | `<your-alb-name>` | ALB name (2-128 chars) | Choose a descriptive name |
 | `<alibaba-cloud-region>` | Region code (e.g., `cn-hangzhou`) | Your deployment region |
-| `<your-vpc-id>` | VPC ID | `AlicloudVpc` stack outputs |
+| `<your-vpc-id>` | VPC ID | `AliCloudVpc` stack outputs |
 | `<zone-a>` | First AZ (e.g., `cn-hangzhou-a`) | Region's available zones |
 | `<zone-b>` | Second AZ (e.g., `cn-hangzhou-b`) | Region's available zones |
-| `<your-vswitch-id-a>` | VSwitch in zone A | `AlicloudVswitch` stack outputs |
-| `<your-vswitch-id-b>` | VSwitch in zone B | `AlicloudVswitch` stack outputs |
+| `<your-vswitch-id-a>` | VSwitch in zone A | `AliCloudVswitch` stack outputs |
+| `<your-vswitch-id-b>` | VSwitch in zone B | `AliCloudVswitch` stack outputs |
 
 ## Related Presets
 

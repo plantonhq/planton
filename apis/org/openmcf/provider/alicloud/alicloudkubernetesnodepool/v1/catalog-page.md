@@ -1,10 +1,10 @@
-# AlicloudKubernetesNodePool
+# AliCloud KubernetesNodePool
 
 Deploys a worker node pool in an Alibaba Cloud ACK Managed Kubernetes cluster with configurable instance types, ESSD disk configuration, auto-scaling, managed lifecycle (auto-repair, auto-upgrade), spot instance support, and Kubernetes scheduling properties (labels, taints).
 
 ## What Gets Created
 
-When you deploy an AlicloudKubernetesNodePool resource, OpenMCF provisions:
+When you deploy an AliCloudKubernetesNodePool resource, OpenMCF provisions:
 
 - **ACK Node Pool** — an `alicloud_cs_kubernetes_node_pool` resource containing a group of ECS worker nodes with shared instance configuration, scaling policy, and Kubernetes properties
 - **ECS Instances** — worker nodes provisioned within the pool based on `desiredSize` or auto-scaler decisions
@@ -13,7 +13,7 @@ When you deploy an AlicloudKubernetesNodePool resource, OpenMCF provisions:
 ## Prerequisites
 
 - **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
-- **An existing ACK cluster** (AlicloudKubernetesCluster) to attach the node pool to
+- **An existing ACK cluster** (AliCloudKubernetesCluster) to attach the node pool to
 - **At least one VSwitch** in the same VPC as the parent cluster
 - **An SSH key pair** or password for node access
 
@@ -22,15 +22,15 @@ When you deploy an AlicloudKubernetesNodePool resource, OpenMCF provisions:
 Create a file `node-pool.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesNodePool
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesNodePool
 metadata:
   name: my-pool
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudKubernetesNodePool.my-pool
+    pulumi.openmcf.org/stack.name: dev.AliCloudKubernetesNodePool.my-pool
 spec:
   region: cn-hangzhou
   clusterId:
@@ -62,7 +62,7 @@ This creates a two-node pool with AliyunLinux3, 120 GiB cloud_essd system disks,
 | `region` | `string` | Alibaba Cloud region. Must match the parent cluster's region. | Required; non-empty |
 | `clusterId` | `StringValueOrRef` | ACK cluster ID that this node pool belongs to. | Required |
 | `clusterId.value` | `string` | Direct cluster ID value. | — |
-| `clusterId.valueFrom` | `object` | Foreign key reference to an AlicloudKubernetesCluster resource. | Default kind: `AlicloudKubernetesCluster`, field: `status.outputs.cluster_id` |
+| `clusterId.valueFrom` | `object` | Foreign key reference to an AliCloudKubernetesCluster resource. | Default kind: `AliCloudKubernetesCluster`, field: `status.outputs.cluster_id` |
 | `name` | `string` | Node pool name. | Required; 1–63 characters |
 | `vswitchIds` | `StringValueOrRef[]` | VSwitch IDs for worker node placement. Use distinct AZs for HA. | 1–5 items required |
 | `instanceTypes` | `string[]` | ECS instance types. Multiple types improve availability. | At least 1 required |
@@ -79,7 +79,7 @@ This creates a two-node pool with AliyunLinux3, 120 GiB cloud_essd system disks,
 | `systemDisk.encrypted` | `bool` | `false` | Encrypt the system disk. |
 | `systemDisk.kmsKeyId` | `string` | — | KMS key ID for disk encryption. |
 | `dataDisks` | `DataDisk[]` | `[]` | Additional data disks per node. Each requires `size` (40–32767 GiB). |
-| `securityGroupIds` | `StringValueOrRef[]` | Cluster default | Security groups for nodes. Immutable after creation. Can reference AlicloudSecurityGroup. |
+| `securityGroupIds` | `StringValueOrRef[]` | Cluster default | Security groups for nodes. Immutable after creation. Can reference AliCloudSecurityGroup. |
 | `internetMaxBandwidthOut` | `int` | `0` | Max outbound bandwidth in Mbps. >0 allocates a public IP. Range: 0–100. |
 | `internetChargeType` | `string` | `PayByTraffic` | Public internet billing: `PayByBandwidth` or `PayByTraffic`. |
 | `keyName` | `string` | — | SSH key pair name. Mutually exclusive with `password`. |
@@ -120,15 +120,15 @@ This creates a two-node pool with AliyunLinux3, 120 GiB cloud_essd system disks,
 A minimal fixed-size pool for development workloads.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesNodePool
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesNodePool
 metadata:
   name: dev-pool
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudKubernetesNodePool.dev-pool
+    pulumi.openmcf.org/stack.name: dev.AliCloudKubernetesNodePool.dev-pool
 spec:
   region: cn-hangzhou
   clusterId:
@@ -148,8 +148,8 @@ spec:
 A production pool with auto-scaling, managed lifecycle, and multiple instance types.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesNodePool
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesNodePool
 metadata:
   name: prod-compute
   org: acme-corp
@@ -158,22 +158,22 @@ metadata:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: acme-corp
     pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.AlicloudKubernetesNodePool.prod-compute
+    pulumi.openmcf.org/stack.name: production.AliCloudKubernetesNodePool.prod-compute
 spec:
   region: cn-hangzhou
   clusterId:
     valueFrom:
-      kind: AlicloudKubernetesCluster
+      kind: AliCloudKubernetesCluster
       name: prod-cluster
       field: status.outputs.cluster_id
   name: prod-compute
   vswitchIds:
     - valueFrom:
-        kind: AlicloudVswitch
+        kind: AliCloudVswitch
         name: node-vsw-a
         field: status.outputs.vswitch_id
     - valueFrom:
-        kind: AlicloudVswitch
+        kind: AliCloudVswitch
         name: node-vsw-b
         field: status.outputs.vswitch_id
   instanceTypes:
@@ -208,15 +208,15 @@ spec:
 A cost-optimized pool using spot instances with taints for batch workload isolation.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesNodePool
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesNodePool
 metadata:
   name: batch-spot
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudKubernetesNodePool.batch-spot
+    pulumi.openmcf.org/stack.name: prod.AliCloudKubernetesNodePool.batch-spot
 spec:
   region: cn-hangzhou
   clusterId:
@@ -270,6 +270,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudKubernetesCluster](/docs/catalog/alicloud/alicloudkubernetescluster) — the parent cluster that this node pool belongs to
-- [AlicloudVswitch](/docs/catalog/alicloud/alicloudvswitch) — provides VSwitches for worker node placement
-- [AlicloudSecurityGroup](/docs/catalog/alicloud/alicloudsecuritygroup) — controls network access for worker nodes
+- [AliCloudKubernetesCluster](/docs/catalog/alicloud/alicloudkubernetescluster) — the parent cluster that this node pool belongs to
+- [AliCloudVswitch](/docs/catalog/alicloud/alicloudvswitch) — provides VSwitches for worker node placement
+- [AliCloudSecurityGroup](/docs/catalog/alicloud/alicloudsecuritygroup) — controls network access for worker nodes

@@ -5,7 +5,7 @@
 The simplest configuration: a 10 GB raw volume in Falkenstein with no filesystem and no server attachment. The volume is created unattached and available for later use.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudVolume
 metadata:
   name: scratch-data
@@ -21,7 +21,7 @@ spec:
 A 50 GB volume pre-formatted with ext4. The filesystem is created at volume creation time — no need to SSH into the server to format the block device. The volume is still unattached; it can be attached to a server later.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudVolume
 metadata:
   name: app-data
@@ -42,7 +42,7 @@ A 100 GB ext4 volume attached to a server via a `valueFrom` reference. The `serv
 Automount is enabled, so Hetzner Cloud mounts the volume automatically after the initial attachment.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudVolume
 metadata:
   name: db-data
@@ -63,7 +63,7 @@ spec:
 The companion server manifest (deployed in the same infra chart):
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: db-primary
@@ -84,7 +84,7 @@ A large XFS volume for high-throughput workloads, attached to a server with dele
 Delete protection prevents accidental deletion — the protection must be explicitly removed before the volume can be destroyed.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudVolume
 metadata:
   name: media-storage

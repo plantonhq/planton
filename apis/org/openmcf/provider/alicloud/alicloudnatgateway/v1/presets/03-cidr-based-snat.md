@@ -18,9 +18,9 @@ This preset creates a NAT Gateway with SNAT entries specified by CIDR blocks ins
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`) | Your deployment region |
-| `<your-vpc-id>` | VPC ID the NAT Gateway belongs to | Alibaba Cloud VPC console or `AlicloudVpc` stack outputs |
-| `<your-nat-vswitch-id>` | VSwitch ID for NAT Gateway placement | Alibaba Cloud VPC console or `AlicloudVswitch` stack outputs |
-| `<your-eip-id>` | EIP allocation ID to associate with the NAT Gateway | Alibaba Cloud EIP console or `AlicloudEipAddress` stack outputs |
+| `<your-vpc-id>` | VPC ID the NAT Gateway belongs to | Alibaba Cloud VPC console or `AliCloudVpc` stack outputs |
+| `<your-nat-vswitch-id>` | VSwitch ID for NAT Gateway placement | Alibaba Cloud VPC console or `AliCloudVswitch` stack outputs |
+| `<your-eip-id>` | EIP allocation ID to associate with the NAT Gateway | Alibaba Cloud EIP console or `AliCloudEipAddress` stack outputs |
 | `<your-nat-name>` | NAT Gateway name (2-128 chars) | Choose a descriptive name |
 
 Adjust the `sourceCidr` values (`10.0.1.0/24`, `10.0.2.0/24`) to match your actual VPC CIDR allocation.

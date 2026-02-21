@@ -22,7 +22,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRdsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-rds",
@@ -44,7 +44,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with all optional fields populated", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRdsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "prod-mysql",
@@ -83,7 +83,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with PostgreSQL engine", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRdsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "pg-test",
@@ -105,7 +105,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with databases and accounts", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRdsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "db-with-accounts",
@@ -148,7 +148,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with Prepaid billing and period", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRdsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "prepaid-rds",
@@ -174,7 +174,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with parameters", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRdsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "param-rds",
@@ -220,7 +220,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when kind is wrong", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRdsInstanceSpec{
@@ -237,7 +237,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when metadata is missing", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRdsInstance",
 				Spec: &AliCloudRdsInstanceSpec{
 					Region: "cn-hangzhou", Engine: "MySQL", EngineVersion: "8.0",
@@ -253,7 +253,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when spec is missing", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRdsInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 			}
@@ -263,7 +263,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when engine is invalid", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRdsInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRdsInstanceSpec{
@@ -280,7 +280,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when region is empty", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRdsInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRdsInstanceSpec{
@@ -297,7 +297,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when vswitch_id is missing", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRdsInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRdsInstanceSpec{
@@ -311,7 +311,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when instance_storage is zero", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRdsInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRdsInstanceSpec{
@@ -328,7 +328,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when category is invalid", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRdsInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRdsInstanceSpec{
@@ -346,7 +346,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when ssl_action is invalid", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRdsInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRdsInstanceSpec{
@@ -364,7 +364,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when account_password is too short", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRdsInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRdsInstanceSpec{
@@ -384,7 +384,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when privilege database_names is empty", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRdsInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRdsInstanceSpec{
@@ -410,7 +410,7 @@ var _ = ginkgo.Describe("AliCloudRdsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when privilege value is invalid", func() {
 			input := &AliCloudRdsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRdsInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRdsInstanceSpec{

@@ -10,7 +10,7 @@ Terraform IaC module for provisioning a Hetzner Cloud load balancer with service
 ├── outputs.tf        # Stack output definitions
 ├── variables.tf      # Input variable definitions (metadata, spec, hcloud_token)
 ├── locals.tf         # LB name, standard labels, algorithm default, service port computation
-└── provider.tf       # Hetzner Cloud provider configuration
+└── provider.tf       # HetznerCloud provider configuration
 ```
 
 ## Resources Created

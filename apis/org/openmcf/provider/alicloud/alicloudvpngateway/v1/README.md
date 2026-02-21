@@ -1,4 +1,4 @@
-# AlicloudVpnGateway
+# AliCloudVpnGateway
 
 Manages an Alibaba Cloud VPN Gateway with bundled customer gateways and IPsec VPN connections.
 

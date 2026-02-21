@@ -1,0 +1,45 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciContainerEngineNodePool
+metadata:
+  name: my-oke-node-pool
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  clusterId:
+    value: <oke-cluster-ocid>
+  kubernetesVersion: <kubernetes-version>
+  nodeShape: VM.Standard.E4.Flex
+  nodeShapeConfig:
+    ocpus: 2
+    memoryInGbs: 32 # 16 GB per OCPU; standard ratio for general-purpose workloads
+  nodeConfigDetails:
+    size: 3
+    placementConfigs:
+      - availabilityDomain: <availability-domain-1>
+        subnetId:
+          value: <worker-subnet-ocid>
+      - availabilityDomain: <availability-domain-2>
+        subnetId:
+          value: <worker-subnet-ocid>
+      - availabilityDomain: <availability-domain-3>
+        subnetId:
+          value: <worker-subnet-ocid>
+    nsgIds:
+      - value: <worker-nsg-ocid>
+    podNetworkOptionDetails:
+      cniType: oci_vcn_ip_native
+      maxPodsPerNode: 31 # default for 2-OCPU E4.Flex based on VNIC attachment limits
+      podSubnetIds:
+        - value: <pod-subnet-ocid>
+      podNsgIds:
+        - value: <pod-nsg-ocid>
+  initialNodeLabels:
+    - key: pool
+      value: general-purpose
+  nodeEvictionSettings:
+    evictionGraceDuration: PT60M
+    isForceDeleteAfterGraceDuration: true
+  nodePoolCyclingDetails:
+    isNodeCyclingEnabled: true
+    maximumSurge: "1"
+    maximumUnavailable: "0" # zero-downtime rolling upgrades

@@ -18,8 +18,8 @@ openmcf pulumi update \
 ## Minimal KMS Key
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKmsKey
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKmsKey
 metadata:
   name: my-key
 spec:
@@ -29,8 +29,8 @@ spec:
 ## Production Encryption Key with Rotation
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKmsKey
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKmsKey
 metadata:
   name: prod-encryption-key
   org: my-org
@@ -49,8 +49,8 @@ spec:
 ## Asymmetric Signing Key
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKmsKey
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKmsKey
 metadata:
   name: signing-key
 spec:

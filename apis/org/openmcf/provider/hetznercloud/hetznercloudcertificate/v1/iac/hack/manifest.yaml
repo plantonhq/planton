@@ -1,4 +1,4 @@
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudCertificate
 metadata:
   name: hetznercloudcertificate-uploaded-demo
@@ -13,7 +13,7 @@ spec:
       MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDExample...
       -----END PRIVATE KEY-----
 ---
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudCertificate
 metadata:
   name: hetznercloudcertificate-managed-demo

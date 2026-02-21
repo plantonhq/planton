@@ -1,12 +1,12 @@
-# AlicloudRedisInstance
+# AliCloudRedisInstance
 
 **Date**: 2026-02-19
 **Type**: New Component
-**Resource Kind**: AlicloudRedisInstance (enum 3072, id_prefix: acred)
+**Resource Kind**: AliCloudRedisInstance (enum 3072, id_prefix: acred)
 
 ## Summary
 
-Added AlicloudRedisInstance component that provisions an Alibaba Cloud Redis (KVStore) instance for managed in-memory caching, session management, and real-time data processing. Supports both Redis and Memcache engines, with Redis as the default. This is a single-resource component (not composite) -- unlike RDS, accounts are not bundled because the instance-level password covers the majority of authentication use cases.
+Added AliCloudRedisInstance component that provisions an Alibaba Cloud Redis (KVStore) instance for managed in-memory caching, session management, and real-time data processing. Supports both Redis and Memcache engines, with Redis as the default. This is a single-resource component (not composite) -- unlike RDS, accounts are not bundled because the instance-level password covers the majority of authentication use cases.
 
 ## What's Included
 
@@ -29,6 +29,6 @@ Added AlicloudRedisInstance component that provisions an Alibaba Cloud Redis (KV
 
 ## Dependencies
 
-- AlicloudVswitch (vswitch_id)
-- AlicloudKmsKey (optional, encryption_key for TDE encryption)
-- AlicloudSecurityGroup (optional, security_group_id)
+- AliCloudVswitch (vswitch_id)
+- AliCloudKmsKey (optional, encryption_key for TDE encryption)
+- AliCloudSecurityGroup (optional, security_group_id)

@@ -25,13 +25,13 @@ This preset creates a security-hardened Redis instance with TDE encryption at re
 | Placeholder | Description | Where to Find |
 |---|---|---|
 | `<alibaba-cloud-region>` | Region code (e.g., `cn-hangzhou`) | Your deployment region |
-| `<your-vswitch-resource-name>` | VSwitch resource name for `valueFrom` reference | Your AlicloudVswitch resource |
+| `<your-vswitch-resource-name>` | VSwitch resource name for `valueFrom` reference | Your AliCloudVswitch resource |
 | `<your-instance-name>` | Instance name | Choose a descriptive name |
 | `<your-organization>` | Organization identifier | Your org slug |
 | `<primary-zone-id>` | Primary AZ (e.g., `cn-hangzhou-a`) | Available AZs in your region |
 | `<standby-zone-id>` | Standby AZ (e.g., `cn-hangzhou-b`) | A different AZ from primary |
 | `<your-password>` | Instance password (8-32 chars) | Use a secrets manager |
-| `<your-kms-key-id>` | KMS key ID for TDE encryption | `AlicloudKmsKey` stack outputs |
+| `<your-kms-key-id>` | KMS key ID for TDE encryption | `AliCloudKmsKey` stack outputs |
 | `<your-application-cidr>` | Application CIDR (e.g., `172.16.0.0/12`) | Your VPC CIDR range |
 | `<your-compliance-standard>` | Compliance standard tag (e.g., `pci-dss`) | Your compliance requirement |
 

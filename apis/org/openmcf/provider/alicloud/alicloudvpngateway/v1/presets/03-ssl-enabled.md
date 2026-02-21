@@ -26,8 +26,8 @@ This preset creates a VPN Gateway with SSL VPN enabled for remote client access,
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<alibaba-cloud-region>` | Alibaba Cloud region code | Your deployment region |
-| `<your-vpc-id>` | VPC ID | `AlicloudVpc` stack outputs |
-| `<your-vswitch-id>` | VSwitch ID | `AlicloudVswitch` stack outputs |
+| `<your-vpc-id>` | VPC ID | `AliCloudVpc` stack outputs |
+| `<your-vswitch-id>` | VSwitch ID | `AliCloudVswitch` stack outputs |
 | `<your-vpn-name>` | VPN Gateway name (2-128 chars) | Choose a descriptive name |
 | `<site-connection-name>` | Connection name (e.g., "office-hq") | Choose a descriptive name |
 | `<remote-device-public-ip>` | On-prem VPN device public IP | Network admin |

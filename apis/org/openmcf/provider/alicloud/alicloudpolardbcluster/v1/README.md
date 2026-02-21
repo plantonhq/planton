@@ -1,4 +1,4 @@
-# AlicloudPolardbCluster
+# AliCloudPolardbCluster
 
 Manages an Alibaba Cloud PolarDB cluster with bundled databases, accounts, and account privileges.
 

@@ -1,4 +1,4 @@
-# Terraform Module to Deploy AlicloudCenInstance
+# Terraform Module to Deploy AliCloudCenInstance
 
 This module provisions an Alibaba Cloud CEN (Cloud Enterprise Network) instance
 with bundled child-instance attachments using `alicloud_cen_instance` and
@@ -30,7 +30,7 @@ Credentials are provided via stack input (CLI), not in the manifest `spec`.
 | `locals.tf` | Tag computation and attachment list-to-map conversion |
 | `variables.tf` | Input variables with validation rules |
 | `outputs.tf` | CEN ID and instance name outputs |
-| `provider.tf` | Alicloud provider configuration scoped to `spec.region` |
+| `provider.tf` | AliCloud provider configuration scoped to `spec.region` |
 
 ## Outputs
 

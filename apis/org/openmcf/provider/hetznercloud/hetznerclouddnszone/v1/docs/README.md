@@ -1,4 +1,4 @@
-# Hetzner Cloud DNS Zone — Research Documentation
+# HetznerCloud DNS Zone — Research Documentation
 
 ## Introduction
 

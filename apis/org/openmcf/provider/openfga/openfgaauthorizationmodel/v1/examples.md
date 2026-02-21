@@ -6,7 +6,7 @@ A simple model for document access control with viewer, editor, and owner roles.
 The DSL format is more human-readable than JSON:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: document-authz-v1
@@ -34,7 +34,7 @@ spec:
 If you have an existing store ID, you can provide it directly:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: document-authz-v1
@@ -61,7 +61,7 @@ spec:
 A more complex model with folders, documents, and inheritance using DSL:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: drive-authz-v1
@@ -97,7 +97,7 @@ spec:
 A model that supports group-based access:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: team-authz-v1
@@ -134,7 +134,7 @@ spec:
 A model for multi-tenant applications with organizations, teams, and projects:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: saas-authz-v1
@@ -174,7 +174,7 @@ spec:
 A model with dynamic conditions for time-based or context-based access:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: conditional-authz-v1
@@ -206,7 +206,7 @@ spec:
 If you prefer JSON format or are migrating from existing JSON models:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: document-authz-v1

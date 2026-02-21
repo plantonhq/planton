@@ -1,4 +1,4 @@
-# AlicloudContainerRegistry - Research Documentation
+# AliCloudContainerRegistry - Research Documentation
 
 ## Provider Resource Analysis
 

@@ -1,0 +1,29 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciContainerInstance
+metadata:
+  name: my-web-service
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  availabilityDomain: <availability-domain>
+  shape: CI.Standard.E4.Flex
+  shapeConfig:
+    ocpus: 1
+    memoryInGbs: 2
+  containerRestartPolicy: always
+  containers:
+    - imageUrl: <container-image-url>
+      displayName: web
+      healthChecks:
+        - healthCheckType: http
+          port: 8080
+          path: /healthz
+          initialDelayInSeconds: 10
+          intervalInSeconds: 15
+          timeoutInSeconds: 5
+          failureThreshold: 3
+          successThreshold: 1
+  vnics:
+    - subnetId:
+        value: <public-subnet-ocid>
+      isPublicIpAssigned: true

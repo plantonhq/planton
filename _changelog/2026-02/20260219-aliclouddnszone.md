@@ -1,13 +1,13 @@
-# AlicloudDnsZone Component Added
+# AliCloudDnsZone Component Added
 
 **Date**: 2026-02-19
-**Component**: AlicloudDnsZone
+**Component**: AliCloudDnsZone
 **Enum**: 3040
 **ID Prefix**: acdns
 
 ## Summary
 
-Added the AlicloudDnsZone deployment component -- manages DNS domains in the Alibaba Cloud Alidns service. This is the prerequisite for creating DNS records (A, AAAA, CNAME, MX, TXT, etc.) via the AlicloudDnsRecord component.
+Added the AliCloudDnsZone deployment component -- manages DNS domains in the Alibaba Cloud Alidns service. This is the prerequisite for creating DNS records (A, AAAA, CNAME, MX, TXT, etc.) via the AliCloudDnsRecord component.
 
 Registering a domain in Alidns does not purchase or transfer it -- it creates a hosted zone so that DNS records can be managed. Users point their domain registrar's NS records to the DNS servers returned in the stack outputs.
 
@@ -15,7 +15,7 @@ Registering a domain in Alidns does not purchase or transfer it -- it creates a 
 
 ### API Definition
 - `apis/org/openmcf/provider/alicloud/aliclouddnszone/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AlicloudDnsZone = 3040` in `CloudResourceKind` enum under the DNS category
+- Registered `AliCloudDnsZone = 3040` in `CloudResourceKind` enum under the DNS category
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider and a single `dns.AlidnsDomain` resource with all spec fields mapped

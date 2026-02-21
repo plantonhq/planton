@@ -155,10 +155,10 @@ var File_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_api_proto 
 
 const file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"Forg/openmcf/provider/alicloud/alicloudnetworkloadbalancer/v1/api.proto\x12<org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1\x1a\x1bbuf/validate/validate.proto\x1aGorg/openmcf/provider/alicloud/alicloudnetworkloadbalancer/v1/spec.proto\x1aPorg/openmcf/provider/alicloud/alicloudnetworkloadbalancer/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xd9\x03\n" +
-	"\x1bAliCloudNetworkLoadBalancer\x12?\n" +
-	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
-	"\x17alicloud.openmcf.org/v1R\n" +
+	"Forg/openmcf/provider/alicloud/alicloudnetworkloadbalancer/v1/api.proto\x12<org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1\x1a\x1bbuf/validate/validate.proto\x1aGorg/openmcf/provider/alicloud/alicloudnetworkloadbalancer/v1/spec.proto\x1aPorg/openmcf/provider/alicloud/alicloudnetworkloadbalancer/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xda\x03\n" +
+	"\x1bAliCloudNetworkLoadBalancer\x12@\n" +
+	"\vapi_version\x18\x01 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
+	"\x18ali-cloud.openmcf.org/v1R\n" +
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
 	"\x1bAliCloudNetworkLoadBalancerR\x04kind\x12M\n" +

@@ -155,10 +155,10 @@ var File_org_openmcf_provider_alicloud_alicloudecsinstance_v1_api_proto protoref
 
 const file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_api_proto_rawDesc = "" +
 	"\n" +
-	">org/openmcf/provider/alicloud/alicloudecsinstance/v1/api.proto\x124org.openmcf.provider.alicloud.alicloudecsinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a?org/openmcf/provider/alicloud/alicloudecsinstance/v1/spec.proto\x1aHorg/openmcf/provider/alicloud/alicloudecsinstance/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xa9\x03\n" +
-	"\x13AliCloudEcsInstance\x12?\n" +
-	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
-	"\x17alicloud.openmcf.org/v1R\n" +
+	">org/openmcf/provider/alicloud/alicloudecsinstance/v1/api.proto\x124org.openmcf.provider.alicloud.alicloudecsinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a?org/openmcf/provider/alicloud/alicloudecsinstance/v1/spec.proto\x1aHorg/openmcf/provider/alicloud/alicloudecsinstance/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xaa\x03\n" +
+	"\x13AliCloudEcsInstance\x12@\n" +
+	"\vapi_version\x18\x01 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
+	"\x18ali-cloud.openmcf.org/v1R\n" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13AliCloudEcsInstanceR\x04kind\x12M\n" +

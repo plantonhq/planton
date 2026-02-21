@@ -20,7 +20,7 @@ This preset creates a security group suitable for public-facing web servers or l
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`, `cn-shanghai`) | Your deployment region |
-| `<your-vpc-id>` | VPC ID that this security group belongs to | Alibaba Cloud VPC console or `AlicloudVpc` stack outputs |
+| `<your-vpc-id>` | VPC ID that this security group belongs to | Alibaba Cloud VPC console or `AliCloudVpc` stack outputs |
 | `<your-sg-name>` | Security group name (2-128 chars) | Choose a descriptive name |
 
 ## Related Presets

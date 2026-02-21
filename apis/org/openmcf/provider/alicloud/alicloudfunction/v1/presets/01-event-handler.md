@@ -25,9 +25,9 @@ This preset creates a lightweight Python 3.12 function for event-driven workload
 |---|---|---|
 | `<alibaba-cloud-region>` | Region code (e.g., `cn-hangzhou`, `ap-southeast-1`) | Your deployment region |
 | `<your-function-name>` | Function name (1-128 chars, unique per region) | Your naming convention |
-| `<your-code-bucket>` | OSS bucket containing the function code ZIP | `AlicloudStorageBucket` stack outputs |
+| `<your-code-bucket>` | OSS bucket containing the function code ZIP | `AliCloudStorageBucket` stack outputs |
 | `<your-code-object-key>` | Object key for the ZIP package (e.g., `functions/handler-v1.zip`) | Your CI/CD pipeline |
-| `<your-log-project-name>` | SLS project for function logs | `AlicloudLogProject` stack outputs |
+| `<your-log-project-name>` | SLS project for function logs | `AliCloudLogProject` stack outputs |
 | `<your-logstore-name>` | SLS logstore within the project | Your SLS project configuration |
 
 ## Related Presets

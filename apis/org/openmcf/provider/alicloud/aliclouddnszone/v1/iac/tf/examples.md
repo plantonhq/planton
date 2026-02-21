@@ -1,4 +1,4 @@
-# AlicloudDnsZone Terraform Examples
+# AliCloudDnsZone Terraform Examples
 
 ## Minimal Domain
 

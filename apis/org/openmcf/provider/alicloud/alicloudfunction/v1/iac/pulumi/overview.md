@@ -1,4 +1,4 @@
-# Pulumi Module Overview — AlicloudFunction
+# Pulumi Module Overview — AliCloudFunction
 
 ## Module Architecture
 
@@ -22,7 +22,7 @@ iac/pulumi/
 | `locals.go` | Initializes `Locals` struct with merged tags (standard + user); provides `optionalString`, `optionalInt`, `optionalFloat64`, `optionalBool` helpers |
 | `outputs.go` | Defines output key constants: `function_id`, `function_name`, `function_arn` |
 
-Entry point: `Resources(ctx *pulumi.Context, stackInput *AlicloudFunctionStackInput) error`
+Entry point: `Resources(ctx *pulumi.Context, stackInput *AliCloudFunctionStackInput) error`
 
 ## Control Flow
 
@@ -96,14 +96,14 @@ proto message into Pulumi SDK args:
 
 | Function | Proto Message | Pulumi Type |
 |----------|--------------|-------------|
-| `codeArgs()` | `AlicloudFunctionCode` | `fc.V3FunctionCodePtrInput` |
-| `vpcConfigArgs()` | `AlicloudFunctionVpcConfig` | `fc.V3FunctionVpcConfigPtrInput` |
-| `logConfigArgs()` | `AlicloudFunctionLogConfig` | `fc.V3FunctionLogConfigPtrInput` |
-| `customContainerConfigArgs()` | `AlicloudFunctionCustomContainerConfig` | `fc.V3FunctionCustomContainerConfigPtrInput` |
-| `customRuntimeConfigArgs()` | `AlicloudFunctionCustomRuntimeConfig` | `fc.V3FunctionCustomRuntimeConfigPtrInput` |
-| `instanceLifecycleConfigArgs()` | `AlicloudFunctionInstanceLifecycleConfig` | `fc.V3FunctionInstanceLifecycleConfigPtrInput` |
-| `nasConfigArgs()` | `AlicloudFunctionNasConfig` | `fc.V3FunctionNasConfigPtrInput` |
-| `gpuConfigArgs()` | `AlicloudFunctionGpuConfig` | `fc.V3FunctionGpuConfigPtrInput` |
+| `codeArgs()` | `AliCloudFunctionCode` | `fc.V3FunctionCodePtrInput` |
+| `vpcConfigArgs()` | `AliCloudFunctionVpcConfig` | `fc.V3FunctionVpcConfigPtrInput` |
+| `logConfigArgs()` | `AliCloudFunctionLogConfig` | `fc.V3FunctionLogConfigPtrInput` |
+| `customContainerConfigArgs()` | `AliCloudFunctionCustomContainerConfig` | `fc.V3FunctionCustomContainerConfigPtrInput` |
+| `customRuntimeConfigArgs()` | `AliCloudFunctionCustomRuntimeConfig` | `fc.V3FunctionCustomRuntimeConfigPtrInput` |
+| `instanceLifecycleConfigArgs()` | `AliCloudFunctionInstanceLifecycleConfig` | `fc.V3FunctionInstanceLifecycleConfigPtrInput` |
+| `nasConfigArgs()` | `AliCloudFunctionNasConfig` | `fc.V3FunctionNasConfigPtrInput` |
+| `gpuConfigArgs()` | `AliCloudFunctionGpuConfig` | `fc.V3FunctionGpuConfigPtrInput` |
 
 ### Health Check Builders
 
@@ -142,7 +142,7 @@ config blocks that would override server-side defaults (e.g., an empty
 the resolved string. The OpenMCF runtime resolves `ref`-based values before the
 Pulumi module executes.
 
-**No default resolution in Go**: Unlike the AlicloudLogProject module, this
+**No default resolution in Go**: Unlike the AliCloudLogProject module, this
 module does not apply Go-level defaults for optional scalars (`cpu`,
 `memorySize`, `timeout`, etc.). These fields use `optionalInt`/`optionalFloat64`
 which return `nil` for unset values, deferring to the FC provider's own defaults.

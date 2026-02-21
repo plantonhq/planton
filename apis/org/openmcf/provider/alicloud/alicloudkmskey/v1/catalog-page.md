@@ -1,10 +1,10 @@
-# Alibaba Cloud KMS Key
+# AliCloud KMS Key
 
 Deploys an Alibaba Cloud Key Management Service (KMS) customer-managed key (CMK). The component provisions a cryptographic key that can be used for data encryption across Alibaba Cloud services (RDS, OSS, ECS, PolarDB) or for digital signing and verification with asymmetric key types.
 
 ## What Gets Created
 
-When you deploy an AlicloudKmsKey resource, OpenMCF provisions:
+When you deploy an AliCloudKmsKey resource, OpenMCF provisions:
 
 - **KMS Key** -- an `alicloud_kms_key` resource in the specified region with configurable algorithm, rotation policy, and deletion protection
 
@@ -17,15 +17,15 @@ When you deploy an AlicloudKmsKey resource, OpenMCF provisions:
 Create a file `kms-key.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKmsKey
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKmsKey
 metadata:
   name: my-key
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudKmsKey.my-key
+    pulumi.openmcf.org/stack.name: dev.AliCloudKmsKey.my-key
 spec:
   region: cn-hangzhou
   description: Encryption key for development resources
@@ -67,8 +67,8 @@ This creates an AES-256 symmetric encryption key with software-based protection.
 ### Minimal KMS Key
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKmsKey
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKmsKey
 metadata:
   name: my-key
 spec:
@@ -78,8 +78,8 @@ spec:
 ### Production Encryption Key with Rotation
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKmsKey
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKmsKey
 metadata:
   name: prod-encryption-key
   org: my-org
@@ -101,8 +101,8 @@ spec:
 ### Asymmetric Signing Key
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKmsKey
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKmsKey
 metadata:
   name: signing-key
 spec:
@@ -125,6 +125,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudRdsInstance](/docs/catalog/alicloud/alicloudrdsinsstance) -- uses a KMS key for Transparent Data Encryption
-- [AlicloudStorageBucket](/docs/catalog/alicloud/alicloudstoragebucket) -- uses a KMS key for Server-Side Encryption
-- [AlicloudEcsInstance](/docs/catalog/alicloud/alicloudecsinstance) -- uses a KMS key for disk encryption
+- [AliCloudRdsInstance](/docs/catalog/alicloud/alicloudrdsinsstance) -- uses a KMS key for Transparent Data Encryption
+- [AliCloudStorageBucket](/docs/catalog/alicloud/alicloudstoragebucket) -- uses a KMS key for Server-Side Encryption
+- [AliCloudEcsInstance](/docs/catalog/alicloud/alicloudecsinstance) -- uses a KMS key for disk encryption

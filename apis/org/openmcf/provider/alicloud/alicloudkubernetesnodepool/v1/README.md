@@ -1,4 +1,4 @@
-# AlicloudKubernetesNodePool v1
+# AliCloudKubernetesNodePool v1
 
 Alibaba Cloud ACK Kubernetes node pool.
 

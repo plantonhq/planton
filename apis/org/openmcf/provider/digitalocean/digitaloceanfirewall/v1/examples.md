@@ -9,7 +9,7 @@ Complete, copy-paste ready YAML manifests for common firewall configurations.
 **Use Case**: Simple firewall for development with open SSH, HTTP, HTTPS, and unrestricted outbound.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFirewall
 metadata:
   name: dev-web-firewall
@@ -65,7 +65,7 @@ spec:
 **Use Case**: Centralized SSH access and monitoring for all servers in an organization.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFirewall
 metadata:
   name: management-firewall
@@ -120,7 +120,7 @@ spec:
 **Use Case**: Web servers behind a Load Balancer serving HTTPS traffic with restricted SSH access.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFirewall
 metadata:
   name: prod-web-firewall
@@ -179,7 +179,7 @@ spec:
 **Use Case**: PostgreSQL database accessible only by web tier and administrators.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFirewall
 metadata:
   name: prod-db-firewall
@@ -227,7 +227,7 @@ spec:
 **Use Case**: In-memory cache accessible by web and API tiers only.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFirewall
 metadata:
   name: prod-cache-firewall
@@ -274,7 +274,7 @@ spec:
 **Use Case**: Protect DigitalOcean Kubernetes nodes with firewall rules.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFirewall
 metadata:
   name: prod-k8s-firewall
@@ -328,7 +328,7 @@ spec:
 ### Load Balancer → Web Tier
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFirewall
 metadata:
   name: prod-web-tier
@@ -367,7 +367,7 @@ spec:
 ### Web Tier → Cache Tier
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFirewall
 metadata:
   name: prod-cache-tier
@@ -398,7 +398,7 @@ spec:
 ### Web Tier → Database Tier
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFirewall
 metadata:
   name: prod-db-tier
@@ -439,7 +439,7 @@ spec:
 **Use Case**: Firewall for staging environment with limited access from development team.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFirewall
 metadata:
   name: staging-firewall
@@ -486,7 +486,7 @@ spec:
 **Use Case**: Hardened bastion host for SSH jump server access to private instances.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFirewall
 metadata:
   name: bastion-firewall
@@ -533,7 +533,7 @@ spec:
 **Use Case**: WireGuard VPN server for remote team access.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFirewall
 metadata:
   name: vpn-server-firewall

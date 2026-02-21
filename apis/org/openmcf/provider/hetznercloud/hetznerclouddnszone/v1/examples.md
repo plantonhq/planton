@@ -5,7 +5,7 @@
 The simplest configuration: a primary DNS zone for a domain with no records. Hetzner Cloud creates the zone and assigns authoritative nameservers. Records can be added later by updating the manifest.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudDnsZone
 metadata:
   name: example-zone
@@ -23,7 +23,7 @@ After deploying, check the `nameservers` output and configure these at your doma
 A production-ready zone with the most common record types: A records for the apex, a CNAME alias for `www`, MX records for email, and TXT records for SPF and DMARC.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudDnsZone
 metadata:
   name: acme-corp-zone
@@ -78,7 +78,7 @@ Note the formatting conventions:
 A DNS zone where A records reference the IP addresses of other Hetzner Cloud resources using `valueFrom`. When the server or load balancer IP changes, the DNS record updates automatically on the next deployment.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudDnsZone
 metadata:
   name: webapp-zone
@@ -139,7 +139,7 @@ The `valueFrom` references establish dependency edges — the DNS zone waits for
 A zone demonstrating less common record types, wildcard records, per-record-set TTL overrides, record comments, and delete protection.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudDnsZone
 metadata:
   name: advanced-zone
@@ -207,7 +207,7 @@ Key details:
 A secondary zone that synchronizes records from an external primary nameserver. TSIG authentication secures the zone transfer. No `recordSets` are specified — records come from the primary.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudDnsZone
 metadata:
   name: secondary-zone
@@ -234,7 +234,7 @@ Multiple primary nameservers provide redundancy: if the first is unreachable, He
 For a secondary zone without TSIG (IP-based ACL only), omit the `tsigAlgorithm` and `tsigKey` fields:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudDnsZone
 metadata:
   name: secondary-no-tsig

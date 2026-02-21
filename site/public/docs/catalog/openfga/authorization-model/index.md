@@ -29,7 +29,7 @@ When you deploy an OpenFgaAuthorizationModel resource, OpenMCF provisions:
 Create a file `authz-model.yaml`:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: my-model
@@ -78,7 +78,7 @@ This creates an authorization model with a `user` type and a `document` type tha
 A minimal model defining users and documents with viewer, editor, and owner relations, using the recommended DSL format:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: basic-model
@@ -104,7 +104,7 @@ spec:
 The same model defined in JSON, for teams that prefer structured data or are migrating existing JSON definitions:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: json-model
@@ -144,7 +144,7 @@ spec:
 A role-based model with groups, folders, and documents using a foreign key reference to resolve the store ID from an OpenFgaStore resource:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: rbac-model

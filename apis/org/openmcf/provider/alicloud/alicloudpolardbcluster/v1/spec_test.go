@@ -22,7 +22,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-polardb",
@@ -43,7 +43,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with all optional fields populated", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "prod-polardb",
@@ -82,7 +82,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with PostgreSQL engine", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "pg-cluster",
@@ -103,7 +103,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with Oracle engine", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "oracle-cluster",
@@ -124,7 +124,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with databases and accounts", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "db-with-accounts",
@@ -166,7 +166,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with PostgreSQL databases using collate and ctype", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "pg-with-collation",
@@ -195,7 +195,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with PrePaid billing and subscription settings", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "prepaid-polardb",
@@ -220,7 +220,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with Standard Edition storage configuration", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "standard-edition",
@@ -244,7 +244,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with parameters", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "param-polardb",
@@ -269,7 +269,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with vswitch_id as valueFrom reference", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "ref-polardb",
@@ -314,7 +314,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when kind is wrong", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudPolardbClusterSpec{
@@ -331,7 +331,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when metadata is missing", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Spec: &AliCloudPolardbClusterSpec{
 					Region: "cn-hangzhou", DbType: "MySQL", DbVersion: "8.0",
@@ -347,7 +347,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when spec is missing", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 			}
@@ -357,7 +357,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when db_type is invalid", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudPolardbClusterSpec{
@@ -374,7 +374,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when region is empty", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudPolardbClusterSpec{
@@ -391,7 +391,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when vswitch_id is missing", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudPolardbClusterSpec{
@@ -405,7 +405,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when db_node_class is empty", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudPolardbClusterSpec{
@@ -422,7 +422,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when pay_type is invalid", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudPolardbClusterSpec{
@@ -440,7 +440,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when creation_category is invalid", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudPolardbClusterSpec{
@@ -458,7 +458,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when storage_type is invalid", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudPolardbClusterSpec{
@@ -476,7 +476,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when storage_space is below minimum", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudPolardbClusterSpec{
@@ -494,7 +494,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when deletion_lock is not 0 or 1", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudPolardbClusterSpec{
@@ -512,7 +512,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when account_password is too short", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudPolardbClusterSpec{
@@ -532,7 +532,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when privilege db_names is empty", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudPolardbClusterSpec{
@@ -558,7 +558,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when account_privilege value is invalid", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudPolardbClusterSpec{
@@ -584,7 +584,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when description is too short", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudPolardbClusterSpec{
@@ -602,7 +602,7 @@ var _ = ginkgo.Describe("AliCloudPolardbClusterSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when db_node_count exceeds maximum", func() {
 			input := &AliCloudPolardbCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPolardbCluster",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudPolardbClusterSpec{

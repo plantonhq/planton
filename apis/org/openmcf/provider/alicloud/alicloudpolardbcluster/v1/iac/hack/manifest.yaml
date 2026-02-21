@@ -1,5 +1,5 @@
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudPolardbCluster
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudPolardbCluster
 metadata:
   name: alicloudpolardbcluster-demo
 spec:

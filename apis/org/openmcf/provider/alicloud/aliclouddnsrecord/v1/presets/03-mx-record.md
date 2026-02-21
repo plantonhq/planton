@@ -19,7 +19,7 @@ This preset creates a DNS MX (Mail Exchange) record that routes email for a doma
 | Placeholder | Description | Where to Find |
 |-------------|-------------|---------------|
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`) | Your deployment region strategy |
-| `<your-domain-name>` | The parent domain (e.g., `example.com`). Must already exist in Alidns. | Your AlicloudDnsZone resource or Alidns console |
+| `<your-domain-name>` | The parent domain (e.g., `example.com`). Must already exist in Alidns. | Your AliCloudDnsZone resource or Alidns console |
 | `<mail-server-domain>` | Mail server hostname (e.g., `mx1.example.com`, `aspmx.l.google.com`) | Your email provider documentation |
 | `<priority-1-to-10>` | MX priority: 1 = highest, 10 = lowest. Use 5 for a single server, or 1/5/10 for primary/secondary/tertiary. | Your email architecture |
 

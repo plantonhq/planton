@@ -1,11 +1,11 @@
-# Terraform Module to Deploy AlicloudFunction
+# Terraform Module to Deploy AliCloudFunction
 
 This module provisions an Alibaba Cloud Function Compute v3 function. The
 `main.tf` file creates a single `alicloud_fcv3_function` resource with dynamic
 blocks for optional configuration sections (VPC, logging, custom container,
 custom runtime, lifecycle hooks, NAS, GPU).
 
-Generated `variables.tf` reflects the proto schema for `AlicloudFunctionSpec`.
+Generated `variables.tf` reflects the proto schema for `AliCloudFunctionSpec`.
 
 ## Usage
 

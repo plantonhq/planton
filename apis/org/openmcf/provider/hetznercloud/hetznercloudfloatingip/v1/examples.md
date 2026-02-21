@@ -5,7 +5,7 @@
 The simplest configuration: allocate a single IPv4 address in Falkenstein. No server assignment, no reverse DNS, no delete protection. Suitable for reserving an IP address before a server is provisioned.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFloatingIp
 metadata:
   name: dev-ip
@@ -21,7 +21,7 @@ spec:
 An IPv4 address with a human-readable description and a reverse DNS pointer — the standard setup for a mail server. The `dnsPtr` value should match the forward DNS A record for the mail server's hostname. Without matching forward and reverse DNS, outbound email will be rejected by most receiving servers.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFloatingIp
 metadata:
   name: mail-ip
@@ -42,7 +42,7 @@ spec:
 An IPv6 /64 network block in Helsinki with delete protection enabled. The allocated block provides approximately 18 quintillion addresses. Useful for services that need multiple IPv6 addresses or when IPv4 cost is a concern.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFloatingIp
 metadata:
   name: web-ipv6
@@ -64,7 +64,7 @@ spec:
 A Floating IP assigned to a specific server at creation time using a literal server ID. The server must be in the same location (`fsn1`) as the Floating IP's `homeLocation`. After assignment, the server's operating system must be configured with an IP alias to accept traffic on the Floating IP address.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFloatingIp
 metadata:
   name: app-failover
@@ -89,7 +89,7 @@ In an infra chart, the Floating IP references a `HetznerCloudServer` via `valueF
 Server manifest:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: web-01
@@ -104,7 +104,7 @@ spec:
 Floating IP manifest referencing the server output:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFloatingIp
 metadata:
   name: web-failover

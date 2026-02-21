@@ -5,7 +5,7 @@
 The simplest configuration: an empty spec. The `type` field defaults to `spread`, which is the only strategy Hetzner Cloud supports.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudPlacementGroup
 metadata:
   name: ha-group
@@ -19,7 +19,7 @@ spec: {}
 Identical behavior to the minimal example, but with the type explicitly set. Useful for documentation clarity in manifests that are reviewed by teams unfamiliar with the defaults.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudPlacementGroup
 metadata:
   name: ha-db-group
@@ -34,7 +34,7 @@ spec:
 A placement group for database replicas in a production environment. The org and env metadata drive label generation for resource tracking and cost allocation.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudPlacementGroup
 metadata:
   name: ha-db-group
@@ -56,7 +56,7 @@ In an infra chart, a `HetznerCloudServer` references the placement group via `va
 Placement group manifest:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudPlacementGroup
 metadata:
   name: ha-db-group
@@ -69,7 +69,7 @@ spec:
 Server manifest referencing the placement group output:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: db-01

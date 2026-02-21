@@ -12,8 +12,8 @@ openmcf tofu apply --manifest <yaml-path> --stack <stack-name>
 ## Minimal ECS Service Role
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamRole
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamRole
 metadata:
   name: my-ecs-role
 spec:
@@ -40,8 +40,8 @@ This example:
 ## Service Role with System Policies
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamRole
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamRole
 metadata:
   name: ecs-worker-role
 spec:
@@ -77,8 +77,8 @@ This role:
 ## Cross-Account Audit Role
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamRole
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamRole
 metadata:
   name: cross-account-audit
 spec:
@@ -116,8 +116,8 @@ This role:
 ## Full-Featured Role
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamRole
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamRole
 metadata:
   name: fc-execution-role
 spec:

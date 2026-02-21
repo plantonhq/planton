@@ -1,4 +1,4 @@
-# AlicloudRedisInstance Pulumi Module
+# AliCloudRedisInstance Pulumi Module
 
 This Pulumi module provisions an Alibaba Cloud Redis (KVStore) instance.
 

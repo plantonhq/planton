@@ -1,10 +1,10 @@
-# AlicloudSaeApplication
+# AliCloud SaeApplication
 
 Deploys an Alibaba Cloud SAE application. The component provisions a container-based serverless application with configurable compute tiers, VPC networking, health checks, rolling update strategy, environment variables, custom host aliases, and SLS log collection. Supports five package types: container images, Java JAR/WAR archives, and Python/PHP ZIP packages.
 
 ## What Gets Created
 
-When you deploy an AlicloudSaeApplication resource, OpenMCF provisions:
+When you deploy an AliCloudSaeApplication resource, OpenMCF provisions:
 
 - **SAE Application** -- an `alicloud_sae_application` resource with the specified compute tier, replica count, deployment source, health probes, update strategy, and metadata tags
 
@@ -21,15 +21,15 @@ When you deploy an AlicloudSaeApplication resource, OpenMCF provisions:
 Create a file `sae-app.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudSaeApplication
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudSaeApplication
 metadata:
   name: my-sae-app
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudSaeApplication.my-sae-app
+    pulumi.openmcf.org/stack.name: dev.AliCloudSaeApplication.my-sae-app
 spec:
   region: cn-hangzhou
   appName: my-sae-app
@@ -119,8 +119,8 @@ This creates a single-instance SAE application running a container image with 1 
 ### Minimal Image Deployment
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudSaeApplication
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudSaeApplication
 metadata:
   name: hello-sae
   labels:
@@ -140,8 +140,8 @@ spec:
 ### Java FatJar with VPC and Health Checks
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudSaeApplication
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudSaeApplication
 metadata:
   name: order-service
   labels:
@@ -190,8 +190,8 @@ spec:
 ### Production Container with Canary Releases
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudSaeApplication
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudSaeApplication
 metadata:
   name: payment-gateway
   labels:
@@ -251,9 +251,9 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudVpc](/docs/catalog/alicloud/alicloudvpc) -- VPC for network isolation
-- [AlicloudVswitch](/docs/catalog/alicloud/alicloudvswitch) -- subnet for VPC-based deployment
-- [AlicloudSecurityGroup](/docs/catalog/alicloud/alicloudsecuritygroup) -- network access control
-- [AlicloudContainerRegistry](/docs/catalog/alicloud/alicloudcontainerregistry) -- private container image registry
-- [AlicloudFunction](/docs/catalog/alicloud/alicloudfunction) -- event-driven serverless compute (alternative)
-- [AlicloudLogProject](/docs/catalog/alicloud/alicloudlogproject) -- SLS project for centralized log collection
+- [AliCloudVpc](/docs/catalog/alicloud/alicloudvpc) -- VPC for network isolation
+- [AliCloudVswitch](/docs/catalog/alicloud/alicloudvswitch) -- subnet for VPC-based deployment
+- [AliCloudSecurityGroup](/docs/catalog/alicloud/alicloudsecuritygroup) -- network access control
+- [AliCloudContainerRegistry](/docs/catalog/alicloud/alicloudcontainerregistry) -- private container image registry
+- [AliCloudFunction](/docs/catalog/alicloud/alicloudfunction) -- event-driven serverless compute (alternative)
+- [AliCloudLogProject](/docs/catalog/alicloud/alicloudlogproject) -- SLS project for centralized log collection

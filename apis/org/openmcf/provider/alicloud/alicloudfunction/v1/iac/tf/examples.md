@@ -1,4 +1,4 @@
-# AlicloudFunction Terraform Examples
+# AliCloudFunction Terraform Examples
 
 Apply any example below using the OpenMCF CLI:
 
@@ -14,8 +14,8 @@ A Python function with code deployed from an OSS bucket. Uses provider defaults
 for compute sizing.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudFunction
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudFunction
 metadata:
   name: hello-world
 spec:
@@ -41,8 +41,8 @@ A Node.js function that accesses VPC-internal resources and logs invocations to
 SLS. Compute sizing is explicitly configured for API workloads.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudFunction
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudFunction
 metadata:
   name: api-handler
   org: my-org
@@ -97,8 +97,8 @@ A containerized ML inference function with GPU acceleration, NAS-mounted model
 storage, and lifecycle hooks for warm-up and cleanup.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudFunction
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudFunction
 metadata:
   name: ml-inference
   org: my-org

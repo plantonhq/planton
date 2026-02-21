@@ -1,4 +1,4 @@
-# AlicloudCdnDomain — Pulumi Module Overview
+# AliCloudCdnDomain — Pulumi Module Overview
 
 ## Module Architecture
 
@@ -22,13 +22,13 @@ iac/pulumi/
 The entrypoint initializes the Pulumi runtime, loads the stack input from the
 OpenMCF manifest via `stackinput.LoadStackInput`, and delegates resource
 creation to `module.Resources()`. The stack input is deserialized into the
-protobuf-generated `AlicloudCdnDomainStackInput` struct.
+protobuf-generated `AliCloudCdnDomainStackInput` struct.
 
 ### Locals (`module/locals.go`)
 
 The `initializeLocals` function computes a `Locals` struct containing:
 
-- A reference to the deserialized `AlicloudCdnDomain` manifest.
+- A reference to the deserialized `AliCloudCdnDomain` manifest.
 - A merged tag map combining system tags (`resource`, `resource_name`,
   `resource_kind`, `resource_id`, `organization`, `environment`) with
   user-defined `spec.tags`. User tags override system tags on key collision.
@@ -45,11 +45,11 @@ The `Resources` function performs three actions:
 
 Helper functions:
 
-- `buildSources` — converts the protobuf `AlicloudCdnDomainSource` slice to
+- `buildSources` — converts the protobuf `AliCloudCdnDomainSource` slice to
   a `cdn.DomainNewSourceArray`, including port/priority/weight only when
   explicitly set (non-zero).
 - `buildCertificateConfig` — converts the protobuf
-  `AlicloudCdnDomainCertificateConfig` to a `cdn.DomainNewCertificateConfigPtrInput`,
+  `AliCloudCdnDomainCertificateConfig` to a `cdn.DomainNewCertificateConfigPtrInput`,
   including each field only when non-empty.
 
 ### Outputs (`module/outputs.go`)
@@ -65,7 +65,7 @@ Three string constants define the output keys:
 ## Resource Relationships
 
 ```
-AlicloudCdnDomain manifest
+AliCloudCdnDomain manifest
   │
   ├─ alicloud.Provider (region from spec.region)
   │      │

@@ -1,12 +1,12 @@
-# AlicloudNatGateway Examples
+# AliCloudNatGateway Examples
 
 ## Minimal: Single VSwitch SNAT
 
 The simplest NAT Gateway configuration: one EIP, one SNAT entry for a single VSwitch.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNatGateway
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNatGateway
 metadata:
   name: dev-nat
 spec:
@@ -29,8 +29,8 @@ spec:
 NAT Gateway serving multiple VSwitches across availability zones with deletion protection enabled.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNatGateway
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNatGateway
 metadata:
   name: prod-nat
   org: acme-corp
@@ -72,8 +72,8 @@ spec:
 Use source CIDR instead of VSwitch ID for fine-grained control over which IP ranges get NATed.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNatGateway
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNatGateway
 metadata:
   name: cidr-nat
 spec:

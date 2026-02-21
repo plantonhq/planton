@@ -1,5 +1,5 @@
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKmsKey
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKmsKey
 metadata:
   name: alicloudkmskey-demo
 spec:

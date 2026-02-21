@@ -4,7 +4,7 @@ Deploys an Alibaba Cloud Security Group with bundled security rules in a VPC. Th
 
 ## What Gets Created
 
-When you deploy an AlicloudSecurityGroup resource, OpenMCF provisions:
+When you deploy an AliCloudSecurityGroup resource, OpenMCF provisions:
 
 - **Security Group** -- an `ecs.SecurityGroup` resource bound to the specified VPC
 - **Security Group Rules** -- one `ecs.SecurityGroupRule` per entry in `rules`, with `nic_type` hardcoded to `intranet`
@@ -19,15 +19,15 @@ When you deploy an AlicloudSecurityGroup resource, OpenMCF provisions:
 Create a file `security-group.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudSecurityGroup
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudSecurityGroup
 metadata:
   name: my-web-sg
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudSecurityGroup.my-web-sg
+    pulumi.openmcf.org/stack.name: dev.AliCloudSecurityGroup.my-web-sg
 spec:
   region: cn-hangzhou
   vpcId:

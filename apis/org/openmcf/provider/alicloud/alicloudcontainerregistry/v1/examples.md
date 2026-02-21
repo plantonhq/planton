@@ -1,12 +1,12 @@
-# AlicloudContainerRegistry Examples
+# AliCloudContainerRegistry Examples
 
 ## Basic Development Registry
 
 A minimal registry for development and testing with a single namespace:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudContainerRegistry
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudContainerRegistry
 metadata:
   name: dev-registry
 spec:
@@ -25,8 +25,8 @@ spec:
 A production-ready registry with multiple namespaces organized by team:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudContainerRegistry
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudContainerRegistry
 metadata:
   name: prod-registry
   org: acme-corp
@@ -55,8 +55,8 @@ spec:
 An enterprise-grade registry with resource group assignment and public-facing namespace:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudContainerRegistry
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudContainerRegistry
 metadata:
   name: enterprise-registry
   org: global-corp

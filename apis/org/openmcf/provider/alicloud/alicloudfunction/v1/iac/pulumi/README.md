@@ -1,4 +1,4 @@
-# Pulumi Module to Deploy AlicloudFunction
+# Pulumi Module to Deploy AliCloudFunction
 
 This module provisions an Alibaba Cloud Function Compute v3 function. It creates
 a single `fc.V3Function` resource with conditional configuration blocks for VPC

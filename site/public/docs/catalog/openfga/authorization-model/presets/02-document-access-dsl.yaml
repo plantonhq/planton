@@ -1,4 +1,4 @@
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: my-document-model

@@ -28,9 +28,9 @@ This preset creates a production SAE application deployed as a Java FatJar packa
 | `<your-app-description>` | Human-readable description | Your service documentation |
 | `<your-jar-url>` | OSS or HTTP URL to the FatJar (e.g., `https://bucket.oss-cn-hangzhou.aliyuncs.com/app-2.0.jar`) | Your CI/CD pipeline |
 | `<your-jar-version>` | Version identifier (e.g., `2.0.0`) | Your release process |
-| `<your-vpc-id>` | VPC ID | `AlicloudVpc` stack outputs |
-| `<your-vswitch-id>` | VSwitch ID | `AlicloudVswitch` stack outputs |
-| `<your-security-group-id>` | Security group ID | `AlicloudSecurityGroup` stack outputs |
+| `<your-vpc-id>` | VPC ID | `AliCloudVpc` stack outputs |
+| `<your-vswitch-id>` | VSwitch ID | `AliCloudVswitch` stack outputs |
+| `<your-security-group-id>` | Security group ID | `AliCloudSecurityGroup` stack outputs |
 | `<your-team>` | Team or business unit | Your organizational structure |
 | `<your-service-name>` | Logical service name | Your service catalog |
 

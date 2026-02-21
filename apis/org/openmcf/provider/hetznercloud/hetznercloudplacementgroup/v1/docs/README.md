@@ -1,4 +1,4 @@
-# Hetzner Cloud Placement Group — Research Documentation
+# HetznerCloud Placement Group — Research Documentation
 
 ## Introduction
 
@@ -206,7 +206,7 @@ The differentiator for OpenMCF is not the state management — Terraform and Pul
 ### Manifest Format
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudPlacementGroup
 metadata:
   name: ha-db-group
@@ -217,7 +217,7 @@ spec:
 Or, since `spread` is the default:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudPlacementGroup
 metadata:
   name: ha-db-group

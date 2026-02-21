@@ -5,7 +5,7 @@
 Grant a user viewer access to a specific document using structured fields:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-views-budget
@@ -32,7 +32,7 @@ Grant different roles to different users:
 
 ```yaml
 # Owner has full control
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: bob-owns-project
@@ -53,7 +53,7 @@ spec:
       value: acme-corp
 ---
 # Editor can modify
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: carol-edits-project
@@ -74,7 +74,7 @@ spec:
       value: acme-corp
 ---
 # Viewer can only read
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: dave-views-project
@@ -100,7 +100,7 @@ spec:
 Add a user to a group:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-in-engineering
@@ -127,7 +127,7 @@ Grant access to all members of a group (userset). The `relation` field in the us
 creates the userset format `group:engineering#member`:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: engineering-views-docs
@@ -155,7 +155,7 @@ Create folder-document hierarchy (document in folder):
 
 ```yaml
 # Document is in the folder
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: budget-in-reports
@@ -176,7 +176,7 @@ spec:
       value: budget-2024
 ---
 # User has access to folder (inherited by documents via model)
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-views-reports
@@ -202,7 +202,7 @@ spec:
 Make a resource publicly accessible using the wildcard `*` for user ID:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: public-announcement
@@ -229,7 +229,7 @@ Grant access with a condition (requires condition defined in authorization model
 
 ```yaml
 # Access only from allowed IP ranges
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-views-sensitive
@@ -262,7 +262,7 @@ Set up organization-level access:
 
 ```yaml
 # User is admin of organization
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: alice-admin-acme
@@ -283,7 +283,7 @@ spec:
       value: acme-corp
 ---
 # User is member of organization
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: bob-member-acme
@@ -304,7 +304,7 @@ spec:
       value: acme-corp
 ---
 # Project belongs to organization
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: project-in-acme
@@ -330,7 +330,7 @@ spec:
 Pin to a specific authorization model version using a reference:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-views-budget-v2
@@ -357,7 +357,7 @@ spec:
 Or with a direct model ID:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-views-budget-v2
@@ -386,7 +386,7 @@ Deploy a store, model, and tuples together:
 
 ```yaml
 # 1. Create the store
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: production-authz
@@ -396,7 +396,7 @@ spec:
   name: production-authorization-store
 ---
 # 2. Create the authorization model (references store)
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: document-authz-v1
@@ -423,7 +423,7 @@ spec:
         define owner: [user]
 ---
 # 3. Create relationship tuples (references store and model)
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-views-budget

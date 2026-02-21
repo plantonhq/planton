@@ -1,4 +1,4 @@
-# Pulumi Module to Deploy AlicloudCenInstance
+# Pulumi Module to Deploy AliCloudCenInstance
 
 This Pulumi program provisions an Alibaba Cloud CEN (Cloud Enterprise Network)
 instance with bundled child-instance attachments. CEN provides private
@@ -50,9 +50,9 @@ openmcf pulumi destroy \
 
 ## How It Works
 
-1. The entrypoint (`main.go`) loads the `AlicloudCenInstanceStackInput` from Pulumi config
+1. The entrypoint (`main.go`) loads the `AliCloudCenInstanceStackInput` from Pulumi config
 2. `locals.go` computes tags from metadata fields (name, id, org, env, resource_kind)
-3. `main.go` creates the Alicloud provider scoped to `spec.region` (used for API routing only)
+3. `main.go` creates the AliCloud provider scoped to `spec.region` (used for API routing only)
 4. The CEN instance is created with name, description, optional protection level, and tags
 5. Each attachment in `spec.attachments[]` creates a `cen.InstanceAttachment` as a child of the CEN instance
 6. Stack outputs are exported: `cen_id` and `cen_instance_name`

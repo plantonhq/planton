@@ -21,7 +21,7 @@ var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
 			input := &AliCloudPrivateDnsZone{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-zone",
@@ -44,7 +44,7 @@ var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with all optional fields populated", func() {
 			input := &AliCloudPrivateDnsZone{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "full-zone",
@@ -91,7 +91,7 @@ var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with multiple VPC attachments including cross-region", func() {
 			input := &AliCloudPrivateDnsZone{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "multi-vpc-zone",
@@ -126,7 +126,7 @@ var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with MX record and priority", func() {
 			input := &AliCloudPrivateDnsZone{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "mx-zone",
@@ -157,7 +157,7 @@ var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with all supported record types", func() {
 			input := &AliCloudPrivateDnsZone{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "all-types",
@@ -188,7 +188,7 @@ var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with records that have remarks", func() {
 			input := &AliCloudPrivateDnsZone{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "remarked-zone",
@@ -223,7 +223,7 @@ var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
 			input := &AliCloudPrivateDnsZone{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -245,7 +245,7 @@ var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when zone_name is missing", func() {
 			input := &AliCloudPrivateDnsZone{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -267,7 +267,7 @@ var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when vpc_attachments is empty", func() {
 			input := &AliCloudPrivateDnsZone{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -284,7 +284,7 @@ var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when vpc_id in attachment is missing", func() {
 			input := &AliCloudPrivateDnsZone{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -303,7 +303,7 @@ var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when record type is invalid", func() {
 			input := &AliCloudPrivateDnsZone{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -333,7 +333,7 @@ var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when record rr is empty", func() {
 			input := &AliCloudPrivateDnsZone{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -362,7 +362,7 @@ var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when record value is empty", func() {
 			input := &AliCloudPrivateDnsZone{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -414,7 +414,7 @@ var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when kind is wrong", func() {
 			input := &AliCloudPrivateDnsZone{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -437,7 +437,7 @@ var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when metadata is missing", func() {
 			input := &AliCloudPrivateDnsZone{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPrivateDnsZone",
 				Spec: &AliCloudPrivateDnsZoneSpec{
 					Region:   "cn-hangzhou",
@@ -457,7 +457,7 @@ var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when spec is missing", func() {
 			input := &AliCloudPrivateDnsZone{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -473,7 +473,7 @@ var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 				longName += "a"
 			}
 			input := &AliCloudPrivateDnsZone{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",

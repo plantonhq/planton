@@ -1,4 +1,4 @@
-# Pulumi Module to Deploy AlicloudLogProject
+# Pulumi Module to Deploy AliCloudLogProject
 
 This module provisions an Alibaba Cloud Simple Log Service (SLS) project with
 bundled log stores and full-text indexes. For each log store defined in the

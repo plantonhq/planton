@@ -138,7 +138,7 @@ apis/org/openmcf/provider/digitalocean/digitaloceandnsrecord/v1/
 ### Direct Value
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: www-a-record
@@ -155,7 +155,7 @@ spec:
 ### Reference to DNS Zone
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: www-a-record

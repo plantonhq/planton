@@ -1,9 +1,9 @@
-# AlicloudPrivateDnsZone -- Pulumi Architecture Overview
+# AliCloudPrivateDnsZone -- Pulumi Architecture Overview
 
 ## Resource Graph
 
 ```
-AlicloudProvider
+AliCloudProvider
   └── pvtz.Zone (private hosted zone)
         ├── pvtz.ZoneAttachment (VPC bindings)
         └── pvtz.ZoneRecord (one per spec.records entry)
@@ -11,7 +11,7 @@ AlicloudProvider
 
 ## Data Flow
 
-1. **Stack input** is loaded from the Pulumi config and deserialized into `AlicloudPrivateDnsZoneStackInput`
+1. **Stack input** is loaded from the Pulumi config and deserialized into `AliCloudPrivateDnsZoneStackInput`
 2. **Locals** are initialized: system tags are computed from metadata, merged with user tags
 3. **Zone** is created with zone_name, remark, resource_group_id, and tags
 4. **VPC attachment** is created as a child of the zone, binding all `spec.vpc_attachments` entries. Cross-region attachments use the `region_id` field.

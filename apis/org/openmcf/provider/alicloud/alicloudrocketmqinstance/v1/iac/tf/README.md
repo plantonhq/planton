@@ -1,4 +1,4 @@
-# Terraform Module to Deploy AlicloudRocketmqInstance
+# Terraform Module to Deploy AliCloudRocketmqInstance
 
 This module provisions an Alibaba Cloud RocketMQ 5.x instance with bundled
 topics and consumer groups using the `alicloud_rocketmq_*` resources.
@@ -32,7 +32,7 @@ Credentials are provided via stack input (CLI), not in the manifest `spec`.
 | `locals.tf` | Tag computation, `commodity_code` derivation, internet logic, collection-to-map conversions |
 | `variables.tf` | Input variables with validation rules |
 | `outputs.tf` | Instance ID, TCP/internet endpoints, topic and consumer group ID maps |
-| `provider.tf` | Alicloud provider configuration scoped to `spec.region` |
+| `provider.tf` | AliCloud provider configuration scoped to `spec.region` |
 
 ## Outputs
 

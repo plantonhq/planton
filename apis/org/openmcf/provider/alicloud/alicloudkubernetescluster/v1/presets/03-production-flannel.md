@@ -17,7 +17,7 @@ This preset creates a production-grade ACK Managed Kubernetes cluster using Flan
 - **RRSA enabled** (`enableRrsa: true`) -- Pod-level IAM remains available regardless of CNI choice. Service accounts can assume RAM roles via OIDC.
 - **Full observability** (logtail-ds, arms-prometheus, metrics-server, ack-node-problem-detector) -- Same logging and monitoring stack as the Terway preset with 90-day control plane log retention and audit logging.
 - **Patch-only auto-upgrade** (`channel: patch`) -- Automatic patch upgrades during the Wednesday maintenance window without minor version jumps.
-- **External NAT** (`newNatGateway: false`) -- Same assumption as the Terway preset: NAT is managed via a dedicated AlicloudNatGateway component.
+- **External NAT** (`newNatGateway: false`) -- Same assumption as the Terway preset: NAT is managed via a dedicated AliCloudNatGateway component.
 
 ## Placeholders to Replace
 
@@ -25,10 +25,10 @@ This preset creates a production-grade ACK Managed Kubernetes cluster using Flan
 |---|---|---|
 | `<alibaba-cloud-region>` | Region code (e.g., `cn-hangzhou`, `ap-southeast-1`) | Your deployment region strategy |
 | `<your-cluster-name>` | Cluster name (1-63 chars, alphanumeric) | Your naming convention |
-| `<vswitch-id-zone-a>` | VSwitch in first availability zone | `AlicloudVswitch` stack outputs |
-| `<vswitch-id-zone-b>` | VSwitch in second availability zone | `AlicloudVswitch` stack outputs |
-| `<vswitch-id-zone-c>` | VSwitch in third availability zone | `AlicloudVswitch` stack outputs |
-| `<your-log-project-name>` | SLS project for cluster logs and addon dashboards | `AlicloudLogProject` stack outputs |
+| `<vswitch-id-zone-a>` | VSwitch in first availability zone | `AliCloudVswitch` stack outputs |
+| `<vswitch-id-zone-b>` | VSwitch in second availability zone | `AliCloudVswitch` stack outputs |
+| `<vswitch-id-zone-c>` | VSwitch in third availability zone | `AliCloudVswitch` stack outputs |
+| `<your-log-project-name>` | SLS project for cluster logs and addon dashboards | `AliCloudLogProject` stack outputs |
 | `<your-team>` | Team or business unit | Your organizational structure |
 | `<your-cost-center>` | Cost center code | Your finance team |
 

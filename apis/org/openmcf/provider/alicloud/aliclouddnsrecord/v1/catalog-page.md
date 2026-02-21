@@ -1,17 +1,17 @@
-# Alibaba Cloud DNS Record
+# AliCloud DNS Record
 
 Creates and manages DNS records within an Alibaba Cloud Alidns-hosted domain. Supports all standard record types (A, AAAA, CNAME, MX, TXT, NS, SRV, CAA) with configurable TTL, priority, resolution lines, and record status.
 
 ## What Gets Created
 
-When you deploy an AlicloudDnsRecord resource, OpenMCF provisions:
+When you deploy an AliCloudDnsRecord resource, OpenMCF provisions:
 
 - **Alidns Record** -- an `alicloud_alidns_record` resource (Pulumi: `dns.AlidnsRecord`) that creates a DNS record within the specified parent domain
 
 ## Prerequisites
 
 - **Alibaba Cloud credentials** configured via environment variables (`ALICLOUD_ACCESS_KEY`, `ALICLOUD_SECRET_KEY`) or OpenMCF provider config
-- **Parent domain** registered in Alidns -- either via the AlicloudDnsZone component or manually in the console
+- **Parent domain** registered in Alidns -- either via the AliCloudDnsZone component or manually in the console
 - **OpenMCF CLI** installed with either Pulumi or Terraform (OpenTofu) backend
 
 ## Quick Start
@@ -19,15 +19,15 @@ When you deploy an AlicloudDnsRecord resource, OpenMCF provisions:
 Create a file `dns-record.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsRecord
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsRecord
 metadata:
   name: my-record
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudDnsRecord.my-record
+    pulumi.openmcf.org/stack.name: dev.AliCloudDnsRecord.my-record
 spec:
   region: cn-hangzhou
   domainName: example.com
@@ -69,15 +69,15 @@ openmcf apply -f dns-record.yaml
 ### A Record
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsRecord
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsRecord
 metadata:
   name: web-server
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudDnsRecord.web-server
+    pulumi.openmcf.org/stack.name: dev.AliCloudDnsRecord.web-server
 spec:
   region: cn-hangzhou
   domainName: example.com
@@ -90,15 +90,15 @@ spec:
 ### CNAME Record
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsRecord
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsRecord
 metadata:
   name: cdn-alias
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudDnsRecord.cdn-alias
+    pulumi.openmcf.org/stack.name: dev.AliCloudDnsRecord.cdn-alias
 spec:
   region: cn-hangzhou
   domainName: example.com
@@ -110,15 +110,15 @@ spec:
 ### MX Record with Priority
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsRecord
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsRecord
 metadata:
   name: mail-primary
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudDnsRecord.mail-primary
+    pulumi.openmcf.org/stack.name: prod.AliCloudDnsRecord.mail-primary
 spec:
   region: cn-hangzhou
   domainName: example.com
@@ -139,5 +139,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudDnsZone](/docs/catalog/alicloud/aliclouddnszone) -- registers the parent domain in Alidns (prerequisite for creating records)
-- [AlicloudPrivateDnsZone](/docs/catalog/alicloud/alicloudprivatednszone) -- manages private DNS zones for VPC-internal resolution (separate from public Alidns)
+- [AliCloudDnsZone](/docs/catalog/alicloud/aliclouddnszone) -- registers the parent domain in Alidns (prerequisite for creating records)
+- [AliCloudPrivateDnsZone](/docs/catalog/alicloud/alicloudprivatednszone) -- manages private DNS zones for VPC-internal resolution (separate from public Alidns)

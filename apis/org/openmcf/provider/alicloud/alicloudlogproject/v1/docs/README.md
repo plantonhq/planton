@@ -206,10 +206,10 @@ _, err = log.NewStoreIndex(ctx, "app-logs-index", &log.StoreIndexArgs{
 
 The most advanced deployment model treats SLS configuration as a continuously reconciled desired state:
 
-- **Crossplane**: Extends the Kubernetes API with custom resources for Alibaba Cloud. An operator watches for `AlicloudLogProject` custom resources and provisions/reconciles the SLS infrastructure automatically.
+- **Crossplane**: Extends the Kubernetes API with custom resources for Alibaba Cloud. An operator watches for `AliCloudLogProject` custom resources and provisions/reconciles the SLS infrastructure automatically.
 - **Custom Operators**: Teams build Kubernetes operators that watch for application deployments and automatically create corresponding SLS projects and stores.
 
-**OpenMCF Context**: OpenMCF's protobuf-defined API is designed for this model. The YAML manifest is a desired-state declaration that can be applied once (CLI mode) or continuously reconciled (control-plane mode). The `AlicloudLogProject` resource is a Kubernetes-native API object, not just a CLI input format.
+**OpenMCF Context**: OpenMCF's protobuf-defined API is designed for this model. The YAML manifest is a desired-state declaration that can be applied once (CLI mode) or continuously reconciled (control-plane mode). The `AliCloudLogProject` resource is a Kubernetes-native API object, not just a CLI input format.
 
 **Verdict**: The future of infrastructure management. OpenMCF's API design anticipates this model even when used in CLI mode today.
 
@@ -229,7 +229,7 @@ The key differentiator is the **Bundled** column. Every other method treats the 
 
 ### Design Philosophy: The DD07 Bundling Decision
 
-The most important design decision for AlicloudLogProject is **DD07: composite bundling**. Instead of creating three separate OpenMCF resources (`AlicloudLogProject`, `AlicloudLogStore`, `AlicloudLogStoreIndex`), the component bundles all three into a single resource.
+The most important design decision for AliCloudLogProject is **DD07: composite bundling**. Instead of creating three separate OpenMCF resources (`AliCloudLogProject`, `AliCloudLogStore`, `AliCloudLogStoreIndex`), the component bundles all three into a single resource.
 
 **Why bundle?**
 
@@ -253,7 +253,7 @@ The most important design decision for AlicloudLogProject is **DD07: composite b
 - **Logtail configuration**: How logs get into the store (agent configuration, machine groups, log collection configs) is a separate operational concern. Different teams use Logtail, Fluent Bit, or the SLS SDK. Bundling log collection with project creation would create an overly opinionated resource.
 - **Field-level indexes**: Full-text indexing covers the majority of query patterns. Field-level indexes (for structured queries like `status:200 AND latency>500`) require schema knowledge that varies by application. This is a customization best handled after initial provisioning.
 - **Dashboards and alerts**: Monitoring configuration belongs to a separate lifecycle. Dashboard YAML changes far more frequently than infrastructure topology.
-- **Cross-region replication**: An advanced feature that involves two projects in different regions. This is better modeled as a relationship between two `AlicloudLogProject` resources, not as a field within one.
+- **Cross-region replication**: An advanced feature that involves two projects in different regions. This is better modeled as a relationship between two `AliCloudLogProject` resources, not as a field within one.
 - **Log ETL (data transformation)**: ETL jobs that transform data between stores are complex pipelines with their own lifecycle. Bundling them would make the resource unwieldy.
 
 ### API Design Decisions
@@ -268,7 +268,7 @@ The most important design decision for AlicloudLogProject is **DD07: composite b
 
 ### Foreign Key References
 
-AlicloudLogProject has no `StringValueOrRef` fields — all fields are direct values. This is correct because SLS projects are foundation resources with no upstream dependencies. Downstream resources (AckManagedCluster, FcFunction, SaeApplication) reference this project's outputs via their own `StringValueOrRef` fields.
+AliCloudLogProject has no `StringValueOrRef` fields — all fields are direct values. This is correct because SLS projects are foundation resources with no upstream dependencies. Downstream resources (AckManagedCluster, FcFunction, SaeApplication) reference this project's outputs via their own `StringValueOrRef` fields.
 
 ## Implementation Landscape
 
@@ -318,7 +318,7 @@ The Terraform module consists of five files under `v1/iac/tf/`:
 
 **`variables.tf`** — Input variables matching the proto schema.
 - `metadata` object with `name`, `id`, `org`, `env`, `labels`, `tags`
-- `spec` object mirroring `AlicloudLogProjectSpec` with all fields and defaults
+- `spec` object mirroring `AliCloudLogProjectSpec` with all fields and defaults
 
 **`locals.tf`** — Computed values.
 - `log_stores_map`: Converts the list of stores to a map keyed by name (required for `for_each`)
@@ -415,7 +415,7 @@ SLS pricing has three dimensions:
 
 SLS projects are region-scoped. A project in `cn-hangzhou` can only receive logs from Logtail agents or SDK clients configured to send to the `cn-hangzhou` endpoint.
 
-**Multi-Region Strategy**: Deploy one `AlicloudLogProject` resource per region where workloads run. Use SLS's built-in cross-region replication (not managed by this OpenMCF component) if centralized querying is needed.
+**Multi-Region Strategy**: Deploy one `AliCloudLogProject` resource per region where workloads run. Use SLS's built-in cross-region replication (not managed by this OpenMCF component) if centralized querying is needed.
 
 **Endpoint Selection**: Choose the region closest to the log source to minimize ingestion latency. For Kubernetes clusters, this means the SLS project should be in the same region as the ACK cluster.
 
@@ -443,7 +443,7 @@ SLS project deployment is a solved problem at every level of the tooling spectru
 
 The DD07 bundling decision is the architectural cornerstone: by treating project + stores + indexes as a single resource, OpenMCF makes the common case simple (one YAML resource for a complete logging setup) while leaving the advanced case possible (custom field-level indexes and ETL can be layered on top).
 
-For teams adopting Alibaba Cloud, `AlicloudLogProject` is typically the first resource deployed — it provides the logging foundation that AckManagedCluster, FcFunction, and SaeApplication reference for operational visibility.
+For teams adopting Alibaba Cloud, `AliCloudLogProject` is typically the first resource deployed — it provides the logging foundation that AckManagedCluster, FcFunction, and SaeApplication reference for operational visibility.
 
 ### References
 

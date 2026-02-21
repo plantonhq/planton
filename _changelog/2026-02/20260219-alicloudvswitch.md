@@ -1,19 +1,19 @@
-# AlicloudVswitch Component Added
+# AliCloudVswitch Component Added
 
 **Date**: 2026-02-19
-**Component**: AlicloudVswitch
+**Component**: AliCloudVswitch
 **Enum**: 3021
 **ID Prefix**: acvsw
 
 ## Summary
 
-Added the AlicloudVswitch deployment component -- the subnet-equivalent resource in Alibaba Cloud networking. This is the first Alibaba Cloud component that uses `StringValueOrRef` for a cross-resource dependency (`vpc_id` referencing `AlicloudVpc`), establishing the foreign-key pattern for all downstream Alibaba Cloud networking components.
+Added the AliCloudVswitch deployment component -- the subnet-equivalent resource in Alibaba Cloud networking. This is the first Alibaba Cloud component that uses `StringValueOrRef` for a cross-resource dependency (`vpc_id` referencing `AliCloudVpc`), establishing the foreign-key pattern for all downstream Alibaba Cloud networking components.
 
 ## What Was Created
 
 ### API Definition
 - `apis/org/openmcf/provider/alicloud/alicloudvswitch/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AlicloudVswitch = 3021` in `CloudResourceKind` enum under the Networking category
+- Registered `AliCloudVswitch = 3021` in `CloudResourceKind` enum under the Networking category
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider and a single `vpc.NewSwitch` resource; resolves `vpc_id` from `StringValueOrRef` via `GetValue()`
@@ -31,11 +31,11 @@ Added the AlicloudVswitch deployment component -- the subnet-equivalent resource
 ## Spec Design Decisions
 
 - **`region` included (deviation from T02)**: T02 spec said "no region field" but every IaC module needs it for provider configuration. Consistent with all other components.
-- **`vpc_id` as StringValueOrRef**: First use in Alibaba Cloud provider. Uses `default_kind = AlicloudVpc` and `default_kind_field_path = "status.outputs.vpc_id"`.
+- **`vpc_id` as StringValueOrRef**: First use in Alibaba Cloud provider. Uses `default_kind = AliCloudVpc` and `default_kind_field_path = "status.outputs.vpc_id"`.
 - **`vswitch_name` not `name`**: Uses provider-authentic field name. TF deprecated `name` in v1.119.0.
 - **`ipv6_cidr_block_mask` validation**: Range 0-255 with `IGNORE_IF_ZERO_VALUE` so zero (proto default) is not flagged.
 - **`is_default` excluded**: Creating default VSwitches is an edge case not needed for managed infrastructure.
-- **Tags included**: Consistent with AlicloudVpc.
+- **Tags included**: Consistent with AliCloudVpc.
 
 ## Verification
 

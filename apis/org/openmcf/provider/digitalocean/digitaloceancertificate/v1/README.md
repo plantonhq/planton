@@ -24,7 +24,7 @@ Manage SSL/TLS certificates on DigitalOcean using a type-safe, protobuf-defined 
 For domains with DNS managed by DigitalOcean:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanCertificate
 metadata:
   name: prod-web-cert
@@ -46,7 +46,7 @@ spec:
 For commercial certificates or external DNS providers:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanCertificate
 metadata:
   name: prod-ev-cert

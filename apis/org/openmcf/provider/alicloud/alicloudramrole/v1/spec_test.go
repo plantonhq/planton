@@ -26,7 +26,7 @@ var _ = ginkgo.Describe("AliCloudRamRoleSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
 			input := &AliCloudRamRole{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRamRole",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-role",
@@ -43,7 +43,7 @@ var _ = ginkgo.Describe("AliCloudRamRoleSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with policy attachments", func() {
 			input := &AliCloudRamRole{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRamRole",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-role",
@@ -70,7 +70,7 @@ var _ = ginkgo.Describe("AliCloudRamRoleSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with all optional fields populated", func() {
 			input := &AliCloudRamRole{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRamRole",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "full-config",
@@ -103,7 +103,7 @@ var _ = ginkgo.Describe("AliCloudRamRoleSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with max_session_duration at boundary values", func() {
 			input := &AliCloudRamRole{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRamRole",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -124,7 +124,7 @@ var _ = ginkgo.Describe("AliCloudRamRoleSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
 			input := &AliCloudRamRole{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRamRole",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -140,7 +140,7 @@ var _ = ginkgo.Describe("AliCloudRamRoleSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when role_name is missing", func() {
 			input := &AliCloudRamRole{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRamRole",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -156,7 +156,7 @@ var _ = ginkgo.Describe("AliCloudRamRoleSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when assume_role_policy_document is missing", func() {
 			input := &AliCloudRamRole{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRamRole",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -172,7 +172,7 @@ var _ = ginkgo.Describe("AliCloudRamRoleSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when role_name exceeds 64 characters", func() {
 			input := &AliCloudRamRole{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRamRole",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -189,7 +189,7 @@ var _ = ginkgo.Describe("AliCloudRamRoleSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when max_session_duration is below minimum", func() {
 			input := &AliCloudRamRole{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRamRole",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -207,7 +207,7 @@ var _ = ginkgo.Describe("AliCloudRamRoleSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when max_session_duration exceeds maximum", func() {
 			input := &AliCloudRamRole{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRamRole",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -225,7 +225,7 @@ var _ = ginkgo.Describe("AliCloudRamRoleSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when policy_type is invalid", func() {
 			input := &AliCloudRamRole{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRamRole",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -248,7 +248,7 @@ var _ = ginkgo.Describe("AliCloudRamRoleSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when policy_name is missing in attachment", func() {
 			input := &AliCloudRamRole{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRamRole",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -287,7 +287,7 @@ var _ = ginkgo.Describe("AliCloudRamRoleSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when kind is wrong", func() {
 			input := &AliCloudRamRole{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",

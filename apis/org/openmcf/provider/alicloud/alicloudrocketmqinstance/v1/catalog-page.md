@@ -1,10 +1,10 @@
-# Alibaba Cloud RocketMQ Instance
+# AliCloud RocketMQ Instance
 
 Deploys an Alibaba Cloud RocketMQ 5.x managed message broker with bundled topics and consumer groups. Supports edition-based throughput tiers (standard, professional, ultimate), deployment architectures (single node, cluster HA, serverless), and optional public internet access.
 
 ## What Gets Created
 
-When you deploy an AlicloudRocketmqInstance resource, OpenMCF provisions:
+When you deploy an AliCloudRocketmqInstance resource, OpenMCF provisions:
 
 - **RocketMQ 5.x Instance** — a managed message broker placed in the specified VPC with configurable edition, billing, and optional internet access
 - **Topics** — one `alicloud_rocketmq_topic` per entry in `spec.topics[]`, each with a message type (NORMAL, FIFO, DELAY, or TRANSACTION) and optional throughput limits
@@ -22,15 +22,15 @@ When you deploy an AlicloudRocketmqInstance resource, OpenMCF provisions:
 Create a file `rocketmq.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRocketmqInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRocketmqInstance
 metadata:
   name: my-mq
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudRocketmqInstance.my-mq
+    pulumi.openmcf.org/stack.name: dev.AliCloudRocketmqInstance.my-mq
 spec:
   region: cn-hangzhou
   seriesCode: standard
@@ -56,7 +56,7 @@ This creates a standard-edition single-node RocketMQ instance in the specified V
 | `region` | `string` | Alibaba Cloud region (e.g., `cn-hangzhou`, `us-west-1`). | Required; non-empty |
 | `seriesCode` | `string` | Edition series: `standard`, `professional`, `ultimate`. Determines feature set and throughput ceiling. ForceNew. | Required; must be one of the three values |
 | `subSeriesCode` | `string` | Deployment architecture: `cluster_ha`, `single_node`, `serverless`. ForceNew. | Required; must be one of the three values |
-| `vpcId` | `StringValueOrRef` | VPC where the instance is deployed. ForceNew. Can reference an `AlicloudVpc` resource via `valueFrom`. | Required |
+| `vpcId` | `StringValueOrRef` | VPC where the instance is deployed. ForceNew. Can reference an `AliCloudVpc` resource via `valueFrom`. | Required |
 
 ### Optional Fields
 
@@ -69,7 +69,7 @@ This creates a standard-edition single-node RocketMQ instance in the specified V
 | `periodUnit` | `string` | — | Subscription period unit: `Month` or `Year`. |
 | `autoRenew` | `bool` | — | Enable auto-renewal for Subscription instances. |
 | `autoRenewPeriod` | `int` | — | Auto-renewal period: 1, 2, 3, 6, or 12. |
-| `vswitchId` | `StringValueOrRef` | — | VSwitch for VPC endpoint placement. ForceNew. Can reference an `AlicloudVswitch` resource via `valueFrom`. |
+| `vswitchId` | `StringValueOrRef` | — | VSwitch for VPC endpoint placement. ForceNew. Can reference an `AliCloudVswitch` resource via `valueFrom`. |
 | `securityGroupId` | `string` | — | Security group for VPC endpoint access control. ForceNew. |
 | `internetInfo.enabled` | `bool` | `false` | Enable public internet endpoint. ForceNew. |
 | `internetInfo.flowOutType` | `string` | `payByTraffic` | Internet billing: `payByBandwidth` or `payByTraffic`. ForceNew. |
@@ -115,15 +115,15 @@ This creates a standard-edition single-node RocketMQ instance in the specified V
 A minimal standard-edition instance for development and testing:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRocketmqInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRocketmqInstance
 metadata:
   name: dev-mq
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudRocketmqInstance.dev-mq
+    pulumi.openmcf.org/stack.name: dev.AliCloudRocketmqInstance.dev-mq
 spec:
   region: cn-hangzhou
   seriesCode: standard
@@ -137,15 +137,15 @@ spec:
 A professional-edition cluster with FIFO and normal topics, consumer groups with custom retry policies, and VSwitch placement:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRocketmqInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRocketmqInstance
 metadata:
   name: prod-mq
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: acme-corp
     pulumi.openmcf.org/project: messaging
-    pulumi.openmcf.org/stack.name: prod.AlicloudRocketmqInstance.prod-mq
+    pulumi.openmcf.org/stack.name: prod.AliCloudRocketmqInstance.prod-mq
 spec:
   region: cn-shanghai
   seriesCode: professional
@@ -191,15 +191,15 @@ spec:
 A mission-critical ultimate-edition instance with subscription billing, public internet access, encryption at rest, and auto-scaling:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRocketmqInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRocketmqInstance
 metadata:
   name: enterprise-mq
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: fintech-corp
     pulumi.openmcf.org/project: messaging
-    pulumi.openmcf.org/stack.name: prod.AlicloudRocketmqInstance.enterprise-mq
+    pulumi.openmcf.org/stack.name: prod.AliCloudRocketmqInstance.enterprise-mq
 spec:
   region: cn-hangzhou
   seriesCode: ultimate
@@ -265,7 +265,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudVpc](/docs/catalog/alicloud/alicloudvpc) — provides the VPC for instance network placement
-- [AlicloudVswitch](/docs/catalog/alicloud/alicloudvswitch) — provides the VSwitch for availability zone placement
-- [AlicloudSecurityGroup](/docs/catalog/alicloud/alicloudsecuritygroup) — controls network-level access to the instance endpoint
-- [AlicloudKmsKey](/docs/catalog/alicloud/alicloudkmskey) — provides the encryption key for storage encryption at rest
+- [AliCloudVpc](/docs/catalog/alicloud/alicloudvpc) — provides the VPC for instance network placement
+- [AliCloudVswitch](/docs/catalog/alicloud/alicloudvswitch) — provides the VSwitch for availability zone placement
+- [AliCloudSecurityGroup](/docs/catalog/alicloud/alicloudsecuritygroup) — controls network-level access to the instance endpoint
+- [AliCloudKmsKey](/docs/catalog/alicloud/alicloudkmskey) — provides the encryption key for storage encryption at rest

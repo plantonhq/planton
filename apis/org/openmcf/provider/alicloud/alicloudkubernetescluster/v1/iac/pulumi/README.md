@@ -1,4 +1,4 @@
-# Pulumi Module to Deploy AlicloudKubernetesCluster
+# Pulumi Module to Deploy AliCloudKubernetesCluster
 
 ## CLI usage (OpenMCF pulumi)
 
@@ -53,11 +53,11 @@ openmcf pulumi preview \
 
 ## Module Overview
 
-This Pulumi module deploys an Alibaba Cloud ACK Managed Kubernetes cluster using a single `cs.ManagedKubernetes` resource. The module reads an `AlicloudKubernetesClusterStackInput` protobuf message, resolves defaults for optional fields, and provisions the cluster with the specified networking, security, addon, logging, maintenance, and auto-upgrade configuration.
+This Pulumi module deploys an Alibaba Cloud ACK Managed Kubernetes cluster using a single `cs.ManagedKubernetes` resource. The module reads an `AliCloudKubernetesClusterStackInput` protobuf message, resolves defaults for optional fields, and provisions the cluster with the specified networking, security, addon, logging, maintenance, and auto-upgrade configuration.
 
 The module supports both Flannel (overlay) and Terway (ENI-based) CNI modes through mutually exclusive spec fields (`podCidr` for Flannel, `podVswitchIds` for Terway). Addons, maintenance windows, and auto-upgrade policies are configured via structured spec fields that map directly to the provider resource arguments.
 
-All 11 stack outputs (cluster ID, name, API server endpoints, VPC ID, security group ID, NAT gateway ID, worker RAM role name, and RRSA OIDC metadata) are exported for use by downstream components such as AlicloudKubernetesNodePool.
+All 11 stack outputs (cluster ID, name, API server endpoints, VPC ID, security group ID, NAT gateway ID, worker RAM role name, and RRSA OIDC metadata) are exported for use by downstream components such as AliCloudKubernetesNodePool.
 
 ---
 

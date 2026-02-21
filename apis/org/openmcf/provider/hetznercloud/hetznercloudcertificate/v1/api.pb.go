@@ -157,10 +157,10 @@ var File_org_openmcf_provider_hetznercloud_hetznercloudcertificate_v1_api_proto 
 
 const file_org_openmcf_provider_hetznercloud_hetznercloudcertificate_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"Forg/openmcf/provider/hetznercloud/hetznercloudcertificate/v1/api.proto\x12<org.openmcf.provider.hetznercloud.hetznercloudcertificate.v1\x1a\x1bbuf/validate/validate.proto\x1aGorg/openmcf/provider/hetznercloud/hetznercloudcertificate/v1/spec.proto\x1aPorg/openmcf/provider/hetznercloud/hetznercloudcertificate/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xcd\x03\n" +
-	"\x17HetznerCloudCertificate\x12C\n" +
-	"\vapi_version\x18\x01 \x01(\tB\"\xbaH\x1fr\x1d\n" +
-	"\x1bhetznercloud.openmcf.org/v1R\n" +
+	"Forg/openmcf/provider/hetznercloud/hetznercloudcertificate/v1/api.proto\x12<org.openmcf.provider.hetznercloud.hetznercloudcertificate.v1\x1a\x1bbuf/validate/validate.proto\x1aGorg/openmcf/provider/hetznercloud/hetznercloudcertificate/v1/spec.proto\x1aPorg/openmcf/provider/hetznercloud/hetznercloudcertificate/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xce\x03\n" +
+	"\x17HetznerCloudCertificate\x12D\n" +
+	"\vapi_version\x18\x01 \x01(\tB#\xbaH r\x1e\n" +
+	"\x1chetzner-cloud.openmcf.org/v1R\n" +
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17HetznerCloudCertificateR\x04kind\x12M\n" +

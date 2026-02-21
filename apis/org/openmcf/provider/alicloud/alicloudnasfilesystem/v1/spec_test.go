@@ -21,7 +21,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-nas",
@@ -44,7 +44,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with all optional fields populated", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "prod-nas",
@@ -90,7 +90,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with extreme NAS configuration", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "extreme-nas",
@@ -120,7 +120,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with SMB protocol", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "smb-nas",
@@ -143,7 +143,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with Premium storage type", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "premium-nas",
@@ -166,7 +166,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with access rule using all_squash", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "squash-nas",
@@ -199,7 +199,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -221,7 +221,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when protocol_type is missing", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -243,7 +243,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when protocol_type has invalid value", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -266,7 +266,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when storage_type has invalid value", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -289,7 +289,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when file_system_type has invalid value", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -313,7 +313,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when vpc_id is missing", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -333,7 +333,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when vswitch_id is missing", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -353,7 +353,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when encrypt_type has invalid value", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -379,7 +379,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when access_rule source_cidr_ip is missing", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -407,7 +407,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when access_rule rw_access_type has invalid value", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -436,7 +436,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when access_rule user_access_type has invalid value", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -488,7 +488,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when kind is wrong", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -511,7 +511,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when metadata is missing", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Spec: &AliCloudNasFileSystemSpec{
 					Region:       "cn-hangzhou",
@@ -531,7 +531,7 @@ var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when spec is missing", func() {
 			input := &AliCloudNasFileSystem{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",

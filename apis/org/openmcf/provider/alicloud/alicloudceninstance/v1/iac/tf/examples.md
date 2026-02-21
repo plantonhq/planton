@@ -1,4 +1,4 @@
-# AlicloudCenInstance Terraform Examples
+# AliCloudCenInstance Terraform Examples
 
 Apply any of the manifests below with the OpenMCF CLI:
 
@@ -13,8 +13,8 @@ openmcf tofu apply --manifest hack/manifest.yaml --auto-approve
 ## Minimal: Single-Region Multi-VPC
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCenInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCenInstance
 metadata:
   name: basic-cen
 spec:
@@ -38,8 +38,8 @@ openmcf tofu apply --manifest basic-cen.yaml --auto-approve
 ## Cross-Region Backbone
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCenInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCenInstance
 metadata:
   name: global-cen
   org: acme-corp
@@ -72,8 +72,8 @@ openmcf tofu apply --manifest global-cen.yaml --auto-approve
 ## Managed VPC References
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCenInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCenInstance
 metadata:
   name: managed-cen
   org: acme-corp

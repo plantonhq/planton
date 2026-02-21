@@ -25,10 +25,10 @@ This preset creates a production-grade PostgreSQL 16 instance with high availabi
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-shanghai`) | Your deployment region |
-| `<your-vswitch-id>` | VSwitch ID for instance placement | `AlicloudVswitch` stack outputs |
+| `<your-vswitch-id>` | VSwitch ID for instance placement | `AliCloudVswitch` stack outputs |
 | `<primary-zone-id>` | Primary AZ (e.g., `cn-shanghai-a`) | Region availability zones |
 | `<standby-zone-id>` | Standby AZ (e.g., `cn-shanghai-b`) | Must differ from primary |
-| `<your-vpc-cidr>` | VPC CIDR for IP whitelist (e.g., `10.0.0.0/8`) | `AlicloudVpc` stack outputs |
+| `<your-vpc-cidr>` | VPC CIDR for IP whitelist (e.g., `10.0.0.0/8`) | `AliCloudVpc` stack outputs |
 | `<your-instance-name>` | Instance name (2-256 chars) | Choose a descriptive name |
 | `<your-org>` | Organization name | Your OpenMCF org |
 | `<your-team>` | Team tag value | Your team name |

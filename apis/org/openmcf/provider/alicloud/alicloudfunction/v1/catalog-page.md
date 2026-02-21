@@ -1,10 +1,10 @@
-# AlicloudFunction
+# AliCloud Function
 
 Deploys an Alibaba Cloud Function Compute v3 function. The component provisions a single `alicloud_fcv3_function` resource with configurable runtime, compute sizing, VPC networking, SLS logging, custom container/runtime settings, lifecycle hooks, NAS mounts, and GPU acceleration. FC v3 uses a service-less model where functions are top-level resources — VPC access, logging, IAM role, and all other configuration is set directly on the function. Triggers, aliases, versions, and concurrency configs have independent lifecycles and are managed by separate components.
 
 ## What Gets Created
 
-When you deploy an AlicloudFunction resource, OpenMCF provisions:
+When you deploy an AliCloudFunction resource, OpenMCF provisions:
 
 - **FC v3 Function** — a single function in the specified region with the configured runtime, handler, compute sizing, and optional networking/logging/storage settings
 - **Standard tags** — `resource`, `resource_name`, `resource_kind`, plus optional `organization` and `environment` tags, merged with user-provided `tags`
@@ -22,15 +22,15 @@ When you deploy an AlicloudFunction resource, OpenMCF provisions:
 Create a file `function.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudFunction
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudFunction
 metadata:
   name: hello-world
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudFunction.hello-world
+    pulumi.openmcf.org/stack.name: dev.AliCloudFunction.hello-world
 spec:
   region: cn-hangzhou
   functionName: hello-world
@@ -71,10 +71,10 @@ This creates an FC v3 function named `hello-world` in `cn-hangzhou` running `pyt
 | `diskSize` | `int32` | Provider default | Temp disk in MB. Minimum: 512. |
 | `instanceConcurrency` | `int32` | Provider default | Concurrent requests per instance. Range: 1-200. |
 | `code` | `object` | — | Code package. Fields: `ossBucketName`, `ossObjectName`, `zipFile`, `checksum`. Not required for `custom-container`. |
-| `role` | `StringValueOrRef` | — | RAM role ARN for execution. References `AlicloudRamRole`. |
+| `role` | `StringValueOrRef` | — | RAM role ARN for execution. References `AliCloudRamRole`. |
 | `internetAccess` | `bool` | — | Whether the function can access the public internet. |
-| `vpcConfig` | `object` | — | VPC attachment. Fields: `vpcId` (ref: AlicloudVpc), `vswitchIds`, `securityGroupId` (ref: AlicloudSecurityGroup). |
-| `logConfig` | `object` | — | SLS logging. Fields: `project` (ref: AlicloudLogProject), `logstore`, `logBeginRule`, `enableInstanceMetrics`, `enableRequestMetrics`. |
+| `vpcConfig` | `object` | — | VPC attachment. Fields: `vpcId` (ref: AliCloudVpc), `vswitchIds`, `securityGroupId` (ref: AliCloudSecurityGroup). |
+| `logConfig` | `object` | — | SLS logging. Fields: `project` (ref: AliCloudLogProject), `logstore`, `logBeginRule`, `enableInstanceMetrics`, `enableRequestMetrics`. |
 | `customContainerConfig` | `object` | — | Container runtime config. Fields: `image`, `entrypoint`, `command`, `port`, `healthCheckConfig`. |
 | `customRuntimeConfig` | `object` | — | Custom runtime config. Fields: `command`, `args`, `port`, `healthCheckConfig`. |
 | `instanceLifecycleConfig` | `object` | — | Lifecycle hooks. Fields: `initializer` (handler, timeout, command), `preStop` (handler, timeout). |
@@ -90,15 +90,15 @@ This creates an FC v3 function named `hello-world` in `cn-hangzhou` running `pyt
 ### Minimal Python Function
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudFunction
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudFunction
 metadata:
   name: hello-world
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudFunction.hello-world
+    pulumi.openmcf.org/stack.name: dev.AliCloudFunction.hello-world
 spec:
   region: cn-hangzhou
   functionName: hello-world
@@ -112,15 +112,15 @@ spec:
 ### VPC-Connected API Function with Logging
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudFunction
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudFunction
 metadata:
   name: api-handler
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AlicloudFunction.api-handler
+    pulumi.openmcf.org/stack.name: staging.AliCloudFunction.api-handler
 spec:
   region: cn-shanghai
   functionName: api-handler
@@ -163,15 +163,15 @@ spec:
 ### GPU-Accelerated Container Function
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudFunction
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudFunction
 metadata:
   name: ml-inference
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudFunction.ml-inference
+    pulumi.openmcf.org/stack.name: prod.AliCloudFunction.ml-inference
 spec:
   region: cn-hangzhou
   functionName: ml-inference
@@ -242,9 +242,9 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudRamRole](/docs/catalog/alicloud/alicloudramrole) — provides the execution role for the function
-- [AlicloudLogProject](/docs/catalog/alicloud/alicloudlogproject) — provides the SLS project for function logging
-- [AlicloudVpc](/docs/catalog/alicloud/alicloudvpc) — provides the VPC for private network access
-- [AlicloudSecurityGroup](/docs/catalog/alicloud/alicloudsecuritygroup) — provides the security group for VPC-attached functions
-- [AlicloudNasFileSystem](/docs/catalog/alicloud/alicloudnasfilesystem) — provides NAS mount targets for shared file storage
-- [AlicloudStorageBucket](/docs/catalog/alicloud/alicloudstoragebucket) — provides OSS buckets for function code packages
+- [AliCloudRamRole](/docs/catalog/alicloud/alicloudramrole) — provides the execution role for the function
+- [AliCloudLogProject](/docs/catalog/alicloud/alicloudlogproject) — provides the SLS project for function logging
+- [AliCloudVpc](/docs/catalog/alicloud/alicloudvpc) — provides the VPC for private network access
+- [AliCloudSecurityGroup](/docs/catalog/alicloud/alicloudsecuritygroup) — provides the security group for VPC-attached functions
+- [AliCloudNasFileSystem](/docs/catalog/alicloud/alicloudnasfilesystem) — provides NAS mount targets for shared file storage
+- [AliCloudStorageBucket](/docs/catalog/alicloud/alicloudstoragebucket) — provides OSS buckets for function code packages

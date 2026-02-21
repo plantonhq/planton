@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added Hetzner Cloud as provider #27 to OpenMCF, enabling users to manage Hetzner Cloud credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. Hetzner Cloud's single API token authentication model maps cleanly to 3 `HCLOUD_*`/`HETZNER_*` environment variables without the multi-method complexity required by providers like OpenStack, Alicloud, or OCI.
+Added Hetzner Cloud as provider #27 to OpenMCF, enabling users to manage Hetzner Cloud credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. Hetzner Cloud's single API token authentication model maps cleanly to 3 `HCLOUD_*`/`HETZNER_*` environment variables without the multi-method complexity required by providers like OpenStack, AliCloud, or OCI.
 
 ## Problem Statement / Motivation
 

@@ -1,4 +1,4 @@
-# AlicloudNetworkLoadBalancer -- Research Documentation
+# AliCloudNetworkLoadBalancer -- Research Documentation
 
 ## Provider Resource Mapping
 
@@ -41,7 +41,7 @@ NLB supports cross-zone load balancing (enabled by default). When disabled, traf
 | Provider Field | Included | Reason |
 |---|---|---|
 | `load_balancer_name` | Yes | Optional, defaults to metadata.name |
-| `vpc_id` | Yes | Required, FK to AlicloudVpc |
+| `vpc_id` | Yes | Required, FK to AliCloudVpc |
 | `address_type` | Yes | Internet/Intranet |
 | `load_balancer_type` | No | Hardcoded to "Network" |
 | `payment_type` | No | Hardcoded to "PayAsYouGo" |

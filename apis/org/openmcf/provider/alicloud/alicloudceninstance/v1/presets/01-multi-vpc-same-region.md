@@ -21,8 +21,8 @@ Connects two VPCs in the same Alibaba Cloud region via a Cloud Enterprise Networ
 | `<alibaba-cloud-region>` | Alibaba Cloud region (e.g., `cn-hangzhou`) | Your deployment region |
 | `<your-cen-name>` | CEN instance name (2-128 characters) | Choose a descriptive name |
 | `<your-team>` | Team or business unit tag | Your organizational structure |
-| `<first-vpc-id>` | VPC ID of the first network to connect | `AlicloudVpc` stack outputs |
-| `<second-vpc-id>` | VPC ID of the second network to connect | `AlicloudVpc` stack outputs |
+| `<first-vpc-id>` | VPC ID of the first network to connect | `AliCloudVpc` stack outputs |
+| `<second-vpc-id>` | VPC ID of the second network to connect | `AliCloudVpc` stack outputs |
 
 ## Related Presets
 

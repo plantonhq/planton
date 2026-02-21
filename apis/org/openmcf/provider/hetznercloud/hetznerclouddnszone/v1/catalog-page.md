@@ -21,7 +21,7 @@ For **secondary** zones:
 Create a file `dns-zone.yaml`:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudDnsZone
 metadata:
   name: my-zone
@@ -78,7 +78,7 @@ This creates an empty primary DNS zone for `example.com`. Check the `nameservers
 A production zone with A records, a CNAME alias, MX records for email, and TXT records for SPF and DMARC.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudDnsZone
 metadata:
   name: acme-zone
@@ -127,7 +127,7 @@ spec:
 DNS records that reference IP addresses from other Hetzner Cloud resources using `valueFrom`. When the referenced resource's IP changes, the DNS record updates automatically.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudDnsZone
 metadata:
   name: webapp-dns
@@ -176,7 +176,7 @@ spec:
 A secondary zone that synchronizes records from an external primary nameserver, authenticated with TSIG.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudDnsZone
 metadata:
   name: internal-dns

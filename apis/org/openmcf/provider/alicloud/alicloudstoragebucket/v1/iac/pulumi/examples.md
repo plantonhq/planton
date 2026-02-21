@@ -1,4 +1,4 @@
-# AlicloudStorageBucket Pulumi Examples
+# AliCloudStorageBucket Pulumi Examples
 
 Create a YAML manifest using one of the examples below, then deploy with the OpenMCF CLI:
 
@@ -22,8 +22,8 @@ openmcf pulumi update \
 A bucket with only the required fields, suitable for development or quick testing.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudStorageBucket
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudStorageBucket
 metadata:
   name: dev-bucket
 spec:
@@ -40,8 +40,8 @@ This creates a private OSS bucket with Standard storage class and LRS redundancy
 A production-ready bucket with ZRS redundancy, versioning, and AES256 encryption.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudStorageBucket
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudStorageBucket
 metadata:
   name: prod-bucket
   org: my-org
@@ -69,8 +69,8 @@ spec:
 A cost-optimized bucket that transitions objects through storage tiers over time.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudStorageBucket
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudStorageBucket
 metadata:
   name: log-archive
   env: production

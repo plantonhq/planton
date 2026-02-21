@@ -1,4 +1,4 @@
-# AlicloudRdsInstance
+# AliCloudRdsInstance
 
 Manages an Alibaba Cloud RDS (Relational Database Service) instance with bundled databases, accounts, and account privileges.
 

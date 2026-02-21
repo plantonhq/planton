@@ -230,7 +230,7 @@ OpenMCF provides a Kubernetes-style API for deploying Alibaba Cloud VPCs that pr
 
 ### The 80% Case: What Is Included
 
-The `AlicloudVpcSpec` proto exposes seven fields:
+The `AliCloudVpcSpec` proto exposes seven fields:
 
 | Field | Type | Required | Default | Rationale |
 |-------|------|----------|---------|-----------|
@@ -250,11 +250,11 @@ Several Alibaba Cloud VPC features are intentionally excluded from this componen
 
 **Secondary CIDR Blocks**: Alibaba Cloud allows adding up to 5 secondary CIDR blocks to an existing VPC. This is a day-2 operation that is rarely needed at VPC creation time and adds complexity to the API surface. Teams that need secondary CIDRs can use the Alibaba Cloud console or CLI to add them after the initial deployment.
 
-**VPC Flow Logs**: Flow logs capture information about IP traffic going to and from network interfaces in the VPC. While valuable for security and debugging, flow log configuration involves selecting log stores, defining capture filters, and managing storage costs — a separate concern that belongs in a dedicated component or is managed alongside the logging infrastructure (AlicloudLogProject).
+**VPC Flow Logs**: Flow logs capture information about IP traffic going to and from network interfaces in the VPC. While valuable for security and debugging, flow log configuration involves selecting log stores, defining capture filters, and managing storage costs — a separate concern that belongs in a dedicated component or is managed alongside the logging infrastructure (AliCloudLogProject).
 
 **DHCP Options**: Alibaba Cloud VPCs support custom DHCP option sets for configuring DNS servers and NTP servers within the VPC. This is an advanced networking feature used primarily in hybrid cloud scenarios and does not belong in the foundational VPC component.
 
-**VPC Peering / CEN Attachment**: Connecting VPCs together (via peering or Cloud Enterprise Network) is a networking topology concern managed by the AlicloudCenInstance component, not by the VPC itself.
+**VPC Peering / CEN Attachment**: Connecting VPCs together (via peering or Cloud Enterprise Network) is a networking topology concern managed by the AliCloudCenInstance component, not by the VPC itself.
 
 **Custom Route Tables**: The system route table is auto-created. Custom route tables (for advanced routing scenarios like transit VPCs or overlapping CIDRs) are a separate concern.
 
@@ -262,7 +262,7 @@ The guiding principle: the VPC component creates the VPC. Everything else — su
 
 ### Automatic Tag Management
 
-OpenMCF adds system tags to every resource it manages. For AlicloudVpc, the Pulumi module merges user-defined tags from `spec.tags` with system tags:
+OpenMCF adds system tags to every resource it manages. For AliCloudVpc, the Pulumi module merges user-defined tags from `spec.tags` with system tags:
 
 | System Tag | Value | Purpose |
 |------------|-------|---------|
@@ -277,16 +277,16 @@ User tags always win in the merge — if a user defines a tag key that conflicts
 
 ### Foreign Key Pattern
 
-AlicloudVpc is a **foundation resource** — it has no upstream dependencies. Its outputs (particularly `vpc_id`) are consumed by downstream components via the `StringValueOrRef` pattern:
+AliCloudVpc is a **foundation resource** — it has no upstream dependencies. Its outputs (particularly `vpc_id`) are consumed by downstream components via the `StringValueOrRef` pattern:
 
 ```
-AlicloudVpc.status.outputs.vpc_id
-    ├── AlicloudVswitch.spec.vpc_id
-    ├── AlicloudSecurityGroup.spec.vpc_id
-    ├── AlicloudNatGateway.spec.vpc_id
-    ├── AlicloudApplicationLoadBalancer.spec.vpc_id
-    ├── AlicloudNetworkLoadBalancer.spec.vpc_id
-    ├── AlicloudPrivateDnsZone.spec.vpc_id
+AliCloudVpc.status.outputs.vpc_id
+    ├── AliCloudVswitch.spec.vpc_id
+    ├── AliCloudSecurityGroup.spec.vpc_id
+    ├── AliCloudNatGateway.spec.vpc_id
+    ├── AliCloudApplicationLoadBalancer.spec.vpc_id
+    ├── AliCloudNetworkLoadBalancer.spec.vpc_id
+    ├── AliCloudPrivateDnsZone.spec.vpc_id
     └── ... (nearly every networking and compute resource)
 ```
 
@@ -310,7 +310,7 @@ The `optionalString()` helper converts empty strings to `nil`, preventing Alibab
 
 **`outputs.go`** — Defines output constant names as Go constants, ensuring consistency between the Pulumi module and the `stack_outputs.proto` definition.
 
-The entry point (`iac/pulumi/main.go`) loads the stack input from Pulumi config, deserializes it into the protobuf `AlicloudVpcStackInput`, and calls `module.Resources()`.
+The entry point (`iac/pulumi/main.go`) loads the stack input from Pulumi config, deserializes it into the protobuf `AliCloudVpcStackInput`, and calls `module.Resources()`.
 
 ### Terraform Module Architecture
 
@@ -388,7 +388,7 @@ A VPC is an isolation boundary, but isolation alone does not guarantee security:
 
 The Alibaba Cloud VPC is both simple and consequential. It creates a single resource (VPC + auto-created VRouter + system route table), but the decisions made at creation time — CIDR block, IPv6 enablement, resource group assignment — have lasting, difficult-to-reverse effects on everything built inside it.
 
-OpenMCF's AlicloudVpc component reflects this reality with a deliberately small API surface: three required fields (region, name, CIDR) and four optional fields (description, IPv6, resource group, tags). Everything else — VSwitches, security groups, NAT gateways, load balancers, Kubernetes clusters — is a separate, composable component that references the VPC by its output ID.
+OpenMCF's AliCloudVpc component reflects this reality with a deliberately small API surface: three required fields (region, name, CIDR) and four optional fields (description, IPv6, resource group, tags). Everything else — VSwitches, security groups, NAT gateways, load balancers, Kubernetes clusters — is a separate, composable component that references the VPC by its output ID.
 
 This composability is the core design principle. A VPC is a building block, not a monolith. By keeping the VPC component focused on VPC creation and nothing else, OpenMCF ensures that:
 - The API is predictable and easy to understand
@@ -403,5 +403,5 @@ For production deployments, plan your CIDR blocks carefully, use resource groups
 - [Alibaba Cloud VPC Documentation](https://www.alibabacloud.com/help/en/vpc/product-overview/what-is-a-vpc)
 - [Alibaba Cloud VPC API Reference](https://www.alibabacloud.com/help/en/vpc/developer-reference/api-vpc-2016-04-28-createvpc)
 - [Terraform alicloud_vpc Resource](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/vpc)
-- [Pulumi Alicloud vpc.Network Resource](https://www.pulumi.com/registry/packages/alicloud/api-docs/vpc/network/)
+- [Pulumi AliCloud vpc.Network Resource](https://www.pulumi.com/registry/packages/alicloud/api-docs/vpc/network/)
 - [RFC 1918 - Address Allocation for Private Internets](https://datatracker.ietf.org/doc/html/rfc1918)

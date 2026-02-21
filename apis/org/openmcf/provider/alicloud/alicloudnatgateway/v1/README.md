@@ -1,4 +1,4 @@
-# AlicloudNatGateway
+# AliCloudNatGateway
 
 Manages an Alibaba Cloud Enhanced NAT Gateway with bundled EIP association and SNAT entries.
 

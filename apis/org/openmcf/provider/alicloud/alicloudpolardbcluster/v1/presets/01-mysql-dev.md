@@ -22,7 +22,7 @@ This preset creates a minimal MySQL 8.0 PolarDB cluster with a single node, suit
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`) | Your deployment region |
-| `<your-vswitch-id>` | VSwitch ID to place the cluster in | `AlicloudVswitch` stack outputs |
+| `<your-vswitch-id>` | VSwitch ID to place the cluster in | `AliCloudVswitch` stack outputs |
 | `<your-cluster-name>` | Cluster name (2-256 chars) | Choose a descriptive name |
 | `<your-database-name>` | Database name (e.g., `appdb`) | Choose a name for your database |
 | `<your-account-name>` | Login account name | Choose a username |

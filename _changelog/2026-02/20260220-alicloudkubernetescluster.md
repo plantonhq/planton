@@ -1,21 +1,21 @@
-# AlicloudKubernetesCluster Component Added
+# AliCloudKubernetesCluster Component Added
 
 **Date**: 2026-02-20
-**Component**: AlicloudKubernetesCluster
+**Component**: AliCloudKubernetesCluster
 **Enum**: 3091
 **ID Prefix**: acack
 
 ## Summary
 
-Added the AlicloudKubernetesCluster deployment component -- an ACK Managed Kubernetes cluster with dual CNI support, RRSA, control plane logging, and maintenance window configuration.
+Added the AliCloudKubernetesCluster deployment component -- an ACK Managed Kubernetes cluster with dual CNI support, RRSA, control plane logging, and maintenance window configuration.
 
-This component wraps a single provider resource (`alicloud_cs_managed_kubernetes` / `cs.ManagedKubernetes`). Worker nodes are managed separately through AlicloudKubernetesNodePool (R25).
+This component wraps a single provider resource (`alicloud_cs_managed_kubernetes` / `cs.ManagedKubernetes`). Worker nodes are managed separately through AliCloudKubernetesNodePool (R25).
 
 ## What Was Created
 
 ### API Definition
 - `apis/org/openmcf/provider/alicloud/alicloudkubernetescluster/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AlicloudKubernetesCluster = 3091` in `CloudResourceKind` enum under the Containers category
+- Registered `AliCloudKubernetesCluster = 3091` in `CloudResourceKind` enum under the Containers category
 - 6 proto messages: spec, addon, logging, maintenance window, auto-upgrade, plus the API/status wrappers
 
 ### IaC Modules
@@ -31,7 +31,7 @@ This component wraps a single provider resource (`alicloud_cs_managed_kubernetes
 
 ## Design Decisions
 
-- **Renamed from AlicloudAckManagedCluster**: T02 originally named this AlicloudAckManagedCluster. Renamed to AlicloudKubernetesCluster per user direction, aligning with DigitalOceanKubernetesCluster and CivoKubernetesCluster naming patterns.
+- **Renamed from AliCloudAckManagedCluster**: T02 originally named this AliCloudAckManagedCluster. Renamed to AliCloudKubernetesCluster per user direction, aligning with DigitalOceanKubernetesCluster and CivoKubernetesCluster naming patterns.
 - **Dual CNI support**: Both Flannel (`pod_cidr`) and Terway (`pod_vswitch_ids`) are supported. The user selects the CNI via the addons list.
 - **No kubeconfig output**: Certificate fields are deprecated since provider v1.248.0. Outputs API server endpoints (internet + intranet) and RRSA metadata instead.
 - **service_cidr is required**: No safe default value due to CIDR overlap concerns with VPC and pod networks.

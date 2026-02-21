@@ -1,4 +1,4 @@
-# AlicloudPrivateDnsZone -- Research Documentation
+# AliCloudPrivateDnsZone -- Research Documentation
 
 ## Alibaba Cloud Private Zone (PVTZ) Service
 

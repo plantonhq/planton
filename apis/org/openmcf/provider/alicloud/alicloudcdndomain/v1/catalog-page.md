@@ -1,10 +1,10 @@
-# AlicloudCdnDomain
+# AliCloud CdnDomain
 
 Deploys an Alibaba Cloud CDN accelerated domain. The component registers a domain name in the CDN service, configures one or more origin sources with priority-based failover and weighted load balancing, and optionally enables HTTPS with certificate management. After deployment, create a DNS CNAME record pointing the accelerated domain to the `cname` stack output for edge acceleration to take effect.
 
 ## What Gets Created
 
-When you deploy an AlicloudCdnDomain resource, OpenMCF provisions:
+When you deploy an AliCloudCdnDomain resource, OpenMCF provisions:
 
 - **CDN Domain** -- an `alicloud_cdn_domain_new` resource registered in the Alibaba Cloud CDN service with the specified content type and geographic scope
 - **Origin Sources** -- one or more origin server configurations with type, address, port, priority, and weight for failover and load distribution
@@ -23,15 +23,15 @@ When you deploy an AlicloudCdnDomain resource, OpenMCF provisions:
 Create a file `cdn-domain.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCdnDomain
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCdnDomain
 metadata:
   name: my-cdn
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: cdn-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudCdnDomain.my-cdn
+    pulumi.openmcf.org/stack.name: dev.AliCloudCdnDomain.my-cdn
 spec:
   region: cn-hangzhou
   domainName: cdn.example.com
@@ -87,15 +87,15 @@ This creates a CDN domain accelerating web content from a single IP origin in th
 ### Minimal Web CDN
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCdnDomain
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCdnDomain
 metadata:
   name: my-cdn
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: cdn-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudCdnDomain.my-cdn
+    pulumi.openmcf.org/stack.name: dev.AliCloudCdnDomain.my-cdn
 spec:
   region: cn-hangzhou
   domainName: cdn.example.com
@@ -108,8 +108,8 @@ spec:
 ### OSS Static Assets with Failover
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCdnDomain
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCdnDomain
 metadata:
   name: assets-cdn
   org: platform-team
@@ -118,7 +118,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: platform-team
     pulumi.openmcf.org/project: cdn-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudCdnDomain.assets-cdn
+    pulumi.openmcf.org/stack.name: prod.AliCloudCdnDomain.assets-cdn
 spec:
   region: cn-shanghai
   domainName: assets.example.com
@@ -142,8 +142,8 @@ spec:
 ### HTTPS with CAS Certificate
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCdnDomain
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCdnDomain
 metadata:
   name: secure-cdn
   org: my-org
@@ -152,7 +152,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: cdn-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudCdnDomain.secure-cdn
+    pulumi.openmcf.org/stack.name: prod.AliCloudCdnDomain.secure-cdn
 spec:
   region: cn-hangzhou
   domainName: secure.example.com
@@ -190,6 +190,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudDnsRecord](/docs/catalog/alicloud/aliclouddnsrecord) -- create the CNAME record pointing to the `cname` output
-- [AlicloudStorageBucket](/docs/catalog/alicloud/alicloudstoragebucket) -- OSS bucket to use as an origin source
-- [AlicloudCertificate](/docs/catalog/alicloud/alicloudcertificate) -- manage certificates in CAS for HTTPS configuration
+- [AliCloudDnsRecord](/docs/catalog/alicloud/aliclouddnsrecord) -- create the CNAME record pointing to the `cname` output
+- [AliCloudStorageBucket](/docs/catalog/alicloud/alicloudstoragebucket) -- OSS bucket to use as an origin source
+- [AliCloudCertificate](/docs/catalog/alicloud/alicloudcertificate) -- manage certificates in CAS for HTTPS configuration

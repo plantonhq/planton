@@ -53,7 +53,7 @@ apiAudience: https://api.us1.fga.dev/
 
 ```yaml
 # openfga-store.yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: production-authz
@@ -91,7 +91,7 @@ After deployment, the following outputs are available:
 ### Development Store
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: dev-store
@@ -104,7 +104,7 @@ spec:
 ### Production Store
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: prod-store

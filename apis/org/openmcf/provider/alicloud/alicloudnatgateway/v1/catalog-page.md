@@ -1,10 +1,10 @@
-# Alibaba Cloud NAT Gateway
+# AliCloud NAT Gateway
 
 Deploys an Alibaba Cloud Enhanced NAT Gateway with bundled EIP association and SNAT entries. The component provisions all three resources as a single atomic unit, enabling private VSwitch traffic to reach the internet through a managed NAT service.
 
 ## What Gets Created
 
-When you deploy an AlicloudNatGateway resource, OpenMCF provisions:
+When you deploy an AliCloudNatGateway resource, OpenMCF provisions:
 
 - **NAT Gateway** -- an `alicloud_nat_gateway` resource placed in the specified VPC and VSwitch
 - **EIP Association** -- an `alicloud_eip_association` binding the provided Elastic IP to the NAT Gateway
@@ -13,17 +13,17 @@ When you deploy an AlicloudNatGateway resource, OpenMCF provisions:
 ## Prerequisites
 
 - **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
-- **An Alibaba Cloud VPC** -- the NAT Gateway must belong to a VPC (create one with AlicloudVpc)
-- **A VSwitch** -- the Enhanced NAT Gateway requires placement in a VSwitch (create with AlicloudVswitch)
-- **An Elastic IP** -- the NAT Gateway needs an EIP for outbound traffic (create with AlicloudEipAddress)
+- **An Alibaba Cloud VPC** -- the NAT Gateway must belong to a VPC (create one with AliCloudVpc)
+- **A VSwitch** -- the Enhanced NAT Gateway requires placement in a VSwitch (create with AliCloudVswitch)
+- **An Elastic IP** -- the NAT Gateway needs an EIP for outbound traffic (create with AliCloudEipAddress)
 
 ## Quick Start
 
 Create a file `nat-gateway.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNatGateway
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNatGateway
 metadata:
   name: my-nat
 spec:
@@ -60,10 +60,10 @@ This creates an Enhanced NAT Gateway with one SNAT entry, enabling the specified
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
 | `region` | string | Alibaba Cloud region (e.g., `cn-hangzhou`, `cn-shanghai`) | Required; non-empty |
-| `vpcId` | StringValueOrRef | VPC ID for the NAT Gateway. Can reference AlicloudVpc via `valueFrom`. | Required |
-| `vswitchId` | StringValueOrRef | VSwitch ID for Enhanced NAT Gateway placement. Can reference AlicloudVswitch via `valueFrom`. | Required |
+| `vpcId` | StringValueOrRef | VPC ID for the NAT Gateway. Can reference AliCloudVpc via `valueFrom`. | Required |
+| `vswitchId` | StringValueOrRef | VSwitch ID for Enhanced NAT Gateway placement. Can reference AliCloudVswitch via `valueFrom`. | Required |
 | `natGatewayName` | string | NAT Gateway name | Required; 2-128 characters |
-| `eipId` | StringValueOrRef | EIP allocation ID to associate with the NAT Gateway. Can reference AlicloudEipAddress via `valueFrom`. | Required |
+| `eipId` | StringValueOrRef | EIP allocation ID to associate with the NAT Gateway. Can reference AliCloudEipAddress via `valueFrom`. | Required |
 
 ### Optional Fields
 
@@ -82,7 +82,7 @@ This creates an Enhanced NAT Gateway with one SNAT entry, enabling the specified
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `sourceVswitchId` | StringValueOrRef | VSwitch to NAT. Can reference AlicloudVswitch via `valueFrom`. Mutually exclusive with `sourceCidr`. |
+| `sourceVswitchId` | StringValueOrRef | VSwitch to NAT. Can reference AliCloudVswitch via `valueFrom`. Mutually exclusive with `sourceCidr`. |
 | `sourceCidr` | string | CIDR block to NAT (e.g., `10.0.1.0/24`). Mutually exclusive with `sourceVswitchId`. |
 | `snatEntryName` | string | Name for this SNAT entry (2-128 characters) |
 
@@ -93,8 +93,8 @@ This creates an Enhanced NAT Gateway with one SNAT entry, enabling the specified
 The simplest NAT configuration: one gateway, one EIP, one SNAT entry.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNatGateway
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNatGateway
 metadata:
   name: simple-nat
 spec:
@@ -117,8 +117,8 @@ spec:
 Production NAT Gateway with deletion protection, VSwitch-based and CIDR-based SNAT entries, and foreign key references.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNatGateway
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNatGateway
 metadata:
   name: prod-nat
   org: my-org
@@ -158,8 +158,8 @@ spec:
 NAT Gateway with fixed specification tier for predictable performance billing.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNatGateway
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNatGateway
 metadata:
   name: fixed-spec-nat
 spec:
@@ -192,8 +192,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- **AlicloudVpc** -- VPC that the NAT Gateway belongs to
-- **AlicloudVswitch** -- VSwitch for NAT Gateway placement and SNAT source
-- **AlicloudEipAddress** -- Elastic IP associated with the NAT Gateway
-- **AlicloudSecurityGroup** -- Network security rules for instances using NAT
-- **AlicloudAckManagedCluster** -- Kubernetes cluster nodes often use NAT for outbound access
+- **AliCloudVpc** -- VPC that the NAT Gateway belongs to
+- **AliCloudVswitch** -- VSwitch for NAT Gateway placement and SNAT source
+- **AliCloudEipAddress** -- Elastic IP associated with the NAT Gateway
+- **AliCloudSecurityGroup** -- Network security rules for instances using NAT
+- **AliCloudAckManagedCluster** -- Kubernetes cluster nodes often use NAT for outbound access

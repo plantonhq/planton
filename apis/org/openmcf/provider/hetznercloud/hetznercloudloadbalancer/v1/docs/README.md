@@ -1,4 +1,4 @@
-# Hetzner Cloud Load Balancer — Research Documentation
+# HetznerCloud Load Balancer — Research Documentation
 
 ## Introduction
 
@@ -336,7 +336,7 @@ _, err = hcloud.NewLoadBalancerTarget(ctx, "web-01", &hcloud.LoadBalancerTargetA
 OpenMCF collapses the four-resource deployment into a single YAML manifest:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: web-lb

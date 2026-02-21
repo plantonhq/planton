@@ -5,8 +5,8 @@
 Creates a VPC with the smallest standard private CIDR range, suitable for development or testing.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpc
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpc
 metadata:
   name: my-vpc
 spec:
@@ -20,8 +20,8 @@ spec:
 A production VPC using a large CIDR block to accommodate many VSwitches across multiple availability zones. Tags are applied for organizational tracking.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpc
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpc
 metadata:
   name: prod-vpc
   org: my-org
@@ -42,8 +42,8 @@ spec:
 A VPC with dual-stack networking. Alibaba Cloud allocates a /56 IPv6 CIDR block when IPv6 is enabled. VSwitches within this VPC can then be assigned IPv6 subnets.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpc
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpc
 metadata:
   name: ipv6-vpc
   env: staging

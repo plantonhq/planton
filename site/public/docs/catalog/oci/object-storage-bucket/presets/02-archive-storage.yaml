@@ -1,0 +1,24 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciObjectStorageBucket
+metadata:
+  name: my-archive-bucket
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  namespace: <object-storage-namespace>
+  name: <bucket-name>
+  accessType: no_public_access
+  storageTier: archive
+  versioning: disabled
+  retentionRules:
+    - displayName: compliance-retention
+      duration:
+        timeAmount: 7
+        timeUnit: years
+  lifecycleRules:
+    - name: cleanup-incomplete-uploads
+      action: lifecycle_abort
+      isEnabled: true
+      timeAmount: 3
+      timeUnit: days
+      target: multipart-uploads

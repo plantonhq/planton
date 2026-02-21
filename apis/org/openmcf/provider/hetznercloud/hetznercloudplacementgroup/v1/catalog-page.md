@@ -15,7 +15,7 @@ Creates a placement group in Hetzner Cloud that controls the physical distributi
 Create a file `placement-group.yaml`:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudPlacementGroup
 metadata:
   name: ha-group
@@ -54,7 +54,7 @@ This component has no required spec fields. An empty `spec` block (or `spec: {}`
 The simplest deployment: an empty spec defaults to the `spread` strategy.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudPlacementGroup
 metadata:
   name: ha-group
@@ -71,7 +71,7 @@ spec: {}
 A placement group for database replicas scoped to a specific organization and environment. The metadata drives label generation for resource tracking.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudPlacementGroup
 metadata:
   name: ha-db-group
@@ -92,7 +92,7 @@ spec:
 A placement group referenced by a HetznerCloudServer using `valueFrom`. The server receives the group's numeric ID from the placement group's stack outputs, establishing a dependency edge in the deployment DAG.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudPlacementGroup
 metadata:
   name: ha-db-group
@@ -110,7 +110,7 @@ spec:
 The server references this placement group:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: db-01

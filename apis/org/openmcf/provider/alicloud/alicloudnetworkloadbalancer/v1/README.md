@@ -1,4 +1,4 @@
-# AlicloudNetworkLoadBalancer
+# AliCloudNetworkLoadBalancer
 
 Alibaba Cloud Network Load Balancer (NLB) for high-performance Layer 4 (TCP/UDP/TCPSSL) load balancing.
 
@@ -27,8 +27,8 @@ Server groups are created empty. Backend membership (ECS instances, ENI IPs, etc
 ## Quick Start
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNetworkLoadBalancer
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNetworkLoadBalancer
 metadata:
   name: my-nlb
 spec:

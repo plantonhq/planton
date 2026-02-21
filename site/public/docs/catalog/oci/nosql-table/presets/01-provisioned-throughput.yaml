@@ -1,0 +1,24 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciNosqlTable
+metadata:
+  name: my-nosql-table
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  name: <table-name>
+  ddlStatement: >-
+    CREATE TABLE <table-name> (
+      id STRING,
+      data JSON,
+      created_at TIMESTAMP(3),
+      PRIMARY KEY(id)
+    )
+  tableLimits:
+    capacityMode: provisioned
+    maxReadUnits: 100
+    maxWriteUnits: 100
+    maxStorageInGbs: 25
+  indexes:
+    - name: idx_created_at
+      keys:
+        - columnName: created_at

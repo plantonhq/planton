@@ -10,7 +10,7 @@ Terraform IaC module for provisioning Hetzner Cloud servers with SSH key injecti
 ├── outputs.tf        # Stack output definitions
 ├── variables.tf      # Input variable definitions (metadata, spec, hcloud_token)
 ├── locals.tf         # Server name derivation and standard label computation
-└── provider.tf       # Hetzner Cloud provider configuration
+└── provider.tf       # HetznerCloud provider configuration
 ```
 
 ## Resources Created

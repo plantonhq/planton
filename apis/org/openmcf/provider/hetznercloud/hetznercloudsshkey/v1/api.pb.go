@@ -157,10 +157,10 @@ var File_org_openmcf_provider_hetznercloud_hetznercloudsshkey_v1_api_proto proto
 
 const file_org_openmcf_provider_hetznercloud_hetznercloudsshkey_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"Aorg/openmcf/provider/hetznercloud/hetznercloudsshkey/v1/api.proto\x127org.openmcf.provider.hetznercloud.hetznercloudsshkey.v1\x1a\x1bbuf/validate/validate.proto\x1aBorg/openmcf/provider/hetznercloud/hetznercloudsshkey/v1/spec.proto\x1aKorg/openmcf/provider/hetznercloud/hetznercloudsshkey/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xaf\x03\n" +
-	"\x12HetznerCloudSshKey\x12C\n" +
-	"\vapi_version\x18\x01 \x01(\tB\"\xbaH\x1fr\x1d\n" +
-	"\x1bhetznercloud.openmcf.org/v1R\n" +
+	"Aorg/openmcf/provider/hetznercloud/hetznercloudsshkey/v1/api.proto\x127org.openmcf.provider.hetznercloud.hetznercloudsshkey.v1\x1a\x1bbuf/validate/validate.proto\x1aBorg/openmcf/provider/hetznercloud/hetznercloudsshkey/v1/spec.proto\x1aKorg/openmcf/provider/hetznercloud/hetznercloudsshkey/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xb0\x03\n" +
+	"\x12HetznerCloudSshKey\x12D\n" +
+	"\vapi_version\x18\x01 \x01(\tB#\xbaH r\x1e\n" +
+	"\x1chetzner-cloud.openmcf.org/v1R\n" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12HetznerCloudSshKeyR\x04kind\x12M\n" +

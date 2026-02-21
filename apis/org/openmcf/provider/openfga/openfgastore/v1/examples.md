@@ -5,7 +5,7 @@
 Create a simple authorization store:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: my-store
@@ -20,7 +20,7 @@ spec:
 ### Development
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: dev-authz
@@ -35,7 +35,7 @@ spec:
 ### Staging
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: staging-authz
@@ -50,7 +50,7 @@ spec:
 ### Production
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: prod-authz
@@ -70,7 +70,7 @@ For SaaS applications with tenant isolation:
 
 ```yaml
 # Tenant A
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: tenant-a-authz
@@ -83,7 +83,7 @@ spec:
 
 ---
 # Tenant B
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: tenant-b-authz
@@ -101,7 +101,7 @@ For microservices with separate authorization domains:
 
 ```yaml
 # Document Service Authorization
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: docs-authz
@@ -114,7 +114,7 @@ spec:
 
 ---
 # Project Service Authorization
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: projects-authz

@@ -1,4 +1,4 @@
-# AlicloudNetworkLoadBalancer Terraform Module
+# AliCloudNetworkLoadBalancer Terraform Module
 
 This Terraform module provisions an Alibaba Cloud Network Load Balancer (NLB) with server groups and listeners.
 

@@ -47,7 +47,7 @@ func ProviderConfigExample(provider cloudresourcekind.CloudResourceProvider) str
 		return gcp.ConfigFileExample
 	case cloudresourcekind.CloudResourceProvider_kubernetes:
 		return kubernetes.ConfigFileExample
-	case cloudresourcekind.CloudResourceProvider_open_fga:
+	case cloudresourcekind.CloudResourceProvider_openfga:
 		return openfga.ConfigFileExample
 	case cloudresourcekind.CloudResourceProvider_snowflake:
 		return snowflake.ConfigFileExample
@@ -55,11 +55,11 @@ func ProviderConfigExample(provider cloudresourcekind.CloudResourceProvider) str
 		return openstack.ConfigFileExample
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return scaleway.ConfigFileExample
-	case cloudresourcekind.CloudResourceProvider_alicloud:
+	case cloudresourcekind.CloudResourceProvider_ali_cloud:
 		return alicloud.ConfigFileExample
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return oci.ConfigFileExample
-	case cloudresourcekind.CloudResourceProvider_hetznercloud:
+	case cloudresourcekind.CloudResourceProvider_hetzner_cloud:
 		return hetznercloud.ConfigFileExample
 	default:
 		return "# Provider config format not available"
@@ -89,7 +89,7 @@ func ProviderConfigFilename(provider cloudresourcekind.CloudResourceProvider) st
 		return gcp.ConfigFileName
 	case cloudresourcekind.CloudResourceProvider_kubernetes:
 		return kubernetes.ConfigFileName
-	case cloudresourcekind.CloudResourceProvider_open_fga:
+	case cloudresourcekind.CloudResourceProvider_openfga:
 		return openfga.ConfigFileName
 	case cloudresourcekind.CloudResourceProvider_snowflake:
 		return snowflake.ConfigFileName
@@ -97,11 +97,11 @@ func ProviderConfigFilename(provider cloudresourcekind.CloudResourceProvider) st
 		return openstack.ConfigFileName
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return scaleway.ConfigFileName
-	case cloudresourcekind.CloudResourceProvider_alicloud:
+	case cloudresourcekind.CloudResourceProvider_ali_cloud:
 		return alicloud.ConfigFileName
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return oci.ConfigFileName
-	case cloudresourcekind.CloudResourceProvider_hetznercloud:
+	case cloudresourcekind.CloudResourceProvider_hetzner_cloud:
 		return hetznercloud.ConfigFileName
 	default:
 		return "provider-config.yaml"
@@ -131,7 +131,7 @@ func ProviderEnvironmentVariablesHelp(provider cloudresourcekind.CloudResourcePr
 		return gcp.EnvironmentVariablesHelp
 	case cloudresourcekind.CloudResourceProvider_kubernetes:
 		return kubernetes.EnvironmentVariablesHelp
-	case cloudresourcekind.CloudResourceProvider_open_fga:
+	case cloudresourcekind.CloudResourceProvider_openfga:
 		return openfga.EnvironmentVariablesHelp
 	case cloudresourcekind.CloudResourceProvider_snowflake:
 		return snowflake.EnvironmentVariablesHelp
@@ -139,11 +139,11 @@ func ProviderEnvironmentVariablesHelp(provider cloudresourcekind.CloudResourcePr
 		return openstack.EnvironmentVariablesHelp
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return scaleway.EnvironmentVariablesHelp
-	case cloudresourcekind.CloudResourceProvider_alicloud:
+	case cloudresourcekind.CloudResourceProvider_ali_cloud:
 		return alicloud.EnvironmentVariablesHelp
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return oci.EnvironmentVariablesHelp
-	case cloudresourcekind.CloudResourceProvider_hetznercloud:
+	case cloudresourcekind.CloudResourceProvider_hetzner_cloud:
 		return hetznercloud.EnvironmentVariablesHelp
 	default:
 		return "# Environment variables not available for this provider"
@@ -173,7 +173,7 @@ func ProviderDocsURL(provider cloudresourcekind.CloudResourceProvider) string {
 		return gcp.ProviderDocsURL
 	case cloudresourcekind.CloudResourceProvider_kubernetes:
 		return kubernetes.ProviderDocsURL
-	case cloudresourcekind.CloudResourceProvider_open_fga:
+	case cloudresourcekind.CloudResourceProvider_openfga:
 		return openfga.ProviderDocsURL
 	case cloudresourcekind.CloudResourceProvider_snowflake:
 		return snowflake.ProviderDocsURL
@@ -181,11 +181,11 @@ func ProviderDocsURL(provider cloudresourcekind.CloudResourceProvider) string {
 		return openstack.ProviderDocsURL
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return scaleway.ProviderDocsURL
-	case cloudresourcekind.CloudResourceProvider_alicloud:
+	case cloudresourcekind.CloudResourceProvider_ali_cloud:
 		return alicloud.ProviderDocsURL
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return oci.ProviderDocsURL
-	case cloudresourcekind.CloudResourceProvider_hetznercloud:
+	case cloudresourcekind.CloudResourceProvider_hetzner_cloud:
 		return hetznercloud.ProviderDocsURL
 	default:
 		return ""

@@ -58,7 +58,7 @@ Each page was verified against the 6-point protocol:
 
 ### Key Findings
 
-- **apiVersion discrepancy**: `DigitalOceanDnsRecord` uses `digitalocean.openmcf.org/v1` (no hyphen) while all other DigitalOcean components use `digital-ocean.openmcf.org/v1` (with hyphen). Each page uses the correct value from its own `api.proto`.
+- **apiVersion discrepancy**: `DigitalOceanDnsRecord` uses `digital-ocean.openmcf.org/v1` (no hyphen) while all other DigitalOcean components use `digital-ocean.openmcf.org/v1` (with hyphen). Each page uses the correct value from its own `api.proto`.
 - **DigitalOceanFunction is Pulumi-only**: The Terraform `main.tf` is empty. The catalog page documents this limitation prominently in the overview.
 - **DigitalOceanDroplet TF module has `ssh_keys`**: This variable exists in the Terraform module but not in `spec.proto`. Correctly omitted from the catalog page (only proto-defined fields documented).
 

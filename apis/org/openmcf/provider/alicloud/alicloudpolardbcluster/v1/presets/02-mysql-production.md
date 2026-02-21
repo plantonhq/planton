@@ -26,11 +26,11 @@ This preset creates a production-grade MySQL 8.0 PolarDB cluster with 4 nodes, T
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<alibaba-cloud-region>` | Alibaba Cloud region code | Your deployment region |
-| `<your-vswitch-resource>` | AlicloudVswitch resource name | Your VSwitch resource metadata.name |
+| `<your-vswitch-resource>` | AliCloudVswitch resource name | Your VSwitch resource metadata.name |
 | `<your-cluster-name>` | Cluster name (2-256 chars) | Choose a descriptive name |
 | `<your-organization>` | Organization identifier | Your org name |
 | `<your-vpc-cidr>` | VPC CIDR for security whitelist | Your VPC CIDR block |
-| `<your-kms-key-id>` | KMS key ID for TDE | `AlicloudKmsKey` stack outputs |
+| `<your-kms-key-id>` | KMS key ID for TDE | `AliCloudKmsKey` stack outputs |
 | `<your-database-name>` | Database name | Choose a name |
 | `<your-account-name>` | Account name | Choose a username |
 | `<your-password>` | Account password | Use a secrets manager |

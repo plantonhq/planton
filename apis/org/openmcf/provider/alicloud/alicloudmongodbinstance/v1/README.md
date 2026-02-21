@@ -1,4 +1,4 @@
-# AlicloudMongodbInstance
+# AliCloudMongodbInstance
 
 Alibaba Cloud ApsaraDB for MongoDB replica-set instance.
 

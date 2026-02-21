@@ -5,8 +5,8 @@
 A security group for web-facing instances that allows HTTP (80) and HTTPS (443) from the internet, with unrestricted outbound access.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudSecurityGroup
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudSecurityGroup
 metadata:
   name: web-tier-sg
   env: production
@@ -42,8 +42,8 @@ spec:
 A locked-down security group for database instances that only allows connections from the internal VPC CIDR range on specific database ports.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudSecurityGroup
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudSecurityGroup
 metadata:
   name: db-tier-sg
   env: production
@@ -81,8 +81,8 @@ spec:
 A security group that allows traffic from another security group (the web tier) on a specific application port, demonstrating cross-SG references.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudSecurityGroup
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudSecurityGroup
 metadata:
   name: app-tier-sg
   env: production

@@ -22,7 +22,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudEcsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-ecs",
@@ -45,7 +45,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with all optional fields populated", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudEcsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "prod-web-server",
@@ -109,7 +109,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with spot instance configuration", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudEcsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "spot-worker",
@@ -134,7 +134,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with PrePaid billing configuration", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudEcsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "prepaid-ecs",
@@ -160,7 +160,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with password authentication", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudEcsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "password-ecs",
@@ -210,7 +210,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail with wrong kind", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-ecs",
@@ -233,7 +233,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail without region", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudEcsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-ecs",
@@ -255,7 +255,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail without vswitch_id", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudEcsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-ecs",
@@ -275,7 +275,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail without security_group_ids", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudEcsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-ecs",
@@ -296,7 +296,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail with invalid instance_type prefix", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudEcsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-ecs",
@@ -319,7 +319,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail without image_id", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudEcsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-ecs",
@@ -341,7 +341,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail with invalid instance_charge_type", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudEcsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-ecs",
@@ -365,7 +365,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail with invalid spot_strategy", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudEcsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-ecs",
@@ -389,7 +389,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail with invalid system_disk category", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudEcsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-ecs",
@@ -415,7 +415,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail with password too short", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudEcsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-ecs",
@@ -439,7 +439,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail with invalid period value", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudEcsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-ecs",
@@ -464,7 +464,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail with data disk size below minimum", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudEcsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-ecs",
@@ -490,7 +490,7 @@ var _ = ginkgo.Describe("AliCloudEcsInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail with internet_max_bandwidth_out exceeding 100", func() {
 			input := &AliCloudEcsInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudEcsInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-ecs",

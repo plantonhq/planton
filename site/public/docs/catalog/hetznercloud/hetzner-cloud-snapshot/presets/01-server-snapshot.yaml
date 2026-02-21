@@ -1,8 +1,0 @@
-apiVersion: hetznercloud.openmcf.org/v1
-kind: HetznerCloudSnapshot
-metadata:
-  name: my-server-snapshot
-spec:
-  serverId:
-    value: <server-id>
-  description: <snapshot-description>

@@ -26,9 +26,9 @@ A production-grade RocketMQ 5.x instance using the professional edition with hig
 | Placeholder | Description | Where to Find |
 |---|---|---|
 | `<alibaba-cloud-region>` | Alibaba Cloud region (e.g., `cn-shanghai`) | Your deployment region |
-| `<your-vpc-id>` | VPC ID for the instance | `AlicloudVpc` stack outputs |
-| `<your-vswitch-id>` | VSwitch ID within the VPC | `AlicloudVswitch` stack outputs |
-| `<your-security-group-id>` | Security group ID for network access control | `AlicloudSecurityGroup` stack outputs |
+| `<your-vpc-id>` | VPC ID for the instance | `AliCloudVpc` stack outputs |
+| `<your-vswitch-id>` | VSwitch ID within the VPC | `AliCloudVswitch` stack outputs |
+| `<your-security-group-id>` | Security group ID for network access control | `AliCloudSecurityGroup` stack outputs |
 | `<msg-process-spec>` | Throughput tier (e.g., `rmq.p2.4xlarge`) | [RocketMQ pricing page](https://www.alibabacloud.com/product/mq) |
 | `<your-vpc-cidr>` | VPC CIDR for IP whitelist (e.g., `10.0.0.0/8`) | Your VPC configuration |
 | `<your-team>` | Team or business unit tag | Your organizational structure |

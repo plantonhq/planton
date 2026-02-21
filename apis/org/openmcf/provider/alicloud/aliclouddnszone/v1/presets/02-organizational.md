@@ -31,7 +31,7 @@ This preset registers a domain in Alibaba Cloud DNS (Alidns) with resource group
 1. Deploy the manifest to register the domain in Alidns
 2. Retrieve the `dns_servers` output from `status.outputs`
 3. Update your domain registrar's NS records to point to the Alibaba Cloud DNS servers
-4. Create DNS records using the AlicloudDnsRecord component
+4. Create DNS records using the AliCloudDnsRecord component
 
 ## Related Presets
 

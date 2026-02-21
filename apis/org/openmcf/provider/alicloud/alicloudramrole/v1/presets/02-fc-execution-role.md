@@ -6,7 +6,7 @@ This preset creates a RAM role that Alibaba Cloud Function Compute can assume wh
 
 - Any Function Compute function that needs to write execution logs to SLS
 - Starting point for serverless roles; add service-specific policies based on what the function accesses
-- Functions deployed via `AlicloudFcFunction` that reference this role's ARN
+- Functions deployed via `AliCloudFcFunction` that reference this role's ARN
 
 ## Key Configuration Choices
 

@@ -1,4 +1,4 @@
-# AlicloudNasFileSystem Terraform Module
+# AliCloudNasFileSystem Terraform Module
 
 This Terraform module provisions an Alibaba Cloud NAS file system with an optional custom access group and a VPC mount target.
 
@@ -18,7 +18,7 @@ This Terraform module provisions an Alibaba Cloud NAS file system with an option
 | `variables.tf` | Input variable definitions with validations |
 | `outputs.tf` | Output values |
 | `locals.tf` | Tag computation and derived values |
-| `provider.tf` | Alicloud provider configuration |
+| `provider.tf` | AliCloud provider configuration |
 
 ## Usage
 

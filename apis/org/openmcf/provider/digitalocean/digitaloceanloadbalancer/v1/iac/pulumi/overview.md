@@ -440,7 +440,7 @@ State:
 
 ```go
 provider := digitalocean.NewProvider(ctx, "digitalocean", &digitalocean.ProviderArgs{
-    Token: pulumi.String(locals.DigitalOceanProviderConfig.DigitaloceanToken),
+    Token: pulumi.String(locals.DigitalOceanProviderConfig.DigitalOceanToken),
 })
 ```
 

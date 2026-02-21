@@ -1,0 +1,11 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciPublicIp
+metadata:
+  name: my-assigned-ip
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  lifetime: RESERVED
+  displayName: assigned-ip
+  privateIpId:
+    value: <private-ip-ocid>

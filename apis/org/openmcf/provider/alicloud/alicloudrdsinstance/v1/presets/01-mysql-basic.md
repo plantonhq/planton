@@ -22,7 +22,7 @@ This preset creates a minimal MySQL 8.0 instance with a single database and acco
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`) | Your deployment region |
-| `<your-vswitch-id>` | VSwitch ID to place the instance in | `AlicloudVswitch` stack outputs |
+| `<your-vswitch-id>` | VSwitch ID to place the instance in | `AliCloudVswitch` stack outputs |
 | `<your-instance-name>` | Instance name (2-256 chars) | Choose a descriptive name |
 | `<your-database-name>` | Database name (e.g., `appdb`) | Choose a name for your database |
 | `<your-account-name>` | Login account name | Choose a username |

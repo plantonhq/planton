@@ -17,7 +17,7 @@ planton pulumi up -f manifest.yaml
 Set the `STACK_INPUT` environment variable with the JSON-encoded stack input:
 
 ```bash
-export STACK_INPUT='{"target":{"apiVersion":"digitalocean.openmcf.org/v1","kind":"DigitalOceanDnsRecord","metadata":{"name":"www-record"},"spec":{"domain":"example.com","name":"www","type":"A","value":"192.0.2.1"}},"providerConfig":{"apiToken":"YOUR_TOKEN","defaultRegion":"nyc1"}}'
+export STACK_INPUT='{"target":{"apiVersion":"digital-ocean.openmcf.org/v1","kind":"DigitalOceanDnsRecord","metadata":{"name":"www-record"},"spec":{"domain":"example.com","name":"www","type":"A","value":"192.0.2.1"}},"providerConfig":{"apiToken":"YOUR_TOKEN","defaultRegion":"nyc1"}}'
 
 pulumi up
 ```

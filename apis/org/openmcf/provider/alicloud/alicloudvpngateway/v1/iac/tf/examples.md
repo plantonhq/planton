@@ -1,4 +1,4 @@
-# AlicloudVpnGateway Terraform Examples
+# AliCloudVpnGateway Terraform Examples
 
 See [../../examples.md](../../examples.md) for YAML-based usage examples.
 

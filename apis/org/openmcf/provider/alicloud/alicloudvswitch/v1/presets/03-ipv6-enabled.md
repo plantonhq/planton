@@ -1,6 +1,6 @@
 # IPv6-Enabled Dual-Stack VSwitch
 
-This preset creates a VSwitch with both IPv4 and IPv6 addressing enabled. The parent VPC must have IPv6 enabled (`enableIpv6: true` in AlicloudVpc) for IPv6 allocation to succeed. A /24 IPv4 CIDR is paired with an automatically assigned /64 IPv6 block selected by `ipv6CidrBlockMask`.
+This preset creates a VSwitch with both IPv4 and IPv6 addressing enabled. The parent VPC must have IPv6 enabled (`enableIpv6: true` in AliCloudVpc) for IPv6 allocation to succeed. A /24 IPv4 CIDR is paired with an automatically assigned /64 IPv6 block selected by `ipv6CidrBlockMask`.
 
 ## When to Use
 
@@ -20,7 +20,7 @@ This preset creates a VSwitch with both IPv4 and IPv6 addressing enabled. The pa
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`, `cn-shanghai`) | Your deployment region |
-| `<your-vpc-id>` | VPC ID with IPv6 enabled | Alibaba Cloud VPC console or `AlicloudVpc` stack outputs |
+| `<your-vpc-id>` | VPC ID with IPv6 enabled | Alibaba Cloud VPC console or `AliCloudVpc` stack outputs |
 | `<availability-zone>` | Availability zone within the region (e.g., `cn-hangzhou-a`) | Alibaba Cloud ECS console > Zones |
 | `<your-ipv6-vswitch-name>` | VSwitch name (1-128 characters) | Choose a descriptive name |
 

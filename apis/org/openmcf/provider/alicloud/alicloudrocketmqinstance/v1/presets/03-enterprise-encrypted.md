@@ -29,11 +29,11 @@ A mission-critical RocketMQ 5.x instance using the ultimate edition with encrypt
 | Placeholder | Description | Where to Find |
 |---|---|---|
 | `<alibaba-cloud-region>` | Alibaba Cloud region (e.g., `cn-hangzhou`) | Your deployment region |
-| `<your-vpc-id>` | VPC ID for the instance | `AlicloudVpc` stack outputs |
-| `<your-vswitch-id>` | VSwitch ID within the VPC | `AlicloudVswitch` stack outputs |
-| `<your-security-group-id>` | Security group for network access control | `AlicloudSecurityGroup` stack outputs |
+| `<your-vpc-id>` | VPC ID for the instance | `AliCloudVpc` stack outputs |
+| `<your-vswitch-id>` | VSwitch ID within the VPC | `AliCloudVswitch` stack outputs |
+| `<your-security-group-id>` | Security group for network access control | `AliCloudSecurityGroup` stack outputs |
 | `<msg-process-spec>` | Throughput tier (e.g., `rmq.u2.4xlarge`) | [RocketMQ pricing page](https://www.alibabacloud.com/product/mq) |
-| `<your-kms-key-id>` | KMS key ID for encryption at rest | `AlicloudKmsKey` stack outputs |
+| `<your-kms-key-id>` | KMS key ID for encryption at rest | `AliCloudKmsKey` stack outputs |
 | `<your-vpc-cidr>` | VPC CIDR for IP whitelist (e.g., `172.16.0.0/12`) | Your VPC configuration |
 | `<your-external-access-cidr>` | External IP range allowed to access the public endpoint | Your network security policy |
 | `<your-compliance-standard>` | Compliance tag (e.g., `pci-dss`, `soc2`) | Your compliance requirement |

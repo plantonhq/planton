@@ -52,8 +52,8 @@ import "org/openmcf/shared/metadata.proto";
 // ```
 message OpenFgaAuthorizationModel {
   // api_version is the version of the OpenFGA API resource.
-  // Must be "open-fga.openmcf.org/v1" for this version.
-  string api_version = 1 [(buf.validate.field).string.const = 'open-fga.openmcf.org/v1'];
+  // Must be "openfga.openmcf.org/v1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'openfga.openmcf.org/v1'];
 
   // kind is the Kubernetes Resource Model (KRM) kind.
   // Must be "OpenFgaAuthorizationModel" for this resource type.

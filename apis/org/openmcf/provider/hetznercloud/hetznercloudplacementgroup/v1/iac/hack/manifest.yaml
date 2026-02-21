@@ -1,4 +1,4 @@
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudPlacementGroup
 metadata:
   name: hetznercloudplacementgroup-demo

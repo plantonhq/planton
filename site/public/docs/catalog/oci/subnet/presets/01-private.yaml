@@ -1,0 +1,25 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciSubnet
+metadata:
+  name: my-private-subnet
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  vcnId:
+    value: <vcn-ocid>
+  cidrBlock: 10.0.1.0/24
+  displayName: private-subnet
+  dnsLabel: priv1
+  prohibitPublicIpOnVnic: true
+  prohibitInternetIngress: true
+  routeRules:
+    - destination: 0.0.0.0/0
+      destinationType: cidr_block
+      networkEntityId:
+        value: <nat-gateway-ocid>
+      description: Route internet-bound traffic via NAT gateway
+    - destination: all-iad-services-in-oracle-services-network
+      destinationType: service_cidr_block
+      networkEntityId:
+        value: <service-gateway-ocid>
+      description: Route OCI service traffic via service gateway

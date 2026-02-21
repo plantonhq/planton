@@ -10,7 +10,7 @@ Terraform IaC module for provisioning Hetzner Cloud block storage volumes with o
 ├── outputs.tf        # Stack output definitions
 ├── variables.tf      # Input variable definitions (metadata, spec, hcloud_token)
 ├── locals.tf         # Volume name derivation and standard label computation
-└── provider.tf       # Hetzner Cloud provider configuration
+└── provider.tf       # HetznerCloud provider configuration
 ```
 
 ## Resources Created

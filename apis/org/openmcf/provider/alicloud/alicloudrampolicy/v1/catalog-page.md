@@ -1,10 +1,10 @@
-# Alibaba Cloud RAM Policy
+# AliCloud RAM Policy
 
-Deploys an Alibaba Cloud RAM custom policy with a JSON permission document, optional version rotation strategy, and tag management. Custom policies define fine-grained permissions beyond what system-managed policies provide and can be attached to RAM roles via AlicloudRamRole.
+Deploys an Alibaba Cloud RAM custom policy with a JSON permission document, optional version rotation strategy, and tag management. Custom policies define fine-grained permissions beyond what system-managed policies provide and can be attached to RAM roles via AliCloudRamRole.
 
 ## What Gets Created
 
-When you deploy an AlicloudRamPolicy resource, OpenMCF provisions:
+When you deploy an AliCloudRamPolicy resource, OpenMCF provisions:
 
 - **RAM Policy** — an `alicloud_ram_policy` resource with the specified JSON policy document, version rotation strategy, and tags
 
@@ -19,15 +19,15 @@ When you deploy an AlicloudRamPolicy resource, OpenMCF provisions:
 Create a file `ram-policy.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamPolicy
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamPolicy
 metadata:
   name: my-oss-reader
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudRamPolicy.my-oss-reader
+    pulumi.openmcf.org/stack.name: dev.AliCloudRamPolicy.my-oss-reader
 spec:
   region: cn-hangzhou
   policyName: oss-read-only
@@ -78,15 +78,15 @@ This creates a custom RAM policy granting read-only access to a specific OSS buc
 A minimal policy granting read-only access to all OSS buckets:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamPolicy
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamPolicy
 metadata:
   name: oss-reader
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudRamPolicy.oss-reader
+    pulumi.openmcf.org/stack.name: dev.AliCloudRamPolicy.oss-reader
 spec:
   region: cn-hangzhou
   policyName: oss-read-only
@@ -113,15 +113,15 @@ spec:
 A policy granting full access to a specific OSS bucket with automatic version rotation for frequent updates:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamPolicy
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamPolicy
 metadata:
   name: app-data-access
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudRamPolicy.app-data-access
+    pulumi.openmcf.org/stack.name: prod.AliCloudRamPolicy.app-data-access
 spec:
   region: cn-shanghai
   policyName: app-data-bucket-full-access
@@ -151,15 +151,15 @@ spec:
 A cross-service policy for CI/CD pipelines with force delete enabled for clean teardowns:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamPolicy
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamPolicy
 metadata:
   name: cicd-deploy-policy
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudRamPolicy.cicd-deploy-policy
+    pulumi.openmcf.org/stack.name: prod.AliCloudRamPolicy.cicd-deploy-policy
 spec:
   region: cn-hangzhou
   policyName: cicd-pipeline-deploy-policy
@@ -210,10 +210,10 @@ After deployment, the following outputs are available in `status.outputs`:
 | Output | Type | Description |
 |--------|------|-------------|
 | `policy_name` | `string` | The RAM policy name as created |
-| `policy_type` | `string` | Always `Custom` for user-created policies. Used by AlicloudRamRole `policyAttachments` which require both policy name and type for attachment. |
+| `policy_type` | `string` | Always `Custom` for user-created policies. Used by AliCloudRamRole `policyAttachments` which require both policy name and type for attachment. |
 
 ## Related Components
 
-- [AlicloudRamRole](/docs/catalog/alicloud/alicloudramrole) — attach this policy to a role via `policyAttachments` with `policyType: Custom`
-- [AlicloudStorageBucket](/docs/catalog/alicloud/alicloudstoragebucket) — common target for fine-grained OSS access policies
-- [AlicloudRdsInstance](/docs/catalog/alicloud/alicloudrdsinstance) — common target for database access policies
+- [AliCloudRamRole](/docs/catalog/alicloud/alicloudramrole) — attach this policy to a role via `policyAttachments` with `policyType: Custom`
+- [AliCloudStorageBucket](/docs/catalog/alicloud/alicloudstoragebucket) — common target for fine-grained OSS access policies
+- [AliCloudRdsInstance](/docs/catalog/alicloud/alicloudrdsinstance) — common target for database access policies

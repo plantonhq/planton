@@ -1,4 +1,4 @@
-# AlicloudRdsInstance Pulumi Module Overview
+# AliCloudRdsInstance Pulumi Module Overview
 
 ## Module Structure
 

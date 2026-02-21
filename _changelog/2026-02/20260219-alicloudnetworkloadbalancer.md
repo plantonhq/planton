@@ -1,7 +1,7 @@
-# AlicloudNetworkLoadBalancer
+# AliCloudNetworkLoadBalancer
 
 **Date**: 2026-02-19
-**Kind**: AlicloudNetworkLoadBalancer
+**Kind**: AliCloudNetworkLoadBalancer
 **Enum**: 3026
 **ID Prefix**: acnlb
 

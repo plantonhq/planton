@@ -1,12 +1,12 @@
-# AlicloudApplicationLoadBalancer Examples
+# AliCloudApplicationLoadBalancer Examples
 
 ## Minimal: Internet-Facing HTTP
 
 The simplest ALB configuration: one server group, one HTTP listener, two availability zones.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudApplicationLoadBalancer
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudApplicationLoadBalancer
 metadata:
   name: dev-alb
 spec:
@@ -36,8 +36,8 @@ spec:
 Full production setup with HTTPS, StandardWithWaf edition, strict TLS policy, access logging to SLS, and deletion protection via tags.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudApplicationLoadBalancer
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudApplicationLoadBalancer
 metadata:
   name: prod-alb
   org: acme-corp
@@ -92,8 +92,8 @@ spec:
 An internal ALB for service-to-service communication using GRPC.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudApplicationLoadBalancer
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudApplicationLoadBalancer
 metadata:
   name: internal-grpc-alb
 spec:

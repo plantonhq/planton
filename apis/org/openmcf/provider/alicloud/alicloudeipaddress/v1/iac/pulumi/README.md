@@ -1,4 +1,4 @@
-# Pulumi Module to Deploy AlicloudEipAddress
+# Pulumi Module to Deploy AliCloudEipAddress
 
 This module provisions an Alibaba Cloud Elastic IP Address (EIP) using the
 `ecs.EipAddress` Pulumi resource. The EIP is a standalone public IPv4 address

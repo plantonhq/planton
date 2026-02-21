@@ -1,4 +1,4 @@
-# AlicloudApplicationLoadBalancer Pulumi Module
+# AliCloudApplicationLoadBalancer Pulumi Module
 
 ## Architecture
 

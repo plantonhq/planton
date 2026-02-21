@@ -1,12 +1,12 @@
-# AlicloudEcsInstance Examples
+# AliCloudEcsInstance Examples
 
 ## Minimal Development Instance
 
 A basic ECS instance with SSH key authentication, no public IP, and default system disk.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudEcsInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudEcsInstance
 metadata:
   name: dev-server
 spec:
@@ -25,8 +25,8 @@ spec:
 A larger instance with ESSD PL1 system disk, encrypted data disk for application data, public IP for serving traffic, deletion protection, and a RAM role for accessing other Alibaba Cloud services.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudEcsInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudEcsInstance
 metadata:
   name: prod-web-01
   org: acme-corp
@@ -37,16 +37,16 @@ spec:
   imageId: aliyun_3_x64_20G_alibase_20230727.vhd
   vswitchId:
     ref:
-      kind: AlicloudVswitch
+      kind: AliCloudVswitch
       name: prod-vswitch-a
       fieldPath: status.outputs.vswitch_id
   securityGroupIds:
     - ref:
-        kind: AlicloudSecurityGroup
+        kind: AliCloudSecurityGroup
         name: prod-web-sg
         fieldPath: status.outputs.security_group_id
     - ref:
-        kind: AlicloudSecurityGroup
+        kind: AliCloudSecurityGroup
         name: prod-mgmt-sg
         fieldPath: status.outputs.security_group_id
   keyName: prod-keypair
@@ -80,8 +80,8 @@ spec:
 A cost-efficient spot instance for batch processing workloads that can tolerate interruption.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudEcsInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudEcsInstance
 metadata:
   name: batch-worker-01
 spec:
@@ -112,8 +112,8 @@ spec:
 A subscription (PrePaid) instance for predictable long-term workloads with lower per-hour costs.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudEcsInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudEcsInstance
 metadata:
   name: app-server
   org: acme-corp

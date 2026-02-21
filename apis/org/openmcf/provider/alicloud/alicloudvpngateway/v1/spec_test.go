@@ -34,7 +34,7 @@ func validMinimalSpec() *AliCloudVpnGatewaySpec {
 
 func validMinimalInput() *AliCloudVpnGateway {
 	return &AliCloudVpnGateway{
-		ApiVersion: "alicloud.openmcf.org/v1",
+		ApiVersion: "ali-cloud.openmcf.org/v1",
 		Kind:       "AliCloudVpnGateway",
 		Metadata:   &shared.CloudResourceMetadata{Name: "test-vpn"},
 		Spec:       validMinimalSpec(),

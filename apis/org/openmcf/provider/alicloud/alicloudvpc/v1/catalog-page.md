@@ -1,10 +1,10 @@
-# Alibaba Cloud VPC
+# AliCloud VPC
 
 Deploys an Alibaba Cloud Virtual Private Cloud with a configurable IPv4 CIDR block, optional IPv6 dual-stack support, resource group assignment, and automatic tag management. The VPC is the networking foundation for VSwitches, security groups, NAT gateways, load balancers, and Kubernetes clusters on Alibaba Cloud.
 
 ## What Gets Created
 
-When you deploy an AlicloudVpc resource, OpenMCF provisions:
+When you deploy an AliCloudVpc resource, OpenMCF provisions:
 
 - **VPC** — an `alicloud_vpc` resource (Pulumi: `vpc.Network`) with the specified CIDR block, name, and optional IPv6 configuration
 - **VRouter** — automatically created by Alibaba Cloud as part of VPC creation, responsible for routing traffic between VSwitches and managing route tables
@@ -22,15 +22,15 @@ When you deploy an AlicloudVpc resource, OpenMCF provisions:
 Create a file `vpc.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpc
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpc
 metadata:
   name: my-vpc
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudVpc.my-vpc
+    pulumi.openmcf.org/stack.name: dev.AliCloudVpc.my-vpc
 spec:
   region: cn-hangzhou
   vpcName: my-vpc
@@ -71,15 +71,15 @@ This creates a VPC with a `/16` CIDR block in the `cn-hangzhou` region. Alibaba 
 A minimal VPC for non-production workloads with the smallest standard private CIDR range.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpc
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpc
 metadata:
   name: dev-vpc
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudVpc.dev-vpc
+    pulumi.openmcf.org/stack.name: dev.AliCloudVpc.dev-vpc
 spec:
   region: cn-hangzhou
   vpcName: dev-vpc
@@ -91,8 +91,8 @@ spec:
 A production VPC with a large address space, resource group assignment for access control and billing, and organizational tags.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpc
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpc
 metadata:
   name: prod-vpc
   org: my-org
@@ -101,7 +101,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudVpc.prod-vpc
+    pulumi.openmcf.org/stack.name: prod.AliCloudVpc.prod-vpc
 spec:
   region: cn-shanghai
   vpcName: prod-platform-vpc
@@ -118,8 +118,8 @@ spec:
 A dual-stack VPC with IPv6 support enabled at creation time. Alibaba Cloud allocates a `/56` IPv6 CIDR block automatically.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpc
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpc
 metadata:
   name: ipv6-vpc
   env: staging
@@ -127,7 +127,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AlicloudVpc.ipv6-vpc
+    pulumi.openmcf.org/stack.name: staging.AliCloudVpc.ipv6-vpc
 spec:
   region: us-west-1
   vpcName: ipv6-enabled-vpc
@@ -145,7 +145,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 | Output | Type | Description |
 |--------|------|-------------|
-| `vpc_id` | `string` | The VPC ID assigned by Alibaba Cloud. Referenced by downstream components (AlicloudVswitch, AlicloudSecurityGroup, AlicloudNatGateway, etc.) via `StringValueOrRef`. |
+| `vpc_id` | `string` | The VPC ID assigned by Alibaba Cloud. Referenced by downstream components (AliCloudVswitch, AliCloudSecurityGroup, AliCloudNatGateway, etc.) via `StringValueOrRef`. |
 | `vpc_name` | `string` | The VPC name as created. |
 | `cidr_block` | `string` | The primary IPv4 CIDR block of the VPC. Useful for downstream VSwitch CIDR planning. |
 | `router_id` | `string` | The virtual router ID automatically created with the VPC. |
@@ -153,8 +153,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudVswitch](/docs/catalog/alicloud/alicloudvswitch) — creates VSwitches (subnets) within this VPC
-- [AlicloudSecurityGroup](/docs/catalog/alicloud/alicloudsecuritygroup) — creates security groups bound to this VPC
-- [AlicloudNatGateway](/docs/catalog/alicloud/alicloudnatgateway) — creates NAT gateways for outbound internet access from private VSwitches
-- [AlicloudApplicationLoadBalancer](/docs/catalog/alicloud/alicloudapplicationloadbalancer) — deploys Application Load Balancers in this VPC
-- [AlicloudAckManagedCluster](/docs/catalog/alicloud/alicloudackmanagedcluster) — deploys managed Kubernetes clusters in this VPC
+- [AliCloudVswitch](/docs/catalog/alicloud/alicloudvswitch) — creates VSwitches (subnets) within this VPC
+- [AliCloudSecurityGroup](/docs/catalog/alicloud/alicloudsecuritygroup) — creates security groups bound to this VPC
+- [AliCloudNatGateway](/docs/catalog/alicloud/alicloudnatgateway) — creates NAT gateways for outbound internet access from private VSwitches
+- [AliCloudApplicationLoadBalancer](/docs/catalog/alicloud/alicloudapplicationloadbalancer) — deploys Application Load Balancers in this VPC
+- [AliCloudAckManagedCluster](/docs/catalog/alicloud/alicloudackmanagedcluster) — deploys managed Kubernetes clusters in this VPC

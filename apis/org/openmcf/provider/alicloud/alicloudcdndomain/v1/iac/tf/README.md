@@ -1,4 +1,4 @@
-# Terraform Module to Deploy AlicloudCdnDomain
+# Terraform Module to Deploy AliCloudCdnDomain
 
 This Terraform module provisions an Alibaba Cloud CDN accelerated domain from
 an OpenMCF manifest. It creates a single `alicloud_cdn_domain_new` resource
@@ -75,5 +75,5 @@ manifest, so no additional region configuration is required.
 
 - [Examples](./examples.md) — progressive deployment examples.
 - [Hack Manifest](../hack/manifest.yaml) — minimal test manifest.
-- [AlicloudCdnDomain Overview](../../../README.md) — full field reference.
+- [AliCloudCdnDomain Overview](../../../README.md) — full field reference.
 - [Research Document](../../docs/README.md) — design rationale.

@@ -1,10 +1,10 @@
-# Alibaba Cloud Log Project
+# AliCloud Log Project
 
 Deploys an Alibaba Cloud Simple Log Service (SLS) project with bundled log stores and full-text indexes. The component provisions the project, creates each specified log store, and enables full-text search indexing per store by default — ensuring logs are immediately queryable after ingestion.
 
 ## What Gets Created
 
-When you deploy an AlicloudLogProject resource, OpenMCF provisions:
+When you deploy an AliCloudLogProject resource, OpenMCF provisions:
 
 - **SLS Project** — the regional container for log data, created with the specified name, description, resource group, and tags
 - **Log Stores** — one `alicloud_log_store` per entry in `logStores`, each with configurable retention, shard count, auto-split, and metadata enrichment
@@ -20,15 +20,15 @@ When you deploy an AlicloudLogProject resource, OpenMCF provisions:
 Create a file `log-project.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudLogProject
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudLogProject
 metadata:
   name: my-log-project
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudLogProject.my-log-project
+    pulumi.openmcf.org/stack.name: dev.AliCloudLogProject.my-log-project
 spec:
   region: cn-hangzhou
   projectName: my-app-logs
@@ -60,7 +60,7 @@ This creates an SLS project named `my-app-logs` in `cn-hangzhou` with one log st
 | `description` | `string` | `""` | Human-readable description of the project. |
 | `resourceGroupId` | `string` | `""` | Alibaba Cloud resource group ID for organizational grouping. If omitted, the default resource group is used. |
 | `tags` | `map<string, string>` | `{}` | Key-value tags applied to the SLS project. Merged with standard OpenMCF tags. |
-| `logStores` | `AlicloudLogStore[]` | `[]` | Log stores to create within this project. See fields below. |
+| `logStores` | `AliCloudLogStore[]` | `[]` | Log stores to create within this project. See fields below. |
 | `logStores[].name` | `string` | — | Log store name. Must be unique within the project. (Required per store; 3-63 characters) |
 | `logStores[].retentionDays` | `int` | `30` | Data retention period in days. Range: 1-3650. Set to 3650 for permanent retention. |
 | `logStores[].shardCount` | `int` | `2` | Number of write shards. Each shard supports ~5 MB/s write throughput. Range: 1-256. |
@@ -76,15 +76,15 @@ This creates an SLS project named `my-app-logs` in `cn-hangzhou` with one log st
 An empty SLS project with no log stores. Stores can be added by updating the manifest.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudLogProject
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudLogProject
 metadata:
   name: empty-project
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudLogProject.empty-project
+    pulumi.openmcf.org/stack.name: dev.AliCloudLogProject.empty-project
 spec:
   region: cn-hangzhou
   projectName: my-empty-project
@@ -95,15 +95,15 @@ spec:
 A project for a development environment with one log store using short retention and minimal shards.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudLogProject
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudLogProject
 metadata:
   name: dev-logging
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudLogProject.dev-logging
+    pulumi.openmcf.org/stack.name: dev.AliCloudLogProject.dev-logging
 spec:
   region: cn-hangzhou
   projectName: dev-app-logs
@@ -119,15 +119,15 @@ spec:
 Separate stores for application logs, audit trails, and access logs with distinct retention and shard configurations. Tags enable cost attribution and organizational filtering.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudLogProject
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudLogProject
 metadata:
   name: prod-logging
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudLogProject.prod-logging
+    pulumi.openmcf.org/stack.name: prod.AliCloudLogProject.prod-logging
 spec:
   region: cn-shanghai
   projectName: prod-platform-logs
@@ -159,15 +159,15 @@ spec:
 A project for compliance archival where query capability is not needed. Disabling indexing eliminates index storage costs.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudLogProject
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudLogProject
 metadata:
   name: archive-project
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudLogProject.archive-project
+    pulumi.openmcf.org/stack.name: prod.AliCloudLogProject.archive-project
 spec:
   region: cn-hangzhou
   projectName: compliance-archive
@@ -191,6 +191,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudAckManagedCluster](/docs/catalog/alicloud/alicloudackmanagedcluster) — references this project for cluster audit and event logging
-- [AlicloudFcFunction](/docs/catalog/alicloud/alicloudfcfunction) — references this project for function execution logging
-- [AlicloudSaeApplication](/docs/catalog/alicloud/alicloudsaeapplication) — references this project for application logging
+- [AliCloudAckManagedCluster](/docs/catalog/alicloud/alicloudackmanagedcluster) — references this project for cluster audit and event logging
+- [AliCloudFcFunction](/docs/catalog/alicloud/alicloudfcfunction) — references this project for function execution logging
+- [AliCloudSaeApplication](/docs/catalog/alicloud/alicloudsaeapplication) — references this project for application logging

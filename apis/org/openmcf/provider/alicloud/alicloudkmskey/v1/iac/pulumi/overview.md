@@ -2,7 +2,7 @@
 
 ## Module Architecture
 
-The AlicloudKmsKey Pulumi module is organized into three files under `iac/pulumi/module/`:
+The AliCloudKmsKey Pulumi module is organized into three files under `iac/pulumi/module/`:
 
 | File | Responsibility |
 |------|---------------|
@@ -10,14 +10,14 @@ The AlicloudKmsKey Pulumi module is organized into three files under `iac/pulumi
 | `locals.go` | Transformations -- tag computation, default resolution, bool-to-string conversion |
 | `outputs.go` | Constants -- defines output key names exported to the stack |
 
-The entry point binary at `iac/pulumi/main.go` loads the stack input (manifest YAML -> AlicloudKmsKeyStackInput) and delegates to `module.Resources()`.
+The entry point binary at `iac/pulumi/main.go` loads the stack input (manifest YAML -> AliCloudKmsKeyStackInput) and delegates to `module.Resources()`.
 
 ## Control Flow
 
 ```
-LoadStackInput (manifest YAML -> AlicloudKmsKeyStackInput)
+LoadStackInput (manifest YAML -> AliCloudKmsKeyStackInput)
     |
-initializeLocals() -> Locals{Tags, AlicloudKmsKey}
+initializeLocals() -> Locals{Tags, AliCloudKmsKey}
     |
 NewProvider("alicloud", region)
     |

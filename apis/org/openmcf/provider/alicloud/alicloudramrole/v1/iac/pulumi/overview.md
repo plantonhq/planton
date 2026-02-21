@@ -2,7 +2,7 @@
 
 ## Module Architecture
 
-The AlicloudRamRole Pulumi module is organized into three files under `iac/pulumi/module/`:
+The AliCloudRamRole Pulumi module is organized into three files under `iac/pulumi/module/`:
 
 | File | Responsibility |
 |------|---------------|
@@ -15,9 +15,9 @@ The entry point binary at `iac/pulumi/main.go` loads the stack input (manifest +
 ## Control Flow
 
 ```
-LoadStackInput (manifest YAML → AlicloudRamRoleStackInput)
+LoadStackInput (manifest YAML → AliCloudRamRoleStackInput)
     ↓
-initializeLocals() → Locals{Tags, AlicloudRamRole}
+initializeLocals() → Locals{Tags, AliCloudRamRole}
     ↓
 alicloud.NewProvider (region-scoped)
     ↓
@@ -49,7 +49,7 @@ The `optionalString` helper returns `nil` for empty strings, allowing Pulumi to 
 The `initializeLocals` function computes:
 
 - **Tags**: Merges standard OpenMCF tags (`resource`, `resource_name`, `resource_kind`, `resource_id`, `organization`, `environment`) with user-provided `spec.Tags`. User tags take precedence on key conflict.
-- **Reference**: Stores the full `AlicloudRamRole` resource for convenient access throughout the module.
+- **Reference**: Stores the full `AliCloudRamRole` resource for convenient access throughout the module.
 
 Three default-resolution helpers handle optional proto fields with pointer semantics:
 

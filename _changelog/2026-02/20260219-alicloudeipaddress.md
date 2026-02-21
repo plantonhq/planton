@@ -1,13 +1,13 @@
-# AlicloudEipAddress Component Added
+# AliCloudEipAddress Component Added
 
 **Date**: 2026-02-19
-**Component**: AlicloudEipAddress
+**Component**: AliCloudEipAddress
 **Enum**: 3023
 **ID Prefix**: aceip
 
 ## Summary
 
-Added the AlicloudEipAddress deployment component -- a standalone Elastic IP Address that can be associated with NAT gateways, ALB/NLB load balancers, VPN gateways, and ECS instances.
+Added the AliCloudEipAddress deployment component -- a standalone Elastic IP Address that can be associated with NAT gateways, ALB/NLB load balancers, VPN gateways, and ECS instances.
 
 This component allocates a static, public IPv4 address that persists independently of the resource lifecycle, allowing it to be released from one resource and re-associated with another without changing the address.
 
@@ -15,7 +15,7 @@ This component allocates a static, public IPv4 address that persists independent
 
 ### API Definition
 - `apis/org/openmcf/provider/alicloud/alicloudeipaddress/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AlicloudEipAddress = 3023` in `CloudResourceKind` enum under the Networking category
+- Registered `AliCloudEipAddress = 3023` in `CloudResourceKind` enum under the Networking category
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider and a single `ecs.EipAddress` resource with bandwidth int-to-string conversion and default resolution for optional fields

@@ -5,7 +5,7 @@
 The simplest configuration: a single ED25519 public key. ED25519 is the recommended algorithm for new keys.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSshKey
 metadata:
   name: deploy-key
@@ -20,7 +20,7 @@ spec:
 An RSA 4096-bit key for environments that require RSA (older OpenSSH versions, hardware tokens, compliance requirements).
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSshKey
 metadata:
   name: legacy-deploy-key
@@ -37,7 +37,7 @@ spec:
 Register individual SSH keys per team member with org and environment context. This enables key lifecycle management — when someone leaves the team, delete their manifest and redeploy.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSshKey
 metadata:
   name: ops-alice
@@ -51,7 +51,7 @@ spec:
 ```
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSshKey
 metadata:
   name: ops-bob
@@ -65,7 +65,7 @@ spec:
 ```
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSshKey
 metadata:
   name: ci-runner
@@ -87,7 +87,7 @@ In an infra chart, a `HetznerCloudServer` references SSH keys via `valueFrom` so
 SSH key manifest:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSshKey
 metadata:
   name: web-deploy-key
@@ -100,7 +100,7 @@ spec:
 Server manifest referencing the SSH key output:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: web-01

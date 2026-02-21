@@ -1,20 +1,20 @@
-# AlicloudNasFileSystem Component Added
+# AliCloudNasFileSystem Component Added
 
 **Date**: 2026-02-19
-**Component**: AlicloudNasFileSystem
+**Component**: AliCloudNasFileSystem
 **Enum**: 3051
 **ID Prefix**: acnas
 
 ## Summary
 
-Added the AlicloudNasFileSystem deployment component -- the second Storage-tier resource in the Alibaba Cloud catalog. This component manages an Alibaba Cloud NAS file system with a VPC mount target and optional custom access group with IP-based access rules. It supports both standard (auto-scaling) and extreme (dedicated throughput) file system types, NFS and SMB protocols, and optional encryption at rest.
+Added the AliCloudNasFileSystem deployment component -- the second Storage-tier resource in the Alibaba Cloud catalog. This component manages an Alibaba Cloud NAS file system with a VPC mount target and optional custom access group with IP-based access rules. It supports both standard (auto-scaling) and extreme (dedicated throughput) file system types, NFS and SMB protocols, and optional encryption at rest.
 
 ## What Was Created
 
 ### API Definition
 - `apis/org/openmcf/provider/alicloud/alicloudnasfilesystem/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AlicloudNasFileSystem = 3051` in `CloudResourceKind` enum under the Storage category
-- 2 nested messages: `AlicloudNasEncryption`, `AlicloudNasAccessRule`
+- Registered `AliCloudNasFileSystem = 3051` in `CloudResourceKind` enum under the Storage category
+- 2 nested messages: `AliCloudNasEncryption`, `AliCloudNasAccessRule`
 
 ### IaC Modules
 - **Pulumi** (Go): Creates NAS file system, conditionally creates access group with access rules when `accessRules` is non-empty, always creates VPC mount target. Handles extreme NAS (sets VPC/VSwitch on file system) vs standard NAS (VPC/VSwitch only on mount target).
@@ -34,7 +34,7 @@ Added the AlicloudNasFileSystem deployment component -- the second Storage-tier 
 
 - **`file_system_type` added (not in T02)**: The provider distinguishes between standard and extreme NAS with fundamentally different behaviors (auto-scaling vs fixed capacity, different storage type values). Defaulting to "standard" covers the 80% case while allowing extreme NAS for high-throughput workloads.
 - **`access_rules` replaces T02's `access_group_name`**: Exposing the access group name leaks a provider implementation detail. Instead, when access_rules are specified, a custom access group is auto-created. When omitted, the default VPC group provides full RDWR access from all VPC IPs. This is cleaner UX.
-- **Encryption included (not in T02)**: Encryption is production-critical. Modeled as an optional `AlicloudNasEncryption` message (same pattern as OssBucket), supporting NAS-managed (1) and KMS customer-managed (2) encryption.
+- **Encryption included (not in T02)**: Encryption is production-critical. Modeled as an optional `AliCloudNasEncryption` message (same pattern as OssBucket), supporting NAS-managed (1) and KMS customer-managed (2) encryption.
 - **`capacity` and `zone_id` added (not in T02)**: Required for extreme NAS but optional/ignored for standard NAS. Standard NAS auto-assigns zones and auto-scales capacity.
 - **Storage type values expanded**: T02 listed only "Performance" and "Capacity". The provider supports "Premium" for standard NAS and "standard"/"advance" for extreme NAS.
 - **CPFS excluded**: Cloud Parallel File System is a niche HPC product with distinct requirements. Can be added as a separate component if needed.

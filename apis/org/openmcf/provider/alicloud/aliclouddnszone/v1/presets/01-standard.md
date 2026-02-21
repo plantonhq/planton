@@ -7,7 +7,7 @@ This preset registers a domain in Alibaba Cloud DNS (Alidns) with only the requi
 - Registering a new domain for DNS hosting on Alibaba Cloud
 - Simple DNS setups where organizational grouping, resource groups, and tags are unnecessary
 - Development and testing environments
-- Quick onboarding of a domain before creating DNS records via AlicloudDnsRecord
+- Quick onboarding of a domain before creating DNS records via AliCloudDnsRecord
 
 ## Key Configuration Choices
 
@@ -28,7 +28,7 @@ This preset registers a domain in Alibaba Cloud DNS (Alidns) with only the requi
 2. Retrieve the `dns_servers` output from `status.outputs`
 3. Update your domain registrar's NS records to point to the Alibaba Cloud DNS servers
 4. DNS propagation typically takes 24-48 hours for NS record changes
-5. Create DNS records using the AlicloudDnsRecord component
+5. Create DNS records using the AliCloudDnsRecord component
 
 ## Related Presets
 

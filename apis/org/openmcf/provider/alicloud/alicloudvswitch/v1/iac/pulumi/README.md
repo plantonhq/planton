@@ -1,8 +1,8 @@
-# Pulumi Module to Deploy AlicloudVswitch
+# Pulumi Module to Deploy AliCloudVswitch
 
 This module provisions an Alibaba Cloud VSwitch (subnet) within an existing VPC. It creates a single `vpc.Switch` resource bound to a specific Availability Zone with a configured IPv4 CIDR block, optional IPv6 support, and automatic tag management. The module exports the VSwitch ID, name, CIDR block, zone ID, and IPv6 CIDR block.
 
-Generated from the proto schema for `AlicloudVswitch`.
+Generated from the proto schema for `AliCloudVswitch`.
 
 ## CLI Usage (OpenMCF Pulumi)
 
@@ -53,8 +53,8 @@ The module resolves the `vpc_id` field from `StringValueOrRef` (supporting both 
 1. Create or edit a manifest:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVswitch
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVswitch
 metadata:
   name: my-vswitch
 spec:

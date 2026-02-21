@@ -1,4 +1,4 @@
-# AlicloudLogProject
+# AliCloudLogProject
 
 Manages an Alibaba Cloud Simple Log Service (SLS) project with optional bundled log stores and full-text indexes.
 
@@ -52,6 +52,6 @@ An SLS project is the top-level container for log data in Alibaba Cloud. This co
 
 ## Related Components
 
-- **AlicloudAckManagedCluster** -- references this project for cluster audit and event logging
-- **AlicloudFcFunction** -- references this project for function execution logging
-- **AlicloudSaeApplication** -- references this project for application logging
+- **AliCloudAckManagedCluster** -- references this project for cluster audit and event logging
+- **AliCloudFcFunction** -- references this project for function execution logging
+- **AliCloudSaeApplication** -- references this project for application logging

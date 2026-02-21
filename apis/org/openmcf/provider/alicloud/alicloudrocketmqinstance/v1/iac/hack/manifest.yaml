@@ -1,5 +1,5 @@
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRocketmqInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRocketmqInstance
 metadata:
   name: alicloudrocketmqinstance-demo
 spec:

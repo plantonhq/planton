@@ -1,4 +1,4 @@
-# AlicloudVpc
+# AliCloudVpc
 
 Manages an Alibaba Cloud Virtual Private Cloud (VPC).
 
@@ -55,11 +55,11 @@ Choose a CIDR that does not overlap with other VPCs if you plan to use VPC peeri
 
 ## Related Components
 
-- **AlicloudVswitch** -- creates subnets within this VPC
-- **AlicloudSecurityGroup** -- creates security groups bound to this VPC
-- **AlicloudNatGateway** -- creates NAT gateways for outbound internet access
-- **AlicloudApplicationLoadBalancer** -- deploys ALB load balancers in this VPC
-- **AlicloudNetworkLoadBalancer** -- deploys NLB load balancers in this VPC
-- **AlicloudAckManagedCluster** -- deploys Kubernetes clusters in this VPC
-- **AlicloudRdsInstance** -- deploys database instances in this VPC (via VSwitch)
-- **AlicloudPrivateDnsZone** -- attaches private DNS zones to this VPC
+- **AliCloudVswitch** -- creates subnets within this VPC
+- **AliCloudSecurityGroup** -- creates security groups bound to this VPC
+- **AliCloudNatGateway** -- creates NAT gateways for outbound internet access
+- **AliCloudApplicationLoadBalancer** -- deploys ALB load balancers in this VPC
+- **AliCloudNetworkLoadBalancer** -- deploys NLB load balancers in this VPC
+- **AliCloudAckManagedCluster** -- deploys Kubernetes clusters in this VPC
+- **AliCloudRdsInstance** -- deploys database instances in this VPC (via VSwitch)
+- **AliCloudPrivateDnsZone** -- attaches private DNS zones to this VPC

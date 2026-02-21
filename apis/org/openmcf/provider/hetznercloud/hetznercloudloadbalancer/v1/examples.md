@@ -5,7 +5,7 @@
 The simplest configuration: an lb11 load balancer in Falkenstein with a single HTTP service on port 80 forwarding to one server target. The server is referenced by literal ID.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: web-lb
@@ -26,7 +26,7 @@ spec:
 An HTTPS load balancer that terminates TLS using a certificate managed by a `HetznerCloudCertificate` resource. HTTP traffic on port 80 is automatically redirected to HTTPS. A custom health check verifies that the backend application responds on `/health`.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: web-https-lb
@@ -67,7 +67,7 @@ spec:
 A load balancer exposing both HTTPS (port 443) and a TCP service (port 5432 for database connections). The HTTPS service uses cookie-based sticky sessions with a custom cookie name and lifetime. Multiple servers are referenced by literal ID.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: app-lb
@@ -119,7 +119,7 @@ spec:
 A load balancer attached to a private Hetzner Cloud network. Targets receive traffic over the private network instead of the public internet. The load balancer gets a fixed private IP and keeps its public interface enabled for client-facing traffic.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: internal-lb
@@ -157,7 +157,7 @@ spec:
 A production-grade load balancer using all three target types, HTTPS with TLS termination, private networking, and `valueFrom` references to other OpenMCF components. Demonstrates the complete feature set: label selector targets for auto-scaling, an IP target for an external service, custom health checks, sticky sessions, and delete protection.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: prod-lb

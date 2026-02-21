@@ -35,7 +35,7 @@ func minimalValidSpec() *AliCloudApplicationLoadBalancerSpec {
 
 func minimalValidInput() *AliCloudApplicationLoadBalancer {
 	return &AliCloudApplicationLoadBalancer{
-		ApiVersion: "alicloud.openmcf.org/v1",
+		ApiVersion: "ali-cloud.openmcf.org/v1",
 		Kind:       "AliCloudApplicationLoadBalancer",
 		Metadata:   &shared.CloudResourceMetadata{Name: "test-alb"},
 		Spec:       minimalValidSpec(),
@@ -258,7 +258,7 @@ var _ = ginkgo.Describe("AliCloudApplicationLoadBalancerSpec Validation Tests", 
 
 		ginkgo.It("should fail when spec is missing", func() {
 			input := &AliCloudApplicationLoadBalancer{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudApplicationLoadBalancer",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 			}

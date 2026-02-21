@@ -16,7 +16,7 @@ Creates a point-in-time disk image from a Hetzner Cloud server, stored as a Hetz
 Create a file `snapshot.yaml`:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSnapshot
 metadata:
   name: my-snapshot
@@ -59,7 +59,7 @@ This creates a snapshot of server `12345678`. The snapshot's image ID is availab
 A snapshot with a description for identification. The description appears in the Hetzner Cloud console and API listings.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSnapshot
 metadata:
   name: pre-upgrade-baseline
@@ -81,7 +81,7 @@ spec:
 Using `valueFrom` to reference a `HetznerCloudServer` component's output. The snapshot waits for the server to be created before attempting to capture its disk.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSnapshot
 metadata:
   name: app-server-snapshot
@@ -106,7 +106,7 @@ spec:
 Snapshot a configured template server, then use the snapshot's image ID to create identical worker servers. This is faster and more consistent than running configuration management on every new server.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSnapshot
 metadata:
   name: golden-image-v1

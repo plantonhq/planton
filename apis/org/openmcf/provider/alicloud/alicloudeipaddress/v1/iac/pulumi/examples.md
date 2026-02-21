@@ -18,8 +18,8 @@ openmcf pulumi update \
 ## Minimal EIP
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudEipAddress
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudEipAddress
 metadata:
   name: my-eip
 spec:
@@ -29,8 +29,8 @@ spec:
 ## EIP for NAT Gateway
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudEipAddress
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudEipAddress
 metadata:
   name: nat-eip
 spec:
@@ -45,8 +45,8 @@ spec:
 ## High-Bandwidth Production EIP
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudEipAddress
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudEipAddress
 metadata:
   name: prod-lb-eip
   org: my-org

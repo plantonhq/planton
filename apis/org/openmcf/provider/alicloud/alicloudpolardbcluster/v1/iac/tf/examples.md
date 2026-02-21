@@ -1,4 +1,4 @@
-# AlicloudPolardbCluster Terraform Examples
+# AliCloudPolardbCluster Terraform Examples
 
 See [../../examples.md](../../examples.md) for complete YAML examples. The Terraform module receives the same spec fields as variables.
 

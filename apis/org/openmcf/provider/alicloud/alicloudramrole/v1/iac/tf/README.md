@@ -1,11 +1,11 @@
-# Terraform Module to Deploy AlicloudRamRole
+# Terraform Module to Deploy AliCloudRamRole
 
 This module provisions an Alibaba Cloud RAM role with bundled policy
 attachments. Each entry in `policy_attachments` creates an
 `alicloud_ram_role_policy_attachment` resource linked to the role via
 `for_each`.
 
-Generated `variables.tf` reflects the proto schema for `AlicloudRamRole`.
+Generated `variables.tf` reflects the proto schema for `AliCloudRamRole`.
 
 ## Usage
 

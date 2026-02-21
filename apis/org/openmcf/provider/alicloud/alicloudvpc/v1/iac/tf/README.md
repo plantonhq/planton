@@ -1,8 +1,8 @@
-# Terraform Module to Deploy AlicloudVpc
+# Terraform Module to Deploy AliCloudVpc
 
 This module provisions an Alibaba Cloud VPC with configurable CIDR block, optional IPv6 support, resource group assignment, and automatic tag management. It creates a single `alicloud_vpc` resource and outputs the VPC ID, name, CIDR block, router ID, and route table ID.
 
-Generated `variables.tf` reflects the proto schema for `AlicloudVpc`.
+Generated `variables.tf` reflects the proto schema for `AliCloudVpc`.
 
 ## Usage
 

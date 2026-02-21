@@ -19,10 +19,10 @@ This preset creates a security group for bastion (jump) hosts that serve as the 
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`) | Your deployment region |
-| `<your-vpc-id>` | VPC ID that this security group belongs to | Alibaba Cloud VPC console or `AlicloudVpc` stack outputs |
+| `<your-vpc-id>` | VPC ID that this security group belongs to | Alibaba Cloud VPC console or `AliCloudVpc` stack outputs |
 | `<your-sg-name>` | Security group name (2-128 chars) | Choose a descriptive name |
 | `<your-trusted-cidr>` | Trusted source CIDR for SSH (e.g., `203.0.113.0/24`) | Your office/VPN IP range |
-| `<your-vpc-cidr>` | VPC CIDR block (e.g., `10.0.0.0/8`) | Your AlicloudVpc spec.cidrBlock |
+| `<your-vpc-cidr>` | VPC CIDR block (e.g., `10.0.0.0/8`) | Your AliCloudVpc spec.cidrBlock |
 
 ## Related Presets
 

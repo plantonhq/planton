@@ -1,5 +1,5 @@
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudPrivateDnsZone
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudPrivateDnsZone
 metadata:
   name: test-private-zone
   org: test-org
@@ -8,7 +8,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: test-org
     pulumi.openmcf.org/project: test-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudPrivateDnsZone.test-private-zone
+    pulumi.openmcf.org/stack.name: dev.AliCloudPrivateDnsZone.test-private-zone
 spec:
   region: cn-hangzhou
   zoneName: test.internal

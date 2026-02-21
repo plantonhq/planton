@@ -1,5 +1,5 @@
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsZone
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsZone
 metadata:
   name: aliclouddnszone-demo
 spec:

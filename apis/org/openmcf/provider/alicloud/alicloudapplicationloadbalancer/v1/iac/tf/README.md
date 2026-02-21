@@ -1,4 +1,4 @@
-# AlicloudApplicationLoadBalancer Terraform Module
+# AliCloudApplicationLoadBalancer Terraform Module
 
 This module deploys an Alibaba Cloud Application Load Balancer (ALB) with server groups and listeners using Terraform.
 

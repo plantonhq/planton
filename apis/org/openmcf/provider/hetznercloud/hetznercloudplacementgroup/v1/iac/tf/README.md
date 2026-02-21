@@ -6,7 +6,7 @@ Terraform (HCL) IaC module for creating placement groups in Hetzner Cloud.
 
 ```
 .
-├── provider.tf     # Hetzner Cloud provider configuration (hcloud ~> 1.60)
+├── provider.tf     # HetznerCloud provider configuration (hcloud ~> 1.60)
 ├── variables.tf    # Input variables (metadata + spec + hcloud_token)
 ├── locals.tf       # Computed values: placement_group_name, placement_group_type, standard_labels
 ├── main.tf         # Placement group resource definition

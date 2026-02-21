@@ -1,0 +1,24 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciContainerEngineCluster
+metadata:
+  name: my-oke-cluster
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  vcnId:
+    value: <vcn-ocid>
+  kubernetesVersion: <kubernetes-version>
+  type: enhanced_cluster # workload identity, add-on management, virtual node pools
+  cniType: oci_vcn_ip_native # pods get VCN IPs; enables NSGs on pods and network policies
+  endpointConfig:
+    subnetId:
+      value: <api-endpoint-subnet-ocid>
+    isPublicIpEnabled: true
+    nsgIds:
+      - value: <api-endpoint-nsg-ocid>
+  options:
+    kubernetesNetworkConfig:
+      podsCidr: 10.244.0.0/16 # default; must not overlap with VCN or services CIDR
+      servicesCidr: 10.96.0.0/16 # default; must not overlap with VCN or pods CIDR
+    serviceLbSubnetIds:
+      - value: <service-lb-subnet-ocid>

@@ -6,7 +6,7 @@ Terraform (HCL) IaC module for registering SSH public keys in Hetzner Cloud.
 
 ```
 .
-├── provider.tf     # Hetzner Cloud provider configuration (hcloud ~> 1.60)
+├── provider.tf     # HetznerCloud provider configuration (hcloud ~> 1.60)
 ├── variables.tf    # Input variables (metadata + spec + hcloud_token)
 ├── locals.tf       # Computed values: ssh_key_name, public_key, standard_labels
 ├── main.tf         # SSH key resource definition

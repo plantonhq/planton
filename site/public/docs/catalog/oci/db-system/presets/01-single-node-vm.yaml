@@ -1,0 +1,32 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciDbSystem
+metadata:
+  name: my-oracle-db
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  displayName: oracle-db
+  availabilityDomain: <availability-domain>
+  shape: VM.Standard.E4.Flex
+  cpuCoreCount: 2
+  subnetId:
+    value: <private-subnet-ocid>
+  sshPublicKeys:
+    - <ssh-public-key>
+  hostname: oracledb
+  databaseEdition: standard_edition
+  licenseModel: license_included
+  dataStorageSizeInGb: 256
+  nodeCount: 1
+  nsgIds:
+    - value: <db-nsg-ocid>
+  dbHome:
+    dbVersion: "19.0.0.0"
+    displayName: dbhome1
+    database:
+      adminPassword: <admin-password>
+      dbName: mydb
+      pdbName: mypdb
+      dbBackupConfig:
+        autoBackupEnabled: true
+        recoveryWindowInDays: 30

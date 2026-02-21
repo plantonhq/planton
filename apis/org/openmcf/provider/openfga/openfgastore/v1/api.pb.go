@@ -56,7 +56,7 @@ const (
 type OpenFgaStore struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api_version is the version of the OpenFGA API resource.
-	// Must be "open-fga.openmcf.org/v1" for this version.
+	// Must be "openfga.openmcf.org/v1" for this version.
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "OpenFgaStore" for this resource type.
@@ -196,10 +196,10 @@ var File_org_openmcf_provider_openfga_openfgastore_v1_api_proto protoreflect.Fil
 
 const file_org_openmcf_provider_openfga_openfgastore_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"6org/openmcf/provider/openfga/openfgastore/v1/api.proto\x12,org.openmcf.provider.openfga.openfgastore.v1\x1a\x1bbuf/validate/validate.proto\x1a7org/openmcf/provider/openfga/openfgastore/v1/spec.proto\x1a@org/openmcf/provider/openfga/openfgastore/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xfd\x02\n" +
-	"\fOpenFgaStore\x12?\n" +
-	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
-	"\x17open-fga.openmcf.org/v1R\n" +
+	"6org/openmcf/provider/openfga/openfgastore/v1/api.proto\x12,org.openmcf.provider.openfga.openfgastore.v1\x1a\x1bbuf/validate/validate.proto\x1a7org/openmcf/provider/openfga/openfgastore/v1/spec.proto\x1a@org/openmcf/provider/openfga/openfgastore/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xfc\x02\n" +
+	"\fOpenFgaStore\x12>\n" +
+	"\vapi_version\x18\x01 \x01(\tB\x1d\xbaH\x1ar\x18\n" +
+	"\x16openfga.openmcf.org/v1R\n" +
 	"apiVersion\x12'\n" +
 	"\x04kind\x18\x02 \x01(\tB\x13\xbaH\x10r\x0e\n" +
 	"\fOpenFgaStoreR\x04kind\x12M\n" +

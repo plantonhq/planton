@@ -1,4 +1,4 @@
-# Hetzner Cloud Firewall — Research Documentation
+# HetznerCloud Firewall — Research Documentation
 
 ## Introduction
 
@@ -315,7 +315,7 @@ This shifts error feedback from minutes (API round-trip) to milliseconds (local 
 ### Manifest Format
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFirewall
 metadata:
   name: web-firewall

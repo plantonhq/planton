@@ -21,7 +21,7 @@ When you deploy an OpenFgaRelationshipTuple resource, OpenMCF provisions:
 Create a file `tuple.yaml`:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-views-budget
@@ -74,7 +74,7 @@ This creates a relationship tuple granting user `anne` the `viewer` relation on 
 A minimal tuple granting a single user viewer access to a specific document, using direct values for all fields:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-views-budget
@@ -99,7 +99,7 @@ spec:
 Add a user to a group using the userset format (`group:engineering#member`). Other tuples can then reference this group membership to grant indirect access:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-member-engineering
@@ -122,7 +122,7 @@ spec:
 A second tuple grants all members of the engineering group editor access to a folder, using the userset `relation` field on the user:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: engineering-edits-reports
@@ -148,7 +148,7 @@ spec:
 A tuple that uses foreign key references to resolve the store and model IDs from other OpenMCF resources, and includes a condition that restricts access to a set of allowed IP ranges. The condition must be defined in the authorization model:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: bob-edits-roadmap-conditional

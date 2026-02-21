@@ -7,7 +7,7 @@ This preset creates a custom RAM policy combining the minimal permissions a CI/C
 - CI/CD pipelines (Jenkins, GitLab CI, GitHub Actions runners) that push images to Container Registry and deploy to ACK
 - Build automation roles that need scoped access across CR, ACK, and SLS without granting full admin
 - Platform teams creating standardized pipeline roles for multiple application teams
-- Attaching to an `AlicloudRamRole` via `policyAttachments` with `policyType: Custom`
+- Attaching to an `AliCloudRamRole` via `policyAttachments` with `policyType: Custom`
 
 ## Key Configuration Choices
 
@@ -23,8 +23,8 @@ This preset creates a custom RAM policy combining the minimal permissions a CI/C
 |-------------|-------------|---------------|
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`, `ap-southeast-1`) | Your deployment region strategy |
 | `<your-policy-name>` | RAM policy name, unique per account (1-128 chars: letters, digits, hyphens) | Choose a name following your naming convention (e.g., `cicd-pipeline-deploy`) |
-| `<your-registry-namespace>` | Container Registry namespace the pipeline pushes to | ACR console or `AlicloudContainerRegistryEnterprise` stack outputs |
-| `<your-log-project-name>` | SLS project name for pipeline build logs | SLS console or `AlicloudLogProject` stack outputs |
+| `<your-registry-namespace>` | Container Registry namespace the pipeline pushes to | ACR console or `AliCloudContainerRegistryEnterprise` stack outputs |
+| `<your-log-project-name>` | SLS project name for pipeline build logs | SLS console or `AliCloudLogProject` stack outputs |
 
 ## Related Presets
 

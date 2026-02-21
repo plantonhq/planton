@@ -1,10 +1,10 @@
-# Terraform Module to Deploy AlicloudEipAddress
+# Terraform Module to Deploy AliCloudEipAddress
 
 This module provisions an Alibaba Cloud Elastic IP Address (EIP) using the
 `alicloud_eip_address` resource. The EIP is a standalone public IPv4 address
 that can be associated with NAT gateways, load balancers, and other resources.
 
-Generated `variables.tf` reflects the proto schema for `AlicloudEipAddress`.
+Generated `variables.tf` reflects the proto schema for `AliCloudEipAddress`.
 
 ## Usage
 

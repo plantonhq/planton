@@ -10,7 +10,7 @@ Terraform IaC module for creating private networks with subnets and static route
 ├── outputs.tf        # Stack output definitions
 ├── variables.tf      # Input variable definitions (metadata, spec, hcloud_token)
 ├── locals.tf         # Network name and standard label computation
-├── provider.tf       # Hetzner Cloud provider configuration
+├── provider.tf       # HetznerCloud provider configuration
 └── BUILD.bazel       # Bazel build definition
 ```
 

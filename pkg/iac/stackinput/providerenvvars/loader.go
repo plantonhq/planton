@@ -98,7 +98,7 @@ func extractProviderConfigYaml(stackInputMap map[string]interface{}) ([]byte, bo
 // loadProviderEnvVars loads the provider config YAML and returns environment variables based on the provider type.
 func loadProviderEnvVars(providerConfigYaml []byte, provider cloudresourcekind.CloudResourceProvider, opts Options) (map[string]string, error) {
 	switch provider {
-	case cloudresourcekind.CloudResourceProvider_open_fga:
+	case cloudresourcekind.CloudResourceProvider_openfga:
 		return loadOpenFgaEnvVars(providerConfigYaml)
 	case cloudresourcekind.CloudResourceProvider_gcp:
 		return loadGcpEnvVars(providerConfigYaml)
@@ -120,11 +120,11 @@ func loadProviderEnvVars(providerConfigYaml []byte, provider cloudresourcekind.C
 		return loadOpenStackEnvVars(providerConfigYaml)
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return loadScalewayEnvVars(providerConfigYaml)
-	case cloudresourcekind.CloudResourceProvider_alicloud:
+	case cloudresourcekind.CloudResourceProvider_ali_cloud:
 		return loadAliCloudEnvVars(providerConfigYaml)
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return loadOciEnvVars(providerConfigYaml)
-	case cloudresourcekind.CloudResourceProvider_hetznercloud:
+	case cloudresourcekind.CloudResourceProvider_hetzner_cloud:
 		return loadHetznerCloudEnvVars(providerConfigYaml)
 	default:
 		// Unknown or unspecified provider - no env vars needed

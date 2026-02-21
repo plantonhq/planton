@@ -1,4 +1,4 @@
-# AlicloudNatGateway Pulumi Module
+# AliCloudNatGateway Pulumi Module
 
 This Pulumi module provisions an Alibaba Cloud Enhanced NAT Gateway with EIP association and SNAT entries.
 

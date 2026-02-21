@@ -1,6 +1,6 @@
 # Overview
 
-The AlicloudVpc Pulumi module creates a single Alibaba Cloud VPC from an OpenMCF manifest. The module is intentionally minimal — three files, one cloud resource — because the VPC is a composable building block. VSwitches, security groups, NAT gateways, and other networking resources are managed by separate components.
+The AliCloudVpc Pulumi module creates a single Alibaba Cloud VPC from an OpenMCF manifest. The module is intentionally minimal — three files, one cloud resource — because the VPC is a composable building block. VSwitches, security groups, NAT gateways, and other networking resources are managed by separate components.
 
 ## Module Architecture
 
@@ -9,13 +9,13 @@ iac/pulumi/
 ├── main.go              Entry point: loads stack input, calls module.Resources()
 └── module/
     ├── locals.go         Transforms stack input into computed values (tag merging)
-    ├── main.go           Controller: creates the Alicloud provider and the VPC resource
+    ├── main.go           Controller: creates the AliCloud provider and the VPC resource
     └── outputs.go        Defines output constant names (vpc_id, vpc_name, etc.)
 ```
 
-**Entry point** (`iac/pulumi/main.go`): Deserializes the Pulumi config into `AlicloudVpcStackInput` via `stackinput.LoadStackInput()`, then delegates to `module.Resources()`.
+**Entry point** (`iac/pulumi/main.go`): Deserializes the Pulumi config into `AliCloudVpcStackInput` via `stackinput.LoadStackInput()`, then delegates to `module.Resources()`.
 
-**Controller** (`module/main.go`): Initializes locals, creates the Alicloud provider scoped to `spec.region`, provisions the VPC via `vpc.NewNetwork`, and exports five outputs.
+**Controller** (`module/main.go`): Initializes locals, creates the AliCloud provider scoped to `spec.region`, provisions the VPC via `vpc.NewNetwork`, and exports five outputs.
 
 **Locals** (`module/locals.go`): Builds the merged tag map. System tags (`resource`, `resource_name`, `resource_kind`) are set first. Metadata fields (`resource_id`, `organization`, `environment`) are added conditionally. User-defined `spec.tags` are merged last, so user values override system tags on key conflict.
 
@@ -24,7 +24,7 @@ iac/pulumi/
 ## Data Flow
 
 ```
-AlicloudVpcStackInput
+AliCloudVpcStackInput
   │
   ├─ target.Metadata  ──► initializeLocals() ──► Locals.Tags (merged map)
   ├─ target.Spec.Tags ─┘

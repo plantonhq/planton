@@ -1,4 +1,4 @@
-# AlicloudApplicationLoadBalancer v1
+# AliCloudApplicationLoadBalancer v1
 
 Alibaba Cloud Application Load Balancer (ALB) with bundled server groups and listeners.
 

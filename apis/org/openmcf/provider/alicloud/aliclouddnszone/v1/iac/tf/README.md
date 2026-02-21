@@ -1,4 +1,4 @@
-# Terraform Module to Deploy AlicloudDnsZone
+# Terraform Module to Deploy AliCloudDnsZone
 
 This module provisions an Alibaba Cloud DNS domain in the Alidns service with optional group assignment, resource group placement, remarks, and automatic tag management.
 

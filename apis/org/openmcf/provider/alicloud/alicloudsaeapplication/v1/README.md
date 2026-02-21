@@ -1,4 +1,4 @@
-# AlicloudSaeApplication
+# AliCloudSaeApplication
 
 Manages an Alibaba Cloud Serverless App Engine (SAE) application.
 
@@ -35,8 +35,8 @@ See [catalog-page.md](catalog-page.md) for the full configuration reference, or 
 
 ## Related Components
 
-- [AlicloudVpc](../alicloudvpc/v1/) — VPC for network isolation
-- [AlicloudVswitch](../alicloudvswitch/v1/) — Subnet for VPC-based deployment
-- [AlicloudSecurityGroup](../alicloudsecuritygroup/v1/) — Network access rules
-- [AlicloudContainerRegistry](../alicloudcontainerregistry/v1/) — Private image registry
-- [AlicloudFunction](../alicloudfunction/v1/) — Alternative serverless compute (event-driven)
+- [AliCloudVpc](../alicloudvpc/v1/) — VPC for network isolation
+- [AliCloudVswitch](../alicloudvswitch/v1/) — Subnet for VPC-based deployment
+- [AliCloudSecurityGroup](../alicloudsecuritygroup/v1/) — Network access rules
+- [AliCloudContainerRegistry](../alicloudcontainerregistry/v1/) — Private image registry
+- [AliCloudFunction](../alicloudfunction/v1/) — Alternative serverless compute (event-driven)

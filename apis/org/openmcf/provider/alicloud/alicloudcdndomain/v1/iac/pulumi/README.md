@@ -1,4 +1,4 @@
-# Pulumi Module to Deploy AlicloudCdnDomain
+# Pulumi Module to Deploy AliCloudCdnDomain
 
 This Pulumi module provisions an Alibaba Cloud CDN accelerated domain from an
 OpenMCF manifest. It creates the CDN domain resource with origin sources,
@@ -88,7 +88,7 @@ If a deployment fails:
 
 ## Further Reading
 
-- [AlicloudCdnDomain Overview](../../../README.md)
+- [AliCloudCdnDomain Overview](../../../README.md)
 - [Examples](./examples.md)
 - [Module Architecture](./overview.md)
 - [Research Document](../../docs/README.md)

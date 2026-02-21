@@ -161,7 +161,7 @@ record, err := digitalocean.NewDnsRecord(ctx, "www", &digitalocean.DnsRecordArgs
 
 **Example:**
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: www-record

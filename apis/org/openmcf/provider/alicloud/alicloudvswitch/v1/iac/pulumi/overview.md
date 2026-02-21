@@ -1,4 +1,4 @@
-# AlicloudVswitch Pulumi Module - Architecture Overview
+# AliCloudVswitch Pulumi Module - Architecture Overview
 
 ## Purpose
 
@@ -39,7 +39,7 @@ iac/pulumi/
 User YAML manifest
     |
     v
-AlicloudVswitchStackInput (protobuf)
+AliCloudVswitchStackInput (protobuf)
     |
     v
 main.go (entrypoint)
@@ -83,7 +83,7 @@ The parent VPC must have IPv6 enabled for the VSwitch IPv6 allocation to succeed
 
 ### Tag Management
 
-Tags follow the same pattern as AlicloudVpc:
+Tags follow the same pattern as AliCloudVpc:
 - Base tags from metadata: `resource`, `resource_name`, `resource_kind`
 - Optional metadata tags: `resource_id`, `organization`, `environment`
 - User-provided tags merged last (can override base tags)

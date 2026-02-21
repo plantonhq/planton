@@ -19,7 +19,7 @@ import {
   AzureCredentialForm,
   OpenStackCredentialForm,
   ScalewayCredentialForm,
-  AlicloudCredentialForm,
+  AliCloudCredentialForm,
   OciCredentialForm,
   HetznerCloudCredentialForm,
 } from '@/app/credentials/_components/forms';
@@ -45,13 +45,13 @@ import {
 } from '@/gen/org/openmcf/provider/scaleway/provider_pb';
 import {
   AliCloudProviderConfigSchema,
-  AlicloudStaticCredentialsSchema,
-  AlicloudStsTokenCredentialsSchema,
-  AlicloudEcsRoleCredentialsSchema,
-  AlicloudAssumeRoleCredentialsSchema,
-  AlicloudAssumeRoleWithOidcCredentialsSchema,
-  AlicloudSharedCredentialsSchema,
-  AlicloudSidecarCredentialsSchema,
+  AliCloudStaticCredentialsSchema,
+  AliCloudStsTokenCredentialsSchema,
+  AliCloudEcsRoleCredentialsSchema,
+  AliCloudAssumeRoleCredentialsSchema,
+  AliCloudAssumeRoleWithOidcCredentialsSchema,
+  AliCloudSharedCredentialsSchema,
+  AliCloudSidecarCredentialsSchema,
   AuthenticationType,
 } from '@/gen/org/openmcf/provider/alicloud/provider_pb';
 import {
@@ -63,7 +63,7 @@ import {
 import {
   HetznerCloudProviderConfigSchema,
 } from '@/gen/org/openmcf/provider/hetznercloud/provider_pb';
-import type { OpenStackFormData, ScalewayFormData, AlicloudFormData, AlicloudAuthMethod, OciFormData, OciAuthMethod, HetznerCloudFormData } from '@/app/credentials/_components/forms/types';
+import type { OpenStackFormData, ScalewayFormData, AliCloudFormData, AliCloudAuthMethod, OciFormData, OciAuthMethod, HetznerCloudFormData } from '@/app/credentials/_components/forms/types';
 import { create } from '@bufbuild/protobuf';
 import { providerConfig } from '@/app/credentials/_components/utils';
 
@@ -216,12 +216,12 @@ export function CredentialDrawer({
         };
       } else if (providerConfigData?.data?.case === 'alicloud') {
         const ali = providerConfigData.data.value;
-        const aliData: AlicloudFormData = {
+        const aliData: AliCloudFormData = {
           region: ali.region,
           accountId: ali.accountId,
           accountType: ali.accountType,
         };
-        const authTypeMap: Record<number, AlicloudAuthMethod> = {
+        const authTypeMap: Record<number, AliCloudAuthMethod> = {
           [AuthenticationType.static_credentials]: 'static_credentials',
           [AuthenticationType.sts_token]: 'sts_token',
           [AuthenticationType.ecs_role]: 'ecs_role',
@@ -476,22 +476,22 @@ export function CredentialDrawer({
         };
 
         if (method === 'static_credentials' && ali.accessKey && ali.secretKey) {
-          configFields.staticCredentials = create(AlicloudStaticCredentialsSchema, {
+          configFields.staticCredentials = create(AliCloudStaticCredentialsSchema, {
             accessKey: ali.accessKey,
             secretKey: ali.secretKey,
           });
         } else if (method === 'sts_token' && ali.accessKey && ali.secretKey && ali.securityToken) {
-          configFields.stsToken = create(AlicloudStsTokenCredentialsSchema, {
+          configFields.stsToken = create(AliCloudStsTokenCredentialsSchema, {
             accessKey: ali.accessKey,
             secretKey: ali.secretKey,
             securityToken: ali.securityToken,
           });
         } else if (method === 'ecs_role' && ali.ecsRoleName) {
-          configFields.ecsRole = create(AlicloudEcsRoleCredentialsSchema, {
+          configFields.ecsRole = create(AliCloudEcsRoleCredentialsSchema, {
             ecsRoleName: ali.ecsRoleName,
           });
         } else if (method === 'assume_role' && ali.accessKey && ali.secretKey && ali.roleArn) {
-          configFields.assumeRole = create(AlicloudAssumeRoleCredentialsSchema, {
+          configFields.assumeRole = create(AliCloudAssumeRoleCredentialsSchema, {
             accessKey: ali.accessKey,
             secretKey: ali.secretKey,
             roleArn: ali.roleArn,
@@ -500,7 +500,7 @@ export function CredentialDrawer({
             externalId: ali.externalId || '',
           });
         } else if (method === 'assume_role_with_oidc' && ali.oidcProviderArn && ali.roleArn) {
-          configFields.assumeRoleWithOidc = create(AlicloudAssumeRoleWithOidcCredentialsSchema, {
+          configFields.assumeRoleWithOidc = create(AliCloudAssumeRoleWithOidcCredentialsSchema, {
             oidcProviderArn: ali.oidcProviderArn,
             roleArn: ali.roleArn,
             oidcToken: ali.oidcToken || '',
@@ -509,12 +509,12 @@ export function CredentialDrawer({
             policy: ali.policy || '',
           });
         } else if (method === 'shared_credentials') {
-          configFields.sharedCredentials = create(AlicloudSharedCredentialsSchema, {
+          configFields.sharedCredentials = create(AliCloudSharedCredentialsSchema, {
             credentialsFile: ali.credentialsFile || '',
             profile: ali.profile || '',
           });
         } else if (method === 'sidecar_credentials' && ali.credentialsUri) {
-          configFields.sidecarCredentials = create(AlicloudSidecarCredentialsSchema, {
+          configFields.sidecarCredentials = create(AliCloudSidecarCredentialsSchema, {
             credentialsUri: ali.credentialsUri,
           });
         } else {
@@ -710,7 +710,7 @@ export function CredentialDrawer({
                 <ScalewayCredentialForm register={register} disabled={isView} />
               )}
               {formProvider == Credential_CredentialProvider.ALICLOUD && (
-                <AlicloudCredentialForm
+                <AliCloudCredentialForm
                   register={register}
                   setValue={setValue}
                   watch={watch}

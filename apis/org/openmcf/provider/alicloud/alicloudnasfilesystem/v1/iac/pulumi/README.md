@@ -1,4 +1,4 @@
-# AlicloudNasFileSystem Pulumi Module
+# AliCloudNasFileSystem Pulumi Module
 
 This Pulumi module provisions an Alibaba Cloud NAS file system with an optional custom access group and a VPC mount target.
 

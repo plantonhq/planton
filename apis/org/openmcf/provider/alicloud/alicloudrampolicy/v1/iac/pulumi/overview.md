@@ -2,7 +2,7 @@
 
 ## Module Architecture
 
-The AlicloudRamPolicy Pulumi module is organized into three files under `iac/pulumi/module/`:
+The AliCloudRamPolicy Pulumi module is organized into three files under `iac/pulumi/module/`:
 
 | File | Responsibility |
 |------|---------------|
@@ -15,9 +15,9 @@ The entry point binary at `iac/pulumi/main.go` loads the stack input (manifest +
 ## Control Flow
 
 ```
-LoadStackInput (manifest YAML → AlicloudRamPolicyStackInput)
+LoadStackInput (manifest YAML → AliCloudRamPolicyStackInput)
     ↓
-initializeLocals() → Locals{Tags, AlicloudRamPolicy}
+initializeLocals() → Locals{Tags, AliCloudRamPolicy}
     ↓
 alicloud.NewProvider (region-scoped)
     ↓
@@ -51,7 +51,7 @@ A third helper resolves the `force` default:
 The `initializeLocals` function computes:
 
 - **Tags**: Merges standard OpenMCF tags (`resource`, `resource_name`, `resource_kind`, `resource_id`, `organization`, `environment`) with user-provided `spec.Tags`. User tags take precedence on key conflict.
-- **Reference**: Stores the full `AlicloudRamPolicy` resource for convenient access throughout the module.
+- **Reference**: Stores the full `AliCloudRamPolicy` resource for convenient access throughout the module.
 
 ### Outputs (`outputs.go`)
 
@@ -73,7 +73,7 @@ This is a single-resource module — no sub-resources, no iteration, no parent c
 
 ## Design Decisions
 
-**Single Resource**: Unlike AlicloudRamRole (which bundles a role + N policy attachments), this module creates exactly one resource. The simplicity is intentional — a policy is a standalone artifact that is referenced by name from other components.
+**Single Resource**: Unlike AliCloudRamRole (which bundles a role + N policy attachments), this module creates exactly one resource. The simplicity is intentional — a policy is a standalone artifact that is referenced by name from other components.
 
 **Tag Merging**: Standard OpenMCF tags are always applied. User-provided `spec.Tags` are merged in, with user tags overriding standard tags on key conflict. This ensures every policy is discoverable via standard tag queries while allowing custom metadata.
 

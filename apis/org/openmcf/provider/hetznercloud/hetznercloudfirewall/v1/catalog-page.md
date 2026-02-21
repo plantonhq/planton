@@ -15,7 +15,7 @@ Creates a firewall in Hetzner Cloud with inline rules that control inbound and o
 Create a file `firewall.yaml`:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFirewall
 metadata:
   name: ssh-only
@@ -81,7 +81,7 @@ When rules are provided, each rule requires:
 A single inbound rule allowing SSH from anywhere.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFirewall
 metadata:
   name: ssh-only
@@ -105,7 +105,7 @@ spec:
 SSH, HTTP, HTTPS, and ICMP for a public-facing web server.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFirewall
 metadata:
   name: web-server
@@ -153,7 +153,7 @@ spec:
 PostgreSQL access restricted to a private subnet, SSH from bastion only.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFirewall
 metadata:
   name: db-restricted
@@ -186,7 +186,7 @@ spec:
 A firewall referenced by a HetznerCloudServer using `valueFrom`. The server receives the firewall's numeric ID from the firewall's stack outputs, establishing a dependency edge in the deployment DAG.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFirewall
 metadata:
   name: web-firewall
@@ -216,7 +216,7 @@ spec:
 The server references this firewall:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: web-01

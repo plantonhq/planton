@@ -1,17 +1,17 @@
-# Alibaba Cloud Redis Instance
+# AliCloud Redis Instance
 
 Deploys an Alibaba Cloud Redis (KVStore) instance for managed in-memory caching, session management, and real-time data processing. Supports both Redis and Memcache engines, with Redis as the default.
 
 ## What Gets Created
 
-When you deploy an AlicloudRedisInstance resource, OpenMCF provisions:
+When you deploy an AliCloudRedisInstance resource, OpenMCF provisions:
 
 - **KVStore Instance** -- an `alicloud_kvstore_instance` with the selected engine version, instance class, and network placement
 
 ## Prerequisites
 
 - **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
-- **A VSwitch** -- the Redis instance is placed in a VSwitch (create one with AlicloudVswitch)
+- **A VSwitch** -- the Redis instance is placed in a VSwitch (create one with AliCloudVswitch)
 - The VSwitch's VPC and availability zone determine the instance's network placement
 
 ## Quick Start
@@ -19,8 +19,8 @@ When you deploy an AlicloudRedisInstance resource, OpenMCF provisions:
 Create a file `redis-instance.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRedisInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRedisInstance
 metadata:
   name: my-redis
 spec:
@@ -47,7 +47,7 @@ This creates a Redis 7.0 instance with the default PostPaid billing and VPC pass
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
 | `region` | string | Alibaba Cloud region (e.g., `cn-hangzhou`) | Required; non-empty |
-| `vswitchId` | StringValueOrRef | VSwitch ID. Can reference AlicloudVswitch via `valueFrom`. | Required |
+| `vswitchId` | StringValueOrRef | VSwitch ID. Can reference AliCloudVswitch via `valueFrom`. | Required |
 | `instanceClass` | string | Instance specification (e.g., `redis.master.small.default`) | Required; non-empty |
 | `password` | string | Authentication password (8-32 chars) | Required; 8-32 characters |
 
@@ -95,8 +95,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- **AlicloudVswitch** -- VSwitch where the Redis instance is placed
-- **AlicloudVpc** -- VPC that provides network isolation
-- **AlicloudSecurityGroup** -- Network security rules for instance access
-- **AlicloudKmsKey** -- Customer-managed key for TDE encryption
-- **AlicloudPrivateDnsZone** -- Private DNS resolution for the instance endpoint
+- **AliCloudVswitch** -- VSwitch where the Redis instance is placed
+- **AliCloudVpc** -- VPC that provides network isolation
+- **AliCloudSecurityGroup** -- Network security rules for instance access
+- **AliCloudKmsKey** -- Customer-managed key for TDE encryption
+- **AliCloudPrivateDnsZone** -- Private DNS resolution for the instance endpoint

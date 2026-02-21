@@ -1,16 +1,16 @@
-# AlicloudPolardbCluster
+# AliCloudPolardbCluster
 
 **Date**: 2026-02-19
 **Type**: New Component
-**Resource Kind**: AlicloudPolardbCluster (enum 3071, id_prefix: acpdb)
+**Resource Kind**: AliCloudPolardbCluster (enum 3071, id_prefix: acpdb)
 
 ## Summary
 
-Added AlicloudPolardbCluster component that provisions an Alibaba Cloud PolarDB cluster with bundled databases, accounts, and account privileges. PolarDB is Alibaba Cloud's cloud-native relational database with a shared-storage, compute-storage-separated architecture. This is a first-class component separate from RDS (per DD06) supporting MySQL, PostgreSQL, and Oracle compatibility modes.
+Added AliCloudPolardbCluster component that provisions an Alibaba Cloud PolarDB cluster with bundled databases, accounts, and account privileges. PolarDB is Alibaba Cloud's cloud-native relational database with a shared-storage, compute-storage-separated architecture. This is a first-class component separate from RDS (per DD06) supporting MySQL, PostgreSQL, and Oracle compatibility modes.
 
 ## What's Included
 
-- **Proto API**: spec.proto with 29 fields and 4 nested message types (AlicloudPolardbParameter, AlicloudPolardbDatabase, AlicloudPolardbAccount, AlicloudPolardbAccountPrivilege), stack_outputs.proto with 4 outputs, api.proto, stack_input.proto
+- **Proto API**: spec.proto with 29 fields and 4 nested message types (AliCloudPolardbParameter, AliCloudPolardbDatabase, AliCloudPolardbAccount, AliCloudPolardbAccountPrivilege), stack_outputs.proto with 4 outputs, api.proto, stack_input.proto
 - **Validations**: CEL validations for db_type, pay_type, creation_category, sub_category, storage_type, tde_status, collector_status, backup_retention_policy, deletion_lock, account_type, account_privilege; length and range constraints on description, db_node_count, storage_space, passwords, periods
 - **Tests**: spec_test.go with 10 valid-input and 18 invalid-input test cases (28 total)
 - **Pulumi Module**: main.go, locals.go, outputs.go, databases.go, accounts.go -- engine-specific character set defaults, parent-child resource hierarchy, PolarDB-specific fields
@@ -33,6 +33,6 @@ Added AlicloudPolardbCluster component that provisions an Alibaba Cloud PolarDB 
 
 ## Dependencies
 
-- AlicloudVswitch (vswitch_id)
-- AlicloudKmsKey (optional, encryption_key for TDE)
-- AlicloudSecurityGroup (optional, security_group_ids)
+- AliCloudVswitch (vswitch_id)
+- AliCloudKmsKey (optional, encryption_key for TDE)
+- AliCloudSecurityGroup (optional, security_group_ids)

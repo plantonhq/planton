@@ -1,4 +1,4 @@
-# Hetzner Cloud Primary IP — Research Documentation
+# HetznerCloud Primary IP — Research Documentation
 
 ## Introduction
 
@@ -264,7 +264,7 @@ The key differentiators for OpenMCF:
 ### Manifest Format
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudPrimaryIp
 metadata:
   name: mail-ip

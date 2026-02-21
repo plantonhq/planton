@@ -157,10 +157,10 @@ var File_org_openmcf_provider_hetznercloud_hetznercloudprimaryip_v1_api_proto pr
 
 const file_org_openmcf_provider_hetznercloud_hetznercloudprimaryip_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"Dorg/openmcf/provider/hetznercloud/hetznercloudprimaryip/v1/api.proto\x12:org.openmcf.provider.hetznercloud.hetznercloudprimaryip.v1\x1a\x1bbuf/validate/validate.proto\x1aEorg/openmcf/provider/hetznercloud/hetznercloudprimaryip/v1/spec.proto\x1aNorg/openmcf/provider/hetznercloud/hetznercloudprimaryip/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xc1\x03\n" +
-	"\x15HetznerCloudPrimaryIp\x12C\n" +
-	"\vapi_version\x18\x01 \x01(\tB\"\xbaH\x1fr\x1d\n" +
-	"\x1bhetznercloud.openmcf.org/v1R\n" +
+	"Dorg/openmcf/provider/hetznercloud/hetznercloudprimaryip/v1/api.proto\x12:org.openmcf.provider.hetznercloud.hetznercloudprimaryip.v1\x1a\x1bbuf/validate/validate.proto\x1aEorg/openmcf/provider/hetznercloud/hetznercloudprimaryip/v1/spec.proto\x1aNorg/openmcf/provider/hetznercloud/hetznercloudprimaryip/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xc2\x03\n" +
+	"\x15HetznerCloudPrimaryIp\x12D\n" +
+	"\vapi_version\x18\x01 \x01(\tB#\xbaH r\x1e\n" +
+	"\x1chetzner-cloud.openmcf.org/v1R\n" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15HetznerCloudPrimaryIpR\x04kind\x12M\n" +

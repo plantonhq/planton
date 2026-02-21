@@ -157,10 +157,10 @@ var File_org_openmcf_provider_hetznercloud_hetznerclouddnszone_v1_api_proto prot
 
 const file_org_openmcf_provider_hetznercloud_hetznerclouddnszone_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"Borg/openmcf/provider/hetznercloud/hetznerclouddnszone/v1/api.proto\x128org.openmcf.provider.hetznercloud.hetznerclouddnszone.v1\x1a\x1bbuf/validate/validate.proto\x1aCorg/openmcf/provider/hetznercloud/hetznerclouddnszone/v1/spec.proto\x1aLorg/openmcf/provider/hetznercloud/hetznerclouddnszone/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xb5\x03\n" +
-	"\x13HetznerCloudDnsZone\x12C\n" +
-	"\vapi_version\x18\x01 \x01(\tB\"\xbaH\x1fr\x1d\n" +
-	"\x1bhetznercloud.openmcf.org/v1R\n" +
+	"Borg/openmcf/provider/hetznercloud/hetznerclouddnszone/v1/api.proto\x128org.openmcf.provider.hetznercloud.hetznerclouddnszone.v1\x1a\x1bbuf/validate/validate.proto\x1aCorg/openmcf/provider/hetznercloud/hetznerclouddnszone/v1/spec.proto\x1aLorg/openmcf/provider/hetznercloud/hetznerclouddnszone/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xb6\x03\n" +
+	"\x13HetznerCloudDnsZone\x12D\n" +
+	"\vapi_version\x18\x01 \x01(\tB#\xbaH r\x1e\n" +
+	"\x1chetzner-cloud.openmcf.org/v1R\n" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13HetznerCloudDnsZoneR\x04kind\x12M\n" +

@@ -1,0 +1,12 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciDnsRecord
+metadata:
+  name: my-a-record
+spec:
+  zoneNameOrId:
+    value: <zone-name-or-ocid>
+  domain: app.example.com
+  rtype: A
+  items:
+    - rdata: <ipv4-address>
+      ttl: 300

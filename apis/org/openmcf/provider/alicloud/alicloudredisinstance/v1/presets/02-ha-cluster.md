@@ -24,7 +24,7 @@ This preset creates a production-grade Redis cluster with multi-zone high availa
 | Placeholder | Description | Where to Find |
 |---|---|---|
 | `<alibaba-cloud-region>` | Region code (e.g., `cn-shanghai`) | Your deployment region |
-| `<your-vswitch-resource-name>` | VSwitch resource name for `valueFrom` reference | Your AlicloudVswitch resource |
+| `<your-vswitch-resource-name>` | VSwitch resource name for `valueFrom` reference | Your AliCloudVswitch resource |
 | `<your-instance-name>` | Instance name | Choose a descriptive name |
 | `<your-organization>` | Organization identifier | Your org slug |
 | `<primary-zone-id>` | Primary AZ (e.g., `cn-shanghai-a`) | Available AZs in your region |

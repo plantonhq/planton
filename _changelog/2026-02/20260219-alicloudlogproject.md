@@ -1,13 +1,13 @@
-# AlicloudLogProject Component Added
+# AliCloudLogProject Component Added
 
 **Date**: 2026-02-19
-**Component**: AlicloudLogProject
+**Component**: AliCloudLogProject
 **Enum**: 3000
 **ID Prefix**: aclog
 
 ## Summary
 
-Added the first Alibaba Cloud deployment component: AlicloudLogProject.
+Added the first Alibaba Cloud deployment component: AliCloudLogProject.
 
 This component manages an Alibaba Cloud Simple Log Service (SLS) project with optional bundled log stores and full-text search indexes.
 
@@ -15,7 +15,7 @@ This component manages an Alibaba Cloud Simple Log Service (SLS) project with op
 
 ### API Definition
 - `apis/org/openmcf/provider/alicloud/alicloudlogproject/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AlicloudLogProject = 3000` in `CloudResourceKind` enum
+- Registered `AliCloudLogProject = 3000` in `CloudResourceKind` enum
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider, SLS project, log stores (iterated), and conditional full-text indexes

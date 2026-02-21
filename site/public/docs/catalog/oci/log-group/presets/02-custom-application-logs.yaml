@@ -1,0 +1,13 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciLogGroup
+metadata:
+  name: my-application-logs
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  description: Application-level custom logs ingested via the Logging Ingestion API
+  logs:
+    - displayName: app-log
+      logType: custom
+      isEnabled: true
+      retentionDuration: 30

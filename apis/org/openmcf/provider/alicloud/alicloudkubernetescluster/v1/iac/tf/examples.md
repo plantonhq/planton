@@ -1,4 +1,4 @@
-# AlicloudKubernetesCluster Terraform Examples
+# AliCloudKubernetesCluster Terraform Examples
 
 Below are several examples demonstrating how to deploy ACK managed clusters with the OpenMCF Terraform module.
 
@@ -15,8 +15,8 @@ openmcf tofu apply --manifest <yaml-path> --stack <stack-name>
 A minimal development cluster using Flannel overlay networking.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesCluster
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesCluster
 metadata:
   name: dev-cluster
 spec:
@@ -45,8 +45,8 @@ This example:
 A staging cluster with ENI-based networking and pod-level IAM.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesCluster
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesCluster
 metadata:
   name: staging-cluster
 spec:
@@ -91,8 +91,8 @@ This example:
 A production-grade cluster with all security and lifecycle features enabled.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesCluster
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesCluster
 metadata:
   name: prod-cluster
   org: acme-corp

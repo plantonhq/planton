@@ -52,7 +52,7 @@ export const file_org_openmcf_provider_openfga_openfgastore_v1_api: GenFile = /*
 export type OpenFgaStore = Message<"org.openmcf.provider.openfga.openfgastore.v1.OpenFgaStore"> & {
   /**
    * api_version is the version of the OpenFGA API resource.
-   * Must be "open-fga.openmcf.org/v1" for this version.
+   * Must be "openfga.openmcf.org/v1" for this version.
    *
    * @generated from field: string api_version = 1;
    */

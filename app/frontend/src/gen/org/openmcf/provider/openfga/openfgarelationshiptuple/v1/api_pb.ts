@@ -47,7 +47,7 @@ export const file_org_openmcf_provider_openfga_openfgarelationshiptuple_v1_api: 
  *
  * Example manifest:
  * ```yaml
- * apiVersion: open-fga.openmcf.org/v1
+ * apiVersion: openfga.openmcf.org/v1
  * kind: OpenFgaRelationshipTuple
  * metadata:
  *   name: anne-views-budget
@@ -65,7 +65,7 @@ export const file_org_openmcf_provider_openfga_openfgarelationshiptuple_v1_api: 
 export type OpenFgaRelationshipTuple = Message<"org.openmcf.provider.openfga.openfgarelationshiptuple.v1.OpenFgaRelationshipTuple"> & {
   /**
    * api_version is the version of the OpenFGA API resource.
-   * Must be "open-fga.openmcf.org/v1" for this version.
+   * Must be "openfga.openmcf.org/v1" for this version.
    *
    * @generated from field: string api_version = 1;
    */

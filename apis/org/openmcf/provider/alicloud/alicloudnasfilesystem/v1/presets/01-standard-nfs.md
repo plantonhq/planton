@@ -22,8 +22,8 @@ This preset creates a minimal standard NAS file system with NFS protocol, Perfor
 | Placeholder | Description | Where to Find |
 |-------------|-------------|---------------|
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`, `cn-shanghai`, `ap-southeast-1`) | Your deployment region strategy |
-| `<vpc-id>` | VPC ID where the mount target will be created | AlicloudVpc outputs or Alibaba Cloud console |
-| `<vswitch-id>` | VSwitch ID within the VPC | AlicloudVswitch outputs or Alibaba Cloud console |
+| `<vpc-id>` | VPC ID where the mount target will be created | AliCloudVpc outputs or Alibaba Cloud console |
+| `<vswitch-id>` | VSwitch ID within the VPC | AliCloudVswitch outputs or Alibaba Cloud console |
 
 ## Related Presets
 

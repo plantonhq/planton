@@ -1,12 +1,12 @@
-# AlicloudNatGateway
+# AliCloudNatGateway
 
 **Date**: 2026-02-19
 **Type**: New Component
-**Resource Kind**: AlicloudNatGateway (enum 3024, id_prefix: acnat)
+**Resource Kind**: AliCloudNatGateway (enum 3024, id_prefix: acnat)
 
 ## Summary
 
-Added AlicloudNatGateway component that provisions an Alibaba Cloud Enhanced NAT Gateway with bundled EIP association and SNAT entries. This is a composite component (per DD07) that creates a fully functional NAT setup as a single deployable unit.
+Added AliCloudNatGateway component that provisions an Alibaba Cloud Enhanced NAT Gateway with bundled EIP association and SNAT entries. This is a composite component (per DD07) that creates a fully functional NAT setup as a single deployable unit.
 
 ## What's Included
 
@@ -29,6 +29,6 @@ Added AlicloudNatGateway component that provisions an Alibaba Cloud Enhanced NAT
 
 ## Dependencies
 
-- AlicloudVpc (vpc_id)
-- AlicloudVswitch (vswitch_id, source_vswitch_id in SNAT entries)
-- AlicloudEipAddress (eip_id)
+- AliCloudVpc (vpc_id)
+- AliCloudVswitch (vswitch_id, source_vswitch_id in SNAT entries)
+- AliCloudEipAddress (eip_id)

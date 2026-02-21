@@ -1,10 +1,10 @@
-# Alibaba Cloud ALB Load Balancer
+# AliCloud ALB Load Balancer
 
 Deploys an Alibaba Cloud Application Load Balancer (ALB) with bundled server groups and listeners. ALB is a modern Layer 7 load balancer for HTTP, HTTPS, and QUIC traffic, offering advanced routing, health checking, and session stickiness.
 
 ## What Gets Created
 
-When you deploy an AlicloudApplicationLoadBalancer resource, OpenMCF provisions:
+When you deploy an AliCloudApplicationLoadBalancer resource, OpenMCF provisions:
 
 - **ALB Load Balancer** -- an `alicloud_alb_load_balancer` spanning multiple availability zones for high availability
 - **Server Groups** -- one `alicloud_alb_server_group` per entry in `serverGroups`, each with health check and optional session stickiness
@@ -15,8 +15,8 @@ Server groups are created empty. Backend membership (ECS instances, ENIs, IPs) i
 ## Prerequisites
 
 - **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
-- **An Alibaba Cloud VPC** -- the ALB must belong to a VPC (create one with AlicloudVpc)
-- **At least 2 VSwitches in different availability zones** -- ALB requires multi-AZ deployment (create with AlicloudVswitch)
+- **An Alibaba Cloud VPC** -- the ALB must belong to a VPC (create one with AliCloudVpc)
+- **At least 2 VSwitches in different availability zones** -- ALB requires multi-AZ deployment (create with AliCloudVswitch)
 - **A server certificate** (for HTTPS listeners) -- obtain from Alibaba Cloud Certificate Management Service (CAS)
 
 ## Quick Start
@@ -24,8 +24,8 @@ Server groups are created empty. Backend membership (ECS instances, ENIs, IPs) i
 Create a file `alb.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudApplicationLoadBalancer
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudApplicationLoadBalancer
 metadata:
   name: my-alb
 spec:
@@ -68,7 +68,7 @@ This creates an internet-facing ALB with an HTTP listener on port 80 across two 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
 | `region` | string | Alibaba Cloud region (e.g., `cn-hangzhou`, `cn-shanghai`) | Required; non-empty |
-| `vpcId` | StringValueOrRef | VPC ID for the ALB. Can reference AlicloudVpc via `valueFrom`. | Required |
+| `vpcId` | StringValueOrRef | VPC ID for the ALB. Can reference AliCloudVpc via `valueFrom`. | Required |
 | `zoneMappings` | list | Availability zone to VSwitch mappings for HA | Minimum 2 items required |
 
 ### Zone Mapping Fields
@@ -76,7 +76,7 @@ This creates an internet-facing ALB with an HTTP listener on port 80 across two 
 | Field | Type | Description |
 |-------|------|-------------|
 | `zoneMappings[].zoneId` | string | Availability zone ID (e.g., `cn-hangzhou-a`) |
-| `zoneMappings[].vswitchId` | StringValueOrRef | VSwitch in this zone. Can reference AlicloudVswitch via `valueFrom`. |
+| `zoneMappings[].vswitchId` | StringValueOrRef | VSwitch in this zone. Can reference AliCloudVswitch via `valueFrom`. |
 
 ### Optional Fields
 
@@ -153,8 +153,8 @@ This creates an internet-facing ALB with an HTTP listener on port 80 across two 
 The simplest ALB: one server group, one HTTP listener, two availability zones.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudApplicationLoadBalancer
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudApplicationLoadBalancer
 metadata:
   name: web-alb
 spec:
@@ -184,8 +184,8 @@ spec:
 Production ALB with TLS termination, WAF edition, and strict cipher policy.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudApplicationLoadBalancer
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudApplicationLoadBalancer
 metadata:
   name: secure-alb
   org: acme-corp
@@ -230,8 +230,8 @@ spec:
 An internal ALB for service-to-service HTTP routing with two server groups and weighted least connections scheduling.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudApplicationLoadBalancer
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudApplicationLoadBalancer
 metadata:
   name: internal-alb
 spec:
@@ -275,8 +275,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- **AlicloudVpc** -- VPC that the ALB belongs to
-- **AlicloudVswitch** -- VSwitches for zone mappings (at least 2 required)
-- **AlicloudSecurityGroup** -- Network security rules for backend instances
-- **AlicloudDnsRecord** -- CNAME records pointing to the ALB's `dns_name`
-- **AlicloudAckManagedCluster** -- Kubernetes cluster whose ingress uses the ALB
+- **AliCloudVpc** -- VPC that the ALB belongs to
+- **AliCloudVswitch** -- VSwitches for zone mappings (at least 2 required)
+- **AliCloudSecurityGroup** -- Network security rules for backend instances
+- **AliCloudDnsRecord** -- CNAME records pointing to the ALB's `dns_name`
+- **AliCloudAckManagedCluster** -- Kubernetes cluster whose ingress uses the ALB

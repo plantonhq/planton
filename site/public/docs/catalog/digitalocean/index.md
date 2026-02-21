@@ -1,13 +1,13 @@
 ---
-title: "DIGITALOCEAN"
-description: "Deploy DIGITALOCEAN resources using OpenMCF"
+title: "DIGITAL OCEAN"
+description: "Deploy DIGITAL OCEAN resources using OpenMCF"
 icon: "cloud"
 order: 10
 ---
 
-# DIGITALOCEAN
+# DIGITAL OCEAN
 
-The following DIGITALOCEAN resources can be deployed using OpenMCF:
+The following DIGITAL OCEAN resources can be deployed using OpenMCF:
 
 - [App Platform Service](/docs/catalog/digitalocean/app-platform-service)
 - [Bucket](/docs/catalog/digitalocean/bucket)

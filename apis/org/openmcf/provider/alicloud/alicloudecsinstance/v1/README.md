@@ -1,4 +1,4 @@
-# AlicloudEcsInstance
+# AliCloudEcsInstance
 
 Alibaba Cloud Elastic Compute Service (ECS) instance with inline system and data disks.
 

@@ -1,19 +1,19 @@
-# AlicloudSaeApplication Component Added
+# AliCloudSaeApplication Component Added
 
 **Date**: 2026-02-20
-**Component**: AlicloudSaeApplication
+**Component**: AliCloudSaeApplication
 **Enum**: 3111
 **ID Prefix**: acsae
 
 ## Summary
 
-Added the AlicloudSaeApplication deployment component -- manages Serverless App Engine (SAE) applications in Alibaba Cloud. SAE is a container-based serverless platform that supports deploying applications as container images, JAR/WAR packages, or Python/PHP ZIP archives. The component covers the core application lifecycle including VPC placement, health checks, rolling deployments, and environment variable management.
+Added the AliCloudSaeApplication deployment component -- manages Serverless App Engine (SAE) applications in Alibaba Cloud. SAE is a container-based serverless platform that supports deploying applications as container images, JAR/WAR packages, or Python/PHP ZIP archives. The component covers the core application lifecycle including VPC placement, health checks, rolling deployments, and environment variable management.
 
 ## What Was Created
 
 ### API Definition
 - `apis/org/openmcf/provider/alicloud/alicloudsaeapplication/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AlicloudSaeApplication = 3111` in `CloudResourceKind` enum under the Serverless category
+- Registered `AliCloudSaeApplication = 3111` in `CloudResourceKind` enum under the Serverless category
 - 8 protobuf message types: spec, health check (with HttpGet/TcpSocket/Exec sub-types), custom host alias, update strategy (with batch update config)
 
 ### IaC Modules

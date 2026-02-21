@@ -1,4 +1,4 @@
-# AlicloudVpnGateway Pulumi Module Overview
+# AliCloudVpnGateway Pulumi Module Overview
 
 ## Module Structure
 

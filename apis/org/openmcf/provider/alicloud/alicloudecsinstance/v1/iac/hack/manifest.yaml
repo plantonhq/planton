@@ -1,5 +1,5 @@
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudEcsInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudEcsInstance
 metadata:
   name: alicloudecsinstance-demo
 spec:

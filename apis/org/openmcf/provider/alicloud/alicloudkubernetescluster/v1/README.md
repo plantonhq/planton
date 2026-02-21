@@ -1,4 +1,4 @@
-# AlicloudKubernetesCluster v1
+# AliCloudKubernetesCluster v1
 
 Alibaba Cloud ACK Managed Kubernetes cluster.
 
@@ -13,7 +13,7 @@ This component deploys an ACK (Alibaba Cloud Container Service for Kubernetes) m
 - Maintenance windows and automatic version upgrades
 - Kubernetes Secrets encryption via KMS
 
-Worker nodes are managed separately through AlicloudKubernetesNodePool components.
+Worker nodes are managed separately through AliCloudKubernetesNodePool components.
 
 ## Directory Structure
 

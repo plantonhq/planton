@@ -27,7 +27,7 @@ When you deploy an OpenFgaStore resource, OpenMCF provisions:
 Create a file `store.yaml`:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: my-store
@@ -64,7 +64,7 @@ This component has no optional fields.
 A store for local development or CI environments:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: dev-authz
@@ -79,7 +79,7 @@ spec:
 Separate stores isolate authorization data between applications running in the same OpenFGA server:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: billing-authz
@@ -94,7 +94,7 @@ spec:
 A production environment store with a descriptive name reflecting its scope:
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: prod-authz

@@ -67,7 +67,7 @@ func getProviderConfigProto(provider cloudresourcekind.CloudResourceProvider) (p
 		return new(gcpprovider.GcpProviderConfig), nil
 	case cloudresourcekind.CloudResourceProvider_kubernetes:
 		return new(kubernetesprovider.KubernetesProviderConfig), nil
-	case cloudresourcekind.CloudResourceProvider_open_fga:
+	case cloudresourcekind.CloudResourceProvider_openfga:
 		return new(openfgaprovider.OpenFgaProviderConfig), nil
 	case cloudresourcekind.CloudResourceProvider_snowflake:
 		return new(snowflakeprovider.SnowflakeProviderConfig), nil
@@ -75,11 +75,11 @@ func getProviderConfigProto(provider cloudresourcekind.CloudResourceProvider) (p
 		return new(openstackprovider.OpenStackProviderConfig), nil
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return new(scalewayprovider.ScalewayProviderConfig), nil
-	case cloudresourcekind.CloudResourceProvider_alicloud:
+	case cloudresourcekind.CloudResourceProvider_ali_cloud:
 		return new(alicloudprovider.AliCloudProviderConfig), nil
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return new(ociprovider.OciProviderConfig), nil
-	case cloudresourcekind.CloudResourceProvider_hetznercloud:
+	case cloudresourcekind.CloudResourceProvider_hetzner_cloud:
 		return new(hetznercloudprovider.HetznerCloudProviderConfig), nil
 	default:
 		return nil, errors.Errorf("unsupported provider: %s", provider.String())

@@ -22,9 +22,9 @@ This preset creates a locked-down security group for database instances (RDS, Po
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`) | Your deployment region |
-| `<your-vpc-id>` | VPC ID that this security group belongs to | Alibaba Cloud VPC console or `AlicloudVpc` stack outputs |
+| `<your-vpc-id>` | VPC ID that this security group belongs to | Alibaba Cloud VPC console or `AliCloudVpc` stack outputs |
 | `<your-sg-name>` | Security group name (2-128 chars) | Choose a descriptive name |
-| `<your-vpc-cidr>` | VPC CIDR block (e.g., `10.0.0.0/8`, `172.16.0.0/12`) | Your AlicloudVpc spec.cidrBlock |
+| `<your-vpc-cidr>` | VPC CIDR block (e.g., `10.0.0.0/8`, `172.16.0.0/12`) | Your AliCloudVpc spec.cidrBlock |
 
 ## Related Presets
 

@@ -9,7 +9,7 @@ Complete, copy-paste ready YAML manifests for common database deployment scenari
 **Use Case**: Non-production PostgreSQL for local development or testing.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDatabaseCluster
 metadata:
   name: dev-postgres
@@ -35,7 +35,7 @@ spec:
 **Use Case**: Mission-critical PostgreSQL with automatic failover.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDatabaseCluster
 metadata:
   name: prod-postgres
@@ -70,7 +70,7 @@ spec:
 **Use Case**: MySQL cluster for content management systems or e-commerce.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDatabaseCluster
 metadata:
   name: prod-mysql
@@ -105,7 +105,7 @@ spec:
 **Use Case**: In-memory caching layer for application performance.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDatabaseCluster
 metadata:
   name: prod-redis-cache
@@ -139,7 +139,7 @@ spec:
 **Use Case**: Document-oriented database for flexible schema applications.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDatabaseCluster
 metadata:
   name: prod-mongodb
@@ -173,7 +173,7 @@ spec:
 **Use Case**: Reference VPC from another OpenMCF resource.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDatabaseCluster
 metadata:
   name: app-database
@@ -206,7 +206,7 @@ spec:
 
 **Development:**
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDatabaseCluster
 metadata:
   name: dev-app-db
@@ -222,7 +222,7 @@ spec:
 
 **Staging:**
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDatabaseCluster
 metadata:
   name: staging-app-db
@@ -240,7 +240,7 @@ spec:
 
 **Production:**
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDatabaseCluster
 metadata:
   name: prod-app-db
@@ -300,7 +300,7 @@ Before deploying, ensure:
 
 2. **Configure Firewall** (separate resource):
    ```yaml
-   apiVersion: digitalocean.openmcf.org/v1
+   apiVersion: digital-ocean.openmcf.org/v1
    kind: DigitalOceanDatabaseFirewall
    metadata:
      name: prod-db-firewall
@@ -313,7 +313,7 @@ Before deploying, ensure:
 
 3. **Set Up PgBouncer** (PostgreSQL only):
    ```yaml
-   apiVersion: digitalocean.openmcf.org/v1
+   apiVersion: digital-ocean.openmcf.org/v1
    kind: DigitalOceanDatabaseConnectionPool
    metadata:
      name: app-pool

@@ -1,20 +1,20 @@
-# AlicloudStorageBucket Component Added
+# AliCloudStorageBucket Component Added
 
 **Date**: 2026-02-19
-**Component**: AlicloudStorageBucket
+**Component**: AliCloudStorageBucket
 **Enum**: 3050
 **ID Prefix**: acoss
 
 ## Summary
 
-Added the AlicloudStorageBucket deployment component -- the first Storage-tier resource in the Alibaba Cloud catalog. This component manages an Alibaba Cloud OSS bucket with configurable access control, storage class, zone redundancy, versioning, server-side encryption, lifecycle management, CORS rules, and access logging.
+Added the AliCloudStorageBucket deployment component -- the first Storage-tier resource in the Alibaba Cloud catalog. This component manages an Alibaba Cloud OSS bucket with configurable access control, storage class, zone redundancy, versioning, server-side encryption, lifecycle management, CORS rules, and access logging.
 
 ## What Was Created
 
 ### API Definition
 - `apis/org/openmcf/provider/alicloud/alicloudstoragebucket/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AlicloudStorageBucket = 3050` in `CloudResourceKind` enum under the Storage category
-- 5 nested messages: `AlicloudStorageBucketEncryption`, `AlicloudStorageBucketLifecycleRule`, `AlicloudStorageBucketLifecycleTransition`, `AlicloudStorageBucketCorsRule`, `AlicloudStorageBucketLogging`
+- Registered `AliCloudStorageBucket = 3050` in `CloudResourceKind` enum under the Storage category
+- 5 nested messages: `AliCloudStorageBucketEncryption`, `AliCloudStorageBucketLifecycleRule`, `AliCloudStorageBucketLifecycleTransition`, `AliCloudStorageBucketCorsRule`, `AliCloudStorageBucketLogging`
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider and a single `oss.Bucket` resource with conditional versioning, encryption, lifecycle rules, CORS rules, and logging blocks

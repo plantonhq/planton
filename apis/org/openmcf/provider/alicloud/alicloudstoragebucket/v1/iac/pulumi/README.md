@@ -1,8 +1,8 @@
-# Pulumi Module to Deploy AlicloudStorageBucket
+# Pulumi Module to Deploy AliCloudStorageBucket
 
 This module provisions an Alibaba Cloud OSS bucket with configurable access control, storage class, redundancy, versioning, server-side encryption, lifecycle rules, CORS configuration, and access logging. It creates a single `oss.Bucket` resource and exports the bucket name and both public and VPC-internal endpoints.
 
-Generated from the proto schema for `AlicloudStorageBucket`.
+Generated from the proto schema for `AliCloudStorageBucket`.
 
 ## CLI Usage (OpenMCF Pulumi)
 
@@ -57,8 +57,8 @@ Tags from `spec.tags` are merged with system tags (resource name, kind, organiza
 1. Create or edit a manifest:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudStorageBucket
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudStorageBucket
 metadata:
   name: my-bucket
 spec:

@@ -1,4 +1,4 @@
-# AlicloudLogProject Pulumi Examples
+# AliCloudLogProject Pulumi Examples
 
 Apply any example below using the OpenMCF CLI:
 
@@ -23,8 +23,8 @@ Creates an SLS project with no log stores. Stores can be added later by updating
 the manifest.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudLogProject
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudLogProject
 metadata:
   name: my-log-project
 spec:
@@ -40,8 +40,8 @@ A project with a single log store using short retention and minimal shards.
 Full-text indexing is enabled by default.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudLogProject
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudLogProject
 metadata:
   name: dev-logging
   env: development
@@ -64,8 +64,8 @@ Separate stores for application logs and audit trails, each with appropriate
 retention and shard configuration. Tags enable cost attribution and filtering.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudLogProject
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudLogProject
 metadata:
   name: prod-logging
   org: my-org

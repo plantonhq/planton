@@ -1,10 +1,10 @@
-# Alibaba Cloud PolarDB Cluster
+# AliCloud PolarDB Cluster
 
 Deploys an Alibaba Cloud PolarDB cluster with bundled databases, accounts, and account privileges. Supports MySQL, PostgreSQL, and Oracle compatibility modes through a single component type.
 
 ## What Gets Created
 
-When you deploy an AlicloudPolardbCluster resource, OpenMCF provisions:
+When you deploy an AliCloudPolardbCluster resource, OpenMCF provisions:
 
 - **PolarDB Cluster** -- an `alicloud_polardb_cluster` with the selected engine, node class, and node count
 - **Databases** -- one `alicloud_polardb_database` per entry in the databases list
@@ -14,7 +14,7 @@ When you deploy an AlicloudPolardbCluster resource, OpenMCF provisions:
 ## Prerequisites
 
 - **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
-- **A VSwitch** -- the PolarDB cluster is placed in a VSwitch (create one with AlicloudVswitch)
+- **A VSwitch** -- the PolarDB cluster is placed in a VSwitch (create one with AliCloudVswitch)
 - The VSwitch's VPC and availability zone determine the cluster's network placement
 
 ## Quick Start
@@ -22,8 +22,8 @@ When you deploy an AlicloudPolardbCluster resource, OpenMCF provisions:
 Create a file `polardb-cluster.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudPolardbCluster
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudPolardbCluster
 metadata:
   name: my-polardb
 spec:
@@ -62,7 +62,7 @@ This creates a MySQL 8.0 PolarDB cluster with 2 nodes (1 primary + 1 read replic
 | `dbType` | string | Database engine | Required; one of: MySQL, PostgreSQL, Oracle |
 | `dbVersion` | string | Engine version (e.g., `8.0`, `14`, `11`) | Required; non-empty |
 | `dbNodeClass` | string | Node instance class (e.g., `polar.mysql.x4.large`) | Required; non-empty |
-| `vswitchId` | StringValueOrRef | VSwitch ID. Can reference AlicloudVswitch via `valueFrom`. | Required |
+| `vswitchId` | StringValueOrRef | VSwitch ID. Can reference AliCloudVswitch via `valueFrom`. | Required |
 
 ### Optional Fields
 
@@ -133,9 +133,9 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- **AlicloudVswitch** -- VSwitch where the PolarDB cluster is placed
-- **AlicloudVpc** -- VPC that provides network isolation
-- **AlicloudSecurityGroup** -- Network security rules for cluster access
-- **AlicloudKmsKey** -- Customer-managed key for TDE encryption
-- **AlicloudPrivateDnsZone** -- Private DNS resolution for the cluster endpoint
-- **AlicloudRdsInstance** -- Alternative: traditional RDS for non-cloud-native workloads
+- **AliCloudVswitch** -- VSwitch where the PolarDB cluster is placed
+- **AliCloudVpc** -- VPC that provides network isolation
+- **AliCloudSecurityGroup** -- Network security rules for cluster access
+- **AliCloudKmsKey** -- Customer-managed key for TDE encryption
+- **AliCloudPrivateDnsZone** -- Private DNS resolution for the cluster endpoint
+- **AliCloudRdsInstance** -- Alternative: traditional RDS for non-cloud-native workloads

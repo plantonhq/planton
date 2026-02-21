@@ -23,8 +23,8 @@ This preset creates a minimal ACK Managed Kubernetes cluster for development and
 | Placeholder | Description | Where to Find |
 |---|---|---|
 | `<alibaba-cloud-region>` | Region code (e.g., `cn-hangzhou`, `ap-southeast-1`) | Your deployment region |
-| `<vswitch-id-zone-a>` | VSwitch in first availability zone | `AlicloudVswitch` stack outputs |
-| `<vswitch-id-zone-b>` | VSwitch in second availability zone | `AlicloudVswitch` stack outputs |
+| `<vswitch-id-zone-a>` | VSwitch in first availability zone | `AliCloudVswitch` stack outputs |
+| `<vswitch-id-zone-b>` | VSwitch in second availability zone | `AliCloudVswitch` stack outputs |
 
 ## Related Presets
 

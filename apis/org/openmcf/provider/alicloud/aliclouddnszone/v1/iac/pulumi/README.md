@@ -1,8 +1,8 @@
-# Pulumi Module to Deploy AlicloudDnsZone
+# Pulumi Module to Deploy AliCloudDnsZone
 
 This module provisions an Alibaba Cloud DNS domain in the Alidns service with optional group assignment, resource group placement, remarks, and automatic tag management. It creates a single `dns.AlidnsDomain` resource and exports the domain ID, domain name, DNS servers, group name, and punycode.
 
-Generated from the proto schema for `AlicloudDnsZone`.
+Generated from the proto schema for `AliCloudDnsZone`.
 
 ## CLI Usage (OpenMCF Pulumi)
 
@@ -40,7 +40,7 @@ openmcf pulumi destroy \
 - **DNS Domain** (`dns.AlidnsDomain`) -- registers a domain in the Alibaba Cloud Alidns service so that DNS records can be created against it
 - **Tags** -- system metadata tags (`resource`, `resource_name`, `resource_kind`, `organization`, `environment`) merged with user-defined `spec.tags`, with user values taking precedence on key conflict
 
-The module does not create DNS records. Records are managed by the separate AlicloudDnsRecord component.
+The module does not create DNS records. Records are managed by the separate AliCloudDnsRecord component.
 
 ## Prerequisites
 
@@ -53,8 +53,8 @@ The module does not create DNS records. Records are managed by the separate Alic
 1. Create or edit a manifest:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsZone
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsZone
 metadata:
   name: my-domain
 spec:

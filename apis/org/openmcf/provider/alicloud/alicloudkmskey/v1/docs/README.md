@@ -6,7 +6,7 @@ Alibaba Cloud Key Management Service (KMS) provides centralized key management f
 
 Nearly every data-at-rest encryption feature on Alibaba Cloud delegates to KMS. When you enable Transparent Data Encryption (TDE) on an RDS instance, Server-Side Encryption (SSE-KMS) on an OSS bucket, or disk encryption on an ECS instance, the service creates an envelope encryption relationship with a KMS key. The data key that encrypts your data is itself encrypted by the CMK, and only KMS can unwrap it. This means the CMK is the root of trust -- lose the key, lose the data.
 
-This document covers the full spectrum of KMS key deployment methods on Alibaba Cloud, explains the design decisions behind the OpenMCF `AlicloudKmsKey` component, and provides production best practices for key lifecycle management.
+This document covers the full spectrum of KMS key deployment methods on Alibaba Cloud, explains the design decisions behind the OpenMCF `AliCloudKmsKey` component, and provides production best practices for key lifecycle management.
 
 ## Evolution and Historical Context
 
@@ -96,8 +96,8 @@ Pulumi provides the same declarative model as Terraform with the added benefit o
 ### OpenMCF
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKmsKey
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKmsKey
 metadata:
   name: prod-encryption-key
   org: my-org

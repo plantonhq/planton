@@ -1,4 +1,4 @@
-# Hetzner Cloud Snapshot — Research Documentation
+# HetznerCloud Snapshot — Research Documentation
 
 ## Introduction
 
@@ -279,7 +279,7 @@ OpenMCF's key differentiators for the snapshot resource:
 ### Manifest Format
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSnapshot
 metadata:
   name: app-baseline

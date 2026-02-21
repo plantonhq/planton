@@ -1,10 +1,10 @@
-# Alibaba Cloud OSS Bucket
+# AliCloud OSS Bucket
 
 Deploys an Alibaba Cloud Object Storage Service (OSS) bucket with configurable access control, storage class, zone redundancy, versioning, server-side encryption, lifecycle management, CORS rules, access logging, and automatic tag management. OSS is Alibaba Cloud's S3-compatible object storage service for unstructured data at any scale.
 
 ## What Gets Created
 
-When you deploy an AlicloudStorageBucket resource, OpenMCF provisions:
+When you deploy an AliCloudStorageBucket resource, OpenMCF provisions:
 
 - **OSS Bucket** -- an `alicloud_oss_bucket` resource (Pulumi: `oss.Bucket`) with the specified storage class, redundancy type, and access control
 - **Versioning** -- optionally enabled to preserve all object versions for accidental deletion/overwrite recovery
@@ -25,15 +25,15 @@ When you deploy an AlicloudStorageBucket resource, OpenMCF provisions:
 Create a file `oss-bucket.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudStorageBucket
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudStorageBucket
 metadata:
   name: my-bucket
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudStorageBucket.my-bucket
+    pulumi.openmcf.org/stack.name: dev.AliCloudStorageBucket.my-bucket
 spec:
   region: cn-hangzhou
   bucketName: my-app-assets-bucket
@@ -77,8 +77,8 @@ This creates a private Standard-tier OSS bucket with LRS redundancy in the `cn-h
 ### Minimal Private Bucket
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudStorageBucket
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudStorageBucket
 metadata:
   name: dev-bucket
 spec:
@@ -89,8 +89,8 @@ spec:
 ### Production Bucket with Versioning and Encryption
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudStorageBucket
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudStorageBucket
 metadata:
   name: prod-bucket
   org: my-org
@@ -110,8 +110,8 @@ spec:
 ### Archive Bucket with Lifecycle Rules
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudStorageBucket
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudStorageBucket
 metadata:
   name: log-archive
   env: production
@@ -144,6 +144,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudKmsKey](/docs/catalog/alicloud/alicloudkmskey) -- for customer-managed encryption keys when using KMS server-side encryption
-- [AlicloudFcFunction](/docs/catalog/alicloud/alicloudfcfunction) -- uses OSS for function code storage
-- [AlicloudCdnDomain](/docs/catalog/alicloud/alicloudcdndomain) -- uses OSS as an origin for CDN acceleration
+- [AliCloudKmsKey](/docs/catalog/alicloud/alicloudkmskey) -- for customer-managed encryption keys when using KMS server-side encryption
+- [AliCloudFcFunction](/docs/catalog/alicloud/alicloudfcfunction) -- uses OSS for function code storage
+- [AliCloudCdnDomain](/docs/catalog/alicloud/alicloudcdndomain) -- uses OSS as an origin for CDN acceleration

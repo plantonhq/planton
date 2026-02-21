@@ -1,4 +1,4 @@
-# AlicloudRocketmqInstance Terraform Examples
+# AliCloudRocketmqInstance Terraform Examples
 
 Apply any of the manifests below with the OpenMCF CLI:
 
@@ -13,8 +13,8 @@ openmcf tofu apply --manifest hack/manifest.yaml --auto-approve
 ## Minimal: Development Single-Node Instance
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRocketmqInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRocketmqInstance
 metadata:
   name: dev-mq
 spec:
@@ -34,8 +34,8 @@ openmcf tofu apply --manifest dev-mq.yaml --auto-approve
 ## Production: Professional HA with Topics
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRocketmqInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRocketmqInstance
 metadata:
   name: prod-mq
   org: acme-corp
@@ -76,8 +76,8 @@ openmcf tofu apply --manifest prod-mq.yaml --auto-approve
 ## Enterprise: Subscription with Internet Access
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRocketmqInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRocketmqInstance
 metadata:
   name: enterprise-mq
   org: fintech-corp

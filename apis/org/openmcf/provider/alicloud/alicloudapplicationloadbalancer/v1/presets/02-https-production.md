@@ -24,11 +24,11 @@ This preset creates a production-grade ALB with HTTPS, WAF integration, strict T
 | `<your-alb-name>` | ALB name (2-128 chars) | Choose a descriptive name |
 | `<your-org>` | Organization identifier | Your org name |
 | `<alibaba-cloud-region>` | Region code | Your deployment region |
-| `<your-vpc-resource-name>` | AlicloudVpc resource name | Your VPC manifest |
+| `<your-vpc-resource-name>` | AliCloudVpc resource name | Your VPC manifest |
 | `<zone-a>`, `<zone-b>` | Availability zones | Region's available zones |
-| `<your-vswitch-resource-a>`, `<your-vswitch-resource-b>` | AlicloudVswitch resource names | Your VSwitch manifests |
-| `<your-sls-project>` | SLS log project name | `AlicloudLogProject` stack outputs |
-| `<your-sls-logstore>` | SLS log store name | `AlicloudLogProject` stack outputs |
+| `<your-vswitch-resource-a>`, `<your-vswitch-resource-b>` | AliCloudVswitch resource names | Your VSwitch manifests |
+| `<your-sls-project>` | SLS log project name | `AliCloudLogProject` stack outputs |
+| `<your-sls-logstore>` | SLS log store name | `AliCloudLogProject` stack outputs |
 | `<your-certificate-id>` | CAS certificate ID | Alibaba Cloud Certificate Management console |
 | `<your-team>`, `<your-cost-center>` | Tag values | Your organization's tagging policy |
 

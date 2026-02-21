@@ -1,4 +1,4 @@
-# AlicloudVpnGateway Research Documentation
+# AliCloudVpnGateway Research Documentation
 
 ## Provider Resource Analysis
 

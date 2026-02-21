@@ -1546,12 +1546,12 @@ func (s *CredentialService) createAliCloudCredential(
 	if providerConfig == nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("provider_config is required"))
 	}
-	aliConfig, ok := providerConfig.Data.(*credentialv1.CredentialProviderConfig_Alicloud)
-	if !ok || aliConfig == nil || aliConfig.Alicloud == nil {
+	aliConfig, ok := providerConfig.Data.(*credentialv1.CredentialProviderConfig_AliCloud)
+	if !ok || aliConfig == nil || aliConfig.AliCloud == nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("alicloud provider_config is required"))
 	}
 
-	credModel, err := alicloudProtoToModel(name, aliConfig.Alicloud)
+	credModel, err := alicloudProtoToModel(name, aliConfig.AliCloud)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}
@@ -1588,12 +1588,12 @@ func (s *CredentialService) updateAliCloudCredential(
 	if providerConfig == nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("provider_config is required"))
 	}
-	aliConfig, ok := providerConfig.Data.(*credentialv1.CredentialProviderConfig_Alicloud)
-	if !ok || aliConfig == nil || aliConfig.Alicloud == nil {
+	aliConfig, ok := providerConfig.Data.(*credentialv1.CredentialProviderConfig_AliCloud)
+	if !ok || aliConfig == nil || aliConfig.AliCloud == nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("alicloud provider_config is required"))
 	}
 
-	credModel, err := alicloudProtoToModel(name, aliConfig.Alicloud)
+	credModel, err := alicloudProtoToModel(name, aliConfig.AliCloud)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}
@@ -1809,8 +1809,8 @@ func alicloudModelToProtoConfig(cred *models.AliCloudCredential) *credentialv1.C
 	}
 
 	return &credentialv1.CredentialProviderConfig{
-		Data: &credentialv1.CredentialProviderConfig_Alicloud{
-			Alicloud: cfg,
+		Data: &credentialv1.CredentialProviderConfig_AliCloud{
+			AliCloud: cfg,
 		},
 	}
 }
@@ -2147,15 +2147,15 @@ func (s *CredentialService) createHetznerCloudCredential(
 	if providerConfig == nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("provider_config is required"))
 	}
-	hcConfig, ok := providerConfig.Data.(*credentialv1.CredentialProviderConfig_Hetznercloud)
-	if !ok || hcConfig == nil || hcConfig.Hetznercloud == nil {
+	hcConfig, ok := providerConfig.Data.(*credentialv1.CredentialProviderConfig_HetznerCloud)
+	if !ok || hcConfig == nil || hcConfig.HetznerCloud == nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("hetznercloud provider_config is required"))
 	}
-	if hcConfig.Hetznercloud.Token == "" {
+	if hcConfig.HetznerCloud.Token == "" {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("token is required"))
 	}
 
-	credModel := hetznercloudProtoToModel(name, hcConfig.Hetznercloud)
+	credModel := hetznercloudProtoToModel(name, hcConfig.HetznerCloud)
 
 	createdCredential, err := s.credentialRepo.CreateHetznerCloud(ctx, credModel)
 	if err != nil {
@@ -2189,15 +2189,15 @@ func (s *CredentialService) updateHetznerCloudCredential(
 	if providerConfig == nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("provider_config is required"))
 	}
-	hcConfig, ok := providerConfig.Data.(*credentialv1.CredentialProviderConfig_Hetznercloud)
-	if !ok || hcConfig == nil || hcConfig.Hetznercloud == nil {
+	hcConfig, ok := providerConfig.Data.(*credentialv1.CredentialProviderConfig_HetznerCloud)
+	if !ok || hcConfig == nil || hcConfig.HetznerCloud == nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("hetznercloud provider_config is required"))
 	}
-	if hcConfig.Hetznercloud.Token == "" {
+	if hcConfig.HetznerCloud.Token == "" {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("token is required"))
 	}
 
-	credModel := hetznercloudProtoToModel(name, hcConfig.Hetznercloud)
+	credModel := hetznercloudProtoToModel(name, hcConfig.HetznerCloud)
 
 	updatedCredential, err := s.credentialRepo.UpdateHetznerCloud(ctx, id, credModel)
 	if err != nil {
@@ -2238,8 +2238,8 @@ func hetznercloudProtoToModel(name string, cfg *hetznercloudv1.HetznerCloudProvi
 
 func hetznercloudModelToProtoConfig(cred *models.HetznerCloudCredential) *credentialv1.CredentialProviderConfig {
 	return &credentialv1.CredentialProviderConfig{
-		Data: &credentialv1.CredentialProviderConfig_Hetznercloud{
-			Hetznercloud: &hetznercloudv1.HetznerCloudProviderConfig{
+		Data: &credentialv1.CredentialProviderConfig_HetznerCloud{
+			HetznerCloud: &hetznercloudv1.HetznerCloudProviderConfig{
 				Token:           cred.Token,
 				Endpoint:        cred.Endpoint,
 				EndpointHetzner: cred.EndpointHetzner,

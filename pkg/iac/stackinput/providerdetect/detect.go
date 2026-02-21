@@ -80,7 +80,7 @@ func ProviderDisplayName(provider cloudresourcekind.CloudResourceProvider) strin
 		return "GCP"
 	case cloudresourcekind.CloudResourceProvider_kubernetes:
 		return "Kubernetes"
-	case cloudresourcekind.CloudResourceProvider_open_fga:
+	case cloudresourcekind.CloudResourceProvider_openfga:
 		return "OpenFGA"
 	case cloudresourcekind.CloudResourceProvider_snowflake:
 		return "Snowflake"
@@ -88,11 +88,11 @@ func ProviderDisplayName(provider cloudresourcekind.CloudResourceProvider) strin
 		return "OpenStack"
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return "Scaleway"
-	case cloudresourcekind.CloudResourceProvider_alicloud:
+	case cloudresourcekind.CloudResourceProvider_ali_cloud:
 		return "Alibaba Cloud"
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return "OCI"
-	case cloudresourcekind.CloudResourceProvider_hetznercloud:
+	case cloudresourcekind.CloudResourceProvider_hetzner_cloud:
 		return "Hetzner Cloud"
 	default:
 		return provider.String()

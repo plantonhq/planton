@@ -76,7 +76,7 @@ message OpenFgaAuthorizationModelStackOutputs {
 ```
 
 **api.proto** - KRM envelope:
-- apiVersion: `open-fga.openmcf.org/v1`
+- apiVersion: `openfga.openmcf.org/v1`
 - kind: `OpenFgaAuthorizationModel`
 - Standard metadata, spec, status structure
 
@@ -166,7 +166,7 @@ output "id" { value = openfga_authorization_model.this.id }
 ### Create Authorization Model
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: document-authz-v1

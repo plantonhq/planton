@@ -1,0 +1,17 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciNosqlTable
+metadata:
+  name: my-nosql-ondemand
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  name: <table-name>
+  ddlStatement: >-
+    CREATE TABLE <table-name> (
+      id STRING,
+      data JSON,
+      PRIMARY KEY(id)
+    )
+  tableLimits:
+    capacityMode: on_demand
+    maxStorageInGbs: 50

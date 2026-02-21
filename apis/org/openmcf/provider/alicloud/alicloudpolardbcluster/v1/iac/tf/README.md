@@ -1,4 +1,4 @@
-# AlicloudPolardbCluster -- Terraform Module
+# AliCloudPolardbCluster -- Terraform Module
 
 ## Overview
 

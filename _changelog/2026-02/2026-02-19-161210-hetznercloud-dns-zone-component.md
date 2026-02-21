@@ -68,7 +68,7 @@ flowchart TB
 ### Proto API (4 files)
 
 - `spec.proto`: `HetznerCloudDnsZoneSpec` with mode enum, `PrimaryNameserver`, `RecordSet`, and `RecordValue` messages. Three CEL validations for mode/nameserver/recordset cross-constraints.
-- `api.proto`: Standard resource wrapper with `api_version: "hetznercloud.openmcf.org/v1"`.
+- `api.proto`: Standard resource wrapper with `api_version: "hetzner-cloud.openmcf.org/v1"`.
 - `stack_input.proto`: Stack input with target + provider config.
 - `stack_outputs.proto`: `zone_id` (string) + `nameservers` (repeated string -- assigned Hetzner nameservers for registrar configuration).
 

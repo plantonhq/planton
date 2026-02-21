@@ -23,11 +23,11 @@ Connects VPCs across multiple Alibaba Cloud regions to form a global private bac
 | `<api-routing-region>` | Any region for API routing (e.g., `cn-hangzhou`) | Your primary management region |
 | `<your-cen-name>` | CEN instance name (2-128 characters) | Choose a descriptive name |
 | `<your-team>` | Team or business unit tag | Your organizational structure |
-| `<china-vpc-id>` | VPC ID in your primary China region | `AlicloudVpc` stack outputs |
+| `<china-vpc-id>` | VPC ID in your primary China region | `AliCloudVpc` stack outputs |
 | `<china-region>` | Primary China region (e.g., `cn-hangzhou`) | Your deployment topology |
-| `<secondary-vpc-id>` | VPC ID in a secondary China region | `AlicloudVpc` stack outputs |
+| `<secondary-vpc-id>` | VPC ID in a secondary China region | `AliCloudVpc` stack outputs |
 | `<secondary-region>` | Secondary China region (e.g., `cn-shanghai`) | Your deployment topology |
-| `<international-vpc-id>` | VPC ID in an international region | `AlicloudVpc` stack outputs |
+| `<international-vpc-id>` | VPC ID in an international region | `AliCloudVpc` stack outputs |
 | `<international-region>` | International region (e.g., `ap-southeast-1`) | Your deployment topology |
 
 ## Related Presets

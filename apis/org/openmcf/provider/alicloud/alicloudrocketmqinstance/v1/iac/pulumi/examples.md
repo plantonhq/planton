@@ -1,4 +1,4 @@
-# AlicloudRocketmqInstance Pulumi Examples
+# AliCloudRocketmqInstance Pulumi Examples
 
 Apply any of the manifests below with the OpenMCF CLI:
 
@@ -22,8 +22,8 @@ openmcf pulumi update \
 A basic standard-edition instance for development and testing with no topics or internet access.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRocketmqInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRocketmqInstance
 metadata:
   name: dev-mq
 spec:
@@ -41,8 +41,8 @@ spec:
 A production-grade professional instance with FIFO and normal topics, consumer groups with custom retry policies, and VSwitch placement.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRocketmqInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRocketmqInstance
 metadata:
   name: prod-mq
   org: acme-corp
@@ -97,8 +97,8 @@ spec:
 A mission-critical ultimate-edition instance with subscription billing, internet access for external clients, encryption at rest, and auto-scaling.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRocketmqInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRocketmqInstance
 metadata:
   name: enterprise-mq
   org: fintech-corp

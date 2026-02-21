@@ -1,12 +1,12 @@
-# AlicloudKubernetesCluster Examples
+# AliCloudKubernetesCluster Examples
 
 ## Minimal Cluster with Flannel
 
 A basic development cluster using Flannel overlay networking.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesCluster
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesCluster
 metadata:
   name: dev-cluster
 spec:
@@ -27,8 +27,8 @@ spec:
 A cluster using Terway ENI-based networking with RRSA enabled for pod IAM.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesCluster
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesCluster
 metadata:
   name: staging-cluster
 spec:
@@ -70,8 +70,8 @@ A production-grade cluster with professional SLA, Terway networking, Secrets
 encryption, maintenance windows, and auto-upgrade.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesCluster
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesCluster
 metadata:
   name: production-cluster
   org: acme-corp

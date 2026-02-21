@@ -1,12 +1,12 @@
-# AlicloudApplicationLoadBalancer
+# AliCloudApplicationLoadBalancer
 
 **Date**: 2026-02-19
 **Type**: New Component
-**Resource Kind**: AlicloudApplicationLoadBalancer (enum 3025, id_prefix: acalb)
+**Resource Kind**: AliCloudApplicationLoadBalancer (enum 3025, id_prefix: acalb)
 
 ## Summary
 
-Added AlicloudApplicationLoadBalancer component that provisions an Alibaba Cloud Application Load Balancer (ALB) with bundled server groups and listeners. This is a composite component (per DD07) that creates a fully functional L7 load balancer as a single deployable unit.
+Added AliCloudApplicationLoadBalancer component that provisions an Alibaba Cloud Application Load Balancer (ALB) with bundled server groups and listeners. This is a composite component (per DD07) that creates a fully functional L7 load balancer as a single deployable unit.
 
 ## What's Included
 
@@ -29,5 +29,5 @@ Added AlicloudApplicationLoadBalancer component that provisions an Alibaba Cloud
 
 ## Dependencies
 
-- AlicloudVpc (vpc_id)
-- AlicloudVswitch (vswitch_id in zone_mappings)
+- AliCloudVpc (vpc_id)
+- AliCloudVswitch (vswitch_id in zone_mappings)

@@ -10,7 +10,7 @@ Terraform IaC module for allocating persistent public IP addresses in Hetzner Cl
 ├── outputs.tf        # Stack output definitions
 ├── variables.tf      # Input variable definitions (metadata, spec, hcloud_token)
 ├── locals.tf         # IP name and standard label computation
-├── provider.tf       # Hetzner Cloud provider configuration
+├── provider.tf       # HetznerCloud provider configuration
 └── BUILD.bazel       # Bazel build definition
 ```
 

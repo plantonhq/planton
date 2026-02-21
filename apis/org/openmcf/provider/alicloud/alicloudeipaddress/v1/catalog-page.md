@@ -1,10 +1,10 @@
-# Alibaba Cloud EIP Address
+# AliCloud EIP Address
 
 Deploys an Alibaba Cloud Elastic IP Address (EIP). The component provisions a standalone public IPv4 address that persists independently of any cloud resource, allowing it to be associated with and disassociated from NAT gateways, load balancers, VPN gateways, and ECS instances without changing the address.
 
 ## What Gets Created
 
-When you deploy an AlicloudEipAddress resource, OpenMCF provisions:
+When you deploy an AliCloudEipAddress resource, OpenMCF provisions:
 
 - **EIP** -- an `alicloud_eip_address` resource in the specified region with configurable bandwidth, ISP, and metering settings
 
@@ -17,15 +17,15 @@ When you deploy an AlicloudEipAddress resource, OpenMCF provisions:
 Create a file `eip.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudEipAddress
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudEipAddress
 metadata:
   name: my-eip
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudEipAddress.my-eip
+    pulumi.openmcf.org/stack.name: dev.AliCloudEipAddress.my-eip
 spec:
   region: cn-hangzhou
   addressName: my-nat-eip
@@ -66,8 +66,8 @@ This allocates a 10 Mbps EIP using BGP multi-line and PayByTraffic metering.
 ### Minimal EIP
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudEipAddress
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudEipAddress
 metadata:
   name: my-eip
 spec:
@@ -79,15 +79,15 @@ spec:
 A named EIP intended for association with a NAT gateway. Uses default 5 Mbps bandwidth and PayByTraffic metering:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudEipAddress
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudEipAddress
 metadata:
   name: nat-eip
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudEipAddress.nat-eip
+    pulumi.openmcf.org/stack.name: prod.AliCloudEipAddress.nat-eip
 spec:
   region: cn-shanghai
   addressName: prod-nat-eip
@@ -100,8 +100,8 @@ spec:
 ### High-Bandwidth Production EIP
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudEipAddress
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudEipAddress
 metadata:
   name: prod-lb-eip
   org: my-org
@@ -130,7 +130,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudNatGateway](/docs/catalog/alicloud/alicloudnatgateway) -- associate this EIP for SNAT outbound internet access
-- [AlicloudApplicationLoadBalancer](/docs/catalog/alicloud/alicloudapplicationloadbalancer) -- use this EIP for internet-facing ALB
-- [AlicloudNetworkLoadBalancer](/docs/catalog/alicloud/alicloudnetworkloadbalancer) -- use this EIP for internet-facing NLB
-- [AlicloudVpnGateway](/docs/catalog/alicloud/alicloudvpngateway) -- use this EIP for VPN gateway public endpoint
+- [AliCloudNatGateway](/docs/catalog/alicloud/alicloudnatgateway) -- associate this EIP for SNAT outbound internet access
+- [AliCloudApplicationLoadBalancer](/docs/catalog/alicloud/alicloudapplicationloadbalancer) -- use this EIP for internet-facing ALB
+- [AliCloudNetworkLoadBalancer](/docs/catalog/alicloud/alicloudnetworkloadbalancer) -- use this EIP for internet-facing NLB
+- [AliCloudVpnGateway](/docs/catalog/alicloud/alicloudvpngateway) -- use this EIP for VPN gateway public endpoint

@@ -19,7 +19,7 @@ Provisions a Hetzner Cloud virtual machine running a chosen OS image on a specif
 Create a file `server.yaml`:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: my-server
@@ -83,7 +83,7 @@ This provisions a shared x86 server (2 vCPU, 4 GB RAM) running Ubuntu 24.04 in F
 A shared x86 server running Ubuntu 24.04 in Falkenstein with auto-assigned public IPs.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: dev-box
@@ -103,7 +103,7 @@ spec:
 A server with SSH key access and a cloud-init script that installs Nginx on first boot.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: web-01
@@ -131,7 +131,7 @@ spec:
 A server composed with other OpenMCF components via `valueFrom` references, with backups and protections enabled.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: app-01
@@ -174,7 +174,7 @@ spec:
 An anti-affinity server in a spread placement group for high availability. Uses a dedicated server type for guaranteed CPU performance.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: db-primary
@@ -223,7 +223,7 @@ spec:
 A server with a stable IPv6 Primary IP, private networking, all protections, and reverse DNS for the auto-assigned IPv4.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: web-prod-01

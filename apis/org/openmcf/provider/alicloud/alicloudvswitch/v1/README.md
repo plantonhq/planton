@@ -1,4 +1,4 @@
-# AlicloudVswitch
+# AliCloudVswitch
 
 Manages an Alibaba Cloud VSwitch (virtual subnet).
 
@@ -27,7 +27,7 @@ The following fields cannot be changed after creation. Modifying them causes the
 | Field | Type | Description |
 |-------|------|-------------|
 | `region` | string | Alibaba Cloud region (e.g., `cn-hangzhou`, `cn-shanghai`, `us-west-1`) |
-| `vpcId` | StringValueOrRef | VPC ID; can be a literal or a reference to an AlicloudVpc component |
+| `vpcId` | StringValueOrRef | VPC ID; can be a literal or a reference to an AliCloudVpc component |
 | `zoneId` | string | Availability zone (e.g., `cn-hangzhou-a`, `cn-hangzhou-b`) |
 | `cidrBlock` | string | IPv4 CIDR block within the VPC range (mask 16-29) |
 | `vswitchName` | string | VSwitch name (1-128 chars) |
@@ -43,7 +43,7 @@ The following fields cannot be changed after creation. Modifying them causes the
 
 ### IPv6 Requirements
 
-IPv6 on a VSwitch requires the parent VPC to have IPv6 enabled (`enableIpv6: true` on the AlicloudVpc). When both are enabled, Alibaba Cloud assigns a /64 IPv6 CIDR block to the VSwitch from the VPC's /56 allocation, selected by `ipv6CidrBlockMask`.
+IPv6 on a VSwitch requires the parent VPC to have IPv6 enabled (`enableIpv6: true` on the AliCloudVpc). When both are enabled, Alibaba Cloud assigns a /64 IPv6 CIDR block to the VSwitch from the VPC's /56 allocation, selected by `ipv6CidrBlockMask`.
 
 ### CIDR Planning Guidance
 
@@ -70,14 +70,14 @@ Avoid overlapping CIDR blocks between VSwitches in the same VPC.
 
 ## Related Components
 
-- **AlicloudVpc** -- the parent VPC that this VSwitch belongs to
-- **AlicloudSecurityGroup** -- security groups applied to resources in this VSwitch
-- **AlicloudNatGateway** -- provides outbound internet access for resources in private VSwitches
-- **AlicloudEcsInstance** -- compute instances deployed into this VSwitch
-- **AlicloudRdsInstance** -- database instances deployed into this VSwitch
-- **AlicloudPolardbCluster** -- cloud-native database clusters in this VSwitch
-- **AlicloudRedisInstance** -- cache instances in this VSwitch
-- **AlicloudAckManagedCluster** -- Kubernetes clusters using this VSwitch for node placement
-- **AlicloudApplicationLoadBalancer** -- ALB load balancers spanning this VSwitch
-- **AlicloudNetworkLoadBalancer** -- NLB load balancers spanning this VSwitch
-- **AlicloudNasFileSystem** -- NAS mount targets in this VSwitch
+- **AliCloudVpc** -- the parent VPC that this VSwitch belongs to
+- **AliCloudSecurityGroup** -- security groups applied to resources in this VSwitch
+- **AliCloudNatGateway** -- provides outbound internet access for resources in private VSwitches
+- **AliCloudEcsInstance** -- compute instances deployed into this VSwitch
+- **AliCloudRdsInstance** -- database instances deployed into this VSwitch
+- **AliCloudPolardbCluster** -- cloud-native database clusters in this VSwitch
+- **AliCloudRedisInstance** -- cache instances in this VSwitch
+- **AliCloudAckManagedCluster** -- Kubernetes clusters using this VSwitch for node placement
+- **AliCloudApplicationLoadBalancer** -- ALB load balancers spanning this VSwitch
+- **AliCloudNetworkLoadBalancer** -- NLB load balancers spanning this VSwitch
+- **AliCloudNasFileSystem** -- NAS mount targets in this VSwitch

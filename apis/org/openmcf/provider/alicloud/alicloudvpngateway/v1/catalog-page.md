@@ -1,10 +1,10 @@
-# Alibaba Cloud VPN Gateway
+# AliCloud VPN Gateway
 
 Deploys an Alibaba Cloud VPN Gateway with bundled customer gateways and IPsec VPN connections. The component provisions all resources as a single atomic unit, establishing encrypted site-to-site tunnels between your VPC and remote networks.
 
 ## What Gets Created
 
-When you deploy an AlicloudVpnGateway resource, OpenMCF provisions:
+When you deploy an AliCloudVpnGateway resource, OpenMCF provisions:
 
 - **VPN Gateway** -- an `alicloud_vpn_gateway` resource in the specified VPC and VSwitch, with configurable bandwidth and optional SSL VPN
 - **Customer Gateways** -- one `alicloud_vpn_customer_gateway` per connection, representing the remote device's public IP and optional BGP ASN
@@ -13,8 +13,8 @@ When you deploy an AlicloudVpnGateway resource, OpenMCF provisions:
 ## Prerequisites
 
 - **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
-- **An Alibaba Cloud VPC** -- the VPN Gateway must belong to a VPC (create one with AlicloudVpc)
-- **A VSwitch** -- the VPN Gateway requires placement in a VSwitch (create with AlicloudVswitch)
+- **An Alibaba Cloud VPC** -- the VPN Gateway must belong to a VPC (create one with AliCloudVpc)
+- **A VSwitch** -- the VPN Gateway requires placement in a VSwitch (create with AliCloudVswitch)
 - **Remote device public IP** -- the on-premises router, firewall, or peer cloud gateway's public IP address
 - **Network CIDR planning** -- VPC-side and remote-site CIDR blocks that should be reachable through the tunnels
 
@@ -23,8 +23,8 @@ When you deploy an AlicloudVpnGateway resource, OpenMCF provisions:
 Create a file `vpn-gateway.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpnGateway
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpnGateway
 metadata:
   name: my-vpn
 spec:
@@ -59,8 +59,8 @@ This creates a 10 Mbps VPN Gateway with a single IPsec tunnel to a remote networ
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
 | `region` | string | Alibaba Cloud region (e.g., `cn-hangzhou`, `us-west-1`) | Required; non-empty |
-| `vpcId` | StringValueOrRef | VPC ID for the VPN Gateway. Can reference AlicloudVpc via `valueFrom`. | Required |
-| `vswitchId` | StringValueOrRef | VSwitch ID for gateway placement. Can reference AlicloudVswitch via `valueFrom`. | Required |
+| `vpcId` | StringValueOrRef | VPC ID for the VPN Gateway. Can reference AliCloudVpc via `valueFrom`. | Required |
+| `vswitchId` | StringValueOrRef | VSwitch ID for gateway placement. Can reference AliCloudVswitch via `valueFrom`. | Required |
 | `vpnGatewayName` | string | Gateway name (2-128 characters) | Required; 2-128 chars |
 | `bandwidth` | int | Maximum bandwidth in Mbps | Must be one of: 5, 10, 20, 50, 100, 200, 500, 1000 |
 
@@ -130,8 +130,8 @@ This creates a 10 Mbps VPN Gateway with a single IPsec tunnel to a remote networ
 The simplest VPN setup: one gateway with a single IPsec connection to a remote office.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpnGateway
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpnGateway
 metadata:
   name: office-vpn
 spec:
@@ -156,8 +156,8 @@ spec:
 VPN Gateway connecting to two remote sites with AES-256, SHA-256 authentication, DH group14, and health checks for failover.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpnGateway
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpnGateway
 metadata:
   name: prod-vpn
   org: acme-corp
@@ -228,8 +228,8 @@ spec:
 VPN Gateway with SSL VPN enabled for remote client access alongside a site-to-site connection.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpnGateway
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpnGateway
 metadata:
   name: hybrid-vpn
 spec:
@@ -264,7 +264,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- **AlicloudVpc** -- VPC that the VPN Gateway belongs to
-- **AlicloudVswitch** -- VSwitch for gateway placement
-- **AlicloudEipAddress** -- EIPs if dedicated public IPs are needed (the VPN Gateway gets its own)
-- **AlicloudCenInstance** -- For multi-region VPC connectivity (alternative to VPN for Alibaba Cloud-to-Alibaba Cloud)
+- **AliCloudVpc** -- VPC that the VPN Gateway belongs to
+- **AliCloudVswitch** -- VSwitch for gateway placement
+- **AliCloudEipAddress** -- EIPs if dedicated public IPs are needed (the VPN Gateway gets its own)
+- **AliCloudCenInstance** -- For multi-region VPC connectivity (alternative to VPN for Alibaba Cloud-to-Alibaba Cloud)

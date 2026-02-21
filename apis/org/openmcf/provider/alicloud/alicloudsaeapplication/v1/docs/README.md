@@ -6,7 +6,7 @@ Alibaba Cloud Serverless App Engine (SAE) occupies a middle ground in the comput
 
 The surface area of a single SAE application resource is deceptively large. Beyond the obvious fields (image URL, CPU, memory), a production-grade SAE deployment requires decisions about VPC placement, namespace isolation, health check configuration, update strategy, graceful shutdown behavior, and log shipping. Each of these decisions has operational consequences that compound when managing multiple applications across environments.
 
-This document examines the SAE application deployment landscape, traces the operational risks at each level of automation, and explains the specific subset of SAE functionality that OpenMCF exposes through the `AlicloudSaeApplication` component.
+This document examines the SAE application deployment landscape, traces the operational risks at each level of automation, and explains the specific subset of SAE functionality that OpenMCF exposes through the `AliCloudSaeApplication` component.
 
 ---
 
@@ -144,8 +144,8 @@ The Pulumi module provides the same functionality as the Terraform module but wi
 OpenMCF wraps the IaC layer with a Kubernetes-like resource model:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudSaeApplication
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudSaeApplication
 metadata:
   name: order-service
   org: acme-corp
@@ -209,7 +209,7 @@ vpcId:
 
 vswitchId:
   ref:
-    kind: AlicloudVswitch
+    kind: AliCloudVswitch
     name: my-vswitch           # Reference to another OpenMCF resource
 ```
 
@@ -297,7 +297,7 @@ SAE integrates with Alibaba Cloud Simple Log Service (SLS) for log collection. T
 
 ### The 80/20 Design
 
-The `AlicloudSaeApplicationSpec` proto schema exposes the fields that cover the vast majority of production SAE deployments. The SAE API has over 60 parameters; the OpenMCF component exposes 31 fields organized into logical groups:
+The `AliCloudSaeApplicationSpec` proto schema exposes the fields that cover the vast majority of production SAE deployments. The SAE API has over 60 parameters; the OpenMCF component exposes 31 fields organized into logical groups:
 
 | Group | Fields | Coverage |
 |---|---|---|
@@ -329,16 +329,16 @@ Three fields support OpenMCF's foreign key mechanism:
 
 | Field | Default Kind | Default Field Path |
 |---|---|---|
-| `vpcId` | `AlicloudVpc` | `status.outputs.vpc_id` |
-| `vswitchId` | `AlicloudVswitch` | `status.outputs.vswitch_id` |
-| `securityGroupId` | `AlicloudSecurityGroup` | `status.outputs.security_group_id` |
+| `vpcId` | `AliCloudVpc` | `status.outputs.vpc_id` |
+| `vswitchId` | `AliCloudVswitch` | `status.outputs.vswitch_id` |
+| `securityGroupId` | `AliCloudSecurityGroup` | `status.outputs.security_group_id` |
 
 Foreign keys allow referencing other OpenMCF resources by name instead of hardcoding IDs:
 
 ```yaml
 vpcId:
   ref:
-    kind: AlicloudVpc
+    kind: AliCloudVpc
     name: production-vpc
 ```
 
@@ -471,8 +471,8 @@ SAE is the appropriate choice when you need a long-running application with mult
 
 ## Conclusion
 
-The `AlicloudSaeApplication` component reduces SAE application deployment from a 60-parameter API surface to a focused 31-field specification that covers the operational requirements of production deployments. The immutable fields (`appName`, `packageType`, `vpcId`, `namespaceId`, `programmingLanguage`) are called out in the proto schema documentation, the IaC plan output surfaces recreation risks before they happen, and the tag management system ensures every application is traceable through the standard OpenMCF metadata.
+The `AliCloudSaeApplication` component reduces SAE application deployment from a 60-parameter API surface to a focused 31-field specification that covers the operational requirements of production deployments. The immutable fields (`appName`, `packageType`, `vpcId`, `namespaceId`, `programmingLanguage`) are called out in the proto schema documentation, the IaC plan output surfaces recreation risks before they happen, and the tag management system ensures every application is traceable through the standard OpenMCF metadata.
 
 The two parallel IaC implementations (Pulumi and Terraform) provide identical functionality with different execution models, allowing teams to choose the tool that fits their existing workflows. Both modules handle the SAE API's quirks — JSON-formatted environment variables, discrete CPU/memory tiers, v2 health check blocks — so that the manifest author works with a clean, map-based interface.
 
-For applications that need event-driven execution rather than long-running instances, see the `AlicloudFunction` component. For applications that require full Kubernetes control (custom operators, service mesh, node-level configuration), see the `AlicloudKubernetesCluster` and `AlicloudKubernetesNodePool` components.
+For applications that need event-driven execution rather than long-running instances, see the `AliCloudFunction` component. For applications that require full Kubernetes control (custom operators, service mesh, node-level configuration), see the `AliCloudKubernetesCluster` and `AliCloudKubernetesNodePool` components.

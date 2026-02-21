@@ -223,7 +223,7 @@ The most advanced deployment model treats RAM role configuration as a continuous
 - **Crossplane**: Extends the Kubernetes API with custom resources for Alibaba Cloud. An operator watches for RAM role custom resources and provisions/reconciles them automatically.
 - **Custom Operators**: Organizations build Kubernetes operators that watch for application deployments and automatically create corresponding RAM roles with least-privilege policies.
 
-**OpenMCF Context**: OpenMCF's protobuf-defined API is designed for this model. The YAML manifest is a desired-state declaration that can be applied once (CLI mode) or continuously reconciled (control-plane mode). The `AlicloudRamRole` resource is a Kubernetes-native API object, not just a CLI input format.
+**OpenMCF Context**: OpenMCF's protobuf-defined API is designed for this model. The YAML manifest is a desired-state declaration that can be applied once (CLI mode) or continuously reconciled (control-plane mode). The `AliCloudRamRole` resource is a Kubernetes-native API object, not just a CLI input format.
 
 **Verdict**: The future of identity management in cloud-native platforms. OpenMCF's API design anticipates this model even when used in CLI mode today.
 
@@ -243,7 +243,7 @@ The key differentiator is the **Bundled** column. Every other method treats the 
 
 ### Design Philosophy: The DD07 Bundling Decision
 
-The most important design decision for AlicloudRamRole is **DD07: composite bundling**. Instead of requiring users to create the role and then separately attach policies, the component bundles both into a single resource.
+The most important design decision for AliCloudRamRole is **DD07: composite bundling**. Instead of requiring users to create the role and then separately attach policies, the component bundles both into a single resource.
 
 **Why bundle?**
 
@@ -253,7 +253,7 @@ The most important design decision for AlicloudRamRole is **DD07: composite bund
 
 3. **The 80% use case is simple**: Most teams need "a role that service X can assume, with policies Y and Z attached." The bundled API serves this case with a flat list of policy attachments. The 20% case (conditional policy attachments, policy creation, complex STS configurations) is not addressed — and intentionally so.
 
-**Why not bundle policy *creation*?** Because policies are reusable across multiple roles. A custom policy like "read-only-oss-bucket-xyz" might be attached to an ECS role, an FC role, and a cross-account audit role. Embedding policy creation inside the role resource would force duplication. Instead, `AlicloudRamPolicy` exists as a separate component for custom policy creation, and `AlicloudRamRole` references those policies by name via the `policyAttachments` field.
+**Why not bundle policy *creation*?** Because policies are reusable across multiple roles. A custom policy like "read-only-oss-bucket-xyz" might be attached to an ECS role, an FC role, and a cross-account audit role. Embedding policy creation inside the role resource would force duplication. Instead, `AliCloudRamPolicy` exists as a separate component for custom policy creation, and `AliCloudRamRole` references those policies by name via the `policyAttachments` field.
 
 ### 80/20 Scoping: What's In and What's Out
 
@@ -267,7 +267,7 @@ The most important design decision for AlicloudRamRole is **DD07: composite bund
 
 **Excluded (the 20%)**:
 
-- **RAM policy creation**: Managed by the separate `AlicloudRamPolicy` component. Creating policies and attaching them are different lifecycle operations — a policy is authored once and attached to many roles.
+- **RAM policy creation**: Managed by the separate `AliCloudRamPolicy` component. Creating policies and attaching them are different lifecycle operations — a policy is authored once and attached to many roles.
 - **STS configuration**: Advanced STS settings (external ID conditions, MFA requirements, source IP restrictions) are rare in the 80% case. Teams requiring these can extend the trust policy document directly.
 - **SAML providers and OIDC federation**: Enterprise SSO integration is a separate infrastructure concern with its own lifecycle. Bundling it with role creation would create an unwieldy resource.
 - **RAM users and groups**: User/group management is a different domain entirely. Roles are for service-to-service authentication; users/groups are for human authentication.
@@ -290,12 +290,12 @@ The most important design decision for AlicloudRamRole is **DD07: composite bund
 
 ### Foreign Key References
 
-AlicloudRamRole has no `StringValueOrRef` fields — all fields are direct values. This is architecturally correct because RAM roles are foundation resources with no upstream dependencies. The trust policy document is a JSON string (not a reference to another resource), and policy names are simple strings that refer to Alibaba Cloud managed policies or separately-created custom policies.
+AliCloudRamRole has no `StringValueOrRef` fields — all fields are direct values. This is architecturally correct because RAM roles are foundation resources with no upstream dependencies. The trust policy document is a JSON string (not a reference to another resource), and policy names are simple strings that refer to Alibaba Cloud managed policies or separately-created custom policies.
 
 Downstream resources reference this role's outputs:
-- `AlicloudAckManagedCluster` can reference this role for cluster service authentication
-- `AlicloudFcFunction` references the role ARN for function execution permissions
-- `AlicloudEcsInstance` references the role for instance profile attachment
+- `AliCloudAckManagedCluster` can reference this role for cluster service authentication
+- `AliCloudFcFunction` references the role ARN for function execution permissions
+- `AliCloudEcsInstance` references the role for instance profile attachment
 
 ## Implementation Landscape
 
@@ -347,7 +347,7 @@ The Terraform module consists of five files under `v1/iac/tf/`:
 
 **`variables.tf`** — Input variables matching the proto schema.
 - `metadata` object with `name`, `id`, `org`, `env`, `labels`, `tags`
-- `spec` object mirroring `AlicloudRamRoleSpec` with all fields, defaults, and validations
+- `spec` object mirroring `AliCloudRamRoleSpec` with all fields, defaults, and validations
 - Includes inline validations for `role_name` length (1-64) and `max_session_duration` range (3600-43200)
 
 **`locals.tf`** — Computed values.
@@ -441,9 +441,9 @@ This is the Alibaba Cloud equivalent of AWS IRSA (IAM Roles for Service Accounts
 
 **The Granularity Trade-off**:
 - `AliyunOSSFullAccess` grants all OSS operations on all buckets — simple but overly broad
-- A custom policy restricting to specific buckets and operations is more secure but requires creating and maintaining an `AlicloudRamPolicy` resource
+- A custom policy restricting to specific buckets and operations is more secure but requires creating and maintaining an `AliCloudRamPolicy` resource
 
-**Recommendation**: Start with system policies for development and staging. Create custom policies (via `AlicloudRamPolicy`) for production environments where least-privilege is a compliance requirement.
+**Recommendation**: Start with system policies for development and staging. Create custom policies (via `AliCloudRamPolicy`) for production environments where least-privilege is a compliance requirement.
 
 **Common System Policy Combinations by Use Case**:
 
@@ -517,9 +517,9 @@ RAM role management is a solved problem at every level of the tooling spectrum �
 - Tags are standardized (organization, environment, resource kind)
 - Credentials are externalized (never in the manifest)
 
-The DD07 bundling decision is the architectural cornerstone: by treating role + policy attachments as a single resource, OpenMCF makes the common case simple (one YAML resource for a complete identity setup) while leaving the advanced case possible (custom policies via `AlicloudRamPolicy`, RRSA federation via trust policy JSON, cross-account trust via explicit principal ARNs).
+The DD07 bundling decision is the architectural cornerstone: by treating role + policy attachments as a single resource, OpenMCF makes the common case simple (one YAML resource for a complete identity setup) while leaving the advanced case possible (custom policies via `AliCloudRamPolicy`, RRSA federation via trust policy JSON, cross-account trust via explicit principal ARNs).
 
-For teams adopting Alibaba Cloud, `AlicloudRamRole` is typically one of the first resources deployed alongside `AlicloudLogProject` — it provides the identity foundation that `AlicloudAckManagedCluster`, `AlicloudFcFunction`, and `AlicloudEcsInstance` reference for service authentication.
+For teams adopting Alibaba Cloud, `AliCloudRamRole` is typically one of the first resources deployed alongside `AliCloudLogProject` — it provides the identity foundation that `AliCloudAckManagedCluster`, `AliCloudFcFunction`, and `AliCloudEcsInstance` reference for service authentication.
 
 ### References
 

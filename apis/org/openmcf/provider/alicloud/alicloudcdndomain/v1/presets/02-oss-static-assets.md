@@ -23,8 +23,8 @@ This preset creates a CDN-accelerated domain with an Alibaba Cloud OSS bucket as
 |---|---|---|
 | `<alibaba-cloud-region>` | Region for provider API calls | Any region, typically `cn-hangzhou` |
 | `<your-cdn-domain>` | Domain name to accelerate (e.g., `assets.example.com`) | Your domain registrar |
-| `<your-bucket-name>` | OSS bucket name | `AlicloudStorageBucket` stack outputs |
-| `<bucket-region>` | Region where the OSS bucket is located (e.g., `cn-hangzhou`) | `AlicloudStorageBucket` configuration |
+| `<your-bucket-name>` | OSS bucket name | `AliCloudStorageBucket` stack outputs |
+| `<bucket-region>` | Region where the OSS bucket is located (e.g., `cn-hangzhou`) | `AliCloudStorageBucket` configuration |
 
 ## Related Presets
 

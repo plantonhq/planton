@@ -21,7 +21,7 @@
 #   # clientSecret: your-client-secret
 #   # apiTokenIssuer: https://your-issuer/oauth/token
 
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: test-model

@@ -177,7 +177,7 @@ func (r *CredentialResolver) ResolveProviderConfig(
 			},
 		}, nil
 
-	case cloudresourcekind.CloudResourceProvider_alicloud:
+	case cloudresourcekind.CloudResourceProvider_ali_cloud:
 		aliCred := credInterface.(*models.AliCloudCredential)
 		cfg := &alicloudv1.AliCloudProviderConfig{
 			Region:      aliCred.Region,
@@ -238,8 +238,8 @@ func (r *CredentialResolver) ResolveProviderConfig(
 			}
 		}
 		return &credentialv1.CredentialProviderConfig{
-			Data: &credentialv1.CredentialProviderConfig_Alicloud{
-				Alicloud: cfg,
+			Data: &credentialv1.CredentialProviderConfig_AliCloud{
+				AliCloud: cfg,
 			},
 		}, nil
 
@@ -277,11 +277,11 @@ func (r *CredentialResolver) ResolveProviderConfig(
 			},
 		}, nil
 
-	case cloudresourcekind.CloudResourceProvider_hetznercloud:
+	case cloudresourcekind.CloudResourceProvider_hetzner_cloud:
 		hcCred := credInterface.(*models.HetznerCloudCredential)
 		return &credentialv1.CredentialProviderConfig{
-			Data: &credentialv1.CredentialProviderConfig_Hetznercloud{
-				Hetznercloud: &hetznercloudv1.HetznerCloudProviderConfig{
+			Data: &credentialv1.CredentialProviderConfig_HetznerCloud{
+				HetznerCloud: &hetznercloudv1.HetznerCloudProviderConfig{
 					Token:           hcCred.Token,
 					Endpoint:        hcCred.Endpoint,
 					EndpointHetzner: hcCred.EndpointHetzner,

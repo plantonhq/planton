@@ -22,8 +22,8 @@ This preset creates a VPN Gateway connecting to two remote sites with production
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<alibaba-cloud-region>` | Alibaba Cloud region code | Your deployment region |
-| `<your-vpc-id>` | VPC ID | `AlicloudVpc` stack outputs |
-| `<your-vswitch-id>` | VSwitch ID for VPN Gateway | `AlicloudVswitch` stack outputs |
+| `<your-vpc-id>` | VPC ID | `AliCloudVpc` stack outputs |
+| `<your-vswitch-id>` | VSwitch ID for VPN Gateway | `AliCloudVswitch` stack outputs |
 | `<your-vpn-name>` | VPN Gateway name (2-128 chars) | Choose a descriptive name |
 | `<your-org>` | Organization name | Your organization |
 | `<your-team>` | Owning team | Your team name |

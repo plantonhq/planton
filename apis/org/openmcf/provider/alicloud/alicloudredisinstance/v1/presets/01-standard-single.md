@@ -22,7 +22,7 @@ This preset creates a minimal Redis 7.0 instance for development and testing, su
 | Placeholder | Description | Where to Find |
 |---|---|---|
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`) | Your deployment region |
-| `<your-vswitch-id>` | VSwitch ID to place the instance in | `AlicloudVswitch` stack outputs |
+| `<your-vswitch-id>` | VSwitch ID to place the instance in | `AliCloudVswitch` stack outputs |
 | `<your-instance-name>` | Instance name (2-256 chars) | Choose a descriptive name |
 | `<your-password>` | Instance password (8-32 chars, mixed complexity) | Use a secrets manager |
 | `<your-application-cidr>` | Application CIDR for IP whitelist (e.g., `10.0.0.0/8`) | Your VPC CIDR range |

@@ -1,4 +1,4 @@
-# AlicloudNasFileSystem
+# AliCloudNasFileSystem
 
 Manages an Alibaba Cloud Network Attached Storage (NAS) file system with a VPC mount target and optional custom access control.
 
@@ -69,12 +69,12 @@ Two file system types are supported:
 
 ## Dependencies
 
-- **AlicloudVpc** -- provides `vpcId` for the mount target
-- **AlicloudVswitch** -- provides `vswitchId` for the mount target
-- **AlicloudKmsKey** -- (optional) provides `kmsKeyId` for customer-managed encryption
+- **AliCloudVpc** -- provides `vpcId` for the mount target
+- **AliCloudVswitch** -- provides `vswitchId` for the mount target
+- **AliCloudKmsKey** -- (optional) provides `kmsKeyId` for customer-managed encryption
 
 ## Related Components
 
-- **AlicloudStorageBucket** -- object storage (S3-compatible), for unstructured data at scale
-- **AlicloudAckManagedCluster** -- Kubernetes clusters that can mount NAS for shared persistent storage
-- **AlicloudEcsInstance** -- compute instances that mount NAS via NFS/SMB
+- **AliCloudStorageBucket** -- object storage (S3-compatible), for unstructured data at scale
+- **AliCloudAckManagedCluster** -- Kubernetes clusters that can mount NAS for shared persistent storage
+- **AliCloudEcsInstance** -- compute instances that mount NAS via NFS/SMB

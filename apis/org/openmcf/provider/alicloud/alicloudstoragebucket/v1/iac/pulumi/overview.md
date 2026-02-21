@@ -1,6 +1,6 @@
 # Overview
 
-The AlicloudStorageBucket Pulumi module creates a single Alibaba Cloud OSS bucket from an OpenMCF manifest. The module handles optional features (versioning, encryption, lifecycle rules, CORS, logging) by conditionally building the appropriate Pulumi resource arguments.
+The AliCloudStorageBucket Pulumi module creates a single Alibaba Cloud OSS bucket from an OpenMCF manifest. The module handles optional features (versioning, encryption, lifecycle rules, CORS, logging) by conditionally building the appropriate Pulumi resource arguments.
 
 ## Module Architecture
 
@@ -13,9 +13,9 @@ iac/pulumi/
     └── outputs.go        Defines output constant names (bucket_name, endpoints)
 ```
 
-**Entry point** (`iac/pulumi/main.go`): Deserializes the Pulumi config into `AlicloudStorageBucketStackInput` via `stackinput.LoadStackInput()`, then delegates to `module.Resources()`.
+**Entry point** (`iac/pulumi/main.go`): Deserializes the Pulumi config into `AliCloudStorageBucketStackInput` via `stackinput.LoadStackInput()`, then delegates to `module.Resources()`.
 
-**Controller** (`module/main.go`): Initializes locals, creates the Alicloud provider scoped to `spec.region`, builds `oss.BucketArgs` with all configured features, provisions the bucket via `oss.NewBucket`, and exports three outputs.
+**Controller** (`module/main.go`): Initializes locals, creates the AliCloud provider scoped to `spec.region`, builds `oss.BucketArgs` with all configured features, provisions the bucket via `oss.NewBucket`, and exports three outputs.
 
 **Locals** (`module/locals.go`): Builds the merged tag map. System tags (`resource`, `resource_name`, `resource_kind`) are set first. Metadata fields (`resource_id`, `organization`, `environment`) are added conditionally. User-defined `spec.tags` are merged last.
 
@@ -24,7 +24,7 @@ iac/pulumi/
 ## Data Flow
 
 ```
-AlicloudStorageBucketStackInput
+AliCloudStorageBucketStackInput
   │
   ├─ target.Metadata  ──► initializeLocals() ──► Locals.Tags (merged map)
   ├─ target.Spec.Tags ─┘

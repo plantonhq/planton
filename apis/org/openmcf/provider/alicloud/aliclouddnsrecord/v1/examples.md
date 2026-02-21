@@ -5,8 +5,8 @@
 The most common DNS record type. Maps a subdomain to an IPv4 address.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsRecord
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsRecord
 metadata:
   name: www-a-record
 spec:
@@ -23,8 +23,8 @@ spec:
 Points a subdomain to another domain name. Commonly used for CDN integration or service aliasing.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsRecord
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsRecord
 metadata:
   name: cdn-cname
 spec:
@@ -40,8 +40,8 @@ spec:
 Routes email to mail servers. The `priority` field is required for MX records (1 = highest priority, 10 = lowest).
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsRecord
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsRecord
 metadata:
   name: mail-mx
 spec:
@@ -59,8 +59,8 @@ spec:
 TXT records are used for domain ownership verification, SPF, DKIM, and DMARC.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsRecord
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsRecord
 metadata:
   name: spf-txt
 spec:
@@ -76,8 +76,8 @@ spec:
 Catches all subdomains that do not have an explicit record.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsRecord
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsRecord
 metadata:
   name: wildcard
 spec:
@@ -93,8 +93,8 @@ spec:
 Create a record in DISABLE status. The record exists in Alidns but is not served in DNS responses. Useful for pre-staging records or temporarily taking a record offline.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsRecord
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsRecord
 metadata:
   name: staging-record
 spec:

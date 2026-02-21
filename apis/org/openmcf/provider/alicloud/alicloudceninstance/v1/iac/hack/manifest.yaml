@@ -1,5 +1,5 @@
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCenInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCenInstance
 metadata:
   name: test-cen
 spec:

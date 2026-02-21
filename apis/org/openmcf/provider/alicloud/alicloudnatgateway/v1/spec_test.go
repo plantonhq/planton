@@ -22,7 +22,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should pass with minimal required fields and no SNAT entries", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-nat",
@@ -47,7 +47,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should pass with all optional fields populated", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "full-nat",
@@ -80,7 +80,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should pass with SNAT entries using source_vswitch_id", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "snat-nat",
@@ -119,7 +119,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should pass with SNAT entries using source_cidr", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "cidr-nat",
@@ -150,7 +150,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should pass with nat_type Normal", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "normal-nat",
@@ -176,7 +176,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should pass with PayBySpec and specification", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "spec-nat",
@@ -203,7 +203,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should pass with Subscription payment type", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "sub-nat",
@@ -257,7 +257,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when kind is wrong", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -282,7 +282,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when metadata is missing", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Spec: &AliCloudNatGatewaySpec{
 					Region: "cn-hangzhou",
@@ -304,7 +304,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when spec is missing", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -316,7 +316,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when region is empty", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -341,7 +341,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when vpc_id is missing", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -363,7 +363,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when vswitch_id is missing", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -385,7 +385,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when eip_id is missing", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -407,7 +407,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when nat_gateway_name is too short", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -432,7 +432,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when nat_type is invalid", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -458,7 +458,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when payment_type is invalid", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -484,7 +484,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when internet_charge_type is invalid", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -510,7 +510,7 @@ var _ = ginkgo.Describe("AliCloudNatGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when specification is invalid", func() {
 			input := &AliCloudNatGateway{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudNatGateway",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",

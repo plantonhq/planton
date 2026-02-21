@@ -1,12 +1,12 @@
-# AlicloudRedisInstance Examples
+# AliCloudRedisInstance Examples
 
 ## Minimal: Development Cache
 
 A basic Redis 7.0 instance for development and testing.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRedisInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRedisInstance
 metadata:
   name: dev-redis
 spec:
@@ -22,8 +22,8 @@ spec:
 A production Redis cluster with cross-AZ failover, multiple data shards for throughput, and read replicas for read scaling.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRedisInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRedisInstance
 metadata:
   name: prod-cache
   org: acme-corp
@@ -65,8 +65,8 @@ spec:
 A security-hardened Redis instance with TDE encryption at rest, SSL for in-transit encryption, and subscription billing for cost optimization.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRedisInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRedisInstance
 metadata:
   name: secure-redis
   org: fintech-corp

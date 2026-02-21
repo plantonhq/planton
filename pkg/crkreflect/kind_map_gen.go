@@ -394,7 +394,7 @@ var ProviderTestMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_TestCloudResourceTwo:   &testcloudresourcetwov1.TestCloudResourceTwo{},
 }
 
-var ProviderAlicloudMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
+var ProviderAliCloudMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AliCloudApplicationLoadBalancer: &alicloudapplicationloadbalancerv1.AliCloudApplicationLoadBalancer{},
 	cloudresourcekind.CloudResourceKind_AliCloudCdnDomain:               &alicloudcdndomainv1.AliCloudCdnDomain{},
 	cloudresourcekind.CloudResourceKind_AliCloudCenInstance:             &alicloudceninstancev1.AliCloudCenInstance{},
@@ -637,7 +637,7 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpVpc:                        &gcpvpcv1.GcpVpc{},
 }
 
-var ProviderHetznercloudMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
+var ProviderHetznerCloudMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_HetznerCloudCertificate:    &hetznercloudcertificatev1.HetznerCloudCertificate{},
 	cloudresourcekind.CloudResourceKind_HetznerCloudDnsZone:        &hetznerclouddnszonev1.HetznerCloudDnsZone{},
 	cloudresourcekind.CloudResourceKind_HetznerCloudFirewall:       &hetznercloudfirewallv1.HetznerCloudFirewall{},
@@ -746,7 +746,7 @@ var ProviderOciMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_OciVcn:                     &ocivcnv1.OciVcn{},
 }
 
-var ProviderOpenFgaMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
+var ProviderOpenfgaMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_OpenFgaAuthorizationModel: &openfgaauthorizationmodelv1.OpenFgaAuthorizationModel{},
 	cloudresourcekind.CloudResourceKind_OpenFgaRelationshipTuple:  &openfgarelationshiptuplev1.OpenFgaRelationshipTuple{},
 	cloudresourcekind.CloudResourceKind_OpenFgaStore:              &openfgastorev1.OpenFgaStore{},
@@ -809,7 +809,7 @@ var ProviderSnowflakeMap = map[cloudresourcekind.CloudResourceKind]proto.Message
 
 var ToMessageMap = merge(
 	ProviderTestMap,
-	ProviderAlicloudMap,
+	ProviderAliCloudMap,
 	ProviderAtlasMap,
 	ProviderAuth0Map,
 	ProviderAwsMap,
@@ -819,10 +819,10 @@ var ToMessageMap = merge(
 	ProviderConfluentMap,
 	ProviderDigitalOceanMap,
 	ProviderGcpMap,
-	ProviderHetznercloudMap,
+	ProviderHetznerCloudMap,
 	ProviderKubernetesMap,
 	ProviderOciMap,
-	ProviderOpenFgaMap,
+	ProviderOpenfgaMap,
 	ProviderOpenstackMap,
 	ProviderScalewayMap,
 	ProviderSnowflakeMap,

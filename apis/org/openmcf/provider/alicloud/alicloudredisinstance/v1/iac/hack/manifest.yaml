@@ -1,5 +1,5 @@
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRedisInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRedisInstance
 metadata:
   name: alicloudredisinstance-demo
 spec:

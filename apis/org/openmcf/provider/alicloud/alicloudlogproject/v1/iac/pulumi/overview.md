@@ -1,4 +1,4 @@
-# Pulumi Module Overview — AlicloudLogProject
+# Pulumi Module Overview — AliCloudLogProject
 
 ## Module Architecture
 
@@ -10,7 +10,7 @@ The module lives in `module/` and consists of three files:
 | `locals.go` | Transformations — tag merging, optional-field default resolution |
 | `outputs.go` | Output constants — `project_name`, `project_id`, `log_store_names` |
 
-Entry point: `Resources(ctx *pulumi.Context, stackInput *AlicloudLogProjectStackInput) error`
+Entry point: `Resources(ctx *pulumi.Context, stackInput *AliCloudLogProjectStackInput) error`
 
 ## Control Flow
 
@@ -105,7 +105,7 @@ customization is a 20% feature deferred from the current API.
 | Goal | File to Modify | Notes |
 |------|---------------|-------|
 | Add a new log store field (e.g., `hotTtl`) | `locals.go` (add default helper), `main.go` (pass to `log.StoreArgs`) | Also update `spec.proto` and regenerate |
-| Add Logtail config | New file `logtail.go` | Would need `AlicloudLogtailConfig` message in `spec.proto` |
+| Add Logtail config | New file `logtail.go` | Would need `AliCloudLogtailConfig` message in `spec.proto` |
 | Change index tokenizer | `main.go`, `logStoreIndex()` function | Consider exposing as a spec field if multiple tokenizers are needed |
-| Add field-level indexes | `main.go`, new `log.StoreIndex` with `FieldSearch` args | Requires `AlicloudLogStoreFieldIndex` message in `spec.proto` |
+| Add field-level indexes | `main.go`, new `log.StoreIndex` with `FieldSearch` args | Requires `AliCloudLogStoreFieldIndex` message in `spec.proto` |
 | Add project-level encryption | `main.go`, `log.ProjectArgs` | SLS supports CMK encryption; add `kmsKeyId` to spec |

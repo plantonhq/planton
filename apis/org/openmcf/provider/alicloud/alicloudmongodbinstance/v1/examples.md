@@ -1,12 +1,12 @@
-# AlicloudMongodbInstance Examples
+# AliCloudMongodbInstance Examples
 
 ## Minimal: Development Instance
 
 A basic MongoDB 7.0 replica-set instance for development and testing.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudMongodbInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudMongodbInstance
 metadata:
   name: dev-mongodb
 spec:
@@ -24,8 +24,8 @@ spec:
 A production MongoDB 6.0 replica set deployed across three availability zones for maximum fault tolerance, with read replicas for read scaling and daily backups.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudMongodbInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudMongodbInstance
 metadata:
   name: prod-mongodb
   org: acme-corp
@@ -70,8 +70,8 @@ spec:
 A security-hardened MongoDB instance with TDE encryption at rest, SSL for in-transit encryption, and subscription billing for cost optimization.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudMongodbInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudMongodbInstance
 metadata:
   name: secure-mongodb
   org: fintech-corp

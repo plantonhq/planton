@@ -1,0 +1,41 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciContainerInstance
+metadata:
+  name: my-private-service
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  availabilityDomain: <availability-domain>
+  shape: CI.Standard.E4.Flex
+  shapeConfig:
+    ocpus: 2
+    memoryInGbs: 8
+  containerRestartPolicy: on_failure
+  gracefulShutdownTimeoutInSeconds: 30
+  containers:
+    - imageUrl: <container-image-url>
+      displayName: app
+      healthChecks:
+        - healthCheckType: http
+          port: 8080
+          path: /healthz
+          failureAction: kill
+          initialDelayInSeconds: 15
+          intervalInSeconds: 10
+          timeoutInSeconds: 5
+          failureThreshold: 3
+          successThreshold: 1
+      securityContext:
+        isNonRootUserCheckEnabled: true
+        isRootFileSystemReadonly: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        capabilities:
+          dropCapabilities:
+            - ALL
+  vnics:
+    - subnetId:
+        value: <private-subnet-ocid>
+      isPublicIpAssigned: false
+      nsgIds:
+        - value: <nsg-ocid>

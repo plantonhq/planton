@@ -1,12 +1,12 @@
-# AlicloudNetworkLoadBalancer Examples
+# AliCloudNetworkLoadBalancer Examples
 
 ## Minimal: Internet-Facing TCP
 
 The simplest NLB configuration: one server group, one TCP listener, two availability zones.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNetworkLoadBalancer
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNetworkLoadBalancer
 metadata:
   name: dev-nlb
 spec:
@@ -35,8 +35,8 @@ spec:
 Internet-facing NLB with TLS termination at Layer 4, client certificate verification, and fixed EIPs for stable public addresses.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNetworkLoadBalancer
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNetworkLoadBalancer
 metadata:
   name: prod-nlb
   org: acme-corp
@@ -98,8 +98,8 @@ spec:
 An internal NLB for service-to-service TCP traffic with connection draining for graceful deployments and source-IP consistent hashing for session affinity.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNetworkLoadBalancer
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNetworkLoadBalancer
 metadata:
   name: internal-nlb
 spec:

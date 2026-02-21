@@ -1,8 +1,8 @@
-# Pulumi Module to Deploy AlicloudVpc
+# Pulumi Module to Deploy AliCloudVpc
 
 This module provisions an Alibaba Cloud Virtual Private Cloud (VPC) with configurable CIDR block, optional IPv6 support, resource group assignment, and automatic tag management. It creates a single `vpc.Network` resource and exports the VPC ID, name, CIDR block, router ID, and route table ID.
 
-Generated from the proto schema for `AlicloudVpc`.
+Generated from the proto schema for `AliCloudVpc`.
 
 ## CLI Usage (OpenMCF Pulumi)
 
@@ -54,8 +54,8 @@ The module merges user-defined `spec.tags` with system tags (resource name, kind
 1. Create or edit a manifest:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpc
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpc
 metadata:
   name: my-vpc
 spec:

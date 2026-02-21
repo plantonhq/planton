@@ -12,8 +12,8 @@ openmcf tofu apply --manifest <yaml-path> --stack <stack-name>
 ## Minimal OSS Read-Only Policy
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamPolicy
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamPolicy
 metadata:
   name: oss-reader
 spec:
@@ -45,8 +45,8 @@ This example:
 ## Scoped Bucket Access with Tags
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamPolicy
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamPolicy
 metadata:
   name: app-data-access
 spec:
@@ -83,8 +83,8 @@ This policy:
 ## Multi-Service CI/CD Pipeline Policy
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamPolicy
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamPolicy
 metadata:
   name: cicd-deploy-policy
 spec:
@@ -140,8 +140,8 @@ This policy:
 ## Full-Featured Policy
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamPolicy
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamPolicy
 metadata:
   name: production-oss-policy
 spec:

@@ -19,11 +19,11 @@ This preset creates a production-grade NAT Gateway serving multiple VSwitches ac
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`) | Your deployment region |
-| `<your-vpc-id>` | VPC ID the NAT Gateway belongs to | Alibaba Cloud VPC console or `AlicloudVpc` stack outputs |
-| `<your-nat-vswitch-id>` | VSwitch ID for NAT Gateway placement | Alibaba Cloud VPC console or `AlicloudVswitch` stack outputs |
-| `<your-eip-id>` | EIP allocation ID to associate with the NAT Gateway | Alibaba Cloud EIP console or `AlicloudEipAddress` stack outputs |
-| `<your-app-vswitch-id-zone-a>` | Application VSwitch ID in availability zone A | `AlicloudVswitch` stack outputs for zone A |
-| `<your-app-vswitch-id-zone-b>` | Application VSwitch ID in availability zone B | `AlicloudVswitch` stack outputs for zone B |
+| `<your-vpc-id>` | VPC ID the NAT Gateway belongs to | Alibaba Cloud VPC console or `AliCloudVpc` stack outputs |
+| `<your-nat-vswitch-id>` | VSwitch ID for NAT Gateway placement | Alibaba Cloud VPC console or `AliCloudVswitch` stack outputs |
+| `<your-eip-id>` | EIP allocation ID to associate with the NAT Gateway | Alibaba Cloud EIP console or `AliCloudEipAddress` stack outputs |
+| `<your-app-vswitch-id-zone-a>` | Application VSwitch ID in availability zone A | `AliCloudVswitch` stack outputs for zone A |
+| `<your-app-vswitch-id-zone-b>` | Application VSwitch ID in availability zone B | `AliCloudVswitch` stack outputs for zone B |
 | `<your-nat-name>` | NAT Gateway name (2-128 chars) | Choose a descriptive name |
 | `<your-team>` | Team name for cost-tracking tag | Your team |
 | `<your-cost-center>` | Cost center for billing tag | Your cost center |

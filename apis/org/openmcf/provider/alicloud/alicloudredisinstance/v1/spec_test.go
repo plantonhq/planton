@@ -22,7 +22,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRedisInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-redis",
@@ -42,7 +42,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with all optional fields populated", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRedisInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "prod-redis",
@@ -85,7 +85,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with PrePaid billing and period", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRedisInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "prepaid-redis",
@@ -109,7 +109,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with Memcache instance type", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRedisInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "memcache-instance",
@@ -131,7 +131,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with TDE encryption enabled", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRedisInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "encrypted-redis",
@@ -173,7 +173,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when kind is wrong", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRedisInstanceSpec{
@@ -190,7 +190,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when metadata is missing", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRedisInstance",
 				Spec: &AliCloudRedisInstanceSpec{
 					Region: "cn-hangzhou", InstanceClass: "redis.master.small.default",
@@ -206,7 +206,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when spec is missing", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 			}
@@ -216,7 +216,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when region is empty", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRedisInstanceSpec{
@@ -233,7 +233,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when vswitch_id is missing", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRedisInstanceSpec{
@@ -247,7 +247,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when instance_class is empty", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRedisInstanceSpec{
@@ -264,7 +264,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when password is too short", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRedisInstanceSpec{
@@ -281,7 +281,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when engine_version is invalid", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRedisInstanceSpec{
@@ -299,7 +299,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when instance_type is invalid", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRedisInstanceSpec{
@@ -317,7 +317,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when payment_type is invalid", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRedisInstanceSpec{
@@ -335,7 +335,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when ssl_enable is invalid", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRedisInstanceSpec{
@@ -353,7 +353,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when vpc_auth_mode is invalid", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRedisInstanceSpec{
@@ -371,7 +371,7 @@ var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when read_only_count exceeds max", func() {
 			input := &AliCloudRedisInstance{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRedisInstanceSpec{

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added Oracle Cloud Infrastructure (OCI) as provider #26 to OpenMCF, enabling users to manage OCI credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. OCI's multi-method authentication model (API Key, Instance Principal, Security Token, Resource Principal, OKE Workload Identity) is handled via the enum-discriminator pattern introduced by Alicloud, with sub-messages only for methods that carry credential fields.
+Added Oracle Cloud Infrastructure (OCI) as provider #26 to OpenMCF, enabling users to manage OCI credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. OCI's multi-method authentication model (API Key, Instance Principal, Security Token, Resource Principal, OKE Workload Identity) is handled via the enum-discriminator pattern introduced by AliCloud, with sub-messages only for methods that carry credential fields.
 
 ## Problem Statement / Motivation
 
@@ -22,7 +22,7 @@ OpenMCF had no Oracle Cloud Infrastructure support. Organizations using OCI coul
 
 ## Solution / What's New
 
-Implemented comprehensive OCI provider support covering all 5 practical authentication methods supported by the upstream Terraform provider, using the enum-discriminator pattern established by the Alicloud integration.
+Implemented comprehensive OCI provider support covering all 5 practical authentication methods supported by the upstream Terraform provider, using the enum-discriminator pattern established by the AliCloud integration.
 
 ### Architecture
 
@@ -145,7 +145,7 @@ Added OCI provider page at `/docs/catalog/oci` with placeholder for future resou
 
 ### For Developers
 
-- **Pattern consistency**: Follows the enum-discriminator pattern established by Alicloud
+- **Pattern consistency**: Follows the enum-discriminator pattern established by AliCloud
 - **Lean proto design**: Only 2 sub-messages (for methods with credential fields); ambient methods use enum + region alone
 - **Foundation for resources**: Ready for OCI resource kinds in future phases
 

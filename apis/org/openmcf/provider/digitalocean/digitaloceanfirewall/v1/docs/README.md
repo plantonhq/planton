@@ -468,7 +468,7 @@ That said, Terraform would work equally well. The choice is implementation detai
 **Use Case:** Simple web application for developer testing. Easy access, no strict security.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFirewall
 metadata:
   name: dev-web-fw
@@ -515,7 +515,7 @@ spec:
 **Use Case:** Production web servers behind a Load Balancer. Serve HTTPS traffic, allow SSH from office only.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFirewall
 metadata:
   name: prod-web-fw
@@ -564,7 +564,7 @@ spec:
 **Use Case:** PostgreSQL database reachable only by web tier and administrators. No public access.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFirewall
 metadata:
   name: prod-db-fw

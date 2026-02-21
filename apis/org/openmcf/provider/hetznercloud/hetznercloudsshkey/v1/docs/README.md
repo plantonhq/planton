@@ -1,4 +1,4 @@
-# Hetzner Cloud SSH Key — Research Documentation
+# HetznerCloud SSH Key — Research Documentation
 
 ## Introduction
 
@@ -203,7 +203,7 @@ The key differentiator for OpenMCF is not the state management (Terraform and Pu
 ### Manifest Format
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSshKey
 metadata:
   name: deploy-key
@@ -310,7 +310,7 @@ For teams, register one SSH key per person or per role rather than sharing a sin
 
 ```yaml
 # ops-team-alice.yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSshKey
 metadata:
   name: ops-alice
@@ -322,7 +322,7 @@ spec:
 
 ```yaml
 # ops-team-bob.yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSshKey
 metadata:
   name: ops-bob

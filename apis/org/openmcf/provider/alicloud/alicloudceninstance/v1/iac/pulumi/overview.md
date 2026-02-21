@@ -1,11 +1,11 @@
-# AlicloudCenInstance Pulumi Module Overview
+# AliCloudCenInstance Pulumi Module Overview
 
 ## Architecture
 
 The module creates a CEN instance and iterates over the `spec.attachments` list to create child-instance attachments. Each attachment connects a VPC, VBR, or CCN to the CEN hub.
 
 ```
-AlicloudCenInstance (spec)
+AliCloudCenInstance (spec)
 ├── cen.Instance (CEN hub)
 └── cen.InstanceAttachment[] (per attachment entry)
     ├── Attachment 0: VPC in cn-hangzhou

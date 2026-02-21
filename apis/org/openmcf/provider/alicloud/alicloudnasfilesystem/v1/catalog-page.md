@@ -1,10 +1,10 @@
-# Alibaba Cloud NAS File System
+# AliCloud NAS File System
 
 Deploys an Alibaba Cloud Network Attached Storage (NAS) file system with a VPC mount target and optional custom access control. NAS provides fully managed, elastic, shared file storage supporting NFS and SMB protocols, accessible from ECS instances, Kubernetes pods, and serverless functions within a VPC.
 
 ## What Gets Created
 
-When you deploy an AlicloudNasFileSystem resource, OpenMCF provisions:
+When you deploy an AliCloudNasFileSystem resource, OpenMCF provisions:
 
 - **NAS File System** -- an `alicloud_nas_file_system` resource (Pulumi: `nas.FileSystem`) with the specified protocol type, storage tier, and optional encryption at rest
 - **Access Group + Access Rules** -- (conditional) when `accessRules` are specified, a custom `alicloud_nas_access_group` with `alicloud_nas_access_rule` entries controlling which IP ranges can mount the file system and with what permissions
@@ -24,15 +24,15 @@ When no `accessRules` are specified, the mount target uses the built-in DEFAULT_
 Create a file `nas.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNasFileSystem
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNasFileSystem
 metadata:
   name: shared-data
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudNasFileSystem.shared-data
+    pulumi.openmcf.org/stack.name: dev.AliCloudNasFileSystem.shared-data
 spec:
   region: cn-hangzhou
   protocolType: NFS
@@ -83,8 +83,8 @@ mount -t nfs -o vers=4,minorversion=0,noresvport <mount_target_domain>:/ /mnt/na
 ### Minimal NFS File System
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNasFileSystem
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNasFileSystem
 metadata:
   name: dev-share
 spec:
@@ -98,8 +98,8 @@ spec:
 ### Production NFS with Encryption and Access Rules
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNasFileSystem
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNasFileSystem
 metadata:
   name: prod-storage
   org: my-org
@@ -125,8 +125,8 @@ spec:
 ### Extreme NAS for High-Throughput Workloads
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNasFileSystem
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNasFileSystem
 metadata:
   name: hpc-scratch
 spec:
@@ -154,8 +154,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudVpc](/docs/catalog/alicloud/alicloudvpc) -- prerequisite VPC for the mount target
-- [AlicloudVswitch](/docs/catalog/alicloud/alicloudvswitch) -- prerequisite VSwitch for the mount target
-- [AlicloudKmsKey](/docs/catalog/alicloud/alicloudkmskey) -- for customer-managed encryption keys
-- [AlicloudStorageBucket](/docs/catalog/alicloud/alicloudstoragebucket) -- object storage alternative for unstructured data
-- [AlicloudAckManagedCluster](/docs/catalog/alicloud/alicloudackmanagedcluster) -- Kubernetes clusters that mount NAS for shared persistent volumes
+- [AliCloudVpc](/docs/catalog/alicloud/alicloudvpc) -- prerequisite VPC for the mount target
+- [AliCloudVswitch](/docs/catalog/alicloud/alicloudvswitch) -- prerequisite VSwitch for the mount target
+- [AliCloudKmsKey](/docs/catalog/alicloud/alicloudkmskey) -- for customer-managed encryption keys
+- [AliCloudStorageBucket](/docs/catalog/alicloud/alicloudstoragebucket) -- object storage alternative for unstructured data
+- [AliCloudAckManagedCluster](/docs/catalog/alicloud/alicloudackmanagedcluster) -- Kubernetes clusters that mount NAS for shared persistent volumes

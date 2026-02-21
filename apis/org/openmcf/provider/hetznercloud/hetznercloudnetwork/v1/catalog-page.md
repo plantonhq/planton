@@ -18,7 +18,7 @@ Creates a private network in Hetzner Cloud with subnets and optional static rout
 Create a file `network.yaml`:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudNetwork
 metadata:
   name: my-network
@@ -79,7 +79,7 @@ This creates a private network with a single cloud subnet in the `eu-central` zo
 A single cloud subnet in `eu-central` — the simplest working network configuration.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudNetwork
 metadata:
   name: simple-net
@@ -101,7 +101,7 @@ spec:
 Two subnets in different zones for geographic redundancy, with delete protection enabled.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudNetwork
 metadata:
   name: multi-zone
@@ -129,7 +129,7 @@ spec:
 A network with custom routes directing traffic for a remote network through a VPN gateway server.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudNetwork
 metadata:
   name: routed-net
@@ -160,7 +160,7 @@ spec:
 A network referenced by a HetznerCloudServer using `valueFrom`. The server receives the network's numeric ID from the network's stack outputs, establishing a dependency edge in the deployment DAG.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudNetwork
 metadata:
   name: app-network
@@ -183,7 +183,7 @@ spec:
 The server references this network:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: app-01

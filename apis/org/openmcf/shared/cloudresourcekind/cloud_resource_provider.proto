@@ -69,8 +69,8 @@ enum CloudResourceProvider {
     group: "auth0.openmcf.org"
     display_name: "Auth0"
   }];
-  open_fga = 22 [(provider_meta) = {
-    group: "open-fga.openmcf.org"
+  openfga = 22 [(provider_meta) = {
+    group: "openfga.openmcf.org"
     display_name: "OpenFGA"
   }];
   openstack = 23 [(provider_meta) = {
@@ -81,16 +81,16 @@ enum CloudResourceProvider {
     group: "scaleway.openmcf.org"
     display_name: "Scaleway"
   }];
-  alicloud = 25 [(provider_meta) = {
-    group: "alicloud.openmcf.org"
+  ali_cloud = 25 [(provider_meta) = {
+    group: "ali-cloud.openmcf.org"
     display_name: "Alibaba Cloud"
   }];
   oci = 26 [(provider_meta) = {
     group: "oci.openmcf.org"
     display_name: "OCI"
   }];
-  hetznercloud = 27 [(provider_meta) = {
-    group: "hetznercloud.openmcf.org"
+  hetzner_cloud = 27 [(provider_meta) = {
+    group: "hetzner-cloud.openmcf.org"
     display_name: "Hetzner Cloud"
   }];
 }

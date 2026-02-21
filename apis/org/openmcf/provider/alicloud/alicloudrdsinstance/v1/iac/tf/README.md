@@ -1,4 +1,4 @@
-# AlicloudRdsInstance Terraform Module
+# AliCloudRdsInstance Terraform Module
 
 This Terraform module provisions an Alibaba Cloud RDS instance with bundled databases, accounts, and account privileges.
 

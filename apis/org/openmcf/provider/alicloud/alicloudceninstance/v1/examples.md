@@ -1,12 +1,12 @@
-# AlicloudCenInstance Examples
+# AliCloudCenInstance Examples
 
 ## Minimal: Single VPC Attachment
 
 The simplest CEN setup: one instance with a single VPC attached. Useful as a placeholder before adding more networks.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCenInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCenInstance
 metadata:
   name: basic-cen
 spec:
@@ -23,8 +23,8 @@ spec:
 Connect production and shared-services VPCs in the same region for private communication.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCenInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCenInstance
 metadata:
   name: intra-region-cen
   org: acme-corp
@@ -50,8 +50,8 @@ spec:
 Connect VPCs across multiple Alibaba Cloud regions for a global backbone. CIDR overlap protection is relaxed with `protectionLevel: REDUCED` to allow overlapping address spaces managed by route maps.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCenInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCenInstance
 metadata:
   name: global-backbone
   org: acme-corp
@@ -82,8 +82,8 @@ spec:
 CEN instance referencing VPCs managed by other OpenMCF resources using `valueFrom`.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCenInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCenInstance
 metadata:
   name: managed-cen
   org: acme-corp

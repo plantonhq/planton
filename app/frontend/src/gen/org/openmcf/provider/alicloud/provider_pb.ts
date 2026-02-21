@@ -85,51 +85,51 @@ export type AliCloudProviderConfig = Message<"org.openmcf.provider.alicloud.AliC
   /**
    * static_credentials is populated when authentication_type is static_credentials.
    *
-   * @generated from field: org.openmcf.provider.alicloud.AlicloudStaticCredentials static_credentials = 10;
+   * @generated from field: org.openmcf.provider.alicloud.AliCloudStaticCredentials static_credentials = 10;
    */
-  staticCredentials?: AlicloudStaticCredentials;
+  staticCredentials?: AliCloudStaticCredentials;
 
   /**
    * sts_token is populated when authentication_type is sts_token.
    *
-   * @generated from field: org.openmcf.provider.alicloud.AlicloudStsTokenCredentials sts_token = 11;
+   * @generated from field: org.openmcf.provider.alicloud.AliCloudStsTokenCredentials sts_token = 11;
    */
-  stsToken?: AlicloudStsTokenCredentials;
+  stsToken?: AliCloudStsTokenCredentials;
 
   /**
    * ecs_role is populated when authentication_type is ecs_role.
    *
-   * @generated from field: org.openmcf.provider.alicloud.AlicloudEcsRoleCredentials ecs_role = 12;
+   * @generated from field: org.openmcf.provider.alicloud.AliCloudEcsRoleCredentials ecs_role = 12;
    */
-  ecsRole?: AlicloudEcsRoleCredentials;
+  ecsRole?: AliCloudEcsRoleCredentials;
 
   /**
    * assume_role is populated when authentication_type is assume_role.
    *
-   * @generated from field: org.openmcf.provider.alicloud.AlicloudAssumeRoleCredentials assume_role = 13;
+   * @generated from field: org.openmcf.provider.alicloud.AliCloudAssumeRoleCredentials assume_role = 13;
    */
-  assumeRole?: AlicloudAssumeRoleCredentials;
+  assumeRole?: AliCloudAssumeRoleCredentials;
 
   /**
    * assume_role_with_oidc is populated when authentication_type is assume_role_with_oidc.
    *
-   * @generated from field: org.openmcf.provider.alicloud.AlicloudAssumeRoleWithOidcCredentials assume_role_with_oidc = 14;
+   * @generated from field: org.openmcf.provider.alicloud.AliCloudAssumeRoleWithOidcCredentials assume_role_with_oidc = 14;
    */
-  assumeRoleWithOidc?: AlicloudAssumeRoleWithOidcCredentials;
+  assumeRoleWithOidc?: AliCloudAssumeRoleWithOidcCredentials;
 
   /**
    * shared_credentials is populated when authentication_type is shared_credentials.
    *
-   * @generated from field: org.openmcf.provider.alicloud.AlicloudSharedCredentials shared_credentials = 15;
+   * @generated from field: org.openmcf.provider.alicloud.AliCloudSharedCredentials shared_credentials = 15;
    */
-  sharedCredentials?: AlicloudSharedCredentials;
+  sharedCredentials?: AliCloudSharedCredentials;
 
   /**
    * sidecar_credentials is populated when authentication_type is sidecar_credentials.
    *
-   * @generated from field: org.openmcf.provider.alicloud.AlicloudSidecarCredentials sidecar_credentials = 16;
+   * @generated from field: org.openmcf.provider.alicloud.AliCloudSidecarCredentials sidecar_credentials = 16;
    */
-  sidecarCredentials?: AlicloudSidecarCredentials;
+  sidecarCredentials?: AliCloudSidecarCredentials;
 };
 
 /**
@@ -140,16 +140,16 @@ export const AliCloudProviderConfigSchema: GenMessage<AliCloudProviderConfig> = 
   messageDesc(file_org_openmcf_provider_alicloud_provider, 0);
 
 /**
- * AlicloudStaticCredentials provides authentication via a long-lived IAM access key pair.
+ * AliCloudStaticCredentials provides authentication via a long-lived IAM access key pair.
  * This is the simplest and most common authentication method.
  *
  * Environment variable mapping:
  *   access_key -> ALIBABA_CLOUD_ACCESS_KEY_ID
  *   secret_key -> ALIBABA_CLOUD_ACCESS_KEY_SECRET
  *
- * @generated from message org.openmcf.provider.alicloud.AlicloudStaticCredentials
+ * @generated from message org.openmcf.provider.alicloud.AliCloudStaticCredentials
  */
-export type AlicloudStaticCredentials = Message<"org.openmcf.provider.alicloud.AlicloudStaticCredentials"> & {
+export type AliCloudStaticCredentials = Message<"org.openmcf.provider.alicloud.AliCloudStaticCredentials"> & {
   /**
    * access_key is the Alibaba Cloud access key ID.
    * Created in the RAM console under AccessKey Management.
@@ -170,14 +170,14 @@ export type AlicloudStaticCredentials = Message<"org.openmcf.provider.alicloud.A
 };
 
 /**
- * Describes the message org.openmcf.provider.alicloud.AlicloudStaticCredentials.
- * Use `create(AlicloudStaticCredentialsSchema)` to create a new message.
+ * Describes the message org.openmcf.provider.alicloud.AliCloudStaticCredentials.
+ * Use `create(AliCloudStaticCredentialsSchema)` to create a new message.
  */
-export const AlicloudStaticCredentialsSchema: GenMessage<AlicloudStaticCredentials> = /*@__PURE__*/
+export const AliCloudStaticCredentialsSchema: GenMessage<AliCloudStaticCredentials> = /*@__PURE__*/
   messageDesc(file_org_openmcf_provider_alicloud_provider, 1);
 
 /**
- * AlicloudStsTokenCredentials provides authentication via temporary STS credentials.
+ * AliCloudStsTokenCredentials provides authentication via temporary STS credentials.
  * STS credentials include an access key pair plus a short-lived security token,
  * typically obtained from AssumeRole, federation, or other STS APIs.
  *
@@ -186,9 +186,9 @@ export const AlicloudStaticCredentialsSchema: GenMessage<AlicloudStaticCredentia
  *   secret_key     -> ALIBABA_CLOUD_ACCESS_KEY_SECRET
  *   security_token -> ALIBABA_CLOUD_SECURITY_TOKEN
  *
- * @generated from message org.openmcf.provider.alicloud.AlicloudStsTokenCredentials
+ * @generated from message org.openmcf.provider.alicloud.AliCloudStsTokenCredentials
  */
-export type AlicloudStsTokenCredentials = Message<"org.openmcf.provider.alicloud.AlicloudStsTokenCredentials"> & {
+export type AliCloudStsTokenCredentials = Message<"org.openmcf.provider.alicloud.AliCloudStsTokenCredentials"> & {
   /**
    * access_key is the temporary access key ID from STS.
    * Environment variable: ALIBABA_CLOUD_ACCESS_KEY_ID
@@ -215,23 +215,23 @@ export type AlicloudStsTokenCredentials = Message<"org.openmcf.provider.alicloud
 };
 
 /**
- * Describes the message org.openmcf.provider.alicloud.AlicloudStsTokenCredentials.
- * Use `create(AlicloudStsTokenCredentialsSchema)` to create a new message.
+ * Describes the message org.openmcf.provider.alicloud.AliCloudStsTokenCredentials.
+ * Use `create(AliCloudStsTokenCredentialsSchema)` to create a new message.
  */
-export const AlicloudStsTokenCredentialsSchema: GenMessage<AlicloudStsTokenCredentials> = /*@__PURE__*/
+export const AliCloudStsTokenCredentialsSchema: GenMessage<AliCloudStsTokenCredentials> = /*@__PURE__*/
   messageDesc(file_org_openmcf_provider_alicloud_provider, 2);
 
 /**
- * AlicloudEcsRoleCredentials provides authentication via an ECS instance RAM role.
+ * AliCloudEcsRoleCredentials provides authentication via an ECS instance RAM role.
  * When running on an ECS instance with an attached RAM role, the provider retrieves
  * temporary credentials from the instance metadata service automatically.
  *
  * Environment variable mapping:
  *   ecs_role_name -> ALIBABA_CLOUD_ECS_METADATA
  *
- * @generated from message org.openmcf.provider.alicloud.AlicloudEcsRoleCredentials
+ * @generated from message org.openmcf.provider.alicloud.AliCloudEcsRoleCredentials
  */
-export type AlicloudEcsRoleCredentials = Message<"org.openmcf.provider.alicloud.AlicloudEcsRoleCredentials"> & {
+export type AliCloudEcsRoleCredentials = Message<"org.openmcf.provider.alicloud.AliCloudEcsRoleCredentials"> & {
   /**
    * ecs_role_name is the name of the RAM role attached to the ECS instance.
    * The provider fetches credentials from http://100.100.100.200/latest/meta-data/ram/security-credentials/<role_name>.
@@ -243,14 +243,14 @@ export type AlicloudEcsRoleCredentials = Message<"org.openmcf.provider.alicloud.
 };
 
 /**
- * Describes the message org.openmcf.provider.alicloud.AlicloudEcsRoleCredentials.
- * Use `create(AlicloudEcsRoleCredentialsSchema)` to create a new message.
+ * Describes the message org.openmcf.provider.alicloud.AliCloudEcsRoleCredentials.
+ * Use `create(AliCloudEcsRoleCredentialsSchema)` to create a new message.
  */
-export const AlicloudEcsRoleCredentialsSchema: GenMessage<AlicloudEcsRoleCredentials> = /*@__PURE__*/
+export const AliCloudEcsRoleCredentialsSchema: GenMessage<AliCloudEcsRoleCredentials> = /*@__PURE__*/
   messageDesc(file_org_openmcf_provider_alicloud_provider, 3);
 
 /**
- * AlicloudAssumeRoleCredentials provides authentication by assuming a RAM role.
+ * AliCloudAssumeRoleCredentials provides authentication by assuming a RAM role.
  * The provider first authenticates with the base access key pair, then calls STS
  * AssumeRole to obtain temporary credentials scoped to the target role.
  *
@@ -263,9 +263,9 @@ export const AlicloudEcsRoleCredentialsSchema: GenMessage<AlicloudEcsRoleCredent
  *   policy             -> (no environment variable)
  *   external_id        -> (no environment variable)
  *
- * @generated from message org.openmcf.provider.alicloud.AlicloudAssumeRoleCredentials
+ * @generated from message org.openmcf.provider.alicloud.AliCloudAssumeRoleCredentials
  */
-export type AlicloudAssumeRoleCredentials = Message<"org.openmcf.provider.alicloud.AlicloudAssumeRoleCredentials"> & {
+export type AliCloudAssumeRoleCredentials = Message<"org.openmcf.provider.alicloud.AliCloudAssumeRoleCredentials"> & {
   /**
    * access_key is the base access key ID used to call STS AssumeRole.
    * Environment variable: ALIBABA_CLOUD_ACCESS_KEY_ID
@@ -328,14 +328,14 @@ export type AlicloudAssumeRoleCredentials = Message<"org.openmcf.provider.aliclo
 };
 
 /**
- * Describes the message org.openmcf.provider.alicloud.AlicloudAssumeRoleCredentials.
- * Use `create(AlicloudAssumeRoleCredentialsSchema)` to create a new message.
+ * Describes the message org.openmcf.provider.alicloud.AliCloudAssumeRoleCredentials.
+ * Use `create(AliCloudAssumeRoleCredentialsSchema)` to create a new message.
  */
-export const AlicloudAssumeRoleCredentialsSchema: GenMessage<AlicloudAssumeRoleCredentials> = /*@__PURE__*/
+export const AliCloudAssumeRoleCredentialsSchema: GenMessage<AliCloudAssumeRoleCredentials> = /*@__PURE__*/
   messageDesc(file_org_openmcf_provider_alicloud_provider, 4);
 
 /**
- * AlicloudAssumeRoleWithOidcCredentials provides authentication by assuming a RAM role
+ * AliCloudAssumeRoleWithOidcCredentials provides authentication by assuming a RAM role
  * via OIDC federation. This method does not require an access key pair -- the OIDC token
  * from a trusted identity provider is exchanged for temporary RAM credentials.
  *
@@ -348,9 +348,9 @@ export const AlicloudAssumeRoleCredentialsSchema: GenMessage<AlicloudAssumeRoleC
  *   policy            -> (no environment variable)
  *   session_expiration -> (no environment variable)
  *
- * @generated from message org.openmcf.provider.alicloud.AlicloudAssumeRoleWithOidcCredentials
+ * @generated from message org.openmcf.provider.alicloud.AliCloudAssumeRoleWithOidcCredentials
  */
-export type AlicloudAssumeRoleWithOidcCredentials = Message<"org.openmcf.provider.alicloud.AlicloudAssumeRoleWithOidcCredentials"> & {
+export type AliCloudAssumeRoleWithOidcCredentials = Message<"org.openmcf.provider.alicloud.AliCloudAssumeRoleWithOidcCredentials"> & {
   /**
    * oidc_provider_arn is the ARN of the OIDC identity provider in RAM.
    * Format: acs:ram::<account_id>:oidc-provider/<provider_name>
@@ -415,14 +415,14 @@ export type AlicloudAssumeRoleWithOidcCredentials = Message<"org.openmcf.provide
 };
 
 /**
- * Describes the message org.openmcf.provider.alicloud.AlicloudAssumeRoleWithOidcCredentials.
- * Use `create(AlicloudAssumeRoleWithOidcCredentialsSchema)` to create a new message.
+ * Describes the message org.openmcf.provider.alicloud.AliCloudAssumeRoleWithOidcCredentials.
+ * Use `create(AliCloudAssumeRoleWithOidcCredentialsSchema)` to create a new message.
  */
-export const AlicloudAssumeRoleWithOidcCredentialsSchema: GenMessage<AlicloudAssumeRoleWithOidcCredentials> = /*@__PURE__*/
+export const AliCloudAssumeRoleWithOidcCredentialsSchema: GenMessage<AliCloudAssumeRoleWithOidcCredentials> = /*@__PURE__*/
   messageDesc(file_org_openmcf_provider_alicloud_provider, 5);
 
 /**
- * AlicloudSharedCredentials provides authentication via a shared credentials file.
+ * AliCloudSharedCredentials provides authentication via a shared credentials file.
  * The file (default: ~/.aliyun/config.json) can contain multiple named profiles,
  * each with its own authentication method and credentials.
  *
@@ -430,9 +430,9 @@ export const AlicloudAssumeRoleWithOidcCredentialsSchema: GenMessage<AlicloudAss
  *   credentials_file -> ALIBABA_CLOUD_CREDENTIALS_FILE
  *   profile          -> ALIBABA_CLOUD_PROFILE
  *
- * @generated from message org.openmcf.provider.alicloud.AlicloudSharedCredentials
+ * @generated from message org.openmcf.provider.alicloud.AliCloudSharedCredentials
  */
-export type AlicloudSharedCredentials = Message<"org.openmcf.provider.alicloud.AlicloudSharedCredentials"> & {
+export type AliCloudSharedCredentials = Message<"org.openmcf.provider.alicloud.AliCloudSharedCredentials"> & {
   /**
    * credentials_file is the path to the shared credentials file.
    * Defaults to ~/.aliyun/config.json if omitted.
@@ -453,23 +453,23 @@ export type AlicloudSharedCredentials = Message<"org.openmcf.provider.alicloud.A
 };
 
 /**
- * Describes the message org.openmcf.provider.alicloud.AlicloudSharedCredentials.
- * Use `create(AlicloudSharedCredentialsSchema)` to create a new message.
+ * Describes the message org.openmcf.provider.alicloud.AliCloudSharedCredentials.
+ * Use `create(AliCloudSharedCredentialsSchema)` to create a new message.
  */
-export const AlicloudSharedCredentialsSchema: GenMessage<AlicloudSharedCredentials> = /*@__PURE__*/
+export const AliCloudSharedCredentialsSchema: GenMessage<AliCloudSharedCredentials> = /*@__PURE__*/
   messageDesc(file_org_openmcf_provider_alicloud_provider, 6);
 
 /**
- * AlicloudSidecarCredentials provides authentication via a sidecar credentials service.
+ * AliCloudSidecarCredentials provides authentication via a sidecar credentials service.
  * The provider fetches temporary credentials by calling the specified HTTP URI.
  * This is useful in containerized environments where a sidecar manages credential rotation.
  *
  * Environment variable mapping:
  *   credentials_uri -> ALIBABA_CLOUD_CREDENTIALS_URI
  *
- * @generated from message org.openmcf.provider.alicloud.AlicloudSidecarCredentials
+ * @generated from message org.openmcf.provider.alicloud.AliCloudSidecarCredentials
  */
-export type AlicloudSidecarCredentials = Message<"org.openmcf.provider.alicloud.AlicloudSidecarCredentials"> & {
+export type AliCloudSidecarCredentials = Message<"org.openmcf.provider.alicloud.AliCloudSidecarCredentials"> & {
   /**
    * credentials_uri is the HTTP URI of the sidecar credentials service.
    * The provider makes a GET request to this URI and expects an STS credential response.
@@ -481,10 +481,10 @@ export type AlicloudSidecarCredentials = Message<"org.openmcf.provider.alicloud.
 };
 
 /**
- * Describes the message org.openmcf.provider.alicloud.AlicloudSidecarCredentials.
- * Use `create(AlicloudSidecarCredentialsSchema)` to create a new message.
+ * Describes the message org.openmcf.provider.alicloud.AliCloudSidecarCredentials.
+ * Use `create(AliCloudSidecarCredentialsSchema)` to create a new message.
  */
-export const AlicloudSidecarCredentialsSchema: GenMessage<AlicloudSidecarCredentials> = /*@__PURE__*/
+export const AliCloudSidecarCredentialsSchema: GenMessage<AliCloudSidecarCredentials> = /*@__PURE__*/
   messageDesc(file_org_openmcf_provider_alicloud_provider, 7);
 
 /**

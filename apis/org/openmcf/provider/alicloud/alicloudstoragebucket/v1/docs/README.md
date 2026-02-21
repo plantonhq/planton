@@ -1,4 +1,4 @@
-# AlicloudStorageBucket -- Research Documentation
+# AliCloudStorageBucket -- Research Documentation
 
 ## Alibaba Cloud OSS Overview
 

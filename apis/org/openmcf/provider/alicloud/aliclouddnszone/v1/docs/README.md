@@ -1,4 +1,4 @@
-# AlicloudDnsZone -- Research Documentation
+# AliCloudDnsZone -- Research Documentation
 
 ## Service Overview
 
@@ -101,7 +101,7 @@ The initial T02 resource queue design specified `group_name` as an input field. 
 
 - **`alicloud_alidns_domain_group`**: Manages domain groups. Not included as a separate OpenMCF component -- groups are referenced by ID.
 - **`alicloud_alidns_domain_attachment`**: Binds domains to premium DNS instances. Out of scope for the standard component.
-- **`alicloud_alidns_record`**: Creates DNS records within a domain. Managed by the AlicloudDnsRecord component.
+- **`alicloud_alidns_record`**: Creates DNS records within a domain. Managed by the AliCloudDnsRecord component.
 
 ## Limits and Quotas
 

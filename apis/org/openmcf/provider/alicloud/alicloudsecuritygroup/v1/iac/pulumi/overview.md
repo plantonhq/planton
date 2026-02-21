@@ -2,7 +2,7 @@
 
 ## Module Architecture
 
-The AlicloudSecurityGroup Pulumi module is organized into four files under `iac/pulumi/module/`:
+The AliCloudSecurityGroup Pulumi module is organized into four files under `iac/pulumi/module/`:
 
 | File | Responsibility |
 |------|---------------|
@@ -11,14 +11,14 @@ The AlicloudSecurityGroup Pulumi module is organized into four files under `iac/
 | `outputs.go` | Constants -- defines output key names exported to the stack |
 | `rules.go` | Rule creator -- creates individual `ecs.SecurityGroupRule` resources |
 
-The entry point binary at `iac/pulumi/main.go` loads the stack input (manifest YAML -> AlicloudSecurityGroupStackInput) and delegates to `module.Resources()`.
+The entry point binary at `iac/pulumi/main.go` loads the stack input (manifest YAML -> AliCloudSecurityGroupStackInput) and delegates to `module.Resources()`.
 
 ## Control Flow
 
 ```
-LoadStackInput (manifest YAML -> AlicloudSecurityGroupStackInput)
+LoadStackInput (manifest YAML -> AliCloudSecurityGroupStackInput)
     |
-initializeLocals() -> Locals{Tags, AlicloudSecurityGroup}
+initializeLocals() -> Locals{Tags, AliCloudSecurityGroup}
     |
 alicloud.NewProvider (region-scoped)
     |
@@ -37,7 +37,7 @@ All security group rules have `nic_type` set to `"intranet"` because `vpc_id` is
 
 ### Rule Naming
 
-Rules are named `{sg_name}-rule-{index}` where index is the zero-based position in the rules list. This follows the same pattern used by AlicloudLogProject for sub-resources.
+Rules are named `{sg_name}-rule-{index}` where index is the zero-based position in the rules list. This follows the same pattern used by AliCloudLogProject for sub-resources.
 
 ### Rule Defaults
 

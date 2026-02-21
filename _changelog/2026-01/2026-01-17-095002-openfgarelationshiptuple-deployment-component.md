@@ -90,7 +90,7 @@ message OpenFgaRelationshipTupleStackOutputs {
 ```
 
 **api.proto** - KRM envelope:
-- apiVersion: `open-fga.openmcf.org/v1`
+- apiVersion: `openfga.openmcf.org/v1`
 - kind: `OpenFgaRelationshipTuple`
 - Standard metadata, spec, status structure
 
@@ -194,7 +194,7 @@ output "object" { value = openfga_relationship_tuple.this.object }
 ### Basic Tuple
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-views-budget
@@ -210,7 +210,7 @@ spec:
 ### With Condition
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-conditional-access

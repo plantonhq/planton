@@ -1,4 +1,4 @@
-# AlicloudVswitch Terraform Examples
+# AliCloudVswitch Terraform Examples
 
 Create a YAML manifest using one of the examples below, then deploy with the OpenMCF CLI:
 
@@ -15,8 +15,8 @@ openmcf tofu apply --manifest hack/manifest.yaml --auto-approve
 A VSwitch with only the required fields. Suitable for development or testing.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVswitch
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVswitch
 metadata:
   name: dev-vswitch
 spec:
@@ -36,8 +36,8 @@ This creates a VSwitch with a `/24` CIDR block in `cn-hangzhou-a`. No descriptio
 A production VSwitch using a large CIDR block for Kubernetes node pools, with organizational tags.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVswitch
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVswitch
 metadata:
   name: prod-app-vswitch
   org: my-org
@@ -65,8 +65,8 @@ spec:
 A dual-stack VSwitch. The parent VPC must have IPv6 enabled for the IPv6 CIDR allocation to succeed.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVswitch
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVswitch
 metadata:
   name: ipv6-vswitch
 spec:

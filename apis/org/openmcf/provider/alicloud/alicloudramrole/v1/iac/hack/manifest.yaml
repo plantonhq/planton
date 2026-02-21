@@ -1,5 +1,5 @@
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamRole
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamRole
 metadata:
   name: alicloudramrole-demo
 spec:

@@ -1,13 +1,13 @@
-# AlicloudRamRole Component Added
+# AliCloudRamRole Component Added
 
 **Date**: 2026-02-19
-**Component**: AlicloudRamRole
+**Component**: AliCloudRamRole
 **Enum**: 3010
 **ID Prefix**: acramr
 
 ## Summary
 
-Added the AlicloudRamRole component for managing Alibaba Cloud RAM roles with bundled policy attachments.
+Added the AliCloudRamRole component for managing Alibaba Cloud RAM roles with bundled policy attachments.
 
 RAM roles are the identity foundation for Alibaba Cloud -- ACK clusters, FC functions, ECS instances, and SAE applications all use RAM roles for service authentication via STS (Security Token Service).
 
@@ -15,7 +15,7 @@ RAM roles are the identity foundation for Alibaba Cloud -- ACK clusters, FC func
 
 ### API Definition
 - `apis/org/openmcf/provider/alicloud/alicloudramrole/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AlicloudRamRole = 3010` in `CloudResourceKind` enum
+- Registered `AliCloudRamRole = 3010` in `CloudResourceKind` enum
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider, RAM role, and iterates policy attachments as child resources

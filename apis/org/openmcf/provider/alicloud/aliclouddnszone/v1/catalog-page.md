@@ -1,10 +1,10 @@
-# Alibaba Cloud DNS Domain
+# AliCloud DNS Domain
 
-Registers and manages an Alibaba Cloud DNS domain in the Alidns service with optional group assignment, resource group placement, domain remarks, and automatic tag management. The domain is the prerequisite for creating DNS records (A, AAAA, CNAME, MX, TXT, etc.) via the AlicloudDnsRecord component.
+Registers and manages an Alibaba Cloud DNS domain in the Alidns service with optional group assignment, resource group placement, domain remarks, and automatic tag management. The domain is the prerequisite for creating DNS records (A, AAAA, CNAME, MX, TXT, etc.) via the AliCloudDnsRecord component.
 
 ## What Gets Created
 
-When you deploy an AlicloudDnsZone resource, OpenMCF provisions:
+When you deploy an AliCloudDnsZone resource, OpenMCF provisions:
 
 - **Alidns Domain** -- an `alicloud_alidns_domain` resource (Pulumi: `dns.AlidnsDomain`) that registers the domain in the Alidns hosted zone
 - **DNS Servers** -- Alibaba Cloud assigns a set of authoritative nameservers; point your domain registrar's NS records to these servers for Alidns to serve queries
@@ -21,15 +21,15 @@ When you deploy an AlicloudDnsZone resource, OpenMCF provisions:
 Create a file `dns-zone.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsZone
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsZone
 metadata:
   name: my-domain
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudDnsZone.my-domain
+    pulumi.openmcf.org/stack.name: dev.AliCloudDnsZone.my-domain
 spec:
   region: cn-hangzhou
   domainName: example.com
@@ -68,15 +68,15 @@ This registers the domain in Alidns. After deployment, retrieve the `dns_servers
 Register a domain with only the required fields. Suitable for development or simple DNS hosting.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsZone
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsZone
 metadata:
   name: dev-domain
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudDnsZone.dev-domain
+    pulumi.openmcf.org/stack.name: dev.AliCloudDnsZone.dev-domain
 spec:
   region: cn-hangzhou
   domainName: dev.example.com
@@ -87,8 +87,8 @@ spec:
 A production domain with resource group placement and organizational tags for governance.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsZone
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsZone
 metadata:
   name: prod-domain
   org: my-org
@@ -97,7 +97,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudDnsZone.prod-domain
+    pulumi.openmcf.org/stack.name: prod.AliCloudDnsZone.prod-domain
 spec:
   region: cn-shanghai
   domainName: platform.example.com
@@ -122,5 +122,5 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudDnsRecord](/docs/catalog/alicloud/aliclouddnsrecord) -- creates DNS records (A, AAAA, CNAME, MX, TXT, NS, SRV) within this domain
-- [AlicloudPrivateDnsZone](/docs/catalog/alicloud/alicloudprivatednszone) -- manages private DNS zones for VPC-internal resolution (separate from public Alidns)
+- [AliCloudDnsRecord](/docs/catalog/alicloud/aliclouddnsrecord) -- creates DNS records (A, AAAA, CNAME, MX, TXT, NS, SRV) within this domain
+- [AliCloudPrivateDnsZone](/docs/catalog/alicloud/alicloudprivatednszone) -- manages private DNS zones for VPC-internal resolution (separate from public Alidns)

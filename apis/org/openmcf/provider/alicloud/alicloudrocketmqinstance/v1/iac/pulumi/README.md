@@ -1,4 +1,4 @@
-# Pulumi Module to Deploy AlicloudRocketmqInstance
+# Pulumi Module to Deploy AliCloudRocketmqInstance
 
 This Pulumi program provisions an Alibaba Cloud RocketMQ 5.x instance with
 bundled topics and consumer groups. It targets the modern `rocketmq.*` Pulumi
@@ -53,9 +53,9 @@ openmcf pulumi destroy \
 
 ## How It Works
 
-1. The entrypoint (`main.go`) loads the `AlicloudRocketmqInstanceStackInput` from Pulumi config
+1. The entrypoint (`main.go`) loads the `AliCloudRocketmqInstanceStackInput` from Pulumi config
 2. `locals.go` computes tags, resolves the instance name, and derives hidden provider fields
-3. `main.go` creates the Alicloud provider (scoped to `spec.region`), then the RocketMQ instance
+3. `main.go` creates the AliCloud provider (scoped to `spec.region`), then the RocketMQ instance
 4. Topics and consumer groups are created in loops, each as a child of the instance resource
 5. Stack outputs are exported: instance ID, VPC TCP endpoint, internet endpoint, topic ID map, consumer group ID map
 

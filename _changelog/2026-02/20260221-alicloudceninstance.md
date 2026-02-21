@@ -1,4 +1,4 @@
-# AlicloudCenInstance
+# AliCloudCenInstance
 
 **Date**: 2026-02-21
 **Type**: New Component
@@ -7,7 +7,7 @@
 
 ## Summary
 
-Added `AlicloudCenInstance` -- Alibaba Cloud Cloud Enterprise Network (CEN) instance with bundled child-instance attachments. CEN is a global networking service that provides private connectivity between VPCs across regions and between VPCs and on-premises data centers.
+Added `AliCloudCenInstance` -- Alibaba Cloud Cloud Enterprise Network (CEN) instance with bundled child-instance attachments. CEN is a global networking service that provides private connectivity between VPCs across regions and between VPCs and on-premises data centers.
 
 ## What's Included
 

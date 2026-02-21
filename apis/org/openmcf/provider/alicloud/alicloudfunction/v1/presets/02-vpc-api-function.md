@@ -25,16 +25,16 @@ This preset creates a Node.js 20 function configured as a backend API handler wi
 |---|---|---|
 | `<alibaba-cloud-region>` | Region code (e.g., `cn-hangzhou`) | Your deployment region |
 | `<your-function-name>` | Function name (1-128 chars) | Your naming convention |
-| `<your-code-bucket>` | OSS bucket for function code | `AlicloudStorageBucket` stack outputs |
+| `<your-code-bucket>` | OSS bucket for function code | `AliCloudStorageBucket` stack outputs |
 | `<your-code-object-key>` | Code ZIP object key (e.g., `functions/api-v2.zip`) | Your CI/CD pipeline |
-| `<your-execution-role-arn>` | RAM role ARN (e.g., `acs:ram::123456:role/fc-api-role`) | `AlicloudRamRole` stack outputs |
-| `<your-vpc-id>` | VPC ID | `AlicloudVpc` stack outputs |
-| `<vswitch-id-zone-a>` | VSwitch in first AZ | `AlicloudVswitch` stack outputs |
-| `<vswitch-id-zone-b>` | VSwitch in second AZ | `AlicloudVswitch` stack outputs |
-| `<your-security-group-id>` | Security group for function ENIs | `AlicloudSecurityGroup` stack outputs |
-| `<your-log-project-name>` | SLS project for function logs | `AlicloudLogProject` stack outputs |
+| `<your-execution-role-arn>` | RAM role ARN (e.g., `acs:ram::123456:role/fc-api-role`) | `AliCloudRamRole` stack outputs |
+| `<your-vpc-id>` | VPC ID | `AliCloudVpc` stack outputs |
+| `<vswitch-id-zone-a>` | VSwitch in first AZ | `AliCloudVswitch` stack outputs |
+| `<vswitch-id-zone-b>` | VSwitch in second AZ | `AliCloudVswitch` stack outputs |
+| `<your-security-group-id>` | Security group for function ENIs | `AliCloudSecurityGroup` stack outputs |
+| `<your-log-project-name>` | SLS project for function logs | `AliCloudLogProject` stack outputs |
 | `<your-logstore-name>` | SLS logstore | Your SLS project configuration |
-| `<your-database-endpoint>` | Database connection endpoint | `AlicloudRdsInstance` or `AlicloudRedisInstance` stack outputs |
+| `<your-database-endpoint>` | Database connection endpoint | `AliCloudRdsInstance` or `AliCloudRedisInstance` stack outputs |
 | `<your-team>` | Team or business unit | Your organizational structure |
 | `<your-service-name>` | Logical service name for tagging | Your service catalog |
 

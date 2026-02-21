@@ -241,7 +241,7 @@ Complete workflow with cross-references:
 
 ```yaml
 # 1. Store
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: production-authz
@@ -250,7 +250,7 @@ spec:
 
 ---
 # 2. Model (references store)
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: document-authz-v1
@@ -268,7 +268,7 @@ spec:
 
 ---
 # 3. Tuple (references store and model)
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-views-budget

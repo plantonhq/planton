@@ -1,4 +1,4 @@
-# AlicloudVpnGateway Pulumi Module
+# AliCloudVpnGateway Pulumi Module
 
 This Pulumi module provisions an Alibaba Cloud VPN Gateway with customer gateways and IPsec VPN connections.
 

@@ -17,7 +17,7 @@ Allocates a reassignable public IP address (IPv4 or IPv6 /64) in Hetzner Cloud t
 Create a file `floating-ip.yaml`:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFloatingIp
 metadata:
   name: my-fip
@@ -64,7 +64,7 @@ This allocates a single unassigned IPv4 address in Falkenstein. The address is a
 A single unassigned IPv4 address in Falkenstein — the simplest working configuration.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFloatingIp
 metadata:
   name: dev-fip
@@ -83,7 +83,7 @@ spec:
 An IPv4 address with a reverse DNS pointer for email deliverability. The `dnsPtr` hostname must have a matching forward DNS A record.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFloatingIp
 metadata:
   name: mail-fip
@@ -107,7 +107,7 @@ spec:
 An IPv6 /64 block in Helsinki with delete protection enabled.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFloatingIp
 metadata:
   name: web-ipv6
@@ -130,7 +130,7 @@ spec:
 A Floating IP assigned to a HetznerCloudServer using `valueFrom`. The Floating IP receives the server's numeric ID from the server's stack outputs, establishing a dependency edge in the deployment DAG.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFloatingIp
 metadata:
   name: app-failover
@@ -157,7 +157,7 @@ spec:
 The server referenced by this Floating IP:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: app-01

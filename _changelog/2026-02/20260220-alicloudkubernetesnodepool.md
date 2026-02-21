@@ -1,21 +1,21 @@
-# AlicloudKubernetesNodePool Component Added
+# AliCloudKubernetesNodePool Component Added
 
 **Date**: 2026-02-20
-**Component**: AlicloudKubernetesNodePool
+**Component**: AliCloudKubernetesNodePool
 **Enum**: 3092
 **ID Prefix**: acknp
 
 ## Summary
 
-Added the AlicloudKubernetesNodePool deployment component -- an ACK Kubernetes node pool with auto-scaling, spot instance support, managed lifecycle, and flexible disk configuration.
+Added the AliCloudKubernetesNodePool deployment component -- an ACK Kubernetes node pool with auto-scaling, spot instance support, managed lifecycle, and flexible disk configuration.
 
-This component wraps a single provider resource (`alicloud_cs_kubernetes_node_pool` / `cs.NodePool`). It manages worker nodes for an AlicloudKubernetesCluster (R24).
+This component wraps a single provider resource (`alicloud_cs_kubernetes_node_pool` / `cs.NodePool`). It manages worker nodes for an AliCloudKubernetesCluster (R24).
 
 ## What Was Created
 
 ### API Definition
 - `apis/org/openmcf/provider/alicloud/alicloudkubernetesnodepool/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AlicloudKubernetesNodePool = 3092` in `CloudResourceKind` enum
+- Registered `AliCloudKubernetesNodePool = 3092` in `CloudResourceKind` enum
 - 7 proto messages: spec, system_disk, data_disk, taint, scaling_config, management, spot_price_limit, plus the API/status wrappers
 
 ### IaC Modules
@@ -33,7 +33,7 @@ This component wraps a single provider resource (`alicloud_cs_kubernetes_node_po
 
 ## Design Decisions
 
-- **Renamed from AlicloudAckNodePool**: T02 originally named this AlicloudAckNodePool. Renamed to AlicloudKubernetesNodePool per established naming pattern (matches DigitalOceanKubernetesNodePool, CivoKubernetesNodePool) and the parent cluster's README/spec.proto references.
+- **Renamed from AliCloudAckNodePool**: T02 originally named this AliCloudAckNodePool. Renamed to AliCloudKubernetesNodePool per established naming pattern (matches DigitalOceanKubernetesNodePool, CivoKubernetesNodePool) and the parent cluster's README/spec.proto references.
 - **region field added**: Every other Alibaba Cloud component has a region field on the spec for provider setup. Included for consistency even though the node pool conceptually inherits region from the cluster.
 - **Labels as map<string,string>**: Provider uses repeated key/value objects, but map is cleaner for end users. IaC modules convert to the provider's format.
 - **desired_size as int32**: The Terraform schema oddly uses string type for this field. Proto uses int32 which is semantically correct; the Pulumi module converts to string for the provider.

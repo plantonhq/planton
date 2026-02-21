@@ -23,9 +23,9 @@ This preset creates a small, fixed-size node pool for development and testing. T
 | Placeholder | Description | Where to Find |
 |---|---|---|
 | `<alibaba-cloud-region>` | Region code matching the parent cluster | Your cluster's region |
-| `<your-cluster-id>` | ACK cluster ID | `AlicloudKubernetesCluster` stack outputs |
-| `<vswitch-id-zone-a>` | VSwitch in first AZ | `AlicloudVswitch` stack outputs |
-| `<vswitch-id-zone-b>` | VSwitch in second AZ | `AlicloudVswitch` stack outputs |
+| `<your-cluster-id>` | ACK cluster ID | `AliCloudKubernetesCluster` stack outputs |
+| `<vswitch-id-zone-a>` | VSwitch in first AZ | `AliCloudVswitch` stack outputs |
+| `<vswitch-id-zone-b>` | VSwitch in second AZ | `AliCloudVswitch` stack outputs |
 | `<your-ssh-key-pair>` | ECS SSH key pair name | ECS console or your key management system |
 
 ## Related Presets

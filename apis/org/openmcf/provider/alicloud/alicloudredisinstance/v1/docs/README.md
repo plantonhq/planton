@@ -1,4 +1,4 @@
-# AlicloudRedisInstance Research Documentation
+# AliCloudRedisInstance Research Documentation
 
 ## Provider Resource Analysis
 

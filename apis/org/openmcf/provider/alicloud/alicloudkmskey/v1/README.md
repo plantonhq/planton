@@ -1,4 +1,4 @@
-# AlicloudKmsKey
+# AliCloudKmsKey
 
 Manages an Alibaba Cloud Key Management Service (KMS) customer-managed key (CMK).
 
@@ -66,6 +66,6 @@ KMS keys are never deleted immediately. When a deletion is requested, the key en
 
 ## Related Components
 
-- **AlicloudRdsInstance** -- uses a KMS key for Transparent Data Encryption (TDE)
-- **AlicloudStorageBucket** -- uses a KMS key for Server-Side Encryption (SSE-KMS)
-- **AlicloudEcsInstance** -- uses a KMS key for disk encryption
+- **AliCloudRdsInstance** -- uses a KMS key for Transparent Data Encryption (TDE)
+- **AliCloudStorageBucket** -- uses a KMS key for Server-Side Encryption (SSE-KMS)
+- **AliCloudEcsInstance** -- uses a KMS key for disk encryption

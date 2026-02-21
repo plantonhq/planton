@@ -7,7 +7,7 @@ This preset creates a VPC with dual-stack networking enabled. When `enableIpv6` 
 - Applications that serve IPv6 clients or need IPv6 egress connectivity
 - China-region deployments where IPv6 adoption is mandated or incentivized by regulatory policy
 - Modern microservice architectures planning for IPv6-native communication
-- Prerequisite for creating IPv6-enabled VSwitches (see AlicloudVswitch `03-ipv6-enabled` preset)
+- Prerequisite for creating IPv6-enabled VSwitches (see AliCloudVswitch `03-ipv6-enabled` preset)
 
 ## Key Configuration Choices
 

@@ -1,4 +1,4 @@
-# AlicloudMongodbInstance Terraform Module
+# AliCloudMongodbInstance Terraform Module
 
 This Terraform module provisions an Alibaba Cloud ApsaraDB for MongoDB replica-set instance.
 

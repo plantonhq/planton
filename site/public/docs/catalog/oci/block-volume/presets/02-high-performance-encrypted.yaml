@@ -1,0 +1,21 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciBlockVolume
+metadata:
+  name: my-database-volume
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  availabilityDomain: <availability-domain>
+  displayName: database-volume
+  sizeInGbs: 200
+  vpusPerGb: 20 # Higher Performance tier: 75 IOPS/GB, 600 KB/s/GB
+  kmsKeyId:
+    value: <kms-key-ocid>
+  backupPolicyId:
+    value: <backup-policy-ocid>
+  autotunePolicies:
+    - autotuneType: performance_based
+      maxVpusPerGb: 40 # Auto-scales VPUs up to 40 under sustained load
+  blockVolumeReplicas:
+    - availabilityDomain: <replica-availability-domain>
+      displayName: database-volume-dr-replica

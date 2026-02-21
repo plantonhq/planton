@@ -1,8 +1,8 @@
-# Terraform Module to Deploy AlicloudKubernetesCluster
+# Terraform Module to Deploy AliCloudKubernetesCluster
 
 This module provisions an Alibaba Cloud ACK Managed Kubernetes cluster with configurable networking (Flannel or Terway CNI), addons, control plane logging, maintenance windows, and automatic version upgrades.
 
-Generated `variables.tf` reflects the proto schema for `AlicloudKubernetesCluster`.
+Generated `variables.tf` reflects the proto schema for `AliCloudKubernetesCluster`.
 
 ## Usage
 

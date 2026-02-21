@@ -1,4 +1,4 @@
-# AlicloudKubernetesNodePool Terraform Examples
+# AliCloudKubernetesNodePool Terraform Examples
 
 Below are several examples demonstrating how to deploy ACK node pools with the OpenMCF Terraform module.
 
@@ -15,8 +15,8 @@ openmcf tofu apply --manifest <yaml-path> --stack <stack-name>
 A minimal node pool with default settings.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesNodePool
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesNodePool
 metadata:
   name: basic-pool
 spec:
@@ -45,8 +45,8 @@ This example:
 A production pool with auto-scaling, multiple instance types, and managed node operations.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesNodePool
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesNodePool
 metadata:
   name: compute-pool
   org: acme-corp
@@ -96,8 +96,8 @@ This example:
 A cost-optimized pool using spot instances with taints for workload isolation.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesNodePool
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesNodePool
 metadata:
   name: batch-spot
 spec:

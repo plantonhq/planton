@@ -42,7 +42,7 @@ This document provides copy-paste ready examples for common `DigitalOceanContain
 The absolute minimum configuration for a development registry:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: my-registry
@@ -65,7 +65,7 @@ spec:
 Production-ready configuration with garbage collection:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: prod-registry
@@ -91,7 +91,7 @@ spec:
 Free tier for individual developers:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: john-dev-registry
@@ -121,7 +121,7 @@ docker push registry.digitalocean.com/john-dev-registry/my-app:latest
 Shared registry for a small development team:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: team-dev-registry
@@ -148,7 +148,7 @@ spec:
 Minimal staging environment:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: staging-registry
@@ -170,7 +170,7 @@ spec:
 Staging with automated cleanup:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: staging-registry
@@ -197,7 +197,7 @@ spec:
 Production registry co-located with a DOKS cluster:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: prod-registry
@@ -226,7 +226,7 @@ Production registries in multiple regions for global applications:
 
 **US East Registry:**
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: prod-us-east
@@ -239,7 +239,7 @@ spec:
 
 **US West Registry:**
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: prod-us-west
@@ -252,7 +252,7 @@ spec:
 
 **Europe Registry:**
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: prod-europe
@@ -279,7 +279,7 @@ spec:
 Production registry with aggressive cost controls:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: cost-optimized-prod
@@ -305,7 +305,7 @@ spec:
 ### US East (NYC)
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: us-east-registry
@@ -325,7 +325,7 @@ spec:
 ### US West (San Francisco)
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: us-west-registry
@@ -345,7 +345,7 @@ spec:
 ### Europe (London)
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: europe-uk-registry
@@ -365,7 +365,7 @@ spec:
 ### Europe (Frankfurt)
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: europe-de-registry
@@ -385,7 +385,7 @@ spec:
 ### Asia (Singapore)
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: asia-sg-registry
@@ -410,7 +410,7 @@ Deploy all three environments with a single Professional subscription:
 
 **Development:**
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: myapp-dev
@@ -423,7 +423,7 @@ spec:
 
 **Staging:**
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: myapp-staging
@@ -436,7 +436,7 @@ spec:
 
 **Production:**
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: myapp-prod
@@ -464,7 +464,7 @@ spec:
 Production setup for a microservices platform with multiple teams:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: microservices-prod
@@ -503,7 +503,7 @@ Production setup with disaster recovery across three continents:
 
 **Primary (US):**
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: global-primary
@@ -516,7 +516,7 @@ spec:
 
 **DR - Europe:**
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: global-dr-eu
@@ -529,7 +529,7 @@ spec:
 
 **DR - Asia:**
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: global-dr-asia
@@ -554,7 +554,7 @@ spec:
 Single Professional registry shared by multiple teams with repository-level organization:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: multi-team-prod

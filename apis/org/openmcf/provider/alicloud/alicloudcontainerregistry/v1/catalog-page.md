@@ -1,10 +1,10 @@
-# AlicloudContainerRegistry
+# AliCloud ContainerRegistry
 
 Deploy an Alibaba Cloud Container Registry (ACR) Enterprise Edition instance with namespaces for organizing container images.
 
 ## What It Does
 
-AlicloudContainerRegistry provisions a managed container image registry on Alibaba Cloud with enterprise-grade security, scalable storage, and optional VPC-internal access for fast, cost-free image pulls from within your network.
+AliCloudContainerRegistry provisions a managed container image registry on Alibaba Cloud with enterprise-grade security, scalable storage, and optional VPC-internal access for fast, cost-free image pulls from within your network.
 
 ## When to Use
 
@@ -52,12 +52,12 @@ After deployment, the following outputs are available:
 
 | Feature | Alibaba Cloud ACR | Azure ACR | AWS ECR |
 |---------|-------------------|-----------|---------|
-| Component | AlicloudContainerRegistry | AzureContainerRegistry | AwsEcrRepo |
+| Component | AliCloudContainerRegistry | AzureContainerRegistry | AwsEcrRepo |
 | Tiers | Basic/Standard/Advanced | Basic/Standard/Premium | N/A (per-repo) |
 | Namespaces | Bundled | N/A (flat) | N/A (per-repo) |
 | Geo-Replication | Advanced tier | Premium tier | Cross-region replication |
 
 ## Related Components
 
-- **AlicloudAckManagedCluster** -- Kubernetes cluster that pulls images from this registry
-- **AlicloudAckNodePool** -- Node pools that need access to container images
+- **AliCloudAckManagedCluster** -- Kubernetes cluster that pulls images from this registry
+- **AliCloudAckNodePool** -- Node pools that need access to container images

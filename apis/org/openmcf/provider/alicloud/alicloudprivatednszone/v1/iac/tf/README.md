@@ -1,12 +1,12 @@
-# AlicloudPrivateDnsZone -- Terraform Module
+# AliCloudPrivateDnsZone -- Terraform Module
 
-This directory contains the Terraform (HCL) implementation for the AlicloudPrivateDnsZone deployment component.
+This directory contains the Terraform (HCL) implementation for the AliCloudPrivateDnsZone deployment component.
 
 ## Structure
 
 ```
 tf/
-├── provider.tf    # Alicloud provider configuration
+├── provider.tf    # AliCloud provider configuration
 ├── variables.tf   # Input variables (from proto spec)
 ├── locals.tf      # Tag computation, record map
 ├── main.tf        # Zone + VPC attachment

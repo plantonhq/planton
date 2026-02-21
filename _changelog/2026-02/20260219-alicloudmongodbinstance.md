@@ -1,12 +1,12 @@
-# AlicloudMongodbInstance
+# AliCloudMongodbInstance
 
 **Date**: 2026-02-19
 **Type**: New Component
-**Resource Kind**: AlicloudMongodbInstance (enum 3073, id_prefix: acmdb)
+**Resource Kind**: AliCloudMongodbInstance (enum 3073, id_prefix: acmdb)
 
 ## Summary
 
-Added AlicloudMongodbInstance component that provisions an Alibaba Cloud ApsaraDB for MongoDB replica-set instance. Supports configurable replication factors (1, 3, 5, 7 nodes), multi-zone HA across three availability zones, read-only replicas for read scaling, and both TDE and cloud disk encryption at rest. This is a single-resource component wrapping `alicloud_mongodb_instance` (replica-set mode only; sharding is a separate TF resource).
+Added AliCloudMongodbInstance component that provisions an Alibaba Cloud ApsaraDB for MongoDB replica-set instance. Supports configurable replication factors (1, 3, 5, 7 nodes), multi-zone HA across three availability zones, read-only replicas for read scaling, and both TDE and cloud disk encryption at rest. This is a single-resource component wrapping `alicloud_mongodb_instance` (replica-set mode only; sharding is a separate TF resource).
 
 ## What's Included
 
@@ -29,6 +29,6 @@ Added AlicloudMongodbInstance component that provisions an Alibaba Cloud ApsaraD
 
 ## Dependencies
 
-- AlicloudVswitch (vswitch_id)
-- AlicloudKmsKey (optional, encryption_key for TDE or cloud_disk_encryption_key)
-- AlicloudSecurityGroup (optional, security_group_id)
+- AliCloudVswitch (vswitch_id)
+- AliCloudKmsKey (optional, encryption_key for TDE or cloud_disk_encryption_key)
+- AliCloudSecurityGroup (optional, security_group_id)

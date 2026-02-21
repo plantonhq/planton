@@ -1,13 +1,13 @@
-# AlicloudPrivateDnsZone Component Added
+# AliCloudPrivateDnsZone Component Added
 
 **Date**: 2026-02-19
-**Component**: AlicloudPrivateDnsZone
+**Component**: AliCloudPrivateDnsZone
 **Enum**: 3042
 **ID Prefix**: acpz
 
 ## Summary
 
-Added the AlicloudPrivateDnsZone deployment component -- a composite resource that bundles a Private Zone (pvtz_zone), VPC attachment(s) (pvtz_zone_attachment), and DNS records (pvtz_zone_record) into a single deployable unit for VPC-internal DNS resolution.
+Added the AliCloudPrivateDnsZone deployment component -- a composite resource that bundles a Private Zone (pvtz_zone), VPC attachment(s) (pvtz_zone_attachment), and DNS records (pvtz_zone_record) into a single deployable unit for VPC-internal DNS resolution.
 
 Private zones resolve domain names only within attached VPCs. They are invisible to the public internet, making them ideal for service discovery, database endpoint management, and split-horizon DNS.
 
@@ -15,8 +15,8 @@ Private zones resolve domain names only within attached VPCs. They are invisible
 
 ### API Definition
 - `apis/org/openmcf/provider/alicloud/alicloudprivatednszone/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AlicloudPrivateDnsZone = 3042` in `CloudResourceKind` enum under the DNS category
-- Nested messages: `AlicloudPrivateDnsZoneVpcAttachment` (with StringValueOrRef for vpc_id), `AlicloudPrivateDnsZoneRecord` (with CEL validation for record types)
+- Registered `AliCloudPrivateDnsZone = 3042` in `CloudResourceKind` enum under the DNS category
+- Nested messages: `AliCloudPrivateDnsZoneVpcAttachment` (with StringValueOrRef for vpc_id), `AliCloudPrivateDnsZoneRecord` (with CEL validation for record types)
 
 ### IaC Modules
 - **Pulumi** (Go): Creates pvtz.Zone, pvtz.ZoneAttachment (with cross-region VPC support), and pvtz.ZoneRecord for each spec.records entry. Records are parented to the zone for clean dependency tracking.

@@ -27,7 +27,7 @@ Relationship tuples require an existing store and authorization model:
 
 ```yaml
 # 1. Create a store
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: my-store
@@ -35,7 +35,7 @@ spec:
   name: my-authorization-store
 
 # 2. Create an authorization model
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: my-model
@@ -54,7 +54,7 @@ spec:
 ### 2. Create Relationship Tuple
 
 ```yaml
-apiVersion: open-fga.openmcf.org/v1
+apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-views-budget

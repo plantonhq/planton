@@ -11,7 +11,7 @@ Complete, copy-paste ready YAML manifests for common serverless function pattern
 **Use Case**: Public REST API endpoint for handling user requests.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFunction
 metadata:
   name: simple-api
@@ -46,7 +46,7 @@ spec:
 **Use Case**: API function that securely connects to a DigitalOcean Managed Database via VPC.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFunction
 metadata:
   name: user-api
@@ -88,7 +88,7 @@ spec:
 **Use Case**: Nightly cleanup task that runs at midnight.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFunction
 metadata:
   name: nightly-cleanup
@@ -128,7 +128,7 @@ spec:
 **Use Case**: High-performance webhook processor for third-party integrations (Stripe, GitHub, etc.).
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFunction
 metadata:
   name: webhook-processor
@@ -167,7 +167,7 @@ spec:
 **Use Case**: Image resizing and optimization triggered by S3 uploads.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFunction
 metadata:
   name: image-processor
@@ -205,7 +205,7 @@ spec:
 
 **Staging Function:**
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFunction
 metadata:
   name: api-staging
@@ -230,7 +230,7 @@ spec:
 
 **Production Function:**
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFunction
 metadata:
   name: api-production
@@ -267,7 +267,7 @@ spec:
 **Use Case**: Sync data from external API every hour.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFunction
 metadata:
   name: hourly-sync
@@ -304,7 +304,7 @@ spec:
 **Use Case**: PHP function for WordPress API integration.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFunction
 metadata:
   name: wordpress-api
@@ -342,7 +342,7 @@ spec:
 **Use Case**: Function triggered by database changes (simulated via cron + change detection).
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFunction
 metadata:
   name: db-change-handler
@@ -379,7 +379,7 @@ spec:
 **Use Case**: Simplest possible function for learning or testing.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFunction
 metadata:
   name: hello-world

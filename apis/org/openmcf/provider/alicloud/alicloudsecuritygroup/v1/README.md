@@ -1,4 +1,4 @@
-# AlicloudSecurityGroup
+# AliCloudSecurityGroup
 
 Manages an Alibaba Cloud Security Group with bundled security rules.
 
@@ -70,6 +70,6 @@ At least one of `cidrIp` or `sourceSecurityGroupId` should be specified per rule
 
 ## Related Components
 
-- **AlicloudVpc** -- the VPC this security group belongs to
-- **AlicloudEcsInstance** -- ECS instances associated with this security group
-- **AlicloudAckManagedCluster** -- ACK worker nodes can use this security group
+- **AliCloudVpc** -- the VPC this security group belongs to
+- **AliCloudEcsInstance** -- ECS instances associated with this security group
+- **AliCloudAckManagedCluster** -- ACK worker nodes can use this security group

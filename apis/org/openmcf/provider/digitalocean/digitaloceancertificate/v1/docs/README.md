@@ -459,7 +459,7 @@ message DigitalOceanCertificateLetsEncryptParams {
 
 **Example YAML:**
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanCertificate
 metadata:
   name: prod-wildcard-cert
@@ -501,7 +501,7 @@ message DigitalOceanCertificateCustomParams {
 
 **Example YAML (with placeholder for secret injection):**
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanCertificate
 metadata:
   name: prod-ev-cert
@@ -590,7 +590,7 @@ These fields add clarity but aren't required for basic functionality.
 **Use Case:** Secure all dynamic preview environments under `*.staging.example.com`.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanCertificate
 metadata:
   name: staging-wildcard-cert
@@ -619,7 +619,7 @@ spec:
 **Use Case:** Secure the apex domain and key subdomains for a production web app.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanCertificate
 metadata:
   name: prod-web-cert
@@ -649,7 +649,7 @@ spec:
 **Use Case:** Uploading a commercial Extended Validation certificate for a domain hosted on Cloudflare DNS.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanCertificate
 metadata:
   name: prod-ev-cert

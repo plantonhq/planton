@@ -22,7 +22,7 @@ DigitalOcean Managed Databases delivers simplicity and predictable pricing for s
 For non-production workloads:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDatabaseCluster
 metadata:
   name: dev-postgres
@@ -41,7 +41,7 @@ spec:
 For mission-critical workloads:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDatabaseCluster
 metadata:
   name: prod-postgres
@@ -257,7 +257,7 @@ Before deploying to production:
 
 ```yaml
 # First, create VPC
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanVpc
 metadata:
   name: prod-vpc
@@ -268,7 +268,7 @@ spec:
 
 ---
 # Then reference VPC in database cluster
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDatabaseCluster
 metadata:
   name: prod-postgres

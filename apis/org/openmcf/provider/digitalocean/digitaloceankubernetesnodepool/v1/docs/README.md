@@ -838,7 +838,7 @@ This reinforces the need to expose `labels`, `taints`, and `tags` as three disti
 OpenMCF provides a **cloud-agnostic, protobuf-defined API** for node pool management. Instead of learning DigitalOcean's specific API patterns, Terraform resource syntax, or Pulumi's programming model, you declare intent using a consistent schema:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanKubernetesNodePool
 metadata:
   name: production-workers

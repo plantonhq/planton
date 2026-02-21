@@ -1,4 +1,4 @@
-# Hetzner Cloud Floating IP — Research Documentation
+# HetznerCloud Floating IP — Research Documentation
 
 ## Introduction
 
@@ -317,7 +317,7 @@ OpenMCF's key differentiators:
 ### Manifest Format
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFloatingIp
 metadata:
   name: failover-ip

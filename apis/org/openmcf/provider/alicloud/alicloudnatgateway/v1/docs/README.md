@@ -1,4 +1,4 @@
-# AlicloudNatGateway Research Documentation
+# AliCloudNatGateway Research Documentation
 
 ## Provider Resource Analysis
 

@@ -1,4 +1,4 @@
-# AlicloudDnsRecord Pulumi Examples
+# AliCloudDnsRecord Pulumi Examples
 
 Create a YAML manifest using one of the examples below, then deploy with the OpenMCF CLI:
 
@@ -22,8 +22,8 @@ openmcf pulumi update \
 Map a subdomain to an IPv4 address.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsRecord
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsRecord
 metadata:
   name: web-server
 spec:
@@ -42,8 +42,8 @@ spec:
 Alias a subdomain to another domain name. Common for CDN integration.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsRecord
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsRecord
 metadata:
   name: cdn-alias
 spec:
@@ -63,8 +63,8 @@ spec:
 Route email to a mail server. Priority ranges from 1 (highest) to 10 (lowest).
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudDnsRecord
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudDnsRecord
 metadata:
   name: mail-primary
 spec:

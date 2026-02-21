@@ -1,4 +1,4 @@
-# Hetzner Cloud Network — Research Documentation
+# HetznerCloud Network — Research Documentation
 
 ## Introduction
 
@@ -284,7 +284,7 @@ The key differentiators for OpenMCF:
 ### Manifest Format
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudNetwork
 metadata:
   name: my-network

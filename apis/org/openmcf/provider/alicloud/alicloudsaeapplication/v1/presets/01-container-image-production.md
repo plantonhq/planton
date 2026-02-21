@@ -28,9 +28,9 @@ This preset creates a production SAE application deployed as a container image i
 | `<your-app-name>` | Application name (1-36 chars, alphanumeric + dashes) | Your naming convention |
 | `<your-app-description>` | Human-readable description (max 1024 chars) | Your service documentation |
 | `<your-container-image-url>` | Full image URL (e.g., `registry.cn-hangzhou.aliyuncs.com/ns/app:v1`) | Your container registry (ACR) |
-| `<your-vpc-id>` | VPC ID | `AlicloudVpc` stack outputs |
-| `<your-vswitch-id>` | VSwitch ID | `AlicloudVswitch` stack outputs |
-| `<your-security-group-id>` | Security group ID | `AlicloudSecurityGroup` stack outputs |
+| `<your-vpc-id>` | VPC ID | `AliCloudVpc` stack outputs |
+| `<your-vswitch-id>` | VSwitch ID | `AliCloudVswitch` stack outputs |
+| `<your-security-group-id>` | Security group ID | `AliCloudSecurityGroup` stack outputs |
 | `<your-liveness-path>` | Liveness endpoint (e.g., `/health`, `/actuator/health/liveness`) | Your application's health check API |
 | `<your-readiness-path>` | Readiness endpoint (e.g., `/ready`, `/actuator/health/readiness`) | Your application's health check API |
 | `<your-team>` | Team or business unit | Your organizational structure |

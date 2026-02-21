@@ -1,4 +1,4 @@
-# AlicloudPolardbCluster -- Research Documentation
+# AliCloudPolardbCluster -- Research Documentation
 
 ## Provider Resources
 
@@ -67,7 +67,7 @@ This component exposes the primary endpoint's connection string. Custom endpoint
 
 ### DD06: PolarDB as First-Class Component
 
-PolarDB is a separate component from AlicloudRdsInstance because:
+PolarDB is a separate component from AliCloudRdsInstance because:
 
 - Different Terraform resources (`alicloud_polardb_*` vs `alicloud_db_*`)
 - Different architecture (cluster vs instance, nodes vs HA categories)

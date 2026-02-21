@@ -10,7 +10,7 @@ Terraform IaC module for creating Hetzner Cloud server snapshots stored as Image
 ├── outputs.tf        # Stack output definitions
 ├── variables.tf      # Input variable definitions (metadata, spec, hcloud_token)
 ├── locals.tf         # Standard label computation
-└── provider.tf       # Hetzner Cloud provider configuration
+└── provider.tf       # HetznerCloud provider configuration
 ```
 
 ## Resources Created

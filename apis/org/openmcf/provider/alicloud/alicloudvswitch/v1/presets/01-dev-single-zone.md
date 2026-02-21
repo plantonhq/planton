@@ -20,7 +20,7 @@ This preset creates a minimal VSwitch in a single availability zone using a smal
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`, `ap-southeast-1`) | Your deployment region |
-| `<your-vpc-id>` | VPC ID that this VSwitch belongs to | Alibaba Cloud VPC console or `AlicloudVpc` stack outputs |
+| `<your-vpc-id>` | VPC ID that this VSwitch belongs to | Alibaba Cloud VPC console or `AliCloudVpc` stack outputs |
 | `<availability-zone>` | Availability zone within the region (e.g., `cn-hangzhou-a`) | Alibaba Cloud ECS console > Zones |
 | `<your-dev-vswitch-name>` | VSwitch name (1-128 characters) | Choose a descriptive name |
 

@@ -1,0 +1,9 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciKmsVault
+metadata:
+  name: my-vault
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  displayName: vault
+  vaultType: default_vault # Shared HSM partition; lower cost, suitable for most workloads

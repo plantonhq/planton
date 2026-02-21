@@ -1,4 +1,4 @@
-# AlicloudMongodbInstance Pulumi Module
+# AliCloudMongodbInstance Pulumi Module
 
 This Pulumi module provisions an Alibaba Cloud ApsaraDB for MongoDB replica-set instance.
 

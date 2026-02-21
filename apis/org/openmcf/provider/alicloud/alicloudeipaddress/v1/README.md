@@ -1,4 +1,4 @@
-# AlicloudEipAddress
+# AliCloudEipAddress
 
 Manages an Alibaba Cloud Elastic IP Address (EIP).
 
@@ -63,7 +63,7 @@ Both `internetChargeType` and `isp` are immutable after creation (changing them 
 
 ## Related Components
 
-- **AlicloudNatGateway** -- associates an EIP for SNAT outbound internet access
-- **AlicloudApplicationLoadBalancer** -- uses EIPs for internet-facing load balancers
-- **AlicloudNetworkLoadBalancer** -- uses EIPs for internet-facing L4 load balancers
-- **AlicloudVpnGateway** -- uses an EIP for the VPN gateway public endpoint
+- **AliCloudNatGateway** -- associates an EIP for SNAT outbound internet access
+- **AliCloudApplicationLoadBalancer** -- uses EIPs for internet-facing load balancers
+- **AliCloudNetworkLoadBalancer** -- uses EIPs for internet-facing L4 load balancers
+- **AliCloudVpnGateway** -- uses an EIP for the VPN gateway public endpoint

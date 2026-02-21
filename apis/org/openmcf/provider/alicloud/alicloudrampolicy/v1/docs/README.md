@@ -79,7 +79,7 @@ OSS is a special case: bucket ARNs omit the region and account because OSS bucke
 
 ### The 6144-Byte Limit
 
-Policy documents are limited to 6144 bytes. This constraint is meaningful for complex multi-service policies. A policy granting specific actions on specific resources across 10 services with conditions can easily approach this limit. When it does, the correct pattern is to split into multiple custom policies (each under 6144 bytes) and attach all of them to the target role via `AlicloudRamRole.policyAttachments`.
+Policy documents are limited to 6144 bytes. This constraint is meaningful for complex multi-service policies. A policy granting specific actions on specific resources across 10 services with conditions can easily approach this limit. When it does, the correct pattern is to split into multiple custom policies (each under 6144 bytes) and attach all of them to the target role via `AliCloudRamRole.policyAttachments`.
 
 ### Policy Versioning
 
@@ -291,7 +291,7 @@ The most advanced deployment model treats policy configuration as a continuously
 - **Crossplane**: Extends the Kubernetes API with custom resources for Alibaba Cloud. An operator watches for RAM policy custom resources and provisions/reconciles them.
 - **Custom Operators**: Organizations build controllers that watch application deployments and automatically create corresponding least-privilege policies.
 
-**OpenMCF Context**: OpenMCF's protobuf-defined API is designed for this model. The YAML manifest is a desired-state declaration that can be applied once (CLI mode) or continuously reconciled (control-plane mode). The `AlicloudRamPolicy` resource is a Kubernetes-native API object, not just a CLI input format.
+**OpenMCF Context**: OpenMCF's protobuf-defined API is designed for this model. The YAML manifest is a desired-state declaration that can be applied once (CLI mode) or continuously reconciled (control-plane mode). The `AliCloudRamPolicy` resource is a Kubernetes-native API object, not just a CLI input format.
 
 **Verdict**: The future of policy management in cloud-native platforms. OpenMCF's API design anticipates this model even when used in CLI mode today.
 
@@ -311,7 +311,7 @@ The key differentiator is the **Validated** column. Terraform validates JSON syn
 
 ### Design Philosophy: Single Resource, Full Lifecycle
 
-AlicloudRamPolicy is architecturally simple — it wraps a single `alicloud_ram_policy` resource. The value is not in resource orchestration (there's only one resource) but in four areas:
+AliCloudRamPolicy is architecturally simple — it wraps a single `alicloud_ram_policy` resource. The value is not in resource orchestration (there's only one resource) but in four areas:
 
 1. **Protobuf Validation**: Field types, lengths, and enum values are validated at the API layer before any IaC engine runs.
 2. **Version Lifecycle Management**: The `rotateStrategy` field is surfaced as a first-class API field, not buried in provider documentation.
@@ -331,7 +331,7 @@ AlicloudRamPolicy is architecturally simple — it wraps a single `alicloud_ram_
 
 - **Policy document validation**: Validating that action names (`oss:GetObject`) and resource ARNs (`acs:oss:*:*:bucket/*`) are correct for the target service would require an up-to-date catalog of all Alibaba Cloud service APIs. This is impractical to maintain and better handled by the Alibaba Cloud API itself at apply time.
 - **Structured policy composition**: Modeling the policy document as a protobuf message (with `Statement`, `Effect`, `Action`, `Resource`, `Condition` as typed fields) would provide richer validation but would also limit flexibility. The JSON string format allows any valid policy structure, including advanced conditions and cross-service grants that a structured API might not anticipate.
-- **Policy attachment management**: Attaching policies to roles is handled by `AlicloudRamRole.policyAttachments`. Attaching to users or groups is not yet in scope for OpenMCF (users and groups are a different lifecycle domain).
+- **Policy attachment management**: Attaching policies to roles is handled by `AliCloudRamRole.policyAttachments`. Attaching to users or groups is not yet in scope for OpenMCF (users and groups are a different lifecycle domain).
 - **Version history management**: Listing, inspecting, and deleting specific policy versions is an operational concern handled by the `rotateStrategy` field. Manual version management is available through the Alibaba Cloud CLI or console.
 - **Policy simulator**: Alibaba Cloud provides a policy simulator tool for testing policies before applying them. Integrating this into the OpenMCF workflow is out of scope.
 
@@ -351,17 +351,17 @@ AlicloudRamPolicy is architecturally simple — it wraps a single `alicloud_ram_
 
 ### The Policy + Role Relationship
 
-`AlicloudRamPolicy` and `AlicloudRamRole` form a deliberate pair:
+`AliCloudRamPolicy` and `AliCloudRamRole` form a deliberate pair:
 
-1. **AlicloudRamPolicy** creates a custom policy document (this component)
-2. **AlicloudRamRole** creates a role and attaches policies (system or custom) via `policyAttachments`
+1. **AliCloudRamPolicy** creates a custom policy document (this component)
+2. **AliCloudRamRole** creates a role and attaches policies (system or custom) via `policyAttachments`
 
-The connection point is the policy name. `AlicloudRamPolicy` outputs `policy_name` and `policy_type` (always `"Custom"`). `AlicloudRamRole` consumes these in its `policyAttachments` list:
+The connection point is the policy name. `AliCloudRamPolicy` outputs `policy_name` and `policy_type` (always `"Custom"`). `AliCloudRamRole` consumes these in its `policyAttachments` list:
 
 ```yaml
 # Step 1: Create the custom policy
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamPolicy
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamPolicy
 metadata:
   name: oss-reader
 spec:
@@ -369,8 +369,8 @@ spec:
   policyDocument: '...'
 ---
 # Step 2: Attach it to a role
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRamRole
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRamRole
 metadata:
   name: my-ecs-role
 spec:
@@ -627,15 +627,15 @@ User-provided tags from `spec.tags` are merged with these standard tags, with us
 
 RAM custom policy management is architecturally simple — it's a single API resource — but operationally nuanced. The policy document JSON format, the 5-version lifecycle limit, the attachment dependency graph, and the force-deletion semantics all create sharp edges that catch teams during deployment.
 
-OpenMCF's `AlicloudRamPolicy` component doesn't add resource orchestration complexity (there's only one resource). Its value is in:
+OpenMCF's `AliCloudRamPolicy` component doesn't add resource orchestration complexity (there's only one resource). Its value is in:
 
 1. **Protobuf-validated API contract**: Field types, lengths, and enum values are validated before any cloud API call.
 2. **Version lifecycle management**: `rotateStrategy` is a first-class field, preventing the most common deployment failure (version exhaustion).
 3. **Tag standardization**: Automatic OpenMCF tags alongside user tags.
 4. **Unified IaC**: Same manifest works with Pulumi and Terraform.
-5. **Integration contract**: `status.outputs.policy_name` and `status.outputs.policy_type` are the connection point for `AlicloudRamRole.policyAttachments`.
+5. **Integration contract**: `status.outputs.policy_name` and `status.outputs.policy_type` are the connection point for `AliCloudRamRole.policyAttachments`.
 
-For teams adopting Alibaba Cloud, `AlicloudRamPolicy` is typically deployed alongside `AlicloudRamRole` — policies provide the permission definitions, roles provide the identities that use them. Together, they form the identity foundation that downstream resources (`AlicloudAckManagedCluster`, `AlicloudFcFunction`, `AlicloudEcsInstance`) depend on for service authentication and authorization.
+For teams adopting Alibaba Cloud, `AliCloudRamPolicy` is typically deployed alongside `AliCloudRamRole` — policies provide the permission definitions, roles provide the identities that use them. Together, they form the identity foundation that downstream resources (`AliCloudAckManagedCluster`, `AliCloudFcFunction`, `AliCloudEcsInstance`) depend on for service authentication and authorization.
 
 ### References
 

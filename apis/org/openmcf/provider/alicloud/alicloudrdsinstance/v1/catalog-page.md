@@ -1,10 +1,10 @@
-# Alibaba Cloud RDS Instance
+# AliCloud RDS Instance
 
 Deploys an Alibaba Cloud RDS (Relational Database Service) instance with bundled databases, accounts, and account privileges. Supports MySQL, PostgreSQL, SQL Server, MariaDB, and PPAS engines through a single component type.
 
 ## What Gets Created
 
-When you deploy an AlicloudRdsInstance resource, OpenMCF provisions:
+When you deploy an AliCloudRdsInstance resource, OpenMCF provisions:
 
 - **RDS Instance** -- an `alicloud_db_instance` with the selected engine, instance class, and storage
 - **Databases** -- one `alicloud_db_database` per entry in the databases list
@@ -14,7 +14,7 @@ When you deploy an AlicloudRdsInstance resource, OpenMCF provisions:
 ## Prerequisites
 
 - **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
-- **A VSwitch** -- the RDS instance is placed in a VSwitch (create one with AlicloudVswitch)
+- **A VSwitch** -- the RDS instance is placed in a VSwitch (create one with AliCloudVswitch)
 - The VSwitch's VPC and availability zone determine the instance's network placement
 
 ## Quick Start
@@ -22,8 +22,8 @@ When you deploy an AlicloudRdsInstance resource, OpenMCF provisions:
 Create a file `rds-instance.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudRdsInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudRdsInstance
 metadata:
   name: my-mysql
 spec:
@@ -64,7 +64,7 @@ This creates a MySQL 8.0 HA instance with one database, one account, and ReadWri
 | `engineVersion` | string | Engine version (e.g., `8.0`, `16.0`) | Required; non-empty |
 | `instanceType` | string | Instance class (e.g., `rds.mysql.s2.large`) | Required; non-empty |
 | `instanceStorage` | int32 | Storage size in GB | Required; > 0 |
-| `vswitchId` | StringValueOrRef | VSwitch ID. Can reference AlicloudVswitch via `valueFrom`. | Required |
+| `vswitchId` | StringValueOrRef | VSwitch ID. Can reference AliCloudVswitch via `valueFrom`. | Required |
 
 ### Optional Fields
 
@@ -131,8 +131,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- **AlicloudVswitch** -- VSwitch where the RDS instance is placed
-- **AlicloudVpc** -- VPC that provides network isolation
-- **AlicloudSecurityGroup** -- Network security rules for instance access
-- **AlicloudKmsKey** -- Customer-managed key for disk/TDE encryption
-- **AlicloudPrivateDnsZone** -- Private DNS resolution for the instance endpoint
+- **AliCloudVswitch** -- VSwitch where the RDS instance is placed
+- **AliCloudVpc** -- VPC that provides network isolation
+- **AliCloudSecurityGroup** -- Network security rules for instance access
+- **AliCloudKmsKey** -- Customer-managed key for disk/TDE encryption
+- **AliCloudPrivateDnsZone** -- Private DNS resolution for the instance endpoint

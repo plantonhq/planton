@@ -21,7 +21,7 @@ This preset creates a private DNS zone for internal service discovery within a s
 |-------------|-------------|---------------|
 | `<alibaba-cloud-region>` | Alibaba Cloud region (e.g., `cn-hangzhou`, `cn-shanghai`) | Your deployment region |
 | `<zone-name>` | Private zone name (e.g., `svc.internal`, `services.corp`) | Your naming convention |
-| `<vpc-id>` | VPC ID to attach the zone to | VPC console or AlicloudVpc output |
+| `<vpc-id>` | VPC ID to attach the zone to | VPC console or AliCloudVpc output |
 | `<service-name>` | Service hostname prefix (e.g., `api`, `cache`, `db`) | Your service inventory |
 | `<private-ip>` | Private IP address of the service | ECS/container private IP |
 

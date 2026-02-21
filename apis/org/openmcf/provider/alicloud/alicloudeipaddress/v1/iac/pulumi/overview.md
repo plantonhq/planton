@@ -2,7 +2,7 @@
 
 ## Module Architecture
 
-The AlicloudEipAddress Pulumi module is organized into three files under `iac/pulumi/module/`:
+The AliCloudEipAddress Pulumi module is organized into three files under `iac/pulumi/module/`:
 
 | File | Responsibility |
 |------|---------------|
@@ -10,14 +10,14 @@ The AlicloudEipAddress Pulumi module is organized into three files under `iac/pu
 | `locals.go` | Transformations -- tag computation, default resolution for optional fields |
 | `outputs.go` | Constants -- defines output key names exported to the stack |
 
-The entry point binary at `iac/pulumi/main.go` loads the stack input (manifest YAML -> AlicloudEipAddressStackInput) and delegates to `module.Resources()`.
+The entry point binary at `iac/pulumi/main.go` loads the stack input (manifest YAML -> AliCloudEipAddressStackInput) and delegates to `module.Resources()`.
 
 ## Control Flow
 
 ```
-LoadStackInput (manifest YAML -> AlicloudEipAddressStackInput)
+LoadStackInput (manifest YAML -> AliCloudEipAddressStackInput)
     |
-initializeLocals() -> Locals{Tags, AlicloudEipAddress}
+initializeLocals() -> Locals{Tags, AliCloudEipAddress}
     |
 alicloud.NewProvider (region-scoped)
     |

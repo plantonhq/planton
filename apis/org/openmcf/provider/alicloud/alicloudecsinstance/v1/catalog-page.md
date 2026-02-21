@@ -1,10 +1,10 @@
-# AlicloudEcsInstance
+# AliCloud EcsInstance
 
 Deploy and manage Alibaba Cloud ECS compute instances with configurable instance types, disk encryption, data disks, public IP, spot pricing, and IAM role attachment.
 
 ## Overview
 
-AlicloudEcsInstance provisions a managed ECS virtual machine on Alibaba Cloud. It supports the full range of ECS instance families (general purpose, compute-optimized, memory-optimized, GPU, etc.), multiple disk categories (cloud_essd, cloud_ssd, cloud_efficiency), SSH key or password authentication, and flexible billing (PostPaid, PrePaid, Spot).
+AliCloudEcsInstance provisions a managed ECS virtual machine on Alibaba Cloud. It supports the full range of ECS instance families (general purpose, compute-optimized, memory-optimized, GPU, etc.), multiple disk categories (cloud_essd, cloud_ssd, cloud_efficiency), SSH key or password authentication, and flexible billing (PostPaid, PrePaid, Spot).
 
 This component wraps a single `alicloud_instance` Terraform resource. Data disks are created inline using the resource's built-in `data_disks` block, keeping their lifecycle coupled to the instance.
 
@@ -19,8 +19,8 @@ This component wraps a single `alicloud_instance` Terraform resource. Data disks
 ## Quick Start
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudEcsInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudEcsInstance
 metadata:
   name: my-ecs
 spec:
@@ -92,9 +92,9 @@ spec:
 
 ## Related Components
 
-- **AlicloudVpc** -- VPC for network isolation
-- **AlicloudVswitch** -- VSwitch for subnet placement
-- **AlicloudSecurityGroup** -- Network access control rules
-- **AlicloudEipAddress** -- Elastic IP (alternative to auto-allocated public IP)
-- **AlicloudKmsKey** -- Encryption key for disk encryption
-- **AlicloudRamRole** -- IAM role for instance profile
+- **AliCloudVpc** -- VPC for network isolation
+- **AliCloudVswitch** -- VSwitch for subnet placement
+- **AliCloudSecurityGroup** -- Network access control rules
+- **AliCloudEipAddress** -- Elastic IP (alternative to auto-allocated public IP)
+- **AliCloudKmsKey** -- Encryption key for disk encryption
+- **AliCloudRamRole** -- IAM role for instance profile

@@ -20,8 +20,8 @@ This preset creates a VPN Gateway with a single IPsec connection to one remote s
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`) | Your deployment region |
-| `<your-vpc-id>` | VPC ID for the VPN Gateway | Alibaba Cloud VPC console or `AlicloudVpc` stack outputs |
-| `<your-vswitch-id>` | VSwitch ID for VPN Gateway placement | Alibaba Cloud VPC console or `AlicloudVswitch` stack outputs |
+| `<your-vpc-id>` | VPC ID for the VPN Gateway | Alibaba Cloud VPC console or `AliCloudVpc` stack outputs |
+| `<your-vswitch-id>` | VSwitch ID for VPN Gateway placement | Alibaba Cloud VPC console or `AliCloudVswitch` stack outputs |
 | `<your-vpn-name>` | VPN Gateway name (2-128 chars) | Choose a descriptive name |
 | `<connection-name>` | Connection identifier (e.g., "office-hq") | Choose a descriptive name |
 | `<remote-device-public-ip>` | Public IP of the on-prem VPN router/firewall | Network admin for the remote site |

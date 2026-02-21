@@ -5,7 +5,7 @@
 The simplest configuration: a managed (Let's Encrypt) certificate for a single domain. Hetzner Cloud obtains and renews the certificate automatically. The domain must resolve to a Hetzner Cloud load balancer with an HTTPS service referencing this certificate.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudCertificate
 metadata:
   name: api-cert
@@ -22,7 +22,7 @@ spec:
 A SAN (Subject Alternative Name) certificate covering multiple domains. Hetzner Cloud issues a single Let's Encrypt certificate that covers all listed domains. Every domain must have DNS records pointing to a load balancer with an HTTPS service referencing this certificate.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudCertificate
 metadata:
   name: web-platform-cert
@@ -43,7 +43,7 @@ spec:
 A user-provided TLS certificate and private key. Use this for wildcard certificates, EV/OV certificates, or certificates from a CA other than Let's Encrypt. Both fields are required and immutable — changing either forces replacement.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudCertificate
 metadata:
   name: wildcard-cert
@@ -75,7 +75,7 @@ The primary use case: a certificate referenced by a `HetznerCloudLoadBalancer` H
 **Step 1** — Create the managed certificate:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudCertificate
 metadata:
   name: web-cert
@@ -91,7 +91,7 @@ spec:
 **Step 2** — Create the load balancer that references the certificate. The load balancer's HTTPS service uses `valueFrom` to reference the certificate's `certificate_id` output:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: web-lb

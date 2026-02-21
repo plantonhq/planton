@@ -9,7 +9,7 @@ Complete, copy-paste ready YAML manifests for common certificate management scen
 **Use Case**: Single domain certificate for a production website.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanCertificate
 metadata:
   name: prod-web-cert
@@ -33,7 +33,7 @@ spec:
 **Use Case**: Secure multiple subdomains (apex, www, API) with a single certificate.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanCertificate
 metadata:
   name: prod-multi-domain-cert
@@ -65,7 +65,7 @@ spec:
 **Use Case**: Secure all subdomains under a base domain (e.g., dynamic preview environments).
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanCertificate
 metadata:
   name: staging-wildcard-cert
@@ -94,7 +94,7 @@ spec:
 **Use Case**: Testing certificate expiration alerts or manual renewal workflows.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanCertificate
 metadata:
   name: test-manual-renewal
@@ -123,7 +123,7 @@ spec:
 **Use Case**: Upload a commercial EV certificate or a cert for domains with external DNS.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanCertificate
 metadata:
   name: prod-ev-cert
@@ -169,7 +169,7 @@ spec:
 **Use Case**: Inject certificate materials from a secret manager at runtime (secure best practice).
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanCertificate
 metadata:
   name: prod-secure-cert
@@ -232,7 +232,7 @@ resource "digitalocean_certificate" "prod" {
 **Use Case**: Complete production certificate with all optional fields for observability and governance.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanCertificate
 metadata:
   name: prod-complete-cert
@@ -268,7 +268,7 @@ spec:
 **Use Case**: Secure both the staging apex and all subdomains.
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanCertificate
 metadata:
   name: staging-full-wildcard

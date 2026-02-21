@@ -27,11 +27,11 @@ This preset creates a production MySQL 8.0 instance with high availability, TDE 
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<alibaba-cloud-region>` | Alibaba Cloud region code | Your deployment region |
-| `<your-vswitch-id>` | VSwitch ID for instance placement | `AlicloudVswitch` stack outputs |
+| `<your-vswitch-id>` | VSwitch ID for instance placement | `AliCloudVswitch` stack outputs |
 | `<primary-zone-id>` | Primary AZ | Region availability zones |
 | `<standby-zone-id>` | Standby AZ | Must differ from primary |
-| `<your-vpc-cidr>` | VPC CIDR for IP whitelist | `AlicloudVpc` stack outputs |
-| `<your-kms-key-id>` | KMS key ID for encryption | `AlicloudKmsKey` stack outputs |
+| `<your-vpc-cidr>` | VPC CIDR for IP whitelist | `AliCloudVpc` stack outputs |
+| `<your-kms-key-id>` | KMS key ID for encryption | `AliCloudKmsKey` stack outputs |
 | `<your-resource-group-id>` | Resource group ID | Alibaba Cloud console |
 | `<your-instance-name>` | Instance name | Choose a descriptive name |
 | `<your-org>` | Organization name | Your OpenMCF org |

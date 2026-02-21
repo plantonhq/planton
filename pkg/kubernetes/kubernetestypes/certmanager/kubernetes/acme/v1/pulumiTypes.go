@@ -1537,7 +1537,7 @@ type ChallengeSpecSolverDns01 struct {
 	// CNAMEStrategy configures how the DNS01 provider should handle CNAME
 	// records when found in DNS zones.
 	CnameStrategy *string                               `pulumi:"cnameStrategy"`
-	Digitalocean  *ChallengeSpecSolverDns01Digitalocean `pulumi:"digitalocean"`
+	DigitalOcean  *ChallengeSpecSolverDns01DigitalOcean `pulumi:"digitalocean"`
 	Rfc2136       *ChallengeSpecSolverDns01Rfc2136      `pulumi:"rfc2136"`
 	Route53       *ChallengeSpecSolverDns01Route53      `pulumi:"route53"`
 	Webhook       *ChallengeSpecSolverDns01Webhook      `pulumi:"webhook"`
@@ -1565,7 +1565,7 @@ type ChallengeSpecSolverDns01Args struct {
 	// CNAMEStrategy configures how the DNS01 provider should handle CNAME
 	// records when found in DNS zones.
 	CnameStrategy pulumi.StringPtrInput                        `pulumi:"cnameStrategy"`
-	Digitalocean  ChallengeSpecSolverDns01DigitaloceanPtrInput `pulumi:"digitalocean"`
+	DigitalOcean  ChallengeSpecSolverDns01DigitalOceanPtrInput `pulumi:"digitalocean"`
 	Rfc2136       ChallengeSpecSolverDns01Rfc2136PtrInput      `pulumi:"rfc2136"`
 	Route53       ChallengeSpecSolverDns01Route53PtrInput      `pulumi:"route53"`
 	Webhook       ChallengeSpecSolverDns01WebhookPtrInput      `pulumi:"webhook"`
@@ -1676,8 +1676,8 @@ func (o ChallengeSpecSolverDns01Output) CnameStrategy() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v ChallengeSpecSolverDns01) *string { return v.CnameStrategy }).(pulumi.StringPtrOutput)
 }
 
-func (o ChallengeSpecSolverDns01Output) Digitalocean() ChallengeSpecSolverDns01DigitaloceanPtrOutput {
-	return o.ApplyT(func(v ChallengeSpecSolverDns01) *ChallengeSpecSolverDns01Digitalocean { return v.Digitalocean }).(ChallengeSpecSolverDns01DigitaloceanPtrOutput)
+func (o ChallengeSpecSolverDns01Output) DigitalOcean() ChallengeSpecSolverDns01DigitalOceanPtrOutput {
+	return o.ApplyT(func(v ChallengeSpecSolverDns01) *ChallengeSpecSolverDns01DigitalOcean { return v.DigitalOcean }).(ChallengeSpecSolverDns01DigitalOceanPtrOutput)
 }
 
 func (o ChallengeSpecSolverDns01Output) Rfc2136() ChallengeSpecSolverDns01Rfc2136PtrOutput {
@@ -1772,13 +1772,13 @@ func (o ChallengeSpecSolverDns01PtrOutput) CnameStrategy() pulumi.StringPtrOutpu
 	}).(pulumi.StringPtrOutput)
 }
 
-func (o ChallengeSpecSolverDns01PtrOutput) Digitalocean() ChallengeSpecSolverDns01DigitaloceanPtrOutput {
-	return o.ApplyT(func(v *ChallengeSpecSolverDns01) *ChallengeSpecSolverDns01Digitalocean {
+func (o ChallengeSpecSolverDns01PtrOutput) DigitalOcean() ChallengeSpecSolverDns01DigitalOceanPtrOutput {
+	return o.ApplyT(func(v *ChallengeSpecSolverDns01) *ChallengeSpecSolverDns01DigitalOcean {
 		if v == nil {
 			return nil
 		}
-		return v.Digitalocean
-	}).(ChallengeSpecSolverDns01DigitaloceanPtrOutput)
+		return v.DigitalOcean
+	}).(ChallengeSpecSolverDns01DigitalOceanPtrOutput)
 }
 
 func (o ChallengeSpecSolverDns01PtrOutput) Rfc2136() ChallengeSpecSolverDns01Rfc2136PtrOutput {
@@ -6901,284 +6901,284 @@ func (o ChallengeSpecSolverDns01CloudflarePatchPtrOutput) Email() pulumi.StringP
 }
 
 // Use the DigitalOcean DNS API to manage DNS01 challenge records.
-type ChallengeSpecSolverDns01Digitalocean struct {
-	TokenSecretRef *ChallengeSpecSolverDns01DigitaloceanTokenSecretRef `pulumi:"tokenSecretRef"`
+type ChallengeSpecSolverDns01DigitalOcean struct {
+	TokenSecretRef *ChallengeSpecSolverDns01DigitalOceanTokenSecretRef `pulumi:"tokenSecretRef"`
 }
 
-// ChallengeSpecSolverDns01DigitaloceanInput is an input type that accepts ChallengeSpecSolverDns01DigitaloceanArgs and ChallengeSpecSolverDns01DigitaloceanOutput values.
-// You can construct a concrete instance of `ChallengeSpecSolverDns01DigitaloceanInput` via:
+// ChallengeSpecSolverDns01DigitalOceanInput is an input type that accepts ChallengeSpecSolverDns01DigitalOceanArgs and ChallengeSpecSolverDns01DigitalOceanOutput values.
+// You can construct a concrete instance of `ChallengeSpecSolverDns01DigitalOceanInput` via:
 //
-//	ChallengeSpecSolverDns01DigitaloceanArgs{...}
-type ChallengeSpecSolverDns01DigitaloceanInput interface {
+//	ChallengeSpecSolverDns01DigitalOceanArgs{...}
+type ChallengeSpecSolverDns01DigitalOceanInput interface {
 	pulumi.Input
 
-	ToChallengeSpecSolverDns01DigitaloceanOutput() ChallengeSpecSolverDns01DigitaloceanOutput
-	ToChallengeSpecSolverDns01DigitaloceanOutputWithContext(context.Context) ChallengeSpecSolverDns01DigitaloceanOutput
+	ToChallengeSpecSolverDns01DigitalOceanOutput() ChallengeSpecSolverDns01DigitalOceanOutput
+	ToChallengeSpecSolverDns01DigitalOceanOutputWithContext(context.Context) ChallengeSpecSolverDns01DigitalOceanOutput
 }
 
 // Use the DigitalOcean DNS API to manage DNS01 challenge records.
-type ChallengeSpecSolverDns01DigitaloceanArgs struct {
-	TokenSecretRef ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrInput `pulumi:"tokenSecretRef"`
+type ChallengeSpecSolverDns01DigitalOceanArgs struct {
+	TokenSecretRef ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrInput `pulumi:"tokenSecretRef"`
 }
 
-func (ChallengeSpecSolverDns01DigitaloceanArgs) ElementType() reflect.Type {
-	return reflect.TypeOf((*ChallengeSpecSolverDns01Digitalocean)(nil)).Elem()
+func (ChallengeSpecSolverDns01DigitalOceanArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ChallengeSpecSolverDns01DigitalOcean)(nil)).Elem()
 }
 
-func (i ChallengeSpecSolverDns01DigitaloceanArgs) ToChallengeSpecSolverDns01DigitaloceanOutput() ChallengeSpecSolverDns01DigitaloceanOutput {
-	return i.ToChallengeSpecSolverDns01DigitaloceanOutputWithContext(context.Background())
+func (i ChallengeSpecSolverDns01DigitalOceanArgs) ToChallengeSpecSolverDns01DigitalOceanOutput() ChallengeSpecSolverDns01DigitalOceanOutput {
+	return i.ToChallengeSpecSolverDns01DigitalOceanOutputWithContext(context.Background())
 }
 
-func (i ChallengeSpecSolverDns01DigitaloceanArgs) ToChallengeSpecSolverDns01DigitaloceanOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanOutput {
-	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitaloceanOutput)
+func (i ChallengeSpecSolverDns01DigitalOceanArgs) ToChallengeSpecSolverDns01DigitalOceanOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitalOceanOutput)
 }
 
-func (i ChallengeSpecSolverDns01DigitaloceanArgs) ToChallengeSpecSolverDns01DigitaloceanPtrOutput() ChallengeSpecSolverDns01DigitaloceanPtrOutput {
-	return i.ToChallengeSpecSolverDns01DigitaloceanPtrOutputWithContext(context.Background())
+func (i ChallengeSpecSolverDns01DigitalOceanArgs) ToChallengeSpecSolverDns01DigitalOceanPtrOutput() ChallengeSpecSolverDns01DigitalOceanPtrOutput {
+	return i.ToChallengeSpecSolverDns01DigitalOceanPtrOutputWithContext(context.Background())
 }
 
-func (i ChallengeSpecSolverDns01DigitaloceanArgs) ToChallengeSpecSolverDns01DigitaloceanPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanPtrOutput {
-	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitaloceanOutput).ToChallengeSpecSolverDns01DigitaloceanPtrOutputWithContext(ctx)
+func (i ChallengeSpecSolverDns01DigitalOceanArgs) ToChallengeSpecSolverDns01DigitalOceanPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitalOceanOutput).ToChallengeSpecSolverDns01DigitalOceanPtrOutputWithContext(ctx)
 }
 
-// ChallengeSpecSolverDns01DigitaloceanPtrInput is an input type that accepts ChallengeSpecSolverDns01DigitaloceanArgs, ChallengeSpecSolverDns01DigitaloceanPtr and ChallengeSpecSolverDns01DigitaloceanPtrOutput values.
-// You can construct a concrete instance of `ChallengeSpecSolverDns01DigitaloceanPtrInput` via:
+// ChallengeSpecSolverDns01DigitalOceanPtrInput is an input type that accepts ChallengeSpecSolverDns01DigitalOceanArgs, ChallengeSpecSolverDns01DigitalOceanPtr and ChallengeSpecSolverDns01DigitalOceanPtrOutput values.
+// You can construct a concrete instance of `ChallengeSpecSolverDns01DigitalOceanPtrInput` via:
 //
-//	        ChallengeSpecSolverDns01DigitaloceanArgs{...}
+//	        ChallengeSpecSolverDns01DigitalOceanArgs{...}
 //
 //	or:
 //
 //	        nil
-type ChallengeSpecSolverDns01DigitaloceanPtrInput interface {
+type ChallengeSpecSolverDns01DigitalOceanPtrInput interface {
 	pulumi.Input
 
-	ToChallengeSpecSolverDns01DigitaloceanPtrOutput() ChallengeSpecSolverDns01DigitaloceanPtrOutput
-	ToChallengeSpecSolverDns01DigitaloceanPtrOutputWithContext(context.Context) ChallengeSpecSolverDns01DigitaloceanPtrOutput
+	ToChallengeSpecSolverDns01DigitalOceanPtrOutput() ChallengeSpecSolverDns01DigitalOceanPtrOutput
+	ToChallengeSpecSolverDns01DigitalOceanPtrOutputWithContext(context.Context) ChallengeSpecSolverDns01DigitalOceanPtrOutput
 }
 
-type challengeSpecSolverDns01DigitaloceanPtrType ChallengeSpecSolverDns01DigitaloceanArgs
+type challengeSpecSolverDns01DigitalOceanPtrType ChallengeSpecSolverDns01DigitalOceanArgs
 
-func ChallengeSpecSolverDns01DigitaloceanPtr(v *ChallengeSpecSolverDns01DigitaloceanArgs) ChallengeSpecSolverDns01DigitaloceanPtrInput {
-	return (*challengeSpecSolverDns01DigitaloceanPtrType)(v)
+func ChallengeSpecSolverDns01DigitalOceanPtr(v *ChallengeSpecSolverDns01DigitalOceanArgs) ChallengeSpecSolverDns01DigitalOceanPtrInput {
+	return (*challengeSpecSolverDns01DigitalOceanPtrType)(v)
 }
 
-func (*challengeSpecSolverDns01DigitaloceanPtrType) ElementType() reflect.Type {
-	return reflect.TypeOf((**ChallengeSpecSolverDns01Digitalocean)(nil)).Elem()
+func (*challengeSpecSolverDns01DigitalOceanPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ChallengeSpecSolverDns01DigitalOcean)(nil)).Elem()
 }
 
-func (i *challengeSpecSolverDns01DigitaloceanPtrType) ToChallengeSpecSolverDns01DigitaloceanPtrOutput() ChallengeSpecSolverDns01DigitaloceanPtrOutput {
-	return i.ToChallengeSpecSolverDns01DigitaloceanPtrOutputWithContext(context.Background())
+func (i *challengeSpecSolverDns01DigitalOceanPtrType) ToChallengeSpecSolverDns01DigitalOceanPtrOutput() ChallengeSpecSolverDns01DigitalOceanPtrOutput {
+	return i.ToChallengeSpecSolverDns01DigitalOceanPtrOutputWithContext(context.Background())
 }
 
-func (i *challengeSpecSolverDns01DigitaloceanPtrType) ToChallengeSpecSolverDns01DigitaloceanPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanPtrOutput {
-	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitaloceanPtrOutput)
+func (i *challengeSpecSolverDns01DigitalOceanPtrType) ToChallengeSpecSolverDns01DigitalOceanPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitalOceanPtrOutput)
 }
 
 // Use the DigitalOcean DNS API to manage DNS01 challenge records.
-type ChallengeSpecSolverDns01DigitaloceanOutput struct{ *pulumi.OutputState }
+type ChallengeSpecSolverDns01DigitalOceanOutput struct{ *pulumi.OutputState }
 
-func (ChallengeSpecSolverDns01DigitaloceanOutput) ElementType() reflect.Type {
-	return reflect.TypeOf((*ChallengeSpecSolverDns01Digitalocean)(nil)).Elem()
+func (ChallengeSpecSolverDns01DigitalOceanOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ChallengeSpecSolverDns01DigitalOcean)(nil)).Elem()
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanOutput) ToChallengeSpecSolverDns01DigitaloceanOutput() ChallengeSpecSolverDns01DigitaloceanOutput {
+func (o ChallengeSpecSolverDns01DigitalOceanOutput) ToChallengeSpecSolverDns01DigitalOceanOutput() ChallengeSpecSolverDns01DigitalOceanOutput {
 	return o
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanOutput) ToChallengeSpecSolverDns01DigitaloceanOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanOutput {
+func (o ChallengeSpecSolverDns01DigitalOceanOutput) ToChallengeSpecSolverDns01DigitalOceanOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanOutput {
 	return o
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanOutput) ToChallengeSpecSolverDns01DigitaloceanPtrOutput() ChallengeSpecSolverDns01DigitaloceanPtrOutput {
-	return o.ToChallengeSpecSolverDns01DigitaloceanPtrOutputWithContext(context.Background())
+func (o ChallengeSpecSolverDns01DigitalOceanOutput) ToChallengeSpecSolverDns01DigitalOceanPtrOutput() ChallengeSpecSolverDns01DigitalOceanPtrOutput {
+	return o.ToChallengeSpecSolverDns01DigitalOceanPtrOutputWithContext(context.Background())
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanOutput) ToChallengeSpecSolverDns01DigitaloceanPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanPtrOutput {
-	return o.ApplyTWithContext(ctx, func(_ context.Context, v ChallengeSpecSolverDns01Digitalocean) *ChallengeSpecSolverDns01Digitalocean {
+func (o ChallengeSpecSolverDns01DigitalOceanOutput) ToChallengeSpecSolverDns01DigitalOceanPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ChallengeSpecSolverDns01DigitalOcean) *ChallengeSpecSolverDns01DigitalOcean {
 		return &v
-	}).(ChallengeSpecSolverDns01DigitaloceanPtrOutput)
+	}).(ChallengeSpecSolverDns01DigitalOceanPtrOutput)
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanOutput) TokenSecretRef() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput {
-	return o.ApplyT(func(v ChallengeSpecSolverDns01Digitalocean) *ChallengeSpecSolverDns01DigitaloceanTokenSecretRef {
+func (o ChallengeSpecSolverDns01DigitalOceanOutput) TokenSecretRef() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput {
+	return o.ApplyT(func(v ChallengeSpecSolverDns01DigitalOcean) *ChallengeSpecSolverDns01DigitalOceanTokenSecretRef {
 		return v.TokenSecretRef
-	}).(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput)
+	}).(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput)
 }
 
-type ChallengeSpecSolverDns01DigitaloceanPtrOutput struct{ *pulumi.OutputState }
+type ChallengeSpecSolverDns01DigitalOceanPtrOutput struct{ *pulumi.OutputState }
 
-func (ChallengeSpecSolverDns01DigitaloceanPtrOutput) ElementType() reflect.Type {
-	return reflect.TypeOf((**ChallengeSpecSolverDns01Digitalocean)(nil)).Elem()
+func (ChallengeSpecSolverDns01DigitalOceanPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ChallengeSpecSolverDns01DigitalOcean)(nil)).Elem()
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanPtrOutput) ToChallengeSpecSolverDns01DigitaloceanPtrOutput() ChallengeSpecSolverDns01DigitaloceanPtrOutput {
+func (o ChallengeSpecSolverDns01DigitalOceanPtrOutput) ToChallengeSpecSolverDns01DigitalOceanPtrOutput() ChallengeSpecSolverDns01DigitalOceanPtrOutput {
 	return o
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanPtrOutput) ToChallengeSpecSolverDns01DigitaloceanPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanPtrOutput {
+func (o ChallengeSpecSolverDns01DigitalOceanPtrOutput) ToChallengeSpecSolverDns01DigitalOceanPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanPtrOutput {
 	return o
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanPtrOutput) Elem() ChallengeSpecSolverDns01DigitaloceanOutput {
-	return o.ApplyT(func(v *ChallengeSpecSolverDns01Digitalocean) ChallengeSpecSolverDns01Digitalocean {
+func (o ChallengeSpecSolverDns01DigitalOceanPtrOutput) Elem() ChallengeSpecSolverDns01DigitalOceanOutput {
+	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitalOcean) ChallengeSpecSolverDns01DigitalOcean {
 		if v != nil {
 			return *v
 		}
-		var ret ChallengeSpecSolverDns01Digitalocean
+		var ret ChallengeSpecSolverDns01DigitalOcean
 		return ret
-	}).(ChallengeSpecSolverDns01DigitaloceanOutput)
+	}).(ChallengeSpecSolverDns01DigitalOceanOutput)
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanPtrOutput) TokenSecretRef() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput {
-	return o.ApplyT(func(v *ChallengeSpecSolverDns01Digitalocean) *ChallengeSpecSolverDns01DigitaloceanTokenSecretRef {
+func (o ChallengeSpecSolverDns01DigitalOceanPtrOutput) TokenSecretRef() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput {
+	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitalOcean) *ChallengeSpecSolverDns01DigitalOceanTokenSecretRef {
 		if v == nil {
 			return nil
 		}
 		return v.TokenSecretRef
-	}).(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput)
+	}).(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput)
 }
 
 // Use the DigitalOcean DNS API to manage DNS01 challenge records.
-type ChallengeSpecSolverDns01DigitaloceanPatch struct {
-	TokenSecretRef *ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch `pulumi:"tokenSecretRef"`
+type ChallengeSpecSolverDns01DigitalOceanPatch struct {
+	TokenSecretRef *ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatch `pulumi:"tokenSecretRef"`
 }
 
-// ChallengeSpecSolverDns01DigitaloceanPatchInput is an input type that accepts ChallengeSpecSolverDns01DigitaloceanPatchArgs and ChallengeSpecSolverDns01DigitaloceanPatchOutput values.
-// You can construct a concrete instance of `ChallengeSpecSolverDns01DigitaloceanPatchInput` via:
+// ChallengeSpecSolverDns01DigitalOceanPatchInput is an input type that accepts ChallengeSpecSolverDns01DigitalOceanPatchArgs and ChallengeSpecSolverDns01DigitalOceanPatchOutput values.
+// You can construct a concrete instance of `ChallengeSpecSolverDns01DigitalOceanPatchInput` via:
 //
-//	ChallengeSpecSolverDns01DigitaloceanPatchArgs{...}
-type ChallengeSpecSolverDns01DigitaloceanPatchInput interface {
+//	ChallengeSpecSolverDns01DigitalOceanPatchArgs{...}
+type ChallengeSpecSolverDns01DigitalOceanPatchInput interface {
 	pulumi.Input
 
-	ToChallengeSpecSolverDns01DigitaloceanPatchOutput() ChallengeSpecSolverDns01DigitaloceanPatchOutput
-	ToChallengeSpecSolverDns01DigitaloceanPatchOutputWithContext(context.Context) ChallengeSpecSolverDns01DigitaloceanPatchOutput
+	ToChallengeSpecSolverDns01DigitalOceanPatchOutput() ChallengeSpecSolverDns01DigitalOceanPatchOutput
+	ToChallengeSpecSolverDns01DigitalOceanPatchOutputWithContext(context.Context) ChallengeSpecSolverDns01DigitalOceanPatchOutput
 }
 
 // Use the DigitalOcean DNS API to manage DNS01 challenge records.
-type ChallengeSpecSolverDns01DigitaloceanPatchArgs struct {
-	TokenSecretRef ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrInput `pulumi:"tokenSecretRef"`
+type ChallengeSpecSolverDns01DigitalOceanPatchArgs struct {
+	TokenSecretRef ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrInput `pulumi:"tokenSecretRef"`
 }
 
-func (ChallengeSpecSolverDns01DigitaloceanPatchArgs) ElementType() reflect.Type {
-	return reflect.TypeOf((*ChallengeSpecSolverDns01DigitaloceanPatch)(nil)).Elem()
+func (ChallengeSpecSolverDns01DigitalOceanPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ChallengeSpecSolverDns01DigitalOceanPatch)(nil)).Elem()
 }
 
-func (i ChallengeSpecSolverDns01DigitaloceanPatchArgs) ToChallengeSpecSolverDns01DigitaloceanPatchOutput() ChallengeSpecSolverDns01DigitaloceanPatchOutput {
-	return i.ToChallengeSpecSolverDns01DigitaloceanPatchOutputWithContext(context.Background())
+func (i ChallengeSpecSolverDns01DigitalOceanPatchArgs) ToChallengeSpecSolverDns01DigitalOceanPatchOutput() ChallengeSpecSolverDns01DigitalOceanPatchOutput {
+	return i.ToChallengeSpecSolverDns01DigitalOceanPatchOutputWithContext(context.Background())
 }
 
-func (i ChallengeSpecSolverDns01DigitaloceanPatchArgs) ToChallengeSpecSolverDns01DigitaloceanPatchOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanPatchOutput {
-	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitaloceanPatchOutput)
+func (i ChallengeSpecSolverDns01DigitalOceanPatchArgs) ToChallengeSpecSolverDns01DigitalOceanPatchOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitalOceanPatchOutput)
 }
 
-func (i ChallengeSpecSolverDns01DigitaloceanPatchArgs) ToChallengeSpecSolverDns01DigitaloceanPatchPtrOutput() ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput {
-	return i.ToChallengeSpecSolverDns01DigitaloceanPatchPtrOutputWithContext(context.Background())
+func (i ChallengeSpecSolverDns01DigitalOceanPatchArgs) ToChallengeSpecSolverDns01DigitalOceanPatchPtrOutput() ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput {
+	return i.ToChallengeSpecSolverDns01DigitalOceanPatchPtrOutputWithContext(context.Background())
 }
 
-func (i ChallengeSpecSolverDns01DigitaloceanPatchArgs) ToChallengeSpecSolverDns01DigitaloceanPatchPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput {
-	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitaloceanPatchOutput).ToChallengeSpecSolverDns01DigitaloceanPatchPtrOutputWithContext(ctx)
+func (i ChallengeSpecSolverDns01DigitalOceanPatchArgs) ToChallengeSpecSolverDns01DigitalOceanPatchPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitalOceanPatchOutput).ToChallengeSpecSolverDns01DigitalOceanPatchPtrOutputWithContext(ctx)
 }
 
-// ChallengeSpecSolverDns01DigitaloceanPatchPtrInput is an input type that accepts ChallengeSpecSolverDns01DigitaloceanPatchArgs, ChallengeSpecSolverDns01DigitaloceanPatchPtr and ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput values.
-// You can construct a concrete instance of `ChallengeSpecSolverDns01DigitaloceanPatchPtrInput` via:
+// ChallengeSpecSolverDns01DigitalOceanPatchPtrInput is an input type that accepts ChallengeSpecSolverDns01DigitalOceanPatchArgs, ChallengeSpecSolverDns01DigitalOceanPatchPtr and ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput values.
+// You can construct a concrete instance of `ChallengeSpecSolverDns01DigitalOceanPatchPtrInput` via:
 //
-//	        ChallengeSpecSolverDns01DigitaloceanPatchArgs{...}
+//	        ChallengeSpecSolverDns01DigitalOceanPatchArgs{...}
 //
 //	or:
 //
 //	        nil
-type ChallengeSpecSolverDns01DigitaloceanPatchPtrInput interface {
+type ChallengeSpecSolverDns01DigitalOceanPatchPtrInput interface {
 	pulumi.Input
 
-	ToChallengeSpecSolverDns01DigitaloceanPatchPtrOutput() ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput
-	ToChallengeSpecSolverDns01DigitaloceanPatchPtrOutputWithContext(context.Context) ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput
+	ToChallengeSpecSolverDns01DigitalOceanPatchPtrOutput() ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput
+	ToChallengeSpecSolverDns01DigitalOceanPatchPtrOutputWithContext(context.Context) ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput
 }
 
-type challengeSpecSolverDns01DigitaloceanPatchPtrType ChallengeSpecSolverDns01DigitaloceanPatchArgs
+type challengeSpecSolverDns01DigitalOceanPatchPtrType ChallengeSpecSolverDns01DigitalOceanPatchArgs
 
-func ChallengeSpecSolverDns01DigitaloceanPatchPtr(v *ChallengeSpecSolverDns01DigitaloceanPatchArgs) ChallengeSpecSolverDns01DigitaloceanPatchPtrInput {
-	return (*challengeSpecSolverDns01DigitaloceanPatchPtrType)(v)
+func ChallengeSpecSolverDns01DigitalOceanPatchPtr(v *ChallengeSpecSolverDns01DigitalOceanPatchArgs) ChallengeSpecSolverDns01DigitalOceanPatchPtrInput {
+	return (*challengeSpecSolverDns01DigitalOceanPatchPtrType)(v)
 }
 
-func (*challengeSpecSolverDns01DigitaloceanPatchPtrType) ElementType() reflect.Type {
-	return reflect.TypeOf((**ChallengeSpecSolverDns01DigitaloceanPatch)(nil)).Elem()
+func (*challengeSpecSolverDns01DigitalOceanPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ChallengeSpecSolverDns01DigitalOceanPatch)(nil)).Elem()
 }
 
-func (i *challengeSpecSolverDns01DigitaloceanPatchPtrType) ToChallengeSpecSolverDns01DigitaloceanPatchPtrOutput() ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput {
-	return i.ToChallengeSpecSolverDns01DigitaloceanPatchPtrOutputWithContext(context.Background())
+func (i *challengeSpecSolverDns01DigitalOceanPatchPtrType) ToChallengeSpecSolverDns01DigitalOceanPatchPtrOutput() ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput {
+	return i.ToChallengeSpecSolverDns01DigitalOceanPatchPtrOutputWithContext(context.Background())
 }
 
-func (i *challengeSpecSolverDns01DigitaloceanPatchPtrType) ToChallengeSpecSolverDns01DigitaloceanPatchPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput {
-	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput)
+func (i *challengeSpecSolverDns01DigitalOceanPatchPtrType) ToChallengeSpecSolverDns01DigitalOceanPatchPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput)
 }
 
 // Use the DigitalOcean DNS API to manage DNS01 challenge records.
-type ChallengeSpecSolverDns01DigitaloceanPatchOutput struct{ *pulumi.OutputState }
+type ChallengeSpecSolverDns01DigitalOceanPatchOutput struct{ *pulumi.OutputState }
 
-func (ChallengeSpecSolverDns01DigitaloceanPatchOutput) ElementType() reflect.Type {
-	return reflect.TypeOf((*ChallengeSpecSolverDns01DigitaloceanPatch)(nil)).Elem()
+func (ChallengeSpecSolverDns01DigitalOceanPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ChallengeSpecSolverDns01DigitalOceanPatch)(nil)).Elem()
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanPatchOutput) ToChallengeSpecSolverDns01DigitaloceanPatchOutput() ChallengeSpecSolverDns01DigitaloceanPatchOutput {
+func (o ChallengeSpecSolverDns01DigitalOceanPatchOutput) ToChallengeSpecSolverDns01DigitalOceanPatchOutput() ChallengeSpecSolverDns01DigitalOceanPatchOutput {
 	return o
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanPatchOutput) ToChallengeSpecSolverDns01DigitaloceanPatchOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanPatchOutput {
+func (o ChallengeSpecSolverDns01DigitalOceanPatchOutput) ToChallengeSpecSolverDns01DigitalOceanPatchOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanPatchOutput {
 	return o
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanPatchOutput) ToChallengeSpecSolverDns01DigitaloceanPatchPtrOutput() ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput {
-	return o.ToChallengeSpecSolverDns01DigitaloceanPatchPtrOutputWithContext(context.Background())
+func (o ChallengeSpecSolverDns01DigitalOceanPatchOutput) ToChallengeSpecSolverDns01DigitalOceanPatchPtrOutput() ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput {
+	return o.ToChallengeSpecSolverDns01DigitalOceanPatchPtrOutputWithContext(context.Background())
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanPatchOutput) ToChallengeSpecSolverDns01DigitaloceanPatchPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput {
-	return o.ApplyTWithContext(ctx, func(_ context.Context, v ChallengeSpecSolverDns01DigitaloceanPatch) *ChallengeSpecSolverDns01DigitaloceanPatch {
+func (o ChallengeSpecSolverDns01DigitalOceanPatchOutput) ToChallengeSpecSolverDns01DigitalOceanPatchPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ChallengeSpecSolverDns01DigitalOceanPatch) *ChallengeSpecSolverDns01DigitalOceanPatch {
 		return &v
-	}).(ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput)
+	}).(ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput)
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanPatchOutput) TokenSecretRef() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput {
-	return o.ApplyT(func(v ChallengeSpecSolverDns01DigitaloceanPatch) *ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch {
+func (o ChallengeSpecSolverDns01DigitalOceanPatchOutput) TokenSecretRef() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput {
+	return o.ApplyT(func(v ChallengeSpecSolverDns01DigitalOceanPatch) *ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatch {
 		return v.TokenSecretRef
-	}).(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput)
+	}).(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput)
 }
 
-type ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput struct{ *pulumi.OutputState }
+type ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput struct{ *pulumi.OutputState }
 
-func (ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput) ElementType() reflect.Type {
-	return reflect.TypeOf((**ChallengeSpecSolverDns01DigitaloceanPatch)(nil)).Elem()
+func (ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ChallengeSpecSolverDns01DigitalOceanPatch)(nil)).Elem()
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput) ToChallengeSpecSolverDns01DigitaloceanPatchPtrOutput() ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput {
+func (o ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput) ToChallengeSpecSolverDns01DigitalOceanPatchPtrOutput() ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput {
 	return o
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput) ToChallengeSpecSolverDns01DigitaloceanPatchPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput {
+func (o ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput) ToChallengeSpecSolverDns01DigitalOceanPatchPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput {
 	return o
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput) Elem() ChallengeSpecSolverDns01DigitaloceanPatchOutput {
-	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitaloceanPatch) ChallengeSpecSolverDns01DigitaloceanPatch {
+func (o ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput) Elem() ChallengeSpecSolverDns01DigitalOceanPatchOutput {
+	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitalOceanPatch) ChallengeSpecSolverDns01DigitalOceanPatch {
 		if v != nil {
 			return *v
 		}
-		var ret ChallengeSpecSolverDns01DigitaloceanPatch
+		var ret ChallengeSpecSolverDns01DigitalOceanPatch
 		return ret
-	}).(ChallengeSpecSolverDns01DigitaloceanPatchOutput)
+	}).(ChallengeSpecSolverDns01DigitalOceanPatchOutput)
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput) TokenSecretRef() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput {
-	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitaloceanPatch) *ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch {
+func (o ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput) TokenSecretRef() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput {
+	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitalOceanPatch) *ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatch {
 		if v == nil {
 			return nil
 		}
 		return v.TokenSecretRef
-	}).(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput)
+	}).(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput)
 }
 
 // A reference to a specific 'key' within a Secret resource.
 // In some instances, `key` is a required field.
-type ChallengeSpecSolverDns01DigitaloceanTokenSecretRef struct {
+type ChallengeSpecSolverDns01DigitalOceanTokenSecretRef struct {
 	// The key of the entry in the Secret resource's `data` field to be used.
 	// Some instances of this field may be defaulted, in others it may be
 	// required.
@@ -7188,20 +7188,20 @@ type ChallengeSpecSolverDns01DigitaloceanTokenSecretRef struct {
 	Name *string `pulumi:"name"`
 }
 
-// ChallengeSpecSolverDns01DigitaloceanTokenSecretRefInput is an input type that accepts ChallengeSpecSolverDns01DigitaloceanTokenSecretRefArgs and ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput values.
-// You can construct a concrete instance of `ChallengeSpecSolverDns01DigitaloceanTokenSecretRefInput` via:
+// ChallengeSpecSolverDns01DigitalOceanTokenSecretRefInput is an input type that accepts ChallengeSpecSolverDns01DigitalOceanTokenSecretRefArgs and ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput values.
+// You can construct a concrete instance of `ChallengeSpecSolverDns01DigitalOceanTokenSecretRefInput` via:
 //
-//	ChallengeSpecSolverDns01DigitaloceanTokenSecretRefArgs{...}
-type ChallengeSpecSolverDns01DigitaloceanTokenSecretRefInput interface {
+//	ChallengeSpecSolverDns01DigitalOceanTokenSecretRefArgs{...}
+type ChallengeSpecSolverDns01DigitalOceanTokenSecretRefInput interface {
 	pulumi.Input
 
-	ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput
-	ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutputWithContext(context.Context) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput
+	ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput
+	ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutputWithContext(context.Context) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput
 }
 
 // A reference to a specific 'key' within a Secret resource.
 // In some instances, `key` is a required field.
-type ChallengeSpecSolverDns01DigitaloceanTokenSecretRefArgs struct {
+type ChallengeSpecSolverDns01DigitalOceanTokenSecretRefArgs struct {
 	// The key of the entry in the Secret resource's `data` field to be used.
 	// Some instances of this field may be defaulted, in others it may be
 	// required.
@@ -7211,127 +7211,127 @@ type ChallengeSpecSolverDns01DigitaloceanTokenSecretRefArgs struct {
 	Name pulumi.StringPtrInput `pulumi:"name"`
 }
 
-func (ChallengeSpecSolverDns01DigitaloceanTokenSecretRefArgs) ElementType() reflect.Type {
-	return reflect.TypeOf((*ChallengeSpecSolverDns01DigitaloceanTokenSecretRef)(nil)).Elem()
+func (ChallengeSpecSolverDns01DigitalOceanTokenSecretRefArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ChallengeSpecSolverDns01DigitalOceanTokenSecretRef)(nil)).Elem()
 }
 
-func (i ChallengeSpecSolverDns01DigitaloceanTokenSecretRefArgs) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput {
-	return i.ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutputWithContext(context.Background())
+func (i ChallengeSpecSolverDns01DigitalOceanTokenSecretRefArgs) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput {
+	return i.ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutputWithContext(context.Background())
 }
 
-func (i ChallengeSpecSolverDns01DigitaloceanTokenSecretRefArgs) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput {
-	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput)
+func (i ChallengeSpecSolverDns01DigitalOceanTokenSecretRefArgs) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput)
 }
 
-func (i ChallengeSpecSolverDns01DigitaloceanTokenSecretRefArgs) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput {
-	return i.ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutputWithContext(context.Background())
+func (i ChallengeSpecSolverDns01DigitalOceanTokenSecretRefArgs) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput {
+	return i.ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutputWithContext(context.Background())
 }
 
-func (i ChallengeSpecSolverDns01DigitaloceanTokenSecretRefArgs) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput {
-	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput).ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutputWithContext(ctx)
+func (i ChallengeSpecSolverDns01DigitalOceanTokenSecretRefArgs) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput).ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutputWithContext(ctx)
 }
 
-// ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrInput is an input type that accepts ChallengeSpecSolverDns01DigitaloceanTokenSecretRefArgs, ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtr and ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput values.
-// You can construct a concrete instance of `ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrInput` via:
+// ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrInput is an input type that accepts ChallengeSpecSolverDns01DigitalOceanTokenSecretRefArgs, ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtr and ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput values.
+// You can construct a concrete instance of `ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrInput` via:
 //
-//	        ChallengeSpecSolverDns01DigitaloceanTokenSecretRefArgs{...}
+//	        ChallengeSpecSolverDns01DigitalOceanTokenSecretRefArgs{...}
 //
 //	or:
 //
 //	        nil
-type ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrInput interface {
+type ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrInput interface {
 	pulumi.Input
 
-	ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput
-	ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutputWithContext(context.Context) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput
+	ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput
+	ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutputWithContext(context.Context) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput
 }
 
-type challengeSpecSolverDns01DigitaloceanTokenSecretRefPtrType ChallengeSpecSolverDns01DigitaloceanTokenSecretRefArgs
+type challengeSpecSolverDns01DigitalOceanTokenSecretRefPtrType ChallengeSpecSolverDns01DigitalOceanTokenSecretRefArgs
 
-func ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtr(v *ChallengeSpecSolverDns01DigitaloceanTokenSecretRefArgs) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrInput {
-	return (*challengeSpecSolverDns01DigitaloceanTokenSecretRefPtrType)(v)
+func ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtr(v *ChallengeSpecSolverDns01DigitalOceanTokenSecretRefArgs) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrInput {
+	return (*challengeSpecSolverDns01DigitalOceanTokenSecretRefPtrType)(v)
 }
 
-func (*challengeSpecSolverDns01DigitaloceanTokenSecretRefPtrType) ElementType() reflect.Type {
-	return reflect.TypeOf((**ChallengeSpecSolverDns01DigitaloceanTokenSecretRef)(nil)).Elem()
+func (*challengeSpecSolverDns01DigitalOceanTokenSecretRefPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ChallengeSpecSolverDns01DigitalOceanTokenSecretRef)(nil)).Elem()
 }
 
-func (i *challengeSpecSolverDns01DigitaloceanTokenSecretRefPtrType) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput {
-	return i.ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutputWithContext(context.Background())
+func (i *challengeSpecSolverDns01DigitalOceanTokenSecretRefPtrType) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput {
+	return i.ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutputWithContext(context.Background())
 }
 
-func (i *challengeSpecSolverDns01DigitaloceanTokenSecretRefPtrType) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput {
-	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput)
+func (i *challengeSpecSolverDns01DigitalOceanTokenSecretRefPtrType) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput)
 }
 
 // A reference to a specific 'key' within a Secret resource.
 // In some instances, `key` is a required field.
-type ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput struct{ *pulumi.OutputState }
+type ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput struct{ *pulumi.OutputState }
 
-func (ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput) ElementType() reflect.Type {
-	return reflect.TypeOf((*ChallengeSpecSolverDns01DigitaloceanTokenSecretRef)(nil)).Elem()
+func (ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ChallengeSpecSolverDns01DigitalOceanTokenSecretRef)(nil)).Elem()
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput {
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput {
 	return o
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput {
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput {
 	return o
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput {
-	return o.ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutputWithContext(context.Background())
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput {
+	return o.ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutputWithContext(context.Background())
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput {
-	return o.ApplyTWithContext(ctx, func(_ context.Context, v ChallengeSpecSolverDns01DigitaloceanTokenSecretRef) *ChallengeSpecSolverDns01DigitaloceanTokenSecretRef {
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ChallengeSpecSolverDns01DigitalOceanTokenSecretRef) *ChallengeSpecSolverDns01DigitalOceanTokenSecretRef {
 		return &v
-	}).(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput)
+	}).(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput)
 }
 
 // The key of the entry in the Secret resource's `data` field to be used.
 // Some instances of this field may be defaulted, in others it may be
 // required.
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput) Key() pulumi.StringPtrOutput {
-	return o.ApplyT(func(v ChallengeSpecSolverDns01DigitaloceanTokenSecretRef) *string { return v.Key }).(pulumi.StringPtrOutput)
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput) Key() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ChallengeSpecSolverDns01DigitalOceanTokenSecretRef) *string { return v.Key }).(pulumi.StringPtrOutput)
 }
 
 // Name of the resource being referred to.
 // More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput) Name() pulumi.StringPtrOutput {
-	return o.ApplyT(func(v ChallengeSpecSolverDns01DigitaloceanTokenSecretRef) *string { return v.Name }).(pulumi.StringPtrOutput)
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ChallengeSpecSolverDns01DigitalOceanTokenSecretRef) *string { return v.Name }).(pulumi.StringPtrOutput)
 }
 
-type ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput struct{ *pulumi.OutputState }
+type ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput struct{ *pulumi.OutputState }
 
-func (ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput) ElementType() reflect.Type {
-	return reflect.TypeOf((**ChallengeSpecSolverDns01DigitaloceanTokenSecretRef)(nil)).Elem()
+func (ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ChallengeSpecSolverDns01DigitalOceanTokenSecretRef)(nil)).Elem()
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput {
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput {
 	return o
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput {
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput {
 	return o
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput) Elem() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput {
-	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitaloceanTokenSecretRef) ChallengeSpecSolverDns01DigitaloceanTokenSecretRef {
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput) Elem() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput {
+	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitalOceanTokenSecretRef) ChallengeSpecSolverDns01DigitalOceanTokenSecretRef {
 		if v != nil {
 			return *v
 		}
-		var ret ChallengeSpecSolverDns01DigitaloceanTokenSecretRef
+		var ret ChallengeSpecSolverDns01DigitalOceanTokenSecretRef
 		return ret
-	}).(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput)
+	}).(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput)
 }
 
 // The key of the entry in the Secret resource's `data` field to be used.
 // Some instances of this field may be defaulted, in others it may be
 // required.
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput) Key() pulumi.StringPtrOutput {
-	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitaloceanTokenSecretRef) *string {
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput) Key() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitalOceanTokenSecretRef) *string {
 		if v == nil {
 			return nil
 		}
@@ -7341,8 +7341,8 @@ func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput) Key() pulum
 
 // Name of the resource being referred to.
 // More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput) Name() pulumi.StringPtrOutput {
-	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitaloceanTokenSecretRef) *string {
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitalOceanTokenSecretRef) *string {
 		if v == nil {
 			return nil
 		}
@@ -7352,7 +7352,7 @@ func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput) Name() pulu
 
 // A reference to a specific 'key' within a Secret resource.
 // In some instances, `key` is a required field.
-type ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch struct {
+type ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatch struct {
 	// The key of the entry in the Secret resource's `data` field to be used.
 	// Some instances of this field may be defaulted, in others it may be
 	// required.
@@ -7362,20 +7362,20 @@ type ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch struct {
 	Name *string `pulumi:"name"`
 }
 
-// ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchInput is an input type that accepts ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchArgs and ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput values.
-// You can construct a concrete instance of `ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchInput` via:
+// ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchInput is an input type that accepts ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchArgs and ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput values.
+// You can construct a concrete instance of `ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchInput` via:
 //
-//	ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchArgs{...}
-type ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchInput interface {
+//	ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchArgs{...}
+type ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchInput interface {
 	pulumi.Input
 
-	ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput
-	ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutputWithContext(context.Context) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput
+	ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput
+	ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutputWithContext(context.Context) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput
 }
 
 // A reference to a specific 'key' within a Secret resource.
 // In some instances, `key` is a required field.
-type ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchArgs struct {
+type ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchArgs struct {
 	// The key of the entry in the Secret resource's `data` field to be used.
 	// Some instances of this field may be defaulted, in others it may be
 	// required.
@@ -7385,127 +7385,127 @@ type ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchArgs struct {
 	Name pulumi.StringPtrInput `pulumi:"name"`
 }
 
-func (ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchArgs) ElementType() reflect.Type {
-	return reflect.TypeOf((*ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch)(nil)).Elem()
+func (ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatch)(nil)).Elem()
 }
 
-func (i ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchArgs) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput {
-	return i.ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutputWithContext(context.Background())
+func (i ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchArgs) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput {
+	return i.ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutputWithContext(context.Background())
 }
 
-func (i ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchArgs) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput {
-	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput)
+func (i ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchArgs) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput)
 }
 
-func (i ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchArgs) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput {
-	return i.ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutputWithContext(context.Background())
+func (i ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchArgs) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput {
+	return i.ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutputWithContext(context.Background())
 }
 
-func (i ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchArgs) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput {
-	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput).ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutputWithContext(ctx)
+func (i ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchArgs) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput).ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutputWithContext(ctx)
 }
 
-// ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrInput is an input type that accepts ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchArgs, ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtr and ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput values.
-// You can construct a concrete instance of `ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrInput` via:
+// ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrInput is an input type that accepts ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchArgs, ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtr and ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput values.
+// You can construct a concrete instance of `ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrInput` via:
 //
-//	        ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchArgs{...}
+//	        ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchArgs{...}
 //
 //	or:
 //
 //	        nil
-type ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrInput interface {
+type ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrInput interface {
 	pulumi.Input
 
-	ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput
-	ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutputWithContext(context.Context) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput
+	ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput
+	ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutputWithContext(context.Context) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput
 }
 
-type challengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrType ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchArgs
+type challengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrType ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchArgs
 
-func ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtr(v *ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchArgs) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrInput {
-	return (*challengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrType)(v)
+func ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtr(v *ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchArgs) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrInput {
+	return (*challengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrType)(v)
 }
 
-func (*challengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrType) ElementType() reflect.Type {
-	return reflect.TypeOf((**ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch)(nil)).Elem()
+func (*challengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatch)(nil)).Elem()
 }
 
-func (i *challengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrType) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput {
-	return i.ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutputWithContext(context.Background())
+func (i *challengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrType) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput {
+	return i.ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutputWithContext(context.Background())
 }
 
-func (i *challengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrType) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput {
-	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput)
+func (i *challengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrType) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput)
 }
 
 // A reference to a specific 'key' within a Secret resource.
 // In some instances, `key` is a required field.
-type ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput struct{ *pulumi.OutputState }
+type ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput struct{ *pulumi.OutputState }
 
-func (ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput) ElementType() reflect.Type {
-	return reflect.TypeOf((*ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch)(nil)).Elem()
+func (ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatch)(nil)).Elem()
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput {
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput {
 	return o
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput {
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput {
 	return o
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput {
-	return o.ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutputWithContext(context.Background())
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput {
+	return o.ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutputWithContext(context.Background())
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput {
-	return o.ApplyTWithContext(ctx, func(_ context.Context, v ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch) *ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch {
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatch) *ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatch {
 		return &v
-	}).(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput)
+	}).(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput)
 }
 
 // The key of the entry in the Secret resource's `data` field to be used.
 // Some instances of this field may be defaulted, in others it may be
 // required.
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput) Key() pulumi.StringPtrOutput {
-	return o.ApplyT(func(v ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch) *string { return v.Key }).(pulumi.StringPtrOutput)
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput) Key() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatch) *string { return v.Key }).(pulumi.StringPtrOutput)
 }
 
 // Name of the resource being referred to.
 // More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput) Name() pulumi.StringPtrOutput {
-	return o.ApplyT(func(v ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch) *string { return v.Name }).(pulumi.StringPtrOutput)
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatch) *string { return v.Name }).(pulumi.StringPtrOutput)
 }
 
-type ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput struct{ *pulumi.OutputState }
+type ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput struct{ *pulumi.OutputState }
 
-func (ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput) ElementType() reflect.Type {
-	return reflect.TypeOf((**ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch)(nil)).Elem()
+func (ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatch)(nil)).Elem()
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput {
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput {
 	return o
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput) ToChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput {
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput) ToChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutputWithContext(ctx context.Context) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput {
 	return o
 }
 
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput) Elem() ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput {
-	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch) ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch {
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput) Elem() ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput {
+	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatch) ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatch {
 		if v != nil {
 			return *v
 		}
-		var ret ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch
+		var ret ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatch
 		return ret
-	}).(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput)
+	}).(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput)
 }
 
 // The key of the entry in the Secret resource's `data` field to be used.
 // Some instances of this field may be defaulted, in others it may be
 // required.
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput) Key() pulumi.StringPtrOutput {
-	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch) *string {
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput) Key() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatch) *string {
 		if v == nil {
 			return nil
 		}
@@ -7515,8 +7515,8 @@ func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput) Key() 
 
 // Name of the resource being referred to.
 // More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-func (o ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput) Name() pulumi.StringPtrOutput {
-	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatch) *string {
+func (o ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatch) *string {
 		if v == nil {
 			return nil
 		}
@@ -7535,7 +7535,7 @@ type ChallengeSpecSolverDns01Patch struct {
 	// CNAMEStrategy configures how the DNS01 provider should handle CNAME
 	// records when found in DNS zones.
 	CnameStrategy *string                                    `pulumi:"cnameStrategy"`
-	Digitalocean  *ChallengeSpecSolverDns01DigitaloceanPatch `pulumi:"digitalocean"`
+	DigitalOcean  *ChallengeSpecSolverDns01DigitalOceanPatch `pulumi:"digitalocean"`
 	Rfc2136       *ChallengeSpecSolverDns01Rfc2136Patch      `pulumi:"rfc2136"`
 	Route53       *ChallengeSpecSolverDns01Route53Patch      `pulumi:"route53"`
 	Webhook       *ChallengeSpecSolverDns01WebhookPatch      `pulumi:"webhook"`
@@ -7563,7 +7563,7 @@ type ChallengeSpecSolverDns01PatchArgs struct {
 	// CNAMEStrategy configures how the DNS01 provider should handle CNAME
 	// records when found in DNS zones.
 	CnameStrategy pulumi.StringPtrInput                             `pulumi:"cnameStrategy"`
-	Digitalocean  ChallengeSpecSolverDns01DigitaloceanPatchPtrInput `pulumi:"digitalocean"`
+	DigitalOcean  ChallengeSpecSolverDns01DigitalOceanPatchPtrInput `pulumi:"digitalocean"`
 	Rfc2136       ChallengeSpecSolverDns01Rfc2136PatchPtrInput      `pulumi:"rfc2136"`
 	Route53       ChallengeSpecSolverDns01Route53PatchPtrInput      `pulumi:"route53"`
 	Webhook       ChallengeSpecSolverDns01WebhookPatchPtrInput      `pulumi:"webhook"`
@@ -7674,10 +7674,10 @@ func (o ChallengeSpecSolverDns01PatchOutput) CnameStrategy() pulumi.StringPtrOut
 	return o.ApplyT(func(v ChallengeSpecSolverDns01Patch) *string { return v.CnameStrategy }).(pulumi.StringPtrOutput)
 }
 
-func (o ChallengeSpecSolverDns01PatchOutput) Digitalocean() ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput {
-	return o.ApplyT(func(v ChallengeSpecSolverDns01Patch) *ChallengeSpecSolverDns01DigitaloceanPatch {
-		return v.Digitalocean
-	}).(ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput)
+func (o ChallengeSpecSolverDns01PatchOutput) DigitalOcean() ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput {
+	return o.ApplyT(func(v ChallengeSpecSolverDns01Patch) *ChallengeSpecSolverDns01DigitalOceanPatch {
+		return v.DigitalOcean
+	}).(ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput)
 }
 
 func (o ChallengeSpecSolverDns01PatchOutput) Rfc2136() ChallengeSpecSolverDns01Rfc2136PatchPtrOutput {
@@ -7772,13 +7772,13 @@ func (o ChallengeSpecSolverDns01PatchPtrOutput) CnameStrategy() pulumi.StringPtr
 	}).(pulumi.StringPtrOutput)
 }
 
-func (o ChallengeSpecSolverDns01PatchPtrOutput) Digitalocean() ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput {
-	return o.ApplyT(func(v *ChallengeSpecSolverDns01Patch) *ChallengeSpecSolverDns01DigitaloceanPatch {
+func (o ChallengeSpecSolverDns01PatchPtrOutput) DigitalOcean() ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput {
+	return o.ApplyT(func(v *ChallengeSpecSolverDns01Patch) *ChallengeSpecSolverDns01DigitalOceanPatch {
 		if v == nil {
 			return nil
 		}
-		return v.Digitalocean
-	}).(ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput)
+		return v.DigitalOcean
+	}).(ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput)
 }
 
 func (o ChallengeSpecSolverDns01PatchPtrOutput) Rfc2136() ChallengeSpecSolverDns01Rfc2136PatchPtrOutput {
@@ -31109,14 +31109,14 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01CloudflareApiTokenSecretRefPatchPtrInput)(nil)).Elem(), ChallengeSpecSolverDns01CloudflareApiTokenSecretRefPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01CloudflarePatchInput)(nil)).Elem(), ChallengeSpecSolverDns01CloudflarePatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01CloudflarePatchPtrInput)(nil)).Elem(), ChallengeSpecSolverDns01CloudflarePatchArgs{})
-	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01DigitaloceanInput)(nil)).Elem(), ChallengeSpecSolverDns01DigitaloceanArgs{})
-	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01DigitaloceanPtrInput)(nil)).Elem(), ChallengeSpecSolverDns01DigitaloceanArgs{})
-	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01DigitaloceanPatchInput)(nil)).Elem(), ChallengeSpecSolverDns01DigitaloceanPatchArgs{})
-	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01DigitaloceanPatchPtrInput)(nil)).Elem(), ChallengeSpecSolverDns01DigitaloceanPatchArgs{})
-	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01DigitaloceanTokenSecretRefInput)(nil)).Elem(), ChallengeSpecSolverDns01DigitaloceanTokenSecretRefArgs{})
-	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrInput)(nil)).Elem(), ChallengeSpecSolverDns01DigitaloceanTokenSecretRefArgs{})
-	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchInput)(nil)).Elem(), ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchArgs{})
-	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrInput)(nil)).Elem(), ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01DigitalOceanInput)(nil)).Elem(), ChallengeSpecSolverDns01DigitalOceanArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01DigitalOceanPtrInput)(nil)).Elem(), ChallengeSpecSolverDns01DigitalOceanArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01DigitalOceanPatchInput)(nil)).Elem(), ChallengeSpecSolverDns01DigitalOceanPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01DigitalOceanPatchPtrInput)(nil)).Elem(), ChallengeSpecSolverDns01DigitalOceanPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01DigitalOceanTokenSecretRefInput)(nil)).Elem(), ChallengeSpecSolverDns01DigitalOceanTokenSecretRefArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrInput)(nil)).Elem(), ChallengeSpecSolverDns01DigitalOceanTokenSecretRefArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchInput)(nil)).Elem(), ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrInput)(nil)).Elem(), ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01PatchInput)(nil)).Elem(), ChallengeSpecSolverDns01PatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01PatchPtrInput)(nil)).Elem(), ChallengeSpecSolverDns01PatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ChallengeSpecSolverDns01Rfc2136Input)(nil)).Elem(), ChallengeSpecSolverDns01Rfc2136Args{})
@@ -31441,14 +31441,14 @@ func init() {
 	pulumi.RegisterOutputType(ChallengeSpecSolverDns01CloudflareApiTokenSecretRefPatchPtrOutput{})
 	pulumi.RegisterOutputType(ChallengeSpecSolverDns01CloudflarePatchOutput{})
 	pulumi.RegisterOutputType(ChallengeSpecSolverDns01CloudflarePatchPtrOutput{})
-	pulumi.RegisterOutputType(ChallengeSpecSolverDns01DigitaloceanOutput{})
-	pulumi.RegisterOutputType(ChallengeSpecSolverDns01DigitaloceanPtrOutput{})
-	pulumi.RegisterOutputType(ChallengeSpecSolverDns01DigitaloceanPatchOutput{})
-	pulumi.RegisterOutputType(ChallengeSpecSolverDns01DigitaloceanPatchPtrOutput{})
-	pulumi.RegisterOutputType(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefOutput{})
-	pulumi.RegisterOutputType(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPtrOutput{})
-	pulumi.RegisterOutputType(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchOutput{})
-	pulumi.RegisterOutputType(ChallengeSpecSolverDns01DigitaloceanTokenSecretRefPatchPtrOutput{})
+	pulumi.RegisterOutputType(ChallengeSpecSolverDns01DigitalOceanOutput{})
+	pulumi.RegisterOutputType(ChallengeSpecSolverDns01DigitalOceanPtrOutput{})
+	pulumi.RegisterOutputType(ChallengeSpecSolverDns01DigitalOceanPatchOutput{})
+	pulumi.RegisterOutputType(ChallengeSpecSolverDns01DigitalOceanPatchPtrOutput{})
+	pulumi.RegisterOutputType(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefOutput{})
+	pulumi.RegisterOutputType(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPtrOutput{})
+	pulumi.RegisterOutputType(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchOutput{})
+	pulumi.RegisterOutputType(ChallengeSpecSolverDns01DigitalOceanTokenSecretRefPatchPtrOutput{})
 	pulumi.RegisterOutputType(ChallengeSpecSolverDns01PatchOutput{})
 	pulumi.RegisterOutputType(ChallengeSpecSolverDns01PatchPtrOutput{})
 	pulumi.RegisterOutputType(ChallengeSpecSolverDns01Rfc2136Output{})

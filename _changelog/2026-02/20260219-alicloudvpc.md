@@ -1,13 +1,13 @@
-# AlicloudVpc Component Added
+# AliCloudVpc Component Added
 
 **Date**: 2026-02-19
-**Component**: AlicloudVpc
+**Component**: AliCloudVpc
 **Enum**: 3020
 **ID Prefix**: acvpc
 
 ## Summary
 
-Added the AlicloudVpc deployment component -- the networking foundation for virtually every other Alibaba Cloud resource in the catalog.
+Added the AliCloudVpc deployment component -- the networking foundation for virtually every other Alibaba Cloud resource in the catalog.
 
 This component manages an Alibaba Cloud Virtual Private Cloud (VPC), creating the isolated virtual network along with its automatically provisioned virtual router and system route table.
 
@@ -15,7 +15,7 @@ This component manages an Alibaba Cloud Virtual Private Cloud (VPC), creating th
 
 ### API Definition
 - `apis/org/openmcf/provider/alicloud/alicloudvpc/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AlicloudVpc = 3020` in `CloudResourceKind` enum under the Networking category
+- Registered `AliCloudVpc = 3020` in `CloudResourceKind` enum under the Networking category
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider and a single `vpc.Network` resource with all spec fields mapped

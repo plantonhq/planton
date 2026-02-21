@@ -48,24 +48,52 @@ interface Stats {
 }
 
 // ---------------------------------------------------------------------------
+// Provider display names (directory name -> proper uppercase display name)
+// Sourced from CloudResourceProvider.display_name in cloud_resource_provider.proto
+// ---------------------------------------------------------------------------
+
+const PROVIDER_DISPLAY_NAMES: Record<string, string> = {
+  'alicloud': 'ALIBABA CLOUD',
+  'atlas': 'ATLAS',
+  'auth0': 'AUTH0',
+  'aws': 'AWS',
+  'azure': 'AZURE',
+  'civo': 'CIVO',
+  'cloudflare': 'CLOUDFLARE',
+  'confluent': 'CONFLUENT',
+  'digitalocean': 'DIGITAL OCEAN',
+  'gcp': 'GCP',
+  'hetznercloud': 'HETZNER CLOUD',
+  'kubernetes': 'KUBERNETES',
+  'oci': 'OCI',
+  'openfga': 'OPENFGA',
+  'openstack': 'OPENSTACK',
+  'scaleway': 'SCALEWAY',
+  'snowflake': 'SNOWFLAKE',
+};
+
+// ---------------------------------------------------------------------------
 // Provider prefix mapping (for stripping from content headings)
 // ---------------------------------------------------------------------------
 
 const PROVIDER_PREFIXES: Record<string, string[]> = {
+  'alicloud': ['AliCloud ', 'Alibaba Cloud '],
+  'atlas': ['MongoDB Atlas ', 'Atlas '],
+  'auth0': ['Auth0 '],
   'aws': ['AWS '],
-  'gcp': ['GCP '],
   'azure': ['Azure '],
-  'kubernetes': ['Kubernetes '],
-  'digitalocean': ['DigitalOcean '],
   'civo': ['Civo '],
   'cloudflare': ['Cloudflare '],
-  'openstack': ['OpenStack '],
-  'auth0': ['Auth0 '],
-  'openfga': ['OpenFGA '],
-  'atlas': ['MongoDB Atlas ', 'Atlas '],
   'confluent': ['Confluent '],
-  'snowflake': ['Snowflake '],
+  'digitalocean': ['DigitalOcean '],
+  'gcp': ['GCP '],
+  'hetznercloud': ['Hetzner Cloud '],
+  'kubernetes': ['Kubernetes '],
+  'oci': ['OCI '],
+  'openfga': ['OpenFGA '],
+  'openstack': ['OpenStack '],
   'scaleway': ['Scaleway '],
+  'snowflake': ['Snowflake '],
 };
 
 /**
@@ -618,7 +646,7 @@ function generateProviderIndex(
     fs.mkdirSync(providerDir, { recursive: true });
   }
 
-  const providerTitle = provider.toUpperCase();
+  const providerTitle = PROVIDER_DISPLAY_NAMES[provider] || provider.toUpperCase();
 
   // Sort docs alphabetically by title
   const sortedDocs = [...docs].sort((a, b) =>
@@ -765,7 +793,7 @@ async function copyComponentDocs(): Promise<void> {
     if (docs.length > 0) {
       stats.providers.add(provider);
       docsByProvider.set(provider, docs);
-      console.log(`${provider.toUpperCase()}: Found ${docs.length} components`);
+      console.log(`${PROVIDER_DISPLAY_NAMES[provider] || provider.toUpperCase()}: Found ${docs.length} components`);
     }
   }
 

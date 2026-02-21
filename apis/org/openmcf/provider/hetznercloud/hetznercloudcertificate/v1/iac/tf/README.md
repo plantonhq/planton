@@ -10,7 +10,7 @@ Terraform IaC module for provisioning Hetzner Cloud TLS certificates (uploaded o
 ├── outputs.tf        # Stack output definitions (conditional selection)
 ├── variables.tf      # Input variable definitions (metadata, spec, hcloud_token)
 ├── locals.tf         # Certificate name, type flags, standard label computation
-└── provider.tf       # Hetzner Cloud provider configuration (~> 1.60)
+└── provider.tf       # HetznerCloud provider configuration (~> 1.60)
 ```
 
 ## Resources Created

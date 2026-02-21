@@ -39,7 +39,7 @@ The `apiVersion` identifies which provider and API version this manifest targets
 | GCP | `gcp.openmcf.org/v1` |
 | Azure | `azure.openmcf.org/v1` |
 | Kubernetes | `kubernetes.openmcf.org/v1` |
-| DigitalOcean | `digitalocean.openmcf.org/v1` |
+| DigitalOcean | `digital-ocean.openmcf.org/v1` |
 | Civo | `civo.openmcf.org/v1` |
 | Cloudflare | `cloudflare.openmcf.org/v1` |
 | OpenStack | `openstack.openmcf.org/v1` |

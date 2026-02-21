@@ -21,7 +21,7 @@ Manage cloud firewalls on DigitalOcean using a type-safe, protobuf-defined API w
 For production web servers behind a Load Balancer with restricted SSH access:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFirewall
 metadata:
   name: prod-web-firewall
@@ -70,7 +70,7 @@ spec:
 For PostgreSQL databases accessible only by web tier and administrators:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanFirewall
 metadata:
   name: prod-db-firewall

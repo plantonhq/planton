@@ -32,7 +32,7 @@ func minimalValidSpec() *AliCloudKubernetesClusterSpec {
 
 func minimalValidInput() *AliCloudKubernetesCluster {
 	return &AliCloudKubernetesCluster{
-		ApiVersion: "alicloud.openmcf.org/v1",
+		ApiVersion: "ali-cloud.openmcf.org/v1",
 		Kind:       "AliCloudKubernetesCluster",
 		Metadata:   &shared.CloudResourceMetadata{Name: "test-cluster"},
 		Spec:       minimalValidSpec(),
@@ -247,7 +247,7 @@ var _ = ginkgo.Describe("AliCloudKubernetesClusterSpec Validation Tests", func()
 
 		ginkgo.It("should fail when spec is missing", func() {
 			input := &AliCloudKubernetesCluster{
-				ApiVersion: "alicloud.openmcf.org/v1",
+				ApiVersion: "ali-cloud.openmcf.org/v1",
 				Kind:       "AliCloudKubernetesCluster",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 			}

@@ -1,10 +1,10 @@
-# Alibaba Cloud CEN Instance
+# AliCloud CEN Instance
 
 Deploys an Alibaba Cloud Cloud Enterprise Network (CEN) instance with bundled child-instance attachments for private multi-VPC, multi-region, and hybrid connectivity. CEN is a global resource — a single instance can connect networks across any Alibaba Cloud region.
 
 ## What Gets Created
 
-When you deploy an AlicloudCenInstance resource, OpenMCF provisions:
+When you deploy an AliCloudCenInstance resource, OpenMCF provisions:
 
 - **CEN Instance** — an `alicloud_cen_instance` resource serving as the global networking hub with optional CIDR overlap protection and resource group assignment
 - **CEN Instance Attachments** — one `alicloud_cen_instance_attachment` per entry in `spec.attachments[]`, connecting a VPC, VBR (Virtual Border Router), or CCN (Cloud Connect Network) to the CEN hub
@@ -21,15 +21,15 @@ When you deploy an AlicloudCenInstance resource, OpenMCF provisions:
 Create a file `cen.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCenInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCenInstance
 metadata:
   name: my-cen
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudCenInstance.my-cen
+    pulumi.openmcf.org/stack.name: dev.AliCloudCenInstance.my-cen
 spec:
   region: cn-hangzhou
   cenInstanceName: my-cen
@@ -70,7 +70,7 @@ This creates a CEN instance and attaches one VPC in cn-hangzhou. Additional VPCs
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `childInstanceId` | `StringValueOrRef` | (required) | ID of the child instance to attach (VPC ID, VBR ID, or CCN ID). Can reference an `AlicloudVpc` resource via `valueFrom`. ForceNew. |
+| `childInstanceId` | `StringValueOrRef` | (required) | ID of the child instance to attach (VPC ID, VBR ID, or CCN ID). Can reference an `AliCloudVpc` resource via `valueFrom`. ForceNew. |
 | `childInstanceType` | `string` | `VPC` | Type of child instance: `VPC`, `VBR`, or `CCN`. ForceNew. |
 | `childInstanceRegionId` | `string` | (required) | Region where the child instance resides (e.g., `cn-hangzhou`, `us-west-1`). ForceNew. |
 
@@ -81,15 +81,15 @@ This creates a CEN instance and attaches one VPC in cn-hangzhou. Additional VPCs
 Connect multiple VPCs in the same region for private inter-VPC communication without VPC peering:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCenInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCenInstance
 metadata:
   name: intra-region-cen
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: networking
-    pulumi.openmcf.org/stack.name: dev.AlicloudCenInstance.intra-region-cen
+    pulumi.openmcf.org/stack.name: dev.AliCloudCenInstance.intra-region-cen
 spec:
   region: cn-hangzhou
   cenInstanceName: intra-region-backbone
@@ -108,15 +108,15 @@ spec:
 Connect VPCs across multiple regions with REDUCED protection for overlapping CIDRs:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCenInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCenInstance
 metadata:
   name: global-cen
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: acme-corp
     pulumi.openmcf.org/project: networking
-    pulumi.openmcf.org/stack.name: prod.AlicloudCenInstance.global-cen
+    pulumi.openmcf.org/stack.name: prod.AliCloudCenInstance.global-cen
 spec:
   region: cn-hangzhou
   cenInstanceName: global-backbone
@@ -143,15 +143,15 @@ spec:
 Connect VPCs managed as OpenMCF resources, automatically resolving VPC IDs from their stack outputs:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCenInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCenInstance
 metadata:
   name: managed-cen
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: acme-corp
     pulumi.openmcf.org/project: networking
-    pulumi.openmcf.org/stack.name: prod.AlicloudCenInstance.managed-cen
+    pulumi.openmcf.org/stack.name: prod.AliCloudCenInstance.managed-cen
 spec:
   region: cn-hangzhou
   cenInstanceName: managed-backbone
@@ -178,6 +178,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudVpc](/docs/catalog/alicloud/alicloudvpc) — provides VPCs to attach to the CEN
-- [AlicloudVpnGateway](/docs/catalog/alicloud/alicloudvpngateway) — alternative point-to-point VPN connectivity
-- [AlicloudVswitch](/docs/catalog/alicloud/alicloudvswitch) — subnets within attached VPCs
+- [AliCloudVpc](/docs/catalog/alicloud/alicloudvpc) — provides VPCs to attach to the CEN
+- [AliCloudVpnGateway](/docs/catalog/alicloud/alicloudvpngateway) — alternative point-to-point VPN connectivity
+- [AliCloudVswitch](/docs/catalog/alicloud/alicloudvswitch) — subnets within attached VPCs

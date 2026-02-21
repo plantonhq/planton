@@ -1,10 +1,10 @@
-# Alibaba Cloud Security Group
+# AliCloud Security Group
 
 Deploys an Alibaba Cloud Security Group with bundled security rules in a VPC. The component provisions the security group and its ingress/egress rules as a single atomic unit, ensuring the firewall is always created with its intended access policy.
 
 ## What Gets Created
 
-When you deploy an AlicloudSecurityGroup resource, OpenMCF provisions:
+When you deploy an AliCloudSecurityGroup resource, OpenMCF provisions:
 
 - **Security Group** -- an `alicloud_security_group` resource bound to the specified VPC with configurable inner access policy and tags
 - **Security Group Rules** -- one `alicloud_security_group_rule` per entry in `rules`, defining ingress and egress traffic policies
@@ -12,22 +12,22 @@ When you deploy an AlicloudSecurityGroup resource, OpenMCF provisions:
 ## Prerequisites
 
 - **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
-- **An Alibaba Cloud VPC** -- the security group must belong to a VPC (create one with AlicloudVpc)
+- **An Alibaba Cloud VPC** -- the security group must belong to a VPC (create one with AliCloudVpc)
 
 ## Quick Start
 
 Create a file `security-group.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudSecurityGroup
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudSecurityGroup
 metadata:
   name: my-web-sg
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudSecurityGroup.my-web-sg
+    pulumi.openmcf.org/stack.name: dev.AliCloudSecurityGroup.my-web-sg
 spec:
   region: cn-hangzhou
   vpcId:
@@ -63,7 +63,7 @@ This creates a security group that allows HTTPS inbound and all outbound traffic
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
 | `region` | `string` | Alibaba Cloud region for provider endpoint (e.g., `cn-hangzhou`, `us-west-1`). | Required; non-empty |
-| `vpcId` | `StringValueOrRef` | VPC ID this security group belongs to. Can be a literal string or a reference to an AlicloudVpc output. | Required |
+| `vpcId` | `StringValueOrRef` | VPC ID this security group belongs to. Can be a literal string or a reference to an AliCloudVpc output. | Required |
 | `securityGroupName` | `string` | Security group name. Must start with a letter; can contain Unicode, digits, colons, underscores, periods, hyphens. | Required; 2-128 characters |
 
 ### Optional Fields
@@ -89,15 +89,15 @@ This creates a security group that allows HTTPS inbound and all outbound traffic
 ### Web Tier with HTTP/HTTPS Ingress
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudSecurityGroup
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudSecurityGroup
 metadata:
   name: web-tier-sg
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudSecurityGroup.web-tier-sg
+    pulumi.openmcf.org/stack.name: prod.AliCloudSecurityGroup.web-tier-sg
 spec:
   region: cn-hangzhou
   vpcId:
@@ -128,15 +128,15 @@ spec:
 ### Database Tier Restricted to VPC
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudSecurityGroup
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudSecurityGroup
 metadata:
   name: db-tier-sg
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AlicloudSecurityGroup.db-tier-sg
+    pulumi.openmcf.org/stack.name: prod.AliCloudSecurityGroup.db-tier-sg
 spec:
   region: cn-hangzhou
   vpcId:
@@ -169,6 +169,6 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudVpc](/docs/catalog/alicloud/alicloudvpc) -- create the VPC this security group belongs to
-- [AlicloudEcsInstance](/docs/catalog/alicloud/alicloudecsinstance) -- associate ECS instances with this security group
-- [AlicloudAckManagedCluster](/docs/catalog/alicloud/alicloudackmanagedcluster) -- use this security group for ACK worker nodes
+- [AliCloudVpc](/docs/catalog/alicloud/alicloudvpc) -- create the VPC this security group belongs to
+- [AliCloudEcsInstance](/docs/catalog/alicloud/alicloudecsinstance) -- associate ECS instances with this security group
+- [AliCloudAckManagedCluster](/docs/catalog/alicloud/alicloudackmanagedcluster) -- use this security group for ACK worker nodes

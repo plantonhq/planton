@@ -10,7 +10,7 @@ import "org/openmcf/shared/metadata.proto";
 // alicloud-log-project
 message AliCloudLogProject {
   // api-version
-  string api_version = 1 [(buf.validate.field).string.const = 'alicloud.openmcf.org/v1'];
+  string api_version = 1 [(buf.validate.field).string.const = 'ali-cloud.openmcf.org/v1'];
 
   // resource-kind
   string kind = 2 [(buf.validate.field).string.const = 'AliCloudLogProject'];

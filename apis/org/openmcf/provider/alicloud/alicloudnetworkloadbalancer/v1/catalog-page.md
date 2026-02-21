@@ -1,10 +1,10 @@
-# Alibaba Cloud NLB Load Balancer
+# AliCloud NLB Load Balancer
 
 Deploys an Alibaba Cloud Network Load Balancer (NLB) with bundled server groups and listeners. NLB is a Layer 4 load balancer for TCP, UDP, and TCPSSL traffic, designed for ultra-high throughput and low latency with multi-AZ high availability.
 
 ## What Gets Created
 
-When you deploy an AlicloudNetworkLoadBalancer resource, OpenMCF provisions:
+When you deploy an AliCloudNetworkLoadBalancer resource, OpenMCF provisions:
 
 - **NLB Load Balancer** -- an `alicloud_nlb_load_balancer` spanning multiple availability zones, with optional per-zone EIP binding for stable public addresses
 - **Server Groups** -- one `alicloud_nlb_server_group` per entry in `serverGroups`, each with health check, scheduling algorithm, and optional connection draining
@@ -15,18 +15,18 @@ Server groups are created empty. Backend membership (ECS instances, ENI IPs, etc
 ## Prerequisites
 
 - **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
-- **An Alibaba Cloud VPC** -- the NLB must belong to a VPC (create one with AlicloudVpc)
-- **At least 2 VSwitches in different availability zones** -- NLB requires multi-AZ deployment (create with AlicloudVswitch)
+- **An Alibaba Cloud VPC** -- the NLB must belong to a VPC (create one with AliCloudVpc)
+- **At least 2 VSwitches in different availability zones** -- NLB requires multi-AZ deployment (create with AliCloudVswitch)
 - **Server certificates** (for TCPSSL listeners) -- obtain from Alibaba Cloud Certificate Management Service (CAS)
-- **EIP addresses** (optional) -- for fixed public IPs per zone (create with AlicloudEipAddress)
+- **EIP addresses** (optional) -- for fixed public IPs per zone (create with AliCloudEipAddress)
 
 ## Quick Start
 
 Create a file `nlb.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNetworkLoadBalancer
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNetworkLoadBalancer
 metadata:
   name: my-nlb
 spec:
@@ -65,7 +65,7 @@ This creates an internet-facing NLB with a TCP listener on port 80 across two av
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
 | `region` | string | Alibaba Cloud region (e.g., `cn-hangzhou`, `us-west-1`) | Required; non-empty |
-| `vpcId` | StringValueOrRef | VPC ID for the NLB. Can reference AlicloudVpc via `valueFrom`. | Required |
+| `vpcId` | StringValueOrRef | VPC ID for the NLB. Can reference AliCloudVpc via `valueFrom`. | Required |
 | `zoneMappings` | list | Availability zone to VSwitch mappings for HA | Minimum 2 items required |
 
 ### Zone Mapping Fields
@@ -73,8 +73,8 @@ This creates an internet-facing NLB with a TCP listener on port 80 across two av
 | Field | Type | Description |
 |-------|------|-------------|
 | `zoneMappings[].zoneId` | string | Availability zone ID (e.g., `cn-hangzhou-a`) |
-| `zoneMappings[].vswitchId` | StringValueOrRef | VSwitch in this zone. Can reference AlicloudVswitch via `valueFrom`. |
-| `zoneMappings[].allocationId` | StringValueOrRef | EIP allocation ID for a fixed public IP in this zone. Can reference AlicloudEipAddress via `valueFrom`. Only meaningful for internet-facing NLBs. |
+| `zoneMappings[].vswitchId` | StringValueOrRef | VSwitch in this zone. Can reference AliCloudVswitch via `valueFrom`. |
+| `zoneMappings[].allocationId` | StringValueOrRef | EIP allocation ID for a fixed public IP in this zone. Can reference AliCloudEipAddress via `valueFrom`. Only meaningful for internet-facing NLBs. |
 
 ### Optional Fields
 
@@ -136,8 +136,8 @@ This creates an internet-facing NLB with a TCP listener on port 80 across two av
 The simplest NLB: one server group, one TCP listener, two availability zones.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNetworkLoadBalancer
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNetworkLoadBalancer
 metadata:
   name: dev-nlb
 spec:
@@ -166,8 +166,8 @@ spec:
 Production NLB with TLS termination, client certificate verification, fixed public IPs per zone, and connection draining for graceful deployments.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNetworkLoadBalancer
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNetworkLoadBalancer
 metadata:
   name: prod-nlb
   org: acme-corp
@@ -229,8 +229,8 @@ spec:
 An internal NLB for service-to-service traffic with source-IP consistent hashing for session affinity, connection draining for graceful deployments, and Proxy Protocol for real client IP visibility.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudNetworkLoadBalancer
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudNetworkLoadBalancer
 metadata:
   name: internal-nlb
 spec:
@@ -280,8 +280,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- **AlicloudVpc** -- VPC that the NLB belongs to
-- **AlicloudVswitch** -- VSwitches for zone mappings (at least 2 required)
-- **AlicloudEipAddress** -- Fixed public IPs for per-zone EIP binding
-- **AlicloudDnsRecord** -- DNS records pointing to the NLB's `dns_name`
-- **AlicloudAckManagedCluster** -- Kubernetes cluster whose services use the NLB
+- **AliCloudVpc** -- VPC that the NLB belongs to
+- **AliCloudVswitch** -- VSwitches for zone mappings (at least 2 required)
+- **AliCloudEipAddress** -- Fixed public IPs for per-zone EIP binding
+- **AliCloudDnsRecord** -- DNS records pointing to the NLB's `dns_name`
+- **AliCloudAckManagedCluster** -- Kubernetes cluster whose services use the NLB

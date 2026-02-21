@@ -45,14 +45,14 @@ flowchart TB
     end
 
     subgraph backend [Backend Layer]
-        Model["AlicloudCredential model"]
+        Model["AliCloudCredential model"]
         Repo["CRUD + auth_method discriminator"]
         Service["Create/Update/Get/List"]
         Resolver["enum-based switch"]
     end
 
     subgraph frontend [Frontend Layer]
-        Form["AlicloudCredentialForm\n7-method auth selector"]
+        Form["AliCloudCredentialForm\n7-method auth selector"]
         Drawer["credential-drawer.tsx\nenum discriminator handling"]
     end
 
@@ -111,15 +111,15 @@ The `cli_help.go` constants document all 7 authentication methods with export co
 
 ### 3. Env Var Mapping
 
-`loadAlicloudEnvVars` switches on the `AuthenticationType` enum to emit method-specific `ALIBABA_CLOUD_*` environment variables. Common fields (region, account_id, account_type) are emitted for all methods. Uses only the modern `ALIBABA_CLOUD_*` prefix; deprecated `ALICLOUD_*` names omitted (except `ALICLOUD_ASSUME_ROLE_SESSION_EXPIRATION` which has no modern equivalent).
+`loadAliCloudEnvVars` switches on the `AuthenticationType` enum to emit method-specific `ALIBABA_CLOUD_*` environment variables. Common fields (region, account_id, account_type) are emitted for all methods. Uses only the modern `ALIBABA_CLOUD_*` prefix; deprecated `ALICLOUD_*` names omitted (except `ALICLOUD_ASSUME_ROLE_SESSION_EXPIRATION` which has no modern equivalent).
 
 ### 4. Backend Credential Management
 
-`AlicloudCredential` model stores all possible fields flat in MongoDB with an `AuthMethod` string discriminator. The `alicloudProtoToModel` function switches on the `AuthenticationType` enum (not a proto oneof type assertion) to extract the correct sub-message -- this is the new pattern distinct from OpenStack's oneof type switch.
+`AliCloudCredential` model stores all possible fields flat in MongoDB with an `AuthMethod` string discriminator. The `alicloudProtoToModel` function switches on the `AuthenticationType` enum (not a proto oneof type assertion) to extract the correct sub-message -- this is the new pattern distinct from OpenStack's oneof type switch.
 
 ### 5. Frontend Credential Form
 
-`AlicloudCredentialForm` uses a `SimpleSelect` for auth method selection with 7 options, conditionally rendering method-specific fields. Static credentials is the default selection. Common fields (region, account_id, account_type) are shown for all methods.
+`AliCloudCredentialForm` uses a `SimpleSelect` for auth method selection with 7 options, conditionally rendering method-specific fields. Static credentials is the default selection. Common fields (region, account_id, account_type) are shown for all methods.
 
 ### 6. Catalog Documentation
 

@@ -50,7 +50,7 @@ export interface ScalewayFormData {
 // Flattened form data for Alibaba Cloud credentials.
 // All auth method fields are combined into a single flat interface.
 // The alicloudAuthMethod discriminator selects which fields are active.
-export interface AlicloudFormData {
+export interface AliCloudFormData {
   // Common
   region?: string;
   accountId?: string;
@@ -78,7 +78,7 @@ export interface AlicloudFormData {
   credentialsUri?: string;
 }
 
-export type AlicloudAuthMethod =
+export type AliCloudAuthMethod =
   | 'static_credentials'
   | 'sts_token'
   | 'ecs_role'
@@ -132,8 +132,8 @@ export type CredentialFormData = {
   // Auth method discriminator for the OpenStack credential form (not part of the proto)
   openstackAuthMethod?: 'password' | 'application_credential' | 'token';
   scaleway?: ScalewayFormData;
-  alicloud?: AlicloudFormData;
-  alicloudAuthMethod?: AlicloudAuthMethod;
+  alicloud?: AliCloudFormData;
+  alicloudAuthMethod?: AliCloudAuthMethod;
   oci?: OciFormData;
   ociAuthMethod?: OciAuthMethod;
   hetznercloud?: HetznerCloudFormData;

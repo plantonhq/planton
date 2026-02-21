@@ -22,7 +22,7 @@ DigitalOcean Container Registry (DOCR) is a fully managed private container regi
 For development and testing:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: dev-registry
@@ -38,7 +38,7 @@ spec:
 For production workloads with automated cleanup:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: prod-registry

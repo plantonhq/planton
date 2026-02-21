@@ -1,10 +1,10 @@
-# Terraform Module to Deploy AlicloudKmsKey
+# Terraform Module to Deploy AliCloudKmsKey
 
 This module provisions an Alibaba Cloud KMS customer-managed key (CMK) using
 the `alicloud_kms_key` resource. The key can be used for data encryption or
 digital signing across Alibaba Cloud services.
 
-Generated `variables.tf` reflects the proto schema for `AlicloudKmsKey`.
+Generated `variables.tf` reflects the proto schema for `AliCloudKmsKey`.
 
 ## Usage
 

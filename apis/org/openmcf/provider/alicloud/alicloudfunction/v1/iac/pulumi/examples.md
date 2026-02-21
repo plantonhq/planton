@@ -1,4 +1,4 @@
-# AlicloudFunction Pulumi Examples
+# AliCloudFunction Pulumi Examples
 
 Apply any example below using the OpenMCF CLI:
 
@@ -23,8 +23,8 @@ A Python function with code deployed from an OSS bucket. Uses provider defaults
 for compute sizing (CPU, memory, timeout).
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudFunction
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudFunction
 metadata:
   name: hello-world
 spec:
@@ -51,8 +51,8 @@ A Node.js function that accesses a database in a VPC, logs to SLS, and runs
 with a dedicated execution role. Compute sizing is tuned for API workloads.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudFunction
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudFunction
 metadata:
   name: api-handler
   org: my-org
@@ -112,8 +112,8 @@ A containerized function running a custom Docker image with initializer and
 pre-stop hooks. Includes NAS mount for shared model data and GPU acceleration.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudFunction
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudFunction
 metadata:
   name: ml-inference
   org: my-org

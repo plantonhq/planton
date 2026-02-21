@@ -157,10 +157,10 @@ var File_org_openmcf_provider_hetznercloud_hetznercloudloadbalancer_v1_api_proto
 
 const file_org_openmcf_provider_hetznercloud_hetznercloudloadbalancer_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"Gorg/openmcf/provider/hetznercloud/hetznercloudloadbalancer/v1/api.proto\x12=org.openmcf.provider.hetznercloud.hetznercloudloadbalancer.v1\x1a\x1bbuf/validate/validate.proto\x1aHorg/openmcf/provider/hetznercloud/hetznercloudloadbalancer/v1/spec.proto\x1aQorg/openmcf/provider/hetznercloud/hetznercloudloadbalancer/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xd3\x03\n" +
-	"\x18HetznerCloudLoadBalancer\x12C\n" +
-	"\vapi_version\x18\x01 \x01(\tB\"\xbaH\x1fr\x1d\n" +
-	"\x1bhetznercloud.openmcf.org/v1R\n" +
+	"Gorg/openmcf/provider/hetznercloud/hetznercloudloadbalancer/v1/api.proto\x12=org.openmcf.provider.hetznercloud.hetznercloudloadbalancer.v1\x1a\x1bbuf/validate/validate.proto\x1aHorg/openmcf/provider/hetznercloud/hetznercloudloadbalancer/v1/spec.proto\x1aQorg/openmcf/provider/hetznercloud/hetznercloudloadbalancer/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xd4\x03\n" +
+	"\x18HetznerCloudLoadBalancer\x12D\n" +
+	"\vapi_version\x18\x01 \x01(\tB#\xbaH r\x1e\n" +
+	"\x1chetzner-cloud.openmcf.org/v1R\n" +
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18HetznerCloudLoadBalancerR\x04kind\x12M\n" +

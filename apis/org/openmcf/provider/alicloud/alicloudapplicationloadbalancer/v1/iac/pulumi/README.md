@@ -1,10 +1,10 @@
-# AlicloudApplicationLoadBalancer Pulumi Module
+# AliCloudApplicationLoadBalancer Pulumi Module
 
 This module deploys an Alibaba Cloud Application Load Balancer (ALB) with server groups and listeners using Pulumi Go.
 
 ## Usage
 
-This module is invoked by the OpenMCF Pulumi entrypoint. It reads an `AlicloudApplicationLoadBalancerStackInput` from the Pulumi stack config and creates all resources.
+This module is invoked by the OpenMCF Pulumi entrypoint. It reads an `AliCloudApplicationLoadBalancerStackInput` from the Pulumi stack config and creates all resources.
 
 ## Development
 

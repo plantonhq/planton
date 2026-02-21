@@ -1,4 +1,4 @@
-# AlicloudNatGateway Terraform Module
+# AliCloudNatGateway Terraform Module
 
 This Terraform module provisions an Alibaba Cloud Enhanced NAT Gateway with EIP association and SNAT entries.
 

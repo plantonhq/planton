@@ -1,8 +1,8 @@
-# Terraform Module to Deploy AlicloudSaeApplication
+# Terraform Module to Deploy AliCloudSaeApplication
 
 This module provisions an Alibaba Cloud SAE application with configurable compute tiers, VPC networking, health checks (liveness and readiness), rolling update strategy, environment variables, custom host aliases, and SLS log collection.
 
-Generated `variables.tf` reflects the proto schema for `AlicloudSaeApplication`.
+Generated `variables.tf` reflects the proto schema for `AliCloudSaeApplication`.
 
 ## Usage
 

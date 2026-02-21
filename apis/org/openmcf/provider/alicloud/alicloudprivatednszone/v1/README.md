@@ -1,4 +1,4 @@
-# AlicloudPrivateDnsZone
+# AliCloudPrivateDnsZone
 
 Manages an Alibaba Cloud Private Zone (PVTZ) for VPC-internal DNS resolution.
 
@@ -62,6 +62,6 @@ At least one VPC attachment is required. Without it, the zone has no resolver sc
 
 ## Related Components
 
-- **AlicloudVpc** -- VPCs that this private zone attaches to
-- **AlicloudDnsZone** -- for public DNS domains (separate from private zones)
-- **AlicloudDnsRecord** -- for public DNS records (separate from private zone records)
+- **AliCloudVpc** -- VPCs that this private zone attaches to
+- **AliCloudDnsZone** -- for public DNS domains (separate from private zones)
+- **AliCloudDnsRecord** -- for public DNS records (separate from private zone records)

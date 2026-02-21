@@ -1,4 +1,4 @@
-# AlicloudVpc Pulumi Examples
+# AliCloudVpc Pulumi Examples
 
 Create a YAML manifest using one of the examples below, then deploy with the OpenMCF CLI:
 
@@ -22,8 +22,8 @@ openmcf pulumi update \
 A VPC with only the required fields, suitable for development or quick testing.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpc
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpc
 metadata:
   name: dev-vpc
 spec:
@@ -41,8 +41,8 @@ This creates a VPC with a `/16` CIDR block in the `cn-hangzhou` region. No descr
 A production VPC using a large CIDR block with resource group assignment and tags for organizational tracking.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpc
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpc
 metadata:
   name: prod-vpc
   org: my-org
@@ -69,8 +69,8 @@ spec:
 A dual-stack VPC with IPv6 support. Alibaba Cloud allocates a `/56` IPv6 CIDR block automatically when IPv6 is enabled.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudVpc
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudVpc
 metadata:
   name: ipv6-vpc
   env: staging

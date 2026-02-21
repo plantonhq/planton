@@ -1,10 +1,10 @@
-# AlicloudKubernetesCluster
+# AliCloud KubernetesCluster
 
-Deploys an Alibaba Cloud ACK Managed Kubernetes cluster with configurable CNI networking (Flannel or Terway), cluster addons, control plane logging, RRSA for pod-level IAM, and optional maintenance windows with automatic version upgrades. Worker nodes are managed separately through AlicloudKubernetesNodePool.
+Deploys an Alibaba Cloud ACK Managed Kubernetes cluster with configurable CNI networking (Flannel or Terway), cluster addons, control plane logging, RRSA for pod-level IAM, and optional maintenance windows with automatic version upgrades. Worker nodes are managed separately through AliCloudKubernetesNodePool.
 
 ## What Gets Created
 
-When you deploy an AlicloudKubernetesCluster resource, OpenMCF provisions:
+When you deploy an AliCloudKubernetesCluster resource, OpenMCF provisions:
 
 - **ACK Managed Kubernetes Cluster** — an `alicloud_cs_managed_kubernetes` resource with a fully managed control plane (etcd, API server, controller manager, scheduler)
 - **Cluster Addons** — network CNI (Flannel or Terway), storage CSI drivers, and optional monitoring, logging, and ingress addons installed at creation time
@@ -25,15 +25,15 @@ When you deploy an AlicloudKubernetesCluster resource, OpenMCF provisions:
 Create a file `ack-cluster.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesCluster
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesCluster
 metadata:
   name: my-cluster
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudKubernetesCluster.my-cluster
+    pulumi.openmcf.org/stack.name: dev.AliCloudKubernetesCluster.my-cluster
 spec:
   region: cn-hangzhou
   vswitchIds:
@@ -64,7 +64,7 @@ This creates a standard-tier ACK cluster with Flannel CNI across two Availabilit
 | `region` | `string` | Alibaba Cloud region for the cluster (e.g., `cn-hangzhou`, `us-west-1`). Must match the region of the specified VSwitches. | Required; non-empty |
 | `vswitchIds` | `StringValueOrRef[]` | VSwitch IDs for control plane and default worker node placement. Use VSwitches in distinct AZs for high availability. | 1–5 items required |
 | `vswitchIds[].value` | `string` | Direct VSwitch ID value. | — |
-| `vswitchIds[].valueFrom` | `object` | Foreign key reference to an AlicloudVswitch resource. | Default kind: `AlicloudVswitch`, field: `status.outputs.vswitch_id` |
+| `vswitchIds[].valueFrom` | `object` | Foreign key reference to an AliCloudVswitch resource. | Default kind: `AliCloudVswitch`, field: `status.outputs.vswitch_id` |
 | `serviceCidr` | `string` | CIDR block for Kubernetes ClusterIP services. Must not overlap the VPC CIDR, pod CIDR, or node CIDR. Immutable after creation. | Required; non-empty |
 
 ### Optional Fields
@@ -79,21 +79,21 @@ This creates a standard-tier ACK cluster with Flannel CNI across two Availabilit
 | `podVswitchIds` | `StringValueOrRef[]` | `[]` | VSwitch IDs for pod ENI allocation with Terway CNI. Required when using `terway-eniip`. |
 | `proxyMode` | `string` | `ipvs` | kube-proxy mode: `ipvs` or `iptables`. Immutable after creation. |
 | `nodeCidrMask` | `int` | `24` | Per-node pod CIDR mask size. Range: 24–28. A `/24` gives ~253 pods per node. Immutable. |
-| `newNatGateway` | `bool` | `true` | Whether ACK auto-creates a NAT gateway. Set to `false` when managing your own AlicloudNatGateway. |
+| `newNatGateway` | `bool` | `true` | Whether ACK auto-creates a NAT gateway. Set to `false` when managing your own AliCloudNatGateway. |
 | `slbInternetEnabled` | `bool` | `true` | Whether to create a public SLB for the Kubernetes API server. |
-| `securityGroupId` | `StringValueOrRef` | Auto-created | Security group for cluster nodes. Can reference an AlicloudSecurityGroup via `valueFrom`. |
+| `securityGroupId` | `StringValueOrRef` | Auto-created | Security group for cluster nodes. Can reference an AliCloudSecurityGroup via `valueFrom`. |
 | `isEnterpriseSecurityGroup` | `bool` | `false` | Auto-create an advanced security group (65,536 rules, 100,000 ENIs). Conflicts with `securityGroupId`. |
 | `enableRrsa` | `bool` | `false` | Enable RRSA for pod-level IAM via OIDC federation. Cannot be disabled once enabled. |
 | `deletionProtection` | `bool` | `false` | Prevent accidental cluster deletion via the API. |
-| `encryptionProviderKey` | `StringValueOrRef` | — | KMS key ID for encrypting Kubernetes Secrets at rest. Immutable. Can reference AlicloudKmsKey. |
+| `encryptionProviderKey` | `StringValueOrRef` | — | KMS key ID for encrypting Kubernetes Secrets at rest. Immutable. Can reference AliCloudKmsKey. |
 | `customSan` | `string` | — | Additional SANs for the API server TLS certificate (comma-separated IPs or domains). |
-| `addons` | `AlicloudKubernetesAddon[]` | `[]` | Addons to install at creation time. See addon fields below. |
+| `addons` | `AliCloudKubernetesAddon[]` | `[]` | Addons to install at creation time. See addon fields below. |
 | `addons[].name` | `string` | — | Addon identifier (e.g., `flannel`, `terway-eniip`, `csi-plugin`). Required. |
 | `addons[].config` | `string` | — | JSON-encoded addon configuration. |
 | `addons[].version` | `string` | Default for K8s version | Addon version override. |
 | `addons[].disabled` | `bool` | `false` | Register but do not install the addon. |
 | `logging` | `object` | — | Control plane and audit logging configuration. |
-| `logging.controlPlaneLogProject` | `StringValueOrRef` | Auto-created | SLS project for control plane logs. Can reference AlicloudLogProject. |
+| `logging.controlPlaneLogProject` | `StringValueOrRef` | Auto-created | SLS project for control plane logs. Can reference AliCloudLogProject. |
 | `logging.controlPlaneLogTtl` | `string` | `"30"` | Log retention in days. |
 | `logging.controlPlaneLogComponents` | `string[]` | `[]` | Components to log: `apiserver`, `kcm`, `scheduler`, `ccm`, `controlplane-events`, `alb`, `coredns`. |
 | `logging.auditLogEnabled` | `bool` | `false` | Enable Kubernetes audit logging. |
@@ -117,15 +117,15 @@ This creates a standard-tier ACK cluster with Flannel CNI across two Availabilit
 A minimal cluster for development and testing.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesCluster
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesCluster
 metadata:
   name: dev-cluster
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudKubernetesCluster.dev-cluster
+    pulumi.openmcf.org/stack.name: dev.AliCloudKubernetesCluster.dev-cluster
 spec:
   region: cn-hangzhou
   vswitchIds:
@@ -144,15 +144,15 @@ spec:
 A staging cluster using ENI-based networking with RRSA and control plane logging.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesCluster
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesCluster
 metadata:
   name: staging-cluster
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AlicloudKubernetesCluster.staging-cluster
+    pulumi.openmcf.org/stack.name: staging.AliCloudKubernetesCluster.staging-cluster
 spec:
   region: cn-shanghai
   clusterSpec: ack.pro.small
@@ -190,8 +190,8 @@ spec:
 A production-grade cluster with Secrets encryption, maintenance windows, auto-upgrade, and deletion protection.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesCluster
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesCluster
 metadata:
   name: prod-cluster
   org: acme-corp
@@ -200,7 +200,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: acme-corp
     pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.AlicloudKubernetesCluster.prod-cluster
+    pulumi.openmcf.org/stack.name: production.AliCloudKubernetesCluster.prod-cluster
 spec:
   region: cn-hangzhou
   name: acme-prod-ack
@@ -266,44 +266,44 @@ spec:
 Reference other OpenMCF-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesCluster
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesCluster
 metadata:
   name: ref-cluster
   labels:
     openmcf.org/provisioner: pulumi
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AlicloudKubernetesCluster.ref-cluster
+    pulumi.openmcf.org/stack.name: dev.AliCloudKubernetesCluster.ref-cluster
 spec:
   region: cn-hangzhou
   vswitchIds:
     - valueFrom:
-        kind: AlicloudVswitch
+        kind: AliCloudVswitch
         name: node-vsw-a
         field: status.outputs.vswitch_id
     - valueFrom:
-        kind: AlicloudVswitch
+        kind: AliCloudVswitch
         name: node-vsw-b
         field: status.outputs.vswitch_id
   podVswitchIds:
     - valueFrom:
-        kind: AlicloudVswitch
+        kind: AliCloudVswitch
         name: pod-vsw-a
         field: status.outputs.vswitch_id
     - valueFrom:
-        kind: AlicloudVswitch
+        kind: AliCloudVswitch
         name: pod-vsw-b
         field: status.outputs.vswitch_id
   serviceCidr: "172.21.0.0/20"
   securityGroupId:
     valueFrom:
-      kind: AlicloudSecurityGroup
+      kind: AliCloudSecurityGroup
       name: ack-sg
       field: status.outputs.security_group_id
   encryptionProviderKey:
     valueFrom:
-      kind: AlicloudKmsKey
+      kind: AliCloudKmsKey
       name: ack-kms-key
       field: status.outputs.key_id
   enableRrsa: true
@@ -314,7 +314,7 @@ spec:
   logging:
     controlPlaneLogProject:
       valueFrom:
-        kind: AlicloudLogProject
+        kind: AliCloudLogProject
         name: platform-logs
         field: status.outputs.project_name
     auditLogEnabled: true
@@ -340,10 +340,10 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-- [AlicloudVpc](/docs/catalog/alicloud/alicloudvpc) — provides the VPC for cluster networking
-- [AlicloudVswitch](/docs/catalog/alicloud/alicloudvswitch) — provides VSwitches for node and pod placement
-- [AlicloudSecurityGroup](/docs/catalog/alicloud/alicloudsecuritygroup) — controls inbound and outbound traffic for cluster nodes
-- [AlicloudNatGateway](/docs/catalog/alicloud/alicloudnatgateway) — provides outbound internet access for nodes in private VSwitches
-- [AlicloudKmsKey](/docs/catalog/alicloud/alicloudkmskey) — provides the encryption key for Kubernetes Secrets at rest
-- [AlicloudLogProject](/docs/catalog/alicloud/alicloudlogproject) — provides the SLS project for control plane and audit logs
-- [AlicloudKubernetesNodePool](/docs/catalog/alicloud/alicloudkubernetesnodepool) — manages worker node pools within this cluster
+- [AliCloudVpc](/docs/catalog/alicloud/alicloudvpc) — provides the VPC for cluster networking
+- [AliCloudVswitch](/docs/catalog/alicloud/alicloudvswitch) — provides VSwitches for node and pod placement
+- [AliCloudSecurityGroup](/docs/catalog/alicloud/alicloudsecuritygroup) — controls inbound and outbound traffic for cluster nodes
+- [AliCloudNatGateway](/docs/catalog/alicloud/alicloudnatgateway) — provides outbound internet access for nodes in private VSwitches
+- [AliCloudKmsKey](/docs/catalog/alicloud/alicloudkmskey) — provides the encryption key for Kubernetes Secrets at rest
+- [AliCloudLogProject](/docs/catalog/alicloud/alicloudlogproject) — provides the SLS project for control plane and audit logs
+- [AliCloudKubernetesNodePool](/docs/catalog/alicloud/alicloudkubernetesnodepool) — manages worker node pools within this cluster

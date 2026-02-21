@@ -1,5 +1,5 @@
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudContainerRegistry
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudContainerRegistry
 metadata:
   name: enterprise-registry
 spec:

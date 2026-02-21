@@ -1,4 +1,4 @@
-# AlicloudCenInstance
+# AliCloudCenInstance
 
 Manages an Alibaba Cloud Cloud Enterprise Network (CEN) instance with bundled child-instance attachments.
 

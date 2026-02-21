@@ -1,10 +1,10 @@
-# AlicloudContainerRegistry
+# AliCloudContainerRegistry
 
 Deploys an Alibaba Cloud Container Registry (ACR) Enterprise Edition instance with optional namespaces.
 
 ## Overview
 
-AlicloudContainerRegistry provisions a managed container image registry on Alibaba Cloud. The Enterprise Edition offers three tiers -- Basic, Standard, and Advanced -- providing scalable storage, image scanning, and multi-region replication capabilities.
+AliCloudContainerRegistry provisions a managed container image registry on Alibaba Cloud. The Enterprise Edition offers three tiers -- Basic, Standard, and Advanced -- providing scalable storage, image scanning, and multi-region replication capabilities.
 
 Namespaces are bundled into the component because a registry instance without namespaces cannot store images. Namespaces organize repositories by team or application (e.g., `platform`, `frontend`, `backend`).
 
@@ -36,8 +36,8 @@ Namespaces are bundled into the component because a registry instance without na
 ## Quick Start
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudContainerRegistry
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudContainerRegistry
 metadata:
   name: my-registry
 spec:

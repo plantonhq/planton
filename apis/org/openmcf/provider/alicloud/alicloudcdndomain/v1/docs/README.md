@@ -1,9 +1,9 @@
-# AlicloudCdnDomain — Research & Design Document
+# AliCloudCdnDomain — Research & Design Document
 
 ## 1 Introduction
 
 This document captures the research and design rationale behind the
-**AlicloudCdnDomain** OpenMCF component (R26). The component provides a
+**AliCloudCdnDomain** OpenMCF component (R26). The component provides a
 declarative, Kubernetes-style manifest for managing an accelerated domain
 within Alibaba Cloud CDN.
 
@@ -17,7 +17,7 @@ After the CDN service accepts the domain, Alibaba Cloud returns a `cname`
 value. The operator must create a DNS CNAME record pointing the accelerated
 domain to that value before edge acceleration takes effect.
 
-The AlicloudCdnDomain component wraps this lifecycle into a single manifest
+The AliCloudCdnDomain component wraps this lifecycle into a single manifest
 that can be version-controlled, reviewed, and deployed through CI/CD.
 
 ### 1.1 Terminology
@@ -292,12 +292,12 @@ the origin, bypassing CDN entirely.
 
 Typical workflow:
 
-1. Deploy the AlicloudCdnDomain manifest; obtain the `cname` output.
+1. Deploy the AliCloudCdnDomain manifest; obtain the `cname` output.
 2. Create a CNAME record: `cdn.example.com → cdn.example.com.w.cdngslb.com`.
 3. Wait for DNS propagation (minutes to hours depending on TTL).
 4. Verify with `dig cdn.example.com CNAME` or `nslookup`.
 
-If the domain is managed in Alibaba Cloud DNS, an AlicloudDnsRecord component
+If the domain is managed in Alibaba Cloud DNS, an AliCloudDnsRecord component
 can reference the CDN domain's `cname` output to automate step 2.
 
 ### 3.5 ICP Filing Requirements
@@ -329,7 +329,7 @@ resource group.
 | 6 | Apply resource group IDs | Enables per-team cost attribution and scoped IAM policies. |
 | 7 | Tag every domain | Tags propagate to billing reports and resource inventories. |
 | 8 | Separate CDN function configs from domain lifecycle | Domain changes are infrequent; caching rules change often. |
-| 9 | Automate DNS CNAME creation | Reference the `cname` output in an AlicloudDnsRecord component. |
+| 9 | Automate DNS CNAME creation | Reference the `cname` output in an AliCloudDnsRecord component. |
 | 10 | Store manifests in version control | Enables code review, audit trail, and rollback. |
 | 11 | Use `priority` 20/30 convention | Consistent primary/standby distinction across all CDN domains. |
 | 12 | Monitor domain status via outputs | `status` output exposes `online`, `offline`, `configuring`, `check_failed`. |
@@ -340,7 +340,7 @@ resource group.
 
 ### 5.1 The 80/20 Design Principle
 
-The AlicloudCdnDomain component covers the 80% of CDN domain configuration
+The AliCloudCdnDomain component covers the 80% of CDN domain configuration
 that nearly every deployment needs:
 
 - **Domain registration** — accelerated domain name, CDN type, geographic scope.
@@ -632,7 +632,7 @@ The CDN domain itself is not affected — only the IaC state changes.
 
 ## 11 Conclusion
 
-The AlicloudCdnDomain component provides a focused, declarative interface for
+The AliCloudCdnDomain component provides a focused, declarative interface for
 the most common CDN domain operations on Alibaba Cloud: registering an
 accelerated domain, configuring origin sources with failover, enabling HTTPS
 with certificate management, and applying operational metadata.
@@ -650,7 +650,7 @@ Key integration points for production deployments:
 
 - Use the `cname` output to automate DNS record creation.
 - Reference CAS certificate IDs for HTTPS with automated renewal.
-- Pair with AlicloudDnsRecord and AlicloudStorageBucket components for
+- Pair with AliCloudDnsRecord and AliCloudStorageBucket components for
   complete static site delivery architectures.
 
 ---

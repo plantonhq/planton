@@ -1,4 +1,4 @@
-# Pulumi Module to Deploy AlicloudSaeApplication
+# Pulumi Module to Deploy AliCloudSaeApplication
 
 ## CLI usage (OpenMCF pulumi)
 
@@ -53,7 +53,7 @@ openmcf pulumi preview \
 
 ## Module Overview
 
-This Pulumi module deploys an Alibaba Cloud SAE application using a single `sae.Application` resource. The module reads an `AlicloudSaeApplicationStackInput` protobuf message, initializes locals (tag merging, environment variable serialization), and provisions the application with the specified compute, networking, health check, update strategy, and logging configuration.
+This Pulumi module deploys an Alibaba Cloud SAE application using a single `sae.Application` resource. The module reads an `AliCloudSaeApplicationStackInput` protobuf message, initializes locals (tag merging, environment variable serialization), and provisions the application with the specified compute, networking, health check, update strategy, and logging configuration.
 
 The module converts the `envs` map into the JSON array format that the SAE API expects, maps health check specs to the provider's `LivenessV2` and `ReadinessV2` types, and conditionally sets optional fields only when provided — avoiding zero-value overrides of provider defaults.
 

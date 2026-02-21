@@ -1,4 +1,4 @@
-# AlicloudRocketmqInstance
+# AliCloudRocketmqInstance
 
 Manages an Alibaba Cloud RocketMQ 5.x instance with bundled topics and consumer groups.
 

@@ -1,4 +1,4 @@
-# AlicloudRedisInstance
+# AliCloudRedisInstance
 
 Manages an Alibaba Cloud Redis (KVStore) instance for managed in-memory caching and data storage.
 

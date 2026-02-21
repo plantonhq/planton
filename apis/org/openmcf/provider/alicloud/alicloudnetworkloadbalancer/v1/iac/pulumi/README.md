@@ -1,10 +1,10 @@
-# AlicloudNetworkLoadBalancer Pulumi Module
+# AliCloudNetworkLoadBalancer Pulumi Module
 
 This Pulumi module provisions an Alibaba Cloud Network Load Balancer (NLB) with server groups and listeners.
 
 ## Usage
 
-This module is invoked by the OpenMCF Pulumi runner. It reads a `AlicloudNetworkLoadBalancerStackInput` from the Pulumi stack config and creates all resources.
+This module is invoked by the OpenMCF Pulumi runner. It reads a `AliCloudNetworkLoadBalancerStackInput` from the Pulumi stack config and creates all resources.
 
 ## Outputs
 

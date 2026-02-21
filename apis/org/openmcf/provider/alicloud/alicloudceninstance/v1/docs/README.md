@@ -6,7 +6,7 @@ As organizations grow on Alibaba Cloud, they inevitably encounter the limits of 
 
 Cloud Enterprise Network (CEN) is Alibaba Cloud's answer. CEN provides a global hub-and-spoke networking fabric that connects VPCs across any region, Virtual Border Routers (VBR) for hybrid on-premises connectivity, and Cloud Connect Networks (CCN) for SD-WAN branch office access — all through a single management plane. Unlike most Alibaba Cloud resources, CEN is inherently global: a single CEN instance can span every Alibaba Cloud region, with traffic flowing over Alibaba Cloud's private backbone rather than the public internet.
 
-This document examines the full deployment landscape for CEN — from manual console configuration to declarative control-plane automation — and explains how OpenMCF's `AlicloudCenInstance` component provides the right level of abstraction for the 80% use case: a CEN instance with VPC attachments. The 20% of advanced features (Transit Routers, Bandwidth Packages, Route Maps, Flow Logs) are intentionally deferred to keep the component focused and maintainable.
+This document examines the full deployment landscape for CEN — from manual console configuration to declarative control-plane automation — and explains how OpenMCF's `AliCloudCenInstance` component provides the right level of abstraction for the 80% use case: a CEN instance with VPC attachments. The 20% of advanced features (Transit Routers, Bandwidth Packages, Route Maps, Flow Logs) are intentionally deferred to keep the component focused and maintainable.
 
 ## Historical Context: VPC Peering to CEN
 
@@ -171,11 +171,11 @@ for i, vpc := range vpcList {
 
 ### Level 4: Control Planes (OpenMCF)
 
-OpenMCF provides a single `AlicloudCenInstance` resource that bundles the CEN instance and its attachments:
+OpenMCF provides a single `AliCloudCenInstance` resource that bundles the CEN instance and its attachments:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudCenInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudCenInstance
 metadata:
   name: global-backbone
 spec:
@@ -220,17 +220,17 @@ The control plane handles the full lifecycle: creating the instance, attaching c
 
 **VPC as default attachment type**: The `child_instance_type` field defaults to `"VPC"` because VPC-to-VPC connectivity is the dominant use case. VBR (hybrid) and CCN (SD-WAN) attachments are supported but are the minority case.
 
-**Region field for API routing only**: Unlike most Alicloud components where `region` determines where the resource is physically created, CEN's `region` field is purely for API routing. The CEN instance itself is global. Each attachment's region is specified separately via `child_instance_region_id`. This is documented in the spec proto to prevent confusion.
+**Region field for API routing only**: Unlike most AliCloud components where `region` determines where the resource is physically created, CEN's `region` field is purely for API routing. The CEN instance itself is global. Each attachment's region is specified separately via `child_instance_region_id`. This is documented in the spec proto to prevent confusion.
 
 ### Foreign Key References
 
-The `child_instance_id` field uses `StringValueOrRef` with `default_kind: AlicloudVpc`, enabling declarative cross-resource references:
+The `child_instance_id` field uses `StringValueOrRef` with `default_kind: AliCloudVpc`, enabling declarative cross-resource references:
 
 ```yaml
 attachments:
   - childInstanceId:
       valueFrom:
-        name: prod-vpc-hangzhou    # references AlicloudVpc resource
+        name: prod-vpc-hangzhou    # references AliCloudVpc resource
     childInstanceRegionId: cn-hangzhou
 ```
 
@@ -261,7 +261,7 @@ The Pulumi module is organized into three files:
 | `locals.tf` | Tag computation, attachment list-to-map conversion |
 | `variables.tf` | Input variables with validation rules |
 | `outputs.tf` | CEN ID and instance name outputs |
-| `provider.tf` | Alicloud provider scoped to `spec.region` |
+| `provider.tf` | AliCloud provider scoped to `spec.region` |
 
 **Key patterns**:
 - Attachments use `for_each` over `local.attachments_map` keyed by `"${idx}-${type}"`
@@ -315,7 +315,7 @@ The Pulumi module is organized into three files:
 
 CEN is the foundation of enterprise networking on Alibaba Cloud, providing the hub-and-spoke fabric that connects VPCs across regions and hybrid data centers. While the full CEN ecosystem is extensive (34+ Terraform resources), the core use case — a CEN instance with VPC attachments — is straightforward and well-served by OpenMCF's composite bundling approach.
 
-The `AlicloudCenInstance` component:
+The `AliCloudCenInstance` component:
 - **Bundles** the CEN instance and its attachments into a single deployable manifest
 - **Supports** VPC, VBR, and CCN attachment types with `valueFrom` cross-resource references
 - **Defaults** sensibly (VPC type, strict protection mode)

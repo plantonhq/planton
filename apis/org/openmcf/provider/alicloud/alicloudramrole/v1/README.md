@@ -1,4 +1,4 @@
-# AlicloudRamRole
+# AliCloudRamRole
 
 Manages an Alibaba Cloud Resource Access Management (RAM) role with bundled policy attachments.
 
@@ -80,7 +80,7 @@ RAM roles are account-global and not region-scoped. The `region` field configure
 
 ## Related Components
 
-- **AlicloudRamPolicy** -- create custom policies to attach to this role
-- **AlicloudAckManagedCluster** -- references this role for cluster service authentication
-- **AlicloudFcFunction** -- references this role for function execution permissions
-- **AlicloudEcsInstance** -- references this role for instance profile
+- **AliCloudRamPolicy** -- create custom policies to attach to this role
+- **AliCloudAckManagedCluster** -- references this role for cluster service authentication
+- **AliCloudFcFunction** -- references this role for function execution permissions
+- **AliCloudEcsInstance** -- references this role for instance profile

@@ -16,7 +16,7 @@ This preset creates a production-grade ACK Managed Kubernetes cluster using Terw
 - **Three availability zones** (3 node VSwitches + 3 pod VSwitches) -- Distributes the control plane and worker nodes across three AZs for maximum resilience against zone-level failures.
 - **RRSA enabled** (`enableRrsa: true`) -- Pods assume RAM roles via OIDC federation, eliminating static access keys. Requires Kubernetes 1.22.3+ and cannot be disabled once enabled.
 - **Deletion protection** (`deletionProtection: true`) -- Prevents accidental cluster deletion via API. Must be explicitly disabled before the cluster can be destroyed.
-- **External NAT** (`newNatGateway: false`) -- Assumes you manage NAT via a dedicated AlicloudNatGateway component, avoiding duplicate NAT gateways and giving you full control over SNAT rules and EIP allocation.
+- **External NAT** (`newNatGateway: false`) -- Assumes you manage NAT via a dedicated AliCloudNatGateway component, avoiding duplicate NAT gateways and giving you full control over SNAT rules and EIP allocation.
 - **Enterprise security group** (`isEnterpriseSecurity Group: true`) -- Supports up to 65,536 rules and 100,000 ENIs, required for large Terway clusters.
 - **Full observability** (logtail-ds, arms-prometheus, metrics-server, ack-node-problem-detector) -- Ships control plane logs and audit events to SLS with 90-day retention, collects Prometheus metrics, and detects node-level problems automatically.
 - **Patch-only auto-upgrade** (`channel: patch`) -- Applies security patches and bug fixes automatically but never performs minor version upgrades (e.g., 1.30.x to 1.30.y, never 1.30 to 1.31). Runs only during the Wednesday maintenance window.
@@ -27,13 +27,13 @@ This preset creates a production-grade ACK Managed Kubernetes cluster using Terw
 |---|---|---|
 | `<alibaba-cloud-region>` | Region code (e.g., `cn-hangzhou`, `ap-southeast-1`) | Your deployment region strategy |
 | `<your-cluster-name>` | Cluster name (1-63 chars, alphanumeric) | Your naming convention |
-| `<node-vswitch-id-zone-a>` | VSwitch for nodes in AZ a | `AlicloudVswitch` stack outputs |
-| `<node-vswitch-id-zone-b>` | VSwitch for nodes in AZ b | `AlicloudVswitch` stack outputs |
-| `<node-vswitch-id-zone-c>` | VSwitch for nodes in AZ c | `AlicloudVswitch` stack outputs |
-| `<pod-vswitch-id-zone-a>` | Dedicated pod VSwitch in AZ a (separate CIDR from node VSwitch) | `AlicloudVswitch` stack outputs |
-| `<pod-vswitch-id-zone-b>` | Dedicated pod VSwitch in AZ b | `AlicloudVswitch` stack outputs |
-| `<pod-vswitch-id-zone-c>` | Dedicated pod VSwitch in AZ c | `AlicloudVswitch` stack outputs |
-| `<your-log-project-name>` | SLS project for cluster logs and addon dashboards | `AlicloudLogProject` stack outputs |
+| `<node-vswitch-id-zone-a>` | VSwitch for nodes in AZ a | `AliCloudVswitch` stack outputs |
+| `<node-vswitch-id-zone-b>` | VSwitch for nodes in AZ b | `AliCloudVswitch` stack outputs |
+| `<node-vswitch-id-zone-c>` | VSwitch for nodes in AZ c | `AliCloudVswitch` stack outputs |
+| `<pod-vswitch-id-zone-a>` | Dedicated pod VSwitch in AZ a (separate CIDR from node VSwitch) | `AliCloudVswitch` stack outputs |
+| `<pod-vswitch-id-zone-b>` | Dedicated pod VSwitch in AZ b | `AliCloudVswitch` stack outputs |
+| `<pod-vswitch-id-zone-c>` | Dedicated pod VSwitch in AZ c | `AliCloudVswitch` stack outputs |
+| `<your-log-project-name>` | SLS project for cluster logs and addon dashboards | `AliCloudLogProject` stack outputs |
 | `<your-team>` | Team or business unit that owns this cluster | Your organizational structure |
 | `<your-cost-center>` | Cost center code for billing attribution | Your finance team |
 

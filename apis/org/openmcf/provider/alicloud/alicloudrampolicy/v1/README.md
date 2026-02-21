@@ -1,4 +1,4 @@
-# AlicloudRamPolicy
+# AliCloudRamPolicy
 
 Manages an Alibaba Cloud Resource Access Management (RAM) custom policy.
 
@@ -70,6 +70,6 @@ Alibaba Cloud RAM policy documents follow this structure:
 
 ## Related Components
 
-- **AlicloudRamRole** -- attach this policy to a role via `policyAttachments`
-- **AlicloudStorageBucket** -- common target for fine-grained OSS access policies
-- **AlicloudRdsInstance** -- common target for database access policies
+- **AliCloudRamRole** -- attach this policy to a role via `policyAttachments`
+- **AliCloudStorageBucket** -- common target for fine-grained OSS access policies
+- **AliCloudRdsInstance** -- common target for database access policies

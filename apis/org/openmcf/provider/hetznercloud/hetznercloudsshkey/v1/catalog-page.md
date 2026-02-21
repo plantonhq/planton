@@ -18,7 +18,7 @@ When you deploy a HetznerCloudSshKey resource, OpenMCF provisions:
 Create a file `ssh-key.yaml`:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSshKey
 metadata:
   name: deploy-key
@@ -58,7 +58,7 @@ This component has no optional spec fields. The SSH key name is derived from `me
 The simplest deployment: a single ED25519 key with no organizational context.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSshKey
 metadata:
   name: my-key
@@ -76,7 +76,7 @@ spec:
 A key scoped to a specific organization and environment. The metadata drives label generation for resource tracking.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSshKey
 metadata:
   name: prod-deploy-key
@@ -97,7 +97,7 @@ spec:
 An SSH key referenced by a HetznerCloudServer using `valueFrom`. The server receives the key's numeric ID from the SSH key's stack outputs, establishing a dependency edge in the deployment DAG.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSshKey
 metadata:
   name: web-key
@@ -115,7 +115,7 @@ spec:
 The server references this key:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: web-01

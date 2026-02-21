@@ -21,7 +21,7 @@ Deploys a Hetzner Cloud load balancer with configurable services (HTTP, HTTPS, T
 Create a file `load-balancer.yaml`:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: my-lb
@@ -106,7 +106,7 @@ This provisions an lb11 load balancer in Falkenstein with a single HTTP listener
 An lb11 load balancer with an HTTP listener on port 80 forwarding to a single server target.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: web-lb
@@ -130,7 +130,7 @@ spec:
 An HTTPS load balancer using a certificate from a `HetznerCloudCertificate` resource. HTTP traffic is redirected to HTTPS. A custom health check verifies the backend on `/health`.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: web-https-lb
@@ -180,7 +180,7 @@ spec:
 A load balancer on a private network using label selectors to dynamically discover backend servers. All traffic flows over the private network.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: internal-lb
@@ -221,7 +221,7 @@ spec:
 A production load balancer with HTTPS, sticky sessions, multiple target types, private networking, custom health checks, and delete protection.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: prod-lb

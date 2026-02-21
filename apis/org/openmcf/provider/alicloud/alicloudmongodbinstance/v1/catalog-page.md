@@ -1,10 +1,10 @@
-# AlicloudMongodbInstance
+# AliCloud MongodbInstance
 
 Deploy and manage Alibaba Cloud ApsaraDB for MongoDB replica-set instances with configurable replication, multi-zone HA, encryption, and backup policies.
 
 ## Overview
 
-AlicloudMongodbInstance provisions a managed MongoDB replica-set instance on Alibaba Cloud. It supports configurable replication factors (1, 3, 5, or 7 nodes), read-only replicas for read scaling, multi-zone high availability across three AZs, and both TDE and cloud disk encryption at rest.
+AliCloudMongodbInstance provisions a managed MongoDB replica-set instance on Alibaba Cloud. It supports configurable replication factors (1, 3, 5, or 7 nodes), read-only replicas for read scaling, multi-zone high availability across three AZs, and both TDE and cloud disk encryption at rest.
 
 This component wraps a single `alicloud_mongodb_instance` Terraform resource (replica-set mode). Sharding deployments require a separate component.
 
@@ -18,8 +18,8 @@ This component wraps a single `alicloud_mongodb_instance` Terraform resource (re
 ## Quick Start
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudMongodbInstance
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudMongodbInstance
 metadata:
   name: my-mongodb
 spec:
@@ -87,8 +87,8 @@ spec:
 
 ## Related Components
 
-- **AlicloudVpc** -- VPC for network isolation
-- **AlicloudVswitch** -- VSwitch for subnet placement
-- **AlicloudSecurityGroup** -- Network access control
-- **AlicloudKmsKey** -- Encryption key for TDE
-- **AlicloudPrivateDnsZone** -- Private DNS for internal resolution
+- **AliCloudVpc** -- VPC for network isolation
+- **AliCloudVswitch** -- VSwitch for subnet placement
+- **AliCloudSecurityGroup** -- Network access control
+- **AliCloudKmsKey** -- Encryption key for TDE
+- **AliCloudPrivateDnsZone** -- Private DNS for internal resolution

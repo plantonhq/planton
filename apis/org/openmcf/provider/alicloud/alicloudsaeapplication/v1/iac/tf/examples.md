@@ -1,4 +1,4 @@
-# AlicloudSaeApplication Terraform Examples
+# AliCloudSaeApplication Terraform Examples
 
 Below are several examples demonstrating how to deploy SAE applications with the OpenMCF Terraform module.
 
@@ -15,8 +15,8 @@ openmcf tofu apply --manifest <yaml-path> --stack <stack-name>
 A container image deployment with the smallest resource tier.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudSaeApplication
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudSaeApplication
 metadata:
   name: hello-sae
 spec:
@@ -46,8 +46,8 @@ This example:
 A production-grade Java application with VPC networking, health probes, and a rolling update strategy.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudSaeApplication
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudSaeApplication
 metadata:
   name: order-service
   org: acme-corp
@@ -118,8 +118,8 @@ This example:
 A high-traffic service with ACR EE, custom host aliases, SLS logging, and canary-style deployments.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudSaeApplication
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudSaeApplication
 metadata:
   name: payment-gateway
   org: fintech-corp

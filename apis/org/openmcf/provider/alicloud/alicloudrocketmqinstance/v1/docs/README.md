@@ -6,7 +6,7 @@ Message queuing is the nervous system of distributed applications. When services
 
 RocketMQ 5.x represents a significant architectural leap from the legacy ONS (Open Notification Service) API. It introduces VPC-native instances with configurable throughput tiers, a cleaner resource model (instances, topics, consumer groups), and a modern 2022-08-01 API that replaces the fragmented ONS endpoint. Despite this modernization, deploying a production-ready RocketMQ instance remains a multi-step orchestration problem: the instance itself, its network placement, topics with the right message types, consumer groups with appropriate retry policies, and internet access configuration all need to be coordinated correctly.
 
-This document examines the full deployment landscape for RocketMQ 5.x—from console provisioning to control-plane automation—and explains how OpenMCF's `AlicloudRocketmqInstance` component abstracts this complexity into a single declarative manifest that handles the 80% use case while exposing the 20% of knobs that production workloads actually need.
+This document examines the full deployment landscape for RocketMQ 5.x—from console provisioning to control-plane automation—and explains how OpenMCF's `AliCloudRocketmqInstance` component abstracts this complexity into a single declarative manifest that handles the 80% use case while exposing the 20% of knobs that production workloads actually need.
 
 ## Historical Context: ONS to RocketMQ 5.x
 
@@ -197,7 +197,7 @@ Control planes move beyond one-shot IaC applies to continuously reconciled infra
 
 **Crossplane**: Can manage Alibaba Cloud RocketMQ through its provider-alicloud, but requires composing three separate Managed Resources (Instance, Topic, ConsumerGroup) with Crossplane Compositions to bundle them. This is significant boilerplate for a resource that naturally forms a composite.
 
-**OpenMCF**: Provides a single `AlicloudRocketmqInstance` API resource that bundles the instance, topics, and consumer groups into one manifest. The control plane reconciles all three resource types as a unit, ensuring consistency.
+**OpenMCF**: Provides a single `AliCloudRocketmqInstance` API resource that bundles the instance, topics, and consumer groups into one manifest. The control plane reconciles all three resource types as a unit, ensuring consistency.
 
 **Verdict**: Control planes are the future for production infrastructure management. OpenMCF's composite bundling of RocketMQ resources is the right abstraction for this naturally-grouped resource.
 
@@ -219,11 +219,11 @@ Control planes move beyond one-shot IaC applies to continuously reconciled infra
 
 **RocketMQ 5.x only (not ONS)**: The component targets the modern `alicloud_rocketmq_*` resources exclusively. The legacy ONS API (`alicloud_ons_*`) is not supported. This is a deliberate choice—the 5.x API is strictly superior, and supporting both would double the maintenance surface for zero user benefit.
 
-**Composite bundling (DD07)**: Topics and consumer groups are bundled into the instance spec because they are meaningless without a parent instance. You cannot create a topic or consumer group without an instance ID. This follows the same pattern as `AlicloudRdsInstance` (which bundles databases and accounts) and `AlicloudLogProject` (which bundles log stores).
+**Composite bundling (DD07)**: Topics and consumer groups are bundled into the instance spec because they are meaningless without a parent instance. You cannot create a topic or consumer group without an instance ID. This follows the same pattern as `AliCloudRdsInstance` (which bundles databases and accounts) and `AliCloudLogProject` (which bundles log stores).
 
-**ACL excluded**: RocketMQ ACL accounts and permission rules are intentionally not bundled. Security configuration has an independent lifecycle—IAM policies change more frequently than messaging topology, and a single instance may have ACL rules managed by different teams. This is consistent with how `AlicloudRamRole` separates identity from policy.
+**ACL excluded**: RocketMQ ACL accounts and permission rules are intentionally not bundled. Security configuration has an independent lifecycle—IAM policies change more frequently than messaging topology, and a single instance may have ACL rules managed by different teams. This is consistent with how `AliCloudRamRole` separates identity from policy.
 
-**Flattened network configuration**: The provider's deeply nested `network_info.vpc_info.vpc_id` / `network_info.vpc_info.vswitches[].vswitch_id` structure is flattened to top-level `vpc_id` and `vswitch_id` fields. This is consistent with every other Alicloud networking component in OpenMCF (VPC, VSwitch, SecurityGroup, NatGateway, etc.) and makes YAML manifests dramatically simpler.
+**Flattened network configuration**: The provider's deeply nested `network_info.vpc_info.vpc_id` / `network_info.vpc_info.vswitches[].vswitch_id` structure is flattened to top-level `vpc_id` and `vswitch_id` fields. This is consistent with every other AliCloud networking component in OpenMCF (VPC, VSwitch, SecurityGroup, NatGateway, etc.) and makes YAML manifests dramatically simpler.
 
 **Hidden implementation details**: The `service_code` (always `"rmq"`), `commodity_code` (derived from `payment_type` and `sub_series_code`), `internet_spec` (derived from `internet_info.enabled`), and `flow_out_type` (derived from internet enablement and billing choice) are all computed internally. Users never see these fields.
 
@@ -231,10 +231,10 @@ Control planes move beyond one-shot IaC applies to continuously reconciled infra
 
 ### API Design
 
-The `AlicloudRocketmqInstanceSpec` message structure:
+The `AliCloudRocketmqInstanceSpec` message structure:
 
 ```
-AlicloudRocketmqInstanceSpec
+AliCloudRocketmqInstanceSpec
 ├── region (required)
 ├── series_code (required: standard | professional | ultimate)
 ├── sub_series_code (required: cluster_ha | single_node | serverless)
@@ -283,10 +283,10 @@ The `vpc_id` and `vswitch_id` fields use `StringValueOrRef`, enabling declarativ
 ```yaml
 vpcId:
   valueFrom:
-    name: my-vpc        # references AlicloudVpc resource
+    name: my-vpc        # references AliCloudVpc resource
 vswitchId:
   valueFrom:
-    name: my-vswitch    # references AlicloudVswitch resource
+    name: my-vswitch    # references AliCloudVswitch resource
 ```
 
 This allows the control plane to resolve VPC and VSwitch IDs from other managed resources at deployment time, rather than requiring hardcoded IDs.
@@ -383,7 +383,7 @@ A complete deployment creates:
 
 - **Message tracing**: Enable `product_info.trace_on` for production instances to track message flow from producer to consumer. Essential for debugging delivery failures and latency issues.
 - **CloudMonitor integration**: RocketMQ 5.x instances automatically report metrics to Alibaba Cloud CloudMonitor, including message production/consumption rates, consumer lag, and instance health.
-- **SLS integration**: For detailed message auditing, connect the instance to an `AlicloudLogProject` via Alibaba Cloud's log service integration (configured outside this component).
+- **SLS integration**: For detailed message auditing, connect the instance to an `AliCloudLogProject` via Alibaba Cloud's log service integration (configured outside this component).
 
 ### Cost Optimization
 
@@ -396,7 +396,7 @@ A complete deployment creates:
 
 RocketMQ 5.x on Alibaba Cloud is a capable distributed messaging platform, but deploying it correctly requires coordinating multiple resources (instance, topics, consumer groups) with careful attention to edition selection, message types, retry policies, and network configuration. The raw Terraform and Pulumi providers expose every knob but also expose implementation details (`commodity_code`, `service_code`, nested `network_info`) that most users should never need to touch.
 
-OpenMCF's `AlicloudRocketmqInstance` component addresses this by:
+OpenMCF's `AliCloudRocketmqInstance` component addresses this by:
 - **Bundling** instance, topics, and consumer groups into a single manifest
 - **Hiding** computed fields like `commodity_code`, `service_code`, `internet_spec`, and `flow_out_type`
 - **Flattening** the nested `network_info` structure to simple `vpc_id` and `vswitch_id` fields

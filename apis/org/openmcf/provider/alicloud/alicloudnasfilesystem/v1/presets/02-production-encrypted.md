@@ -23,8 +23,8 @@ This preset creates a production-grade NAS file system with NAS-managed encrypti
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`, `cn-shanghai`) | Your deployment region strategy |
 | `<organization>` | Organization name for tag-based resource grouping | Your OpenMCF org configuration |
 | `<purpose-description>` | Human-readable purpose (e.g., "Shared config for payment service") | Your service catalog |
-| `<vpc-id>` | VPC ID where the mount target will be created | AlicloudVpc outputs |
-| `<vswitch-id>` | VSwitch ID within the VPC | AlicloudVswitch outputs |
+| `<vpc-id>` | VPC ID where the mount target will be created | AliCloudVpc outputs |
+| `<vswitch-id>` | VSwitch ID within the VPC | AliCloudVswitch outputs |
 | `<application-subnet-cidr>` | CIDR block of the subnet that should access NAS (e.g., `10.0.1.0/24`) | Your VSwitch CIDR allocation |
 
 ## Related Presets

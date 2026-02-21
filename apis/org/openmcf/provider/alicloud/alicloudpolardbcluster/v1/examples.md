@@ -1,12 +1,12 @@
-# AlicloudPolardbCluster Examples
+# AliCloudPolardbCluster Examples
 
 ## Minimal: MySQL Development Cluster
 
 A basic MySQL 8.0 PolarDB cluster for development and testing with a single node.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudPolardbCluster
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudPolardbCluster
 metadata:
   name: dev-polardb
 spec:
@@ -33,8 +33,8 @@ spec:
 A production-grade MySQL PolarDB cluster with 4 nodes (1 primary + 3 read replicas), TDE encryption, audit logging, and cross-AZ deployment.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudPolardbCluster
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudPolardbCluster
 metadata:
   name: prod-mysql-polardb
   org: acme-corp
@@ -99,8 +99,8 @@ spec:
 A PostgreSQL PolarDB cluster with database-level collation settings for internationalized applications.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudPolardbCluster
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudPolardbCluster
 metadata:
   name: pg-polardb
   org: global-corp

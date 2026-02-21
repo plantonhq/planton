@@ -5,7 +5,7 @@
 The simplest configuration: a shared x86 server running Ubuntu 24.04 in Falkenstein. No SSH keys, no networking customization, no protections. The server receives auto-assigned public IPv4 and IPv6 addresses.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: dev-box
@@ -22,7 +22,7 @@ spec:
 A server with an SSH key for access and a cloud-init script that installs Nginx on first boot. The SSH key is referenced by name (a literal string value). Cloud-init runs once at creation — changing `userData` forces server replacement.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: web-01
@@ -50,7 +50,7 @@ A server attached to a private network and protected by a firewall, using `value
 The firewall controls inbound traffic at the infrastructure level. The private network provides internal communication between servers without traversing the public internet.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: app-01
@@ -88,7 +88,7 @@ The `valueFrom` references establish dependency edges in the deployment DAG — 
 A production server with anti-affinity scheduling, automatic backups, and all protection flags enabled. The `keepDisk` flag preserves the ability to downgrade the server type later by preventing irreversible disk upgrades.
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: db-primary
@@ -147,7 +147,7 @@ This example shows the complete infra-chart composition pattern. Each companion 
 Companion resource manifests (deployed in the same infra chart):
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudSshKey
 metadata:
   name: prod-key
@@ -158,7 +158,7 @@ spec:
 ```
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudPlacementGroup
 metadata:
   name: web-spread
@@ -169,7 +169,7 @@ spec:
 ```
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudFirewall
 metadata:
   name: web-firewall
@@ -191,7 +191,7 @@ spec:
 ```
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudNetwork
 metadata:
   name: main-vpc
@@ -206,7 +206,7 @@ spec:
 ```
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudPrimaryIp
 metadata:
   name: web-ipv6
@@ -221,7 +221,7 @@ spec:
 The server manifest referencing all companion resources:
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: web-prod-01

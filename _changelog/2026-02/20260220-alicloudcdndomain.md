@@ -1,19 +1,19 @@
-# AlicloudCdnDomain Component Added
+# AliCloudCdnDomain Component Added
 
 **Date**: 2026-02-20
-**Component**: AlicloudCdnDomain
+**Component**: AliCloudCdnDomain
 **Enum**: 3100
 **ID Prefix**: accdn
 
 ## Summary
 
-Added the AlicloudCdnDomain deployment component -- manages CDN accelerated domains in the Alibaba Cloud CDN service. A CDN domain maps a user-facing domain name to one or more origin servers; edge nodes worldwide cache and serve content, reducing latency for end users. After deployment, create a CNAME record at your DNS provider pointing to the `cname` stack output.
+Added the AliCloudCdnDomain deployment component -- manages CDN accelerated domains in the Alibaba Cloud CDN service. A CDN domain maps a user-facing domain name to one or more origin servers; edge nodes worldwide cache and serve content, reducing latency for end users. After deployment, create a CNAME record at your DNS provider pointing to the `cname` stack output.
 
 ## What Was Created
 
 ### API Definition
 - `apis/org/openmcf/provider/alicloud/alicloudcdndomain/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AlicloudCdnDomain = 3100` in `CloudResourceKind` enum under a new CDN category
+- Registered `AliCloudCdnDomain = 3100` in `CloudResourceKind` enum under a new CDN category
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider and a single `cdn.DomainNew` resource with all spec fields mapped, including sources array and optional certificate config

@@ -1,4 +1,4 @@
-# AlicloudStorageBucket
+# AliCloudStorageBucket
 
 Manages an Alibaba Cloud Object Storage Service (OSS) bucket.
 
@@ -70,6 +70,6 @@ None. OSS buckets are standalone resources with no upstream dependencies.
 
 ## Related Components
 
-- **AlicloudKmsKey** -- for customer-managed encryption keys (KMS SSE)
-- **AlicloudFcFunction** -- uses OSS for function code storage
-- **AlicloudCdnDomain** -- uses OSS as an origin for CDN acceleration
+- **AliCloudKmsKey** -- for customer-managed encryption keys (KMS SSE)
+- **AliCloudFcFunction** -- uses OSS for function code storage
+- **AliCloudCdnDomain** -- uses OSS as an origin for CDN acceleration

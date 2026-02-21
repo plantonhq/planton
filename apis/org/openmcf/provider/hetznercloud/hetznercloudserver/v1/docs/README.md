@@ -1,4 +1,4 @@
-# Hetzner Cloud Server — Research Documentation
+# HetznerCloud Server — Research Documentation
 
 ## Introduction
 
@@ -493,7 +493,7 @@ OpenMCF's key differentiators for the server resource:
 ### Manifest Format
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudServer
 metadata:
   name: web-01

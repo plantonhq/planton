@@ -1,4 +1,4 @@
-# AlicloudKubernetesNodePool Examples
+# AliCloudKubernetesNodePool Examples
 
 ## Minimal Fixed-Size Pool
 
@@ -6,8 +6,8 @@ A basic node pool with a fixed number of nodes, suitable for development or
 small workloads.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesNodePool
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesNodePool
 metadata:
   name: dev-pool
 spec:
@@ -29,8 +29,8 @@ A node pool with auto-scaling enabled. The cluster auto-scaler adjusts the
 node count between 2 and 20 based on pending pod resource requests.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesNodePool
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesNodePool
 metadata:
   name: compute-pool
 spec:
@@ -80,8 +80,8 @@ instance types maximize availability across spot pools. Falls back to on-demand
 when spot capacity is unavailable.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesNodePool
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesNodePool
 metadata:
   name: spot-pool
   org: acme-corp

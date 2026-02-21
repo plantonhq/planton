@@ -192,7 +192,7 @@ These should be in the same AZs but with separate CIDR ranges.
 
 **Log Retention**: The `control_plane_log_ttl` field controls how many days logs are retained in SLS. Default is 30 days; production environments typically use 90 or more.
 
-**SLS Project Reference**: The `control_plane_log_project` field can reference an existing AlicloudLogProject component via foreign key, enabling centralized log management across clusters.
+**SLS Project Reference**: The `control_plane_log_project` field can reference an existing AliCloudLogProject component via foreign key, enabling centralized log management across clusters.
 
 ### Addons: The Creation-Time Constraint
 
@@ -300,18 +300,18 @@ The current API (`spec.proto`) covers the production-critical settings:
 ### Foreign Key References
 
 OpenMCF's `StringValueOrRef` pattern enables declarative cross-resource dependencies:
-- `vswitch_ids` → references `AlicloudVswitch.status.outputs.vswitch_id`
-- `pod_vswitch_ids` → references `AlicloudVswitch.status.outputs.vswitch_id`
-- `security_group_id` → references `AlicloudSecurityGroup.status.outputs.security_group_id`
-- `encryption_provider_key` → references `AlicloudKmsKey.status.outputs.key_id`
-- `logging.control_plane_log_project` → references `AlicloudLogProject.status.outputs.project_name`
+- `vswitch_ids` → references `AliCloudVswitch.status.outputs.vswitch_id`
+- `pod_vswitch_ids` → references `AliCloudVswitch.status.outputs.vswitch_id`
+- `security_group_id` → references `AliCloudSecurityGroup.status.outputs.security_group_id`
+- `encryption_provider_key` → references `AliCloudKmsKey.status.outputs.key_id`
+- `logging.control_plane_log_project` → references `AliCloudLogProject.status.outputs.project_name`
 
 ### What's Excluded from v1 (Future Enhancements)
 
 The following features are intentionally excluded to maintain API simplicity, following the 80/20 principle:
 
 - **kubeconfig output**: Sensitive credential that should be retrieved through `aliyun cs` CLI or the control plane, not stored in stack outputs
-- **Worker node configuration**: Managed through the separate AlicloudKubernetesNodePool component
+- **Worker node configuration**: Managed through the separate AliCloudKubernetesNodePool component
 - **Post-creation addon management**: Requires `alicloud_cs_kubernetes_addon` (separate resource, separate lifecycle)
 - **Cluster autoscaler configuration**: Installed as an addon; scaling policies belong in node pool configuration
 - **ACK Serverless (ASK)**: A different cluster type with its own resource and API surface
@@ -335,4 +335,4 @@ The research makes clear that:
 - **IaC is the minimum acceptable approach** for production clusters
 - **Control plane APIs like OpenMCF represent the future**, providing a durable specification layer above the IaC execution engine
 
-OpenMCF's AlicloudKubernetesCluster component codifies these lessons: it validates multi-AZ VSwitch selection, supports both CNI modes through clean field separation, defaults to secure settings where possible, and exposes the full set of production-critical outputs (cluster endpoints, RRSA OIDC metadata, security group and NAT gateway IDs) needed by downstream components.
+OpenMCF's AliCloudKubernetesCluster component codifies these lessons: it validates multi-AZ VSwitch selection, supports both CNI modes through clean field separation, defaults to secure settings where possible, and exposes the full set of production-critical outputs (cluster endpoints, RRSA OIDC metadata, security group and NAT gateway IDs) needed by downstream components.

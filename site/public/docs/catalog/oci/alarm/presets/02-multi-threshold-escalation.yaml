@@ -1,0 +1,25 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciAlarm
+metadata:
+  name: my-cpu-escalation-alarm
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  metricCompartmentId:
+    value: <compartment-ocid>
+  namespace: oci_computeagent
+  query: CpuUtilization[5m].mean() > 70
+  severity: warning
+  destinations:
+    - <ons-topic-ocid>
+  isEnabled: true
+  body: "CPU utilization exceeded warning threshold. Review workload and consider scaling."
+  pendingDuration: PT5M
+  messageFormat: pretty_json
+  ruleName: BASE
+  overrides:
+    - ruleName: critical-threshold
+      query: CpuUtilization[5m].mean() > 90
+      severity: critical
+      body: "CPU utilization exceeded 90% -- immediate action required. Scale out or investigate runaway processes."
+      pendingDuration: PT3M

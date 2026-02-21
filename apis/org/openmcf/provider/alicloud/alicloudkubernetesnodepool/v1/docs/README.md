@@ -179,7 +179,7 @@ Spot instances can reduce compute costs by up to 90% but can be reclaimed by Ali
 
 ### Design Philosophy: 80/20 API Structure
 
-The AlicloudKubernetesNodePool spec covers the production-critical node pool settings while excluding niche features (kubelet_configuration, instance_patterns, tee_config, eflo_node_group) that affect less than 5% of use cases.
+The AliCloudKubernetesNodePool spec covers the production-critical node pool settings while excluding niche features (kubelet_configuration, instance_patterns, tee_config, eflo_node_group) that affect less than 5% of use cases.
 
 **Core Fields**: `cluster_id`, `name`, `vswitch_ids`, `instance_types`, `desired_size`
 **Disk**: `system_disk` (category, size, performance level, encryption), `data_disks`
@@ -192,9 +192,9 @@ The AlicloudKubernetesNodePool spec covers the production-critical node pool set
 
 ### Foreign Key References
 
-- `cluster_id` → `AlicloudKubernetesCluster.status.outputs.cluster_id`
-- `vswitch_ids` → `AlicloudVswitch.status.outputs.vswitch_id`
-- `security_group_ids` → `AlicloudSecurityGroup.status.outputs.security_group_id`
+- `cluster_id` → `AliCloudKubernetesCluster.status.outputs.cluster_id`
+- `vswitch_ids` → `AliCloudVswitch.status.outputs.vswitch_id`
+- `security_group_ids` → `AliCloudSecurityGroup.status.outputs.security_group_id`
 
 ### Implementation Landscape
 
@@ -206,4 +206,4 @@ The AlicloudKubernetesNodePool spec covers the production-critical node pool set
 
 ACK node pools are the workhorse of Kubernetes data plane management. Getting their configuration right — instance types, disk sizing, auto-scaling bounds, spot strategy, and managed lifecycle settings — directly determines cluster availability, cost efficiency, and operational overhead.
 
-OpenMCF's AlicloudKubernetesNodePool component encodes these decisions into a declarative API with sensible defaults: `cloud_essd` disks at 120 GiB, `AliyunLinux3` images, `PostPaid` billing, and CloudMonitor enabled. The foreign key reference to `AlicloudKubernetesCluster` ensures the cluster-nodepool relationship is explicit and type-safe.
+OpenMCF's AliCloudKubernetesNodePool component encodes these decisions into a declarative API with sensible defaults: `cloud_essd` disks at 120 GiB, `AliyunLinux3` images, `PostPaid` billing, and CloudMonitor enabled. The foreign key reference to `AliCloudKubernetesCluster` ensures the cluster-nodepool relationship is explicit and type-safe.

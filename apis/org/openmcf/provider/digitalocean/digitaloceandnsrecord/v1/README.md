@@ -32,7 +32,7 @@ This component provides a clean, protobuf-defined API for provisioning DNS recor
 Point a subdomain to an IPv4 address:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: www-a-record
@@ -56,7 +56,7 @@ planton apply -f record.yaml
 You can reference a DigitalOceanDnsZone resource for the domain:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: www-a-record
@@ -77,7 +77,7 @@ spec:
 Create an alias to another hostname:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: app-cname
@@ -95,7 +95,7 @@ spec:
 Route email to your mail server:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: mx-primary
@@ -114,7 +114,7 @@ spec:
 Add SPF for email authentication:
 
 ```yaml
-apiVersion: digitalocean.openmcf.org/v1
+apiVersion: digital-ocean.openmcf.org/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: spf-record

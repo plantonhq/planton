@@ -1,4 +1,4 @@
-# Hetzner Cloud Volume — Research Documentation
+# HetznerCloud Volume — Research Documentation
 
 ## Introduction
 
@@ -21,7 +21,7 @@ What makes block storage interesting in cloud environments is the lifecycle sepa
 
 This separation enables the "cattle not pets" pattern for servers while keeping state durable. A database server can be replaced (new OS, new server type, new location within the same datacenter) by detaching the volume, destroying the server, creating a new one, and reattaching the volume.
 
-### Hetzner Cloud Volumes
+### HetznerCloud Volumes
 
 Hetzner Cloud launched volumes as a block storage product backed by SSD storage in their datacenters. Key characteristics:
 
@@ -302,7 +302,7 @@ OpenMCF's key differentiators for the volume resource:
 ### Manifest Format
 
 ```yaml
-apiVersion: hetznercloud.openmcf.org/v1
+apiVersion: hetzner-cloud.openmcf.org/v1
 kind: HetznerCloudVolume
 metadata:
   name: db-data

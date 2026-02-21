@@ -1,19 +1,19 @@
-# AlicloudKmsKey Component Added
+# AliCloudKmsKey Component Added
 
 **Date**: 2026-02-19
-**Component**: AlicloudKmsKey
+**Component**: AliCloudKmsKey
 **Enum**: 3060
 **ID Prefix**: ackms
 
 ## Summary
 
-Added the AlicloudKmsKey deployment component -- a standalone KMS customer-managed key (CMK) for data encryption and digital signing across Alibaba Cloud services. This key serves as the root of trust for envelope encryption used by RDS (TDE), OSS (SSE-KMS), ECS (disk encryption), and PolarDB.
+Added the AliCloudKmsKey deployment component -- a standalone KMS customer-managed key (CMK) for data encryption and digital signing across Alibaba Cloud services. This key serves as the root of trust for envelope encryption used by RDS (TDE), OSS (SSE-KMS), ECS (disk encryption), and PolarDB.
 
 ## What Was Created
 
 ### API Definition
 - `apis/org/openmcf/provider/alicloud/alicloudkmskey/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AlicloudKmsKey = 3060` in `CloudResourceKind` enum under a new Security category
+- Registered `AliCloudKmsKey = 3060` in `CloudResourceKind` enum under a new Security category
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider and a single `kms.Key` resource with bool-to-string conversion for `automatic_rotation` and `deletion_protection`, default resolution for optional fields

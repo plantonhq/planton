@@ -113,7 +113,7 @@ func ValidateProviderConfig(
 				"Kubernetes credentials required for resource '%s'. Provide credentials via provider_config in API request",
 				resourceName,
 			)
-		case cloudresourcekind.CloudResourceProvider_open_fga:
+		case cloudresourcekind.CloudResourceProvider_openfga:
 			return errors.Errorf(
 				"OpenFGA credentials required for resource '%s'. Provide credentials via provider_config in API request",
 				resourceName,

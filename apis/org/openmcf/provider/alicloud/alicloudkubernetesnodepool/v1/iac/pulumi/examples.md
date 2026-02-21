@@ -1,4 +1,4 @@
-# AlicloudKubernetesNodePool Pulumi Examples
+# AliCloudKubernetesNodePool Pulumi Examples
 
 ## CLI
 
@@ -17,8 +17,8 @@ openmcf pulumi update \
 A basic fixed-size node pool with default settings.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesNodePool
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesNodePool
 metadata:
   name: basic-pool
 spec:
@@ -48,8 +48,8 @@ spec:
 A node pool with auto-scaling enabled and Kubernetes labels for pod scheduling.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesNodePool
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesNodePool
 metadata:
   name: compute-pool
 spec:
@@ -97,8 +97,8 @@ spec:
 A cost-optimized pool using spot instances with taints for workload isolation.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
-kind: AlicloudKubernetesNodePool
+apiVersion: ali-cloud.openmcf.org/v1
+kind: AliCloudKubernetesNodePool
 metadata:
   name: batch-spot-pool
 spec:

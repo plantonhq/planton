@@ -1,8 +1,8 @@
-# Terraform Module to Deploy AlicloudStorageBucket
+# Terraform Module to Deploy AliCloudStorageBucket
 
 This module provisions an Alibaba Cloud OSS bucket with configurable access control, storage class, redundancy, versioning, server-side encryption, lifecycle rules, CORS configuration, and access logging.
 
-Generated from the proto schema for `AlicloudStorageBucket`.
+Generated from the proto schema for `AliCloudStorageBucket`.
 
 ## Usage
 

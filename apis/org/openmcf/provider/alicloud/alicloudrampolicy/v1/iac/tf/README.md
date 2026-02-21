@@ -1,10 +1,10 @@
-# Terraform Module to Deploy AlicloudRamPolicy
+# Terraform Module to Deploy AliCloudRamPolicy
 
 This module provisions a single Alibaba Cloud RAM custom policy. The
 `alicloud_ram_policy` resource is configured with a JSON policy document,
 optional version rotation, and tag management.
 
-Generated `variables.tf` reflects the proto schema for `AlicloudRamPolicy`.
+Generated `variables.tf` reflects the proto schema for `AliCloudRamPolicy`.
 
 ## Usage
 
