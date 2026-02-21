@@ -45,6 +45,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsNeptuneCluster.my-neptune
 spec:
+  region: us-west-2
   subnetIds:
     - subnet-0a1b2c3d4e5f00001
     - subnet-0a1b2c3d4e5f00002
@@ -66,6 +67,7 @@ This creates a single-instance Neptune 1.3.0.0 cluster with encrypted storage, I
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the Neptune cluster will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `subnetIds` | `StringValueOrRef[]` | Subnet IDs for the Neptune subnet group. Provide at least two in distinct AZs. | Minimum 2 items unless `neptuneSubnetGroupName` is set. Can reference AwsVpc resource via `valueFrom`. |
 | `finalSnapshotIdentifier` | `string` | Identifier for the final snapshot on deletion. | Required when `skipFinalSnapshot` is `false` (the default). |
 
@@ -117,6 +119,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsNeptuneCluster.knowledge-graph
 spec:
+  region: us-west-2
   subnetIds:
     - subnet-private-az1
     - subnet-private-az2
@@ -157,6 +160,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsNeptuneCluster.serverless-graph
 spec:
+  region: us-west-2
   subnetIds:
     - subnet-private-az1
     - subnet-private-az2
@@ -184,6 +188,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsNeptuneCluster.data-loader
 spec:
+  region: us-west-2
   subnetIds:
     - subnet-private-az1
     - subnet-private-az2
@@ -213,6 +218,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsNeptuneCluster.ref-graph
 spec:
+  region: us-west-2
   subnetIds:
     - valueFrom:
         kind: AwsVpc

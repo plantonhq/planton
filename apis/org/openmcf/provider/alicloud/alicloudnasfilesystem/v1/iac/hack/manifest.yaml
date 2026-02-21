@@ -1,0 +1,18 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudNasFileSystem
+metadata:
+  name: alicloudnasfilesystem-demo
+spec:
+  region: cn-hangzhou
+  protocolType: NFS
+  storageType: Performance
+  description: Demo NAS file system for local testing
+  vpcId:
+    value: vpc-demo123
+  vswitchId:
+    value: vsw-demo123
+  accessRules:
+    - sourceCidrIp: "10.0.0.0/8"
+      rwAccessType: RDWR
+      userAccessType: no_squash
+      priority: 1

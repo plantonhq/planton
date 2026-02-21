@@ -3,6 +3,7 @@ kind: AwsCertManagerCert
 metadata:
   name: my-wildcard-certificate
 spec:
+  region: <aws-region>
   primaryDomainName: "*.<your-domain.com>"
   alternateDomainNames:
     - <your-domain.com>

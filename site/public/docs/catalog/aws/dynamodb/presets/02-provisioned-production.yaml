@@ -3,6 +3,7 @@ kind: AwsDynamodb
 metadata:
   name: my-provisioned-table
 spec:
+  region: <aws-region>
   billingMode: PROVISIONED
   provisionedThroughput:
     readCapacityUnits: 25

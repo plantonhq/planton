@@ -3,6 +3,7 @@ kind: AwsCloudFront
 metadata:
   name: my-custom-domain-cdn
 spec:
+  region: <aws-region>
   enabled: true
   aliases:
     - <your-cdn-domain.com>

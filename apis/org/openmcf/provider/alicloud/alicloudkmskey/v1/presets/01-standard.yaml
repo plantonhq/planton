@@ -1,0 +1,10 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudKmsKey
+metadata:
+  name: my-encryption-key
+spec:
+  region: <alibaba-cloud-region>
+  description: <key-description>
+  tags:
+    team: <your-team>
+    purpose: encryption

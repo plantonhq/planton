@@ -3,6 +3,7 @@ kind: AwsIamUser
 metadata:
   name: my-read-only-user
 spec:
+  region: <aws-region>
   userName: <service-user-name>
   managedPolicyArns:
     - arn:aws:iam::aws:policy/ReadOnlyAccess

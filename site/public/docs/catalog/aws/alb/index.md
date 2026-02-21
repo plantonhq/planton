@@ -42,6 +42,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsAlb.my-alb
 spec:
+  region: us-west-2
   subnets:
     - subnet-0a1b2c3d4e5f00001
     - subnet-0a1b2c3d4e5f00002
@@ -63,6 +64,7 @@ This creates an internet-facing ALB with an HTTP listener on port 80 across two 
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the ALB will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `subnets` | `string[]` | Subnet IDs where the ALB is placed. Use public subnets for internet-facing, private for internal. | Minimum 2 items required |
 | `subnets[].value` | `string` | Direct subnet ID value | — |
 | `subnets[].valueFrom` | `object` | Foreign key reference to an AwsVpc resource | Default kind: `AwsVpc` |
@@ -98,6 +100,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsAlb.internal-api-alb
 spec:
+  region: us-west-2
   subnets:
     - subnet-private-az1
     - subnet-private-az2
@@ -121,6 +124,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsAlb.web-alb
 spec:
+  region: us-west-2
   subnets:
     - subnet-public-az1
     - subnet-public-az2
@@ -148,6 +152,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsAlb.prod-alb
 spec:
+  region: us-west-2
   subnets:
     - subnet-public-az1
     - subnet-public-az2
@@ -182,6 +187,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsAlb.ref-alb
 spec:
+  region: us-west-2
   subnets:
     - valueFrom:
         kind: AwsVpc

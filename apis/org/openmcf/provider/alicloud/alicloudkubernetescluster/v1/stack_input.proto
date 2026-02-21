@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudkubernetescluster.v1;
+
+import "org/openmcf/provider/alicloud/alicloudkubernetescluster/v1/api.proto";
+import "org/openmcf/provider/alicloud/provider.proto";
+
+// alicloud-kubernetes-cluster stack-input
+message AliCloudKubernetesClusterStackInput {
+  // target cloud-resource
+  AliCloudKubernetesCluster target = 1;
+  // provider-config
+  org.openmcf.provider.alicloud.AliCloudProviderConfig provider_config = 2;
+}

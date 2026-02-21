@@ -47,7 +47,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsS3Bucket.my-bucket
 spec:
-  awsRegion: us-east-1
+  region: us-east-1
 ```
 
 Deploy:
@@ -64,7 +64,7 @@ This creates a private S3 bucket in `us-east-1` with SSE-S3 encryption, public a
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
-| `awsRegion` | `string` | AWS region where the bucket will be created. | Minimum 1 character |
+| `region` | `string` | AWS region where the bucket will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 
 ### Optional Fields
 
@@ -110,7 +110,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsS3Bucket.app-data
 spec:
-  awsRegion: us-east-1
+  region: us-east-1
   versioningEnabled: true
   tags:
     Environment: production
@@ -133,7 +133,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsS3Bucket.app-logs
 spec:
-  awsRegion: us-west-2
+  region: us-west-2
   versioningEnabled: true
   lifecycleRules:
     - id: transition-to-ia
@@ -166,7 +166,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsS3Bucket.secure-bucket
 spec:
-  awsRegion: us-east-1
+  region: us-east-1
   versioningEnabled: true
   encryptionType: ENCRYPTION_TYPE_SSE_KMS
   kmsKeyId: arn:aws:kms:us-east-1:123456789012:key/abcdef01-2345-6789-abcd-ef0123456789

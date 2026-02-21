@@ -3,6 +3,7 @@ kind: AwsEcrRepo
 metadata:
   name: my-production-ecr-repo
 spec:
+  region: <aws-region>
   repositoryName: <repository-name>
   imageImmutable: true  # Prevents tag overwriting in production
   encryptionType: AES256  # default from spec

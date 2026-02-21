@@ -40,6 +40,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsEventBridgeRule.hourly-cleanup
 spec:
+  region: us-east-1
   description: Trigger cleanup function every hour
   scheduleExpression: "rate(1 hour)"
   targets:
@@ -62,6 +63,7 @@ This creates a scheduled rule on the default event bus that triggers a Lambda fu
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the EventBridge rule will be created (e.g., `us-east-1`). | Required; non-empty |
 | `eventPattern` | `object` | JSON event pattern for matching incoming events. Expressed as a structured object in YAML. Mutually exclusive with `scheduleExpression`. | Exactly one of `eventPattern` or `scheduleExpression` must be set |
 | `scheduleExpression` | `string` | Cron or rate expression for time-based triggering (e.g., `rate(5 minutes)`, `cron(0 12 * * ? *)`). Mutually exclusive with `eventPattern`. | Exactly one of `eventPattern` or `scheduleExpression` must be set; max 256 chars |
 | `targets` | `AwsEventBridgeTarget[]` | Targets to invoke when the rule matches an event. | Minimum 1 item required; AWS limit 5 per rule |
@@ -102,6 +104,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsEventBridgeRule.order-router
 spec:
+  region: us-east-1
   eventBusName:
     valueFrom:
       kind: AwsEventBridgeBus
@@ -149,6 +152,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsEventBridgeRule.nightly-batch
 spec:
+  region: us-east-1
   description: Run batch processing at 2 AM UTC daily
   scheduleExpression: "cron(0 2 * * ? *)"
   targets:
@@ -179,6 +183,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsEventBridgeRule.ec2-state-handler
 spec:
+  region: us-east-1
   description: Handle EC2 instance state changes
   eventPattern:
     source:
@@ -221,6 +226,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: staging.AwsEventBridgeRule.staging-order-router
 spec:
+  region: us-east-1
   description: Order routing rule (disabled for staging validation)
   state: DISABLED
   eventPattern:

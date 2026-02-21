@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package org.openmcf.provider.hetznercloud.hetznercloudsnapshot.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// HetznerCloudSnapshotSpec defines the specification for a Hetzner Cloud
+// server snapshot.
+//
+// A snapshot is a point-in-time disk image captured from a running or stopped
+// server. Snapshots are stored as Hetzner Cloud Images (type "snapshot") and
+// can be used to create new servers from the captured state. Snapshots persist
+// independently of the source server -- deleting the server does not remove
+// existing snapshots.
+//
+// This is a single-resource component. Changing the source server_id forces
+// replacement of the snapshot (the provider marks server_id as ForceNew).
+//
+// Bundled provider resources:
+//   - hcloud_snapshot:  The server snapshot (stored as an Image).
+//
+// Fields not exposed in this spec (hardcoded or derived in IaC modules):
+//   - labels: Derived from metadata (CG01 pattern). Standard labels take
+//             precedence over user-specified metadata.labels.
+message HetznerCloudSnapshotSpec {
+  // Server to create the snapshot from. Required.
+  //
+  // Accepts a literal Hetzner Cloud server ID (as a string) or a reference
+  // to a HetznerCloudServer resource's output via valueFrom.
+  //
+  // Changing this value forces replacement of the snapshot (the existing
+  // snapshot is destroyed and a new one is created from the new server).
+  //
+  // Example (literal):
+  //   serverId:
+  //     value: "12345678"
+  //
+  // Example (reference):
+  //   serverId:
+  //     valueFrom:
+  //       kind: HetznerCloudServer
+  //       name: my-app-server
+  //       fieldPath: status.outputs.server_id
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef server_id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = HetznerCloudServer,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.server_id"
+  ];
+
+  // Human-readable description of the snapshot. Optional.
+  //
+  // Useful for identifying the purpose of the snapshot (e.g.,
+  // "pre-upgrade baseline", "golden image v2.1"). Can be updated after
+  // creation without replacing the snapshot.
+  string description = 2;
+}

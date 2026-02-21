@@ -382,6 +382,36 @@ const (
 	CloudResourceKind_ScalewayDnsRecord                 CloudResourceKind = 2861
 	CloudResourceKind_ScalewayServerlessFunction        CloudResourceKind = 2870
 	CloudResourceKind_ScalewayServerlessContainer       CloudResourceKind = 2871
+	CloudResourceKind_AliCloudLogProject                CloudResourceKind = 3000
+	CloudResourceKind_AliCloudRamRole                   CloudResourceKind = 3010
+	CloudResourceKind_AliCloudRamPolicy                 CloudResourceKind = 3011
+	CloudResourceKind_AliCloudVpc                       CloudResourceKind = 3020
+	CloudResourceKind_AliCloudVswitch                   CloudResourceKind = 3021
+	CloudResourceKind_AliCloudSecurityGroup             CloudResourceKind = 3022
+	CloudResourceKind_AliCloudEipAddress                CloudResourceKind = 3023
+	CloudResourceKind_AliCloudNatGateway                CloudResourceKind = 3024
+	CloudResourceKind_AliCloudApplicationLoadBalancer   CloudResourceKind = 3025
+	CloudResourceKind_AliCloudNetworkLoadBalancer       CloudResourceKind = 3026
+	CloudResourceKind_AliCloudVpnGateway                CloudResourceKind = 3027
+	CloudResourceKind_AliCloudDnsZone                   CloudResourceKind = 3040
+	CloudResourceKind_AliCloudDnsRecord                 CloudResourceKind = 3041
+	CloudResourceKind_AliCloudPrivateDnsZone            CloudResourceKind = 3042
+	CloudResourceKind_AliCloudStorageBucket             CloudResourceKind = 3050
+	CloudResourceKind_AliCloudNasFileSystem             CloudResourceKind = 3051
+	CloudResourceKind_AliCloudKmsKey                    CloudResourceKind = 3060
+	CloudResourceKind_AliCloudRdsInstance               CloudResourceKind = 3070
+	CloudResourceKind_AliCloudPolardbCluster            CloudResourceKind = 3071
+	CloudResourceKind_AliCloudRedisInstance             CloudResourceKind = 3072
+	CloudResourceKind_AliCloudMongodbInstance           CloudResourceKind = 3073
+	CloudResourceKind_AliCloudEcsInstance               CloudResourceKind = 3080
+	CloudResourceKind_AliCloudContainerRegistry         CloudResourceKind = 3090
+	CloudResourceKind_AliCloudKubernetesCluster         CloudResourceKind = 3091
+	CloudResourceKind_AliCloudKubernetesNodePool        CloudResourceKind = 3092
+	CloudResourceKind_AliCloudCdnDomain                 CloudResourceKind = 3100
+	CloudResourceKind_AliCloudFunction                  CloudResourceKind = 3110
+	CloudResourceKind_AliCloudSaeApplication            CloudResourceKind = 3111
+	CloudResourceKind_AliCloudRocketmqInstance          CloudResourceKind = 3120
+	CloudResourceKind_AliCloudCenInstance               CloudResourceKind = 3130
 	CloudResourceKind_OciVcn                            CloudResourceKind = 3300
 	CloudResourceKind_OciSubnet                         CloudResourceKind = 3301
 	CloudResourceKind_OciSecurityGroup                  CloudResourceKind = 3302
@@ -419,6 +449,18 @@ const (
 	CloudResourceKind_OciDnsRecord                      CloudResourceKind = 3391
 	CloudResourceKind_OciNetworkFirewall                CloudResourceKind = 3395
 	CloudResourceKind_OciDevopsProject                  CloudResourceKind = 3396
+	CloudResourceKind_HetznerCloudSshKey                CloudResourceKind = 3500
+	CloudResourceKind_HetznerCloudPlacementGroup        CloudResourceKind = 3501
+	CloudResourceKind_HetznerCloudFirewall              CloudResourceKind = 3502
+	CloudResourceKind_HetznerCloudNetwork               CloudResourceKind = 3510
+	CloudResourceKind_HetznerCloudPrimaryIp             CloudResourceKind = 3511
+	CloudResourceKind_HetznerCloudFloatingIp            CloudResourceKind = 3512
+	CloudResourceKind_HetznerCloudServer                CloudResourceKind = 3520
+	CloudResourceKind_HetznerCloudVolume                CloudResourceKind = 3521
+	CloudResourceKind_HetznerCloudSnapshot              CloudResourceKind = 3522
+	CloudResourceKind_HetznerCloudCertificate           CloudResourceKind = 3530
+	CloudResourceKind_HetznerCloudLoadBalancer          CloudResourceKind = 3531
+	CloudResourceKind_HetznerCloudDnsZone               CloudResourceKind = 3540
 )
 
 // Enum value maps for CloudResourceKind.
@@ -711,6 +753,36 @@ var (
 		2861: "ScalewayDnsRecord",
 		2870: "ScalewayServerlessFunction",
 		2871: "ScalewayServerlessContainer",
+		3000: "AliCloudLogProject",
+		3010: "AliCloudRamRole",
+		3011: "AliCloudRamPolicy",
+		3020: "AliCloudVpc",
+		3021: "AliCloudVswitch",
+		3022: "AliCloudSecurityGroup",
+		3023: "AliCloudEipAddress",
+		3024: "AliCloudNatGateway",
+		3025: "AliCloudApplicationLoadBalancer",
+		3026: "AliCloudNetworkLoadBalancer",
+		3027: "AliCloudVpnGateway",
+		3040: "AliCloudDnsZone",
+		3041: "AliCloudDnsRecord",
+		3042: "AliCloudPrivateDnsZone",
+		3050: "AliCloudStorageBucket",
+		3051: "AliCloudNasFileSystem",
+		3060: "AliCloudKmsKey",
+		3070: "AliCloudRdsInstance",
+		3071: "AliCloudPolardbCluster",
+		3072: "AliCloudRedisInstance",
+		3073: "AliCloudMongodbInstance",
+		3080: "AliCloudEcsInstance",
+		3090: "AliCloudContainerRegistry",
+		3091: "AliCloudKubernetesCluster",
+		3092: "AliCloudKubernetesNodePool",
+		3100: "AliCloudCdnDomain",
+		3110: "AliCloudFunction",
+		3111: "AliCloudSaeApplication",
+		3120: "AliCloudRocketmqInstance",
+		3130: "AliCloudCenInstance",
 		3300: "OciVcn",
 		3301: "OciSubnet",
 		3302: "OciSecurityGroup",
@@ -748,6 +820,18 @@ var (
 		3391: "OciDnsRecord",
 		3395: "OciNetworkFirewall",
 		3396: "OciDevopsProject",
+		3500: "HetznerCloudSshKey",
+		3501: "HetznerCloudPlacementGroup",
+		3502: "HetznerCloudFirewall",
+		3510: "HetznerCloudNetwork",
+		3511: "HetznerCloudPrimaryIp",
+		3512: "HetznerCloudFloatingIp",
+		3520: "HetznerCloudServer",
+		3521: "HetznerCloudVolume",
+		3522: "HetznerCloudSnapshot",
+		3530: "HetznerCloudCertificate",
+		3531: "HetznerCloudLoadBalancer",
+		3540: "HetznerCloudDnsZone",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
@@ -1037,6 +1121,36 @@ var (
 		"ScalewayDnsRecord":                     2861,
 		"ScalewayServerlessFunction":            2870,
 		"ScalewayServerlessContainer":           2871,
+		"AliCloudLogProject":                    3000,
+		"AliCloudRamRole":                       3010,
+		"AliCloudRamPolicy":                     3011,
+		"AliCloudVpc":                           3020,
+		"AliCloudVswitch":                       3021,
+		"AliCloudSecurityGroup":                 3022,
+		"AliCloudEipAddress":                    3023,
+		"AliCloudNatGateway":                    3024,
+		"AliCloudApplicationLoadBalancer":       3025,
+		"AliCloudNetworkLoadBalancer":           3026,
+		"AliCloudVpnGateway":                    3027,
+		"AliCloudDnsZone":                       3040,
+		"AliCloudDnsRecord":                     3041,
+		"AliCloudPrivateDnsZone":                3042,
+		"AliCloudStorageBucket":                 3050,
+		"AliCloudNasFileSystem":                 3051,
+		"AliCloudKmsKey":                        3060,
+		"AliCloudRdsInstance":                   3070,
+		"AliCloudPolardbCluster":                3071,
+		"AliCloudRedisInstance":                 3072,
+		"AliCloudMongodbInstance":               3073,
+		"AliCloudEcsInstance":                   3080,
+		"AliCloudContainerRegistry":             3090,
+		"AliCloudKubernetesCluster":             3091,
+		"AliCloudKubernetesNodePool":            3092,
+		"AliCloudCdnDomain":                     3100,
+		"AliCloudFunction":                      3110,
+		"AliCloudSaeApplication":                3111,
+		"AliCloudRocketmqInstance":              3120,
+		"AliCloudCenInstance":                   3130,
 		"OciVcn":                                3300,
 		"OciSubnet":                             3301,
 		"OciSecurityGroup":                      3302,
@@ -1074,6 +1188,18 @@ var (
 		"OciDnsRecord":                          3391,
 		"OciNetworkFirewall":                    3395,
 		"OciDevopsProject":                      3396,
+		"HetznerCloudSshKey":                    3500,
+		"HetznerCloudPlacementGroup":            3501,
+		"HetznerCloudFirewall":                  3502,
+		"HetznerCloudNetwork":                   3510,
+		"HetznerCloudPrimaryIp":                 3511,
+		"HetznerCloudFloatingIp":                3512,
+		"HetznerCloudServer":                    3520,
+		"HetznerCloudVolume":                    3521,
+		"HetznerCloudSnapshot":                  3522,
+		"HetznerCloudCertificate":               3530,
+		"HetznerCloudLoadBalancer":              3531,
+		"HetznerCloudDnsZone":                   3540,
 	}
 )
 
@@ -1218,7 +1344,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xecl\n" +
+	"\x02v1\x10\x01*\xa3{\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1556,7 +1682,42 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0fScalewayDnsZone\x10\xac\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwdns\x12(\n" +
 	"\x11ScalewayDnsRecord\x10\xad\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwrec\x120\n" +
 	"\x1aScalewayServerlessFunction\x10\xb6\x16\x1a\x0f\xa2\xf7\x04\v\b\x18\x10\x01\"\x05scwfn\x122\n" +
-	"\x1bScalewayServerlessContainer\x10\xb7\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwscn\x12\x1d\n" +
+	"\x1bScalewayServerlessContainer\x10\xb7\x16\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwscn\x12(\n" +
+	"\x12AliCloudLogProject\x10\xb8\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05aclog\x12&\n" +
+	"\x0fAliCloudRamRole\x10\xc2\x17\x1a\x10\xa2\xf7\x04\f\b\x19\x10\x01\"\x06acramr\x12(\n" +
+	"\x11AliCloudRamPolicy\x10\xc3\x17\x1a\x10\xa2\xf7\x04\f\b\x19\x10\x01\"\x06acramp\x12!\n" +
+	"\vAliCloudVpc\x10\xcc\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acvpc\x12%\n" +
+	"\x0fAliCloudVswitch\x10\xcd\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acvsw\x12*\n" +
+	"\x15AliCloudSecurityGroup\x10\xce\x17\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x19\x10\x01\"\x04acsg\x12(\n" +
+	"\x12AliCloudEipAddress\x10\xcf\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05aceip\x12(\n" +
+	"\x12AliCloudNatGateway\x10\xd0\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acnat\x125\n" +
+	"\x1fAliCloudApplicationLoadBalancer\x10\xd1\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acalb\x121\n" +
+	"\x1bAliCloudNetworkLoadBalancer\x10\xd2\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acnlb\x12(\n" +
+	"\x12AliCloudVpnGateway\x10\xd3\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acvpn\x12$\n" +
+	"\x0fAliCloudDnsZone\x10\xe0\x17\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x19\x10\x01\"\x04acdz\x12&\n" +
+	"\x11AliCloudDnsRecord\x10\xe1\x17\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x19\x10\x01\"\x04acdr\x12,\n" +
+	"\x16AliCloudPrivateDnsZone\x10\xe2\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acdpz\x12+\n" +
+	"\x15AliCloudStorageBucket\x10\xea\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acbkt\x12+\n" +
+	"\x15AliCloudNasFileSystem\x10\xeb\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acnas\x12$\n" +
+	"\x0eAliCloudKmsKey\x10\xf4\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05ackms\x12)\n" +
+	"\x13AliCloudRdsInstance\x10\xfe\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acrds\x12,\n" +
+	"\x16AliCloudPolardbCluster\x10\xff\x17\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acpdb\x12+\n" +
+	"\x15AliCloudRedisInstance\x10\x80\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acred\x12-\n" +
+	"\x17AliCloudMongodbInstance\x10\x81\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acmdb\x12)\n" +
+	"\x13AliCloudEcsInstance\x10\x88\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acecs\x12.\n" +
+	"\x19AliCloudContainerRegistry\x10\x92\x18\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x19\x10\x01\"\x04accr\x12/\n" +
+	"\x19AliCloudKubernetesCluster\x10\x93\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acack\x120\n" +
+	"\x1aAliCloudKubernetesNodePool\x10\x94\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acknp\x12'\n" +
+	"\x11AliCloudCdnDomain\x10\x9c\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05accdn\x12%\n" +
+	"\x10AliCloudFunction\x10\xa6\x18\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x19\x10\x01\"\x04acfc\x12,\n" +
+	"\x16AliCloudSaeApplication\x10\xa7\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acsae\x12.\n" +
+	"\x18AliCloudRocketmqInstance\x10\xb0\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05acrmq\x12)\n" +
+	"\x13AliCloudCenInstance\x10\xba\x18\x1a\x0f\xa2\xf7\x04\v\b\x19\x10\x01\"\x05accen\x12\x1d\n" +
 	"\x06OciVcn\x10\xe4\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocivcn\x12 \n" +
 	"\tOciSubnet\x10\xe5\x19\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocisub\x12&\n" +
 	"\x10OciSecurityGroup\x10\xe6\x19\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocisg\x12%\n" +
@@ -1595,7 +1756,22 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"OciDnsZone\x10\xbe\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocidns\x12$\n" +
 	"\fOciDnsRecord\x10\xbf\x1a\x1a\x11\xa2\xf7\x04\r\b\x1a\x10\x01\"\aocidnsr\x12(\n" +
 	"\x12OciNetworkFirewall\x10\xc3\x1a\x1a\x0f\xa2\xf7\x04\v\b\x1a\x10\x01\"\x05ocifw\x12'\n" +
-	"\x10OciDevopsProject\x10\xc4\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocidev:|\n" +
+	"\x10OciDevopsProject\x10\xc4\x1a\x1a\x10\xa2\xf7\x04\f\b\x1a\x10\x01\"\x06ocidev\x12(\n" +
+	"\x12HetznerCloudSshKey\x10\xac\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcssh\x12/\n" +
+	"\x1aHetznerCloudPlacementGroup\x10\xad\x1b\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x1b\x10\x01\"\x04hcpg\x12)\n" +
+	"\x14HetznerCloudFirewall\x10\xae\x1b\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x1b\x10\x01\"\x04hcfw\x12)\n" +
+	"\x13HetznerCloudNetwork\x10\xb6\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcnet\x12+\n" +
+	"\x15HetznerCloudPrimaryIp\x10\xb7\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcpip\x12,\n" +
+	"\x16HetznerCloudFloatingIp\x10\xb8\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcfip\x12(\n" +
+	"\x12HetznerCloudServer\x10\xc0\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcsrv\x12(\n" +
+	"\x12HetznerCloudVolume\x10\xc1\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcvol\x12*\n" +
+	"\x14HetznerCloudSnapshot\x10\xc2\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcsnp\x12-\n" +
+	"\x17HetznerCloudCertificate\x10\xca\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hccrt\x12-\n" +
+	"\x18HetznerCloudLoadBalancer\x10\xcb\x1b\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x1b\x10\x01\"\x04hclb\x12)\n" +
+	"\x13HetznerCloudDnsZone\x10\xd4\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcdns:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

@@ -6,6 +6,7 @@ metadata:
   name: prod-windows-fs
   id: awsfxw-prod-windows-fs-production
 spec:
+  region: <aws-region>
   deployment_type: SINGLE_AZ_2
   storage_capacity_gib: 500
   storage_type: SSD

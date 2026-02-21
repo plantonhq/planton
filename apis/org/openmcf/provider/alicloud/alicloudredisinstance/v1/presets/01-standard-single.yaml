@@ -1,0 +1,13 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudRedisInstance
+metadata:
+  name: <your-instance-name>
+spec:
+  region: <alibaba-cloud-region>
+  instanceClass: redis.master.small.default
+  password: <your-password>
+  vswitchId:
+    value: <your-vswitch-id>
+  engineVersion: "7.0"
+  securityIps:
+    - <your-application-cidr>

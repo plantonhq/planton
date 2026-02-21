@@ -1,0 +1,49 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudApplicationLoadBalancer
+metadata:
+  name: <your-alb-name>
+  org: <your-org>
+  env: production
+spec:
+  region: <alibaba-cloud-region>
+  vpcId:
+    valueFrom:
+      name: <your-vpc-resource-name>
+  loadBalancerEdition: StandardWithWaf
+  zoneMappings:
+    - zoneId: <zone-a>
+      vswitchId:
+        valueFrom:
+          name: <your-vswitch-resource-a>
+    - zoneId: <zone-b>
+      vswitchId:
+        valueFrom:
+          name: <your-vswitch-resource-b>
+  accessLogConfig:
+    logProject: <your-sls-project>
+    logStore: <your-sls-logstore>
+  tags:
+    team: <your-team>
+    cost-center: <your-cost-center>
+  serverGroups:
+    - name: api-backend
+      protocol: HTTPS
+      healthCheckConfig:
+        healthCheckEnabled: true
+        healthCheckProtocol: HTTPS
+        healthCheckPath: /healthz
+        healthCheckMethod: GET
+        healthCheckInterval: 5
+        healthyThreshold: 5
+        unhealthyThreshold: 2
+      stickySessionConfig:
+        stickySessionEnabled: true
+        stickySessionType: Insert
+        cookieTimeout: 3600
+  listeners:
+    - listenerPort: 443
+      listenerProtocol: HTTPS
+      defaultActionServerGroupName: api-backend
+      certificateId: <your-certificate-id>
+      securityPolicyId: tls_cipher_policy_1_2_strict
+      listenerDescription: Production HTTPS listener

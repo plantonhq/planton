@@ -33,7 +33,7 @@ This preset creates a production-ready VPC spanning two Availability Zones with 
 
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
-| `<aws-region>` | AWS region code (e.g., `us-east-1`, `eu-west-1`); appended with `a` and `b` for AZ suffixes | Your deployment region |
+| `<aws-region>` | AWS region code (e.g., `us-east-1`, `eu-west-1`); used for the `region` field and appended with `a` and `b` for AZ suffixes | Your deployment region |
 
 ## Related Presets
 

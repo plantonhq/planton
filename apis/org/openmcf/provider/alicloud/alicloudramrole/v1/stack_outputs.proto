@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudramrole.v1;
+
+// AliCloudRamRoleStackOutputs captures the outputs from deploying an
+// Alibaba Cloud RAM role and its policy attachments.
+message AliCloudRamRoleStackOutputs {
+  // The RAM role ID assigned by Alibaba Cloud.
+  string role_id = 1;
+
+  // The RAM role name as created.
+  string role_name = 2;
+
+  // The Alibaba Cloud Resource Name (ARN) for the role.
+  // Format: acs:ram::<account-id>:role/<role-name>
+  // Used by other components (ACK, FC, ECS) to reference this role.
+  string arn = 3;
+}

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudstoragebucket.v1;
+
+// AliCloudStorageBucketStackOutputs captures the outputs from deploying an
+// Alibaba Cloud OSS bucket.
+message AliCloudStorageBucketStackOutputs {
+  // The bucket name. OSS uses the bucket name as the resource identifier.
+  // Consumers reference this to upload objects, configure logging targets,
+  // or set up replication sources.
+  string bucket_name = 1;
+
+  // The public internet endpoint for accessing this bucket.
+  // Format: {bucket_name}.oss-{region}.aliyuncs.com
+  // Used by external clients and CDN origins.
+  string extranet_endpoint = 2;
+
+  // The VPC-internal endpoint for accessing this bucket.
+  // Format: {bucket_name}.oss-{region}-internal.aliyuncs.com
+  // Used by ECS instances, functions, and containers within the same region
+  // for zero-cost, low-latency access.
+  string intranet_endpoint = 3;
+}

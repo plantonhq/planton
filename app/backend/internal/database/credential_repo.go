@@ -411,9 +411,11 @@ func (r *CredentialRepository) FindFirstByProvider(ctx context.Context, provider
 	case "scaleway":
 		return convertToScalewayCredential(result)
 	case "alicloud":
-		return convertToAlicloudCredential(result)
+		return convertToAliCloudCredential(result)
 	case "oci":
 		return convertToOciCredential(result)
+	case "hetznercloud":
+		return convertToHetznerCloudCredential(result)
 	default:
 		return nil, fmt.Errorf("unsupported provider: %s", provider)
 	}
@@ -885,8 +887,8 @@ func convertToScalewayCredential(doc bson.M) (*models.ScalewayCredential, error)
 	return cred, nil
 }
 
-// CreateAlicloud creates a new Alibaba Cloud credential.
-func (r *CredentialRepository) CreateAlicloud(ctx context.Context, cred *models.AlicloudCredential) (*models.AlicloudCredential, error) {
+// CreateAliCloud creates a new Alibaba Cloud credential.
+func (r *CredentialRepository) CreateAliCloud(ctx context.Context, cred *models.AliCloudCredential) (*models.AliCloudCredential, error) {
 	exists, err := r.ExistsByProvider(ctx, "alicloud")
 	if err != nil {
 		return nil, fmt.Errorf("failed to check for existing Alibaba Cloud credential: %w", err)
@@ -938,8 +940,8 @@ func (r *CredentialRepository) CreateAlicloud(ctx context.Context, cred *models.
 	return cred, nil
 }
 
-// UpdateAlicloud updates an existing Alibaba Cloud credential.
-func (r *CredentialRepository) UpdateAlicloud(ctx context.Context, id string, cred *models.AlicloudCredential) (*models.AlicloudCredential, error) {
+// UpdateAliCloud updates an existing Alibaba Cloud credential.
+func (r *CredentialRepository) UpdateAliCloud(ctx context.Context, id string, cred *models.AliCloudCredential) (*models.AliCloudCredential, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, fmt.Errorf("invalid ID format: %w", err)
@@ -988,10 +990,10 @@ func (r *CredentialRepository) UpdateAlicloud(ctx context.Context, id string, cr
 		return nil, fmt.Errorf("credential not found after update")
 	}
 
-	return convertToAlicloudCredential(doc)
+	return convertToAliCloudCredential(doc)
 }
 
-func convertToAlicloudCredential(doc bson.M) (*models.AlicloudCredential, error) {
+func convertToAliCloudCredential(doc bson.M) (*models.AliCloudCredential, error) {
 	id, ok := doc["_id"].(primitive.ObjectID)
 	if !ok {
 		return nil, fmt.Errorf("invalid _id field")
@@ -1005,7 +1007,7 @@ func convertToAlicloudCredential(doc bson.M) (*models.AlicloudCredential, error)
 		updatedAt = dt.Time()
 	}
 
-	cred := &models.AlicloudCredential{
+	cred := &models.AliCloudCredential{
 		ID:        id,
 		Name:      doc["name"].(string),
 		CreatedAt: createdAt,
@@ -1199,6 +1201,120 @@ func convertToOciCredential(doc bson.M) (*models.OciCredential, error) {
 	}
 	if v, ok := doc["config_file_profile"].(string); ok {
 		cred.ConfigFileProfile = v
+	}
+
+	return cred, nil
+}
+
+// CreateHetznerCloud creates a new Hetzner Cloud credential.
+func (r *CredentialRepository) CreateHetznerCloud(ctx context.Context, cred *models.HetznerCloudCredential) (*models.HetznerCloudCredential, error) {
+	exists, err := r.ExistsByProvider(ctx, "hetznercloud")
+	if err != nil {
+		return nil, fmt.Errorf("failed to check for existing Hetzner Cloud credential: %w", err)
+	}
+	if exists {
+		return nil, fmt.Errorf("credential for provider 'hetznercloud' already exists")
+	}
+
+	now := time.Now()
+	cred.ID = primitive.NewObjectID()
+	cred.CreatedAt = now
+	cred.UpdatedAt = now
+
+	doc := bson.M{
+		"_id":        cred.ID,
+		"name":       cred.Name,
+		"provider":   "hetznercloud",
+		"token":      cred.Token,
+		"created_at": cred.CreatedAt,
+		"updated_at": cred.UpdatedAt,
+	}
+
+	setOptionalString(doc, "endpoint", cred.Endpoint)
+	setOptionalString(doc, "endpoint_hetzner", cred.EndpointHetzner)
+	setOptionalString(doc, "poll_interval", cred.PollInterval)
+	setOptionalString(doc, "poll_function", cred.PollFunction)
+
+	_, err = r.collection.InsertOne(ctx, doc)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create Hetzner Cloud credential: %w", err)
+	}
+
+	return cred, nil
+}
+
+// UpdateHetznerCloud updates an existing Hetzner Cloud credential.
+func (r *CredentialRepository) UpdateHetznerCloud(ctx context.Context, id string, cred *models.HetznerCloudCredential) (*models.HetznerCloudCredential, error) {
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, fmt.Errorf("invalid ID format: %w", err)
+	}
+
+	now := time.Now()
+	setFields := bson.M{
+		"name":             cred.Name,
+		"token":            cred.Token,
+		"updated_at":       now,
+		"endpoint":         cred.Endpoint,
+		"endpoint_hetzner": cred.EndpointHetzner,
+		"poll_interval":    cred.PollInterval,
+		"poll_function":    cred.PollFunction,
+	}
+
+	update := bson.M{"$set": setFields}
+
+	result := r.collection.FindOneAndUpdate(ctx, bson.M{"_id": objectID, "provider": "hetznercloud"}, update)
+	if result.Err() == mongo.ErrNoDocuments {
+		return nil, fmt.Errorf("Hetzner Cloud credential with ID '%s' not found", id)
+	}
+	if result.Err() != nil {
+		return nil, fmt.Errorf("failed to update Hetzner Cloud credential: %w", result.Err())
+	}
+
+	doc, err := r.FindByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	if doc == nil {
+		return nil, fmt.Errorf("credential not found after update")
+	}
+
+	return convertToHetznerCloudCredential(doc)
+}
+
+func convertToHetznerCloudCredential(doc bson.M) (*models.HetznerCloudCredential, error) {
+	id, ok := doc["_id"].(primitive.ObjectID)
+	if !ok {
+		return nil, fmt.Errorf("invalid _id field")
+	}
+
+	var createdAt, updatedAt time.Time
+	if dt, ok := doc["created_at"].(primitive.DateTime); ok {
+		createdAt = dt.Time()
+	}
+	if dt, ok := doc["updated_at"].(primitive.DateTime); ok {
+		updatedAt = dt.Time()
+	}
+
+	cred := &models.HetznerCloudCredential{
+		ID:        id,
+		Name:      doc["name"].(string),
+		Token:     doc["token"].(string),
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
+	}
+
+	if v, ok := doc["endpoint"].(string); ok {
+		cred.Endpoint = v
+	}
+	if v, ok := doc["endpoint_hetzner"].(string); ok {
+		cred.EndpointHetzner = v
+	}
+	if v, ok := doc["poll_interval"].(string); ok {
+		cred.PollInterval = v
+	}
+	if v, ok := doc["poll_function"].(string); ok {
+		cred.PollFunction = v
 	}
 
 	return cred, nil

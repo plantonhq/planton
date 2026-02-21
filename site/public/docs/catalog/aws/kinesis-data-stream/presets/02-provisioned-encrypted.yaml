@@ -3,6 +3,7 @@ kind: AwsKinesisStream
 metadata:
   name: example-stream
 spec:
+  region: <aws-region>
   streamMode: PROVISIONED
   shardCount: 2
   retentionPeriodHours: 48

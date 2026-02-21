@@ -3,6 +3,7 @@ kind: AwsIamRole
 metadata:
   name: my-ec2-ssm-role
 spec:
+  region: <aws-region>
   description: EC2 instance role with SSM Session Manager and CloudWatch Agent access
   path: /  # recommended_default from spec
   trustPolicy:

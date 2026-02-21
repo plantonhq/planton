@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1;
+
+// AliCloudKubernetesNodePoolStackOutputs captures the outputs from deploying
+// an ACK Kubernetes node pool.
+message AliCloudKubernetesNodePoolStackOutputs {
+  // Node pool ID assigned by Alibaba Cloud.
+  string node_pool_id = 1;
+
+  // Auto Scaling group ID associated with this node pool.
+  // Can be used to query scaling activities and node status.
+  string scaling_group_id = 2;
+}

@@ -1,0 +1,164 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudnatgateway.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// AliCloudNatGatewaySpec defines the configuration for an Alibaba Cloud NAT
+// Gateway with bundled EIP association and SNAT entries.
+//
+// A NAT Gateway enables resources in a VPC (typically placed in private
+// VSwitches with no public IP) to access the internet via SNAT (Source NAT).
+// This component bundles the NAT Gateway, its EIP association, and SNAT entries
+// into a single deployable unit (per DD07 composite bundling) because a NAT
+// Gateway without an EIP and at least one SNAT entry is non-functional.
+//
+// The bundled flow:
+//   1. Create the Enhanced NAT Gateway in the specified VPC/VSwitch.
+//   2. Associate the provided EIP with the NAT Gateway.
+//   3. Create SNAT entries that map private VSwitch/CIDR traffic to the EIP.
+//
+// The EIP's IP address is resolved internally by the IaC modules via a data
+// source lookup on the provided eip_id -- the user does not need to supply the
+// IP address separately.
+//
+// Provider resources:
+//   Terraform: alicloud_nat_gateway + alicloud_eip_association + alicloud_snat_entry
+//   Pulumi:    vpc.NatGateway + ecs.EipAssociation + vpc.SnatEntry
+message AliCloudNatGatewaySpec {
+  // Alibaba Cloud region where the NAT Gateway will be created.
+  // Must match the region of the VPC and VSwitch.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // VPC ID that the NAT Gateway belongs to.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // VSwitch ID where the Enhanced NAT Gateway is placed.
+  // The NAT Gateway consumes an IP from this VSwitch. Must be in the same VPC
+  // as vpc_id. Required for Enhanced NAT Gateways (the default and recommended
+  // type).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 3 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
+  ];
+
+  // NAT Gateway name. 2-128 characters; must start with a letter or Chinese
+  // character; can contain digits, underscores, periods, and hyphens.
+  string nat_gateway_name = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 2,
+    (buf.validate.field).string.max_len = 128
+  ];
+
+  // Human-readable description of the NAT Gateway's purpose.
+  string description = 5;
+
+  // NAT Gateway type. "Enhanced" is the modern standard with higher
+  // performance and VSwitch placement support. "Normal" is legacy.
+  // Default: "Enhanced"
+  optional string nat_type = 6 [
+    (buf.validate.field).cel = {
+      id: "nat_type_valid"
+      message: "nat_type must be one of: Enhanced, Normal"
+      expression: "this == '' || this in ['Enhanced', 'Normal']"
+    },
+    (org.openmcf.shared.options.default) = "Enhanced"
+  ];
+
+  // Billing method for the NAT Gateway.
+  // "PayAsYouGo" for on-demand billing, "Subscription" for reserved pricing.
+  // Default: "PayAsYouGo"
+  optional string payment_type = 7 [
+    (buf.validate.field).cel = {
+      id: "payment_type_valid"
+      message: "payment_type must be one of: PayAsYouGo, Subscription"
+      expression: "this == '' || this in ['PayAsYouGo', 'Subscription']"
+    },
+    (org.openmcf.shared.options.default) = "PayAsYouGo"
+  ];
+
+  // Metering method for the NAT Gateway.
+  // "PayByLcu" bills based on actual capacity units (recommended for most
+  // workloads). "PayBySpec" bills based on a fixed specification tier.
+  // Default: "PayByLcu"
+  optional string internet_charge_type = 8 [
+    (buf.validate.field).cel = {
+      id: "internet_charge_type_valid"
+      message: "internet_charge_type must be one of: PayByLcu, PayBySpec"
+      expression: "this == '' || this in ['PayByLcu', 'PayBySpec']"
+    },
+    (org.openmcf.shared.options.default) = "PayByLcu"
+  ];
+
+  // Fixed specification tier for the NAT Gateway. Only applicable when
+  // internet_charge_type is "PayBySpec". Ignored when "PayByLcu".
+  // Valid values: "Small" (1Gbps), "Middle" (5Gbps), "Large" (10Gbps),
+  // "XLarge.1" (20Gbps).
+  optional string specification = 9 [(buf.validate.field).cel = {
+    id: "specification_valid"
+    message: "specification must be one of: Small, Middle, Large, XLarge.1"
+    expression: "this == '' || this in ['Small', 'Middle', 'Large', 'XLarge.1']"
+  }];
+
+  // Enable deletion protection to prevent accidental deletion via the console
+  // or API. Must be explicitly disabled before the NAT Gateway can be deleted.
+  optional bool deletion_protection = 10;
+
+  // Tags to apply to the NAT Gateway resource.
+  map<string, string> tags = 11;
+
+  // EIP allocation ID to associate with this NAT Gateway.
+  // The IaC module resolves the EIP's public IP address internally via a data
+  // source lookup and uses it for all SNAT entries. The EIP must already exist
+  // (create one with AliCloudEipAddress).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef eip_id = 12 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudEipAddress,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.eip_id"
+  ];
+
+  // SNAT entries that map private network sources to the NAT Gateway's EIP.
+  // Each entry enables outbound internet access for traffic originating from
+  // the specified VSwitch or CIDR block.
+  repeated AliCloudSnatEntry snat_entries = 13;
+}
+
+// AliCloudSnatEntry defines a single SNAT rule mapping a private traffic
+// source to the NAT Gateway's associated EIP for outbound internet access.
+//
+// Specify exactly one of source_vswitch_id or source_cidr:
+//   - source_vswitch_id: NATs all traffic from a VSwitch (the common 80% case).
+//   - source_cidr: NATs traffic from a specific CIDR (for fine-grained control).
+//
+// These are mutually exclusive in the provider. If neither is set, the
+// provider will reject the SNAT entry.
+message AliCloudSnatEntry {
+  // VSwitch whose traffic should be NATed through the EIP.
+  // Use this for the common case of enabling internet access for an entire
+  // VSwitch. Mutually exclusive with source_cidr.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef source_vswitch_id = 1 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
+  ];
+
+  // Source CIDR block whose traffic should be NATed. Use this for fine-grained
+  // control when you want to NAT only a subset of a VSwitch's address space.
+  // Mutually exclusive with source_vswitch_id.
+  // Example: "10.0.1.0/24"
+  string source_cidr = 2;
+
+  // Human-readable name for this SNAT entry. 2-128 characters.
+  // If omitted, a name is generated from the NAT Gateway name and entry index.
+  string snat_entry_name = 3;
+}

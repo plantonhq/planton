@@ -40,6 +40,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsCognitoUserPool.my-auth
 spec:
+  region: us-east-1
   usernameAttributes:
     - email
   autoVerifiedAttributes:
@@ -65,6 +66,7 @@ This creates a user pool where users sign in with their email address, email is 
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | The AWS region where the Cognito User Pool will be created (e.g., `us-east-1`). | Required |
 | `clients` | `AwsCognitoUserPoolClient[]` | App clients that authenticate against this pool. At least one required. | Minimum 1 item |
 | `clients[].name` | `string` | Client name, used as key in `client_ids` and `client_secrets` output maps. Must be unique across all clients. | 1-128 characters |
 
@@ -137,6 +139,7 @@ metadata:
     pulumi.openmcf.org/project: webapp
     pulumi.openmcf.org/stack.name: staging.AwsCognitoUserPool.webapp-auth
 spec:
+  region: us-east-1
   usernameAttributes:
     - email
   passwordPolicy:
@@ -186,6 +189,7 @@ metadata:
     pulumi.openmcf.org/project: platform
     pulumi.openmcf.org/stack.name: prod.AwsCognitoUserPool.prod-auth
 spec:
+  region: us-east-1
   usernameAttributes:
     - email
   passwordPolicy:

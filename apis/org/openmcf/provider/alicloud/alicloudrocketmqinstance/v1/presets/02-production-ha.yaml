@@ -1,0 +1,38 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudRocketmqInstance
+metadata:
+  name: my-production-rocketmq
+spec:
+  region: <alibaba-cloud-region>
+  seriesCode: professional
+  subSeriesCode: cluster_ha
+  vpcId:
+    value: <your-vpc-id>
+  vswitchId:
+    value: <your-vswitch-id>
+  securityGroupId: <your-security-group-id>
+  msgProcessSpec: <msg-process-spec>
+  productInfo:
+    messageRetentionTime: 168
+    traceOn: true
+  ipWhitelists:
+    - <your-vpc-cidr>
+  tags:
+    team: <your-team>
+  topics:
+    - topicName: <your-normal-topic>
+      messageType: NORMAL
+      remark: Standard messages with no ordering guarantee
+    - topicName: <your-fifo-topic>
+      messageType: FIFO
+      remark: Strictly ordered messages for sequential processing
+  consumerGroups:
+    - consumerGroupId: <your-normal-consumer-group>
+      deliveryOrderType: Concurrently
+      remark: Parallel consumer for normal messages
+    - consumerGroupId: <your-fifo-consumer-group>
+      deliveryOrderType: Orderly
+      remark: Ordered consumer for FIFO messages
+      consumeRetryPolicy:
+        retryPolicy: DefaultRetryPolicy
+        maxRetryTimes: 16

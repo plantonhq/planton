@@ -47,6 +47,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsOpenSearchDomain.my-search
 spec:
+  region: us-west-2
   engineVersion: "OpenSearch_2.11"
   clusterConfig:
     instanceType: t3.small.search
@@ -72,6 +73,7 @@ This creates a single-node OpenSearch 2.11 domain with 20 GB gp3 storage, encryp
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the OpenSearch domain will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `engineVersion` | `string` | Engine version. Format: `OpenSearch_X.Y` or `Elasticsearch_X.Y`. Changing to an incompatible version forces domain recreation. | Must match `OpenSearch_X.Y` or `Elasticsearch_X.Y`. |
 | `clusterConfig` | `object` | Cluster topology configuration. | Required. |
 | `clusterConfig.instanceType` | `string` | Instance type for data nodes. Uses the `.search` suffix. | Must be set. Examples: `t3.small.search`, `r6g.large.search`. |
@@ -139,6 +141,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsOpenSearchDomain.prod-search
 spec:
+  region: us-east-1
   engineVersion: "OpenSearch_2.11"
   clusterConfig:
     instanceType: r6g.large.search
@@ -184,6 +187,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: staging.AwsOpenSearchDomain.fgac-search
 spec:
+  region: us-east-1
   engineVersion: "OpenSearch_2.11"
   clusterConfig:
     instanceType: r6g.large.search
@@ -218,6 +222,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsOpenSearchDomain.analytics-search
 spec:
+  region: us-east-1
   engineVersion: "OpenSearch_2.11"
   clusterConfig:
     instanceType: r6g.xlarge.search
@@ -259,6 +264,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsOpenSearchDomain.ref-search
 spec:
+  region: us-west-2
   engineVersion: "OpenSearch_2.11"
   clusterConfig:
     instanceType: r6g.large.search

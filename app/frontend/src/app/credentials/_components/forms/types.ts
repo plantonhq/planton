@@ -110,6 +110,16 @@ export type OciAuthMethod =
   | 'resource_principal'
   | 'oke_workload_identity';
 
+// Form data for Hetzner Cloud credentials.
+// Flat structure matching HetznerCloudProviderConfig proto fields.
+export interface HetznerCloudFormData {
+  token?: string;
+  endpoint?: string;
+  endpointHetzner?: string;
+  pollInterval?: string;
+  pollFunction?: string;
+}
+
 // Form-friendly type based on CreateCredentialRequest fields (without the protobuf Message wrapper)
 export type CredentialFormData = {
   name: string;
@@ -126,5 +136,6 @@ export type CredentialFormData = {
   alicloudAuthMethod?: AlicloudAuthMethod;
   oci?: OciFormData;
   ociAuthMethod?: OciAuthMethod;
+  hetznercloud?: HetznerCloudFormData;
 };
 

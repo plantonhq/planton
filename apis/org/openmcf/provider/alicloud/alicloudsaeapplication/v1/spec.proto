@@ -1,0 +1,316 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudsaeapplication.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// AliCloudSaeApplicationSpec defines the configuration for an Alibaba Cloud
+// Serverless App Engine (SAE) application.
+//
+// SAE is a fully managed, container-based serverless compute platform that
+// combines the simplicity of PaaS with the flexibility of containers. It
+// supports deploying applications as container images, JAR packages, WAR
+// packages, or Python/PHP ZIP archives. SAE handles provisioning, scaling,
+// load balancing, and log collection automatically.
+//
+// CPU and memory are specified as discrete tiers (millicores and MB),
+// not arbitrary values. Each instance runs a single copy of the application
+// and can be scaled horizontally via the replicas field.
+//
+// Provider resources:
+//   Terraform: alicloud_sae_application
+//   Pulumi:    sae.Application
+message AliCloudSaeApplicationSpec {
+  // Alibaba Cloud region where the SAE application will be created.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Application name. Must start with a letter, and can contain letters,
+  // digits, and dashes. Maximum 36 characters.
+  // This field is immutable after creation (ForceNew in the provider).
+  string app_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 36
+  ];
+
+  // Human-readable description of the application. Maximum 1024 characters.
+  string app_description = 3 [(buf.validate.field).string.max_len = 1024];
+
+  // Application package type. Determines how the application code is
+  // delivered and which runtime fields apply.
+  // This field is immutable after creation (ForceNew in the provider).
+  string package_type = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "package_type_valid"
+      message: "package_type must be one of: Image, FatJar, War, PythonZip, PhpZip"
+      expression: "this in ['Image', 'FatJar', 'War', 'PythonZip', 'PhpZip']"
+    }
+  ];
+
+  // Number of application instances to run. Minimum 1.
+  int32 replicas = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  // CPU allocation per instance in millicores.
+  int32 cpu = 6 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "cpu_valid"
+      message: "cpu must be one of: 500, 1000, 2000, 4000, 8000, 16000, 32000"
+      expression: "this in [500, 1000, 2000, 4000, 8000, 16000, 32000]"
+    }
+  ];
+
+  // Memory allocation per instance in MB.
+  int32 memory = 7 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "memory_valid"
+      message: "memory must be one of: 1024, 2048, 4096, 8192, 12288, 16384, 24576, 32768, 65536, 131072"
+      expression: "this in [1024, 2048, 4096, 8192, 12288, 16384, 24576, 32768, 65536, 131072]"
+    }
+  ];
+
+  // ── Networking ─────────────────────────────────────────────────────────
+
+  // VPC ID for VPC-based deployment. When set, the application runs inside
+  // the specified VPC. Optional — SAE provides managed networking by default.
+  // This field is immutable after creation (ForceNew in the provider).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 8 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // VSwitch ID for VPC-based deployment. Determines the subnet and
+  // availability zone.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 9 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
+  ];
+
+  // Security group ID for VPC-based deployment. Controls inbound/outbound
+  // traffic rules for the application instances.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_id = 10 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // ── Deployment ─────────────────────────────────────────────────────────
+
+  // SAE namespace ID. Format: "{region}:{short_id}". Applications in the
+  // same namespace share configuration items (ConfigMaps) and can discover
+  // each other via built-in service registration.
+  // If omitted, the application is placed in the default namespace.
+  // This field is immutable after creation (ForceNew in the provider).
+  string namespace_id = 11;
+
+  // Container image URL. Required when package_type is "Image".
+  // Example: "registry.cn-hangzhou.aliyuncs.com/my-ns/my-app:v1"
+  string image_url = 12;
+
+  // Deployment package URL (OSS or HTTP). Required when package_type is
+  // "FatJar", "War", "PythonZip", or "PhpZip".
+  string package_url = 13;
+
+  // Deployment package version identifier. Recommended for non-Image
+  // deployments to track which version is deployed.
+  string package_version = 14;
+
+  // Container start command override (ENTRYPOINT equivalent).
+  string command = 15;
+
+  // Container start command arguments (CMD equivalent).
+  // Maps to the provider's command_args_v2 field.
+  repeated string command_args = 16;
+
+  // Environment variables passed to the application at runtime.
+  // The IaC modules convert this map to the JSON array format that
+  // the SAE API expects: [{"name":"K","value":"V"},...].
+  map<string, string> envs = 17;
+
+  // ── Runtime configuration ──────────────────────────────────────────────
+
+  // JDK version for Java applications (package_type FatJar or War).
+  // Examples: "Open JDK 8", "Open JDK 11", "Open JDK 17", "Dragonwell 8",
+  // "Dragonwell 11", "Dragonwell 17".
+  string jdk = 18;
+
+  // JVM startup options for FatJar applications.
+  // Example: "-Xms512m -Xmx1024m -Dserver.port=8080"
+  string jar_start_options = 19;
+
+  // Application startup arguments for FatJar applications.
+  string jar_start_args = 20;
+
+  // Programming language. Affects which runtime features are available.
+  // This field is immutable after creation (ForceNew in the provider).
+  optional string programming_language = 21 [(buf.validate.field).cel = {
+    id: "programming_language_valid"
+    message: "programming_language must be one of: java, php, other"
+    expression: "this == '' || this in ['java', 'php', 'other']"
+  }];
+
+  // Application timezone. Affects log timestamps and scheduled tasks.
+  string timezone = 22;
+
+  // Graceful shutdown timeout in seconds. The application receives SIGTERM
+  // and has this many seconds to clean up before SIGKILL.
+  // Range: 1-60. Provider default: 30.
+  optional int32 termination_grace_period_seconds = 23 [(buf.validate.field).cel = {
+    id: "termination_grace_period_range"
+    message: "termination_grace_period_seconds must be between 1 and 60"
+    expression: "this >= 1 && this <= 60"
+  }];
+
+  // Minimum number of available instances during a rolling deployment.
+  // Ensures service availability while new instances are starting.
+  optional int32 min_ready_instances = 24;
+
+  // ACR Enterprise Edition instance ID for pulling images from a private
+  // container registry. Only needed when image_url points to an ACR EE
+  // instance (not the default ACR Personal Edition).
+  string acr_instance_id = 25;
+
+  // ── Health checks ──────────────────────────────────────────────────────
+
+  // Liveness probe configuration. If the liveness check fails repeatedly,
+  // SAE restarts the application instance.
+  AliCloudSaeApplicationHealthCheck liveness = 26;
+
+  // Readiness probe configuration. Until the readiness check passes, SAE
+  // does not route traffic to the instance.
+  AliCloudSaeApplicationHealthCheck readiness = 27;
+
+  // ── Host aliases ───────────────────────────────────────────────────────
+
+  // Custom hostname-to-IP mappings injected into the container's /etc/hosts.
+  // Useful for resolving internal service names without DNS.
+  repeated AliCloudSaeApplicationCustomHostAlias custom_host_aliases = 28;
+
+  // ── Update strategy ────────────────────────────────────────────────────
+
+  // Deployment update strategy controlling how new versions are rolled out.
+  AliCloudSaeApplicationUpdateStrategy update_strategy = 29;
+
+  // ── Logging ────────────────────────────────────────────────────────────
+
+  // SLS log collection configuration as a JSON string.
+  // Format: [{"logDir":"/path","logType":"stdout"},...]
+  // When set, SAE collects application logs and ships them to SLS.
+  string sls_configs = 30;
+
+  // ── Tags ───────────────────────────────────────────────────────────────
+
+  // Tags to apply to the SAE application resource.
+  map<string, string> tags = 31;
+}
+
+// AliCloudSaeApplicationHealthCheck defines a health check probe for the
+// SAE application. Exactly one of http_get, tcp_socket, or exec should be
+// configured to specify the check mechanism.
+message AliCloudSaeApplicationHealthCheck {
+  // HTTP GET probe. SAE sends an HTTP GET request to the specified path
+  // and port, and considers the check successful if the response status
+  // is 200-399.
+  AliCloudSaeApplicationHttpGetAction http_get = 1;
+
+  // TCP socket probe. SAE attempts a TCP connection to the specified port
+  // and considers the check successful if the connection is established.
+  AliCloudSaeApplicationTcpSocketAction tcp_socket = 2;
+
+  // Exec probe. SAE executes the specified command inside the container
+  // and considers the check successful if the command exits with code 0.
+  AliCloudSaeApplicationExecAction exec = 3;
+
+  // Seconds to wait after the container starts before initiating the
+  // first health check.
+  optional int32 initial_delay_seconds = 4;
+
+  // Seconds between consecutive health checks.
+  optional int32 period_seconds = 5;
+
+  // Seconds to wait for a health check response before marking it failed.
+  optional int32 timeout_seconds = 6;
+
+  // Number of consecutive failures before considering the container
+  // unhealthy (liveness) or not ready (readiness).
+  optional int32 failure_threshold = 7;
+
+  // Number of consecutive successes before considering the container
+  // healthy or ready again after a failure.
+  optional int32 success_threshold = 8;
+}
+
+// AliCloudSaeApplicationHttpGetAction defines an HTTP GET health check.
+message AliCloudSaeApplicationHttpGetAction {
+  // URL path for the HTTP GET request (e.g., "/healthz").
+  string path = 1;
+
+  // Port to send the HTTP GET request to.
+  int32 port = 2;
+}
+
+// AliCloudSaeApplicationTcpSocketAction defines a TCP socket health check.
+message AliCloudSaeApplicationTcpSocketAction {
+  // Port to attempt a TCP connection to.
+  int32 port = 1;
+}
+
+// AliCloudSaeApplicationExecAction defines a command-based health check.
+message AliCloudSaeApplicationExecAction {
+  // Command to execute inside the container. The check succeeds if the
+  // command exits with code 0.
+  string command = 1;
+}
+
+// AliCloudSaeApplicationCustomHostAlias defines a hostname-to-IP mapping
+// injected into the container's /etc/hosts file.
+message AliCloudSaeApplicationCustomHostAlias {
+  // Hostname to map.
+  string host_name = 1;
+
+  // IP address the hostname resolves to.
+  string ip = 2;
+}
+
+// AliCloudSaeApplicationUpdateStrategy controls how new application
+// versions are rolled out to instances.
+message AliCloudSaeApplicationUpdateStrategy {
+  // Release policy type.
+  // "BatchUpdate": release in sequential batches.
+  // "GrayBatchUpdate": canary-style phased release.
+  optional string type = 1 [(buf.validate.field).cel = {
+    id: "update_strategy_type_valid"
+    message: "type must be one of: BatchUpdate, GrayBatchUpdate"
+    expression: "this == '' || this in ['BatchUpdate', 'GrayBatchUpdate']"
+  }];
+
+  // Batch update configuration.
+  AliCloudSaeApplicationBatchUpdate batch_update = 2;
+}
+
+// AliCloudSaeApplicationBatchUpdate defines the batch release configuration.
+message AliCloudSaeApplicationBatchUpdate {
+  // Number of batches to split the release into.
+  optional int32 batch = 1;
+
+  // Seconds to wait between batches.
+  optional int32 batch_wait_time = 2;
+
+  // Release processing method.
+  // "auto": automatically proceed to the next batch.
+  // "manual": pause between batches for manual approval.
+  optional string release_type = 3 [(buf.validate.field).cel = {
+    id: "release_type_valid"
+    message: "release_type must be one of: auto, manual"
+    expression: "this == '' || this in ['auto', 'manual']"
+  }];
+}

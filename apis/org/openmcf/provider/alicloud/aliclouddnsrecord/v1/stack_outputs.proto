@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.aliclouddnsrecord.v1;
+
+// AliCloudDnsRecordStackOutputs captures the outputs from deploying an
+// Alibaba Cloud DNS record.
+message AliCloudDnsRecordStackOutputs {
+  // The record ID assigned by Alibaba Cloud.
+  string record_id = 1;
+}

@@ -6,6 +6,7 @@ metadata:
   name: ha-windows-fs
   id: awsfxw-ha-windows-fs-production
 spec:
+  region: <aws-region>
   deployment_type: MULTI_AZ_1
   storage_capacity_gib: 1000
   storage_type: SSD

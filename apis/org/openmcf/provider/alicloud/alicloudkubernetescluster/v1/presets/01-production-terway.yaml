@@ -1,0 +1,65 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudKubernetesCluster
+metadata:
+  name: my-production-cluster
+spec:
+  region: <alibaba-cloud-region>
+  name: <your-cluster-name>
+  clusterSpec: ack.pro.small # production SLA with managed node pools and topology-aware scheduling
+  version: "1.30"
+
+  # Terway ENI-based networking: pods get their own VPC ENIs for native
+  # security group isolation and VPC-routable pod IPs.
+  vswitchIds:
+    - value: <node-vswitch-id-zone-a>
+    - value: <node-vswitch-id-zone-b>
+    - value: <node-vswitch-id-zone-c>
+  podVswitchIds:
+    - value: <pod-vswitch-id-zone-a>
+    - value: <pod-vswitch-id-zone-b>
+    - value: <pod-vswitch-id-zone-c>
+  serviceCidr: "172.21.0.0/20"
+  proxyMode: ipvs # default from spec
+  nodeCidrMask: 24 # default from spec
+  newNatGateway: false # manage NAT externally via AlicloudNatGateway
+  slbInternetEnabled: true # default from spec
+
+  isEnterpriseSecurityGroup: true # advanced SG with 65k rules and 100k ENIs
+  enableRrsa: true # pod-level IAM via OIDC federation
+  deletionProtection: true
+
+  addons:
+    - name: terway-eniip
+    - name: csi-plugin
+    - name: csi-provisioner
+    - name: logtail-ds
+      config: '{"IngressDashboardEnabled":"true","sls_project_name":"<your-log-project-name>"}'
+    - name: arms-prometheus
+    - name: metrics-server
+    - name: ack-node-problem-detector
+
+  logging:
+    controlPlaneLogProject:
+      value: <your-log-project-name>
+    controlPlaneLogTtl: "90"
+    controlPlaneLogComponents:
+      - apiserver
+      - kcm
+      - scheduler
+      - ccm
+    auditLogEnabled: true
+
+  maintenanceWindow:
+    enable: true
+    maintenanceTime: "2026-03-01T03:00:00+08:00"
+    duration: "3h"
+    weeklyPeriod: Wednesday
+
+  autoUpgrade:
+    enabled: true
+    channel: patch # only patch versions, no minor version jumps
+
+  tags:
+    team: <your-team>
+    costCenter: <your-cost-center>
+  timezone: Asia/Shanghai

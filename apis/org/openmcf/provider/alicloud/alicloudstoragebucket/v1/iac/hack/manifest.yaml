@@ -1,0 +1,7 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudStorageBucket
+metadata:
+  name: alicloudstoragebucket-demo
+spec:
+  region: cn-hangzhou
+  bucketName: alicloudstoragebucket-demo

@@ -1,0 +1,3 @@
+name: alicloud-private-dns-zone
+runtime: go
+description: Alibaba Cloud Private Zone deployment component

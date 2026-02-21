@@ -44,6 +44,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsServerlessElasticache.my-cache
 spec:
+  region: us-west-2
   engine: redis
   subnetIds:
     - subnet-0a1b2c3d4e5f00001
@@ -66,6 +67,7 @@ This creates a Redis Serverless cache with AWS-managed scaling defaults, placed 
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the resource will be created. Example: `us-west-2`, `eu-west-1`. | Must be a valid AWS region string |
 | `engine` | `string` | Cache engine to use. Values: `redis`, `valkey`, `memcached`. Switching between Redis and Valkey is in-place; switching to/from Memcached forces recreation. | Must be `redis`, `valkey`, or `memcached` |
 
 ### Optional Fields
@@ -102,6 +104,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsServerlessElasticache.session-cache
 spec:
+  region: us-west-2
   engine: redis
   majorEngineVersion: "7"
   description: Session store for web application
@@ -131,6 +134,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsServerlessElasticache.prod-kv-store
 spec:
+  region: us-east-1
   engine: valkey
   majorEngineVersion: "8"
   description: Production key-value store
@@ -165,6 +169,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsServerlessElasticache.html-fragment-cache
 spec:
+  region: us-west-2
   engine: memcached
   majorEngineVersion: "1.6"
   description: HTML fragment cache
@@ -192,6 +197,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsServerlessElasticache.ref-cache
 spec:
+  region: us-east-1
   engine: redis
   majorEngineVersion: "7"
   dataStorageMinGb: 1

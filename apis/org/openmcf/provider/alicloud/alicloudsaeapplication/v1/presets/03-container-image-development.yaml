@@ -1,0 +1,19 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudSaeApplication
+metadata:
+  name: my-dev-app
+spec:
+  region: <alibaba-cloud-region>
+  appName: <your-app-name>
+  packageType: Image
+  replicas: 1
+  cpu: 500
+  memory: 1024
+  imageUrl: <your-container-image-url>
+  envs:
+    LOG_LEVEL: debug
+  readiness:
+    tcpSocket:
+      port: 8080
+    initialDelaySeconds: 5
+    periodSeconds: 10

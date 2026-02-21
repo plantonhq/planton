@@ -1,0 +1,22 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudRdsInstance
+metadata:
+  name: <your-instance-name>
+spec:
+  region: <alibaba-cloud-region>
+  engine: MySQL
+  engineVersion: "8.0"
+  instanceType: rds.mysql.t1.small
+  instanceStorage: 20
+  vswitchId:
+    value: <your-vswitch-id>
+  category: Basic
+  dbInstanceStorageType: cloud_essd
+  databases:
+    - name: <your-database-name>
+  accounts:
+    - accountName: <your-account-name>
+      accountPassword: <your-password>
+      privileges:
+        - databaseNames: [<your-database-name>]
+          privilege: ReadWrite

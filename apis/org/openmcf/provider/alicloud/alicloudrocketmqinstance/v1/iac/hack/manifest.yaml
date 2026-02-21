@@ -1,0 +1,10 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudRocketmqInstance
+metadata:
+  name: alicloudrocketmqinstance-demo
+spec:
+  region: cn-hangzhou
+  seriesCode: standard
+  subSeriesCode: single_node
+  vpcId:
+    value: vpc-demo123

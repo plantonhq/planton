@@ -1,0 +1,9 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudLogProject
+metadata:
+  name: alicloudlogproject-demo
+spec:
+  region: cn-hangzhou
+  projectName: openmcf-demo-logs
+  logStores:
+    - name: app-logs

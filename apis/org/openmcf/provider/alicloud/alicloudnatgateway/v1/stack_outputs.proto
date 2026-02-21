@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudnatgateway.v1;
+
+// AliCloudNatGatewayStackOutputs captures the outputs from deploying an
+// Alibaba Cloud NAT Gateway with its associated EIP and SNAT entries.
+message AliCloudNatGatewayStackOutputs {
+  // The NAT Gateway ID assigned by Alibaba Cloud (e.g., "ngw-xxxxx").
+  string nat_gateway_id = 1;
+
+  // The NAT Gateway name as created.
+  string nat_gateway_name = 2;
+
+  // The SNAT table ID, auto-created with the NAT Gateway.
+  // Exposed for advanced users who need to add SNAT entries outside OpenMCF.
+  string snat_table_id = 3;
+
+  // The forward (DNAT) table ID, auto-created with the NAT Gateway.
+  // Exposed for users who want to add DNAT entries outside OpenMCF.
+  string forward_table_id = 4;
+}

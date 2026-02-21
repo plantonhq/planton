@@ -1,0 +1,23 @@
+apiVersion: hetznercloud.openmcf.org/v1
+kind: HetznerCloudLoadBalancer
+metadata:
+  name: my-web-app-lb
+spec:
+  loadBalancerType: lb11
+  location: fsn1
+  algorithm: round_robin
+  services:
+    - protocol: https
+      destinationPort: 8080
+      http:
+        certificateIds:
+          - value: <certificate-id>
+        redirectHttp: true
+      healthCheck:
+        protocol: http
+        port: 8080
+        http:
+          path: /health
+  labelSelectorTargets:
+    - selector: <label-selector>
+  deleteProtection: true

@@ -1,0 +1,26 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudSecurityGroup
+metadata:
+  name: <your-sg-name>
+spec:
+  region: <alibaba-cloud-region>
+  vpcId:
+    value: <your-vpc-id>
+  securityGroupName: <your-sg-name>
+  description: Web tier security group allowing HTTP and HTTPS from the internet
+  rules:
+    - type: ingress
+      ipProtocol: tcp
+      portRange: "80/80"
+      cidrIp: "0.0.0.0/0"
+      description: Allow HTTP from anywhere
+    - type: ingress
+      ipProtocol: tcp
+      portRange: "443/443"
+      cidrIp: "0.0.0.0/0"
+      description: Allow HTTPS from anywhere
+    - type: egress
+      ipProtocol: all
+      portRange: "-1/-1"
+      cidrIp: "0.0.0.0/0"
+      description: Allow all outbound traffic

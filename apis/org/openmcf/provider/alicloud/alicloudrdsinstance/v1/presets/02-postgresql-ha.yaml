@@ -1,0 +1,36 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudRdsInstance
+metadata:
+  name: <your-instance-name>
+  org: <your-org>
+  env: production
+spec:
+  region: <alibaba-cloud-region>
+  engine: PostgreSQL
+  engineVersion: "16.0"
+  instanceType: rds.pg.s2.large
+  instanceStorage: 100
+  vswitchId:
+    value: <your-vswitch-id>
+  category: HighAvailability
+  dbInstanceStorageType: cloud_essd
+  zoneId: <primary-zone-id>
+  zoneIdSlaveA: <standby-zone-id>
+  securityIps:
+    - <your-vpc-cidr>
+  monitoringPeriod: 60
+  maintainTime: "02:00Z-06:00Z"
+  deletionProtection: true
+  sslAction: Open
+  tags:
+    team: <your-team>
+  databases:
+    - name: <your-database-name>
+      description: Primary application database
+  accounts:
+    - accountName: <your-account-name>
+      accountPassword: <your-password>
+      accountDescription: Application service account
+      privileges:
+        - databaseNames: [<your-database-name>]
+          privilege: ReadWrite

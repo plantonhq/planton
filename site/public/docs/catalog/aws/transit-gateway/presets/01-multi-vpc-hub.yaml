@@ -3,6 +3,7 @@ kind: AwsTransitGateway
 metadata:
   name: my-transit-gateway
 spec:
+  region: <aws-region>
   description: Production multi-VPC connectivity hub
   amazonSideAsn: 64512
   defaultRouteTableAssociation: true

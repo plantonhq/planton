@@ -1,0 +1,24 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudApplicationLoadBalancer
+metadata:
+  name: <your-alb-name>
+spec:
+  region: <alibaba-cloud-region>
+  vpcId:
+    value: <your-vpc-id>
+  zoneMappings:
+    - zoneId: <zone-a>
+      vswitchId:
+        value: <your-vswitch-id-a>
+    - zoneId: <zone-b>
+      vswitchId:
+        value: <your-vswitch-id-b>
+  serverGroups:
+    - name: web-backend
+      healthCheckConfig:
+        healthCheckEnabled: true
+        healthCheckPath: /health
+  listeners:
+    - listenerPort: 80
+      listenerProtocol: HTTP
+      defaultActionServerGroupName: web-backend

@@ -5,6 +5,7 @@ metadata:
   labels:
     openmcf.org/provisioner: pulumi
 spec:
+  region: <aws-region>
   enabled: true
   ipAddressType: IPV4
   flowLogs:

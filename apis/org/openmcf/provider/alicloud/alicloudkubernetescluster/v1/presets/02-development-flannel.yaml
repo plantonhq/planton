@@ -1,0 +1,18 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudKubernetesCluster
+metadata:
+  name: my-dev-cluster
+spec:
+  region: <alibaba-cloud-region>
+  clusterSpec: ack.standard # free managed control plane
+  vswitchIds:
+    - value: <vswitch-id-zone-a>
+    - value: <vswitch-id-zone-b>
+  podCidr: "172.20.0.0/16"
+  serviceCidr: "172.21.0.0/20"
+  proxyMode: ipvs # default from spec
+  slbInternetEnabled: true # default from spec; enables kubectl from outside VPC
+  addons:
+    - name: flannel
+    - name: csi-plugin
+    - name: csi-provisioner

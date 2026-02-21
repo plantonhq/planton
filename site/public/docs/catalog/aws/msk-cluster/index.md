@@ -44,6 +44,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsMskCluster.my-kafka
 spec:
+  region: us-west-2
   kafkaVersion: "3.6.0"
   numberOfBrokerNodes: 3
   instanceType: kafka.t3.small
@@ -69,6 +70,7 @@ This creates a 3-broker MSK cluster with SASL/IAM authentication across three su
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the MSK cluster will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `kafkaVersion` | `string` | Apache Kafka version (e.g., "3.6.0", "3.5.1"). Downgrades force cluster replacement. | Required |
 | `numberOfBrokerNodes` | `int` | Total broker nodes. Must be a multiple of the number of subnets for even AZ distribution. | Required, >= 1 |
 | `instanceType` | `string` | Broker EC2 instance type (e.g., "kafka.m5.large", "kafka.m7g.xlarge", "kafka.t3.small"). | Required |
@@ -127,6 +129,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsMskCluster.prod-kafka
 spec:
+  region: us-east-1
   kafkaVersion: "3.6.0"
   numberOfBrokerNodes: 6
   instanceType: kafka.m7g.xlarge
@@ -167,6 +170,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsMskCluster.multi-auth-kafka
 spec:
+  region: us-west-2
   kafkaVersion: "3.6.0"
   numberOfBrokerNodes: 3
   instanceType: kafka.m5.large
@@ -197,6 +201,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsMskCluster.logged-kafka
 spec:
+  region: us-west-2
   kafkaVersion: "3.6.0"
   numberOfBrokerNodes: 3
   instanceType: kafka.m5.large
@@ -234,6 +239,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsMskCluster.ref-kafka
 spec:
+  region: us-east-1
   kafkaVersion: "3.6.0"
   numberOfBrokerNodes: 6
   instanceType: kafka.m7g.xlarge

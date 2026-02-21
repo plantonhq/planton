@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudmongodbinstance.v1;
+
+// AliCloudMongodbInstanceStackOutputs captures the outputs from deploying an
+// Alibaba Cloud MongoDB replica-set instance.
+message AliCloudMongodbInstanceStackOutputs {
+  // The MongoDB instance ID assigned by Alibaba Cloud (e.g., "dds-xxxxx").
+  string instance_id = 1;
+
+  // The replica set name. Applications use this in MongoDB connection strings
+  // (e.g., "?replicaSet=<name>") to enable automatic failover.
+  string replica_set_name = 2;
+}

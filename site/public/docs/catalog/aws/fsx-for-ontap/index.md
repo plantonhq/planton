@@ -42,6 +42,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsFsxOntapFileSystem.my-ontap
 spec:
+  region: us-east-1
   storageCapacityGib: 1024
   throughputCapacityPerHaPair: 128
   subnetIds:
@@ -62,6 +63,7 @@ This creates a SINGLE_AZ_2 ONTAP file system with 1024 GiB SSD storage, 128 MB/s
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the FSx ONTAP file system will be created (e.g., `us-east-1`). | Required; non-empty |
 | `storageCapacityGib` | `int32` | Storage capacity in GiB. Can be increased after creation but never decreased. | 1024–1048576 (1 TiB – 1 PiB) |
 | `throughputCapacityPerHaPair` | `int32` | Throughput per HA pair in MB/s. Total throughput = this value × number of HA pairs. | One of: 128, 256, 384, 512, 768, 1024, 1536, 2048, 3072, 4096, 6144 |
 | `subnetIds` | `StringValueOrRef[]` | Subnet IDs. 1 for single-AZ, 2 for multi-AZ. Can reference AwsVpc via `valueFrom`. | Minimum 1 item |
@@ -104,6 +106,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsFsxOntapFileSystem.app-storage
 spec:
+  region: us-east-1
   deploymentType: SINGLE_AZ_2
   storageCapacityGib: 2048
   storageType: SSD
@@ -137,6 +140,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsFsxOntapFileSystem.throughput-tier
 spec:
+  region: us-east-1
   deploymentType: SINGLE_AZ_2
   storageCapacityGib: 8192
   throughputCapacityPerHaPair: 1024
@@ -164,6 +168,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsFsxOntapFileSystem.ha-ontap
 spec:
+  region: us-east-1
   deploymentType: MULTI_AZ_2
   storageCapacityGib: 4096
   throughputCapacityPerHaPair: 512
@@ -198,6 +203,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsFsxOntapFileSystem.ref-ontap
 spec:
+  region: us-east-1
   storageCapacityGib: 2048
   throughputCapacityPerHaPair: 256
   subnetIds:

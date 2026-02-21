@@ -1,0 +1,12 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudDnsRecord
+metadata:
+  name: my-record
+spec:
+  region: <alibaba-cloud-region>
+  domainName: <your-domain-name>
+  rr: "@"
+  type: MX
+  value: <mail-server-domain>
+  priority: <priority-1-to-10>
+  ttl: 3600

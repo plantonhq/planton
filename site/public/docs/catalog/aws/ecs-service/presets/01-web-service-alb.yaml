@@ -3,6 +3,7 @@ kind: AwsEcsService
 metadata:
   name: my-web-service
 spec:
+  region: <aws-region>
   clusterArn:
     value: "<ecs-cluster-arn>"
   container:

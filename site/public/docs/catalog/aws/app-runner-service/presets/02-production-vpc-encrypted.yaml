@@ -3,6 +3,7 @@ kind: AwsAppRunnerService
 metadata:
   name: my-production-api
 spec:
+  region: <aws-region>
   # Private ECR image -- requires an access role for pulling
   imageSource:
     imageIdentifier: "<account-id>.dkr.ecr.<region>.amazonaws.com/<repo>:<tag>"

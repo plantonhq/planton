@@ -39,6 +39,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsMemcachedElasticache.my-cache
 spec:
+  region: us-west-2
   engineVersion: "1.6.22"
   nodeType: cache.t3.micro
   numCacheNodes: 1
@@ -63,6 +64,7 @@ This creates a single-node Memcached cluster on port 11211 in the specified subn
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region where the ElastiCache cluster will be deployed (e.g., `"us-west-2"`, `"us-east-1"`). | Required |
 | `engineVersion` | `string` | Memcached engine version. Uses three-part versioning (e.g., `"1.6.22"`, `"1.6.17"`, `"1.5.16"`). Transit encryption requires `1.6.12` or later. | Required |
 | `nodeType` | `string` | ElastiCache node type determining CPU, memory, and network capacity. Examples: `cache.t3.micro` (dev), `cache.r7g.large` (production). Changing this forces cluster recreation. | Required |
 
@@ -102,6 +104,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsMemcachedElasticache.prod-cache
 spec:
+  region: us-east-1
   engineVersion: "1.6.22"
   nodeType: cache.r7g.large
   numCacheNodes: 3
@@ -136,6 +139,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: staging.AwsMemcachedElasticache.tuned-cache
 spec:
+  region: us-west-2
   engineVersion: "1.6.22"
   nodeType: cache.m7g.large
   numCacheNodes: 2
@@ -172,6 +176,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsMemcachedElasticache.ref-cache
 spec:
+  region: us-west-2
   engineVersion: "1.6.22"
   nodeType: cache.r7g.large
   numCacheNodes: 2

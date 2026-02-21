@@ -32,6 +32,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsCloudwatchLogGroup.app-logs
 spec:
+  region: us-west-2
   retentionInDays: 30
 ```
 
@@ -78,6 +79,7 @@ metadata:
     pulumi.openmcf.org/project: platform
     pulumi.openmcf.org/stack.name: dev.AwsCloudwatchLogGroup.app-logs
 spec:
+  region: us-west-2
   retentionInDays: 30
 ```
 
@@ -96,6 +98,7 @@ metadata:
     pulumi.openmcf.org/project: platform
     pulumi.openmcf.org/stack.name: prod.AwsCloudwatchLogGroup.prod-app-logs
 spec:
+  region: us-west-2
   retentionInDays: 90
   kmsKeyId:
     valueFrom:
@@ -119,6 +122,7 @@ metadata:
     pulumi.openmcf.org/project: networking
     pulumi.openmcf.org/stack.name: prod.AwsCloudwatchLogGroup.vpc-flow-logs
 spec:
+  region: us-west-2
   retentionInDays: 365
   logGroupClass: INFREQUENT_ACCESS
   kmsKeyId:

@@ -44,6 +44,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsDynamodb.my-table
 spec:
+  region: us-east-1
   billingMode: PAY_PER_REQUEST
   attributeDefinitions:
     - name: pk
@@ -67,6 +68,7 @@ This creates an on-demand DynamoDB table with a single string partition key.
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | The AWS region where the resource will be created. | Must be a valid AWS region |
 | `billingMode` | `enum` | Billing mode for the table. Valid values: `PROVISIONED`, `PAY_PER_REQUEST`. | Must be set (not `BILLING_MODE_UNSPECIFIED`) |
 | `attributeDefinitions` | `object[]` | Attribute definitions referenced by the primary key and indexes. | Minimum 1 item |
 | `attributeDefinitions[].name` | `string` | Attribute name. | Minimum length 1 |
@@ -122,6 +124,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsDynamodb.orders-table
 spec:
+  region: us-east-1
   billingMode: PAY_PER_REQUEST
   attributeDefinitions:
     - name: customerId
@@ -150,6 +153,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsDynamodb.sessions-table
 spec:
+  region: us-east-1
   billingMode: PROVISIONED
   provisionedThroughput:
     readCapacityUnits: 10
@@ -180,6 +184,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsDynamodb.users-table
 spec:
+  region: us-east-1
   billingMode: PAY_PER_REQUEST
   attributeDefinitions:
     - name: userId
@@ -213,6 +218,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsDynamodb.audit-log
 spec:
+  region: us-east-1
   billingMode: PAY_PER_REQUEST
   attributeDefinitions:
     - name: pk
@@ -266,6 +272,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsDynamodb.products-table
 spec:
+  region: us-east-1
   billingMode: PROVISIONED
   provisionedThroughput:
     readCapacityUnits: 50

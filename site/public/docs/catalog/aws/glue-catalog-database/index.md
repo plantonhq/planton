@@ -36,6 +36,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsGlueCatalogDatabase.analytics
 spec:
+  region: us-east-1
   description: "Analytics data catalog for ad-hoc queries and BI dashboards"
 ```
 
@@ -51,7 +52,9 @@ This creates a Glue Data Catalog database named `analytics` that Athena workgrou
 
 ### Required Fields
 
-No fields are strictly required. A minimal empty `spec: {}` creates a database with just the name from `metadata.name`. However, most practical deployments set at least `description` to document the database's purpose.
+| Field | Type | Description |
+|-------|------|-------------|
+| `region` | `string` | AWS region where the Glue Catalog Database will be created (e.g., `us-east-1`) |
 
 ### Optional Fields
 
@@ -80,7 +83,8 @@ metadata:
     pulumi.openmcf.org/organization: my-org
     pulumi.openmcf.org/project: data
     pulumi.openmcf.org/stack.name: dev.AwsGlueCatalogDatabase.experiments
-spec: {}
+spec:
+  region: us-east-1
 ```
 
 ### Descriptive Analytics Database
@@ -98,6 +102,7 @@ metadata:
     pulumi.openmcf.org/project: analytics
     pulumi.openmcf.org/stack.name: prod.AwsGlueCatalogDatabase.sales_analytics
 spec:
+  region: us-east-1
   description: >-
     Sales pipeline data lake — raw ingestion tables, curated transformations,
     and aggregated datasets for BI dashboards and ML feature stores.
@@ -118,6 +123,7 @@ metadata:
     pulumi.openmcf.org/project: data-platform
     pulumi.openmcf.org/stack.name: prod.AwsGlueCatalogDatabase.prod_warehouse
 spec:
+  region: us-east-1
   description: >-
     Production data warehouse — curated datasets from ETL pipelines.
     Tables populated by Glue crawlers on a daily schedule. Accessed by

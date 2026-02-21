@@ -1,0 +1,23 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudRamRole
+metadata:
+  name: my-cross-account-audit-role
+spec:
+  region: <alibaba-cloud-region>
+  roleName: <your-audit-role-name>
+  description: Cross-account audit role for security review, billing, and log access
+  assumeRolePolicyDocument: |
+    {
+      "Statement": [{
+        "Action": "sts:AssumeRole",
+        "Effect": "Allow",
+        "Principal": {"RAM": ["acs:ram::<trusted-account-id>:root"]}
+      }],
+      "Version": "1"
+    }
+  maxSessionDuration: 43200 # 12 hours; extended for long audit sessions
+  force: true # Allow clean deletion regardless of attached policies
+  policyAttachments:
+    - policyName: AliyunBSSReadOnlyAccess
+    - policyName: AliyunLogReadOnlyAccess
+    - policyName: AliyunActionTrailReadOnlyAccess

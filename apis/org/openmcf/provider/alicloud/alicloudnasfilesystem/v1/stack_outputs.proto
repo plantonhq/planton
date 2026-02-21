@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudnasfilesystem.v1;
+
+// AliCloudNasFileSystemStackOutputs captures the outputs from deploying an
+// Alibaba Cloud NAS file system with its mount target.
+message AliCloudNasFileSystemStackOutputs {
+  // The NAS file system ID assigned by Alibaba Cloud (e.g., "1ca404a348").
+  // Used to reference this file system from other resources such as snapshot
+  // policies or lifecycle policies.
+  string file_system_id = 1;
+
+  // The mount target domain name.
+  // This is the endpoint used to mount the file system from ECS instances,
+  // containers, or any resource within the VPC.
+  //
+  // NFS mount example:
+  //   mount -t nfs -o vers=4,minorversion=0,noresvport <domain>:/ /mnt/nas
+  //
+  // SMB mount example (Windows):
+  //   net use Z: \\<domain>\myshare
+  string mount_target_domain = 2;
+}

@@ -1,0 +1,18 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudNatGateway
+metadata:
+  name: <your-nat-name>
+spec:
+  region: <alibaba-cloud-region>
+  vpcId:
+    value: <your-vpc-id>
+  vswitchId:
+    value: <your-nat-vswitch-id>
+  natGatewayName: <your-nat-name>
+  description: NAT Gateway for single VSwitch outbound internet access
+  eipId:
+    value: <your-eip-id>
+  snatEntries:
+    - sourceVswitchId:
+        value: <your-app-vswitch-id>
+      snatEntryName: app-internet-access

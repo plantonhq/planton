@@ -3,6 +3,7 @@ kind: AwsSagemakerDomain
 metadata:
   name: production-ml-domain
 spec:
+  region: us-west-2
   authMode: SSO
   appNetworkAccessType: VpcOnly
   vpcId:

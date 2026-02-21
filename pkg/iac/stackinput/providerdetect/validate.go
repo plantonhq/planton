@@ -16,6 +16,7 @@ import (
 	cloudflareprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare"
 	confluentprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/confluent"
 	gcpprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
+	hetznercloudprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud"
 	kubernetesprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
 	ociprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci"
 	openfgaprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga"
@@ -75,9 +76,11 @@ func getProviderConfigProto(provider cloudresourcekind.CloudResourceProvider) (p
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return new(scalewayprovider.ScalewayProviderConfig), nil
 	case cloudresourcekind.CloudResourceProvider_alicloud:
-		return new(alicloudprovider.AlicloudProviderConfig), nil
+		return new(alicloudprovider.AliCloudProviderConfig), nil
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return new(ociprovider.OciProviderConfig), nil
+	case cloudresourcekind.CloudResourceProvider_hetznercloud:
+		return new(hetznercloudprovider.HetznerCloudProviderConfig), nil
 	default:
 		return nil, errors.Errorf("unsupported provider: %s", provider.String())
 	}

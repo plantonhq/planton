@@ -3,6 +3,7 @@ kind: AwsIamRole
 metadata:
   name: my-ecs-task-execution-role
 spec:
+  region: <aws-region>
   description: ECS task execution role for pulling images and writing logs
   path: /  # recommended_default from spec
   trustPolicy:

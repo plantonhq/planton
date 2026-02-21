@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudkubernetescluster.v1;
+
+// AliCloudKubernetesClusterStackOutputs captures the outputs from deploying
+// an ACK Managed Kubernetes cluster.
+message AliCloudKubernetesClusterStackOutputs {
+  // ACK cluster ID assigned by Alibaba Cloud.
+  string cluster_id = 1;
+
+  // Cluster name as created.
+  string cluster_name = 2;
+
+  // Public API server endpoint for kubectl and other Kubernetes clients.
+  // Only populated when slb_internet_enabled is true.
+  string api_server_internet = 3;
+
+  // Private (VPC-internal) API server endpoint.
+  // Always available regardless of slb_internet_enabled.
+  string api_server_intranet = 4;
+
+  // VPC ID where the cluster is deployed.
+  // Computed by the cluster resource from the provided VSwitches.
+  string vpc_id = 5;
+
+  // Security group ID used by the cluster nodes.
+  // Either the user-provided security_group_id or the auto-created one.
+  string security_group_id = 6;
+
+  // NAT gateway ID auto-created by the cluster.
+  // Only populated when new_nat_gateway is true.
+  string nat_gateway_id = 7;
+
+  // RAM role name attached to worker nodes.
+  // Downstream components (e.g., container registries, log services)
+  // can grant this role access to their resources.
+  string worker_ram_role_name = 8;
+
+  // RRSA OIDC issuer URL. Empty when enable_rrsa is false.
+  // Used to configure RAM role trust policies for pod-level IAM.
+  string rrsa_oidc_issuer_url = 9;
+
+  // RRSA OIDC provider name in RAM. Empty when enable_rrsa is false.
+  // Format: "ack-rrsa-c{cluster_id}"
+  string ram_oidc_provider_name = 10;
+
+  // RRSA OIDC provider ARN. Empty when enable_rrsa is false.
+  // Format: "acs:ram::{account_id}:oidc-provider/ack-rrsa-c{cluster_id}"
+  string ram_oidc_provider_arn = 11;
+}

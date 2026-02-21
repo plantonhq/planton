@@ -3,4 +3,5 @@ kind: AwsSnsTopic
 metadata:
   name: my-topic
 spec:
+  region: <aws-region>
   signatureVersion: 2

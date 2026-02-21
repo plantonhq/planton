@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudrdsinstance.v1;
+
+// AliCloudRdsInstanceStackOutputs captures the outputs from deploying an
+// Alibaba Cloud RDS instance with its databases and accounts.
+message AliCloudRdsInstanceStackOutputs {
+  // The RDS instance ID assigned by Alibaba Cloud (e.g., "rm-xxxxx").
+  string instance_id = 1;
+
+  // The intranet (VPC-internal) connection endpoint for the RDS instance.
+  // Applications within the same VPC use this endpoint to connect.
+  string connection_string = 2;
+
+  // The database service port (e.g., "3306" for MySQL, "5432" for PostgreSQL,
+  // "1433" for SQL Server).
+  string port = 3;
+
+  // Map of database names to their IDs within the RDS instance.
+  // Keys are the names specified in spec.databases[].name.
+  map<string, string> database_ids = 4;
+}

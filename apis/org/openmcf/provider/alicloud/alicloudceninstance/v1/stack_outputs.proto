@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudceninstance.v1;
+
+// AliCloudCenInstanceStackOutputs captures the outputs from deploying an
+// Alibaba Cloud CEN instance with its bundled child-instance attachments.
+message AliCloudCenInstanceStackOutputs {
+  // The CEN instance ID assigned by Alibaba Cloud (e.g., "cen-xxxxx").
+  string cen_id = 1;
+
+  // The CEN instance name as configured in the spec.
+  string cen_instance_name = 2;
+}

@@ -38,6 +38,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsSnsTopic.my-notifications
 spec:
+  region: us-east-1
   signatureVersion: 2
 ```
 
@@ -53,7 +54,11 @@ This creates a Standard SNS topic with SHA256 message signatures and all other A
 
 ### Required Fields
 
-All top-level spec fields are optional. A topic can be created with an empty `spec` to get a Standard topic with all AWS defaults.
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `region` | `string` | The AWS region where the SNS topic will be created. | Required |
+
+All other top-level spec fields are optional. A topic can be created with an empty `spec` to get a Standard topic with all AWS defaults.
 
 When entries are added to `subscriptions`, each entry requires:
 
@@ -100,6 +105,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsSnsTopic.order-events
 spec:
+  region: us-east-1
   signatureVersion: 2
   subscriptions:
     - name: fulfillment
@@ -138,6 +144,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsSnsTopic.payment-events
 spec:
+  region: us-east-1
   fifoTopic: true
   contentBasedDeduplication: true
   fifoThroughputScope: MessageGroup
@@ -168,6 +175,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsSnsTopic.audit-events
 spec:
+  region: us-east-1
   displayName: Audit Events
   signatureVersion: 2
   tracingConfig: Active

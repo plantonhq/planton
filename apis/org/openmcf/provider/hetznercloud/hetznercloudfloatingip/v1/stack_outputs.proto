@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package org.openmcf.provider.hetznercloud.hetznercloudfloatingip.v1;
+
+// HetznerCloudFloatingIpStackOutputs captures the resulting IP identifiers
+// and addresses after provisioning.
+message HetznerCloudFloatingIpStackOutputs {
+  // The Hetzner Cloud numeric ID of the created Floating IP (as a string).
+  // Can be referenced by other components via StringValueOrRef for
+  // cross-component wiring (e.g., monitoring or DNS record creation).
+  string floating_ip_id = 1;
+
+  // The allocated IP address. For IPv4, this is a single address
+  // (e.g., "203.0.113.42"). For IPv6, this is the first address in the
+  // allocated /64 block (e.g., "2001:db8::1").
+  string ip_address = 2;
+
+  // The allocated IPv6 network in CIDR notation (e.g., "2001:db8::/64").
+  // Empty for IPv4 Floating IPs.
+  string ip_network = 3;
+}

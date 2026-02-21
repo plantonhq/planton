@@ -3,6 +3,7 @@ kind: AwsTransitGateway
 metadata:
   name: my-dev-transit-gateway
 spec:
+  region: <aws-region>
   description: Development Transit Gateway with single VPC
   dnsSupport: true
   defaultRouteTableAssociation: true

@@ -3,6 +3,7 @@ kind: AwsIamRole
 metadata:
   name: my-lambda-execution-role
 spec:
+  region: <aws-region>
   description: Lambda function execution role with basic logging permissions
   path: /  # recommended_default from spec
   trustPolicy:

@@ -1,0 +1,274 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudecsinstance.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// AliCloudEcsInstanceSpec defines the configuration for an Alibaba Cloud
+// Elastic Compute Service (ECS) instance.
+//
+// ECS is the fundamental compute building block on Alibaba Cloud, analogous
+// to AWS EC2 or Azure Virtual Machines. Each instance runs a single OS image
+// with configurable CPU, memory, system disk, optional data disks, and
+// networking (VPC placement, security groups, optional public IP).
+//
+// Data disks are created inline with the instance using the provider's
+// built-in `data_disks` block, keeping disk lifecycle tightly coupled to
+// the instance (consistent with DD07 composite bundling).
+//
+// Provider resources:
+//   Terraform: alicloud_instance
+//   Pulumi:    ecs.Instance
+message AliCloudEcsInstanceSpec {
+  // Alibaba Cloud region where the ECS instance will be created.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // VSwitch ID that determines the VPC, availability zone, and subnet CIDR
+  // for the instance's primary network interface.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
+  ];
+
+  // Security group IDs to associate with the instance. At least one is
+  // required. An instance can belong to up to 5 security groups.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 3 [
+    (buf.validate.field).repeated.min_items = 1,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // ECS instance type that determines CPU and memory allocation.
+  // Must start with "ecs." prefix.
+  // Examples: "ecs.g7.large" (2 vCPU, 8 GiB), "ecs.c7.xlarge" (4 vCPU, 8 GiB).
+  string instance_type = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "instance_type_prefix"
+      message: "instance_type must start with 'ecs.'"
+      expression: "this.startsWith('ecs.')"
+    }
+  ];
+
+  // Operating system image ID. Determines the OS, architecture, and
+  // pre-installed software on the instance.
+  // Example: "ubuntu_22_04_x64_20G_alibase_20230515.vhd"
+  string image_id = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Instance display name. 2-128 characters.
+  // If omitted, defaults to the metadata.name.
+  string instance_name = 6 [(buf.validate.field).cel = {
+    id: "instance_name_length"
+    message: "instance_name must be between 2 and 128 characters when set"
+    expression: "this == '' || (this.size() >= 2 && this.size() <= 128)"
+  }];
+
+  // OS-level hostname. If omitted, Alibaba Cloud generates one.
+  string host_name = 7;
+
+  // Instance description. 2-256 characters.
+  string description = 8 [(buf.validate.field).cel = {
+    id: "description_length"
+    message: "description must be between 2 and 256 characters when set"
+    expression: "this == '' || (this.size() >= 2 && this.size() <= 256)"
+  }];
+
+  // System disk configuration. Every ECS instance has exactly one system
+  // disk that holds the OS. If omitted, defaults are applied (cloud_essd, 40 GB).
+  AliCloudEcsSystemDisk system_disk = 9;
+
+  // Additional data disks to create and attach to the instance. Up to 16
+  // data disks are supported. Disks are created inline with the instance
+  // and their lifecycle is tied to it by default.
+  repeated AliCloudEcsDataDisk data_disks = 10 [(buf.validate.field).repeated.max_items = 16];
+
+  // SSH key pair name for passwordless authentication. Mutually exclusive
+  // authentication option with password.
+  string key_name = 11;
+
+  // Instance login password. 8-30 characters, must contain at least three
+  // of: uppercase, lowercase, digits, special characters.
+  // Mutually exclusive authentication option with key_name.
+  string password = 12 [(buf.validate.field).cel = {
+    id: "password_length"
+    message: "password must be between 8 and 30 characters when set"
+    expression: "this == '' || (this.size() >= 8 && this.size() <= 30)"
+  }];
+
+  // Maximum outbound internet bandwidth in Mbps. A value > 0 causes Alibaba
+  // Cloud to allocate a public IP address to the instance.
+  // Default: 0 (no public IP).
+  optional int32 internet_max_bandwidth_out = 13 [
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 100
+    },
+    (org.openmcf.shared.options.default) = "0"
+  ];
+
+  // Billing method for internet traffic. Only meaningful when
+  // internet_max_bandwidth_out > 0.
+  optional string internet_charge_type = 14 [(buf.validate.field).cel = {
+    id: "internet_charge_type_valid"
+    message: "internet_charge_type must be one of: PayByTraffic, PayByBandwidth"
+    expression: "this == '' || this in ['PayByTraffic', 'PayByBandwidth']"
+  }];
+
+  // Billing method for the instance itself.
+  // Default: "PostPaid" (pay-as-you-go).
+  optional string instance_charge_type = 15 [
+    (buf.validate.field).cel = {
+      id: "instance_charge_type_valid"
+      message: "instance_charge_type must be one of: PostPaid, PrePaid"
+      expression: "this == '' || this in ['PostPaid', 'PrePaid']"
+    },
+    (org.openmcf.shared.options.default) = "PostPaid"
+  ];
+
+  // Subscription period. Only applicable when instance_charge_type is "PrePaid".
+  // Valid values: 1-9, 12, 24, 36, 48, 60.
+  optional int32 period = 16 [(buf.validate.field).cel = {
+    id: "period_valid"
+    message: "period must be one of: 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 24, 36, 48, 60"
+    expression: "this in [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 24, 36, 48, 60]"
+  }];
+
+  // Subscription period unit. Only applicable when instance_charge_type is "PrePaid".
+  optional string period_unit = 17 [(buf.validate.field).cel = {
+    id: "period_unit_valid"
+    message: "period_unit must be one of: Week, Month"
+    expression: "this == '' || this in ['Week', 'Month']"
+  }];
+
+  // Spot instance bidding strategy. Spot instances can reduce costs up to 90%
+  // but may be reclaimed by Alibaba Cloud when capacity is needed.
+  optional string spot_strategy = 18 [(buf.validate.field).cel = {
+    id: "spot_strategy_valid"
+    message: "spot_strategy must be one of: NoSpot, SpotAsPriceGo, SpotWithPriceLimit"
+    expression: "this == '' || this in ['NoSpot', 'SpotAsPriceGo', 'SpotWithPriceLimit']"
+  }];
+
+  // Maximum hourly price for a spot instance. Only applicable when
+  // spot_strategy is "SpotWithPriceLimit".
+  optional double spot_price_limit = 19;
+
+  // Cloud-init user data script. Typically base64-encoded. Executed once
+  // at first boot for automated instance provisioning.
+  string user_data = 20;
+
+  // RAM role name to attach as the instance profile. Enables the instance
+  // to call Alibaba Cloud APIs without embedded credentials.
+  string role_name = 21;
+
+  // Prevent accidental instance deletion via console or API.
+  optional bool deletion_protection = 22;
+
+  // Cloud security center agent mode. "Active" enables the China-region
+  // security agent; "Deactive" disables it.
+  optional string security_enhancement_strategy = 23 [(buf.validate.field).cel = {
+    id: "security_enhancement_strategy_valid"
+    message: "security_enhancement_strategy must be one of: Active, Deactive"
+    expression: "this == '' || this in ['Active', 'Deactive']"
+  }];
+
+  // Alibaba Cloud resource group ID for organizational grouping (per DD05).
+  // If omitted, the instance is placed in the account's default resource group.
+  string resource_group_id = 24;
+
+  // Tags to apply to the ECS instance and its disks.
+  map<string, string> tags = 25;
+}
+
+// AliCloudEcsSystemDisk configures the boot disk for the ECS instance.
+message AliCloudEcsSystemDisk {
+  // Disk category. Determines the underlying storage technology and
+  // performance characteristics.
+  // Default: "cloud_essd"
+  optional string category = 1 [
+    (buf.validate.field).cel = {
+      id: "system_disk_category_valid"
+      message: "category must be one of: cloud_efficiency, cloud_ssd, cloud_essd, cloud_auto, cloud_essd_entry"
+      expression: "this == '' || this in ['cloud_efficiency', 'cloud_ssd', 'cloud_essd', 'cloud_auto', 'cloud_essd_entry']"
+    },
+    (org.openmcf.shared.options.default) = "cloud_essd"
+  ];
+
+  // Disk size in GB. The minimum depends on the image; typical minimum
+  // is 20 GB for Linux and 40 GB for Windows.
+  // Default: 40
+  optional int32 size = 2 [
+    (buf.validate.field).int32.gte = 20,
+    (org.openmcf.shared.options.default) = "40"
+  ];
+
+  // ESSD performance level. Only applicable when category is "cloud_essd".
+  // Higher levels deliver more IOPS and throughput at higher cost.
+  optional string performance_level = 3 [(buf.validate.field).cel = {
+    id: "system_disk_pl_valid"
+    message: "performance_level must be one of: PL0, PL1, PL2, PL3"
+    expression: "this == '' || this in ['PL0', 'PL1', 'PL2', 'PL3']"
+  }];
+
+  // Enable server-side encryption for the system disk.
+  optional bool encrypted = 4;
+
+  // KMS key ID for disk encryption. Only applicable when encrypted is true.
+  string kms_key_id = 5;
+}
+
+// AliCloudEcsDataDisk configures an additional data disk to be created
+// inline with the ECS instance.
+message AliCloudEcsDataDisk {
+  // Disk size in GB. Required for each data disk.
+  int32 size = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32.gte = 20
+  ];
+
+  // Disk category.
+  // Default: "cloud_essd"
+  optional string category = 2 [
+    (buf.validate.field).cel = {
+      id: "data_disk_category_valid"
+      message: "category must be one of: cloud_efficiency, cloud_ssd, cloud_essd, cloud_auto, cloud_essd_entry"
+      expression: "this == '' || this in ['cloud_efficiency', 'cloud_ssd', 'cloud_essd', 'cloud_auto', 'cloud_essd_entry']"
+    },
+    (org.openmcf.shared.options.default) = "cloud_essd"
+  ];
+
+  // Disk display name.
+  string name = 3;
+
+  // ESSD performance level. Only applicable when category is "cloud_essd".
+  optional string performance_level = 4 [(buf.validate.field).cel = {
+    id: "data_disk_pl_valid"
+    message: "performance_level must be one of: PL0, PL1, PL2, PL3"
+    expression: "this == '' || this in ['PL0', 'PL1', 'PL2', 'PL3']"
+  }];
+
+  // Enable server-side encryption for this data disk.
+  optional bool encrypted = 5;
+
+  // KMS key ID for disk encryption.
+  string kms_key_id = 6;
+
+  // Snapshot ID to create this disk from.
+  string snapshot_id = 7;
+
+  // Whether this disk is deleted when the instance is released.
+  // Default: true
+  optional bool delete_with_instance = 8 [(org.openmcf.shared.options.default) = "true"];
+
+  // Disk description.
+  string description = 9;
+}

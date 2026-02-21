@@ -14,6 +14,7 @@ import (
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/confluent"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/digitalocean"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
+	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga"
@@ -58,6 +59,8 @@ func ProviderConfigExample(provider cloudresourcekind.CloudResourceProvider) str
 		return alicloud.ConfigFileExample
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return oci.ConfigFileExample
+	case cloudresourcekind.CloudResourceProvider_hetznercloud:
+		return hetznercloud.ConfigFileExample
 	default:
 		return "# Provider config format not available"
 	}
@@ -98,6 +101,8 @@ func ProviderConfigFilename(provider cloudresourcekind.CloudResourceProvider) st
 		return alicloud.ConfigFileName
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return oci.ConfigFileName
+	case cloudresourcekind.CloudResourceProvider_hetznercloud:
+		return hetznercloud.ConfigFileName
 	default:
 		return "provider-config.yaml"
 	}
@@ -138,6 +143,8 @@ func ProviderEnvironmentVariablesHelp(provider cloudresourcekind.CloudResourcePr
 		return alicloud.EnvironmentVariablesHelp
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return oci.EnvironmentVariablesHelp
+	case cloudresourcekind.CloudResourceProvider_hetznercloud:
+		return hetznercloud.EnvironmentVariablesHelp
 	default:
 		return "# Environment variables not available for this provider"
 	}
@@ -178,6 +185,8 @@ func ProviderDocsURL(provider cloudresourcekind.CloudResourceProvider) string {
 		return alicloud.ProviderDocsURL
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return oci.ProviderDocsURL
+	case cloudresourcekind.CloudResourceProvider_hetznercloud:
+		return hetznercloud.ProviderDocsURL
 	default:
 		return ""
 	}

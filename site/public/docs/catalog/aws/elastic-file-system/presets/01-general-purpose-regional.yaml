@@ -6,6 +6,7 @@ metadata:
   name: app-efs-regional
   id: app-efs-regional-id
 spec:
+  region: <aws-region>
   encrypted: true
   throughput_mode: bursting
   backup_enabled: true

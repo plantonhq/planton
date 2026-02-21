@@ -39,6 +39,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsCloudFront.my-cdn
 spec:
+  region: us-east-1
   enabled: true
   origins:
     - domainName: my-bucket.s3.us-east-1.amazonaws.com
@@ -59,6 +60,7 @@ This creates a CloudFront distribution with a single origin, using the default C
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
+| `region` | `string` | AWS region for the provider (e.g., `us-east-1`). | Required |
 | `origins` | `Origin[]` | List of origins available to the distribution. Must contain at least one origin with exactly one marked as default. | Minimum 1 item; exactly one must have `isDefault: true` |
 | `origins[].domainName` | `string` | DNS name of the origin, e.g., `my-bucket.s3.amazonaws.com`. | Minimum 1 character; must be a valid domain name |
 | `origins[].isDefault` | `bool` | Whether this origin is the default for the distribution. Exactly one origin must be marked as default. | — |
@@ -91,6 +93,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsCloudFront.static-site-cdn
 spec:
+  region: us-east-1
   enabled: true
   defaultRootObject: index.html
   origins:
@@ -113,6 +116,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsCloudFront.branded-cdn
 spec:
+  region: us-east-1
   enabled: true
   aliases:
     - cdn.example.com
@@ -139,6 +143,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: dev.AwsCloudFront.regional-cdn
 spec:
+  region: us-east-1
   enabled: true
   priceClass: PRICE_CLASS_100
   origins:
@@ -161,6 +166,7 @@ metadata:
     pulumi.openmcf.org/project: my-project
     pulumi.openmcf.org/stack.name: prod.AwsCloudFront.multi-origin-cdn
 spec:
+  region: us-east-1
   enabled: true
   aliases:
     - www.example.com

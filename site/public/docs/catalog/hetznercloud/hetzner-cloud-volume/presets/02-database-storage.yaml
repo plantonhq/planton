@@ -1,0 +1,12 @@
+apiVersion: hetznercloud.openmcf.org/v1
+kind: HetznerCloudVolume
+metadata:
+  name: my-database-volume
+spec:
+  size: 100
+  location: fsn1
+  format: xfs
+  serverId:
+    value: <server-id>
+  automount: true
+  deleteProtection: true

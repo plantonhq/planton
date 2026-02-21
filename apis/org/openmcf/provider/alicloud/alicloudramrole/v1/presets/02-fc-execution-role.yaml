@@ -1,0 +1,19 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudRamRole
+metadata:
+  name: my-fc-execution-role
+spec:
+  region: <alibaba-cloud-region>
+  roleName: <your-fc-role-name>
+  description: Function Compute execution role with Log Service access
+  assumeRolePolicyDocument: |
+    {
+      "Statement": [{
+        "Action": "sts:AssumeRole",
+        "Effect": "Allow",
+        "Principal": {"Service": ["fc.aliyuncs.com"]}
+      }],
+      "Version": "1"
+    }
+  policyAttachments:
+    - policyName: AliyunLogFullAccess

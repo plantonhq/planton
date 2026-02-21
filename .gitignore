@@ -46,3 +46,7 @@ backend.tf
 /pulumi
 bazel-openmcf-oracle-cloud
 bazel-openmcf-oracle-cloud/
+bazel-openmcf-alibaba-cloud
+bazel-openmcf-alibaba-cloud/
+bazel-openmcf-hetzner-cloud
+bazel-openmcf-hetzner-cloud/

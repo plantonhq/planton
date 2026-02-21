@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudprivatednszone.v1;
+
+// AliCloudPrivateDnsZoneStackOutputs captures the outputs from deploying an
+// Alibaba Cloud Private Zone.
+message AliCloudPrivateDnsZoneStackOutputs {
+  // The Private Zone ID assigned by Alibaba Cloud.
+  string zone_id = 1;
+
+  // The zone name as created (e.g., "internal.example.com").
+  string zone_name = 2;
+
+  // Whether the zone is a reverse-lookup (PTR) zone.
+  // Computed by the provider based on the zone name format.
+  bool is_ptr = 3;
+
+  // The number of DNS records in the zone.
+  // Computed by the provider after record creation.
+  int32 record_count = 4;
+}

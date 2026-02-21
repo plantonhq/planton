@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package org.openmcf.provider.hetznercloud;
+
+import "buf/validate/validate.proto";
+
+// HetznerCloudProviderConfig defines the credentials and connection parameters required to
+// interact with Hetzner Cloud infrastructure. This message maps directly to the authentication
+// fields accepted by the Terraform hcloud provider.
+//
+// Hetzner Cloud uses a single API token for authentication. The token is a 64-character string
+// generated in the Hetzner Cloud Console under a specific project. All API requests are scoped
+// to the project that owns the token.
+//
+// The endpoint fields allow overriding the default API base URLs, which is useful for testing
+// or proxying. The poll_interval and poll_function fields control how the provider polls for
+// action completion; these are included for programmatic access but have no upstream environment
+// variable mapping and are not emitted by the env var loader.
+//
+// Field-to-environment-variable mapping:
+//   token            -> HCLOUD_TOKEN
+//   endpoint         -> HCLOUD_ENDPOINT
+//   endpoint_hetzner -> HETZNER_ENDPOINT
+//   poll_interval    -> (no env var -- provider config only)
+//   poll_function    -> (no env var -- provider config only)
+//
+// For more information:
+// - Terraform provider docs: https://registry.terraform.io/providers/hetznercloud/hcloud/latest/docs
+// - Hetzner Cloud API: https://docs.hetzner.cloud/
+message HetznerCloudProviderConfig {
+  // token is the Hetzner Cloud API token used to authenticate all API requests.
+  // Tokens are 64 characters long and are created per-project in the Hetzner Cloud Console
+  // under Security > API Tokens.
+  // Environment variable: HCLOUD_TOKEN
+  string token = 1 [(buf.validate.field).required = true];
+
+  // endpoint overrides the default Hetzner Cloud API endpoint.
+  // If omitted, defaults to https://api.hetzner.cloud/v1.
+  // Environment variable: HCLOUD_ENDPOINT
+  string endpoint = 2;
+
+  // endpoint_hetzner overrides the default Hetzner (non-cloud) API endpoint.
+  // If omitted, defaults to https://api.hetzner.com/v1.
+  // Environment variable: HETZNER_ENDPOINT
+  string endpoint_hetzner = 3;
+
+  // poll_interval controls the interval at which the provider polls for action completion.
+  // Format is a Go duration string (e.g., "500ms", "1s", "5s").
+  // If omitted, defaults to "500ms" upstream. Increase when encountering rate-limit errors.
+  // No upstream environment variable mapping.
+  string poll_interval = 4;
+
+  // poll_function selects the polling backoff strategy used when waiting for actions.
+  // Valid values: "constant", "exponential".
+  // If omitted, defaults to "exponential" upstream.
+  // No upstream environment variable mapping.
+  string poll_function = 5;
+}

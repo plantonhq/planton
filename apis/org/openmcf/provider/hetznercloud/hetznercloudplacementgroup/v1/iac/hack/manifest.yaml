@@ -1,0 +1,5 @@
+apiVersion: hetznercloud.openmcf.org/v1
+kind: HetznerCloudPlacementGroup
+metadata:
+  name: hetznercloudplacementgroup-demo
+spec: {}

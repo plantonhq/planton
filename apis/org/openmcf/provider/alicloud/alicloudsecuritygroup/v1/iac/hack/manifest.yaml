@@ -1,0 +1,21 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudSecurityGroup
+metadata:
+  name: alicloudsecuritygroup-demo
+spec:
+  region: cn-hangzhou
+  vpcId:
+    value: vpc-demo123
+  securityGroupName: demo-sg
+  description: Demo security group for local testing
+  rules:
+    - type: ingress
+      ipProtocol: tcp
+      portRange: "443/443"
+      cidrIp: "0.0.0.0/0"
+      description: Allow HTTPS
+    - type: egress
+      ipProtocol: all
+      portRange: "-1/-1"
+      cidrIp: "0.0.0.0/0"
+      description: Allow all outbound

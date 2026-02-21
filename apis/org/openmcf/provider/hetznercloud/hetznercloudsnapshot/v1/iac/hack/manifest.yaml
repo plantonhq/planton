@@ -1,0 +1,8 @@
+apiVersion: hetznercloud.openmcf.org/v1
+kind: HetznerCloudSnapshot
+metadata:
+  name: hetznercloudsnapshot-demo
+spec:
+  serverId:
+    value: "12345678"
+  description: demo snapshot

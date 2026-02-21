@@ -110,10 +110,10 @@ type SnowflakeCredential struct {
 // Supports three authentication methods: password, application_credential, and token.
 // The AuthMethod field acts as a discriminator to determine which credential fields are active.
 type OpenStackCredential struct {
-	ID       primitive.ObjectID `bson:"_id,omitempty" json:"id"`
-	Name     string             `bson:"name" json:"name"`
-	AuthURL  string             `bson:"auth_url" json:"auth_url"`
-	Region   string             `bson:"region,omitempty" json:"region,omitempty"`
+	ID      primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	Name    string             `bson:"name" json:"name"`
+	AuthURL string             `bson:"auth_url" json:"auth_url"`
+	Region  string             `bson:"region,omitempty" json:"region,omitempty"`
 	// AuthMethod discriminates the active credential set: "password", "application_credential", or "token"
 	AuthMethod string `bson:"auth_method" json:"auth_method"`
 	// Password authentication fields
@@ -157,10 +157,10 @@ type ScalewayCredential struct {
 	UpdatedAt      time.Time          `bson:"updated_at" json:"updated_at"`
 }
 
-// AlicloudCredential represents Alibaba Cloud credentials.
+// AliCloudCredential represents Alibaba Cloud credentials.
 // Supports seven authentication methods via an AuthMethod string discriminator.
 // Only the fields relevant to the active auth method are populated.
-type AlicloudCredential struct {
+type AliCloudCredential struct {
 	ID          primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	Name        string             `bson:"name" json:"name"`
 	AuthMethod  string             `bson:"auth_method" json:"auth_method"`
@@ -174,11 +174,11 @@ type AlicloudCredential struct {
 	// ECS role
 	EcsRoleName string `bson:"ecs_role_name,omitempty" json:"ecs_role_name,omitempty"`
 	// Assume role / OIDC shared fields
-	RoleArn          string `bson:"role_arn,omitempty" json:"role_arn,omitempty"`
-	SessionName      string `bson:"session_name,omitempty" json:"session_name,omitempty"`
-	Policy           string `bson:"policy,omitempty" json:"policy,omitempty"`
+	RoleArn           string `bson:"role_arn,omitempty" json:"role_arn,omitempty"`
+	SessionName       string `bson:"session_name,omitempty" json:"session_name,omitempty"`
+	Policy            string `bson:"policy,omitempty" json:"policy,omitempty"`
 	SessionExpiration int32  `bson:"session_expiration,omitempty" json:"session_expiration,omitempty"`
-	ExternalId       string `bson:"external_id,omitempty" json:"external_id,omitempty"`
+	ExternalId        string `bson:"external_id,omitempty" json:"external_id,omitempty"`
 	// OIDC-specific
 	OidcProviderArn string `bson:"oidc_provider_arn,omitempty" json:"oidc_provider_arn,omitempty"`
 	OidcToken       string `bson:"oidc_token,omitempty" json:"oidc_token,omitempty"`
@@ -210,6 +210,20 @@ type OciCredential struct {
 	ConfigFileProfile string    `bson:"config_file_profile,omitempty" json:"config_file_profile,omitempty"`
 	CreatedAt         time.Time `bson:"created_at" json:"created_at"`
 	UpdatedAt         time.Time `bson:"updated_at" json:"updated_at"`
+}
+
+// HetznerCloudCredential represents Hetzner Cloud credentials.
+// Uses a single API token authentication model.
+type HetznerCloudCredential struct {
+	ID              primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	Name            string             `bson:"name" json:"name"`
+	Token           string             `bson:"token" json:"token"`
+	Endpoint        string             `bson:"endpoint,omitempty" json:"endpoint,omitempty"`
+	EndpointHetzner string             `bson:"endpoint_hetzner,omitempty" json:"endpoint_hetzner,omitempty"`
+	PollInterval    string             `bson:"poll_interval,omitempty" json:"poll_interval,omitempty"`
+	PollFunction    string             `bson:"poll_function,omitempty" json:"poll_function,omitempty"`
+	CreatedAt       time.Time          `bson:"created_at" json:"created_at"`
+	UpdatedAt       time.Time          `bson:"updated_at" json:"updated_at"`
 }
 
 // KubernetesCredential represents Kubernetes cluster credentials.

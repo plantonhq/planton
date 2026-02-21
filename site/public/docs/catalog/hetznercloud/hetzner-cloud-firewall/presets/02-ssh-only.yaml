@@ -1,0 +1,19 @@
+apiVersion: hetznercloud.openmcf.org/v1
+kind: HetznerCloudFirewall
+metadata:
+  name: my-ssh-only-firewall
+spec:
+  rules:
+    - direction: in
+      protocol: tcp
+      port: "22"
+      sourceIps:
+        - 0.0.0.0/0
+        - "::/0"
+      description: allow SSH
+    - direction: in
+      protocol: icmp
+      sourceIps:
+        - 0.0.0.0/0
+        - "::/0"
+      description: allow ping

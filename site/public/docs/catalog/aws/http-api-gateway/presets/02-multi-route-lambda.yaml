@@ -3,6 +3,7 @@ kind: AwsHttpApiGateway
 metadata:
   name: my-multi-route-api
 spec:
+  region: <aws-region>
   description: Multi-route API with CORS support
   cors_configuration:
     allow_origins:

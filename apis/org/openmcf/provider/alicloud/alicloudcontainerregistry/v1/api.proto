@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudcontainerregistry.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/alicloud/alicloudcontainerregistry/v1/spec.proto";
+import "org/openmcf/provider/alicloud/alicloudcontainerregistry/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// alicloud-container-registry
+message AliCloudContainerRegistry {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'alicloud.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AliCloudContainerRegistry'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AliCloudContainerRegistrySpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AliCloudContainerRegistryStatus status = 5;
+}
+
+// alicloud-container-registry status
+message AliCloudContainerRegistryStatus {
+  // stack-outputs
+  AliCloudContainerRegistryStackOutputs outputs = 1;
+}

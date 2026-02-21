@@ -6,6 +6,7 @@ metadata:
   org: <REPLACE>
   env: <REPLACE>
 spec:
+  region: <aws-region>
   deployment_type: MULTI_AZ_2
   storage_capacity_gib: 2048
   storage_type: SSD

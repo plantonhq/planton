@@ -3,6 +3,7 @@ kind: AwsSecurityGroup
 metadata:
   name: my-database-tier-sg
 spec:
+  region: us-west-2
   vpcId:
     value: "<vpc-id>"
   description: Allow database access from application tier only
