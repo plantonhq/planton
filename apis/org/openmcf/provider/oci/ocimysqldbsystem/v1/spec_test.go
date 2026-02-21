@@ -121,9 +121,9 @@ var _ = ginkgo.Describe("OciMysqlDbSystemSpec Validation Tests", func() {
 				input := minimalValidMysql()
 				autoExpand := true
 				input.Spec.DataStorage = &OciMysqlDbSystemSpec_DataStorage{
-					DataStorageSizeInGb:          50,
-					IsAutoExpandStorageEnabled:   &autoExpand,
-					MaxStorageSizeInGbs:          65536,
+					DataStorageSizeInGb:        50,
+					IsAutoExpandStorageEnabled: &autoExpand,
+					MaxStorageSizeInGbs:        65536,
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
@@ -243,10 +243,10 @@ var _ = ginkgo.Describe("OciMysqlDbSystemSpec Validation Tests", func() {
 				input := minimalValidMysql()
 				readEnabled := true
 				input.Spec.ReadEndpoint = &OciMysqlDbSystemSpec_ReadEndpoint{
-					IsEnabled:                  &readEnabled,
-					ReadEndpointHostnameLabel:  "mydb-read",
-					ReadEndpointIpAddress:      "10.0.1.51",
-					ExcludeIps:                 []string{"10.0.1.100"},
+					IsEnabled:                 &readEnabled,
+					ReadEndpointHostnameLabel: "mydb-read",
+					ReadEndpointIpAddress:     "10.0.1.51",
+					ExcludeIps:                []string{"10.0.1.100"},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())

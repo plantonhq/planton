@@ -11,11 +11,11 @@ func bastionResource(ctx *pulumi.Context, locals *Locals, provider *oci.Provider
 	spec := locals.OciBastion.Spec
 
 	bastionArgs := &bastion.BastionArgs{
-		CompartmentId: pulumi.String(spec.CompartmentId.GetValue()),
+		CompartmentId:  pulumi.String(spec.CompartmentId.GetValue()),
 		TargetSubnetId: pulumi.String(spec.TargetSubnetId.GetValue()),
-		BastionType:   pulumi.String("STANDARD"),
-		Name:          pulumi.String(locals.DisplayName),
-		FreeformTags:  pulumi.ToStringMap(locals.FreeformTags),
+		BastionType:    pulumi.String("STANDARD"),
+		Name:           pulumi.String(locals.DisplayName),
+		FreeformTags:   pulumi.ToStringMap(locals.FreeformTags),
 	}
 
 	if len(spec.ClientCidrBlockAllowList) > 0 {

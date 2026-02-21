@@ -44,4 +44,3 @@ func Resources(ctx *pulumi.Context, stackInput *ocikmskeyv1.OciKmsKeyStackInput)
 func pulumiOciOpt(provider *oci.Provider) pulumi.ResourceOption {
 	return pulumi.Provider(provider)
 }
-

@@ -11,8 +11,8 @@ import (
 )
 
 var accessTypeMap = map[ociobjectstoragebucketv1.OciObjectStorageBucketSpec_AccessType]string{
-	ociobjectstoragebucketv1.OciObjectStorageBucketSpec_no_public_access:        "NoPublicAccess",
-	ociobjectstoragebucketv1.OciObjectStorageBucketSpec_object_read:             "ObjectRead",
+	ociobjectstoragebucketv1.OciObjectStorageBucketSpec_no_public_access:         "NoPublicAccess",
+	ociobjectstoragebucketv1.OciObjectStorageBucketSpec_object_read:              "ObjectRead",
 	ociobjectstoragebucketv1.OciObjectStorageBucketSpec_object_read_without_list: "ObjectReadWithoutList",
 }
 

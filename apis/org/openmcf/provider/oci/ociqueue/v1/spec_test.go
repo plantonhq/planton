@@ -101,7 +101,7 @@ var _ = ginkgo.Describe("OciQueueSpec Validation Tests", func() {
 			ginkgo.It("should not return a validation error with consumer group config", func() {
 				input := minimalValidQueue()
 				input.Spec.ConsumerGroupConfig = &OciQueueSpec_ConsumerGroupConfig{
-					IsPrimaryEnabled: proto.Bool(true),
+					IsPrimaryEnabled:   proto.Bool(true),
 					PrimaryDisplayName: "My Consumer Group",
 				}
 				err := protovalidate.Validate(input)

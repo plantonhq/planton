@@ -292,7 +292,7 @@ var _ = ginkgo.Describe("OciContainerEngineNodePoolSpec Validation Tests", func(
 						newStringValueOrRef("ocid1.nsg.oc1.iad.worker"),
 					},
 					KmsKeyId:                       newStringValueOrRef("ocid1.key.oc1.iad.boot"),
-					IsPvEncryptionInTransitEnabled:  true,
+					IsPvEncryptionInTransitEnabled: true,
 					PodNetworkOptionDetails: &OciContainerEngineNodePoolSpec_PodNetworkOptionDetails{
 						CniType:        OciContainerEngineNodePoolSpec_oci_vcn_ip_native,
 						MaxPodsPerNode: 31,

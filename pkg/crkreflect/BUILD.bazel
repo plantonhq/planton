@@ -274,6 +274,7 @@ go_library(
         "//apis/org/openmcf/provider/oci/ocicontainerinstance/v1:ocicontainerinstance",
         "//apis/org/openmcf/provider/oci/ocidbsystem/v1:ocidbsystem",
         "//apis/org/openmcf/provider/oci/ocidevopsproject/v1:ocidevopsproject",
+        "//apis/org/openmcf/provider/oci/ocidnsrecord/v1:ocidnsrecord",
         "//apis/org/openmcf/provider/oci/ocidnszone/v1:ocidnszone",
         "//apis/org/openmcf/provider/oci/ocidynamicgroup/v1:ocidynamicgroup",
         "//apis/org/openmcf/provider/oci/ocidynamicroutinggateway/v1:ocidynamicroutinggateway",

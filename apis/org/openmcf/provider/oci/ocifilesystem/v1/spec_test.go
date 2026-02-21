@@ -174,12 +174,12 @@ var _ = ginkgo.Describe("OciFileSystemSpec Validation Tests", func() {
 						Path: "/shared-data",
 						ExportOptions: []*OciFileSystemSpec_ExportOption{
 							{
-								Source:                     "0.0.0.0/0",
-								Access:                     OciFileSystemSpec_read_only,
-								IdentitySquash:             OciFileSystemSpec_all_squash,
-								IsAnonymousAccessAllowed:   true,
-								AnonymousUid:               65534,
-								AnonymousGid:               65534,
+								Source:                   "0.0.0.0/0",
+								Access:                   OciFileSystemSpec_read_only,
+								IdentitySquash:           OciFileSystemSpec_all_squash,
+								IsAnonymousAccessAllowed: true,
+								AnonymousUid:             65534,
+								AnonymousGid:             65534,
 							},
 						},
 					},

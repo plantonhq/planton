@@ -207,10 +207,10 @@ var _ = ginkgo.Describe("OciApplicationLoadBalancerSpec Validation Tests", func(
 			ginkgo.It("should not return a validation error with backend set SSL configuration", func() {
 				input := minimalValidLoadBalancer()
 				input.Spec.BackendSets[0].SslConfiguration = &OciApplicationLoadBalancerSpec_SslConfiguration{
-					CertificateIds:   []string{"ocid1.certificate.oc1.iad.example"},
-					CipherSuiteName:  "oci-default-ssl-cipher-suite-v1",
-					Protocols:        []string{"TLSv1.2"},
-					VerifyDepth:      3,
+					CertificateIds:        []string{"ocid1.certificate.oc1.iad.example"},
+					CipherSuiteName:       "oci-default-ssl-cipher-suite-v1",
+					Protocols:             []string{"TLSv1.2"},
+					VerifyDepth:           3,
 					VerifyPeerCertificate: true,
 				}
 				err := protovalidate.Validate(input)

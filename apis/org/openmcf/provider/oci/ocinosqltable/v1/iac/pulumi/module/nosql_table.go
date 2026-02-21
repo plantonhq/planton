@@ -25,12 +25,12 @@ func nosqlTable(ctx *pulumi.Context, locals *Locals, provider *oci.Provider) err
 	}
 
 	tableArgs := &nosql.TableArgs{
-		CompartmentId:    pulumi.String(spec.CompartmentId.GetValue()),
-		Name:             pulumi.String(spec.Name),
-		DdlStatement:     pulumi.String(spec.DdlStatement),
-		TableLimits:      tableLimitsArgs,
+		CompartmentId:     pulumi.String(spec.CompartmentId.GetValue()),
+		Name:              pulumi.String(spec.Name),
+		DdlStatement:      pulumi.String(spec.DdlStatement),
+		TableLimits:       tableLimitsArgs,
 		IsAutoReclaimable: pulumi.Bool(spec.IsAutoReclaimable),
-		FreeformTags:     pulumi.ToStringMap(locals.FreeformTags),
+		FreeformTags:      pulumi.ToStringMap(locals.FreeformTags),
 	}
 
 	table, err := nosql.NewTable(ctx, locals.TableName, tableArgs, pulumiOciOpt(provider))

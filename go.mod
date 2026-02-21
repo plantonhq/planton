@@ -35,6 +35,7 @@ require (
 	github.com/pulumi/pulumi-gcp/sdk/v9 v9.4.0
 	github.com/pulumi/pulumi-kubernetes/sdk/v4 v4.18.4
 	github.com/pulumi/pulumi-mongodbatlas/sdk/v3 v3.36.1
+	github.com/pulumi/pulumi-oci/sdk/v4 v4.0.0-20260214044446-b221312c8fd5
 	github.com/pulumi/pulumi-openstack/sdk/v5 v5.4.1
 	github.com/pulumi/pulumi-random/sdk/v4 v4.16.7
 	github.com/pulumi/pulumi-snowflake/sdk/v2 v2.9.1
@@ -140,7 +141,6 @@ require (
 	github.com/pseudomuto/protokit v0.2.0 // indirect
 	github.com/pulumi/appdash v0.0.0-20231130102222-75f619a67231 // indirect
 	github.com/pulumi/esc v0.17.0 // indirect
-	github.com/pulumi/pulumi-oci/sdk/v4 v4.0.0-20260214044446-b221312c8fd5 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
 	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0 // indirect

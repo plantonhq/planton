@@ -8,8 +8,8 @@ import (
 
 type Locals struct {
 	OciSecurityGroup *ocisecuritygroupv1.OciSecurityGroup
-	DisplayName             string
-	FreeformTags            map[string]string
+	DisplayName      string
+	FreeformTags     map[string]string
 }
 
 func initializeLocals(_ *pulumi.Context, stackInput *ocisecuritygroupv1.OciSecurityGroupStackInput) *Locals {

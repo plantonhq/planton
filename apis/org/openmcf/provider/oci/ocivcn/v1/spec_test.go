@@ -105,14 +105,14 @@ var _ = ginkgo.Describe("OciVcnSpec Validation Tests", func() {
 						},
 					},
 					Spec: &OciVcnSpec{
-						CompartmentId:             newStringValueOrRef("ocid1.compartment.oc1..example"),
-						CidrBlocks:                []string{"10.0.0.0/16", "172.16.0.0/16"},
-						DisplayName:               "Production VCN",
-						DnsLabel:                   "prodvcn",
-						IsIpv6Enabled:              true,
-						IsInternetGatewayEnabled:   true,
-						IsNatGatewayEnabled:        true,
-						IsServiceGatewayEnabled:    true,
+						CompartmentId:            newStringValueOrRef("ocid1.compartment.oc1..example"),
+						CidrBlocks:               []string{"10.0.0.0/16", "172.16.0.0/16"},
+						DisplayName:              "Production VCN",
+						DnsLabel:                 "prodvcn",
+						IsIpv6Enabled:            true,
+						IsInternetGatewayEnabled: true,
+						IsNatGatewayEnabled:      true,
+						IsServiceGatewayEnabled:  true,
 					},
 				}
 				err := protovalidate.Validate(input)

@@ -9,7 +9,7 @@ import (
 )
 
 var autotuneTypeMap = map[ociblockvolumev1.OciBlockVolumeSpec_AutotunePolicy_AutotuneType]string{
-	ociblockvolumev1.OciBlockVolumeSpec_AutotunePolicy_detached_volume:  "DETACHED_VOLUME",
+	ociblockvolumev1.OciBlockVolumeSpec_AutotunePolicy_detached_volume:   "DETACHED_VOLUME",
 	ociblockvolumev1.OciBlockVolumeSpec_AutotunePolicy_performance_based: "PERFORMANCE_BASED",
 }
 

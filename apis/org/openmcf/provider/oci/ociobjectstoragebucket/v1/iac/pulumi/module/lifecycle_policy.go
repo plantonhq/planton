@@ -11,10 +11,10 @@ import (
 )
 
 var lifecycleActionMap = map[ociobjectstoragebucketv1.OciObjectStorageBucketSpec_LifecycleAction]string{
-	ociobjectstoragebucketv1.OciObjectStorageBucketSpec_lifecycle_archive:            "ARCHIVE",
-	ociobjectstoragebucketv1.OciObjectStorageBucketSpec_lifecycle_infrequent_access:  "INFREQUENT_ACCESS",
-	ociobjectstoragebucketv1.OciObjectStorageBucketSpec_lifecycle_delete:             "DELETE",
-	ociobjectstoragebucketv1.OciObjectStorageBucketSpec_lifecycle_abort:              "ABORT",
+	ociobjectstoragebucketv1.OciObjectStorageBucketSpec_lifecycle_archive:           "ARCHIVE",
+	ociobjectstoragebucketv1.OciObjectStorageBucketSpec_lifecycle_infrequent_access: "INFREQUENT_ACCESS",
+	ociobjectstoragebucketv1.OciObjectStorageBucketSpec_lifecycle_delete:            "DELETE",
+	ociobjectstoragebucketv1.OciObjectStorageBucketSpec_lifecycle_abort:             "ABORT",
 }
 
 func lifecyclePolicy(ctx *pulumi.Context, locals *Locals, provider *oci.Provider, bucket *objectstorage.Bucket) error {

@@ -8,8 +8,8 @@ import (
 
 type Locals struct {
 	OciApplicationLoadBalancer *ociapplicationloadbalancerv1.OciApplicationLoadBalancer
-	DisplayName     string
-	FreeformTags    map[string]string
+	DisplayName                string
+	FreeformTags               map[string]string
 }
 
 func initializeLocals(_ *pulumi.Context, stackInput *ociapplicationloadbalancerv1.OciApplicationLoadBalancerStackInput) *Locals {

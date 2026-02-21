@@ -22,8 +22,8 @@ func urlListResources(
 	for _, ul := range spec.Policy.UrlLists {
 		args := &networkfirewall.NetworkFirewallPolicyUrlListArgs{
 			NetworkFirewallPolicyId: policy.ID(),
-			Name:                   pulumi.String(ul.Name),
-			Urls:                   buildUrls(ul.Urls),
+			Name:                    pulumi.String(ul.Name),
+			Urls:                    buildUrls(ul.Urls),
 		}
 
 		if ul.Description != "" {

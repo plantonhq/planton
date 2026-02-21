@@ -31,8 +31,8 @@ func minimalValidCluster() *OciContainerEngineCluster {
 			Name: "test-oke-cluster",
 		},
 		Spec: &OciContainerEngineClusterSpec{
-			CompartmentId:    newStringValueOrRef("ocid1.compartment.oc1..example"),
-			VcnId:            newStringValueOrRef("ocid1.vcn.oc1.iad.example"),
+			CompartmentId:     newStringValueOrRef("ocid1.compartment.oc1..example"),
+			VcnId:             newStringValueOrRef("ocid1.vcn.oc1.iad.example"),
 			KubernetesVersion: "v1.28.2",
 		},
 	}

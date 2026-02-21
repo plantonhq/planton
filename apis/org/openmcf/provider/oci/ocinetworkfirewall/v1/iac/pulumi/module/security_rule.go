@@ -26,10 +26,10 @@ func securityRuleResources(
 	for i, rule := range spec.Policy.SecurityRules {
 		args := &networkfirewall.NetworkFirewallPolicySecurityRuleArgs{
 			NetworkFirewallPolicyId: policy.ID(),
-			Name:                   pulumi.String(rule.Name),
-			Action:                 pulumi.String(actionMap[rule.Action]),
-			Condition:              buildSecurityRuleCondition(rule.Condition),
-			PriorityOrder:          pulumi.String(fmt.Sprintf("%d", i+1)),
+			Name:                    pulumi.String(rule.Name),
+			Action:                  pulumi.String(actionMap[rule.Action]),
+			Condition:               buildSecurityRuleCondition(rule.Condition),
+			PriorityOrder:           pulumi.String(fmt.Sprintf("%d", i+1)),
 		}
 
 		if rule.Inspection != ocinetworkfirewallv1.OciNetworkFirewallSpec_SecurityRule_inspection_unspecified {

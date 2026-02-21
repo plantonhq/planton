@@ -253,11 +253,11 @@ var _ = ginkgo.Describe("OciDynamicRoutingGatewaySpec Validation Tests", func() 
 						DisplayName: "hub-rt",
 						StaticRouteRules: []*OciDynamicRoutingGatewaySpec_StaticRouteRule{
 							{
-								Destination:          "10.0.0.0/8",
+								Destination:           "10.0.0.0/8",
 								NextHopAttachmentName: "spoke-vcn-1",
 							},
 							{
-								Destination:          "172.16.0.0/12",
+								Destination:           "172.16.0.0/12",
 								NextHopAttachmentName: "spoke-vcn-1",
 							},
 						},
@@ -423,11 +423,11 @@ var _ = ginkgo.Describe("OciDynamicRoutingGatewaySpec Validation Tests", func() 
 						ImportDrgRouteDistributionName: "vcn-import",
 						StaticRouteRules: []*OciDynamicRoutingGatewaySpec_StaticRouteRule{
 							{
-								Destination:          "10.0.0.0/16",
+								Destination:           "10.0.0.0/16",
 								NextHopAttachmentName: "spoke-a",
 							},
 							{
-								Destination:          "10.1.0.0/16",
+								Destination:           "10.1.0.0/16",
 								NextHopAttachmentName: "spoke-b",
 							},
 						},
@@ -574,7 +574,7 @@ var _ = ginkgo.Describe("OciDynamicRoutingGatewaySpec Validation Tests", func() 
 						DisplayName: "bad-rt",
 						StaticRouteRules: []*OciDynamicRoutingGatewaySpec_StaticRouteRule{
 							{
-								Destination:          "",
+								Destination:           "",
 								NextHopAttachmentName: "spoke-vcn-1",
 							},
 						},
@@ -591,7 +591,7 @@ var _ = ginkgo.Describe("OciDynamicRoutingGatewaySpec Validation Tests", func() 
 						DisplayName: "bad-rt",
 						StaticRouteRules: []*OciDynamicRoutingGatewaySpec_StaticRouteRule{
 							{
-								Destination:          "10.0.0.0/8",
+								Destination:           "10.0.0.0/8",
 								NextHopAttachmentName: "",
 							},
 						},

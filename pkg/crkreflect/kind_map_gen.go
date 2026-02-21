@@ -259,6 +259,7 @@ import (
 	ocicontainerinstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocicontainerinstance/v1"
 	ocidbsystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocidbsystem/v1"
 	ocidevopsprojectv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocidevopsproject/v1"
+	ocidnsrecordv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocidnsrecord/v1"
 	ocidnszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocidnszone/v1"
 	ocidynamicgroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocidynamicgroup/v1"
 	ocidynamicroutinggatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocidynamicroutinggateway/v1"
@@ -629,6 +630,7 @@ var ProviderOciMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_OciContainerInstance:       &ocicontainerinstancev1.OciContainerInstance{},
 	cloudresourcekind.CloudResourceKind_OciDbSystem:                &ocidbsystemv1.OciDbSystem{},
 	cloudresourcekind.CloudResourceKind_OciDevopsProject:           &ocidevopsprojectv1.OciDevopsProject{},
+	cloudresourcekind.CloudResourceKind_OciDnsRecord:               &ocidnsrecordv1.OciDnsRecord{},
 	cloudresourcekind.CloudResourceKind_OciDnsZone:                 &ocidnszonev1.OciDnsZone{},
 	cloudresourcekind.CloudResourceKind_OciDynamicGroup:            &ocidynamicgroupv1.OciDynamicGroup{},
 	cloudresourcekind.CloudResourceKind_OciDynamicRoutingGateway:   &ocidynamicroutinggatewayv1.OciDynamicRoutingGateway{},

@@ -169,8 +169,8 @@ var _ = ginkgo.Describe("OciContainerInstanceSpec Validation Tests", func() {
 				input.Spec.Containers[0].SecurityContext = &OciContainerInstanceSpec_SecurityContext{
 					IsNonRootUserCheckEnabled: true,
 					IsRootFileSystemReadonly:  true,
-					RunAsUser:                1000,
-					RunAsGroup:               1000,
+					RunAsUser:                 1000,
+					RunAsGroup:                1000,
 					Capabilities: &OciContainerInstanceSpec_Capabilities{
 						DropCapabilities: []string{"ALL"},
 						AddCapabilities:  []string{"NET_BIND_SERVICE"},
@@ -323,9 +323,9 @@ var _ = ginkgo.Describe("OciContainerInstanceSpec Validation Tests", func() {
 						},
 						Containers: []*OciContainerInstanceSpec_Container{
 							{
-								ImageUrl:    "docker.io/library/nginx:1.25",
-								DisplayName: "web",
-								Command:     []string{"nginx", "-g", "daemon off;"},
+								ImageUrl:             "docker.io/library/nginx:1.25",
+								DisplayName:          "web",
+								Command:              []string{"nginx", "-g", "daemon off;"},
 								EnvironmentVariables: map[string]string{"PORT": "8080"},
 								ResourceConfig:       &OciContainerInstanceSpec_ContainerResourceConfig{MemoryLimitInGbs: 8.0, VcpusLimit: 2.0},
 								HealthChecks: []*OciContainerInstanceSpec_HealthCheck{

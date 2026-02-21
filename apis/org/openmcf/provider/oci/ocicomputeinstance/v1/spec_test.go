@@ -80,8 +80,8 @@ var _ = ginkgo.Describe("OciComputeInstanceSpec Validation Tests", func() {
 				ocpus := float32(1.0)
 				mem := float32(8.0)
 				input.Spec.ShapeConfig = &OciComputeInstanceSpec_ShapeConfig{
-					Ocpus:                    &ocpus,
-					MemoryInGbs:              &mem,
+					Ocpus:                   &ocpus,
+					MemoryInGbs:             &mem,
 					BaselineOcpuUtilization: "BASELINE_1_8",
 				}
 				err := protovalidate.Validate(input)
@@ -132,10 +132,10 @@ var _ = ginkgo.Describe("OciComputeInstanceSpec Validation Tests", func() {
 				bvSize := int64(100)
 				bvVpus := int64(20)
 				input.Spec.SourceDetails = &OciComputeInstanceSpec_SourceDetails{
-					SourceType:           OciComputeInstanceSpec_SourceDetails_image,
-					SourceId:             "ocid1.image.oc1.iad.example",
-					BootVolumeSizeInGbs:  &bvSize,
-					BootVolumeVpusPerGb:  &bvVpus,
+					SourceType:          OciComputeInstanceSpec_SourceDetails_image,
+					SourceId:            "ocid1.image.oc1.iad.example",
+					BootVolumeSizeInGbs: &bvSize,
+					BootVolumeVpusPerGb: &bvVpus,
 					KmsKeyId:            newStringValueOrRef("ocid1.key.oc1.iad.example"),
 				}
 				err := protovalidate.Validate(input)
@@ -173,9 +173,9 @@ var _ = ginkgo.Describe("OciComputeInstanceSpec Validation Tests", func() {
 				secureBoot := true
 				measuredBoot := true
 				input.Spec.PlatformConfig = &OciComputeInstanceSpec_PlatformConfig{
-					Type:                          OciComputeInstanceSpec_PlatformConfig_amd_vm,
-					IsSecureBootEnabled:           &secureBoot,
-					IsMeasuredBootEnabled:         &measuredBoot,
+					Type:                  OciComputeInstanceSpec_PlatformConfig_amd_vm,
+					IsSecureBootEnabled:   &secureBoot,
+					IsMeasuredBootEnabled: &measuredBoot,
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())

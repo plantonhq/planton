@@ -147,8 +147,8 @@ var _ = ginkgo.Describe("OciVaultSecretSpec Validation Tests", func() {
 			s := secretWithExplicitContent()
 			s.Spec.SecretRules = []*OciVaultSecretSpec_SecretRule{
 				{
-					RuleType:                                        OciVaultSecretSpec_SecretRule_secret_expiry_rule,
-					SecretVersionExpiryInterval:                     "P30D",
+					RuleType:                                OciVaultSecretSpec_SecretRule_secret_expiry_rule,
+					SecretVersionExpiryInterval:             "P30D",
 					IsSecretContentRetrievalBlockedOnExpiry: true,
 				},
 			}

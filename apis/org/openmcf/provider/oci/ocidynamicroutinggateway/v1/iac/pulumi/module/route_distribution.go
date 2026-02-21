@@ -16,7 +16,7 @@ var distributionTypeMap = map[ocidynamicroutinggatewayv1.OciDynamicRoutingGatewa
 }
 
 var matchTypeMap = map[ocidynamicroutinggatewayv1.OciDynamicRoutingGatewaySpec_MatchCriteria_MatchType]string{
-	ocidynamicroutinggatewayv1.OciDynamicRoutingGatewaySpec_MatchCriteria_match_all:          "MATCH_ALL",
+	ocidynamicroutinggatewayv1.OciDynamicRoutingGatewaySpec_MatchCriteria_match_all:           "MATCH_ALL",
 	ocidynamicroutinggatewayv1.OciDynamicRoutingGatewaySpec_MatchCriteria_drg_attachment_type: "DRG_ATTACHMENT_TYPE",
 	ocidynamicroutinggatewayv1.OciDynamicRoutingGatewaySpec_MatchCriteria_drg_attachment_id:   "DRG_ATTACHMENT_ID",
 }

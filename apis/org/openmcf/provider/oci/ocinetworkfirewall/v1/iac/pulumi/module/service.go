@@ -22,9 +22,9 @@ func serviceResources(
 	for _, svc := range spec.Policy.Services {
 		args := &networkfirewall.NetworkFirewallPolicyServiceArgs{
 			NetworkFirewallPolicyId: policy.ID(),
-			Name:                   pulumi.String(svc.Name),
-			Type:                   pulumi.String(serviceTypeMap[svc.Type]),
-			PortRanges:             buildPortRanges(svc.PortRanges),
+			Name:                    pulumi.String(svc.Name),
+			Type:                    pulumi.String(serviceTypeMap[svc.Type]),
+			PortRanges:              buildPortRanges(svc.PortRanges),
 		}
 
 		if svc.Description != "" {
@@ -65,8 +65,8 @@ func serviceListResources(
 	for _, sl := range spec.Policy.ServiceLists {
 		args := &networkfirewall.NetworkFirewallPolicyServiceListArgs{
 			NetworkFirewallPolicyId: policy.ID(),
-			Name:                   pulumi.String(sl.Name),
-			Services:               pulumi.ToStringArray(sl.Services),
+			Name:                    pulumi.String(sl.Name),
+			Services:                pulumi.ToStringArray(sl.Services),
 		}
 
 		if sl.Description != "" {

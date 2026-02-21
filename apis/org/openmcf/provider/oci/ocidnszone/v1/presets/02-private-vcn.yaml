@@ -1,0 +1,11 @@
+apiVersion: oci.openmcf.org/v1
+kind: OciDnsZone
+metadata:
+  name: my-private-zone
+spec:
+  compartmentId:
+    value: <compartment-ocid>
+  zoneType: primary
+  scope: private
+  viewId:
+    value: <dns-view-ocid>

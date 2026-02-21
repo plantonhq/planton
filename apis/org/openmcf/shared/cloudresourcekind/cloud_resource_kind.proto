@@ -1799,7 +1799,7 @@ enum CloudResourceKind {
   OciDnsRecord = 3391 [(kind_meta) = {
     provider: oci
     version: v1
-    id_prefix: "ocirec"
+    id_prefix: "ocidnsr"
   }];
 
   // ── Additional Services ─────────────────────────────────────────────

@@ -236,16 +236,16 @@ var _ = ginkgo.Describe("OciDbSystemSpec Validation Tests", func() {
 				customTimeout := true
 				monthlyPatching := false
 				input.Spec.MaintenanceWindowDetails = &OciDbSystemSpec_MaintenanceWindowDetails{
-					Preference:                     OciDbSystemSpec_custom_preference,
-					PatchingMode:                   OciDbSystemSpec_rolling,
-					LeadTimeInWeeks:                1,
-					Months:                         []string{"JANUARY", "APRIL", "JULY", "OCTOBER"},
-					WeeksOfMonth:                   []int32{1},
-					DaysOfWeek:                     []string{"MONDAY"},
-					HoursOfDay:                     []int32{4},
-					CustomActionTimeoutInMins:       120,
-					IsCustomActionTimeoutEnabled:   &customTimeout,
-					IsMonthlyPatchingEnabled:       &monthlyPatching,
+					Preference:                   OciDbSystemSpec_custom_preference,
+					PatchingMode:                 OciDbSystemSpec_rolling,
+					LeadTimeInWeeks:              1,
+					Months:                       []string{"JANUARY", "APRIL", "JULY", "OCTOBER"},
+					WeeksOfMonth:                 []int32{1},
+					DaysOfWeek:                   []string{"MONDAY"},
+					HoursOfDay:                   []int32{4},
+					CustomActionTimeoutInMins:    120,
+					IsCustomActionTimeoutEnabled: &customTimeout,
+					IsMonthlyPatchingEnabled:     &monthlyPatching,
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())

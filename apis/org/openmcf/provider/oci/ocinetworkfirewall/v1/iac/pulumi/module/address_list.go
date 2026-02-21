@@ -21,9 +21,9 @@ func addressListResources(
 	for _, al := range spec.Policy.AddressLists {
 		args := &networkfirewall.NetworkFirewallPolicyAddressListArgs{
 			NetworkFirewallPolicyId: policy.ID(),
-			Name:                   pulumi.String(al.Name),
-			Type:                   pulumi.String(addressListTypeMap[al.Type]),
-			Addresses:              pulumi.ToStringArray(al.Addresses),
+			Name:                    pulumi.String(al.Name),
+			Type:                    pulumi.String(addressListTypeMap[al.Type]),
+			Addresses:               pulumi.ToStringArray(al.Addresses),
 		}
 
 		if al.Description != "" {

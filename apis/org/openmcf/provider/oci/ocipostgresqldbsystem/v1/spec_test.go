@@ -162,10 +162,10 @@ var _ = ginkgo.Describe("OciPostgresqlDbSystemSpec Validation Tests", func() {
 				input := minimalValidPostgresql()
 				input.Spec.ManagementPolicy = &OciPostgresqlDbSystemSpec_ManagementPolicy{
 					BackupPolicy: &OciPostgresqlDbSystemSpec_BackupPolicy{
-						Kind:           OciPostgresqlDbSystemSpec_weekly,
-						BackupStart:    "03:00",
-						RetentionDays:  14,
-						DaysOfTheWeek:  []string{"MONDAY", "THURSDAY"},
+						Kind:          OciPostgresqlDbSystemSpec_weekly,
+						BackupStart:   "03:00",
+						RetentionDays: 14,
+						DaysOfTheWeek: []string{"MONDAY", "THURSDAY"},
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -176,10 +176,10 @@ var _ = ginkgo.Describe("OciPostgresqlDbSystemSpec Validation Tests", func() {
 				input := minimalValidPostgresql()
 				input.Spec.ManagementPolicy = &OciPostgresqlDbSystemSpec_ManagementPolicy{
 					BackupPolicy: &OciPostgresqlDbSystemSpec_BackupPolicy{
-						Kind:            OciPostgresqlDbSystemSpec_monthly,
-						BackupStart:     "04:00",
-						RetentionDays:   30,
-						DaysOfTheMonth:  []int32{1, 15},
+						Kind:           OciPostgresqlDbSystemSpec_monthly,
+						BackupStart:    "04:00",
+						RetentionDays:  30,
+						DaysOfTheMonth: []int32{1, 15},
 					},
 				}
 				err := protovalidate.Validate(input)

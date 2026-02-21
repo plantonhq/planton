@@ -11,8 +11,8 @@ import (
 )
 
 var actionMap = map[ociapplicationloadbalancerv1.OciApplicationLoadBalancerSpec_RuleSetItem_Action]string{
-	ociapplicationloadbalancerv1.OciApplicationLoadBalancerSpec_RuleSetItem_add_http_request_header:          "ADD_HTTP_REQUEST_HEADER",
-	ociapplicationloadbalancerv1.OciApplicationLoadBalancerSpec_RuleSetItem_add_http_response_header:         "ADD_HTTP_RESPONSE_HEADER",
+	ociapplicationloadbalancerv1.OciApplicationLoadBalancerSpec_RuleSetItem_add_http_request_header:           "ADD_HTTP_REQUEST_HEADER",
+	ociapplicationloadbalancerv1.OciApplicationLoadBalancerSpec_RuleSetItem_add_http_response_header:          "ADD_HTTP_RESPONSE_HEADER",
 	ociapplicationloadbalancerv1.OciApplicationLoadBalancerSpec_RuleSetItem_extend_http_request_header_value:  "EXTEND_HTTP_REQUEST_HEADER_VALUE",
 	ociapplicationloadbalancerv1.OciApplicationLoadBalancerSpec_RuleSetItem_extend_http_response_header_value: "EXTEND_HTTP_RESPONSE_HEADER_VALUE",
 	ociapplicationloadbalancerv1.OciApplicationLoadBalancerSpec_RuleSetItem_remove_http_request_header:        "REMOVE_HTTP_REQUEST_HEADER",

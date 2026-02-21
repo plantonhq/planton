@@ -232,12 +232,12 @@ var _ = ginkgo.Describe("OciApiGatewaySpec Validation Tests", func() {
 				input := minimalValid()
 				input.Spec.Deployment.RequestPolicies = &OciApiGatewaySpec_RequestPolicies{
 					Cors: &OciApiGatewaySpec_CorsPolicy{
-						AllowedOrigins:             []string{"https://app.example.com", "https://admin.example.com"},
-						AllowedMethods:             []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-						AllowedHeaders:             []string{"Content-Type", "Authorization", "X-Request-ID"},
-						ExposedHeaders:             []string{"X-Total-Count", "X-Rate-Limit-Remaining"},
+						AllowedOrigins:            []string{"https://app.example.com", "https://admin.example.com"},
+						AllowedMethods:            []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+						AllowedHeaders:            []string{"Content-Type", "Authorization", "X-Request-ID"},
+						ExposedHeaders:            []string{"X-Total-Count", "X-Rate-Limit-Remaining"},
 						IsAllowCredentialsEnabled: proto.Bool(true),
-						MaxAgeInSeconds:            proto.Int32(3600),
+						MaxAgeInSeconds:           proto.Int32(3600),
 					},
 				}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
@@ -293,9 +293,9 @@ var _ = ginkgo.Describe("OciApiGatewaySpec Validation Tests", func() {
 						Issuers:   []string{"https://auth0.example.com/"},
 						Audiences: []string{"https://api.example.com"},
 						PublicKeys: &OciApiGatewaySpec_PublicKeys{
-							Type:                     OciApiGatewaySpec_remote_jwks,
-							Uri:                      "https://auth0.example.com/.well-known/jwks.json",
-							IsSslVerifyDisabled:      proto.Bool(false),
+							Type:                    OciApiGatewaySpec_remote_jwks,
+							Uri:                     "https://auth0.example.com/.well-known/jwks.json",
+							IsSslVerifyDisabled:     proto.Bool(false),
 							MaxCacheDurationInHours: proto.Int32(24),
 						},
 					},
@@ -531,12 +531,12 @@ var _ = ginkgo.Describe("OciApiGatewaySpec Validation Tests", func() {
 						Issuers:                  []string{"https://idcs.example.com/"},
 						Audiences:                []string{"https://api.example.com"},
 						TokenHeader:              "Authorization",
-						TokenAuthScheme:           "Bearer",
+						TokenAuthScheme:          "Bearer",
 						IsAnonymousAccessAllowed: proto.Bool(false),
-						MaxClockSkewInSeconds:     proto.Float32(30),
+						MaxClockSkewInSeconds:    proto.Float32(30),
 						PublicKeys: &OciApiGatewaySpec_PublicKeys{
-							Type:                     OciApiGatewaySpec_remote_jwks,
-							Uri:                      "https://idcs.example.com/.well-known/jwks.json",
+							Type:                    OciApiGatewaySpec_remote_jwks,
+							Uri:                     "https://idcs.example.com/.well-known/jwks.json",
 							MaxCacheDurationInHours: proto.Int32(12),
 						},
 						VerifyClaims: []*OciApiGatewaySpec_VerifyClaim{
@@ -544,11 +544,11 @@ var _ = ginkgo.Describe("OciApiGatewaySpec Validation Tests", func() {
 						},
 					},
 					Cors: &OciApiGatewaySpec_CorsPolicy{
-						AllowedOrigins:             []string{"https://app.example.com"},
-						AllowedMethods:             []string{"GET", "POST", "PUT", "DELETE"},
-						AllowedHeaders:             []string{"Content-Type", "Authorization"},
+						AllowedOrigins:            []string{"https://app.example.com"},
+						AllowedMethods:            []string{"GET", "POST", "PUT", "DELETE"},
+						AllowedHeaders:            []string{"Content-Type", "Authorization"},
 						IsAllowCredentialsEnabled: proto.Bool(true),
-						MaxAgeInSeconds:            proto.Int32(3600),
+						MaxAgeInSeconds:           proto.Int32(3600),
 					},
 					RateLimiting: &OciApiGatewaySpec_RateLimiting{
 						RateInRequestsPerSecond: 500,
