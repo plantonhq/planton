@@ -1,0 +1,32 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudEcsInstance
+metadata:
+  name: prod-web-01
+  org: "${ORG_NAME}"
+  env: production
+spec:
+  region: cn-shanghai
+  instanceType: ecs.g7.2xlarge
+  imageId: aliyun_3_x64_20G_alibase_20230727.vhd
+  vswitchId:
+    value: "${VSWITCH_ID}"
+  securityGroupIds:
+    - value: "${SECURITY_GROUP_ID}"
+  keyName: "${SSH_KEY_NAME}"
+  systemDisk:
+    category: cloud_essd
+    size: 100
+    performanceLevel: PL1
+    encrypted: true
+  dataDisks:
+    - size: 200
+      category: cloud_essd
+      name: app-data
+      performanceLevel: PL1
+      encrypted: true
+  internetMaxBandwidthOut: 20
+  internetChargeType: PayByTraffic
+  deletionProtection: true
+  roleName: "${ROLE_NAME}"
+  tags:
+    service: web-frontend

@@ -1,0 +1,25 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudNatGateway
+metadata:
+  name: <your-nat-name>
+spec:
+  region: <alibaba-cloud-region>
+  vpcId:
+    value: <your-vpc-id>
+  vswitchId:
+    value: <your-nat-vswitch-id>
+  natGatewayName: <your-nat-name>
+  description: Production NAT Gateway for multi-AZ outbound traffic
+  deletionProtection: true
+  tags:
+    team: <your-team>
+    cost-center: <your-cost-center>
+  eipId:
+    value: <your-eip-id>
+  snatEntries:
+    - sourceVswitchId:
+        value: <your-app-vswitch-id-zone-a>
+      snatEntryName: app-zone-a
+    - sourceVswitchId:
+        value: <your-app-vswitch-id-zone-b>
+      snatEntryName: app-zone-b

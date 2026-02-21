@@ -1,0 +1,12 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudVswitch
+metadata:
+  name: my-dev-vswitch
+spec:
+  region: <alibaba-cloud-region>
+  vpcId:
+    value: <your-vpc-id>
+  zoneId: <availability-zone>
+  cidrBlock: "192.168.0.0/24"
+  vswitchName: <your-dev-vswitch-name>
+  description: Development VSwitch for a single availability zone

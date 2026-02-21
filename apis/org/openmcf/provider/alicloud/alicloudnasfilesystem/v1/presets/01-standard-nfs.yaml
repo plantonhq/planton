@@ -1,0 +1,10 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudNasFileSystem
+metadata:
+  name: my-nas
+spec:
+  region: <alibaba-cloud-region>
+  protocolType: NFS
+  storageType: Performance
+  vpcId: <vpc-id>
+  vswitchId: <vswitch-id>

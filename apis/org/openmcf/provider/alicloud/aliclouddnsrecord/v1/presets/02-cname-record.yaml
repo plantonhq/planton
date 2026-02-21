@@ -1,0 +1,10 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudDnsRecord
+metadata:
+  name: my-record
+spec:
+  region: <alibaba-cloud-region>
+  domainName: <your-domain-name>
+  rr: <host-record>
+  type: CNAME
+  value: <target-domain>

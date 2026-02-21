@@ -1,0 +1,47 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudSaeApplication
+metadata:
+  name: my-production-app
+spec:
+  region: <alibaba-cloud-region>
+  appName: <your-app-name>
+  appDescription: <your-app-description>
+  packageType: Image
+  replicas: 3
+  cpu: 4000
+  memory: 8192
+  imageUrl: <your-container-image-url>
+  vpcId:
+    value: <your-vpc-id>
+  vswitchId:
+    value: <your-vswitch-id>
+  securityGroupId:
+    value: <your-security-group-id>
+  terminationGracePeriodSeconds: 30
+  minReadyInstances: 2
+  envs:
+    LOG_LEVEL: info
+  liveness:
+    httpGet:
+      path: <your-liveness-path>
+      port: 8080
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readiness:
+    httpGet:
+      path: <your-readiness-path>
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 3
+  updateStrategy:
+    type: BatchUpdate
+    batchUpdate:
+      batch: 2
+      batchWaitTime: 10
+      releaseType: auto
+  tags:
+    team: <your-team>
+    service: <your-service-name>

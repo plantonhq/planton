@@ -157,10 +157,10 @@ type ScalewayCredential struct {
 	UpdatedAt      time.Time          `bson:"updated_at" json:"updated_at"`
 }
 
-// AlicloudCredential represents Alibaba Cloud credentials.
+// AliCloudCredential represents Alibaba Cloud credentials.
 // Supports seven authentication methods via an AuthMethod string discriminator.
 // Only the fields relevant to the active auth method are populated.
-type AlicloudCredential struct {
+type AliCloudCredential struct {
 	ID          primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	Name        string             `bson:"name" json:"name"`
 	AuthMethod  string             `bson:"auth_method" json:"auth_method"`

@@ -7,11 +7,11 @@ import (
 	alicloudprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud"
 )
 
-// loadAlicloudEnvVars loads Alibaba Cloud provider config and returns environment variables.
+// loadAliCloudEnvVars loads Alibaba Cloud provider config and returns environment variables.
 // It switches on the AuthenticationType enum to emit method-specific ALIBABA_CLOUD_*
 // environment variables expected by the Terraform Alibaba Cloud provider.
-func loadAlicloudEnvVars(providerConfigYaml []byte) (map[string]string, error) {
-	config := new(alicloudprovider.AlicloudProviderConfig)
+func loadAliCloudEnvVars(providerConfigYaml []byte) (map[string]string, error) {
+	config := new(alicloudprovider.AliCloudProviderConfig)
 	if err := loadProviderConfigProto(providerConfigYaml, config); err != nil {
 		return nil, errors.Wrap(err, "failed to load Alibaba Cloud provider config")
 	}

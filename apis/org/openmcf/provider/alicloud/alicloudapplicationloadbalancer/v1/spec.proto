@@ -1,0 +1,398 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// AliCloudApplicationLoadBalancerSpec defines the configuration for an Alibaba Cloud
+// Application Load Balancer (ALB) with bundled server groups and listeners.
+//
+// ALB is a modern Layer 7 load balancer for HTTP, HTTPS, and QUIC traffic.
+// This component bundles the ALB, its server groups, and listeners into a
+// single deployable unit because an ALB without at least one server group
+// and listener is non-functional. Forwarding rules (alicloud_alb_rule) are
+// intentionally excluded -- they are extremely complex (9 action types x
+// 9 condition types) and can be managed separately. The listener's
+// default_actions handle the 80% use case of forwarding traffic to a
+// server group.
+//
+// Server groups are created as empty targets -- backend membership (ECS
+// instances, ENI IPs, etc.) is managed externally by ACK ingress controllers,
+// SAE bindings, or manual attachment, matching the Azure LoadBalancer pattern.
+//
+// Billing is hardcoded to PayAsYouGo in the IaC modules because ALB does not
+// support subscription billing in the current provider.
+//
+// Provider resources:
+//   Terraform: alicloud_alb_load_balancer + alicloud_alb_server_group + alicloud_alb_listener
+//   Pulumi:    alb.LoadBalancer + alb.ServerGroup + alb.Listener
+message AliCloudApplicationLoadBalancerSpec {
+  // Alibaba Cloud region where the ALB will be created.
+  // Must match the region of the VPC and VSwitches.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // VPC ID that the ALB belongs to. The ALB, all zone-mapping VSwitches,
+  // and server groups must reside in the same VPC.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // ALB name. 2-128 characters; must start with a letter; can contain
+  // digits, underscores, periods, and hyphens.
+  // If omitted, defaults to the metadata.name.
+  string load_balancer_name = 3 [(buf.validate.field).cel = {
+    id: "load_balancer_name_length"
+    message: "load_balancer_name must be between 2 and 128 characters when set"
+    expression: "this == '' || (this.size() >= 2 && this.size() <= 128)"
+  }];
+
+  // Network type of the ALB.
+  // "Internet" creates a public-facing ALB with a DNS name resolvable
+  // from the internet. "Intranet" creates a VPC-internal ALB.
+  // Default: "Internet"
+  optional string address_type = 4 [
+    (buf.validate.field).cel = {
+      id: "address_type_valid"
+      message: "address_type must be one of: Internet, Intranet"
+      expression: "this == '' || this in ['Internet', 'Intranet']"
+    },
+    (org.openmcf.shared.options.default) = "Internet"
+  ];
+
+  // ALB edition that determines feature availability and performance.
+  // "Basic" supports basic L7 load balancing.
+  // "Standard" adds advanced features (WAF integration, custom routing).
+  // "StandardWithWaf" includes integrated WAF protection.
+  // Default: "Standard"
+  optional string load_balancer_edition = 5 [
+    (buf.validate.field).cel = {
+      id: "load_balancer_edition_valid"
+      message: "load_balancer_edition must be one of: Basic, Standard, StandardWithWaf"
+      expression: "this == '' || this in ['Basic', 'Standard', 'StandardWithWaf']"
+    },
+    (org.openmcf.shared.options.default) = "Standard"
+  ];
+
+  // Availability zone mappings. Each mapping places an ALB node in a zone
+  // with a VSwitch for IP allocation. ALB requires at least 2 zones for
+  // high availability.
+  repeated AliCloudApplicationLoadBalancerZoneMapping zone_mappings = 6 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).repeated.min_items = 2
+  ];
+
+  // Alibaba Cloud resource group ID for organizational grouping (per DD05).
+  // If omitted, the ALB is placed in the account's default resource group.
+  string resource_group_id = 7;
+
+  // Access log configuration for shipping ALB access logs to SLS (Log Service).
+  // When configured, all listener access logs are sent to the specified
+  // SLS log project and log store.
+  AliCloudApplicationLoadBalancerAccessLogConfig access_log_config = 8;
+
+  // Tags to apply to the ALB resource.
+  map<string, string> tags = 9;
+
+  // Server groups that define backend targets for the ALB.
+  // Each server group has its own health check, protocol, and session
+  // stickiness configuration. Listeners reference server groups by name.
+  //
+  // Server groups are created empty -- backend membership is managed
+  // externally (by ACK ingress, SAE, or manual attachment).
+  repeated AliCloudApplicationLoadBalancerServerGroup server_groups = 10;
+
+  // Listeners that define how the ALB accepts incoming traffic.
+  // Each listener binds to a port and protocol and forwards traffic to a
+  // server group via default_actions. HTTPS listeners require a certificate.
+  repeated AliCloudApplicationLoadBalancerListener listeners = 11;
+}
+
+// AliCloudApplicationLoadBalancerZoneMapping associates an availability zone with a VSwitch.
+// The ALB places a node in each mapped zone for high availability.
+message AliCloudApplicationLoadBalancerZoneMapping {
+  // Availability zone ID within the region.
+  // Examples: "cn-hangzhou-a", "cn-hangzhou-b", "us-west-1-a".
+  string zone_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // VSwitch ID in this availability zone. The ALB allocates an IP from
+  // this VSwitch. Must belong to the same VPC as the ALB's vpc_id.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
+  ];
+}
+
+// AliCloudApplicationLoadBalancerAccessLogConfig configures access log delivery to SLS.
+message AliCloudApplicationLoadBalancerAccessLogConfig {
+  // SLS log project name. Must already exist in the same region as the ALB.
+  string log_project = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // SLS log store name within the log project.
+  string log_store = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}
+
+// AliCloudApplicationLoadBalancerServerGroup defines a backend target group with health check
+// and session stickiness configuration. Server groups are created empty --
+// backend membership is managed externally.
+message AliCloudApplicationLoadBalancerServerGroup {
+  // Server group name. 2-128 characters; must start with a letter.
+  // Used by listeners to reference this server group via
+  // default_action_server_group_name.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 2,
+    (buf.validate.field).string.max_len = 128
+  ];
+
+  // Backend protocol for communication between the ALB and servers.
+  // Default: "HTTP"
+  optional string protocol = 2 [
+    (buf.validate.field).cel = {
+      id: "server_group_protocol_valid"
+      message: "protocol must be one of: HTTP, HTTPS, GRPC"
+      expression: "this == '' || this in ['HTTP', 'HTTPS', 'GRPC']"
+    },
+    (org.openmcf.shared.options.default) = "HTTP"
+  ];
+
+  // Scheduling algorithm for distributing requests across servers.
+  // "Wrr" -- Weighted Round Robin (default, distributes by weight).
+  // "Wlc" -- Weighted Least Connections (routes to least-busy server).
+  // "Sch" -- Source IP Consistent Hashing (same client IP to same server).
+  // Default: "Wrr"
+  optional string scheduler = 3 [
+    (buf.validate.field).cel = {
+      id: "scheduler_valid"
+      message: "scheduler must be one of: Wrr, Wlc, Sch"
+      expression: "this == '' || this in ['Wrr', 'Wlc', 'Sch']"
+    },
+    (org.openmcf.shared.options.default) = "Wrr"
+  ];
+
+  // Health check configuration. Required for every server group.
+  AliCloudApplicationLoadBalancerHealthCheckConfig health_check_config = 4 [(buf.validate.field).required = true];
+
+  // Session stickiness configuration. When enabled, requests from the same
+  // client are routed to the same backend server.
+  AliCloudApplicationLoadBalancerStickySessionConfig sticky_session_config = 5;
+}
+
+// AliCloudApplicationLoadBalancerHealthCheckConfig defines how the ALB probes backend servers.
+message AliCloudApplicationLoadBalancerHealthCheckConfig {
+  // Whether health checks are enabled for this server group.
+  // When disabled, all servers are considered healthy.
+  bool health_check_enabled = 1;
+
+  // Protocol used for health check probes.
+  // Default: "HTTP"
+  optional string health_check_protocol = 2 [
+    (buf.validate.field).cel = {
+      id: "health_check_protocol_valid"
+      message: "health_check_protocol must be one of: HTTP, HTTPS, TCP, GRPC"
+      expression: "this == '' || this in ['HTTP', 'HTTPS', 'TCP', 'GRPC']"
+    },
+    (org.openmcf.shared.options.default) = "HTTP"
+  ];
+
+  // URL path for HTTP/HTTPS health check probes. Must start with "/".
+  // Ignored for TCP probes.
+  // Example: "/health", "/api/healthz"
+  string health_check_path = 3;
+
+  // Domain name used in the Host header of HTTP/HTTPS health check probes.
+  // If omitted, the server's IP address is used.
+  string health_check_host = 4;
+
+  // HTTP method for health check probes.
+  // Default: "HEAD"
+  optional string health_check_method = 5 [
+    (buf.validate.field).cel = {
+      id: "health_check_method_valid"
+      message: "health_check_method must be one of: GET, POST, HEAD"
+      expression: "this == '' || this in ['GET', 'POST', 'HEAD']"
+    },
+    (org.openmcf.shared.options.default) = "HEAD"
+  ];
+
+  // Backend port used for health checks. 0 means use the port of the
+  // backend server (the default).
+  // Range: 0-65535. Default: 0
+  optional int32 health_check_connect_port = 6 [
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 65535
+    },
+    (org.openmcf.shared.options.default) = "0"
+  ];
+
+  // Interval between health check probes, in seconds.
+  // Range: 1-50. Default: 2
+  optional int32 health_check_interval = 7 [
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 50
+    },
+    (org.openmcf.shared.options.default) = "2"
+  ];
+
+  // Maximum time to wait for a health check response, in seconds.
+  // Range: 1-300. Default: 5
+  optional int32 health_check_timeout = 8 [
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 300
+    },
+    (org.openmcf.shared.options.default) = "5"
+  ];
+
+  // Number of consecutive successful probes before a server is marked healthy.
+  // Range: 2-10. Default: 3
+  optional int32 healthy_threshold = 9 [
+    (buf.validate.field).int32 = {
+      gte: 2
+      lte: 10
+    },
+    (org.openmcf.shared.options.default) = "3"
+  ];
+
+  // Number of consecutive failed probes before a server is marked unhealthy.
+  // Range: 2-10. Default: 3
+  optional int32 unhealthy_threshold = 10 [
+    (buf.validate.field).int32 = {
+      gte: 2
+      lte: 10
+    },
+    (org.openmcf.shared.options.default) = "3"
+  ];
+
+  // HTTP status codes that indicate a healthy response.
+  // Only applicable when health_check_protocol is HTTP or HTTPS.
+  // Examples: ["http_2xx"], ["http_2xx", "http_3xx"]
+  repeated string health_check_codes = 11;
+}
+
+// AliCloudApplicationLoadBalancerStickySessionConfig defines session stickiness behavior.
+message AliCloudApplicationLoadBalancerStickySessionConfig {
+  // Whether session stickiness is enabled.
+  bool sticky_session_enabled = 1;
+
+  // Session stickiness method.
+  // "Insert" -- ALB inserts a cookie (SERVERID) into responses.
+  // "Server" -- ALB uses a cookie set by the backend server.
+  optional string sticky_session_type = 2 [(buf.validate.field).cel = {
+    id: "sticky_session_type_valid"
+    message: "sticky_session_type must be one of: Insert, Server"
+    expression: "this == '' || this in ['Insert', 'Server']"
+  }];
+
+  // Cookie name when sticky_session_type is "Server".
+  // The ALB reads this cookie from backend responses to identify the server.
+  string cookie = 3;
+
+  // Cookie timeout in seconds when sticky_session_type is "Insert".
+  // Range: 1-86400. Default: 1000
+  optional int32 cookie_timeout = 4 [
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 86400
+    },
+    (org.openmcf.shared.options.default) = "1000"
+  ];
+}
+
+// AliCloudApplicationLoadBalancerListener defines how the ALB accepts incoming traffic on a
+// specific port and protocol.
+message AliCloudApplicationLoadBalancerListener {
+  // Port on which the listener accepts traffic.
+  // Range: 1-65535. Common values: 80 (HTTP), 443 (HTTPS).
+  int32 listener_port = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  // Protocol for this listener.
+  // "HTTP" for unencrypted HTTP traffic.
+  // "HTTPS" for TLS-encrypted traffic (requires certificate_id).
+  // "QUIC" for HTTP/3 over QUIC.
+  string listener_protocol = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "listener_protocol_valid"
+      message: "listener_protocol must be one of: HTTP, HTTPS, QUIC"
+      expression: "this in ['HTTP', 'HTTPS', 'QUIC']"
+    }
+  ];
+
+  // Name of the server group that receives traffic from this listener.
+  // Must match a name in the server_groups list. The listener creates a
+  // default ForwardGroup action routing all traffic to this server group.
+  string default_action_server_group_name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Human-readable description of this listener's purpose.
+  // 2-256 characters.
+  string listener_description = 4;
+
+  // Server certificate ID for HTTPS and QUIC listeners.
+  // Required when listener_protocol is "HTTPS" or "QUIC".
+  // Obtain from Alibaba Cloud Certificate Management Service (CAS).
+  string certificate_id = 5;
+
+  // TLS security policy that defines the supported TLS versions and cipher
+  // suites. Only applicable for HTTPS and QUIC listeners.
+  // Examples: "tls_cipher_policy_1_0", "tls_cipher_policy_1_2_strict"
+  string security_policy_id = 6;
+
+  // Whether to enable gzip compression for HTTP responses.
+  // Default: true
+  optional bool gzip_enabled = 7 [(org.openmcf.shared.options.default) = "true"];
+
+  // Whether to enable HTTP/2 for this listener.
+  // Only applicable for HTTPS listeners.
+  // Default: true
+  optional bool http2_enabled = 8 [(org.openmcf.shared.options.default) = "true"];
+
+  // Connection idle timeout in seconds. Connections idle longer are closed.
+  // Range: 1-60. Default: 60
+  optional int32 idle_timeout = 9 [
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 60
+    },
+    (org.openmcf.shared.options.default) = "60"
+  ];
+
+  // Request timeout in seconds. The ALB returns 504 if the backend does
+  // not respond within this period.
+  // Range: 1-180. Default: 60
+  optional int32 request_timeout = 10 [
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 180
+    },
+    (org.openmcf.shared.options.default) = "60"
+  ];
+}

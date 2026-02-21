@@ -411,7 +411,7 @@ func (r *CredentialRepository) FindFirstByProvider(ctx context.Context, provider
 	case "scaleway":
 		return convertToScalewayCredential(result)
 	case "alicloud":
-		return convertToAlicloudCredential(result)
+		return convertToAliCloudCredential(result)
 	case "oci":
 		return convertToOciCredential(result)
 	case "hetznercloud":
@@ -887,8 +887,8 @@ func convertToScalewayCredential(doc bson.M) (*models.ScalewayCredential, error)
 	return cred, nil
 }
 
-// CreateAlicloud creates a new Alibaba Cloud credential.
-func (r *CredentialRepository) CreateAlicloud(ctx context.Context, cred *models.AlicloudCredential) (*models.AlicloudCredential, error) {
+// CreateAliCloud creates a new Alibaba Cloud credential.
+func (r *CredentialRepository) CreateAliCloud(ctx context.Context, cred *models.AliCloudCredential) (*models.AliCloudCredential, error) {
 	exists, err := r.ExistsByProvider(ctx, "alicloud")
 	if err != nil {
 		return nil, fmt.Errorf("failed to check for existing Alibaba Cloud credential: %w", err)
@@ -940,8 +940,8 @@ func (r *CredentialRepository) CreateAlicloud(ctx context.Context, cred *models.
 	return cred, nil
 }
 
-// UpdateAlicloud updates an existing Alibaba Cloud credential.
-func (r *CredentialRepository) UpdateAlicloud(ctx context.Context, id string, cred *models.AlicloudCredential) (*models.AlicloudCredential, error) {
+// UpdateAliCloud updates an existing Alibaba Cloud credential.
+func (r *CredentialRepository) UpdateAliCloud(ctx context.Context, id string, cred *models.AliCloudCredential) (*models.AliCloudCredential, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, fmt.Errorf("invalid ID format: %w", err)
@@ -990,10 +990,10 @@ func (r *CredentialRepository) UpdateAlicloud(ctx context.Context, id string, cr
 		return nil, fmt.Errorf("credential not found after update")
 	}
 
-	return convertToAlicloudCredential(doc)
+	return convertToAliCloudCredential(doc)
 }
 
-func convertToAlicloudCredential(doc bson.M) (*models.AlicloudCredential, error) {
+func convertToAliCloudCredential(doc bson.M) (*models.AliCloudCredential, error) {
 	id, ok := doc["_id"].(primitive.ObjectID)
 	if !ok {
 		return nil, fmt.Errorf("invalid _id field")
@@ -1007,7 +1007,7 @@ func convertToAlicloudCredential(doc bson.M) (*models.AlicloudCredential, error)
 		updatedAt = dt.Time()
 	}
 
-	cred := &models.AlicloudCredential{
+	cred := &models.AliCloudCredential{
 		ID:        id,
 		Name:      doc["name"].(string),
 		CreatedAt: createdAt,

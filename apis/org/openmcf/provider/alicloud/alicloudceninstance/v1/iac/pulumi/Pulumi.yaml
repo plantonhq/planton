@@ -1,0 +1,3 @@
+name: alicloud-cen-instance
+runtime: go
+description: Alibaba Cloud CEN instance with bundled child-instance attachments

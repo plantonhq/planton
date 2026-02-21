@@ -1,0 +1,12 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudLogProject
+metadata:
+  name: my-development-log-project
+spec:
+  region: <alibaba-cloud-region>
+  projectName: <your-project-name>
+  logStores:
+    - name: app-logs
+      retentionDays: 7
+      shardCount: 1
+      enableIndex: true

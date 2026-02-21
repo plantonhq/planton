@@ -1,0 +1,12 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudSaeApplication
+metadata:
+  name: alicloudsaeapplication-demo
+spec:
+  region: cn-hangzhou
+  appName: sae-demo
+  packageType: Image
+  replicas: 1
+  cpu: 500
+  memory: 1024
+  imageUrl: registry.cn-hangzhou.aliyuncs.com/my-ns/demo:latest

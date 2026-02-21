@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1;
+
+import "org/openmcf/provider/alicloud/alicloudrocketmqinstance/v1/api.proto";
+import "org/openmcf/provider/alicloud/provider.proto";
+
+// alicloud-rocketmq-instance stack-input
+message AliCloudRocketmqInstanceStackInput {
+  // target cloud-resource
+  AliCloudRocketmqInstance target = 1;
+  // provider-config
+  org.openmcf.provider.alicloud.AliCloudProviderConfig provider_config = 2;
+}

@@ -1,0 +1,13 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudPrivateDnsZone
+metadata:
+  name: svc-zone
+spec:
+  region: <alibaba-cloud-region>
+  zoneName: <zone-name>
+  vpcAttachments:
+    - vpcId: <vpc-id>
+  records:
+    - rr: <service-name>
+      type: A
+      value: <private-ip>

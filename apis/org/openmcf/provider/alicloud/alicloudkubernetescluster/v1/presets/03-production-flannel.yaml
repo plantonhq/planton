@@ -1,0 +1,61 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudKubernetesCluster
+metadata:
+  name: my-production-cluster
+spec:
+  region: <alibaba-cloud-region>
+  name: <your-cluster-name>
+  clusterSpec: ack.pro.small # production SLA
+  version: "1.30"
+
+  # Flannel overlay networking: simpler setup, no dedicated pod VSwitches needed.
+  # Pods get cluster-internal IPs from podCidr, routed via VXLAN between nodes.
+  vswitchIds:
+    - value: <vswitch-id-zone-a>
+    - value: <vswitch-id-zone-b>
+    - value: <vswitch-id-zone-c>
+  podCidr: "172.20.0.0/16"
+  serviceCidr: "172.21.0.0/20"
+  proxyMode: ipvs # default from spec
+  nodeCidrMask: 24 # default from spec
+  newNatGateway: false # manage NAT externally via AlicloudNatGateway
+  slbInternetEnabled: true # default from spec
+
+  enableRrsa: true # pod-level IAM via OIDC federation
+  deletionProtection: true
+
+  addons:
+    - name: flannel
+    - name: csi-plugin
+    - name: csi-provisioner
+    - name: logtail-ds
+      config: '{"IngressDashboardEnabled":"true","sls_project_name":"<your-log-project-name>"}'
+    - name: arms-prometheus
+    - name: metrics-server
+    - name: ack-node-problem-detector
+
+  logging:
+    controlPlaneLogProject:
+      value: <your-log-project-name>
+    controlPlaneLogTtl: "90"
+    controlPlaneLogComponents:
+      - apiserver
+      - kcm
+      - scheduler
+      - ccm
+    auditLogEnabled: true
+
+  maintenanceWindow:
+    enable: true
+    maintenanceTime: "2026-03-01T03:00:00+08:00"
+    duration: "3h"
+    weeklyPeriod: Wednesday
+
+  autoUpgrade:
+    enabled: true
+    channel: patch
+
+  tags:
+    team: <your-team>
+    costCenter: <your-cost-center>
+  timezone: Asia/Shanghai

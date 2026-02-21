@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/alicloud/alicloudnetworkloadbalancer/v1/spec.proto";
+import "org/openmcf/provider/alicloud/alicloudnetworkloadbalancer/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// alicloud-network-load-balancer
+message AliCloudNetworkLoadBalancer {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'alicloud.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AliCloudNetworkLoadBalancer'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AliCloudNetworkLoadBalancerSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AliCloudNetworkLoadBalancerStatus status = 5;
+}
+
+// alicloud-network-load-balancer status
+message AliCloudNetworkLoadBalancerStatus {
+  // stack-outputs
+  AliCloudNetworkLoadBalancerStackOutputs outputs = 1;
+}

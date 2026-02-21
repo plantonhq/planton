@@ -76,7 +76,7 @@ func getProviderConfigProto(provider cloudresourcekind.CloudResourceProvider) (p
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return new(scalewayprovider.ScalewayProviderConfig), nil
 	case cloudresourcekind.CloudResourceProvider_alicloud:
-		return new(alicloudprovider.AlicloudProviderConfig), nil
+		return new(alicloudprovider.AliCloudProviderConfig), nil
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return new(ociprovider.OciProviderConfig), nil
 	case cloudresourcekind.CloudResourceProvider_hetznercloud:

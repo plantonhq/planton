@@ -30,7 +30,7 @@ Implemented comprehensive Alibaba Cloud provider support covering all 7 authenti
 flowchart TB
     subgraph proto [Proto Layer]
         ProviderEnum["cloud_resource_provider.proto\nalicloud = 25"]
-        ProviderConfig["provider/alicloud/provider.proto\nAlicloudProviderConfig + 7 sub-messages"]
+        ProviderConfig["provider/alicloud/provider.proto\nAliCloudProviderConfig + 7 sub-messages"]
         CredentialAPI["credential/v1/api.proto\nALICLOUD enum + oneof"]
     end
 
@@ -101,7 +101,7 @@ flowchart LR
 
 **Provider registration** (`cloud_resource_provider.proto`): `alicloud = 25`
 
-**Provider config** (`provider/alicloud/provider.proto`): `AlicloudProviderConfig` with a package-scope `AuthenticationType` enum and 7 separate sub-message types. The enum is at package scope (not nested in the message) to avoid protobuf C++ scoping conflicts between enum values and message field names.
+**Provider config** (`provider/alicloud/provider.proto`): `AliCloudProviderConfig` with a package-scope `AuthenticationType` enum and 7 separate sub-message types. The enum is at package scope (not nested in the message) to avoid protobuf C++ scoping conflicts between enum values and message field names.
 
 **Credential API** (`credential/v1/api.proto`): Added `ALICLOUD = 8` to `CredentialProvider` enum and `alicloud = 15` to the `CredentialProviderConfig` oneof.
 

@@ -1568,6 +1568,214 @@ enum CloudResourceKind {
     id_prefix: "scwscn"
   }];
 
+  // 3000–3299: Alibaba Cloud resources
+
+  // --- Monitoring ---
+
+  AliCloudLogProject = 3000 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "aclog"
+  }];
+
+  // --- Identity ---
+
+  AliCloudRamRole = 3010 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acramr"
+  }];
+
+  AliCloudRamPolicy = 3011 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acramp"
+  }];
+
+  // --- Networking ---
+
+  AliCloudVpc = 3020 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acvpc"
+  }];
+
+  AliCloudVswitch = 3021 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acvsw"
+  }];
+
+  AliCloudSecurityGroup = 3022 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acsg"
+  }];
+
+  AliCloudEipAddress = 3023 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "aceip"
+  }];
+
+  AliCloudNatGateway = 3024 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acnat"
+  }];
+
+  AliCloudApplicationLoadBalancer = 3025 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acalb"
+  }];
+
+  AliCloudNetworkLoadBalancer = 3026 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acnlb"
+  }];
+
+  AliCloudVpnGateway = 3027 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acvpn"
+  }];
+
+  // --- DNS ---
+
+  AliCloudDnsZone = 3040 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acdz"
+  }];
+
+  AliCloudDnsRecord = 3041 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acdr"
+  }];
+
+  AliCloudPrivateDnsZone = 3042 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acdpz"
+  }];
+
+  // --- Storage ---
+
+  AliCloudStorageBucket = 3050 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acbkt"
+  }];
+
+  AliCloudNasFileSystem = 3051 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acnas"
+  }];
+
+  // --- Security ---
+
+  AliCloudKmsKey = 3060 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "ackms"
+  }];
+
+  // --- Database ---
+
+  AliCloudRdsInstance = 3070 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acrds"
+  }];
+
+  AliCloudPolardbCluster = 3071 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acpdb"
+  }];
+
+  AliCloudRedisInstance = 3072 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acred"
+  }];
+
+  AliCloudMongodbInstance = 3073 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acmdb"
+  }];
+
+  // --- Compute ---
+
+  AliCloudEcsInstance = 3080 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acecs"
+  }];
+
+  // --- Containers ---
+
+  AliCloudContainerRegistry = 3090 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "accr"
+  }];
+
+  AliCloudKubernetesCluster = 3091 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acack"
+  }];
+
+  AliCloudKubernetesNodePool = 3092 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acknp"
+  }];
+
+  // --- CDN ---
+
+  AliCloudCdnDomain = 3100 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "accdn"
+  }];
+
+  // --- Serverless ---
+
+  AliCloudFunction = 3110 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acfc"
+  }];
+
+  AliCloudSaeApplication = 3111 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acsae"
+  }];
+
+  // --- Messaging ---
+
+  AliCloudRocketmqInstance = 3120 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "acrmq"
+  }];
+
+  // --- Enterprise Networking ---
+
+  AliCloudCenInstance = 3130 [(kind_meta) = {
+    provider: alicloud
+    version: v1
+    id_prefix: "accen"
+  }];
+
   // =========================================================================
   // Hetzner Cloud (provider: hetznercloud, range: 3500-3699)
   // =========================================================================

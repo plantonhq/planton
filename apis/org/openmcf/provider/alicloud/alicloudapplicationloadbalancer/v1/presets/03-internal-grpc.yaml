@@ -1,0 +1,33 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudApplicationLoadBalancer
+metadata:
+  name: <your-alb-name>
+spec:
+  region: <alibaba-cloud-region>
+  vpcId:
+    value: <your-vpc-id>
+  addressType: Intranet
+  loadBalancerEdition: Basic
+  zoneMappings:
+    - zoneId: <zone-a>
+      vswitchId:
+        value: <your-vswitch-id-a>
+    - zoneId: <zone-b>
+      vswitchId:
+        value: <your-vswitch-id-b>
+  serverGroups:
+    - name: grpc-services
+      protocol: GRPC
+      scheduler: Wlc
+      healthCheckConfig:
+        healthCheckEnabled: true
+        healthCheckProtocol: GRPC
+        healthCheckInterval: 3
+        healthyThreshold: 2
+        unhealthyThreshold: 3
+  listeners:
+    - listenerPort: 443
+      listenerProtocol: HTTPS
+      defaultActionServerGroupName: grpc-services
+      certificateId: <your-internal-cert-id>
+      http2Enabled: true

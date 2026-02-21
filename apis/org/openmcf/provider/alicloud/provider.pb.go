@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AuthenticationType selects which credential sub-message is active in AlicloudProviderConfig.
+// AuthenticationType selects which credential sub-message is active in AliCloudProviderConfig.
 // Defined at package scope to avoid protobuf C++ scoping conflicts between enum values
 // and message field names (both share the enclosing message scope when nested).
 type AuthenticationType int32
@@ -89,7 +89,7 @@ func (AuthenticationType) EnumDescriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_provider_proto_rawDescGZIP(), []int{0}
 }
 
-// AlicloudProviderConfig defines the credentials and connection parameters required to interact
+// AliCloudProviderConfig defines the credentials and connection parameters required to interact
 // with Alibaba Cloud infrastructure. This message supports seven authentication methods via
 // an explicit AuthenticationType enum discriminator, with a separate sub-message per method.
 //
@@ -115,7 +115,7 @@ func (AuthenticationType) EnumDescriptor() ([]byte, []int) {
 // For more information:
 // - Terraform provider docs: https://registry.terraform.io/providers/aliyun/alicloud/latest/docs
 // - Alibaba Cloud authentication: https://registry.terraform.io/providers/aliyun/alicloud/latest/docs#authentication
-type AlicloudProviderConfig struct {
+type AliCloudProviderConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// authentication_type selects the active credential sub-message.
 	// Consumers switch on this value to determine which sub-message to read.
@@ -136,37 +136,37 @@ type AlicloudProviderConfig struct {
 	// Environment variable: ALIBABA_CLOUD_ACCOUNT_TYPE
 	AccountType string `protobuf:"bytes,4,opt,name=account_type,json=accountType,proto3" json:"account_type,omitempty"`
 	// static_credentials is populated when authentication_type is static_credentials.
-	StaticCredentials *AlicloudStaticCredentials `protobuf:"bytes,10,opt,name=static_credentials,json=staticCredentials,proto3" json:"static_credentials,omitempty"`
+	StaticCredentials *AliCloudStaticCredentials `protobuf:"bytes,10,opt,name=static_credentials,json=staticCredentials,proto3" json:"static_credentials,omitempty"`
 	// sts_token is populated when authentication_type is sts_token.
-	StsToken *AlicloudStsTokenCredentials `protobuf:"bytes,11,opt,name=sts_token,json=stsToken,proto3" json:"sts_token,omitempty"`
+	StsToken *AliCloudStsTokenCredentials `protobuf:"bytes,11,opt,name=sts_token,json=stsToken,proto3" json:"sts_token,omitempty"`
 	// ecs_role is populated when authentication_type is ecs_role.
-	EcsRole *AlicloudEcsRoleCredentials `protobuf:"bytes,12,opt,name=ecs_role,json=ecsRole,proto3" json:"ecs_role,omitempty"`
+	EcsRole *AliCloudEcsRoleCredentials `protobuf:"bytes,12,opt,name=ecs_role,json=ecsRole,proto3" json:"ecs_role,omitempty"`
 	// assume_role is populated when authentication_type is assume_role.
-	AssumeRole *AlicloudAssumeRoleCredentials `protobuf:"bytes,13,opt,name=assume_role,json=assumeRole,proto3" json:"assume_role,omitempty"`
+	AssumeRole *AliCloudAssumeRoleCredentials `protobuf:"bytes,13,opt,name=assume_role,json=assumeRole,proto3" json:"assume_role,omitempty"`
 	// assume_role_with_oidc is populated when authentication_type is assume_role_with_oidc.
-	AssumeRoleWithOidc *AlicloudAssumeRoleWithOidcCredentials `protobuf:"bytes,14,opt,name=assume_role_with_oidc,json=assumeRoleWithOidc,proto3" json:"assume_role_with_oidc,omitempty"`
+	AssumeRoleWithOidc *AliCloudAssumeRoleWithOidcCredentials `protobuf:"bytes,14,opt,name=assume_role_with_oidc,json=assumeRoleWithOidc,proto3" json:"assume_role_with_oidc,omitempty"`
 	// shared_credentials is populated when authentication_type is shared_credentials.
-	SharedCredentials *AlicloudSharedCredentials `protobuf:"bytes,15,opt,name=shared_credentials,json=sharedCredentials,proto3" json:"shared_credentials,omitempty"`
+	SharedCredentials *AliCloudSharedCredentials `protobuf:"bytes,15,opt,name=shared_credentials,json=sharedCredentials,proto3" json:"shared_credentials,omitempty"`
 	// sidecar_credentials is populated when authentication_type is sidecar_credentials.
-	SidecarCredentials *AlicloudSidecarCredentials `protobuf:"bytes,16,opt,name=sidecar_credentials,json=sidecarCredentials,proto3" json:"sidecar_credentials,omitempty"`
+	SidecarCredentials *AliCloudSidecarCredentials `protobuf:"bytes,16,opt,name=sidecar_credentials,json=sidecarCredentials,proto3" json:"sidecar_credentials,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AlicloudProviderConfig) Reset() {
-	*x = AlicloudProviderConfig{}
+func (x *AliCloudProviderConfig) Reset() {
+	*x = AliCloudProviderConfig{}
 	mi := &file_org_openmcf_provider_alicloud_provider_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudProviderConfig) String() string {
+func (x *AliCloudProviderConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudProviderConfig) ProtoMessage() {}
+func (*AliCloudProviderConfig) ProtoMessage() {}
 
-func (x *AlicloudProviderConfig) ProtoReflect() protoreflect.Message {
+func (x *AliCloudProviderConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_provider_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -178,96 +178,96 @@ func (x *AlicloudProviderConfig) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudProviderConfig.ProtoReflect.Descriptor instead.
-func (*AlicloudProviderConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudProviderConfig.ProtoReflect.Descriptor instead.
+func (*AliCloudProviderConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_provider_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudProviderConfig) GetAuthenticationType() AuthenticationType {
+func (x *AliCloudProviderConfig) GetAuthenticationType() AuthenticationType {
 	if x != nil {
 		return x.AuthenticationType
 	}
 	return AuthenticationType_authentication_type_unspecified
 }
 
-func (x *AlicloudProviderConfig) GetRegion() string {
+func (x *AliCloudProviderConfig) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudProviderConfig) GetAccountId() string {
+func (x *AliCloudProviderConfig) GetAccountId() string {
 	if x != nil {
 		return x.AccountId
 	}
 	return ""
 }
 
-func (x *AlicloudProviderConfig) GetAccountType() string {
+func (x *AliCloudProviderConfig) GetAccountType() string {
 	if x != nil {
 		return x.AccountType
 	}
 	return ""
 }
 
-func (x *AlicloudProviderConfig) GetStaticCredentials() *AlicloudStaticCredentials {
+func (x *AliCloudProviderConfig) GetStaticCredentials() *AliCloudStaticCredentials {
 	if x != nil {
 		return x.StaticCredentials
 	}
 	return nil
 }
 
-func (x *AlicloudProviderConfig) GetStsToken() *AlicloudStsTokenCredentials {
+func (x *AliCloudProviderConfig) GetStsToken() *AliCloudStsTokenCredentials {
 	if x != nil {
 		return x.StsToken
 	}
 	return nil
 }
 
-func (x *AlicloudProviderConfig) GetEcsRole() *AlicloudEcsRoleCredentials {
+func (x *AliCloudProviderConfig) GetEcsRole() *AliCloudEcsRoleCredentials {
 	if x != nil {
 		return x.EcsRole
 	}
 	return nil
 }
 
-func (x *AlicloudProviderConfig) GetAssumeRole() *AlicloudAssumeRoleCredentials {
+func (x *AliCloudProviderConfig) GetAssumeRole() *AliCloudAssumeRoleCredentials {
 	if x != nil {
 		return x.AssumeRole
 	}
 	return nil
 }
 
-func (x *AlicloudProviderConfig) GetAssumeRoleWithOidc() *AlicloudAssumeRoleWithOidcCredentials {
+func (x *AliCloudProviderConfig) GetAssumeRoleWithOidc() *AliCloudAssumeRoleWithOidcCredentials {
 	if x != nil {
 		return x.AssumeRoleWithOidc
 	}
 	return nil
 }
 
-func (x *AlicloudProviderConfig) GetSharedCredentials() *AlicloudSharedCredentials {
+func (x *AliCloudProviderConfig) GetSharedCredentials() *AliCloudSharedCredentials {
 	if x != nil {
 		return x.SharedCredentials
 	}
 	return nil
 }
 
-func (x *AlicloudProviderConfig) GetSidecarCredentials() *AlicloudSidecarCredentials {
+func (x *AliCloudProviderConfig) GetSidecarCredentials() *AliCloudSidecarCredentials {
 	if x != nil {
 		return x.SidecarCredentials
 	}
 	return nil
 }
 
-// AlicloudStaticCredentials provides authentication via a long-lived IAM access key pair.
+// AliCloudStaticCredentials provides authentication via a long-lived IAM access key pair.
 // This is the simplest and most common authentication method.
 //
 // Environment variable mapping:
 //
 //	access_key -> ALIBABA_CLOUD_ACCESS_KEY_ID
 //	secret_key -> ALIBABA_CLOUD_ACCESS_KEY_SECRET
-type AlicloudStaticCredentials struct {
+type AliCloudStaticCredentials struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// access_key is the Alibaba Cloud access key ID.
 	// Created in the RAM console under AccessKey Management.
@@ -281,20 +281,20 @@ type AlicloudStaticCredentials struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudStaticCredentials) Reset() {
-	*x = AlicloudStaticCredentials{}
+func (x *AliCloudStaticCredentials) Reset() {
+	*x = AliCloudStaticCredentials{}
 	mi := &file_org_openmcf_provider_alicloud_provider_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudStaticCredentials) String() string {
+func (x *AliCloudStaticCredentials) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudStaticCredentials) ProtoMessage() {}
+func (*AliCloudStaticCredentials) ProtoMessage() {}
 
-func (x *AlicloudStaticCredentials) ProtoReflect() protoreflect.Message {
+func (x *AliCloudStaticCredentials) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_provider_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -306,26 +306,26 @@ func (x *AlicloudStaticCredentials) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudStaticCredentials.ProtoReflect.Descriptor instead.
-func (*AlicloudStaticCredentials) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudStaticCredentials.ProtoReflect.Descriptor instead.
+func (*AliCloudStaticCredentials) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_provider_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudStaticCredentials) GetAccessKey() string {
+func (x *AliCloudStaticCredentials) GetAccessKey() string {
 	if x != nil {
 		return x.AccessKey
 	}
 	return ""
 }
 
-func (x *AlicloudStaticCredentials) GetSecretKey() string {
+func (x *AliCloudStaticCredentials) GetSecretKey() string {
 	if x != nil {
 		return x.SecretKey
 	}
 	return ""
 }
 
-// AlicloudStsTokenCredentials provides authentication via temporary STS credentials.
+// AliCloudStsTokenCredentials provides authentication via temporary STS credentials.
 // STS credentials include an access key pair plus a short-lived security token,
 // typically obtained from AssumeRole, federation, or other STS APIs.
 //
@@ -334,7 +334,7 @@ func (x *AlicloudStaticCredentials) GetSecretKey() string {
 //	access_key     -> ALIBABA_CLOUD_ACCESS_KEY_ID
 //	secret_key     -> ALIBABA_CLOUD_ACCESS_KEY_SECRET
 //	security_token -> ALIBABA_CLOUD_SECURITY_TOKEN
-type AlicloudStsTokenCredentials struct {
+type AliCloudStsTokenCredentials struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// access_key is the temporary access key ID from STS.
 	// Environment variable: ALIBABA_CLOUD_ACCESS_KEY_ID
@@ -349,20 +349,20 @@ type AlicloudStsTokenCredentials struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudStsTokenCredentials) Reset() {
-	*x = AlicloudStsTokenCredentials{}
+func (x *AliCloudStsTokenCredentials) Reset() {
+	*x = AliCloudStsTokenCredentials{}
 	mi := &file_org_openmcf_provider_alicloud_provider_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudStsTokenCredentials) String() string {
+func (x *AliCloudStsTokenCredentials) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudStsTokenCredentials) ProtoMessage() {}
+func (*AliCloudStsTokenCredentials) ProtoMessage() {}
 
-func (x *AlicloudStsTokenCredentials) ProtoReflect() protoreflect.Message {
+func (x *AliCloudStsTokenCredentials) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_provider_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -374,40 +374,40 @@ func (x *AlicloudStsTokenCredentials) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudStsTokenCredentials.ProtoReflect.Descriptor instead.
-func (*AlicloudStsTokenCredentials) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudStsTokenCredentials.ProtoReflect.Descriptor instead.
+func (*AliCloudStsTokenCredentials) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_provider_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AlicloudStsTokenCredentials) GetAccessKey() string {
+func (x *AliCloudStsTokenCredentials) GetAccessKey() string {
 	if x != nil {
 		return x.AccessKey
 	}
 	return ""
 }
 
-func (x *AlicloudStsTokenCredentials) GetSecretKey() string {
+func (x *AliCloudStsTokenCredentials) GetSecretKey() string {
 	if x != nil {
 		return x.SecretKey
 	}
 	return ""
 }
 
-func (x *AlicloudStsTokenCredentials) GetSecurityToken() string {
+func (x *AliCloudStsTokenCredentials) GetSecurityToken() string {
 	if x != nil {
 		return x.SecurityToken
 	}
 	return ""
 }
 
-// AlicloudEcsRoleCredentials provides authentication via an ECS instance RAM role.
+// AliCloudEcsRoleCredentials provides authentication via an ECS instance RAM role.
 // When running on an ECS instance with an attached RAM role, the provider retrieves
 // temporary credentials from the instance metadata service automatically.
 //
 // Environment variable mapping:
 //
 //	ecs_role_name -> ALIBABA_CLOUD_ECS_METADATA
-type AlicloudEcsRoleCredentials struct {
+type AliCloudEcsRoleCredentials struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// ecs_role_name is the name of the RAM role attached to the ECS instance.
 	// The provider fetches credentials from http://100.100.100.200/latest/meta-data/ram/security-credentials/<role_name>.
@@ -417,20 +417,20 @@ type AlicloudEcsRoleCredentials struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudEcsRoleCredentials) Reset() {
-	*x = AlicloudEcsRoleCredentials{}
+func (x *AliCloudEcsRoleCredentials) Reset() {
+	*x = AliCloudEcsRoleCredentials{}
 	mi := &file_org_openmcf_provider_alicloud_provider_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudEcsRoleCredentials) String() string {
+func (x *AliCloudEcsRoleCredentials) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudEcsRoleCredentials) ProtoMessage() {}
+func (*AliCloudEcsRoleCredentials) ProtoMessage() {}
 
-func (x *AlicloudEcsRoleCredentials) ProtoReflect() protoreflect.Message {
+func (x *AliCloudEcsRoleCredentials) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_provider_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -442,19 +442,19 @@ func (x *AlicloudEcsRoleCredentials) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudEcsRoleCredentials.ProtoReflect.Descriptor instead.
-func (*AlicloudEcsRoleCredentials) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudEcsRoleCredentials.ProtoReflect.Descriptor instead.
+func (*AliCloudEcsRoleCredentials) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_provider_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *AlicloudEcsRoleCredentials) GetEcsRoleName() string {
+func (x *AliCloudEcsRoleCredentials) GetEcsRoleName() string {
 	if x != nil {
 		return x.EcsRoleName
 	}
 	return ""
 }
 
-// AlicloudAssumeRoleCredentials provides authentication by assuming a RAM role.
+// AliCloudAssumeRoleCredentials provides authentication by assuming a RAM role.
 // The provider first authenticates with the base access key pair, then calls STS
 // AssumeRole to obtain temporary credentials scoped to the target role.
 //
@@ -467,7 +467,7 @@ func (x *AlicloudEcsRoleCredentials) GetEcsRoleName() string {
 //	session_expiration -> ALICLOUD_ASSUME_ROLE_SESSION_EXPIRATION (deprecated naming, no modern equivalent)
 //	policy             -> (no environment variable)
 //	external_id        -> (no environment variable)
-type AlicloudAssumeRoleCredentials struct {
+type AliCloudAssumeRoleCredentials struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// access_key is the base access key ID used to call STS AssumeRole.
 	// Environment variable: ALIBABA_CLOUD_ACCESS_KEY_ID
@@ -498,20 +498,20 @@ type AlicloudAssumeRoleCredentials struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudAssumeRoleCredentials) Reset() {
-	*x = AlicloudAssumeRoleCredentials{}
+func (x *AliCloudAssumeRoleCredentials) Reset() {
+	*x = AliCloudAssumeRoleCredentials{}
 	mi := &file_org_openmcf_provider_alicloud_provider_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudAssumeRoleCredentials) String() string {
+func (x *AliCloudAssumeRoleCredentials) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudAssumeRoleCredentials) ProtoMessage() {}
+func (*AliCloudAssumeRoleCredentials) ProtoMessage() {}
 
-func (x *AlicloudAssumeRoleCredentials) ProtoReflect() protoreflect.Message {
+func (x *AliCloudAssumeRoleCredentials) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_provider_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -523,61 +523,61 @@ func (x *AlicloudAssumeRoleCredentials) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudAssumeRoleCredentials.ProtoReflect.Descriptor instead.
-func (*AlicloudAssumeRoleCredentials) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudAssumeRoleCredentials.ProtoReflect.Descriptor instead.
+func (*AliCloudAssumeRoleCredentials) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_provider_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *AlicloudAssumeRoleCredentials) GetAccessKey() string {
+func (x *AliCloudAssumeRoleCredentials) GetAccessKey() string {
 	if x != nil {
 		return x.AccessKey
 	}
 	return ""
 }
 
-func (x *AlicloudAssumeRoleCredentials) GetSecretKey() string {
+func (x *AliCloudAssumeRoleCredentials) GetSecretKey() string {
 	if x != nil {
 		return x.SecretKey
 	}
 	return ""
 }
 
-func (x *AlicloudAssumeRoleCredentials) GetRoleArn() string {
+func (x *AliCloudAssumeRoleCredentials) GetRoleArn() string {
 	if x != nil {
 		return x.RoleArn
 	}
 	return ""
 }
 
-func (x *AlicloudAssumeRoleCredentials) GetSessionName() string {
+func (x *AliCloudAssumeRoleCredentials) GetSessionName() string {
 	if x != nil {
 		return x.SessionName
 	}
 	return ""
 }
 
-func (x *AlicloudAssumeRoleCredentials) GetPolicy() string {
+func (x *AliCloudAssumeRoleCredentials) GetPolicy() string {
 	if x != nil {
 		return x.Policy
 	}
 	return ""
 }
 
-func (x *AlicloudAssumeRoleCredentials) GetSessionExpiration() int32 {
+func (x *AliCloudAssumeRoleCredentials) GetSessionExpiration() int32 {
 	if x != nil {
 		return x.SessionExpiration
 	}
 	return 0
 }
 
-func (x *AlicloudAssumeRoleCredentials) GetExternalId() string {
+func (x *AliCloudAssumeRoleCredentials) GetExternalId() string {
 	if x != nil {
 		return x.ExternalId
 	}
 	return ""
 }
 
-// AlicloudAssumeRoleWithOidcCredentials provides authentication by assuming a RAM role
+// AliCloudAssumeRoleWithOidcCredentials provides authentication by assuming a RAM role
 // via OIDC federation. This method does not require an access key pair -- the OIDC token
 // from a trusted identity provider is exchanged for temporary RAM credentials.
 //
@@ -590,7 +590,7 @@ func (x *AlicloudAssumeRoleCredentials) GetExternalId() string {
 //	session_name      -> ALIBABA_CLOUD_ROLE_SESSION_NAME
 //	policy            -> (no environment variable)
 //	session_expiration -> (no environment variable)
-type AlicloudAssumeRoleWithOidcCredentials struct {
+type AliCloudAssumeRoleWithOidcCredentials struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// oidc_provider_arn is the ARN of the OIDC identity provider in RAM.
 	// Format: acs:ram::<account_id>:oidc-provider/<provider_name>
@@ -623,20 +623,20 @@ type AlicloudAssumeRoleWithOidcCredentials struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AlicloudAssumeRoleWithOidcCredentials) Reset() {
-	*x = AlicloudAssumeRoleWithOidcCredentials{}
+func (x *AliCloudAssumeRoleWithOidcCredentials) Reset() {
+	*x = AliCloudAssumeRoleWithOidcCredentials{}
 	mi := &file_org_openmcf_provider_alicloud_provider_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudAssumeRoleWithOidcCredentials) String() string {
+func (x *AliCloudAssumeRoleWithOidcCredentials) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudAssumeRoleWithOidcCredentials) ProtoMessage() {}
+func (*AliCloudAssumeRoleWithOidcCredentials) ProtoMessage() {}
 
-func (x *AlicloudAssumeRoleWithOidcCredentials) ProtoReflect() protoreflect.Message {
+func (x *AliCloudAssumeRoleWithOidcCredentials) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_provider_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -648,61 +648,61 @@ func (x *AlicloudAssumeRoleWithOidcCredentials) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudAssumeRoleWithOidcCredentials.ProtoReflect.Descriptor instead.
-func (*AlicloudAssumeRoleWithOidcCredentials) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudAssumeRoleWithOidcCredentials.ProtoReflect.Descriptor instead.
+func (*AliCloudAssumeRoleWithOidcCredentials) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_provider_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *AlicloudAssumeRoleWithOidcCredentials) GetOidcProviderArn() string {
+func (x *AliCloudAssumeRoleWithOidcCredentials) GetOidcProviderArn() string {
 	if x != nil {
 		return x.OidcProviderArn
 	}
 	return ""
 }
 
-func (x *AlicloudAssumeRoleWithOidcCredentials) GetRoleArn() string {
+func (x *AliCloudAssumeRoleWithOidcCredentials) GetRoleArn() string {
 	if x != nil {
 		return x.RoleArn
 	}
 	return ""
 }
 
-func (x *AlicloudAssumeRoleWithOidcCredentials) GetOidcToken() string {
+func (x *AliCloudAssumeRoleWithOidcCredentials) GetOidcToken() string {
 	if x != nil {
 		return x.OidcToken
 	}
 	return ""
 }
 
-func (x *AlicloudAssumeRoleWithOidcCredentials) GetOidcTokenFile() string {
+func (x *AliCloudAssumeRoleWithOidcCredentials) GetOidcTokenFile() string {
 	if x != nil {
 		return x.OidcTokenFile
 	}
 	return ""
 }
 
-func (x *AlicloudAssumeRoleWithOidcCredentials) GetSessionName() string {
+func (x *AliCloudAssumeRoleWithOidcCredentials) GetSessionName() string {
 	if x != nil {
 		return x.SessionName
 	}
 	return ""
 }
 
-func (x *AlicloudAssumeRoleWithOidcCredentials) GetPolicy() string {
+func (x *AliCloudAssumeRoleWithOidcCredentials) GetPolicy() string {
 	if x != nil {
 		return x.Policy
 	}
 	return ""
 }
 
-func (x *AlicloudAssumeRoleWithOidcCredentials) GetSessionExpiration() int32 {
+func (x *AliCloudAssumeRoleWithOidcCredentials) GetSessionExpiration() int32 {
 	if x != nil {
 		return x.SessionExpiration
 	}
 	return 0
 }
 
-// AlicloudSharedCredentials provides authentication via a shared credentials file.
+// AliCloudSharedCredentials provides authentication via a shared credentials file.
 // The file (default: ~/.aliyun/config.json) can contain multiple named profiles,
 // each with its own authentication method and credentials.
 //
@@ -710,7 +710,7 @@ func (x *AlicloudAssumeRoleWithOidcCredentials) GetSessionExpiration() int32 {
 //
 //	credentials_file -> ALIBABA_CLOUD_CREDENTIALS_FILE
 //	profile          -> ALIBABA_CLOUD_PROFILE
-type AlicloudSharedCredentials struct {
+type AliCloudSharedCredentials struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// credentials_file is the path to the shared credentials file.
 	// Defaults to ~/.aliyun/config.json if omitted.
@@ -724,20 +724,20 @@ type AlicloudSharedCredentials struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudSharedCredentials) Reset() {
-	*x = AlicloudSharedCredentials{}
+func (x *AliCloudSharedCredentials) Reset() {
+	*x = AliCloudSharedCredentials{}
 	mi := &file_org_openmcf_provider_alicloud_provider_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudSharedCredentials) String() string {
+func (x *AliCloudSharedCredentials) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudSharedCredentials) ProtoMessage() {}
+func (*AliCloudSharedCredentials) ProtoMessage() {}
 
-func (x *AlicloudSharedCredentials) ProtoReflect() protoreflect.Message {
+func (x *AliCloudSharedCredentials) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_provider_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -749,33 +749,33 @@ func (x *AlicloudSharedCredentials) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudSharedCredentials.ProtoReflect.Descriptor instead.
-func (*AlicloudSharedCredentials) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudSharedCredentials.ProtoReflect.Descriptor instead.
+func (*AliCloudSharedCredentials) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_provider_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *AlicloudSharedCredentials) GetCredentialsFile() string {
+func (x *AliCloudSharedCredentials) GetCredentialsFile() string {
 	if x != nil {
 		return x.CredentialsFile
 	}
 	return ""
 }
 
-func (x *AlicloudSharedCredentials) GetProfile() string {
+func (x *AliCloudSharedCredentials) GetProfile() string {
 	if x != nil {
 		return x.Profile
 	}
 	return ""
 }
 
-// AlicloudSidecarCredentials provides authentication via a sidecar credentials service.
+// AliCloudSidecarCredentials provides authentication via a sidecar credentials service.
 // The provider fetches temporary credentials by calling the specified HTTP URI.
 // This is useful in containerized environments where a sidecar manages credential rotation.
 //
 // Environment variable mapping:
 //
 //	credentials_uri -> ALIBABA_CLOUD_CREDENTIALS_URI
-type AlicloudSidecarCredentials struct {
+type AliCloudSidecarCredentials struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// credentials_uri is the HTTP URI of the sidecar credentials service.
 	// The provider makes a GET request to this URI and expects an STS credential response.
@@ -785,20 +785,20 @@ type AlicloudSidecarCredentials struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudSidecarCredentials) Reset() {
-	*x = AlicloudSidecarCredentials{}
+func (x *AliCloudSidecarCredentials) Reset() {
+	*x = AliCloudSidecarCredentials{}
 	mi := &file_org_openmcf_provider_alicloud_provider_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudSidecarCredentials) String() string {
+func (x *AliCloudSidecarCredentials) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudSidecarCredentials) ProtoMessage() {}
+func (*AliCloudSidecarCredentials) ProtoMessage() {}
 
-func (x *AlicloudSidecarCredentials) ProtoReflect() protoreflect.Message {
+func (x *AliCloudSidecarCredentials) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_provider_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -810,12 +810,12 @@ func (x *AlicloudSidecarCredentials) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudSidecarCredentials.ProtoReflect.Descriptor instead.
-func (*AlicloudSidecarCredentials) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudSidecarCredentials.ProtoReflect.Descriptor instead.
+func (*AliCloudSidecarCredentials) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_provider_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *AlicloudSidecarCredentials) GetCredentialsUri() string {
+func (x *AliCloudSidecarCredentials) GetCredentialsUri() string {
 	if x != nil {
 		return x.CredentialsUri
 	}
@@ -827,35 +827,35 @@ var File_org_openmcf_provider_alicloud_provider_proto protoreflect.FileDescripto
 const file_org_openmcf_provider_alicloud_provider_proto_rawDesc = "" +
 	"\n" +
 	",org/openmcf/provider/alicloud/provider.proto\x12\x1dorg.openmcf.provider.alicloud\x1a\x1bbuf/validate/validate.proto\"\xa3\a\n" +
-	"\x16AlicloudProviderConfig\x12j\n" +
+	"\x16AliCloudProviderConfig\x12j\n" +
 	"\x13authentication_type\x18\x01 \x01(\x0e21.org.openmcf.provider.alicloud.AuthenticationTypeB\x06\xbaH\x03\xc8\x01\x01R\x12authenticationType\x12\x16\n" +
 	"\x06region\x18\x02 \x01(\tR\x06region\x12\x1d\n" +
 	"\n" +
 	"account_id\x18\x03 \x01(\tR\taccountId\x12!\n" +
 	"\faccount_type\x18\x04 \x01(\tR\vaccountType\x12g\n" +
 	"\x12static_credentials\x18\n" +
-	" \x01(\v28.org.openmcf.provider.alicloud.AlicloudStaticCredentialsR\x11staticCredentials\x12W\n" +
-	"\tsts_token\x18\v \x01(\v2:.org.openmcf.provider.alicloud.AlicloudStsTokenCredentialsR\bstsToken\x12T\n" +
-	"\becs_role\x18\f \x01(\v29.org.openmcf.provider.alicloud.AlicloudEcsRoleCredentialsR\aecsRole\x12]\n" +
-	"\vassume_role\x18\r \x01(\v2<.org.openmcf.provider.alicloud.AlicloudAssumeRoleCredentialsR\n" +
+	" \x01(\v28.org.openmcf.provider.alicloud.AliCloudStaticCredentialsR\x11staticCredentials\x12W\n" +
+	"\tsts_token\x18\v \x01(\v2:.org.openmcf.provider.alicloud.AliCloudStsTokenCredentialsR\bstsToken\x12T\n" +
+	"\becs_role\x18\f \x01(\v29.org.openmcf.provider.alicloud.AliCloudEcsRoleCredentialsR\aecsRole\x12]\n" +
+	"\vassume_role\x18\r \x01(\v2<.org.openmcf.provider.alicloud.AliCloudAssumeRoleCredentialsR\n" +
 	"assumeRole\x12w\n" +
-	"\x15assume_role_with_oidc\x18\x0e \x01(\v2D.org.openmcf.provider.alicloud.AlicloudAssumeRoleWithOidcCredentialsR\x12assumeRoleWithOidc\x12g\n" +
-	"\x12shared_credentials\x18\x0f \x01(\v28.org.openmcf.provider.alicloud.AlicloudSharedCredentialsR\x11sharedCredentials\x12j\n" +
-	"\x13sidecar_credentials\x18\x10 \x01(\v29.org.openmcf.provider.alicloud.AlicloudSidecarCredentialsR\x12sidecarCredentials\"i\n" +
-	"\x19AlicloudStaticCredentials\x12%\n" +
+	"\x15assume_role_with_oidc\x18\x0e \x01(\v2D.org.openmcf.provider.alicloud.AliCloudAssumeRoleWithOidcCredentialsR\x12assumeRoleWithOidc\x12g\n" +
+	"\x12shared_credentials\x18\x0f \x01(\v28.org.openmcf.provider.alicloud.AliCloudSharedCredentialsR\x11sharedCredentials\x12j\n" +
+	"\x13sidecar_credentials\x18\x10 \x01(\v29.org.openmcf.provider.alicloud.AliCloudSidecarCredentialsR\x12sidecarCredentials\"i\n" +
+	"\x19AliCloudStaticCredentials\x12%\n" +
 	"\n" +
 	"access_key\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\taccessKey\x12%\n" +
 	"\n" +
 	"secret_key\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\tsecretKey\"\x9a\x01\n" +
-	"\x1bAlicloudStsTokenCredentials\x12%\n" +
+	"\x1bAliCloudStsTokenCredentials\x12%\n" +
 	"\n" +
 	"access_key\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\taccessKey\x12%\n" +
 	"\n" +
 	"secret_key\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\tsecretKey\x12-\n" +
 	"\x0esecurity_token\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\rsecurityToken\"H\n" +
-	"\x1aAlicloudEcsRoleCredentials\x12*\n" +
+	"\x1aAliCloudEcsRoleCredentials\x12*\n" +
 	"\recs_role_name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vecsRoleName\"\x9b\x02\n" +
-	"\x1dAlicloudAssumeRoleCredentials\x12%\n" +
+	"\x1dAliCloudAssumeRoleCredentials\x12%\n" +
 	"\n" +
 	"access_key\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\taccessKey\x12%\n" +
 	"\n" +
@@ -866,7 +866,7 @@ const file_org_openmcf_provider_alicloud_provider_proto_rawDesc = "" +
 	"\x12session_expiration\x18\x06 \x01(\x05R\x11sessionExpiration\x12\x1f\n" +
 	"\vexternal_id\x18\a \x01(\tR\n" +
 	"externalId\"\xaf\x02\n" +
-	"%AlicloudAssumeRoleWithOidcCredentials\x122\n" +
+	"%AliCloudAssumeRoleWithOidcCredentials\x122\n" +
 	"\x11oidc_provider_arn\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0foidcProviderArn\x12!\n" +
 	"\brole_arn\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\aroleArn\x12\x1d\n" +
 	"\n" +
@@ -875,10 +875,10 @@ const file_org_openmcf_provider_alicloud_provider_proto_rawDesc = "" +
 	"\fsession_name\x18\x05 \x01(\tR\vsessionName\x12\x16\n" +
 	"\x06policy\x18\x06 \x01(\tR\x06policy\x12-\n" +
 	"\x12session_expiration\x18\a \x01(\x05R\x11sessionExpiration\"`\n" +
-	"\x19AlicloudSharedCredentials\x12)\n" +
+	"\x19AliCloudSharedCredentials\x12)\n" +
 	"\x10credentials_file\x18\x01 \x01(\tR\x0fcredentialsFile\x12\x18\n" +
 	"\aprofile\x18\x02 \x01(\tR\aprofile\"M\n" +
-	"\x1aAlicloudSidecarCredentials\x12/\n" +
+	"\x1aAliCloudSidecarCredentials\x12/\n" +
 	"\x0fcredentials_uri\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0ecredentialsUri*\xcb\x01\n" +
 	"\x12AuthenticationType\x12#\n" +
 	"\x1fauthentication_type_unspecified\x10\x00\x12\x16\n" +
@@ -907,24 +907,24 @@ var file_org_openmcf_provider_alicloud_provider_proto_enumTypes = make([]protoim
 var file_org_openmcf_provider_alicloud_provider_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_org_openmcf_provider_alicloud_provider_proto_goTypes = []any{
 	(AuthenticationType)(0),                       // 0: org.openmcf.provider.alicloud.AuthenticationType
-	(*AlicloudProviderConfig)(nil),                // 1: org.openmcf.provider.alicloud.AlicloudProviderConfig
-	(*AlicloudStaticCredentials)(nil),             // 2: org.openmcf.provider.alicloud.AlicloudStaticCredentials
-	(*AlicloudStsTokenCredentials)(nil),           // 3: org.openmcf.provider.alicloud.AlicloudStsTokenCredentials
-	(*AlicloudEcsRoleCredentials)(nil),            // 4: org.openmcf.provider.alicloud.AlicloudEcsRoleCredentials
-	(*AlicloudAssumeRoleCredentials)(nil),         // 5: org.openmcf.provider.alicloud.AlicloudAssumeRoleCredentials
-	(*AlicloudAssumeRoleWithOidcCredentials)(nil), // 6: org.openmcf.provider.alicloud.AlicloudAssumeRoleWithOidcCredentials
-	(*AlicloudSharedCredentials)(nil),             // 7: org.openmcf.provider.alicloud.AlicloudSharedCredentials
-	(*AlicloudSidecarCredentials)(nil),            // 8: org.openmcf.provider.alicloud.AlicloudSidecarCredentials
+	(*AliCloudProviderConfig)(nil),                // 1: org.openmcf.provider.alicloud.AliCloudProviderConfig
+	(*AliCloudStaticCredentials)(nil),             // 2: org.openmcf.provider.alicloud.AliCloudStaticCredentials
+	(*AliCloudStsTokenCredentials)(nil),           // 3: org.openmcf.provider.alicloud.AliCloudStsTokenCredentials
+	(*AliCloudEcsRoleCredentials)(nil),            // 4: org.openmcf.provider.alicloud.AliCloudEcsRoleCredentials
+	(*AliCloudAssumeRoleCredentials)(nil),         // 5: org.openmcf.provider.alicloud.AliCloudAssumeRoleCredentials
+	(*AliCloudAssumeRoleWithOidcCredentials)(nil), // 6: org.openmcf.provider.alicloud.AliCloudAssumeRoleWithOidcCredentials
+	(*AliCloudSharedCredentials)(nil),             // 7: org.openmcf.provider.alicloud.AliCloudSharedCredentials
+	(*AliCloudSidecarCredentials)(nil),            // 8: org.openmcf.provider.alicloud.AliCloudSidecarCredentials
 }
 var file_org_openmcf_provider_alicloud_provider_proto_depIdxs = []int32{
-	0, // 0: org.openmcf.provider.alicloud.AlicloudProviderConfig.authentication_type:type_name -> org.openmcf.provider.alicloud.AuthenticationType
-	2, // 1: org.openmcf.provider.alicloud.AlicloudProviderConfig.static_credentials:type_name -> org.openmcf.provider.alicloud.AlicloudStaticCredentials
-	3, // 2: org.openmcf.provider.alicloud.AlicloudProviderConfig.sts_token:type_name -> org.openmcf.provider.alicloud.AlicloudStsTokenCredentials
-	4, // 3: org.openmcf.provider.alicloud.AlicloudProviderConfig.ecs_role:type_name -> org.openmcf.provider.alicloud.AlicloudEcsRoleCredentials
-	5, // 4: org.openmcf.provider.alicloud.AlicloudProviderConfig.assume_role:type_name -> org.openmcf.provider.alicloud.AlicloudAssumeRoleCredentials
-	6, // 5: org.openmcf.provider.alicloud.AlicloudProviderConfig.assume_role_with_oidc:type_name -> org.openmcf.provider.alicloud.AlicloudAssumeRoleWithOidcCredentials
-	7, // 6: org.openmcf.provider.alicloud.AlicloudProviderConfig.shared_credentials:type_name -> org.openmcf.provider.alicloud.AlicloudSharedCredentials
-	8, // 7: org.openmcf.provider.alicloud.AlicloudProviderConfig.sidecar_credentials:type_name -> org.openmcf.provider.alicloud.AlicloudSidecarCredentials
+	0, // 0: org.openmcf.provider.alicloud.AliCloudProviderConfig.authentication_type:type_name -> org.openmcf.provider.alicloud.AuthenticationType
+	2, // 1: org.openmcf.provider.alicloud.AliCloudProviderConfig.static_credentials:type_name -> org.openmcf.provider.alicloud.AliCloudStaticCredentials
+	3, // 2: org.openmcf.provider.alicloud.AliCloudProviderConfig.sts_token:type_name -> org.openmcf.provider.alicloud.AliCloudStsTokenCredentials
+	4, // 3: org.openmcf.provider.alicloud.AliCloudProviderConfig.ecs_role:type_name -> org.openmcf.provider.alicloud.AliCloudEcsRoleCredentials
+	5, // 4: org.openmcf.provider.alicloud.AliCloudProviderConfig.assume_role:type_name -> org.openmcf.provider.alicloud.AliCloudAssumeRoleCredentials
+	6, // 5: org.openmcf.provider.alicloud.AliCloudProviderConfig.assume_role_with_oidc:type_name -> org.openmcf.provider.alicloud.AliCloudAssumeRoleWithOidcCredentials
+	7, // 6: org.openmcf.provider.alicloud.AliCloudProviderConfig.shared_credentials:type_name -> org.openmcf.provider.alicloud.AliCloudSharedCredentials
+	8, // 7: org.openmcf.provider.alicloud.AliCloudProviderConfig.sidecar_credentials:type_name -> org.openmcf.provider.alicloud.AliCloudSidecarCredentials
 	8, // [8:8] is the sub-list for method output_type
 	8, // [8:8] is the sub-list for method input_type
 	8, // [8:8] is the sub-list for extension type_name

@@ -1,0 +1,24 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudPolardbCluster
+metadata:
+  name: alicloudpolardbcluster-demo
+spec:
+  region: cn-hangzhou
+  dbType: MySQL
+  dbVersion: "8.0"
+  dbNodeClass: polar.mysql.x4.large
+  vswitchId:
+    value: vsw-demo123
+  dbNodeCount: 2
+  description: Demo PolarDB cluster
+  securityIps:
+    - "10.0.0.0/8"
+  databases:
+    - dbName: appdb
+      characterSetName: utf8mb4
+  accounts:
+    - accountName: app_user
+      accountPassword: DemoP@ssw0rd123
+      privileges:
+        - dbNames: [appdb]
+          accountPrivilege: ReadWrite

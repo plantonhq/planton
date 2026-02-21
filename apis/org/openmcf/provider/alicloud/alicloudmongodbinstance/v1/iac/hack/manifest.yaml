@@ -1,0 +1,16 @@
+apiVersion: alicloud.openmcf.org/v1
+kind: AlicloudMongodbInstance
+metadata:
+  name: alicloudmongodbinstance-demo
+spec:
+  region: cn-hangzhou
+  engineVersion: "7.0"
+  dbInstanceClass: dds.mongo.mid
+  dbInstanceStorage: 20
+  accountPassword: DemoP@ssw0rd123
+  vswitchId:
+    value: vsw-demo123
+  replicationFactor: 3
+  storageEngine: WiredTiger
+  securityIpList:
+    - "10.0.0.0/8"

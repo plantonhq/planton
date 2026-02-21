@@ -4,7 +4,7 @@ package org.openmcf.provider.alicloud;
 
 import "buf/validate/validate.proto";
 
-// AuthenticationType selects which credential sub-message is active in AlicloudProviderConfig.
+// AuthenticationType selects which credential sub-message is active in AliCloudProviderConfig.
 // Defined at package scope to avoid protobuf C++ scoping conflicts between enum values
 // and message field names (both share the enclosing message scope when nested).
 enum AuthenticationType {
@@ -18,7 +18,7 @@ enum AuthenticationType {
   sidecar_credentials = 7;
 }
 
-// AlicloudProviderConfig defines the credentials and connection parameters required to interact
+// AliCloudProviderConfig defines the credentials and connection parameters required to interact
 // with Alibaba Cloud infrastructure. This message supports seven authentication methods via
 // an explicit AuthenticationType enum discriminator, with a separate sub-message per method.
 //
@@ -44,7 +44,7 @@ enum AuthenticationType {
 // For more information:
 // - Terraform provider docs: https://registry.terraform.io/providers/aliyun/alicloud/latest/docs
 // - Alibaba Cloud authentication: https://registry.terraform.io/providers/aliyun/alicloud/latest/docs#authentication
-message AlicloudProviderConfig {
+message AliCloudProviderConfig {
   // authentication_type selects the active credential sub-message.
   // Consumers switch on this value to determine which sub-message to read.
   AuthenticationType authentication_type = 1 [(buf.validate.field).required = true];
@@ -72,34 +72,34 @@ message AlicloudProviderConfig {
   // --- Authentication method sub-messages (exactly one should be populated) ---
 
   // static_credentials is populated when authentication_type is static_credentials.
-  AlicloudStaticCredentials static_credentials = 10;
+  AliCloudStaticCredentials static_credentials = 10;
 
   // sts_token is populated when authentication_type is sts_token.
-  AlicloudStsTokenCredentials sts_token = 11;
+  AliCloudStsTokenCredentials sts_token = 11;
 
   // ecs_role is populated when authentication_type is ecs_role.
-  AlicloudEcsRoleCredentials ecs_role = 12;
+  AliCloudEcsRoleCredentials ecs_role = 12;
 
   // assume_role is populated when authentication_type is assume_role.
-  AlicloudAssumeRoleCredentials assume_role = 13;
+  AliCloudAssumeRoleCredentials assume_role = 13;
 
   // assume_role_with_oidc is populated when authentication_type is assume_role_with_oidc.
-  AlicloudAssumeRoleWithOidcCredentials assume_role_with_oidc = 14;
+  AliCloudAssumeRoleWithOidcCredentials assume_role_with_oidc = 14;
 
   // shared_credentials is populated when authentication_type is shared_credentials.
-  AlicloudSharedCredentials shared_credentials = 15;
+  AliCloudSharedCredentials shared_credentials = 15;
 
   // sidecar_credentials is populated when authentication_type is sidecar_credentials.
-  AlicloudSidecarCredentials sidecar_credentials = 16;
+  AliCloudSidecarCredentials sidecar_credentials = 16;
 }
 
-// AlicloudStaticCredentials provides authentication via a long-lived IAM access key pair.
+// AliCloudStaticCredentials provides authentication via a long-lived IAM access key pair.
 // This is the simplest and most common authentication method.
 //
 // Environment variable mapping:
 //   access_key -> ALIBABA_CLOUD_ACCESS_KEY_ID
 //   secret_key -> ALIBABA_CLOUD_ACCESS_KEY_SECRET
-message AlicloudStaticCredentials {
+message AliCloudStaticCredentials {
   // access_key is the Alibaba Cloud access key ID.
   // Created in the RAM console under AccessKey Management.
   // Environment variable: ALIBABA_CLOUD_ACCESS_KEY_ID
@@ -111,7 +111,7 @@ message AlicloudStaticCredentials {
   string secret_key = 2 [(buf.validate.field).required = true];
 }
 
-// AlicloudStsTokenCredentials provides authentication via temporary STS credentials.
+// AliCloudStsTokenCredentials provides authentication via temporary STS credentials.
 // STS credentials include an access key pair plus a short-lived security token,
 // typically obtained from AssumeRole, federation, or other STS APIs.
 //
@@ -119,7 +119,7 @@ message AlicloudStaticCredentials {
 //   access_key     -> ALIBABA_CLOUD_ACCESS_KEY_ID
 //   secret_key     -> ALIBABA_CLOUD_ACCESS_KEY_SECRET
 //   security_token -> ALIBABA_CLOUD_SECURITY_TOKEN
-message AlicloudStsTokenCredentials {
+message AliCloudStsTokenCredentials {
   // access_key is the temporary access key ID from STS.
   // Environment variable: ALIBABA_CLOUD_ACCESS_KEY_ID
   string access_key = 1 [(buf.validate.field).required = true];
@@ -133,20 +133,20 @@ message AlicloudStsTokenCredentials {
   string security_token = 3 [(buf.validate.field).required = true];
 }
 
-// AlicloudEcsRoleCredentials provides authentication via an ECS instance RAM role.
+// AliCloudEcsRoleCredentials provides authentication via an ECS instance RAM role.
 // When running on an ECS instance with an attached RAM role, the provider retrieves
 // temporary credentials from the instance metadata service automatically.
 //
 // Environment variable mapping:
 //   ecs_role_name -> ALIBABA_CLOUD_ECS_METADATA
-message AlicloudEcsRoleCredentials {
+message AliCloudEcsRoleCredentials {
   // ecs_role_name is the name of the RAM role attached to the ECS instance.
   // The provider fetches credentials from http://100.100.100.200/latest/meta-data/ram/security-credentials/<role_name>.
   // Environment variable: ALIBABA_CLOUD_ECS_METADATA
   string ecs_role_name = 1 [(buf.validate.field).required = true];
 }
 
-// AlicloudAssumeRoleCredentials provides authentication by assuming a RAM role.
+// AliCloudAssumeRoleCredentials provides authentication by assuming a RAM role.
 // The provider first authenticates with the base access key pair, then calls STS
 // AssumeRole to obtain temporary credentials scoped to the target role.
 //
@@ -158,7 +158,7 @@ message AlicloudEcsRoleCredentials {
 //   session_expiration -> ALICLOUD_ASSUME_ROLE_SESSION_EXPIRATION (deprecated naming, no modern equivalent)
 //   policy             -> (no environment variable)
 //   external_id        -> (no environment variable)
-message AlicloudAssumeRoleCredentials {
+message AliCloudAssumeRoleCredentials {
   // access_key is the base access key ID used to call STS AssumeRole.
   // Environment variable: ALIBABA_CLOUD_ACCESS_KEY_ID
   string access_key = 1 [(buf.validate.field).required = true];
@@ -192,7 +192,7 @@ message AlicloudAssumeRoleCredentials {
   string external_id = 7;
 }
 
-// AlicloudAssumeRoleWithOidcCredentials provides authentication by assuming a RAM role
+// AliCloudAssumeRoleWithOidcCredentials provides authentication by assuming a RAM role
 // via OIDC federation. This method does not require an access key pair -- the OIDC token
 // from a trusted identity provider is exchanged for temporary RAM credentials.
 //
@@ -204,7 +204,7 @@ message AlicloudAssumeRoleCredentials {
 //   session_name      -> ALIBABA_CLOUD_ROLE_SESSION_NAME
 //   policy            -> (no environment variable)
 //   session_expiration -> (no environment variable)
-message AlicloudAssumeRoleWithOidcCredentials {
+message AliCloudAssumeRoleWithOidcCredentials {
   // oidc_provider_arn is the ARN of the OIDC identity provider in RAM.
   // Format: acs:ram::<account_id>:oidc-provider/<provider_name>
   // Environment variable: ALIBABA_CLOUD_OIDC_PROVIDER_ARN
@@ -240,14 +240,14 @@ message AlicloudAssumeRoleWithOidcCredentials {
   int32 session_expiration = 7;
 }
 
-// AlicloudSharedCredentials provides authentication via a shared credentials file.
+// AliCloudSharedCredentials provides authentication via a shared credentials file.
 // The file (default: ~/.aliyun/config.json) can contain multiple named profiles,
 // each with its own authentication method and credentials.
 //
 // Environment variable mapping:
 //   credentials_file -> ALIBABA_CLOUD_CREDENTIALS_FILE
 //   profile          -> ALIBABA_CLOUD_PROFILE
-message AlicloudSharedCredentials {
+message AliCloudSharedCredentials {
   // credentials_file is the path to the shared credentials file.
   // Defaults to ~/.aliyun/config.json if omitted.
   // Environment variable: ALIBABA_CLOUD_CREDENTIALS_FILE
@@ -259,13 +259,13 @@ message AlicloudSharedCredentials {
   string profile = 2;
 }
 
-// AlicloudSidecarCredentials provides authentication via a sidecar credentials service.
+// AliCloudSidecarCredentials provides authentication via a sidecar credentials service.
 // The provider fetches temporary credentials by calling the specified HTTP URI.
 // This is useful in containerized environments where a sidecar manages credential rotation.
 //
 // Environment variable mapping:
 //   credentials_uri -> ALIBABA_CLOUD_CREDENTIALS_URI
-message AlicloudSidecarCredentials {
+message AliCloudSidecarCredentials {
   // credentials_uri is the HTTP URI of the sidecar credentials service.
   // The provider makes a GET request to this URI and expects an STS credential response.
   // Environment variable: ALIBABA_CLOUD_CREDENTIALS_URI

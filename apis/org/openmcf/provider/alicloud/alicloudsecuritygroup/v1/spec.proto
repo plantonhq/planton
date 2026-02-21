@@ -1,0 +1,166 @@
+syntax = "proto3";
+
+package org.openmcf.provider.alicloud.alicloudsecuritygroup.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// AliCloudSecurityGroupSpec defines the configuration for an Alibaba Cloud
+// Security Group with bundled security rules.
+//
+// A security group is a stateful virtual firewall that controls inbound and
+// outbound traffic for ECS instances, ACK worker nodes, RDS instances, and
+// other VPC-aware resources. Each security group belongs to exactly one VPC,
+// and resources can be associated with up to five security groups.
+//
+// This component bundles the security group with its rules (per DD07 composite
+// bundling) because a security group without rules is an open door -- the rules
+// are the substance of the resource.
+//
+// Security group rules are evaluated by priority (lowest number = highest
+// priority, range 1-100). The first matching rule determines whether traffic
+// is allowed or dropped. If no rule matches, the default behavior depends on
+// the inner_access_policy for intra-group traffic, and deny for everything else.
+//
+// Provider resources:
+//   Terraform: alicloud_security_group + alicloud_security_group_rule
+//   Pulumi:    ecs.SecurityGroup + ecs.SecurityGroupRule
+message AliCloudSecurityGroupSpec {
+  // Alibaba Cloud region where the security group will be created.
+  // Must match the region of the VPC referenced by vpc_id.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // VPC ID that this security group belongs to.
+  // All security group rules automatically apply to VPC-internal traffic
+  // (nic_type "intranet" is implied and hardcoded in the IaC modules).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // Security group name. 2-128 characters; must start with a letter; can
+  // contain Unicode characters, digits, colons, underscores, periods, hyphens.
+  // Maps to the provider field `security_group_name`.
+  string security_group_name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 2,
+    (buf.validate.field).string.max_len = 128
+  ];
+
+  // Human-readable description of the security group's purpose.
+  // 2-256 characters; cannot start with http:// or https://.
+  string description = 4;
+
+  // Controls whether instances within the same security group can communicate
+  // with each other freely. When "Accept", all intra-group traffic is allowed.
+  // When "Drop", intra-group traffic follows normal rule evaluation.
+  //
+  // Uses the provider's exact casing: "Accept" or "Drop".
+  // Default: "Accept"
+  optional string inner_access_policy = 5 [
+    (buf.validate.field).cel = {
+      id: "inner_access_policy_valid"
+      message: "inner_access_policy must be one of: Accept, Drop"
+      expression: "this == '' || this in ['Accept', 'Drop']"
+    },
+    (org.openmcf.shared.options.default) = "Accept"
+  ];
+
+  // Alibaba Cloud resource group ID for organizational grouping (per DD05).
+  // If omitted, the security group is placed in the account's default resource group.
+  string resource_group_id = 6;
+
+  // Tags to apply to the security group.
+  map<string, string> tags = 7;
+
+  // Security rules that define allowed or dropped traffic flows.
+  // Each rule specifies direction (ingress/egress), protocol, port range,
+  // source/destination, and an accept/drop decision.
+  //
+  // Rules are evaluated by priority within their direction. Lower priority
+  // numbers are evaluated first (1 = highest priority). The first matching
+  // rule wins.
+  repeated AliCloudSecurityGroupRule rules = 8;
+}
+
+// AliCloudSecurityGroupRule defines a single inbound or outbound traffic rule.
+//
+// For ingress rules, cidr_ip and source_security_group_id specify the traffic
+// source. For egress rules, cidr_ip specifies the traffic destination. At least
+// one of cidr_ip or source_security_group_id must be provided.
+//
+// All rule fields except description are immutable after creation (ForceNew in
+// the provider). Changing any field requires destroying and recreating the rule.
+message AliCloudSecurityGroupRule {
+  // Traffic direction: "ingress" for inbound, "egress" for outbound.
+  string type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "type_valid"
+      message: "type must be one of: ingress, egress"
+      expression: "this in ['ingress', 'egress']"
+    }
+  ];
+
+  // IP protocol for this rule.
+  // For "tcp" and "udp", port_range must specify explicit ports.
+  // For "icmp", "gre", and "all", port_range must be "-1/-1".
+  string ip_protocol = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "ip_protocol_valid"
+      message: "ip_protocol must be one of: tcp, udp, icmp, gre, all"
+      expression: "this in ['tcp', 'udp', 'icmp', 'gre', 'all']"
+    }
+  ];
+
+  // Port range in "start/end" format.
+  // For tcp/udp: valid range 1-65535, e.g. "80/80" (single port), "8080/8090" (range).
+  // For icmp/gre/all: must be "-1/-1".
+  // Default: "-1/-1" (all ports)
+  optional string port_range = 3 [(org.openmcf.shared.options.default) = "-1/-1"];
+
+  // IPv4 CIDR block for the traffic source (ingress) or destination (egress).
+  // Example: "0.0.0.0/0" (any), "10.0.0.0/8" (private range).
+  // At least one of cidr_ip or source_security_group_id must be specified.
+  string cidr_ip = 4;
+
+  // Source (for ingress) or destination (for egress) security group ID.
+  // Used for SG-to-SG rules within the same VPC.
+  // Mutually exclusive with cidr_ip in the provider -- when both are set,
+  // cidr_ip takes precedence.
+  string source_security_group_id = 5;
+
+  // Rule evaluation priority. Lower number = higher priority.
+  // Range: 1 to 100.
+  // Default: 1 (highest priority)
+  optional int32 priority = 6 [
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 100
+    },
+    (org.openmcf.shared.options.default) = "1"
+  ];
+
+  // Action to take when this rule matches: "accept" to allow, "drop" to block.
+  // Default: "accept"
+  optional string policy = 7 [
+    (buf.validate.field).cel = {
+      id: "policy_valid"
+      message: "policy must be one of: accept, drop"
+      expression: "this == '' || this in ['accept', 'drop']"
+    },
+    (org.openmcf.shared.options.default) = "accept"
+  ];
+
+  // Human-readable description of this rule's purpose.
+  // This is the only field that can be updated after creation without
+  // recreating the rule.
+  string description = 8;
+}

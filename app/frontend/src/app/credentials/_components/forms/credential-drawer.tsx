@@ -44,7 +44,7 @@ import {
   ScalewayProviderConfigSchema,
 } from '@/gen/org/openmcf/provider/scaleway/provider_pb';
 import {
-  AlicloudProviderConfigSchema,
+  AliCloudProviderConfigSchema,
   AlicloudStaticCredentialsSchema,
   AlicloudStsTokenCredentialsSchema,
   AlicloudEcsRoleCredentialsSchema,
@@ -524,7 +524,7 @@ export function CredentialDrawer({
         providerConfig = create(CredentialProviderConfigSchema, {
           data: {
             case: 'alicloud',
-            value: create(AlicloudProviderConfigSchema, configFields),
+            value: create(AliCloudProviderConfigSchema, configFields),
           },
         });
       } else if (
