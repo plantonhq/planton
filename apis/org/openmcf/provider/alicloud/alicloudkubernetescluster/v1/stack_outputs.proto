@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudkubernetescluster.v1;
 
-// AlicloudKubernetesClusterStackOutputs captures the outputs from deploying
+// AliCloudKubernetesClusterStackOutputs captures the outputs from deploying
 // an ACK Managed Kubernetes cluster.
-message AlicloudKubernetesClusterStackOutputs {
+message AliCloudKubernetesClusterStackOutputs {
   // ACK cluster ID assigned by Alibaba Cloud.
   string cluster_id = 1;
 

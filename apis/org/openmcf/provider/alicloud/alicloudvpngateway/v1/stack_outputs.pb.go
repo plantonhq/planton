@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudVpnGatewayStackOutputs captures the outputs from deploying an
+// AliCloudVpnGatewayStackOutputs captures the outputs from deploying an
 // Alibaba Cloud VPN Gateway with its bundled customer gateways and VPN
 // connections.
-type AlicloudVpnGatewayStackOutputs struct {
+type AliCloudVpnGatewayStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The VPN Gateway ID assigned by Alibaba Cloud (e.g., "vpn-xxxxx").
 	VpnGatewayId string `protobuf:"bytes,1,opt,name=vpn_gateway_id,json=vpnGatewayId,proto3" json:"vpn_gateway_id,omitempty"`
@@ -41,20 +41,20 @@ type AlicloudVpnGatewayStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudVpnGatewayStackOutputs) Reset() {
-	*x = AlicloudVpnGatewayStackOutputs{}
+func (x *AliCloudVpnGatewayStackOutputs) Reset() {
+	*x = AliCloudVpnGatewayStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudVpnGatewayStackOutputs) String() string {
+func (x *AliCloudVpnGatewayStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudVpnGatewayStackOutputs) ProtoMessage() {}
+func (*AliCloudVpnGatewayStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudVpnGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudVpnGatewayStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,33 +66,33 @@ func (x *AlicloudVpnGatewayStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudVpnGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudVpnGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudVpnGatewayStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudVpnGatewayStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudVpnGatewayStackOutputs) GetVpnGatewayId() string {
+func (x *AliCloudVpnGatewayStackOutputs) GetVpnGatewayId() string {
 	if x != nil {
 		return x.VpnGatewayId
 	}
 	return ""
 }
 
-func (x *AlicloudVpnGatewayStackOutputs) GetInternetIp() string {
+func (x *AliCloudVpnGatewayStackOutputs) GetInternetIp() string {
 	if x != nil {
 		return x.InternetIp
 	}
 	return ""
 }
 
-func (x *AlicloudVpnGatewayStackOutputs) GetSslVpnInternetIp() string {
+func (x *AliCloudVpnGatewayStackOutputs) GetSslVpnInternetIp() string {
 	if x != nil {
 		return x.SslVpnInternetIp
 	}
 	return ""
 }
 
-func (x *AlicloudVpnGatewayStackOutputs) GetConnectionIds() map[string]string {
+func (x *AliCloudVpnGatewayStackOutputs) GetConnectionIds() map[string]string {
 	if x != nil {
 		return x.ConnectionIds
 	}
@@ -104,12 +104,12 @@ var File_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_outputs_proto
 const file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Gorg/openmcf/provider/alicloud/alicloudvpngateway/v1/stack_outputs.proto\x123org.openmcf.provider.alicloud.alicloudvpngateway.v1\"\xe8\x02\n" +
-	"\x1eAlicloudVpnGatewayStackOutputs\x12$\n" +
+	"\x1eAliCloudVpnGatewayStackOutputs\x12$\n" +
 	"\x0evpn_gateway_id\x18\x01 \x01(\tR\fvpnGatewayId\x12\x1f\n" +
 	"\vinternet_ip\x18\x02 \x01(\tR\n" +
 	"internetIp\x12-\n" +
 	"\x13ssl_vpn_internet_ip\x18\x03 \x01(\tR\x10sslVpnInternetIp\x12\x8d\x01\n" +
-	"\x0econnection_ids\x18\x04 \x03(\v2f.org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGatewayStackOutputs.ConnectionIdsEntryR\rconnectionIds\x1a@\n" +
+	"\x0econnection_ids\x18\x04 \x03(\v2f.org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGatewayStackOutputs.ConnectionIdsEntryR\rconnectionIds\x1a@\n" +
 	"\x12ConnectionIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xab\x03\n" +
@@ -129,11 +129,11 @@ func file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_outputs_prot
 
 var file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudVpnGatewayStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGatewayStackOutputs
-	nil,                                    // 1: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGatewayStackOutputs.ConnectionIdsEntry
+	(*AliCloudVpnGatewayStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGatewayStackOutputs
+	nil,                                    // 1: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGatewayStackOutputs.ConnectionIdsEntry
 }
 var file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_outputs_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGatewayStackOutputs.connection_ids:type_name -> org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGatewayStackOutputs.ConnectionIdsEntry
+	1, // 0: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGatewayStackOutputs.connection_ids:type_name -> org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGatewayStackOutputs.ConnectionIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

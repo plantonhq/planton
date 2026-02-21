@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudecsinstance.v1;
 
-// AlicloudEcsInstanceStackOutputs captures the outputs from deploying an
+// AliCloudEcsInstanceStackOutputs captures the outputs from deploying an
 // Alibaba Cloud ECS instance.
-message AlicloudEcsInstanceStackOutputs {
+message AliCloudEcsInstanceStackOutputs {
   // The ECS instance ID assigned by Alibaba Cloud (e.g., "i-bp1xxxxx").
   string instance_id = 1;
 

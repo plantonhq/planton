@@ -8,9 +8,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *alicloudcdndomainv1.AlicloudCdnDomainStackInput) error {
+func Resources(ctx *pulumi.Context, stackInput *alicloudcdndomainv1.AliCloudCdnDomainStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
-	spec := locals.AlicloudCdnDomain.Spec
+	spec := locals.AliCloudCdnDomain.Spec
 
 	alicloudProvider, err := alicloud.NewProvider(ctx, "alicloud", &alicloud.ProviderArgs{
 		Region: pulumi.String(spec.Region),
@@ -51,7 +51,7 @@ func Resources(ctx *pulumi.Context, stackInput *alicloudcdndomainv1.AlicloudCdnD
 	return nil
 }
 
-func buildSources(sources []*alicloudcdndomainv1.AlicloudCdnDomainSource) cdn.DomainNewSourceArray {
+func buildSources(sources []*alicloudcdndomainv1.AliCloudCdnDomainSource) cdn.DomainNewSourceArray {
 	var result cdn.DomainNewSourceArray
 	for _, s := range sources {
 		sourceArgs := cdn.DomainNewSourceArgs{
@@ -72,7 +72,7 @@ func buildSources(sources []*alicloudcdndomainv1.AlicloudCdnDomainSource) cdn.Do
 	return result
 }
 
-func buildCertificateConfig(cc *alicloudcdndomainv1.AlicloudCdnDomainCertificateConfig) cdn.DomainNewCertificateConfigPtrInput {
+func buildCertificateConfig(cc *alicloudcdndomainv1.AliCloudCdnDomainCertificateConfig) cdn.DomainNewCertificateConfigPtrInput {
 	args := &cdn.DomainNewCertificateConfigArgs{}
 
 	if cc.CertName != "" {

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudRedisInstanceStackOutputs captures the outputs from deploying an
+// AliCloudRedisInstanceStackOutputs captures the outputs from deploying an
 // Alibaba Cloud Redis (KVStore) instance.
-type AlicloudRedisInstanceStackOutputs struct {
+type AliCloudRedisInstanceStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Redis instance ID assigned by Alibaba Cloud (e.g., "r-xxxxx").
 	InstanceId string `protobuf:"bytes,1,opt,name=instance_id,json=instanceId,proto3" json:"instance_id,omitempty"`
@@ -38,20 +38,20 @@ type AlicloudRedisInstanceStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudRedisInstanceStackOutputs) Reset() {
-	*x = AlicloudRedisInstanceStackOutputs{}
+func (x *AliCloudRedisInstanceStackOutputs) Reset() {
+	*x = AliCloudRedisInstanceStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRedisInstanceStackOutputs) String() string {
+func (x *AliCloudRedisInstanceStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRedisInstanceStackOutputs) ProtoMessage() {}
+func (*AliCloudRedisInstanceStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudRedisInstanceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRedisInstanceStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,33 +63,33 @@ func (x *AlicloudRedisInstanceStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRedisInstanceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudRedisInstanceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRedisInstanceStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudRedisInstanceStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudRedisInstanceStackOutputs) GetInstanceId() string {
+func (x *AliCloudRedisInstanceStackOutputs) GetInstanceId() string {
 	if x != nil {
 		return x.InstanceId
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceStackOutputs) GetConnectionDomain() string {
+func (x *AliCloudRedisInstanceStackOutputs) GetConnectionDomain() string {
 	if x != nil {
 		return x.ConnectionDomain
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceStackOutputs) GetPrivateConnectionPort() string {
+func (x *AliCloudRedisInstanceStackOutputs) GetPrivateConnectionPort() string {
 	if x != nil {
 		return x.PrivateConnectionPort
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceStackOutputs) GetPrivateIp() string {
+func (x *AliCloudRedisInstanceStackOutputs) GetPrivateIp() string {
 	if x != nil {
 		return x.PrivateIp
 	}
@@ -101,7 +101,7 @@ var File_org_openmcf_provider_alicloud_alicloudredisinstance_v1_stack_outputs_pr
 const file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Jorg/openmcf/provider/alicloud/alicloudredisinstance/v1/stack_outputs.proto\x126org.openmcf.provider.alicloud.alicloudredisinstance.v1\"\xc8\x01\n" +
-	"!AlicloudRedisInstanceStackOutputs\x12\x1f\n" +
+	"!AliCloudRedisInstanceStackOutputs\x12\x1f\n" +
 	"\vinstance_id\x18\x01 \x01(\tR\n" +
 	"instanceId\x12+\n" +
 	"\x11connection_domain\x18\x02 \x01(\tR\x10connectionDomain\x126\n" +
@@ -124,7 +124,7 @@ func file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_stack_outputs_p
 
 var file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudRedisInstanceStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceStackOutputs
+	(*AliCloudRedisInstanceStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_stack_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

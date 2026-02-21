@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudnasfilesystem.v1;
 
-// AlicloudNasFileSystemStackOutputs captures the outputs from deploying an
+// AliCloudNasFileSystemStackOutputs captures the outputs from deploying an
 // Alibaba Cloud NAS file system with its mount target.
-message AlicloudNasFileSystemStackOutputs {
+message AliCloudNasFileSystemStackOutputs {
   // The NAS file system ID assigned by Alibaba Cloud (e.g., "1ca404a348").
   // Used to reference this file system from other resources such as snapshot
   // policies or lifecycle policies.

@@ -9,19 +9,19 @@ import (
 )
 
 type Locals struct {
-	AlicloudCenInstance *alicloudceninstancev1.AlicloudCenInstance
+	AliCloudCenInstance *alicloudceninstancev1.AliCloudCenInstance
 	Tags                map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudceninstancev1.AlicloudCenInstanceStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudceninstancev1.AliCloudCenInstanceStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudCenInstance = stackInput.Target
+	locals.AliCloudCenInstance = stackInput.Target
 	target := stackInput.Target
 
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudCenInstance.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudCenInstance.String()),
 	}
 
 	if target.Metadata.Id != "" {

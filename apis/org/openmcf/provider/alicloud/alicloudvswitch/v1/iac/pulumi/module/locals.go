@@ -9,14 +9,14 @@ import (
 )
 
 type Locals struct {
-	AlicloudVswitch *alicloudvswitchv1.AlicloudVswitch
+	AliCloudVswitch *alicloudvswitchv1.AliCloudVswitch
 	VpcId           string
 	Tags            map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudvswitchv1.AlicloudVswitchStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudvswitchv1.AliCloudVswitchStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudVswitch = stackInput.Target
+	locals.AliCloudVswitch = stackInput.Target
 	target := stackInput.Target
 
 	// Resolve vpc_id from StringValueOrRef.
@@ -27,7 +27,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudvswitchv1.Aliclou
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudVswitch.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudVswitch.String()),
 	}
 
 	if target.Metadata.Id != "" {

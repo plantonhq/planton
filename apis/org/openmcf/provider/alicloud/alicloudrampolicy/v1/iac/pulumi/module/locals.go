@@ -9,19 +9,19 @@ import (
 )
 
 type Locals struct {
-	AlicloudRamPolicy *alicloudrampolicyv1.AlicloudRamPolicy
+	AliCloudRamPolicy *alicloudrampolicyv1.AliCloudRamPolicy
 	Tags              map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudrampolicyv1.AlicloudRamPolicyStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudrampolicyv1.AliCloudRamPolicyStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudRamPolicy = stackInput.Target
+	locals.AliCloudRamPolicy = stackInput.Target
 	target := stackInput.Target
 
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudRamPolicy.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudRamPolicy.String()),
 	}
 
 	if target.Metadata.Id != "" {
@@ -43,7 +43,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudrampolicyv1.Alicl
 	return locals
 }
 
-func forceDelete(spec *alicloudrampolicyv1.AlicloudRamPolicySpec) bool {
+func forceDelete(spec *alicloudrampolicyv1.AliCloudRamPolicySpec) bool {
 	if spec.Force != nil {
 		return *spec.Force
 	}

@@ -8,25 +8,25 @@ import "org/openmcf/provider/alicloud/alicloudceninstance/v1/stack_outputs.proto
 import "org/openmcf/shared/metadata.proto";
 
 // alicloud-cen-instance
-message AlicloudCenInstance {
+message AliCloudCenInstance {
   // api-version
   string api_version = 1 [(buf.validate.field).string.const = 'alicloud.openmcf.org/v1'];
 
   // resource-kind
-  string kind = 2 [(buf.validate.field).string.const = 'AlicloudCenInstance'];
+  string kind = 2 [(buf.validate.field).string.const = 'AliCloudCenInstance'];
 
   // metadata
   org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
-  AlicloudCenInstanceSpec spec = 4 [(buf.validate.field).required = true];
+  AliCloudCenInstanceSpec spec = 4 [(buf.validate.field).required = true];
 
   // status
-  AlicloudCenInstanceStatus status = 5;
+  AliCloudCenInstanceStatus status = 5;
 }
 
 // alicloud-cen-instance status
-message AlicloudCenInstanceStatus {
+message AliCloudCenInstanceStatus {
   // stack-outputs
-  AlicloudCenInstanceStackOutputs outputs = 1;
+  AliCloudCenInstanceStackOutputs outputs = 1;
 }

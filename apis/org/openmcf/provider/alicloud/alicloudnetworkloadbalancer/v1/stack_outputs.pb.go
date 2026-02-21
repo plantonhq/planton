@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudNetworkLoadBalancerStackOutputs captures the outputs from deploying
+// AliCloudNetworkLoadBalancerStackOutputs captures the outputs from deploying
 // an Alibaba Cloud Network Load Balancer with its server groups and
 // listeners.
-type AlicloudNetworkLoadBalancerStackOutputs struct {
+type AliCloudNetworkLoadBalancerStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The NLB instance ID assigned by Alibaba Cloud (e.g., "nlb-xxxxx").
 	LoadBalancerId string `protobuf:"bytes,1,opt,name=load_balancer_id,json=loadBalancerId,proto3" json:"load_balancer_id,omitempty"`
@@ -43,20 +43,20 @@ type AlicloudNetworkLoadBalancerStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudNetworkLoadBalancerStackOutputs) Reset() {
-	*x = AlicloudNetworkLoadBalancerStackOutputs{}
+func (x *AliCloudNetworkLoadBalancerStackOutputs) Reset() {
+	*x = AliCloudNetworkLoadBalancerStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudNetworkLoadBalancerStackOutputs) String() string {
+func (x *AliCloudNetworkLoadBalancerStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudNetworkLoadBalancerStackOutputs) ProtoMessage() {}
+func (*AliCloudNetworkLoadBalancerStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudNetworkLoadBalancerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudNetworkLoadBalancerStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,26 +68,26 @@ func (x *AlicloudNetworkLoadBalancerStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudNetworkLoadBalancerStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudNetworkLoadBalancerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudNetworkLoadBalancerStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudNetworkLoadBalancerStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudNetworkLoadBalancerStackOutputs) GetLoadBalancerId() string {
+func (x *AliCloudNetworkLoadBalancerStackOutputs) GetLoadBalancerId() string {
 	if x != nil {
 		return x.LoadBalancerId
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerStackOutputs) GetDnsName() string {
+func (x *AliCloudNetworkLoadBalancerStackOutputs) GetDnsName() string {
 	if x != nil {
 		return x.DnsName
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerStackOutputs) GetServerGroupIds() map[string]string {
+func (x *AliCloudNetworkLoadBalancerStackOutputs) GetServerGroupIds() map[string]string {
 	if x != nil {
 		return x.ServerGroupIds
 	}
@@ -99,10 +99,10 @@ var File_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_stack_outp
 const file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Porg/openmcf/provider/alicloud/alicloudnetworkloadbalancer/v1/stack_outputs.proto\x12<org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1\"\xd7\x02\n" +
-	"'AlicloudNetworkLoadBalancerStackOutputs\x12(\n" +
+	"'AliCloudNetworkLoadBalancerStackOutputs\x12(\n" +
 	"\x10load_balancer_id\x18\x01 \x01(\tR\x0eloadBalancerId\x12\x19\n" +
 	"\bdns_name\x18\x02 \x01(\tR\adnsName\x12\xa3\x01\n" +
-	"\x10server_group_ids\x18\x03 \x03(\v2y.org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerStackOutputs.ServerGroupIdsEntryR\x0eserverGroupIds\x1aA\n" +
+	"\x10server_group_ids\x18\x03 \x03(\v2y.org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerStackOutputs.ServerGroupIdsEntryR\x0eserverGroupIds\x1aA\n" +
 	"\x13ServerGroupIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xea\x03\n" +
@@ -122,11 +122,11 @@ func file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_stack_out
 
 var file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudNetworkLoadBalancerStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerStackOutputs
-	nil, // 1: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerStackOutputs.ServerGroupIdsEntry
+	(*AliCloudNetworkLoadBalancerStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerStackOutputs
+	nil, // 1: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerStackOutputs.ServerGroupIdsEntry
 }
 var file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_stack_outputs_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerStackOutputs.server_group_ids:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerStackOutputs.ServerGroupIdsEntry
+	1, // 0: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerStackOutputs.server_group_ids:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerStackOutputs.ServerGroupIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

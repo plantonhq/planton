@@ -10,23 +10,23 @@ import (
 	fkv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
-func TestAlicloudNasFileSystemSpec(t *testing.T) {
+func TestAliCloudNasFileSystemSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
-	ginkgo.RunSpecs(t, "AlicloudNasFileSystemSpec Validation Tests")
+	ginkgo.RunSpecs(t, "AliCloudNasFileSystemSpec Validation Tests")
 }
 
-var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
+var _ = ginkgo.Describe("AliCloudNasFileSystemSpec Validation Tests", func() {
 
 	ginkgo.Describe("valid input", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-nas",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:       "cn-hangzhou",
 					ProtocolType: "NFS",
 					StorageType:  "Performance",
@@ -43,21 +43,21 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with all optional fields populated", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "prod-nas",
 					Org:  "my-org",
 					Env:  "production",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:         "cn-shanghai",
 					FileSystemType: strPtr("standard"),
 					ProtocolType:   "NFS",
 					StorageType:    "Performance",
 					Description:    "Production shared file system for microservices",
-					Encryption: &AlicloudNasEncryption{
+					Encryption: &AliCloudNasEncryption{
 						EncryptType: 1,
 					},
 					VpcId: &fkv1.StringValueOrRef{
@@ -66,7 +66,7 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 					VswitchId: &fkv1.StringValueOrRef{
 						LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vsw-prod-001"},
 					},
-					AccessRules: []*AlicloudNasAccessRule{
+					AccessRules: []*AliCloudNasAccessRule{
 						{
 							SourceCidrIp:   "10.0.0.0/8",
 							RwAccessType:   strPtr("RDWR"),
@@ -89,20 +89,20 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with extreme NAS configuration", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "extreme-nas",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:         "cn-hangzhou",
 					FileSystemType: strPtr("extreme"),
 					ProtocolType:   "NFS",
 					StorageType:    "advance",
 					Capacity:       500,
 					ZoneId:         "cn-hangzhou-a",
-					Encryption: &AlicloudNasEncryption{
+					Encryption: &AliCloudNasEncryption{
 						EncryptType: 2,
 						KmsKeyId:    "kms-key-abc123",
 					},
@@ -119,13 +119,13 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with SMB protocol", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "smb-nas",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:       "cn-hangzhou",
 					ProtocolType: "SMB",
 					StorageType:  "Capacity",
@@ -142,13 +142,13 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with Premium storage type", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "premium-nas",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:       "cn-hangzhou",
 					ProtocolType: "NFS",
 					StorageType:  "Premium",
@@ -165,13 +165,13 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with access rule using all_squash", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "squash-nas",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:       "cn-hangzhou",
 					ProtocolType: "NFS",
 					StorageType:  "Performance",
@@ -181,7 +181,7 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 					VswitchId: &fkv1.StringValueOrRef{
 						LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vsw-001"},
 					},
-					AccessRules: []*AlicloudNasAccessRule{
+					AccessRules: []*AliCloudNasAccessRule{
 						{
 							SourceCidrIp:   "0.0.0.0/0",
 							UserAccessType: strPtr("all_squash"),
@@ -198,13 +198,13 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 	ginkgo.Describe("invalid input", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					ProtocolType: "NFS",
 					StorageType:  "Performance",
 					VpcId: &fkv1.StringValueOrRef{
@@ -220,13 +220,13 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when protocol_type is missing", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:      "cn-hangzhou",
 					StorageType: "Performance",
 					VpcId: &fkv1.StringValueOrRef{
@@ -242,13 +242,13 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when protocol_type has invalid value", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:       "cn-hangzhou",
 					ProtocolType: "FTP",
 					StorageType:  "Performance",
@@ -265,13 +265,13 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when storage_type has invalid value", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:       "cn-hangzhou",
 					ProtocolType: "NFS",
 					StorageType:  "SuperFast",
@@ -288,13 +288,13 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when file_system_type has invalid value", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:         "cn-hangzhou",
 					FileSystemType: strPtr("cpfs"),
 					ProtocolType:   "NFS",
@@ -312,13 +312,13 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when vpc_id is missing", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:       "cn-hangzhou",
 					ProtocolType: "NFS",
 					StorageType:  "Performance",
@@ -332,13 +332,13 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when vswitch_id is missing", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:       "cn-hangzhou",
 					ProtocolType: "NFS",
 					StorageType:  "Performance",
@@ -352,17 +352,17 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when encrypt_type has invalid value", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:       "cn-hangzhou",
 					ProtocolType: "NFS",
 					StorageType:  "Performance",
-					Encryption: &AlicloudNasEncryption{
+					Encryption: &AliCloudNasEncryption{
 						EncryptType: 5,
 					},
 					VpcId: &fkv1.StringValueOrRef{
@@ -378,13 +378,13 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when access_rule source_cidr_ip is missing", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:       "cn-hangzhou",
 					ProtocolType: "NFS",
 					StorageType:  "Performance",
@@ -394,7 +394,7 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 					VswitchId: &fkv1.StringValueOrRef{
 						LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vsw-001"},
 					},
-					AccessRules: []*AlicloudNasAccessRule{
+					AccessRules: []*AliCloudNasAccessRule{
 						{
 							RwAccessType: strPtr("RDWR"),
 						},
@@ -406,13 +406,13 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when access_rule rw_access_type has invalid value", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:       "cn-hangzhou",
 					ProtocolType: "NFS",
 					StorageType:  "Performance",
@@ -422,7 +422,7 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 					VswitchId: &fkv1.StringValueOrRef{
 						LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vsw-001"},
 					},
-					AccessRules: []*AlicloudNasAccessRule{
+					AccessRules: []*AliCloudNasAccessRule{
 						{
 							SourceCidrIp: "10.0.0.0/8",
 							RwAccessType: strPtr("WRITE_ONLY"),
@@ -435,13 +435,13 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when access_rule user_access_type has invalid value", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:       "cn-hangzhou",
 					ProtocolType: "NFS",
 					StorageType:  "Performance",
@@ -451,7 +451,7 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 					VswitchId: &fkv1.StringValueOrRef{
 						LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vsw-001"},
 					},
-					AccessRules: []*AlicloudNasAccessRule{
+					AccessRules: []*AliCloudNasAccessRule{
 						{
 							SourceCidrIp:   "10.0.0.0/8",
 							UserAccessType: strPtr("nuke_squash"),
@@ -464,13 +464,13 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when api_version is wrong", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "wrong/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:       "cn-hangzhou",
 					ProtocolType: "NFS",
 					StorageType:  "Performance",
@@ -487,13 +487,13 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when kind is wrong", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudNasFileSystemSpec{
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:       "cn-hangzhou",
 					ProtocolType: "NFS",
 					StorageType:  "Performance",
@@ -510,10 +510,10 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when metadata is missing", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
-				Spec: &AlicloudNasFileSystemSpec{
+				Kind:       "AliCloudNasFileSystem",
+				Spec: &AliCloudNasFileSystemSpec{
 					Region:       "cn-hangzhou",
 					ProtocolType: "NFS",
 					StorageType:  "Performance",
@@ -530,9 +530,9 @@ var _ = ginkgo.Describe("AlicloudNasFileSystemSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when spec is missing", func() {
-			input := &AlicloudNasFileSystem{
+			input := &AliCloudNasFileSystem{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNasFileSystem",
+				Kind:       "AliCloudNasFileSystem",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},

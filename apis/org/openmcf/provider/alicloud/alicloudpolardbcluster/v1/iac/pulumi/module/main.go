@@ -8,9 +8,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *alicloudpolardbclusterv1.AlicloudPolardbClusterStackInput) error {
+func Resources(ctx *pulumi.Context, stackInput *alicloudpolardbclusterv1.AliCloudPolardbClusterStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
-	spec := locals.AlicloudPolardbCluster.Spec
+	spec := locals.AliCloudPolardbCluster.Spec
 
 	alicloudProvider, err := alicloud.NewProvider(ctx, "alicloud", &alicloud.ProviderArgs{
 		Region: pulumi.String(spec.Region),
@@ -92,7 +92,7 @@ func Resources(ctx *pulumi.Context, stackInput *alicloudpolardbclusterv1.Aliclou
 		clusterArgs.Parameters = params
 	}
 
-	cluster, err := polardb.NewCluster(ctx, locals.AlicloudPolardbCluster.Metadata.Name, clusterArgs,
+	cluster, err := polardb.NewCluster(ctx, locals.AliCloudPolardbCluster.Metadata.Name, clusterArgs,
 		pulumi.Provider(alicloudProvider),
 	)
 	if err != nil {

@@ -10,26 +10,26 @@ import (
 	fkv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
-func TestAlicloudPrivateDnsZoneSpec(t *testing.T) {
+func TestAliCloudPrivateDnsZoneSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
-	ginkgo.RunSpecs(t, "AlicloudPrivateDnsZoneSpec Validation Tests")
+	ginkgo.RunSpecs(t, "AliCloudPrivateDnsZoneSpec Validation Tests")
 }
 
-var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
+var _ = ginkgo.Describe("AliCloudPrivateDnsZoneSpec Validation Tests", func() {
 
 	ginkgo.Describe("valid input", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudPrivateDnsZone",
+				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-zone",
 				},
-				Spec: &AlicloudPrivateDnsZoneSpec{
+				Spec: &AliCloudPrivateDnsZoneSpec{
 					Region:   "cn-hangzhou",
 					ZoneName: "internal.example.com",
-					VpcAttachments: []*AlicloudPrivateDnsZoneVpcAttachment{
+					VpcAttachments: []*AliCloudPrivateDnsZoneVpcAttachment{
 						{
 							VpcId: &fkv1.StringValueOrRef{
 								LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vpc-abc123"},
@@ -43,20 +43,20 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with all optional fields populated", func() {
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudPrivateDnsZone",
+				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "full-zone",
 					Org:  "my-org",
 					Env:  "production",
 				},
-				Spec: &AlicloudPrivateDnsZoneSpec{
+				Spec: &AliCloudPrivateDnsZoneSpec{
 					Region:          "cn-shanghai",
 					ZoneName:        "db.internal.corp",
 					Remark:          "Database service discovery zone for production",
 					ResourceGroupId: "rg-prod-456",
-					VpcAttachments: []*AlicloudPrivateDnsZoneVpcAttachment{
+					VpcAttachments: []*AliCloudPrivateDnsZoneVpcAttachment{
 						{
 							VpcId: &fkv1.StringValueOrRef{
 								LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vpc-app"},
@@ -69,7 +69,7 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 							RegionId: "cn-hangzhou",
 						},
 					},
-					Records: []*AlicloudPrivateDnsZoneRecord{
+					Records: []*AliCloudPrivateDnsZoneRecord{
 						{
 							Rr:    "master",
 							Type:  "A",
@@ -90,16 +90,16 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with multiple VPC attachments including cross-region", func() {
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudPrivateDnsZone",
+				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "multi-vpc-zone",
 				},
-				Spec: &AlicloudPrivateDnsZoneSpec{
+				Spec: &AliCloudPrivateDnsZoneSpec{
 					Region:   "cn-hangzhou",
 					ZoneName: "services.internal",
-					VpcAttachments: []*AlicloudPrivateDnsZoneVpcAttachment{
+					VpcAttachments: []*AliCloudPrivateDnsZoneVpcAttachment{
 						{
 							VpcId: &fkv1.StringValueOrRef{
 								LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vpc-hangzhou"},
@@ -125,23 +125,23 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with MX record and priority", func() {
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudPrivateDnsZone",
+				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "mx-zone",
 				},
-				Spec: &AlicloudPrivateDnsZoneSpec{
+				Spec: &AliCloudPrivateDnsZoneSpec{
 					Region:   "cn-hangzhou",
 					ZoneName: "mail.internal",
-					VpcAttachments: []*AlicloudPrivateDnsZoneVpcAttachment{
+					VpcAttachments: []*AliCloudPrivateDnsZoneVpcAttachment{
 						{
 							VpcId: &fkv1.StringValueOrRef{
 								LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vpc-123"},
 							},
 						},
 					},
-					Records: []*AlicloudPrivateDnsZoneRecord{
+					Records: []*AliCloudPrivateDnsZoneRecord{
 						{
 							Rr:       "@",
 							Type:     "MX",
@@ -156,23 +156,23 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with all supported record types", func() {
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudPrivateDnsZone",
+				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "all-types",
 				},
-				Spec: &AlicloudPrivateDnsZoneSpec{
+				Spec: &AliCloudPrivateDnsZoneSpec{
 					Region:   "cn-hangzhou",
 					ZoneName: "test.internal",
-					VpcAttachments: []*AlicloudPrivateDnsZoneVpcAttachment{
+					VpcAttachments: []*AliCloudPrivateDnsZoneVpcAttachment{
 						{
 							VpcId: &fkv1.StringValueOrRef{
 								LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vpc-123"},
 							},
 						},
 					},
-					Records: []*AlicloudPrivateDnsZoneRecord{
+					Records: []*AliCloudPrivateDnsZoneRecord{
 						{Rr: "web", Type: "A", Value: "10.0.1.1"},
 						{Rr: "alias", Type: "CNAME", Value: "web.test.internal"},
 						{Rr: "@", Type: "MX", Value: "mail.test.internal", Priority: 5},
@@ -187,23 +187,23 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with records that have remarks", func() {
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudPrivateDnsZone",
+				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "remarked-zone",
 				},
-				Spec: &AlicloudPrivateDnsZoneSpec{
+				Spec: &AliCloudPrivateDnsZoneSpec{
 					Region:   "us-west-1",
 					ZoneName: "svc.internal",
-					VpcAttachments: []*AlicloudPrivateDnsZoneVpcAttachment{
+					VpcAttachments: []*AliCloudPrivateDnsZoneVpcAttachment{
 						{
 							VpcId: &fkv1.StringValueOrRef{
 								LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vpc-456"},
 							},
 						},
 					},
-					Records: []*AlicloudPrivateDnsZoneRecord{
+					Records: []*AliCloudPrivateDnsZoneRecord{
 						{
 							Rr:     "api",
 							Type:   "A",
@@ -222,15 +222,15 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 	ginkgo.Describe("invalid input", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudPrivateDnsZone",
+				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudPrivateDnsZoneSpec{
+				Spec: &AliCloudPrivateDnsZoneSpec{
 					ZoneName: "internal.example.com",
-					VpcAttachments: []*AlicloudPrivateDnsZoneVpcAttachment{
+					VpcAttachments: []*AliCloudPrivateDnsZoneVpcAttachment{
 						{
 							VpcId: &fkv1.StringValueOrRef{
 								LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vpc-123"},
@@ -244,15 +244,15 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when zone_name is missing", func() {
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudPrivateDnsZone",
+				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudPrivateDnsZoneSpec{
+				Spec: &AliCloudPrivateDnsZoneSpec{
 					Region: "cn-hangzhou",
-					VpcAttachments: []*AlicloudPrivateDnsZoneVpcAttachment{
+					VpcAttachments: []*AliCloudPrivateDnsZoneVpcAttachment{
 						{
 							VpcId: &fkv1.StringValueOrRef{
 								LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vpc-123"},
@@ -266,16 +266,16 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when vpc_attachments is empty", func() {
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudPrivateDnsZone",
+				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudPrivateDnsZoneSpec{
+				Spec: &AliCloudPrivateDnsZoneSpec{
 					Region:         "cn-hangzhou",
 					ZoneName:       "internal.example.com",
-					VpcAttachments: []*AlicloudPrivateDnsZoneVpcAttachment{},
+					VpcAttachments: []*AliCloudPrivateDnsZoneVpcAttachment{},
 				},
 			}
 			err := protovalidate.Validate(input)
@@ -283,16 +283,16 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when vpc_id in attachment is missing", func() {
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudPrivateDnsZone",
+				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudPrivateDnsZoneSpec{
+				Spec: &AliCloudPrivateDnsZoneSpec{
 					Region:   "cn-hangzhou",
 					ZoneName: "internal.example.com",
-					VpcAttachments: []*AlicloudPrivateDnsZoneVpcAttachment{
+					VpcAttachments: []*AliCloudPrivateDnsZoneVpcAttachment{
 						{},
 					},
 				},
@@ -302,23 +302,23 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when record type is invalid", func() {
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudPrivateDnsZone",
+				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudPrivateDnsZoneSpec{
+				Spec: &AliCloudPrivateDnsZoneSpec{
 					Region:   "cn-hangzhou",
 					ZoneName: "internal.example.com",
-					VpcAttachments: []*AlicloudPrivateDnsZoneVpcAttachment{
+					VpcAttachments: []*AliCloudPrivateDnsZoneVpcAttachment{
 						{
 							VpcId: &fkv1.StringValueOrRef{
 								LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vpc-123"},
 							},
 						},
 					},
-					Records: []*AlicloudPrivateDnsZoneRecord{
+					Records: []*AliCloudPrivateDnsZoneRecord{
 						{
 							Rr:    "www",
 							Type:  "AAAA",
@@ -332,23 +332,23 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when record rr is empty", func() {
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudPrivateDnsZone",
+				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudPrivateDnsZoneSpec{
+				Spec: &AliCloudPrivateDnsZoneSpec{
 					Region:   "cn-hangzhou",
 					ZoneName: "internal.example.com",
-					VpcAttachments: []*AlicloudPrivateDnsZoneVpcAttachment{
+					VpcAttachments: []*AliCloudPrivateDnsZoneVpcAttachment{
 						{
 							VpcId: &fkv1.StringValueOrRef{
 								LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vpc-123"},
 							},
 						},
 					},
-					Records: []*AlicloudPrivateDnsZoneRecord{
+					Records: []*AliCloudPrivateDnsZoneRecord{
 						{
 							Type:  "A",
 							Value: "10.0.1.1",
@@ -361,23 +361,23 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when record value is empty", func() {
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudPrivateDnsZone",
+				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudPrivateDnsZoneSpec{
+				Spec: &AliCloudPrivateDnsZoneSpec{
 					Region:   "cn-hangzhou",
 					ZoneName: "internal.example.com",
-					VpcAttachments: []*AlicloudPrivateDnsZoneVpcAttachment{
+					VpcAttachments: []*AliCloudPrivateDnsZoneVpcAttachment{
 						{
 							VpcId: &fkv1.StringValueOrRef{
 								LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vpc-123"},
 							},
 						},
 					},
-					Records: []*AlicloudPrivateDnsZoneRecord{
+					Records: []*AliCloudPrivateDnsZoneRecord{
 						{
 							Rr:   "web",
 							Type: "A",
@@ -390,16 +390,16 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when api_version is wrong", func() {
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "wrong/v1",
-				Kind:       "AlicloudPrivateDnsZone",
+				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudPrivateDnsZoneSpec{
+				Spec: &AliCloudPrivateDnsZoneSpec{
 					Region:   "cn-hangzhou",
 					ZoneName: "internal.example.com",
-					VpcAttachments: []*AlicloudPrivateDnsZoneVpcAttachment{
+					VpcAttachments: []*AliCloudPrivateDnsZoneVpcAttachment{
 						{
 							VpcId: &fkv1.StringValueOrRef{
 								LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vpc-123"},
@@ -413,16 +413,16 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when kind is wrong", func() {
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudPrivateDnsZoneSpec{
+				Spec: &AliCloudPrivateDnsZoneSpec{
 					Region:   "cn-hangzhou",
 					ZoneName: "internal.example.com",
-					VpcAttachments: []*AlicloudPrivateDnsZoneVpcAttachment{
+					VpcAttachments: []*AliCloudPrivateDnsZoneVpcAttachment{
 						{
 							VpcId: &fkv1.StringValueOrRef{
 								LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vpc-123"},
@@ -436,13 +436,13 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when metadata is missing", func() {
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudPrivateDnsZone",
-				Spec: &AlicloudPrivateDnsZoneSpec{
+				Kind:       "AliCloudPrivateDnsZone",
+				Spec: &AliCloudPrivateDnsZoneSpec{
 					Region:   "cn-hangzhou",
 					ZoneName: "internal.example.com",
-					VpcAttachments: []*AlicloudPrivateDnsZoneVpcAttachment{
+					VpcAttachments: []*AliCloudPrivateDnsZoneVpcAttachment{
 						{
 							VpcId: &fkv1.StringValueOrRef{
 								LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vpc-123"},
@@ -456,9 +456,9 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when spec is missing", func() {
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudPrivateDnsZone",
+				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
@@ -472,16 +472,16 @@ var _ = ginkgo.Describe("AlicloudPrivateDnsZoneSpec Validation Tests", func() {
 			for i := 0; i < 254; i++ {
 				longName += "a"
 			}
-			input := &AlicloudPrivateDnsZone{
+			input := &AliCloudPrivateDnsZone{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudPrivateDnsZone",
+				Kind:       "AliCloudPrivateDnsZone",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudPrivateDnsZoneSpec{
+				Spec: &AliCloudPrivateDnsZoneSpec{
 					Region:   "cn-hangzhou",
 					ZoneName: longName,
-					VpcAttachments: []*AlicloudPrivateDnsZoneVpcAttachment{
+					VpcAttachments: []*AliCloudPrivateDnsZoneVpcAttachment{
 						{
 							VpcId: &fkv1.StringValueOrRef{
 								LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "vpc-123"},

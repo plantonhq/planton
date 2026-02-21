@@ -9,19 +9,19 @@ import (
 )
 
 type Locals struct {
-	AlicloudKmsKey *alicloudkmskeyv1.AlicloudKmsKey
+	AliCloudKmsKey *alicloudkmskeyv1.AliCloudKmsKey
 	Tags           map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudkmskeyv1.AlicloudKmsKeyStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudkmskeyv1.AliCloudKmsKeyStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudKmsKey = stackInput.Target
+	locals.AliCloudKmsKey = stackInput.Target
 	target := stackInput.Target
 
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudKmsKey.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudKmsKey.String()),
 	}
 
 	if target.Metadata.Id != "" {
@@ -43,42 +43,42 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudkmskeyv1.Alicloud
 	return locals
 }
 
-func keySpec(spec *alicloudkmskeyv1.AlicloudKmsKeySpec) string {
+func keySpec(spec *alicloudkmskeyv1.AliCloudKmsKeySpec) string {
 	if spec.KeySpec != nil {
 		return *spec.KeySpec
 	}
 	return "Aliyun_AES_256"
 }
 
-func keyUsage(spec *alicloudkmskeyv1.AlicloudKmsKeySpec) string {
+func keyUsage(spec *alicloudkmskeyv1.AliCloudKmsKeySpec) string {
 	if spec.KeyUsage != nil {
 		return *spec.KeyUsage
 	}
 	return "ENCRYPT/DECRYPT"
 }
 
-func protectionLevel(spec *alicloudkmskeyv1.AlicloudKmsKeySpec) string {
+func protectionLevel(spec *alicloudkmskeyv1.AliCloudKmsKeySpec) string {
 	if spec.ProtectionLevel != nil {
 		return *spec.ProtectionLevel
 	}
 	return "SOFTWARE"
 }
 
-func automaticRotation(spec *alicloudkmskeyv1.AlicloudKmsKeySpec) string {
+func automaticRotation(spec *alicloudkmskeyv1.AliCloudKmsKeySpec) string {
 	if spec.AutomaticRotation != nil && *spec.AutomaticRotation {
 		return "Enabled"
 	}
 	return "Disabled"
 }
 
-func pendingWindowInDays(spec *alicloudkmskeyv1.AlicloudKmsKeySpec) int {
+func pendingWindowInDays(spec *alicloudkmskeyv1.AliCloudKmsKeySpec) int {
 	if spec.PendingWindowInDays != nil {
 		return int(*spec.PendingWindowInDays)
 	}
 	return 30
 }
 
-func deletionProtection(spec *alicloudkmskeyv1.AlicloudKmsKeySpec) string {
+func deletionProtection(spec *alicloudkmskeyv1.AliCloudKmsKeySpec) string {
 	if spec.DeletionProtection != nil && *spec.DeletionProtection {
 		return "Enabled"
 	}

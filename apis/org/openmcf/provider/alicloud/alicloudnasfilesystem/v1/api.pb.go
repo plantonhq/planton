@@ -24,7 +24,7 @@ const (
 )
 
 // alicloud-nas-file-system
-type AlicloudNasFileSystem struct {
+type AliCloudNasFileSystem struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
@@ -33,27 +33,27 @@ type AlicloudNasFileSystem struct {
 	// metadata
 	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
-	Spec *AlicloudNasFileSystemSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec *AliCloudNasFileSystemSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
-	Status        *AlicloudNasFileSystemStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *AliCloudNasFileSystemStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudNasFileSystem) Reset() {
-	*x = AlicloudNasFileSystem{}
+func (x *AliCloudNasFileSystem) Reset() {
+	*x = AliCloudNasFileSystem{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudNasFileSystem) String() string {
+func (x *AliCloudNasFileSystem) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudNasFileSystem) ProtoMessage() {}
+func (*AliCloudNasFileSystem) ProtoMessage() {}
 
-func (x *AlicloudNasFileSystem) ProtoReflect() protoreflect.Message {
+func (x *AliCloudNasFileSystem) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AlicloudNasFileSystem) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudNasFileSystem.ProtoReflect.Descriptor instead.
-func (*AlicloudNasFileSystem) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudNasFileSystem.ProtoReflect.Descriptor instead.
+func (*AliCloudNasFileSystem) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudNasFileSystem) GetApiVersion() string {
+func (x *AliCloudNasFileSystem) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *AlicloudNasFileSystem) GetKind() string {
+func (x *AliCloudNasFileSystem) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AlicloudNasFileSystem) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AliCloudNasFileSystem) GetMetadata() *shared.CloudResourceMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *AlicloudNasFileSystem) GetSpec() *AlicloudNasFileSystemSpec {
+func (x *AliCloudNasFileSystem) GetSpec() *AliCloudNasFileSystemSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-func (x *AlicloudNasFileSystem) GetStatus() *AlicloudNasFileSystemStatus {
+func (x *AliCloudNasFileSystem) GetStatus() *AliCloudNasFileSystemStatus {
 	if x != nil {
 		return x.Status
 	}
@@ -106,28 +106,28 @@ func (x *AlicloudNasFileSystem) GetStatus() *AlicloudNasFileSystemStatus {
 }
 
 // alicloud-nas-file-system status
-type AlicloudNasFileSystemStatus struct {
+type AliCloudNasFileSystemStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// stack-outputs
-	Outputs       *AlicloudNasFileSystemStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AliCloudNasFileSystemStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudNasFileSystemStatus) Reset() {
-	*x = AlicloudNasFileSystemStatus{}
+func (x *AliCloudNasFileSystemStatus) Reset() {
+	*x = AliCloudNasFileSystemStatus{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudNasFileSystemStatus) String() string {
+func (x *AliCloudNasFileSystemStatus) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudNasFileSystemStatus) ProtoMessage() {}
+func (*AliCloudNasFileSystemStatus) ProtoMessage() {}
 
-func (x *AlicloudNasFileSystemStatus) ProtoReflect() protoreflect.Message {
+func (x *AliCloudNasFileSystemStatus) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,12 +139,12 @@ func (x *AlicloudNasFileSystemStatus) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudNasFileSystemStatus.ProtoReflect.Descriptor instead.
-func (*AlicloudNasFileSystemStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudNasFileSystemStatus.ProtoReflect.Descriptor instead.
+func (*AliCloudNasFileSystemStatus) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudNasFileSystemStatus) GetOutputs() *AlicloudNasFileSystemStackOutputs {
+func (x *AliCloudNasFileSystemStatus) GetOutputs() *AliCloudNasFileSystemStackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -156,17 +156,17 @@ var File_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_api_proto protor
 const file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"@org/openmcf/provider/alicloud/alicloudnasfilesystem/v1/api.proto\x126org.openmcf.provider.alicloud.alicloudnasfilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1aAorg/openmcf/provider/alicloud/alicloudnasfilesystem/v1/spec.proto\x1aJorg/openmcf/provider/alicloud/alicloudnasfilesystem/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xb5\x03\n" +
-	"\x15AlicloudNasFileSystem\x12?\n" +
+	"\x15AliCloudNasFileSystem\x12?\n" +
 	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
-	"\x15AlicloudNasFileSystemR\x04kind\x12M\n" +
+	"\x15AliCloudNasFileSystemR\x04kind\x12M\n" +
 	"\bmetadata\x18\x03 \x01(\v2).org.openmcf.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
-	"\x04spec\x18\x04 \x01(\v2Q.org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12k\n" +
-	"\x06status\x18\x05 \x01(\v2S.org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemStatusR\x06status\"\x92\x01\n" +
-	"\x1bAlicloudNasFileSystemStatus\x12s\n" +
-	"\aoutputs\x18\x01 \x01(\v2Y.org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemStackOutputsR\aoutputsB\xb7\x03\n" +
+	"\x04spec\x18\x04 \x01(\v2Q.org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12k\n" +
+	"\x06status\x18\x05 \x01(\v2S.org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemStatusR\x06status\"\x92\x01\n" +
+	"\x1bAliCloudNasFileSystemStatus\x12s\n" +
+	"\aoutputs\x18\x01 \x01(\v2Y.org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemStackOutputsR\aoutputsB\xb7\x03\n" +
 	":com.org.openmcf.provider.alicloud.alicloudnasfilesystem.v1B\bApiProtoP\x01Zpgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudnasfilesystem/v1;alicloudnasfilesystemv1\xa2\x02\x05OOPAA\xaa\x026Org.Openmcf.Provider.Alicloud.Alicloudnasfilesystem.V1\xca\x026Org\\Openmcf\\Provider\\Alicloud\\Alicloudnasfilesystem\\V1\xe2\x02BOrg\\Openmcf\\Provider\\Alicloud\\Alicloudnasfilesystem\\V1\\GPBMetadata\xea\x02;Org::Openmcf::Provider::Alicloud::Alicloudnasfilesystem::V1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_api_proto_rawDe
 
 var file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_api_proto_goTypes = []any{
-	(*AlicloudNasFileSystem)(nil),             // 0: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystem
-	(*AlicloudNasFileSystemStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemStatus
+	(*AliCloudNasFileSystem)(nil),             // 0: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystem
+	(*AliCloudNasFileSystemStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemStatus
 	(*shared.CloudResourceMetadata)(nil),      // 2: org.openmcf.shared.CloudResourceMetadata
-	(*AlicloudNasFileSystemSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemSpec
-	(*AlicloudNasFileSystemStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemStackOutputs
+	(*AliCloudNasFileSystemSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemSpec
+	(*AliCloudNasFileSystemStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_api_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystem.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
-	3, // 1: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystem.spec:type_name -> org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemSpec
-	1, // 2: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystem.status:type_name -> org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemStatus
-	4, // 3: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemStackOutputs
+	2, // 0: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystem.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
+	3, // 1: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystem.spec:type_name -> org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemSpec
+	1, // 2: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystem.status:type_name -> org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemStatus
+	4, // 3: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemStackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -389,7 +389,7 @@ func (x *CredentialProviderConfig) GetScaleway() *scaleway.ScalewayProviderConfi
 	return nil
 }
 
-func (x *CredentialProviderConfig) GetAlicloud() *alicloud.AlicloudProviderConfig {
+func (x *CredentialProviderConfig) GetAlicloud() *alicloud.AliCloudProviderConfig {
 	if x != nil {
 		if x, ok := x.Data.(*CredentialProviderConfig_Alicloud); ok {
 			return x.Alicloud
@@ -468,7 +468,7 @@ type CredentialProviderConfig_Scaleway struct {
 }
 
 type CredentialProviderConfig_Alicloud struct {
-	Alicloud *alicloud.AlicloudProviderConfig `protobuf:"bytes,15,opt,name=alicloud,proto3,oneof"`
+	Alicloud *alicloud.AliCloudProviderConfig `protobuf:"bytes,15,opt,name=alicloud,proto3,oneof"`
 }
 
 type CredentialProviderConfig_Oci struct {
@@ -554,7 +554,7 @@ const file_org_openmcf_app_credential_v1_api_proto_rawDesc = "" +
 	"\aopenfga\x18\f \x01(\v23.org.openmcf.provider.openfga.OpenFgaProviderConfigH\x00R\aopenfga\x12W\n" +
 	"\topenstack\x18\r \x01(\v27.org.openmcf.provider.openstack.OpenStackProviderConfigH\x00R\topenstack\x12S\n" +
 	"\bscaleway\x18\x0e \x01(\v25.org.openmcf.provider.scaleway.ScalewayProviderConfigH\x00R\bscaleway\x12S\n" +
-	"\balicloud\x18\x0f \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigH\x00R\balicloud\x12?\n" +
+	"\balicloud\x18\x0f \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigH\x00R\balicloud\x12?\n" +
 	"\x03oci\x18\x10 \x01(\v2+.org.openmcf.provider.oci.OciProviderConfigH\x00R\x03ociB\x06\n" +
 	"\x04dataB\xfe\x01\n" +
 	"\x1dcom.org.openmcf.credential.v1B\bApiProtoP\x01ZLgithub.com/plantonhq/openmcf/apis/org/openmcf/app/credential/v1;credentialv1\xa2\x02\x03OOC\xaa\x02\x19Org.Openmcf.Credential.V1\xca\x02\x19Org\\Openmcf\\Credential\\V1\xe2\x02%Org\\Openmcf\\Credential\\V1\\GPBMetadata\xea\x02\x1cOrg::Openmcf::Credential::V1b\x06proto3"
@@ -592,7 +592,7 @@ var file_org_openmcf_app_credential_v1_api_proto_goTypes = []any{
 	(*openfga.OpenFgaProviderConfig)(nil),           // 15: org.openmcf.provider.openfga.OpenFgaProviderConfig
 	(*openstack.OpenStackProviderConfig)(nil),       // 16: org.openmcf.provider.openstack.OpenStackProviderConfig
 	(*scaleway.ScalewayProviderConfig)(nil),         // 17: org.openmcf.provider.scaleway.ScalewayProviderConfig
-	(*alicloud.AlicloudProviderConfig)(nil),         // 18: org.openmcf.provider.alicloud.AlicloudProviderConfig
+	(*alicloud.AliCloudProviderConfig)(nil),         // 18: org.openmcf.provider.alicloud.AliCloudProviderConfig
 	(*oci.OciProviderConfig)(nil),                   // 19: org.openmcf.provider.oci.OciProviderConfig
 }
 var file_org_openmcf_app_credential_v1_api_proto_depIdxs = []int32{
@@ -614,7 +614,7 @@ var file_org_openmcf_app_credential_v1_api_proto_depIdxs = []int32{
 	15, // 15: org.openmcf.credential.v1.CredentialProviderConfig.openfga:type_name -> org.openmcf.provider.openfga.OpenFgaProviderConfig
 	16, // 16: org.openmcf.credential.v1.CredentialProviderConfig.openstack:type_name -> org.openmcf.provider.openstack.OpenStackProviderConfig
 	17, // 17: org.openmcf.credential.v1.CredentialProviderConfig.scaleway:type_name -> org.openmcf.provider.scaleway.ScalewayProviderConfig
-	18, // 18: org.openmcf.credential.v1.CredentialProviderConfig.alicloud:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
+	18, // 18: org.openmcf.credential.v1.CredentialProviderConfig.alicloud:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
 	19, // 19: org.openmcf.credential.v1.CredentialProviderConfig.oci:type_name -> org.openmcf.provider.oci.OciProviderConfig
 	20, // [20:20] is the sub-list for method output_type
 	20, // [20:20] is the sub-list for method input_type

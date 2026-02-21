@@ -23,30 +23,30 @@ const (
 )
 
 // alicloud-private-dns-zone stack-input
-type AlicloudPrivateDnsZoneStackInput struct {
+type AliCloudPrivateDnsZoneStackInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target cloud-resource
-	Target *AlicloudPrivateDnsZone `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
+	Target *AliCloudPrivateDnsZone `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
-	ProviderConfig *alicloud.AlicloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
+	ProviderConfig *alicloud.AliCloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudPrivateDnsZoneStackInput) Reset() {
-	*x = AlicloudPrivateDnsZoneStackInput{}
+func (x *AliCloudPrivateDnsZoneStackInput) Reset() {
+	*x = AliCloudPrivateDnsZoneStackInput{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_stack_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudPrivateDnsZoneStackInput) String() string {
+func (x *AliCloudPrivateDnsZoneStackInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudPrivateDnsZoneStackInput) ProtoMessage() {}
+func (*AliCloudPrivateDnsZoneStackInput) ProtoMessage() {}
 
-func (x *AlicloudPrivateDnsZoneStackInput) ProtoReflect() protoreflect.Message {
+func (x *AliCloudPrivateDnsZoneStackInput) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_stack_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AlicloudPrivateDnsZoneStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudPrivateDnsZoneStackInput.ProtoReflect.Descriptor instead.
-func (*AlicloudPrivateDnsZoneStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudPrivateDnsZoneStackInput.ProtoReflect.Descriptor instead.
+func (*AliCloudPrivateDnsZoneStackInput) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_stack_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudPrivateDnsZoneStackInput) GetTarget() *AlicloudPrivateDnsZone {
+func (x *AliCloudPrivateDnsZoneStackInput) GetTarget() *AliCloudPrivateDnsZone {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AlicloudPrivateDnsZoneStackInput) GetProviderConfig() *alicloud.AlicloudProviderConfig {
+func (x *AliCloudPrivateDnsZoneStackInput) GetProviderConfig() *alicloud.AliCloudProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,9 +82,9 @@ var File_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_stack_input_pro
 const file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_stack_input_proto_rawDesc = "" +
 	"\n" +
 	"Iorg/openmcf/provider/alicloud/alicloudprivatednszone/v1/stack_input.proto\x127org.openmcf.provider.alicloud.alicloudprivatednszone.v1\x1aAorg/openmcf/provider/alicloud/alicloudprivatednszone/v1/api.proto\x1a,org/openmcf/provider/alicloud/provider.proto\"\xeb\x01\n" +
-	" AlicloudPrivateDnsZoneStackInput\x12g\n" +
-	"\x06target\x18\x01 \x01(\v2O.org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneR\x06target\x12^\n" +
-	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigR\x0eproviderConfigB\xc5\x03\n" +
+	" AliCloudPrivateDnsZoneStackInput\x12g\n" +
+	"\x06target\x18\x01 \x01(\v2O.org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneR\x06target\x12^\n" +
+	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigR\x0eproviderConfigB\xc5\x03\n" +
 	";com.org.openmcf.provider.alicloud.alicloudprivatednszone.v1B\x0fStackInputProtoP\x01Zrgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudprivatednszone/v1;alicloudprivatednszonev1\xa2\x02\x05OOPAA\xaa\x027Org.Openmcf.Provider.Alicloud.Alicloudprivatednszone.V1\xca\x027Org\\Openmcf\\Provider\\Alicloud\\Alicloudprivatednszone\\V1\xe2\x02COrg\\Openmcf\\Provider\\Alicloud\\Alicloudprivatednszone\\V1\\GPBMetadata\xea\x02<Org::Openmcf::Provider::Alicloud::Alicloudprivatednszone::V1b\x06proto3"
 
 var (
@@ -101,13 +101,13 @@ func file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_stack_input_pr
 
 var file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_stack_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_stack_input_proto_goTypes = []any{
-	(*AlicloudPrivateDnsZoneStackInput)(nil), // 0: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneStackInput
-	(*AlicloudPrivateDnsZone)(nil),           // 1: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZone
-	(*alicloud.AlicloudProviderConfig)(nil),  // 2: org.openmcf.provider.alicloud.AlicloudProviderConfig
+	(*AliCloudPrivateDnsZoneStackInput)(nil), // 0: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneStackInput
+	(*AliCloudPrivateDnsZone)(nil),           // 1: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZone
+	(*alicloud.AliCloudProviderConfig)(nil),  // 2: org.openmcf.provider.alicloud.AliCloudProviderConfig
 }
 var file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_stack_input_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZone
-	2, // 1: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
+	1, // 0: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZone
+	2, // 1: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

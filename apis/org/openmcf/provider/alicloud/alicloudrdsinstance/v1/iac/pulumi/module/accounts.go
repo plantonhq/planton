@@ -14,7 +14,7 @@ func account(
 	ctx *pulumi.Context,
 	provider *alicloud.Provider,
 	instance *rds.Instance,
-	acct *alicloudrdsinstancev1.AlicloudRdsAccount,
+	acct *alicloudrdsinstancev1.AliCloudRdsAccount,
 ) error {
 	args := &rds.RdsAccountArgs{
 		DbInstanceId:    instance.ID(),

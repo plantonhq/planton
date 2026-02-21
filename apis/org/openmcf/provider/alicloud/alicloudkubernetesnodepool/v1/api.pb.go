@@ -24,7 +24,7 @@ const (
 )
 
 // alicloud-kubernetes-node-pool
-type AlicloudKubernetesNodePool struct {
+type AliCloudKubernetesNodePool struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
@@ -33,27 +33,27 @@ type AlicloudKubernetesNodePool struct {
 	// metadata
 	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
-	Spec *AlicloudKubernetesNodePoolSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec *AliCloudKubernetesNodePoolSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
-	Status        *AlicloudKubernetesNodePoolStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *AliCloudKubernetesNodePoolStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudKubernetesNodePool) Reset() {
-	*x = AlicloudKubernetesNodePool{}
+func (x *AliCloudKubernetesNodePool) Reset() {
+	*x = AliCloudKubernetesNodePool{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKubernetesNodePool) String() string {
+func (x *AliCloudKubernetesNodePool) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKubernetesNodePool) ProtoMessage() {}
+func (*AliCloudKubernetesNodePool) ProtoMessage() {}
 
-func (x *AlicloudKubernetesNodePool) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKubernetesNodePool) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AlicloudKubernetesNodePool) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKubernetesNodePool.ProtoReflect.Descriptor instead.
-func (*AlicloudKubernetesNodePool) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKubernetesNodePool.ProtoReflect.Descriptor instead.
+func (*AliCloudKubernetesNodePool) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudKubernetesNodePool) GetApiVersion() string {
+func (x *AliCloudKubernetesNodePool) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePool) GetKind() string {
+func (x *AliCloudKubernetesNodePool) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePool) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AliCloudKubernetesNodePool) GetMetadata() *shared.CloudResourceMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesNodePool) GetSpec() *AlicloudKubernetesNodePoolSpec {
+func (x *AliCloudKubernetesNodePool) GetSpec() *AliCloudKubernetesNodePoolSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesNodePool) GetStatus() *AlicloudKubernetesNodePoolStatus {
+func (x *AliCloudKubernetesNodePool) GetStatus() *AliCloudKubernetesNodePoolStatus {
 	if x != nil {
 		return x.Status
 	}
@@ -106,28 +106,28 @@ func (x *AlicloudKubernetesNodePool) GetStatus() *AlicloudKubernetesNodePoolStat
 }
 
 // alicloud-kubernetes-node-pool status
-type AlicloudKubernetesNodePoolStatus struct {
+type AliCloudKubernetesNodePoolStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// stack-outputs
-	Outputs       *AlicloudKubernetesNodePoolStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AliCloudKubernetesNodePoolStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudKubernetesNodePoolStatus) Reset() {
-	*x = AlicloudKubernetesNodePoolStatus{}
+func (x *AliCloudKubernetesNodePoolStatus) Reset() {
+	*x = AliCloudKubernetesNodePoolStatus{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKubernetesNodePoolStatus) String() string {
+func (x *AliCloudKubernetesNodePoolStatus) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKubernetesNodePoolStatus) ProtoMessage() {}
+func (*AliCloudKubernetesNodePoolStatus) ProtoMessage() {}
 
-func (x *AlicloudKubernetesNodePoolStatus) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKubernetesNodePoolStatus) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,12 +139,12 @@ func (x *AlicloudKubernetesNodePoolStatus) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKubernetesNodePoolStatus.ProtoReflect.Descriptor instead.
-func (*AlicloudKubernetesNodePoolStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKubernetesNodePoolStatus.ProtoReflect.Descriptor instead.
+func (*AliCloudKubernetesNodePoolStatus) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudKubernetesNodePoolStatus) GetOutputs() *AlicloudKubernetesNodePoolStackOutputs {
+func (x *AliCloudKubernetesNodePoolStatus) GetOutputs() *AliCloudKubernetesNodePoolStackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -156,17 +156,17 @@ var File_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_api_proto p
 const file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"Eorg/openmcf/provider/alicloud/alicloudkubernetesnodepool/v1/api.proto\x12;org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1\x1a\x1bbuf/validate/validate.proto\x1aForg/openmcf/provider/alicloud/alicloudkubernetesnodepool/v1/spec.proto\x1aOorg/openmcf/provider/alicloud/alicloudkubernetesnodepool/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xd3\x03\n" +
-	"\x1aAlicloudKubernetesNodePool\x12?\n" +
+	"\x1aAliCloudKubernetesNodePool\x12?\n" +
 	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
-	"\x1aAlicloudKubernetesNodePoolR\x04kind\x12M\n" +
+	"\x1aAliCloudKubernetesNodePoolR\x04kind\x12M\n" +
 	"\bmetadata\x18\x03 \x01(\v2).org.openmcf.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12w\n" +
-	"\x04spec\x18\x04 \x01(\v2[.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12u\n" +
-	"\x06status\x18\x05 \x01(\v2].org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolStatusR\x06status\"\xa1\x01\n" +
-	" AlicloudKubernetesNodePoolStatus\x12}\n" +
-	"\aoutputs\x18\x01 \x01(\v2c.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolStackOutputsR\aoutputsB\xda\x03\n" +
+	"\x04spec\x18\x04 \x01(\v2[.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12u\n" +
+	"\x06status\x18\x05 \x01(\v2].org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolStatusR\x06status\"\xa1\x01\n" +
+	" AliCloudKubernetesNodePoolStatus\x12}\n" +
+	"\aoutputs\x18\x01 \x01(\v2c.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolStackOutputsR\aoutputsB\xda\x03\n" +
 	"?com.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1B\bApiProtoP\x01Zzgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudkubernetesnodepool/v1;alicloudkubernetesnodepoolv1\xa2\x02\x05OOPAA\xaa\x02;Org.Openmcf.Provider.Alicloud.Alicloudkubernetesnodepool.V1\xca\x02;Org\\Openmcf\\Provider\\Alicloud\\Alicloudkubernetesnodepool\\V1\xe2\x02GOrg\\Openmcf\\Provider\\Alicloud\\Alicloudkubernetesnodepool\\V1\\GPBMetadata\xea\x02@Org::Openmcf::Provider::Alicloud::Alicloudkubernetesnodepool::V1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_api_proto_
 
 var file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_api_proto_goTypes = []any{
-	(*AlicloudKubernetesNodePool)(nil),             // 0: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePool
-	(*AlicloudKubernetesNodePoolStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolStatus
+	(*AliCloudKubernetesNodePool)(nil),             // 0: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePool
+	(*AliCloudKubernetesNodePoolStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolStatus
 	(*shared.CloudResourceMetadata)(nil),           // 2: org.openmcf.shared.CloudResourceMetadata
-	(*AlicloudKubernetesNodePoolSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec
-	(*AlicloudKubernetesNodePoolStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolStackOutputs
+	(*AliCloudKubernetesNodePoolSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec
+	(*AliCloudKubernetesNodePoolStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_api_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePool.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
-	3, // 1: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePool.spec:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec
-	1, // 2: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePool.status:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolStatus
-	4, // 3: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolStackOutputs
+	2, // 0: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePool.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
+	3, // 1: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePool.spec:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec
+	1, // 2: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePool.status:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolStatus
+	4, // 3: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolStackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

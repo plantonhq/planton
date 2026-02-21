@@ -17,7 +17,7 @@ func accessGroup(
 	provider *alicloud.Provider,
 	resourceName string,
 	fsType string,
-	rules []*alicloudnasfilesystemv1.AlicloudNasAccessRule,
+	rules []*alicloudnasfilesystemv1.AliCloudNasAccessRule,
 ) (pulumi.StringOutput, error) {
 	agName := fmt.Sprintf("%s-ag", resourceName)
 
@@ -47,7 +47,7 @@ func accessRule(
 	agName string,
 	fsType string,
 	index int,
-	rule *alicloudnasfilesystemv1.AlicloudNasAccessRule,
+	rule *alicloudnasfilesystemv1.AliCloudNasAccessRule,
 ) error {
 	ruleName := fmt.Sprintf("%s-rule-%d", agName, index)
 

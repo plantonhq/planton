@@ -9,19 +9,19 @@ import (
 )
 
 type Locals struct {
-	AlicloudVpnGateway *alicloudvpngatewayv1.AlicloudVpnGateway
+	AliCloudVpnGateway *alicloudvpngatewayv1.AliCloudVpnGateway
 	Tags               map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudvpngatewayv1.AlicloudVpnGatewayStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudvpngatewayv1.AliCloudVpnGatewayStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudVpnGateway = stackInput.Target
+	locals.AliCloudVpnGateway = stackInput.Target
 	target := stackInput.Target
 
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudVpnGateway.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudVpnGateway.String()),
 	}
 
 	if target.Metadata.Id != "" {
@@ -43,7 +43,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudvpngatewayv1.Alic
 	return locals
 }
 
-func paymentType(spec *alicloudvpngatewayv1.AlicloudVpnGatewaySpec) string {
+func paymentType(spec *alicloudvpngatewayv1.AliCloudVpnGatewaySpec) string {
 	if spec.PaymentType != nil {
 		return *spec.PaymentType
 	}

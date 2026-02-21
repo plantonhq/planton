@@ -9,19 +9,19 @@ import (
 )
 
 type Locals struct {
-	AlicloudVpc *alicloudvpcv1.AlicloudVpc
+	AliCloudVpc *alicloudvpcv1.AliCloudVpc
 	Tags        map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudvpcv1.AlicloudVpcStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudvpcv1.AliCloudVpcStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudVpc = stackInput.Target
+	locals.AliCloudVpc = stackInput.Target
 	target := stackInput.Target
 
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudVpc.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudVpc.String()),
 	}
 
 	if target.Metadata.Id != "" {

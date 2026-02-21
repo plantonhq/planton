@@ -24,7 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudNetworkLoadBalancerSpec defines the configuration for an Alibaba Cloud
+// AliCloudNetworkLoadBalancerSpec defines the configuration for an Alibaba Cloud
 // Network Load Balancer (NLB) with bundled server groups and listeners.
 //
 // NLB is a modern Layer 4 load balancer for TCP, UDP, and TCPSSL traffic,
@@ -44,7 +44,7 @@ const (
 //
 //	Terraform: alicloud_nlb_load_balancer + alicloud_nlb_server_group + alicloud_nlb_listener
 //	Pulumi:    nlb.LoadBalancer + nlb.ServerGroup + nlb.Listener
-type AlicloudNetworkLoadBalancerSpec struct {
+type AliCloudNetworkLoadBalancerSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the NLB will be created.
 	// Must match the region of the VPC and VSwitches.
@@ -65,7 +65,7 @@ type AlicloudNetworkLoadBalancerSpec struct {
 	// Availability zone mappings. Each mapping places an NLB node in a zone
 	// with a VSwitch for IP allocation. NLB requires at least 2 zones for
 	// high availability.
-	ZoneMappings []*AlicloudNetworkLoadBalancerZoneMapping `protobuf:"bytes,5,rep,name=zone_mappings,json=zoneMappings,proto3" json:"zone_mappings,omitempty"`
+	ZoneMappings []*AliCloudNetworkLoadBalancerZoneMapping `protobuf:"bytes,5,rep,name=zone_mappings,json=zoneMappings,proto3" json:"zone_mappings,omitempty"`
 	// Alibaba Cloud resource group ID for organizational grouping (per DD05).
 	// If omitted, the NLB is placed in the account's default resource group.
 	ResourceGroupId string `protobuf:"bytes,6,opt,name=resource_group_id,json=resourceGroupId,proto3" json:"resource_group_id,omitempty"`
@@ -82,29 +82,29 @@ type AlicloudNetworkLoadBalancerSpec struct {
 	//
 	// Server groups are created empty -- backend membership is managed
 	// externally (by ACK service controllers, manual attachment, etc.).
-	ServerGroups []*AlicloudNetworkLoadBalancerServerGroup `protobuf:"bytes,9,rep,name=server_groups,json=serverGroups,proto3" json:"server_groups,omitempty"`
+	ServerGroups []*AliCloudNetworkLoadBalancerServerGroup `protobuf:"bytes,9,rep,name=server_groups,json=serverGroups,proto3" json:"server_groups,omitempty"`
 	// Listeners that define how the NLB accepts incoming traffic.
 	// Each listener binds to a port and protocol and forwards traffic
 	// directly to a server group. TCPSSL listeners support TLS termination.
-	Listeners     []*AlicloudNetworkLoadBalancerListener `protobuf:"bytes,10,rep,name=listeners,proto3" json:"listeners,omitempty"`
+	Listeners     []*AliCloudNetworkLoadBalancerListener `protobuf:"bytes,10,rep,name=listeners,proto3" json:"listeners,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudNetworkLoadBalancerSpec) Reset() {
-	*x = AlicloudNetworkLoadBalancerSpec{}
+func (x *AliCloudNetworkLoadBalancerSpec) Reset() {
+	*x = AliCloudNetworkLoadBalancerSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudNetworkLoadBalancerSpec) String() string {
+func (x *AliCloudNetworkLoadBalancerSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudNetworkLoadBalancerSpec) ProtoMessage() {}
+func (*AliCloudNetworkLoadBalancerSpec) ProtoMessage() {}
 
-func (x *AlicloudNetworkLoadBalancerSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudNetworkLoadBalancerSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -116,84 +116,84 @@ func (x *AlicloudNetworkLoadBalancerSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudNetworkLoadBalancerSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudNetworkLoadBalancerSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudNetworkLoadBalancerSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudNetworkLoadBalancerSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudNetworkLoadBalancerSpec) GetRegion() string {
+func (x *AliCloudNetworkLoadBalancerSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerSpec) GetVpcId() *v1.StringValueOrRef {
+func (x *AliCloudNetworkLoadBalancerSpec) GetVpcId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VpcId
 	}
 	return nil
 }
 
-func (x *AlicloudNetworkLoadBalancerSpec) GetLoadBalancerName() string {
+func (x *AliCloudNetworkLoadBalancerSpec) GetLoadBalancerName() string {
 	if x != nil {
 		return x.LoadBalancerName
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerSpec) GetAddressType() string {
+func (x *AliCloudNetworkLoadBalancerSpec) GetAddressType() string {
 	if x != nil && x.AddressType != nil {
 		return *x.AddressType
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerSpec) GetZoneMappings() []*AlicloudNetworkLoadBalancerZoneMapping {
+func (x *AliCloudNetworkLoadBalancerSpec) GetZoneMappings() []*AliCloudNetworkLoadBalancerZoneMapping {
 	if x != nil {
 		return x.ZoneMappings
 	}
 	return nil
 }
 
-func (x *AlicloudNetworkLoadBalancerSpec) GetResourceGroupId() string {
+func (x *AliCloudNetworkLoadBalancerSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerSpec) GetCrossZoneEnabled() bool {
+func (x *AliCloudNetworkLoadBalancerSpec) GetCrossZoneEnabled() bool {
 	if x != nil && x.CrossZoneEnabled != nil {
 		return *x.CrossZoneEnabled
 	}
 	return false
 }
 
-func (x *AlicloudNetworkLoadBalancerSpec) GetTags() map[string]string {
+func (x *AliCloudNetworkLoadBalancerSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-func (x *AlicloudNetworkLoadBalancerSpec) GetServerGroups() []*AlicloudNetworkLoadBalancerServerGroup {
+func (x *AliCloudNetworkLoadBalancerSpec) GetServerGroups() []*AliCloudNetworkLoadBalancerServerGroup {
 	if x != nil {
 		return x.ServerGroups
 	}
 	return nil
 }
 
-func (x *AlicloudNetworkLoadBalancerSpec) GetListeners() []*AlicloudNetworkLoadBalancerListener {
+func (x *AliCloudNetworkLoadBalancerSpec) GetListeners() []*AliCloudNetworkLoadBalancerListener {
 	if x != nil {
 		return x.Listeners
 	}
 	return nil
 }
 
-// AlicloudNetworkLoadBalancerZoneMapping associates an availability zone with a VSwitch.
+// AliCloudNetworkLoadBalancerZoneMapping associates an availability zone with a VSwitch.
 // The NLB places a node in each mapped zone for high availability.
-type AlicloudNetworkLoadBalancerZoneMapping struct {
+type AliCloudNetworkLoadBalancerZoneMapping struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Availability zone ID within the region.
 	// Examples: "cn-hangzhou-a", "cn-hangzhou-b", "us-west-1-a".
@@ -210,20 +210,20 @@ type AlicloudNetworkLoadBalancerZoneMapping struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudNetworkLoadBalancerZoneMapping) Reset() {
-	*x = AlicloudNetworkLoadBalancerZoneMapping{}
+func (x *AliCloudNetworkLoadBalancerZoneMapping) Reset() {
+	*x = AliCloudNetworkLoadBalancerZoneMapping{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudNetworkLoadBalancerZoneMapping) String() string {
+func (x *AliCloudNetworkLoadBalancerZoneMapping) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudNetworkLoadBalancerZoneMapping) ProtoMessage() {}
+func (*AliCloudNetworkLoadBalancerZoneMapping) ProtoMessage() {}
 
-func (x *AlicloudNetworkLoadBalancerZoneMapping) ProtoReflect() protoreflect.Message {
+func (x *AliCloudNetworkLoadBalancerZoneMapping) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -235,36 +235,36 @@ func (x *AlicloudNetworkLoadBalancerZoneMapping) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudNetworkLoadBalancerZoneMapping.ProtoReflect.Descriptor instead.
-func (*AlicloudNetworkLoadBalancerZoneMapping) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudNetworkLoadBalancerZoneMapping.ProtoReflect.Descriptor instead.
+func (*AliCloudNetworkLoadBalancerZoneMapping) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudNetworkLoadBalancerZoneMapping) GetZoneId() string {
+func (x *AliCloudNetworkLoadBalancerZoneMapping) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerZoneMapping) GetVswitchId() *v1.StringValueOrRef {
+func (x *AliCloudNetworkLoadBalancerZoneMapping) GetVswitchId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VswitchId
 	}
 	return nil
 }
 
-func (x *AlicloudNetworkLoadBalancerZoneMapping) GetAllocationId() *v1.StringValueOrRef {
+func (x *AliCloudNetworkLoadBalancerZoneMapping) GetAllocationId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.AllocationId
 	}
 	return nil
 }
 
-// AlicloudNetworkLoadBalancerServerGroup defines a backend target group with health check
+// AliCloudNetworkLoadBalancerServerGroup defines a backend target group with health check
 // and connection management configuration. Server groups are created empty --
 // backend membership is managed externally.
-type AlicloudNetworkLoadBalancerServerGroup struct {
+type AliCloudNetworkLoadBalancerServerGroup struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Server group name. 2-128 characters; must start with a letter.
 	// Used by listeners to reference this server group via server_group_name.
@@ -297,25 +297,25 @@ type AlicloudNetworkLoadBalancerServerGroup struct {
 	// Default: true
 	PreserveClientIpEnabled *bool `protobuf:"varint,6,opt,name=preserve_client_ip_enabled,json=preserveClientIpEnabled,proto3,oneof" json:"preserve_client_ip_enabled,omitempty"`
 	// Health check configuration. Required for every server group.
-	HealthCheck   *AlicloudNetworkLoadBalancerHealthCheckConfig `protobuf:"bytes,7,opt,name=health_check,json=healthCheck,proto3" json:"health_check,omitempty"`
+	HealthCheck   *AliCloudNetworkLoadBalancerHealthCheckConfig `protobuf:"bytes,7,opt,name=health_check,json=healthCheck,proto3" json:"health_check,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudNetworkLoadBalancerServerGroup) Reset() {
-	*x = AlicloudNetworkLoadBalancerServerGroup{}
+func (x *AliCloudNetworkLoadBalancerServerGroup) Reset() {
+	*x = AliCloudNetworkLoadBalancerServerGroup{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudNetworkLoadBalancerServerGroup) String() string {
+func (x *AliCloudNetworkLoadBalancerServerGroup) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudNetworkLoadBalancerServerGroup) ProtoMessage() {}
+func (*AliCloudNetworkLoadBalancerServerGroup) ProtoMessage() {}
 
-func (x *AlicloudNetworkLoadBalancerServerGroup) ProtoReflect() protoreflect.Message {
+func (x *AliCloudNetworkLoadBalancerServerGroup) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -327,62 +327,62 @@ func (x *AlicloudNetworkLoadBalancerServerGroup) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudNetworkLoadBalancerServerGroup.ProtoReflect.Descriptor instead.
-func (*AlicloudNetworkLoadBalancerServerGroup) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudNetworkLoadBalancerServerGroup.ProtoReflect.Descriptor instead.
+func (*AliCloudNetworkLoadBalancerServerGroup) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AlicloudNetworkLoadBalancerServerGroup) GetName() string {
+func (x *AliCloudNetworkLoadBalancerServerGroup) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerServerGroup) GetProtocol() string {
+func (x *AliCloudNetworkLoadBalancerServerGroup) GetProtocol() string {
 	if x != nil && x.Protocol != nil {
 		return *x.Protocol
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerServerGroup) GetScheduler() string {
+func (x *AliCloudNetworkLoadBalancerServerGroup) GetScheduler() string {
 	if x != nil && x.Scheduler != nil {
 		return *x.Scheduler
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerServerGroup) GetConnectionDrainEnabled() bool {
+func (x *AliCloudNetworkLoadBalancerServerGroup) GetConnectionDrainEnabled() bool {
 	if x != nil && x.ConnectionDrainEnabled != nil {
 		return *x.ConnectionDrainEnabled
 	}
 	return false
 }
 
-func (x *AlicloudNetworkLoadBalancerServerGroup) GetConnectionDrainTimeout() int32 {
+func (x *AliCloudNetworkLoadBalancerServerGroup) GetConnectionDrainTimeout() int32 {
 	if x != nil && x.ConnectionDrainTimeout != nil {
 		return *x.ConnectionDrainTimeout
 	}
 	return 0
 }
 
-func (x *AlicloudNetworkLoadBalancerServerGroup) GetPreserveClientIpEnabled() bool {
+func (x *AliCloudNetworkLoadBalancerServerGroup) GetPreserveClientIpEnabled() bool {
 	if x != nil && x.PreserveClientIpEnabled != nil {
 		return *x.PreserveClientIpEnabled
 	}
 	return false
 }
 
-func (x *AlicloudNetworkLoadBalancerServerGroup) GetHealthCheck() *AlicloudNetworkLoadBalancerHealthCheckConfig {
+func (x *AliCloudNetworkLoadBalancerServerGroup) GetHealthCheck() *AliCloudNetworkLoadBalancerHealthCheckConfig {
 	if x != nil {
 		return x.HealthCheck
 	}
 	return nil
 }
 
-// AlicloudNetworkLoadBalancerHealthCheckConfig defines how the NLB probes backend servers.
-type AlicloudNetworkLoadBalancerHealthCheckConfig struct {
+// AliCloudNetworkLoadBalancerHealthCheckConfig defines how the NLB probes backend servers.
+type AliCloudNetworkLoadBalancerHealthCheckConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Whether health checks are enabled for this server group.
 	// When disabled, all servers are considered healthy.
@@ -429,20 +429,20 @@ type AlicloudNetworkLoadBalancerHealthCheckConfig struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *AlicloudNetworkLoadBalancerHealthCheckConfig) Reset() {
-	*x = AlicloudNetworkLoadBalancerHealthCheckConfig{}
+func (x *AliCloudNetworkLoadBalancerHealthCheckConfig) Reset() {
+	*x = AliCloudNetworkLoadBalancerHealthCheckConfig{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudNetworkLoadBalancerHealthCheckConfig) String() string {
+func (x *AliCloudNetworkLoadBalancerHealthCheckConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudNetworkLoadBalancerHealthCheckConfig) ProtoMessage() {}
+func (*AliCloudNetworkLoadBalancerHealthCheckConfig) ProtoMessage() {}
 
-func (x *AlicloudNetworkLoadBalancerHealthCheckConfig) ProtoReflect() protoreflect.Message {
+func (x *AliCloudNetworkLoadBalancerHealthCheckConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -454,91 +454,91 @@ func (x *AlicloudNetworkLoadBalancerHealthCheckConfig) ProtoReflect() protorefle
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudNetworkLoadBalancerHealthCheckConfig.ProtoReflect.Descriptor instead.
-func (*AlicloudNetworkLoadBalancerHealthCheckConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudNetworkLoadBalancerHealthCheckConfig.ProtoReflect.Descriptor instead.
+func (*AliCloudNetworkLoadBalancerHealthCheckConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *AlicloudNetworkLoadBalancerHealthCheckConfig) GetHealthCheckEnabled() bool {
+func (x *AliCloudNetworkLoadBalancerHealthCheckConfig) GetHealthCheckEnabled() bool {
 	if x != nil {
 		return x.HealthCheckEnabled
 	}
 	return false
 }
 
-func (x *AlicloudNetworkLoadBalancerHealthCheckConfig) GetHealthCheckType() string {
+func (x *AliCloudNetworkLoadBalancerHealthCheckConfig) GetHealthCheckType() string {
 	if x != nil && x.HealthCheckType != nil {
 		return *x.HealthCheckType
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerHealthCheckConfig) GetHealthCheckConnectPort() int32 {
+func (x *AliCloudNetworkLoadBalancerHealthCheckConfig) GetHealthCheckConnectPort() int32 {
 	if x != nil && x.HealthCheckConnectPort != nil {
 		return *x.HealthCheckConnectPort
 	}
 	return 0
 }
 
-func (x *AlicloudNetworkLoadBalancerHealthCheckConfig) GetHealthCheckConnectTimeout() int32 {
+func (x *AliCloudNetworkLoadBalancerHealthCheckConfig) GetHealthCheckConnectTimeout() int32 {
 	if x != nil && x.HealthCheckConnectTimeout != nil {
 		return *x.HealthCheckConnectTimeout
 	}
 	return 0
 }
 
-func (x *AlicloudNetworkLoadBalancerHealthCheckConfig) GetHealthCheckInterval() int32 {
+func (x *AliCloudNetworkLoadBalancerHealthCheckConfig) GetHealthCheckInterval() int32 {
 	if x != nil && x.HealthCheckInterval != nil {
 		return *x.HealthCheckInterval
 	}
 	return 0
 }
 
-func (x *AlicloudNetworkLoadBalancerHealthCheckConfig) GetHealthyThreshold() int32 {
+func (x *AliCloudNetworkLoadBalancerHealthCheckConfig) GetHealthyThreshold() int32 {
 	if x != nil && x.HealthyThreshold != nil {
 		return *x.HealthyThreshold
 	}
 	return 0
 }
 
-func (x *AlicloudNetworkLoadBalancerHealthCheckConfig) GetUnhealthyThreshold() int32 {
+func (x *AliCloudNetworkLoadBalancerHealthCheckConfig) GetUnhealthyThreshold() int32 {
 	if x != nil && x.UnhealthyThreshold != nil {
 		return *x.UnhealthyThreshold
 	}
 	return 0
 }
 
-func (x *AlicloudNetworkLoadBalancerHealthCheckConfig) GetHealthCheckUrl() string {
+func (x *AliCloudNetworkLoadBalancerHealthCheckConfig) GetHealthCheckUrl() string {
 	if x != nil {
 		return x.HealthCheckUrl
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerHealthCheckConfig) GetHealthCheckDomain() string {
+func (x *AliCloudNetworkLoadBalancerHealthCheckConfig) GetHealthCheckDomain() string {
 	if x != nil {
 		return x.HealthCheckDomain
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerHealthCheckConfig) GetHttpCheckMethod() string {
+func (x *AliCloudNetworkLoadBalancerHealthCheckConfig) GetHttpCheckMethod() string {
 	if x != nil && x.HttpCheckMethod != nil {
 		return *x.HttpCheckMethod
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerHealthCheckConfig) GetHealthCheckHttpCodes() []string {
+func (x *AliCloudNetworkLoadBalancerHealthCheckConfig) GetHealthCheckHttpCodes() []string {
 	if x != nil {
 		return x.HealthCheckHttpCodes
 	}
 	return nil
 }
 
-// AlicloudNetworkLoadBalancerListener defines how the NLB accepts incoming traffic on a
+// AliCloudNetworkLoadBalancerListener defines how the NLB accepts incoming traffic on a
 // specific port and protocol.
-type AlicloudNetworkLoadBalancerListener struct {
+type AliCloudNetworkLoadBalancerListener struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Port on which the listener accepts traffic.
 	// Range: 1-65535. Common values: 80 (TCP), 443 (TCPSSL), 3306 (MySQL).
@@ -581,20 +581,20 @@ type AlicloudNetworkLoadBalancerListener struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudNetworkLoadBalancerListener) Reset() {
-	*x = AlicloudNetworkLoadBalancerListener{}
+func (x *AliCloudNetworkLoadBalancerListener) Reset() {
+	*x = AliCloudNetworkLoadBalancerListener{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudNetworkLoadBalancerListener) String() string {
+func (x *AliCloudNetworkLoadBalancerListener) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudNetworkLoadBalancerListener) ProtoMessage() {}
+func (*AliCloudNetworkLoadBalancerListener) ProtoMessage() {}
 
-func (x *AlicloudNetworkLoadBalancerListener) ProtoReflect() protoreflect.Message {
+func (x *AliCloudNetworkLoadBalancerListener) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -606,75 +606,75 @@ func (x *AlicloudNetworkLoadBalancerListener) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudNetworkLoadBalancerListener.ProtoReflect.Descriptor instead.
-func (*AlicloudNetworkLoadBalancerListener) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudNetworkLoadBalancerListener.ProtoReflect.Descriptor instead.
+func (*AliCloudNetworkLoadBalancerListener) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *AlicloudNetworkLoadBalancerListener) GetListenerPort() int32 {
+func (x *AliCloudNetworkLoadBalancerListener) GetListenerPort() int32 {
 	if x != nil {
 		return x.ListenerPort
 	}
 	return 0
 }
 
-func (x *AlicloudNetworkLoadBalancerListener) GetListenerProtocol() string {
+func (x *AliCloudNetworkLoadBalancerListener) GetListenerProtocol() string {
 	if x != nil {
 		return x.ListenerProtocol
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerListener) GetServerGroupName() string {
+func (x *AliCloudNetworkLoadBalancerListener) GetServerGroupName() string {
 	if x != nil {
 		return x.ServerGroupName
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerListener) GetListenerDescription() string {
+func (x *AliCloudNetworkLoadBalancerListener) GetListenerDescription() string {
 	if x != nil {
 		return x.ListenerDescription
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerListener) GetIdleTimeout() int32 {
+func (x *AliCloudNetworkLoadBalancerListener) GetIdleTimeout() int32 {
 	if x != nil && x.IdleTimeout != nil {
 		return *x.IdleTimeout
 	}
 	return 0
 }
 
-func (x *AlicloudNetworkLoadBalancerListener) GetProxyProtocolEnabled() bool {
+func (x *AliCloudNetworkLoadBalancerListener) GetProxyProtocolEnabled() bool {
 	if x != nil && x.ProxyProtocolEnabled != nil {
 		return *x.ProxyProtocolEnabled
 	}
 	return false
 }
 
-func (x *AlicloudNetworkLoadBalancerListener) GetCertificateIds() []string {
+func (x *AliCloudNetworkLoadBalancerListener) GetCertificateIds() []string {
 	if x != nil {
 		return x.CertificateIds
 	}
 	return nil
 }
 
-func (x *AlicloudNetworkLoadBalancerListener) GetSecurityPolicyId() string {
+func (x *AliCloudNetworkLoadBalancerListener) GetSecurityPolicyId() string {
 	if x != nil {
 		return x.SecurityPolicyId
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancerListener) GetCaCertificateIds() []string {
+func (x *AliCloudNetworkLoadBalancerListener) GetCaCertificateIds() []string {
 	if x != nil {
 		return x.CaCertificateIds
 	}
 	return nil
 }
 
-func (x *AlicloudNetworkLoadBalancerListener) GetCaEnabled() bool {
+func (x *AliCloudNetworkLoadBalancerListener) GetCaEnabled() bool {
 	if x != nil && x.CaEnabled != nil {
 		return *x.CaEnabled
 	}
@@ -687,7 +687,7 @@ const file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_pro
 	"\n" +
 	"Gorg/openmcf/provider/alicloud/alicloudnetworkloadbalancer/v1/spec.proto\x12<org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa5\n" +
 	"\n" +
-	"\x1fAlicloudNetworkLoadBalancerSpec\x12\"\n" +
+	"\x1fAliCloudNetworkLoadBalancerSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12o\n" +
 	"\x06vpc_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xcc\x17\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12\xcc\x01\n" +
@@ -695,25 +695,25 @@ const file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_pro
 	"\x19load_balancer_name_length\x12@load_balancer_name must be between 2 and 128 characters when set\x1a6this == '' || (this.size() >= 2 && this.size() <= 128)R\x10loadBalancerName\x12\xb0\x01\n" +
 	"\faddress_type\x18\x04 \x01(\tB\x87\x01\xbaHx\xba\x01u\n" +
 	"\x12address_type_valid\x12/address_type must be one of: Internet, Intranet\x1a.this == '' || this in ['Internet', 'Intranet']\x8a\xa6\x1d\bInternetH\x00R\vaddressType\x88\x01\x01\x12\x96\x01\n" +
-	"\rzone_mappings\x18\x05 \x03(\v2d.org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerZoneMappingB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x02R\fzoneMappings\x12*\n" +
+	"\rzone_mappings\x18\x05 \x03(\v2d.org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerZoneMappingB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x02R\fzoneMappings\x12*\n" +
 	"\x11resource_group_id\x18\x06 \x01(\tR\x0fresourceGroupId\x12;\n" +
 	"\x12cross_zone_enabled\x18\a \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\x10crossZoneEnabled\x88\x01\x01\x12{\n" +
-	"\x04tags\x18\b \x03(\v2g.org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerSpec.TagsEntryR\x04tags\x12\x89\x01\n" +
-	"\rserver_groups\x18\t \x03(\v2d.org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerServerGroupR\fserverGroups\x12\x7f\n" +
+	"\x04tags\x18\b \x03(\v2g.org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerSpec.TagsEntryR\x04tags\x12\x89\x01\n" +
+	"\rserver_groups\x18\t \x03(\v2d.org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerServerGroupR\fserverGroups\x12\x7f\n" +
 	"\tlisteners\x18\n" +
-	" \x03(\v2a.org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerListenerR\tlisteners\x1a7\n" +
+	" \x03(\v2a.org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerListenerR\tlisteners\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x0f\n" +
 	"\r_address_typeB\x15\n" +
 	"\x13_cross_zone_enabled\"\xc3\x02\n" +
-	"&AlicloudNetworkLoadBalancerZoneMapping\x12#\n" +
+	"&AliCloudNetworkLoadBalancerZoneMapping\x12#\n" +
 	"\azone_id\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06zoneId\x12{\n" +
 	"\n" +
 	"vswitch_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xcd\x17\x92\xd4a\x19status.outputs.vswitch_idR\tvswitchId\x12w\n" +
 	"\rallocation_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xcf\x17\x92\xd4a\x15status.outputs.eip_idR\fallocationId\"\xa7\a\n" +
-	"&AlicloudNetworkLoadBalancerServerGroup\x12!\n" +
+	"&AliCloudNetworkLoadBalancerServerGroup\x12!\n" +
 	"\x04name\x18\x01 \x01(\tB\r\xbaH\n" +
 	"\xc8\x01\x01r\x05\x10\x02\x18\x80\x01R\x04name\x12\xa7\x01\n" +
 	"\bprotocol\x18\x02 \x01(\tB\x85\x01\xbaH{\xba\x01x\n" +
@@ -724,14 +724,14 @@ const file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_pro
 	"\x18connection_drain_timeout\x18\x05 \x01(\x05B\x10\xbaH\a\x1a\x05\x18\x84\a(\n" +
 	"\x8a\xa6\x1d\x0210H\x03R\x16connectionDrainTimeout\x88\x01\x01\x12J\n" +
 	"\x1apreserve_client_ip_enabled\x18\x06 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x04R\x17preserveClientIpEnabled\x88\x01\x01\x12\x95\x01\n" +
-	"\fhealth_check\x18\a \x01(\v2j.org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerHealthCheckConfigB\x06\xbaH\x03\xc8\x01\x01R\vhealthCheckB\v\n" +
+	"\fhealth_check\x18\a \x01(\v2j.org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerHealthCheckConfigB\x06\xbaH\x03\xc8\x01\x01R\vhealthCheckB\v\n" +
 	"\t_protocolB\f\n" +
 	"\n" +
 	"_schedulerB\x1b\n" +
 	"\x19_connection_drain_enabledB\x1b\n" +
 	"\x19_connection_drain_timeoutB\x1d\n" +
 	"\x1b_preserve_client_ip_enabled\"\x88\t\n" +
-	",AlicloudNetworkLoadBalancerHealthCheckConfig\x120\n" +
+	",AliCloudNetworkLoadBalancerHealthCheckConfig\x120\n" +
 	"\x14health_check_enabled\x18\x01 \x01(\bR\x12healthCheckEnabled\x12\xb8\x01\n" +
 	"\x11health_check_type\x18\x02 \x01(\tB\x86\x01\xbaH|\xba\x01y\n" +
 	"\x17health_check_type_valid\x120health_check_type must be one of: TCP, HTTP, UDP\x1a,this == '' || this in ['TCP', 'HTTP', 'UDP']\x8a\xa6\x1d\x03TCPH\x00R\x0fhealthCheckType\x88\x01\x01\x12P\n" +
@@ -755,7 +755,7 @@ const file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_pro
 	"\x12_healthy_thresholdB\x16\n" +
 	"\x14_unhealthy_thresholdB\x14\n" +
 	"\x12_http_check_method\"\xdd\x05\n" +
-	"#AlicloudNetworkLoadBalancerListener\x123\n" +
+	"#AliCloudNetworkLoadBalancerListener\x123\n" +
 	"\rlistener_port\x18\x01 \x01(\x05B\x0e\xbaH\v\xc8\x01\x01\x1a\x06\x18\xff\xff\x03(\x01R\flistenerPort\x12\xa5\x01\n" +
 	"\x11listener_protocol\x18\x02 \x01(\tBx\xbaHu\xba\x01o\n" +
 	"\x17listener_protocol_valid\x122listener_protocol must be one of: TCP, UDP, TCPSSL\x1a this in ['TCP', 'UDP', 'TCPSSL']\xc8\x01\x01R\x10listenerProtocol\x126\n" +
@@ -789,23 +789,23 @@ func file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_prot
 
 var file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_goTypes = []any{
-	(*AlicloudNetworkLoadBalancerSpec)(nil),              // 0: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerSpec
-	(*AlicloudNetworkLoadBalancerZoneMapping)(nil),       // 1: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerZoneMapping
-	(*AlicloudNetworkLoadBalancerServerGroup)(nil),       // 2: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerServerGroup
-	(*AlicloudNetworkLoadBalancerHealthCheckConfig)(nil), // 3: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerHealthCheckConfig
-	(*AlicloudNetworkLoadBalancerListener)(nil),          // 4: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerListener
-	nil,                         // 5: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerSpec.TagsEntry
+	(*AliCloudNetworkLoadBalancerSpec)(nil),              // 0: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerSpec
+	(*AliCloudNetworkLoadBalancerZoneMapping)(nil),       // 1: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerZoneMapping
+	(*AliCloudNetworkLoadBalancerServerGroup)(nil),       // 2: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerServerGroup
+	(*AliCloudNetworkLoadBalancerHealthCheckConfig)(nil), // 3: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerHealthCheckConfig
+	(*AliCloudNetworkLoadBalancerListener)(nil),          // 4: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerListener
+	nil,                         // 5: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerSpec.TagsEntry
 	(*v1.StringValueOrRef)(nil), // 6: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_spec_proto_depIdxs = []int32{
-	6, // 0: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerSpec.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	1, // 1: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerSpec.zone_mappings:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerZoneMapping
-	5, // 2: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerSpec.TagsEntry
-	2, // 3: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerSpec.server_groups:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerServerGroup
-	4, // 4: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerSpec.listeners:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerListener
-	6, // 5: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerZoneMapping.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	6, // 6: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerZoneMapping.allocation_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	3, // 7: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerServerGroup.health_check:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerHealthCheckConfig
+	6, // 0: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerSpec.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	1, // 1: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerSpec.zone_mappings:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerZoneMapping
+	5, // 2: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerSpec.TagsEntry
+	2, // 3: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerSpec.server_groups:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerServerGroup
+	4, // 4: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerSpec.listeners:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerListener
+	6, // 5: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerZoneMapping.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	6, // 6: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerZoneMapping.allocation_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	3, // 7: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerServerGroup.health_check:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerHealthCheckConfig
 	8, // [8:8] is the sub-list for method output_type
 	8, // [8:8] is the sub-list for method input_type
 	8, // [8:8] is the sub-list for extension type_name

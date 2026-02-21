@@ -6,12 +6,12 @@ import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudKubernetesClusterSpec defines the configuration for an Alibaba Cloud
+// AliCloudKubernetesClusterSpec defines the configuration for an Alibaba Cloud
 // ACK Managed Kubernetes cluster.
 //
 // ACK (Alibaba Cloud Container Service for Kubernetes) provides a fully managed
 // control plane. Worker nodes are managed separately through node pools
-// (AlicloudKubernetesNodePool), which have their own lifecycle.
+// (AliCloudKubernetesNodePool), which have their own lifecycle.
 //
 // This component wraps a single provider resource:
 //   Terraform: alicloud_cs_managed_kubernetes
@@ -27,7 +27,7 @@ import "org/openmcf/shared/options/options.proto";
 // Billing: The cluster control plane itself is free for ack.standard; only
 // ack.pro.small incurs a management fee. Worker node costs are determined by
 // the node pool instance types.
-message AlicloudKubernetesClusterSpec {
+message AliCloudKubernetesClusterSpec {
   // ──────────────────────────────────────────────────────────────────────────
   // Core Identity (fields 1–9)
   // ──────────────────────────────────────────────────────────────────────────
@@ -83,7 +83,7 @@ message AlicloudKubernetesClusterSpec {
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 1,
     (buf.validate.field).repeated.max_items = 5,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
   ];
 
@@ -99,7 +99,7 @@ message AlicloudKubernetesClusterSpec {
   // Should be in the same AZs as vswitch_ids but use dedicated CIDR ranges
   // to avoid IP exhaustion on the node VSwitches.
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef pod_vswitch_ids = 12 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
   ];
 
@@ -139,7 +139,7 @@ message AlicloudKubernetesClusterSpec {
   ];
 
   // Whether ACK should automatically create a NAT gateway for the cluster
-  // VPC. Set to false when you manage your own AlicloudNatGateway component
+  // VPC. Set to false when you manage your own AliCloudNatGateway component
   // to avoid creating a duplicate NAT gateway.
   // Default: true
   optional bool new_nat_gateway = 16 [(org.openmcf.shared.options.default) = "true"];
@@ -157,7 +157,7 @@ message AlicloudKubernetesClusterSpec {
   // Security group ID for the cluster nodes. If omitted, ACK auto-creates
   // a security group. Conflicts with is_enterprise_security_group.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_id = 20 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
 
@@ -183,7 +183,7 @@ message AlicloudKubernetesClusterSpec {
   // When set, all Secrets stored in etcd are encrypted with this key.
   // Immutable after creation.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef encryption_provider_key = 24 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
   ];
 
@@ -210,7 +210,7 @@ message AlicloudKubernetesClusterSpec {
   //
   // Addons are only configurable at creation time. Post-creation management
   // requires the alicloud_cs_kubernetes_addon resource.
-  repeated AlicloudKubernetesAddon addons = 30;
+  repeated AliCloudKubernetesAddon addons = 30;
 
   // ──────────────────────────────────────────────────────────────────────────
   // Logging (field 40)
@@ -218,7 +218,7 @@ message AlicloudKubernetesClusterSpec {
 
   // Control plane and audit logging configuration.
   // When omitted, no control plane logs or audit logs are collected.
-  AlicloudKubernetesClusterLogging logging = 40;
+  AliCloudKubernetesClusterLogging logging = 40;
 
   // ──────────────────────────────────────────────────────────────────────────
   // Maintenance (fields 50–51)
@@ -226,11 +226,11 @@ message AlicloudKubernetesClusterSpec {
 
   // Maintenance window for the cluster. When configured, ACK applies
   // updates and patches only during the specified window.
-  AlicloudKubernetesClusterMaintenanceWindow maintenance_window = 50;
+  AliCloudKubernetesClusterMaintenanceWindow maintenance_window = 50;
 
   // Automatic cluster version upgrade policy.
   // Only takes effect when a maintenance_window is configured.
-  AlicloudKubernetesClusterAutoUpgrade auto_upgrade = 51;
+  AliCloudKubernetesClusterAutoUpgrade auto_upgrade = 51;
 
   // ──────────────────────────────────────────────────────────────────────────
   // Resource Management (fields 60–69)
@@ -247,8 +247,8 @@ message AlicloudKubernetesClusterSpec {
   string timezone = 62;
 }
 
-// AlicloudKubernetesAddon defines a cluster addon to install during creation.
-message AlicloudKubernetesAddon {
+// AliCloudKubernetesAddon defines a cluster addon to install during creation.
+message AliCloudKubernetesAddon {
   // Addon name. Must match an ACK addon identifier.
   // Examples: "flannel", "terway-eniip", "csi-plugin", "logtail-ds",
   //   "nginx-ingress-controller", "arms-prometheus", "metrics-server".
@@ -271,13 +271,13 @@ message AlicloudKubernetesAddon {
   bool disabled = 4;
 }
 
-// AlicloudKubernetesClusterLogging groups control plane logging and
+// AliCloudKubernetesClusterLogging groups control plane logging and
 // Kubernetes audit logging configuration.
-message AlicloudKubernetesClusterLogging {
+message AliCloudKubernetesClusterLogging {
   // SLS (Log Service) project for control plane component logs.
   // If omitted, ACK auto-creates a project named "k8s-log-{cluster-id}".
   org.openmcf.shared.foreignkey.v1.StringValueOrRef control_plane_log_project = 1 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudLogProject,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudLogProject,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_name"
   ];
 
@@ -299,9 +299,9 @@ message AlicloudKubernetesClusterLogging {
   string audit_log_sls_project = 5;
 }
 
-// AlicloudKubernetesClusterMaintenanceWindow defines a recurring time window
+// AliCloudKubernetesClusterMaintenanceWindow defines a recurring time window
 // during which ACK may apply cluster updates and patches.
-message AlicloudKubernetesClusterMaintenanceWindow {
+message AliCloudKubernetesClusterMaintenanceWindow {
   // Whether the maintenance window is enabled.
   bool enable = 1;
 
@@ -319,9 +319,9 @@ message AlicloudKubernetesClusterMaintenanceWindow {
   string weekly_period = 4;
 }
 
-// AlicloudKubernetesClusterAutoUpgrade defines the automatic cluster version
+// AliCloudKubernetesClusterAutoUpgrade defines the automatic cluster version
 // upgrade policy. Only takes effect when a maintenance window is configured.
-message AlicloudKubernetesClusterAutoUpgrade {
+message AliCloudKubernetesClusterAutoUpgrade {
   // Whether automatic cluster version upgrades are enabled.
   bool enabled = 1;
 

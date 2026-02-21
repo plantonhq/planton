@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudFunctionStackOutputs captures the outputs from deploying an
+// AliCloudFunctionStackOutputs captures the outputs from deploying an
 // Alibaba Cloud Function Compute v3 function.
-type AlicloudFunctionStackOutputs struct {
+type AliCloudFunctionStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The function ID assigned by Alibaba Cloud.
 	FunctionId string `protobuf:"bytes,1,opt,name=function_id,json=functionId,proto3" json:"function_id,omitempty"`
@@ -37,20 +37,20 @@ type AlicloudFunctionStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudFunctionStackOutputs) Reset() {
-	*x = AlicloudFunctionStackOutputs{}
+func (x *AliCloudFunctionStackOutputs) Reset() {
+	*x = AliCloudFunctionStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudFunctionStackOutputs) String() string {
+func (x *AliCloudFunctionStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudFunctionStackOutputs) ProtoMessage() {}
+func (*AliCloudFunctionStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudFunctionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudFunctionStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *AlicloudFunctionStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudFunctionStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudFunctionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudFunctionStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudFunctionStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudFunctionStackOutputs) GetFunctionId() string {
+func (x *AliCloudFunctionStackOutputs) GetFunctionId() string {
 	if x != nil {
 		return x.FunctionId
 	}
 	return ""
 }
 
-func (x *AlicloudFunctionStackOutputs) GetFunctionName() string {
+func (x *AliCloudFunctionStackOutputs) GetFunctionName() string {
 	if x != nil {
 		return x.FunctionName
 	}
 	return ""
 }
 
-func (x *AlicloudFunctionStackOutputs) GetFunctionArn() string {
+func (x *AliCloudFunctionStackOutputs) GetFunctionArn() string {
 	if x != nil {
 		return x.FunctionArn
 	}
@@ -93,7 +93,7 @@ var File_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_outputs_proto p
 const file_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Eorg/openmcf/provider/alicloud/alicloudfunction/v1/stack_outputs.proto\x121org.openmcf.provider.alicloud.alicloudfunction.v1\"\x87\x01\n" +
-	"\x1cAlicloudFunctionStackOutputs\x12\x1f\n" +
+	"\x1cAliCloudFunctionStackOutputs\x12\x1f\n" +
 	"\vfunction_id\x18\x01 \x01(\tR\n" +
 	"functionId\x12#\n" +
 	"\rfunction_name\x18\x02 \x01(\tR\ffunctionName\x12!\n" +
@@ -114,7 +114,7 @@ func file_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_outputs_proto_
 
 var file_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudFunctionStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionStackOutputs
+	(*AliCloudFunctionStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

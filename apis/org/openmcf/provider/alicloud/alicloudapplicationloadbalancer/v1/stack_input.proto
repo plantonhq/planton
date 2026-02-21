@@ -6,9 +6,9 @@ import "org/openmcf/provider/alicloud/alicloudapplicationloadbalancer/v1/api.pro
 import "org/openmcf/provider/alicloud/provider.proto";
 
 // alicloud-application-load-balancer stack-input
-message AlicloudApplicationLoadBalancerStackInput {
+message AliCloudApplicationLoadBalancerStackInput {
   // target cloud-resource
-  AlicloudApplicationLoadBalancer target = 1;
+  AliCloudApplicationLoadBalancer target = 1;
   // provider-config
-  org.openmcf.provider.alicloud.AlicloudProviderConfig provider_config = 2;
+  org.openmcf.provider.alicloud.AliCloudProviderConfig provider_config = 2;
 }

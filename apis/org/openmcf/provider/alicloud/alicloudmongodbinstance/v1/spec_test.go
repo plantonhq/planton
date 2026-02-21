@@ -11,23 +11,23 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func TestAlicloudMongodbInstanceSpec(t *testing.T) {
+func TestAliCloudMongodbInstanceSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
-	ginkgo.RunSpecs(t, "AlicloudMongodbInstanceSpec Validation Tests")
+	ginkgo.RunSpecs(t, "AliCloudMongodbInstanceSpec Validation Tests")
 }
 
-var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
+var _ = ginkgo.Describe("AliCloudMongodbInstanceSpec Validation Tests", func() {
 
 	ginkgo.Describe("valid input", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-mongodb",
 				},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region:            "cn-hangzhou",
 					EngineVersion:     "7.0",
 					DbInstanceClass:   "dds.mongo.mid",
@@ -43,15 +43,15 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with all optional fields populated", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "prod-mongodb",
 					Org:  "acme-corp",
 					Env:  "production",
 				},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region:            "cn-shanghai",
 					EngineVersion:     "6.0",
 					DbInstanceClass:   "mongo.x8.large",
@@ -88,13 +88,13 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with PrePaid billing", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "prepaid-mongodb",
 				},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region:            "cn-hangzhou",
 					EngineVersion:     "7.0",
 					DbInstanceClass:   "dds.mongo.mid",
@@ -114,13 +114,13 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with multi-zone HA deployment", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "ha-mongodb",
 				},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region:            "cn-hangzhou",
 					EngineVersion:     "6.0",
 					DbInstanceClass:   "mongo.x8.medium",
@@ -140,13 +140,13 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with TDE encryption enabled", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "encrypted-mongodb",
 				},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region:            "cn-hangzhou",
 					EngineVersion:     "7.0",
 					DbInstanceClass:   "mongo.x8.large",
@@ -164,13 +164,13 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with cloud disk encryption", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "disk-encrypted-mongodb",
 				},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region:            "cn-hangzhou",
 					EngineVersion:     "7.0",
 					DbInstanceClass:   "dds.mongo.mid",
@@ -191,11 +191,11 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 	ginkgo.Describe("invalid input", func() {
 
 		ginkgo.It("should fail when api_version is wrong", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "wrong/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region: "cn-hangzhou", EngineVersion: "7.0",
 					DbInstanceClass: "dds.mongo.mid", DbInstanceStorage: 20,
 					AccountPassword: "SecureP@ss123",
@@ -209,11 +209,11 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when kind is wrong", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region: "cn-hangzhou", EngineVersion: "7.0",
 					DbInstanceClass: "dds.mongo.mid", DbInstanceStorage: 20,
 					AccountPassword: "SecureP@ss123",
@@ -227,10 +227,10 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when metadata is missing", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
-				Spec: &AlicloudMongodbInstanceSpec{
+				Kind:       "AliCloudMongodbInstance",
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region: "cn-hangzhou", EngineVersion: "7.0",
 					DbInstanceClass: "dds.mongo.mid", DbInstanceStorage: 20,
 					AccountPassword: "SecureP@ss123",
@@ -244,9 +244,9 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when spec is missing", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 			}
 			err := protovalidate.Validate(input)
@@ -254,11 +254,11 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when region is empty", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region: "", EngineVersion: "7.0",
 					DbInstanceClass: "dds.mongo.mid", DbInstanceStorage: 20,
 					AccountPassword: "SecureP@ss123",
@@ -272,11 +272,11 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when vswitch_id is missing", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region: "cn-hangzhou", EngineVersion: "7.0",
 					DbInstanceClass: "dds.mongo.mid", DbInstanceStorage: 20,
 					AccountPassword: "SecureP@ss123",
@@ -287,11 +287,11 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when engine_version is invalid", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region: "cn-hangzhou", EngineVersion: "3.6",
 					DbInstanceClass: "dds.mongo.mid", DbInstanceStorage: 20,
 					AccountPassword: "SecureP@ss123",
@@ -305,11 +305,11 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when db_instance_class is empty", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region: "cn-hangzhou", EngineVersion: "7.0",
 					DbInstanceClass: "", DbInstanceStorage: 20,
 					AccountPassword: "SecureP@ss123",
@@ -323,11 +323,11 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when account_password is too short", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region: "cn-hangzhou", EngineVersion: "7.0",
 					DbInstanceClass: "dds.mongo.mid", DbInstanceStorage: 20,
 					AccountPassword: "short",
@@ -341,11 +341,11 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when replication_factor is invalid", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region: "cn-hangzhou", EngineVersion: "7.0",
 					DbInstanceClass: "dds.mongo.mid", DbInstanceStorage: 20,
 					AccountPassword: "SecureP@ss123",
@@ -360,11 +360,11 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when readonly_replicas exceeds max", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region: "cn-hangzhou", EngineVersion: "7.0",
 					DbInstanceClass: "dds.mongo.mid", DbInstanceStorage: 20,
 					AccountPassword: "SecureP@ss123",
@@ -379,11 +379,11 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when storage_engine is invalid", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region: "cn-hangzhou", EngineVersion: "7.0",
 					DbInstanceClass: "dds.mongo.mid", DbInstanceStorage: 20,
 					AccountPassword: "SecureP@ss123",
@@ -398,11 +398,11 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when instance_charge_type is invalid", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region: "cn-hangzhou", EngineVersion: "7.0",
 					DbInstanceClass: "dds.mongo.mid", DbInstanceStorage: 20,
 					AccountPassword: "SecureP@ss123",
@@ -417,11 +417,11 @@ var _ = ginkgo.Describe("AlicloudMongodbInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when tde_status is invalid", func() {
-			input := &AlicloudMongodbInstance{
+			input := &AliCloudMongodbInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudMongodbInstance",
+				Kind:       "AliCloudMongodbInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudMongodbInstanceSpec{
+				Spec: &AliCloudMongodbInstanceSpec{
 					Region: "cn-hangzhou", EngineVersion: "7.0",
 					DbInstanceClass: "dds.mongo.mid", DbInstanceStorage: 20,
 					AccountPassword: "SecureP@ss123",

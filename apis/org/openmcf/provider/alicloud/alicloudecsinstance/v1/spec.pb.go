@@ -24,7 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudEcsInstanceSpec defines the configuration for an Alibaba Cloud
+// AliCloudEcsInstanceSpec defines the configuration for an Alibaba Cloud
 // Elastic Compute Service (ECS) instance.
 //
 // ECS is the fundamental compute building block on Alibaba Cloud, analogous
@@ -40,7 +40,7 @@ const (
 //
 //	Terraform: alicloud_instance
 //	Pulumi:    ecs.Instance
-type AlicloudEcsInstanceSpec struct {
+type AliCloudEcsInstanceSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the ECS instance will be created.
 	// Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -68,11 +68,11 @@ type AlicloudEcsInstanceSpec struct {
 	Description string `protobuf:"bytes,8,opt,name=description,proto3" json:"description,omitempty"`
 	// System disk configuration. Every ECS instance has exactly one system
 	// disk that holds the OS. If omitted, defaults are applied (cloud_essd, 40 GB).
-	SystemDisk *AlicloudEcsSystemDisk `protobuf:"bytes,9,opt,name=system_disk,json=systemDisk,proto3" json:"system_disk,omitempty"`
+	SystemDisk *AliCloudEcsSystemDisk `protobuf:"bytes,9,opt,name=system_disk,json=systemDisk,proto3" json:"system_disk,omitempty"`
 	// Additional data disks to create and attach to the instance. Up to 16
 	// data disks are supported. Disks are created inline with the instance
 	// and their lifecycle is tied to it by default.
-	DataDisks []*AlicloudEcsDataDisk `protobuf:"bytes,10,rep,name=data_disks,json=dataDisks,proto3" json:"data_disks,omitempty"`
+	DataDisks []*AliCloudEcsDataDisk `protobuf:"bytes,10,rep,name=data_disks,json=dataDisks,proto3" json:"data_disks,omitempty"`
 	// SSH key pair name for passwordless authentication. Mutually exclusive
 	// authentication option with password.
 	KeyName string `protobuf:"bytes,11,opt,name=key_name,json=keyName,proto3" json:"key_name,omitempty"`
@@ -121,20 +121,20 @@ type AlicloudEcsInstanceSpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudEcsInstanceSpec) Reset() {
-	*x = AlicloudEcsInstanceSpec{}
+func (x *AliCloudEcsInstanceSpec) Reset() {
+	*x = AliCloudEcsInstanceSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudEcsInstanceSpec) String() string {
+func (x *AliCloudEcsInstanceSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudEcsInstanceSpec) ProtoMessage() {}
+func (*AliCloudEcsInstanceSpec) ProtoMessage() {}
 
-func (x *AlicloudEcsInstanceSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudEcsInstanceSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -146,188 +146,188 @@ func (x *AlicloudEcsInstanceSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudEcsInstanceSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudEcsInstanceSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudEcsInstanceSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudEcsInstanceSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudEcsInstanceSpec) GetRegion() string {
+func (x *AliCloudEcsInstanceSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceSpec) GetVswitchId() *v1.StringValueOrRef {
+func (x *AliCloudEcsInstanceSpec) GetVswitchId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VswitchId
 	}
 	return nil
 }
 
-func (x *AlicloudEcsInstanceSpec) GetSecurityGroupIds() []*v1.StringValueOrRef {
+func (x *AliCloudEcsInstanceSpec) GetSecurityGroupIds() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.SecurityGroupIds
 	}
 	return nil
 }
 
-func (x *AlicloudEcsInstanceSpec) GetInstanceType() string {
+func (x *AliCloudEcsInstanceSpec) GetInstanceType() string {
 	if x != nil {
 		return x.InstanceType
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceSpec) GetImageId() string {
+func (x *AliCloudEcsInstanceSpec) GetImageId() string {
 	if x != nil {
 		return x.ImageId
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceSpec) GetInstanceName() string {
+func (x *AliCloudEcsInstanceSpec) GetInstanceName() string {
 	if x != nil {
 		return x.InstanceName
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceSpec) GetHostName() string {
+func (x *AliCloudEcsInstanceSpec) GetHostName() string {
 	if x != nil {
 		return x.HostName
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceSpec) GetDescription() string {
+func (x *AliCloudEcsInstanceSpec) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceSpec) GetSystemDisk() *AlicloudEcsSystemDisk {
+func (x *AliCloudEcsInstanceSpec) GetSystemDisk() *AliCloudEcsSystemDisk {
 	if x != nil {
 		return x.SystemDisk
 	}
 	return nil
 }
 
-func (x *AlicloudEcsInstanceSpec) GetDataDisks() []*AlicloudEcsDataDisk {
+func (x *AliCloudEcsInstanceSpec) GetDataDisks() []*AliCloudEcsDataDisk {
 	if x != nil {
 		return x.DataDisks
 	}
 	return nil
 }
 
-func (x *AlicloudEcsInstanceSpec) GetKeyName() string {
+func (x *AliCloudEcsInstanceSpec) GetKeyName() string {
 	if x != nil {
 		return x.KeyName
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceSpec) GetPassword() string {
+func (x *AliCloudEcsInstanceSpec) GetPassword() string {
 	if x != nil {
 		return x.Password
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceSpec) GetInternetMaxBandwidthOut() int32 {
+func (x *AliCloudEcsInstanceSpec) GetInternetMaxBandwidthOut() int32 {
 	if x != nil && x.InternetMaxBandwidthOut != nil {
 		return *x.InternetMaxBandwidthOut
 	}
 	return 0
 }
 
-func (x *AlicloudEcsInstanceSpec) GetInternetChargeType() string {
+func (x *AliCloudEcsInstanceSpec) GetInternetChargeType() string {
 	if x != nil && x.InternetChargeType != nil {
 		return *x.InternetChargeType
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceSpec) GetInstanceChargeType() string {
+func (x *AliCloudEcsInstanceSpec) GetInstanceChargeType() string {
 	if x != nil && x.InstanceChargeType != nil {
 		return *x.InstanceChargeType
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceSpec) GetPeriod() int32 {
+func (x *AliCloudEcsInstanceSpec) GetPeriod() int32 {
 	if x != nil && x.Period != nil {
 		return *x.Period
 	}
 	return 0
 }
 
-func (x *AlicloudEcsInstanceSpec) GetPeriodUnit() string {
+func (x *AliCloudEcsInstanceSpec) GetPeriodUnit() string {
 	if x != nil && x.PeriodUnit != nil {
 		return *x.PeriodUnit
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceSpec) GetSpotStrategy() string {
+func (x *AliCloudEcsInstanceSpec) GetSpotStrategy() string {
 	if x != nil && x.SpotStrategy != nil {
 		return *x.SpotStrategy
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceSpec) GetSpotPriceLimit() float64 {
+func (x *AliCloudEcsInstanceSpec) GetSpotPriceLimit() float64 {
 	if x != nil && x.SpotPriceLimit != nil {
 		return *x.SpotPriceLimit
 	}
 	return 0
 }
 
-func (x *AlicloudEcsInstanceSpec) GetUserData() string {
+func (x *AliCloudEcsInstanceSpec) GetUserData() string {
 	if x != nil {
 		return x.UserData
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceSpec) GetRoleName() string {
+func (x *AliCloudEcsInstanceSpec) GetRoleName() string {
 	if x != nil {
 		return x.RoleName
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceSpec) GetDeletionProtection() bool {
+func (x *AliCloudEcsInstanceSpec) GetDeletionProtection() bool {
 	if x != nil && x.DeletionProtection != nil {
 		return *x.DeletionProtection
 	}
 	return false
 }
 
-func (x *AlicloudEcsInstanceSpec) GetSecurityEnhancementStrategy() string {
+func (x *AliCloudEcsInstanceSpec) GetSecurityEnhancementStrategy() string {
 	if x != nil && x.SecurityEnhancementStrategy != nil {
 		return *x.SecurityEnhancementStrategy
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceSpec) GetResourceGroupId() string {
+func (x *AliCloudEcsInstanceSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceSpec) GetTags() map[string]string {
+func (x *AliCloudEcsInstanceSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-// AlicloudEcsSystemDisk configures the boot disk for the ECS instance.
-type AlicloudEcsSystemDisk struct {
+// AliCloudEcsSystemDisk configures the boot disk for the ECS instance.
+type AliCloudEcsSystemDisk struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Disk category. Determines the underlying storage technology and
 	// performance characteristics.
@@ -348,20 +348,20 @@ type AlicloudEcsSystemDisk struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudEcsSystemDisk) Reset() {
-	*x = AlicloudEcsSystemDisk{}
+func (x *AliCloudEcsSystemDisk) Reset() {
+	*x = AliCloudEcsSystemDisk{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudEcsSystemDisk) String() string {
+func (x *AliCloudEcsSystemDisk) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudEcsSystemDisk) ProtoMessage() {}
+func (*AliCloudEcsSystemDisk) ProtoMessage() {}
 
-func (x *AlicloudEcsSystemDisk) ProtoReflect() protoreflect.Message {
+func (x *AliCloudEcsSystemDisk) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -373,49 +373,49 @@ func (x *AlicloudEcsSystemDisk) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudEcsSystemDisk.ProtoReflect.Descriptor instead.
-func (*AlicloudEcsSystemDisk) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudEcsSystemDisk.ProtoReflect.Descriptor instead.
+func (*AliCloudEcsSystemDisk) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudEcsSystemDisk) GetCategory() string {
+func (x *AliCloudEcsSystemDisk) GetCategory() string {
 	if x != nil && x.Category != nil {
 		return *x.Category
 	}
 	return ""
 }
 
-func (x *AlicloudEcsSystemDisk) GetSize() int32 {
+func (x *AliCloudEcsSystemDisk) GetSize() int32 {
 	if x != nil && x.Size != nil {
 		return *x.Size
 	}
 	return 0
 }
 
-func (x *AlicloudEcsSystemDisk) GetPerformanceLevel() string {
+func (x *AliCloudEcsSystemDisk) GetPerformanceLevel() string {
 	if x != nil && x.PerformanceLevel != nil {
 		return *x.PerformanceLevel
 	}
 	return ""
 }
 
-func (x *AlicloudEcsSystemDisk) GetEncrypted() bool {
+func (x *AliCloudEcsSystemDisk) GetEncrypted() bool {
 	if x != nil && x.Encrypted != nil {
 		return *x.Encrypted
 	}
 	return false
 }
 
-func (x *AlicloudEcsSystemDisk) GetKmsKeyId() string {
+func (x *AliCloudEcsSystemDisk) GetKmsKeyId() string {
 	if x != nil {
 		return x.KmsKeyId
 	}
 	return ""
 }
 
-// AlicloudEcsDataDisk configures an additional data disk to be created
+// AliCloudEcsDataDisk configures an additional data disk to be created
 // inline with the ECS instance.
-type AlicloudEcsDataDisk struct {
+type AliCloudEcsDataDisk struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Disk size in GB. Required for each data disk.
 	Size int32 `protobuf:"varint,1,opt,name=size,proto3" json:"size,omitempty"`
@@ -441,20 +441,20 @@ type AlicloudEcsDataDisk struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudEcsDataDisk) Reset() {
-	*x = AlicloudEcsDataDisk{}
+func (x *AliCloudEcsDataDisk) Reset() {
+	*x = AliCloudEcsDataDisk{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudEcsDataDisk) String() string {
+func (x *AliCloudEcsDataDisk) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudEcsDataDisk) ProtoMessage() {}
+func (*AliCloudEcsDataDisk) ProtoMessage() {}
 
-func (x *AlicloudEcsDataDisk) ProtoReflect() protoreflect.Message {
+func (x *AliCloudEcsDataDisk) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -466,68 +466,68 @@ func (x *AlicloudEcsDataDisk) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudEcsDataDisk.ProtoReflect.Descriptor instead.
-func (*AlicloudEcsDataDisk) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudEcsDataDisk.ProtoReflect.Descriptor instead.
+func (*AliCloudEcsDataDisk) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AlicloudEcsDataDisk) GetSize() int32 {
+func (x *AliCloudEcsDataDisk) GetSize() int32 {
 	if x != nil {
 		return x.Size
 	}
 	return 0
 }
 
-func (x *AlicloudEcsDataDisk) GetCategory() string {
+func (x *AliCloudEcsDataDisk) GetCategory() string {
 	if x != nil && x.Category != nil {
 		return *x.Category
 	}
 	return ""
 }
 
-func (x *AlicloudEcsDataDisk) GetName() string {
+func (x *AliCloudEcsDataDisk) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *AlicloudEcsDataDisk) GetPerformanceLevel() string {
+func (x *AliCloudEcsDataDisk) GetPerformanceLevel() string {
 	if x != nil && x.PerformanceLevel != nil {
 		return *x.PerformanceLevel
 	}
 	return ""
 }
 
-func (x *AlicloudEcsDataDisk) GetEncrypted() bool {
+func (x *AliCloudEcsDataDisk) GetEncrypted() bool {
 	if x != nil && x.Encrypted != nil {
 		return *x.Encrypted
 	}
 	return false
 }
 
-func (x *AlicloudEcsDataDisk) GetKmsKeyId() string {
+func (x *AliCloudEcsDataDisk) GetKmsKeyId() string {
 	if x != nil {
 		return x.KmsKeyId
 	}
 	return ""
 }
 
-func (x *AlicloudEcsDataDisk) GetSnapshotId() string {
+func (x *AliCloudEcsDataDisk) GetSnapshotId() string {
 	if x != nil {
 		return x.SnapshotId
 	}
 	return ""
 }
 
-func (x *AlicloudEcsDataDisk) GetDeleteWithInstance() bool {
+func (x *AliCloudEcsDataDisk) GetDeleteWithInstance() bool {
 	if x != nil && x.DeleteWithInstance != nil {
 		return *x.DeleteWithInstance
 	}
 	return false
 }
 
-func (x *AlicloudEcsDataDisk) GetDescription() string {
+func (x *AliCloudEcsDataDisk) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
@@ -539,7 +539,7 @@ var File_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto protore
 const file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"?org/openmcf/provider/alicloud/alicloudecsinstance/v1/spec.proto\x124org.openmcf.provider.alicloud.alicloudecsinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xfb\x18\n" +
-	"\x17AlicloudEcsInstanceSpec\x12\"\n" +
+	"\x17AliCloudEcsInstanceSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12{\n" +
 	"\n" +
@@ -554,11 +554,11 @@ const file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_rawDe
 	"\thost_name\x18\a \x01(\tR\bhostName\x12\xb2\x01\n" +
 	"\vdescription\x18\b \x01(\tB\x8f\x01\xbaH\x8b\x01\xba\x01\x87\x01\n" +
 	"\x12description_length\x129description must be between 2 and 256 characters when set\x1a6this == '' || (this.size() >= 2 && this.size() <= 256)R\vdescription\x12l\n" +
-	"\vsystem_disk\x18\t \x01(\v2K.org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsSystemDiskR\n" +
+	"\vsystem_disk\x18\t \x01(\v2K.org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsSystemDiskR\n" +
 	"systemDisk\x12r\n" +
 	"\n" +
 	"data_disks\x18\n" +
-	" \x03(\v2I.org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsDataDiskB\b\xbaH\x05\x92\x01\x02\x10\x10R\tdataDisks\x12\x19\n" +
+	" \x03(\v2I.org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsDataDiskB\b\xbaH\x05\x92\x01\x02\x10\x10R\tdataDisks\x12\x19\n" +
 	"\bkey_name\x18\v \x01(\tR\akeyName\x12\xa3\x01\n" +
 	"\bpassword\x18\f \x01(\tB\x86\x01\xbaH\x82\x01\xba\x01\x7f\n" +
 	"\x0fpassword_length\x125password must be between 8 and 30 characters when set\x1a5this == '' || (this.size() >= 8 && this.size() <= 30)R\bpassword\x12P\n" +
@@ -581,7 +581,7 @@ const file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_rawDe
 	"\x1dsecurity_enhancement_strategy\x18\x17 \x01(\tB\x9b\x01\xbaH\x97\x01\xba\x01\x93\x01\n" +
 	"#security_enhancement_strategy_valid\x12>security_enhancement_strategy must be one of: Active, Deactive\x1a,this == '' || this in ['Active', 'Deactive']H\bR\x1bsecurityEnhancementStrategy\x88\x01\x01\x12*\n" +
 	"\x11resource_group_id\x18\x18 \x01(\tR\x0fresourceGroupId\x12k\n" +
-	"\x04tags\x18\x19 \x03(\v2W.org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceSpec.TagsEntryR\x04tags\x1a7\n" +
+	"\x04tags\x18\x19 \x03(\v2W.org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceSpec.TagsEntryR\x04tags\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x1d\n" +
@@ -594,7 +594,7 @@ const file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_rawDe
 	"\x11_spot_price_limitB\x16\n" +
 	"\x14_deletion_protectionB \n" +
 	"\x1e_security_enhancement_strategy\"\x98\x05\n" +
-	"\x15AlicloudEcsSystemDisk\x12\x9d\x02\n" +
+	"\x15AliCloudEcsSystemDisk\x12\x9d\x02\n" +
 	"\bcategory\x18\x01 \x01(\tB\xfb\x01\xbaH\xe9\x01\xba\x01\xe5\x01\n" +
 	"\x1asystem_disk_category_valid\x12^category must be one of: cloud_efficiency, cloud_ssd, cloud_essd, cloud_auto, cloud_essd_entry\x1agthis == '' || this in ['cloud_efficiency', 'cloud_ssd', 'cloud_essd', 'cloud_auto', 'cloud_essd_entry']\x8a\xa6\x1d\n" +
 	"cloud_essdH\x00R\bcategory\x88\x01\x01\x12&\n" +
@@ -609,7 +609,7 @@ const file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_rawDe
 	"\x12_performance_levelB\f\n" +
 	"\n" +
 	"_encrypted\"\xb1\x06\n" +
-	"\x13AlicloudEcsDataDisk\x12\x1e\n" +
+	"\x13AliCloudEcsDataDisk\x12\x1e\n" +
 	"\x04size\x18\x01 \x01(\x05B\n" +
 	"\xbaH\a\xc8\x01\x01\x1a\x02(\x14R\x04size\x12\x9b\x02\n" +
 	"\bcategory\x18\x02 \x01(\tB\xf9\x01\xbaH\xe7\x01\xba\x01\xe3\x01\n" +
@@ -646,18 +646,18 @@ func file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_rawDes
 
 var file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_goTypes = []any{
-	(*AlicloudEcsInstanceSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceSpec
-	(*AlicloudEcsSystemDisk)(nil),   // 1: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsSystemDisk
-	(*AlicloudEcsDataDisk)(nil),     // 2: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsDataDisk
-	nil,                             // 3: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceSpec.TagsEntry
+	(*AliCloudEcsInstanceSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceSpec
+	(*AliCloudEcsSystemDisk)(nil),   // 1: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsSystemDisk
+	(*AliCloudEcsDataDisk)(nil),     // 2: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsDataDisk
+	nil,                             // 3: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceSpec.TagsEntry
 	(*v1.StringValueOrRef)(nil),     // 4: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_depIdxs = []int32{
-	4, // 0: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceSpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	4, // 1: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceSpec.security_group_ids:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	1, // 2: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceSpec.system_disk:type_name -> org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsSystemDisk
-	2, // 3: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceSpec.data_disks:type_name -> org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsDataDisk
-	3, // 4: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceSpec.TagsEntry
+	4, // 0: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceSpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	4, // 1: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceSpec.security_group_ids:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	1, // 2: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceSpec.system_disk:type_name -> org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsSystemDisk
+	2, // 3: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceSpec.data_disks:type_name -> org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsDataDisk
+	3, // 4: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceSpec.TagsEntry
 	5, // [5:5] is the sub-list for method output_type
 	5, // [5:5] is the sub-list for method input_type
 	5, // [5:5] is the sub-list for extension type_name

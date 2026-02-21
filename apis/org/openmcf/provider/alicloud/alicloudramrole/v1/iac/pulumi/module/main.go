@@ -10,9 +10,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *alicloudramrolev1.AlicloudRamRoleStackInput) error {
+func Resources(ctx *pulumi.Context, stackInput *alicloudramrolev1.AliCloudRamRoleStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
-	spec := locals.AlicloudRamRole.Spec
+	spec := locals.AliCloudRamRole.Spec
 
 	alicloudProvider, err := alicloud.NewProvider(ctx, "alicloud", &alicloud.ProviderArgs{
 		Region: pulumi.String(spec.Region),
@@ -51,7 +51,7 @@ func policyAttachment(
 	provider *alicloud.Provider,
 	role *ram.Role,
 	roleName string,
-	pa *alicloudramrolev1.AlicloudRamRolePolicyAttachment,
+	pa *alicloudramrolev1.AliCloudRamRolePolicyAttachment,
 ) error {
 	pt := policyType(pa)
 	resourceName := fmt.Sprintf("%s-%s-%s", roleName, pa.PolicyName, pt)

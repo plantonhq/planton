@@ -10,9 +10,9 @@ import (
 	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
-func TestAlicloudVswitchSpec(t *testing.T) {
+func TestAliCloudVswitchSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
-	ginkgo.RunSpecs(t, "AlicloudVswitchSpec Validation Tests")
+	ginkgo.RunSpecs(t, "AliCloudVswitchSpec Validation Tests")
 }
 
 func stringValueOrRef(val string) *foreignkeyv1.StringValueOrRef {
@@ -21,18 +21,18 @@ func stringValueOrRef(val string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
+var _ = ginkgo.Describe("AliCloudVswitchSpec Validation Tests", func() {
 
 	ginkgo.Describe("valid input", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
-			input := &AlicloudVswitch{
+			input := &AliCloudVswitch{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVswitch",
+				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-vswitch",
 				},
-				Spec: &AlicloudVswitchSpec{
+				Spec: &AliCloudVswitchSpec{
 					Region:      "cn-hangzhou",
 					VpcId:       stringValueOrRef("vpc-abc123"),
 					ZoneId:      "cn-hangzhou-a",
@@ -45,15 +45,15 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with all optional fields populated", func() {
-			input := &AlicloudVswitch{
+			input := &AliCloudVswitch{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVswitch",
+				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "full-config-vswitch",
 					Org:  "my-org",
 					Env:  "production",
 				},
-				Spec: &AlicloudVswitchSpec{
+				Spec: &AliCloudVswitchSpec{
 					Region:            "cn-shanghai",
 					VpcId:             stringValueOrRef("vpc-prod-001"),
 					ZoneId:            "cn-shanghai-b",
@@ -70,13 +70,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with 192.168 CIDR range", func() {
-			input := &AlicloudVswitch{
+			input := &AliCloudVswitch{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVswitch",
+				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "small-vswitch",
 				},
-				Spec: &AlicloudVswitchSpec{
+				Spec: &AliCloudVswitchSpec{
 					Region:      "ap-southeast-1",
 					VpcId:       stringValueOrRef("vpc-dev-001"),
 					ZoneId:      "ap-southeast-1a",
@@ -89,13 +89,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with ipv6_cidr_block_mask at lower bound", func() {
-			input := &AlicloudVswitch{
+			input := &AliCloudVswitch{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVswitch",
+				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "ipv6-lower-bound",
 				},
-				Spec: &AlicloudVswitchSpec{
+				Spec: &AliCloudVswitchSpec{
 					Region:            "cn-hangzhou",
 					VpcId:             stringValueOrRef("vpc-abc123"),
 					ZoneId:            "cn-hangzhou-a",
@@ -110,13 +110,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with ipv6_cidr_block_mask at upper bound", func() {
-			input := &AlicloudVswitch{
+			input := &AliCloudVswitch{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVswitch",
+				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "ipv6-upper-bound",
 				},
-				Spec: &AlicloudVswitchSpec{
+				Spec: &AliCloudVswitchSpec{
 					Region:            "cn-hangzhou",
 					VpcId:             stringValueOrRef("vpc-abc123"),
 					ZoneId:            "cn-hangzhou-a",
@@ -131,13 +131,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with vpc_id as value_from reference", func() {
-			input := &AlicloudVswitch{
+			input := &AliCloudVswitch{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVswitch",
+				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "ref-vswitch",
 				},
-				Spec: &AlicloudVswitchSpec{
+				Spec: &AliCloudVswitchSpec{
 					Region: "cn-hangzhou",
 					VpcId: &foreignkeyv1.StringValueOrRef{
 						LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
@@ -159,13 +159,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 	ginkgo.Describe("invalid input", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
-			input := &AlicloudVswitch{
+			input := &AliCloudVswitch{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVswitch",
+				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudVswitchSpec{
+				Spec: &AliCloudVswitchSpec{
 					VpcId:       stringValueOrRef("vpc-abc123"),
 					ZoneId:      "cn-hangzhou-a",
 					CidrBlock:   "10.0.0.0/24",
@@ -177,13 +177,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when vpc_id is missing", func() {
-			input := &AlicloudVswitch{
+			input := &AliCloudVswitch{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVswitch",
+				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudVswitchSpec{
+				Spec: &AliCloudVswitchSpec{
 					Region:      "cn-hangzhou",
 					ZoneId:      "cn-hangzhou-a",
 					CidrBlock:   "10.0.0.0/24",
@@ -195,13 +195,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when zone_id is missing", func() {
-			input := &AlicloudVswitch{
+			input := &AliCloudVswitch{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVswitch",
+				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudVswitchSpec{
+				Spec: &AliCloudVswitchSpec{
 					Region:      "cn-hangzhou",
 					VpcId:       stringValueOrRef("vpc-abc123"),
 					CidrBlock:   "10.0.0.0/24",
@@ -213,13 +213,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when cidr_block is missing", func() {
-			input := &AlicloudVswitch{
+			input := &AliCloudVswitch{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVswitch",
+				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudVswitchSpec{
+				Spec: &AliCloudVswitchSpec{
 					Region:      "cn-hangzhou",
 					VpcId:       stringValueOrRef("vpc-abc123"),
 					ZoneId:      "cn-hangzhou-a",
@@ -231,13 +231,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when vswitch_name is missing", func() {
-			input := &AlicloudVswitch{
+			input := &AliCloudVswitch{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVswitch",
+				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudVswitchSpec{
+				Spec: &AliCloudVswitchSpec{
 					Region:    "cn-hangzhou",
 					VpcId:     stringValueOrRef("vpc-abc123"),
 					ZoneId:    "cn-hangzhou-a",
@@ -253,13 +253,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 			for i := 0; i < 129; i++ {
 				longName += "a"
 			}
-			input := &AlicloudVswitch{
+			input := &AliCloudVswitch{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVswitch",
+				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudVswitchSpec{
+				Spec: &AliCloudVswitchSpec{
 					Region:      "cn-hangzhou",
 					VpcId:       stringValueOrRef("vpc-abc123"),
 					ZoneId:      "cn-hangzhou-a",
@@ -272,13 +272,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when api_version is wrong", func() {
-			input := &AlicloudVswitch{
+			input := &AliCloudVswitch{
 				ApiVersion: "wrong/v1",
-				Kind:       "AlicloudVswitch",
+				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudVswitchSpec{
+				Spec: &AliCloudVswitchSpec{
 					Region:      "cn-hangzhou",
 					VpcId:       stringValueOrRef("vpc-abc123"),
 					ZoneId:      "cn-hangzhou-a",
@@ -291,13 +291,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when kind is wrong", func() {
-			input := &AlicloudVswitch{
+			input := &AliCloudVswitch{
 				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudVswitchSpec{
+				Spec: &AliCloudVswitchSpec{
 					Region:      "cn-hangzhou",
 					VpcId:       stringValueOrRef("vpc-abc123"),
 					ZoneId:      "cn-hangzhou-a",
@@ -310,10 +310,10 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when metadata is missing", func() {
-			input := &AlicloudVswitch{
+			input := &AliCloudVswitch{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVswitch",
-				Spec: &AlicloudVswitchSpec{
+				Kind:       "AliCloudVswitch",
+				Spec: &AliCloudVswitchSpec{
 					Region:      "cn-hangzhou",
 					VpcId:       stringValueOrRef("vpc-abc123"),
 					ZoneId:      "cn-hangzhou-a",
@@ -326,13 +326,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when ipv6_cidr_block_mask exceeds upper bound", func() {
-			input := &AlicloudVswitch{
+			input := &AliCloudVswitch{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVswitch",
+				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudVswitchSpec{
+				Spec: &AliCloudVswitchSpec{
 					Region:            "cn-hangzhou",
 					VpcId:             stringValueOrRef("vpc-abc123"),
 					ZoneId:            "cn-hangzhou-a",
@@ -347,13 +347,13 @@ var _ = ginkgo.Describe("AlicloudVswitchSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when ipv6_cidr_block_mask is negative", func() {
-			input := &AlicloudVswitch{
+			input := &AliCloudVswitch{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVswitch",
+				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudVswitchSpec{
+				Spec: &AliCloudVswitchSpec{
 					Region:            "cn-hangzhou",
 					VpcId:             stringValueOrRef("vpc-abc123"),
 					ZoneId:            "cn-hangzhou-a",

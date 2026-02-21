@@ -24,7 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudCenInstanceSpec defines the configuration for an Alibaba Cloud
+// AliCloudCenInstanceSpec defines the configuration for an Alibaba Cloud
 // Cloud Enterprise Network (CEN) instance with bundled child-instance
 // attachments.
 //
@@ -47,7 +47,7 @@ const (
 //
 //	Terraform: alicloud_cen_instance + alicloud_cen_instance_attachment
 //	Pulumi:    cen.Instance + cen.InstanceAttachment
-type AlicloudCenInstanceSpec struct {
+type AliCloudCenInstanceSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region used for API routing. CEN is a global service so
 	// this does not restrict where attached networks reside -- each attachment
@@ -72,25 +72,25 @@ type AlicloudCenInstanceSpec struct {
 	// Child-instance attachments bundled with this CEN. Each entry attaches a
 	// VPC, VBR (Virtual Border Router), or CCN (Cloud Connect Network) to the
 	// CEN instance, enabling private connectivity between the attached networks.
-	Attachments   []*AlicloudCenAttachment `protobuf:"bytes,7,rep,name=attachments,proto3" json:"attachments,omitempty"`
+	Attachments   []*AliCloudCenAttachment `protobuf:"bytes,7,rep,name=attachments,proto3" json:"attachments,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudCenInstanceSpec) Reset() {
-	*x = AlicloudCenInstanceSpec{}
+func (x *AliCloudCenInstanceSpec) Reset() {
+	*x = AliCloudCenInstanceSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudceninstance_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudCenInstanceSpec) String() string {
+func (x *AliCloudCenInstanceSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudCenInstanceSpec) ProtoMessage() {}
+func (*AliCloudCenInstanceSpec) ProtoMessage() {}
 
-func (x *AlicloudCenInstanceSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudCenInstanceSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudceninstance_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -102,64 +102,64 @@ func (x *AlicloudCenInstanceSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudCenInstanceSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudCenInstanceSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudCenInstanceSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudCenInstanceSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudceninstance_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudCenInstanceSpec) GetRegion() string {
+func (x *AliCloudCenInstanceSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudCenInstanceSpec) GetCenInstanceName() string {
+func (x *AliCloudCenInstanceSpec) GetCenInstanceName() string {
 	if x != nil {
 		return x.CenInstanceName
 	}
 	return ""
 }
 
-func (x *AlicloudCenInstanceSpec) GetDescription() string {
+func (x *AliCloudCenInstanceSpec) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *AlicloudCenInstanceSpec) GetProtectionLevel() string {
+func (x *AliCloudCenInstanceSpec) GetProtectionLevel() string {
 	if x != nil && x.ProtectionLevel != nil {
 		return *x.ProtectionLevel
 	}
 	return ""
 }
 
-func (x *AlicloudCenInstanceSpec) GetResourceGroupId() string {
+func (x *AliCloudCenInstanceSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudCenInstanceSpec) GetTags() map[string]string {
+func (x *AliCloudCenInstanceSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-func (x *AlicloudCenInstanceSpec) GetAttachments() []*AlicloudCenAttachment {
+func (x *AliCloudCenInstanceSpec) GetAttachments() []*AliCloudCenAttachment {
 	if x != nil {
 		return x.Attachments
 	}
 	return nil
 }
 
-// AlicloudCenAttachment attaches a single child instance (VPC, VBR, or CCN)
+// AliCloudCenAttachment attaches a single child instance (VPC, VBR, or CCN)
 // to the parent CEN instance. Each attachment creates an
 // alicloud_cen_instance_attachment resource in the provider.
-type AlicloudCenAttachment struct {
+type AliCloudCenAttachment struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// ID of the child instance to attach. For VPCs this is the vpc_id; for VBRs
 	// the vbr_id; for CCNs the ccn_id. When the child is a VPC managed by
@@ -176,20 +176,20 @@ type AlicloudCenAttachment struct {
 	sizeCache             protoimpl.SizeCache
 }
 
-func (x *AlicloudCenAttachment) Reset() {
-	*x = AlicloudCenAttachment{}
+func (x *AliCloudCenAttachment) Reset() {
+	*x = AliCloudCenAttachment{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudceninstance_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudCenAttachment) String() string {
+func (x *AliCloudCenAttachment) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudCenAttachment) ProtoMessage() {}
+func (*AliCloudCenAttachment) ProtoMessage() {}
 
-func (x *AlicloudCenAttachment) ProtoReflect() protoreflect.Message {
+func (x *AliCloudCenAttachment) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudceninstance_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -201,26 +201,26 @@ func (x *AlicloudCenAttachment) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudCenAttachment.ProtoReflect.Descriptor instead.
-func (*AlicloudCenAttachment) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudCenAttachment.ProtoReflect.Descriptor instead.
+func (*AliCloudCenAttachment) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudceninstance_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudCenAttachment) GetChildInstanceId() *v1.StringValueOrRef {
+func (x *AliCloudCenAttachment) GetChildInstanceId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ChildInstanceId
 	}
 	return nil
 }
 
-func (x *AlicloudCenAttachment) GetChildInstanceType() string {
+func (x *AliCloudCenAttachment) GetChildInstanceType() string {
 	if x != nil && x.ChildInstanceType != nil {
 		return *x.ChildInstanceType
 	}
 	return ""
 }
 
-func (x *AlicloudCenAttachment) GetChildInstanceRegionId() string {
+func (x *AliCloudCenAttachment) GetChildInstanceRegionId() string {
 	if x != nil {
 		return x.ChildInstanceRegionId
 	}
@@ -232,7 +232,7 @@ var File_org_openmcf_provider_alicloud_alicloudceninstance_v1_spec_proto protore
 const file_org_openmcf_provider_alicloud_alicloudceninstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"?org/openmcf/provider/alicloud/alicloudceninstance/v1/spec.proto\x124org.openmcf.provider.alicloud.alicloudceninstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x8f\x05\n" +
-	"\x17AlicloudCenInstanceSpec\x12\"\n" +
+	"\x17AliCloudCenInstanceSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x129\n" +
 	"\x11cen_instance_name\x18\x02 \x01(\tB\r\xbaH\n" +
@@ -241,13 +241,13 @@ const file_org_openmcf_provider_alicloud_alicloudceninstance_v1_spec_proto_rawDe
 	"\x10protection_level\x18\x04 \x01(\tBl\xbaHi\xba\x01f\n" +
 	"\x16protection_level_valid\x12+protection_level must be empty or 'REDUCED'\x1a\x1fthis == '' || this == 'REDUCED'H\x00R\x0fprotectionLevel\x88\x01\x01\x12*\n" +
 	"\x11resource_group_id\x18\x05 \x01(\tR\x0fresourceGroupId\x12k\n" +
-	"\x04tags\x18\x06 \x03(\v2W.org.openmcf.provider.alicloud.alicloudceninstance.v1.AlicloudCenInstanceSpec.TagsEntryR\x04tags\x12m\n" +
-	"\vattachments\x18\a \x03(\v2K.org.openmcf.provider.alicloud.alicloudceninstance.v1.AlicloudCenAttachmentR\vattachments\x1a7\n" +
+	"\x04tags\x18\x06 \x03(\v2W.org.openmcf.provider.alicloud.alicloudceninstance.v1.AliCloudCenInstanceSpec.TagsEntryR\x04tags\x12m\n" +
+	"\vattachments\x18\a \x03(\v2K.org.openmcf.provider.alicloud.alicloudceninstance.v1.AliCloudCenAttachmentR\vattachments\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x13\n" +
 	"\x11_protection_level\"\xbc\x03\n" +
-	"\x15AlicloudCenAttachment\x12\x84\x01\n" +
+	"\x15AliCloudCenAttachment\x12\x84\x01\n" +
 	"\x11child_instance_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xcc\x17\x92\xd4a\x15status.outputs.vpc_idR\x0fchildInstanceId\x12\xbe\x01\n" +
 	"\x13child_instance_type\x18\x02 \x01(\tB\x88\x01\xbaH~\xba\x01{\n" +
 	"\x19child_instance_type_valid\x121child_instance_type must be one of: VPC, VBR, CCN\x1a+this == '' || this in ['VPC', 'VBR', 'CCN']\x8a\xa6\x1d\x03VPCH\x00R\x11childInstanceType\x88\x01\x01\x12C\n" +
@@ -270,15 +270,15 @@ func file_org_openmcf_provider_alicloud_alicloudceninstance_v1_spec_proto_rawDes
 
 var file_org_openmcf_provider_alicloud_alicloudceninstance_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_org_openmcf_provider_alicloud_alicloudceninstance_v1_spec_proto_goTypes = []any{
-	(*AlicloudCenInstanceSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudceninstance.v1.AlicloudCenInstanceSpec
-	(*AlicloudCenAttachment)(nil),   // 1: org.openmcf.provider.alicloud.alicloudceninstance.v1.AlicloudCenAttachment
-	nil,                             // 2: org.openmcf.provider.alicloud.alicloudceninstance.v1.AlicloudCenInstanceSpec.TagsEntry
+	(*AliCloudCenInstanceSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudceninstance.v1.AliCloudCenInstanceSpec
+	(*AliCloudCenAttachment)(nil),   // 1: org.openmcf.provider.alicloud.alicloudceninstance.v1.AliCloudCenAttachment
+	nil,                             // 2: org.openmcf.provider.alicloud.alicloudceninstance.v1.AliCloudCenInstanceSpec.TagsEntry
 	(*v1.StringValueOrRef)(nil),     // 3: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudceninstance_v1_spec_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudceninstance.v1.AlicloudCenInstanceSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudceninstance.v1.AlicloudCenInstanceSpec.TagsEntry
-	1, // 1: org.openmcf.provider.alicloud.alicloudceninstance.v1.AlicloudCenInstanceSpec.attachments:type_name -> org.openmcf.provider.alicloud.alicloudceninstance.v1.AlicloudCenAttachment
-	3, // 2: org.openmcf.provider.alicloud.alicloudceninstance.v1.AlicloudCenAttachment.child_instance_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	2, // 0: org.openmcf.provider.alicloud.alicloudceninstance.v1.AliCloudCenInstanceSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudceninstance.v1.AliCloudCenInstanceSpec.TagsEntry
+	1, // 1: org.openmcf.provider.alicloud.alicloudceninstance.v1.AliCloudCenInstanceSpec.attachments:type_name -> org.openmcf.provider.alicloud.alicloudceninstance.v1.AliCloudCenAttachment
+	3, // 2: org.openmcf.provider.alicloud.alicloudceninstance.v1.AliCloudCenAttachment.child_instance_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

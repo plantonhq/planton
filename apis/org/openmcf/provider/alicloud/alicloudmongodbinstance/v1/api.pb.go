@@ -24,7 +24,7 @@ const (
 )
 
 // alicloud-mongodb-instance
-type AlicloudMongodbInstance struct {
+type AliCloudMongodbInstance struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
@@ -33,27 +33,27 @@ type AlicloudMongodbInstance struct {
 	// metadata
 	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
-	Spec *AlicloudMongodbInstanceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec *AliCloudMongodbInstanceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
-	Status        *AlicloudMongodbInstanceStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *AliCloudMongodbInstanceStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudMongodbInstance) Reset() {
-	*x = AlicloudMongodbInstance{}
+func (x *AliCloudMongodbInstance) Reset() {
+	*x = AliCloudMongodbInstance{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudMongodbInstance) String() string {
+func (x *AliCloudMongodbInstance) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudMongodbInstance) ProtoMessage() {}
+func (*AliCloudMongodbInstance) ProtoMessage() {}
 
-func (x *AlicloudMongodbInstance) ProtoReflect() protoreflect.Message {
+func (x *AliCloudMongodbInstance) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AlicloudMongodbInstance) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudMongodbInstance.ProtoReflect.Descriptor instead.
-func (*AlicloudMongodbInstance) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudMongodbInstance.ProtoReflect.Descriptor instead.
+func (*AliCloudMongodbInstance) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudMongodbInstance) GetApiVersion() string {
+func (x *AliCloudMongodbInstance) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstance) GetKind() string {
+func (x *AliCloudMongodbInstance) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstance) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AliCloudMongodbInstance) GetMetadata() *shared.CloudResourceMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *AlicloudMongodbInstance) GetSpec() *AlicloudMongodbInstanceSpec {
+func (x *AliCloudMongodbInstance) GetSpec() *AliCloudMongodbInstanceSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-func (x *AlicloudMongodbInstance) GetStatus() *AlicloudMongodbInstanceStatus {
+func (x *AliCloudMongodbInstance) GetStatus() *AliCloudMongodbInstanceStatus {
 	if x != nil {
 		return x.Status
 	}
@@ -106,28 +106,28 @@ func (x *AlicloudMongodbInstance) GetStatus() *AlicloudMongodbInstanceStatus {
 }
 
 // alicloud-mongodb-instance status
-type AlicloudMongodbInstanceStatus struct {
+type AliCloudMongodbInstanceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// stack-outputs
-	Outputs       *AlicloudMongodbInstanceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AliCloudMongodbInstanceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudMongodbInstanceStatus) Reset() {
-	*x = AlicloudMongodbInstanceStatus{}
+func (x *AliCloudMongodbInstanceStatus) Reset() {
+	*x = AliCloudMongodbInstanceStatus{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudMongodbInstanceStatus) String() string {
+func (x *AliCloudMongodbInstanceStatus) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudMongodbInstanceStatus) ProtoMessage() {}
+func (*AliCloudMongodbInstanceStatus) ProtoMessage() {}
 
-func (x *AlicloudMongodbInstanceStatus) ProtoReflect() protoreflect.Message {
+func (x *AliCloudMongodbInstanceStatus) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,12 +139,12 @@ func (x *AlicloudMongodbInstanceStatus) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudMongodbInstanceStatus.ProtoReflect.Descriptor instead.
-func (*AlicloudMongodbInstanceStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudMongodbInstanceStatus.ProtoReflect.Descriptor instead.
+func (*AliCloudMongodbInstanceStatus) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudMongodbInstanceStatus) GetOutputs() *AlicloudMongodbInstanceStackOutputs {
+func (x *AliCloudMongodbInstanceStatus) GetOutputs() *AliCloudMongodbInstanceStackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -156,17 +156,17 @@ var File_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_api_proto prot
 const file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"Borg/openmcf/provider/alicloud/alicloudmongodbinstance/v1/api.proto\x128org.openmcf.provider.alicloud.alicloudmongodbinstance.v1\x1a\x1bbuf/validate/validate.proto\x1aCorg/openmcf/provider/alicloud/alicloudmongodbinstance/v1/spec.proto\x1aLorg/openmcf/provider/alicloud/alicloudmongodbinstance/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xc1\x03\n" +
-	"\x17AlicloudMongodbInstance\x12?\n" +
+	"\x17AliCloudMongodbInstance\x12?\n" +
 	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
-	"\x17AlicloudMongodbInstanceR\x04kind\x12M\n" +
+	"\x17AliCloudMongodbInstanceR\x04kind\x12M\n" +
 	"\bmetadata\x18\x03 \x01(\v2).org.openmcf.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
-	"\x04spec\x18\x04 \x01(\v2U.org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12o\n" +
-	"\x06status\x18\x05 \x01(\v2W.org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceStatusR\x06status\"\x98\x01\n" +
-	"\x1dAlicloudMongodbInstanceStatus\x12w\n" +
-	"\aoutputs\x18\x01 \x01(\v2].org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceStackOutputsR\aoutputsB\xc5\x03\n" +
+	"\x04spec\x18\x04 \x01(\v2U.org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12o\n" +
+	"\x06status\x18\x05 \x01(\v2W.org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceStatusR\x06status\"\x98\x01\n" +
+	"\x1dAliCloudMongodbInstanceStatus\x12w\n" +
+	"\aoutputs\x18\x01 \x01(\v2].org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceStackOutputsR\aoutputsB\xc5\x03\n" +
 	"<com.org.openmcf.provider.alicloud.alicloudmongodbinstance.v1B\bApiProtoP\x01Ztgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudmongodbinstance/v1;alicloudmongodbinstancev1\xa2\x02\x05OOPAA\xaa\x028Org.Openmcf.Provider.Alicloud.Alicloudmongodbinstance.V1\xca\x028Org\\Openmcf\\Provider\\Alicloud\\Alicloudmongodbinstance\\V1\xe2\x02DOrg\\Openmcf\\Provider\\Alicloud\\Alicloudmongodbinstance\\V1\\GPBMetadata\xea\x02=Org::Openmcf::Provider::Alicloud::Alicloudmongodbinstance::V1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_api_proto_raw
 
 var file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_api_proto_goTypes = []any{
-	(*AlicloudMongodbInstance)(nil),             // 0: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstance
-	(*AlicloudMongodbInstanceStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceStatus
+	(*AliCloudMongodbInstance)(nil),             // 0: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstance
+	(*AliCloudMongodbInstanceStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceStatus
 	(*shared.CloudResourceMetadata)(nil),        // 2: org.openmcf.shared.CloudResourceMetadata
-	(*AlicloudMongodbInstanceSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceSpec
-	(*AlicloudMongodbInstanceStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceStackOutputs
+	(*AliCloudMongodbInstanceSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceSpec
+	(*AliCloudMongodbInstanceStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_api_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstance.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
-	3, // 1: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstance.spec:type_name -> org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceSpec
-	1, // 2: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstance.status:type_name -> org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceStatus
-	4, // 3: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceStackOutputs
+	2, // 0: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstance.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
+	3, // 1: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstance.spec:type_name -> org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceSpec
+	1, // 2: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstance.status:type_name -> org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceStatus
+	4, // 3: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceStackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

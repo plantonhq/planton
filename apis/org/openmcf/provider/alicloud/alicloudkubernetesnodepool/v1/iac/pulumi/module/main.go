@@ -10,9 +10,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *alicloudkubernetesnodepoolv1.AlicloudKubernetesNodePoolStackInput) error {
+func Resources(ctx *pulumi.Context, stackInput *alicloudkubernetesnodepoolv1.AliCloudKubernetesNodePoolStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
-	spec := locals.AlicloudKubernetesNodePool.Spec
+	spec := locals.AliCloudKubernetesNodePool.Spec
 
 	alicloudProvider, err := alicloud.NewProvider(ctx, "alicloud", &alicloud.ProviderArgs{
 		Region: pulumi.String(spec.Region),
@@ -155,7 +155,7 @@ func Resources(ctx *pulumi.Context, stackInput *alicloudkubernetesnodepoolv1.Ali
 	return nil
 }
 
-func dataDisks(disks []*alicloudkubernetesnodepoolv1.AlicloudKubernetesNodePoolDataDisk) cs.NodePoolDataDiskArray {
+func dataDisks(disks []*alicloudkubernetesnodepoolv1.AliCloudKubernetesNodePoolDataDisk) cs.NodePoolDataDiskArray {
 	result := cs.NodePoolDataDiskArray{}
 	for _, d := range disks {
 		disk := cs.NodePoolDataDiskArgs{
@@ -194,7 +194,7 @@ func nodeLabels(labels map[string]string) cs.NodePoolLabelArray {
 	return result
 }
 
-func nodeTaints(taints []*alicloudkubernetesnodepoolv1.AlicloudKubernetesNodePoolTaint) cs.NodePoolTaintArray {
+func nodeTaints(taints []*alicloudkubernetesnodepoolv1.AliCloudKubernetesNodePoolTaint) cs.NodePoolTaintArray {
 	result := cs.NodePoolTaintArray{}
 	for _, t := range taints {
 		taint := cs.NodePoolTaintArgs{
@@ -211,7 +211,7 @@ func nodeTaints(taints []*alicloudkubernetesnodepoolv1.AlicloudKubernetesNodePoo
 	return result
 }
 
-func scalingConfig(sc *alicloudkubernetesnodepoolv1.AlicloudKubernetesNodePoolScalingConfig) cs.NodePoolScalingConfigPtrInput {
+func scalingConfig(sc *alicloudkubernetesnodepoolv1.AliCloudKubernetesNodePoolScalingConfig) cs.NodePoolScalingConfigPtrInput {
 	enable := true
 	if sc.Enable != nil {
 		enable = *sc.Enable
@@ -227,7 +227,7 @@ func scalingConfig(sc *alicloudkubernetesnodepoolv1.AlicloudKubernetesNodePoolSc
 	return args.ToNodePoolScalingConfigPtrOutput()
 }
 
-func managementConfig(mgmt *alicloudkubernetesnodepoolv1.AlicloudKubernetesNodePoolManagement) cs.NodePoolManagementPtrInput {
+func managementConfig(mgmt *alicloudkubernetesnodepoolv1.AliCloudKubernetesNodePoolManagement) cs.NodePoolManagementPtrInput {
 	enable := true
 	if mgmt.Enable != nil {
 		enable = *mgmt.Enable
@@ -247,7 +247,7 @@ func managementConfig(mgmt *alicloudkubernetesnodepoolv1.AlicloudKubernetesNodeP
 	return args.ToNodePoolManagementPtrOutput()
 }
 
-func spotPriceLimits(limits []*alicloudkubernetesnodepoolv1.AlicloudKubernetesNodePoolSpotPriceLimit) cs.NodePoolSpotPriceLimitArray {
+func spotPriceLimits(limits []*alicloudkubernetesnodepoolv1.AliCloudKubernetesNodePoolSpotPriceLimit) cs.NodePoolSpotPriceLimitArray {
 	result := cs.NodePoolSpotPriceLimitArray{}
 	for _, l := range limits {
 		result = append(result, cs.NodePoolSpotPriceLimitArgs{

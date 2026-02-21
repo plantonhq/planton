@@ -24,7 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudNatGatewaySpec defines the configuration for an Alibaba Cloud NAT
+// AliCloudNatGatewaySpec defines the configuration for an Alibaba Cloud NAT
 // Gateway with bundled EIP association and SNAT entries.
 //
 // A NAT Gateway enables resources in a VPC (typically placed in private
@@ -46,7 +46,7 @@ const (
 //
 //	Terraform: alicloud_nat_gateway + alicloud_eip_association + alicloud_snat_entry
 //	Pulumi:    vpc.NatGateway + ecs.EipAssociation + vpc.SnatEntry
-type AlicloudNatGatewaySpec struct {
+type AliCloudNatGatewaySpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the NAT Gateway will be created.
 	// Must match the region of the VPC and VSwitch.
@@ -90,30 +90,30 @@ type AlicloudNatGatewaySpec struct {
 	// EIP allocation ID to associate with this NAT Gateway.
 	// The IaC module resolves the EIP's public IP address internally via a data
 	// source lookup and uses it for all SNAT entries. The EIP must already exist
-	// (create one with AlicloudEipAddress).
+	// (create one with AliCloudEipAddress).
 	EipId *v1.StringValueOrRef `protobuf:"bytes,12,opt,name=eip_id,json=eipId,proto3" json:"eip_id,omitempty"`
 	// SNAT entries that map private network sources to the NAT Gateway's EIP.
 	// Each entry enables outbound internet access for traffic originating from
 	// the specified VSwitch or CIDR block.
-	SnatEntries   []*AlicloudSnatEntry `protobuf:"bytes,13,rep,name=snat_entries,json=snatEntries,proto3" json:"snat_entries,omitempty"`
+	SnatEntries   []*AliCloudSnatEntry `protobuf:"bytes,13,rep,name=snat_entries,json=snatEntries,proto3" json:"snat_entries,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudNatGatewaySpec) Reset() {
-	*x = AlicloudNatGatewaySpec{}
+func (x *AliCloudNatGatewaySpec) Reset() {
+	*x = AliCloudNatGatewaySpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudNatGatewaySpec) String() string {
+func (x *AliCloudNatGatewaySpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudNatGatewaySpec) ProtoMessage() {}
+func (*AliCloudNatGatewaySpec) ProtoMessage() {}
 
-func (x *AlicloudNatGatewaySpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudNatGatewaySpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -125,103 +125,103 @@ func (x *AlicloudNatGatewaySpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudNatGatewaySpec.ProtoReflect.Descriptor instead.
-func (*AlicloudNatGatewaySpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudNatGatewaySpec.ProtoReflect.Descriptor instead.
+func (*AliCloudNatGatewaySpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudNatGatewaySpec) GetRegion() string {
+func (x *AliCloudNatGatewaySpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudNatGatewaySpec) GetVpcId() *v1.StringValueOrRef {
+func (x *AliCloudNatGatewaySpec) GetVpcId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VpcId
 	}
 	return nil
 }
 
-func (x *AlicloudNatGatewaySpec) GetVswitchId() *v1.StringValueOrRef {
+func (x *AliCloudNatGatewaySpec) GetVswitchId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VswitchId
 	}
 	return nil
 }
 
-func (x *AlicloudNatGatewaySpec) GetNatGatewayName() string {
+func (x *AliCloudNatGatewaySpec) GetNatGatewayName() string {
 	if x != nil {
 		return x.NatGatewayName
 	}
 	return ""
 }
 
-func (x *AlicloudNatGatewaySpec) GetDescription() string {
+func (x *AliCloudNatGatewaySpec) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *AlicloudNatGatewaySpec) GetNatType() string {
+func (x *AliCloudNatGatewaySpec) GetNatType() string {
 	if x != nil && x.NatType != nil {
 		return *x.NatType
 	}
 	return ""
 }
 
-func (x *AlicloudNatGatewaySpec) GetPaymentType() string {
+func (x *AliCloudNatGatewaySpec) GetPaymentType() string {
 	if x != nil && x.PaymentType != nil {
 		return *x.PaymentType
 	}
 	return ""
 }
 
-func (x *AlicloudNatGatewaySpec) GetInternetChargeType() string {
+func (x *AliCloudNatGatewaySpec) GetInternetChargeType() string {
 	if x != nil && x.InternetChargeType != nil {
 		return *x.InternetChargeType
 	}
 	return ""
 }
 
-func (x *AlicloudNatGatewaySpec) GetSpecification() string {
+func (x *AliCloudNatGatewaySpec) GetSpecification() string {
 	if x != nil && x.Specification != nil {
 		return *x.Specification
 	}
 	return ""
 }
 
-func (x *AlicloudNatGatewaySpec) GetDeletionProtection() bool {
+func (x *AliCloudNatGatewaySpec) GetDeletionProtection() bool {
 	if x != nil && x.DeletionProtection != nil {
 		return *x.DeletionProtection
 	}
 	return false
 }
 
-func (x *AlicloudNatGatewaySpec) GetTags() map[string]string {
+func (x *AliCloudNatGatewaySpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-func (x *AlicloudNatGatewaySpec) GetEipId() *v1.StringValueOrRef {
+func (x *AliCloudNatGatewaySpec) GetEipId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.EipId
 	}
 	return nil
 }
 
-func (x *AlicloudNatGatewaySpec) GetSnatEntries() []*AlicloudSnatEntry {
+func (x *AliCloudNatGatewaySpec) GetSnatEntries() []*AliCloudSnatEntry {
 	if x != nil {
 		return x.SnatEntries
 	}
 	return nil
 }
 
-// AlicloudSnatEntry defines a single SNAT rule mapping a private traffic
+// AliCloudSnatEntry defines a single SNAT rule mapping a private traffic
 // source to the NAT Gateway's associated EIP for outbound internet access.
 //
 // Specify exactly one of source_vswitch_id or source_cidr:
@@ -230,7 +230,7 @@ func (x *AlicloudNatGatewaySpec) GetSnatEntries() []*AlicloudSnatEntry {
 //
 // These are mutually exclusive in the provider. If neither is set, the
 // provider will reject the SNAT entry.
-type AlicloudSnatEntry struct {
+type AliCloudSnatEntry struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// VSwitch whose traffic should be NATed through the EIP.
 	// Use this for the common case of enabling internet access for an entire
@@ -248,20 +248,20 @@ type AlicloudSnatEntry struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudSnatEntry) Reset() {
-	*x = AlicloudSnatEntry{}
+func (x *AliCloudSnatEntry) Reset() {
+	*x = AliCloudSnatEntry{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudSnatEntry) String() string {
+func (x *AliCloudSnatEntry) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudSnatEntry) ProtoMessage() {}
+func (*AliCloudSnatEntry) ProtoMessage() {}
 
-func (x *AlicloudSnatEntry) ProtoReflect() protoreflect.Message {
+func (x *AliCloudSnatEntry) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -273,26 +273,26 @@ func (x *AlicloudSnatEntry) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudSnatEntry.ProtoReflect.Descriptor instead.
-func (*AlicloudSnatEntry) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudSnatEntry.ProtoReflect.Descriptor instead.
+func (*AliCloudSnatEntry) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudSnatEntry) GetSourceVswitchId() *v1.StringValueOrRef {
+func (x *AliCloudSnatEntry) GetSourceVswitchId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.SourceVswitchId
 	}
 	return nil
 }
 
-func (x *AlicloudSnatEntry) GetSourceCidr() string {
+func (x *AliCloudSnatEntry) GetSourceCidr() string {
 	if x != nil {
 		return x.SourceCidr
 	}
 	return ""
 }
 
-func (x *AlicloudSnatEntry) GetSnatEntryName() string {
+func (x *AliCloudSnatEntry) GetSnatEntryName() string {
 	if x != nil {
 		return x.SnatEntryName
 	}
@@ -304,7 +304,7 @@ var File_org_openmcf_provider_alicloud_alicloudnatgateway_v1_spec_proto protoref
 const file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	">org/openmcf/provider/alicloud/alicloudnatgateway/v1/spec.proto\x123org.openmcf.provider.alicloud.alicloudnatgateway.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x9d\r\n" +
-	"\x16AlicloudNatGatewaySpec\x12\"\n" +
+	"\x16AliCloudNatGatewaySpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12o\n" +
 	"\x06vpc_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xcc\x17\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12{\n" +
@@ -324,9 +324,9 @@ const file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_spec_proto_rawDes
 	"\x13specification_valid\x12<specification must be one of: Small, Middle, Large, XLarge.1\x1a>this == '' || this in ['Small', 'Middle', 'Large', 'XLarge.1']H\x03R\rspecification\x88\x01\x01\x124\n" +
 	"\x13deletion_protection\x18\n" +
 	" \x01(\bH\x04R\x12deletionProtection\x88\x01\x01\x12i\n" +
-	"\x04tags\x18\v \x03(\v2U.org.openmcf.provider.alicloud.alicloudnatgateway.v1.AlicloudNatGatewaySpec.TagsEntryR\x04tags\x12o\n" +
+	"\x04tags\x18\v \x03(\v2U.org.openmcf.provider.alicloud.alicloudnatgateway.v1.AliCloudNatGatewaySpec.TagsEntryR\x04tags\x12o\n" +
 	"\x06eip_id\x18\f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xcf\x17\x92\xd4a\x15status.outputs.eip_idR\x05eipId\x12i\n" +
-	"\fsnat_entries\x18\r \x03(\v2F.org.openmcf.provider.alicloud.alicloudnatgateway.v1.AlicloudSnatEntryR\vsnatEntries\x1a7\n" +
+	"\fsnat_entries\x18\r \x03(\v2F.org.openmcf.provider.alicloud.alicloudnatgateway.v1.AliCloudSnatEntryR\vsnatEntries\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\v\n" +
@@ -335,7 +335,7 @@ const file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_spec_proto_rawDes
 	"\x15_internet_charge_typeB\x10\n" +
 	"\x0e_specificationB\x16\n" +
 	"\x14_deletion_protection\"\xe1\x01\n" +
-	"\x11AlicloudSnatEntry\x12\x82\x01\n" +
+	"\x11AliCloudSnatEntry\x12\x82\x01\n" +
 	"\x11source_vswitch_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xcd\x17\x92\xd4a\x19status.outputs.vswitch_idR\x0fsourceVswitchId\x12\x1f\n" +
 	"\vsource_cidr\x18\x02 \x01(\tR\n" +
 	"sourceCidr\x12&\n" +
@@ -356,18 +356,18 @@ func file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_spec_proto_rawDesc
 
 var file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_spec_proto_goTypes = []any{
-	(*AlicloudNatGatewaySpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AlicloudNatGatewaySpec
-	(*AlicloudSnatEntry)(nil),      // 1: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AlicloudSnatEntry
-	nil,                            // 2: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AlicloudNatGatewaySpec.TagsEntry
+	(*AliCloudNatGatewaySpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AliCloudNatGatewaySpec
+	(*AliCloudSnatEntry)(nil),      // 1: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AliCloudSnatEntry
+	nil,                            // 2: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AliCloudNatGatewaySpec.TagsEntry
 	(*v1.StringValueOrRef)(nil),    // 3: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_spec_proto_depIdxs = []int32{
-	3, // 0: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AlicloudNatGatewaySpec.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	3, // 1: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AlicloudNatGatewaySpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	2, // 2: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AlicloudNatGatewaySpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudnatgateway.v1.AlicloudNatGatewaySpec.TagsEntry
-	3, // 3: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AlicloudNatGatewaySpec.eip_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	1, // 4: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AlicloudNatGatewaySpec.snat_entries:type_name -> org.openmcf.provider.alicloud.alicloudnatgateway.v1.AlicloudSnatEntry
-	3, // 5: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AlicloudSnatEntry.source_vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	3, // 0: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AliCloudNatGatewaySpec.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	3, // 1: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AliCloudNatGatewaySpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	2, // 2: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AliCloudNatGatewaySpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudnatgateway.v1.AliCloudNatGatewaySpec.TagsEntry
+	3, // 3: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AliCloudNatGatewaySpec.eip_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	1, // 4: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AliCloudNatGatewaySpec.snat_entries:type_name -> org.openmcf.provider.alicloud.alicloudnatgateway.v1.AliCloudSnatEntry
+	3, // 5: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AliCloudSnatEntry.source_vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
 	6, // [6:6] is the sub-list for method output_type
 	6, // [6:6] is the sub-list for method input_type
 	6, // [6:6] is the sub-list for extension type_name

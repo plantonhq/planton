@@ -6,7 +6,7 @@ import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudPolardbClusterSpec defines the configuration for an Alibaba Cloud
+// AliCloudPolardbClusterSpec defines the configuration for an Alibaba Cloud
 // PolarDB cluster with bundled databases, accounts, and account privileges.
 //
 // PolarDB is Alibaba Cloud's cloud-native relational database built on a
@@ -15,7 +15,7 @@ import "org/openmcf/shared/options/options.proto";
 // cluster model where one primary node and one or more read-only replicas
 // share a single distributed storage layer.
 //
-// This component is separate from AlicloudRdsInstance (per DD06) because
+// This component is separate from AliCloudRdsInstance (per DD06) because
 // PolarDB has a fundamentally different resource schema: cluster-based
 // topology, node-class sizing, separate endpoint management, and different
 // Terraform/Pulumi resource types.
@@ -35,7 +35,7 @@ import "org/openmcf/shared/options/options.proto";
 // Provider resources:
 //   Terraform: alicloud_polardb_cluster + alicloud_polardb_database + alicloud_polardb_account + alicloud_polardb_account_privilege
 //   Pulumi:    polardb.Cluster + polardb.Database + polardb.Account + polardb.AccountPrivilege
-message AlicloudPolardbClusterSpec {
+message AliCloudPolardbClusterSpec {
   // Alibaba Cloud region where the PolarDB cluster will be created.
   // Must match the region of the VSwitch.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -75,7 +75,7 @@ message AlicloudPolardbClusterSpec {
   // the VPC and availability zone from the VSwitch.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 5 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
   ];
 
@@ -246,17 +246,17 @@ message AlicloudPolardbClusterSpec {
   // Cluster parameter overrides. Each parameter sets a specific database
   // engine configuration value. Refer to Alibaba Cloud documentation for
   // valid parameter names and value ranges per engine.
-  repeated AlicloudPolardbParameter parameters = 27;
+  repeated AliCloudPolardbParameter parameters = 27;
 
   // Databases to create within the PolarDB cluster.
-  repeated AlicloudPolardbDatabase databases = 28;
+  repeated AliCloudPolardbDatabase databases = 28;
 
   // Database accounts to create within the PolarDB cluster.
-  repeated AlicloudPolardbAccount accounts = 29;
+  repeated AliCloudPolardbAccount accounts = 29;
 }
 
-// AlicloudPolardbParameter represents a single cluster parameter override.
-message AlicloudPolardbParameter {
+// AliCloudPolardbParameter represents a single cluster parameter override.
+message AliCloudPolardbParameter {
   // Parameter name (e.g., "loose_innodb_buffer_pool_size", "max_connections").
   string name = 1 [
     (buf.validate.field).required = true,
@@ -271,9 +271,9 @@ message AlicloudPolardbParameter {
   ];
 }
 
-// AlicloudPolardbDatabase defines a database to create within the PolarDB
+// AliCloudPolardbDatabase defines a database to create within the PolarDB
 // cluster.
-message AlicloudPolardbDatabase {
+message AliCloudPolardbDatabase {
   // Database name. Must start with a letter, consist of lowercase letters,
   // numbers, and underscores, and be no more than 64 characters.
   string db_name = 1 [
@@ -300,9 +300,9 @@ message AlicloudPolardbDatabase {
   string ctype = 5;
 }
 
-// AlicloudPolardbAccount defines a database account to create within the
+// AliCloudPolardbAccount defines a database account to create within the
 // PolarDB cluster.
-message AlicloudPolardbAccount {
+message AliCloudPolardbAccount {
   // Account login name. Must start with a lowercase letter, end with a
   // letter or number, consist of lowercase letters, numbers, or underscores,
   // and be 2-16 characters long.
@@ -338,12 +338,12 @@ message AlicloudPolardbAccount {
   // Database privileges to grant to this account. Each entry grants a
   // privilege level on a set of databases. Only applicable when account_type
   // is "Normal"; Super accounts have implicit full access.
-  repeated AlicloudPolardbAccountPrivilege privileges = 5;
+  repeated AliCloudPolardbAccountPrivilege privileges = 5;
 }
 
-// AlicloudPolardbAccountPrivilege grants a single privilege level on a set of
+// AliCloudPolardbAccountPrivilege grants a single privilege level on a set of
 // databases to the owning account.
-message AlicloudPolardbAccountPrivilege {
+message AliCloudPolardbAccountPrivilege {
   // Database names to grant access to. Each name must match a database
   // defined in the spec's databases list.
   repeated string db_names = 1 [

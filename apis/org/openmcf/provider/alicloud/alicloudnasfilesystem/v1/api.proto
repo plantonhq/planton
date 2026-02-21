@@ -8,25 +8,25 @@ import "org/openmcf/provider/alicloud/alicloudnasfilesystem/v1/stack_outputs.pro
 import "org/openmcf/shared/metadata.proto";
 
 // alicloud-nas-file-system
-message AlicloudNasFileSystem {
+message AliCloudNasFileSystem {
   // api-version
   string api_version = 1 [(buf.validate.field).string.const = 'alicloud.openmcf.org/v1'];
 
   // resource-kind
-  string kind = 2 [(buf.validate.field).string.const = 'AlicloudNasFileSystem'];
+  string kind = 2 [(buf.validate.field).string.const = 'AliCloudNasFileSystem'];
 
   // metadata
   org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
-  AlicloudNasFileSystemSpec spec = 4 [(buf.validate.field).required = true];
+  AliCloudNasFileSystemSpec spec = 4 [(buf.validate.field).required = true];
 
   // status
-  AlicloudNasFileSystemStatus status = 5;
+  AliCloudNasFileSystemStatus status = 5;
 }
 
 // alicloud-nas-file-system status
-message AlicloudNasFileSystemStatus {
+message AliCloudNasFileSystemStatus {
   // stack-outputs
-  AlicloudNasFileSystemStackOutputs outputs = 1;
+  AliCloudNasFileSystemStackOutputs outputs = 1;
 }

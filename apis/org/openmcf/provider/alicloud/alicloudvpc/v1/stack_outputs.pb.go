@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudVpcStackOutputs captures the outputs from deploying an
+// AliCloudVpcStackOutputs captures the outputs from deploying an
 // Alibaba Cloud VPC.
-type AlicloudVpcStackOutputs struct {
+type AliCloudVpcStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The VPC ID assigned by Alibaba Cloud.
 	// Referenced by downstream components (VSwitch, SecurityGroup, NAT, ACK, etc.)
@@ -44,20 +44,20 @@ type AlicloudVpcStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudVpcStackOutputs) Reset() {
-	*x = AlicloudVpcStackOutputs{}
+func (x *AliCloudVpcStackOutputs) Reset() {
+	*x = AliCloudVpcStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudVpcStackOutputs) String() string {
+func (x *AliCloudVpcStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudVpcStackOutputs) ProtoMessage() {}
+func (*AliCloudVpcStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudVpcStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudVpcStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,40 +69,40 @@ func (x *AlicloudVpcStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudVpcStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudVpcStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudVpcStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudVpcStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudVpcStackOutputs) GetVpcId() string {
+func (x *AliCloudVpcStackOutputs) GetVpcId() string {
 	if x != nil {
 		return x.VpcId
 	}
 	return ""
 }
 
-func (x *AlicloudVpcStackOutputs) GetVpcName() string {
+func (x *AliCloudVpcStackOutputs) GetVpcName() string {
 	if x != nil {
 		return x.VpcName
 	}
 	return ""
 }
 
-func (x *AlicloudVpcStackOutputs) GetCidrBlock() string {
+func (x *AliCloudVpcStackOutputs) GetCidrBlock() string {
 	if x != nil {
 		return x.CidrBlock
 	}
 	return ""
 }
 
-func (x *AlicloudVpcStackOutputs) GetRouterId() string {
+func (x *AliCloudVpcStackOutputs) GetRouterId() string {
 	if x != nil {
 		return x.RouterId
 	}
 	return ""
 }
 
-func (x *AlicloudVpcStackOutputs) GetRouteTableId() string {
+func (x *AliCloudVpcStackOutputs) GetRouteTableId() string {
 	if x != nil {
 		return x.RouteTableId
 	}
@@ -114,7 +114,7 @@ var File_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_outputs_proto protor
 const file_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"@org/openmcf/provider/alicloud/alicloudvpc/v1/stack_outputs.proto\x12,org.openmcf.provider.alicloud.alicloudvpc.v1\"\xad\x01\n" +
-	"\x17AlicloudVpcStackOutputs\x12\x15\n" +
+	"\x17AliCloudVpcStackOutputs\x12\x15\n" +
 	"\x06vpc_id\x18\x01 \x01(\tR\x05vpcId\x12\x19\n" +
 	"\bvpc_name\x18\x02 \x01(\tR\avpcName\x12\x1d\n" +
 	"\n" +
@@ -137,7 +137,7 @@ func file_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_outputs_proto_rawDe
 
 var file_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudVpcStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudvpc.v1.AlicloudVpcStackOutputs
+	(*AliCloudVpcStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudvpc.v1.AliCloudVpcStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

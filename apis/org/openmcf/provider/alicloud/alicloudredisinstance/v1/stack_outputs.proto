@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudredisinstance.v1;
 
-// AlicloudRedisInstanceStackOutputs captures the outputs from deploying an
+// AliCloudRedisInstanceStackOutputs captures the outputs from deploying an
 // Alibaba Cloud Redis (KVStore) instance.
-message AlicloudRedisInstanceStackOutputs {
+message AliCloudRedisInstanceStackOutputs {
   // The Redis instance ID assigned by Alibaba Cloud (e.g., "r-xxxxx").
   string instance_id = 1;
 

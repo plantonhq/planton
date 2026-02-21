@@ -24,7 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudRdsInstanceSpec defines the configuration for an Alibaba Cloud RDS
+// AliCloudRdsInstanceSpec defines the configuration for an Alibaba Cloud RDS
 // (Relational Database Service) instance with bundled databases, accounts, and
 // account privileges.
 //
@@ -53,7 +53,7 @@ const (
 //
 //	Terraform: alicloud_db_instance + alicloud_db_database + alicloud_rds_account + alicloud_db_account_privilege
 //	Pulumi:    rds.Instance + rds.Database + rds.RdsAccount + rds.AccountPrivilege
-type AlicloudRdsInstanceSpec struct {
+type AliCloudRdsInstanceSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the RDS instance will be created.
 	// Must match the region of the VSwitch.
@@ -152,29 +152,29 @@ type AlicloudRdsInstanceSpec struct {
 	// engine configuration value, overriding the default from the parameter
 	// group. Refer to Alibaba Cloud documentation for valid parameter names
 	// and value ranges per engine.
-	Parameters []*AlicloudRdsParameter `protobuf:"bytes,26,rep,name=parameters,proto3" json:"parameters,omitempty"`
+	Parameters []*AliCloudRdsParameter `protobuf:"bytes,26,rep,name=parameters,proto3" json:"parameters,omitempty"`
 	// Databases to create within the RDS instance.
-	Databases []*AlicloudRdsDatabase `protobuf:"bytes,27,rep,name=databases,proto3" json:"databases,omitempty"`
+	Databases []*AliCloudRdsDatabase `protobuf:"bytes,27,rep,name=databases,proto3" json:"databases,omitempty"`
 	// Database accounts to create within the RDS instance.
-	Accounts      []*AlicloudRdsAccount `protobuf:"bytes,28,rep,name=accounts,proto3" json:"accounts,omitempty"`
+	Accounts      []*AliCloudRdsAccount `protobuf:"bytes,28,rep,name=accounts,proto3" json:"accounts,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudRdsInstanceSpec) Reset() {
-	*x = AlicloudRdsInstanceSpec{}
+func (x *AliCloudRdsInstanceSpec) Reset() {
+	*x = AliCloudRdsInstanceSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRdsInstanceSpec) String() string {
+func (x *AliCloudRdsInstanceSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRdsInstanceSpec) ProtoMessage() {}
+func (*AliCloudRdsInstanceSpec) ProtoMessage() {}
 
-func (x *AlicloudRdsInstanceSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRdsInstanceSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -186,209 +186,209 @@ func (x *AlicloudRdsInstanceSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRdsInstanceSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudRdsInstanceSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRdsInstanceSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudRdsInstanceSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudRdsInstanceSpec) GetRegion() string {
+func (x *AliCloudRdsInstanceSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudRdsInstanceSpec) GetEngine() string {
+func (x *AliCloudRdsInstanceSpec) GetEngine() string {
 	if x != nil {
 		return x.Engine
 	}
 	return ""
 }
 
-func (x *AlicloudRdsInstanceSpec) GetEngineVersion() string {
+func (x *AliCloudRdsInstanceSpec) GetEngineVersion() string {
 	if x != nil {
 		return x.EngineVersion
 	}
 	return ""
 }
 
-func (x *AlicloudRdsInstanceSpec) GetInstanceType() string {
+func (x *AliCloudRdsInstanceSpec) GetInstanceType() string {
 	if x != nil {
 		return x.InstanceType
 	}
 	return ""
 }
 
-func (x *AlicloudRdsInstanceSpec) GetInstanceStorage() int32 {
+func (x *AliCloudRdsInstanceSpec) GetInstanceStorage() int32 {
 	if x != nil {
 		return x.InstanceStorage
 	}
 	return 0
 }
 
-func (x *AlicloudRdsInstanceSpec) GetVswitchId() *v1.StringValueOrRef {
+func (x *AliCloudRdsInstanceSpec) GetVswitchId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VswitchId
 	}
 	return nil
 }
 
-func (x *AlicloudRdsInstanceSpec) GetInstanceName() string {
+func (x *AliCloudRdsInstanceSpec) GetInstanceName() string {
 	if x != nil {
 		return x.InstanceName
 	}
 	return ""
 }
 
-func (x *AlicloudRdsInstanceSpec) GetInstanceChargeType() string {
+func (x *AliCloudRdsInstanceSpec) GetInstanceChargeType() string {
 	if x != nil && x.InstanceChargeType != nil {
 		return *x.InstanceChargeType
 	}
 	return ""
 }
 
-func (x *AlicloudRdsInstanceSpec) GetCategory() string {
+func (x *AliCloudRdsInstanceSpec) GetCategory() string {
 	if x != nil && x.Category != nil {
 		return *x.Category
 	}
 	return ""
 }
 
-func (x *AlicloudRdsInstanceSpec) GetDbInstanceStorageType() string {
+func (x *AliCloudRdsInstanceSpec) GetDbInstanceStorageType() string {
 	if x != nil && x.DbInstanceStorageType != nil {
 		return *x.DbInstanceStorageType
 	}
 	return ""
 }
 
-func (x *AlicloudRdsInstanceSpec) GetZoneId() string {
+func (x *AliCloudRdsInstanceSpec) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *AlicloudRdsInstanceSpec) GetZoneIdSlaveA() string {
+func (x *AliCloudRdsInstanceSpec) GetZoneIdSlaveA() string {
 	if x != nil {
 		return x.ZoneIdSlaveA
 	}
 	return ""
 }
 
-func (x *AlicloudRdsInstanceSpec) GetSecurityIps() []string {
+func (x *AliCloudRdsInstanceSpec) GetSecurityIps() []string {
 	if x != nil {
 		return x.SecurityIps
 	}
 	return nil
 }
 
-func (x *AlicloudRdsInstanceSpec) GetSecurityGroupIds() []string {
+func (x *AliCloudRdsInstanceSpec) GetSecurityGroupIds() []string {
 	if x != nil {
 		return x.SecurityGroupIds
 	}
 	return nil
 }
 
-func (x *AlicloudRdsInstanceSpec) GetMonitoringPeriod() int32 {
+func (x *AliCloudRdsInstanceSpec) GetMonitoringPeriod() int32 {
 	if x != nil && x.MonitoringPeriod != nil {
 		return *x.MonitoringPeriod
 	}
 	return 0
 }
 
-func (x *AlicloudRdsInstanceSpec) GetMaintainTime() string {
+func (x *AliCloudRdsInstanceSpec) GetMaintainTime() string {
 	if x != nil {
 		return x.MaintainTime
 	}
 	return ""
 }
 
-func (x *AlicloudRdsInstanceSpec) GetDeletionProtection() bool {
+func (x *AliCloudRdsInstanceSpec) GetDeletionProtection() bool {
 	if x != nil && x.DeletionProtection != nil {
 		return *x.DeletionProtection
 	}
 	return false
 }
 
-func (x *AlicloudRdsInstanceSpec) GetSslAction() string {
+func (x *AliCloudRdsInstanceSpec) GetSslAction() string {
 	if x != nil && x.SslAction != nil {
 		return *x.SslAction
 	}
 	return ""
 }
 
-func (x *AlicloudRdsInstanceSpec) GetTdeStatus() string {
+func (x *AliCloudRdsInstanceSpec) GetTdeStatus() string {
 	if x != nil && x.TdeStatus != nil {
 		return *x.TdeStatus
 	}
 	return ""
 }
 
-func (x *AlicloudRdsInstanceSpec) GetEncryptionKey() string {
+func (x *AliCloudRdsInstanceSpec) GetEncryptionKey() string {
 	if x != nil {
 		return x.EncryptionKey
 	}
 	return ""
 }
 
-func (x *AlicloudRdsInstanceSpec) GetAutoRenew() bool {
+func (x *AliCloudRdsInstanceSpec) GetAutoRenew() bool {
 	if x != nil && x.AutoRenew != nil {
 		return *x.AutoRenew
 	}
 	return false
 }
 
-func (x *AlicloudRdsInstanceSpec) GetAutoRenewPeriod() int32 {
+func (x *AliCloudRdsInstanceSpec) GetAutoRenewPeriod() int32 {
 	if x != nil && x.AutoRenewPeriod != nil {
 		return *x.AutoRenewPeriod
 	}
 	return 0
 }
 
-func (x *AlicloudRdsInstanceSpec) GetPeriod() int32 {
+func (x *AliCloudRdsInstanceSpec) GetPeriod() int32 {
 	if x != nil && x.Period != nil {
 		return *x.Period
 	}
 	return 0
 }
 
-func (x *AlicloudRdsInstanceSpec) GetResourceGroupId() string {
+func (x *AliCloudRdsInstanceSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudRdsInstanceSpec) GetTags() map[string]string {
+func (x *AliCloudRdsInstanceSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-func (x *AlicloudRdsInstanceSpec) GetParameters() []*AlicloudRdsParameter {
+func (x *AliCloudRdsInstanceSpec) GetParameters() []*AliCloudRdsParameter {
 	if x != nil {
 		return x.Parameters
 	}
 	return nil
 }
 
-func (x *AlicloudRdsInstanceSpec) GetDatabases() []*AlicloudRdsDatabase {
+func (x *AliCloudRdsInstanceSpec) GetDatabases() []*AliCloudRdsDatabase {
 	if x != nil {
 		return x.Databases
 	}
 	return nil
 }
 
-func (x *AlicloudRdsInstanceSpec) GetAccounts() []*AlicloudRdsAccount {
+func (x *AliCloudRdsInstanceSpec) GetAccounts() []*AliCloudRdsAccount {
 	if x != nil {
 		return x.Accounts
 	}
 	return nil
 }
 
-// AlicloudRdsParameter represents a single database engine parameter override.
-type AlicloudRdsParameter struct {
+// AliCloudRdsParameter represents a single database engine parameter override.
+type AliCloudRdsParameter struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Parameter name (e.g., "innodb_buffer_pool_size", "max_connections",
 	// "shared_buffers").
@@ -400,20 +400,20 @@ type AlicloudRdsParameter struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudRdsParameter) Reset() {
-	*x = AlicloudRdsParameter{}
+func (x *AliCloudRdsParameter) Reset() {
+	*x = AliCloudRdsParameter{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRdsParameter) String() string {
+func (x *AliCloudRdsParameter) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRdsParameter) ProtoMessage() {}
+func (*AliCloudRdsParameter) ProtoMessage() {}
 
-func (x *AlicloudRdsParameter) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRdsParameter) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -425,27 +425,27 @@ func (x *AlicloudRdsParameter) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRdsParameter.ProtoReflect.Descriptor instead.
-func (*AlicloudRdsParameter) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRdsParameter.ProtoReflect.Descriptor instead.
+func (*AliCloudRdsParameter) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudRdsParameter) GetName() string {
+func (x *AliCloudRdsParameter) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *AlicloudRdsParameter) GetValue() string {
+func (x *AliCloudRdsParameter) GetValue() string {
 	if x != nil {
 		return x.Value
 	}
 	return ""
 }
 
-// AlicloudRdsDatabase defines a database to create within the RDS instance.
-type AlicloudRdsDatabase struct {
+// AliCloudRdsDatabase defines a database to create within the RDS instance.
+type AliCloudRdsDatabase struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Database name. Must match the pattern [a-z][a-z0-9_-]*[a-z0-9] and
 	// be unique within the instance.
@@ -460,20 +460,20 @@ type AlicloudRdsDatabase struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudRdsDatabase) Reset() {
-	*x = AlicloudRdsDatabase{}
+func (x *AliCloudRdsDatabase) Reset() {
+	*x = AliCloudRdsDatabase{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRdsDatabase) String() string {
+func (x *AliCloudRdsDatabase) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRdsDatabase) ProtoMessage() {}
+func (*AliCloudRdsDatabase) ProtoMessage() {}
 
-func (x *AlicloudRdsDatabase) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRdsDatabase) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -485,35 +485,35 @@ func (x *AlicloudRdsDatabase) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRdsDatabase.ProtoReflect.Descriptor instead.
-func (*AlicloudRdsDatabase) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRdsDatabase.ProtoReflect.Descriptor instead.
+func (*AliCloudRdsDatabase) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AlicloudRdsDatabase) GetName() string {
+func (x *AliCloudRdsDatabase) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *AlicloudRdsDatabase) GetCharacterSet() string {
+func (x *AliCloudRdsDatabase) GetCharacterSet() string {
 	if x != nil {
 		return x.CharacterSet
 	}
 	return ""
 }
 
-func (x *AlicloudRdsDatabase) GetDescription() string {
+func (x *AliCloudRdsDatabase) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-// AlicloudRdsAccount defines a database account to create within the RDS
+// AliCloudRdsAccount defines a database account to create within the RDS
 // instance.
-type AlicloudRdsAccount struct {
+type AliCloudRdsAccount struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Account login name. Must match [a-z][a-z0-9_]{0,61}[a-z0-9].
 	AccountName string `protobuf:"bytes,1,opt,name=account_name,json=accountName,proto3" json:"account_name,omitempty"`
@@ -531,25 +531,25 @@ type AlicloudRdsAccount struct {
 	// Database privileges to grant to this account. Each entry grants a
 	// privilege level on a set of databases. Only applicable when account_type
 	// is "Normal"; Super accounts have implicit full access.
-	Privileges    []*AlicloudRdsAccountPrivilege `protobuf:"bytes,5,rep,name=privileges,proto3" json:"privileges,omitempty"`
+	Privileges    []*AliCloudRdsAccountPrivilege `protobuf:"bytes,5,rep,name=privileges,proto3" json:"privileges,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudRdsAccount) Reset() {
-	*x = AlicloudRdsAccount{}
+func (x *AliCloudRdsAccount) Reset() {
+	*x = AliCloudRdsAccount{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRdsAccount) String() string {
+func (x *AliCloudRdsAccount) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRdsAccount) ProtoMessage() {}
+func (*AliCloudRdsAccount) ProtoMessage() {}
 
-func (x *AlicloudRdsAccount) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRdsAccount) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -561,49 +561,49 @@ func (x *AlicloudRdsAccount) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRdsAccount.ProtoReflect.Descriptor instead.
-func (*AlicloudRdsAccount) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRdsAccount.ProtoReflect.Descriptor instead.
+func (*AliCloudRdsAccount) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *AlicloudRdsAccount) GetAccountName() string {
+func (x *AliCloudRdsAccount) GetAccountName() string {
 	if x != nil {
 		return x.AccountName
 	}
 	return ""
 }
 
-func (x *AlicloudRdsAccount) GetAccountPassword() string {
+func (x *AliCloudRdsAccount) GetAccountPassword() string {
 	if x != nil {
 		return x.AccountPassword
 	}
 	return ""
 }
 
-func (x *AlicloudRdsAccount) GetAccountType() string {
+func (x *AliCloudRdsAccount) GetAccountType() string {
 	if x != nil && x.AccountType != nil {
 		return *x.AccountType
 	}
 	return ""
 }
 
-func (x *AlicloudRdsAccount) GetAccountDescription() string {
+func (x *AliCloudRdsAccount) GetAccountDescription() string {
 	if x != nil {
 		return x.AccountDescription
 	}
 	return ""
 }
 
-func (x *AlicloudRdsAccount) GetPrivileges() []*AlicloudRdsAccountPrivilege {
+func (x *AliCloudRdsAccount) GetPrivileges() []*AliCloudRdsAccountPrivilege {
 	if x != nil {
 		return x.Privileges
 	}
 	return nil
 }
 
-// AlicloudRdsAccountPrivilege grants a single privilege level on a set of
+// AliCloudRdsAccountPrivilege grants a single privilege level on a set of
 // databases to the owning account.
-type AlicloudRdsAccountPrivilege struct {
+type AliCloudRdsAccountPrivilege struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Database names to grant access to. Each name must match a database
 	// defined in the spec's databases list.
@@ -620,20 +620,20 @@ type AlicloudRdsAccountPrivilege struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudRdsAccountPrivilege) Reset() {
-	*x = AlicloudRdsAccountPrivilege{}
+func (x *AliCloudRdsAccountPrivilege) Reset() {
+	*x = AliCloudRdsAccountPrivilege{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRdsAccountPrivilege) String() string {
+func (x *AliCloudRdsAccountPrivilege) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRdsAccountPrivilege) ProtoMessage() {}
+func (*AliCloudRdsAccountPrivilege) ProtoMessage() {}
 
-func (x *AlicloudRdsAccountPrivilege) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRdsAccountPrivilege) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -645,19 +645,19 @@ func (x *AlicloudRdsAccountPrivilege) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRdsAccountPrivilege.ProtoReflect.Descriptor instead.
-func (*AlicloudRdsAccountPrivilege) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRdsAccountPrivilege.ProtoReflect.Descriptor instead.
+func (*AliCloudRdsAccountPrivilege) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *AlicloudRdsAccountPrivilege) GetDatabaseNames() []string {
+func (x *AliCloudRdsAccountPrivilege) GetDatabaseNames() []string {
 	if x != nil {
 		return x.DatabaseNames
 	}
 	return nil
 }
 
-func (x *AlicloudRdsAccountPrivilege) GetPrivilege() string {
+func (x *AliCloudRdsAccountPrivilege) GetPrivilege() string {
 	if x != nil && x.Privilege != nil {
 		return *x.Privilege
 	}
@@ -669,7 +669,7 @@ var File_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto protore
 const file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"?org/openmcf/provider/alicloud/alicloudrdsinstance/v1/spec.proto\x124org.openmcf.provider.alicloud.alicloudrdsinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xcd\x18\n" +
-	"\x17AlicloudRdsInstanceSpec\x12\"\n" +
+	"\x17AliCloudRdsInstanceSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\xb7\x01\n" +
 	"\x06engine\x18\x02 \x01(\tB\x9e\x01\xbaH\x9a\x01\xba\x01\x93\x01\n" +
@@ -712,12 +712,12 @@ const file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_rawDe
 	"\x06period\x18\x17 \x01(\x05Bn\xbaHk\xba\x01h\n" +
 	"\fperiod_valid\x12&period must be one of: 1-9, 12, 24, 36\x1a0(this >= 1 && this <= 9) || this in [12, 24, 36]H\tR\x06period\x88\x01\x01\x12*\n" +
 	"\x11resource_group_id\x18\x18 \x01(\tR\x0fresourceGroupId\x12k\n" +
-	"\x04tags\x18\x19 \x03(\v2W.org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsInstanceSpec.TagsEntryR\x04tags\x12j\n" +
+	"\x04tags\x18\x19 \x03(\v2W.org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsInstanceSpec.TagsEntryR\x04tags\x12j\n" +
 	"\n" +
-	"parameters\x18\x1a \x03(\v2J.org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsParameterR\n" +
+	"parameters\x18\x1a \x03(\v2J.org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsParameterR\n" +
 	"parameters\x12g\n" +
-	"\tdatabases\x18\x1b \x03(\v2I.org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsDatabaseR\tdatabases\x12d\n" +
-	"\baccounts\x18\x1c \x03(\v2H.org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsAccountR\baccounts\x1a7\n" +
+	"\tdatabases\x18\x1b \x03(\v2I.org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsDatabaseR\tdatabases\x12d\n" +
+	"\baccounts\x18\x1c \x03(\v2H.org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsAccountR\baccounts\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x17\n" +
@@ -731,17 +731,17 @@ const file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_rawDe
 	"\v_auto_renewB\x14\n" +
 	"\x12_auto_renew_periodB\t\n" +
 	"\a_period\"X\n" +
-	"\x14AlicloudRdsParameter\x12\x1e\n" +
+	"\x14AliCloudRdsParameter\x12\x1e\n" +
 	"\x04name\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x12 \n" +
 	"\x05value\x18\x02 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x05value\"|\n" +
-	"\x13AlicloudRdsDatabase\x12\x1e\n" +
+	"\x13AliCloudRdsDatabase\x12\x1e\n" +
 	"\x04name\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x12#\n" +
 	"\rcharacter_set\x18\x02 \x01(\tR\fcharacterSet\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\"\xd5\x03\n" +
-	"\x12AlicloudRdsAccount\x12-\n" +
+	"\x12AliCloudRdsAccount\x12-\n" +
 	"\faccount_name\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x02R\vaccountName\x125\n" +
 	"\x10account_password\x18\x02 \x01(\tB\n" +
@@ -750,10 +750,10 @@ const file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_rawDe
 	"\x12account_type_valid\x12*account_type must be one of: Normal, Super\x1a)this == '' || this in ['Normal', 'Super']\x8a\xa6\x1d\x06NormalH\x00R\vaccountType\x88\x01\x01\x12/\n" +
 	"\x13account_description\x18\x04 \x01(\tR\x12accountDescription\x12q\n" +
 	"\n" +
-	"privileges\x18\x05 \x03(\v2Q.org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsAccountPrivilegeR\n" +
+	"privileges\x18\x05 \x03(\v2Q.org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsAccountPrivilegeR\n" +
 	"privilegesB\x0f\n" +
 	"\r_account_type\"\xc7\x02\n" +
-	"\x1bAlicloudRdsAccountPrivilege\x122\n" +
+	"\x1bAliCloudRdsAccountPrivilege\x122\n" +
 	"\x0edatabase_names\x18\x01 \x03(\tB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01R\rdatabaseNames\x12\xe5\x01\n" +
 	"\tprivilege\x18\x02 \x01(\tB\xc1\x01\xbaH\xb1\x01\xba\x01\xad\x01\n" +
 	"\x0fprivilege_valid\x12Hprivilege must be one of: ReadOnly, ReadWrite, DDLOnly, DMLOnly, DBOwner\x1aPthis == '' || this in ['ReadOnly', 'ReadWrite', 'DDLOnly', 'DMLOnly', 'DBOwner']\x8a\xa6\x1d\bReadOnlyH\x00R\tprivilege\x88\x01\x01B\f\n" +
@@ -775,21 +775,21 @@ func file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_rawDes
 
 var file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_goTypes = []any{
-	(*AlicloudRdsInstanceSpec)(nil),     // 0: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsInstanceSpec
-	(*AlicloudRdsParameter)(nil),        // 1: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsParameter
-	(*AlicloudRdsDatabase)(nil),         // 2: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsDatabase
-	(*AlicloudRdsAccount)(nil),          // 3: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsAccount
-	(*AlicloudRdsAccountPrivilege)(nil), // 4: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsAccountPrivilege
-	nil,                                 // 5: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsInstanceSpec.TagsEntry
+	(*AliCloudRdsInstanceSpec)(nil),     // 0: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsInstanceSpec
+	(*AliCloudRdsParameter)(nil),        // 1: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsParameter
+	(*AliCloudRdsDatabase)(nil),         // 2: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsDatabase
+	(*AliCloudRdsAccount)(nil),          // 3: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsAccount
+	(*AliCloudRdsAccountPrivilege)(nil), // 4: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsAccountPrivilege
+	nil,                                 // 5: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsInstanceSpec.TagsEntry
 	(*v1.StringValueOrRef)(nil),         // 6: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_depIdxs = []int32{
-	6, // 0: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsInstanceSpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	5, // 1: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsInstanceSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsInstanceSpec.TagsEntry
-	1, // 2: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsInstanceSpec.parameters:type_name -> org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsParameter
-	2, // 3: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsInstanceSpec.databases:type_name -> org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsDatabase
-	3, // 4: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsInstanceSpec.accounts:type_name -> org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsAccount
-	4, // 5: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsAccount.privileges:type_name -> org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AlicloudRdsAccountPrivilege
+	6, // 0: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsInstanceSpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	5, // 1: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsInstanceSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsInstanceSpec.TagsEntry
+	1, // 2: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsInstanceSpec.parameters:type_name -> org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsParameter
+	2, // 3: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsInstanceSpec.databases:type_name -> org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsDatabase
+	3, // 4: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsInstanceSpec.accounts:type_name -> org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsAccount
+	4, // 5: org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsAccount.privileges:type_name -> org.openmcf.provider.alicloud.alicloudrdsinstance.v1.AliCloudRdsAccountPrivilege
 	6, // [6:6] is the sub-list for method output_type
 	6, // [6:6] is the sub-list for method input_type
 	6, // [6:6] is the sub-list for extension type_name

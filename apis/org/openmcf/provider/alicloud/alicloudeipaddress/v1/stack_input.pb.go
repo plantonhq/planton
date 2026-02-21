@@ -23,30 +23,30 @@ const (
 )
 
 // alicloud-eip-address stack-input
-type AlicloudEipAddressStackInput struct {
+type AliCloudEipAddressStackInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target cloud-resource
-	Target *AlicloudEipAddress `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
+	Target *AliCloudEipAddress `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
-	ProviderConfig *alicloud.AlicloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
+	ProviderConfig *alicloud.AliCloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudEipAddressStackInput) Reset() {
-	*x = AlicloudEipAddressStackInput{}
+func (x *AliCloudEipAddressStackInput) Reset() {
+	*x = AliCloudEipAddressStackInput{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudEipAddressStackInput) String() string {
+func (x *AliCloudEipAddressStackInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudEipAddressStackInput) ProtoMessage() {}
+func (*AliCloudEipAddressStackInput) ProtoMessage() {}
 
-func (x *AlicloudEipAddressStackInput) ProtoReflect() protoreflect.Message {
+func (x *AliCloudEipAddressStackInput) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AlicloudEipAddressStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudEipAddressStackInput.ProtoReflect.Descriptor instead.
-func (*AlicloudEipAddressStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudEipAddressStackInput.ProtoReflect.Descriptor instead.
+func (*AliCloudEipAddressStackInput) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudEipAddressStackInput) GetTarget() *AlicloudEipAddress {
+func (x *AliCloudEipAddressStackInput) GetTarget() *AliCloudEipAddress {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AlicloudEipAddressStackInput) GetProviderConfig() *alicloud.AlicloudProviderConfig {
+func (x *AliCloudEipAddressStackInput) GetProviderConfig() *alicloud.AliCloudProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,9 +82,9 @@ var File_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_input_proto p
 const file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_input_proto_rawDesc = "" +
 	"\n" +
 	"Eorg/openmcf/provider/alicloud/alicloudeipaddress/v1/stack_input.proto\x123org.openmcf.provider.alicloud.alicloudeipaddress.v1\x1a=org/openmcf/provider/alicloud/alicloudeipaddress/v1/api.proto\x1a,org/openmcf/provider/alicloud/provider.proto\"\xdf\x01\n" +
-	"\x1cAlicloudEipAddressStackInput\x12_\n" +
-	"\x06target\x18\x01 \x01(\v2G.org.openmcf.provider.alicloud.alicloudeipaddress.v1.AlicloudEipAddressR\x06target\x12^\n" +
-	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigR\x0eproviderConfigB\xa9\x03\n" +
+	"\x1cAliCloudEipAddressStackInput\x12_\n" +
+	"\x06target\x18\x01 \x01(\v2G.org.openmcf.provider.alicloud.alicloudeipaddress.v1.AliCloudEipAddressR\x06target\x12^\n" +
+	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigR\x0eproviderConfigB\xa9\x03\n" +
 	"7com.org.openmcf.provider.alicloud.alicloudeipaddress.v1B\x0fStackInputProtoP\x01Zjgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudeipaddress/v1;alicloudeipaddressv1\xa2\x02\x05OOPAA\xaa\x023Org.Openmcf.Provider.Alicloud.Alicloudeipaddress.V1\xca\x023Org\\Openmcf\\Provider\\Alicloud\\Alicloudeipaddress\\V1\xe2\x02?Org\\Openmcf\\Provider\\Alicloud\\Alicloudeipaddress\\V1\\GPBMetadata\xea\x028Org::Openmcf::Provider::Alicloud::Alicloudeipaddress::V1b\x06proto3"
 
 var (
@@ -101,13 +101,13 @@ func file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_input_proto_
 
 var file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_input_proto_goTypes = []any{
-	(*AlicloudEipAddressStackInput)(nil),    // 0: org.openmcf.provider.alicloud.alicloudeipaddress.v1.AlicloudEipAddressStackInput
-	(*AlicloudEipAddress)(nil),              // 1: org.openmcf.provider.alicloud.alicloudeipaddress.v1.AlicloudEipAddress
-	(*alicloud.AlicloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AlicloudProviderConfig
+	(*AliCloudEipAddressStackInput)(nil),    // 0: org.openmcf.provider.alicloud.alicloudeipaddress.v1.AliCloudEipAddressStackInput
+	(*AliCloudEipAddress)(nil),              // 1: org.openmcf.provider.alicloud.alicloudeipaddress.v1.AliCloudEipAddress
+	(*alicloud.AliCloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AliCloudProviderConfig
 }
 var file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_input_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudeipaddress.v1.AlicloudEipAddressStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudeipaddress.v1.AlicloudEipAddress
-	2, // 1: org.openmcf.provider.alicloud.alicloudeipaddress.v1.AlicloudEipAddressStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
+	1, // 0: org.openmcf.provider.alicloud.alicloudeipaddress.v1.AliCloudEipAddressStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudeipaddress.v1.AliCloudEipAddress
+	2, // 1: org.openmcf.provider.alicloud.alicloudeipaddress.v1.AliCloudEipAddressStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

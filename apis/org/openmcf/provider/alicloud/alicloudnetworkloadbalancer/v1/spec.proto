@@ -6,7 +6,7 @@ import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudNetworkLoadBalancerSpec defines the configuration for an Alibaba Cloud
+// AliCloudNetworkLoadBalancerSpec defines the configuration for an Alibaba Cloud
 // Network Load Balancer (NLB) with bundled server groups and listeners.
 //
 // NLB is a modern Layer 4 load balancer for TCP, UDP, and TCPSSL traffic,
@@ -25,7 +25,7 @@ import "org/openmcf/shared/options/options.proto";
 // Provider resources:
 //   Terraform: alicloud_nlb_load_balancer + alicloud_nlb_server_group + alicloud_nlb_listener
 //   Pulumi:    nlb.LoadBalancer + nlb.ServerGroup + nlb.Listener
-message AlicloudNetworkLoadBalancerSpec {
+message AliCloudNetworkLoadBalancerSpec {
   // Alibaba Cloud region where the NLB will be created.
   // Must match the region of the VPC and VSwitches.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -38,7 +38,7 @@ message AlicloudNetworkLoadBalancerSpec {
   // and server groups must reside in the same VPC.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 2 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
   ];
 
@@ -67,7 +67,7 @@ message AlicloudNetworkLoadBalancerSpec {
   // Availability zone mappings. Each mapping places an NLB node in a zone
   // with a VSwitch for IP allocation. NLB requires at least 2 zones for
   // high availability.
-  repeated AlicloudNetworkLoadBalancerZoneMapping zone_mappings = 5 [
+  repeated AliCloudNetworkLoadBalancerZoneMapping zone_mappings = 5 [
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 2
   ];
@@ -91,17 +91,17 @@ message AlicloudNetworkLoadBalancerSpec {
   //
   // Server groups are created empty -- backend membership is managed
   // externally (by ACK service controllers, manual attachment, etc.).
-  repeated AlicloudNetworkLoadBalancerServerGroup server_groups = 9;
+  repeated AliCloudNetworkLoadBalancerServerGroup server_groups = 9;
 
   // Listeners that define how the NLB accepts incoming traffic.
   // Each listener binds to a port and protocol and forwards traffic
   // directly to a server group. TCPSSL listeners support TLS termination.
-  repeated AlicloudNetworkLoadBalancerListener listeners = 10;
+  repeated AliCloudNetworkLoadBalancerListener listeners = 10;
 }
 
-// AlicloudNetworkLoadBalancerZoneMapping associates an availability zone with a VSwitch.
+// AliCloudNetworkLoadBalancerZoneMapping associates an availability zone with a VSwitch.
 // The NLB places a node in each mapped zone for high availability.
-message AlicloudNetworkLoadBalancerZoneMapping {
+message AliCloudNetworkLoadBalancerZoneMapping {
   // Availability zone ID within the region.
   // Examples: "cn-hangzhou-a", "cn-hangzhou-b", "us-west-1-a".
   string zone_id = 1 [
@@ -113,7 +113,7 @@ message AlicloudNetworkLoadBalancerZoneMapping {
   // this VSwitch. Must belong to the same VPC as the NLB's vpc_id.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 2 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
   ];
 
@@ -122,15 +122,15 @@ message AlicloudNetworkLoadBalancerZoneMapping {
   // (e.g., database access, game servers, DNS A-records).
   // If omitted, Alibaba Cloud auto-assigns IPs.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef allocation_id = 3 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudEipAddress,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudEipAddress,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.eip_id"
   ];
 }
 
-// AlicloudNetworkLoadBalancerServerGroup defines a backend target group with health check
+// AliCloudNetworkLoadBalancerServerGroup defines a backend target group with health check
 // and connection management configuration. Server groups are created empty --
 // backend membership is managed externally.
-message AlicloudNetworkLoadBalancerServerGroup {
+message AliCloudNetworkLoadBalancerServerGroup {
   // Server group name. 2-128 characters; must start with a letter.
   // Used by listeners to reference this server group via server_group_name.
   string name = 1 [
@@ -192,11 +192,11 @@ message AlicloudNetworkLoadBalancerServerGroup {
   optional bool preserve_client_ip_enabled = 6 [(org.openmcf.shared.options.default) = "true"];
 
   // Health check configuration. Required for every server group.
-  AlicloudNetworkLoadBalancerHealthCheckConfig health_check = 7 [(buf.validate.field).required = true];
+  AliCloudNetworkLoadBalancerHealthCheckConfig health_check = 7 [(buf.validate.field).required = true];
 }
 
-// AlicloudNetworkLoadBalancerHealthCheckConfig defines how the NLB probes backend servers.
-message AlicloudNetworkLoadBalancerHealthCheckConfig {
+// AliCloudNetworkLoadBalancerHealthCheckConfig defines how the NLB probes backend servers.
+message AliCloudNetworkLoadBalancerHealthCheckConfig {
   // Whether health checks are enabled for this server group.
   // When disabled, all servers are considered healthy.
   bool health_check_enabled = 1;
@@ -294,9 +294,9 @@ message AlicloudNetworkLoadBalancerHealthCheckConfig {
   repeated string health_check_http_codes = 11;
 }
 
-// AlicloudNetworkLoadBalancerListener defines how the NLB accepts incoming traffic on a
+// AliCloudNetworkLoadBalancerListener defines how the NLB accepts incoming traffic on a
 // specific port and protocol.
-message AlicloudNetworkLoadBalancerListener {
+message AliCloudNetworkLoadBalancerListener {
   // Port on which the listener accepts traffic.
   // Range: 1-65535. Common values: 80 (TCP), 443 (TCPSSL), 3306 (MySQL).
   int32 listener_port = 1 [

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudvswitch.v1;
 
-// AlicloudVswitchStackOutputs captures the outputs from deploying an
+// AliCloudVswitchStackOutputs captures the outputs from deploying an
 // Alibaba Cloud VSwitch.
-message AlicloudVswitchStackOutputs {
+message AliCloudVswitchStackOutputs {
   // The VSwitch ID assigned by Alibaba Cloud.
   // Referenced by downstream components (NatGateway, EcsInstance, AckManagedCluster,
   // RdsInstance, PolardbCluster, RedisInstance, etc.) via StringValueOrRef.

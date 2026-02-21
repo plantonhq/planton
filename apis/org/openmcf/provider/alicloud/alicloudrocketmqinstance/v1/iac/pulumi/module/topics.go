@@ -12,7 +12,7 @@ func topic(
 	ctx *pulumi.Context,
 	provider *alicloud.Provider,
 	instance *rocketmq.RocketMQInstance,
-	t *alicloudrocketmqinstancev1.AlicloudRocketmqTopic,
+	t *alicloudrocketmqinstancev1.AliCloudRocketmqTopic,
 ) (*rocketmq.RocketMQTopic, error) {
 	args := &rocketmq.RocketMQTopicArgs{
 		InstanceId:  instance.ID(),

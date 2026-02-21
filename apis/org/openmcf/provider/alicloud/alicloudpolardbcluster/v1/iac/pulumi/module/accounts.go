@@ -14,7 +14,7 @@ func account(
 	ctx *pulumi.Context,
 	provider *alicloud.Provider,
 	cluster *polardb.Cluster,
-	acct *alicloudpolardbclusterv1.AlicloudPolardbAccount,
+	acct *alicloudpolardbclusterv1.AliCloudPolardbAccount,
 ) error {
 	args := &polardb.AccountArgs{
 		DbClusterId:     cluster.ID(),

@@ -6,7 +6,7 @@ import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudMongodbInstanceSpec defines the configuration for an Alibaba Cloud
+// AliCloudMongodbInstanceSpec defines the configuration for an Alibaba Cloud
 // MongoDB replica-set instance.
 //
 // MongoDB is a managed NoSQL document database used for content management,
@@ -21,7 +21,7 @@ import "org/openmcf/shared/options/options.proto";
 // Provider resources:
 //   Terraform: alicloud_mongodb_instance
 //   Pulumi:    mongodb.Instance
-message AlicloudMongodbInstanceSpec {
+message AliCloudMongodbInstanceSpec {
   // Alibaba Cloud region where the MongoDB instance will be created.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
   string region = 1 [
@@ -33,7 +33,7 @@ message AlicloudMongodbInstanceSpec {
   // the VPC and availability zone from the VSwitch.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 2 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
   ];
 

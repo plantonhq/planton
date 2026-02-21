@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudpolardbcluster.v1;
 
-// AlicloudPolardbClusterStackOutputs captures the outputs from deploying an
+// AliCloudPolardbClusterStackOutputs captures the outputs from deploying an
 // Alibaba Cloud PolarDB cluster with its databases and accounts.
-message AlicloudPolardbClusterStackOutputs {
+message AliCloudPolardbClusterStackOutputs {
   // The PolarDB cluster ID assigned by Alibaba Cloud (e.g., "pc-xxxxx").
   string cluster_id = 1;
 

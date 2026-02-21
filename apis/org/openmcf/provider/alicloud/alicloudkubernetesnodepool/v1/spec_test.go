@@ -11,9 +11,9 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func TestAlicloudKubernetesNodePoolSpec(t *testing.T) {
+func TestAliCloudKubernetesNodePoolSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
-	ginkgo.RunSpecs(t, "AlicloudKubernetesNodePoolSpec Validation Tests")
+	ginkgo.RunSpecs(t, "AliCloudKubernetesNodePoolSpec Validation Tests")
 }
 
 func strRef(s string) *fkv1.StringValueOrRef {
@@ -22,8 +22,8 @@ func strRef(s string) *fkv1.StringValueOrRef {
 	}
 }
 
-func minimalValidSpec() *AlicloudKubernetesNodePoolSpec {
-	return &AlicloudKubernetesNodePoolSpec{
+func minimalValidSpec() *AliCloudKubernetesNodePoolSpec {
+	return &AliCloudKubernetesNodePoolSpec{
 		Region:        "cn-hangzhou",
 		ClusterId:     strRef("c-abc123"),
 		Name:          "default-pool",
@@ -32,16 +32,16 @@ func minimalValidSpec() *AlicloudKubernetesNodePoolSpec {
 	}
 }
 
-func minimalValidInput() *AlicloudKubernetesNodePool {
-	return &AlicloudKubernetesNodePool{
+func minimalValidInput() *AliCloudKubernetesNodePool {
+	return &AliCloudKubernetesNodePool{
 		ApiVersion: "alicloud.openmcf.org/v1",
-		Kind:       "AlicloudKubernetesNodePool",
+		Kind:       "AliCloudKubernetesNodePool",
 		Metadata:   &shared.CloudResourceMetadata{Name: "test-pool"},
 		Spec:       minimalValidSpec(),
 	}
 }
 
-var _ = ginkgo.Describe("AlicloudKubernetesNodePoolSpec Validation Tests", func() {
+var _ = ginkgo.Describe("AliCloudKubernetesNodePoolSpec Validation Tests", func() {
 
 	ginkgo.Describe("valid input", func() {
 
@@ -73,7 +73,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesNodePoolSpec Validation Tests", func(
 
 		ginkgo.It("should pass with system disk configuration", func() {
 			input := minimalValidInput()
-			input.Spec.SystemDisk = &AlicloudKubernetesNodePoolSystemDisk{
+			input.Spec.SystemDisk = &AliCloudKubernetesNodePoolSystemDisk{
 				Category:         proto.String("cloud_essd"),
 				Size:             proto.Int32(200),
 				PerformanceLevel: "PL1",
@@ -86,7 +86,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesNodePoolSpec Validation Tests", func(
 
 		ginkgo.It("should pass with data disks", func() {
 			input := minimalValidInput()
-			input.Spec.DataDisks = []*AlicloudKubernetesNodePoolDataDisk{
+			input.Spec.DataDisks = []*AliCloudKubernetesNodePoolDataDisk{
 				{
 					Category:         proto.String("cloud_essd"),
 					Size:             200,
@@ -104,7 +104,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesNodePoolSpec Validation Tests", func(
 		ginkgo.It("should pass with auto-scaling configuration", func() {
 			input := minimalValidInput()
 			input.Spec.DesiredSize = proto.Int32(2)
-			input.Spec.ScalingConfig = &AlicloudKubernetesNodePoolScalingConfig{
+			input.Spec.ScalingConfig = &AliCloudKubernetesNodePoolScalingConfig{
 				Enable:  proto.Bool(true),
 				MinSize: 1,
 				MaxSize: 10,
@@ -116,7 +116,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesNodePoolSpec Validation Tests", func(
 
 		ginkgo.It("should pass with management configuration", func() {
 			input := minimalValidInput()
-			input.Spec.Management = &AlicloudKubernetesNodePoolManagement{
+			input.Spec.Management = &AliCloudKubernetesNodePoolManagement{
 				Enable:         proto.Bool(true),
 				AutoRepair:     proto.Bool(true),
 				AutoUpgrade:    proto.Bool(true),
@@ -137,7 +137,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesNodePoolSpec Validation Tests", func(
 		ginkgo.It("should pass with spot price limits", func() {
 			input := minimalValidInput()
 			input.Spec.SpotStrategy = proto.String("SpotWithPriceLimit")
-			input.Spec.SpotPriceLimits = []*AlicloudKubernetesNodePoolSpotPriceLimit{
+			input.Spec.SpotPriceLimits = []*AliCloudKubernetesNodePoolSpotPriceLimit{
 				{InstanceType: "ecs.g7.xlarge", PriceLimit: "0.98"},
 			}
 			err := protovalidate.Validate(input)
@@ -150,7 +150,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesNodePoolSpec Validation Tests", func(
 				"workload-type": "compute",
 				"team":          "platform",
 			}
-			input.Spec.Taints = []*AlicloudKubernetesNodePoolTaint{
+			input.Spec.Taints = []*AliCloudKubernetesNodePoolTaint{
 				{Key: "dedicated", Value: "gpu", Effect: "NoSchedule"},
 				{Key: "special", Effect: "PreferNoSchedule"},
 			}
@@ -202,30 +202,30 @@ var _ = ginkgo.Describe("AlicloudKubernetesNodePoolSpec Validation Tests", func(
 			input.Spec.InstanceTypes = []string{"ecs.g7.2xlarge", "ecs.g7.xlarge"}
 			input.Spec.DesiredSize = proto.Int32(6)
 			input.Spec.ImageType = proto.String("AliyunLinux3")
-			input.Spec.SystemDisk = &AlicloudKubernetesNodePoolSystemDisk{
+			input.Spec.SystemDisk = &AliCloudKubernetesNodePoolSystemDisk{
 				Category:         proto.String("cloud_essd"),
 				Size:             proto.Int32(200),
 				PerformanceLevel: "PL1",
 				Encrypted:        proto.Bool(true),
 			}
-			input.Spec.DataDisks = []*AlicloudKubernetesNodePoolDataDisk{
+			input.Spec.DataDisks = []*AliCloudKubernetesNodePoolDataDisk{
 				{Category: proto.String("cloud_essd"), Size: 500, PerformanceLevel: "PL1"},
 			}
 			input.Spec.KeyName = "prod-keypair"
 			input.Spec.Labels = map[string]string{"env": "production", "tier": "compute"}
-			input.Spec.Taints = []*AlicloudKubernetesNodePoolTaint{
+			input.Spec.Taints = []*AliCloudKubernetesNodePoolTaint{
 				{Key: "dedicated", Value: "production", Effect: "NoSchedule"},
 			}
 			input.Spec.CpuPolicy = proto.String("none")
 			input.Spec.RuntimeName = "containerd"
 			input.Spec.InstallCloudMonitor = proto.Bool(true)
-			input.Spec.ScalingConfig = &AlicloudKubernetesNodePoolScalingConfig{
+			input.Spec.ScalingConfig = &AliCloudKubernetesNodePoolScalingConfig{
 				Enable:  proto.Bool(true),
 				MinSize: 3,
 				MaxSize: 20,
 			}
 			input.Spec.MultiAzPolicy = proto.String("BALANCE")
-			input.Spec.Management = &AlicloudKubernetesNodePoolManagement{
+			input.Spec.Management = &AliCloudKubernetesNodePoolManagement{
 				Enable:         proto.Bool(true),
 				AutoRepair:     proto.Bool(true),
 				AutoUpgrade:    proto.Bool(true),
@@ -262,9 +262,9 @@ var _ = ginkgo.Describe("AlicloudKubernetesNodePoolSpec Validation Tests", func(
 		})
 
 		ginkgo.It("should fail when spec is missing", func() {
-			input := &AlicloudKubernetesNodePool{
+			input := &AliCloudKubernetesNodePool{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudKubernetesNodePool",
+				Kind:       "AliCloudKubernetesNodePool",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 			}
 			err := protovalidate.Validate(input)
@@ -374,7 +374,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesNodePoolSpec Validation Tests", func(
 
 		ginkgo.It("should fail when data_disk size is below 40", func() {
 			input := minimalValidInput()
-			input.Spec.DataDisks = []*AlicloudKubernetesNodePoolDataDisk{
+			input.Spec.DataDisks = []*AliCloudKubernetesNodePoolDataDisk{
 				{Size: 10},
 			}
 			err := protovalidate.Validate(input)
@@ -383,7 +383,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesNodePoolSpec Validation Tests", func(
 
 		ginkgo.It("should fail when taint key is empty", func() {
 			input := minimalValidInput()
-			input.Spec.Taints = []*AlicloudKubernetesNodePoolTaint{
+			input.Spec.Taints = []*AliCloudKubernetesNodePoolTaint{
 				{Key: "", Effect: "NoSchedule"},
 			}
 			err := protovalidate.Validate(input)
@@ -392,7 +392,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesNodePoolSpec Validation Tests", func(
 
 		ginkgo.It("should fail when taint effect is invalid", func() {
 			input := minimalValidInput()
-			input.Spec.Taints = []*AlicloudKubernetesNodePoolTaint{
+			input.Spec.Taints = []*AliCloudKubernetesNodePoolTaint{
 				{Key: "dedicated", Effect: "Drain"},
 			}
 			err := protovalidate.Validate(input)
@@ -408,7 +408,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesNodePoolSpec Validation Tests", func(
 
 		ginkgo.It("should fail when system_disk category is invalid", func() {
 			input := minimalValidInput()
-			input.Spec.SystemDisk = &AlicloudKubernetesNodePoolSystemDisk{
+			input.Spec.SystemDisk = &AliCloudKubernetesNodePoolSystemDisk{
 				Category: proto.String("premium_ssd"),
 			}
 			err := protovalidate.Validate(input)
@@ -417,7 +417,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesNodePoolSpec Validation Tests", func(
 
 		ginkgo.It("should fail when scaling_config type is invalid", func() {
 			input := minimalValidInput()
-			input.Spec.ScalingConfig = &AlicloudKubernetesNodePoolScalingConfig{
+			input.Spec.ScalingConfig = &AliCloudKubernetesNodePoolScalingConfig{
 				Enable:  proto.Bool(true),
 				MinSize: 1,
 				MaxSize: 10,

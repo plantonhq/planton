@@ -11,23 +11,23 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func TestAlicloudFunctionSpec(t *testing.T) {
+func TestAliCloudFunctionSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
-	ginkgo.RunSpecs(t, "AlicloudFunctionSpec Validation Tests")
+	ginkgo.RunSpecs(t, "AliCloudFunctionSpec Validation Tests")
 }
 
-var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
+var _ = ginkgo.Describe("AliCloudFunctionSpec Validation Tests", func() {
 
 	ginkgo.Describe("valid input", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "my-func",
 				},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "hello-world",
 					Handler:      "index.handler",
@@ -39,15 +39,15 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with all compute sizing fields", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "compute-func",
 					Org:  "my-org",
 					Env:  "production",
 				},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:              "cn-shanghai",
 					FunctionName:        "data-processor",
 					Handler:             "main",
@@ -72,18 +72,18 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with code from OSS", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "oss-func",
 				},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "oss-handler",
 					Handler:      "index.handler",
 					Runtime:      "nodejs20",
-					Code: &AlicloudFunctionCode{
+					Code: &AliCloudFunctionCode{
 						OssBucketName: "my-code-bucket",
 						OssObjectName: "functions/handler.zip",
 					},
@@ -94,18 +94,18 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with VPC configuration", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "vpc-func",
 				},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "db-reader",
 					Handler:      "index.handler",
 					Runtime:      "python3.10",
-					VpcConfig: &AlicloudFunctionVpcConfig{
+					VpcConfig: &AliCloudFunctionVpcConfig{
 						VpcId: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "vpc-123"},
 						},
@@ -125,18 +125,18 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with log configuration", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "logged-func",
 				},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "logged-handler",
 					Handler:      "index.handler",
 					Runtime:      "python3.12",
-					LogConfig: &AlicloudFunctionLogConfig{
+					LogConfig: &AliCloudFunctionLogConfig{
 						Project: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my-sls-project"},
 						},
@@ -152,25 +152,25 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with custom container configuration", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "container-func",
 				},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "container-handler",
 					Handler:      "not-used",
 					Runtime:      "custom-container",
 					Cpu:          proto.Float64(4.0),
 					MemorySize:   proto.Int32(8192),
-					CustomContainerConfig: &AlicloudFunctionCustomContainerConfig{
+					CustomContainerConfig: &AliCloudFunctionCustomContainerConfig{
 						Image:      "registry.cn-hangzhou.aliyuncs.com/my-ns/my-func:v1",
 						Entrypoint: []string{"/app/entrypoint.sh"},
 						Command:    []string{"serve"},
 						Port:       proto.Int32(8080),
-						HealthCheckConfig: &AlicloudFunctionHealthCheckConfig{
+						HealthCheckConfig: &AliCloudFunctionHealthCheckConfig{
 							HttpGetUrl:          "/healthz",
 							InitialDelaySeconds: proto.Int32(5),
 							PeriodSeconds:       proto.Int32(10),
@@ -186,18 +186,18 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with custom runtime configuration", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "custom-rt-func",
 				},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "custom-runtime-handler",
 					Handler:      "index.handler",
 					Runtime:      "custom.debian12",
-					CustomRuntimeConfig: &AlicloudFunctionCustomRuntimeConfig{
+					CustomRuntimeConfig: &AliCloudFunctionCustomRuntimeConfig{
 						Command: []string{"./bootstrap"},
 						Args:    []string{"--port", "9000"},
 						Port:    proto.Int32(9000),
@@ -209,23 +209,23 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with lifecycle hooks", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "lifecycle-func",
 				},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "lifecycle-handler",
 					Handler:      "index.handler",
 					Runtime:      "python3.12",
-					InstanceLifecycleConfig: &AlicloudFunctionInstanceLifecycleConfig{
-						Initializer: &AlicloudFunctionLifecycleHook{
+					InstanceLifecycleConfig: &AliCloudFunctionInstanceLifecycleConfig{
+						Initializer: &AliCloudFunctionLifecycleHook{
 							Handler: "index.initializer",
 							Timeout: proto.Int32(30),
 						},
-						PreStop: &AlicloudFunctionLifecycleHook{
+						PreStop: &AliCloudFunctionLifecycleHook{
 							Handler: "index.pre_stop",
 							Timeout: proto.Int32(15),
 						},
@@ -237,21 +237,21 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with NAS configuration", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "nas-func",
 				},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "nas-handler",
 					Handler:      "index.handler",
 					Runtime:      "python3.12",
-					NasConfig: &AlicloudFunctionNasConfig{
+					NasConfig: &AliCloudFunctionNasConfig{
 						UserId:  proto.Int32(0),
 						GroupId: proto.Int32(0),
-						MountPoints: []*AlicloudFunctionNasMountPoint{
+						MountPoints: []*AliCloudFunctionNasMountPoint{
 							{
 								ServerAddr: "0f2a1b2c3d-abc12.cn-hangzhou.nas.aliyuncs.com:/data",
 								MountDir:   "/mnt/data",
@@ -266,18 +266,18 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with GPU configuration", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "gpu-func",
 				},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "inference",
 					Handler:      "index.handler",
 					Runtime:      "custom.debian12",
-					GpuConfig: &AlicloudFunctionGpuConfig{
+					GpuConfig: &AliCloudFunctionGpuConfig{
 						GpuMemorySize: 8192,
 						GpuType:       "fc.gpu.ampere.1",
 					},
@@ -296,11 +296,11 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 				"custom-container",
 			}
 			for _, rt := range runtimes {
-				input := &AlicloudFunction{
+				input := &AliCloudFunction{
 					ApiVersion: "alicloud.openmcf.org/v1",
-					Kind:       "AlicloudFunction",
+					Kind:       "AliCloudFunction",
 					Metadata:   &shared.CloudResourceMetadata{Name: "rt-test"},
-					Spec: &AlicloudFunctionSpec{
+					Spec: &AliCloudFunctionSpec{
 						Region:       "cn-hangzhou",
 						FunctionName: "test-" + rt,
 						Handler:      "index.handler",
@@ -313,13 +313,13 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with layers and role reference", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "layered-func",
 				},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "layered-handler",
 					Handler:      "index.handler",
@@ -339,11 +339,11 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with compute sizing at boundary values", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "boundary-func"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:              "cn-hangzhou",
 					FunctionName:        "boundary",
 					Handler:             "index.handler",
@@ -370,11 +370,11 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 	ginkgo.Describe("invalid input", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					FunctionName: "test",
 					Handler:      "index.handler",
 					Runtime:      "python3.12",
@@ -385,11 +385,11 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when function_name is missing", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:  "cn-hangzhou",
 					Handler: "index.handler",
 					Runtime: "python3.12",
@@ -400,11 +400,11 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when handler is missing", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "test",
 					Runtime:      "python3.12",
@@ -415,11 +415,11 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when runtime is missing", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "test",
 					Handler:      "index.handler",
@@ -430,11 +430,11 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when runtime is invalid", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "test",
 					Handler:      "index.handler",
@@ -446,11 +446,11 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when api_version is wrong", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "wrong/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "test",
 					Handler:      "index.handler",
@@ -462,11 +462,11 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when kind is wrong", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "test",
 					Handler:      "index.handler",
@@ -478,10 +478,10 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when metadata is missing", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
-				Spec: &AlicloudFunctionSpec{
+				Kind:       "AliCloudFunction",
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "test",
 					Handler:      "index.handler",
@@ -493,11 +493,11 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when cpu is below minimum", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "test",
 					Handler:      "index.handler",
@@ -510,11 +510,11 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when cpu exceeds maximum", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "test",
 					Handler:      "index.handler",
@@ -527,11 +527,11 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when memory_size is below minimum", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "test",
 					Handler:      "index.handler",
@@ -544,11 +544,11 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when timeout exceeds maximum", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "test",
 					Handler:      "index.handler",
@@ -561,11 +561,11 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when disk_size is below minimum", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "test",
 					Handler:      "index.handler",
@@ -578,11 +578,11 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when instance_concurrency exceeds maximum", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:              "cn-hangzhou",
 					FunctionName:        "test",
 					Handler:             "index.handler",
@@ -599,11 +599,11 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 			for i := 0; i < 130; i++ {
 				longName += "a"
 			}
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: longName,
 					Handler:      "index.handler",
@@ -615,16 +615,16 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when gpu_type is invalid", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "test",
 					Handler:      "index.handler",
 					Runtime:      "python3.12",
-					GpuConfig: &AlicloudFunctionGpuConfig{
+					GpuConfig: &AliCloudFunctionGpuConfig{
 						GpuMemorySize: 8192,
 						GpuType:       "nvidia.a100",
 					},
@@ -635,16 +635,16 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when log_begin_rule is invalid", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "test",
 					Handler:      "index.handler",
 					Runtime:      "python3.12",
-					LogConfig: &AlicloudFunctionLogConfig{
+					LogConfig: &AliCloudFunctionLogConfig{
 						LogBeginRule: proto.String("CustomRegex"),
 					},
 				},
@@ -654,16 +654,16 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when custom_container_config image is empty", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "test",
 					Handler:      "not-used",
 					Runtime:      "custom-container",
-					CustomContainerConfig: &AlicloudFunctionCustomContainerConfig{
+					CustomContainerConfig: &AliCloudFunctionCustomContainerConfig{
 						Image: "",
 					},
 				},
@@ -673,18 +673,18 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when health check initial_delay_seconds exceeds maximum", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "test",
 					Handler:      "not-used",
 					Runtime:      "custom-container",
-					CustomContainerConfig: &AlicloudFunctionCustomContainerConfig{
+					CustomContainerConfig: &AliCloudFunctionCustomContainerConfig{
 						Image: "registry.cn-hangzhou.aliyuncs.com/ns/img:v1",
-						HealthCheckConfig: &AlicloudFunctionHealthCheckConfig{
+						HealthCheckConfig: &AliCloudFunctionHealthCheckConfig{
 							InitialDelaySeconds: proto.Int32(200),
 						},
 					},
@@ -695,17 +695,17 @@ var _ = ginkgo.Describe("AlicloudFunctionSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when NAS mount_dir is empty", func() {
-			input := &AlicloudFunction{
+			input := &AliCloudFunction{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudFunction",
+				Kind:       "AliCloudFunction",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudFunctionSpec{
+				Spec: &AliCloudFunctionSpec{
 					Region:       "cn-hangzhou",
 					FunctionName: "test",
 					Handler:      "index.handler",
 					Runtime:      "python3.12",
-					NasConfig: &AlicloudFunctionNasConfig{
-						MountPoints: []*AlicloudFunctionNasMountPoint{
+					NasConfig: &AliCloudFunctionNasConfig{
+						MountPoints: []*AliCloudFunctionNasMountPoint{
 							{
 								ServerAddr: "addr",
 								MountDir:   "",

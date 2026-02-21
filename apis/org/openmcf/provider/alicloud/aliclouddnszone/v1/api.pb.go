@@ -24,7 +24,7 @@ const (
 )
 
 // alicloud-dns-zone
-type AlicloudDnsZone struct {
+type AliCloudDnsZone struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
@@ -33,27 +33,27 @@ type AlicloudDnsZone struct {
 	// metadata
 	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
-	Spec *AlicloudDnsZoneSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec *AliCloudDnsZoneSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
-	Status        *AlicloudDnsZoneStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *AliCloudDnsZoneStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudDnsZone) Reset() {
-	*x = AlicloudDnsZone{}
+func (x *AliCloudDnsZone) Reset() {
+	*x = AliCloudDnsZone{}
 	mi := &file_org_openmcf_provider_alicloud_aliclouddnszone_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudDnsZone) String() string {
+func (x *AliCloudDnsZone) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudDnsZone) ProtoMessage() {}
+func (*AliCloudDnsZone) ProtoMessage() {}
 
-func (x *AlicloudDnsZone) ProtoReflect() protoreflect.Message {
+func (x *AliCloudDnsZone) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_aliclouddnszone_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AlicloudDnsZone) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudDnsZone.ProtoReflect.Descriptor instead.
-func (*AlicloudDnsZone) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudDnsZone.ProtoReflect.Descriptor instead.
+func (*AliCloudDnsZone) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_aliclouddnszone_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudDnsZone) GetApiVersion() string {
+func (x *AliCloudDnsZone) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *AlicloudDnsZone) GetKind() string {
+func (x *AliCloudDnsZone) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AlicloudDnsZone) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AliCloudDnsZone) GetMetadata() *shared.CloudResourceMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *AlicloudDnsZone) GetSpec() *AlicloudDnsZoneSpec {
+func (x *AliCloudDnsZone) GetSpec() *AliCloudDnsZoneSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-func (x *AlicloudDnsZone) GetStatus() *AlicloudDnsZoneStatus {
+func (x *AliCloudDnsZone) GetStatus() *AliCloudDnsZoneStatus {
 	if x != nil {
 		return x.Status
 	}
@@ -106,28 +106,28 @@ func (x *AlicloudDnsZone) GetStatus() *AlicloudDnsZoneStatus {
 }
 
 // alicloud-dns-zone status
-type AlicloudDnsZoneStatus struct {
+type AliCloudDnsZoneStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// stack-outputs
-	Outputs       *AlicloudDnsZoneStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AliCloudDnsZoneStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudDnsZoneStatus) Reset() {
-	*x = AlicloudDnsZoneStatus{}
+func (x *AliCloudDnsZoneStatus) Reset() {
+	*x = AliCloudDnsZoneStatus{}
 	mi := &file_org_openmcf_provider_alicloud_aliclouddnszone_v1_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudDnsZoneStatus) String() string {
+func (x *AliCloudDnsZoneStatus) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudDnsZoneStatus) ProtoMessage() {}
+func (*AliCloudDnsZoneStatus) ProtoMessage() {}
 
-func (x *AlicloudDnsZoneStatus) ProtoReflect() protoreflect.Message {
+func (x *AliCloudDnsZoneStatus) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_aliclouddnszone_v1_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,12 +139,12 @@ func (x *AlicloudDnsZoneStatus) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudDnsZoneStatus.ProtoReflect.Descriptor instead.
-func (*AlicloudDnsZoneStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudDnsZoneStatus.ProtoReflect.Descriptor instead.
+func (*AliCloudDnsZoneStatus) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_aliclouddnszone_v1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudDnsZoneStatus) GetOutputs() *AlicloudDnsZoneStackOutputs {
+func (x *AliCloudDnsZoneStatus) GetOutputs() *AliCloudDnsZoneStackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -156,17 +156,17 @@ var File_org_openmcf_provider_alicloud_aliclouddnszone_v1_api_proto protoreflect
 const file_org_openmcf_provider_alicloud_aliclouddnszone_v1_api_proto_rawDesc = "" +
 	"\n" +
 	":org/openmcf/provider/alicloud/aliclouddnszone/v1/api.proto\x120org.openmcf.provider.alicloud.aliclouddnszone.v1\x1a\x1bbuf/validate/validate.proto\x1a;org/openmcf/provider/alicloud/aliclouddnszone/v1/spec.proto\x1aDorg/openmcf/provider/alicloud/aliclouddnszone/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\x91\x03\n" +
-	"\x0fAlicloudDnsZone\x12?\n" +
+	"\x0fAliCloudDnsZone\x12?\n" +
 	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
-	"\x0fAlicloudDnsZoneR\x04kind\x12M\n" +
+	"\x0fAliCloudDnsZoneR\x04kind\x12M\n" +
 	"\bmetadata\x18\x03 \x01(\v2).org.openmcf.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
-	"\x04spec\x18\x04 \x01(\v2E.org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12_\n" +
-	"\x06status\x18\x05 \x01(\v2G.org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneStatusR\x06status\"\x80\x01\n" +
-	"\x15AlicloudDnsZoneStatus\x12g\n" +
-	"\aoutputs\x18\x01 \x01(\v2M.org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneStackOutputsR\aoutputsB\x8d\x03\n" +
+	"\x04spec\x18\x04 \x01(\v2E.org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12_\n" +
+	"\x06status\x18\x05 \x01(\v2G.org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneStatusR\x06status\"\x80\x01\n" +
+	"\x15AliCloudDnsZoneStatus\x12g\n" +
+	"\aoutputs\x18\x01 \x01(\v2M.org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneStackOutputsR\aoutputsB\x8d\x03\n" +
 	"4com.org.openmcf.provider.alicloud.aliclouddnszone.v1B\bApiProtoP\x01Zdgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/aliclouddnszone/v1;aliclouddnszonev1\xa2\x02\x05OOPAA\xaa\x020Org.Openmcf.Provider.Alicloud.Aliclouddnszone.V1\xca\x020Org\\Openmcf\\Provider\\Alicloud\\Aliclouddnszone\\V1\xe2\x02<Org\\Openmcf\\Provider\\Alicloud\\Aliclouddnszone\\V1\\GPBMetadata\xea\x025Org::Openmcf::Provider::Alicloud::Aliclouddnszone::V1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_org_openmcf_provider_alicloud_aliclouddnszone_v1_api_proto_rawDescGZIP
 
 var file_org_openmcf_provider_alicloud_aliclouddnszone_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_aliclouddnszone_v1_api_proto_goTypes = []any{
-	(*AlicloudDnsZone)(nil),              // 0: org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZone
-	(*AlicloudDnsZoneStatus)(nil),        // 1: org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneStatus
+	(*AliCloudDnsZone)(nil),              // 0: org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZone
+	(*AliCloudDnsZoneStatus)(nil),        // 1: org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneStatus
 	(*shared.CloudResourceMetadata)(nil), // 2: org.openmcf.shared.CloudResourceMetadata
-	(*AlicloudDnsZoneSpec)(nil),          // 3: org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneSpec
-	(*AlicloudDnsZoneStackOutputs)(nil),  // 4: org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneStackOutputs
+	(*AliCloudDnsZoneSpec)(nil),          // 3: org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneSpec
+	(*AliCloudDnsZoneStackOutputs)(nil),  // 4: org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneStackOutputs
 }
 var file_org_openmcf_provider_alicloud_aliclouddnszone_v1_api_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZone.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
-	3, // 1: org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZone.spec:type_name -> org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneSpec
-	1, // 2: org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZone.status:type_name -> org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneStatus
-	4, // 3: org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneStatus.outputs:type_name -> org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneStackOutputs
+	2, // 0: org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZone.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
+	3, // 1: org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZone.spec:type_name -> org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneSpec
+	1, // 2: org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZone.status:type_name -> org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneStatus
+	4, // 3: org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneStatus.outputs:type_name -> org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneStackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

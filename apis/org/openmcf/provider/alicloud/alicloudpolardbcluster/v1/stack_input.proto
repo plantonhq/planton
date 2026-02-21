@@ -6,9 +6,9 @@ import "org/openmcf/provider/alicloud/alicloudpolardbcluster/v1/api.proto";
 import "org/openmcf/provider/alicloud/provider.proto";
 
 // alicloud-polardb-cluster stack-input
-message AlicloudPolardbClusterStackInput {
+message AliCloudPolardbClusterStackInput {
   // target cloud-resource
-  AlicloudPolardbCluster target = 1;
+  AliCloudPolardbCluster target = 1;
   // provider-config
-  org.openmcf.provider.alicloud.AlicloudProviderConfig provider_config = 2;
+  org.openmcf.provider.alicloud.AliCloudProviderConfig provider_config = 2;
 }

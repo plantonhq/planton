@@ -5,7 +5,7 @@ package org.openmcf.provider.alicloud.alicloudrampolicy.v1;
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudRamPolicySpec defines the configuration for an Alibaba Cloud
+// AliCloudRamPolicySpec defines the configuration for an Alibaba Cloud
 // Resource Access Management (RAM) custom policy.
 //
 // A RAM policy is a JSON document that defines a set of permissions (actions
@@ -17,7 +17,7 @@ import "org/openmcf/shared/options/options.proto";
 // Alibaba Cloud supports up to 5 versions per policy. When a policy is updated,
 // a new version is created and set as the default. The rotate_strategy field
 // controls what happens when the version limit is reached.
-message AlicloudRamPolicySpec {
+message AliCloudRamPolicySpec {
   // Alibaba Cloud region for provider endpoint configuration.
   // RAM is a global service, but the provider requires a region for API routing.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".

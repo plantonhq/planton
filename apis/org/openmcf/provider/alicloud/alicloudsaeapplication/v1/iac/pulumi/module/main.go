@@ -8,9 +8,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *alicloudsaeapplicationv1.AlicloudSaeApplicationStackInput) error {
+func Resources(ctx *pulumi.Context, stackInput *alicloudsaeapplicationv1.AliCloudSaeApplicationStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
-	spec := locals.AlicloudSaeApplication.Spec
+	spec := locals.AliCloudSaeApplication.Spec
 
 	alicloudProvider, err := alicloud.NewProvider(ctx, "alicloud", &alicloud.ProviderArgs{
 		Region: pulumi.String(spec.Region),
@@ -130,7 +130,7 @@ func Resources(ctx *pulumi.Context, stackInput *alicloudsaeapplicationv1.Aliclou
 	return nil
 }
 
-func healthCheckArgs(hc *alicloudsaeapplicationv1.AlicloudSaeApplicationHealthCheck) sae.ApplicationLivenessV2PtrInput {
+func healthCheckArgs(hc *alicloudsaeapplicationv1.AliCloudSaeApplicationHealthCheck) sae.ApplicationLivenessV2PtrInput {
 	args := &sae.ApplicationLivenessV2Args{}
 
 	if hc.HttpGet != nil {
@@ -168,7 +168,7 @@ func healthCheckArgs(hc *alicloudsaeapplicationv1.AlicloudSaeApplicationHealthCh
 	return args
 }
 
-func readinessCheckArgs(hc *alicloudsaeapplicationv1.AlicloudSaeApplicationHealthCheck) sae.ApplicationReadinessV2PtrInput {
+func readinessCheckArgs(hc *alicloudsaeapplicationv1.AliCloudSaeApplicationHealthCheck) sae.ApplicationReadinessV2PtrInput {
 	args := &sae.ApplicationReadinessV2Args{}
 
 	if hc.HttpGet != nil {
@@ -206,7 +206,7 @@ func readinessCheckArgs(hc *alicloudsaeapplicationv1.AlicloudSaeApplicationHealt
 	return args
 }
 
-func customHostAliasArgs(aliases []*alicloudsaeapplicationv1.AlicloudSaeApplicationCustomHostAlias) sae.ApplicationCustomHostAliasV2ArrayInput {
+func customHostAliasArgs(aliases []*alicloudsaeapplicationv1.AliCloudSaeApplicationCustomHostAlias) sae.ApplicationCustomHostAliasV2ArrayInput {
 	result := sae.ApplicationCustomHostAliasV2Array{}
 	for _, alias := range aliases {
 		result = append(result, &sae.ApplicationCustomHostAliasV2Args{
@@ -217,7 +217,7 @@ func customHostAliasArgs(aliases []*alicloudsaeapplicationv1.AlicloudSaeApplicat
 	return result
 }
 
-func updateStrategyArgs(strategy *alicloudsaeapplicationv1.AlicloudSaeApplicationUpdateStrategy) sae.ApplicationUpdateStrategyV2PtrInput {
+func updateStrategyArgs(strategy *alicloudsaeapplicationv1.AliCloudSaeApplicationUpdateStrategy) sae.ApplicationUpdateStrategyV2PtrInput {
 	args := &sae.ApplicationUpdateStrategyV2Args{
 		Type: optionalStringPtr(strategy.Type),
 	}

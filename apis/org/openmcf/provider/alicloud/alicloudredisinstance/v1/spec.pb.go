@@ -24,7 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudRedisInstanceSpec defines the configuration for an Alibaba Cloud
+// AliCloudRedisInstanceSpec defines the configuration for an Alibaba Cloud
 // Redis (KVStore) instance.
 //
 // Redis is a managed in-memory key-value store used for caching, session
@@ -42,7 +42,7 @@ const (
 //
 //	Terraform: alicloud_kvstore_instance
 //	Pulumi:    kvstore.Instance
-type AlicloudRedisInstanceSpec struct {
+type AliCloudRedisInstanceSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the Redis instance will be created.
 	// Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -152,20 +152,20 @@ type AlicloudRedisInstanceSpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudRedisInstanceSpec) Reset() {
-	*x = AlicloudRedisInstanceSpec{}
+func (x *AliCloudRedisInstanceSpec) Reset() {
+	*x = AliCloudRedisInstanceSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRedisInstanceSpec) String() string {
+func (x *AliCloudRedisInstanceSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRedisInstanceSpec) ProtoMessage() {}
+func (*AliCloudRedisInstanceSpec) ProtoMessage() {}
 
-func (x *AlicloudRedisInstanceSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRedisInstanceSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -177,215 +177,215 @@ func (x *AlicloudRedisInstanceSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRedisInstanceSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudRedisInstanceSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRedisInstanceSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudRedisInstanceSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudRedisInstanceSpec) GetRegion() string {
+func (x *AliCloudRedisInstanceSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetVswitchId() *v1.StringValueOrRef {
+func (x *AliCloudRedisInstanceSpec) GetVswitchId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VswitchId
 	}
 	return nil
 }
 
-func (x *AlicloudRedisInstanceSpec) GetInstanceClass() string {
+func (x *AliCloudRedisInstanceSpec) GetInstanceClass() string {
 	if x != nil {
 		return x.InstanceClass
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetPassword() string {
+func (x *AliCloudRedisInstanceSpec) GetPassword() string {
 	if x != nil {
 		return x.Password
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetEngineVersion() string {
+func (x *AliCloudRedisInstanceSpec) GetEngineVersion() string {
 	if x != nil && x.EngineVersion != nil {
 		return *x.EngineVersion
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetInstanceType() string {
+func (x *AliCloudRedisInstanceSpec) GetInstanceType() string {
 	if x != nil && x.InstanceType != nil {
 		return *x.InstanceType
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetDbInstanceName() string {
+func (x *AliCloudRedisInstanceSpec) GetDbInstanceName() string {
 	if x != nil {
 		return x.DbInstanceName
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetZoneId() string {
+func (x *AliCloudRedisInstanceSpec) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetSecondaryZoneId() string {
+func (x *AliCloudRedisInstanceSpec) GetSecondaryZoneId() string {
 	if x != nil {
 		return x.SecondaryZoneId
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetPaymentType() string {
+func (x *AliCloudRedisInstanceSpec) GetPaymentType() string {
 	if x != nil && x.PaymentType != nil {
 		return *x.PaymentType
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetSecurityIps() []string {
+func (x *AliCloudRedisInstanceSpec) GetSecurityIps() []string {
 	if x != nil {
 		return x.SecurityIps
 	}
 	return nil
 }
 
-func (x *AlicloudRedisInstanceSpec) GetSecurityGroupId() string {
+func (x *AliCloudRedisInstanceSpec) GetSecurityGroupId() string {
 	if x != nil {
 		return x.SecurityGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetResourceGroupId() string {
+func (x *AliCloudRedisInstanceSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetTags() map[string]string {
+func (x *AliCloudRedisInstanceSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-func (x *AlicloudRedisInstanceSpec) GetShardCount() int32 {
+func (x *AliCloudRedisInstanceSpec) GetShardCount() int32 {
 	if x != nil && x.ShardCount != nil {
 		return *x.ShardCount
 	}
 	return 0
 }
 
-func (x *AlicloudRedisInstanceSpec) GetReadOnlyCount() int32 {
+func (x *AliCloudRedisInstanceSpec) GetReadOnlyCount() int32 {
 	if x != nil && x.ReadOnlyCount != nil {
 		return *x.ReadOnlyCount
 	}
 	return 0
 }
 
-func (x *AlicloudRedisInstanceSpec) GetSslEnable() string {
+func (x *AliCloudRedisInstanceSpec) GetSslEnable() string {
 	if x != nil && x.SslEnable != nil {
 		return *x.SslEnable
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetTdeStatus() string {
+func (x *AliCloudRedisInstanceSpec) GetTdeStatus() string {
 	if x != nil && x.TdeStatus != nil {
 		return *x.TdeStatus
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetEncryptionKey() string {
+func (x *AliCloudRedisInstanceSpec) GetEncryptionKey() string {
 	if x != nil {
 		return x.EncryptionKey
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetVpcAuthMode() string {
+func (x *AliCloudRedisInstanceSpec) GetVpcAuthMode() string {
 	if x != nil && x.VpcAuthMode != nil {
 		return *x.VpcAuthMode
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetConfig() map[string]string {
+func (x *AliCloudRedisInstanceSpec) GetConfig() map[string]string {
 	if x != nil {
 		return x.Config
 	}
 	return nil
 }
 
-func (x *AlicloudRedisInstanceSpec) GetInstanceReleaseProtection() bool {
+func (x *AliCloudRedisInstanceSpec) GetInstanceReleaseProtection() bool {
 	if x != nil && x.InstanceReleaseProtection != nil {
 		return *x.InstanceReleaseProtection
 	}
 	return false
 }
 
-func (x *AlicloudRedisInstanceSpec) GetMaintainStartTime() string {
+func (x *AliCloudRedisInstanceSpec) GetMaintainStartTime() string {
 	if x != nil {
 		return x.MaintainStartTime
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetMaintainEndTime() string {
+func (x *AliCloudRedisInstanceSpec) GetMaintainEndTime() string {
 	if x != nil {
 		return x.MaintainEndTime
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetBackupPeriod() []string {
+func (x *AliCloudRedisInstanceSpec) GetBackupPeriod() []string {
 	if x != nil {
 		return x.BackupPeriod
 	}
 	return nil
 }
 
-func (x *AlicloudRedisInstanceSpec) GetBackupTime() string {
+func (x *AliCloudRedisInstanceSpec) GetBackupTime() string {
 	if x != nil {
 		return x.BackupTime
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetPrivateConnectionPrefix() string {
+func (x *AliCloudRedisInstanceSpec) GetPrivateConnectionPrefix() string {
 	if x != nil {
 		return x.PrivateConnectionPrefix
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstanceSpec) GetAutoRenew() bool {
+func (x *AliCloudRedisInstanceSpec) GetAutoRenew() bool {
 	if x != nil && x.AutoRenew != nil {
 		return *x.AutoRenew
 	}
 	return false
 }
 
-func (x *AlicloudRedisInstanceSpec) GetAutoRenewPeriod() int32 {
+func (x *AliCloudRedisInstanceSpec) GetAutoRenewPeriod() int32 {
 	if x != nil && x.AutoRenewPeriod != nil {
 		return *x.AutoRenewPeriod
 	}
 	return 0
 }
 
-func (x *AlicloudRedisInstanceSpec) GetPeriod() string {
+func (x *AliCloudRedisInstanceSpec) GetPeriod() string {
 	if x != nil && x.Period != nil {
 		return *x.Period
 	}
@@ -397,7 +397,7 @@ var File_org_openmcf_provider_alicloud_alicloudredisinstance_v1_spec_proto proto
 const file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"Aorg/openmcf/provider/alicloud/alicloudredisinstance/v1/spec.proto\x126org.openmcf.provider.alicloud.alicloudredisinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa4\x17\n" +
-	"\x19AlicloudRedisInstanceSpec\x12\"\n" +
+	"\x19AliCloudRedisInstanceSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12{\n" +
 	"\n" +
@@ -419,7 +419,7 @@ const file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_spec_proto_raw
 	"\fsecurity_ips\x18\v \x03(\tR\vsecurityIps\x12*\n" +
 	"\x11security_group_id\x18\f \x01(\tR\x0fsecurityGroupId\x12*\n" +
 	"\x11resource_group_id\x18\r \x01(\tR\x0fresourceGroupId\x12o\n" +
-	"\x04tags\x18\x0e \x03(\v2[.org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceSpec.TagsEntryR\x04tags\x12-\n" +
+	"\x04tags\x18\x0e \x03(\v2[.org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceSpec.TagsEntryR\x04tags\x12-\n" +
 	"\vshard_count\x18\x0f \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x03R\n" +
 	"shardCount\x88\x01\x01\x126\n" +
 	"\x0fread_only_count\x18\x10 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\t(\x01H\x04R\rreadOnlyCount\x88\x01\x01\x12\xa9\x01\n" +
@@ -432,7 +432,7 @@ const file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_spec_proto_raw
 	"\x0eencryption_key\x18\x13 \x01(\tR\rencryptionKey\x12\xa0\x01\n" +
 	"\rvpc_auth_mode\x18\x14 \x01(\tBw\xbaHl\xba\x01i\n" +
 	"\x13vpc_auth_mode_valid\x12)vpc_auth_mode must be one of: Open, Close\x1a'this == '' || this in ['Open', 'Close']\x8a\xa6\x1d\x04OpenH\aR\vvpcAuthMode\x88\x01\x01\x12u\n" +
-	"\x06config\x18\x15 \x03(\v2].org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceSpec.ConfigEntryR\x06config\x12C\n" +
+	"\x06config\x18\x15 \x03(\v2].org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceSpec.ConfigEntryR\x06config\x12C\n" +
 	"\x1binstance_release_protection\x18\x16 \x01(\bH\bR\x19instanceReleaseProtection\x88\x01\x01\x12.\n" +
 	"\x13maintain_start_time\x18\x17 \x01(\tR\x11maintainStartTime\x12*\n" +
 	"\x11maintain_end_time\x18\x18 \x01(\tR\x0fmaintainEndTime\x12#\n" +
@@ -480,15 +480,15 @@ func file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_spec_proto_rawD
 
 var file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_spec_proto_goTypes = []any{
-	(*AlicloudRedisInstanceSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceSpec
-	nil,                               // 1: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceSpec.TagsEntry
-	nil,                               // 2: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceSpec.ConfigEntry
+	(*AliCloudRedisInstanceSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceSpec
+	nil,                               // 1: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceSpec.TagsEntry
+	nil,                               // 2: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceSpec.ConfigEntry
 	(*v1.StringValueOrRef)(nil),       // 3: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_spec_proto_depIdxs = []int32{
-	3, // 0: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceSpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	1, // 1: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceSpec.TagsEntry
-	2, // 2: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceSpec.config:type_name -> org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceSpec.ConfigEntry
+	3, // 0: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceSpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	1, // 1: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceSpec.TagsEntry
+	2, // 2: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceSpec.config:type_name -> org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceSpec.ConfigEntry
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

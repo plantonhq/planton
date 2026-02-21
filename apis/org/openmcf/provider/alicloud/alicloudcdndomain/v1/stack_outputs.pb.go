@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudCdnDomainStackOutputs captures the outputs from deploying an
+// AliCloudCdnDomainStackOutputs captures the outputs from deploying an
 // Alibaba Cloud CDN accelerated domain.
-type AlicloudCdnDomainStackOutputs struct {
+type AliCloudCdnDomainStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The accelerated domain name as registered in CDN.
 	DomainName string `protobuf:"bytes,1,opt,name=domain_name,json=domainName,proto3" json:"domain_name,omitempty"`
@@ -38,20 +38,20 @@ type AlicloudCdnDomainStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudCdnDomainStackOutputs) Reset() {
-	*x = AlicloudCdnDomainStackOutputs{}
+func (x *AliCloudCdnDomainStackOutputs) Reset() {
+	*x = AliCloudCdnDomainStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudCdnDomainStackOutputs) String() string {
+func (x *AliCloudCdnDomainStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudCdnDomainStackOutputs) ProtoMessage() {}
+func (*AliCloudCdnDomainStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudCdnDomainStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudCdnDomainStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *AlicloudCdnDomainStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudCdnDomainStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudCdnDomainStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudCdnDomainStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudCdnDomainStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudCdnDomainStackOutputs) GetDomainName() string {
+func (x *AliCloudCdnDomainStackOutputs) GetDomainName() string {
 	if x != nil {
 		return x.DomainName
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomainStackOutputs) GetCname() string {
+func (x *AliCloudCdnDomainStackOutputs) GetCname() string {
 	if x != nil {
 		return x.Cname
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomainStackOutputs) GetStatus() string {
+func (x *AliCloudCdnDomainStackOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
@@ -94,7 +94,7 @@ var File_org_openmcf_provider_alicloud_alicloudcdndomain_v1_stack_outputs_proto 
 const file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Forg/openmcf/provider/alicloud/alicloudcdndomain/v1/stack_outputs.proto\x122org.openmcf.provider.alicloud.alicloudcdndomain.v1\"n\n" +
-	"\x1dAlicloudCdnDomainStackOutputs\x12\x1f\n" +
+	"\x1dAliCloudCdnDomainStackOutputs\x12\x1f\n" +
 	"\vdomain_name\x18\x01 \x01(\tR\n" +
 	"domainName\x12\x14\n" +
 	"\x05cname\x18\x02 \x01(\tR\x05cname\x12\x16\n" +
@@ -115,7 +115,7 @@ func file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_stack_outputs_proto
 
 var file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudCdnDomainStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainStackOutputs
+	(*AliCloudCdnDomainStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_stack_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

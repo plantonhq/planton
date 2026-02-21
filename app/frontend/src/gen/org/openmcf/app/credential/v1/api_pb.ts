@@ -6,7 +6,7 @@ import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1"
 import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv1";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
-import type { AlicloudProviderConfig } from "../../../provider/alicloud/provider_pb";
+import type { AliCloudProviderConfig } from "../../../provider/alicloud/provider_pb";
 import { file_org_openmcf_provider_alicloud_provider } from "../../../provider/alicloud/provider_pb";
 import type { AtlasProviderConfig } from "../../../provider/atlas/provider_pb";
 import { file_org_openmcf_provider_atlas_provider } from "../../../provider/atlas/provider_pb";
@@ -258,9 +258,9 @@ export type CredentialProviderConfig = Message<"org.openmcf.credential.v1.Creden
     case: "scaleway";
   } | {
     /**
-     * @generated from field: org.openmcf.provider.alicloud.AlicloudProviderConfig alicloud = 15;
+     * @generated from field: org.openmcf.provider.alicloud.AliCloudProviderConfig alicloud = 15;
      */
-    value: AlicloudProviderConfig;
+    value: AliCloudProviderConfig;
     case: "alicloud";
   } | {
     /**

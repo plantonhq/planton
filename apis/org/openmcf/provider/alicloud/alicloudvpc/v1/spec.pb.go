@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudVpcSpec defines the configuration for an Alibaba Cloud Virtual
+// AliCloudVpcSpec defines the configuration for an Alibaba Cloud Virtual
 // Private Cloud (VPC).
 //
 // A VPC is the networking foundation for nearly every other Alibaba Cloud
@@ -34,7 +34,7 @@ const (
 // This component creates a single VPC. VSwitches, NAT gateways, and other
 // networking resources are managed as separate components, keeping the VPC
 // itself a clean, composable building block.
-type AlicloudVpcSpec struct {
+type AliCloudVpcSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the VPC will be created.
 	// Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -69,20 +69,20 @@ type AlicloudVpcSpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudVpcSpec) Reset() {
-	*x = AlicloudVpcSpec{}
+func (x *AliCloudVpcSpec) Reset() {
+	*x = AliCloudVpcSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpc_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudVpcSpec) String() string {
+func (x *AliCloudVpcSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudVpcSpec) ProtoMessage() {}
+func (*AliCloudVpcSpec) ProtoMessage() {}
 
-func (x *AlicloudVpcSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudVpcSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpc_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -94,54 +94,54 @@ func (x *AlicloudVpcSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudVpcSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudVpcSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudVpcSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudVpcSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudvpc_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudVpcSpec) GetRegion() string {
+func (x *AliCloudVpcSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudVpcSpec) GetVpcName() string {
+func (x *AliCloudVpcSpec) GetVpcName() string {
 	if x != nil {
 		return x.VpcName
 	}
 	return ""
 }
 
-func (x *AlicloudVpcSpec) GetCidrBlock() string {
+func (x *AliCloudVpcSpec) GetCidrBlock() string {
 	if x != nil {
 		return x.CidrBlock
 	}
 	return ""
 }
 
-func (x *AlicloudVpcSpec) GetDescription() string {
+func (x *AliCloudVpcSpec) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *AlicloudVpcSpec) GetEnableIpv6() bool {
+func (x *AliCloudVpcSpec) GetEnableIpv6() bool {
 	if x != nil {
 		return x.EnableIpv6
 	}
 	return false
 }
 
-func (x *AlicloudVpcSpec) GetResourceGroupId() string {
+func (x *AliCloudVpcSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudVpcSpec) GetTags() map[string]string {
+func (x *AliCloudVpcSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
@@ -153,7 +153,7 @@ var File_org_openmcf_provider_alicloud_alicloudvpc_v1_spec_proto protoreflect.Fi
 const file_org_openmcf_provider_alicloud_alicloudvpc_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"7org/openmcf/provider/alicloud/alicloudvpc/v1/spec.proto\x12,org.openmcf.provider.alicloud.alicloudvpc.v1\x1a\x1bbuf/validate/validate.proto\"\x8f\x03\n" +
-	"\x0fAlicloudVpcSpec\x12\"\n" +
+	"\x0fAliCloudVpcSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12(\n" +
 	"\bvpc_name\x18\x02 \x01(\tB\r\xbaH\n" +
@@ -165,7 +165,7 @@ const file_org_openmcf_provider_alicloud_alicloudvpc_v1_spec_proto_rawDesc = "" 
 	"\venable_ipv6\x18\x05 \x01(\bR\n" +
 	"enableIpv6\x12*\n" +
 	"\x11resource_group_id\x18\x06 \x01(\tR\x0fresourceGroupId\x12[\n" +
-	"\x04tags\x18\a \x03(\v2G.org.openmcf.provider.alicloud.alicloudvpc.v1.AlicloudVpcSpec.TagsEntryR\x04tags\x1a7\n" +
+	"\x04tags\x18\a \x03(\v2G.org.openmcf.provider.alicloud.alicloudvpc.v1.AliCloudVpcSpec.TagsEntryR\x04tags\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xf2\x02\n" +
@@ -185,11 +185,11 @@ func file_org_openmcf_provider_alicloud_alicloudvpc_v1_spec_proto_rawDescGZIP() 
 
 var file_org_openmcf_provider_alicloud_alicloudvpc_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudvpc_v1_spec_proto_goTypes = []any{
-	(*AlicloudVpcSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudvpc.v1.AlicloudVpcSpec
-	nil,                     // 1: org.openmcf.provider.alicloud.alicloudvpc.v1.AlicloudVpcSpec.TagsEntry
+	(*AliCloudVpcSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudvpc.v1.AliCloudVpcSpec
+	nil,                     // 1: org.openmcf.provider.alicloud.alicloudvpc.v1.AliCloudVpcSpec.TagsEntry
 }
 var file_org_openmcf_provider_alicloud_alicloudvpc_v1_spec_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudvpc.v1.AlicloudVpcSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudvpc.v1.AlicloudVpcSpec.TagsEntry
+	1, // 0: org.openmcf.provider.alicloud.alicloudvpc.v1.AliCloudVpcSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudvpc.v1.AliCloudVpcSpec.TagsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

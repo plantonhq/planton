@@ -22,17 +22,17 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudDnsRecordSpec defines the configuration for an Alibaba Cloud DNS
+// AliCloudDnsRecordSpec defines the configuration for an Alibaba Cloud DNS
 // record managed by the Alidns service.
 //
 // A DNS record maps a host record (subdomain) to a value within a parent
 // domain. The parent domain must already exist in Alidns -- either managed
-// by the AlicloudDnsZone component or added manually in the console.
+// by the AliCloudDnsZone component or added manually in the console.
 //
 // Common record types: A (IPv4 address), AAAA (IPv6), CNAME (alias),
 // MX (mail exchange with priority), TXT (verification / SPF / DKIM),
 // NS (delegation), SRV (service locator), CAA (certificate authority).
-type AlicloudDnsRecordSpec struct {
+type AliCloudDnsRecordSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region for provider initialization.
 	// Alidns is a global service, but the provider requires a region.
@@ -90,20 +90,20 @@ type AlicloudDnsRecordSpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudDnsRecordSpec) Reset() {
-	*x = AlicloudDnsRecordSpec{}
+func (x *AliCloudDnsRecordSpec) Reset() {
+	*x = AliCloudDnsRecordSpec{}
 	mi := &file_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudDnsRecordSpec) String() string {
+func (x *AliCloudDnsRecordSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudDnsRecordSpec) ProtoMessage() {}
+func (*AliCloudDnsRecordSpec) ProtoMessage() {}
 
-func (x *AlicloudDnsRecordSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudDnsRecordSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -115,75 +115,75 @@ func (x *AlicloudDnsRecordSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudDnsRecordSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudDnsRecordSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudDnsRecordSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudDnsRecordSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudDnsRecordSpec) GetRegion() string {
+func (x *AliCloudDnsRecordSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudDnsRecordSpec) GetDomainName() string {
+func (x *AliCloudDnsRecordSpec) GetDomainName() string {
 	if x != nil {
 		return x.DomainName
 	}
 	return ""
 }
 
-func (x *AlicloudDnsRecordSpec) GetRr() string {
+func (x *AliCloudDnsRecordSpec) GetRr() string {
 	if x != nil {
 		return x.Rr
 	}
 	return ""
 }
 
-func (x *AlicloudDnsRecordSpec) GetType() string {
+func (x *AliCloudDnsRecordSpec) GetType() string {
 	if x != nil {
 		return x.Type
 	}
 	return ""
 }
 
-func (x *AlicloudDnsRecordSpec) GetValue() string {
+func (x *AliCloudDnsRecordSpec) GetValue() string {
 	if x != nil {
 		return x.Value
 	}
 	return ""
 }
 
-func (x *AlicloudDnsRecordSpec) GetTtl() int32 {
+func (x *AliCloudDnsRecordSpec) GetTtl() int32 {
 	if x != nil {
 		return x.Ttl
 	}
 	return 0
 }
 
-func (x *AlicloudDnsRecordSpec) GetPriority() int32 {
+func (x *AliCloudDnsRecordSpec) GetPriority() int32 {
 	if x != nil {
 		return x.Priority
 	}
 	return 0
 }
 
-func (x *AlicloudDnsRecordSpec) GetLine() string {
+func (x *AliCloudDnsRecordSpec) GetLine() string {
 	if x != nil {
 		return x.Line
 	}
 	return ""
 }
 
-func (x *AlicloudDnsRecordSpec) GetStatus() string {
+func (x *AliCloudDnsRecordSpec) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *AlicloudDnsRecordSpec) GetRemark() string {
+func (x *AliCloudDnsRecordSpec) GetRemark() string {
 	if x != nil {
 		return x.Remark
 	}
@@ -195,7 +195,7 @@ var File_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_spec_proto protorefl
 const file_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"=org/openmcf/provider/alicloud/aliclouddnsrecord/v1/spec.proto\x122org.openmcf.provider.alicloud.aliclouddnsrecord.v1\x1a\x1bbuf/validate/validate.proto\"\x87\x05\n" +
-	"\x15AlicloudDnsRecordSpec\x12\"\n" +
+	"\x15AliCloudDnsRecordSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12.\n" +
 	"\vdomain_name\x18\x02 \x01(\tB\r\xbaH\n" +
@@ -230,7 +230,7 @@ func file_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_spec_proto_rawDescG
 
 var file_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_spec_proto_goTypes = []any{
-	(*AlicloudDnsRecordSpec)(nil), // 0: org.openmcf.provider.alicloud.aliclouddnsrecord.v1.AlicloudDnsRecordSpec
+	(*AliCloudDnsRecordSpec)(nil), // 0: org.openmcf.provider.alicloud.aliclouddnsrecord.v1.AliCloudDnsRecordSpec
 }
 var file_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_spec_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

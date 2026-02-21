@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.aliclouddnszone.v1;
 
-// AlicloudDnsZoneStackOutputs captures the outputs from deploying an
+// AliCloudDnsZoneStackOutputs captures the outputs from deploying an
 // Alibaba Cloud DNS domain.
-message AlicloudDnsZoneStackOutputs {
+message AliCloudDnsZoneStackOutputs {
   // The domain ID assigned by Alibaba Cloud.
   string domain_id = 1;
 

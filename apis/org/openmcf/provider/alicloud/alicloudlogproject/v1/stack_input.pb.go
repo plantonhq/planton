@@ -23,30 +23,30 @@ const (
 )
 
 // alicloud-log-project stack-input
-type AlicloudLogProjectStackInput struct {
+type AliCloudLogProjectStackInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target cloud-resource
-	Target *AlicloudLogProject `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
+	Target *AliCloudLogProject `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
-	ProviderConfig *alicloud.AlicloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
+	ProviderConfig *alicloud.AliCloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudLogProjectStackInput) Reset() {
-	*x = AlicloudLogProjectStackInput{}
+func (x *AliCloudLogProjectStackInput) Reset() {
+	*x = AliCloudLogProjectStackInput{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudLogProjectStackInput) String() string {
+func (x *AliCloudLogProjectStackInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudLogProjectStackInput) ProtoMessage() {}
+func (*AliCloudLogProjectStackInput) ProtoMessage() {}
 
-func (x *AlicloudLogProjectStackInput) ProtoReflect() protoreflect.Message {
+func (x *AliCloudLogProjectStackInput) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AlicloudLogProjectStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudLogProjectStackInput.ProtoReflect.Descriptor instead.
-func (*AlicloudLogProjectStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudLogProjectStackInput.ProtoReflect.Descriptor instead.
+func (*AliCloudLogProjectStackInput) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudLogProjectStackInput) GetTarget() *AlicloudLogProject {
+func (x *AliCloudLogProjectStackInput) GetTarget() *AliCloudLogProject {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AlicloudLogProjectStackInput) GetProviderConfig() *alicloud.AlicloudProviderConfig {
+func (x *AliCloudLogProjectStackInput) GetProviderConfig() *alicloud.AliCloudProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,9 +82,9 @@ var File_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_input_proto p
 const file_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_input_proto_rawDesc = "" +
 	"\n" +
 	"Eorg/openmcf/provider/alicloud/alicloudlogproject/v1/stack_input.proto\x123org.openmcf.provider.alicloud.alicloudlogproject.v1\x1a=org/openmcf/provider/alicloud/alicloudlogproject/v1/api.proto\x1a,org/openmcf/provider/alicloud/provider.proto\"\xdf\x01\n" +
-	"\x1cAlicloudLogProjectStackInput\x12_\n" +
-	"\x06target\x18\x01 \x01(\v2G.org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogProjectR\x06target\x12^\n" +
-	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigR\x0eproviderConfigB\xa9\x03\n" +
+	"\x1cAliCloudLogProjectStackInput\x12_\n" +
+	"\x06target\x18\x01 \x01(\v2G.org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogProjectR\x06target\x12^\n" +
+	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigR\x0eproviderConfigB\xa9\x03\n" +
 	"7com.org.openmcf.provider.alicloud.alicloudlogproject.v1B\x0fStackInputProtoP\x01Zjgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudlogproject/v1;alicloudlogprojectv1\xa2\x02\x05OOPAA\xaa\x023Org.Openmcf.Provider.Alicloud.Alicloudlogproject.V1\xca\x023Org\\Openmcf\\Provider\\Alicloud\\Alicloudlogproject\\V1\xe2\x02?Org\\Openmcf\\Provider\\Alicloud\\Alicloudlogproject\\V1\\GPBMetadata\xea\x028Org::Openmcf::Provider::Alicloud::Alicloudlogproject::V1b\x06proto3"
 
 var (
@@ -101,13 +101,13 @@ func file_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_input_proto_
 
 var file_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_input_proto_goTypes = []any{
-	(*AlicloudLogProjectStackInput)(nil),    // 0: org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogProjectStackInput
-	(*AlicloudLogProject)(nil),              // 1: org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogProject
-	(*alicloud.AlicloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AlicloudProviderConfig
+	(*AliCloudLogProjectStackInput)(nil),    // 0: org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogProjectStackInput
+	(*AliCloudLogProject)(nil),              // 1: org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogProject
+	(*alicloud.AliCloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AliCloudProviderConfig
 }
 var file_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_input_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogProjectStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogProject
-	2, // 1: org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogProjectStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
+	1, // 0: org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogProjectStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogProject
+	2, // 1: org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogProjectStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

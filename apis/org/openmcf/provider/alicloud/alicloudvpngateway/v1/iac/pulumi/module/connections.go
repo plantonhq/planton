@@ -14,7 +14,7 @@ func vpnConnection(
 	ctx *pulumi.Context,
 	provider *alicloud.Provider,
 	gateway *vpn.Gateway,
-	conn *alicloudvpngatewayv1.AlicloudVpnConnection,
+	conn *alicloudvpngatewayv1.AliCloudVpnConnection,
 ) (pulumi.StringOutput, error) {
 	cgArgs := &vpn.CustomerGatewayArgs{
 		CustomerGatewayName: pulumi.StringPtr(fmt.Sprintf("%s-cg", conn.Name)),
@@ -76,7 +76,7 @@ func vpnConnection(
 	return vpnConn.ID().ToStringOutput(), nil
 }
 
-func buildIkeConfig(cfg *alicloudvpngatewayv1.AlicloudIkeConfig) vpn.ConnectionIkeConfigPtrInput {
+func buildIkeConfig(cfg *alicloudvpngatewayv1.AliCloudIkeConfig) vpn.ConnectionIkeConfigPtrInput {
 	ike := &vpn.ConnectionIkeConfigArgs{}
 
 	if cfg.Psk != "" {
@@ -104,7 +104,7 @@ func buildIkeConfig(cfg *alicloudvpngatewayv1.AlicloudIkeConfig) vpn.ConnectionI
 	return ike
 }
 
-func buildIpsecConfig(cfg *alicloudvpngatewayv1.AlicloudIpsecConfig) vpn.ConnectionIpsecConfigPtrInput {
+func buildIpsecConfig(cfg *alicloudvpngatewayv1.AliCloudIpsecConfig) vpn.ConnectionIpsecConfigPtrInput {
 	ipsec := &vpn.ConnectionIpsecConfigArgs{}
 
 	if cfg.IpsecEncAlg != nil {
@@ -123,7 +123,7 @@ func buildIpsecConfig(cfg *alicloudvpngatewayv1.AlicloudIpsecConfig) vpn.Connect
 	return ipsec
 }
 
-func buildHealthCheckConfig(cfg *alicloudvpngatewayv1.AlicloudVpnHealthCheckConfig) vpn.ConnectionHealthCheckConfigPtrInput {
+func buildHealthCheckConfig(cfg *alicloudvpngatewayv1.AliCloudVpnHealthCheckConfig) vpn.ConnectionHealthCheckConfigPtrInput {
 	hc := &vpn.ConnectionHealthCheckConfigArgs{}
 
 	if cfg.Enable != nil {

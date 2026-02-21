@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudKmsKeyStackOutputs captures the outputs from creating an
+// AliCloudKmsKeyStackOutputs captures the outputs from creating an
 // Alibaba Cloud KMS customer-managed key.
-type AlicloudKmsKeyStackOutputs struct {
+type AliCloudKmsKeyStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The KMS key ID assigned by Alibaba Cloud.
 	// This is the primary identifier used by downstream components (RDS, OSS,
@@ -37,20 +37,20 @@ type AlicloudKmsKeyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudKmsKeyStackOutputs) Reset() {
-	*x = AlicloudKmsKeyStackOutputs{}
+func (x *AliCloudKmsKeyStackOutputs) Reset() {
+	*x = AliCloudKmsKeyStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKmsKeyStackOutputs) String() string {
+func (x *AliCloudKmsKeyStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKmsKeyStackOutputs) ProtoMessage() {}
+func (*AliCloudKmsKeyStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudKmsKeyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKmsKeyStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *AlicloudKmsKeyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKmsKeyStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudKmsKeyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKmsKeyStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudKmsKeyStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudKmsKeyStackOutputs) GetKeyId() string {
+func (x *AliCloudKmsKeyStackOutputs) GetKeyId() string {
 	if x != nil {
 		return x.KeyId
 	}
 	return ""
 }
 
-func (x *AlicloudKmsKeyStackOutputs) GetArn() string {
+func (x *AliCloudKmsKeyStackOutputs) GetArn() string {
 	if x != nil {
 		return x.Arn
 	}
@@ -86,7 +86,7 @@ var File_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_outputs_proto pro
 const file_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Corg/openmcf/provider/alicloud/alicloudkmskey/v1/stack_outputs.proto\x12/org.openmcf.provider.alicloud.alicloudkmskey.v1\"E\n" +
-	"\x1aAlicloudKmsKeyStackOutputs\x12\x15\n" +
+	"\x1aAliCloudKmsKeyStackOutputs\x12\x15\n" +
 	"\x06key_id\x18\x01 \x01(\tR\x05keyId\x12\x10\n" +
 	"\x03arn\x18\x02 \x01(\tR\x03arnB\x8f\x03\n" +
 	"3com.org.openmcf.provider.alicloud.alicloudkmskey.v1B\x11StackOutputsProtoP\x01Zbgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudkmskey/v1;alicloudkmskeyv1\xa2\x02\x05OOPAA\xaa\x02/Org.Openmcf.Provider.Alicloud.Alicloudkmskey.V1\xca\x02/Org\\Openmcf\\Provider\\Alicloud\\Alicloudkmskey\\V1\xe2\x02;Org\\Openmcf\\Provider\\Alicloud\\Alicloudkmskey\\V1\\GPBMetadata\xea\x024Org::Openmcf::Provider::Alicloud::Alicloudkmskey::V1b\x06proto3"
@@ -105,7 +105,7 @@ func file_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_outputs_proto_ra
 
 var file_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudKmsKeyStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeyStackOutputs
+	(*AliCloudKmsKeyStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeyStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

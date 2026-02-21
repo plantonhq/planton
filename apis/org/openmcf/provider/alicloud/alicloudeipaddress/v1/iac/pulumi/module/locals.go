@@ -9,19 +9,19 @@ import (
 )
 
 type Locals struct {
-	AlicloudEipAddress *alicloudeipaddressv1.AlicloudEipAddress
+	AliCloudEipAddress *alicloudeipaddressv1.AliCloudEipAddress
 	Tags               map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudeipaddressv1.AlicloudEipAddressStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudeipaddressv1.AliCloudEipAddressStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudEipAddress = stackInput.Target
+	locals.AliCloudEipAddress = stackInput.Target
 	target := stackInput.Target
 
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudEipAddress.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudEipAddress.String()),
 	}
 
 	if target.Metadata.Id != "" {
@@ -43,21 +43,21 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudeipaddressv1.Alic
 	return locals
 }
 
-func bandwidth(spec *alicloudeipaddressv1.AlicloudEipAddressSpec) int32 {
+func bandwidth(spec *alicloudeipaddressv1.AliCloudEipAddressSpec) int32 {
 	if spec.Bandwidth != nil {
 		return *spec.Bandwidth
 	}
 	return 5
 }
 
-func internetChargeType(spec *alicloudeipaddressv1.AlicloudEipAddressSpec) string {
+func internetChargeType(spec *alicloudeipaddressv1.AliCloudEipAddressSpec) string {
 	if spec.InternetChargeType != nil {
 		return *spec.InternetChargeType
 	}
 	return "PayByTraffic"
 }
 
-func isp(spec *alicloudeipaddressv1.AlicloudEipAddressSpec) string {
+func isp(spec *alicloudeipaddressv1.AliCloudEipAddressSpec) string {
 	if spec.Isp != nil {
 		return *spec.Isp
 	}

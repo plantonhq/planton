@@ -10,7 +10,7 @@ import (
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
-		stackInput := &alicloudrocketmqinstancev1.AlicloudRocketmqInstanceStackInput{}
+		stackInput := &alicloudrocketmqinstancev1.AliCloudRocketmqInstanceStackInput{}
 
 		if err := stackinput.LoadStackInput(ctx, stackInput); err != nil {
 			return errors.Wrap(err, "failed to load stack-input")

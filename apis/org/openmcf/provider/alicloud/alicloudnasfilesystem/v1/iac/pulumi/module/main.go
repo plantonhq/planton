@@ -8,10 +8,10 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *alicloudnasfilesystemv1.AlicloudNasFileSystemStackInput) error {
+func Resources(ctx *pulumi.Context, stackInput *alicloudnasfilesystemv1.AliCloudNasFileSystemStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
-	spec := locals.AlicloudNasFileSystem.Spec
-	resourceName := locals.AlicloudNasFileSystem.Metadata.Name
+	spec := locals.AliCloudNasFileSystem.Spec
+	resourceName := locals.AliCloudNasFileSystem.Metadata.Name
 
 	alicloudProvider, err := alicloud.NewProvider(ctx, "alicloud", &alicloud.ProviderArgs{
 		Region: pulumi.String(spec.Region),

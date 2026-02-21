@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudnatgateway.v1;
 
-// AlicloudNatGatewayStackOutputs captures the outputs from deploying an
+// AliCloudNatGatewayStackOutputs captures the outputs from deploying an
 // Alibaba Cloud NAT Gateway with its associated EIP and SNAT entries.
-message AlicloudNatGatewayStackOutputs {
+message AliCloudNatGatewayStackOutputs {
   // The NAT Gateway ID assigned by Alibaba Cloud (e.g., "ngw-xxxxx").
   string nat_gateway_id = 1;
 

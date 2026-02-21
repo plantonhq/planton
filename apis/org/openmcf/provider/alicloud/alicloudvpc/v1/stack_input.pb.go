@@ -23,30 +23,30 @@ const (
 )
 
 // alicloud-vpc stack-input
-type AlicloudVpcStackInput struct {
+type AliCloudVpcStackInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target cloud-resource
-	Target *AlicloudVpc `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
+	Target *AliCloudVpc `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
-	ProviderConfig *alicloud.AlicloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
+	ProviderConfig *alicloud.AliCloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudVpcStackInput) Reset() {
-	*x = AlicloudVpcStackInput{}
+func (x *AliCloudVpcStackInput) Reset() {
+	*x = AliCloudVpcStackInput{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudVpcStackInput) String() string {
+func (x *AliCloudVpcStackInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudVpcStackInput) ProtoMessage() {}
+func (*AliCloudVpcStackInput) ProtoMessage() {}
 
-func (x *AlicloudVpcStackInput) ProtoReflect() protoreflect.Message {
+func (x *AliCloudVpcStackInput) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AlicloudVpcStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudVpcStackInput.ProtoReflect.Descriptor instead.
-func (*AlicloudVpcStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudVpcStackInput.ProtoReflect.Descriptor instead.
+func (*AliCloudVpcStackInput) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudVpcStackInput) GetTarget() *AlicloudVpc {
+func (x *AliCloudVpcStackInput) GetTarget() *AliCloudVpc {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AlicloudVpcStackInput) GetProviderConfig() *alicloud.AlicloudProviderConfig {
+func (x *AliCloudVpcStackInput) GetProviderConfig() *alicloud.AliCloudProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,9 +82,9 @@ var File_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_input_proto protoref
 const file_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_input_proto_rawDesc = "" +
 	"\n" +
 	">org/openmcf/provider/alicloud/alicloudvpc/v1/stack_input.proto\x12,org.openmcf.provider.alicloud.alicloudvpc.v1\x1a6org/openmcf/provider/alicloud/alicloudvpc/v1/api.proto\x1a,org/openmcf/provider/alicloud/provider.proto\"\xca\x01\n" +
-	"\x15AlicloudVpcStackInput\x12Q\n" +
-	"\x06target\x18\x01 \x01(\v29.org.openmcf.provider.alicloud.alicloudvpc.v1.AlicloudVpcR\x06target\x12^\n" +
-	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigR\x0eproviderConfigB\xf8\x02\n" +
+	"\x15AliCloudVpcStackInput\x12Q\n" +
+	"\x06target\x18\x01 \x01(\v29.org.openmcf.provider.alicloud.alicloudvpc.v1.AliCloudVpcR\x06target\x12^\n" +
+	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigR\x0eproviderConfigB\xf8\x02\n" +
 	"0com.org.openmcf.provider.alicloud.alicloudvpc.v1B\x0fStackInputProtoP\x01Z\\github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudvpc/v1;alicloudvpcv1\xa2\x02\x05OOPAA\xaa\x02,Org.Openmcf.Provider.Alicloud.Alicloudvpc.V1\xca\x02,Org\\Openmcf\\Provider\\Alicloud\\Alicloudvpc\\V1\xe2\x028Org\\Openmcf\\Provider\\Alicloud\\Alicloudvpc\\V1\\GPBMetadata\xea\x021Org::Openmcf::Provider::Alicloud::Alicloudvpc::V1b\x06proto3"
 
 var (
@@ -101,13 +101,13 @@ func file_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_input_proto_rawDesc
 
 var file_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_input_proto_goTypes = []any{
-	(*AlicloudVpcStackInput)(nil),           // 0: org.openmcf.provider.alicloud.alicloudvpc.v1.AlicloudVpcStackInput
-	(*AlicloudVpc)(nil),                     // 1: org.openmcf.provider.alicloud.alicloudvpc.v1.AlicloudVpc
-	(*alicloud.AlicloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AlicloudProviderConfig
+	(*AliCloudVpcStackInput)(nil),           // 0: org.openmcf.provider.alicloud.alicloudvpc.v1.AliCloudVpcStackInput
+	(*AliCloudVpc)(nil),                     // 1: org.openmcf.provider.alicloud.alicloudvpc.v1.AliCloudVpc
+	(*alicloud.AliCloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AliCloudProviderConfig
 }
 var file_org_openmcf_provider_alicloud_alicloudvpc_v1_stack_input_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudvpc.v1.AlicloudVpcStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudvpc.v1.AlicloudVpc
-	2, // 1: org.openmcf.provider.alicloud.alicloudvpc.v1.AlicloudVpcStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
+	1, // 0: org.openmcf.provider.alicloud.alicloudvpc.v1.AliCloudVpcStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudvpc.v1.AliCloudVpc
+	2, // 1: org.openmcf.provider.alicloud.alicloudvpc.v1.AliCloudVpcStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

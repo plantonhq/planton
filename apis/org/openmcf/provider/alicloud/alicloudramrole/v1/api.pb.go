@@ -24,7 +24,7 @@ const (
 )
 
 // alicloud-ram-role
-type AlicloudRamRole struct {
+type AliCloudRamRole struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
@@ -33,27 +33,27 @@ type AlicloudRamRole struct {
 	// metadata
 	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
-	Spec *AlicloudRamRoleSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec *AliCloudRamRoleSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
-	Status        *AlicloudRamRoleStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *AliCloudRamRoleStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudRamRole) Reset() {
-	*x = AlicloudRamRole{}
+func (x *AliCloudRamRole) Reset() {
+	*x = AliCloudRamRole{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudramrole_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRamRole) String() string {
+func (x *AliCloudRamRole) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRamRole) ProtoMessage() {}
+func (*AliCloudRamRole) ProtoMessage() {}
 
-func (x *AlicloudRamRole) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRamRole) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudramrole_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AlicloudRamRole) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRamRole.ProtoReflect.Descriptor instead.
-func (*AlicloudRamRole) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRamRole.ProtoReflect.Descriptor instead.
+func (*AliCloudRamRole) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudramrole_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudRamRole) GetApiVersion() string {
+func (x *AliCloudRamRole) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *AlicloudRamRole) GetKind() string {
+func (x *AliCloudRamRole) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AlicloudRamRole) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AliCloudRamRole) GetMetadata() *shared.CloudResourceMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *AlicloudRamRole) GetSpec() *AlicloudRamRoleSpec {
+func (x *AliCloudRamRole) GetSpec() *AliCloudRamRoleSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-func (x *AlicloudRamRole) GetStatus() *AlicloudRamRoleStatus {
+func (x *AliCloudRamRole) GetStatus() *AliCloudRamRoleStatus {
 	if x != nil {
 		return x.Status
 	}
@@ -106,28 +106,28 @@ func (x *AlicloudRamRole) GetStatus() *AlicloudRamRoleStatus {
 }
 
 // alicloud-ram-role status
-type AlicloudRamRoleStatus struct {
+type AliCloudRamRoleStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// stack-outputs
-	Outputs       *AlicloudRamRoleStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AliCloudRamRoleStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudRamRoleStatus) Reset() {
-	*x = AlicloudRamRoleStatus{}
+func (x *AliCloudRamRoleStatus) Reset() {
+	*x = AliCloudRamRoleStatus{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudramrole_v1_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRamRoleStatus) String() string {
+func (x *AliCloudRamRoleStatus) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRamRoleStatus) ProtoMessage() {}
+func (*AliCloudRamRoleStatus) ProtoMessage() {}
 
-func (x *AlicloudRamRoleStatus) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRamRoleStatus) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudramrole_v1_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,12 +139,12 @@ func (x *AlicloudRamRoleStatus) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRamRoleStatus.ProtoReflect.Descriptor instead.
-func (*AlicloudRamRoleStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRamRoleStatus.ProtoReflect.Descriptor instead.
+func (*AliCloudRamRoleStatus) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudramrole_v1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudRamRoleStatus) GetOutputs() *AlicloudRamRoleStackOutputs {
+func (x *AliCloudRamRoleStatus) GetOutputs() *AliCloudRamRoleStackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -156,17 +156,17 @@ var File_org_openmcf_provider_alicloud_alicloudramrole_v1_api_proto protoreflect
 const file_org_openmcf_provider_alicloud_alicloudramrole_v1_api_proto_rawDesc = "" +
 	"\n" +
 	":org/openmcf/provider/alicloud/alicloudramrole/v1/api.proto\x120org.openmcf.provider.alicloud.alicloudramrole.v1\x1a\x1bbuf/validate/validate.proto\x1a;org/openmcf/provider/alicloud/alicloudramrole/v1/spec.proto\x1aDorg/openmcf/provider/alicloud/alicloudramrole/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\x91\x03\n" +
-	"\x0fAlicloudRamRole\x12?\n" +
+	"\x0fAliCloudRamRole\x12?\n" +
 	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
-	"\x0fAlicloudRamRoleR\x04kind\x12M\n" +
+	"\x0fAliCloudRamRoleR\x04kind\x12M\n" +
 	"\bmetadata\x18\x03 \x01(\v2).org.openmcf.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
-	"\x04spec\x18\x04 \x01(\v2E.org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12_\n" +
-	"\x06status\x18\x05 \x01(\v2G.org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleStatusR\x06status\"\x80\x01\n" +
-	"\x15AlicloudRamRoleStatus\x12g\n" +
-	"\aoutputs\x18\x01 \x01(\v2M.org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleStackOutputsR\aoutputsB\x8d\x03\n" +
+	"\x04spec\x18\x04 \x01(\v2E.org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12_\n" +
+	"\x06status\x18\x05 \x01(\v2G.org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleStatusR\x06status\"\x80\x01\n" +
+	"\x15AliCloudRamRoleStatus\x12g\n" +
+	"\aoutputs\x18\x01 \x01(\v2M.org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleStackOutputsR\aoutputsB\x8d\x03\n" +
 	"4com.org.openmcf.provider.alicloud.alicloudramrole.v1B\bApiProtoP\x01Zdgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudramrole/v1;alicloudramrolev1\xa2\x02\x05OOPAA\xaa\x020Org.Openmcf.Provider.Alicloud.Alicloudramrole.V1\xca\x020Org\\Openmcf\\Provider\\Alicloud\\Alicloudramrole\\V1\xe2\x02<Org\\Openmcf\\Provider\\Alicloud\\Alicloudramrole\\V1\\GPBMetadata\xea\x025Org::Openmcf::Provider::Alicloud::Alicloudramrole::V1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_org_openmcf_provider_alicloud_alicloudramrole_v1_api_proto_rawDescGZIP
 
 var file_org_openmcf_provider_alicloud_alicloudramrole_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudramrole_v1_api_proto_goTypes = []any{
-	(*AlicloudRamRole)(nil),              // 0: org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRole
-	(*AlicloudRamRoleStatus)(nil),        // 1: org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleStatus
+	(*AliCloudRamRole)(nil),              // 0: org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRole
+	(*AliCloudRamRoleStatus)(nil),        // 1: org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleStatus
 	(*shared.CloudResourceMetadata)(nil), // 2: org.openmcf.shared.CloudResourceMetadata
-	(*AlicloudRamRoleSpec)(nil),          // 3: org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleSpec
-	(*AlicloudRamRoleStackOutputs)(nil),  // 4: org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleStackOutputs
+	(*AliCloudRamRoleSpec)(nil),          // 3: org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleSpec
+	(*AliCloudRamRoleStackOutputs)(nil),  // 4: org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudramrole_v1_api_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRole.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
-	3, // 1: org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRole.spec:type_name -> org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleSpec
-	1, // 2: org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRole.status:type_name -> org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleStatus
-	4, // 3: org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleStackOutputs
+	2, // 0: org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRole.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
+	3, // 1: org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRole.spec:type_name -> org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleSpec
+	1, // 2: org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRole.status:type_name -> org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleStatus
+	4, // 3: org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleStackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

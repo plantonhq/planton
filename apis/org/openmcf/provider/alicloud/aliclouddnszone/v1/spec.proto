@@ -4,7 +4,7 @@ package org.openmcf.provider.alicloud.aliclouddnszone.v1;
 
 import "buf/validate/validate.proto";
 
-// AlicloudDnsZoneSpec defines the configuration for an Alibaba Cloud DNS
+// AliCloudDnsZoneSpec defines the configuration for an Alibaba Cloud DNS
 // domain managed by the Alidns service.
 //
 // A DNS domain is the top-level container for DNS records. Registering a domain
@@ -14,8 +14,8 @@ import "buf/validate/validate.proto";
 // Alibaba Cloud DNS servers returned in the stack outputs.
 //
 // This component creates a single Alidns domain. DNS records within the domain
-// are managed by the AlicloudDnsRecord component.
-message AlicloudDnsZoneSpec {
+// are managed by the AliCloudDnsRecord component.
+message AliCloudDnsZoneSpec {
   // Alibaba Cloud region for provider initialization.
   // While Alidns is a global service, the provider requires a region.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".

@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudLogProjectSpec defines the configuration for an Alibaba Cloud
+// AliCloudLogProjectSpec defines the configuration for an Alibaba Cloud
 // Simple Log Service (SLS) project with optional bundled log stores.
 //
 // An SLS project is the top-level container for log data in Alibaba Cloud.
@@ -34,7 +34,7 @@ const (
 // This component bundles the project with its log stores and full-text indexes
 // (per DD07) because a project without stores is an empty shell, and stores
 // without indexes are unsearchable.
-type AlicloudLogProjectSpec struct {
+type AliCloudLogProjectSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the SLS project will be created.
 	// Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -52,25 +52,25 @@ type AlicloudLogProjectSpec struct {
 	Tags map[string]string `protobuf:"bytes,5,rep,name=tags,proto3" json:"tags,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Log stores to create within this project.
 	// Each log store is an independent unit of log collection and storage.
-	LogStores     []*AlicloudLogStore `protobuf:"bytes,6,rep,name=log_stores,json=logStores,proto3" json:"log_stores,omitempty"`
+	LogStores     []*AliCloudLogStore `protobuf:"bytes,6,rep,name=log_stores,json=logStores,proto3" json:"log_stores,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudLogProjectSpec) Reset() {
-	*x = AlicloudLogProjectSpec{}
+func (x *AliCloudLogProjectSpec) Reset() {
+	*x = AliCloudLogProjectSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudlogproject_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudLogProjectSpec) String() string {
+func (x *AliCloudLogProjectSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudLogProjectSpec) ProtoMessage() {}
+func (*AliCloudLogProjectSpec) ProtoMessage() {}
 
-func (x *AlicloudLogProjectSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudLogProjectSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudlogproject_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -82,56 +82,56 @@ func (x *AlicloudLogProjectSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudLogProjectSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudLogProjectSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudLogProjectSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudLogProjectSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudlogproject_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudLogProjectSpec) GetRegion() string {
+func (x *AliCloudLogProjectSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudLogProjectSpec) GetProjectName() string {
+func (x *AliCloudLogProjectSpec) GetProjectName() string {
 	if x != nil {
 		return x.ProjectName
 	}
 	return ""
 }
 
-func (x *AlicloudLogProjectSpec) GetDescription() string {
+func (x *AliCloudLogProjectSpec) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *AlicloudLogProjectSpec) GetResourceGroupId() string {
+func (x *AliCloudLogProjectSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudLogProjectSpec) GetTags() map[string]string {
+func (x *AliCloudLogProjectSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-func (x *AlicloudLogProjectSpec) GetLogStores() []*AlicloudLogStore {
+func (x *AliCloudLogProjectSpec) GetLogStores() []*AliCloudLogStore {
 	if x != nil {
 		return x.LogStores
 	}
 	return nil
 }
 
-// AlicloudLogStore defines a log store within an SLS project.
+// AliCloudLogStore defines a log store within an SLS project.
 // A log store is the basic unit for collecting, storing, and querying log data.
-type AlicloudLogStore struct {
+type AliCloudLogStore struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Log store name. Must be unique within the project.
 	// 3-63 characters, lowercase letters, digits, hyphens, and underscores.
@@ -161,20 +161,20 @@ type AlicloudLogStore struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudLogStore) Reset() {
-	*x = AlicloudLogStore{}
+func (x *AliCloudLogStore) Reset() {
+	*x = AliCloudLogStore{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudlogproject_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudLogStore) String() string {
+func (x *AliCloudLogStore) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudLogStore) ProtoMessage() {}
+func (*AliCloudLogStore) ProtoMessage() {}
 
-func (x *AlicloudLogStore) ProtoReflect() protoreflect.Message {
+func (x *AliCloudLogStore) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudlogproject_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -186,54 +186,54 @@ func (x *AlicloudLogStore) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudLogStore.ProtoReflect.Descriptor instead.
-func (*AlicloudLogStore) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudLogStore.ProtoReflect.Descriptor instead.
+func (*AliCloudLogStore) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudlogproject_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudLogStore) GetName() string {
+func (x *AliCloudLogStore) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *AlicloudLogStore) GetRetentionDays() int32 {
+func (x *AliCloudLogStore) GetRetentionDays() int32 {
 	if x != nil && x.RetentionDays != nil {
 		return *x.RetentionDays
 	}
 	return 0
 }
 
-func (x *AlicloudLogStore) GetShardCount() int32 {
+func (x *AliCloudLogStore) GetShardCount() int32 {
 	if x != nil && x.ShardCount != nil {
 		return *x.ShardCount
 	}
 	return 0
 }
 
-func (x *AlicloudLogStore) GetAutoSplit() bool {
+func (x *AliCloudLogStore) GetAutoSplit() bool {
 	if x != nil && x.AutoSplit != nil {
 		return *x.AutoSplit
 	}
 	return false
 }
 
-func (x *AlicloudLogStore) GetMaxSplitShardCount() int32 {
+func (x *AliCloudLogStore) GetMaxSplitShardCount() int32 {
 	if x != nil && x.MaxSplitShardCount != nil {
 		return *x.MaxSplitShardCount
 	}
 	return 0
 }
 
-func (x *AlicloudLogStore) GetEnableIndex() bool {
+func (x *AliCloudLogStore) GetEnableIndex() bool {
 	if x != nil && x.EnableIndex != nil {
 		return *x.EnableIndex
 	}
 	return false
 }
 
-func (x *AlicloudLogStore) GetAppendMeta() bool {
+func (x *AliCloudLogStore) GetAppendMeta() bool {
 	if x != nil && x.AppendMeta != nil {
 		return *x.AppendMeta
 	}
@@ -245,19 +245,19 @@ var File_org_openmcf_provider_alicloud_alicloudlogproject_v1_spec_proto protoref
 const file_org_openmcf_provider_alicloud_alicloudlogproject_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	">org/openmcf/provider/alicloud/alicloudlogproject/v1/spec.proto\x123org.openmcf.provider.alicloud.alicloudlogproject.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xc5\x03\n" +
-	"\x16AlicloudLogProjectSpec\x12\"\n" +
+	"\x16AliCloudLogProjectSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12/\n" +
 	"\fproject_name\x18\x02 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x03\x18?R\vprojectName\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12*\n" +
 	"\x11resource_group_id\x18\x04 \x01(\tR\x0fresourceGroupId\x12i\n" +
-	"\x04tags\x18\x05 \x03(\v2U.org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogProjectSpec.TagsEntryR\x04tags\x12d\n" +
+	"\x04tags\x18\x05 \x03(\v2U.org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogProjectSpec.TagsEntryR\x04tags\x12d\n" +
 	"\n" +
-	"log_stores\x18\x06 \x03(\v2E.org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogStoreR\tlogStores\x1a7\n" +
+	"log_stores\x18\x06 \x03(\v2E.org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogStoreR\tlogStores\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xf0\x03\n" +
-	"\x10AlicloudLogStore\x12 \n" +
+	"\x10AliCloudLogStore\x12 \n" +
 	"\x04name\x18\x01 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x03\x18?R\x04name\x12<\n" +
 	"\x0eretention_days\x18\x02 \x01(\x05B\x10\xbaH\a\x1a\x05\x18\xc2\x1c(\x01\x8a\xa6\x1d\x0230H\x00R\rretentionDays\x88\x01\x01\x125\n" +
 	"\vshard_count\x18\x03 \x01(\x05B\x0f\xbaH\a\x1a\x05\x18\x80\x02(\x01\x8a\xa6\x1d\x012H\x01R\n" +
@@ -290,13 +290,13 @@ func file_org_openmcf_provider_alicloud_alicloudlogproject_v1_spec_proto_rawDesc
 
 var file_org_openmcf_provider_alicloud_alicloudlogproject_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_org_openmcf_provider_alicloud_alicloudlogproject_v1_spec_proto_goTypes = []any{
-	(*AlicloudLogProjectSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogProjectSpec
-	(*AlicloudLogStore)(nil),       // 1: org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogStore
-	nil,                            // 2: org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogProjectSpec.TagsEntry
+	(*AliCloudLogProjectSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogProjectSpec
+	(*AliCloudLogStore)(nil),       // 1: org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogStore
+	nil,                            // 2: org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogProjectSpec.TagsEntry
 }
 var file_org_openmcf_provider_alicloud_alicloudlogproject_v1_spec_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogProjectSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogProjectSpec.TagsEntry
-	1, // 1: org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogProjectSpec.log_stores:type_name -> org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogStore
+	2, // 0: org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogProjectSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogProjectSpec.TagsEntry
+	1, // 1: org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogProjectSpec.log_stores:type_name -> org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogStore
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

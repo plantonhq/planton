@@ -10,9 +10,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *alicloudlogprojectv1.AlicloudLogProjectStackInput) error {
+func Resources(ctx *pulumi.Context, stackInput *alicloudlogprojectv1.AliCloudLogProjectStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
-	spec := locals.AlicloudLogProject.Spec
+	spec := locals.AliCloudLogProject.Spec
 
 	// Credentials are injected via environment variables by the runner
 	// (ALIBABA_CLOUD_ACCESS_KEY_ID, ALIBABA_CLOUD_ACCESS_KEY_SECRET, etc.).
@@ -63,7 +63,7 @@ func logStore(
 	provider *alicloud.Provider,
 	project *log.Project,
 	projectName string,
-	ls *alicloudlogprojectv1.AlicloudLogStore,
+	ls *alicloudlogprojectv1.AliCloudLogStore,
 ) (*log.Store, error) {
 	resourceName := fmt.Sprintf("%s-%s", projectName, ls.Name)
 

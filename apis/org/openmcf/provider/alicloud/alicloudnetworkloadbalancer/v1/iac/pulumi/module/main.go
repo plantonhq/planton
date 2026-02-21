@@ -8,9 +8,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *alicloudnetworkloadbalancerv1.AlicloudNetworkLoadBalancerStackInput) error {
+func Resources(ctx *pulumi.Context, stackInput *alicloudnetworkloadbalancerv1.AliCloudNetworkLoadBalancerStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
-	spec := locals.AlicloudNetworkLoadBalancer.Spec
+	spec := locals.AliCloudNetworkLoadBalancer.Spec
 
 	alicloudProvider, err := alicloud.NewProvider(ctx, "alicloud", &alicloud.ProviderArgs{
 		Region: pulumi.String(spec.Region),
@@ -33,7 +33,7 @@ func Resources(ctx *pulumi.Context, stackInput *alicloudnetworkloadbalancerv1.Al
 
 	lbName := spec.LoadBalancerName
 	if lbName == "" {
-		lbName = locals.AlicloudNetworkLoadBalancer.Metadata.Name
+		lbName = locals.AliCloudNetworkLoadBalancer.Metadata.Name
 	}
 
 	lbArgs := &nlb.LoadBalancerArgs{

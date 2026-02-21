@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudApplicationLoadBalancerStackOutputs captures the outputs from deploying
+// AliCloudApplicationLoadBalancerStackOutputs captures the outputs from deploying
 // an Alibaba Cloud Application Load Balancer with its server groups and
 // listeners.
-type AlicloudApplicationLoadBalancerStackOutputs struct {
+type AliCloudApplicationLoadBalancerStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ALB instance ID assigned by Alibaba Cloud (e.g., "alb-xxxxx").
 	LoadBalancerId string `protobuf:"bytes,1,opt,name=load_balancer_id,json=loadBalancerId,proto3" json:"load_balancer_id,omitempty"`
@@ -43,20 +43,20 @@ type AlicloudApplicationLoadBalancerStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudApplicationLoadBalancerStackOutputs) Reset() {
-	*x = AlicloudApplicationLoadBalancerStackOutputs{}
+func (x *AliCloudApplicationLoadBalancerStackOutputs) Reset() {
+	*x = AliCloudApplicationLoadBalancerStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudApplicationLoadBalancerStackOutputs) String() string {
+func (x *AliCloudApplicationLoadBalancerStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudApplicationLoadBalancerStackOutputs) ProtoMessage() {}
+func (*AliCloudApplicationLoadBalancerStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudApplicationLoadBalancerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudApplicationLoadBalancerStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,26 +68,26 @@ func (x *AlicloudApplicationLoadBalancerStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudApplicationLoadBalancerStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudApplicationLoadBalancerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudApplicationLoadBalancerStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudApplicationLoadBalancerStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudApplicationLoadBalancerStackOutputs) GetLoadBalancerId() string {
+func (x *AliCloudApplicationLoadBalancerStackOutputs) GetLoadBalancerId() string {
 	if x != nil {
 		return x.LoadBalancerId
 	}
 	return ""
 }
 
-func (x *AlicloudApplicationLoadBalancerStackOutputs) GetDnsName() string {
+func (x *AliCloudApplicationLoadBalancerStackOutputs) GetDnsName() string {
 	if x != nil {
 		return x.DnsName
 	}
 	return ""
 }
 
-func (x *AlicloudApplicationLoadBalancerStackOutputs) GetServerGroupIds() map[string]string {
+func (x *AliCloudApplicationLoadBalancerStackOutputs) GetServerGroupIds() map[string]string {
 	if x != nil {
 		return x.ServerGroupIds
 	}
@@ -99,10 +99,10 @@ var File_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack_
 const file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Torg/openmcf/provider/alicloud/alicloudapplicationloadbalancer/v1/stack_outputs.proto\x12@org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1\"\xe4\x02\n" +
-	"+AlicloudApplicationLoadBalancerStackOutputs\x12(\n" +
+	"+AliCloudApplicationLoadBalancerStackOutputs\x12(\n" +
 	"\x10load_balancer_id\x18\x01 \x01(\tR\x0eloadBalancerId\x12\x19\n" +
 	"\bdns_name\x18\x02 \x01(\tR\adnsName\x12\xac\x01\n" +
-	"\x10server_group_ids\x18\x03 \x03(\v2\x81\x01.org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerStackOutputs.ServerGroupIdsEntryR\x0eserverGroupIds\x1aA\n" +
+	"\x10server_group_ids\x18\x03 \x03(\v2\x81\x01.org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerStackOutputs.ServerGroupIdsEntryR\x0eserverGroupIds\x1aA\n" +
 	"\x13ServerGroupIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x87\x04\n" +
@@ -122,11 +122,11 @@ func file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack
 
 var file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudApplicationLoadBalancerStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerStackOutputs
-	nil, // 1: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerStackOutputs.ServerGroupIdsEntry
+	(*AliCloudApplicationLoadBalancerStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerStackOutputs
+	nil, // 1: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerStackOutputs.ServerGroupIdsEntry
 }
 var file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack_outputs_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerStackOutputs.server_group_ids:type_name -> org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerStackOutputs.ServerGroupIdsEntry
+	1, // 0: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerStackOutputs.server_group_ids:type_name -> org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerStackOutputs.ServerGroupIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

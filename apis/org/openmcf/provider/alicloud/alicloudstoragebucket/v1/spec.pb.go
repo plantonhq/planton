@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudStorageBucketSpec defines the configuration for an Alibaba Cloud Object
+// AliCloudStorageBucketSpec defines the configuration for an Alibaba Cloud Object
 // Storage Service (OSS) bucket.
 //
 // OSS is a cloud-native, S3-compatible object storage service. A bucket is the
@@ -42,7 +42,7 @@ const (
 //
 //	Terraform: alicloud_oss_bucket
 //	Pulumi:    oss.Bucket
-type AlicloudStorageBucketSpec struct {
+type AliCloudStorageBucketSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the bucket will be created.
 	// The region determines the physical location of stored data and the
@@ -90,19 +90,19 @@ type AlicloudStorageBucketSpec struct {
 	// Server-side encryption configuration.
 	// When set, all objects stored in this bucket are encrypted at rest using
 	// the specified algorithm. Omit to store objects without default encryption.
-	ServerSideEncryption *AlicloudStorageBucketEncryption `protobuf:"bytes,7,opt,name=server_side_encryption,json=serverSideEncryption,proto3" json:"server_side_encryption,omitempty"`
+	ServerSideEncryption *AliCloudStorageBucketEncryption `protobuf:"bytes,7,opt,name=server_side_encryption,json=serverSideEncryption,proto3" json:"server_side_encryption,omitempty"`
 	// Lifecycle management rules for automatic object transitions and expiration.
 	// Rules are evaluated independently; multiple rules can match the same object.
 	// Maximum 1000 rules per bucket.
-	LifecycleRules []*AlicloudStorageBucketLifecycleRule `protobuf:"bytes,8,rep,name=lifecycle_rules,json=lifecycleRules,proto3" json:"lifecycle_rules,omitempty"`
+	LifecycleRules []*AliCloudStorageBucketLifecycleRule `protobuf:"bytes,8,rep,name=lifecycle_rules,json=lifecycleRules,proto3" json:"lifecycle_rules,omitempty"`
 	// Cross-Origin Resource Sharing rules.
 	// Required when browser-based clients need to access OSS directly.
 	// Maximum 10 rules per bucket.
-	CorsRules []*AlicloudStorageBucketCorsRule `protobuf:"bytes,9,rep,name=cors_rules,json=corsRules,proto3" json:"cors_rules,omitempty"`
+	CorsRules []*AliCloudStorageBucketCorsRule `protobuf:"bytes,9,rep,name=cors_rules,json=corsRules,proto3" json:"cors_rules,omitempty"`
 	// Server access logging configuration.
 	// When set, OSS writes access logs to the specified target bucket.
 	// Omit to disable access logging.
-	Logging *AlicloudStorageBucketLogging `protobuf:"bytes,10,opt,name=logging,proto3" json:"logging,omitempty"`
+	Logging *AliCloudStorageBucketLogging `protobuf:"bytes,10,opt,name=logging,proto3" json:"logging,omitempty"`
 	// Allow force-destroying a non-empty bucket.
 	// When true, Terraform/Pulumi will delete all objects in the bucket before
 	// destroying it. Use with caution in production.
@@ -117,20 +117,20 @@ type AlicloudStorageBucketSpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudStorageBucketSpec) Reset() {
-	*x = AlicloudStorageBucketSpec{}
+func (x *AliCloudStorageBucketSpec) Reset() {
+	*x = AliCloudStorageBucketSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudStorageBucketSpec) String() string {
+func (x *AliCloudStorageBucketSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudStorageBucketSpec) ProtoMessage() {}
+func (*AliCloudStorageBucketSpec) ProtoMessage() {}
 
-func (x *AlicloudStorageBucketSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudStorageBucketSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -142,96 +142,96 @@ func (x *AlicloudStorageBucketSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudStorageBucketSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudStorageBucketSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudStorageBucketSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudStorageBucketSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudStorageBucketSpec) GetRegion() string {
+func (x *AliCloudStorageBucketSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudStorageBucketSpec) GetBucketName() string {
+func (x *AliCloudStorageBucketSpec) GetBucketName() string {
 	if x != nil {
 		return x.BucketName
 	}
 	return ""
 }
 
-func (x *AlicloudStorageBucketSpec) GetAcl() string {
+func (x *AliCloudStorageBucketSpec) GetAcl() string {
 	if x != nil && x.Acl != nil {
 		return *x.Acl
 	}
 	return ""
 }
 
-func (x *AlicloudStorageBucketSpec) GetStorageClass() string {
+func (x *AliCloudStorageBucketSpec) GetStorageClass() string {
 	if x != nil && x.StorageClass != nil {
 		return *x.StorageClass
 	}
 	return ""
 }
 
-func (x *AlicloudStorageBucketSpec) GetRedundancyType() string {
+func (x *AliCloudStorageBucketSpec) GetRedundancyType() string {
 	if x != nil && x.RedundancyType != nil {
 		return *x.RedundancyType
 	}
 	return ""
 }
 
-func (x *AlicloudStorageBucketSpec) GetVersioningEnabled() bool {
+func (x *AliCloudStorageBucketSpec) GetVersioningEnabled() bool {
 	if x != nil {
 		return x.VersioningEnabled
 	}
 	return false
 }
 
-func (x *AlicloudStorageBucketSpec) GetServerSideEncryption() *AlicloudStorageBucketEncryption {
+func (x *AliCloudStorageBucketSpec) GetServerSideEncryption() *AliCloudStorageBucketEncryption {
 	if x != nil {
 		return x.ServerSideEncryption
 	}
 	return nil
 }
 
-func (x *AlicloudStorageBucketSpec) GetLifecycleRules() []*AlicloudStorageBucketLifecycleRule {
+func (x *AliCloudStorageBucketSpec) GetLifecycleRules() []*AliCloudStorageBucketLifecycleRule {
 	if x != nil {
 		return x.LifecycleRules
 	}
 	return nil
 }
 
-func (x *AlicloudStorageBucketSpec) GetCorsRules() []*AlicloudStorageBucketCorsRule {
+func (x *AliCloudStorageBucketSpec) GetCorsRules() []*AliCloudStorageBucketCorsRule {
 	if x != nil {
 		return x.CorsRules
 	}
 	return nil
 }
 
-func (x *AlicloudStorageBucketSpec) GetLogging() *AlicloudStorageBucketLogging {
+func (x *AliCloudStorageBucketSpec) GetLogging() *AliCloudStorageBucketLogging {
 	if x != nil {
 		return x.Logging
 	}
 	return nil
 }
 
-func (x *AlicloudStorageBucketSpec) GetForceDestroy() bool {
+func (x *AliCloudStorageBucketSpec) GetForceDestroy() bool {
 	if x != nil {
 		return x.ForceDestroy
 	}
 	return false
 }
 
-func (x *AlicloudStorageBucketSpec) GetResourceGroupId() string {
+func (x *AliCloudStorageBucketSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudStorageBucketSpec) GetTags() map[string]string {
+func (x *AliCloudStorageBucketSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
@@ -239,7 +239,7 @@ func (x *AlicloudStorageBucketSpec) GetTags() map[string]string {
 }
 
 // Server-side encryption configuration for an OSS bucket.
-type AlicloudStorageBucketEncryption struct {
+type AliCloudStorageBucketEncryption struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Encryption algorithm.
 	// "AES256" uses OSS-managed keys (no additional configuration needed).
@@ -254,20 +254,20 @@ type AlicloudStorageBucketEncryption struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudStorageBucketEncryption) Reset() {
-	*x = AlicloudStorageBucketEncryption{}
+func (x *AliCloudStorageBucketEncryption) Reset() {
+	*x = AliCloudStorageBucketEncryption{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudStorageBucketEncryption) String() string {
+func (x *AliCloudStorageBucketEncryption) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudStorageBucketEncryption) ProtoMessage() {}
+func (*AliCloudStorageBucketEncryption) ProtoMessage() {}
 
-func (x *AlicloudStorageBucketEncryption) ProtoReflect() protoreflect.Message {
+func (x *AliCloudStorageBucketEncryption) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -279,19 +279,19 @@ func (x *AlicloudStorageBucketEncryption) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudStorageBucketEncryption.ProtoReflect.Descriptor instead.
-func (*AlicloudStorageBucketEncryption) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudStorageBucketEncryption.ProtoReflect.Descriptor instead.
+func (*AliCloudStorageBucketEncryption) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudStorageBucketEncryption) GetSseAlgorithm() string {
+func (x *AliCloudStorageBucketEncryption) GetSseAlgorithm() string {
 	if x != nil {
 		return x.SseAlgorithm
 	}
 	return ""
 }
 
-func (x *AlicloudStorageBucketEncryption) GetKmsMasterKeyId() string {
+func (x *AliCloudStorageBucketEncryption) GetKmsMasterKeyId() string {
 	if x != nil {
 		return x.KmsMasterKeyId
 	}
@@ -303,7 +303,7 @@ func (x *AlicloudStorageBucketEncryption) GetKmsMasterKeyId() string {
 // Each rule applies to objects matching the given prefix. At least one action
 // (expiration, transition, abort multipart upload, or noncurrent version
 // expiration) should be configured for the rule to be meaningful.
-type AlicloudStorageBucketLifecycleRule struct {
+type AliCloudStorageBucketLifecycleRule struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Object name prefix that scopes this rule. An empty prefix applies
 	// the rule to all objects in the bucket.
@@ -317,7 +317,7 @@ type AlicloudStorageBucketLifecycleRule struct {
 	ExpirationDays int32 `protobuf:"varint,3,opt,name=expiration_days,json=expirationDays,proto3" json:"expiration_days,omitempty"`
 	// Storage class transitions. Objects are moved to a cheaper storage tier
 	// after the specified number of days.
-	Transitions []*AlicloudStorageBucketLifecycleTransition `protobuf:"bytes,4,rep,name=transitions,proto3" json:"transitions,omitempty"`
+	Transitions []*AliCloudStorageBucketLifecycleTransition `protobuf:"bytes,4,rep,name=transitions,proto3" json:"transitions,omitempty"`
 	// Number of days after which incomplete multipart uploads are automatically
 	// aborted. This prevents orphaned upload parts from consuming storage.
 	// Recommended: 7 days for most workloads.
@@ -330,20 +330,20 @@ type AlicloudStorageBucketLifecycleRule struct {
 	sizeCache                       protoimpl.SizeCache
 }
 
-func (x *AlicloudStorageBucketLifecycleRule) Reset() {
-	*x = AlicloudStorageBucketLifecycleRule{}
+func (x *AliCloudStorageBucketLifecycleRule) Reset() {
+	*x = AliCloudStorageBucketLifecycleRule{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudStorageBucketLifecycleRule) String() string {
+func (x *AliCloudStorageBucketLifecycleRule) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudStorageBucketLifecycleRule) ProtoMessage() {}
+func (*AliCloudStorageBucketLifecycleRule) ProtoMessage() {}
 
-func (x *AlicloudStorageBucketLifecycleRule) ProtoReflect() protoreflect.Message {
+func (x *AliCloudStorageBucketLifecycleRule) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -355,47 +355,47 @@ func (x *AlicloudStorageBucketLifecycleRule) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudStorageBucketLifecycleRule.ProtoReflect.Descriptor instead.
-func (*AlicloudStorageBucketLifecycleRule) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudStorageBucketLifecycleRule.ProtoReflect.Descriptor instead.
+func (*AliCloudStorageBucketLifecycleRule) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AlicloudStorageBucketLifecycleRule) GetPrefix() string {
+func (x *AliCloudStorageBucketLifecycleRule) GetPrefix() string {
 	if x != nil {
 		return x.Prefix
 	}
 	return ""
 }
 
-func (x *AlicloudStorageBucketLifecycleRule) GetEnabled() bool {
+func (x *AliCloudStorageBucketLifecycleRule) GetEnabled() bool {
 	if x != nil {
 		return x.Enabled
 	}
 	return false
 }
 
-func (x *AlicloudStorageBucketLifecycleRule) GetExpirationDays() int32 {
+func (x *AliCloudStorageBucketLifecycleRule) GetExpirationDays() int32 {
 	if x != nil {
 		return x.ExpirationDays
 	}
 	return 0
 }
 
-func (x *AlicloudStorageBucketLifecycleRule) GetTransitions() []*AlicloudStorageBucketLifecycleTransition {
+func (x *AliCloudStorageBucketLifecycleRule) GetTransitions() []*AliCloudStorageBucketLifecycleTransition {
 	if x != nil {
 		return x.Transitions
 	}
 	return nil
 }
 
-func (x *AlicloudStorageBucketLifecycleRule) GetAbortMultipartUploadDays() int32 {
+func (x *AliCloudStorageBucketLifecycleRule) GetAbortMultipartUploadDays() int32 {
 	if x != nil {
 		return x.AbortMultipartUploadDays
 	}
 	return 0
 }
 
-func (x *AlicloudStorageBucketLifecycleRule) GetNoncurrentVersionExpirationDays() int32 {
+func (x *AliCloudStorageBucketLifecycleRule) GetNoncurrentVersionExpirationDays() int32 {
 	if x != nil {
 		return x.NoncurrentVersionExpirationDays
 	}
@@ -403,7 +403,7 @@ func (x *AlicloudStorageBucketLifecycleRule) GetNoncurrentVersionExpirationDays(
 }
 
 // A storage class transition within a lifecycle rule.
-type AlicloudStorageBucketLifecycleTransition struct {
+type AliCloudStorageBucketLifecycleTransition struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Number of days after object creation to transition to the target
 	// storage class.
@@ -417,20 +417,20 @@ type AlicloudStorageBucketLifecycleTransition struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudStorageBucketLifecycleTransition) Reset() {
-	*x = AlicloudStorageBucketLifecycleTransition{}
+func (x *AliCloudStorageBucketLifecycleTransition) Reset() {
+	*x = AliCloudStorageBucketLifecycleTransition{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudStorageBucketLifecycleTransition) String() string {
+func (x *AliCloudStorageBucketLifecycleTransition) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudStorageBucketLifecycleTransition) ProtoMessage() {}
+func (*AliCloudStorageBucketLifecycleTransition) ProtoMessage() {}
 
-func (x *AlicloudStorageBucketLifecycleTransition) ProtoReflect() protoreflect.Message {
+func (x *AliCloudStorageBucketLifecycleTransition) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -442,19 +442,19 @@ func (x *AlicloudStorageBucketLifecycleTransition) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudStorageBucketLifecycleTransition.ProtoReflect.Descriptor instead.
-func (*AlicloudStorageBucketLifecycleTransition) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudStorageBucketLifecycleTransition.ProtoReflect.Descriptor instead.
+func (*AliCloudStorageBucketLifecycleTransition) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *AlicloudStorageBucketLifecycleTransition) GetDays() int32 {
+func (x *AliCloudStorageBucketLifecycleTransition) GetDays() int32 {
 	if x != nil {
 		return x.Days
 	}
 	return 0
 }
 
-func (x *AlicloudStorageBucketLifecycleTransition) GetStorageClass() string {
+func (x *AliCloudStorageBucketLifecycleTransition) GetStorageClass() string {
 	if x != nil {
 		return x.StorageClass
 	}
@@ -462,7 +462,7 @@ func (x *AlicloudStorageBucketLifecycleTransition) GetStorageClass() string {
 }
 
 // CORS rule for browser-based cross-origin access to an OSS bucket.
-type AlicloudStorageBucketCorsRule struct {
+type AliCloudStorageBucketCorsRule struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Origins allowed to make cross-origin requests. Use "*" to allow all origins.
 	// Example: ["https://example.com", "https://app.example.com"]
@@ -483,20 +483,20 @@ type AlicloudStorageBucketCorsRule struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudStorageBucketCorsRule) Reset() {
-	*x = AlicloudStorageBucketCorsRule{}
+func (x *AliCloudStorageBucketCorsRule) Reset() {
+	*x = AliCloudStorageBucketCorsRule{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudStorageBucketCorsRule) String() string {
+func (x *AliCloudStorageBucketCorsRule) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudStorageBucketCorsRule) ProtoMessage() {}
+func (*AliCloudStorageBucketCorsRule) ProtoMessage() {}
 
-func (x *AlicloudStorageBucketCorsRule) ProtoReflect() protoreflect.Message {
+func (x *AliCloudStorageBucketCorsRule) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -508,40 +508,40 @@ func (x *AlicloudStorageBucketCorsRule) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudStorageBucketCorsRule.ProtoReflect.Descriptor instead.
-func (*AlicloudStorageBucketCorsRule) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudStorageBucketCorsRule.ProtoReflect.Descriptor instead.
+func (*AliCloudStorageBucketCorsRule) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *AlicloudStorageBucketCorsRule) GetAllowedOrigins() []string {
+func (x *AliCloudStorageBucketCorsRule) GetAllowedOrigins() []string {
 	if x != nil {
 		return x.AllowedOrigins
 	}
 	return nil
 }
 
-func (x *AlicloudStorageBucketCorsRule) GetAllowedMethods() []string {
+func (x *AliCloudStorageBucketCorsRule) GetAllowedMethods() []string {
 	if x != nil {
 		return x.AllowedMethods
 	}
 	return nil
 }
 
-func (x *AlicloudStorageBucketCorsRule) GetAllowedHeaders() []string {
+func (x *AliCloudStorageBucketCorsRule) GetAllowedHeaders() []string {
 	if x != nil {
 		return x.AllowedHeaders
 	}
 	return nil
 }
 
-func (x *AlicloudStorageBucketCorsRule) GetExposeHeaders() []string {
+func (x *AliCloudStorageBucketCorsRule) GetExposeHeaders() []string {
 	if x != nil {
 		return x.ExposeHeaders
 	}
 	return nil
 }
 
-func (x *AlicloudStorageBucketCorsRule) GetMaxAgeSeconds() int32 {
+func (x *AliCloudStorageBucketCorsRule) GetMaxAgeSeconds() int32 {
 	if x != nil {
 		return x.MaxAgeSeconds
 	}
@@ -549,7 +549,7 @@ func (x *AlicloudStorageBucketCorsRule) GetMaxAgeSeconds() int32 {
 }
 
 // Access logging configuration for an OSS bucket.
-type AlicloudStorageBucketLogging struct {
+type AliCloudStorageBucketLogging struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Destination bucket for access log objects. Can be the same bucket or a
 	// different bucket in the same region.
@@ -561,20 +561,20 @@ type AlicloudStorageBucketLogging struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudStorageBucketLogging) Reset() {
-	*x = AlicloudStorageBucketLogging{}
+func (x *AliCloudStorageBucketLogging) Reset() {
+	*x = AliCloudStorageBucketLogging{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudStorageBucketLogging) String() string {
+func (x *AliCloudStorageBucketLogging) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudStorageBucketLogging) ProtoMessage() {}
+func (*AliCloudStorageBucketLogging) ProtoMessage() {}
 
-func (x *AlicloudStorageBucketLogging) ProtoReflect() protoreflect.Message {
+func (x *AliCloudStorageBucketLogging) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -586,19 +586,19 @@ func (x *AlicloudStorageBucketLogging) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudStorageBucketLogging.ProtoReflect.Descriptor instead.
-func (*AlicloudStorageBucketLogging) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudStorageBucketLogging.ProtoReflect.Descriptor instead.
+func (*AliCloudStorageBucketLogging) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *AlicloudStorageBucketLogging) GetTargetBucket() string {
+func (x *AliCloudStorageBucketLogging) GetTargetBucket() string {
 	if x != nil {
 		return x.TargetBucket
 	}
 	return ""
 }
 
-func (x *AlicloudStorageBucketLogging) GetTargetPrefix() string {
+func (x *AliCloudStorageBucketLogging) GetTargetPrefix() string {
 	if x != nil {
 		return x.TargetPrefix
 	}
@@ -610,7 +610,7 @@ var File_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto proto
 const file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"Aorg/openmcf/provider/alicloud/alicloudstoragebucket/v1/spec.proto\x126org.openmcf.provider.alicloud.alicloudstoragebucket.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xa5\f\n" +
-	"\x19AlicloudStorageBucketSpec\x12\"\n" +
+	"\x19AliCloudStorageBucketSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12-\n" +
 	"\vbucket_name\x18\x02 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x03\x18?R\n" +
@@ -622,43 +622,43 @@ const file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_raw
 	"\x0fredundancy_type\x18\x05 \x01(\tBt\xbaHj\xba\x01g\n" +
 	"\x15redundancy_type_valid\x12(redundancy_type must be one of: LRS, ZRS\x1a$this == '' || this in ['LRS', 'ZRS']\x8a\xa6\x1d\x03LRSH\x02R\x0eredundancyType\x88\x01\x01\x12-\n" +
 	"\x12versioning_enabled\x18\x06 \x01(\bR\x11versioningEnabled\x12\x8d\x01\n" +
-	"\x16server_side_encryption\x18\a \x01(\v2W.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketEncryptionR\x14serverSideEncryption\x12\x83\x01\n" +
-	"\x0flifecycle_rules\x18\b \x03(\v2Z.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketLifecycleRuleR\x0elifecycleRules\x12t\n" +
+	"\x16server_side_encryption\x18\a \x01(\v2W.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketEncryptionR\x14serverSideEncryption\x12\x83\x01\n" +
+	"\x0flifecycle_rules\x18\b \x03(\v2Z.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketLifecycleRuleR\x0elifecycleRules\x12t\n" +
 	"\n" +
-	"cors_rules\x18\t \x03(\v2U.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketCorsRuleR\tcorsRules\x12n\n" +
+	"cors_rules\x18\t \x03(\v2U.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketCorsRuleR\tcorsRules\x12n\n" +
 	"\alogging\x18\n" +
-	" \x01(\v2T.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketLoggingR\alogging\x12#\n" +
+	" \x01(\v2T.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketLoggingR\alogging\x12#\n" +
 	"\rforce_destroy\x18\v \x01(\bR\fforceDestroy\x12*\n" +
 	"\x11resource_group_id\x18\f \x01(\tR\x0fresourceGroupId\x12o\n" +
-	"\x04tags\x18\r \x03(\v2[.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketSpec.TagsEntryR\x04tags\x1a7\n" +
+	"\x04tags\x18\r \x03(\v2[.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketSpec.TagsEntryR\x04tags\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x06\n" +
 	"\x04_aclB\x10\n" +
 	"\x0e_storage_classB\x12\n" +
 	"\x10_redundancy_type\"\xd8\x01\n" +
-	"\x1fAlicloudStorageBucketEncryption\x12\x89\x01\n" +
+	"\x1fAliCloudStorageBucketEncryption\x12\x89\x01\n" +
 	"\rsse_algorithm\x18\x01 \x01(\tBd\xbaHa\xba\x01[\n" +
 	"\x13sse_algorithm_valid\x12)sse_algorithm must be one of: AES256, KMS\x1a\x19this in ['AES256', 'KMS']\xc8\x01\x01R\fsseAlgorithm\x12)\n" +
 	"\x11kms_master_key_id\x18\x02 \x01(\tR\x0ekmsMasterKeyId\"\x90\x03\n" +
-	"\"AlicloudStorageBucketLifecycleRule\x12\x16\n" +
+	"\"AliCloudStorageBucketLifecycleRule\x12\x16\n" +
 	"\x06prefix\x18\x01 \x01(\tR\x06prefix\x12\x18\n" +
 	"\aenabled\x18\x02 \x01(\bR\aenabled\x12'\n" +
 	"\x0fexpiration_days\x18\x03 \x01(\x05R\x0eexpirationDays\x12\x82\x01\n" +
-	"\vtransitions\x18\x04 \x03(\v2`.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketLifecycleTransitionR\vtransitions\x12=\n" +
+	"\vtransitions\x18\x04 \x03(\v2`.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketLifecycleTransitionR\vtransitions\x12=\n" +
 	"\x1babort_multipart_upload_days\x18\x05 \x01(\x05R\x18abortMultipartUploadDays\x12K\n" +
 	"\"noncurrent_version_expiration_days\x18\x06 \x01(\x05R\x1fnoncurrentVersionExpirationDays\"\xa1\x02\n" +
-	"(AlicloudStorageBucketLifecycleTransition\x12\x1b\n" +
+	"(AliCloudStorageBucketLifecycleTransition\x12\x1b\n" +
 	"\x04days\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x04days\x12\xd7\x01\n" +
 	"\rstorage_class\x18\x02 \x01(\tB\xb1\x01\xbaH\xad\x01\xba\x01\xa6\x01\n" +
 	"\x1etransition_storage_class_valid\x12Gstorage_class must be one of: IA, Archive, ColdArchive, DeepColdArchive\x1a;this in ['IA', 'Archive', 'ColdArchive', 'DeepColdArchive']\xc8\x01\x01R\fstorageClass\"\xfd\x01\n" +
-	"\x1dAlicloudStorageBucketCorsRule\x121\n" +
+	"\x1dAliCloudStorageBucketCorsRule\x121\n" +
 	"\x0fallowed_origins\x18\x01 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\x0eallowedOrigins\x121\n" +
 	"\x0fallowed_methods\x18\x02 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\x0eallowedMethods\x12'\n" +
 	"\x0fallowed_headers\x18\x03 \x03(\tR\x0eallowedHeaders\x12%\n" +
 	"\x0eexpose_headers\x18\x04 \x03(\tR\rexposeHeaders\x12&\n" +
 	"\x0fmax_age_seconds\x18\x05 \x01(\x05R\rmaxAgeSeconds\"t\n" +
-	"\x1cAlicloudStorageBucketLogging\x12/\n" +
+	"\x1cAliCloudStorageBucketLogging\x12/\n" +
 	"\rtarget_bucket\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\ftargetBucket\x12#\n" +
 	"\rtarget_prefix\x18\x02 \x01(\tR\ftargetPrefixB\xb8\x03\n" +
@@ -678,21 +678,21 @@ func file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_rawD
 
 var file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_goTypes = []any{
-	(*AlicloudStorageBucketSpec)(nil),                // 0: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketSpec
-	(*AlicloudStorageBucketEncryption)(nil),          // 1: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketEncryption
-	(*AlicloudStorageBucketLifecycleRule)(nil),       // 2: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketLifecycleRule
-	(*AlicloudStorageBucketLifecycleTransition)(nil), // 3: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketLifecycleTransition
-	(*AlicloudStorageBucketCorsRule)(nil),            // 4: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketCorsRule
-	(*AlicloudStorageBucketLogging)(nil),             // 5: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketLogging
-	nil,                                              // 6: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketSpec.TagsEntry
+	(*AliCloudStorageBucketSpec)(nil),                // 0: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketSpec
+	(*AliCloudStorageBucketEncryption)(nil),          // 1: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketEncryption
+	(*AliCloudStorageBucketLifecycleRule)(nil),       // 2: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketLifecycleRule
+	(*AliCloudStorageBucketLifecycleTransition)(nil), // 3: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketLifecycleTransition
+	(*AliCloudStorageBucketCorsRule)(nil),            // 4: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketCorsRule
+	(*AliCloudStorageBucketLogging)(nil),             // 5: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketLogging
+	nil,                                              // 6: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketSpec.TagsEntry
 }
 var file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_spec_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketSpec.server_side_encryption:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketEncryption
-	2, // 1: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketSpec.lifecycle_rules:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketLifecycleRule
-	4, // 2: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketSpec.cors_rules:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketCorsRule
-	5, // 3: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketSpec.logging:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketLogging
-	6, // 4: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketSpec.TagsEntry
-	3, // 5: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketLifecycleRule.transitions:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketLifecycleTransition
+	1, // 0: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketSpec.server_side_encryption:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketEncryption
+	2, // 1: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketSpec.lifecycle_rules:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketLifecycleRule
+	4, // 2: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketSpec.cors_rules:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketCorsRule
+	5, // 3: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketSpec.logging:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketLogging
+	6, // 4: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketSpec.TagsEntry
+	3, // 5: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketLifecycleRule.transitions:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketLifecycleTransition
 	6, // [6:6] is the sub-list for method output_type
 	6, // [6:6] is the sub-list for method input_type
 	6, // [6:6] is the sub-list for extension type_name

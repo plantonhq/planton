@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudEcsInstanceStackOutputs captures the outputs from deploying an
+// AliCloudEcsInstanceStackOutputs captures the outputs from deploying an
 // Alibaba Cloud ECS instance.
-type AlicloudEcsInstanceStackOutputs struct {
+type AliCloudEcsInstanceStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ECS instance ID assigned by Alibaba Cloud (e.g., "i-bp1xxxxx").
 	InstanceId string `protobuf:"bytes,1,opt,name=instance_id,json=instanceId,proto3" json:"instance_id,omitempty"`
@@ -36,20 +36,20 @@ type AlicloudEcsInstanceStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudEcsInstanceStackOutputs) Reset() {
-	*x = AlicloudEcsInstanceStackOutputs{}
+func (x *AliCloudEcsInstanceStackOutputs) Reset() {
+	*x = AliCloudEcsInstanceStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudEcsInstanceStackOutputs) String() string {
+func (x *AliCloudEcsInstanceStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudEcsInstanceStackOutputs) ProtoMessage() {}
+func (*AliCloudEcsInstanceStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudEcsInstanceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudEcsInstanceStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *AlicloudEcsInstanceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudEcsInstanceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudEcsInstanceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudEcsInstanceStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudEcsInstanceStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudEcsInstanceStackOutputs) GetInstanceId() string {
+func (x *AliCloudEcsInstanceStackOutputs) GetInstanceId() string {
 	if x != nil {
 		return x.InstanceId
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceStackOutputs) GetPrivateIp() string {
+func (x *AliCloudEcsInstanceStackOutputs) GetPrivateIp() string {
 	if x != nil {
 		return x.PrivateIp
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstanceStackOutputs) GetPublicIp() string {
+func (x *AliCloudEcsInstanceStackOutputs) GetPublicIp() string {
 	if x != nil {
 		return x.PublicIp
 	}
@@ -92,7 +92,7 @@ var File_org_openmcf_provider_alicloud_alicloudecsinstance_v1_stack_outputs_prot
 const file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Horg/openmcf/provider/alicloud/alicloudecsinstance/v1/stack_outputs.proto\x124org.openmcf.provider.alicloud.alicloudecsinstance.v1\"~\n" +
-	"\x1fAlicloudEcsInstanceStackOutputs\x12\x1f\n" +
+	"\x1fAliCloudEcsInstanceStackOutputs\x12\x1f\n" +
 	"\vinstance_id\x18\x01 \x01(\tR\n" +
 	"instanceId\x12\x1d\n" +
 	"\n" +
@@ -114,7 +114,7 @@ func file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_stack_outputs_pro
 
 var file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudEcsInstanceStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceStackOutputs
+	(*AliCloudEcsInstanceStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_stack_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

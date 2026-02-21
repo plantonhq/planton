@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1;
 
-// AlicloudApplicationLoadBalancerStackOutputs captures the outputs from deploying
+// AliCloudApplicationLoadBalancerStackOutputs captures the outputs from deploying
 // an Alibaba Cloud Application Load Balancer with its server groups and
 // listeners.
-message AlicloudApplicationLoadBalancerStackOutputs {
+message AliCloudApplicationLoadBalancerStackOutputs {
   // The ALB instance ID assigned by Alibaba Cloud (e.g., "alb-xxxxx").
   string load_balancer_id = 1;
 

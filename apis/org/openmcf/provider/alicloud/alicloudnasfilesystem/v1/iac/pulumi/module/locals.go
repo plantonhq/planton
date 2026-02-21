@@ -9,19 +9,19 @@ import (
 )
 
 type Locals struct {
-	AlicloudNasFileSystem *alicloudnasfilesystemv1.AlicloudNasFileSystem
+	AliCloudNasFileSystem *alicloudnasfilesystemv1.AliCloudNasFileSystem
 	Tags                  map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudnasfilesystemv1.AlicloudNasFileSystemStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudnasfilesystemv1.AliCloudNasFileSystemStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudNasFileSystem = stackInput.Target
+	locals.AliCloudNasFileSystem = stackInput.Target
 	target := stackInput.Target
 
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudNasFileSystem.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudNasFileSystem.String()),
 	}
 
 	if target.Metadata.Id != "" {
@@ -43,7 +43,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudnasfilesystemv1.A
 	return locals
 }
 
-func fileSystemType(spec *alicloudnasfilesystemv1.AlicloudNasFileSystemSpec) string {
+func fileSystemType(spec *alicloudnasfilesystemv1.AliCloudNasFileSystemSpec) string {
 	if spec.FileSystemType != nil && *spec.FileSystemType != "" {
 		return *spec.FileSystemType
 	}

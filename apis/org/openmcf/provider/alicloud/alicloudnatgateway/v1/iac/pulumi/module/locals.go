@@ -9,19 +9,19 @@ import (
 )
 
 type Locals struct {
-	AlicloudNatGateway *alicloudnatgatewayv1.AlicloudNatGateway
+	AliCloudNatGateway *alicloudnatgatewayv1.AliCloudNatGateway
 	Tags               map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudnatgatewayv1.AlicloudNatGatewayStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudnatgatewayv1.AliCloudNatGatewayStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudNatGateway = stackInput.Target
+	locals.AliCloudNatGateway = stackInput.Target
 	target := stackInput.Target
 
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudNatGateway.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudNatGateway.String()),
 	}
 
 	if target.Metadata.Id != "" {
@@ -43,21 +43,21 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudnatgatewayv1.Alic
 	return locals
 }
 
-func natType(spec *alicloudnatgatewayv1.AlicloudNatGatewaySpec) string {
+func natType(spec *alicloudnatgatewayv1.AliCloudNatGatewaySpec) string {
 	if spec.NatType != nil {
 		return *spec.NatType
 	}
 	return "Enhanced"
 }
 
-func paymentType(spec *alicloudnatgatewayv1.AlicloudNatGatewaySpec) string {
+func paymentType(spec *alicloudnatgatewayv1.AliCloudNatGatewaySpec) string {
 	if spec.PaymentType != nil {
 		return *spec.PaymentType
 	}
 	return "PayAsYouGo"
 }
 
-func internetChargeType(spec *alicloudnatgatewayv1.AlicloudNatGatewaySpec) string {
+func internetChargeType(spec *alicloudnatgatewayv1.AliCloudNatGatewaySpec) string {
 	if spec.InternetChargeType != nil {
 		return *spec.InternetChargeType
 	}

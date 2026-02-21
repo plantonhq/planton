@@ -4,17 +4,17 @@ package org.openmcf.provider.alicloud.aliclouddnsrecord.v1;
 
 import "buf/validate/validate.proto";
 
-// AlicloudDnsRecordSpec defines the configuration for an Alibaba Cloud DNS
+// AliCloudDnsRecordSpec defines the configuration for an Alibaba Cloud DNS
 // record managed by the Alidns service.
 //
 // A DNS record maps a host record (subdomain) to a value within a parent
 // domain. The parent domain must already exist in Alidns -- either managed
-// by the AlicloudDnsZone component or added manually in the console.
+// by the AliCloudDnsZone component or added manually in the console.
 //
 // Common record types: A (IPv4 address), AAAA (IPv6), CNAME (alias),
 // MX (mail exchange with priority), TXT (verification / SPF / DKIM),
 // NS (delegation), SRV (service locator), CAA (certificate authority).
-message AlicloudDnsRecordSpec {
+message AliCloudDnsRecordSpec {
   // Alibaba Cloud region for provider initialization.
   // Alidns is a global service, but the provider requires a region.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".

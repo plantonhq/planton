@@ -23,30 +23,30 @@ const (
 )
 
 // alicloud-dns-zone stack-input
-type AlicloudDnsZoneStackInput struct {
+type AliCloudDnsZoneStackInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target cloud-resource
-	Target *AlicloudDnsZone `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
+	Target *AliCloudDnsZone `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
-	ProviderConfig *alicloud.AlicloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
+	ProviderConfig *alicloud.AliCloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudDnsZoneStackInput) Reset() {
-	*x = AlicloudDnsZoneStackInput{}
+func (x *AliCloudDnsZoneStackInput) Reset() {
+	*x = AliCloudDnsZoneStackInput{}
 	mi := &file_org_openmcf_provider_alicloud_aliclouddnszone_v1_stack_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudDnsZoneStackInput) String() string {
+func (x *AliCloudDnsZoneStackInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudDnsZoneStackInput) ProtoMessage() {}
+func (*AliCloudDnsZoneStackInput) ProtoMessage() {}
 
-func (x *AlicloudDnsZoneStackInput) ProtoReflect() protoreflect.Message {
+func (x *AliCloudDnsZoneStackInput) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_aliclouddnszone_v1_stack_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AlicloudDnsZoneStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudDnsZoneStackInput.ProtoReflect.Descriptor instead.
-func (*AlicloudDnsZoneStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudDnsZoneStackInput.ProtoReflect.Descriptor instead.
+func (*AliCloudDnsZoneStackInput) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_aliclouddnszone_v1_stack_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudDnsZoneStackInput) GetTarget() *AlicloudDnsZone {
+func (x *AliCloudDnsZoneStackInput) GetTarget() *AliCloudDnsZone {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AlicloudDnsZoneStackInput) GetProviderConfig() *alicloud.AlicloudProviderConfig {
+func (x *AliCloudDnsZoneStackInput) GetProviderConfig() *alicloud.AliCloudProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,9 +82,9 @@ var File_org_openmcf_provider_alicloud_aliclouddnszone_v1_stack_input_proto prot
 const file_org_openmcf_provider_alicloud_aliclouddnszone_v1_stack_input_proto_rawDesc = "" +
 	"\n" +
 	"Borg/openmcf/provider/alicloud/aliclouddnszone/v1/stack_input.proto\x120org.openmcf.provider.alicloud.aliclouddnszone.v1\x1a:org/openmcf/provider/alicloud/aliclouddnszone/v1/api.proto\x1a,org/openmcf/provider/alicloud/provider.proto\"\xd6\x01\n" +
-	"\x19AlicloudDnsZoneStackInput\x12Y\n" +
-	"\x06target\x18\x01 \x01(\v2A.org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneR\x06target\x12^\n" +
-	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigR\x0eproviderConfigB\x94\x03\n" +
+	"\x19AliCloudDnsZoneStackInput\x12Y\n" +
+	"\x06target\x18\x01 \x01(\v2A.org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneR\x06target\x12^\n" +
+	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigR\x0eproviderConfigB\x94\x03\n" +
 	"4com.org.openmcf.provider.alicloud.aliclouddnszone.v1B\x0fStackInputProtoP\x01Zdgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/aliclouddnszone/v1;aliclouddnszonev1\xa2\x02\x05OOPAA\xaa\x020Org.Openmcf.Provider.Alicloud.Aliclouddnszone.V1\xca\x020Org\\Openmcf\\Provider\\Alicloud\\Aliclouddnszone\\V1\xe2\x02<Org\\Openmcf\\Provider\\Alicloud\\Aliclouddnszone\\V1\\GPBMetadata\xea\x025Org::Openmcf::Provider::Alicloud::Aliclouddnszone::V1b\x06proto3"
 
 var (
@@ -101,13 +101,13 @@ func file_org_openmcf_provider_alicloud_aliclouddnszone_v1_stack_input_proto_raw
 
 var file_org_openmcf_provider_alicloud_aliclouddnszone_v1_stack_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_aliclouddnszone_v1_stack_input_proto_goTypes = []any{
-	(*AlicloudDnsZoneStackInput)(nil),       // 0: org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneStackInput
-	(*AlicloudDnsZone)(nil),                 // 1: org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZone
-	(*alicloud.AlicloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AlicloudProviderConfig
+	(*AliCloudDnsZoneStackInput)(nil),       // 0: org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneStackInput
+	(*AliCloudDnsZone)(nil),                 // 1: org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZone
+	(*alicloud.AliCloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AliCloudProviderConfig
 }
 var file_org_openmcf_provider_alicloud_aliclouddnszone_v1_stack_input_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneStackInput.target:type_name -> org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZone
-	2, // 1: org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
+	1, // 0: org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneStackInput.target:type_name -> org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZone
+	2, // 1: org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -8,25 +8,25 @@ import "org/openmcf/provider/alicloud/alicloudmongodbinstance/v1/stack_outputs.p
 import "org/openmcf/shared/metadata.proto";
 
 // alicloud-mongodb-instance
-message AlicloudMongodbInstance {
+message AliCloudMongodbInstance {
   // api-version
   string api_version = 1 [(buf.validate.field).string.const = 'alicloud.openmcf.org/v1'];
 
   // resource-kind
-  string kind = 2 [(buf.validate.field).string.const = 'AlicloudMongodbInstance'];
+  string kind = 2 [(buf.validate.field).string.const = 'AliCloudMongodbInstance'];
 
   // metadata
   org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
-  AlicloudMongodbInstanceSpec spec = 4 [(buf.validate.field).required = true];
+  AliCloudMongodbInstanceSpec spec = 4 [(buf.validate.field).required = true];
 
   // status
-  AlicloudMongodbInstanceStatus status = 5;
+  AliCloudMongodbInstanceStatus status = 5;
 }
 
 // alicloud-mongodb-instance status
-message AlicloudMongodbInstanceStatus {
+message AliCloudMongodbInstanceStatus {
   // stack-outputs
-  AlicloudMongodbInstanceStackOutputs outputs = 1;
+  AliCloudMongodbInstanceStackOutputs outputs = 1;
 }

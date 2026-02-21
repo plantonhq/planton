@@ -23,30 +23,30 @@ const (
 )
 
 // alicloud-kubernetes-cluster stack-input
-type AlicloudKubernetesClusterStackInput struct {
+type AliCloudKubernetesClusterStackInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target cloud-resource
-	Target *AlicloudKubernetesCluster `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
+	Target *AliCloudKubernetesCluster `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
-	ProviderConfig *alicloud.AlicloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
+	ProviderConfig *alicloud.AliCloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudKubernetesClusterStackInput) Reset() {
-	*x = AlicloudKubernetesClusterStackInput{}
+func (x *AliCloudKubernetesClusterStackInput) Reset() {
+	*x = AliCloudKubernetesClusterStackInput{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKubernetesClusterStackInput) String() string {
+func (x *AliCloudKubernetesClusterStackInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKubernetesClusterStackInput) ProtoMessage() {}
+func (*AliCloudKubernetesClusterStackInput) ProtoMessage() {}
 
-func (x *AlicloudKubernetesClusterStackInput) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKubernetesClusterStackInput) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AlicloudKubernetesClusterStackInput) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKubernetesClusterStackInput.ProtoReflect.Descriptor instead.
-func (*AlicloudKubernetesClusterStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKubernetesClusterStackInput.ProtoReflect.Descriptor instead.
+func (*AliCloudKubernetesClusterStackInput) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudKubernetesClusterStackInput) GetTarget() *AlicloudKubernetesCluster {
+func (x *AliCloudKubernetesClusterStackInput) GetTarget() *AliCloudKubernetesCluster {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesClusterStackInput) GetProviderConfig() *alicloud.AlicloudProviderConfig {
+func (x *AliCloudKubernetesClusterStackInput) GetProviderConfig() *alicloud.AliCloudProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,9 +82,9 @@ var File_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_input_
 const file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_input_proto_rawDesc = "" +
 	"\n" +
 	"Lorg/openmcf/provider/alicloud/alicloudkubernetescluster/v1/stack_input.proto\x12:org.openmcf.provider.alicloud.alicloudkubernetescluster.v1\x1aDorg/openmcf/provider/alicloud/alicloudkubernetescluster/v1/api.proto\x1a,org/openmcf/provider/alicloud/provider.proto\"\xf4\x01\n" +
-	"#AlicloudKubernetesClusterStackInput\x12m\n" +
-	"\x06target\x18\x01 \x01(\v2U.org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterR\x06target\x12^\n" +
-	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigR\x0eproviderConfigB\xda\x03\n" +
+	"#AliCloudKubernetesClusterStackInput\x12m\n" +
+	"\x06target\x18\x01 \x01(\v2U.org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterR\x06target\x12^\n" +
+	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigR\x0eproviderConfigB\xda\x03\n" +
 	">com.org.openmcf.provider.alicloud.alicloudkubernetescluster.v1B\x0fStackInputProtoP\x01Zxgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudkubernetescluster/v1;alicloudkubernetesclusterv1\xa2\x02\x05OOPAA\xaa\x02:Org.Openmcf.Provider.Alicloud.Alicloudkubernetescluster.V1\xca\x02:Org\\Openmcf\\Provider\\Alicloud\\Alicloudkubernetescluster\\V1\xe2\x02FOrg\\Openmcf\\Provider\\Alicloud\\Alicloudkubernetescluster\\V1\\GPBMetadata\xea\x02?Org::Openmcf::Provider::Alicloud::Alicloudkubernetescluster::V1b\x06proto3"
 
 var (
@@ -101,13 +101,13 @@ func file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_input
 
 var file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_input_proto_goTypes = []any{
-	(*AlicloudKubernetesClusterStackInput)(nil), // 0: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterStackInput
-	(*AlicloudKubernetesCluster)(nil),           // 1: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesCluster
-	(*alicloud.AlicloudProviderConfig)(nil),     // 2: org.openmcf.provider.alicloud.AlicloudProviderConfig
+	(*AliCloudKubernetesClusterStackInput)(nil), // 0: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterStackInput
+	(*AliCloudKubernetesCluster)(nil),           // 1: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesCluster
+	(*alicloud.AliCloudProviderConfig)(nil),     // 2: org.openmcf.provider.alicloud.AliCloudProviderConfig
 }
 var file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_input_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesCluster
-	2, // 1: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
+	1, // 0: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesCluster
+	2, // 1: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

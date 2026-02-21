@@ -8,25 +8,25 @@ import "org/openmcf/provider/alicloud/alicloudcdndomain/v1/stack_outputs.proto";
 import "org/openmcf/shared/metadata.proto";
 
 // alicloud-cdn-domain
-message AlicloudCdnDomain {
+message AliCloudCdnDomain {
   // api-version
   string api_version = 1 [(buf.validate.field).string.const = 'alicloud.openmcf.org/v1'];
 
   // resource-kind
-  string kind = 2 [(buf.validate.field).string.const = 'AlicloudCdnDomain'];
+  string kind = 2 [(buf.validate.field).string.const = 'AliCloudCdnDomain'];
 
   // metadata
   org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
-  AlicloudCdnDomainSpec spec = 4 [(buf.validate.field).required = true];
+  AliCloudCdnDomainSpec spec = 4 [(buf.validate.field).required = true];
 
   // status
-  AlicloudCdnDomainStatus status = 5;
+  AliCloudCdnDomainStatus status = 5;
 }
 
 // alicloud-cdn-domain status
-message AlicloudCdnDomainStatus {
+message AliCloudCdnDomainStatus {
   // stack-outputs
-  AlicloudCdnDomainStackOutputs outputs = 1;
+  AliCloudCdnDomainStackOutputs outputs = 1;
 }

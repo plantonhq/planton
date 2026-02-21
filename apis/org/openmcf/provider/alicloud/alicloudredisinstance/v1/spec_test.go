@@ -11,23 +11,23 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func TestAlicloudRedisInstanceSpec(t *testing.T) {
+func TestAliCloudRedisInstanceSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
-	ginkgo.RunSpecs(t, "AlicloudRedisInstanceSpec Validation Tests")
+	ginkgo.RunSpecs(t, "AliCloudRedisInstanceSpec Validation Tests")
 }
 
-var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
+var _ = ginkgo.Describe("AliCloudRedisInstanceSpec Validation Tests", func() {
 
 	ginkgo.Describe("valid input", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudRedisInstance",
+				Kind:       "AliCloudRedisInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-redis",
 				},
-				Spec: &AlicloudRedisInstanceSpec{
+				Spec: &AliCloudRedisInstanceSpec{
 					Region:        "cn-hangzhou",
 					InstanceClass: "redis.master.small.default",
 					Password:      "SecureP@ss123",
@@ -41,15 +41,15 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with all optional fields populated", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudRedisInstance",
+				Kind:       "AliCloudRedisInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "prod-redis",
 					Org:  "acme-corp",
 					Env:  "production",
 				},
-				Spec: &AlicloudRedisInstanceSpec{
+				Spec: &AliCloudRedisInstanceSpec{
 					Region:        "cn-shanghai",
 					InstanceClass: "redis.master.large.default",
 					Password:      "ProdP@ssw0rd!",
@@ -84,13 +84,13 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with PrePaid billing and period", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudRedisInstance",
+				Kind:       "AliCloudRedisInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "prepaid-redis",
 				},
-				Spec: &AlicloudRedisInstanceSpec{
+				Spec: &AliCloudRedisInstanceSpec{
 					Region:        "cn-hangzhou",
 					InstanceClass: "redis.master.small.default",
 					Password:      "SecureP@ss123",
@@ -108,13 +108,13 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with Memcache instance type", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudRedisInstance",
+				Kind:       "AliCloudRedisInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "memcache-instance",
 				},
-				Spec: &AlicloudRedisInstanceSpec{
+				Spec: &AliCloudRedisInstanceSpec{
 					Region:        "cn-hangzhou",
 					InstanceClass: "memcache.master.small.default",
 					Password:      "SecureP@ss123",
@@ -130,13 +130,13 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with TDE encryption enabled", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudRedisInstance",
+				Kind:       "AliCloudRedisInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "encrypted-redis",
 				},
-				Spec: &AlicloudRedisInstanceSpec{
+				Spec: &AliCloudRedisInstanceSpec{
 					Region:        "cn-hangzhou",
 					InstanceClass: "redis.master.large.default",
 					Password:      "SecureP@ss123",
@@ -155,11 +155,11 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 	ginkgo.Describe("invalid input", func() {
 
 		ginkgo.It("should fail when api_version is wrong", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "wrong/v1",
-				Kind:       "AlicloudRedisInstance",
+				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudRedisInstanceSpec{
+				Spec: &AliCloudRedisInstanceSpec{
 					Region: "cn-hangzhou", InstanceClass: "redis.master.small.default",
 					Password: "SecureP@ss123",
 					VswitchId: &fkv1.StringValueOrRef{
@@ -172,11 +172,11 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when kind is wrong", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudRedisInstanceSpec{
+				Spec: &AliCloudRedisInstanceSpec{
 					Region: "cn-hangzhou", InstanceClass: "redis.master.small.default",
 					Password: "SecureP@ss123",
 					VswitchId: &fkv1.StringValueOrRef{
@@ -189,10 +189,10 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when metadata is missing", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudRedisInstance",
-				Spec: &AlicloudRedisInstanceSpec{
+				Kind:       "AliCloudRedisInstance",
+				Spec: &AliCloudRedisInstanceSpec{
 					Region: "cn-hangzhou", InstanceClass: "redis.master.small.default",
 					Password: "SecureP@ss123",
 					VswitchId: &fkv1.StringValueOrRef{
@@ -205,9 +205,9 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when spec is missing", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudRedisInstance",
+				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 			}
 			err := protovalidate.Validate(input)
@@ -215,11 +215,11 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when region is empty", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudRedisInstance",
+				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudRedisInstanceSpec{
+				Spec: &AliCloudRedisInstanceSpec{
 					Region: "", InstanceClass: "redis.master.small.default",
 					Password: "SecureP@ss123",
 					VswitchId: &fkv1.StringValueOrRef{
@@ -232,11 +232,11 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when vswitch_id is missing", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudRedisInstance",
+				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudRedisInstanceSpec{
+				Spec: &AliCloudRedisInstanceSpec{
 					Region: "cn-hangzhou", InstanceClass: "redis.master.small.default",
 					Password: "SecureP@ss123",
 				},
@@ -246,11 +246,11 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when instance_class is empty", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudRedisInstance",
+				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudRedisInstanceSpec{
+				Spec: &AliCloudRedisInstanceSpec{
 					Region: "cn-hangzhou", InstanceClass: "",
 					Password: "SecureP@ss123",
 					VswitchId: &fkv1.StringValueOrRef{
@@ -263,11 +263,11 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when password is too short", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudRedisInstance",
+				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudRedisInstanceSpec{
+				Spec: &AliCloudRedisInstanceSpec{
 					Region: "cn-hangzhou", InstanceClass: "redis.master.small.default",
 					Password: "short",
 					VswitchId: &fkv1.StringValueOrRef{
@@ -280,11 +280,11 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when engine_version is invalid", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudRedisInstance",
+				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudRedisInstanceSpec{
+				Spec: &AliCloudRedisInstanceSpec{
 					Region: "cn-hangzhou", InstanceClass: "redis.master.small.default",
 					Password: "SecureP@ss123",
 					VswitchId: &fkv1.StringValueOrRef{
@@ -298,11 +298,11 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when instance_type is invalid", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudRedisInstance",
+				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudRedisInstanceSpec{
+				Spec: &AliCloudRedisInstanceSpec{
 					Region: "cn-hangzhou", InstanceClass: "redis.master.small.default",
 					Password: "SecureP@ss123",
 					VswitchId: &fkv1.StringValueOrRef{
@@ -316,11 +316,11 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when payment_type is invalid", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudRedisInstance",
+				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudRedisInstanceSpec{
+				Spec: &AliCloudRedisInstanceSpec{
 					Region: "cn-hangzhou", InstanceClass: "redis.master.small.default",
 					Password: "SecureP@ss123",
 					VswitchId: &fkv1.StringValueOrRef{
@@ -334,11 +334,11 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when ssl_enable is invalid", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudRedisInstance",
+				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudRedisInstanceSpec{
+				Spec: &AliCloudRedisInstanceSpec{
 					Region: "cn-hangzhou", InstanceClass: "redis.master.small.default",
 					Password: "SecureP@ss123",
 					VswitchId: &fkv1.StringValueOrRef{
@@ -352,11 +352,11 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when vpc_auth_mode is invalid", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudRedisInstance",
+				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudRedisInstanceSpec{
+				Spec: &AliCloudRedisInstanceSpec{
 					Region: "cn-hangzhou", InstanceClass: "redis.master.small.default",
 					Password: "SecureP@ss123",
 					VswitchId: &fkv1.StringValueOrRef{
@@ -370,11 +370,11 @@ var _ = ginkgo.Describe("AlicloudRedisInstanceSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when read_only_count exceeds max", func() {
-			input := &AlicloudRedisInstance{
+			input := &AliCloudRedisInstance{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudRedisInstance",
+				Kind:       "AliCloudRedisInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
-				Spec: &AlicloudRedisInstanceSpec{
+				Spec: &AliCloudRedisInstanceSpec{
 					Region: "cn-hangzhou", InstanceClass: "redis.master.small.default",
 					Password: "SecureP@ss123",
 					VswitchId: &fkv1.StringValueOrRef{

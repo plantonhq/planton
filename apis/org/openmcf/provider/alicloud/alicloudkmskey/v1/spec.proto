@@ -5,7 +5,7 @@ package org.openmcf.provider.alicloud.alicloudkmskey.v1;
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudKmsKeySpec defines the configuration for an Alibaba Cloud Key
+// AliCloudKmsKeySpec defines the configuration for an Alibaba Cloud Key
 // Management Service (KMS) customer-managed key (CMK).
 //
 // A KMS key is used to encrypt and decrypt data across Alibaba Cloud services
@@ -23,7 +23,7 @@ import "org/openmcf/shared/options/options.proto";
 // Provider resources:
 //   Terraform: alicloud_kms_key
 //   Pulumi:    kms.Key
-message AlicloudKmsKeySpec {
+message AliCloudKmsKeySpec {
   // Alibaba Cloud region where the KMS key will be created.
   // The key can only be used by resources in the same region.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".

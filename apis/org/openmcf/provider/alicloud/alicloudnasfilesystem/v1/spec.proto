@@ -6,7 +6,7 @@ import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudNasFileSystemSpec defines the configuration for an Alibaba Cloud
+// AliCloudNasFileSystemSpec defines the configuration for an Alibaba Cloud
 // Network Attached Storage (NAS) file system with a bundled access group and
 // VPC mount target.
 //
@@ -42,7 +42,7 @@ import "org/openmcf/shared/options/options.proto";
 //              + alicloud_nas_access_rule + alicloud_nas_mount_target
 //   Pulumi:    nas.FileSystem + nas.AccessGroup + nas.AccessRule
 //              + nas.MountTarget
-message AlicloudNasFileSystemSpec {
+message AliCloudNasFileSystemSpec {
   // Alibaba Cloud region where the file system will be created.
   // Must match the region of the VPC and VSwitch used for the mount target.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -105,7 +105,7 @@ message AlicloudNasFileSystemSpec {
 
   // Encryption configuration. When omitted, the file system is not encrypted.
   // Encryption type is immutable after creation (ForceNew).
-  AlicloudNasEncryption encryption = 6;
+  AliCloudNasEncryption encryption = 6;
 
   // File system capacity in GiB.
   // Required for extreme NAS (minimum 100 GiB). Ignored for standard NAS,
@@ -123,7 +123,7 @@ message AlicloudNasFileSystemSpec {
   // accessible to resources within it.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 9 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
   ];
 
@@ -132,7 +132,7 @@ message AlicloudNasFileSystemSpec {
   // zone the mount target is placed in.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 10 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
   ];
 
@@ -146,7 +146,7 @@ message AlicloudNasFileSystemSpec {
   // When omitted (empty list), the mount target uses the built-in
   // DEFAULT_VPC_GROUP_NAME access group, which allows full read-write access
   // from all IP addresses within the VPC.
-  repeated AlicloudNasAccessRule access_rules = 11;
+  repeated AliCloudNasAccessRule access_rules = 11;
 
   // Alibaba Cloud resource group ID for organizational grouping (per DD05).
   // If omitted, the file system is placed in the account's default resource
@@ -158,7 +158,7 @@ message AlicloudNasFileSystemSpec {
 }
 
 // Encryption configuration for a NAS file system.
-message AlicloudNasEncryption {
+message AliCloudNasEncryption {
   // Encryption type.
   //   1 = NAS-managed key: Alibaba Cloud manages the encryption key.
   //       No additional configuration needed.
@@ -175,13 +175,13 @@ message AlicloudNasEncryption {
 
   // KMS key ID for customer-managed encryption.
   // Required when encrypt_type is 2. Ignored when encrypt_type is 1.
-  // Create one with AlicloudKmsKey and reference its key_id output.
+  // Create one with AliCloudKmsKey and reference its key_id output.
   string kms_key_id = 2;
 }
 
 // An access rule within a NAS access group that controls which IP ranges
 // can mount the file system and with what permissions.
-message AlicloudNasAccessRule {
+message AliCloudNasAccessRule {
   // Source CIDR IP address or block.
   // Allows traffic from this network range to access the file system.
   // Examples: "0.0.0.0/0" for all IPs, "10.0.0.0/8" for a private range,

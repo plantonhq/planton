@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudMongodbInstanceStackOutputs captures the outputs from deploying an
+// AliCloudMongodbInstanceStackOutputs captures the outputs from deploying an
 // Alibaba Cloud MongoDB replica-set instance.
-type AlicloudMongodbInstanceStackOutputs struct {
+type AliCloudMongodbInstanceStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The MongoDB instance ID assigned by Alibaba Cloud (e.g., "dds-xxxxx").
 	InstanceId string `protobuf:"bytes,1,opt,name=instance_id,json=instanceId,proto3" json:"instance_id,omitempty"`
@@ -34,20 +34,20 @@ type AlicloudMongodbInstanceStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudMongodbInstanceStackOutputs) Reset() {
-	*x = AlicloudMongodbInstanceStackOutputs{}
+func (x *AliCloudMongodbInstanceStackOutputs) Reset() {
+	*x = AliCloudMongodbInstanceStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudMongodbInstanceStackOutputs) String() string {
+func (x *AliCloudMongodbInstanceStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudMongodbInstanceStackOutputs) ProtoMessage() {}
+func (*AliCloudMongodbInstanceStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudMongodbInstanceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudMongodbInstanceStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AlicloudMongodbInstanceStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudMongodbInstanceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudMongodbInstanceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudMongodbInstanceStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudMongodbInstanceStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudMongodbInstanceStackOutputs) GetInstanceId() string {
+func (x *AliCloudMongodbInstanceStackOutputs) GetInstanceId() string {
 	if x != nil {
 		return x.InstanceId
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceStackOutputs) GetReplicaSetName() string {
+func (x *AliCloudMongodbInstanceStackOutputs) GetReplicaSetName() string {
 	if x != nil {
 		return x.ReplicaSetName
 	}
@@ -83,7 +83,7 @@ var File_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_stack_outputs_
 const file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Lorg/openmcf/provider/alicloud/alicloudmongodbinstance/v1/stack_outputs.proto\x128org.openmcf.provider.alicloud.alicloudmongodbinstance.v1\"p\n" +
-	"#AlicloudMongodbInstanceStackOutputs\x12\x1f\n" +
+	"#AliCloudMongodbInstanceStackOutputs\x12\x1f\n" +
 	"\vinstance_id\x18\x01 \x01(\tR\n" +
 	"instanceId\x12(\n" +
 	"\x10replica_set_name\x18\x02 \x01(\tR\x0ereplicaSetNameB\xce\x03\n" +
@@ -103,7 +103,7 @@ func file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_stack_outputs
 
 var file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudMongodbInstanceStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceStackOutputs
+	(*AliCloudMongodbInstanceStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_stack_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

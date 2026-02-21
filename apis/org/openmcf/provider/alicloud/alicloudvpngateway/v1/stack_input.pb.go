@@ -23,30 +23,30 @@ const (
 )
 
 // alicloud-vpn-gateway stack-input
-type AlicloudVpnGatewayStackInput struct {
+type AliCloudVpnGatewayStackInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target cloud-resource
-	Target *AlicloudVpnGateway `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
+	Target *AliCloudVpnGateway `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
-	ProviderConfig *alicloud.AlicloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
+	ProviderConfig *alicloud.AliCloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudVpnGatewayStackInput) Reset() {
-	*x = AlicloudVpnGatewayStackInput{}
+func (x *AliCloudVpnGatewayStackInput) Reset() {
+	*x = AliCloudVpnGatewayStackInput{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudVpnGatewayStackInput) String() string {
+func (x *AliCloudVpnGatewayStackInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudVpnGatewayStackInput) ProtoMessage() {}
+func (*AliCloudVpnGatewayStackInput) ProtoMessage() {}
 
-func (x *AlicloudVpnGatewayStackInput) ProtoReflect() protoreflect.Message {
+func (x *AliCloudVpnGatewayStackInput) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AlicloudVpnGatewayStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudVpnGatewayStackInput.ProtoReflect.Descriptor instead.
-func (*AlicloudVpnGatewayStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudVpnGatewayStackInput.ProtoReflect.Descriptor instead.
+func (*AliCloudVpnGatewayStackInput) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudVpnGatewayStackInput) GetTarget() *AlicloudVpnGateway {
+func (x *AliCloudVpnGatewayStackInput) GetTarget() *AliCloudVpnGateway {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AlicloudVpnGatewayStackInput) GetProviderConfig() *alicloud.AlicloudProviderConfig {
+func (x *AliCloudVpnGatewayStackInput) GetProviderConfig() *alicloud.AliCloudProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,9 +82,9 @@ var File_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_input_proto p
 const file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_input_proto_rawDesc = "" +
 	"\n" +
 	"Eorg/openmcf/provider/alicloud/alicloudvpngateway/v1/stack_input.proto\x123org.openmcf.provider.alicloud.alicloudvpngateway.v1\x1a=org/openmcf/provider/alicloud/alicloudvpngateway/v1/api.proto\x1a,org/openmcf/provider/alicloud/provider.proto\"\xdf\x01\n" +
-	"\x1cAlicloudVpnGatewayStackInput\x12_\n" +
-	"\x06target\x18\x01 \x01(\v2G.org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGatewayR\x06target\x12^\n" +
-	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigR\x0eproviderConfigB\xa9\x03\n" +
+	"\x1cAliCloudVpnGatewayStackInput\x12_\n" +
+	"\x06target\x18\x01 \x01(\v2G.org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGatewayR\x06target\x12^\n" +
+	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigR\x0eproviderConfigB\xa9\x03\n" +
 	"7com.org.openmcf.provider.alicloud.alicloudvpngateway.v1B\x0fStackInputProtoP\x01Zjgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudvpngateway/v1;alicloudvpngatewayv1\xa2\x02\x05OOPAA\xaa\x023Org.Openmcf.Provider.Alicloud.Alicloudvpngateway.V1\xca\x023Org\\Openmcf\\Provider\\Alicloud\\Alicloudvpngateway\\V1\xe2\x02?Org\\Openmcf\\Provider\\Alicloud\\Alicloudvpngateway\\V1\\GPBMetadata\xea\x028Org::Openmcf::Provider::Alicloud::Alicloudvpngateway::V1b\x06proto3"
 
 var (
@@ -101,13 +101,13 @@ func file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_input_proto_
 
 var file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_input_proto_goTypes = []any{
-	(*AlicloudVpnGatewayStackInput)(nil),    // 0: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGatewayStackInput
-	(*AlicloudVpnGateway)(nil),              // 1: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGateway
-	(*alicloud.AlicloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AlicloudProviderConfig
+	(*AliCloudVpnGatewayStackInput)(nil),    // 0: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGatewayStackInput
+	(*AliCloudVpnGateway)(nil),              // 1: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGateway
+	(*alicloud.AliCloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AliCloudProviderConfig
 }
 var file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_stack_input_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGatewayStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGateway
-	2, // 1: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGatewayStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
+	1, // 0: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGatewayStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGateway
+	2, // 1: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGatewayStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

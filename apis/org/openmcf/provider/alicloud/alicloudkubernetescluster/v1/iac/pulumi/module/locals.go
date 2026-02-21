@@ -9,19 +9,19 @@ import (
 )
 
 type Locals struct {
-	AlicloudKubernetesCluster *alicloudkubernetesclusterv1.AlicloudKubernetesCluster
+	AliCloudKubernetesCluster *alicloudkubernetesclusterv1.AliCloudKubernetesCluster
 	Tags                      map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudkubernetesclusterv1.AlicloudKubernetesClusterStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudkubernetesclusterv1.AliCloudKubernetesClusterStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudKubernetesCluster = stackInput.Target
+	locals.AliCloudKubernetesCluster = stackInput.Target
 	target := stackInput.Target
 
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudKubernetesCluster.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudKubernetesCluster.String()),
 	}
 
 	if target.Metadata.Id != "" {
@@ -43,63 +43,63 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudkubernetescluster
 	return locals
 }
 
-func clusterSpec(spec *alicloudkubernetesclusterv1.AlicloudKubernetesClusterSpec) string {
+func clusterSpec(spec *alicloudkubernetesclusterv1.AliCloudKubernetesClusterSpec) string {
 	if spec.ClusterSpec != nil {
 		return *spec.ClusterSpec
 	}
 	return "ack.standard"
 }
 
-func proxyMode(spec *alicloudkubernetesclusterv1.AlicloudKubernetesClusterSpec) string {
+func proxyMode(spec *alicloudkubernetesclusterv1.AliCloudKubernetesClusterSpec) string {
 	if spec.ProxyMode != nil {
 		return *spec.ProxyMode
 	}
 	return "ipvs"
 }
 
-func nodeCidrMask(spec *alicloudkubernetesclusterv1.AlicloudKubernetesClusterSpec) int {
+func nodeCidrMask(spec *alicloudkubernetesclusterv1.AliCloudKubernetesClusterSpec) int {
 	if spec.NodeCidrMask != nil {
 		return int(*spec.NodeCidrMask)
 	}
 	return 24
 }
 
-func newNatGateway(spec *alicloudkubernetesclusterv1.AlicloudKubernetesClusterSpec) bool {
+func newNatGateway(spec *alicloudkubernetesclusterv1.AliCloudKubernetesClusterSpec) bool {
 	if spec.NewNatGateway != nil {
 		return *spec.NewNatGateway
 	}
 	return true
 }
 
-func slbInternetEnabled(spec *alicloudkubernetesclusterv1.AlicloudKubernetesClusterSpec) bool {
+func slbInternetEnabled(spec *alicloudkubernetesclusterv1.AliCloudKubernetesClusterSpec) bool {
 	if spec.SlbInternetEnabled != nil {
 		return *spec.SlbInternetEnabled
 	}
 	return true
 }
 
-func enableRrsa(spec *alicloudkubernetesclusterv1.AlicloudKubernetesClusterSpec) bool {
+func enableRrsa(spec *alicloudkubernetesclusterv1.AliCloudKubernetesClusterSpec) bool {
 	if spec.EnableRrsa != nil {
 		return *spec.EnableRrsa
 	}
 	return false
 }
 
-func isEnterpriseSg(spec *alicloudkubernetesclusterv1.AlicloudKubernetesClusterSpec) bool {
+func isEnterpriseSg(spec *alicloudkubernetesclusterv1.AliCloudKubernetesClusterSpec) bool {
 	if spec.IsEnterpriseSecurityGroup != nil {
 		return *spec.IsEnterpriseSecurityGroup
 	}
 	return false
 }
 
-func deletionProtection(spec *alicloudkubernetesclusterv1.AlicloudKubernetesClusterSpec) bool {
+func deletionProtection(spec *alicloudkubernetesclusterv1.AliCloudKubernetesClusterSpec) bool {
 	if spec.DeletionProtection != nil {
 		return *spec.DeletionProtection
 	}
 	return false
 }
 
-func controlPlaneLogTtl(logging *alicloudkubernetesclusterv1.AlicloudKubernetesClusterLogging) string {
+func controlPlaneLogTtl(logging *alicloudkubernetesclusterv1.AliCloudKubernetesClusterLogging) string {
 	if logging.ControlPlaneLogTtl != nil {
 		return *logging.ControlPlaneLogTtl
 	}

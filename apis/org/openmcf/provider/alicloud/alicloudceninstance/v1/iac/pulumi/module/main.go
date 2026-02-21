@@ -10,9 +10,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *alicloudceninstancev1.AlicloudCenInstanceStackInput) error {
+func Resources(ctx *pulumi.Context, stackInput *alicloudceninstancev1.AliCloudCenInstanceStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
-	spec := locals.AlicloudCenInstance.Spec
+	spec := locals.AliCloudCenInstance.Spec
 
 	alicloudProvider, err := alicloud.NewProvider(ctx, "alicloud", &alicloud.ProviderArgs{
 		Region: pulumi.String(spec.Region),
@@ -61,7 +61,7 @@ func cenAttachment(
 	ctx *pulumi.Context,
 	provider *alicloud.Provider,
 	cenInstance *cen.Instance,
-	attachment *alicloudceninstancev1.AlicloudCenAttachment,
+	attachment *alicloudceninstancev1.AliCloudCenAttachment,
 	index int,
 ) error {
 	childType := "VPC"

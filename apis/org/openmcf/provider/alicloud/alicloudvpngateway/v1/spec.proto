@@ -6,7 +6,7 @@ import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudVpnGatewaySpec defines the configuration for an Alibaba Cloud VPN
+// AliCloudVpnGatewaySpec defines the configuration for an Alibaba Cloud VPN
 // Gateway with bundled customer gateways and IPsec VPN connections.
 //
 // A VPN Gateway provides encrypted site-to-site connectivity between an
@@ -31,7 +31,7 @@ import "org/openmcf/shared/options/options.proto";
 // Provider resources:
 //   Terraform: alicloud_vpn_gateway + alicloud_vpn_customer_gateway + alicloud_vpn_connection
 //   Pulumi:    vpn.Gateway + vpn.CustomerGateway + vpn.Connection
-message AlicloudVpnGatewaySpec {
+message AliCloudVpnGatewaySpec {
   // Alibaba Cloud region where the VPN Gateway will be created.
   // Must match the region of the VPC and VSwitch.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -43,7 +43,7 @@ message AlicloudVpnGatewaySpec {
   // VPC ID that the VPN Gateway belongs to.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 2 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
   ];
 
@@ -51,7 +51,7 @@ message AlicloudVpnGatewaySpec {
   // vpc_id. The VPN Gateway consumes a private IP from this VSwitch.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 3 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
   ];
 
@@ -109,17 +109,17 @@ message AlicloudVpnGatewaySpec {
   // IPsec VPN connections bundled with this gateway. Each entry creates a
   // Customer Gateway (from the remote device's public IP) and a VPN
   // Connection with the specified IKE/IPsec negotiation parameters.
-  repeated AlicloudVpnConnection connections = 12;
+  repeated AliCloudVpnConnection connections = 12;
 }
 
-// AlicloudVpnConnection defines a single IPsec VPN connection between the
+// AliCloudVpnConnection defines a single IPsec VPN connection between the
 // Alibaba Cloud VPN Gateway and a remote network device (on-premises router,
 // firewall, or another cloud VPN endpoint).
 //
 // Each connection creates two provider resources:
 //   - A Customer Gateway representing the remote device's identity (IP + ASN)
 //   - A VPN Connection with IPsec tunnel configuration
-message AlicloudVpnConnection {
+message AliCloudVpnConnection {
   // Connection name. Used as both the customer_gateway_name and
   // vpn_connection_name in the provider. 2-128 characters.
   string name = 1 [
@@ -175,21 +175,21 @@ message AlicloudVpnConnection {
   // IKE (Phase 1) negotiation parameters. When omitted, the provider uses
   // sensible defaults (IKEv2, main mode, AES encryption, SHA1 auth, DH group2,
   // auto-generated pre-shared key, 86400s lifetime).
-  AlicloudIkeConfig ike_config = 9;
+  AliCloudIkeConfig ike_config = 9;
 
   // IPsec (Phase 2) negotiation parameters. When omitted, the provider uses
   // sensible defaults (AES encryption, MD5 auth, DH group2, 86400s lifetime).
-  AlicloudIpsecConfig ipsec_config = 10;
+  AliCloudIpsecConfig ipsec_config = 10;
 
   // Health check configuration for monitoring tunnel connectivity. When
   // enabled, the VPN gateway periodically probes the remote endpoint and
   // can trigger failover if the tunnel becomes unhealthy.
-  AlicloudVpnHealthCheckConfig health_check_config = 11;
+  AliCloudVpnHealthCheckConfig health_check_config = 11;
 }
 
-// AlicloudIkeConfig defines the IKE (Internet Key Exchange) Phase 1
+// AliCloudIkeConfig defines the IKE (Internet Key Exchange) Phase 1
 // negotiation parameters for establishing the IPsec security association.
-message AlicloudIkeConfig {
+message AliCloudIkeConfig {
   // Pre-shared key (PSK) for IKE authentication. 1-100 characters.
   // If omitted, the provider auto-generates a random PSK.
   string psk = 1 [(buf.validate.field).string.max_len = 100];
@@ -263,9 +263,9 @@ message AlicloudIkeConfig {
   ];
 }
 
-// AlicloudIpsecConfig defines the IPsec (Phase 2) negotiation parameters
+// AliCloudIpsecConfig defines the IPsec (Phase 2) negotiation parameters
 // that control how data traffic is encrypted through the tunnel.
-message AlicloudIpsecConfig {
+message AliCloudIpsecConfig {
   // IPsec encryption algorithm for Phase 2 data traffic.
   // Default: "aes"
   optional string ipsec_enc_alg = 1 [
@@ -311,10 +311,10 @@ message AlicloudIpsecConfig {
   ];
 }
 
-// AlicloudVpnHealthCheckConfig defines health monitoring for a VPN connection.
+// AliCloudVpnHealthCheckConfig defines health monitoring for a VPN connection.
 // When enabled, the VPN gateway periodically sends probes to detect tunnel
 // failures and can trigger route failover in active-standby setups.
-message AlicloudVpnHealthCheckConfig {
+message AliCloudVpnHealthCheckConfig {
   // Enable health checks for this connection. Default: false
   optional bool enable = 1 [(org.openmcf.shared.options.default) = "false"];
 

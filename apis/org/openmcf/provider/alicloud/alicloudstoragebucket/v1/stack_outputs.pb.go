@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudStorageBucketStackOutputs captures the outputs from deploying an
+// AliCloudStorageBucketStackOutputs captures the outputs from deploying an
 // Alibaba Cloud OSS bucket.
-type AlicloudStorageBucketStackOutputs struct {
+type AliCloudStorageBucketStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The bucket name. OSS uses the bucket name as the resource identifier.
 	// Consumers reference this to upload objects, configure logging targets,
@@ -42,20 +42,20 @@ type AlicloudStorageBucketStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AlicloudStorageBucketStackOutputs) Reset() {
-	*x = AlicloudStorageBucketStackOutputs{}
+func (x *AliCloudStorageBucketStackOutputs) Reset() {
+	*x = AliCloudStorageBucketStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudStorageBucketStackOutputs) String() string {
+func (x *AliCloudStorageBucketStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudStorageBucketStackOutputs) ProtoMessage() {}
+func (*AliCloudStorageBucketStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudStorageBucketStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudStorageBucketStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,26 +67,26 @@ func (x *AlicloudStorageBucketStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudStorageBucketStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudStorageBucketStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudStorageBucketStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudStorageBucketStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudStorageBucketStackOutputs) GetBucketName() string {
+func (x *AliCloudStorageBucketStackOutputs) GetBucketName() string {
 	if x != nil {
 		return x.BucketName
 	}
 	return ""
 }
 
-func (x *AlicloudStorageBucketStackOutputs) GetExtranetEndpoint() string {
+func (x *AliCloudStorageBucketStackOutputs) GetExtranetEndpoint() string {
 	if x != nil {
 		return x.ExtranetEndpoint
 	}
 	return ""
 }
 
-func (x *AlicloudStorageBucketStackOutputs) GetIntranetEndpoint() string {
+func (x *AliCloudStorageBucketStackOutputs) GetIntranetEndpoint() string {
 	if x != nil {
 		return x.IntranetEndpoint
 	}
@@ -98,7 +98,7 @@ var File_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_outputs_pr
 const file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Jorg/openmcf/provider/alicloud/alicloudstoragebucket/v1/stack_outputs.proto\x126org.openmcf.provider.alicloud.alicloudstoragebucket.v1\"\x9e\x01\n" +
-	"!AlicloudStorageBucketStackOutputs\x12\x1f\n" +
+	"!AliCloudStorageBucketStackOutputs\x12\x1f\n" +
 	"\vbucket_name\x18\x01 \x01(\tR\n" +
 	"bucketName\x12+\n" +
 	"\x11extranet_endpoint\x18\x02 \x01(\tR\x10extranetEndpoint\x12+\n" +
@@ -119,7 +119,7 @@ func file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_outputs_p
 
 var file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudStorageBucketStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketStackOutputs
+	(*AliCloudStorageBucketStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

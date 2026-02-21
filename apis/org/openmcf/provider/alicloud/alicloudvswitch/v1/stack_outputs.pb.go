@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudVswitchStackOutputs captures the outputs from deploying an
+// AliCloudVswitchStackOutputs captures the outputs from deploying an
 // Alibaba Cloud VSwitch.
-type AlicloudVswitchStackOutputs struct {
+type AliCloudVswitchStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The VSwitch ID assigned by Alibaba Cloud.
 	// Referenced by downstream components (NatGateway, EcsInstance, AckManagedCluster,
@@ -43,20 +43,20 @@ type AlicloudVswitchStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudVswitchStackOutputs) Reset() {
-	*x = AlicloudVswitchStackOutputs{}
+func (x *AliCloudVswitchStackOutputs) Reset() {
+	*x = AliCloudVswitchStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudvswitch_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudVswitchStackOutputs) String() string {
+func (x *AliCloudVswitchStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudVswitchStackOutputs) ProtoMessage() {}
+func (*AliCloudVswitchStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudVswitchStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudVswitchStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudvswitch_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,40 +68,40 @@ func (x *AlicloudVswitchStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudVswitchStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudVswitchStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudVswitchStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudVswitchStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudvswitch_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudVswitchStackOutputs) GetVswitchId() string {
+func (x *AliCloudVswitchStackOutputs) GetVswitchId() string {
 	if x != nil {
 		return x.VswitchId
 	}
 	return ""
 }
 
-func (x *AlicloudVswitchStackOutputs) GetVswitchName() string {
+func (x *AliCloudVswitchStackOutputs) GetVswitchName() string {
 	if x != nil {
 		return x.VswitchName
 	}
 	return ""
 }
 
-func (x *AlicloudVswitchStackOutputs) GetCidrBlock() string {
+func (x *AliCloudVswitchStackOutputs) GetCidrBlock() string {
 	if x != nil {
 		return x.CidrBlock
 	}
 	return ""
 }
 
-func (x *AlicloudVswitchStackOutputs) GetZoneId() string {
+func (x *AliCloudVswitchStackOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *AlicloudVswitchStackOutputs) GetIpv6CidrBlock() string {
+func (x *AliCloudVswitchStackOutputs) GetIpv6CidrBlock() string {
 	if x != nil {
 		return x.Ipv6CidrBlock
 	}
@@ -113,7 +113,7 @@ var File_org_openmcf_provider_alicloud_alicloudvswitch_v1_stack_outputs_proto pr
 const file_org_openmcf_provider_alicloud_alicloudvswitch_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Dorg/openmcf/provider/alicloud/alicloudvswitch/v1/stack_outputs.proto\x120org.openmcf.provider.alicloud.alicloudvswitch.v1\"\xbf\x01\n" +
-	"\x1bAlicloudVswitchStackOutputs\x12\x1d\n" +
+	"\x1bAliCloudVswitchStackOutputs\x12\x1d\n" +
 	"\n" +
 	"vswitch_id\x18\x01 \x01(\tR\tvswitchId\x12!\n" +
 	"\fvswitch_name\x18\x02 \x01(\tR\vvswitchName\x12\x1d\n" +
@@ -137,7 +137,7 @@ func file_org_openmcf_provider_alicloud_alicloudvswitch_v1_stack_outputs_proto_r
 
 var file_org_openmcf_provider_alicloud_alicloudvswitch_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudvswitch_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudVswitchStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudvswitch.v1.AlicloudVswitchStackOutputs
+	(*AliCloudVswitchStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudvswitch.v1.AliCloudVswitchStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudvswitch_v1_stack_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudceninstance.v1;
 
-// AlicloudCenInstanceStackOutputs captures the outputs from deploying an
+// AliCloudCenInstanceStackOutputs captures the outputs from deploying an
 // Alibaba Cloud CEN instance with its bundled child-instance attachments.
-message AlicloudCenInstanceStackOutputs {
+message AliCloudCenInstanceStackOutputs {
   // The CEN instance ID assigned by Alibaba Cloud (e.g., "cen-xxxxx").
   string cen_id = 1;
 

@@ -5,7 +5,7 @@ package org.openmcf.provider.alicloud.alicloudfunction.v1;
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 
-// AlicloudFunctionSpec defines the configuration for an Alibaba Cloud Function
+// AliCloudFunctionSpec defines the configuration for an Alibaba Cloud Function
 // Compute v3 function.
 //
 // Function Compute (FC) is a fully managed, event-driven serverless compute
@@ -25,7 +25,7 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 // Provider resources:
 //   Terraform: alicloud_fcv3_function
 //   Pulumi:    fc.V3Function
-message AlicloudFunctionSpec {
+message AliCloudFunctionSpec {
   // Alibaba Cloud region where the function will be created.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
   string region = 1 [
@@ -112,14 +112,14 @@ message AlicloudFunctionSpec {
   // Code package for the function. Not required when runtime is
   // "custom-container" (the container image is specified in
   // custom_container_config instead).
-  AlicloudFunctionCode code = 11;
+  AliCloudFunctionCode code = 11;
 
   // ── Identity and access ────────────────────────────────────────────────
 
   // RAM role ARN that the function assumes during execution.
   // The role must trust the FC service principal (fc.aliyuncs.com).
   org.openmcf.shared.foreignkey.v1.StringValueOrRef role = 12 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudRamRole,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudRamRole,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.arn"
   ];
 
@@ -133,40 +133,40 @@ message AlicloudFunctionSpec {
   // VPC configuration for functions that need to access VPC-internal
   // resources (databases, caches, NAS). When set, the function runs inside
   // the specified VPC and can reach private endpoints.
-  AlicloudFunctionVpcConfig vpc_config = 14;
+  AliCloudFunctionVpcConfig vpc_config = 14;
 
   // ── Logging ────────────────────────────────────────────────────────────
 
   // Log Service (SLS) configuration for function invocation logs.
-  AlicloudFunctionLogConfig log_config = 15;
+  AliCloudFunctionLogConfig log_config = 15;
 
   // ── Runtime customization ──────────────────────────────────────────────
 
   // Configuration for custom container runtimes (runtime="custom-container").
   // Specifies the container image, entrypoint, and health check.
-  AlicloudFunctionCustomContainerConfig custom_container_config = 16;
+  AliCloudFunctionCustomContainerConfig custom_container_config = 16;
 
   // Configuration for custom runtimes (runtime="custom.*").
   // Specifies the bootstrap command, arguments, listening port, and health check.
-  AlicloudFunctionCustomRuntimeConfig custom_runtime_config = 17;
+  AliCloudFunctionCustomRuntimeConfig custom_runtime_config = 17;
 
   // ── Instance lifecycle ─────────────────────────────────────────────────
 
   // Lifecycle hooks for function instances. The initializer runs once when
   // an instance is created (warm-up logic), and pre_stop runs before an
   // instance is reclaimed (cleanup logic).
-  AlicloudFunctionInstanceLifecycleConfig instance_lifecycle_config = 18;
+  AliCloudFunctionInstanceLifecycleConfig instance_lifecycle_config = 18;
 
   // ── Storage mounts ─────────────────────────────────────────────────────
 
   // NAS file system mount configuration. Requires vpc_config to be set
   // (NAS mount targets are VPC-internal).
-  AlicloudFunctionNasConfig nas_config = 19;
+  AliCloudFunctionNasConfig nas_config = 19;
 
   // ── GPU ─────────────────────────────────────────────────────────────────
 
   // GPU configuration for AI/ML inference workloads.
-  AlicloudFunctionGpuConfig gpu_config = 20;
+  AliCloudFunctionGpuConfig gpu_config = 20;
 
   // ── Layers, environment, tags ──────────────────────────────────────────
 
@@ -185,8 +185,8 @@ message AlicloudFunctionSpec {
   string resource_group_id = 24;
 }
 
-// AlicloudFunctionCode defines the code package for a function.
-message AlicloudFunctionCode {
+// AliCloudFunctionCode defines the code package for a function.
+message AliCloudFunctionCode {
   // OSS bucket name where the function code ZIP package is stored.
   string oss_bucket_name = 1;
 
@@ -202,13 +202,13 @@ message AlicloudFunctionCode {
   string checksum = 4;
 }
 
-// AlicloudFunctionVpcConfig places the function inside a VPC so it can
+// AliCloudFunctionVpcConfig places the function inside a VPC so it can
 // reach private resources (databases, caches, NAS mount targets).
-message AlicloudFunctionVpcConfig {
+message AliCloudFunctionVpcConfig {
   // VPC ID. Computed by the provider from the VSwitch when omitted in TF,
   // but required in the OpenMCF model for explicit cross-component wiring.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 1 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
   ];
 
@@ -218,17 +218,17 @@ message AlicloudFunctionVpcConfig {
 
   // Security group ID applied to the function's ENIs.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_id = 3 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
 }
 
-// AlicloudFunctionLogConfig configures function invocation logging to
+// AliCloudFunctionLogConfig configures function invocation logging to
 // Simple Log Service (SLS).
-message AlicloudFunctionLogConfig {
-  // SLS project name. References AlicloudLogProject.
+message AliCloudFunctionLogConfig {
+  // SLS project name. References AliCloudLogProject.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef project = 1 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudLogProject,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudLogProject,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_name"
   ];
 
@@ -250,9 +250,9 @@ message AlicloudFunctionLogConfig {
   optional bool enable_request_metrics = 5;
 }
 
-// AlicloudFunctionCustomContainerConfig configures a custom container
+// AliCloudFunctionCustomContainerConfig configures a custom container
 // runtime (runtime="custom-container").
-message AlicloudFunctionCustomContainerConfig {
+message AliCloudFunctionCustomContainerConfig {
   // Container image URI. Required when this config is set.
   // Example: "registry.cn-hangzhou.aliyuncs.com/my-ns/my-func:v1"
   string image = 1 [(buf.validate.field).cel = {
@@ -271,13 +271,13 @@ message AlicloudFunctionCustomContainerConfig {
   optional int32 port = 4;
 
   // Health check configuration for the container.
-  AlicloudFunctionHealthCheckConfig health_check_config = 5;
+  AliCloudFunctionHealthCheckConfig health_check_config = 5;
 }
 
-// AlicloudFunctionCustomRuntimeConfig configures a custom runtime
+// AliCloudFunctionCustomRuntimeConfig configures a custom runtime
 // (runtime="custom.*"). The function starts a long-running HTTP server
 // and FC forwards invocations to it.
-message AlicloudFunctionCustomRuntimeConfig {
+message AliCloudFunctionCustomRuntimeConfig {
   // Bootstrap command to start the custom runtime server.
   repeated string command = 1;
 
@@ -292,13 +292,13 @@ message AlicloudFunctionCustomRuntimeConfig {
   }];
 
   // Health check configuration for the custom runtime.
-  AlicloudFunctionHealthCheckConfig health_check_config = 4;
+  AliCloudFunctionHealthCheckConfig health_check_config = 4;
 }
 
-// AlicloudFunctionHealthCheckConfig defines an HTTP health check used by
+// AliCloudFunctionHealthCheckConfig defines an HTTP health check used by
 // both custom container and custom runtime configurations to verify that
 // the function instance is ready to serve traffic.
-message AlicloudFunctionHealthCheckConfig {
+message AliCloudFunctionHealthCheckConfig {
   // Seconds to wait after instance start before the first health check.
   // Range: 0-120.
   optional int32 initial_delay_seconds = 1 [(buf.validate.field).cel = {
@@ -342,22 +342,22 @@ message AlicloudFunctionHealthCheckConfig {
   }];
 }
 
-// AlicloudFunctionInstanceLifecycleConfig defines initializer and pre-stop
+// AliCloudFunctionInstanceLifecycleConfig defines initializer and pre-stop
 // hooks that run at instance creation and destruction.
-message AlicloudFunctionInstanceLifecycleConfig {
+message AliCloudFunctionInstanceLifecycleConfig {
   // Initializer hook. Runs once when a new instance is created, before it
   // receives any invocations. Use for warm-up tasks (loading models,
   // opening DB connections).
-  AlicloudFunctionLifecycleHook initializer = 1;
+  AliCloudFunctionLifecycleHook initializer = 1;
 
   // Pre-stop hook. Runs before an idle instance is reclaimed. Use for
   // cleanup tasks (flushing buffers, closing connections).
-  AlicloudFunctionLifecycleHook pre_stop = 2;
+  AliCloudFunctionLifecycleHook pre_stop = 2;
 }
 
-// AlicloudFunctionLifecycleHook defines a single lifecycle hook with a
+// AliCloudFunctionLifecycleHook defines a single lifecycle hook with a
 // handler entry point and a timeout.
-message AlicloudFunctionLifecycleHook {
+message AliCloudFunctionLifecycleHook {
   // Entry point for the hook (e.g., "index.initializer").
   string handler = 1;
 
@@ -374,10 +374,10 @@ message AlicloudFunctionLifecycleHook {
   repeated string command = 3;
 }
 
-// AlicloudFunctionNasConfig mounts a NAS file system into the function
+// AliCloudFunctionNasConfig mounts a NAS file system into the function
 // instance. Requires vpc_config to be set because NAS mount targets are
 // VPC-internal.
-message AlicloudFunctionNasConfig {
+message AliCloudFunctionNasConfig {
   // POSIX user ID for file access. Typically 0 (root) or a custom UID.
   optional int32 user_id = 1;
 
@@ -385,11 +385,11 @@ message AlicloudFunctionNasConfig {
   optional int32 group_id = 2;
 
   // NAS mount points to attach to the function instance.
-  repeated AlicloudFunctionNasMountPoint mount_points = 3;
+  repeated AliCloudFunctionNasMountPoint mount_points = 3;
 }
 
-// AlicloudFunctionNasMountPoint defines a single NAS mount.
-message AlicloudFunctionNasMountPoint {
+// AliCloudFunctionNasMountPoint defines a single NAS mount.
+message AliCloudFunctionNasMountPoint {
   // NAS mount target address.
   // Format: "{file-system-id}-{mount-target-id}.{region}.nas.aliyuncs.com:/{path}"
   string server_addr = 1 [(buf.validate.field).cel = {
@@ -410,8 +410,8 @@ message AlicloudFunctionNasMountPoint {
   optional bool enable_tls = 3;
 }
 
-// AlicloudFunctionGpuConfig enables GPU acceleration for AI/ML inference.
-message AlicloudFunctionGpuConfig {
+// AliCloudFunctionGpuConfig enables GPU acceleration for AI/ML inference.
+message AliCloudFunctionGpuConfig {
   // GPU memory in MB allocated to each function instance.
   int32 gpu_memory_size = 1 [(buf.validate.field).int32.gt = 0];
 

@@ -6,9 +6,9 @@ import "org/openmcf/provider/alicloud/alicloudvpngateway/v1/api.proto";
 import "org/openmcf/provider/alicloud/provider.proto";
 
 // alicloud-vpn-gateway stack-input
-message AlicloudVpnGatewayStackInput {
+message AliCloudVpnGatewayStackInput {
   // target cloud-resource
-  AlicloudVpnGateway target = 1;
+  AliCloudVpnGateway target = 1;
   // provider-config
-  org.openmcf.provider.alicloud.AlicloudProviderConfig provider_config = 2;
+  org.openmcf.provider.alicloud.AliCloudProviderConfig provider_config = 2;
 }

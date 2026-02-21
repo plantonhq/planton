@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudcdndomain.v1;
 
-// AlicloudCdnDomainStackOutputs captures the outputs from deploying an
+// AliCloudCdnDomainStackOutputs captures the outputs from deploying an
 // Alibaba Cloud CDN accelerated domain.
-message AlicloudCdnDomainStackOutputs {
+message AliCloudCdnDomainStackOutputs {
   // The accelerated domain name as registered in CDN.
   string domain_name = 1;
 

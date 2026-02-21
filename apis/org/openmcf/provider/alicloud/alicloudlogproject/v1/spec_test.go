@@ -9,26 +9,26 @@ import (
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
 )
 
-func TestAlicloudLogProjectSpec(t *testing.T) {
+func TestAliCloudLogProjectSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
-	ginkgo.RunSpecs(t, "AlicloudLogProjectSpec Validation Tests")
+	ginkgo.RunSpecs(t, "AliCloudLogProjectSpec Validation Tests")
 }
 
 func int32Ptr(i int32) *int32 { return &i }
 func boolPtr(b bool) *bool    { return &b }
 
-var _ = ginkgo.Describe("AlicloudLogProjectSpec Validation Tests", func() {
+var _ = ginkgo.Describe("AliCloudLogProjectSpec Validation Tests", func() {
 
 	ginkgo.Describe("valid input", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
-			input := &AlicloudLogProject{
+			input := &AliCloudLogProject{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudLogProject",
+				Kind:       "AliCloudLogProject",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-log-project",
 				},
-				Spec: &AlicloudLogProjectSpec{
+				Spec: &AliCloudLogProjectSpec{
 					Region:      "cn-hangzhou",
 					ProjectName: "my-sls-project",
 				},
@@ -38,17 +38,17 @@ var _ = ginkgo.Describe("AlicloudLogProjectSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with log stores configured", func() {
-			input := &AlicloudLogProject{
+			input := &AliCloudLogProject{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudLogProject",
+				Kind:       "AliCloudLogProject",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-log-project",
 				},
-				Spec: &AlicloudLogProjectSpec{
+				Spec: &AliCloudLogProjectSpec{
 					Region:      "cn-shanghai",
 					ProjectName: "prod-logging",
 					Description: "Production logging project",
-					LogStores: []*AlicloudLogStore{
+					LogStores: []*AliCloudLogStore{
 						{
 							Name:          "app-logs",
 							RetentionDays: int32Ptr(90),
@@ -70,21 +70,21 @@ var _ = ginkgo.Describe("AlicloudLogProjectSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with all optional fields populated", func() {
-			input := &AlicloudLogProject{
+			input := &AliCloudLogProject{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudLogProject",
+				Kind:       "AliCloudLogProject",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "full-config",
 					Org:  "my-org",
 					Env:  "production",
 				},
-				Spec: &AlicloudLogProjectSpec{
+				Spec: &AliCloudLogProjectSpec{
 					Region:          "us-west-1",
 					ProjectName:     "full-project-config",
 					Description:     "Fully configured project",
 					ResourceGroupId: "rg-abc123",
 					Tags:            map[string]string{"team": "platform", "cost-center": "eng"},
-					LogStores: []*AlicloudLogStore{
+					LogStores: []*AliCloudLogStore{
 						{
 							Name:               "request-logs",
 							RetentionDays:      int32Ptr(180),
@@ -105,13 +105,13 @@ var _ = ginkgo.Describe("AlicloudLogProjectSpec Validation Tests", func() {
 	ginkgo.Describe("invalid input", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
-			input := &AlicloudLogProject{
+			input := &AliCloudLogProject{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudLogProject",
+				Kind:       "AliCloudLogProject",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudLogProjectSpec{
+				Spec: &AliCloudLogProjectSpec{
 					ProjectName: "my-project",
 				},
 			}
@@ -120,13 +120,13 @@ var _ = ginkgo.Describe("AlicloudLogProjectSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when project_name is missing", func() {
-			input := &AlicloudLogProject{
+			input := &AliCloudLogProject{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudLogProject",
+				Kind:       "AliCloudLogProject",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudLogProjectSpec{
+				Spec: &AliCloudLogProjectSpec{
 					Region: "cn-hangzhou",
 				},
 			}
@@ -135,13 +135,13 @@ var _ = ginkgo.Describe("AlicloudLogProjectSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when project_name is too short", func() {
-			input := &AlicloudLogProject{
+			input := &AliCloudLogProject{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudLogProject",
+				Kind:       "AliCloudLogProject",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudLogProjectSpec{
+				Spec: &AliCloudLogProjectSpec{
 					Region:      "cn-hangzhou",
 					ProjectName: "ab",
 				},
@@ -151,16 +151,16 @@ var _ = ginkgo.Describe("AlicloudLogProjectSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when log store name is too short", func() {
-			input := &AlicloudLogProject{
+			input := &AliCloudLogProject{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudLogProject",
+				Kind:       "AliCloudLogProject",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudLogProjectSpec{
+				Spec: &AliCloudLogProjectSpec{
 					Region:      "cn-hangzhou",
 					ProjectName: "my-project",
-					LogStores: []*AlicloudLogStore{
+					LogStores: []*AliCloudLogStore{
 						{Name: "ab"},
 					},
 				},
@@ -170,16 +170,16 @@ var _ = ginkgo.Describe("AlicloudLogProjectSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when retention_days is out of range", func() {
-			input := &AlicloudLogProject{
+			input := &AliCloudLogProject{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudLogProject",
+				Kind:       "AliCloudLogProject",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudLogProjectSpec{
+				Spec: &AliCloudLogProjectSpec{
 					Region:      "cn-hangzhou",
 					ProjectName: "my-project",
-					LogStores: []*AlicloudLogStore{
+					LogStores: []*AliCloudLogStore{
 						{
 							Name:          "bad-retention",
 							RetentionDays: int32Ptr(5000),
@@ -192,13 +192,13 @@ var _ = ginkgo.Describe("AlicloudLogProjectSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when api_version is wrong", func() {
-			input := &AlicloudLogProject{
+			input := &AliCloudLogProject{
 				ApiVersion: "wrong/v1",
-				Kind:       "AlicloudLogProject",
+				Kind:       "AliCloudLogProject",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudLogProjectSpec{
+				Spec: &AliCloudLogProjectSpec{
 					Region:      "cn-hangzhou",
 					ProjectName: "my-project",
 				},
@@ -208,13 +208,13 @@ var _ = ginkgo.Describe("AlicloudLogProjectSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when kind is wrong", func() {
-			input := &AlicloudLogProject{
+			input := &AliCloudLogProject{
 				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudLogProjectSpec{
+				Spec: &AliCloudLogProjectSpec{
 					Region:      "cn-hangzhou",
 					ProjectName: "my-project",
 				},

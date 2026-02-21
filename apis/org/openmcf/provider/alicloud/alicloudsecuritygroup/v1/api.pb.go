@@ -24,7 +24,7 @@ const (
 )
 
 // alicloud-security-group
-type AlicloudSecurityGroup struct {
+type AliCloudSecurityGroup struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
@@ -33,27 +33,27 @@ type AlicloudSecurityGroup struct {
 	// metadata
 	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
-	Spec *AlicloudSecurityGroupSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec *AliCloudSecurityGroupSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
-	Status        *AlicloudSecurityGroupStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *AliCloudSecurityGroupStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudSecurityGroup) Reset() {
-	*x = AlicloudSecurityGroup{}
+func (x *AliCloudSecurityGroup) Reset() {
+	*x = AliCloudSecurityGroup{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudSecurityGroup) String() string {
+func (x *AliCloudSecurityGroup) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudSecurityGroup) ProtoMessage() {}
+func (*AliCloudSecurityGroup) ProtoMessage() {}
 
-func (x *AlicloudSecurityGroup) ProtoReflect() protoreflect.Message {
+func (x *AliCloudSecurityGroup) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AlicloudSecurityGroup) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudSecurityGroup.ProtoReflect.Descriptor instead.
-func (*AlicloudSecurityGroup) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudSecurityGroup.ProtoReflect.Descriptor instead.
+func (*AliCloudSecurityGroup) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudSecurityGroup) GetApiVersion() string {
+func (x *AliCloudSecurityGroup) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *AlicloudSecurityGroup) GetKind() string {
+func (x *AliCloudSecurityGroup) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AlicloudSecurityGroup) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AliCloudSecurityGroup) GetMetadata() *shared.CloudResourceMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *AlicloudSecurityGroup) GetSpec() *AlicloudSecurityGroupSpec {
+func (x *AliCloudSecurityGroup) GetSpec() *AliCloudSecurityGroupSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-func (x *AlicloudSecurityGroup) GetStatus() *AlicloudSecurityGroupStatus {
+func (x *AliCloudSecurityGroup) GetStatus() *AliCloudSecurityGroupStatus {
 	if x != nil {
 		return x.Status
 	}
@@ -106,28 +106,28 @@ func (x *AlicloudSecurityGroup) GetStatus() *AlicloudSecurityGroupStatus {
 }
 
 // alicloud-security-group status
-type AlicloudSecurityGroupStatus struct {
+type AliCloudSecurityGroupStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// stack-outputs
-	Outputs       *AlicloudSecurityGroupStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AliCloudSecurityGroupStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudSecurityGroupStatus) Reset() {
-	*x = AlicloudSecurityGroupStatus{}
+func (x *AliCloudSecurityGroupStatus) Reset() {
+	*x = AliCloudSecurityGroupStatus{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudSecurityGroupStatus) String() string {
+func (x *AliCloudSecurityGroupStatus) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudSecurityGroupStatus) ProtoMessage() {}
+func (*AliCloudSecurityGroupStatus) ProtoMessage() {}
 
-func (x *AlicloudSecurityGroupStatus) ProtoReflect() protoreflect.Message {
+func (x *AliCloudSecurityGroupStatus) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,12 +139,12 @@ func (x *AlicloudSecurityGroupStatus) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudSecurityGroupStatus.ProtoReflect.Descriptor instead.
-func (*AlicloudSecurityGroupStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudSecurityGroupStatus.ProtoReflect.Descriptor instead.
+func (*AliCloudSecurityGroupStatus) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudSecurityGroupStatus) GetOutputs() *AlicloudSecurityGroupStackOutputs {
+func (x *AliCloudSecurityGroupStatus) GetOutputs() *AliCloudSecurityGroupStackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -156,17 +156,17 @@ var File_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_api_proto protor
 const file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"@org/openmcf/provider/alicloud/alicloudsecuritygroup/v1/api.proto\x126org.openmcf.provider.alicloud.alicloudsecuritygroup.v1\x1a\x1bbuf/validate/validate.proto\x1aAorg/openmcf/provider/alicloud/alicloudsecuritygroup/v1/spec.proto\x1aJorg/openmcf/provider/alicloud/alicloudsecuritygroup/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xb5\x03\n" +
-	"\x15AlicloudSecurityGroup\x12?\n" +
+	"\x15AliCloudSecurityGroup\x12?\n" +
 	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
-	"\x15AlicloudSecurityGroupR\x04kind\x12M\n" +
+	"\x15AliCloudSecurityGroupR\x04kind\x12M\n" +
 	"\bmetadata\x18\x03 \x01(\v2).org.openmcf.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
-	"\x04spec\x18\x04 \x01(\v2Q.org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12k\n" +
-	"\x06status\x18\x05 \x01(\v2S.org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupStatusR\x06status\"\x92\x01\n" +
-	"\x1bAlicloudSecurityGroupStatus\x12s\n" +
-	"\aoutputs\x18\x01 \x01(\v2Y.org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupStackOutputsR\aoutputsB\xb7\x03\n" +
+	"\x04spec\x18\x04 \x01(\v2Q.org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12k\n" +
+	"\x06status\x18\x05 \x01(\v2S.org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupStatusR\x06status\"\x92\x01\n" +
+	"\x1bAliCloudSecurityGroupStatus\x12s\n" +
+	"\aoutputs\x18\x01 \x01(\v2Y.org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupStackOutputsR\aoutputsB\xb7\x03\n" +
 	":com.org.openmcf.provider.alicloud.alicloudsecuritygroup.v1B\bApiProtoP\x01Zpgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudsecuritygroup/v1;alicloudsecuritygroupv1\xa2\x02\x05OOPAA\xaa\x026Org.Openmcf.Provider.Alicloud.Alicloudsecuritygroup.V1\xca\x026Org\\Openmcf\\Provider\\Alicloud\\Alicloudsecuritygroup\\V1\xe2\x02BOrg\\Openmcf\\Provider\\Alicloud\\Alicloudsecuritygroup\\V1\\GPBMetadata\xea\x02;Org::Openmcf::Provider::Alicloud::Alicloudsecuritygroup::V1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_api_proto_rawDe
 
 var file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_api_proto_goTypes = []any{
-	(*AlicloudSecurityGroup)(nil),             // 0: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroup
-	(*AlicloudSecurityGroupStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupStatus
+	(*AliCloudSecurityGroup)(nil),             // 0: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroup
+	(*AliCloudSecurityGroupStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupStatus
 	(*shared.CloudResourceMetadata)(nil),      // 2: org.openmcf.shared.CloudResourceMetadata
-	(*AlicloudSecurityGroupSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupSpec
-	(*AlicloudSecurityGroupStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupStackOutputs
+	(*AliCloudSecurityGroupSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupSpec
+	(*AliCloudSecurityGroupStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_api_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroup.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
-	3, // 1: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroup.spec:type_name -> org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupSpec
-	1, // 2: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroup.status:type_name -> org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupStatus
-	4, // 3: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupStackOutputs
+	2, // 0: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroup.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
+	3, // 1: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroup.spec:type_name -> org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupSpec
+	1, // 2: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroup.status:type_name -> org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupStatus
+	4, // 3: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupStackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

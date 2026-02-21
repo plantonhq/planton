@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudLogProjectStackOutputs captures the outputs from deploying an
+// AliCloudLogProjectStackOutputs captures the outputs from deploying an
 // Alibaba Cloud SLS project and its bundled log stores.
-type AlicloudLogProjectStackOutputs struct {
+type AliCloudLogProjectStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The SLS project name (also serves as the project identifier in SLS APIs).
 	ProjectName string `protobuf:"bytes,1,opt,name=project_name,json=projectName,proto3" json:"project_name,omitempty"`
@@ -38,20 +38,20 @@ type AlicloudLogProjectStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudLogProjectStackOutputs) Reset() {
-	*x = AlicloudLogProjectStackOutputs{}
+func (x *AliCloudLogProjectStackOutputs) Reset() {
+	*x = AliCloudLogProjectStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudLogProjectStackOutputs) String() string {
+func (x *AliCloudLogProjectStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudLogProjectStackOutputs) ProtoMessage() {}
+func (*AliCloudLogProjectStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudLogProjectStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudLogProjectStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *AlicloudLogProjectStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudLogProjectStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudLogProjectStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudLogProjectStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudLogProjectStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudLogProjectStackOutputs) GetProjectName() string {
+func (x *AliCloudLogProjectStackOutputs) GetProjectName() string {
 	if x != nil {
 		return x.ProjectName
 	}
 	return ""
 }
 
-func (x *AlicloudLogProjectStackOutputs) GetProjectId() string {
+func (x *AliCloudLogProjectStackOutputs) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *AlicloudLogProjectStackOutputs) GetLogStoreNames() map[string]string {
+func (x *AliCloudLogProjectStackOutputs) GetLogStoreNames() map[string]string {
 	if x != nil {
 		return x.LogStoreNames
 	}
@@ -94,11 +94,11 @@ var File_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_outputs_proto
 const file_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Gorg/openmcf/provider/alicloud/alicloudlogproject/v1/stack_outputs.proto\x123org.openmcf.provider.alicloud.alicloudlogproject.v1\"\xb5\x02\n" +
-	"\x1eAlicloudLogProjectStackOutputs\x12!\n" +
+	"\x1eAliCloudLogProjectStackOutputs\x12!\n" +
 	"\fproject_name\x18\x01 \x01(\tR\vprojectName\x12\x1d\n" +
 	"\n" +
 	"project_id\x18\x02 \x01(\tR\tprojectId\x12\x8e\x01\n" +
-	"\x0flog_store_names\x18\x03 \x03(\v2f.org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogProjectStackOutputs.LogStoreNamesEntryR\rlogStoreNames\x1a@\n" +
+	"\x0flog_store_names\x18\x03 \x03(\v2f.org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogProjectStackOutputs.LogStoreNamesEntryR\rlogStoreNames\x1a@\n" +
 	"\x12LogStoreNamesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xab\x03\n" +
@@ -118,11 +118,11 @@ func file_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_outputs_prot
 
 var file_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudLogProjectStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogProjectStackOutputs
-	nil,                                    // 1: org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogProjectStackOutputs.LogStoreNamesEntry
+	(*AliCloudLogProjectStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogProjectStackOutputs
+	nil,                                    // 1: org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogProjectStackOutputs.LogStoreNamesEntry
 }
 var file_org_openmcf_provider_alicloud_alicloudlogproject_v1_stack_outputs_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogProjectStackOutputs.log_store_names:type_name -> org.openmcf.provider.alicloud.alicloudlogproject.v1.AlicloudLogProjectStackOutputs.LogStoreNamesEntry
+	1, // 0: org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogProjectStackOutputs.log_store_names:type_name -> org.openmcf.provider.alicloud.alicloudlogproject.v1.AliCloudLogProjectStackOutputs.LogStoreNamesEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

@@ -4,7 +4,7 @@ package org.openmcf.provider.alicloud.alicloudvpc.v1;
 
 import "buf/validate/validate.proto";
 
-// AlicloudVpcSpec defines the configuration for an Alibaba Cloud Virtual
+// AliCloudVpcSpec defines the configuration for an Alibaba Cloud Virtual
 // Private Cloud (VPC).
 //
 // A VPC is the networking foundation for nearly every other Alibaba Cloud
@@ -16,7 +16,7 @@ import "buf/validate/validate.proto";
 // This component creates a single VPC. VSwitches, NAT gateways, and other
 // networking resources are managed as separate components, keeping the VPC
 // itself a clean, composable building block.
-message AlicloudVpcSpec {
+message AliCloudVpcSpec {
   // Alibaba Cloud region where the VPC will be created.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
   string region = 1 [

@@ -6,9 +6,9 @@ import "org/openmcf/provider/alicloud/alicloudcdndomain/v1/api.proto";
 import "org/openmcf/provider/alicloud/provider.proto";
 
 // alicloud-cdn-domain stack-input
-message AlicloudCdnDomainStackInput {
+message AliCloudCdnDomainStackInput {
   // target cloud-resource
-  AlicloudCdnDomain target = 1;
+  AliCloudCdnDomain target = 1;
   // provider-config
-  org.openmcf.provider.alicloud.AlicloudProviderConfig provider_config = 2;
+  org.openmcf.provider.alicloud.AliCloudProviderConfig provider_config = 2;
 }

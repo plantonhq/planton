@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudramrole.v1;
 
-// AlicloudRamRoleStackOutputs captures the outputs from deploying an
+// AliCloudRamRoleStackOutputs captures the outputs from deploying an
 // Alibaba Cloud RAM role and its policy attachments.
-message AlicloudRamRoleStackOutputs {
+message AliCloudRamRoleStackOutputs {
   // The RAM role ID assigned by Alibaba Cloud.
   string role_id = 1;
 

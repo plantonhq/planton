@@ -23,30 +23,30 @@ const (
 )
 
 // alicloud-kms-key stack-input
-type AlicloudKmsKeyStackInput struct {
+type AliCloudKmsKeyStackInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target cloud-resource
-	Target *AlicloudKmsKey `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
+	Target *AliCloudKmsKey `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
-	ProviderConfig *alicloud.AlicloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
+	ProviderConfig *alicloud.AliCloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudKmsKeyStackInput) Reset() {
-	*x = AlicloudKmsKeyStackInput{}
+func (x *AliCloudKmsKeyStackInput) Reset() {
+	*x = AliCloudKmsKeyStackInput{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKmsKeyStackInput) String() string {
+func (x *AliCloudKmsKeyStackInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKmsKeyStackInput) ProtoMessage() {}
+func (*AliCloudKmsKeyStackInput) ProtoMessage() {}
 
-func (x *AlicloudKmsKeyStackInput) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKmsKeyStackInput) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AlicloudKmsKeyStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKmsKeyStackInput.ProtoReflect.Descriptor instead.
-func (*AlicloudKmsKeyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKmsKeyStackInput.ProtoReflect.Descriptor instead.
+func (*AliCloudKmsKeyStackInput) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudKmsKeyStackInput) GetTarget() *AlicloudKmsKey {
+func (x *AliCloudKmsKeyStackInput) GetTarget() *AliCloudKmsKey {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AlicloudKmsKeyStackInput) GetProviderConfig() *alicloud.AlicloudProviderConfig {
+func (x *AliCloudKmsKeyStackInput) GetProviderConfig() *alicloud.AliCloudProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,9 +82,9 @@ var File_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_input_proto proto
 const file_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_input_proto_rawDesc = "" +
 	"\n" +
 	"Aorg/openmcf/provider/alicloud/alicloudkmskey/v1/stack_input.proto\x12/org.openmcf.provider.alicloud.alicloudkmskey.v1\x1a9org/openmcf/provider/alicloud/alicloudkmskey/v1/api.proto\x1a,org/openmcf/provider/alicloud/provider.proto\"\xd3\x01\n" +
-	"\x18AlicloudKmsKeyStackInput\x12W\n" +
-	"\x06target\x18\x01 \x01(\v2?.org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeyR\x06target\x12^\n" +
-	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigR\x0eproviderConfigB\x8d\x03\n" +
+	"\x18AliCloudKmsKeyStackInput\x12W\n" +
+	"\x06target\x18\x01 \x01(\v2?.org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeyR\x06target\x12^\n" +
+	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigR\x0eproviderConfigB\x8d\x03\n" +
 	"3com.org.openmcf.provider.alicloud.alicloudkmskey.v1B\x0fStackInputProtoP\x01Zbgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudkmskey/v1;alicloudkmskeyv1\xa2\x02\x05OOPAA\xaa\x02/Org.Openmcf.Provider.Alicloud.Alicloudkmskey.V1\xca\x02/Org\\Openmcf\\Provider\\Alicloud\\Alicloudkmskey\\V1\xe2\x02;Org\\Openmcf\\Provider\\Alicloud\\Alicloudkmskey\\V1\\GPBMetadata\xea\x024Org::Openmcf::Provider::Alicloud::Alicloudkmskey::V1b\x06proto3"
 
 var (
@@ -101,13 +101,13 @@ func file_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_input_proto_rawD
 
 var file_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_input_proto_goTypes = []any{
-	(*AlicloudKmsKeyStackInput)(nil),        // 0: org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeyStackInput
-	(*AlicloudKmsKey)(nil),                  // 1: org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKey
-	(*alicloud.AlicloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AlicloudProviderConfig
+	(*AliCloudKmsKeyStackInput)(nil),        // 0: org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeyStackInput
+	(*AliCloudKmsKey)(nil),                  // 1: org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKey
+	(*alicloud.AliCloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AliCloudProviderConfig
 }
 var file_org_openmcf_provider_alicloud_alicloudkmskey_v1_stack_input_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeyStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKey
-	2, // 1: org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeyStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
+	1, // 0: org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeyStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKey
+	2, // 1: org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeyStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

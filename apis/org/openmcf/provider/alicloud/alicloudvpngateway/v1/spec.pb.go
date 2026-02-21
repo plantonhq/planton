@@ -24,7 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudVpnGatewaySpec defines the configuration for an Alibaba Cloud VPN
+// AliCloudVpnGatewaySpec defines the configuration for an Alibaba Cloud VPN
 // Gateway with bundled customer gateways and IPsec VPN connections.
 //
 // A VPN Gateway provides encrypted site-to-site connectivity between an
@@ -50,7 +50,7 @@ const (
 //
 //	Terraform: alicloud_vpn_gateway + alicloud_vpn_customer_gateway + alicloud_vpn_connection
 //	Pulumi:    vpn.Gateway + vpn.CustomerGateway + vpn.Connection
-type AlicloudVpnGatewaySpec struct {
+type AliCloudVpnGatewaySpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the VPN Gateway will be created.
 	// Must match the region of the VPC and VSwitch.
@@ -89,25 +89,25 @@ type AlicloudVpnGatewaySpec struct {
 	// IPsec VPN connections bundled with this gateway. Each entry creates a
 	// Customer Gateway (from the remote device's public IP) and a VPN
 	// Connection with the specified IKE/IPsec negotiation parameters.
-	Connections   []*AlicloudVpnConnection `protobuf:"bytes,12,rep,name=connections,proto3" json:"connections,omitempty"`
+	Connections   []*AliCloudVpnConnection `protobuf:"bytes,12,rep,name=connections,proto3" json:"connections,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudVpnGatewaySpec) Reset() {
-	*x = AlicloudVpnGatewaySpec{}
+func (x *AliCloudVpnGatewaySpec) Reset() {
+	*x = AliCloudVpnGatewaySpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudVpnGatewaySpec) String() string {
+func (x *AliCloudVpnGatewaySpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudVpnGatewaySpec) ProtoMessage() {}
+func (*AliCloudVpnGatewaySpec) ProtoMessage() {}
 
-func (x *AlicloudVpnGatewaySpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudVpnGatewaySpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -119,103 +119,103 @@ func (x *AlicloudVpnGatewaySpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudVpnGatewaySpec.ProtoReflect.Descriptor instead.
-func (*AlicloudVpnGatewaySpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudVpnGatewaySpec.ProtoReflect.Descriptor instead.
+func (*AliCloudVpnGatewaySpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudVpnGatewaySpec) GetRegion() string {
+func (x *AliCloudVpnGatewaySpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudVpnGatewaySpec) GetVpcId() *v1.StringValueOrRef {
+func (x *AliCloudVpnGatewaySpec) GetVpcId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VpcId
 	}
 	return nil
 }
 
-func (x *AlicloudVpnGatewaySpec) GetVswitchId() *v1.StringValueOrRef {
+func (x *AliCloudVpnGatewaySpec) GetVswitchId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VswitchId
 	}
 	return nil
 }
 
-func (x *AlicloudVpnGatewaySpec) GetVpnGatewayName() string {
+func (x *AliCloudVpnGatewaySpec) GetVpnGatewayName() string {
 	if x != nil {
 		return x.VpnGatewayName
 	}
 	return ""
 }
 
-func (x *AlicloudVpnGatewaySpec) GetDescription() string {
+func (x *AliCloudVpnGatewaySpec) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *AlicloudVpnGatewaySpec) GetBandwidth() int32 {
+func (x *AliCloudVpnGatewaySpec) GetBandwidth() int32 {
 	if x != nil {
 		return x.Bandwidth
 	}
 	return 0
 }
 
-func (x *AlicloudVpnGatewaySpec) GetPaymentType() string {
+func (x *AliCloudVpnGatewaySpec) GetPaymentType() string {
 	if x != nil && x.PaymentType != nil {
 		return *x.PaymentType
 	}
 	return ""
 }
 
-func (x *AlicloudVpnGatewaySpec) GetEnableSsl() bool {
+func (x *AliCloudVpnGatewaySpec) GetEnableSsl() bool {
 	if x != nil && x.EnableSsl != nil {
 		return *x.EnableSsl
 	}
 	return false
 }
 
-func (x *AlicloudVpnGatewaySpec) GetSslConnections() int32 {
+func (x *AliCloudVpnGatewaySpec) GetSslConnections() int32 {
 	if x != nil && x.SslConnections != nil {
 		return *x.SslConnections
 	}
 	return 0
 }
 
-func (x *AlicloudVpnGatewaySpec) GetTags() map[string]string {
+func (x *AliCloudVpnGatewaySpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-func (x *AlicloudVpnGatewaySpec) GetResourceGroupId() string {
+func (x *AliCloudVpnGatewaySpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudVpnGatewaySpec) GetConnections() []*AlicloudVpnConnection {
+func (x *AliCloudVpnGatewaySpec) GetConnections() []*AliCloudVpnConnection {
 	if x != nil {
 		return x.Connections
 	}
 	return nil
 }
 
-// AlicloudVpnConnection defines a single IPsec VPN connection between the
+// AliCloudVpnConnection defines a single IPsec VPN connection between the
 // Alibaba Cloud VPN Gateway and a remote network device (on-premises router,
 // firewall, or another cloud VPN endpoint).
 //
 // Each connection creates two provider resources:
 //   - A Customer Gateway representing the remote device's identity (IP + ASN)
 //   - A VPN Connection with IPsec tunnel configuration
-type AlicloudVpnConnection struct {
+type AliCloudVpnConnection struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Connection name. Used as both the customer_gateway_name and
 	// vpn_connection_name in the provider. 2-128 characters.
@@ -251,32 +251,32 @@ type AlicloudVpnConnection struct {
 	// IKE (Phase 1) negotiation parameters. When omitted, the provider uses
 	// sensible defaults (IKEv2, main mode, AES encryption, SHA1 auth, DH group2,
 	// auto-generated pre-shared key, 86400s lifetime).
-	IkeConfig *AlicloudIkeConfig `protobuf:"bytes,9,opt,name=ike_config,json=ikeConfig,proto3" json:"ike_config,omitempty"`
+	IkeConfig *AliCloudIkeConfig `protobuf:"bytes,9,opt,name=ike_config,json=ikeConfig,proto3" json:"ike_config,omitempty"`
 	// IPsec (Phase 2) negotiation parameters. When omitted, the provider uses
 	// sensible defaults (AES encryption, MD5 auth, DH group2, 86400s lifetime).
-	IpsecConfig *AlicloudIpsecConfig `protobuf:"bytes,10,opt,name=ipsec_config,json=ipsecConfig,proto3" json:"ipsec_config,omitempty"`
+	IpsecConfig *AliCloudIpsecConfig `protobuf:"bytes,10,opt,name=ipsec_config,json=ipsecConfig,proto3" json:"ipsec_config,omitempty"`
 	// Health check configuration for monitoring tunnel connectivity. When
 	// enabled, the VPN gateway periodically probes the remote endpoint and
 	// can trigger failover if the tunnel becomes unhealthy.
-	HealthCheckConfig *AlicloudVpnHealthCheckConfig `protobuf:"bytes,11,opt,name=health_check_config,json=healthCheckConfig,proto3" json:"health_check_config,omitempty"`
+	HealthCheckConfig *AliCloudVpnHealthCheckConfig `protobuf:"bytes,11,opt,name=health_check_config,json=healthCheckConfig,proto3" json:"health_check_config,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AlicloudVpnConnection) Reset() {
-	*x = AlicloudVpnConnection{}
+func (x *AliCloudVpnConnection) Reset() {
+	*x = AliCloudVpnConnection{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudVpnConnection) String() string {
+func (x *AliCloudVpnConnection) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudVpnConnection) ProtoMessage() {}
+func (*AliCloudVpnConnection) ProtoMessage() {}
 
-func (x *AlicloudVpnConnection) ProtoReflect() protoreflect.Message {
+func (x *AliCloudVpnConnection) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -288,91 +288,91 @@ func (x *AlicloudVpnConnection) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudVpnConnection.ProtoReflect.Descriptor instead.
-func (*AlicloudVpnConnection) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudVpnConnection.ProtoReflect.Descriptor instead.
+func (*AliCloudVpnConnection) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudVpnConnection) GetName() string {
+func (x *AliCloudVpnConnection) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *AlicloudVpnConnection) GetCustomerGatewayIp() string {
+func (x *AliCloudVpnConnection) GetCustomerGatewayIp() string {
 	if x != nil {
 		return x.CustomerGatewayIp
 	}
 	return ""
 }
 
-func (x *AlicloudVpnConnection) GetCustomerGatewayAsn() string {
+func (x *AliCloudVpnConnection) GetCustomerGatewayAsn() string {
 	if x != nil {
 		return x.CustomerGatewayAsn
 	}
 	return ""
 }
 
-func (x *AlicloudVpnConnection) GetLocalSubnets() []string {
+func (x *AliCloudVpnConnection) GetLocalSubnets() []string {
 	if x != nil {
 		return x.LocalSubnets
 	}
 	return nil
 }
 
-func (x *AlicloudVpnConnection) GetRemoteSubnets() []string {
+func (x *AliCloudVpnConnection) GetRemoteSubnets() []string {
 	if x != nil {
 		return x.RemoteSubnets
 	}
 	return nil
 }
 
-func (x *AlicloudVpnConnection) GetEnableDpd() bool {
+func (x *AliCloudVpnConnection) GetEnableDpd() bool {
 	if x != nil && x.EnableDpd != nil {
 		return *x.EnableDpd
 	}
 	return false
 }
 
-func (x *AlicloudVpnConnection) GetEnableNatTraversal() bool {
+func (x *AliCloudVpnConnection) GetEnableNatTraversal() bool {
 	if x != nil && x.EnableNatTraversal != nil {
 		return *x.EnableNatTraversal
 	}
 	return false
 }
 
-func (x *AlicloudVpnConnection) GetEffectImmediately() bool {
+func (x *AliCloudVpnConnection) GetEffectImmediately() bool {
 	if x != nil && x.EffectImmediately != nil {
 		return *x.EffectImmediately
 	}
 	return false
 }
 
-func (x *AlicloudVpnConnection) GetIkeConfig() *AlicloudIkeConfig {
+func (x *AliCloudVpnConnection) GetIkeConfig() *AliCloudIkeConfig {
 	if x != nil {
 		return x.IkeConfig
 	}
 	return nil
 }
 
-func (x *AlicloudVpnConnection) GetIpsecConfig() *AlicloudIpsecConfig {
+func (x *AliCloudVpnConnection) GetIpsecConfig() *AliCloudIpsecConfig {
 	if x != nil {
 		return x.IpsecConfig
 	}
 	return nil
 }
 
-func (x *AlicloudVpnConnection) GetHealthCheckConfig() *AlicloudVpnHealthCheckConfig {
+func (x *AliCloudVpnConnection) GetHealthCheckConfig() *AliCloudVpnHealthCheckConfig {
 	if x != nil {
 		return x.HealthCheckConfig
 	}
 	return nil
 }
 
-// AlicloudIkeConfig defines the IKE (Internet Key Exchange) Phase 1
+// AliCloudIkeConfig defines the IKE (Internet Key Exchange) Phase 1
 // negotiation parameters for establishing the IPsec security association.
-type AlicloudIkeConfig struct {
+type AliCloudIkeConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Pre-shared key (PSK) for IKE authentication. 1-100 characters.
 	// If omitted, the provider auto-generates a random PSK.
@@ -401,20 +401,20 @@ type AlicloudIkeConfig struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudIkeConfig) Reset() {
-	*x = AlicloudIkeConfig{}
+func (x *AliCloudIkeConfig) Reset() {
+	*x = AliCloudIkeConfig{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudIkeConfig) String() string {
+func (x *AliCloudIkeConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudIkeConfig) ProtoMessage() {}
+func (*AliCloudIkeConfig) ProtoMessage() {}
 
-func (x *AlicloudIkeConfig) ProtoReflect() protoreflect.Message {
+func (x *AliCloudIkeConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -426,63 +426,63 @@ func (x *AlicloudIkeConfig) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudIkeConfig.ProtoReflect.Descriptor instead.
-func (*AlicloudIkeConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudIkeConfig.ProtoReflect.Descriptor instead.
+func (*AliCloudIkeConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AlicloudIkeConfig) GetPsk() string {
+func (x *AliCloudIkeConfig) GetPsk() string {
 	if x != nil {
 		return x.Psk
 	}
 	return ""
 }
 
-func (x *AlicloudIkeConfig) GetIkeVersion() string {
+func (x *AliCloudIkeConfig) GetIkeVersion() string {
 	if x != nil && x.IkeVersion != nil {
 		return *x.IkeVersion
 	}
 	return ""
 }
 
-func (x *AlicloudIkeConfig) GetIkeMode() string {
+func (x *AliCloudIkeConfig) GetIkeMode() string {
 	if x != nil && x.IkeMode != nil {
 		return *x.IkeMode
 	}
 	return ""
 }
 
-func (x *AlicloudIkeConfig) GetIkeEncAlg() string {
+func (x *AliCloudIkeConfig) GetIkeEncAlg() string {
 	if x != nil && x.IkeEncAlg != nil {
 		return *x.IkeEncAlg
 	}
 	return ""
 }
 
-func (x *AlicloudIkeConfig) GetIkeAuthAlg() string {
+func (x *AliCloudIkeConfig) GetIkeAuthAlg() string {
 	if x != nil && x.IkeAuthAlg != nil {
 		return *x.IkeAuthAlg
 	}
 	return ""
 }
 
-func (x *AlicloudIkeConfig) GetIkePfs() string {
+func (x *AliCloudIkeConfig) GetIkePfs() string {
 	if x != nil && x.IkePfs != nil {
 		return *x.IkePfs
 	}
 	return ""
 }
 
-func (x *AlicloudIkeConfig) GetIkeLifetime() int32 {
+func (x *AliCloudIkeConfig) GetIkeLifetime() int32 {
 	if x != nil && x.IkeLifetime != nil {
 		return *x.IkeLifetime
 	}
 	return 0
 }
 
-// AlicloudIpsecConfig defines the IPsec (Phase 2) negotiation parameters
+// AliCloudIpsecConfig defines the IPsec (Phase 2) negotiation parameters
 // that control how data traffic is encrypted through the tunnel.
-type AlicloudIpsecConfig struct {
+type AliCloudIpsecConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// IPsec encryption algorithm for Phase 2 data traffic.
 	// Default: "aes"
@@ -500,20 +500,20 @@ type AlicloudIpsecConfig struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudIpsecConfig) Reset() {
-	*x = AlicloudIpsecConfig{}
+func (x *AliCloudIpsecConfig) Reset() {
+	*x = AliCloudIpsecConfig{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudIpsecConfig) String() string {
+func (x *AliCloudIpsecConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudIpsecConfig) ProtoMessage() {}
+func (*AliCloudIpsecConfig) ProtoMessage() {}
 
-func (x *AlicloudIpsecConfig) ProtoReflect() protoreflect.Message {
+func (x *AliCloudIpsecConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -525,43 +525,43 @@ func (x *AlicloudIpsecConfig) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudIpsecConfig.ProtoReflect.Descriptor instead.
-func (*AlicloudIpsecConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudIpsecConfig.ProtoReflect.Descriptor instead.
+func (*AliCloudIpsecConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *AlicloudIpsecConfig) GetIpsecEncAlg() string {
+func (x *AliCloudIpsecConfig) GetIpsecEncAlg() string {
 	if x != nil && x.IpsecEncAlg != nil {
 		return *x.IpsecEncAlg
 	}
 	return ""
 }
 
-func (x *AlicloudIpsecConfig) GetIpsecAuthAlg() string {
+func (x *AliCloudIpsecConfig) GetIpsecAuthAlg() string {
 	if x != nil && x.IpsecAuthAlg != nil {
 		return *x.IpsecAuthAlg
 	}
 	return ""
 }
 
-func (x *AlicloudIpsecConfig) GetIpsecPfs() string {
+func (x *AliCloudIpsecConfig) GetIpsecPfs() string {
 	if x != nil && x.IpsecPfs != nil {
 		return *x.IpsecPfs
 	}
 	return ""
 }
 
-func (x *AlicloudIpsecConfig) GetIpsecLifetime() int32 {
+func (x *AliCloudIpsecConfig) GetIpsecLifetime() int32 {
 	if x != nil && x.IpsecLifetime != nil {
 		return *x.IpsecLifetime
 	}
 	return 0
 }
 
-// AlicloudVpnHealthCheckConfig defines health monitoring for a VPN connection.
+// AliCloudVpnHealthCheckConfig defines health monitoring for a VPN connection.
 // When enabled, the VPN gateway periodically sends probes to detect tunnel
 // failures and can trigger route failover in active-standby setups.
-type AlicloudVpnHealthCheckConfig struct {
+type AliCloudVpnHealthCheckConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Enable health checks for this connection. Default: false
 	Enable *bool `protobuf:"varint,1,opt,name=enable,proto3,oneof" json:"enable,omitempty"`
@@ -580,20 +580,20 @@ type AlicloudVpnHealthCheckConfig struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudVpnHealthCheckConfig) Reset() {
-	*x = AlicloudVpnHealthCheckConfig{}
+func (x *AliCloudVpnHealthCheckConfig) Reset() {
+	*x = AliCloudVpnHealthCheckConfig{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudVpnHealthCheckConfig) String() string {
+func (x *AliCloudVpnHealthCheckConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudVpnHealthCheckConfig) ProtoMessage() {}
+func (*AliCloudVpnHealthCheckConfig) ProtoMessage() {}
 
-func (x *AlicloudVpnHealthCheckConfig) ProtoReflect() protoreflect.Message {
+func (x *AliCloudVpnHealthCheckConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -605,40 +605,40 @@ func (x *AlicloudVpnHealthCheckConfig) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudVpnHealthCheckConfig.ProtoReflect.Descriptor instead.
-func (*AlicloudVpnHealthCheckConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudVpnHealthCheckConfig.ProtoReflect.Descriptor instead.
+func (*AliCloudVpnHealthCheckConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *AlicloudVpnHealthCheckConfig) GetEnable() bool {
+func (x *AliCloudVpnHealthCheckConfig) GetEnable() bool {
 	if x != nil && x.Enable != nil {
 		return *x.Enable
 	}
 	return false
 }
 
-func (x *AlicloudVpnHealthCheckConfig) GetSip() string {
+func (x *AliCloudVpnHealthCheckConfig) GetSip() string {
 	if x != nil {
 		return x.Sip
 	}
 	return ""
 }
 
-func (x *AlicloudVpnHealthCheckConfig) GetDip() string {
+func (x *AliCloudVpnHealthCheckConfig) GetDip() string {
 	if x != nil {
 		return x.Dip
 	}
 	return ""
 }
 
-func (x *AlicloudVpnHealthCheckConfig) GetInterval() int32 {
+func (x *AliCloudVpnHealthCheckConfig) GetInterval() int32 {
 	if x != nil && x.Interval != nil {
 		return *x.Interval
 	}
 	return 0
 }
 
-func (x *AlicloudVpnHealthCheckConfig) GetRetry() int32 {
+func (x *AliCloudVpnHealthCheckConfig) GetRetry() int32 {
 	if x != nil && x.Retry != nil {
 		return *x.Retry
 	}
@@ -650,7 +650,7 @@ var File_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto protoref
 const file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	">org/openmcf/provider/alicloud/alicloudvpngateway/v1/spec.proto\x123org.openmcf.provider.alicloud.alicloudvpngateway.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xc8\t\n" +
-	"\x16AlicloudVpnGatewaySpec\x12\"\n" +
+	"\x16AliCloudVpnGatewaySpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12o\n" +
 	"\x06vpc_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xcc\x17\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12{\n" +
@@ -668,16 +668,16 @@ const file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_rawDes
 	"enable_ssl\x18\b \x01(\bB\t\x8a\xa6\x1d\x05falseH\x01R\tenableSsl\x88\x01\x01\x12,\n" +
 	"\x0fssl_connections\x18\t \x01(\x05H\x02R\x0esslConnections\x88\x01\x01\x12i\n" +
 	"\x04tags\x18\n" +
-	" \x03(\v2U.org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGatewaySpec.TagsEntryR\x04tags\x12*\n" +
+	" \x03(\v2U.org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGatewaySpec.TagsEntryR\x04tags\x12*\n" +
 	"\x11resource_group_id\x18\v \x01(\tR\x0fresourceGroupId\x12l\n" +
-	"\vconnections\x18\f \x03(\v2J.org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnConnectionR\vconnections\x1a7\n" +
+	"\vconnections\x18\f \x03(\v2J.org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnConnectionR\vconnections\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x0f\n" +
 	"\r_payment_typeB\r\n" +
 	"\v_enable_sslB\x12\n" +
 	"\x10_ssl_connections\"\xd0\x06\n" +
-	"\x15AlicloudVpnConnection\x12!\n" +
+	"\x15AliCloudVpnConnection\x12!\n" +
 	"\x04name\x18\x01 \x01(\tB\r\xbaH\n" +
 	"\xc8\x01\x01r\x05\x10\x02\x18\x80\x01R\x04name\x12:\n" +
 	"\x13customer_gateway_ip\x18\x02 \x01(\tB\n" +
@@ -694,14 +694,14 @@ const file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_rawDes
 	"\x14enable_nat_traversal\x18\a \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\x12enableNatTraversal\x88\x01\x01\x12<\n" +
 	"\x12effect_immediately\x18\b \x01(\bB\b\x8a\xa6\x1d\x04trueH\x02R\x11effectImmediately\x88\x01\x01\x12e\n" +
 	"\n" +
-	"ike_config\x18\t \x01(\v2F.org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudIkeConfigR\tikeConfig\x12k\n" +
+	"ike_config\x18\t \x01(\v2F.org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudIkeConfigR\tikeConfig\x12k\n" +
 	"\fipsec_config\x18\n" +
-	" \x01(\v2H.org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudIpsecConfigR\vipsecConfig\x12\x81\x01\n" +
-	"\x13health_check_config\x18\v \x01(\v2Q.org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnHealthCheckConfigR\x11healthCheckConfigB\r\n" +
+	" \x01(\v2H.org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudIpsecConfigR\vipsecConfig\x12\x81\x01\n" +
+	"\x13health_check_config\x18\v \x01(\v2Q.org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnHealthCheckConfigR\x11healthCheckConfigB\r\n" +
 	"\v_enable_dpdB\x17\n" +
 	"\x15_enable_nat_traversalB\x15\n" +
 	"\x13_effect_immediately\"\xb8\t\n" +
-	"\x11AlicloudIkeConfig\x12\x19\n" +
+	"\x11AliCloudIkeConfig\x12\x19\n" +
 	"\x03psk\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x18dR\x03psk\x12\x9c\x01\n" +
 	"\vike_version\x18\x02 \x01(\tBv\xbaHj\xba\x01g\n" +
 	"\x11ike_version_valid\x12(ike_version must be one of: ikev1, ikev2\x1a(this == '' || this in ['ikev1', 'ikev2']\x8a\xa6\x1d\x05ikev2H\x00R\n" +
@@ -724,7 +724,7 @@ const file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_rawDes
 	"\n" +
 	"\b_ike_pfsB\x0f\n" +
 	"\r_ike_lifetime\"\x86\a\n" +
-	"\x13AlicloudIpsecConfig\x12\xce\x01\n" +
+	"\x13AliCloudIpsecConfig\x12\xce\x01\n" +
 	"\ripsec_enc_alg\x18\x01 \x01(\tB\xa4\x01\xbaH\x99\x01\xba\x01\x95\x01\n" +
 	"\x13ipsec_enc_alg_valid\x12<ipsec_enc_alg must be one of: aes, aes192, aes256, des, 3des\x1a@this == '' || this in ['aes', 'aes192', 'aes256', 'des', '3des']\x8a\xa6\x1d\x03aesH\x00R\vipsecEncAlg\x88\x01\x01\x12\xd8\x01\n" +
 	"\x0eipsec_auth_alg\x18\x02 \x01(\tB\xac\x01\xbaH\xa1\x01\xba\x01\x9d\x01\n" +
@@ -738,7 +738,7 @@ const file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_rawDes
 	"\n" +
 	"_ipsec_pfsB\x11\n" +
 	"\x0f_ipsec_lifetime\"\xd6\x01\n" +
-	"\x1cAlicloudVpnHealthCheckConfig\x12&\n" +
+	"\x1cAliCloudVpnHealthCheckConfig\x12&\n" +
 	"\x06enable\x18\x01 \x01(\bB\t\x8a\xa6\x1d\x05falseH\x00R\x06enable\x88\x01\x01\x12\x10\n" +
 	"\x03sip\x18\x02 \x01(\tR\x03sip\x12\x10\n" +
 	"\x03dip\x18\x03 \x01(\tR\x03dip\x12&\n" +
@@ -763,22 +763,22 @@ func file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_rawDesc
 
 var file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_goTypes = []any{
-	(*AlicloudVpnGatewaySpec)(nil),       // 0: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGatewaySpec
-	(*AlicloudVpnConnection)(nil),        // 1: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnConnection
-	(*AlicloudIkeConfig)(nil),            // 2: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudIkeConfig
-	(*AlicloudIpsecConfig)(nil),          // 3: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudIpsecConfig
-	(*AlicloudVpnHealthCheckConfig)(nil), // 4: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnHealthCheckConfig
-	nil,                                  // 5: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGatewaySpec.TagsEntry
+	(*AliCloudVpnGatewaySpec)(nil),       // 0: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGatewaySpec
+	(*AliCloudVpnConnection)(nil),        // 1: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnConnection
+	(*AliCloudIkeConfig)(nil),            // 2: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudIkeConfig
+	(*AliCloudIpsecConfig)(nil),          // 3: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudIpsecConfig
+	(*AliCloudVpnHealthCheckConfig)(nil), // 4: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnHealthCheckConfig
+	nil,                                  // 5: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGatewaySpec.TagsEntry
 	(*v1.StringValueOrRef)(nil),          // 6: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_depIdxs = []int32{
-	6, // 0: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGatewaySpec.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	6, // 1: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGatewaySpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	5, // 2: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGatewaySpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGatewaySpec.TagsEntry
-	1, // 3: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnGatewaySpec.connections:type_name -> org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnConnection
-	2, // 4: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnConnection.ike_config:type_name -> org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudIkeConfig
-	3, // 5: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnConnection.ipsec_config:type_name -> org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudIpsecConfig
-	4, // 6: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnConnection.health_check_config:type_name -> org.openmcf.provider.alicloud.alicloudvpngateway.v1.AlicloudVpnHealthCheckConfig
+	6, // 0: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGatewaySpec.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	6, // 1: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGatewaySpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	5, // 2: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGatewaySpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGatewaySpec.TagsEntry
+	1, // 3: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnGatewaySpec.connections:type_name -> org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnConnection
+	2, // 4: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnConnection.ike_config:type_name -> org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudIkeConfig
+	3, // 5: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnConnection.ipsec_config:type_name -> org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudIpsecConfig
+	4, // 6: org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnConnection.health_check_config:type_name -> org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnHealthCheckConfig
 	7, // [7:7] is the sub-list for method output_type
 	7, // [7:7] is the sub-list for method input_type
 	7, // [7:7] is the sub-list for extension type_name

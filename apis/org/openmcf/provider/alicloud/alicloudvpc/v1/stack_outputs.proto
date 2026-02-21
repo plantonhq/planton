@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudvpc.v1;
 
-// AlicloudVpcStackOutputs captures the outputs from deploying an
+// AliCloudVpcStackOutputs captures the outputs from deploying an
 // Alibaba Cloud VPC.
-message AlicloudVpcStackOutputs {
+message AliCloudVpcStackOutputs {
   // The VPC ID assigned by Alibaba Cloud.
   // Referenced by downstream components (VSwitch, SecurityGroup, NAT, ACK, etc.)
   // via StringValueOrRef.

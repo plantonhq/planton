@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudeipaddress.v1;
 
-// AlicloudEipAddressStackOutputs captures the outputs from allocating an
+// AliCloudEipAddressStackOutputs captures the outputs from allocating an
 // Alibaba Cloud Elastic IP Address.
-message AlicloudEipAddressStackOutputs {
+message AliCloudEipAddressStackOutputs {
   // The EIP allocation ID assigned by Alibaba Cloud.
   // Referenced by downstream components (NatGateway, ALB, VPN, etc.)
   // via StringValueOrRef for EIP association.

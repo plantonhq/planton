@@ -11,9 +11,9 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func TestAlicloudCenInstanceSpec(t *testing.T) {
+func TestAliCloudCenInstanceSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
-	ginkgo.RunSpecs(t, "AlicloudCenInstanceSpec Validation Tests")
+	ginkgo.RunSpecs(t, "AliCloudCenInstanceSpec Validation Tests")
 }
 
 func strRef(val string) *fkv1.StringValueOrRef {
@@ -22,23 +22,23 @@ func strRef(val string) *fkv1.StringValueOrRef {
 	}
 }
 
-func validMinimalSpec() *AlicloudCenInstanceSpec {
-	return &AlicloudCenInstanceSpec{
+func validMinimalSpec() *AliCloudCenInstanceSpec {
+	return &AliCloudCenInstanceSpec{
 		Region:          "cn-hangzhou",
 		CenInstanceName: "my-cen",
 	}
 }
 
-func validMinimalInput() *AlicloudCenInstance {
-	return &AlicloudCenInstance{
+func validMinimalInput() *AliCloudCenInstance {
+	return &AliCloudCenInstance{
 		ApiVersion: "alicloud.openmcf.org/v1",
-		Kind:       "AlicloudCenInstance",
+		Kind:       "AliCloudCenInstance",
 		Metadata:   &shared.CloudResourceMetadata{Name: "test-cen"},
 		Spec:       validMinimalSpec(),
 	}
 }
 
-var _ = ginkgo.Describe("AlicloudCenInstanceSpec Validation Tests", func() {
+var _ = ginkgo.Describe("AliCloudCenInstanceSpec Validation Tests", func() {
 
 	ginkgo.Describe("valid input", func() {
 
@@ -60,7 +60,7 @@ var _ = ginkgo.Describe("AlicloudCenInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with a single VPC attachment", func() {
 			input := validMinimalInput()
-			input.Spec.Attachments = []*AlicloudCenAttachment{
+			input.Spec.Attachments = []*AliCloudCenAttachment{
 				{
 					ChildInstanceId:       strRef("vpc-abc123"),
 					ChildInstanceRegionId: "cn-hangzhou",
@@ -71,7 +71,7 @@ var _ = ginkgo.Describe("AlicloudCenInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with explicit VPC child_instance_type", func() {
 			input := validMinimalInput()
-			input.Spec.Attachments = []*AlicloudCenAttachment{
+			input.Spec.Attachments = []*AliCloudCenAttachment{
 				{
 					ChildInstanceId:       strRef("vpc-abc123"),
 					ChildInstanceType:     proto.String("VPC"),
@@ -83,7 +83,7 @@ var _ = ginkgo.Describe("AlicloudCenInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with VBR child_instance_type", func() {
 			input := validMinimalInput()
-			input.Spec.Attachments = []*AlicloudCenAttachment{
+			input.Spec.Attachments = []*AliCloudCenAttachment{
 				{
 					ChildInstanceId:       strRef("vbr-abc123"),
 					ChildInstanceType:     proto.String("VBR"),
@@ -95,7 +95,7 @@ var _ = ginkgo.Describe("AlicloudCenInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with CCN child_instance_type", func() {
 			input := validMinimalInput()
-			input.Spec.Attachments = []*AlicloudCenAttachment{
+			input.Spec.Attachments = []*AliCloudCenAttachment{
 				{
 					ChildInstanceId:       strRef("ccn-abc123"),
 					ChildInstanceType:     proto.String("CCN"),
@@ -109,7 +109,7 @@ var _ = ginkgo.Describe("AlicloudCenInstanceSpec Validation Tests", func() {
 			input := validMinimalInput()
 			input.Spec.CenInstanceName = "multi-region-backbone"
 			input.Spec.Description = "Connects VPCs across three regions"
-			input.Spec.Attachments = []*AlicloudCenAttachment{
+			input.Spec.Attachments = []*AliCloudCenAttachment{
 				{
 					ChildInstanceId:       strRef("vpc-hangzhou"),
 					ChildInstanceType:     proto.String("VPC"),
@@ -200,7 +200,7 @@ var _ = ginkgo.Describe("AlicloudCenInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when attachment child_instance_id is missing", func() {
 			input := validMinimalInput()
-			input.Spec.Attachments = []*AlicloudCenAttachment{
+			input.Spec.Attachments = []*AliCloudCenAttachment{
 				{
 					ChildInstanceRegionId: "cn-hangzhou",
 				},
@@ -210,7 +210,7 @@ var _ = ginkgo.Describe("AlicloudCenInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when attachment child_instance_region_id is empty", func() {
 			input := validMinimalInput()
-			input.Spec.Attachments = []*AlicloudCenAttachment{
+			input.Spec.Attachments = []*AliCloudCenAttachment{
 				{
 					ChildInstanceId:       strRef("vpc-abc123"),
 					ChildInstanceRegionId: "",
@@ -221,7 +221,7 @@ var _ = ginkgo.Describe("AlicloudCenInstanceSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when attachment child_instance_type is invalid", func() {
 			input := validMinimalInput()
-			input.Spec.Attachments = []*AlicloudCenAttachment{
+			input.Spec.Attachments = []*AliCloudCenAttachment{
 				{
 					ChildInstanceId:       strRef("vpc-abc123"),
 					ChildInstanceType:     proto.String("ECS"),

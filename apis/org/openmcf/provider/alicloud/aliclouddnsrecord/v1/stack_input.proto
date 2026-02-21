@@ -6,9 +6,9 @@ import "org/openmcf/provider/alicloud/aliclouddnsrecord/v1/api.proto";
 import "org/openmcf/provider/alicloud/provider.proto";
 
 // alicloud-dns-record stack-input
-message AlicloudDnsRecordStackInput {
+message AliCloudDnsRecordStackInput {
   // target cloud-resource
-  AlicloudDnsRecord target = 1;
+  AliCloudDnsRecord target = 1;
   // provider-config
-  org.openmcf.provider.alicloud.AlicloudProviderConfig provider_config = 2;
+  org.openmcf.provider.alicloud.AliCloudProviderConfig provider_config = 2;
 }

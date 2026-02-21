@@ -12,7 +12,7 @@ func serverGroup(
 	ctx *pulumi.Context,
 	provider *alicloud.Provider,
 	vpcId string,
-	sg *alicloudnetworkloadbalancerv1.AlicloudNetworkLoadBalancerServerGroup,
+	sg *alicloudnetworkloadbalancerv1.AliCloudNetworkLoadBalancerServerGroup,
 ) (*nlb.ServerGroup, error) {
 	hc := sg.HealthCheck
 

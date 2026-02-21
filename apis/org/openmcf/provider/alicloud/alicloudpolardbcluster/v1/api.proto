@@ -8,25 +8,25 @@ import "org/openmcf/provider/alicloud/alicloudpolardbcluster/v1/stack_outputs.pr
 import "org/openmcf/shared/metadata.proto";
 
 // alicloud-polardb-cluster
-message AlicloudPolardbCluster {
+message AliCloudPolardbCluster {
   // api-version
   string api_version = 1 [(buf.validate.field).string.const = 'alicloud.openmcf.org/v1'];
 
   // resource-kind
-  string kind = 2 [(buf.validate.field).string.const = 'AlicloudPolardbCluster'];
+  string kind = 2 [(buf.validate.field).string.const = 'AliCloudPolardbCluster'];
 
   // metadata
   org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
-  AlicloudPolardbClusterSpec spec = 4 [(buf.validate.field).required = true];
+  AliCloudPolardbClusterSpec spec = 4 [(buf.validate.field).required = true];
 
   // status
-  AlicloudPolardbClusterStatus status = 5;
+  AliCloudPolardbClusterStatus status = 5;
 }
 
 // alicloud-polardb-cluster status
-message AlicloudPolardbClusterStatus {
+message AliCloudPolardbClusterStatus {
   // stack-outputs
-  AlicloudPolardbClusterStackOutputs outputs = 1;
+  AliCloudPolardbClusterStackOutputs outputs = 1;
 }

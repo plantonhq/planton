@@ -24,7 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudRocketmqInstanceSpec defines the configuration for an Alibaba Cloud
+// AliCloudRocketmqInstanceSpec defines the configuration for an Alibaba Cloud
 // RocketMQ 5.x instance with bundled topics and consumer groups.
 //
 // RocketMQ is Alibaba Cloud's distributed messaging and streaming platform,
@@ -45,7 +45,7 @@ const (
 //
 // The provider's deeply nested network_info block is partially flattened for
 // better YAML authoring experience: vpc_id and vswitch_id are promoted to the
-// spec root (consistent with all other Alicloud components), while internet
+// spec root (consistent with all other AliCloud components), while internet
 // access settings remain in an optional nested message since their fields are
 // conditionally relevant.
 //
@@ -53,7 +53,7 @@ const (
 //
 //	Terraform: alicloud_rocketmq_instance + alicloud_rocketmq_topic + alicloud_rocketmq_consumer_group
 //	Pulumi:    rocketmq.RocketMQInstance + rocketmq.RocketMQTopic + rocketmq.ConsumerGroup
-type AlicloudRocketmqInstanceSpec struct {
+type AliCloudRocketmqInstanceSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the RocketMQ instance will be created.
 	// Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -104,7 +104,7 @@ type AlicloudRocketmqInstanceSpec struct {
 	SecurityGroupId string `protobuf:"bytes,13,opt,name=security_group_id,json=securityGroupId,proto3" json:"security_group_id,omitempty"`
 	// Internet access configuration. When omitted, internet access is disabled
 	// and the instance is only accessible within the VPC.
-	InternetInfo *AlicloudRocketmqInternetInfo `protobuf:"bytes,14,opt,name=internet_info,json=internetInfo,proto3" json:"internet_info,omitempty"`
+	InternetInfo *AliCloudRocketmqInternetInfo `protobuf:"bytes,14,opt,name=internet_info,json=internetInfo,proto3" json:"internet_info,omitempty"`
 	// Message processing specification that determines the instance's
 	// throughput capacity. Examples: "rmq.s1.micro", "rmq.p2.4xlarge",
 	// "rmq.u2.4xlarge". Required when product_info is set.
@@ -112,7 +112,7 @@ type AlicloudRocketmqInstanceSpec struct {
 	MsgProcessSpec string `protobuf:"bytes,15,opt,name=msg_process_spec,json=msgProcessSpec,proto3" json:"msg_process_spec,omitempty"`
 	// Advanced product configuration for message retention, auto-scaling,
 	// tracing, and encryption at rest. When omitted, provider defaults apply.
-	ProductInfo *AlicloudRocketmqProductInfo `protobuf:"bytes,16,opt,name=product_info,json=productInfo,proto3" json:"product_info,omitempty"`
+	ProductInfo *AliCloudRocketmqProductInfo `protobuf:"bytes,16,opt,name=product_info,json=productInfo,proto3" json:"product_info,omitempty"`
 	// IP addresses or CIDR blocks allowed to access the instance.
 	IpWhitelists []string `protobuf:"bytes,17,rep,name=ip_whitelists,json=ipWhitelists,proto3" json:"ip_whitelists,omitempty"`
 	// Alibaba Cloud resource group ID (per DD05).
@@ -120,27 +120,27 @@ type AlicloudRocketmqInstanceSpec struct {
 	// Tags to apply to the RocketMQ instance.
 	Tags map[string]string `protobuf:"bytes,19,rep,name=tags,proto3" json:"tags,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Topics to create within the instance.
-	Topics []*AlicloudRocketmqTopic `protobuf:"bytes,20,rep,name=topics,proto3" json:"topics,omitempty"`
+	Topics []*AliCloudRocketmqTopic `protobuf:"bytes,20,rep,name=topics,proto3" json:"topics,omitempty"`
 	// Consumer groups to create within the instance.
-	ConsumerGroups []*AlicloudRocketmqConsumerGroup `protobuf:"bytes,21,rep,name=consumer_groups,json=consumerGroups,proto3" json:"consumer_groups,omitempty"`
+	ConsumerGroups []*AliCloudRocketmqConsumerGroup `protobuf:"bytes,21,rep,name=consumer_groups,json=consumerGroups,proto3" json:"consumer_groups,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudRocketmqInstanceSpec) Reset() {
-	*x = AlicloudRocketmqInstanceSpec{}
+func (x *AliCloudRocketmqInstanceSpec) Reset() {
+	*x = AliCloudRocketmqInstanceSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRocketmqInstanceSpec) String() string {
+func (x *AliCloudRocketmqInstanceSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRocketmqInstanceSpec) ProtoMessage() {}
+func (*AliCloudRocketmqInstanceSpec) ProtoMessage() {}
 
-func (x *AlicloudRocketmqInstanceSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRocketmqInstanceSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -152,161 +152,161 @@ func (x *AlicloudRocketmqInstanceSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRocketmqInstanceSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudRocketmqInstanceSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRocketmqInstanceSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudRocketmqInstanceSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetRegion() string {
+func (x *AliCloudRocketmqInstanceSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetSeriesCode() string {
+func (x *AliCloudRocketmqInstanceSpec) GetSeriesCode() string {
 	if x != nil {
 		return x.SeriesCode
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetSubSeriesCode() string {
+func (x *AliCloudRocketmqInstanceSpec) GetSubSeriesCode() string {
 	if x != nil {
 		return x.SubSeriesCode
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetVpcId() *v1.StringValueOrRef {
+func (x *AliCloudRocketmqInstanceSpec) GetVpcId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VpcId
 	}
 	return nil
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetInstanceName() string {
+func (x *AliCloudRocketmqInstanceSpec) GetInstanceName() string {
 	if x != nil {
 		return x.InstanceName
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetRemark() string {
+func (x *AliCloudRocketmqInstanceSpec) GetRemark() string {
 	if x != nil {
 		return x.Remark
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetPaymentType() string {
+func (x *AliCloudRocketmqInstanceSpec) GetPaymentType() string {
 	if x != nil && x.PaymentType != nil {
 		return *x.PaymentType
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetPeriod() int32 {
+func (x *AliCloudRocketmqInstanceSpec) GetPeriod() int32 {
 	if x != nil && x.Period != nil {
 		return *x.Period
 	}
 	return 0
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetPeriodUnit() string {
+func (x *AliCloudRocketmqInstanceSpec) GetPeriodUnit() string {
 	if x != nil && x.PeriodUnit != nil {
 		return *x.PeriodUnit
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetAutoRenew() bool {
+func (x *AliCloudRocketmqInstanceSpec) GetAutoRenew() bool {
 	if x != nil && x.AutoRenew != nil {
 		return *x.AutoRenew
 	}
 	return false
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetAutoRenewPeriod() int32 {
+func (x *AliCloudRocketmqInstanceSpec) GetAutoRenewPeriod() int32 {
 	if x != nil && x.AutoRenewPeriod != nil {
 		return *x.AutoRenewPeriod
 	}
 	return 0
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetVswitchId() *v1.StringValueOrRef {
+func (x *AliCloudRocketmqInstanceSpec) GetVswitchId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VswitchId
 	}
 	return nil
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetSecurityGroupId() string {
+func (x *AliCloudRocketmqInstanceSpec) GetSecurityGroupId() string {
 	if x != nil {
 		return x.SecurityGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetInternetInfo() *AlicloudRocketmqInternetInfo {
+func (x *AliCloudRocketmqInstanceSpec) GetInternetInfo() *AliCloudRocketmqInternetInfo {
 	if x != nil {
 		return x.InternetInfo
 	}
 	return nil
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetMsgProcessSpec() string {
+func (x *AliCloudRocketmqInstanceSpec) GetMsgProcessSpec() string {
 	if x != nil {
 		return x.MsgProcessSpec
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetProductInfo() *AlicloudRocketmqProductInfo {
+func (x *AliCloudRocketmqInstanceSpec) GetProductInfo() *AliCloudRocketmqProductInfo {
 	if x != nil {
 		return x.ProductInfo
 	}
 	return nil
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetIpWhitelists() []string {
+func (x *AliCloudRocketmqInstanceSpec) GetIpWhitelists() []string {
 	if x != nil {
 		return x.IpWhitelists
 	}
 	return nil
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetResourceGroupId() string {
+func (x *AliCloudRocketmqInstanceSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetTags() map[string]string {
+func (x *AliCloudRocketmqInstanceSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetTopics() []*AlicloudRocketmqTopic {
+func (x *AliCloudRocketmqInstanceSpec) GetTopics() []*AliCloudRocketmqTopic {
 	if x != nil {
 		return x.Topics
 	}
 	return nil
 }
 
-func (x *AlicloudRocketmqInstanceSpec) GetConsumerGroups() []*AlicloudRocketmqConsumerGroup {
+func (x *AliCloudRocketmqInstanceSpec) GetConsumerGroups() []*AliCloudRocketmqConsumerGroup {
 	if x != nil {
 		return x.ConsumerGroups
 	}
 	return nil
 }
 
-// AlicloudRocketmqInternetInfo configures public internet access for the
+// AliCloudRocketmqInternetInfo configures public internet access for the
 // RocketMQ instance. All fields in this message are ForceNew in the provider.
-type AlicloudRocketmqInternetInfo struct {
+type AliCloudRocketmqInternetInfo struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Enable public internet access. When true, the instance gets a public
 	// endpoint in addition to the VPC endpoint.
@@ -325,20 +325,20 @@ type AlicloudRocketmqInternetInfo struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AlicloudRocketmqInternetInfo) Reset() {
-	*x = AlicloudRocketmqInternetInfo{}
+func (x *AliCloudRocketmqInternetInfo) Reset() {
+	*x = AliCloudRocketmqInternetInfo{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRocketmqInternetInfo) String() string {
+func (x *AliCloudRocketmqInternetInfo) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRocketmqInternetInfo) ProtoMessage() {}
+func (*AliCloudRocketmqInternetInfo) ProtoMessage() {}
 
-func (x *AlicloudRocketmqInternetInfo) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRocketmqInternetInfo) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -350,35 +350,35 @@ func (x *AlicloudRocketmqInternetInfo) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRocketmqInternetInfo.ProtoReflect.Descriptor instead.
-func (*AlicloudRocketmqInternetInfo) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRocketmqInternetInfo.ProtoReflect.Descriptor instead.
+func (*AliCloudRocketmqInternetInfo) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudRocketmqInternetInfo) GetEnabled() bool {
+func (x *AliCloudRocketmqInternetInfo) GetEnabled() bool {
 	if x != nil && x.Enabled != nil {
 		return *x.Enabled
 	}
 	return false
 }
 
-func (x *AlicloudRocketmqInternetInfo) GetFlowOutType() string {
+func (x *AliCloudRocketmqInternetInfo) GetFlowOutType() string {
 	if x != nil && x.FlowOutType != nil {
 		return *x.FlowOutType
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqInternetInfo) GetFlowOutBandwidth() int32 {
+func (x *AliCloudRocketmqInternetInfo) GetFlowOutBandwidth() int32 {
 	if x != nil && x.FlowOutBandwidth != nil {
 		return *x.FlowOutBandwidth
 	}
 	return 0
 }
 
-// AlicloudRocketmqProductInfo contains advanced product configuration for
+// AliCloudRocketmqProductInfo contains advanced product configuration for
 // message retention, scaling, tracing, and encryption.
-type AlicloudRocketmqProductInfo struct {
+type AliCloudRocketmqProductInfo struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Duration of message retention in hours. Controls how long messages are
 	// stored before expiration. Longer retention increases storage costs.
@@ -401,20 +401,20 @@ type AlicloudRocketmqProductInfo struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AlicloudRocketmqProductInfo) Reset() {
-	*x = AlicloudRocketmqProductInfo{}
+func (x *AliCloudRocketmqProductInfo) Reset() {
+	*x = AliCloudRocketmqProductInfo{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRocketmqProductInfo) String() string {
+func (x *AliCloudRocketmqProductInfo) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRocketmqProductInfo) ProtoMessage() {}
+func (*AliCloudRocketmqProductInfo) ProtoMessage() {}
 
-func (x *AlicloudRocketmqProductInfo) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRocketmqProductInfo) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -426,55 +426,55 @@ func (x *AlicloudRocketmqProductInfo) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRocketmqProductInfo.ProtoReflect.Descriptor instead.
-func (*AlicloudRocketmqProductInfo) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRocketmqProductInfo.ProtoReflect.Descriptor instead.
+func (*AliCloudRocketmqProductInfo) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AlicloudRocketmqProductInfo) GetMessageRetentionTime() int32 {
+func (x *AliCloudRocketmqProductInfo) GetMessageRetentionTime() int32 {
 	if x != nil && x.MessageRetentionTime != nil {
 		return *x.MessageRetentionTime
 	}
 	return 0
 }
 
-func (x *AlicloudRocketmqProductInfo) GetSendReceiveRatio() float64 {
+func (x *AliCloudRocketmqProductInfo) GetSendReceiveRatio() float64 {
 	if x != nil && x.SendReceiveRatio != nil {
 		return *x.SendReceiveRatio
 	}
 	return 0
 }
 
-func (x *AlicloudRocketmqProductInfo) GetAutoScaling() bool {
+func (x *AliCloudRocketmqProductInfo) GetAutoScaling() bool {
 	if x != nil && x.AutoScaling != nil {
 		return *x.AutoScaling
 	}
 	return false
 }
 
-func (x *AlicloudRocketmqProductInfo) GetTraceOn() bool {
+func (x *AliCloudRocketmqProductInfo) GetTraceOn() bool {
 	if x != nil && x.TraceOn != nil {
 		return *x.TraceOn
 	}
 	return false
 }
 
-func (x *AlicloudRocketmqProductInfo) GetStorageEncryption() bool {
+func (x *AliCloudRocketmqProductInfo) GetStorageEncryption() bool {
 	if x != nil && x.StorageEncryption != nil {
 		return *x.StorageEncryption
 	}
 	return false
 }
 
-func (x *AlicloudRocketmqProductInfo) GetStorageSecretKey() string {
+func (x *AliCloudRocketmqProductInfo) GetStorageSecretKey() string {
 	if x != nil {
 		return x.StorageSecretKey
 	}
 	return ""
 }
 
-// AlicloudRocketmqTopic defines a topic to create within the instance.
-type AlicloudRocketmqTopic struct {
+// AliCloudRocketmqTopic defines a topic to create within the instance.
+type AliCloudRocketmqTopic struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Topic name. Must match ^[%a-zA-Z0-9_-]+$ and be unique within the
 	// instance. ForceNew: changing this replaces the topic.
@@ -495,20 +495,20 @@ type AlicloudRocketmqTopic struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudRocketmqTopic) Reset() {
-	*x = AlicloudRocketmqTopic{}
+func (x *AliCloudRocketmqTopic) Reset() {
+	*x = AliCloudRocketmqTopic{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRocketmqTopic) String() string {
+func (x *AliCloudRocketmqTopic) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRocketmqTopic) ProtoMessage() {}
+func (*AliCloudRocketmqTopic) ProtoMessage() {}
 
-func (x *AlicloudRocketmqTopic) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRocketmqTopic) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -520,41 +520,41 @@ func (x *AlicloudRocketmqTopic) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRocketmqTopic.ProtoReflect.Descriptor instead.
-func (*AlicloudRocketmqTopic) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRocketmqTopic.ProtoReflect.Descriptor instead.
+func (*AliCloudRocketmqTopic) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *AlicloudRocketmqTopic) GetTopicName() string {
+func (x *AliCloudRocketmqTopic) GetTopicName() string {
 	if x != nil {
 		return x.TopicName
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqTopic) GetMessageType() string {
+func (x *AliCloudRocketmqTopic) GetMessageType() string {
 	if x != nil && x.MessageType != nil {
 		return *x.MessageType
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqTopic) GetRemark() string {
+func (x *AliCloudRocketmqTopic) GetRemark() string {
 	if x != nil {
 		return x.Remark
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqTopic) GetMaxSendTps() int32 {
+func (x *AliCloudRocketmqTopic) GetMaxSendTps() int32 {
 	if x != nil && x.MaxSendTps != nil {
 		return *x.MaxSendTps
 	}
 	return 0
 }
 
-// AlicloudRocketmqConsumerGroup defines a consumer group within the instance.
-type AlicloudRocketmqConsumerGroup struct {
+// AliCloudRocketmqConsumerGroup defines a consumer group within the instance.
+type AliCloudRocketmqConsumerGroup struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Consumer group ID. Must be unique within the instance.
 	// ForceNew: changing this replaces the consumer group.
@@ -569,25 +569,25 @@ type AlicloudRocketmqConsumerGroup struct {
 	MaxReceiveTps *int32 `protobuf:"varint,4,opt,name=max_receive_tps,json=maxReceiveTps,proto3,oneof" json:"max_receive_tps,omitempty"`
 	// Retry policy for failed message consumption. When omitted, defaults to
 	// DefaultRetryPolicy with 16 retries.
-	ConsumeRetryPolicy *AlicloudRocketmqConsumeRetryPolicy `protobuf:"bytes,5,opt,name=consume_retry_policy,json=consumeRetryPolicy,proto3" json:"consume_retry_policy,omitempty"`
+	ConsumeRetryPolicy *AliCloudRocketmqConsumeRetryPolicy `protobuf:"bytes,5,opt,name=consume_retry_policy,json=consumeRetryPolicy,proto3" json:"consume_retry_policy,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AlicloudRocketmqConsumerGroup) Reset() {
-	*x = AlicloudRocketmqConsumerGroup{}
+func (x *AliCloudRocketmqConsumerGroup) Reset() {
+	*x = AliCloudRocketmqConsumerGroup{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRocketmqConsumerGroup) String() string {
+func (x *AliCloudRocketmqConsumerGroup) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRocketmqConsumerGroup) ProtoMessage() {}
+func (*AliCloudRocketmqConsumerGroup) ProtoMessage() {}
 
-func (x *AlicloudRocketmqConsumerGroup) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRocketmqConsumerGroup) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -599,49 +599,49 @@ func (x *AlicloudRocketmqConsumerGroup) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRocketmqConsumerGroup.ProtoReflect.Descriptor instead.
-func (*AlicloudRocketmqConsumerGroup) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRocketmqConsumerGroup.ProtoReflect.Descriptor instead.
+func (*AliCloudRocketmqConsumerGroup) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *AlicloudRocketmqConsumerGroup) GetConsumerGroupId() string {
+func (x *AliCloudRocketmqConsumerGroup) GetConsumerGroupId() string {
 	if x != nil {
 		return x.ConsumerGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqConsumerGroup) GetDeliveryOrderType() string {
+func (x *AliCloudRocketmqConsumerGroup) GetDeliveryOrderType() string {
 	if x != nil && x.DeliveryOrderType != nil {
 		return *x.DeliveryOrderType
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqConsumerGroup) GetRemark() string {
+func (x *AliCloudRocketmqConsumerGroup) GetRemark() string {
 	if x != nil {
 		return x.Remark
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqConsumerGroup) GetMaxReceiveTps() int32 {
+func (x *AliCloudRocketmqConsumerGroup) GetMaxReceiveTps() int32 {
 	if x != nil && x.MaxReceiveTps != nil {
 		return *x.MaxReceiveTps
 	}
 	return 0
 }
 
-func (x *AlicloudRocketmqConsumerGroup) GetConsumeRetryPolicy() *AlicloudRocketmqConsumeRetryPolicy {
+func (x *AliCloudRocketmqConsumerGroup) GetConsumeRetryPolicy() *AliCloudRocketmqConsumeRetryPolicy {
 	if x != nil {
 		return x.ConsumeRetryPolicy
 	}
 	return nil
 }
 
-// AlicloudRocketmqConsumeRetryPolicy configures how failed messages are
+// AliCloudRocketmqConsumeRetryPolicy configures how failed messages are
 // retried before being sent to the dead-letter topic.
-type AlicloudRocketmqConsumeRetryPolicy struct {
+type AliCloudRocketmqConsumeRetryPolicy struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Retry strategy.
 	// "DefaultRetryPolicy" -- exponential backoff (recommended).
@@ -658,20 +658,20 @@ type AlicloudRocketmqConsumeRetryPolicy struct {
 	sizeCache             protoimpl.SizeCache
 }
 
-func (x *AlicloudRocketmqConsumeRetryPolicy) Reset() {
-	*x = AlicloudRocketmqConsumeRetryPolicy{}
+func (x *AliCloudRocketmqConsumeRetryPolicy) Reset() {
+	*x = AliCloudRocketmqConsumeRetryPolicy{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRocketmqConsumeRetryPolicy) String() string {
+func (x *AliCloudRocketmqConsumeRetryPolicy) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRocketmqConsumeRetryPolicy) ProtoMessage() {}
+func (*AliCloudRocketmqConsumeRetryPolicy) ProtoMessage() {}
 
-func (x *AlicloudRocketmqConsumeRetryPolicy) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRocketmqConsumeRetryPolicy) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -683,26 +683,26 @@ func (x *AlicloudRocketmqConsumeRetryPolicy) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRocketmqConsumeRetryPolicy.ProtoReflect.Descriptor instead.
-func (*AlicloudRocketmqConsumeRetryPolicy) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRocketmqConsumeRetryPolicy.ProtoReflect.Descriptor instead.
+func (*AliCloudRocketmqConsumeRetryPolicy) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *AlicloudRocketmqConsumeRetryPolicy) GetRetryPolicy() string {
+func (x *AliCloudRocketmqConsumeRetryPolicy) GetRetryPolicy() string {
 	if x != nil && x.RetryPolicy != nil {
 		return *x.RetryPolicy
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqConsumeRetryPolicy) GetMaxRetryTimes() int32 {
+func (x *AliCloudRocketmqConsumeRetryPolicy) GetMaxRetryTimes() int32 {
 	if x != nil && x.MaxRetryTimes != nil {
 		return *x.MaxRetryTimes
 	}
 	return 0
 }
 
-func (x *AlicloudRocketmqConsumeRetryPolicy) GetDeadLetterTargetTopic() string {
+func (x *AliCloudRocketmqConsumeRetryPolicy) GetDeadLetterTargetTopic() string {
 	if x != nil {
 		return x.DeadLetterTargetTopic
 	}
@@ -714,7 +714,7 @@ var File_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto pr
 const file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"Dorg/openmcf/provider/alicloud/alicloudrocketmqinstance/v1/spec.proto\x129org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x82\x13\n" +
-	"\x1cAlicloudRocketmqInstanceSpec\x12\"\n" +
+	"\x1cAliCloudRocketmqInstanceSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\xb0\x01\n" +
 	"\vseries_code\x18\x02 \x01(\tB\x8e\x01\xbaH\x8a\x01\xba\x01\x83\x01\n" +
@@ -742,14 +742,14 @@ const file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_
 	"\n" +
 	"vswitch_id\x18\f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xcd\x17\x92\xd4a\x19status.outputs.vswitch_idR\tvswitchId\x12*\n" +
 	"\x11security_group_id\x18\r \x01(\tR\x0fsecurityGroupId\x12|\n" +
-	"\rinternet_info\x18\x0e \x01(\v2W.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInternetInfoR\finternetInfo\x12(\n" +
+	"\rinternet_info\x18\x0e \x01(\v2W.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInternetInfoR\finternetInfo\x12(\n" +
 	"\x10msg_process_spec\x18\x0f \x01(\tR\x0emsgProcessSpec\x12y\n" +
-	"\fproduct_info\x18\x10 \x01(\v2V.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqProductInfoR\vproductInfo\x12#\n" +
+	"\fproduct_info\x18\x10 \x01(\v2V.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqProductInfoR\vproductInfo\x12#\n" +
 	"\rip_whitelists\x18\x11 \x03(\tR\fipWhitelists\x12*\n" +
 	"\x11resource_group_id\x18\x12 \x01(\tR\x0fresourceGroupId\x12u\n" +
-	"\x04tags\x18\x13 \x03(\v2a.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceSpec.TagsEntryR\x04tags\x12h\n" +
-	"\x06topics\x18\x14 \x03(\v2P.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqTopicR\x06topics\x12\x81\x01\n" +
-	"\x0fconsumer_groups\x18\x15 \x03(\v2X.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqConsumerGroupR\x0econsumerGroups\x1a7\n" +
+	"\x04tags\x18\x13 \x03(\v2a.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceSpec.TagsEntryR\x04tags\x12h\n" +
+	"\x06topics\x18\x14 \x03(\v2P.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqTopicR\x06topics\x12\x81\x01\n" +
+	"\x0fconsumer_groups\x18\x15 \x03(\v2X.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqConsumerGroupR\x0econsumerGroups\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x0f\n" +
@@ -758,7 +758,7 @@ const file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_
 	"\f_period_unitB\r\n" +
 	"\v_auto_renewB\x14\n" +
 	"\x12_auto_renew_period\"\xe2\x03\n" +
-	"\x1cAlicloudRocketmqInternetInfo\x12\x1d\n" +
+	"\x1cAliCloudRocketmqInternetInfo\x12\x1d\n" +
 	"\aenabled\x18\x01 \x01(\bH\x00R\aenabled\x88\x01\x01\x12\xcd\x01\n" +
 	"\rflow_out_type\x18\x02 \x01(\tB\xa3\x01\xbaH\x8f\x01\xba\x01\x8b\x01\n" +
 	"\x13flow_out_type_valid\x12:flow_out_type must be one of: payByBandwidth, payByTraffic\x1a8this == '' || this in ['payByBandwidth', 'payByTraffic']\x8a\xa6\x1d\fpayByTrafficH\x01R\vflowOutType\x88\x01\x01\x12\x9d\x01\n" +
@@ -768,7 +768,7 @@ const file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_
 	"\b_enabledB\x10\n" +
 	"\x0e_flow_out_typeB\x15\n" +
 	"\x13_flow_out_bandwidth\"\xf1\x04\n" +
-	"\x1bAlicloudRocketmqProductInfo\x12\x9e\x01\n" +
+	"\x1bAliCloudRocketmqProductInfo\x12\x9e\x01\n" +
 	"\x16message_retention_time\x18\x01 \x01(\x05Bc\xbaH`\xba\x01]\n" +
 	"\x1fmessage_retention_time_positive\x120message_retention_time must be positive when set\x1a\bthis > 0H\x00R\x14messageRetentionTime\x88\x01\x01\x12\x9f\x01\n" +
 	"\x12send_receive_ratio\x18\x02 \x01(\x01Bl\xbaHi\xba\x01f\n" +
@@ -782,7 +782,7 @@ const file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_
 	"\r_auto_scalingB\v\n" +
 	"\t_trace_onB\x15\n" +
 	"\x13_storage_encryption\"\xf6\x02\n" +
-	"\x15AlicloudRocketmqTopic\x12)\n" +
+	"\x15AliCloudRocketmqTopic\x12)\n" +
 	"\n" +
 	"topic_name\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\ttopicName\x12\xd0\x01\n" +
@@ -793,17 +793,17 @@ const file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_
 	"maxSendTps\x88\x01\x01B\x0f\n" +
 	"\r_message_typeB\x0f\n" +
 	"\r_max_send_tps\"\xa4\x04\n" +
-	"\x1dAlicloudRocketmqConsumerGroup\x126\n" +
+	"\x1dAliCloudRocketmqConsumerGroup\x126\n" +
 	"\x11consumer_group_id\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x0fconsumerGroupId\x12\xc7\x01\n" +
 	"\x13delivery_order_type\x18\x02 \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
 	"\x19delivery_order_type_valid\x129delivery_order_type must be one of: Concurrently, Orderly\x1a1this == '' || this in ['Concurrently', 'Orderly']H\x00R\x11deliveryOrderType\x88\x01\x01\x12\x16\n" +
 	"\x06remark\x18\x03 \x01(\tR\x06remark\x12+\n" +
 	"\x0fmax_receive_tps\x18\x04 \x01(\x05H\x01R\rmaxReceiveTps\x88\x01\x01\x12\x8f\x01\n" +
-	"\x14consume_retry_policy\x18\x05 \x01(\v2].org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqConsumeRetryPolicyR\x12consumeRetryPolicyB\x16\n" +
+	"\x14consume_retry_policy\x18\x05 \x01(\v2].org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqConsumeRetryPolicyR\x12consumeRetryPolicyB\x16\n" +
 	"\x14_delivery_order_typeB\x12\n" +
 	"\x10_max_receive_tps\"\x9e\x03\n" +
-	"\"AlicloudRocketmqConsumeRetryPolicy\x12\xe0\x01\n" +
+	"\"AliCloudRocketmqConsumeRetryPolicy\x12\xe0\x01\n" +
 	"\fretry_policy\x18\x01 \x01(\tB\xb7\x01\xbaH\x9d\x01\xba\x01\x99\x01\n" +
 	"\x12retry_policy_valid\x12Aretry_policy must be one of: DefaultRetryPolicy, FixedRetryPolicy\x1a@this == '' || this in ['DefaultRetryPolicy', 'FixedRetryPolicy']\x8a\xa6\x1d\x12DefaultRetryPolicyH\x00R\vretryPolicy\x88\x01\x01\x127\n" +
 	"\x0fmax_retry_times\x18\x02 \x01(\x05B\n" +
@@ -827,24 +827,24 @@ func file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_r
 
 var file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_goTypes = []any{
-	(*AlicloudRocketmqInstanceSpec)(nil),       // 0: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceSpec
-	(*AlicloudRocketmqInternetInfo)(nil),       // 1: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInternetInfo
-	(*AlicloudRocketmqProductInfo)(nil),        // 2: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqProductInfo
-	(*AlicloudRocketmqTopic)(nil),              // 3: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqTopic
-	(*AlicloudRocketmqConsumerGroup)(nil),      // 4: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqConsumerGroup
-	(*AlicloudRocketmqConsumeRetryPolicy)(nil), // 5: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqConsumeRetryPolicy
-	nil,                         // 6: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceSpec.TagsEntry
+	(*AliCloudRocketmqInstanceSpec)(nil),       // 0: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceSpec
+	(*AliCloudRocketmqInternetInfo)(nil),       // 1: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInternetInfo
+	(*AliCloudRocketmqProductInfo)(nil),        // 2: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqProductInfo
+	(*AliCloudRocketmqTopic)(nil),              // 3: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqTopic
+	(*AliCloudRocketmqConsumerGroup)(nil),      // 4: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqConsumerGroup
+	(*AliCloudRocketmqConsumeRetryPolicy)(nil), // 5: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqConsumeRetryPolicy
+	nil,                         // 6: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceSpec.TagsEntry
 	(*v1.StringValueOrRef)(nil), // 7: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_depIdxs = []int32{
-	7, // 0: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceSpec.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	7, // 1: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceSpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	1, // 2: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceSpec.internet_info:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInternetInfo
-	2, // 3: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceSpec.product_info:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqProductInfo
-	6, // 4: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceSpec.TagsEntry
-	3, // 5: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceSpec.topics:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqTopic
-	4, // 6: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceSpec.consumer_groups:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqConsumerGroup
-	5, // 7: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqConsumerGroup.consume_retry_policy:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqConsumeRetryPolicy
+	7, // 0: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceSpec.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	7, // 1: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceSpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	1, // 2: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceSpec.internet_info:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInternetInfo
+	2, // 3: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceSpec.product_info:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqProductInfo
+	6, // 4: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceSpec.TagsEntry
+	3, // 5: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceSpec.topics:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqTopic
+	4, // 6: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceSpec.consumer_groups:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqConsumerGroup
+	5, // 7: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqConsumerGroup.consume_retry_policy:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqConsumeRetryPolicy
 	8, // [8:8] is the sub-list for method output_type
 	8, // [8:8] is the sub-list for method input_type
 	8, // [8:8] is the sub-list for extension type_name

@@ -24,7 +24,7 @@ const (
 )
 
 // alicloud-storage-bucket
-type AlicloudStorageBucket struct {
+type AliCloudStorageBucket struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
@@ -33,27 +33,27 @@ type AlicloudStorageBucket struct {
 	// metadata
 	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
-	Spec *AlicloudStorageBucketSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec *AliCloudStorageBucketSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
-	Status        *AlicloudStorageBucketStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *AliCloudStorageBucketStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudStorageBucket) Reset() {
-	*x = AlicloudStorageBucket{}
+func (x *AliCloudStorageBucket) Reset() {
+	*x = AliCloudStorageBucket{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudStorageBucket) String() string {
+func (x *AliCloudStorageBucket) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudStorageBucket) ProtoMessage() {}
+func (*AliCloudStorageBucket) ProtoMessage() {}
 
-func (x *AlicloudStorageBucket) ProtoReflect() protoreflect.Message {
+func (x *AliCloudStorageBucket) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AlicloudStorageBucket) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudStorageBucket.ProtoReflect.Descriptor instead.
-func (*AlicloudStorageBucket) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudStorageBucket.ProtoReflect.Descriptor instead.
+func (*AliCloudStorageBucket) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudStorageBucket) GetApiVersion() string {
+func (x *AliCloudStorageBucket) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *AlicloudStorageBucket) GetKind() string {
+func (x *AliCloudStorageBucket) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AlicloudStorageBucket) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AliCloudStorageBucket) GetMetadata() *shared.CloudResourceMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *AlicloudStorageBucket) GetSpec() *AlicloudStorageBucketSpec {
+func (x *AliCloudStorageBucket) GetSpec() *AliCloudStorageBucketSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-func (x *AlicloudStorageBucket) GetStatus() *AlicloudStorageBucketStatus {
+func (x *AliCloudStorageBucket) GetStatus() *AliCloudStorageBucketStatus {
 	if x != nil {
 		return x.Status
 	}
@@ -106,28 +106,28 @@ func (x *AlicloudStorageBucket) GetStatus() *AlicloudStorageBucketStatus {
 }
 
 // alicloud-storage-bucket status
-type AlicloudStorageBucketStatus struct {
+type AliCloudStorageBucketStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// stack-outputs
-	Outputs       *AlicloudStorageBucketStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AliCloudStorageBucketStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudStorageBucketStatus) Reset() {
-	*x = AlicloudStorageBucketStatus{}
+func (x *AliCloudStorageBucketStatus) Reset() {
+	*x = AliCloudStorageBucketStatus{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudStorageBucketStatus) String() string {
+func (x *AliCloudStorageBucketStatus) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudStorageBucketStatus) ProtoMessage() {}
+func (*AliCloudStorageBucketStatus) ProtoMessage() {}
 
-func (x *AlicloudStorageBucketStatus) ProtoReflect() protoreflect.Message {
+func (x *AliCloudStorageBucketStatus) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,12 +139,12 @@ func (x *AlicloudStorageBucketStatus) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudStorageBucketStatus.ProtoReflect.Descriptor instead.
-func (*AlicloudStorageBucketStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudStorageBucketStatus.ProtoReflect.Descriptor instead.
+func (*AliCloudStorageBucketStatus) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudStorageBucketStatus) GetOutputs() *AlicloudStorageBucketStackOutputs {
+func (x *AliCloudStorageBucketStatus) GetOutputs() *AliCloudStorageBucketStackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -156,17 +156,17 @@ var File_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_api_proto protor
 const file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"@org/openmcf/provider/alicloud/alicloudstoragebucket/v1/api.proto\x126org.openmcf.provider.alicloud.alicloudstoragebucket.v1\x1a\x1bbuf/validate/validate.proto\x1aAorg/openmcf/provider/alicloud/alicloudstoragebucket/v1/spec.proto\x1aJorg/openmcf/provider/alicloud/alicloudstoragebucket/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xb5\x03\n" +
-	"\x15AlicloudStorageBucket\x12?\n" +
+	"\x15AliCloudStorageBucket\x12?\n" +
 	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
-	"\x15AlicloudStorageBucketR\x04kind\x12M\n" +
+	"\x15AliCloudStorageBucketR\x04kind\x12M\n" +
 	"\bmetadata\x18\x03 \x01(\v2).org.openmcf.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
-	"\x04spec\x18\x04 \x01(\v2Q.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12k\n" +
-	"\x06status\x18\x05 \x01(\v2S.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketStatusR\x06status\"\x92\x01\n" +
-	"\x1bAlicloudStorageBucketStatus\x12s\n" +
-	"\aoutputs\x18\x01 \x01(\v2Y.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketStackOutputsR\aoutputsB\xb7\x03\n" +
+	"\x04spec\x18\x04 \x01(\v2Q.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12k\n" +
+	"\x06status\x18\x05 \x01(\v2S.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketStatusR\x06status\"\x92\x01\n" +
+	"\x1bAliCloudStorageBucketStatus\x12s\n" +
+	"\aoutputs\x18\x01 \x01(\v2Y.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketStackOutputsR\aoutputsB\xb7\x03\n" +
 	":com.org.openmcf.provider.alicloud.alicloudstoragebucket.v1B\bApiProtoP\x01Zpgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudstoragebucket/v1;alicloudstoragebucketv1\xa2\x02\x05OOPAA\xaa\x026Org.Openmcf.Provider.Alicloud.Alicloudstoragebucket.V1\xca\x026Org\\Openmcf\\Provider\\Alicloud\\Alicloudstoragebucket\\V1\xe2\x02BOrg\\Openmcf\\Provider\\Alicloud\\Alicloudstoragebucket\\V1\\GPBMetadata\xea\x02;Org::Openmcf::Provider::Alicloud::Alicloudstoragebucket::V1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_api_proto_rawDe
 
 var file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_api_proto_goTypes = []any{
-	(*AlicloudStorageBucket)(nil),             // 0: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucket
-	(*AlicloudStorageBucketStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketStatus
+	(*AliCloudStorageBucket)(nil),             // 0: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucket
+	(*AliCloudStorageBucketStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketStatus
 	(*shared.CloudResourceMetadata)(nil),      // 2: org.openmcf.shared.CloudResourceMetadata
-	(*AlicloudStorageBucketSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketSpec
-	(*AlicloudStorageBucketStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketStackOutputs
+	(*AliCloudStorageBucketSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketSpec
+	(*AliCloudStorageBucketStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_api_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucket.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
-	3, // 1: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucket.spec:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketSpec
-	1, // 2: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucket.status:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketStatus
-	4, // 3: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketStackOutputs
+	2, // 0: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucket.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
+	3, // 1: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucket.spec:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketSpec
+	1, // 2: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucket.status:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketStatus
+	4, // 3: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketStackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

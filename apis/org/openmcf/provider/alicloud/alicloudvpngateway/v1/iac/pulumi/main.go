@@ -10,7 +10,7 @@ import (
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
-		stackInput := &alicloudvpngatewayv1.AlicloudVpnGatewayStackInput{}
+		stackInput := &alicloudvpngatewayv1.AliCloudVpnGatewayStackInput{}
 
 		if err := stackinput.LoadStackInput(ctx, stackInput); err != nil {
 			return errors.Wrap(err, "failed to load stack-input")

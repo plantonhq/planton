@@ -23,30 +23,30 @@ const (
 )
 
 // alicloud-ram-policy stack-input
-type AlicloudRamPolicyStackInput struct {
+type AliCloudRamPolicyStackInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target cloud-resource
-	Target *AlicloudRamPolicy `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
+	Target *AliCloudRamPolicy `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
-	ProviderConfig *alicloud.AlicloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
+	ProviderConfig *alicloud.AliCloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudRamPolicyStackInput) Reset() {
-	*x = AlicloudRamPolicyStackInput{}
+func (x *AliCloudRamPolicyStackInput) Reset() {
+	*x = AliCloudRamPolicyStackInput{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_stack_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRamPolicyStackInput) String() string {
+func (x *AliCloudRamPolicyStackInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRamPolicyStackInput) ProtoMessage() {}
+func (*AliCloudRamPolicyStackInput) ProtoMessage() {}
 
-func (x *AlicloudRamPolicyStackInput) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRamPolicyStackInput) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_stack_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AlicloudRamPolicyStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRamPolicyStackInput.ProtoReflect.Descriptor instead.
-func (*AlicloudRamPolicyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRamPolicyStackInput.ProtoReflect.Descriptor instead.
+func (*AliCloudRamPolicyStackInput) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_stack_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudRamPolicyStackInput) GetTarget() *AlicloudRamPolicy {
+func (x *AliCloudRamPolicyStackInput) GetTarget() *AliCloudRamPolicy {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AlicloudRamPolicyStackInput) GetProviderConfig() *alicloud.AlicloudProviderConfig {
+func (x *AliCloudRamPolicyStackInput) GetProviderConfig() *alicloud.AliCloudProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,9 +82,9 @@ var File_org_openmcf_provider_alicloud_alicloudrampolicy_v1_stack_input_proto pr
 const file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_stack_input_proto_rawDesc = "" +
 	"\n" +
 	"Dorg/openmcf/provider/alicloud/alicloudrampolicy/v1/stack_input.proto\x122org.openmcf.provider.alicloud.alicloudrampolicy.v1\x1a<org/openmcf/provider/alicloud/alicloudrampolicy/v1/api.proto\x1a,org/openmcf/provider/alicloud/provider.proto\"\xdc\x01\n" +
-	"\x1bAlicloudRamPolicyStackInput\x12]\n" +
-	"\x06target\x18\x01 \x01(\v2E.org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicyR\x06target\x12^\n" +
-	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigR\x0eproviderConfigB\xa2\x03\n" +
+	"\x1bAliCloudRamPolicyStackInput\x12]\n" +
+	"\x06target\x18\x01 \x01(\v2E.org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicyR\x06target\x12^\n" +
+	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigR\x0eproviderConfigB\xa2\x03\n" +
 	"6com.org.openmcf.provider.alicloud.alicloudrampolicy.v1B\x0fStackInputProtoP\x01Zhgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudrampolicy/v1;alicloudrampolicyv1\xa2\x02\x05OOPAA\xaa\x022Org.Openmcf.Provider.Alicloud.Alicloudrampolicy.V1\xca\x022Org\\Openmcf\\Provider\\Alicloud\\Alicloudrampolicy\\V1\xe2\x02>Org\\Openmcf\\Provider\\Alicloud\\Alicloudrampolicy\\V1\\GPBMetadata\xea\x027Org::Openmcf::Provider::Alicloud::Alicloudrampolicy::V1b\x06proto3"
 
 var (
@@ -101,13 +101,13 @@ func file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_stack_input_proto_r
 
 var file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_stack_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_stack_input_proto_goTypes = []any{
-	(*AlicloudRamPolicyStackInput)(nil),     // 0: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicyStackInput
-	(*AlicloudRamPolicy)(nil),               // 1: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicy
-	(*alicloud.AlicloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AlicloudProviderConfig
+	(*AliCloudRamPolicyStackInput)(nil),     // 0: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicyStackInput
+	(*AliCloudRamPolicy)(nil),               // 1: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicy
+	(*alicloud.AliCloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AliCloudProviderConfig
 }
 var file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_stack_input_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicyStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicy
-	2, // 1: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicyStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
+	1, // 0: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicyStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicy
+	2, // 1: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicyStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

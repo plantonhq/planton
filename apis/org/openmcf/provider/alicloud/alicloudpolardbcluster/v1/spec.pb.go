@@ -24,7 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudPolardbClusterSpec defines the configuration for an Alibaba Cloud
+// AliCloudPolardbClusterSpec defines the configuration for an Alibaba Cloud
 // PolarDB cluster with bundled databases, accounts, and account privileges.
 //
 // PolarDB is Alibaba Cloud's cloud-native relational database built on a
@@ -33,7 +33,7 @@ const (
 // cluster model where one primary node and one or more read-only replicas
 // share a single distributed storage layer.
 //
-// This component is separate from AlicloudRdsInstance (per DD06) because
+// This component is separate from AliCloudRdsInstance (per DD06) because
 // PolarDB has a fundamentally different resource schema: cluster-based
 // topology, node-class sizing, separate endpoint management, and different
 // Terraform/Pulumi resource types.
@@ -54,7 +54,7 @@ const (
 //
 //	Terraform: alicloud_polardb_cluster + alicloud_polardb_database + alicloud_polardb_account + alicloud_polardb_account_privilege
 //	Pulumi:    polardb.Cluster + polardb.Database + polardb.Account + polardb.AccountPrivilege
-type AlicloudPolardbClusterSpec struct {
+type AliCloudPolardbClusterSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the PolarDB cluster will be created.
 	// Must match the region of the VSwitch.
@@ -158,29 +158,29 @@ type AlicloudPolardbClusterSpec struct {
 	// Cluster parameter overrides. Each parameter sets a specific database
 	// engine configuration value. Refer to Alibaba Cloud documentation for
 	// valid parameter names and value ranges per engine.
-	Parameters []*AlicloudPolardbParameter `protobuf:"bytes,27,rep,name=parameters,proto3" json:"parameters,omitempty"`
+	Parameters []*AliCloudPolardbParameter `protobuf:"bytes,27,rep,name=parameters,proto3" json:"parameters,omitempty"`
 	// Databases to create within the PolarDB cluster.
-	Databases []*AlicloudPolardbDatabase `protobuf:"bytes,28,rep,name=databases,proto3" json:"databases,omitempty"`
+	Databases []*AliCloudPolardbDatabase `protobuf:"bytes,28,rep,name=databases,proto3" json:"databases,omitempty"`
 	// Database accounts to create within the PolarDB cluster.
-	Accounts      []*AlicloudPolardbAccount `protobuf:"bytes,29,rep,name=accounts,proto3" json:"accounts,omitempty"`
+	Accounts      []*AliCloudPolardbAccount `protobuf:"bytes,29,rep,name=accounts,proto3" json:"accounts,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudPolardbClusterSpec) Reset() {
-	*x = AlicloudPolardbClusterSpec{}
+func (x *AliCloudPolardbClusterSpec) Reset() {
+	*x = AliCloudPolardbClusterSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudPolardbClusterSpec) String() string {
+func (x *AliCloudPolardbClusterSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudPolardbClusterSpec) ProtoMessage() {}
+func (*AliCloudPolardbClusterSpec) ProtoMessage() {}
 
-func (x *AlicloudPolardbClusterSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudPolardbClusterSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -192,216 +192,216 @@ func (x *AlicloudPolardbClusterSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudPolardbClusterSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudPolardbClusterSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudPolardbClusterSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudPolardbClusterSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudPolardbClusterSpec) GetRegion() string {
+func (x *AliCloudPolardbClusterSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterSpec) GetDbType() string {
+func (x *AliCloudPolardbClusterSpec) GetDbType() string {
 	if x != nil {
 		return x.DbType
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterSpec) GetDbVersion() string {
+func (x *AliCloudPolardbClusterSpec) GetDbVersion() string {
 	if x != nil {
 		return x.DbVersion
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterSpec) GetDbNodeClass() string {
+func (x *AliCloudPolardbClusterSpec) GetDbNodeClass() string {
 	if x != nil {
 		return x.DbNodeClass
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterSpec) GetVswitchId() *v1.StringValueOrRef {
+func (x *AliCloudPolardbClusterSpec) GetVswitchId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VswitchId
 	}
 	return nil
 }
 
-func (x *AlicloudPolardbClusterSpec) GetDbNodeCount() int32 {
+func (x *AliCloudPolardbClusterSpec) GetDbNodeCount() int32 {
 	if x != nil && x.DbNodeCount != nil {
 		return *x.DbNodeCount
 	}
 	return 0
 }
 
-func (x *AlicloudPolardbClusterSpec) GetDescription() string {
+func (x *AliCloudPolardbClusterSpec) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterSpec) GetPayType() string {
+func (x *AliCloudPolardbClusterSpec) GetPayType() string {
 	if x != nil && x.PayType != nil {
 		return *x.PayType
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterSpec) GetPeriod() int32 {
+func (x *AliCloudPolardbClusterSpec) GetPeriod() int32 {
 	if x != nil && x.Period != nil {
 		return *x.Period
 	}
 	return 0
 }
 
-func (x *AlicloudPolardbClusterSpec) GetRenewalStatus() string {
+func (x *AliCloudPolardbClusterSpec) GetRenewalStatus() string {
 	if x != nil && x.RenewalStatus != nil {
 		return *x.RenewalStatus
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterSpec) GetAutoRenewPeriod() int32 {
+func (x *AliCloudPolardbClusterSpec) GetAutoRenewPeriod() int32 {
 	if x != nil && x.AutoRenewPeriod != nil {
 		return *x.AutoRenewPeriod
 	}
 	return 0
 }
 
-func (x *AlicloudPolardbClusterSpec) GetZoneId() string {
+func (x *AliCloudPolardbClusterSpec) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterSpec) GetSecurityIps() []string {
+func (x *AliCloudPolardbClusterSpec) GetSecurityIps() []string {
 	if x != nil {
 		return x.SecurityIps
 	}
 	return nil
 }
 
-func (x *AlicloudPolardbClusterSpec) GetSecurityGroupIds() []string {
+func (x *AliCloudPolardbClusterSpec) GetSecurityGroupIds() []string {
 	if x != nil {
 		return x.SecurityGroupIds
 	}
 	return nil
 }
 
-func (x *AlicloudPolardbClusterSpec) GetMaintainTime() string {
+func (x *AliCloudPolardbClusterSpec) GetMaintainTime() string {
 	if x != nil {
 		return x.MaintainTime
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterSpec) GetResourceGroupId() string {
+func (x *AliCloudPolardbClusterSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterSpec) GetTags() map[string]string {
+func (x *AliCloudPolardbClusterSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-func (x *AlicloudPolardbClusterSpec) GetCreationCategory() string {
+func (x *AliCloudPolardbClusterSpec) GetCreationCategory() string {
 	if x != nil && x.CreationCategory != nil {
 		return *x.CreationCategory
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterSpec) GetSubCategory() string {
+func (x *AliCloudPolardbClusterSpec) GetSubCategory() string {
 	if x != nil && x.SubCategory != nil {
 		return *x.SubCategory
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterSpec) GetStorageType() string {
+func (x *AliCloudPolardbClusterSpec) GetStorageType() string {
 	if x != nil && x.StorageType != nil {
 		return *x.StorageType
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterSpec) GetStorageSpace() int32 {
+func (x *AliCloudPolardbClusterSpec) GetStorageSpace() int32 {
 	if x != nil && x.StorageSpace != nil {
 		return *x.StorageSpace
 	}
 	return 0
 }
 
-func (x *AlicloudPolardbClusterSpec) GetTdeStatus() string {
+func (x *AliCloudPolardbClusterSpec) GetTdeStatus() string {
 	if x != nil && x.TdeStatus != nil {
 		return *x.TdeStatus
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterSpec) GetEncryptionKey() string {
+func (x *AliCloudPolardbClusterSpec) GetEncryptionKey() string {
 	if x != nil {
 		return x.EncryptionKey
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterSpec) GetDeletionLock() int32 {
+func (x *AliCloudPolardbClusterSpec) GetDeletionLock() int32 {
 	if x != nil && x.DeletionLock != nil {
 		return *x.DeletionLock
 	}
 	return 0
 }
 
-func (x *AlicloudPolardbClusterSpec) GetCollectorStatus() string {
+func (x *AliCloudPolardbClusterSpec) GetCollectorStatus() string {
 	if x != nil && x.CollectorStatus != nil {
 		return *x.CollectorStatus
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterSpec) GetBackupRetentionPolicyOnClusterDeletion() string {
+func (x *AliCloudPolardbClusterSpec) GetBackupRetentionPolicyOnClusterDeletion() string {
 	if x != nil && x.BackupRetentionPolicyOnClusterDeletion != nil {
 		return *x.BackupRetentionPolicyOnClusterDeletion
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterSpec) GetParameters() []*AlicloudPolardbParameter {
+func (x *AliCloudPolardbClusterSpec) GetParameters() []*AliCloudPolardbParameter {
 	if x != nil {
 		return x.Parameters
 	}
 	return nil
 }
 
-func (x *AlicloudPolardbClusterSpec) GetDatabases() []*AlicloudPolardbDatabase {
+func (x *AliCloudPolardbClusterSpec) GetDatabases() []*AliCloudPolardbDatabase {
 	if x != nil {
 		return x.Databases
 	}
 	return nil
 }
 
-func (x *AlicloudPolardbClusterSpec) GetAccounts() []*AlicloudPolardbAccount {
+func (x *AliCloudPolardbClusterSpec) GetAccounts() []*AliCloudPolardbAccount {
 	if x != nil {
 		return x.Accounts
 	}
 	return nil
 }
 
-// AlicloudPolardbParameter represents a single cluster parameter override.
-type AlicloudPolardbParameter struct {
+// AliCloudPolardbParameter represents a single cluster parameter override.
+type AliCloudPolardbParameter struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Parameter name (e.g., "loose_innodb_buffer_pool_size", "max_connections").
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -412,20 +412,20 @@ type AlicloudPolardbParameter struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudPolardbParameter) Reset() {
-	*x = AlicloudPolardbParameter{}
+func (x *AliCloudPolardbParameter) Reset() {
+	*x = AliCloudPolardbParameter{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudPolardbParameter) String() string {
+func (x *AliCloudPolardbParameter) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudPolardbParameter) ProtoMessage() {}
+func (*AliCloudPolardbParameter) ProtoMessage() {}
 
-func (x *AlicloudPolardbParameter) ProtoReflect() protoreflect.Message {
+func (x *AliCloudPolardbParameter) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -437,28 +437,28 @@ func (x *AlicloudPolardbParameter) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudPolardbParameter.ProtoReflect.Descriptor instead.
-func (*AlicloudPolardbParameter) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudPolardbParameter.ProtoReflect.Descriptor instead.
+func (*AliCloudPolardbParameter) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudPolardbParameter) GetName() string {
+func (x *AliCloudPolardbParameter) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbParameter) GetValue() string {
+func (x *AliCloudPolardbParameter) GetValue() string {
 	if x != nil {
 		return x.Value
 	}
 	return ""
 }
 
-// AlicloudPolardbDatabase defines a database to create within the PolarDB
+// AliCloudPolardbDatabase defines a database to create within the PolarDB
 // cluster.
-type AlicloudPolardbDatabase struct {
+type AliCloudPolardbDatabase struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Database name. Must start with a letter, consist of lowercase letters,
 	// numbers, and underscores, and be no more than 64 characters.
@@ -481,20 +481,20 @@ type AlicloudPolardbDatabase struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudPolardbDatabase) Reset() {
-	*x = AlicloudPolardbDatabase{}
+func (x *AliCloudPolardbDatabase) Reset() {
+	*x = AliCloudPolardbDatabase{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudPolardbDatabase) String() string {
+func (x *AliCloudPolardbDatabase) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudPolardbDatabase) ProtoMessage() {}
+func (*AliCloudPolardbDatabase) ProtoMessage() {}
 
-func (x *AlicloudPolardbDatabase) ProtoReflect() protoreflect.Message {
+func (x *AliCloudPolardbDatabase) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -506,49 +506,49 @@ func (x *AlicloudPolardbDatabase) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudPolardbDatabase.ProtoReflect.Descriptor instead.
-func (*AlicloudPolardbDatabase) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudPolardbDatabase.ProtoReflect.Descriptor instead.
+func (*AliCloudPolardbDatabase) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AlicloudPolardbDatabase) GetDbName() string {
+func (x *AliCloudPolardbDatabase) GetDbName() string {
 	if x != nil {
 		return x.DbName
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbDatabase) GetCharacterSetName() string {
+func (x *AliCloudPolardbDatabase) GetCharacterSetName() string {
 	if x != nil {
 		return x.CharacterSetName
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbDatabase) GetDbDescription() string {
+func (x *AliCloudPolardbDatabase) GetDbDescription() string {
 	if x != nil {
 		return x.DbDescription
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbDatabase) GetCollate() string {
+func (x *AliCloudPolardbDatabase) GetCollate() string {
 	if x != nil {
 		return x.Collate
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbDatabase) GetCtype() string {
+func (x *AliCloudPolardbDatabase) GetCtype() string {
 	if x != nil {
 		return x.Ctype
 	}
 	return ""
 }
 
-// AlicloudPolardbAccount defines a database account to create within the
+// AliCloudPolardbAccount defines a database account to create within the
 // PolarDB cluster.
-type AlicloudPolardbAccount struct {
+type AliCloudPolardbAccount struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Account login name. Must start with a lowercase letter, end with a
 	// letter or number, consist of lowercase letters, numbers, or underscores,
@@ -568,25 +568,25 @@ type AlicloudPolardbAccount struct {
 	// Database privileges to grant to this account. Each entry grants a
 	// privilege level on a set of databases. Only applicable when account_type
 	// is "Normal"; Super accounts have implicit full access.
-	Privileges    []*AlicloudPolardbAccountPrivilege `protobuf:"bytes,5,rep,name=privileges,proto3" json:"privileges,omitempty"`
+	Privileges    []*AliCloudPolardbAccountPrivilege `protobuf:"bytes,5,rep,name=privileges,proto3" json:"privileges,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudPolardbAccount) Reset() {
-	*x = AlicloudPolardbAccount{}
+func (x *AliCloudPolardbAccount) Reset() {
+	*x = AliCloudPolardbAccount{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudPolardbAccount) String() string {
+func (x *AliCloudPolardbAccount) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudPolardbAccount) ProtoMessage() {}
+func (*AliCloudPolardbAccount) ProtoMessage() {}
 
-func (x *AlicloudPolardbAccount) ProtoReflect() protoreflect.Message {
+func (x *AliCloudPolardbAccount) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -598,49 +598,49 @@ func (x *AlicloudPolardbAccount) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudPolardbAccount.ProtoReflect.Descriptor instead.
-func (*AlicloudPolardbAccount) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudPolardbAccount.ProtoReflect.Descriptor instead.
+func (*AliCloudPolardbAccount) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *AlicloudPolardbAccount) GetAccountName() string {
+func (x *AliCloudPolardbAccount) GetAccountName() string {
 	if x != nil {
 		return x.AccountName
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbAccount) GetAccountPassword() string {
+func (x *AliCloudPolardbAccount) GetAccountPassword() string {
 	if x != nil {
 		return x.AccountPassword
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbAccount) GetAccountType() string {
+func (x *AliCloudPolardbAccount) GetAccountType() string {
 	if x != nil && x.AccountType != nil {
 		return *x.AccountType
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbAccount) GetAccountDescription() string {
+func (x *AliCloudPolardbAccount) GetAccountDescription() string {
 	if x != nil {
 		return x.AccountDescription
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbAccount) GetPrivileges() []*AlicloudPolardbAccountPrivilege {
+func (x *AliCloudPolardbAccount) GetPrivileges() []*AliCloudPolardbAccountPrivilege {
 	if x != nil {
 		return x.Privileges
 	}
 	return nil
 }
 
-// AlicloudPolardbAccountPrivilege grants a single privilege level on a set of
+// AliCloudPolardbAccountPrivilege grants a single privilege level on a set of
 // databases to the owning account.
-type AlicloudPolardbAccountPrivilege struct {
+type AliCloudPolardbAccountPrivilege struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Database names to grant access to. Each name must match a database
 	// defined in the spec's databases list.
@@ -656,20 +656,20 @@ type AlicloudPolardbAccountPrivilege struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AlicloudPolardbAccountPrivilege) Reset() {
-	*x = AlicloudPolardbAccountPrivilege{}
+func (x *AliCloudPolardbAccountPrivilege) Reset() {
+	*x = AliCloudPolardbAccountPrivilege{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudPolardbAccountPrivilege) String() string {
+func (x *AliCloudPolardbAccountPrivilege) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudPolardbAccountPrivilege) ProtoMessage() {}
+func (*AliCloudPolardbAccountPrivilege) ProtoMessage() {}
 
-func (x *AlicloudPolardbAccountPrivilege) ProtoReflect() protoreflect.Message {
+func (x *AliCloudPolardbAccountPrivilege) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -681,19 +681,19 @@ func (x *AlicloudPolardbAccountPrivilege) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudPolardbAccountPrivilege.ProtoReflect.Descriptor instead.
-func (*AlicloudPolardbAccountPrivilege) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudPolardbAccountPrivilege.ProtoReflect.Descriptor instead.
+func (*AliCloudPolardbAccountPrivilege) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *AlicloudPolardbAccountPrivilege) GetDbNames() []string {
+func (x *AliCloudPolardbAccountPrivilege) GetDbNames() []string {
 	if x != nil {
 		return x.DbNames
 	}
 	return nil
 }
 
-func (x *AlicloudPolardbAccountPrivilege) GetAccountPrivilege() string {
+func (x *AliCloudPolardbAccountPrivilege) GetAccountPrivilege() string {
 	if x != nil && x.AccountPrivilege != nil {
 		return *x.AccountPrivilege
 	}
@@ -705,7 +705,7 @@ var File_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto prot
 const file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"Borg/openmcf/provider/alicloud/alicloudpolardbcluster/v1/spec.proto\x127org.openmcf.provider.alicloud.alicloudpolardbcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x9d\x1f\n" +
-	"\x1aAlicloudPolardbClusterSpec\x12\"\n" +
+	"\x1aAliCloudPolardbClusterSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\x8f\x01\n" +
 	"\adb_type\x18\x02 \x01(\tBv\xbaHs\xba\x01m\n" +
@@ -735,7 +735,7 @@ const file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_ra
 	"\x12security_group_ids\x18\x0e \x03(\tR\x10securityGroupIds\x12#\n" +
 	"\rmaintain_time\x18\x0f \x01(\tR\fmaintainTime\x12*\n" +
 	"\x11resource_group_id\x18\x10 \x01(\tR\x0fresourceGroupId\x12q\n" +
-	"\x04tags\x18\x11 \x03(\v2].org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbClusterSpec.TagsEntryR\x04tags\x12\x8e\x02\n" +
+	"\x04tags\x18\x11 \x03(\v2].org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbClusterSpec.TagsEntryR\x04tags\x12\x8e\x02\n" +
 	"\x11creation_category\x18\x12 \x01(\tB\xdb\x01\xbaH\xd7\x01\xba\x01\xd3\x01\n" +
 	"\x17creation_category_valid\x12[creation_category must be one of: Normal, Basic, ArchiveNormal, NormalMultimaster, SENormal\x1a[this == '' || this in ['Normal', 'Basic', 'ArchiveNormal', 'NormalMultimaster', 'SENormal']H\x05R\x10creationCategory\x88\x01\x01\x12\xa3\x01\n" +
 	"\fsub_category\x18\x13 \x01(\tB{\xbaHx\xba\x01u\n" +
@@ -756,10 +756,10 @@ const file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_ra
 	"+backup_retention_policy_on_cluster_deletion\x18\x1a \x01(\tB\xa7\x01\xbaH\xa3\x01\xba\x01\x9f\x01\n" +
 	"\x1dbackup_retention_policy_valid\x12Mbackup_retention_policy_on_cluster_deletion must be one of: ALL, LATEST, NONE\x1a/this == '' || this in ['ALL', 'LATEST', 'NONE']H\fR&backupRetentionPolicyOnClusterDeletion\x88\x01\x01\x12q\n" +
 	"\n" +
-	"parameters\x18\x1b \x03(\v2Q.org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbParameterR\n" +
+	"parameters\x18\x1b \x03(\v2Q.org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbParameterR\n" +
 	"parameters\x12n\n" +
-	"\tdatabases\x18\x1c \x03(\v2P.org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbDatabaseR\tdatabases\x12k\n" +
-	"\baccounts\x18\x1d \x03(\v2O.org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbAccountR\baccounts\x1a7\n" +
+	"\tdatabases\x18\x1c \x03(\v2P.org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbDatabaseR\tdatabases\x12k\n" +
+	"\baccounts\x18\x1d \x03(\v2O.org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbAccountR\baccounts\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x10\n" +
@@ -776,19 +776,19 @@ const file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_ra
 	"\x0e_deletion_lockB\x13\n" +
 	"\x11_collector_statusB.\n" +
 	",_backup_retention_policy_on_cluster_deletion\"\\\n" +
-	"\x18AlicloudPolardbParameter\x12\x1e\n" +
+	"\x18AliCloudPolardbParameter\x12\x1e\n" +
 	"\x04name\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x12 \n" +
 	"\x05value\x18\x02 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x05value\"\xc3\x01\n" +
-	"\x17AlicloudPolardbDatabase\x12#\n" +
+	"\x17AliCloudPolardbDatabase\x12#\n" +
 	"\adb_name\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06dbName\x12,\n" +
 	"\x12character_set_name\x18\x02 \x01(\tR\x10characterSetName\x12%\n" +
 	"\x0edb_description\x18\x03 \x01(\tR\rdbDescription\x12\x18\n" +
 	"\acollate\x18\x04 \x01(\tR\acollate\x12\x14\n" +
 	"\x05ctype\x18\x05 \x01(\tR\x05ctype\"\xe0\x03\n" +
-	"\x16AlicloudPolardbAccount\x12-\n" +
+	"\x16AliCloudPolardbAccount\x12-\n" +
 	"\faccount_name\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x02R\vaccountName\x125\n" +
 	"\x10account_password\x18\x02 \x01(\tB\n" +
@@ -797,10 +797,10 @@ const file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_ra
 	"\x12account_type_valid\x12*account_type must be one of: Normal, Super\x1a)this == '' || this in ['Normal', 'Super']\x8a\xa6\x1d\x06NormalH\x00R\vaccountType\x88\x01\x01\x12/\n" +
 	"\x13account_description\x18\x04 \x01(\tR\x12accountDescription\x12x\n" +
 	"\n" +
-	"privileges\x18\x05 \x03(\v2X.org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbAccountPrivilegeR\n" +
+	"privileges\x18\x05 \x03(\v2X.org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbAccountPrivilegeR\n" +
 	"privilegesB\x0f\n" +
 	"\r_account_type\"\xd2\x02\n" +
-	"\x1fAlicloudPolardbAccountPrivilege\x12&\n" +
+	"\x1fAliCloudPolardbAccountPrivilege\x12&\n" +
 	"\bdb_names\x18\x01 \x03(\tB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01R\adbNames\x12\xf0\x01\n" +
 	"\x11account_privilege\x18\x02 \x01(\tB\xbd\x01\xbaH\xad\x01\xba\x01\xa9\x01\n" +
 	"\x17account_privilege_valid\x12Gaccount_privilege must be one of: ReadOnly, ReadWrite, DDLOnly, DMLOnly\x1aEthis == '' || this in ['ReadOnly', 'ReadWrite', 'DDLOnly', 'DMLOnly']\x8a\xa6\x1d\bReadOnlyH\x00R\x10accountPrivilege\x88\x01\x01B\x14\n" +
@@ -821,21 +821,21 @@ func file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_raw
 
 var file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_goTypes = []any{
-	(*AlicloudPolardbClusterSpec)(nil),      // 0: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbClusterSpec
-	(*AlicloudPolardbParameter)(nil),        // 1: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbParameter
-	(*AlicloudPolardbDatabase)(nil),         // 2: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbDatabase
-	(*AlicloudPolardbAccount)(nil),          // 3: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbAccount
-	(*AlicloudPolardbAccountPrivilege)(nil), // 4: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbAccountPrivilege
-	nil,                                     // 5: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbClusterSpec.TagsEntry
+	(*AliCloudPolardbClusterSpec)(nil),      // 0: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbClusterSpec
+	(*AliCloudPolardbParameter)(nil),        // 1: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbParameter
+	(*AliCloudPolardbDatabase)(nil),         // 2: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbDatabase
+	(*AliCloudPolardbAccount)(nil),          // 3: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbAccount
+	(*AliCloudPolardbAccountPrivilege)(nil), // 4: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbAccountPrivilege
+	nil,                                     // 5: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbClusterSpec.TagsEntry
 	(*v1.StringValueOrRef)(nil),             // 6: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_depIdxs = []int32{
-	6, // 0: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbClusterSpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	5, // 1: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbClusterSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbClusterSpec.TagsEntry
-	1, // 2: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbClusterSpec.parameters:type_name -> org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbParameter
-	2, // 3: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbClusterSpec.databases:type_name -> org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbDatabase
-	3, // 4: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbClusterSpec.accounts:type_name -> org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbAccount
-	4, // 5: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbAccount.privileges:type_name -> org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbAccountPrivilege
+	6, // 0: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbClusterSpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	5, // 1: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbClusterSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbClusterSpec.TagsEntry
+	1, // 2: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbClusterSpec.parameters:type_name -> org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbParameter
+	2, // 3: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbClusterSpec.databases:type_name -> org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbDatabase
+	3, // 4: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbClusterSpec.accounts:type_name -> org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbAccount
+	4, // 5: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbAccount.privileges:type_name -> org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbAccountPrivilege
 	6, // [6:6] is the sub-list for method output_type
 	6, // [6:6] is the sub-list for method input_type
 	6, // [6:6] is the sub-list for extension type_name

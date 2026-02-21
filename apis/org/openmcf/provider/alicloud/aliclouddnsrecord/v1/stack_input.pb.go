@@ -23,30 +23,30 @@ const (
 )
 
 // alicloud-dns-record stack-input
-type AlicloudDnsRecordStackInput struct {
+type AliCloudDnsRecordStackInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target cloud-resource
-	Target *AlicloudDnsRecord `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
+	Target *AliCloudDnsRecord `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
-	ProviderConfig *alicloud.AlicloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
+	ProviderConfig *alicloud.AliCloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudDnsRecordStackInput) Reset() {
-	*x = AlicloudDnsRecordStackInput{}
+func (x *AliCloudDnsRecordStackInput) Reset() {
+	*x = AliCloudDnsRecordStackInput{}
 	mi := &file_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_stack_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudDnsRecordStackInput) String() string {
+func (x *AliCloudDnsRecordStackInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudDnsRecordStackInput) ProtoMessage() {}
+func (*AliCloudDnsRecordStackInput) ProtoMessage() {}
 
-func (x *AlicloudDnsRecordStackInput) ProtoReflect() protoreflect.Message {
+func (x *AliCloudDnsRecordStackInput) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_stack_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AlicloudDnsRecordStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudDnsRecordStackInput.ProtoReflect.Descriptor instead.
-func (*AlicloudDnsRecordStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudDnsRecordStackInput.ProtoReflect.Descriptor instead.
+func (*AliCloudDnsRecordStackInput) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_stack_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudDnsRecordStackInput) GetTarget() *AlicloudDnsRecord {
+func (x *AliCloudDnsRecordStackInput) GetTarget() *AliCloudDnsRecord {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AlicloudDnsRecordStackInput) GetProviderConfig() *alicloud.AlicloudProviderConfig {
+func (x *AliCloudDnsRecordStackInput) GetProviderConfig() *alicloud.AliCloudProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,9 +82,9 @@ var File_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_stack_input_proto pr
 const file_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_stack_input_proto_rawDesc = "" +
 	"\n" +
 	"Dorg/openmcf/provider/alicloud/aliclouddnsrecord/v1/stack_input.proto\x122org.openmcf.provider.alicloud.aliclouddnsrecord.v1\x1a<org/openmcf/provider/alicloud/aliclouddnsrecord/v1/api.proto\x1a,org/openmcf/provider/alicloud/provider.proto\"\xdc\x01\n" +
-	"\x1bAlicloudDnsRecordStackInput\x12]\n" +
-	"\x06target\x18\x01 \x01(\v2E.org.openmcf.provider.alicloud.aliclouddnsrecord.v1.AlicloudDnsRecordR\x06target\x12^\n" +
-	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigR\x0eproviderConfigB\xa2\x03\n" +
+	"\x1bAliCloudDnsRecordStackInput\x12]\n" +
+	"\x06target\x18\x01 \x01(\v2E.org.openmcf.provider.alicloud.aliclouddnsrecord.v1.AliCloudDnsRecordR\x06target\x12^\n" +
+	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigR\x0eproviderConfigB\xa2\x03\n" +
 	"6com.org.openmcf.provider.alicloud.aliclouddnsrecord.v1B\x0fStackInputProtoP\x01Zhgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/aliclouddnsrecord/v1;aliclouddnsrecordv1\xa2\x02\x05OOPAA\xaa\x022Org.Openmcf.Provider.Alicloud.Aliclouddnsrecord.V1\xca\x022Org\\Openmcf\\Provider\\Alicloud\\Aliclouddnsrecord\\V1\xe2\x02>Org\\Openmcf\\Provider\\Alicloud\\Aliclouddnsrecord\\V1\\GPBMetadata\xea\x027Org::Openmcf::Provider::Alicloud::Aliclouddnsrecord::V1b\x06proto3"
 
 var (
@@ -101,13 +101,13 @@ func file_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_stack_input_proto_r
 
 var file_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_stack_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_stack_input_proto_goTypes = []any{
-	(*AlicloudDnsRecordStackInput)(nil),     // 0: org.openmcf.provider.alicloud.aliclouddnsrecord.v1.AlicloudDnsRecordStackInput
-	(*AlicloudDnsRecord)(nil),               // 1: org.openmcf.provider.alicloud.aliclouddnsrecord.v1.AlicloudDnsRecord
-	(*alicloud.AlicloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AlicloudProviderConfig
+	(*AliCloudDnsRecordStackInput)(nil),     // 0: org.openmcf.provider.alicloud.aliclouddnsrecord.v1.AliCloudDnsRecordStackInput
+	(*AliCloudDnsRecord)(nil),               // 1: org.openmcf.provider.alicloud.aliclouddnsrecord.v1.AliCloudDnsRecord
+	(*alicloud.AliCloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AliCloudProviderConfig
 }
 var file_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_stack_input_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.aliclouddnsrecord.v1.AlicloudDnsRecordStackInput.target:type_name -> org.openmcf.provider.alicloud.aliclouddnsrecord.v1.AlicloudDnsRecord
-	2, // 1: org.openmcf.provider.alicloud.aliclouddnsrecord.v1.AlicloudDnsRecordStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
+	1, // 0: org.openmcf.provider.alicloud.aliclouddnsrecord.v1.AliCloudDnsRecordStackInput.target:type_name -> org.openmcf.provider.alicloud.aliclouddnsrecord.v1.AliCloudDnsRecord
+	2, // 1: org.openmcf.provider.alicloud.aliclouddnsrecord.v1.AliCloudDnsRecordStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

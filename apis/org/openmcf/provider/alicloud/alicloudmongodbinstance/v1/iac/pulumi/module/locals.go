@@ -9,19 +9,19 @@ import (
 )
 
 type Locals struct {
-	AlicloudMongodbInstance *alicloudmongodbinstancev1.AlicloudMongodbInstance
+	AliCloudMongodbInstance *alicloudmongodbinstancev1.AliCloudMongodbInstance
 	Tags                    map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudmongodbinstancev1.AlicloudMongodbInstanceStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudmongodbinstancev1.AliCloudMongodbInstanceStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudMongodbInstance = stackInput.Target
+	locals.AliCloudMongodbInstance = stackInput.Target
 	target := stackInput.Target
 
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudMongodbInstance.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudMongodbInstance.String()),
 	}
 
 	if target.Metadata.Id != "" {
@@ -44,27 +44,27 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudmongodbinstancev1
 }
 
 func instanceName(locals *Locals) string {
-	if locals.AlicloudMongodbInstance.Spec.DbInstanceName != "" {
-		return locals.AlicloudMongodbInstance.Spec.DbInstanceName
+	if locals.AliCloudMongodbInstance.Spec.DbInstanceName != "" {
+		return locals.AliCloudMongodbInstance.Spec.DbInstanceName
 	}
-	return locals.AlicloudMongodbInstance.Metadata.Name
+	return locals.AliCloudMongodbInstance.Metadata.Name
 }
 
-func replicationFactor(spec *alicloudmongodbinstancev1.AlicloudMongodbInstanceSpec) int {
+func replicationFactor(spec *alicloudmongodbinstancev1.AliCloudMongodbInstanceSpec) int {
 	if spec.ReplicationFactor != nil {
 		return int(*spec.ReplicationFactor)
 	}
 	return 3
 }
 
-func storageEngine(spec *alicloudmongodbinstancev1.AlicloudMongodbInstanceSpec) string {
+func storageEngine(spec *alicloudmongodbinstancev1.AliCloudMongodbInstanceSpec) string {
 	if spec.StorageEngine != nil && *spec.StorageEngine != "" {
 		return *spec.StorageEngine
 	}
 	return "WiredTiger"
 }
 
-func instanceChargeType(spec *alicloudmongodbinstancev1.AlicloudMongodbInstanceSpec) string {
+func instanceChargeType(spec *alicloudmongodbinstancev1.AliCloudMongodbInstanceSpec) string {
 	if spec.InstanceChargeType != nil && *spec.InstanceChargeType != "" {
 		return *spec.InstanceChargeType
 	}

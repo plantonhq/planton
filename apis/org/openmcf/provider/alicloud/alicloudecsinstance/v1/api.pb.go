@@ -24,7 +24,7 @@ const (
 )
 
 // alicloud-ecs-instance
-type AlicloudEcsInstance struct {
+type AliCloudEcsInstance struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
@@ -33,27 +33,27 @@ type AlicloudEcsInstance struct {
 	// metadata
 	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
-	Spec *AlicloudEcsInstanceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec *AliCloudEcsInstanceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
-	Status        *AlicloudEcsInstanceStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *AliCloudEcsInstanceStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudEcsInstance) Reset() {
-	*x = AlicloudEcsInstance{}
+func (x *AliCloudEcsInstance) Reset() {
+	*x = AliCloudEcsInstance{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudEcsInstance) String() string {
+func (x *AliCloudEcsInstance) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudEcsInstance) ProtoMessage() {}
+func (*AliCloudEcsInstance) ProtoMessage() {}
 
-func (x *AlicloudEcsInstance) ProtoReflect() protoreflect.Message {
+func (x *AliCloudEcsInstance) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AlicloudEcsInstance) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudEcsInstance.ProtoReflect.Descriptor instead.
-func (*AlicloudEcsInstance) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudEcsInstance.ProtoReflect.Descriptor instead.
+func (*AliCloudEcsInstance) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudEcsInstance) GetApiVersion() string {
+func (x *AliCloudEcsInstance) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstance) GetKind() string {
+func (x *AliCloudEcsInstance) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AlicloudEcsInstance) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AliCloudEcsInstance) GetMetadata() *shared.CloudResourceMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *AlicloudEcsInstance) GetSpec() *AlicloudEcsInstanceSpec {
+func (x *AliCloudEcsInstance) GetSpec() *AliCloudEcsInstanceSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-func (x *AlicloudEcsInstance) GetStatus() *AlicloudEcsInstanceStatus {
+func (x *AliCloudEcsInstance) GetStatus() *AliCloudEcsInstanceStatus {
 	if x != nil {
 		return x.Status
 	}
@@ -106,28 +106,28 @@ func (x *AlicloudEcsInstance) GetStatus() *AlicloudEcsInstanceStatus {
 }
 
 // alicloud-ecs-instance status
-type AlicloudEcsInstanceStatus struct {
+type AliCloudEcsInstanceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// stack-outputs
-	Outputs       *AlicloudEcsInstanceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AliCloudEcsInstanceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudEcsInstanceStatus) Reset() {
-	*x = AlicloudEcsInstanceStatus{}
+func (x *AliCloudEcsInstanceStatus) Reset() {
+	*x = AliCloudEcsInstanceStatus{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudEcsInstanceStatus) String() string {
+func (x *AliCloudEcsInstanceStatus) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudEcsInstanceStatus) ProtoMessage() {}
+func (*AliCloudEcsInstanceStatus) ProtoMessage() {}
 
-func (x *AlicloudEcsInstanceStatus) ProtoReflect() protoreflect.Message {
+func (x *AliCloudEcsInstanceStatus) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,12 +139,12 @@ func (x *AlicloudEcsInstanceStatus) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudEcsInstanceStatus.ProtoReflect.Descriptor instead.
-func (*AlicloudEcsInstanceStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudEcsInstanceStatus.ProtoReflect.Descriptor instead.
+func (*AliCloudEcsInstanceStatus) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudEcsInstanceStatus) GetOutputs() *AlicloudEcsInstanceStackOutputs {
+func (x *AliCloudEcsInstanceStatus) GetOutputs() *AliCloudEcsInstanceStackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -156,17 +156,17 @@ var File_org_openmcf_provider_alicloud_alicloudecsinstance_v1_api_proto protoref
 const file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_api_proto_rawDesc = "" +
 	"\n" +
 	">org/openmcf/provider/alicloud/alicloudecsinstance/v1/api.proto\x124org.openmcf.provider.alicloud.alicloudecsinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a?org/openmcf/provider/alicloud/alicloudecsinstance/v1/spec.proto\x1aHorg/openmcf/provider/alicloud/alicloudecsinstance/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xa9\x03\n" +
-	"\x13AlicloudEcsInstance\x12?\n" +
+	"\x13AliCloudEcsInstance\x12?\n" +
 	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
-	"\x13AlicloudEcsInstanceR\x04kind\x12M\n" +
+	"\x13AliCloudEcsInstanceR\x04kind\x12M\n" +
 	"\bmetadata\x18\x03 \x01(\v2).org.openmcf.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
-	"\x04spec\x18\x04 \x01(\v2M.org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12g\n" +
-	"\x06status\x18\x05 \x01(\v2O.org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceStatusR\x06status\"\x8c\x01\n" +
-	"\x19AlicloudEcsInstanceStatus\x12o\n" +
-	"\aoutputs\x18\x01 \x01(\v2U.org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceStackOutputsR\aoutputsB\xa9\x03\n" +
+	"\x04spec\x18\x04 \x01(\v2M.org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12g\n" +
+	"\x06status\x18\x05 \x01(\v2O.org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceStatusR\x06status\"\x8c\x01\n" +
+	"\x19AliCloudEcsInstanceStatus\x12o\n" +
+	"\aoutputs\x18\x01 \x01(\v2U.org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceStackOutputsR\aoutputsB\xa9\x03\n" +
 	"8com.org.openmcf.provider.alicloud.alicloudecsinstance.v1B\bApiProtoP\x01Zlgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudecsinstance/v1;alicloudecsinstancev1\xa2\x02\x05OOPAA\xaa\x024Org.Openmcf.Provider.Alicloud.Alicloudecsinstance.V1\xca\x024Org\\Openmcf\\Provider\\Alicloud\\Alicloudecsinstance\\V1\xe2\x02@Org\\Openmcf\\Provider\\Alicloud\\Alicloudecsinstance\\V1\\GPBMetadata\xea\x029Org::Openmcf::Provider::Alicloud::Alicloudecsinstance::V1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_api_proto_rawDesc
 
 var file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_api_proto_goTypes = []any{
-	(*AlicloudEcsInstance)(nil),             // 0: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstance
-	(*AlicloudEcsInstanceStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceStatus
+	(*AliCloudEcsInstance)(nil),             // 0: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstance
+	(*AliCloudEcsInstanceStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceStatus
 	(*shared.CloudResourceMetadata)(nil),    // 2: org.openmcf.shared.CloudResourceMetadata
-	(*AlicloudEcsInstanceSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceSpec
-	(*AlicloudEcsInstanceStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceStackOutputs
+	(*AliCloudEcsInstanceSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceSpec
+	(*AliCloudEcsInstanceStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_api_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstance.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
-	3, // 1: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstance.spec:type_name -> org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceSpec
-	1, // 2: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstance.status:type_name -> org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceStatus
-	4, // 3: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudecsinstance.v1.AlicloudEcsInstanceStackOutputs
+	2, // 0: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstance.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
+	3, // 1: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstance.spec:type_name -> org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceSpec
+	1, // 2: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstance.status:type_name -> org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceStatus
+	4, // 3: org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsInstanceStackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

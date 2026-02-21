@@ -5,7 +5,7 @@ package org.openmcf.provider.alicloud.alicloudprivatednszone.v1;
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 
-// AlicloudPrivateDnsZoneSpec defines the configuration for an Alibaba Cloud
+// AliCloudPrivateDnsZoneSpec defines the configuration for an Alibaba Cloud
 // Private Zone (PrivateZone / PVTZ) that provides VPC-internal DNS resolution.
 //
 // A Private Zone is a private DNS hosted zone that resolves domain names
@@ -24,7 +24,7 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 // Provider resources:
 //   Terraform: alicloud_pvtz_zone + alicloud_pvtz_zone_attachment + alicloud_pvtz_zone_record
 //   Pulumi:    pvtz.Zone + pvtz.ZoneAttachment + pvtz.ZoneRecord
-message AlicloudPrivateDnsZoneSpec {
+message AliCloudPrivateDnsZoneSpec {
   // Alibaba Cloud region for provider initialization.
   // Private Zone is a global service, but the provider requires a region.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -56,24 +56,24 @@ message AlicloudPrivateDnsZoneSpec {
   //
   // Cross-region attachments are supported: set region_id on the attachment
   // to attach a VPC in a different region than spec.region.
-  repeated AlicloudPrivateDnsZoneVpcAttachment vpc_attachments = 5 [(buf.validate.field).repeated.min_items = 1];
+  repeated AliCloudPrivateDnsZoneVpcAttachment vpc_attachments = 5 [(buf.validate.field).repeated.min_items = 1];
 
   // DNS records within the private zone.
   // Each record maps a resource record name (rr) to a value (IP, hostname, etc.)
   // that is resolvable only within the attached VPCs.
-  repeated AlicloudPrivateDnsZoneRecord records = 6;
+  repeated AliCloudPrivateDnsZoneRecord records = 6;
 
   // Tags to apply to the private zone.
   map<string, string> tags = 7;
 }
 
-// AlicloudPrivateDnsZoneVpcAttachment defines a VPC to attach to the private zone.
+// AliCloudPrivateDnsZoneVpcAttachment defines a VPC to attach to the private zone.
 // Once attached, resources in the VPC can resolve records in this zone.
-message AlicloudPrivateDnsZoneVpcAttachment {
-  // VPC ID to attach. References an AlicloudVpc component's output.
+message AliCloudPrivateDnsZoneVpcAttachment {
+  // VPC ID to attach. References an AliCloudVpc component's output.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 1 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
   ];
 
@@ -83,12 +83,12 @@ message AlicloudPrivateDnsZoneVpcAttachment {
   string region_id = 2;
 }
 
-// AlicloudPrivateDnsZoneRecord defines a DNS record within the private zone.
+// AliCloudPrivateDnsZoneRecord defines a DNS record within the private zone.
 //
 // Supported record types for Private Zone: A, CNAME, MX, PTR, SRV, TXT.
 // Note: AAAA and NS are not supported in Alibaba Cloud Private Zone
 // (unlike public Alidns which supports a broader set of types).
-message AlicloudPrivateDnsZoneRecord {
+message AliCloudPrivateDnsZoneRecord {
   // Resource record name -- the hostname part under the zone.
   // Examples: "db" resolves as "db.internal.example.com" if zone is
   // "internal.example.com"; "@" for the zone apex.

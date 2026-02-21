@@ -16,7 +16,7 @@ func securityGroupRule(
 	sg *ecs.SecurityGroup,
 	sgName string,
 	index int,
-	rule *alicloudsecuritygroupv1.AlicloudSecurityGroupRule,
+	rule *alicloudsecuritygroupv1.AliCloudSecurityGroupRule,
 ) error {
 	resourceName := fmt.Sprintf("%s-rule-%d", sgName, index)
 

@@ -6,7 +6,7 @@ import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudApplicationLoadBalancerSpec defines the configuration for an Alibaba Cloud
+// AliCloudApplicationLoadBalancerSpec defines the configuration for an Alibaba Cloud
 // Application Load Balancer (ALB) with bundled server groups and listeners.
 //
 // ALB is a modern Layer 7 load balancer for HTTP, HTTPS, and QUIC traffic.
@@ -28,7 +28,7 @@ import "org/openmcf/shared/options/options.proto";
 // Provider resources:
 //   Terraform: alicloud_alb_load_balancer + alicloud_alb_server_group + alicloud_alb_listener
 //   Pulumi:    alb.LoadBalancer + alb.ServerGroup + alb.Listener
-message AlicloudApplicationLoadBalancerSpec {
+message AliCloudApplicationLoadBalancerSpec {
   // Alibaba Cloud region where the ALB will be created.
   // Must match the region of the VPC and VSwitches.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -41,7 +41,7 @@ message AlicloudApplicationLoadBalancerSpec {
   // and server groups must reside in the same VPC.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 2 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
   ];
 
@@ -84,7 +84,7 @@ message AlicloudApplicationLoadBalancerSpec {
   // Availability zone mappings. Each mapping places an ALB node in a zone
   // with a VSwitch for IP allocation. ALB requires at least 2 zones for
   // high availability.
-  repeated AlicloudApplicationLoadBalancerZoneMapping zone_mappings = 6 [
+  repeated AliCloudApplicationLoadBalancerZoneMapping zone_mappings = 6 [
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 2
   ];
@@ -96,7 +96,7 @@ message AlicloudApplicationLoadBalancerSpec {
   // Access log configuration for shipping ALB access logs to SLS (Log Service).
   // When configured, all listener access logs are sent to the specified
   // SLS log project and log store.
-  AlicloudApplicationLoadBalancerAccessLogConfig access_log_config = 8;
+  AliCloudApplicationLoadBalancerAccessLogConfig access_log_config = 8;
 
   // Tags to apply to the ALB resource.
   map<string, string> tags = 9;
@@ -107,17 +107,17 @@ message AlicloudApplicationLoadBalancerSpec {
   //
   // Server groups are created empty -- backend membership is managed
   // externally (by ACK ingress, SAE, or manual attachment).
-  repeated AlicloudApplicationLoadBalancerServerGroup server_groups = 10;
+  repeated AliCloudApplicationLoadBalancerServerGroup server_groups = 10;
 
   // Listeners that define how the ALB accepts incoming traffic.
   // Each listener binds to a port and protocol and forwards traffic to a
   // server group via default_actions. HTTPS listeners require a certificate.
-  repeated AlicloudApplicationLoadBalancerListener listeners = 11;
+  repeated AliCloudApplicationLoadBalancerListener listeners = 11;
 }
 
-// AlicloudApplicationLoadBalancerZoneMapping associates an availability zone with a VSwitch.
+// AliCloudApplicationLoadBalancerZoneMapping associates an availability zone with a VSwitch.
 // The ALB places a node in each mapped zone for high availability.
-message AlicloudApplicationLoadBalancerZoneMapping {
+message AliCloudApplicationLoadBalancerZoneMapping {
   // Availability zone ID within the region.
   // Examples: "cn-hangzhou-a", "cn-hangzhou-b", "us-west-1-a".
   string zone_id = 1 [
@@ -129,13 +129,13 @@ message AlicloudApplicationLoadBalancerZoneMapping {
   // this VSwitch. Must belong to the same VPC as the ALB's vpc_id.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 2 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
   ];
 }
 
-// AlicloudApplicationLoadBalancerAccessLogConfig configures access log delivery to SLS.
-message AlicloudApplicationLoadBalancerAccessLogConfig {
+// AliCloudApplicationLoadBalancerAccessLogConfig configures access log delivery to SLS.
+message AliCloudApplicationLoadBalancerAccessLogConfig {
   // SLS log project name. Must already exist in the same region as the ALB.
   string log_project = 1 [
     (buf.validate.field).required = true,
@@ -149,10 +149,10 @@ message AlicloudApplicationLoadBalancerAccessLogConfig {
   ];
 }
 
-// AlicloudApplicationLoadBalancerServerGroup defines a backend target group with health check
+// AliCloudApplicationLoadBalancerServerGroup defines a backend target group with health check
 // and session stickiness configuration. Server groups are created empty --
 // backend membership is managed externally.
-message AlicloudApplicationLoadBalancerServerGroup {
+message AliCloudApplicationLoadBalancerServerGroup {
   // Server group name. 2-128 characters; must start with a letter.
   // Used by listeners to reference this server group via
   // default_action_server_group_name.
@@ -188,15 +188,15 @@ message AlicloudApplicationLoadBalancerServerGroup {
   ];
 
   // Health check configuration. Required for every server group.
-  AlicloudApplicationLoadBalancerHealthCheckConfig health_check_config = 4 [(buf.validate.field).required = true];
+  AliCloudApplicationLoadBalancerHealthCheckConfig health_check_config = 4 [(buf.validate.field).required = true];
 
   // Session stickiness configuration. When enabled, requests from the same
   // client are routed to the same backend server.
-  AlicloudApplicationLoadBalancerStickySessionConfig sticky_session_config = 5;
+  AliCloudApplicationLoadBalancerStickySessionConfig sticky_session_config = 5;
 }
 
-// AlicloudApplicationLoadBalancerHealthCheckConfig defines how the ALB probes backend servers.
-message AlicloudApplicationLoadBalancerHealthCheckConfig {
+// AliCloudApplicationLoadBalancerHealthCheckConfig defines how the ALB probes backend servers.
+message AliCloudApplicationLoadBalancerHealthCheckConfig {
   // Whether health checks are enabled for this server group.
   // When disabled, all servers are considered healthy.
   bool health_check_enabled = 1;
@@ -289,8 +289,8 @@ message AlicloudApplicationLoadBalancerHealthCheckConfig {
   repeated string health_check_codes = 11;
 }
 
-// AlicloudApplicationLoadBalancerStickySessionConfig defines session stickiness behavior.
-message AlicloudApplicationLoadBalancerStickySessionConfig {
+// AliCloudApplicationLoadBalancerStickySessionConfig defines session stickiness behavior.
+message AliCloudApplicationLoadBalancerStickySessionConfig {
   // Whether session stickiness is enabled.
   bool sticky_session_enabled = 1;
 
@@ -318,9 +318,9 @@ message AlicloudApplicationLoadBalancerStickySessionConfig {
   ];
 }
 
-// AlicloudApplicationLoadBalancerListener defines how the ALB accepts incoming traffic on a
+// AliCloudApplicationLoadBalancerListener defines how the ALB accepts incoming traffic on a
 // specific port and protocol.
-message AlicloudApplicationLoadBalancerListener {
+message AliCloudApplicationLoadBalancerListener {
   // Port on which the listener accepts traffic.
   // Range: 1-65535. Common values: 80 (HTTP), 443 (HTTPS).
   int32 listener_port = 1 [

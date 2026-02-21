@@ -11,9 +11,9 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func TestAlicloudVpnGatewaySpec(t *testing.T) {
+func TestAliCloudVpnGatewaySpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
-	ginkgo.RunSpecs(t, "AlicloudVpnGatewaySpec Validation Tests")
+	ginkgo.RunSpecs(t, "AliCloudVpnGatewaySpec Validation Tests")
 }
 
 func strRef(val string) *fkv1.StringValueOrRef {
@@ -22,8 +22,8 @@ func strRef(val string) *fkv1.StringValueOrRef {
 	}
 }
 
-func validMinimalSpec() *AlicloudVpnGatewaySpec {
-	return &AlicloudVpnGatewaySpec{
+func validMinimalSpec() *AliCloudVpnGatewaySpec {
+	return &AliCloudVpnGatewaySpec{
 		Region:         "cn-hangzhou",
 		VpcId:          strRef("vpc-abc123"),
 		VswitchId:      strRef("vsw-abc123"),
@@ -32,16 +32,16 @@ func validMinimalSpec() *AlicloudVpnGatewaySpec {
 	}
 }
 
-func validMinimalInput() *AlicloudVpnGateway {
-	return &AlicloudVpnGateway{
+func validMinimalInput() *AliCloudVpnGateway {
+	return &AliCloudVpnGateway{
 		ApiVersion: "alicloud.openmcf.org/v1",
-		Kind:       "AlicloudVpnGateway",
+		Kind:       "AliCloudVpnGateway",
 		Metadata:   &shared.CloudResourceMetadata{Name: "test-vpn"},
 		Spec:       validMinimalSpec(),
 	}
 }
 
-var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
+var _ = ginkgo.Describe("AliCloudVpnGatewaySpec Validation Tests", func() {
 
 	ginkgo.Describe("valid input", func() {
 
@@ -65,7 +65,7 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should pass with a single connection using minimal fields", func() {
 			input := validMinimalInput()
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:              "office-hq",
 					CustomerGatewayIp: "203.0.113.1",
@@ -79,7 +79,7 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 		ginkgo.It("should pass with a fully-configured connection", func() {
 			input := validMinimalInput()
 			input.Spec.Bandwidth = 100
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:               "datacenter-primary",
 					CustomerGatewayIp:  "198.51.100.1",
@@ -89,7 +89,7 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 					EnableDpd:          proto.Bool(true),
 					EnableNatTraversal: proto.Bool(true),
 					EffectImmediately:  proto.Bool(true),
-					IkeConfig: &AlicloudIkeConfig{
+					IkeConfig: &AliCloudIkeConfig{
 						Psk:         "my-secret-key-123",
 						IkeVersion:  proto.String("ikev2"),
 						IkeMode:     proto.String("main"),
@@ -98,13 +98,13 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 						IkePfs:      proto.String("group14"),
 						IkeLifetime: proto.Int32(86400),
 					},
-					IpsecConfig: &AlicloudIpsecConfig{
+					IpsecConfig: &AliCloudIpsecConfig{
 						IpsecEncAlg:   proto.String("aes256"),
 						IpsecAuthAlg:  proto.String("sha256"),
 						IpsecPfs:      proto.String("group14"),
 						IpsecLifetime: proto.Int32(86400),
 					},
-					HealthCheckConfig: &AlicloudVpnHealthCheckConfig{
+					HealthCheckConfig: &AliCloudVpnHealthCheckConfig{
 						Enable:   proto.Bool(true),
 						Sip:      "10.0.0.1",
 						Dip:      "192.168.1.1",
@@ -119,7 +119,7 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 		ginkgo.It("should pass with multiple connections", func() {
 			input := validMinimalInput()
 			input.Spec.Bandwidth = 200
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:              "office-hq",
 					CustomerGatewayIp: "203.0.113.1",
@@ -146,13 +146,13 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should pass with IKEv1 and aggressive mode", func() {
 			input := validMinimalInput()
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:              "legacy-site",
 					CustomerGatewayIp: "198.51.100.5",
 					LocalSubnets:      []string{"10.0.0.0/8"},
 					RemoteSubnets:     []string{"172.16.0.0/12"},
-					IkeConfig: &AlicloudIkeConfig{
+					IkeConfig: &AliCloudIkeConfig{
 						IkeVersion:  proto.String("ikev1"),
 						IkeMode:     proto.String("aggressive"),
 						IkeEncAlg:   proto.String("3des"),
@@ -167,13 +167,13 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should pass with IPsec PFS disabled", func() {
 			input := validMinimalInput()
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:              "no-pfs-site",
 					CustomerGatewayIp: "198.51.100.10",
 					LocalSubnets:      []string{"10.0.0.0/8"},
 					RemoteSubnets:     []string{"172.16.0.0/12"},
-					IpsecConfig: &AlicloudIpsecConfig{
+					IpsecConfig: &AliCloudIpsecConfig{
 						IpsecPfs: proto.String("disabled"),
 					},
 				},
@@ -183,16 +183,16 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should pass with zero lifetime (no expiry)", func() {
 			input := validMinimalInput()
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:              "no-rekey",
 					CustomerGatewayIp: "198.51.100.20",
 					LocalSubnets:      []string{"10.0.0.0/8"},
 					RemoteSubnets:     []string{"172.16.0.0/12"},
-					IkeConfig: &AlicloudIkeConfig{
+					IkeConfig: &AliCloudIkeConfig{
 						IkeLifetime: proto.Int32(0),
 					},
-					IpsecConfig: &AlicloudIpsecConfig{
+					IpsecConfig: &AliCloudIpsecConfig{
 						IpsecLifetime: proto.Int32(0),
 					},
 				},
@@ -273,7 +273,7 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when connection name is too short", func() {
 			input := validMinimalInput()
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:              "x",
 					CustomerGatewayIp: "203.0.113.1",
@@ -286,7 +286,7 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when customer_gateway_ip is empty", func() {
 			input := validMinimalInput()
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:          "missing-ip",
 					LocalSubnets:  []string{"10.0.0.0/8"},
@@ -298,7 +298,7 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when local_subnets is empty", func() {
 			input := validMinimalInput()
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:              "no-local",
 					CustomerGatewayIp: "203.0.113.1",
@@ -311,7 +311,7 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when remote_subnets is empty", func() {
 			input := validMinimalInput()
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:              "no-remote",
 					CustomerGatewayIp: "203.0.113.1",
@@ -324,13 +324,13 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when ike_version is invalid", func() {
 			input := validMinimalInput()
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:              "bad-ike",
 					CustomerGatewayIp: "203.0.113.1",
 					LocalSubnets:      []string{"10.0.0.0/8"},
 					RemoteSubnets:     []string{"192.168.0.0/16"},
-					IkeConfig: &AlicloudIkeConfig{
+					IkeConfig: &AliCloudIkeConfig{
 						IkeVersion: proto.String("ikev3"),
 					},
 				},
@@ -340,13 +340,13 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when ike_mode is invalid", func() {
 			input := validMinimalInput()
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:              "bad-mode",
 					CustomerGatewayIp: "203.0.113.1",
 					LocalSubnets:      []string{"10.0.0.0/8"},
 					RemoteSubnets:     []string{"192.168.0.0/16"},
-					IkeConfig: &AlicloudIkeConfig{
+					IkeConfig: &AliCloudIkeConfig{
 						IkeMode: proto.String("hybrid"),
 					},
 				},
@@ -356,13 +356,13 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when ike_enc_alg is invalid", func() {
 			input := validMinimalInput()
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:              "bad-enc",
 					CustomerGatewayIp: "203.0.113.1",
 					LocalSubnets:      []string{"10.0.0.0/8"},
 					RemoteSubnets:     []string{"192.168.0.0/16"},
-					IkeConfig: &AlicloudIkeConfig{
+					IkeConfig: &AliCloudIkeConfig{
 						IkeEncAlg: proto.String("blowfish"),
 					},
 				},
@@ -372,13 +372,13 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when ike_auth_alg is invalid", func() {
 			input := validMinimalInput()
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:              "bad-auth",
 					CustomerGatewayIp: "203.0.113.1",
 					LocalSubnets:      []string{"10.0.0.0/8"},
 					RemoteSubnets:     []string{"192.168.0.0/16"},
-					IkeConfig: &AlicloudIkeConfig{
+					IkeConfig: &AliCloudIkeConfig{
 						IkeAuthAlg: proto.String("sha3"),
 					},
 				},
@@ -388,13 +388,13 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when ike_pfs is invalid", func() {
 			input := validMinimalInput()
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:              "bad-pfs",
 					CustomerGatewayIp: "203.0.113.1",
 					LocalSubnets:      []string{"10.0.0.0/8"},
 					RemoteSubnets:     []string{"192.168.0.0/16"},
-					IkeConfig: &AlicloudIkeConfig{
+					IkeConfig: &AliCloudIkeConfig{
 						IkePfs: proto.String("group99"),
 					},
 				},
@@ -404,13 +404,13 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when ike_lifetime exceeds maximum", func() {
 			input := validMinimalInput()
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:              "bad-lifetime",
 					CustomerGatewayIp: "203.0.113.1",
 					LocalSubnets:      []string{"10.0.0.0/8"},
 					RemoteSubnets:     []string{"192.168.0.0/16"},
-					IkeConfig: &AlicloudIkeConfig{
+					IkeConfig: &AliCloudIkeConfig{
 						IkeLifetime: proto.Int32(86401),
 					},
 				},
@@ -420,13 +420,13 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when ipsec_enc_alg is invalid", func() {
 			input := validMinimalInput()
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:              "bad-ipsec-enc",
 					CustomerGatewayIp: "203.0.113.1",
 					LocalSubnets:      []string{"10.0.0.0/8"},
 					RemoteSubnets:     []string{"192.168.0.0/16"},
-					IpsecConfig: &AlicloudIpsecConfig{
+					IpsecConfig: &AliCloudIpsecConfig{
 						IpsecEncAlg: proto.String("rc4"),
 					},
 				},
@@ -436,13 +436,13 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when ipsec_pfs is invalid", func() {
 			input := validMinimalInput()
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:              "bad-ipsec-pfs",
 					CustomerGatewayIp: "203.0.113.1",
 					LocalSubnets:      []string{"10.0.0.0/8"},
 					RemoteSubnets:     []string{"192.168.0.0/16"},
-					IpsecConfig: &AlicloudIpsecConfig{
+					IpsecConfig: &AliCloudIpsecConfig{
 						IpsecPfs: proto.String("group99"),
 					},
 				},
@@ -452,13 +452,13 @@ var _ = ginkgo.Describe("AlicloudVpnGatewaySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when ipsec_lifetime exceeds maximum", func() {
 			input := validMinimalInput()
-			input.Spec.Connections = []*AlicloudVpnConnection{
+			input.Spec.Connections = []*AliCloudVpnConnection{
 				{
 					Name:              "bad-ipsec-life",
 					CustomerGatewayIp: "203.0.113.1",
 					LocalSubnets:      []string{"10.0.0.0/8"},
 					RemoteSubnets:     []string{"192.168.0.0/16"},
-					IpsecConfig: &AlicloudIpsecConfig{
+					IpsecConfig: &AliCloudIpsecConfig{
 						IpsecLifetime: proto.Int32(100000),
 					},
 				},

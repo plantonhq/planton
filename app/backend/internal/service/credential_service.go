@@ -12,11 +12,11 @@ import (
 
 	"connectrpc.com/connect"
 	credentialv1 "github.com/plantonhq/openmcf/apis/org/openmcf/app/credential/v1"
+	alicloudv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud"
 	auth0v1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0"
 	awsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
 	azurev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure"
 	gcpv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
-	alicloudv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud"
 	ociv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci"
 	openstackv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack"
 	scalewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway"
@@ -67,7 +67,7 @@ func (s *CredentialService) Create(
 	case credentialv1.Credential_SCALEWAY:
 		return s.createScalewayCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
 	case credentialv1.Credential_ALICLOUD:
-		return s.createAlicloudCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
+		return s.createAliCloudCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
 	case credentialv1.Credential_OCI:
 		return s.createOciCredential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)
 	default:
@@ -575,7 +575,7 @@ func (s *CredentialService) Get(
 			protoCredential.UpdatedAt = timestamppb.New(scwCred.UpdatedAt)
 		}
 	case "alicloud":
-		aliCred, err := convertBsonToAlicloudCredential(doc)
+		aliCred, err := convertBsonToAliCloudCredential(doc)
 		if err != nil {
 			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to convert credential: %w", err))
 		}
@@ -647,7 +647,7 @@ func (s *CredentialService) Update(
 	case credentialv1.Credential_SCALEWAY:
 		return s.updateScalewayCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
 	case credentialv1.Credential_ALICLOUD:
-		return s.updateAlicloudCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
+		return s.updateAliCloudCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
 	case credentialv1.Credential_OCI:
 		return s.updateOciCredential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)
 	default:
@@ -1510,8 +1510,8 @@ func convertBsonToOpenStackCredential(doc bson.M) (*models.OpenStackCredential, 
 	return cred, nil
 }
 
-// createAlicloudCredential creates an Alibaba Cloud credential.
-func (s *CredentialService) createAlicloudCredential(
+// createAliCloudCredential creates an Alibaba Cloud credential.
+func (s *CredentialService) createAliCloudCredential(
 	ctx context.Context,
 	name string,
 	providerConfig *credentialv1.CredentialProviderConfig,
@@ -1530,7 +1530,7 @@ func (s *CredentialService) createAlicloudCredential(
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}
 
-	createdCredential, err := s.credentialRepo.CreateAlicloud(ctx, credModel)
+	createdCredential, err := s.credentialRepo.CreateAliCloud(ctx, credModel)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create Alibaba Cloud credential: %w", err))
 	}
@@ -1553,8 +1553,8 @@ func (s *CredentialService) createAlicloudCredential(
 	}), nil
 }
 
-// updateAlicloudCredential updates an Alibaba Cloud credential.
-func (s *CredentialService) updateAlicloudCredential(
+// updateAliCloudCredential updates an Alibaba Cloud credential.
+func (s *CredentialService) updateAliCloudCredential(
 	ctx context.Context,
 	id, name string,
 	providerConfig *credentialv1.CredentialProviderConfig,
@@ -1572,7 +1572,7 @@ func (s *CredentialService) updateAlicloudCredential(
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
 	}
 
-	updatedCredential, err := s.credentialRepo.UpdateAlicloud(ctx, id, credModel)
+	updatedCredential, err := s.credentialRepo.UpdateAliCloud(ctx, id, credModel)
 	if err != nil {
 		if err.Error() == fmt.Sprintf("Alibaba Cloud credential with ID '%s' not found", id) {
 			return nil, connect.NewError(connect.CodeNotFound, err)
@@ -1598,10 +1598,10 @@ func (s *CredentialService) updateAlicloudCredential(
 	}), nil
 }
 
-// alicloudProtoToModel converts an AlicloudProviderConfig proto to the database model.
+// alicloudProtoToModel converts an AliCloudProviderConfig proto to the database model.
 // Switches on the AuthenticationType enum to extract fields from the correct sub-message.
-func alicloudProtoToModel(name string, cfg *alicloudv1.AlicloudProviderConfig) (*models.AlicloudCredential, error) {
-	cred := &models.AlicloudCredential{
+func alicloudProtoToModel(name string, cfg *alicloudv1.AliCloudProviderConfig) (*models.AliCloudCredential, error) {
+	cred := &models.AliCloudCredential{
 		Name:        name,
 		Region:      cfg.Region,
 		AccountId:   cfg.AccountId,
@@ -1720,9 +1720,9 @@ func alicloudProtoToModel(name string, cfg *alicloudv1.AlicloudProviderConfig) (
 	return cred, nil
 }
 
-// alicloudModelToProtoConfig converts an AlicloudCredential model back to proto CredentialProviderConfig.
-func alicloudModelToProtoConfig(cred *models.AlicloudCredential) *credentialv1.CredentialProviderConfig {
-	cfg := &alicloudv1.AlicloudProviderConfig{
+// alicloudModelToProtoConfig converts an AliCloudCredential model back to proto CredentialProviderConfig.
+func alicloudModelToProtoConfig(cred *models.AliCloudCredential) *credentialv1.CredentialProviderConfig {
+	cfg := &alicloudv1.AliCloudProviderConfig{
 		Region:      cred.Region,
 		AccountId:   cred.AccountId,
 		AccountType: cred.AccountType,
@@ -1731,25 +1731,25 @@ func alicloudModelToProtoConfig(cred *models.AlicloudCredential) *credentialv1.C
 	switch cred.AuthMethod {
 	case "static_credentials":
 		cfg.AuthenticationType = alicloudv1.AuthenticationType_static_credentials
-		cfg.StaticCredentials = &alicloudv1.AlicloudStaticCredentials{
+		cfg.StaticCredentials = &alicloudv1.AliCloudStaticCredentials{
 			AccessKey: cred.AccessKey,
 			SecretKey: cred.SecretKey,
 		}
 	case "sts_token":
 		cfg.AuthenticationType = alicloudv1.AuthenticationType_sts_token
-		cfg.StsToken = &alicloudv1.AlicloudStsTokenCredentials{
+		cfg.StsToken = &alicloudv1.AliCloudStsTokenCredentials{
 			AccessKey:     cred.AccessKey,
 			SecretKey:     cred.SecretKey,
 			SecurityToken: cred.SecurityToken,
 		}
 	case "ecs_role":
 		cfg.AuthenticationType = alicloudv1.AuthenticationType_ecs_role
-		cfg.EcsRole = &alicloudv1.AlicloudEcsRoleCredentials{
+		cfg.EcsRole = &alicloudv1.AliCloudEcsRoleCredentials{
 			EcsRoleName: cred.EcsRoleName,
 		}
 	case "assume_role":
 		cfg.AuthenticationType = alicloudv1.AuthenticationType_assume_role
-		cfg.AssumeRole = &alicloudv1.AlicloudAssumeRoleCredentials{
+		cfg.AssumeRole = &alicloudv1.AliCloudAssumeRoleCredentials{
 			AccessKey:         cred.AccessKey,
 			SecretKey:         cred.SecretKey,
 			RoleArn:           cred.RoleArn,
@@ -1760,7 +1760,7 @@ func alicloudModelToProtoConfig(cred *models.AlicloudCredential) *credentialv1.C
 		}
 	case "assume_role_with_oidc":
 		cfg.AuthenticationType = alicloudv1.AuthenticationType_assume_role_with_oidc
-		cfg.AssumeRoleWithOidc = &alicloudv1.AlicloudAssumeRoleWithOidcCredentials{
+		cfg.AssumeRoleWithOidc = &alicloudv1.AliCloudAssumeRoleWithOidcCredentials{
 			OidcProviderArn:   cred.OidcProviderArn,
 			RoleArn:           cred.RoleArn,
 			OidcToken:         cred.OidcToken,
@@ -1771,13 +1771,13 @@ func alicloudModelToProtoConfig(cred *models.AlicloudCredential) *credentialv1.C
 		}
 	case "shared_credentials":
 		cfg.AuthenticationType = alicloudv1.AuthenticationType_shared_credentials
-		cfg.SharedCredentials = &alicloudv1.AlicloudSharedCredentials{
+		cfg.SharedCredentials = &alicloudv1.AliCloudSharedCredentials{
 			CredentialsFile: cred.CredentialsFile,
 			Profile:         cred.Profile,
 		}
 	case "sidecar_credentials":
 		cfg.AuthenticationType = alicloudv1.AuthenticationType_sidecar_credentials
-		cfg.SidecarCredentials = &alicloudv1.AlicloudSidecarCredentials{
+		cfg.SidecarCredentials = &alicloudv1.AliCloudSidecarCredentials{
 			CredentialsUri: cred.CredentialsUri,
 		}
 	}
@@ -1789,7 +1789,7 @@ func alicloudModelToProtoConfig(cred *models.AlicloudCredential) *credentialv1.C
 	}
 }
 
-func convertBsonToAlicloudCredential(doc bson.M) (*models.AlicloudCredential, error) {
+func convertBsonToAliCloudCredential(doc bson.M) (*models.AliCloudCredential, error) {
 	id, ok := doc["_id"].(primitive.ObjectID)
 	if !ok {
 		return nil, fmt.Errorf("invalid _id field")
@@ -1807,7 +1807,7 @@ func convertBsonToAlicloudCredential(doc bson.M) (*models.AlicloudCredential, er
 		updatedAt = t
 	}
 
-	cred := &models.AlicloudCredential{
+	cred := &models.AliCloudCredential{
 		ID:        id,
 		Name:      doc["name"].(string),
 		CreatedAt: createdAt,

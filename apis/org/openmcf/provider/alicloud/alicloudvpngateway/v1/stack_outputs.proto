@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudvpngateway.v1;
 
-// AlicloudVpnGatewayStackOutputs captures the outputs from deploying an
+// AliCloudVpnGatewayStackOutputs captures the outputs from deploying an
 // Alibaba Cloud VPN Gateway with its bundled customer gateways and VPN
 // connections.
-message AlicloudVpnGatewayStackOutputs {
+message AliCloudVpnGatewayStackOutputs {
   // The VPN Gateway ID assigned by Alibaba Cloud (e.g., "vpn-xxxxx").
   string vpn_gateway_id = 1;
 

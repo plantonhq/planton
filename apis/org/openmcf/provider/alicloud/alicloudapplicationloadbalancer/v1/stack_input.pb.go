@@ -23,30 +23,30 @@ const (
 )
 
 // alicloud-application-load-balancer stack-input
-type AlicloudApplicationLoadBalancerStackInput struct {
+type AliCloudApplicationLoadBalancerStackInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target cloud-resource
-	Target *AlicloudApplicationLoadBalancer `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
+	Target *AliCloudApplicationLoadBalancer `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
-	ProviderConfig *alicloud.AlicloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
+	ProviderConfig *alicloud.AliCloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudApplicationLoadBalancerStackInput) Reset() {
-	*x = AlicloudApplicationLoadBalancerStackInput{}
+func (x *AliCloudApplicationLoadBalancerStackInput) Reset() {
+	*x = AliCloudApplicationLoadBalancerStackInput{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudApplicationLoadBalancerStackInput) String() string {
+func (x *AliCloudApplicationLoadBalancerStackInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudApplicationLoadBalancerStackInput) ProtoMessage() {}
+func (*AliCloudApplicationLoadBalancerStackInput) ProtoMessage() {}
 
-func (x *AlicloudApplicationLoadBalancerStackInput) ProtoReflect() protoreflect.Message {
+func (x *AliCloudApplicationLoadBalancerStackInput) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AlicloudApplicationLoadBalancerStackInput) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudApplicationLoadBalancerStackInput.ProtoReflect.Descriptor instead.
-func (*AlicloudApplicationLoadBalancerStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudApplicationLoadBalancerStackInput.ProtoReflect.Descriptor instead.
+func (*AliCloudApplicationLoadBalancerStackInput) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudApplicationLoadBalancerStackInput) GetTarget() *AlicloudApplicationLoadBalancer {
+func (x *AliCloudApplicationLoadBalancerStackInput) GetTarget() *AliCloudApplicationLoadBalancer {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AlicloudApplicationLoadBalancerStackInput) GetProviderConfig() *alicloud.AlicloudProviderConfig {
+func (x *AliCloudApplicationLoadBalancerStackInput) GetProviderConfig() *alicloud.AliCloudProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,9 +82,9 @@ var File_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack_
 const file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack_input_proto_rawDesc = "" +
 	"\n" +
 	"Rorg/openmcf/provider/alicloud/alicloudapplicationloadbalancer/v1/stack_input.proto\x12@org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1\x1aJorg/openmcf/provider/alicloud/alicloudapplicationloadbalancer/v1/api.proto\x1a,org/openmcf/provider/alicloud/provider.proto\"\x86\x02\n" +
-	")AlicloudApplicationLoadBalancerStackInput\x12y\n" +
-	"\x06target\x18\x01 \x01(\v2a.org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerR\x06target\x12^\n" +
-	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigR\x0eproviderConfigB\x85\x04\n" +
+	")AliCloudApplicationLoadBalancerStackInput\x12y\n" +
+	"\x06target\x18\x01 \x01(\v2a.org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerR\x06target\x12^\n" +
+	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigR\x0eproviderConfigB\x85\x04\n" +
 	"Dcom.org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1B\x0fStackInputProtoP\x01Z\x84\x01github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudapplicationloadbalancer/v1;alicloudapplicationloadbalancerv1\xa2\x02\x05OOPAA\xaa\x02@Org.Openmcf.Provider.Alicloud.Alicloudapplicationloadbalancer.V1\xca\x02@Org\\Openmcf\\Provider\\Alicloud\\Alicloudapplicationloadbalancer\\V1\xe2\x02LOrg\\Openmcf\\Provider\\Alicloud\\Alicloudapplicationloadbalancer\\V1\\GPBMetadata\xea\x02EOrg::Openmcf::Provider::Alicloud::Alicloudapplicationloadbalancer::V1b\x06proto3"
 
 var (
@@ -101,13 +101,13 @@ func file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack
 
 var file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack_input_proto_goTypes = []any{
-	(*AlicloudApplicationLoadBalancerStackInput)(nil), // 0: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerStackInput
-	(*AlicloudApplicationLoadBalancer)(nil),           // 1: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancer
-	(*alicloud.AlicloudProviderConfig)(nil),           // 2: org.openmcf.provider.alicloud.AlicloudProviderConfig
+	(*AliCloudApplicationLoadBalancerStackInput)(nil), // 0: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerStackInput
+	(*AliCloudApplicationLoadBalancer)(nil),           // 1: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancer
+	(*alicloud.AliCloudProviderConfig)(nil),           // 2: org.openmcf.provider.alicloud.AliCloudProviderConfig
 }
 var file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_stack_input_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancer
-	2, // 1: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
+	1, // 0: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancer
+	2, // 1: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -6,11 +6,11 @@ import (
 )
 
 type Locals struct {
-	AlicloudDnsRecord *aliclouddnsrecordv1.AlicloudDnsRecord
+	AliCloudDnsRecord *aliclouddnsrecordv1.AliCloudDnsRecord
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *aliclouddnsrecordv1.AlicloudDnsRecordStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *aliclouddnsrecordv1.AliCloudDnsRecordStackInput) *Locals {
 	return &Locals{
-		AlicloudDnsRecord: stackInput.Target,
+		AliCloudDnsRecord: stackInput.Target,
 	}
 }

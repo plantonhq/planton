@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudprivatednszone.v1;
 
-// AlicloudPrivateDnsZoneStackOutputs captures the outputs from deploying an
+// AliCloudPrivateDnsZoneStackOutputs captures the outputs from deploying an
 // Alibaba Cloud Private Zone.
-message AlicloudPrivateDnsZoneStackOutputs {
+message AliCloudPrivateDnsZoneStackOutputs {
   // The Private Zone ID assigned by Alibaba Cloud.
   string zone_id = 1;
 

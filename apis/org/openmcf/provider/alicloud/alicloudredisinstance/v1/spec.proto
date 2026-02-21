@@ -6,7 +6,7 @@ import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudRedisInstanceSpec defines the configuration for an Alibaba Cloud
+// AliCloudRedisInstanceSpec defines the configuration for an Alibaba Cloud
 // Redis (KVStore) instance.
 //
 // Redis is a managed in-memory key-value store used for caching, session
@@ -23,7 +23,7 @@ import "org/openmcf/shared/options/options.proto";
 // Provider resources:
 //   Terraform: alicloud_kvstore_instance
 //   Pulumi:    kvstore.Instance
-message AlicloudRedisInstanceSpec {
+message AliCloudRedisInstanceSpec {
   // Alibaba Cloud region where the Redis instance will be created.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
   string region = 1 [
@@ -35,7 +35,7 @@ message AlicloudRedisInstanceSpec {
   // VPC and availability zone from the VSwitch.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 2 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
   ];
 

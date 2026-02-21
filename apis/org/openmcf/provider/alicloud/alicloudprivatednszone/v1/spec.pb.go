@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudPrivateDnsZoneSpec defines the configuration for an Alibaba Cloud
+// AliCloudPrivateDnsZoneSpec defines the configuration for an Alibaba Cloud
 // Private Zone (PrivateZone / PVTZ) that provides VPC-internal DNS resolution.
 //
 // A Private Zone is a private DNS hosted zone that resolves domain names
@@ -43,7 +43,7 @@ const (
 //
 //	Terraform: alicloud_pvtz_zone + alicloud_pvtz_zone_attachment + alicloud_pvtz_zone_record
 //	Pulumi:    pvtz.Zone + pvtz.ZoneAttachment + pvtz.ZoneRecord
-type AlicloudPrivateDnsZoneSpec struct {
+type AliCloudPrivateDnsZoneSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region for provider initialization.
 	// Private Zone is a global service, but the provider requires a region.
@@ -65,31 +65,31 @@ type AlicloudPrivateDnsZoneSpec struct {
 	//
 	// Cross-region attachments are supported: set region_id on the attachment
 	// to attach a VPC in a different region than spec.region.
-	VpcAttachments []*AlicloudPrivateDnsZoneVpcAttachment `protobuf:"bytes,5,rep,name=vpc_attachments,json=vpcAttachments,proto3" json:"vpc_attachments,omitempty"`
+	VpcAttachments []*AliCloudPrivateDnsZoneVpcAttachment `protobuf:"bytes,5,rep,name=vpc_attachments,json=vpcAttachments,proto3" json:"vpc_attachments,omitempty"`
 	// DNS records within the private zone.
 	// Each record maps a resource record name (rr) to a value (IP, hostname, etc.)
 	// that is resolvable only within the attached VPCs.
-	Records []*AlicloudPrivateDnsZoneRecord `protobuf:"bytes,6,rep,name=records,proto3" json:"records,omitempty"`
+	Records []*AliCloudPrivateDnsZoneRecord `protobuf:"bytes,6,rep,name=records,proto3" json:"records,omitempty"`
 	// Tags to apply to the private zone.
 	Tags          map[string]string `protobuf:"bytes,7,rep,name=tags,proto3" json:"tags,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudPrivateDnsZoneSpec) Reset() {
-	*x = AlicloudPrivateDnsZoneSpec{}
+func (x *AliCloudPrivateDnsZoneSpec) Reset() {
+	*x = AliCloudPrivateDnsZoneSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudPrivateDnsZoneSpec) String() string {
+func (x *AliCloudPrivateDnsZoneSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudPrivateDnsZoneSpec) ProtoMessage() {}
+func (*AliCloudPrivateDnsZoneSpec) ProtoMessage() {}
 
-func (x *AlicloudPrivateDnsZoneSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudPrivateDnsZoneSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -101,65 +101,65 @@ func (x *AlicloudPrivateDnsZoneSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudPrivateDnsZoneSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudPrivateDnsZoneSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudPrivateDnsZoneSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudPrivateDnsZoneSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudPrivateDnsZoneSpec) GetRegion() string {
+func (x *AliCloudPrivateDnsZoneSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudPrivateDnsZoneSpec) GetZoneName() string {
+func (x *AliCloudPrivateDnsZoneSpec) GetZoneName() string {
 	if x != nil {
 		return x.ZoneName
 	}
 	return ""
 }
 
-func (x *AlicloudPrivateDnsZoneSpec) GetRemark() string {
+func (x *AliCloudPrivateDnsZoneSpec) GetRemark() string {
 	if x != nil {
 		return x.Remark
 	}
 	return ""
 }
 
-func (x *AlicloudPrivateDnsZoneSpec) GetResourceGroupId() string {
+func (x *AliCloudPrivateDnsZoneSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudPrivateDnsZoneSpec) GetVpcAttachments() []*AlicloudPrivateDnsZoneVpcAttachment {
+func (x *AliCloudPrivateDnsZoneSpec) GetVpcAttachments() []*AliCloudPrivateDnsZoneVpcAttachment {
 	if x != nil {
 		return x.VpcAttachments
 	}
 	return nil
 }
 
-func (x *AlicloudPrivateDnsZoneSpec) GetRecords() []*AlicloudPrivateDnsZoneRecord {
+func (x *AliCloudPrivateDnsZoneSpec) GetRecords() []*AliCloudPrivateDnsZoneRecord {
 	if x != nil {
 		return x.Records
 	}
 	return nil
 }
 
-func (x *AlicloudPrivateDnsZoneSpec) GetTags() map[string]string {
+func (x *AliCloudPrivateDnsZoneSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-// AlicloudPrivateDnsZoneVpcAttachment defines a VPC to attach to the private zone.
+// AliCloudPrivateDnsZoneVpcAttachment defines a VPC to attach to the private zone.
 // Once attached, resources in the VPC can resolve records in this zone.
-type AlicloudPrivateDnsZoneVpcAttachment struct {
+type AliCloudPrivateDnsZoneVpcAttachment struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// VPC ID to attach. References an AlicloudVpc component's output.
+	// VPC ID to attach. References an AliCloudVpc component's output.
 	VpcId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
 	// Region of the VPC. Defaults to the spec.region when omitted.
 	// Set this explicitly when attaching a VPC in a different region than
@@ -169,20 +169,20 @@ type AlicloudPrivateDnsZoneVpcAttachment struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudPrivateDnsZoneVpcAttachment) Reset() {
-	*x = AlicloudPrivateDnsZoneVpcAttachment{}
+func (x *AliCloudPrivateDnsZoneVpcAttachment) Reset() {
+	*x = AliCloudPrivateDnsZoneVpcAttachment{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudPrivateDnsZoneVpcAttachment) String() string {
+func (x *AliCloudPrivateDnsZoneVpcAttachment) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudPrivateDnsZoneVpcAttachment) ProtoMessage() {}
+func (*AliCloudPrivateDnsZoneVpcAttachment) ProtoMessage() {}
 
-func (x *AlicloudPrivateDnsZoneVpcAttachment) ProtoReflect() protoreflect.Message {
+func (x *AliCloudPrivateDnsZoneVpcAttachment) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -194,31 +194,31 @@ func (x *AlicloudPrivateDnsZoneVpcAttachment) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudPrivateDnsZoneVpcAttachment.ProtoReflect.Descriptor instead.
-func (*AlicloudPrivateDnsZoneVpcAttachment) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudPrivateDnsZoneVpcAttachment.ProtoReflect.Descriptor instead.
+func (*AliCloudPrivateDnsZoneVpcAttachment) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudPrivateDnsZoneVpcAttachment) GetVpcId() *v1.StringValueOrRef {
+func (x *AliCloudPrivateDnsZoneVpcAttachment) GetVpcId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VpcId
 	}
 	return nil
 }
 
-func (x *AlicloudPrivateDnsZoneVpcAttachment) GetRegionId() string {
+func (x *AliCloudPrivateDnsZoneVpcAttachment) GetRegionId() string {
 	if x != nil {
 		return x.RegionId
 	}
 	return ""
 }
 
-// AlicloudPrivateDnsZoneRecord defines a DNS record within the private zone.
+// AliCloudPrivateDnsZoneRecord defines a DNS record within the private zone.
 //
 // Supported record types for Private Zone: A, CNAME, MX, PTR, SRV, TXT.
 // Note: AAAA and NS are not supported in Alibaba Cloud Private Zone
 // (unlike public Alidns which supports a broader set of types).
-type AlicloudPrivateDnsZoneRecord struct {
+type AliCloudPrivateDnsZoneRecord struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Resource record name -- the hostname part under the zone.
 	// Examples: "db" resolves as "db.internal.example.com" if zone is
@@ -247,20 +247,20 @@ type AlicloudPrivateDnsZoneRecord struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudPrivateDnsZoneRecord) Reset() {
-	*x = AlicloudPrivateDnsZoneRecord{}
+func (x *AliCloudPrivateDnsZoneRecord) Reset() {
+	*x = AliCloudPrivateDnsZoneRecord{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudPrivateDnsZoneRecord) String() string {
+func (x *AliCloudPrivateDnsZoneRecord) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudPrivateDnsZoneRecord) ProtoMessage() {}
+func (*AliCloudPrivateDnsZoneRecord) ProtoMessage() {}
 
-func (x *AlicloudPrivateDnsZoneRecord) ProtoReflect() protoreflect.Message {
+func (x *AliCloudPrivateDnsZoneRecord) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -272,47 +272,47 @@ func (x *AlicloudPrivateDnsZoneRecord) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudPrivateDnsZoneRecord.ProtoReflect.Descriptor instead.
-func (*AlicloudPrivateDnsZoneRecord) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudPrivateDnsZoneRecord.ProtoReflect.Descriptor instead.
+func (*AliCloudPrivateDnsZoneRecord) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AlicloudPrivateDnsZoneRecord) GetRr() string {
+func (x *AliCloudPrivateDnsZoneRecord) GetRr() string {
 	if x != nil {
 		return x.Rr
 	}
 	return ""
 }
 
-func (x *AlicloudPrivateDnsZoneRecord) GetType() string {
+func (x *AliCloudPrivateDnsZoneRecord) GetType() string {
 	if x != nil {
 		return x.Type
 	}
 	return ""
 }
 
-func (x *AlicloudPrivateDnsZoneRecord) GetValue() string {
+func (x *AliCloudPrivateDnsZoneRecord) GetValue() string {
 	if x != nil {
 		return x.Value
 	}
 	return ""
 }
 
-func (x *AlicloudPrivateDnsZoneRecord) GetTtl() int32 {
+func (x *AliCloudPrivateDnsZoneRecord) GetTtl() int32 {
 	if x != nil {
 		return x.Ttl
 	}
 	return 0
 }
 
-func (x *AlicloudPrivateDnsZoneRecord) GetPriority() int32 {
+func (x *AliCloudPrivateDnsZoneRecord) GetPriority() int32 {
 	if x != nil {
 		return x.Priority
 	}
 	return 0
 }
 
-func (x *AlicloudPrivateDnsZoneRecord) GetRemark() string {
+func (x *AliCloudPrivateDnsZoneRecord) GetRemark() string {
 	if x != nil {
 		return x.Remark
 	}
@@ -324,23 +324,23 @@ var File_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_spec_proto prot
 const file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"Borg/openmcf/provider/alicloud/alicloudprivatednszone/v1/spec.proto\x127org.openmcf.provider.alicloud.alicloudprivatednszone.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xdf\x04\n" +
-	"\x1aAlicloudPrivateDnsZoneSpec\x12\"\n" +
+	"\x1aAliCloudPrivateDnsZoneSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12*\n" +
 	"\tzone_name\x18\x02 \x01(\tB\r\xbaH\n" +
 	"\xc8\x01\x01r\x05\x10\x01\x18\xfd\x01R\bzoneName\x12\x16\n" +
 	"\x06remark\x18\x03 \x01(\tR\x06remark\x12*\n" +
 	"\x11resource_group_id\x18\x04 \x01(\tR\x0fresourceGroupId\x12\x8f\x01\n" +
-	"\x0fvpc_attachments\x18\x05 \x03(\v2\\.org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneVpcAttachmentB\b\xbaH\x05\x92\x01\x02\b\x01R\x0evpcAttachments\x12o\n" +
-	"\arecords\x18\x06 \x03(\v2U.org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneRecordR\arecords\x12q\n" +
-	"\x04tags\x18\a \x03(\v2].org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneSpec.TagsEntryR\x04tags\x1a7\n" +
+	"\x0fvpc_attachments\x18\x05 \x03(\v2\\.org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneVpcAttachmentB\b\xbaH\x05\x92\x01\x02\b\x01R\x0evpcAttachments\x12o\n" +
+	"\arecords\x18\x06 \x03(\v2U.org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneRecordR\arecords\x12q\n" +
+	"\x04tags\x18\a \x03(\v2].org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneSpec.TagsEntryR\x04tags\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xb3\x01\n" +
-	"#AlicloudPrivateDnsZoneVpcAttachment\x12o\n" +
+	"#AliCloudPrivateDnsZoneVpcAttachment\x12o\n" +
 	"\x06vpc_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xcc\x17\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12\x1b\n" +
 	"\tregion_id\x18\x02 \x01(\tR\bregionId\"\xc1\x02\n" +
-	"\x1cAlicloudPrivateDnsZoneRecord\x12\x1a\n" +
+	"\x1cAliCloudPrivateDnsZoneRecord\x12\x1a\n" +
 	"\x02rr\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x02rr\x12\x9c\x01\n" +
 	"\x04type\x18\x02 \x01(\tB\x87\x01\xbaH\x83\x01\xba\x01}\n" +
@@ -366,17 +366,17 @@ func file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_spec_proto_raw
 
 var file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_spec_proto_goTypes = []any{
-	(*AlicloudPrivateDnsZoneSpec)(nil),          // 0: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneSpec
-	(*AlicloudPrivateDnsZoneVpcAttachment)(nil), // 1: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneVpcAttachment
-	(*AlicloudPrivateDnsZoneRecord)(nil),        // 2: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneRecord
-	nil,                                         // 3: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneSpec.TagsEntry
+	(*AliCloudPrivateDnsZoneSpec)(nil),          // 0: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneSpec
+	(*AliCloudPrivateDnsZoneVpcAttachment)(nil), // 1: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneVpcAttachment
+	(*AliCloudPrivateDnsZoneRecord)(nil),        // 2: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneRecord
+	nil,                                         // 3: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneSpec.TagsEntry
 	(*v1.StringValueOrRef)(nil),                 // 4: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudprivatednszone_v1_spec_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneSpec.vpc_attachments:type_name -> org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneVpcAttachment
-	2, // 1: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneSpec.records:type_name -> org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneRecord
-	3, // 2: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneSpec.TagsEntry
-	4, // 3: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AlicloudPrivateDnsZoneVpcAttachment.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	1, // 0: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneSpec.vpc_attachments:type_name -> org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneVpcAttachment
+	2, // 1: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneSpec.records:type_name -> org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneRecord
+	3, // 2: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneSpec.TagsEntry
+	4, // 3: org.openmcf.provider.alicloud.alicloudprivatednszone.v1.AliCloudPrivateDnsZoneVpcAttachment.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

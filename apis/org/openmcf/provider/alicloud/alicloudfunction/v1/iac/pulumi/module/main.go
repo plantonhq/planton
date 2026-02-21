@@ -8,9 +8,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *alicloudfunctionv1.AlicloudFunctionStackInput) error {
+func Resources(ctx *pulumi.Context, stackInput *alicloudfunctionv1.AliCloudFunctionStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
-	spec := locals.AlicloudFunction.Spec
+	spec := locals.AliCloudFunction.Spec
 
 	alicloudProvider, err := alicloud.NewProvider(ctx, "alicloud", &alicloud.ProviderArgs{
 		Region: pulumi.String(spec.Region),
@@ -86,7 +86,7 @@ func Resources(ctx *pulumi.Context, stackInput *alicloudfunctionv1.AlicloudFunct
 	return nil
 }
 
-func codeArgs(code *alicloudfunctionv1.AlicloudFunctionCode) fc.V3FunctionCodePtrInput {
+func codeArgs(code *alicloudfunctionv1.AliCloudFunctionCode) fc.V3FunctionCodePtrInput {
 	return &fc.V3FunctionCodeArgs{
 		OssBucketName: optionalString(code.OssBucketName),
 		OssObjectName: optionalString(code.OssObjectName),
@@ -95,7 +95,7 @@ func codeArgs(code *alicloudfunctionv1.AlicloudFunctionCode) fc.V3FunctionCodePt
 	}
 }
 
-func vpcConfigArgs(cfg *alicloudfunctionv1.AlicloudFunctionVpcConfig) fc.V3FunctionVpcConfigPtrInput {
+func vpcConfigArgs(cfg *alicloudfunctionv1.AliCloudFunctionVpcConfig) fc.V3FunctionVpcConfigPtrInput {
 	vswitchIds := make(pulumi.StringArray, 0, len(cfg.VswitchIds))
 	for _, ref := range cfg.VswitchIds {
 		vswitchIds = append(vswitchIds, pulumi.String(ref.GetValue()))
@@ -116,7 +116,7 @@ func vpcConfigArgs(cfg *alicloudfunctionv1.AlicloudFunctionVpcConfig) fc.V3Funct
 	return vpcArgs
 }
 
-func logConfigArgs(cfg *alicloudfunctionv1.AlicloudFunctionLogConfig) fc.V3FunctionLogConfigPtrInput {
+func logConfigArgs(cfg *alicloudfunctionv1.AliCloudFunctionLogConfig) fc.V3FunctionLogConfigPtrInput {
 	logArgs := &fc.V3FunctionLogConfigArgs{
 		Logstore: optionalString(cfg.Logstore),
 	}
@@ -140,7 +140,7 @@ func logConfigArgs(cfg *alicloudfunctionv1.AlicloudFunctionLogConfig) fc.V3Funct
 	return logArgs
 }
 
-func customContainerConfigArgs(cfg *alicloudfunctionv1.AlicloudFunctionCustomContainerConfig) fc.V3FunctionCustomContainerConfigPtrInput {
+func customContainerConfigArgs(cfg *alicloudfunctionv1.AliCloudFunctionCustomContainerConfig) fc.V3FunctionCustomContainerConfigPtrInput {
 	containerArgs := &fc.V3FunctionCustomContainerConfigArgs{
 		Image:       optionalString(cfg.Image),
 		Entrypoints: pulumi.ToStringArray(cfg.Entrypoint),
@@ -158,7 +158,7 @@ func customContainerConfigArgs(cfg *alicloudfunctionv1.AlicloudFunctionCustomCon
 	return containerArgs
 }
 
-func containerHealthCheckArgs(hc *alicloudfunctionv1.AlicloudFunctionHealthCheckConfig) fc.V3FunctionCustomContainerConfigHealthCheckConfigPtrInput {
+func containerHealthCheckArgs(hc *alicloudfunctionv1.AliCloudFunctionHealthCheckConfig) fc.V3FunctionCustomContainerConfigHealthCheckConfigPtrInput {
 	args := &fc.V3FunctionCustomContainerConfigHealthCheckConfigArgs{
 		HttpGetUrl: optionalString(hc.HttpGetUrl),
 	}
@@ -182,7 +182,7 @@ func containerHealthCheckArgs(hc *alicloudfunctionv1.AlicloudFunctionHealthCheck
 	return args
 }
 
-func customRuntimeConfigArgs(cfg *alicloudfunctionv1.AlicloudFunctionCustomRuntimeConfig) fc.V3FunctionCustomRuntimeConfigPtrInput {
+func customRuntimeConfigArgs(cfg *alicloudfunctionv1.AliCloudFunctionCustomRuntimeConfig) fc.V3FunctionCustomRuntimeConfigPtrInput {
 	rtArgs := &fc.V3FunctionCustomRuntimeConfigArgs{
 		Commands: pulumi.ToStringArray(cfg.Command),
 		Args:     pulumi.ToStringArray(cfg.Args),
@@ -199,7 +199,7 @@ func customRuntimeConfigArgs(cfg *alicloudfunctionv1.AlicloudFunctionCustomRunti
 	return rtArgs
 }
 
-func runtimeHealthCheckArgs(hc *alicloudfunctionv1.AlicloudFunctionHealthCheckConfig) fc.V3FunctionCustomRuntimeConfigHealthCheckConfigPtrInput {
+func runtimeHealthCheckArgs(hc *alicloudfunctionv1.AliCloudFunctionHealthCheckConfig) fc.V3FunctionCustomRuntimeConfigHealthCheckConfigPtrInput {
 	args := &fc.V3FunctionCustomRuntimeConfigHealthCheckConfigArgs{
 		HttpGetUrl: optionalString(hc.HttpGetUrl),
 	}
@@ -223,7 +223,7 @@ func runtimeHealthCheckArgs(hc *alicloudfunctionv1.AlicloudFunctionHealthCheckCo
 	return args
 }
 
-func instanceLifecycleConfigArgs(cfg *alicloudfunctionv1.AlicloudFunctionInstanceLifecycleConfig) fc.V3FunctionInstanceLifecycleConfigPtrInput {
+func instanceLifecycleConfigArgs(cfg *alicloudfunctionv1.AliCloudFunctionInstanceLifecycleConfig) fc.V3FunctionInstanceLifecycleConfigPtrInput {
 	lcArgs := &fc.V3FunctionInstanceLifecycleConfigArgs{}
 
 	if cfg.Initializer != nil {
@@ -250,7 +250,7 @@ func instanceLifecycleConfigArgs(cfg *alicloudfunctionv1.AlicloudFunctionInstanc
 	return lcArgs
 }
 
-func nasConfigArgs(cfg *alicloudfunctionv1.AlicloudFunctionNasConfig) fc.V3FunctionNasConfigPtrInput {
+func nasConfigArgs(cfg *alicloudfunctionv1.AliCloudFunctionNasConfig) fc.V3FunctionNasConfigPtrInput {
 	nasArgs := &fc.V3FunctionNasConfigArgs{}
 
 	if cfg.UserId != nil {
@@ -279,7 +279,7 @@ func nasConfigArgs(cfg *alicloudfunctionv1.AlicloudFunctionNasConfig) fc.V3Funct
 	return nasArgs
 }
 
-func gpuConfigArgs(cfg *alicloudfunctionv1.AlicloudFunctionGpuConfig) fc.V3FunctionGpuConfigPtrInput {
+func gpuConfigArgs(cfg *alicloudfunctionv1.AliCloudFunctionGpuConfig) fc.V3FunctionGpuConfigPtrInput {
 	return &fc.V3FunctionGpuConfigArgs{
 		GpuMemorySize: pulumi.IntPtr(int(cfg.GpuMemorySize)),
 		GpuType:       optionalString(cfg.GpuType),

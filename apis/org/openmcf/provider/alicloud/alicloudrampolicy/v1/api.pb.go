@@ -24,7 +24,7 @@ const (
 )
 
 // alicloud-ram-policy
-type AlicloudRamPolicy struct {
+type AliCloudRamPolicy struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
@@ -33,27 +33,27 @@ type AlicloudRamPolicy struct {
 	// metadata
 	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
-	Spec *AlicloudRamPolicySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec *AliCloudRamPolicySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
-	Status        *AlicloudRamPolicyStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *AliCloudRamPolicyStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudRamPolicy) Reset() {
-	*x = AlicloudRamPolicy{}
+func (x *AliCloudRamPolicy) Reset() {
+	*x = AliCloudRamPolicy{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRamPolicy) String() string {
+func (x *AliCloudRamPolicy) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRamPolicy) ProtoMessage() {}
+func (*AliCloudRamPolicy) ProtoMessage() {}
 
-func (x *AlicloudRamPolicy) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRamPolicy) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AlicloudRamPolicy) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRamPolicy.ProtoReflect.Descriptor instead.
-func (*AlicloudRamPolicy) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRamPolicy.ProtoReflect.Descriptor instead.
+func (*AliCloudRamPolicy) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudRamPolicy) GetApiVersion() string {
+func (x *AliCloudRamPolicy) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *AlicloudRamPolicy) GetKind() string {
+func (x *AliCloudRamPolicy) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AlicloudRamPolicy) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AliCloudRamPolicy) GetMetadata() *shared.CloudResourceMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *AlicloudRamPolicy) GetSpec() *AlicloudRamPolicySpec {
+func (x *AliCloudRamPolicy) GetSpec() *AliCloudRamPolicySpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-func (x *AlicloudRamPolicy) GetStatus() *AlicloudRamPolicyStatus {
+func (x *AliCloudRamPolicy) GetStatus() *AliCloudRamPolicyStatus {
 	if x != nil {
 		return x.Status
 	}
@@ -106,28 +106,28 @@ func (x *AlicloudRamPolicy) GetStatus() *AlicloudRamPolicyStatus {
 }
 
 // alicloud-ram-policy status
-type AlicloudRamPolicyStatus struct {
+type AliCloudRamPolicyStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// stack-outputs
-	Outputs       *AlicloudRamPolicyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AliCloudRamPolicyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudRamPolicyStatus) Reset() {
-	*x = AlicloudRamPolicyStatus{}
+func (x *AliCloudRamPolicyStatus) Reset() {
+	*x = AliCloudRamPolicyStatus{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRamPolicyStatus) String() string {
+func (x *AliCloudRamPolicyStatus) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRamPolicyStatus) ProtoMessage() {}
+func (*AliCloudRamPolicyStatus) ProtoMessage() {}
 
-func (x *AlicloudRamPolicyStatus) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRamPolicyStatus) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,12 +139,12 @@ func (x *AlicloudRamPolicyStatus) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRamPolicyStatus.ProtoReflect.Descriptor instead.
-func (*AlicloudRamPolicyStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRamPolicyStatus.ProtoReflect.Descriptor instead.
+func (*AliCloudRamPolicyStatus) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudRamPolicyStatus) GetOutputs() *AlicloudRamPolicyStackOutputs {
+func (x *AliCloudRamPolicyStatus) GetOutputs() *AliCloudRamPolicyStackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -156,17 +156,17 @@ var File_org_openmcf_provider_alicloud_alicloudrampolicy_v1_api_proto protorefle
 const file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"<org/openmcf/provider/alicloud/alicloudrampolicy/v1/api.proto\x122org.openmcf.provider.alicloud.alicloudrampolicy.v1\x1a\x1bbuf/validate/validate.proto\x1a=org/openmcf/provider/alicloud/alicloudrampolicy/v1/spec.proto\x1aForg/openmcf/provider/alicloud/alicloudrampolicy/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\x9d\x03\n" +
-	"\x11AlicloudRamPolicy\x12?\n" +
+	"\x11AliCloudRamPolicy\x12?\n" +
 	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
-	"\x11AlicloudRamPolicyR\x04kind\x12M\n" +
+	"\x11AliCloudRamPolicyR\x04kind\x12M\n" +
 	"\bmetadata\x18\x03 \x01(\v2).org.openmcf.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
-	"\x04spec\x18\x04 \x01(\v2I.org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
-	"\x06status\x18\x05 \x01(\v2K.org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicyStatusR\x06status\"\x86\x01\n" +
-	"\x17AlicloudRamPolicyStatus\x12k\n" +
-	"\aoutputs\x18\x01 \x01(\v2Q.org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicyStackOutputsR\aoutputsB\x9b\x03\n" +
+	"\x04spec\x18\x04 \x01(\v2I.org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
+	"\x06status\x18\x05 \x01(\v2K.org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicyStatusR\x06status\"\x86\x01\n" +
+	"\x17AliCloudRamPolicyStatus\x12k\n" +
+	"\aoutputs\x18\x01 \x01(\v2Q.org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicyStackOutputsR\aoutputsB\x9b\x03\n" +
 	"6com.org.openmcf.provider.alicloud.alicloudrampolicy.v1B\bApiProtoP\x01Zhgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudrampolicy/v1;alicloudrampolicyv1\xa2\x02\x05OOPAA\xaa\x022Org.Openmcf.Provider.Alicloud.Alicloudrampolicy.V1\xca\x022Org\\Openmcf\\Provider\\Alicloud\\Alicloudrampolicy\\V1\xe2\x02>Org\\Openmcf\\Provider\\Alicloud\\Alicloudrampolicy\\V1\\GPBMetadata\xea\x027Org::Openmcf::Provider::Alicloud::Alicloudrampolicy::V1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_api_proto_rawDescGZ
 
 var file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_api_proto_goTypes = []any{
-	(*AlicloudRamPolicy)(nil),             // 0: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicy
-	(*AlicloudRamPolicyStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicyStatus
+	(*AliCloudRamPolicy)(nil),             // 0: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicy
+	(*AliCloudRamPolicyStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicyStatus
 	(*shared.CloudResourceMetadata)(nil),  // 2: org.openmcf.shared.CloudResourceMetadata
-	(*AlicloudRamPolicySpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicySpec
-	(*AlicloudRamPolicyStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicyStackOutputs
+	(*AliCloudRamPolicySpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicySpec
+	(*AliCloudRamPolicyStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicyStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudrampolicy_v1_api_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicy.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
-	3, // 1: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicy.spec:type_name -> org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicySpec
-	1, // 2: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicy.status:type_name -> org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicyStatus
-	4, // 3: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicyStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudrampolicy.v1.AlicloudRamPolicyStackOutputs
+	2, // 0: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicy.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
+	3, // 1: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicy.spec:type_name -> org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicySpec
+	1, // 2: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicy.status:type_name -> org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicyStatus
+	4, // 3: org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicyStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudrampolicy.v1.AliCloudRamPolicyStackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

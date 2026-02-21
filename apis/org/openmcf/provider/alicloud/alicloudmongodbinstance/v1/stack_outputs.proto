@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudmongodbinstance.v1;
 
-// AlicloudMongodbInstanceStackOutputs captures the outputs from deploying an
+// AliCloudMongodbInstanceStackOutputs captures the outputs from deploying an
 // Alibaba Cloud MongoDB replica-set instance.
-message AlicloudMongodbInstanceStackOutputs {
+message AliCloudMongodbInstanceStackOutputs {
   // The MongoDB instance ID assigned by Alibaba Cloud (e.g., "dds-xxxxx").
   string instance_id = 1;
 

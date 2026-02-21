@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudRamRoleSpec defines the configuration for an Alibaba Cloud
+// AliCloudRamRoleSpec defines the configuration for an Alibaba Cloud
 // Resource Access Management (RAM) role with optional policy attachments.
 //
 // A RAM role is a virtual identity that does not have permanent credentials.
@@ -34,7 +34,7 @@ const (
 //
 // Policy attachments are bundled (per DD07) because a role without policies
 // grants zero permissions and is non-functional.
-type AlicloudRamRoleSpec struct {
+type AliCloudRamRoleSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region for provider endpoint configuration.
 	// RAM is a global service, but the provider requires a region for API routing.
@@ -66,25 +66,25 @@ type AlicloudRamRoleSpec struct {
 	Force *bool `protobuf:"varint,7,opt,name=force,proto3,oneof" json:"force,omitempty"`
 	// Policies to attach to this role. Each attachment grants the role a set
 	// of permissions defined by either a system-managed or custom policy.
-	PolicyAttachments []*AlicloudRamRolePolicyAttachment `protobuf:"bytes,8,rep,name=policy_attachments,json=policyAttachments,proto3" json:"policy_attachments,omitempty"`
+	PolicyAttachments []*AliCloudRamRolePolicyAttachment `protobuf:"bytes,8,rep,name=policy_attachments,json=policyAttachments,proto3" json:"policy_attachments,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AlicloudRamRoleSpec) Reset() {
-	*x = AlicloudRamRoleSpec{}
+func (x *AliCloudRamRoleSpec) Reset() {
+	*x = AliCloudRamRoleSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudramrole_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRamRoleSpec) String() string {
+func (x *AliCloudRamRoleSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRamRoleSpec) ProtoMessage() {}
+func (*AliCloudRamRoleSpec) ProtoMessage() {}
 
-func (x *AlicloudRamRoleSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRamRoleSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudramrole_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -96,69 +96,69 @@ func (x *AlicloudRamRoleSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRamRoleSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudRamRoleSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRamRoleSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudRamRoleSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudramrole_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudRamRoleSpec) GetRegion() string {
+func (x *AliCloudRamRoleSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudRamRoleSpec) GetRoleName() string {
+func (x *AliCloudRamRoleSpec) GetRoleName() string {
 	if x != nil {
 		return x.RoleName
 	}
 	return ""
 }
 
-func (x *AlicloudRamRoleSpec) GetDescription() string {
+func (x *AliCloudRamRoleSpec) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *AlicloudRamRoleSpec) GetAssumeRolePolicyDocument() string {
+func (x *AliCloudRamRoleSpec) GetAssumeRolePolicyDocument() string {
 	if x != nil {
 		return x.AssumeRolePolicyDocument
 	}
 	return ""
 }
 
-func (x *AlicloudRamRoleSpec) GetMaxSessionDuration() int32 {
+func (x *AliCloudRamRoleSpec) GetMaxSessionDuration() int32 {
 	if x != nil && x.MaxSessionDuration != nil {
 		return *x.MaxSessionDuration
 	}
 	return 0
 }
 
-func (x *AlicloudRamRoleSpec) GetTags() map[string]string {
+func (x *AliCloudRamRoleSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-func (x *AlicloudRamRoleSpec) GetForce() bool {
+func (x *AliCloudRamRoleSpec) GetForce() bool {
 	if x != nil && x.Force != nil {
 		return *x.Force
 	}
 	return false
 }
 
-func (x *AlicloudRamRoleSpec) GetPolicyAttachments() []*AlicloudRamRolePolicyAttachment {
+func (x *AliCloudRamRoleSpec) GetPolicyAttachments() []*AliCloudRamRolePolicyAttachment {
 	if x != nil {
 		return x.PolicyAttachments
 	}
 	return nil
 }
 
-// AlicloudRamRolePolicyAttachment defines a policy to attach to the RAM role.
-type AlicloudRamRolePolicyAttachment struct {
+// AliCloudRamRolePolicyAttachment defines a policy to attach to the RAM role.
+type AliCloudRamRolePolicyAttachment struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the policy to attach.
 	// System policies: "AliyunECSFullAccess", "AliyunOSSReadOnlyAccess", etc.
@@ -172,20 +172,20 @@ type AlicloudRamRolePolicyAttachment struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudRamRolePolicyAttachment) Reset() {
-	*x = AlicloudRamRolePolicyAttachment{}
+func (x *AliCloudRamRolePolicyAttachment) Reset() {
+	*x = AliCloudRamRolePolicyAttachment{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudramrole_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRamRolePolicyAttachment) String() string {
+func (x *AliCloudRamRolePolicyAttachment) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRamRolePolicyAttachment) ProtoMessage() {}
+func (*AliCloudRamRolePolicyAttachment) ProtoMessage() {}
 
-func (x *AlicloudRamRolePolicyAttachment) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRamRolePolicyAttachment) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudramrole_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -197,19 +197,19 @@ func (x *AlicloudRamRolePolicyAttachment) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRamRolePolicyAttachment.ProtoReflect.Descriptor instead.
-func (*AlicloudRamRolePolicyAttachment) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRamRolePolicyAttachment.ProtoReflect.Descriptor instead.
+func (*AliCloudRamRolePolicyAttachment) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudramrole_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudRamRolePolicyAttachment) GetPolicyName() string {
+func (x *AliCloudRamRolePolicyAttachment) GetPolicyName() string {
 	if x != nil {
 		return x.PolicyName
 	}
 	return ""
 }
 
-func (x *AlicloudRamRolePolicyAttachment) GetPolicyType() string {
+func (x *AliCloudRamRolePolicyAttachment) GetPolicyType() string {
 	if x != nil && x.PolicyType != nil {
 		return *x.PolicyType
 	}
@@ -221,7 +221,7 @@ var File_org_openmcf_provider_alicloud_alicloudramrole_v1_spec_proto protoreflec
 const file_org_openmcf_provider_alicloud_alicloudramrole_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	";org/openmcf/provider/alicloud/alicloudramrole/v1/spec.proto\x120org.openmcf.provider.alicloud.alicloudramrole.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\x88\x05\n" +
-	"\x13AlicloudRamRoleSpec\x12\"\n" +
+	"\x13AliCloudRamRoleSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12)\n" +
 	"\trole_name\x18\x02 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x01\x18@R\broleName\x12 \n" +
@@ -229,15 +229,15 @@ const file_org_openmcf_provider_alicloud_alicloudramrole_v1_spec_proto_rawDesc =
 	"\x1bassume_role_policy_document\x18\x04 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x18assumeRolePolicyDocument\x12K\n" +
 	"\x14max_session_duration\x18\x05 \x01(\x05B\x14\xbaH\t\x1a\a\x18\xc0\xd1\x02(\x90\x1c\x8a\xa6\x1d\x043600H\x00R\x12maxSessionDuration\x88\x01\x01\x12c\n" +
-	"\x04tags\x18\x06 \x03(\v2O.org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleSpec.TagsEntryR\x04tags\x12$\n" +
+	"\x04tags\x18\x06 \x03(\v2O.org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleSpec.TagsEntryR\x04tags\x12$\n" +
 	"\x05force\x18\a \x01(\bB\t\x8a\xa6\x1d\x05falseH\x01R\x05force\x88\x01\x01\x12\x80\x01\n" +
-	"\x12policy_attachments\x18\b \x03(\v2Q.org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRolePolicyAttachmentR\x11policyAttachments\x1a7\n" +
+	"\x12policy_attachments\x18\b \x03(\v2Q.org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRolePolicyAttachmentR\x11policyAttachments\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x17\n" +
 	"\x15_max_session_durationB\b\n" +
 	"\x06_force\"\xa5\x01\n" +
-	"\x1fAlicloudRamRolePolicyAttachment\x12+\n" +
+	"\x1fAliCloudRamRolePolicyAttachment\x12+\n" +
 	"\vpolicy_name\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\n" +
 	"policyName\x12E\n" +
@@ -260,13 +260,13 @@ func file_org_openmcf_provider_alicloud_alicloudramrole_v1_spec_proto_rawDescGZI
 
 var file_org_openmcf_provider_alicloud_alicloudramrole_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_org_openmcf_provider_alicloud_alicloudramrole_v1_spec_proto_goTypes = []any{
-	(*AlicloudRamRoleSpec)(nil),             // 0: org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleSpec
-	(*AlicloudRamRolePolicyAttachment)(nil), // 1: org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRolePolicyAttachment
-	nil,                                     // 2: org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleSpec.TagsEntry
+	(*AliCloudRamRoleSpec)(nil),             // 0: org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleSpec
+	(*AliCloudRamRolePolicyAttachment)(nil), // 1: org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRolePolicyAttachment
+	nil,                                     // 2: org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleSpec.TagsEntry
 }
 var file_org_openmcf_provider_alicloud_alicloudramrole_v1_spec_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleSpec.TagsEntry
-	1, // 1: org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleSpec.policy_attachments:type_name -> org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRolePolicyAttachment
+	2, // 0: org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleSpec.TagsEntry
+	1, // 1: org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleSpec.policy_attachments:type_name -> org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRolePolicyAttachment
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

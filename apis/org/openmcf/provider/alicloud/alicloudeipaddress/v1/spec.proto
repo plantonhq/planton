@@ -5,7 +5,7 @@ package org.openmcf.provider.alicloud.alicloudeipaddress.v1;
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudEipAddressSpec defines the configuration for an Alibaba Cloud
+// AliCloudEipAddressSpec defines the configuration for an Alibaba Cloud
 // Elastic IP Address (EIP).
 //
 // An EIP is a static, public IPv4 address that can be associated with ECS
@@ -15,13 +15,13 @@ import "org/openmcf/shared/options/options.proto";
 // re-associated with another without changing the address.
 //
 // This component creates a standalone EIP. Association with a target resource
-// is handled by the downstream component (e.g., AlicloudNatGateway includes
+// is handled by the downstream component (e.g., AliCloudNatGateway includes
 // an eip_id field for EIP association).
 //
 // Provider resources:
 //   Terraform: alicloud_eip_address
 //   Pulumi:    ecs.EipAddress
-message AlicloudEipAddressSpec {
+message AliCloudEipAddressSpec {
   // Alibaba Cloud region where the EIP will be allocated.
   // The EIP can only be associated with resources in the same region.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".

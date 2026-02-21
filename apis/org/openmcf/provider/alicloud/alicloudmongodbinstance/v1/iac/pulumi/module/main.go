@@ -8,9 +8,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *alicloudmongodbinstancev1.AlicloudMongodbInstanceStackInput) error {
+func Resources(ctx *pulumi.Context, stackInput *alicloudmongodbinstancev1.AliCloudMongodbInstanceStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
-	spec := locals.AlicloudMongodbInstance.Spec
+	spec := locals.AliCloudMongodbInstance.Spec
 
 	alicloudProvider, err := alicloud.NewProvider(ctx, "alicloud", &alicloud.ProviderArgs{
 		Region: pulumi.String(spec.Region),

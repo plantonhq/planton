@@ -9,23 +9,23 @@ import (
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
 )
 
-func TestAlicloudStorageBucketSpec(t *testing.T) {
+func TestAliCloudStorageBucketSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
-	ginkgo.RunSpecs(t, "AlicloudStorageBucketSpec Validation Tests")
+	ginkgo.RunSpecs(t, "AliCloudStorageBucketSpec Validation Tests")
 }
 
-var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
+var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 	ginkgo.Describe("valid input", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudStorageBucket",
+				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-bucket",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					Region:     "cn-hangzhou",
 					BucketName: "my-test-bucket",
 				},
@@ -35,31 +35,31 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with all optional fields populated", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudStorageBucket",
+				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "full-config-bucket",
 					Org:  "my-org",
 					Env:  "production",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					Region:            "cn-shanghai",
 					BucketName:        "prod-assets-bucket",
 					Acl:               strPtr("public-read"),
 					StorageClass:      strPtr("IA"),
 					RedundancyType:    strPtr("ZRS"),
 					VersioningEnabled: true,
-					ServerSideEncryption: &AlicloudStorageBucketEncryption{
+					ServerSideEncryption: &AliCloudStorageBucketEncryption{
 						SseAlgorithm:   "KMS",
 						KmsMasterKeyId: "kms-key-123",
 					},
-					LifecycleRules: []*AlicloudStorageBucketLifecycleRule{
+					LifecycleRules: []*AliCloudStorageBucketLifecycleRule{
 						{
 							Prefix:         "logs/",
 							Enabled:        true,
 							ExpirationDays: 90,
-							Transitions: []*AlicloudStorageBucketLifecycleTransition{
+							Transitions: []*AliCloudStorageBucketLifecycleTransition{
 								{Days: 30, StorageClass: "IA"},
 								{Days: 60, StorageClass: "Archive"},
 							},
@@ -67,7 +67,7 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 							NoncurrentVersionExpirationDays: 30,
 						},
 					},
-					CorsRules: []*AlicloudStorageBucketCorsRule{
+					CorsRules: []*AliCloudStorageBucketCorsRule{
 						{
 							AllowedOrigins: []string{"https://example.com"},
 							AllowedMethods: []string{"GET", "PUT"},
@@ -76,7 +76,7 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 							MaxAgeSeconds:  3600,
 						},
 					},
-					Logging: &AlicloudStorageBucketLogging{
+					Logging: &AliCloudStorageBucketLogging{
 						TargetBucket: "log-bucket",
 						TargetPrefix: "access-logs/",
 					},
@@ -90,16 +90,16 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with AES256 encryption", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudStorageBucket",
+				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "encrypted-bucket",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					Region:     "cn-hangzhou",
 					BucketName: "aes-encrypted-bucket",
-					ServerSideEncryption: &AlicloudStorageBucketEncryption{
+					ServerSideEncryption: &AliCloudStorageBucketEncryption{
 						SseAlgorithm: "AES256",
 					},
 				},
@@ -109,21 +109,21 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with lifecycle rules and versioning", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudStorageBucket",
+				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "lifecycle-bucket",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					Region:            "us-west-1",
 					BucketName:        "lifecycle-versioned-bucket",
 					VersioningEnabled: true,
-					LifecycleRules: []*AlicloudStorageBucketLifecycleRule{
+					LifecycleRules: []*AliCloudStorageBucketLifecycleRule{
 						{
 							Prefix:  "",
 							Enabled: true,
-							Transitions: []*AlicloudStorageBucketLifecycleTransition{
+							Transitions: []*AliCloudStorageBucketLifecycleTransition{
 								{Days: 30, StorageClass: "IA"},
 								{Days: 90, StorageClass: "Archive"},
 							},
@@ -141,13 +141,13 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 	ginkgo.Describe("invalid input", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudStorageBucket",
+				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					BucketName: "my-bucket",
 				},
 			}
@@ -156,13 +156,13 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when bucket_name is missing", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudStorageBucket",
+				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					Region: "cn-hangzhou",
 				},
 			}
@@ -171,13 +171,13 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when bucket_name is too short", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudStorageBucket",
+				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					Region:     "cn-hangzhou",
 					BucketName: "ab",
 				},
@@ -191,13 +191,13 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 			for i := 0; i < 64; i++ {
 				longName += "a"
 			}
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudStorageBucket",
+				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					Region:     "cn-hangzhou",
 					BucketName: longName,
 				},
@@ -207,13 +207,13 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when acl has invalid value", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudStorageBucket",
+				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					Region:     "cn-hangzhou",
 					BucketName: "my-bucket",
 					Acl:        strPtr("invalid-acl"),
@@ -224,13 +224,13 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when storage_class has invalid value", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudStorageBucket",
+				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					Region:       "cn-hangzhou",
 					BucketName:   "my-bucket",
 					StorageClass: strPtr("InvalidClass"),
@@ -241,13 +241,13 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when redundancy_type has invalid value", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudStorageBucket",
+				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					Region:         "cn-hangzhou",
 					BucketName:     "my-bucket",
 					RedundancyType: strPtr("GRS"),
@@ -258,16 +258,16 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when sse_algorithm has invalid value", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudStorageBucket",
+				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					Region:     "cn-hangzhou",
 					BucketName: "my-bucket",
-					ServerSideEncryption: &AlicloudStorageBucketEncryption{
+					ServerSideEncryption: &AliCloudStorageBucketEncryption{
 						SseAlgorithm: "DES",
 					},
 				},
@@ -277,19 +277,19 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when transition storage_class has invalid value", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudStorageBucket",
+				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					Region:     "cn-hangzhou",
 					BucketName: "my-bucket",
-					LifecycleRules: []*AlicloudStorageBucketLifecycleRule{
+					LifecycleRules: []*AliCloudStorageBucketLifecycleRule{
 						{
 							Enabled: true,
-							Transitions: []*AlicloudStorageBucketLifecycleTransition{
+							Transitions: []*AliCloudStorageBucketLifecycleTransition{
 								{Days: 30, StorageClass: "Standard"},
 							},
 						},
@@ -301,16 +301,16 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when cors_rule has no allowed_origins", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudStorageBucket",
+				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					Region:     "cn-hangzhou",
 					BucketName: "my-bucket",
-					CorsRules: []*AlicloudStorageBucketCorsRule{
+					CorsRules: []*AliCloudStorageBucketCorsRule{
 						{
 							AllowedMethods: []string{"GET"},
 						},
@@ -322,16 +322,16 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when cors_rule has no allowed_methods", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudStorageBucket",
+				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					Region:     "cn-hangzhou",
 					BucketName: "my-bucket",
-					CorsRules: []*AlicloudStorageBucketCorsRule{
+					CorsRules: []*AliCloudStorageBucketCorsRule{
 						{
 							AllowedOrigins: []string{"*"},
 						},
@@ -343,16 +343,16 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when logging target_bucket is missing", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudStorageBucket",
+				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					Region:     "cn-hangzhou",
 					BucketName: "my-bucket",
-					Logging: &AlicloudStorageBucketLogging{
+					Logging: &AliCloudStorageBucketLogging{
 						TargetPrefix: "logs/",
 					},
 				},
@@ -362,13 +362,13 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when api_version is wrong", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "wrong/v1",
-				Kind:       "AlicloudStorageBucket",
+				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					Region:     "cn-hangzhou",
 					BucketName: "my-bucket",
 				},
@@ -378,13 +378,13 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when kind is wrong", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudStorageBucketSpec{
+				Spec: &AliCloudStorageBucketSpec{
 					Region:     "cn-hangzhou",
 					BucketName: "my-bucket",
 				},
@@ -394,10 +394,10 @@ var _ = ginkgo.Describe("AlicloudStorageBucketSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when metadata is missing", func() {
-			input := &AlicloudStorageBucket{
+			input := &AliCloudStorageBucket{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudStorageBucket",
-				Spec: &AlicloudStorageBucketSpec{
+				Kind:       "AliCloudStorageBucket",
+				Spec: &AliCloudStorageBucketSpec{
 					Region:     "cn-hangzhou",
 					BucketName: "my-bucket",
 				},

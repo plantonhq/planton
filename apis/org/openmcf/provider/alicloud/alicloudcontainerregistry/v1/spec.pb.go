@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudContainerRegistrySpec defines the configuration for an Alibaba Cloud
+// AliCloudContainerRegistrySpec defines the configuration for an Alibaba Cloud
 // Container Registry (ACR) Enterprise Edition instance bundled with namespaces.
 //
 // ACR Enterprise Edition provides a managed container image registry with
@@ -43,7 +43,7 @@ const (
 //
 //	Terraform: alicloud_cr_ee_instance + alicloud_cr_ee_namespace
 //	Pulumi:    cr.RegistryEnterpriseInstance + cs.RegistryEnterpriseNamespace
-type AlicloudContainerRegistrySpec struct {
+type AliCloudContainerRegistrySpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the registry instance will be created.
 	// Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -78,25 +78,25 @@ type AlicloudContainerRegistrySpec struct {
 	// Namespaces to create within the registry instance.
 	// Namespaces are the top-level organizational units for container images.
 	// Images are addressed as: {registry-endpoint}/{namespace}/{repo}:{tag}
-	Namespaces    []*AlicloudContainerRegistryNamespace `protobuf:"bytes,8,rep,name=namespaces,proto3" json:"namespaces,omitempty"`
+	Namespaces    []*AliCloudContainerRegistryNamespace `protobuf:"bytes,8,rep,name=namespaces,proto3" json:"namespaces,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudContainerRegistrySpec) Reset() {
-	*x = AlicloudContainerRegistrySpec{}
+func (x *AliCloudContainerRegistrySpec) Reset() {
+	*x = AliCloudContainerRegistrySpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudContainerRegistrySpec) String() string {
+func (x *AliCloudContainerRegistrySpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudContainerRegistrySpec) ProtoMessage() {}
+func (*AliCloudContainerRegistrySpec) ProtoMessage() {}
 
-func (x *AlicloudContainerRegistrySpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudContainerRegistrySpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -108,73 +108,73 @@ func (x *AlicloudContainerRegistrySpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudContainerRegistrySpec.ProtoReflect.Descriptor instead.
-func (*AlicloudContainerRegistrySpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudContainerRegistrySpec.ProtoReflect.Descriptor instead.
+func (*AliCloudContainerRegistrySpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudContainerRegistrySpec) GetRegion() string {
+func (x *AliCloudContainerRegistrySpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudContainerRegistrySpec) GetInstanceName() string {
+func (x *AliCloudContainerRegistrySpec) GetInstanceName() string {
 	if x != nil {
 		return x.InstanceName
 	}
 	return ""
 }
 
-func (x *AlicloudContainerRegistrySpec) GetInstanceType() string {
+func (x *AliCloudContainerRegistrySpec) GetInstanceType() string {
 	if x != nil {
 		return x.InstanceType
 	}
 	return ""
 }
 
-func (x *AlicloudContainerRegistrySpec) GetPaymentType() string {
+func (x *AliCloudContainerRegistrySpec) GetPaymentType() string {
 	if x != nil && x.PaymentType != nil {
 		return *x.PaymentType
 	}
 	return ""
 }
 
-func (x *AlicloudContainerRegistrySpec) GetPeriod() int32 {
+func (x *AliCloudContainerRegistrySpec) GetPeriod() int32 {
 	if x != nil {
 		return x.Period
 	}
 	return 0
 }
 
-func (x *AlicloudContainerRegistrySpec) GetPassword() string {
+func (x *AliCloudContainerRegistrySpec) GetPassword() string {
 	if x != nil {
 		return x.Password
 	}
 	return ""
 }
 
-func (x *AlicloudContainerRegistrySpec) GetResourceGroupId() string {
+func (x *AliCloudContainerRegistrySpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudContainerRegistrySpec) GetNamespaces() []*AlicloudContainerRegistryNamespace {
+func (x *AliCloudContainerRegistrySpec) GetNamespaces() []*AliCloudContainerRegistryNamespace {
 	if x != nil {
 		return x.Namespaces
 	}
 	return nil
 }
 
-// AlicloudContainerRegistryNamespace defines a namespace within the ACR
+// AliCloudContainerRegistryNamespace defines a namespace within the ACR
 // Enterprise Edition instance.
 //
 // Namespaces group related image repositories. A typical pattern is one
 // namespace per team or application (e.g., "platform", "frontend", "backend").
-type AlicloudContainerRegistryNamespace struct {
+type AliCloudContainerRegistryNamespace struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace name. 2-120 characters; can contain lowercase letters, digits,
 	// underscores, hyphens, and periods. Cannot start or end with a delimiter.
@@ -193,20 +193,20 @@ type AlicloudContainerRegistryNamespace struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AlicloudContainerRegistryNamespace) Reset() {
-	*x = AlicloudContainerRegistryNamespace{}
+func (x *AliCloudContainerRegistryNamespace) Reset() {
+	*x = AliCloudContainerRegistryNamespace{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudContainerRegistryNamespace) String() string {
+func (x *AliCloudContainerRegistryNamespace) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudContainerRegistryNamespace) ProtoMessage() {}
+func (*AliCloudContainerRegistryNamespace) ProtoMessage() {}
 
-func (x *AlicloudContainerRegistryNamespace) ProtoReflect() protoreflect.Message {
+func (x *AliCloudContainerRegistryNamespace) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -218,26 +218,26 @@ func (x *AlicloudContainerRegistryNamespace) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudContainerRegistryNamespace.ProtoReflect.Descriptor instead.
-func (*AlicloudContainerRegistryNamespace) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudContainerRegistryNamespace.ProtoReflect.Descriptor instead.
+func (*AliCloudContainerRegistryNamespace) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudContainerRegistryNamespace) GetName() string {
+func (x *AliCloudContainerRegistryNamespace) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *AlicloudContainerRegistryNamespace) GetAutoCreate() bool {
+func (x *AliCloudContainerRegistryNamespace) GetAutoCreate() bool {
 	if x != nil && x.AutoCreate != nil {
 		return *x.AutoCreate
 	}
 	return false
 }
 
-func (x *AlicloudContainerRegistryNamespace) GetDefaultVisibility() string {
+func (x *AliCloudContainerRegistryNamespace) GetDefaultVisibility() string {
 	if x != nil && x.DefaultVisibility != nil {
 		return *x.DefaultVisibility
 	}
@@ -249,7 +249,7 @@ var File_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_spec_proto p
 const file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"Eorg/openmcf/provider/alicloud/alicloudcontainerregistry/v1/spec.proto\x12:org.openmcf.provider.alicloud.alicloudcontainerregistry.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xd5\x05\n" +
-	"\x1dAlicloudContainerRegistrySpec\x12\"\n" +
+	"\x1dAliCloudContainerRegistrySpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12/\n" +
 	"\rinstance_name\x18\x02 \x01(\tB\n" +
@@ -262,10 +262,10 @@ const file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_spec_proto
 	"\bpassword\x18\x06 \x01(\tR\bpassword\x12*\n" +
 	"\x11resource_group_id\x18\a \x01(\tR\x0fresourceGroupId\x12~\n" +
 	"\n" +
-	"namespaces\x18\b \x03(\v2^.org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistryNamespaceR\n" +
+	"namespaces\x18\b \x03(\v2^.org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistryNamespaceR\n" +
 	"namespacesB\x0f\n" +
 	"\r_payment_type\"\xe2\x02\n" +
-	"\"AlicloudContainerRegistryNamespace\x12 \n" +
+	"\"AliCloudContainerRegistryNamespace\x12 \n" +
 	"\x04name\x18\x01 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x02\x18xR\x04name\x12/\n" +
 	"\vauto_create\x18\x02 \x01(\bB\t\x8a\xa6\x1d\x05falseH\x00R\n" +
 	"autoCreate\x88\x01\x01\x12\xc1\x01\n" +
@@ -289,11 +289,11 @@ func file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_spec_proto_
 
 var file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_spec_proto_goTypes = []any{
-	(*AlicloudContainerRegistrySpec)(nil),      // 0: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistrySpec
-	(*AlicloudContainerRegistryNamespace)(nil), // 1: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistryNamespace
+	(*AliCloudContainerRegistrySpec)(nil),      // 0: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistrySpec
+	(*AliCloudContainerRegistryNamespace)(nil), // 1: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistryNamespace
 }
 var file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_spec_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistrySpec.namespaces:type_name -> org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistryNamespace
+	1, // 0: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistrySpec.namespaces:type_name -> org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistryNamespace
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

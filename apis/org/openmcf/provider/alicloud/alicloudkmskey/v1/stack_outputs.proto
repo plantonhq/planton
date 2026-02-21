@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudkmskey.v1;
 
-// AlicloudKmsKeyStackOutputs captures the outputs from creating an
+// AliCloudKmsKeyStackOutputs captures the outputs from creating an
 // Alibaba Cloud KMS customer-managed key.
-message AlicloudKmsKeyStackOutputs {
+message AliCloudKmsKeyStackOutputs {
   // The KMS key ID assigned by Alibaba Cloud.
   // This is the primary identifier used by downstream components (RDS, OSS,
   // ECS) when configuring encryption with a customer-managed key.

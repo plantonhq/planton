@@ -5,7 +5,7 @@ package org.openmcf.provider.alicloud.alicloudlogproject.v1;
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudLogProjectSpec defines the configuration for an Alibaba Cloud
+// AliCloudLogProjectSpec defines the configuration for an Alibaba Cloud
 // Simple Log Service (SLS) project with optional bundled log stores.
 //
 // An SLS project is the top-level container for log data in Alibaba Cloud.
@@ -16,7 +16,7 @@ import "org/openmcf/shared/options/options.proto";
 // This component bundles the project with its log stores and full-text indexes
 // (per DD07) because a project without stores is an empty shell, and stores
 // without indexes are unsearchable.
-message AlicloudLogProjectSpec {
+message AliCloudLogProjectSpec {
   // Alibaba Cloud region where the SLS project will be created.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
   string region = 1 [
@@ -45,12 +45,12 @@ message AlicloudLogProjectSpec {
 
   // Log stores to create within this project.
   // Each log store is an independent unit of log collection and storage.
-  repeated AlicloudLogStore log_stores = 6;
+  repeated AliCloudLogStore log_stores = 6;
 }
 
-// AlicloudLogStore defines a log store within an SLS project.
+// AliCloudLogStore defines a log store within an SLS project.
 // A log store is the basic unit for collecting, storing, and querying log data.
-message AlicloudLogStore {
+message AliCloudLogStore {
   // Log store name. Must be unique within the project.
   // 3-63 characters, lowercase letters, digits, hyphens, and underscores.
   string name = 1 [

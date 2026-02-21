@@ -8,25 +8,25 @@ import "org/openmcf/provider/alicloud/alicloudfunction/v1/stack_outputs.proto";
 import "org/openmcf/shared/metadata.proto";
 
 // alicloud-function
-message AlicloudFunction {
+message AliCloudFunction {
   // api-version
   string api_version = 1 [(buf.validate.field).string.const = 'alicloud.openmcf.org/v1'];
 
   // resource-kind
-  string kind = 2 [(buf.validate.field).string.const = 'AlicloudFunction'];
+  string kind = 2 [(buf.validate.field).string.const = 'AliCloudFunction'];
 
   // metadata
   org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
-  AlicloudFunctionSpec spec = 4 [(buf.validate.field).required = true];
+  AliCloudFunctionSpec spec = 4 [(buf.validate.field).required = true];
 
   // status
-  AlicloudFunctionStatus status = 5;
+  AliCloudFunctionStatus status = 5;
 }
 
 // alicloud-function status
-message AlicloudFunctionStatus {
+message AliCloudFunctionStatus {
   // stack-outputs
-  AlicloudFunctionStackOutputs outputs = 1;
+  AliCloudFunctionStackOutputs outputs = 1;
 }

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudPolardbClusterStackOutputs captures the outputs from deploying an
+// AliCloudPolardbClusterStackOutputs captures the outputs from deploying an
 // Alibaba Cloud PolarDB cluster with its databases and accounts.
-type AlicloudPolardbClusterStackOutputs struct {
+type AliCloudPolardbClusterStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The PolarDB cluster ID assigned by Alibaba Cloud (e.g., "pc-xxxxx").
 	ClusterId string `protobuf:"bytes,1,opt,name=cluster_id,json=clusterId,proto3" json:"cluster_id,omitempty"`
@@ -40,20 +40,20 @@ type AlicloudPolardbClusterStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudPolardbClusterStackOutputs) Reset() {
-	*x = AlicloudPolardbClusterStackOutputs{}
+func (x *AliCloudPolardbClusterStackOutputs) Reset() {
+	*x = AliCloudPolardbClusterStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudPolardbClusterStackOutputs) String() string {
+func (x *AliCloudPolardbClusterStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudPolardbClusterStackOutputs) ProtoMessage() {}
+func (*AliCloudPolardbClusterStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudPolardbClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudPolardbClusterStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,33 +65,33 @@ func (x *AlicloudPolardbClusterStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudPolardbClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudPolardbClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudPolardbClusterStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudPolardbClusterStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudPolardbClusterStackOutputs) GetClusterId() string {
+func (x *AliCloudPolardbClusterStackOutputs) GetClusterId() string {
 	if x != nil {
 		return x.ClusterId
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterStackOutputs) GetConnectionString() string {
+func (x *AliCloudPolardbClusterStackOutputs) GetConnectionString() string {
 	if x != nil {
 		return x.ConnectionString
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterStackOutputs) GetPort() string {
+func (x *AliCloudPolardbClusterStackOutputs) GetPort() string {
 	if x != nil {
 		return x.Port
 	}
 	return ""
 }
 
-func (x *AlicloudPolardbClusterStackOutputs) GetDatabaseIds() map[string]string {
+func (x *AliCloudPolardbClusterStackOutputs) GetDatabaseIds() map[string]string {
 	if x != nil {
 		return x.DatabaseIds
 	}
@@ -103,12 +103,12 @@ var File_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_stack_outputs_p
 const file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Korg/openmcf/provider/alicloud/alicloudpolardbcluster/v1/stack_outputs.proto\x127org.openmcf.provider.alicloud.alicloudpolardbcluster.v1\"\xd6\x02\n" +
-	"\"AlicloudPolardbClusterStackOutputs\x12\x1d\n" +
+	"\"AliCloudPolardbClusterStackOutputs\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12+\n" +
 	"\x11connection_string\x18\x02 \x01(\tR\x10connectionString\x12\x12\n" +
 	"\x04port\x18\x03 \x01(\tR\x04port\x12\x8f\x01\n" +
-	"\fdatabase_ids\x18\x04 \x03(\v2l.org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbClusterStackOutputs.DatabaseIdsEntryR\vdatabaseIds\x1a>\n" +
+	"\fdatabase_ids\x18\x04 \x03(\v2l.org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbClusterStackOutputs.DatabaseIdsEntryR\vdatabaseIds\x1a>\n" +
 	"\x10DatabaseIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xc7\x03\n" +
@@ -128,11 +128,11 @@ func file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_stack_outputs_
 
 var file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudPolardbClusterStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbClusterStackOutputs
-	nil, // 1: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbClusterStackOutputs.DatabaseIdsEntry
+	(*AliCloudPolardbClusterStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbClusterStackOutputs
+	nil, // 1: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbClusterStackOutputs.DatabaseIdsEntry
 }
 var file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_stack_outputs_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbClusterStackOutputs.database_ids:type_name -> org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AlicloudPolardbClusterStackOutputs.DatabaseIdsEntry
+	1, // 0: org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbClusterStackOutputs.database_ids:type_name -> org.openmcf.provider.alicloud.alicloudpolardbcluster.v1.AliCloudPolardbClusterStackOutputs.DatabaseIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

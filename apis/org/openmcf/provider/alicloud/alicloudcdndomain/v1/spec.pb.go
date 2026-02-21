@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudCdnDomainSpec defines the configuration for an Alibaba Cloud CDN
+// AliCloudCdnDomainSpec defines the configuration for an Alibaba Cloud CDN
 // accelerated domain managed by the CDN service.
 //
 // A CDN domain maps a user-facing domain name (e.g., "cdn.example.com") to one
@@ -35,7 +35,7 @@ const (
 // HTTPS certificate configuration. Advanced CDN function configs (caching rules,
 // referer whitelists, HTTP headers) are outside the scope of this component and
 // should be managed via raw Terraform or Pulumi if needed.
-type AlicloudCdnDomainSpec struct {
+type AliCloudCdnDomainSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region for provider initialization.
 	// CDN is a global service, but the provider requires a region for API calls.
@@ -60,10 +60,10 @@ type AlicloudCdnDomainSpec struct {
 	Scope string `protobuf:"bytes,4,opt,name=scope,proto3" json:"scope,omitempty"`
 	// Origin server sources for the CDN domain. At least one source is required.
 	// Multiple sources enable failover and load distribution via priority and weight.
-	Sources []*AlicloudCdnDomainSource `protobuf:"bytes,5,rep,name=sources,proto3" json:"sources,omitempty"`
+	Sources []*AliCloudCdnDomainSource `protobuf:"bytes,5,rep,name=sources,proto3" json:"sources,omitempty"`
 	// HTTPS certificate configuration.
 	// If omitted, the CDN domain serves content over HTTP only.
-	CertificateConfig *AlicloudCdnDomainCertificateConfig `protobuf:"bytes,6,opt,name=certificate_config,json=certificateConfig,proto3" json:"certificate_config,omitempty"`
+	CertificateConfig *AliCloudCdnDomainCertificateConfig `protobuf:"bytes,6,opt,name=certificate_config,json=certificateConfig,proto3" json:"certificate_config,omitempty"`
 	// URL used by the CDN service to verify that the origin is reachable.
 	// Alibaba Cloud sends a request to this URL during domain creation.
 	// If omitted, no health check is performed during creation.
@@ -77,20 +77,20 @@ type AlicloudCdnDomainSpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudCdnDomainSpec) Reset() {
-	*x = AlicloudCdnDomainSpec{}
+func (x *AliCloudCdnDomainSpec) Reset() {
+	*x = AliCloudCdnDomainSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudCdnDomainSpec) String() string {
+func (x *AliCloudCdnDomainSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudCdnDomainSpec) ProtoMessage() {}
+func (*AliCloudCdnDomainSpec) ProtoMessage() {}
 
-func (x *AlicloudCdnDomainSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudCdnDomainSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -102,76 +102,76 @@ func (x *AlicloudCdnDomainSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudCdnDomainSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudCdnDomainSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudCdnDomainSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudCdnDomainSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudCdnDomainSpec) GetRegion() string {
+func (x *AliCloudCdnDomainSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomainSpec) GetDomainName() string {
+func (x *AliCloudCdnDomainSpec) GetDomainName() string {
 	if x != nil {
 		return x.DomainName
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomainSpec) GetCdnType() string {
+func (x *AliCloudCdnDomainSpec) GetCdnType() string {
 	if x != nil {
 		return x.CdnType
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomainSpec) GetScope() string {
+func (x *AliCloudCdnDomainSpec) GetScope() string {
 	if x != nil {
 		return x.Scope
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomainSpec) GetSources() []*AlicloudCdnDomainSource {
+func (x *AliCloudCdnDomainSpec) GetSources() []*AliCloudCdnDomainSource {
 	if x != nil {
 		return x.Sources
 	}
 	return nil
 }
 
-func (x *AlicloudCdnDomainSpec) GetCertificateConfig() *AlicloudCdnDomainCertificateConfig {
+func (x *AliCloudCdnDomainSpec) GetCertificateConfig() *AliCloudCdnDomainCertificateConfig {
 	if x != nil {
 		return x.CertificateConfig
 	}
 	return nil
 }
 
-func (x *AlicloudCdnDomainSpec) GetCheckUrl() string {
+func (x *AliCloudCdnDomainSpec) GetCheckUrl() string {
 	if x != nil {
 		return x.CheckUrl
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomainSpec) GetResourceGroupId() string {
+func (x *AliCloudCdnDomainSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomainSpec) GetTags() map[string]string {
+func (x *AliCloudCdnDomainSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-// AlicloudCdnDomainSource defines a single origin server for the CDN domain.
-type AlicloudCdnDomainSource struct {
+// AliCloudCdnDomainSource defines a single origin server for the CDN domain.
+type AliCloudCdnDomainSource struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The type of origin source.
 	//   - "ipaddr"  : origin is an IP address
@@ -201,20 +201,20 @@ type AlicloudCdnDomainSource struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudCdnDomainSource) Reset() {
-	*x = AlicloudCdnDomainSource{}
+func (x *AliCloudCdnDomainSource) Reset() {
+	*x = AliCloudCdnDomainSource{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudCdnDomainSource) String() string {
+func (x *AliCloudCdnDomainSource) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudCdnDomainSource) ProtoMessage() {}
+func (*AliCloudCdnDomainSource) ProtoMessage() {}
 
-func (x *AlicloudCdnDomainSource) ProtoReflect() protoreflect.Message {
+func (x *AliCloudCdnDomainSource) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -226,50 +226,50 @@ func (x *AlicloudCdnDomainSource) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudCdnDomainSource.ProtoReflect.Descriptor instead.
-func (*AlicloudCdnDomainSource) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudCdnDomainSource.ProtoReflect.Descriptor instead.
+func (*AliCloudCdnDomainSource) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudCdnDomainSource) GetType() string {
+func (x *AliCloudCdnDomainSource) GetType() string {
 	if x != nil {
 		return x.Type
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomainSource) GetContent() string {
+func (x *AliCloudCdnDomainSource) GetContent() string {
 	if x != nil {
 		return x.Content
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomainSource) GetPort() int32 {
+func (x *AliCloudCdnDomainSource) GetPort() int32 {
 	if x != nil {
 		return x.Port
 	}
 	return 0
 }
 
-func (x *AlicloudCdnDomainSource) GetPriority() int32 {
+func (x *AliCloudCdnDomainSource) GetPriority() int32 {
 	if x != nil {
 		return x.Priority
 	}
 	return 0
 }
 
-func (x *AlicloudCdnDomainSource) GetWeight() int32 {
+func (x *AliCloudCdnDomainSource) GetWeight() int32 {
 	if x != nil {
 		return x.Weight
 	}
 	return 0
 }
 
-// AlicloudCdnDomainCertificateConfig configures HTTPS for the CDN domain.
+// AliCloudCdnDomainCertificateConfig configures HTTPS for the CDN domain.
 // When provided, the CDN edge nodes serve content over HTTPS using the
 // specified certificate.
-type AlicloudCdnDomainCertificateConfig struct {
+type AliCloudCdnDomainCertificateConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Display name of the certificate.
 	CertName string `protobuf:"bytes,1,opt,name=cert_name,json=certName,proto3" json:"cert_name,omitempty"`
@@ -300,20 +300,20 @@ type AlicloudCdnDomainCertificateConfig struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *AlicloudCdnDomainCertificateConfig) Reset() {
-	*x = AlicloudCdnDomainCertificateConfig{}
+func (x *AliCloudCdnDomainCertificateConfig) Reset() {
+	*x = AliCloudCdnDomainCertificateConfig{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudCdnDomainCertificateConfig) String() string {
+func (x *AliCloudCdnDomainCertificateConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudCdnDomainCertificateConfig) ProtoMessage() {}
+func (*AliCloudCdnDomainCertificateConfig) ProtoMessage() {}
 
-func (x *AlicloudCdnDomainCertificateConfig) ProtoReflect() protoreflect.Message {
+func (x *AliCloudCdnDomainCertificateConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -325,54 +325,54 @@ func (x *AlicloudCdnDomainCertificateConfig) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudCdnDomainCertificateConfig.ProtoReflect.Descriptor instead.
-func (*AlicloudCdnDomainCertificateConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudCdnDomainCertificateConfig.ProtoReflect.Descriptor instead.
+func (*AliCloudCdnDomainCertificateConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AlicloudCdnDomainCertificateConfig) GetCertName() string {
+func (x *AliCloudCdnDomainCertificateConfig) GetCertName() string {
 	if x != nil {
 		return x.CertName
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomainCertificateConfig) GetCertType() string {
+func (x *AliCloudCdnDomainCertificateConfig) GetCertType() string {
 	if x != nil {
 		return x.CertType
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomainCertificateConfig) GetCertId() string {
+func (x *AliCloudCdnDomainCertificateConfig) GetCertId() string {
 	if x != nil {
 		return x.CertId
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomainCertificateConfig) GetCertRegion() string {
+func (x *AliCloudCdnDomainCertificateConfig) GetCertRegion() string {
 	if x != nil {
 		return x.CertRegion
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomainCertificateConfig) GetServerCertificate() string {
+func (x *AliCloudCdnDomainCertificateConfig) GetServerCertificate() string {
 	if x != nil {
 		return x.ServerCertificate
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomainCertificateConfig) GetPrivateKey() string {
+func (x *AliCloudCdnDomainCertificateConfig) GetPrivateKey() string {
 	if x != nil {
 		return x.PrivateKey
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomainCertificateConfig) GetServerCertificateStatus() string {
+func (x *AliCloudCdnDomainCertificateConfig) GetServerCertificateStatus() string {
 	if x != nil {
 		return x.ServerCertificateStatus
 	}
@@ -384,7 +384,7 @@ var File_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto protorefl
 const file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"=org/openmcf/provider/alicloud/alicloudcdndomain/v1/spec.proto\x122org.openmcf.provider.alicloud.alicloudcdndomain.v1\x1a\x1bbuf/validate/validate.proto\"\xf2\x06\n" +
-	"\x15AlicloudCdnDomainSpec\x12\"\n" +
+	"\x15AliCloudCdnDomainSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12-\n" +
 	"\vdomain_name\x18\x02 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x01\x18?R\n" +
@@ -393,15 +393,15 @@ const file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_rawDesc
 	"\x0ecdn_type_valid\x12-cdn_type must be one of: web, download, video\x1a$this in ['web', 'download', 'video']\xc8\x01\x01R\acdnType\x12\x95\x01\n" +
 	"\x05scope\x18\x04 \x01(\tB\x7f\xbaH|\xba\x01y\n" +
 	"\vscope_valid\x120scope must be one of: domestic, overseas, global\x1a8this == '' || this in ['domestic', 'overseas', 'global']R\x05scope\x12o\n" +
-	"\asources\x18\x05 \x03(\v2K.org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainSourceB\b\xbaH\x05\x92\x01\x02\b\x01R\asources\x12\x85\x01\n" +
-	"\x12certificate_config\x18\x06 \x01(\v2V.org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainCertificateConfigR\x11certificateConfig\x12\x1b\n" +
+	"\asources\x18\x05 \x03(\v2K.org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainSourceB\b\xbaH\x05\x92\x01\x02\b\x01R\asources\x12\x85\x01\n" +
+	"\x12certificate_config\x18\x06 \x01(\v2V.org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainCertificateConfigR\x11certificateConfig\x12\x1b\n" +
 	"\tcheck_url\x18\a \x01(\tR\bcheckUrl\x12*\n" +
 	"\x11resource_group_id\x18\b \x01(\tR\x0fresourceGroupId\x12g\n" +
-	"\x04tags\x18\t \x03(\v2S.org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainSpec.TagsEntryR\x04tags\x1a7\n" +
+	"\x04tags\x18\t \x03(\v2S.org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainSpec.TagsEntryR\x04tags\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xcc\x03\n" +
-	"\x17AlicloudCdnDomainSource\x12\x9a\x01\n" +
+	"\x17AliCloudCdnDomainSource\x12\x9a\x01\n" +
 	"\x04type\x18\x01 \x01(\tB\x85\x01\xbaH\x81\x01\xba\x01{\n" +
 	"\x11source_type_valid\x127source type must be one of: ipaddr, domain, oss, common\x1a-this in ['ipaddr', 'domain', 'oss', 'common']\xc8\x01\x01R\x04type\x12$\n" +
 	"\acontent\x18\x02 \x01(\tB\n" +
@@ -411,7 +411,7 @@ const file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_rawDesc
 	"\x0epriority_range\x12\"priority must be between 0 and 100\x1a\x18this >= 0 && this <= 100R\bpriority\x12h\n" +
 	"\x06weight\x18\x05 \x01(\x05BP\xbaHM\xba\x01J\n" +
 	"\fweight_range\x12 weight must be between 0 and 100\x1a\x18this >= 0 && this <= 100R\x06weight\"\x90\x04\n" +
-	"\"AlicloudCdnDomainCertificateConfig\x12\x1b\n" +
+	"\"AliCloudCdnDomainCertificateConfig\x12\x1b\n" +
 	"\tcert_name\x18\x01 \x01(\tR\bcertName\x12\x92\x01\n" +
 	"\tcert_type\x18\x02 \x01(\tBu\xbaHr\xba\x01o\n" +
 	"\x0fcert_type_valid\x12+cert_type must be one of: upload, cas, free\x1a/this == '' || this in ['upload', 'cas', 'free']R\bcertType\x12\x17\n" +
@@ -439,15 +439,15 @@ func file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_rawDescG
 
 var file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_goTypes = []any{
-	(*AlicloudCdnDomainSpec)(nil),              // 0: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainSpec
-	(*AlicloudCdnDomainSource)(nil),            // 1: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainSource
-	(*AlicloudCdnDomainCertificateConfig)(nil), // 2: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainCertificateConfig
-	nil, // 3: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainSpec.TagsEntry
+	(*AliCloudCdnDomainSpec)(nil),              // 0: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainSpec
+	(*AliCloudCdnDomainSource)(nil),            // 1: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainSource
+	(*AliCloudCdnDomainCertificateConfig)(nil), // 2: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainCertificateConfig
+	nil, // 3: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainSpec.TagsEntry
 }
 var file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainSpec.sources:type_name -> org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainSource
-	2, // 1: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainSpec.certificate_config:type_name -> org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainCertificateConfig
-	3, // 2: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainSpec.TagsEntry
+	1, // 0: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainSpec.sources:type_name -> org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainSource
+	2, // 1: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainSpec.certificate_config:type_name -> org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainCertificateConfig
+	3, // 2: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainSpec.TagsEntry
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

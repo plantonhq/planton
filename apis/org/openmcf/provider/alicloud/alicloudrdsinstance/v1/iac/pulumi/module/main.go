@@ -8,9 +8,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *alicloudrdsinstancev1.AlicloudRdsInstanceStackInput) error {
+func Resources(ctx *pulumi.Context, stackInput *alicloudrdsinstancev1.AliCloudRdsInstanceStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
-	spec := locals.AlicloudRdsInstance.Spec
+	spec := locals.AliCloudRdsInstance.Spec
 
 	alicloudProvider, err := alicloud.NewProvider(ctx, "alicloud", &alicloud.ProviderArgs{
 		Region: pulumi.String(spec.Region),
@@ -115,14 +115,14 @@ func Resources(ctx *pulumi.Context, stackInput *alicloudrdsinstancev1.AlicloudRd
 	return nil
 }
 
-func sslAction(spec *alicloudrdsinstancev1.AlicloudRdsInstanceSpec) string {
+func sslAction(spec *alicloudrdsinstancev1.AliCloudRdsInstanceSpec) string {
 	if spec.SslAction != nil {
 		return *spec.SslAction
 	}
 	return ""
 }
 
-func tdeAction(spec *alicloudrdsinstancev1.AlicloudRdsInstanceSpec) string {
+func tdeAction(spec *alicloudrdsinstancev1.AliCloudRdsInstanceSpec) string {
 	if spec.TdeStatus != nil {
 		return *spec.TdeStatus
 	}

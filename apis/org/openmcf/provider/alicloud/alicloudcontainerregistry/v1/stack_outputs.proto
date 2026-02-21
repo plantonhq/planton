@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudcontainerregistry.v1;
 
-// AlicloudContainerRegistryStackOutputs captures the outputs from deploying an
+// AliCloudContainerRegistryStackOutputs captures the outputs from deploying an
 // Alibaba Cloud Container Registry (ACR) Enterprise Edition instance.
-message AlicloudContainerRegistryStackOutputs {
+message AliCloudContainerRegistryStackOutputs {
   // The ACR Enterprise Edition instance ID.
   // Referenced by downstream resources that need to interact with this registry.
   string instance_id = 1;

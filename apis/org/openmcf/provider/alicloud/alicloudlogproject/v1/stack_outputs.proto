@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudlogproject.v1;
 
-// AlicloudLogProjectStackOutputs captures the outputs from deploying an
+// AliCloudLogProjectStackOutputs captures the outputs from deploying an
 // Alibaba Cloud SLS project and its bundled log stores.
-message AlicloudLogProjectStackOutputs {
+message AliCloudLogProjectStackOutputs {
   // The SLS project name (also serves as the project identifier in SLS APIs).
   string project_name = 1;
 

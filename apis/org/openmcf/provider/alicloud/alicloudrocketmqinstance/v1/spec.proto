@@ -6,7 +6,7 @@ import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudRocketmqInstanceSpec defines the configuration for an Alibaba Cloud
+// AliCloudRocketmqInstanceSpec defines the configuration for an Alibaba Cloud
 // RocketMQ 5.x instance with bundled topics and consumer groups.
 //
 // RocketMQ is Alibaba Cloud's distributed messaging and streaming platform,
@@ -27,14 +27,14 @@ import "org/openmcf/shared/options/options.proto";
 //
 // The provider's deeply nested network_info block is partially flattened for
 // better YAML authoring experience: vpc_id and vswitch_id are promoted to the
-// spec root (consistent with all other Alicloud components), while internet
+// spec root (consistent with all other AliCloud components), while internet
 // access settings remain in an optional nested message since their fields are
 // conditionally relevant.
 //
 // Provider resources:
 //   Terraform: alicloud_rocketmq_instance + alicloud_rocketmq_topic + alicloud_rocketmq_consumer_group
 //   Pulumi:    rocketmq.RocketMQInstance + rocketmq.RocketMQTopic + rocketmq.ConsumerGroup
-message AlicloudRocketmqInstanceSpec {
+message AliCloudRocketmqInstanceSpec {
   // Alibaba Cloud region where the RocketMQ instance will be created.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
   string region = 1 [
@@ -74,7 +74,7 @@ message AlicloudRocketmqInstanceSpec {
   // ForceNew: changing this replaces the instance.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 4 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
   ];
 
@@ -134,7 +134,7 @@ message AlicloudRocketmqInstanceSpec {
   // For serverless instances, at least two VSwitches are recommended.
   // ForceNew: changing this replaces the instance.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 12 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
   ];
 
@@ -144,7 +144,7 @@ message AlicloudRocketmqInstanceSpec {
 
   // Internet access configuration. When omitted, internet access is disabled
   // and the instance is only accessible within the VPC.
-  AlicloudRocketmqInternetInfo internet_info = 14;
+  AliCloudRocketmqInternetInfo internet_info = 14;
 
   // Message processing specification that determines the instance's
   // throughput capacity. Examples: "rmq.s1.micro", "rmq.p2.4xlarge",
@@ -154,7 +154,7 @@ message AlicloudRocketmqInstanceSpec {
 
   // Advanced product configuration for message retention, auto-scaling,
   // tracing, and encryption at rest. When omitted, provider defaults apply.
-  AlicloudRocketmqProductInfo product_info = 16;
+  AliCloudRocketmqProductInfo product_info = 16;
 
   // IP addresses or CIDR blocks allowed to access the instance.
   repeated string ip_whitelists = 17;
@@ -166,15 +166,15 @@ message AlicloudRocketmqInstanceSpec {
   map<string, string> tags = 19;
 
   // Topics to create within the instance.
-  repeated AlicloudRocketmqTopic topics = 20;
+  repeated AliCloudRocketmqTopic topics = 20;
 
   // Consumer groups to create within the instance.
-  repeated AlicloudRocketmqConsumerGroup consumer_groups = 21;
+  repeated AliCloudRocketmqConsumerGroup consumer_groups = 21;
 }
 
-// AlicloudRocketmqInternetInfo configures public internet access for the
+// AliCloudRocketmqInternetInfo configures public internet access for the
 // RocketMQ instance. All fields in this message are ForceNew in the provider.
-message AlicloudRocketmqInternetInfo {
+message AliCloudRocketmqInternetInfo {
   // Enable public internet access. When true, the instance gets a public
   // endpoint in addition to the VPC endpoint.
   // Default: false (internet disabled)
@@ -203,9 +203,9 @@ message AlicloudRocketmqInternetInfo {
   }];
 }
 
-// AlicloudRocketmqProductInfo contains advanced product configuration for
+// AliCloudRocketmqProductInfo contains advanced product configuration for
 // message retention, scaling, tracing, and encryption.
-message AlicloudRocketmqProductInfo {
+message AliCloudRocketmqProductInfo {
   // Duration of message retention in hours. Controls how long messages are
   // stored before expiration. Longer retention increases storage costs.
   optional int32 message_retention_time = 1 [(buf.validate.field).cel = {
@@ -238,8 +238,8 @@ message AlicloudRocketmqProductInfo {
   string storage_secret_key = 6;
 }
 
-// AlicloudRocketmqTopic defines a topic to create within the instance.
-message AlicloudRocketmqTopic {
+// AliCloudRocketmqTopic defines a topic to create within the instance.
+message AliCloudRocketmqTopic {
   // Topic name. Must match ^[%a-zA-Z0-9_-]+$ and be unique within the
   // instance. ForceNew: changing this replaces the topic.
   string topic_name = 1 [
@@ -270,8 +270,8 @@ message AlicloudRocketmqTopic {
   optional int32 max_send_tps = 4;
 }
 
-// AlicloudRocketmqConsumerGroup defines a consumer group within the instance.
-message AlicloudRocketmqConsumerGroup {
+// AliCloudRocketmqConsumerGroup defines a consumer group within the instance.
+message AliCloudRocketmqConsumerGroup {
   // Consumer group ID. Must be unique within the instance.
   // ForceNew: changing this replaces the consumer group.
   string consumer_group_id = 1 [
@@ -296,12 +296,12 @@ message AlicloudRocketmqConsumerGroup {
 
   // Retry policy for failed message consumption. When omitted, defaults to
   // DefaultRetryPolicy with 16 retries.
-  AlicloudRocketmqConsumeRetryPolicy consume_retry_policy = 5;
+  AliCloudRocketmqConsumeRetryPolicy consume_retry_policy = 5;
 }
 
-// AlicloudRocketmqConsumeRetryPolicy configures how failed messages are
+// AliCloudRocketmqConsumeRetryPolicy configures how failed messages are
 // retried before being sent to the dead-letter topic.
-message AlicloudRocketmqConsumeRetryPolicy {
+message AliCloudRocketmqConsumeRetryPolicy {
   // Retry strategy.
   // "DefaultRetryPolicy" -- exponential backoff (recommended).
   // "FixedRetryPolicy" -- fixed interval between retries.

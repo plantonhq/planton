@@ -24,7 +24,7 @@ const (
 )
 
 // alicloud-cdn-domain
-type AlicloudCdnDomain struct {
+type AliCloudCdnDomain struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
@@ -33,27 +33,27 @@ type AlicloudCdnDomain struct {
 	// metadata
 	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
-	Spec *AlicloudCdnDomainSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec *AliCloudCdnDomainSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
-	Status        *AlicloudCdnDomainStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *AliCloudCdnDomainStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudCdnDomain) Reset() {
-	*x = AlicloudCdnDomain{}
+func (x *AliCloudCdnDomain) Reset() {
+	*x = AliCloudCdnDomain{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudCdnDomain) String() string {
+func (x *AliCloudCdnDomain) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudCdnDomain) ProtoMessage() {}
+func (*AliCloudCdnDomain) ProtoMessage() {}
 
-func (x *AlicloudCdnDomain) ProtoReflect() protoreflect.Message {
+func (x *AliCloudCdnDomain) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AlicloudCdnDomain) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudCdnDomain.ProtoReflect.Descriptor instead.
-func (*AlicloudCdnDomain) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudCdnDomain.ProtoReflect.Descriptor instead.
+func (*AliCloudCdnDomain) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudCdnDomain) GetApiVersion() string {
+func (x *AliCloudCdnDomain) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomain) GetKind() string {
+func (x *AliCloudCdnDomain) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AlicloudCdnDomain) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AliCloudCdnDomain) GetMetadata() *shared.CloudResourceMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *AlicloudCdnDomain) GetSpec() *AlicloudCdnDomainSpec {
+func (x *AliCloudCdnDomain) GetSpec() *AliCloudCdnDomainSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-func (x *AlicloudCdnDomain) GetStatus() *AlicloudCdnDomainStatus {
+func (x *AliCloudCdnDomain) GetStatus() *AliCloudCdnDomainStatus {
 	if x != nil {
 		return x.Status
 	}
@@ -106,28 +106,28 @@ func (x *AlicloudCdnDomain) GetStatus() *AlicloudCdnDomainStatus {
 }
 
 // alicloud-cdn-domain status
-type AlicloudCdnDomainStatus struct {
+type AliCloudCdnDomainStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// stack-outputs
-	Outputs       *AlicloudCdnDomainStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AliCloudCdnDomainStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudCdnDomainStatus) Reset() {
-	*x = AlicloudCdnDomainStatus{}
+func (x *AliCloudCdnDomainStatus) Reset() {
+	*x = AliCloudCdnDomainStatus{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudCdnDomainStatus) String() string {
+func (x *AliCloudCdnDomainStatus) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudCdnDomainStatus) ProtoMessage() {}
+func (*AliCloudCdnDomainStatus) ProtoMessage() {}
 
-func (x *AlicloudCdnDomainStatus) ProtoReflect() protoreflect.Message {
+func (x *AliCloudCdnDomainStatus) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,12 +139,12 @@ func (x *AlicloudCdnDomainStatus) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudCdnDomainStatus.ProtoReflect.Descriptor instead.
-func (*AlicloudCdnDomainStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudCdnDomainStatus.ProtoReflect.Descriptor instead.
+func (*AliCloudCdnDomainStatus) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudCdnDomainStatus) GetOutputs() *AlicloudCdnDomainStackOutputs {
+func (x *AliCloudCdnDomainStatus) GetOutputs() *AliCloudCdnDomainStackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -156,17 +156,17 @@ var File_org_openmcf_provider_alicloud_alicloudcdndomain_v1_api_proto protorefle
 const file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"<org/openmcf/provider/alicloud/alicloudcdndomain/v1/api.proto\x122org.openmcf.provider.alicloud.alicloudcdndomain.v1\x1a\x1bbuf/validate/validate.proto\x1a=org/openmcf/provider/alicloud/alicloudcdndomain/v1/spec.proto\x1aForg/openmcf/provider/alicloud/alicloudcdndomain/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\x9d\x03\n" +
-	"\x11AlicloudCdnDomain\x12?\n" +
+	"\x11AliCloudCdnDomain\x12?\n" +
 	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
-	"\x11AlicloudCdnDomainR\x04kind\x12M\n" +
+	"\x11AliCloudCdnDomainR\x04kind\x12M\n" +
 	"\bmetadata\x18\x03 \x01(\v2).org.openmcf.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
-	"\x04spec\x18\x04 \x01(\v2I.org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
-	"\x06status\x18\x05 \x01(\v2K.org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainStatusR\x06status\"\x86\x01\n" +
-	"\x17AlicloudCdnDomainStatus\x12k\n" +
-	"\aoutputs\x18\x01 \x01(\v2Q.org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainStackOutputsR\aoutputsB\x9b\x03\n" +
+	"\x04spec\x18\x04 \x01(\v2I.org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
+	"\x06status\x18\x05 \x01(\v2K.org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainStatusR\x06status\"\x86\x01\n" +
+	"\x17AliCloudCdnDomainStatus\x12k\n" +
+	"\aoutputs\x18\x01 \x01(\v2Q.org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainStackOutputsR\aoutputsB\x9b\x03\n" +
 	"6com.org.openmcf.provider.alicloud.alicloudcdndomain.v1B\bApiProtoP\x01Zhgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudcdndomain/v1;alicloudcdndomainv1\xa2\x02\x05OOPAA\xaa\x022Org.Openmcf.Provider.Alicloud.Alicloudcdndomain.V1\xca\x022Org\\Openmcf\\Provider\\Alicloud\\Alicloudcdndomain\\V1\xe2\x02>Org\\Openmcf\\Provider\\Alicloud\\Alicloudcdndomain\\V1\\GPBMetadata\xea\x027Org::Openmcf::Provider::Alicloud::Alicloudcdndomain::V1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_api_proto_rawDescGZ
 
 var file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_api_proto_goTypes = []any{
-	(*AlicloudCdnDomain)(nil),             // 0: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomain
-	(*AlicloudCdnDomainStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainStatus
+	(*AliCloudCdnDomain)(nil),             // 0: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomain
+	(*AliCloudCdnDomainStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainStatus
 	(*shared.CloudResourceMetadata)(nil),  // 2: org.openmcf.shared.CloudResourceMetadata
-	(*AlicloudCdnDomainSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainSpec
-	(*AlicloudCdnDomainStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainStackOutputs
+	(*AliCloudCdnDomainSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainSpec
+	(*AliCloudCdnDomainStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_api_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomain.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
-	3, // 1: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomain.spec:type_name -> org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainSpec
-	1, // 2: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomain.status:type_name -> org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainStatus
-	4, // 3: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudcdndomain.v1.AlicloudCdnDomainStackOutputs
+	2, // 0: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomain.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
+	3, // 1: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomain.spec:type_name -> org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainSpec
+	1, // 2: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomain.status:type_name -> org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainStatus
+	4, // 3: org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudcdndomain.v1.AliCloudCdnDomainStackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

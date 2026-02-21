@@ -16,7 +16,7 @@ func zoneRecord(
 	zone *pvtz.Zone,
 	zoneName string,
 	index int,
-	record *alicloudprivatednszonev1.AlicloudPrivateDnsZoneRecord,
+	record *alicloudprivatednszonev1.AliCloudPrivateDnsZoneRecord,
 ) error {
 	resourceName := fmt.Sprintf("%s-%s-%s-%d", zoneName, record.Rr, record.Type, index)
 

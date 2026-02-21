@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudNatGatewayStackOutputs captures the outputs from deploying an
+// AliCloudNatGatewayStackOutputs captures the outputs from deploying an
 // Alibaba Cloud NAT Gateway with its associated EIP and SNAT entries.
-type AlicloudNatGatewayStackOutputs struct {
+type AliCloudNatGatewayStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The NAT Gateway ID assigned by Alibaba Cloud (e.g., "ngw-xxxxx").
 	NatGatewayId string `protobuf:"bytes,1,opt,name=nat_gateway_id,json=natGatewayId,proto3" json:"nat_gateway_id,omitempty"`
@@ -39,20 +39,20 @@ type AlicloudNatGatewayStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudNatGatewayStackOutputs) Reset() {
-	*x = AlicloudNatGatewayStackOutputs{}
+func (x *AliCloudNatGatewayStackOutputs) Reset() {
+	*x = AliCloudNatGatewayStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudNatGatewayStackOutputs) String() string {
+func (x *AliCloudNatGatewayStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudNatGatewayStackOutputs) ProtoMessage() {}
+func (*AliCloudNatGatewayStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudNatGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudNatGatewayStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,33 +64,33 @@ func (x *AlicloudNatGatewayStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudNatGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudNatGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudNatGatewayStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudNatGatewayStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudNatGatewayStackOutputs) GetNatGatewayId() string {
+func (x *AliCloudNatGatewayStackOutputs) GetNatGatewayId() string {
 	if x != nil {
 		return x.NatGatewayId
 	}
 	return ""
 }
 
-func (x *AlicloudNatGatewayStackOutputs) GetNatGatewayName() string {
+func (x *AliCloudNatGatewayStackOutputs) GetNatGatewayName() string {
 	if x != nil {
 		return x.NatGatewayName
 	}
 	return ""
 }
 
-func (x *AlicloudNatGatewayStackOutputs) GetSnatTableId() string {
+func (x *AliCloudNatGatewayStackOutputs) GetSnatTableId() string {
 	if x != nil {
 		return x.SnatTableId
 	}
 	return ""
 }
 
-func (x *AlicloudNatGatewayStackOutputs) GetForwardTableId() string {
+func (x *AliCloudNatGatewayStackOutputs) GetForwardTableId() string {
 	if x != nil {
 		return x.ForwardTableId
 	}
@@ -102,7 +102,7 @@ var File_org_openmcf_provider_alicloud_alicloudnatgateway_v1_stack_outputs_proto
 const file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Gorg/openmcf/provider/alicloud/alicloudnatgateway/v1/stack_outputs.proto\x123org.openmcf.provider.alicloud.alicloudnatgateway.v1\"\xbe\x01\n" +
-	"\x1eAlicloudNatGatewayStackOutputs\x12$\n" +
+	"\x1eAliCloudNatGatewayStackOutputs\x12$\n" +
 	"\x0enat_gateway_id\x18\x01 \x01(\tR\fnatGatewayId\x12(\n" +
 	"\x10nat_gateway_name\x18\x02 \x01(\tR\x0enatGatewayName\x12\"\n" +
 	"\rsnat_table_id\x18\x03 \x01(\tR\vsnatTableId\x12(\n" +
@@ -123,7 +123,7 @@ func file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_stack_outputs_prot
 
 var file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudNatGatewayStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AlicloudNatGatewayStackOutputs
+	(*AliCloudNatGatewayStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudnatgateway.v1.AliCloudNatGatewayStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudnatgateway_v1_stack_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

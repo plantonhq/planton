@@ -5,7 +5,7 @@ package org.openmcf.provider.alicloud.alicloudstoragebucket.v1;
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudStorageBucketSpec defines the configuration for an Alibaba Cloud Object
+// AliCloudStorageBucketSpec defines the configuration for an Alibaba Cloud Object
 // Storage Service (OSS) bucket.
 //
 // OSS is a cloud-native, S3-compatible object storage service. A bucket is the
@@ -23,7 +23,7 @@ import "org/openmcf/shared/options/options.proto";
 // Provider resources:
 //   Terraform: alicloud_oss_bucket
 //   Pulumi:    oss.Bucket
-message AlicloudStorageBucketSpec {
+message AliCloudStorageBucketSpec {
   // Alibaba Cloud region where the bucket will be created.
   // The region determines the physical location of stored data and the
   // available endpoints.
@@ -101,22 +101,22 @@ message AlicloudStorageBucketSpec {
   // Server-side encryption configuration.
   // When set, all objects stored in this bucket are encrypted at rest using
   // the specified algorithm. Omit to store objects without default encryption.
-  AlicloudStorageBucketEncryption server_side_encryption = 7;
+  AliCloudStorageBucketEncryption server_side_encryption = 7;
 
   // Lifecycle management rules for automatic object transitions and expiration.
   // Rules are evaluated independently; multiple rules can match the same object.
   // Maximum 1000 rules per bucket.
-  repeated AlicloudStorageBucketLifecycleRule lifecycle_rules = 8;
+  repeated AliCloudStorageBucketLifecycleRule lifecycle_rules = 8;
 
   // Cross-Origin Resource Sharing rules.
   // Required when browser-based clients need to access OSS directly.
   // Maximum 10 rules per bucket.
-  repeated AlicloudStorageBucketCorsRule cors_rules = 9;
+  repeated AliCloudStorageBucketCorsRule cors_rules = 9;
 
   // Server access logging configuration.
   // When set, OSS writes access logs to the specified target bucket.
   // Omit to disable access logging.
-  AlicloudStorageBucketLogging logging = 10;
+  AliCloudStorageBucketLogging logging = 10;
 
   // Allow force-destroying a non-empty bucket.
   // When true, Terraform/Pulumi will delete all objects in the bucket before
@@ -133,7 +133,7 @@ message AlicloudStorageBucketSpec {
 }
 
 // Server-side encryption configuration for an OSS bucket.
-message AlicloudStorageBucketEncryption {
+message AliCloudStorageBucketEncryption {
   // Encryption algorithm.
   // "AES256" uses OSS-managed keys (no additional configuration needed).
   // "KMS" uses Alibaba Cloud KMS; optionally specify kms_master_key_id for
@@ -158,7 +158,7 @@ message AlicloudStorageBucketEncryption {
 // Each rule applies to objects matching the given prefix. At least one action
 // (expiration, transition, abort multipart upload, or noncurrent version
 // expiration) should be configured for the rule to be meaningful.
-message AlicloudStorageBucketLifecycleRule {
+message AliCloudStorageBucketLifecycleRule {
   // Object name prefix that scopes this rule. An empty prefix applies
   // the rule to all objects in the bucket.
   string prefix = 1;
@@ -174,7 +174,7 @@ message AlicloudStorageBucketLifecycleRule {
 
   // Storage class transitions. Objects are moved to a cheaper storage tier
   // after the specified number of days.
-  repeated AlicloudStorageBucketLifecycleTransition transitions = 4;
+  repeated AliCloudStorageBucketLifecycleTransition transitions = 4;
 
   // Number of days after which incomplete multipart uploads are automatically
   // aborted. This prevents orphaned upload parts from consuming storage.
@@ -188,7 +188,7 @@ message AlicloudStorageBucketLifecycleRule {
 }
 
 // A storage class transition within a lifecycle rule.
-message AlicloudStorageBucketLifecycleTransition {
+message AliCloudStorageBucketLifecycleTransition {
   // Number of days after object creation to transition to the target
   // storage class.
   int32 days = 1 [(buf.validate.field).int32.gt = 0];
@@ -207,7 +207,7 @@ message AlicloudStorageBucketLifecycleTransition {
 }
 
 // CORS rule for browser-based cross-origin access to an OSS bucket.
-message AlicloudStorageBucketCorsRule {
+message AliCloudStorageBucketCorsRule {
   // Origins allowed to make cross-origin requests. Use "*" to allow all origins.
   // Example: ["https://example.com", "https://app.example.com"]
   repeated string allowed_origins = 1 [(buf.validate.field).repeated.min_items = 1];
@@ -230,7 +230,7 @@ message AlicloudStorageBucketCorsRule {
 }
 
 // Access logging configuration for an OSS bucket.
-message AlicloudStorageBucketLogging {
+message AliCloudStorageBucketLogging {
   // Destination bucket for access log objects. Can be the same bucket or a
   // different bucket in the same region.
   string target_bucket = 1 [

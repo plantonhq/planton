@@ -24,7 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudKubernetesNodePoolSpec defines the configuration for an ACK node pool.
+// AliCloudKubernetesNodePoolSpec defines the configuration for an ACK node pool.
 //
 // A node pool is a group of worker nodes within an ACK Managed Kubernetes
 // cluster that share the same instance type, scaling policy, and node
@@ -43,7 +43,7 @@ const (
 //
 // For cost-optimized workloads, use spot_strategy with multiple instance_types
 // to spread across spot instance pools.
-type AlicloudKubernetesNodePoolSpec struct {
+type AliCloudKubernetesNodePoolSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region. Must match the parent cluster's region.
 	// Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -71,9 +71,9 @@ type AlicloudKubernetesNodePoolSpec struct {
 	// Default: "AliyunLinux3"
 	ImageType *string `protobuf:"bytes,10,opt,name=image_type,json=imageType,proto3,oneof" json:"image_type,omitempty"`
 	// System disk configuration for the worker nodes.
-	SystemDisk *AlicloudKubernetesNodePoolSystemDisk `protobuf:"bytes,11,opt,name=system_disk,json=systemDisk,proto3" json:"system_disk,omitempty"`
+	SystemDisk *AliCloudKubernetesNodePoolSystemDisk `protobuf:"bytes,11,opt,name=system_disk,json=systemDisk,proto3" json:"system_disk,omitempty"`
 	// Additional data disks attached to each worker node.
-	DataDisks []*AlicloudKubernetesNodePoolDataDisk `protobuf:"bytes,12,rep,name=data_disks,json=dataDisks,proto3" json:"data_disks,omitempty"`
+	DataDisks []*AliCloudKubernetesNodePoolDataDisk `protobuf:"bytes,12,rep,name=data_disks,json=dataDisks,proto3" json:"data_disks,omitempty"`
 	// Security group IDs for the worker nodes.
 	// Immutable after creation.
 	// If omitted, the cluster's default security group is used.
@@ -98,7 +98,7 @@ type AlicloudKubernetesNodePoolSpec struct {
 	Labels map[string]string `protobuf:"bytes,30,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Kubernetes taints applied to all nodes in the pool.
 	// Taints repel pods unless the pod has a matching toleration.
-	Taints []*AlicloudKubernetesNodePoolTaint `protobuf:"bytes,31,rep,name=taints,proto3" json:"taints,omitempty"`
+	Taints []*AliCloudKubernetesNodePoolTaint `protobuf:"bytes,31,rep,name=taints,proto3" json:"taints,omitempty"`
 	// CPU management policy for nodes.
 	// "none" (default) -- standard CFS scheduling.
 	// "static" -- pin exclusive containers to specific CPUs; improves
@@ -124,7 +124,7 @@ type AlicloudKubernetesNodePoolSpec struct {
 	// Auto-scaling configuration. When enabled, the cluster auto-scaler
 	// adjusts the number of nodes between min_size and max_size based on
 	// pending pod resource requests.
-	ScalingConfig *AlicloudKubernetesNodePoolScalingConfig `protobuf:"bytes,40,opt,name=scaling_config,json=scalingConfig,proto3" json:"scaling_config,omitempty"`
+	ScalingConfig *AliCloudKubernetesNodePoolScalingConfig `protobuf:"bytes,40,opt,name=scaling_config,json=scalingConfig,proto3" json:"scaling_config,omitempty"`
 	// Multi-AZ scheduling policy when vswitch_ids spans multiple zones.
 	// "PRIORITY" -- allocate in the first AZ with available capacity.
 	// "COST_OPTIMIZED" -- allocate in the cheapest AZ.
@@ -133,7 +133,7 @@ type AlicloudKubernetesNodePoolSpec struct {
 	// Managed node pool lifecycle management settings.
 	// When enabled, ACK automatically repairs unhealthy nodes, upgrades
 	// kubelet versions, and patches vulnerabilities.
-	Management *AlicloudKubernetesNodePoolManagement `protobuf:"bytes,45,opt,name=management,proto3" json:"management,omitempty"`
+	Management *AliCloudKubernetesNodePoolManagement `protobuf:"bytes,45,opt,name=management,proto3" json:"management,omitempty"`
 	// Spot instance strategy for cost optimization.
 	// "NoSpot" (default) -- only on-demand instances.
 	// "SpotWithPriceLimit" -- spot instances with a price cap.
@@ -141,7 +141,7 @@ type AlicloudKubernetesNodePoolSpec struct {
 	SpotStrategy *string `protobuf:"bytes,50,opt,name=spot_strategy,json=spotStrategy,proto3,oneof" json:"spot_strategy,omitempty"`
 	// Per-instance-type price caps for spot instances.
 	// Only relevant when spot_strategy is "SpotWithPriceLimit".
-	SpotPriceLimits []*AlicloudKubernetesNodePoolSpotPriceLimit `protobuf:"bytes,51,rep,name=spot_price_limits,json=spotPriceLimits,proto3" json:"spot_price_limits,omitempty"`
+	SpotPriceLimits []*AliCloudKubernetesNodePoolSpotPriceLimit `protobuf:"bytes,51,rep,name=spot_price_limits,json=spotPriceLimits,proto3" json:"spot_price_limits,omitempty"`
 	// Billing method for worker node instances.
 	// "PostPaid" (default) -- pay-as-you-go.
 	// "PrePaid" -- subscription; requires period and optionally auto_renew.
@@ -169,20 +169,20 @@ type AlicloudKubernetesNodePoolSpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) Reset() {
-	*x = AlicloudKubernetesNodePoolSpec{}
+func (x *AliCloudKubernetesNodePoolSpec) Reset() {
+	*x = AliCloudKubernetesNodePoolSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) String() string {
+func (x *AliCloudKubernetesNodePoolSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKubernetesNodePoolSpec) ProtoMessage() {}
+func (*AliCloudKubernetesNodePoolSpec) ProtoMessage() {}
 
-func (x *AlicloudKubernetesNodePoolSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKubernetesNodePoolSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -194,252 +194,252 @@ func (x *AlicloudKubernetesNodePoolSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKubernetesNodePoolSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudKubernetesNodePoolSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKubernetesNodePoolSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudKubernetesNodePoolSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetRegion() string {
+func (x *AliCloudKubernetesNodePoolSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetClusterId() *v1.StringValueOrRef {
+func (x *AliCloudKubernetesNodePoolSpec) GetClusterId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ClusterId
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetName() string {
+func (x *AliCloudKubernetesNodePoolSpec) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetVswitchIds() []*v1.StringValueOrRef {
+func (x *AliCloudKubernetesNodePoolSpec) GetVswitchIds() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.VswitchIds
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetInstanceTypes() []string {
+func (x *AliCloudKubernetesNodePoolSpec) GetInstanceTypes() []string {
 	if x != nil {
 		return x.InstanceTypes
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetDesiredSize() int32 {
+func (x *AliCloudKubernetesNodePoolSpec) GetDesiredSize() int32 {
 	if x != nil && x.DesiredSize != nil {
 		return *x.DesiredSize
 	}
 	return 0
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetImageType() string {
+func (x *AliCloudKubernetesNodePoolSpec) GetImageType() string {
 	if x != nil && x.ImageType != nil {
 		return *x.ImageType
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetSystemDisk() *AlicloudKubernetesNodePoolSystemDisk {
+func (x *AliCloudKubernetesNodePoolSpec) GetSystemDisk() *AliCloudKubernetesNodePoolSystemDisk {
 	if x != nil {
 		return x.SystemDisk
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetDataDisks() []*AlicloudKubernetesNodePoolDataDisk {
+func (x *AliCloudKubernetesNodePoolSpec) GetDataDisks() []*AliCloudKubernetesNodePoolDataDisk {
 	if x != nil {
 		return x.DataDisks
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetSecurityGroupIds() []*v1.StringValueOrRef {
+func (x *AliCloudKubernetesNodePoolSpec) GetSecurityGroupIds() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.SecurityGroupIds
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetInternetMaxBandwidthOut() int32 {
+func (x *AliCloudKubernetesNodePoolSpec) GetInternetMaxBandwidthOut() int32 {
 	if x != nil && x.InternetMaxBandwidthOut != nil {
 		return *x.InternetMaxBandwidthOut
 	}
 	return 0
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetInternetChargeType() string {
+func (x *AliCloudKubernetesNodePoolSpec) GetInternetChargeType() string {
 	if x != nil && x.InternetChargeType != nil {
 		return *x.InternetChargeType
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetKeyName() string {
+func (x *AliCloudKubernetesNodePoolSpec) GetKeyName() string {
 	if x != nil {
 		return x.KeyName
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetPassword() string {
+func (x *AliCloudKubernetesNodePoolSpec) GetPassword() string {
 	if x != nil {
 		return x.Password
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetLabels() map[string]string {
+func (x *AliCloudKubernetesNodePoolSpec) GetLabels() map[string]string {
 	if x != nil {
 		return x.Labels
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetTaints() []*AlicloudKubernetesNodePoolTaint {
+func (x *AliCloudKubernetesNodePoolSpec) GetTaints() []*AliCloudKubernetesNodePoolTaint {
 	if x != nil {
 		return x.Taints
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetCpuPolicy() string {
+func (x *AliCloudKubernetesNodePoolSpec) GetCpuPolicy() string {
 	if x != nil && x.CpuPolicy != nil {
 		return *x.CpuPolicy
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetRuntimeName() string {
+func (x *AliCloudKubernetesNodePoolSpec) GetRuntimeName() string {
 	if x != nil {
 		return x.RuntimeName
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetRuntimeVersion() string {
+func (x *AliCloudKubernetesNodePoolSpec) GetRuntimeVersion() string {
 	if x != nil {
 		return x.RuntimeVersion
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetUnschedulable() bool {
+func (x *AliCloudKubernetesNodePoolSpec) GetUnschedulable() bool {
 	if x != nil && x.Unschedulable != nil {
 		return *x.Unschedulable
 	}
 	return false
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetUserData() string {
+func (x *AliCloudKubernetesNodePoolSpec) GetUserData() string {
 	if x != nil {
 		return x.UserData
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetInstallCloudMonitor() bool {
+func (x *AliCloudKubernetesNodePoolSpec) GetInstallCloudMonitor() bool {
 	if x != nil && x.InstallCloudMonitor != nil {
 		return *x.InstallCloudMonitor
 	}
 	return false
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetScalingConfig() *AlicloudKubernetesNodePoolScalingConfig {
+func (x *AliCloudKubernetesNodePoolSpec) GetScalingConfig() *AliCloudKubernetesNodePoolScalingConfig {
 	if x != nil {
 		return x.ScalingConfig
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetMultiAzPolicy() string {
+func (x *AliCloudKubernetesNodePoolSpec) GetMultiAzPolicy() string {
 	if x != nil && x.MultiAzPolicy != nil {
 		return *x.MultiAzPolicy
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetManagement() *AlicloudKubernetesNodePoolManagement {
+func (x *AliCloudKubernetesNodePoolSpec) GetManagement() *AliCloudKubernetesNodePoolManagement {
 	if x != nil {
 		return x.Management
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetSpotStrategy() string {
+func (x *AliCloudKubernetesNodePoolSpec) GetSpotStrategy() string {
 	if x != nil && x.SpotStrategy != nil {
 		return *x.SpotStrategy
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetSpotPriceLimits() []*AlicloudKubernetesNodePoolSpotPriceLimit {
+func (x *AliCloudKubernetesNodePoolSpec) GetSpotPriceLimits() []*AliCloudKubernetesNodePoolSpotPriceLimit {
 	if x != nil {
 		return x.SpotPriceLimits
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetInstanceChargeType() string {
+func (x *AliCloudKubernetesNodePoolSpec) GetInstanceChargeType() string {
 	if x != nil && x.InstanceChargeType != nil {
 		return *x.InstanceChargeType
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetPeriod() int32 {
+func (x *AliCloudKubernetesNodePoolSpec) GetPeriod() int32 {
 	if x != nil && x.Period != nil {
 		return *x.Period
 	}
 	return 0
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetAutoRenew() bool {
+func (x *AliCloudKubernetesNodePoolSpec) GetAutoRenew() bool {
 	if x != nil && x.AutoRenew != nil {
 		return *x.AutoRenew
 	}
 	return false
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetAutoRenewPeriod() int32 {
+func (x *AliCloudKubernetesNodePoolSpec) GetAutoRenewPeriod() int32 {
 	if x != nil && x.AutoRenewPeriod != nil {
 		return *x.AutoRenewPeriod
 	}
 	return 0
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetTags() map[string]string {
+func (x *AliCloudKubernetesNodePoolSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetResourceGroupId() string {
+func (x *AliCloudKubernetesNodePoolSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolSpec) GetRamRoleName() string {
+func (x *AliCloudKubernetesNodePoolSpec) GetRamRoleName() string {
 	if x != nil {
 		return x.RamRoleName
 	}
 	return ""
 }
 
-// AlicloudKubernetesNodePoolSystemDisk configures the system (OS) disk
+// AliCloudKubernetesNodePoolSystemDisk configures the system (OS) disk
 // for each worker node.
-type AlicloudKubernetesNodePoolSystemDisk struct {
+type AliCloudKubernetesNodePoolSystemDisk struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Disk category.
 	// Default: "cloud_essd"
@@ -460,20 +460,20 @@ type AlicloudKubernetesNodePoolSystemDisk struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudKubernetesNodePoolSystemDisk) Reset() {
-	*x = AlicloudKubernetesNodePoolSystemDisk{}
+func (x *AliCloudKubernetesNodePoolSystemDisk) Reset() {
+	*x = AliCloudKubernetesNodePoolSystemDisk{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKubernetesNodePoolSystemDisk) String() string {
+func (x *AliCloudKubernetesNodePoolSystemDisk) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKubernetesNodePoolSystemDisk) ProtoMessage() {}
+func (*AliCloudKubernetesNodePoolSystemDisk) ProtoMessage() {}
 
-func (x *AlicloudKubernetesNodePoolSystemDisk) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKubernetesNodePoolSystemDisk) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -485,49 +485,49 @@ func (x *AlicloudKubernetesNodePoolSystemDisk) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKubernetesNodePoolSystemDisk.ProtoReflect.Descriptor instead.
-func (*AlicloudKubernetesNodePoolSystemDisk) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKubernetesNodePoolSystemDisk.ProtoReflect.Descriptor instead.
+func (*AliCloudKubernetesNodePoolSystemDisk) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudKubernetesNodePoolSystemDisk) GetCategory() string {
+func (x *AliCloudKubernetesNodePoolSystemDisk) GetCategory() string {
 	if x != nil && x.Category != nil {
 		return *x.Category
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolSystemDisk) GetSize() int32 {
+func (x *AliCloudKubernetesNodePoolSystemDisk) GetSize() int32 {
 	if x != nil && x.Size != nil {
 		return *x.Size
 	}
 	return 0
 }
 
-func (x *AlicloudKubernetesNodePoolSystemDisk) GetPerformanceLevel() string {
+func (x *AliCloudKubernetesNodePoolSystemDisk) GetPerformanceLevel() string {
 	if x != nil {
 		return x.PerformanceLevel
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolSystemDisk) GetEncrypted() bool {
+func (x *AliCloudKubernetesNodePoolSystemDisk) GetEncrypted() bool {
 	if x != nil && x.Encrypted != nil {
 		return *x.Encrypted
 	}
 	return false
 }
 
-func (x *AlicloudKubernetesNodePoolSystemDisk) GetKmsKeyId() string {
+func (x *AliCloudKubernetesNodePoolSystemDisk) GetKmsKeyId() string {
 	if x != nil {
 		return x.KmsKeyId
 	}
 	return ""
 }
 
-// AlicloudKubernetesNodePoolDataDisk configures an additional data disk
+// AliCloudKubernetesNodePoolDataDisk configures an additional data disk
 // attached to each worker node.
-type AlicloudKubernetesNodePoolDataDisk struct {
+type AliCloudKubernetesNodePoolDataDisk struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Disk category.
 	// Default: "cloud_essd"
@@ -547,20 +547,20 @@ type AlicloudKubernetesNodePoolDataDisk struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudKubernetesNodePoolDataDisk) Reset() {
-	*x = AlicloudKubernetesNodePoolDataDisk{}
+func (x *AliCloudKubernetesNodePoolDataDisk) Reset() {
+	*x = AliCloudKubernetesNodePoolDataDisk{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKubernetesNodePoolDataDisk) String() string {
+func (x *AliCloudKubernetesNodePoolDataDisk) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKubernetesNodePoolDataDisk) ProtoMessage() {}
+func (*AliCloudKubernetesNodePoolDataDisk) ProtoMessage() {}
 
-func (x *AlicloudKubernetesNodePoolDataDisk) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKubernetesNodePoolDataDisk) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -572,56 +572,56 @@ func (x *AlicloudKubernetesNodePoolDataDisk) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKubernetesNodePoolDataDisk.ProtoReflect.Descriptor instead.
-func (*AlicloudKubernetesNodePoolDataDisk) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKubernetesNodePoolDataDisk.ProtoReflect.Descriptor instead.
+func (*AliCloudKubernetesNodePoolDataDisk) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AlicloudKubernetesNodePoolDataDisk) GetCategory() string {
+func (x *AliCloudKubernetesNodePoolDataDisk) GetCategory() string {
 	if x != nil && x.Category != nil {
 		return *x.Category
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolDataDisk) GetSize() int32 {
+func (x *AliCloudKubernetesNodePoolDataDisk) GetSize() int32 {
 	if x != nil {
 		return x.Size
 	}
 	return 0
 }
 
-func (x *AlicloudKubernetesNodePoolDataDisk) GetName() string {
+func (x *AliCloudKubernetesNodePoolDataDisk) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolDataDisk) GetPerformanceLevel() string {
+func (x *AliCloudKubernetesNodePoolDataDisk) GetPerformanceLevel() string {
 	if x != nil {
 		return x.PerformanceLevel
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolDataDisk) GetEncrypted() string {
+func (x *AliCloudKubernetesNodePoolDataDisk) GetEncrypted() string {
 	if x != nil {
 		return x.Encrypted
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolDataDisk) GetKmsKeyId() string {
+func (x *AliCloudKubernetesNodePoolDataDisk) GetKmsKeyId() string {
 	if x != nil {
 		return x.KmsKeyId
 	}
 	return ""
 }
 
-// AlicloudKubernetesNodePoolTaint defines a Kubernetes taint applied to
+// AliCloudKubernetesNodePoolTaint defines a Kubernetes taint applied to
 // all nodes in the pool.
-type AlicloudKubernetesNodePoolTaint struct {
+type AliCloudKubernetesNodePoolTaint struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Taint key. Must be a valid Kubernetes label key.
 	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
@@ -636,20 +636,20 @@ type AlicloudKubernetesNodePoolTaint struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudKubernetesNodePoolTaint) Reset() {
-	*x = AlicloudKubernetesNodePoolTaint{}
+func (x *AliCloudKubernetesNodePoolTaint) Reset() {
+	*x = AliCloudKubernetesNodePoolTaint{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKubernetesNodePoolTaint) String() string {
+func (x *AliCloudKubernetesNodePoolTaint) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKubernetesNodePoolTaint) ProtoMessage() {}
+func (*AliCloudKubernetesNodePoolTaint) ProtoMessage() {}
 
-func (x *AlicloudKubernetesNodePoolTaint) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKubernetesNodePoolTaint) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -661,35 +661,35 @@ func (x *AlicloudKubernetesNodePoolTaint) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKubernetesNodePoolTaint.ProtoReflect.Descriptor instead.
-func (*AlicloudKubernetesNodePoolTaint) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKubernetesNodePoolTaint.ProtoReflect.Descriptor instead.
+func (*AliCloudKubernetesNodePoolTaint) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *AlicloudKubernetesNodePoolTaint) GetKey() string {
+func (x *AliCloudKubernetesNodePoolTaint) GetKey() string {
 	if x != nil {
 		return x.Key
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolTaint) GetValue() string {
+func (x *AliCloudKubernetesNodePoolTaint) GetValue() string {
 	if x != nil {
 		return x.Value
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolTaint) GetEffect() string {
+func (x *AliCloudKubernetesNodePoolTaint) GetEffect() string {
 	if x != nil {
 		return x.Effect
 	}
 	return ""
 }
 
-// AlicloudKubernetesNodePoolScalingConfig configures the cluster auto-scaler
+// AliCloudKubernetesNodePoolScalingConfig configures the cluster auto-scaler
 // for this node pool.
-type AlicloudKubernetesNodePoolScalingConfig struct {
+type AliCloudKubernetesNodePoolScalingConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Whether auto-scaling is enabled.
 	// Default: true (when scaling_config is present).
@@ -710,20 +710,20 @@ type AlicloudKubernetesNodePoolScalingConfig struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudKubernetesNodePoolScalingConfig) Reset() {
-	*x = AlicloudKubernetesNodePoolScalingConfig{}
+func (x *AliCloudKubernetesNodePoolScalingConfig) Reset() {
+	*x = AliCloudKubernetesNodePoolScalingConfig{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKubernetesNodePoolScalingConfig) String() string {
+func (x *AliCloudKubernetesNodePoolScalingConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKubernetesNodePoolScalingConfig) ProtoMessage() {}
+func (*AliCloudKubernetesNodePoolScalingConfig) ProtoMessage() {}
 
-func (x *AlicloudKubernetesNodePoolScalingConfig) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKubernetesNodePoolScalingConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -735,42 +735,42 @@ func (x *AlicloudKubernetesNodePoolScalingConfig) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKubernetesNodePoolScalingConfig.ProtoReflect.Descriptor instead.
-func (*AlicloudKubernetesNodePoolScalingConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKubernetesNodePoolScalingConfig.ProtoReflect.Descriptor instead.
+func (*AliCloudKubernetesNodePoolScalingConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *AlicloudKubernetesNodePoolScalingConfig) GetEnable() bool {
+func (x *AliCloudKubernetesNodePoolScalingConfig) GetEnable() bool {
 	if x != nil && x.Enable != nil {
 		return *x.Enable
 	}
 	return false
 }
 
-func (x *AlicloudKubernetesNodePoolScalingConfig) GetMinSize() int32 {
+func (x *AliCloudKubernetesNodePoolScalingConfig) GetMinSize() int32 {
 	if x != nil {
 		return x.MinSize
 	}
 	return 0
 }
 
-func (x *AlicloudKubernetesNodePoolScalingConfig) GetMaxSize() int32 {
+func (x *AliCloudKubernetesNodePoolScalingConfig) GetMaxSize() int32 {
 	if x != nil {
 		return x.MaxSize
 	}
 	return 0
 }
 
-func (x *AlicloudKubernetesNodePoolScalingConfig) GetType() string {
+func (x *AliCloudKubernetesNodePoolScalingConfig) GetType() string {
 	if x != nil && x.Type != nil {
 		return *x.Type
 	}
 	return ""
 }
 
-// AlicloudKubernetesNodePoolManagement configures automatic lifecycle
+// AliCloudKubernetesNodePoolManagement configures automatic lifecycle
 // management for a managed node pool.
-type AlicloudKubernetesNodePoolManagement struct {
+type AliCloudKubernetesNodePoolManagement struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Whether managed node pool features are enabled.
 	// Default: true
@@ -789,20 +789,20 @@ type AlicloudKubernetesNodePoolManagement struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudKubernetesNodePoolManagement) Reset() {
-	*x = AlicloudKubernetesNodePoolManagement{}
+func (x *AliCloudKubernetesNodePoolManagement) Reset() {
+	*x = AliCloudKubernetesNodePoolManagement{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKubernetesNodePoolManagement) String() string {
+func (x *AliCloudKubernetesNodePoolManagement) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKubernetesNodePoolManagement) ProtoMessage() {}
+func (*AliCloudKubernetesNodePoolManagement) ProtoMessage() {}
 
-func (x *AlicloudKubernetesNodePoolManagement) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKubernetesNodePoolManagement) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -814,42 +814,42 @@ func (x *AlicloudKubernetesNodePoolManagement) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKubernetesNodePoolManagement.ProtoReflect.Descriptor instead.
-func (*AlicloudKubernetesNodePoolManagement) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKubernetesNodePoolManagement.ProtoReflect.Descriptor instead.
+func (*AliCloudKubernetesNodePoolManagement) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *AlicloudKubernetesNodePoolManagement) GetEnable() bool {
+func (x *AliCloudKubernetesNodePoolManagement) GetEnable() bool {
 	if x != nil && x.Enable != nil {
 		return *x.Enable
 	}
 	return false
 }
 
-func (x *AlicloudKubernetesNodePoolManagement) GetAutoRepair() bool {
+func (x *AliCloudKubernetesNodePoolManagement) GetAutoRepair() bool {
 	if x != nil && x.AutoRepair != nil {
 		return *x.AutoRepair
 	}
 	return false
 }
 
-func (x *AlicloudKubernetesNodePoolManagement) GetAutoUpgrade() bool {
+func (x *AliCloudKubernetesNodePoolManagement) GetAutoUpgrade() bool {
 	if x != nil && x.AutoUpgrade != nil {
 		return *x.AutoUpgrade
 	}
 	return false
 }
 
-func (x *AlicloudKubernetesNodePoolManagement) GetMaxUnavailable() int32 {
+func (x *AliCloudKubernetesNodePoolManagement) GetMaxUnavailable() int32 {
 	if x != nil && x.MaxUnavailable != nil {
 		return *x.MaxUnavailable
 	}
 	return 0
 }
 
-// AlicloudKubernetesNodePoolSpotPriceLimit defines a price cap for a
+// AliCloudKubernetesNodePoolSpotPriceLimit defines a price cap for a
 // specific spot instance type.
-type AlicloudKubernetesNodePoolSpotPriceLimit struct {
+type AliCloudKubernetesNodePoolSpotPriceLimit struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// ECS instance type (e.g., "ecs.g7.xlarge").
 	// Must be one of the types listed in instance_types.
@@ -861,20 +861,20 @@ type AlicloudKubernetesNodePoolSpotPriceLimit struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudKubernetesNodePoolSpotPriceLimit) Reset() {
-	*x = AlicloudKubernetesNodePoolSpotPriceLimit{}
+func (x *AliCloudKubernetesNodePoolSpotPriceLimit) Reset() {
+	*x = AliCloudKubernetesNodePoolSpotPriceLimit{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKubernetesNodePoolSpotPriceLimit) String() string {
+func (x *AliCloudKubernetesNodePoolSpotPriceLimit) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKubernetesNodePoolSpotPriceLimit) ProtoMessage() {}
+func (*AliCloudKubernetesNodePoolSpotPriceLimit) ProtoMessage() {}
 
-func (x *AlicloudKubernetesNodePoolSpotPriceLimit) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKubernetesNodePoolSpotPriceLimit) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -886,19 +886,19 @@ func (x *AlicloudKubernetesNodePoolSpotPriceLimit) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKubernetesNodePoolSpotPriceLimit.ProtoReflect.Descriptor instead.
-func (*AlicloudKubernetesNodePoolSpotPriceLimit) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKubernetesNodePoolSpotPriceLimit.ProtoReflect.Descriptor instead.
+func (*AliCloudKubernetesNodePoolSpotPriceLimit) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *AlicloudKubernetesNodePoolSpotPriceLimit) GetInstanceType() string {
+func (x *AliCloudKubernetesNodePoolSpotPriceLimit) GetInstanceType() string {
 	if x != nil {
 		return x.InstanceType
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolSpotPriceLimit) GetPriceLimit() string {
+func (x *AliCloudKubernetesNodePoolSpotPriceLimit) GetPriceLimit() string {
 	if x != nil {
 		return x.PriceLimit
 	}
@@ -910,7 +910,7 @@ var File_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto 
 const file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"Forg/openmcf/provider/alicloud/alicloudkubernetesnodepool/v1/spec.proto\x12;org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb1!\n" +
-	"\x1eAlicloudKubernetesNodePoolSpec\x12\"\n" +
+	"\x1eAliCloudKubernetesNodePoolSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12{\n" +
 	"\n" +
@@ -926,18 +926,18 @@ const file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_prot
 	"image_type\x18\n" +
 	" \x01(\tB\xa9\x03\xbaH\x95\x03\xba\x01\x91\x03\n" +
 	"\x10image_type_valid\x12\xb3\x01image_type must be one of: AliyunLinux, AliyunLinux3, AliyunLinux3Arm64, AliyunLinuxUEFI, CentOS, Windows, WindowsCore, ContainerOS, Ubuntu, AliyunLinux3ContainerOptimized, Custom\x1a\xc6\x01this == '' || this in ['AliyunLinux', 'AliyunLinux3', 'AliyunLinux3Arm64', 'AliyunLinuxUEFI', 'CentOS', 'Windows', 'WindowsCore', 'ContainerOS', 'Ubuntu', 'AliyunLinux3ContainerOptimized', 'Custom']\x8a\xa6\x1d\fAliyunLinux3H\x01R\timageType\x88\x01\x01\x12\x82\x01\n" +
-	"\vsystem_disk\x18\v \x01(\v2a.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSystemDiskR\n" +
+	"\vsystem_disk\x18\v \x01(\v2a.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSystemDiskR\n" +
 	"systemDisk\x12~\n" +
 	"\n" +
-	"data_disks\x18\f \x03(\v2_.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolDataDiskR\tdataDisks\x12\x8b\x01\n" +
+	"data_disks\x18\f \x03(\v2_.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolDataDiskR\tdataDisks\x12\x8b\x01\n" +
 	"\x12security_group_ids\x18\x14 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xce\x17\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12K\n" +
 	"\x1ainternet_max_bandwidth_out\x18\x15 \x01(\x05B\t\xbaH\x06\x1a\x04\x18d(\x00H\x02R\x17internetMaxBandwidthOut\x88\x01\x01\x12\xd9\x01\n" +
 	"\x14internet_charge_type\x18\x16 \x01(\tB\xa1\x01\xbaH\x9d\x01\xba\x01\x99\x01\n" +
 	"\x1ainternet_charge_type_valid\x12Ainternet_charge_type must be one of: PayByBandwidth, PayByTraffic\x1a8this == '' || this in ['PayByBandwidth', 'PayByTraffic']H\x03R\x12internetChargeType\x88\x01\x01\x12\x19\n" +
 	"\bkey_name\x18\x19 \x01(\tR\akeyName\x12\x1a\n" +
 	"\bpassword\x18\x1a \x01(\tR\bpassword\x12\x7f\n" +
-	"\x06labels\x18\x1e \x03(\v2g.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec.LabelsEntryR\x06labels\x12t\n" +
-	"\x06taints\x18\x1f \x03(\v2\\.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolTaintR\x06taints\x12\x8f\x01\n" +
+	"\x06labels\x18\x1e \x03(\v2g.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.LabelsEntryR\x06labels\x12t\n" +
+	"\x06taints\x18\x1f \x03(\v2\\.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolTaintR\x06taints\x12\x8f\x01\n" +
 	"\n" +
 	"cpu_policy\x18  \x01(\tBk\xbaHh\xba\x01e\n" +
 	"\x10cpu_policy_valid\x12'cpu_policy must be one of: none, static\x1a(this == '' || this in ['none', 'static']H\x04R\tcpuPolicy\x88\x01\x01\x12!\n" +
@@ -946,15 +946,15 @@ const file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_prot
 	"\runschedulable\x18# \x01(\bH\x05R\runschedulable\x88\x01\x01\x12\x1b\n" +
 	"\tuser_data\x18$ \x01(\tR\buserData\x12A\n" +
 	"\x15install_cloud_monitor\x18% \x01(\bB\b\x8a\xa6\x1d\x04trueH\x06R\x13installCloudMonitor\x88\x01\x01\x12\x8b\x01\n" +
-	"\x0escaling_config\x18( \x01(\v2d.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolScalingConfigR\rscalingConfig\x12\xd1\x01\n" +
+	"\x0escaling_config\x18( \x01(\v2d.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolScalingConfigR\rscalingConfig\x12\xd1\x01\n" +
 	"\x0fmulti_az_policy\x18) \x01(\tB\xa3\x01\xbaH\x9f\x01\xba\x01\x9b\x01\n" +
 	"\x15multi_az_policy_valid\x12Amulti_az_policy must be one of: PRIORITY, COST_OPTIMIZED, BALANCE\x1a?this == '' || this in ['PRIORITY', 'COST_OPTIMIZED', 'BALANCE']H\aR\rmultiAzPolicy\x88\x01\x01\x12\x81\x01\n" +
 	"\n" +
-	"management\x18- \x01(\v2a.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolManagementR\n" +
+	"management\x18- \x01(\v2a.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolManagementR\n" +
 	"management\x12\xda\x01\n" +
 	"\rspot_strategy\x182 \x01(\tB\xaf\x01\xbaH\xab\x01\xba\x01\xa7\x01\n" +
 	"\x13spot_strategy_valid\x12Gspot_strategy must be one of: NoSpot, SpotWithPriceLimit, SpotAsPriceGo\x1aGthis == '' || this in ['NoSpot', 'SpotWithPriceLimit', 'SpotAsPriceGo']H\bR\fspotStrategy\x88\x01\x01\x12\x91\x01\n" +
-	"\x11spot_price_limits\x183 \x03(\v2e.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpotPriceLimitR\x0fspotPriceLimits\x12\xcf\x01\n" +
+	"\x11spot_price_limits\x183 \x03(\v2e.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpotPriceLimitR\x0fspotPriceLimits\x12\xcf\x01\n" +
 	"\x14instance_charge_type\x187 \x01(\tB\x97\x01\xbaH\x87\x01\xba\x01\x83\x01\n" +
 	"\x1ainstance_charge_type_valid\x126instance_charge_type must be one of: PostPaid, PrePaid\x1a-this == '' || this in ['PostPaid', 'PrePaid']\x8a\xa6\x1d\bPostPaidH\tR\x12instanceChargeType\x88\x01\x01\x12\x7f\n" +
 	"\x06period\x188 \x01(\x05Bb\xbaH_\xba\x01\\\n" +
@@ -964,7 +964,7 @@ const file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_prot
 	"auto_renew\x189 \x01(\bH\vR\tautoRenew\x88\x01\x01\x12\xa9\x01\n" +
 	"\x11auto_renew_period\x18: \x01(\x05Bx\xbaHu\xba\x01r\n" +
 	"\x17auto_renew_period_valid\x120auto_renew_period must be one of: 1, 2, 3, 6, 12\x1a%this == 0 || this in [1, 2, 3, 6, 12]H\fR\x0fautoRenewPeriod\x88\x01\x01\x12y\n" +
-	"\x04tags\x18< \x03(\v2e.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec.TagsEntryR\x04tags\x12*\n" +
+	"\x04tags\x18< \x03(\v2e.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.TagsEntryR\x04tags\x12*\n" +
 	"\x11resource_group_id\x18= \x01(\tR\x0fresourceGroupId\x12\"\n" +
 	"\rram_role_name\x18> \x01(\tR\vramRoleName\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
@@ -986,7 +986,7 @@ const file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_prot
 	"\a_periodB\r\n" +
 	"\v_auto_renewB\x14\n" +
 	"\x12_auto_renew_period\"\xf2\x04\n" +
-	"$AlicloudKubernetesNodePoolSystemDisk\x12\xf7\x01\n" +
+	"$AliCloudKubernetesNodePoolSystemDisk\x12\xf7\x01\n" +
 	"\bcategory\x18\x01 \x01(\tB\xd5\x01\xbaH\xc3\x01\xba\x01\xbf\x01\n" +
 	"\x1asystem_disk_category_valid\x12Lcategory must be one of: cloud_efficiency, cloud_ssd, cloud_essd, cloud_auto\x1aSthis == '' || this in ['cloud_efficiency', 'cloud_ssd', 'cloud_essd', 'cloud_auto']\x8a\xa6\x1d\n" +
 	"cloud_essdH\x00R\bcategory\x88\x01\x01\x12*\n" +
@@ -1000,7 +1000,7 @@ const file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_prot
 	"\x05_sizeB\f\n" +
 	"\n" +
 	"_encrypted\"\xdc\x04\n" +
-	"\"AlicloudKubernetesNodePoolDataDisk\x12\xf5\x01\n" +
+	"\"AliCloudKubernetesNodePoolDataDisk\x12\xf5\x01\n" +
 	"\bcategory\x18\x01 \x01(\tB\xd3\x01\xbaH\xc1\x01\xba\x01\xbd\x01\n" +
 	"\x18data_disk_category_valid\x12Lcategory must be one of: cloud_efficiency, cloud_ssd, cloud_essd, cloud_auto\x1aSthis == '' || this in ['cloud_efficiency', 'cloud_ssd', 'cloud_essd', 'cloud_auto']\x8a\xa6\x1d\n" +
 	"cloud_essdH\x00R\bcategory\x88\x01\x01\x12\"\n" +
@@ -1012,13 +1012,13 @@ const file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_prot
 	"\n" +
 	"kms_key_id\x18\x06 \x01(\tR\bkmsKeyIdB\v\n" +
 	"\t_category\"\x94\x02\n" +
-	"\x1fAlicloudKubernetesNodePoolTaint\x12\x1c\n" +
+	"\x1fAliCloudKubernetesNodePoolTaint\x12\x1c\n" +
 	"\x03key\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value\x12\xbc\x01\n" +
 	"\x06effect\x18\x03 \x01(\tB\xa3\x01\xbaH\x9f\x01\xba\x01\x9b\x01\n" +
 	"\x12taint_effect_valid\x12>effect must be one of: NoSchedule, PreferNoSchedule, NoExecute\x1aEthis == '' || this in ['NoSchedule', 'PreferNoSchedule', 'NoExecute']R\x06effect\"\xd3\x02\n" +
-	"'AlicloudKubernetesNodePoolScalingConfig\x12%\n" +
+	"'AliCloudKubernetesNodePoolScalingConfig\x12%\n" +
 	"\x06enable\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\x06enable\x88\x01\x01\x12%\n" +
 	"\bmin_size\x18\x02 \x01(\x05B\n" +
 	"\xbaH\a\x1a\x05\x18\xe8\a(\x00R\aminSize\x12%\n" +
@@ -1028,7 +1028,7 @@ const file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_prot
 	"\x12scaling_type_valid\x12-type must be one of: cpu, gpu, gpushare, spot\x1a8this == '' || this in ['cpu', 'gpu', 'gpushare', 'spot']H\x01R\x04type\x88\x01\x01B\t\n" +
 	"\a_enableB\a\n" +
 	"\x05_type\"\x95\x02\n" +
-	"$AlicloudKubernetesNodePoolManagement\x12%\n" +
+	"$AliCloudKubernetesNodePoolManagement\x12%\n" +
 	"\x06enable\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\x06enable\x88\x01\x01\x12$\n" +
 	"\vauto_repair\x18\x02 \x01(\bH\x01R\n" +
 	"autoRepair\x88\x01\x01\x12&\n" +
@@ -1039,7 +1039,7 @@ const file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_prot
 	"\f_auto_repairB\x0f\n" +
 	"\r_auto_upgradeB\x12\n" +
 	"\x10_max_unavailable\"p\n" +
-	"(AlicloudKubernetesNodePoolSpotPriceLimit\x12#\n" +
+	"(AliCloudKubernetesNodePoolSpotPriceLimit\x12#\n" +
 	"\rinstance_type\x18\x01 \x01(\tR\finstanceType\x12\x1f\n" +
 	"\vprice_limit\x18\x02 \x01(\tR\n" +
 	"priceLimitB\xdb\x03\n" +
@@ -1059,29 +1059,29 @@ func file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto
 
 var file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_goTypes = []any{
-	(*AlicloudKubernetesNodePoolSpec)(nil),           // 0: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec
-	(*AlicloudKubernetesNodePoolSystemDisk)(nil),     // 1: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSystemDisk
-	(*AlicloudKubernetesNodePoolDataDisk)(nil),       // 2: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolDataDisk
-	(*AlicloudKubernetesNodePoolTaint)(nil),          // 3: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolTaint
-	(*AlicloudKubernetesNodePoolScalingConfig)(nil),  // 4: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolScalingConfig
-	(*AlicloudKubernetesNodePoolManagement)(nil),     // 5: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolManagement
-	(*AlicloudKubernetesNodePoolSpotPriceLimit)(nil), // 6: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpotPriceLimit
-	nil,                         // 7: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec.LabelsEntry
-	nil,                         // 8: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec.TagsEntry
+	(*AliCloudKubernetesNodePoolSpec)(nil),           // 0: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec
+	(*AliCloudKubernetesNodePoolSystemDisk)(nil),     // 1: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSystemDisk
+	(*AliCloudKubernetesNodePoolDataDisk)(nil),       // 2: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolDataDisk
+	(*AliCloudKubernetesNodePoolTaint)(nil),          // 3: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolTaint
+	(*AliCloudKubernetesNodePoolScalingConfig)(nil),  // 4: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolScalingConfig
+	(*AliCloudKubernetesNodePoolManagement)(nil),     // 5: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolManagement
+	(*AliCloudKubernetesNodePoolSpotPriceLimit)(nil), // 6: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpotPriceLimit
+	nil,                         // 7: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.LabelsEntry
+	nil,                         // 8: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.TagsEntry
 	(*v1.StringValueOrRef)(nil), // 9: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_depIdxs = []int32{
-	9,  // 0: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec.cluster_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	9,  // 1: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec.vswitch_ids:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	1,  // 2: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec.system_disk:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSystemDisk
-	2,  // 3: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec.data_disks:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolDataDisk
-	9,  // 4: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec.security_group_ids:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	7,  // 5: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec.labels:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec.LabelsEntry
-	3,  // 6: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec.taints:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolTaint
-	4,  // 7: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec.scaling_config:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolScalingConfig
-	5,  // 8: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec.management:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolManagement
-	6,  // 9: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec.spot_price_limits:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpotPriceLimit
-	8,  // 10: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolSpec.TagsEntry
+	9,  // 0: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.cluster_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	9,  // 1: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.vswitch_ids:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	1,  // 2: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.system_disk:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSystemDisk
+	2,  // 3: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.data_disks:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolDataDisk
+	9,  // 4: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.security_group_ids:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	7,  // 5: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.labels:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.LabelsEntry
+	3,  // 6: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.taints:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolTaint
+	4,  // 7: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.scaling_config:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolScalingConfig
+	5,  // 8: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.management:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolManagement
+	6,  // 9: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.spot_price_limits:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpotPriceLimit
+	8,  // 10: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.TagsEntry
 	11, // [11:11] is the sub-list for method output_type
 	11, // [11:11] is the sub-list for method input_type
 	11, // [11:11] is the sub-list for extension type_name

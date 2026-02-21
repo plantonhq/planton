@@ -12,7 +12,7 @@ func consumerGroup(
 	ctx *pulumi.Context,
 	provider *alicloud.Provider,
 	instance *rocketmq.RocketMQInstance,
-	cg *alicloudrocketmqinstancev1.AlicloudRocketmqConsumerGroup,
+	cg *alicloudrocketmqinstancev1.AliCloudRocketmqConsumerGroup,
 ) (*rocketmq.ConsumerGroup, error) {
 	retryPolicyArgs := rocketmq.ConsumerGroupConsumeRetryPolicyArgs{
 		RetryPolicy: pulumi.StringPtr(retryPolicy(cg)),

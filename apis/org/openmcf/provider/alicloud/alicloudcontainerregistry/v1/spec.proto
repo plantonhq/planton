@@ -5,7 +5,7 @@ package org.openmcf.provider.alicloud.alicloudcontainerregistry.v1;
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudContainerRegistrySpec defines the configuration for an Alibaba Cloud
+// AliCloudContainerRegistrySpec defines the configuration for an Alibaba Cloud
 // Container Registry (ACR) Enterprise Edition instance bundled with namespaces.
 //
 // ACR Enterprise Edition provides a managed container image registry with
@@ -24,7 +24,7 @@ import "org/openmcf/shared/options/options.proto";
 // Provider resources:
 //   Terraform: alicloud_cr_ee_instance + alicloud_cr_ee_namespace
 //   Pulumi:    cr.RegistryEnterpriseInstance + cs.RegistryEnterpriseNamespace
-message AlicloudContainerRegistrySpec {
+message AliCloudContainerRegistrySpec {
   // Alibaba Cloud region where the registry instance will be created.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
   string region = 1 [
@@ -85,15 +85,15 @@ message AlicloudContainerRegistrySpec {
   // Namespaces to create within the registry instance.
   // Namespaces are the top-level organizational units for container images.
   // Images are addressed as: {registry-endpoint}/{namespace}/{repo}:{tag}
-  repeated AlicloudContainerRegistryNamespace namespaces = 8;
+  repeated AliCloudContainerRegistryNamespace namespaces = 8;
 }
 
-// AlicloudContainerRegistryNamespace defines a namespace within the ACR
+// AliCloudContainerRegistryNamespace defines a namespace within the ACR
 // Enterprise Edition instance.
 //
 // Namespaces group related image repositories. A typical pattern is one
 // namespace per team or application (e.g., "platform", "frontend", "backend").
-message AlicloudContainerRegistryNamespace {
+message AliCloudContainerRegistryNamespace {
   // Namespace name. 2-120 characters; can contain lowercase letters, digits,
   // underscores, hyphens, and periods. Cannot start or end with a delimiter.
   string name = 1 [

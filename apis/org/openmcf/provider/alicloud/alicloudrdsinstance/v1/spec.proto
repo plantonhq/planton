@@ -6,7 +6,7 @@ import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudRdsInstanceSpec defines the configuration for an Alibaba Cloud RDS
+// AliCloudRdsInstanceSpec defines the configuration for an Alibaba Cloud RDS
 // (Relational Database Service) instance with bundled databases, accounts, and
 // account privileges.
 //
@@ -34,7 +34,7 @@ import "org/openmcf/shared/options/options.proto";
 // Provider resources:
 //   Terraform: alicloud_db_instance + alicloud_db_database + alicloud_rds_account + alicloud_db_account_privilege
 //   Pulumi:    rds.Instance + rds.Database + rds.RdsAccount + rds.AccountPrivilege
-message AlicloudRdsInstanceSpec {
+message AliCloudRdsInstanceSpec {
   // Alibaba Cloud region where the RDS instance will be created.
   // Must match the region of the VSwitch.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -82,7 +82,7 @@ message AlicloudRdsInstanceSpec {
   // VPC and availability zone from the VSwitch.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 6 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
   ];
 
@@ -221,17 +221,17 @@ message AlicloudRdsInstanceSpec {
   // engine configuration value, overriding the default from the parameter
   // group. Refer to Alibaba Cloud documentation for valid parameter names
   // and value ranges per engine.
-  repeated AlicloudRdsParameter parameters = 26;
+  repeated AliCloudRdsParameter parameters = 26;
 
   // Databases to create within the RDS instance.
-  repeated AlicloudRdsDatabase databases = 27;
+  repeated AliCloudRdsDatabase databases = 27;
 
   // Database accounts to create within the RDS instance.
-  repeated AlicloudRdsAccount accounts = 28;
+  repeated AliCloudRdsAccount accounts = 28;
 }
 
-// AlicloudRdsParameter represents a single database engine parameter override.
-message AlicloudRdsParameter {
+// AliCloudRdsParameter represents a single database engine parameter override.
+message AliCloudRdsParameter {
   // Parameter name (e.g., "innodb_buffer_pool_size", "max_connections",
   // "shared_buffers").
   string name = 1 [
@@ -247,8 +247,8 @@ message AlicloudRdsParameter {
   ];
 }
 
-// AlicloudRdsDatabase defines a database to create within the RDS instance.
-message AlicloudRdsDatabase {
+// AliCloudRdsDatabase defines a database to create within the RDS instance.
+message AliCloudRdsDatabase {
   // Database name. Must match the pattern [a-z][a-z0-9_-]*[a-z0-9] and
   // be unique within the instance.
   string name = 1 [
@@ -265,9 +265,9 @@ message AlicloudRdsDatabase {
   string description = 3;
 }
 
-// AlicloudRdsAccount defines a database account to create within the RDS
+// AliCloudRdsAccount defines a database account to create within the RDS
 // instance.
-message AlicloudRdsAccount {
+message AliCloudRdsAccount {
   // Account login name. Must match [a-z][a-z0-9_]{0,61}[a-z0-9].
   string account_name = 1 [
     (buf.validate.field).required = true,
@@ -301,12 +301,12 @@ message AlicloudRdsAccount {
   // Database privileges to grant to this account. Each entry grants a
   // privilege level on a set of databases. Only applicable when account_type
   // is "Normal"; Super accounts have implicit full access.
-  repeated AlicloudRdsAccountPrivilege privileges = 5;
+  repeated AliCloudRdsAccountPrivilege privileges = 5;
 }
 
-// AlicloudRdsAccountPrivilege grants a single privilege level on a set of
+// AliCloudRdsAccountPrivilege grants a single privilege level on a set of
 // databases to the owning account.
-message AlicloudRdsAccountPrivilege {
+message AliCloudRdsAccountPrivilege {
   // Database names to grant access to. Each name must match a database
   // defined in the spec's databases list.
   repeated string database_names = 1 [

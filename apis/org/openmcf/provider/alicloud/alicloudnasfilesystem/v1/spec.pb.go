@@ -24,7 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudNasFileSystemSpec defines the configuration for an Alibaba Cloud
+// AliCloudNasFileSystemSpec defines the configuration for an Alibaba Cloud
 // Network Attached Storage (NAS) file system with a bundled access group and
 // VPC mount target.
 //
@@ -61,7 +61,7 @@ const (
 //	           + alicloud_nas_access_rule + alicloud_nas_mount_target
 //	Pulumi:    nas.FileSystem + nas.AccessGroup + nas.AccessRule
 //	           + nas.MountTarget
-type AlicloudNasFileSystemSpec struct {
+type AliCloudNasFileSystemSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the file system will be created.
 	// Must match the region of the VPC and VSwitch used for the mount target.
@@ -99,7 +99,7 @@ type AlicloudNasFileSystemSpec struct {
 	Description string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
 	// Encryption configuration. When omitted, the file system is not encrypted.
 	// Encryption type is immutable after creation (ForceNew).
-	Encryption *AlicloudNasEncryption `protobuf:"bytes,6,opt,name=encryption,proto3" json:"encryption,omitempty"`
+	Encryption *AliCloudNasEncryption `protobuf:"bytes,6,opt,name=encryption,proto3" json:"encryption,omitempty"`
 	// File system capacity in GiB.
 	// Required for extreme NAS (minimum 100 GiB). Ignored for standard NAS,
 	// which auto-scales capacity based on stored data.
@@ -127,7 +127,7 @@ type AlicloudNasFileSystemSpec struct {
 	// When omitted (empty list), the mount target uses the built-in
 	// DEFAULT_VPC_GROUP_NAME access group, which allows full read-write access
 	// from all IP addresses within the VPC.
-	AccessRules []*AlicloudNasAccessRule `protobuf:"bytes,11,rep,name=access_rules,json=accessRules,proto3" json:"access_rules,omitempty"`
+	AccessRules []*AliCloudNasAccessRule `protobuf:"bytes,11,rep,name=access_rules,json=accessRules,proto3" json:"access_rules,omitempty"`
 	// Alibaba Cloud resource group ID for organizational grouping (per DD05).
 	// If omitted, the file system is placed in the account's default resource
 	// group.
@@ -138,20 +138,20 @@ type AlicloudNasFileSystemSpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudNasFileSystemSpec) Reset() {
-	*x = AlicloudNasFileSystemSpec{}
+func (x *AliCloudNasFileSystemSpec) Reset() {
+	*x = AliCloudNasFileSystemSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudNasFileSystemSpec) String() string {
+func (x *AliCloudNasFileSystemSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudNasFileSystemSpec) ProtoMessage() {}
+func (*AliCloudNasFileSystemSpec) ProtoMessage() {}
 
-func (x *AlicloudNasFileSystemSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudNasFileSystemSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -163,96 +163,96 @@ func (x *AlicloudNasFileSystemSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudNasFileSystemSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudNasFileSystemSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudNasFileSystemSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudNasFileSystemSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudNasFileSystemSpec) GetRegion() string {
+func (x *AliCloudNasFileSystemSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudNasFileSystemSpec) GetFileSystemType() string {
+func (x *AliCloudNasFileSystemSpec) GetFileSystemType() string {
 	if x != nil && x.FileSystemType != nil {
 		return *x.FileSystemType
 	}
 	return ""
 }
 
-func (x *AlicloudNasFileSystemSpec) GetProtocolType() string {
+func (x *AliCloudNasFileSystemSpec) GetProtocolType() string {
 	if x != nil {
 		return x.ProtocolType
 	}
 	return ""
 }
 
-func (x *AlicloudNasFileSystemSpec) GetStorageType() string {
+func (x *AliCloudNasFileSystemSpec) GetStorageType() string {
 	if x != nil {
 		return x.StorageType
 	}
 	return ""
 }
 
-func (x *AlicloudNasFileSystemSpec) GetDescription() string {
+func (x *AliCloudNasFileSystemSpec) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *AlicloudNasFileSystemSpec) GetEncryption() *AlicloudNasEncryption {
+func (x *AliCloudNasFileSystemSpec) GetEncryption() *AliCloudNasEncryption {
 	if x != nil {
 		return x.Encryption
 	}
 	return nil
 }
 
-func (x *AlicloudNasFileSystemSpec) GetCapacity() int32 {
+func (x *AliCloudNasFileSystemSpec) GetCapacity() int32 {
 	if x != nil {
 		return x.Capacity
 	}
 	return 0
 }
 
-func (x *AlicloudNasFileSystemSpec) GetZoneId() string {
+func (x *AliCloudNasFileSystemSpec) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *AlicloudNasFileSystemSpec) GetVpcId() *v1.StringValueOrRef {
+func (x *AliCloudNasFileSystemSpec) GetVpcId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VpcId
 	}
 	return nil
 }
 
-func (x *AlicloudNasFileSystemSpec) GetVswitchId() *v1.StringValueOrRef {
+func (x *AliCloudNasFileSystemSpec) GetVswitchId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VswitchId
 	}
 	return nil
 }
 
-func (x *AlicloudNasFileSystemSpec) GetAccessRules() []*AlicloudNasAccessRule {
+func (x *AliCloudNasFileSystemSpec) GetAccessRules() []*AliCloudNasAccessRule {
 	if x != nil {
 		return x.AccessRules
 	}
 	return nil
 }
 
-func (x *AlicloudNasFileSystemSpec) GetResourceGroupId() string {
+func (x *AliCloudNasFileSystemSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudNasFileSystemSpec) GetTags() map[string]string {
+func (x *AliCloudNasFileSystemSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
@@ -260,7 +260,7 @@ func (x *AlicloudNasFileSystemSpec) GetTags() map[string]string {
 }
 
 // Encryption configuration for a NAS file system.
-type AlicloudNasEncryption struct {
+type AliCloudNasEncryption struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Encryption type.
 	//
@@ -271,26 +271,26 @@ type AlicloudNasEncryption struct {
 	EncryptType int32 `protobuf:"varint,1,opt,name=encrypt_type,json=encryptType,proto3" json:"encrypt_type,omitempty"`
 	// KMS key ID for customer-managed encryption.
 	// Required when encrypt_type is 2. Ignored when encrypt_type is 1.
-	// Create one with AlicloudKmsKey and reference its key_id output.
+	// Create one with AliCloudKmsKey and reference its key_id output.
 	KmsKeyId      string `protobuf:"bytes,2,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudNasEncryption) Reset() {
-	*x = AlicloudNasEncryption{}
+func (x *AliCloudNasEncryption) Reset() {
+	*x = AliCloudNasEncryption{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudNasEncryption) String() string {
+func (x *AliCloudNasEncryption) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudNasEncryption) ProtoMessage() {}
+func (*AliCloudNasEncryption) ProtoMessage() {}
 
-func (x *AlicloudNasEncryption) ProtoReflect() protoreflect.Message {
+func (x *AliCloudNasEncryption) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -302,19 +302,19 @@ func (x *AlicloudNasEncryption) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudNasEncryption.ProtoReflect.Descriptor instead.
-func (*AlicloudNasEncryption) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudNasEncryption.ProtoReflect.Descriptor instead.
+func (*AliCloudNasEncryption) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudNasEncryption) GetEncryptType() int32 {
+func (x *AliCloudNasEncryption) GetEncryptType() int32 {
 	if x != nil {
 		return x.EncryptType
 	}
 	return 0
 }
 
-func (x *AlicloudNasEncryption) GetKmsKeyId() string {
+func (x *AliCloudNasEncryption) GetKmsKeyId() string {
 	if x != nil {
 		return x.KmsKeyId
 	}
@@ -323,7 +323,7 @@ func (x *AlicloudNasEncryption) GetKmsKeyId() string {
 
 // An access rule within a NAS access group that controls which IP ranges
 // can mount the file system and with what permissions.
-type AlicloudNasAccessRule struct {
+type AliCloudNasAccessRule struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Source CIDR IP address or block.
 	// Allows traffic from this network range to access the file system.
@@ -353,20 +353,20 @@ type AlicloudNasAccessRule struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudNasAccessRule) Reset() {
-	*x = AlicloudNasAccessRule{}
+func (x *AliCloudNasAccessRule) Reset() {
+	*x = AliCloudNasAccessRule{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudNasAccessRule) String() string {
+func (x *AliCloudNasAccessRule) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudNasAccessRule) ProtoMessage() {}
+func (*AliCloudNasAccessRule) ProtoMessage() {}
 
-func (x *AlicloudNasAccessRule) ProtoReflect() protoreflect.Message {
+func (x *AliCloudNasAccessRule) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -378,33 +378,33 @@ func (x *AlicloudNasAccessRule) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudNasAccessRule.ProtoReflect.Descriptor instead.
-func (*AlicloudNasAccessRule) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudNasAccessRule.ProtoReflect.Descriptor instead.
+func (*AliCloudNasAccessRule) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AlicloudNasAccessRule) GetSourceCidrIp() string {
+func (x *AliCloudNasAccessRule) GetSourceCidrIp() string {
 	if x != nil {
 		return x.SourceCidrIp
 	}
 	return ""
 }
 
-func (x *AlicloudNasAccessRule) GetRwAccessType() string {
+func (x *AliCloudNasAccessRule) GetRwAccessType() string {
 	if x != nil && x.RwAccessType != nil {
 		return *x.RwAccessType
 	}
 	return ""
 }
 
-func (x *AlicloudNasAccessRule) GetUserAccessType() string {
+func (x *AliCloudNasAccessRule) GetUserAccessType() string {
 	if x != nil && x.UserAccessType != nil {
 		return *x.UserAccessType
 	}
 	return ""
 }
 
-func (x *AlicloudNasAccessRule) GetPriority() int32 {
+func (x *AliCloudNasAccessRule) GetPriority() int32 {
 	if x != nil && x.Priority != nil {
 		return *x.Priority
 	}
@@ -417,7 +417,7 @@ const file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_spec_proto_raw
 	"\n" +
 	"Aorg/openmcf/provider/alicloud/alicloudnasfilesystem/v1/spec.proto\x126org.openmcf.provider.alicloud.alicloudnasfilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xf3\n" +
 	"\n" +
-	"\x19AlicloudNasFileSystemSpec\x12\"\n" +
+	"\x19AliCloudNasFileSystemSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\xbd\x01\n" +
 	"\x10file_system_type\x18\x02 \x01(\tB\x8d\x01\xbaH~\xba\x01{\n" +
@@ -428,7 +428,7 @@ const file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_spec_proto_raw
 	"\x12storage_type_valid\x12Nstorage_type must be one of: Performance, Capacity, Premium, standard, advance\x1aEthis in ['Performance', 'Capacity', 'Premium', 'standard', 'advance']\xc8\x01\x01R\vstorageType\x12 \n" +
 	"\vdescription\x18\x05 \x01(\tR\vdescription\x12m\n" +
 	"\n" +
-	"encryption\x18\x06 \x01(\v2M.org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasEncryptionR\n" +
+	"encryption\x18\x06 \x01(\v2M.org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasEncryptionR\n" +
 	"encryption\x12\x1a\n" +
 	"\bcapacity\x18\a \x01(\x05R\bcapacity\x12\x17\n" +
 	"\azone_id\x18\b \x01(\tR\x06zoneId\x12o\n" +
@@ -436,19 +436,19 @@ const file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_spec_proto_raw
 	"\n" +
 	"vswitch_id\x18\n" +
 	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xcd\x17\x92\xd4a\x19status.outputs.vswitch_idR\tvswitchId\x12p\n" +
-	"\faccess_rules\x18\v \x03(\v2M.org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasAccessRuleR\vaccessRules\x12*\n" +
+	"\faccess_rules\x18\v \x03(\v2M.org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasAccessRuleR\vaccessRules\x12*\n" +
 	"\x11resource_group_id\x18\f \x01(\tR\x0fresourceGroupId\x12o\n" +
-	"\x04tags\x18\r \x03(\v2[.org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemSpec.TagsEntryR\x04tags\x1a7\n" +
+	"\x04tags\x18\r \x03(\v2[.org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemSpec.TagsEntryR\x04tags\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x13\n" +
 	"\x11_file_system_type\"\xca\x01\n" +
-	"\x15AlicloudNasEncryption\x12\x92\x01\n" +
+	"\x15AliCloudNasEncryption\x12\x92\x01\n" +
 	"\fencrypt_type\x18\x01 \x01(\x05Bo\xbaHl\xba\x01f\n" +
 	"\x12encrypt_type_valid\x12@encrypt_type must be 1 (NAS-managed) or 2 (KMS customer-managed)\x1a\x0ethis in [1, 2]\xc8\x01\x01R\vencryptType\x12\x1c\n" +
 	"\n" +
 	"kms_key_id\x18\x02 \x01(\tR\bkmsKeyId\"\x9a\x05\n" +
-	"\x15AlicloudNasAccessRule\x120\n" +
+	"\x15AliCloudNasAccessRule\x120\n" +
 	"\x0esource_cidr_ip\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\fsourceCidrIp\x12\xa6\x01\n" +
 	"\x0erw_access_type\x18\x02 \x01(\tB{\xbaHp\xba\x01m\n" +
@@ -476,18 +476,18 @@ func file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_spec_proto_rawD
 
 var file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_spec_proto_goTypes = []any{
-	(*AlicloudNasFileSystemSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemSpec
-	(*AlicloudNasEncryption)(nil),     // 1: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasEncryption
-	(*AlicloudNasAccessRule)(nil),     // 2: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasAccessRule
-	nil,                               // 3: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemSpec.TagsEntry
+	(*AliCloudNasFileSystemSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemSpec
+	(*AliCloudNasEncryption)(nil),     // 1: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasEncryption
+	(*AliCloudNasAccessRule)(nil),     // 2: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasAccessRule
+	nil,                               // 3: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemSpec.TagsEntry
 	(*v1.StringValueOrRef)(nil),       // 4: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudnasfilesystem_v1_spec_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemSpec.encryption:type_name -> org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasEncryption
-	4, // 1: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemSpec.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	4, // 2: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemSpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	2, // 3: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemSpec.access_rules:type_name -> org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasAccessRule
-	3, // 4: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AlicloudNasFileSystemSpec.TagsEntry
+	1, // 0: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemSpec.encryption:type_name -> org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasEncryption
+	4, // 1: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemSpec.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	4, // 2: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemSpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	2, // 3: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemSpec.access_rules:type_name -> org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasAccessRule
+	3, // 4: org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudnasfilesystem.v1.AliCloudNasFileSystemSpec.TagsEntry
 	5, // [5:5] is the sub-list for method output_type
 	5, // [5:5] is the sub-list for method input_type
 	5, // [5:5] is the sub-list for extension type_name

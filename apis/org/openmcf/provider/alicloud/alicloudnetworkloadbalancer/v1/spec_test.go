@@ -11,9 +11,9 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func TestAlicloudNetworkLoadBalancerSpec(t *testing.T) {
+func TestAliCloudNetworkLoadBalancerSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
-	ginkgo.RunSpecs(t, "AlicloudNetworkLoadBalancerSpec Validation Tests")
+	ginkgo.RunSpecs(t, "AliCloudNetworkLoadBalancerSpec Validation Tests")
 }
 
 func strRef(s string) *fkv1.StringValueOrRef {
@@ -22,27 +22,27 @@ func strRef(s string) *fkv1.StringValueOrRef {
 	}
 }
 
-func minimalValidSpec() *AlicloudNetworkLoadBalancerSpec {
-	return &AlicloudNetworkLoadBalancerSpec{
+func minimalValidSpec() *AliCloudNetworkLoadBalancerSpec {
+	return &AliCloudNetworkLoadBalancerSpec{
 		Region: "cn-hangzhou",
 		VpcId:  strRef("vpc-abc123"),
-		ZoneMappings: []*AlicloudNetworkLoadBalancerZoneMapping{
+		ZoneMappings: []*AliCloudNetworkLoadBalancerZoneMapping{
 			{ZoneId: "cn-hangzhou-a", VswitchId: strRef("vsw-aaa")},
 			{ZoneId: "cn-hangzhou-b", VswitchId: strRef("vsw-bbb")},
 		},
 	}
 }
 
-func minimalValidInput() *AlicloudNetworkLoadBalancer {
-	return &AlicloudNetworkLoadBalancer{
+func minimalValidInput() *AliCloudNetworkLoadBalancer {
+	return &AliCloudNetworkLoadBalancer{
 		ApiVersion: "alicloud.openmcf.org/v1",
-		Kind:       "AlicloudNetworkLoadBalancer",
+		Kind:       "AliCloudNetworkLoadBalancer",
 		Metadata:   &shared.CloudResourceMetadata{Name: "test-nlb"},
 		Spec:       minimalValidSpec(),
 	}
 }
 
-var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func() {
+var _ = ginkgo.Describe("AliCloudNetworkLoadBalancerSpec Validation Tests", func() {
 
 	ginkgo.Describe("valid input", func() {
 
@@ -86,15 +86,15 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should pass with TCP server group and listener", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{
 					Name: "tcp-backend",
-					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+					HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled: true,
 					},
 				},
 			}
-			input.Spec.Listeners = []*AlicloudNetworkLoadBalancerListener{
+			input.Spec.Listeners = []*AliCloudNetworkLoadBalancerListener{
 				{
 					ListenerPort:     80,
 					ListenerProtocol: "TCP",
@@ -107,17 +107,17 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should pass with UDP server group and listener", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{
 					Name:     "udp-backend",
 					Protocol: proto.String("UDP"),
-					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+					HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled: true,
 						HealthCheckType:    proto.String("UDP"),
 					},
 				},
 			}
-			input.Spec.Listeners = []*AlicloudNetworkLoadBalancerListener{
+			input.Spec.Listeners = []*AliCloudNetworkLoadBalancerListener{
 				{
 					ListenerPort:     53,
 					ListenerProtocol: "UDP",
@@ -130,16 +130,16 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should pass with TCPSSL listener and certificates", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{
 					Name:     "ssl-backend",
 					Protocol: proto.String("TCPSSL"),
-					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+					HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled: true,
 					},
 				},
 			}
-			input.Spec.Listeners = []*AlicloudNetworkLoadBalancerListener{
+			input.Spec.Listeners = []*AliCloudNetworkLoadBalancerListener{
 				{
 					ListenerPort:     443,
 					ListenerProtocol: "TCPSSL",
@@ -156,12 +156,12 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should pass with connection drain enabled", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{
 					Name:                   "drain-backend",
 					ConnectionDrainEnabled: proto.Bool(true),
 					ConnectionDrainTimeout: proto.Int32(300),
-					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+					HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled: true,
 					},
 				},
@@ -174,11 +174,11 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 			schedulers := []string{"Wrr", "Rr", "Sch", "Tch", "Qch", "Wlc"}
 			for _, sched := range schedulers {
 				input := minimalValidInput()
-				input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+				input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 					{
 						Name:      "sched-backend",
 						Scheduler: proto.String(sched),
-						HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+						HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 							HealthCheckEnabled: false,
 						},
 					},
@@ -190,10 +190,10 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should pass with all health check fields populated for HTTP type", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{
 					Name: "full-hc",
-					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+					HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled:        true,
 						HealthCheckType:           proto.String("HTTP"),
 						HealthCheckConnectPort:    proto.Int32(8080),
@@ -214,15 +214,15 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should pass with proxy protocol enabled", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{
 					Name: "proxy-backend",
-					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+					HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled: true,
 					},
 				},
 			}
-			input.Spec.Listeners = []*AlicloudNetworkLoadBalancerListener{
+			input.Spec.Listeners = []*AliCloudNetworkLoadBalancerListener{
 				{
 					ListenerPort:         80,
 					ListenerProtocol:     "TCP",
@@ -236,15 +236,15 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should pass with custom idle timeout", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{
 					Name: "timeout-backend",
-					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+					HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled: true,
 					},
 				},
 			}
-			input.Spec.Listeners = []*AlicloudNetworkLoadBalancerListener{
+			input.Spec.Listeners = []*AliCloudNetworkLoadBalancerListener{
 				{
 					ListenerPort:     80,
 					ListenerProtocol: "TCP",
@@ -258,11 +258,11 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should pass with preserve_client_ip disabled", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{
 					Name:                    "no-preserve",
 					PreserveClientIpEnabled: proto.Bool(false),
-					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+					HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled: true,
 					},
 				},
@@ -296,9 +296,9 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 		})
 
 		ginkgo.It("should fail when spec is missing", func() {
-			input := &AlicloudNetworkLoadBalancer{
+			input := &AliCloudNetworkLoadBalancer{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudNetworkLoadBalancer",
+				Kind:       "AliCloudNetworkLoadBalancer",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 			}
 			err := protovalidate.Validate(input)
@@ -321,7 +321,7 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should fail when zone_mappings has fewer than 2 entries", func() {
 			input := minimalValidInput()
-			input.Spec.ZoneMappings = []*AlicloudNetworkLoadBalancerZoneMapping{
+			input.Spec.ZoneMappings = []*AliCloudNetworkLoadBalancerZoneMapping{
 				{ZoneId: "cn-hangzhou-a", VswitchId: strRef("vsw-aaa")},
 			}
 			err := protovalidate.Validate(input)
@@ -358,10 +358,10 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should fail when server group name is too short", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{
 					Name: "x",
-					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+					HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled: true,
 					},
 				},
@@ -372,7 +372,7 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should fail when server group health check is missing", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{Name: "no-hc"},
 			}
 			err := protovalidate.Validate(input)
@@ -381,11 +381,11 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should fail when server group protocol is invalid", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{
 					Name:     "bad-proto",
 					Protocol: proto.String("HTTP"),
-					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+					HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled: true,
 					},
 				},
@@ -396,11 +396,11 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should fail when scheduler is invalid", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{
 					Name:      "bad-sched",
 					Scheduler: proto.String("Random"),
-					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+					HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled: true,
 					},
 				},
@@ -411,11 +411,11 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should fail when connection_drain_timeout is below minimum", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{
 					Name:                   "bad-drain",
 					ConnectionDrainTimeout: proto.Int32(5),
-					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+					HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled: true,
 					},
 				},
@@ -426,11 +426,11 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should fail when connection_drain_timeout exceeds maximum", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{
 					Name:                   "bad-drain-max",
 					ConnectionDrainTimeout: proto.Int32(1000),
-					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+					HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled: true,
 					},
 				},
@@ -441,10 +441,10 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should fail when health check type is invalid", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{
 					Name: "bad-hc-type",
-					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+					HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled: true,
 						HealthCheckType:    proto.String("GRPC"),
 					},
@@ -456,10 +456,10 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should fail when health check interval is below minimum", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{
 					Name: "bad-interval",
-					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+					HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled:  true,
 						HealthCheckInterval: proto.Int32(2),
 					},
@@ -471,10 +471,10 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should fail when healthy_threshold is out of range", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{
 					Name: "bad-threshold",
-					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+					HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled: true,
 						HealthyThreshold:   proto.Int32(15),
 					},
@@ -486,10 +486,10 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should fail when http_check_method is invalid", func() {
 			input := minimalValidInput()
-			input.Spec.ServerGroups = []*AlicloudNetworkLoadBalancerServerGroup{
+			input.Spec.ServerGroups = []*AliCloudNetworkLoadBalancerServerGroup{
 				{
 					Name: "bad-method",
-					HealthCheck: &AlicloudNetworkLoadBalancerHealthCheckConfig{
+					HealthCheck: &AliCloudNetworkLoadBalancerHealthCheckConfig{
 						HealthCheckEnabled: true,
 						HttpCheckMethod:    proto.String("POST"),
 					},
@@ -501,7 +501,7 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should fail when listener protocol is invalid", func() {
 			input := minimalValidInput()
-			input.Spec.Listeners = []*AlicloudNetworkLoadBalancerListener{
+			input.Spec.Listeners = []*AliCloudNetworkLoadBalancerListener{
 				{
 					ListenerPort:     80,
 					ListenerProtocol: "HTTP",
@@ -514,7 +514,7 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should fail when listener server_group_name is empty", func() {
 			input := minimalValidInput()
-			input.Spec.Listeners = []*AlicloudNetworkLoadBalancerListener{
+			input.Spec.Listeners = []*AliCloudNetworkLoadBalancerListener{
 				{
 					ListenerPort:     80,
 					ListenerProtocol: "TCP",
@@ -527,7 +527,7 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should fail when idle_timeout exceeds maximum", func() {
 			input := minimalValidInput()
-			input.Spec.Listeners = []*AlicloudNetworkLoadBalancerListener{
+			input.Spec.Listeners = []*AliCloudNetworkLoadBalancerListener{
 				{
 					ListenerPort:     80,
 					ListenerProtocol: "TCP",
@@ -541,7 +541,7 @@ var _ = ginkgo.Describe("AlicloudNetworkLoadBalancerSpec Validation Tests", func
 
 		ginkgo.It("should fail when listener port exceeds maximum", func() {
 			input := minimalValidInput()
-			input.Spec.Listeners = []*AlicloudNetworkLoadBalancerListener{
+			input.Spec.Listeners = []*AliCloudNetworkLoadBalancerListener{
 				{
 					ListenerPort:     70000,
 					ListenerProtocol: "TCP",

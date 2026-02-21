@@ -9,23 +9,23 @@ import (
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
 )
 
-func TestAlicloudVpcSpec(t *testing.T) {
+func TestAliCloudVpcSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
-	ginkgo.RunSpecs(t, "AlicloudVpcSpec Validation Tests")
+	ginkgo.RunSpecs(t, "AliCloudVpcSpec Validation Tests")
 }
 
-var _ = ginkgo.Describe("AlicloudVpcSpec Validation Tests", func() {
+var _ = ginkgo.Describe("AliCloudVpcSpec Validation Tests", func() {
 
 	ginkgo.Describe("valid input", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
-			input := &AlicloudVpc{
+			input := &AliCloudVpc{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVpc",
+				Kind:       "AliCloudVpc",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-vpc",
 				},
-				Spec: &AlicloudVpcSpec{
+				Spec: &AliCloudVpcSpec{
 					Region:    "cn-hangzhou",
 					VpcName:   "my-vpc",
 					CidrBlock: "10.0.0.0/8",
@@ -36,15 +36,15 @@ var _ = ginkgo.Describe("AlicloudVpcSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with all optional fields populated", func() {
-			input := &AlicloudVpc{
+			input := &AliCloudVpc{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVpc",
+				Kind:       "AliCloudVpc",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "full-config-vpc",
 					Org:  "my-org",
 					Env:  "production",
 				},
-				Spec: &AlicloudVpcSpec{
+				Spec: &AliCloudVpcSpec{
 					Region:          "cn-shanghai",
 					VpcName:         "prod-vpc",
 					CidrBlock:       "172.16.0.0/12",
@@ -59,13 +59,13 @@ var _ = ginkgo.Describe("AlicloudVpcSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with 192.168 CIDR range", func() {
-			input := &AlicloudVpc{
+			input := &AliCloudVpc{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVpc",
+				Kind:       "AliCloudVpc",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "small-vpc",
 				},
-				Spec: &AlicloudVpcSpec{
+				Spec: &AliCloudVpcSpec{
 					Region:    "ap-southeast-1",
 					VpcName:   "dev-vpc",
 					CidrBlock: "192.168.0.0/16",
@@ -76,13 +76,13 @@ var _ = ginkgo.Describe("AlicloudVpcSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should pass with IPv6 enabled", func() {
-			input := &AlicloudVpc{
+			input := &AliCloudVpc{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVpc",
+				Kind:       "AliCloudVpc",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "ipv6-vpc",
 				},
-				Spec: &AlicloudVpcSpec{
+				Spec: &AliCloudVpcSpec{
 					Region:     "us-west-1",
 					VpcName:    "ipv6-enabled-vpc",
 					CidrBlock:  "10.0.0.0/16",
@@ -97,13 +97,13 @@ var _ = ginkgo.Describe("AlicloudVpcSpec Validation Tests", func() {
 	ginkgo.Describe("invalid input", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
-			input := &AlicloudVpc{
+			input := &AliCloudVpc{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVpc",
+				Kind:       "AliCloudVpc",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudVpcSpec{
+				Spec: &AliCloudVpcSpec{
 					VpcName:   "my-vpc",
 					CidrBlock: "10.0.0.0/8",
 				},
@@ -113,13 +113,13 @@ var _ = ginkgo.Describe("AlicloudVpcSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when vpc_name is missing", func() {
-			input := &AlicloudVpc{
+			input := &AliCloudVpc{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVpc",
+				Kind:       "AliCloudVpc",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudVpcSpec{
+				Spec: &AliCloudVpcSpec{
 					Region:    "cn-hangzhou",
 					CidrBlock: "10.0.0.0/8",
 				},
@@ -129,13 +129,13 @@ var _ = ginkgo.Describe("AlicloudVpcSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when cidr_block is missing", func() {
-			input := &AlicloudVpc{
+			input := &AliCloudVpc{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVpc",
+				Kind:       "AliCloudVpc",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudVpcSpec{
+				Spec: &AliCloudVpcSpec{
 					Region:  "cn-hangzhou",
 					VpcName: "my-vpc",
 				},
@@ -145,13 +145,13 @@ var _ = ginkgo.Describe("AlicloudVpcSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when api_version is wrong", func() {
-			input := &AlicloudVpc{
+			input := &AliCloudVpc{
 				ApiVersion: "wrong/v1",
-				Kind:       "AlicloudVpc",
+				Kind:       "AliCloudVpc",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudVpcSpec{
+				Spec: &AliCloudVpcSpec{
 					Region:    "cn-hangzhou",
 					VpcName:   "my-vpc",
 					CidrBlock: "10.0.0.0/8",
@@ -162,13 +162,13 @@ var _ = ginkgo.Describe("AlicloudVpcSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when kind is wrong", func() {
-			input := &AlicloudVpc{
+			input := &AliCloudVpc{
 				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudVpcSpec{
+				Spec: &AliCloudVpcSpec{
 					Region:    "cn-hangzhou",
 					VpcName:   "my-vpc",
 					CidrBlock: "10.0.0.0/8",
@@ -179,10 +179,10 @@ var _ = ginkgo.Describe("AlicloudVpcSpec Validation Tests", func() {
 		})
 
 		ginkgo.It("should fail when metadata is missing", func() {
-			input := &AlicloudVpc{
+			input := &AliCloudVpc{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVpc",
-				Spec: &AlicloudVpcSpec{
+				Kind:       "AliCloudVpc",
+				Spec: &AliCloudVpcSpec{
 					Region:    "cn-hangzhou",
 					VpcName:   "my-vpc",
 					CidrBlock: "10.0.0.0/8",
@@ -197,13 +197,13 @@ var _ = ginkgo.Describe("AlicloudVpcSpec Validation Tests", func() {
 			for i := 0; i < 129; i++ {
 				longName += "a"
 			}
-			input := &AlicloudVpc{
+			input := &AliCloudVpc{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudVpc",
+				Kind:       "AliCloudVpc",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudVpcSpec{
+				Spec: &AliCloudVpcSpec{
 					Region:    "cn-hangzhou",
 					VpcName:   longName,
 					CidrBlock: "10.0.0.0/8",

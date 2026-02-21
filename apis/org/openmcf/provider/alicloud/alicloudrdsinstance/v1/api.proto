@@ -8,25 +8,25 @@ import "org/openmcf/provider/alicloud/alicloudrdsinstance/v1/stack_outputs.proto
 import "org/openmcf/shared/metadata.proto";
 
 // alicloud-rds-instance
-message AlicloudRdsInstance {
+message AliCloudRdsInstance {
   // api-version
   string api_version = 1 [(buf.validate.field).string.const = 'alicloud.openmcf.org/v1'];
 
   // resource-kind
-  string kind = 2 [(buf.validate.field).string.const = 'AlicloudRdsInstance'];
+  string kind = 2 [(buf.validate.field).string.const = 'AliCloudRdsInstance'];
 
   // metadata
   org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
-  AlicloudRdsInstanceSpec spec = 4 [(buf.validate.field).required = true];
+  AliCloudRdsInstanceSpec spec = 4 [(buf.validate.field).required = true];
 
   // status
-  AlicloudRdsInstanceStatus status = 5;
+  AliCloudRdsInstanceStatus status = 5;
 }
 
 // alicloud-rds-instance status
-message AlicloudRdsInstanceStatus {
+message AliCloudRdsInstanceStatus {
   // stack-outputs
-  AlicloudRdsInstanceStackOutputs outputs = 1;
+  AliCloudRdsInstanceStackOutputs outputs = 1;
 }

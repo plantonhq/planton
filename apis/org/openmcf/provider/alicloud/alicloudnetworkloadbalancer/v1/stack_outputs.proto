@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1;
 
-// AlicloudNetworkLoadBalancerStackOutputs captures the outputs from deploying
+// AliCloudNetworkLoadBalancerStackOutputs captures the outputs from deploying
 // an Alibaba Cloud Network Load Balancer with its server groups and
 // listeners.
-message AlicloudNetworkLoadBalancerStackOutputs {
+message AliCloudNetworkLoadBalancerStackOutputs {
   // The NLB instance ID assigned by Alibaba Cloud (e.g., "nlb-xxxxx").
   string load_balancer_id = 1;
 

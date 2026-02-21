@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudDnsZoneSpec defines the configuration for an Alibaba Cloud DNS
+// AliCloudDnsZoneSpec defines the configuration for an Alibaba Cloud DNS
 // domain managed by the Alidns service.
 //
 // A DNS domain is the top-level container for DNS records. Registering a domain
@@ -32,8 +32,8 @@ const (
 // Alibaba Cloud DNS servers returned in the stack outputs.
 //
 // This component creates a single Alidns domain. DNS records within the domain
-// are managed by the AlicloudDnsRecord component.
-type AlicloudDnsZoneSpec struct {
+// are managed by the AliCloudDnsRecord component.
+type AliCloudDnsZoneSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region for provider initialization.
 	// While Alidns is a global service, the provider requires a region.
@@ -60,20 +60,20 @@ type AlicloudDnsZoneSpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudDnsZoneSpec) Reset() {
-	*x = AlicloudDnsZoneSpec{}
+func (x *AliCloudDnsZoneSpec) Reset() {
+	*x = AliCloudDnsZoneSpec{}
 	mi := &file_org_openmcf_provider_alicloud_aliclouddnszone_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudDnsZoneSpec) String() string {
+func (x *AliCloudDnsZoneSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudDnsZoneSpec) ProtoMessage() {}
+func (*AliCloudDnsZoneSpec) ProtoMessage() {}
 
-func (x *AlicloudDnsZoneSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudDnsZoneSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_aliclouddnszone_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -85,47 +85,47 @@ func (x *AlicloudDnsZoneSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudDnsZoneSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudDnsZoneSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudDnsZoneSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudDnsZoneSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_aliclouddnszone_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudDnsZoneSpec) GetRegion() string {
+func (x *AliCloudDnsZoneSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudDnsZoneSpec) GetDomainName() string {
+func (x *AliCloudDnsZoneSpec) GetDomainName() string {
 	if x != nil {
 		return x.DomainName
 	}
 	return ""
 }
 
-func (x *AlicloudDnsZoneSpec) GetGroupId() string {
+func (x *AliCloudDnsZoneSpec) GetGroupId() string {
 	if x != nil {
 		return x.GroupId
 	}
 	return ""
 }
 
-func (x *AlicloudDnsZoneSpec) GetRemark() string {
+func (x *AliCloudDnsZoneSpec) GetRemark() string {
 	if x != nil {
 		return x.Remark
 	}
 	return ""
 }
 
-func (x *AlicloudDnsZoneSpec) GetResourceGroupId() string {
+func (x *AliCloudDnsZoneSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudDnsZoneSpec) GetTags() map[string]string {
+func (x *AliCloudDnsZoneSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
@@ -137,7 +137,7 @@ var File_org_openmcf_provider_alicloud_aliclouddnszone_v1_spec_proto protoreflec
 const file_org_openmcf_provider_alicloud_aliclouddnszone_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	";org/openmcf/provider/alicloud/aliclouddnszone/v1/spec.proto\x120org.openmcf.provider.alicloud.aliclouddnszone.v1\x1a\x1bbuf/validate/validate.proto\"\xe6\x02\n" +
-	"\x13AlicloudDnsZoneSpec\x12\"\n" +
+	"\x13AliCloudDnsZoneSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12.\n" +
 	"\vdomain_name\x18\x02 \x01(\tB\r\xbaH\n" +
@@ -146,7 +146,7 @@ const file_org_openmcf_provider_alicloud_aliclouddnszone_v1_spec_proto_rawDesc =
 	"\bgroup_id\x18\x03 \x01(\tR\agroupId\x12\x16\n" +
 	"\x06remark\x18\x04 \x01(\tR\x06remark\x12*\n" +
 	"\x11resource_group_id\x18\x05 \x01(\tR\x0fresourceGroupId\x12c\n" +
-	"\x04tags\x18\x06 \x03(\v2O.org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneSpec.TagsEntryR\x04tags\x1a7\n" +
+	"\x04tags\x18\x06 \x03(\v2O.org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneSpec.TagsEntryR\x04tags\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x8e\x03\n" +
@@ -166,11 +166,11 @@ func file_org_openmcf_provider_alicloud_aliclouddnszone_v1_spec_proto_rawDescGZI
 
 var file_org_openmcf_provider_alicloud_aliclouddnszone_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_aliclouddnszone_v1_spec_proto_goTypes = []any{
-	(*AlicloudDnsZoneSpec)(nil), // 0: org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneSpec
-	nil,                         // 1: org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneSpec.TagsEntry
+	(*AliCloudDnsZoneSpec)(nil), // 0: org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneSpec
+	nil,                         // 1: org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneSpec.TagsEntry
 }
 var file_org_openmcf_provider_alicloud_aliclouddnszone_v1_spec_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneSpec.tags:type_name -> org.openmcf.provider.alicloud.aliclouddnszone.v1.AlicloudDnsZoneSpec.TagsEntry
+	1, // 0: org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneSpec.tags:type_name -> org.openmcf.provider.alicloud.aliclouddnszone.v1.AliCloudDnsZoneSpec.TagsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

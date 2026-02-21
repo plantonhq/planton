@@ -5,7 +5,7 @@ package org.openmcf.provider.alicloud.alicloudramrole.v1;
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudRamRoleSpec defines the configuration for an Alibaba Cloud
+// AliCloudRamRoleSpec defines the configuration for an Alibaba Cloud
 // Resource Access Management (RAM) role with optional policy attachments.
 //
 // A RAM role is a virtual identity that does not have permanent credentials.
@@ -16,7 +16,7 @@ import "org/openmcf/shared/options/options.proto";
 //
 // Policy attachments are bundled (per DD07) because a role without policies
 // grants zero permissions and is non-functional.
-message AlicloudRamRoleSpec {
+message AliCloudRamRoleSpec {
   // Alibaba Cloud region for provider endpoint configuration.
   // RAM is a global service, but the provider requires a region for API routing.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -69,11 +69,11 @@ message AlicloudRamRoleSpec {
 
   // Policies to attach to this role. Each attachment grants the role a set
   // of permissions defined by either a system-managed or custom policy.
-  repeated AlicloudRamRolePolicyAttachment policy_attachments = 8;
+  repeated AliCloudRamRolePolicyAttachment policy_attachments = 8;
 }
 
-// AlicloudRamRolePolicyAttachment defines a policy to attach to the RAM role.
-message AlicloudRamRolePolicyAttachment {
+// AliCloudRamRolePolicyAttachment defines a policy to attach to the RAM role.
+message AliCloudRamRolePolicyAttachment {
   // Name of the policy to attach.
   // System policies: "AliyunECSFullAccess", "AliyunOSSReadOnlyAccess", etc.
   // Custom policies: the name you gave when creating the policy.

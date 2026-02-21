@@ -9,19 +9,19 @@ import (
 )
 
 type Locals struct {
-	AlicloudRedisInstance *alicloudredisinstancev1.AlicloudRedisInstance
+	AliCloudRedisInstance *alicloudredisinstancev1.AliCloudRedisInstance
 	Tags                  map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudredisinstancev1.AlicloudRedisInstanceStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudredisinstancev1.AliCloudRedisInstanceStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudRedisInstance = stackInput.Target
+	locals.AliCloudRedisInstance = stackInput.Target
 	target := stackInput.Target
 
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudRedisInstance.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudRedisInstance.String()),
 	}
 
 	if target.Metadata.Id != "" {
@@ -44,34 +44,34 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudredisinstancev1.A
 }
 
 func instanceName(locals *Locals) string {
-	if locals.AlicloudRedisInstance.Spec.DbInstanceName != "" {
-		return locals.AlicloudRedisInstance.Spec.DbInstanceName
+	if locals.AliCloudRedisInstance.Spec.DbInstanceName != "" {
+		return locals.AliCloudRedisInstance.Spec.DbInstanceName
 	}
-	return locals.AlicloudRedisInstance.Metadata.Name
+	return locals.AliCloudRedisInstance.Metadata.Name
 }
 
-func engineVersion(spec *alicloudredisinstancev1.AlicloudRedisInstanceSpec) string {
+func engineVersion(spec *alicloudredisinstancev1.AliCloudRedisInstanceSpec) string {
 	if spec.EngineVersion != nil && *spec.EngineVersion != "" {
 		return *spec.EngineVersion
 	}
 	return "7.0"
 }
 
-func instanceType(spec *alicloudredisinstancev1.AlicloudRedisInstanceSpec) string {
+func instanceType(spec *alicloudredisinstancev1.AliCloudRedisInstanceSpec) string {
 	if spec.InstanceType != nil && *spec.InstanceType != "" {
 		return *spec.InstanceType
 	}
 	return "Redis"
 }
 
-func paymentType(spec *alicloudredisinstancev1.AlicloudRedisInstanceSpec) string {
+func paymentType(spec *alicloudredisinstancev1.AliCloudRedisInstanceSpec) string {
 	if spec.PaymentType != nil && *spec.PaymentType != "" {
 		return *spec.PaymentType
 	}
 	return "PostPaid"
 }
 
-func vpcAuthMode(spec *alicloudredisinstancev1.AlicloudRedisInstanceSpec) string {
+func vpcAuthMode(spec *alicloudredisinstancev1.AliCloudRedisInstanceSpec) string {
 	if spec.VpcAuthMode != nil && *spec.VpcAuthMode != "" {
 		return *spec.VpcAuthMode
 	}

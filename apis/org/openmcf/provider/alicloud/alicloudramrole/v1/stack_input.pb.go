@@ -23,30 +23,30 @@ const (
 )
 
 // alicloud-ram-role stack-input
-type AlicloudRamRoleStackInput struct {
+type AliCloudRamRoleStackInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target cloud-resource
-	Target *AlicloudRamRole `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
+	Target *AliCloudRamRole `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
-	ProviderConfig *alicloud.AlicloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
+	ProviderConfig *alicloud.AliCloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudRamRoleStackInput) Reset() {
-	*x = AlicloudRamRoleStackInput{}
+func (x *AliCloudRamRoleStackInput) Reset() {
+	*x = AliCloudRamRoleStackInput{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudramrole_v1_stack_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRamRoleStackInput) String() string {
+func (x *AliCloudRamRoleStackInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRamRoleStackInput) ProtoMessage() {}
+func (*AliCloudRamRoleStackInput) ProtoMessage() {}
 
-func (x *AlicloudRamRoleStackInput) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRamRoleStackInput) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudramrole_v1_stack_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AlicloudRamRoleStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRamRoleStackInput.ProtoReflect.Descriptor instead.
-func (*AlicloudRamRoleStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRamRoleStackInput.ProtoReflect.Descriptor instead.
+func (*AliCloudRamRoleStackInput) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudramrole_v1_stack_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudRamRoleStackInput) GetTarget() *AlicloudRamRole {
+func (x *AliCloudRamRoleStackInput) GetTarget() *AliCloudRamRole {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AlicloudRamRoleStackInput) GetProviderConfig() *alicloud.AlicloudProviderConfig {
+func (x *AliCloudRamRoleStackInput) GetProviderConfig() *alicloud.AliCloudProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,9 +82,9 @@ var File_org_openmcf_provider_alicloud_alicloudramrole_v1_stack_input_proto prot
 const file_org_openmcf_provider_alicloud_alicloudramrole_v1_stack_input_proto_rawDesc = "" +
 	"\n" +
 	"Borg/openmcf/provider/alicloud/alicloudramrole/v1/stack_input.proto\x120org.openmcf.provider.alicloud.alicloudramrole.v1\x1a:org/openmcf/provider/alicloud/alicloudramrole/v1/api.proto\x1a,org/openmcf/provider/alicloud/provider.proto\"\xd6\x01\n" +
-	"\x19AlicloudRamRoleStackInput\x12Y\n" +
-	"\x06target\x18\x01 \x01(\v2A.org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleR\x06target\x12^\n" +
-	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigR\x0eproviderConfigB\x94\x03\n" +
+	"\x19AliCloudRamRoleStackInput\x12Y\n" +
+	"\x06target\x18\x01 \x01(\v2A.org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleR\x06target\x12^\n" +
+	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigR\x0eproviderConfigB\x94\x03\n" +
 	"4com.org.openmcf.provider.alicloud.alicloudramrole.v1B\x0fStackInputProtoP\x01Zdgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudramrole/v1;alicloudramrolev1\xa2\x02\x05OOPAA\xaa\x020Org.Openmcf.Provider.Alicloud.Alicloudramrole.V1\xca\x020Org\\Openmcf\\Provider\\Alicloud\\Alicloudramrole\\V1\xe2\x02<Org\\Openmcf\\Provider\\Alicloud\\Alicloudramrole\\V1\\GPBMetadata\xea\x025Org::Openmcf::Provider::Alicloud::Alicloudramrole::V1b\x06proto3"
 
 var (
@@ -101,13 +101,13 @@ func file_org_openmcf_provider_alicloud_alicloudramrole_v1_stack_input_proto_raw
 
 var file_org_openmcf_provider_alicloud_alicloudramrole_v1_stack_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudramrole_v1_stack_input_proto_goTypes = []any{
-	(*AlicloudRamRoleStackInput)(nil),       // 0: org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleStackInput
-	(*AlicloudRamRole)(nil),                 // 1: org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRole
-	(*alicloud.AlicloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AlicloudProviderConfig
+	(*AliCloudRamRoleStackInput)(nil),       // 0: org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleStackInput
+	(*AliCloudRamRole)(nil),                 // 1: org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRole
+	(*alicloud.AliCloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AliCloudProviderConfig
 }
 var file_org_openmcf_provider_alicloud_alicloudramrole_v1_stack_input_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRole
-	2, // 1: org.openmcf.provider.alicloud.alicloudramrole.v1.AlicloudRamRoleStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
+	1, // 0: org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRole
+	2, // 1: org.openmcf.provider.alicloud.alicloudramrole.v1.AliCloudRamRoleStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

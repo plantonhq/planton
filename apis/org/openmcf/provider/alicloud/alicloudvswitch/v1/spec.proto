@@ -5,7 +5,7 @@ package org.openmcf.provider.alicloud.alicloudvswitch.v1;
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 
-// AlicloudVswitchSpec defines the configuration for an Alibaba Cloud VSwitch.
+// AliCloudVswitchSpec defines the configuration for an Alibaba Cloud VSwitch.
 //
 // A VSwitch is the subnet-equivalent resource in Alibaba Cloud networking.
 // It carves out a CIDR range within a VPC and pins it to a single availability
@@ -15,7 +15,7 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 // Each VSwitch belongs to exactly one VPC and one availability zone. The CIDR
 // block must be a subset of the parent VPC's CIDR block. Changing the VPC,
 // zone, or CIDR after creation requires destroying and recreating the VSwitch.
-message AlicloudVswitchSpec {
+message AliCloudVswitchSpec {
   // Alibaba Cloud region where the VSwitch will be created.
   // Must match the region of the parent VPC.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -28,7 +28,7 @@ message AlicloudVswitchSpec {
   // The VSwitch's CIDR block must fall within the VPC's CIDR range.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 2 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
   ];
 

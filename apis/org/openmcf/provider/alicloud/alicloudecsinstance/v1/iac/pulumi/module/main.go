@@ -8,9 +8,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *alicloudecsinstancev1.AlicloudEcsInstanceStackInput) error {
+func Resources(ctx *pulumi.Context, stackInput *alicloudecsinstancev1.AliCloudEcsInstanceStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
-	spec := locals.AlicloudEcsInstance.Spec
+	spec := locals.AliCloudEcsInstance.Spec
 
 	alicloudProvider, err := alicloud.NewProvider(ctx, "alicloud", &alicloud.ProviderArgs{
 		Region: pulumi.String(spec.Region),
@@ -101,7 +101,7 @@ func Resources(ctx *pulumi.Context, stackInput *alicloudecsinstancev1.AlicloudEc
 	return nil
 }
 
-func buildDataDisks(disks []*alicloudecsinstancev1.AlicloudEcsDataDisk) ecs.InstanceDataDiskArray {
+func buildDataDisks(disks []*alicloudecsinstancev1.AliCloudEcsDataDisk) ecs.InstanceDataDiskArray {
 	result := ecs.InstanceDataDiskArray{}
 	for _, disk := range disks {
 		d := &ecs.InstanceDataDiskArgs{

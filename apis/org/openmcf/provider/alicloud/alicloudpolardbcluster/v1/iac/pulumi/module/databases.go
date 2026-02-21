@@ -13,7 +13,7 @@ func database(
 	provider *alicloud.Provider,
 	cluster *polardb.Cluster,
 	dbType string,
-	db *alicloudpolardbclusterv1.AlicloudPolardbDatabase,
+	db *alicloudpolardbclusterv1.AliCloudPolardbDatabase,
 ) (*polardb.Database, error) {
 	args := &polardb.DatabaseArgs{
 		DbClusterId: cluster.ID(),

@@ -24,7 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudMongodbInstanceSpec defines the configuration for an Alibaba Cloud
+// AliCloudMongodbInstanceSpec defines the configuration for an Alibaba Cloud
 // MongoDB replica-set instance.
 //
 // MongoDB is a managed NoSQL document database used for content management,
@@ -40,7 +40,7 @@ const (
 //
 //	Terraform: alicloud_mongodb_instance
 //	Pulumi:    mongodb.Instance
-type AlicloudMongodbInstanceSpec struct {
+type AliCloudMongodbInstanceSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the MongoDB instance will be created.
 	// Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -159,20 +159,20 @@ type AlicloudMongodbInstanceSpec struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AlicloudMongodbInstanceSpec) Reset() {
-	*x = AlicloudMongodbInstanceSpec{}
+func (x *AliCloudMongodbInstanceSpec) Reset() {
+	*x = AliCloudMongodbInstanceSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudMongodbInstanceSpec) String() string {
+func (x *AliCloudMongodbInstanceSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudMongodbInstanceSpec) ProtoMessage() {}
+func (*AliCloudMongodbInstanceSpec) ProtoMessage() {}
 
-func (x *AlicloudMongodbInstanceSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudMongodbInstanceSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -184,243 +184,243 @@ func (x *AlicloudMongodbInstanceSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudMongodbInstanceSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudMongodbInstanceSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudMongodbInstanceSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudMongodbInstanceSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetRegion() string {
+func (x *AliCloudMongodbInstanceSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetVswitchId() *v1.StringValueOrRef {
+func (x *AliCloudMongodbInstanceSpec) GetVswitchId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VswitchId
 	}
 	return nil
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetEngineVersion() string {
+func (x *AliCloudMongodbInstanceSpec) GetEngineVersion() string {
 	if x != nil {
 		return x.EngineVersion
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetDbInstanceClass() string {
+func (x *AliCloudMongodbInstanceSpec) GetDbInstanceClass() string {
 	if x != nil {
 		return x.DbInstanceClass
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetDbInstanceStorage() int32 {
+func (x *AliCloudMongodbInstanceSpec) GetDbInstanceStorage() int32 {
 	if x != nil {
 		return x.DbInstanceStorage
 	}
 	return 0
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetAccountPassword() string {
+func (x *AliCloudMongodbInstanceSpec) GetAccountPassword() string {
 	if x != nil {
 		return x.AccountPassword
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetDbInstanceName() string {
+func (x *AliCloudMongodbInstanceSpec) GetDbInstanceName() string {
 	if x != nil {
 		return x.DbInstanceName
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetZoneId() string {
+func (x *AliCloudMongodbInstanceSpec) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetSecondaryZoneId() string {
+func (x *AliCloudMongodbInstanceSpec) GetSecondaryZoneId() string {
 	if x != nil {
 		return x.SecondaryZoneId
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetHiddenZoneId() string {
+func (x *AliCloudMongodbInstanceSpec) GetHiddenZoneId() string {
 	if x != nil {
 		return x.HiddenZoneId
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetReplicationFactor() int32 {
+func (x *AliCloudMongodbInstanceSpec) GetReplicationFactor() int32 {
 	if x != nil && x.ReplicationFactor != nil {
 		return *x.ReplicationFactor
 	}
 	return 0
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetReadonlyReplicas() int32 {
+func (x *AliCloudMongodbInstanceSpec) GetReadonlyReplicas() int32 {
 	if x != nil && x.ReadonlyReplicas != nil {
 		return *x.ReadonlyReplicas
 	}
 	return 0
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetStorageEngine() string {
+func (x *AliCloudMongodbInstanceSpec) GetStorageEngine() string {
 	if x != nil && x.StorageEngine != nil {
 		return *x.StorageEngine
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetStorageType() string {
+func (x *AliCloudMongodbInstanceSpec) GetStorageType() string {
 	if x != nil && x.StorageType != nil {
 		return *x.StorageType
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetProvisionedIops() int32 {
+func (x *AliCloudMongodbInstanceSpec) GetProvisionedIops() int32 {
 	if x != nil && x.ProvisionedIops != nil {
 		return *x.ProvisionedIops
 	}
 	return 0
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetInstanceChargeType() string {
+func (x *AliCloudMongodbInstanceSpec) GetInstanceChargeType() string {
 	if x != nil && x.InstanceChargeType != nil {
 		return *x.InstanceChargeType
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetSecurityIpList() []string {
+func (x *AliCloudMongodbInstanceSpec) GetSecurityIpList() []string {
 	if x != nil {
 		return x.SecurityIpList
 	}
 	return nil
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetSecurityGroupId() string {
+func (x *AliCloudMongodbInstanceSpec) GetSecurityGroupId() string {
 	if x != nil {
 		return x.SecurityGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetResourceGroupId() string {
+func (x *AliCloudMongodbInstanceSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetTags() map[string]string {
+func (x *AliCloudMongodbInstanceSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetSslAction() string {
+func (x *AliCloudMongodbInstanceSpec) GetSslAction() string {
 	if x != nil && x.SslAction != nil {
 		return *x.SslAction
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetTdeStatus() string {
+func (x *AliCloudMongodbInstanceSpec) GetTdeStatus() string {
 	if x != nil && x.TdeStatus != nil {
 		return *x.TdeStatus
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetEncryptionKey() string {
+func (x *AliCloudMongodbInstanceSpec) GetEncryptionKey() string {
 	if x != nil {
 		return x.EncryptionKey
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetEncrypted() bool {
+func (x *AliCloudMongodbInstanceSpec) GetEncrypted() bool {
 	if x != nil && x.Encrypted != nil {
 		return *x.Encrypted
 	}
 	return false
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetCloudDiskEncryptionKey() string {
+func (x *AliCloudMongodbInstanceSpec) GetCloudDiskEncryptionKey() string {
 	if x != nil {
 		return x.CloudDiskEncryptionKey
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetMaintainStartTime() string {
+func (x *AliCloudMongodbInstanceSpec) GetMaintainStartTime() string {
 	if x != nil {
 		return x.MaintainStartTime
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetMaintainEndTime() string {
+func (x *AliCloudMongodbInstanceSpec) GetMaintainEndTime() string {
 	if x != nil {
 		return x.MaintainEndTime
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetBackupTime() string {
+func (x *AliCloudMongodbInstanceSpec) GetBackupTime() string {
 	if x != nil {
 		return x.BackupTime
 	}
 	return ""
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetBackupPeriod() []string {
+func (x *AliCloudMongodbInstanceSpec) GetBackupPeriod() []string {
 	if x != nil {
 		return x.BackupPeriod
 	}
 	return nil
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetParameters() map[string]string {
+func (x *AliCloudMongodbInstanceSpec) GetParameters() map[string]string {
 	if x != nil {
 		return x.Parameters
 	}
 	return nil
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetDbInstanceReleaseProtection() bool {
+func (x *AliCloudMongodbInstanceSpec) GetDbInstanceReleaseProtection() bool {
 	if x != nil && x.DbInstanceReleaseProtection != nil {
 		return *x.DbInstanceReleaseProtection
 	}
 	return false
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetPeriod() int32 {
+func (x *AliCloudMongodbInstanceSpec) GetPeriod() int32 {
 	if x != nil && x.Period != nil {
 		return *x.Period
 	}
 	return 0
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetAutoRenew() bool {
+func (x *AliCloudMongodbInstanceSpec) GetAutoRenew() bool {
 	if x != nil && x.AutoRenew != nil {
 		return *x.AutoRenew
 	}
 	return false
 }
 
-func (x *AlicloudMongodbInstanceSpec) GetAutoRenewDuration() int32 {
+func (x *AliCloudMongodbInstanceSpec) GetAutoRenewDuration() int32 {
 	if x != nil && x.AutoRenewDuration != nil {
 		return *x.AutoRenewDuration
 	}
@@ -432,7 +432,7 @@ var File_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_spec_proto pro
 const file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"Corg/openmcf/provider/alicloud/alicloudmongodbinstance/v1/spec.proto\x128org.openmcf.provider.alicloud.alicloudmongodbinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x8a\x1b\n" +
-	"\x1bAlicloudMongodbInstanceSpec\x12\"\n" +
+	"\x1bAliCloudMongodbInstanceSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12{\n" +
 	"\n" +
@@ -464,7 +464,7 @@ const file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_spec_proto_r
 	"\x10security_ip_list\x18\x11 \x03(\tR\x0esecurityIpList\x12*\n" +
 	"\x11security_group_id\x18\x12 \x01(\tR\x0fsecurityGroupId\x12*\n" +
 	"\x11resource_group_id\x18\x13 \x01(\tR\x0fresourceGroupId\x12s\n" +
-	"\x04tags\x18\x14 \x03(\v2_.org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceSpec.TagsEntryR\x04tags\x12\x9f\x01\n" +
+	"\x04tags\x18\x14 \x03(\v2_.org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceSpec.TagsEntryR\x04tags\x12\x9f\x01\n" +
 	"\n" +
 	"ssl_action\x18\x15 \x01(\tB{\xbaHx\xba\x01u\n" +
 	"\x10ssl_action_valid\x12.ssl_action must be one of: Open, Close, Update\x1a1this == '' || this in ['Open', 'Close', 'Update']H\x06R\tsslAction\x88\x01\x01\x12y\n" +
@@ -480,7 +480,7 @@ const file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_spec_proto_r
 	"backupTime\x12#\n" +
 	"\rbackup_period\x18\x1d \x03(\tR\fbackupPeriod\x12\x85\x01\n" +
 	"\n" +
-	"parameters\x18\x1e \x03(\v2e.org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceSpec.ParametersEntryR\n" +
+	"parameters\x18\x1e \x03(\v2e.org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceSpec.ParametersEntryR\n" +
 	"parameters\x12H\n" +
 	"\x1edb_instance_release_protection\x18\x1f \x01(\bH\tR\x1bdbInstanceReleaseProtection\x88\x01\x01\x12\xa2\x01\n" +
 	"\x06period\x18  \x01(\x05B\x84\x01\xbaH\x80\x01\xba\x01}\n" +
@@ -525,15 +525,15 @@ func file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_spec_proto_ra
 
 var file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_spec_proto_goTypes = []any{
-	(*AlicloudMongodbInstanceSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceSpec
-	nil,                                 // 1: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceSpec.TagsEntry
-	nil,                                 // 2: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceSpec.ParametersEntry
+	(*AliCloudMongodbInstanceSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceSpec
+	nil,                                 // 1: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceSpec.TagsEntry
+	nil,                                 // 2: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceSpec.ParametersEntry
 	(*v1.StringValueOrRef)(nil),         // 3: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_spec_proto_depIdxs = []int32{
-	3, // 0: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceSpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	1, // 1: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceSpec.TagsEntry
-	2, // 2: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceSpec.parameters:type_name -> org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AlicloudMongodbInstanceSpec.ParametersEntry
+	3, // 0: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceSpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	1, // 1: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceSpec.TagsEntry
+	2, // 2: org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceSpec.parameters:type_name -> org.openmcf.provider.alicloud.alicloudmongodbinstance.v1.AliCloudMongodbInstanceSpec.ParametersEntry
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

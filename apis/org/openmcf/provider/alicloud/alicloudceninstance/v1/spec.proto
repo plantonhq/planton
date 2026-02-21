@@ -6,7 +6,7 @@ import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudCenInstanceSpec defines the configuration for an Alibaba Cloud
+// AliCloudCenInstanceSpec defines the configuration for an Alibaba Cloud
 // Cloud Enterprise Network (CEN) instance with bundled child-instance
 // attachments.
 //
@@ -28,7 +28,7 @@ import "org/openmcf/shared/options/options.proto";
 // Provider resources:
 //   Terraform: alicloud_cen_instance + alicloud_cen_instance_attachment
 //   Pulumi:    cen.Instance + cen.InstanceAttachment
-message AlicloudCenInstanceSpec {
+message AliCloudCenInstanceSpec {
   // Alibaba Cloud region used for API routing. CEN is a global service so
   // this does not restrict where attached networks reside -- each attachment
   // declares its own region via child_instance_region_id.
@@ -69,19 +69,19 @@ message AlicloudCenInstanceSpec {
   // Child-instance attachments bundled with this CEN. Each entry attaches a
   // VPC, VBR (Virtual Border Router), or CCN (Cloud Connect Network) to the
   // CEN instance, enabling private connectivity between the attached networks.
-  repeated AlicloudCenAttachment attachments = 7;
+  repeated AliCloudCenAttachment attachments = 7;
 }
 
-// AlicloudCenAttachment attaches a single child instance (VPC, VBR, or CCN)
+// AliCloudCenAttachment attaches a single child instance (VPC, VBR, or CCN)
 // to the parent CEN instance. Each attachment creates an
 // alicloud_cen_instance_attachment resource in the provider.
-message AlicloudCenAttachment {
+message AliCloudCenAttachment {
   // ID of the child instance to attach. For VPCs this is the vpc_id; for VBRs
   // the vbr_id; for CCNs the ccn_id. When the child is a VPC managed by
   // OpenMCF, use valueFrom to reference its output.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef child_instance_id = 1 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
   ];
 

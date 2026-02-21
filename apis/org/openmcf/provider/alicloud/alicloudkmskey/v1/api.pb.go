@@ -24,7 +24,7 @@ const (
 )
 
 // alicloud-kms-key
-type AlicloudKmsKey struct {
+type AliCloudKmsKey struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
@@ -33,27 +33,27 @@ type AlicloudKmsKey struct {
 	// metadata
 	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
-	Spec *AlicloudKmsKeySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec *AliCloudKmsKeySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
-	Status        *AlicloudKmsKeyStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *AliCloudKmsKeyStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudKmsKey) Reset() {
-	*x = AlicloudKmsKey{}
+func (x *AliCloudKmsKey) Reset() {
+	*x = AliCloudKmsKey{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkmskey_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKmsKey) String() string {
+func (x *AliCloudKmsKey) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKmsKey) ProtoMessage() {}
+func (*AliCloudKmsKey) ProtoMessage() {}
 
-func (x *AlicloudKmsKey) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKmsKey) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkmskey_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AlicloudKmsKey) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKmsKey.ProtoReflect.Descriptor instead.
-func (*AlicloudKmsKey) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKmsKey.ProtoReflect.Descriptor instead.
+func (*AliCloudKmsKey) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkmskey_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudKmsKey) GetApiVersion() string {
+func (x *AliCloudKmsKey) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *AlicloudKmsKey) GetKind() string {
+func (x *AliCloudKmsKey) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AlicloudKmsKey) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AliCloudKmsKey) GetMetadata() *shared.CloudResourceMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *AlicloudKmsKey) GetSpec() *AlicloudKmsKeySpec {
+func (x *AliCloudKmsKey) GetSpec() *AliCloudKmsKeySpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-func (x *AlicloudKmsKey) GetStatus() *AlicloudKmsKeyStatus {
+func (x *AliCloudKmsKey) GetStatus() *AliCloudKmsKeyStatus {
 	if x != nil {
 		return x.Status
 	}
@@ -106,28 +106,28 @@ func (x *AlicloudKmsKey) GetStatus() *AlicloudKmsKeyStatus {
 }
 
 // alicloud-kms-key status
-type AlicloudKmsKeyStatus struct {
+type AliCloudKmsKeyStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// stack-outputs
-	Outputs       *AlicloudKmsKeyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AliCloudKmsKeyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudKmsKeyStatus) Reset() {
-	*x = AlicloudKmsKeyStatus{}
+func (x *AliCloudKmsKeyStatus) Reset() {
+	*x = AliCloudKmsKeyStatus{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkmskey_v1_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKmsKeyStatus) String() string {
+func (x *AliCloudKmsKeyStatus) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKmsKeyStatus) ProtoMessage() {}
+func (*AliCloudKmsKeyStatus) ProtoMessage() {}
 
-func (x *AlicloudKmsKeyStatus) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKmsKeyStatus) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkmskey_v1_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,12 +139,12 @@ func (x *AlicloudKmsKeyStatus) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKmsKeyStatus.ProtoReflect.Descriptor instead.
-func (*AlicloudKmsKeyStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKmsKeyStatus.ProtoReflect.Descriptor instead.
+func (*AliCloudKmsKeyStatus) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkmskey_v1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudKmsKeyStatus) GetOutputs() *AlicloudKmsKeyStackOutputs {
+func (x *AliCloudKmsKeyStatus) GetOutputs() *AliCloudKmsKeyStackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -156,17 +156,17 @@ var File_org_openmcf_provider_alicloud_alicloudkmskey_v1_api_proto protoreflect.
 const file_org_openmcf_provider_alicloud_alicloudkmskey_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"9org/openmcf/provider/alicloud/alicloudkmskey/v1/api.proto\x12/org.openmcf.provider.alicloud.alicloudkmskey.v1\x1a\x1bbuf/validate/validate.proto\x1a:org/openmcf/provider/alicloud/alicloudkmskey/v1/spec.proto\x1aCorg/openmcf/provider/alicloud/alicloudkmskey/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\x8b\x03\n" +
-	"\x0eAlicloudKmsKey\x12?\n" +
+	"\x0eAliCloudKmsKey\x12?\n" +
 	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x12)\n" +
 	"\x04kind\x18\x02 \x01(\tB\x15\xbaH\x12r\x10\n" +
-	"\x0eAlicloudKmsKeyR\x04kind\x12M\n" +
+	"\x0eAliCloudKmsKeyR\x04kind\x12M\n" +
 	"\bmetadata\x18\x03 \x01(\v2).org.openmcf.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
-	"\x04spec\x18\x04 \x01(\v2C.org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeyStatusR\x06status\"}\n" +
-	"\x14AlicloudKmsKeyStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeyStackOutputsR\aoutputsB\x86\x03\n" +
+	"\x04spec\x18\x04 \x01(\v2C.org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
+	"\x06status\x18\x05 \x01(\v2E.org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeyStatusR\x06status\"}\n" +
+	"\x14AliCloudKmsKeyStatus\x12e\n" +
+	"\aoutputs\x18\x01 \x01(\v2K.org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeyStackOutputsR\aoutputsB\x86\x03\n" +
 	"3com.org.openmcf.provider.alicloud.alicloudkmskey.v1B\bApiProtoP\x01Zbgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudkmskey/v1;alicloudkmskeyv1\xa2\x02\x05OOPAA\xaa\x02/Org.Openmcf.Provider.Alicloud.Alicloudkmskey.V1\xca\x02/Org\\Openmcf\\Provider\\Alicloud\\Alicloudkmskey\\V1\xe2\x02;Org\\Openmcf\\Provider\\Alicloud\\Alicloudkmskey\\V1\\GPBMetadata\xea\x024Org::Openmcf::Provider::Alicloud::Alicloudkmskey::V1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_org_openmcf_provider_alicloud_alicloudkmskey_v1_api_proto_rawDescGZIP(
 
 var file_org_openmcf_provider_alicloud_alicloudkmskey_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudkmskey_v1_api_proto_goTypes = []any{
-	(*AlicloudKmsKey)(nil),               // 0: org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKey
-	(*AlicloudKmsKeyStatus)(nil),         // 1: org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeyStatus
+	(*AliCloudKmsKey)(nil),               // 0: org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKey
+	(*AliCloudKmsKeyStatus)(nil),         // 1: org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeyStatus
 	(*shared.CloudResourceMetadata)(nil), // 2: org.openmcf.shared.CloudResourceMetadata
-	(*AlicloudKmsKeySpec)(nil),           // 3: org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeySpec
-	(*AlicloudKmsKeyStackOutputs)(nil),   // 4: org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeyStackOutputs
+	(*AliCloudKmsKeySpec)(nil),           // 3: org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeySpec
+	(*AliCloudKmsKeyStackOutputs)(nil),   // 4: org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeyStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudkmskey_v1_api_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKey.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
-	3, // 1: org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKey.spec:type_name -> org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeySpec
-	1, // 2: org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKey.status:type_name -> org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeyStatus
-	4, // 3: org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeyStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeyStackOutputs
+	2, // 0: org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKey.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
+	3, // 1: org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKey.spec:type_name -> org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeySpec
+	1, // 2: org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKey.status:type_name -> org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeyStatus
+	4, // 3: org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeyStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeyStackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

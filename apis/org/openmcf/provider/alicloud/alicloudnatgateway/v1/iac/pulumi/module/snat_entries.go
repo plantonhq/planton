@@ -17,7 +17,7 @@ func snatEntry(
 	natGatewayName string,
 	snatIp string,
 	index int,
-	entry *alicloudnatgatewayv1.AlicloudSnatEntry,
+	entry *alicloudnatgatewayv1.AliCloudSnatEntry,
 ) error {
 	entryName := entry.SnatEntryName
 	if entryName == "" {

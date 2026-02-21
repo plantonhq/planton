@@ -6,30 +6,30 @@ import (
 )
 
 type Locals struct {
-	AlicloudContainerRegistry *alicloudcontainerregistryv1.AlicloudContainerRegistry
+	AliCloudContainerRegistry *alicloudcontainerregistryv1.AliCloudContainerRegistry
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *alicloudcontainerregistryv1.AlicloudContainerRegistryStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, stackInput *alicloudcontainerregistryv1.AliCloudContainerRegistryStackInput) *Locals {
 	return &Locals{
-		AlicloudContainerRegistry: stackInput.Target,
+		AliCloudContainerRegistry: stackInput.Target,
 	}
 }
 
-func paymentType(spec *alicloudcontainerregistryv1.AlicloudContainerRegistrySpec) string {
+func paymentType(spec *alicloudcontainerregistryv1.AliCloudContainerRegistrySpec) string {
 	if spec.PaymentType != nil {
 		return *spec.PaymentType
 	}
 	return "Subscription"
 }
 
-func namespaceAutoCreate(ns *alicloudcontainerregistryv1.AlicloudContainerRegistryNamespace) bool {
+func namespaceAutoCreate(ns *alicloudcontainerregistryv1.AliCloudContainerRegistryNamespace) bool {
 	if ns.AutoCreate != nil {
 		return *ns.AutoCreate
 	}
 	return false
 }
 
-func namespaceDefaultVisibility(ns *alicloudcontainerregistryv1.AlicloudContainerRegistryNamespace) string {
+func namespaceDefaultVisibility(ns *alicloudcontainerregistryv1.AliCloudContainerRegistryNamespace) string {
 	if ns.DefaultVisibility != nil {
 		return *ns.DefaultVisibility
 	}

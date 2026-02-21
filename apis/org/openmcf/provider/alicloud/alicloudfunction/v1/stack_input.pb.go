@@ -23,30 +23,30 @@ const (
 )
 
 // alicloud-function stack-input
-type AlicloudFunctionStackInput struct {
+type AliCloudFunctionStackInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target cloud-resource
-	Target *AlicloudFunction `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
+	Target *AliCloudFunction `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
-	ProviderConfig *alicloud.AlicloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
+	ProviderConfig *alicloud.AliCloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudFunctionStackInput) Reset() {
-	*x = AlicloudFunctionStackInput{}
+func (x *AliCloudFunctionStackInput) Reset() {
+	*x = AliCloudFunctionStackInput{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudFunctionStackInput) String() string {
+func (x *AliCloudFunctionStackInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudFunctionStackInput) ProtoMessage() {}
+func (*AliCloudFunctionStackInput) ProtoMessage() {}
 
-func (x *AlicloudFunctionStackInput) ProtoReflect() protoreflect.Message {
+func (x *AliCloudFunctionStackInput) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AlicloudFunctionStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudFunctionStackInput.ProtoReflect.Descriptor instead.
-func (*AlicloudFunctionStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudFunctionStackInput.ProtoReflect.Descriptor instead.
+func (*AliCloudFunctionStackInput) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudFunctionStackInput) GetTarget() *AlicloudFunction {
+func (x *AliCloudFunctionStackInput) GetTarget() *AliCloudFunction {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionStackInput) GetProviderConfig() *alicloud.AlicloudProviderConfig {
+func (x *AliCloudFunctionStackInput) GetProviderConfig() *alicloud.AliCloudProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,9 +82,9 @@ var File_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_input_proto pro
 const file_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_input_proto_rawDesc = "" +
 	"\n" +
 	"Corg/openmcf/provider/alicloud/alicloudfunction/v1/stack_input.proto\x121org.openmcf.provider.alicloud.alicloudfunction.v1\x1a;org/openmcf/provider/alicloud/alicloudfunction/v1/api.proto\x1a,org/openmcf/provider/alicloud/provider.proto\"\xd9\x01\n" +
-	"\x1aAlicloudFunctionStackInput\x12[\n" +
-	"\x06target\x18\x01 \x01(\v2C.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionR\x06target\x12^\n" +
-	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigR\x0eproviderConfigB\x9b\x03\n" +
+	"\x1aAliCloudFunctionStackInput\x12[\n" +
+	"\x06target\x18\x01 \x01(\v2C.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionR\x06target\x12^\n" +
+	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigR\x0eproviderConfigB\x9b\x03\n" +
 	"5com.org.openmcf.provider.alicloud.alicloudfunction.v1B\x0fStackInputProtoP\x01Zfgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudfunction/v1;alicloudfunctionv1\xa2\x02\x05OOPAA\xaa\x021Org.Openmcf.Provider.Alicloud.Alicloudfunction.V1\xca\x021Org\\Openmcf\\Provider\\Alicloud\\Alicloudfunction\\V1\xe2\x02=Org\\Openmcf\\Provider\\Alicloud\\Alicloudfunction\\V1\\GPBMetadata\xea\x026Org::Openmcf::Provider::Alicloud::Alicloudfunction::V1b\x06proto3"
 
 var (
@@ -101,13 +101,13 @@ func file_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_input_proto_ra
 
 var file_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_input_proto_goTypes = []any{
-	(*AlicloudFunctionStackInput)(nil),      // 0: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionStackInput
-	(*AlicloudFunction)(nil),                // 1: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunction
-	(*alicloud.AlicloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AlicloudProviderConfig
+	(*AliCloudFunctionStackInput)(nil),      // 0: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionStackInput
+	(*AliCloudFunction)(nil),                // 1: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunction
+	(*alicloud.AliCloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AliCloudProviderConfig
 }
 var file_org_openmcf_provider_alicloud_alicloudfunction_v1_stack_input_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunction
-	2, // 1: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
+	1, // 0: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunction
+	2, // 1: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

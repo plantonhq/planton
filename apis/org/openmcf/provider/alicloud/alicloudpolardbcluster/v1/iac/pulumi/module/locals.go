@@ -9,19 +9,19 @@ import (
 )
 
 type Locals struct {
-	AlicloudPolardbCluster *alicloudpolardbclusterv1.AlicloudPolardbCluster
+	AliCloudPolardbCluster *alicloudpolardbclusterv1.AliCloudPolardbCluster
 	Tags                   map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudpolardbclusterv1.AlicloudPolardbClusterStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudpolardbclusterv1.AliCloudPolardbClusterStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudPolardbCluster = stackInput.Target
+	locals.AliCloudPolardbCluster = stackInput.Target
 	target := stackInput.Target
 
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudPolardbCluster.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudPolardbCluster.String()),
 	}
 
 	if target.Metadata.Id != "" {
@@ -44,34 +44,34 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudpolardbclusterv1.
 }
 
 func clusterDescription(locals *Locals) string {
-	if locals.AlicloudPolardbCluster.Spec.Description != "" {
-		return locals.AlicloudPolardbCluster.Spec.Description
+	if locals.AliCloudPolardbCluster.Spec.Description != "" {
+		return locals.AliCloudPolardbCluster.Spec.Description
 	}
-	return locals.AlicloudPolardbCluster.Metadata.Name
+	return locals.AliCloudPolardbCluster.Metadata.Name
 }
 
-func payType(spec *alicloudpolardbclusterv1.AlicloudPolardbClusterSpec) string {
+func payType(spec *alicloudpolardbclusterv1.AliCloudPolardbClusterSpec) string {
 	if spec.PayType != nil && *spec.PayType != "" {
 		return *spec.PayType
 	}
 	return "PostPaid"
 }
 
-func dbNodeCount(spec *alicloudpolardbclusterv1.AlicloudPolardbClusterSpec) int {
+func dbNodeCount(spec *alicloudpolardbclusterv1.AliCloudPolardbClusterSpec) int {
 	if spec.DbNodeCount != nil {
 		return int(*spec.DbNodeCount)
 	}
 	return 2
 }
 
-func accountType(acct *alicloudpolardbclusterv1.AlicloudPolardbAccount) string {
+func accountType(acct *alicloudpolardbclusterv1.AliCloudPolardbAccount) string {
 	if acct.AccountType != nil && *acct.AccountType != "" {
 		return *acct.AccountType
 	}
 	return "Normal"
 }
 
-func accountPrivilege(priv *alicloudpolardbclusterv1.AlicloudPolardbAccountPrivilege) string {
+func accountPrivilege(priv *alicloudpolardbclusterv1.AliCloudPolardbAccountPrivilege) string {
 	if priv.AccountPrivilege != nil && *priv.AccountPrivilege != "" {
 		return *priv.AccountPrivilege
 	}

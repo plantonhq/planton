@@ -11,9 +11,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *alicloudnatgatewayv1.AlicloudNatGatewayStackInput) error {
+func Resources(ctx *pulumi.Context, stackInput *alicloudnatgatewayv1.AliCloudNatGatewayStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
-	spec := locals.AlicloudNatGateway.Spec
+	spec := locals.AliCloudNatGateway.Spec
 
 	alicloudProvider, err := alicloud.NewProvider(ctx, "alicloud", &alicloud.ProviderArgs{
 		Region: pulumi.String(spec.Region),

@@ -10,23 +10,23 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func TestAlicloudContainerRegistrySpec(t *testing.T) {
+func TestAliCloudContainerRegistrySpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
-	ginkgo.RunSpecs(t, "AlicloudContainerRegistrySpec Validation Tests")
+	ginkgo.RunSpecs(t, "AliCloudContainerRegistrySpec Validation Tests")
 }
 
-var _ = ginkgo.Describe("AlicloudContainerRegistrySpec Validation Tests", func() {
+var _ = ginkgo.Describe("AliCloudContainerRegistrySpec Validation Tests", func() {
 
 	ginkgo.Describe("valid input", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
-			input := &AlicloudContainerRegistry{
+			input := &AliCloudContainerRegistry{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudContainerRegistry",
+				Kind:       "AliCloudContainerRegistry",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-registry",
 				},
-				Spec: &AlicloudContainerRegistrySpec{
+				Spec: &AliCloudContainerRegistrySpec{
 					Region:       "cn-hangzhou",
 					InstanceName: "my-registry",
 					InstanceType: "Basic",
@@ -37,15 +37,15 @@ var _ = ginkgo.Describe("AlicloudContainerRegistrySpec Validation Tests", func()
 		})
 
 		ginkgo.It("should pass with all optional fields populated", func() {
-			input := &AlicloudContainerRegistry{
+			input := &AliCloudContainerRegistry{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudContainerRegistry",
+				Kind:       "AliCloudContainerRegistry",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "full-registry",
 					Org:  "my-org",
 					Env:  "production",
 				},
-				Spec: &AlicloudContainerRegistrySpec{
+				Spec: &AliCloudContainerRegistrySpec{
 					Region:          "cn-shanghai",
 					InstanceName:    "prod-registry",
 					InstanceType:    "Advanced",
@@ -60,13 +60,13 @@ var _ = ginkgo.Describe("AlicloudContainerRegistrySpec Validation Tests", func()
 		})
 
 		ginkgo.It("should pass with Standard instance type", func() {
-			input := &AlicloudContainerRegistry{
+			input := &AliCloudContainerRegistry{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudContainerRegistry",
+				Kind:       "AliCloudContainerRegistry",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "standard-reg",
 				},
-				Spec: &AlicloudContainerRegistrySpec{
+				Spec: &AliCloudContainerRegistrySpec{
 					Region:       "us-west-1",
 					InstanceName: "standard-registry",
 					InstanceType: "Standard",
@@ -77,13 +77,13 @@ var _ = ginkgo.Describe("AlicloudContainerRegistrySpec Validation Tests", func()
 		})
 
 		ginkgo.It("should pass with PayAsYouGo payment type", func() {
-			input := &AlicloudContainerRegistry{
+			input := &AliCloudContainerRegistry{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudContainerRegistry",
+				Kind:       "AliCloudContainerRegistry",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "payg-reg",
 				},
-				Spec: &AlicloudContainerRegistrySpec{
+				Spec: &AliCloudContainerRegistrySpec{
 					Region:       "cn-hangzhou",
 					InstanceName: "dev-registry",
 					InstanceType: "Basic",
@@ -95,17 +95,17 @@ var _ = ginkgo.Describe("AlicloudContainerRegistrySpec Validation Tests", func()
 		})
 
 		ginkgo.It("should pass with namespaces configured", func() {
-			input := &AlicloudContainerRegistry{
+			input := &AliCloudContainerRegistry{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudContainerRegistry",
+				Kind:       "AliCloudContainerRegistry",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "ns-reg",
 				},
-				Spec: &AlicloudContainerRegistrySpec{
+				Spec: &AliCloudContainerRegistrySpec{
 					Region:       "cn-hangzhou",
 					InstanceName: "ns-registry",
 					InstanceType: "Standard",
-					Namespaces: []*AlicloudContainerRegistryNamespace{
+					Namespaces: []*AliCloudContainerRegistryNamespace{
 						{
 							Name:              "platform",
 							AutoCreate:        proto.Bool(true),
@@ -124,17 +124,17 @@ var _ = ginkgo.Describe("AlicloudContainerRegistrySpec Validation Tests", func()
 		})
 
 		ginkgo.It("should pass with namespace using only required fields", func() {
-			input := &AlicloudContainerRegistry{
+			input := &AliCloudContainerRegistry{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudContainerRegistry",
+				Kind:       "AliCloudContainerRegistry",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "minimal-ns-reg",
 				},
-				Spec: &AlicloudContainerRegistrySpec{
+				Spec: &AliCloudContainerRegistrySpec{
 					Region:       "cn-hangzhou",
 					InstanceName: "minimal-ns-registry",
 					InstanceType: "Basic",
-					Namespaces: []*AlicloudContainerRegistryNamespace{
+					Namespaces: []*AliCloudContainerRegistryNamespace{
 						{
 							Name: "backend",
 						},
@@ -149,13 +149,13 @@ var _ = ginkgo.Describe("AlicloudContainerRegistrySpec Validation Tests", func()
 	ginkgo.Describe("invalid input", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
-			input := &AlicloudContainerRegistry{
+			input := &AliCloudContainerRegistry{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudContainerRegistry",
+				Kind:       "AliCloudContainerRegistry",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudContainerRegistrySpec{
+				Spec: &AliCloudContainerRegistrySpec{
 					InstanceName: "my-registry",
 					InstanceType: "Basic",
 				},
@@ -165,13 +165,13 @@ var _ = ginkgo.Describe("AlicloudContainerRegistrySpec Validation Tests", func()
 		})
 
 		ginkgo.It("should fail when instance_name is missing", func() {
-			input := &AlicloudContainerRegistry{
+			input := &AliCloudContainerRegistry{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudContainerRegistry",
+				Kind:       "AliCloudContainerRegistry",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudContainerRegistrySpec{
+				Spec: &AliCloudContainerRegistrySpec{
 					Region:       "cn-hangzhou",
 					InstanceType: "Basic",
 				},
@@ -181,13 +181,13 @@ var _ = ginkgo.Describe("AlicloudContainerRegistrySpec Validation Tests", func()
 		})
 
 		ginkgo.It("should fail when instance_type is missing", func() {
-			input := &AlicloudContainerRegistry{
+			input := &AliCloudContainerRegistry{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudContainerRegistry",
+				Kind:       "AliCloudContainerRegistry",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudContainerRegistrySpec{
+				Spec: &AliCloudContainerRegistrySpec{
 					Region:       "cn-hangzhou",
 					InstanceName: "my-registry",
 				},
@@ -197,13 +197,13 @@ var _ = ginkgo.Describe("AlicloudContainerRegistrySpec Validation Tests", func()
 		})
 
 		ginkgo.It("should fail when instance_type has invalid value", func() {
-			input := &AlicloudContainerRegistry{
+			input := &AliCloudContainerRegistry{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudContainerRegistry",
+				Kind:       "AliCloudContainerRegistry",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudContainerRegistrySpec{
+				Spec: &AliCloudContainerRegistrySpec{
 					Region:       "cn-hangzhou",
 					InstanceName: "my-registry",
 					InstanceType: "Enterprise",
@@ -214,13 +214,13 @@ var _ = ginkgo.Describe("AlicloudContainerRegistrySpec Validation Tests", func()
 		})
 
 		ginkgo.It("should fail when payment_type has invalid value", func() {
-			input := &AlicloudContainerRegistry{
+			input := &AliCloudContainerRegistry{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudContainerRegistry",
+				Kind:       "AliCloudContainerRegistry",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudContainerRegistrySpec{
+				Spec: &AliCloudContainerRegistrySpec{
 					Region:       "cn-hangzhou",
 					InstanceName: "my-registry",
 					InstanceType: "Basic",
@@ -232,13 +232,13 @@ var _ = ginkgo.Describe("AlicloudContainerRegistrySpec Validation Tests", func()
 		})
 
 		ginkgo.It("should fail when api_version is wrong", func() {
-			input := &AlicloudContainerRegistry{
+			input := &AliCloudContainerRegistry{
 				ApiVersion: "wrong/v1",
-				Kind:       "AlicloudContainerRegistry",
+				Kind:       "AliCloudContainerRegistry",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudContainerRegistrySpec{
+				Spec: &AliCloudContainerRegistrySpec{
 					Region:       "cn-hangzhou",
 					InstanceName: "my-registry",
 					InstanceType: "Basic",
@@ -249,13 +249,13 @@ var _ = ginkgo.Describe("AlicloudContainerRegistrySpec Validation Tests", func()
 		})
 
 		ginkgo.It("should fail when kind is wrong", func() {
-			input := &AlicloudContainerRegistry{
+			input := &AliCloudContainerRegistry{
 				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudContainerRegistrySpec{
+				Spec: &AliCloudContainerRegistrySpec{
 					Region:       "cn-hangzhou",
 					InstanceName: "my-registry",
 					InstanceType: "Basic",
@@ -266,10 +266,10 @@ var _ = ginkgo.Describe("AlicloudContainerRegistrySpec Validation Tests", func()
 		})
 
 		ginkgo.It("should fail when metadata is missing", func() {
-			input := &AlicloudContainerRegistry{
+			input := &AliCloudContainerRegistry{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudContainerRegistry",
-				Spec: &AlicloudContainerRegistrySpec{
+				Kind:       "AliCloudContainerRegistry",
+				Spec: &AliCloudContainerRegistrySpec{
 					Region:       "cn-hangzhou",
 					InstanceName: "my-registry",
 					InstanceType: "Basic",
@@ -280,17 +280,17 @@ var _ = ginkgo.Describe("AlicloudContainerRegistrySpec Validation Tests", func()
 		})
 
 		ginkgo.It("should fail when namespace name is too short", func() {
-			input := &AlicloudContainerRegistry{
+			input := &AliCloudContainerRegistry{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudContainerRegistry",
+				Kind:       "AliCloudContainerRegistry",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudContainerRegistrySpec{
+				Spec: &AliCloudContainerRegistrySpec{
 					Region:       "cn-hangzhou",
 					InstanceName: "my-registry",
 					InstanceType: "Basic",
-					Namespaces: []*AlicloudContainerRegistryNamespace{
+					Namespaces: []*AliCloudContainerRegistryNamespace{
 						{
 							Name: "x",
 						},
@@ -306,17 +306,17 @@ var _ = ginkgo.Describe("AlicloudContainerRegistrySpec Validation Tests", func()
 			for i := 0; i < 121; i++ {
 				longName += "a"
 			}
-			input := &AlicloudContainerRegistry{
+			input := &AliCloudContainerRegistry{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudContainerRegistry",
+				Kind:       "AliCloudContainerRegistry",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudContainerRegistrySpec{
+				Spec: &AliCloudContainerRegistrySpec{
 					Region:       "cn-hangzhou",
 					InstanceName: "my-registry",
 					InstanceType: "Basic",
-					Namespaces: []*AlicloudContainerRegistryNamespace{
+					Namespaces: []*AliCloudContainerRegistryNamespace{
 						{
 							Name: longName,
 						},
@@ -328,17 +328,17 @@ var _ = ginkgo.Describe("AlicloudContainerRegistrySpec Validation Tests", func()
 		})
 
 		ginkgo.It("should fail when namespace default_visibility has invalid value", func() {
-			input := &AlicloudContainerRegistry{
+			input := &AliCloudContainerRegistry{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudContainerRegistry",
+				Kind:       "AliCloudContainerRegistry",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
 				},
-				Spec: &AlicloudContainerRegistrySpec{
+				Spec: &AliCloudContainerRegistrySpec{
 					Region:       "cn-hangzhou",
 					InstanceName: "my-registry",
 					InstanceType: "Basic",
-					Namespaces: []*AlicloudContainerRegistryNamespace{
+					Namespaces: []*AliCloudContainerRegistryNamespace{
 						{
 							Name:              "test-ns",
 							DefaultVisibility: proto.String("INTERNAL"),

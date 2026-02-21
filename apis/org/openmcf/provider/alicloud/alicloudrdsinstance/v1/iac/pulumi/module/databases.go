@@ -13,7 +13,7 @@ func database(
 	provider *alicloud.Provider,
 	instance *rds.Instance,
 	engine string,
-	db *alicloudrdsinstancev1.AlicloudRdsDatabase,
+	db *alicloudrdsinstancev1.AliCloudRdsDatabase,
 ) (*rds.Database, error) {
 	args := &rds.DatabaseArgs{
 		InstanceId:   instance.ID(),

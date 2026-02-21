@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudEipAddressSpec defines the configuration for an Alibaba Cloud
+// AliCloudEipAddressSpec defines the configuration for an Alibaba Cloud
 // Elastic IP Address (EIP).
 //
 // An EIP is a static, public IPv4 address that can be associated with ECS
@@ -33,14 +33,14 @@ const (
 // re-associated with another without changing the address.
 //
 // This component creates a standalone EIP. Association with a target resource
-// is handled by the downstream component (e.g., AlicloudNatGateway includes
+// is handled by the downstream component (e.g., AliCloudNatGateway includes
 // an eip_id field for EIP association).
 //
 // Provider resources:
 //
 //	Terraform: alicloud_eip_address
 //	Pulumi:    ecs.EipAddress
-type AlicloudEipAddressSpec struct {
+type AliCloudEipAddressSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the EIP will be allocated.
 	// The EIP can only be associated with resources in the same region.
@@ -95,20 +95,20 @@ type AlicloudEipAddressSpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudEipAddressSpec) Reset() {
-	*x = AlicloudEipAddressSpec{}
+func (x *AliCloudEipAddressSpec) Reset() {
+	*x = AliCloudEipAddressSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudEipAddressSpec) String() string {
+func (x *AliCloudEipAddressSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudEipAddressSpec) ProtoMessage() {}
+func (*AliCloudEipAddressSpec) ProtoMessage() {}
 
-func (x *AlicloudEipAddressSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudEipAddressSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -120,61 +120,61 @@ func (x *AlicloudEipAddressSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudEipAddressSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudEipAddressSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudEipAddressSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudEipAddressSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudEipAddressSpec) GetRegion() string {
+func (x *AliCloudEipAddressSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudEipAddressSpec) GetAddressName() string {
+func (x *AliCloudEipAddressSpec) GetAddressName() string {
 	if x != nil {
 		return x.AddressName
 	}
 	return ""
 }
 
-func (x *AlicloudEipAddressSpec) GetDescription() string {
+func (x *AliCloudEipAddressSpec) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *AlicloudEipAddressSpec) GetBandwidth() int32 {
+func (x *AliCloudEipAddressSpec) GetBandwidth() int32 {
 	if x != nil && x.Bandwidth != nil {
 		return *x.Bandwidth
 	}
 	return 0
 }
 
-func (x *AlicloudEipAddressSpec) GetInternetChargeType() string {
+func (x *AliCloudEipAddressSpec) GetInternetChargeType() string {
 	if x != nil && x.InternetChargeType != nil {
 		return *x.InternetChargeType
 	}
 	return ""
 }
 
-func (x *AlicloudEipAddressSpec) GetIsp() string {
+func (x *AliCloudEipAddressSpec) GetIsp() string {
 	if x != nil && x.Isp != nil {
 		return *x.Isp
 	}
 	return ""
 }
 
-func (x *AlicloudEipAddressSpec) GetResourceGroupId() string {
+func (x *AliCloudEipAddressSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudEipAddressSpec) GetTags() map[string]string {
+func (x *AliCloudEipAddressSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
@@ -186,7 +186,7 @@ var File_org_openmcf_provider_alicloud_alicloudeipaddress_v1_spec_proto protoref
 const file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	">org/openmcf/provider/alicloud/alicloudeipaddress/v1/spec.proto\x123org.openmcf.provider.alicloud.alicloudeipaddress.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xb9\b\n" +
-	"\x16AlicloudEipAddressSpec\x12\"\n" +
+	"\x16AliCloudEipAddressSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12+\n" +
 	"\faddress_name\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x01R\vaddressName\x12 \n" +
@@ -197,7 +197,7 @@ const file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_spec_proto_rawDes
 	"\x03isp\x18\x06 \x01(\tB\xf4\x02\xbaH\xe9\x02\xba\x01\xe5\x02\n" +
 	"\tisp_valid\x12\x9e\x01isp must be one of: BGP, BGP_PRO, ChinaTelecom, ChinaUnicom, ChinaMobile, ChinaTelecom_L2, ChinaUnicom_L2, ChinaMobile_L2, BGP_FinanceCloud, BGP_International\x1a\xb6\x01this == '' || this in ['BGP', 'BGP_PRO', 'ChinaTelecom', 'ChinaUnicom', 'ChinaMobile', 'ChinaTelecom_L2', 'ChinaUnicom_L2', 'ChinaMobile_L2', 'BGP_FinanceCloud', 'BGP_International']\x8a\xa6\x1d\x03BGPH\x02R\x03isp\x88\x01\x01\x12*\n" +
 	"\x11resource_group_id\x18\a \x01(\tR\x0fresourceGroupId\x12i\n" +
-	"\x04tags\x18\b \x03(\v2U.org.openmcf.provider.alicloud.alicloudeipaddress.v1.AlicloudEipAddressSpec.TagsEntryR\x04tags\x1a7\n" +
+	"\x04tags\x18\b \x03(\v2U.org.openmcf.provider.alicloud.alicloudeipaddress.v1.AliCloudEipAddressSpec.TagsEntryR\x04tags\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\f\n" +
@@ -221,11 +221,11 @@ func file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_spec_proto_rawDesc
 
 var file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_spec_proto_goTypes = []any{
-	(*AlicloudEipAddressSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudeipaddress.v1.AlicloudEipAddressSpec
-	nil,                            // 1: org.openmcf.provider.alicloud.alicloudeipaddress.v1.AlicloudEipAddressSpec.TagsEntry
+	(*AliCloudEipAddressSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudeipaddress.v1.AliCloudEipAddressSpec
+	nil,                            // 1: org.openmcf.provider.alicloud.alicloudeipaddress.v1.AliCloudEipAddressSpec.TagsEntry
 }
 var file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_spec_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudeipaddress.v1.AlicloudEipAddressSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudeipaddress.v1.AlicloudEipAddressSpec.TagsEntry
+	1, // 0: org.openmcf.provider.alicloud.alicloudeipaddress.v1.AliCloudEipAddressSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudeipaddress.v1.AliCloudEipAddressSpec.TagsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

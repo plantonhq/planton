@@ -23,30 +23,30 @@ const (
 )
 
 // alicloud-storage-bucket stack-input
-type AlicloudStorageBucketStackInput struct {
+type AliCloudStorageBucketStackInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target cloud-resource
-	Target *AlicloudStorageBucket `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
+	Target *AliCloudStorageBucket `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
-	ProviderConfig *alicloud.AlicloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
+	ProviderConfig *alicloud.AliCloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudStorageBucketStackInput) Reset() {
-	*x = AlicloudStorageBucketStackInput{}
+func (x *AliCloudStorageBucketStackInput) Reset() {
+	*x = AliCloudStorageBucketStackInput{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudStorageBucketStackInput) String() string {
+func (x *AliCloudStorageBucketStackInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudStorageBucketStackInput) ProtoMessage() {}
+func (*AliCloudStorageBucketStackInput) ProtoMessage() {}
 
-func (x *AlicloudStorageBucketStackInput) ProtoReflect() protoreflect.Message {
+func (x *AliCloudStorageBucketStackInput) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AlicloudStorageBucketStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudStorageBucketStackInput.ProtoReflect.Descriptor instead.
-func (*AlicloudStorageBucketStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudStorageBucketStackInput.ProtoReflect.Descriptor instead.
+func (*AliCloudStorageBucketStackInput) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudStorageBucketStackInput) GetTarget() *AlicloudStorageBucket {
+func (x *AliCloudStorageBucketStackInput) GetTarget() *AliCloudStorageBucket {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AlicloudStorageBucketStackInput) GetProviderConfig() *alicloud.AlicloudProviderConfig {
+func (x *AliCloudStorageBucketStackInput) GetProviderConfig() *alicloud.AliCloudProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,9 +82,9 @@ var File_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_input_prot
 const file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_input_proto_rawDesc = "" +
 	"\n" +
 	"Horg/openmcf/provider/alicloud/alicloudstoragebucket/v1/stack_input.proto\x126org.openmcf.provider.alicloud.alicloudstoragebucket.v1\x1a@org/openmcf/provider/alicloud/alicloudstoragebucket/v1/api.proto\x1a,org/openmcf/provider/alicloud/provider.proto\"\xe8\x01\n" +
-	"\x1fAlicloudStorageBucketStackInput\x12e\n" +
-	"\x06target\x18\x01 \x01(\v2M.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketR\x06target\x12^\n" +
-	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigR\x0eproviderConfigB\xbe\x03\n" +
+	"\x1fAliCloudStorageBucketStackInput\x12e\n" +
+	"\x06target\x18\x01 \x01(\v2M.org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketR\x06target\x12^\n" +
+	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigR\x0eproviderConfigB\xbe\x03\n" +
 	":com.org.openmcf.provider.alicloud.alicloudstoragebucket.v1B\x0fStackInputProtoP\x01Zpgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudstoragebucket/v1;alicloudstoragebucketv1\xa2\x02\x05OOPAA\xaa\x026Org.Openmcf.Provider.Alicloud.Alicloudstoragebucket.V1\xca\x026Org\\Openmcf\\Provider\\Alicloud\\Alicloudstoragebucket\\V1\xe2\x02BOrg\\Openmcf\\Provider\\Alicloud\\Alicloudstoragebucket\\V1\\GPBMetadata\xea\x02;Org::Openmcf::Provider::Alicloud::Alicloudstoragebucket::V1b\x06proto3"
 
 var (
@@ -101,13 +101,13 @@ func file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_input_pro
 
 var file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_input_proto_goTypes = []any{
-	(*AlicloudStorageBucketStackInput)(nil), // 0: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketStackInput
-	(*AlicloudStorageBucket)(nil),           // 1: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucket
-	(*alicloud.AlicloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AlicloudProviderConfig
+	(*AliCloudStorageBucketStackInput)(nil), // 0: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketStackInput
+	(*AliCloudStorageBucket)(nil),           // 1: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucket
+	(*alicloud.AliCloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AliCloudProviderConfig
 }
 var file_org_openmcf_provider_alicloud_alicloudstoragebucket_v1_stack_input_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucket
-	2, // 1: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AlicloudStorageBucketStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
+	1, // 0: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucket
+	2, // 1: org.openmcf.provider.alicloud.alicloudstoragebucket.v1.AliCloudStorageBucketStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

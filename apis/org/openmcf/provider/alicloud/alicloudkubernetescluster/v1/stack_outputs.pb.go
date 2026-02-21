@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudKubernetesClusterStackOutputs captures the outputs from deploying
+// AliCloudKubernetesClusterStackOutputs captures the outputs from deploying
 // an ACK Managed Kubernetes cluster.
-type AlicloudKubernetesClusterStackOutputs struct {
+type AliCloudKubernetesClusterStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// ACK cluster ID assigned by Alibaba Cloud.
 	ClusterId string `protobuf:"bytes,1,opt,name=cluster_id,json=clusterId,proto3" json:"cluster_id,omitempty"`
@@ -61,20 +61,20 @@ type AlicloudKubernetesClusterStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AlicloudKubernetesClusterStackOutputs) Reset() {
-	*x = AlicloudKubernetesClusterStackOutputs{}
+func (x *AliCloudKubernetesClusterStackOutputs) Reset() {
+	*x = AliCloudKubernetesClusterStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKubernetesClusterStackOutputs) String() string {
+func (x *AliCloudKubernetesClusterStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKubernetesClusterStackOutputs) ProtoMessage() {}
+func (*AliCloudKubernetesClusterStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudKubernetesClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKubernetesClusterStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -86,82 +86,82 @@ func (x *AlicloudKubernetesClusterStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKubernetesClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudKubernetesClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKubernetesClusterStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudKubernetesClusterStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudKubernetesClusterStackOutputs) GetClusterId() string {
+func (x *AliCloudKubernetesClusterStackOutputs) GetClusterId() string {
 	if x != nil {
 		return x.ClusterId
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterStackOutputs) GetClusterName() string {
+func (x *AliCloudKubernetesClusterStackOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterStackOutputs) GetApiServerInternet() string {
+func (x *AliCloudKubernetesClusterStackOutputs) GetApiServerInternet() string {
 	if x != nil {
 		return x.ApiServerInternet
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterStackOutputs) GetApiServerIntranet() string {
+func (x *AliCloudKubernetesClusterStackOutputs) GetApiServerIntranet() string {
 	if x != nil {
 		return x.ApiServerIntranet
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterStackOutputs) GetVpcId() string {
+func (x *AliCloudKubernetesClusterStackOutputs) GetVpcId() string {
 	if x != nil {
 		return x.VpcId
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterStackOutputs) GetSecurityGroupId() string {
+func (x *AliCloudKubernetesClusterStackOutputs) GetSecurityGroupId() string {
 	if x != nil {
 		return x.SecurityGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterStackOutputs) GetNatGatewayId() string {
+func (x *AliCloudKubernetesClusterStackOutputs) GetNatGatewayId() string {
 	if x != nil {
 		return x.NatGatewayId
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterStackOutputs) GetWorkerRamRoleName() string {
+func (x *AliCloudKubernetesClusterStackOutputs) GetWorkerRamRoleName() string {
 	if x != nil {
 		return x.WorkerRamRoleName
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterStackOutputs) GetRrsaOidcIssuerUrl() string {
+func (x *AliCloudKubernetesClusterStackOutputs) GetRrsaOidcIssuerUrl() string {
 	if x != nil {
 		return x.RrsaOidcIssuerUrl
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterStackOutputs) GetRamOidcProviderName() string {
+func (x *AliCloudKubernetesClusterStackOutputs) GetRamOidcProviderName() string {
 	if x != nil {
 		return x.RamOidcProviderName
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterStackOutputs) GetRamOidcProviderArn() string {
+func (x *AliCloudKubernetesClusterStackOutputs) GetRamOidcProviderArn() string {
 	if x != nil {
 		return x.RamOidcProviderArn
 	}
@@ -173,7 +173,7 @@ var File_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_output
 const file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Norg/openmcf/provider/alicloud/alicloudkubernetescluster/v1/stack_outputs.proto\x12:org.openmcf.provider.alicloud.alicloudkubernetescluster.v1\"\xfc\x03\n" +
-	"%AlicloudKubernetesClusterStackOutputs\x12\x1d\n" +
+	"%AliCloudKubernetesClusterStackOutputs\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12!\n" +
 	"\fcluster_name\x18\x02 \x01(\tR\vclusterName\x12.\n" +
@@ -203,7 +203,7 @@ func file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_outpu
 
 var file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudKubernetesClusterStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterStackOutputs
+	(*AliCloudKubernetesClusterStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_stack_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

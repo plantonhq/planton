@@ -24,7 +24,7 @@ const (
 )
 
 // alicloud-network-load-balancer
-type AlicloudNetworkLoadBalancer struct {
+type AliCloudNetworkLoadBalancer struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
@@ -33,27 +33,27 @@ type AlicloudNetworkLoadBalancer struct {
 	// metadata
 	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
-	Spec *AlicloudNetworkLoadBalancerSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec *AliCloudNetworkLoadBalancerSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
-	Status        *AlicloudNetworkLoadBalancerStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *AliCloudNetworkLoadBalancerStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudNetworkLoadBalancer) Reset() {
-	*x = AlicloudNetworkLoadBalancer{}
+func (x *AliCloudNetworkLoadBalancer) Reset() {
+	*x = AliCloudNetworkLoadBalancer{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudNetworkLoadBalancer) String() string {
+func (x *AliCloudNetworkLoadBalancer) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudNetworkLoadBalancer) ProtoMessage() {}
+func (*AliCloudNetworkLoadBalancer) ProtoMessage() {}
 
-func (x *AlicloudNetworkLoadBalancer) ProtoReflect() protoreflect.Message {
+func (x *AliCloudNetworkLoadBalancer) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AlicloudNetworkLoadBalancer) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudNetworkLoadBalancer.ProtoReflect.Descriptor instead.
-func (*AlicloudNetworkLoadBalancer) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudNetworkLoadBalancer.ProtoReflect.Descriptor instead.
+func (*AliCloudNetworkLoadBalancer) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudNetworkLoadBalancer) GetApiVersion() string {
+func (x *AliCloudNetworkLoadBalancer) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancer) GetKind() string {
+func (x *AliCloudNetworkLoadBalancer) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AlicloudNetworkLoadBalancer) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AliCloudNetworkLoadBalancer) GetMetadata() *shared.CloudResourceMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *AlicloudNetworkLoadBalancer) GetSpec() *AlicloudNetworkLoadBalancerSpec {
+func (x *AliCloudNetworkLoadBalancer) GetSpec() *AliCloudNetworkLoadBalancerSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-func (x *AlicloudNetworkLoadBalancer) GetStatus() *AlicloudNetworkLoadBalancerStatus {
+func (x *AliCloudNetworkLoadBalancer) GetStatus() *AliCloudNetworkLoadBalancerStatus {
 	if x != nil {
 		return x.Status
 	}
@@ -106,28 +106,28 @@ func (x *AlicloudNetworkLoadBalancer) GetStatus() *AlicloudNetworkLoadBalancerSt
 }
 
 // alicloud-network-load-balancer status
-type AlicloudNetworkLoadBalancerStatus struct {
+type AliCloudNetworkLoadBalancerStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// stack-outputs
-	Outputs       *AlicloudNetworkLoadBalancerStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AliCloudNetworkLoadBalancerStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudNetworkLoadBalancerStatus) Reset() {
-	*x = AlicloudNetworkLoadBalancerStatus{}
+func (x *AliCloudNetworkLoadBalancerStatus) Reset() {
+	*x = AliCloudNetworkLoadBalancerStatus{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudNetworkLoadBalancerStatus) String() string {
+func (x *AliCloudNetworkLoadBalancerStatus) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudNetworkLoadBalancerStatus) ProtoMessage() {}
+func (*AliCloudNetworkLoadBalancerStatus) ProtoMessage() {}
 
-func (x *AlicloudNetworkLoadBalancerStatus) ProtoReflect() protoreflect.Message {
+func (x *AliCloudNetworkLoadBalancerStatus) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,12 +139,12 @@ func (x *AlicloudNetworkLoadBalancerStatus) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudNetworkLoadBalancerStatus.ProtoReflect.Descriptor instead.
-func (*AlicloudNetworkLoadBalancerStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudNetworkLoadBalancerStatus.ProtoReflect.Descriptor instead.
+func (*AliCloudNetworkLoadBalancerStatus) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudNetworkLoadBalancerStatus) GetOutputs() *AlicloudNetworkLoadBalancerStackOutputs {
+func (x *AliCloudNetworkLoadBalancerStatus) GetOutputs() *AliCloudNetworkLoadBalancerStackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -156,17 +156,17 @@ var File_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_api_proto 
 const file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"Forg/openmcf/provider/alicloud/alicloudnetworkloadbalancer/v1/api.proto\x12<org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1\x1a\x1bbuf/validate/validate.proto\x1aGorg/openmcf/provider/alicloud/alicloudnetworkloadbalancer/v1/spec.proto\x1aPorg/openmcf/provider/alicloud/alicloudnetworkloadbalancer/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xd9\x03\n" +
-	"\x1bAlicloudNetworkLoadBalancer\x12?\n" +
+	"\x1bAliCloudNetworkLoadBalancer\x12?\n" +
 	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
-	"\x1bAlicloudNetworkLoadBalancerR\x04kind\x12M\n" +
+	"\x1bAliCloudNetworkLoadBalancerR\x04kind\x12M\n" +
 	"\bmetadata\x18\x03 \x01(\v2).org.openmcf.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12y\n" +
-	"\x04spec\x18\x04 \x01(\v2].org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12w\n" +
-	"\x06status\x18\x05 \x01(\v2_.org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerStatusR\x06status\"\xa4\x01\n" +
-	"!AlicloudNetworkLoadBalancerStatus\x12\x7f\n" +
-	"\aoutputs\x18\x01 \x01(\v2e.org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerStackOutputsR\aoutputsB\xe1\x03\n" +
+	"\x04spec\x18\x04 \x01(\v2].org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12w\n" +
+	"\x06status\x18\x05 \x01(\v2_.org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerStatusR\x06status\"\xa4\x01\n" +
+	"!AliCloudNetworkLoadBalancerStatus\x12\x7f\n" +
+	"\aoutputs\x18\x01 \x01(\v2e.org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerStackOutputsR\aoutputsB\xe1\x03\n" +
 	"@com.org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1B\bApiProtoP\x01Z|github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudnetworkloadbalancer/v1;alicloudnetworkloadbalancerv1\xa2\x02\x05OOPAA\xaa\x02<Org.Openmcf.Provider.Alicloud.Alicloudnetworkloadbalancer.V1\xca\x02<Org\\Openmcf\\Provider\\Alicloud\\Alicloudnetworkloadbalancer\\V1\xe2\x02HOrg\\Openmcf\\Provider\\Alicloud\\Alicloudnetworkloadbalancer\\V1\\GPBMetadata\xea\x02AOrg::Openmcf::Provider::Alicloud::Alicloudnetworkloadbalancer::V1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_api_proto
 
 var file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_api_proto_goTypes = []any{
-	(*AlicloudNetworkLoadBalancer)(nil),             // 0: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancer
-	(*AlicloudNetworkLoadBalancerStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerStatus
+	(*AliCloudNetworkLoadBalancer)(nil),             // 0: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancer
+	(*AliCloudNetworkLoadBalancerStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerStatus
 	(*shared.CloudResourceMetadata)(nil),            // 2: org.openmcf.shared.CloudResourceMetadata
-	(*AlicloudNetworkLoadBalancerSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerSpec
-	(*AlicloudNetworkLoadBalancerStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerStackOutputs
+	(*AliCloudNetworkLoadBalancerSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerSpec
+	(*AliCloudNetworkLoadBalancerStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudnetworkloadbalancer_v1_api_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancer.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
-	3, // 1: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancer.spec:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerSpec
-	1, // 2: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancer.status:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerStatus
-	4, // 3: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AlicloudNetworkLoadBalancerStackOutputs
+	2, // 0: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancer.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
+	3, // 1: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancer.spec:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerSpec
+	1, // 2: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancer.status:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerStatus
+	4, // 3: org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudnetworkloadbalancer.v1.AliCloudNetworkLoadBalancerStackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

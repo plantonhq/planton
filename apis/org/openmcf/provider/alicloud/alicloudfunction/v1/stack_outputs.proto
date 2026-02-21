@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudfunction.v1;
 
-// AlicloudFunctionStackOutputs captures the outputs from deploying an
+// AliCloudFunctionStackOutputs captures the outputs from deploying an
 // Alibaba Cloud Function Compute v3 function.
-message AlicloudFunctionStackOutputs {
+message AliCloudFunctionStackOutputs {
   // The function ID assigned by Alibaba Cloud.
   string function_id = 1;
 

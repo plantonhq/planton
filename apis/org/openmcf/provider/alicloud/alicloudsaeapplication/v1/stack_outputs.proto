@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudsaeapplication.v1;
 
-// AlicloudSaeApplicationStackOutputs captures the outputs from deploying
+// AliCloudSaeApplicationStackOutputs captures the outputs from deploying
 // an Alibaba Cloud SAE application.
-message AlicloudSaeApplicationStackOutputs {
+message AliCloudSaeApplicationStackOutputs {
   // The SAE application ID assigned by Alibaba Cloud.
   string app_id = 1;
 

@@ -6,7 +6,7 @@ import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudEcsInstanceSpec defines the configuration for an Alibaba Cloud
+// AliCloudEcsInstanceSpec defines the configuration for an Alibaba Cloud
 // Elastic Compute Service (ECS) instance.
 //
 // ECS is the fundamental compute building block on Alibaba Cloud, analogous
@@ -21,7 +21,7 @@ import "org/openmcf/shared/options/options.proto";
 // Provider resources:
 //   Terraform: alicloud_instance
 //   Pulumi:    ecs.Instance
-message AlicloudEcsInstanceSpec {
+message AliCloudEcsInstanceSpec {
   // Alibaba Cloud region where the ECS instance will be created.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
   string region = 1 [
@@ -33,7 +33,7 @@ message AlicloudEcsInstanceSpec {
   // for the instance's primary network interface.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 2 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
   ];
 
@@ -41,7 +41,7 @@ message AlicloudEcsInstanceSpec {
   // required. An instance can belong to up to 5 security groups.
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 3 [
     (buf.validate.field).repeated.min_items = 1,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
 
@@ -85,12 +85,12 @@ message AlicloudEcsInstanceSpec {
 
   // System disk configuration. Every ECS instance has exactly one system
   // disk that holds the OS. If omitted, defaults are applied (cloud_essd, 40 GB).
-  AlicloudEcsSystemDisk system_disk = 9;
+  AliCloudEcsSystemDisk system_disk = 9;
 
   // Additional data disks to create and attach to the instance. Up to 16
   // data disks are supported. Disks are created inline with the instance
   // and their lifecycle is tied to it by default.
-  repeated AlicloudEcsDataDisk data_disks = 10 [(buf.validate.field).repeated.max_items = 16];
+  repeated AliCloudEcsDataDisk data_disks = 10 [(buf.validate.field).repeated.max_items = 16];
 
   // SSH key pair name for passwordless authentication. Mutually exclusive
   // authentication option with password.
@@ -189,8 +189,8 @@ message AlicloudEcsInstanceSpec {
   map<string, string> tags = 25;
 }
 
-// AlicloudEcsSystemDisk configures the boot disk for the ECS instance.
-message AlicloudEcsSystemDisk {
+// AliCloudEcsSystemDisk configures the boot disk for the ECS instance.
+message AliCloudEcsSystemDisk {
   // Disk category. Determines the underlying storage technology and
   // performance characteristics.
   // Default: "cloud_essd"
@@ -226,9 +226,9 @@ message AlicloudEcsSystemDisk {
   string kms_key_id = 5;
 }
 
-// AlicloudEcsDataDisk configures an additional data disk to be created
+// AliCloudEcsDataDisk configures an additional data disk to be created
 // inline with the ECS instance.
-message AlicloudEcsDataDisk {
+message AliCloudEcsDataDisk {
   // Disk size in GB. Required for each data disk.
   int32 size = 1 [
     (buf.validate.field).required = true,

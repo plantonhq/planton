@@ -23,30 +23,30 @@ const (
 )
 
 // alicloud-cen-instance stack-input
-type AlicloudCenInstanceStackInput struct {
+type AliCloudCenInstanceStackInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target cloud-resource
-	Target *AlicloudCenInstance `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
+	Target *AliCloudCenInstance `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
-	ProviderConfig *alicloud.AlicloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
+	ProviderConfig *alicloud.AliCloudProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudCenInstanceStackInput) Reset() {
-	*x = AlicloudCenInstanceStackInput{}
+func (x *AliCloudCenInstanceStackInput) Reset() {
+	*x = AliCloudCenInstanceStackInput{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudceninstance_v1_stack_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudCenInstanceStackInput) String() string {
+func (x *AliCloudCenInstanceStackInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudCenInstanceStackInput) ProtoMessage() {}
+func (*AliCloudCenInstanceStackInput) ProtoMessage() {}
 
-func (x *AlicloudCenInstanceStackInput) ProtoReflect() protoreflect.Message {
+func (x *AliCloudCenInstanceStackInput) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudceninstance_v1_stack_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AlicloudCenInstanceStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudCenInstanceStackInput.ProtoReflect.Descriptor instead.
-func (*AlicloudCenInstanceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudCenInstanceStackInput.ProtoReflect.Descriptor instead.
+func (*AliCloudCenInstanceStackInput) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudceninstance_v1_stack_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudCenInstanceStackInput) GetTarget() *AlicloudCenInstance {
+func (x *AliCloudCenInstanceStackInput) GetTarget() *AliCloudCenInstance {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AlicloudCenInstanceStackInput) GetProviderConfig() *alicloud.AlicloudProviderConfig {
+func (x *AliCloudCenInstanceStackInput) GetProviderConfig() *alicloud.AliCloudProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,9 +82,9 @@ var File_org_openmcf_provider_alicloud_alicloudceninstance_v1_stack_input_proto 
 const file_org_openmcf_provider_alicloud_alicloudceninstance_v1_stack_input_proto_rawDesc = "" +
 	"\n" +
 	"Forg/openmcf/provider/alicloud/alicloudceninstance/v1/stack_input.proto\x124org.openmcf.provider.alicloud.alicloudceninstance.v1\x1a>org/openmcf/provider/alicloud/alicloudceninstance/v1/api.proto\x1a,org/openmcf/provider/alicloud/provider.proto\"\xe2\x01\n" +
-	"\x1dAlicloudCenInstanceStackInput\x12a\n" +
-	"\x06target\x18\x01 \x01(\v2I.org.openmcf.provider.alicloud.alicloudceninstance.v1.AlicloudCenInstanceR\x06target\x12^\n" +
-	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AlicloudProviderConfigR\x0eproviderConfigB\xb0\x03\n" +
+	"\x1dAliCloudCenInstanceStackInput\x12a\n" +
+	"\x06target\x18\x01 \x01(\v2I.org.openmcf.provider.alicloud.alicloudceninstance.v1.AliCloudCenInstanceR\x06target\x12^\n" +
+	"\x0fprovider_config\x18\x02 \x01(\v25.org.openmcf.provider.alicloud.AliCloudProviderConfigR\x0eproviderConfigB\xb0\x03\n" +
 	"8com.org.openmcf.provider.alicloud.alicloudceninstance.v1B\x0fStackInputProtoP\x01Zlgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudceninstance/v1;alicloudceninstancev1\xa2\x02\x05OOPAA\xaa\x024Org.Openmcf.Provider.Alicloud.Alicloudceninstance.V1\xca\x024Org\\Openmcf\\Provider\\Alicloud\\Alicloudceninstance\\V1\xe2\x02@Org\\Openmcf\\Provider\\Alicloud\\Alicloudceninstance\\V1\\GPBMetadata\xea\x029Org::Openmcf::Provider::Alicloud::Alicloudceninstance::V1b\x06proto3"
 
 var (
@@ -101,13 +101,13 @@ func file_org_openmcf_provider_alicloud_alicloudceninstance_v1_stack_input_proto
 
 var file_org_openmcf_provider_alicloud_alicloudceninstance_v1_stack_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudceninstance_v1_stack_input_proto_goTypes = []any{
-	(*AlicloudCenInstanceStackInput)(nil),   // 0: org.openmcf.provider.alicloud.alicloudceninstance.v1.AlicloudCenInstanceStackInput
-	(*AlicloudCenInstance)(nil),             // 1: org.openmcf.provider.alicloud.alicloudceninstance.v1.AlicloudCenInstance
-	(*alicloud.AlicloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AlicloudProviderConfig
+	(*AliCloudCenInstanceStackInput)(nil),   // 0: org.openmcf.provider.alicloud.alicloudceninstance.v1.AliCloudCenInstanceStackInput
+	(*AliCloudCenInstance)(nil),             // 1: org.openmcf.provider.alicloud.alicloudceninstance.v1.AliCloudCenInstance
+	(*alicloud.AliCloudProviderConfig)(nil), // 2: org.openmcf.provider.alicloud.AliCloudProviderConfig
 }
 var file_org_openmcf_provider_alicloud_alicloudceninstance_v1_stack_input_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudceninstance.v1.AlicloudCenInstanceStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudceninstance.v1.AlicloudCenInstance
-	2, // 1: org.openmcf.provider.alicloud.alicloudceninstance.v1.AlicloudCenInstanceStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AlicloudProviderConfig
+	1, // 0: org.openmcf.provider.alicloud.alicloudceninstance.v1.AliCloudCenInstanceStackInput.target:type_name -> org.openmcf.provider.alicloud.alicloudceninstance.v1.AliCloudCenInstance
+	2, // 1: org.openmcf.provider.alicloud.alicloudceninstance.v1.AliCloudCenInstanceStackInput.provider_config:type_name -> org.openmcf.provider.alicloud.AliCloudProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

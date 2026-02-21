@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudSaeApplicationStackOutputs captures the outputs from deploying
+// AliCloudSaeApplicationStackOutputs captures the outputs from deploying
 // an Alibaba Cloud SAE application.
-type AlicloudSaeApplicationStackOutputs struct {
+type AliCloudSaeApplicationStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The SAE application ID assigned by Alibaba Cloud.
 	AppId string `protobuf:"bytes,1,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
@@ -33,20 +33,20 @@ type AlicloudSaeApplicationStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudSaeApplicationStackOutputs) Reset() {
-	*x = AlicloudSaeApplicationStackOutputs{}
+func (x *AliCloudSaeApplicationStackOutputs) Reset() {
+	*x = AliCloudSaeApplicationStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudSaeApplicationStackOutputs) String() string {
+func (x *AliCloudSaeApplicationStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudSaeApplicationStackOutputs) ProtoMessage() {}
+func (*AliCloudSaeApplicationStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudSaeApplicationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudSaeApplicationStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AlicloudSaeApplicationStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudSaeApplicationStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudSaeApplicationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudSaeApplicationStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudSaeApplicationStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudSaeApplicationStackOutputs) GetAppId() string {
+func (x *AliCloudSaeApplicationStackOutputs) GetAppId() string {
 	if x != nil {
 		return x.AppId
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationStackOutputs) GetAppName() string {
+func (x *AliCloudSaeApplicationStackOutputs) GetAppName() string {
 	if x != nil {
 		return x.AppName
 	}
@@ -82,7 +82,7 @@ var File_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_stack_outputs_p
 const file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Korg/openmcf/provider/alicloud/alicloudsaeapplication/v1/stack_outputs.proto\x127org.openmcf.provider.alicloud.alicloudsaeapplication.v1\"V\n" +
-	"\"AlicloudSaeApplicationStackOutputs\x12\x15\n" +
+	"\"AliCloudSaeApplicationStackOutputs\x12\x15\n" +
 	"\x06app_id\x18\x01 \x01(\tR\x05appId\x12\x19\n" +
 	"\bapp_name\x18\x02 \x01(\tR\aappNameB\xc7\x03\n" +
 	";com.org.openmcf.provider.alicloud.alicloudsaeapplication.v1B\x11StackOutputsProtoP\x01Zrgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudsaeapplication/v1;alicloudsaeapplicationv1\xa2\x02\x05OOPAA\xaa\x027Org.Openmcf.Provider.Alicloud.Alicloudsaeapplication.V1\xca\x027Org\\Openmcf\\Provider\\Alicloud\\Alicloudsaeapplication\\V1\xe2\x02COrg\\Openmcf\\Provider\\Alicloud\\Alicloudsaeapplication\\V1\\GPBMetadata\xea\x02<Org::Openmcf::Provider::Alicloud::Alicloudsaeapplication::V1b\x06proto3"
@@ -101,7 +101,7 @@ func file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_stack_outputs_
 
 var file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudSaeApplicationStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationStackOutputs
+	(*AliCloudSaeApplicationStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_stack_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

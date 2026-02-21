@@ -9,16 +9,16 @@ import (
 )
 
 type Locals struct {
-	AlicloudKubernetesNodePool *alicloudkubernetesnodepoolv1.AlicloudKubernetesNodePool
+	AliCloudKubernetesNodePool *alicloudkubernetesnodepoolv1.AliCloudKubernetesNodePool
 	ClusterId                  string
 	VswitchIds                 []string
 	SecurityGroupIds           []string
 	Tags                       map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudkubernetesnodepoolv1.AlicloudKubernetesNodePoolStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudkubernetesnodepoolv1.AliCloudKubernetesNodePoolStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudKubernetesNodePool = stackInput.Target
+	locals.AliCloudKubernetesNodePool = stackInput.Target
 	target := stackInput.Target
 
 	locals.ClusterId = target.Spec.ClusterId.GetValue()
@@ -34,7 +34,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudkubernetesnodepoo
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudKubernetesNodePool.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudKubernetesNodePool.String()),
 	}
 
 	if target.Metadata.Id != "" {
@@ -56,35 +56,35 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudkubernetesnodepoo
 	return locals
 }
 
-func imageType(spec *alicloudkubernetesnodepoolv1.AlicloudKubernetesNodePoolSpec) string {
+func imageType(spec *alicloudkubernetesnodepoolv1.AliCloudKubernetesNodePoolSpec) string {
 	if spec.ImageType != nil {
 		return *spec.ImageType
 	}
 	return "AliyunLinux3"
 }
 
-func systemDiskCategory(disk *alicloudkubernetesnodepoolv1.AlicloudKubernetesNodePoolSystemDisk) string {
+func systemDiskCategory(disk *alicloudkubernetesnodepoolv1.AliCloudKubernetesNodePoolSystemDisk) string {
 	if disk != nil && disk.Category != nil {
 		return *disk.Category
 	}
 	return "cloud_essd"
 }
 
-func systemDiskSize(disk *alicloudkubernetesnodepoolv1.AlicloudKubernetesNodePoolSystemDisk) int {
+func systemDiskSize(disk *alicloudkubernetesnodepoolv1.AliCloudKubernetesNodePoolSystemDisk) int {
 	if disk != nil && disk.Size != nil {
 		return int(*disk.Size)
 	}
 	return 120
 }
 
-func instanceChargeType(spec *alicloudkubernetesnodepoolv1.AlicloudKubernetesNodePoolSpec) string {
+func instanceChargeType(spec *alicloudkubernetesnodepoolv1.AliCloudKubernetesNodePoolSpec) string {
 	if spec.InstanceChargeType != nil {
 		return *spec.InstanceChargeType
 	}
 	return "PostPaid"
 }
 
-func installCloudMonitor(spec *alicloudkubernetesnodepoolv1.AlicloudKubernetesNodePoolSpec) bool {
+func installCloudMonitor(spec *alicloudkubernetesnodepoolv1.AliCloudKubernetesNodePoolSpec) bool {
 	if spec.InstallCloudMonitor != nil {
 		return *spec.InstallCloudMonitor
 	}

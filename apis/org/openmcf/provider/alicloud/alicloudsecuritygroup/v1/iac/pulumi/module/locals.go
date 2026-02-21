@@ -9,19 +9,19 @@ import (
 )
 
 type Locals struct {
-	AlicloudSecurityGroup *alicloudsecuritygroupv1.AlicloudSecurityGroup
+	AliCloudSecurityGroup *alicloudsecuritygroupv1.AliCloudSecurityGroup
 	Tags                  map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudsecuritygroupv1.AlicloudSecurityGroupStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudsecuritygroupv1.AliCloudSecurityGroupStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudSecurityGroup = stackInput.Target
+	locals.AliCloudSecurityGroup = stackInput.Target
 	target := stackInput.Target
 
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudSecurityGroup.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudSecurityGroup.String()),
 	}
 
 	if target.Metadata.Id != "" {
@@ -43,28 +43,28 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudsecuritygroupv1.A
 	return locals
 }
 
-func rulePortRange(rule *alicloudsecuritygroupv1.AlicloudSecurityGroupRule) string {
+func rulePortRange(rule *alicloudsecuritygroupv1.AliCloudSecurityGroupRule) string {
 	if rule.PortRange != nil {
 		return *rule.PortRange
 	}
 	return "-1/-1"
 }
 
-func rulePriority(rule *alicloudsecuritygroupv1.AlicloudSecurityGroupRule) int {
+func rulePriority(rule *alicloudsecuritygroupv1.AliCloudSecurityGroupRule) int {
 	if rule.Priority != nil {
 		return int(*rule.Priority)
 	}
 	return 1
 }
 
-func rulePolicy(rule *alicloudsecuritygroupv1.AlicloudSecurityGroupRule) string {
+func rulePolicy(rule *alicloudsecuritygroupv1.AliCloudSecurityGroupRule) string {
 	if rule.Policy != nil {
 		return *rule.Policy
 	}
 	return "accept"
 }
 
-func innerAccessPolicy(spec *alicloudsecuritygroupv1.AlicloudSecurityGroupSpec) string {
+func innerAccessPolicy(spec *alicloudsecuritygroupv1.AliCloudSecurityGroupSpec) string {
 	if spec.InnerAccessPolicy != nil {
 		return *spec.InnerAccessPolicy
 	}

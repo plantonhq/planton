@@ -8,9 +8,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *alicloudstoragebucketv1.AlicloudStorageBucketStackInput) error {
+func Resources(ctx *pulumi.Context, stackInput *alicloudstoragebucketv1.AliCloudStorageBucketStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
-	spec := locals.AlicloudStorageBucket.Spec
+	spec := locals.AliCloudStorageBucket.Spec
 
 	alicloudProvider, err := alicloud.NewProvider(ctx, "alicloud", &alicloud.ProviderArgs{
 		Region: pulumi.String(spec.Region),
@@ -69,7 +69,7 @@ func Resources(ctx *pulumi.Context, stackInput *alicloudstoragebucketv1.Alicloud
 	return nil
 }
 
-func buildCorsRules(rules []*alicloudstoragebucketv1.AlicloudStorageBucketCorsRule) oss.BucketCorsRuleArray {
+func buildCorsRules(rules []*alicloudstoragebucketv1.AliCloudStorageBucketCorsRule) oss.BucketCorsRuleArray {
 	var result oss.BucketCorsRuleArray
 	for _, r := range rules {
 		result = append(result, &oss.BucketCorsRuleArgs{
@@ -83,7 +83,7 @@ func buildCorsRules(rules []*alicloudstoragebucketv1.AlicloudStorageBucketCorsRu
 	return result
 }
 
-func buildLifecycleRules(rules []*alicloudstoragebucketv1.AlicloudStorageBucketLifecycleRule) oss.BucketLifecycleRuleArray {
+func buildLifecycleRules(rules []*alicloudstoragebucketv1.AliCloudStorageBucketLifecycleRule) oss.BucketLifecycleRuleArray {
 	var result oss.BucketLifecycleRuleArray
 	for i, r := range rules {
 		ruleArgs := &oss.BucketLifecycleRuleArgs{

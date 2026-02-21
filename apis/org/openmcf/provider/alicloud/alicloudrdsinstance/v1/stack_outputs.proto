@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudrdsinstance.v1;
 
-// AlicloudRdsInstanceStackOutputs captures the outputs from deploying an
+// AliCloudRdsInstanceStackOutputs captures the outputs from deploying an
 // Alibaba Cloud RDS instance with its databases and accounts.
-message AlicloudRdsInstanceStackOutputs {
+message AliCloudRdsInstanceStackOutputs {
   // The RDS instance ID assigned by Alibaba Cloud (e.g., "rm-xxxxx").
   string instance_id = 1;
 

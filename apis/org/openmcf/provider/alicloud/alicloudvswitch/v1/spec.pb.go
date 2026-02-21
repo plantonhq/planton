@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudVswitchSpec defines the configuration for an Alibaba Cloud VSwitch.
+// AliCloudVswitchSpec defines the configuration for an Alibaba Cloud VSwitch.
 //
 // A VSwitch is the subnet-equivalent resource in Alibaba Cloud networking.
 // It carves out a CIDR range within a VPC and pins it to a single availability
@@ -33,7 +33,7 @@ const (
 // Each VSwitch belongs to exactly one VPC and one availability zone. The CIDR
 // block must be a subset of the parent VPC's CIDR block. Changing the VPC,
 // zone, or CIDR after creation requires destroying and recreating the VSwitch.
-type AlicloudVswitchSpec struct {
+type AliCloudVswitchSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the VSwitch will be created.
 	// Must match the region of the parent VPC.
@@ -75,20 +75,20 @@ type AlicloudVswitchSpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudVswitchSpec) Reset() {
-	*x = AlicloudVswitchSpec{}
+func (x *AliCloudVswitchSpec) Reset() {
+	*x = AliCloudVswitchSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudvswitch_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudVswitchSpec) String() string {
+func (x *AliCloudVswitchSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudVswitchSpec) ProtoMessage() {}
+func (*AliCloudVswitchSpec) ProtoMessage() {}
 
-func (x *AlicloudVswitchSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudVswitchSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudvswitch_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -100,68 +100,68 @@ func (x *AlicloudVswitchSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudVswitchSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudVswitchSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudVswitchSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudVswitchSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudvswitch_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudVswitchSpec) GetRegion() string {
+func (x *AliCloudVswitchSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudVswitchSpec) GetVpcId() *v1.StringValueOrRef {
+func (x *AliCloudVswitchSpec) GetVpcId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VpcId
 	}
 	return nil
 }
 
-func (x *AlicloudVswitchSpec) GetZoneId() string {
+func (x *AliCloudVswitchSpec) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *AlicloudVswitchSpec) GetCidrBlock() string {
+func (x *AliCloudVswitchSpec) GetCidrBlock() string {
 	if x != nil {
 		return x.CidrBlock
 	}
 	return ""
 }
 
-func (x *AlicloudVswitchSpec) GetVswitchName() string {
+func (x *AliCloudVswitchSpec) GetVswitchName() string {
 	if x != nil {
 		return x.VswitchName
 	}
 	return ""
 }
 
-func (x *AlicloudVswitchSpec) GetDescription() string {
+func (x *AliCloudVswitchSpec) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *AlicloudVswitchSpec) GetEnableIpv6() bool {
+func (x *AliCloudVswitchSpec) GetEnableIpv6() bool {
 	if x != nil {
 		return x.EnableIpv6
 	}
 	return false
 }
 
-func (x *AlicloudVswitchSpec) GetIpv6CidrBlockMask() int32 {
+func (x *AliCloudVswitchSpec) GetIpv6CidrBlockMask() int32 {
 	if x != nil {
 		return x.Ipv6CidrBlockMask
 	}
 	return 0
 }
 
-func (x *AlicloudVswitchSpec) GetTags() map[string]string {
+func (x *AliCloudVswitchSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
@@ -173,7 +173,7 @@ var File_org_openmcf_provider_alicloud_alicloudvswitch_v1_spec_proto protoreflec
 const file_org_openmcf_provider_alicloud_alicloudvswitch_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	";org/openmcf/provider/alicloud/alicloudvswitch/v1/spec.proto\x120org.openmcf.provider.alicloud.alicloudvswitch.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xcd\x04\n" +
-	"\x13AlicloudVswitchSpec\x12\"\n" +
+	"\x13AliCloudVswitchSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12o\n" +
 	"\x06vpc_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xcc\x17\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12#\n" +
@@ -189,7 +189,7 @@ const file_org_openmcf_provider_alicloud_alicloudvswitch_v1_spec_proto_rawDesc =
 	"enableIpv6\x12>\n" +
 	"\x14ipv6_cidr_block_mask\x18\b \x01(\x05B\r\xbaH\n" +
 	"\xd8\x01\x01\x1a\x05\x18\xff\x01(\x00R\x11ipv6CidrBlockMask\x12c\n" +
-	"\x04tags\x18\t \x03(\v2O.org.openmcf.provider.alicloud.alicloudvswitch.v1.AlicloudVswitchSpec.TagsEntryR\x04tags\x1a7\n" +
+	"\x04tags\x18\t \x03(\v2O.org.openmcf.provider.alicloud.alicloudvswitch.v1.AliCloudVswitchSpec.TagsEntryR\x04tags\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x8e\x03\n" +
@@ -209,13 +209,13 @@ func file_org_openmcf_provider_alicloud_alicloudvswitch_v1_spec_proto_rawDescGZI
 
 var file_org_openmcf_provider_alicloud_alicloudvswitch_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudvswitch_v1_spec_proto_goTypes = []any{
-	(*AlicloudVswitchSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudvswitch.v1.AlicloudVswitchSpec
-	nil,                         // 1: org.openmcf.provider.alicloud.alicloudvswitch.v1.AlicloudVswitchSpec.TagsEntry
+	(*AliCloudVswitchSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudvswitch.v1.AliCloudVswitchSpec
+	nil,                         // 1: org.openmcf.provider.alicloud.alicloudvswitch.v1.AliCloudVswitchSpec.TagsEntry
 	(*v1.StringValueOrRef)(nil), // 2: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudvswitch_v1_spec_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudvswitch.v1.AlicloudVswitchSpec.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	1, // 1: org.openmcf.provider.alicloud.alicloudvswitch.v1.AlicloudVswitchSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudvswitch.v1.AlicloudVswitchSpec.TagsEntry
+	2, // 0: org.openmcf.provider.alicloud.alicloudvswitch.v1.AliCloudVswitchSpec.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	1, // 1: org.openmcf.provider.alicloud.alicloudvswitch.v1.AliCloudVswitchSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudvswitch.v1.AliCloudVswitchSpec.TagsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

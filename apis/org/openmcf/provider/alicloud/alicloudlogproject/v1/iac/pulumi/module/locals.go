@@ -9,19 +9,19 @@ import (
 )
 
 type Locals struct {
-	AlicloudLogProject *alicloudlogprojectv1.AlicloudLogProject
+	AliCloudLogProject *alicloudlogprojectv1.AliCloudLogProject
 	Tags               map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudlogprojectv1.AlicloudLogProjectStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudlogprojectv1.AliCloudLogProjectStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudLogProject = stackInput.Target
+	locals.AliCloudLogProject = stackInput.Target
 	target := stackInput.Target
 
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudLogProject.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudLogProject.String()),
 	}
 
 	if target.Metadata.Id != "" {
@@ -44,7 +44,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudlogprojectv1.Alic
 }
 
 // logStoreRetentionDays returns the retention period, defaulting to 30 when unset.
-func logStoreRetentionDays(ls *alicloudlogprojectv1.AlicloudLogStore) int {
+func logStoreRetentionDays(ls *alicloudlogprojectv1.AliCloudLogStore) int {
 	if ls.RetentionDays != nil {
 		return int(*ls.RetentionDays)
 	}
@@ -52,7 +52,7 @@ func logStoreRetentionDays(ls *alicloudlogprojectv1.AlicloudLogStore) int {
 }
 
 // logStoreShardCount returns the shard count, defaulting to 2 when unset.
-func logStoreShardCount(ls *alicloudlogprojectv1.AlicloudLogStore) int {
+func logStoreShardCount(ls *alicloudlogprojectv1.AliCloudLogStore) int {
 	if ls.ShardCount != nil {
 		return int(*ls.ShardCount)
 	}
@@ -60,7 +60,7 @@ func logStoreShardCount(ls *alicloudlogprojectv1.AlicloudLogStore) int {
 }
 
 // logStoreAutoSplit returns the auto_split flag, defaulting to true when unset.
-func logStoreAutoSplit(ls *alicloudlogprojectv1.AlicloudLogStore) bool {
+func logStoreAutoSplit(ls *alicloudlogprojectv1.AliCloudLogStore) bool {
 	if ls.AutoSplit != nil {
 		return *ls.AutoSplit
 	}
@@ -68,7 +68,7 @@ func logStoreAutoSplit(ls *alicloudlogprojectv1.AlicloudLogStore) bool {
 }
 
 // logStoreMaxSplitShardCount returns the max split shard count, defaulting to 64 when unset.
-func logStoreMaxSplitShardCount(ls *alicloudlogprojectv1.AlicloudLogStore) int {
+func logStoreMaxSplitShardCount(ls *alicloudlogprojectv1.AliCloudLogStore) int {
 	if ls.MaxSplitShardCount != nil {
 		return int(*ls.MaxSplitShardCount)
 	}
@@ -76,7 +76,7 @@ func logStoreMaxSplitShardCount(ls *alicloudlogprojectv1.AlicloudLogStore) int {
 }
 
 // logStoreEnableIndex returns the enable_index flag, defaulting to true when unset.
-func logStoreEnableIndex(ls *alicloudlogprojectv1.AlicloudLogStore) bool {
+func logStoreEnableIndex(ls *alicloudlogprojectv1.AliCloudLogStore) bool {
 	if ls.EnableIndex != nil {
 		return *ls.EnableIndex
 	}
@@ -84,7 +84,7 @@ func logStoreEnableIndex(ls *alicloudlogprojectv1.AlicloudLogStore) bool {
 }
 
 // logStoreAppendMeta returns the append_meta flag, defaulting to true when unset.
-func logStoreAppendMeta(ls *alicloudlogprojectv1.AlicloudLogStore) bool {
+func logStoreAppendMeta(ls *alicloudlogprojectv1.AliCloudLogStore) bool {
 	if ls.AppendMeta != nil {
 		return *ls.AppendMeta
 	}

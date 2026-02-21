@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudSaeApplicationSpec defines the configuration for an Alibaba Cloud
+// AliCloudSaeApplicationSpec defines the configuration for an Alibaba Cloud
 // Serverless App Engine (SAE) application.
 //
 // SAE is a fully managed, container-based serverless compute platform that
@@ -40,7 +40,7 @@ const (
 //
 //	Terraform: alicloud_sae_application
 //	Pulumi:    sae.Application
-type AlicloudSaeApplicationSpec struct {
+type AliCloudSaeApplicationSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the SAE application will be created.
 	// Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -122,15 +122,15 @@ type AlicloudSaeApplicationSpec struct {
 	AcrInstanceId string `protobuf:"bytes,25,opt,name=acr_instance_id,json=acrInstanceId,proto3" json:"acr_instance_id,omitempty"`
 	// Liveness probe configuration. If the liveness check fails repeatedly,
 	// SAE restarts the application instance.
-	Liveness *AlicloudSaeApplicationHealthCheck `protobuf:"bytes,26,opt,name=liveness,proto3" json:"liveness,omitempty"`
+	Liveness *AliCloudSaeApplicationHealthCheck `protobuf:"bytes,26,opt,name=liveness,proto3" json:"liveness,omitempty"`
 	// Readiness probe configuration. Until the readiness check passes, SAE
 	// does not route traffic to the instance.
-	Readiness *AlicloudSaeApplicationHealthCheck `protobuf:"bytes,27,opt,name=readiness,proto3" json:"readiness,omitempty"`
+	Readiness *AliCloudSaeApplicationHealthCheck `protobuf:"bytes,27,opt,name=readiness,proto3" json:"readiness,omitempty"`
 	// Custom hostname-to-IP mappings injected into the container's /etc/hosts.
 	// Useful for resolving internal service names without DNS.
-	CustomHostAliases []*AlicloudSaeApplicationCustomHostAlias `protobuf:"bytes,28,rep,name=custom_host_aliases,json=customHostAliases,proto3" json:"custom_host_aliases,omitempty"`
+	CustomHostAliases []*AliCloudSaeApplicationCustomHostAlias `protobuf:"bytes,28,rep,name=custom_host_aliases,json=customHostAliases,proto3" json:"custom_host_aliases,omitempty"`
 	// Deployment update strategy controlling how new versions are rolled out.
-	UpdateStrategy *AlicloudSaeApplicationUpdateStrategy `protobuf:"bytes,29,opt,name=update_strategy,json=updateStrategy,proto3" json:"update_strategy,omitempty"`
+	UpdateStrategy *AliCloudSaeApplicationUpdateStrategy `protobuf:"bytes,29,opt,name=update_strategy,json=updateStrategy,proto3" json:"update_strategy,omitempty"`
 	// SLS log collection configuration as a JSON string.
 	// Format: [{"logDir":"/path","logType":"stdout"},...]
 	// When set, SAE collects application logs and ships them to SLS.
@@ -141,20 +141,20 @@ type AlicloudSaeApplicationSpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudSaeApplicationSpec) Reset() {
-	*x = AlicloudSaeApplicationSpec{}
+func (x *AliCloudSaeApplicationSpec) Reset() {
+	*x = AliCloudSaeApplicationSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudSaeApplicationSpec) String() string {
+func (x *AliCloudSaeApplicationSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudSaeApplicationSpec) ProtoMessage() {}
+func (*AliCloudSaeApplicationSpec) ProtoMessage() {}
 
-func (x *AlicloudSaeApplicationSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudSaeApplicationSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -166,243 +166,243 @@ func (x *AlicloudSaeApplicationSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudSaeApplicationSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudSaeApplicationSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudSaeApplicationSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudSaeApplicationSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudSaeApplicationSpec) GetRegion() string {
+func (x *AliCloudSaeApplicationSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationSpec) GetAppName() string {
+func (x *AliCloudSaeApplicationSpec) GetAppName() string {
 	if x != nil {
 		return x.AppName
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationSpec) GetAppDescription() string {
+func (x *AliCloudSaeApplicationSpec) GetAppDescription() string {
 	if x != nil {
 		return x.AppDescription
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationSpec) GetPackageType() string {
+func (x *AliCloudSaeApplicationSpec) GetPackageType() string {
 	if x != nil {
 		return x.PackageType
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationSpec) GetReplicas() int32 {
+func (x *AliCloudSaeApplicationSpec) GetReplicas() int32 {
 	if x != nil {
 		return x.Replicas
 	}
 	return 0
 }
 
-func (x *AlicloudSaeApplicationSpec) GetCpu() int32 {
+func (x *AliCloudSaeApplicationSpec) GetCpu() int32 {
 	if x != nil {
 		return x.Cpu
 	}
 	return 0
 }
 
-func (x *AlicloudSaeApplicationSpec) GetMemory() int32 {
+func (x *AliCloudSaeApplicationSpec) GetMemory() int32 {
 	if x != nil {
 		return x.Memory
 	}
 	return 0
 }
 
-func (x *AlicloudSaeApplicationSpec) GetVpcId() *v1.StringValueOrRef {
+func (x *AliCloudSaeApplicationSpec) GetVpcId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VpcId
 	}
 	return nil
 }
 
-func (x *AlicloudSaeApplicationSpec) GetVswitchId() *v1.StringValueOrRef {
+func (x *AliCloudSaeApplicationSpec) GetVswitchId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VswitchId
 	}
 	return nil
 }
 
-func (x *AlicloudSaeApplicationSpec) GetSecurityGroupId() *v1.StringValueOrRef {
+func (x *AliCloudSaeApplicationSpec) GetSecurityGroupId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.SecurityGroupId
 	}
 	return nil
 }
 
-func (x *AlicloudSaeApplicationSpec) GetNamespaceId() string {
+func (x *AliCloudSaeApplicationSpec) GetNamespaceId() string {
 	if x != nil {
 		return x.NamespaceId
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationSpec) GetImageUrl() string {
+func (x *AliCloudSaeApplicationSpec) GetImageUrl() string {
 	if x != nil {
 		return x.ImageUrl
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationSpec) GetPackageUrl() string {
+func (x *AliCloudSaeApplicationSpec) GetPackageUrl() string {
 	if x != nil {
 		return x.PackageUrl
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationSpec) GetPackageVersion() string {
+func (x *AliCloudSaeApplicationSpec) GetPackageVersion() string {
 	if x != nil {
 		return x.PackageVersion
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationSpec) GetCommand() string {
+func (x *AliCloudSaeApplicationSpec) GetCommand() string {
 	if x != nil {
 		return x.Command
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationSpec) GetCommandArgs() []string {
+func (x *AliCloudSaeApplicationSpec) GetCommandArgs() []string {
 	if x != nil {
 		return x.CommandArgs
 	}
 	return nil
 }
 
-func (x *AlicloudSaeApplicationSpec) GetEnvs() map[string]string {
+func (x *AliCloudSaeApplicationSpec) GetEnvs() map[string]string {
 	if x != nil {
 		return x.Envs
 	}
 	return nil
 }
 
-func (x *AlicloudSaeApplicationSpec) GetJdk() string {
+func (x *AliCloudSaeApplicationSpec) GetJdk() string {
 	if x != nil {
 		return x.Jdk
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationSpec) GetJarStartOptions() string {
+func (x *AliCloudSaeApplicationSpec) GetJarStartOptions() string {
 	if x != nil {
 		return x.JarStartOptions
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationSpec) GetJarStartArgs() string {
+func (x *AliCloudSaeApplicationSpec) GetJarStartArgs() string {
 	if x != nil {
 		return x.JarStartArgs
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationSpec) GetProgrammingLanguage() string {
+func (x *AliCloudSaeApplicationSpec) GetProgrammingLanguage() string {
 	if x != nil && x.ProgrammingLanguage != nil {
 		return *x.ProgrammingLanguage
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationSpec) GetTimezone() string {
+func (x *AliCloudSaeApplicationSpec) GetTimezone() string {
 	if x != nil {
 		return x.Timezone
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationSpec) GetTerminationGracePeriodSeconds() int32 {
+func (x *AliCloudSaeApplicationSpec) GetTerminationGracePeriodSeconds() int32 {
 	if x != nil && x.TerminationGracePeriodSeconds != nil {
 		return *x.TerminationGracePeriodSeconds
 	}
 	return 0
 }
 
-func (x *AlicloudSaeApplicationSpec) GetMinReadyInstances() int32 {
+func (x *AliCloudSaeApplicationSpec) GetMinReadyInstances() int32 {
 	if x != nil && x.MinReadyInstances != nil {
 		return *x.MinReadyInstances
 	}
 	return 0
 }
 
-func (x *AlicloudSaeApplicationSpec) GetAcrInstanceId() string {
+func (x *AliCloudSaeApplicationSpec) GetAcrInstanceId() string {
 	if x != nil {
 		return x.AcrInstanceId
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationSpec) GetLiveness() *AlicloudSaeApplicationHealthCheck {
+func (x *AliCloudSaeApplicationSpec) GetLiveness() *AliCloudSaeApplicationHealthCheck {
 	if x != nil {
 		return x.Liveness
 	}
 	return nil
 }
 
-func (x *AlicloudSaeApplicationSpec) GetReadiness() *AlicloudSaeApplicationHealthCheck {
+func (x *AliCloudSaeApplicationSpec) GetReadiness() *AliCloudSaeApplicationHealthCheck {
 	if x != nil {
 		return x.Readiness
 	}
 	return nil
 }
 
-func (x *AlicloudSaeApplicationSpec) GetCustomHostAliases() []*AlicloudSaeApplicationCustomHostAlias {
+func (x *AliCloudSaeApplicationSpec) GetCustomHostAliases() []*AliCloudSaeApplicationCustomHostAlias {
 	if x != nil {
 		return x.CustomHostAliases
 	}
 	return nil
 }
 
-func (x *AlicloudSaeApplicationSpec) GetUpdateStrategy() *AlicloudSaeApplicationUpdateStrategy {
+func (x *AliCloudSaeApplicationSpec) GetUpdateStrategy() *AliCloudSaeApplicationUpdateStrategy {
 	if x != nil {
 		return x.UpdateStrategy
 	}
 	return nil
 }
 
-func (x *AlicloudSaeApplicationSpec) GetSlsConfigs() string {
+func (x *AliCloudSaeApplicationSpec) GetSlsConfigs() string {
 	if x != nil {
 		return x.SlsConfigs
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationSpec) GetTags() map[string]string {
+func (x *AliCloudSaeApplicationSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-// AlicloudSaeApplicationHealthCheck defines a health check probe for the
+// AliCloudSaeApplicationHealthCheck defines a health check probe for the
 // SAE application. Exactly one of http_get, tcp_socket, or exec should be
 // configured to specify the check mechanism.
-type AlicloudSaeApplicationHealthCheck struct {
+type AliCloudSaeApplicationHealthCheck struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// HTTP GET probe. SAE sends an HTTP GET request to the specified path
 	// and port, and considers the check successful if the response status
 	// is 200-399.
-	HttpGet *AlicloudSaeApplicationHttpGetAction `protobuf:"bytes,1,opt,name=http_get,json=httpGet,proto3" json:"http_get,omitempty"`
+	HttpGet *AliCloudSaeApplicationHttpGetAction `protobuf:"bytes,1,opt,name=http_get,json=httpGet,proto3" json:"http_get,omitempty"`
 	// TCP socket probe. SAE attempts a TCP connection to the specified port
 	// and considers the check successful if the connection is established.
-	TcpSocket *AlicloudSaeApplicationTcpSocketAction `protobuf:"bytes,2,opt,name=tcp_socket,json=tcpSocket,proto3" json:"tcp_socket,omitempty"`
+	TcpSocket *AliCloudSaeApplicationTcpSocketAction `protobuf:"bytes,2,opt,name=tcp_socket,json=tcpSocket,proto3" json:"tcp_socket,omitempty"`
 	// Exec probe. SAE executes the specified command inside the container
 	// and considers the check successful if the command exits with code 0.
-	Exec *AlicloudSaeApplicationExecAction `protobuf:"bytes,3,opt,name=exec,proto3" json:"exec,omitempty"`
+	Exec *AliCloudSaeApplicationExecAction `protobuf:"bytes,3,opt,name=exec,proto3" json:"exec,omitempty"`
 	// Seconds to wait after the container starts before initiating the
 	// first health check.
 	InitialDelaySeconds *int32 `protobuf:"varint,4,opt,name=initial_delay_seconds,json=initialDelaySeconds,proto3,oneof" json:"initial_delay_seconds,omitempty"`
@@ -420,20 +420,20 @@ type AlicloudSaeApplicationHealthCheck struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AlicloudSaeApplicationHealthCheck) Reset() {
-	*x = AlicloudSaeApplicationHealthCheck{}
+func (x *AliCloudSaeApplicationHealthCheck) Reset() {
+	*x = AliCloudSaeApplicationHealthCheck{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudSaeApplicationHealthCheck) String() string {
+func (x *AliCloudSaeApplicationHealthCheck) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudSaeApplicationHealthCheck) ProtoMessage() {}
+func (*AliCloudSaeApplicationHealthCheck) ProtoMessage() {}
 
-func (x *AlicloudSaeApplicationHealthCheck) ProtoReflect() protoreflect.Message {
+func (x *AliCloudSaeApplicationHealthCheck) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -445,69 +445,69 @@ func (x *AlicloudSaeApplicationHealthCheck) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudSaeApplicationHealthCheck.ProtoReflect.Descriptor instead.
-func (*AlicloudSaeApplicationHealthCheck) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudSaeApplicationHealthCheck.ProtoReflect.Descriptor instead.
+func (*AliCloudSaeApplicationHealthCheck) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudSaeApplicationHealthCheck) GetHttpGet() *AlicloudSaeApplicationHttpGetAction {
+func (x *AliCloudSaeApplicationHealthCheck) GetHttpGet() *AliCloudSaeApplicationHttpGetAction {
 	if x != nil {
 		return x.HttpGet
 	}
 	return nil
 }
 
-func (x *AlicloudSaeApplicationHealthCheck) GetTcpSocket() *AlicloudSaeApplicationTcpSocketAction {
+func (x *AliCloudSaeApplicationHealthCheck) GetTcpSocket() *AliCloudSaeApplicationTcpSocketAction {
 	if x != nil {
 		return x.TcpSocket
 	}
 	return nil
 }
 
-func (x *AlicloudSaeApplicationHealthCheck) GetExec() *AlicloudSaeApplicationExecAction {
+func (x *AliCloudSaeApplicationHealthCheck) GetExec() *AliCloudSaeApplicationExecAction {
 	if x != nil {
 		return x.Exec
 	}
 	return nil
 }
 
-func (x *AlicloudSaeApplicationHealthCheck) GetInitialDelaySeconds() int32 {
+func (x *AliCloudSaeApplicationHealthCheck) GetInitialDelaySeconds() int32 {
 	if x != nil && x.InitialDelaySeconds != nil {
 		return *x.InitialDelaySeconds
 	}
 	return 0
 }
 
-func (x *AlicloudSaeApplicationHealthCheck) GetPeriodSeconds() int32 {
+func (x *AliCloudSaeApplicationHealthCheck) GetPeriodSeconds() int32 {
 	if x != nil && x.PeriodSeconds != nil {
 		return *x.PeriodSeconds
 	}
 	return 0
 }
 
-func (x *AlicloudSaeApplicationHealthCheck) GetTimeoutSeconds() int32 {
+func (x *AliCloudSaeApplicationHealthCheck) GetTimeoutSeconds() int32 {
 	if x != nil && x.TimeoutSeconds != nil {
 		return *x.TimeoutSeconds
 	}
 	return 0
 }
 
-func (x *AlicloudSaeApplicationHealthCheck) GetFailureThreshold() int32 {
+func (x *AliCloudSaeApplicationHealthCheck) GetFailureThreshold() int32 {
 	if x != nil && x.FailureThreshold != nil {
 		return *x.FailureThreshold
 	}
 	return 0
 }
 
-func (x *AlicloudSaeApplicationHealthCheck) GetSuccessThreshold() int32 {
+func (x *AliCloudSaeApplicationHealthCheck) GetSuccessThreshold() int32 {
 	if x != nil && x.SuccessThreshold != nil {
 		return *x.SuccessThreshold
 	}
 	return 0
 }
 
-// AlicloudSaeApplicationHttpGetAction defines an HTTP GET health check.
-type AlicloudSaeApplicationHttpGetAction struct {
+// AliCloudSaeApplicationHttpGetAction defines an HTTP GET health check.
+type AliCloudSaeApplicationHttpGetAction struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// URL path for the HTTP GET request (e.g., "/healthz").
 	Path string `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
@@ -517,20 +517,20 @@ type AlicloudSaeApplicationHttpGetAction struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudSaeApplicationHttpGetAction) Reset() {
-	*x = AlicloudSaeApplicationHttpGetAction{}
+func (x *AliCloudSaeApplicationHttpGetAction) Reset() {
+	*x = AliCloudSaeApplicationHttpGetAction{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudSaeApplicationHttpGetAction) String() string {
+func (x *AliCloudSaeApplicationHttpGetAction) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudSaeApplicationHttpGetAction) ProtoMessage() {}
+func (*AliCloudSaeApplicationHttpGetAction) ProtoMessage() {}
 
-func (x *AlicloudSaeApplicationHttpGetAction) ProtoReflect() protoreflect.Message {
+func (x *AliCloudSaeApplicationHttpGetAction) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -542,27 +542,27 @@ func (x *AlicloudSaeApplicationHttpGetAction) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudSaeApplicationHttpGetAction.ProtoReflect.Descriptor instead.
-func (*AlicloudSaeApplicationHttpGetAction) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudSaeApplicationHttpGetAction.ProtoReflect.Descriptor instead.
+func (*AliCloudSaeApplicationHttpGetAction) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AlicloudSaeApplicationHttpGetAction) GetPath() string {
+func (x *AliCloudSaeApplicationHttpGetAction) GetPath() string {
 	if x != nil {
 		return x.Path
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationHttpGetAction) GetPort() int32 {
+func (x *AliCloudSaeApplicationHttpGetAction) GetPort() int32 {
 	if x != nil {
 		return x.Port
 	}
 	return 0
 }
 
-// AlicloudSaeApplicationTcpSocketAction defines a TCP socket health check.
-type AlicloudSaeApplicationTcpSocketAction struct {
+// AliCloudSaeApplicationTcpSocketAction defines a TCP socket health check.
+type AliCloudSaeApplicationTcpSocketAction struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Port to attempt a TCP connection to.
 	Port          int32 `protobuf:"varint,1,opt,name=port,proto3" json:"port,omitempty"`
@@ -570,20 +570,20 @@ type AlicloudSaeApplicationTcpSocketAction struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudSaeApplicationTcpSocketAction) Reset() {
-	*x = AlicloudSaeApplicationTcpSocketAction{}
+func (x *AliCloudSaeApplicationTcpSocketAction) Reset() {
+	*x = AliCloudSaeApplicationTcpSocketAction{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudSaeApplicationTcpSocketAction) String() string {
+func (x *AliCloudSaeApplicationTcpSocketAction) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudSaeApplicationTcpSocketAction) ProtoMessage() {}
+func (*AliCloudSaeApplicationTcpSocketAction) ProtoMessage() {}
 
-func (x *AlicloudSaeApplicationTcpSocketAction) ProtoReflect() protoreflect.Message {
+func (x *AliCloudSaeApplicationTcpSocketAction) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -595,20 +595,20 @@ func (x *AlicloudSaeApplicationTcpSocketAction) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudSaeApplicationTcpSocketAction.ProtoReflect.Descriptor instead.
-func (*AlicloudSaeApplicationTcpSocketAction) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudSaeApplicationTcpSocketAction.ProtoReflect.Descriptor instead.
+func (*AliCloudSaeApplicationTcpSocketAction) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *AlicloudSaeApplicationTcpSocketAction) GetPort() int32 {
+func (x *AliCloudSaeApplicationTcpSocketAction) GetPort() int32 {
 	if x != nil {
 		return x.Port
 	}
 	return 0
 }
 
-// AlicloudSaeApplicationExecAction defines a command-based health check.
-type AlicloudSaeApplicationExecAction struct {
+// AliCloudSaeApplicationExecAction defines a command-based health check.
+type AliCloudSaeApplicationExecAction struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Command to execute inside the container. The check succeeds if the
 	// command exits with code 0.
@@ -617,20 +617,20 @@ type AlicloudSaeApplicationExecAction struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudSaeApplicationExecAction) Reset() {
-	*x = AlicloudSaeApplicationExecAction{}
+func (x *AliCloudSaeApplicationExecAction) Reset() {
+	*x = AliCloudSaeApplicationExecAction{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudSaeApplicationExecAction) String() string {
+func (x *AliCloudSaeApplicationExecAction) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudSaeApplicationExecAction) ProtoMessage() {}
+func (*AliCloudSaeApplicationExecAction) ProtoMessage() {}
 
-func (x *AlicloudSaeApplicationExecAction) ProtoReflect() protoreflect.Message {
+func (x *AliCloudSaeApplicationExecAction) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -642,21 +642,21 @@ func (x *AlicloudSaeApplicationExecAction) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudSaeApplicationExecAction.ProtoReflect.Descriptor instead.
-func (*AlicloudSaeApplicationExecAction) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudSaeApplicationExecAction.ProtoReflect.Descriptor instead.
+func (*AliCloudSaeApplicationExecAction) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *AlicloudSaeApplicationExecAction) GetCommand() string {
+func (x *AliCloudSaeApplicationExecAction) GetCommand() string {
 	if x != nil {
 		return x.Command
 	}
 	return ""
 }
 
-// AlicloudSaeApplicationCustomHostAlias defines a hostname-to-IP mapping
+// AliCloudSaeApplicationCustomHostAlias defines a hostname-to-IP mapping
 // injected into the container's /etc/hosts file.
-type AlicloudSaeApplicationCustomHostAlias struct {
+type AliCloudSaeApplicationCustomHostAlias struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Hostname to map.
 	HostName string `protobuf:"bytes,1,opt,name=host_name,json=hostName,proto3" json:"host_name,omitempty"`
@@ -666,20 +666,20 @@ type AlicloudSaeApplicationCustomHostAlias struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudSaeApplicationCustomHostAlias) Reset() {
-	*x = AlicloudSaeApplicationCustomHostAlias{}
+func (x *AliCloudSaeApplicationCustomHostAlias) Reset() {
+	*x = AliCloudSaeApplicationCustomHostAlias{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudSaeApplicationCustomHostAlias) String() string {
+func (x *AliCloudSaeApplicationCustomHostAlias) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudSaeApplicationCustomHostAlias) ProtoMessage() {}
+func (*AliCloudSaeApplicationCustomHostAlias) ProtoMessage() {}
 
-func (x *AlicloudSaeApplicationCustomHostAlias) ProtoReflect() protoreflect.Message {
+func (x *AliCloudSaeApplicationCustomHostAlias) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -691,53 +691,53 @@ func (x *AlicloudSaeApplicationCustomHostAlias) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudSaeApplicationCustomHostAlias.ProtoReflect.Descriptor instead.
-func (*AlicloudSaeApplicationCustomHostAlias) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudSaeApplicationCustomHostAlias.ProtoReflect.Descriptor instead.
+func (*AliCloudSaeApplicationCustomHostAlias) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *AlicloudSaeApplicationCustomHostAlias) GetHostName() string {
+func (x *AliCloudSaeApplicationCustomHostAlias) GetHostName() string {
 	if x != nil {
 		return x.HostName
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationCustomHostAlias) GetIp() string {
+func (x *AliCloudSaeApplicationCustomHostAlias) GetIp() string {
 	if x != nil {
 		return x.Ip
 	}
 	return ""
 }
 
-// AlicloudSaeApplicationUpdateStrategy controls how new application
+// AliCloudSaeApplicationUpdateStrategy controls how new application
 // versions are rolled out to instances.
-type AlicloudSaeApplicationUpdateStrategy struct {
+type AliCloudSaeApplicationUpdateStrategy struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Release policy type.
 	// "BatchUpdate": release in sequential batches.
 	// "GrayBatchUpdate": canary-style phased release.
 	Type *string `protobuf:"bytes,1,opt,name=type,proto3,oneof" json:"type,omitempty"`
 	// Batch update configuration.
-	BatchUpdate   *AlicloudSaeApplicationBatchUpdate `protobuf:"bytes,2,opt,name=batch_update,json=batchUpdate,proto3" json:"batch_update,omitempty"`
+	BatchUpdate   *AliCloudSaeApplicationBatchUpdate `protobuf:"bytes,2,opt,name=batch_update,json=batchUpdate,proto3" json:"batch_update,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudSaeApplicationUpdateStrategy) Reset() {
-	*x = AlicloudSaeApplicationUpdateStrategy{}
+func (x *AliCloudSaeApplicationUpdateStrategy) Reset() {
+	*x = AliCloudSaeApplicationUpdateStrategy{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudSaeApplicationUpdateStrategy) String() string {
+func (x *AliCloudSaeApplicationUpdateStrategy) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudSaeApplicationUpdateStrategy) ProtoMessage() {}
+func (*AliCloudSaeApplicationUpdateStrategy) ProtoMessage() {}
 
-func (x *AlicloudSaeApplicationUpdateStrategy) ProtoReflect() protoreflect.Message {
+func (x *AliCloudSaeApplicationUpdateStrategy) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -749,27 +749,27 @@ func (x *AlicloudSaeApplicationUpdateStrategy) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudSaeApplicationUpdateStrategy.ProtoReflect.Descriptor instead.
-func (*AlicloudSaeApplicationUpdateStrategy) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudSaeApplicationUpdateStrategy.ProtoReflect.Descriptor instead.
+func (*AliCloudSaeApplicationUpdateStrategy) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *AlicloudSaeApplicationUpdateStrategy) GetType() string {
+func (x *AliCloudSaeApplicationUpdateStrategy) GetType() string {
 	if x != nil && x.Type != nil {
 		return *x.Type
 	}
 	return ""
 }
 
-func (x *AlicloudSaeApplicationUpdateStrategy) GetBatchUpdate() *AlicloudSaeApplicationBatchUpdate {
+func (x *AliCloudSaeApplicationUpdateStrategy) GetBatchUpdate() *AliCloudSaeApplicationBatchUpdate {
 	if x != nil {
 		return x.BatchUpdate
 	}
 	return nil
 }
 
-// AlicloudSaeApplicationBatchUpdate defines the batch release configuration.
-type AlicloudSaeApplicationBatchUpdate struct {
+// AliCloudSaeApplicationBatchUpdate defines the batch release configuration.
+type AliCloudSaeApplicationBatchUpdate struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Number of batches to split the release into.
 	Batch *int32 `protobuf:"varint,1,opt,name=batch,proto3,oneof" json:"batch,omitempty"`
@@ -783,20 +783,20 @@ type AlicloudSaeApplicationBatchUpdate struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudSaeApplicationBatchUpdate) Reset() {
-	*x = AlicloudSaeApplicationBatchUpdate{}
+func (x *AliCloudSaeApplicationBatchUpdate) Reset() {
+	*x = AliCloudSaeApplicationBatchUpdate{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudSaeApplicationBatchUpdate) String() string {
+func (x *AliCloudSaeApplicationBatchUpdate) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudSaeApplicationBatchUpdate) ProtoMessage() {}
+func (*AliCloudSaeApplicationBatchUpdate) ProtoMessage() {}
 
-func (x *AlicloudSaeApplicationBatchUpdate) ProtoReflect() protoreflect.Message {
+func (x *AliCloudSaeApplicationBatchUpdate) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -808,26 +808,26 @@ func (x *AlicloudSaeApplicationBatchUpdate) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudSaeApplicationBatchUpdate.ProtoReflect.Descriptor instead.
-func (*AlicloudSaeApplicationBatchUpdate) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudSaeApplicationBatchUpdate.ProtoReflect.Descriptor instead.
+func (*AliCloudSaeApplicationBatchUpdate) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *AlicloudSaeApplicationBatchUpdate) GetBatch() int32 {
+func (x *AliCloudSaeApplicationBatchUpdate) GetBatch() int32 {
 	if x != nil && x.Batch != nil {
 		return *x.Batch
 	}
 	return 0
 }
 
-func (x *AlicloudSaeApplicationBatchUpdate) GetBatchWaitTime() int32 {
+func (x *AliCloudSaeApplicationBatchUpdate) GetBatchWaitTime() int32 {
 	if x != nil && x.BatchWaitTime != nil {
 		return *x.BatchWaitTime
 	}
 	return 0
 }
 
-func (x *AlicloudSaeApplicationBatchUpdate) GetReleaseType() string {
+func (x *AliCloudSaeApplicationBatchUpdate) GetReleaseType() string {
 	if x != nil && x.ReleaseType != nil {
 		return *x.ReleaseType
 	}
@@ -839,7 +839,7 @@ var File_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto prot
 const file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"Borg/openmcf/provider/alicloud/alicloudsaeapplication/v1/spec.proto\x127org.openmcf.provider.alicloud.alicloudsaeapplication.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x83\x17\n" +
-	"\x1aAlicloudSaeApplicationSpec\x12\"\n" +
+	"\x1aAliCloudSaeApplicationSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12'\n" +
 	"\bapp_name\x18\x02 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x01\x18$R\aappName\x121\n" +
@@ -864,7 +864,7 @@ const file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_ra
 	"\x0fpackage_version\x18\x0e \x01(\tR\x0epackageVersion\x12\x18\n" +
 	"\acommand\x18\x0f \x01(\tR\acommand\x12!\n" +
 	"\fcommand_args\x18\x10 \x03(\tR\vcommandArgs\x12q\n" +
-	"\x04envs\x18\x11 \x03(\v2].org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationSpec.EnvsEntryR\x04envs\x12\x10\n" +
+	"\x04envs\x18\x11 \x03(\v2].org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationSpec.EnvsEntryR\x04envs\x12\x10\n" +
 	"\x03jdk\x18\x12 \x01(\tR\x03jdk\x12*\n" +
 	"\x11jar_start_options\x18\x13 \x01(\tR\x0fjarStartOptions\x12$\n" +
 	"\x0ejar_start_args\x18\x14 \x01(\tR\fjarStartArgs\x12\xc4\x01\n" +
@@ -875,13 +875,13 @@ const file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_ra
 	"\x1etermination_grace_period_range\x129termination_grace_period_seconds must be between 1 and 60\x1a\x17this >= 1 && this <= 60H\x01R\x1dterminationGracePeriodSeconds\x88\x01\x01\x123\n" +
 	"\x13min_ready_instances\x18\x18 \x01(\x05H\x02R\x11minReadyInstances\x88\x01\x01\x12&\n" +
 	"\x0facr_instance_id\x18\x19 \x01(\tR\racrInstanceId\x12v\n" +
-	"\bliveness\x18\x1a \x01(\v2Z.org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationHealthCheckR\bliveness\x12x\n" +
-	"\treadiness\x18\x1b \x01(\v2Z.org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationHealthCheckR\treadiness\x12\x8e\x01\n" +
-	"\x13custom_host_aliases\x18\x1c \x03(\v2^.org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationCustomHostAliasR\x11customHostAliases\x12\x86\x01\n" +
-	"\x0fupdate_strategy\x18\x1d \x01(\v2].org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationUpdateStrategyR\x0eupdateStrategy\x12\x1f\n" +
+	"\bliveness\x18\x1a \x01(\v2Z.org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationHealthCheckR\bliveness\x12x\n" +
+	"\treadiness\x18\x1b \x01(\v2Z.org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationHealthCheckR\treadiness\x12\x8e\x01\n" +
+	"\x13custom_host_aliases\x18\x1c \x03(\v2^.org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationCustomHostAliasR\x11customHostAliases\x12\x86\x01\n" +
+	"\x0fupdate_strategy\x18\x1d \x01(\v2].org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationUpdateStrategyR\x0eupdateStrategy\x12\x1f\n" +
 	"\vsls_configs\x18\x1e \x01(\tR\n" +
 	"slsConfigs\x12q\n" +
-	"\x04tags\x18\x1f \x03(\v2].org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationSpec.TagsEntryR\x04tags\x1a7\n" +
+	"\x04tags\x18\x1f \x03(\v2].org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationSpec.TagsEntryR\x04tags\x1a7\n" +
 	"\tEnvsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a7\n" +
@@ -891,11 +891,11 @@ const file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_ra
 	"\x15_programming_languageB#\n" +
 	"!_termination_grace_period_secondsB\x16\n" +
 	"\x14_min_ready_instances\"\xee\x05\n" +
-	"!AlicloudSaeApplicationHealthCheck\x12w\n" +
-	"\bhttp_get\x18\x01 \x01(\v2\\.org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationHttpGetActionR\ahttpGet\x12}\n" +
+	"!AliCloudSaeApplicationHealthCheck\x12w\n" +
+	"\bhttp_get\x18\x01 \x01(\v2\\.org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationHttpGetActionR\ahttpGet\x12}\n" +
 	"\n" +
-	"tcp_socket\x18\x02 \x01(\v2^.org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationTcpSocketActionR\ttcpSocket\x12m\n" +
-	"\x04exec\x18\x03 \x01(\v2Y.org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationExecActionR\x04exec\x127\n" +
+	"tcp_socket\x18\x02 \x01(\v2^.org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationTcpSocketActionR\ttcpSocket\x12m\n" +
+	"\x04exec\x18\x03 \x01(\v2Y.org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationExecActionR\x04exec\x127\n" +
 	"\x15initial_delay_seconds\x18\x04 \x01(\x05H\x00R\x13initialDelaySeconds\x88\x01\x01\x12*\n" +
 	"\x0eperiod_seconds\x18\x05 \x01(\x05H\x01R\rperiodSeconds\x88\x01\x01\x12,\n" +
 	"\x0ftimeout_seconds\x18\x06 \x01(\x05H\x02R\x0etimeoutSeconds\x88\x01\x01\x120\n" +
@@ -906,22 +906,22 @@ const file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_ra
 	"\x10_timeout_secondsB\x14\n" +
 	"\x12_failure_thresholdB\x14\n" +
 	"\x12_success_threshold\"M\n" +
-	"#AlicloudSaeApplicationHttpGetAction\x12\x12\n" +
+	"#AliCloudSaeApplicationHttpGetAction\x12\x12\n" +
 	"\x04path\x18\x01 \x01(\tR\x04path\x12\x12\n" +
 	"\x04port\x18\x02 \x01(\x05R\x04port\";\n" +
-	"%AlicloudSaeApplicationTcpSocketAction\x12\x12\n" +
+	"%AliCloudSaeApplicationTcpSocketAction\x12\x12\n" +
 	"\x04port\x18\x01 \x01(\x05R\x04port\"<\n" +
-	" AlicloudSaeApplicationExecAction\x12\x18\n" +
+	" AliCloudSaeApplicationExecAction\x12\x18\n" +
 	"\acommand\x18\x01 \x01(\tR\acommand\"T\n" +
-	"%AlicloudSaeApplicationCustomHostAlias\x12\x1b\n" +
+	"%AliCloudSaeApplicationCustomHostAlias\x12\x1b\n" +
 	"\thost_name\x18\x01 \x01(\tR\bhostName\x12\x0e\n" +
 	"\x02ip\x18\x02 \x01(\tR\x02ip\"\xdc\x02\n" +
-	"$AlicloudSaeApplicationUpdateStrategy\x12\xab\x01\n" +
+	"$AliCloudSaeApplicationUpdateStrategy\x12\xab\x01\n" +
 	"\x04type\x18\x01 \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
 	"\x1aupdate_strategy_type_valid\x121type must be one of: BatchUpdate, GrayBatchUpdate\x1a8this == '' || this in ['BatchUpdate', 'GrayBatchUpdate']H\x00R\x04type\x88\x01\x01\x12}\n" +
-	"\fbatch_update\x18\x02 \x01(\v2Z.org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationBatchUpdateR\vbatchUpdateB\a\n" +
+	"\fbatch_update\x18\x02 \x01(\v2Z.org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationBatchUpdateR\vbatchUpdateB\a\n" +
 	"\x05_type\"\xb4\x02\n" +
-	"!AlicloudSaeApplicationBatchUpdate\x12\x19\n" +
+	"!AliCloudSaeApplicationBatchUpdate\x12\x19\n" +
 	"\x05batch\x18\x01 \x01(\x05H\x00R\x05batch\x88\x01\x01\x12+\n" +
 	"\x0fbatch_wait_time\x18\x02 \x01(\x05H\x01R\rbatchWaitTime\x88\x01\x01\x12\x97\x01\n" +
 	"\frelease_type\x18\x03 \x01(\tBo\xbaHl\xba\x01i\n" +
@@ -945,32 +945,32 @@ func file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_raw
 
 var file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_goTypes = []any{
-	(*AlicloudSaeApplicationSpec)(nil),            // 0: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationSpec
-	(*AlicloudSaeApplicationHealthCheck)(nil),     // 1: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationHealthCheck
-	(*AlicloudSaeApplicationHttpGetAction)(nil),   // 2: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationHttpGetAction
-	(*AlicloudSaeApplicationTcpSocketAction)(nil), // 3: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationTcpSocketAction
-	(*AlicloudSaeApplicationExecAction)(nil),      // 4: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationExecAction
-	(*AlicloudSaeApplicationCustomHostAlias)(nil), // 5: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationCustomHostAlias
-	(*AlicloudSaeApplicationUpdateStrategy)(nil),  // 6: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationUpdateStrategy
-	(*AlicloudSaeApplicationBatchUpdate)(nil),     // 7: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationBatchUpdate
-	nil,                         // 8: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationSpec.EnvsEntry
-	nil,                         // 9: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationSpec.TagsEntry
+	(*AliCloudSaeApplicationSpec)(nil),            // 0: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationSpec
+	(*AliCloudSaeApplicationHealthCheck)(nil),     // 1: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationHealthCheck
+	(*AliCloudSaeApplicationHttpGetAction)(nil),   // 2: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationHttpGetAction
+	(*AliCloudSaeApplicationTcpSocketAction)(nil), // 3: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationTcpSocketAction
+	(*AliCloudSaeApplicationExecAction)(nil),      // 4: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationExecAction
+	(*AliCloudSaeApplicationCustomHostAlias)(nil), // 5: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationCustomHostAlias
+	(*AliCloudSaeApplicationUpdateStrategy)(nil),  // 6: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationUpdateStrategy
+	(*AliCloudSaeApplicationBatchUpdate)(nil),     // 7: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationBatchUpdate
+	nil,                         // 8: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationSpec.EnvsEntry
+	nil,                         // 9: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationSpec.TagsEntry
 	(*v1.StringValueOrRef)(nil), // 10: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudsaeapplication_v1_spec_proto_depIdxs = []int32{
-	10, // 0: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationSpec.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	10, // 1: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationSpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	10, // 2: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationSpec.security_group_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	8,  // 3: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationSpec.envs:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationSpec.EnvsEntry
-	1,  // 4: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationSpec.liveness:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationHealthCheck
-	1,  // 5: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationSpec.readiness:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationHealthCheck
-	5,  // 6: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationSpec.custom_host_aliases:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationCustomHostAlias
-	6,  // 7: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationSpec.update_strategy:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationUpdateStrategy
-	9,  // 8: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationSpec.TagsEntry
-	2,  // 9: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationHealthCheck.http_get:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationHttpGetAction
-	3,  // 10: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationHealthCheck.tcp_socket:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationTcpSocketAction
-	4,  // 11: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationHealthCheck.exec:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationExecAction
-	7,  // 12: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationUpdateStrategy.batch_update:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AlicloudSaeApplicationBatchUpdate
+	10, // 0: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationSpec.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	10, // 1: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationSpec.vswitch_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	10, // 2: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationSpec.security_group_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	8,  // 3: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationSpec.envs:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationSpec.EnvsEntry
+	1,  // 4: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationSpec.liveness:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationHealthCheck
+	1,  // 5: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationSpec.readiness:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationHealthCheck
+	5,  // 6: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationSpec.custom_host_aliases:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationCustomHostAlias
+	6,  // 7: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationSpec.update_strategy:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationUpdateStrategy
+	9,  // 8: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationSpec.TagsEntry
+	2,  // 9: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationHealthCheck.http_get:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationHttpGetAction
+	3,  // 10: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationHealthCheck.tcp_socket:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationTcpSocketAction
+	4,  // 11: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationHealthCheck.exec:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationExecAction
+	7,  // 12: org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationUpdateStrategy.batch_update:type_name -> org.openmcf.provider.alicloud.alicloudsaeapplication.v1.AliCloudSaeApplicationBatchUpdate
 	13, // [13:13] is the sub-list for method output_type
 	13, // [13:13] is the sub-list for method input_type
 	13, // [13:13] is the sub-list for extension type_name

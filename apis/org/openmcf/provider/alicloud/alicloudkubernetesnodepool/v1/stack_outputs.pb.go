@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudKubernetesNodePoolStackOutputs captures the outputs from deploying
+// AliCloudKubernetesNodePoolStackOutputs captures the outputs from deploying
 // an ACK Kubernetes node pool.
-type AlicloudKubernetesNodePoolStackOutputs struct {
+type AliCloudKubernetesNodePoolStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Node pool ID assigned by Alibaba Cloud.
 	NodePoolId string `protobuf:"bytes,1,opt,name=node_pool_id,json=nodePoolId,proto3" json:"node_pool_id,omitempty"`
@@ -34,20 +34,20 @@ type AlicloudKubernetesNodePoolStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AlicloudKubernetesNodePoolStackOutputs) Reset() {
-	*x = AlicloudKubernetesNodePoolStackOutputs{}
+func (x *AliCloudKubernetesNodePoolStackOutputs) Reset() {
+	*x = AliCloudKubernetesNodePoolStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKubernetesNodePoolStackOutputs) String() string {
+func (x *AliCloudKubernetesNodePoolStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKubernetesNodePoolStackOutputs) ProtoMessage() {}
+func (*AliCloudKubernetesNodePoolStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudKubernetesNodePoolStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKubernetesNodePoolStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AlicloudKubernetesNodePoolStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKubernetesNodePoolStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudKubernetesNodePoolStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKubernetesNodePoolStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudKubernetesNodePoolStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudKubernetesNodePoolStackOutputs) GetNodePoolId() string {
+func (x *AliCloudKubernetesNodePoolStackOutputs) GetNodePoolId() string {
 	if x != nil {
 		return x.NodePoolId
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesNodePoolStackOutputs) GetScalingGroupId() string {
+func (x *AliCloudKubernetesNodePoolStackOutputs) GetScalingGroupId() string {
 	if x != nil {
 		return x.ScalingGroupId
 	}
@@ -83,7 +83,7 @@ var File_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_stack_outpu
 const file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Oorg/openmcf/provider/alicloud/alicloudkubernetesnodepool/v1/stack_outputs.proto\x12;org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1\"t\n" +
-	"&AlicloudKubernetesNodePoolStackOutputs\x12 \n" +
+	"&AliCloudKubernetesNodePoolStackOutputs\x12 \n" +
 	"\fnode_pool_id\x18\x01 \x01(\tR\n" +
 	"nodePoolId\x12(\n" +
 	"\x10scaling_group_id\x18\x02 \x01(\tR\x0escalingGroupIdB\xe3\x03\n" +
@@ -103,7 +103,7 @@ func file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_stack_outp
 
 var file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudKubernetesNodePoolStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AlicloudKubernetesNodePoolStackOutputs
+	(*AliCloudKubernetesNodePoolStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_stack_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

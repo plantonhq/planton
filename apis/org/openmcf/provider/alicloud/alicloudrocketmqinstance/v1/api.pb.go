@@ -24,7 +24,7 @@ const (
 )
 
 // alicloud-rocketmq-instance
-type AlicloudRocketmqInstance struct {
+type AliCloudRocketmqInstance struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
@@ -33,27 +33,27 @@ type AlicloudRocketmqInstance struct {
 	// metadata
 	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
-	Spec *AlicloudRocketmqInstanceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec *AliCloudRocketmqInstanceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
-	Status        *AlicloudRocketmqInstanceStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *AliCloudRocketmqInstanceStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudRocketmqInstance) Reset() {
-	*x = AlicloudRocketmqInstance{}
+func (x *AliCloudRocketmqInstance) Reset() {
+	*x = AliCloudRocketmqInstance{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRocketmqInstance) String() string {
+func (x *AliCloudRocketmqInstance) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRocketmqInstance) ProtoMessage() {}
+func (*AliCloudRocketmqInstance) ProtoMessage() {}
 
-func (x *AlicloudRocketmqInstance) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRocketmqInstance) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AlicloudRocketmqInstance) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRocketmqInstance.ProtoReflect.Descriptor instead.
-func (*AlicloudRocketmqInstance) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRocketmqInstance.ProtoReflect.Descriptor instead.
+func (*AliCloudRocketmqInstance) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudRocketmqInstance) GetApiVersion() string {
+func (x *AliCloudRocketmqInstance) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqInstance) GetKind() string {
+func (x *AliCloudRocketmqInstance) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqInstance) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AliCloudRocketmqInstance) GetMetadata() *shared.CloudResourceMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *AlicloudRocketmqInstance) GetSpec() *AlicloudRocketmqInstanceSpec {
+func (x *AliCloudRocketmqInstance) GetSpec() *AliCloudRocketmqInstanceSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-func (x *AlicloudRocketmqInstance) GetStatus() *AlicloudRocketmqInstanceStatus {
+func (x *AliCloudRocketmqInstance) GetStatus() *AliCloudRocketmqInstanceStatus {
 	if x != nil {
 		return x.Status
 	}
@@ -106,28 +106,28 @@ func (x *AlicloudRocketmqInstance) GetStatus() *AlicloudRocketmqInstanceStatus {
 }
 
 // alicloud-rocketmq-instance status
-type AlicloudRocketmqInstanceStatus struct {
+type AliCloudRocketmqInstanceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// stack-outputs
-	Outputs       *AlicloudRocketmqInstanceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AliCloudRocketmqInstanceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudRocketmqInstanceStatus) Reset() {
-	*x = AlicloudRocketmqInstanceStatus{}
+func (x *AliCloudRocketmqInstanceStatus) Reset() {
+	*x = AliCloudRocketmqInstanceStatus{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRocketmqInstanceStatus) String() string {
+func (x *AliCloudRocketmqInstanceStatus) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRocketmqInstanceStatus) ProtoMessage() {}
+func (*AliCloudRocketmqInstanceStatus) ProtoMessage() {}
 
-func (x *AlicloudRocketmqInstanceStatus) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRocketmqInstanceStatus) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,12 +139,12 @@ func (x *AlicloudRocketmqInstanceStatus) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRocketmqInstanceStatus.ProtoReflect.Descriptor instead.
-func (*AlicloudRocketmqInstanceStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRocketmqInstanceStatus.ProtoReflect.Descriptor instead.
+func (*AliCloudRocketmqInstanceStatus) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudRocketmqInstanceStatus) GetOutputs() *AlicloudRocketmqInstanceStackOutputs {
+func (x *AliCloudRocketmqInstanceStatus) GetOutputs() *AliCloudRocketmqInstanceStackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -156,17 +156,17 @@ var File_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_api_proto pro
 const file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"Corg/openmcf/provider/alicloud/alicloudrocketmqinstance/v1/api.proto\x129org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1\x1a\x1bbuf/validate/validate.proto\x1aDorg/openmcf/provider/alicloud/alicloudrocketmqinstance/v1/spec.proto\x1aMorg/openmcf/provider/alicloud/alicloudrocketmqinstance/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xc7\x03\n" +
-	"\x18AlicloudRocketmqInstance\x12?\n" +
+	"\x18AliCloudRocketmqInstance\x12?\n" +
 	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
-	"\x18AlicloudRocketmqInstanceR\x04kind\x12M\n" +
+	"\x18AliCloudRocketmqInstanceR\x04kind\x12M\n" +
 	"\bmetadata\x18\x03 \x01(\v2).org.openmcf.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
-	"\x04spec\x18\x04 \x01(\v2W.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12q\n" +
-	"\x06status\x18\x05 \x01(\v2Y.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceStatusR\x06status\"\x9b\x01\n" +
-	"\x1eAlicloudRocketmqInstanceStatus\x12y\n" +
-	"\aoutputs\x18\x01 \x01(\v2_.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceStackOutputsR\aoutputsB\xcc\x03\n" +
+	"\x04spec\x18\x04 \x01(\v2W.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12q\n" +
+	"\x06status\x18\x05 \x01(\v2Y.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceStatusR\x06status\"\x9b\x01\n" +
+	"\x1eAliCloudRocketmqInstanceStatus\x12y\n" +
+	"\aoutputs\x18\x01 \x01(\v2_.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceStackOutputsR\aoutputsB\xcc\x03\n" +
 	"=com.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1B\bApiProtoP\x01Zvgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudrocketmqinstance/v1;alicloudrocketmqinstancev1\xa2\x02\x05OOPAA\xaa\x029Org.Openmcf.Provider.Alicloud.Alicloudrocketmqinstance.V1\xca\x029Org\\Openmcf\\Provider\\Alicloud\\Alicloudrocketmqinstance\\V1\xe2\x02EOrg\\Openmcf\\Provider\\Alicloud\\Alicloudrocketmqinstance\\V1\\GPBMetadata\xea\x02>Org::Openmcf::Provider::Alicloud::Alicloudrocketmqinstance::V1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_api_proto_ra
 
 var file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_api_proto_goTypes = []any{
-	(*AlicloudRocketmqInstance)(nil),             // 0: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstance
-	(*AlicloudRocketmqInstanceStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceStatus
+	(*AliCloudRocketmqInstance)(nil),             // 0: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstance
+	(*AliCloudRocketmqInstanceStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceStatus
 	(*shared.CloudResourceMetadata)(nil),         // 2: org.openmcf.shared.CloudResourceMetadata
-	(*AlicloudRocketmqInstanceSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceSpec
-	(*AlicloudRocketmqInstanceStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceStackOutputs
+	(*AliCloudRocketmqInstanceSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceSpec
+	(*AliCloudRocketmqInstanceStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_api_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstance.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
-	3, // 1: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstance.spec:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceSpec
-	1, // 2: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstance.status:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceStatus
-	4, // 3: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceStackOutputs
+	2, // 0: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstance.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
+	3, // 1: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstance.spec:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceSpec
+	1, // 2: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstance.status:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceStatus
+	4, // 3: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceStackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

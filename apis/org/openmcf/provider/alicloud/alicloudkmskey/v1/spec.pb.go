@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudKmsKeySpec defines the configuration for an Alibaba Cloud Key
+// AliCloudKmsKeySpec defines the configuration for an Alibaba Cloud Key
 // Management Service (KMS) customer-managed key (CMK).
 //
 // A KMS key is used to encrypt and decrypt data across Alibaba Cloud services
@@ -42,7 +42,7 @@ const (
 //
 //	Terraform: alicloud_kms_key
 //	Pulumi:    kms.Key
-type AlicloudKmsKeySpec struct {
+type AliCloudKmsKeySpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the KMS key will be created.
 	// The key can only be used by resources in the same region.
@@ -136,20 +136,20 @@ type AlicloudKmsKeySpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudKmsKeySpec) Reset() {
-	*x = AlicloudKmsKeySpec{}
+func (x *AliCloudKmsKeySpec) Reset() {
+	*x = AliCloudKmsKeySpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkmskey_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKmsKeySpec) String() string {
+func (x *AliCloudKmsKeySpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKmsKeySpec) ProtoMessage() {}
+func (*AliCloudKmsKeySpec) ProtoMessage() {}
 
-func (x *AlicloudKmsKeySpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKmsKeySpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkmskey_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -161,82 +161,82 @@ func (x *AlicloudKmsKeySpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKmsKeySpec.ProtoReflect.Descriptor instead.
-func (*AlicloudKmsKeySpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKmsKeySpec.ProtoReflect.Descriptor instead.
+func (*AliCloudKmsKeySpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkmskey_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudKmsKeySpec) GetRegion() string {
+func (x *AliCloudKmsKeySpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudKmsKeySpec) GetDescription() string {
+func (x *AliCloudKmsKeySpec) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *AlicloudKmsKeySpec) GetKeySpec() string {
+func (x *AliCloudKmsKeySpec) GetKeySpec() string {
 	if x != nil && x.KeySpec != nil {
 		return *x.KeySpec
 	}
 	return ""
 }
 
-func (x *AlicloudKmsKeySpec) GetKeyUsage() string {
+func (x *AliCloudKmsKeySpec) GetKeyUsage() string {
 	if x != nil && x.KeyUsage != nil {
 		return *x.KeyUsage
 	}
 	return ""
 }
 
-func (x *AlicloudKmsKeySpec) GetProtectionLevel() string {
+func (x *AliCloudKmsKeySpec) GetProtectionLevel() string {
 	if x != nil && x.ProtectionLevel != nil {
 		return *x.ProtectionLevel
 	}
 	return ""
 }
 
-func (x *AlicloudKmsKeySpec) GetAutomaticRotation() bool {
+func (x *AliCloudKmsKeySpec) GetAutomaticRotation() bool {
 	if x != nil && x.AutomaticRotation != nil {
 		return *x.AutomaticRotation
 	}
 	return false
 }
 
-func (x *AlicloudKmsKeySpec) GetRotationInterval() string {
+func (x *AliCloudKmsKeySpec) GetRotationInterval() string {
 	if x != nil {
 		return x.RotationInterval
 	}
 	return ""
 }
 
-func (x *AlicloudKmsKeySpec) GetPendingWindowInDays() int32 {
+func (x *AliCloudKmsKeySpec) GetPendingWindowInDays() int32 {
 	if x != nil && x.PendingWindowInDays != nil {
 		return *x.PendingWindowInDays
 	}
 	return 0
 }
 
-func (x *AlicloudKmsKeySpec) GetDeletionProtection() bool {
+func (x *AliCloudKmsKeySpec) GetDeletionProtection() bool {
 	if x != nil && x.DeletionProtection != nil {
 		return *x.DeletionProtection
 	}
 	return false
 }
 
-func (x *AlicloudKmsKeySpec) GetDeletionProtectionDescription() string {
+func (x *AliCloudKmsKeySpec) GetDeletionProtectionDescription() string {
 	if x != nil {
 		return x.DeletionProtectionDescription
 	}
 	return ""
 }
 
-func (x *AlicloudKmsKeySpec) GetTags() map[string]string {
+func (x *AliCloudKmsKeySpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
@@ -248,7 +248,7 @@ var File_org_openmcf_provider_alicloud_alicloudkmskey_v1_spec_proto protoreflect
 const file_org_openmcf_provider_alicloud_alicloudkmskey_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	":org/openmcf/provider/alicloud/alicloudkmskey/v1/spec.proto\x12/org.openmcf.provider.alicloud.alicloudkmskey.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\x97\v\n" +
-	"\x12AlicloudKmsKeySpec\x12\"\n" +
+	"\x12AliCloudKmsKeySpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12 \n" +
 	"\vdescription\x18\x02 \x01(\tR\vdescription\x12\xe6\x02\n" +
@@ -264,7 +264,7 @@ const file_org_openmcf_provider_alicloud_alicloudkmskey_v1_spec_proto_rawDesc = 
 	"\x13deletion_protection\x18\t \x01(\bB\t\x8a\xa6\x1d\x05falseH\x05R\x12deletionProtection\x88\x01\x01\x12F\n" +
 	"\x1fdeletion_protection_description\x18\n" +
 	" \x01(\tR\x1ddeletionProtectionDescription\x12a\n" +
-	"\x04tags\x18\v \x03(\v2M.org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeySpec.TagsEntryR\x04tags\x1a7\n" +
+	"\x04tags\x18\v \x03(\v2M.org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeySpec.TagsEntryR\x04tags\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\v\n" +
@@ -291,11 +291,11 @@ func file_org_openmcf_provider_alicloud_alicloudkmskey_v1_spec_proto_rawDescGZIP
 
 var file_org_openmcf_provider_alicloud_alicloudkmskey_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudkmskey_v1_spec_proto_goTypes = []any{
-	(*AlicloudKmsKeySpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeySpec
-	nil,                        // 1: org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeySpec.TagsEntry
+	(*AliCloudKmsKeySpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeySpec
+	nil,                        // 1: org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeySpec.TagsEntry
 }
 var file_org_openmcf_provider_alicloud_alicloudkmskey_v1_spec_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeySpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudkmskey.v1.AlicloudKmsKeySpec.TagsEntry
+	1, // 0: org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeySpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudkmskey.v1.AliCloudKmsKeySpec.TagsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

@@ -5,7 +5,7 @@ package org.openmcf.provider.alicloud.alicloudsaeapplication.v1;
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 
-// AlicloudSaeApplicationSpec defines the configuration for an Alibaba Cloud
+// AliCloudSaeApplicationSpec defines the configuration for an Alibaba Cloud
 // Serverless App Engine (SAE) application.
 //
 // SAE is a fully managed, container-based serverless compute platform that
@@ -21,7 +21,7 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 // Provider resources:
 //   Terraform: alicloud_sae_application
 //   Pulumi:    sae.Application
-message AlicloudSaeApplicationSpec {
+message AliCloudSaeApplicationSpec {
   // Alibaba Cloud region where the SAE application will be created.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
   string region = 1 [
@@ -85,21 +85,21 @@ message AlicloudSaeApplicationSpec {
   // the specified VPC. Optional — SAE provides managed networking by default.
   // This field is immutable after creation (ForceNew in the provider).
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 8 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
   ];
 
   // VSwitch ID for VPC-based deployment. Determines the subnet and
   // availability zone.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vswitch_id = 9 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
   ];
 
   // Security group ID for VPC-based deployment. Controls inbound/outbound
   // traffic rules for the application instances.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_id = 10 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
 
@@ -183,22 +183,22 @@ message AlicloudSaeApplicationSpec {
 
   // Liveness probe configuration. If the liveness check fails repeatedly,
   // SAE restarts the application instance.
-  AlicloudSaeApplicationHealthCheck liveness = 26;
+  AliCloudSaeApplicationHealthCheck liveness = 26;
 
   // Readiness probe configuration. Until the readiness check passes, SAE
   // does not route traffic to the instance.
-  AlicloudSaeApplicationHealthCheck readiness = 27;
+  AliCloudSaeApplicationHealthCheck readiness = 27;
 
   // ── Host aliases ───────────────────────────────────────────────────────
 
   // Custom hostname-to-IP mappings injected into the container's /etc/hosts.
   // Useful for resolving internal service names without DNS.
-  repeated AlicloudSaeApplicationCustomHostAlias custom_host_aliases = 28;
+  repeated AliCloudSaeApplicationCustomHostAlias custom_host_aliases = 28;
 
   // ── Update strategy ────────────────────────────────────────────────────
 
   // Deployment update strategy controlling how new versions are rolled out.
-  AlicloudSaeApplicationUpdateStrategy update_strategy = 29;
+  AliCloudSaeApplicationUpdateStrategy update_strategy = 29;
 
   // ── Logging ────────────────────────────────────────────────────────────
 
@@ -213,22 +213,22 @@ message AlicloudSaeApplicationSpec {
   map<string, string> tags = 31;
 }
 
-// AlicloudSaeApplicationHealthCheck defines a health check probe for the
+// AliCloudSaeApplicationHealthCheck defines a health check probe for the
 // SAE application. Exactly one of http_get, tcp_socket, or exec should be
 // configured to specify the check mechanism.
-message AlicloudSaeApplicationHealthCheck {
+message AliCloudSaeApplicationHealthCheck {
   // HTTP GET probe. SAE sends an HTTP GET request to the specified path
   // and port, and considers the check successful if the response status
   // is 200-399.
-  AlicloudSaeApplicationHttpGetAction http_get = 1;
+  AliCloudSaeApplicationHttpGetAction http_get = 1;
 
   // TCP socket probe. SAE attempts a TCP connection to the specified port
   // and considers the check successful if the connection is established.
-  AlicloudSaeApplicationTcpSocketAction tcp_socket = 2;
+  AliCloudSaeApplicationTcpSocketAction tcp_socket = 2;
 
   // Exec probe. SAE executes the specified command inside the container
   // and considers the check successful if the command exits with code 0.
-  AlicloudSaeApplicationExecAction exec = 3;
+  AliCloudSaeApplicationExecAction exec = 3;
 
   // Seconds to wait after the container starts before initiating the
   // first health check.
@@ -249,8 +249,8 @@ message AlicloudSaeApplicationHealthCheck {
   optional int32 success_threshold = 8;
 }
 
-// AlicloudSaeApplicationHttpGetAction defines an HTTP GET health check.
-message AlicloudSaeApplicationHttpGetAction {
+// AliCloudSaeApplicationHttpGetAction defines an HTTP GET health check.
+message AliCloudSaeApplicationHttpGetAction {
   // URL path for the HTTP GET request (e.g., "/healthz").
   string path = 1;
 
@@ -258,22 +258,22 @@ message AlicloudSaeApplicationHttpGetAction {
   int32 port = 2;
 }
 
-// AlicloudSaeApplicationTcpSocketAction defines a TCP socket health check.
-message AlicloudSaeApplicationTcpSocketAction {
+// AliCloudSaeApplicationTcpSocketAction defines a TCP socket health check.
+message AliCloudSaeApplicationTcpSocketAction {
   // Port to attempt a TCP connection to.
   int32 port = 1;
 }
 
-// AlicloudSaeApplicationExecAction defines a command-based health check.
-message AlicloudSaeApplicationExecAction {
+// AliCloudSaeApplicationExecAction defines a command-based health check.
+message AliCloudSaeApplicationExecAction {
   // Command to execute inside the container. The check succeeds if the
   // command exits with code 0.
   string command = 1;
 }
 
-// AlicloudSaeApplicationCustomHostAlias defines a hostname-to-IP mapping
+// AliCloudSaeApplicationCustomHostAlias defines a hostname-to-IP mapping
 // injected into the container's /etc/hosts file.
-message AlicloudSaeApplicationCustomHostAlias {
+message AliCloudSaeApplicationCustomHostAlias {
   // Hostname to map.
   string host_name = 1;
 
@@ -281,9 +281,9 @@ message AlicloudSaeApplicationCustomHostAlias {
   string ip = 2;
 }
 
-// AlicloudSaeApplicationUpdateStrategy controls how new application
+// AliCloudSaeApplicationUpdateStrategy controls how new application
 // versions are rolled out to instances.
-message AlicloudSaeApplicationUpdateStrategy {
+message AliCloudSaeApplicationUpdateStrategy {
   // Release policy type.
   // "BatchUpdate": release in sequential batches.
   // "GrayBatchUpdate": canary-style phased release.
@@ -294,11 +294,11 @@ message AlicloudSaeApplicationUpdateStrategy {
   }];
 
   // Batch update configuration.
-  AlicloudSaeApplicationBatchUpdate batch_update = 2;
+  AliCloudSaeApplicationBatchUpdate batch_update = 2;
 }
 
-// AlicloudSaeApplicationBatchUpdate defines the batch release configuration.
-message AlicloudSaeApplicationBatchUpdate {
+// AliCloudSaeApplicationBatchUpdate defines the batch release configuration.
+message AliCloudSaeApplicationBatchUpdate {
   // Number of batches to split the release into.
   optional int32 batch = 1;
 

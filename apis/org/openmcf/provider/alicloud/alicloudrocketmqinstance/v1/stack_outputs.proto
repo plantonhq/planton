@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1;
 
-// AlicloudRocketmqInstanceStackOutputs captures the outputs from deploying an
+// AliCloudRocketmqInstanceStackOutputs captures the outputs from deploying an
 // Alibaba Cloud RocketMQ 5.x instance with its topics and consumer groups.
-message AlicloudRocketmqInstanceStackOutputs {
+message AliCloudRocketmqInstanceStackOutputs {
   // The RocketMQ instance ID assigned by Alibaba Cloud.
   string instance_id = 1;
 

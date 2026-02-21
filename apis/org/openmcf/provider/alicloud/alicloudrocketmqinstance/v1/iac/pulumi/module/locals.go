@@ -9,19 +9,19 @@ import (
 )
 
 type Locals struct {
-	AlicloudRocketmqInstance *alicloudrocketmqinstancev1.AlicloudRocketmqInstance
+	AliCloudRocketmqInstance *alicloudrocketmqinstancev1.AliCloudRocketmqInstance
 	Tags                     map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudrocketmqinstancev1.AlicloudRocketmqInstanceStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudrocketmqinstancev1.AliCloudRocketmqInstanceStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudRocketmqInstance = stackInput.Target
+	locals.AliCloudRocketmqInstance = stackInput.Target
 	target := stackInput.Target
 
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudRocketmqInstance.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudRocketmqInstance.String()),
 	}
 
 	if target.Metadata.Id != "" {
@@ -44,13 +44,13 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudrocketmqinstancev
 }
 
 func instanceName(locals *Locals) string {
-	if locals.AlicloudRocketmqInstance.Spec.InstanceName != "" {
-		return locals.AlicloudRocketmqInstance.Spec.InstanceName
+	if locals.AliCloudRocketmqInstance.Spec.InstanceName != "" {
+		return locals.AliCloudRocketmqInstance.Spec.InstanceName
 	}
-	return locals.AlicloudRocketmqInstance.Metadata.Name
+	return locals.AliCloudRocketmqInstance.Metadata.Name
 }
 
-func paymentType(spec *alicloudrocketmqinstancev1.AlicloudRocketmqInstanceSpec) string {
+func paymentType(spec *alicloudrocketmqinstancev1.AliCloudRocketmqInstanceSpec) string {
 	if spec.PaymentType != nil && *spec.PaymentType != "" {
 		return *spec.PaymentType
 	}
@@ -59,7 +59,7 @@ func paymentType(spec *alicloudrocketmqinstancev1.AlicloudRocketmqInstanceSpec) 
 
 // commodityCode derives the billing commodity code from payment_type and
 // sub_series_code. This is an implementation detail hidden from users.
-func commodityCode(spec *alicloudrocketmqinstancev1.AlicloudRocketmqInstanceSpec) string {
+func commodityCode(spec *alicloudrocketmqinstancev1.AliCloudRocketmqInstanceSpec) string {
 	if spec.SubSeriesCode == "serverless" {
 		return "ons_rmqsrvlesspost_public_cn"
 	}
@@ -69,14 +69,14 @@ func commodityCode(spec *alicloudrocketmqinstancev1.AlicloudRocketmqInstanceSpec
 	return "ons_rmqpost_public_cn"
 }
 
-func internetSpec(spec *alicloudrocketmqinstancev1.AlicloudRocketmqInstanceSpec) string {
+func internetSpec(spec *alicloudrocketmqinstancev1.AliCloudRocketmqInstanceSpec) string {
 	if spec.InternetInfo != nil && spec.InternetInfo.Enabled != nil && *spec.InternetInfo.Enabled {
 		return "enable"
 	}
 	return "disable"
 }
 
-func flowOutType(spec *alicloudrocketmqinstancev1.AlicloudRocketmqInstanceSpec) string {
+func flowOutType(spec *alicloudrocketmqinstancev1.AliCloudRocketmqInstanceSpec) string {
 	if spec.InternetInfo == nil || spec.InternetInfo.Enabled == nil || !*spec.InternetInfo.Enabled {
 		return "uninvolved"
 	}
@@ -86,14 +86,14 @@ func flowOutType(spec *alicloudrocketmqinstancev1.AlicloudRocketmqInstanceSpec) 
 	return "payByTraffic"
 }
 
-func messageType(t *alicloudrocketmqinstancev1.AlicloudRocketmqTopic) string {
+func messageType(t *alicloudrocketmqinstancev1.AliCloudRocketmqTopic) string {
 	if t.MessageType != nil && *t.MessageType != "" {
 		return *t.MessageType
 	}
 	return "NORMAL"
 }
 
-func retryPolicy(cg *alicloudrocketmqinstancev1.AlicloudRocketmqConsumerGroup) string {
+func retryPolicy(cg *alicloudrocketmqinstancev1.AliCloudRocketmqConsumerGroup) string {
 	if cg.ConsumeRetryPolicy != nil && cg.ConsumeRetryPolicy.RetryPolicy != nil && *cg.ConsumeRetryPolicy.RetryPolicy != "" {
 		return *cg.ConsumeRetryPolicy.RetryPolicy
 	}

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudContainerRegistryStackOutputs captures the outputs from deploying an
+// AliCloudContainerRegistryStackOutputs captures the outputs from deploying an
 // Alibaba Cloud Container Registry (ACR) Enterprise Edition instance.
-type AlicloudContainerRegistryStackOutputs struct {
+type AliCloudContainerRegistryStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ACR Enterprise Edition instance ID.
 	// Referenced by downstream resources that need to interact with this registry.
@@ -44,20 +44,20 @@ type AlicloudContainerRegistryStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudContainerRegistryStackOutputs) Reset() {
-	*x = AlicloudContainerRegistryStackOutputs{}
+func (x *AliCloudContainerRegistryStackOutputs) Reset() {
+	*x = AliCloudContainerRegistryStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudContainerRegistryStackOutputs) String() string {
+func (x *AliCloudContainerRegistryStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudContainerRegistryStackOutputs) ProtoMessage() {}
+func (*AliCloudContainerRegistryStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudContainerRegistryStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudContainerRegistryStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,40 +69,40 @@ func (x *AlicloudContainerRegistryStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudContainerRegistryStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudContainerRegistryStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudContainerRegistryStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudContainerRegistryStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudContainerRegistryStackOutputs) GetInstanceId() string {
+func (x *AliCloudContainerRegistryStackOutputs) GetInstanceId() string {
 	if x != nil {
 		return x.InstanceId
 	}
 	return ""
 }
 
-func (x *AlicloudContainerRegistryStackOutputs) GetInstanceName() string {
+func (x *AliCloudContainerRegistryStackOutputs) GetInstanceName() string {
 	if x != nil {
 		return x.InstanceName
 	}
 	return ""
 }
 
-func (x *AlicloudContainerRegistryStackOutputs) GetPublicEndpoint() string {
+func (x *AliCloudContainerRegistryStackOutputs) GetPublicEndpoint() string {
 	if x != nil {
 		return x.PublicEndpoint
 	}
 	return ""
 }
 
-func (x *AlicloudContainerRegistryStackOutputs) GetVpcEndpoint() string {
+func (x *AliCloudContainerRegistryStackOutputs) GetVpcEndpoint() string {
 	if x != nil {
 		return x.VpcEndpoint
 	}
 	return ""
 }
 
-func (x *AlicloudContainerRegistryStackOutputs) GetNamespaceIds() map[string]string {
+func (x *AliCloudContainerRegistryStackOutputs) GetNamespaceIds() map[string]string {
 	if x != nil {
 		return x.NamespaceIds
 	}
@@ -114,13 +114,13 @@ var File_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_stack_output
 const file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Norg/openmcf/provider/alicloud/alicloudcontainerregistry/v1/stack_outputs.proto\x12:org.openmcf.provider.alicloud.alicloudcontainerregistry.v1\"\x95\x03\n" +
-	"%AlicloudContainerRegistryStackOutputs\x12\x1f\n" +
+	"%AliCloudContainerRegistryStackOutputs\x12\x1f\n" +
 	"\vinstance_id\x18\x01 \x01(\tR\n" +
 	"instanceId\x12#\n" +
 	"\rinstance_name\x18\x02 \x01(\tR\finstanceName\x12'\n" +
 	"\x0fpublic_endpoint\x18\x03 \x01(\tR\x0epublicEndpoint\x12!\n" +
 	"\fvpc_endpoint\x18\x04 \x01(\tR\vvpcEndpoint\x12\x98\x01\n" +
-	"\rnamespace_ids\x18\x05 \x03(\v2s.org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistryStackOutputs.NamespaceIdsEntryR\fnamespaceIds\x1a?\n" +
+	"\rnamespace_ids\x18\x05 \x03(\v2s.org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistryStackOutputs.NamespaceIdsEntryR\fnamespaceIds\x1a?\n" +
 	"\x11NamespaceIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xdc\x03\n" +
@@ -140,11 +140,11 @@ func file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_stack_outpu
 
 var file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudContainerRegistryStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistryStackOutputs
-	nil, // 1: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistryStackOutputs.NamespaceIdsEntry
+	(*AliCloudContainerRegistryStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistryStackOutputs
+	nil, // 1: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistryStackOutputs.NamespaceIdsEntry
 }
 var file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_stack_outputs_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistryStackOutputs.namespace_ids:type_name -> org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistryStackOutputs.NamespaceIdsEntry
+	1, // 0: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistryStackOutputs.namespace_ids:type_name -> org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistryStackOutputs.NamespaceIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

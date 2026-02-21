@@ -8,9 +8,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *alicloudkubernetesclusterv1.AlicloudKubernetesClusterStackInput) error {
+func Resources(ctx *pulumi.Context, stackInput *alicloudkubernetesclusterv1.AliCloudKubernetesClusterStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
-	spec := locals.AlicloudKubernetesCluster.Spec
+	spec := locals.AliCloudKubernetesCluster.Spec
 
 	alicloudProvider, err := alicloud.NewProvider(ctx, "alicloud", &alicloud.ProviderArgs{
 		Region: pulumi.String(spec.Region),
@@ -21,7 +21,7 @@ func Resources(ctx *pulumi.Context, stackInput *alicloudkubernetesclusterv1.Alic
 
 	clusterName := spec.Name
 	if clusterName == "" {
-		clusterName = locals.AlicloudKubernetesCluster.Metadata.Name
+		clusterName = locals.AliCloudKubernetesCluster.Metadata.Name
 	}
 
 	vswitchIds := pulumi.StringArray{}
@@ -139,7 +139,7 @@ func Resources(ctx *pulumi.Context, stackInput *alicloudkubernetesclusterv1.Alic
 	return nil
 }
 
-func configureLogging(args *cs.ManagedKubernetesArgs, logging *alicloudkubernetesclusterv1.AlicloudKubernetesClusterLogging) {
+func configureLogging(args *cs.ManagedKubernetesArgs, logging *alicloudkubernetesclusterv1.AliCloudKubernetesClusterLogging) {
 	if logging.ControlPlaneLogProject != nil {
 		args.ControlPlaneLogProject = pulumi.String(logging.ControlPlaneLogProject.GetValue())
 	}
@@ -161,7 +161,7 @@ func configureLogging(args *cs.ManagedKubernetesArgs, logging *alicloudkubernete
 	}
 }
 
-func autoUpgradeChannel(au *alicloudkubernetesclusterv1.AlicloudKubernetesClusterAutoUpgrade) string {
+func autoUpgradeChannel(au *alicloudkubernetesclusterv1.AliCloudKubernetesClusterAutoUpgrade) string {
 	if au.Channel != nil {
 		return *au.Channel
 	}

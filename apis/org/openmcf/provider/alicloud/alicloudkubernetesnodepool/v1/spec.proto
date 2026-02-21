@@ -6,7 +6,7 @@ import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudKubernetesNodePoolSpec defines the configuration for an ACK node pool.
+// AliCloudKubernetesNodePoolSpec defines the configuration for an ACK node pool.
 //
 // A node pool is a group of worker nodes within an ACK Managed Kubernetes
 // cluster that share the same instance type, scaling policy, and node
@@ -24,7 +24,7 @@ import "org/openmcf/shared/options/options.proto";
 //
 // For cost-optimized workloads, use spot_strategy with multiple instance_types
 // to spread across spot instance pools.
-message AlicloudKubernetesNodePoolSpec {
+message AliCloudKubernetesNodePoolSpec {
   // ──────────────────────────────────────────────────────────────────────────
   // Core Identity (fields 1–9)
   // ──────────────────────────────────────────────────────────────────────────
@@ -39,7 +39,7 @@ message AlicloudKubernetesNodePoolSpec {
   // ACK cluster ID that this node pool belongs to.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_id = 2 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudKubernetesCluster,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudKubernetesCluster,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cluster_id"
   ];
 
@@ -57,7 +57,7 @@ message AlicloudKubernetesNodePoolSpec {
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 1,
     (buf.validate.field).repeated.max_items = 5,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVswitch,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
   ];
 
@@ -100,10 +100,10 @@ message AlicloudKubernetesNodePoolSpec {
   // ──────────────────────────────────────────────────────────────────────────
 
   // System disk configuration for the worker nodes.
-  AlicloudKubernetesNodePoolSystemDisk system_disk = 11;
+  AliCloudKubernetesNodePoolSystemDisk system_disk = 11;
 
   // Additional data disks attached to each worker node.
-  repeated AlicloudKubernetesNodePoolDataDisk data_disks = 12;
+  repeated AliCloudKubernetesNodePoolDataDisk data_disks = 12;
 
   // ──────────────────────────────────────────────────────────────────────────
   // Network & Security (fields 20–22)
@@ -113,7 +113,7 @@ message AlicloudKubernetesNodePoolSpec {
   // Immutable after creation.
   // If omitted, the cluster's default security group is used.
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 20 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudSecurityGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudSecurityGroup,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
 
@@ -157,7 +157,7 @@ message AlicloudKubernetesNodePoolSpec {
 
   // Kubernetes taints applied to all nodes in the pool.
   // Taints repel pods unless the pod has a matching toleration.
-  repeated AlicloudKubernetesNodePoolTaint taints = 31;
+  repeated AliCloudKubernetesNodePoolTaint taints = 31;
 
   // CPU management policy for nodes.
   // "none" (default) -- standard CFS scheduling.
@@ -197,7 +197,7 @@ message AlicloudKubernetesNodePoolSpec {
   // Auto-scaling configuration. When enabled, the cluster auto-scaler
   // adjusts the number of nodes between min_size and max_size based on
   // pending pod resource requests.
-  AlicloudKubernetesNodePoolScalingConfig scaling_config = 40;
+  AliCloudKubernetesNodePoolScalingConfig scaling_config = 40;
 
   // Multi-AZ scheduling policy when vswitch_ids spans multiple zones.
   // "PRIORITY" -- allocate in the first AZ with available capacity.
@@ -216,7 +216,7 @@ message AlicloudKubernetesNodePoolSpec {
   // Managed node pool lifecycle management settings.
   // When enabled, ACK automatically repairs unhealthy nodes, upgrades
   // kubelet versions, and patches vulnerabilities.
-  AlicloudKubernetesNodePoolManagement management = 45;
+  AliCloudKubernetesNodePoolManagement management = 45;
 
   // ──────────────────────────────────────────────────────────────────────────
   // Spot Instance Configuration (fields 50–51)
@@ -234,7 +234,7 @@ message AlicloudKubernetesNodePoolSpec {
 
   // Per-instance-type price caps for spot instances.
   // Only relevant when spot_strategy is "SpotWithPriceLimit".
-  repeated AlicloudKubernetesNodePoolSpotPriceLimit spot_price_limits = 51;
+  repeated AliCloudKubernetesNodePoolSpotPriceLimit spot_price_limits = 51;
 
   // ──────────────────────────────────────────────────────────────────────────
   // Billing (fields 55–58)
@@ -290,9 +290,9 @@ message AlicloudKubernetesNodePoolSpec {
   string ram_role_name = 62;
 }
 
-// AlicloudKubernetesNodePoolSystemDisk configures the system (OS) disk
+// AliCloudKubernetesNodePoolSystemDisk configures the system (OS) disk
 // for each worker node.
-message AlicloudKubernetesNodePoolSystemDisk {
+message AliCloudKubernetesNodePoolSystemDisk {
   // Disk category.
   // Default: "cloud_essd"
   optional string category = 1 [
@@ -331,9 +331,9 @@ message AlicloudKubernetesNodePoolSystemDisk {
   string kms_key_id = 5;
 }
 
-// AlicloudKubernetesNodePoolDataDisk configures an additional data disk
+// AliCloudKubernetesNodePoolDataDisk configures an additional data disk
 // attached to each worker node.
-message AlicloudKubernetesNodePoolDataDisk {
+message AliCloudKubernetesNodePoolDataDisk {
   // Disk category.
   // Default: "cloud_essd"
   optional string category = 1 [
@@ -372,9 +372,9 @@ message AlicloudKubernetesNodePoolDataDisk {
   string kms_key_id = 6;
 }
 
-// AlicloudKubernetesNodePoolTaint defines a Kubernetes taint applied to
+// AliCloudKubernetesNodePoolTaint defines a Kubernetes taint applied to
 // all nodes in the pool.
-message AlicloudKubernetesNodePoolTaint {
+message AliCloudKubernetesNodePoolTaint {
   // Taint key. Must be a valid Kubernetes label key.
   string key = 1 [
     (buf.validate.field).required = true,
@@ -395,9 +395,9 @@ message AlicloudKubernetesNodePoolTaint {
   }];
 }
 
-// AlicloudKubernetesNodePoolScalingConfig configures the cluster auto-scaler
+// AliCloudKubernetesNodePoolScalingConfig configures the cluster auto-scaler
 // for this node pool.
-message AlicloudKubernetesNodePoolScalingConfig {
+message AliCloudKubernetesNodePoolScalingConfig {
   // Whether auto-scaling is enabled.
   // Default: true (when scaling_config is present).
   optional bool enable = 1 [(org.openmcf.shared.options.default) = "true"];
@@ -428,9 +428,9 @@ message AlicloudKubernetesNodePoolScalingConfig {
   }];
 }
 
-// AlicloudKubernetesNodePoolManagement configures automatic lifecycle
+// AliCloudKubernetesNodePoolManagement configures automatic lifecycle
 // management for a managed node pool.
-message AlicloudKubernetesNodePoolManagement {
+message AliCloudKubernetesNodePoolManagement {
   // Whether managed node pool features are enabled.
   // Default: true
   optional bool enable = 1 [(org.openmcf.shared.options.default) = "true"];
@@ -452,9 +452,9 @@ message AlicloudKubernetesNodePoolManagement {
   }];
 }
 
-// AlicloudKubernetesNodePoolSpotPriceLimit defines a price cap for a
+// AliCloudKubernetesNodePoolSpotPriceLimit defines a price cap for a
 // specific spot instance type.
-message AlicloudKubernetesNodePoolSpotPriceLimit {
+message AliCloudKubernetesNodePoolSpotPriceLimit {
   // ECS instance type (e.g., "ecs.g7.xlarge").
   // Must be one of the types listed in instance_types.
   string instance_type = 1;

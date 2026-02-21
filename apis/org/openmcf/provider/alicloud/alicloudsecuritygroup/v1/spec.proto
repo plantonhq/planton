@@ -6,7 +6,7 @@ import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// AlicloudSecurityGroupSpec defines the configuration for an Alibaba Cloud
+// AliCloudSecurityGroupSpec defines the configuration for an Alibaba Cloud
 // Security Group with bundled security rules.
 //
 // A security group is a stateful virtual firewall that controls inbound and
@@ -26,7 +26,7 @@ import "org/openmcf/shared/options/options.proto";
 // Provider resources:
 //   Terraform: alicloud_security_group + alicloud_security_group_rule
 //   Pulumi:    ecs.SecurityGroup + ecs.SecurityGroupRule
-message AlicloudSecurityGroupSpec {
+message AliCloudSecurityGroupSpec {
   // Alibaba Cloud region where the security group will be created.
   // Must match the region of the VPC referenced by vpc_id.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -40,7 +40,7 @@ message AlicloudSecurityGroupSpec {
   // (nic_type "intranet" is implied and hardcoded in the IaC modules).
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 2 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AlicloudVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AliCloudVpc,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
   ];
 
@@ -86,10 +86,10 @@ message AlicloudSecurityGroupSpec {
   // Rules are evaluated by priority within their direction. Lower priority
   // numbers are evaluated first (1 = highest priority). The first matching
   // rule wins.
-  repeated AlicloudSecurityGroupRule rules = 8;
+  repeated AliCloudSecurityGroupRule rules = 8;
 }
 
-// AlicloudSecurityGroupRule defines a single inbound or outbound traffic rule.
+// AliCloudSecurityGroupRule defines a single inbound or outbound traffic rule.
 //
 // For ingress rules, cidr_ip and source_security_group_id specify the traffic
 // source. For egress rules, cidr_ip specifies the traffic destination. At least
@@ -97,7 +97,7 @@ message AlicloudSecurityGroupSpec {
 //
 // All rule fields except description are immutable after creation (ForceNew in
 // the provider). Changing any field requires destroying and recreating the rule.
-message AlicloudSecurityGroupRule {
+message AliCloudSecurityGroupRule {
   // Traffic direction: "ingress" for inbound, "egress" for outbound.
   string type = 1 [
     (buf.validate.field).required = true,

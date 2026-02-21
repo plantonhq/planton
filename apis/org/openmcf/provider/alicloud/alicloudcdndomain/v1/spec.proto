@@ -4,7 +4,7 @@ package org.openmcf.provider.alicloud.alicloudcdndomain.v1;
 
 import "buf/validate/validate.proto";
 
-// AlicloudCdnDomainSpec defines the configuration for an Alibaba Cloud CDN
+// AliCloudCdnDomainSpec defines the configuration for an Alibaba Cloud CDN
 // accelerated domain managed by the CDN service.
 //
 // A CDN domain maps a user-facing domain name (e.g., "cdn.example.com") to one
@@ -17,7 +17,7 @@ import "buf/validate/validate.proto";
 // HTTPS certificate configuration. Advanced CDN function configs (caching rules,
 // referer whitelists, HTTP headers) are outside the scope of this component and
 // should be managed via raw Terraform or Pulumi if needed.
-message AlicloudCdnDomainSpec {
+message AliCloudCdnDomainSpec {
   // Alibaba Cloud region for provider initialization.
   // CDN is a global service, but the provider requires a region for API calls.
   // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -62,11 +62,11 @@ message AlicloudCdnDomainSpec {
 
   // Origin server sources for the CDN domain. At least one source is required.
   // Multiple sources enable failover and load distribution via priority and weight.
-  repeated AlicloudCdnDomainSource sources = 5 [(buf.validate.field).repeated.min_items = 1];
+  repeated AliCloudCdnDomainSource sources = 5 [(buf.validate.field).repeated.min_items = 1];
 
   // HTTPS certificate configuration.
   // If omitted, the CDN domain serves content over HTTP only.
-  AlicloudCdnDomainCertificateConfig certificate_config = 6;
+  AliCloudCdnDomainCertificateConfig certificate_config = 6;
 
   // URL used by the CDN service to verify that the origin is reachable.
   // Alibaba Cloud sends a request to this URL during domain creation.
@@ -81,8 +81,8 @@ message AlicloudCdnDomainSpec {
   map<string, string> tags = 9;
 }
 
-// AlicloudCdnDomainSource defines a single origin server for the CDN domain.
-message AlicloudCdnDomainSource {
+// AliCloudCdnDomainSource defines a single origin server for the CDN domain.
+message AliCloudCdnDomainSource {
   // The type of origin source.
   //   - "ipaddr"  : origin is an IP address
   //   - "domain"  : origin is a domain name
@@ -131,10 +131,10 @@ message AlicloudCdnDomainSource {
   }];
 }
 
-// AlicloudCdnDomainCertificateConfig configures HTTPS for the CDN domain.
+// AliCloudCdnDomainCertificateConfig configures HTTPS for the CDN domain.
 // When provided, the CDN edge nodes serve content over HTTPS using the
 // specified certificate.
-message AlicloudCdnDomainCertificateConfig {
+message AliCloudCdnDomainCertificateConfig {
   // Display name of the certificate.
   string cert_name = 1;
 

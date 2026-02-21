@@ -11,9 +11,9 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func TestAlicloudKubernetesClusterSpec(t *testing.T) {
+func TestAliCloudKubernetesClusterSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
-	ginkgo.RunSpecs(t, "AlicloudKubernetesClusterSpec Validation Tests")
+	ginkgo.RunSpecs(t, "AliCloudKubernetesClusterSpec Validation Tests")
 }
 
 func strRef(s string) *fkv1.StringValueOrRef {
@@ -22,24 +22,24 @@ func strRef(s string) *fkv1.StringValueOrRef {
 	}
 }
 
-func minimalValidSpec() *AlicloudKubernetesClusterSpec {
-	return &AlicloudKubernetesClusterSpec{
+func minimalValidSpec() *AliCloudKubernetesClusterSpec {
+	return &AliCloudKubernetesClusterSpec{
 		Region:      "cn-hangzhou",
 		VswitchIds:  []*fkv1.StringValueOrRef{strRef("vsw-aaa111"), strRef("vsw-bbb222")},
 		ServiceCidr: "172.21.0.0/20",
 	}
 }
 
-func minimalValidInput() *AlicloudKubernetesCluster {
-	return &AlicloudKubernetesCluster{
+func minimalValidInput() *AliCloudKubernetesCluster {
+	return &AliCloudKubernetesCluster{
 		ApiVersion: "alicloud.openmcf.org/v1",
-		Kind:       "AlicloudKubernetesCluster",
+		Kind:       "AliCloudKubernetesCluster",
 		Metadata:   &shared.CloudResourceMetadata{Name: "test-cluster"},
 		Spec:       minimalValidSpec(),
 	}
 }
 
-var _ = ginkgo.Describe("AlicloudKubernetesClusterSpec Validation Tests", func() {
+var _ = ginkgo.Describe("AliCloudKubernetesClusterSpec Validation Tests", func() {
 
 	ginkgo.Describe("valid input", func() {
 
@@ -104,7 +104,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesClusterSpec Validation Tests", func()
 
 		ginkgo.It("should pass with addons", func() {
 			input := minimalValidInput()
-			input.Spec.Addons = []*AlicloudKubernetesAddon{
+			input.Spec.Addons = []*AliCloudKubernetesAddon{
 				{Name: "flannel"},
 				{Name: "csi-plugin"},
 				{Name: "logtail-ds", Config: `{"IngressDashboardEnabled":"true"}`},
@@ -117,7 +117,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesClusterSpec Validation Tests", func()
 
 		ginkgo.It("should pass with logging configuration", func() {
 			input := minimalValidInput()
-			input.Spec.Logging = &AlicloudKubernetesClusterLogging{
+			input.Spec.Logging = &AliCloudKubernetesClusterLogging{
 				ControlPlaneLogProject:    strRef("my-sls-project"),
 				ControlPlaneLogTtl:        proto.String("60"),
 				ControlPlaneLogComponents: []string{"apiserver", "kcm", "scheduler"},
@@ -130,7 +130,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesClusterSpec Validation Tests", func()
 
 		ginkgo.It("should pass with maintenance window", func() {
 			input := minimalValidInput()
-			input.Spec.MaintenanceWindow = &AlicloudKubernetesClusterMaintenanceWindow{
+			input.Spec.MaintenanceWindow = &AliCloudKubernetesClusterMaintenanceWindow{
 				Enable:          true,
 				MaintenanceTime: "2026-03-01T03:00:00+08:00",
 				Duration:        "3h",
@@ -142,7 +142,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesClusterSpec Validation Tests", func()
 
 		ginkgo.It("should pass with auto-upgrade enabled", func() {
 			input := minimalValidInput()
-			input.Spec.AutoUpgrade = &AlicloudKubernetesClusterAutoUpgrade{
+			input.Spec.AutoUpgrade = &AliCloudKubernetesClusterAutoUpgrade{
 				Enabled: true,
 				Channel: proto.String("stable"),
 			}
@@ -191,7 +191,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesClusterSpec Validation Tests", func()
 			input.Spec.EnableRrsa = proto.Bool(true)
 			input.Spec.DeletionProtection = proto.Bool(true)
 			input.Spec.EncryptionProviderKey = strRef("kms-key-prod")
-			input.Spec.Addons = []*AlicloudKubernetesAddon{
+			input.Spec.Addons = []*AliCloudKubernetesAddon{
 				{Name: "terway-eniip"},
 				{Name: "csi-plugin"},
 				{Name: "csi-provisioner"},
@@ -199,19 +199,19 @@ var _ = ginkgo.Describe("AlicloudKubernetesClusterSpec Validation Tests", func()
 				{Name: "arms-prometheus"},
 				{Name: "metrics-server"},
 			}
-			input.Spec.Logging = &AlicloudKubernetesClusterLogging{
+			input.Spec.Logging = &AliCloudKubernetesClusterLogging{
 				ControlPlaneLogProject:    strRef("prod-logs"),
 				ControlPlaneLogTtl:        proto.String("90"),
 				ControlPlaneLogComponents: []string{"apiserver", "kcm", "scheduler", "ccm", "controlplane-events"},
 				AuditLogEnabled:           true,
 			}
-			input.Spec.MaintenanceWindow = &AlicloudKubernetesClusterMaintenanceWindow{
+			input.Spec.MaintenanceWindow = &AliCloudKubernetesClusterMaintenanceWindow{
 				Enable:          true,
 				MaintenanceTime: "2026-03-01T03:00:00+08:00",
 				Duration:        "3h",
 				WeeklyPeriod:    "Wednesday",
 			}
-			input.Spec.AutoUpgrade = &AlicloudKubernetesClusterAutoUpgrade{
+			input.Spec.AutoUpgrade = &AliCloudKubernetesClusterAutoUpgrade{
 				Enabled: true,
 				Channel: proto.String("patch"),
 			}
@@ -246,9 +246,9 @@ var _ = ginkgo.Describe("AlicloudKubernetesClusterSpec Validation Tests", func()
 		})
 
 		ginkgo.It("should fail when spec is missing", func() {
-			input := &AlicloudKubernetesCluster{
+			input := &AliCloudKubernetesCluster{
 				ApiVersion: "alicloud.openmcf.org/v1",
-				Kind:       "AlicloudKubernetesCluster",
+				Kind:       "AliCloudKubernetesCluster",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 			}
 			err := protovalidate.Validate(input)
@@ -323,7 +323,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesClusterSpec Validation Tests", func()
 
 		ginkgo.It("should fail when addon name is empty", func() {
 			input := minimalValidInput()
-			input.Spec.Addons = []*AlicloudKubernetesAddon{
+			input.Spec.Addons = []*AliCloudKubernetesAddon{
 				{Name: ""},
 			}
 			err := protovalidate.Validate(input)
@@ -332,7 +332,7 @@ var _ = ginkgo.Describe("AlicloudKubernetesClusterSpec Validation Tests", func()
 
 		ginkgo.It("should fail when auto_upgrade channel is invalid", func() {
 			input := minimalValidInput()
-			input.Spec.AutoUpgrade = &AlicloudKubernetesClusterAutoUpgrade{
+			input.Spec.AutoUpgrade = &AliCloudKubernetesClusterAutoUpgrade{
 				Enabled: true,
 				Channel: proto.String("bleeding-edge"),
 			}

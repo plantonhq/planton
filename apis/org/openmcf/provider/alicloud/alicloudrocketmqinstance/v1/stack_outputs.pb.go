@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudRocketmqInstanceStackOutputs captures the outputs from deploying an
+// AliCloudRocketmqInstanceStackOutputs captures the outputs from deploying an
 // Alibaba Cloud RocketMQ 5.x instance with its topics and consumer groups.
-type AlicloudRocketmqInstanceStackOutputs struct {
+type AliCloudRocketmqInstanceStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The RocketMQ instance ID assigned by Alibaba Cloud.
 	InstanceId string `protobuf:"bytes,1,opt,name=instance_id,json=instanceId,proto3" json:"instance_id,omitempty"`
@@ -43,20 +43,20 @@ type AlicloudRocketmqInstanceStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AlicloudRocketmqInstanceStackOutputs) Reset() {
-	*x = AlicloudRocketmqInstanceStackOutputs{}
+func (x *AliCloudRocketmqInstanceStackOutputs) Reset() {
+	*x = AliCloudRocketmqInstanceStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRocketmqInstanceStackOutputs) String() string {
+func (x *AliCloudRocketmqInstanceStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRocketmqInstanceStackOutputs) ProtoMessage() {}
+func (*AliCloudRocketmqInstanceStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudRocketmqInstanceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRocketmqInstanceStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,40 +68,40 @@ func (x *AlicloudRocketmqInstanceStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRocketmqInstanceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudRocketmqInstanceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRocketmqInstanceStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudRocketmqInstanceStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudRocketmqInstanceStackOutputs) GetInstanceId() string {
+func (x *AliCloudRocketmqInstanceStackOutputs) GetInstanceId() string {
 	if x != nil {
 		return x.InstanceId
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqInstanceStackOutputs) GetTcpEndpoint() string {
+func (x *AliCloudRocketmqInstanceStackOutputs) GetTcpEndpoint() string {
 	if x != nil {
 		return x.TcpEndpoint
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqInstanceStackOutputs) GetInternetEndpoint() string {
+func (x *AliCloudRocketmqInstanceStackOutputs) GetInternetEndpoint() string {
 	if x != nil {
 		return x.InternetEndpoint
 	}
 	return ""
 }
 
-func (x *AlicloudRocketmqInstanceStackOutputs) GetTopicIds() map[string]string {
+func (x *AliCloudRocketmqInstanceStackOutputs) GetTopicIds() map[string]string {
 	if x != nil {
 		return x.TopicIds
 	}
 	return nil
 }
 
-func (x *AlicloudRocketmqInstanceStackOutputs) GetConsumerGroupIds() map[string]string {
+func (x *AliCloudRocketmqInstanceStackOutputs) GetConsumerGroupIds() map[string]string {
 	if x != nil {
 		return x.ConsumerGroupIds
 	}
@@ -113,13 +113,13 @@ var File_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_stack_outputs
 const file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Morg/openmcf/provider/alicloud/alicloudrocketmqinstance/v1/stack_outputs.proto\x129org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1\"\xcc\x04\n" +
-	"$AlicloudRocketmqInstanceStackOutputs\x12\x1f\n" +
+	"$AliCloudRocketmqInstanceStackOutputs\x12\x1f\n" +
 	"\vinstance_id\x18\x01 \x01(\tR\n" +
 	"instanceId\x12!\n" +
 	"\ftcp_endpoint\x18\x02 \x01(\tR\vtcpEndpoint\x12+\n" +
 	"\x11internet_endpoint\x18\x03 \x01(\tR\x10internetEndpoint\x12\x8a\x01\n" +
-	"\ttopic_ids\x18\x04 \x03(\v2m.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceStackOutputs.TopicIdsEntryR\btopicIds\x12\xa3\x01\n" +
-	"\x12consumer_group_ids\x18\x05 \x03(\v2u.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceStackOutputs.ConsumerGroupIdsEntryR\x10consumerGroupIds\x1a;\n" +
+	"\ttopic_ids\x18\x04 \x03(\v2m.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceStackOutputs.TopicIdsEntryR\btopicIds\x12\xa3\x01\n" +
+	"\x12consumer_group_ids\x18\x05 \x03(\v2u.org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceStackOutputs.ConsumerGroupIdsEntryR\x10consumerGroupIds\x1a;\n" +
 	"\rTopicIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aC\n" +
@@ -142,13 +142,13 @@ func file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_stack_output
 
 var file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudRocketmqInstanceStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceStackOutputs
-	nil, // 1: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceStackOutputs.TopicIdsEntry
-	nil, // 2: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceStackOutputs.ConsumerGroupIdsEntry
+	(*AliCloudRocketmqInstanceStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceStackOutputs
+	nil, // 1: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceStackOutputs.TopicIdsEntry
+	nil, // 2: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceStackOutputs.ConsumerGroupIdsEntry
 }
 var file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_stack_outputs_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceStackOutputs.topic_ids:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceStackOutputs.TopicIdsEntry
-	2, // 1: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceStackOutputs.consumer_group_ids:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AlicloudRocketmqInstanceStackOutputs.ConsumerGroupIdsEntry
+	1, // 0: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceStackOutputs.topic_ids:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceStackOutputs.TopicIdsEntry
+	2, // 1: org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceStackOutputs.consumer_group_ids:type_name -> org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1.AliCloudRocketmqInstanceStackOutputs.ConsumerGroupIdsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudFunctionSpec defines the configuration for an Alibaba Cloud Function
+// AliCloudFunctionSpec defines the configuration for an Alibaba Cloud Function
 // Compute v3 function.
 //
 // Function Compute (FC) is a fully managed, event-driven serverless compute
@@ -44,7 +44,7 @@ const (
 //
 //	Terraform: alicloud_fcv3_function
 //	Pulumi:    fc.V3Function
-type AlicloudFunctionSpec struct {
+type AliCloudFunctionSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the function will be created.
 	// Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
@@ -81,7 +81,7 @@ type AlicloudFunctionSpec struct {
 	// Code package for the function. Not required when runtime is
 	// "custom-container" (the container image is specified in
 	// custom_container_config instead).
-	Code *AlicloudFunctionCode `protobuf:"bytes,11,opt,name=code,proto3" json:"code,omitempty"`
+	Code *AliCloudFunctionCode `protobuf:"bytes,11,opt,name=code,proto3" json:"code,omitempty"`
 	// RAM role ARN that the function assumes during execution.
 	// The role must trust the FC service principal (fc.aliyuncs.com).
 	Role *v1.StringValueOrRef `protobuf:"bytes,12,opt,name=role,proto3" json:"role,omitempty"`
@@ -92,24 +92,24 @@ type AlicloudFunctionSpec struct {
 	// VPC configuration for functions that need to access VPC-internal
 	// resources (databases, caches, NAS). When set, the function runs inside
 	// the specified VPC and can reach private endpoints.
-	VpcConfig *AlicloudFunctionVpcConfig `protobuf:"bytes,14,opt,name=vpc_config,json=vpcConfig,proto3" json:"vpc_config,omitempty"`
+	VpcConfig *AliCloudFunctionVpcConfig `protobuf:"bytes,14,opt,name=vpc_config,json=vpcConfig,proto3" json:"vpc_config,omitempty"`
 	// Log Service (SLS) configuration for function invocation logs.
-	LogConfig *AlicloudFunctionLogConfig `protobuf:"bytes,15,opt,name=log_config,json=logConfig,proto3" json:"log_config,omitempty"`
+	LogConfig *AliCloudFunctionLogConfig `protobuf:"bytes,15,opt,name=log_config,json=logConfig,proto3" json:"log_config,omitempty"`
 	// Configuration for custom container runtimes (runtime="custom-container").
 	// Specifies the container image, entrypoint, and health check.
-	CustomContainerConfig *AlicloudFunctionCustomContainerConfig `protobuf:"bytes,16,opt,name=custom_container_config,json=customContainerConfig,proto3" json:"custom_container_config,omitempty"`
+	CustomContainerConfig *AliCloudFunctionCustomContainerConfig `protobuf:"bytes,16,opt,name=custom_container_config,json=customContainerConfig,proto3" json:"custom_container_config,omitempty"`
 	// Configuration for custom runtimes (runtime="custom.*").
 	// Specifies the bootstrap command, arguments, listening port, and health check.
-	CustomRuntimeConfig *AlicloudFunctionCustomRuntimeConfig `protobuf:"bytes,17,opt,name=custom_runtime_config,json=customRuntimeConfig,proto3" json:"custom_runtime_config,omitempty"`
+	CustomRuntimeConfig *AliCloudFunctionCustomRuntimeConfig `protobuf:"bytes,17,opt,name=custom_runtime_config,json=customRuntimeConfig,proto3" json:"custom_runtime_config,omitempty"`
 	// Lifecycle hooks for function instances. The initializer runs once when
 	// an instance is created (warm-up logic), and pre_stop runs before an
 	// instance is reclaimed (cleanup logic).
-	InstanceLifecycleConfig *AlicloudFunctionInstanceLifecycleConfig `protobuf:"bytes,18,opt,name=instance_lifecycle_config,json=instanceLifecycleConfig,proto3" json:"instance_lifecycle_config,omitempty"`
+	InstanceLifecycleConfig *AliCloudFunctionInstanceLifecycleConfig `protobuf:"bytes,18,opt,name=instance_lifecycle_config,json=instanceLifecycleConfig,proto3" json:"instance_lifecycle_config,omitempty"`
 	// NAS file system mount configuration. Requires vpc_config to be set
 	// (NAS mount targets are VPC-internal).
-	NasConfig *AlicloudFunctionNasConfig `protobuf:"bytes,19,opt,name=nas_config,json=nasConfig,proto3" json:"nas_config,omitempty"`
+	NasConfig *AliCloudFunctionNasConfig `protobuf:"bytes,19,opt,name=nas_config,json=nasConfig,proto3" json:"nas_config,omitempty"`
 	// GPU configuration for AI/ML inference workloads.
-	GpuConfig *AlicloudFunctionGpuConfig `protobuf:"bytes,20,opt,name=gpu_config,json=gpuConfig,proto3" json:"gpu_config,omitempty"`
+	GpuConfig *AliCloudFunctionGpuConfig `protobuf:"bytes,20,opt,name=gpu_config,json=gpuConfig,proto3" json:"gpu_config,omitempty"`
 	// Layer ARNs to attach to the function. Layers provide shared libraries
 	// and dependencies without bundling them in the function code package.
 	// Maximum: 5 layers.
@@ -124,20 +124,20 @@ type AlicloudFunctionSpec struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *AlicloudFunctionSpec) Reset() {
-	*x = AlicloudFunctionSpec{}
+func (x *AliCloudFunctionSpec) Reset() {
+	*x = AliCloudFunctionSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudFunctionSpec) String() string {
+func (x *AliCloudFunctionSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudFunctionSpec) ProtoMessage() {}
+func (*AliCloudFunctionSpec) ProtoMessage() {}
 
-func (x *AlicloudFunctionSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudFunctionSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -149,181 +149,181 @@ func (x *AlicloudFunctionSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudFunctionSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudFunctionSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudFunctionSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudFunctionSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudFunctionSpec) GetRegion() string {
+func (x *AliCloudFunctionSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudFunctionSpec) GetFunctionName() string {
+func (x *AliCloudFunctionSpec) GetFunctionName() string {
 	if x != nil {
 		return x.FunctionName
 	}
 	return ""
 }
 
-func (x *AlicloudFunctionSpec) GetHandler() string {
+func (x *AliCloudFunctionSpec) GetHandler() string {
 	if x != nil {
 		return x.Handler
 	}
 	return ""
 }
 
-func (x *AlicloudFunctionSpec) GetRuntime() string {
+func (x *AliCloudFunctionSpec) GetRuntime() string {
 	if x != nil {
 		return x.Runtime
 	}
 	return ""
 }
 
-func (x *AlicloudFunctionSpec) GetDescription() string {
+func (x *AliCloudFunctionSpec) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *AlicloudFunctionSpec) GetCpu() float64 {
+func (x *AliCloudFunctionSpec) GetCpu() float64 {
 	if x != nil && x.Cpu != nil {
 		return *x.Cpu
 	}
 	return 0
 }
 
-func (x *AlicloudFunctionSpec) GetMemorySize() int32 {
+func (x *AliCloudFunctionSpec) GetMemorySize() int32 {
 	if x != nil && x.MemorySize != nil {
 		return *x.MemorySize
 	}
 	return 0
 }
 
-func (x *AlicloudFunctionSpec) GetTimeout() int32 {
+func (x *AliCloudFunctionSpec) GetTimeout() int32 {
 	if x != nil && x.Timeout != nil {
 		return *x.Timeout
 	}
 	return 0
 }
 
-func (x *AlicloudFunctionSpec) GetDiskSize() int32 {
+func (x *AliCloudFunctionSpec) GetDiskSize() int32 {
 	if x != nil && x.DiskSize != nil {
 		return *x.DiskSize
 	}
 	return 0
 }
 
-func (x *AlicloudFunctionSpec) GetInstanceConcurrency() int32 {
+func (x *AliCloudFunctionSpec) GetInstanceConcurrency() int32 {
 	if x != nil && x.InstanceConcurrency != nil {
 		return *x.InstanceConcurrency
 	}
 	return 0
 }
 
-func (x *AlicloudFunctionSpec) GetCode() *AlicloudFunctionCode {
+func (x *AliCloudFunctionSpec) GetCode() *AliCloudFunctionCode {
 	if x != nil {
 		return x.Code
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionSpec) GetRole() *v1.StringValueOrRef {
+func (x *AliCloudFunctionSpec) GetRole() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Role
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionSpec) GetInternetAccess() bool {
+func (x *AliCloudFunctionSpec) GetInternetAccess() bool {
 	if x != nil && x.InternetAccess != nil {
 		return *x.InternetAccess
 	}
 	return false
 }
 
-func (x *AlicloudFunctionSpec) GetVpcConfig() *AlicloudFunctionVpcConfig {
+func (x *AliCloudFunctionSpec) GetVpcConfig() *AliCloudFunctionVpcConfig {
 	if x != nil {
 		return x.VpcConfig
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionSpec) GetLogConfig() *AlicloudFunctionLogConfig {
+func (x *AliCloudFunctionSpec) GetLogConfig() *AliCloudFunctionLogConfig {
 	if x != nil {
 		return x.LogConfig
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionSpec) GetCustomContainerConfig() *AlicloudFunctionCustomContainerConfig {
+func (x *AliCloudFunctionSpec) GetCustomContainerConfig() *AliCloudFunctionCustomContainerConfig {
 	if x != nil {
 		return x.CustomContainerConfig
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionSpec) GetCustomRuntimeConfig() *AlicloudFunctionCustomRuntimeConfig {
+func (x *AliCloudFunctionSpec) GetCustomRuntimeConfig() *AliCloudFunctionCustomRuntimeConfig {
 	if x != nil {
 		return x.CustomRuntimeConfig
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionSpec) GetInstanceLifecycleConfig() *AlicloudFunctionInstanceLifecycleConfig {
+func (x *AliCloudFunctionSpec) GetInstanceLifecycleConfig() *AliCloudFunctionInstanceLifecycleConfig {
 	if x != nil {
 		return x.InstanceLifecycleConfig
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionSpec) GetNasConfig() *AlicloudFunctionNasConfig {
+func (x *AliCloudFunctionSpec) GetNasConfig() *AliCloudFunctionNasConfig {
 	if x != nil {
 		return x.NasConfig
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionSpec) GetGpuConfig() *AlicloudFunctionGpuConfig {
+func (x *AliCloudFunctionSpec) GetGpuConfig() *AliCloudFunctionGpuConfig {
 	if x != nil {
 		return x.GpuConfig
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionSpec) GetLayers() []string {
+func (x *AliCloudFunctionSpec) GetLayers() []string {
 	if x != nil {
 		return x.Layers
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionSpec) GetEnvironmentVariables() map[string]string {
+func (x *AliCloudFunctionSpec) GetEnvironmentVariables() map[string]string {
 	if x != nil {
 		return x.EnvironmentVariables
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionSpec) GetTags() map[string]string {
+func (x *AliCloudFunctionSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionSpec) GetResourceGroupId() string {
+func (x *AliCloudFunctionSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-// AlicloudFunctionCode defines the code package for a function.
-type AlicloudFunctionCode struct {
+// AliCloudFunctionCode defines the code package for a function.
+type AliCloudFunctionCode struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// OSS bucket name where the function code ZIP package is stored.
 	OssBucketName string `protobuf:"bytes,1,opt,name=oss_bucket_name,json=ossBucketName,proto3" json:"oss_bucket_name,omitempty"`
@@ -339,20 +339,20 @@ type AlicloudFunctionCode struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudFunctionCode) Reset() {
-	*x = AlicloudFunctionCode{}
+func (x *AliCloudFunctionCode) Reset() {
+	*x = AliCloudFunctionCode{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudFunctionCode) String() string {
+func (x *AliCloudFunctionCode) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudFunctionCode) ProtoMessage() {}
+func (*AliCloudFunctionCode) ProtoMessage() {}
 
-func (x *AlicloudFunctionCode) ProtoReflect() protoreflect.Message {
+func (x *AliCloudFunctionCode) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -364,42 +364,42 @@ func (x *AlicloudFunctionCode) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudFunctionCode.ProtoReflect.Descriptor instead.
-func (*AlicloudFunctionCode) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudFunctionCode.ProtoReflect.Descriptor instead.
+func (*AliCloudFunctionCode) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudFunctionCode) GetOssBucketName() string {
+func (x *AliCloudFunctionCode) GetOssBucketName() string {
 	if x != nil {
 		return x.OssBucketName
 	}
 	return ""
 }
 
-func (x *AlicloudFunctionCode) GetOssObjectName() string {
+func (x *AliCloudFunctionCode) GetOssObjectName() string {
 	if x != nil {
 		return x.OssObjectName
 	}
 	return ""
 }
 
-func (x *AlicloudFunctionCode) GetZipFile() string {
+func (x *AliCloudFunctionCode) GetZipFile() string {
 	if x != nil {
 		return x.ZipFile
 	}
 	return ""
 }
 
-func (x *AlicloudFunctionCode) GetChecksum() string {
+func (x *AliCloudFunctionCode) GetChecksum() string {
 	if x != nil {
 		return x.Checksum
 	}
 	return ""
 }
 
-// AlicloudFunctionVpcConfig places the function inside a VPC so it can
+// AliCloudFunctionVpcConfig places the function inside a VPC so it can
 // reach private resources (databases, caches, NAS mount targets).
-type AlicloudFunctionVpcConfig struct {
+type AliCloudFunctionVpcConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// VPC ID. Computed by the provider from the VSwitch when omitted in TF,
 	// but required in the OpenMCF model for explicit cross-component wiring.
@@ -413,20 +413,20 @@ type AlicloudFunctionVpcConfig struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *AlicloudFunctionVpcConfig) Reset() {
-	*x = AlicloudFunctionVpcConfig{}
+func (x *AliCloudFunctionVpcConfig) Reset() {
+	*x = AliCloudFunctionVpcConfig{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudFunctionVpcConfig) String() string {
+func (x *AliCloudFunctionVpcConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudFunctionVpcConfig) ProtoMessage() {}
+func (*AliCloudFunctionVpcConfig) ProtoMessage() {}
 
-func (x *AlicloudFunctionVpcConfig) ProtoReflect() protoreflect.Message {
+func (x *AliCloudFunctionVpcConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -438,37 +438,37 @@ func (x *AlicloudFunctionVpcConfig) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudFunctionVpcConfig.ProtoReflect.Descriptor instead.
-func (*AlicloudFunctionVpcConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudFunctionVpcConfig.ProtoReflect.Descriptor instead.
+func (*AliCloudFunctionVpcConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AlicloudFunctionVpcConfig) GetVpcId() *v1.StringValueOrRef {
+func (x *AliCloudFunctionVpcConfig) GetVpcId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VpcId
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionVpcConfig) GetVswitchIds() []*v1.StringValueOrRef {
+func (x *AliCloudFunctionVpcConfig) GetVswitchIds() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.VswitchIds
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionVpcConfig) GetSecurityGroupId() *v1.StringValueOrRef {
+func (x *AliCloudFunctionVpcConfig) GetSecurityGroupId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.SecurityGroupId
 	}
 	return nil
 }
 
-// AlicloudFunctionLogConfig configures function invocation logging to
+// AliCloudFunctionLogConfig configures function invocation logging to
 // Simple Log Service (SLS).
-type AlicloudFunctionLogConfig struct {
+type AliCloudFunctionLogConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// SLS project name. References AlicloudLogProject.
+	// SLS project name. References AliCloudLogProject.
 	Project *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=project,proto3" json:"project,omitempty"`
 	// SLS logstore name within the project.
 	Logstore string `protobuf:"bytes,2,opt,name=logstore,proto3" json:"logstore,omitempty"`
@@ -483,20 +483,20 @@ type AlicloudFunctionLogConfig struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *AlicloudFunctionLogConfig) Reset() {
-	*x = AlicloudFunctionLogConfig{}
+func (x *AliCloudFunctionLogConfig) Reset() {
+	*x = AliCloudFunctionLogConfig{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudFunctionLogConfig) String() string {
+func (x *AliCloudFunctionLogConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudFunctionLogConfig) ProtoMessage() {}
+func (*AliCloudFunctionLogConfig) ProtoMessage() {}
 
-func (x *AlicloudFunctionLogConfig) ProtoReflect() protoreflect.Message {
+func (x *AliCloudFunctionLogConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -508,49 +508,49 @@ func (x *AlicloudFunctionLogConfig) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudFunctionLogConfig.ProtoReflect.Descriptor instead.
-func (*AlicloudFunctionLogConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudFunctionLogConfig.ProtoReflect.Descriptor instead.
+func (*AliCloudFunctionLogConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *AlicloudFunctionLogConfig) GetProject() *v1.StringValueOrRef {
+func (x *AliCloudFunctionLogConfig) GetProject() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Project
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionLogConfig) GetLogstore() string {
+func (x *AliCloudFunctionLogConfig) GetLogstore() string {
 	if x != nil {
 		return x.Logstore
 	}
 	return ""
 }
 
-func (x *AlicloudFunctionLogConfig) GetLogBeginRule() string {
+func (x *AliCloudFunctionLogConfig) GetLogBeginRule() string {
 	if x != nil && x.LogBeginRule != nil {
 		return *x.LogBeginRule
 	}
 	return ""
 }
 
-func (x *AlicloudFunctionLogConfig) GetEnableInstanceMetrics() bool {
+func (x *AliCloudFunctionLogConfig) GetEnableInstanceMetrics() bool {
 	if x != nil && x.EnableInstanceMetrics != nil {
 		return *x.EnableInstanceMetrics
 	}
 	return false
 }
 
-func (x *AlicloudFunctionLogConfig) GetEnableRequestMetrics() bool {
+func (x *AliCloudFunctionLogConfig) GetEnableRequestMetrics() bool {
 	if x != nil && x.EnableRequestMetrics != nil {
 		return *x.EnableRequestMetrics
 	}
 	return false
 }
 
-// AlicloudFunctionCustomContainerConfig configures a custom container
+// AliCloudFunctionCustomContainerConfig configures a custom container
 // runtime (runtime="custom-container").
-type AlicloudFunctionCustomContainerConfig struct {
+type AliCloudFunctionCustomContainerConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Container image URI. Required when this config is set.
 	// Example: "registry.cn-hangzhou.aliyuncs.com/my-ns/my-func:v1"
@@ -562,25 +562,25 @@ type AlicloudFunctionCustomContainerConfig struct {
 	// Port the container listens on for HTTP requests.
 	Port *int32 `protobuf:"varint,4,opt,name=port,proto3,oneof" json:"port,omitempty"`
 	// Health check configuration for the container.
-	HealthCheckConfig *AlicloudFunctionHealthCheckConfig `protobuf:"bytes,5,opt,name=health_check_config,json=healthCheckConfig,proto3" json:"health_check_config,omitempty"`
+	HealthCheckConfig *AliCloudFunctionHealthCheckConfig `protobuf:"bytes,5,opt,name=health_check_config,json=healthCheckConfig,proto3" json:"health_check_config,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AlicloudFunctionCustomContainerConfig) Reset() {
-	*x = AlicloudFunctionCustomContainerConfig{}
+func (x *AliCloudFunctionCustomContainerConfig) Reset() {
+	*x = AliCloudFunctionCustomContainerConfig{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudFunctionCustomContainerConfig) String() string {
+func (x *AliCloudFunctionCustomContainerConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudFunctionCustomContainerConfig) ProtoMessage() {}
+func (*AliCloudFunctionCustomContainerConfig) ProtoMessage() {}
 
-func (x *AlicloudFunctionCustomContainerConfig) ProtoReflect() protoreflect.Message {
+func (x *AliCloudFunctionCustomContainerConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -592,50 +592,50 @@ func (x *AlicloudFunctionCustomContainerConfig) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudFunctionCustomContainerConfig.ProtoReflect.Descriptor instead.
-func (*AlicloudFunctionCustomContainerConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudFunctionCustomContainerConfig.ProtoReflect.Descriptor instead.
+func (*AliCloudFunctionCustomContainerConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *AlicloudFunctionCustomContainerConfig) GetImage() string {
+func (x *AliCloudFunctionCustomContainerConfig) GetImage() string {
 	if x != nil {
 		return x.Image
 	}
 	return ""
 }
 
-func (x *AlicloudFunctionCustomContainerConfig) GetEntrypoint() []string {
+func (x *AliCloudFunctionCustomContainerConfig) GetEntrypoint() []string {
 	if x != nil {
 		return x.Entrypoint
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionCustomContainerConfig) GetCommand() []string {
+func (x *AliCloudFunctionCustomContainerConfig) GetCommand() []string {
 	if x != nil {
 		return x.Command
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionCustomContainerConfig) GetPort() int32 {
+func (x *AliCloudFunctionCustomContainerConfig) GetPort() int32 {
 	if x != nil && x.Port != nil {
 		return *x.Port
 	}
 	return 0
 }
 
-func (x *AlicloudFunctionCustomContainerConfig) GetHealthCheckConfig() *AlicloudFunctionHealthCheckConfig {
+func (x *AliCloudFunctionCustomContainerConfig) GetHealthCheckConfig() *AliCloudFunctionHealthCheckConfig {
 	if x != nil {
 		return x.HealthCheckConfig
 	}
 	return nil
 }
 
-// AlicloudFunctionCustomRuntimeConfig configures a custom runtime
+// AliCloudFunctionCustomRuntimeConfig configures a custom runtime
 // (runtime="custom.*"). The function starts a long-running HTTP server
 // and FC forwards invocations to it.
-type AlicloudFunctionCustomRuntimeConfig struct {
+type AliCloudFunctionCustomRuntimeConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Bootstrap command to start the custom runtime server.
 	Command []string `protobuf:"bytes,1,rep,name=command,proto3" json:"command,omitempty"`
@@ -644,25 +644,25 @@ type AlicloudFunctionCustomRuntimeConfig struct {
 	// Port the custom runtime listens on. Range: 0-65535.
 	Port *int32 `protobuf:"varint,3,opt,name=port,proto3,oneof" json:"port,omitempty"`
 	// Health check configuration for the custom runtime.
-	HealthCheckConfig *AlicloudFunctionHealthCheckConfig `protobuf:"bytes,4,opt,name=health_check_config,json=healthCheckConfig,proto3" json:"health_check_config,omitempty"`
+	HealthCheckConfig *AliCloudFunctionHealthCheckConfig `protobuf:"bytes,4,opt,name=health_check_config,json=healthCheckConfig,proto3" json:"health_check_config,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AlicloudFunctionCustomRuntimeConfig) Reset() {
-	*x = AlicloudFunctionCustomRuntimeConfig{}
+func (x *AliCloudFunctionCustomRuntimeConfig) Reset() {
+	*x = AliCloudFunctionCustomRuntimeConfig{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudFunctionCustomRuntimeConfig) String() string {
+func (x *AliCloudFunctionCustomRuntimeConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudFunctionCustomRuntimeConfig) ProtoMessage() {}
+func (*AliCloudFunctionCustomRuntimeConfig) ProtoMessage() {}
 
-func (x *AlicloudFunctionCustomRuntimeConfig) ProtoReflect() protoreflect.Message {
+func (x *AliCloudFunctionCustomRuntimeConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -674,43 +674,43 @@ func (x *AlicloudFunctionCustomRuntimeConfig) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudFunctionCustomRuntimeConfig.ProtoReflect.Descriptor instead.
-func (*AlicloudFunctionCustomRuntimeConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudFunctionCustomRuntimeConfig.ProtoReflect.Descriptor instead.
+func (*AliCloudFunctionCustomRuntimeConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *AlicloudFunctionCustomRuntimeConfig) GetCommand() []string {
+func (x *AliCloudFunctionCustomRuntimeConfig) GetCommand() []string {
 	if x != nil {
 		return x.Command
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionCustomRuntimeConfig) GetArgs() []string {
+func (x *AliCloudFunctionCustomRuntimeConfig) GetArgs() []string {
 	if x != nil {
 		return x.Args
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionCustomRuntimeConfig) GetPort() int32 {
+func (x *AliCloudFunctionCustomRuntimeConfig) GetPort() int32 {
 	if x != nil && x.Port != nil {
 		return *x.Port
 	}
 	return 0
 }
 
-func (x *AlicloudFunctionCustomRuntimeConfig) GetHealthCheckConfig() *AlicloudFunctionHealthCheckConfig {
+func (x *AliCloudFunctionCustomRuntimeConfig) GetHealthCheckConfig() *AliCloudFunctionHealthCheckConfig {
 	if x != nil {
 		return x.HealthCheckConfig
 	}
 	return nil
 }
 
-// AlicloudFunctionHealthCheckConfig defines an HTTP health check used by
+// AliCloudFunctionHealthCheckConfig defines an HTTP health check used by
 // both custom container and custom runtime configurations to verify that
 // the function instance is ready to serve traffic.
-type AlicloudFunctionHealthCheckConfig struct {
+type AliCloudFunctionHealthCheckConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Seconds to wait after instance start before the first health check.
 	// Range: 0-120.
@@ -732,20 +732,20 @@ type AlicloudFunctionHealthCheckConfig struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AlicloudFunctionHealthCheckConfig) Reset() {
-	*x = AlicloudFunctionHealthCheckConfig{}
+func (x *AliCloudFunctionHealthCheckConfig) Reset() {
+	*x = AliCloudFunctionHealthCheckConfig{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudFunctionHealthCheckConfig) String() string {
+func (x *AliCloudFunctionHealthCheckConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudFunctionHealthCheckConfig) ProtoMessage() {}
+func (*AliCloudFunctionHealthCheckConfig) ProtoMessage() {}
 
-func (x *AlicloudFunctionHealthCheckConfig) ProtoReflect() protoreflect.Message {
+func (x *AliCloudFunctionHealthCheckConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -757,82 +757,82 @@ func (x *AlicloudFunctionHealthCheckConfig) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudFunctionHealthCheckConfig.ProtoReflect.Descriptor instead.
-func (*AlicloudFunctionHealthCheckConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudFunctionHealthCheckConfig.ProtoReflect.Descriptor instead.
+func (*AliCloudFunctionHealthCheckConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *AlicloudFunctionHealthCheckConfig) GetInitialDelaySeconds() int32 {
+func (x *AliCloudFunctionHealthCheckConfig) GetInitialDelaySeconds() int32 {
 	if x != nil && x.InitialDelaySeconds != nil {
 		return *x.InitialDelaySeconds
 	}
 	return 0
 }
 
-func (x *AlicloudFunctionHealthCheckConfig) GetTimeoutSeconds() int32 {
+func (x *AliCloudFunctionHealthCheckConfig) GetTimeoutSeconds() int32 {
 	if x != nil && x.TimeoutSeconds != nil {
 		return *x.TimeoutSeconds
 	}
 	return 0
 }
 
-func (x *AlicloudFunctionHealthCheckConfig) GetHttpGetUrl() string {
+func (x *AliCloudFunctionHealthCheckConfig) GetHttpGetUrl() string {
 	if x != nil {
 		return x.HttpGetUrl
 	}
 	return ""
 }
 
-func (x *AlicloudFunctionHealthCheckConfig) GetPeriodSeconds() int32 {
+func (x *AliCloudFunctionHealthCheckConfig) GetPeriodSeconds() int32 {
 	if x != nil && x.PeriodSeconds != nil {
 		return *x.PeriodSeconds
 	}
 	return 0
 }
 
-func (x *AlicloudFunctionHealthCheckConfig) GetFailureThreshold() int32 {
+func (x *AliCloudFunctionHealthCheckConfig) GetFailureThreshold() int32 {
 	if x != nil && x.FailureThreshold != nil {
 		return *x.FailureThreshold
 	}
 	return 0
 }
 
-func (x *AlicloudFunctionHealthCheckConfig) GetSuccessThreshold() int32 {
+func (x *AliCloudFunctionHealthCheckConfig) GetSuccessThreshold() int32 {
 	if x != nil && x.SuccessThreshold != nil {
 		return *x.SuccessThreshold
 	}
 	return 0
 }
 
-// AlicloudFunctionInstanceLifecycleConfig defines initializer and pre-stop
+// AliCloudFunctionInstanceLifecycleConfig defines initializer and pre-stop
 // hooks that run at instance creation and destruction.
-type AlicloudFunctionInstanceLifecycleConfig struct {
+type AliCloudFunctionInstanceLifecycleConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Initializer hook. Runs once when a new instance is created, before it
 	// receives any invocations. Use for warm-up tasks (loading models,
 	// opening DB connections).
-	Initializer *AlicloudFunctionLifecycleHook `protobuf:"bytes,1,opt,name=initializer,proto3" json:"initializer,omitempty"`
+	Initializer *AliCloudFunctionLifecycleHook `protobuf:"bytes,1,opt,name=initializer,proto3" json:"initializer,omitempty"`
 	// Pre-stop hook. Runs before an idle instance is reclaimed. Use for
 	// cleanup tasks (flushing buffers, closing connections).
-	PreStop       *AlicloudFunctionLifecycleHook `protobuf:"bytes,2,opt,name=pre_stop,json=preStop,proto3" json:"pre_stop,omitempty"`
+	PreStop       *AliCloudFunctionLifecycleHook `protobuf:"bytes,2,opt,name=pre_stop,json=preStop,proto3" json:"pre_stop,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudFunctionInstanceLifecycleConfig) Reset() {
-	*x = AlicloudFunctionInstanceLifecycleConfig{}
+func (x *AliCloudFunctionInstanceLifecycleConfig) Reset() {
+	*x = AliCloudFunctionInstanceLifecycleConfig{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudFunctionInstanceLifecycleConfig) String() string {
+func (x *AliCloudFunctionInstanceLifecycleConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudFunctionInstanceLifecycleConfig) ProtoMessage() {}
+func (*AliCloudFunctionInstanceLifecycleConfig) ProtoMessage() {}
 
-func (x *AlicloudFunctionInstanceLifecycleConfig) ProtoReflect() protoreflect.Message {
+func (x *AliCloudFunctionInstanceLifecycleConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -844,28 +844,28 @@ func (x *AlicloudFunctionInstanceLifecycleConfig) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudFunctionInstanceLifecycleConfig.ProtoReflect.Descriptor instead.
-func (*AlicloudFunctionInstanceLifecycleConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudFunctionInstanceLifecycleConfig.ProtoReflect.Descriptor instead.
+func (*AliCloudFunctionInstanceLifecycleConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *AlicloudFunctionInstanceLifecycleConfig) GetInitializer() *AlicloudFunctionLifecycleHook {
+func (x *AliCloudFunctionInstanceLifecycleConfig) GetInitializer() *AliCloudFunctionLifecycleHook {
 	if x != nil {
 		return x.Initializer
 	}
 	return nil
 }
 
-func (x *AlicloudFunctionInstanceLifecycleConfig) GetPreStop() *AlicloudFunctionLifecycleHook {
+func (x *AliCloudFunctionInstanceLifecycleConfig) GetPreStop() *AliCloudFunctionLifecycleHook {
 	if x != nil {
 		return x.PreStop
 	}
 	return nil
 }
 
-// AlicloudFunctionLifecycleHook defines a single lifecycle hook with a
+// AliCloudFunctionLifecycleHook defines a single lifecycle hook with a
 // handler entry point and a timeout.
-type AlicloudFunctionLifecycleHook struct {
+type AliCloudFunctionLifecycleHook struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Entry point for the hook (e.g., "index.initializer").
 	Handler string `protobuf:"bytes,1,opt,name=handler,proto3" json:"handler,omitempty"`
@@ -879,20 +879,20 @@ type AlicloudFunctionLifecycleHook struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudFunctionLifecycleHook) Reset() {
-	*x = AlicloudFunctionLifecycleHook{}
+func (x *AliCloudFunctionLifecycleHook) Reset() {
+	*x = AliCloudFunctionLifecycleHook{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudFunctionLifecycleHook) String() string {
+func (x *AliCloudFunctionLifecycleHook) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudFunctionLifecycleHook) ProtoMessage() {}
+func (*AliCloudFunctionLifecycleHook) ProtoMessage() {}
 
-func (x *AlicloudFunctionLifecycleHook) ProtoReflect() protoreflect.Message {
+func (x *AliCloudFunctionLifecycleHook) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -904,61 +904,61 @@ func (x *AlicloudFunctionLifecycleHook) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudFunctionLifecycleHook.ProtoReflect.Descriptor instead.
-func (*AlicloudFunctionLifecycleHook) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudFunctionLifecycleHook.ProtoReflect.Descriptor instead.
+func (*AliCloudFunctionLifecycleHook) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDescGZIP(), []int{8}
 }
 
-func (x *AlicloudFunctionLifecycleHook) GetHandler() string {
+func (x *AliCloudFunctionLifecycleHook) GetHandler() string {
 	if x != nil {
 		return x.Handler
 	}
 	return ""
 }
 
-func (x *AlicloudFunctionLifecycleHook) GetTimeout() int32 {
+func (x *AliCloudFunctionLifecycleHook) GetTimeout() int32 {
 	if x != nil && x.Timeout != nil {
 		return *x.Timeout
 	}
 	return 0
 }
 
-func (x *AlicloudFunctionLifecycleHook) GetCommand() []string {
+func (x *AliCloudFunctionLifecycleHook) GetCommand() []string {
 	if x != nil {
 		return x.Command
 	}
 	return nil
 }
 
-// AlicloudFunctionNasConfig mounts a NAS file system into the function
+// AliCloudFunctionNasConfig mounts a NAS file system into the function
 // instance. Requires vpc_config to be set because NAS mount targets are
 // VPC-internal.
-type AlicloudFunctionNasConfig struct {
+type AliCloudFunctionNasConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// POSIX user ID for file access. Typically 0 (root) or a custom UID.
 	UserId *int32 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`
 	// POSIX group ID for file access.
 	GroupId *int32 `protobuf:"varint,2,opt,name=group_id,json=groupId,proto3,oneof" json:"group_id,omitempty"`
 	// NAS mount points to attach to the function instance.
-	MountPoints   []*AlicloudFunctionNasMountPoint `protobuf:"bytes,3,rep,name=mount_points,json=mountPoints,proto3" json:"mount_points,omitempty"`
+	MountPoints   []*AliCloudFunctionNasMountPoint `protobuf:"bytes,3,rep,name=mount_points,json=mountPoints,proto3" json:"mount_points,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudFunctionNasConfig) Reset() {
-	*x = AlicloudFunctionNasConfig{}
+func (x *AliCloudFunctionNasConfig) Reset() {
+	*x = AliCloudFunctionNasConfig{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudFunctionNasConfig) String() string {
+func (x *AliCloudFunctionNasConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudFunctionNasConfig) ProtoMessage() {}
+func (*AliCloudFunctionNasConfig) ProtoMessage() {}
 
-func (x *AlicloudFunctionNasConfig) ProtoReflect() protoreflect.Message {
+func (x *AliCloudFunctionNasConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -970,34 +970,34 @@ func (x *AlicloudFunctionNasConfig) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudFunctionNasConfig.ProtoReflect.Descriptor instead.
-func (*AlicloudFunctionNasConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudFunctionNasConfig.ProtoReflect.Descriptor instead.
+func (*AliCloudFunctionNasConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *AlicloudFunctionNasConfig) GetUserId() int32 {
+func (x *AliCloudFunctionNasConfig) GetUserId() int32 {
 	if x != nil && x.UserId != nil {
 		return *x.UserId
 	}
 	return 0
 }
 
-func (x *AlicloudFunctionNasConfig) GetGroupId() int32 {
+func (x *AliCloudFunctionNasConfig) GetGroupId() int32 {
 	if x != nil && x.GroupId != nil {
 		return *x.GroupId
 	}
 	return 0
 }
 
-func (x *AlicloudFunctionNasConfig) GetMountPoints() []*AlicloudFunctionNasMountPoint {
+func (x *AliCloudFunctionNasConfig) GetMountPoints() []*AliCloudFunctionNasMountPoint {
 	if x != nil {
 		return x.MountPoints
 	}
 	return nil
 }
 
-// AlicloudFunctionNasMountPoint defines a single NAS mount.
-type AlicloudFunctionNasMountPoint struct {
+// AliCloudFunctionNasMountPoint defines a single NAS mount.
+type AliCloudFunctionNasMountPoint struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// NAS mount target address.
 	// Format: "{file-system-id}-{mount-target-id}.{region}.nas.aliyuncs.com:/{path}"
@@ -1011,20 +1011,20 @@ type AlicloudFunctionNasMountPoint struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudFunctionNasMountPoint) Reset() {
-	*x = AlicloudFunctionNasMountPoint{}
+func (x *AliCloudFunctionNasMountPoint) Reset() {
+	*x = AliCloudFunctionNasMountPoint{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudFunctionNasMountPoint) String() string {
+func (x *AliCloudFunctionNasMountPoint) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudFunctionNasMountPoint) ProtoMessage() {}
+func (*AliCloudFunctionNasMountPoint) ProtoMessage() {}
 
-func (x *AlicloudFunctionNasMountPoint) ProtoReflect() protoreflect.Message {
+func (x *AliCloudFunctionNasMountPoint) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1036,34 +1036,34 @@ func (x *AlicloudFunctionNasMountPoint) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudFunctionNasMountPoint.ProtoReflect.Descriptor instead.
-func (*AlicloudFunctionNasMountPoint) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudFunctionNasMountPoint.ProtoReflect.Descriptor instead.
+func (*AliCloudFunctionNasMountPoint) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDescGZIP(), []int{10}
 }
 
-func (x *AlicloudFunctionNasMountPoint) GetServerAddr() string {
+func (x *AliCloudFunctionNasMountPoint) GetServerAddr() string {
 	if x != nil {
 		return x.ServerAddr
 	}
 	return ""
 }
 
-func (x *AlicloudFunctionNasMountPoint) GetMountDir() string {
+func (x *AliCloudFunctionNasMountPoint) GetMountDir() string {
 	if x != nil {
 		return x.MountDir
 	}
 	return ""
 }
 
-func (x *AlicloudFunctionNasMountPoint) GetEnableTls() bool {
+func (x *AliCloudFunctionNasMountPoint) GetEnableTls() bool {
 	if x != nil && x.EnableTls != nil {
 		return *x.EnableTls
 	}
 	return false
 }
 
-// AlicloudFunctionGpuConfig enables GPU acceleration for AI/ML inference.
-type AlicloudFunctionGpuConfig struct {
+// AliCloudFunctionGpuConfig enables GPU acceleration for AI/ML inference.
+type AliCloudFunctionGpuConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// GPU memory in MB allocated to each function instance.
 	GpuMemorySize int32 `protobuf:"varint,1,opt,name=gpu_memory_size,json=gpuMemorySize,proto3" json:"gpu_memory_size,omitempty"`
@@ -1073,20 +1073,20 @@ type AlicloudFunctionGpuConfig struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudFunctionGpuConfig) Reset() {
-	*x = AlicloudFunctionGpuConfig{}
+func (x *AliCloudFunctionGpuConfig) Reset() {
+	*x = AliCloudFunctionGpuConfig{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudFunctionGpuConfig) String() string {
+func (x *AliCloudFunctionGpuConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudFunctionGpuConfig) ProtoMessage() {}
+func (*AliCloudFunctionGpuConfig) ProtoMessage() {}
 
-func (x *AlicloudFunctionGpuConfig) ProtoReflect() protoreflect.Message {
+func (x *AliCloudFunctionGpuConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1098,19 +1098,19 @@ func (x *AlicloudFunctionGpuConfig) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudFunctionGpuConfig.ProtoReflect.Descriptor instead.
-func (*AlicloudFunctionGpuConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudFunctionGpuConfig.ProtoReflect.Descriptor instead.
+func (*AliCloudFunctionGpuConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *AlicloudFunctionGpuConfig) GetGpuMemorySize() int32 {
+func (x *AliCloudFunctionGpuConfig) GetGpuMemorySize() int32 {
 	if x != nil {
 		return x.GpuMemorySize
 	}
 	return 0
 }
 
-func (x *AlicloudFunctionGpuConfig) GetGpuType() string {
+func (x *AliCloudFunctionGpuConfig) GetGpuType() string {
 	if x != nil {
 		return x.GpuType
 	}
@@ -1122,7 +1122,7 @@ var File_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto protorefle
 const file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"<org/openmcf/provider/alicloud/alicloudfunction/v1/spec.proto\x121org.openmcf.provider.alicloud.alicloudfunction.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x88\x16\n" +
-	"\x14AlicloudFunctionSpec\x12\"\n" +
+	"\x14AliCloudFunctionSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x122\n" +
 	"\rfunction_name\x18\x02 \x01(\tB\r\xbaH\n" +
@@ -1144,23 +1144,23 @@ const file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDesc 
 	"\x14instance_concurrency\x18\n" +
 	" \x01(\x05Bl\xbaHi\xba\x01f\n" +
 	"\x1ainstance_concurrency_range\x12.instance_concurrency must be between 1 and 200\x1a\x18this >= 1 && this <= 200H\x04R\x13instanceConcurrency\x88\x01\x01\x12[\n" +
-	"\x04code\x18\v \x01(\v2G.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionCodeR\x04code\x12c\n" +
+	"\x04code\x18\v \x01(\v2G.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionCodeR\x04code\x12c\n" +
 	"\x04role\x18\f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1b\x88\xd4a\xc2\x17\x92\xd4a\x12status.outputs.arnR\x04role\x12,\n" +
 	"\x0finternet_access\x18\r \x01(\bH\x05R\x0einternetAccess\x88\x01\x01\x12k\n" +
 	"\n" +
-	"vpc_config\x18\x0e \x01(\v2L.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionVpcConfigR\tvpcConfig\x12k\n" +
+	"vpc_config\x18\x0e \x01(\v2L.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionVpcConfigR\tvpcConfig\x12k\n" +
 	"\n" +
-	"log_config\x18\x0f \x01(\v2L.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionLogConfigR\tlogConfig\x12\x90\x01\n" +
-	"\x17custom_container_config\x18\x10 \x01(\v2X.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionCustomContainerConfigR\x15customContainerConfig\x12\x8a\x01\n" +
-	"\x15custom_runtime_config\x18\x11 \x01(\v2V.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionCustomRuntimeConfigR\x13customRuntimeConfig\x12\x96\x01\n" +
-	"\x19instance_lifecycle_config\x18\x12 \x01(\v2Z.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionInstanceLifecycleConfigR\x17instanceLifecycleConfig\x12k\n" +
+	"log_config\x18\x0f \x01(\v2L.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionLogConfigR\tlogConfig\x12\x90\x01\n" +
+	"\x17custom_container_config\x18\x10 \x01(\v2X.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionCustomContainerConfigR\x15customContainerConfig\x12\x8a\x01\n" +
+	"\x15custom_runtime_config\x18\x11 \x01(\v2V.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionCustomRuntimeConfigR\x13customRuntimeConfig\x12\x96\x01\n" +
+	"\x19instance_lifecycle_config\x18\x12 \x01(\v2Z.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionInstanceLifecycleConfigR\x17instanceLifecycleConfig\x12k\n" +
 	"\n" +
-	"nas_config\x18\x13 \x01(\v2L.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionNasConfigR\tnasConfig\x12k\n" +
+	"nas_config\x18\x13 \x01(\v2L.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionNasConfigR\tnasConfig\x12k\n" +
 	"\n" +
-	"gpu_config\x18\x14 \x01(\v2L.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionGpuConfigR\tgpuConfig\x12\x16\n" +
+	"gpu_config\x18\x14 \x01(\v2L.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionGpuConfigR\tgpuConfig\x12\x16\n" +
 	"\x06layers\x18\x15 \x03(\tR\x06layers\x12\x96\x01\n" +
-	"\x15environment_variables\x18\x16 \x03(\v2a.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec.EnvironmentVariablesEntryR\x14environmentVariables\x12e\n" +
-	"\x04tags\x18\x17 \x03(\v2Q.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec.TagsEntryR\x04tags\x12*\n" +
+	"\x15environment_variables\x18\x16 \x03(\v2a.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec.EnvironmentVariablesEntryR\x14environmentVariables\x12e\n" +
+	"\x04tags\x18\x17 \x03(\v2Q.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec.TagsEntryR\x04tags\x12*\n" +
 	"\x11resource_group_id\x18\x18 \x01(\tR\x0fresourceGroupId\x1aG\n" +
 	"\x19EnvironmentVariablesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -1176,17 +1176,17 @@ const file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDesc 
 	"_disk_sizeB\x17\n" +
 	"\x15_instance_concurrencyB\x12\n" +
 	"\x10_internet_access\"\x9d\x01\n" +
-	"\x14AlicloudFunctionCode\x12&\n" +
+	"\x14AliCloudFunctionCode\x12&\n" +
 	"\x0foss_bucket_name\x18\x01 \x01(\tR\rossBucketName\x12&\n" +
 	"\x0foss_object_name\x18\x02 \x01(\tR\rossObjectName\x12\x19\n" +
 	"\bzip_file\x18\x03 \x01(\tR\azipFile\x12\x1a\n" +
 	"\bchecksum\x18\x04 \x01(\tR\bchecksum\"\xe7\x02\n" +
-	"\x19AlicloudFunctionVpcConfig\x12i\n" +
+	"\x19AliCloudFunctionVpcConfig\x12i\n" +
 	"\x06vpc_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xcc\x17\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12S\n" +
 	"\vvswitch_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\n" +
 	"vswitchIds\x12\x89\x01\n" +
 	"\x11security_group_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xce\x17\x92\xd4a status.outputs.security_group_idR\x0fsecurityGroupId\"\x9a\x04\n" +
-	"\x19AlicloudFunctionLogConfig\x12r\n" +
+	"\x19AliCloudFunctionLogConfig\x12r\n" +
 	"\aproject\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\xb8\x17\x92\xd4a\x1bstatus.outputs.project_nameR\aproject\x12\x1a\n" +
 	"\blogstore\x18\x02 \x01(\tR\blogstore\x12\xaa\x01\n" +
 	"\x0elog_begin_rule\x18\x03 \x01(\tB\x7f\xbaH|\xba\x01y\n" +
@@ -1196,7 +1196,7 @@ const file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDesc 
 	"\x0f_log_begin_ruleB\x1a\n" +
 	"\x18_enable_instance_metricsB\x19\n" +
 	"\x17_enable_request_metrics\"\x90\x03\n" +
-	"%AlicloudFunctionCustomContainerConfig\x12\x83\x01\n" +
+	"%AliCloudFunctionCustomContainerConfig\x12\x83\x01\n" +
 	"\x05image\x18\x01 \x01(\tBm\xbaHj\xba\x01g\n" +
 	"\x17image_required_when_set\x12;image must not be empty when custom_container_config is set\x1a\x0fthis.size() > 0R\x05image\x12\x1e\n" +
 	"\n" +
@@ -1204,16 +1204,16 @@ const file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDesc 
 	"entrypoint\x12\x18\n" +
 	"\acommand\x18\x03 \x03(\tR\acommand\x12\x17\n" +
 	"\x04port\x18\x04 \x01(\x05H\x00R\x04port\x88\x01\x01\x12\x84\x01\n" +
-	"\x13health_check_config\x18\x05 \x01(\v2T.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionHealthCheckConfigR\x11healthCheckConfigB\a\n" +
+	"\x13health_check_config\x18\x05 \x01(\v2T.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionHealthCheckConfigR\x11healthCheckConfigB\a\n" +
 	"\x05_port\"\xdd\x02\n" +
-	"#AlicloudFunctionCustomRuntimeConfig\x12\x18\n" +
+	"#AliCloudFunctionCustomRuntimeConfig\x12\x18\n" +
 	"\acommand\x18\x01 \x03(\tR\acommand\x12\x12\n" +
 	"\x04args\x18\x02 \x03(\tR\x04args\x12x\n" +
 	"\x04port\x18\x03 \x01(\x05B_\xbaH\\\xba\x01Y\n" +
 	"\x19custom_runtime_port_range\x12 port must be between 0 and 65535\x1a\x1athis >= 0 && this <= 65535H\x00R\x04port\x88\x01\x01\x12\x84\x01\n" +
-	"\x13health_check_config\x18\x04 \x01(\v2T.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionHealthCheckConfigR\x11healthCheckConfigB\a\n" +
+	"\x13health_check_config\x18\x04 \x01(\v2T.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionHealthCheckConfigR\x11healthCheckConfigB\a\n" +
 	"\x05_port\"\xa8\a\n" +
-	"!AlicloudFunctionHealthCheckConfig\x12\x9f\x01\n" +
+	"!AliCloudFunctionHealthCheckConfig\x12\x9f\x01\n" +
 	"\x15initial_delay_seconds\x18\x01 \x01(\x05Bf\xbaHc\xba\x01`\n" +
 	"\x13initial_delay_range\x12/initial_delay_seconds must be between 0 and 120\x1a\x18this >= 0 && this <= 120H\x00R\x13initialDelaySeconds\x88\x01\x01\x12\x8c\x01\n" +
 	"\x0ftimeout_seconds\x18\x02 \x01(\x05B^\xbaH[\xba\x01X\n" +
@@ -1231,24 +1231,24 @@ const file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDesc 
 	"\x0f_period_secondsB\x14\n" +
 	"\x12_failure_thresholdB\x14\n" +
 	"\x12_success_threshold\"\x8a\x02\n" +
-	"'AlicloudFunctionInstanceLifecycleConfig\x12r\n" +
-	"\vinitializer\x18\x01 \x01(\v2P.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionLifecycleHookR\vinitializer\x12k\n" +
-	"\bpre_stop\x18\x02 \x01(\v2P.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionLifecycleHookR\apreStop\"\xe2\x01\n" +
-	"\x1dAlicloudFunctionLifecycleHook\x12\x18\n" +
+	"'AliCloudFunctionInstanceLifecycleConfig\x12r\n" +
+	"\vinitializer\x18\x01 \x01(\v2P.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionLifecycleHookR\vinitializer\x12k\n" +
+	"\bpre_stop\x18\x02 \x01(\v2P.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionLifecycleHookR\apreStop\"\xe2\x01\n" +
+	"\x1dAliCloudFunctionLifecycleHook\x12\x18\n" +
 	"\ahandler\x18\x01 \x01(\tR\ahandler\x12\x80\x01\n" +
 	"\atimeout\x18\x02 \x01(\x05Ba\xbaH^\xba\x01[\n" +
 	"\x1clifecycle_hook_timeout_range\x12!timeout must be between 0 and 900\x1a\x18this >= 0 && this <= 900H\x00R\atimeout\x88\x01\x01\x12\x18\n" +
 	"\acommand\x18\x03 \x03(\tR\acommandB\n" +
 	"\n" +
 	"\b_timeout\"\xe7\x01\n" +
-	"\x19AlicloudFunctionNasConfig\x12\x1c\n" +
+	"\x19AliCloudFunctionNasConfig\x12\x1c\n" +
 	"\auser_id\x18\x01 \x01(\x05H\x00R\x06userId\x88\x01\x01\x12\x1e\n" +
 	"\bgroup_id\x18\x02 \x01(\x05H\x01R\agroupId\x88\x01\x01\x12s\n" +
-	"\fmount_points\x18\x03 \x03(\v2P.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionNasMountPointR\vmountPointsB\n" +
+	"\fmount_points\x18\x03 \x03(\v2P.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionNasMountPointR\vmountPointsB\n" +
 	"\n" +
 	"\b_user_idB\v\n" +
 	"\t_group_id\"\xa8\x02\n" +
-	"\x1dAlicloudFunctionNasMountPoint\x12m\n" +
+	"\x1dAliCloudFunctionNasMountPoint\x12m\n" +
 	"\vserver_addr\x18\x01 \x01(\tBL\xbaHI\xba\x01F\n" +
 	"\x14server_addr_required\x12\x1dserver_addr must not be empty\x1a\x0fthis.size() > 0R\n" +
 	"serverAddr\x12e\n" +
@@ -1257,7 +1257,7 @@ const file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDesc 
 	"\n" +
 	"enable_tls\x18\x03 \x01(\bH\x00R\tenableTls\x88\x01\x01B\r\n" +
 	"\v_enable_tls\"\x94\x02\n" +
-	"\x19AlicloudFunctionGpuConfig\x12/\n" +
+	"\x19AliCloudFunctionGpuConfig\x12/\n" +
 	"\x0fgpu_memory_size\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\rgpuMemorySize\x12\xc5\x01\n" +
 	"\bgpu_type\x18\x02 \x01(\tB\xa9\x01\xbaH\xa5\x01\xba\x01\xa1\x01\n" +
 	"\x0egpu_type_valid\x12Jgpu_type must be one of: fc.gpu.tesla.1, fc.gpu.ampere.1, fc.gpu.ada.1, g1\x1aCthis in ['fc.gpu.tesla.1', 'fc.gpu.ampere.1', 'fc.gpu.ada.1', 'g1']R\agpuTypeB\x95\x03\n" +
@@ -1277,43 +1277,43 @@ func file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_rawDescGZ
 
 var file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_goTypes = []any{
-	(*AlicloudFunctionSpec)(nil),                    // 0: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec
-	(*AlicloudFunctionCode)(nil),                    // 1: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionCode
-	(*AlicloudFunctionVpcConfig)(nil),               // 2: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionVpcConfig
-	(*AlicloudFunctionLogConfig)(nil),               // 3: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionLogConfig
-	(*AlicloudFunctionCustomContainerConfig)(nil),   // 4: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionCustomContainerConfig
-	(*AlicloudFunctionCustomRuntimeConfig)(nil),     // 5: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionCustomRuntimeConfig
-	(*AlicloudFunctionHealthCheckConfig)(nil),       // 6: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionHealthCheckConfig
-	(*AlicloudFunctionInstanceLifecycleConfig)(nil), // 7: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionInstanceLifecycleConfig
-	(*AlicloudFunctionLifecycleHook)(nil),           // 8: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionLifecycleHook
-	(*AlicloudFunctionNasConfig)(nil),               // 9: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionNasConfig
-	(*AlicloudFunctionNasMountPoint)(nil),           // 10: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionNasMountPoint
-	(*AlicloudFunctionGpuConfig)(nil),               // 11: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionGpuConfig
-	nil,                                             // 12: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec.EnvironmentVariablesEntry
-	nil,                                             // 13: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec.TagsEntry
+	(*AliCloudFunctionSpec)(nil),                    // 0: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec
+	(*AliCloudFunctionCode)(nil),                    // 1: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionCode
+	(*AliCloudFunctionVpcConfig)(nil),               // 2: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionVpcConfig
+	(*AliCloudFunctionLogConfig)(nil),               // 3: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionLogConfig
+	(*AliCloudFunctionCustomContainerConfig)(nil),   // 4: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionCustomContainerConfig
+	(*AliCloudFunctionCustomRuntimeConfig)(nil),     // 5: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionCustomRuntimeConfig
+	(*AliCloudFunctionHealthCheckConfig)(nil),       // 6: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionHealthCheckConfig
+	(*AliCloudFunctionInstanceLifecycleConfig)(nil), // 7: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionInstanceLifecycleConfig
+	(*AliCloudFunctionLifecycleHook)(nil),           // 8: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionLifecycleHook
+	(*AliCloudFunctionNasConfig)(nil),               // 9: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionNasConfig
+	(*AliCloudFunctionNasMountPoint)(nil),           // 10: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionNasMountPoint
+	(*AliCloudFunctionGpuConfig)(nil),               // 11: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionGpuConfig
+	nil,                                             // 12: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec.EnvironmentVariablesEntry
+	nil,                                             // 13: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec.TagsEntry
 	(*v1.StringValueOrRef)(nil),                     // 14: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudfunction_v1_spec_proto_depIdxs = []int32{
-	1,  // 0: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec.code:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionCode
-	14, // 1: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec.role:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	2,  // 2: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec.vpc_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionVpcConfig
-	3,  // 3: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec.log_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionLogConfig
-	4,  // 4: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec.custom_container_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionCustomContainerConfig
-	5,  // 5: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec.custom_runtime_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionCustomRuntimeConfig
-	7,  // 6: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec.instance_lifecycle_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionInstanceLifecycleConfig
-	9,  // 7: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec.nas_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionNasConfig
-	11, // 8: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec.gpu_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionGpuConfig
-	12, // 9: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec.environment_variables:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec.EnvironmentVariablesEntry
-	13, // 10: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec.TagsEntry
-	14, // 11: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionVpcConfig.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	14, // 12: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionVpcConfig.vswitch_ids:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	14, // 13: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionVpcConfig.security_group_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	14, // 14: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionLogConfig.project:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	6,  // 15: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionCustomContainerConfig.health_check_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionHealthCheckConfig
-	6,  // 16: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionCustomRuntimeConfig.health_check_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionHealthCheckConfig
-	8,  // 17: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionInstanceLifecycleConfig.initializer:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionLifecycleHook
-	8,  // 18: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionInstanceLifecycleConfig.pre_stop:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionLifecycleHook
-	10, // 19: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionNasConfig.mount_points:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionNasMountPoint
+	1,  // 0: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec.code:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionCode
+	14, // 1: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec.role:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	2,  // 2: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec.vpc_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionVpcConfig
+	3,  // 3: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec.log_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionLogConfig
+	4,  // 4: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec.custom_container_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionCustomContainerConfig
+	5,  // 5: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec.custom_runtime_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionCustomRuntimeConfig
+	7,  // 6: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec.instance_lifecycle_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionInstanceLifecycleConfig
+	9,  // 7: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec.nas_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionNasConfig
+	11, // 8: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec.gpu_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionGpuConfig
+	12, // 9: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec.environment_variables:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec.EnvironmentVariablesEntry
+	13, // 10: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec.TagsEntry
+	14, // 11: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionVpcConfig.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	14, // 12: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionVpcConfig.vswitch_ids:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	14, // 13: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionVpcConfig.security_group_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	14, // 14: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionLogConfig.project:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	6,  // 15: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionCustomContainerConfig.health_check_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionHealthCheckConfig
+	6,  // 16: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionCustomRuntimeConfig.health_check_config:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionHealthCheckConfig
+	8,  // 17: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionInstanceLifecycleConfig.initializer:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionLifecycleHook
+	8,  // 18: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionInstanceLifecycleConfig.pre_stop:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionLifecycleHook
+	10, // 19: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionNasConfig.mount_points:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionNasMountPoint
 	20, // [20:20] is the sub-list for method output_type
 	20, // [20:20] is the sub-list for method input_type
 	20, // [20:20] is the sub-list for extension type_name

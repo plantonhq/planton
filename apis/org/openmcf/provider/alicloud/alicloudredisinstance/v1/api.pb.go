@@ -24,7 +24,7 @@ const (
 )
 
 // alicloud-redis-instance
-type AlicloudRedisInstance struct {
+type AliCloudRedisInstance struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
@@ -33,27 +33,27 @@ type AlicloudRedisInstance struct {
 	// metadata
 	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
-	Spec *AlicloudRedisInstanceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec *AliCloudRedisInstanceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
-	Status        *AlicloudRedisInstanceStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *AliCloudRedisInstanceStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudRedisInstance) Reset() {
-	*x = AlicloudRedisInstance{}
+func (x *AliCloudRedisInstance) Reset() {
+	*x = AliCloudRedisInstance{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRedisInstance) String() string {
+func (x *AliCloudRedisInstance) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRedisInstance) ProtoMessage() {}
+func (*AliCloudRedisInstance) ProtoMessage() {}
 
-func (x *AlicloudRedisInstance) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRedisInstance) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AlicloudRedisInstance) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRedisInstance.ProtoReflect.Descriptor instead.
-func (*AlicloudRedisInstance) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRedisInstance.ProtoReflect.Descriptor instead.
+func (*AliCloudRedisInstance) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudRedisInstance) GetApiVersion() string {
+func (x *AliCloudRedisInstance) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstance) GetKind() string {
+func (x *AliCloudRedisInstance) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AlicloudRedisInstance) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AliCloudRedisInstance) GetMetadata() *shared.CloudResourceMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *AlicloudRedisInstance) GetSpec() *AlicloudRedisInstanceSpec {
+func (x *AliCloudRedisInstance) GetSpec() *AliCloudRedisInstanceSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-func (x *AlicloudRedisInstance) GetStatus() *AlicloudRedisInstanceStatus {
+func (x *AliCloudRedisInstance) GetStatus() *AliCloudRedisInstanceStatus {
 	if x != nil {
 		return x.Status
 	}
@@ -106,28 +106,28 @@ func (x *AlicloudRedisInstance) GetStatus() *AlicloudRedisInstanceStatus {
 }
 
 // alicloud-redis-instance status
-type AlicloudRedisInstanceStatus struct {
+type AliCloudRedisInstanceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// stack-outputs
-	Outputs       *AlicloudRedisInstanceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AliCloudRedisInstanceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudRedisInstanceStatus) Reset() {
-	*x = AlicloudRedisInstanceStatus{}
+func (x *AliCloudRedisInstanceStatus) Reset() {
+	*x = AliCloudRedisInstanceStatus{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudRedisInstanceStatus) String() string {
+func (x *AliCloudRedisInstanceStatus) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudRedisInstanceStatus) ProtoMessage() {}
+func (*AliCloudRedisInstanceStatus) ProtoMessage() {}
 
-func (x *AlicloudRedisInstanceStatus) ProtoReflect() protoreflect.Message {
+func (x *AliCloudRedisInstanceStatus) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,12 +139,12 @@ func (x *AlicloudRedisInstanceStatus) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudRedisInstanceStatus.ProtoReflect.Descriptor instead.
-func (*AlicloudRedisInstanceStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudRedisInstanceStatus.ProtoReflect.Descriptor instead.
+func (*AliCloudRedisInstanceStatus) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudRedisInstanceStatus) GetOutputs() *AlicloudRedisInstanceStackOutputs {
+func (x *AliCloudRedisInstanceStatus) GetOutputs() *AliCloudRedisInstanceStackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -156,17 +156,17 @@ var File_org_openmcf_provider_alicloud_alicloudredisinstance_v1_api_proto protor
 const file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"@org/openmcf/provider/alicloud/alicloudredisinstance/v1/api.proto\x126org.openmcf.provider.alicloud.alicloudredisinstance.v1\x1a\x1bbuf/validate/validate.proto\x1aAorg/openmcf/provider/alicloud/alicloudredisinstance/v1/spec.proto\x1aJorg/openmcf/provider/alicloud/alicloudredisinstance/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xb5\x03\n" +
-	"\x15AlicloudRedisInstance\x12?\n" +
+	"\x15AliCloudRedisInstance\x12?\n" +
 	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
-	"\x15AlicloudRedisInstanceR\x04kind\x12M\n" +
+	"\x15AliCloudRedisInstanceR\x04kind\x12M\n" +
 	"\bmetadata\x18\x03 \x01(\v2).org.openmcf.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
-	"\x04spec\x18\x04 \x01(\v2Q.org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12k\n" +
-	"\x06status\x18\x05 \x01(\v2S.org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceStatusR\x06status\"\x92\x01\n" +
-	"\x1bAlicloudRedisInstanceStatus\x12s\n" +
-	"\aoutputs\x18\x01 \x01(\v2Y.org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceStackOutputsR\aoutputsB\xb7\x03\n" +
+	"\x04spec\x18\x04 \x01(\v2Q.org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12k\n" +
+	"\x06status\x18\x05 \x01(\v2S.org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceStatusR\x06status\"\x92\x01\n" +
+	"\x1bAliCloudRedisInstanceStatus\x12s\n" +
+	"\aoutputs\x18\x01 \x01(\v2Y.org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceStackOutputsR\aoutputsB\xb7\x03\n" +
 	":com.org.openmcf.provider.alicloud.alicloudredisinstance.v1B\bApiProtoP\x01Zpgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudredisinstance/v1;alicloudredisinstancev1\xa2\x02\x05OOPAA\xaa\x026Org.Openmcf.Provider.Alicloud.Alicloudredisinstance.V1\xca\x026Org\\Openmcf\\Provider\\Alicloud\\Alicloudredisinstance\\V1\xe2\x02BOrg\\Openmcf\\Provider\\Alicloud\\Alicloudredisinstance\\V1\\GPBMetadata\xea\x02;Org::Openmcf::Provider::Alicloud::Alicloudredisinstance::V1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_api_proto_rawDe
 
 var file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_api_proto_goTypes = []any{
-	(*AlicloudRedisInstance)(nil),             // 0: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstance
-	(*AlicloudRedisInstanceStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceStatus
+	(*AliCloudRedisInstance)(nil),             // 0: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstance
+	(*AliCloudRedisInstanceStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceStatus
 	(*shared.CloudResourceMetadata)(nil),      // 2: org.openmcf.shared.CloudResourceMetadata
-	(*AlicloudRedisInstanceSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceSpec
-	(*AlicloudRedisInstanceStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceStackOutputs
+	(*AliCloudRedisInstanceSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceSpec
+	(*AliCloudRedisInstanceStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_api_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstance.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
-	3, // 1: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstance.spec:type_name -> org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceSpec
-	1, // 2: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstance.status:type_name -> org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceStatus
-	4, // 3: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudredisinstance.v1.AlicloudRedisInstanceStackOutputs
+	2, // 0: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstance.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
+	3, // 1: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstance.spec:type_name -> org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceSpec
+	1, // 2: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstance.status:type_name -> org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceStatus
+	4, // 3: org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceStackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

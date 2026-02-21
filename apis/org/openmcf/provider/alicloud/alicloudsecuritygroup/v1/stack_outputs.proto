@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package org.openmcf.provider.alicloud.alicloudsecuritygroup.v1;
 
-// AlicloudSecurityGroupStackOutputs captures the outputs from deploying an
+// AliCloudSecurityGroupStackOutputs captures the outputs from deploying an
 // Alibaba Cloud Security Group.
-message AlicloudSecurityGroupStackOutputs {
+message AliCloudSecurityGroupStackOutputs {
   // The security group ID assigned by Alibaba Cloud.
   // Referenced by downstream components (EcsInstance, AckManagedCluster, etc.)
   // via StringValueOrRef.

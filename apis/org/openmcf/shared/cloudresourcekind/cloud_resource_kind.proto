@@ -1572,7 +1572,7 @@ enum CloudResourceKind {
 
   // --- Monitoring ---
 
-  AlicloudLogProject = 3000 [(kind_meta) = {
+  AliCloudLogProject = 3000 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "aclog"
@@ -1580,13 +1580,13 @@ enum CloudResourceKind {
 
   // --- Identity ---
 
-  AlicloudRamRole = 3010 [(kind_meta) = {
+  AliCloudRamRole = 3010 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acramr"
   }];
 
-  AlicloudRamPolicy = 3011 [(kind_meta) = {
+  AliCloudRamPolicy = 3011 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acramp"
@@ -1594,49 +1594,49 @@ enum CloudResourceKind {
 
   // --- Networking ---
 
-  AlicloudVpc = 3020 [(kind_meta) = {
+  AliCloudVpc = 3020 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acvpc"
   }];
 
-  AlicloudVswitch = 3021 [(kind_meta) = {
+  AliCloudVswitch = 3021 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acvsw"
   }];
 
-  AlicloudSecurityGroup = 3022 [(kind_meta) = {
+  AliCloudSecurityGroup = 3022 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acsg"
   }];
 
-  AlicloudEipAddress = 3023 [(kind_meta) = {
+  AliCloudEipAddress = 3023 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "aceip"
   }];
 
-  AlicloudNatGateway = 3024 [(kind_meta) = {
+  AliCloudNatGateway = 3024 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acnat"
   }];
 
-  AlicloudApplicationLoadBalancer = 3025 [(kind_meta) = {
+  AliCloudApplicationLoadBalancer = 3025 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acalb"
   }];
 
-  AlicloudNetworkLoadBalancer = 3026 [(kind_meta) = {
+  AliCloudNetworkLoadBalancer = 3026 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acnlb"
   }];
 
-  AlicloudVpnGateway = 3027 [(kind_meta) = {
+  AliCloudVpnGateway = 3027 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acvpn"
@@ -1644,19 +1644,19 @@ enum CloudResourceKind {
 
   // --- DNS ---
 
-  AlicloudDnsZone = 3040 [(kind_meta) = {
+  AliCloudDnsZone = 3040 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acdz"
   }];
 
-  AlicloudDnsRecord = 3041 [(kind_meta) = {
+  AliCloudDnsRecord = 3041 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acdr"
   }];
 
-  AlicloudPrivateDnsZone = 3042 [(kind_meta) = {
+  AliCloudPrivateDnsZone = 3042 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acdpz"
@@ -1664,13 +1664,13 @@ enum CloudResourceKind {
 
   // --- Storage ---
 
-  AlicloudStorageBucket = 3050 [(kind_meta) = {
+  AliCloudStorageBucket = 3050 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acbkt"
   }];
 
-  AlicloudNasFileSystem = 3051 [(kind_meta) = {
+  AliCloudNasFileSystem = 3051 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acnas"
@@ -1678,7 +1678,7 @@ enum CloudResourceKind {
 
   // --- Security ---
 
-  AlicloudKmsKey = 3060 [(kind_meta) = {
+  AliCloudKmsKey = 3060 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "ackms"
@@ -1686,25 +1686,25 @@ enum CloudResourceKind {
 
   // --- Database ---
 
-  AlicloudRdsInstance = 3070 [(kind_meta) = {
+  AliCloudRdsInstance = 3070 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acrds"
   }];
 
-  AlicloudPolardbCluster = 3071 [(kind_meta) = {
+  AliCloudPolardbCluster = 3071 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acpdb"
   }];
 
-  AlicloudRedisInstance = 3072 [(kind_meta) = {
+  AliCloudRedisInstance = 3072 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acred"
   }];
 
-  AlicloudMongodbInstance = 3073 [(kind_meta) = {
+  AliCloudMongodbInstance = 3073 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acmdb"
@@ -1712,7 +1712,7 @@ enum CloudResourceKind {
 
   // --- Compute ---
 
-  AlicloudEcsInstance = 3080 [(kind_meta) = {
+  AliCloudEcsInstance = 3080 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acecs"
@@ -1720,19 +1720,19 @@ enum CloudResourceKind {
 
   // --- Containers ---
 
-  AlicloudContainerRegistry = 3090 [(kind_meta) = {
+  AliCloudContainerRegistry = 3090 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "accr"
   }];
 
-  AlicloudKubernetesCluster = 3091 [(kind_meta) = {
+  AliCloudKubernetesCluster = 3091 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acack"
   }];
 
-  AlicloudKubernetesNodePool = 3092 [(kind_meta) = {
+  AliCloudKubernetesNodePool = 3092 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acknp"
@@ -1740,7 +1740,7 @@ enum CloudResourceKind {
 
   // --- CDN ---
 
-  AlicloudCdnDomain = 3100 [(kind_meta) = {
+  AliCloudCdnDomain = 3100 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "accdn"
@@ -1748,13 +1748,13 @@ enum CloudResourceKind {
 
   // --- Serverless ---
 
-  AlicloudFunction = 3110 [(kind_meta) = {
+  AliCloudFunction = 3110 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acfc"
   }];
 
-  AlicloudSaeApplication = 3111 [(kind_meta) = {
+  AliCloudSaeApplication = 3111 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acsae"
@@ -1762,7 +1762,7 @@ enum CloudResourceKind {
 
   // --- Messaging ---
 
-  AlicloudRocketmqInstance = 3120 [(kind_meta) = {
+  AliCloudRocketmqInstance = 3120 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "acrmq"
@@ -1770,7 +1770,7 @@ enum CloudResourceKind {
 
   // --- Enterprise Networking ---
 
-  AlicloudCenInstance = 3130 [(kind_meta) = {
+  AliCloudCenInstance = 3130 [(kind_meta) = {
     provider: alicloud
     version: v1
     id_prefix: "accen"

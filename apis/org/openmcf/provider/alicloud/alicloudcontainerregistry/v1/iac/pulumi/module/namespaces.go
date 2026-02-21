@@ -15,7 +15,7 @@ func createNamespaces(
 	ctx *pulumi.Context,
 	provider *alicloud.Provider,
 	instance *cr.RegistryEnterpriseInstance,
-	namespaces []*alicloudcontainerregistryv1.AlicloudContainerRegistryNamespace,
+	namespaces []*alicloudcontainerregistryv1.AliCloudContainerRegistryNamespace,
 ) (pulumi.MapOutput, error) {
 	nsIdMap := pulumi.Map{}
 

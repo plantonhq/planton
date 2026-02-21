@@ -8,25 +8,25 @@ import "org/openmcf/provider/alicloud/alicloudeipaddress/v1/stack_outputs.proto"
 import "org/openmcf/shared/metadata.proto";
 
 // alicloud-eip-address
-message AlicloudEipAddress {
+message AliCloudEipAddress {
   // api-version
   string api_version = 1 [(buf.validate.field).string.const = 'alicloud.openmcf.org/v1'];
 
   // resource-kind
-  string kind = 2 [(buf.validate.field).string.const = 'AlicloudEipAddress'];
+  string kind = 2 [(buf.validate.field).string.const = 'AliCloudEipAddress'];
 
   // metadata
   org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
-  AlicloudEipAddressSpec spec = 4 [(buf.validate.field).required = true];
+  AliCloudEipAddressSpec spec = 4 [(buf.validate.field).required = true];
 
   // status
-  AlicloudEipAddressStatus status = 5;
+  AliCloudEipAddressStatus status = 5;
 }
 
 // alicloud-eip-address status
-message AlicloudEipAddressStatus {
+message AliCloudEipAddressStatus {
   // stack-outputs
-  AlicloudEipAddressStackOutputs outputs = 1;
+  AliCloudEipAddressStackOutputs outputs = 1;
 }

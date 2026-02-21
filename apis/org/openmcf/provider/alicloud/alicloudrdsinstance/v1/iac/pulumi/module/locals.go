@@ -9,19 +9,19 @@ import (
 )
 
 type Locals struct {
-	AlicloudRdsInstance *alicloudrdsinstancev1.AlicloudRdsInstance
+	AliCloudRdsInstance *alicloudrdsinstancev1.AliCloudRdsInstance
 	Tags                map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudrdsinstancev1.AlicloudRdsInstanceStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudrdsinstancev1.AliCloudRdsInstanceStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudRdsInstance = stackInput.Target
+	locals.AliCloudRdsInstance = stackInput.Target
 	target := stackInput.Target
 
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudRdsInstance.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudRdsInstance.String()),
 	}
 
 	if target.Metadata.Id != "" {
@@ -44,34 +44,34 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudrdsinstancev1.Ali
 }
 
 func instanceName(locals *Locals) string {
-	if locals.AlicloudRdsInstance.Spec.InstanceName != "" {
-		return locals.AlicloudRdsInstance.Spec.InstanceName
+	if locals.AliCloudRdsInstance.Spec.InstanceName != "" {
+		return locals.AliCloudRdsInstance.Spec.InstanceName
 	}
-	return locals.AlicloudRdsInstance.Metadata.Name
+	return locals.AliCloudRdsInstance.Metadata.Name
 }
 
-func instanceChargeType(spec *alicloudrdsinstancev1.AlicloudRdsInstanceSpec) string {
+func instanceChargeType(spec *alicloudrdsinstancev1.AliCloudRdsInstanceSpec) string {
 	if spec.InstanceChargeType != nil {
 		return *spec.InstanceChargeType
 	}
 	return "Postpaid"
 }
 
-func category(spec *alicloudrdsinstancev1.AlicloudRdsInstanceSpec) string {
+func category(spec *alicloudrdsinstancev1.AliCloudRdsInstanceSpec) string {
 	if spec.Category != nil {
 		return *spec.Category
 	}
 	return "HighAvailability"
 }
 
-func accountType(acct *alicloudrdsinstancev1.AlicloudRdsAccount) string {
+func accountType(acct *alicloudrdsinstancev1.AliCloudRdsAccount) string {
 	if acct.AccountType != nil {
 		return *acct.AccountType
 	}
 	return "Normal"
 }
 
-func privilege(priv *alicloudrdsinstancev1.AlicloudRdsAccountPrivilege) string {
+func privilege(priv *alicloudrdsinstancev1.AliCloudRdsAccountPrivilege) string {
 	if priv.Privilege != nil {
 		return *priv.Privilege
 	}

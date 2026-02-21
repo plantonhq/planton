@@ -24,12 +24,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudKubernetesClusterSpec defines the configuration for an Alibaba Cloud
+// AliCloudKubernetesClusterSpec defines the configuration for an Alibaba Cloud
 // ACK Managed Kubernetes cluster.
 //
 // ACK (Alibaba Cloud Container Service for Kubernetes) provides a fully managed
 // control plane. Worker nodes are managed separately through node pools
-// (AlicloudKubernetesNodePool), which have their own lifecycle.
+// (AliCloudKubernetesNodePool), which have their own lifecycle.
 //
 // This component wraps a single provider resource:
 //
@@ -46,7 +46,7 @@ const (
 // Billing: The cluster control plane itself is free for ack.standard; only
 // ack.pro.small incurs a management fee. Worker node costs are determined by
 // the node pool instance types.
-type AlicloudKubernetesClusterSpec struct {
+type AliCloudKubernetesClusterSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region for the cluster.
 	// Must match the region of the VSwitches in vswitch_ids.
@@ -103,7 +103,7 @@ type AlicloudKubernetesClusterSpec struct {
 	// Immutable after creation.
 	NodeCidrMask *int32 `protobuf:"varint,15,opt,name=node_cidr_mask,json=nodeCidrMask,proto3,oneof" json:"node_cidr_mask,omitempty"`
 	// Whether ACK should automatically create a NAT gateway for the cluster
-	// VPC. Set to false when you manage your own AlicloudNatGateway component
+	// VPC. Set to false when you manage your own AliCloudNatGateway component
 	// to avoid creating a duplicate NAT gateway.
 	// Default: true
 	NewNatGateway *bool `protobuf:"varint,16,opt,name=new_nat_gateway,json=newNatGateway,proto3,oneof" json:"new_nat_gateway,omitempty"`
@@ -153,16 +153,16 @@ type AlicloudKubernetesClusterSpec struct {
 	//
 	// Addons are only configurable at creation time. Post-creation management
 	// requires the alicloud_cs_kubernetes_addon resource.
-	Addons []*AlicloudKubernetesAddon `protobuf:"bytes,30,rep,name=addons,proto3" json:"addons,omitempty"`
+	Addons []*AliCloudKubernetesAddon `protobuf:"bytes,30,rep,name=addons,proto3" json:"addons,omitempty"`
 	// Control plane and audit logging configuration.
 	// When omitted, no control plane logs or audit logs are collected.
-	Logging *AlicloudKubernetesClusterLogging `protobuf:"bytes,40,opt,name=logging,proto3" json:"logging,omitempty"`
+	Logging *AliCloudKubernetesClusterLogging `protobuf:"bytes,40,opt,name=logging,proto3" json:"logging,omitempty"`
 	// Maintenance window for the cluster. When configured, ACK applies
 	// updates and patches only during the specified window.
-	MaintenanceWindow *AlicloudKubernetesClusterMaintenanceWindow `protobuf:"bytes,50,opt,name=maintenance_window,json=maintenanceWindow,proto3" json:"maintenance_window,omitempty"`
+	MaintenanceWindow *AliCloudKubernetesClusterMaintenanceWindow `protobuf:"bytes,50,opt,name=maintenance_window,json=maintenanceWindow,proto3" json:"maintenance_window,omitempty"`
 	// Automatic cluster version upgrade policy.
 	// Only takes effect when a maintenance_window is configured.
-	AutoUpgrade *AlicloudKubernetesClusterAutoUpgrade `protobuf:"bytes,51,opt,name=auto_upgrade,json=autoUpgrade,proto3" json:"auto_upgrade,omitempty"`
+	AutoUpgrade *AliCloudKubernetesClusterAutoUpgrade `protobuf:"bytes,51,opt,name=auto_upgrade,json=autoUpgrade,proto3" json:"auto_upgrade,omitempty"`
 	// Tags applied to the cluster and its auto-created resources.
 	Tags map[string]string `protobuf:"bytes,60,rep,name=tags,proto3" json:"tags,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Alibaba Cloud resource group ID for organizational grouping (per DD05).
@@ -174,20 +174,20 @@ type AlicloudKubernetesClusterSpec struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudKubernetesClusterSpec) Reset() {
-	*x = AlicloudKubernetesClusterSpec{}
+func (x *AliCloudKubernetesClusterSpec) Reset() {
+	*x = AliCloudKubernetesClusterSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKubernetesClusterSpec) String() string {
+func (x *AliCloudKubernetesClusterSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKubernetesClusterSpec) ProtoMessage() {}
+func (*AliCloudKubernetesClusterSpec) ProtoMessage() {}
 
-func (x *AlicloudKubernetesClusterSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKubernetesClusterSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -199,195 +199,195 @@ func (x *AlicloudKubernetesClusterSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKubernetesClusterSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudKubernetesClusterSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKubernetesClusterSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudKubernetesClusterSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetRegion() string {
+func (x *AliCloudKubernetesClusterSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetName() string {
+func (x *AliCloudKubernetesClusterSpec) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetVersion() string {
+func (x *AliCloudKubernetesClusterSpec) GetVersion() string {
 	if x != nil {
 		return x.Version
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetClusterSpec() string {
+func (x *AliCloudKubernetesClusterSpec) GetClusterSpec() string {
 	if x != nil && x.ClusterSpec != nil {
 		return *x.ClusterSpec
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetClusterDomain() string {
+func (x *AliCloudKubernetesClusterSpec) GetClusterDomain() string {
 	if x != nil {
 		return x.ClusterDomain
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetVswitchIds() []*v1.StringValueOrRef {
+func (x *AliCloudKubernetesClusterSpec) GetVswitchIds() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.VswitchIds
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetPodCidr() string {
+func (x *AliCloudKubernetesClusterSpec) GetPodCidr() string {
 	if x != nil {
 		return x.PodCidr
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetPodVswitchIds() []*v1.StringValueOrRef {
+func (x *AliCloudKubernetesClusterSpec) GetPodVswitchIds() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.PodVswitchIds
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetServiceCidr() string {
+func (x *AliCloudKubernetesClusterSpec) GetServiceCidr() string {
 	if x != nil {
 		return x.ServiceCidr
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetProxyMode() string {
+func (x *AliCloudKubernetesClusterSpec) GetProxyMode() string {
 	if x != nil && x.ProxyMode != nil {
 		return *x.ProxyMode
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetNodeCidrMask() int32 {
+func (x *AliCloudKubernetesClusterSpec) GetNodeCidrMask() int32 {
 	if x != nil && x.NodeCidrMask != nil {
 		return *x.NodeCidrMask
 	}
 	return 0
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetNewNatGateway() bool {
+func (x *AliCloudKubernetesClusterSpec) GetNewNatGateway() bool {
 	if x != nil && x.NewNatGateway != nil {
 		return *x.NewNatGateway
 	}
 	return false
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetSlbInternetEnabled() bool {
+func (x *AliCloudKubernetesClusterSpec) GetSlbInternetEnabled() bool {
 	if x != nil && x.SlbInternetEnabled != nil {
 		return *x.SlbInternetEnabled
 	}
 	return false
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetSecurityGroupId() *v1.StringValueOrRef {
+func (x *AliCloudKubernetesClusterSpec) GetSecurityGroupId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.SecurityGroupId
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetIsEnterpriseSecurityGroup() bool {
+func (x *AliCloudKubernetesClusterSpec) GetIsEnterpriseSecurityGroup() bool {
 	if x != nil && x.IsEnterpriseSecurityGroup != nil {
 		return *x.IsEnterpriseSecurityGroup
 	}
 	return false
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetEnableRrsa() bool {
+func (x *AliCloudKubernetesClusterSpec) GetEnableRrsa() bool {
 	if x != nil && x.EnableRrsa != nil {
 		return *x.EnableRrsa
 	}
 	return false
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetDeletionProtection() bool {
+func (x *AliCloudKubernetesClusterSpec) GetDeletionProtection() bool {
 	if x != nil && x.DeletionProtection != nil {
 		return *x.DeletionProtection
 	}
 	return false
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetEncryptionProviderKey() *v1.StringValueOrRef {
+func (x *AliCloudKubernetesClusterSpec) GetEncryptionProviderKey() *v1.StringValueOrRef {
 	if x != nil {
 		return x.EncryptionProviderKey
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetCustomSan() string {
+func (x *AliCloudKubernetesClusterSpec) GetCustomSan() string {
 	if x != nil {
 		return x.CustomSan
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetAddons() []*AlicloudKubernetesAddon {
+func (x *AliCloudKubernetesClusterSpec) GetAddons() []*AliCloudKubernetesAddon {
 	if x != nil {
 		return x.Addons
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetLogging() *AlicloudKubernetesClusterLogging {
+func (x *AliCloudKubernetesClusterSpec) GetLogging() *AliCloudKubernetesClusterLogging {
 	if x != nil {
 		return x.Logging
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetMaintenanceWindow() *AlicloudKubernetesClusterMaintenanceWindow {
+func (x *AliCloudKubernetesClusterSpec) GetMaintenanceWindow() *AliCloudKubernetesClusterMaintenanceWindow {
 	if x != nil {
 		return x.MaintenanceWindow
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetAutoUpgrade() *AlicloudKubernetesClusterAutoUpgrade {
+func (x *AliCloudKubernetesClusterSpec) GetAutoUpgrade() *AliCloudKubernetesClusterAutoUpgrade {
 	if x != nil {
 		return x.AutoUpgrade
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetTags() map[string]string {
+func (x *AliCloudKubernetesClusterSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetResourceGroupId() string {
+func (x *AliCloudKubernetesClusterSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterSpec) GetTimezone() string {
+func (x *AliCloudKubernetesClusterSpec) GetTimezone() string {
 	if x != nil {
 		return x.Timezone
 	}
 	return ""
 }
 
-// AlicloudKubernetesAddon defines a cluster addon to install during creation.
-type AlicloudKubernetesAddon struct {
+// AliCloudKubernetesAddon defines a cluster addon to install during creation.
+type AliCloudKubernetesAddon struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Addon name. Must match an ACK addon identifier.
 	// Examples: "flannel", "terway-eniip", "csi-plugin", "logtail-ds",
@@ -409,20 +409,20 @@ type AlicloudKubernetesAddon struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudKubernetesAddon) Reset() {
-	*x = AlicloudKubernetesAddon{}
+func (x *AliCloudKubernetesAddon) Reset() {
+	*x = AliCloudKubernetesAddon{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKubernetesAddon) String() string {
+func (x *AliCloudKubernetesAddon) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKubernetesAddon) ProtoMessage() {}
+func (*AliCloudKubernetesAddon) ProtoMessage() {}
 
-func (x *AlicloudKubernetesAddon) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKubernetesAddon) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -434,42 +434,42 @@ func (x *AlicloudKubernetesAddon) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKubernetesAddon.ProtoReflect.Descriptor instead.
-func (*AlicloudKubernetesAddon) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKubernetesAddon.ProtoReflect.Descriptor instead.
+func (*AliCloudKubernetesAddon) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudKubernetesAddon) GetName() string {
+func (x *AliCloudKubernetesAddon) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesAddon) GetConfig() string {
+func (x *AliCloudKubernetesAddon) GetConfig() string {
 	if x != nil {
 		return x.Config
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesAddon) GetVersion() string {
+func (x *AliCloudKubernetesAddon) GetVersion() string {
 	if x != nil {
 		return x.Version
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesAddon) GetDisabled() bool {
+func (x *AliCloudKubernetesAddon) GetDisabled() bool {
 	if x != nil {
 		return x.Disabled
 	}
 	return false
 }
 
-// AlicloudKubernetesClusterLogging groups control plane logging and
+// AliCloudKubernetesClusterLogging groups control plane logging and
 // Kubernetes audit logging configuration.
-type AlicloudKubernetesClusterLogging struct {
+type AliCloudKubernetesClusterLogging struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// SLS (Log Service) project for control plane component logs.
 	// If omitted, ACK auto-creates a project named "k8s-log-{cluster-id}".
@@ -492,20 +492,20 @@ type AlicloudKubernetesClusterLogging struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AlicloudKubernetesClusterLogging) Reset() {
-	*x = AlicloudKubernetesClusterLogging{}
+func (x *AliCloudKubernetesClusterLogging) Reset() {
+	*x = AliCloudKubernetesClusterLogging{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKubernetesClusterLogging) String() string {
+func (x *AliCloudKubernetesClusterLogging) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKubernetesClusterLogging) ProtoMessage() {}
+func (*AliCloudKubernetesClusterLogging) ProtoMessage() {}
 
-func (x *AlicloudKubernetesClusterLogging) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKubernetesClusterLogging) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -517,49 +517,49 @@ func (x *AlicloudKubernetesClusterLogging) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKubernetesClusterLogging.ProtoReflect.Descriptor instead.
-func (*AlicloudKubernetesClusterLogging) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKubernetesClusterLogging.ProtoReflect.Descriptor instead.
+func (*AliCloudKubernetesClusterLogging) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AlicloudKubernetesClusterLogging) GetControlPlaneLogProject() *v1.StringValueOrRef {
+func (x *AliCloudKubernetesClusterLogging) GetControlPlaneLogProject() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ControlPlaneLogProject
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesClusterLogging) GetControlPlaneLogTtl() string {
+func (x *AliCloudKubernetesClusterLogging) GetControlPlaneLogTtl() string {
 	if x != nil && x.ControlPlaneLogTtl != nil {
 		return *x.ControlPlaneLogTtl
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterLogging) GetControlPlaneLogComponents() []string {
+func (x *AliCloudKubernetesClusterLogging) GetControlPlaneLogComponents() []string {
 	if x != nil {
 		return x.ControlPlaneLogComponents
 	}
 	return nil
 }
 
-func (x *AlicloudKubernetesClusterLogging) GetAuditLogEnabled() bool {
+func (x *AliCloudKubernetesClusterLogging) GetAuditLogEnabled() bool {
 	if x != nil {
 		return x.AuditLogEnabled
 	}
 	return false
 }
 
-func (x *AlicloudKubernetesClusterLogging) GetAuditLogSlsProject() string {
+func (x *AliCloudKubernetesClusterLogging) GetAuditLogSlsProject() string {
 	if x != nil {
 		return x.AuditLogSlsProject
 	}
 	return ""
 }
 
-// AlicloudKubernetesClusterMaintenanceWindow defines a recurring time window
+// AliCloudKubernetesClusterMaintenanceWindow defines a recurring time window
 // during which ACK may apply cluster updates and patches.
-type AlicloudKubernetesClusterMaintenanceWindow struct {
+type AliCloudKubernetesClusterMaintenanceWindow struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Whether the maintenance window is enabled.
 	Enable bool `protobuf:"varint,1,opt,name=enable,proto3" json:"enable,omitempty"`
@@ -577,20 +577,20 @@ type AlicloudKubernetesClusterMaintenanceWindow struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudKubernetesClusterMaintenanceWindow) Reset() {
-	*x = AlicloudKubernetesClusterMaintenanceWindow{}
+func (x *AliCloudKubernetesClusterMaintenanceWindow) Reset() {
+	*x = AliCloudKubernetesClusterMaintenanceWindow{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKubernetesClusterMaintenanceWindow) String() string {
+func (x *AliCloudKubernetesClusterMaintenanceWindow) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKubernetesClusterMaintenanceWindow) ProtoMessage() {}
+func (*AliCloudKubernetesClusterMaintenanceWindow) ProtoMessage() {}
 
-func (x *AlicloudKubernetesClusterMaintenanceWindow) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKubernetesClusterMaintenanceWindow) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -602,42 +602,42 @@ func (x *AlicloudKubernetesClusterMaintenanceWindow) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKubernetesClusterMaintenanceWindow.ProtoReflect.Descriptor instead.
-func (*AlicloudKubernetesClusterMaintenanceWindow) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKubernetesClusterMaintenanceWindow.ProtoReflect.Descriptor instead.
+func (*AliCloudKubernetesClusterMaintenanceWindow) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *AlicloudKubernetesClusterMaintenanceWindow) GetEnable() bool {
+func (x *AliCloudKubernetesClusterMaintenanceWindow) GetEnable() bool {
 	if x != nil {
 		return x.Enable
 	}
 	return false
 }
 
-func (x *AlicloudKubernetesClusterMaintenanceWindow) GetMaintenanceTime() string {
+func (x *AliCloudKubernetesClusterMaintenanceWindow) GetMaintenanceTime() string {
 	if x != nil {
 		return x.MaintenanceTime
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterMaintenanceWindow) GetDuration() string {
+func (x *AliCloudKubernetesClusterMaintenanceWindow) GetDuration() string {
 	if x != nil {
 		return x.Duration
 	}
 	return ""
 }
 
-func (x *AlicloudKubernetesClusterMaintenanceWindow) GetWeeklyPeriod() string {
+func (x *AliCloudKubernetesClusterMaintenanceWindow) GetWeeklyPeriod() string {
 	if x != nil {
 		return x.WeeklyPeriod
 	}
 	return ""
 }
 
-// AlicloudKubernetesClusterAutoUpgrade defines the automatic cluster version
+// AliCloudKubernetesClusterAutoUpgrade defines the automatic cluster version
 // upgrade policy. Only takes effect when a maintenance window is configured.
-type AlicloudKubernetesClusterAutoUpgrade struct {
+type AliCloudKubernetesClusterAutoUpgrade struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Whether automatic cluster version upgrades are enabled.
 	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
@@ -650,20 +650,20 @@ type AlicloudKubernetesClusterAutoUpgrade struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudKubernetesClusterAutoUpgrade) Reset() {
-	*x = AlicloudKubernetesClusterAutoUpgrade{}
+func (x *AliCloudKubernetesClusterAutoUpgrade) Reset() {
+	*x = AliCloudKubernetesClusterAutoUpgrade{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudKubernetesClusterAutoUpgrade) String() string {
+func (x *AliCloudKubernetesClusterAutoUpgrade) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudKubernetesClusterAutoUpgrade) ProtoMessage() {}
+func (*AliCloudKubernetesClusterAutoUpgrade) ProtoMessage() {}
 
-func (x *AlicloudKubernetesClusterAutoUpgrade) ProtoReflect() protoreflect.Message {
+func (x *AliCloudKubernetesClusterAutoUpgrade) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -675,19 +675,19 @@ func (x *AlicloudKubernetesClusterAutoUpgrade) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudKubernetesClusterAutoUpgrade.ProtoReflect.Descriptor instead.
-func (*AlicloudKubernetesClusterAutoUpgrade) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudKubernetesClusterAutoUpgrade.ProtoReflect.Descriptor instead.
+func (*AliCloudKubernetesClusterAutoUpgrade) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *AlicloudKubernetesClusterAutoUpgrade) GetEnabled() bool {
+func (x *AliCloudKubernetesClusterAutoUpgrade) GetEnabled() bool {
 	if x != nil {
 		return x.Enabled
 	}
 	return false
 }
 
-func (x *AlicloudKubernetesClusterAutoUpgrade) GetChannel() string {
+func (x *AliCloudKubernetesClusterAutoUpgrade) GetChannel() string {
 	if x != nil && x.Channel != nil {
 		return *x.Channel
 	}
@@ -699,7 +699,7 @@ var File_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto p
 const file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"Eorg/openmcf/provider/alicloud/alicloudkubernetescluster/v1/spec.proto\x12:org.openmcf.provider.alicloud.alicloudkubernetescluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x86\x14\n" +
-	"\x1dAlicloudKubernetesClusterSpec\x12\"\n" +
+	"\x1dAliCloudKubernetesClusterSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\x91\x01\n" +
 	"\x04name\x18\x02 \x01(\tB}\xbaHz\xba\x01w\n" +
@@ -730,11 +730,11 @@ const file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto
 	"\x17encryption_provider_key\x18\x18 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xf4\x17\x92\xd4a\x15status.outputs.key_idR\x15encryptionProviderKey\x12\x1d\n" +
 	"\n" +
 	"custom_san\x18\x19 \x01(\tR\tcustomSan\x12k\n" +
-	"\x06addons\x18\x1e \x03(\v2S.org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesAddonR\x06addons\x12v\n" +
-	"\alogging\x18( \x01(\v2\\.org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterLoggingR\alogging\x12\x95\x01\n" +
-	"\x12maintenance_window\x182 \x01(\v2f.org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterMaintenanceWindowR\x11maintenanceWindow\x12\x83\x01\n" +
-	"\fauto_upgrade\x183 \x01(\v2`.org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterAutoUpgradeR\vautoUpgrade\x12w\n" +
-	"\x04tags\x18< \x03(\v2c.org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterSpec.TagsEntryR\x04tags\x12*\n" +
+	"\x06addons\x18\x1e \x03(\v2S.org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesAddonR\x06addons\x12v\n" +
+	"\alogging\x18( \x01(\v2\\.org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterLoggingR\alogging\x12\x95\x01\n" +
+	"\x12maintenance_window\x182 \x01(\v2f.org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterMaintenanceWindowR\x11maintenanceWindow\x12\x83\x01\n" +
+	"\fauto_upgrade\x183 \x01(\v2`.org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterAutoUpgradeR\vautoUpgrade\x12w\n" +
+	"\x04tags\x18< \x03(\v2c.org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterSpec.TagsEntryR\x04tags\x12*\n" +
 	"\x11resource_group_id\x18= \x01(\tR\x0fresourceGroupId\x12\x1a\n" +
 	"\btimezone\x18> \x01(\tR\btimezone\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
@@ -748,25 +748,25 @@ const file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto
 	"\x1d_is_enterprise_security_groupB\x0e\n" +
 	"\f_enable_rrsaB\x16\n" +
 	"\x14_deletion_protection\"\x87\x01\n" +
-	"\x17AlicloudKubernetesAddon\x12\x1e\n" +
+	"\x17AliCloudKubernetesAddon\x12\x1e\n" +
 	"\x04name\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x12\x16\n" +
 	"\x06config\x18\x02 \x01(\tR\x06config\x12\x18\n" +
 	"\aversion\x18\x03 \x01(\tR\aversion\x12\x1a\n" +
 	"\bdisabled\x18\x04 \x01(\bR\bdisabled\"\xb2\x03\n" +
-	" AlicloudKubernetesClusterLogging\x12\x93\x01\n" +
+	" AliCloudKubernetesClusterLogging\x12\x93\x01\n" +
 	"\x19control_plane_log_project\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\xb8\x17\x92\xd4a\x1bstatus.outputs.project_nameR\x16controlPlaneLogProject\x12>\n" +
 	"\x15control_plane_log_ttl\x18\x02 \x01(\tB\x06\x8a\xa6\x1d\x0230H\x00R\x12controlPlaneLogTtl\x88\x01\x01\x12?\n" +
 	"\x1ccontrol_plane_log_components\x18\x03 \x03(\tR\x19controlPlaneLogComponents\x12*\n" +
 	"\x11audit_log_enabled\x18\x04 \x01(\bR\x0fauditLogEnabled\x121\n" +
 	"\x15audit_log_sls_project\x18\x05 \x01(\tR\x12auditLogSlsProjectB\x18\n" +
 	"\x16_control_plane_log_ttl\"\xb0\x01\n" +
-	"*AlicloudKubernetesClusterMaintenanceWindow\x12\x16\n" +
+	"*AliCloudKubernetesClusterMaintenanceWindow\x12\x16\n" +
 	"\x06enable\x18\x01 \x01(\bR\x06enable\x12)\n" +
 	"\x10maintenance_time\x18\x02 \x01(\tR\x0fmaintenanceTime\x12\x1a\n" +
 	"\bduration\x18\x03 \x01(\tR\bduration\x12#\n" +
 	"\rweekly_period\x18\x04 \x01(\tR\fweeklyPeriod\"\xf4\x01\n" +
-	"$AlicloudKubernetesClusterAutoUpgrade\x12\x18\n" +
+	"$AliCloudKubernetesClusterAutoUpgrade\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\xa5\x01\n" +
 	"\achannel\x18\x02 \x01(\tB\x85\x01\xbaH\x81\x01\xba\x01~\n" +
 	"\x1aauto_upgrade_channel_valid\x12,channel must be one of: patch, stable, rapid\x1a2this == '' || this in ['patch', 'stable', 'rapid']H\x00R\achannel\x88\x01\x01B\n" +
@@ -788,25 +788,25 @@ func file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_
 
 var file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_goTypes = []any{
-	(*AlicloudKubernetesClusterSpec)(nil),              // 0: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterSpec
-	(*AlicloudKubernetesAddon)(nil),                    // 1: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesAddon
-	(*AlicloudKubernetesClusterLogging)(nil),           // 2: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterLogging
-	(*AlicloudKubernetesClusterMaintenanceWindow)(nil), // 3: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterMaintenanceWindow
-	(*AlicloudKubernetesClusterAutoUpgrade)(nil),       // 4: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterAutoUpgrade
-	nil,                         // 5: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterSpec.TagsEntry
+	(*AliCloudKubernetesClusterSpec)(nil),              // 0: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterSpec
+	(*AliCloudKubernetesAddon)(nil),                    // 1: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesAddon
+	(*AliCloudKubernetesClusterLogging)(nil),           // 2: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterLogging
+	(*AliCloudKubernetesClusterMaintenanceWindow)(nil), // 3: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterMaintenanceWindow
+	(*AliCloudKubernetesClusterAutoUpgrade)(nil),       // 4: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterAutoUpgrade
+	nil,                         // 5: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterSpec.TagsEntry
 	(*v1.StringValueOrRef)(nil), // 6: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudkubernetescluster_v1_spec_proto_depIdxs = []int32{
-	6,  // 0: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterSpec.vswitch_ids:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	6,  // 1: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterSpec.pod_vswitch_ids:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	6,  // 2: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterSpec.security_group_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	6,  // 3: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterSpec.encryption_provider_key:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	1,  // 4: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterSpec.addons:type_name -> org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesAddon
-	2,  // 5: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterSpec.logging:type_name -> org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterLogging
-	3,  // 6: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterSpec.maintenance_window:type_name -> org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterMaintenanceWindow
-	4,  // 7: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterSpec.auto_upgrade:type_name -> org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterAutoUpgrade
-	5,  // 8: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterSpec.TagsEntry
-	6,  // 9: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AlicloudKubernetesClusterLogging.control_plane_log_project:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	6,  // 0: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterSpec.vswitch_ids:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	6,  // 1: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterSpec.pod_vswitch_ids:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	6,  // 2: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterSpec.security_group_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	6,  // 3: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterSpec.encryption_provider_key:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	1,  // 4: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterSpec.addons:type_name -> org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesAddon
+	2,  // 5: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterSpec.logging:type_name -> org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterLogging
+	3,  // 6: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterSpec.maintenance_window:type_name -> org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterMaintenanceWindow
+	4,  // 7: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterSpec.auto_upgrade:type_name -> org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterAutoUpgrade
+	5,  // 8: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterSpec.TagsEntry
+	6,  // 9: org.openmcf.provider.alicloud.alicloudkubernetescluster.v1.AliCloudKubernetesClusterLogging.control_plane_log_project:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
 	10, // [10:10] is the sub-list for method output_type
 	10, // [10:10] is the sub-list for method input_type
 	10, // [10:10] is the sub-list for extension type_name

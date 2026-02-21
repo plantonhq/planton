@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudEipAddressStackOutputs captures the outputs from allocating an
+// AliCloudEipAddressStackOutputs captures the outputs from allocating an
 // Alibaba Cloud Elastic IP Address.
-type AlicloudEipAddressStackOutputs struct {
+type AliCloudEipAddressStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The EIP allocation ID assigned by Alibaba Cloud.
 	// Referenced by downstream components (NatGateway, ALB, VPN, etc.)
@@ -36,20 +36,20 @@ type AlicloudEipAddressStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudEipAddressStackOutputs) Reset() {
-	*x = AlicloudEipAddressStackOutputs{}
+func (x *AliCloudEipAddressStackOutputs) Reset() {
+	*x = AliCloudEipAddressStackOutputs{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudEipAddressStackOutputs) String() string {
+func (x *AliCloudEipAddressStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudEipAddressStackOutputs) ProtoMessage() {}
+func (*AliCloudEipAddressStackOutputs) ProtoMessage() {}
 
-func (x *AlicloudEipAddressStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AliCloudEipAddressStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AlicloudEipAddressStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudEipAddressStackOutputs.ProtoReflect.Descriptor instead.
-func (*AlicloudEipAddressStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudEipAddressStackOutputs.ProtoReflect.Descriptor instead.
+func (*AliCloudEipAddressStackOutputs) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudEipAddressStackOutputs) GetEipId() string {
+func (x *AliCloudEipAddressStackOutputs) GetEipId() string {
 	if x != nil {
 		return x.EipId
 	}
 	return ""
 }
 
-func (x *AlicloudEipAddressStackOutputs) GetIpAddress() string {
+func (x *AliCloudEipAddressStackOutputs) GetIpAddress() string {
 	if x != nil {
 		return x.IpAddress
 	}
@@ -85,7 +85,7 @@ var File_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_outputs_proto
 const file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
 	"Gorg/openmcf/provider/alicloud/alicloudeipaddress/v1/stack_outputs.proto\x123org.openmcf.provider.alicloud.alicloudeipaddress.v1\"V\n" +
-	"\x1eAlicloudEipAddressStackOutputs\x12\x15\n" +
+	"\x1eAliCloudEipAddressStackOutputs\x12\x15\n" +
 	"\x06eip_id\x18\x01 \x01(\tR\x05eipId\x12\x1d\n" +
 	"\n" +
 	"ip_address\x18\x02 \x01(\tR\tipAddressB\xab\x03\n" +
@@ -105,7 +105,7 @@ func file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_outputs_prot
 
 var file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_outputs_proto_goTypes = []any{
-	(*AlicloudEipAddressStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudeipaddress.v1.AlicloudEipAddressStackOutputs
+	(*AliCloudEipAddressStackOutputs)(nil), // 0: org.openmcf.provider.alicloud.alicloudeipaddress.v1.AliCloudEipAddressStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudeipaddress_v1_stack_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

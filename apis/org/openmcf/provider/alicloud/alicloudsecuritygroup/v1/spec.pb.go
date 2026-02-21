@@ -24,7 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AlicloudSecurityGroupSpec defines the configuration for an Alibaba Cloud
+// AliCloudSecurityGroupSpec defines the configuration for an Alibaba Cloud
 // Security Group with bundled security rules.
 //
 // A security group is a stateful virtual firewall that controls inbound and
@@ -45,7 +45,7 @@ const (
 //
 //	Terraform: alicloud_security_group + alicloud_security_group_rule
 //	Pulumi:    ecs.SecurityGroup + ecs.SecurityGroupRule
-type AlicloudSecurityGroupSpec struct {
+type AliCloudSecurityGroupSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Alibaba Cloud region where the security group will be created.
 	// Must match the region of the VPC referenced by vpc_id.
@@ -81,25 +81,25 @@ type AlicloudSecurityGroupSpec struct {
 	// Rules are evaluated by priority within their direction. Lower priority
 	// numbers are evaluated first (1 = highest priority). The first matching
 	// rule wins.
-	Rules         []*AlicloudSecurityGroupRule `protobuf:"bytes,8,rep,name=rules,proto3" json:"rules,omitempty"`
+	Rules         []*AliCloudSecurityGroupRule `protobuf:"bytes,8,rep,name=rules,proto3" json:"rules,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudSecurityGroupSpec) Reset() {
-	*x = AlicloudSecurityGroupSpec{}
+func (x *AliCloudSecurityGroupSpec) Reset() {
+	*x = AliCloudSecurityGroupSpec{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudSecurityGroupSpec) String() string {
+func (x *AliCloudSecurityGroupSpec) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudSecurityGroupSpec) ProtoMessage() {}
+func (*AliCloudSecurityGroupSpec) ProtoMessage() {}
 
-func (x *AlicloudSecurityGroupSpec) ProtoReflect() protoreflect.Message {
+func (x *AliCloudSecurityGroupSpec) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -111,68 +111,68 @@ func (x *AlicloudSecurityGroupSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudSecurityGroupSpec.ProtoReflect.Descriptor instead.
-func (*AlicloudSecurityGroupSpec) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudSecurityGroupSpec.ProtoReflect.Descriptor instead.
+func (*AliCloudSecurityGroupSpec) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudSecurityGroupSpec) GetRegion() string {
+func (x *AliCloudSecurityGroupSpec) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AlicloudSecurityGroupSpec) GetVpcId() *v1.StringValueOrRef {
+func (x *AliCloudSecurityGroupSpec) GetVpcId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VpcId
 	}
 	return nil
 }
 
-func (x *AlicloudSecurityGroupSpec) GetSecurityGroupName() string {
+func (x *AliCloudSecurityGroupSpec) GetSecurityGroupName() string {
 	if x != nil {
 		return x.SecurityGroupName
 	}
 	return ""
 }
 
-func (x *AlicloudSecurityGroupSpec) GetDescription() string {
+func (x *AliCloudSecurityGroupSpec) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *AlicloudSecurityGroupSpec) GetInnerAccessPolicy() string {
+func (x *AliCloudSecurityGroupSpec) GetInnerAccessPolicy() string {
 	if x != nil && x.InnerAccessPolicy != nil {
 		return *x.InnerAccessPolicy
 	}
 	return ""
 }
 
-func (x *AlicloudSecurityGroupSpec) GetResourceGroupId() string {
+func (x *AliCloudSecurityGroupSpec) GetResourceGroupId() string {
 	if x != nil {
 		return x.ResourceGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudSecurityGroupSpec) GetTags() map[string]string {
+func (x *AliCloudSecurityGroupSpec) GetTags() map[string]string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-func (x *AlicloudSecurityGroupSpec) GetRules() []*AlicloudSecurityGroupRule {
+func (x *AliCloudSecurityGroupSpec) GetRules() []*AliCloudSecurityGroupRule {
 	if x != nil {
 		return x.Rules
 	}
 	return nil
 }
 
-// AlicloudSecurityGroupRule defines a single inbound or outbound traffic rule.
+// AliCloudSecurityGroupRule defines a single inbound or outbound traffic rule.
 //
 // For ingress rules, cidr_ip and source_security_group_id specify the traffic
 // source. For egress rules, cidr_ip specifies the traffic destination. At least
@@ -180,7 +180,7 @@ func (x *AlicloudSecurityGroupSpec) GetRules() []*AlicloudSecurityGroupRule {
 //
 // All rule fields except description are immutable after creation (ForceNew in
 // the provider). Changing any field requires destroying and recreating the rule.
-type AlicloudSecurityGroupRule struct {
+type AliCloudSecurityGroupRule struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Traffic direction: "ingress" for inbound, "egress" for outbound.
 	Type string `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
@@ -217,20 +217,20 @@ type AlicloudSecurityGroupRule struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudSecurityGroupRule) Reset() {
-	*x = AlicloudSecurityGroupRule{}
+func (x *AliCloudSecurityGroupRule) Reset() {
+	*x = AliCloudSecurityGroupRule{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudSecurityGroupRule) String() string {
+func (x *AliCloudSecurityGroupRule) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudSecurityGroupRule) ProtoMessage() {}
+func (*AliCloudSecurityGroupRule) ProtoMessage() {}
 
-func (x *AlicloudSecurityGroupRule) ProtoReflect() protoreflect.Message {
+func (x *AliCloudSecurityGroupRule) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -242,61 +242,61 @@ func (x *AlicloudSecurityGroupRule) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudSecurityGroupRule.ProtoReflect.Descriptor instead.
-func (*AlicloudSecurityGroupRule) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudSecurityGroupRule.ProtoReflect.Descriptor instead.
+func (*AliCloudSecurityGroupRule) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudSecurityGroupRule) GetType() string {
+func (x *AliCloudSecurityGroupRule) GetType() string {
 	if x != nil {
 		return x.Type
 	}
 	return ""
 }
 
-func (x *AlicloudSecurityGroupRule) GetIpProtocol() string {
+func (x *AliCloudSecurityGroupRule) GetIpProtocol() string {
 	if x != nil {
 		return x.IpProtocol
 	}
 	return ""
 }
 
-func (x *AlicloudSecurityGroupRule) GetPortRange() string {
+func (x *AliCloudSecurityGroupRule) GetPortRange() string {
 	if x != nil && x.PortRange != nil {
 		return *x.PortRange
 	}
 	return ""
 }
 
-func (x *AlicloudSecurityGroupRule) GetCidrIp() string {
+func (x *AliCloudSecurityGroupRule) GetCidrIp() string {
 	if x != nil {
 		return x.CidrIp
 	}
 	return ""
 }
 
-func (x *AlicloudSecurityGroupRule) GetSourceSecurityGroupId() string {
+func (x *AliCloudSecurityGroupRule) GetSourceSecurityGroupId() string {
 	if x != nil {
 		return x.SourceSecurityGroupId
 	}
 	return ""
 }
 
-func (x *AlicloudSecurityGroupRule) GetPriority() int32 {
+func (x *AliCloudSecurityGroupRule) GetPriority() int32 {
 	if x != nil && x.Priority != nil {
 		return *x.Priority
 	}
 	return 0
 }
 
-func (x *AlicloudSecurityGroupRule) GetPolicy() string {
+func (x *AliCloudSecurityGroupRule) GetPolicy() string {
 	if x != nil && x.Policy != nil {
 		return *x.Policy
 	}
 	return ""
 }
 
-func (x *AlicloudSecurityGroupRule) GetDescription() string {
+func (x *AliCloudSecurityGroupRule) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
@@ -308,7 +308,7 @@ var File_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_spec_proto proto
 const file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"Aorg/openmcf/provider/alicloud/alicloudsecuritygroup/v1/spec.proto\x126org.openmcf.provider.alicloud.alicloudsecuritygroup.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa8\x06\n" +
-	"\x19AlicloudSecurityGroupSpec\x12\"\n" +
+	"\x19AliCloudSecurityGroupSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12o\n" +
 	"\x06vpc_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xcc\x17\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12=\n" +
@@ -318,13 +318,13 @@ const file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_spec_proto_raw
 	"\x13inner_access_policy\x18\x05 \x01(\tB\x87\x01\xbaHz\xba\x01w\n" +
 	"\x19inner_access_policy_valid\x120inner_access_policy must be one of: Accept, Drop\x1a(this == '' || this in ['Accept', 'Drop']\x8a\xa6\x1d\x06AcceptH\x00R\x11innerAccessPolicy\x88\x01\x01\x12*\n" +
 	"\x11resource_group_id\x18\x06 \x01(\tR\x0fresourceGroupId\x12o\n" +
-	"\x04tags\x18\a \x03(\v2[.org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupSpec.TagsEntryR\x04tags\x12g\n" +
-	"\x05rules\x18\b \x03(\v2Q.org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupRuleR\x05rules\x1a7\n" +
+	"\x04tags\x18\a \x03(\v2[.org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupSpec.TagsEntryR\x04tags\x12g\n" +
+	"\x05rules\x18\b \x03(\v2Q.org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupRuleR\x05rules\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x16\n" +
 	"\x14_inner_access_policy\"\xb8\x05\n" +
-	"\x19AlicloudSecurityGroupRule\x12n\n" +
+	"\x19AliCloudSecurityGroupRule\x12n\n" +
 	"\x04type\x18\x01 \x01(\tBZ\xbaHW\xba\x01Q\n" +
 	"\n" +
 	"type_valid\x12$type must be one of: ingress, egress\x1a\x1dthis in ['ingress', 'egress']\xc8\x01\x01R\x04type\x12\xa2\x01\n" +
@@ -358,15 +358,15 @@ func file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_spec_proto_rawD
 
 var file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_spec_proto_goTypes = []any{
-	(*AlicloudSecurityGroupSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupSpec
-	(*AlicloudSecurityGroupRule)(nil), // 1: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupRule
-	nil,                               // 2: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupSpec.TagsEntry
+	(*AliCloudSecurityGroupSpec)(nil), // 0: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupSpec
+	(*AliCloudSecurityGroupRule)(nil), // 1: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupRule
+	nil,                               // 2: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupSpec.TagsEntry
 	(*v1.StringValueOrRef)(nil),       // 3: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_alicloud_alicloudsecuritygroup_v1_spec_proto_depIdxs = []int32{
-	3, // 0: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupSpec.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	2, // 1: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupSpec.TagsEntry
-	1, // 2: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupSpec.rules:type_name -> org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AlicloudSecurityGroupRule
+	3, // 0: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupSpec.vpc_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	2, // 1: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupSpec.tags:type_name -> org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupSpec.TagsEntry
+	1, // 2: org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupSpec.rules:type_name -> org.openmcf.provider.alicloud.alicloudsecuritygroup.v1.AliCloudSecurityGroupRule
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

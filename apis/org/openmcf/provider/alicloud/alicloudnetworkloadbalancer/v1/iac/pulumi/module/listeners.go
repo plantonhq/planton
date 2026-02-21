@@ -15,7 +15,7 @@ func listener(
 	provider *alicloud.Provider,
 	lb *nlb.LoadBalancer,
 	serverGroupIdByName map[string]pulumi.IDOutput,
-	l *alicloudnetworkloadbalancerv1.AlicloudNetworkLoadBalancerListener,
+	l *alicloudnetworkloadbalancerv1.AliCloudNetworkLoadBalancerListener,
 ) error {
 	sgIdOutput, ok := serverGroupIdByName[l.ServerGroupName]
 	if !ok {

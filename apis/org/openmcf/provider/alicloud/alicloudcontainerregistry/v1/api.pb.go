@@ -24,7 +24,7 @@ const (
 )
 
 // alicloud-container-registry
-type AlicloudContainerRegistry struct {
+type AliCloudContainerRegistry struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
@@ -33,27 +33,27 @@ type AlicloudContainerRegistry struct {
 	// metadata
 	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
-	Spec *AlicloudContainerRegistrySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec *AliCloudContainerRegistrySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
-	Status        *AlicloudContainerRegistryStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *AliCloudContainerRegistryStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudContainerRegistry) Reset() {
-	*x = AlicloudContainerRegistry{}
+func (x *AliCloudContainerRegistry) Reset() {
+	*x = AliCloudContainerRegistry{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudContainerRegistry) String() string {
+func (x *AliCloudContainerRegistry) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudContainerRegistry) ProtoMessage() {}
+func (*AliCloudContainerRegistry) ProtoMessage() {}
 
-func (x *AlicloudContainerRegistry) ProtoReflect() protoreflect.Message {
+func (x *AliCloudContainerRegistry) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AlicloudContainerRegistry) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudContainerRegistry.ProtoReflect.Descriptor instead.
-func (*AlicloudContainerRegistry) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudContainerRegistry.ProtoReflect.Descriptor instead.
+func (*AliCloudContainerRegistry) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudContainerRegistry) GetApiVersion() string {
+func (x *AliCloudContainerRegistry) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *AlicloudContainerRegistry) GetKind() string {
+func (x *AliCloudContainerRegistry) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AlicloudContainerRegistry) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AliCloudContainerRegistry) GetMetadata() *shared.CloudResourceMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *AlicloudContainerRegistry) GetSpec() *AlicloudContainerRegistrySpec {
+func (x *AliCloudContainerRegistry) GetSpec() *AliCloudContainerRegistrySpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-func (x *AlicloudContainerRegistry) GetStatus() *AlicloudContainerRegistryStatus {
+func (x *AliCloudContainerRegistry) GetStatus() *AliCloudContainerRegistryStatus {
 	if x != nil {
 		return x.Status
 	}
@@ -106,28 +106,28 @@ func (x *AlicloudContainerRegistry) GetStatus() *AlicloudContainerRegistryStatus
 }
 
 // alicloud-container-registry status
-type AlicloudContainerRegistryStatus struct {
+type AliCloudContainerRegistryStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// stack-outputs
-	Outputs       *AlicloudContainerRegistryStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AliCloudContainerRegistryStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudContainerRegistryStatus) Reset() {
-	*x = AlicloudContainerRegistryStatus{}
+func (x *AliCloudContainerRegistryStatus) Reset() {
+	*x = AliCloudContainerRegistryStatus{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudContainerRegistryStatus) String() string {
+func (x *AliCloudContainerRegistryStatus) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudContainerRegistryStatus) ProtoMessage() {}
+func (*AliCloudContainerRegistryStatus) ProtoMessage() {}
 
-func (x *AlicloudContainerRegistryStatus) ProtoReflect() protoreflect.Message {
+func (x *AliCloudContainerRegistryStatus) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,12 +139,12 @@ func (x *AlicloudContainerRegistryStatus) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudContainerRegistryStatus.ProtoReflect.Descriptor instead.
-func (*AlicloudContainerRegistryStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudContainerRegistryStatus.ProtoReflect.Descriptor instead.
+func (*AliCloudContainerRegistryStatus) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudContainerRegistryStatus) GetOutputs() *AlicloudContainerRegistryStackOutputs {
+func (x *AliCloudContainerRegistryStatus) GetOutputs() *AliCloudContainerRegistryStackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -156,17 +156,17 @@ var File_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_api_proto pr
 const file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"Dorg/openmcf/provider/alicloud/alicloudcontainerregistry/v1/api.proto\x12:org.openmcf.provider.alicloud.alicloudcontainerregistry.v1\x1a\x1bbuf/validate/validate.proto\x1aEorg/openmcf/provider/alicloud/alicloudcontainerregistry/v1/spec.proto\x1aNorg/openmcf/provider/alicloud/alicloudcontainerregistry/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xcd\x03\n" +
-	"\x19AlicloudContainerRegistry\x12?\n" +
+	"\x19AliCloudContainerRegistry\x12?\n" +
 	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x124\n" +
 	"\x04kind\x18\x02 \x01(\tB \xbaH\x1dr\x1b\n" +
-	"\x19AlicloudContainerRegistryR\x04kind\x12M\n" +
+	"\x19AliCloudContainerRegistryR\x04kind\x12M\n" +
 	"\bmetadata\x18\x03 \x01(\v2).org.openmcf.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12u\n" +
-	"\x04spec\x18\x04 \x01(\v2Y.org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistrySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12s\n" +
-	"\x06status\x18\x05 \x01(\v2[.org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistryStatusR\x06status\"\x9e\x01\n" +
-	"\x1fAlicloudContainerRegistryStatus\x12{\n" +
-	"\aoutputs\x18\x01 \x01(\v2a.org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistryStackOutputsR\aoutputsB\xd3\x03\n" +
+	"\x04spec\x18\x04 \x01(\v2Y.org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistrySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12s\n" +
+	"\x06status\x18\x05 \x01(\v2[.org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistryStatusR\x06status\"\x9e\x01\n" +
+	"\x1fAliCloudContainerRegistryStatus\x12{\n" +
+	"\aoutputs\x18\x01 \x01(\v2a.org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistryStackOutputsR\aoutputsB\xd3\x03\n" +
 	">com.org.openmcf.provider.alicloud.alicloudcontainerregistry.v1B\bApiProtoP\x01Zxgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudcontainerregistry/v1;alicloudcontainerregistryv1\xa2\x02\x05OOPAA\xaa\x02:Org.Openmcf.Provider.Alicloud.Alicloudcontainerregistry.V1\xca\x02:Org\\Openmcf\\Provider\\Alicloud\\Alicloudcontainerregistry\\V1\xe2\x02FOrg\\Openmcf\\Provider\\Alicloud\\Alicloudcontainerregistry\\V1\\GPBMetadata\xea\x02?Org::Openmcf::Provider::Alicloud::Alicloudcontainerregistry::V1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_api_proto_r
 
 var file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_api_proto_goTypes = []any{
-	(*AlicloudContainerRegistry)(nil),             // 0: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistry
-	(*AlicloudContainerRegistryStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistryStatus
+	(*AliCloudContainerRegistry)(nil),             // 0: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistry
+	(*AliCloudContainerRegistryStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistryStatus
 	(*shared.CloudResourceMetadata)(nil),          // 2: org.openmcf.shared.CloudResourceMetadata
-	(*AlicloudContainerRegistrySpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistrySpec
-	(*AlicloudContainerRegistryStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistryStackOutputs
+	(*AliCloudContainerRegistrySpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistrySpec
+	(*AliCloudContainerRegistryStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistryStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_api_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistry.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
-	3, // 1: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistry.spec:type_name -> org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistrySpec
-	1, // 2: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistry.status:type_name -> org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistryStatus
-	4, // 3: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistryStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AlicloudContainerRegistryStackOutputs
+	2, // 0: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistry.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
+	3, // 1: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistry.spec:type_name -> org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistrySpec
+	1, // 2: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistry.status:type_name -> org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistryStatus
+	4, // 3: org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistryStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistryStackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

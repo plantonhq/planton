@@ -8,10 +8,10 @@ import (
 	credentialv1 "github.com/plantonhq/openmcf/apis/org/openmcf/app/credential/v1"
 	alicloudv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud"
 	auth0v1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0"
-	ociv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci"
 	awsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
 	azurev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure"
 	gcpv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
+	ociv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci"
 	openstackv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack"
 	scalewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
@@ -156,8 +156,8 @@ func (r *CredentialResolver) ResolveProviderConfig(
 			}
 		}
 		return &credentialv1.CredentialProviderConfig{
-		Data: &credentialv1.CredentialProviderConfig_Openstack{
-			Openstack: cfg,
+			Data: &credentialv1.CredentialProviderConfig_Openstack{
+				Openstack: cfg,
 			},
 		}, nil
 
@@ -177,8 +177,8 @@ func (r *CredentialResolver) ResolveProviderConfig(
 		}, nil
 
 	case cloudresourcekind.CloudResourceProvider_alicloud:
-		aliCred := credInterface.(*models.AlicloudCredential)
-		cfg := &alicloudv1.AlicloudProviderConfig{
+		aliCred := credInterface.(*models.AliCloudCredential)
+		cfg := &alicloudv1.AliCloudProviderConfig{
 			Region:      aliCred.Region,
 			AccountId:   aliCred.AccountId,
 			AccountType: aliCred.AccountType,
@@ -186,25 +186,25 @@ func (r *CredentialResolver) ResolveProviderConfig(
 		switch aliCred.AuthMethod {
 		case "static_credentials":
 			cfg.AuthenticationType = alicloudv1.AuthenticationType_static_credentials
-			cfg.StaticCredentials = &alicloudv1.AlicloudStaticCredentials{
+			cfg.StaticCredentials = &alicloudv1.AliCloudStaticCredentials{
 				AccessKey: aliCred.AccessKey,
 				SecretKey: aliCred.SecretKey,
 			}
 		case "sts_token":
 			cfg.AuthenticationType = alicloudv1.AuthenticationType_sts_token
-			cfg.StsToken = &alicloudv1.AlicloudStsTokenCredentials{
+			cfg.StsToken = &alicloudv1.AliCloudStsTokenCredentials{
 				AccessKey:     aliCred.AccessKey,
 				SecretKey:     aliCred.SecretKey,
 				SecurityToken: aliCred.SecurityToken,
 			}
 		case "ecs_role":
 			cfg.AuthenticationType = alicloudv1.AuthenticationType_ecs_role
-			cfg.EcsRole = &alicloudv1.AlicloudEcsRoleCredentials{
+			cfg.EcsRole = &alicloudv1.AliCloudEcsRoleCredentials{
 				EcsRoleName: aliCred.EcsRoleName,
 			}
 		case "assume_role":
 			cfg.AuthenticationType = alicloudv1.AuthenticationType_assume_role
-			cfg.AssumeRole = &alicloudv1.AlicloudAssumeRoleCredentials{
+			cfg.AssumeRole = &alicloudv1.AliCloudAssumeRoleCredentials{
 				AccessKey:         aliCred.AccessKey,
 				SecretKey:         aliCred.SecretKey,
 				RoleArn:           aliCred.RoleArn,
@@ -215,7 +215,7 @@ func (r *CredentialResolver) ResolveProviderConfig(
 			}
 		case "assume_role_with_oidc":
 			cfg.AuthenticationType = alicloudv1.AuthenticationType_assume_role_with_oidc
-			cfg.AssumeRoleWithOidc = &alicloudv1.AlicloudAssumeRoleWithOidcCredentials{
+			cfg.AssumeRoleWithOidc = &alicloudv1.AliCloudAssumeRoleWithOidcCredentials{
 				OidcProviderArn:   aliCred.OidcProviderArn,
 				RoleArn:           aliCred.RoleArn,
 				OidcToken:         aliCred.OidcToken,
@@ -226,13 +226,13 @@ func (r *CredentialResolver) ResolveProviderConfig(
 			}
 		case "shared_credentials":
 			cfg.AuthenticationType = alicloudv1.AuthenticationType_shared_credentials
-			cfg.SharedCredentials = &alicloudv1.AlicloudSharedCredentials{
+			cfg.SharedCredentials = &alicloudv1.AliCloudSharedCredentials{
 				CredentialsFile: aliCred.CredentialsFile,
 				Profile:         aliCred.Profile,
 			}
 		case "sidecar_credentials":
 			cfg.AuthenticationType = alicloudv1.AuthenticationType_sidecar_credentials
-			cfg.SidecarCredentials = &alicloudv1.AlicloudSidecarCredentials{
+			cfg.SidecarCredentials = &alicloudv1.AliCloudSidecarCredentials{
 				CredentialsUri: aliCred.CredentialsUri,
 			}
 		}

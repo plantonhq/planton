@@ -9,19 +9,19 @@ import (
 )
 
 type Locals struct {
-	AlicloudEcsInstance *alicloudecsinstancev1.AlicloudEcsInstance
+	AliCloudEcsInstance *alicloudecsinstancev1.AliCloudEcsInstance
 	Tags                map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *alicloudecsinstancev1.AlicloudEcsInstanceStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, stackInput *alicloudecsinstancev1.AliCloudEcsInstanceStackInput) *Locals {
 	locals := &Locals{}
-	locals.AlicloudEcsInstance = stackInput.Target
+	locals.AliCloudEcsInstance = stackInput.Target
 	target := stackInput.Target
 
 	locals.Tags = map[string]string{
 		"resource":      "true",
 		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AlicloudEcsInstance.String()),
+		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AliCloudEcsInstance.String()),
 	}
 
 	if target.Metadata.Id != "" {
@@ -44,41 +44,41 @@ func initializeLocals(ctx *pulumi.Context, stackInput *alicloudecsinstancev1.Ali
 }
 
 func instanceName(locals *Locals) string {
-	if locals.AlicloudEcsInstance.Spec.InstanceName != "" {
-		return locals.AlicloudEcsInstance.Spec.InstanceName
+	if locals.AliCloudEcsInstance.Spec.InstanceName != "" {
+		return locals.AliCloudEcsInstance.Spec.InstanceName
 	}
-	return locals.AlicloudEcsInstance.Metadata.Name
+	return locals.AliCloudEcsInstance.Metadata.Name
 }
 
-func instanceChargeType(spec *alicloudecsinstancev1.AlicloudEcsInstanceSpec) string {
+func instanceChargeType(spec *alicloudecsinstancev1.AliCloudEcsInstanceSpec) string {
 	if spec.InstanceChargeType != nil && *spec.InstanceChargeType != "" {
 		return *spec.InstanceChargeType
 	}
 	return "PostPaid"
 }
 
-func systemDiskCategory(spec *alicloudecsinstancev1.AlicloudEcsInstanceSpec) string {
+func systemDiskCategory(spec *alicloudecsinstancev1.AliCloudEcsInstanceSpec) string {
 	if spec.SystemDisk != nil && spec.SystemDisk.Category != nil && *spec.SystemDisk.Category != "" {
 		return *spec.SystemDisk.Category
 	}
 	return "cloud_essd"
 }
 
-func systemDiskSize(spec *alicloudecsinstancev1.AlicloudEcsInstanceSpec) int {
+func systemDiskSize(spec *alicloudecsinstancev1.AliCloudEcsInstanceSpec) int {
 	if spec.SystemDisk != nil && spec.SystemDisk.Size != nil {
 		return int(*spec.SystemDisk.Size)
 	}
 	return 40
 }
 
-func dataDiskCategory(disk *alicloudecsinstancev1.AlicloudEcsDataDisk) string {
+func dataDiskCategory(disk *alicloudecsinstancev1.AliCloudEcsDataDisk) string {
 	if disk.Category != nil && *disk.Category != "" {
 		return *disk.Category
 	}
 	return "cloud_essd"
 }
 
-func dataDiskDeleteWithInstance(disk *alicloudecsinstancev1.AlicloudEcsDataDisk) bool {
+func dataDiskDeleteWithInstance(disk *alicloudecsinstancev1.AliCloudEcsDataDisk) bool {
 	if disk.DeleteWithInstance != nil {
 		return *disk.DeleteWithInstance
 	}

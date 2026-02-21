@@ -24,7 +24,7 @@ const (
 )
 
 // alicloud-function
-type AlicloudFunction struct {
+type AliCloudFunction struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
@@ -33,27 +33,27 @@ type AlicloudFunction struct {
 	// metadata
 	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
-	Spec *AlicloudFunctionSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec *AliCloudFunctionSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
-	Status        *AlicloudFunctionStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *AliCloudFunctionStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudFunction) Reset() {
-	*x = AlicloudFunction{}
+func (x *AliCloudFunction) Reset() {
+	*x = AliCloudFunction{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudFunction) String() string {
+func (x *AliCloudFunction) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudFunction) ProtoMessage() {}
+func (*AliCloudFunction) ProtoMessage() {}
 
-func (x *AlicloudFunction) ProtoReflect() protoreflect.Message {
+func (x *AliCloudFunction) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AlicloudFunction) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudFunction.ProtoReflect.Descriptor instead.
-func (*AlicloudFunction) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudFunction.ProtoReflect.Descriptor instead.
+func (*AliCloudFunction) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudfunction_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudFunction) GetApiVersion() string {
+func (x *AliCloudFunction) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *AlicloudFunction) GetKind() string {
+func (x *AliCloudFunction) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AlicloudFunction) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AliCloudFunction) GetMetadata() *shared.CloudResourceMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *AlicloudFunction) GetSpec() *AlicloudFunctionSpec {
+func (x *AliCloudFunction) GetSpec() *AliCloudFunctionSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-func (x *AlicloudFunction) GetStatus() *AlicloudFunctionStatus {
+func (x *AliCloudFunction) GetStatus() *AliCloudFunctionStatus {
 	if x != nil {
 		return x.Status
 	}
@@ -106,28 +106,28 @@ func (x *AlicloudFunction) GetStatus() *AlicloudFunctionStatus {
 }
 
 // alicloud-function status
-type AlicloudFunctionStatus struct {
+type AliCloudFunctionStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// stack-outputs
-	Outputs       *AlicloudFunctionStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AliCloudFunctionStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudFunctionStatus) Reset() {
-	*x = AlicloudFunctionStatus{}
+func (x *AliCloudFunctionStatus) Reset() {
+	*x = AliCloudFunctionStatus{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudFunctionStatus) String() string {
+func (x *AliCloudFunctionStatus) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudFunctionStatus) ProtoMessage() {}
+func (*AliCloudFunctionStatus) ProtoMessage() {}
 
-func (x *AlicloudFunctionStatus) ProtoReflect() protoreflect.Message {
+func (x *AliCloudFunctionStatus) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudfunction_v1_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,12 +139,12 @@ func (x *AlicloudFunctionStatus) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudFunctionStatus.ProtoReflect.Descriptor instead.
-func (*AlicloudFunctionStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudFunctionStatus.ProtoReflect.Descriptor instead.
+func (*AliCloudFunctionStatus) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudfunction_v1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudFunctionStatus) GetOutputs() *AlicloudFunctionStackOutputs {
+func (x *AliCloudFunctionStatus) GetOutputs() *AliCloudFunctionStackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -156,17 +156,17 @@ var File_org_openmcf_provider_alicloud_alicloudfunction_v1_api_proto protoreflec
 const file_org_openmcf_provider_alicloud_alicloudfunction_v1_api_proto_rawDesc = "" +
 	"\n" +
 	";org/openmcf/provider/alicloud/alicloudfunction/v1/api.proto\x121org.openmcf.provider.alicloud.alicloudfunction.v1\x1a\x1bbuf/validate/validate.proto\x1a<org/openmcf/provider/alicloud/alicloudfunction/v1/spec.proto\x1aEorg/openmcf/provider/alicloud/alicloudfunction/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\x97\x03\n" +
-	"\x10AlicloudFunction\x12?\n" +
+	"\x10AliCloudFunction\x12?\n" +
 	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
-	"\x10AlicloudFunctionR\x04kind\x12M\n" +
+	"\x10AliCloudFunctionR\x04kind\x12M\n" +
 	"\bmetadata\x18\x03 \x01(\v2).org.openmcf.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
-	"\x04spec\x18\x04 \x01(\v2G.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
-	"\x06status\x18\x05 \x01(\v2I.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionStatusR\x06status\"\x83\x01\n" +
-	"\x16AlicloudFunctionStatus\x12i\n" +
-	"\aoutputs\x18\x01 \x01(\v2O.org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionStackOutputsR\aoutputsB\x94\x03\n" +
+	"\x04spec\x18\x04 \x01(\v2G.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
+	"\x06status\x18\x05 \x01(\v2I.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionStatusR\x06status\"\x83\x01\n" +
+	"\x16AliCloudFunctionStatus\x12i\n" +
+	"\aoutputs\x18\x01 \x01(\v2O.org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionStackOutputsR\aoutputsB\x94\x03\n" +
 	"5com.org.openmcf.provider.alicloud.alicloudfunction.v1B\bApiProtoP\x01Zfgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudfunction/v1;alicloudfunctionv1\xa2\x02\x05OOPAA\xaa\x021Org.Openmcf.Provider.Alicloud.Alicloudfunction.V1\xca\x021Org\\Openmcf\\Provider\\Alicloud\\Alicloudfunction\\V1\xe2\x02=Org\\Openmcf\\Provider\\Alicloud\\Alicloudfunction\\V1\\GPBMetadata\xea\x026Org::Openmcf::Provider::Alicloud::Alicloudfunction::V1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_org_openmcf_provider_alicloud_alicloudfunction_v1_api_proto_rawDescGZI
 
 var file_org_openmcf_provider_alicloud_alicloudfunction_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudfunction_v1_api_proto_goTypes = []any{
-	(*AlicloudFunction)(nil),             // 0: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunction
-	(*AlicloudFunctionStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionStatus
+	(*AliCloudFunction)(nil),             // 0: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunction
+	(*AliCloudFunctionStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionStatus
 	(*shared.CloudResourceMetadata)(nil), // 2: org.openmcf.shared.CloudResourceMetadata
-	(*AlicloudFunctionSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec
-	(*AlicloudFunctionStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionStackOutputs
+	(*AliCloudFunctionSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec
+	(*AliCloudFunctionStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudfunction_v1_api_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunction.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
-	3, // 1: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunction.spec:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionSpec
-	1, // 2: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunction.status:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionStatus
-	4, // 3: org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AlicloudFunctionStackOutputs
+	2, // 0: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunction.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
+	3, // 1: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunction.spec:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionSpec
+	1, // 2: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunction.status:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionStatus
+	4, // 3: org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudfunction.v1.AliCloudFunctionStackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

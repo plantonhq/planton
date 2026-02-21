@@ -24,7 +24,7 @@ const (
 )
 
 // alicloud-application-load-balancer
-type AlicloudApplicationLoadBalancer struct {
+type AliCloudApplicationLoadBalancer struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
@@ -33,27 +33,27 @@ type AlicloudApplicationLoadBalancer struct {
 	// metadata
 	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
-	Spec *AlicloudApplicationLoadBalancerSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec *AliCloudApplicationLoadBalancerSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
-	Status        *AlicloudApplicationLoadBalancerStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *AliCloudApplicationLoadBalancerStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudApplicationLoadBalancer) Reset() {
-	*x = AlicloudApplicationLoadBalancer{}
+func (x *AliCloudApplicationLoadBalancer) Reset() {
+	*x = AliCloudApplicationLoadBalancer{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_api_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudApplicationLoadBalancer) String() string {
+func (x *AliCloudApplicationLoadBalancer) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudApplicationLoadBalancer) ProtoMessage() {}
+func (*AliCloudApplicationLoadBalancer) ProtoMessage() {}
 
-func (x *AlicloudApplicationLoadBalancer) ProtoReflect() protoreflect.Message {
+func (x *AliCloudApplicationLoadBalancer) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_api_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AlicloudApplicationLoadBalancer) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudApplicationLoadBalancer.ProtoReflect.Descriptor instead.
-func (*AlicloudApplicationLoadBalancer) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudApplicationLoadBalancer.ProtoReflect.Descriptor instead.
+func (*AliCloudApplicationLoadBalancer) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AlicloudApplicationLoadBalancer) GetApiVersion() string {
+func (x *AliCloudApplicationLoadBalancer) GetApiVersion() string {
 	if x != nil {
 		return x.ApiVersion
 	}
 	return ""
 }
 
-func (x *AlicloudApplicationLoadBalancer) GetKind() string {
+func (x *AliCloudApplicationLoadBalancer) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AlicloudApplicationLoadBalancer) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AliCloudApplicationLoadBalancer) GetMetadata() *shared.CloudResourceMetadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *AlicloudApplicationLoadBalancer) GetSpec() *AlicloudApplicationLoadBalancerSpec {
+func (x *AliCloudApplicationLoadBalancer) GetSpec() *AliCloudApplicationLoadBalancerSpec {
 	if x != nil {
 		return x.Spec
 	}
 	return nil
 }
 
-func (x *AlicloudApplicationLoadBalancer) GetStatus() *AlicloudApplicationLoadBalancerStatus {
+func (x *AliCloudApplicationLoadBalancer) GetStatus() *AliCloudApplicationLoadBalancerStatus {
 	if x != nil {
 		return x.Status
 	}
@@ -106,28 +106,28 @@ func (x *AlicloudApplicationLoadBalancer) GetStatus() *AlicloudApplicationLoadBa
 }
 
 // alicloud-application-load-balancer status
-type AlicloudApplicationLoadBalancerStatus struct {
+type AliCloudApplicationLoadBalancerStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// stack-outputs
-	Outputs       *AlicloudApplicationLoadBalancerStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AliCloudApplicationLoadBalancerStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AlicloudApplicationLoadBalancerStatus) Reset() {
-	*x = AlicloudApplicationLoadBalancerStatus{}
+func (x *AliCloudApplicationLoadBalancerStatus) Reset() {
+	*x = AliCloudApplicationLoadBalancerStatus{}
 	mi := &file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AlicloudApplicationLoadBalancerStatus) String() string {
+func (x *AliCloudApplicationLoadBalancerStatus) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlicloudApplicationLoadBalancerStatus) ProtoMessage() {}
+func (*AliCloudApplicationLoadBalancerStatus) ProtoMessage() {}
 
-func (x *AlicloudApplicationLoadBalancerStatus) ProtoReflect() protoreflect.Message {
+func (x *AliCloudApplicationLoadBalancerStatus) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,12 +139,12 @@ func (x *AlicloudApplicationLoadBalancerStatus) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlicloudApplicationLoadBalancerStatus.ProtoReflect.Descriptor instead.
-func (*AlicloudApplicationLoadBalancerStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use AliCloudApplicationLoadBalancerStatus.ProtoReflect.Descriptor instead.
+func (*AliCloudApplicationLoadBalancerStatus) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlicloudApplicationLoadBalancerStatus) GetOutputs() *AlicloudApplicationLoadBalancerStackOutputs {
+func (x *AliCloudApplicationLoadBalancerStatus) GetOutputs() *AliCloudApplicationLoadBalancerStackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -156,17 +156,17 @@ var File_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_api_pr
 const file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"Jorg/openmcf/provider/alicloud/alicloudapplicationloadbalancer/v1/api.proto\x12@org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1\x1a\x1bbuf/validate/validate.proto\x1aKorg/openmcf/provider/alicloud/alicloudapplicationloadbalancer/v1/spec.proto\x1aTorg/openmcf/provider/alicloud/alicloudapplicationloadbalancer/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xf2\x03\n" +
-	"\x1fAlicloudApplicationLoadBalancer\x12?\n" +
+	"\x1fAliCloudApplicationLoadBalancer\x12?\n" +
 	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x12:\n" +
 	"\x04kind\x18\x02 \x01(\tB&\xbaH#r!\n" +
-	"\x1fAlicloudApplicationLoadBalancerR\x04kind\x12M\n" +
+	"\x1fAliCloudApplicationLoadBalancerR\x04kind\x12M\n" +
 	"\bmetadata\x18\x03 \x01(\v2).org.openmcf.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x81\x01\n" +
-	"\x04spec\x18\x04 \x01(\v2e.org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x7f\n" +
-	"\x06status\x18\x05 \x01(\v2g.org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerStatusR\x06status\"\xb1\x01\n" +
-	"%AlicloudApplicationLoadBalancerStatus\x12\x87\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2m.org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerStackOutputsR\aoutputsB\xfe\x03\n" +
+	"\x04spec\x18\x04 \x01(\v2e.org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x7f\n" +
+	"\x06status\x18\x05 \x01(\v2g.org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerStatusR\x06status\"\xb1\x01\n" +
+	"%AliCloudApplicationLoadBalancerStatus\x12\x87\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2m.org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerStackOutputsR\aoutputsB\xfe\x03\n" +
 	"Dcom.org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1B\bApiProtoP\x01Z\x84\x01github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudapplicationloadbalancer/v1;alicloudapplicationloadbalancerv1\xa2\x02\x05OOPAA\xaa\x02@Org.Openmcf.Provider.Alicloud.Alicloudapplicationloadbalancer.V1\xca\x02@Org\\Openmcf\\Provider\\Alicloud\\Alicloudapplicationloadbalancer\\V1\xe2\x02LOrg\\Openmcf\\Provider\\Alicloud\\Alicloudapplicationloadbalancer\\V1\\GPBMetadata\xea\x02EOrg::Openmcf::Provider::Alicloud::Alicloudapplicationloadbalancer::V1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_api_p
 
 var file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_api_proto_goTypes = []any{
-	(*AlicloudApplicationLoadBalancer)(nil),             // 0: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancer
-	(*AlicloudApplicationLoadBalancerStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerStatus
+	(*AliCloudApplicationLoadBalancer)(nil),             // 0: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancer
+	(*AliCloudApplicationLoadBalancerStatus)(nil),       // 1: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerStatus
 	(*shared.CloudResourceMetadata)(nil),                // 2: org.openmcf.shared.CloudResourceMetadata
-	(*AlicloudApplicationLoadBalancerSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerSpec
-	(*AlicloudApplicationLoadBalancerStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerStackOutputs
+	(*AliCloudApplicationLoadBalancerSpec)(nil),         // 3: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerSpec
+	(*AliCloudApplicationLoadBalancerStackOutputs)(nil), // 4: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerStackOutputs
 }
 var file_org_openmcf_provider_alicloud_alicloudapplicationloadbalancer_v1_api_proto_depIdxs = []int32{
-	2, // 0: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancer.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
-	3, // 1: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancer.spec:type_name -> org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerSpec
-	1, // 2: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancer.status:type_name -> org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerStatus
-	4, // 3: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AlicloudApplicationLoadBalancerStackOutputs
+	2, // 0: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancer.metadata:type_name -> org.openmcf.shared.CloudResourceMetadata
+	3, // 1: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancer.spec:type_name -> org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerSpec
+	1, // 2: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancer.status:type_name -> org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerStatus
+	4, // 3: org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerStatus.outputs:type_name -> org.openmcf.provider.alicloud.alicloudapplicationloadbalancer.v1.AliCloudApplicationLoadBalancerStackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name
