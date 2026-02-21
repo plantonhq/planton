@@ -18,7 +18,7 @@ locals {
   }
 
   scope_value = (
-    var.spec.scope == "private" ? "PRIVATE" :
+    var.spec.scope == "scope_private" ? "PRIVATE" :
     var.spec.scope == "global" ? "GLOBAL" :
     null
   )

@@ -37,7 +37,7 @@ func minimalValid() *OciApiGateway {
 		Metadata:   &shared.CloudResourceMetadata{Name: "test-api-gw"},
 		Spec: &OciApiGatewaySpec{
 			CompartmentId: svr("ocid1.compartment.oc1..example"),
-			EndpointType:  OciApiGatewaySpec_public,
+			EndpointType:  OciApiGatewaySpec_endpoint_type_public,
 			SubnetId:      svr("ocid1.subnet.oc1..example"),
 			Deployment: &OciApiGatewaySpec_Deployment{
 				PathPrefix: "/api",
@@ -69,13 +69,13 @@ var _ = ginkgo.Describe("OciApiGatewaySpec Validation Tests", func() {
 
 			ginkgo.It("should accept public endpoint type", func() {
 				input := minimalValid()
-				input.Spec.EndpointType = OciApiGatewaySpec_public
+				input.Spec.EndpointType = OciApiGatewaySpec_endpoint_type_public
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should accept private endpoint type", func() {
 				input := minimalValid()
-				input.Spec.EndpointType = OciApiGatewaySpec_private
+				input.Spec.EndpointType = OciApiGatewaySpec_endpoint_type_private
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
@@ -629,7 +629,7 @@ var _ = ginkgo.Describe("OciApiGatewaySpec Validation Tests", func() {
 
 			ginkgo.It("should reject unspecified endpoint_type", func() {
 				input := minimalValid()
-				input.Spec.EndpointType = OciApiGatewaySpec_unspecified
+				input.Spec.EndpointType = OciApiGatewaySpec_endpoint_type_unspecified
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 

@@ -12,7 +12,7 @@ This preset creates a private DNS zone resolvable only within VCNs attached to t
 ## Key Configuration Choices
 
 - **PRIMARY zone type** (`zoneType: primary`) -- OCI is the authoritative source. SECONDARY zones cannot be private (OCI limitation enforced by CEL validation in the spec).
-- **PRIVATE scope** (`scope: private`) -- the zone is only resolvable from VCNs whose DNS resolver is associated with the specified view. Queries from the public internet receive NXDOMAIN.
+- **PRIVATE scope** (`scope: scope_private`) -- the zone is only resolvable from VCNs whose DNS resolver is associated with the specified view. Queries from the public internet receive NXDOMAIN.
 - **DNS view** (`viewId`) -- the view controls which VCNs can resolve records in this zone. Each VCN's DNS resolver references a view; all private zones attached to that view become resolvable from the VCN. Multiple VCNs can share a view for cross-VCN resolution.
 
 ## Placeholders to Replace

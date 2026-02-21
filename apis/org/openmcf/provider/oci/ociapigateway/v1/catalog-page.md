@@ -35,7 +35,7 @@ metadata:
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
-  endpointType: public
+  endpointType: endpoint_type_public
   subnetId:
     value: "ocid1.subnet.oc1..example"
   deployment:
@@ -166,7 +166,7 @@ metadata:
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
-  endpointType: public
+  endpointType: endpoint_type_public
   subnetId:
     value: "ocid1.subnet.oc1..example"
   deployment:
@@ -209,7 +209,7 @@ spec:
       kind: OciCompartment
       name: prod-compartment
       fieldPath: status.outputs.compartmentId
-  endpointType: public
+  endpointType: endpoint_type_public
   subnetId:
     valueFrom:
       kind: OciSubnet

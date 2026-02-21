@@ -24,3 +24,9 @@ plugins:
     out: generated/stubs/go
   - remote: buf.build/grpc/go:v1.5.1
     out: generated/stubs/go
+  # Java stubs catch reserved keyword conflicts early (e.g., 'public', 'class').
+  # These are NOT committed -- generated/stubs/java is gitignored.
+  - remote: buf.build/protocolbuffers/java:v30.1
+    out: generated/stubs/java
+  - remote: buf.build/grpc/java:v1.65.0
+    out: generated/stubs/java

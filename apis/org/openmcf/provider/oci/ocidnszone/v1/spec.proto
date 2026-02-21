@@ -70,7 +70,7 @@ message OciDnsZoneSpec {
     scope_unspecified = 0;
     global = 1;
     // Private DNS zone, resolvable only within VCNs via a DNS view.
-    private = 2;
+    scope_private = 2;
   }
 
   // External DNS server used for zone transfers.

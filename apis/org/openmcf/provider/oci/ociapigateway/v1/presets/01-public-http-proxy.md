@@ -11,7 +11,7 @@ This preset creates a public-facing OCI API Gateway with a single deployment tha
 
 ## Key Configuration Choices
 
-- **Public endpoint** (`endpointType: public`) -- the gateway is accessible from the internet. It must be placed in a public subnet. The gateway's public IP is available in status outputs and can be mapped to a custom domain via DNS.
+- **Public endpoint** (`endpointType: endpoint_type_public`) -- the gateway is accessible from the internet. It must be placed in a public subnet. The gateway's public IP is available in status outputs and can be mapped to a custom domain via DNS.
 - **NSG protection** (`networkSecurityGroupIds`) -- restricts network access to the gateway. Configure ingress rules allowing TCP port 443 from `0.0.0.0/0` for public APIs, or restrict to specific CIDR blocks for partner-only APIs.
 - **CORS policy** (`requestPolicies.cors`) -- configured for a single frontend domain with credentials support. The preflight response is cached for 1 hour (`maxAgeInSeconds: 3600`). Adjust `allowedOrigins` to list your actual frontend domains; use `["*"]` only for fully public APIs where any origin is acceptable.
 - **Health check route** (`/health` with stock response) -- returns `{"status":"ok"}` without forwarding to the backend. Useful for load balancer health probes, uptime monitors, and smoke tests that verify the gateway itself is operational.

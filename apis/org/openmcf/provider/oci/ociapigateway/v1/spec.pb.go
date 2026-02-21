@@ -28,22 +28,22 @@ const (
 type OciApiGatewaySpec_EndpointType int32
 
 const (
-	OciApiGatewaySpec_unspecified OciApiGatewaySpec_EndpointType = 0
-	OciApiGatewaySpec_public      OciApiGatewaySpec_EndpointType = 1
-	OciApiGatewaySpec_private     OciApiGatewaySpec_EndpointType = 2
+	OciApiGatewaySpec_endpoint_type_unspecified OciApiGatewaySpec_EndpointType = 0
+	OciApiGatewaySpec_endpoint_type_public      OciApiGatewaySpec_EndpointType = 1
+	OciApiGatewaySpec_endpoint_type_private     OciApiGatewaySpec_EndpointType = 2
 )
 
 // Enum value maps for OciApiGatewaySpec_EndpointType.
 var (
 	OciApiGatewaySpec_EndpointType_name = map[int32]string{
-		0: "unspecified",
-		1: "public",
-		2: "private",
+		0: "endpoint_type_unspecified",
+		1: "endpoint_type_public",
+		2: "endpoint_type_private",
 	}
 	OciApiGatewaySpec_EndpointType_value = map[string]int32{
-		"unspecified": 0,
-		"public":      1,
-		"private":     2,
+		"endpoint_type_unspecified": 0,
+		"endpoint_type_public":      1,
+		"endpoint_type_private":     2,
 	}
 )
 
@@ -469,7 +469,7 @@ func (x *OciApiGatewaySpec) GetEndpointType() OciApiGatewaySpec_EndpointType {
 	if x != nil {
 		return x.EndpointType
 	}
-	return OciApiGatewaySpec_unspecified
+	return OciApiGatewaySpec_endpoint_type_unspecified
 }
 
 func (x *OciApiGatewaySpec) GetSubnetId() *v1.StringValueOrRef {
@@ -1679,7 +1679,7 @@ var File_org_openmcf_provider_oci_ociapigateway_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_oci_ociapigateway_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/oci/ociapigateway/v1/spec.proto\x12)org.openmcf.provider.oci.ociapigateway.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xf23\n" +
+	"4org/openmcf/provider/oci/ociapigateway/v1/spec.proto\x12)org.openmcf.provider.oci.ociapigateway.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x9c4\n" +
 	"\x11OciApiGatewaySpec\x12\x86\x01\n" +
 	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12x\n" +
 	"\rendpoint_type\x18\x02 \x01(\x0e2I.org.openmcf.provider.oci.ociapigateway.v1.OciApiGatewaySpec.EndpointTypeB\b\xbaH\x05\x82\x01\x02 \x00R\fendpointType\x12w\n" +
@@ -1800,12 +1800,11 @@ const file_org_openmcf_provider_oci_ociapigateway_v1_spec_proto_rawDesc = "" +
 	"\x12RouteAuthorization\x12b\n" +
 	"\x04type\x18\x01 \x01(\x0e2N.org.openmcf.provider.oci.ociapigateway.v1.OciApiGatewaySpec.AuthorizationTypeR\x04type\x12#\n" +
 	"\rallowed_scope\x18\x02 \x03(\tR\fallowedScope:\x8b\x01\xbaH\x87\x01\x1a\x84\x01\n" +
-	"\x1dany_of_requires_allowed_scope\x123allowed_scope must be non-empty when type is any_of\x1a.this.type != 2 || size(this.allowed_scope) > 0\"8\n" +
-	"\fEndpointType\x12\x0f\n" +
-	"\vunspecified\x10\x00\x12\n" +
-	"\n" +
-	"\x06public\x10\x01\x12\v\n" +
-	"\aprivate\x10\x02\"D\n" +
+	"\x1dany_of_requires_allowed_scope\x123allowed_scope must be non-empty when type is any_of\x1a.this.type != 2 || size(this.allowed_scope) > 0\"b\n" +
+	"\fEndpointType\x12\x1d\n" +
+	"\x19endpoint_type_unspecified\x10\x00\x12\x18\n" +
+	"\x14endpoint_type_public\x10\x01\x12\x19\n" +
+	"\x15endpoint_type_private\x10\x02\"D\n" +
 	"\bLogLevel\x12\x19\n" +
 	"\x15log_level_unspecified\x10\x00\x12\b\n" +
 	"\x04info\x10\x01\x12\b\n" +

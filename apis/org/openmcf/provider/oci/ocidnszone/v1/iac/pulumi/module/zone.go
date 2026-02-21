@@ -25,7 +25,7 @@ func dnsZone(ctx *pulumi.Context, locals *Locals, provider *oci.Provider) error 
 		FreeformTags:  pulumi.ToStringMap(locals.FreeformTags),
 	}
 
-	if spec.Scope == ocidnszonev1.OciDnsZoneSpec_private {
+	if spec.Scope == ocidnszonev1.OciDnsZoneSpec_scope_private {
 		args.Scope = pulumi.String("PRIVATE")
 	} else if spec.Scope == ocidnszonev1.OciDnsZoneSpec_global {
 		args.Scope = pulumi.String("GLOBAL")

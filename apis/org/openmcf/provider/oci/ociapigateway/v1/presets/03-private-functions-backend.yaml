@@ -5,7 +5,7 @@ metadata:
 spec:
   compartmentId:
     value: <compartment-ocid>
-  endpointType: private
+  endpointType: endpoint_type_private
   subnetId:
     value: <private-subnet-ocid>
   displayName: internal-api

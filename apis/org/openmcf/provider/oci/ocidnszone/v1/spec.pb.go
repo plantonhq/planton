@@ -85,7 +85,7 @@ const (
 	OciDnsZoneSpec_scope_unspecified OciDnsZoneSpec_Scope = 0
 	OciDnsZoneSpec_global            OciDnsZoneSpec_Scope = 1
 	// Private DNS zone, resolvable only within VCNs via a DNS view.
-	OciDnsZoneSpec_private OciDnsZoneSpec_Scope = 2
+	OciDnsZoneSpec_scope_private OciDnsZoneSpec_Scope = 2
 )
 
 // Enum value maps for OciDnsZoneSpec_Scope.
@@ -93,12 +93,12 @@ var (
 	OciDnsZoneSpec_Scope_name = map[int32]string{
 		0: "scope_unspecified",
 		1: "global",
-		2: "private",
+		2: "scope_private",
 	}
 	OciDnsZoneSpec_Scope_value = map[string]int32{
 		"scope_unspecified": 0,
 		"global":            1,
-		"private":           2,
+		"scope_private":     2,
 	}
 )
 
@@ -333,7 +333,7 @@ var File_org_openmcf_provider_oci_ocidnszone_v1_spec_proto protoreflect.FileDesc
 
 const file_org_openmcf_provider_oci_ocidnszone_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"1org/openmcf/provider/oci/ocidnszone/v1/spec.proto\x12&org.openmcf.provider.oci.ocidnszone.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xd5\v\n" +
+	"1org/openmcf/provider/oci/ocidnszone/v1/spec.proto\x12&org.openmcf.provider.oci.ocidnszone.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xdb\v\n" +
 	"\x0eOciDnsZoneSpec\x12\x86\x01\n" +
 	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12\\\n" +
 	"\tzone_type\x18\x02 \x01(\x0e2?.org.openmcf.provider.oci.ocidnszone.v1.OciDnsZoneSpec.ZoneTypeR\bzoneType\x12R\n" +
@@ -350,12 +350,12 @@ const file_org_openmcf_provider_oci_ocidnszone_v1_spec_proto_rawDesc = "" +
 	"\bZoneType\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12\v\n" +
 	"\aprimary\x10\x01\x12\r\n" +
-	"\tsecondary\x10\x02\"7\n" +
+	"\tsecondary\x10\x02\"=\n" +
 	"\x05Scope\x12\x15\n" +
 	"\x11scope_unspecified\x10\x00\x12\n" +
 	"\n" +
-	"\x06global\x10\x01\x12\v\n" +
-	"\aprivate\x10\x02:\x83\x04\xbaH\xff\x03\x1ab\n" +
+	"\x06global\x10\x01\x12\x11\n" +
+	"\rscope_private\x10\x02:\x83\x04\xbaH\xff\x03\x1ab\n" +
 	"\x12zone_type_required\x127zone_type must be explicitly set (primary or secondary)\x1a\x13this.zone_type != 0\x1ai\n" +
 	"\x18private_requires_view_id\x12'private zones require view_id to be set\x1a$this.scope != 2 || has(this.view_id)\x1a\x97\x01\n" +
 	"\x14no_private_secondary\x12WSECONDARY zones cannot have private scope (OCI only supports PRIMARY for private zones)\x1a&this.zone_type != 2 || this.scope != 2\x1a\x93\x01\n" +

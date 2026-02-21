@@ -21,8 +21,8 @@ locals {
   freeform_tags = merge(local.base_tags, local.org_tag, local.env_tag, var.metadata.labels)
 
   endpoint_type_map = {
-    "public"  = "PUBLIC"
-    "private" = "PRIVATE"
+    "endpoint_type_public"  = "PUBLIC"
+    "endpoint_type_private" = "PRIVATE"
   }
 
   log_level_map = {

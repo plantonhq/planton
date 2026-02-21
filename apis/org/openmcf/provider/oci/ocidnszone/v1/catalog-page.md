@@ -142,7 +142,7 @@ spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
   zoneType: primary
-  scope: private
+  scope: scope_private
   viewId:
     value: "ocid1.dnsview.oc1..example"
 ```

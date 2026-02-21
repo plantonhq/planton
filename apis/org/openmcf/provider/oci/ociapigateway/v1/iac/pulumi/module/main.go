@@ -9,8 +9,8 @@ import (
 )
 
 var endpointTypeMap = map[ociapigatewayv1.OciApiGatewaySpec_EndpointType]string{
-	ociapigatewayv1.OciApiGatewaySpec_public:  "PUBLIC",
-	ociapigatewayv1.OciApiGatewaySpec_private: "PRIVATE",
+	ociapigatewayv1.OciApiGatewaySpec_endpoint_type_public:  "PUBLIC",
+	ociapigatewayv1.OciApiGatewaySpec_endpoint_type_private: "PRIVATE",
 }
 
 var logLevelMap = map[ociapigatewayv1.OciApiGatewaySpec_LogLevel]string{

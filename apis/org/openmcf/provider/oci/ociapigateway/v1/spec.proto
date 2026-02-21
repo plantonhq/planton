@@ -72,9 +72,9 @@ message OciApiGatewaySpec {
   // EndpointType determines whether the gateway is publicly accessible or
   // restricted to the VCN.
   enum EndpointType {
-    unspecified = 0;
-    public = 1;
-    private = 2;
+    endpoint_type_unspecified = 0;
+    endpoint_type_public = 1;
+    endpoint_type_private = 2;
   }
 
   // Deployment defines the API specification deployed on the gateway.

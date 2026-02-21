@@ -57,7 +57,7 @@ var _ = ginkgo.Describe("OciDnsZoneSpec Validation Tests", func() {
 
 			ginkgo.It("should not return a validation error for primary private zone with view_id", func() {
 				input := minimalValidZone()
-				input.Spec.Scope = OciDnsZoneSpec_private
+				input.Spec.Scope = OciDnsZoneSpec_scope_private
 				input.Spec.ViewId = newStringValueOrRef("ocid1.dnsview.oc1..example")
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
@@ -144,7 +144,7 @@ var _ = ginkgo.Describe("OciDnsZoneSpec Validation Tests", func() {
 
 			ginkgo.It("should not return a validation error with view_id via valueFrom ref", func() {
 				input := minimalValidZone()
-				input.Spec.Scope = OciDnsZoneSpec_private
+				input.Spec.Scope = OciDnsZoneSpec_scope_private
 				input.Spec.ViewId = &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -226,7 +226,7 @@ var _ = ginkgo.Describe("OciDnsZoneSpec Validation Tests", func() {
 
 			ginkgo.It("should return a validation error for private zone without view_id", func() {
 				input := minimalValidZone()
-				input.Spec.Scope = OciDnsZoneSpec_private
+				input.Spec.Scope = OciDnsZoneSpec_scope_private
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
@@ -234,7 +234,7 @@ var _ = ginkgo.Describe("OciDnsZoneSpec Validation Tests", func() {
 			ginkgo.It("should return a validation error for secondary zone with private scope", func() {
 				input := minimalValidZone()
 				input.Spec.ZoneType = OciDnsZoneSpec_secondary
-				input.Spec.Scope = OciDnsZoneSpec_private
+				input.Spec.Scope = OciDnsZoneSpec_scope_private
 				input.Spec.ViewId = newStringValueOrRef("ocid1.dnsview.oc1..example")
 				input.Spec.ExternalMasters = []*OciDnsZoneSpec_ExternalServer{
 					{Address: "10.0.0.1"},
