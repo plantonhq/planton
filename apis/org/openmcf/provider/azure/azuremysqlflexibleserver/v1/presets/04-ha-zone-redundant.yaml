@@ -1,0 +1,30 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureMysqlFlexibleServer
+metadata:
+  name: my-ha-mysql-server
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-server-name>
+  administratorLogin: <admin-username>
+  administratorPassword:
+    value: "<admin-password>"
+  version: "8.0.21"  # default from spec
+  skuName: GP_Standard_D4ds_v4  # 4 vCPU, 16 GiB — recommended for HA production
+  storageSizeGb: 64
+  autoGrowEnabled: true  # default from spec
+  zone: "1"  # primary in zone 1
+  highAvailability:
+    mode: ZoneRedundant
+    standbyAvailabilityZone: "2"  # standby in zone 2
+  backupRetentionDays: 14
+  geoRedundantBackupEnabled: true  # cross-region backup for DR
+  databases:
+    - name: <your-database-name>
+      charset: utf8mb4  # default from spec
+      collation: utf8mb4_0900_ai_ci  # default from spec
+  firewallRules:
+    - name: allow-azure-services
+      startIpAddress: 0.0.0.0
+      endIpAddress: 0.0.0.0

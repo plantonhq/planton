@@ -30,6 +30,12 @@ message CloudResourceKindMeta {
   string id_prefix = 4;
   //flag indicating whether the cloud-resource kind can be used to launch a service.
   bool is_service_kind = 5;
+  //flag indicating whether the cloud-resource kind is a container kind.
+  //container kinds are resources that logically contain other resources
+  //(e.g., a Kubernetes namespace contains deployments, a VPC contains subnets).
+  //used by the organization graph to render hierarchical architecture diagrams
+  //where container resources visually enclose their child resources.
+  bool container_kind = 6;
 }
 
 enum CloudResourceKind {
@@ -100,6 +106,7 @@ enum CloudResourceKind {
     provider: aws
     version: v1
     id_prefix: "ecsclu"
+    container_kind: true
   }];
   AwsEcsService = 206 [(kind_meta) = {
     provider: aws
@@ -110,6 +117,7 @@ enum CloudResourceKind {
     provider: aws
     version: v1
     id_prefix: "eks"
+    container_kind: true
   }];
   AwsIamRole = 208 [(kind_meta) = {
     provider: aws
@@ -155,6 +163,7 @@ enum CloudResourceKind {
     provider: aws
     version: v1
     id_prefix: "awsvpc"
+    container_kind: true
   }];
   AwsEksNodeGroup = 217 [(kind_meta) = {
     provider: aws
@@ -452,11 +461,13 @@ enum CloudResourceKind {
     provider: azure
     version: v1
     id_prefix: "azrg"
+    container_kind: true
   }];
   AzureAksCluster = 401 [(kind_meta) = {
     provider: azure
     version: v1
     id_prefix: "aks"
+    container_kind: true
   }];
   AzureAksNodePool = 402 [(kind_meta) = {
     provider: azure
@@ -482,6 +493,7 @@ enum CloudResourceKind {
     provider: azure
     version: v1
     id_prefix: "azvpc"
+    container_kind: true
   }];
   AzureNatGateway = 407 [(kind_meta) = {
     provider: azure
@@ -567,6 +579,7 @@ enum CloudResourceKind {
     provider: azure
     version: v1
     id_prefix: "azcae"
+    container_kind: true
   }];
   AzureContainerApp = 441 [(kind_meta) = {
     provider: azure
@@ -662,6 +675,7 @@ enum CloudResourceKind {
     provider: gcp
     version: v1
     id_prefix: "gke"
+    container_kind: true
   }];
   GcpSecretsManager = 608 [(kind_meta) = {
     provider: gcp
@@ -672,11 +686,13 @@ enum CloudResourceKind {
     provider: gcp
     version: v1
     id_prefix: "gcpprj"
+    container_kind: true
   }];
   GcpVpc = 610 [(kind_meta) = {
     provider: gcp
     version: v1
     id_prefix: "gcpvpc"
+    container_kind: true
   }];
   GcpSubnetwork = 611 [(kind_meta) = {
     provider: gcp
@@ -1020,6 +1036,7 @@ enum CloudResourceKind {
     provider: kubernetes
     version: v1
     id_prefix: "k8sns"
+    container_kind: true
   }];
   KubernetesGatewayApiCrds = 837 [(kind_meta) = {
     provider: kubernetes
@@ -1138,6 +1155,7 @@ enum CloudResourceKind {
     provider: digital_ocean
     version: v1
     id_prefix: "dokc"
+    container_kind: true
   }];
   DigitalOceanKubernetesNodePool = 1209 [(kind_meta) = {
     provider: digital_ocean
@@ -1158,6 +1176,7 @@ enum CloudResourceKind {
     provider: digital_ocean
     version: v1
     id_prefix: "dovpc"
+    container_kind: true
   }];
   DigitalOceanCertificate = 1213 [(kind_meta) = {
     provider: digital_ocean
@@ -1210,6 +1229,7 @@ enum CloudResourceKind {
     provider: civo
     version: v1
     id_prefix: "cikc"
+    container_kind: true
   }];
   CivoKubernetesNodePool = 1508 [(kind_meta) = {
     provider: civo
@@ -1225,6 +1245,7 @@ enum CloudResourceKind {
     provider: civo
     version: v1
     id_prefix: "civpc"
+    container_kind: true
   }];
   CivoDnsRecord = 1511 [(kind_meta) = {
     provider: civo
@@ -1325,6 +1346,7 @@ enum CloudResourceKind {
     provider: openstack
     version: v1
     id_prefix: "osnet"
+    container_kind: true
   }];
   OpenStackSubnet = 2502 [(kind_meta) = {
     provider: openstack
@@ -1390,6 +1412,7 @@ enum CloudResourceKind {
     provider: openstack
     version: v1
     id_prefix: "osprj"
+    container_kind: true
   }];
   OpenStackApplicationCredential = 2513 [(kind_meta) = {
     provider: openstack
@@ -1450,6 +1473,7 @@ enum CloudResourceKind {
     provider: openstack
     version: v1
     id_prefix: "oscc"
+    container_kind: true
   }];
 
   // 2800–2999: Scaleway resources
@@ -1460,6 +1484,7 @@ enum CloudResourceKind {
     provider: scaleway
     version: v1
     id_prefix: "scwvpc"
+    container_kind: true
   }];
   ScalewayPrivateNetwork = 2801 [(kind_meta) = {
     provider: scaleway
@@ -1496,6 +1521,7 @@ enum CloudResourceKind {
     provider: scaleway
     version: v1
     id_prefix: "scwk8s"
+    container_kind: true
   }];
   ScalewayKapsulePool = 2821 [(kind_meta) = {
     provider: scaleway
@@ -1598,6 +1624,7 @@ enum CloudResourceKind {
     provider: ali_cloud
     version: v1
     id_prefix: "acvpc"
+    container_kind: true
   }];
 
   AliCloudVswitch = 3021 [(kind_meta) = {
@@ -1730,6 +1757,7 @@ enum CloudResourceKind {
     provider: ali_cloud
     version: v1
     id_prefix: "acack"
+    container_kind: true
   }];
 
   AliCloudKubernetesNodePool = 3092 [(kind_meta) = {
@@ -1784,6 +1812,7 @@ enum CloudResourceKind {
     provider: oci
     version: v1
     id_prefix: "ocivcn"
+    container_kind: true
   }];
 
   OciSubnet = 3301 [(kind_meta) = {
@@ -1804,6 +1833,7 @@ enum CloudResourceKind {
     provider: oci
     version: v1
     id_prefix: "ocicmp"
+    container_kind: true
   }];
   OciIdentityPolicy = 3304 [(kind_meta) = {
     provider: oci
@@ -1830,6 +1860,7 @@ enum CloudResourceKind {
     provider: oci
     version: v1
     id_prefix: "ocioke"
+    container_kind: true
   }];
 
   OciContainerEngineNodePool = 3312 [(kind_meta) = {
@@ -2054,6 +2085,7 @@ enum CloudResourceKind {
     provider: hetzner_cloud
     version: v1
     id_prefix: "hcnet"
+    container_kind: true
   }];
 
   HetznerCloudPrimaryIp = 3511 [(kind_meta) = {
