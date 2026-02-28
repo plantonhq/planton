@@ -24,3 +24,4 @@ This preset deploys OpenBao in high-availability mode with 3 replicas, TLS encry
 ## Related Presets
 
 - **01-dev-mode** -- Simple single-server deployment for development
+- **03-production-ha-gcp-auto-unseal** -- HA mode with GCP Cloud KMS auto-unseal and Workload Identity

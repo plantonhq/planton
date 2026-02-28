@@ -98,6 +98,108 @@ var _ = ginkgo.Describe("KubernetesOpenBao Custom Validation Tests", func() {
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 		})
+
+		ginkgo.Context("standalone openbao with GCP KMS auto-unseal", func() {
+			ginkgo.It("should not return a validation error", func() {
+				input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+					Seal: &KubernetesOpenBaoAutoUnseal_GcpKms{
+						GcpKms: &KubernetesOpenBaoGcpKmsSeal{
+							Project: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my-project"},
+							},
+							Region: "us-central1",
+							KeyRing: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my-keyring"},
+							},
+							CryptoKey: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my-key"},
+							},
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("standalone openbao with AWS KMS auto-unseal", func() {
+			ginkgo.It("should not return a validation error", func() {
+				input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+					Seal: &KubernetesOpenBaoAutoUnseal_AwsKms{
+						AwsKms: &KubernetesOpenBaoAwsKmsSeal{
+							Region:   "us-east-1",
+							KmsKeyId: "arn:aws:kms:us-east-1:111122223333:key/example-key-id",
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("standalone openbao with Azure Key Vault auto-unseal", func() {
+			ginkgo.It("should not return a validation error", func() {
+				input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+					Seal: &KubernetesOpenBaoAutoUnseal_AzureKeyVault{
+						AzureKeyVault: &KubernetesOpenBaoAzureKeyVaultSeal{
+							VaultName: "my-keyvault",
+							KeyName:   "unseal-key",
+							TenantId:  "00000000-0000-0000-0000-000000000000",
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("standalone openbao with Transit auto-unseal", func() {
+			ginkgo.It("should not return a validation error", func() {
+				input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+					Seal: &KubernetesOpenBaoAutoUnseal_Transit{
+						Transit: &KubernetesOpenBaoTransitSeal{
+							Address:         "https://vault.example.com:8200",
+							KeyName:         "autounseal",
+							MountPath:       "transit/",
+							TokenSecretName: "vault-transit-token",
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("ha openbao with GCP KMS auto-unseal", func() {
+			ginkgo.It("should not return a validation error", func() {
+				haReplicas := int32(3)
+				input.Spec.HighAvailability = &KubernetesOpenBaoHighAvailability{
+					Enabled:  true,
+					Replicas: &haReplicas,
+				}
+				input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+					Seal: &KubernetesOpenBaoAutoUnseal_GcpKms{
+						GcpKms: &KubernetesOpenBaoGcpKmsSeal{
+							Project: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my-project"},
+							},
+							Region: "us-central1",
+							KeyRing: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my-keyring"},
+							},
+							CryptoKey: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my-key"},
+							},
+							WorkloadIdentityServiceAccount: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "openbao@my-project.iam.gserviceaccount.com"},
+							},
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+		})
 	})
 
 	ginkgo.Describe("When invalid input is passed", func() {
@@ -162,6 +264,206 @@ var _ = ginkgo.Describe("KubernetesOpenBao Custom Validation Tests", func() {
 				input.Spec.Injector = &KubernetesOpenBaoInjector{
 					Enabled:  true,
 					Replicas: &injectorReplicas,
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("gcp kms auto-unseal missing project", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+					Seal: &KubernetesOpenBaoAutoUnseal_GcpKms{
+						GcpKms: &KubernetesOpenBaoGcpKmsSeal{
+							Region: "us-central1",
+							KeyRing: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my-keyring"},
+							},
+							CryptoKey: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my-key"},
+							},
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("gcp kms auto-unseal missing key_ring", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+					Seal: &KubernetesOpenBaoAutoUnseal_GcpKms{
+						GcpKms: &KubernetesOpenBaoGcpKmsSeal{
+							Project: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my-project"},
+							},
+							Region: "us-central1",
+							CryptoKey: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my-key"},
+							},
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("gcp kms auto-unseal missing crypto_key", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+					Seal: &KubernetesOpenBaoAutoUnseal_GcpKms{
+						GcpKms: &KubernetesOpenBaoGcpKmsSeal{
+							Project: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my-project"},
+							},
+							Region: "us-central1",
+							KeyRing: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my-keyring"},
+							},
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("gcp kms auto-unseal missing region", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+					Seal: &KubernetesOpenBaoAutoUnseal_GcpKms{
+						GcpKms: &KubernetesOpenBaoGcpKmsSeal{
+							Project: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my-project"},
+							},
+							KeyRing: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my-keyring"},
+							},
+							CryptoKey: &foreignkeyv1.StringValueOrRef{
+								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my-key"},
+							},
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("aws kms auto-unseal missing region", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+					Seal: &KubernetesOpenBaoAutoUnseal_AwsKms{
+						AwsKms: &KubernetesOpenBaoAwsKmsSeal{
+							KmsKeyId: "arn:aws:kms:us-east-1:111122223333:key/example-key-id",
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("aws kms auto-unseal missing kms_key_id", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+					Seal: &KubernetesOpenBaoAutoUnseal_AwsKms{
+						AwsKms: &KubernetesOpenBaoAwsKmsSeal{
+							Region: "us-east-1",
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("azure key vault auto-unseal missing vault_name", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+					Seal: &KubernetesOpenBaoAutoUnseal_AzureKeyVault{
+						AzureKeyVault: &KubernetesOpenBaoAzureKeyVaultSeal{
+							KeyName:  "unseal-key",
+							TenantId: "00000000-0000-0000-0000-000000000000",
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("azure key vault auto-unseal missing key_name", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+					Seal: &KubernetesOpenBaoAutoUnseal_AzureKeyVault{
+						AzureKeyVault: &KubernetesOpenBaoAzureKeyVaultSeal{
+							VaultName: "my-keyvault",
+							TenantId:  "00000000-0000-0000-0000-000000000000",
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("azure key vault auto-unseal missing tenant_id", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+					Seal: &KubernetesOpenBaoAutoUnseal_AzureKeyVault{
+						AzureKeyVault: &KubernetesOpenBaoAzureKeyVaultSeal{
+							VaultName: "my-keyvault",
+							KeyName:   "unseal-key",
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("transit auto-unseal missing address", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+					Seal: &KubernetesOpenBaoAutoUnseal_Transit{
+						Transit: &KubernetesOpenBaoTransitSeal{
+							KeyName:         "autounseal",
+							TokenSecretName: "vault-transit-token",
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("transit auto-unseal missing key_name", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+					Seal: &KubernetesOpenBaoAutoUnseal_Transit{
+						Transit: &KubernetesOpenBaoTransitSeal{
+							Address:         "https://vault.example.com:8200",
+							TokenSecretName: "vault-transit-token",
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("transit auto-unseal missing token_secret_name", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+					Seal: &KubernetesOpenBaoAutoUnseal_Transit{
+						Transit: &KubernetesOpenBaoTransitSeal{
+							Address: "https://vault.example.com:8200",
+							KeyName: "autounseal",
+						},
+					},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).ToNot(gomega.BeNil())

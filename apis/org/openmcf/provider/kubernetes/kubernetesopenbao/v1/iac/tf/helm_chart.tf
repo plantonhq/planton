@@ -87,10 +87,35 @@ resource "helm_release" "openbao" {
     }
   }
 
+  dynamic "set" {
+    for_each = local.ha_enabled ? [1] : []
+    content {
+      name  = "server.ha.raft.config"
+      value = local.ha_raft_config
+    }
+  }
+
   # Standalone mode (when HA is disabled)
   set {
     name  = "server.standalone.enabled"
     value = tostring(!local.ha_enabled)
+  }
+
+  dynamic "set" {
+    for_each = !local.ha_enabled ? [1] : []
+    content {
+      name  = "server.standalone.config"
+      value = local.standalone_config
+    }
+  }
+
+  # Workload Identity service account annotation (GCP KMS auto-unseal)
+  dynamic "set" {
+    for_each = local.workload_identity_sa != "" ? [1] : []
+    content {
+      name  = "server.serviceAccount.annotations.iam\\.gke\\.io/gcp-service-account"
+      value = local.workload_identity_sa
+    }
   }
 
   # UI configuration

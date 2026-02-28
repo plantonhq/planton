@@ -24,3 +24,4 @@ This preset deploys OpenBao (open-source Vault fork) in a simple configuration w
 ## Related Presets
 
 - **02-production-ha** -- High-availability mode with Raft storage and TLS
+- **03-production-ha-gcp-auto-unseal** -- HA mode with GCP Cloud KMS auto-unseal and Workload Identity

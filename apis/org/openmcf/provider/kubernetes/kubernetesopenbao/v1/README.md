@@ -42,6 +42,17 @@ The OpenBao Agent Injector provides automatic secret injection into Kubernetes p
 - **Secret Templating**: Transform secrets into application-specific formats
 - **Token Management**: Automatic authentication and token renewal
 
+### Auto-Unseal
+
+OpenBao starts in a sealed state after every pod restart. The `auto_unseal` field configures automatic unsealing via an external KMS so pods recover without human intervention.
+
+- **GCP Cloud KMS**: Symmetric encrypt/decrypt key in Cloud KMS. Supports GKE Workload Identity for credential-free authentication via `workload_identity_service_account`.
+- **AWS KMS**: Symmetric KMS key. Supports IRSA (IAM Roles for Service Accounts) on EKS or explicit credentials via a Kubernetes secret.
+- **Azure Key Vault**: RSA or EC key in Azure Key Vault. Supports Azure Managed Identity on AKS or explicit credentials via a Kubernetes secret.
+- **Transit Seal**: Uses another Vault/OpenBao instance's Transit secrets engine to wrap/unwrap the master key.
+
+When configured, the HCL `seal` stanza is automatically injected into the Helm chart's server configuration for both standalone and HA modes.
+
 ### Ingress Configuration
 
 - **External Access**: Configure ingress for secure external access to the OpenBao UI and API
@@ -58,7 +69,7 @@ The OpenBao Agent Injector provides automatic secret injection into Kubernetes p
 ## Security Features
 
 - **TLS Encryption**: Optional end-to-end TLS encryption for all OpenBao traffic
-- **Auto-Unseal**: Support for various auto-unseal mechanisms through Helm value overrides
+- **Auto-Unseal**: First-class `auto_unseal` configuration supporting GCP Cloud KMS, AWS KMS, Azure Key Vault, and Transit seal types. Pods unseal automatically on startup without manual intervention.
 - **Audit Logging**: Configurable audit storage for compliance requirements
 
 ## Outputs
