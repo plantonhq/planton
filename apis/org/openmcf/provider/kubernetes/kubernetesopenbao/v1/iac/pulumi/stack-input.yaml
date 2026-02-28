@@ -11,6 +11,17 @@ target:
         name: main
         org: planton-cloud
     spec:
+        autoUnseal:
+            gcpKms:
+                cryptoKey:
+                    value: openbao-auto-unseal-key
+                keyRing:
+                    value: openbao-unseal
+                project:
+                    value: gke-mumbai-20240816-cte
+                region: asia-south1
+                workloadIdentityServiceAccount:
+                    value: openbao-unseal@gke-mumbai-20240816-cte.iam.gserviceaccount.com
         createNamespace: true
         helmChartVersion: 0.23.3
         ingress:

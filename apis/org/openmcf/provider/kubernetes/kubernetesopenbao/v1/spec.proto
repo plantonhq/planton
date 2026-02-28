@@ -71,6 +71,12 @@ message KubernetesOpenBaoSpec {
   // TLS configuration.
   // Default: TLS is disabled (tlsDisable: true in Helm values).
   bool tls_enabled = 10;
+
+  // Auto-unseal configuration.
+  // When configured, OpenBao delegates master key protection to an external KMS
+  // instead of Shamir key shares. The server unseals automatically on startup
+  // without human intervention.
+  KubernetesOpenBaoAutoUnseal auto_unseal = 11;
 }
 
 /**
@@ -157,4 +163,124 @@ message KubernetesOpenBaoInjector {
       lte: 5
     }
   ];
+}
+
+/**
+ * KubernetesOpenBaoAutoUnseal configures automatic unsealing via an external KMS.
+ * Exactly one seal type must be specified. When configured, OpenBao encrypts its
+ * master key with the KMS key instead of Shamir splitting, enabling automatic
+ * recovery after pod restarts without human intervention.
+ */
+message KubernetesOpenBaoAutoUnseal {
+  oneof seal {
+    // GCP Cloud KMS auto-unseal. Natural choice for GKE deployments.
+    KubernetesOpenBaoGcpKmsSeal gcp_kms = 1;
+
+    // AWS KMS auto-unseal. Natural choice for EKS deployments.
+    KubernetesOpenBaoAwsKmsSeal aws_kms = 2;
+
+    // Azure Key Vault auto-unseal. Natural choice for AKS deployments.
+    KubernetesOpenBaoAzureKeyVaultSeal azure_key_vault = 3;
+
+    // Transit auto-unseal via another Vault/OpenBao instance.
+    KubernetesOpenBaoTransitSeal transit = 4;
+  }
+}
+
+/**
+ * KubernetesOpenBaoGcpKmsSeal configures GCP Cloud KMS as the auto-unseal mechanism.
+ * Requires a symmetric encrypt/decrypt key and appropriate IAM permissions.
+ * Supports GKE Workload Identity for credential-free authentication.
+ */
+message KubernetesOpenBaoGcpKmsSeal {
+  // GCP project containing the KMS keyring.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef project = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpProject,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // GCP region where the KMS keyring lives (e.g., "asia-south1").
+  string region = 2 [(buf.validate.field).string.min_len = 1];
+
+  // Name of the KMS keyring containing the auto-unseal key.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef key_ring = 3 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpKmsKeyRing,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_ring_name"
+  ];
+
+  // Name of the crypto key within the keyring used to encrypt the master key.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef crypto_key = 4 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_name"
+  ];
+
+  // GCP service account email for GKE Workload Identity.
+  // When set, the Kubernetes service account is annotated with
+  // iam.gke.io/gcp-service-account for credential-free KMS access.
+  // The GCP service account must have roles/cloudkms.cryptoKeyEncrypterDecrypter
+  // on the key and a Workload Identity binding for the OpenBao namespace/SA.
+  // If empty, relies on Application Default Credentials or node-level permissions.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef workload_identity_service_account = 5 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+}
+
+/**
+ * KubernetesOpenBaoAwsKmsSeal configures AWS KMS as the auto-unseal mechanism.
+ * Requires a symmetric KMS key and appropriate IAM permissions.
+ * Supports IRSA (IAM Roles for Service Accounts) on EKS for credential-free authentication.
+ */
+message KubernetesOpenBaoAwsKmsSeal {
+  // AWS region where the KMS key lives (e.g., "ap-south-1").
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // KMS key ID or full ARN.
+  string kms_key_id = 2 [(buf.validate.field).string.min_len = 1];
+
+  // Name of a Kubernetes secret containing 'access-key' and 'secret-key' data keys.
+  // If empty, relies on IRSA or EC2 instance profile for authentication.
+  string credentials_secret_name = 3;
+}
+
+/**
+ * KubernetesOpenBaoAzureKeyVaultSeal configures Azure Key Vault as the auto-unseal mechanism.
+ * Requires an RSA or EC key in Azure Key Vault and appropriate access policies.
+ * Supports Azure Managed Identity on AKS for credential-free authentication.
+ */
+message KubernetesOpenBaoAzureKeyVaultSeal {
+  // Name of the Azure Key Vault (e.g., "my-openbao-vault").
+  string vault_name = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Name of the key within the Azure Key Vault.
+  string key_name = 2 [(buf.validate.field).string.min_len = 1];
+
+  // Azure AD tenant ID.
+  string tenant_id = 3 [(buf.validate.field).string.min_len = 1];
+
+  // Name of a Kubernetes secret containing 'client-id' and 'client-secret' data keys.
+  // If empty, relies on Azure Managed Identity for authentication.
+  string credentials_secret_name = 4;
+}
+
+/**
+ * KubernetesOpenBaoTransitSeal configures another Vault/OpenBao instance's Transit engine
+ * as the auto-unseal mechanism. The satellite instance depends on the central instance
+ * being available and unsealed.
+ */
+message KubernetesOpenBaoTransitSeal {
+  // Address of the central Vault/OpenBao instance (e.g., "https://vault.example.com:8200").
+  string address = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Name of the Transit key used to wrap/unwrap the master key.
+  string key_name = 2 [(buf.validate.field).string.min_len = 1];
+
+  // Transit engine mount path. Default: "transit/".
+  string mount_path = 3;
+
+  // Name of a Kubernetes secret containing a 'token' data key for the central Vault.
+  string token_secret_name = 4 [(buf.validate.field).string.min_len = 1];
 }
