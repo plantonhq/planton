@@ -57,7 +57,12 @@ type KubernetesOpenBaoSpec struct {
 	Injector *KubernetesOpenBaoInjector `protobuf:"bytes,9,opt,name=injector,proto3" json:"injector,omitempty"`
 	// TLS configuration.
 	// Default: TLS is disabled (tlsDisable: true in Helm values).
-	TlsEnabled    bool `protobuf:"varint,10,opt,name=tls_enabled,json=tlsEnabled,proto3" json:"tls_enabled,omitempty"`
+	TlsEnabled bool `protobuf:"varint,10,opt,name=tls_enabled,json=tlsEnabled,proto3" json:"tls_enabled,omitempty"`
+	// Auto-unseal configuration.
+	// When configured, OpenBao delegates master key protection to an external KMS
+	// instead of Shamir key shares. The server unseals automatically on startup
+	// without human intervention.
+	AutoUnseal    *KubernetesOpenBaoAutoUnseal `protobuf:"bytes,11,opt,name=auto_unseal,json=autoUnseal,proto3" json:"auto_unseal,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -160,6 +165,13 @@ func (x *KubernetesOpenBaoSpec) GetTlsEnabled() bool {
 		return x.TlsEnabled
 	}
 	return false
+}
+
+func (x *KubernetesOpenBaoSpec) GetAutoUnseal() *KubernetesOpenBaoAutoUnseal {
+	if x != nil {
+		return x.AutoUnseal
+	}
+	return nil
 }
 
 // *
@@ -410,6 +422,440 @@ func (x *KubernetesOpenBaoInjector) GetReplicas() int32 {
 	return 0
 }
 
+// *
+// KubernetesOpenBaoAutoUnseal configures automatic unsealing via an external KMS.
+// Exactly one seal type must be specified. When configured, OpenBao encrypts its
+// master key with the KMS key instead of Shamir splitting, enabling automatic
+// recovery after pod restarts without human intervention.
+type KubernetesOpenBaoAutoUnseal struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to Seal:
+	//
+	//	*KubernetesOpenBaoAutoUnseal_GcpKms
+	//	*KubernetesOpenBaoAutoUnseal_AwsKms
+	//	*KubernetesOpenBaoAutoUnseal_AzureKeyVault
+	//	*KubernetesOpenBaoAutoUnseal_Transit
+	Seal          isKubernetesOpenBaoAutoUnseal_Seal `protobuf_oneof:"seal"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesOpenBaoAutoUnseal) Reset() {
+	*x = KubernetesOpenBaoAutoUnseal{}
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesOpenBaoAutoUnseal) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesOpenBaoAutoUnseal) ProtoMessage() {}
+
+func (x *KubernetesOpenBaoAutoUnseal) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesOpenBaoAutoUnseal.ProtoReflect.Descriptor instead.
+func (*KubernetesOpenBaoAutoUnseal) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *KubernetesOpenBaoAutoUnseal) GetSeal() isKubernetesOpenBaoAutoUnseal_Seal {
+	if x != nil {
+		return x.Seal
+	}
+	return nil
+}
+
+func (x *KubernetesOpenBaoAutoUnseal) GetGcpKms() *KubernetesOpenBaoGcpKmsSeal {
+	if x != nil {
+		if x, ok := x.Seal.(*KubernetesOpenBaoAutoUnseal_GcpKms); ok {
+			return x.GcpKms
+		}
+	}
+	return nil
+}
+
+func (x *KubernetesOpenBaoAutoUnseal) GetAwsKms() *KubernetesOpenBaoAwsKmsSeal {
+	if x != nil {
+		if x, ok := x.Seal.(*KubernetesOpenBaoAutoUnseal_AwsKms); ok {
+			return x.AwsKms
+		}
+	}
+	return nil
+}
+
+func (x *KubernetesOpenBaoAutoUnseal) GetAzureKeyVault() *KubernetesOpenBaoAzureKeyVaultSeal {
+	if x != nil {
+		if x, ok := x.Seal.(*KubernetesOpenBaoAutoUnseal_AzureKeyVault); ok {
+			return x.AzureKeyVault
+		}
+	}
+	return nil
+}
+
+func (x *KubernetesOpenBaoAutoUnseal) GetTransit() *KubernetesOpenBaoTransitSeal {
+	if x != nil {
+		if x, ok := x.Seal.(*KubernetesOpenBaoAutoUnseal_Transit); ok {
+			return x.Transit
+		}
+	}
+	return nil
+}
+
+type isKubernetesOpenBaoAutoUnseal_Seal interface {
+	isKubernetesOpenBaoAutoUnseal_Seal()
+}
+
+type KubernetesOpenBaoAutoUnseal_GcpKms struct {
+	// GCP Cloud KMS auto-unseal. Natural choice for GKE deployments.
+	GcpKms *KubernetesOpenBaoGcpKmsSeal `protobuf:"bytes,1,opt,name=gcp_kms,json=gcpKms,proto3,oneof"`
+}
+
+type KubernetesOpenBaoAutoUnseal_AwsKms struct {
+	// AWS KMS auto-unseal. Natural choice for EKS deployments.
+	AwsKms *KubernetesOpenBaoAwsKmsSeal `protobuf:"bytes,2,opt,name=aws_kms,json=awsKms,proto3,oneof"`
+}
+
+type KubernetesOpenBaoAutoUnseal_AzureKeyVault struct {
+	// Azure Key Vault auto-unseal. Natural choice for AKS deployments.
+	AzureKeyVault *KubernetesOpenBaoAzureKeyVaultSeal `protobuf:"bytes,3,opt,name=azure_key_vault,json=azureKeyVault,proto3,oneof"`
+}
+
+type KubernetesOpenBaoAutoUnseal_Transit struct {
+	// Transit auto-unseal via another Vault/OpenBao instance.
+	Transit *KubernetesOpenBaoTransitSeal `protobuf:"bytes,4,opt,name=transit,proto3,oneof"`
+}
+
+func (*KubernetesOpenBaoAutoUnseal_GcpKms) isKubernetesOpenBaoAutoUnseal_Seal() {}
+
+func (*KubernetesOpenBaoAutoUnseal_AwsKms) isKubernetesOpenBaoAutoUnseal_Seal() {}
+
+func (*KubernetesOpenBaoAutoUnseal_AzureKeyVault) isKubernetesOpenBaoAutoUnseal_Seal() {}
+
+func (*KubernetesOpenBaoAutoUnseal_Transit) isKubernetesOpenBaoAutoUnseal_Seal() {}
+
+// *
+// KubernetesOpenBaoGcpKmsSeal configures GCP Cloud KMS as the auto-unseal mechanism.
+// Requires a symmetric encrypt/decrypt key and appropriate IAM permissions.
+// Supports GKE Workload Identity for credential-free authentication.
+type KubernetesOpenBaoGcpKmsSeal struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// GCP project containing the KMS keyring.
+	Project *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=project,proto3" json:"project,omitempty"`
+	// GCP region where the KMS keyring lives (e.g., "asia-south1").
+	Region string `protobuf:"bytes,2,opt,name=region,proto3" json:"region,omitempty"`
+	// Name of the KMS keyring containing the auto-unseal key.
+	KeyRing *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=key_ring,json=keyRing,proto3" json:"key_ring,omitempty"`
+	// Name of the crypto key within the keyring used to encrypt the master key.
+	CryptoKey *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=crypto_key,json=cryptoKey,proto3" json:"crypto_key,omitempty"`
+	// GCP service account email for GKE Workload Identity.
+	// When set, the Kubernetes service account is annotated with
+	// iam.gke.io/gcp-service-account for credential-free KMS access.
+	// The GCP service account must have roles/cloudkms.cryptoKeyEncrypterDecrypter
+	// on the key and a Workload Identity binding for the OpenBao namespace/SA.
+	// If empty, relies on Application Default Credentials or node-level permissions.
+	WorkloadIdentityServiceAccount *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=workload_identity_service_account,json=workloadIdentityServiceAccount,proto3" json:"workload_identity_service_account,omitempty"`
+	unknownFields                  protoimpl.UnknownFields
+	sizeCache                      protoimpl.SizeCache
+}
+
+func (x *KubernetesOpenBaoGcpKmsSeal) Reset() {
+	*x = KubernetesOpenBaoGcpKmsSeal{}
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesOpenBaoGcpKmsSeal) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesOpenBaoGcpKmsSeal) ProtoMessage() {}
+
+func (x *KubernetesOpenBaoGcpKmsSeal) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesOpenBaoGcpKmsSeal.ProtoReflect.Descriptor instead.
+func (*KubernetesOpenBaoGcpKmsSeal) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *KubernetesOpenBaoGcpKmsSeal) GetProject() *v1.StringValueOrRef {
+	if x != nil {
+		return x.Project
+	}
+	return nil
+}
+
+func (x *KubernetesOpenBaoGcpKmsSeal) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
+func (x *KubernetesOpenBaoGcpKmsSeal) GetKeyRing() *v1.StringValueOrRef {
+	if x != nil {
+		return x.KeyRing
+	}
+	return nil
+}
+
+func (x *KubernetesOpenBaoGcpKmsSeal) GetCryptoKey() *v1.StringValueOrRef {
+	if x != nil {
+		return x.CryptoKey
+	}
+	return nil
+}
+
+func (x *KubernetesOpenBaoGcpKmsSeal) GetWorkloadIdentityServiceAccount() *v1.StringValueOrRef {
+	if x != nil {
+		return x.WorkloadIdentityServiceAccount
+	}
+	return nil
+}
+
+// *
+// KubernetesOpenBaoAwsKmsSeal configures AWS KMS as the auto-unseal mechanism.
+// Requires a symmetric KMS key and appropriate IAM permissions.
+// Supports IRSA (IAM Roles for Service Accounts) on EKS for credential-free authentication.
+type KubernetesOpenBaoAwsKmsSeal struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// AWS region where the KMS key lives (e.g., "ap-south-1").
+	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
+	// KMS key ID or full ARN.
+	KmsKeyId string `protobuf:"bytes,2,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
+	// Name of a Kubernetes secret containing 'access-key' and 'secret-key' data keys.
+	// If empty, relies on IRSA or EC2 instance profile for authentication.
+	CredentialsSecretName string `protobuf:"bytes,3,opt,name=credentials_secret_name,json=credentialsSecretName,proto3" json:"credentials_secret_name,omitempty"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
+}
+
+func (x *KubernetesOpenBaoAwsKmsSeal) Reset() {
+	*x = KubernetesOpenBaoAwsKmsSeal{}
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesOpenBaoAwsKmsSeal) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesOpenBaoAwsKmsSeal) ProtoMessage() {}
+
+func (x *KubernetesOpenBaoAwsKmsSeal) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesOpenBaoAwsKmsSeal.ProtoReflect.Descriptor instead.
+func (*KubernetesOpenBaoAwsKmsSeal) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *KubernetesOpenBaoAwsKmsSeal) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
+func (x *KubernetesOpenBaoAwsKmsSeal) GetKmsKeyId() string {
+	if x != nil {
+		return x.KmsKeyId
+	}
+	return ""
+}
+
+func (x *KubernetesOpenBaoAwsKmsSeal) GetCredentialsSecretName() string {
+	if x != nil {
+		return x.CredentialsSecretName
+	}
+	return ""
+}
+
+// *
+// KubernetesOpenBaoAzureKeyVaultSeal configures Azure Key Vault as the auto-unseal mechanism.
+// Requires an RSA or EC key in Azure Key Vault and appropriate access policies.
+// Supports Azure Managed Identity on AKS for credential-free authentication.
+type KubernetesOpenBaoAzureKeyVaultSeal struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Name of the Azure Key Vault (e.g., "my-openbao-vault").
+	VaultName string `protobuf:"bytes,1,opt,name=vault_name,json=vaultName,proto3" json:"vault_name,omitempty"`
+	// Name of the key within the Azure Key Vault.
+	KeyName string `protobuf:"bytes,2,opt,name=key_name,json=keyName,proto3" json:"key_name,omitempty"`
+	// Azure AD tenant ID.
+	TenantId string `protobuf:"bytes,3,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty"`
+	// Name of a Kubernetes secret containing 'client-id' and 'client-secret' data keys.
+	// If empty, relies on Azure Managed Identity for authentication.
+	CredentialsSecretName string `protobuf:"bytes,4,opt,name=credentials_secret_name,json=credentialsSecretName,proto3" json:"credentials_secret_name,omitempty"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
+}
+
+func (x *KubernetesOpenBaoAzureKeyVaultSeal) Reset() {
+	*x = KubernetesOpenBaoAzureKeyVaultSeal{}
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesOpenBaoAzureKeyVaultSeal) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesOpenBaoAzureKeyVaultSeal) ProtoMessage() {}
+
+func (x *KubernetesOpenBaoAzureKeyVaultSeal) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesOpenBaoAzureKeyVaultSeal.ProtoReflect.Descriptor instead.
+func (*KubernetesOpenBaoAzureKeyVaultSeal) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *KubernetesOpenBaoAzureKeyVaultSeal) GetVaultName() string {
+	if x != nil {
+		return x.VaultName
+	}
+	return ""
+}
+
+func (x *KubernetesOpenBaoAzureKeyVaultSeal) GetKeyName() string {
+	if x != nil {
+		return x.KeyName
+	}
+	return ""
+}
+
+func (x *KubernetesOpenBaoAzureKeyVaultSeal) GetTenantId() string {
+	if x != nil {
+		return x.TenantId
+	}
+	return ""
+}
+
+func (x *KubernetesOpenBaoAzureKeyVaultSeal) GetCredentialsSecretName() string {
+	if x != nil {
+		return x.CredentialsSecretName
+	}
+	return ""
+}
+
+// *
+// KubernetesOpenBaoTransitSeal configures another Vault/OpenBao instance's Transit engine
+// as the auto-unseal mechanism. The satellite instance depends on the central instance
+// being available and unsealed.
+type KubernetesOpenBaoTransitSeal struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Address of the central Vault/OpenBao instance (e.g., "https://vault.example.com:8200").
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	// Name of the Transit key used to wrap/unwrap the master key.
+	KeyName string `protobuf:"bytes,2,opt,name=key_name,json=keyName,proto3" json:"key_name,omitempty"`
+	// Transit engine mount path. Default: "transit/".
+	MountPath string `protobuf:"bytes,3,opt,name=mount_path,json=mountPath,proto3" json:"mount_path,omitempty"`
+	// Name of a Kubernetes secret containing a 'token' data key for the central Vault.
+	TokenSecretName string `protobuf:"bytes,4,opt,name=token_secret_name,json=tokenSecretName,proto3" json:"token_secret_name,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *KubernetesOpenBaoTransitSeal) Reset() {
+	*x = KubernetesOpenBaoTransitSeal{}
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesOpenBaoTransitSeal) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesOpenBaoTransitSeal) ProtoMessage() {}
+
+func (x *KubernetesOpenBaoTransitSeal) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesOpenBaoTransitSeal.ProtoReflect.Descriptor instead.
+func (*KubernetesOpenBaoTransitSeal) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *KubernetesOpenBaoTransitSeal) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
+func (x *KubernetesOpenBaoTransitSeal) GetKeyName() string {
+	if x != nil {
+		return x.KeyName
+	}
+	return ""
+}
+
+func (x *KubernetesOpenBaoTransitSeal) GetMountPath() string {
+	if x != nil {
+		return x.MountPath
+	}
+	return ""
+}
+
+func (x *KubernetesOpenBaoTransitSeal) GetTokenSecretName() string {
+	if x != nil {
+		return x.TokenSecretName
+	}
+	return ""
+}
+
 var file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_extTypes = []protoimpl.ExtensionInfo{
 	{
 		ExtendedType:  (*descriptorpb.FieldOptions)(nil),
@@ -431,7 +877,7 @@ var File_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto protore
 
 const file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"?org/openmcf/provider/kubernetes/kubernetesopenbao/v1/spec.proto\x124org.openmcf.provider.kubernetes.kubernetesopenbao.v1\x1a\x1bbuf/validate/validate.proto\x1a google/protobuf/descriptor.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd6\a\n" +
+	"?org/openmcf/provider/kubernetes/kubernetesopenbao/v1/spec.proto\x124org.openmcf.provider.kubernetes.kubernetesopenbao.v1\x1a\x1bbuf/validate/validate.proto\x1a google/protobuf/descriptor.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xca\b\n" +
 	"\x15KubernetesOpenBaoSpec\x12a\n" +
 	"\x0etarget_cluster\x18\x01 \x01(\v2:.org.openmcf.provider.kubernetes.KubernetesClusterSelectorR\rtargetCluster\x12j\n" +
 	"\tnamespace\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xc4\x06\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
@@ -449,7 +895,9 @@ const file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_rawDe
 	"\binjector\x18\t \x01(\v2O.org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoInjectorR\binjector\x12\x1f\n" +
 	"\vtls_enabled\x18\n" +
 	" \x01(\bR\n" +
-	"tlsEnabledB\x15\n" +
+	"tlsEnabled\x12r\n" +
+	"\vauto_unseal\x18\v \x01(\v2Q.org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoAutoUnsealR\n" +
+	"autoUnsealB\x15\n" +
 	"\x13_helm_chart_versionB\r\n" +
 	"\v_ui_enabled\"\x82\x02\n" +
 	" KubernetesOpenBaoServerContainer\x12%\n" +
@@ -469,7 +917,37 @@ const file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_rawDe
 	"\x19KubernetesOpenBaoInjector\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12/\n" +
 	"\breplicas\x18\x02 \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18\x05(\x01\x8a\xa6\x1d\x011H\x00R\breplicas\x88\x01\x01B\v\n" +
-	"\t_replicas:\xb1\x01\n" +
+	"\t_replicas\"\xf6\x03\n" +
+	"\x1bKubernetesOpenBaoAutoUnseal\x12l\n" +
+	"\agcp_kms\x18\x01 \x01(\v2Q.org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoGcpKmsSealH\x00R\x06gcpKms\x12l\n" +
+	"\aaws_kms\x18\x02 \x01(\v2Q.org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoAwsKmsSealH\x00R\x06awsKms\x12\x82\x01\n" +
+	"\x0fazure_key_vault\x18\x03 \x01(\v2X.org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoAzureKeyVaultSealH\x00R\razureKeyVault\x12n\n" +
+	"\atransit\x18\x04 \x01(\v2R.org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoTransitSealH\x00R\atransitB\x06\n" +
+	"\x04seal\"\xcc\x04\n" +
+	"\x1bKubernetesOpenBaoGcpKmsSeal\x12v\n" +
+	"\aproject\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xe1\x04\x92\xd4a\x19status.outputs.project_idR\aproject\x12\x1f\n" +
+	"\x06region\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12z\n" +
+	"\bkey_ring\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xb2\x05\x92\xd4a\x1cstatus.outputs.key_ring_nameR\akeyRing\x12y\n" +
+	"\n" +
+	"crypto_key\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xb3\x05\x92\xd4a\x17status.outputs.key_nameR\tcryptoKey\x12\x9c\x01\n" +
+	"!workload_identity_service_account\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\xe6\x04\x92\xd4a\x14status.outputs.emailR\x1eworkloadIdentityServiceAccount\"\x9d\x01\n" +
+	"\x1bKubernetesOpenBaoAwsKmsSeal\x12\x1f\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12%\n" +
+	"\n" +
+	"kms_key_id\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bkmsKeyId\x126\n" +
+	"\x17credentials_secret_name\x18\x03 \x01(\tR\x15credentialsSecretName\"\xce\x01\n" +
+	"\"KubernetesOpenBaoAzureKeyVaultSeal\x12&\n" +
+	"\n" +
+	"vault_name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\tvaultName\x12\"\n" +
+	"\bkey_name\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\akeyName\x12$\n" +
+	"\ttenant_id\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\btenantId\x126\n" +
+	"\x17credentials_secret_name\x18\x04 \x01(\tR\x15credentialsSecretName\"\xb9\x01\n" +
+	"\x1cKubernetesOpenBaoTransitSeal\x12!\n" +
+	"\aaddress\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\aaddress\x12\"\n" +
+	"\bkey_name\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\akeyName\x12\x1d\n" +
+	"\n" +
+	"mount_path\x18\x03 \x01(\tR\tmountPath\x123\n" +
+	"\x11token_secret_name\x18\x04 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0ftokenSecretName:\xb1\x01\n" +
 	"\x18default_server_container\x12\x1d.google.protobuf.FieldOptions\x18\x8c\xe4  \x01(\v2V.org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoServerContainerR\x16defaultServerContainerB\xa8\x03\n" +
 	"8com.org.openmcf.provider.kubernetes.kubernetesopenbao.v1B\tSpecProtoP\x01Zjgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesopenbao/v1;kubernetesopenbaov1\xa2\x02\x05OOPKK\xaa\x024Org.Openmcf.Provider.Kubernetes.Kubernetesopenbao.V1\xca\x024Org\\Openmcf\\Provider\\Kubernetes\\Kubernetesopenbao\\V1\xe2\x02@Org\\Openmcf\\Provider\\Kubernetes\\Kubernetesopenbao\\V1\\GPBMetadata\xea\x029Org::Openmcf::Provider::Kubernetes::Kubernetesopenbao::V1b\x06proto3"
 
@@ -485,33 +963,47 @@ func file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_rawDes
 	return file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_rawDescData
 }
 
-var file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_goTypes = []any{
 	(*KubernetesOpenBaoSpec)(nil),                // 0: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoSpec
 	(*KubernetesOpenBaoServerContainer)(nil),     // 1: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoServerContainer
 	(*KubernetesOpenBaoHighAvailability)(nil),    // 2: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoHighAvailability
 	(*KubernetesOpenBaoIngress)(nil),             // 3: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoIngress
 	(*KubernetesOpenBaoInjector)(nil),            // 4: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoInjector
-	(*kubernetes.KubernetesClusterSelector)(nil), // 5: org.openmcf.provider.kubernetes.KubernetesClusterSelector
-	(*v1.StringValueOrRef)(nil),                  // 6: org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.ContainerResources)(nil),        // 7: org.openmcf.provider.kubernetes.ContainerResources
-	(*descriptorpb.FieldOptions)(nil),            // 8: google.protobuf.FieldOptions
+	(*KubernetesOpenBaoAutoUnseal)(nil),          // 5: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoAutoUnseal
+	(*KubernetesOpenBaoGcpKmsSeal)(nil),          // 6: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoGcpKmsSeal
+	(*KubernetesOpenBaoAwsKmsSeal)(nil),          // 7: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoAwsKmsSeal
+	(*KubernetesOpenBaoAzureKeyVaultSeal)(nil),   // 8: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoAzureKeyVaultSeal
+	(*KubernetesOpenBaoTransitSeal)(nil),         // 9: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoTransitSeal
+	(*kubernetes.KubernetesClusterSelector)(nil), // 10: org.openmcf.provider.kubernetes.KubernetesClusterSelector
+	(*v1.StringValueOrRef)(nil),                  // 11: org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.ContainerResources)(nil),        // 12: org.openmcf.provider.kubernetes.ContainerResources
+	(*descriptorpb.FieldOptions)(nil),            // 13: google.protobuf.FieldOptions
 }
 var file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_depIdxs = []int32{
-	5, // 0: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoSpec.target_cluster:type_name -> org.openmcf.provider.kubernetes.KubernetesClusterSelector
-	6, // 1: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoSpec.namespace:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	1, // 2: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoSpec.server_container:type_name -> org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoServerContainer
-	2, // 3: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoSpec.high_availability:type_name -> org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoHighAvailability
-	3, // 4: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoSpec.ingress:type_name -> org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoIngress
-	4, // 5: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoSpec.injector:type_name -> org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoInjector
-	7, // 6: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoServerContainer.resources:type_name -> org.openmcf.provider.kubernetes.ContainerResources
-	8, // 7: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.default_server_container:extendee -> google.protobuf.FieldOptions
-	1, // 8: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.default_server_container:type_name -> org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoServerContainer
-	9, // [9:9] is the sub-list for method output_type
-	9, // [9:9] is the sub-list for method input_type
-	8, // [8:9] is the sub-list for extension type_name
-	7, // [7:8] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	10, // 0: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoSpec.target_cluster:type_name -> org.openmcf.provider.kubernetes.KubernetesClusterSelector
+	11, // 1: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoSpec.namespace:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	1,  // 2: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoSpec.server_container:type_name -> org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoServerContainer
+	2,  // 3: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoSpec.high_availability:type_name -> org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoHighAvailability
+	3,  // 4: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoSpec.ingress:type_name -> org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoIngress
+	4,  // 5: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoSpec.injector:type_name -> org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoInjector
+	5,  // 6: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoSpec.auto_unseal:type_name -> org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoAutoUnseal
+	12, // 7: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoServerContainer.resources:type_name -> org.openmcf.provider.kubernetes.ContainerResources
+	6,  // 8: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoAutoUnseal.gcp_kms:type_name -> org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoGcpKmsSeal
+	7,  // 9: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoAutoUnseal.aws_kms:type_name -> org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoAwsKmsSeal
+	8,  // 10: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoAutoUnseal.azure_key_vault:type_name -> org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoAzureKeyVaultSeal
+	9,  // 11: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoAutoUnseal.transit:type_name -> org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoTransitSeal
+	11, // 12: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoGcpKmsSeal.project:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	11, // 13: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoGcpKmsSeal.key_ring:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	11, // 14: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoGcpKmsSeal.crypto_key:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	11, // 15: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoGcpKmsSeal.workload_identity_service_account:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	13, // 16: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.default_server_container:extendee -> google.protobuf.FieldOptions
+	1,  // 17: org.openmcf.provider.kubernetes.kubernetesopenbao.v1.default_server_container:type_name -> org.openmcf.provider.kubernetes.kubernetesopenbao.v1.KubernetesOpenBaoServerContainer
+	18, // [18:18] is the sub-list for method output_type
+	18, // [18:18] is the sub-list for method input_type
+	17, // [17:18] is the sub-list for extension type_name
+	16, // [16:17] is the sub-list for extension extendee
+	0,  // [0:16] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_init() }
@@ -522,13 +1014,19 @@ func file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_init()
 	file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_msgTypes[0].OneofWrappers = []any{}
 	file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_msgTypes[2].OneofWrappers = []any{}
 	file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_msgTypes[4].OneofWrappers = []any{}
+	file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_msgTypes[5].OneofWrappers = []any{
+		(*KubernetesOpenBaoAutoUnseal_GcpKms)(nil),
+		(*KubernetesOpenBaoAutoUnseal_AwsKms)(nil),
+		(*KubernetesOpenBaoAutoUnseal_AzureKeyVault)(nil),
+		(*KubernetesOpenBaoAutoUnseal_Transit)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_rawDesc), len(file_org_openmcf_provider_kubernetes_kubernetesopenbao_v1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   10,
 			NumExtensions: 1,
 			NumServices:   0,
 		},

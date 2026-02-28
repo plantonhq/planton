@@ -131,10 +131,61 @@ ui:
 
 ## Security Considerations
 
-### Seal/Unseal Process
-OpenBao starts in a sealed state and requires unseal keys to decrypt the master key:
-- **Shamir's Secret Sharing**: Default method, splits master key into shares
-- **Auto-Unseal**: Uses external KMS (GCP, AWS, Azure) to automatically unseal
+### Seal/Unseal Architecture
+
+OpenBao encrypts all stored data with a randomly generated encryption key. This encryption key is itself protected by a **master key** that is never stored in plaintext. How the master key is protected defines the seal type.
+
+#### Shamir Seal (Default)
+
+The default method uses **Shamir's Secret Sharing** to split the master key into N key shares with a threshold of T shares required to reconstruct it (commonly 5 shares, threshold 3). On every pod start, T key shares must be provided via `bao operator unseal` before the server can serve requests.
+
+**Problem in Kubernetes:** Every pod restart -- rolling update, node failure, OOM kill, or preemption -- produces a sealed instance that cannot serve traffic until a human provides unseal keys. For HA deployments with 3+ replicas, a single node preemption event requires manual intervention bounded by human response time.
+
+#### Auto-Unseal
+
+Auto-unseal delegates master key protection to an external KMS. The master key is encrypted (wrapped) by the KMS key and stored alongside the data. On startup, OpenBao calls the KMS to decrypt (unwrap) the master key automatically -- no human intervention required.
+
+**Seal stanza**: Auto-unseal is configured via an HCL `seal` block in the server config. The `KubernetesOpenBao` component generates this block from the `auto_unseal` spec field and appends it to the Helm chart's server configuration.
+
+**Migration path**: Existing deployments using Shamir can migrate to auto-unseal by adding the seal stanza and running `bao operator unseal -migrate` with the existing Shamir keys.
+
+#### GCP Cloud KMS
+
+- **Seal type**: `gcpckms`
+- **Key requirement**: Symmetric encrypt/decrypt key in a Cloud KMS keyring
+- **IAM**: The service account needs `roles/cloudkms.cryptoKeyEncrypterDecrypter` on the key
+- **Authentication on GKE**: Use Workload Identity -- annotate the Kubernetes ServiceAccount with `iam.gke.io/gcp-service-account` pointing to a GCP service account that has a Workload Identity binding for the OpenBao namespace and SA. No credential files needed.
+- **Authentication elsewhere**: Application Default Credentials or a JSON key file mounted as a volume
+
+#### AWS KMS
+
+- **Seal type**: `awskms`
+- **Key requirement**: Symmetric KMS key (default key spec `SYMMETRIC_DEFAULT`)
+- **IAM**: The IAM entity needs `kms:Encrypt` and `kms:Decrypt` on the key ARN
+- **Authentication on EKS**: Use IRSA (IAM Roles for Service Accounts) -- associate an IAM role with the Kubernetes service account
+- **Authentication elsewhere**: Static credentials via a Kubernetes secret with `access-key` and `secret-key` data keys, or EC2 instance profile
+
+#### Azure Key Vault
+
+- **Seal type**: `azurekeyvault`
+- **Key requirement**: RSA or EC key in an Azure Key Vault with `wrapKey` and `unwrapKey` permissions
+- **Authentication on AKS**: Azure Managed Identity (either system-assigned or user-assigned)
+- **Authentication elsewhere**: Service principal credentials via a Kubernetes secret with `client-id` and `client-secret` data keys
+
+#### Transit Seal
+
+- **Seal type**: `transit`
+- **Key requirement**: A Transit secrets engine key on another Vault/OpenBao instance (the "central" instance)
+- **Dependency**: The satellite instance depends on the central instance being available and unsealed
+- **Authentication**: A Vault/OpenBao token stored in a Kubernetes secret with a `token` data key. The token must have a policy granting `update` on `transit/encrypt/<key>` and `transit/decrypt/<key>`
+- **Use case**: Multi-cluster setups where a single central Vault instance manages unseal for satellite instances
+
+### Auto-Unseal Security Considerations
+
+- **KMS key rotation**: Cloud KMS keys should have automatic rotation enabled. OpenBao re-wraps the master key on the next seal/unseal cycle after rotation.
+- **Key access audit**: Enable Cloud Audit Logs (GCP), CloudTrail (AWS), or Diagnostic Logs (Azure) on the KMS key to track every encrypt/decrypt call.
+- **Blast radius**: Deleting or disabling the KMS key makes all sealed OpenBao data unrecoverable. Use key destruction protection and IAM deny policies on deletion.
+- **Network path**: The OpenBao pod must have network access to the KMS API endpoint. For Transit seal, the pod must reach the central Vault instance on port 8200.
 
 ### TLS Configuration
 - TLS disabled by default (`global.tlsDisable: true`)

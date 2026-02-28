@@ -73,5 +73,33 @@ variable "spec" {
 
     # Enable TLS encryption.
     tls_enabled = optional(bool)
+
+    # Auto-unseal configuration. Exactly one seal type should be specified.
+    auto_unseal = optional(object({
+      gcp_kms = optional(object({
+        project                            = string
+        region                             = string
+        key_ring                           = string
+        crypto_key                         = string
+        workload_identity_service_account  = optional(string)
+      }))
+      aws_kms = optional(object({
+        region                  = string
+        kms_key_id              = string
+        credentials_secret_name = optional(string)
+      }))
+      azure_key_vault = optional(object({
+        vault_name              = string
+        key_name                = string
+        tenant_id               = string
+        credentials_secret_name = optional(string)
+      }))
+      transit = optional(object({
+        address           = string
+        key_name          = string
+        mount_path        = optional(string)
+        token_secret_name = string
+      }))
+    }))
   })
 }

@@ -82,6 +82,78 @@ locals {
       length(split(".", local.ingress_external_hostname))))
   ) : null
 
+  # Auto-unseal seal HCL stanza
+  auto_unseal = try(var.spec.auto_unseal, null)
+
+  seal_hcl = (
+    local.auto_unseal != null && try(local.auto_unseal.gcp_kms, null) != null ? join("", [
+      "\nseal \"gcpckms\" {\n",
+      "  project    = \"${local.auto_unseal.gcp_kms.project}\"\n",
+      "  region     = \"${local.auto_unseal.gcp_kms.region}\"\n",
+      "  key_ring   = \"${local.auto_unseal.gcp_kms.key_ring}\"\n",
+      "  crypto_key = \"${local.auto_unseal.gcp_kms.crypto_key}\"\n",
+      "}\n",
+    ]) :
+    local.auto_unseal != null && try(local.auto_unseal.aws_kms, null) != null ? join("", [
+      "\nseal \"awskms\" {\n",
+      "  region     = \"${local.auto_unseal.aws_kms.region}\"\n",
+      "  kms_key_id = \"${local.auto_unseal.aws_kms.kms_key_id}\"\n",
+      "}\n",
+    ]) :
+    local.auto_unseal != null && try(local.auto_unseal.azure_key_vault, null) != null ? join("", [
+      "\nseal \"azurekeyvault\" {\n",
+      "  vault_name = \"${local.auto_unseal.azure_key_vault.vault_name}\"\n",
+      "  key_name   = \"${local.auto_unseal.azure_key_vault.key_name}\"\n",
+      "  tenant_id  = \"${local.auto_unseal.azure_key_vault.tenant_id}\"\n",
+      "}\n",
+    ]) :
+    local.auto_unseal != null && try(local.auto_unseal.transit, null) != null ? join("", [
+      "\nseal \"transit\" {\n",
+      "  address    = \"${local.auto_unseal.transit.address}\"\n",
+      "  key_name   = \"${local.auto_unseal.transit.key_name}\"\n",
+      "  mount_path = \"${coalesce(try(local.auto_unseal.transit.mount_path, null), "transit/")}\"\n",
+      "}\n",
+    ]) :
+    ""
+  )
+
+  # Workload Identity service account email (GCP KMS only)
+  workload_identity_sa = try(local.auto_unseal.gcp_kms.workload_identity_service_account, "")
+
+  # Standalone mode server config HCL
+  standalone_config = <<-EOT
+ui = true
+
+listener "tcp" {
+  tls_disable = 1
+  address = "[::]:8200"
+  cluster_address = "[::]:8201"
+}
+
+storage "file" {
+  path = "/openbao/data"
+}
+${local.seal_hcl}
+EOT
+
+  # HA mode server config HCL
+  ha_raft_config = <<-EOT
+ui = true
+
+listener "tcp" {
+  tls_disable = 1
+  address = "[::]:8200"
+  cluster_address = "[::]:8201"
+}
+
+storage "raft" {
+  path = "/openbao/data"
+}
+
+service_registration "kubernetes" {}
+${local.seal_hcl}
+EOT
+
   # Computed resource names to avoid conflicts when multiple instances share a namespace
   ingress_cert_secret_name         = "${var.metadata.name}-tls"
   ingress_certificate_name         = "${var.metadata.name}-certificate"

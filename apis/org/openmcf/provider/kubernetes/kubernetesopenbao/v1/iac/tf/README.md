@@ -8,6 +8,7 @@ OpenBao is an open-source secrets management solution forked from HashiCorp Vaul
 
 - Standalone and High Availability (HA) deployment modes
 - Raft integrated storage for HA deployments
+- Auto-unseal via GCP Cloud KMS, AWS KMS, Azure Key Vault, or Transit seal
 - Optional Agent Injector for automatic secret injection
 - Ingress configuration for external access
 - UI enablement
@@ -74,6 +75,11 @@ module "openbao" {
 | ui_enabled | Enable OpenBao UI | bool | true |
 | injector | Agent Injector configuration | object | null |
 | tls_enabled | Enable TLS | bool | false |
+| auto_unseal | Auto-unseal configuration | object | null |
+| auto_unseal.gcp_kms | GCP Cloud KMS seal (project, region, key_ring, crypto_key, workload_identity_service_account) | object | null |
+| auto_unseal.aws_kms | AWS KMS seal (region, kms_key_id, credentials_secret_name) | object | null |
+| auto_unseal.azure_key_vault | Azure Key Vault seal (vault_name, key_name, tenant_id, credentials_secret_name) | object | null |
+| auto_unseal.transit | Transit seal (address, key_name, mount_path, token_secret_name) | object | null |
 
 ## Outputs
 
@@ -97,7 +103,7 @@ After deploying OpenBao, you need to:
    kubectl exec -it <pod-name> -n <namespace> -- bao operator init
    ```
 
-2. **Unseal OpenBao** (repeat with threshold keys):
+2. **Unseal OpenBao** (Shamir only -- repeat with threshold keys). If `auto_unseal` is configured, this step is handled automatically by the KMS provider on every pod startup:
    ```bash
    kubectl exec -it <pod-name> -n <namespace> -- bao operator unseal
    ```

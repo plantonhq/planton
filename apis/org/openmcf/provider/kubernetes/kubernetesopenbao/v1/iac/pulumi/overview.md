@@ -16,7 +16,7 @@ iac/pulumi/
     ├── vars.go       # Helm chart configuration
     ├── outputs.go    # Output constants
     ├── namespace.go  # Namespace creation
-    └── helm_chart.go # Helm chart installation
+    └── helm_chart.go # Helm chart installation, seal config, workload identity
 ```
 
 ## Resource Flow
@@ -34,6 +34,7 @@ iac/pulumi/
 │           │           │  │  - ingress                   │    │  │
 │           │           │  │  - injector                  │    │  │
 │           │           │  │  - ui_enabled                │    │  │
+│           │           │  │  - auto_unseal                │    │  │
 │           │           │  └─────────────────────────────┘    │  │
 │           │           └─────────────────────────────────────┘  │
 └───────────┼────────────────────────────────────────────────────┘
@@ -150,8 +151,17 @@ iac/pulumi/
 | `ui_enabled` | `ui.enabled` | Enable UI service |
 | `injector.enabled` | `injector.enabled` | Enable agent injector |
 | `tls_enabled` | `global.tlsDisable` (inverted) | TLS configuration |
+| `auto_unseal.*` | `server.standalone.config` / `server.ha.raft.config` | Appends HCL `seal` stanza to server config |
+| `auto_unseal.gcp_kms.workload_identity_service_account` | `server.serviceAccount.annotations` | Adds `iam.gke.io/gcp-service-account` annotation |
 
 ## Key Implementation Details
+
+### Auto-Unseal (`helm_chart.go`)
+
+- `sealConfigHcl(spec)` -- Type-switches on the `auto_unseal.seal` oneof and returns the matching HCL `seal` stanza (`gcpckms`, `awskms`, `azurekeyvault`, or `transit`). Returns empty string when auto-unseal is not configured. Uses `GetValue()` on `StringValueOrRef` fields.
+- `workloadIdentityServiceAccount(spec)` -- Extracts the GCP service account email from the GCP KMS seal config for the `iam.gke.io/gcp-service-account` annotation. Returns empty string when GCP KMS is not configured.
+- The seal stanza is appended to both the standalone and HA server config strings.
+- The service account annotation is injected into Helm values when Workload Identity is configured.
 
 ### Labels
 All resources are tagged with standard OpenMCF labels:
@@ -176,6 +186,6 @@ kubectl port-forward -n <namespace> service/<name> 8200:8200
 
 After deployment, OpenBao requires initialization:
 1. Initialize: `bao operator init`
-2. Unseal: `bao operator unseal` (repeat with threshold keys)
+2. Unseal (Shamir only): `bao operator unseal` (repeat with threshold keys). If `auto_unseal` is configured, this step is handled automatically by the KMS provider on every pod startup.
 3. Login: `bao login <root-token>`
 4. Configure auth methods and policies

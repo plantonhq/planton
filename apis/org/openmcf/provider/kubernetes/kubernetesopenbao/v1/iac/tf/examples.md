@@ -130,7 +130,59 @@ module "openbao_enterprise" {
 }
 ```
 
-## Example 4: Minimal Development Setup
+## Example 4: HA with GCP KMS Auto-Unseal
+
+```hcl
+module "openbao_auto_unseal" {
+  source = "."
+
+  metadata = {
+    name = "prod-openbao"
+    org  = "my-org"
+    env  = "production"
+  }
+
+  spec = {
+    namespace        = "openbao-prod"
+    create_namespace = true
+
+    server_container = {
+      replicas          = 3
+      data_storage_size = "50Gi"
+      resources = {
+        limits = {
+          cpu    = "1000m"
+          memory = "512Mi"
+        }
+        requests = {
+          cpu    = "250m"
+          memory = "256Mi"
+        }
+      }
+    }
+
+    high_availability = {
+      enabled  = true
+      replicas = 3
+    }
+
+    auto_unseal = {
+      gcp_kms = {
+        project                           = "my-gcp-project"
+        region                            = "asia-south1"
+        key_ring                          = "openbao-unseal"
+        crypto_key                        = "openbao-auto-unseal-key"
+        workload_identity_service_account = "openbao@my-gcp-project.iam.gserviceaccount.com"
+      }
+    }
+
+    ui_enabled  = true
+    tls_enabled = true
+  }
+}
+```
+
+## Example 5: Minimal Development Setup
 
 ```hcl
 module "openbao_dev" {
