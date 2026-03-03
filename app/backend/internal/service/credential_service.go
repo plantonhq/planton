@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -92,31 +91,19 @@ func (s *CredentialService) createGcpCredential(
 	if !ok || gcpConfig == nil || gcpConfig.Gcp == nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("gcp provider_config is required"))
 	}
-	if gcpConfig.Gcp.ServiceAccountKeyBase64 == "" {
-		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("service_account_key_base64 is required"))
+	if gcpConfig.Gcp.ServiceAccountKey == "" {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("service_account_key is required"))
 	}
 
-	// Frontend sends base64 encoded string, backend validates and stores it
-	// Validate that it's valid base64
-	decodedBytes, err := base64.StdEncoding.DecodeString(gcpConfig.Gcp.ServiceAccountKeyBase64)
-	if err != nil {
-		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("invalid base64 encoded service account key: %w", err))
-	}
-
-	// Validate that decoded content is valid JSON
 	var keyJSON map[string]interface{}
-	if err := json.Unmarshal(decodedBytes, &keyJSON); err != nil {
+	if err := json.Unmarshal([]byte(gcpConfig.Gcp.ServiceAccountKey), &keyJSON); err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("service account key is not valid JSON: %w", err))
 	}
 
-	// Store base64 in database
-	createdCredential, err := s.credentialRepo.CreateGcp(ctx, name, gcpConfig.Gcp.ServiceAccountKeyBase64)
+	createdCredential, err := s.credentialRepo.CreateGcp(ctx, name, gcpConfig.Gcp.ServiceAccountKey)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create GCP credential: %w", err))
 	}
-
-	// Decode base64 for response (return decoded JSON string to frontend)
-	decodedKeyString := string(decodedBytes)
 
 	protoCredential := &credentialv1.Credential{
 		Id:       createdCredential.ID.Hex(),
@@ -125,7 +112,7 @@ func (s *CredentialService) createGcpCredential(
 		ProviderConfig: &credentialv1.CredentialProviderConfig{
 			Data: &credentialv1.CredentialProviderConfig_Gcp{
 				Gcp: &gcpv1.GcpProviderConfig{
-					ServiceAccountKeyBase64: decodedKeyString, // Actually contains decoded JSON string
+					ServiceAccountKey: createdCredential.ServiceAccountKey,
 				},
 			},
 		},
@@ -436,21 +423,6 @@ func (s *CredentialService) Get(
 			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to convert credential: %w", err))
 		}
 
-		// Decode base64 to get the original service account key JSON string
-		decodedKey, err := base64.StdEncoding.DecodeString(gcpCred.ServiceAccountKeyBase64)
-		if err != nil {
-			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to decode service account key: %w", err))
-		}
-
-		// Validate that the decoded content is valid JSON
-		var keyJSON map[string]interface{}
-		if err := json.Unmarshal(decodedKey, &keyJSON); err != nil {
-			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("service account key is not valid JSON: %w", err))
-		}
-
-		// Return decoded JSON string (not base64) to frontend
-		decodedKeyString := string(decodedKey)
-
 		protoCredential = &credentialv1.Credential{
 			Id:       gcpCred.ID.Hex(),
 			Name:     gcpCred.Name,
@@ -458,7 +430,7 @@ func (s *CredentialService) Get(
 			ProviderConfig: &credentialv1.CredentialProviderConfig{
 				Data: &credentialv1.CredentialProviderConfig_Gcp{
 					Gcp: &gcpv1.GcpProviderConfig{
-						ServiceAccountKeyBase64: decodedKeyString, // Actually contains decoded JSON string
+						ServiceAccountKey: gcpCred.ServiceAccountKey,
 					},
 				},
 			},
@@ -694,34 +666,22 @@ func (s *CredentialService) updateGcpCredential(
 	if !ok || gcpConfig == nil || gcpConfig.Gcp == nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("gcp provider_config is required"))
 	}
-	if gcpConfig.Gcp.ServiceAccountKeyBase64 == "" {
-		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("service_account_key_base64 is required"))
+	if gcpConfig.Gcp.ServiceAccountKey == "" {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("service_account_key is required"))
 	}
 
-	// Frontend sends base64 encoded string, backend validates and stores it
-	// Validate that it's valid base64
-	decodedBytes, err := base64.StdEncoding.DecodeString(gcpConfig.Gcp.ServiceAccountKeyBase64)
-	if err != nil {
-		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("invalid base64 encoded service account key: %w", err))
-	}
-
-	// Validate that decoded content is valid JSON
 	var keyJSON map[string]interface{}
-	if err := json.Unmarshal(decodedBytes, &keyJSON); err != nil {
+	if err := json.Unmarshal([]byte(gcpConfig.Gcp.ServiceAccountKey), &keyJSON); err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("service account key is not valid JSON: %w", err))
 	}
 
-	// Store base64 in database
-	updatedCredential, err := s.credentialRepo.UpdateGcp(ctx, id, name, gcpConfig.Gcp.ServiceAccountKeyBase64)
+	updatedCredential, err := s.credentialRepo.UpdateGcp(ctx, id, name, gcpConfig.Gcp.ServiceAccountKey)
 	if err != nil {
 		if err.Error() == fmt.Sprintf("GCP credential with ID '%s' not found", id) {
 			return nil, connect.NewError(connect.CodeNotFound, err)
 		}
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to update GCP credential: %w", err))
 	}
-
-	// Decode base64 for response (return decoded JSON string to frontend)
-	decodedKeyString := string(decodedBytes)
 
 	protoCredential := &credentialv1.Credential{
 		Id:       updatedCredential.ID.Hex(),
@@ -730,7 +690,7 @@ func (s *CredentialService) updateGcpCredential(
 		ProviderConfig: &credentialv1.CredentialProviderConfig{
 			Data: &credentialv1.CredentialProviderConfig_Gcp{
 				Gcp: &gcpv1.GcpProviderConfig{
-					ServiceAccountKeyBase64: decodedKeyString, // Actually contains decoded JSON string
+					ServiceAccountKey: updatedCredential.ServiceAccountKey,
 				},
 			},
 		},
@@ -970,11 +930,11 @@ func convertBsonToGcpCredential(doc bson.M) (*models.GcpCredential, error) {
 	}
 
 	return &models.GcpCredential{
-		ID:                      id,
-		Name:                    doc["name"].(string),
-		ServiceAccountKeyBase64: doc["service_account_key_base64"].(string),
-		CreatedAt:               createdAt,
-		UpdatedAt:               updatedAt,
+		ID:                id,
+		Name:              doc["name"].(string),
+		ServiceAccountKey: doc["service_account_key"].(string),
+		CreatedAt:         createdAt,
+		UpdatedAt:         updatedAt,
 	}, nil
 }
 

@@ -22,21 +22,22 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpProviderConfig message represents the specification required to connect a Google Cloud Platform (GCP).
-// This message consolidates all necessary input parameters to establish a connection with a GCP account,
-// ensuring accurate configuration and validation of credentials.
-// Fields include details like GCP organization ID and service account key, providing a complete set of information
-// for securely connecting to GCP.
-// Detailed validation rules have been applied to these fields to ensure input correctness and adherence to
-// security protocols.
+// GcpProviderConfig contains the authentication configuration for a Google Cloud Platform provider.
+//
+// Used as the provider_config in stack inputs for all GCP-based IaC modules. The runner or
+// IaC module uses this to configure the Pulumi/Terraform GCP provider.
 type GcpProviderConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The Google Service Account Base64 Encoded Key, which is used to authenticate API requests to GCP services.
-	// This is a required field, and the value must be a valid base64 encoded string.
-	// // For more information do refer this link https://cloud.google.com/iam/docs/keys-create-delete
-	ServiceAccountKeyBase64 string `protobuf:"bytes,1,opt,name=service_account_key_base64,json=serviceAccountKeyBase64,proto3" json:"service_account_key_base64,omitempty"`
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
+	// JSON content of a Google Service Account key file.
+	//
+	// This is the raw JSON downloaded from the GCP Console or generated via
+	// `gcloud iam service-accounts keys create`. It contains fields such as
+	// type, project_id, private_key_id, private_key, client_email, etc.
+	//
+	// For more information: https://cloud.google.com/iam/docs/keys-create-delete
+	ServiceAccountKey string `protobuf:"bytes,1,opt,name=service_account_key,json=serviceAccountKey,proto3" json:"service_account_key,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *GcpProviderConfig) Reset() {
@@ -69,9 +70,9 @@ func (*GcpProviderConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_gcp_provider_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpProviderConfig) GetServiceAccountKeyBase64() string {
+func (x *GcpProviderConfig) GetServiceAccountKey() string {
 	if x != nil {
-		return x.ServiceAccountKeyBase64
+		return x.ServiceAccountKey
 	}
 	return ""
 }
@@ -80,9 +81,9 @@ var File_org_openmcf_provider_gcp_provider_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_gcp_provider_proto_rawDesc = "" +
 	"\n" +
-	"'org/openmcf/provider/gcp/provider.proto\x12\x18org.openmcf.provider.gcp\x1a\x1bbuf/validate/validate.proto\"X\n" +
-	"\x11GcpProviderConfig\x12C\n" +
-	"\x1aservice_account_key_base64\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x17serviceAccountKeyBase64B\xed\x01\n" +
+	"'org/openmcf/provider/gcp/provider.proto\x12\x18org.openmcf.provider.gcp\x1a\x1bbuf/validate/validate.proto\"K\n" +
+	"\x11GcpProviderConfig\x126\n" +
+	"\x13service_account_key\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x11serviceAccountKeyB\xed\x01\n" +
 	"\x1ccom.org.openmcf.provider.gcpB\rProviderProtoP\x01Z:github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp\xa2\x02\x04OOPG\xaa\x02\x18Org.Openmcf.Provider.Gcp\xca\x02\x18Org\\Openmcf\\Provider\\Gcp\xe2\x02$Org\\Openmcf\\Provider\\Gcp\\GPBMetadata\xea\x02\x1bOrg::Openmcf::Provider::Gcpb\x06proto3"
 
 var (

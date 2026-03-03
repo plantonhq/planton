@@ -93,7 +93,7 @@ func buildGcpGkeKubeConfig(c *kubernetesprovider.KubernetesProviderConfigGcpGke)
 		c.ClusterEndpoint,
 		c.ClusterCaData,
 		gcpExecPluginPath,
-		c.ServiceAccountKeyBase64), nil
+		c.ServiceAccountKey), nil
 }
 
 func buildAwsEksKubeConfig(c *kubernetesprovider.KubernetesProviderConfigAwsEks) (string, error) {

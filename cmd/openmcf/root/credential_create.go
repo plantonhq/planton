@@ -2,7 +2,6 @@ package root
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"net/http"
 	"os"
@@ -153,16 +152,13 @@ func buildGcpCredentialRequest(cmd *cobra.Command, name string) (*credentialv1.C
 		return nil, fmt.Errorf("failed to read service account key file '%s': %w", keyFile, err)
 	}
 
-	// Base64 encode the key
-	keyBase64 := base64.StdEncoding.EncodeToString(keyContent)
-
 	return &credentialv1.CreateCredentialRequest{
 		Name:     name,
 		Provider: credentialv1.Credential_GCP,
 		ProviderConfig: &credentialv1.CredentialProviderConfig{
 			Data: &credentialv1.CredentialProviderConfig_Gcp{
 				Gcp: &gcpv1.GcpProviderConfig{
-					ServiceAccountKeyBase64: keyBase64,
+					ServiceAccountKey: string(keyContent),
 				},
 			},
 		},

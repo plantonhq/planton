@@ -71,7 +71,7 @@ variable "spec" {
 variable "provider_config" {
   description = "GCP provider configuration"
   type = object({
-    service_account_key_base64 = optional(string, "")
+    service_account_key = optional(string, "")
   })
-  default = { service_account_key_base64 = "" }
+  default = { service_account_key = "" }
 }

@@ -48,12 +48,12 @@ jobs:
           - civo
           - cloudflare
           - confluent
-          - digitalocean
+        # - digitalocean
           - gcp
           - kubernetes
           - openfga
-          - openstack
-          - snowflake
+        # - openstack
+        # - snowflake
 
     steps:
       - name: Checkout

@@ -1,7 +1,6 @@
 package pulumigoogleprovider
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"reflect"
@@ -18,24 +17,14 @@ func Get(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig,
 	nameSuffixes ...string) (*gcp.Provider, error) {
 	gcpProviderArgs := &gcp.ProviderArgs{}
 
-	//if stack-input contains gcp-credentials, provider will be created with those credentials
-	if gcpProviderConfig != nil {
-		serviceAccountKeyBytes, err := base64.StdEncoding.DecodeString(gcpProviderConfig.ServiceAccountKeyBase64)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to decode base64 encoded"+
-				" google service account credential")
-		}
-		// Convert bytes to string - the GCP provider expects the JSON content as a string
-		serviceAccountKeyJSON := string(serviceAccountKeyBytes)
-
-		// Validate that the decoded content is valid JSON
+	if gcpProviderConfig != nil && gcpProviderConfig.ServiceAccountKey != "" {
 		var serviceAccountKeyMap map[string]interface{}
-		if err := json.Unmarshal(serviceAccountKeyBytes, &serviceAccountKeyMap); err != nil {
+		if err := json.Unmarshal([]byte(gcpProviderConfig.ServiceAccountKey), &serviceAccountKeyMap); err != nil {
 			return nil, errors.Wrap(err, "failed to parse service account key JSON. "+
-				"Ensure the base64-encoded value contains valid JSON with fields: type, project_id, private_key_id, private_key, client_email, client_id, auth_uri, token_uri")
+				"Ensure the value is a valid GCP Service Account key file containing fields: "+
+				"type, project_id, private_key_id, private_key, client_email, client_id, auth_uri, token_uri")
 		}
 
-		// Validate required fields are present
 		requiredFields := []string{"type", "project_id", "private_key", "client_email"}
 		for _, field := range requiredFields {
 			if _, ok := serviceAccountKeyMap[field]; !ok {
@@ -43,19 +32,17 @@ func Get(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig,
 			}
 		}
 
-		// Validate private_key format - it should be a PEM-encoded key
 		privateKey, ok := serviceAccountKeyMap["private_key"].(string)
 		if !ok {
 			return nil, errors.New("service account key 'private_key' field must be a string")
 		}
-		// Check if private key looks like PEM format (starts with -----BEGIN)
-		if len(privateKey) > 0 && !(privateKey[:11] == "-----BEGIN " || privateKey[:15] == "-----BEGIN RSA ") {
+		if len(privateKey) > 11 && privateKey[:11] != "-----BEGIN " {
 			return nil, errors.New("service account key 'private_key' field must be a PEM-encoded key " +
-				"(starting with '-----BEGIN PRIVATE KEY-----' or '-----BEGIN RSA PRIVATE KEY-----'). " +
+				"(starting with '-----BEGIN PRIVATE KEY-----'). " +
 				"Ensure you're using a JSON key file from GCP, not a P12/PKCS12 key")
 		}
 
-		gcpProviderArgs = &gcp.ProviderArgs{Credentials: pulumi.String(serviceAccountKeyJSON)}
+		gcpProviderArgs = &gcp.ProviderArgs{Credentials: pulumi.String(gcpProviderConfig.ServiceAccountKey)}
 	}
 
 	googleProvider, err := gcp.NewProvider(ctx, ProviderResourceName(nameSuffixes), gcpProviderArgs)

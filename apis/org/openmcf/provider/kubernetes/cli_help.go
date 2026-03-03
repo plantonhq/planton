@@ -21,7 +21,7 @@ const ConfigFileExample = `provider: 1  # 1=GCP_GKE, 2=AWS_EKS, 3=AZURE_AKS, 4=D
 gcp_gke:
   cluster_endpoint: "<cluster-endpoint>"
   cluster_ca_data: "<base64-encoded-ca-cert>"
-  service_account_key_base64: "<base64-encoded-service-account-json>"`
+  service_account_key: "<service-account-json>"`
 
 // ConfigFileName is the suggested filename for the provider config.
 const ConfigFileName = "kubernetes-provider-config.yaml"

@@ -29,8 +29,7 @@ func NewCredentialRepository(db *MongoDB) *CredentialRepository {
 }
 
 // CreateGcp creates a new GCP credential.
-func (r *CredentialRepository) CreateGcp(ctx context.Context, name, serviceAccountKeyBase64 string) (*models.GcpCredential, error) {
-	// Check if a credential for this provider already exists
+func (r *CredentialRepository) CreateGcp(ctx context.Context, name, serviceAccountKey string) (*models.GcpCredential, error) {
 	exists, err := r.ExistsByProvider(ctx, "gcp")
 	if err != nil {
 		return nil, fmt.Errorf("failed to check for existing GCP credential: %w", err)
@@ -41,21 +40,20 @@ func (r *CredentialRepository) CreateGcp(ctx context.Context, name, serviceAccou
 
 	now := time.Now()
 	credential := &models.GcpCredential{
-		ID:                      primitive.NewObjectID(),
-		Name:                    name,
-		ServiceAccountKeyBase64: serviceAccountKeyBase64,
-		CreatedAt:               now,
-		UpdatedAt:               now,
+		ID:                primitive.NewObjectID(),
+		Name:              name,
+		ServiceAccountKey: serviceAccountKey,
+		CreatedAt:         now,
+		UpdatedAt:         now,
 	}
 
-	// Store as document with provider field
 	doc := bson.M{
-		"_id":                        credential.ID,
-		"name":                       credential.Name,
-		"provider":                   "gcp",
-		"service_account_key_base64": credential.ServiceAccountKeyBase64,
-		"created_at":                 credential.CreatedAt,
-		"updated_at":                 credential.UpdatedAt,
+		"_id":                 credential.ID,
+		"name":                credential.Name,
+		"provider":            "gcp",
+		"service_account_key": credential.ServiceAccountKey,
+		"created_at":          credential.CreatedAt,
+		"updated_at":          credential.UpdatedAt,
 	}
 
 	_, err = r.collection.InsertOne(ctx, doc)
@@ -159,7 +157,7 @@ func (r *CredentialRepository) CreateAzure(ctx context.Context, name, clientID, 
 }
 
 // UpdateGcp updates an existing GCP credential.
-func (r *CredentialRepository) UpdateGcp(ctx context.Context, id string, name, serviceAccountKeyBase64 string) (*models.GcpCredential, error) {
+func (r *CredentialRepository) UpdateGcp(ctx context.Context, id string, name, serviceAccountKey string) (*models.GcpCredential, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, fmt.Errorf("invalid ID format: %w", err)
@@ -168,9 +166,9 @@ func (r *CredentialRepository) UpdateGcp(ctx context.Context, id string, name, s
 	now := time.Now()
 	update := bson.M{
 		"$set": bson.M{
-			"name":                       name,
-			"service_account_key_base64": serviceAccountKeyBase64,
-			"updated_at":                 now,
+			"name":                name,
+			"service_account_key": serviceAccountKey,
+			"updated_at":          now,
 		},
 	}
 
@@ -488,11 +486,11 @@ func convertToGcpCredential(doc bson.M) (*models.GcpCredential, error) {
 	}
 
 	return &models.GcpCredential{
-		ID:                      id,
-		Name:                    doc["name"].(string),
-		ServiceAccountKeyBase64: doc["service_account_key_base64"].(string),
-		CreatedAt:               createdAt,
-		UpdatedAt:               updatedAt,
+		ID:                id,
+		Name:              doc["name"].(string),
+		ServiceAccountKey: doc["service_account_key"].(string),
+		CreatedAt:         createdAt,
+		UpdatedAt:         updatedAt,
 	}, nil
 }
 

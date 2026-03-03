@@ -49,12 +49,12 @@ jobs:
           - civo
           - cloudflare
           - confluent
-          - digitalocean
+          # - digitalocean
           - gcp
           - kubernetes
           - openfga
-          - openstack
-          - snowflake
+          # - openstack
+          # - snowflake
         platform:
           - goos: linux
             goarch: amd64

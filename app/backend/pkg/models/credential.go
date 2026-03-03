@@ -32,11 +32,11 @@ type AwsCredential struct {
 
 // GcpCredential represents GCP credentials.
 type GcpCredential struct {
-	ID                      primitive.ObjectID `bson:"_id,omitempty" json:"id"`
-	Name                    string             `bson:"name" json:"name"`
-	ServiceAccountKeyBase64 string             `bson:"service_account_key_base64" json:"service_account_key_base64"`
-	CreatedAt               time.Time          `bson:"created_at" json:"created_at"`
-	UpdatedAt               time.Time          `bson:"updated_at" json:"updated_at"`
+	ID                primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	Name              string             `bson:"name" json:"name"`
+	ServiceAccountKey string             `bson:"service_account_key" json:"service_account_key"`
+	CreatedAt         time.Time          `bson:"created_at" json:"created_at"`
+	UpdatedAt         time.Time          `bson:"updated_at" json:"updated_at"`
 }
 
 // AzureCredential represents Azure credentials.

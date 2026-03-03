@@ -106,7 +106,7 @@ func gcpGke(spec *kubernetesprovider.KubernetesProviderConfig) (kubeConfigString
 		c.ClusterEndpoint,
 		c.ClusterCaData,
 		pulumigkekubernetesprovider.GcpExecPluginPath,
-		c.ServiceAccountKeyBase64)
+		c.ServiceAccountKey)
 
 	return kubeConfigString
 }
