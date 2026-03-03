@@ -1,7 +1,7 @@
 variable "provider_config" {
   description = "GCP provider configuration"
   type = object({
-    service_account_key_base64 = string
+    service_account_key = string
   })
 }
 

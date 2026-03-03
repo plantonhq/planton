@@ -12,5 +12,5 @@ terraform {
 }
 
 provider "google" {
-  credentials = var.provider_config.service_account_key_base64 != "" ? base64decode(var.provider_config.service_account_key_base64) : null
+  credentials = var.provider_config.service_account_key != "" ? var.provider_config.service_account_key : null
 }

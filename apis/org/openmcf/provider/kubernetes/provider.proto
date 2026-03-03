@@ -37,20 +37,20 @@ message KubernetesProviderConfig {
   KubernetesProviderConfigDigitalOceanDoks digital_ocean_doks = 5;
 }
 
-// KubernetesProviderConfigGcpGke message represents the specification required to connect to a Google Kubernetes Engine (GKE) cluster.
-// This message consolidates the necessary input parameters for establishing a secure connection with a GKE cluster.
+// KubernetesProviderConfigGcpGke contains the connection parameters for a Google Kubernetes Engine (GKE) cluster.
 message KubernetesProviderConfigGcpGke {
-  // The cluster endpoint for the GKE cluster.
-  // This is a required field and must contain the URL endpoint for the GKE cluster.
+  // The cluster API server endpoint URL.
   string cluster_endpoint = 1 [(buf.validate.field).required = true];
 
-  // The cluster Certificate Authority (CA) data for the GKE cluster.
-  // This is a required field and must contain the base64 encoded CA certificate.
+  // Base64-encoded cluster Certificate Authority (CA) certificate.
+  // This is the standard kubeconfig CA data format.
   string cluster_ca_data = 2 [(buf.validate.field).required = true];
 
-  // The base64 encoded Google Service Account JSON key.
-  // This is a required field and must be a valid base64 encoded string representing the service account key.
-  string service_account_key_base64 = 3 [(buf.validate.field).required = true];
+  // JSON content of a Google Service Account key file used to authenticate to the GKE cluster.
+  //
+  // This is the raw JSON downloaded from the GCP Console or generated via
+  // `gcloud iam service-accounts keys create`.
+  string service_account_key = 3 [(buf.validate.field).required = true];
 }
 
 // KubernetesProviderConfigAwsEks message represents the specification required to connect to a Elastic Kubernetes Service (EKS) cluster.

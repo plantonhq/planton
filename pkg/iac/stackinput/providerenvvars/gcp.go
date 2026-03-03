@@ -1,8 +1,6 @@
 package providerenvvars
 
 import (
-	"encoding/base64"
-
 	"github.com/pkg/errors"
 	gcpprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
 )
@@ -14,13 +12,8 @@ func loadGcpEnvVars(providerConfigYaml []byte) (map[string]string, error) {
 		return nil, errors.Wrap(err, "failed to load GCP provider config")
 	}
 
-	serviceAccountKey, err := base64.StdEncoding.DecodeString(config.ServiceAccountKeyBase64)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to decode service account key from base64")
-	}
-
 	envVars := map[string]string{
-		"GOOGLE_CREDENTIALS": string(serviceAccountKey),
+		"GOOGLE_CREDENTIALS": config.ServiceAccountKey,
 	}
 
 	return envVars, nil

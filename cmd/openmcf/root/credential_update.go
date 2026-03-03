@@ -2,7 +2,6 @@ package root
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"net/http"
 	"os"
@@ -111,11 +110,10 @@ func credentialUpdateHandler(cmd *cobra.Command, args []string) {
 			os.Exit(1)
 		}
 
-		serviceAccountKeyBase64 := base64.StdEncoding.EncodeToString(keyBytes)
 		req.ProviderConfig = &credentialv1.CredentialProviderConfig{
 			Data: &credentialv1.CredentialProviderConfig_Gcp{
 				Gcp: &gcpv1.GcpProviderConfig{
-					ServiceAccountKeyBase64: serviceAccountKeyBase64,
+					ServiceAccountKey: string(keyBytes),
 				},
 			},
 		}

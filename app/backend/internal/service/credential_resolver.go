@@ -88,7 +88,7 @@ func (r *CredentialResolver) ResolveProviderConfig(
 		return &credentialv1.CredentialProviderConfig{
 			Data: &credentialv1.CredentialProviderConfig_Gcp{
 				Gcp: &gcpv1.GcpProviderConfig{
-					ServiceAccountKeyBase64: gcpCred.ServiceAccountKeyBase64,
+					ServiceAccountKey: gcpCred.ServiceAccountKey,
 				},
 			},
 		}, nil

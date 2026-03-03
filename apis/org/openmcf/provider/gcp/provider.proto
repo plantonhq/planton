@@ -4,16 +4,17 @@ package org.openmcf.provider.gcp;
 
 import "buf/validate/validate.proto";
 
-// GcpProviderConfig message represents the specification required to connect a Google Cloud Platform (GCP).
-// This message consolidates all necessary input parameters to establish a connection with a GCP account,
-// ensuring accurate configuration and validation of credentials.
-// Fields include details like GCP organization ID and service account key, providing a complete set of information
-// for securely connecting to GCP.
-// Detailed validation rules have been applied to these fields to ensure input correctness and adherence to
-// security protocols.
+// GcpProviderConfig contains the authentication configuration for a Google Cloud Platform provider.
+//
+// Used as the provider_config in stack inputs for all GCP-based IaC modules. The runner or
+// IaC module uses this to configure the Pulumi/Terraform GCP provider.
 message GcpProviderConfig {
-  // The Google Service Account Base64 Encoded Key, which is used to authenticate API requests to GCP services.
-  // This is a required field, and the value must be a valid base64 encoded string.
-  // // For more information do refer this link https://cloud.google.com/iam/docs/keys-create-delete
-  string service_account_key_base64 = 1 [(buf.validate.field).required = true];
+  // JSON content of a Google Service Account key file.
+  //
+  // This is the raw JSON downloaded from the GCP Console or generated via
+  // `gcloud iam service-accounts keys create`. It contains fields such as
+  // type, project_id, private_key_id, private_key, client_email, etc.
+  //
+  // For more information: https://cloud.google.com/iam/docs/keys-create-delete
+  string service_account_key = 1 [(buf.validate.field).required = true];
 }

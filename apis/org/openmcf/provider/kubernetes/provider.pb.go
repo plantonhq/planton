@@ -166,21 +166,21 @@ func (x *KubernetesProviderConfig) GetDigitalOceanDoks() *KubernetesProviderConf
 	return nil
 }
 
-// KubernetesProviderConfigGcpGke message represents the specification required to connect to a Google Kubernetes Engine (GKE) cluster.
-// This message consolidates the necessary input parameters for establishing a secure connection with a GKE cluster.
+// KubernetesProviderConfigGcpGke contains the connection parameters for a Google Kubernetes Engine (GKE) cluster.
 type KubernetesProviderConfigGcpGke struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The cluster endpoint for the GKE cluster.
-	// This is a required field and must contain the URL endpoint for the GKE cluster.
+	// The cluster API server endpoint URL.
 	ClusterEndpoint string `protobuf:"bytes,1,opt,name=cluster_endpoint,json=clusterEndpoint,proto3" json:"cluster_endpoint,omitempty"`
-	// The cluster Certificate Authority (CA) data for the GKE cluster.
-	// This is a required field and must contain the base64 encoded CA certificate.
+	// Base64-encoded cluster Certificate Authority (CA) certificate.
+	// This is the standard kubeconfig CA data format.
 	ClusterCaData string `protobuf:"bytes,2,opt,name=cluster_ca_data,json=clusterCaData,proto3" json:"cluster_ca_data,omitempty"`
-	// The base64 encoded Google Service Account JSON key.
-	// This is a required field and must be a valid base64 encoded string representing the service account key.
-	ServiceAccountKeyBase64 string `protobuf:"bytes,3,opt,name=service_account_key_base64,json=serviceAccountKeyBase64,proto3" json:"service_account_key_base64,omitempty"`
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
+	// JSON content of a Google Service Account key file used to authenticate to the GKE cluster.
+	//
+	// This is the raw JSON downloaded from the GCP Console or generated via
+	// `gcloud iam service-accounts keys create`.
+	ServiceAccountKey string `protobuf:"bytes,3,opt,name=service_account_key,json=serviceAccountKey,proto3" json:"service_account_key,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *KubernetesProviderConfigGcpGke) Reset() {
@@ -227,9 +227,9 @@ func (x *KubernetesProviderConfigGcpGke) GetClusterCaData() string {
 	return ""
 }
 
-func (x *KubernetesProviderConfigGcpGke) GetServiceAccountKeyBase64() string {
+func (x *KubernetesProviderConfigGcpGke) GetServiceAccountKey() string {
 	if x != nil {
-		return x.ServiceAccountKeyBase64
+		return x.ServiceAccountKey
 	}
 	return ""
 }
@@ -365,11 +365,11 @@ const file_org_openmcf_provider_kubernetes_provider_proto_rawDesc = "" +
 	"\agcp_gke\x18\x02 \x01(\v2?.org.openmcf.provider.kubernetes.KubernetesProviderConfigGcpGkeR\x06gcpGke\x12X\n" +
 	"\aaws_eks\x18\x03 \x01(\v2?.org.openmcf.provider.kubernetes.KubernetesProviderConfigAwsEksR\x06awsEks\x12^\n" +
 	"\tazure_aks\x18\x04 \x01(\v2A.org.openmcf.provider.kubernetes.KubernetesProviderConfigAzureAksR\bazureAks\x12w\n" +
-	"\x12digital_ocean_doks\x18\x05 \x01(\v2I.org.openmcf.provider.kubernetes.KubernetesProviderConfigDigitalOceanDoksR\x10digitalOceanDoks\"\xc8\x01\n" +
+	"\x12digital_ocean_doks\x18\x05 \x01(\v2I.org.openmcf.provider.kubernetes.KubernetesProviderConfigDigitalOceanDoksR\x10digitalOceanDoks\"\xbb\x01\n" +
 	"\x1eKubernetesProviderConfigGcpGke\x121\n" +
 	"\x10cluster_endpoint\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0fclusterEndpoint\x12.\n" +
-	"\x0fcluster_ca_data\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\rclusterCaData\x12C\n" +
-	"\x1aservice_account_key_base64\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x17serviceAccountKeyBase64\" \n" +
+	"\x0fcluster_ca_data\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\rclusterCaData\x126\n" +
+	"\x13service_account_key\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x11serviceAccountKey\" \n" +
 	"\x1eKubernetesProviderConfigAwsEks\"\"\n" +
 	" KubernetesProviderConfigAzureAks\"S\n" +
 	"(KubernetesProviderConfigDigitalOceanDoks\x12'\n" +

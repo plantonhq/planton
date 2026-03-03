@@ -19,7 +19,7 @@ const EnvironmentVariablesHelp = `export GOOGLE_APPLICATION_CREDENTIALS="/path/t
 export GOOGLE_CLOUD_PROJECT="<your-project-id>"`
 
 // ConfigFileExample provides an example YAML configuration file.
-const ConfigFileExample = `service_account_key_base64: "<base64-encoded-service-account-json>"`
+const ConfigFileExample = `service_account_key: "<service-account-json>"`
 
 // ConfigFileName is the suggested filename for the provider config.
 const ConfigFileName = "gcp-provider-config.yaml"
