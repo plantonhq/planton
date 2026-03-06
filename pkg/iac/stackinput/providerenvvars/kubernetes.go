@@ -1,6 +1,7 @@
 package providerenvvars
 
 import (
+	"encoding/base64"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -93,7 +94,7 @@ func buildGcpGkeKubeConfig(c *kubernetesprovider.KubernetesProviderConfigGcpGke)
 		c.ClusterEndpoint,
 		c.ClusterCaData,
 		gcpExecPluginPath,
-		c.ServiceAccountKey), nil
+		base64.StdEncoding.EncodeToString([]byte(c.ServiceAccountKey))), nil
 }
 
 func buildAwsEksKubeConfig(c *kubernetesprovider.KubernetesProviderConfigAwsEks) (string, error) {

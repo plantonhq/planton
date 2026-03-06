@@ -1,6 +1,7 @@
 package pulumikubernetesprovider
 
 import (
+	"encoding/base64"
 	"fmt"
 	"os"
 
@@ -106,7 +107,7 @@ func gcpGke(spec *kubernetesprovider.KubernetesProviderConfig) (kubeConfigString
 		c.ClusterEndpoint,
 		c.ClusterCaData,
 		pulumigkekubernetesprovider.GcpExecPluginPath,
-		c.ServiceAccountKey)
+		base64.StdEncoding.EncodeToString([]byte(c.ServiceAccountKey)))
 
 	return kubeConfigString
 }
