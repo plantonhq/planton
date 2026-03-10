@@ -65,7 +65,7 @@ metadata:
   name: my-first-postgres
   labels:
     openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: local
+    pulumi.openmcf.org/organization: organization
     pulumi.openmcf.org/project: getting-started
     pulumi.openmcf.org/stack.name: dev
 spec:
