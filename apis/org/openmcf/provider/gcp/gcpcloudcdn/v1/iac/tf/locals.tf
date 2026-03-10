@@ -4,7 +4,7 @@ locals {
   # GCP labels from metadata
   gcp_labels = merge(
     {
-      "planton-cloud-resource-type" = "gcp-cloud-cdn"
+      "planton-resource-type" = "gcp-cloud-cdn"
     },
     var.metadata.labels
   )

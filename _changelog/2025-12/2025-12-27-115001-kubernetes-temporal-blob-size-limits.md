@@ -175,9 +175,9 @@ spec:
 
 ## Related Work
 
-- **Preceding changelog**: `planton-cloud/_changelog/2025-12/2025-12-26-132601-kubernetes-temporal-web-console-dynamic-config-services.md` - Added initial history size limit support
+- **Preceding changelog**: `planton/_changelog/2025-12/2025-12-26-132601-kubernetes-temporal-web-console-dynamic-config-services.md` - Added initial history size limit support
 - **Web Console**: Updated separately to expose these fields in forms and details pages
-- **Production manifest**: `planton-cloud/ops/.../temporal.yaml` updated with 10MB limit
+- **Production manifest**: `planton/ops/.../temporal.yaml` updated with 10MB limit
 
 ## Best Practices
 

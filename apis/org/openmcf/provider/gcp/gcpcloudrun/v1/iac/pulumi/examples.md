@@ -1,4 +1,4 @@
-Here are a few examples of the `GcpCloudRun` API resource based on the information you provided. These examples demonstrate how developers can configure the `GcpCloudRun` API resource for deploying services on Google Cloud using Planton Cloud's standard structure.
+Here are a few examples of the `GcpCloudRun` API resource based on the information you provided. These examples demonstrate how developers can configure the `GcpCloudRun` API resource for deploying services on Google Cloud using Planton's standard structure.
 
 ### Example 1: Basic Google Cloud Run Deployment
 

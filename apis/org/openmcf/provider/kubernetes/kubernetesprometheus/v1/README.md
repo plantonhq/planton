@@ -15,7 +15,7 @@ Managing a Prometheus deployment within Kubernetes can be complex, especially wh
 
 ### Environment and Stack Integration
 
-- **Environment Info**: Automatically integrates with Planton Cloud's environment management, ensuring that Prometheus is deployed within the appropriate context.
+- **Environment Info**: Automatically integrates with Planton's environment management, ensuring that Prometheus is deployed within the appropriate context.
 - **Stack Job Settings**: Supports configuration of stack-update settings to enable consistent infrastructure-as-code deployments.
 
 ### Kubernetes Credential Management

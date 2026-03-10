@@ -40,7 +40,7 @@ Removed redundant provider prefixes and implemented smart title generation:
 
 **3. Component Icon Integration**
 
-Copied 39 component logos from planton-cloud repository and organized them in the expected flat structure for the documentation site.
+Copied 39 component logos from planton repository and organized them in the expected flat structure for the documentation site.
 
 **4. Complete Catalog Coverage**
 
@@ -139,13 +139,13 @@ function generateTitle(component: string, provider: string): string {
 
 ### 3. Component Icon Organization
 
-Copied component logos from the planton-cloud repository and reorganized them to match the site's expected flat structure:
+Copied component logos from the planton repository and reorganized them to match the site's expected flat structure:
 
 ```bash
 # Copied from source
-/planton-cloud/apis/.../provider/kubernetes/addon/{component}/v1/logo.svg
-/planton-cloud/apis/.../provider/kubernetes/workload/{component}/v1/logo.svg
-/planton-cloud/apis/.../provider/snowflake/snowflakedatabase/v1/logo.svg
+/planton/apis/.../provider/kubernetes/addon/{component}/v1/logo.svg
+/planton/apis/.../provider/kubernetes/workload/{component}/v1/logo.svg
+/planton/apis/.../provider/snowflake/snowflakedatabase/v1/logo.svg
 
 # Organized as
 /site/public/images/providers/kubernetes/{component}/logo.svg
@@ -274,7 +274,7 @@ cd site && npm run copy-docs
 - Updated provider list to include kubernetes and snowflake
 
 **Phase 3: Icon Integration** ✅
-- Copied 39 component logos from planton-cloud
+- Copied 39 component logos from planton
 - Organized in flat structure matching site expectations
 - Verified all paths match website URL patterns
 
@@ -334,7 +334,7 @@ In the sidebar navigation, each component already appears under its provider sec
 1. **Category Tags**: Add addon/workload tags to Kubernetes components in the UI
 2. **Search Optimization**: Enhance search to include component aliases (e.g., "argocd" finds "ArgoCD")
 3. **Icon Fallbacks**: Generate default icons for components without custom logos
-4. **Automated Icon Sync**: Script to periodically sync icons from planton-cloud repository
+4. **Automated Icon Sync**: Script to periodically sync icons from planton repository
 5. **Title Validation**: Build-time warnings for components without special case title mappings
 
 ## Verification Commands
@@ -364,7 +364,7 @@ cd site && yarn dev
 
 1. **Manual Index Maintenance**: The `site/public/docs/index.md` provider cards are manually maintained and don't auto-update when component counts change
 2. **Title Edge Cases**: Some compound component names may not format perfectly and require adding to the special cases dictionary
-3. **Icon Dependencies**: Icons must be manually synced from planton-cloud repository when new components are added
+3. **Icon Dependencies**: Icons must be manually synced from planton repository when new components are added
 
 ---
 

@@ -654,9 +654,9 @@ This same change pattern should be applied to these additional components that h
 3. Run tests for that component
 4. Update examples
 
-## Planton Cloud Web Console Integration
+## Planton Web Console Integration
 
-When this pattern is adopted, the Planton Cloud web console (`planton-cloud` repo) will need updates:
+When this pattern is adopted, the Planton web console (`planton` repo) will need updates:
 
 ### Form Components
 

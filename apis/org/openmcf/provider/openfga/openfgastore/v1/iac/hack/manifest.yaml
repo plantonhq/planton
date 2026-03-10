@@ -24,7 +24,7 @@ apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaStore
 metadata:
   name: test-store
-  org: planton-cloud
+  org: planton
   env: development
 spec:
   name: test-authorization-store

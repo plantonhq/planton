@@ -6,7 +6,7 @@ spec:
   # ——— core GCP context ———
   # projectId using StringValueOrRef format (can use value or valueFrom)
   projectId:
-    value: planton-cloud-testing
+    value: planton-testing
   region: us-central1            # pick the closest GCP region
   # serviceName: custom-service-name  # optional: customize Cloud Run service name
 

@@ -37,7 +37,7 @@ func createDnsRecord(
 		Type:    pulumi.String("A"),
 		Content: pulumi.String("100.0.0.1"), // Dummy IP - not used due to proxying
 		Proxied: pulumi.Bool(true),          // Orange cloud - routes through Cloudflare
-		Comment: pulumi.String("Managed by Planton Cloud - Routes to Cloudflare Worker"),
+		Comment: pulumi.String("Managed by Planton - Routes to Cloudflare Worker"),
 		Ttl:     pulumi.Float64(1), // TTL is automatic when proxied
 	}
 

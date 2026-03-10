@@ -275,7 +275,7 @@ apiVersion: kubernetes.openmcf.org/v1
 kind: PostgresKubernetes
 metadata:
   name: api-resources
-  org: planton-cloud
+  org: planton
   env: app-prod
 spec:
   container:
@@ -290,7 +290,7 @@ spec:
     restore:
       enabled: true  # Stage 1: Bootstrap as standby
       bucket_name: "planton-db-backups-prod"
-      s3_path: "backups/db-pgk8s-planton-cloud-app-prod-main/14"
+      s3_path: "backups/db-pgk8s-planton-app-prod-main/14"
       r2_config:
         cloudflare_account_id: "074755a78d8e8f77c119a90a125e8a06"
         access_key_id: "xxx"
@@ -300,7 +300,7 @@ spec:
 **Deploy**:
 
 ```bash
-cd ops/organizations/planton-cloud/infra-hub/cloud-resources/app-prod/kubernetes/workload/app/dependencies/databases
+cd ops/organizations/planton/infra-hub/cloud-resources/app-prod/kubernetes/workload/app/dependencies/databases
 
 export POSTGRES_MODULE=~/scm/github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/postgreskubernetes/v1/iac/pulumi
 
@@ -318,7 +318,7 @@ apiVersion: acid.zalan.do/v1
 kind: postgresql
 spec:
   standby:
-    s3_wal_path: "s3://planton-db-backups-prod/backups/db-pgk8s-planton-cloud-app-prod-main/14"
+    s3_wal_path: "s3://planton-db-backups-prod/backups/db-pgk8s-planton-app-prod-main/14"
   env:
     - name: STANDBY_AWS_ENDPOINT
       value: "https://074755a78d8e8f77c119a90a125e8a06.r2.cloudflarestorage.com"
@@ -439,7 +439,7 @@ kubectl exec -n postgres-app-prod-api-resources $POD -- psql -U postgres -c "CRE
 **Test Database**:
 - **Name**: `postgres-api-resources`
 - **Namespace**: `postgres-app-prod-api-resources`
-- **Source**: `db-pgk8s-planton-cloud-app-prod-main` (447 days old, PostgreSQL 14)
+- **Source**: `db-pgk8s-planton-app-prod-main` (447 days old, PostgreSQL 14)
 - **Backup**: Latest from R2 (2025-11-07)
 
 **Verified Components**:
@@ -458,13 +458,13 @@ kubectl get postgresql -n postgres-app-prod-api-resources db-api-resources -o ya
 
 # Output:
 #   standby:
-#     s3_wal_path: s3://planton-db-backups-prod/backups/db-pgk8s-planton-cloud-app-prod-main/14
+#     s3_wal_path: s3://planton-db-backups-prod/backups/db-pgk8s-planton-app-prod-main/14
 
 # Environment variables verification
 kubectl exec -n postgres-app-prod-api-resources $POD -- env | grep STANDBY
 
 # Output:
-#   STANDBY_WALE_S3_PREFIX=s3://planton-db-backups-prod/backups/db-pgk8s-planton-cloud-app-prod-main/14
+#   STANDBY_WALE_S3_PREFIX=s3://planton-db-backups-prod/backups/db-pgk8s-planton-app-prod-main/14
 #   STANDBY_AWS_ENDPOINT=https://074755a78d8e8f77c119a90a125e8a06.r2.cloudflarestorage.com
 #   STANDBY_AWS_ACCESS_KEY_ID=xxx
 #   STANDBY_AWS_SECRET_ACCESS_KEY=yyy

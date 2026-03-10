@@ -4,7 +4,7 @@ metadata:
   name: test.openmcf.org
 spec:
   projectId:
-    value: planton-cloud-dns
+    value: planton-dns
   records:
     - recordType: A
       name: test-a.test.openmcf.org.

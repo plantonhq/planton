@@ -4,7 +4,7 @@ metadata:
   name: openmcf-test-gcp-gcs-bucket
 spec:
   gcp_project_id:
-    value: planton-cloud-public-downloads
+    value: planton-public-downloads
   location: asia-south1
   bucket_name: openmcf-test-bucket
   uniform_bucket_level_access_enabled: true

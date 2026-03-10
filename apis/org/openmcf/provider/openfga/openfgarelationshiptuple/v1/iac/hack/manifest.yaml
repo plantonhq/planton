@@ -26,7 +26,7 @@ apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: test-tuple
-  org: planton-cloud
+  org: planton
   env: development
 spec:
   # Replace with actual store ID from OpenFgaStore deployment

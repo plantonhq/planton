@@ -6,7 +6,7 @@
 
 ## Summary
 
-Implemented a complete HarborKubernetes API resource for deploying Harbor cloud-native registry on Kubernetes with flexible configuration options supporting both development (embedded dependencies) and production (external managed services) deployment patterns. The implementation includes comprehensive proto definitions, documentation, Pulumi and Terraform IaC modules, and integration with the Planton Cloud asset system.
+Implemented a complete HarborKubernetes API resource for deploying Harbor cloud-native registry on Kubernetes with flexible configuration options supporting both development (embedded dependencies) and production (external managed services) deployment patterns. The implementation includes comprehensive proto definitions, documentation, Pulumi and Terraform IaC modules, and integration with the Planton asset system.
 
 ## Problem Statement / Motivation
 
@@ -194,9 +194,9 @@ This enables:
 - Proper categorization in the workload category
 - Namespace naming convention with "harbor" prefix
 
-### Planton Cloud Asset Files
+### Planton Asset Files
 
-Created 4 asset files in `planton-cloud/apis/ai/planton/infrahub/cloudresource/v1/assets/provider/kubernetes/workload/harborkubernetes/v1/`:
+Created 4 asset files in `planton/apis/ai/planton/infrahub/cloudresource/v1/assets/provider/kubernetes/workload/harborkubernetes/v1/`:
 
 1. **deployment-component.yaml**: Deployment metadata with tags (container-registry, artifact-registry, security, vulnerability-scanning)
 2. **iac-modules.yaml**: References to both Pulumi and Terraform modules in openmcf repo
@@ -531,7 +531,7 @@ certmanagerv1.NewCertificate(ctx, "ingress-certificate", &certmanagerv1.Certific
 **Cloud Resource Registration (1 file modified)**:
 - `apis/project/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
 
-### Planton Cloud Repository
+### Planton Repository
 
 **HarborKubernetes Assets (4 files)**:
 - `apis/ai/planton/infrahub/cloudresource/v1/assets/provider/kubernetes/workload/harborkubernetes/v1/deployment-component.yaml`
@@ -804,7 +804,7 @@ grep -A 8 "HarborKubernetes = 837" apis/project/planton/shared/cloudresourcekind
 - Cloud resource kind: 1 enum entry added
 - **Total**: 30 new files, 1 file modified
 
-**Planton Cloud Repository**:
+**Planton Repository**:
 - Asset files: 4 files (~150 lines)
 - Deployment component, IaC modules, quick actions, logo
 
@@ -872,7 +872,7 @@ N/A - New resource, no migration needed.
 - Harbor HA Deployment: https://goharbor.io/docs/latest/install-config/harbor-ha-helm/
 
 **Research Report**:
-- Analysis of Modern Harbor Deployment Architectures: `planton-cloud/research/2025-11-06-deploying-harbor-on-kubernetes.md`
+- Analysis of Modern Harbor Deployment Architectures: `planton/research/2025-11-06-deploying-harbor-on-kubernetes.md`
 
 **Related Changelogs**:
 - Forge Workflow Validation: `2025-11-05-064831-forge-workflow-automated-validation-proto-build-test.md`

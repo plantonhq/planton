@@ -8,8 +8,8 @@ This Terraform module deploys Helm charts to a Kubernetes cluster using the Kube
 
 ```shell
 openmcf tofu init --manifest ../hack/manifest.yaml --backend-type s3 \
-  --backend-config="bucket=planton-cloud-tf-state-backend" \
-  --backend-config="dynamodb_table=planton-cloud-tf-state-backend-lock" \
+  --backend-config="bucket=planton-tf-state-backend" \
+  --backend-config="dynamodb_table=planton-tf-state-backend-lock" \
   --backend-config="region=ap-south-2" \
   --backend-config="key=kubernetes-stacks/test-helm-release.tfstate"
 ```

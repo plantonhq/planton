@@ -1,6 +1,6 @@
 # Auth0EventStream
 
-Auth0EventStream is a Planton Cloud deployment component that manages Auth0 Event Streams. Event Streams enable real-time delivery of Auth0 events to external systems like AWS EventBridge or custom webhook endpoints.
+Auth0EventStream is a Planton deployment component that manages Auth0 Event Streams. Event Streams enable real-time delivery of Auth0 events to external systems like AWS EventBridge or custom webhook endpoints.
 
 ## Overview
 

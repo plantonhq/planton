@@ -16,7 +16,7 @@
 
 - **Declarative Resource Specification**: The module uses declarative YAML definitions for deploying ArgoCD. Developers simply define the desired state in the `ArgocdKubernetes` API resource, and the module handles the provisioning, management, and scaling of the necessary resources.
 
-- **Seamless Integration with Planton Cloud CLI**: The module is fully integrated with Planton Cloud's CLI, making it easy to deploy infrastructure by running a single command. The default Pulumi module is used if no specific module is provided, streamlining the deployment process for both simple and advanced use cases.
+- **Seamless Integration with Planton CLI**: The module is fully integrated with Planton's CLI, making it easy to deploy infrastructure by running a single command. The default Pulumi module is used if no specific module is provided, streamlining the deployment process for both simple and advanced use cases.
 
 - **Comprehensive Outputs**: The module captures important output details, including:
   - Namespace in which ArgoCD is deployed.

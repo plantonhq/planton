@@ -11,12 +11,12 @@ locals {
   gcp_labels = merge(
     var.spec.labels != null ? var.spec.labels : {},
     {
-      "planton-cloud-resource"      = "true"
-      "planton-cloud-resource-name" = var.metadata.name
-      "planton-cloud-resource-kind" = "gcpproject"
-      "planton-cloud-resource-id"   = var.metadata.id != null ? var.metadata.id : var.metadata.name
-      "planton-cloud-org"           = var.metadata.org != null ? var.metadata.org : "default"
-      "planton-cloud-env"           = var.metadata.env != null ? var.metadata.env : "default"
+      "planton-resource"      = "true"
+      "planton-resource-name" = var.metadata.name
+      "planton-resource-kind" = "gcpproject"
+      "planton-resource-id"   = var.metadata.id != null ? var.metadata.id : var.metadata.name
+      "planton-org"           = var.metadata.org != null ? var.metadata.org : "default"
+      "planton-env"           = var.metadata.env != null ? var.metadata.env : "default"
     }
   )
 

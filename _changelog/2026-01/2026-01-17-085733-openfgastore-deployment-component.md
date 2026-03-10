@@ -184,7 +184,7 @@ Added OpenFGA to the credential provider configuration to fix build:
 
 - `OpenFgaAuthorizationModel` component (define types and relations)
 - `OpenFgaTuple` component (manage relationship tuples)
-- Integration with Planton Cloud's authorization system
+- Integration with Planton's authorization system
 
 ## Usage Examples
 

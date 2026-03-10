@@ -1,4 +1,4 @@
-# MongoDB Atlas Pulumi Module for Planton Cloud
+# MongoDB Atlas Pulumi Module for Planton
 
 ## Key Features
 

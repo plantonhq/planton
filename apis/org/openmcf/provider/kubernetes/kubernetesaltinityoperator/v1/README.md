@@ -15,7 +15,7 @@ Deploying the Altinity ClickHouse Operator manually in Kubernetes can be complex
 
 ### Kubernetes Cluster Integration
 
-- **Target Cluster Configuration**: This resource integrates seamlessly with Planton Cloud's Kubernetes cluster credential management system, ensuring that the operator is deployed to the correct cluster.
+- **Target Cluster Configuration**: This resource integrates seamlessly with Planton's Kubernetes cluster credential management system, ensuring that the operator is deployed to the correct cluster.
 - **Namespace Isolation**: The operator is deployed in a dedicated `kubernetes-altinity-operator` namespace for clean resource separation.
 
 ### Namespace Management

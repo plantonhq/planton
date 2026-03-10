@@ -481,7 +481,7 @@ dig _acme-challenge.test.planton.cloud TXT @1.1.1.1 +short
 
 ### Integration Tests
 
-- **Cloudflare Provider**: Verified with production Planton Cloud deployment (planton.cloud, planton.live)
+- **Cloudflare Provider**: Verified with production Planton deployment (planton.cloud, planton.live)
 - **GCP Provider**: Tested with internal GKE cluster + Cloud DNS
 - **Build Verification**: `go build` successful with no compilation errors
 - **Lint Checks**: No linter errors in updated code
@@ -598,5 +598,5 @@ The implementation aligns with cert-manager best practices from the technical re
 
 **Status**: ✅ Production Ready  
 **Migration Required**: Yes (breaking change)  
-**Deployment**: Planton Cloud production (planton.cloud, planton.live)
+**Deployment**: Planton production (planton.cloud, planton.live)
 

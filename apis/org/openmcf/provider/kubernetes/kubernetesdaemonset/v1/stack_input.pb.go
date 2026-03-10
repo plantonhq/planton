@@ -48,7 +48,7 @@ type KubernetesDaemonSetStackInput struct {
 	// - Public images: no authentication required for public registries
 	//
 	// Priority order:
-	// 1. If this field is set, it takes precedence (used by Planton Cloud)
+	// 1. If this field is set, it takes precedence (used by Planton)
 	// 2. If not set, check metadata.labels["kubernetes.planton.io/docker-config-json-file"] for file path
 	// 3. If neither set, no image pull secret is created (assumes Workload Identity or public images)
 	//

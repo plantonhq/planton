@@ -182,5 +182,5 @@ For support, please contact our support team at support@planton.cloud.
 
 - [Pulumi Documentation](https://www.pulumi.com/docs/)
 - [GCP Cloud SQL Documentation](https://cloud.google.com/sql/docs)
-- [Planton Cloud APIs](https://buf.build/openmcf/apis/docs)
+- [Planton APIs](https://buf.build/openmcf/apis/docs)
 

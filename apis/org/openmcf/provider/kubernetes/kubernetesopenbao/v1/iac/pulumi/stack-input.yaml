@@ -6,10 +6,10 @@ target:
         labels:
             openmcf.org/provisioner: pulumi
             pulumi.openmcf.org/organization: organization
-            pulumi.openmcf.org/project: planton-cloud
+            pulumi.openmcf.org/project: planton
             pulumi.openmcf.org/stack.name: app-prod.KubernetesOpenBao.main
         name: main
-        org: planton-cloud
+        org: planton
     spec:
         autoUnseal:
             gcpKms:

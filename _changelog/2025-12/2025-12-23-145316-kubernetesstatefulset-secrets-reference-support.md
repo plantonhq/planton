@@ -587,9 +587,9 @@ make test
 - Validation failure when secret ref name is missing - PASSED
 - Validation failure when secret ref key is missing - PASSED
 
-## Planton Cloud Web Console Integration
+## Planton Web Console Integration
 
-When this pattern is adopted, the Planton Cloud web console (`planton-cloud` repo) will need updates:
+When this pattern is adopted, the Planton web console (`planton` repo) will need updates:
 
 ### Form Components
 

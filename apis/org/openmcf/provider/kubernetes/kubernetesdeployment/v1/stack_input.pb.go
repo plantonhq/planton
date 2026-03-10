@@ -48,7 +48,7 @@ type KubernetesDeploymentStackInput struct {
 	// - public images: no authentication required for public registries
 	//
 	// priority order:
-	// 1. if this field is set, it takes precedence (used by Planton Cloud)
+	// 1. if this field is set, it takes precedence (used by Planton)
 	// 2. if not set, check metadata.labels["kubernetes.planton.io/docker-config-json-file"] for file path
 	// 3. if neither set, no image pull secret is created (assumes workload identity or public images)
 	//

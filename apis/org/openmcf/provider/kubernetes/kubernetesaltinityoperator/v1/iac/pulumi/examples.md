@@ -13,7 +13,7 @@ Deploy the Altinity ClickHouse Operator with default resource allocations using 
 ### Prerequisites
 
 - Pulumi CLI installed
-- Kubernetes cluster credentials configured in Planton Cloud
+- Kubernetes cluster credentials configured in Planton
 - `kubectl` configured to access your cluster
 
 ### Manifest

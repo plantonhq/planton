@@ -64,7 +64,7 @@ spec:
 
 ### Example with Environment Secrets
 
-This example integrates environment secrets managed by Planton Cloud's [Snowflake Secrets Manager](https://buf.build/openmcf/apis/docs/main:ai.planton.code2cloud.v1.snowflake.snowflakedatabase).
+This example integrates environment secrets managed by Planton's [Snowflake Secrets Manager](https://buf.build/openmcf/apis/docs/main:ai.planton.code2cloud.v1.snowflake.snowflakedatabase).
 
 ```yaml
 apiVersion: snowflake.openmcf.org/v1
@@ -92,8 +92,8 @@ spec:
   trace_level: "EVENT OFF"
   env:
     secrets:
-      # value before dot 'snowflakesm-secure-env-snowflake-secrets' is the id of the snowflake-secret-manager resource on planton-cloud
-      # value after dot 'db-password' is one of the secrets list in 'snowflakesm-secure-env-snowflake-secrets' is the id of the snowflake-secret-manager resource on planton-cloud
+      # value before dot 'snowflakesm-secure-env-snowflake-secrets' is the id of the snowflake-secret-manager resource on planton
+      # value after dot 'db-password' is one of the secrets list in 'snowflakesm-secure-env-snowflake-secrets' is the id of the snowflake-secret-manager resource on planton
       DB_PASSWORD: ${snowflakesm-secure-env-snowflake-secrets.db-password}
     variables:
       ADMIN_USER: admin
@@ -154,7 +154,7 @@ For support, please contact our [support team](mailto:support@planton.cloud). We
 
 ## Acknowledgements
 
-Special thanks to all contributors and the Planton Cloud community for their ongoing support and feedback. Your efforts and dedication are instrumental in making this module robust and effective.
+Special thanks to all contributors and the Planton community for their ongoing support and feedback. Your efforts and dedication are instrumental in making this module robust and effective.
 
 ## Changelog
 
@@ -178,7 +178,7 @@ For any inquiries or feedback, please reach out to us at [contact@planton.cloud]
 
 ## Disclaimer
 
-*This project is maintained by Planton Cloud and is not affiliated with any third-party services unless explicitly stated. While we strive to ensure the accuracy and reliability of this module, users are encouraged to review and test configurations in their environments.*
+*This project is maintained by Planton and is not affiliated with any third-party services unless explicitly stated. While we strive to ensure the accuracy and reliability of this module, users are encouraged to review and test configurations in their environments.*
 
 ## Security
 
@@ -192,4 +192,4 @@ Please adhere to our [Code of Conduct](CODE_OF_CONDUCT.md) when interacting with
 
 - [Pulumi Documentation](https://www.pulumi.com/docs/)
 - [Snowflake Documentation](https://docs.snowflake.com/)
-- [Planton Cloud APIs](https://buf.build/openmcf/apis/docs)
+- [Planton APIs](https://buf.build/openmcf/apis/docs)

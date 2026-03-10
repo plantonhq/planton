@@ -1,4 +1,4 @@
-Here are a few examples for the `KubernetesArgocd` API resource, demonstrating how to configure and deploy Argo CD on a Kubernetes cluster using Planton Cloud's unified API structure.
+Here are a few examples for the `KubernetesArgocd` API resource, demonstrating how to configure and deploy Argo CD on a Kubernetes cluster using Planton's unified API structure.
 
 ---
 

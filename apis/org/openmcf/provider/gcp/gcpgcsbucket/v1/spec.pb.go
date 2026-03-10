@@ -155,7 +155,7 @@ type GcpGcsBucketSpec struct {
 	// Optional.
 	PublicAccessPrevention string `protobuf:"bytes,14,opt,name=public_access_prevention,json=publicAccessPrevention,proto3" json:"public_access_prevention,omitempty"`
 	// Custom labels for the bucket (cost tracking, governance, compliance).
-	// These are merged with auto-generated labels (planton-cloud-resource-*).
+	// These are merged with auto-generated labels (planton-resource-*).
 	// Optional.
 	GcpLabels map[string]string `protobuf:"bytes,15,rep,name=gcp_labels,json=gcpLabels,proto3" json:"gcp_labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Name of the GCS bucket to create in GCP.

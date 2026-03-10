@@ -1,6 +1,6 @@
 # GcpCloudFunction API - Examples
 
-Here are examples of how to create and configure a **GcpCloudFunction** API resource using the Planton Cloud CLI. The examples cover basic HTTP functions, event-driven functions, and production configurations with VPC, secrets, and scaling.
+Here are examples of how to create and configure a **GcpCloudFunction** API resource using the Planton CLI. The examples cover basic HTTP functions, event-driven functions, and production configurations with VPC, secrets, and scaling.
 
 ## Create using CLI
 

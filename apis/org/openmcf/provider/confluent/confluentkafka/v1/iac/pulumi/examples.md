@@ -100,7 +100,7 @@ spec:
 
 ### Example with Environment Secrets
 
-This example integrates environment secrets managed by Planton Cloud's GCP Secrets Manager.
+This example integrates environment secrets managed by Planton's GCP Secrets Manager.
 
 ```yaml
 apiVersion: confluent.openmcf.org/v1
@@ -113,8 +113,8 @@ spec:
     app:
       env:
         secrets:
-          # value before dot 'gcpsm-my-org-prod-gcp-secrets' is the id of the gcp-secret-manager resource on planton-cloud
-          # value after dot 'database-password' is one of the secrets list in 'gcpsm-my-org-prod-gcp-secrets' is the id of the gcp-secret-manager resource on planton-cloud
+          # value before dot 'gcpsm-my-org-prod-gcp-secrets' is the id of the gcp-secret-manager resource on planton
+          # value after dot 'database-password' is one of the secrets list in 'gcpsm-my-org-prod-gcp-secrets' is the id of the gcp-secret-manager resource on planton
           DATABASE_PASSWORD: ${gcpsm-my-org-prod-gcp-secrets.database-password}
         variables:
           DATABASE_NAME: todo
@@ -191,7 +191,7 @@ For support, please contact our [support team](mailto:support@planton.cloud). We
 
 ## Acknowledgements
 
-Special thanks to all contributors and the Planton Cloud community for their ongoing support and feedback. Your efforts and dedication are instrumental in making this module robust and effective.
+Special thanks to all contributors and the Planton community for their ongoing support and feedback. Your efforts and dedication are instrumental in making this module robust and effective.
 
 ## Changelog
 
@@ -215,7 +215,7 @@ For any inquiries or feedback, please reach out to us at [contact@planton.cloud]
 
 ## Disclaimer
 
-*This project is maintained by Planton Cloud and is not affiliated with any third-party services unless explicitly stated. While we strive to ensure the accuracy and reliability of this module, users are encouraged to review and test configurations in their environments.*
+*This project is maintained by Planton and is not affiliated with any third-party services unless explicitly stated. While we strive to ensure the accuracy and reliability of this module, users are encouraged to review and test configurations in their environments.*
 
 ## Security
 
@@ -229,4 +229,4 @@ Please adhere to our [Code of Conduct](CODE_OF_CONDUCT.md) when interacting with
 
 - [Pulumi Documentation](https://www.pulumi.com/docs/)
 - [Kubernetes Documentation](https://kubernetes.io/docs/)
-- [Planton Cloud APIs](https://buf.build/openmcf/apis/docs)
+- [Planton APIs](https://buf.build/openmcf/apis/docs)

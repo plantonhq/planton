@@ -133,7 +133,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *kubernetessignozv1.Kubern
 
 		// ClusterIssuer should already exist on the cluster
 		// Extract domain from hostname for ClusterIssuer name
-		// Typically managed by cluster administrator or created by Planton Cloud
+		// Typically managed by cluster administrator or created by Planton
 		hostnameParts := strings.Split(locals.IngressExternalHostname, ".")
 		if len(hostnameParts) > 1 {
 			locals.IngressCertClusterIssuerName = strings.Join(hostnameParts[1:], ".")

@@ -245,7 +245,7 @@ openmcf apply --manifest openfga-store.yaml \
 - OpenFgaStore deployment component
 - OpenFgaAuthorizationModel deployment component
 - OpenFga relationship tuple management
-- Integration with Planton Cloud credential management
+- Integration with Planton credential management
 
 ## Related Work
 

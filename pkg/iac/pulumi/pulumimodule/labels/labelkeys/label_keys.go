@@ -35,7 +35,7 @@ func WithoutPrefix(label string) string {
 
 // WithPrometheusFormat returns the label with prometheus transformation applied.
 // prometheus label transformation rules explained in https://stackoverflow.com/a/71507356.
-// ex: planton.cloud/company label gets transformed to planton_cloud_company
+// ex: planton.cloud/company label gets transformed to planton_company
 // rules: replace dots, slashes and hyphens with underscores.
 func WithPrometheusFormat(label string) string {
 	//replace all dots with underscores
@@ -50,8 +50,8 @@ func WithPrometheusFormat(label string) string {
 //WARNING: logic is incorrect here. fix it before using it.
 //// FromPrometheusFormat returns the label by undoing the prometheus transformation rules.
 //// prometheus label transformation rules explained in https://stackoverflow.com/a/71507356.
-//// ex: planton_cloud_company will be converted to planton.cloud/company
-//// rules: replace "planton_cloud_" with "planton.cloud/"
+//// ex: planton_company will be converted to planton.cloud/company
+//// rules: replace "planton_" with "planton.cloud/"
 //func FromPrometheusFormat(label string) string {
 //	prometheusFormattedPrefix := strings.ReplaceAll(PlantonAiDomain, ".", "_")
 //	//replace prometheus formatted prefix with normal prefix

@@ -25,7 +25,7 @@ apiVersion: openfga.openmcf.org/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: test-model
-  org: planton-cloud
+  org: planton
   env: development
 spec:
   # Replace with actual store ID from OpenFgaStore deployment

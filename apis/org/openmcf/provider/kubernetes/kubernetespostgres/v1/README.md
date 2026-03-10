@@ -15,7 +15,7 @@ Deploying and managing PostgreSQL databases in Kubernetes can be complex due to 
 
 ### Environment Integration
 
-- **Environment Info**: Automatically integrates with the Planton Cloud environment management system, ensuring that PostgreSQL is deployed in the right context.
+- **Environment Info**: Automatically integrates with the Planton environment management system, ensuring that PostgreSQL is deployed in the right context.
 - **Stack Job Settings**: Supports stack-update settings for consistent infrastructure-as-code deployments.
 
 ### Kubernetes Credential Management

@@ -183,7 +183,7 @@ Your webhook receiver parses this to extract pipeline results, update databases,
 
 **Reliability**: Tekton uses asynchronous delivery with exponential backoff retry. If your sink is down, Tekton will retry sending events without blocking pipeline execution. Events may arrive out-of-order during retries. For critical audit trails, consider also using Tekton Results (stores run history in a database) as a backup.
 
-**Real-world usage at Planton Cloud**: The sink points to an internal service that updates the ServiceHub database with pipeline status and triggers downstream actions (deployment, notifications). This integration is **essential**—without it, Tekton runs in isolation with no way for the platform to know when builds complete.
+**Real-world usage at Planton**: The sink points to an internal service that updates the ServiceHub database with pipeline status and triggers downstream actions (deployment, notifications). This integration is **essential**—without it, Tekton runs in isolation with no way for the platform to know when builds complete.
 
 ### 2. Dashboard Exposure and Authentication
 
@@ -266,7 +266,7 @@ Tekton Dashboard ships with two installation manifests:
 
 In read-only mode, the dashboard's service account can only view Tekton resources. Users see pipeline status and logs but can't trigger new runs or delete pipelines. **Use read-only for most users**. Grant read-write access only to CI admins who need to manage pipelines via UI.
 
-**Real-world at Planton Cloud**: Dashboard is critical for developers to debug failed builds. We expose it via Istio Gateway with HTTPS. Authentication is handled at the gateway level. Most users have read-only access; only platform engineers have write access via CLI/GitOps.
+**Real-world at Planton**: Dashboard is critical for developers to debug failed builds. We expose it via Istio Gateway with HTTPS. Authentication is handled at the gateway level. Most users have read-only access; only platform engineers have write access via CLI/GitOps.
 
 ### 3. Log Collection: Real-Time Streaming and Long-Term Storage
 
@@ -297,7 +297,7 @@ Both work as DaemonSets that tail pod logs and forward them. Key differences:
 | **Community Momentum** | Growing (CNCF, backed by Datadog) | Established (widely deployed) |
 | **Production Maturity** | Proven at scale, newer codebase | Proven for years, very stable |
 
-**Planton Cloud's choice**: Migrated from Fluent Bit to Vector when switching from Kafka to NATS. Vector's native NATS sink and powerful transforms aligned better with the new architecture. Teams report that Vector "just works" with complex routing and is easier to debug than Fluent Bit's configuration syntax.
+**Planton's choice**: Migrated from Fluent Bit to Vector when switching from Kafka to NATS. Vector's native NATS sink and powerful transforms aligned better with the new architecture. Teams report that Vector "just works" with complex routing and is easier to debug than Fluent Bit's configuration syntax.
 
 **Vector configuration for Tekton + NATS**:
 
@@ -717,7 +717,7 @@ This feels like extra work initially. But it's actually **freedom**. Want logs i
 
 The Tekton Operator makes this composition **declarative**. Instead of a bash script that installs Tekton, creates ConfigMaps, deploys dashboard, sets up ingress, you have a TektonConfig CR that describes the desired state. GitOps tools (ArgoCD, Flux) can manage it. Your platform can generate it. It's infrastructure as code, not imperative installation.
 
-For production CI/CD platforms like Planton Cloud, this matters. We don't want a one-size-fits-all CI system. We want pipeline execution that integrates with our webhook architecture, our NATS-based log streaming, our Istio ingress. Tekton + Operator gives us that integration surface while handling the undifferentiated heavy lifting of component lifecycle management.
+For production CI/CD platforms like Planton, this matters. We don't want a one-size-fits-all CI system. We want pipeline execution that integrates with our webhook architecture, our NATS-based log streaming, our Istio ingress. Tekton + Operator gives us that integration surface while handling the undifferentiated heavy lifting of component lifecycle management.
 
 ## What's Next
 
@@ -732,6 +732,6 @@ These guides are placeholders—to be written as needed based on user questions 
 
 ---
 
-**This document is grounded in**: Official Tekton documentation, Red Hat OpenShift Pipelines guides, production deployments at Planton Cloud (5 months running), and research into Vector/Fluent Bit integration patterns.
+**This document is grounded in**: Official Tekton documentation, Red Hat OpenShift Pipelines guides, production deployments at Planton (5 months running), and research into Vector/Fluent Bit integration patterns.
 
 **Status**: Living document, updated as Tekton and the KubernetesTektonOperator component evolve.

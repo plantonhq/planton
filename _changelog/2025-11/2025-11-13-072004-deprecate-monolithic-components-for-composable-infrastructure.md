@@ -618,9 +618,9 @@ This is a **breaking change** for users with existing deployments using deprecat
    - Will be reimplemented in future "config" category
    - Existing Istio/Certificate resources continue to work
 
-### Planton Cloud Platform Impact
+### Planton Platform Impact
 
-The commercial Planton Cloud platform will need updates:
+The commercial Planton platform will need updates:
 
 1. **Web Console**:
    - Remove deprecated components from UI
@@ -650,7 +650,7 @@ The commercial Planton Cloud platform will need updates:
 - ✅ Build system updated
 
 **Next Steps**:
-1. Update Planton Cloud platform to handle deprecated kinds
+1. Update Planton platform to handle deprecated kinds
 2. Notify users with deprecation warnings
 3. Publish migration documentation
 4. Provide tooling to help migration (manifest converters)
@@ -820,7 +820,7 @@ make build
 ### What Was NOT Tested
 
 - ❌ **Actual deployments**: Didn't test deploying with new manifests (requires cloud credentials)
-- ❌ **Platform integration**: Planton Cloud platform updates not yet implemented
+- ❌ **Platform integration**: Planton platform updates not yet implemented
 - ❌ **Migration tooling**: Manifest conversion tools not yet built
 - ❌ **E2E tests**: End-to-end deployment tests not run
 
@@ -859,7 +859,7 @@ These will be addressed in follow-up work as part of the platform rollout.
 ## Known Limitations
 
 1. **No Migration Tooling**: Users must manually update manifests (tooling planned)
-2. **Platform Not Updated**: Planton Cloud platform still needs updates
+2. **Platform Not Updated**: Planton platform still needs updates
 3. **No Config Category**: KubernetesHttpEndpoint replacement not yet available
 4. **Documentation Gaps**: Need to create comprehensive migration guides
 
@@ -868,7 +868,7 @@ These will be addressed in follow-up work as part of the platform rollout.
 ### Short Term (Next 2 Weeks)
 
 1. **Platform Updates**:
-   - Update Planton Cloud web console to remove deprecated components
+   - Update Planton web console to remove deprecated components
    - Add deprecation warnings for users with legacy manifests
    - Implement backend handling for deprecated kinds
 

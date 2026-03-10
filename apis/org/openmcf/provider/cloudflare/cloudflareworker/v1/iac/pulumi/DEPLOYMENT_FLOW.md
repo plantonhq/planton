@@ -73,7 +73,7 @@ Name: <hostname from dns.hostname>
 Content: 100.0.0.1 (dummy IP - never reached)
 Proxied: true (orange cloud enabled)
 TTL: 1 (automatic)
-Comment: "Managed by Planton Cloud - Routes to Cloudflare Worker"
+Comment: "Managed by Planton - Routes to Cloudflare Worker"
 ```
 
 ### Why 100.0.0.1?
@@ -179,7 +179,7 @@ export AWS_ACCESS_KEY_ID=<r2-access-key-id>
 export AWS_SECRET_ACCESS_KEY=<r2-secret-access-key>
 
 # 4. Deploy with Pulumi
-cd ops/organizations/planton-cloud/infra-hub/cloud-resources/app-prod/cloudflare
+cd ops/organizations/planton/infra-hub/cloud-resources/app-prod/cloudflare
 export CLOUDFLARE_WORKER_MODULE=~/scm/github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/iac/pulumi
 
 openmcf pulumi up --manifest worker.your-worker.yaml --module-dir ${CLOUDFLARE_WORKER_MODULE}

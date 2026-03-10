@@ -15,7 +15,7 @@ Deploying the Percona Operator for MongoDB manually in Kubernetes can be complex
 
 ### Kubernetes Cluster Integration
 
-- **Target Cluster Configuration**: This resource integrates seamlessly with Planton Cloud's Kubernetes cluster credential management system, ensuring that the operator is deployed to the correct cluster.
+- **Target Cluster Configuration**: This resource integrates seamlessly with Planton's Kubernetes cluster credential management system, ensuring that the operator is deployed to the correct cluster.
 - **Flexible Namespace Management**: Choose whether to create a new namespace or use an existing one, providing flexibility for different deployment scenarios.
 
 ### Operator Configuration

@@ -247,8 +247,8 @@ spec:
 
 The decision was based on comprehensive research reports:
 
-- `planton-cloud/apis/ai/.../kubernetestektonoperator/v1/research/report.gpt-5.2.md`
-- `planton-cloud/apis/ai/.../kubernetestektonoperator/v1/research/report.gemini-3.md`
+- `planton/apis/ai/.../kubernetestektonoperator/v1/research/report.gpt-5.2.md`
+- `planton/apis/ai/.../kubernetestektonoperator/v1/research/report.gemini-3.md`
 
 Key findings from research:
 1. Tekton Operator itself installs in `tekton-operator` namespace

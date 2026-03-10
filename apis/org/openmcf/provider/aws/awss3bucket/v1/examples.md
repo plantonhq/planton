@@ -38,7 +38,7 @@ In this example, replace the placeholders like `${AWS_REGION}` with your actual 
 
 # Example with Environment Secrets
 
-The below example assumes that the secrets are managed by Planton Cloud's [AWS Secrets Manager](https://buf.build/openmcf/apis/docs/main:ai.planton.code2cloud.v1.aws.awssecretsmanager) deployment module.
+The below example assumes that the secrets are managed by Planton's [AWS Secrets Manager](https://buf.build/openmcf/apis/docs/main:ai.planton.code2cloud.v1.aws.awssecretsmanager) deployment module.
 
 ```yaml
 apiVersion: aws.openmcf.org/v1
@@ -54,7 +54,7 @@ spec:
 In this example:
 
 - **someSecretConfig** is a placeholder for any configuration value you want to retrieve from AWS Secrets Manager.
-- The value before the dot (`awssm-my-org-prod-aws-secrets`) is the ID of the AWS Secrets Manager resource on Planton Cloud.
+- The value before the dot (`awssm-my-org-prod-aws-secrets`) is the ID of the AWS Secrets Manager resource on Planton.
 - The value after the dot (`secret-key`) is the name of the secret within that resource.
 
 # Example with Public Access

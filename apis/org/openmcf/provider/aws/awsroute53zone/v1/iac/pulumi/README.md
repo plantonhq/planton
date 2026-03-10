@@ -53,7 +53,7 @@ openmcf pulumi preview \
 
 # AWS Route53 Zone Pulumi Module
 
-This Pulumi module is designed to automate the creation and management of Route53 hosted zones and DNS records on AWS using a Kubernetes-like API resource model. The module is part of Planton Cloud’s unified APIs, allowing developers to define infrastructure in a declarative YAML format. By leveraging the Pulumi infrastructure-as-code platform, this module simplifies the provisioning process across AWS environments, ensuring efficient DNS management.
+This Pulumi module is designed to automate the creation and management of Route53 hosted zones and DNS records on AWS using a Kubernetes-like API resource model. The module is part of Planton’s unified APIs, allowing developers to define infrastructure in a declarative YAML format. By leveraging the Pulumi infrastructure-as-code platform, this module simplifies the provisioning process across AWS environments, ensuring efficient DNS management.
 
 **Important Note:** If the API resource spec is empty, the module is not fully implemented and some features might be missing. Refer to future updates for a complete implementation.
 
@@ -87,7 +87,7 @@ The module provides detailed status outputs, including hosted zone names, IDs, a
 ## Benefits
 
 - **Declarative Infrastructure Management**: Define AWS Route53 resources as YAML files, making it easier to maintain and scale infrastructure.
-- **Cross-Cloud Compatibility**: This module fits into Planton Cloud’s multi-cloud infrastructure management platform, making it easy to manage resources across different providers.
+- **Cross-Cloud Compatibility**: This module fits into Planton’s multi-cloud infrastructure management platform, making it easy to manage resources across different providers.
 - **Comprehensive DNS Record Support**: Configure and manage a wide range of DNS record types, ensuring flexible and detailed control over your DNS setup.
 - **AWS Provider Flexibility**: Uses both the AWS Native and Classic providers to ensure all relevant Route53 features are available and managed effectively.
 - **Seamless AWS Integration**: Automatically provisions infrastructure using the provided AWS credentials, ensuring that the setup is secure and compliant with AWS best practices.

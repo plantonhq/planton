@@ -6,7 +6,7 @@
 
 ## Summary
 
-Refactored the deployment component rename script to use an elegant sequential in-place approach (directories → files → contents) instead of copying the entire directory tree. This implementation, inspired by the Planton Cloud monorepo's rename workflow, is more efficient, cleaner, and safer while maintaining 100% backward compatibility. Also reorganized the script into its own `_scripts` folder under the `rename/` subdirectory for better organization.
+Refactored the deployment component rename script to use an elegant sequential in-place approach (directories → files → contents) instead of copying the entire directory tree. This implementation, inspired by the Planton monorepo's rename workflow, is more efficient, cleaner, and safer while maintaining 100% backward compatibility. Also reorganized the script into its own `_scripts` folder under the `rename/` subdirectory for better organization.
 
 ## Problem Statement / Motivation
 
@@ -43,7 +43,7 @@ shutil.rmtree(old_dir)
 - Not the natural way to think about renaming
 
 **Discovered Better Pattern**:
-- The Planton Cloud monorepo uses sequential in-place renames
+- The Planton monorepo uses sequential in-place renames
 - Directories → Files → Contents (all in the same location)
 - More intuitive and efficient
 
@@ -352,10 +352,10 @@ Updated 6 references across the codebase:
 
 ## Related Work
 
-### Inspiration: Planton Cloud Monorepo
+### Inspiration: Planton Monorepo
 
-The sequential rename approach was discovered in the Planton Cloud monorepo's rename script:
-- Location: `planton-cloud/.cursor/rules/product/apis/infra-hub/cloud-resource/deployment-component/_scripts/rename_component.py`
+The sequential rename approach was discovered in the Planton monorepo's rename script:
+- Location: `planton/.cursor/rules/product/apis/infra-hub/cloud-resource/deployment-component/_scripts/rename_component.py`
 - Key insight: Sequential renames (directories → files → contents) are more elegant than copy-based approach
 - Pattern: Bottom-up traversal to avoid path conflicts
 

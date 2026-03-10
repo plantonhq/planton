@@ -162,12 +162,12 @@ The module implements a two-tier label system:
 
 **Standard Labels (Auto-Generated):**
 ```
-planton-cloud-resource: "true"
-planton-cloud-resource-name: <bucket-name>
-planton-cloud-resource-kind: "gcpgcsbucket"
-planton-cloud-resource-id: <ulid>        # if set
-planton-cloud-resource-org: <org>        # if set
-planton-cloud-resource-env: <env>        # if set
+planton-resource: "true"
+planton-resource-name: <bucket-name>
+planton-resource-kind: "gcpgcsbucket"
+planton-resource-id: <ulid>        # if set
+planton-resource-org: <org>        # if set
+planton-resource-env: <env>        # if set
 ```
 
 **User Labels (From Spec):**

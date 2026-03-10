@@ -1,4 +1,4 @@
-Here are several examples for the `GcpDnsZone` API resource, similar to how you've formatted the examples for the `MicroserviceKubernetes` API. These examples showcase different configurations for creating and managing DNS zones and records in Google Cloud using Planton Cloud.
+Here are several examples for the `GcpDnsZone` API resource, similar to how you've formatted the examples for the `MicroserviceKubernetes` API. These examples showcase different configurations for creating and managing DNS zones and records in Google Cloud using Planton.
 
 ### Example 1: Basic Google Cloud DNS Zone
 

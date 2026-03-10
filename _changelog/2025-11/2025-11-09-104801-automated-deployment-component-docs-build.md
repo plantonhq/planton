@@ -246,7 +246,7 @@ This prevents unnecessary builds when proto files or CLI code changes.
 ### 7. Visual Enhancements
 
 **Provider Icons Integration**:
-- Copied 35 SVG icons from planton-cloud web-console to `site/public/images/`
+- Copied 35 SVG icons from planton web-console to `site/public/images/`
   - 19 provider/tool icons (AWS, GCP, Azure, Cloudflare, Civo, DigitalOcean, Atlas, Confluent, Kubernetes, Pulumi, Terraform, etc.)
   - 16 utility icons (deploy, rocket, thunder, code, docs, AI, lock, security, GitHub Actions)
 
@@ -536,7 +536,7 @@ This preserves `index.md` and any other manual documentation while cleaning gene
 - `site/serve.json` (5 lines)
 - `site/public/.nojekyll` (empty file for GitHub Pages)
 - `site/src/components/ui/GitHubStarBadge.tsx` (58 lines - star badge with live count)
-- `site/public/images/` (35 SVG icons copied from planton-cloud web-console)
+- `site/public/images/` (35 SVG icons copied from planton web-console)
 
 **Files Modified**: 7
 - `site/package.json` (added script + dependency)

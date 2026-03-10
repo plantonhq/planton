@@ -66,7 +66,7 @@ spec:
 
 # Example Using Created Secrets in a Microservice
 
-The following example shows how to reference secrets created by `AwsSecretsManager` in a `MicroserviceKubernetes` deployment. This assumes that the secrets have been created and are managed by Planton Cloud's `AwsSecretsManager` deployment module.
+The following example shows how to reference secrets created by `AwsSecretsManager` in a `MicroserviceKubernetes` deployment. This assumes that the secrets have been created and are managed by Planton's `AwsSecretsManager` deployment module.
 
 ```yaml
 apiVersion: aws.openmcf.org/v1
@@ -79,7 +79,7 @@ spec:
     app:
       env:
         secrets:
-          # The value before the dot is the ID of the AwsSecretsManager resource on Planton Cloud
+          # The value before the dot is the ID of the AwsSecretsManager resource on Planton
           # The value after the dot is the name of the secret as specified in the AwsSecretsManager spec
           DATABASE_PASSWORD: ${my-aws-secrets.database-password}
         variables:

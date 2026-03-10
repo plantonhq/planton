@@ -230,9 +230,9 @@ Formatting requirements have been validated:
 ## Related
 
 This enhancement mirrors the same formatting requirements added to:
-- `planton-cloud/.cursor/rules/product/apis/infra-hub/cloud-resource/audit-planton-cloud-deployment-component.mdc`
+- `planton/.cursor/rules/product/apis/infra-hub/cloud-resource/audit-planton-deployment-component.mdc`
 
-Both audit rules now follow the same markdown formatting standards for consistency across OpenMCF and Planton Cloud audit reports.
+Both audit rules now follow the same markdown formatting standards for consistency across OpenMCF and Planton audit reports.
 
 ---
 

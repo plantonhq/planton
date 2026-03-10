@@ -106,7 +106,7 @@ See the full [CLI Reference](https://openmcf.org/docs/cli/cli-reference) for all
 - **[Getting Started Guide](https://openmcf.org/docs/getting-started)** — Your first deployment in 10 minutes
 - **[Component Catalog](https://openmcf.org/docs/catalog)** — Browse 360+ deployment components across 17 providers
 - **[Architecture](https://openmcf.org/docs/concepts/architecture)** — How Protocol Buffers, IaC modules, and CLI work together
-- **[Planton Cloud](https://planton.cloud)** — Commercial SaaS platform with UI, CI/CD, and team features
+- **[Planton](https://planton.cloud)** — Commercial SaaS platform with UI, CI/CD, and team features
 
 ---
 

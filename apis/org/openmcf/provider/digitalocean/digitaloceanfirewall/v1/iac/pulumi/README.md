@@ -146,7 +146,7 @@ DigitalOcean provider configuration.
 
 ```yaml
 provider_config:
-  credential_id: string  # ID of DigitalOcean credential in Planton Cloud
+  credential_id: string  # ID of DigitalOcean credential in Planton
 ```
 
 ### `target.spec` (Required)

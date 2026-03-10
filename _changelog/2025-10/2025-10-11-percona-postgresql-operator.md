@@ -422,11 +422,11 @@ Not recommended for existing deployments. Both operators manage PostgreSQL but w
 Two test manifests have been created for easy deployment:
 
 1. **OpenMCF Environment** (development/testing):
-   - Path: `planton-cloud/ops/organizations/openmcf/infra-hub/cloud-resources/kubernetes/addon/percona-postgresql-operator.yaml`
+   - Path: `planton/ops/organizations/openmcf/infra-hub/cloud-resources/kubernetes/addon/percona-postgresql-operator.yaml`
    - Cluster: `k8scred_01k789v5ewezr0f45j5zht9ysj`
 
 2. **App-Prod Environment** (production):
-   - Path: `planton-cloud/ops/organizations/planton-cloud/infra-hub/cloud-resources/app-prod/kubernetes/addon/percona-postgresql-operator.yaml`
+   - Path: `planton/ops/organizations/planton/infra-hub/cloud-resources/app-prod/kubernetes/addon/percona-postgresql-operator.yaml`
    - Cluster: `k8scred_01jp6qzdsj70s228htskj53214`
 
 Both manifests include complete deployment commands in their respective README files.

@@ -159,7 +159,7 @@ output "id" { value = openfga_authorization_model.this.id }
 
 - `OpenFgaTuple` component (manage relationship tuples)
 - Direct integration with application authorization flows
-- Policy-as-code for Planton Cloud's own authorization
+- Policy-as-code for Planton's own authorization
 
 ## Usage Examples
 

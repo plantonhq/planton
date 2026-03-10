@@ -2,7 +2,7 @@
 
 ## The Philosophy: Deployment-Agnostic Specifications
 
-When writing `spec.proto` files for Planton Cloud resources, we follow a fundamental principle: **specifications should describe what users want to deploy, not how it gets deployed**.
+When writing `spec.proto` files for Planton resources, we follow a fundamental principle: **specifications should describe what users want to deploy, not how it gets deployed**.
 
 Think of it like ordering food at a restaurant. You tell the waiter "I'd like a medium-rare steak with mashed potatoes," not "Please cook beef at 135°F for 4 minutes per side, boil potatoes, mash them with butter..." The kitchen (deployment layer) handles the implementation details.
 

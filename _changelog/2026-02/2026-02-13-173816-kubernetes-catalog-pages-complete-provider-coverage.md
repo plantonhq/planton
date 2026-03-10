@@ -16,7 +16,7 @@ The Kubernetes provider is OpenMCF's largest, with 51 deployment components span
 
 - 48 components had no source-verified catalog documentation
 - Auto-generated pages contained technology landscape essays, deployment maturity spectrums, and tool comparisons instead of actionable deployment guides
-- The `kubernetestektonoperator` page contained a Planton boundary violation ("Real-world usage at Planton Cloud")
+- The `kubernetestektonoperator` page contained a Planton boundary violation ("Real-world usage at Planton")
 - No consistent structure across Kubernetes component documentation
 
 ## Solution / What's New
@@ -80,7 +80,7 @@ The build script (`site/scripts/copy-component-docs.ts`) automatically prefers `
 
 - **Kubernetes provider at 100% catalog page coverage** — 51/51 components have hand-written, source-verified documentation
 - **Consistent 9-section structure** across all 51 pages
-- **Planton boundary violation fixed** — `kubernetestektonoperator` no longer shows "Real-world usage at Planton Cloud"
+- **Planton boundary violation fixed** — `kubernetestektonoperator` no longer shows "Real-world usage at Planton"
 - **Total catalog coverage**: 114 of ~215 production components (53%), up from 66 (31%)
   - AWS: 25/25 (100%)
   - GCP: 19/19 (100%)

@@ -29,7 +29,7 @@ Added `ExternalDnsCloudflareConfig` to the ExternalDNS specification:
 apiVersion: kubernetes.openmcf.org/v1
 kind: ExternalDnsKubernetes
 metadata:
-  name: external-dns-planton-cloud
+  name: external-dns-planton
 spec:
   targetCluster:
     kubernetesProviderConfigId: k8s-cluster-01
@@ -79,7 +79,7 @@ The implementation supports multiple ExternalDNS instances for different domains
 ```yaml
 # Instance 1: planton.cloud
 metadata:
-  name: external-dns-planton-cloud
+  name: external-dns-planton
 spec:
   cloudflare:
     dnsZoneId: "7adff2f8326758cac24fd17f02ca3001"
@@ -94,9 +94,9 @@ spec:
 ```
 
 **Resource Isolation**:
-- Helm release name derived from `metadata.name` (e.g., `external-dns-planton-cloud`)
+- Helm release name derived from `metadata.name` (e.g., `external-dns-planton`)
 - ServiceAccount name matches release name for clear identification
-- Secret names include domain suffix (e.g., `cloudflare-api-token-external-dns-planton-cloud`)
+- Secret names include domain suffix (e.g., `cloudflare-api-token-external-dns-planton`)
 - No resource conflicts when managing multiple domains
 
 ## Implementation Details
@@ -217,7 +217,7 @@ Set `--cloudflare-dns-records-per-page=5000` (the maximum) to minimize API calls
 
 #### 5. Domain-Specific Resource Names
 Resource names include the manifest's `metadata.name` to support multiple ExternalDNS instances:
-- Helm release: `external-dns-planton-cloud`, `external-dns-planton-live`
+- Helm release: `external-dns-planton`, `external-dns-planton-live`
 - ServiceAccount: matches release name
 - Secret: `cloudflare-api-token-<release-name>`
 
@@ -346,7 +346,7 @@ ExternalDNS automatically creates DNS records pointing to the Ingress controller
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: console-planton-cloud
+  name: console-planton
   namespace: istio-ingress
   annotations:
     external-dns.alpha.kubernetes.io/hostname: console.planton.cloud
@@ -442,10 +442,10 @@ Always specify `dns_zone_id` to:
 Successfully deployed to production environment managing two domains:
 
 **Instance 1: planton.cloud**
-- Manifest: `external-dns-planton-cloud.yaml`
+- Manifest: `external-dns-planton.yaml`
 - Zone ID: `7adff2f8326758cac24fd17f02ca3001`
-- Helm Release: `external-dns-planton-cloud`
-- ServiceAccount: `external-dns-planton-cloud`
+- Helm Release: `external-dns-planton`
+- ServiceAccount: `external-dns-planton`
 - Status: ✅ Running
 
 **Instance 2: planton.live**
@@ -461,19 +461,19 @@ Successfully deployed to production environment managing two domains:
 # Check both instances running
 kubectl get pods -n external-dns
 # Output:
-# external-dns-planton-cloud-xxx   1/1   Running
+# external-dns-planton-xxx   1/1   Running
 # external-dns-planton-live-xxx    1/1   Running
 
 # Check Helm releases
 helm ls -n external-dns
 # Output:
-# external-dns-planton-cloud   1.19.0   0.19.0
+# external-dns-planton   1.19.0   0.19.0
 # external-dns-planton-live    1.19.0   0.19.0
 
 # Check secrets created
 kubectl get secret -n external-dns
 # Output:
-# cloudflare-api-token-external-dns-planton-cloud
+# cloudflare-api-token-external-dns-planton
 # cloudflare-api-token-external-dns-planton-live
 
 # Verify zone ID filters and sources in logs
@@ -484,7 +484,7 @@ stern external -n external-dns | grep -E "ZoneIDFilter|Sources"
 # ZoneIDFilter:[77c6a34cf87dd1e8b497dc895bf5ea1b]
 
 # Verify Gateway API RBAC permissions
-kubectl get clusterrole external-dns-planton-cloud -o yaml | grep -A 10 gateway.networking.k8s.io
+kubectl get clusterrole external-dns-planton -o yaml | grep -A 10 gateway.networking.k8s.io
 # Should show Gateway API permissions
 ```
 
@@ -493,7 +493,7 @@ kubectl get clusterrole external-dns-planton-cloud -o yaml | grep -A 10 gateway.
 Successfully tested Gateway API integration with Istio:
 
 **Test Case**: console.planton.cloud
-- **Gateway**: `console-planton-cloud` in `istio-ingress` namespace
+- **Gateway**: `console-planton` in `istio-ingress` namespace
 - **Service**: `ingress-external` with external IP `34.93.244.81`
 - **Annotation**: `external-dns.alpha.kubernetes.io/hostname: console.planton.cloud`
 - **Result**: ✅ DNS record created automatically in Cloudflare

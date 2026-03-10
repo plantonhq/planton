@@ -10,7 +10,7 @@ import (
 // imagePullSecret creates a Kubernetes secret for pulling private container images.
 //
 // The docker config JSON can be provided in two ways (checked in priority order):
-// 1. stackInput.DockerConfigJson - Takes precedence (used by Planton Cloud)
+// 1. stackInput.DockerConfigJson - Takes precedence (used by Planton)
 //   - If present, label is completely ignored
 //
 // 2. metadata.labels["kubernetes.planton.io/docker-config-json-file"] - File path (for open-source users)

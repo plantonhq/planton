@@ -10,7 +10,7 @@ Implemented production-ready CloudflareWorker infrastructure resource with compl
 
 ## Problem Statement
 
-Cloudflare Workers provide serverless compute at the edge with sub-10ms cold starts globally, but deploying them through infrastructure-as-code required manual DNS configuration, zone ID lookups, and separate route management. The existing Planton Cloud infrastructure lacked support for:
+Cloudflare Workers provide serverless compute at the edge with sub-10ms cold starts globally, but deploying them through infrastructure-as-code required manual DNS configuration, zone ID lookups, and separate route management. The existing Planton infrastructure lacked support for:
 
 - Deploying pre-built Worker bundles from private R2 storage
 - Automatic DNS record creation for Worker hostnames
@@ -216,7 +216,7 @@ func createDnsRecord(ctx *pulumi.Context, zoneId pulumi.StringOutput) (*cloudfl.
         Type:    pulumi.String("A"),
         Content: pulumi.String("100.0.0.1"),  // Dummy IP
         Proxied: pulumi.Bool(true),           // Orange cloud
-        Comment: pulumi.String("Managed by Planton Cloud - Routes to Cloudflare Worker"),
+        Comment: pulumi.String("Managed by Planton - Routes to Cloudflare Worker"),
         Ttl:     pulumi.Float64(1),
     }
     
@@ -281,10 +281,10 @@ All modules compile cleanly with no warnings.
 
 ### 4. R2 Bundle Upload Integration
 
-**File**: `planton-cloud/backend/services/git-webhooks-receiver/Makefile`
+**File**: `planton/backend/services/git-webhooks-receiver/Makefile`
 
 ```makefile
-R2_BUCKET := planton-cloudflare-worker-scripts
+R2_BUCKET := plantonflare-worker-scripts
 R2_PATH_PREFIX := git-webhooks-receiver
 version ?= local-$(HOSTNAME)-$(TIMESTAMP)
 
@@ -296,7 +296,7 @@ publish: build
 **Why rclone over wrangler**:
 - Uses existing rclone R2 configuration
 - More reliable for remote uploads
-- Consistent with other Planton Cloud tooling
+- Consistent with other Planton tooling
 - No duplicate credential configuration needed
 
 ### 5. Worker Bindings System
@@ -333,7 +333,7 @@ make publish
 
 # Output:
 # Version: local-hostname-20251029190918
-# Published: r2://planton-cloudflare-worker-scripts/git-webhooks-receiver/local-hostname-20251029190918.js
+# Published: r2://plantonflare-worker-scripts/git-webhooks-receiver/local-hostname-20251029190918.js
 ```
 
 ### Phase 2: Update Manifest
@@ -343,7 +343,7 @@ apiVersion: cloudflare.openmcf.org/v1
 kind: CloudflareWorker
 metadata:
   name: git-webhooks-receiver
-  org: planton-cloud
+  org: planton
   env: app-prod
 spec:
   account_id: "074755a78d8e8f77c119a90a125e8a06"
@@ -351,7 +351,7 @@ spec:
   script:
     name: git-webhooks-receiver
     bundle:
-      bucket: planton-cloudflare-worker-scripts
+      bucket: plantonflare-worker-scripts
       path: git-webhooks-receiver/local-hostname-20251029190918.js
   
   dns:
@@ -371,7 +371,7 @@ spec:
 ### Phase 3: Deploy Infrastructure
 
 ```bash
-cd ops/organizations/planton-cloud/infra-hub/cloud-resources/app-prod/cloudflare
+cd ops/organizations/planton/infra-hub/cloud-resources/app-prod/cloudflare
 
 # Export R2 credentials (from rclone config)
 export AWS_ACCESS_KEY_ID=<r2-access-key-id>
@@ -616,7 +616,7 @@ r2Provider, err := aws.NewProvider(ctx, "r2-provider", &aws.ProviderArgs{
 
 // Read object using S3 SDK
 scriptObject := s3.GetObjectOutput(ctx, s3.GetObjectOutputArgs{
-    Bucket: pulumi.String("planton-cloudflare-worker-scripts"),
+    Bucket: pulumi.String("plantonflare-worker-scripts"),
     Key: pulumi.String("git-webhooks-receiver/v1.0.0.js"),
 }, pulumi.Provider(r2Provider))
 ```
@@ -708,7 +708,7 @@ spec:
   script:
     name: hello-world
     bundle:
-      bucket: planton-cloudflare-worker-scripts
+      bucket: plantonflare-worker-scripts
       path: hello-world/v1.0.0.js
   compatibility_date: "2024-09-23"
 ```
@@ -727,7 +727,7 @@ spec:
   script:
     name: api-gateway
     bundle:
-      bucket: planton-cloudflare-worker-scripts
+      bucket: plantonflare-worker-scripts
       path: api-gateway/v2.1.0.js
   dns:
     enabled: true
@@ -758,7 +758,7 @@ spec:
   script:
     name: cache-worker
     bundle:
-      bucket: planton-cloudflare-worker-scripts
+      bucket: plantonflare-worker-scripts
       path: cache-worker/v1.0.0.js
   kv_bindings:
     - name: CACHE
@@ -775,7 +775,7 @@ spec:
 ### Example 4: Multiple Workers in Monorepo
 
 ```
-planton-cloud/
+planton/
 ├─ backend/services/
 │  ├─ git-webhooks-receiver/
 │  │  ├─ src/index.ts
@@ -788,7 +788,7 @@ planton-cloud/
 │  └─ websocket-relay/
 │     └─ Makefile (make publish)
 │
-└─ ops/organizations/planton-cloud/infra-hub/cloud-resources/app-prod/cloudflare/
+└─ ops/organizations/planton/infra-hub/cloud-resources/app-prod/cloudflare/
    ├─ worker.git-webhooks-receiver.yaml
    ├─ worker.api-gateway.yaml
    └─ worker.websocket-relay.yaml
@@ -937,7 +937,7 @@ openmcf pulumi up --manifest worker.yaml
 
 ### Organizational
 
-**Planton Cloud Infrastructure**:
+**Planton Infrastructure**:
 - Adds edge compute capability
 - Complements existing Temporal workflow infrastructure
 - Enables webhook processing at global edge
@@ -1055,7 +1055,7 @@ spec:
   script:
     name: my-worker
     bundle:
-      bucket: planton-cloudflare-worker-scripts
+      bucket: plantonflare-worker-scripts
       path: my-worker/v1.0.0.js
   dns:
     enabled: true
@@ -1077,7 +1077,7 @@ openmcf pulumi up --manifest worker.my-worker.yaml --module-dir ${CLOUDFLARE_WOR
 - Versioned deployments
 - State tracking
 
-### Adding to Existing Planton Cloud Setup
+### Adding to Existing Planton Setup
 
 1. **Create Worker Service**:
    ```bash
@@ -1191,10 +1191,10 @@ apis/project/planton/provider/cloudflare/cloudflareworker/v1/
 └─ _cursor/
    └─ deploy.log             (deployment logs)
 
-planton-cloud/backend/services/git-webhooks-receiver/
+planton/backend/services/git-webhooks-receiver/
 └─ Makefile                  (MODIFIED - rclone integration)
 
-planton-cloud/ops/.../cloudflare/
+planton/ops/.../cloudflare/
 └─ worker.git-webhooks-receiver.yaml  (MODIFIED - new DNS structure)
 
 Total: 12 files modified, 3 files created
@@ -1296,7 +1296,7 @@ error: reading S3 Bucket (...) Object (...): couldn't find resource
 1. Verify `make publish` completed successfully
 2. Check R2 bucket name and path in manifest match publish output
 3. Ensure `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` are set
-4. Use `rclone ls r2:planton-cloudflare-worker-scripts/` to verify upload
+4. Use `rclone ls r2:plantonflare-worker-scripts/` to verify upload
 
 ### Issue: DNS Record Already Exists
 
@@ -1320,7 +1320,7 @@ echo $AWS_ACCESS_KEY_ID
 # Should output: access key
 
 # 2. Verify bundle exists in R2
-rclone ls r2:planton-cloudflare-worker-scripts/git-webhooks-receiver/
+rclone ls r2:plantonflare-worker-scripts/git-webhooks-receiver/
 # Should show: <version>.js with size
 
 # 3. Verify Cloudflare API token
@@ -1577,6 +1577,6 @@ Built on Cloudflare's global network:
 - **Integration**: Signals Temporal workflows for git commit transformations
 - **Performance**: < 10ms webhook processing latency worldwide
 
-**Impact**: Planton Cloud now supports edge compute deployments with complete automation from code to production URL with SSL. 🎉
+**Impact**: Planton now supports edge compute deployments with complete automation from code to production URL with SSL. 🎉
 
 

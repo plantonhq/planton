@@ -93,7 +93,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesstatefulsetv1.K
 	locals.HttpInternalRedirectRouteName = fmt.Sprintf("%s-http-internal-redirect", target.Metadata.Name)
 	locals.HttpsInternalRouteName = fmt.Sprintf("%s-https-internal", target.Metadata.Name)
 
-	// Priority 1: StackInput (used by Planton Cloud - takes precedence)
+	// Priority 1: StackInput (used by Planton - takes precedence)
 	if stackInput.DockerConfigJson != "" {
 		locals.ImagePullSecretData = map[string]string{".dockerconfigjson": stackInput.DockerConfigJson}
 	} else {

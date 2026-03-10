@@ -40,7 +40,7 @@ The original name `buf-plugin-planton` was too generic and didn't communicate th
 
 **Clear Purpose**: `optional-linter` immediately communicates what it does - it's a linter that validates optional field usage. This is more discoverable than a generic name.
 
-**Reusability Across Projects**: The renamed plugin can be used in both `openmcf` and the internal planton-cloud project, since both use the same `(org.openmcf.shared.options.default)` extension.
+**Reusability Across Projects**: The renamed plugin can be used in both `openmcf` and the internal planton project, since both use the same `(org.openmcf.shared.options.default)` extension.
 
 ## What's New
 
@@ -718,7 +718,7 @@ $ optional-linter --protocol
 - `docs/research/2025-10-19.how-to-publish-buf-plugin.md` - BSR publication research
 
 **Future**:
-- Could be used in planton-cloud internal project
+- Could be used in planton internal project
 - May inspire additional custom linting rules
 
 ## Documentation

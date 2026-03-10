@@ -696,7 +696,7 @@ Preview changes without executing (similar to delete --dry-run).
 Automated rollback if issues discovered after rename.
 
 **Cross-Repository Updates**:
-Update references in related repositories (planton-cloud, infra-charts).
+Update references in related repositories (planton, infra-charts).
 
 **Pattern Customization**:
 Allow users to add custom naming patterns if needed.

@@ -45,7 +45,7 @@ flowchart TB
 
 When loading stack input, the Pulumi module checks sources in this order:
 
-1. Pulumi config `planton-cloud:stack-input`
+1. Pulumi config `planton:stack-input`
 2. `STACK_INPUT_YAML` env var (direct content) - for backward compatibility
 3. `STACK_INPUT_YAML_FILE` env var (file path) - new primary mechanism
 
@@ -65,7 +65,7 @@ StackInput Flag = "stack-input"
 
 ```go
 const (
-    PulumiConfigKey   = "planton-cloud:stack-input"
+    PulumiConfigKey   = "planton:stack-input"
     FilePathEnvVar    = "STACK_INPUT_YAML_FILE"  // Renamed from STACK_INPUT_FILE_PATH
     YamlContentEnvVar = "STACK_INPUT_YAML"
 )

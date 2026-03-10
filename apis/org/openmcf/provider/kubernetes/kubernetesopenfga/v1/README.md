@@ -15,7 +15,7 @@ Deploying OpenFGA in Kubernetes can involve complex configurations, especially w
 
 ### Environment Integration
 
-- **Environment Info**: Integrates with Planton Cloud's environment management system to deploy OpenFGA in a specific environment.
+- **Environment Info**: Integrates with Planton's environment management system to deploy OpenFGA in a specific environment.
 - **Stack Job Settings**: Supports stack-update settings to ensure consistent and repeatable deployments using infrastructure-as-code.
 
 ### Kubernetes Credential Management

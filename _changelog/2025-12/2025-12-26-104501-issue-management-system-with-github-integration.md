@@ -6,7 +6,7 @@
 
 ## Summary
 
-Implemented a comprehensive issue management system for OpenMCF with four cursor rules that enable structured issue tracking, image handling, GitHub issue creation, and automated issue archival. The system adapts the proven planton-cloud issue management workflow to OpenMCF's repository structure, with deployment-component-aware area detection and CLI-focused labeling.
+Implemented a comprehensive issue management system for OpenMCF with four cursor rules that enable structured issue tracking, image handling, GitHub issue creation, and automated issue archival. The system adapts the proven planton issue management workflow to OpenMCF's repository structure, with deployment-component-aware area detection and CLI-focused labeling.
 
 ## Problem Statement
 
@@ -23,7 +23,7 @@ During development of OpenMCF, we frequently discover bugs, feature requests, an
 
 ## Solution
 
-Created a complete issue management system modeled after the successful planton-cloud implementation, with adaptations specific to OpenMCF's structure and focus areas.
+Created a complete issue management system modeled after the successful planton implementation, with adaptations specific to OpenMCF's structure and focus areas.
 
 ### System Architecture
 
@@ -77,7 +77,7 @@ openmcf/
 
 ### Area Detection System
 
-Adapted from planton-cloud to match OpenMCF's structure:
+Adapted from planton to match OpenMCF's structure:
 
 **OpenMCF Areas**:
 - `deployment-component` - Deployment component changes
@@ -359,11 +359,11 @@ Agent:
 
 ## OpenMCF Adaptations
 
-Key adaptations from planton-cloud to openmcf:
+Key adaptations from planton to openmcf:
 
 **Area Changes**:
 ```
-planton-cloud              → openmcf
+planton              → openmcf
 -----------------          → -------------------
 console                    → cli (primary interface)
 backend                    → deployment-component (core artifacts)
@@ -373,7 +373,7 @@ openmcf (area)     → pkg (libraries)
 
 **File Path Mappings**:
 ```
-planton-cloud                          → openmcf
+planton                          → openmcf
 ---------------------------------      → ----------------------------------
 client-apps/web/console/**            → cmd/openmcf/**
 backend/services/**                    → apis/org/openmcf/provider/**
@@ -430,8 +430,8 @@ Added for openmcf:
 
 This implementation builds on:
 
-- **planton-cloud issue system**: Proven workflow adapted for openmcf
-- **planton-cloud changelog rule**: Similar structure and philosophy
+- **planton issue system**: Proven workflow adapted for openmcf
+- **planton changelog rule**: Similar structure and philosophy
 - **Existing PR info rule**: Area detection patterns
 - **GitHub CLI (gh)**: Non-interactive issue creation
 

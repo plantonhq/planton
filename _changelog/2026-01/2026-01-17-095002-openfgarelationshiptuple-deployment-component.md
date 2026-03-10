@@ -187,7 +187,7 @@ output "object" { value = openfga_relationship_tuple.this.object }
 
 - Bulk tuple management
 - Integration with application authorization flows
-- Policy-as-code for Planton Cloud's own authorization
+- Policy-as-code for Planton's own authorization
 
 ## Usage Examples
 

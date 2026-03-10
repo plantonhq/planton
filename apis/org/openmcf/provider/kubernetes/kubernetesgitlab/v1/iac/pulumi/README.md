@@ -111,4 +111,4 @@ The outputs from the Pulumi deployment are captured in the `status.outputs` fiel
 
 ## Conclusion
 
-The `gitlab-kubernetes-pulumi-module` simplifies the process of deploying and managing GitLab within Kubernetes clusters. By leveraging Planton Cloud's unified API structure and Pulumi's infrastructure-as-code capabilities, the module ensures that GitLab is consistently deployed across different environments. With built-in support for resource customization, ingress configuration, and secure access options, this module offers flexibility and control for deploying GitLab in both development and production environments.
+The `gitlab-kubernetes-pulumi-module` simplifies the process of deploying and managing GitLab within Kubernetes clusters. By leveraging Planton's unified API structure and Pulumi's infrastructure-as-code capabilities, the module ensures that GitLab is consistently deployed across different environments. With built-in support for resource customization, ingress configuration, and secure access options, this module offers flexibility and control for deploying GitLab in both development and production environments.

@@ -127,11 +127,11 @@ flowchart LR
 - Both Pulumi and Terraform users
 
 ### Unblocks
-- Planton Cloud dev environment setup (web console builds require self-hosted runners with more RAM than GitHub-hosted runners provide)
+- Planton dev environment setup (web console builds require self-hosted runners with more RAM than GitHub-hosted runners provide)
 
 ## Related Work
 
-- Planton Cloud project: `_projects/2025-12/20251220.01.planton-dev-env-setup/`
+- Planton project: `_projects/2025-12/20251220.01.planton-dev-env-setup/`
 - InfraChart: `planton-gha-runners` (uses these deployment components)
 - Design decision: `design-decisions/self-hosted-gha-runners.md`
 

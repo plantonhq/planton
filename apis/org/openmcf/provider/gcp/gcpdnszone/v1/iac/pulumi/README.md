@@ -83,7 +83,7 @@ For support, please contact our [support team](mailto:support@planton.cloud).
 
 ## Acknowledgements
 
-Special thanks to all contributors and the Planton Cloud community for their ongoing support and feedback.
+Special thanks to all contributors and the Planton community for their ongoing support and feedback.
 
 ## Changelog
 
@@ -105,7 +105,7 @@ For any inquiries or feedback, please reach out to us at [contact@planton.cloud]
 
 ## Disclaimer
 
-*This project is maintained by Planton Cloud and is not affiliated with any third-party services unless explicitly stated.*
+*This project is maintained by Planton and is not affiliated with any third-party services unless explicitly stated.*
 
 ## Security
 
@@ -119,7 +119,7 @@ Please adhere to our [Code of Conduct](CODE_OF_CONDUCT.md) when interacting with
 
 - [Pulumi Documentation](https://www.pulumi.com/docs/)
 - [GCP DNS Documentation](https://cloud.google.com/dns/docs)
-- [Planton Cloud APIs](https://buf.build/openmcf/apis/docs)
+- [Planton APIs](https://buf.build/openmcf/apis/docs)
 
 ## Getting Started
 
@@ -127,4 +127,4 @@ To get started with the GCP DNS Zone Pulumi Module, follow the installation inst
 
 ---
 
-*Thank you for choosing Planton Cloud's GCP DNS Zone Pulumi Module. We look forward to supporting your infrastructure management needs!*
+*Thank you for choosing Planton's GCP DNS Zone Pulumi Module. We look forward to supporting your infrastructure management needs!*

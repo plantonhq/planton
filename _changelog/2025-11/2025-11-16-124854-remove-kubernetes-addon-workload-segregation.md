@@ -713,11 +713,11 @@ git status --short | grep "^D "
 - No special handling needed
 - Works exactly like AWS/GCP components
 
-### For Planton Cloud Integration
+### For Planton Integration
 
-**Next Phase**: Apply these changes to planton-cloud monorepo
+**Next Phase**: Apply these changes to planton monorepo
 
-The planton-cloud monorepo imports OpenMCF APIs via Buf Schema Registry. Once OpenMCF publishes updated proto schemas, planton-cloud will:
+The planton monorepo imports OpenMCF APIs via Buf Schema Registry. Once OpenMCF publishes updated proto schemas, planton will:
 
 1. Update dependency to latest OpenMCF version
 2. Regenerate proto stubs (import paths update automatically)
@@ -863,9 +863,9 @@ These changelogs show the evolution of the Kubernetes components and documentati
 
 ### Immediate Next Steps
 
-**1. Apply to Planton Cloud Monorepo** (Next Iteration)
+**1. Apply to Planton Monorepo** (Next Iteration)
 
-The planton-cloud monorepo has its own references to addon/workload structure:
+The planton monorepo has its own references to addon/workload structure:
 - Web console UI may display category information
 - Backend services may have category-based logic
 - Documentation may reference the categories
@@ -1000,7 +1000,7 @@ Using `git mv` for all 36 components:
 - Category enum removed (code using it needs updates)
 - Helper function deleted (calls need removal)
 
-These only affect planton-cloud monorepo, which will be addressed in the next iteration.
+These only affect planton monorepo, which will be addressed in the next iteration.
 
 ## Statistics
 
@@ -1059,7 +1059,7 @@ Tasks remaining:
 - Publish updated APIs to Buf Schema Registry
 - Deploy documentation site with updated structure
 
-### For Next Iteration (planton-cloud monorepo)
+### For Next Iteration (planton monorepo)
 
 The monorepo will need updates:
 
@@ -1074,7 +1074,7 @@ Estimated effort: 2-4 hours (mostly verification and testing)
 ---
 
 **Status**: ✅ Complete (openmcf repository)  
-**Next Phase**: planton-cloud monorepo updates  
+**Next Phase**: planton monorepo updates  
 **Timeline**: Single session (November 16, 2025)  
 **Impact**: Architectural simplification affecting all Kubernetes components  
 

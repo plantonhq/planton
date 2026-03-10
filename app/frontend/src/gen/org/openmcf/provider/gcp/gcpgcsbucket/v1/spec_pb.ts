@@ -156,7 +156,7 @@ export type GcpGcsBucketSpec = Message<"org.openmcf.provider.gcp.gcpgcsbucket.v1
 
   /**
    * Custom labels for the bucket (cost tracking, governance, compliance).
-   * These are merged with auto-generated labels (planton-cloud-resource-*).
+   * These are merged with auto-generated labels (planton-resource-*).
    * Optional.
    *
    * @generated from field: map<string, string> gcp_labels = 15;

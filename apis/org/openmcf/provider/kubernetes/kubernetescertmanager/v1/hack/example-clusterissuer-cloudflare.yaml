@@ -57,11 +57,11 @@
 apiVersion: kubernetes-cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: planton-cloud-wildcard
+  name: planton-wildcard
   namespace: default
 spec:
   # Secret name where the TLS certificate will be stored
-  secretName: planton-cloud-tls
+  secretName: planton-tls
   
   # Reference to the auto-created ClusterIssuer (named after the domain)
   issuerRef:

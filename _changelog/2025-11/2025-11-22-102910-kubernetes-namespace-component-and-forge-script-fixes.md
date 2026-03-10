@@ -1344,7 +1344,7 @@ All namespace configurations are:
 
 ### Phase 3: Platform Integration
 
-1. **Web Console UI**: Create namespace from web UI (Planton Cloud)
+1. **Web Console UI**: Create namespace from web UI (Planton)
 2. **Self-Service Portal**: Teams request namespaces via form
 3. **GitOps Integration**: ArgoCD AppProject creation alongside namespace
 4. **Monitoring**: Prometheus recording rules for namespace metrics

@@ -16,7 +16,7 @@
 
 ### Seamless Kubernetes Integration
 - **Multi-Cluster Support**: Deploy the operator to any Kubernetes cluster with proper credentials.
-- **Kubernetes Credentials Management**: Securely manage cluster credentials through Planton Cloud's credential system.
+- **Kubernetes Credentials Management**: Securely manage cluster credentials through Planton's credential system.
 - **Automated Outputs Handling**: Capture and manage Pulumi outputs within the API resource status, providing essential information such as namespace.
 
 ### Developer-Friendly CLI
@@ -35,7 +35,7 @@
 To use the KubernetesPerconaMongoOperator Pulumi module, ensure that you have:
 - Pulumi CLI installed
 - Access to a Kubernetes cluster
-- Valid Kubernetes cluster credentials configured in Planton Cloud
+- Valid Kubernetes cluster credentials configured in Planton
 
 ## Usage
 

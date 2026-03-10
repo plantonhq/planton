@@ -331,10 +331,10 @@ Simply create Certificate resources referencing the domain-named ClusterIssuer:
 apiVersion: kubernetes-cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: planton-cloud-wildcard
+  name: planton-wildcard
   namespace: default
 spec:
-  secretName: planton-cloud-tls  # Where the cert will be stored
+  secretName: planton-tls  # Where the cert will be stored
   issuerRef:
     name: planton.cloud  # Use the domain name - auto-created by the addon
     kind: ClusterIssuer
@@ -345,7 +345,7 @@ spec:
 
 Each domain gets its own ClusterIssuer named after the domain itself. This makes it crystal clear which issuer to use for each domain and provides better visibility when troubleshooting.
 
-Within a few minutes, you'll have a Secret named `planton-cloud-tls` containing your certificate.
+Within a few minutes, you'll have a Secret named `planton-tls` containing your certificate.
 
 ### Separate Certificates Per Domain
 
@@ -356,10 +356,10 @@ Since each domain has its own ClusterIssuer, you'll typically create separate ce
 apiVersion: kubernetes-cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: planton-cloud-cert
+  name: planton-cert
   namespace: default
 spec:
-  secretName: planton-cloud-tls
+  secretName: planton-tls
   issuerRef:
     name: planton.cloud  # Domain-specific issuer
     kind: ClusterIssuer
@@ -401,7 +401,7 @@ spec:
   tls:
     - hosts:
         - app.planton.cloud
-      secretName: planton-cloud-tls
+      secretName: planton-tls
   rules:
     - host: app.planton.cloud
       http:

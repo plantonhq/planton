@@ -25,7 +25,7 @@ Think of Pulumi as your infrastructure's version control system. Just as Git let
 
 **Manifest**: A YAML file describing your infrastructure resource (e.g., `r2-bucket.yaml`, `eks-cluster.yaml`). Think of it as a blueprint.
 
-**Stack**: A deployment instance with its own state. The stack name follows the format `<org>/<project>/<stack>` (e.g., `planton-cloud/planton-cloud/prod.CloudflareR2Bucket.my-bucket`). Your manifest contains this in its labels.
+**Stack**: A deployment instance with its own state. The stack name follows the format `<org>/<project>/<stack>` (e.g., `planton/planton/prod.CloudflareR2Bucket.my-bucket`). Your manifest contains this in its labels.
 
 **Module Directory**: Where the Pulumi IaC code lives. Usually auto-detected from your manifest's resource kind, but can be overridden with `--module-dir`.
 
@@ -86,14 +86,14 @@ openmcf pulumi init \
 🤝 Handing off to Pulumi...
    Output below is from Pulumi
 
-Using Pulumi stack from manifest labels: planton-cloud/planton-cloud/prod.CloudflareR2Bucket.pipeline-logs
+Using Pulumi stack from manifest labels: planton/planton/prod.CloudflareR2Bucket.pipeline-logs
 
 pulumi module directory: /path/to/module
-Initializing stack: planton-cloud/planton-cloud/prod.CloudflareR2Bucket.pipeline-logs
+Initializing stack: planton/planton/prod.CloudflareR2Bucket.pipeline-logs
 
-Created stack 'planton-cloud/planton-cloud/prod.CloudflareR2Bucket.pipeline-logs'
+Created stack 'planton/planton/prod.CloudflareR2Bucket.pipeline-logs'
 
-✓ Successfully initialized stack: planton-cloud/planton-cloud/prod.CloudflareR2Bucket.pipeline-logs
+✓ Successfully initialized stack: planton/planton/prod.CloudflareR2Bucket.pipeline-logs
 
 ✔ Pulumi execution succeeded
 ```
@@ -145,10 +145,10 @@ openmcf pulumi preview \
 **Reading the output**:
 
 ```
-Previewing update (planton-cloud/prod.CloudflareR2Bucket.logs):
+Previewing update (planton/prod.CloudflareR2Bucket.logs):
 
      Type                        Name                Plan       Info
- +   pulumi:pulumi:Stack         planton-cloud       create
+ +   pulumi:pulumi:Stack         planton       create
  +   └─ cloudflare:R2Bucket      bucket              create
 
 Resources:
@@ -228,12 +228,12 @@ openmcf pulumi up \
 🤝 Handing off to Pulumi...
    Output below is from Pulumi
 
-Using Pulumi stack from manifest labels: planton-cloud/planton-cloud/prod.GcpCloudSql.main-db
+Using Pulumi stack from manifest labels: planton/planton/prod.GcpCloudSql.main-db
 
-Previewing update (planton-cloud/planton-cloud/prod.GcpCloudSql.main-db):
+Previewing update (planton/planton/prod.GcpCloudSql.main-db):
 
      Type                             Name                          Plan
- +   pulumi:pulumi:Stack              planton-cloud                 create
+ +   pulumi:pulumi:Stack              planton                 create
  +   ├─ gcp:sql:DatabaseInstance      main-db                       create
  +   ├─ gcp:sql:Database              app-db                        create
  +   └─ gcp:sql:User                  app-user                      create
@@ -242,10 +242,10 @@ Resources:
     + 4 to create
 
 Do you want to perform this update? yes
-Updating (planton-cloud/planton-cloud/prod.GcpCloudSql.main-db):
+Updating (planton/planton/prod.GcpCloudSql.main-db):
 
      Type                             Name                          Status
- +   pulumi:pulumi:Stack              planton-cloud                 created (3s)
+ +   pulumi:pulumi:Stack              planton                 created (3s)
  +   ├─ gcp:sql:DatabaseInstance      main-db                       created (185s)
  +   ├─ gcp:sql:Database              app-db                        created (8s)
  +   └─ gcp:sql:User                  app-user                      created (5s)
@@ -329,10 +329,10 @@ openmcf pulumi up \
 🤝 Handing off to Pulumi...
    Output below is from Pulumi
 
-Refreshing (planton-cloud/planton-cloud/prod.AwsS3Bucket.assets):
+Refreshing (planton/planton/prod.AwsS3Bucket.assets):
 
      Type                    Name                Status       Info
-     pulumi:pulumi:Stack     planton-cloud
+     pulumi:pulumi:Stack     planton
  ~   └─ aws:s3:Bucket        assets              updated      [diff: ~tags]
 
 Outputs:
@@ -426,10 +426,10 @@ openmcf pulumi destroy \
 🤝 Handing off to Pulumi...
    Output below is from Pulumi
 
-Previewing destroy (planton-cloud/planton-cloud/dev.GkeCluster.test-cluster):
+Previewing destroy (planton/planton/dev.GkeCluster.test-cluster):
 
      Type                              Name                      Plan
- -   pulumi:pulumi:Stack               planton-cloud             delete
+ -   pulumi:pulumi:Stack               planton             delete
  -   ├─ gcp:container:Cluster          test-cluster              delete
  -   └─ gcp:container:NodePool         default-pool              delete
 
@@ -437,10 +437,10 @@ Resources:
     - 3 to delete
 
 Do you want to perform this destroy? yes
-Destroying (planton-cloud/planton-cloud/dev.GkeCluster.test-cluster):
+Destroying (planton/planton/dev.GkeCluster.test-cluster):
 
      Type                              Name                      Status
- -   pulumi:pulumi:Stack               planton-cloud             deleted
+ -   pulumi:pulumi:Stack               planton             deleted
  -   ├─ gcp:container:NodePool         default-pool              deleted (90s)
  -   └─ gcp:container:Cluster          test-cluster              deleted (180s)
 
@@ -545,14 +545,14 @@ openmcf pulumi delete \
 🤝 Handing off to Pulumi...
    Output below is from Pulumi
 
-Using Pulumi stack from manifest labels: planton-cloud/planton-cloud/dev.TestResource.temp
+Using Pulumi stack from manifest labels: planton/planton/dev.TestResource.temp
 
 pulumi module directory: /path/to/module
-Removing stack: planton-cloud/planton-cloud/dev.TestResource.temp
+Removing stack: planton/planton/dev.TestResource.temp
 
-Stack 'planton-cloud/planton-cloud/dev.TestResource.temp' has been removed!
+Stack 'planton/planton/dev.TestResource.temp' has been removed!
 
-✓ Successfully removed stack: planton-cloud/planton-cloud/dev.TestResource.temp
+✓ Successfully removed stack: planton/planton/dev.TestResource.temp
 
 ✔ Pulumi execution succeeded
 ```
@@ -1141,7 +1141,7 @@ openmcf pulumi up --manifest resource.yaml
 # ✅ Good: Clear, hierarchical naming
 metadata:
   labels:
-    pulumi.openmcf.org/stack.name: "planton-cloud/planton-cloud/prod.CloudflareR2Bucket.pipeline-logs"
+    pulumi.openmcf.org/stack.name: "planton/planton/prod.CloudflareR2Bucket.pipeline-logs"
     #                                       └─────org────┘ └─project──┘ └─────environment.ResourceType.resource-name───┘
 
 # ❌ Bad: Generic, unclear names

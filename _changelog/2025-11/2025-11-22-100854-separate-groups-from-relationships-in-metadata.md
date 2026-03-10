@@ -187,7 +187,7 @@ This is a **breaking change** for any code that:
 2. Update code that reads grouping information to use `metadata.group`
 3. Update YAML manifests to declare groups in `metadata.group` instead of in each relationship
 
-**For Planton Cloud monorepo**:
+**For Planton monorepo**:
 1. Upgrade openmcf dependency to v0.2.237
 2. Update `CloudResourceDagMapper` to read from `metadata.group`
 3. Update all infra-chart manifests to use the new structure
@@ -199,7 +199,7 @@ This is a **breaking change** for any code that:
 - `apis/org/openmcf/shared/relationship/v1/relationship.proto` - Removed group field
 - `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto` - Commented out KubernetesNamespace
 
-**Planton Cloud (pending)**:
+**Planton (pending)**:
 - `backend/libs/java/domain/infra-hub-commons/src/main/java/ai/planton/infrahubcommons/cloudresource/dag/mapper/CloudResourceDagMapper.java` - Will read from `metadata.group`
 - `ops/organizations/planton/infra-hub/infra-chart/planton-gcp-environment/templates/**/*.yaml` - Manifest updates
 
@@ -236,7 +236,7 @@ Not all resources need grouping. Resources that stand alone (like a GCP project 
 ## Next Steps
 
 1. ✅ Release OpenMCF v0.2.237 with updated protos
-2. ⏳ Update Planton Cloud monorepo to consume new version
+2. ⏳ Update Planton monorepo to consume new version
 3. ⏳ Update CloudResourceDagMapper to read `metadata.group`
 4. ⏳ Migrate all infra-chart YAML manifests to new structure
 5. ⏳ Test DAG construction and visualization
@@ -245,7 +245,7 @@ Not all resources need grouping. Resources that stand alone (like a GCP project 
 ---
 
 **Status**: ✅ Released in OpenMCF
-**Pending**: Planton Cloud monorepo integration
+**Pending**: Planton monorepo integration
 **Timeline**: Proto changes completed November 22, 2025
 
 **Key Insight**: Metadata should belong to the resource itself, not be scattered across references from other resources. This change aligns the API with that principle, making groups a first-class resource property rather than a relationship attribute.

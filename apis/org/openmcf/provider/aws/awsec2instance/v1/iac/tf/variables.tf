@@ -1,5 +1,5 @@
 variable "metadata" {
-  description = "metadata for all resource objects on planton-cloud"
+  description = "metadata for all resource objects on planton"
   type = object({
 
     # name of the resource

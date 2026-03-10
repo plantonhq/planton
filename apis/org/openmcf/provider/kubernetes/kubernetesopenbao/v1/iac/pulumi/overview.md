@@ -165,11 +165,11 @@ iac/pulumi/
 
 ### Labels
 All resources are tagged with standard OpenMCF labels:
-- `planton-cloud-resource: "true"`
-- `planton-cloud-resource-name: <name>`
-- `planton-cloud-resource-kind: KubernetesOpenBao`
-- `planton-cloud-organization: <org>` (if set)
-- `planton-cloud-environment: <env>` (if set)
+- `planton-resource: "true"`
+- `planton-resource-name: <name>`
+- `planton-resource-kind: KubernetesOpenBao`
+- `planton-organization: <org>` (if set)
+- `planton-environment: <env>` (if set)
 
 ### Service Discovery
 - Internal: `<name>.<namespace>.svc.cluster.local:8200`

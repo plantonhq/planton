@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **Confluent Cloud Kafka Pulumi Module** is designed to simplify the deployment and management of Confluent Cloud Kafka clusters across multiple cloud providers. By leveraging Google Cloud Platform (GCP), AWS, and Azure, this module integrates seamlessly with Planton Cloud's unified API framework, which models every API resource using a Kubernetes-like structure with `apiVersion`, `kind`, `metadata`, `spec`, and `status` fields. The `ConfluentKafka` resource defines the necessary specifications for provisioning Kafka clusters in Confluent Cloud, enabling developers to manage their messaging infrastructure as code effortlessly.
+The **Confluent Cloud Kafka Pulumi Module** is designed to simplify the deployment and management of Confluent Cloud Kafka clusters across multiple cloud providers. By leveraging Google Cloud Platform (GCP), AWS, and Azure, this module integrates seamlessly with Planton's unified API framework, which models every API resource using a Kubernetes-like structure with `apiVersion`, `kind`, `metadata`, `spec`, and `status` fields. The `ConfluentKafka` resource defines the necessary specifications for provisioning Kafka clusters in Confluent Cloud, enabling developers to manage their messaging infrastructure as code effortlessly.
 
 By utilizing this Pulumi module, developers can automate the creation of Kafka clusters with specified configurations such as cloud provider selection, availability zones, and environment isolation. The module interacts with Confluent credentials and other necessary specifications provided in the resource definition, ensuring a streamlined and consistent deployment process. Additionally, the outputs from the deployment, including cluster IDs and endpoints, are captured in the resource's `status.outputs`, allowing users to monitor and manage their Kafka infrastructure directly through the `ConfluentKafka` resource.
 
@@ -86,7 +86,7 @@ For support, please contact our [support team](mailto:support@planton.cloud). We
 
 ## Acknowledgements
 
-Special thanks to all contributors and the Planton Cloud community for their ongoing support and feedback. Your efforts and dedication are instrumental in making this module robust and effective.
+Special thanks to all contributors and the Planton community for their ongoing support and feedback. Your efforts and dedication are instrumental in making this module robust and effective.
 
 ## Changelog
 
@@ -110,7 +110,7 @@ For any inquiries or feedback, please reach out to us at [contact@planton.cloud]
 
 ## Disclaimer
 
-*This project is maintained by Planton Cloud and is not affiliated with any third-party services unless explicitly stated. While we strive to ensure the accuracy and reliability of this module, users are encouraged to review and test configurations in their environments.*
+*This project is maintained by Planton and is not affiliated with any third-party services unless explicitly stated. While we strive to ensure the accuracy and reliability of this module, users are encouraged to review and test configurations in their environments.*
 
 ## Security
 
@@ -124,7 +124,7 @@ Please adhere to our [Code of Conduct](CODE_OF_CONDUCT.md) when interacting with
 
 - [Pulumi Documentation](https://www.pulumi.com/docs/)
 - [Confluent Cloud Documentation](https://docs.confluent.io/cloud/)
-- [Planton Cloud APIs](https://buf.build/openmcf/apis/docs)
+- [Planton APIs](https://buf.build/openmcf/apis/docs)
 
 ## Getting Started
 

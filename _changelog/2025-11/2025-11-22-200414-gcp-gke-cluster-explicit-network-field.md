@@ -326,6 +326,6 @@ openmcf pulumi up --manifest gcp-gke-cluster.yaml
 
 **Next Steps**:
 1. Update existing GKE cluster manifests to include `networkSelfLink`
-2. Regenerate proto stubs in consuming services (planton-cloud)
+2. Regenerate proto stubs in consuming services (planton)
 3. Test deployment in production environment
 

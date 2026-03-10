@@ -180,7 +180,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *kuberneteskafkav1.Kuberne
 
 	//note: a ClusterIssuer resource should have already exist on the kubernetes-cluster.
 	//this is typically taken care of by the kubernetes cluster administrator.
-	//if the kubernetes-cluster is created using Planton Cloud, then the cluster-issuer name will be
+	//if the kubernetes-cluster is created using Planton, then the cluster-issuer name will be
 	//same as the ingress-domain-name as long as the same ingress-domain-name is added to the list of
 	//ingress-domain-names for the GkeCluster/EksCluster/AksCluster spec.
 	// Extract the domain from hostname for certificate issuer name

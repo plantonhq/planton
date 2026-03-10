@@ -13,7 +13,7 @@ Deploy the Percona Operator for MySQL with default resource allocations using th
 ### Prerequisites
 
 - Pulumi CLI installed
-- Kubernetes cluster credentials configured in Planton Cloud
+- Kubernetes cluster credentials configured in Planton
 - `kubectl` configured to access your cluster
 
 ### Manifest

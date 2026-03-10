@@ -15,7 +15,7 @@ Deploying Redis in a Kubernetes environment can be complex, especially when deal
 
 ### Environment and Stack Integration
 
-- **Environment Info**: This resource integrates seamlessly with Planton Cloud’s environment management system, ensuring that Redis instances are deployed in the appropriate environment.
+- **Environment Info**: This resource integrates seamlessly with Planton’s environment management system, ensuring that Redis instances are deployed in the appropriate environment.
 - **Stack Job Settings**: Stack job settings ensure that Redis instances are deployed using consistent infrastructure-as-code approaches.
 
 ### Kubernetes Credential Management
