@@ -1,18 +1,14 @@
 # =============================================================================
 # Terraform Modules Auto-Release
 # =============================================================================
-# Creates GitHub releases for Terraform module changes with zipped module
-# contents attached as artifacts.
+# Zips a Terraform module, uploads it to Cloudflare R2
+# (downloads.openmcf.org), and creates a GitHub release with download links.
 #
 # Tag Format: v{semver}-terraform.{component}.{YYYYMMDD}.{N}
 # Example: v0.3.5-terraform.awsecsservice.20260108.0
 #
-# Artifacts:
-#   - terraform-{component}.zip - zipped contents of the module's tf/ folder
-#
-# Usage Options:
-#   1. Download zip from release (recommended - fastest)
-#   2. Reference via git source (legacy)
+# Upload path: s3://openmcf-downloads-bucket/releases/{tag}/modules/terraform/{component}.zip
+# Public URL:  https://downloads.openmcf.org/releases/{tag}/modules/terraform/{component}.zip
 #
 # Triggered by: auto-tag.yaml via workflow_dispatch (one call per component)
 # =============================================================================
@@ -43,6 +39,9 @@ on:
 permissions:
   contents: write
 
+env:
+  R2_BUCKET: openmcf-downloads-bucket
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -54,18 +53,32 @@ jobs:
         run: |
           COMPONENT="${{ inputs.component }}"
           MODULE_PATH="${{ inputs.path }}"
-          ARTIFACT_NAME="terraform-${COMPONENT}.zip"
+          ARTIFACT_NAME="${COMPONENT}.zip"
           
           echo "========================================"
           echo "ZIPPING: ${COMPONENT}"
           echo "Path: ${MODULE_PATH}"
           echo "========================================"
           
-          # Create zip from the tf directory contents
           (cd "${MODULE_PATH}" && zip -r "${GITHUB_WORKSPACE}/${ARTIFACT_NAME}" .)
           
           ZIP_SIZE=$(ls -lh "${ARTIFACT_NAME}" | awk '{print $5}')
           echo "Created: ${ARTIFACT_NAME} (${ZIP_SIZE})"
+
+      - name: Upload to R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          AWS_ENDPOINT_URL: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
+        run: |
+          TAG="${{ inputs.tag }}"
+          COMPONENT="${{ inputs.component }}"
+          ARTIFACT_NAME="${COMPONENT}.zip"
+          R2_KEY="releases/${TAG}/modules/terraform/${ARTIFACT_NAME}"
+          
+          aws s3 cp "${ARTIFACT_NAME}" "s3://${R2_BUCKET}/${R2_KEY}" \
+            --endpoint-url "${AWS_ENDPOINT_URL}"
+          echo "✓ Uploaded: https://downloads.openmcf.org/${R2_KEY}"
 
       - name: Create GitHub Release
         env:
@@ -75,7 +88,7 @@ jobs:
           COMPONENT="${{ inputs.component }}"
           PROVIDER="${{ inputs.provider }}"
           MODULE_PATH="${{ inputs.path }}"
-          ARTIFACT_NAME="terraform-${COMPONENT}.zip"
+          DOWNLOAD_URL="https://downloads.openmcf.org/releases/${TAG}/modules/terraform/${COMPONENT}.zip"
 
           cat > release-notes.md << 'EOF'
           ## Terraform Module Auto-Release
@@ -101,8 +114,8 @@ jobs:
 
           ```bash
           # Download and extract
-          curl -LO https://github.com/plantonhq/openmcf/releases/download/TAG_PLACEHOLDER/terraform-COMPONENT_PLACEHOLDER.zip
-          unzip terraform-COMPONENT_PLACEHOLDER.zip -d COMPONENT_PLACEHOLDER
+          curl -LO DOWNLOAD_URL_PLACEHOLDER
+          unzip COMPONENT_PLACEHOLDER.zip -d COMPONENT_PLACEHOLDER
           cd COMPONENT_PLACEHOLDER
 
           # Initialize and apply
@@ -129,9 +142,9 @@ jobs:
 
           ## Available Artifacts
 
-          | Artifact | Description |
-          |----------|-------------|
-          | `terraform-COMPONENT_PLACEHOLDER.zip` | Complete Terraform module |
+          | Artifact | Download |
+          |----------|----------|
+          | `COMPONENT_PLACEHOLDER.zip` | [Download](DOWNLOAD_URL_PLACEHOLDER) |
 
           ---
 
@@ -142,12 +155,12 @@ jobs:
           `PATH_PLACEHOLDER/README.md`
           EOF
 
-          # Replace placeholders
           sed -i "s|TAG_PLACEHOLDER|${TAG}|g" release-notes.md
           sed -i "s|COMPONENT_PLACEHOLDER|${COMPONENT}|g" release-notes.md
           sed -i "s|PROVIDER_PLACEHOLDER|${PROVIDER}|g" release-notes.md
           sed -i "s|PATH_PLACEHOLDER|${MODULE_PATH}|g" release-notes.md
           sed -i "s|COMMIT_PLACEHOLDER|${{ github.sha }}|g" release-notes.md
+          sed -i "s|DOWNLOAD_URL_PLACEHOLDER|${DOWNLOAD_URL}|g" release-notes.md
 
           if gh release view "${TAG}" >/dev/null 2>&1; then
             echo "Release ${TAG} already exists"
@@ -157,17 +170,6 @@ jobs:
               --title "${TAG}" \
               --notes-file release-notes.md
           fi
-
-      - name: Upload zip to release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          TAG="${{ inputs.tag }}"
-          COMPONENT="${{ inputs.component }}"
-          ARTIFACT_NAME="terraform-${COMPONENT}.zip"
-          
-          gh release upload "${TAG}" "${ARTIFACT_NAME}" --clobber
-          echo "✓ Uploaded: ${ARTIFACT_NAME}"
 
           echo ""
           echo "========================================"
@@ -181,6 +183,7 @@ jobs:
           COMPONENT="${{ inputs.component }}"
           PROVIDER="${{ inputs.provider }}"
           MODULE_PATH="${{ inputs.path }}"
+          DOWNLOAD_URL="https://downloads.openmcf.org/releases/${TAG}/modules/terraform/${COMPONENT}.zip"
           
           echo "## Terraform Module Auto-Release Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -191,14 +194,13 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Artifact" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- \`terraform-${COMPONENT}.zip\`" >> $GITHUB_STEP_SUMMARY
+          echo "- [${COMPONENT}.zip](${DOWNLOAD_URL})" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Usage" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Download zip:**" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "curl -LO https://github.com/${{ github.repository }}/releases/download/${TAG}/terraform-${COMPONENT}.zip" >> $GITHUB_STEP_SUMMARY
+          echo "curl -LO ${DOWNLOAD_URL}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "[View Release](https://github.com/${{ github.repository }}/releases/tag/${TAG})" >> $GITHUB_STEP_SUMMARY
-

@@ -1,8 +1,9 @@
 # =============================================================================
 # Pulumi Modules Auto-Release
 # =============================================================================
-# Builds pre-compiled binaries for Pulumi deployment components and creates
-# GitHub releases with gzipped artifacts.
+# Builds pre-compiled binaries for Pulumi deployment components, uploads them
+# to Cloudflare R2 (downloads.openmcf.org), and creates a GitHub release with
+# download links.
 #
 # Tag Format: v{semver}-pulumi.{component}.{YYYYMMDD}.{N}
 # Example: v0.3.5-pulumi.awsecsservice.20260108.0
@@ -12,6 +13,9 @@
 #   - darwin_arm64   - Apple Silicon Macs
 #   - darwin_amd64   - Intel Macs
 #   - windows_amd64  - Windows
+#
+# Upload path: s3://openmcf-downloads-bucket/releases/{tag}/modules/pulumi/{component}_{platform}.gz
+# Public URL:  https://downloads.openmcf.org/releases/{tag}/modules/pulumi/{component}_{platform}.gz
 #
 # Triggered by: auto-tag.yaml via workflow_dispatch (one call per component)
 # =============================================================================
@@ -41,7 +45,9 @@ on:
 
 permissions:
   contents: write
-  packages: write
+
+env:
+  R2_BUCKET: openmcf-downloads-bucket
 
 jobs:
   # ===========================================================================
@@ -60,8 +66,8 @@ jobs:
           TAG="${{ inputs.tag }}"
           COMPONENT="${{ inputs.component }}"
           PROVIDER="${{ inputs.provider }}"
+          BASE_URL="https://downloads.openmcf.org/releases/${TAG}/modules/pulumi"
           
-          # Create release if it doesn't exist (tag already exists from auto-tag.yaml)
           if gh release view "${TAG}" >/dev/null 2>&1; then
             echo "Release ${TAG} already exists"
           else
@@ -85,12 +91,12 @@ jobs:
 
           ## Available Platforms
 
-          | Platform | Artifact |
+          | Platform | Download |
           |----------|----------|
-          | Linux x86-64 | \`pulumi-${COMPONENT}_linux_amd64.gz\` |
-          | macOS Apple Silicon | \`pulumi-${COMPONENT}_darwin_arm64.gz\` |
-          | macOS Intel | \`pulumi-${COMPONENT}_darwin_amd64.gz\` |
-          | Windows x86-64 | \`pulumi-${COMPONENT}_windows_amd64.exe.gz\` |
+          | Linux x86-64 | [${COMPONENT}_linux_amd64.gz](${BASE_URL}/${COMPONENT}_linux_amd64.gz) |
+          | macOS Apple Silicon | [${COMPONENT}_darwin_arm64.gz](${BASE_URL}/${COMPONENT}_darwin_arm64.gz) |
+          | macOS Intel | [${COMPONENT}_darwin_amd64.gz](${BASE_URL}/${COMPONENT}_darwin_amd64.gz) |
+          | Windows x86-64 | [${COMPONENT}_windows_amd64.exe.gz](${BASE_URL}/${COMPONENT}_windows_amd64.exe.gz) |
 
           ---
 
@@ -98,14 +104,14 @@ jobs:
 
           \`\`\`bash
           # Linux x86-64
-          curl -LO https://github.com/${{ github.repository }}/releases/download/${TAG}/pulumi-${COMPONENT}_linux_amd64.gz
-          gunzip pulumi-${COMPONENT}_linux_amd64.gz
-          chmod +x pulumi-${COMPONENT}_linux_amd64
+          curl -LO ${BASE_URL}/${COMPONENT}_linux_amd64.gz
+          gunzip ${COMPONENT}_linux_amd64.gz
+          chmod +x ${COMPONENT}_linux_amd64
 
           # macOS Apple Silicon
-          curl -LO https://github.com/${{ github.repository }}/releases/download/${TAG}/pulumi-${COMPONENT}_darwin_arm64.gz
-          gunzip pulumi-${COMPONENT}_darwin_arm64.gz
-          chmod +x pulumi-${COMPONENT}_darwin_arm64
+          curl -LO ${BASE_URL}/${COMPONENT}_darwin_arm64.gz
+          gunzip ${COMPONENT}_darwin_arm64.gz
+          chmod +x ${COMPONENT}_darwin_arm64
           \`\`\`
 
           ---
@@ -152,7 +158,9 @@ jobs:
 
       - name: Build and upload binary
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          AWS_ENDPOINT_URL: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
         run: |
           COMPONENT="${{ inputs.component }}"
           PROVIDER="${{ inputs.provider }}"
@@ -165,18 +173,20 @@ jobs:
           GOARCH="${PLATFORM##*_}"
           
           echo "========================================"
-          echo "BUILDING: pulumi-${COMPONENT}"
+          echo "BUILDING: ${COMPONENT}"
           echo "Platform: ${PLATFORM}"
           echo "========================================"
           
           # Handle Windows .exe extension
           if [ "$GOOS" = "windows" ]; then
-            BINARY_NAME="pulumi-${COMPONENT}.exe"
-            ARTIFACT_NAME="pulumi-${COMPONENT}_${PLATFORM}.exe.gz"
+            BINARY_NAME="${COMPONENT}.exe"
+            ARTIFACT_NAME="${COMPONENT}_${PLATFORM}.exe.gz"
           else
-            BINARY_NAME="pulumi-${COMPONENT}"
-            ARTIFACT_NAME="pulumi-${COMPONENT}_${PLATFORM}.gz"
+            BINARY_NAME="${COMPONENT}"
+            ARTIFACT_NAME="${COMPONENT}_${PLATFORM}.gz"
           fi
+          
+          R2_KEY="releases/${TAG}/modules/pulumi/${ARTIFACT_NAME}"
           
           # Build
           CGO_ENABLED=0 GOOS="${GOOS}" GOARCH="${GOARCH}" go build \
@@ -190,9 +200,10 @@ jobs:
           COMP_SIZE=$(ls -lh "${ARTIFACT_NAME}" | awk '{print $5}')
           echo "Built: ${ARTIFACT_NAME} (${COMP_SIZE})"
           
-          # Upload
-          gh release upload "${TAG}" "${ARTIFACT_NAME}" --clobber
-          echo "✓ Uploaded: ${ARTIFACT_NAME}"
+          # Upload to R2
+          aws s3 cp "${ARTIFACT_NAME}" "s3://${R2_BUCKET}/${R2_KEY}" \
+            --endpoint-url "${AWS_ENDPOINT_URL}"
+          echo "✓ Uploaded: https://downloads.openmcf.org/${R2_KEY}"
 
   # ===========================================================================
   # Summary
@@ -206,6 +217,7 @@ jobs:
           TAG="${{ inputs.tag }}"
           COMPONENT="${{ inputs.component }}"
           PROVIDER="${{ inputs.provider }}"
+          BASE_URL="https://downloads.openmcf.org/releases/${TAG}/modules/pulumi"
           
           echo "## Pulumi Module Auto-Release Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -214,13 +226,13 @@ jobs:
           echo "**Tag:** \`${TAG}\`" >> $GITHUB_STEP_SUMMARY
           echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Artifacts Uploaded" >> $GITHUB_STEP_SUMMARY
+          echo "### Artifacts Uploaded to R2" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Platform | Artifact |" >> $GITHUB_STEP_SUMMARY
+          echo "| Platform | Download |" >> $GITHUB_STEP_SUMMARY
           echo "|----------|----------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Linux x86-64 | \`pulumi-${COMPONENT}_linux_amd64.gz\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| macOS Apple Silicon | \`pulumi-${COMPONENT}_darwin_arm64.gz\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| macOS Intel | \`pulumi-${COMPONENT}_darwin_amd64.gz\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| Windows x86-64 | \`pulumi-${COMPONENT}_windows_amd64.exe.gz\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Linux x86-64 | [${COMPONENT}_linux_amd64.gz](${BASE_URL}/${COMPONENT}_linux_amd64.gz) |" >> $GITHUB_STEP_SUMMARY
+          echo "| macOS Apple Silicon | [${COMPONENT}_darwin_arm64.gz](${BASE_URL}/${COMPONENT}_darwin_arm64.gz) |" >> $GITHUB_STEP_SUMMARY
+          echo "| macOS Intel | [${COMPONENT}_darwin_amd64.gz](${BASE_URL}/${COMPONENT}_darwin_amd64.gz) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Windows x86-64 | [${COMPONENT}_windows_amd64.exe.gz](${BASE_URL}/${COMPONENT}_windows_amd64.exe.gz) |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "[View Release](https://github.com/${{ github.repository }}/releases/tag/${TAG})" >> $GITHUB_STEP_SUMMARY

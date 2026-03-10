@@ -1,15 +1,18 @@
 # =============================================================================
 # Content Distribution Release (Reusable Workflow)
 # =============================================================================
-# Packages OpenMCF content into four versioned zips and uploads them to the
-# GitHub Release. These zips decouple downstream consumers (e.g. the Planton
-# upgrade-openmcf script) from needing a local OpenMCF checkout.
+# Packages OpenMCF content into four zips and uploads them to Cloudflare R2
+# (downloads.openmcf.org). These zips decouple downstream consumers (e.g. the
+# Planton upgrade-openmcf script) from needing a local OpenMCF checkout.
 #
 # Artifacts created:
-#   presets_{version}.zip       -- Preset YAML + MD, kind enum proto
-#   iac-source_{version}.zip    -- IaC module source (.go, .tf, .md, .yaml)
-#   catalog-pages_{version}.zip -- Per-component catalog-page.md
-#   proto-source_{version}.zip  -- Raw proto source (spec, api, stack_input, stack_outputs)
+#   presets.zip       -- Preset YAML + MD, kind enum proto
+#   iac-source.zip    -- IaC module source (.go, .tf, .md, .yaml)
+#   catalog-pages.zip -- Per-component catalog-page.md
+#   proto-source.zip  -- Raw proto source (spec, api, stack_input, stack_outputs)
+#
+# Upload path: s3://openmcf-downloads-bucket/releases/{tag}/content/{name}.zip
+# Public URL:  https://downloads.openmcf.org/releases/{tag}/content/{name}.zip
 #
 # Called by: .github/workflows/release.yaml (after CLI release creates the release)
 # =============================================================================
@@ -18,9 +21,19 @@ name: release.content
 
 on:
   workflow_call:
+    secrets:
+      CLOUDFLARE_R2_ACCESS_KEY_ID:
+        required: true
+      CLOUDFLARE_R2_SECRET_ACCESS_KEY:
+        required: true
+      CLOUDFLARE_R2_ENDPOINT:
+        required: true
 
 permissions:
-  contents: write
+  contents: read
+
+env:
+  R2_BUCKET: openmcf-downloads-bucket
 
 jobs:
   package:
@@ -32,20 +45,22 @@ jobs:
 
       - name: Package and upload content zips
         env:
-          GH_TOKEN: ${{ github.token }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          AWS_ENDPOINT_URL: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
         run: |
           TAG="${GITHUB_REF_NAME}"
-          VERSION="${TAG#v}"
 
           bash tools/ci/release/package_content.sh "$TAG"
 
           echo ""
-          echo "Uploading content zips to release ${TAG}..."
-          for zip in presets_${VERSION}.zip iac-source_${VERSION}.zip \
-                     catalog-pages_${VERSION}.zip proto-source_${VERSION}.zip; do
+          echo "Uploading content zips to R2 (releases/${TAG}/content/)..."
+          for zip in presets.zip iac-source.zip catalog-pages.zip proto-source.zip; do
             if [ -f "$zip" ]; then
-              gh release upload "$TAG" "$zip" --clobber
-              echo "  uploaded: $zip"
+              R2_KEY="releases/${TAG}/content/${zip}"
+              aws s3 cp "$zip" "s3://${R2_BUCKET}/${R2_KEY}" \
+                --endpoint-url "${AWS_ENDPOINT_URL}"
+              echo "  uploaded: https://downloads.openmcf.org/${R2_KEY}"
             else
               echo "  WARNING: $zip not found, skipping upload"
             fi

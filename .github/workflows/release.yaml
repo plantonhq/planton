@@ -9,8 +9,14 @@
 # Architecture:
 #   1. CLI job runs first (GoReleaser creates the GitHub Release)
 #   2. App and Website jobs run in parallel (independent of each other)
-#   3. Pulumi modules, Terraform modules, and Content jobs run after CLI
-#      completes (depend on the release existing)
+#   3. Pulumi modules, Terraform modules, and Content jobs upload to
+#      Cloudflare R2 (downloads.openmcf.org) after CLI completes
+#
+# Artifact hosting:
+#   - CLI binaries   -> GitHub Release (via GoReleaser)
+#   - Pulumi modules -> Cloudflare R2 (downloads.openmcf.org/releases/{tag}/modules/pulumi/)
+#   - Terraform zips -> Cloudflare R2 (downloads.openmcf.org/releases/{tag}/modules/terraform/)
+#   - Content zips   -> Cloudflare R2 (downloads.openmcf.org/releases/{tag}/content/)
 #
 # Trigger: git tag v0.1.0 && git push origin v0.1.0
 # Note: Only triggers on strict semver tags (v1.2.3), not auto-release tags (v1.2.3+cli.*)
@@ -52,18 +58,26 @@ jobs:
     uses: ./.github/workflows/release.website.yaml
 
   # ============================================================================
-  # Pulumi Modules - All providers (runs after CLI creates release)
+  # Pulumi Modules - All providers (uploads to Cloudflare R2)
   # ============================================================================
   pulumi-modules:
     needs: cli
     uses: ./.github/workflows/release.pulumi-modules.yaml
+    secrets:
+      CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+      CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+      CLOUDFLARE_R2_ENDPOINT: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
 
   # ============================================================================
-  # Terraform Modules - All providers (runs after CLI creates release)
+  # Terraform Modules - All providers (uploads to Cloudflare R2)
   # ============================================================================
   terraform-modules:
     needs: cli
     uses: ./.github/workflows/release.terraform-modules.yaml
+    secrets:
+      CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+      CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+      CLOUDFLARE_R2_ENDPOINT: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
 
   # ============================================================================
   # Content Distribution - presets, IaC source, catalog pages, proto source
@@ -71,4 +85,8 @@ jobs:
   content:
     needs: cli
     uses: ./.github/workflows/release.content.yaml
+    secrets:
+      CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+      CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+      CLOUDFLARE_R2_ENDPOINT: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
 
