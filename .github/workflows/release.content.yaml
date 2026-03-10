@@ -1,0 +1,52 @@
+# =============================================================================
+# Content Distribution Release (Reusable Workflow)
+# =============================================================================
+# Packages OpenMCF content into four versioned zips and uploads them to the
+# GitHub Release. These zips decouple downstream consumers (e.g. the Planton
+# upgrade-openmcf script) from needing a local OpenMCF checkout.
+#
+# Artifacts created:
+#   presets_{version}.zip       -- Preset YAML + MD, kind enum proto
+#   iac-source_{version}.zip    -- IaC module source (.go, .tf, .md, .yaml)
+#   catalog-pages_{version}.zip -- Per-component catalog-page.md
+#   proto-source_{version}.zip  -- Raw proto source (spec, api, stack_input, stack_outputs)
+#
+# Called by: .github/workflows/release.yaml (after CLI release creates the release)
+# =============================================================================
+
+name: release.content
+
+on:
+  workflow_call:
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Package and upload content zips
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+
+          bash tools/ci/release/package_content.sh "$TAG"
+
+          echo ""
+          echo "Uploading content zips to release ${TAG}..."
+          for zip in presets_${VERSION}.zip iac-source_${VERSION}.zip \
+                     catalog-pages_${VERSION}.zip proto-source_${VERSION}.zip; do
+            if [ -f "$zip" ]; then
+              gh release upload "$TAG" "$zip" --clobber
+              echo "  uploaded: $zip"
+            else
+              echo "  WARNING: $zip not found, skipping upload"
+            fi
+          done
