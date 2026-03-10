@@ -3,13 +3,14 @@
 # =============================================================================
 # Single entry point for all release workflows. Triggers on semantic version
 # tags (v*) and orchestrates the release of CLI, Docker image, website,
-# all Pulumi module binaries, and all Terraform module zips.
+# all Pulumi module binaries, all Terraform module zips, and content
+# distribution zips (presets, IaC source, catalog pages, proto source).
 #
 # Architecture:
 #   1. CLI job runs first (GoReleaser creates the GitHub Release)
 #   2. App and Website jobs run in parallel (independent of each other)
-#   3. Pulumi modules job runs after CLI completes (depends on release existing)
-#   4. Terraform modules job runs after CLI completes (depends on release existing)
+#   3. Pulumi modules, Terraform modules, and Content jobs run after CLI
+#      completes (depend on the release existing)
 #
 # Trigger: git tag v0.1.0 && git push origin v0.1.0
 # Note: Only triggers on strict semver tags (v1.2.3), not auto-release tags (v1.2.3+cli.*)
@@ -63,4 +64,11 @@ jobs:
   terraform-modules:
     needs: cli
     uses: ./.github/workflows/release.terraform-modules.yaml
+
+  # ============================================================================
+  # Content Distribution - presets, IaC source, catalog pages, proto source
+  # ============================================================================
+  content:
+    needs: cli
+    uses: ./.github/workflows/release.content.yaml
 

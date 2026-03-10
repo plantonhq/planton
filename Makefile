@@ -213,6 +213,10 @@ local: build_darwin
 show-todo:
 	grep -r "TODO:" cmd internal
 
+.PHONY: package-content
+package-content:  ## Package all content zips (presets, iac-source, catalog-pages, proto-source)
+	bash tools/ci/release/package_content.sh ${version}
+
 .PHONY: release-buf
 release-buf:
 	cd apis && buf push && buf push --label ${version}

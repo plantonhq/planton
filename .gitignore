@@ -40,6 +40,7 @@ web-app/src/gen/
 
 *.sh
 !app/entrypoint-unified.sh
+!tools/ci/release/package_content.sh
 **/*.env
 _aacursor/
 backend.tf
