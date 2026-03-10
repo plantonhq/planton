@@ -14,6 +14,7 @@ import (
 	"github.com/plantonhq/openmcf/internal/cli/cliprint"
 	"github.com/plantonhq/openmcf/internal/cli/version"
 	"github.com/plantonhq/openmcf/internal/cli/workspace"
+	"github.com/plantonhq/openmcf/pkg/downloads"
 	"github.com/plantonhq/openmcf/pkg/fileutil"
 )
 
@@ -30,10 +31,7 @@ const (
 	// Full path: ~/.openmcf/pulumi/workspaces/{stack-fqdn}/
 	WorkspacesSubDir = "workspaces"
 
-	// GitHubReleaseBaseURL is the base URL for GitHub releases
-	GitHubReleaseBaseURL = "https://github.com/plantonhq/openmcf/releases/download"
-
-	// BinaryPrefix is the prefix for Pulumi component binaries
+	// BinaryPrefix is the prefix for locally cached Pulumi component binaries.
 	BinaryPrefix = "pulumi-"
 )
 
@@ -97,21 +95,14 @@ func BuildBinaryName(componentName string) string {
 	return fmt.Sprintf("%s_%s", baseName, suffix)
 }
 
-// BuildDownloadURL constructs the download URL for a platform-specific component binary.
-// The release version can be:
-// - A semantic version like "v0.3.2" (downloads from main openmcf release)
-// - An auto-release version like "v0.3.1-pulumi-awsecsservice-20260107.01" (downloads from component-specific release)
+// BuildDownloadURL constructs the Cloudflare R2 download URL for a platform-specific component binary.
 //
-// The URL includes the platform suffix based on the current OS and architecture.
 // Examples (on darwin/arm64):
-//   - BuildDownloadURL("AwsEcsService", "v0.3.2")
-//     -> https://github.com/plantonhq/openmcf/releases/download/v0.3.2/pulumi-awsecsservice_darwin_arm64.gz
-//   - BuildDownloadURL("AwsEcsService", "v0.3.1-pulumi-awsecsservice-20260107.01")
-//     -> https://github.com/plantonhq/openmcf/releases/download/v0.3.1-pulumi-awsecsservice-20260107.01/pulumi-awsecsservice_darwin_arm64.gz
+//
+//	BuildDownloadURL("AwsEcsService", "v0.3.50")
+//	  -> https://downloads.openmcf.org/releases/v0.3.50/modules/pulumi/awsecsservice_darwin_arm64.gz
 func BuildDownloadURL(componentName, releaseVersion string) string {
-	binaryName := BuildBinaryName(componentName)
-	artifactName := binaryName + ".gz"
-	return fmt.Sprintf("%s/%s/%s", GitHubReleaseBaseURL, releaseVersion, artifactName)
+	return downloads.BuildPulumiDownloadURL(componentName, releaseVersion, GetPlatformSuffix())
 }
 
 // IsBinaryCached checks if a binary is already cached
@@ -173,12 +164,8 @@ func EnsureBinary(componentName, releaseVersion string) (string, error) {
 	return binaryPath, nil
 }
 
-// DownloadBinary downloads and extracts a platform-specific component binary from GitHub releases.
-// The releaseVersion determines which GitHub release to download from.
+// DownloadBinary downloads and extracts a platform-specific component binary from Cloudflare R2.
 // The binary downloaded is platform-specific based on runtime.GOOS and runtime.GOARCH.
-// Examples (on darwin/arm64):
-//   - "v0.3.2" -> downloads pulumi-{component}_darwin_arm64.gz from v0.3.2 release
-//   - "v0.3.1-pulumi-awsecsservice-20260107.01" -> downloads from that specific auto-release
 func DownloadBinary(componentName, releaseVersion string) error {
 	// Ensure cache directory exists
 	cacheDir, err := GetBinaryCacheDir(releaseVersion)

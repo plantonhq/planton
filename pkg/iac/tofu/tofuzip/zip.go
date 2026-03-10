@@ -13,6 +13,7 @@ import (
 	"github.com/plantonhq/openmcf/internal/cli/cliprint"
 	"github.com/plantonhq/openmcf/internal/cli/version"
 	"github.com/plantonhq/openmcf/internal/cli/workspace"
+	"github.com/plantonhq/openmcf/pkg/downloads"
 	"github.com/plantonhq/openmcf/pkg/fileutil"
 )
 
@@ -24,12 +25,6 @@ const (
 	// ModulesSubDir is the subdirectory for cached modules
 	// Full path: ~/.openmcf/terraform/modules/{version}/
 	ModulesSubDir = "modules"
-
-	// GitHubReleaseBaseURL is the base URL for GitHub releases
-	GitHubReleaseBaseURL = "https://github.com/plantonhq/openmcf/releases/download"
-
-	// ZipPrefix is the prefix for Terraform module zips
-	ZipPrefix = "terraform-"
 )
 
 // GetTerraformBaseDir returns the base directory for all Terraform-related files
@@ -72,28 +67,14 @@ func GetModulePath(componentName, releaseVersion string) (string, error) {
 	return filepath.Join(cacheDir, moduleFolderName), nil
 }
 
-// BuildZipName constructs the zip filename for a component.
-// Unlike Pulumi binaries, Terraform modules are platform-agnostic, so no platform suffix.
-// Examples:
-//   - "AwsEcsService" -> "terraform-awsecsservice.zip"
-//   - "KubernetesDeployment" -> "terraform-kubernetesdeployment.zip"
-func BuildZipName(componentName string) string {
-	return ZipPrefix + strings.ToLower(componentName) + ".zip"
-}
-
-// BuildDownloadURL constructs the download URL for a component's Terraform module zip.
-// The release version can be:
-// - A semantic version like "v0.3.2" (downloads from main openmcf release)
-// - An auto-release version like "v0.3.2+terraform.awsecsservice.20260108.0" (downloads from component-specific release)
+// BuildDownloadURL constructs the Cloudflare R2 download URL for a Terraform module zip.
 //
 // Examples:
-//   - BuildDownloadURL("AwsEcsService", "v0.3.2")
-//     -> https://github.com/plantonhq/openmcf/releases/download/v0.3.2/terraform-awsecsservice.zip
-//   - BuildDownloadURL("AwsEcsService", "v0.3.2+terraform.awsecsservice.20260108.0")
-//     -> https://github.com/plantonhq/openmcf/releases/download/v0.3.2+terraform.awsecsservice.20260108.0/terraform-awsecsservice.zip
+//
+//	BuildDownloadURL("AwsEcsService", "v0.3.50")
+//	  -> https://downloads.openmcf.org/releases/v0.3.50/modules/terraform/awsecsservice.zip
 func BuildDownloadURL(componentName, releaseVersion string) string {
-	zipName := BuildZipName(componentName)
-	return fmt.Sprintf("%s/%s/%s", GitHubReleaseBaseURL, releaseVersion, zipName)
+	return downloads.BuildTerraformDownloadURL(componentName, releaseVersion)
 }
 
 // IsModuleCached checks if a module is already cached and has .tf files
@@ -156,11 +137,7 @@ func EnsureModule(componentName, releaseVersion string) (string, error) {
 	return modulePath, nil
 }
 
-// DownloadAndExtractZip downloads and extracts a component's Terraform module zip from GitHub releases.
-// The releaseVersion determines which GitHub release to download from.
-// Examples:
-//   - "v0.3.2" -> downloads terraform-{component}.zip from v0.3.2 release
-//   - "v0.3.2+terraform.awsecsservice.20260108.0" -> downloads from that specific auto-release
+// DownloadAndExtractZip downloads and extracts a component's Terraform module zip from Cloudflare R2.
 func DownloadAndExtractZip(componentName, releaseVersion string) error {
 	// Ensure cache directory exists
 	cacheDir, err := GetModuleCacheDir(releaseVersion)

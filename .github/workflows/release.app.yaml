@@ -1,12 +1,13 @@
 # =============================================================================
-# Docker App Release (Reusable Workflow)
+# Docker App Release (Reusable Workflow) -- DISABLED
 # =============================================================================
-# Builds and pushes the unified Docker image to GitHub Container Registry.
+# The webapp is no longer built or released as part of the OpenMCF pipeline.
+# This workflow is retained for reference but is not called by any orchestrator.
 #
-# Called by: .github/workflows/release.yaml
+# Previously called by: .github/workflows/release.yaml
 # =============================================================================
 
-name: release.app
+name: release.app [disabled]
 
 on:
   workflow_call:

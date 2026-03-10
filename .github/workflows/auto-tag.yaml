@@ -9,7 +9,6 @@
 #
 # Tag Formats (pre-release of NEXT version):
 #   - CLI: v{next}-cli.{YYYYMMDD}.{N}
-#   - App: v{next}-app.{YYYYMMDD}.{N}
 #   - Website: v{next}-website.{YYYYMMDD}.{N}
 #   - Pulumi: v{next}-pulumi.{component}.{YYYYMMDD}.{N}
 #   - Terraform: v{next}-terraform.{component}.{YYYYMMDD}.{N}
@@ -30,7 +29,6 @@ on:
       - 'cmd/**'
       - 'internal/**'
       - 'pkg/**'
-      - 'app/**'
       - 'site/**'
       - 'apis/**/iac/pulumi/**'
       - 'apis/**/iac/tf/**'
@@ -42,11 +40,6 @@ on:
     inputs:
       force_cli:
         description: 'Force CLI tag'
-        required: false
-        type: boolean
-        default: false
-      force_app:
-        description: 'Force App tag'
         required: false
         type: boolean
         default: false
@@ -78,7 +71,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       cli_tag: ${{ steps.detect.outputs.cli_tag }}
-      app_tag: ${{ steps.detect.outputs.app_tag }}
       website_tag: ${{ steps.detect.outputs.website_tag }}
       pulumi_modules: ${{ steps.detect.outputs.pulumi_modules }}
       terraform_modules: ${{ steps.detect.outputs.terraform_modules }}
@@ -163,36 +155,6 @@ jobs:
             git tag -a "${CLI_TAG}" -m "Auto-tag CLI ${CLI_TAG}"
             git push origin "${CLI_TAG}"
             echo "cli_tag=${CLI_TAG}" >> $GITHUB_OUTPUT
-            ANY_TAGS_CREATED="true"
-          fi
-
-          # =================================================================
-          # App Tag
-          # =================================================================
-          APP_CHANGED="false"
-          if [ "${{ inputs.force_app }}" = "true" ]; then
-            APP_CHANGED="true"
-            echo "App: forced via manual dispatch"
-          elif echo "$CHANGED_FILES" | grep -qE '^app/'; then
-            APP_CHANGED="true"
-            echo "App: changes detected"
-          fi
-
-          if [ "$APP_CHANGED" = "true" ]; then
-            APP_PREFIX="${NEXT_SEMVER}-app.${TODAY}"
-            APP_LATEST=$(git tag -l "${APP_PREFIX}.*" 2>/dev/null | sort -t. -k2 -n | tail -1)
-            if [ -z "$APP_LATEST" ]; then
-              APP_SEQ=0
-            else
-              APP_SEQ=$(echo "$APP_LATEST" | sed "s/${APP_PREFIX}\.//")
-              APP_SEQ=$((APP_SEQ + 1))
-            fi
-            APP_TAG="${APP_PREFIX}.${APP_SEQ}"
-            
-            echo "Creating App tag: ${APP_TAG}"
-            git tag -a "${APP_TAG}" -m "Auto-tag App ${APP_TAG}"
-            git push origin "${APP_TAG}"
-            echo "app_tag=${APP_TAG}" >> $GITHUB_OUTPUT
             ANY_TAGS_CREATED="true"
           fi
 
@@ -353,20 +315,6 @@ jobs:
             });
             console.log('Triggered auto-release.cli for: ${{ needs.create-tags.outputs.cli_tag }}');
 
-      - name: Trigger App release
-        if: needs.create-tags.outputs.app_tag != ''
-        uses: actions/github-script@v7
-        with:
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'auto-release.app.yaml',
-              ref: 'main',
-              inputs: { tag: '${{ needs.create-tags.outputs.app_tag }}' }
-            });
-            console.log('Triggered auto-release.app for: ${{ needs.create-tags.outputs.app_tag }}');
-
       - name: Trigger Website release
         if: needs.create-tags.outputs.website_tag != ''
         uses: actions/github-script@v7
@@ -448,10 +396,6 @@ jobs:
 
           if [ -n "${{ needs.create-tags.outputs.cli_tag }}" ]; then
             echo "| CLI | \`${{ needs.create-tags.outputs.cli_tag }}\` |" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          if [ -n "${{ needs.create-tags.outputs.app_tag }}" ]; then
-            echo "| App | \`${{ needs.create-tags.outputs.app_tag }}\` |" >> $GITHUB_STEP_SUMMARY
           fi
 
           if [ -n "${{ needs.create-tags.outputs.website_tag }}" ]; then
