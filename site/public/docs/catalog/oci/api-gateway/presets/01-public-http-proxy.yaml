@@ -5,7 +5,7 @@ metadata:
 spec:
   compartmentId:
     value: <compartment-ocid>
-  endpointType: public
+  endpointType: endpoint_type_public
   subnetId:
     value: <public-subnet-ocid>
   displayName: api-gateway

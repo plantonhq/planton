@@ -6,6 +6,6 @@ spec:
   compartmentId:
     value: <compartment-ocid>
   zoneType: primary
-  scope: private
+  scope: scope_private
   viewId:
     value: <dns-view-ocid>

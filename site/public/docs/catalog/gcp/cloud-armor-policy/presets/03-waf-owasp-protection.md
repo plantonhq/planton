@@ -2,13 +2,13 @@
 title: "Preset: WAF OWASP Protection"
 description: "Protect web applications and APIs against OWASP Top 10–style attacks: SQL injection (SQLi), cross-site scripting (XSS), and Layer 7 DDoS. Uses Cloud Armor preconfigured WAF rules derived from OWASP..."
 type: "preset"
-rank: "99"
-presetSlug: "waf-owasp-protection"
+rank: "03"
+presetSlug: "03-waf-owasp-protection"
 componentSlug: "cloud-armor-policy"
 componentTitle: "Cloud Armor Policy"
 provider: "gcp"
 icon: "package"
-order: 99
+order: 3
 ---
 
 # Preset: WAF OWASP Protection

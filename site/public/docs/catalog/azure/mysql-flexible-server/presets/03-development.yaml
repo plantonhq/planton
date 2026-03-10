@@ -1,0 +1,26 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureMysqlFlexibleServer
+metadata:
+  name: my-dev-mysql
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-server-name>
+  administratorLogin: <admin-username>
+  administratorPassword:
+    value: "<admin-password>"
+  version: "8.0.21"  # default from spec
+  skuName: B_Standard_B1ms  # Burstable 1 vCPU, 2 GB RAM (~$12/month)
+  storageSizeGb: 20  # minimum storage
+  autoGrowEnabled: false  # keep costs predictable in dev
+  backupRetentionDays: 7  # default from spec
+  geoRedundantBackupEnabled: false  # not needed for dev
+  databases:
+    - name: <your-database-name>
+      charset: utf8mb4  # default from spec
+      collation: utf8mb4_0900_ai_ci  # default from spec
+  firewallRules:
+    - name: allow-azure-services
+      startIpAddress: 0.0.0.0
+      endIpAddress: 0.0.0.0

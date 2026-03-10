@@ -11,14 +11,14 @@ Kustomize lets you manage variations of OpenMCF manifests without duplication. I
 
 For the conceptual overview of manifest sources (including Kustomize), see [Manifests](../concepts/manifests). For flag details, see [CLI Reference](/docs/cli/cli-reference).
 
-```
+```text
 manifests/database/
-├── base/
-│   └── database.yaml      # Shared configuration
-└── overlays/
-    ├── dev/
-    ├── staging/
-    └── prod/               # Environment-specific patches
+|-- base/
+|   \-- database.yaml      # Shared configuration
+\-- overlays/
+    |-- dev/
+    |-- staging/
+    \-- prod/               # Environment-specific patches
 ```
 
 OpenMCF integrates Kustomize as a Go library (`sigs.k8s.io/kustomize`), not as an external binary. The `--kustomize-dir` and `--overlay` flags trigger Kustomize to build the final manifest at deployment time.
@@ -121,44 +121,44 @@ openmcf pulumi up \
 
 ### Standard Layout
 
-```
+```text
 <service-name>/kustomize/
-├── base/
-│   ├── kustomization.yaml          # Base kustomization config
-│   └── <resource>.yaml             # Base resource definition
-└── overlays/
-    ├── dev/
-    │   ├── kustomization.yaml      # Dev environment config
-    │   └── patch.yaml              # Dev-specific patches
-    ├── staging/
-    │   ├── kustomization.yaml
-    │   └── patch.yaml
-    └── prod/
-        ├── kustomization.yaml
-        └── patch.yaml
+|-- base/
+|   |-- kustomization.yaml          # Base kustomization config
+|   \-- <resource>.yaml             # Base resource definition
+\-- overlays/
+    |-- dev/
+    |   |-- kustomization.yaml      # Dev environment config
+    |   \-- patch.yaml              # Dev-specific patches
+    |-- staging/
+    |   |-- kustomization.yaml
+    |   \-- patch.yaml
+    \-- prod/
+        |-- kustomization.yaml
+        \-- patch.yaml
 ```
 
 ### Example: Complete Service
 
-```
+```text
 backend/services/api/kustomize/
-├── base/
-│   ├── kustomization.yaml
-│   ├── deployment.yaml
-│   └── database.yaml
-└── overlays/
-    ├── dev/
-    │   ├── kustomization.yaml
-    │   ├── deployment-patch.yaml
-    │   └── database-patch.yaml
-    ├── staging/
-    │   ├── kustomization.yaml
-    │   ├── deployment-patch.yaml
-    │   └── database-patch.yaml
-    └── prod/
-        ├── kustomization.yaml
-        ├── deployment-patch.yaml
-        └── database-patch.yaml
+|-- base/
+|   |-- kustomization.yaml
+|   |-- deployment.yaml
+|   \-- database.yaml
+\-- overlays/
+    |-- dev/
+    |   |-- kustomization.yaml
+    |   |-- deployment-patch.yaml
+    |   \-- database-patch.yaml
+    |-- staging/
+    |   |-- kustomization.yaml
+    |   |-- deployment-patch.yaml
+    |   \-- database-patch.yaml
+    \-- prod/
+        |-- kustomization.yaml
+        |-- deployment-patch.yaml
+        \-- database-patch.yaml
 ```
 
 ---
@@ -413,23 +413,23 @@ For using Kustomize in CI/CD pipelines with branch-based overlay selection, see 
 
 Useful for shared components:
 
-```
+```text
 common/
-└── base/
-    ├── kustomization.yaml
-    └── shared-config.yaml
+\-- base/
+    |-- kustomization.yaml
+    \-- shared-config.yaml
 
 service-a/kustomize/
-└── overlays/
-    └── prod/
-        ├── kustomization.yaml  # References ../../../common/base
-        └── patch.yaml
+\-- overlays/
+    \-- prod/
+        |-- kustomization.yaml  # References ../../../common/base
+        \-- patch.yaml
 
 service-b/kustomize/
-└── overlays/
-    └── prod/
-        ├── kustomization.yaml  # Also references ../../../common/base
-        └── patch.yaml
+\-- overlays/
+    \-- prod/
+        |-- kustomization.yaml  # Also references ../../../common/base
+        \-- patch.yaml
 ```
 
 ### Components (Reusable Pieces)
@@ -572,37 +572,37 @@ base/deployment.yaml:
 
 ### 2. **One Overlay Per Environment**
 
-```
-# ✅ Good
+```text
+# Good
 overlays/
-├── dev/
-├── staging/
-└── prod/
+|-- dev/
+|-- staging/
+\-- prod/
 
-# ❌ Confusing
+# Confusing
 overlays/
-├── dev-us-west/
-├── dev-eu-central/
-├── staging-us-west/
-└── ... (too many combinations)
+|-- dev-us-west/
+|-- dev-eu-central/
+|-- staging-us-west/
+\-- ... (too many combinations)
 ```
 
 ### 3. **Use Descriptive Patch Names**
 
-```
-# ✅ Good
+```text
+# Good
 overlays/prod/
-├── kustomization.yaml
-├── resources-patch.yaml          # Increases resources
-├── replicas-patch.yaml            # Scales replicas
-└── monitoring-patch.yaml          # Adds monitoring
+|-- kustomization.yaml
+|-- resources-patch.yaml          # Increases resources
+|-- replicas-patch.yaml            # Scales replicas
+\-- monitoring-patch.yaml          # Adds monitoring
 
-# ❌ Bad
+# Bad
 overlays/prod/
-├── kustomization.yaml
-├── patch1.yaml
-├── patch2.yaml
-└── patch3.yaml
+|-- kustomization.yaml
+|-- patch1.yaml
+|-- patch2.yaml
+\-- patch3.yaml
 ```
 
 ### 4. **Version Control Everything**
@@ -635,24 +635,24 @@ Here's a complete real-world example:
 
 ### Directory Structure
 
-```
+```text
 backend/services/api/kustomize/
-├── base/
-│   ├── kustomization.yaml
-│   ├── deployment.yaml
-│   ├── database.yaml
-│   └── redis.yaml
-└── overlays/
-    ├── dev/
-    │   ├── kustomization.yaml
-    │   ├── deployment-patch.yaml
-    │   ├── database-patch.yaml
-    │   └── redis-patch.yaml
-    └── prod/
-        ├── kustomization.yaml
-        ├── deployment-patch.yaml
-        ├── database-patch.yaml
-        └── redis-patch.yaml
+|-- base/
+|   |-- kustomization.yaml
+|   |-- deployment.yaml
+|   |-- database.yaml
+|   \-- redis.yaml
+\-- overlays/
+    |-- dev/
+    |   |-- kustomization.yaml
+    |   |-- deployment-patch.yaml
+    |   |-- database-patch.yaml
+    |   \-- redis-patch.yaml
+    \-- prod/
+        |-- kustomization.yaml
+        |-- deployment-patch.yaml
+        |-- database-patch.yaml
+        \-- redis-patch.yaml
 ```
 
 ### Files

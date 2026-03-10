@@ -142,7 +142,7 @@ openmcf pulumi up \
 
 ### How It Works
 
-```
+```text
 1. CLI detects manifestPath is a URL (has scheme + host)
    ↓
 2. Downloads file using http.Get

@@ -16,6 +16,10 @@ presets:
     rank: "02"
     title: "Private Endpoint for Azure Blob Storage"
     excerpt: "This preset creates an Azure Private Endpoint that connects an Azure Storage Account's blob service to a VNet subnet via Private Link. It includes a DNS zone group registration so that the storage..."
+  - slug: "03-key-vault"
+    rank: "03"
+    title: "Key Vault Private Endpoint"
+    excerpt: "This preset creates a Private Endpoint for Azure Key Vault, enabling private network access to secrets, keys, and certificates. The `vault` subresource connects the endpoint to the Key Vault's data..."
 ---
 
 # Private Endpoint Presets

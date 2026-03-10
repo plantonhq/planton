@@ -60,7 +60,7 @@ The combination of `apiVersion` and `kind` uniquely identifies the deployment co
 
 ### metadata
 
-The `metadata` section identifies the resource and carries organizational context. It is defined by the shared `CloudResourceMetadata` message, which is the same across all 178 components.
+The `metadata` section identifies the resource and carries organizational context. It is defined by the shared `CloudResourceMetadata` message, which is the same across all 362 components.
 
 ```yaml
 metadata:

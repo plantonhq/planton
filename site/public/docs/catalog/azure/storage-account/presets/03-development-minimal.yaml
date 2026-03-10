@@ -1,0 +1,24 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureStorageAccount
+metadata:
+  name: my-dev-storage
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  accountKind: 1  # STORAGE_V2
+  accountTier: 1  # STANDARD
+  replicationType: 1  # LRS — cheapest, single datacenter
+  accessTier: 1  # HOT
+  enableHttpsTrafficOnly: true
+  minTlsVersion: 3  # TLS1_2
+  networkRules:
+    defaultAction: 1  # ALLOW — open access for dev
+    bypassAzureServices: true
+  blobProperties:
+    enableVersioning: false  # not needed for dev
+    softDeleteRetentionDays: 7
+    containerSoftDeleteRetentionDays: 7
+  containers:
+    - name: uploads
+      accessType: 1  # PRIVATE

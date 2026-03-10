@@ -2,13 +2,13 @@
 title: "Preset: Basic Public Endpoint"
 description: "**Rank**: 1 (most common)"
 type: "preset"
-rank: "99"
-presetSlug: "basic-public"
+rank: "01"
+presetSlug: "01-basic-public"
 componentSlug: "vertex-ai-endpoint"
 componentTitle: "Vertex AI Endpoint"
 provider: "gcp"
 icon: "package"
-order: 99
+order: 1
 ---
 
 # Preset: Basic Public Endpoint

@@ -16,6 +16,10 @@ presets:
     rank: "02"
     title: "Production OpenBao with HA"
     excerpt: "This preset deploys OpenBao in high-availability mode with 3 replicas, TLS encryption, and the sidecar injector for automatic secrets injection into pods."
+  - slug: "03-production-ha-gcp-auto-unseal"
+    rank: "03"
+    title: "Production HA with GCP KMS Auto-Unseal"
+    excerpt: "This preset deploys OpenBao in high-availability mode with GCP Cloud KMS auto-unseal and GKE Workload Identity. Pods unseal automatically on every restart without human intervention, eliminating the..."
 ---
 
 # OpenBao Presets

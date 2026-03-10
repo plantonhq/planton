@@ -13,62 +13,62 @@ This page is the single authoritative reference for every command, flag, and opt
 
 The complete command tree, verified against source. Commands are grouped by purpose.
 
-```
+```text
 openmcf
-│
-├── Unified Commands (provisioner auto-detected from manifest)
-│   ├── apply                 Deploy infrastructure
-│   ├── plan                  Preview changes (alias: preview)
-│   ├── init                  Initialize backend or stack
-│   ├── destroy               Tear down infrastructure (alias: delete)
-│   └── refresh               Sync state with cloud reality
-│
-├── Pulumi Commands
-│   └── pulumi
-│       ├── init              Initialize a new Pulumi stack
-│       ├── preview           Preview infrastructure changes
-│       ├── update            Deploy infrastructure (alias: up)
-│       ├── destroy           Tear down infrastructure
-│       ├── refresh           Sync state with cloud reality
-│       ├── delete            Remove stack metadata (alias: rm)
-│       └── cancel            Cancel in-progress stack operation
-│
-├── OpenTofu Commands
-│   └── tofu
-│       ├── init              Initialize backend and providers
-│       ├── plan              Preview infrastructure changes
-│       ├── apply             Deploy infrastructure
-│       ├── destroy           Tear down infrastructure
-│       ├── refresh           Sync state with cloud reality
-│       ├── generate-variables Generate Terraform variables from manifest
-│       └── load-tfvars       Load manifest into tfvars format
-│
-├── Terraform Commands
-│   └── terraform
-│       ├── init              Initialize backend and providers
-│       ├── plan              Preview infrastructure changes
-│       ├── apply             Deploy infrastructure
-│       ├── destroy           Tear down infrastructure
-│       └── refresh           Sync state with cloud reality
-│
-├── Module Management
-│   ├── checkout              Check out a specific module version in staging
-│   ├── pull                  Pull latest modules from upstream
-│   ├── upgrade               Upgrade the CLI to latest or specified version
-│   ├── downgrade             Install a previous CLI version
-│   └── modules-version       Show current module version in staging
-│
-├── Manifest Utilities
-│   ├── validate-manifest     Validate manifest against schema (alias: validate)
-│   └── load-manifest         Load and display manifest with defaults (alias: load)
-│
-├── Configuration
-│   └── config
-│       ├── set               Set a configuration value
-│       ├── get               Get a configuration value
-│       └── list              List all configuration values
-│
-└── version                   Show CLI version and update status
+|
+|-- Unified Commands (provisioner auto-detected from manifest)
+|   |-- apply                 Deploy infrastructure
+|   |-- plan                  Preview changes (alias: preview)
+|   |-- init                  Initialize backend or stack
+|   |-- destroy               Tear down infrastructure (alias: delete)
+|   \-- refresh               Sync state with cloud reality
+|
+|-- Pulumi Commands
+|   \-- pulumi
+|       |-- init              Initialize a new Pulumi stack
+|       |-- preview           Preview infrastructure changes
+|       |-- update            Deploy infrastructure (alias: up)
+|       |-- destroy           Tear down infrastructure
+|       |-- refresh           Sync state with cloud reality
+|       |-- delete            Remove stack metadata (alias: rm)
+|       \-- cancel            Cancel in-progress stack operation
+|
+|-- OpenTofu Commands
+|   \-- tofu
+|       |-- init              Initialize backend and providers
+|       |-- plan              Preview infrastructure changes
+|       |-- apply             Deploy infrastructure
+|       |-- destroy           Tear down infrastructure
+|       |-- refresh           Sync state with cloud reality
+|       |-- generate-variables Generate Terraform variables from manifest
+|       \-- load-tfvars       Load manifest into tfvars format
+|
+|-- Terraform Commands
+|   \-- terraform
+|       |-- init              Initialize backend and providers
+|       |-- plan              Preview infrastructure changes
+|       |-- apply             Deploy infrastructure
+|       |-- destroy           Tear down infrastructure
+|       \-- refresh           Sync state with cloud reality
+|
+|-- Module Management
+|   |-- checkout              Check out a specific module version in staging
+|   |-- pull                  Pull latest modules from upstream
+|   |-- upgrade               Upgrade the CLI to latest or specified version
+|   |-- downgrade             Install a previous CLI version
+|   \-- modules-version       Show current module version in staging
+|
+|-- Manifest Utilities
+|   |-- validate-manifest     Validate manifest against schema (alias: validate)
+|   \-- load-manifest         Load and display manifest with defaults (alias: load)
+|
+|-- Configuration
+|   \-- config
+|       |-- set               Set a configuration value
+|       |-- get               Get a configuration value
+|       \-- list              List all configuration values
+|
+\-- version                   Show CLI version and update status
 ```
 
 ## Global Flags

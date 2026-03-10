@@ -15,33 +15,33 @@ Every component follows the same structure: Protocol Buffer API definitions, dua
 
 A complete deployment component lives at `apis/org/openmcf/provider/<provider>/<component>/v1/` and contains:
 
-```
+```text
 apis/org/openmcf/provider/aws/awss3bucket/v1/
-├── api.proto              # KRM resource model (apiVersion, kind, metadata, spec, status)
-├── spec.proto             # Configuration fields for the resource
-├── stack_input.proto      # IaC input contract (target resource + provider config)
-├── stack_outputs.proto    # IaC output contract (what the module exports)
-├── spec_test.go           # Validation tests for the spec
-├── README.md              # Component overview
-├── docs/
-│   └── README.md          # Research doc with design rationale
-├── iac/
-│   ├── hack/
-│   │   └── manifest.yaml  # Development test manifest
-│   ├── pulumi/
-│   │   ├── main.go        # Pulumi entrypoint (loads stack input, calls module)
-│   │   ├── Pulumi.yaml    # Pulumi project configuration
-│   │   ├── Makefile        # Build targets for the Pulumi module
-│   │   └── module/
-│   │       ├── main.go    # Resource creation and exports
-│   │       ├── locals.go  # Local variables from stack input
-│   │       └── outputs.go # Output key constants
-│   └── tf/
-│       ├── main.tf        # Terraform resource definitions
-│       ├── variables.tf   # Input variables (metadata + spec)
-│       ├── outputs.tf     # Output definitions
-│       ├── provider.tf    # Provider and backend configuration
-│       └── locals.tf      # Derived local values
+|-- api.proto              # KRM resource model (apiVersion, kind, metadata, spec, status)
+|-- spec.proto             # Configuration fields for the resource
+|-- stack_input.proto      # IaC input contract (target resource + provider config)
+|-- stack_outputs.proto    # IaC output contract (what the module exports)
+|-- spec_test.go           # Validation tests for the spec
+|-- README.md              # Component overview
+|-- docs/
+|   \-- README.md          # Research doc with design rationale
+|-- iac/
+|   |-- hack/
+|   |   \-- manifest.yaml  # Development test manifest
+|   |-- pulumi/
+|   |   |-- main.go        # Pulumi entrypoint (loads stack input, calls module)
+|   |   |-- Pulumi.yaml    # Pulumi project configuration
+|   |   |-- Makefile        # Build targets for the Pulumi module
+|   |   \-- module/
+|   |       |-- main.go    # Resource creation and exports
+|   |       |-- locals.go  # Local variables from stack input
+|   |       \-- outputs.go # Output key constants
+|   \-- tf/
+|       |-- main.tf        # Terraform resource definitions
+|       |-- variables.tf   # Input variables (metadata + spec)
+|       |-- outputs.tf     # Output definitions
+|       |-- provider.tf    # Provider and backend configuration
+|       \-- locals.tf      # Derived local values
 ```
 
 ## Naming Conventions

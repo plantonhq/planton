@@ -1,0 +1,18 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureServiceBusNamespace
+metadata:
+  name: my-messaging
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-namespace-name>
+  sku: Standard  # default from spec
+  minimumTlsVersion: "1.2"  # default from spec
+  publicNetworkAccessEnabled: true  # default from spec
+  queues:
+    - name: orders
+      maxDeliveryCount: 10  # default from spec
+      deadLetteringOnMessageExpiration: true
+  topics:
+    - name: domain-events

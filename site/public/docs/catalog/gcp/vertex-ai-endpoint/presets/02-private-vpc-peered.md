@@ -2,13 +2,13 @@
 title: "Preset: Private VPC-Peered Endpoint"
 description: "**Rank**: 2"
 type: "preset"
-rank: "99"
-presetSlug: "private-vpc-peered"
+rank: "02"
+presetSlug: "02-private-vpc-peered"
 componentSlug: "vertex-ai-endpoint"
 componentTitle: "Vertex AI Endpoint"
 provider: "gcp"
 icon: "package"
-order: 99
+order: 2
 ---
 
 # Preset: Private VPC-Peered Endpoint

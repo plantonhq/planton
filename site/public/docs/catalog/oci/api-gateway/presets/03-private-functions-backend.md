@@ -24,7 +24,7 @@ This preset creates a private (VCN-internal) OCI API Gateway that routes request
 
 ## Key Configuration Choices
 
-- **Private endpoint** (`endpointType: private`) -- the gateway has no public IP and is reachable only from within the VCN. This eliminates internet exposure entirely. Clients must be in the same VCN, a peered VCN, or connected via VPN/FastConnect. The gateway's private IP is available in status outputs.
+- **Private endpoint** (`endpointType: endpoint_type_private`) -- the gateway has no public IP and is reachable only from within the VCN. This eliminates internet exposure entirely. Clients must be in the same VCN, a peered VCN, or connected via VPN/FastConnect. The gateway's private IP is available in status outputs.
 - **OCI Functions backends** (`type: oracle_functions`) -- requests are forwarded to individual OCI Functions identified by their OCIDs. The gateway handles HTTP routing, timeout enforcement, and error responses while the functions handle business logic. Each route can target a different function, enabling a microservice decomposition pattern.
 - **Per-route timeouts** -- the `/process` route has a generous 120-second read timeout for long-running operations (data transformations, external API calls), while the `/query` route uses a 60-second timeout for read-heavy operations. Tune these based on the actual execution time of your functions. OCI Functions have a maximum execution time of 300 seconds.
 - **NSG protection** (`networkSecurityGroupIds`) -- even though the gateway is private, NSG rules control which subnets and services can reach it. Configure ingress rules allowing TCP port 443 from specific application subnets.

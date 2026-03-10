@@ -2,13 +2,13 @@
 title: "Preset: Basic IP Allowlist"
 description: "Restrict access to your backend to known corporate or VPN IP ranges. All traffic from allowlisted CIDR blocks is permitted; everything else receives a 403. Ideal for internal dashboards, admin..."
 type: "preset"
-rank: "99"
-presetSlug: "basic-ip-allowlist"
+rank: "01"
+presetSlug: "01-basic-ip-allowlist"
 componentSlug: "cloud-armor-policy"
 componentTitle: "Cloud Armor Policy"
 provider: "gcp"
 icon: "package"
-order: 99
+order: 1
 ---
 
 # Preset: Basic IP Allowlist

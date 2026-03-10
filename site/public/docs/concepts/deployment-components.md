@@ -9,39 +9,39 @@ order: 20
 
 A deployment component is the atomic unit of OpenMCF. It is a self-contained package that combines everything needed to deploy and manage a specific type of cloud resource: a Protocol Buffer API definition, dual IaC module implementations (Pulumi and OpenTofu/Terraform), and auto-generated documentation.
 
-OpenMCF ships with 178 deployment components spanning 13 cloud providers. Each component follows the same structural contract, which means once you understand how one component works, you understand them all.
+OpenMCF ships with 362 deployment components spanning 17 cloud providers. Each component follows the same structural contract, which means once you understand how one component works, you understand them all.
 
 ## What a Component Contains
 
 Every deployment component lives at a predictable path in the repository:
 
-```
+```text
 apis/org/openmcf/provider/{provider}/{component}/v1/
 ```
 
 Inside that directory, every component contains the same set of files:
 
-```
+```text
 apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1/
-├── api.proto              # Resource envelope: apiVersion, kind, metadata, spec, status
-├── spec.proto             # Configuration fields with types and validation rules
-├── stack_input.proto      # IaC input contract: the resource + provider credentials
-├── stack_outputs.proto    # IaC output contract: what the deployment produces
-├── iac/
-│   ├── pulumi/            # Pulumi module (Go)
-│   │   ├── main.go
-│   │   ├── module/        # Resource implementation
-│   │   └── Pulumi.yaml
-│   └── tf/                # OpenTofu/Terraform module (HCL)
-│       ├── main.tf
-│       ├── variables.tf
-│       ├── provider.tf
-│       └── outputs.tf
-└── docs/
-    └── README.md          # Auto-generated documentation
+|-- api.proto              # Resource envelope: apiVersion, kind, metadata, spec, status
+|-- spec.proto             # Configuration fields with types and validation rules
+|-- stack_input.proto      # IaC input contract: the resource + provider credentials
+|-- stack_outputs.proto    # IaC output contract: what the deployment produces
+|-- iac/
+|   |-- pulumi/            # Pulumi module (Go)
+|   |   |-- main.go
+|   |   |-- module/        # Resource implementation
+|   |   \-- Pulumi.yaml
+|   \-- tf/                # OpenTofu/Terraform module (HCL)
+|       |-- main.tf
+|       |-- variables.tf
+|       |-- provider.tf
+|       \-- outputs.tf
+\-- docs/
+    \-- README.md          # Auto-generated documentation
 ```
 
-This structure is not a convention. It is a contract. Every one of the 178 components follows it exactly.
+This structure is not a convention. It is a contract. Every one of the 362 components follows it exactly.
 
 ## The Four-File Protocol Buffer Contract
 
@@ -273,6 +273,6 @@ Every field in this manifest traces directly to a protobuf definition. The `apiV
 ## What's Next
 
 - **[Manifests](manifests)** -- Deep dive into the KRM manifest structure, metadata fields, and manifest sources
-- **[Cloud Resource Kinds](cloud-resource-kinds)** -- The full taxonomy of 178 components across 13 providers
+- **[Cloud Resource Kinds](cloud-resource-kinds)** -- The full taxonomy of 362 components across 17 providers
 - **[Dual IaC Engines](dual-iac-engines)** -- How the Pulumi and OpenTofu/Terraform implementations work
 - **[Component Catalog](/docs/catalog)** -- Browse the documentation for every deployment component

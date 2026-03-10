@@ -63,7 +63,7 @@ export default function Hero() {
 							<Button
 								size="lg"
 								onClick={copyToClipboard}
-								className="rounded-full bg-gradient-to-r from-[#7a4183] to-[#d946ef] text-white font-mono text-xs sm:text-sm px-4 sm:px-8 py-3 h-auto shadow-lg shadow-fuchsia-800/30 transform-gpu transition-all hover:brightness-110 hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-fuchsia-400/50 w-full sm:w-auto"
+								className="cursor-pointer rounded-full bg-gradient-to-r from-[#7a4183] to-[#d946ef] text-white font-mono text-xs sm:text-sm px-4 sm:px-8 py-3 h-auto shadow-lg shadow-fuchsia-800/30 transform-gpu transition-all hover:brightness-110 hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-fuchsia-400/50 w-full sm:w-auto"
 							>
 								<span className="flex items-center whitespace-nowrap overflow-hidden text-ellipsis">
 								{copied ? (
@@ -84,9 +84,9 @@ export default function Hero() {
 						<Button
 							size="lg"
 							variant="outline"
-							className="rounded-full border border-white/20 text-slate-100 bg-transparent hover:bg-white/5 hover:border-white/40 px-8 py-3 h-auto transform-gpu transition-all hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-fuchsia-400/40"
+							className="cursor-pointer rounded-full border border-white/20 text-slate-100 bg-transparent hover:bg-white/5 hover:border-white/40 px-8 py-3 h-auto transform-gpu transition-all hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-fuchsia-400/40"
 						>
-							Browse 200+ Components
+							Browse 360+ Components from 17 Providers
 							<ArrowRight className="w-4 h-4 ml-2" />
 						</Button>
 					</Link>

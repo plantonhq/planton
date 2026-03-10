@@ -104,4 +104,8 @@
   body {
     @apply bg-background text-foreground;
   }
+  pre code,
+  pre code * {
+    font-family: inherit;
+  }
 }

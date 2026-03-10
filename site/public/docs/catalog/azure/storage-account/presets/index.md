@@ -16,6 +16,10 @@ presets:
     rank: "02"
     title: "Production Geo-Redundant Storage Account"
     excerpt: "This preset creates an Azure Storage Account with geo-redundant storage (GRS), 30-day soft delete retention, IP-restricted network access, and blob versioning. GRS replicates data to Azure's paired..."
+  - slug: "03-development-minimal"
+    rank: "03"
+    title: "Development Minimal Storage Account"
+    excerpt: "This preset creates a minimal Azure Storage Account with LRS replication (single datacenter, 11 nines durability), no blob versioning, 7-day soft delete, and open network access. Designed for..."
 ---
 
 # Storage Account Presets

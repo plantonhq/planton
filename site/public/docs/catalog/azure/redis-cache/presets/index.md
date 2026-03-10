@@ -16,6 +16,10 @@ presets:
     rank: "02"
     title: "Premium Redis Cache with VNet Injection"
     excerpt: "This preset creates an Azure Cache for Redis with Premium tier injected into a virtual network subnet. VNet injection provides private IP addressing and network isolation -- the cache is not..."
+  - slug: "03-development"
+    rank: "03"
+    title: "Development Redis Cache"
+    excerpt: "This preset creates an Azure Cache for Redis with Basic tier, the smallest cache size (C0, 250 MB), and `allkeys-lru` eviction for pure caching workloads. Basic tier provides a single-node cache with..."
 ---
 
 # Redis Cache Presets

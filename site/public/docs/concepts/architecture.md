@@ -13,64 +13,24 @@ This page shows how the different parts of OpenMCF connect. Each diagram is a vi
 
 When you run a deployment command, this is the path your manifest takes from YAML file to deployed cloud resources:
 
-```
-                         ┌─────────────────┐
-                         │  YAML Manifest   │
-                         │   (your file)    │
-                         └────────┬─────────┘
-                                  │
-                                  ▼
-                    ┌─────────────────────────────┐
-                    │        CLI: Load Manifest     │
-                    │  --manifest / --clipboard /   │
-                    │  --kustomize-dir / --stack-input│
-                    └──────────────┬────────────────┘
-                                   │
-                                   ▼
-                    ┌─────────────────────────────┐
-                    │     CLI: Validate Manifest    │
-                    │  protobuf schema + buf-validate│
-                    │  apiVersion, kind, spec fields │
-                    └──────────────┬────────────────┘
-                                   │
-                          (validation passes)
-                                   │
-                                   ▼
-                    ┌─────────────────────────────┐
-                    │    CLI: Resolve IaC Module    │
-                    │  kind → provider → module path│
-                    │  binary / zip / staging repo  │
-                    └──────────────┬────────────────┘
-                                   │
-                                   ▼
-                    ┌─────────────────────────────┐
-                    │  CLI: Construct Stack Input   │
-                    │  manifest + provider config   │
-                    └──────────────┬────────────────┘
-                                   │
-                        ┌──────────┴──────────┐
-                        │                     │
-                        ▼                     ▼
-              ┌──────────────────┐  ┌──────────────────┐
-              │   Pulumi Engine   │  │  Tofu/TF Engine   │
-              │   (Go program)    │  │  (HCL modules)    │
-              └────────┬─────────┘  └────────┬─────────┘
-                       │                     │
-                       └──────────┬──────────┘
-                                  │
-                                  ▼
-                    ┌─────────────────────────────┐
-                    │     Cloud Provider APIs       │
-                    │  AWS / GCP / Azure / K8s /    │
-                    │  DigitalOcean / Civo / ...    │
-                    └──────────────┬────────────────┘
-                                   │
-                                   ▼
-                    ┌─────────────────────────────┐
-                    │     Deployed Resources        │
-                    │  + state stored in backend    │
-                    │  + outputs returned to CLI    │
-                    └─────────────────────────────┘
+```mermaid
+flowchart TD
+    manifest["YAML Manifest\n(your file)"]
+    load["CLI: Load Manifest\n--manifest / --clipboard /\n--kustomize-dir / --stack-input"]
+    validate["CLI: Validate Manifest\nprotobuf schema + buf-validate\napiVersion, kind, spec fields"]
+    passes(["validation passes"])
+    resolve["CLI: Resolve IaC Module\nkind > provider > module path\nbinary / zip / staging repo"]
+    stackInput["CLI: Construct Stack Input\nmanifest + provider config"]
+    pulumi["Pulumi Engine\n(Go program)"]
+    tofu["Tofu/TF Engine\n(HCL modules)"]
+    cloudAPIs["Cloud Provider APIs\nAWS / GCP / Azure / K8s /\nDigitalOcean / Civo / ..."]
+    deployed["Deployed Resources\n+ state stored in backend\n+ outputs returned to CLI"]
+
+    manifest --> load --> validate --> passes --> resolve --> stackInput
+    stackInput --> pulumi & tofu
+    pulumi --> cloudAPIs
+    tofu --> cloudAPIs
+    cloudAPIs --> deployed
 ```
 
 **Deep dives**: [Manifests](manifests) | [Validation](validation) | [Module System](module-system) | [Dual IaC Engines](dual-iac-engines) | [State Management](state-management)
@@ -79,38 +39,38 @@ When you run a deployment command, this is the path your manifest takes from YAM
 
 Every deployment component is a self-contained package at a fixed path. The Protocol Buffer definitions define the contract. The IaC modules implement it.
 
-```
+```text
 apis/org/openmcf/provider/{provider}/{component}/v1/
-│
-├── api.proto                 ← Resource envelope
-│   apiVersion, kind,           (apiVersion + kind are const-validated)
-│   metadata, spec, status
-│
-├── spec.proto                ← Configuration surface
-│   All configurable fields     (types, validation rules, defaults,
-│   for this component           nested messages, enums)
-│
-├── stack_input.proto         ← IaC input contract
-│   target (full manifest)      (bridges manifest → IaC module)
-│   + provider_config
-│
-├── stack_outputs.proto       ← IaC output contract
-│   Deployment results          (endpoints, ARNs, secrets,
-│   returned after apply         connection strings)
-│
-├── iac/
-│   ├── pulumi/               ← Pulumi implementation (Go)
-│   │   ├── main.go             Load stack input → module.Resources()
-│   │   └── module/             Actual resource creation logic
-│   │
-│   └── tf/                   ← Terraform implementation (HCL)
-│       ├── main.tf             Resource creation
-│       ├── variables.tf        Mirrors spec.proto structure
-│       ├── provider.tf         Cloud provider configuration
-│       └── outputs.tf          Stack outputs
-│
-└── docs/
-    └── README.md             ← Auto-generated documentation
+|
+|-- api.proto                 <- Resource envelope
+|   apiVersion, kind,           (apiVersion + kind are const-validated)
+|   metadata, spec, status
+|
+|-- spec.proto                <- Configuration surface
+|   All configurable fields     (types, validation rules, defaults,
+|   for this component           nested messages, enums)
+|
+|-- stack_input.proto         <- IaC input contract
+|   target (full manifest)      (bridges manifest -> IaC module)
+|   + provider_config
+|
+|-- stack_outputs.proto       <- IaC output contract
+|   Deployment results          (endpoints, ARNs, secrets,
+|   returned after apply         connection strings)
+|
+|-- iac/
+|   |-- pulumi/               <- Pulumi implementation (Go)
+|   |   |-- main.go             Load stack input -> module.Resources()
+|   |   \-- module/             Actual resource creation logic
+|   |
+|   \-- tf/                   <- Terraform implementation (HCL)
+|       |-- main.tf             Resource creation
+|       |-- variables.tf        Mirrors spec.proto structure
+|       |-- provider.tf         Cloud provider configuration
+|       \-- outputs.tf          Stack outputs
+|
+\-- docs/
+    \-- README.md             <- Auto-generated documentation
 ```
 
 **Deep dive**: [Deployment Components](deployment-components)
@@ -119,45 +79,31 @@ apis/org/openmcf/provider/{provider}/{component}/v1/
 
 OpenMCF's architecture has three distinct layers, each with a clear responsibility:
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│                     API LAYER (Protocol Buffers)                 │
-│                                                                 │
-│  CloudResourceKind enum    CloudResourceMetadata    buf-validate │
-│  360+ kinds, 17 providers   name, org, env, labels   schema rules│
-│                                                                 │
-│  api.proto  spec.proto  stack_input.proto  stack_outputs.proto   │
-│                                                                 │
-│  Defines: what resources exist, what fields they accept,        │
-│           what validation rules apply, what outputs they produce │
-│                                                                 │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│                  EXECUTION LAYER (CLI + IaC Engines)             │
-│                                                                 │
-│  CLI:     load manifest → validate → resolve module → run engine│
-│  Pulumi:  Go SDK programs, stack management, binary provider    │
-│  Tofu/TF: HCL modules, tfvars generation, backend.tf writing   │
-│                                                                 │
-│  Module system: staging repo, workspace isolation, versioning   │
-│  State:         Pulumi Cloud / S3 / GCS / Azure Blob / local   │
-│                                                                 │
-│  Orchestrates: manifest-to-infrastructure deployment pipeline   │
-│                                                                 │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│                INFRASTRUCTURE LAYER (Cloud Providers)            │
-│                                                                 │
-│  AWS          GCP           Azure         Kubernetes            │
-│  DigitalOcean Civo          Cloudflare    OpenStack             │
-│  Scaleway     Auth0         OpenFGA       Confluent             │
-│  MongoDB Atlas              Snowflake                           │
-│                                                                 │
-│  Each provider: native APIs, native resource models,            │
-│                 full capability exposure (no abstraction)        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    subgraph api ["API LAYER (Protocol Buffers)"]
+        direction LR
+        kindEnum["CloudResourceKind enum\n360+ kinds, 17 providers"]
+        metadata["CloudResourceMetadata\nname, org, env, labels"]
+        bufValidate["buf-validate\nschema rules"]
+        protos["api.proto / spec.proto\nstack_input.proto / stack_outputs.proto"]
+    end
+
+    subgraph exec ["EXECUTION LAYER (CLI + IaC Engines)"]
+        direction LR
+        cli["CLI: load manifest >\nvalidate > resolve module\n> run engine"]
+        engines["Pulumi: Go SDK programs\nTofu/TF: HCL modules"]
+        infra_support["Module system / State backends\nPulumi Cloud / S3 / GCS / Azure Blob / local"]
+    end
+
+    subgraph providers ["INFRASTRUCTURE LAYER (Cloud Providers)"]
+        direction LR
+        cloud1["AWS / GCP / Azure\nKubernetes"]
+        cloud2["DigitalOcean / Civo\nCloudflare / OpenStack"]
+        cloud3["Scaleway / Auth0\nOpenFGA / Confluent"]
+    end
+
+    api --> exec --> providers
 ```
 
 **The API layer** is the source of truth. It defines the vocabulary, the resource models, and the validation rules. Everything downstream -- the CLI, the IaC modules, the documentation, the SDKs -- is derived from these Protocol Buffer definitions.

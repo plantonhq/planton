@@ -8,18 +8,18 @@ provider: "gcp"
 icon: "package"
 order: 200
 presets:
-  - slug: "basic-public"
-    rank: "99"
+  - slug: "01-basic-public"
+    rank: "01"
     title: "Preset: Basic Public Endpoint"
     excerpt: "**Rank**: 1 (most common)"
-  - slug: "private-psc"
-    rank: "99"
-    title: "Preset: Private Service Connect Endpoint"
-    excerpt: "**Rank**: 3"
-  - slug: "private-vpc-peered"
-    rank: "99"
+  - slug: "02-private-vpc-peered"
+    rank: "02"
     title: "Preset: Private VPC-Peered Endpoint"
     excerpt: "**Rank**: 2"
+  - slug: "03-private-psc"
+    rank: "03"
+    title: "Preset: Private Service Connect Endpoint"
+    excerpt: "**Rank**: 3"
 ---
 
 # Vertex AI Endpoint Presets

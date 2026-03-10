@@ -2,13 +2,13 @@
 title: "Preset: Private Service Connect Endpoint"
 description: "**Rank**: 3"
 type: "preset"
-rank: "99"
-presetSlug: "private-psc"
+rank: "03"
+presetSlug: "03-private-psc"
 componentSlug: "vertex-ai-endpoint"
 componentTitle: "Vertex AI Endpoint"
 provider: "gcp"
 icon: "package"
-order: 99
+order: 3
 ---
 
 # Preset: Private Service Connect Endpoint

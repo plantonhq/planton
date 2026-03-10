@@ -45,21 +45,21 @@ mkdir -p postgres-kustomize/overlays/prod
 
 The final structure will look like this:
 
-```
+```text
 postgres-kustomize/
-├── base/
-│   ├── kustomization.yaml
-│   └── postgres.yaml
-└── overlays/
-    ├── dev/
-    │   ├── kustomization.yaml
-    │   └── patch.yaml
-    ├── staging/
-    │   ├── kustomization.yaml
-    │   └── patch.yaml
-    └── prod/
-        ├── kustomization.yaml
-        └── patch.yaml
+|-- base/
+|   |-- kustomization.yaml
+|   \-- postgres.yaml
+\-- overlays/
+    |-- dev/
+    |   |-- kustomization.yaml
+    |   \-- patch.yaml
+    |-- staging/
+    |   |-- kustomization.yaml
+    |   \-- patch.yaml
+    \-- prod/
+        |-- kustomization.yaml
+        \-- patch.yaml
 ```
 
 ## Step 2: Write the Base Manifest

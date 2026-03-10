@@ -2,13 +2,13 @@
 title: "Preset: Rate Limiting for API Endpoints"
 description: "Protect APIs from abuse and DDoS with per-IP rate limiting and ban escalation. Traffic under the throttle limit is allowed; exceeding it returns 429. Persistent abusers crossing the ban threshold are..."
 type: "preset"
-rank: "99"
-presetSlug: "rate-limiting-api"
+rank: "02"
+presetSlug: "02-rate-limiting-api"
 componentSlug: "cloud-armor-policy"
 componentTitle: "Cloud Armor Policy"
 provider: "gcp"
 icon: "package"
-order: 99
+order: 2
 ---
 
 # Preset: Rate Limiting for API Endpoints

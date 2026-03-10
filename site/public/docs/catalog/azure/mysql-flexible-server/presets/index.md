@@ -16,6 +16,14 @@ presets:
     rank: "02"
     title: "Production MySQL with VNet Integration"
     excerpt: "This preset creates an Azure Database for MySQL Flexible Server injected into a virtual network subnet. Public network access is automatically disabled when `delegatedSubnetId` is set, ensuring the..."
+  - slug: "03-development"
+    rank: "03"
+    title: "Development MySQL Flexible Server"
+    excerpt: "This preset creates a minimal Azure Database for MySQL Flexible Server using the Burstable B1ms SKU (~$12/month) with 20 GB storage, no high availability, no geo-redundant backup, and public access..."
+  - slug: "04-ha-zone-redundant"
+    rank: "04"
+    title: "HA Zone-Redundant MySQL Flexible Server"
+    excerpt: "This preset creates an Azure Database for MySQL Flexible Server with Zone-Redundant high availability, geo-redundant backup, and a General Purpose D4ds_v4 SKU (4 vCPU, 16 GiB RAM). The primary runs..."
 ---
 
 # MySQL Flexible Server Presets

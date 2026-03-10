@@ -16,6 +16,10 @@ presets:
     rank: "02"
     title: "Linux Premium Plan with Zone Redundancy"
     excerpt: "This preset creates an Azure App Service Plan on the Premium v3 P1v3 tier with 3 Linux workers distributed across availability zones. Premium v3 provides faster processors, SSD storage, double the..."
+  - slug: "03-consumption-serverless"
+    rank: "03"
+    title: "Consumption (Serverless) Service Plan"
+    excerpt: "This preset creates an Azure App Service Plan with the Consumption (Y1) SKU — a fully serverless plan that scales to zero and bills per execution. The Consumption plan is the cheapest option for..."
 ---
 
 # Service Plan Presets

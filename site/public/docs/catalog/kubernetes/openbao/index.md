@@ -23,6 +23,8 @@ When you deploy a KubernetesOpenBao resource, OpenMCF provisions:
 - **HA Raft Cluster** — when `highAvailability.enabled` is `true`, deploys multiple replicas using Raft consensus for leader election and replicated storage
 - **Agent Injector** — when `injector.enabled` is `true`, deploys a mutating webhook that automatically injects OpenBao Agent sidecar containers into annotated pods
 - **Ingress** — when `ingress.enabled` is `true`, creates an Ingress resource for external access with optional TLS termination
+- **Auto-Unseal Seal Stanza** — when `autoUnseal` is configured, injects the appropriate HCL `seal` block (gcpckms, awskms, azurekeyvault, or transit) into the server configuration so pods unseal automatically on startup
+- **Workload Identity Annotation** — when GCP KMS auto-unseal is configured with a service account, annotates the Kubernetes ServiceAccount with `iam.gke.io/gcp-service-account` for credential-free KMS access
 - **Web UI** — enabled by default, accessible at the service endpoint on port 8200
 
 ## Prerequisites
@@ -91,6 +93,10 @@ This creates a single-replica OpenBao instance in standalone mode with 10Gi stor
 | `injector.enabled` | `bool` | `false` | Deploy the OpenBao Agent Injector mutating webhook for automatic sidecar injection. |
 | `injector.replicas` | `int` | `1` | Number of injector replicas. Range: 1-5. |
 | `tlsEnabled` | `bool` | `false` | Enable TLS for OpenBao server listeners. When `false`, the Helm chart sets `tlsDisable: true`. |
+| `autoUnseal.gcpKms` | `object` | — | GCP Cloud KMS auto-unseal. Fields: `project`, `region`, `keyRing`, `cryptoKey` (all required), `workloadIdentityServiceAccount` (optional). `StringValueOrRef` fields support `value` or `valueFrom`. |
+| `autoUnseal.awsKms` | `object` | — | AWS KMS auto-unseal. Fields: `region`, `kmsKeyId` (required), `credentialsSecretName` (optional). |
+| `autoUnseal.azureKeyVault` | `object` | — | Azure Key Vault auto-unseal. Fields: `vaultName`, `keyName`, `tenantId` (required), `credentialsSecretName` (optional). |
+| `autoUnseal.transit` | `object` | — | Transit auto-unseal via another Vault/OpenBao instance. Fields: `address`, `keyName`, `tokenSecretName` (required), `mountPath` (optional, default `transit/`). |
 
 ## Examples
 
@@ -202,6 +208,52 @@ spec:
     enabled: true
     replicas: 2
   tlsEnabled: false
+```
+
+### HA with GCP KMS Auto-Unseal
+
+A production HA deployment with GCP Cloud KMS auto-unseal and Workload Identity for zero-downtime recovery:
+
+```yaml
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesOpenBao
+metadata:
+  name: prod-openbao
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: my-org
+    pulumi.openmcf.org/project: my-project
+    pulumi.openmcf.org/stack.name: prod.KubernetesOpenBao.prod-openbao
+spec:
+  namespace:
+    value: openbao-prod
+  createNamespace: true
+  serverContainer:
+    replicas: 3
+    resources:
+      limits:
+        cpu: "1000m"
+        memory: "512Mi"
+      requests:
+        cpu: "250m"
+        memory: "256Mi"
+    dataStorageSize: "50Gi"
+  highAvailability:
+    enabled: true
+    replicas: 3
+  autoUnseal:
+    gcpKms:
+      project:
+        value: my-gcp-project
+      region: asia-south1
+      keyRing:
+        value: openbao-unseal
+      cryptoKey:
+        value: openbao-auto-unseal-key
+      workloadIdentityServiceAccount:
+        value: openbao@my-gcp-project.iam.gserviceaccount.com
+  uiEnabled: true
+  tlsEnabled: true
 ```
 
 ## Stack Outputs

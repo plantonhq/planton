@@ -1,0 +1,27 @@
+apiVersion: azure.openmcf.org/v1
+kind: AzureMssqlServer
+metadata:
+  name: my-dev-mssql
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-server-name>
+  administratorLogin: <admin-username>
+  administratorPassword:
+    value: "<admin-password>"
+  version: "12.0"  # default from spec
+  minimumTlsVersion: "1.2"  # default from spec
+  publicNetworkAccessEnabled: true  # default from spec
+  connectionPolicy: Default  # default from spec
+  databases:
+    - name: <your-database-name>
+      skuName: Basic  # 5 DTU (~$5/month)
+      maxSizeGb: 2
+      collation: SQL_Latin1_General_CP1_CI_AS  # default from spec
+      zoneRedundant: false  # default from spec
+      storageAccountType: Local  # cheapest backup redundancy for dev
+  firewallRules:
+    - name: allow-azure-services
+      startIpAddress: 0.0.0.0
+      endIpAddress: 0.0.0.0

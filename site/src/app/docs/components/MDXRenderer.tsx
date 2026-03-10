@@ -10,11 +10,23 @@ import matter from 'gray-matter';
 import { formatDate } from '@/lib/utils';
 import { Author } from '@/lib/mdx';
 import { CodeBlock } from '@/app/docs/components/CodeBlock';
+import { MermaidBlock } from '@/app/docs/components/MermaidBlock';
 import {
   CatalogProviderGrid,
   CatalogProvider,
 } from '@/app/docs/components/CatalogProviderGrid';
 import 'highlight.js/styles/github-dark.css';
+
+function extractMermaidText(node: React.ReactNode): string {
+  if (typeof node === 'string') return node;
+  if (typeof node === 'number') return String(node);
+  if (!node) return '';
+  if (Array.isArray(node)) return node.map(extractMermaidText).join('');
+  if (React.isValidElement(node) && node.props) {
+    return extractMermaidText((node.props as { children?: React.ReactNode }).children);
+  }
+  return '';
+}
 
 interface MdxMetadata {
   title: string;
@@ -189,7 +201,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
         <div className="prose prose-lg max-w-none prose-invert">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw, rehypeHighlight]}
+            rehypePlugins={[rehypeRaw, [rehypeHighlight, { detect: false }]]}
             components={{
               p: ({ children }) => (
                 <p className="text-gray-300 mb-4 leading-relaxed">{children}</p>
@@ -297,9 +309,17 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
                 }
                 return <code className={className}>{children}</code>;
               },
-              pre: ({ children }) => (
-                <CodeBlock>{children}</CodeBlock>
-              ),
+              pre: ({ children }) => {
+                const child = React.Children.toArray(children)[0];
+                if (
+                  React.isValidElement<{ className?: string; children?: React.ReactNode }>(child) &&
+                  child.props?.className?.includes('language-mermaid')
+                ) {
+                  const text = extractMermaidText(child.props.children);
+                  if (text) return <MermaidBlock chart={text} />;
+                }
+                return <CodeBlock>{children}</CodeBlock>;
+              },
               a: ({ href, children }) => {
                 const isExternal = href?.startsWith('http');
                 if (!isExternal && href) {

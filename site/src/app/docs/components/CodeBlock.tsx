@@ -41,7 +41,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ children }) => {
 
   return (
     <div className="relative group mb-4">
-      <pre className="bg-slate-900 rounded-lg p-4 overflow-x-auto border border-purple-900/30">
+      <pre className="bg-slate-900 rounded-lg p-4 overflow-x-auto border border-purple-900/30" style={{ fontFamily: 'var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace' }}>
         {children}
       </pre>
       <button
