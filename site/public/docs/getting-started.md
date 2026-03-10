@@ -9,7 +9,11 @@ order: 2
 
 By the end of this page, you will have installed the OpenMCF CLI, deployed a PostgreSQL database to a local Kubernetes cluster, verified it is running, and torn it down. The entire process takes about 10 minutes.
 
-You will use KubernetesPostgres — one of OpenMCF's 198 deployment components — as your first resource. It runs on a local Kind cluster, so you do not need cloud provider credentials or a paid account to get started.
+<!-- AI-AGENT NOTE: The deployment component count below MUST be verified against the authoritative source:
+     apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto
+     Count only non-test, non-unspecified enum values in the CloudResourceKind enum. -->
+
+You will use KubernetesPostgres — one of OpenMCF's 360+ deployment components — as your first resource. It runs on a local Kind cluster, so you do not need cloud provider credentials or a paid account to get started.
 
 ## What You'll Need
 
@@ -82,7 +86,7 @@ spec:
 
 Every OpenMCF manifest follows the Kubernetes Resource Model (KRM) — the same `apiVersion`, `kind`, `metadata`, `spec` structure used by Kubernetes itself. Here is what each section does:
 
-- **`apiVersion` and `kind`** identify this as a KubernetesPostgres resource. OpenMCF has [198 component kinds](/docs/concepts/cloud-resource-kinds) across 14 cloud providers, each with its own apiVersion and kind.
+- **`apiVersion` and `kind`** identify this as a KubernetesPostgres resource. OpenMCF has [360+ component kinds](/docs/concepts/cloud-resource-kinds) across 17 cloud providers, each with its own apiVersion and kind.
 - **`metadata.name`** names this resource. The name is used in state tracking, logging, and resource identification.
 - **`metadata.labels`** control how OpenMCF processes the manifest:
   - `openmcf.org/provisioner: pulumi` tells the CLI to route this deployment through the Pulumi engine. The alternative is `tofu` for OpenTofu/Terraform.
@@ -183,5 +187,5 @@ You have deployed your first resource with OpenMCF. Here is where to go next:
 - **Deploy to a cloud provider.** Follow the [AWS S3 Bucket tutorial](/docs/tutorials/first-aws-resource) or the [Multi-Provider tutorial](/docs/tutorials/multi-provider) to deploy real cloud infrastructure.
 - **Go deeper with Kubernetes.** The [Kubernetes Postgres tutorial](/docs/tutorials/first-kubernetes-resource) builds on this guide with custom databases, named users, resource tuning, and runtime overrides.
 - **Set up cloud credentials.** Configure [AWS](/docs/guides/aws-provider-setup), [GCP](/docs/guides/gcp-provider-setup), or [Azure](/docs/guides/azure-provider-setup) for production deployments.
-- **Explore the catalog.** Browse all [198 deployment components](/docs/catalog) across 14 cloud providers.
+- **Explore the catalog.** Browse all [360+ deployment components](/docs/catalog) across 17 cloud providers.
 - **Troubleshoot issues.** Check the [Troubleshooting Guide](/docs/troubleshooting) if you run into problems.

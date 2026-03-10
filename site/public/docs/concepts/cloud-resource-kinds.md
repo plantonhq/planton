@@ -1,6 +1,6 @@
 ---
 title: "Cloud Resource Kinds"
-description: "The taxonomy of deployment components in OpenMCF: 198 resource kinds across 14 cloud providers, each with a unique kind name, provider mapping, and API version"
+description: "The taxonomy of deployment components in OpenMCF: 360+ resource kinds across 17 cloud providers, each with a unique kind name, provider mapping, and API version"
 icon: "database"
 order: 30
 ---
@@ -9,7 +9,11 @@ order: 30
 
 Every deployment component in OpenMCF has a unique kind name -- `AwsS3Bucket`, `KubernetesPostgres`, `GcpCloudSql`. These kind names are not arbitrary strings. They are entries in the `CloudResourceKind` enum, a Protocol Buffer enum that serves as the canonical registry of everything OpenMCF can deploy.
 
-The enum currently contains 198 resource kinds spanning 14 cloud providers.
+<!-- AI-AGENT NOTE: The deployment component count below MUST be verified against the authoritative source:
+     apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto
+     Count only non-test, non-unspecified enum values in the CloudResourceKind enum. -->
+
+The enum currently contains 360+ resource kinds spanning 17 cloud providers.
 
 ## The CloudResourceKind Enum
 
@@ -130,4 +134,4 @@ The [Component Catalog](/docs/catalog) provides detailed documentation for every
 - **[Deployment Components](deployment-components)** -- The anatomy of what each kind maps to
 - **[Manifests](manifests)** -- How to write manifests using these kind names
 - **[Validation](validation)** -- How kind and apiVersion values are validated
-- **[Component Catalog](/docs/catalog)** -- Browse documentation for all 198 components
+- **[Component Catalog](/docs/catalog)** -- Browse documentation for all 360+ components

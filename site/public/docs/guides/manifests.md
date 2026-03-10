@@ -24,7 +24,7 @@ If you know the provider and resource type, the kind name follows a predictable 
 | AWS | `Aws` + resource | `AwsRdsInstance`, `AwsS3Bucket`, `AwsEksCluster` |
 | GCP | `Gcp` + resource | `GcpCloudSql`, `GcpGkeCluster`, `GcpGcsBucket` |
 | Azure | `Azure` + resource | `AzureAksCluster`, `AzureResourceGroup` |
-| Kubernetes | resource + `Kubernetes` | `KubernetesPostgres`, `RedisKubernetes` |
+| Kubernetes | `Kubernetes` + resource | `KubernetesPostgres`, `KubernetesRedis` |
 
 For the complete taxonomy, see [Cloud Resource Kinds](../concepts/cloud-resource-kinds).
 
@@ -42,7 +42,7 @@ apis/org/openmcf/provider/{provider}/{component}/v1/spec.proto
 
 The proto file shows every field, its type, whether it is required, and any validation rules.
 
-**Buf Schema Registry** — Browse the API definitions at [buf.build/openmcf/apis](https://buf.build/openmcf/apis) for generated documentation of every component's spec.
+**Buf Schema Registry** — Browse the API definitions at [buf.build/openmcf/openmcf](https://buf.build/openmcf/openmcf) for generated documentation of every component's spec.
 
 ## Writing a Manifest Step by Step
 

@@ -1,6 +1,6 @@
 ---
 title: "Concepts"
-description: "The core ideas behind OpenMCF: how a multi-cloud deployment framework brings Kubernetes-style consistency to infrastructure across 14 cloud providers"
+description: "The core ideas behind OpenMCF: how a multi-cloud deployment framework brings Kubernetes-style consistency to infrastructure across 17 cloud providers"
 icon: "lightbulb"
 order: 10
 ---
@@ -23,13 +23,13 @@ OpenMCF takes a different path: consistency of structure and workflow, not abstr
 
 Every resource across every provider follows the same manifest format (the Kubernetes Resource Model), uses the same validation framework (Protocol Buffers with buf-validate), is deployed with the same CLI commands, and is managed through the same module and state systems. But the spec -- the actual configuration surface -- is provider-specific. An `AwsS3Bucket` exposes the full S3 feature set. A `GcpGcsBucket` exposes the full GCS feature set. Neither pretends to be the other.
 
-The result: you learn one set of tools and one workflow pattern, then apply it to 198 deployment components across 14 cloud providers. The learning curve is the framework itself, not each provider's toolchain.
+The result: you learn one set of tools and one workflow pattern, then apply it to 360+ deployment components across 17 cloud providers. The learning curve is the framework itself, not each provider's toolchain.
 
 ## Key Concepts
 
 ### Deployment Components
 
-A deployment component is the atomic unit of OpenMCF -- a self-contained package combining a Protocol Buffer API definition, dual IaC module implementations (Pulumi and Terraform), and auto-generated documentation. OpenMCF ships with 198 components spanning 14 providers.
+A deployment component is the atomic unit of OpenMCF -- a self-contained package combining a Protocol Buffer API definition, dual IaC module implementations (Pulumi and Terraform), and auto-generated documentation. OpenMCF ships with 360+ components spanning 17 providers.
 
 Every component follows the same four-file protobuf contract: `api.proto` (resource envelope), `spec.proto` (configuration surface), `stack_input.proto` (IaC input), and `stack_outputs.proto` (IaC output).
 
@@ -43,7 +43,7 @@ OpenMCF manifests use the Kubernetes Resource Model: `apiVersion`, `kind`, `meta
 
 ### Cloud Resource Kinds
 
-The `CloudResourceKind` enum is the canonical registry of everything OpenMCF can deploy -- 198 entries mapped to 14 providers. Each kind maps to a provider, an API version, a module path, and a validation schema. The kind name in your manifest is the key that drives the entire deployment pipeline.
+The `CloudResourceKind` enum is the canonical registry of everything OpenMCF can deploy -- 360+ entries mapped to 17 providers. Each kind maps to a provider, an API version, a module path, and a validation schema. The kind name in your manifest is the key that drives the entire deployment pipeline.
 
 **[Read more: Cloud Resource Kinds](cloud-resource-kinds)**
 

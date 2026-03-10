@@ -9,7 +9,7 @@ order: 20
 
 This guide walks through creating a new deployment component for OpenMCF. A deployment component is a self-contained package that enables declarative deployment of a specific cloud resource — from an S3 bucket to a Kubernetes cluster to a Cloudflare Worker.
 
-Every component follows the same structure: Protocol Buffer API definitions, dual IaC modules (Pulumi + Terraform), and documentation. This consistency across 198 components and 14 providers is what makes OpenMCF predictable for users.
+Every component follows the same structure: Protocol Buffer API definitions, dual IaC modules (Pulumi + Terraform), and documentation. This consistency across 360+ components and 17 providers is what makes OpenMCF predictable for users.
 
 ## Anatomy of a Component
 

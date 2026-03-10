@@ -10,17 +10,23 @@
 
 An open-source multi-cloud deployment framework that brings Kubernetes-style consistency to infrastructure deployments everywhere. No vendor lock-in, no artificial abstractions—just provider-specific configurations with a unified structure and workflow.
 
-**[Documentation](https://openmcf.org)** · **[Component Catalog](https://openmcf.org/docs/catalog)** · **[Website](https://openmcf.org)**
+<!-- AI-AGENT NOTE: The deployment component count below MUST be verified against the authoritative source:
+     apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto
+     Count only non-test, non-unspecified enum values in the CloudResourceKind enum. -->
+
+**360+ deployment components** across **17 cloud providers** — AWS, GCP, Azure, Kubernetes, OCI, Alibaba Cloud, Hetzner Cloud, DigitalOcean, Cloudflare, Civo, Scaleway, OpenStack, Confluent, Snowflake, Auth0, MongoDB Atlas, and OpenFGA.
+
+**[Documentation](https://openmcf.org)** · **[Component Catalog](https://openmcf.org/docs/catalog)** · **[Getting Started](https://openmcf.org/docs/getting-started)**
 
 ---
 
 ## Why OpenMCF?
 
-- **One structure, any cloud** - Kubernetes Resource Model (apiVersion/kind/metadata/spec) for all deployments
-- **Validate before deploy** - Protocol Buffer validations catch errors in seconds, not minutes
-- **Zero abstraction** - Provider-specific configs preserve cloud capabilities, consistent experience across all
-- **Choose your IaC** - Built-in Pulumi and Terraform/OpenTofu modules with feature parity
-- **Build on top** - Auto-generated SDKs in Go, Python, TypeScript, Java from Protocol Buffer definitions
+- **One structure, any cloud** — Kubernetes Resource Model (apiVersion/kind/metadata/spec) for all deployments
+- **Validate before deploy** — Protocol Buffer validations catch errors in seconds, not minutes
+- **Zero abstraction** — Provider-specific configs preserve cloud capabilities; consistent experience across all
+- **Choose your IaC** — Built-in Pulumi and Terraform/OpenTofu modules with feature parity
+- **Build on top** — Auto-generated SDKs in Go, Python, TypeScript, Java from Protocol Buffer definitions
 
 ---
 
@@ -34,44 +40,73 @@ brew install plantonhq/tap/openmcf
 
 ### 2. Create a YAML Manifest
 
-Example: Deploy Redis to Kubernetes using the [redis-kubernetes](https://buf.build/openmcf/apis/file/main:project/planton/provider/kubernetes/workload/rediskubernetes/v1/spec.proto) deployment component.
+Example: Deploy PostgreSQL to Kubernetes using the [KubernetesPostgres](https://buf.build/openmcf/openmcf/file/main:org/openmcf/provider/kubernetes/kubernetespostgres/v1/spec.proto) deployment component.
 
 ```yaml
 apiVersion: kubernetes.openmcf.org/v1
-kind: RedisKubernetes
+kind: KubernetesPostgres
 metadata:
-  name: payments
-  id: payments-namespace
+  name: my-first-postgres
+  labels:
+    openmcf.org/provisioner: pulumi
+    pulumi.openmcf.org/organization: local
+    pulumi.openmcf.org/project: getting-started
+    pulumi.openmcf.org/stack.name: dev
 spec:
+  namespace:
+    value: my-first-postgres
+  createNamespace: true
   container:
     replicas: 1
     resources:
-      limits:
-        cpu: 50m
-        memory: 2Gi
       requests:
         cpu: 50m
         memory: 100Mi
-    isPersistenceEnabled: true
+      limits:
+        cpu: 500m
+        memory: 512Mi
     diskSize: 1Gi
 ```
 
-You can create similar manifests for [AWS VPC](https://github.com/plantonhq/openmcf/tree/main/apis/project/planton/provider/aws/awsvpc/v1), [GKE Cluster](https://github.com/plantonhq/openmcf/tree/main/apis/project/planton/provider/gcp/gkecluster/v1), [Kafka on Kubernetes](https://github.com/plantonhq/openmcf/tree/main/apis/project/planton/provider/kubernetes/workload/kafkakubernetes/v1), and [many more](https://github.com/plantonhq/openmcf/tree/main/apis/project/planton/provider).
+You can create similar manifests for [AWS VPC](https://github.com/plantonhq/openmcf/tree/main/apis/org/openmcf/provider/aws/awsvpc/v1), [GKE Cluster](https://github.com/plantonhq/openmcf/tree/main/apis/org/openmcf/provider/gcp/gcpgkecluster/v1), [Kafka on Kubernetes](https://github.com/plantonhq/openmcf/tree/main/apis/org/openmcf/provider/kubernetes/kuberneteskafka/v1), and [many more](https://github.com/plantonhq/openmcf/tree/main/apis/org/openmcf/provider).
 
 ### 3. Deploy
 
 ```bash
-openmcf pulumi up --manifest redis.yaml
+# Unified command (auto-detects provisioner from manifest labels)
+openmcf apply -f postgres.yaml
+
+# Or use IaC-specific commands directly
+openmcf pulumi up -f postgres.yaml
+openmcf tofu apply -f postgres.yaml
 ```
+
+---
+
+## CLI Overview
+
+```
+openmcf
+├── apply / destroy / plan      Unified commands (provisioner auto-detected)
+├── pulumi                      Pulumi-specific commands (init, preview, up, destroy, refresh)
+├── tofu                        OpenTofu commands (init, plan, apply, destroy, refresh)
+├── terraform                   Terraform commands (init, plan, apply, destroy, refresh)
+├── validate                    Validate manifest against protobuf schema
+├── pull / checkout             Module management
+├── config                      CLI configuration
+└── version / upgrade           Version management
+```
+
+See the full [CLI Reference](https://openmcf.org/docs/cli/cli-reference) for all commands, flags, and options.
 
 ---
 
 ## Learn More
 
-- **[Getting Started Guide](https://openmcf.org/docs/getting-started)** - Your first deployment in 5 minutes
-- **[Component Catalog](https://openmcf.org/docs/catalog)** - Browse 118+ deployment components across 10 providers
-- **[Architecture](https://openmcf.org/docs/concepts/architecture)** - How Protocol Buffers, IaC modules, and CLI work together
-- **[Planton Cloud](https://planton.cloud)** - Commercial SaaS platform with UI, CI/CD, and team features
+- **[Getting Started Guide](https://openmcf.org/docs/getting-started)** — Your first deployment in 10 minutes
+- **[Component Catalog](https://openmcf.org/docs/catalog)** — Browse 360+ deployment components across 17 providers
+- **[Architecture](https://openmcf.org/docs/concepts/architecture)** — How Protocol Buffers, IaC modules, and CLI work together
+- **[Planton Cloud](https://planton.cloud)** — Commercial SaaS platform with UI, CI/CD, and team features
 
 ---
 
@@ -79,7 +114,7 @@ openmcf pulumi up --manifest redis.yaml
 
 Visit [CONTRIBUTING.md](CONTRIBUTING.md) for information on building OpenMCF from source or contributing improvements.
 
-Also, refer to this [Contributor Guide](https://openmcf.org/docs/guide/contributor-guide) for detailed information about becoming a contributor to OpenMCF.
+Also, refer to the [Contributor Guide](https://openmcf.org/docs/contributing) for detailed information about becoming a contributor to OpenMCF.
 
 ## License
 

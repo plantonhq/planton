@@ -12,7 +12,7 @@ Practical how-to guides for deploying and managing infrastructure with OpenMCF. 
 ## Core Guides
 
 - **[Writing Manifests](./manifests)** — Find the right component, write a manifest, validate it, and deploy
-- **[Credentials](./credentials)** — How OpenMCF loads credentials, with a quick reference for all 14 providers
+- **[Credentials](./credentials)** — How OpenMCF loads credentials, with a quick reference for all 17 providers
 - **[Kustomize Integration](./kustomize)** — Manage multi-environment deployments with base manifests and overlays
 - **[State Backends](./state-backends)** — Configure state storage for Pulumi, OpenTofu, and Terraform
 - **[Advanced Usage](./advanced-usage)** — Runtime overrides with `--set`, URL manifests, module customization, and scripting

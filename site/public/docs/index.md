@@ -198,6 +198,6 @@ For detailed solutions, see the full [Troubleshooting Guide](/docs/troubleshooti
 ## Resources
 
 - [GitHub Repository](https://github.com/plantonhq/openmcf)
-- [Buf Schema Registry](https://buf.build/openmcf/apis)
+- [Buf Schema Registry](https://buf.build/openmcf/openmcf)
 - [Issue Tracker](https://github.com/plantonhq/openmcf/issues)
 

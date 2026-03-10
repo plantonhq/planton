@@ -125,7 +125,7 @@ OpenMCF's architecture has three distinct layers, each with a clear responsibili
 │                     API LAYER (Protocol Buffers)                 │
 │                                                                 │
 │  CloudResourceKind enum    CloudResourceMetadata    buf-validate │
-│  198 kinds, 14 providers   name, org, env, labels   schema rules│
+│  360+ kinds, 17 providers   name, org, env, labels   schema rules│
 │                                                                 │
 │  api.proto  spec.proto  stack_input.proto  stack_outputs.proto   │
 │                                                                 │
@@ -185,4 +185,4 @@ These SDKs enable teams to build custom tools that work with OpenMCF manifests p
 - **[Deployment Components](deployment-components)** -- Deep dive into the component structure
 - **[Manifests](manifests)** -- The KRM manifest model
 - **[Validation](validation)** -- The three-layer validation architecture
-- **[Component Catalog](/docs/catalog)** -- Browse all 198 deployment components
+- **[Component Catalog](/docs/catalog)** -- Browse all 360+ deployment components

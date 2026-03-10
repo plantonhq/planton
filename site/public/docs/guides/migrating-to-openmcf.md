@@ -201,7 +201,7 @@ If the Pulumi stack already exists with the same stack name and the underlying m
 
 ## What If My Resource Has No OpenMCF Component?
 
-OpenMCF currently supports 198 deployment components across 14 providers. If the specific resource you need is not available as an OpenMCF component:
+OpenMCF currently supports 360+ deployment components across 17 providers. If the specific resource you need is not available as an OpenMCF component:
 
 - **Continue using raw Terraform or Pulumi** for that resource. OpenMCF does not require all-or-nothing adoption.
 - **Check the catalog** periodically — new components are added regularly.

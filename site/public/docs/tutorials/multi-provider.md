@@ -182,7 +182,7 @@ Step back and look at what just happened. You deployed resources on two differen
 
 The provider-specific complexity — AWS IAM, GCP project IDs, region naming conventions, encryption defaults, naming constraints — is encapsulated in each component's `spec`. You do not need to learn a different tool, a different command syntax, or a different configuration format for each provider.
 
-This extends to all 198 deployment components across 14 providers in the [Component Catalog](../catalog). Whether you are deploying a Kubernetes PostgreSQL database, an AWS VPC, a GCP Cloud SQL instance, or a Cloudflare DNS zone, the workflow is the same: write a manifest, plan, apply.
+This extends to all 360+ deployment components across 17 providers in the [Component Catalog](../catalog). Whether you are deploying a Kubernetes PostgreSQL database, an AWS VPC, a GCP Cloud SQL instance, or a Cloudflare DNS zone, the workflow is the same: write a manifest, plan, apply.
 
 ## Step 7: Clean Up
 
@@ -205,7 +205,7 @@ Each `destroy` command reads the manifest, identifies the managed resources on t
 
 ## What's Next
 
-- [Cloud Resource Kinds](../concepts/cloud-resource-kinds) — the full taxonomy of 198 components across 14 providers
+- [Cloud Resource Kinds](../concepts/cloud-resource-kinds) — the full taxonomy of 360+ components across 17 providers
 - [Deployment Components](../concepts/deployment-components) — how components are structured with protobuf APIs and dual IaC modules
 - [Component Catalog](../catalog) — browse all available components and their configuration
 - [Writing Manifests](../guides/manifests) — practical guide to writing manifests for any component

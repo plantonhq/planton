@@ -157,7 +157,7 @@ metadata:
   name: app-database
   labels:
     openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/stack.name: prod.PostgresKubernetes.app-database
+    pulumi.openmcf.org/stack.name: prod.KubernetesPostgres.app-database
 spec:
   container:
     replicas: 1
@@ -436,7 +436,7 @@ Store state on the local filesystem. **Not recommended for production or team us
 
 ```yaml
 apiVersion: kubernetes.openmcf.org/v1
-kind: MicroserviceKubernetes
+kind: KubernetesDeployment
 metadata:
   name: test-service
   labels:
@@ -576,7 +576,7 @@ metadata:
     openmcf.org/provisioner: pulumi
     
     # Stack name for state identification
-    pulumi.openmcf.org/stack.name: production.PostgresKubernetes.analytics-db
+    pulumi.openmcf.org/stack.name: production.KubernetesPostgres.analytics-db
 spec:
   container:
     replicas: 3

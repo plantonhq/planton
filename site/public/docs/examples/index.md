@@ -33,6 +33,6 @@ openmcf apply -f my-resource.yaml
 ## Related Resources
 
 - **[Tutorials](/docs/tutorials)** — Guided walkthroughs that take you step-by-step through deploying and managing resources
-- **[Catalog](/docs/catalog)** — Complete reference for all 198 deployment components with full field documentation
+- **[Catalog](/docs/catalog)** — Complete reference for all 360+ deployment components with full field documentation
 - **[Manifests Guide](/docs/guides/manifests)** — How to write and structure OpenMCF manifests
 - **[CLI Reference](/docs/cli/cli-reference)** — All commands and flags for the OpenMCF CLI
