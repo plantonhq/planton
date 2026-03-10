@@ -1,0 +1,8 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "downloads",
+    srcs = ["downloads.go"],
+    importpath = "github.com/plantonhq/openmcf/pkg/downloads",
+    visibility = ["//visibility:public"],
+)

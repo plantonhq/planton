@@ -12,6 +12,7 @@ go_library(
         "//internal/cli/cliprint",
         "//internal/cli/version",
         "//internal/cli/workspace",
+        "//pkg/downloads",
         "//pkg/fileutil",
         "@com_github_pkg_errors//:errors",
     ],
