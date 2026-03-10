@@ -1,24 +1,21 @@
 # =============================================================================
-# App Auto-Release
+# App Auto-Release -- DISABLED
 # =============================================================================
-# Builds and pushes the unified Docker image to GitHub Container Registry
-# for auto-releases. Does NOT update the 'latest' tag (reserved for semantic
-# releases).
+# The webapp is no longer built or released as part of the OpenMCF pipeline.
+# This workflow is retained for reference but is no longer dispatched by
+# auto-tag.yaml.
 #
-# Tag Format: v{semver}-app.{YYYYMMDD}.{N}
-# Example: v0.3.5-app.20260108.0
-#
-# Triggered by: auto-tag.yaml via workflow_dispatch
+# Previously triggered by: auto-tag.yaml via workflow_dispatch
 # =============================================================================
 
-name: auto-release.app
-run-name: "App Release: ${{ inputs.tag }}"
+name: auto-release.app [disabled]
+run-name: "App Release: ${{ inputs.tag }} [DISABLED]"
 
 on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'The tag to release (e.g., v0.3.5-app.20260108.0)'
+        description: 'DISABLED - The tag to release (e.g., v0.3.5-app.20260108.0)'
         required: true
         type: string
 
@@ -32,6 +29,7 @@ permissions:
 
 jobs:
   docker-build-push:
+    if: false  # Webapp builds disabled -- retained for reference
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
