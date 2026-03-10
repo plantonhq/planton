@@ -2,16 +2,17 @@
 # Terraform Modules Release (Reusable Workflow)
 # =============================================================================
 # Zips all Terraform deployment component folders across all providers and
-# uploads them to the GitHub Release.
+# uploads them to Cloudflare R2 (downloads.openmcf.org).
 #
 # Features:
 #   - Dynamic component discovery from directory structure
-#   - Matrix-based parallelization: one job per provider (11 parallel jobs)
+#   - Matrix-based parallelization: one job per provider
 #   - Simple zip operation - no compilation needed
 #   - Clear progress logging with component counts
 #   - No hardcoded component paths - auto-discovers from filesystem
 #
-# Matrix: 13 providers = 13 parallel jobs
+# Upload path: s3://openmcf-downloads-bucket/releases/{tag}/modules/terraform/{component}.zip
+# Public URL:  https://downloads.openmcf.org/releases/{tag}/modules/terraform/{component}.zip
 #
 # Path pattern: apis/org/openmcf/provider/{provider}/{component}/v1/iac/tf
 #
@@ -22,12 +23,20 @@ name: release.terraform-modules
 
 on:
   workflow_call:
+    secrets:
+      CLOUDFLARE_R2_ACCESS_KEY_ID:
+        required: true
+      CLOUDFLARE_R2_SECRET_ACCESS_KEY:
+        required: true
+      CLOUDFLARE_R2_ENDPOINT:
+        required: true
 
 permissions:
-  contents: write
+  contents: read
 
 env:
   PROVIDER_BASE_PATH: apis/org/openmcf/provider
+  R2_BUCKET: openmcf-downloads-bucket
 
 jobs:
   # ============================================================================
@@ -38,9 +47,10 @@ jobs:
     timeout-minutes: 30
     strategy:
       fail-fast: false
-      max-parallel: 13
+      max-parallel: 18
       matrix:
         provider:
+          - alicloud
           - atlas
           - auth0
           - aws
@@ -48,12 +58,15 @@ jobs:
           - civo
           - cloudflare
           - confluent
-        # - digitalocean
+          - digitalocean
           - gcp
+          - hetznercloud
           - kubernetes
+          - oci
           - openfga
-        # - openstack
-        # - snowflake
+          - openstack
+          - scaleway
+          - snowflake
 
     steps:
       - name: Checkout
@@ -61,7 +74,9 @@ jobs:
 
       - name: Zip and upload all Terraform modules
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          AWS_ENDPOINT_URL: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
           PROVIDER: ${{ matrix.provider }}
         run: |
           TAG="${GITHUB_REF#refs/tags/}"
@@ -108,7 +123,8 @@ jobs:
             REMAINING=$((TOTAL - COMPLETED))
             
             TF_PATH="${PROVIDER_PATH}/${component}/v1/iac/tf"
-            ARTIFACT_NAME="terraform-${component}.zip"
+            ARTIFACT_NAME="${component}.zip"
+            R2_KEY="releases/${TAG}/modules/terraform/${ARTIFACT_NAME}"
             
             echo ""
             echo "----------------------------------------"
@@ -116,19 +132,17 @@ jobs:
             echo "Progress: ${COMPLETED}/${TOTAL} (${REMAINING} remaining)"
             echo "----------------------------------------"
             
-            # Create zip from the tf directory contents
-            # Use -j to junk (don't record) directory names, or keep structure
-            # We'll preserve the structure so users get the full folder
             if (cd "${TF_PATH}" && zip -r "${GITHUB_WORKSPACE}/${ARTIFACT_NAME}" .); then
               
               ZIP_SIZE=$(ls -lh "${ARTIFACT_NAME}" | awk '{print $5}')
               echo "Created: ${ARTIFACT_NAME} (${ZIP_SIZE})"
               
-              # Upload immediately
-              if gh release upload "${TAG}" "${ARTIFACT_NAME}" --clobber; then
-                echo "✓ Uploaded: ${ARTIFACT_NAME}"
+              # Upload to R2
+              if aws s3 cp "${ARTIFACT_NAME}" "s3://${R2_BUCKET}/${R2_KEY}" \
+                --endpoint-url "${AWS_ENDPOINT_URL}"; then
+                echo "✓ Uploaded: https://downloads.openmcf.org/${R2_KEY}"
               else
-                echo "✗ ERROR: Failed to upload ${ARTIFACT_NAME}"
+                echo "✗ ERROR: Failed to upload ${ARTIFACT_NAME} to R2"
                 FAILED=$((FAILED + 1))
               fi
               
@@ -153,4 +167,3 @@ jobs:
             echo "ERROR: ${FAILED} module(s) failed to zip"
             exit 1
           fi
-

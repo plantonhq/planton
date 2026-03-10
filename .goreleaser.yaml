@@ -42,7 +42,9 @@ release:
   header: |
     ## OpenMCF {{ .Tag }}
 
-    This release includes the CLI, Docker images, website deployment, and pre-built Pulumi module binaries.
+    This release includes the CLI, Docker images, and website deployment.
+
+    Pre-built Pulumi binaries and Terraform module zips are hosted on [downloads.openmcf.org](https://downloads.openmcf.org/releases/{{ .Tag }}/).
 
   footer: |
     ---
@@ -133,16 +135,18 @@ release:
 
     ## Pulumi Module Binaries
 
-    Pre-built Pulumi module binaries are attached to this release for multiple platforms. Each binary is gzip-compressed.
+    Pre-built Pulumi module binaries are hosted on **downloads.openmcf.org** for all platforms. Each binary is gzip-compressed.
+
+    **Browse all binaries:** [downloads.openmcf.org/releases/{{ .Tag }}/modules/pulumi/](https://downloads.openmcf.org/releases/{{ .Tag }}/modules/pulumi/)
 
     ### Available Platforms
 
     | Platform | Suffix | Example |
     |----------|--------|---------|
-    | Linux x86-64 | `_linux_amd64.gz` | `pulumi-awsecsservice_linux_amd64.gz` |
-    | macOS Apple Silicon | `_darwin_arm64.gz` | `pulumi-awsecsservice_darwin_arm64.gz` |
-    | macOS Intel | `_darwin_amd64.gz` | `pulumi-awsecsservice_darwin_amd64.gz` |
-    | Windows x86-64 | `_windows_amd64.exe.gz` | `pulumi-awsecsservice_windows_amd64.exe.gz` |
+    | Linux x86-64 | `_linux_amd64.gz` | `awsecsservice_linux_amd64.gz` |
+    | macOS Apple Silicon | `_darwin_arm64.gz` | `awsecsservice_darwin_arm64.gz` |
+    | macOS Intel | `_darwin_amd64.gz` | `awsecsservice_darwin_amd64.gz` |
+    | Windows x86-64 | `_windows_amd64.exe.gz` | `awsecsservice_windows_amd64.exe.gz` |
 
     ### Download and Extract
 
@@ -150,86 +154,41 @@ release:
     # Example: Download the AWS ECS Service module for your platform
 
     # Linux x86-64
-    curl -LO https://github.com/plantonhq/openmcf/releases/download/{{ .Tag }}/pulumi-awsecsservice_linux_amd64.gz
-    gunzip pulumi-awsecsservice_linux_amd64.gz
-    chmod +x pulumi-awsecsservice_linux_amd64
-    ./pulumi-awsecsservice_linux_amd64
+    curl -LO https://downloads.openmcf.org/releases/{{ .Tag }}/modules/pulumi/awsecsservice_linux_amd64.gz
+    gunzip awsecsservice_linux_amd64.gz
+    chmod +x awsecsservice_linux_amd64
 
     # macOS Apple Silicon (M1/M2/M3)
-    curl -LO https://github.com/plantonhq/openmcf/releases/download/{{ .Tag }}/pulumi-awsecsservice_darwin_arm64.gz
-    gunzip pulumi-awsecsservice_darwin_arm64.gz
-    chmod +x pulumi-awsecsservice_darwin_arm64
-    ./pulumi-awsecsservice_darwin_arm64
+    curl -LO https://downloads.openmcf.org/releases/{{ .Tag }}/modules/pulumi/awsecsservice_darwin_arm64.gz
+    gunzip awsecsservice_darwin_arm64.gz
+    chmod +x awsecsservice_darwin_arm64
     ```
-
-    ### Available Modules
-
-    All `pulumi-*_{platform}.gz` files attached to this release are pre-built deployment component binaries for the IaC Runner.
 
     ---
 
     ## Terraform Modules
 
-    Terraform modules are available for all deployment components across all providers. Unlike Pulumi modules (which are pre-built binaries), Terraform modules are HCL files that you reference directly from this repository.
+    Terraform module zips are hosted on **downloads.openmcf.org** for all deployment components across all providers.
 
-    ### Available Providers
+    **Browse all modules:** [downloads.openmcf.org/releases/{{ .Tag }}/modules/terraform/](https://downloads.openmcf.org/releases/{{ .Tag }}/modules/terraform/)
 
-    Terraform modules are available for: AWS, GCP, Azure, Kubernetes, DigitalOcean, Civo, Cloudflare, and more.
-
-    ### Module Path Pattern
-
-    All Terraform modules follow this path pattern:
-
-    ```
-    apis/org/openmcf/provider/{provider}/{component}/v1/iac/tf/
-    ```
-
-    ### Option 1: Clone and Checkout
-
-    Clone the repository and checkout this release tag:
+    ### Download Zip (Recommended)
 
     ```bash
-    # Clone the repository
-    git clone https://github.com/plantonhq/openmcf.git
-    cd openmcf
-
-    # Checkout this release
-    git checkout {{ .Tag }}
-
-    # Navigate to a Terraform module
     # Example: AWS ECS Service
-    cd apis/org/openmcf/provider/aws/awsecsservice/v1/iac/tf
-
-    # Example: GCP GKE Cluster
-    cd apis/org/openmcf/provider/gcp/gcpgkecluster/v1/iac/tf
-
-    # Example: Kubernetes Deployment
-    cd apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/iac/tf
-
-    # Initialize and apply
-    terraform init
-    terraform plan
-    terraform apply
+    curl -LO https://downloads.openmcf.org/releases/{{ .Tag }}/modules/terraform/awsecsservice.zip
+    unzip awsecsservice.zip -d awsecsservice
+    cd awsecsservice
+    terraform init && terraform plan
     ```
 
-    ### Option 2: Git Source Reference
+    ### Git Source Reference (Alternative)
 
     Reference modules directly in your Terraform configuration:
 
     ```hcl
-    # AWS ECS Service
     module "awsecsservice" {
       source = "git::https://github.com/plantonhq/openmcf.git//apis/org/openmcf/provider/aws/awsecsservice/v1/iac/tf?ref={{ .Tag }}"
-    }
-
-    # GCP GKE Cluster
-    module "gcpgkecluster" {
-      source = "git::https://github.com/plantonhq/openmcf.git//apis/org/openmcf/provider/gcp/gcpgkecluster/v1/iac/tf?ref={{ .Tag }}"
-    }
-
-    # Azure AKS Cluster
-    module "azureakscluster" {
-      source = "git::https://github.com/plantonhq/openmcf.git//apis/org/openmcf/provider/azure/azureakscluster/v1/iac/tf?ref={{ .Tag }}"
     }
     ```
 

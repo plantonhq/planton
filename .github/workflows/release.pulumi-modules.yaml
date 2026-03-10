@@ -2,16 +2,17 @@
 # Pulumi Modules Release (Reusable Workflow)
 # =============================================================================
 # Builds pre-compiled binaries for all Pulumi deployment components across
-# all providers and uploads them to the GitHub Release.
+# all providers and uploads them to Cloudflare R2 (downloads.openmcf.org).
 #
 # Features:
 #   - Dynamic component discovery from directory structure
-#   - Matrix-based parallelization: provider × platform (44 parallel jobs)
+#   - Matrix-based parallelization: provider × platform
 #   - Multi-platform builds: linux_amd64, darwin_arm64, darwin_amd64, windows_amd64
 #   - Clear progress logging with component counts
 #   - No hardcoded component paths - auto-discovers from filesystem
 #
-# Matrix: 13 providers × 4 platforms = 52 parallel jobs
+# Upload path: s3://openmcf-downloads-bucket/releases/{tag}/modules/pulumi/{component}_{platform}.gz
+# Public URL:  https://downloads.openmcf.org/releases/{tag}/modules/pulumi/{component}_{platform}.gz
 #
 # Path pattern: apis/org/openmcf/provider/{provider}/{component}/v1/iac/pulumi
 #
@@ -22,13 +23,21 @@ name: release.pulumi-modules
 
 on:
   workflow_call:
+    secrets:
+      CLOUDFLARE_R2_ACCESS_KEY_ID:
+        required: true
+      CLOUDFLARE_R2_SECRET_ACCESS_KEY:
+        required: true
+      CLOUDFLARE_R2_ENDPOINT:
+        required: true
 
 permissions:
-  contents: write
+  contents: read
 
 env:
   GO_VERSION: '1.25'
   PROVIDER_BASE_PATH: apis/org/openmcf/provider
+  R2_BUCKET: openmcf-downloads-bucket
 
 jobs:
   # ============================================================================
@@ -39,9 +48,10 @@ jobs:
     timeout-minutes: 60
     strategy:
       fail-fast: false
-      max-parallel: 52
+      max-parallel: 72
       matrix:
         provider:
+          - alicloud
           - atlas
           - auth0
           - aws
@@ -49,12 +59,15 @@ jobs:
           - civo
           - cloudflare
           - confluent
-          # - digitalocean
+          - digitalocean
           - gcp
+          - hetznercloud
           - kubernetes
+          - oci
           - openfga
-          # - openstack
-          # - snowflake
+          - openstack
+          - scaleway
+          - snowflake
         platform:
           - goos: linux
             goarch: amd64
@@ -77,7 +90,9 @@ jobs:
 
       - name: Build and upload all components
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          AWS_ENDPOINT_URL: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
           PROVIDER: ${{ matrix.provider }}
           GOOS: ${{ matrix.platform.goos }}
           GOARCH: ${{ matrix.platform.goarch }}
@@ -88,8 +103,8 @@ jobs:
           
           # Discover all components by listing directories
           if [ ! -d "$PROVIDER_PATH" ]; then
-            echo "ERROR: Provider path not found: $PROVIDER_PATH"
-            exit 1
+            echo "WARNING: Provider path not found: $PROVIDER_PATH"
+            exit 0
           fi
           
           # Get all component directories that have the pulumi folder
@@ -131,12 +146,14 @@ jobs:
             
             # Handle Windows .exe extension
             if [ "$GOOS" = "windows" ]; then
-              BINARY_NAME="pulumi-${component}.exe"
-              ARTIFACT_NAME="pulumi-${component}_${PLATFORM_LABEL}.exe.gz"
+              BINARY_NAME="${component}.exe"
+              ARTIFACT_NAME="${component}_${PLATFORM_LABEL}.exe.gz"
             else
-              BINARY_NAME="pulumi-${component}"
-              ARTIFACT_NAME="pulumi-${component}_${PLATFORM_LABEL}.gz"
+              BINARY_NAME="${component}"
+              ARTIFACT_NAME="${component}_${PLATFORM_LABEL}.gz"
             fi
+            
+            R2_KEY="releases/${TAG}/modules/pulumi/${ARTIFACT_NAME}"
             
             echo ""
             echo "----------------------------------------"
@@ -154,11 +171,12 @@ jobs:
               gzip -9 -c "${BINARY_NAME}" > "${ARTIFACT_NAME}"
               rm -f "${BINARY_NAME}"
               
-              # Upload immediately
-              if gh release upload "${TAG}" "${ARTIFACT_NAME}" --clobber; then
-                echo "✓ Uploaded: ${ARTIFACT_NAME}"
+              # Upload to R2
+              if aws s3 cp "${ARTIFACT_NAME}" "s3://${R2_BUCKET}/${R2_KEY}" \
+                --endpoint-url "${AWS_ENDPOINT_URL}"; then
+                echo "✓ Uploaded: https://downloads.openmcf.org/${R2_KEY}"
               else
-                echo "✗ ERROR: Failed to upload ${ARTIFACT_NAME}"
+                echo "✗ ERROR: Failed to upload ${ARTIFACT_NAME} to R2"
                 FAILED=$((FAILED + 1))
               fi
               
@@ -183,4 +201,3 @@ jobs:
             echo "ERROR: ${FAILED} component(s) failed to build"
             exit 1
           fi
-
