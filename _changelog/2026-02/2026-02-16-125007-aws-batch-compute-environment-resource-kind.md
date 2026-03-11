@@ -79,7 +79,7 @@ The component bundles compute environments + job queues + scheduling policy beca
 
 - Part of project 20260215.02.sp.aws-resource-expansion (R28)
 - Parent project: 20260212.01.openmcf-cloud-provider-expansion
-- Follows patterns established by AwsNeptuneCluster (R26) and AwsMemoryDbCluster (R27)
+- Follows patterns established by AwsNeptuneCluster (R26) and AwsMemorydbCluster (R27)
 
 ---
 

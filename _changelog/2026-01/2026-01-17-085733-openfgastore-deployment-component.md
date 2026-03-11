@@ -36,7 +36,7 @@ Allocated OpenFGA provider block **2300–2499** (200 numbers) for future OpenFG
 // 2300–2499: OpenFGA resources
 // Note: OpenFGA is Terraform-only - there is no Pulumi provider available.
 OpenFgaStore = 2300 [(kind_meta) = {
-  provider: open_fga
+  provider: openfga
   version: v1
   id_prefix: "fgastore"
 }];

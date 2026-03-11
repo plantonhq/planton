@@ -38,6 +38,27 @@ resource "aws_s3_bucket_public_access_block" "this" {
   restrict_public_buckets = !local.is_public
 }
 
+# Grant public read access via bucket policy when is_public is true.
+# With BucketOwnerEnforced ownership (ACLs disabled), a bucket policy is
+# the only mechanism for granting public access to objects.
+resource "aws_s3_bucket_policy" "public_read" {
+  count  = local.is_public ? 1 : 0
+  bucket = aws_s3_bucket.this.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Sid       = "PublicReadGetObject"
+      Effect    = "Allow"
+      Principal = "*"
+      Action    = "s3:GetObject"
+      Resource  = "${aws_s3_bucket.this.arn}/*"
+    }]
+  })
+
+  depends_on = [aws_s3_bucket_public_access_block.this]
+}
+
 # Configure ownership controls (disable ACLs - bucket owner enforced)
 resource "aws_s3_bucket_ownership_controls" "this" {
   bucket = aws_s3_bucket.this.id

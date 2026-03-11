@@ -1,6 +1,7 @@
 package module
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -110,7 +111,7 @@ func Resources(ctx *pulumi.Context, stackInput *awss3bucketv1.AwsS3BucketStackIn
 	}
 
 	// Configure public access block
-	_, err = s3.NewBucketPublicAccessBlock(ctx, "public-access-block", &s3.BucketPublicAccessBlockArgs{
+	publicAccessBlock, err := s3.NewBucketPublicAccessBlock(ctx, "public-access-block", &s3.BucketPublicAccessBlockArgs{
 		Bucket:                bucket.ID(),
 		BlockPublicAcls:       pulumi.Bool(!spec.IsPublic),
 		BlockPublicPolicy:     pulumi.Bool(!spec.IsPublic),
@@ -119,6 +120,39 @@ func Resources(ctx *pulumi.Context, stackInput *awss3bucketv1.AwsS3BucketStackIn
 	}, pulumi.Provider(provider))
 	if err != nil {
 		return errors.Wrap(err, "failed to configure public access block")
+	}
+
+	// Grant public read access via bucket policy when is_public is true.
+	// With BucketOwnerEnforced ownership (ACLs disabled), a bucket policy is
+	// the only mechanism for granting public access to objects.
+	if spec.IsPublic {
+		policyJSON := bucket.Arn.ApplyT(func(arn string) (string, error) {
+			policy := map[string]interface{}{
+				"Version": "2012-10-17",
+				"Statement": []map[string]interface{}{
+					{
+						"Sid":       "PublicReadGetObject",
+						"Effect":    "Allow",
+						"Principal": "*",
+						"Action":    "s3:GetObject",
+						"Resource":  arn + "/*",
+					},
+				},
+			}
+			b, err := json.Marshal(policy)
+			if err != nil {
+				return "", err
+			}
+			return string(b), nil
+		}).(pulumi.StringOutput)
+
+		_, err = s3.NewBucketPolicy(ctx, "public-read-policy", &s3.BucketPolicyArgs{
+			Bucket: bucket.ID(),
+			Policy: policyJSON,
+		}, pulumi.Provider(provider), pulumi.DependsOn([]pulumi.Resource{publicAccessBlock}))
+		if err != nil {
+			return errors.Wrap(err, "failed to configure public read bucket policy")
+		}
 	}
 
 	// Configure ownership controls (disable ACLs - bucket owner enforced)

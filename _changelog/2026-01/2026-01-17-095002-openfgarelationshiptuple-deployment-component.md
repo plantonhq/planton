@@ -29,7 +29,7 @@ Created a complete OpenFgaRelationshipTuple deployment component following the p
 
 ```protobuf
 OpenFgaRelationshipTuple = 2302 [(kind_meta) = {
-  provider: open_fga
+  provider: openfga
   version: v1
   id_prefix: "fgatuple"
 }];

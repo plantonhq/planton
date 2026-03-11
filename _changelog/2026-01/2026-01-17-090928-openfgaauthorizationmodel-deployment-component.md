@@ -27,7 +27,7 @@ Created a complete OpenFgaAuthorizationModel deployment component following the 
 
 ```protobuf
 OpenFgaAuthorizationModel = 2301 [(kind_meta) = {
-  provider: open_fga
+  provider: openfga
   version: v1
   id_prefix: "fgamodel"
 }];
