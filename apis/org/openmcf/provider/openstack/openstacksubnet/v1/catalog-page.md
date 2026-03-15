@@ -178,5 +178,4 @@ After deployment, the following outputs are available in `status.outputs`:
 - [OpenStackRouterInterface](/docs/catalog/openstack/openstackrouterinterface) — attaches a subnet to a router for inter-network routing
 - [OpenStackLoadBalancer](/docs/catalog/openstack/openstackloadbalancer) — places a load balancer VIP on a subnet
 - [OpenStackLoadBalancerMember](/docs/catalog/openstack/openstackloadbalancermember) — registers backend members on a subnet
-- [OpenStackContainerClusterTemplate](/docs/catalog/openstack/openstackcontainerclustertemplate) — uses a subnet as the fixed network for container clusters
 - [OpenStackInstance](/docs/catalog/openstack/openstackinstance) — attaches compute instances to networks via subnets

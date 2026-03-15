@@ -344,8 +344,6 @@ go_library(
         "//apis/org/openmcf/provider/openfga/openfgarelationshiptuple/v1:openfgarelationshiptuple",
         "//apis/org/openmcf/provider/openfga/openfgastore/v1:openfgastore",
         "//apis/org/openmcf/provider/openstack/openstackapplicationcredential/v1:openstackapplicationcredential",
-        "//apis/org/openmcf/provider/openstack/openstackcontainercluster/v1:openstackcontainercluster",
-        "//apis/org/openmcf/provider/openstack/openstackcontainerclustertemplate/v1:openstackcontainerclustertemplate",
         "//apis/org/openmcf/provider/openstack/openstackdnsrecord/v1:openstackdnsrecord",
         "//apis/org/openmcf/provider/openstack/openstackdnszone/v1:openstackdnszone",
         "//apis/org/openmcf/provider/openstack/openstackfloatingip/v1:openstackfloatingip",

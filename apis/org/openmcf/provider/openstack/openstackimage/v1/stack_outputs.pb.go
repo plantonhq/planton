@@ -27,7 +27,6 @@ const (
 // The image_id is the primary output referenced by downstream components:
 // - OpenStackVolume (image_id FK for bootable volumes)
 // - OpenStackInstance (image_id FK for boot-from-image instances)
-// - OpenStackContainerClusterTemplate (image FK for Magnum templates)
 type OpenStackImageStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// image_id is the unique identifier (UUID) of the image in Glance.

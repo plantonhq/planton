@@ -275,8 +275,6 @@ OpenStackNetwork is a **root resource** — it has no foreign key dependencies. 
 - `OpenStackNetworkPort.spec.network_id` → `OpenStackNetwork.status.outputs.network_id`
 - `OpenStackFloatingIp.spec.floating_network_id` → `OpenStackNetwork.status.outputs.network_id`
 - `OpenStackInstance.spec.networks[].uuid` → `OpenStackNetwork.status.outputs.network_id`
-- `OpenStackContainerClusterTemplate.spec.external_network_id` → `OpenStackNetwork.status.outputs.network_id`
-- `OpenStackContainerClusterTemplate.spec.fixed_network` → `OpenStackNetwork.status.outputs.network_id`
 
 This makes `network_id` the single most important output in the entire OpenStack component family.
 

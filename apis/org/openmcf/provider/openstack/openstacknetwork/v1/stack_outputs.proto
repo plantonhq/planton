@@ -11,7 +11,6 @@ package org.openmcf.provider.openstack.openstacknetwork.v1;
 // - OpenStackNetworkPort (network_id)
 // - OpenStackFloatingIp (floating_network_id)
 // - OpenStackInstance (networks[].uuid)
-// - OpenStackContainerClusterTemplate (external_network_id, fixed_network)
 message OpenStackNetworkStackOutputs {
   // network_id is the unique identifier (UUID) of the network in OpenStack.
   // This is the primary output used as a foreign key by downstream components.

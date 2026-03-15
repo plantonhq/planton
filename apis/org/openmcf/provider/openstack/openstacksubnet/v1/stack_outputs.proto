@@ -9,7 +9,6 @@ package org.openmcf.provider.openstack.openstacksubnet.v1;
 // - OpenStackRouterInterface (subnet_id)
 // - OpenStackLoadBalancer (vip_subnet_id)
 // - OpenStackLoadBalancerMember (subnet_id)
-// - OpenStackContainerClusterTemplate (fixed_subnet)
 message OpenStackSubnetStackOutputs {
   // subnet_id is the unique identifier (UUID) of the subnet in OpenStack.
   // This is the primary output used as a foreign key by downstream components.

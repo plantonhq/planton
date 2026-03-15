@@ -28,7 +28,6 @@ const (
 // - OpenStackRouterInterface (subnet_id)
 // - OpenStackLoadBalancer (vip_subnet_id)
 // - OpenStackLoadBalancerMember (subnet_id)
-// - OpenStackContainerClusterTemplate (fixed_subnet)
 type OpenStackSubnetStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// subnet_id is the unique identifier (UUID) of the subnet in OpenStack.

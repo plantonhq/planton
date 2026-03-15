@@ -10,8 +10,6 @@ order: 10
 The following OPENSTACK resources can be deployed using OpenMCF:
 
 - [Application Credential](/docs/catalog/openstack/application-credential)
-- [Container Cluster](/docs/catalog/openstack/container-cluster)
-- [Container Cluster Template](/docs/catalog/openstack/container-cluster-template)
 - [DNS Record](/docs/catalog/openstack/dns-record)
 - [DNS Zone](/docs/catalog/openstack/dns-zone)
 - [Floating IP](/docs/catalog/openstack/floating-ip)
