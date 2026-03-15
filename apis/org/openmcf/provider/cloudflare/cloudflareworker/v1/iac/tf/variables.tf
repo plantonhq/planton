@@ -34,8 +34,10 @@ variable "spec" {
 
     # Optional DNS configuration for custom domain
     dns = optional(object({
-      enabled       = optional(bool, false)
-      zone_id       = optional(string, "")
+      enabled = optional(bool, false)
+      zone_id = optional(object({
+        value = optional(string, "")
+      }))
       hostname      = optional(string, "")
       route_pattern = optional(string, "")
     }))

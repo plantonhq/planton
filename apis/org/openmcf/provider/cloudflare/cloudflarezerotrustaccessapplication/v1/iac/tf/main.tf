@@ -2,7 +2,7 @@
 
 # Lookup the Cloudflare zone to get account_id
 data "cloudflare_zone" "main" {
-  zone_id = var.spec.zone_id
+  zone_id = var.spec.zone_id.value
 }
 
 # Create the Cloudflare Zero Trust Access Application

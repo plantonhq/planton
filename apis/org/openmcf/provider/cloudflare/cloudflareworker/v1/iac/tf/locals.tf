@@ -19,7 +19,7 @@ locals {
 
   # DNS configuration
   dns_enabled = try(var.spec.dns.enabled, false)
-  dns_zone_id = try(var.spec.dns.zone_id, "")
+  dns_zone_id = try(var.spec.dns.zone_id.value, "")
   dns_hostname = try(var.spec.dns.hostname, "")
   
   # Route pattern (defaults to hostname/* if not specified)

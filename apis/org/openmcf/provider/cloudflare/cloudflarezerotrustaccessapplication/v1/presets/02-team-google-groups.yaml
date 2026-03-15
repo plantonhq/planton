@@ -4,7 +4,8 @@ metadata:
   name: my-team-google-groups
 spec:
   applicationName: Team App - Google Groups
-  zoneId: <cloudflare-zone-id>
+  zoneId:
+    value: <cloudflare-zone-id>
   hostname: <admin-subdomain>.<your-domain.com>
   policyType: ALLOW
   allowedGoogleGroups:

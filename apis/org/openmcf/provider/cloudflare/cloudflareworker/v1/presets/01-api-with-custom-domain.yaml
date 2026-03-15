@@ -12,7 +12,8 @@ spec:
     - value: <kv-namespace-id>
   dns:
     enabled: true
-    zoneId: <cloudflare-zone-id>
+    zoneId:
+      value: <cloudflare-zone-id>
     hostname: <api-subdomain>.<your-domain.com>
     routePattern: <api-subdomain>.<your-domain.com>/*
   compatibilityDate: 2024-01-01

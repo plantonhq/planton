@@ -15,7 +15,8 @@ message CloudflareZeroTrustAccessApplicationSpec {
   string application_name = 1 [(buf.validate.field).string.min_len = 1];
 
   // The Cloudflare DNS zone ID (from a CloudflareDnsZone resource) for the domain.
-  string zone_id = 2 [
+  // Can be a literal value or referenced from a CloudflareDnsZone resource.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef zone_id = 2 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"

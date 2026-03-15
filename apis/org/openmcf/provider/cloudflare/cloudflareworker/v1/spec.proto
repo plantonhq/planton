@@ -83,7 +83,11 @@ message CloudflareWorkerDns {
   bool enabled = 1;
 
   // The Cloudflare Zone ID where the Worker route will be created.
-  string zone_id = 2 [(buf.validate.field).string.min_len = 1];
+  // Can be a literal value or referenced from a CloudflareDnsZone resource.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef zone_id = 2 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
 
   // The fully qualified domain name where the Worker will be accessible (e.g., "git-webhooks.planton.live").
   // A DNS record will be created automatically for this hostname with proxy (orange cloud) enabled.

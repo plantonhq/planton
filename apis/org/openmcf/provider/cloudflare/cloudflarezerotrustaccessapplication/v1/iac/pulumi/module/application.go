@@ -17,9 +17,18 @@ func application(
 ) (*cloudflare.AccessApplication, error) {
 
 	// --- Access Application --------------------------------------------------
+	// Resolve zone_id from literal value or reference.
+	zoneId := ""
+	if locals.CloudflareZeroTrustAccessApplication.Spec.ZoneId != nil {
+		zoneId = locals.CloudflareZeroTrustAccessApplication.Spec.ZoneId.GetValue()
+	}
+	if zoneId == "" {
+		return nil, errors.New("zone_id is required")
+	}
+
 	appArgs := &cloudflare.AccessApplicationArgs{
 		Name:   pulumi.String(locals.CloudflareZeroTrustAccessApplication.Spec.ApplicationName),
-		ZoneId: pulumi.String(locals.CloudflareZeroTrustAccessApplication.Spec.ZoneId),
+		ZoneId: pulumi.String(zoneId),
 		Domain: pulumi.String(locals.CloudflareZeroTrustAccessApplication.Spec.Hostname),
 		Type:   pulumi.StringPtr("self_hosted"),
 	}
@@ -43,7 +52,7 @@ func application(
 	// --- Access Policy -------------------------------------------------------
 	// Lookup zone to get account ID (required for AccessPolicy in v6)
 	zone := cloudflare.LookupZoneOutput(ctx, cloudflare.LookupZoneOutputArgs{
-		ZoneId: pulumi.String(locals.CloudflareZeroTrustAccessApplication.Spec.ZoneId),
+		ZoneId: pulumi.String(zoneId),
 	}, pulumi.Provider(cloudflareProvider))
 
 	accountId := zone.Account().Id()

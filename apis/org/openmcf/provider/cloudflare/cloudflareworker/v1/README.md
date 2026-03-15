@@ -89,7 +89,7 @@ spec:
   
   dns:
     enabled: true
-    zone_id: "zone123abc"
+    zone_id: { value: "zone123abc" }
     hostname: api.example.com
     route_pattern: api.example.com/*
   
@@ -124,7 +124,7 @@ This additionally:
 
 - **`dns`** (object): Custom domain configuration
   - **`enabled`** (bool): Enable DNS/route configuration - Default: `false`
-  - **`zone_id`** (string): Cloudflare Zone ID for the domain
+  - **`zone_id`** (StringValueOrRef): Cloudflare Zone ID for the domain
   - **`hostname`** (string): Fully qualified domain name (e.g., `api.example.com`)
   - **`route_pattern`** (string): URL pattern to match (defaults to `hostname/*`)
 
@@ -172,7 +172,7 @@ spec:
   
   dns:
     enabled: true
-    zone_id: "zone123"
+    zone_id: { value: "zone123" }
     hostname: api.example.com
   
   env:
@@ -224,7 +224,7 @@ spec:
   
   dns:
     enabled: true
-    zone_id: "zone123"
+    zone_id: { value: "zone123" }
     hostname: webhooks.example.com
     route_pattern: webhooks.example.com/github/*
   
@@ -255,7 +255,7 @@ spec:
       path: api/v2.1.0.js
   dns:
     enabled: true
-    zone_id: "staging-zone-id"
+    zone_id: { value: "staging-zone-id" }
     hostname: api-staging.example.com
   env:
     variables:
@@ -277,7 +277,7 @@ spec:
       path: api/v2.1.0.js
   dns:
     enabled: true
-    zone_id: "prod-zone-id"
+    zone_id: { value: "prod-zone-id" }
     hostname: api.example.com
   env:
     variables:

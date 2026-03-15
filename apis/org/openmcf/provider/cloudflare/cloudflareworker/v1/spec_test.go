@@ -7,6 +7,7 @@ import (
 	"github.com/onsi/gomega"
 
 	"buf.build/go/protovalidate"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
 )
 
@@ -85,12 +86,16 @@ var _ = ginkgo.Describe("CloudflareWorkerSpec Custom Validation Tests", func() {
 							Bucket: "test-bucket",
 							Path:   "test/script-with-route.js",
 						},
-						Dns: &CloudflareWorkerDns{
-							Enabled:      true,
-							ZoneId:       "00000000000000000000000000000000",
-							Hostname:     "api.example.com",
-							RoutePattern: "https://example.com/*",
+					Dns: &CloudflareWorkerDns{
+						Enabled: true,
+						ZoneId: &foreignkeyv1.StringValueOrRef{
+							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
+								Value: "00000000000000000000000000000000",
+							},
 						},
+						Hostname:     "api.example.com",
+						RoutePattern: "https://example.com/*",
+					},
 						CompatibilityDate: "2024-01-01",
 					},
 				}

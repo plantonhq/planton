@@ -30,7 +30,14 @@ metadata:
   name: minimal-app
 spec:
   applicationName: "Minimal App"
-  zoneId: "abc123def456..."
+  zoneId:
+    value: "abc123def456..."
+    # Or reference a CloudflareDnsZone resource:
+    # zoneId:
+    #   valueFrom:
+    #     kind: CloudflareDnsZone
+    #     name: "my-zone"
+    #     fieldPath: "status.outputs.zone_id"
   hostname: "app.example.com"
 ```
 
@@ -58,7 +65,8 @@ metadata:
     audience: company-wide
 spec:
   applicationName: "Company Wiki"
-  zoneId: "abc123def456..."
+  zoneId:
+    value: "abc123def456..."
   hostname: "wiki.example.com"
   policyType: ALLOW
   allowedEmails:
@@ -93,7 +101,8 @@ metadata:
     team: engineering
 spec:
   applicationName: "Engineering Dashboard"
-  zoneId: "abc123def456..."
+  zoneId:
+    value: "abc123def456..."
   hostname: "eng-dash.example.com"
   policyType: ALLOW
   allowedGoogleGroups:
@@ -130,7 +139,8 @@ metadata:
     app: admin-console
 spec:
   applicationName: "Staging Admin Console"
-  zoneId: "abc123def456..."
+  zoneId:
+    value: "abc123def456..."
   hostname: "staging-admin.example.com"
   policyType: ALLOW
   allowedGoogleGroups:
@@ -165,7 +175,8 @@ metadata:
     tier: critical
 spec:
   applicationName: "Production Admin Console"
-  zoneId: "abc123def456..."
+  zoneId:
+    value: "abc123def456..."
   hostname: "prod.example.com"
   policyType: ALLOW
   allowedGoogleGroups:
@@ -203,7 +214,8 @@ metadata:
     app: console
 spec:
   applicationName: "Development Console"
-  zoneId: "abc123def456..."
+  zoneId:
+    value: "abc123def456..."
   hostname: "dev.example.com"
   policyType: ALLOW
   allowedEmails:
@@ -288,7 +300,8 @@ metadata:
     app: my-application
 spec:
   applicationName: "My App - Development"
-  zoneId: "abc123def456..."
+  zoneId:
+    value: "abc123def456..."
   hostname: "dev.my-app.example.com"
   policyType: ALLOW
   allowedEmails:
@@ -311,7 +324,8 @@ metadata:
     app: my-application
 spec:
   applicationName: "My App - Staging"
-  zoneId: "abc123def456..."
+  zoneId:
+    value: "abc123def456..."
   hostname: "staging.my-app.example.com"
   policyType: ALLOW
   allowedGoogleGroups:
@@ -335,7 +349,8 @@ metadata:
     app: my-application
 spec:
   applicationName: "My App - Production"
-  zoneId: "abc123def456..."
+  zoneId:
+    value: "abc123def456..."
   hostname: "my-app.example.com"
   policyType: ALLOW
   allowedGoogleGroups:
@@ -393,7 +408,8 @@ metadata:
   name: contractor-portal
 spec:
   applicationName: "Contractor Portal"
-  zoneId: "abc123def456..."
+  zoneId:
+    value: "abc123def456..."
   hostname: "contractors.example.com"
   policyType: ALLOW
   allowedEmails:
@@ -415,7 +431,8 @@ metadata:
   name: internal-docs
 spec:
   applicationName: "Internal Documentation"
-  zoneId: "abc123def456..."
+  zoneId:
+    value: "abc123def456..."
   hostname: "docs.example.com"
   policyType: ALLOW
   allowedEmails:
@@ -441,7 +458,8 @@ metadata:
   name: finance-dashboard
 spec:
   applicationName: "Finance Dashboard"
-  zoneId: "abc123def456..."
+  zoneId:
+    value: "abc123def456..."
   hostname: "finance.example.com"
   policyType: ALLOW
   allowedGoogleGroups:
@@ -459,7 +477,8 @@ metadata:
   name: shared-analytics
 spec:
   applicationName: "Shared Analytics Platform"
-  zoneId: "abc123def456..."
+  zoneId:
+    value: "abc123def456..."
   hostname: "analytics.example.com"
   policyType: ALLOW
   allowedGoogleGroups:
@@ -485,7 +504,8 @@ metadata:
   name: mixed-access-app
 spec:
   applicationName: "Mixed Access Application"
-  zoneId: "abc123def456..."
+  zoneId:
+    value: "abc123def456..."
   hostname: "mixed.example.com"
   policyType: ALLOW
   allowedEmails:

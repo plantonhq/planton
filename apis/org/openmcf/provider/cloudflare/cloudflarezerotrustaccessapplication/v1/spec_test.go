@@ -6,6 +6,7 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
 )
 
@@ -28,8 +29,12 @@ var _ = ginkgo.Describe("CloudflareZeroTrustAccessApplicationSpec Custom Validat
 					},
 					Spec: &CloudflareZeroTrustAccessApplicationSpec{
 						ApplicationName: "Test Access Application",
-						ZoneId:          "test-zone-123",
-						Hostname:        "app.example.com",
+						ZoneId: &foreignkeyv1.StringValueOrRef{
+							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
+								Value: "test-zone-123",
+							},
+						},
+						Hostname: "app.example.com",
 					},
 				}
 				err := protovalidate.Validate(input)

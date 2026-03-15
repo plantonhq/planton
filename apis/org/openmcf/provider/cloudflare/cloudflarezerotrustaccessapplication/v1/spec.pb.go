@@ -8,7 +8,7 @@ package cloudflarezerotrustaccessapplicationv1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
-	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -79,7 +79,8 @@ type CloudflareZeroTrustAccessApplicationSpec struct {
 	// The display name of the Zero Trust Access Application.
 	ApplicationName string `protobuf:"bytes,1,opt,name=application_name,json=applicationName,proto3" json:"application_name,omitempty"`
 	// The Cloudflare DNS zone ID (from a CloudflareDnsZone resource) for the domain.
-	ZoneId string `protobuf:"bytes,2,opt,name=zone_id,json=zoneId,proto3" json:"zone_id,omitempty"`
+	// Can be a literal value or referenced from a CloudflareDnsZone resource.
+	ZoneId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=zone_id,json=zoneId,proto3" json:"zone_id,omitempty"`
 	// The fully qualified domain name to protect (e.g., "app.example.com").
 	Hostname string `protobuf:"bytes,3,opt,name=hostname,proto3" json:"hostname,omitempty"`
 	// The type of access policy for this application (ALLOW or BLOCK). Defaults to ALLOW if unspecified.
@@ -133,11 +134,11 @@ func (x *CloudflareZeroTrustAccessApplicationSpec) GetApplicationName() string {
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessApplicationSpec) GetZoneId() string {
+func (x *CloudflareZeroTrustAccessApplicationSpec) GetZoneId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ZoneId
 	}
-	return ""
+	return nil
 }
 
 func (x *CloudflareZeroTrustAccessApplicationSpec) GetHostname() string {
@@ -186,10 +187,10 @@ var File_org_openmcf_provider_cloudflare_cloudflarezerotrustaccessapplication_v1
 
 const file_org_openmcf_provider_cloudflare_cloudflarezerotrustaccessapplication_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Rorg/openmcf/provider/cloudflare/cloudflarezerotrustaccessapplication/v1/spec.proto\x12Gorg.openmcf.provider.cloudflare.cloudflarezerotrustaccessapplication.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x82\x04\n" +
+	"Rorg/openmcf/provider/cloudflare/cloudflarezerotrustaccessapplication/v1/spec.proto\x12Gorg.openmcf.provider.cloudflare.cloudflarezerotrustaccessapplication.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xb6\x04\n" +
 	"(CloudflareZeroTrustAccessApplicationSpec\x122\n" +
-	"\x10application_name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0fapplicationName\x12>\n" +
-	"\azone_id\x18\x02 \x01(\tB%\xbaH\x03\xc8\x01\x01\x88\xd4a\x88\x0e\x92\xd4a\x16status.outputs.zone_idR\x06zoneId\x12\"\n" +
+	"\x10application_name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0fapplicationName\x12r\n" +
+	"\azone_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\xbaH\x03\xc8\x01\x01\x88\xd4a\x88\x0e\x92\xd4a\x16status.outputs.zone_idR\x06zoneId\x12\"\n" +
 	"\bhostname\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bhostname\x12\x87\x01\n" +
 	"\vpolicy_type\x18\x04 \x01(\x0e2f.org.openmcf.provider.cloudflare.cloudflarezerotrustaccessapplication.v1.CloudflareZeroTrustPolicyTypeR\n" +
 	"policyType\x12%\n" +
@@ -220,14 +221,16 @@ var file_org_openmcf_provider_cloudflare_cloudflarezerotrustaccessapplication_v1
 var file_org_openmcf_provider_cloudflare_cloudflarezerotrustaccessapplication_v1_spec_proto_goTypes = []any{
 	(CloudflareZeroTrustPolicyType)(0),               // 0: org.openmcf.provider.cloudflare.cloudflarezerotrustaccessapplication.v1.CloudflareZeroTrustPolicyType
 	(*CloudflareZeroTrustAccessApplicationSpec)(nil), // 1: org.openmcf.provider.cloudflare.cloudflarezerotrustaccessapplication.v1.CloudflareZeroTrustAccessApplicationSpec
+	(*v1.StringValueOrRef)(nil),                      // 2: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_cloudflare_cloudflarezerotrustaccessapplication_v1_spec_proto_depIdxs = []int32{
-	0, // 0: org.openmcf.provider.cloudflare.cloudflarezerotrustaccessapplication.v1.CloudflareZeroTrustAccessApplicationSpec.policy_type:type_name -> org.openmcf.provider.cloudflare.cloudflarezerotrustaccessapplication.v1.CloudflareZeroTrustPolicyType
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 0: org.openmcf.provider.cloudflare.cloudflarezerotrustaccessapplication.v1.CloudflareZeroTrustAccessApplicationSpec.zone_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	0, // 1: org.openmcf.provider.cloudflare.cloudflarezerotrustaccessapplication.v1.CloudflareZeroTrustAccessApplicationSpec.policy_type:type_name -> org.openmcf.provider.cloudflare.cloudflarezerotrustaccessapplication.v1.CloudflareZeroTrustPolicyType
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() {

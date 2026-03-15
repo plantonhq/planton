@@ -22,18 +22,22 @@ func route(
 
 	dns := locals.CloudflareWorker.Spec.Dns
 
-	// Validate required DNS fields
-	if dns.ZoneId == "" {
+	// Resolve zone_id from literal value or reference.
+	zoneId := ""
+	if dns.ZoneId != nil {
+		zoneId = dns.ZoneId.GetValue()
+	}
+	if zoneId == "" {
 		return nil, errors.New("dns.zone_id is required when dns is enabled")
 	}
 	if dns.Hostname == "" {
 		return nil, errors.New("dns.hostname is required when dns is enabled")
 	}
 
-	zoneId := pulumi.String(dns.ZoneId).ToStringOutput()
+	zoneIdOutput := pulumi.String(zoneId).ToStringOutput()
 
 	// Create DNS record for the hostname
-	createdDnsRecord, err := createDnsRecord(ctx, locals, cloudflareProvider, zoneId)
+	createdDnsRecord, err := createDnsRecord(ctx, locals, cloudflareProvider, zoneIdOutput)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create dns record")
 	}
@@ -45,7 +49,7 @@ func route(
 	}
 
 	routeArgs := &cloudfl.WorkersRouteArgs{
-		ZoneId:  zoneId,
+		ZoneId:  zoneIdOutput,
 		Pattern: pulumi.String(routePattern),
 		Script:  pulumi.String(locals.CloudflareWorker.Spec.WorkerName),
 	}

@@ -4,7 +4,8 @@ metadata:
   name: my-company-wide-email
 spec:
   applicationName: Internal App - Company Domain
-  zoneId: <cloudflare-zone-id>
+  zoneId:
+    value: <cloudflare-zone-id>
   hostname: <app-subdomain>.<your-domain.com>
   policyType: ALLOW
   allowedEmails:

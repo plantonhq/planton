@@ -84,7 +84,9 @@ spec:
   
   dns:
     enabled: true
-    zoneId: "zone123abc456def"  # Your Cloudflare zone ID
+    zoneId: { value: "zone123abc456def" }
+    # Or reference a CloudflareDnsZone resource:
+    # zoneId: { valueFrom: { kind: CloudflareDnsZone, name: "my-zone", fieldPath: "status.outputs.zone_id" } }
     hostname: api.example.com
     routePattern: api.example.com/*  # Match all paths
   
@@ -146,7 +148,7 @@ spec:
   
   dns:
     enabled: true
-    zoneId: "zone123"
+    zoneId: { value: "zone123" }
     hostname: api.example.com
     routePattern: api.example.com/v1/*
   
@@ -230,7 +232,7 @@ spec:
   
   dns:
     enabled: true
-    zoneId: "zone123"
+    zoneId: { value: "zone123" }
     hostname: webhooks.example.com
     routePattern: webhooks.example.com/github/*
   
@@ -299,7 +301,7 @@ spec:
   
   dns:
     enabled: true
-    zoneId: "zone123"
+    zoneId: { value: "zone123" }
     hostname: app.example.com
     routePattern: app.example.com/api/*
   
@@ -370,7 +372,7 @@ spec:
   
   dns:
     enabled: true
-    zoneId: "staging-zone-id"
+    zoneId: { value: "staging-zone-id" }
     hostname: api-staging.example.com
   
   env:
@@ -397,7 +399,7 @@ spec:
   
   dns:
     enabled: true
-    zoneId: "prod-zone-id"
+    zoneId: { value: "prod-zone-id" }
     hostname: api.example.com
   
   env:
@@ -506,7 +508,7 @@ spec:
   
   dns:
     enabled: true
-    zoneId: "zone123"
+    zoneId: { value: "zone123" }
     hostname: app.example.com
   
   env:

@@ -305,7 +305,8 @@ type CloudflareWorkerDns struct {
 	// Enable or disable DNS/route configuration. Set to false to deploy worker without a route.
 	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	// The Cloudflare Zone ID where the Worker route will be created.
-	ZoneId string `protobuf:"bytes,2,opt,name=zone_id,json=zoneId,proto3" json:"zone_id,omitempty"`
+	// Can be a literal value or referenced from a CloudflareDnsZone resource.
+	ZoneId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=zone_id,json=zoneId,proto3" json:"zone_id,omitempty"`
 	// The fully qualified domain name where the Worker will be accessible (e.g., "git-webhooks.planton.live").
 	// A DNS record will be created automatically for this hostname with proxy (orange cloud) enabled.
 	Hostname string `protobuf:"bytes,3,opt,name=hostname,proto3" json:"hostname,omitempty"`
@@ -353,11 +354,11 @@ func (x *CloudflareWorkerDns) GetEnabled() bool {
 	return false
 }
 
-func (x *CloudflareWorkerDns) GetZoneId() string {
+func (x *CloudflareWorkerDns) GetZoneId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ZoneId
 	}
-	return ""
+	return nil
 }
 
 func (x *CloudflareWorkerDns) GetHostname() string {
@@ -406,10 +407,10 @@ const file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDes
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"Z\n" +
 	"\x1cCloudflareWorkerScriptBundle\x12\x1e\n" +
 	"\x06bucket\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06bucket\x12\x1a\n" +
-	"\x04path\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04path\"\x9b\x01\n" +
+	"\x04path\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04path\"\xe7\x01\n" +
 	"\x13CloudflareWorkerDns\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\x12 \n" +
-	"\azone_id\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06zoneId\x12#\n" +
+	"\aenabled\x18\x01 \x01(\bR\aenabled\x12l\n" +
+	"\azone_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\x88\x0e\x92\xd4a\x16status.outputs.zone_idR\x06zoneId\x12#\n" +
 	"\bhostname\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bhostname\x12#\n" +
 	"\rroute_pattern\x18\x04 \x01(\tR\froutePatternB\xa1\x03\n" +
 	"7com.org.openmcf.provider.cloudflare.cloudflareworker.v1B\tSpecProtoP\x01Zhgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareworker/v1;cloudflareworkerv1\xa2\x02\x05OOPCC\xaa\x023Org.Openmcf.Provider.Cloudflare.Cloudflareworker.V1\xca\x023Org\\Openmcf\\Provider\\Cloudflare\\Cloudflareworker\\V1\xe2\x02?Org\\Openmcf\\Provider\\Cloudflare\\Cloudflareworker\\V1\\GPBMetadata\xea\x028Org::Openmcf::Provider::Cloudflare::Cloudflareworker::V1b\x06proto3"
@@ -446,11 +447,12 @@ var file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_depIdxs 
 	2, // 4: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.env:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv
 	5, // 5: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv.variables:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv.VariablesEntry
 	6, // 6: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv.secrets:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv.SecretsEntry
-	7, // [7:7] is the sub-list for method output_type
-	7, // [7:7] is the sub-list for method input_type
-	7, // [7:7] is the sub-list for extension type_name
-	7, // [7:7] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	7, // 7: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerDns.zone_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	8, // [8:8] is the sub-list for method output_type
+	8, // [8:8] is the sub-list for method input_type
+	8, // [8:8] is the sub-list for extension type_name
+	8, // [8:8] is the sub-list for extension extendee
+	0, // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_init() }
