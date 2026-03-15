@@ -1464,17 +1464,8 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "osdr"
   }];
-  OpenStackContainerClusterTemplate = 2523 [(kind_meta) = {
-    provider: openstack
-    version: v1
-    id_prefix: "oscct"
-  }];
-  OpenStackContainerCluster = 2524 [(kind_meta) = {
-    provider: openstack
-    version: v1
-    id_prefix: "oscc"
-    container_kind: true
-  }];
+  reserved 2523, 2524;
+  reserved "OpenStackContainerClusterTemplate", "OpenStackContainerCluster";
 
   // 2800–2999: Scaleway resources
 

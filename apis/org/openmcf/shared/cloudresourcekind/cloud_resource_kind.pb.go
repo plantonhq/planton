@@ -337,130 +337,128 @@ const (
 	CloudResourceKind_OpenFgaAuthorizationModel CloudResourceKind = 2301
 	CloudResourceKind_OpenFgaRelationshipTuple  CloudResourceKind = 2302
 	// 2500–2799: OpenStack resources
-	CloudResourceKind_OpenStackKeypair                  CloudResourceKind = 2500
-	CloudResourceKind_OpenStackNetwork                  CloudResourceKind = 2501
-	CloudResourceKind_OpenStackSubnet                   CloudResourceKind = 2502
-	CloudResourceKind_OpenStackRouter                   CloudResourceKind = 2503
-	CloudResourceKind_OpenStackRouterInterface          CloudResourceKind = 2504
-	CloudResourceKind_OpenStackSecurityGroup            CloudResourceKind = 2505
-	CloudResourceKind_OpenStackFloatingIp               CloudResourceKind = 2506
-	CloudResourceKind_OpenStackNetworkPort              CloudResourceKind = 2507
-	CloudResourceKind_OpenStackSecurityGroupRule        CloudResourceKind = 2525
-	CloudResourceKind_OpenStackFloatingIpAssociate      CloudResourceKind = 2526
-	CloudResourceKind_OpenStackInstance                 CloudResourceKind = 2508
-	CloudResourceKind_OpenStackServerGroup              CloudResourceKind = 2509
-	CloudResourceKind_OpenStackVolume                   CloudResourceKind = 2510
-	CloudResourceKind_OpenStackVolumeAttach             CloudResourceKind = 2511
-	CloudResourceKind_OpenStackProject                  CloudResourceKind = 2512
-	CloudResourceKind_OpenStackApplicationCredential    CloudResourceKind = 2513
-	CloudResourceKind_OpenStackImage                    CloudResourceKind = 2514
-	CloudResourceKind_OpenStackRoleAssignment           CloudResourceKind = 2515
-	CloudResourceKind_OpenStackLoadBalancer             CloudResourceKind = 2516
-	CloudResourceKind_OpenStackLoadBalancerListener     CloudResourceKind = 2517
-	CloudResourceKind_OpenStackLoadBalancerPool         CloudResourceKind = 2518
-	CloudResourceKind_OpenStackLoadBalancerMember       CloudResourceKind = 2519
-	CloudResourceKind_OpenStackLoadBalancerMonitor      CloudResourceKind = 2520
-	CloudResourceKind_OpenStackDnsZone                  CloudResourceKind = 2521
-	CloudResourceKind_OpenStackDnsRecord                CloudResourceKind = 2522
-	CloudResourceKind_OpenStackContainerClusterTemplate CloudResourceKind = 2523
-	CloudResourceKind_OpenStackContainerCluster         CloudResourceKind = 2524
-	CloudResourceKind_ScalewayVpc                       CloudResourceKind = 2800
-	CloudResourceKind_ScalewayPrivateNetwork            CloudResourceKind = 2801
-	CloudResourceKind_ScalewayPublicGateway             CloudResourceKind = 2802
-	CloudResourceKind_ScalewayLoadBalancer              CloudResourceKind = 2803
-	CloudResourceKind_ScalewayInstanceSecurityGroup     CloudResourceKind = 2804
-	CloudResourceKind_ScalewayInstance                  CloudResourceKind = 2810
-	CloudResourceKind_ScalewayKapsuleCluster            CloudResourceKind = 2820
-	CloudResourceKind_ScalewayKapsulePool               CloudResourceKind = 2821
-	CloudResourceKind_ScalewayRdbInstance               CloudResourceKind = 2830
-	CloudResourceKind_ScalewayRedisCluster              CloudResourceKind = 2831
-	CloudResourceKind_ScalewayMongodbInstance           CloudResourceKind = 2832
-	CloudResourceKind_ScalewayObjectBucket              CloudResourceKind = 2840
-	CloudResourceKind_ScalewayBlockVolume               CloudResourceKind = 2841
-	CloudResourceKind_ScalewayContainerRegistry         CloudResourceKind = 2850
-	CloudResourceKind_ScalewayDnsZone                   CloudResourceKind = 2860
-	CloudResourceKind_ScalewayDnsRecord                 CloudResourceKind = 2861
-	CloudResourceKind_ScalewayServerlessFunction        CloudResourceKind = 2870
-	CloudResourceKind_ScalewayServerlessContainer       CloudResourceKind = 2871
-	CloudResourceKind_AliCloudLogProject                CloudResourceKind = 3000
-	CloudResourceKind_AliCloudRamRole                   CloudResourceKind = 3010
-	CloudResourceKind_AliCloudRamPolicy                 CloudResourceKind = 3011
-	CloudResourceKind_AliCloudVpc                       CloudResourceKind = 3020
-	CloudResourceKind_AliCloudVswitch                   CloudResourceKind = 3021
-	CloudResourceKind_AliCloudSecurityGroup             CloudResourceKind = 3022
-	CloudResourceKind_AliCloudEipAddress                CloudResourceKind = 3023
-	CloudResourceKind_AliCloudNatGateway                CloudResourceKind = 3024
-	CloudResourceKind_AliCloudApplicationLoadBalancer   CloudResourceKind = 3025
-	CloudResourceKind_AliCloudNetworkLoadBalancer       CloudResourceKind = 3026
-	CloudResourceKind_AliCloudVpnGateway                CloudResourceKind = 3027
-	CloudResourceKind_AliCloudDnsZone                   CloudResourceKind = 3040
-	CloudResourceKind_AliCloudDnsRecord                 CloudResourceKind = 3041
-	CloudResourceKind_AliCloudPrivateDnsZone            CloudResourceKind = 3042
-	CloudResourceKind_AliCloudStorageBucket             CloudResourceKind = 3050
-	CloudResourceKind_AliCloudNasFileSystem             CloudResourceKind = 3051
-	CloudResourceKind_AliCloudKmsKey                    CloudResourceKind = 3060
-	CloudResourceKind_AliCloudRdsInstance               CloudResourceKind = 3070
-	CloudResourceKind_AliCloudPolardbCluster            CloudResourceKind = 3071
-	CloudResourceKind_AliCloudRedisInstance             CloudResourceKind = 3072
-	CloudResourceKind_AliCloudMongodbInstance           CloudResourceKind = 3073
-	CloudResourceKind_AliCloudEcsInstance               CloudResourceKind = 3080
-	CloudResourceKind_AliCloudContainerRegistry         CloudResourceKind = 3090
-	CloudResourceKind_AliCloudKubernetesCluster         CloudResourceKind = 3091
-	CloudResourceKind_AliCloudKubernetesNodePool        CloudResourceKind = 3092
-	CloudResourceKind_AliCloudCdnDomain                 CloudResourceKind = 3100
-	CloudResourceKind_AliCloudFunction                  CloudResourceKind = 3110
-	CloudResourceKind_AliCloudSaeApplication            CloudResourceKind = 3111
-	CloudResourceKind_AliCloudRocketmqInstance          CloudResourceKind = 3120
-	CloudResourceKind_AliCloudCenInstance               CloudResourceKind = 3130
-	CloudResourceKind_OciVcn                            CloudResourceKind = 3300
-	CloudResourceKind_OciSubnet                         CloudResourceKind = 3301
-	CloudResourceKind_OciSecurityGroup                  CloudResourceKind = 3302
-	CloudResourceKind_OciCompartment                    CloudResourceKind = 3303
-	CloudResourceKind_OciIdentityPolicy                 CloudResourceKind = 3304
-	CloudResourceKind_OciDynamicGroup                   CloudResourceKind = 3305
-	CloudResourceKind_OciComputeInstance                CloudResourceKind = 3310
-	CloudResourceKind_OciContainerEngineCluster         CloudResourceKind = 3311
-	CloudResourceKind_OciContainerEngineNodePool        CloudResourceKind = 3312
-	CloudResourceKind_OciContainerInstance              CloudResourceKind = 3313
-	CloudResourceKind_OciApplicationLoadBalancer        CloudResourceKind = 3320
-	CloudResourceKind_OciNetworkLoadBalancer            CloudResourceKind = 3321
-	CloudResourceKind_OciDynamicRoutingGateway          CloudResourceKind = 3322
-	CloudResourceKind_OciPublicIp                       CloudResourceKind = 3323
-	CloudResourceKind_OciAutonomousDatabase             CloudResourceKind = 3330
-	CloudResourceKind_OciDbSystem                       CloudResourceKind = 3331
-	CloudResourceKind_OciMysqlDbSystem                  CloudResourceKind = 3332
-	CloudResourceKind_OciPostgresqlDbSystem             CloudResourceKind = 3333
-	CloudResourceKind_OciRedisCluster                   CloudResourceKind = 3334
-	CloudResourceKind_OciNosqlTable                     CloudResourceKind = 3335
-	CloudResourceKind_OciObjectStorageBucket            CloudResourceKind = 3340
-	CloudResourceKind_OciFileSystem                     CloudResourceKind = 3341
-	CloudResourceKind_OciBlockVolume                    CloudResourceKind = 3342
-	CloudResourceKind_OciKmsVault                       CloudResourceKind = 3350
-	CloudResourceKind_OciKmsKey                         CloudResourceKind = 3351
-	CloudResourceKind_OciVaultSecret                    CloudResourceKind = 3352
-	CloudResourceKind_OciBastion                        CloudResourceKind = 3353
-	CloudResourceKind_OciFunctionsApplication           CloudResourceKind = 3360
-	CloudResourceKind_OciApiGateway                     CloudResourceKind = 3361
-	CloudResourceKind_OciStreamPool                     CloudResourceKind = 3370
-	CloudResourceKind_OciQueue                          CloudResourceKind = 3371
-	CloudResourceKind_OciAlarm                          CloudResourceKind = 3380
-	CloudResourceKind_OciLogGroup                       CloudResourceKind = 3381
-	CloudResourceKind_OciDnsZone                        CloudResourceKind = 3390
-	CloudResourceKind_OciDnsRecord                      CloudResourceKind = 3391
-	CloudResourceKind_OciNetworkFirewall                CloudResourceKind = 3395
-	CloudResourceKind_OciDevopsProject                  CloudResourceKind = 3396
-	CloudResourceKind_HetznerCloudSshKey                CloudResourceKind = 3500
-	CloudResourceKind_HetznerCloudPlacementGroup        CloudResourceKind = 3501
-	CloudResourceKind_HetznerCloudFirewall              CloudResourceKind = 3502
-	CloudResourceKind_HetznerCloudNetwork               CloudResourceKind = 3510
-	CloudResourceKind_HetznerCloudPrimaryIp             CloudResourceKind = 3511
-	CloudResourceKind_HetznerCloudFloatingIp            CloudResourceKind = 3512
-	CloudResourceKind_HetznerCloudServer                CloudResourceKind = 3520
-	CloudResourceKind_HetznerCloudVolume                CloudResourceKind = 3521
-	CloudResourceKind_HetznerCloudSnapshot              CloudResourceKind = 3522
-	CloudResourceKind_HetznerCloudCertificate           CloudResourceKind = 3530
-	CloudResourceKind_HetznerCloudLoadBalancer          CloudResourceKind = 3531
-	CloudResourceKind_HetznerCloudDnsZone               CloudResourceKind = 3540
+	CloudResourceKind_OpenStackKeypair                CloudResourceKind = 2500
+	CloudResourceKind_OpenStackNetwork                CloudResourceKind = 2501
+	CloudResourceKind_OpenStackSubnet                 CloudResourceKind = 2502
+	CloudResourceKind_OpenStackRouter                 CloudResourceKind = 2503
+	CloudResourceKind_OpenStackRouterInterface        CloudResourceKind = 2504
+	CloudResourceKind_OpenStackSecurityGroup          CloudResourceKind = 2505
+	CloudResourceKind_OpenStackFloatingIp             CloudResourceKind = 2506
+	CloudResourceKind_OpenStackNetworkPort            CloudResourceKind = 2507
+	CloudResourceKind_OpenStackSecurityGroupRule      CloudResourceKind = 2525
+	CloudResourceKind_OpenStackFloatingIpAssociate    CloudResourceKind = 2526
+	CloudResourceKind_OpenStackInstance               CloudResourceKind = 2508
+	CloudResourceKind_OpenStackServerGroup            CloudResourceKind = 2509
+	CloudResourceKind_OpenStackVolume                 CloudResourceKind = 2510
+	CloudResourceKind_OpenStackVolumeAttach           CloudResourceKind = 2511
+	CloudResourceKind_OpenStackProject                CloudResourceKind = 2512
+	CloudResourceKind_OpenStackApplicationCredential  CloudResourceKind = 2513
+	CloudResourceKind_OpenStackImage                  CloudResourceKind = 2514
+	CloudResourceKind_OpenStackRoleAssignment         CloudResourceKind = 2515
+	CloudResourceKind_OpenStackLoadBalancer           CloudResourceKind = 2516
+	CloudResourceKind_OpenStackLoadBalancerListener   CloudResourceKind = 2517
+	CloudResourceKind_OpenStackLoadBalancerPool       CloudResourceKind = 2518
+	CloudResourceKind_OpenStackLoadBalancerMember     CloudResourceKind = 2519
+	CloudResourceKind_OpenStackLoadBalancerMonitor    CloudResourceKind = 2520
+	CloudResourceKind_OpenStackDnsZone                CloudResourceKind = 2521
+	CloudResourceKind_OpenStackDnsRecord              CloudResourceKind = 2522
+	CloudResourceKind_ScalewayVpc                     CloudResourceKind = 2800
+	CloudResourceKind_ScalewayPrivateNetwork          CloudResourceKind = 2801
+	CloudResourceKind_ScalewayPublicGateway           CloudResourceKind = 2802
+	CloudResourceKind_ScalewayLoadBalancer            CloudResourceKind = 2803
+	CloudResourceKind_ScalewayInstanceSecurityGroup   CloudResourceKind = 2804
+	CloudResourceKind_ScalewayInstance                CloudResourceKind = 2810
+	CloudResourceKind_ScalewayKapsuleCluster          CloudResourceKind = 2820
+	CloudResourceKind_ScalewayKapsulePool             CloudResourceKind = 2821
+	CloudResourceKind_ScalewayRdbInstance             CloudResourceKind = 2830
+	CloudResourceKind_ScalewayRedisCluster            CloudResourceKind = 2831
+	CloudResourceKind_ScalewayMongodbInstance         CloudResourceKind = 2832
+	CloudResourceKind_ScalewayObjectBucket            CloudResourceKind = 2840
+	CloudResourceKind_ScalewayBlockVolume             CloudResourceKind = 2841
+	CloudResourceKind_ScalewayContainerRegistry       CloudResourceKind = 2850
+	CloudResourceKind_ScalewayDnsZone                 CloudResourceKind = 2860
+	CloudResourceKind_ScalewayDnsRecord               CloudResourceKind = 2861
+	CloudResourceKind_ScalewayServerlessFunction      CloudResourceKind = 2870
+	CloudResourceKind_ScalewayServerlessContainer     CloudResourceKind = 2871
+	CloudResourceKind_AliCloudLogProject              CloudResourceKind = 3000
+	CloudResourceKind_AliCloudRamRole                 CloudResourceKind = 3010
+	CloudResourceKind_AliCloudRamPolicy               CloudResourceKind = 3011
+	CloudResourceKind_AliCloudVpc                     CloudResourceKind = 3020
+	CloudResourceKind_AliCloudVswitch                 CloudResourceKind = 3021
+	CloudResourceKind_AliCloudSecurityGroup           CloudResourceKind = 3022
+	CloudResourceKind_AliCloudEipAddress              CloudResourceKind = 3023
+	CloudResourceKind_AliCloudNatGateway              CloudResourceKind = 3024
+	CloudResourceKind_AliCloudApplicationLoadBalancer CloudResourceKind = 3025
+	CloudResourceKind_AliCloudNetworkLoadBalancer     CloudResourceKind = 3026
+	CloudResourceKind_AliCloudVpnGateway              CloudResourceKind = 3027
+	CloudResourceKind_AliCloudDnsZone                 CloudResourceKind = 3040
+	CloudResourceKind_AliCloudDnsRecord               CloudResourceKind = 3041
+	CloudResourceKind_AliCloudPrivateDnsZone          CloudResourceKind = 3042
+	CloudResourceKind_AliCloudStorageBucket           CloudResourceKind = 3050
+	CloudResourceKind_AliCloudNasFileSystem           CloudResourceKind = 3051
+	CloudResourceKind_AliCloudKmsKey                  CloudResourceKind = 3060
+	CloudResourceKind_AliCloudRdsInstance             CloudResourceKind = 3070
+	CloudResourceKind_AliCloudPolardbCluster          CloudResourceKind = 3071
+	CloudResourceKind_AliCloudRedisInstance           CloudResourceKind = 3072
+	CloudResourceKind_AliCloudMongodbInstance         CloudResourceKind = 3073
+	CloudResourceKind_AliCloudEcsInstance             CloudResourceKind = 3080
+	CloudResourceKind_AliCloudContainerRegistry       CloudResourceKind = 3090
+	CloudResourceKind_AliCloudKubernetesCluster       CloudResourceKind = 3091
+	CloudResourceKind_AliCloudKubernetesNodePool      CloudResourceKind = 3092
+	CloudResourceKind_AliCloudCdnDomain               CloudResourceKind = 3100
+	CloudResourceKind_AliCloudFunction                CloudResourceKind = 3110
+	CloudResourceKind_AliCloudSaeApplication          CloudResourceKind = 3111
+	CloudResourceKind_AliCloudRocketmqInstance        CloudResourceKind = 3120
+	CloudResourceKind_AliCloudCenInstance             CloudResourceKind = 3130
+	CloudResourceKind_OciVcn                          CloudResourceKind = 3300
+	CloudResourceKind_OciSubnet                       CloudResourceKind = 3301
+	CloudResourceKind_OciSecurityGroup                CloudResourceKind = 3302
+	CloudResourceKind_OciCompartment                  CloudResourceKind = 3303
+	CloudResourceKind_OciIdentityPolicy               CloudResourceKind = 3304
+	CloudResourceKind_OciDynamicGroup                 CloudResourceKind = 3305
+	CloudResourceKind_OciComputeInstance              CloudResourceKind = 3310
+	CloudResourceKind_OciContainerEngineCluster       CloudResourceKind = 3311
+	CloudResourceKind_OciContainerEngineNodePool      CloudResourceKind = 3312
+	CloudResourceKind_OciContainerInstance            CloudResourceKind = 3313
+	CloudResourceKind_OciApplicationLoadBalancer      CloudResourceKind = 3320
+	CloudResourceKind_OciNetworkLoadBalancer          CloudResourceKind = 3321
+	CloudResourceKind_OciDynamicRoutingGateway        CloudResourceKind = 3322
+	CloudResourceKind_OciPublicIp                     CloudResourceKind = 3323
+	CloudResourceKind_OciAutonomousDatabase           CloudResourceKind = 3330
+	CloudResourceKind_OciDbSystem                     CloudResourceKind = 3331
+	CloudResourceKind_OciMysqlDbSystem                CloudResourceKind = 3332
+	CloudResourceKind_OciPostgresqlDbSystem           CloudResourceKind = 3333
+	CloudResourceKind_OciRedisCluster                 CloudResourceKind = 3334
+	CloudResourceKind_OciNosqlTable                   CloudResourceKind = 3335
+	CloudResourceKind_OciObjectStorageBucket          CloudResourceKind = 3340
+	CloudResourceKind_OciFileSystem                   CloudResourceKind = 3341
+	CloudResourceKind_OciBlockVolume                  CloudResourceKind = 3342
+	CloudResourceKind_OciKmsVault                     CloudResourceKind = 3350
+	CloudResourceKind_OciKmsKey                       CloudResourceKind = 3351
+	CloudResourceKind_OciVaultSecret                  CloudResourceKind = 3352
+	CloudResourceKind_OciBastion                      CloudResourceKind = 3353
+	CloudResourceKind_OciFunctionsApplication         CloudResourceKind = 3360
+	CloudResourceKind_OciApiGateway                   CloudResourceKind = 3361
+	CloudResourceKind_OciStreamPool                   CloudResourceKind = 3370
+	CloudResourceKind_OciQueue                        CloudResourceKind = 3371
+	CloudResourceKind_OciAlarm                        CloudResourceKind = 3380
+	CloudResourceKind_OciLogGroup                     CloudResourceKind = 3381
+	CloudResourceKind_OciDnsZone                      CloudResourceKind = 3390
+	CloudResourceKind_OciDnsRecord                    CloudResourceKind = 3391
+	CloudResourceKind_OciNetworkFirewall              CloudResourceKind = 3395
+	CloudResourceKind_OciDevopsProject                CloudResourceKind = 3396
+	CloudResourceKind_HetznerCloudSshKey              CloudResourceKind = 3500
+	CloudResourceKind_HetznerCloudPlacementGroup      CloudResourceKind = 3501
+	CloudResourceKind_HetznerCloudFirewall            CloudResourceKind = 3502
+	CloudResourceKind_HetznerCloudNetwork             CloudResourceKind = 3510
+	CloudResourceKind_HetznerCloudPrimaryIp           CloudResourceKind = 3511
+	CloudResourceKind_HetznerCloudFloatingIp          CloudResourceKind = 3512
+	CloudResourceKind_HetznerCloudServer              CloudResourceKind = 3520
+	CloudResourceKind_HetznerCloudVolume              CloudResourceKind = 3521
+	CloudResourceKind_HetznerCloudSnapshot            CloudResourceKind = 3522
+	CloudResourceKind_HetznerCloudCertificate         CloudResourceKind = 3530
+	CloudResourceKind_HetznerCloudLoadBalancer        CloudResourceKind = 3531
+	CloudResourceKind_HetznerCloudDnsZone             CloudResourceKind = 3540
 )
 
 // Enum value maps for CloudResourceKind.
@@ -733,8 +731,6 @@ var (
 		2520: "OpenStackLoadBalancerMonitor",
 		2521: "OpenStackDnsZone",
 		2522: "OpenStackDnsRecord",
-		2523: "OpenStackContainerClusterTemplate",
-		2524: "OpenStackContainerCluster",
 		2800: "ScalewayVpc",
 		2801: "ScalewayPrivateNetwork",
 		2802: "ScalewayPublicGateway",
@@ -1101,8 +1097,6 @@ var (
 		"OpenStackLoadBalancerMonitor":          2520,
 		"OpenStackDnsZone":                      2521,
 		"OpenStackDnsRecord":                    2522,
-		"OpenStackContainerClusterTemplate":     2523,
-		"OpenStackContainerCluster":             2524,
 		"ScalewayVpc":                           2800,
 		"ScalewayPrivateNetwork":                2801,
 		"ScalewayPublicGateway":                 2802,
@@ -1358,7 +1352,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0econtainer_kind\x18\x06 \x01(\bR\rcontainerKind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xd7{\n" +
+	"\x02v1\x10\x01*\xba{\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1672,9 +1666,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x10OpenStackDnsZone\x10\xd9\x13\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\x17\x10\x01\"\x04osdz\x12'\n" +
 	"\x12OpenStackDnsRecord\x10\xda\x13\x1a\x0e\xa2\xf7\x04\n" +
-	"\b\x17\x10\x01\"\x04osdr\x127\n" +
-	"!OpenStackContainerClusterTemplate\x10\xdb\x13\x1a\x0f\xa2\xf7\x04\v\b\x17\x10\x01\"\x05oscct\x120\n" +
-	"\x19OpenStackContainerCluster\x10\xdc\x13\x1a\x10\xa2\xf7\x04\f\b\x17\x10\x01\"\x04oscc0\x01\x12$\n" +
+	"\b\x17\x10\x01\"\x04osdr\x12$\n" +
 	"\vScalewayVpc\x10\xf0\x15\x1a\x12\xa2\xf7\x04\x0e\b\x18\x10\x01\"\x06scwvpc0\x01\x12,\n" +
 	"\x16ScalewayPrivateNetwork\x10\xf1\x15\x1a\x0f\xa2\xf7\x04\v\b\x18\x10\x01\"\x05scwpn\x12,\n" +
 	"\x15ScalewayPublicGateway\x10\xf2\x15\x1a\x10\xa2\xf7\x04\f\b\x18\x10\x01\"\x06scwpgw\x12*\n" +
@@ -1781,7 +1773,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x17HetznerCloudCertificate\x10\xca\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hccrt\x12-\n" +
 	"\x18HetznerCloudLoadBalancer\x10\xcb\x1b\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\x1b\x10\x01\"\x04hclb\x12)\n" +
-	"\x13HetznerCloudDnsZone\x10\xd4\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcdns:|\n" +
+	"\x13HetznerCloudDnsZone\x10\xd4\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcdns\"\x06\b\xdb\x13\x10\xdb\x13\"\x06\b\xdc\x13\x10\xdc\x13*!OpenStackContainerClusterTemplate*\x19OpenStackContainerCluster:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

@@ -8,7 +8,6 @@ package org.openmcf.provider.openstack.openstackimage.v1;
 // The image_id is the primary output referenced by downstream components:
 // - OpenStackVolume (image_id FK for bootable volumes)
 // - OpenStackInstance (image_id FK for boot-from-image instances)
-// - OpenStackContainerClusterTemplate (image FK for Magnum templates)
 message OpenStackImageStackOutputs {
   // image_id is the unique identifier (UUID) of the image in Glance.
   // This is the primary output used as a foreign key by downstream resources.

@@ -234,7 +234,6 @@ OpenStackSubnet has one inbound FK and is referenced by multiple downstream comp
 - `OpenStackRouterInterface.spec.subnet_id` -> `subnet_id`
 - `OpenStackLoadBalancer.spec.vip_subnet_id` -> `subnet_id`
 - `OpenStackLoadBalancerMember.spec.subnet_id` -> `subnet_id`
-- `OpenStackContainerClusterTemplate.spec.fixed_subnet` -> `subnet_id`
 
 This makes `subnet_id` the second most important output in the OpenStack component family (after `network_id`).
 

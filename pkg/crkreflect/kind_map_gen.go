@@ -329,8 +329,6 @@ import (
 	openfgarelationshiptuplev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga/openfgarelationshiptuple/v1"
 	openfgastorev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga/openfgastore/v1"
 	openstackapplicationcredentialv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackapplicationcredential/v1"
-	openstackcontainerclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackcontainercluster/v1"
-	openstackcontainerclustertemplatev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackcontainerclustertemplate/v1"
 	openstackdnsrecordv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackdnsrecord/v1"
 	openstackdnszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackdnszone/v1"
 	openstackfloatingipv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack/openstackfloatingip/v1"
@@ -753,33 +751,31 @@ var ProviderOpenfgaMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 }
 
 var ProviderOpenstackMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
-	cloudresourcekind.CloudResourceKind_OpenStackApplicationCredential:    &openstackapplicationcredentialv1.OpenStackApplicationCredential{},
-	cloudresourcekind.CloudResourceKind_OpenStackContainerCluster:         &openstackcontainerclusterv1.OpenStackContainerCluster{},
-	cloudresourcekind.CloudResourceKind_OpenStackContainerClusterTemplate: &openstackcontainerclustertemplatev1.OpenStackContainerClusterTemplate{},
-	cloudresourcekind.CloudResourceKind_OpenStackDnsRecord:                &openstackdnsrecordv1.OpenStackDnsRecord{},
-	cloudresourcekind.CloudResourceKind_OpenStackDnsZone:                  &openstackdnszonev1.OpenStackDnsZone{},
-	cloudresourcekind.CloudResourceKind_OpenStackFloatingIp:               &openstackfloatingipv1.OpenStackFloatingIp{},
-	cloudresourcekind.CloudResourceKind_OpenStackFloatingIpAssociate:      &openstackfloatingipassociatev1.OpenStackFloatingIpAssociate{},
-	cloudresourcekind.CloudResourceKind_OpenStackImage:                    &openstackimagev1.OpenStackImage{},
-	cloudresourcekind.CloudResourceKind_OpenStackInstance:                 &openstackinstancev1.OpenStackInstance{},
-	cloudresourcekind.CloudResourceKind_OpenStackKeypair:                  &openstackkeypairv1.OpenStackKeypair{},
-	cloudresourcekind.CloudResourceKind_OpenStackLoadBalancer:             &openstackloadbalancerv1.OpenStackLoadBalancer{},
-	cloudresourcekind.CloudResourceKind_OpenStackLoadBalancerListener:     &openstackloadbalancerlistenerv1.OpenStackLoadBalancerListener{},
-	cloudresourcekind.CloudResourceKind_OpenStackLoadBalancerMember:       &openstackloadbalancermemberv1.OpenStackLoadBalancerMember{},
-	cloudresourcekind.CloudResourceKind_OpenStackLoadBalancerMonitor:      &openstackloadbalancermonitorv1.OpenStackLoadBalancerMonitor{},
-	cloudresourcekind.CloudResourceKind_OpenStackLoadBalancerPool:         &openstackloadbalancerpoolv1.OpenStackLoadBalancerPool{},
-	cloudresourcekind.CloudResourceKind_OpenStackNetwork:                  &openstacknetworkv1.OpenStackNetwork{},
-	cloudresourcekind.CloudResourceKind_OpenStackNetworkPort:              &openstacknetworkportv1.OpenStackNetworkPort{},
-	cloudresourcekind.CloudResourceKind_OpenStackProject:                  &openstackprojectv1.OpenStackProject{},
-	cloudresourcekind.CloudResourceKind_OpenStackRoleAssignment:           &openstackroleassignmentv1.OpenStackRoleAssignment{},
-	cloudresourcekind.CloudResourceKind_OpenStackRouter:                   &openstackrouterv1.OpenStackRouter{},
-	cloudresourcekind.CloudResourceKind_OpenStackRouterInterface:          &openstackrouterinterfacev1.OpenStackRouterInterface{},
-	cloudresourcekind.CloudResourceKind_OpenStackSecurityGroup:            &openstacksecuritygroupv1.OpenStackSecurityGroup{},
-	cloudresourcekind.CloudResourceKind_OpenStackSecurityGroupRule:        &openstacksecuritygrouprulev1.OpenStackSecurityGroupRule{},
-	cloudresourcekind.CloudResourceKind_OpenStackServerGroup:              &openstackservergroupv1.OpenStackServerGroup{},
-	cloudresourcekind.CloudResourceKind_OpenStackSubnet:                   &openstacksubnetv1.OpenStackSubnet{},
-	cloudresourcekind.CloudResourceKind_OpenStackVolume:                   &openstackvolumev1.OpenStackVolume{},
-	cloudresourcekind.CloudResourceKind_OpenStackVolumeAttach:             &openstackvolumeattachv1.OpenStackVolumeAttach{},
+	cloudresourcekind.CloudResourceKind_OpenStackApplicationCredential: &openstackapplicationcredentialv1.OpenStackApplicationCredential{},
+	cloudresourcekind.CloudResourceKind_OpenStackDnsRecord:             &openstackdnsrecordv1.OpenStackDnsRecord{},
+	cloudresourcekind.CloudResourceKind_OpenStackDnsZone:               &openstackdnszonev1.OpenStackDnsZone{},
+	cloudresourcekind.CloudResourceKind_OpenStackFloatingIp:            &openstackfloatingipv1.OpenStackFloatingIp{},
+	cloudresourcekind.CloudResourceKind_OpenStackFloatingIpAssociate:   &openstackfloatingipassociatev1.OpenStackFloatingIpAssociate{},
+	cloudresourcekind.CloudResourceKind_OpenStackImage:                 &openstackimagev1.OpenStackImage{},
+	cloudresourcekind.CloudResourceKind_OpenStackInstance:              &openstackinstancev1.OpenStackInstance{},
+	cloudresourcekind.CloudResourceKind_OpenStackKeypair:               &openstackkeypairv1.OpenStackKeypair{},
+	cloudresourcekind.CloudResourceKind_OpenStackLoadBalancer:          &openstackloadbalancerv1.OpenStackLoadBalancer{},
+	cloudresourcekind.CloudResourceKind_OpenStackLoadBalancerListener:  &openstackloadbalancerlistenerv1.OpenStackLoadBalancerListener{},
+	cloudresourcekind.CloudResourceKind_OpenStackLoadBalancerMember:    &openstackloadbalancermemberv1.OpenStackLoadBalancerMember{},
+	cloudresourcekind.CloudResourceKind_OpenStackLoadBalancerMonitor:   &openstackloadbalancermonitorv1.OpenStackLoadBalancerMonitor{},
+	cloudresourcekind.CloudResourceKind_OpenStackLoadBalancerPool:      &openstackloadbalancerpoolv1.OpenStackLoadBalancerPool{},
+	cloudresourcekind.CloudResourceKind_OpenStackNetwork:               &openstacknetworkv1.OpenStackNetwork{},
+	cloudresourcekind.CloudResourceKind_OpenStackNetworkPort:           &openstacknetworkportv1.OpenStackNetworkPort{},
+	cloudresourcekind.CloudResourceKind_OpenStackProject:               &openstackprojectv1.OpenStackProject{},
+	cloudresourcekind.CloudResourceKind_OpenStackRoleAssignment:        &openstackroleassignmentv1.OpenStackRoleAssignment{},
+	cloudresourcekind.CloudResourceKind_OpenStackRouter:                &openstackrouterv1.OpenStackRouter{},
+	cloudresourcekind.CloudResourceKind_OpenStackRouterInterface:       &openstackrouterinterfacev1.OpenStackRouterInterface{},
+	cloudresourcekind.CloudResourceKind_OpenStackSecurityGroup:         &openstacksecuritygroupv1.OpenStackSecurityGroup{},
+	cloudresourcekind.CloudResourceKind_OpenStackSecurityGroupRule:     &openstacksecuritygrouprulev1.OpenStackSecurityGroupRule{},
+	cloudresourcekind.CloudResourceKind_OpenStackServerGroup:           &openstackservergroupv1.OpenStackServerGroup{},
+	cloudresourcekind.CloudResourceKind_OpenStackSubnet:                &openstacksubnetv1.OpenStackSubnet{},
+	cloudresourcekind.CloudResourceKind_OpenStackVolume:                &openstackvolumev1.OpenStackVolume{},
+	cloudresourcekind.CloudResourceKind_OpenStackVolumeAttach:          &openstackvolumeattachv1.OpenStackVolumeAttach{},
 }
 
 var ProviderScalewayMap = map[cloudresourcekind.CloudResourceKind]proto.Message{

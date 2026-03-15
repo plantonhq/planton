@@ -1,9 +1,0 @@
-apiVersion: openstack.openmcf.org/v1
-kind: OpenStackContainerCluster
-metadata:
-  name: k8s-cluster
-spec:
-  cluster_template:
-    value: "template-uuid-1234"
-  master_count: 3
-  node_count: 5

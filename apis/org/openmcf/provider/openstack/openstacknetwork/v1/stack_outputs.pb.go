@@ -30,7 +30,6 @@ const (
 // - OpenStackNetworkPort (network_id)
 // - OpenStackFloatingIp (floating_network_id)
 // - OpenStackInstance (networks[].uuid)
-// - OpenStackContainerClusterTemplate (external_network_id, fixed_network)
 type OpenStackNetworkStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// network_id is the unique identifier (UUID) of the network in OpenStack.
