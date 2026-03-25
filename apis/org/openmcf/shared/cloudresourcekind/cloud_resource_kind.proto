@@ -1294,6 +1294,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "cfrec"
   }];
+  CloudflareRuleset = 1808 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfrs"
+  }];
 
   // 2100–2299: Auth0 resources
   Auth0Connection = 2100 [(kind_meta) = {

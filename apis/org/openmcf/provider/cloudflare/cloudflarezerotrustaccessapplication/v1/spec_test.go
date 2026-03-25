@@ -6,8 +6,8 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
+	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
 func TestCloudflareZeroTrustAccessApplicationSpec(t *testing.T) {

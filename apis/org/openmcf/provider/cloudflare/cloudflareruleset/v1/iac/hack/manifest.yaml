@@ -1,0 +1,20 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareRuleset
+metadata:
+  name: test-origin-rule
+spec:
+  zone_id: "test-zone-id-abc123"
+  ruleset_kind: zone
+  phase: http_request_origin
+  name: "Test origin routing"
+  rules:
+    - ref: "route-app-to-k8s"
+      expression: 'not http.request.uri.path starts_with "/docs"'
+      action: route
+      description: "Route non-docs traffic to K8s"
+      enabled: true
+      action_parameters:
+        host_header: "example.com"
+        origin:
+          host: "k8s-lb.example.com"
+          port: 443

@@ -1,0 +1,452 @@
+syntax = "proto3";
+package org.openmcf.provider.cloudflare.cloudflareruleset.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// CloudflareRulesetSpec defines the configuration for a Cloudflare Ruleset.
+//
+// Rulesets are ordered collections of rules that execute during specific phases of HTTP
+// request processing on the Cloudflare network. They power Origin Rules, WAF Custom Rules,
+// Cache Rules, Redirect Rules, Transform Rules, and more.
+//
+// Exactly one of zone_id or account_id must be provided. Zone-level rulesets apply to a
+// single domain; account-level rulesets apply across all zones in the account.
+message CloudflareRulesetSpec {
+  // The kind of the ruleset.
+  enum RulesetKind {
+    ruleset_kind_unspecified = 0;
+    // Zone-level ruleset (most common, applies to a single domain).
+    zone = 1;
+    // Custom ruleset (reusable rule collection, invoked via "execute" action).
+    custom = 2;
+    // Managed ruleset (Cloudflare-maintained, read-only rules like OWASP Core Ruleset).
+    managed = 3;
+    // Root ruleset (account-level entry point for a phase).
+    root = 4;
+  }
+
+  // The phase determines when the ruleset is evaluated during request processing.
+  enum Phase {
+    phase_unspecified = 0;
+    // DDoS protection at L4 (network layer).
+    ddos_l4 = 1;
+    // DDoS protection at L7 (application layer).
+    ddos_l7 = 2;
+    // Configuration settings (e.g., automatic HTTPS rewrites, browser integrity check).
+    http_config_settings = 3;
+    // Custom error responses.
+    http_custom_errors = 4;
+    // Custom log fields.
+    http_log_custom_fields = 5;
+    // Rate limiting rules.
+    http_ratelimit = 6;
+    // Cache settings rules.
+    http_request_cache_settings = 7;
+    // Dynamic redirect rules.
+    http_request_dynamic_redirect = 8;
+    // Custom firewall rules (WAF custom rules).
+    http_request_firewall_custom = 9;
+    // Managed firewall rules (WAF managed rulesets like OWASP).
+    http_request_firewall_managed = 10;
+    // Late request transform (runs after other transforms).
+    http_request_late_transform = 11;
+    // Origin Rules -- override the origin server for matching requests.
+    http_request_origin = 12;
+    // Bulk redirect rules.
+    http_request_redirect = 13;
+    // Request sanitization.
+    http_request_sanitize = 14;
+    // Super Bot Fight Mode.
+    http_request_sbfm = 15;
+    // Request transform rules (URL rewrites, header modifications).
+    http_request_transform = 16;
+    // Response cache settings.
+    http_response_cache_settings = 17;
+    // Response compression rules.
+    http_response_compression = 18;
+    // Response-phase managed firewall rules.
+    http_response_firewall_managed = 19;
+    // Response header transform rules.
+    http_response_headers_transform = 20;
+    // Magic Transit rules (network-layer).
+    magic_transit = 21;
+    // Magic Transit IDS managed rules.
+    magic_transit_ids_managed = 22;
+    // Magic Transit managed rules.
+    magic_transit_managed = 23;
+    // Magic Transit rate limiting.
+    magic_transit_ratelimit = 24;
+  }
+
+  // The Cloudflare Zone ID where this ruleset will be created.
+  // Exactly one of zone_id or account_id must be set.
+  // When using value_from, defaults to CloudflareDnsZone kind and status.outputs.zone_id field path.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef zone_id = 1 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+
+  // The Cloudflare Account ID for account-level rulesets.
+  // Exactly one of zone_id or account_id must be set.
+  string account_id = 2;
+
+  // The kind of the ruleset.
+  // Default: zone
+  optional RulesetKind ruleset_kind = 3 [
+    (org.openmcf.shared.options.default) = "1",
+    (buf.validate.field).enum.defined_only = true
+  ];
+
+  // The phase determines when the ruleset is evaluated during request processing.
+  Phase phase = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "phase.not_unspecified"
+      message: "phase must be specified"
+      expression: "this != 0"
+    }
+  ];
+
+  // Human-readable name of the ruleset displayed in the Cloudflare dashboard.
+  string name = 5 [(buf.validate.field).string.min_len = 1];
+
+  // Informative description of the ruleset.
+  string description = 6;
+
+  // The ordered list of rules in the ruleset.
+  // Rules are evaluated in the order they appear.
+  repeated CloudflareRulesetRule rules = 7 [(buf.validate.field).repeated.min_items = 1];
+
+  // Exactly one of zone_id or account_id must be provided.
+  option (buf.validate.message).cel = {
+    id: "spec.zone_or_account"
+    message: "exactly one of zone_id or account_id must be set"
+    expression: "(has(this.zone_id) && this.account_id == '') || (!has(this.zone_id) && this.account_id != '')"
+  };
+}
+
+// CloudflareRulesetRule defines a single rule within a ruleset.
+// Each rule has a matching expression and an action to perform when the expression matches.
+message CloudflareRulesetRule {
+  // The action to perform when the rule's expression matches.
+  enum Action {
+    action_unspecified = 0;
+    // Override the origin server (used with http_request_origin phase).
+    route = 1;
+    // Block the request and return a custom response.
+    block = 2;
+    // Present a Cloudflare challenge page.
+    challenge = 3;
+    // Execute a managed ruleset.
+    execute = 4;
+    // Present a JavaScript challenge.
+    js_challenge = 5;
+    // Log the request without taking action.
+    log = 6;
+    // Present a managed challenge (Cloudflare decides JS or interactive).
+    managed_challenge = 7;
+    // Redirect the request to a different URL.
+    redirect = 8;
+    // Rewrite the request URI or headers.
+    rewrite = 9;
+    // Configure caching behavior for matching requests.
+    set_cache_settings = 10;
+    // Skip execution of other rulesets or products.
+    skip = 11;
+    // Compress the response body.
+    compress_response = 12;
+    // Assign a threat score to the request.
+    score = 13;
+  }
+
+  // Stable reference ID for the rule.
+  // Prevents Terraform from destroying and recreating the rule when its position changes.
+  string ref = 1;
+
+  // Cloudflare wirefilter expression that determines when this rule matches.
+  // Examples: "true" (match all), "http.request.uri.path eq \"/api\"",
+  // "ip.src ne 1.1.1.1", "not http.request.uri.path starts_with \"/static\"".
+  string expression = 2 [(buf.validate.field).string.min_len = 1];
+
+  // The action to perform when the expression matches.
+  Action action = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "action.not_unspecified"
+      message: "action must be specified"
+      expression: "this != 0"
+    }
+  ];
+
+  // Human-readable description of what this rule does.
+  string description = 4;
+
+  // Whether the rule is active.
+  // Default: true
+  optional bool enabled = 5 [(org.openmcf.shared.options.default) = "true"];
+
+  // Action-specific parameters. The applicable fields depend on the chosen action.
+  CloudflareRulesetActionParameters action_parameters = 6;
+}
+
+// CloudflareRulesetActionParameters contains configuration for rule actions.
+//
+// This is a flat structure matching the Cloudflare API. Not all fields apply to every
+// action type. Use only the fields relevant to your chosen action:
+//
+//   route:             origin, host_header, sni
+//   block:             response
+//   rewrite:           uri, headers
+//   redirect:          from_value
+//   skip:              phases, products, ruleset, rulesets
+//   execute:           id, overrides
+//   set_cache_settings: cache, edge_ttl, browser_ttl, serve_stale
+message CloudflareRulesetActionParameters {
+  // ---- Origin Rules (action: route) ----
+
+  // Override the Host header sent to the origin server.
+  string host_header = 1;
+
+  // Override the origin server that Cloudflare connects to.
+  CloudflareRulesetOrigin origin = 2;
+
+  // Override the SNI value used during TLS handshake with the origin.
+  CloudflareRulesetSni sni = 3;
+
+  // ---- Block (action: block) ----
+
+  // Custom response returned to the client when the request is blocked.
+  CloudflareRulesetResponse response = 4;
+
+  // ---- Rewrite (action: rewrite) ----
+
+  // URI rewrite configuration (path and/or query string).
+  CloudflareRulesetUri uri = 5;
+
+  // Header modifications. Key is the header name, value defines the operation.
+  map<string, CloudflareRulesetHeader> headers = 6;
+
+  // ---- Redirect (action: redirect) ----
+
+  // Redirect configuration with target URL and status code.
+  CloudflareRulesetFromValue from_value = 7;
+
+  // ---- Skip (action: skip) ----
+
+  // List of phases to skip (e.g., "http_request_firewall_managed").
+  repeated string phases = 8;
+
+  // List of Cloudflare products to skip (e.g., "zoneLockdown", "uaBlock", "waf").
+  repeated string products = 9;
+
+  // Single ruleset ID to skip.
+  string ruleset = 10;
+
+  // Multiple ruleset IDs to skip.
+  repeated string rulesets = 11;
+
+  // ---- Execute (action: execute) ----
+
+  // The ID of the managed ruleset to execute.
+  string id = 12;
+
+  // Overrides to apply when executing a managed ruleset.
+  CloudflareRulesetOverrides overrides = 13;
+
+  // ---- Cache (action: set_cache_settings) ----
+
+  // Whether to cache matching requests.
+  bool cache = 14;
+
+  // Edge TTL configuration (how long Cloudflare caches the response).
+  CloudflareRulesetEdgeTtl edge_ttl = 15;
+
+  // Browser TTL configuration (Cache-Control max-age sent to the client).
+  CloudflareRulesetBrowserTtl browser_ttl = 16;
+
+  // Controls serving stale content while revalidating with the origin.
+  CloudflareRulesetServeStale serve_stale = 17;
+}
+
+// CloudflareRulesetOrigin identifies the origin server to route traffic to.
+message CloudflareRulesetOrigin {
+  // Hostname or IP address of the origin server.
+  string host = 1;
+
+  // Port number on the origin server.
+  int32 port = 2;
+}
+
+// CloudflareRulesetSni overrides the Server Name Indication value for TLS.
+message CloudflareRulesetSni {
+  // The SNI hostname to present during the TLS handshake.
+  string value = 1;
+}
+
+// CloudflareRulesetResponse defines a custom HTTP response for block actions.
+message CloudflareRulesetResponse {
+  // HTTP status code to return (e.g., 403, 503).
+  int32 status_code = 1;
+
+  // Response body content.
+  string content = 2;
+
+  // MIME type of the response body (e.g., "text/plain", "application/json").
+  string content_type = 3;
+}
+
+// CloudflareRulesetUri configures URI rewrites for path and query string.
+message CloudflareRulesetUri {
+  // Path rewrite configuration.
+  CloudflareRulesetUriComponent path = 1;
+
+  // Query string rewrite configuration.
+  CloudflareRulesetUriComponent query = 2;
+}
+
+// CloudflareRulesetUriComponent defines a rewrite for a single URI component (path or query).
+// Exactly one of value or expression should be set.
+message CloudflareRulesetUriComponent {
+  // Static replacement value.
+  string value = 1;
+
+  // Dynamic expression that evaluates to the replacement value.
+  string expression = 2;
+}
+
+// CloudflareRulesetHeader defines a modification to an HTTP header.
+message CloudflareRulesetHeader {
+  // The operation to perform: "set", "add", or "remove".
+  string operation = 1;
+
+  // Static value for the header (used with "set" and "add" operations).
+  string value = 2;
+
+  // Dynamic expression that evaluates to the header value.
+  string expression = 3;
+}
+
+// CloudflareRulesetFromValue configures a redirect action.
+message CloudflareRulesetFromValue {
+  // The target URL to redirect to.
+  CloudflareRulesetTargetUrl target_url = 1;
+
+  // HTTP status code for the redirect (301, 302, 303, 307, or 308).
+  int32 status_code = 2;
+
+  // Whether to preserve the original query string in the redirect.
+  bool preserve_query_string = 3;
+}
+
+// CloudflareRulesetTargetUrl defines the destination for a redirect.
+// Exactly one of value or expression should be set.
+message CloudflareRulesetTargetUrl {
+  // Static target URL.
+  string value = 1;
+
+  // Dynamic expression that evaluates to the target URL.
+  string expression = 2;
+}
+
+// CloudflareRulesetOverrides configures overrides when executing a managed ruleset.
+message CloudflareRulesetOverrides {
+  // Default action to apply to all rules in the managed ruleset.
+  string action = 1;
+
+  // Whether rules in the managed ruleset are enabled by default.
+  bool enabled = 2;
+
+  // Category-level overrides.
+  repeated CloudflareRulesetCategoryOverride categories = 3;
+
+  // Individual rule-level overrides.
+  repeated CloudflareRulesetRuleOverride rules = 4;
+
+  // Sensitivity level for all rules (e.g., "default", "medium", "low", "eoff").
+  string sensitivity_level = 5;
+}
+
+// CloudflareRulesetCategoryOverride overrides settings for a rule category in a managed ruleset.
+message CloudflareRulesetCategoryOverride {
+  // The category name (e.g., "wordpress", "xss", "sqli").
+  string category = 1;
+
+  // Action to apply to rules in this category.
+  string action = 2;
+
+  // Whether rules in this category are enabled.
+  bool enabled = 3;
+
+  // Sensitivity level for this category.
+  string sensitivity_level = 4;
+}
+
+// CloudflareRulesetRuleOverride overrides settings for a specific rule in a managed ruleset.
+message CloudflareRulesetRuleOverride {
+  // The rule ID within the managed ruleset.
+  string id = 1;
+
+  // Action to apply for this rule.
+  string action = 2;
+
+  // Whether this rule is enabled.
+  bool enabled = 3;
+
+  // Score threshold for this rule.
+  int32 score_threshold = 4;
+
+  // Sensitivity level for this rule.
+  string sensitivity_level = 5;
+}
+
+// CloudflareRulesetEdgeTtl configures how long Cloudflare caches responses at the edge.
+message CloudflareRulesetEdgeTtl {
+  // TTL mode: "override_origin" ignores origin Cache-Control, "respect_origin" honors it.
+  string mode = 1;
+
+  // Default TTL in seconds when mode is "override_origin".
+  int32 default_ttl = 2;
+
+  // Status code-specific TTL overrides.
+  repeated CloudflareRulesetStatusCodeTtl status_code_ttls = 3;
+}
+
+// CloudflareRulesetStatusCodeTtl defines a TTL for a specific status code or range.
+message CloudflareRulesetStatusCodeTtl {
+  // TTL value in seconds.
+  int32 value = 1;
+
+  // Specific HTTP status code (e.g., 200, 404). Use this or status_code_range, not both.
+  int32 status_code = 2;
+
+  // Range of HTTP status codes. Use this or status_code, not both.
+  CloudflareRulesetStatusCodeRange status_code_range = 3;
+}
+
+// CloudflareRulesetStatusCodeRange defines an inclusive range of HTTP status codes.
+message CloudflareRulesetStatusCodeRange {
+  // Start of the range (inclusive).
+  int32 from = 1;
+
+  // End of the range (inclusive).
+  int32 to = 2;
+}
+
+// CloudflareRulesetBrowserTtl configures the Cache-Control max-age sent to clients.
+message CloudflareRulesetBrowserTtl {
+  // TTL mode: "override_origin" ignores origin Cache-Control, "respect_origin" honors it.
+  string mode = 1;
+
+  // Default TTL in seconds when mode is "override_origin".
+  int32 default_ttl = 2;
+}
+
+// CloudflareRulesetServeStale controls behavior when cached content is stale.
+message CloudflareRulesetServeStale {
+  // When true, Cloudflare will not serve stale content while revalidating.
+  bool disable_stale_while_updating = 1;
+}
