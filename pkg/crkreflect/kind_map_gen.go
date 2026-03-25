@@ -165,6 +165,7 @@ import (
 	cloudflarekvnamespacev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarekvnamespace/v1"
 	cloudflareloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareloadbalancer/v1"
 	cloudflarer2bucketv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarer2bucket/v1"
+	cloudflarerulesetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareruleset/v1"
 	cloudflareworkerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareworker/v1"
 	cloudflarezerotrustaccessapplicationv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarezerotrustaccessapplication/v1"
 	confluentkafkav1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/confluent/confluentkafka/v1"
@@ -564,6 +565,7 @@ var ProviderCloudflareMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 	cloudresourcekind.CloudResourceKind_CloudflareKvNamespace:                &cloudflarekvnamespacev1.CloudflareKvNamespace{},
 	cloudresourcekind.CloudResourceKind_CloudflareLoadBalancer:               &cloudflareloadbalancerv1.CloudflareLoadBalancer{},
 	cloudresourcekind.CloudResourceKind_CloudflareR2Bucket:                   &cloudflarer2bucketv1.CloudflareR2Bucket{},
+	cloudresourcekind.CloudResourceKind_CloudflareRuleset:                    &cloudflarerulesetv1.CloudflareRuleset{},
 	cloudresourcekind.CloudResourceKind_CloudflareWorker:                     &cloudflareworkerv1.CloudflareWorker{},
 	cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessApplication: &cloudflarezerotrustaccessapplicationv1.CloudflareZeroTrustAccessApplication{},
 }
