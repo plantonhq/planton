@@ -52,6 +52,7 @@ The following 20 rules execute in order. Each rule is atomic and can be run indi
      handles defaults centrally. This eliminates defensive default logic in IaC modules.
 2. **002-spec-validate** - Add buf.validate rules and CEL validations
    - Also verifies that all identified defaults carry the formal `optional` + default field option.
+   - **Every CEL `message` must be a user-facing, empathetic string** -- see `.cursor/info/spec_validate.md` "Validation Message Philosophy". These messages are rendered directly in UIs and CLIs. Write them like a knowledgeable colleague, not a compiler.
 3. **003-spec-tests** - Generate spec_test.go with validation tests
 4. **004-stack-outputs** - Generate stack_outputs.proto (deployment outputs)
 5. **005-api** - Generate api.proto (KRM wiring: metadata/spec/status)
@@ -150,6 +151,7 @@ If score is lower, the audit report will identify gaps and suggest fixes.
 After forge completes, the component should have:
 
 ✅ All 4 proto files with validations
+✅ **Every CEL message is user-facing quality** (clear, actionable, empathetic -- see `.cursor/info/spec_validate.md`)
 ✅ Generated .pb.go stubs
 ✅ spec_test.go with validation tests
 ✅ **Component tests execute and pass** (validates buf.validate rules)

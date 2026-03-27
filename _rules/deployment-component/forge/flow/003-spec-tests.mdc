@@ -39,6 +39,7 @@ SUCCESS CRITERIA
 - `spec_test.go` exists and compiles.
 - `go test` for the resource passes with both positive and negative cases.
 - CEL expressions are robust (no runtime panics) and enforce intended constraints.
+- While writing tests, verify each CEL `message` meets the quality standard in `.cursor/info/spec_validate.md` "Validation Message Philosophy". If you find a terse or generic message during test authoring (e.g., "required", "invalid", raw regex), fix the message in `spec.proto` via the validate rule before proceeding. Tests are the last line of defense for message quality.
 
 TESTING OPTIONAL FIELDS
 - Fields with `(org.openmcf.shared.options.default)` are marked `optional`

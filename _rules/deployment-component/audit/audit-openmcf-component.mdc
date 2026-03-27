@@ -94,6 +94,15 @@ For each category, check files and record results. Use the following structure t
 - [ ] `stack_input.pb.go` exists
 - [ ] `stack_outputs.pb.go` exists
 
+**Validation Message Quality (scored as part of Proto Files):**
+- [ ] Every CEL `message` in `spec.proto` is a complete, user-facing sentence (not terse: "required", "invalid")
+- [ ] Regex patterns are explained in plain English in the message, with the raw regex in a code comment
+- [ ] Conditional rules explain both the condition and the requirement (e.g., "X is required when Y is enabled")
+- [ ] No messages shorter than 5 words or containing raw regex as the primary text
+- [ ] Messages use the field's semantic purpose (e.g., "Image repository") not proto path names (e.g., "this.repo")
+
+**Reference:** See `.cursor/info/spec_validate.md` "Validation Message Philosophy" for the full quality standard.
+
 **Unit Tests - File Presence (2.77%):**
 - [ ] `spec_test.go` exists and is non-empty (>500 bytes)
 - [ ] File contains test functions for validation rules
@@ -724,6 +733,13 @@ To complete missing items, consider running these forge rules in sequence:
 - [x/  ] Unique id_prefix
 - [x/  ] Complete metadata
 - [x/  ] Kubernetes metadata (if applicable)
+
+#### Validation Message Quality (part of Proto Files score)
+- [x/  ] Every CEL `message` is a complete, actionable sentence
+- [x/  ] No raw regex in user-facing messages (regex in comments, plain English in messages)
+- [x/  ] Conditional rules explain both condition and requirement
+- [x/  ] No messages shorter than 5 words
+- [x/  ] Messages use semantic field names, not proto path names
 
 <Continue for all categories>
 

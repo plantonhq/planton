@@ -29,10 +29,26 @@ SEQUENTIAL STEPS
 3) Write+Build: `cat <<'PROTO' | python3 _rules/deployment-component/_scripts/spec_proto_write_and_build.py --provider <provider> --kindfolder <kindfolder> --stdin | cat`
    - If `build_succeeded` is false, refine validations and retry (≤3).
 
+VALIDATION MESSAGE QUALITY (NON-NEGOTIABLE)
+
+Every CEL `message` string you write will be read by a human configuring this component. You are not a compiler emitting errors -- you are a knowledgeable colleague reviewing their configuration and guiding them to success.
+
+Before writing any message, read the "Validation Message Philosophy" section in `.cursor/info/spec_validate.md`. This is mandatory, not optional.
+
+Quick checklist for every `message:` string:
+- Is it a complete sentence a non-expert can act on? (not "required" or "invalid")
+- Does it explain the constraint in plain English? (not raw regex)
+- For regex patterns: is the regex in a code comment with the human description in the message?
+- For conditional rules: does it explain WHEN and WHY?
+- Would you be proud of this message if a developer saw it in their first hour using this component?
+
+Reject and rewrite any message that is terse, generic, or exposes implementation details.
+
 SUCCESS
 - Build succeeds with validations (`build_succeeded: true`).
 - No schema changes.
 - Validations present for core fields and important constraints.
+- Every CEL `message` is a clear, actionable, user-facing string (see quality checklist above).
 
 OUTPUT
 - Show created/updated path and key JSON fields from tools.
