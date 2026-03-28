@@ -30,14 +30,3 @@ message StringValueOrRef {
     ValueFromRef value_from = 2;
   }
 }
-
-// Oneof-based message for int32 literal vs. reference
-message Int32ValueOrRef {
-  oneof literal_or_ref {
-    // A literal int value:
-    int32 value = 1;
-
-    // A reference to another resource’s field:
-    ValueFromRef value_from = 2;
-  }
-}

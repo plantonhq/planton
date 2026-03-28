@@ -178,91 +178,6 @@ func (*StringValueOrRef_Value) isStringValueOrRef_LiteralOrRef() {}
 
 func (*StringValueOrRef_ValueFrom) isStringValueOrRef_LiteralOrRef() {}
 
-// Oneof-based message for int32 literal vs. reference
-type Int32ValueOrRef struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Types that are valid to be assigned to LiteralOrRef:
-	//
-	//	*Int32ValueOrRef_Value
-	//	*Int32ValueOrRef_ValueFrom
-	LiteralOrRef  isInt32ValueOrRef_LiteralOrRef `protobuf_oneof:"literal_or_ref"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Int32ValueOrRef) Reset() {
-	*x = Int32ValueOrRef{}
-	mi := &file_org_openmcf_shared_foreignkey_v1_foreign_key_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Int32ValueOrRef) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Int32ValueOrRef) ProtoMessage() {}
-
-func (x *Int32ValueOrRef) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_shared_foreignkey_v1_foreign_key_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Int32ValueOrRef.ProtoReflect.Descriptor instead.
-func (*Int32ValueOrRef) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_shared_foreignkey_v1_foreign_key_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *Int32ValueOrRef) GetLiteralOrRef() isInt32ValueOrRef_LiteralOrRef {
-	if x != nil {
-		return x.LiteralOrRef
-	}
-	return nil
-}
-
-func (x *Int32ValueOrRef) GetValue() int32 {
-	if x != nil {
-		if x, ok := x.LiteralOrRef.(*Int32ValueOrRef_Value); ok {
-			return x.Value
-		}
-	}
-	return 0
-}
-
-func (x *Int32ValueOrRef) GetValueFrom() *ValueFromRef {
-	if x != nil {
-		if x, ok := x.LiteralOrRef.(*Int32ValueOrRef_ValueFrom); ok {
-			return x.ValueFrom
-		}
-	}
-	return nil
-}
-
-type isInt32ValueOrRef_LiteralOrRef interface {
-	isInt32ValueOrRef_LiteralOrRef()
-}
-
-type Int32ValueOrRef_Value struct {
-	// A literal int value:
-	Value int32 `protobuf:"varint,1,opt,name=value,proto3,oneof"`
-}
-
-type Int32ValueOrRef_ValueFrom struct {
-	// A reference to another resource’s field:
-	ValueFrom *ValueFromRef `protobuf:"bytes,2,opt,name=value_from,json=valueFrom,proto3,oneof"`
-}
-
-func (*Int32ValueOrRef_Value) isInt32ValueOrRef_LiteralOrRef() {}
-
-func (*Int32ValueOrRef_ValueFrom) isInt32ValueOrRef_LiteralOrRef() {}
-
 var file_org_openmcf_shared_foreignkey_v1_foreign_key_proto_extTypes = []protoimpl.ExtensionInfo{
 	{
 		ExtendedType:  (*descriptorpb.FieldOptions)(nil),
@@ -305,11 +220,6 @@ const file_org_openmcf_shared_foreignkey_v1_foreign_key_proto_rawDesc = "" +
 	"\x05value\x18\x01 \x01(\tH\x00R\x05value\x12O\n" +
 	"\n" +
 	"value_from\x18\x02 \x01(\v2..org.openmcf.shared.foreignkey.v1.ValueFromRefH\x00R\tvalueFromB\x10\n" +
-	"\x0eliteral_or_ref\"\x8c\x01\n" +
-	"\x0fInt32ValueOrRef\x12\x16\n" +
-	"\x05value\x18\x01 \x01(\x05H\x00R\x05value\x12O\n" +
-	"\n" +
-	"value_from\x18\x02 \x01(\v2..org.openmcf.shared.foreignkey.v1.ValueFromRefH\x00R\tvalueFromB\x10\n" +
 	"\x0eliteral_or_ref:{\n" +
 	"\fdefault_kind\x12\x1d.google.protobuf.FieldOptions\x18\xc1\x9a\f \x01(\x0e27.org.openmcf.shared.cloudresourcekind.CloudResourceKindR\vdefaultKind:V\n" +
 	"\x17default_kind_field_path\x12\x1d.google.protobuf.FieldOptions\x18\u009a\f \x01(\tR\x14defaultKindFieldPathB\xad\x02\n" +
@@ -327,26 +237,24 @@ func file_org_openmcf_shared_foreignkey_v1_foreign_key_proto_rawDescGZIP() []byt
 	return file_org_openmcf_shared_foreignkey_v1_foreign_key_proto_rawDescData
 }
 
-var file_org_openmcf_shared_foreignkey_v1_foreign_key_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_org_openmcf_shared_foreignkey_v1_foreign_key_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_shared_foreignkey_v1_foreign_key_proto_goTypes = []any{
 	(*ValueFromRef)(nil),                     // 0: org.openmcf.shared.foreignkey.v1.ValueFromRef
 	(*StringValueOrRef)(nil),                 // 1: org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	(*Int32ValueOrRef)(nil),                  // 2: org.openmcf.shared.foreignkey.v1.Int32ValueOrRef
-	(cloudresourcekind.CloudResourceKind)(0), // 3: org.openmcf.shared.cloudresourcekind.CloudResourceKind
-	(*descriptorpb.FieldOptions)(nil),        // 4: google.protobuf.FieldOptions
+	(cloudresourcekind.CloudResourceKind)(0), // 2: org.openmcf.shared.cloudresourcekind.CloudResourceKind
+	(*descriptorpb.FieldOptions)(nil),        // 3: google.protobuf.FieldOptions
 }
 var file_org_openmcf_shared_foreignkey_v1_foreign_key_proto_depIdxs = []int32{
-	3, // 0: org.openmcf.shared.foreignkey.v1.ValueFromRef.kind:type_name -> org.openmcf.shared.cloudresourcekind.CloudResourceKind
+	2, // 0: org.openmcf.shared.foreignkey.v1.ValueFromRef.kind:type_name -> org.openmcf.shared.cloudresourcekind.CloudResourceKind
 	0, // 1: org.openmcf.shared.foreignkey.v1.StringValueOrRef.value_from:type_name -> org.openmcf.shared.foreignkey.v1.ValueFromRef
-	0, // 2: org.openmcf.shared.foreignkey.v1.Int32ValueOrRef.value_from:type_name -> org.openmcf.shared.foreignkey.v1.ValueFromRef
-	4, // 3: org.openmcf.shared.foreignkey.v1.default_kind:extendee -> google.protobuf.FieldOptions
-	4, // 4: org.openmcf.shared.foreignkey.v1.default_kind_field_path:extendee -> google.protobuf.FieldOptions
-	3, // 5: org.openmcf.shared.foreignkey.v1.default_kind:type_name -> org.openmcf.shared.cloudresourcekind.CloudResourceKind
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	5, // [5:6] is the sub-list for extension type_name
-	3, // [3:5] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	3, // 2: org.openmcf.shared.foreignkey.v1.default_kind:extendee -> google.protobuf.FieldOptions
+	3, // 3: org.openmcf.shared.foreignkey.v1.default_kind_field_path:extendee -> google.protobuf.FieldOptions
+	2, // 4: org.openmcf.shared.foreignkey.v1.default_kind:type_name -> org.openmcf.shared.cloudresourcekind.CloudResourceKind
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	4, // [4:5] is the sub-list for extension type_name
+	2, // [2:4] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_shared_foreignkey_v1_foreign_key_proto_init() }
@@ -358,17 +266,13 @@ func file_org_openmcf_shared_foreignkey_v1_foreign_key_proto_init() {
 		(*StringValueOrRef_Value)(nil),
 		(*StringValueOrRef_ValueFrom)(nil),
 	}
-	file_org_openmcf_shared_foreignkey_v1_foreign_key_proto_msgTypes[2].OneofWrappers = []any{
-		(*Int32ValueOrRef_Value)(nil),
-		(*Int32ValueOrRef_ValueFrom)(nil),
-	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_shared_foreignkey_v1_foreign_key_proto_rawDesc), len(file_org_openmcf_shared_foreignkey_v1_foreign_key_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   2,
 			NumExtensions: 2,
 			NumServices:   0,
 		},
