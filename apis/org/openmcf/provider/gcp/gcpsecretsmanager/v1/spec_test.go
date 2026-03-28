@@ -163,9 +163,15 @@ var _ = ginkgo.Describe("GcpSecretsManagerSpec Custom Validation Tests", func() 
 				gomega.Expect(err.Error()).To(gomega.ContainSubstring("project_id"))
 			})
 
-			// Note: An empty StringValueOrRef passes proto validation (it's not nil).
-			// Runtime validation should check that either value or value_from is set.
-			ginkgo.It("should pass proto validation with empty StringValueOrRef (runtime validation handles oneof)", func() {
+			// HISTORY: This test originally asserted BeNil() — documenting that an empty
+			// StringValueOrRef passed proto validation because `required = true` only
+			// checked message presence, not content. A message-level CEL rule was added
+			// to StringValueOrRef (id: "string_value_or_ref.non_empty") to fix this.
+			// The assertion is now inverted to reflect the corrected behavior.
+			//
+			// Comprehensive boundary tests for the CEL rule live on the permanent test
+			// resource at _test/testcloudresourceone/v1/spec_test.go, not here.
+			ginkgo.It("should return a validation error with empty StringValueOrRef (CEL rule rejects empty content)", func() {
 				input := &GcpSecretsManager{
 					ApiVersion: "gcp.openmcf.org/v1",
 					Kind:       "GcpSecretsManager",
@@ -176,10 +182,8 @@ var _ = ginkgo.Describe("GcpSecretsManagerSpec Custom Validation Tests", func() 
 						ProjectId: &foreignkeyv1.StringValueOrRef{},
 					},
 				}
-				// Proto validation passes because the field is not nil
-				// Runtime/IAC code should validate that GetValue() returns non-empty
 				err := protovalidate.Validate(input)
-				gomega.Expect(err).To(gomega.BeNil())
+				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 
 			ginkgo.It("should return a validation error when spec is nil", func() {

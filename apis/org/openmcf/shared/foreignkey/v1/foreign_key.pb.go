@@ -93,7 +93,18 @@ func (x *ValueFromRef) GetFieldPath() string {
 	return ""
 }
 
-// Oneof-based message for string literal vs. reference
+// StringValueOrRef holds either a literal string or a reference to another resource's field.
+//
+// A message-level CEL rule enforces that whenever this message is present, it must carry
+// meaningful content: either a non-empty literal value or a ValueFromRef. This matters because
+// buf.validate's `required = true` on a message-type field only checks presence (not nil) --
+// it does NOT verify the oneof has content. Without this rule, a consumer field like
+// `StringValueOrRef namespace = 2 [(buf.validate.field).required = true]` would accept
+// `namespace: { value: "" }` (message present, oneof set to empty string) as valid.
+//
+// The rule fires on ANY instance of StringValueOrRef regardless of the consumer field's
+// annotations. For optional fields, the only way to bypass this validation is to leave the
+// field nil (absent). If the message is present, it must have content.
 type StringValueOrRef struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Types that are valid to be assigned to LiteralOrRef:
@@ -165,12 +176,12 @@ type isStringValueOrRef_LiteralOrRef interface {
 }
 
 type StringValueOrRef_Value struct {
-	// A literal string value:
+	// A literal string value (must be non-empty per the message-level CEL rule above):
 	Value string `protobuf:"bytes,1,opt,name=value,proto3,oneof"`
 }
 
 type StringValueOrRef_ValueFrom struct {
-	// A reference to another resource’s field:
+	// A reference to another resource's field:
 	ValueFrom *ValueFromRef `protobuf:"bytes,2,opt,name=value_from,json=valueFrom,proto3,oneof"`
 }
 
@@ -215,11 +226,12 @@ const file_org_openmcf_shared_foreignkey_v1_foreign_key_proto_rawDesc = "" +
 	"\x03env\x18\x02 \x01(\tR\x03env\x12\x1a\n" +
 	"\x04name\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12\x1d\n" +
 	"\n" +
-	"field_path\x18\x04 \x01(\tR\tfieldPath\"\x8d\x01\n" +
+	"field_path\x18\x04 \x01(\tR\tfieldPath\"\xb1\x02\n" +
 	"\x10StringValueOrRef\x12\x16\n" +
 	"\x05value\x18\x01 \x01(\tH\x00R\x05value\x12O\n" +
 	"\n" +
-	"value_from\x18\x02 \x01(\v2..org.openmcf.shared.foreignkey.v1.ValueFromRefH\x00R\tvalueFromB\x10\n" +
+	"value_from\x18\x02 \x01(\v2..org.openmcf.shared.foreignkey.v1.ValueFromRefH\x00R\tvalueFrom:\xa1\x01\xbaH\x9d\x01\x1a\x9a\x01\n" +
+	"\x1dstring_value_or_ref.non_empty\x12:a non-empty value or a resource reference must be provided\x1a=(has(this.value) && this.value != '') || has(this.value_from)B\x10\n" +
 	"\x0eliteral_or_ref:{\n" +
 	"\fdefault_kind\x12\x1d.google.protobuf.FieldOptions\x18\xc1\x9a\f \x01(\x0e27.org.openmcf.shared.cloudresourcekind.CloudResourceKindR\vdefaultKind:V\n" +
 	"\x17default_kind_field_path\x12\x1d.google.protobuf.FieldOptions\x18\u009a\f \x01(\tR\x14defaultKindFieldPathB\xad\x02\n" +

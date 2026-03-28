@@ -19,6 +19,8 @@ go_test(
     srcs = ["foreign_key_test.go"],
     embed = [":foreignkey"],
     deps = [
+        "//apis/org/openmcf/provider/_test/testcloudresourceone/v1:testcloudresourceone",
+        "//apis/org/openmcf/shared",
         "//apis/org/openmcf/shared/cloudresourcekind",
         "@build_buf_go_protovalidate//:protovalidate",
         "@com_github_onsi_ginkgo_v2//:ginkgo",
