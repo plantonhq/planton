@@ -7,6 +7,8 @@
 package testcloudresourceonev1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -39,7 +41,13 @@ type TestCloudResourceOneSpec struct {
 	// Bool field with default
 	BoolField *bool `protobuf:"varint,9,opt,name=bool_field,json=boolField,proto3,oneof" json:"bool_field,omitempty"`
 	// Nested message with defaults
-	Nested        *TestNestedMessage `protobuf:"bytes,10,opt,name=nested,proto3" json:"nested,omitempty"`
+	Nested *TestNestedMessage `protobuf:"bytes,10,opt,name=nested,proto3" json:"nested,omitempty"`
+	// A StringValueOrRef with required = true. Mirrors real-world usage like
+	// KubernetesDeploymentSpec.namespace, AwsEcsServiceSpec.cluster_arn, etc.
+	RequiredRef *v1.StringValueOrRef `protobuf:"bytes,11,opt,name=required_ref,json=requiredRef,proto3" json:"required_ref,omitempty"`
+	// A StringValueOrRef WITHOUT required. Proves the CEL rule fires on message
+	// presence alone. nil = skip validation, present = must have content.
+	OptionalRef   *v1.StringValueOrRef `protobuf:"bytes,12,opt,name=optional_ref,json=optionalRef,proto3" json:"optional_ref,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,6 +152,20 @@ func (x *TestCloudResourceOneSpec) GetNested() *TestNestedMessage {
 	return nil
 }
 
+func (x *TestCloudResourceOneSpec) GetRequiredRef() *v1.StringValueOrRef {
+	if x != nil {
+		return x.RequiredRef
+	}
+	return nil
+}
+
+func (x *TestCloudResourceOneSpec) GetOptionalRef() *v1.StringValueOrRef {
+	if x != nil {
+		return x.OptionalRef
+	}
+	return nil
+}
+
 // TestNestedMessage tests nested message defaults
 type TestNestedMessage struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -201,7 +223,7 @@ var File_org_openmcf_provider__test_testcloudresourceone_v1_spec_proto protorefl
 
 const file_org_openmcf_provider__test_testcloudresourceone_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"=org/openmcf/provider/_test/testcloudresourceone/v1/spec.proto\x122org.openmcf.provider._test.testcloudresourceone.v1\x1a(org/openmcf/shared/options/options.proto\"\xb7\x05\n" +
+	"=org/openmcf/provider/_test/testcloudresourceone/v1/spec.proto\x122org.openmcf.provider._test.testcloudresourceone.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xed\x06\n" +
 	"\x18TestCloudResourceOneSpec\x12:\n" +
 	"\fstring_field\x18\x01 \x01(\tB\x12\x8a\xa6\x1d\x0edefault-stringH\x00R\vstringField\x88\x01\x01\x12*\n" +
 	"\x11string_no_default\x18\x02 \x01(\tR\x0fstringNoDefault\x12,\n" +
@@ -217,7 +239,9 @@ const file_org_openmcf_provider__test_testcloudresourceone_v1_spec_proto_rawDesc
 	"\n" +
 	"bool_field\x18\t \x01(\bB\b\x8a\xa6\x1d\x04trueH\aR\tboolField\x88\x01\x01\x12]\n" +
 	"\x06nested\x18\n" +
-	" \x01(\v2E.org.openmcf.provider._test.testcloudresourceone.v1.TestNestedMessageR\x06nestedB\x0f\n" +
+	" \x01(\v2E.org.openmcf.provider._test.testcloudresourceone.v1.TestNestedMessageR\x06nested\x12]\n" +
+	"\frequired_ref\x18\v \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\vrequiredRef\x12U\n" +
+	"\foptional_ref\x18\f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\voptionalRefB\x0f\n" +
 	"\r_string_fieldB\x0e\n" +
 	"\f_int32_fieldB\x0e\n" +
 	"\f_int64_fieldB\x0f\n" +
@@ -250,14 +274,17 @@ var file_org_openmcf_provider__test_testcloudresourceone_v1_spec_proto_msgTypes 
 var file_org_openmcf_provider__test_testcloudresourceone_v1_spec_proto_goTypes = []any{
 	(*TestCloudResourceOneSpec)(nil), // 0: org.openmcf.provider._test.testcloudresourceone.v1.TestCloudResourceOneSpec
 	(*TestNestedMessage)(nil),        // 1: org.openmcf.provider._test.testcloudresourceone.v1.TestNestedMessage
+	(*v1.StringValueOrRef)(nil),      // 2: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider__test_testcloudresourceone_v1_spec_proto_depIdxs = []int32{
 	1, // 0: org.openmcf.provider._test.testcloudresourceone.v1.TestCloudResourceOneSpec.nested:type_name -> org.openmcf.provider._test.testcloudresourceone.v1.TestNestedMessage
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 1: org.openmcf.provider._test.testcloudresourceone.v1.TestCloudResourceOneSpec.required_ref:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	2, // 2: org.openmcf.provider._test.testcloudresourceone.v1.TestCloudResourceOneSpec.optional_ref:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider__test_testcloudresourceone_v1_spec_proto_init() }

@@ -114,13 +114,16 @@ var _ = Describe("GcpCloudSqlSpec validations", func() {
 			Expect(err).NotTo(BeNil())
 		})
 
-		It("accepts project_id with empty value (validation happens at resolution)", func() {
+		// HISTORY: This test originally asserted BeNil() — documenting that an empty
+		// StringValueOrRef passed proto validation because `required = true` only
+		// checked message presence, not content. A message-level CEL rule was added
+		// to StringValueOrRef (id: "string_value_or_ref.non_empty") to fix this.
+		// The assertion is now inverted to reflect the corrected behavior.
+		It("rejects project_id with empty value (CEL rule on StringValueOrRef)", func() {
 			spec := makeValidSpec()
 			spec.ProjectId = strVal("")
 			err := protovalidate.Validate(spec)
-			// Note: Empty value is allowed at proto validation level
-			// Actual validation happens during value resolution
-			Expect(err).To(BeNil())
+			Expect(err).NotTo(BeNil())
 		})
 	})
 

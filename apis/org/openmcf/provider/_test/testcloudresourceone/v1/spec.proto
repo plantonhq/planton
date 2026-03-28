@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package org.openmcf.provider._test.testcloudresourceone.v1;
 
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
 //TestCloudResourceOneSpec defines test configuration with comprehensive default values
@@ -25,6 +27,36 @@ message TestCloudResourceOneSpec {
 
   // Nested message with defaults
   TestNestedMessage nested = 10;
+
+  // ─── StringValueOrRef validation test fields ──────────────────────────────────
+  //
+  // These two fields exist to provide durable boundary-test coverage for the
+  // message-level CEL rule on StringValueOrRef (see foreign_key.proto).
+  //
+  // WHY HERE AND NOT ON A PRODUCTION RESOURCE:
+  // Production resources (KubernetesDeployment, GcpSecretsManager, etc.) may be
+  // removed or refactored over time. If boundary tests lived only on those resources,
+  // the institutional knowledge encoded in the tests would silently vanish with them.
+  // TestCloudResourceOne is permanent test infrastructure -- these tests survive
+  // regardless of which production resources come and go.
+  //
+  // WHY TWO FIELDS:
+  // - required_ref: Tests the interaction of `(buf.validate.field).required = true`
+  //   with StringValueOrRef's message-level CEL rule. This is the exact combination
+  //   that caused the false-positive: `required` checks message presence, but the CEL
+  //   rule now also checks content.
+  // - optional_ref: Tests the opposite -- a StringValueOrRef without `required`. This
+  //   proves the CEL rule fires on message PRESENCE, not on the field annotation. When
+  //   the field is nil (absent), validation passes. When the message is present, the
+  //   CEL rule fires regardless of whether the field is marked required.
+
+  // A StringValueOrRef with required = true. Mirrors real-world usage like
+  // KubernetesDeploymentSpec.namespace, AwsEcsServiceSpec.cluster_arn, etc.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef required_ref = 11 [(buf.validate.field).required = true];
+
+  // A StringValueOrRef WITHOUT required. Proves the CEL rule fires on message
+  // presence alone. nil = skip validation, present = must have content.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef optional_ref = 12;
 }
 
 //TestNestedMessage tests nested message defaults

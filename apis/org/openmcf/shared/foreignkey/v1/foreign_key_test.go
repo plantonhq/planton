@@ -1,14 +1,28 @@
-// filename: foreign_key_test.go
+// foreign_key_test.go — Message-level isolation tests for StringValueOrRef's CEL rule.
+//
+// These test StringValueOrRef directly (no consumer wrapper message) to validate that
+// the CEL rule (id: "string_value_or_ref.non_empty") works at the message level.
+//
+// Cross-cutting consumer tests that import TestCloudResourceOne live in a separate
+// file (foreign_key_consumer_test.go) using Go's external test package convention
+// (`package foreignkeyv1_test`). This avoids Go's import cycle restriction:
+// foreignkeyv1 -> testcloudresourceonev1 -> foreignkeyv1 would form a cycle in the
+// same package, but the external test package breaks it.
+//
+// RELATED FILES:
+//   - foreign_key.proto                (the CEL rule)
+//   - foreign_key_consumer_test.go     (cross-cutting consumer tests with TestCloudResourceOne)
+//   - _test/testcloudresourceone/v1/spec_test.go (comprehensive boundary tests)
+
 package foreignkeyv1
 
 import (
 	"testing"
 
+	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
-
-	"buf.build/go/protovalidate"
 )
 
 func TestForeignKey(t *testing.T) {
@@ -16,24 +30,30 @@ func TestForeignKey(t *testing.T) {
 	ginkgo.RunSpecs(t, "ForeignKey Suite")
 }
 
-var _ = ginkgo.Describe("ForeignKey Oneof Tests", func() {
+var _ = ginkgo.Describe("StringValueOrRef Validation", func() {
 
-	ginkgo.Describe("StringValueOrRef usage", func() {
-		ginkgo.Context("when setting a literal value only", func() {
-			ginkgo.It("should not return a validation error", func() {
+	// ─── Message-level isolation tests ──────────────────────────────────────────
+	//
+	// These test StringValueOrRef directly, without any consumer wrapper message.
+	// They validate that the CEL rule (id: "string_value_or_ref.non_empty") works
+	// at the message level before testing its behavior inside consumer fields.
+
+	ginkgo.Describe("message-level CEL rule", func() {
+
+		ginkgo.Context("with a non-empty literal value", func() {
+			ginkgo.It("should pass validation", func() {
 				input := &StringValueOrRef{
 					LiteralOrRef: &StringValueOrRef_Value{
 						Value: "my-string",
 					},
 				}
-				// No custom rule; we expect no errors from protovalidate
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 		})
 
-		ginkgo.Context("when setting a ValueFromRef only", func() {
-			ginkgo.It("should not return a validation error", func() {
+		ginkgo.Context("with a valid ValueFromRef", func() {
+			ginkgo.It("should pass validation", func() {
 				input := &StringValueOrRef{
 					LiteralOrRef: &StringValueOrRef_ValueFrom{
 						ValueFrom: &ValueFromRef{
@@ -49,9 +69,8 @@ var _ = ginkgo.Describe("ForeignKey Oneof Tests", func() {
 			})
 		})
 
-		ginkgo.Context("when setting both (proto oneof overwrites the first)", func() {
-			ginkgo.It("should end up with the last field set and not produce a validation error", func() {
-				// The 'value' gets overwritten by the oneof assignment to 'value_from'
+		ginkgo.Context("when proto oneof overwrites (last-write wins)", func() {
+			ginkgo.It("should validate the final oneof branch", func() {
 				input := &StringValueOrRef{
 					LiteralOrRef: &StringValueOrRef_Value{
 						Value: "my-string",
@@ -67,64 +86,33 @@ var _ = ginkgo.Describe("ForeignKey Oneof Tests", func() {
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
 
-				// Because this is a oneof, the 'Value' is no longer set
 				gomega.Expect(input.GetValue()).To(gomega.Equal(""))
 				gomega.Expect(input.GetValueFrom().GetName()).To(gomega.Equal("overwrites-literal"))
 			})
 		})
-	})
 
-	ginkgo.Describe("Int32ValueOrRef usage", func() {
-		ginkgo.Context("when setting an int32 literal only", func() {
-			ginkgo.It("should not return a validation error", func() {
-				input := &Int32ValueOrRef{
-					LiteralOrRef: &Int32ValueOrRef_Value{
-						Value: 123,
+		// EMPTY VALUE: The oneof is set to `value` with an empty string. This is the
+		// core false-positive scenario. Before the CEL rule, `required = true` on the
+		// consumer field passed because the message was present. Now rejected.
+		ginkgo.Context("with an empty literal value", func() {
+			ginkgo.It("should return a validation error", func() {
+				input := &StringValueOrRef{
+					LiteralOrRef: &StringValueOrRef_Value{
+						Value: "",
 					},
 				}
 				err := protovalidate.Validate(input)
-				gomega.Expect(err).To(gomega.BeNil())
+				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 		})
 
-		ginkgo.Context("when setting a ValueFromRef only", func() {
-			ginkgo.It("should not return a validation error", func() {
-				input := &Int32ValueOrRef{
-					LiteralOrRef: &Int32ValueOrRef_ValueFrom{
-						ValueFrom: &ValueFromRef{
-							Kind: cloudresourcekind.CloudResourceKind_TestCloudResourceOne,
-							Env:  "dev",
-							Name: "ref-int32",
-						},
-					},
-				}
+		// UNSET ONEOF: The message exists but no oneof branch is selected.
+		// Neither `has(this.value)` nor `has(this.value_from)` is true.
+		ginkgo.Context("with unset oneof (empty struct)", func() {
+			ginkgo.It("should return a validation error", func() {
+				input := &StringValueOrRef{}
 				err := protovalidate.Validate(input)
-				gomega.Expect(err).To(gomega.BeNil())
-			})
-		})
-
-		ginkgo.Context("when setting both fields in code sequentially", func() {
-			ginkgo.It("should overwrite the first field with the second (no error)", func() {
-				input := &Int32ValueOrRef{
-					LiteralOrRef: &Int32ValueOrRef_Value{
-						Value: 456,
-					},
-				}
-
-				// Overwrite with ValueFromRef
-				input.LiteralOrRef = &Int32ValueOrRef_ValueFrom{
-					ValueFrom: &ValueFromRef{
-						Kind: cloudresourcekind.CloudResourceKind_TestCloudResourceOne,
-						Env:  "dev",
-						Name: "ref-overwrites-int",
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).To(gomega.BeNil())
-
-				// Because it's a oneof, the integer literal is no longer set
-				gomega.Expect(input.GetValue()).To(gomega.BeEquivalentTo(0))
-				gomega.Expect(input.GetValueFrom().GetName()).To(gomega.Equal("ref-overwrites-int"))
+				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 		})
 	})

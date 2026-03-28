@@ -20,13 +20,30 @@ message ValueFromRef {
   string field_path = 4;
 }
 
-// Oneof-based message for string literal vs. reference
+// StringValueOrRef holds either a literal string or a reference to another resource's field.
+//
+// A message-level CEL rule enforces that whenever this message is present, it must carry
+// meaningful content: either a non-empty literal value or a ValueFromRef. This matters because
+// buf.validate's `required = true` on a message-type field only checks presence (not nil) --
+// it does NOT verify the oneof has content. Without this rule, a consumer field like
+// `StringValueOrRef namespace = 2 [(buf.validate.field).required = true]` would accept
+// `namespace: { value: "" }` (message present, oneof set to empty string) as valid.
+//
+// The rule fires on ANY instance of StringValueOrRef regardless of the consumer field's
+// annotations. For optional fields, the only way to bypass this validation is to leave the
+// field nil (absent). If the message is present, it must have content.
 message StringValueOrRef {
+  option (buf.validate.message).cel = {
+    id: "string_value_or_ref.non_empty"
+    message: "a non-empty value or a resource reference must be provided"
+    expression: "(has(this.value) && this.value != '') || has(this.value_from)"
+  };
+
   oneof literal_or_ref {
-    // A literal string value:
+    // A literal string value (must be non-empty per the message-level CEL rule above):
     string value = 1;
 
-    // A reference to another resource’s field:
+    // A reference to another resource's field:
     ValueFromRef value_from = 2;
   }
 }
