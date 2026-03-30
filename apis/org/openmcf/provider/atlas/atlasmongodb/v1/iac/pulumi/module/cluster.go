@@ -7,26 +7,26 @@ import (
 )
 
 // createCluster creates a Atlas MongoDB advanced cluster with all configured parameters
-func createCluster(ctx *pulumi.Context, locals *Locals, provider *atlasmongodb.Provider) (*atlasmongodb.AdvancedCluster, error) {
+func createCluster(ctx *pulumi.Context, locals *Locals, provider *mongodbatlas.Provider) (*mongodbatlas.AdvancedCluster, error) {
 	// Determine region based on provider
 	// In a production implementation, this would come from the spec
 	// For now, we'll use default regions per provider
 	regionName := getDefaultRegion(locals.ProviderName)
 
 	// Build region configuration
-	regionConfig := &atlasmongodb.AdvancedClusterReplicationSpecRegionConfigArgs{
+	regionConfig := &mongodbatlas.AdvancedClusterReplicationSpecRegionConfigArgs{
 		ProviderName: pulumi.String(locals.ProviderName),
 		RegionName:   pulumi.String(regionName),
 		Priority:     pulumi.Int(int(locals.Priority)),
 
 		// Electable nodes configuration
-		ElectableSpecs: &atlasmongodb.AdvancedClusterReplicationSpecRegionConfigElectableSpecsArgs{
+		ElectableSpecs: &mongodbatlas.AdvancedClusterReplicationSpecRegionConfigElectableSpecsArgs{
 			InstanceSize: pulumi.String(locals.InstanceSize),
 			NodeCount:    pulumi.Int(int(locals.ElectableNodes)),
 		},
 
 		// Auto-scaling configuration
-		AutoScaling: &atlasmongodb.AdvancedClusterReplicationSpecRegionConfigAutoScalingArgs{
+		AutoScaling: &mongodbatlas.AdvancedClusterReplicationSpecRegionConfigAutoScalingArgs{
 			DiskGbEnabled:           pulumi.Bool(locals.AutoScalingEnabled),
 			ComputeEnabled:          pulumi.Bool(false),
 			ComputeScaleDownEnabled: pulumi.Bool(false),
@@ -35,25 +35,25 @@ func createCluster(ctx *pulumi.Context, locals *Locals, provider *atlasmongodb.P
 
 	// Add read-only specs if configured
 	if locals.ReadOnlyNodes > 0 {
-		regionConfig.ReadOnlySpecs = &atlasmongodb.AdvancedClusterReplicationSpecRegionConfigReadOnlySpecsArgs{
+		regionConfig.ReadOnlySpecs = &mongodbatlas.AdvancedClusterReplicationSpecRegionConfigReadOnlySpecsArgs{
 			InstanceSize: pulumi.String(locals.InstanceSize),
 			NodeCount:    pulumi.Int(int(locals.ReadOnlyNodes)),
 		}
 	}
 
 	// Build replication specs based on cluster configuration
-	replicationSpecs := atlasmongodb.AdvancedClusterReplicationSpecArray{
-		&atlasmongodb.AdvancedClusterReplicationSpecArgs{
+	replicationSpecs := mongodbatlas.AdvancedClusterReplicationSpecArray{
+		&mongodbatlas.AdvancedClusterReplicationSpecArgs{
 			// Number of shards - 1 for REPLICASET, more for SHARDED/GEOSHARDED
 			NumShards: pulumi.Int(getNumShards(locals.ClusterType)),
 
 			// Region configuration
-			RegionConfigs: atlasmongodb.AdvancedClusterReplicationSpecRegionConfigArray{regionConfig},
+			RegionConfigs: mongodbatlas.AdvancedClusterReplicationSpecRegionConfigArray{regionConfig},
 		},
 	}
 
 	// Build cluster arguments
-	clusterArgs := &atlasmongodb.AdvancedClusterArgs{
+	clusterArgs := &mongodbatlas.AdvancedClusterArgs{
 		ProjectId:           pulumi.String(locals.ProjectId),
 		Name:                pulumi.String(locals.ClusterName),
 		ClusterType:         pulumi.String(locals.ClusterType),
@@ -63,7 +63,7 @@ func createCluster(ctx *pulumi.Context, locals *Locals, provider *atlasmongodb.P
 	}
 
 	// Create the cluster resource
-	cluster, err := atlasmongodb.NewAdvancedCluster(ctx, locals.ClusterName, clusterArgs, pulumi.Provider(provider))
+	cluster, err := mongodbatlas.NewAdvancedCluster(ctx, locals.ClusterName, clusterArgs, pulumi.Provider(provider))
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to create Atlas MongoDB cluster %s", locals.ClusterName)
 	}

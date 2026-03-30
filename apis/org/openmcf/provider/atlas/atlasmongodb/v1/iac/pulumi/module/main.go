@@ -12,19 +12,19 @@ func Resources(ctx *pulumi.Context, stackInput *atlasmongodbv1.AtlasMongodbStack
 	locals := initializeLocals(ctx, stackInput)
 
 	// Setup Atlas MongoDB provider with credentials from provider config
-	var provider *atlasmongodb.Provider
+	var provider *mongodbatlas.Provider
 	var err error
 	providerConfig := stackInput.ProviderConfig
 
 	if providerConfig == nil {
 		// Use default provider (assumes credentials from environment)
-		provider, err = atlasmongodb.NewProvider(ctx, "atlasmongodb-provider", &atlasmongodb.ProviderArgs{})
+		provider, err = mongodbatlas.NewProvider(ctx, "atlasmongodb-provider", &mongodbatlas.ProviderArgs{})
 		if err != nil {
 			return errors.Wrap(err, "failed to create default Atlas MongoDB provider")
 		}
 	} else {
 		// Create provider with explicit credentials
-		provider, err = atlasmongodb.NewProvider(ctx, "atlasmongodb-provider", &atlasmongodb.ProviderArgs{
+		provider, err = mongodbatlas.NewProvider(ctx, "atlasmongodb-provider", &mongodbatlas.ProviderArgs{
 			PublicKey:  pulumi.String(providerConfig.PublicKey),
 			PrivateKey: pulumi.String(providerConfig.PrivateKey),
 		})

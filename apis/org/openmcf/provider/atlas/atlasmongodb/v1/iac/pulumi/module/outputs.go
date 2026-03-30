@@ -20,13 +20,13 @@ const (
 )
 
 // exportOutputs exports cluster information to Pulumi stack outputs
-func exportOutputs(ctx *pulumi.Context, cluster *atlasmongodb.AdvancedCluster, locals *Locals) error {
+func exportOutputs(ctx *pulumi.Context, cluster *mongodbatlas.AdvancedCluster, locals *Locals) error {
 	// Export required outputs matching stack_outputs.proto
 	ctx.Export(OpId, cluster.ID())
 
 	// Export connection strings with safe access
 	// The connection string is embedded in the ConnectionStrings array
-	ctx.Export(OpBootstrapUrl, cluster.ConnectionStrings.ApplyT(func(connections []atlasmongodb.AdvancedClusterConnectionString) string {
+	ctx.Export(OpBootstrapUrl, cluster.ConnectionStrings.ApplyT(func(connections []mongodbatlas.AdvancedClusterConnectionString) string {
 		if len(connections) > 0 && connections[0].StandardSrv != nil {
 			return *connections[0].StandardSrv
 		}
@@ -36,7 +36,7 @@ func exportOutputs(ctx *pulumi.Context, cluster *atlasmongodb.AdvancedCluster, l
 	// CRN is the cluster ID for Atlas MongoDB
 	ctx.Export(OpCrn, cluster.ClusterId)
 
-	ctx.Export(OpRestEndpoint, cluster.ConnectionStrings.ApplyT(func(connections []atlasmongodb.AdvancedClusterConnectionString) string {
+	ctx.Export(OpRestEndpoint, cluster.ConnectionStrings.ApplyT(func(connections []mongodbatlas.AdvancedClusterConnectionString) string {
 		if len(connections) > 0 && connections[0].Standard != nil {
 			return *connections[0].Standard
 		}
