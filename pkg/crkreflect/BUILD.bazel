@@ -57,7 +57,7 @@ go_library(
         "//apis/org/openmcf/provider/alicloud/alicloudvpc/v1:alicloudvpc",
         "//apis/org/openmcf/provider/alicloud/alicloudvpngateway/v1:alicloudvpngateway",
         "//apis/org/openmcf/provider/alicloud/alicloudvswitch/v1:alicloudvswitch",
-        "//apis/org/openmcf/provider/atlas/mongodbatlas/v1:mongodbatlas",
+        "//apis/org/openmcf/provider/atlas/atlasmongodb/v1:atlasmongodb",
         "//apis/org/openmcf/provider/auth0/auth0client/v1:auth0client",
         "//apis/org/openmcf/provider/auth0/auth0connection/v1:auth0connection",
         "//apis/org/openmcf/provider/auth0/auth0eventstream/v1:auth0eventstream",

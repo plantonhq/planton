@@ -65,10 +65,10 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "conkaf"
   }];
-  MongodbAtlas = 51 [(kind_meta) = {
+  AtlasMongodb = 51 [(kind_meta) = {
     provider: atlas
     version: v1
-    id_prefix: "mdbatl"
+    id_prefix: "atlmdb"
   }];
   SnowflakeDatabase = 52 [(kind_meta) = {
     provider: snowflake

@@ -42,7 +42,7 @@ import (
 	alicloudvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudvpc/v1"
 	alicloudvpngatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudvpngateway/v1"
 	alicloudvswitchv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudvswitch/v1"
-	mongodbatlasv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/atlas/mongodbatlas/v1"
+	atlasmongodbv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/atlas/atlasmongodb/v1"
 	auth0clientv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/auth0client/v1"
 	auth0connectionv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/auth0connection/v1"
 	auth0eventstreamv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/auth0eventstream/v1"
@@ -427,7 +427,7 @@ var ProviderAliCloudMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 }
 
 var ProviderAtlasMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
-	cloudresourcekind.CloudResourceKind_MongodbAtlas: &mongodbatlasv1.MongodbAtlas{},
+	cloudresourcekind.CloudResourceKind_AtlasMongodb: &atlasmongodbv1.AtlasMongodb{},
 }
 
 var ProviderAuth0Map = map[cloudresourcekind.CloudResourceKind]proto.Message{

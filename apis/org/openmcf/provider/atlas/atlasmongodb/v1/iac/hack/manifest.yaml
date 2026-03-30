@@ -1,0 +1,51 @@
+apiVersion: atlas.openmcf.org/v1
+kind: AtlasMongodb
+metadata:
+  name: test-atlas-mongodb
+  id: mdbatl-test-001
+  org: engineering
+  env: development
+  labels:
+    team: platform
+    component: atlas-mongodb
+    managed-by: openmcf
+spec:
+  clusterConfig:
+    # Atlas MongoDB Project ID (required)
+    # Create a project in Atlas UI and copy the Project ID from Project Settings
+    projectId: "64f1a2b3c4d5e6f7g8h9i0j1"
+    
+    # Cluster type: REPLICASET (default), SHARDED, or GEOSHARDED
+    clusterType: REPLICASET
+    
+    # Number of electable nodes (must be 3, 5, or 7 for consensus)
+    # These nodes can become primary and facilitate local reads
+    electableNodes: 3
+    
+    # Election priority (7 is highest, identifies preferred region)
+    # In multi-region setups, primary region should be 7
+    priority: 7
+    
+    # Number of read-only nodes (optional)
+    # These nodes can never become primary but provide read scaling
+    readOnlyNodes: 0
+    
+    # Enable cloud backups (recommended for production)
+    cloudBackup: true
+    
+    # Enable automatic disk scaling
+    autoScalingDiskGbEnabled: true
+    
+    # MongoDB major version
+    # Supported versions: 4.4, 5.0, 6.0, 7.0
+    mongoDbMajorVersion: "7.0"
+    
+    # Cloud provider: AWS, GCP, AZURE, or TENANT
+    providerName: AWS
+    
+    # Instance size
+    # Development: M10, M20
+    # Production: M30+ (recommended)
+    # Free tier: M0 (requires different resource type)
+    providerInstanceSizeName: M10
+

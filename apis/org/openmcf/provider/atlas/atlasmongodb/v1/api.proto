@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package org.openmcf.provider.atlas.atlasmongodb.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/atlas/atlasmongodb/v1/spec.proto";
+import "org/openmcf/provider/atlas/atlasmongodb/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+//atlas-mongodb
+message AtlasMongodb {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'atlas.openmcf.org/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AtlasMongodb'];
+
+  //metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  AtlasMongodbSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  AtlasMongodbStatus status = 5;
+}
+
+//atlas-mongodb status
+message AtlasMongodbStatus {
+  //stack-outputs
+  AtlasMongodbStackOutputs outputs = 1;
+}

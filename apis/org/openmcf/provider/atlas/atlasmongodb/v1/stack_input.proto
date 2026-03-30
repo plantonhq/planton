@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.atlas.atlasmongodb.v1;
+
+import "org/openmcf/provider/atlas/atlasmongodb/v1/api.proto";
+import "org/openmcf/provider/atlas/provider.proto";
+
+//atlas-mongodb stack-input
+message AtlasMongodbStackInput {
+  //target cloud-resource
+  AtlasMongodb target = 1;
+  //provider-config
+  org.openmcf.provider.atlas.AtlasProviderConfig provider_config = 2;
+}

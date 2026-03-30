@@ -80,7 +80,7 @@ const (
 	CloudResourceKind_TestCloudResourceThree CloudResourceKind = 3
 	// 50–199: saas platform resources
 	CloudResourceKind_ConfluentKafka    CloudResourceKind = 50
-	CloudResourceKind_MongodbAtlas      CloudResourceKind = 51
+	CloudResourceKind_AtlasMongodb      CloudResourceKind = 51
 	CloudResourceKind_SnowflakeDatabase CloudResourceKind = 52
 	// 200–399: AWS resources
 	CloudResourceKind_AwsAlb                           CloudResourceKind = 200
@@ -470,7 +470,7 @@ var (
 		2:    "TestCloudResourceTwo",
 		3:    "TestCloudResourceThree",
 		50:   "ConfluentKafka",
-		51:   "MongodbAtlas",
+		51:   "AtlasMongodb",
 		52:   "SnowflakeDatabase",
 		200:  "AwsAlb",
 		201:  "AwsCertManagerCert",
@@ -837,7 +837,7 @@ var (
 		"TestCloudResourceTwo":                  2,
 		"TestCloudResourceThree":                3,
 		"ConfluentKafka":                        50,
-		"MongodbAtlas":                          51,
+		"AtlasMongodb":                          51,
 		"SnowflakeDatabase":                     52,
 		"AwsAlb":                                200,
 		"AwsCertManagerCert":                    201,
@@ -1365,7 +1365,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x16TestCloudResourceThree\x10\x03\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\x01\x10\x01\"\x04tcr3\x12$\n" +
 	"\x0eConfluentKafka\x102\x1a\x10\xa2\xf7\x04\f\b\x10\x10\x01\"\x06conkaf\x12\"\n" +
-	"\fMongodbAtlas\x103\x1a\x10\xa2\xf7\x04\f\b\v\x10\x01\"\x06mdbatl\x12'\n" +
+	"\fAtlasMongodb\x103\x1a\x10\xa2\xf7\x04\f\b\v\x10\x01\"\x06atlmdb\x12'\n" +
 	"\x11SnowflakeDatabase\x104\x1a\x10\xa2\xf7\x04\f\b\x14\x10\x01\"\x06snowdb\x12\x1d\n" +
 	"\x06AwsAlb\x10\xc8\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsalb\x12*\n" +
 	"\x12AwsCertManagerCert\x10\xc9\x01\x1a\x11\xa2\xf7\x04\r\b\f\x10\x01\"\aacmcert\x12#\n" +
