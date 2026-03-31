@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/plantonhq/openmcf/cmd/openmcf/root"
-	"github.com/plantonhq/openmcf/cmd/openmcf/root/webapp"
 	"github.com/plantonhq/openmcf/internal/cli/flag"
 	"github.com/spf13/cobra"
 )
@@ -46,18 +45,6 @@ func init() {
 	rootCmd.AddCommand(
 		root.Apply,
 		root.Checkout,
-		root.CloudResourceApplyCmd,
-		root.CloudResourceCreateCmd,
-		root.CloudResourceDeleteCmd,
-		root.CloudResourceGetCmd,
-		root.CloudResourceListCmd,
-		root.CloudResourceUpdateCmd,
-		root.ConfigCmd,
-		root.CredentialCreateCmd,
-		root.CredentialDeleteCmd,
-		root.CredentialGetCmd,
-		root.CredentialListCmd,
-		root.CredentialUpdateCmd,
 		root.Destroy,
 		root.Downgrade,
 		root.Init,
@@ -67,13 +54,11 @@ func init() {
 		root.Pull,
 		root.Pulumi,
 		root.Refresh,
-		root.StackUpdateStreamOutputCmd,
 		root.Terraform,
 		root.Tofu,
 		root.Upgrade,
 		root.ValidateManifest,
 		root.Version,
-		webapp.WebAppCmd,
 	)
 }
 

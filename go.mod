@@ -5,7 +5,6 @@ go 1.25.0
 require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.10-20251209175733-2a1774d88802.1
 	buf.build/go/protovalidate v1.1.0
-	connectrpc.com/connect v1.16.2
 	github.com/Masterminds/sprig v2.15.0+incompatible
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/charmbracelet/lipgloss v1.1.0
@@ -51,7 +50,6 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/zclconf/go-cty v1.13.2
 	github.com/zyedidia/clipboard v1.0.4
-	google.golang.org/grpc v1.72.1
 	google.golang.org/protobuf v1.36.10
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.31.3
@@ -172,6 +170,7 @@ require (
 	golang.org/x/tools v0.40.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20250811230008-5f3141c8851a // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250811230008-5f3141c8851a // indirect
+	google.golang.org/grpc v1.72.1 // indirect
 	gopkg.in/evanphx/json-patch.v4 v4.12.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
@@ -182,5 +181,3 @@ require (
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.2 // indirect
 )
-
-replace github.com/plantonhq/openmcf/app/backend => ./app/backend

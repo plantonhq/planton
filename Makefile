@@ -109,65 +109,10 @@ build-go: fmt deps vet
 .PHONY: build-cli
 build-cli: build-go
 
-.PHONY: build-backend
-build-backend:
-	$(MAKE) -C app/backend build
-
-.PHONY: build-frontend
-build-frontend:
-	$(MAKE) -C app/frontend build
-
 .PHONY: build
 build: protos generate-cloud-resource-kind-map bazel-mod-tidy bazel-gazelle bazel-build-cli build-cli
 
 ${build_dir}/${name}: build-go
-
-# ── Docker (Unified Image) ─────────────────────────────────────────────────────
-DOCKER_IMAGE?=ghcr.io/plantonhq/openmcf
-DOCKER_TAG?=latest
-DOCKERFILE_UNIFIED=app/Dockerfile.unified
-
-.PHONY: docker-build
-docker-build:
-	@echo "Building Docker image: $(DOCKER_IMAGE):$(DOCKER_TAG)"
-	docker build -f $(DOCKERFILE_UNIFIED) -t $(DOCKER_IMAGE):$(DOCKER_TAG) .
-
-.PHONY: docker-build-multiarch
-docker-build-multiarch:
-	@echo "Building multi-architecture Docker image: $(DOCKER_IMAGE):$(DOCKER_TAG)"
-	docker buildx build \
-		--platform linux/amd64,linux/arm64 \
-		-f $(DOCKERFILE_UNIFIED) \
-		-t $(DOCKER_IMAGE):$(DOCKER_TAG) \
-		--push \
-		.
-
-.PHONY: docker-run
-docker-run:
-	@echo "Running Docker container from $(DOCKER_IMAGE):$(DOCKER_TAG)"
-	docker run -d \
-		--name openmcf-webapp \
-		-p 3000:3000 \
-		-p 50051:50051 \
-		-v openmcf-mongodb:/data/db \
-		-v openmcf-pulumi:/home/appuser/.pulumi \
-		$(DOCKER_IMAGE):$(DOCKER_TAG)
-
-.PHONY: docker-stop
-docker-stop:
-	@echo "Stopping and removing container..."
-	docker stop openmcf-webapp || true
-	docker rm openmcf-webapp || true
-
-.PHONY: docker-logs
-docker-logs:
-	docker logs -f openmcf-webapp
-
-.PHONY: docker-shell
-docker-shell:
-	docker exec -it openmcf-webapp /bin/bash
-
-# ──────────────────────────────────────────────────────────────────────────────
 
 .PHONY: test
 test:
@@ -182,7 +127,6 @@ vet:
 	go vet ./cmd/...
 	go vet ./internal/...
 	go vet ./pkg/...
-	go vet ./app/backend/...
 
 .PHONY: fmt
 fmt:
