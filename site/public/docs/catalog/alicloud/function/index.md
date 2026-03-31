@@ -30,7 +30,7 @@ When you deploy an AliCloudFunction resource, OpenMCF provisions:
 Create a file `function.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudFunction
 metadata:
   name: hello-world
@@ -98,7 +98,7 @@ This creates an FC v3 function named `hello-world` in `cn-hangzhou` running `pyt
 ### Minimal Python Function
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudFunction
 metadata:
   name: hello-world
@@ -120,7 +120,7 @@ spec:
 ### VPC-Connected API Function with Logging
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudFunction
 metadata:
   name: api-handler
@@ -171,7 +171,7 @@ spec:
 ### GPU-Accelerated Container Function
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudFunction
 metadata:
   name: ml-inference

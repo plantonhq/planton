@@ -27,7 +27,7 @@ This component wraps a single `alicloud_instance` Terraform resource. Data disks
 ## Quick Start
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudEcsInstance
 metadata:
   name: my-ecs

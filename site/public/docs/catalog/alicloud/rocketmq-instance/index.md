@@ -30,7 +30,7 @@ When you deploy an AliCloudRocketmqInstance resource, OpenMCF provisions:
 Create a file `rocketmq.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRocketmqInstance
 metadata:
   name: my-mq
@@ -123,7 +123,7 @@ This creates a standard-edition single-node RocketMQ instance in the specified V
 A minimal standard-edition instance for development and testing:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRocketmqInstance
 metadata:
   name: dev-mq
@@ -145,7 +145,7 @@ spec:
 A professional-edition cluster with FIFO and normal topics, consumer groups with custom retry policies, and VSwitch placement:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRocketmqInstance
 metadata:
   name: prod-mq
@@ -199,7 +199,7 @@ spec:
 A mission-critical ultimate-edition instance with subscription billing, public internet access, encryption at rest, and auto-scaling:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRocketmqInstance
 metadata:
   name: enterprise-mq

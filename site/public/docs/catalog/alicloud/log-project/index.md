@@ -28,7 +28,7 @@ When you deploy an AliCloudLogProject resource, OpenMCF provisions:
 Create a file `log-project.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudLogProject
 metadata:
   name: my-log-project
@@ -84,7 +84,7 @@ This creates an SLS project named `my-app-logs` in `cn-hangzhou` with one log st
 An empty SLS project with no log stores. Stores can be added by updating the manifest.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudLogProject
 metadata:
   name: empty-project
@@ -103,7 +103,7 @@ spec:
 A project for a development environment with one log store using short retention and minimal shards.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudLogProject
 metadata:
   name: dev-logging
@@ -127,7 +127,7 @@ spec:
 Separate stores for application logs, audit trails, and access logs with distinct retention and shard configurations. Tags enable cost attribution and organizational filtering.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudLogProject
 metadata:
   name: prod-logging
@@ -167,7 +167,7 @@ spec:
 A project for compliance archival where query capability is not needed. Disabling indexing eliminates index storage costs.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudLogProject
 metadata:
   name: archive-project

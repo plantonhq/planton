@@ -32,7 +32,7 @@ Server groups are created empty. Backend membership (ECS instances, ENIs, IPs) i
 Create a file `alb.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudApplicationLoadBalancer
 metadata:
   name: my-alb
@@ -161,7 +161,7 @@ This creates an internet-facing ALB with an HTTP listener on port 80 across two 
 The simplest ALB: one server group, one HTTP listener, two availability zones.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudApplicationLoadBalancer
 metadata:
   name: web-alb
@@ -192,7 +192,7 @@ spec:
 Production ALB with TLS termination, WAF edition, and strict cipher policy.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudApplicationLoadBalancer
 metadata:
   name: secure-alb
@@ -238,7 +238,7 @@ spec:
 An internal ALB for service-to-service HTTP routing with two server groups and weighted least connections scheduling.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudApplicationLoadBalancer
 metadata:
   name: internal-alb

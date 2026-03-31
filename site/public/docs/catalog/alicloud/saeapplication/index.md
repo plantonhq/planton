@@ -29,7 +29,7 @@ When you deploy an AliCloudSaeApplication resource, OpenMCF provisions:
 Create a file `sae-app.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudSaeApplication
 metadata:
   name: my-sae-app
@@ -127,7 +127,7 @@ This creates a single-instance SAE application running a container image with 1 
 ### Minimal Image Deployment
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudSaeApplication
 metadata:
   name: hello-sae
@@ -148,7 +148,7 @@ spec:
 ### Java FatJar with VPC and Health Checks
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudSaeApplication
 metadata:
   name: order-service
@@ -198,7 +198,7 @@ spec:
 ### Production Container with Canary Releases
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudSaeApplication
 metadata:
   name: payment-gateway
