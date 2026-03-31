@@ -7,7 +7,6 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//cmd/openmcf/root",
-        "//cmd/openmcf/root/webapp",
         "//internal/cli/flag",
         "@com_github_spf13_cobra//:cobra",
     ],
