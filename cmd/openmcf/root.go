@@ -30,7 +30,6 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.CompletionOptions.DisableDefaultCmd = true
 	rootCmd.DisableSuggestions = true
 
 	// Enable -v as shorthand for --version (handled in Run function for colorful output)

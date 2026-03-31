@@ -34,6 +34,44 @@ brew install opentofu
 brew install terraform
 ```
 
+## Shell Completion
+
+Enable tab-completion for all commands, subcommands, and flags. This is a one-time setup per machine.
+
+**Zsh (default on macOS):**
+
+Add this line to your `~/.zshrc`:
+
+```bash
+source <(openmcf completion zsh)
+```
+
+**Bash:**
+
+Add this line to your `~/.bashrc`:
+
+```bash
+source <(openmcf completion bash)
+```
+
+> Bash completion requires the `bash-completion` package. On macOS: `brew install bash-completion@2`.
+
+**Fish:**
+
+```bash
+openmcf completion fish > ~/.config/fish/completions/openmcf.fish
+```
+
+**PowerShell:**
+
+Add this line to your PowerShell profile:
+
+```powershell
+openmcf completion powershell | Out-String | Invoke-Expression
+```
+
+After setup, open a new terminal and type `openmcf <Tab>` to see available commands.
+
 ## How the CLI Works
 
 Every deployment follows the same sequence regardless of which engine you choose:

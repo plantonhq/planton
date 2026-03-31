@@ -69,6 +69,12 @@ openmcf
 |       \-- list              List all configuration values
 |
 \-- version                   Show CLI version and update status
+|
+\-- completion                Generate shell completion scripts
+    |-- bash              Completion script for bash
+    |-- zsh               Completion script for zsh
+    |-- fish              Completion script for fish
+    \-- powershell        Completion script for powershell
 ```
 
 ## Global Flags
