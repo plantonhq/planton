@@ -360,7 +360,7 @@ The connection point is the policy name. `AliCloudRamPolicy` outputs `policy_nam
 
 ```yaml
 # Step 1: Create the custom policy
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRamPolicy
 metadata:
   name: oss-reader
@@ -369,7 +369,7 @@ spec:
   policyDocument: '...'
 ---
 # Step 2: Attach it to a role
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRamRole
 metadata:
   name: my-ecs-role

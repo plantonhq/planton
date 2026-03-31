@@ -25,7 +25,7 @@ When you deploy an AliCloudKubernetesCluster resource, OpenMCF provisions:
 Create a file `ack-cluster.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: my-cluster
@@ -117,7 +117,7 @@ This creates a standard-tier ACK cluster with Flannel CNI across two Availabilit
 A minimal cluster for development and testing.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: dev-cluster
@@ -144,7 +144,7 @@ spec:
 A staging cluster using ENI-based networking with RRSA and control plane logging.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: staging-cluster
@@ -190,7 +190,7 @@ spec:
 A production-grade cluster with Secrets encryption, maintenance windows, auto-upgrade, and deletion protection.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: prod-cluster
@@ -266,7 +266,7 @@ spec:
 Reference other OpenMCF-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: ref-cluster

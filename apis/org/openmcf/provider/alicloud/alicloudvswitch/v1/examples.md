@@ -5,7 +5,7 @@
 Creates a VSwitch in one availability zone with a /24 CIDR block. Suitable for development or small workloads.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVswitch
 metadata:
   name: dev-vswitch
@@ -22,7 +22,7 @@ spec:
 A production VSwitch using a larger CIDR block for Kubernetes node pools. Tags are applied for cost tracking and organizational grouping.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVswitch
 metadata:
   name: prod-app-vswitch
@@ -46,7 +46,7 @@ spec:
 Uses a `valueFrom` reference to resolve the VPC ID from an existing AliCloudVpc component, establishing a declarative dependency.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVswitch
 metadata:
   name: db-vswitch
@@ -67,7 +67,7 @@ spec:
 A dual-stack VSwitch with IPv6 support. The parent VPC must also have IPv6 enabled for this to take effect.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVswitch
 metadata:
   name: ipv6-vswitch

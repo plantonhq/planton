@@ -42,7 +42,7 @@ const (
 	CloudResourceProvider_openfga                             CloudResourceProvider = 22
 	CloudResourceProvider_openstack                           CloudResourceProvider = 23
 	CloudResourceProvider_scaleway                            CloudResourceProvider = 24
-	CloudResourceProvider_ali_cloud                           CloudResourceProvider = 25
+	CloudResourceProvider_alicloud                            CloudResourceProvider = 25
 	CloudResourceProvider_oci                                 CloudResourceProvider = 26
 	CloudResourceProvider_hetzner_cloud                       CloudResourceProvider = 27
 )
@@ -66,7 +66,7 @@ var (
 		22: "openfga",
 		23: "openstack",
 		24: "scaleway",
-		25: "ali_cloud",
+		25: "alicloud",
 		26: "oci",
 		27: "hetzner_cloud",
 	}
@@ -87,7 +87,7 @@ var (
 		"openfga":                             22,
 		"openstack":                           23,
 		"scaleway":                            24,
-		"ali_cloud":                           25,
+		"alicloud":                            25,
 		"oci":                                 26,
 		"hetzner_cloud":                       27,
 	}
@@ -199,7 +199,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_provider_proto_ra
 	"Borg/openmcf/shared/cloudresourcekind/cloud_resource_provider.proto\x12$org.openmcf.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\"T\n" +
 	"\x19CloudResourceProviderMeta\x12\x14\n" +
 	"\x05group\x18\x01 \x01(\tR\x05group\x12!\n" +
-	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName*\xd8\a\n" +
+	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName*\xd6\a\n" +
 	"\x15CloudResourceProvider\x12'\n" +
 	"#cloud_resource_provider_unspecified\x10\x00\x128\n" +
 	"\x05_test\x10\x01\x1a-\xea\xcc')\n" +
@@ -235,9 +235,9 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_provider_proto_ra
 	"\topenstack\x10\x17\x1a&\xea\xcc'\"\n" +
 	"\x15openstack.openmcf.org\x12\tOpenStack\x122\n" +
 	"\bscaleway\x10\x18\x1a$\xea\xcc' \n" +
-	"\x14scaleway.openmcf.org\x12\bScaleway\x129\n" +
-	"\tali_cloud\x10\x19\x1a*\xea\xcc'&\n" +
-	"\x15ali-cloud.openmcf.org\x12\rAlibaba Cloud\x12#\n" +
+	"\x14scaleway.openmcf.org\x12\bScaleway\x127\n" +
+	"\balicloud\x10\x19\x1a)\xea\xcc'%\n" +
+	"\x14alicloud.openmcf.org\x12\rAlibaba Cloud\x12#\n" +
 	"\x03oci\x10\x1a\x1a\x1a\xea\xcc'\x16\n" +
 	"\x0foci.openmcf.org\x12\x03OCI\x12A\n" +
 	"\rhetzner_cloud\x10\x1b\x1a.\xea\xcc'*\n" +

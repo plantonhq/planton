@@ -22,7 +22,7 @@ openmcf pulumi update \
 Connects two VPCs in the same region for private inter-VPC communication.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCenInstance
 metadata:
   name: basic-cen
@@ -46,7 +46,7 @@ A global backbone connecting VPCs across China and international regions with
 REDUCED protection level for CIDR overlap tolerance.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCenInstance
 metadata:
   name: global-cen
@@ -80,7 +80,7 @@ Connects VPCs managed as OpenMCF resources using `valueFrom` references that
 resolve VPC IDs at deployment time.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCenInstance
 metadata:
   name: managed-cen

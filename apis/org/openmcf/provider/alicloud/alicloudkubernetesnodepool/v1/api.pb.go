@@ -155,10 +155,10 @@ var File_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_api_proto p
 
 const file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"Eorg/openmcf/provider/alicloud/alicloudkubernetesnodepool/v1/api.proto\x12;org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1\x1a\x1bbuf/validate/validate.proto\x1aForg/openmcf/provider/alicloud/alicloudkubernetesnodepool/v1/spec.proto\x1aOorg/openmcf/provider/alicloud/alicloudkubernetesnodepool/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xd4\x03\n" +
-	"\x1aAliCloudKubernetesNodePool\x12@\n" +
-	"\vapi_version\x18\x01 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
-	"\x18ali-cloud.openmcf.org/v1R\n" +
+	"Eorg/openmcf/provider/alicloud/alicloudkubernetesnodepool/v1/api.proto\x12;org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1\x1a\x1bbuf/validate/validate.proto\x1aForg/openmcf/provider/alicloud/alicloudkubernetesnodepool/v1/spec.proto\x1aOorg/openmcf/provider/alicloud/alicloudkubernetesnodepool/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xd3\x03\n" +
+	"\x1aAliCloudKubernetesNodePool\x12?\n" +
+	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
+	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aAliCloudKubernetesNodePoolR\x04kind\x12M\n" +

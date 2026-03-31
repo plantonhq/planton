@@ -5,7 +5,7 @@
 A basic Redis 7.0 instance for development and testing.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRedisInstance
 metadata:
   name: dev-redis
@@ -22,7 +22,7 @@ spec:
 A production Redis cluster with cross-AZ failover, multiple data shards for throughput, and read replicas for read scaling.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRedisInstance
 metadata:
   name: prod-cache
@@ -65,7 +65,7 @@ spec:
 A security-hardened Redis instance with TDE encryption at rest, SSL for in-transit encryption, and subscription billing for cost optimization.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRedisInstance
 metadata:
   name: secure-redis

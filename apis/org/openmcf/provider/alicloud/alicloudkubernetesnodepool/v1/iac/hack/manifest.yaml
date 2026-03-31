@@ -1,4 +1,4 @@
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesNodePool
 metadata:
   name: alicloudkubernetesnodepool-demo

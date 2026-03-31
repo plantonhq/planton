@@ -155,10 +155,10 @@ var File_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_api_proto protorefle
 
 const file_org_openmcf_provider_alicloud_aliclouddnsrecord_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"<org/openmcf/provider/alicloud/aliclouddnsrecord/v1/api.proto\x122org.openmcf.provider.alicloud.aliclouddnsrecord.v1\x1a\x1bbuf/validate/validate.proto\x1a=org/openmcf/provider/alicloud/aliclouddnsrecord/v1/spec.proto\x1aForg/openmcf/provider/alicloud/aliclouddnsrecord/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\x9e\x03\n" +
-	"\x11AliCloudDnsRecord\x12@\n" +
-	"\vapi_version\x18\x01 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
-	"\x18ali-cloud.openmcf.org/v1R\n" +
+	"<org/openmcf/provider/alicloud/aliclouddnsrecord/v1/api.proto\x122org.openmcf.provider.alicloud.aliclouddnsrecord.v1\x1a\x1bbuf/validate/validate.proto\x1a=org/openmcf/provider/alicloud/aliclouddnsrecord/v1/spec.proto\x1aForg/openmcf/provider/alicloud/aliclouddnsrecord/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\x9d\x03\n" +
+	"\x11AliCloudDnsRecord\x12?\n" +
+	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
+	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11AliCloudDnsRecordR\x04kind\x12M\n" +

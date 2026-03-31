@@ -22,7 +22,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with minimal Image deployment", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "my-app",
@@ -43,7 +43,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with FatJar deployment and JDK options", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "java-app",
@@ -71,7 +71,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with War deployment", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "war-app"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -91,7 +91,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with PythonZip deployment", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "py-app"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -111,7 +111,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with VPC configuration", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "vpc-app"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -140,7 +140,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with health checks", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "healthy-app"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -176,7 +176,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with exec health check", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "exec-app"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -202,7 +202,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with environment variables and command args", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "env-app"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -228,7 +228,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with custom host aliases", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "alias-app"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -251,7 +251,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with update strategy", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "strategy-app"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -280,7 +280,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 			cpuValues := []int32{500, 1000, 2000, 4000, 8000, 16000, 32000}
 			for _, cpu := range cpuValues {
 				input := &AliCloudSaeApplication{
-					ApiVersion: "ali-cloud.openmcf.org/v1",
+					ApiVersion: "alicloud.openmcf.org/v1",
 					Kind:       "AliCloudSaeApplication",
 					Metadata:   &shared.CloudResourceMetadata{Name: "cpu-test"},
 					Spec: &AliCloudSaeApplicationSpec{
@@ -302,7 +302,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 			memValues := []int32{1024, 2048, 4096, 8192, 12288, 16384, 24576, 32768, 65536, 131072}
 			for _, mem := range memValues {
 				input := &AliCloudSaeApplication{
-					ApiVersion: "ali-cloud.openmcf.org/v1",
+					ApiVersion: "alicloud.openmcf.org/v1",
 					Kind:       "AliCloudSaeApplication",
 					Metadata:   &shared.CloudResourceMetadata{Name: "mem-test"},
 					Spec: &AliCloudSaeApplicationSpec{
@@ -322,7 +322,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with full production configuration", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "prod-app",
@@ -406,7 +406,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -423,7 +423,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when app_name is missing", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -440,7 +440,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when app_name exceeds 36 characters", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -458,7 +458,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when package_type is invalid", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -476,7 +476,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when replicas is zero", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -494,7 +494,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when cpu is not a valid tier", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -512,7 +512,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when memory is not a valid tier", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -548,7 +548,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when kind is wrong", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -566,7 +566,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when metadata is missing", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Spec: &AliCloudSaeApplicationSpec{
 					Region:      "cn-hangzhou",
@@ -583,7 +583,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when termination_grace_period_seconds exceeds 60", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -602,7 +602,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when termination_grace_period_seconds is zero", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -621,7 +621,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when programming_language is invalid", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -640,7 +640,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when update_strategy type is invalid", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudSaeApplicationSpec{
@@ -661,7 +661,7 @@ var _ = ginkgo.Describe("AliCloudSaeApplicationSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when batch_update release_type is invalid", func() {
 			input := &AliCloudSaeApplication{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudSaeApplication",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudSaeApplicationSpec{

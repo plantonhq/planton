@@ -155,10 +155,10 @@ var File_org_openmcf_provider_alicloud_alicloudfunction_v1_api_proto protoreflec
 
 const file_org_openmcf_provider_alicloud_alicloudfunction_v1_api_proto_rawDesc = "" +
 	"\n" +
-	";org/openmcf/provider/alicloud/alicloudfunction/v1/api.proto\x121org.openmcf.provider.alicloud.alicloudfunction.v1\x1a\x1bbuf/validate/validate.proto\x1a<org/openmcf/provider/alicloud/alicloudfunction/v1/spec.proto\x1aEorg/openmcf/provider/alicloud/alicloudfunction/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\x98\x03\n" +
-	"\x10AliCloudFunction\x12@\n" +
-	"\vapi_version\x18\x01 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
-	"\x18ali-cloud.openmcf.org/v1R\n" +
+	";org/openmcf/provider/alicloud/alicloudfunction/v1/api.proto\x121org.openmcf.provider.alicloud.alicloudfunction.v1\x1a\x1bbuf/validate/validate.proto\x1a<org/openmcf/provider/alicloud/alicloudfunction/v1/spec.proto\x1aEorg/openmcf/provider/alicloud/alicloudfunction/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\x97\x03\n" +
+	"\x10AliCloudFunction\x12?\n" +
+	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
+	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
 	"\x10AliCloudFunctionR\x04kind\x12M\n" +

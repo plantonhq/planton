@@ -53,7 +53,7 @@ The module resolves the `vpc_id` field from `StringValueOrRef` (supporting both 
 1. Create or edit a manifest:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVswitch
 metadata:
   name: my-vswitch

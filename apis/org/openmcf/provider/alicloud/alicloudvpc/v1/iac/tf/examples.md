@@ -15,7 +15,7 @@ openmcf tofu apply --manifest hack/manifest.yaml --auto-approve
 A VPC with only the required fields. Suitable for development or testing.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpc
 metadata:
   name: dev-vpc
@@ -34,7 +34,7 @@ This creates a VPC with a `/16` CIDR block in `cn-hangzhou`. No description, IPv
 A production VPC with a large CIDR block, resource group assignment, and organizational tags.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpc
 metadata:
   name: prod-vpc
@@ -62,7 +62,7 @@ spec:
 A dual-stack VPC. Alibaba Cloud allocates a `/56` IPv6 CIDR block automatically when IPv6 is enabled.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpc
 metadata:
   name: ipv6-vpc

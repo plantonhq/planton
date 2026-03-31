@@ -3,7 +3,7 @@
 ## Minimal Zone
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudPrivateDnsZone
 metadata:
   name: minimal-zone
@@ -17,7 +17,7 @@ spec:
 ## Zone with Service Discovery Records
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudPrivateDnsZone
 metadata:
   name: svc-zone
@@ -42,7 +42,7 @@ spec:
 ## Multi-VPC Cross-Region Zone
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudPrivateDnsZone
 metadata:
   name: shared-zone

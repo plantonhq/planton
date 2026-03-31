@@ -144,7 +144,7 @@ The Pulumi module provides the same functionality as the Terraform module but wi
 OpenMCF wraps the IaC layer with a Kubernetes-like resource model:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudSaeApplication
 metadata:
   name: order-service

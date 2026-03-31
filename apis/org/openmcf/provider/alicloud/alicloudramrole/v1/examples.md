@@ -5,7 +5,7 @@
 A RAM role with a trust policy allowing ECS service to assume it. No policies attached yet.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRamRole
 metadata:
   name: my-ecs-role
@@ -28,7 +28,7 @@ spec:
 A role for ECS instances that need access to OSS and CloudMonitor. Uses Alibaba Cloud managed (system) policies.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRamRole
 metadata:
   name: ecs-worker-role
@@ -62,7 +62,7 @@ spec:
 A role that another Alibaba Cloud account can assume, with a custom policy for fine-grained access. Uses `force: true` to allow clean deletion even if policies are attached.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRamRole
 metadata:
   name: cross-account-audit-role

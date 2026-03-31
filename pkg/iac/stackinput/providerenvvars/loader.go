@@ -120,7 +120,7 @@ func loadProviderEnvVars(providerConfigYaml []byte, provider cloudresourcekind.C
 		return loadOpenStackEnvVars(providerConfigYaml)
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return loadScalewayEnvVars(providerConfigYaml)
-	case cloudresourcekind.CloudResourceProvider_ali_cloud:
+	case cloudresourcekind.CloudResourceProvider_alicloud:
 		return loadAliCloudEnvVars(providerConfigYaml)
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return loadOciEnvVars(providerConfigYaml)

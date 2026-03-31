@@ -23,7 +23,7 @@ A Python function with code deployed from an OSS bucket. Uses provider defaults
 for compute sizing (CPU, memory, timeout).
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudFunction
 metadata:
   name: hello-world
@@ -51,7 +51,7 @@ A Node.js function that accesses a database in a VPC, logs to SLS, and runs
 with a dedicated execution role. Compute sizing is tuned for API workloads.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudFunction
 metadata:
   name: api-handler
@@ -112,7 +112,7 @@ A containerized function running a custom Docker image with initializer and
 pre-stop hooks. Includes NAS mount for shared model data and GPU acceleration.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudFunction
 metadata:
   name: ml-inference

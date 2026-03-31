@@ -22,7 +22,7 @@ openmcf pulumi update \
 A bucket with only the required fields, suitable for development or quick testing.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudStorageBucket
 metadata:
   name: dev-bucket
@@ -40,7 +40,7 @@ This creates a private OSS bucket with Standard storage class and LRS redundancy
 A production-ready bucket with ZRS redundancy, versioning, and AES256 encryption.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudStorageBucket
 metadata:
   name: prod-bucket
@@ -69,7 +69,7 @@ spec:
 A cost-optimized bucket that transitions objects through storage tiers over time.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudStorageBucket
 metadata:
   name: log-archive

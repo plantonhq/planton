@@ -19,7 +19,7 @@ When you deploy an AliCloudRedisInstance resource, OpenMCF provisions:
 Create a file `redis-instance.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRedisInstance
 metadata:
   name: my-redis

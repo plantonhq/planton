@@ -15,7 +15,7 @@ openmcf tofu apply --manifest hack/manifest.yaml --auto-approve
 A VSwitch with only the required fields. Suitable for development or testing.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVswitch
 metadata:
   name: dev-vswitch
@@ -36,7 +36,7 @@ This creates a VSwitch with a `/24` CIDR block in `cn-hangzhou-a`. No descriptio
 A production VSwitch using a large CIDR block for Kubernetes node pools, with organizational tags.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVswitch
 metadata:
   name: prod-app-vswitch
@@ -65,7 +65,7 @@ spec:
 A dual-stack VSwitch. The parent VPC must have IPv6 enabled for the IPv6 CIDR allocation to succeed.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVswitch
 metadata:
   name: ipv6-vswitch

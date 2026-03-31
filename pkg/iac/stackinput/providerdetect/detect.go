@@ -88,7 +88,7 @@ func ProviderDisplayName(provider cloudresourcekind.CloudResourceProvider) strin
 		return "OpenStack"
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return "Scaleway"
-	case cloudresourcekind.CloudResourceProvider_ali_cloud:
+	case cloudresourcekind.CloudResourceProvider_alicloud:
 		return "Alibaba Cloud"
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return "OCI"

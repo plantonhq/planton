@@ -23,7 +23,7 @@ When you deploy an AliCloudVpnGateway resource, OpenMCF provisions:
 Create a file `vpn-gateway.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpnGateway
 metadata:
   name: my-vpn
@@ -130,7 +130,7 @@ This creates a 10 Mbps VPN Gateway with a single IPsec tunnel to a remote networ
 The simplest VPN setup: one gateway with a single IPsec connection to a remote office.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpnGateway
 metadata:
   name: office-vpn
@@ -156,7 +156,7 @@ spec:
 VPN Gateway connecting to two remote sites with AES-256, SHA-256 authentication, DH group14, and health checks for failover.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpnGateway
 metadata:
   name: prod-vpn
@@ -228,7 +228,7 @@ spec:
 VPN Gateway with SSL VPN enabled for remote client access alongside a site-to-site connection.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpnGateway
 metadata:
   name: hybrid-vpn

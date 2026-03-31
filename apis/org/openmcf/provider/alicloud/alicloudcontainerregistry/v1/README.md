@@ -36,7 +36,7 @@ Namespaces are bundled into the component because a registry instance without na
 ## Quick Start
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudContainerRegistry
 metadata:
   name: my-registry

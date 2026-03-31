@@ -5,7 +5,7 @@
 A minimal registry for development and testing with a single namespace:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudContainerRegistry
 metadata:
   name: dev-registry
@@ -25,7 +25,7 @@ spec:
 A production-ready registry with multiple namespaces organized by team:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudContainerRegistry
 metadata:
   name: prod-registry
@@ -55,7 +55,7 @@ spec:
 An enterprise-grade registry with resource group assignment and public-facing namespace:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudContainerRegistry
 metadata:
   name: enterprise-registry

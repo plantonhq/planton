@@ -54,7 +54,7 @@ The module merges user-defined `spec.tags` with system tags (resource name, kind
 1. Create or edit a manifest:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpc
 metadata:
   name: my-vpc

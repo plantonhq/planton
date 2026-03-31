@@ -25,7 +25,7 @@ Accelerate a website with a single IP-based origin. Only required fields are
 specified.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCdnDomain
 metadata:
   name: my-cdn
@@ -52,7 +52,7 @@ Serve static assets from an OSS bucket with a standby domain origin for
 failover. Includes resource group and tags.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCdnDomain
 metadata:
   name: assets-cdn
@@ -93,7 +93,7 @@ Production configuration with HTTPS enabled via Alibaba Cloud Certificate
 Management Service and weighted load distribution across two origins.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCdnDomain
 metadata:
   name: secure-cdn

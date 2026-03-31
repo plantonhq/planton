@@ -5,7 +5,7 @@
 The simplest NLB configuration: one server group, one TCP listener, two availability zones.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudNetworkLoadBalancer
 metadata:
   name: dev-nlb
@@ -35,7 +35,7 @@ spec:
 Internet-facing NLB with TLS termination at Layer 4, client certificate verification, and fixed EIPs for stable public addresses.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudNetworkLoadBalancer
 metadata:
   name: prod-nlb
@@ -98,7 +98,7 @@ spec:
 An internal NLB for service-to-service TCP traffic with connection draining for graceful deployments and source-IP consistent hashing for session affinity.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudNetworkLoadBalancer
 metadata:
   name: internal-nlb

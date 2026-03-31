@@ -53,7 +53,7 @@ The module does not manage the parent domain. The domain must already exist in A
 1. Create or edit a manifest:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudDnsRecord
 metadata:
   name: my-record

@@ -53,7 +53,7 @@ The module does not create DNS records. Records are managed by the separate AliC
 1. Create or edit a manifest:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudDnsZone
 metadata:
   name: my-domain

@@ -22,7 +22,7 @@ openmcf pulumi update \
 Register a domain in Alidns with only the required fields.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudDnsZone
 metadata:
   name: my-domain
@@ -40,7 +40,7 @@ This adds the domain to the Alidns hosted zone. After deployment, point your dom
 A domain with organizational tags and resource group placement for access control and cost attribution.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudDnsZone
 metadata:
   name: platform-domain
@@ -66,7 +66,7 @@ spec:
 A domain placed in a specific Alidns domain group for organizational grouping in the console.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudDnsZone
 metadata:
   name: grouped-domain

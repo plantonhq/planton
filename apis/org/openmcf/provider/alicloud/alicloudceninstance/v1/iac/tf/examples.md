@@ -13,7 +13,7 @@ openmcf tofu apply --manifest hack/manifest.yaml --auto-approve
 ## Minimal: Single-Region Multi-VPC
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCenInstance
 metadata:
   name: basic-cen
@@ -38,7 +38,7 @@ openmcf tofu apply --manifest basic-cen.yaml --auto-approve
 ## Cross-Region Backbone
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCenInstance
 metadata:
   name: global-cen
@@ -72,7 +72,7 @@ openmcf tofu apply --manifest global-cen.yaml --auto-approve
 ## Managed VPC References
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCenInstance
 metadata:
   name: managed-cen

@@ -21,7 +21,7 @@ When you deploy an AliCloudDnsZone resource, OpenMCF provisions:
 Create a file `dns-zone.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudDnsZone
 metadata:
   name: my-domain
@@ -68,7 +68,7 @@ This registers the domain in Alidns. After deployment, retrieve the `dns_servers
 Register a domain with only the required fields. Suitable for development or simple DNS hosting.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudDnsZone
 metadata:
   name: dev-domain
@@ -87,7 +87,7 @@ spec:
 A production domain with resource group placement and organizational tags for governance.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudDnsZone
 metadata:
   name: prod-domain

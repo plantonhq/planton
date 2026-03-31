@@ -27,7 +27,7 @@ Accelerate a website with a single IP-based origin. This is the simplest
 configuration — only the required fields are specified.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCdnDomain
 metadata:
   name: my-cdn
@@ -62,7 +62,7 @@ standby origin for failover. Includes tags and a resource group for
 production tracking.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCdnDomain
 metadata:
   name: assets-cdn
@@ -113,7 +113,7 @@ Certificate Management Service. Uses multiple weighted origins for load
 distribution.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCdnDomain
 metadata:
   name: secure-cdn

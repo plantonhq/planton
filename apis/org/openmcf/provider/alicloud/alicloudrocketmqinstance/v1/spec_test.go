@@ -22,7 +22,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should pass with minimal required fields", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "dev-mq",
@@ -42,7 +42,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should pass with professional cluster_ha and topics", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "prod-mq",
@@ -86,7 +86,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should pass with subscription billing and auto-renew", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "prepaid-mq",
@@ -112,7 +112,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should pass with internet access enabled", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "internet-mq",
@@ -136,7 +136,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should pass with product info and encryption", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "encrypted-mq",
@@ -165,7 +165,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should pass with consumer group using default retry policy", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "cg-test",
@@ -198,7 +198,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should pass with TRANSACTION message type", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "tx-mq",
@@ -240,7 +240,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should fail when kind is wrong", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRocketmqInstanceSpec{
@@ -256,7 +256,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should fail when metadata is missing", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Spec: &AliCloudRocketmqInstanceSpec{
 					Region: "cn-hangzhou", SeriesCode: "standard", SubSeriesCode: "single_node",
@@ -271,7 +271,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should fail when spec is missing", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 			}
@@ -281,7 +281,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should fail when region is empty", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRocketmqInstanceSpec{
@@ -297,7 +297,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should fail when series_code is invalid", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRocketmqInstanceSpec{
@@ -313,7 +313,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should fail when sub_series_code is invalid", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRocketmqInstanceSpec{
@@ -329,7 +329,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should fail when vpc_id is missing", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRocketmqInstanceSpec{
@@ -342,7 +342,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should fail when payment_type is invalid", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRocketmqInstanceSpec{
@@ -359,7 +359,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should fail when message_type is invalid", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRocketmqInstanceSpec{
@@ -378,7 +378,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should fail when topic_name is empty", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRocketmqInstanceSpec{
@@ -397,7 +397,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should fail when consumer_group_id is empty", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRocketmqInstanceSpec{
@@ -416,7 +416,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should fail when delivery_order_type is invalid", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRocketmqInstanceSpec{
@@ -435,7 +435,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should fail when auto_renew_period is invalid", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRocketmqInstanceSpec{
@@ -452,7 +452,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should fail when max_retry_times exceeds 1000", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRocketmqInstanceSpec{
@@ -476,7 +476,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should fail when flow_out_type is invalid", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRocketmqInstanceSpec{
@@ -496,7 +496,7 @@ var _ = ginkgo.Describe("AliCloudRocketmqInstanceSpec Validation Tests", func() 
 
 		ginkgo.It("should fail when retry_policy is invalid", func() {
 			input := &AliCloudRocketmqInstance{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudRocketmqInstance",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 				Spec: &AliCloudRocketmqInstanceSpec{

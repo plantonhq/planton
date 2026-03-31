@@ -22,7 +22,7 @@ openmcf pulumi update \
 A VPC with only the required fields, suitable for development or quick testing.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpc
 metadata:
   name: dev-vpc
@@ -41,7 +41,7 @@ This creates a VPC with a `/16` CIDR block in the `cn-hangzhou` region. No descr
 A production VPC using a large CIDR block with resource group assignment and tags for organizational tracking.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpc
 metadata:
   name: prod-vpc
@@ -69,7 +69,7 @@ spec:
 A dual-stack VPC with IPv6 support. Alibaba Cloud allocates a `/56` IPv6 CIDR block automatically when IPv6 is enabled.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpc
 metadata:
   name: ipv6-vpc

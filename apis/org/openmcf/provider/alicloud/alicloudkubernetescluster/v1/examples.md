@@ -5,7 +5,7 @@
 A basic development cluster using Flannel overlay networking.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: dev-cluster
@@ -27,7 +27,7 @@ spec:
 A cluster using Terway ENI-based networking with RRSA enabled for pod IAM.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: staging-cluster
@@ -70,7 +70,7 @@ A production-grade cluster with professional SLA, Terway networking, Secrets
 encryption, maintenance windows, and auto-upgrade.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: production-cluster

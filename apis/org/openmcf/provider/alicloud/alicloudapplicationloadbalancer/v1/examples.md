@@ -5,7 +5,7 @@
 The simplest ALB configuration: one server group, one HTTP listener, two availability zones.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudApplicationLoadBalancer
 metadata:
   name: dev-alb
@@ -36,7 +36,7 @@ spec:
 Full production setup with HTTPS, StandardWithWaf edition, strict TLS policy, access logging to SLS, and deletion protection via tags.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudApplicationLoadBalancer
 metadata:
   name: prod-alb
@@ -92,7 +92,7 @@ spec:
 An internal ALB for service-to-service communication using GRPC.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudApplicationLoadBalancer
 metadata:
   name: internal-grpc-alb

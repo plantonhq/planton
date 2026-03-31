@@ -15,7 +15,7 @@ openmcf tofu apply --manifest <yaml-path> --stack <stack-name>
 A minimal node pool with default settings.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesNodePool
 metadata:
   name: basic-pool
@@ -45,7 +45,7 @@ This example:
 A production pool with auto-scaling, multiple instance types, and managed node operations.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesNodePool
 metadata:
   name: compute-pool
@@ -96,7 +96,7 @@ This example:
 A cost-optimized pool using spot instances with taints for workload isolation.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesNodePool
 metadata:
   name: batch-spot

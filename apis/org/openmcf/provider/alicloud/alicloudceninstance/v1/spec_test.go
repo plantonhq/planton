@@ -31,7 +31,7 @@ func validMinimalSpec() *AliCloudCenInstanceSpec {
 
 func validMinimalInput() *AliCloudCenInstance {
 	return &AliCloudCenInstance{
-		ApiVersion: "ali-cloud.openmcf.org/v1",
+		ApiVersion: "alicloud.openmcf.org/v1",
 		Kind:       "AliCloudCenInstance",
 		Metadata:   &shared.CloudResourceMetadata{Name: "test-cen"},
 		Spec:       validMinimalSpec(),

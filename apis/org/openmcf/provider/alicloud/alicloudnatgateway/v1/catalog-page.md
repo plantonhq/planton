@@ -22,7 +22,7 @@ When you deploy an AliCloudNatGateway resource, OpenMCF provisions:
 Create a file `nat-gateway.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudNatGateway
 metadata:
   name: my-nat
@@ -93,7 +93,7 @@ This creates an Enhanced NAT Gateway with one SNAT entry, enabling the specified
 The simplest NAT configuration: one gateway, one EIP, one SNAT entry.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudNatGateway
 metadata:
   name: simple-nat
@@ -117,7 +117,7 @@ spec:
 Production NAT Gateway with deletion protection, VSwitch-based and CIDR-based SNAT entries, and foreign key references.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudNatGateway
 metadata:
   name: prod-nat
@@ -158,7 +158,7 @@ spec:
 NAT Gateway with fixed specification tier for predictable performance billing.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudNatGateway
 metadata:
   name: fixed-spec-nat

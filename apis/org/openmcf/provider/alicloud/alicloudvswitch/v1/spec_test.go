@@ -27,7 +27,7 @@ var _ = ginkgo.Describe("AliCloudVswitchSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
 			input := &AliCloudVswitch{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-vswitch",
@@ -46,7 +46,7 @@ var _ = ginkgo.Describe("AliCloudVswitchSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with all optional fields populated", func() {
 			input := &AliCloudVswitch{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "full-config-vswitch",
@@ -71,7 +71,7 @@ var _ = ginkgo.Describe("AliCloudVswitchSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with 192.168 CIDR range", func() {
 			input := &AliCloudVswitch{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "small-vswitch",
@@ -90,7 +90,7 @@ var _ = ginkgo.Describe("AliCloudVswitchSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with ipv6_cidr_block_mask at lower bound", func() {
 			input := &AliCloudVswitch{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "ipv6-lower-bound",
@@ -111,7 +111,7 @@ var _ = ginkgo.Describe("AliCloudVswitchSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with ipv6_cidr_block_mask at upper bound", func() {
 			input := &AliCloudVswitch{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "ipv6-upper-bound",
@@ -132,7 +132,7 @@ var _ = ginkgo.Describe("AliCloudVswitchSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with vpc_id as value_from reference", func() {
 			input := &AliCloudVswitch{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "ref-vswitch",
@@ -160,7 +160,7 @@ var _ = ginkgo.Describe("AliCloudVswitchSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
 			input := &AliCloudVswitch{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -178,7 +178,7 @@ var _ = ginkgo.Describe("AliCloudVswitchSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when vpc_id is missing", func() {
 			input := &AliCloudVswitch{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -196,7 +196,7 @@ var _ = ginkgo.Describe("AliCloudVswitchSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when zone_id is missing", func() {
 			input := &AliCloudVswitch{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -214,7 +214,7 @@ var _ = ginkgo.Describe("AliCloudVswitchSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when cidr_block is missing", func() {
 			input := &AliCloudVswitch{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -232,7 +232,7 @@ var _ = ginkgo.Describe("AliCloudVswitchSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when vswitch_name is missing", func() {
 			input := &AliCloudVswitch{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -254,7 +254,7 @@ var _ = ginkgo.Describe("AliCloudVswitchSpec Validation Tests", func() {
 				longName += "a"
 			}
 			input := &AliCloudVswitch{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -292,7 +292,7 @@ var _ = ginkgo.Describe("AliCloudVswitchSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when kind is wrong", func() {
 			input := &AliCloudVswitch{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -311,7 +311,7 @@ var _ = ginkgo.Describe("AliCloudVswitchSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when metadata is missing", func() {
 			input := &AliCloudVswitch{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVswitch",
 				Spec: &AliCloudVswitchSpec{
 					Region:      "cn-hangzhou",
@@ -327,7 +327,7 @@ var _ = ginkgo.Describe("AliCloudVswitchSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when ipv6_cidr_block_mask exceeds upper bound", func() {
 			input := &AliCloudVswitch{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -348,7 +348,7 @@ var _ = ginkgo.Describe("AliCloudVswitchSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when ipv6_cidr_block_mask is negative", func() {
 			input := &AliCloudVswitch{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVswitch",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",

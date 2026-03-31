@@ -144,7 +144,7 @@ The Go type system catches some misconfiguration at compile time (e.g., passing 
 OpenMCF operates one level above Terraform and Pulumi. Instead of declaring low-level resources, the operator writes a manifest that describes the desired function:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudFunction
 metadata:
   name: hello-world

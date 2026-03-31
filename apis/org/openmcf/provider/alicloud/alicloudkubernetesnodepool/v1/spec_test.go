@@ -34,7 +34,7 @@ func minimalValidSpec() *AliCloudKubernetesNodePoolSpec {
 
 func minimalValidInput() *AliCloudKubernetesNodePool {
 	return &AliCloudKubernetesNodePool{
-		ApiVersion: "ali-cloud.openmcf.org/v1",
+		ApiVersion: "alicloud.openmcf.org/v1",
 		Kind:       "AliCloudKubernetesNodePool",
 		Metadata:   &shared.CloudResourceMetadata{Name: "test-pool"},
 		Spec:       minimalValidSpec(),
@@ -263,7 +263,7 @@ var _ = ginkgo.Describe("AliCloudKubernetesNodePoolSpec Validation Tests", func(
 
 		ginkgo.It("should fail when spec is missing", func() {
 			input := &AliCloudKubernetesNodePool{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudKubernetesNodePool",
 				Metadata:   &shared.CloudResourceMetadata{Name: "test"},
 			}

@@ -5,7 +5,7 @@
 Allocates an EIP with defaults: 5 Mbps, PayByTraffic, BGP. Suitable for development or testing.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudEipAddress
 metadata:
   name: my-eip
@@ -18,7 +18,7 @@ spec:
 A named EIP intended for association with a NAT gateway, using the default 5 Mbps bandwidth.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudEipAddress
 metadata:
   name: nat-eip
@@ -36,7 +36,7 @@ spec:
 A production EIP with 100 Mbps guaranteed bandwidth, billed per bandwidth allocation. Uses BGP_PRO for optimized routing in mainland China.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudEipAddress
 metadata:
   name: prod-lb-eip

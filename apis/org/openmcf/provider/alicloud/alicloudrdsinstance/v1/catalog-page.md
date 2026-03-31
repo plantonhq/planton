@@ -22,7 +22,7 @@ When you deploy an AliCloudRdsInstance resource, OpenMCF provisions:
 Create a file `rds-instance.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRdsInstance
 metadata:
   name: my-mysql

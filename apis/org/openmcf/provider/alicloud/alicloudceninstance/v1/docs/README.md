@@ -174,7 +174,7 @@ for i, vpc := range vpcList {
 OpenMCF provides a single `AliCloudCenInstance` resource that bundles the CEN instance and its attachments:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCenInstance
 metadata:
   name: global-backbone

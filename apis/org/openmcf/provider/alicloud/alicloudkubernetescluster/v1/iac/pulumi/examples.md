@@ -30,7 +30,7 @@ openmcf pulumi destroy \
 A basic development cluster using Flannel overlay networking with default settings.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: dev-cluster
@@ -60,7 +60,7 @@ spec:
 A staging cluster using Terway ENI-based networking with RRSA enabled for pod-level IAM.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: staging-cluster
@@ -112,7 +112,7 @@ spec:
 A production-grade cluster with Secrets encryption, maintenance windows, and auto-upgrade.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: production-cluster

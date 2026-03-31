@@ -393,7 +393,7 @@ var ProviderTestMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_TestCloudResourceTwo:   &testcloudresourcetwov1.TestCloudResourceTwo{},
 }
 
-var ProviderAliCloudMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
+var ProviderAlicloudMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AliCloudApplicationLoadBalancer: &alicloudapplicationloadbalancerv1.AliCloudApplicationLoadBalancer{},
 	cloudresourcekind.CloudResourceKind_AliCloudCdnDomain:               &alicloudcdndomainv1.AliCloudCdnDomain{},
 	cloudresourcekind.CloudResourceKind_AliCloudCenInstance:             &alicloudceninstancev1.AliCloudCenInstance{},
@@ -807,7 +807,7 @@ var ProviderSnowflakeMap = map[cloudresourcekind.CloudResourceKind]proto.Message
 
 var ToMessageMap = merge(
 	ProviderTestMap,
-	ProviderAliCloudMap,
+	ProviderAlicloudMap,
 	ProviderAtlasMap,
 	ProviderAuth0Map,
 	ProviderAwsMap,

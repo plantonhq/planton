@@ -25,7 +25,7 @@ When you deploy an AliCloudStorageBucket resource, OpenMCF provisions:
 Create a file `oss-bucket.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudStorageBucket
 metadata:
   name: my-bucket
@@ -77,7 +77,7 @@ This creates a private Standard-tier OSS bucket with LRS redundancy in the `cn-h
 ### Minimal Private Bucket
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudStorageBucket
 metadata:
   name: dev-bucket
@@ -89,7 +89,7 @@ spec:
 ### Production Bucket with Versioning and Encryption
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudStorageBucket
 metadata:
   name: prod-bucket
@@ -110,7 +110,7 @@ spec:
 ### Archive Bucket with Lifecycle Rules
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudStorageBucket
 metadata:
   name: log-archive

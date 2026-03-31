@@ -6,7 +6,7 @@ A basic node pool with a fixed number of nodes, suitable for development or
 small workloads.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesNodePool
 metadata:
   name: dev-pool
@@ -29,7 +29,7 @@ A node pool with auto-scaling enabled. The cluster auto-scaler adjusts the
 node count between 2 and 20 based on pending pod resource requests.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesNodePool
 metadata:
   name: compute-pool
@@ -80,7 +80,7 @@ instance types maximize availability across spot pools. Falls back to on-demand
 when spot capacity is unavailable.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesNodePool
 metadata:
   name: spot-pool

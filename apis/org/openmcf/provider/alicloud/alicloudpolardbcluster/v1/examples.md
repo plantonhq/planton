@@ -5,7 +5,7 @@
 A basic MySQL 8.0 PolarDB cluster for development and testing with a single node.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudPolardbCluster
 metadata:
   name: dev-polardb
@@ -33,7 +33,7 @@ spec:
 A production-grade MySQL PolarDB cluster with 4 nodes (1 primary + 3 read replicas), TDE encryption, audit logging, and cross-AZ deployment.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudPolardbCluster
 metadata:
   name: prod-mysql-polardb
@@ -99,7 +99,7 @@ spec:
 A PostgreSQL PolarDB cluster with database-level collation settings for internationalized applications.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudPolardbCluster
 metadata:
   name: pg-polardb

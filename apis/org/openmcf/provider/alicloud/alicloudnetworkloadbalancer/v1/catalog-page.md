@@ -25,7 +25,7 @@ Server groups are created empty. Backend membership (ECS instances, ENI IPs, etc
 Create a file `nlb.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudNetworkLoadBalancer
 metadata:
   name: my-nlb
@@ -136,7 +136,7 @@ This creates an internet-facing NLB with a TCP listener on port 80 across two av
 The simplest NLB: one server group, one TCP listener, two availability zones.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudNetworkLoadBalancer
 metadata:
   name: dev-nlb
@@ -166,7 +166,7 @@ spec:
 Production NLB with TLS termination, client certificate verification, fixed public IPs per zone, and connection draining for graceful deployments.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudNetworkLoadBalancer
 metadata:
   name: prod-nlb
@@ -229,7 +229,7 @@ spec:
 An internal NLB for service-to-service traffic with source-IP consistent hashing for session affinity, connection draining for graceful deployments, and Proxy Protocol for real client IP visibility.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudNetworkLoadBalancer
 metadata:
   name: internal-nlb

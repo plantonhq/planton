@@ -36,7 +36,7 @@ openmcf pulumi destroy \
 ## Minimal OSS Read-Only Policy
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRamPolicy
 metadata:
   name: oss-reader
@@ -66,7 +66,7 @@ Creates a custom policy granting read-only access to a specific OSS bucket. Uses
 ## Scoped Bucket Access with Version Rotation
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRamPolicy
 metadata:
   name: app-data-access
@@ -101,7 +101,7 @@ Grants full OSS access scoped to a single bucket. The `rotateStrategy` prevents 
 ## Multi-Service CI/CD Pipeline Policy
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRamPolicy
 metadata:
   name: cicd-deploy-policy

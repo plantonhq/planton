@@ -22,7 +22,7 @@ var _ = ginkgo.Describe("AliCloudEipAddressSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
 			input := &AliCloudEipAddress{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudEipAddress",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-eip",
@@ -37,7 +37,7 @@ var _ = ginkgo.Describe("AliCloudEipAddressSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with all optional fields populated", func() {
 			input := &AliCloudEipAddress{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudEipAddress",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "full-eip",
@@ -61,7 +61,7 @@ var _ = ginkgo.Describe("AliCloudEipAddressSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with PayByTraffic charge type", func() {
 			input := &AliCloudEipAddress{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudEipAddress",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "traffic-eip",
@@ -78,7 +78,7 @@ var _ = ginkgo.Describe("AliCloudEipAddressSpec Validation Tests", func() {
 		ginkgo.It("should pass with China-specific ISP values", func() {
 			for _, isp := range []string{"ChinaTelecom", "ChinaUnicom", "ChinaMobile"} {
 				input := &AliCloudEipAddress{
-					ApiVersion: "ali-cloud.openmcf.org/v1",
+					ApiVersion: "alicloud.openmcf.org/v1",
 					Kind:       "AliCloudEipAddress",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "isp-eip",
@@ -96,7 +96,7 @@ var _ = ginkgo.Describe("AliCloudEipAddressSpec Validation Tests", func() {
 		ginkgo.It("should pass with L2 and special ISP values", func() {
 			for _, isp := range []string{"ChinaTelecom_L2", "ChinaUnicom_L2", "ChinaMobile_L2", "BGP_FinanceCloud", "BGP_International"} {
 				input := &AliCloudEipAddress{
-					ApiVersion: "ali-cloud.openmcf.org/v1",
+					ApiVersion: "alicloud.openmcf.org/v1",
 					Kind:       "AliCloudEipAddress",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "special-isp-eip",
@@ -113,7 +113,7 @@ var _ = ginkgo.Describe("AliCloudEipAddressSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with bandwidth at boundary values", func() {
 			input := &AliCloudEipAddress{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudEipAddress",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "min-bw-eip",
@@ -136,7 +136,7 @@ var _ = ginkgo.Describe("AliCloudEipAddressSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
 			input := &AliCloudEipAddress{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudEipAddress",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -164,7 +164,7 @@ var _ = ginkgo.Describe("AliCloudEipAddressSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when kind is wrong", func() {
 			input := &AliCloudEipAddress{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -179,7 +179,7 @@ var _ = ginkgo.Describe("AliCloudEipAddressSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when metadata is missing", func() {
 			input := &AliCloudEipAddress{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudEipAddress",
 				Spec: &AliCloudEipAddressSpec{
 					Region: "cn-hangzhou",
@@ -191,7 +191,7 @@ var _ = ginkgo.Describe("AliCloudEipAddressSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when internet_charge_type has invalid value", func() {
 			input := &AliCloudEipAddress{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudEipAddress",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -207,7 +207,7 @@ var _ = ginkgo.Describe("AliCloudEipAddressSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when isp has invalid value", func() {
 			input := &AliCloudEipAddress{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudEipAddress",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -223,7 +223,7 @@ var _ = ginkgo.Describe("AliCloudEipAddressSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when bandwidth is below minimum", func() {
 			input := &AliCloudEipAddress{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudEipAddress",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -239,7 +239,7 @@ var _ = ginkgo.Describe("AliCloudEipAddressSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when bandwidth exceeds maximum", func() {
 			input := &AliCloudEipAddress{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudEipAddress",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -255,7 +255,7 @@ var _ = ginkgo.Describe("AliCloudEipAddressSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when address_name exceeds max length", func() {
 			input := &AliCloudEipAddress{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudEipAddress",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",

@@ -55,7 +55,7 @@ func ProviderConfigExample(provider cloudresourcekind.CloudResourceProvider) str
 		return openstack.ConfigFileExample
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return scaleway.ConfigFileExample
-	case cloudresourcekind.CloudResourceProvider_ali_cloud:
+	case cloudresourcekind.CloudResourceProvider_alicloud:
 		return alicloud.ConfigFileExample
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return oci.ConfigFileExample
@@ -97,7 +97,7 @@ func ProviderConfigFilename(provider cloudresourcekind.CloudResourceProvider) st
 		return openstack.ConfigFileName
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return scaleway.ConfigFileName
-	case cloudresourcekind.CloudResourceProvider_ali_cloud:
+	case cloudresourcekind.CloudResourceProvider_alicloud:
 		return alicloud.ConfigFileName
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return oci.ConfigFileName
@@ -139,7 +139,7 @@ func ProviderEnvironmentVariablesHelp(provider cloudresourcekind.CloudResourcePr
 		return openstack.EnvironmentVariablesHelp
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return scaleway.EnvironmentVariablesHelp
-	case cloudresourcekind.CloudResourceProvider_ali_cloud:
+	case cloudresourcekind.CloudResourceProvider_alicloud:
 		return alicloud.EnvironmentVariablesHelp
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return oci.EnvironmentVariablesHelp
@@ -181,7 +181,7 @@ func ProviderDocsURL(provider cloudresourcekind.CloudResourceProvider) string {
 		return openstack.ProviderDocsURL
 	case cloudresourcekind.CloudResourceProvider_scaleway:
 		return scaleway.ProviderDocsURL
-	case cloudresourcekind.CloudResourceProvider_ali_cloud:
+	case cloudresourcekind.CloudResourceProvider_alicloud:
 		return alicloud.ProviderDocsURL
 	case cloudresourcekind.CloudResourceProvider_oci:
 		return oci.ProviderDocsURL

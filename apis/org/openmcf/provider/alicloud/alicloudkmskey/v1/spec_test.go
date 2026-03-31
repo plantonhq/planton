@@ -21,7 +21,7 @@ var _ = ginkgo.Describe("AliCloudKmsKeySpec Validation Tests", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
 			input := &AliCloudKmsKey{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudKmsKey",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-key",
@@ -36,7 +36,7 @@ var _ = ginkgo.Describe("AliCloudKmsKeySpec Validation Tests", func() {
 
 		ginkgo.It("should pass with all optional fields populated", func() {
 			input := &AliCloudKmsKey{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudKmsKey",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "full-key",
@@ -63,7 +63,7 @@ var _ = ginkgo.Describe("AliCloudKmsKeySpec Validation Tests", func() {
 
 		ginkgo.It("should pass with HSM protection level", func() {
 			input := &AliCloudKmsKey{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudKmsKey",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "hsm-key",
@@ -80,7 +80,7 @@ var _ = ginkgo.Describe("AliCloudKmsKeySpec Validation Tests", func() {
 		ginkgo.It("should pass with SIGN/VERIFY key usage and asymmetric key specs", func() {
 			for _, spec := range []string{"RSA_2048", "RSA_3072", "EC_P256", "EC_P256K", "EC_SM2"} {
 				input := &AliCloudKmsKey{
-					ApiVersion: "ali-cloud.openmcf.org/v1",
+					ApiVersion: "alicloud.openmcf.org/v1",
 					Kind:       "AliCloudKmsKey",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "sign-key",
@@ -99,7 +99,7 @@ var _ = ginkgo.Describe("AliCloudKmsKeySpec Validation Tests", func() {
 		ginkgo.It("should pass with all symmetric key specs", func() {
 			for _, spec := range []string{"Aliyun_AES_256", "Aliyun_AES_128", "Aliyun_AES_192", "Aliyun_SM4"} {
 				input := &AliCloudKmsKey{
-					ApiVersion: "ali-cloud.openmcf.org/v1",
+					ApiVersion: "alicloud.openmcf.org/v1",
 					Kind:       "AliCloudKmsKey",
 					Metadata: &shared.CloudResourceMetadata{
 						Name: "sym-key",
@@ -116,7 +116,7 @@ var _ = ginkgo.Describe("AliCloudKmsKeySpec Validation Tests", func() {
 
 		ginkgo.It("should pass with pending_window_in_days at boundary values", func() {
 			input := &AliCloudKmsKey{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudKmsKey",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "min-window-key",
@@ -136,7 +136,7 @@ var _ = ginkgo.Describe("AliCloudKmsKeySpec Validation Tests", func() {
 
 		ginkgo.It("should pass with rotation disabled and no rotation_interval", func() {
 			input := &AliCloudKmsKey{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudKmsKey",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "no-rotation-key",
@@ -155,7 +155,7 @@ var _ = ginkgo.Describe("AliCloudKmsKeySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
 			input := &AliCloudKmsKey{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudKmsKey",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -183,7 +183,7 @@ var _ = ginkgo.Describe("AliCloudKmsKeySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when kind is wrong", func() {
 			input := &AliCloudKmsKey{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -198,7 +198,7 @@ var _ = ginkgo.Describe("AliCloudKmsKeySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when metadata is missing", func() {
 			input := &AliCloudKmsKey{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudKmsKey",
 				Spec: &AliCloudKmsKeySpec{
 					Region: "cn-hangzhou",
@@ -210,7 +210,7 @@ var _ = ginkgo.Describe("AliCloudKmsKeySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when key_spec has invalid value", func() {
 			input := &AliCloudKmsKey{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudKmsKey",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -226,7 +226,7 @@ var _ = ginkgo.Describe("AliCloudKmsKeySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when key_usage has invalid value", func() {
 			input := &AliCloudKmsKey{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudKmsKey",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -242,7 +242,7 @@ var _ = ginkgo.Describe("AliCloudKmsKeySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when protection_level has invalid value", func() {
 			input := &AliCloudKmsKey{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudKmsKey",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -258,7 +258,7 @@ var _ = ginkgo.Describe("AliCloudKmsKeySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when pending_window_in_days is below minimum", func() {
 			input := &AliCloudKmsKey{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudKmsKey",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -274,7 +274,7 @@ var _ = ginkgo.Describe("AliCloudKmsKeySpec Validation Tests", func() {
 
 		ginkgo.It("should fail when pending_window_in_days exceeds maximum", func() {
 			input := &AliCloudKmsKey{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudKmsKey",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",

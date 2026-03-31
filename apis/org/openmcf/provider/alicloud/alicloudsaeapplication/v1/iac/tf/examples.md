@@ -15,7 +15,7 @@ openmcf tofu apply --manifest <yaml-path> --stack <stack-name>
 A container image deployment with the smallest resource tier.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudSaeApplication
 metadata:
   name: hello-sae
@@ -46,7 +46,7 @@ This example:
 A production-grade Java application with VPC networking, health probes, and a rolling update strategy.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudSaeApplication
 metadata:
   name: order-service
@@ -118,7 +118,7 @@ This example:
 A high-traffic service with ACR EE, custom host aliases, SLS logging, and canary-style deployments.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudSaeApplication
 metadata:
   name: payment-gateway

@@ -5,7 +5,7 @@
 Creates a private OSS bucket with default settings -- Standard storage class, LRS redundancy, no versioning, no encryption.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudStorageBucket
 metadata:
   name: my-bucket
@@ -19,7 +19,7 @@ spec:
 A production-ready bucket with ZRS redundancy for cross-zone durability, versioning enabled for accidental deletion recovery, and AES256 server-side encryption at rest.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudStorageBucket
 metadata:
   name: prod-data-bucket
@@ -46,7 +46,7 @@ spec:
 A cost-optimized bucket that transitions objects to cheaper storage tiers over time: IA after 30 days, Archive after 90 days, and expires objects after 365 days. Incomplete multipart uploads are cleaned up after 7 days. Noncurrent versions (from versioning) are expired after 30 days.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudStorageBucket
 metadata:
   name: log-archive
@@ -76,7 +76,7 @@ spec:
 An OSS bucket configured for direct browser uploads from a web application, with CORS rules allowing cross-origin PUT and POST requests.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudStorageBucket
 metadata:
   name: upload-bucket
@@ -112,7 +112,7 @@ spec:
 A security-hardened bucket using a customer-managed KMS key for encryption, with access logs written to a separate bucket.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudStorageBucket
 metadata:
   name: secure-bucket

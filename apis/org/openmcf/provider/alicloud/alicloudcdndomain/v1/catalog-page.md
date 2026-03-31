@@ -23,7 +23,7 @@ When you deploy an AliCloudCdnDomain resource, OpenMCF provisions:
 Create a file `cdn-domain.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCdnDomain
 metadata:
   name: my-cdn
@@ -87,7 +87,7 @@ This creates a CDN domain accelerating web content from a single IP origin in th
 ### Minimal Web CDN
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCdnDomain
 metadata:
   name: my-cdn
@@ -108,7 +108,7 @@ spec:
 ### OSS Static Assets with Failover
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCdnDomain
 metadata:
   name: assets-cdn
@@ -142,7 +142,7 @@ spec:
 ### HTTPS with CAS Certificate
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCdnDomain
 metadata:
   name: secure-cdn

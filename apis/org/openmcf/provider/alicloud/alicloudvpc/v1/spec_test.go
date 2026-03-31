@@ -20,7 +20,7 @@ var _ = ginkgo.Describe("AliCloudVpcSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
 			input := &AliCloudVpc{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVpc",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-vpc",
@@ -37,7 +37,7 @@ var _ = ginkgo.Describe("AliCloudVpcSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with all optional fields populated", func() {
 			input := &AliCloudVpc{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVpc",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "full-config-vpc",
@@ -60,7 +60,7 @@ var _ = ginkgo.Describe("AliCloudVpcSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with 192.168 CIDR range", func() {
 			input := &AliCloudVpc{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVpc",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "small-vpc",
@@ -77,7 +77,7 @@ var _ = ginkgo.Describe("AliCloudVpcSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with IPv6 enabled", func() {
 			input := &AliCloudVpc{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVpc",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "ipv6-vpc",
@@ -98,7 +98,7 @@ var _ = ginkgo.Describe("AliCloudVpcSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
 			input := &AliCloudVpc{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVpc",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -114,7 +114,7 @@ var _ = ginkgo.Describe("AliCloudVpcSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when vpc_name is missing", func() {
 			input := &AliCloudVpc{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVpc",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -130,7 +130,7 @@ var _ = ginkgo.Describe("AliCloudVpcSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when cidr_block is missing", func() {
 			input := &AliCloudVpc{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVpc",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -163,7 +163,7 @@ var _ = ginkgo.Describe("AliCloudVpcSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when kind is wrong", func() {
 			input := &AliCloudVpc{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -180,7 +180,7 @@ var _ = ginkgo.Describe("AliCloudVpcSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when metadata is missing", func() {
 			input := &AliCloudVpc{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVpc",
 				Spec: &AliCloudVpcSpec{
 					Region:    "cn-hangzhou",
@@ -198,7 +198,7 @@ var _ = ginkgo.Describe("AliCloudVpcSpec Validation Tests", func() {
 				longName += "a"
 			}
 			input := &AliCloudVpc{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudVpc",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",

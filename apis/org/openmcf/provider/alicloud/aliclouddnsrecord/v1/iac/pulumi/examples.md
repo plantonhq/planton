@@ -22,7 +22,7 @@ openmcf pulumi update \
 Map a subdomain to an IPv4 address.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudDnsRecord
 metadata:
   name: web-server
@@ -42,7 +42,7 @@ spec:
 Alias a subdomain to another domain name. Common for CDN integration.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudDnsRecord
 metadata:
   name: cdn-alias
@@ -63,7 +63,7 @@ spec:
 Route email to a mail server. Priority ranges from 1 (highest) to 10 (lowest).
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudDnsRecord
 metadata:
   name: mail-primary

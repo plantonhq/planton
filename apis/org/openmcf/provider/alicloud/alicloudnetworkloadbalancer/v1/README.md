@@ -27,7 +27,7 @@ Server groups are created empty. Backend membership (ECS instances, ENI IPs, etc
 ## Quick Start
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudNetworkLoadBalancer
 metadata:
   name: my-nlb

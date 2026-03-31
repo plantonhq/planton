@@ -155,10 +155,10 @@ var File_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_api_proto pro
 
 const file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"Corg/openmcf/provider/alicloud/alicloudrocketmqinstance/v1/api.proto\x129org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1\x1a\x1bbuf/validate/validate.proto\x1aDorg/openmcf/provider/alicloud/alicloudrocketmqinstance/v1/spec.proto\x1aMorg/openmcf/provider/alicloud/alicloudrocketmqinstance/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xc8\x03\n" +
-	"\x18AliCloudRocketmqInstance\x12@\n" +
-	"\vapi_version\x18\x01 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
-	"\x18ali-cloud.openmcf.org/v1R\n" +
+	"Corg/openmcf/provider/alicloud/alicloudrocketmqinstance/v1/api.proto\x129org.openmcf.provider.alicloud.alicloudrocketmqinstance.v1\x1a\x1bbuf/validate/validate.proto\x1aDorg/openmcf/provider/alicloud/alicloudrocketmqinstance/v1/spec.proto\x1aMorg/openmcf/provider/alicloud/alicloudrocketmqinstance/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xc7\x03\n" +
+	"\x18AliCloudRocketmqInstance\x12?\n" +
+	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
+	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18AliCloudRocketmqInstanceR\x04kind\x12M\n" +

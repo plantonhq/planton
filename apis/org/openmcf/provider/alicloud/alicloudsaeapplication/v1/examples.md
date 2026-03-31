@@ -5,7 +5,7 @@
 Deploy a container image with the smallest resource tier. Suitable for development and testing.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudSaeApplication
 metadata:
   name: hello-sae
@@ -28,7 +28,7 @@ spec:
 Production-grade Java application deployed as a FatJar in a VPC with liveness and readiness probes.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudSaeApplication
 metadata:
   name: order-service
@@ -91,7 +91,7 @@ spec:
 Lightweight Python ZIP application for a stateless API.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudSaeApplication
 metadata:
   name: data-api
@@ -128,7 +128,7 @@ spec:
 Production deployment pulling images from a private ACR EE registry with custom host aliases and full observability.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudSaeApplication
 metadata:
   name: payment-gateway

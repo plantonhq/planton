@@ -19,7 +19,7 @@ When you deploy an AliCloudDnsRecord resource, OpenMCF provisions:
 Create a file `dns-record.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudDnsRecord
 metadata:
   name: my-record
@@ -69,7 +69,7 @@ openmcf apply -f dns-record.yaml
 ### A Record
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudDnsRecord
 metadata:
   name: web-server
@@ -90,7 +90,7 @@ spec:
 ### CNAME Record
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudDnsRecord
 metadata:
   name: cdn-alias
@@ -110,7 +110,7 @@ spec:
 ### MX Record with Priority
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudDnsRecord
 metadata:
   name: mail-primary

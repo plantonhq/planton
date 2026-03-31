@@ -14,7 +14,7 @@ Creates a project with no log stores. Stores can be added later by updating the
 manifest.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudLogProject
 metadata:
   name: my-log-project
@@ -34,7 +34,7 @@ A project with one log store using short retention and a single shard. Full-text
 indexing is enabled by default, making logs immediately searchable.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudLogProject
 metadata:
   name: dev-logging
@@ -63,7 +63,7 @@ Separate stores for application logs, audit trails, and access logs. Each store
 has distinct retention and shard configuration. Tags enable cost attribution.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudLogProject
 metadata:
   name: prod-logging
@@ -108,7 +108,7 @@ A store used purely for compliance archival where query capability is not needed
 Disabling indexing eliminates index storage costs.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudLogProject
 metadata:
   name: archive-logging

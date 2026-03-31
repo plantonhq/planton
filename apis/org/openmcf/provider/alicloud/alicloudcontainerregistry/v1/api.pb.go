@@ -155,10 +155,10 @@ var File_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_api_proto pr
 
 const file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"Dorg/openmcf/provider/alicloud/alicloudcontainerregistry/v1/api.proto\x12:org.openmcf.provider.alicloud.alicloudcontainerregistry.v1\x1a\x1bbuf/validate/validate.proto\x1aEorg/openmcf/provider/alicloud/alicloudcontainerregistry/v1/spec.proto\x1aNorg/openmcf/provider/alicloud/alicloudcontainerregistry/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xce\x03\n" +
-	"\x19AliCloudContainerRegistry\x12@\n" +
-	"\vapi_version\x18\x01 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
-	"\x18ali-cloud.openmcf.org/v1R\n" +
+	"Dorg/openmcf/provider/alicloud/alicloudcontainerregistry/v1/api.proto\x12:org.openmcf.provider.alicloud.alicloudcontainerregistry.v1\x1a\x1bbuf/validate/validate.proto\x1aEorg/openmcf/provider/alicloud/alicloudcontainerregistry/v1/spec.proto\x1aNorg/openmcf/provider/alicloud/alicloudcontainerregistry/v1/stack_outputs.proto\x1a!org/openmcf/shared/metadata.proto\"\xcd\x03\n" +
+	"\x19AliCloudContainerRegistry\x12?\n" +
+	"\vapi_version\x18\x01 \x01(\tB\x1e\xbaH\x1br\x19\n" +
+	"\x17alicloud.openmcf.org/v1R\n" +
 	"apiVersion\x124\n" +
 	"\x04kind\x18\x02 \x01(\tB \xbaH\x1dr\x1b\n" +
 	"\x19AliCloudContainerRegistryR\x04kind\x12M\n" +

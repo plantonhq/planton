@@ -19,7 +19,7 @@ When you deploy an AliCloudRamPolicy resource, OpenMCF provisions:
 Create a file `ram-policy.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRamPolicy
 metadata:
   name: my-oss-reader
@@ -107,7 +107,7 @@ openmcf pulumi destroy \
 A minimal policy granting read-only access to all OSS buckets:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRamPolicy
 metadata:
   name: oss-reader
@@ -142,7 +142,7 @@ spec:
 A policy granting full access to a specific OSS bucket with automatic version rotation for frequent updates:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRamPolicy
 metadata:
   name: app-data-access
@@ -180,7 +180,7 @@ spec:
 A cross-service policy for CI/CD pipelines with force delete enabled for clean teardowns:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRamPolicy
 metadata:
   name: cicd-deploy-policy

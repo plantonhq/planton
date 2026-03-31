@@ -5,7 +5,7 @@
 A basic MySQL 8.0 instance for development and testing.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRdsInstance
 metadata:
   name: dev-mysql
@@ -33,7 +33,7 @@ spec:
 A production-grade PostgreSQL instance with high availability, SSL encryption, cross-AZ deployment, and fine-grained monitoring.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRdsInstance
 metadata:
   name: prod-pg
@@ -96,7 +96,7 @@ spec:
 A production MySQL instance with TDE encryption, KMS key, and subscription billing for cost optimization.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRdsInstance
 metadata:
   name: encrypted-mysql

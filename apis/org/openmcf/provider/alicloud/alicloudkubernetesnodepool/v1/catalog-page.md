@@ -22,7 +22,7 @@ When you deploy an AliCloudKubernetesNodePool resource, OpenMCF provisions:
 Create a file `node-pool.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesNodePool
 metadata:
   name: my-pool
@@ -120,7 +120,7 @@ This creates a two-node pool with AliyunLinux3, 120 GiB cloud_essd system disks,
 A minimal fixed-size pool for development workloads.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesNodePool
 metadata:
   name: dev-pool
@@ -148,7 +148,7 @@ spec:
 A production pool with auto-scaling, managed lifecycle, and multiple instance types.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesNodePool
 metadata:
   name: prod-compute
@@ -208,7 +208,7 @@ spec:
 A cost-optimized pool using spot instances with taints for batch workload isolation.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesNodePool
 metadata:
   name: batch-spot

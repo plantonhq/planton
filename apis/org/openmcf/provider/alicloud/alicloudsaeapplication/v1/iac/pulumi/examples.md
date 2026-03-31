@@ -30,7 +30,7 @@ openmcf pulumi destroy \
 A container image deployment with the smallest resource tier. Suitable for development and testing.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudSaeApplication
 metadata:
   name: hello-sae
@@ -62,7 +62,7 @@ spec:
 A production-grade Java application deployed as a FatJar inside a VPC with liveness and readiness probes.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudSaeApplication
 metadata:
   name: order-service
@@ -136,7 +136,7 @@ spec:
 A high-traffic service pulling images from ACR Enterprise Edition with canary-style releases, custom host aliases, and SLS log collection.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudSaeApplication
 metadata:
   name: payment-gateway

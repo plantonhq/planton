@@ -13,7 +13,7 @@ openmcf tofu apply --manifest hack/manifest.yaml --auto-approve
 ## Minimal: Development Single-Node Instance
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRocketmqInstance
 metadata:
   name: dev-mq
@@ -34,7 +34,7 @@ openmcf tofu apply --manifest dev-mq.yaml --auto-approve
 ## Production: Professional HA with Topics
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRocketmqInstance
 metadata:
   name: prod-mq
@@ -76,7 +76,7 @@ openmcf tofu apply --manifest prod-mq.yaml --auto-approve
 ## Enterprise: Subscription with Internet Access
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRocketmqInstance
 metadata:
   name: enterprise-mq

@@ -5,7 +5,7 @@
 The simplest VPN setup: one gateway with a single IPsec connection to a remote office.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpnGateway
 metadata:
   name: office-vpn
@@ -31,7 +31,7 @@ spec:
 VPN Gateway connecting to two remote sites with strong encryption and health checks.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpnGateway
 metadata:
   name: prod-vpn
@@ -103,7 +103,7 @@ spec:
 VPN Gateway with SSL VPN for remote client access alongside a site-to-site connection.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpnGateway
 metadata:
   name: hybrid-vpn
@@ -131,7 +131,7 @@ spec:
 VPN Gateway referencing VPC and VSwitch from other OpenMCF resources.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpnGateway
 metadata:
   name: ref-vpn

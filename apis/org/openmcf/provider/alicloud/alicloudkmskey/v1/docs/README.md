@@ -96,7 +96,7 @@ Pulumi provides the same declarative model as Terraform with the added benefit o
 ### OpenMCF
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKmsKey
 metadata:
   name: prod-encryption-key

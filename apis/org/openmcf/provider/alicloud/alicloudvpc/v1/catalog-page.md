@@ -22,7 +22,7 @@ When you deploy an AliCloudVpc resource, OpenMCF provisions:
 Create a file `vpc.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpc
 metadata:
   name: my-vpc
@@ -71,7 +71,7 @@ This creates a VPC with a `/16` CIDR block in the `cn-hangzhou` region. Alibaba 
 A minimal VPC for non-production workloads with the smallest standard private CIDR range.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpc
 metadata:
   name: dev-vpc
@@ -91,7 +91,7 @@ spec:
 A production VPC with a large address space, resource group assignment for access control and billing, and organizational tags.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpc
 metadata:
   name: prod-vpc
@@ -118,7 +118,7 @@ spec:
 A dual-stack VPC with IPv6 support enabled at creation time. Alibaba Cloud allocates a `/56` IPv6 CIDR block automatically.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudVpc
 metadata:
   name: ipv6-vpc

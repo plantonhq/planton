@@ -5,7 +5,7 @@
 Create a private zone attached to a single VPC with no records. Records can be added later or managed separately.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudPrivateDnsZone
 metadata:
   name: internal-zone
@@ -21,7 +21,7 @@ spec:
 A private zone for internal service discovery with A records pointing to private IP addresses. This is the common pattern for microservices that need to find each other by hostname within a VPC.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudPrivateDnsZone
 metadata:
   name: svc-discovery
@@ -59,7 +59,7 @@ spec:
 A private zone shared across multiple VPCs (including cross-region) for database endpoint discovery. This pattern is used when databases in one VPC need to be reachable from application VPCs in different regions.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudPrivateDnsZone
 metadata:
   name: db-zone

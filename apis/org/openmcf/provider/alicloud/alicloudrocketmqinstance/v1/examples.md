@@ -5,7 +5,7 @@
 A basic standard-edition instance for development and testing with no topics or internet access.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRocketmqInstance
 metadata:
   name: dev-mq
@@ -22,7 +22,7 @@ spec:
 A production-grade professional instance with FIFO and normal topics, consumer groups with custom retry policies, and VSwitch placement.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRocketmqInstance
 metadata:
   name: prod-mq
@@ -76,7 +76,7 @@ spec:
 A mission-critical ultimate-edition instance with subscription billing, internet access for external clients, encryption at rest, and auto-scaling.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRocketmqInstance
 metadata:
   name: enterprise-mq

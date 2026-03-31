@@ -20,7 +20,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with minimal required fields", func() {
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test-bucket",
@@ -36,7 +36,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with all optional fields populated", func() {
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "full-config-bucket",
@@ -91,7 +91,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with AES256 encryption", func() {
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "encrypted-bucket",
@@ -110,7 +110,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 		ginkgo.It("should pass with lifecycle rules and versioning", func() {
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "lifecycle-bucket",
@@ -142,7 +142,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when region is missing", func() {
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -157,7 +157,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when bucket_name is missing", func() {
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -172,7 +172,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when bucket_name is too short", func() {
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -192,7 +192,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 				longName += "a"
 			}
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -208,7 +208,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when acl has invalid value", func() {
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -225,7 +225,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when storage_class has invalid value", func() {
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -242,7 +242,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when redundancy_type has invalid value", func() {
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -259,7 +259,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when sse_algorithm has invalid value", func() {
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -278,7 +278,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when transition storage_class has invalid value", func() {
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -302,7 +302,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when cors_rule has no allowed_origins", func() {
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -323,7 +323,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when cors_rule has no allowed_methods", func() {
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -344,7 +344,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when logging target_bucket is missing", func() {
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudStorageBucket",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -379,7 +379,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when kind is wrong", func() {
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "WrongKind",
 				Metadata: &shared.CloudResourceMetadata{
 					Name: "test",
@@ -395,7 +395,7 @@ var _ = ginkgo.Describe("AliCloudStorageBucketSpec Validation Tests", func() {
 
 		ginkgo.It("should fail when metadata is missing", func() {
 			input := &AliCloudStorageBucket{
-				ApiVersion: "ali-cloud.openmcf.org/v1",
+				ApiVersion: "alicloud.openmcf.org/v1",
 				Kind:       "AliCloudStorageBucket",
 				Spec: &AliCloudStorageBucketSpec{
 					Region:     "cn-hangzhou",

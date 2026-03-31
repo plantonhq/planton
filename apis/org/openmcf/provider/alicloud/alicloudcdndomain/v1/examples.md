@@ -5,7 +5,7 @@
 Accelerate a website with a single IP origin.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCdnDomain
 metadata:
   name: my-cdn
@@ -23,7 +23,7 @@ spec:
 A CDN domain with a primary and standby origin. If the primary origin is unreachable, CDN falls back to the standby.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCdnDomain
 metadata:
   name: ha-cdn
@@ -56,7 +56,7 @@ spec:
 Enable HTTPS using a certificate from Alibaba Cloud Certificate Management Service.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCdnDomain
 metadata:
   name: secure-cdn
@@ -83,7 +83,7 @@ spec:
 Serve static assets from an OSS bucket via CDN.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudCdnDomain
 metadata:
   name: assets-cdn

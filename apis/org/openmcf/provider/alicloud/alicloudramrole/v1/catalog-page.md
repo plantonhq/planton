@@ -20,7 +20,7 @@ When you deploy an AliCloudRamRole resource, OpenMCF provisions:
 Create a file `ram-role.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRamRole
 metadata:
   name: my-ecs-role
@@ -80,7 +80,7 @@ This creates a RAM role that ECS instances can assume via STS. No policies are a
 A role for ECS instances that need access to OSS and log services, with a 2-hour session duration:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRamRole
 metadata:
   name: ecs-worker-role
@@ -117,7 +117,7 @@ spec:
 A role that another Alibaba Cloud account can assume for read-only audit access, with both system and custom policies:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRamRole
 metadata:
   name: cross-account-audit
@@ -155,7 +155,7 @@ spec:
 A role for Function Compute functions that need VPC access and log service integration:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudRamRole
 metadata:
   name: fc-execution-role

@@ -15,7 +15,7 @@ openmcf tofu apply --manifest <yaml-path> --stack <stack-name>
 A minimal development cluster using Flannel overlay networking.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: dev-cluster
@@ -45,7 +45,7 @@ This example:
 A staging cluster with ENI-based networking and pod-level IAM.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: staging-cluster
@@ -91,7 +91,7 @@ This example:
 A production-grade cluster with all security and lifecycle features enabled.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: prod-cluster

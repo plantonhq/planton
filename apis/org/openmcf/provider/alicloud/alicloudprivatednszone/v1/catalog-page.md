@@ -22,7 +22,7 @@ When you deploy an AliCloudPrivateDnsZone resource, OpenMCF provisions:
 Create a file `private-zone.yaml`:
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudPrivateDnsZone
 metadata:
   name: my-private-zone
@@ -94,7 +94,7 @@ After deployment, resources within the attached VPC can resolve `api.internal.ex
 A common pattern: create a private zone for service discovery within a VPC, with A records for each service endpoint.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudPrivateDnsZone
 metadata:
   name: svc-zone
@@ -125,7 +125,7 @@ spec:
 Share database endpoints across multiple VPCs, including cross-region.
 
 ```yaml
-apiVersion: ali-cloud.openmcf.org/v1
+apiVersion: alicloud.openmcf.org/v1
 kind: AliCloudPrivateDnsZone
 metadata:
   name: db-zone
