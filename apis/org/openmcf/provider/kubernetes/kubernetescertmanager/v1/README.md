@@ -319,7 +319,7 @@ After deploying the addon, the following resources are automatically created:
 | ServiceAccount | `kubernetes-cert-manager` | For running kubernetes-cert-manager pods (with cloud provider annotations) |
 | Helm Release | `kubernetes-cert-manager` | The kubernetes-cert-manager controller, webhook, cainjector |
 | Secrets | `kubernetes-cert-manager-<provider-name>-credentials` | For each Cloudflare provider |
-| **ClusterIssuers** | **One per domain** (e.g., `planton.cloud`, `planton.live`) | **Each domain gets its own ClusterIssuer for better visibility** |
+| **ClusterIssuers** | **One per domain** (e.g., `planton.ai`, `planton.live`) | **Each domain gets its own ClusterIssuer for better visibility** |
 
 **The key difference**: You **DO NOT** need to manually create ClusterIssuers. The addon creates **one ClusterIssuer per domain**, each named after the domain itself for easy identification.
 
@@ -336,11 +336,11 @@ metadata:
 spec:
   secretName: planton-tls  # Where the cert will be stored
   issuerRef:
-    name: planton.cloud  # Use the domain name - auto-created by the addon
+    name: planton.ai  # Use the domain name - auto-created by the addon
     kind: ClusterIssuer
   dnsNames:
-    - planton.cloud
-    - "*.planton.cloud"
+    - planton.ai
+    - "*.planton.ai"
 ```
 
 Each domain gets its own ClusterIssuer named after the domain itself. This makes it crystal clear which issuer to use for each domain and provides better visibility when troubleshooting.
@@ -352,7 +352,7 @@ Within a few minutes, you'll have a Secret named `planton-tls` containing your c
 Since each domain has its own ClusterIssuer, you'll typically create separate certificates for each domain:
 
 ```yaml
-# Certificate for planton.cloud
+# Certificate for planton.ai
 apiVersion: kubernetes-cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -361,11 +361,11 @@ metadata:
 spec:
   secretName: planton-tls
   issuerRef:
-    name: planton.cloud  # Domain-specific issuer
+    name: planton.ai  # Domain-specific issuer
     kind: ClusterIssuer
   dnsNames:
-    - planton.cloud
-    - "*.planton.cloud"
+    - planton.ai
+    - "*.planton.ai"
 ---
 # Certificate for planton.live
 apiVersion: kubernetes-cert-manager.io/v1
@@ -396,14 +396,14 @@ metadata:
   name: my-app
   annotations:
     # Optional: Let kubernetes-cert-manager auto-create the certificate
-    kubernetes-cert-manager.io/cluster-issuer: planton.cloud  # Use the domain name
+    kubernetes-cert-manager.io/cluster-issuer: planton.ai  # Use the domain name
 spec:
   tls:
     - hosts:
-        - app.planton.cloud
+        - app.planton.ai
       secretName: planton-tls
   rules:
-    - host: app.planton.cloud
+    - host: app.planton.ai
       http:
         paths:
           - path: /
@@ -504,7 +504,7 @@ kubectl get pods -n kubernetes-cert-manager
 
 # Verify the auto-created ClusterIssuers (one per domain)
 kubectl get clusterissuer
-kubectl describe clusterissuer planton.cloud
+kubectl describe clusterissuer planton.ai
 kubectl describe clusterissuer planton.live
 
 # Check for provider-specific resources
@@ -697,7 +697,7 @@ The ClusterIssuer automatically updates when you change the addon configuration.
 
 **Q: Do I still need to create ClusterIssuers manually?**
 
-A: No! This addon automatically creates **one ClusterIssuer per domain**, each named after the domain itself (e.g., `planton.cloud`, `planton.live`). Just reference the domain name in your Certificate resources.
+A: No! This addon automatically creates **one ClusterIssuer per domain**, each named after the domain itself (e.g., `planton.ai`, `planton.live`). Just reference the domain name in your Certificate resources.
 
 **Q: Can I use multiple DNS providers for different domains?**
 

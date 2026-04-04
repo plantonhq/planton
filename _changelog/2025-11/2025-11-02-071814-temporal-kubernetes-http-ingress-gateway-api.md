@@ -358,7 +358,7 @@ func Resources(ctx *pulumi.Context, stackInput *temporalkubernetesv1.TemporalKub
 
 **gRPC-only (existing behavior)**:
 ```yaml
-apiVersion: code2ai.planton.cloud/v1
+apiVersion: code2ai.planton.ai/v1
 kind: TemporalKubernetes
 metadata:
   name: my-temporal
@@ -373,7 +373,7 @@ This creates only the gRPC LoadBalancer, accessible at `temporal-grpc.planton.li
 
 **gRPC + HTTP with separate hostnames**:
 ```yaml
-apiVersion: code2ai.planton.cloud/v1
+apiVersion: code2ai.planton.ai/v1
 kind: TemporalKubernetes
 metadata:
   name: my-temporal

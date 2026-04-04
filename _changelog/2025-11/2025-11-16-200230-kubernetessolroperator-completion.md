@@ -123,7 +123,7 @@ func newLocals(stackInput *kubernetessolroperatorv1.KubernetesStrimziKafkaOperat
 
 **Features**:
 - Computed values from stack input (namespace, operator name, chart version)
-- Common label generation (app.kubernetes.io/*, planton.cloud/*)
+- Common label generation (app.kubernetes.io/*, planton.ai/*)
 - Metadata integration (organization, environment labels)
 
 ### 4. Documented Terraform Status

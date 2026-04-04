@@ -1,6 +1,6 @@
 # Example manifest with Terraform/Tofu S3 backend configuration in labels
 # This manifest configures remote state storage in AWS S3
-apiVersion: aws.planton.cloud/v1
+apiVersion: aws.planton.ai/v1
 kind: EksCluster
 metadata:
   id: main-cluster

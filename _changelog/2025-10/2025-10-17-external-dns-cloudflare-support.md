@@ -77,7 +77,7 @@ message ExternalDnsKubernetesSpec {
 The implementation supports multiple ExternalDNS instances for different domains in the same namespace:
 
 ```yaml
-# Instance 1: planton.cloud
+# Instance 1: planton.ai
 metadata:
   name: external-dns-planton
 spec:
@@ -349,14 +349,14 @@ metadata:
   name: console-planton
   namespace: istio-ingress
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: console.planton.cloud
+    external-dns.alpha.kubernetes.io/hostname: console.planton.ai
 spec:
   addresses:
   - type: Hostname
     value: ingress-external.istio-ingress.svc.cluster.local
   gatewayClassName: istio
   listeners:
-  - hostname: console.planton.cloud
+  - hostname: console.planton.ai
     port: 443
     protocol: HTTPS
 ```
@@ -441,7 +441,7 @@ Always specify `dns_zone_id` to:
 
 Successfully deployed to production environment managing two domains:
 
-**Instance 1: planton.cloud**
+**Instance 1: planton.ai**
 - Manifest: `external-dns-planton.yaml`
 - Zone ID: `7adff2f8326758cac24fd17f02ca3001`
 - Helm Release: `external-dns-planton`
@@ -492,10 +492,10 @@ kubectl get clusterrole external-dns-planton -o yaml | grep -A 10 gateway.networ
 
 Successfully tested Gateway API integration with Istio:
 
-**Test Case**: console.planton.cloud
+**Test Case**: console.planton.ai
 - **Gateway**: `console-planton` in `istio-ingress` namespace
 - **Service**: `ingress-external` with external IP `34.93.244.81`
-- **Annotation**: `external-dns.alpha.kubernetes.io/hostname: console.planton.cloud`
+- **Annotation**: `external-dns.alpha.kubernetes.io/hostname: console.planton.ai`
 - **Result**: ✅ DNS record created automatically in Cloudflare
 - **Proxy**: Orange cloud enabled
 
@@ -504,7 +504,7 @@ Successfully tested Gateway API integration with Istio:
 2. Applied manifest to cluster
 3. Monitored ExternalDNS logs for record creation
 4. Verified A record appeared in Cloudflare dashboard
-5. Tested DNS resolution with `dig console.planton.cloud`
+5. Tested DNS resolution with `dig console.planton.ai`
 6. Confirmed HTTPS access working
 
 ## Architecture
@@ -785,7 +785,7 @@ None. This is a new provider addition with no impact on existing GKE, EKS, or AK
 
 ✅ **Protobuf Specification**: Complete with validation  
 ✅ **Pulumi Module**: Implemented and tested  
-✅ **Multi-Domain Support**: Verified with planton.cloud and planton.live  
+✅ **Multi-Domain Support**: Verified with planton.ai and planton.live  
 ✅ **Production Deployment**: Successfully deployed to app-prod cluster  
 ✅ **Authentication**: Cloudflare API integration working  
 ✅ **DNS Record Creation**: Automated record creation verified  
@@ -793,7 +793,7 @@ None. This is a new provider addition with no impact on existing GKE, EKS, or AK
 ✅ **RBAC Configuration**: Proper permissions for all sources (Service, Ingress, Gateway API)  
 ✅ **Documentation**: README created with examples and troubleshooting  
 ✅ **Rate Limiting**: Optimized for production scale  
-✅ **Production Testing**: console.planton.cloud DNS record created via Gateway annotation
+✅ **Production Testing**: console.planton.ai DNS record created via Gateway annotation
 
 ## Lessons Learned
 

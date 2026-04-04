@@ -82,7 +82,7 @@ This project is licensed under the [MIT License](LICENSE), granting you the free
 
 ## Support
 
-For support, please contact our [support team](mailto:support@planton.cloud). We are here to help you with any issues, questions, or feedback you may have regarding the Confluent Cloud Kafka Pulumi Module.
+For support, please contact our [support team](mailto:support@planton.ai). We are here to help you with any issues, questions, or feedback you may have regarding the Confluent Cloud Kafka Pulumi Module.
 
 ## Acknowledgements
 
@@ -106,7 +106,7 @@ Stay tuned for more updates as we continue to develop and refine the module to m
 
 ## Contact
 
-For any inquiries or feedback, please reach out to us at [contact@planton.cloud](mailto:contact@planton.cloud). We value your input and are committed to providing the support you need to effectively manage your Confluent Cloud Kafka resources.
+For any inquiries or feedback, please reach out to us at [contact@planton.ai](mailto:contact@planton.ai). We value your input and are committed to providing the support you need to effectively manage your Confluent Cloud Kafka resources.
 
 ## Disclaimer
 
@@ -114,7 +114,7 @@ For any inquiries or feedback, please reach out to us at [contact@planton.cloud]
 
 ## Security
 
-If you discover any security vulnerabilities, please report them responsibly by contacting our security team at [security@planton.cloud](mailto:security@planton.cloud). We take security seriously and are committed to addressing any issues promptly to protect our users and their infrastructure.
+If you discover any security vulnerabilities, please report them responsibly by contacting our security team at [security@planton.ai](mailto:security@planton.ai). We take security seriously and are committed to addressing any issues promptly to protect our users and their infrastructure.
 
 ## Code of Conduct
 

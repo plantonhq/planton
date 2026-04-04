@@ -22,7 +22,7 @@ This document provides practical examples of common Droplet configurations using
 Basic, cost-effective configuration for development and testing.
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDroplet
 metadata:
   name: dev-server
@@ -56,7 +56,7 @@ spec:
 Balanced configuration for staging environments that mirror production settings.
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDroplet
 metadata:
   name: staging-app
@@ -99,7 +99,7 @@ spec:
 Production-grade configuration with all recommended features enabled.
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDroplet
 metadata:
   name: prod-web-01
@@ -141,7 +141,7 @@ spec:
 Droplet with persistent storage volume for data that outlives the VM.
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDroplet
 metadata:
   name: app-with-storage
@@ -182,7 +182,7 @@ spec:
 Using a shell script for first-boot provisioning.
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDroplet
 metadata:
   name: scripted-droplet
@@ -242,7 +242,7 @@ spec:
 Using declarative cloud-config for better readability and maintainability.
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDroplet
 metadata:
   name: cloud-config-droplet
@@ -315,7 +315,7 @@ spec:
 CPU-optimized Droplet for computational tasks (builds, video encoding, ML inference).
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDroplet
 metadata:
   name: compute-worker
@@ -351,7 +351,7 @@ spec:
 Droplet with both IPv4 and IPv6 connectivity.
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDroplet
 metadata:
   name: ipv6-droplet
@@ -387,7 +387,7 @@ spec:
 Self-hosted PostgreSQL database with persistent storage and backups.
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDroplet
 metadata:
   name: postgres-db-server
@@ -456,7 +456,7 @@ spec:
 Comprehensive configuration with all production features.
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDroplet
 metadata:
   name: prod-app-complete
@@ -612,7 +612,7 @@ spec:
 
 ```yaml
 # Create Volume first
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanVolume
 metadata:
   name: my-data-volume
@@ -623,7 +623,7 @@ spec:
 
 ---
 # Then reference in Droplet
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDroplet
 metadata:
   name: my-droplet

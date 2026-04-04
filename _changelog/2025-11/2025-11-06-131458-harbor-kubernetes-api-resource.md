@@ -351,13 +351,13 @@ The `initializeLocals` function follows the established pattern:
 
 1. **Namespace Resolution**: Priority order:
    - Default: `metadata.name`
-   - Override: Custom label `kubernetes.planton.cloud/namespace`
+   - Override: Custom label `kubernetes.planton.ai/namespace`
    - Override: Stack input `kubernetes_namespace` field
 
 2. **Label Construction**: Standard Kubernetes labels:
-   - `planton.cloud/resource`: "true"
-   - `planton.cloud/resource-name`: resource name
-   - `planton.cloud/resource-kind`: "HarborKubernetes"
+   - `planton.ai/resource`: "true"
+   - `planton.ai/resource-name`: resource name
+   - `planton.ai/resource-kind`: "HarborKubernetes"
    - Plus optional: resource-id, organization, environment
 
 3. **Service Name Generation**: Predictable naming:

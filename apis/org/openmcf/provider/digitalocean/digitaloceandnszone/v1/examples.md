@@ -20,7 +20,7 @@ This document provides practical examples of common DNS zone configurations usin
 Basic DNS configuration for a website hosted on a DigitalOcean Droplet or Load Balancer.
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDnsZone
 metadata:
   name: simple-website
@@ -52,7 +52,7 @@ spec:
 Complete email setup with MX records and email authentication (SPF, DMARC, DKIM).
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDnsZone
 metadata:
   name: email-enabled-domain
@@ -127,7 +127,7 @@ spec:
 DNS configuration for an application with separate API and web frontends behind a DigitalOcean Load Balancer.
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDnsZone
 metadata:
   name: app-load-balanced
@@ -173,7 +173,7 @@ spec:
 Pointing subdomains to DigitalOcean Spaces CDN endpoints for static assets.
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDnsZone
 metadata:
   name: cdn-enabled-site
@@ -212,7 +212,7 @@ spec:
 Managing DNS for development, staging, and production environments using subdomains.
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDnsZone
 metadata:
   name: multi-env-dns
@@ -268,7 +268,7 @@ spec:
 Authorizing certificate issuance for enhanced security and compliance.
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDnsZone
 metadata:
   name: caa-secured-domain
@@ -320,7 +320,7 @@ spec:
 Configuring SRV records for service discovery (e.g., SIP, XMPP, Minecraft).
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDnsZone
 metadata:
   name: srv-example
@@ -372,7 +372,7 @@ spec:
 Comprehensive DNS configuration combining all best practices.
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDnsZone
 metadata:
   name: production-complete
@@ -495,7 +495,7 @@ spec:
 You can reference outputs from other resources using `StringValueOrRef`.
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDnsZone
 metadata:
   name: cross-ref-example

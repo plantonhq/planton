@@ -96,7 +96,7 @@ type Locals struct {
 - Label management (resource, resource_id, resource_kind, org, env)
 - Namespace resolution with 3-level priority:
   1. Default: `metadata.name`
-  2. Override: custom label `planton.cloud/kubernetes-namespace`
+  2. Override: custom label `planton.ai/kubernetes-namespace`
   3. Override: `stackInput.kubernetes_namespace`
 - Service name calculation: `{name}-grafana`
 - FQDN generation: `{service}.{namespace}.svc.cluster.local`

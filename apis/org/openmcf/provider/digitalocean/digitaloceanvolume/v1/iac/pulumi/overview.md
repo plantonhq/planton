@@ -72,12 +72,12 @@ Standard OpenMCF labels applied to resources:
 
 ```go
 labels := {
-    "planton.cloud/resource":      "true",
-    "planton.cloud/resource-kind": "DigitalOceanVolume",
-    "planton.cloud/resource-name": "prod-db-data",
-    "planton.cloud/resource-id":   "dovol-abc123",
-    "planton.cloud/organization":  "my-org",
-    "planton.cloud/environment":   "production",
+    "planton.ai/resource":      "true",
+    "planton.ai/resource-kind": "DigitalOceanVolume",
+    "planton.ai/resource-name": "prod-db-data",
+    "planton.ai/resource-id":   "dovol-abc123",
+    "planton.ai/organization":  "my-org",
+    "planton.ai/environment":   "production",
 }
 ```
 

@@ -76,7 +76,7 @@ pulumi config set digitalocean:token dop_v1_xxxxxxxxxxxxxxxxxxxx --secret
 Create a manifest file (e.g., `manifest.yaml`) with your DNS zone specification:
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: DigitalOceanDnsZone
 metadata:
   name: my-website-dns

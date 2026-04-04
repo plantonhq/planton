@@ -293,7 +293,7 @@ Verify backup configuration and check Cloud SQL instance logs in GCP Console.
 
 ## Support
 
-For support, please contact support@planton.cloud.
+For support, please contact support@planton.ai.
 
 ## License
 

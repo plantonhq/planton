@@ -26,18 +26,18 @@ func newLocals(stackInput *kubernetesstrimzikafkaoperatorv1.KubernetesStrimziKaf
 	labels := pulumi.StringMap{
 		"app.kubernetes.io/name":       pulumi.String("strimzi-kafka-operator"),
 		"app.kubernetes.io/managed-by": pulumi.String("openmcf"),
-		"planton.cloud/resource-kind":  pulumi.String("kubernetes-strimzi-kafka-operator"),
+		"planton.ai/resource-kind":  pulumi.String("kubernetes-strimzi-kafka-operator"),
 	}
 
 	if stackInput.Target != nil && stackInput.Target.Metadata != nil {
 		if stackInput.Target.Metadata.Name != "" {
-			labels["planton.cloud/resource-id"] = pulumi.String(stackInput.Target.Metadata.Name)
+			labels["planton.ai/resource-id"] = pulumi.String(stackInput.Target.Metadata.Name)
 		}
 		if stackInput.Target.Metadata.Org != "" {
-			labels["planton.cloud/organization"] = pulumi.String(stackInput.Target.Metadata.Org)
+			labels["planton.ai/organization"] = pulumi.String(stackInput.Target.Metadata.Org)
 		}
 		if stackInput.Target.Metadata.Env != "" {
-			labels["planton.cloud/environment"] = pulumi.String(stackInput.Target.Metadata.Env)
+			labels["planton.ai/environment"] = pulumi.String(stackInput.Target.Metadata.Env)
 		}
 	}
 

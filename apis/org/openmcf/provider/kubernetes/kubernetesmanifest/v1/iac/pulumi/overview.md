@@ -136,9 +136,9 @@ For very large manifests (1000+ lines), consider:
 ### Label Management
 
 Standard OpenMCF labels are applied to the namespace (if created):
-- `planton.cloud/resource: true`
-- `planton.cloud/resource-name: {metadata.name}`
-- `planton.cloud/resource-kind: KubernetesManifest`
+- `planton.ai/resource: true`
+- `planton.ai/resource-name: {metadata.name}`
+- `planton.ai/resource-kind: KubernetesManifest`
 
 ### Error Handling
 

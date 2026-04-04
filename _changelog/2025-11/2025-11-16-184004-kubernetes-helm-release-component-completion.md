@@ -78,7 +78,7 @@ const (
     //
     // The namespace value is determined by (in priority order):
     //   1. Default: metadata.name from the KubernetesHelmRelease resource
-    //   2. Override: custom label "planton.cloud/kubernetes-namespace" if provided
+    //   2. Override: custom label "planton.ai/kubernetes-namespace" if provided
     //   3. Override: kubernetes_namespace from KubernetesHelmReleaseStackInput if provided
     OpNamespace = "namespace"
 )

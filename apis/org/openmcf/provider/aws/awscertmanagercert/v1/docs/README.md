@@ -374,7 +374,7 @@ The `AwsCertManagerCertStackOutputs` message provides:
 ### Example: Typical Production Configuration
 
 ```yaml
-apiVersion: aws.planton.cloud/v1
+apiVersion: aws.planton.ai/v1
 kind: AwsCertManagerCert
 metadata:
   name: example-com-cert

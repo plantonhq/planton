@@ -1,6 +1,6 @@
 # Example manifest with Pulumi backend configuration in labels
 # This manifest can be deployed without specifying --stack flag
-apiVersion: code2ai.planton.cloud/v1
+apiVersion: code2ai.planton.ai/v1
 kind: MicroserviceKubernetes
 metadata:
   id: order-service

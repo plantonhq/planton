@@ -176,7 +176,7 @@ This project is licensed under the MIT License. Please review the LICENSE file f
 
 ## Support
 
-For support, please contact our support team at support@planton.cloud.
+For support, please contact our support team at support@planton.ai.
 
 ## References
 

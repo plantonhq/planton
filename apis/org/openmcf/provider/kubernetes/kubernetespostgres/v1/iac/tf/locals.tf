@@ -32,8 +32,8 @@ locals {
 
   # Labels for Postgres pods
   postgres_pod_selector_labels = {
-    "planton.cloud/resource-kind" = "postgres_kubernetes"
-    "planton.cloud/resource-id"   = local.resource_id
+    "planton.ai/resource-kind" = "postgres_kubernetes"
+    "planton.ai/resource-id"   = local.resource_id
   }
 
   # Namespace uses the resource_id

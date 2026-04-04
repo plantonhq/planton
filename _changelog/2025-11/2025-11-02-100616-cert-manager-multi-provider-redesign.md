@@ -6,7 +6,7 @@
 
 ## Summary
 
-Redesigned the CertManagerKubernetes addon from a single-provider model to a multi-provider architecture that supports managing certificates across multiple DNS providers (Cloudflare, GCP Cloud DNS, AWS Route53, Azure DNS) in a single deployment. The addon now automatically creates one ClusterIssuer per domain, each named after the domain itself (e.g., `planton.cloud`, `planton.live`), providing superior visibility and easier troubleshooting compared to the previous single multi-solver ClusterIssuer approach.
+Redesigned the CertManagerKubernetes addon from a single-provider model to a multi-provider architecture that supports managing certificates across multiple DNS providers (Cloudflare, GCP Cloud DNS, AWS Route53, Azure DNS) in a single deployment. The addon now automatically creates one ClusterIssuer per domain, each named after the domain itself (e.g., `planton.ai`, `planton.live`), providing superior visibility and easier troubleshooting compared to the previous single multi-solver ClusterIssuer approach.
 
 ## Problem Statement / Motivation
 
@@ -223,7 +223,7 @@ func createClusterIssuerForDomain(
             ApiVersion: pulumi.String("cert-manager.io/v1"),
             Kind:       pulumi.String("ClusterIssuer"),
             Metadata: &metav1.ObjectMetaArgs{
-                Name: pulumi.String(issuerName),  // e.g., "planton.cloud"
+                Name: pulumi.String(issuerName),  // e.g., "planton.ai"
             },
             OtherFields: map[string]interface{}{
                 "spec": map[string]interface{}{
@@ -292,7 +292,7 @@ spec:
 ### ClusterIssuer Names
 
 **Old**: Single issuer named `letsencrypt-cluster-issuer`  
-**New**: One issuer per domain, named after the domain (e.g., `planton.cloud`)
+**New**: One issuer per domain, named after the domain (e.g., `planton.ai`)
 
 ### Certificate Resource Updates
 
@@ -306,7 +306,7 @@ issuerRef:
 **After**:
 ```yaml
 issuerRef:
-  name: planton.cloud  # Use the domain name
+  name: planton.ai  # Use the domain name
   kind: ClusterIssuer
 ```
 
@@ -372,7 +372,7 @@ kubectl delete clusterissuer letsencrypt-cluster-issuer
 1. **Immediate Clarity**: `kubectl get clusterissuer` output is self-documenting:
 ```
 NAME              READY   AGE
-planton.cloud     True    5d
+planton.ai     True    5d
 planton.live      True    5d
 internal.corp     True    5d
 ```
@@ -381,11 +381,11 @@ internal.corp     True    5d
 
 3. **Faster Debugging**:
 ```bash
-# Old way: Which issuer handles planton.cloud?
+# Old way: Which issuer handles planton.ai?
 kubectl describe clusterissuer letsencrypt-cluster-issuer | grep -A20 solvers
 
 # New way: Direct inspection
-kubectl describe clusterissuer planton.cloud
+kubectl describe clusterissuer planton.ai
 ```
 
 ### Operational Benefits
@@ -443,7 +443,7 @@ openmcf pulumi up --manifest cert-manager-multi.yaml
 
 # Verify ClusterIssuers created
 kubectl get clusterissuer
-# Should show: planton.cloud, planton.live, internal.corp
+# Should show: planton.ai, planton.live, internal.corp
 
 # Check Cloudflare secret
 kubectl get secret -n cert-manager cert-manager-cloudflare-prod-credentials
@@ -461,10 +461,10 @@ metadata:
 spec:
   secretName: test-tls
   issuerRef:
-    name: planton.cloud
+    name: planton.ai
     kind: ClusterIssuer
   dnsNames:
-    - test.planton.cloud
+    - test.planton.ai
 EOF
 
 # Monitor certificate creation
@@ -476,12 +476,12 @@ kubectl logs -n cert-manager deployment/cert-manager -f
 3. **DNS Propagation Verification**:
 ```bash
 # Verify TXT record creation during challenge
-dig _acme-challenge.test.planton.cloud TXT @1.1.1.1 +short
+dig _acme-challenge.test.planton.ai TXT @1.1.1.1 +short
 ```
 
 ### Integration Tests
 
-- **Cloudflare Provider**: Verified with production Planton deployment (planton.cloud, planton.live)
+- **Cloudflare Provider**: Verified with production Planton deployment (planton.ai, planton.live)
 - **GCP Provider**: Tested with internal GKE cluster + Cloud DNS
 - **Build Verification**: `go build` successful with no compilation errors
 - **Lint Checks**: No linter errors in updated code
@@ -533,7 +533,7 @@ dig _acme-challenge.test.planton.cloud TXT @1.1.1.1 +short
    - ✅ Immediate visibility: `kubectl get clusterissuer` is self-documenting
    - ✅ Direct mapping: domain → issuer (no ambiguity)
    - ✅ Better isolation: separate ACME accounts and rate limits
-   - ✅ Easier troubleshooting: `kubectl describe clusterissuer planton.cloud`
+   - ✅ Easier troubleshooting: `kubectl describe clusterissuer planton.ai`
    - ❌ More Kubernetes resources (acceptable trade-off)
 
 **Rationale**: The visibility and troubleshooting benefits outweigh the resource overhead. Modern Kubernetes clusters easily handle hundreds of CRDs, and the operational clarity is invaluable.
@@ -557,7 +557,7 @@ The addon creates ClusterIssuers but not Certificate resources because:
 
 ## Known Limitations
 
-1. **Multi-Domain Certificates Across Providers**: A single Certificate resource cannot span domains from different providers (e.g., can't have `planton.cloud` and `internal.corp` in same cert). Workaround: Create separate certificates.
+1. **Multi-Domain Certificates Across Providers**: A single Certificate resource cannot span domains from different providers (e.g., can't have `planton.ai` and `internal.corp` in same cert). Workaround: Create separate certificates.
 
 2. **Provider Migration**: Changing a domain's DNS provider requires deleting and recreating the ClusterIssuer (Pulumi handles this automatically).
 
@@ -598,5 +598,5 @@ The implementation aligns with cert-manager best practices from the technical re
 
 **Status**: ✅ Production Ready  
 **Migration Required**: Yes (breaking change)  
-**Deployment**: Planton production (planton.cloud, planton.live)
+**Deployment**: Planton production (planton.ai, planton.live)
 

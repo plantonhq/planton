@@ -321,7 +321,7 @@ Contributions are welcome! Please see the [project contribution guidelines](../.
 
 For support:
 - **Issues**: Open an issue on [GitHub](https://github.com/plantonhq/openmcf/issues)
-- **Email**: [support@planton.cloud](mailto:support@planton.cloud)
+- **Email**: [support@planton.ai](mailto:support@planton.ai)
 - **Documentation**: [docs.confluent.io](https://docs.confluent.io/cloud/)
 
 ## References

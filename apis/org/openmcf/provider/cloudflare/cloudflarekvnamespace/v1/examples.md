@@ -13,7 +13,7 @@ This document provides copy-paste ready examples for creating and managing Cloud
 Create a Cloudflare credential resource with the required API token:
 
 ```yaml
-apiVersion: code2cloud.planton.cloud/v1
+apiVersion: code2cloud.planton.ai/v1
 kind: CloudflareCredential
 metadata:
   name: my-cloudflare-credential

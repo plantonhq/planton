@@ -5,13 +5,13 @@
 # Each ClusterIssuer is named after the domain for better visibility.
 #
 # You DO NOT need to manually create ClusterIssuers when using this addon.
-# Simply reference the domain name (e.g., "planton.cloud") in your Certificate resources.
+# Simply reference the domain name (e.g., "planton.ai") in your Certificate resources.
 #
 # Example configuration:
 # dnsProviders:
 #   - name: cloudflare-planton
 #     dnsZones:
-#       - planton.cloud
+#       - planton.ai
 #       - planton.live
 #     cloudflare:
 #       apiToken: ...
@@ -21,13 +21,13 @@
 # apiVersion: kubernetes-cert-manager.io/v1
 # kind: ClusterIssuer
 # metadata:
-#   name: planton.cloud  # Named after the domain
+#   name: planton.ai  # Named after the domain
 # spec:
 #   acme:
-#     email: admin@planton.cloud  # From spec.acme.email
+#     email: admin@planton.ai  # From spec.acme.email
 #     server: https://acme-v02.api.letsencrypt.org/directory  # From spec.acme.server
 #     privateKeySecretRef:
-#       name: letsencrypt-planton.cloud-account-key
+#       name: letsencrypt-planton.ai-account-key
 #     solvers:
 #       - dns01:
 #           cloudflare:
@@ -41,7 +41,7 @@
 #   name: planton.live  # Named after the domain
 # spec:
 #   acme:
-#     email: admin@planton.cloud
+#     email: admin@planton.ai
 #     server: https://acme-v02.api.letsencrypt.org/directory
 #     privateKeySecretRef:
 #       name: letsencrypt-planton.live-account-key
@@ -65,13 +65,13 @@ spec:
   
   # Reference to the auto-created ClusterIssuer (named after the domain)
   issuerRef:
-    name: planton.cloud  # Use the domain name as the issuer name
+    name: planton.ai  # Use the domain name as the issuer name
     kind: ClusterIssuer
   
   # DNS names for the certificate
   dnsNames:
-    - planton.cloud
-    - "*.planton.cloud"  # Wildcard subdomain
+    - planton.ai
+    - "*.planton.ai"  # Wildcard subdomain
   
   # Certificate renewal settings
   renewBefore: 720h  # 30 days before expiry

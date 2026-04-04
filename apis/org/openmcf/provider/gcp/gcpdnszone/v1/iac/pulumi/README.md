@@ -79,7 +79,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Support
 
-For support, please contact our [support team](mailto:support@planton.cloud).
+For support, please contact our [support team](mailto:support@planton.ai).
 
 ## Acknowledgements
 
@@ -101,7 +101,7 @@ Stay tuned for more updates!
 
 ## Contact
 
-For any inquiries or feedback, please reach out to us at [contact@planton.cloud](mailto:contact@planton.cloud).
+For any inquiries or feedback, please reach out to us at [contact@planton.ai](mailto:contact@planton.ai).
 
 ## Disclaimer
 
@@ -109,7 +109,7 @@ For any inquiries or feedback, please reach out to us at [contact@planton.cloud]
 
 ## Security
 
-If you discover any security vulnerabilities, please report them responsibly by contacting our security team at [security@planton.cloud](mailto:security@planton.cloud).
+If you discover any security vulnerabilities, please report them responsibly by contacting our security team at [security@planton.ai](mailto:security@planton.ai).
 
 ## Code of Conduct
 

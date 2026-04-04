@@ -110,7 +110,7 @@ For each `.md` file, check required sections:
 |-------|--------|---------|
 | Naming convention | PASS | |
 | Companion .md | PASS | |
-| apiVersion match | FAIL | Expected "aws.openmcf.org/v1", found "aws.planton.cloud/v1" |
+| apiVersion match | FAIL | Expected "aws.openmcf.org/v1", found "aws.planton.ai/v1" |
 | StringValueOrRef | WARN | Field `subnets` uses plain string instead of value: wrapper |
 | ... | ... | ... |
 

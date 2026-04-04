@@ -231,7 +231,7 @@ See [iac/tf/README.md](./iac/tf/README.md) for Terraform-based deployment instru
 ## Support
 
 For issues and questions:
-- **OpenMCF Documentation**: [docs.planton.cloud](https://docs.planton.cloud)
+- **OpenMCF Documentation**: [docs.planton.ai](https://docs.planton.ai)
 - **DigitalOcean App Platform Docs**: [docs.digitalocean.com/products/app-platform](https://docs.digitalocean.com/products/app-platform/)
 - **OpenMCF GitHub**: [github.com/plantonhq/openmcf](https://github.com/plantonhq/openmcf)
 

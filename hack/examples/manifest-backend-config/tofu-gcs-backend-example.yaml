@@ -1,6 +1,6 @@
 # Example manifest with Terraform/Tofu GCS backend configuration in labels
 # This manifest configures remote state storage in Google Cloud Storage
-apiVersion: gcp.planton.cloud/v1
+apiVersion: gcp.planton.ai/v1
 kind: GkeCluster
 metadata:
   id: staging-cluster
