@@ -35,12 +35,13 @@ message GcpCertManagerCertSpec {
     }
   ];
 
-  // cloud_dns_zone_id is the identifier of the Cloud DNS managed zone
-  // where DNS validation records will be created automatically.
-  // Must be a public managed zone matching the domain names.
-  // Example: "my-dns-zone" or a full zone name.
+  // cloud_dns_zone_id is the identifier of a Cloud DNS managed zone used for
+  // automatic DNS validation record creation. When set, the module creates CNAME
+  // validation records directly in this Cloud DNS zone. When omitted, the module
+  // still creates DNS authorizations but skips record insertion — the required
+  // validation records are exported as stack outputs (dns_validation_records) so
+  // they can be inserted manually into any DNS provider (e.g. AWS Route 53).
   org.openmcf.shared.foreignkey.v1.StringValueOrRef cloud_dns_zone_id = 4 [
-    (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = GcpDnsZone,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_name"
   ];

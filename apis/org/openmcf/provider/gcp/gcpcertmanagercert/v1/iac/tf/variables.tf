@@ -16,9 +16,9 @@ variable "spec" {
     gcp_project_id         = string
     primary_domain_name    = string
     alternate_domain_names = list(string)
-    cloud_dns_zone_id = object({
+    cloud_dns_zone_id = optional(object({
       value = string
-    })
+    }), null)
     certificate_type  = optional(number, 0) # 0 = MANAGED, 1 = LOAD_BALANCER
     validation_method = optional(string, "DNS")
   })

@@ -206,6 +206,33 @@ Here, we only specify the required fields. The certificate will be created using
 
 ---
 
+## External DNS (Manual Validation) Example
+
+```yaml
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCertManagerCert
+metadata:
+  name: external-dns-cert
+  org: my-org
+  env:
+    id: production
+spec:
+  gcpProjectId: my-gcp-project
+  primaryDomainName: example.com
+  alternateDomainNames:
+    - www.example.com
+  certificateType: MANAGED
+```
+
+When `cloudDnsZoneId` is omitted, the module creates DNS authorizations in GCP but does **not** insert validation records into any DNS zone. Instead, the required CNAME records are exported as the `dns-validation-records` stack output. After deployment, read these records and manually create them in your DNS provider (e.g. AWS Route 53, Cloudflare). The certificate will provision once the records propagate globally.
+
+```shell
+# Read the validation records after deployment
+pulumi stack output dns-validation-records
+```
+
+---
+
 ## After Deploying
 
 Once you've chosen one of these examples, apply it with OpenMCF using Pulumi or Terraform:

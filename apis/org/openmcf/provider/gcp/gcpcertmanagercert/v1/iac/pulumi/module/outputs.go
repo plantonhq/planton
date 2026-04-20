@@ -12,4 +12,8 @@ const (
 
 	// OpCertificateStatus is the output key for the certificate status
 	OpCertificateStatus = "certificate-status"
+
+	// OpDnsValidationRecords is the output key for the DNS validation records
+	// required for certificate domain ownership verification.
+	OpDnsValidationRecords = "dns-validation-records"
 )

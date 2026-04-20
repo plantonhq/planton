@@ -101,12 +101,12 @@ func TestGcpCertManagerCertSpec_Validation(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "missing cloud dns zone id",
+			name: "valid spec without cloud dns zone id (external DNS)",
 			spec: &GcpCertManagerCertSpec{
 				GcpProjectId:      "my-project",
 				PrimaryDomainName: "example.com",
 			},
-			wantErr: true,
+			wantErr: false,
 		},
 		{
 			name: "invalid primary domain pattern",
@@ -142,23 +142,16 @@ func TestGcpCertManagerCertSpec_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Note: Actual validation happens at the protobuf validation layer
-			// These tests verify the spec structure is correct
 			if tt.wantErr {
-				// Verify that required fields are present or patterns are valid
 				if tt.spec.GcpProjectId == "" {
 					assert.Empty(t, tt.spec.GcpProjectId, "gcp_project_id should be empty")
 				}
 				if tt.spec.PrimaryDomainName == "" {
 					assert.Empty(t, tt.spec.PrimaryDomainName, "primary_domain_name should be empty")
 				}
-				if tt.spec.CloudDnsZoneId == nil {
-					assert.Nil(t, tt.spec.CloudDnsZoneId, "cloud_dns_zone_id should be nil")
-				}
 			} else {
 				assert.NotEmpty(t, tt.spec.GcpProjectId, "gcp_project_id should not be empty")
 				assert.NotEmpty(t, tt.spec.PrimaryDomainName, "primary_domain_name should not be empty")
-				assert.NotNil(t, tt.spec.CloudDnsZoneId, "cloud_dns_zone_id should not be nil")
 			}
 		})
 	}
@@ -233,6 +226,14 @@ func TestGcpCertManagerCertStatus_Structure(t *testing.T) {
 			CertificateName:       "projects/test/locations/global/certificates/test-cert",
 			CertificateDomainName: "test.example.com",
 			CertificateStatus:     "ACTIVE",
+			DnsValidationRecords: []*DnsValidationRecord{
+				{
+					RecordName: "_acme-challenge.test.example.com.",
+					RecordType: "CNAME",
+					RecordData: "abc123.authorize.certificatemanager.goog.",
+					Domain:     "test.example.com",
+				},
+			},
 		},
 	}
 
@@ -242,4 +243,7 @@ func TestGcpCertManagerCertStatus_Structure(t *testing.T) {
 	assert.Equal(t, "projects/test/locations/global/certificates/test-cert", status.Outputs.CertificateName)
 	assert.Equal(t, "test.example.com", status.Outputs.CertificateDomainName)
 	assert.Equal(t, "ACTIVE", status.Outputs.CertificateStatus)
+	require.Len(t, status.Outputs.DnsValidationRecords, 1)
+	assert.Equal(t, "CNAME", status.Outputs.DnsValidationRecords[0].RecordType)
+	assert.Equal(t, "test.example.com", status.Outputs.DnsValidationRecords[0].Domain)
 }

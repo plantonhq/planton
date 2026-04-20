@@ -94,10 +94,12 @@ type GcpCertManagerCertSpec struct {
 	// Each entry must follow the same pattern as primary_domain_name and cannot contain duplicates.
 	// Primary domain should not be added to this list.
 	AlternateDomainNames []string `protobuf:"bytes,3,rep,name=alternate_domain_names,json=alternateDomainNames,proto3" json:"alternate_domain_names,omitempty"`
-	// cloud_dns_zone_id is the identifier of the Cloud DNS managed zone
-	// where DNS validation records will be created automatically.
-	// Must be a public managed zone matching the domain names.
-	// Example: "my-dns-zone" or a full zone name.
+	// cloud_dns_zone_id is the identifier of a Cloud DNS managed zone used for
+	// automatic DNS validation record creation. When set, the module creates CNAME
+	// validation records directly in this Cloud DNS zone. When omitted, the module
+	// still creates DNS authorizations but skips record insertion — the required
+	// validation records are exported as stack outputs (dns_validation_records) so
+	// they can be inserted manually into any DNS provider (e.g. AWS Route 53).
 	CloudDnsZoneId *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=cloud_dns_zone_id,json=cloudDnsZoneId,proto3" json:"cloud_dns_zone_id,omitempty"`
 	// certificate_type indicates which type of certificate to create.
 	// MANAGED uses Google Certificate Manager (newer, more flexible).
@@ -187,12 +189,12 @@ var File_org_openmcf_provider_gcp_gcpcertmanagercert_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_gcp_gcpcertmanagercert_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/gcp/gcpcertmanagercert/v1/spec.proto\x12.org.openmcf.provider.gcp.gcpcertmanagercert.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb1\x05\n" +
+	"9org/openmcf/provider/gcp/gcpcertmanagercert/v1/spec.proto\x12.org.openmcf.provider.gcp.gcpcertmanagercert.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xab\x05\n" +
 	"\x16GcpCertManagerCertSpec\x12,\n" +
 	"\x0egcp_project_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\fgcpProjectId\x12s\n" +
 	"\x13primary_domain_name\x18\x02 \x01(\tBC\xbaH@\xc8\x01\x01r;29^(?:\\*\\.[A-Za-z0-9\\-\\.]+|[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,})$R\x11primaryDomainName\x12}\n" +
-	"\x16alternate_domain_names\x18\x03 \x03(\tBG\xbaHD\x92\x01A\x18\x01\"=r;29^(?:\\*\\.[A-Za-z0-9\\-\\.]+|[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,})$R\x14alternateDomainNames\x12\x86\x01\n" +
-	"\x11cloud_dns_zone_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xdd\x04\x92\xd4a\x18status.outputs.zone_nameR\x0ecloudDnsZoneId\x12|\n" +
+	"\x16alternate_domain_names\x18\x03 \x03(\tBG\xbaHD\x92\x01A\x18\x01\"=r;29^(?:\\*\\.[A-Za-z0-9\\-\\.]+|[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,})$R\x14alternateDomainNames\x12\x80\x01\n" +
+	"\x11cloud_dns_zone_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xdd\x04\x92\xd4a\x18status.outputs.zone_nameR\x0ecloudDnsZoneId\x12|\n" +
 	"\x10certificate_type\x18\x05 \x01(\x0e2?.org.openmcf.provider.gcp.gcpcertmanagercert.v1.CertificateTypeB\v\x8a\xa6\x1d\aMANAGEDH\x00R\x0fcertificateType\x88\x01\x01\x12C\n" +
 	"\x11validation_method\x18\x06 \x01(\tB\x11\xbaH\ar\x05R\x03DNS\x8a\xa6\x1d\x03DNSH\x01R\x10validationMethod\x88\x01\x01B\x13\n" +
 	"\x11_certificate_typeB\x14\n" +

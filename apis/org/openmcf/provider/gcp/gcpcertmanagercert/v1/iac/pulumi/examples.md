@@ -142,6 +142,45 @@ pulumi destroy
 }
 ```
 
+## Example: External DNS (No Cloud DNS Zone)
+
+When your DNS zone is hosted outside GCP (e.g. AWS Route 53), omit `cloudDnsZoneId`. The module creates DNS authorizations but skips record insertion. Validation records are exported as the `dns-validation-records` stack output.
+
+```json
+{
+  "target": {
+    "apiVersion": "gcp.openmcf.org/v1",
+    "kind": "GcpCertManagerCert",
+    "metadata": {
+      "name": "external-dns-example",
+      "id": "ext-cert-001",
+      "org": "acme-corp",
+      "env": {
+        "id": "production"
+      }
+    },
+    "spec": {
+      "gcpProjectId": "acme-production",
+      "primaryDomainName": "api.acme.com",
+      "alternateDomainNames": [
+        "www.api.acme.com"
+      ],
+      "certificateType": 0,
+      "validationMethod": "DNS"
+    }
+  },
+  "providerConfig": {
+    "serviceAccountKeyBase64": "YOUR_BASE64_KEY_HERE"
+  }
+}
+```
+
+After deploying, read the validation records and create them in your DNS provider:
+
+```bash
+pulumi stack output dns-validation-records
+```
+
 ## Using Makefile
 
 ### Preview

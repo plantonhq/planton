@@ -1,10 +1,7 @@
 locals {
-  # Combine primary and alternate domains
-  all_domains = concat([var.spec.primary_domain_name], var.spec.alternate_domain_names)
-  
-  # Determine if we're using MANAGED or LOAD_BALANCER certificate type
-  # Default to MANAGED if not specified or set to 0
-  is_managed = var.spec.certificate_type == null || var.spec.certificate_type == 0
+  all_domains  = concat([var.spec.primary_domain_name], var.spec.alternate_domain_names)
+  is_managed   = var.spec.certificate_type == null || var.spec.certificate_type == 0
+  has_dns_zone = var.spec.cloud_dns_zone_id != null
 }
 
 #############################################
@@ -22,9 +19,10 @@ resource "google_certificate_manager_dns_authorization" "dns_auth" {
   labels      = local.gcp_labels
 }
 
-# DNS validation records (Certificate Manager only)
+# DNS validation records — only created when a Cloud DNS zone is provided.
+# When omitted, the dns-validation-records output contains the records for manual insertion.
 resource "google_dns_record_set" "validation_records" {
-  for_each = local.is_managed ? google_certificate_manager_dns_authorization.dns_auth : {}
+  for_each = local.is_managed && local.has_dns_zone ? google_certificate_manager_dns_authorization.dns_auth : {}
   
   name         = each.value.dns_resource_record[0].name
   type         = each.value.dns_resource_record[0].type

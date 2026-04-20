@@ -1,6 +1,7 @@
 package module
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -12,20 +13,21 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// certManagerCert provisions a GCP certificate with DNS validation
-// and creates corresponding DNS records in Cloud DNS.
-// It supports both Certificate Manager certificates and Load Balancer SSL certificates.
+type dnsValidationRecord struct {
+	RecordName string `json:"record_name"`
+	RecordType string `json:"record_type"`
+	RecordData string `json:"record_data"`
+	Domain     string `json:"domain"`
+}
+
 func certManagerCert(ctx *pulumi.Context, locals *Locals, provider *gcp.Provider) error {
 	spec := locals.GcpCertManagerCert.Spec
 
-	// Determine which type of certificate to create
-	// Default to MANAGED if not specified
 	certType := gcpcertmanagercertv1.CertificateType_MANAGED
 	if spec.CertificateType != nil {
 		certType = *spec.CertificateType
 	}
 
-	// Collect all domains (primary + alternates)
 	allDomains := []string{spec.PrimaryDomainName}
 	allDomains = append(allDomains, spec.AlternateDomainNames...)
 
@@ -39,13 +41,13 @@ func certManagerCert(ctx *pulumi.Context, locals *Locals, provider *gcp.Provider
 	}
 }
 
-// createManagedCertificate creates a Certificate Manager certificate with DNS authorization
 func createManagedCertificate(ctx *pulumi.Context, locals *Locals, provider *gcp.Provider,
 	allDomains []string, spec *gcpcertmanagercertv1.GcpCertManagerCertSpec) error {
 
 	meta := locals.GcpCertManagerCert.Metadata
 
-	// Create DNS authorizations for each domain
+	hasDnsZone := spec.CloudDnsZoneId != nil && spec.CloudDnsZoneId.GetValue() != ""
+
 	var dnsAuthorizations []*certificatemanager.DnsAuthorization
 	for i, domain := range allDomains {
 		dnsAuth, err := certificatemanager.NewDnsAuthorization(ctx,
@@ -64,41 +66,40 @@ func createManagedCertificate(ctx *pulumi.Context, locals *Locals, provider *gcp
 		}
 		dnsAuthorizations = append(dnsAuthorizations, dnsAuth)
 
-		// Create the DNS record for validation
-		// The DNS authorization provides the record name and data
-		_, err = dns.NewRecordSet(ctx,
-			fmt.Sprintf("%s-validation-record-%d", meta.Name, i),
-			&dns.RecordSetArgs{
-				Name: dnsAuth.DnsResourceRecords.ApplyT(func(records []certificatemanager.DnsAuthorizationDnsResourceRecord) string {
-					if len(records) > 0 && records[0].Name != nil {
-						return *records[0].Name
-					}
-					return ""
-				}).(pulumi.StringOutput),
-				Type: dnsAuth.DnsResourceRecords.ApplyT(func(records []certificatemanager.DnsAuthorizationDnsResourceRecord) string {
-					if len(records) > 0 && records[0].Type != nil {
-						return *records[0].Type
-					}
-					return ""
-				}).(pulumi.StringOutput),
-				Ttl: pulumi.Int(300),
-				Rrdatas: dnsAuth.DnsResourceRecords.ApplyT(func(records []certificatemanager.DnsAuthorizationDnsResourceRecord) []string {
-					if len(records) > 0 && records[0].Data != nil {
-						return []string{*records[0].Data}
-					}
-					return []string{}
-				}).(pulumi.StringArrayOutput),
-				ManagedZone: pulumi.String(spec.CloudDnsZoneId.GetValue()),
-				Project:     pulumi.String(spec.GcpProjectId),
-			},
-			pulumi.Provider(provider),
-		)
-		if err != nil {
-			return errors.Wrapf(err, "failed to create DNS validation record for domain %s", domain)
+		if hasDnsZone {
+			_, err = dns.NewRecordSet(ctx,
+				fmt.Sprintf("%s-validation-record-%d", meta.Name, i),
+				&dns.RecordSetArgs{
+					Name: dnsAuth.DnsResourceRecords.ApplyT(func(records []certificatemanager.DnsAuthorizationDnsResourceRecord) string {
+						if len(records) > 0 && records[0].Name != nil {
+							return *records[0].Name
+						}
+						return ""
+					}).(pulumi.StringOutput),
+					Type: dnsAuth.DnsResourceRecords.ApplyT(func(records []certificatemanager.DnsAuthorizationDnsResourceRecord) string {
+						if len(records) > 0 && records[0].Type != nil {
+							return *records[0].Type
+						}
+						return ""
+					}).(pulumi.StringOutput),
+					Ttl: pulumi.Int(300),
+					Rrdatas: dnsAuth.DnsResourceRecords.ApplyT(func(records []certificatemanager.DnsAuthorizationDnsResourceRecord) []string {
+						if len(records) > 0 && records[0].Data != nil {
+							return []string{*records[0].Data}
+						}
+						return []string{}
+					}).(pulumi.StringArrayOutput),
+					ManagedZone: pulumi.String(spec.CloudDnsZoneId.GetValue()),
+					Project:     pulumi.String(spec.GcpProjectId),
+				},
+				pulumi.Provider(provider),
+			)
+			if err != nil {
+				return errors.Wrapf(err, "failed to create DNS validation record for domain %s", domain)
+			}
 		}
 	}
 
-	// Create the Certificate Manager certificate
 	cert, err := certificatemanager.NewCertificate(ctx,
 		meta.Name+"-cert",
 		&certificatemanager.CertificateArgs{
@@ -132,23 +133,21 @@ func createManagedCertificate(ctx *pulumi.Context, locals *Locals, provider *gcp
 		return errors.Wrap(err, "failed to create Certificate Manager certificate")
 	}
 
-	// Export outputs
 	ctx.Export(OpCertificateId, cert.ID())
 	ctx.Export(OpCertificateName, cert.Name)
 	ctx.Export(OpCertificateDomainName, pulumi.String(spec.PrimaryDomainName))
 	ctx.Export(OpCertificateStatus, pulumi.String("PROVISIONING"))
 
+	exportDnsValidationRecords(ctx, dnsAuthorizations, allDomains)
+
 	return nil
 }
 
-// createLoadBalancerCertificate creates a Google-managed SSL certificate for load balancers
 func createLoadBalancerCertificate(ctx *pulumi.Context, locals *Locals, provider *gcp.Provider,
 	allDomains []string, spec *gcpcertmanagercertv1.GcpCertManagerCertSpec) error {
 
 	meta := locals.GcpCertManagerCert.Metadata
 
-	// Note: Google-managed SSL certificates for load balancers handle DNS validation automatically
-	// when the domain is pointed to the load balancer. We don't need to create DNS records manually.
 	cert, err := compute.NewManagedSslCertificate(ctx,
 		meta.Name+"-ssl-cert",
 		&compute.ManagedSslCertificateArgs{
@@ -165,11 +164,53 @@ func createLoadBalancerCertificate(ctx *pulumi.Context, locals *Locals, provider
 		return errors.Wrap(err, "failed to create Google-managed SSL certificate")
 	}
 
-	// Export outputs
 	ctx.Export(OpCertificateId, cert.ID())
 	ctx.Export(OpCertificateName, cert.Name)
 	ctx.Export(OpCertificateDomainName, pulumi.String(spec.PrimaryDomainName))
 	ctx.Export(OpCertificateStatus, pulumi.String("PROVISIONING"))
 
 	return nil
+}
+
+// exportDnsValidationRecords exports the DNS validation records produced by each
+// DnsAuthorization so that users whose DNS zone is outside GCP can manually
+// create the required CNAME records.
+func exportDnsValidationRecords(ctx *pulumi.Context,
+	auths []*certificatemanager.DnsAuthorization, domains []string) {
+
+	perAuthOutputs := make([]interface{}, len(auths))
+	for i, auth := range auths {
+		domain := domains[i]
+		perAuthOutputs[i] = auth.DnsResourceRecords.ApplyT(
+			func(records []certificatemanager.DnsAuthorizationDnsResourceRecord) dnsValidationRecord {
+				rec := dnsValidationRecord{Domain: domain}
+				if len(records) > 0 {
+					if records[0].Name != nil {
+						rec.RecordName = *records[0].Name
+					}
+					if records[0].Type != nil {
+						rec.RecordType = *records[0].Type
+					}
+					if records[0].Data != nil {
+						rec.RecordData = *records[0].Data
+					}
+				}
+				return rec
+			},
+		)
+	}
+
+	validationRecords := pulumi.All(perAuthOutputs...).ApplyT(func(args []interface{}) (string, error) {
+		records := make([]dnsValidationRecord, 0, len(args))
+		for _, arg := range args {
+			records = append(records, arg.(dnsValidationRecord))
+		}
+		b, err := json.Marshal(records)
+		if err != nil {
+			return "[]", err
+		}
+		return string(b), nil
+	}).(pulumi.StringOutput)
+
+	ctx.Export(OpDnsValidationRecords, validationRecords)
 }

@@ -2,7 +2,7 @@
 
 The `GcpCertManagerCert` Pulumi module provides an intelligent abstraction for provisioning SSL/TLS certificates on Google Cloud Platform. It bridges two distinct GCP certificate services—the modern **Certificate Manager** and the classic **Google-managed SSL certificates**—through a unified API, enabling developers to choose between cost optimization and advanced features without managing the underlying complexity.
 
-By accepting a single declarative specification, the module automatically orchestrates multi-step DNS validation workflows, creates DNS authorization records in Cloud DNS, and provisions certificates in the appropriate GCP service based on requirements. This transforms what would typically require 3-5 separate resources and explicit dependency management into a single, atomic operation.
+By accepting a single declarative specification, the module automatically orchestrates multi-step DNS validation workflows, creates DNS authorization records, and provisions certificates in the appropriate GCP service based on requirements. When a Cloud DNS zone is provided (`cloud_dns_zone_id`), validation records are auto-created in that zone. When omitted, the module still creates DNS authorizations but exports the required validation records as stack outputs (`dns-validation-records`) so they can be inserted manually into any DNS provider (e.g. AWS Route 53, Cloudflare). This transforms what would typically require 3-5 separate resources and explicit dependency management into a single, atomic operation.
 
 ## Key Capabilities
 
@@ -21,11 +21,12 @@ For `MANAGED` certificates, the module automates the complex DNS validation work
 
 1. **DNS Authorization Creation**: Creates a `google_certificate_manager_dns_authorization` resource for each domain
 2. **CNAME Record Extraction**: Extracts the unique CNAME validation record from the authorization response
-3. **DNS Record Provisioning**: Creates the CNAME record in the specified Cloud DNS zone
-4. **Dependency Management**: Ensures DNS records exist before certificate creation using explicit `DependsOn` relationships
-5. **Certificate Provisioning**: Creates the certificate with proper references to all DNS authorizations
+3. **DNS Record Provisioning** (conditional): When `cloud_dns_zone_id` is provided, creates the CNAME record in the specified Cloud DNS zone. When omitted, this step is skipped.
+4. **Validation Record Export**: Always exports all validation records as the `dns-validation-records` stack output, enabling manual insertion into any DNS provider
+5. **Dependency Management**: Ensures DNS records (if created) exist before certificate creation using explicit `DependsOn` relationships
+6. **Certificate Provisioning**: Creates the certificate with proper references to all DNS authorizations
 
-This orchestration eliminates the "chicken-and-egg" validation problem and enables **zero-downtime certificate provisioning** independent of load balancer availability.
+This orchestration eliminates the "chicken-and-egg" validation problem and enables **zero-downtime certificate provisioning** independent of load balancer availability. The optional Cloud DNS zone support makes it possible to use GCP Certificate Manager even when the DNS zone is hosted outside GCP (e.g. AWS Route 53).
 
 ### Multi-Domain Certificate Support
 
@@ -126,7 +127,7 @@ The module manages complex resource dependencies to ensure correct provisioning 
 ```
 DNS Authorization (per domain)
          ↓
-    DNS Record (CNAME validation)
+    DNS Record (CNAME validation)  ← only when cloud_dns_zone_id is set
          ↓
     Certificate (aggregates all authorizations)
 ```
@@ -143,6 +144,9 @@ The module exports outputs to the Pulumi stack for integration with other infras
 | `certificate-name` | Certificate name | `my-cert` |
 | `certificate-domain-name` | Primary domain | `example.com` |
 | `certificate-status` | Provisioning status | `PROVISIONING` or `ACTIVE` |
+| `dns-validation-records` | JSON array of CNAME records for DNS validation | `[{"record_name":"...","record_type":"CNAME","record_data":"...","domain":"example.com"}]` |
+
+The `dns-validation-records` output is always populated for `MANAGED` certificates. When `cloud_dns_zone_id` is provided, these records are also auto-created in Cloud DNS. When omitted, users must manually insert these CNAME records into their DNS provider (e.g. AWS Route 53, Cloudflare).
 
 These outputs are mapped to the `stack_outputs.proto` structure and returned to the OpenMCF CLI for status reporting and integration with other resources.
 

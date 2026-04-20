@@ -37,8 +37,13 @@ type GcpCertManagerCertStackOutputs struct {
 	// certificate_status represents the validation or provisioning status of the certificate.
 	// Possible values: "ACTIVE", "PROVISIONING", "FAILED", etc.
 	CertificateStatus string `protobuf:"bytes,4,opt,name=certificate_status,json=certificateStatus,proto3" json:"certificate_status,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	// dns_validation_records contains the CNAME records required for DNS validation.
+	// Always populated for MANAGED certificates. When cloud_dns_zone_id is set, these
+	// records are also auto-created in Cloud DNS. When cloud_dns_zone_id is omitted,
+	// users must manually insert these records into their DNS provider.
+	DnsValidationRecords []*DnsValidationRecord `protobuf:"bytes,5,rep,name=dns_validation_records,json=dnsValidationRecords,proto3" json:"dns_validation_records,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *GcpCertManagerCertStackOutputs) Reset() {
@@ -99,16 +104,105 @@ func (x *GcpCertManagerCertStackOutputs) GetCertificateStatus() string {
 	return ""
 }
 
+func (x *GcpCertManagerCertStackOutputs) GetDnsValidationRecords() []*DnsValidationRecord {
+	if x != nil {
+		return x.DnsValidationRecords
+	}
+	return nil
+}
+
+// DnsValidationRecord represents a single DNS record required for certificate validation.
+type DnsValidationRecord struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// record_name is the fully qualified DNS record name (e.g. "_acme-challenge.example.com.").
+	RecordName string `protobuf:"bytes,1,opt,name=record_name,json=recordName,proto3" json:"record_name,omitempty"`
+	// record_type is the DNS record type (typically "CNAME").
+	RecordType string `protobuf:"bytes,2,opt,name=record_type,json=recordType,proto3" json:"record_type,omitempty"`
+	// record_data is the DNS record value to set.
+	RecordData string `protobuf:"bytes,3,opt,name=record_data,json=recordData,proto3" json:"record_data,omitempty"`
+	// domain is the domain this validation record corresponds to.
+	Domain        string `protobuf:"bytes,4,opt,name=domain,proto3" json:"domain,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DnsValidationRecord) Reset() {
+	*x = DnsValidationRecord{}
+	mi := &file_org_openmcf_provider_gcp_gcpcertmanagercert_v1_stack_outputs_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DnsValidationRecord) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DnsValidationRecord) ProtoMessage() {}
+
+func (x *DnsValidationRecord) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_gcp_gcpcertmanagercert_v1_stack_outputs_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DnsValidationRecord.ProtoReflect.Descriptor instead.
+func (*DnsValidationRecord) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_gcp_gcpcertmanagercert_v1_stack_outputs_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *DnsValidationRecord) GetRecordName() string {
+	if x != nil {
+		return x.RecordName
+	}
+	return ""
+}
+
+func (x *DnsValidationRecord) GetRecordType() string {
+	if x != nil {
+		return x.RecordType
+	}
+	return ""
+}
+
+func (x *DnsValidationRecord) GetRecordData() string {
+	if x != nil {
+		return x.RecordData
+	}
+	return ""
+}
+
+func (x *DnsValidationRecord) GetDomain() string {
+	if x != nil {
+		return x.Domain
+	}
+	return ""
+}
+
 var File_org_openmcf_provider_gcp_gcpcertmanagercert_v1_stack_outputs_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_gcp_gcpcertmanagercert_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Borg/openmcf/provider/gcp/gcpcertmanagercert/v1/stack_outputs.proto\x12.org.openmcf.provider.gcp.gcpcertmanagercert.v1\"\xd9\x01\n" +
+	"Borg/openmcf/provider/gcp/gcpcertmanagercert/v1/stack_outputs.proto\x12.org.openmcf.provider.gcp.gcpcertmanagercert.v1\"\xd4\x02\n" +
 	"\x1eGcpCertManagerCertStackOutputs\x12%\n" +
 	"\x0ecertificate_id\x18\x01 \x01(\tR\rcertificateId\x12)\n" +
 	"\x10certificate_name\x18\x02 \x01(\tR\x0fcertificateName\x126\n" +
 	"\x17certificate_domain_name\x18\x03 \x01(\tR\x15certificateDomainName\x12-\n" +
-	"\x12certificate_status\x18\x04 \x01(\tR\x11certificateStatusB\x8d\x03\n" +
+	"\x12certificate_status\x18\x04 \x01(\tR\x11certificateStatus\x12y\n" +
+	"\x16dns_validation_records\x18\x05 \x03(\v2C.org.openmcf.provider.gcp.gcpcertmanagercert.v1.DnsValidationRecordR\x14dnsValidationRecords\"\x90\x01\n" +
+	"\x13DnsValidationRecord\x12\x1f\n" +
+	"\vrecord_name\x18\x01 \x01(\tR\n" +
+	"recordName\x12\x1f\n" +
+	"\vrecord_type\x18\x02 \x01(\tR\n" +
+	"recordType\x12\x1f\n" +
+	"\vrecord_data\x18\x03 \x01(\tR\n" +
+	"recordData\x12\x16\n" +
+	"\x06domain\x18\x04 \x01(\tR\x06domainB\x8d\x03\n" +
 	"2com.org.openmcf.provider.gcp.gcpcertmanagercert.v1B\x11StackOutputsProtoP\x01Zegithub.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpcertmanagercert/v1;gcpcertmanagercertv1\xa2\x02\x05OOPGG\xaa\x02.Org.Openmcf.Provider.Gcp.Gcpcertmanagercert.V1\xca\x02.Org\\Openmcf\\Provider\\Gcp\\Gcpcertmanagercert\\V1\xe2\x02:Org\\Openmcf\\Provider\\Gcp\\Gcpcertmanagercert\\V1\\GPBMetadata\xea\x023Org::Openmcf::Provider::Gcp::Gcpcertmanagercert::V1b\x06proto3"
 
 var (
@@ -123,16 +217,18 @@ func file_org_openmcf_provider_gcp_gcpcertmanagercert_v1_stack_outputs_proto_raw
 	return file_org_openmcf_provider_gcp_gcpcertmanagercert_v1_stack_outputs_proto_rawDescData
 }
 
-var file_org_openmcf_provider_gcp_gcpcertmanagercert_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_org_openmcf_provider_gcp_gcpcertmanagercert_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_gcp_gcpcertmanagercert_v1_stack_outputs_proto_goTypes = []any{
 	(*GcpCertManagerCertStackOutputs)(nil), // 0: org.openmcf.provider.gcp.gcpcertmanagercert.v1.GcpCertManagerCertStackOutputs
+	(*DnsValidationRecord)(nil),            // 1: org.openmcf.provider.gcp.gcpcertmanagercert.v1.DnsValidationRecord
 }
 var file_org_openmcf_provider_gcp_gcpcertmanagercert_v1_stack_outputs_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: org.openmcf.provider.gcp.gcpcertmanagercert.v1.GcpCertManagerCertStackOutputs.dns_validation_records:type_name -> org.openmcf.provider.gcp.gcpcertmanagercert.v1.DnsValidationRecord
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_gcp_gcpcertmanagercert_v1_stack_outputs_proto_init() }
@@ -146,7 +242,7 @@ func file_org_openmcf_provider_gcp_gcpcertmanagercert_v1_stack_outputs_proto_ini
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_gcp_gcpcertmanagercert_v1_stack_outputs_proto_rawDesc), len(file_org_openmcf_provider_gcp_gcpcertmanagercert_v1_stack_outputs_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

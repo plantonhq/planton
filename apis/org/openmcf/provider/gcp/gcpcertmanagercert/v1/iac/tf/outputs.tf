@@ -26,3 +26,13 @@ output "certificate-status" {
   value       = "PROVISIONING"
 }
 
+output "dns-validation-records" {
+  description = "DNS validation records for manual insertion when cloud_dns_zone_id is omitted"
+  value = [for k, auth in google_certificate_manager_dns_authorization.dns_auth : {
+    record_name = auth.dns_resource_record[0].name
+    record_type = auth.dns_resource_record[0].type
+    record_data = auth.dns_resource_record[0].data
+    domain      = auth.domain
+  }]
+}
+

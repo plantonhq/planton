@@ -20,4 +20,25 @@ message GcpCertManagerCertStackOutputs {
   // certificate_status represents the validation or provisioning status of the certificate.
   // Possible values: "ACTIVE", "PROVISIONING", "FAILED", etc.
   string certificate_status = 4;
+
+  // dns_validation_records contains the CNAME records required for DNS validation.
+  // Always populated for MANAGED certificates. When cloud_dns_zone_id is set, these
+  // records are also auto-created in Cloud DNS. When cloud_dns_zone_id is omitted,
+  // users must manually insert these records into their DNS provider.
+  repeated DnsValidationRecord dns_validation_records = 5;
+}
+
+// DnsValidationRecord represents a single DNS record required for certificate validation.
+message DnsValidationRecord {
+  // record_name is the fully qualified DNS record name (e.g. "_acme-challenge.example.com.").
+  string record_name = 1;
+
+  // record_type is the DNS record type (typically "CNAME").
+  string record_type = 2;
+
+  // record_data is the DNS record value to set.
+  string record_data = 3;
+
+  // domain is the domain this validation record corresponds to.
+  string domain = 4;
 }
