@@ -78,6 +78,7 @@ func subnetwork(ctx *pulumi.Context,
 
 	// --- (4) Export outputs -------------------------------------------------
 	ctx.Export(OpSubnetworkSelfLink, createdSubnetwork.SelfLink)
+	ctx.Export(OpSubnetworkName, createdSubnetwork.Name)
 	ctx.Export(OpRegion, createdSubnetwork.Region)
 	ctx.Export(OpIpCidrRange, createdSubnetwork.IpCidrRange)
 

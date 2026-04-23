@@ -11,12 +11,13 @@ resource "google_sql_database_instance" "instance" {
     tier              = var.spec.tier
     disk_size         = var.spec.storage_gb
     disk_type         = "PD_SSD"
+    disk_autoresize   = var.spec.disk_auto_resize
     availability_type = local.availability_type
     user_labels       = local.final_gcp_labels
 
     # IP configuration
     ip_configuration {
-      ipv4_enabled    = !local.private_ip_enabled
+      ipv4_enabled    = local.private_ip_enabled ? var.spec.network.ipv4_enabled : true
       private_network = local.private_ip_enabled ? local.vpc_id : null
 
       # Authorized networks for public IP access
@@ -58,7 +59,6 @@ resource "google_sql_database_instance" "instance" {
   # Root password
   root_password = var.spec.root_password
 
-  # Deletion protection disabled for easier cleanup during development/testing
-  deletion_protection = false
+  deletion_protection = var.spec.deletion_protection
 }
 

@@ -15,6 +15,7 @@ go_library(
         "//apis/org/openmcf/provider/gcp",
         "//apis/org/openmcf/provider/gcp/gcpcloudrun/v1:gcpcloudrun",
         "//apis/org/openmcf/shared/cloudresourcekind",
+        "//apis/org/openmcf/shared/foreignkey/v1:foreignkey",
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider",
         "@com_github_pkg_errors//:errors",

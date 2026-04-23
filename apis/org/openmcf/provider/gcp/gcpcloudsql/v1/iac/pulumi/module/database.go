@@ -22,15 +22,12 @@ func databaseInstance(
 	// Convert database engine enum to string
 	databaseVersion := spec.DatabaseVersion
 
-	// Build settings
 	settings := &sql.DatabaseInstanceSettingsArgs{
-		Tier: pulumi.String(spec.Tier),
-
-		DiskSize: pulumi.Int(int(spec.StorageGb)),
-		DiskType: pulumi.String("PD_SSD"),
-
-		// Attach labels
-		UserLabels: pulumi.ToStringMap(locals.GcpLabels),
+		Tier:           pulumi.String(spec.Tier),
+		DiskSize:       pulumi.Int(int(spec.StorageGb)),
+		DiskType:       pulumi.String("PD_SSD"),
+		DiskAutoresize: pulumi.BoolPtr(spec.DiskAutoResize),
+		UserLabels:     pulumi.ToStringMap(locals.GcpLabels),
 	}
 
 	// Configure IP settings
@@ -38,8 +35,8 @@ func databaseInstance(
 		ipConfig := &sql.DatabaseInstanceSettingsIpConfigurationArgs{}
 
 		if spec.Network.PrivateIpEnabled {
-			ipConfig.Ipv4Enabled = pulumi.Bool(false)
 			ipConfig.PrivateNetwork = pulumi.String(spec.Network.VpcId.GetValue())
+			ipConfig.Ipv4Enabled = pulumi.Bool(spec.Network.Ipv4Enabled)
 		} else {
 			ipConfig.Ipv4Enabled = pulumi.Bool(true)
 		}
@@ -100,19 +97,12 @@ func databaseInstance(
 			DatabaseVersion:    pulumi.String(databaseVersion),
 			Settings:           settings,
 			RootPassword:       pulumi.String(spec.RootPassword),
-			DeletionProtection: pulumi.Bool(false), // Allow deletion for easier cleanup
+			DeletionProtection: pulumi.Bool(spec.DeletionProtection),
 		},
 		pulumi.Provider(gcpProvider),
 	)
 	if err != nil {
 		return nil, err
-	}
-
-	// If private IP is enabled, we may need to create a service networking connection
-	if spec.Network != nil && spec.Network.PrivateIpEnabled && spec.Network.VpcId.GetValue() != "" {
-		// Note: This assumes the VPC peering connection already exists
-		// In production, you might want to create the peering connection here
-		// using google_service_networking_connection resource
 	}
 
 	return instance, nil

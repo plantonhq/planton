@@ -42,6 +42,12 @@ variable "spec" {
     # Storage size in gigabytes for the database instance.
     storage_gb = number
 
+    # Whether storage should automatically resize when approaching capacity.
+    disk_auto_resize = optional(bool, true)
+
+    # Whether to enable deletion protection for the instance.
+    deletion_protection = optional(bool, false)
+
     # Network configuration for the Cloud SQL instance.
     network = optional(object({
       # VPC network ID for private IP connectivity.
@@ -58,6 +64,10 @@ variable "spec" {
 
       # Whether to enable private IP for the instance.
       private_ip_enabled = optional(bool, false)
+
+      # Whether to enable public IPv4 for the instance.
+      # When both private_ip_enabled and ipv4_enabled are true, the instance gets both (Smart Hybrid pattern).
+      ipv4_enabled = optional(bool, true)
 
       # List of authorized networks (CIDR blocks) allowed to connect via public IP.
       authorized_networks = optional(list(string), [])

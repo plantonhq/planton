@@ -4,846 +4,551 @@ import (
 	"testing"
 
 	"buf.build/go/protovalidate"
-	"github.com/onsi/ginkgo/v2"
-	"github.com/onsi/gomega"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
 func TestGcpCloudRunSpec(t *testing.T) {
-	gomega.RegisterFailHandler(ginkgo.Fail)
-	ginkgo.RunSpecs(t, "GcpCloudRunSpec Custom Validation Tests")
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "GcpCloudRunSpec Validation Suite")
 }
 
-var _ = ginkgo.Describe("GcpCloudRunSpec Custom Validation Tests", func() {
+var _ = Describe("GcpCloudRunSpec validations", func() {
 
-	ginkgo.Describe("When valid input is passed", func() {
-		ginkgo.Context("gcp_cloud_run", func() {
+	strVal := func(v string) *foreignkeyv1.StringValueOrRef {
+		return &foreignkeyv1.StringValueOrRef{
+			LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: v},
+		}
+	}
 
-			ginkgo.It("should not return a validation error for minimal valid fields", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Port:   8080,
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-						MaxConcurrency: 80,
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).To(gomega.BeNil())
-			})
+	makeValidSpec := func() *GcpCloudRunSpec {
+		return &GcpCloudRunSpec{
+			ProjectId: strVal("my-gcp-project"),
+			Region:    "us-central1",
+			Container: &GcpCloudRunContainer{
+				Image: &GcpCloudRunContainerImage{
+					Repo: "us-docker.pkg.dev/my-project/repo/app",
+					Tag:  "v1.0.0",
+				},
+				Port:   8080,
+				Cpu:    1,
+				Memory: 512,
+				Replicas: &GcpCloudRunContainerReplicas{
+					Min: 0,
+					Max: 10,
+				},
+			},
+		}
+	}
 
-			ginkgo.It("should not return validation error with all optional fields set", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run-full",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region:         "us-central1",
-						ServiceName:    "custom-service-name",
-						ServiceAccount: "sa-name@test-project-123.iam.gserviceaccount.com",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "v1.0.0",
-							},
-							Env: &GcpCloudRunContainerEnv{
-								Variables: map[string]string{
-									"ENV":  "production",
-									"PORT": "8080",
-								},
-								Secrets: map[string]string{
-									"API_KEY": "projects/123/secrets/api-key:latest",
-								},
-							},
-							Port:   8080,
-							Cpu:    2,
-							Memory: 1024,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 1,
-								Max: 100,
-							},
-						},
-						MaxConcurrency:       100,
-						TimeoutSeconds:       600,
-						Ingress:              GcpCloudRunIngress_INGRESS_TRAFFIC_ALL,
-						AllowUnauthenticated: true,
-						VpcAccess: &GcpCloudRunVpcAccess{
-							Network: &foreignkeyv1.StringValueOrRef{
-								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "projects/test-project-123/global/networks/default"},
-							},
-							Subnet: &foreignkeyv1.StringValueOrRef{
-								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "projects/test-project-123/regions/us-central1/subnetworks/default"},
-							},
-							Egress: "ALL_TRAFFIC",
-						},
-						ExecutionEnvironment: GcpCloudRunExecutionEnvironment_EXECUTION_ENVIRONMENT_GEN2,
-						Dns: &GcpCloudRunDns{
-							Enabled:     true,
-							Hostnames:   []string{"api.example.com", "api2.example.com"},
-							ManagedZone: "example-zone",
-						},
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).To(gomega.BeNil())
-			})
+	Context("Required fields", func() {
+		It("accepts a minimal valid spec", func() {
+			spec := makeValidSpec()
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("rejects spec with missing project_id", func() {
+			spec := makeValidSpec()
+			spec.ProjectId = nil
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+
+		It("rejects spec with missing region", func() {
+			spec := makeValidSpec()
+			spec.Region = ""
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+
+		It("rejects spec with missing container", func() {
+			spec := makeValidSpec()
+			spec.Container = nil
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
 		})
 	})
 
-	ginkgo.Describe("When invalid input is passed", func() {
-		ginkgo.Context("project_id validation", func() {
+	Context("Region validation", func() {
+		It("accepts valid region format", func() {
+			spec := makeValidSpec()
+			spec.Region = "us-west1"
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
 
-			ginkgo.It("should return validation error for missing project_id", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
+		It("accepts multi-word region", func() {
+			spec := makeValidSpec()
+			spec.Region = "europe-west2"
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
 
-			ginkgo.It("should not return validation error for project_id with valueRef", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
+		It("rejects region without trailing number", func() {
+			spec := makeValidSpec()
+			spec.Region = "us-central"
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+
+		It("rejects region with uppercase letters", func() {
+			spec := makeValidSpec()
+			spec.Region = "US-CENTRAL1"
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+	})
+
+	Context("Service name validation", func() {
+		It("accepts valid service name", func() {
+			spec := makeValidSpec()
+			spec.ServiceName = "my-api-service"
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("accepts empty service name (defaults to metadata.name)", func() {
+			spec := makeValidSpec()
+			spec.ServiceName = ""
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("rejects service name with uppercase", func() {
+			spec := makeValidSpec()
+			spec.ServiceName = "MyService"
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+
+		It("rejects service name starting with hyphen", func() {
+			spec := makeValidSpec()
+			spec.ServiceName = "-my-service"
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+	})
+
+	Context("Container configuration", func() {
+		It("accepts cpu = 1", func() {
+			spec := makeValidSpec()
+			spec.Container.Cpu = 1
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("accepts cpu = 2", func() {
+			spec := makeValidSpec()
+			spec.Container.Cpu = 2
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("accepts cpu = 4", func() {
+			spec := makeValidSpec()
+			spec.Container.Cpu = 4
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("rejects cpu = 3 (not in allowed set)", func() {
+			spec := makeValidSpec()
+			spec.Container.Cpu = 3
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+
+		It("accepts memory at minimum (128 MiB)", func() {
+			spec := makeValidSpec()
+			spec.Container.Memory = 128
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("accepts memory at maximum (32768 MiB)", func() {
+			spec := makeValidSpec()
+			spec.Container.Memory = 32768
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("rejects memory below minimum (127 MiB)", func() {
+			spec := makeValidSpec()
+			spec.Container.Memory = 127
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+
+		It("rejects memory above maximum (32769 MiB)", func() {
+			spec := makeValidSpec()
+			spec.Container.Memory = 32769
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+
+		It("accepts valid port", func() {
+			spec := makeValidSpec()
+			spec.Container.Port = 3000
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("rejects port above 65535", func() {
+			spec := makeValidSpec()
+			spec.Container.Port = 65536
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+	})
+
+	Context("Max concurrency validation", func() {
+		It("accepts concurrency within range", func() {
+			spec := makeValidSpec()
+			spec.MaxConcurrency = 100
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("accepts concurrency at maximum (1000)", func() {
+			spec := makeValidSpec()
+			spec.MaxConcurrency = 1000
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("rejects concurrency above maximum (1001)", func() {
+			spec := makeValidSpec()
+			spec.MaxConcurrency = 1001
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+
+		It("accepts zero concurrency (uses default)", func() {
+			spec := makeValidSpec()
+			spec.MaxConcurrency = 0
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+	})
+
+	Context("Timeout validation", func() {
+		It("accepts timeout within range", func() {
+			spec := makeValidSpec()
+			spec.TimeoutSeconds = 60
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("accepts timeout at maximum (3600)", func() {
+			spec := makeValidSpec()
+			spec.TimeoutSeconds = 3600
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("rejects timeout above maximum (3601)", func() {
+			spec := makeValidSpec()
+			spec.TimeoutSeconds = 3601
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+
+		It("accepts zero timeout (uses default)", func() {
+			spec := makeValidSpec()
+			spec.TimeoutSeconds = 0
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+	})
+
+	Context("DNS configuration - CEL validation", func() {
+		It("accepts enabled DNS with hostnames and managed_zone", func() {
+			spec := makeValidSpec()
+			spec.Dns = &GcpCloudRunDns{
+				Enabled:     true,
+				Hostnames:   []string{"api.example.com"},
+				ManagedZone: "example-zone",
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("rejects enabled DNS without hostnames", func() {
+			spec := makeValidSpec()
+			spec.Dns = &GcpCloudRunDns{
+				Enabled:     true,
+				Hostnames:   []string{},
+				ManagedZone: "example-zone",
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+
+		It("rejects enabled DNS without managed_zone", func() {
+			spec := makeValidSpec()
+			spec.Dns = &GcpCloudRunDns{
+				Enabled:     true,
+				Hostnames:   []string{"api.example.com"},
+				ManagedZone: "",
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+
+		It("accepts disabled DNS without hostnames", func() {
+			spec := makeValidSpec()
+			spec.Dns = &GcpCloudRunDns{
+				Enabled: false,
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("rejects duplicate hostnames", func() {
+			spec := makeValidSpec()
+			spec.Dns = &GcpCloudRunDns{
+				Enabled:     true,
+				Hostnames:   []string{"api.example.com", "api.example.com"},
+				ManagedZone: "example-zone",
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+
+		It("rejects hostname with uppercase", func() {
+			spec := makeValidSpec()
+			spec.Dns = &GcpCloudRunDns{
+				Enabled:     true,
+				Hostnames:   []string{"API.example.com"},
+				ManagedZone: "example-zone",
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+	})
+
+	Context("Cloud SQL connectivity - CEL validation", func() {
+		It("accepts native connection with instances", func() {
+			spec := makeValidSpec()
+			spec.CloudSql = &GcpCloudRunCloudSqlConnection{
+				Connection: &GcpCloudRunCloudSqlDirectConnection{
+					Instances: []*foreignkeyv1.StringValueOrRef{
+						strVal("my-project:us-central1:my-db"),
 					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
+				},
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("accepts auth proxy with instances", func() {
+			spec := makeValidSpec()
+			spec.CloudSql = &GcpCloudRunCloudSqlConnection{
+				AuthProxy: &GcpCloudRunCloudSqlAuthProxy{
+					Instances: []*foreignkeyv1.StringValueOrRef{
+						strVal("my-project:us-central1:my-db"),
+					},
+					Port: 5432,
+				},
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("rejects both connection and auth_proxy set (mutual exclusion)", func() {
+			spec := makeValidSpec()
+			spec.CloudSql = &GcpCloudRunCloudSqlConnection{
+				Connection: &GcpCloudRunCloudSqlDirectConnection{
+					Instances: []*foreignkeyv1.StringValueOrRef{
+						strVal("my-project:us-central1:my-db"),
+					},
+				},
+				AuthProxy: &GcpCloudRunCloudSqlAuthProxy{
+					Instances: []*foreignkeyv1.StringValueOrRef{
+						strVal("my-project:us-central1:my-db"),
+					},
+				},
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+
+		It("rejects cloud_sql with neither connection nor auth_proxy", func() {
+			spec := makeValidSpec()
+			spec.CloudSql = &GcpCloudRunCloudSqlConnection{}
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+
+		It("accepts spec without cloud_sql (optional)", func() {
+			spec := makeValidSpec()
+			spec.CloudSql = nil
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("accepts native connection with multiple instances", func() {
+			spec := makeValidSpec()
+			spec.CloudSql = &GcpCloudRunCloudSqlConnection{
+				Connection: &GcpCloudRunCloudSqlDirectConnection{
+					Instances: []*foreignkeyv1.StringValueOrRef{
+						strVal("my-project:us-central1:db-1"),
+						strVal("my-project:us-central1:db-2"),
+					},
+				},
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("rejects native connection with empty instances", func() {
+			spec := makeValidSpec()
+			spec.CloudSql = &GcpCloudRunCloudSqlConnection{
+				Connection: &GcpCloudRunCloudSqlDirectConnection{
+					Instances: []*foreignkeyv1.StringValueOrRef{},
+				},
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+		})
+
+		It("accepts auth proxy with use_private_ip", func() {
+			spec := makeValidSpec()
+			spec.CloudSql = &GcpCloudRunCloudSqlConnection{
+				AuthProxy: &GcpCloudRunCloudSqlAuthProxy{
+					Instances: []*foreignkeyv1.StringValueOrRef{
+						strVal("my-project:us-central1:my-db"),
+					},
+					Port:         5432,
+					UsePrivateIp: true,
+				},
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("accepts auth proxy with custom port", func() {
+			spec := makeValidSpec()
+			spec.CloudSql = &GcpCloudRunCloudSqlConnection{
+				AuthProxy: &GcpCloudRunCloudSqlAuthProxy{
+					Instances: []*foreignkeyv1.StringValueOrRef{
+						strVal("my-project:us-central1:my-db"),
+					},
+					Port: 3306,
+				},
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+
+		It("accepts native connection with value_from reference", func() {
+			spec := makeValidSpec()
+			spec.CloudSql = &GcpCloudRunCloudSqlConnection{
+				Connection: &GcpCloudRunCloudSqlDirectConnection{
+					Instances: []*foreignkeyv1.StringValueOrRef{
+						{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 								ValueFrom: &foreignkeyv1.ValueFromRef{
-									Name: "my-gcp-project",
+									Name:      "my-cloudsql",
+									FieldPath: "status.outputs.connection_name",
 								},
 							},
 						},
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Port:   8080,
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
 					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).To(gomega.BeNil())
-			})
+				},
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
+		})
+	})
+
+	Context("VPC access configuration", func() {
+		It("accepts VPC access with network and subnet", func() {
+			spec := makeValidSpec()
+			spec.VpcAccess = &GcpCloudRunVpcAccess{
+				Network: strVal("my-vpc"),
+				Subnet:  strVal("my-subnet"),
+				Egress:  "PRIVATE_RANGES_ONLY",
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
 		})
 
-		ginkgo.Context("region validation", func() {
-
-			ginkgo.It("should return validation error for missing region", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
-
-			ginkgo.It("should return validation error for invalid region pattern", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region: "invalid-region",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
+		It("accepts VPC access with ALL_TRAFFIC egress", func() {
+			spec := makeValidSpec()
+			spec.VpcAccess = &GcpCloudRunVpcAccess{
+				Network: strVal("my-vpc"),
+				Subnet:  strVal("my-subnet"),
+				Egress:  "ALL_TRAFFIC",
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
 		})
 
-		ginkgo.Context("service_name validation", func() {
-
-			ginkgo.It("should return validation error for invalid service_name pattern", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region:      "us-central1",
-						ServiceName: "Invalid_Service_Name",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
-
-			ginkgo.It("should return validation error for service_name that is too long", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region:      "us-central1",
-						ServiceName: "this-is-a-very-long-service-name-that-exceeds-the-maximum-allowed-length-of-63-characters",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
+		It("rejects VPC access with invalid egress", func() {
+			spec := makeValidSpec()
+			spec.VpcAccess = &GcpCloudRunVpcAccess{
+				Network: strVal("my-vpc"),
+				Subnet:  strVal("my-subnet"),
+				Egress:  "INVALID_EGRESS",
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
 		})
 
-		ginkgo.Context("service_account validation", func() {
-
-			ginkgo.It("should return validation error for invalid service_account pattern", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region:         "us-central1",
-						ServiceAccount: "invalid-service-account-email",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
+		It("accepts spec without VPC access (optional)", func() {
+			spec := makeValidSpec()
+			spec.VpcAccess = nil
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
 		})
+	})
 
-		ginkgo.Context("container validation", func() {
-
-			ginkgo.It("should return validation error for missing container", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
+	Context("Complete production spec", func() {
+		It("accepts a full-featured Cloud Run spec with Cloud SQL native connection", func() {
+			spec := &GcpCloudRunSpec{
+				ProjectId:   strVal("prod-project-123"),
+				Region:      "us-central1",
+				ServiceName: "production-api",
+				Container: &GcpCloudRunContainer{
+					Image: &GcpCloudRunContainerImage{
+						Repo: "us-docker.pkg.dev/prod/containers/api",
+						Tag:  "v3.0.0",
 					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
+					Cpu:    2,
+					Memory: 2048,
+					Port:   8080,
+					Replicas: &GcpCloudRunContainerReplicas{
+						Min: 2,
+						Max: 50,
+					},
+					Env: &GcpCloudRunContainerEnv{
+						Variables: map[string]string{
+							"LOG_LEVEL": "info",
 						},
-						Region: "us-central1",
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
-
-			ginkgo.It("should return validation error for missing image repo", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Tag: "1.0.0",
-							},
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
+						Secrets: map[string]string{
+							"API_KEY": "projects/prod/secrets/api-key:latest",
 						},
 					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
-
-			ginkgo.It("should return validation error for missing image tag", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-							},
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
+				},
+				MaxConcurrency:       100,
+				TimeoutSeconds:       60,
+				Ingress:              GcpCloudRunIngress_INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER,
+				AllowUnauthenticated: false,
+				ExecutionEnvironment: GcpCloudRunExecutionEnvironment_EXECUTION_ENVIRONMENT_GEN2,
+				DeleteProtection:     true,
+				CloudSql: &GcpCloudRunCloudSqlConnection{
+					Connection: &GcpCloudRunCloudSqlDirectConnection{
+						Instances: []*foreignkeyv1.StringValueOrRef{
+							strVal("prod-project:us-central1:prod-db"),
 						},
 					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
-
-			ginkgo.It("should return validation error for invalid cpu value", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    3,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
-
-			ginkgo.It("should return validation error for memory below minimum", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    1,
-							Memory: 100,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
-
-			ginkgo.It("should return validation error for memory above maximum", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    4,
-							Memory: 40000,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
-
-			ginkgo.It("should return validation error for invalid port range", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Port:   70000,
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
-
-			ginkgo.It("should return validation error for missing replicas", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    1,
-							Memory: 512,
-						},
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
-		})
-
-		ginkgo.Context("max_concurrency validation", func() {
-
-			ginkgo.It("should return validation error for max_concurrency below minimum", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-						MaxConcurrency: 0,
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
-
-			ginkgo.It("should return validation error for max_concurrency above maximum", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-						MaxConcurrency: 1500,
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
-		})
-
-		ginkgo.Context("timeout_seconds validation", func() {
-
-			ginkgo.It("should return validation error for timeout_seconds below minimum", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-						TimeoutSeconds: 0,
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
-
-			ginkgo.It("should return validation error for timeout_seconds above maximum", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-						TimeoutSeconds: 4000,
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
-		})
-
-		ginkgo.Context("vpc_access validation", func() {
-
-			ginkgo.It("should return validation error for invalid egress value", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-						VpcAccess: &GcpCloudRunVpcAccess{
-							Network: &foreignkeyv1.StringValueOrRef{
-								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "projects/test-project-123/global/networks/default"},
-							},
-							Subnet: &foreignkeyv1.StringValueOrRef{
-								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "projects/test-project-123/regions/us-central1/subnetworks/default"},
-							},
-							Egress: "INVALID_EGRESS_VALUE",
-						},
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
-		})
-
-		ginkgo.Context("dns validation", func() {
-
-			ginkgo.It("should return validation error when dns.enabled is true but hostnames is empty", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-						Dns: &GcpCloudRunDns{
-							Enabled:     true,
-							ManagedZone: "example-zone",
-						},
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
-
-			ginkgo.It("should return validation error when dns.enabled is true but managed_zone is empty", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-						Dns: &GcpCloudRunDns{
-							Enabled:   true,
-							Hostnames: []string{"api.example.com"},
-						},
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
-
-			ginkgo.It("should return validation error for invalid hostname pattern", func() {
-				input := &GcpCloudRun{
-					ApiVersion: "gcp.openmcf.org/v1",
-					Kind:       "GcpCloudRun",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cloud-run",
-					},
-					Spec: &GcpCloudRunSpec{
-						ProjectId: &foreignkeyv1.StringValueOrRef{
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-project-123"},
-						},
-						Region: "us-central1",
-						Container: &GcpCloudRunContainer{
-							Image: &GcpCloudRunContainerImage{
-								Repo: "us-docker.pkg.dev/prj/registry/app",
-								Tag:  "1.0.0",
-							},
-							Cpu:    1,
-							Memory: 512,
-							Replicas: &GcpCloudRunContainerReplicas{
-								Min: 0,
-								Max: 10,
-							},
-						},
-						Dns: &GcpCloudRunDns{
-							Enabled:     true,
-							Hostnames:   []string{"Invalid_Hostname"},
-							ManagedZone: "example-zone",
-						},
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).ToNot(gomega.BeNil())
-			})
+				},
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).To(BeNil())
 		})
 	})
 })

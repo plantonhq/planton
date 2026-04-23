@@ -14,4 +14,12 @@ message GcpVpcStackOutputs {
   // CIDR of the allocated IP range for private services (only set if private_services_access is enabled).
   // Example: "10.100.0.0/16"
   string private_services_ip_range_cidr = 3;
+
+  // Name of the VPC network (e.g., "my-vpc-network").
+  // Referenced by GcpCloudRun.spec.vpc_access.network FK.
+  string network_name = 4;
+
+  // GCP self-link of the VPC network (e.g., "projects/PROJECT/global/networks/NAME").
+  // Used by GcpCloudSql.spec.network.vpc_id to configure Private Services Access.
+  string network_id = 5;
 }

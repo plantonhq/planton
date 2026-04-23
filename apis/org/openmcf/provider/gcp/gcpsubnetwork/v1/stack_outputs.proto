@@ -12,6 +12,10 @@ message GcpSubnetworkStackOutputs {
   string ip_cidr_range = 3;
   // List of secondary ranges created in this subnet, with their names and CIDRs.
   repeated GcpSubnetworkSecondaryRangeStackOutput secondary_ranges = 4;
+
+  // Name of the subnetwork (e.g., "my-subnet").
+  // Referenced by GcpCloudRun.spec.vpc_access.subnet FK.
+  string subnetwork_name = 5;
 }
 
 // List of secondary ranges created in this subnet, with their names and CIDRs.

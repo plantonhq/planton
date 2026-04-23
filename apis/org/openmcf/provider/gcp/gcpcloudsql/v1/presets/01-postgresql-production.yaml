@@ -10,7 +10,7 @@ spec:
   databaseVersion: POSTGRES_15
   tier: db-custom-2-8192  # 2 vCPU, 8 GB RAM
   storageGb: 20
-  diskAutoresize: true  # recommended_default from spec
+  diskAutoResize: true  # recommended_default from spec
   edition: ENTERPRISE  # recommended_default from spec
   deletionProtection: true  # prevents accidental deletion
   queryInsightsEnabled: true  # query performance monitoring

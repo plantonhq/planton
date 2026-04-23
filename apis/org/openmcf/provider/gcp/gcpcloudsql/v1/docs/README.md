@@ -238,7 +238,7 @@ With just these five fields, you can deploy a working Cloud SQL instance for dev
 - `deletion_protection`: Prevent accidental deletion
 - `settings.edition`: `ENTERPRISE` or `ENTERPRISE_PLUS`
 - `settings.availability_type`: `ZONAL` or `REGIONAL` (HA toggle)
-- `settings.disk_size_gb` and `settings.disk_autoresize`
+- `settings.disk_size_gb` and `settings.disk_auto_resize`
 - `settings.backup_configuration`: `enabled`, `start_time`, `point_in_time_recovery_enabled`
 - `settings.ip_configuration`: `ipv4_enabled`, `private_network`, `authorized_networks`
 - `settings.maintenance_window`: Schedule maintenance for off-peak hours

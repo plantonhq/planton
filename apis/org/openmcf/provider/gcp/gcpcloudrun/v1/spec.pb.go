@@ -171,8 +171,12 @@ type GcpCloudRunSpec struct {
 	// If true, prevents accidental deletion of the Cloud Run service.
 	// When enabled, the service cannot be deleted until this flag is set to false.
 	DeleteProtection bool `protobuf:"varint,13,opt,name=delete_protection,json=deleteProtection,proto3" json:"delete_protection,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	// Cloud SQL connectivity configuration.
+	// Provides secure, IAM-authenticated access to Cloud SQL instances.
+	// Two modes: native volume mount (connection) or Auth Proxy sidecar (auth_proxy).
+	CloudSql      *GcpCloudRunCloudSqlConnection `protobuf:"bytes,14,opt,name=cloud_sql,json=cloudSql,proto3" json:"cloud_sql,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpCloudRunSpec) Reset() {
@@ -294,6 +298,13 @@ func (x *GcpCloudRunSpec) GetDeleteProtection() bool {
 		return x.DeleteProtection
 	}
 	return false
+}
+
+func (x *GcpCloudRunSpec) GetCloudSql() *GcpCloudRunCloudSqlConnection {
+	if x != nil {
+		return x.CloudSql
+	}
+	return nil
 }
 
 // GcpCloudRunContainer groups image, resources, environment, and port settings
@@ -618,6 +629,190 @@ func (x *GcpCloudRunDns) GetManagedZone() string {
 	return ""
 }
 
+// GcpCloudRunCloudSqlConnection configures Cloud SQL connectivity for the Cloud Run service.
+// Exactly one of connection or auth_proxy must be set.
+//
+//   - connection: Native Cloud Run volume mount. GCP manages the proxy internally.
+//     Creates Unix sockets at /cloudsql/<connection_name>.
+//     Application DATABASE_URL uses: ?host=/cloudsql/<connection_name>
+//
+//   - auth_proxy: Explicit Cloud SQL Auth Proxy sidecar container.
+//     Creates a TCP proxy on localhost:<port>.
+//     Application DATABASE_URL uses: @localhost:<port>
+type GcpCloudRunCloudSqlConnection struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Native Cloud SQL connection via Cloud Run managed volume mount.
+	// No VPC or Private Services Access required.
+	Connection *GcpCloudRunCloudSqlDirectConnection `protobuf:"bytes,1,opt,name=connection,proto3" json:"connection,omitempty"`
+	// Cloud SQL Auth Proxy sidecar for TCP-based connectivity.
+	// No VPC required unless use_private_ip is true.
+	AuthProxy     *GcpCloudRunCloudSqlAuthProxy `protobuf:"bytes,2,opt,name=auth_proxy,json=authProxy,proto3" json:"auth_proxy,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GcpCloudRunCloudSqlConnection) Reset() {
+	*x = GcpCloudRunCloudSqlConnection{}
+	mi := &file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpCloudRunCloudSqlConnection) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpCloudRunCloudSqlConnection) ProtoMessage() {}
+
+func (x *GcpCloudRunCloudSqlConnection) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpCloudRunCloudSqlConnection.ProtoReflect.Descriptor instead.
+func (*GcpCloudRunCloudSqlConnection) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GcpCloudRunCloudSqlConnection) GetConnection() *GcpCloudRunCloudSqlDirectConnection {
+	if x != nil {
+		return x.Connection
+	}
+	return nil
+}
+
+func (x *GcpCloudRunCloudSqlConnection) GetAuthProxy() *GcpCloudRunCloudSqlAuthProxy {
+	if x != nil {
+		return x.AuthProxy
+	}
+	return nil
+}
+
+// GcpCloudRunCloudSqlDirectConnection configures the native Cloud Run volume mount
+// for Cloud SQL. GCP automatically creates Unix sockets at /cloudsql/<connection_name>
+// for each instance. No sidecar container needed.
+type GcpCloudRunCloudSqlDirectConnection struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Cloud SQL instance connection names (format: project:region:instance).
+	// Can be literal values or references to GcpCloudSql resources.
+	Instances     []*v1.StringValueOrRef `protobuf:"bytes,1,rep,name=instances,proto3" json:"instances,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GcpCloudRunCloudSqlDirectConnection) Reset() {
+	*x = GcpCloudRunCloudSqlDirectConnection{}
+	mi := &file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpCloudRunCloudSqlDirectConnection) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpCloudRunCloudSqlDirectConnection) ProtoMessage() {}
+
+func (x *GcpCloudRunCloudSqlDirectConnection) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpCloudRunCloudSqlDirectConnection.ProtoReflect.Descriptor instead.
+func (*GcpCloudRunCloudSqlDirectConnection) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *GcpCloudRunCloudSqlDirectConnection) GetInstances() []*v1.StringValueOrRef {
+	if x != nil {
+		return x.Instances
+	}
+	return nil
+}
+
+// GcpCloudRunCloudSqlAuthProxy configures a Cloud SQL Auth Proxy sidecar container.
+// The proxy runs alongside the application container and provides a TCP endpoint
+// at localhost:<port> for each Cloud SQL instance.
+type GcpCloudRunCloudSqlAuthProxy struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Cloud SQL instance connection names (format: project:region:instance).
+	// Can be literal values or references to GcpCloudSql resources.
+	Instances []*v1.StringValueOrRef `protobuf:"bytes,1,rep,name=instances,proto3" json:"instances,omitempty"`
+	// Port the proxy listens on for the first instance. Default: 5432.
+	// Additional instances get sequential ports (5433, 5434, ...).
+	Port int32 `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`
+	// Whether to route proxy connections through the VPC private network.
+	// Requires vpc_access to be configured on the Cloud Run service.
+	UsePrivateIp  bool `protobuf:"varint,3,opt,name=use_private_ip,json=usePrivateIp,proto3" json:"use_private_ip,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GcpCloudRunCloudSqlAuthProxy) Reset() {
+	*x = GcpCloudRunCloudSqlAuthProxy{}
+	mi := &file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpCloudRunCloudSqlAuthProxy) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpCloudRunCloudSqlAuthProxy) ProtoMessage() {}
+
+func (x *GcpCloudRunCloudSqlAuthProxy) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpCloudRunCloudSqlAuthProxy.ProtoReflect.Descriptor instead.
+func (*GcpCloudRunCloudSqlAuthProxy) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *GcpCloudRunCloudSqlAuthProxy) GetInstances() []*v1.StringValueOrRef {
+	if x != nil {
+		return x.Instances
+	}
+	return nil
+}
+
+func (x *GcpCloudRunCloudSqlAuthProxy) GetPort() int32 {
+	if x != nil {
+		return x.Port
+	}
+	return 0
+}
+
+func (x *GcpCloudRunCloudSqlAuthProxy) GetUsePrivateIp() bool {
+	if x != nil {
+		return x.UsePrivateIp
+	}
+	return false
+}
+
 // GcpCloudRunVpcAccess configures Direct VPC Egress for accessing private resources.
 type GcpCloudRunVpcAccess struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -637,7 +832,7 @@ type GcpCloudRunVpcAccess struct {
 
 func (x *GcpCloudRunVpcAccess) Reset() {
 	*x = GcpCloudRunVpcAccess{}
-	mi := &file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_msgTypes[6]
+	mi := &file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -649,7 +844,7 @@ func (x *GcpCloudRunVpcAccess) String() string {
 func (*GcpCloudRunVpcAccess) ProtoMessage() {}
 
 func (x *GcpCloudRunVpcAccess) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_msgTypes[6]
+	mi := &file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -662,7 +857,7 @@ func (x *GcpCloudRunVpcAccess) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpCloudRunVpcAccess.ProtoReflect.Descriptor instead.
 func (*GcpCloudRunVpcAccess) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_rawDescGZIP(), []int{6}
+	return file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GcpCloudRunVpcAccess) GetNetwork() *v1.StringValueOrRef {
@@ -690,7 +885,8 @@ var File_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto protoreflect.FileDes
 
 const file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2org/openmcf/provider/gcp/gcpcloudrun/v1/spec.proto\x12'org.openmcf.provider.gcp.gcpcloudrun.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa2\t\n" +
+	"2org/openmcf/provider/gcp/gcpcloudrun/v1/spec.proto\x12'org.openmcf.provider.gcp.gcpcloudrun.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x87\n" +
+	"\n" +
 	"\x0fGcpCloudRunSpec\x12{\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xe1\x04\x92\xd4a\x19status.outputs.project_idR\tprojectId\x126\n" +
@@ -709,7 +905,8 @@ const file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_rawDesc = "" +
 	"vpc_access\x18\v \x01(\v2=.org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunVpcAccessR\tvpcAccess\x12\x9d\x01\n" +
 	"\x15execution_environment\x18\f \x01(\x0e2H.org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunExecutionEnvironmentB\x1e\x92\xa6\x1d\x1aEXECUTION_ENVIRONMENT_GEN2R\x14executionEnvironment\x12I\n" +
 	"\x03dns\x18\x06 \x01(\v27.org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunDnsR\x03dns\x126\n" +
-	"\x11delete_protection\x18\r \x01(\bB\t\x92\xa6\x1d\x05falseR\x10deleteProtection\"\xa7\x03\n" +
+	"\x11delete_protection\x18\r \x01(\bB\t\x92\xa6\x1d\x05falseR\x10deleteProtection\x12c\n" +
+	"\tcloud_sql\x18\x0e \x01(\v2F.org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunCloudSqlConnectionR\bcloudSql\"\xa7\x03\n" +
 	"\x14GcpCloudRunContainer\x12X\n" +
 	"\x05image\x18\x01 \x01(\v2B.org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerImageR\x05image\x12R\n" +
 	"\x03env\x18\x02 \x01(\v2@.org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerEnvR\x03env\x12\x1f\n" +
@@ -738,7 +935,20 @@ const file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_rawDesc = "" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12p\n" +
 	"\thostnames\x18\x02 \x03(\tBR\xbaHO\xd8\x01\x01\x92\x01I\x18\x01\"ErC2A^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$R\thostnames\x12!\n" +
 	"\fmanaged_zone\x18\x03 \x01(\tR\vmanagedZone:\xad\x01\xbaH\xa9\x01\x1a\xa6\x01\n" +
-	"\x1bdns.enabled-requires-fields\x12?hostnames and managed_zone must be set when dns.enabled is true\x1aF!this.enabled || (size(this.hostnames) > 0 && this.managed_zone != '')\"\xc5\x02\n" +
+	"\x1bdns.enabled-requires-fields\x12?hostnames and managed_zone must be set when dns.enabled is true\x1aF!this.enabled || (size(this.hostnames) > 0 && this.managed_zone != '')\"\xbc\x03\n" +
+	"\x1dGcpCloudRunCloudSqlConnection\x12l\n" +
+	"\n" +
+	"connection\x18\x01 \x01(\v2L.org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunCloudSqlDirectConnectionR\n" +
+	"connection\x12d\n" +
+	"\n" +
+	"auth_proxy\x18\x02 \x01(\v2E.org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunCloudSqlAuthProxyR\tauthProxy:\xc6\x01\xbaH\xc2\x01\x1a\xbf\x01\n" +
+	"\x1acloud_sql.mutual_exclusion\x12=exactly one of connection or auth_proxy must be set, not both\x1ab(has(this.connection) && !has(this.auth_proxy)) || (!has(this.connection) && has(this.auth_proxy))\"\xa6\x01\n" +
+	"#GcpCloudRunCloudSqlDirectConnection\x12\x7f\n" +
+	"\tinstances\x18\x01 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB-\xbaH\x03\xc8\x01\x01\x88\xd4a\xdc\x04\x92\xd4a\x1estatus.outputs.connection_nameR\tinstances\"\xf1\x01\n" +
+	"\x1cGcpCloudRunCloudSqlAuthProxy\x12\x7f\n" +
+	"\tinstances\x18\x01 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB-\xbaH\x03\xc8\x01\x01\x88\xd4a\xdc\x04\x92\xd4a\x1estatus.outputs.connection_nameR\tinstances\x12*\n" +
+	"\x04port\x18\x02 \x01(\x05B\x16\xbaH\v\xd8\x01\x01\x1a\x06\x18\xff\xff\x03(\x01\x92\xa6\x1d\x045432R\x04port\x12$\n" +
+	"\x0euse_private_ip\x18\x03 \x01(\bR\fusePrivateIp\"\xc5\x02\n" +
 	"\x14GcpCloudRunVpcAccess\x12r\n" +
 	"\anetwork\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\xe2\x04\x92\xd4a\x1bstatus.outputs.network_nameR\anetwork\x12s\n" +
 	"\x06subnet\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\x88\xd4a\xe3\x04\x92\xd4a\x1estatus.outputs.subnetwork_nameR\x06subnet\x12D\n" +
@@ -767,40 +977,48 @@ func file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_rawDescGZIP() []byt
 }
 
 var file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_goTypes = []any{
-	(GcpCloudRunIngress)(0),              // 0: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunIngress
-	(GcpCloudRunExecutionEnvironment)(0), // 1: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunExecutionEnvironment
-	(*GcpCloudRunSpec)(nil),              // 2: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunSpec
-	(*GcpCloudRunContainer)(nil),         // 3: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainer
-	(*GcpCloudRunContainerReplicas)(nil), // 4: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerReplicas
-	(*GcpCloudRunContainerImage)(nil),    // 5: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerImage
-	(*GcpCloudRunContainerEnv)(nil),      // 6: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerEnv
-	(*GcpCloudRunDns)(nil),               // 7: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunDns
-	(*GcpCloudRunVpcAccess)(nil),         // 8: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunVpcAccess
-	nil,                                  // 9: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerEnv.VariablesEntry
-	nil,                                  // 10: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerEnv.SecretsEntry
-	(*v1.StringValueOrRef)(nil),          // 11: org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	(GcpCloudRunIngress)(0),                     // 0: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunIngress
+	(GcpCloudRunExecutionEnvironment)(0),        // 1: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunExecutionEnvironment
+	(*GcpCloudRunSpec)(nil),                     // 2: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunSpec
+	(*GcpCloudRunContainer)(nil),                // 3: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainer
+	(*GcpCloudRunContainerReplicas)(nil),        // 4: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerReplicas
+	(*GcpCloudRunContainerImage)(nil),           // 5: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerImage
+	(*GcpCloudRunContainerEnv)(nil),             // 6: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerEnv
+	(*GcpCloudRunDns)(nil),                      // 7: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunDns
+	(*GcpCloudRunCloudSqlConnection)(nil),       // 8: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunCloudSqlConnection
+	(*GcpCloudRunCloudSqlDirectConnection)(nil), // 9: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunCloudSqlDirectConnection
+	(*GcpCloudRunCloudSqlAuthProxy)(nil),        // 10: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunCloudSqlAuthProxy
+	(*GcpCloudRunVpcAccess)(nil),                // 11: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunVpcAccess
+	nil,                                         // 12: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerEnv.VariablesEntry
+	nil,                                         // 13: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerEnv.SecretsEntry
+	(*v1.StringValueOrRef)(nil),                 // 14: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_depIdxs = []int32{
-	11, // 0: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunSpec.project_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	14, // 0: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunSpec.project_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
 	3,  // 1: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunSpec.container:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainer
 	0,  // 2: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunSpec.ingress:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunIngress
-	8,  // 3: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunSpec.vpc_access:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunVpcAccess
+	11, // 3: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunSpec.vpc_access:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunVpcAccess
 	1,  // 4: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunSpec.execution_environment:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunExecutionEnvironment
 	7,  // 5: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunSpec.dns:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunDns
-	5,  // 6: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainer.image:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerImage
-	6,  // 7: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainer.env:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerEnv
-	4,  // 8: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainer.replicas:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerReplicas
-	9,  // 9: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerEnv.variables:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerEnv.VariablesEntry
-	10, // 10: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerEnv.secrets:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerEnv.SecretsEntry
-	11, // 11: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunVpcAccess.network:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	11, // 12: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunVpcAccess.subnet:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	13, // [13:13] is the sub-list for method output_type
-	13, // [13:13] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	8,  // 6: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunSpec.cloud_sql:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunCloudSqlConnection
+	5,  // 7: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainer.image:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerImage
+	6,  // 8: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainer.env:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerEnv
+	4,  // 9: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainer.replicas:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerReplicas
+	12, // 10: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerEnv.variables:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerEnv.VariablesEntry
+	13, // 11: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerEnv.secrets:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunContainerEnv.SecretsEntry
+	9,  // 12: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunCloudSqlConnection.connection:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunCloudSqlDirectConnection
+	10, // 13: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunCloudSqlConnection.auth_proxy:type_name -> org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunCloudSqlAuthProxy
+	14, // 14: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunCloudSqlDirectConnection.instances:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	14, // 15: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunCloudSqlAuthProxy.instances:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	14, // 16: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunVpcAccess.network:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	14, // 17: org.openmcf.provider.gcp.gcpcloudrun.v1.GcpCloudRunVpcAccess.subnet:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	18, // [18:18] is the sub-list for method output_type
+	18, // [18:18] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_init() }
@@ -814,7 +1032,7 @@ func file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_rawDesc), len(file_org_openmcf_provider_gcp_gcpcloudrun_v1_spec_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   9,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
