@@ -86,6 +86,11 @@ message GcpCloudRunSpec {
   // If true, prevents accidental deletion of the Cloud Run service.
   // When enabled, the service cannot be deleted until this flag is set to false.
   bool delete_protection = 13 [(org.openmcf.shared.options.recommended_default) = "false"];
+
+  // Cloud SQL connectivity configuration.
+  // Provides secure, IAM-authenticated access to Cloud SQL instances.
+  // Two modes: native volume mount (connection) or Auth Proxy sidecar (auth_proxy).
+  GcpCloudRunCloudSqlConnection cloud_sql = 14;
 }
 
 /*
@@ -230,6 +235,79 @@ enum GcpCloudRunExecutionEnvironment {
 
   // Second generation execution environment (full Linux compatibility)
   EXECUTION_ENVIRONMENT_GEN2 = 2;
+}
+
+/*
+ * GcpCloudRunCloudSqlConnection configures Cloud SQL connectivity for the Cloud Run service.
+ * Exactly one of connection or auth_proxy must be set.
+ *
+ * - connection: Native Cloud Run volume mount. GCP manages the proxy internally.
+ *   Creates Unix sockets at /cloudsql/<connection_name>.
+ *   Application DATABASE_URL uses: ?host=/cloudsql/<connection_name>
+ *
+ * - auth_proxy: Explicit Cloud SQL Auth Proxy sidecar container.
+ *   Creates a TCP proxy on localhost:<port>.
+ *   Application DATABASE_URL uses: @localhost:<port>
+ */
+message GcpCloudRunCloudSqlConnection {
+  // Native Cloud SQL connection via Cloud Run managed volume mount.
+  // No VPC or Private Services Access required.
+  GcpCloudRunCloudSqlDirectConnection connection = 1;
+
+  // Cloud SQL Auth Proxy sidecar for TCP-based connectivity.
+  // No VPC required unless use_private_ip is true.
+  GcpCloudRunCloudSqlAuthProxy auth_proxy = 2;
+
+  option (buf.validate.message).cel = {
+    id: "cloud_sql.mutual_exclusion"
+    message: "exactly one of connection or auth_proxy must be set, not both"
+    expression: "(has(this.connection) && !has(this.auth_proxy)) || (!has(this.connection) && has(this.auth_proxy))"
+  };
+}
+
+/*
+ * GcpCloudRunCloudSqlDirectConnection configures the native Cloud Run volume mount
+ * for Cloud SQL. GCP automatically creates Unix sockets at /cloudsql/<connection_name>
+ * for each instance. No sidecar container needed.
+ */
+message GcpCloudRunCloudSqlDirectConnection {
+  // Cloud SQL instance connection names (format: project:region:instance).
+  // Can be literal values or references to GcpCloudSql resources.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef instances = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpCloudSql,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.connection_name"
+  ];
+}
+
+/*
+ * GcpCloudRunCloudSqlAuthProxy configures a Cloud SQL Auth Proxy sidecar container.
+ * The proxy runs alongside the application container and provides a TCP endpoint
+ * at localhost:<port> for each Cloud SQL instance.
+ */
+message GcpCloudRunCloudSqlAuthProxy {
+  // Cloud SQL instance connection names (format: project:region:instance).
+  // Can be literal values or references to GcpCloudSql resources.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef instances = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpCloudSql,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.connection_name"
+  ];
+
+  // Port the proxy listens on for the first instance. Default: 5432.
+  // Additional instances get sequential ports (5433, 5434, ...).
+  int32 port = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    },
+    (org.openmcf.shared.options.recommended_default) = "5432"
+  ];
+
+  // Whether to route proxy connections through the VPC private network.
+  // Requires vpc_access to be configured on the Cloud Run service.
+  bool use_private_ip = 3;
 }
 
 /*

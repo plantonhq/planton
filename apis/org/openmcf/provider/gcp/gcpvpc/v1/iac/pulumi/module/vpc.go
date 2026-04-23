@@ -53,6 +53,8 @@ func vpc(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) (*compu
 
 	// 4. Export stack outputs.
 	ctx.Export(OpNetworkSelfLink, createdNetwork.SelfLink)
+	ctx.Export(OpNetworkName, createdNetwork.Name)
+	ctx.Export(OpNetworkId, createdNetwork.ID())
 
 	// 5. Configure Private Services Access if enabled.
 	// This creates VPC peering with Google's service network for managed services (Cloud SQL, Memorystore, etc.)
