@@ -32,8 +32,11 @@ type GcpSubnetworkStackOutputs struct {
 	IpCidrRange string `protobuf:"bytes,3,opt,name=ip_cidr_range,json=ipCidrRange,proto3" json:"ip_cidr_range,omitempty"`
 	// List of secondary ranges created in this subnet, with their names and CIDRs.
 	SecondaryRanges []*GcpSubnetworkSecondaryRangeStackOutput `protobuf:"bytes,4,rep,name=secondary_ranges,json=secondaryRanges,proto3" json:"secondary_ranges,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	// Name of the subnetwork (e.g., "my-subnet").
+	// Referenced by GcpCloudRun.spec.vpc_access.subnet FK.
+	SubnetworkName string `protobuf:"bytes,5,opt,name=subnetwork_name,json=subnetworkName,proto3" json:"subnetwork_name,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *GcpSubnetworkStackOutputs) Reset() {
@@ -92,6 +95,13 @@ func (x *GcpSubnetworkStackOutputs) GetSecondaryRanges() []*GcpSubnetworkSeconda
 		return x.SecondaryRanges
 	}
 	return nil
+}
+
+func (x *GcpSubnetworkStackOutputs) GetSubnetworkName() string {
+	if x != nil {
+		return x.SubnetworkName
+	}
+	return ""
 }
 
 // List of secondary ranges created in this subnet, with their names and CIDRs.
@@ -153,12 +163,13 @@ var File_org_openmcf_provider_gcp_gcpsubnetwork_v1_stack_outputs_proto protorefl
 
 const file_org_openmcf_provider_gcp_gcpsubnetwork_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=org/openmcf/provider/gcp/gcpsubnetwork/v1/stack_outputs.proto\x12)org.openmcf.provider.gcp.gcpsubnetwork.v1\"\x87\x02\n" +
+	"=org/openmcf/provider/gcp/gcpsubnetwork/v1/stack_outputs.proto\x12)org.openmcf.provider.gcp.gcpsubnetwork.v1\"\xb0\x02\n" +
 	"\x19GcpSubnetworkStackOutputs\x120\n" +
 	"\x14subnetwork_self_link\x18\x01 \x01(\tR\x12subnetworkSelfLink\x12\x16\n" +
 	"\x06region\x18\x02 \x01(\tR\x06region\x12\"\n" +
 	"\rip_cidr_range\x18\x03 \x01(\tR\vipCidrRange\x12|\n" +
-	"\x10secondary_ranges\x18\x04 \x03(\v2Q.org.openmcf.provider.gcp.gcpsubnetwork.v1.GcpSubnetworkSecondaryRangeStackOutputR\x0fsecondaryRanges\"k\n" +
+	"\x10secondary_ranges\x18\x04 \x03(\v2Q.org.openmcf.provider.gcp.gcpsubnetwork.v1.GcpSubnetworkSecondaryRangeStackOutputR\x0fsecondaryRanges\x12'\n" +
+	"\x0fsubnetwork_name\x18\x05 \x01(\tR\x0esubnetworkName\"k\n" +
 	"&GcpSubnetworkSecondaryRangeStackOutput\x12\x1d\n" +
 	"\n" +
 	"range_name\x18\x01 \x01(\tR\trangeName\x12\"\n" +

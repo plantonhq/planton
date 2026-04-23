@@ -153,7 +153,7 @@ type GcpCloudSqlSpec struct {
 	StorageGb int32 `protobuf:"varint,6,opt,name=storage_gb,json=storageGb,proto3" json:"storage_gb,omitempty"`
 	// Whether storage should automatically resize when approaching capacity.
 	// Enabled by default to prevent out-of-space issues.
-	DiskAutoresize bool `protobuf:"varint,7,opt,name=disk_autoresize,json=diskAutoresize,proto3" json:"disk_autoresize,omitempty"`
+	DiskAutoResize bool `protobuf:"varint,7,opt,name=disk_auto_resize,json=diskAutoResize,proto3" json:"disk_auto_resize,omitempty"`
 	// Cloud SQL edition: ENTERPRISE (standard) or ENTERPRISE_PLUS (premium with 99.99% SLA).
 	// Defaults to ENTERPRISE if not specified.
 	Edition GcpCloudSqlEdition `protobuf:"varint,8,opt,name=edition,proto3,enum=org.openmcf.provider.gcp.gcpcloudsql.v1.GcpCloudSqlEdition" json:"edition,omitempty"`
@@ -250,9 +250,9 @@ func (x *GcpCloudSqlSpec) GetStorageGb() int32 {
 	return 0
 }
 
-func (x *GcpCloudSqlSpec) GetDiskAutoresize() bool {
+func (x *GcpCloudSqlSpec) GetDiskAutoResize() bool {
 	if x != nil {
-		return x.DiskAutoresize
+		return x.DiskAutoResize
 	}
 	return false
 }
@@ -597,7 +597,7 @@ var File_org_openmcf_provider_gcp_gcpcloudsql_v1_spec_proto protoreflect.FileDes
 
 const file_org_openmcf_provider_gcp_gcpcloudsql_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2org/openmcf/provider/gcp/gcpcloudsql/v1/spec.proto\x12'org.openmcf.provider.gcp.gcpcloudsql.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd5\n" +
+	"2org/openmcf/provider/gcp/gcpcloudsql/v1/spec.proto\x12'org.openmcf.provider.gcp.gcpcloudsql.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd6\n" +
 	"\n" +
 	"\x0fGcpCloudSqlSpec\x12{\n" +
 	"\n" +
@@ -611,8 +611,8 @@ const file_org_openmcf_provider_gcp_gcpcloudsql_v1_spec_proto_rawDesc = "" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04tier\x123\n" +
 	"\n" +
 	"storage_gb\x18\x06 \x01(\x05B\x14\xbaH\v\xc8\x01\x01\x1a\x06\x18\x80\x80\x04(\n" +
-	"\x92\xa6\x1d\x0210R\tstorageGb\x121\n" +
-	"\x0fdisk_autoresize\x18\a \x01(\bB\b\x92\xa6\x1d\x04trueR\x0ediskAutoresize\x12e\n" +
+	"\x92\xa6\x1d\x0210R\tstorageGb\x122\n" +
+	"\x10disk_auto_resize\x18\a \x01(\bB\b\x92\xa6\x1d\x04trueR\x0ediskAutoResize\x12e\n" +
 	"\aedition\x18\b \x01(\x0e2;.org.openmcf.provider.gcp.gcpcloudsql.v1.GcpCloudSqlEditionB\x0e\x92\xa6\x1d\n" +
 	"ENTERPRISER\aedition\x12:\n" +
 	"\x13deletion_protection\x18\t \x01(\bB\t\x92\xa6\x1d\x05falseR\x12deletionProtection\x124\n" +

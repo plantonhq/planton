@@ -26,7 +26,7 @@ func databaseInstance(
 		Tier:           pulumi.String(spec.Tier),
 		DiskSize:       pulumi.Int(int(spec.StorageGb)),
 		DiskType:       pulumi.String("PD_SSD"),
-		DiskAutoresize: pulumi.BoolPtr(spec.DiskAutoresize),
+		DiskAutoresize: pulumi.BoolPtr(spec.DiskAutoResize),
 		UserLabels:     pulumi.ToStringMap(locals.GcpLabels),
 	}
 

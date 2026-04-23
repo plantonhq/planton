@@ -216,6 +216,10 @@ func buildAuthProxyArgs(proxy *gcpcloudrunv1.GcpCloudRunCloudSqlAuthProxy) pulum
 func toEnvArray(locals *Locals) cloudrunv2.ServiceTemplateContainerEnvArray {
 	envs := cloudrunv2.ServiceTemplateContainerEnvArray{}
 
+	if locals.GcpCloudRun.Spec.Container.Env == nil {
+		return envs
+	}
+
 	for k, v := range locals.GcpCloudRun.Spec.Container.Env.Variables {
 		envs = append(envs, &cloudrunv2.ServiceTemplateContainerEnvArgs{
 			Name:  pulumi.String(k),

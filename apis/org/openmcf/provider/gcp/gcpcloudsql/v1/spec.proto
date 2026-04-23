@@ -59,7 +59,7 @@ message GcpCloudSqlSpec {
 
   // Whether storage should automatically resize when approaching capacity.
   // Enabled by default to prevent out-of-space issues.
-  bool disk_autoresize = 7 [(org.openmcf.shared.options.recommended_default) = "true"];
+  bool disk_auto_resize = 7 [(org.openmcf.shared.options.recommended_default) = "true"];
 
   // Cloud SQL edition: ENTERPRISE (standard) or ENTERPRISE_PLUS (premium with 99.99% SLA).
   // Defaults to ENTERPRISE if not specified.

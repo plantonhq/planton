@@ -19,7 +19,7 @@ message GcpVpcStackOutputs {
   // Referenced by GcpCloudRun.spec.vpc_access.network FK.
   string network_name = 4;
 
-  // Pulumi resource ID of the VPC network.
-  // Referenced by GcpCloudSql.spec.network.vpc_id FK.
+  // GCP self-link of the VPC network (e.g., "projects/PROJECT/global/networks/NAME").
+  // Used by GcpCloudSql.spec.network.vpc_id to configure Private Services Access.
   string network_id = 5;
 }

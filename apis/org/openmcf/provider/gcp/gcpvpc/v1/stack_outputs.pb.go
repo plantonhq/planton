@@ -32,8 +32,14 @@ type GcpVpcStackOutputs struct {
 	// CIDR of the allocated IP range for private services (only set if private_services_access is enabled).
 	// Example: "10.100.0.0/16"
 	PrivateServicesIpRangeCidr string `protobuf:"bytes,3,opt,name=private_services_ip_range_cidr,json=privateServicesIpRangeCidr,proto3" json:"private_services_ip_range_cidr,omitempty"`
-	unknownFields              protoimpl.UnknownFields
-	sizeCache                  protoimpl.SizeCache
+	// Name of the VPC network (e.g., "my-vpc-network").
+	// Referenced by GcpCloudRun.spec.vpc_access.network FK.
+	NetworkName string `protobuf:"bytes,4,opt,name=network_name,json=networkName,proto3" json:"network_name,omitempty"`
+	// GCP self-link of the VPC network (e.g., "projects/PROJECT/global/networks/NAME").
+	// Used by GcpCloudSql.spec.network.vpc_id to configure Private Services Access.
+	NetworkId     string `protobuf:"bytes,5,opt,name=network_id,json=networkId,proto3" json:"network_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpVpcStackOutputs) Reset() {
@@ -87,15 +93,32 @@ func (x *GcpVpcStackOutputs) GetPrivateServicesIpRangeCidr() string {
 	return ""
 }
 
+func (x *GcpVpcStackOutputs) GetNetworkName() string {
+	if x != nil {
+		return x.NetworkName
+	}
+	return ""
+}
+
+func (x *GcpVpcStackOutputs) GetNetworkId() string {
+	if x != nil {
+		return x.NetworkId
+	}
+	return ""
+}
+
 var File_org_openmcf_provider_gcp_gcpvpc_v1_stack_outputs_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_gcp_gcpvpc_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6org/openmcf/provider/gcp/gcpvpc/v1/stack_outputs.proto\x12\"org.openmcf.provider.gcp.gcpvpc.v1\"\xc8\x01\n" +
+	"6org/openmcf/provider/gcp/gcpvpc/v1/stack_outputs.proto\x12\"org.openmcf.provider.gcp.gcpvpc.v1\"\x8a\x02\n" +
 	"\x12GcpVpcStackOutputs\x12*\n" +
 	"\x11network_self_link\x18\x01 \x01(\tR\x0fnetworkSelfLink\x12B\n" +
 	"\x1eprivate_services_ip_range_name\x18\x02 \x01(\tR\x1aprivateServicesIpRangeName\x12B\n" +
-	"\x1eprivate_services_ip_range_cidr\x18\x03 \x01(\tR\x1aprivateServicesIpRangeCidrB\xb9\x02\n" +
+	"\x1eprivate_services_ip_range_cidr\x18\x03 \x01(\tR\x1aprivateServicesIpRangeCidr\x12!\n" +
+	"\fnetwork_name\x18\x04 \x01(\tR\vnetworkName\x12\x1d\n" +
+	"\n" +
+	"network_id\x18\x05 \x01(\tR\tnetworkIdB\xb9\x02\n" +
 	"&com.org.openmcf.provider.gcp.gcpvpc.v1B\x11StackOutputsProtoP\x01ZMgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpvpc/v1;gcpvpcv1\xa2\x02\x05OOPGG\xaa\x02\"Org.Openmcf.Provider.Gcp.Gcpvpc.V1\xca\x02\"Org\\Openmcf\\Provider\\Gcp\\Gcpvpc\\V1\xe2\x02.Org\\Openmcf\\Provider\\Gcp\\Gcpvpc\\V1\\GPBMetadata\xea\x02'Org::Openmcf::Provider::Gcp::Gcpvpc::V1b\x06proto3"
 
 var (
