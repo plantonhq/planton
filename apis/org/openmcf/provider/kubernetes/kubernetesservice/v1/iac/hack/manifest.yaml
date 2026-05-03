@@ -3,7 +3,7 @@ kind: KubernetesService
 metadata:
   name: test-service
 spec:
-  namespace: test-namespace
+  namespace: default
   name: test-service
   selector:
     app: test-app

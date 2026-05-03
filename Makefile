@@ -206,6 +206,24 @@ build-site:
 preview-site:
 	$(MAKE) -C site preview-site
 
+# ── E2E Tests ─────────────────────────────────────────────────────────────────
+.PHONY: e2e-test-kubernetes
+e2e-test-kubernetes:  ## Run all Kubernetes E2E tests (requires kind, pulumi, kubectl, Docker)
+	go test -tags=e2e -timeout=30m -v -count=1 ./e2e/...
+
+.PHONY: e2e-test-component
+e2e-test-component:  ## Single component E2E test (usage: make e2e-test-component component=KubernetesNamespace)
+	go test -tags=e2e -timeout=10m -v -count=1 -run "Test.*$(component)" ./e2e/...
+
+.PHONY: e2e-build
+e2e-build:  ## Compile E2E tests without running them
+	go build -tags=e2e ./e2e/...
+
+.PHONY: e2e-vet
+e2e-vet:  ## Run go vet on E2E packages
+	go vet ./e2e/framework/...
+	go vet -tags=e2e ./e2e/...
+
 # ── Base Images ───────────────────────────────────────────────────────────────
 .PHONY: build-iac-runner-base-image
 build-iac-runner-base-image:

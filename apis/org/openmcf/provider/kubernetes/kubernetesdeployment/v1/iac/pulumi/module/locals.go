@@ -130,6 +130,12 @@ func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesdeploymentv1.Ku
 	//export kube-port-forward command
 	ctx.Export(OpPortForwardCommand, pulumi.String(locals.KubePortForwardCommand))
 
+	if locals.KubernetesDeployment.Spec.Availability == nil {
+		locals.KubernetesDeployment.Spec.Availability = &kubernetesdeploymentv1.KubernetesDeploymentAvailability{
+			MinReplicas: 1,
+		}
+	}
+
 	if target.Spec.Ingress == nil ||
 		!target.Spec.Ingress.Enabled ||
 		target.Spec.Ingress.Hostname == "" {
@@ -164,12 +170,6 @@ func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesdeploymentv1.Ku
 
 	if locals.KubernetesDeployment.Spec.Container.App.Image == nil {
 		return nil, errors.New("spec.container.app.image is required")
-	}
-
-	if locals.KubernetesDeployment.Spec.Availability == nil {
-		locals.KubernetesDeployment.Spec.Availability = &kubernetesdeploymentv1.KubernetesDeploymentAvailability{
-			MinReplicas: 1,
-		}
 	}
 
 	return locals, nil
