@@ -5,6 +5,10 @@ package provider
 
 import "context"
 
+// ManifestPathKey is the context key used to pass the manifest path to provider harnesses
+// so they can dynamically parse resource names and namespaces for verification.
+type ManifestPathKey struct{}
+
 // Harness manages the lifecycle of test infrastructure for a specific provider.
 // For Kubernetes this means a kind cluster; for AWS it means credential validation
 // and resource cleanup; for GCP it means project-scoped verification, etc.

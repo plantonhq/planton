@@ -1,0 +1,11 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesSecret
+metadata:
+  name: e2e-sec-opaque
+spec:
+  name: e2e-sec-opaque
+  namespace: default
+  opaque:
+    data:
+      username: "test-user"
+      password: "test-password"

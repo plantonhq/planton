@@ -1,0 +1,11 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesSecret
+metadata:
+  name: e2e-sec-immutable
+spec:
+  name: e2e-sec-immutable
+  namespace: default
+  immutable: true
+  opaque:
+    data:
+      api-key: "immutable-key-value"

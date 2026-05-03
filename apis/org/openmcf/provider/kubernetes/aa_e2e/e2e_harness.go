@@ -1,6 +1,6 @@
-// Package kubernetes implements the E2E provider harness for Kubernetes,
+// Package aa_e2e implements the E2E provider harness for Kubernetes,
 // using kind (Kubernetes IN Docker) as the test cluster substrate.
-package kubernetes
+package aa_e2e
 
 import (
 	"bytes"
@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/plantonhq/openmcf/e2e/framework/provider"
 )
 
 // Harness manages a kind cluster lifecycle for Kubernetes E2E tests.
@@ -77,12 +78,10 @@ func (h *Harness) Teardown(ctx context.Context) error {
 		return errors.Wrapf(err, "kind delete cluster failed: %s", stderr.String())
 	}
 
-	// Clean up temp directory
 	if h.tempDir != "" {
 		os.RemoveAll(h.tempDir)
 	}
 
-	// Unset KUBECONFIG
 	os.Unsetenv("KUBECONFIG")
 
 	return nil
@@ -98,18 +97,26 @@ func (h *Harness) ClusterName() string {
 	return h.clusterName
 }
 
-// VerifyDeployed delegates to resource-type-specific verification based on component.
+// VerifyDeployed delegates to resource-type-specific verification based on the manifest.
 func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs map[string]interface{}) error {
-	verifier, err := getVerifier(component)
+	manifestPath, _ := ctx.Value(provider.ManifestPathKey{}).(string)
+	if manifestPath == "" {
+		return errors.New("manifest path not found in context -- cannot verify deployment")
+	}
+	verifier, err := GetVerifierFromManifest(manifestPath)
 	if err != nil {
 		return err
 	}
 	return verifier.VerifyExists(ctx, h.kubeconfigPath)
 }
 
-// VerifyDestroyed delegates to resource-type-specific verification based on component.
+// VerifyDestroyed confirms that resources have been removed after destroy.
 func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
-	verifier, err := getVerifier(component)
+	manifestPath, _ := ctx.Value(provider.ManifestPathKey{}).(string)
+	if manifestPath == "" {
+		return errors.New("manifest path not found in context -- cannot verify cleanup")
+	}
+	verifier, err := GetVerifierFromManifest(manifestPath)
 	if err != nil {
 		return err
 	}

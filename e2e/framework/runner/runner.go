@@ -47,6 +47,9 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 		Passed:    true,
 	}
 
+	// Inject the manifest path into context for the harness verifiers
+	verifyCtx := context.WithValue(ctx, provider.ManifestPathKey{}, tc.ManifestPath)
+
 	phases := []struct {
 		phase Phase
 		fn    func() error
@@ -54,9 +57,9 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 		{PhaseValidate, func() error { return runValidate(tc) }},
 		{PhaseDeploy, func() error { return runDeploy(tc) }},
 		{PhaseVerifyOut, func() error { return runVerifyOutputs(tc) }},
-		{PhaseVerifyRes, func() error { return runVerifyResources(ctx, tc, harness) }},
+		{PhaseVerifyRes, func() error { return runVerifyResources(verifyCtx, tc, harness) }},
 		{PhaseDestroy, func() error { return runDestroy(tc) }},
-		{PhaseVerifyCln, func() error { return runVerifyCleanup(ctx, tc, harness) }},
+		{PhaseVerifyCln, func() error { return runVerifyCleanup(verifyCtx, tc, harness) }},
 	}
 
 	for _, p := range phases {

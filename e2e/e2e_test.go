@@ -20,13 +20,13 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/plantonhq/openmcf/e2e/framework/provider/kubernetes"
+	kubernetese2e "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/aa_e2e"
 	"github.com/plantonhq/openmcf/e2e/framework/runner"
 )
 
 var (
 	// testHarness is the shared kind cluster harness for all Kubernetes tests.
-	testHarness *kubernetes.Harness
+	testHarness *kubernetese2e.Harness
 
 	// repoRoot is the absolute path to the openmcf repository root.
 	repoRoot string
@@ -67,7 +67,7 @@ func TestMain(m *testing.M) {
 
 	// Create kind cluster
 	clusterName := fmt.Sprintf("openmcf-e2e-%s", runID)
-	testHarness = kubernetes.NewHarness(clusterName)
+	testHarness = kubernetese2e.NewHarness(clusterName)
 
 	ctx := context.Background()
 	if err := testHarness.Setup(ctx); err != nil {

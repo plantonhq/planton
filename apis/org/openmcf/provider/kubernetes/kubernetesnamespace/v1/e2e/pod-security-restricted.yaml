@@ -1,0 +1,7 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesNamespace
+metadata:
+  name: e2e-ns-pss
+spec:
+  name: e2e-ns-pss
+  pod_security_standard: restricted

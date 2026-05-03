@@ -1,15 +1,71 @@
-package kubernetes
+package aa_e2e
 
 import (
 	"bytes"
 	"context"
 	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 	"time"
 
 	"github.com/pkg/errors"
+	"gopkg.in/yaml.v3"
 )
+
+// ManifestInfo holds the parsed fields from a manifest needed for verification.
+type ManifestInfo struct {
+	Kind      string
+	Name      string
+	Namespace string
+}
+
+// ParseManifestInfo extracts kind, name, and namespace from a manifest YAML file
+// to drive dynamic verification without hardcoded values.
+func ParseManifestInfo(manifestPath string) (*ManifestInfo, error) {
+	data, err := os.ReadFile(manifestPath)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to read manifest %s", manifestPath)
+	}
+
+	var raw map[string]interface{}
+	if err := yaml.Unmarshal(data, &raw); err != nil {
+		return nil, errors.Wrapf(err, "failed to parse manifest YAML %s", manifestPath)
+	}
+
+	info := &ManifestInfo{}
+
+	if kind, ok := raw["kind"].(string); ok {
+		info.Kind = kind
+	}
+
+	if metadata, ok := raw["metadata"].(map[string]interface{}); ok {
+		if name, ok := metadata["name"].(string); ok {
+			info.Name = name
+		}
+	}
+
+	if spec, ok := raw["spec"].(map[string]interface{}); ok {
+		if name, ok := spec["name"].(string); ok {
+			info.Name = name
+		}
+
+		switch ns := spec["namespace"].(type) {
+		case string:
+			info.Namespace = ns
+		case map[string]interface{}:
+			if val, ok := ns["value"].(string); ok {
+				info.Namespace = val
+			}
+		}
+	}
+
+	if info.Namespace == "" {
+		info.Namespace = "default"
+	}
+
+	return info, nil
+}
 
 // ResourceVerifier knows how to verify a specific Kubernetes resource type.
 type ResourceVerifier interface {
@@ -17,36 +73,47 @@ type ResourceVerifier interface {
 	VerifyAbsent(ctx context.Context, kubeconfig string) error
 }
 
-// getVerifier returns the appropriate verifier for a component.
-// Components are mapped to their primary resource type for verification.
-func getVerifier(component string) (ResourceVerifier, error) {
-	switch strings.ToLower(component) {
+// GetVerifierFromManifest creates the appropriate verifier by parsing the manifest.
+func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
+	info, err := ParseManifestInfo(manifestPath)
+	if err != nil {
+		return nil, err
+	}
+
+	component := strings.ToLower(info.Kind)
+
+	switch component {
 	case "kubernetesnamespace":
-		return &NamespaceVerifier{Name: "test-namespace"}, nil
+		return &NamespaceVerifier{Name: info.Name}, nil
+
 	case "kubernetesdeployment":
 		return &WorkloadVerifier{
-			Namespace: "test-deployment-ns",
+			Namespace: info.Namespace,
 			Kind:      "deployment",
-			Name:      "test-deployment",
+			Name:      info.Name,
 		}, nil
+
 	case "kubernetesstatefulset":
 		return &WorkloadVerifier{
-			Namespace: "test-statefulset-ns",
+			Namespace: info.Namespace,
 			Kind:      "statefulset",
-			Name:      "test-statefulset",
+			Name:      info.Name,
 		}, nil
+
 	case "kubernetessecret":
 		return &ResourceExistenceVerifier{
-			Namespace: "default",
+			Namespace: info.Namespace,
 			Kind:      "secret",
-			Name:      "test-secret",
+			Name:      info.Name,
 		}, nil
+
 	case "kubernetesservice":
 		return &ResourceExistenceVerifier{
-			Namespace: "default",
+			Namespace: info.Namespace,
 			Kind:      "service",
-			Name:      "test-service",
+			Name:      info.Name,
 		}, nil
+
 	default:
 		return &GenericVerifier{Component: component}, nil
 	}
@@ -113,7 +180,6 @@ func (v *GenericVerifier) VerifyAbsent(ctx context.Context, kubeconfig string) e
 func kubectlResourceExists(ctx context.Context, kubeconfig, kind, name, namespace string) error {
 	args := buildKubectlArgs(kubeconfig, "get", kind, name, namespace)
 
-	// Retry with backoff because resource creation may have eventual consistency
 	var lastErr error
 	for attempt := 0; attempt < 5; attempt++ {
 		cmd := exec.CommandContext(ctx, "kubectl", args...)
@@ -139,7 +205,6 @@ func kubectlResourceExists(ctx context.Context, kubeconfig, kind, name, namespac
 func kubectlResourceAbsent(ctx context.Context, kubeconfig, kind, name, namespace string) error {
 	args := buildKubectlArgs(kubeconfig, "get", kind, name, namespace)
 
-	// Give time for deletion to propagate
 	for attempt := 0; attempt < 10; attempt++ {
 		cmd := exec.CommandContext(ctx, "kubectl", args...)
 		var stderr bytes.Buffer
@@ -154,7 +219,6 @@ func kubectlResourceAbsent(ctx context.Context, kubeconfig, kind, name, namespac
 		}
 
 		if err == nil {
-			// Resource still exists -- wait and retry
 			select {
 			case <-ctx.Done():
 				return ctx.Err()
@@ -163,7 +227,6 @@ func kubectlResourceAbsent(ctx context.Context, kubeconfig, kind, name, namespac
 			continue
 		}
 
-		// Non-NotFound error -- resource is gone or something else
 		return nil
 	}
 

@@ -119,3 +119,83 @@ func DiscoverByName(repoRoot, componentName string) (*Component, error) {
 	}
 	return nil, errors.Errorf("component %q not found", componentName)
 }
+
+// TestScenario represents one test manifest for a component under e2e/testdata/.
+type TestScenario struct {
+	// Name is the scenario name derived from the filename (e.g., "minimal", "with-hpa").
+	Name string
+
+	// ManifestPath is the absolute path to the test manifest YAML.
+	ManifestPath string
+
+	// Component is the component name (e.g., "kubernetesnamespace").
+	Component string
+
+	// Provider is the provider name (e.g., "kubernetes").
+	Provider string
+}
+
+// DiscoverTestScenarios scans the component's colocated e2e/ directory for YAML manifests.
+// Path: apis/org/openmcf/provider/{provider}/{component}/v1/e2e/
+func DiscoverTestScenarios(repoRoot, provider, component string) ([]TestScenario, error) {
+	scenarioDir := filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", provider, component, "v1", "e2e")
+
+	entries, err := os.ReadDir(scenarioDir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, nil
+		}
+		return nil, errors.Wrapf(err, "failed to read test scenario directory %s", scenarioDir)
+	}
+
+	var scenarios []TestScenario
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		name := entry.Name()
+		if !strings.HasSuffix(name, ".yaml") && !strings.HasSuffix(name, ".yml") {
+			continue
+		}
+
+		scenarioName := strings.TrimSuffix(strings.TrimSuffix(name, ".yaml"), ".yml")
+		scenarios = append(scenarios, TestScenario{
+			Name:         scenarioName,
+			ManifestPath: filepath.Join(scenarioDir, name),
+			Component:    component,
+			Provider:     provider,
+		})
+	}
+
+	return scenarios, nil
+}
+
+// DiscoverAllTestScenarios scans all components under a provider for colocated e2e/ directories.
+func DiscoverAllTestScenarios(repoRoot, provider string) (map[string][]TestScenario, error) {
+	providerDir := filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", provider)
+
+	entries, err := os.ReadDir(providerDir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, nil
+		}
+		return nil, errors.Wrapf(err, "failed to read provider testdata directory %s", providerDir)
+	}
+
+	result := make(map[string][]TestScenario)
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+		component := entry.Name()
+		scenarios, err := DiscoverTestScenarios(repoRoot, provider, component)
+		if err != nil {
+			return nil, err
+		}
+		if len(scenarios) > 0 {
+			result[component] = scenarios
+		}
+	}
+
+	return result, nil
+}

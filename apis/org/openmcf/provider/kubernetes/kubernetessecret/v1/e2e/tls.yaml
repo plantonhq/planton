@@ -1,0 +1,26 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesSecret
+metadata:
+  name: e2e-sec-tls
+spec:
+  name: e2e-sec-tls
+  namespace: default
+  tls:
+    tls_crt: |
+      -----BEGIN CERTIFICATE-----
+      MIIBhTCCASugAwIBAgIQIRi6zePL6mKjOipn+dNuaTAKBggqhkjOPQQDAjASMRAw
+      DgYDVQQKEwdBY21lIENvMB4XDTE3MTAyMDE5NDMwNloXDTE4MTAyMDE5NDMwNlow
+      EjEQMA4GA1UEChMHQWNtZSBDbzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABD0d
+      7VNhbWvZLWPuj/RtHFjvtJBEwOkhbN/BnnE8rnZR8+sbwnc/KhCk3FhnpHZnQz7B
+      5aETbbIgmuvewdjvSBSjYzBhMA4GA1UdDwEB/wQEAwICpDATBgNVHSUEDDAKBggr
+      BgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MCkGA1UdEQQiMCCCDmxvY2FsaG9zdDo1
+      NDUzgg4xMjcuMC4wLjE6NTQ1MzAKBggqhkjOPQQDAgNIADBFAiEA2wpSek1iFxMG
+      cKJCDQPJSscoOGrb2t/HWWPH5MxWJHkCIGzGZstDKLmMLPSJPnFnkCLPviYOwUwp
+      l1udQIHyuPAx
+      -----END CERTIFICATE-----
+    tls_key: |
+      -----BEGIN EC PRIVATE KEY-----
+      MHQCAQEEIIrYSSNQFaA2Hwf583QmKbyavkgoftpCYFbQ7GfIKThnoAcGBSuBBAAi
+      oWQDYgAEPR3tU2Fta9ktY+6P9G0cWO+0kETA6SFs38GecTyudlHz6xvCdz8qEKTc
+      WGekdmdDPsHloRNtsiCa697B2O9IFA==
+      -----END EC PRIVATE KEY-----

@@ -8,52 +8,82 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/plantonhq/openmcf/e2e/framework/discovery"
 	"github.com/plantonhq/openmcf/e2e/framework/provider"
 	"github.com/plantonhq/openmcf/e2e/framework/runner"
 )
 
+// Kubernetes Tier 1 components that have Pulumi modules.
+var kubernetesTier1Components = []string{
+	"kubernetesnamespace",
+	"kubernetesdeployment",
+	"kubernetesstatefulset",
+	"kubernetessecret",
+	"kubernetesservice",
+}
+
 func TestKubernetesNamespace_Pulumi(t *testing.T) {
-	runKubernetesComponentTest(t, "kubernetesnamespace")
+	runAllScenariosForComponent(t, "kubernetesnamespace")
 }
 
 func TestKubernetesDeployment_Pulumi(t *testing.T) {
-	runKubernetesComponentTest(t, "kubernetesdeployment")
-}
-
-func TestKubernetesSecret_Pulumi(t *testing.T) {
-	runKubernetesComponentTest(t, "kubernetessecret")
-}
-
-func TestKubernetesService_Pulumi(t *testing.T) {
-	runKubernetesComponentTest(t, "kubernetesservice")
+	runAllScenariosForComponent(t, "kubernetesdeployment")
 }
 
 func TestKubernetesStatefulSet_Pulumi(t *testing.T) {
-	runKubernetesComponentTest(t, "kubernetesstatefulset")
+	runAllScenariosForComponent(t, "kubernetesstatefulset")
 }
 
-func runKubernetesComponentTest(t *testing.T, component string) {
+func TestKubernetesSecret_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetessecret")
+}
+
+func TestKubernetesService_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesservice")
+}
+
+func runAllScenariosForComponent(t *testing.T, component string) {
 	t.Helper()
 
 	moduleDir := filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", "kubernetes", component, "v1", "iac", "pulumi")
-	manifestPath := filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", "kubernetes", component, "v1", "iac", "hack", "manifest.yaml")
-
-	// Verify the component exists
 	if !fileExists(moduleDir) {
 		t.Skipf("component %s pulumi module not found at %s", component, moduleDir)
 	}
-	if !fileExists(manifestPath) {
-		t.Skipf("component %s manifest not found at %s", component, manifestPath)
+
+	scenarios, err := discovery.DiscoverTestScenarios(repoRoot, "kubernetes", component)
+	if err != nil {
+		t.Fatalf("failed to discover test scenarios for %s: %v", component, err)
 	}
 
-	stackName := runner.GenerateStackName(component, runID)
+	if len(scenarios) == 0 {
+		t.Skipf("no test scenarios found for %s in e2e/testdata/kubernetes/%s/", component, component)
+	}
+
+	t.Logf("Discovered %d scenarios for %s", len(scenarios), component)
+
+	for _, scenario := range scenarios {
+		scenario := scenario
+		t.Run(scenario.Name, func(t *testing.T) {
+			runSingleScenario(t, component, moduleDir, scenario)
+		})
+	}
+}
+
+func runSingleScenario(t *testing.T, component, moduleDir string, scenario discovery.TestScenario) {
+	t.Helper()
+
+	stackName := runner.GenerateStackName(component+"-"+scenario.Name, runID)
+	// Pulumi stack names have a max length; truncate if needed
+	if len(stackName) > 50 {
+		stackName = stackName[:50]
+	}
 
 	tc := &provider.ComponentTestContext{
 		Component:    component,
 		Provider:     "kubernetes",
 		Engine:       "pulumi",
 		ModuleDir:    moduleDir,
-		ManifestPath: manifestPath,
+		ManifestPath: scenario.ManifestPath,
 		StackName:    stackName,
 		BackendURL:   pulumiBackendURL,
 	}
@@ -61,7 +91,6 @@ func runKubernetesComponentTest(t *testing.T, component string) {
 	ctx := context.Background()
 	result := runner.RunComponentTest(ctx, tc, testHarness)
 
-	// Report results
 	for _, phase := range result.Phases {
 		status := "PASS"
 		if !phase.Passed {
@@ -74,10 +103,10 @@ func runKubernetesComponentTest(t *testing.T, component string) {
 	}
 
 	if !result.Passed {
-		t.Fatalf("E2E test for %s failed (total: %s)", component, result.Duration)
+		t.Fatalf("scenario %s/%s failed (total: %s)", component, scenario.Name, result.Duration)
 	}
 
-	t.Logf("E2E test for %s passed (total: %s)", component, result.Duration)
+	t.Logf("scenario %s/%s passed (total: %s)", component, scenario.Name, result.Duration)
 }
 
 func fileExists(path string) bool {
