@@ -208,12 +208,20 @@ preview-site:
 
 # ── E2E Tests ─────────────────────────────────────────────────────────────────
 .PHONY: e2e-test-kubernetes
-e2e-test-kubernetes:  ## Run all Kubernetes E2E tests (requires kind, pulumi, kubectl, Docker)
-	go test -tags=e2e -timeout=30m -v -count=1 ./e2e/...
+e2e-test-kubernetes:  ## Run all Kubernetes E2E tests -- Tier 1 + Tier 2 (requires kind, pulumi, kubectl, Docker)
+	go test -tags=e2e -timeout=90m -v -count=1 ./e2e/...
+
+.PHONY: e2e-test-kubernetes-tier1
+e2e-test-kubernetes-tier1:  ## Run Kubernetes Tier 1 (native K8s) E2E tests only
+	go test -tags=e2e -timeout=30m -v -count=1 -run "Test(KubernetesNamespace|KubernetesDeployment|KubernetesStatefulSet|KubernetesSecret|KubernetesService)_" ./e2e/...
+
+.PHONY: e2e-test-kubernetes-tier2
+e2e-test-kubernetes-tier2:  ## Run Kubernetes Tier 2 (Helm-based) E2E tests only
+	go test -tags=e2e -timeout=60m -v -count=1 -run "Test(KubernetesRedis|KubernetesGrafana|KubernetesOpenBao|KubernetesArgoCD|KubernetesLocust)_" ./e2e/...
 
 .PHONY: e2e-test-component
 e2e-test-component:  ## Single component E2E test (usage: make e2e-test-component component=KubernetesNamespace)
-	go test -tags=e2e -timeout=10m -v -count=1 -run "Test.*$(component)" ./e2e/...
+	go test -tags=e2e -timeout=15m -v -count=1 -run "Test.*$(component)" ./e2e/...
 
 .PHONY: e2e-build
 e2e-build:  ## Compile E2E tests without running them

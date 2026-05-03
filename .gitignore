@@ -51,3 +51,6 @@ bazel-openmcf-alibaba-cloud
 bazel-openmcf-alibaba-cloud/
 bazel-openmcf-hetzner-cloud
 bazel-openmcf-hetzner-cloud/
+
+# E2E test artifacts (generated during pulumi runs)
+**/iac/pulumi/stack-input.yaml

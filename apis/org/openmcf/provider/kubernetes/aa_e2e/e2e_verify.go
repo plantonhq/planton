@@ -73,6 +73,42 @@ type ResourceVerifier interface {
 	VerifyAbsent(ctx context.Context, kubeconfig string) error
 }
 
+// helmTier2Kinds lists all manifest kind values (lowercased) for Helm-based
+// Kubernetes components (Tier 2). These must match the CloudResourceKind enum
+// names from cloud_resource_kind.proto (case-insensitive via lowercasing).
+//
+// Historical hack manifests use inconsistent kind names (e.g., "RedisKubernetes"
+// instead of "KubernetesRedis"). E2E manifests must use the enum name. Both
+// conventions are included here so the verifier works with either.
+var helmTier2Kinds = map[string]bool{
+	// Canonical enum names (lowercased)
+	"kubernetesredis":                    true,
+	"kubernetesnats":                     true,
+	"kubernetesgrafana":                  true,
+	"kubernetesneo4j":                    true,
+	"kubernetesopenbao":                  true,
+	"kubernetesopenfga":                  true,
+	"kubernetesjenkins":                  true,
+	"kubernetestemporal":                 true,
+	"kubernetesperconamongooperator":     true,
+	"kubernetesperconamysqloperator":     true,
+	"kubernetesperconapostgresoperator":  true,
+	"kubernetesargocd":                   true,
+	"kubernetesharbor":                   true,
+	"kubernetesgitlab":                   true,
+	"kuberneteslocust":                   true,
+	"kubernetessignoz":                   true,
+	"kubernetessolr":                     true,
+	"kubernetessolroperator":             true,
+	"kubernetesclickhouse":               true,
+	// Legacy hack manifest kind names (lowercased)
+	"rediskubernetes":                    true,
+	"harborkubernetes":                   true,
+	"locustkubernetes":                   true,
+	"signozkubernetes":                   true,
+	"clickhousekubernetes":               true,
+}
+
 // GetVerifierFromManifest creates the appropriate verifier by parsing the manifest.
 func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 	info, err := ParseManifestInfo(manifestPath)
@@ -115,6 +151,12 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 		}, nil
 
 	default:
+		if helmTier2Kinds[component] {
+			return &HelmComponentVerifier{
+				Namespace:     info.Namespace,
+				ComponentName: info.Name,
+			}, nil
+		}
 		return &GenericVerifier{Component: component}, nil
 	}
 }
@@ -162,6 +204,36 @@ func (v *ResourceExistenceVerifier) VerifyAbsent(ctx context.Context, kubeconfig
 	return kubectlResourceAbsent(ctx, kubeconfig, v.Kind, v.Name, v.Namespace)
 }
 
+// HelmComponentVerifier checks Helm-based (Tier 2) components by verifying
+// that the namespace exists, at least one Pod is Running, and at least one
+// Service is present. This avoids coupling to chart-internal resource names.
+type HelmComponentVerifier struct {
+	Namespace     string
+	ComponentName string
+}
+
+func (v *HelmComponentVerifier) VerifyExists(ctx context.Context, kubeconfig string) error {
+	fmt.Printf("  [verify] Helm component %q in namespace %q\n", v.ComponentName, v.Namespace)
+
+	if err := kubectlResourceExists(ctx, kubeconfig, "namespace", v.Namespace, ""); err != nil {
+		return errors.Wrapf(err, "namespace %q not found for helm component %q", v.Namespace, v.ComponentName)
+	}
+
+	if err := kubectlPodsRunningInNamespace(ctx, kubeconfig, v.Namespace); err != nil {
+		return errors.Wrapf(err, "no running pods in namespace %q for helm component %q", v.Namespace, v.ComponentName)
+	}
+
+	if err := kubectlServicesExistInNamespace(ctx, kubeconfig, v.Namespace); err != nil {
+		return errors.Wrapf(err, "no services in namespace %q for helm component %q", v.Namespace, v.ComponentName)
+	}
+
+	return nil
+}
+
+func (v *HelmComponentVerifier) VerifyAbsent(ctx context.Context, kubeconfig string) error {
+	return kubectlResourceAbsent(ctx, kubeconfig, "namespace", v.Namespace, "")
+}
+
 // GenericVerifier is a fallback that always passes (for components without specific verifiers yet).
 type GenericVerifier struct {
 	Component string
@@ -175,6 +247,83 @@ func (v *GenericVerifier) VerifyExists(ctx context.Context, kubeconfig string) e
 func (v *GenericVerifier) VerifyAbsent(ctx context.Context, kubeconfig string) error {
 	fmt.Printf("  [verify] No specific verifier for %s -- skipping cleanup verification\n", v.Component)
 	return nil
+}
+
+// kubectlPodsRunningInNamespace waits for at least one Pod in the namespace to
+// reach Running phase. Helm-based components need longer to start because they
+// pull container images and may run init containers.
+func kubectlPodsRunningInNamespace(ctx context.Context, kubeconfig, namespace string) error {
+	args := []string{"get", "pods", "-n", namespace,
+		"--field-selector=status.phase=Running",
+		"-o", "jsonpath={.items}",
+		"--no-headers",
+	}
+	if kubeconfig != "" {
+		args = append(args, "--kubeconfig", kubeconfig)
+	}
+
+	var lastErr error
+	for attempt := 0; attempt < 15; attempt++ {
+		cmd := exec.CommandContext(ctx, "kubectl", args...)
+		var stdout, stderr bytes.Buffer
+		cmd.Stdout = &stdout
+		cmd.Stderr = &stderr
+
+		if err := cmd.Run(); err != nil {
+			lastErr = errors.Wrapf(err, "kubectl get pods: %s", stderr.String())
+		} else {
+			output := strings.TrimSpace(stdout.String())
+			if output != "" && output != "[]" {
+				return nil
+			}
+			lastErr = errors.Errorf("no running pods in namespace %s (output: %q)", namespace, output)
+		}
+
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-time.After(time.Duration(attempt+1) * 3 * time.Second):
+		}
+	}
+
+	return errors.Wrapf(lastErr, "no running pods in namespace %s after 15 attempts", namespace)
+}
+
+// kubectlServicesExistInNamespace checks that at least one Service exists in the namespace.
+func kubectlServicesExistInNamespace(ctx context.Context, kubeconfig, namespace string) error {
+	args := []string{"get", "svc", "-n", namespace,
+		"-o", "jsonpath={.items[*].metadata.name}",
+		"--no-headers",
+	}
+	if kubeconfig != "" {
+		args = append(args, "--kubeconfig", kubeconfig)
+	}
+
+	var lastErr error
+	for attempt := 0; attempt < 10; attempt++ {
+		cmd := exec.CommandContext(ctx, "kubectl", args...)
+		var stdout, stderr bytes.Buffer
+		cmd.Stdout = &stdout
+		cmd.Stderr = &stderr
+
+		if err := cmd.Run(); err != nil {
+			lastErr = errors.Wrapf(err, "kubectl get svc: %s", stderr.String())
+		} else {
+			output := strings.TrimSpace(stdout.String())
+			if output != "" {
+				return nil
+			}
+			lastErr = errors.Errorf("no services in namespace %s", namespace)
+		}
+
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-time.After(time.Duration(attempt+1) * 2 * time.Second):
+		}
+	}
+
+	return errors.Wrapf(lastErr, "no services in namespace %s after 10 attempts", namespace)
 }
 
 func kubectlResourceExists(ctx context.Context, kubeconfig, kind, name, namespace string) error {

@@ -13,7 +13,7 @@ import (
 	"github.com/plantonhq/openmcf/e2e/framework/runner"
 )
 
-// Kubernetes Tier 1 components that have Pulumi modules.
+// Kubernetes Tier 1 components: native K8s resources, zero dependencies.
 var kubernetesTier1Components = []string{
 	"kubernetesnamespace",
 	"kubernetesdeployment",
@@ -21,6 +21,17 @@ var kubernetesTier1Components = []string{
 	"kubernetessecret",
 	"kubernetesservice",
 }
+
+// Kubernetes Tier 2 components: Helm-based, self-contained chart installs.
+var kubernetesTier2Components = []string{
+	"kubernetesredis",
+	"kubernetesgrafana",
+	"kubernetesopenbao",
+	"kubernetesargocd",
+	"kuberneteslocust",
+}
+
+// --- Tier 1 test entry points ---
 
 func TestKubernetesNamespace_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "kubernetesnamespace")
@@ -42,6 +53,28 @@ func TestKubernetesService_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "kubernetesservice")
 }
 
+// --- Tier 2 test entry points (Helm-based) ---
+
+func TestKubernetesRedis_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesredis")
+}
+
+func TestKubernetesGrafana_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesgrafana")
+}
+
+func TestKubernetesOpenBao_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesopenbao")
+}
+
+func TestKubernetesArgoCD_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesargocd")
+}
+
+func TestKubernetesLocust_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kuberneteslocust")
+}
+
 func runAllScenariosForComponent(t *testing.T, component string) {
 	t.Helper()
 
@@ -56,7 +89,7 @@ func runAllScenariosForComponent(t *testing.T, component string) {
 	}
 
 	if len(scenarios) == 0 {
-		t.Skipf("no test scenarios found for %s in e2e/testdata/kubernetes/%s/", component, component)
+		t.Skipf("no test scenarios found for %s in %s/v1/e2e/", component, component)
 	}
 
 	t.Logf("Discovered %d scenarios for %s", len(scenarios), component)
