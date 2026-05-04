@@ -1,0 +1,22 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesElasticsearch
+metadata:
+  name: e2e-es-minimal
+spec:
+  namespace:
+    value: e2e-es-minimal
+  create_namespace: true
+  elasticsearch:
+    container:
+      replicas: 1
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 50m
+          memory: 256Mi
+      persistence_enabled: true
+      disk_size: 1Gi
+  kibana:
+    enabled: false

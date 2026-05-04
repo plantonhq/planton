@@ -82,6 +82,24 @@ var operatorKinds = map[string]bool{
 	"kubernetesperconamysqloperator":    true,
 	"kubernetesperconapostgresoperator": true,
 	"kubernetessolroperator":            true,
+	"kubernetesaltinityoperator":        true,
+	"kuberneteselasticoperator":         true,
+	"kubernetesstrimzikafkaoperator":    true,
+	"kuberneteszalandopostgresoperator": true,
+}
+
+// crdWorkloadKinds lists manifest kind values (lowercased) for Tier 3
+// operator-dependent components. These create Custom Resources (e.g.,
+// Zalando Postgresql, Strimzi Kafka, ECK Elasticsearch) that are
+// reconciled by their prerequisite operator into pods and services.
+// Verification checks namespace + running pods + at least one service.
+var crdWorkloadKinds = map[string]bool{
+	"kubernetespostgres":      true,
+	"kuberneteskafka":         true,
+	"kuberneteselasticsearch": true,
+	"kubernetesmongodb":       true,
+	"kubernetessolr":          true,
+	"kubernetesclickhouse":    true,
 }
 
 // helmTier2Kinds lists all manifest kind values (lowercased) for Helm-based
@@ -104,16 +122,14 @@ var helmTier2Kinds = map[string]bool{
 	"kubernetesargocd":    true,
 	"kubernetesharbor":    true,
 	"kubernetesgitlab":    true,
-	"kuberneteslocust":    true,
-	"kubernetessignoz":    true,
-	"kubernetessolr":      true,
-	"kubernetesclickhouse": true,
+	"kuberneteslocust":  true,
+	"kubernetessignoz":  true,
+	"kuberneteskeycloak": true,
 	// Legacy hack manifest kind names (lowercased)
-	"rediskubernetes":      true,
-	"harborkubernetes":     true,
-	"locustkubernetes":     true,
-	"signozkubernetes":     true,
-	"clickhousekubernetes": true,
+	"rediskubernetes":    true,
+	"harborkubernetes":   true,
+	"locustkubernetes":   true,
+	"signozkubernetes":   true,
 }
 
 // GetVerifierFromManifest creates the appropriate verifier by parsing the manifest.
@@ -160,6 +176,12 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 	default:
 		if operatorKinds[component] {
 			return &OperatorComponentVerifier{
+				Namespace:     info.Namespace,
+				ComponentName: info.Name,
+			}, nil
+		}
+		if crdWorkloadKinds[component] {
+			return &CRDWorkloadVerifier{
 				Namespace:     info.Namespace,
 				ComponentName: info.Name,
 			}, nil
@@ -240,6 +262,39 @@ func (v *OperatorComponentVerifier) VerifyExists(ctx context.Context, kubeconfig
 }
 
 func (v *OperatorComponentVerifier) VerifyAbsent(ctx context.Context, kubeconfig string) error {
+	return kubectlResourceAbsent(ctx, kubeconfig, "namespace", v.Namespace, "")
+}
+
+// CRDWorkloadVerifier checks Tier 3 operator-dependent components. These
+// create Custom Resources (e.g., Zalando Postgresql, Strimzi Kafka) that an
+// operator reconciles into pods and services. Verification checks namespace
+// exists, at least one pod Running, and at least one service present. Uses
+// the same retry windows as HelmComponentVerifier because CRD reconciliation
+// takes comparable time to Helm chart startup.
+type CRDWorkloadVerifier struct {
+	Namespace     string
+	ComponentName string
+}
+
+func (v *CRDWorkloadVerifier) VerifyExists(ctx context.Context, kubeconfig string) error {
+	fmt.Printf("  [verify] CRD workload %q in namespace %q\n", v.ComponentName, v.Namespace)
+
+	if err := kubectlResourceExists(ctx, kubeconfig, "namespace", v.Namespace, ""); err != nil {
+		return errors.Wrapf(err, "namespace %q not found for CRD workload %q", v.Namespace, v.ComponentName)
+	}
+
+	if err := kubectlPodsRunningInNamespace(ctx, kubeconfig, v.Namespace); err != nil {
+		return errors.Wrapf(err, "no running pods in namespace %q for CRD workload %q", v.Namespace, v.ComponentName)
+	}
+
+	if err := kubectlServicesExistInNamespace(ctx, kubeconfig, v.Namespace); err != nil {
+		return errors.Wrapf(err, "no services in namespace %q for CRD workload %q", v.Namespace, v.ComponentName)
+	}
+
+	return nil
+}
+
+func (v *CRDWorkloadVerifier) VerifyAbsent(ctx context.Context, kubeconfig string) error {
 	return kubectlResourceAbsent(ctx, kubeconfig, "namespace", v.Namespace, "")
 }
 

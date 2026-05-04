@@ -10,8 +10,8 @@ var vars = struct {
 	HelmChartVersion string
 }{
 	Namespace:     "strimzi-operator",
-	HelmChartName: "kubernetes-strimzi-kafka-operator",
-	// https://artifacthub.io/packages/helm/strimzi/kubernetes-strimzi-kafka-operator
+	HelmChartName: "strimzi-kafka-operator",
+	// https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator
 	HelmChartRepo:    "https://strimzi.io/charts/",
 	HelmChartVersion: "0.42.0",
 }
