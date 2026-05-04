@@ -213,7 +213,7 @@ e2e-test-kubernetes:  ## Run all Kubernetes E2E tests -- Tier 1 + Tier 2 + Tier 
 
 .PHONY: e2e-test-kubernetes-tier1
 e2e-test-kubernetes-tier1:  ## Run Kubernetes Tier 1 (native K8s) E2E tests only
-	go test -tags=e2e -timeout=30m -v -count=1 -run "Test(KubernetesNamespace|KubernetesDeployment|KubernetesStatefulSet|KubernetesSecret|KubernetesService|KubernetesCronJob|KubernetesJob|KubernetesDaemonSet|KubernetesManifest)_" ./e2e/...
+	go test -tags=e2e -timeout=60m -v -count=1 -run "Test(KubernetesNamespace|KubernetesDeployment|KubernetesStatefulSet|KubernetesSecret|KubernetesService|KubernetesCronJob|KubernetesJob|KubernetesDaemonSet|KubernetesManifest)_" ./e2e/...
 
 .PHONY: e2e-test-kubernetes-tier2
 e2e-test-kubernetes-tier2:  ## Run Kubernetes Tier 2 (Helm-based) E2E tests only

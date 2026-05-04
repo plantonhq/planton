@@ -1,0 +1,24 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesDaemonSet
+metadata:
+  name: e2e-ds-minimal
+spec:
+  namespace:
+    value: e2e-ds-minimal-ns
+  create_namespace: true
+  container:
+    app:
+      image:
+        repo: busybox
+        tag: "1.36"
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "32Mi"
+        limits:
+          cpu: "50m"
+          memory: "64Mi"
+      command:
+        - /bin/sh
+        - -c
+        - sleep 3600

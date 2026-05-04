@@ -8,19 +8,21 @@ import (
 )
 
 // serviceAccount creates a ServiceAccount for the DaemonSet if create_service_account is true.
-// Returns the ServiceAccount name to use (either created or specified).
+// Returns the ServiceAccount name to use: non-empty if created or explicitly specified,
+// empty string if neither (meaning Kubernetes uses the namespace's "default" SA).
 func serviceAccount(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) (string, error) {
 	spec := locals.KubernetesDaemonSet.Spec
 
-	// Determine the service account name
+	// If not creating, return the explicitly specified name (may be empty,
+	// which tells the DaemonSet to use the namespace default SA).
+	if !spec.CreateServiceAccount {
+		return spec.ServiceAccountName, nil
+	}
+
+	// Determine the service account name for creation
 	saName := spec.ServiceAccountName
 	if saName == "" {
 		saName = locals.KubernetesDaemonSet.Metadata.Name
-	}
-
-	// If not creating, just return the name (assume it exists or use default)
-	if !spec.CreateServiceAccount {
-		return saName, nil
 	}
 
 	// Create the ServiceAccount

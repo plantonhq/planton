@@ -168,9 +168,11 @@ func daemonSet(ctx *pulumi.Context, locals *Locals, serviceAccountName string, k
 
 	// Build pod spec
 	podSpecArgs := &kubernetescorev1.PodSpecArgs{
-		ServiceAccountName: pulumi.String(serviceAccountName),
-		Containers:         kubernetescorev1.ContainerArray{mainContainer},
-		Volumes:            volumes,
+		Containers: kubernetescorev1.ContainerArray{mainContainer},
+		Volumes:    volumes,
+	}
+	if serviceAccountName != "" {
+		podSpecArgs.ServiceAccountName = pulumi.String(serviceAccountName)
 	}
 
 	// Add node selector if specified
