@@ -1,0 +1,17 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesNeo4j
+metadata:
+  name: e2e-neo4j-minimal
+spec:
+  namespace:
+    value: e2e-neo4j-minimal
+  create_namespace: true
+  container:
+    resources:
+      limits:
+        cpu: "1000m"
+        memory: 2Gi
+      requests:
+        cpu: 50m
+        memory: 256Mi
+    disk_size: 1Gi

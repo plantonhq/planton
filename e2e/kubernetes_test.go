@@ -29,6 +29,15 @@ var kubernetesTier2Components = []string{
 	"kubernetesopenbao",
 	"kubernetesargocd",
 	"kuberneteslocust",
+	"kubernetesnats",
+	"kubernetesneo4j",
+	"kubernetesjenkins",
+	"kubernetessolr",
+	"kubernetessolroperator",
+	"kubernetesperconamongooperator",
+	"kubernetesperconamysqloperator",
+	"kubernetesperconapostgresoperator",
+	"kubernetesgitlab",
 }
 
 // --- Tier 1 test entry points ---
@@ -73,6 +82,42 @@ func TestKubernetesArgoCD_Pulumi(t *testing.T) {
 
 func TestKubernetesLocust_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "kuberneteslocust")
+}
+
+func TestKubernetesNats_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesnats")
+}
+
+func TestKubernetesNeo4j_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesneo4j")
+}
+
+func TestKubernetesJenkins_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesjenkins")
+}
+
+func TestKubernetesSolr_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetessolr")
+}
+
+func TestKubernetesSolrOperator_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetessolroperator")
+}
+
+func TestKubernetesPerconaMongoOperator_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesperconamongooperator")
+}
+
+func TestKubernetesPerconaMysqlOperator_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesperconamysqloperator")
+}
+
+func TestKubernetesPerconaPostgresOperator_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesperconapostgresoperator")
+}
+
+func TestKubernetesGitlab_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesgitlab")
 }
 
 func runAllScenariosForComponent(t *testing.T, component string) {

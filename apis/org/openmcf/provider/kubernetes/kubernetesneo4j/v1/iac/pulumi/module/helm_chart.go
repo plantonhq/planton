@@ -2,6 +2,7 @@ package module
 
 import (
 	"github.com/pkg/errors"
+	kubernetesneo4jv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesneo4j/v1"
 	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/datatypes/stringmaps/convertstringmaps"
 	helmv3 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/helm/v3"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
@@ -63,11 +64,8 @@ func helmChart(
 					},
 				},
 
-				// neo4j.conf overrides
-				"config": pulumi.Map{
-					"server.memory.heap.initial_size": pulumi.String(locals.KubernetesNeo4J.Spec.MemoryConfig.HeapMax),
-					"server.memory.pagecache.size":    pulumi.String(locals.KubernetesNeo4J.Spec.MemoryConfig.PageCache),
-				},
+			// neo4j.conf overrides (only when memory tuning is explicitly specified)
+			"config": memoryConfigValues(locals.KubernetesNeo4J.Spec.MemoryConfig),
 
 				"podLabels": convertstringmaps.ConvertGoStringMapToPulumiMap(locals.Labels),
 			},
@@ -92,4 +90,21 @@ func helmChart(
 	ctx.Export(OpPasswordSecretKey, pulumi.String(vars.Neo4jPasswordSecretKey))
 
 	return nil
+}
+
+// memoryConfigValues returns Helm config map values for Neo4j memory settings.
+// Returns an empty map when memory_config is nil, allowing Neo4j to use its
+// internal auto-detection defaults.
+func memoryConfigValues(mc *kubernetesneo4jv1.KubernetesNeo4JMemoryConfig) pulumi.Map {
+	if mc == nil {
+		return pulumi.Map{}
+	}
+	m := pulumi.Map{}
+	if mc.HeapMax != "" {
+		m["server.memory.heap.initial_size"] = pulumi.String(mc.HeapMax)
+	}
+	if mc.PageCache != "" {
+		m["server.memory.pagecache.size"] = pulumi.String(mc.PageCache)
+	}
+	return m
 }

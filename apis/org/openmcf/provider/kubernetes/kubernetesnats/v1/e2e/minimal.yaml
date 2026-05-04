@@ -1,0 +1,20 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesNats
+metadata:
+  name: e2e-nats-minimal
+spec:
+  namespace:
+    value: e2e-nats-minimal
+  create_namespace: true
+  server_container:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+    disk_size: 1Gi
+  disable_jet_stream: true
+  disable_nats_box: true

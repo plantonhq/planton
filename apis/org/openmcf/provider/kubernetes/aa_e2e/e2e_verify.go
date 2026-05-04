@@ -73,40 +73,47 @@ type ResourceVerifier interface {
 	VerifyAbsent(ctx context.Context, kubeconfig string) error
 }
 
+// operatorKinds lists manifest kind values (lowercased) for operator/controller
+// components. Operators install CRD controllers that watch resources but typically
+// do not expose a Kubernetes Service. Verification checks namespace + running
+// pods only (no service requirement).
+var operatorKinds = map[string]bool{
+	"kubernetesperconamongooperator":    true,
+	"kubernetesperconamysqloperator":    true,
+	"kubernetesperconapostgresoperator": true,
+	"kubernetessolroperator":            true,
+}
+
 // helmTier2Kinds lists all manifest kind values (lowercased) for Helm-based
-// Kubernetes components (Tier 2). These must match the CloudResourceKind enum
-// names from cloud_resource_kind.proto (case-insensitive via lowercasing).
+// Kubernetes components (Tier 2) that deploy applications with Services.
+// These must match the CloudResourceKind enum names from cloud_resource_kind.proto
+// (case-insensitive via lowercasing).
 //
 // Historical hack manifests use inconsistent kind names (e.g., "RedisKubernetes"
 // instead of "KubernetesRedis"). E2E manifests must use the enum name. Both
 // conventions are included here so the verifier works with either.
 var helmTier2Kinds = map[string]bool{
-	// Canonical enum names (lowercased)
-	"kubernetesredis":                    true,
-	"kubernetesnats":                     true,
-	"kubernetesgrafana":                  true,
-	"kubernetesneo4j":                    true,
-	"kubernetesopenbao":                  true,
-	"kubernetesopenfga":                  true,
-	"kubernetesjenkins":                  true,
-	"kubernetestemporal":                 true,
-	"kubernetesperconamongooperator":     true,
-	"kubernetesperconamysqloperator":     true,
-	"kubernetesperconapostgresoperator":  true,
-	"kubernetesargocd":                   true,
-	"kubernetesharbor":                   true,
-	"kubernetesgitlab":                   true,
-	"kuberneteslocust":                   true,
-	"kubernetessignoz":                   true,
-	"kubernetessolr":                     true,
-	"kubernetessolroperator":             true,
-	"kubernetesclickhouse":               true,
+	"kubernetesredis":     true,
+	"kubernetesnats":      true,
+	"kubernetesgrafana":   true,
+	"kubernetesneo4j":     true,
+	"kubernetesopenbao":   true,
+	"kubernetesopenfga":   true,
+	"kubernetesjenkins":   true,
+	"kubernetestemporal":  true,
+	"kubernetesargocd":    true,
+	"kubernetesharbor":    true,
+	"kubernetesgitlab":    true,
+	"kuberneteslocust":    true,
+	"kubernetessignoz":    true,
+	"kubernetessolr":      true,
+	"kubernetesclickhouse": true,
 	// Legacy hack manifest kind names (lowercased)
-	"rediskubernetes":                    true,
-	"harborkubernetes":                   true,
-	"locustkubernetes":                   true,
-	"signozkubernetes":                   true,
-	"clickhousekubernetes":               true,
+	"rediskubernetes":      true,
+	"harborkubernetes":     true,
+	"locustkubernetes":     true,
+	"signozkubernetes":     true,
+	"clickhousekubernetes": true,
 }
 
 // GetVerifierFromManifest creates the appropriate verifier by parsing the manifest.
@@ -151,6 +158,12 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 		}, nil
 
 	default:
+		if operatorKinds[component] {
+			return &OperatorComponentVerifier{
+				Namespace:     info.Namespace,
+				ComponentName: info.Name,
+			}, nil
+		}
 		if helmTier2Kinds[component] {
 			return &HelmComponentVerifier{
 				Namespace:     info.Namespace,
@@ -202,6 +215,32 @@ func (v *ResourceExistenceVerifier) VerifyExists(ctx context.Context, kubeconfig
 
 func (v *ResourceExistenceVerifier) VerifyAbsent(ctx context.Context, kubeconfig string) error {
 	return kubectlResourceAbsent(ctx, kubeconfig, v.Kind, v.Name, v.Namespace)
+}
+
+// OperatorComponentVerifier checks operator/controller components by verifying
+// that the namespace exists and at least one Pod is Running. Operators install
+// CRD controllers that do not expose Services, so service checks are omitted.
+type OperatorComponentVerifier struct {
+	Namespace     string
+	ComponentName string
+}
+
+func (v *OperatorComponentVerifier) VerifyExists(ctx context.Context, kubeconfig string) error {
+	fmt.Printf("  [verify] Operator component %q in namespace %q\n", v.ComponentName, v.Namespace)
+
+	if err := kubectlResourceExists(ctx, kubeconfig, "namespace", v.Namespace, ""); err != nil {
+		return errors.Wrapf(err, "namespace %q not found for operator component %q", v.Namespace, v.ComponentName)
+	}
+
+	if err := kubectlPodsRunningInNamespace(ctx, kubeconfig, v.Namespace); err != nil {
+		return errors.Wrapf(err, "no running pods in namespace %q for operator component %q", v.Namespace, v.ComponentName)
+	}
+
+	return nil
+}
+
+func (v *OperatorComponentVerifier) VerifyAbsent(ctx context.Context, kubeconfig string) error {
+	return kubectlResourceAbsent(ctx, kubeconfig, "namespace", v.Namespace, "")
 }
 
 // HelmComponentVerifier checks Helm-based (Tier 2) components by verifying

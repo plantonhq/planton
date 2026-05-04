@@ -1,0 +1,15 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesJenkins
+metadata:
+  name: e2e-jenkins-minimal
+spec:
+  namespace:
+    value: e2e-jenkins-minimal
+  create_namespace: true
+  container_resources:
+    limits:
+      cpu: "1000m"
+      memory: 2Gi
+    requests:
+      cpu: 100m
+      memory: 512Mi

@@ -2,6 +2,7 @@ package module
 
 import (
 	"github.com/pkg/errors"
+	kubernetessolrv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetessolr/v1"
 	"github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/solroperator/kubernetes/solr/v1beta1"
 	metav1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/meta/v1"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
@@ -46,9 +47,9 @@ func solrCloud(ctx *pulumi.Context, locals *Locals,
 					Repository: pulumi.String(locals.KubernetesSolr.Spec.SolrContainer.Image.Repo),
 					Tag:        pulumi.String(locals.KubernetesSolr.Spec.SolrContainer.Image.Tag),
 				},
-				SolrJavaMem: pulumi.String(locals.KubernetesSolr.Spec.Config.JavaMem),
-				SolrOpts:    pulumi.String(locals.KubernetesSolr.Spec.Config.Opts),
-				SolrGCTune:  pulumi.String(locals.KubernetesSolr.Spec.Config.GarbageCollectionTuning),
+			SolrJavaMem: pulumi.String(solrConfigJavaMem(locals.KubernetesSolr.Spec)),
+			SolrOpts:    pulumi.String(solrConfigOpts(locals.KubernetesSolr.Spec)),
+			SolrGCTune:  pulumi.String(solrConfigGCTune(locals.KubernetesSolr.Spec)),
 				SolrModules: pulumi.ToStringArray(vars.SolrCloudSolrModules),
 				CustomSolrKubeOptions: v1beta1.SolrCloudSpecCustomSolrKubeOptionsArgs{
 					PodOptions: v1beta1.SolrCloudSpecCustomSolrKubeOptionsPodOptionsArgs{
@@ -111,4 +112,25 @@ func solrCloud(ctx *pulumi.Context, locals *Locals,
 		return errors.Wrap(err, "failed to create solr-cloud resource")
 	}
 	return nil
+}
+
+func solrConfigJavaMem(spec *kubernetessolrv1.KubernetesSolrSpec) string {
+	if spec.Config == nil {
+		return ""
+	}
+	return spec.Config.JavaMem
+}
+
+func solrConfigOpts(spec *kubernetessolrv1.KubernetesSolrSpec) string {
+	if spec.Config == nil {
+		return ""
+	}
+	return spec.Config.Opts
+}
+
+func solrConfigGCTune(spec *kubernetessolrv1.KubernetesSolrSpec) string {
+	if spec.Config == nil {
+		return ""
+	}
+	return spec.Config.GarbageCollectionTuning
 }
