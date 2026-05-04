@@ -20,6 +20,10 @@ var kubernetesTier1Components = []string{
 	"kubernetesstatefulset",
 	"kubernetessecret",
 	"kubernetesservice",
+	"kubernetescronjob",
+	"kubernetesjob",
+	"kubernetesdaemonset",
+	"kubernetesmanifest",
 }
 
 // Kubernetes Tier 3 components: operator-dependent, need fixtures deployed first.
@@ -33,6 +37,26 @@ var kubernetesTier3Components = []string{
 	"kubernetesmongodb",
 	"kubernetessolr",
 	"kubernetesclickhouse",
+}
+
+// Kubernetes Tier 4 components: operators, addons, and cluster-level infrastructure.
+// Includes operators that were previously only exercised as Tier 3 fixtures,
+// plus new components tested in session 010.
+var kubernetesTier4Components = []string{
+	// Operators already proven as Tier 3 fixtures -- now standalone
+	"kuberneteszalandopostgresoperator",
+	"kubernetesstrimzikafkaoperator",
+	"kuberneteselasticoperator",
+	"kubernetesaltinityoperator",
+	// New Tier 4 (session 010)
+	"kubernetesgatewayapicrds",
+	"kubernetesgharunnerscalesetcontroller",
+	"kubernetesrookcephoperator",
+	"kubernetesexternalsecrets",
+	"kubernetesingressnginx",
+	"kubernetestekton",
+	"kubernetestektonoperator",
+	"kubernetesistio",
 }
 
 // Kubernetes Tier 2 components: Helm-based, self-contained chart installs.
@@ -72,6 +96,22 @@ func TestKubernetesSecret_Pulumi(t *testing.T) {
 
 func TestKubernetesService_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "kubernetesservice")
+}
+
+func TestKubernetesCronJob_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetescronjob")
+}
+
+func TestKubernetesJob_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesjob")
+}
+
+func TestKubernetesDaemonSet_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesdaemonset")
+}
+
+func TestKubernetesManifest_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesmanifest")
 }
 
 // --- Tier 2 test entry points (Helm-based) ---
@@ -152,6 +192,62 @@ func TestKubernetesSolr_Pulumi(t *testing.T) {
 
 func TestKubernetesClickHouse_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "kubernetesclickhouse")
+}
+
+// --- Tier 4 test entry points (operators, addons, cluster-level infrastructure) ---
+
+// Standalone tests for operators that were previously only tested as Tier 3 fixtures.
+// These verify each operator deploys correctly on its own, independent of the
+// workload components that depend on them.
+
+func TestKubernetesZalandoPostgresOperator_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kuberneteszalandopostgresoperator")
+}
+
+func TestKubernetesStrimziKafkaOperator_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesstrimzikafkaoperator")
+}
+
+func TestKubernetesElasticOperator_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kuberneteselasticoperator")
+}
+
+func TestKubernetesAltinityOperator_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesaltinityoperator")
+}
+
+// New Tier 4 components (session 010).
+
+func TestKubernetesGatewayApiCrds_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesgatewayapicrds")
+}
+
+func TestKubernetesGhaRunnerScaleSetController_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesgharunnerscalesetcontroller")
+}
+
+func TestKubernetesRookCephOperator_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesrookcephoperator")
+}
+
+func TestKubernetesExternalSecrets_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesexternalsecrets")
+}
+
+func TestKubernetesIngressNginx_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesingressnginx")
+}
+
+func TestKubernetesTekton_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetestekton")
+}
+
+func TestKubernetesTektonOperator_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetestektonoperator")
+}
+
+func TestKubernetesIstio_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesistio")
 }
 
 func runAllScenariosForComponent(t *testing.T, component string) {

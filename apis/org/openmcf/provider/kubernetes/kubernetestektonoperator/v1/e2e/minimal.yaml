@@ -1,0 +1,17 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesTektonOperator
+metadata:
+  name: e2e-tekton-op
+spec:
+  container:
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "64Mi"
+      limits:
+        cpu: "250m"
+        memory: "256Mi"
+  components:
+    pipelines: true
+    triggers: false
+    dashboard: false

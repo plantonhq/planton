@@ -7,7 +7,7 @@ var vars = struct {
 	DefaultChartVersion string
 }{
 	Namespace:           "kubernetes-ingress-nginx",
-	HelmChartName:       "kubernetes-ingress-nginx",
-	HelmChartRepo:       "https://kubernetes.github.io/kubernetes-ingress-nginx",
+	HelmChartName:       "ingress-nginx",
+	HelmChartRepo:       "https://kubernetes.github.io/ingress-nginx",
 	DefaultChartVersion: "4.11.1", // bump when you move the stable channel
 }

@@ -3,9 +3,12 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "verify",
     srcs = [
+        "config_group.go",
+        "crd_install.go",
         "crd_workload.go",
         "generic.go",
         "helm.go",
+        "job.go",
         "kubectl.go",
         "manifest.go",
         "namespace.go",

@@ -16,6 +16,7 @@ type ResourceVerifier interface {
 // do not expose a Kubernetes Service. Verification checks namespace + running
 // pods only (no service requirement).
 var operatorKinds = map[string]bool{
+	// Tier 2/3 fixture operators (tested since sessions 3-9)
 	"kubernetesperconamongooperator":    true,
 	"kubernetesperconamysqloperator":    true,
 	"kubernetesperconapostgresoperator": true,
@@ -24,6 +25,10 @@ var operatorKinds = map[string]bool{
 	"kuberneteselasticoperator":         true,
 	"kubernetesstrimzikafkaoperator":    true,
 	"kuberneteszalandopostgresoperator": true,
+	// Tier 4 operators with configurable namespace (session 010)
+	"kubernetesexternalsecrets":            true,
+	"kubernetesgharunnerscalesetcontroller": true,
+	"kubernetesrookcephoperator":            true,
 }
 
 // crdWorkloadKinds lists manifest kind values (lowercased) for Tier 3
@@ -40,15 +45,12 @@ var crdWorkloadKinds = map[string]bool{
 	"kubernetesclickhouse":    true,
 }
 
-// helmTier2Kinds lists all manifest kind values (lowercased) for Helm-based
-// Kubernetes components (Tier 2) that deploy applications with Services.
+// helmTier2Kinds lists manifest kind values (lowercased) for Helm-based
+// Kubernetes components that deploy applications with Services.
 // These must match the CloudResourceKind enum names from cloud_resource_kind.proto
 // (case-insensitive via lowercasing).
-//
-// Historical hack manifests use inconsistent kind names (e.g., "RedisKubernetes"
-// instead of "KubernetesRedis"). E2E manifests must use the enum name. Both
-// conventions are included here so the verifier works with either.
 var helmTier2Kinds = map[string]bool{
+	// Tier 2 Helm applications
 	"kubernetesredis":    true,
 	"kubernetesnats":     true,
 	"kubernetesgrafana":  true,
@@ -63,11 +65,21 @@ var helmTier2Kinds = map[string]bool{
 	"kuberneteslocust":   true,
 	"kubernetessignoz":   true,
 	"kuberneteskeycloak": true,
-	// Legacy hack manifest kind names (lowercased)
-	"rediskubernetes":  true,
-	"harborkubernetes": true,
-	"locustkubernetes": true,
-	"signozkubernetes": true,
+	// Tier 4 Helm applications with configurable namespace (session 010)
+	"kubernetesingressnginx": true,
+	"kubernetesistio":        true,
+}
+
+// crdInstallKinds maps manifest kind values (lowercased) to their expected CRD
+// names for components that only install cluster-scoped CRDs without deploying
+// any pods or services.
+var crdInstallKinds = map[string][]string{
+	"kubernetesgatewayapicrds": {
+		"gatewayclasses.gateway.networking.k8s.io",
+		"gateways.gateway.networking.k8s.io",
+		"httproutes.gateway.networking.k8s.io",
+		"referencegrants.gateway.networking.k8s.io",
+	},
 }
 
 // GetVerifierFromManifest creates the appropriate verifier by parsing the manifest.
@@ -111,7 +123,55 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 			Name:      info.Name,
 		}, nil
 
+	case "kubernetescronjob":
+		return &ResourceExistenceVerifier{
+			Namespace: info.Namespace,
+			Kind:      "cronjob",
+			Name:      info.Name,
+		}, nil
+
+	case "kubernetesjob":
+		return &JobVerifier{
+			Namespace: info.Namespace,
+			Name:      info.Name,
+		}, nil
+
+	case "kubernetesdaemonset":
+		return &WorkloadVerifier{
+			Namespace: info.Namespace,
+			Kind:      "daemonset",
+			Name:      info.Name,
+		}, nil
+
+	case "kubernetesmanifest":
+		return &ConfigGroupVerifier{
+			Namespace:    info.Namespace,
+			ManifestPath: manifestPath,
+		}, nil
+
+	// Fixed-namespace components: the proto spec has no namespace field because
+	// the upstream tooling (Tekton, etc.) uses hardcoded namespaces. The manifest
+	// YAML cannot carry a namespace hint because protojson.Unmarshal rejects
+	// unknown fields. Namespace is therefore embedded here.
+	case "kubernetestekton":
+		return &HelmComponentVerifier{
+			Namespace:     "tekton-pipelines",
+			ComponentName: info.Name,
+		}, nil
+
+	case "kubernetestektonoperator":
+		return &OperatorComponentVerifier{
+			Namespace:     "tekton-operator",
+			ComponentName: info.Name,
+		}, nil
+
 	default:
+		if crdNames, ok := crdInstallKinds[component]; ok {
+			return &CRDInstallVerifier{
+				ComponentName: info.Name,
+				CRDNames:      crdNames,
+			}, nil
+		}
 		if operatorKinds[component] {
 			return &OperatorComponentVerifier{
 				Namespace:     info.Namespace,
