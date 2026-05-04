@@ -227,6 +227,26 @@ e2e-test-kubernetes-tier3:  ## Run Kubernetes Tier 3 (operator-dependent) E2E te
 e2e-test-kubernetes-tier4:  ## Run Kubernetes Tier 4 (operators, addons, cluster infra) E2E tests
 	go test -tags=e2e -timeout=150m -v -count=1 -run "Test(KubernetesZalandoPostgresOperator|KubernetesStrimziKafkaOperator|KubernetesElasticOperator|KubernetesAltinityOperator|KubernetesGatewayApiCrds|KubernetesGhaRunnerScaleSetController|KubernetesRookCephOperator|KubernetesExternalSecrets|KubernetesIngressNginx|KubernetesTekton|KubernetesTektonOperator|KubernetesIstio)_" ./e2e/...
 
+# ── Terraform-only E2E targets (requires kind, tofu/terraform, kubectl, Docker) ──
+
+.PHONY: e2e-test-kubernetes-terraform-tier1
+e2e-test-kubernetes-terraform-tier1:  ## Run Kubernetes Tier 1 Terraform E2E tests only
+	go test -tags=e2e -timeout=60m -v -count=1 -run "Test(KubernetesNamespace|KubernetesDeployment|KubernetesStatefulSet|KubernetesSecret|KubernetesService|KubernetesCronJob|KubernetesJob|KubernetesDaemonSet|KubernetesManifest)_Terraform" ./e2e/...
+
+.PHONY: e2e-test-kubernetes-terraform-tier2
+e2e-test-kubernetes-terraform-tier2:  ## Run Kubernetes Tier 2 Terraform (Helm-based) E2E tests only
+	go test -tags=e2e -timeout=120m -v -count=1 -run "Test(KubernetesRedis|KubernetesGrafana|KubernetesArgoCD|KubernetesLocust|KubernetesNats|KubernetesSolrOperator|KubernetesPerconaMongoOperator|KubernetesPerconaMysqlOperator|KubernetesPerconaPostgresOperator)_Terraform" ./e2e/...
+
+.PHONY: e2e-test-kubernetes-terraform-tier3
+e2e-test-kubernetes-terraform-tier3:  ## Run Kubernetes Tier 3 Terraform (operator-dependent) E2E tests
+	go test -tags=e2e -timeout=120m -v -count=1 -run "Test(KubernetesPostgres|KubernetesKafka|KubernetesElasticsearch|KubernetesMongodb|KubernetesSolr|KubernetesClickHouse)_Terraform" ./e2e/...
+
+.PHONY: e2e-test-kubernetes-terraform-tier4
+e2e-test-kubernetes-terraform-tier4:  ## Run Kubernetes Tier 4 Terraform (operators, addons) E2E tests
+	go test -tags=e2e -timeout=150m -v -count=1 -run "Test(KubernetesZalandoPostgresOperator|KubernetesStrimziKafkaOperator|KubernetesElasticOperator|KubernetesAltinityOperator|KubernetesGatewayApiCrds|KubernetesGhaRunnerScaleSetController|KubernetesRookCephOperator|KubernetesExternalSecrets|KubernetesTekton)_Terraform" ./e2e/...
+
+# ── Generic component E2E targets ────────────────────────────────────────────
+
 .PHONY: e2e-test-component
 e2e-test-component:  ## Single component E2E test (usage: make e2e-test-component component=KubernetesNamespace)
 	go test -tags=e2e -timeout=15m -v -count=1 -run "Test.*$(component)" ./e2e/...

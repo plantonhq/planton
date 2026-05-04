@@ -15,17 +15,18 @@ locals {
 
   labels = merge(local.standard_labels, var.spec.labels, local.pss_label)
 
-  # Build annotations with service mesh injection
-  mesh_annotations = var.spec.service_mesh_config != null && var.spec.service_mesh_config.enabled ? (
-    var.spec.service_mesh_config.mesh_type == "istio" ? (
-      var.spec.service_mesh_config.revision_tag != null ? {
+  # Build annotations with service mesh injection.
+  # try() is used for safe nested access because HCL does not short-circuit &&.
+  mesh_annotations = try(var.spec.service_mesh_config.enabled, false) ? (
+    try(var.spec.service_mesh_config.mesh_type, "") == "istio" ? (
+      try(var.spec.service_mesh_config.revision_tag, null) != null ? {
         "istio.io/rev" = var.spec.service_mesh_config.revision_tag
       } : {
         "istio-injection" = "enabled"
       }
-    ) : var.spec.service_mesh_config.mesh_type == "linkerd" ? {
+    ) : try(var.spec.service_mesh_config.mesh_type, "") == "linkerd" ? {
       "linkerd.io/inject" = "enabled"
-    } : var.spec.service_mesh_config.mesh_type == "consul" ? {
+    } : try(var.spec.service_mesh_config.mesh_type, "") == "consul" ? {
       "consul.hashicorp.com/connect-inject" = "true"
     } : {}
   ) : {}
@@ -35,7 +36,7 @@ locals {
   # Resource Quota configuration
   resource_quota_enabled = var.spec.resource_profile != null
 
-  resource_quota_preset = var.spec.resource_profile != null && var.spec.resource_profile.preset != null ? {
+  resource_quota_preset = try(var.spec.resource_profile.preset, null) != null ? {
     "small" = {
       cpu_requests    = "2"
       cpu_limits      = "4"
@@ -84,21 +85,21 @@ locals {
       pvcs            = 40
       load_balancers  = 10
     }
-  }[var.spec.resource_profile.preset] : null
+  }[try(var.spec.resource_profile.preset, "")] : null
 
   # Compute quota values
   quota_config = local.resource_quota_enabled ? (
-    var.spec.resource_profile.preset != null ? local.resource_quota_preset : {
-      cpu_requests    = var.spec.resource_profile.custom.cpu != null ? var.spec.resource_profile.custom.cpu.requests : null
-      cpu_limits      = var.spec.resource_profile.custom.cpu != null ? var.spec.resource_profile.custom.cpu.limits : null
-      memory_requests = var.spec.resource_profile.custom.memory != null ? var.spec.resource_profile.custom.memory.requests : null
-      memory_limits   = var.spec.resource_profile.custom.memory != null ? var.spec.resource_profile.custom.memory.limits : null
-      pods            = var.spec.resource_profile.custom.object_counts != null ? var.spec.resource_profile.custom.object_counts.pods : null
-      services        = var.spec.resource_profile.custom.object_counts != null ? var.spec.resource_profile.custom.object_counts.services : null
-      configmaps      = var.spec.resource_profile.custom.object_counts != null ? var.spec.resource_profile.custom.object_counts.configmaps : null
-      secrets         = var.spec.resource_profile.custom.object_counts != null ? var.spec.resource_profile.custom.object_counts.secrets : null
-      pvcs            = var.spec.resource_profile.custom.object_counts != null ? var.spec.resource_profile.custom.object_counts.persistent_volume_claims : null
-      load_balancers  = var.spec.resource_profile.custom.object_counts != null ? var.spec.resource_profile.custom.object_counts.load_balancers : null
+    try(var.spec.resource_profile.preset, null) != null ? local.resource_quota_preset : {
+      cpu_requests    = try(var.spec.resource_profile.custom.cpu.requests, null)
+      cpu_limits      = try(var.spec.resource_profile.custom.cpu.limits, null)
+      memory_requests = try(var.spec.resource_profile.custom.memory.requests, null)
+      memory_limits   = try(var.spec.resource_profile.custom.memory.limits, null)
+      pods            = try(var.spec.resource_profile.custom.object_counts.pods, null)
+      services        = try(var.spec.resource_profile.custom.object_counts.services, null)
+      configmaps      = try(var.spec.resource_profile.custom.object_counts.configmaps, null)
+      secrets         = try(var.spec.resource_profile.custom.object_counts.secrets, null)
+      pvcs            = try(var.spec.resource_profile.custom.object_counts.persistent_volume_claims, null)
+      load_balancers  = try(var.spec.resource_profile.custom.object_counts.load_balancers, null)
     }
   ) : null
 
@@ -117,7 +118,7 @@ locals {
   ) : {}
 
   # Limit Range configuration
-  limit_range_enabled = var.spec.resource_profile != null && var.spec.resource_profile.custom != null && var.spec.resource_profile.custom.default_limits != null
+  limit_range_enabled = try(var.spec.resource_profile.custom.default_limits, null) != null
 
   default_requests = local.limit_range_enabled ? {
     cpu    = var.spec.resource_profile.custom.default_limits.default_cpu_request
@@ -136,10 +137,8 @@ locals {
   allowed_egress_cidrs       = var.spec.network_config != null ? var.spec.network_config.allowed_egress_cidrs : []
 
   # Service mesh configuration
-  service_mesh_enabled = var.spec.service_mesh_config != null ? var.spec.service_mesh_config.enabled : false
-  service_mesh_type = var.spec.service_mesh_config != null && var.spec.service_mesh_config.mesh_type != null ? (
-    var.spec.service_mesh_config.mesh_type
-  ) : ""
+  service_mesh_enabled = try(var.spec.service_mesh_config.enabled, false)
+  service_mesh_type    = try(var.spec.service_mesh_config.mesh_type, "")
 
   # Pod security standard
   pod_security_standard = var.spec.pod_security_standard != null && var.spec.pod_security_standard != "pod_security_standard_unspecified" ? (

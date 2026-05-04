@@ -61,19 +61,51 @@ provider SDKs or CLIs for verification.
 
 ## Running Tests
 
-Prerequisites: Docker running, `kind`, `pulumi`, and `kubectl` installed.
+Prerequisites: Docker running, `kind`, `kubectl` installed, plus at least one
+of `pulumi` (for Pulumi E2E) or `tofu`/`terraform` (for Terraform E2E).
 
 ```bash
-# All Kubernetes E2E tests (all components, all scenarios)
+# All Kubernetes E2E tests (Pulumi + Terraform, all tiers)
 make e2e-test-kubernetes
 
-# Single component, all scenarios
-make e2e-test-component component=KubernetesNamespace
+# Pulumi-only, single component
+make e2e-test-component component=KubernetesNamespace_Pulumi
 
-# Single scenario via Go test
+# Terraform-only, Tier 1
+make e2e-test-kubernetes-terraform-tier1
+
+# Terraform-only, single component
+go test -tags=e2e -timeout=30m -v -count=1 \
+  -run "TestKubernetesNamespace_Terraform/minimal$" ./e2e/...
+
+# Pulumi-only, single scenario
 go test -tags=e2e -timeout=30m -v -count=1 \
   -run "TestKubernetesNamespace_Pulumi/minimal$" ./e2e/...
 ```
+
+### Terraform binary selection
+
+Terraform E2E defaults to `tofu` (OpenTofu), matching the OpenMCF CLI.
+To use HashiCorp Terraform instead:
+
+```bash
+OPENMCF_E2E_TF_BINARY=terraform make e2e-test-kubernetes-terraform-tier1
+```
+
+### How the Terraform path works
+
+The Terraform runner uses [Terratest](https://github.com/gruntwork-io/terratest)
+as its execution layer. For each test scenario:
+
+1. The TF module (`iac/tf/`) is copied to a temp directory
+2. `terraform.tfvars` is generated from the manifest proto via `ProtoToTFVars()`
+3. `backend.tf` is written with a local backend
+4. Provider env vars (KUBECONFIG, etc.) are extracted from the stack-input YAML
+5. Terratest runs `tofu init` + `tofu apply` with built-in transient error retry
+6. The same kubectl verifiers validate the deployed infrastructure
+7. Terratest runs `tofu destroy`
+8. The same kubectl verifiers confirm cleanup
+9. The temp directory is removed
 
 ## Build Tag Isolation
 

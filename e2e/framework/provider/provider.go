@@ -3,7 +3,10 @@
 // lifecycle and resource verification.
 package provider
 
-import "context"
+import (
+	"context"
+	"testing"
+)
 
 // ManifestPathKey is the context key used to pass the manifest path to provider harnesses
 // so they can dynamically parse resource names and namespaces for verification.
@@ -64,4 +67,20 @@ type ComponentTestContext struct {
 
 	// RunID is the unique test run identifier, used for stack naming.
 	RunID string
+
+	// T is the Go test handle, required by Terratest for logging.
+	// Populated from the test function's *testing.T.
+	T testing.TB
+
+	// TerraformOpts holds the Terratest terraform.Options configured during
+	// VALIDATE phase. Stored as interface{} to avoid importing Terratest in the
+	// provider package; the runner package type-asserts to *terraform.Options.
+	TerraformOpts interface{}
+
+	// TerraformWorkDir is the temp directory containing the TF module copy.
+	// Cleaned up after the test completes.
+	TerraformWorkDir string
+
+	// TerraformCleanup removes the temporary TF working directory.
+	TerraformCleanup func()
 }
