@@ -36,6 +36,13 @@ message CloudResourceKindMeta {
   //used by the organization graph to render hierarchical architecture diagrams
   //where container resources visually enclose their child resources.
   bool container_kind = 6;
+  //components that must be deployed before this component can function.
+  //order matters: index 0 is deployed first. the E2E framework deploys
+  //these as fixtures and tears them down in reverse order. this is also
+  //used by the platform for dependency ordering in infra charts.
+  //example: KubernetesPostgres needs KubernetesZalandoPostgresOperator
+  //because it creates acid.zalan.do/v1 postgresql CRDs.
+  repeated CloudResourceKind prerequisites = 7;
 }
 
 enum CloudResourceKind {
@@ -865,6 +872,7 @@ enum CloudResourceKind {
     provider: kubernetes
     version: v1
     id_prefix: "k8ses"
+    prerequisites: [KubernetesElasticOperator]
   }];
   KubernetesGitlab = 803 [(kind_meta) = {
     provider: kubernetes
@@ -890,6 +898,7 @@ enum CloudResourceKind {
     provider: kubernetes
     version: v1
     id_prefix: "k8skaf"
+    prerequisites: [KubernetesStrimziKafkaOperator]
   }];
   KubernetesKeycloak = 808 [(kind_meta) = {
     provider: kubernetes
@@ -911,6 +920,7 @@ enum CloudResourceKind {
     provider: kubernetes
     version: v1
     id_prefix: "k8smdb"
+    prerequisites: [KubernetesPerconaMongoOperator]
   }];
   KubernetesNeo4j = 812 [(kind_meta) = {
     provider: kubernetes
@@ -926,6 +936,7 @@ enum CloudResourceKind {
     provider: kubernetes
     version: v1
     id_prefix: "k8spg"
+    prerequisites: [KubernetesZalandoPostgresOperator]
   }];
   KubernetesPrometheus = 815 [(kind_meta) = {
     provider: kubernetes
@@ -946,6 +957,7 @@ enum CloudResourceKind {
     provider: kubernetes
     version: v1
     id_prefix: "k8ssolr"
+    prerequisites: [KubernetesSolrOperator]
   }];
   KubernetesTemporal = 819 [(kind_meta) = {
     provider: kubernetes
@@ -1006,6 +1018,7 @@ enum CloudResourceKind {
     provider: kubernetes
     version: v1
     id_prefix: "k8sclkhs"
+    prerequisites: [KubernetesAltinityOperator]
   }];
   KubernetesAltinityOperator = 831 [(kind_meta) = {
     provider: kubernetes

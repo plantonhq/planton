@@ -16,6 +16,10 @@ import (
 func dbPasswordSecret(ctx *pulumi.Context, locals *Locals,
 	kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 
+	if locals.KubernetesTemporal.Spec.Database == nil {
+		return nil
+	}
+
 	ext := locals.KubernetesTemporal.Spec.Database.ExternalDatabase
 	if ext == nil {
 		// No external DB: nothing to create.

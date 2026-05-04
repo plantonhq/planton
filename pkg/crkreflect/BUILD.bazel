@@ -18,6 +18,7 @@ go_library(
         "kind_to_kind_meta_map.go",
         "kinds_list.go",
         "new_instance.go",
+        "prerequisites.go",
         "provider_meta.go",
         "providers_list.go",
     ],
@@ -403,6 +404,7 @@ go_test(
     srcs = [
         "kind_by_id_prefix_test.go",
         "kind_from_string_test.go",
+        "prerequisites_test.go",
     ],
     embed = [":crkreflect"],
     deps = ["//apis/org/openmcf/shared/cloudresourcekind"],

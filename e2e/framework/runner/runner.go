@@ -13,12 +13,14 @@ import (
 type Phase string
 
 const (
-	PhaseValidate  Phase = "VALIDATE"
-	PhaseDeploy    Phase = "DEPLOY"
-	PhaseVerifyOut Phase = "VERIFY-OUT"
-	PhaseVerifyRes Phase = "VERIFY-RES"
-	PhaseDestroy   Phase = "DESTROY"
-	PhaseVerifyCln Phase = "VERIFY-CLN"
+	PhaseFixturesUp Phase = "FIXTURES-UP"
+	PhaseValidate   Phase = "VALIDATE"
+	PhaseDeploy     Phase = "DEPLOY"
+	PhaseVerifyOut  Phase = "VERIFY-OUT"
+	PhaseVerifyRes  Phase = "VERIFY-RES"
+	PhaseDestroy    Phase = "DESTROY"
+	PhaseVerifyCln  Phase = "VERIFY-CLN"
+	PhaseFixturesDn Phase = "FIXTURES-DN"
 )
 
 // PhaseResult captures the outcome of a single lifecycle phase.
@@ -38,7 +40,9 @@ type TestResult struct {
 	Duration  time.Duration
 }
 
-// RunComponentTest executes the full 6-phase E2E lifecycle for a single component.
+// RunComponentTest executes the E2E lifecycle for a single component.
+// If the component has fixtures (prerequisites), they are deployed first
+// and torn down last, wrapping the standard 6-phase lifecycle.
 func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, harness provider.Harness) *TestResult {
 	start := time.Now()
 	result := &TestResult{
@@ -47,9 +51,32 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 		Passed:    true,
 	}
 
-	// Inject the manifest path into context for the harness verifiers
 	verifyCtx := context.WithValue(ctx, provider.ManifestPathKey{}, tc.ManifestPath)
 
+	// Phase 0: deploy fixtures if the component has a fixtures/ directory
+	var fixtureStates []FixtureState
+	if tc.RepoRoot != "" {
+		fixtureStart := time.Now()
+		var err error
+		fixtureStates, err = DeployFixtures(ctx, tc.RepoRoot, tc.Provider, tc.Component, tc.BackendURL, tc.RunID, harness)
+		pr := PhaseResult{
+			Phase:    PhaseFixturesUp,
+			Duration: time.Since(fixtureStart),
+			Passed:   err == nil,
+			Error:    err,
+		}
+		if len(fixtureStates) > 0 || err != nil {
+			result.Phases = append(result.Phases, pr)
+		}
+		if err != nil {
+			result.Passed = false
+			TeardownFixtures(fixtureStates)
+			result.Duration = time.Since(start)
+			return result
+		}
+	}
+
+	// Phases 1-6: standard lifecycle
 	phases := []struct {
 		phase Phase
 		fn    func() error
@@ -75,7 +102,6 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 
 		if err != nil {
 			result.Passed = false
-			// After deploy failure, still attempt destroy for cleanup
 			if p.phase == PhaseDeploy || p.phase == PhaseVerifyOut || p.phase == PhaseVerifyRes {
 				cleanupErr := runDestroy(tc)
 				if cleanupErr != nil {
@@ -84,6 +110,17 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 			}
 			break
 		}
+	}
+
+	// Phase 7: teardown fixtures in reverse order
+	if len(fixtureStates) > 0 {
+		fixtureStart := time.Now()
+		TeardownFixtures(fixtureStates)
+		result.Phases = append(result.Phases, PhaseResult{
+			Phase:    PhaseFixturesDn,
+			Duration: time.Since(fixtureStart),
+			Passed:   true,
+		})
 	}
 
 	result.Duration = time.Since(start)

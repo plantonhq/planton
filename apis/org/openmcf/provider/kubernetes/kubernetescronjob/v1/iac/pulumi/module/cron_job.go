@@ -105,16 +105,23 @@ func cronJob(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Prov
 			target.Spec.Image.Tag)),
 		Env:          corev1.EnvVarArray(envVarInputs),
 		VolumeMounts: volumeMounts,
-		Resources: corev1.ResourceRequirementsArgs{
-			Limits: pulumi.ToStringMap(map[string]string{
+	}
+
+	if target.Spec.Resources != nil {
+		res := corev1.ResourceRequirementsArgs{}
+		if target.Spec.Resources.Limits != nil {
+			res.Limits = pulumi.ToStringMap(map[string]string{
 				"cpu":    target.Spec.Resources.Limits.Cpu,
 				"memory": target.Spec.Resources.Limits.Memory,
-			}),
-			Requests: pulumi.ToStringMap(map[string]string{
+			})
+		}
+		if target.Spec.Resources.Requests != nil {
+			res.Requests = pulumi.ToStringMap(map[string]string{
 				"cpu":    target.Spec.Resources.Requests.Cpu,
 				"memory": target.Spec.Resources.Requests.Memory,
-			}),
-		},
+			})
+		}
+		mainContainer.Resources = res
 	}
 
 	if len(target.Spec.Command) > 0 {

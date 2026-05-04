@@ -57,4 +57,11 @@ type ComponentTestContext struct {
 
 	// Outputs holds stack outputs after deployment.
 	Outputs map[string]interface{}
+
+	// RepoRoot is the absolute path to the openmcf repository root.
+	// Used by the fixture system to discover fixture YAML files.
+	RepoRoot string
+
+	// RunID is the unique test run identifier, used for stack naming.
+	RunID string
 }

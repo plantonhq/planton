@@ -165,7 +165,7 @@ func kowl(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Provide
 		return errors.Wrapf(err, "failed to add kowl service")
 	}
 
-	if !locals.KubernetesKafka.Spec.Ingress.Enabled {
+	if locals.KubernetesKafka.Spec.Ingress == nil || !locals.KubernetesKafka.Spec.Ingress.Enabled {
 		//skip creating ingress for kowl if the ingress is not enabled for kafka itself.
 		return nil
 	}

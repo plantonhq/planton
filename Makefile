@@ -208,8 +208,8 @@ preview-site:
 
 # ── E2E Tests ─────────────────────────────────────────────────────────────────
 .PHONY: e2e-test-kubernetes
-e2e-test-kubernetes:  ## Run all Kubernetes E2E tests -- Tier 1 + Tier 2 (requires kind, pulumi, kubectl, Docker)
-	go test -tags=e2e -timeout=180m -v -count=1 ./e2e/...
+e2e-test-kubernetes:  ## Run all Kubernetes E2E tests -- Tier 1 + Tier 2 + Tier 3 (requires kind, pulumi, kubectl, Docker)
+	go test -tags=e2e -timeout=240m -v -count=1 ./e2e/...
 
 .PHONY: e2e-test-kubernetes-tier1
 e2e-test-kubernetes-tier1:  ## Run Kubernetes Tier 1 (native K8s) E2E tests only
@@ -217,7 +217,11 @@ e2e-test-kubernetes-tier1:  ## Run Kubernetes Tier 1 (native K8s) E2E tests only
 
 .PHONY: e2e-test-kubernetes-tier2
 e2e-test-kubernetes-tier2:  ## Run Kubernetes Tier 2 (Helm-based) E2E tests only
-	go test -tags=e2e -timeout=120m -v -count=1 -run "Test(KubernetesRedis|KubernetesGrafana|KubernetesOpenBao|KubernetesArgoCD|KubernetesLocust|KubernetesNats|KubernetesNeo4j|KubernetesJenkins|KubernetesSolr|KubernetesSolrOperator|KubernetesPerconaMongoOperator|KubernetesPerconaMysqlOperator|KubernetesPerconaPostgresOperator|KubernetesGitlab)_" ./e2e/...
+	go test -tags=e2e -timeout=120m -v -count=1 -run "Test(KubernetesRedis|KubernetesGrafana|KubernetesOpenBao|KubernetesArgoCD|KubernetesLocust|KubernetesNats|KubernetesNeo4j|KubernetesJenkins|KubernetesSolrOperator|KubernetesPerconaMongoOperator|KubernetesPerconaMysqlOperator|KubernetesPerconaPostgresOperator|KubernetesGitlab)_" ./e2e/...
+
+.PHONY: e2e-test-kubernetes-tier3
+e2e-test-kubernetes-tier3:  ## Run Kubernetes Tier 3 (operator-dependent) E2E tests -- fixtures deployed automatically
+	go test -tags=e2e -timeout=120m -v -count=1 -run "Test(KubernetesPostgres|KubernetesKafka|KubernetesElasticsearch|KubernetesMongodb|KubernetesSolr|KubernetesClickHouse)_" ./e2e/...
 
 .PHONY: e2e-test-component
 e2e-test-component:  ## Single component E2E test (usage: make e2e-test-component component=KubernetesNamespace)

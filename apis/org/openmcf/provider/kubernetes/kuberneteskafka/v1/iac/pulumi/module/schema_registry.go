@@ -144,7 +144,7 @@ func schemaRegistry(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulu
 		return errors.Wrapf(err, "failed to add schema registry service")
 	}
 
-	if !locals.KubernetesKafka.Spec.Ingress.Enabled {
+	if locals.KubernetesKafka.Spec.Ingress == nil || !locals.KubernetesKafka.Spec.Ingress.Enabled {
 		//skip creating ingress for schema-registry if the ingress is not enabled for kafka itself.
 		return nil
 	}

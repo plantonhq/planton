@@ -22,6 +22,19 @@ var kubernetesTier1Components = []string{
 	"kubernetesservice",
 }
 
+// Kubernetes Tier 3 components: operator-dependent, need fixtures deployed first.
+// The fixture system (DD-007) automatically deploys prerequisite operators
+// by reading CloudResourceKindMeta.prerequisites from proto options and
+// deploying the numbered YAML files in each component's e2e/fixtures/ directory.
+var kubernetesTier3Components = []string{
+	"kubernetespostgres",
+	"kuberneteskafka",
+	"kuberneteselasticsearch",
+	"kubernetesmongodb",
+	"kubernetessolr",
+	"kubernetesclickhouse",
+}
+
 // Kubernetes Tier 2 components: Helm-based, self-contained chart installs.
 var kubernetesTier2Components = []string{
 	"kubernetesredis",
@@ -32,7 +45,6 @@ var kubernetesTier2Components = []string{
 	"kubernetesnats",
 	"kubernetesneo4j",
 	"kubernetesjenkins",
-	"kubernetessolr",
 	"kubernetessolroperator",
 	"kubernetesperconamongooperator",
 	"kubernetesperconamysqloperator",
@@ -96,10 +108,6 @@ func TestKubernetesJenkins_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "kubernetesjenkins")
 }
 
-func TestKubernetesSolr_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "kubernetessolr")
-}
-
 func TestKubernetesSolrOperator_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "kubernetessolroperator")
 }
@@ -118,6 +126,32 @@ func TestKubernetesPerconaPostgresOperator_Pulumi(t *testing.T) {
 
 func TestKubernetesGitlab_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "kubernetesgitlab")
+}
+
+// --- Tier 3 test entry points (operator-dependent, fixtures deployed automatically) ---
+
+func TestKubernetesPostgres_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetespostgres")
+}
+
+func TestKubernetesKafka_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kuberneteskafka")
+}
+
+func TestKubernetesElasticsearch_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kuberneteselasticsearch")
+}
+
+func TestKubernetesMongodb_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesmongodb")
+}
+
+func TestKubernetesSolr_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetessolr")
+}
+
+func TestKubernetesClickHouse_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesclickhouse")
 }
 
 func runAllScenariosForComponent(t *testing.T, component string) {
@@ -164,6 +198,8 @@ func runSingleScenario(t *testing.T, component, moduleDir string, scenario disco
 		ManifestPath: scenario.ManifestPath,
 		StackName:    stackName,
 		BackendURL:   pulumiBackendURL,
+		RepoRoot:     repoRoot,
+		RunID:        runID,
 	}
 
 	ctx := context.Background()
