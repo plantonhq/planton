@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/aa_e2e/verify"
 	"github.com/plantonhq/openmcf/e2e/framework/provider"
 )
 
@@ -103,7 +104,7 @@ func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs 
 	if manifestPath == "" {
 		return errors.New("manifest path not found in context -- cannot verify deployment")
 	}
-	verifier, err := GetVerifierFromManifest(manifestPath)
+	verifier, err := verify.GetVerifierFromManifest(manifestPath)
 	if err != nil {
 		return err
 	}
@@ -116,7 +117,7 @@ func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
 	if manifestPath == "" {
 		return errors.New("manifest path not found in context -- cannot verify cleanup")
 	}
-	verifier, err := GetVerifierFromManifest(manifestPath)
+	verifier, err := verify.GetVerifierFromManifest(manifestPath)
 	if err != nil {
 		return err
 	}

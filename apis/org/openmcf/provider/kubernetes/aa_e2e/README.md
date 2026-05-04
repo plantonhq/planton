@@ -1,8 +1,8 @@
 # Kubernetes E2E Provider Harness
 
 This package (`aa_e2e`) implements the E2E test harness for the Kubernetes
-provider. It manages the test cluster lifecycle and provides verification
-logic that confirms deployed resources exist and destroyed resources are gone.
+provider. It manages the test cluster lifecycle and delegates resource
+verification to the `verify/` subpackage.
 
 ## Why `aa_e2e`?
 
@@ -20,18 +20,26 @@ its component directories. The directory is named `aa_e2e` (not `_e2e` or
 This naming convention applies to all providers. When adding E2E support for
 a new provider (e.g., AWS), create `apis/org/openmcf/provider/aws/aa_e2e/`.
 
-## Architecture
-
-The harness has two responsibilities: **cluster lifecycle** and **resource
-verification**.
+## Directory Layout
 
 ```
 aa_e2e/
-  harness.go   -- Cluster lifecycle (Setup / Teardown / VerifyDeployed / VerifyDestroyed)
-  verify.go    -- Verifier dispatch, verifier types, and kubectl helpers
+  harness.go    -- Kind cluster lifecycle (Setup / Teardown / VerifyDeployed / VerifyDestroyed)
+  README.md     -- This file
+  verify/       -- Manifest-driven resource verification (separate package)
+    manifest.go           -- ManifestInfo struct + ParseManifestInfo
+    verifier.go           -- ResourceVerifier interface, GetVerifierFromManifest dispatch, kind maps
+    kubectl.go            -- kubectl helper functions (retry, backoff, resource exist/absent)
+    namespace.go          -- NamespaceVerifier (Tier 1)
+    workload.go           -- WorkloadVerifier (Tier 1 deployments, statefulsets)
+    resource_existence.go -- ResourceExistenceVerifier (Tier 1 secrets, services)
+    operator.go           -- OperatorComponentVerifier (Tier 4 operators)
+    crd_workload.go       -- CRDWorkloadVerifier (Tier 3 operator-dependent CRD workloads)
+    helm.go               -- HelmComponentVerifier (Tier 2 Helm-based apps)
+    generic.go            -- GenericVerifier (fallback, always passes)
 ```
 
-### Harness (`harness.go`)
+## Harness (`harness.go`)
 
 The `Harness` struct manages a kind (Kubernetes IN Docker) cluster. The
 `e2e/e2e_test.go` TestMain creates one shared Harness for all Kubernetes
@@ -41,14 +49,13 @@ tests in a single run.
   sets the `KUBECONFIG` environment variable so Pulumi's Kubernetes provider
   finds it automatically.
 - `Teardown` deletes the kind cluster and cleans up temp files.
-- `VerifyDeployed` and `VerifyDestroyed` delegate to the appropriate
-  `ResourceVerifier` by parsing the test manifest to determine what was
-  deployed and what should be checked.
+- `VerifyDeployed` and `VerifyDestroyed` delegate to `verify.GetVerifierFromManifest`
+  which parses the test manifest and returns the appropriate verifier.
 
 The Harness implements the `provider.Harness` interface from
 `e2e/framework/provider/provider.go`, keeping the framework provider-agnostic.
 
-### Verification (`verify.go`)
+## Verification (`verify/`)
 
 Verification is **manifest-driven**: the verifier reads the test manifest YAML
 at runtime, extracts the `kind`, `metadata.name`, and `spec.namespace`, and
@@ -56,31 +63,40 @@ selects the appropriate verifier type. This means adding a new test scenario
 (a YAML file in a component's `v1/e2e/` directory) never requires touching Go
 code.
 
-#### Verifier Types
+### Verifier Types
 
-| Verifier | Scope | Checks |
-|----------|-------|--------|
-| `NamespaceVerifier` | Tier 1 namespace | Namespace exists / absent |
-| `WorkloadVerifier` | Tier 1 deployments, statefulsets | Resource exists in namespace / absent |
-| `ResourceExistenceVerifier` | Tier 1 secrets, services | Resource exists in namespace / absent |
-| `HelmComponentVerifier` | Tier 2 Helm-based apps | Namespace + at least one Running pod + at least one Service |
-| `OperatorComponentVerifier` | Operator/controller installs | Namespace + at least one Running pod (no Service required) |
-| `GenericVerifier` | Fallback | Always passes (logs a skip message) |
+| Verifier | File | Tier | Checks |
+|----------|------|------|--------|
+| `NamespaceVerifier` | `namespace.go` | 1 | Namespace exists / absent |
+| `WorkloadVerifier` | `workload.go` | 1 | Deployment or StatefulSet exists in namespace / absent |
+| `ResourceExistenceVerifier` | `resource_existence.go` | 1 | Secret or Service exists in namespace / absent |
+| `HelmComponentVerifier` | `helm.go` | 2 | Namespace + running pods + services |
+| `OperatorComponentVerifier` | `operator.go` | 4 | Namespace + running pods (no service requirement) |
+| `CRDWorkloadVerifier` | `crd_workload.go` | 3 | Namespace + running pods + services |
+| `GenericVerifier` | `generic.go` | -- | Always passes (logs a skip message) |
 
-The dispatch logic in `GetVerifierFromManifest` uses two kind maps
-(`operatorKinds` and `helmTier2Kinds`) plus a hardcoded switch for Tier 1
-native resources. New component kinds are added to the appropriate map.
+### Dispatch (`verifier.go`)
 
-#### Retry Strategy
+`GetVerifierFromManifest` uses three kind classification maps plus a hardcoded
+switch for Tier 1 native resources:
 
-All kubectl operations use retry loops with increasing backoff to handle
+- **`operatorKinds`** -- Tier 4 operator/controller components (namespace + pods)
+- **`crdWorkloadKinds`** -- Tier 3 CRD workloads (namespace + pods + services)
+- **`helmTier2Kinds`** -- Tier 2 Helm-based applications (namespace + pods + services)
+
+New component kinds are added to the appropriate map. Tier 1 native resources
+(namespace, deployment, statefulset, secret, service) are routed via the switch.
+
+### Retry Strategy (`kubectl.go`)
+
+All kubectl operations use retry loops with progressive backoff to handle
 Kubernetes eventual consistency:
 
 - **Existence checks**: 5 attempts, 2-second base backoff
 - **Absence checks**: 10 attempts, 2-second base backoff (resources take
   longer to finalize)
-- **Helm pod readiness**: 15 attempts, 3-second base backoff (images must
-  be pulled, init containers must complete)
+- **Pod readiness**: 15 attempts, 3-second base backoff (images must
+  be pulled, init containers must complete, CRDs must reconcile)
 - **Service existence**: 10 attempts, 2-second base backoff
 
 ## Adding a New Provider Harness
@@ -89,16 +105,9 @@ When extending E2E testing to a new provider (e.g., AWS):
 
 1. Create `apis/org/openmcf/provider/aws/aa_e2e/`
 2. Implement `harness.go` with provider-specific infrastructure lifecycle
-   (e.g., creating a test VPC, configuring credentials from env vars)
-3. Implement `verify.go` with provider-specific verification (e.g., AWS SDK
-   calls to confirm resources exist)
+3. Create a `verify/` subpackage with provider-specific verification logic
 4. Implement the `provider.Harness` interface from `e2e/framework/provider/`
 5. Register the new harness in `e2e/e2e_test.go` TestMain
-
-The test framework (`e2e/framework/`) is provider-agnostic. The 6-phase
-lifecycle (VALIDATE, DEPLOY, VERIFY-OUT, VERIFY-RES, DESTROY, VERIFY-CLN)
-and the runner work identically across all providers. Only the harness
-implementation changes.
 
 ## Test Manifests
 

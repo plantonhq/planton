@@ -2,15 +2,12 @@ load("@rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "aa_e2e",
-    srcs = [
-        "harness.go",
-        "verify.go",
-    ],
+    srcs = ["harness.go"],
     importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/aa_e2e",
     visibility = ["//visibility:public"],
     deps = [
+        "//apis/org/openmcf/provider/kubernetes/aa_e2e/verify",
         "//e2e/framework/provider",
         "@com_github_pkg_errors//:errors",
-        "@in_gopkg_yaml_v3//:yaml_v3",
     ],
 )
