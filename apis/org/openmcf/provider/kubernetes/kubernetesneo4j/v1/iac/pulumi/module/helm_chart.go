@@ -22,13 +22,18 @@ func helmChart(
 		locals.KubernetesNeo4J.Spec.Ingress.Enabled &&
 		locals.KubernetesNeo4J.Spec.Ingress.Hostname != ""
 
-	// optional external LB
-	externalSvc := pulumi.Map{
+	// Build the services.neo4j block that controls the chart's LoadBalancer
+	// service. The chart (2025.03.0) defaults to services.neo4j.enabled: true
+	// with type: LoadBalancer. We must explicitly disable it when ingress is off
+	// to prevent an unprovisionable LB on clusters without a cloud LB controller.
+	neo4jSvc := pulumi.Map{
 		"enabled": pulumi.Bool(ingressEnabled),
 	}
 	if ingressEnabled {
-		externalSvc["type"] = pulumi.String("LoadBalancer")
-		externalSvc["annotations"] = pulumi.StringMap{
+		neo4jSvc["spec"] = pulumi.Map{
+			"type": pulumi.String("LoadBalancer"),
+		}
+		neo4jSvc["annotations"] = pulumi.StringMap{
 			"external-dns.alpha.kubernetes.io/hostname": pulumi.String(locals.IngressExternalHostname),
 		}
 	}
@@ -43,10 +48,6 @@ func helmChart(
 			Values: pulumi.Map{
 				"neo4j": pulumi.Map{
 					"name": pulumi.String(locals.KubernetesNeo4J.Metadata.Name),
-
-					// let the chart create its own secret + password
-					// (no passwordFromSecret / passwordKey provided)
-
 					"resources": pulumi.Map{
 						"cpu":    pulumi.String(container.Resources.Limits.Cpu),
 						"memory": pulumi.String(container.Resources.Limits.Memory),
@@ -54,9 +55,10 @@ func helmChart(
 					"acceptLicenseAgreement": pulumi.String("yes"),
 				},
 
-				"externalService": externalSvc,
+				"services": pulumi.Map{
+					"neo4j": neo4jSvc,
+				},
 
-				// persistence
 				"volumes": pulumi.Map{
 					"data": pulumi.Map{
 						"mode": pulumi.String("defaultStorageClass"),
@@ -64,8 +66,7 @@ func helmChart(
 					},
 				},
 
-			// neo4j.conf overrides (only when memory tuning is explicitly specified)
-			"config": memoryConfigValues(locals.KubernetesNeo4J.Spec.MemoryConfig),
+				"config": memoryConfigValues(locals.KubernetesNeo4J.Spec.MemoryConfig),
 
 				"podLabels": convertstringmaps.ConvertGoStringMapToPulumiMap(locals.Labels),
 			},

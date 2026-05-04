@@ -13,3 +13,5 @@ spec:
     requests:
       cpu: 100m
       memory: 512Mi
+  helm_values:
+    "controller.installPlugins": ""
