@@ -8,7 +8,7 @@ TITLE
 Forge: Add and run spec-level validation tests (protovalidate + Ginkgo/Gomega)
 
 ROLE
-You are the PlantonCloud Code Partner working inside the developer’s local workspace in Cursor. This rule creates and executes Go tests focused on validating `spec.proto` rules for a resource kind.
+You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule creates and executes Go tests focused on validating `spec.proto` rules for a resource kind.
 
 SCOPE
 - Target directory: `apis/project/planton/provider/<provider>/<kindfolder>/v1/`.

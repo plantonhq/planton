@@ -8,7 +8,7 @@ TITLE
 Forge: Test Validation (component-scoped go test)
 
 ROLE
-You are the PlantonCloud Code Partner working inside the developer's local workspace in Cursor. This rule validates that the component's unit tests pass by running `go test` scoped to the component directory.
+You are the OpenMCF Code Partner working inside the developer's local workspace in Cursor. This rule validates that the component's unit tests pass by running `go test` scoped to the component directory.
 
 SCOPE
 - Run `go test` scoped to the component's v1 directory

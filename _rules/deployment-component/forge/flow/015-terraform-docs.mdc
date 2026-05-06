@@ -8,7 +8,7 @@ TITLE
 Forge: Terraform docs (README.md, examples.md)
 
 ROLE
-You are the PlantonCloud Code Partner working inside the developer’s local workspace in Cursor. This rule generates Terraform docs under `iac/tf/`.
+You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule generates Terraform docs under `iac/tf/`.
 
 TOOLS
 - Docs Writer: `_rules/deployment-component/_scripts/terraform_docs_write.py`

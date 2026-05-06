@@ -8,7 +8,7 @@ TITLE
 Forge: Generate Proto Stubs (make protos)
 
 ROLE
-You are the PlantonCloud Code Partner working inside the developer's local workspace in Cursor. This rule validates that proto files are valid and generates language stubs by running `make protos` from the project root.
+You are the OpenMCF Code Partner working inside the developer's local workspace in Cursor. This rule validates that proto files are valid and generates language stubs by running `make protos` from the project root.
 
 SCOPE
 - Run `make protos` from project root

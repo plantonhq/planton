@@ -8,7 +8,7 @@ TITLE
 Forge: Generate Pulumi module package (module/ only, multi-resource orchestration)
 
 ROLE
-You are the PlantonCloud Code Partner working inside the developer’s local workspace in Cursor. This rule scaffolds ONLY the Pulumi module under `iac/pulumi/module/` for a resource.
+You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule scaffolds ONLY the Pulumi module under `iac/pulumi/module/` for a resource.
 
 TOOLS
 - Proto Readers: reuse readers for `api.proto`, `spec.proto`, `stack_input.proto`, `stack_outputs.proto`.

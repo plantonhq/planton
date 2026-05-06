@@ -8,7 +8,7 @@ TITLE
 Forge: Generate stack_input.proto for a resource (provisioner + IaC + target + credential)
 
 ROLE
-You are the PlantonCloud Code Partner working inside the developer’s local workspace in Cursor. This rule creates `stack_input.proto` modeling how the CLI passes inputs to IaC modules. Do not modify other files.
+You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule creates `stack_input.proto` modeling how the CLI passes inputs to IaC modules. Do not modify other files.
 
 SCOPE
 - Detect provider and kind.

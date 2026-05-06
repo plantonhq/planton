@@ -8,7 +8,7 @@ TITLE
 Forge: Build Validation (component-scoped go build)
 
 ROLE
-You are the PlantonCloud Code Partner working inside the developer's local workspace in Cursor. This rule validates that the component's Go code compiles correctly by running `go build` scoped to the component directory.
+You are the OpenMCF Code Partner working inside the developer's local workspace in Cursor. This rule validates that the component's Go code compiles correctly by running `go build` scoped to the component directory.
 
 SCOPE
 - Run `go build` scoped to the component's directory tree
