@@ -82,22 +82,7 @@ variable "spec" {
           # Each variable can be provided either as a direct string value (value)
           # or as a reference to another OpenMCF resource's field (value_from).
           # The orchestrator resolves value_from references and populates .value before invoking Terraform.
-          variables = optional(map(object({
-            # A literal string value for the variable.
-            value = optional(string)
-            # A reference to another OpenMCF resource's field.
-            # Resolved by the orchestrator before Terraform is invoked.
-            value_from = optional(object({
-              # The resource kind (e.g., PostgresCluster, GcpGkeCluster).
-              kind = optional(string)
-              # The environment of the resource.
-              env = optional(string)
-              # The name of the resource (required).
-              name = string
-              # The field path within the resource (e.g., "status.outputs.host").
-              field_path = optional(string)
-            }))
-          })))
+          variables = optional(map(string))
           # A map of secret environment variable names to their values.
           # Each secret can be provided either as a literal string value (value)
           # or as a reference to an existing Kubernetes Secret (secret_ref).

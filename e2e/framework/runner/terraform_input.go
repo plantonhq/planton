@@ -10,7 +10,7 @@ import (
 	"github.com/plantonhq/openmcf/pkg/iac/stackinput"
 	"github.com/plantonhq/openmcf/pkg/iac/stackinput/providerenvvars"
 	"github.com/plantonhq/openmcf/pkg/iac/tofu/tfbackend"
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/tfvars"
+	"github.com/plantonhq/openmcf/pkg/iac/tofu/generators"
 )
 
 // TerraformInput holds the prepared inputs for a Terraform E2E test run.
@@ -37,7 +37,7 @@ func BuildTerraformInput(manifestPath, workDir string) (*TerraformInput, error) 
 	// The tfvars file is placed inside the working directory so tofu init
 	// can find it alongside the module's .tf files.
 	tfvarsPath := filepath.Join(workDir, "terraform.tfvars")
-	if err := tfvars.WriteVarFile(manifestObject, tfvarsPath); err != nil {
+	if err := generators.WriteVarFile(manifestObject, tfvarsPath); err != nil {
 		return nil, errors.Wrap(err, "failed to generate terraform.tfvars from manifest")
 	}
 

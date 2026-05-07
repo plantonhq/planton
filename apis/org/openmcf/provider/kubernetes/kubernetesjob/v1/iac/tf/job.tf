@@ -93,12 +93,12 @@ resource "kubernetes_job" "this" {
           }
 
           # Add env variables from var.spec.env.variables
-          # The orchestrator resolves valueFrom references and populates .value before invoking Terraform
+          # After generator flattening, each value is a plain string.
           dynamic "env" {
             for_each = {
               for k, v in try(var.spec.env.variables, {}) :
-              k => v.value
-              if try(v.value, null) != null && v.value != ""
+              k => v
+              if v != null && v != ""
             }
             content {
               name  = env.key

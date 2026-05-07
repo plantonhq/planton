@@ -11,7 +11,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/iac/terraform"
 	"github.com/plantonhq/openmcf/pkg/iac/tofu/tfbackend"
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/tfvars"
+	"github.com/plantonhq/openmcf/pkg/iac/tofu/generators"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -33,7 +33,7 @@ func Init(
 	}
 
 	tfVarsFile := filepath.Join(modulePath, ".terraform", "terraform.tfvars")
-	if err := tfvars.WriteVarFile(manifestObject, tfVarsFile); err != nil {
+	if err := generators.WriteVarFile(manifestObject, tfVarsFile); err != nil {
 		return errors.Wrapf(err, "failed to write %s file", tfVarsFile)
 	}
 

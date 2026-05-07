@@ -23,9 +23,6 @@ variable "metadata" {
 variable "spec" {
   description = "Spec defines the configuration for the CronJobKubernetes resource."
   type = object({
-    target_cluster = optional(object({
-      cluster_name = string
-    }))
     namespace                     = string
     create_namespace              = bool
     schedule                      = string
@@ -52,19 +49,10 @@ variable "spec" {
       })
     })
     env = optional(object({
-      # A map of environment variable names to their values.
-      # Each variable can be provided either as a direct string value (value)
-      # or as a reference to another OpenMCF resource's field (value_from).
-      # The orchestrator resolves value_from references and populates .value before invoking Terraform.
-      variables = optional(map(object({
-        value = optional(string)
-        value_from = optional(object({
-          kind       = optional(string)
-          env        = optional(string)
-          name       = string
-          field_path = optional(string)
-        }))
-      })))
+      # A map of environment variable names to their string values.
+      # StringValueOrRef wrapper types are flattened to plain strings by the
+      # tfvars generator before reaching the TF module.
+      variables = optional(map(string))
       secrets = optional(map(object({
         value = optional(string)
         secret_ref = optional(object({

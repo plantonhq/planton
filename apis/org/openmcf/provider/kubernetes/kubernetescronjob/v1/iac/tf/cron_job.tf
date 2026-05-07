@@ -16,17 +16,18 @@ resource "kubernetes_service_account" "this" {
 
 # 2) Create an optional image pull secret if Docker credentials are provided
 resource "kubernetes_secret" "image_pull_secret" {
+  count = var.docker_config_json != "" ? 1 : 0
+
   metadata {
-    # Computed name to avoid conflicts when multiple instances share a namespace
     name      = local.image_pull_secret_name
     namespace = local.namespace_name
     labels    = local.final_labels
   }
   type = "kubernetes.io/dockerconfigjson"
 
-  data = var.docker_config_json != "" ? {
+  data = {
     ".dockerconfigjson" = var.docker_config_json
-  } : {}
+  }
 
   depends_on = [
     kubernetes_namespace.this
@@ -105,12 +106,12 @@ resource "kubernetes_cron_job" "this" {
               }
 
               # Add env variables from var.spec.env.variables
-              # The orchestrator resolves valueFrom references and populates .value before invoking Terraform
+              # After generator flattening, each value is a plain string.
               dynamic "env" {
                 for_each = {
                   for k, v in try(var.spec.env.variables, {}) :
-                  k => v.value
-                  if try(v.value, null) != null && v.value != ""
+                  k => v
+                  if v != null && v != ""
                 }
                 content {
                   name  = env.key
@@ -252,9 +253,12 @@ resource "kubernetes_cron_job" "this" {
               }
             }
 
-            # If the image pull secret is non-empty, attach it
-            image_pull_secrets {
-              name = kubernetes_secret.image_pull_secret.metadata[0].name
+            # Attach image pull secret if Docker credentials were provided
+            dynamic "image_pull_secrets" {
+              for_each = kubernetes_secret.image_pull_secret
+              content {
+                name = image_pull_secrets.value.metadata[0].name
+              }
             }
           }
         }

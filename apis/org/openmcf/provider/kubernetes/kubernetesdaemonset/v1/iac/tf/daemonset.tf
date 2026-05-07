@@ -121,12 +121,12 @@ resource "kubernetes_daemon_set_v1" "this" {
           }
 
           # Environment variables from spec
-          # The orchestrator resolves valueFrom references and populates .value before invoking Terraform
+          # After generator flattening, each value is a plain string.
           dynamic "env" {
             for_each = {
               for k, v in try(var.spec.container.app.env.variables, {}) :
-              k => v.value
-              if try(v.value, null) != null && v.value != ""
+              k => v
+              if v != null && v != ""
             }
             content {
               name  = env.key
