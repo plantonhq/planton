@@ -23,9 +23,9 @@ variable "metadata" {
 variable "spec" {
   description = "Spec defines the configuration for the KubernetesJob resource."
   type = object({
-    target_cluster = object({
+    target_cluster = optional(object({
       cluster_name = string
-    })
+    }))
     namespace                  = string
     create_namespace           = bool
     parallelism                = optional(number)

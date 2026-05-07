@@ -23,9 +23,9 @@ variable "metadata" {
 variable "spec" {
   description = "Spec defines the configuration for the CronJobKubernetes resource."
   type = object({
-    target_cluster = object({
+    target_cluster = optional(object({
       cluster_name = string
-    })
+    }))
     namespace                     = string
     create_namespace              = bool
     schedule                      = string
