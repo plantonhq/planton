@@ -14,14 +14,14 @@ variable "metadata" {
 variable "spec" {
   description = "Specification for Kubernetes Locust deployment"
   type = object({
-    # Target Kubernetes cluster
-    target_cluster_name = string
+    # Target Kubernetes cluster (orchestrator-only, not included in generated tfvars)
+    target_cluster_name = optional(string)
 
     # Kubernetes namespace for Locust deployment
     namespace = string
 
     # Flag to indicate if the namespace should be created
-    create_namespace = bool
+    create_namespace = optional(bool, true)
 
     # The master container specifications for the Locust cluster.
     # This defines the resource allocation and number of replicas for the master node.
@@ -94,14 +94,14 @@ variable "spec" {
     })
 
     # The ingress configuration for the Locust deployment.
-    ingress = object({
+    ingress = optional(object({
 
       # A flag to enable or disable ingress.
-      is_enabled = bool
+      is_enabled = optional(bool, false)
 
       # The dns domain.
-      dns_domain = string
-    })
+      dns_domain = optional(string, "")
+    }))
 
     # The load test parameters, including the main test script, additional library files,
     # and extra Python pip packages needed for test execution.

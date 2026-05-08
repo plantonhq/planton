@@ -18,7 +18,7 @@ variable "spec" {
     namespace = string
 
     # flag to indicate if the namespace should be created
-    create_namespace = bool
+    create_namespace = optional(bool, true)
 
     # The container specifications for the Redis deployment.
     container = object({
@@ -55,21 +55,20 @@ variable "spec" {
       # A flag to enable or disable data persistence for Redis.
       # When enabled, in-memory data is persisted to a storage volume, allowing data to survive pod restarts.
       # The backup data from the persistent volume is restored into Redis memory between pod restarts.
-      # Defaults to `false`.
-      persistence_enabled = bool
+      persistence_enabled = optional(bool, false)
 
-      # Description for disk_size
-      disk_size = string
+      # The size of the persistent volume for Redis data (e.g., "10Gi").
+      disk_size = optional(string, "1Gi")
     })
 
     # The ingress configuration for the Redis deployment.
-    ingress = object({
+    ingress = optional(object({
 
       # A flag to enable or disable ingress.
       enabled = optional(bool)
 
       # The full hostname for external access.
       hostname = optional(string)
-    })
+    }))
   })
 }

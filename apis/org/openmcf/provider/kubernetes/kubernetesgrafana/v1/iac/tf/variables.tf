@@ -59,13 +59,13 @@ variable "spec" {
     })
 
     # The ingress configuration for the Grafana deployment.
-    ingress = object({
+    ingress = optional(object({
 
       # A flag to enable or disable ingress.
-      enabled = bool
+      enabled = optional(bool, false)
 
       # The dns domain.
-      dns_domain = string
-    })
+      dns_domain = optional(string, "")
+    }))
   })
 }
