@@ -79,7 +79,7 @@ resource "kubernetes_stateful_set" "this" {
           # After generator flattening, each value is a plain string.
           dynamic "env" {
             for_each = {
-              for k, v in try(var.spec.container.app.env.variables, {}) :
+              for k, v in (try(var.spec.container.app.env.variables, null) != null ? var.spec.container.app.env.variables : {}) :
               k => v
               if v != null && v != ""
             }
@@ -92,7 +92,7 @@ resource "kubernetes_stateful_set" "this" {
           # Add env variables from secrets with direct string values
           dynamic "env" {
             for_each = {
-              for k, v in try(var.spec.container.app.env.secrets, {}) :
+              for k, v in (try(var.spec.container.app.env.secrets, null) != null ? var.spec.container.app.env.secrets : {}) :
               k => v
               if try(v.value, null) != null && v.value != ""
             }
@@ -110,7 +110,7 @@ resource "kubernetes_stateful_set" "this" {
           # Add env variables from external Kubernetes Secret references
           dynamic "env" {
             for_each = {
-              for k, v in try(var.spec.container.app.env.secrets, {}) :
+              for k, v in (try(var.spec.container.app.env.secrets, null) != null ? var.spec.container.app.env.secrets : {}) :
               k => v
               if try(v.secret_ref, null) != null
             }
@@ -149,10 +149,10 @@ resource "kubernetes_stateful_set" "this" {
           }
 
           # Command override (if specified)
-          command = length(try(var.spec.container.app.command, [])) > 0 ? var.spec.container.app.command : null
+          command = try(length(var.spec.container.app.command), 0) > 0 ? var.spec.container.app.command : null
 
           # Args (if specified)
-          args = length(try(var.spec.container.app.args, [])) > 0 ? var.spec.container.app.args : null
+          args = try(length(var.spec.container.app.args), 0) > 0 ? var.spec.container.app.args : null
         }
 
         # ConfigMap volumes
@@ -223,7 +223,7 @@ resource "kubernetes_stateful_set" "this" {
           for_each = [
             for vm in try(var.spec.container.app.volume_mounts, []) : vm
             if vm.pvc != null && !contains(
-              [for vct in try(var.spec.volume_claim_templates, []) : vct.name],
+              [for vct in (var.spec.volume_claim_templates != null ? var.spec.volume_claim_templates : []) : vct.name],
               vm.pvc.claim_name
             )
           ]
@@ -240,7 +240,7 @@ resource "kubernetes_stateful_set" "this" {
 
     # Volume claim templates for persistent storage
     dynamic "volume_claim_template" {
-      for_each = try(var.spec.volume_claim_templates, [])
+      for_each = var.spec.volume_claim_templates != null ? var.spec.volume_claim_templates : []
       content {
         metadata {
           name = volume_claim_template.value.name

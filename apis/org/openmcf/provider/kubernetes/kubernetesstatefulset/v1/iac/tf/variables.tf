@@ -18,7 +18,7 @@ variable "spec" {
     namespace = string
 
     # Flag to indicate if the namespace should be created
-    create_namespace = bool
+    create_namespace = optional(bool, true)
 
     # The container specifications for the statefulset
     container = object({
@@ -67,7 +67,7 @@ variable "spec" {
           network_protocol = string
           app_protocol     = string
           service_port     = number
-          is_ingress_port  = bool
+          is_ingress_port  = optional(bool, false)
         }))
 
         # Volume mounts for the container

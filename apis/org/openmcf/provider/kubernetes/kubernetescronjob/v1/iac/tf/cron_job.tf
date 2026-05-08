@@ -35,7 +35,7 @@ resource "kubernetes_secret" "image_pull_secret" {
 }
 
 # 3) Create the CronJob
-resource "kubernetes_cron_job" "this" {
+resource "kubernetes_cron_job_v1" "this" {
   metadata {
     name      = var.metadata.name
     namespace = local.namespace_name

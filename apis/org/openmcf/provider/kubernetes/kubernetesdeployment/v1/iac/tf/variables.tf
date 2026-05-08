@@ -19,7 +19,7 @@ variable "spec" {
     namespace = string
 
     # Flag to indicate if the namespace should be created
-    create_namespace = bool
+    create_namespace = optional(bool, true)
 
     # The version of the microservice being deployed.
     # This is usually either "main" (the default git branch name) or "review-<id>" where <id> is the merge request number.
@@ -127,7 +127,7 @@ variable "spec" {
           service_port = number
 
           # A flag indicating whether this port should be exposed via ingress.
-          is_ingress_port = bool
+          is_ingress_port = optional(bool, false)
         }))
 
         # Volume mounts for the application container.
@@ -250,14 +250,14 @@ variable "spec" {
 
     # The ingress configuration for the microservice.
     # This defines how the microservice can be accessed externally.
-    ingress = object({
+    ingress = optional(object({
 
       # A flag to enable or disable ingress.
       is_enabled = bool
 
       # The dns domain.
       dns_domain = string
-    })
+    }))
 
     # ConfigMaps to create alongside the deployment.
     # Key is the ConfigMap name, value is the content.
@@ -278,10 +278,10 @@ variable "spec" {
         is_enabled = bool
 
         # The target CPU utilization percentage to trigger autoscaling (e.g., 60.0).
-        target_cpu_utilization_percent = number
+        target_cpu_utilization_percent = optional(number)
 
         # The target memory utilization to trigger autoscaling (e.g., "1Gi").
-        target_memory_utilization = string
+        target_memory_utilization = optional(string)
       }))
     }))
   })

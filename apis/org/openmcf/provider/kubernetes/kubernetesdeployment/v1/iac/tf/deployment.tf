@@ -72,7 +72,7 @@ resource "kubernetes_deployment" "this" {
           # After generator flattening, each value is a plain string.
           dynamic "env" {
             for_each = {
-              for k, v in try(var.spec.container.app.env.variables, {}) :
+              for k, v in (try(var.spec.container.app.env.variables, null) != null ? var.spec.container.app.env.variables : {}) :
               k => v
               if v != null && v != ""
             }
@@ -85,7 +85,7 @@ resource "kubernetes_deployment" "this" {
           # Add env variables from secrets with direct string values (using computed secret name)
           dynamic "env" {
             for_each = {
-              for k, v in try(var.spec.container.app.env.secrets, {}) :
+              for k, v in (try(var.spec.container.app.env.secrets, null) != null ? var.spec.container.app.env.secrets : {}) :
               k => v
               if try(v.value, null) != null && v.value != ""
             }
@@ -103,7 +103,7 @@ resource "kubernetes_deployment" "this" {
           # Add env variables from external Kubernetes Secret references
           dynamic "env" {
             for_each = {
-              for k, v in try(var.spec.container.app.env.secrets, {}) :
+              for k, v in (try(var.spec.container.app.env.secrets, null) != null ? var.spec.container.app.env.secrets : {}) :
               k => v
               if try(v.secret_ref, null) != null
             }
