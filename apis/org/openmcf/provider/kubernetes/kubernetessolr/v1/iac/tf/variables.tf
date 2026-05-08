@@ -18,7 +18,7 @@ variable "spec" {
     namespace = string
 
     # flag to indicate if the namespace should be created
-    create_namespace = bool
+    create_namespace = optional(bool, true)
 
     # The specifications for the Solr container deployment.
     solr_container = object({
@@ -71,7 +71,7 @@ variable "spec" {
     })
 
     # The Solr-specific configuration options.
-    config = object({
+    config = optional(object({
 
       # JVM memory settings for Solr.
       java_mem = optional(string)
@@ -81,7 +81,7 @@ variable "spec" {
 
       # Solr garbage collection tuning configuration (e.g., "-XX:SurvivorRatio=4 -XX:TargetSurvivorRatio=90 -XX:MaxTenuringThreshold=8").
       garbage_collection_tuning = optional(string)
-    })
+    }))
 
     # The specifications for the Zookeeper container deployment.
     zookeeper_container = object({
@@ -120,13 +120,13 @@ variable "spec" {
     })
 
     # The ingress configuration for the Solr deployment.
-    ingress = object({
+    ingress = optional(object({
 
       # A flag to enable or disable ingress.
       is_enabled = bool
 
       # The dns domain.
       dns_domain = string
-    })
+    }))
   })
 }

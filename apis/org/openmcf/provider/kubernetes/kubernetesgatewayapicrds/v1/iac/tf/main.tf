@@ -46,14 +46,13 @@ data "http" "gateway_api_crds" {
 # which handles multi-document YAML properly.
 ##############################################
 resource "kubectl_manifest" "gateway_api_crds" {
-  yaml_body = data.http.gateway_api_crds.response_body
+  for_each = {
+    for idx, doc in split("---", data.http.gateway_api_crds.response_body) : idx => doc
+    if trimspace(doc) != "" && can(yamldecode(doc))
+  }
 
-  # Force new resource if CRD content changes
-  force_new = true
+  yaml_body = each.value
 
-  # Server-side apply for better CRD handling
   server_side_apply = true
-
-  # Apply even if CRDs already exist
-  force_conflicts = true
+  force_conflicts   = true
 }

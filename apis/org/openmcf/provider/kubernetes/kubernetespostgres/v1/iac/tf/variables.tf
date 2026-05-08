@@ -19,7 +19,7 @@ variable "spec" {
     namespace = string
 
     # flag to indicate if the namespace should be created
-    create_namespace = bool
+    create_namespace = optional(bool, true)
 
     # The container specifications for the PostgreSQL deployment.
     container = object({
@@ -59,14 +59,14 @@ variable "spec" {
     })
 
     # The ingress configuration for the PostgreSQL deployment.
-    ingress = object({
+    ingress = optional(object({
 
       # A flag to enable or disable ingress.
       enabled = bool
 
       # The full hostname for external access.
       hostname = string
-    })
+    }))
 
     # List of databases to create.
     # Each database has a name and an optional owner role.

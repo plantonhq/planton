@@ -19,7 +19,7 @@ variable "spec" {
     namespace = string
 
     # Flag to indicate if the namespace should be created
-    create_namespace = bool
+    create_namespace = optional(bool, true)
 
     # The name of the ClickHouse cluster (used for ClickHouseInstallation resource name)
     # Defaults to metadata.name if not specified

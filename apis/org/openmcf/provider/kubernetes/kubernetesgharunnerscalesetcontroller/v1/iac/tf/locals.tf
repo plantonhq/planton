@@ -1,82 +1,73 @@
-##############################################
-# locals.tf
-#
-# Computed values and transformations for the
-# KubernetesGhaRunnerScaleSetController module.
-##############################################
-
 locals {
-  # Release configuration - use resource name for consistency with other components
   release_name = var.metadata.name
-  # For OCI charts, the full URL must be passed as the chart parameter
-  # (repository doesn't work with OCI registries in Terraform helm_release)
-  chart_oci = "oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller"
+  chart_oci    = "oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller"
 
-  # Standard labels
+  resource_id = coalesce(var.metadata.id, var.metadata.name)
+
   labels = merge(
     {
-      "openmcf.org/resource"      = "true"
-      "openmcf.org/resource-name" = var.metadata.name
-      "openmcf.org/resource-kind" = "KubernetesGhaRunnerScaleSetController"
+      "resource"      = "true"
+      "resource_id"   = local.resource_id
+      "resource_kind" = "gha_runner_scale_set_controller_kubernetes"
+      "resource_name" = var.metadata.name
     },
-    var.metadata.id != "" ? { "openmcf.org/resource-id" = var.metadata.id } : {},
-    var.metadata.org != "" ? { "openmcf.org/organization" = var.metadata.org } : {},
-    var.metadata.env != "" ? { "openmcf.org/environment" = var.metadata.env } : {}
+    var.metadata.org != null && var.metadata.org != "" ? { "organization" = var.metadata.org } : {},
+    var.metadata.env != null && var.metadata.env != "" ? { "environment" = var.metadata.env } : {}
   )
 
-  # Metrics enabled check
-  metrics_enabled = var.metrics != null && var.metrics.controller_manager_addr != ""
+  metrics_enabled = var.spec.metrics != null && try(var.spec.metrics.controller_manager_addr, "") != ""
 
-  # Build Helm values
   helm_values = {
-    replicaCount = var.replica_count
+    replicaCount = var.spec.replica_count
     labels       = local.labels
 
     resources = {
       requests = {
-        cpu    = try(var.container.resources.requests.cpu, "100m")
-        memory = try(var.container.resources.requests.memory, "128Mi")
+        cpu    = try(var.spec.container.resources.requests.cpu, "100m")
+        memory = try(var.spec.container.resources.requests.memory, "128Mi")
       }
       limits = {
-        cpu    = try(var.container.resources.limits.cpu, "500m")
-        memory = try(var.container.resources.limits.memory, "512Mi")
+        cpu    = try(var.spec.container.resources.limits.cpu, "500m")
+        memory = try(var.spec.container.resources.limits.memory, "512Mi")
       }
     }
 
     flags = merge(
       {
-        logLevel                      = var.flags.log_level
-        logFormat                     = var.flags.log_format
-        runnerMaxConcurrentReconciles = var.flags.runner_max_concurrent_reconciles
-        updateStrategy                = var.flags.update_strategy
+        logLevel                      = try(var.spec.flags.log_level, "debug")
+        logFormat                     = try(var.spec.flags.log_format, "text")
+        runnerMaxConcurrentReconciles = try(var.spec.flags.runner_max_concurrent_reconciles, 2)
+        updateStrategy                = try(var.spec.flags.update_strategy, "immediate")
       },
-      var.flags.watch_single_namespace != "" ? { watchSingleNamespace = var.flags.watch_single_namespace } : {},
-      length(var.flags.exclude_label_propagation_prefixes) > 0 ? { excludeLabelPropagationPrefixes = var.flags.exclude_label_propagation_prefixes } : {},
-      var.flags.k8s_client_rate_limiter_qps > 0 ? { k8sClientRateLimiterQPS = var.flags.k8s_client_rate_limiter_qps } : {},
-      var.flags.k8s_client_rate_limiter_burst > 0 ? { k8sClientRateLimiterBurst = var.flags.k8s_client_rate_limiter_burst } : {}
+      try(var.spec.flags.watch_single_namespace, "") != "" ? { watchSingleNamespace = var.spec.flags.watch_single_namespace } : {},
+      try(length(var.spec.flags.exclude_label_propagation_prefixes), 0) > 0 ? { excludeLabelPropagationPrefixes = var.spec.flags.exclude_label_propagation_prefixes } : {},
+      try(var.spec.flags.k8s_client_rate_limiter_qps, 0) > 0 ? { k8sClientRateLimiterQPS = var.spec.flags.k8s_client_rate_limiter_qps } : {},
+      try(var.spec.flags.k8s_client_rate_limiter_burst, 0) > 0 ? { k8sClientRateLimiterBurst = var.spec.flags.k8s_client_rate_limiter_burst } : {}
     )
 
-    priorityClassName = var.priority_class_name
+    priorityClassName = try(var.spec.priority_class_name, "")
 
-    imagePullSecrets = [for s in var.image_pull_secrets : { name = s }]
+    imagePullSecrets = [for s in try(var.spec.image_pull_secrets, []) : { name = s }]
   }
 
-  # Add image configuration if provided
-  helm_values_with_image = var.container.image.repository != "" ? merge(local.helm_values, {
-    image = {
-      repository = var.container.image.repository
-      tag        = var.container.image.tag
-      pullPolicy = var.container.image.pull_policy
-    }
-  }) : local.helm_values
-
-  # Add metrics configuration if enabled
-  helm_values_final = local.metrics_enabled ? merge(local.helm_values_with_image, {
-    metrics = {
-      controllerManagerAddr = var.metrics.controller_manager_addr
-      listenerAddr          = var.metrics.listener_addr
-      listenerEndpoint      = var.metrics.listener_endpoint
-    }
-  }) : local.helm_values_with_image
+  # Helm values split into separate yamlencode entries to avoid HCL
+  # "Inconsistent conditional result types" errors. Helm deep-merges
+  # values list entries in order (like multiple -f flags).
+  helm_values_list = concat(
+    [yamlencode(local.helm_values)],
+    try(var.spec.container.image.repository, "") != "" ? [yamlencode({
+      image = {
+        repository = var.spec.container.image.repository
+        tag        = var.spec.container.image.tag
+        pullPolicy = var.spec.container.image.pull_policy
+      }
+    })] : [],
+    local.metrics_enabled ? [yamlencode({
+      metrics = {
+        controllerManagerAddr = var.spec.metrics.controller_manager_addr
+        listenerAddr          = try(var.spec.metrics.listener_addr, "")
+        listenerEndpoint      = try(var.spec.metrics.listener_endpoint, "")
+      }
+    })] : []
+  )
 }
-

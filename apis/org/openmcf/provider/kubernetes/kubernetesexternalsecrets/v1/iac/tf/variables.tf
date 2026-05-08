@@ -14,11 +14,8 @@ variable "metadata" {
 variable "spec" {
   description = "Specification for Kubernetes External Secrets Operator"
   type = object({
-    # Namespace where the operator will be installed (StringValueOrRef)
-    namespace = optional(object({
-      value = optional(string)
-      ref   = optional(string)
-    }))
+    # Namespace where the operator will be installed
+    namespace = optional(string)
 
     # Flag to indicate if the namespace should be created
     create_namespace = optional(bool, false)
