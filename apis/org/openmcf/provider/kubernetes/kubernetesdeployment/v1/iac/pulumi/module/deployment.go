@@ -65,13 +65,10 @@ func deployment(ctx *pulumi.Context, locals *Locals,
 
 			for _, envVarKey := range sortedEnvVariableKeys {
 				envVarValue := locals.KubernetesDeployment.Spec.Container.App.Env.Variables[envVarKey]
-				// Orchestrator resolves valueFrom and places result in .value
-				if envVarValue.GetValue() != "" {
-					envVarInputs = append(envVarInputs, kubernetescorev1.EnvVarInput(kubernetescorev1.EnvVarArgs{
-						Name:  pulumi.String(envVarKey),
-						Value: pulumi.String(envVarValue.GetValue()),
-					}))
-				}
+				envVarInputs = append(envVarInputs, kubernetescorev1.EnvVarInput(kubernetescorev1.EnvVarArgs{
+					Name:  pulumi.String(envVarKey),
+					Value: pulumi.String(envVarValue.GetValue()),
+				}))
 			}
 		}
 

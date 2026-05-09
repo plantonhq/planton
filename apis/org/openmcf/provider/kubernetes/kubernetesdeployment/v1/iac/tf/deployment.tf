@@ -70,11 +70,12 @@ resource "kubernetes_deployment" "this" {
 
           # Add env variables from var.spec.container.app.env.variables
           # After generator flattening, each value is a plain string.
+          # Empty string is a valid value (distinct from null/not-declared).
           dynamic "env" {
             for_each = {
               for k, v in (try(var.spec.container.app.env.variables, null) != null ? var.spec.container.app.env.variables : {}) :
               k => v
-              if v != null && v != ""
+              if v != null
             }
             content {
               name  = env.key
