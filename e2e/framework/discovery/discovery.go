@@ -135,10 +135,10 @@ type TestScenario struct {
 	Provider string
 }
 
-// DiscoverTestScenarios scans the component's colocated e2e/ directory for YAML manifests.
-// Path: apis/org/openmcf/provider/{provider}/{component}/v1/e2e/
+// DiscoverTestScenarios scans the component's colocated e2e/scenarios/ directory for YAML manifests.
+// Path: apis/org/openmcf/provider/{provider}/{component}/v1/e2e/scenarios/
 func DiscoverTestScenarios(repoRoot, provider, component string) ([]TestScenario, error) {
-	scenarioDir := filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", provider, component, "v1", "e2e")
+	scenarioDir := filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", provider, component, "v1", "e2e", "scenarios")
 
 	entries, err := os.ReadDir(scenarioDir)
 	if err != nil {

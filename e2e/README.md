@@ -19,45 +19,110 @@ executing the full lifecycle against real providers:
 If any phase fails, the framework still attempts DESTROY to avoid leaking
 resources.
 
-## How Test Scenarios Are Organized
+## Directory Layout
 
-Test manifests live **next to their components**, not in a central test
-directory. Each component has an `e2e/` folder at the `v1` level:
+### Component E2E Structure
+
+Test scenarios, profiles, and fixtures live **next to their components** at the
+`v1/e2e/` level:
 
 ```
 apis/org/openmcf/provider/{provider}/{component}/v1/
-  e2e/                    <-- test manifests live here
-    minimal.yaml
-    with-probes.yaml
-    with-hpa.yaml
-    ...
+  e2e/
+    profile.yaml           <-- E2E profile (tier, status, provisioners, timeout)
+    scenarios/             <-- test scenario manifests
+      minimal.yaml
+      with-probes.yaml
+      with-hpa.yaml
+    fixtures/              <-- prerequisite deployments (Tier 3 only)
+      01-operator.yaml
   iac/
-    hack/manifest.yaml    <-- the canonical example manifest
-    pulumi/               <-- Pulumi module
-    tf/                   <-- Terraform module
+    hack/manifest.yaml     <-- the canonical example manifest
+    pulumi/                <-- Pulumi module
+    tf/                    <-- Terraform module
   spec.proto
 ```
 
-Each YAML file in `e2e/` is a complete OpenMCF manifest representing one test
-scenario. The framework discovers them automatically and runs each through the
-full 6-phase lifecycle as an independent sub-test.
-
-## Provider Harnesses
+### Provider Harness Structure
 
 Each cloud provider has a harness that manages test infrastructure and
-verification. The harness for a provider lives under that provider's directory
-in an `aa_e2e/` folder (the `aa_` prefix ensures it sorts first in the file
-explorer, ahead of component directories):
+verification, plus a provider-level E2E profile:
 
 ```
 apis/org/openmcf/provider/{provider}/aa_e2e/
-  e2e_harness.go          <-- provider lifecycle (setup/teardown)
-  e2e_verify.go           <-- resource verification logic
+  profile.yaml             <-- Provider E2E profile (credentials, substrate, tools)
+  harness.go               <-- Provider lifecycle (setup/teardown)
+  verify/                  <-- Resource verification logic
 ```
 
 For Kubernetes, the harness creates a `kind` cluster and uses `kubectl` for
-verification. Future cloud provider harnesses will manage credentials and use
-provider SDKs or CLIs for verification.
+verification.
+
+## E2E Profiles
+
+Profiles are KRM-style YAML files (`apiVersion: qa.openmcf.org/v1`) that
+declare how E2E tests are executed. The CI workflow reads these profiles to
+dynamically generate the test matrix -- no hardcoded component lists.
+
+### Provider Profile (`aa_e2e/profile.yaml`)
+
+Configures provider-wide E2E behavior:
+
+```yaml
+apiVersion: qa.openmcf.org/v1
+kind: ProviderE2EProfile
+metadata:
+  name: kubernetes
+spec:
+  credential_approach: none
+  test_substrate: kind
+  default_cost_class: free_local
+  default_schedule_lane: weekly
+  required_tools: [kind, kubectl, pulumi, tofu]
+  github_environment: e2e-kubernetes
+  max_concurrent_tests: 8
+```
+
+### Component Profile (`v1/e2e/profile.yaml`)
+
+Declares a component's E2E readiness:
+
+```yaml
+apiVersion: qa.openmcf.org/v1
+kind: ComponentE2EProfile
+metadata:
+  name: kubernetesredis
+spec:
+  tier: 2
+  status: green
+  validated_provisioners: [pulumi, terraform]
+  timeout_minutes: 15
+```
+
+Status values:
+- **green** -- passes on CI, included in scheduled runs
+- **deferred** -- known failure with documented reason, skipped in CI
+- **skip** -- intentionally excluded (needs cloud credentials, etc.)
+- **stub** -- module is a stub with no real deployment logic
+
+## Discovering Components
+
+The `openmcf e2e discover` CLI command scans profiles and displays component
+readiness:
+
+```bash
+# Interactive TUI (default in terminal)
+openmcf e2e discover --provider kubernetes
+
+# Plain table (default when piped)
+openmcf e2e discover --provider kubernetes --output table
+
+# GitHub Actions matrix JSON (for CI consumption)
+openmcf e2e discover --provider kubernetes --output github-matrix
+
+# Filter to GREEN Pulumi Tier 1 only
+openmcf e2e discover --provider kubernetes --status green --tier 1 --provisioner pulumi
+```
 
 ## Running Tests
 
@@ -77,10 +142,6 @@ make e2e-test-kubernetes-terraform-tier1
 # Terraform-only, single component
 go test -tags=e2e -timeout=30m -v -count=1 \
   -run "TestKubernetesNamespace_Terraform/minimal$" ./e2e/...
-
-# Pulumi-only, single scenario
-go test -tags=e2e -timeout=30m -v -count=1 \
-  -run "TestKubernetesNamespace_Pulumi/minimal$" ./e2e/...
 ```
 
 ### Terraform binary selection
@@ -107,6 +168,20 @@ as its execution layer. For each test scenario:
 8. The same kubectl verifiers confirm cleanup
 9. The temp directory is removed
 
+## CI Workflow
+
+The `e2e-kubernetes.yaml` GitHub Actions workflow automates E2E on a weekly
+schedule:
+
+1. **build-check** -- compiles E2E code + go vet (runs on every PR too)
+2. **discover** -- runs `openmcf e2e discover --output github-matrix` to
+   generate the test matrix from profiles
+3. **e2e** -- dynamic matrix of (tier x provisioner) cells, each with its own
+   kind cluster, using `gotestsum` for JUnit output
+4. **summary** -- aggregates JUnit XML into GitHub Step Summary
+
+To trigger manually: Actions > e2e-kubernetes > Run workflow > select branch.
+
 ## Build Tag Isolation
 
 All E2E test files use `//go:build e2e`. This means:
@@ -124,26 +199,38 @@ create real infrastructure are gated.
 The framework does not hardcode resource names. Instead, it parses each test
 manifest at runtime to extract the resource name, namespace, and kind, then
 builds the appropriate verification dynamically. This means adding a new test
-scenario is as simple as dropping a YAML file into the component's `e2e/`
-folder -- no Go code changes needed.
+scenario is as simple as dropping a YAML file into the component's
+`e2e/scenarios/` folder -- no Go code changes needed.
 
 ## Adding a New Test Scenario
 
-1. Create a YAML manifest in `{component}/v1/e2e/` with a descriptive filename
+1. Create a YAML manifest in `{component}/v1/e2e/scenarios/` with a descriptive
+   filename
 2. Use a unique `metadata.name` (and unique namespace if the component creates
    one) to avoid collisions with other scenarios
 3. Run `make e2e-test-component component={ComponentName}` to verify it works
 4. That's it -- the framework discovers and runs it automatically
 
+## Adding a New Component
+
+1. Create the IaC modules (`iac/pulumi/`, `iac/tf/`)
+2. Create `v1/e2e/profile.yaml` with the component's E2E profile
+3. Create at least `v1/e2e/scenarios/minimal.yaml` with a minimal test manifest
+4. Add a `Test{ComponentName}_{Provisioner}` function in the appropriate test
+   file (e.g., `kubernetes_test.go`)
+5. The CI workflow picks up the new component automatically from the profile
+
 ## Adding a New Provider
 
-1. Create `apis/org/openmcf/provider/{provider}/aa_e2e/` with harness and
-   verify files
+1. Create `apis/org/openmcf/provider/{provider}/aa_e2e/` with harness, verify
+   files, and `profile.yaml`
 2. Implement the `provider.Harness` interface (Setup, Teardown, VerifyDeployed,
    VerifyDestroyed)
 3. Add a test entry point in `e2e/` that creates the harness and discovers
    scenarios for that provider
 4. Add Makefile targets
+5. Create `.github/workflows/e2e-{provider}.yaml` with the appropriate trigger
+   schedule and credential configuration
 
 ## Architecture
 
@@ -156,6 +243,16 @@ e2e/
     provider/             -- Harness interface definition
     discovery/            -- Filesystem scanner for components and scenarios
     reporter/             -- JSON + Markdown report generation
+
+pkg/e2e/profile/          -- E2E profile loader and discovery
+  loader.go               -- YAML→proto loading for provider and component profiles
+  discover.go             -- Profile scanning, filtering, GitHub matrix generation
+  paths.go                -- Well-known filesystem paths
+
+apis/org/openmcf/qa/      -- Proto schema for E2E profiles (KRM-style)
+  shared/                 -- Shared enums (CostClass)
+  providere2eprofile/v1/  -- ProviderE2EProfile KRM API
+  componente2eprofile/v1/ -- ComponentE2EProfile KRM API
 ```
 
 The framework is engine-agnostic. The runner supports both Pulumi and Terraform
