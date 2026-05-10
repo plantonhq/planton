@@ -97,24 +97,9 @@ func signoz(ctx *pulumi.Context, locals *Locals,
 			// Self-managed ClickHouse configuration
 			if locals.KubernetesSignoz.Spec.Database.ManagedDatabase != nil {
 				managed := locals.KubernetesSignoz.Spec.Database.ManagedDatabase
-				clickhouseValues := pulumi.Map{
-					"enabled": pulumi.Bool(true),
-					// Use bitnamilegacy registry due to Bitnami discontinuing free Docker Hub images (Sep 2025)
-					// See: https://github.com/bitnami/containers/issues/83267
-					// ClickHouse specific image override (not using global.imageRegistry to avoid affecting Altinity operator)
-					"image": pulumi.Map{
-						"registry":   pulumi.String("docker.io"),
-						"repository": pulumi.String("bitnamilegacy/clickhouse"),
-					},
-					// ZooKeeper is a subchart dependency of ClickHouse in SigNoz
-					// Override ZooKeeper image here under clickhouse.zookeeper
-					"zookeeper": pulumi.Map{
-						"image": pulumi.Map{
-							"registry":   pulumi.String("docker.io"),
-							"repository": pulumi.String("bitnamilegacy/zookeeper"),
-						},
-					},
-				}
+			clickhouseValues := pulumi.Map{
+				"enabled": pulumi.Bool(true),
+			}
 
 				// ClickHouse container configuration
 				if managed.Container != nil {

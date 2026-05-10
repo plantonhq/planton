@@ -1,5 +1,5 @@
 apiVersion: kubernetes.openmcf.org/v1
-kind: HarborKubernetes
+kind: KubernetesHarbor
 metadata:
   name: harborkubernetes-demo
 spec:

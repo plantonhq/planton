@@ -4,8 +4,11 @@ metadata:
   name: kubernetestemporal
 spec:
   tier: 2
-  status: skip
-  deferred_reason: "requires external Cassandra/PostgreSQL/MySQL database"
+  status: deferred
+  deferred_reason: "too heavy for default kind -- embedded PostgreSQL + schema init jobs + 4 Temporal services exceed 20m deployment window"
   validated_provisioners:
     - pulumi
   timeout_minutes: 15
+  limitations:
+    - "Helm chart deploys PostgreSQL + 3 schema jobs + 4 Temporal services sequentially"
+    - "Module validation fixed: embedded PostgreSQL/MySQL now supported (was restricted to Cassandra-only)"

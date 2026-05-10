@@ -4,8 +4,11 @@ metadata:
   name: kubernetessignoz
 spec:
   tier: 2
-  status: skip
-  deferred_reason: "requires external ClickHouse database"
+  status: deferred
+  deferred_reason: "too heavy for default kind -- ClickHouse operator + StatefulSet + SigNoz + OTel collector (41 resources) exceed 20m deployment window"
   validated_provisioners:
     - pulumi
   timeout_minutes: 15
+  limitations:
+    - "Managed ClickHouse works (not external-only as previously documented)"
+    - "Fixed bitnamilegacy/clickhouse image bug -- chart default clickhouse/clickhouse-server is correct"

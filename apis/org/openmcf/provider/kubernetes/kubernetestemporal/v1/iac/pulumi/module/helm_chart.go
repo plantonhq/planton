@@ -156,10 +156,70 @@ func helmChart(ctx *pulumi.Context, locals *Locals,
 			values["mysql"] = pulumi.Map{"enabled": pulumi.Bool(true)}
 			values["postgresql"] = pulumi.Map{"enabled": pulumi.Bool(false)}
 
+			defaultDB := db.GetDatabaseName()
+			visibilityDB := db.GetVisibilityName()
+			values["server"] = pulumi.Map{
+				"config": pulumi.Map{
+					"persistence": pulumi.Map{
+						"driver": pulumi.String("sql"),
+						"default": pulumi.Map{
+							"driver": pulumi.String("sql"),
+							"sql": pulumi.Map{
+								"driver":   pulumi.String("mysql8"),
+								"host":     pulumi.String(locals.KubernetesTemporal.Metadata.Name + "-mysql"),
+								"port":     pulumi.Int(3306),
+								"database": pulumi.String(defaultDB),
+								"user":     pulumi.String("root"),
+							},
+						},
+						"visibility": pulumi.Map{
+							"driver": pulumi.String("sql"),
+							"sql": pulumi.Map{
+								"driver":   pulumi.String("mysql8"),
+								"host":     pulumi.String(locals.KubernetesTemporal.Metadata.Name + "-mysql"),
+								"port":     pulumi.Int(3306),
+								"database": pulumi.String(visibilityDB),
+								"user":     pulumi.String("root"),
+							},
+						},
+					},
+				},
+			}
+
 		case kubernetestemporalv1.KubernetesTemporalDatabaseBackend_postgresql:
 			values["cassandra"] = pulumi.Map{"enabled": pulumi.Bool(false)}
 			values["mysql"] = pulumi.Map{"enabled": pulumi.Bool(false)}
 			values["postgresql"] = pulumi.Map{"enabled": pulumi.Bool(true)}
+
+			defaultDB := db.GetDatabaseName()
+			visibilityDB := db.GetVisibilityName()
+			values["server"] = pulumi.Map{
+				"config": pulumi.Map{
+					"persistence": pulumi.Map{
+						"driver": pulumi.String("sql"),
+						"default": pulumi.Map{
+							"driver": pulumi.String("sql"),
+							"sql": pulumi.Map{
+								"driver":   pulumi.String("postgres12"),
+								"host":     pulumi.String(locals.KubernetesTemporal.Metadata.Name + "-postgresql"),
+								"port":     pulumi.Int(5432),
+								"database": pulumi.String(defaultDB),
+								"user":     pulumi.String("temporal"),
+							},
+						},
+						"visibility": pulumi.Map{
+							"driver": pulumi.String("sql"),
+							"sql": pulumi.Map{
+								"driver":   pulumi.String("postgres12"),
+								"host":     pulumi.String(locals.KubernetesTemporal.Metadata.Name + "-postgresql"),
+								"port":     pulumi.Int(5432),
+								"database": pulumi.String(visibilityDB),
+								"user":     pulumi.String("temporal"),
+							},
+						},
+					},
+				},
+			}
 		}
 	}
 
