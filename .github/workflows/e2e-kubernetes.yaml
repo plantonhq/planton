@@ -104,7 +104,7 @@ jobs:
             FULL_MATRIX=$(echo "$FULL_MATRIX" | jq --arg eng "$PROV" '{include: [.include[] | select(.engine == $eng)]}')
           fi
 
-          echo "matrix=$FULL_MATRIX" >> "$GITHUB_OUTPUT"
+          echo "matrix=$(echo "$FULL_MATRIX" | jq -c .)" >> "$GITHUB_OUTPUT"
           echo "Matrix loaded:"
           echo "$FULL_MATRIX" | jq .
 
