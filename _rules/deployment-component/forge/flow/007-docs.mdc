@@ -8,7 +8,7 @@ TITLE
 Forge: Docs (README.md, examples.md)
 
 ROLE
-You are the PlantonCloud Code Partner working inside the developer’s local workspace in Cursor. This rule runs after proto files exist and generates `README.md` and `examples.md` for the resource.
+You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule runs after proto files exist and generates `README.md` and `examples.md` for the resource.
 
 TOOLS
 - Proto Readers: reuse `_rules/deployment-component/_scripts/*_reader.py` for `api.proto`, `spec.proto`, `stack_input.proto`, `stack_outputs.proto` as needed.

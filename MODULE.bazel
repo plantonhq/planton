@@ -29,9 +29,11 @@ use_repo(
     "build_buf_gen_go_bufbuild_protovalidate_protocolbuffers_go",
     "build_buf_go_protovalidate",
     "com_github_blang_semver",
+    "com_github_charmbracelet_bubbletea",
     "com_github_charmbracelet_lipgloss",
     "com_github_fatih_color",
     "com_github_google_uuid",
+    "com_github_gruntwork_io_terratest",
     "com_github_hashicorp_hcl_v2",
     "com_github_iancoleman_strcase",
     "com_github_masterminds_sprig",
@@ -71,7 +73,6 @@ use_repo(
     "com_github_spf13_cobra",
     "com_github_spf13_pflag",
     "com_github_stretchr_testify",
-    "com_github_zclconf_go_cty",
     "com_github_zyedidia_clipboard",
     "in_gopkg_yaml_v3",
     "io_k8s_api",
@@ -80,6 +81,7 @@ use_repo(
     "io_k8s_sigs_yaml",
     "io_k8s_utils",
     "org_golang_google_protobuf",
+    "org_golang_x_term",
     "org_golang_x_tools",
 )
 

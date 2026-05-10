@@ -19,7 +19,7 @@ variable "spec" {
     namespace = string
 
     # flag to indicate if the namespace should be created
-    create_namespace = bool
+    create_namespace = optional(bool, true)
 
     # The specifications for the MongoDB container deployment.
     container = object({
@@ -62,14 +62,14 @@ variable "spec" {
     })
 
     # The ingress configuration for the MongoDB deployment.
-    ingress = object({
+    ingress = optional(object({
 
       # A flag to enable or disable ingress.
       enabled = bool
 
       # The full hostname for MongoDB access.
       hostname = string
-    })
+    }))
 
     # A map of key-value pairs that provide additional customization options for the Helm chart used
     # to deploy MongoDB on Kubernetes. These values allow for further refinement of the deployment,

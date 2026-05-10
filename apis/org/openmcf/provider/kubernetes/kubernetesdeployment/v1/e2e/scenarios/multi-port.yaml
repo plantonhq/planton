@@ -1,0 +1,32 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesDeployment
+metadata:
+  name: e2e-dep-multiport
+spec:
+  namespace:
+    value: e2e-dep-mp-ns
+  create_namespace: true
+  version: main
+  container:
+    app:
+      image:
+        repo: nginx
+        tag: "1.27-alpine"
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "32Mi"
+        limits:
+          cpu: "100m"
+          memory: "64Mi"
+      ports:
+        - name: http
+          container_port: 80
+          network_protocol: TCP
+          app_protocol: http
+          service_port: 80
+        - name: https
+          container_port: 443
+          network_protocol: TCP
+          app_protocol: https
+          service_port: 443

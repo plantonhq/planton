@@ -18,7 +18,7 @@ variable "spec" {
     namespace = string
 
     # Flag to indicate if the namespace should be created
-    create_namespace = bool
+    create_namespace = optional(bool, true)
 
     # The container specifications for the statefulset
     container = object({
@@ -49,15 +49,7 @@ variable "spec" {
           # Each variable can be provided either as a direct string value (value)
           # or as a reference to another OpenMCF resource's field (value_from).
           # The orchestrator resolves value_from references and populates .value before invoking Terraform.
-          variables = optional(map(object({
-            value = optional(string)
-            value_from = optional(object({
-              kind       = optional(string)
-              env        = optional(string)
-              name       = string
-              field_path = optional(string)
-            }))
-          })))
+          variables = optional(map(string))
           secrets = optional(map(object({
             value = optional(string)
             secret_ref = optional(object({
@@ -75,7 +67,7 @@ variable "spec" {
           network_protocol = string
           app_protocol     = string
           service_port     = number
-          is_ingress_port  = bool
+          is_ingress_port  = optional(bool, false)
         }))
 
         # Volume mounts for the container

@@ -1,0 +1,19 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesOpenBao
+metadata:
+  name: e2e-openbao-minimal
+spec:
+  namespace:
+    value: e2e-openbao-minimal
+  create_namespace: true
+  server_container:
+    replicas: 1
+    data_storage_size: "1Gi"
+    resources:
+      limits:
+        cpu: "500m"
+        memory: "256Mi"
+      requests:
+        cpu: "50m"
+        memory: "64Mi"
+  ui_enabled: false

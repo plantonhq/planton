@@ -69,12 +69,13 @@ resource "kubernetes_deployment" "this" {
           }
 
           # Add env variables from var.spec.container.app.env.variables
-          # The orchestrator resolves valueFrom references and populates .value before invoking Terraform
+          # After generator flattening, each value is a plain string.
+          # Empty string is a valid value (distinct from null/not-declared).
           dynamic "env" {
             for_each = {
-              for k, v in try(var.spec.container.app.env.variables, {}) :
-              k => v.value
-              if try(v.value, null) != null && v.value != ""
+              for k, v in (try(var.spec.container.app.env.variables, null) != null ? var.spec.container.app.env.variables : {}) :
+              k => v
+              if v != null
             }
             content {
               name  = env.key
@@ -85,7 +86,7 @@ resource "kubernetes_deployment" "this" {
           # Add env variables from secrets with direct string values (using computed secret name)
           dynamic "env" {
             for_each = {
-              for k, v in try(var.spec.container.app.env.secrets, {}) :
+              for k, v in (try(var.spec.container.app.env.secrets, null) != null ? var.spec.container.app.env.secrets : {}) :
               k => v
               if try(v.value, null) != null && v.value != ""
             }
@@ -103,7 +104,7 @@ resource "kubernetes_deployment" "this" {
           # Add env variables from external Kubernetes Secret references
           dynamic "env" {
             for_each = {
-              for k, v in try(var.spec.container.app.env.secrets, {}) :
+              for k, v in (try(var.spec.container.app.env.secrets, null) != null ? var.spec.container.app.env.secrets : {}) :
               k => v
               if try(v.secret_ref, null) != null
             }

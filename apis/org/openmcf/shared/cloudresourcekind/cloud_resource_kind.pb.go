@@ -1248,6 +1248,13 @@ type CloudResourceKindMeta struct {
 	// used by the organization graph to render hierarchical architecture diagrams
 	// where container resources visually enclose their child resources.
 	ContainerKind bool `protobuf:"varint,6,opt,name=container_kind,json=containerKind,proto3" json:"container_kind,omitempty"`
+	// components that must be deployed before this component can function.
+	// order matters: index 0 is deployed first. the E2E framework deploys
+	// these as fixtures and tears them down in reverse order. this is also
+	// used by the platform for dependency ordering in infra charts.
+	// example: KubernetesPostgres needs KubernetesZalandoPostgresOperator
+	// because it creates acid.zalan.do/v1 postgresql CRDs.
+	Prerequisites []CloudResourceKind `protobuf:"varint,7,rep,packed,name=prerequisites,proto3,enum=org.openmcf.shared.cloudresourcekind.CloudResourceKind" json:"prerequisites,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1324,6 +1331,13 @@ func (x *CloudResourceKindMeta) GetContainerKind() bool {
 	return false
 }
 
+func (x *CloudResourceKindMeta) GetPrerequisites() []CloudResourceKind {
+	if x != nil {
+		return x.Prerequisites
+	}
+	return nil
+}
+
 var file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_extTypes = []protoimpl.ExtensionInfo{
 	{
 		ExtendedType:  (*descriptorpb.EnumValueOptions)(nil),
@@ -1345,17 +1359,18 @@ var File_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto protoref
 
 const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\n" +
-	">org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto\x12$org.openmcf.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\x1aBorg/openmcf/shared/cloudresourcekind/cloud_resource_provider.proto\"\xca\x02\n" +
+	">org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto\x12$org.openmcf.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\x1aBorg/openmcf/shared/cloudresourcekind/cloud_resource_provider.proto\"\xa9\x03\n" +
 	"\x15CloudResourceKindMeta\x12W\n" +
 	"\bprovider\x18\x01 \x01(\x0e2;.org.openmcf.shared.cloudresourcekind.CloudResourceProviderR\bprovider\x12X\n" +
 	"\aversion\x18\x02 \x01(\x0e2>.org.openmcf.shared.cloudresourcekind.CloudResourceKindVersionR\aversion\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1b\n" +
 	"\tid_prefix\x18\x04 \x01(\tR\bidPrefix\x12&\n" +
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind\x12%\n" +
-	"\x0econtainer_kind\x18\x06 \x01(\bR\rcontainerKind*O\n" +
+	"\x0econtainer_kind\x18\x06 \x01(\bR\rcontainerKind\x12]\n" +
+	"\rprerequisites\x18\a \x03(\x0e27.org.openmcf.shared.cloudresourcekind.CloudResourceKindR\rprerequisites*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xe2{\n" +
+	"\x02v1\x10\x01*\xfa{\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12(\n" +
 	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1530,24 +1545,24 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\tGcpKmsKey\x10\xb3\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpkms\x12+\n" +
 	"\x14GcpFilestoreInstance\x10\xbc\x05\x1a\x10\xa2\xf7\x04\f\b\x12\x10\x01\"\x06gcpnfs\x12(\n" +
 	"\x10KubernetesArgocd\x10\xa0\x06\x1a\x11\xa2\xf7\x04\r\b\x13\x10\x01\"\ak8sargo\x12)\n" +
-	"\x11KubernetesCronJob\x10\xa1\x06\x1a\x11\xa2\xf7\x04\r\b\x13\x10\x01\"\ak8scron\x12-\n" +
-	"\x17KubernetesElasticsearch\x10\xa2\x06\x1a\x0f\xa2\xf7\x04\v\b\x13\x10\x01\"\x05k8ses\x12&\n" +
+	"\x11KubernetesCronJob\x10\xa1\x06\x1a\x11\xa2\xf7\x04\r\b\x13\x10\x01\"\ak8scron\x121\n" +
+	"\x17KubernetesElasticsearch\x10\xa2\x06\x1a\x13\xa2\xf7\x04\x0f\b\x13\x10\x01\"\x05k8ses:\x02\xb6\x06\x12&\n" +
 	"\x10KubernetesGitlab\x10\xa3\x06\x1a\x0f\xa2\xf7\x04\v\b\x13\x10\x01\"\x05k8sgl\x12(\n" +
 	"\x11KubernetesGrafana\x10\xa4\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8sgfn\x12-\n" +
 	"\x15KubernetesHelmRelease\x10\xa5\x06\x1a\x11\xa2\xf7\x04\r\b\x13\x10\x01\"\ak8shelm\x12(\n" +
-	"\x11KubernetesJenkins\x10\xa6\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8sjkn\x12&\n" +
-	"\x0fKubernetesKafka\x10\xa7\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8skaf\x12(\n" +
+	"\x11KubernetesJenkins\x10\xa6\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8sjkn\x12*\n" +
+	"\x0fKubernetesKafka\x10\xa7\x06\x1a\x14\xa2\xf7\x04\x10\b\x13\x10\x01\"\x06k8skaf:\x02\xba\x06\x12(\n" +
 	"\x12KubernetesKeycloak\x10\xa8\x06\x1a\x0f\xa2\xf7\x04\v\b\x13\x10\x01\"\x05k8skc\x12'\n" +
 	"\x10KubernetesLocust\x10\xa9\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8sloc\x12-\n" +
-	"\x14KubernetesDeployment\x10\xaa\x06\x1a\x12\xa2\xf7\x04\x0e\b\x13\x10\x01\"\x06k8sdpl(\x01\x12(\n" +
-	"\x11KubernetesMongodb\x10\xab\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8smdb\x12&\n" +
+	"\x14KubernetesDeployment\x10\xaa\x06\x1a\x12\xa2\xf7\x04\x0e\b\x13\x10\x01\"\x06k8sdpl(\x01\x12,\n" +
+	"\x11KubernetesMongodb\x10\xab\x06\x1a\x14\xa2\xf7\x04\x10\b\x13\x10\x01\"\x06k8smdb:\x02\xc1\x06\x12&\n" +
 	"\x0fKubernetesNeo4j\x10\xac\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8sneo\x12(\n" +
-	"\x11KubernetesOpenFga\x10\xad\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8sfga\x12(\n" +
-	"\x12KubernetesPostgres\x10\xae\x06\x1a\x0f\xa2\xf7\x04\v\b\x13\x10\x01\"\x05k8spg\x12,\n" +
+	"\x11KubernetesOpenFga\x10\xad\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8sfga\x12,\n" +
+	"\x12KubernetesPostgres\x10\xae\x06\x1a\x13\xa2\xf7\x04\x0f\b\x13\x10\x01\"\x05k8spg:\x02\xbb\x06\x12,\n" +
 	"\x14KubernetesPrometheus\x10\xaf\x06\x1a\x11\xa2\xf7\x04\r\b\x13\x10\x01\"\ak8sprom\x12&\n" +
 	"\x0fKubernetesRedis\x10\xb0\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8sred\x12'\n" +
-	"\x10KubernetesSignoz\x10\xb1\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8ssgz\x12&\n" +
-	"\x0eKubernetesSolr\x10\xb2\x06\x1a\x11\xa2\xf7\x04\r\b\x13\x10\x01\"\ak8ssolr\x12*\n" +
+	"\x10KubernetesSignoz\x10\xb1\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8ssgz\x12*\n" +
+	"\x0eKubernetesSolr\x10\xb2\x06\x1a\x15\xa2\xf7\x04\x11\b\x13\x10\x01\"\ak8ssolr:\x02\xbc\x06\x12*\n" +
 	"\x12KubernetesTemporal\x10\xb3\x06\x1a\x11\xa2\xf7\x04\r\b\x13\x10\x01\"\ak8stprl\x12&\n" +
 	"\x0eKubernetesNats\x10\xb4\x06\x1a\x11\xa2\xf7\x04\r\b\x13\x10\x01\"\ak8snats\x12+\n" +
 	"\x15KubernetesCertManager\x10\xb5\x06\x1a\x0f\xa2\xf7\x04\v\b\x13\x10\x01\"\x05k8scm\x122\n" +
@@ -1558,8 +1573,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x1eKubernetesStrimziKafkaOperator\x10\xba\x06\x1a\x12\xa2\xf7\x04\x0e\b\x13\x10\x01\"\bk8sstzop\x129\n" +
 	"!KubernetesZalandoPostgresOperator\x10\xbb\x06\x1a\x11\xa2\xf7\x04\r\b\x13\x10\x01\"\ak8szlop\x12/\n" +
 	"\x16KubernetesSolrOperator\x10\xbc\x06\x1a\x12\xa2\xf7\x04\x0e\b\x13\x10\x01\"\bk8sslrop\x123\n" +
-	"\x19KubernetesExternalSecrets\x10\xbd\x06\x1a\x13\xa2\xf7\x04\x0f\b\x13\x10\x01\"\tk8sextsec\x12-\n" +
-	"\x14KubernetesClickHouse\x10\xbe\x06\x1a\x12\xa2\xf7\x04\x0e\b\x13\x10\x01\"\bk8sclkhs\x123\n" +
+	"\x19KubernetesExternalSecrets\x10\xbd\x06\x1a\x13\xa2\xf7\x04\x0f\b\x13\x10\x01\"\tk8sextsec\x121\n" +
+	"\x14KubernetesClickHouse\x10\xbe\x06\x1a\x16\xa2\xf7\x04\x12\b\x13\x10\x01\"\bk8sclkhs:\x02\xbf\x06\x123\n" +
 	"\x1aKubernetesAltinityOperator\x10\xbf\x06\x1a\x12\xa2\xf7\x04\x0e\b\x13\x10\x01\"\bk8saltop\x12=\n" +
 	"!KubernetesPerconaPostgresOperator\x10\xc0\x06\x1a\x15\xa2\xf7\x04\x11\b\x13\x10\x01\"\vk8sprcnpgop\x12;\n" +
 	"\x1eKubernetesPerconaMongoOperator\x10\xc1\x06\x1a\x16\xa2\xf7\x04\x12\b\x13\x10\x01\"\fk8sprcnmdbop\x12:\n" +
@@ -1806,13 +1821,14 @@ var file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_goTypes 
 var file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_depIdxs = []int32{
 	3, // 0: org.openmcf.shared.cloudresourcekind.CloudResourceKindMeta.provider:type_name -> org.openmcf.shared.cloudresourcekind.CloudResourceProvider
 	0, // 1: org.openmcf.shared.cloudresourcekind.CloudResourceKindMeta.version:type_name -> org.openmcf.shared.cloudresourcekind.CloudResourceKindVersion
-	4, // 2: org.openmcf.shared.cloudresourcekind.kind_meta:extendee -> google.protobuf.EnumValueOptions
-	2, // 3: org.openmcf.shared.cloudresourcekind.kind_meta:type_name -> org.openmcf.shared.cloudresourcekind.CloudResourceKindMeta
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	3, // [3:4] is the sub-list for extension type_name
-	2, // [2:3] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	1, // 2: org.openmcf.shared.cloudresourcekind.CloudResourceKindMeta.prerequisites:type_name -> org.openmcf.shared.cloudresourcekind.CloudResourceKind
+	4, // 3: org.openmcf.shared.cloudresourcekind.kind_meta:extendee -> google.protobuf.EnumValueOptions
+	2, // 4: org.openmcf.shared.cloudresourcekind.kind_meta:type_name -> org.openmcf.shared.cloudresourcekind.CloudResourceKindMeta
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	4, // [4:5] is the sub-list for extension type_name
+	3, // [3:4] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_init() }

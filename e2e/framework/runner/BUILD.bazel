@@ -1,0 +1,26 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "runner",
+    srcs = [
+        "fixtures.go",
+        "pulumi.go",
+        "runner.go",
+        "stackinput.go",
+        "terraform.go",
+        "terraform_input.go",
+    ],
+    importpath = "github.com/plantonhq/openmcf/e2e/framework/runner",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/org/openmcf/shared/iac/terraform",
+        "//e2e/framework/provider",
+        "//internal/manifest",
+        "//pkg/iac/stackinput",
+        "//pkg/iac/stackinput/providerenvvars",
+        "//pkg/iac/tofu/generators",
+        "//pkg/iac/tofu/tfbackend",
+        "@com_github_gruntwork_io_terratest//modules/terraform",
+        "@com_github_pkg_errors//:errors",
+    ],
+)

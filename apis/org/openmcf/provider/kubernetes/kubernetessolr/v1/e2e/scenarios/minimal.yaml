@@ -1,0 +1,31 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesSolr
+metadata:
+  name: e2e-solr-minimal
+spec:
+  namespace:
+    value: e2e-solr-minimal
+  create_namespace: true
+  solr_container:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 50m
+        memory: 128Mi
+    disk_size: 1Gi
+    image:
+      repo: solr
+      tag: "9.10.0"
+  zookeeper_container:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 250m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+    disk_size: 1Gi

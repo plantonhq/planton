@@ -106,6 +106,12 @@ func initializeLocals(ctx *pulumi.Context, stackInput *kuberneteskafkav1.Kuberne
 
 	locals.BootstrapKubeServiceFqdn = fmt.Sprintf("%s.%s.svc", locals.BootstrapKubeServiceName, locals.Namespace)
 
+	if target.Spec.Ingress == nil ||
+		!target.Spec.Ingress.Enabled ||
+		target.Spec.Ingress.Hostname == "" {
+		return locals
+	}
+
 	// schema registry related locals data
 	if locals.KubernetesKafka.Spec.SchemaRegistryContainer != nil &&
 		locals.KubernetesKafka.Spec.SchemaRegistryContainer.IsEnabled {
@@ -136,12 +142,6 @@ func initializeLocals(ctx *pulumi.Context, stackInput *kuberneteskafkav1.Kuberne
 		ctx.Export(OpKafkaUiExternalUrl, pulumi.Sprintf("https://%s", locals.IngressExternalKowlHostname))
 
 		locals.KowlKubeServiceFqdn = fmt.Sprintf("%s.%s.svc.cluster.local", locals.KowlKubeServiceName, locals.Namespace)
-	}
-
-	if target.Spec.Ingress == nil ||
-		!target.Spec.Ingress.Enabled ||
-		target.Spec.Ingress.Hostname == "" {
-		return locals
 	}
 
 	locals.IngressExternalBootstrapHostname = target.Spec.Ingress.Hostname

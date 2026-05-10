@@ -33,6 +33,13 @@
 # Equivalent to:
 #   kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/{version}/release.yaml
 ##############################################
+resource "kubernetes_namespace_v1" "tekton_pipelines" {
+  metadata {
+    name   = local.namespace
+    labels = local.final_labels
+  }
+}
+
 data "http" "tekton_pipeline_manifest" {
   url = local.pipeline_manifest_url
 }
@@ -45,6 +52,8 @@ resource "kubectl_manifest" "tekton_pipelines" {
 
   yaml_body = each.value
   wait      = true
+
+  depends_on = [kubernetes_namespace_v1.tekton_pipelines]
 }
 
 ##############################################

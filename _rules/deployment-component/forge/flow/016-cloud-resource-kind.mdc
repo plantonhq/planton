@@ -8,7 +8,7 @@ TITLE
 Forge: Add new cloud resource to cloud_resource_kind.proto enum
 
 ROLE
-You are the PlantonCloud Code Partner working inside the developer's local workspace in Cursor. This rule ensures that newly forged cloud resources are properly registered in the `cloud_resource_kind.proto` enum with correct provider ranges and metadata.
+You are the OpenMCF Code Partner working inside the developer's local workspace in Cursor. This rule ensures that newly forged cloud resources are properly registered in the `cloud_resource_kind.proto` enum with correct provider ranges and metadata.
 
 SCOPE
 - Add new enum entry to `apis/project/planton/shared/cloudresourcekind/cloud_resource_kind.proto`

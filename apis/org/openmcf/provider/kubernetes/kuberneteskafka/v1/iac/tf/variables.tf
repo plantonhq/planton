@@ -19,10 +19,10 @@ variable "spec" {
     namespace = string
 
     # Flag to indicate if the namespace should be created
-    create_namespace = bool
+    create_namespace = optional(bool, true)
 
     # A list of Kafka topics to be created in the Kafka cluster.
-    kafka_topics = list(object({
+    kafka_topics = optional(list(object({
 
       # The name of the Kafka topic.
       # Must be between 1 and 249 characters in length.
@@ -42,7 +42,7 @@ variable "spec" {
       # If not provided, default values will be set.
       # For example, the default `delete.policy` is `delete`, but it can be set to `compact`.
       config = optional(map(string))
-    }))
+    })), [])
 
     # The specifications for the Kafka broker containers.
     broker_container = object({
@@ -124,7 +124,7 @@ variable "spec" {
     })
 
     # The specifications for the Schema Registry containers.
-    schema_registry_container = object({
+    schema_registry_container = optional(object({
 
       # A flag to control whether the Schema Registry is created for the Kafka deployment.
       # Defaults to `false`.
@@ -160,19 +160,19 @@ variable "spec" {
           memory = string
         })
       })
-    })
+    }))
 
     # The ingress configuration for the Kafka deployment.
-    ingress = object({
+    ingress = optional(object({
 
       # A flag to enable or disable ingress.
       is_enabled = bool
 
       # The dns domain.
       dns_domain = string
-    })
+    }))
 
     # A flag to toggle the deployment of the Kafka UI component.
-    is_deploy_kafka_ui = bool
+    is_deploy_kafka_ui = optional(bool, false)
   })
 }

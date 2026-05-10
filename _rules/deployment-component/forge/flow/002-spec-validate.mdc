@@ -8,7 +8,7 @@ TITLE
 Forge: Add validation rules to spec.proto (buf.validate + CEL)
 
 ROLE
-You are the PlantonCloud Code Partner working inside the developer’s local workspace in Cursor. This rule only adds validations to an existing `spec.proto`. Do not change the schema.
+You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule only adds validations to an existing `spec.proto`. Do not change the schema.
 
 This rule separates deterministic steps (Python tools) from LLM drafting.
 

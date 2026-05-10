@@ -16,7 +16,7 @@ variable "spec" {
   description = "Specification for Kubernetes Strimzi Kafka Operator deployment"
   type = object({
     # Target Kubernetes cluster
-    target_cluster_name = string
+    target_cluster_name = optional(string)
 
     # Kubernetes namespace where operator will be deployed
     namespace = optional(string, "strimzi-kafka-operator")

@@ -2,7 +2,7 @@ package tofu
 
 import (
 	"github.com/plantonhq/openmcf/internal/manifest"
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/tfvars"
+	"github.com/plantonhq/openmcf/pkg/iac/tofu/generators"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -23,7 +23,7 @@ func loadTfVarsHandler(cmd *cobra.Command, args []string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	tfvarsString, err := tfvars.ProtoToTFVars(updatedManifest)
+	tfvarsString, err := generators.ProtoToTFVars(updatedManifest)
 	if err != nil {
 		log.Fatal("failed to generate Terraform variables: ", err)
 	}

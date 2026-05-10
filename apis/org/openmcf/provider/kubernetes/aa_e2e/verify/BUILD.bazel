@@ -1,0 +1,26 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "verify",
+    srcs = [
+        "config_group.go",
+        "crd_install.go",
+        "crd_workload.go",
+        "generic.go",
+        "helm.go",
+        "job.go",
+        "kubectl.go",
+        "manifest.go",
+        "namespace.go",
+        "operator.go",
+        "resource_existence.go",
+        "verifier.go",
+        "workload.go",
+    ],
+    importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/aa_e2e/verify",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_pkg_errors//:errors",
+        "@in_gopkg_yaml_v3//:yaml_v3",
+    ],
+)

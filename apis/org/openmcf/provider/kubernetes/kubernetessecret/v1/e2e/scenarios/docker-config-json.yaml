@@ -1,0 +1,12 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesSecret
+metadata:
+  name: e2e-sec-docker
+spec:
+  name: e2e-sec-docker
+  namespace: default
+  docker_config_json:
+    registry_server: "https://index.docker.io/v1/"
+    username: "e2e-test-user"
+    password: "e2e-test-token"
+    email: "e2e@example.com"

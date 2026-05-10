@@ -206,6 +206,60 @@ build-site:
 preview-site:
 	$(MAKE) -C site preview-site
 
+# ── E2E Tests ─────────────────────────────────────────────────────────────────
+.PHONY: e2e-test-kubernetes
+e2e-test-kubernetes:  ## Run all Kubernetes E2E tests -- Tier 1 + Tier 2 + Tier 3 + Tier 4 (requires kind, pulumi, kubectl, Docker)
+	go test -tags=e2e -timeout=360m -v -count=1 ./e2e/...
+
+.PHONY: e2e-test-kubernetes-tier1
+e2e-test-kubernetes-tier1:  ## Run Kubernetes Tier 1 (native K8s) E2E tests only
+	go test -tags=e2e -timeout=60m -v -count=1 -run "Test(KubernetesNamespace|KubernetesDeployment|KubernetesStatefulSet|KubernetesSecret|KubernetesService|KubernetesCronJob|KubernetesJob|KubernetesDaemonSet|KubernetesManifest)_" ./e2e/...
+
+.PHONY: e2e-test-kubernetes-tier2
+e2e-test-kubernetes-tier2:  ## Run Kubernetes Tier 2 (Helm-based) E2E tests only
+	go test -tags=e2e -timeout=120m -v -count=1 -run "Test(KubernetesRedis|KubernetesGrafana|KubernetesOpenBao|KubernetesArgoCD|KubernetesLocust|KubernetesNats|KubernetesNeo4j|KubernetesJenkins|KubernetesSolrOperator|KubernetesPerconaMongoOperator|KubernetesPerconaMysqlOperator|KubernetesPerconaPostgresOperator|KubernetesGitlab)_" ./e2e/...
+
+.PHONY: e2e-test-kubernetes-tier3
+e2e-test-kubernetes-tier3:  ## Run Kubernetes Tier 3 (operator-dependent) E2E tests -- fixtures deployed automatically
+	go test -tags=e2e -timeout=120m -v -count=1 -run "Test(KubernetesPostgres|KubernetesKafka|KubernetesElasticsearch|KubernetesMongodb|KubernetesSolr|KubernetesClickHouse)_" ./e2e/...
+
+.PHONY: e2e-test-kubernetes-tier4
+e2e-test-kubernetes-tier4:  ## Run Kubernetes Tier 4 (operators, addons, cluster infra) E2E tests
+	go test -tags=e2e -timeout=150m -v -count=1 -run "Test(KubernetesZalandoPostgresOperator|KubernetesStrimziKafkaOperator|KubernetesElasticOperator|KubernetesAltinityOperator|KubernetesGatewayApiCrds|KubernetesGhaRunnerScaleSetController|KubernetesRookCephOperator|KubernetesExternalSecrets|KubernetesIngressNginx|KubernetesTekton|KubernetesTektonOperator|KubernetesIstio)_" ./e2e/...
+
+# ── Terraform-only E2E targets (requires kind, tofu/terraform, kubectl, Docker) ──
+
+.PHONY: e2e-test-kubernetes-terraform-tier1
+e2e-test-kubernetes-terraform-tier1:  ## Run Kubernetes Tier 1 Terraform E2E tests only
+	go test -tags=e2e -timeout=60m -v -count=1 -run "Test(KubernetesNamespace|KubernetesDeployment|KubernetesStatefulSet|KubernetesSecret|KubernetesService|KubernetesCronJob|KubernetesJob|KubernetesDaemonSet|KubernetesManifest)_Terraform" ./e2e/...
+
+.PHONY: e2e-test-kubernetes-terraform-tier2
+e2e-test-kubernetes-terraform-tier2:  ## Run Kubernetes Tier 2 Terraform (Helm-based) E2E tests only
+	go test -tags=e2e -timeout=120m -v -count=1 -run "Test(KubernetesRedis|KubernetesGrafana|KubernetesArgoCD|KubernetesLocust|KubernetesNats|KubernetesSolrOperator|KubernetesPerconaMongoOperator|KubernetesPerconaMysqlOperator|KubernetesPerconaPostgresOperator)_Terraform" ./e2e/...
+
+.PHONY: e2e-test-kubernetes-terraform-tier3
+e2e-test-kubernetes-terraform-tier3:  ## Run Kubernetes Tier 3 Terraform (operator-dependent) E2E tests
+	go test -tags=e2e -timeout=120m -v -count=1 -run "Test(KubernetesPostgres|KubernetesKafka|KubernetesElasticsearch|KubernetesMongodb|KubernetesSolr|KubernetesClickHouse)_Terraform" ./e2e/...
+
+.PHONY: e2e-test-kubernetes-terraform-tier4
+e2e-test-kubernetes-terraform-tier4:  ## Run Kubernetes Tier 4 Terraform (operators, addons) E2E tests
+	go test -tags=e2e -timeout=150m -v -count=1 -run "Test(KubernetesZalandoPostgresOperator|KubernetesStrimziKafkaOperator|KubernetesElasticOperator|KubernetesAltinityOperator|KubernetesGatewayApiCrds|KubernetesGhaRunnerScaleSetController|KubernetesRookCephOperator|KubernetesExternalSecrets|KubernetesTekton)_Terraform" ./e2e/...
+
+# ── Generic component E2E targets ────────────────────────────────────────────
+
+.PHONY: e2e-test-component
+e2e-test-component:  ## Single component E2E test (usage: make e2e-test-component component=KubernetesNamespace)
+	go test -tags=e2e -timeout=15m -v -count=1 -run "Test.*$(component)" ./e2e/...
+
+.PHONY: e2e-build
+e2e-build:  ## Compile E2E tests without running them
+	go build -tags=e2e ./e2e/...
+
+.PHONY: e2e-vet
+e2e-vet:  ## Run go vet on E2E packages
+	go vet ./e2e/framework/...
+	go vet -tags=e2e ./e2e/...
+
 # ── Base Images ───────────────────────────────────────────────────────────────
 .PHONY: build-iac-runner-base-image
 build-iac-runner-base-image:

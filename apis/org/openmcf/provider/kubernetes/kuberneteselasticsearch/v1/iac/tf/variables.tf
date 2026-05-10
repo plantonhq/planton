@@ -19,7 +19,7 @@ variable "spec" {
     namespace = string
 
     # Flag to indicate if the namespace should be created
-    create_namespace = bool
+    create_namespace = optional(bool, true)
 
     # Elasticsearch configuration
     elasticsearch = object({
@@ -41,16 +41,16 @@ variable "spec" {
       })
 
       # Ingress configuration
-      ingress = object({
+      ingress = optional(object({
         enabled  = bool
         hostname = string
-      })
+      }))
     })
 
     # Kibana configuration
-    kibana = object({
-      enabled = bool
-      container = object({
+    kibana = optional(object({
+      enabled = optional(bool, false)
+      container = optional(object({
         replicas = number
         resources = object({
           limits = object({
@@ -62,11 +62,11 @@ variable "spec" {
             memory = string
           })
         })
-      })
-      ingress = object({
+      }))
+      ingress = optional(object({
         enabled  = bool
         hostname = string
-      })
-    })
+      }))
+    }))
   })
 }

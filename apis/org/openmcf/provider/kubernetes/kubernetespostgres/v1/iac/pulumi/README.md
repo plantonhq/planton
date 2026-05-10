@@ -66,7 +66,7 @@ These outputs facilitate seamless integration with other systems and tools, enab
 
 ## Documentation
 
-Comprehensive documentation for the API resources and module is available via [buf.build](https://buf.build). This documentation provides detailed insights into the API structure, configuration options, and operational guidelines, ensuring that developers can effectively utilize the module to deploy and manage PostgreSQL services within the PlantonCloud ecosystem.
+Comprehensive documentation for the API resources and module is available via [buf.build](https://buf.build). This documentation provides detailed insights into the API structure, configuration options, and operational guidelines, ensuring that developers can effectively utilize the module to deploy and manage PostgreSQL services within the Planton ecosystem.
 
 ## Contributing
 

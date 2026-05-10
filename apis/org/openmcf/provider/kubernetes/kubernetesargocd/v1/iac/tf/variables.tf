@@ -20,7 +20,7 @@ variable "spec" {
 
     # Flag to indicate if the namespace should be created by the module.
     # Set to true to create the namespace, false to use an existing namespace.
-    create_namespace = bool
+    create_namespace = optional(bool, true)
 
     # The container specifications for the Argo CD deployment.
     container = object({
@@ -53,13 +53,13 @@ variable "spec" {
     })
 
     # The ingress configuration for the Argo CD deployment.
-    ingress = object({
+    ingress = optional(object({
 
       # A flag to enable or disable ingress.
       is_enabled = bool
 
       # The dns domain.
       dns_domain = string
-    })
+    }))
   })
 }

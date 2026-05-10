@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package org.openmcf.qa.componente2eprofile.v1;
+
+import "org/openmcf/qa/componente2eprofile/v1/spec.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// ComponentE2EProfile declares a single component's E2E testing readiness and configuration.
+// Follows the KRM pattern (apiVersion + kind + metadata + spec).
+// Lives at {component}/v1/e2e/profile.yaml.
+//
+// Example:
+//   apiVersion: qa.openmcf.org/v1
+//   kind: ComponentE2EProfile
+//   metadata:
+//     name: kubernetesredis
+//   spec:
+//     tier: 2
+//     status: green
+//     validated_provisioners: [pulumi, terraform]
+//     timeout_minutes: 15
+message ComponentE2EProfile {
+  string api_version = 1;
+  string kind = 2;
+  org.openmcf.shared.CloudResourceMetadata metadata = 3;
+  ComponentE2EProfileSpec spec = 4;
+}

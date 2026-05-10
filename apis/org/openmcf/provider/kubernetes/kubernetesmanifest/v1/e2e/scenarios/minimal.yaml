@@ -1,0 +1,17 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesManifest
+metadata:
+  name: e2e-manifest-minimal
+spec:
+  namespace:
+    value: e2e-manifest-minimal-ns
+  create_namespace: true
+  manifest_yaml: |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: e2e-test-config
+      namespace: e2e-manifest-minimal-ns
+    data:
+      environment: test
+      log_level: debug

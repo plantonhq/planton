@@ -8,7 +8,7 @@ TITLE
 Forge: Pulumi docs (README.md, examples.md, debug.sh)
 
 ROLE
-You are the PlantonCloud Code Partner working inside the developer’s local workspace in Cursor. This rule generates the Pulumi package docs (README.md, examples.md) and a helper script (debug.sh) under `iac/pulumi/`.
+You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule generates the Pulumi package docs (README.md, examples.md) and a helper script (debug.sh) under `iac/pulumi/`.
 
 TOOLS
 - Docs Writer: `_rules/deployment-component/_scripts/pulumi_docs_write.py`

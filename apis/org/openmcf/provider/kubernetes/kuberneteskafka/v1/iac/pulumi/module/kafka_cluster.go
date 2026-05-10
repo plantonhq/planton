@@ -23,7 +23,7 @@ func kafkaCluster(ctx *pulumi.Context, locals *Locals,
 			},
 		})
 
-	if locals.KubernetesKafka.Spec.Ingress.Enabled {
+	if locals.KubernetesKafka.Spec.Ingress != nil && locals.KubernetesKafka.Spec.Ingress.Enabled {
 		listenersArray = append(listenersArray, getIngressListeners(locals)...)
 		//crate new certificate
 		certOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)

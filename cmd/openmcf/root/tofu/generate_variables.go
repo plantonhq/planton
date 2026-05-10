@@ -3,7 +3,7 @@ package tofu
 import (
 	"github.com/plantonhq/openmcf/internal/cli/flag"
 	"github.com/plantonhq/openmcf/pkg/crkreflect"
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/variablestf"
+	"github.com/plantonhq/openmcf/pkg/iac/tofu/generators"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"os"
@@ -51,7 +51,7 @@ func generateVariablesHandler(cmd *cobra.Command, args []string) {
 		log.Fatalf("proto message not found for %s cloudResourceKind", cloudResourceKind.String())
 	}
 
-	variablesTfContent, err := variablestf.ProtoToVariablesTF(manifestObject)
+	variablesTfContent, err := generators.ProtoToVariablesTF(manifestObject)
 	if err != nil {
 		log.Fatal("failed to generate Terraform variables: ", err)
 	}

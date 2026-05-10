@@ -1,0 +1,26 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesManifest
+metadata:
+  name: e2e-manifest-multi
+spec:
+  namespace:
+    value: e2e-manifest-multi-ns
+  create_namespace: true
+  manifest_yaml: |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: e2e-multi-config
+      namespace: e2e-manifest-multi-ns
+    data:
+      app_name: openmcf-e2e
+      version: "1.0"
+    ---
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: e2e-multi-secret
+      namespace: e2e-manifest-multi-ns
+    type: Opaque
+    stringData:
+      api-key: test-e2e-key

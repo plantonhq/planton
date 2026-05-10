@@ -5,7 +5,7 @@ output "namespace" {
 
 output "cronjob_name" {
   description = "The name of the CronJob resource"
-  value       = kubernetes_cron_job.this.metadata[0].name
+  value       = kubernetes_cron_job_v1.this.metadata[0].name
 }
 
 output "service_account_name" {

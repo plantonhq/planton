@@ -65,8 +65,14 @@ func initializeLocals(ctx *pulumi.Context, in *kubernetestektonoperatorv1.Kubern
 	l.ComponentsNamespace = vars.ComponentsNamespace
 	l.TektonConfigName = vars.TektonConfigName
 
-	// Compute operator release URL from version (default comes from proto options)
-	l.OperatorReleaseURL = fmt.Sprintf(vars.OperatorReleaseURLFormat, in.Target.Spec.OperatorVersion)
+	// Compute operator release URL from version, falling back to the documented
+	// default when the spec field is empty. Proto documents v0.78.0 as the
+	// default but the generated Go code does not substitute it at runtime.
+	operatorVersion := in.Target.Spec.OperatorVersion
+	if operatorVersion == "" {
+		operatorVersion = "v0.78.0"
+	}
+	l.OperatorReleaseURL = fmt.Sprintf(vars.OperatorReleaseURLFormat, operatorVersion)
 
 	// Get component enablement from spec
 	if comp := in.Target.Spec.Components; comp != nil {

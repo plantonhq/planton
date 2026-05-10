@@ -22,13 +22,15 @@ func exportOutputs(ctx *pulumi.Context, locals *Locals, service *kubernetescorev
 	ctx.Export(OutputType, pulumi.String(locals.ServiceType))
 	ctx.Export(OutputInternalDnsName, pulumi.String(internalDnsName(locals.Name, locals.Namespace)))
 
-	// ClusterIP is populated by Kubernetes after the service is created.
-	// For headless services, this will be "None". For ExternalName, it will be empty.
 	ctx.Export(OutputClusterIP, service.Spec.ClusterIP().Elem())
 
 	// LoadBalancer ingress is only populated for LoadBalancer-type services.
-	// Extract the first ingress hostname or IP if available.
-	ctx.Export(OutputLoadBalancerIngress, service.Status.LoadBalancer().Ingress().Index(pulumi.Int(0)).Hostname().Elem())
+	// Non-LB services (ClusterIP, NodePort, ExternalName) have an empty ingress array,
+	// so accessing Index(0) would panic.
+	if locals.ServiceType == "LoadBalancer" {
+		ctx.Export(OutputLoadBalancerIngress,
+			service.Status.LoadBalancer().Ingress().Index(pulumi.Int(0)).Hostname().Elem())
+	}
 
 	return nil
 }

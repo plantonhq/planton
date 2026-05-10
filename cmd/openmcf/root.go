@@ -46,6 +46,7 @@ func init() {
 		root.Checkout,
 		root.Destroy,
 		root.Downgrade,
+		root.E2E,
 		root.Init,
 		root.LoadManifest,
 		root.ModulesVersion,

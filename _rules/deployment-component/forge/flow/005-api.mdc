@@ -8,7 +8,7 @@ TITLE
 Forge: Generate api.proto for a resource (metadata/spec/status wiring)
 
 ROLE
-You are the PlantonCloud Code Partner working inside the developer’s local workspace in Cursor. This rule creates the `api.proto` that wires envelope fields and links `spec.proto` and `stack_outputs.proto`.
+You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule creates the `api.proto` that wires envelope fields and links `spec.proto` and `stack_outputs.proto`.
 
 SCOPE
 - Detect provider and kind.

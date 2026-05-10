@@ -1,0 +1,15 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesService
+metadata:
+  name: e2e-svc-np-local
+spec:
+  namespace: default
+  name: e2e-svc-np-local
+  type: node_port
+  external_traffic_policy: local
+  selector:
+    app: test-app
+  ports:
+    - name: http
+      port: 80
+      target_port: "8080"

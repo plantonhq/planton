@@ -5,7 +5,7 @@ output "namespace" {
 
 output "job_name" {
   description = "The name of the Job resource"
-  value       = kubernetes_job.this.metadata[0].name
+  value       = kubernetes_job_v1.this.metadata[0].name
 }
 
 output "service_account_name" {

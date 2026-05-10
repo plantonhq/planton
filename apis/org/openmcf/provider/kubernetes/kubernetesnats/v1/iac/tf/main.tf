@@ -166,9 +166,13 @@ resource "helm_release" "nats" {
   wait    = true
   timeout = 600 # 10 minutes
 
-  values = [
-    yamlencode({
-      # Container resources
+  # Helm values are split into multiple yamlencode entries to avoid HCL's
+  # "Inconsistent conditional result types" error. Helm deep-merges values
+  # entries in order (like multiple -f flags), so each section can be
+  # independently guarded without needing matching object shapes.
+  values = concat(
+    # Base configuration (always present, uniform shape)
+    [yamlencode({
       container = {
         merge = {
           resources = {
@@ -183,71 +187,30 @@ resource "helm_release" "nats" {
           }
         }
       }
+      config = {
+        cluster = {
+          enabled  = var.spec.server_container.replicas > 1
+          replicas = var.spec.server_container.replicas
+        }
+      }
+      natsbox = {
+        enabled = !try(var.spec.disable_nats_box, false)
+      }
+    })],
 
-      # NATS configuration
-      config = merge(
-        {
-          # Clustering configuration
-          cluster = {
-            enabled  = var.spec.server_container.replicas > 1
-            replicas = var.spec.server_container.replicas
-          }
+    # JetStream: both branches produce string via yamlencode, so the
+    # conditional is string-vs-string (always valid in HCL).
+    [var.spec.disable_jet_stream
+      ? yamlencode({ config = { jetstream = { enabled = false } } })
+      : yamlencode({ config = { jetstream = {
+          enabled   = true
+          fileStore = { enabled = true, pvc = { size = var.spec.server_container.disk_size } }
+        } } })
+    ],
 
-          # JetStream configuration
-          jetstream = var.spec.disable_jet_stream ? {
-            enabled = false
-            } : {
-            enabled = true
-            fileStore = {
-              enabled = true
-              pvc = {
-                size = var.spec.server_container.disk_size
-              }
-            }
-          }
-        },
-        # Conditionally add auth configuration for basic auth
-        try(var.spec.auth.enabled, false) && try(var.spec.auth.scheme, "") == "basic_auth" ? {
-          patch = concat(
-            [
-              {
-                op   = "add"
-                path = "/authorization"
-                value = {
-                  users = concat(
-                    [
-                      {
-                        username = "nats"
-                        password = random_password.nats_admin_password[0].result
-                      }
-                    ],
-                    try(var.spec.auth.no_auth_user.enabled, false) ? [
-                      {
-                        username = "noauth"
-                        password = "nopassword"
-                        permissions = {
-                          publish   = try(var.spec.auth.no_auth_user.publish_subjects, [])
-                          subscribe = []
-                        }
-                      }
-                    ] : []
-                  )
-                }
-              }
-            ],
-            try(var.spec.auth.no_auth_user.enabled, false) ? [
-              {
-                op    = "add"
-                path  = "/no_auth_user"
-                value = "noauth"
-              }
-            ] : []
-          )
-        } : {}
-      )
-
-      # Authentication configuration (bearer token)
-      auth = try(var.spec.auth.enabled, false) && try(var.spec.auth.scheme, "") == "bearer_token" ? {
+    # Bearer token auth (conditional list: list(string) vs empty list)
+    try(var.spec.auth.enabled, false) && try(var.spec.auth.scheme, "") == "bearer_token" ? [yamlencode({
+      auth = {
         enabled = true
         token = {
           users = [
@@ -259,25 +222,64 @@ resource "helm_release" "nats" {
             }
           ]
         }
-        } : try(var.spec.auth.enabled, false) && try(var.spec.auth.scheme, "") == "basic_auth" ? {
+      }
+    })] : [],
+
+    # Basic auth: config patch + auth flag (conditional list)
+    try(var.spec.auth.enabled, false) && try(var.spec.auth.scheme, "") == "basic_auth" ? [yamlencode({
+      config = {
+        patch = concat(
+          [
+            {
+              op   = "add"
+              path = "/authorization"
+              value = {
+                users = concat(
+                  [
+                    {
+                      username = "nats"
+                      password = random_password.nats_admin_password[0].result
+                    }
+                  ],
+                  try(var.spec.auth.no_auth_user.enabled, false) ? [
+                    {
+                      username = "noauth"
+                      password = "nopassword"
+                      permissions = {
+                        publish   = try(var.spec.auth.no_auth_user.publish_subjects, [])
+                        subscribe = []
+                      }
+                    }
+                  ] : []
+                )
+              }
+            }
+          ],
+          try(var.spec.auth.no_auth_user.enabled, false) ? [
+            {
+              op    = "add"
+              path  = "/no_auth_user"
+              value = "noauth"
+            }
+          ] : []
+        )
+      }
+      auth = {
         enabled = true
         basic   = {}
-      } : {}
+      }
+    })] : [],
 
-      # TLS configuration
-      tls = try(var.spec.tls_enabled, false) ? {
+    # TLS (conditional list)
+    try(var.spec.tls_enabled, false) ? [yamlencode({
+      tls = {
         enabled = true
         secret = {
           name = kubernetes_secret_v1.nats_tls_secret[0].metadata[0].name
         }
-      } : {}
-
-      # NATS box configuration
-      natsbox = {
-        enabled = !try(var.spec.disable_nats_box, false)
       }
-    })
-  ]
+    })] : []
+  )
 
   depends_on = [
     kubernetes_namespace.nats_namespace,

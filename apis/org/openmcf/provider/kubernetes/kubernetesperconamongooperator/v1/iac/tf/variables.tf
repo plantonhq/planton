@@ -14,8 +14,8 @@ variable "metadata" {
 variable "spec" {
   description = "Specification for the Percona Operator for MongoDB deployment"
   type = object({
-    # Target Kubernetes cluster
-    target_cluster_name = string
+    # Target Kubernetes cluster (orchestrator-only, not included in generated tfvars)
+    target_cluster_name = optional(string)
 
     # Kubernetes namespace to install the operator. Defaults to "percona-operator" if not provided.
     namespace = optional(string, "percona-operator")

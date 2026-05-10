@@ -1,5 +1,5 @@
 resource "kubernetes_service" "redis_external_lb" {
-  count = var.spec.ingress.enabled && var.spec.ingress.hostname != "" ? 1 : 0
+  count = try(var.spec.ingress.enabled, false) && try(var.spec.ingress.hostname, "") != "" ? 1 : 0
 
   depends_on = [kubernetes_namespace.redis_namespace]
 

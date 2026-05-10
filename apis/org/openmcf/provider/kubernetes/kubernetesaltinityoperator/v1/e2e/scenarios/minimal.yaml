@@ -1,0 +1,16 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesAltinityOperator
+metadata:
+  name: e2e-altop-fix
+spec:
+  namespace:
+    value: e2e-altop-fix
+  create_namespace: true
+  container:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi

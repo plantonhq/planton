@@ -75,7 +75,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesmongodbv1.KubernetesMo
 	}
 
 	//create service of type load-balancer if ingress is enabled.
-	if locals.KubernetesMongodb.Spec.Ingress.Enabled {
+	if locals.KubernetesMongodb.Spec.Ingress != nil && locals.KubernetesMongodb.Spec.Ingress.Enabled {
 		lbOpts := append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, namespaceDeps...)
 		_, err := kubernetescorev1.NewService(ctx,
 			locals.ExternalLbServiceName,

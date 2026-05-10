@@ -1,0 +1,25 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesCronJob
+metadata:
+  name: e2e-cronjob-minimal
+spec:
+  namespace:
+    value: e2e-cronjob-minimal-ns
+  create_namespace: true
+  image:
+    repo: busybox
+    tag: "1.36"
+  resources:
+    requests:
+      cpu: "10m"
+      memory: "32Mi"
+    limits:
+      cpu: "50m"
+      memory: "64Mi"
+  schedule: "*/1 * * * *"
+  restart_policy: Never
+  backoff_limit: 1
+  command:
+    - /bin/sh
+    - -c
+    - echo "e2e-cronjob-test"

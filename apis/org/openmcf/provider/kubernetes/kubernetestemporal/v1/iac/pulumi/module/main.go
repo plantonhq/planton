@@ -15,7 +15,10 @@ func Resources(ctx *pulumi.Context,
 
 	locals := initializeLocals(ctx, stackInput)
 
-	// external_database is required when the backend is not cassandra
+	if locals.KubernetesTemporal.Spec.Database == nil {
+		return errors.New("database configuration is required")
+	}
+
 	if locals.KubernetesTemporal.Spec.Database.Backend != kubernetestemporalv1.KubernetesTemporalDatabaseBackend_cassandra &&
 		locals.KubernetesTemporal.Spec.Database.ExternalDatabase == nil {
 

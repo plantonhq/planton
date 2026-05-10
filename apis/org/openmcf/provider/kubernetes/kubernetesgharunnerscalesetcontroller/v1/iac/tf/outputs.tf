@@ -1,13 +1,6 @@
-##############################################
-# outputs.tf
-#
-# Output values from the KubernetesGhaRunnerScaleSetController
-# deployment matching stack_outputs.proto fields.
-##############################################
-
 output "namespace" {
   description = "Namespace where the controller is deployed"
-  value       = var.namespace
+  value       = var.spec.namespace
 }
 
 output "release_name" {
@@ -35,8 +28,7 @@ output "metrics_endpoint" {
   value = local.metrics_enabled ? format(
     "%s.%s.svc.cluster.local%s",
     local.release_name,
-    var.namespace,
-    var.metrics.controller_manager_addr
+    var.spec.namespace,
+    var.spec.metrics.controller_manager_addr
   ) : ""
 }
-

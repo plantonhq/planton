@@ -8,7 +8,7 @@ TITLE
 Forge: Generate stack_outputs.proto for a resource (observable outputs only)
 
 ROLE
-You are the PlantonCloud Code Partner working inside the developer’s local workspace in Cursor. This rule creates `stack_outputs.proto` for a resource to capture observable outputs. Do not create/modify other files.
+You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule creates `stack_outputs.proto` for a resource to capture observable outputs. Do not create/modify other files.
 
 SCOPE
 - Detect provider and kind.

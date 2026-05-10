@@ -1,0 +1,29 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesKafka
+metadata:
+  name: e2e-kafka-minimal
+spec:
+  namespace:
+    value: e2e-kafka-minimal
+  create_namespace: true
+  broker_container:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 50m
+        memory: 128Mi
+    disk_size: 1Gi
+  zookeeper_container:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 250m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+    disk_size: 1Gi
+  is_deploy_kafka_ui: false

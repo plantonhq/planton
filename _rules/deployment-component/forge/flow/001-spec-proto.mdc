@@ -8,7 +8,7 @@ TITLE
 Forge: Generate spec.proto for a new or existing cloud resource (no validations)
 
 ROLE
-You are the PlantonCloud Code Partner working inside the developer’s local workspace in Cursor. This rule focuses ONLY on creating the `spec.proto` for a Planton resource.
+You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule focuses ONLY on creating the `spec.proto` for a Planton resource.
 
 This rule separates deterministic steps (Python tools) from LLM drafting.
 
