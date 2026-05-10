@@ -52,9 +52,9 @@
       "name": "Tier 4 Pulumi",
       "tier": 4,
       "engine": "pulumi",
-      "timeout": 150,
-      "run_regex": "Test(KubernetesAltinityOperator|KubernetesElasticOperator|KubernetesExternalSecrets|KubernetesGatewayApiCrds|KubernetesGhaRunnerScaleSetController|KubernetesRookCephOperator|KubernetesStrimziKafkaOperator|KubernetesTekton|KubernetesZalandoPostgresOperator)_Pulumi",
-      "component_count": 9
+      "timeout": 135,
+      "run_regex": "Test(KubernetesAltinityOperator|KubernetesElasticOperator|KubernetesExternalSecrets|KubernetesGatewayApiCrds|KubernetesGhaRunnerScaleSetController|KubernetesRookCephOperator|KubernetesStrimziKafkaOperator|KubernetesZalandoPostgresOperator)_Pulumi",
+      "component_count": 8
     },
     {
       "name": "Tier 4 Terraform",

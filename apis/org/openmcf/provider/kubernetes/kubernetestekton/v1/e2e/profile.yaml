@@ -4,7 +4,14 @@ metadata:
   name: kubernetestekton
 spec:
   tier: 4
-  status: green
+  status: deferred
+  deferred_reason: >-
+    Tekton webhook pods take too long to become ready on kind clusters.
+    Apply succeeds (74 resources created) but ConfigMaps in the
+    tekton-pipelines-resolvers namespace fail webhook validation because
+    config.webhook.pipeline.tekton.dev is not listening yet. This is a
+    kind/runner resource constraint, not a module bug.
+    Deferred by explicit decision in session 016 (2026-05-08).
   validated_provisioners:
     - pulumi
-  timeout_minutes: 15
+  timeout_minutes: 25

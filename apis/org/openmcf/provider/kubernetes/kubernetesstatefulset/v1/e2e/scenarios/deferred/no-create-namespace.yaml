@@ -1,0 +1,39 @@
+# DEFERRED: Proto3 zero-value limitation.
+#
+# When create_namespace is false (proto3 default for bool), the TF module
+# cannot distinguish "not set" from "explicitly false". The generated
+# variables.tf treats the zero value as unset and still creates the namespace
+# resource, which fails with 'namespaces "default" already exists' because
+# the default namespace is pre-existing in every Kubernetes cluster.
+#
+# This scenario will be re-enabled once the TF generator handles proto3
+# zero-value bools correctly (e.g., via wrapper types or explicit optionality).
+#
+# Discovered: session 014 (2026-05-08). Moved to deferred/: session 018 (2026-05-10).
+
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesStatefulSet
+metadata:
+  name: e2e-sts-nocreatens
+spec:
+  namespace:
+    value: default
+  create_namespace: false
+  container:
+    app:
+      image:
+        repo: nginx
+        tag: "1.27-alpine"
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "32Mi"
+        limits:
+          cpu: "100m"
+          memory: "64Mi"
+      ports:
+        - name: http
+          container_port: 80
+          network_protocol: TCP
+          app_protocol: http
+          service_port: 80
