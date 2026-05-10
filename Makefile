@@ -110,7 +110,7 @@ build-go: fmt deps vet
 build-cli: build-go
 
 .PHONY: build
-build: protos generate-cloud-resource-kind-map bazel-mod-tidy bazel-gazelle bazel-build-cli build-cli
+build: protos generate-cloud-resource-kind-map bazel-mod-tidy bazel-gazelle bazel-build-cli build-cli e2e-matrix
 
 ${build_dir}/${name}: build-go
 
@@ -250,6 +250,12 @@ e2e-test-kubernetes-terraform-tier4:  ## Run Kubernetes Tier 4 Terraform (operat
 .PHONY: e2e-test-component
 e2e-test-component:  ## Single component E2E test (usage: make e2e-test-component component=KubernetesNamespace)
 	go test -tags=e2e -timeout=15m -v -count=1 -run "Test.*$(component)" ./e2e/...
+
+.PHONY: e2e-matrix
+e2e-matrix:  ## Regenerate E2E GitHub Actions matrix JSON from profiles
+	go run . e2e discover \
+		--provider kubernetes --status green --output github-matrix \
+		> .github/e2e-matrix-kubernetes.json
 
 .PHONY: e2e-build
 e2e-build:  ## Compile E2E tests without running them

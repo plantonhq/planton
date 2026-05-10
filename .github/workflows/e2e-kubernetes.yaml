@@ -76,42 +76,37 @@ jobs:
         run: make e2e-vet
 
   # ============================================================================
-  # Discover -- read E2E profiles and output matrix JSON
+  # Discover -- load pre-generated matrix JSON (no Go compilation needed)
   # ============================================================================
   discover:
     needs: build-check
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 1
     outputs:
       matrix: ${{ steps.discover.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-go@v5
-        with:
-          go-version-file: 'go.mod'
-
-      - name: Discover E2E components
+      - name: Load and filter E2E matrix
         id: discover
         run: |
-          ARGS="--provider kubernetes --status green --output github-matrix"
+          FULL_MATRIX=$(cat .github/e2e-matrix-kubernetes.json)
 
           # Apply optional filters from workflow_dispatch
           TIER="${{ github.event.inputs.tier }}"
           if [ -n "$TIER" ] && [ "$TIER" != "0" ]; then
-            ARGS="$ARGS --tier $TIER"
+            FULL_MATRIX=$(echo "$FULL_MATRIX" | jq --argjson tier "$TIER" '{include: [.include[] | select(.tier == $tier)]}')
           fi
 
           PROV="${{ github.event.inputs.provisioner }}"
           if [ -n "$PROV" ]; then
-            ARGS="$ARGS --provisioner $PROV"
+            FULL_MATRIX=$(echo "$FULL_MATRIX" | jq --arg eng "$PROV" '{include: [.include[] | select(.engine == $eng)]}')
           fi
 
-          MATRIX=$(go run ./cmd/openmcf e2e discover $ARGS)
-          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
-          echo "Discovered matrix:"
-          echo "$MATRIX" | jq .
+          echo "matrix=$FULL_MATRIX" >> "$GITHUB_OUTPUT"
+          echo "Matrix loaded:"
+          echo "$FULL_MATRIX" | jq .
 
   # ============================================================================
   # E2E -- dynamic matrix, one kind cluster per cell

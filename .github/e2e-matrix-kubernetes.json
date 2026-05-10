@@ -1,0 +1,68 @@
+{
+  "include": [
+    {
+      "name": "Tier 1 Pulumi",
+      "tier": 1,
+      "engine": "pulumi",
+      "timeout": 150,
+      "run_regex": "Test(KubernetesCronJob|KubernetesDaemonSet|KubernetesDeployment|KubernetesJob|KubernetesManifest|KubernetesNamespace|KubernetesSecret|KubernetesService|KubernetesStatefulSet)_Pulumi",
+      "component_count": 9
+    },
+    {
+      "name": "Tier 1 Terraform",
+      "tier": 1,
+      "engine": "terraform",
+      "timeout": 135,
+      "run_regex": "Test(KubernetesCronJob|KubernetesDaemonSet|KubernetesDeployment|KubernetesJob|KubernetesNamespace|KubernetesSecret|KubernetesService|KubernetesStatefulSet)_Terraform",
+      "component_count": 8
+    },
+    {
+      "name": "Tier 2 Pulumi",
+      "tier": 2,
+      "engine": "pulumi",
+      "timeout": 150,
+      "run_regex": "Test(KubernetesArgoCD|KubernetesGrafana|KubernetesLocust|KubernetesNats|KubernetesPerconaMongoOperator|KubernetesPerconaMysqlOperator|KubernetesPerconaPostgresOperator|KubernetesRedis|KubernetesSolrOperator)_Pulumi",
+      "component_count": 9
+    },
+    {
+      "name": "Tier 2 Terraform",
+      "tier": 2,
+      "engine": "terraform",
+      "timeout": 120,
+      "run_regex": "Test(KubernetesArgoCD|KubernetesGrafana|KubernetesLocust|KubernetesPerconaMongoOperator|KubernetesPerconaMysqlOperator|KubernetesPerconaPostgresOperator|KubernetesRedis)_Terraform",
+      "component_count": 7
+    },
+    {
+      "name": "Tier 3 Pulumi",
+      "tier": 3,
+      "engine": "pulumi",
+      "timeout": 105,
+      "run_regex": "Test(KubernetesClickHouse|KubernetesElasticsearch|KubernetesKafka|KubernetesMongodb|KubernetesPostgres|KubernetesSolr)_Pulumi",
+      "component_count": 6
+    },
+    {
+      "name": "Tier 3 Terraform",
+      "tier": 3,
+      "engine": "terraform",
+      "timeout": 105,
+      "run_regex": "Test(KubernetesClickHouse|KubernetesElasticsearch|KubernetesKafka|KubernetesMongodb|KubernetesPostgres|KubernetesSolr)_Terraform",
+      "component_count": 6
+    },
+    {
+      "name": "Tier 4 Pulumi",
+      "tier": 4,
+      "engine": "pulumi",
+      "timeout": 150,
+      "run_regex": "Test(KubernetesAltinityOperator|KubernetesElasticOperator|KubernetesExternalSecrets|KubernetesGatewayApiCrds|KubernetesGhaRunnerScaleSetController|KubernetesRookCephOperator|KubernetesStrimziKafkaOperator|KubernetesTekton|KubernetesZalandoPostgresOperator)_Pulumi",
+      "component_count": 9
+    },
+    {
+      "name": "Tier 4 Terraform",
+      "tier": 4,
+      "engine": "terraform",
+      "timeout": 135,
+      "run_regex": "Test(KubernetesAltinityOperator|KubernetesElasticOperator|KubernetesExternalSecrets|KubernetesGatewayApiCrds|KubernetesGhaRunnerScaleSetController|KubernetesRookCephOperator|KubernetesStrimziKafkaOperator|KubernetesZalandoPostgresOperator)_Terraform",
+      "component_count": 8
+    }
+  ]
+}
