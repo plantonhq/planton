@@ -42,11 +42,11 @@ metadata:
 spec:
   tier: <int>
   status: <green|deferred|skip|stub>
-  deferred_reason: <string>           # when status is deferred or skip
+  deferred_reason: <string> # when status is deferred or skip
   validated_provisioners: [pulumi, terraform]
   timeout_minutes: <int>
-  cost_class: <enum>                  # optional override of provider default
-  limitations: [...]                  # known constraints (e.g., "requires 4+ GB RAM")
+  cost_class: <enum> # optional override of provider default
+  limitations: [...] # known constraints (e.g., "requires 4+ GB RAM")
 ```
 
 Field semantics are documented in the proto comments in `spec.proto`. The
@@ -76,11 +76,11 @@ platform change causes failures. The profile is the single source of truth.
 Tiers group components by dependency complexity within a provider. For
 Kubernetes:
 
-| Tier | Category | Dependencies | Example |
-|------|----------|-------------|---------|
-| 1 | Native K8s | None | Namespace, Deployment, Secret |
-| 2 | Helm-based | Self-contained chart | Redis, Grafana, ArgoCD |
-| 3 | Operator-dependent | Needs operator CRDs | Postgres, Kafka, Elasticsearch |
-| 4 | Operators/addons | Cluster-level infra | CertManager, Istio, ExternalSecrets |
+| Tier | Category           | Dependencies         | Example                             |
+| ---- | ------------------ | -------------------- | ----------------------------------- |
+| 1    | Native K8s         | None                 | Namespace, Deployment, Secret       |
+| 2    | Helm-based         | Self-contained chart | Redis, Grafana, ArgoCD              |
+| 3    | Operator-dependent | Needs operator CRDs  | Postgres, Kafka, Elasticsearch      |
+| 4    | Operators/addons   | Cluster-level infra  | CertManager, Istio, ExternalSecrets |
 
 Other providers will define their own tier semantics as E2E expands.

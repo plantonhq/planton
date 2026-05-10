@@ -1,0 +1,18 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "e2ediscover",
+    srcs = [
+        "interactive.go",
+        "table.go",
+    ],
+    importpath = "github.com/plantonhq/openmcf/internal/cli/ui/e2ediscover",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//apis/org/openmcf/qa/componente2eprofile/v1:componente2eprofile",
+        "//apis/org/openmcf/shared",
+        "//pkg/e2e/profile",
+        "@com_github_charmbracelet_bubbletea//:bubbletea",
+        "@com_github_charmbracelet_lipgloss//:lipgloss",
+    ],
+)
