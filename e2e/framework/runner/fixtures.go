@@ -15,12 +15,12 @@ import (
 
 // FixtureState tracks a deployed fixture so it can be torn down later.
 type FixtureState struct {
-	Name             string
-	ManifestPath     string
-	ModuleDir        string
-	StackName        string
-	BackendURL       string
-	StackInputPath   string
+	Name           string
+	ManifestPath   string
+	ModuleDir      string
+	StackName      string
+	BackendURL     string
+	StackInputPath string
 }
 
 // DeployFixtures discovers and deploys all fixture YAML files in numeric order.

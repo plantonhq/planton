@@ -6,9 +6,9 @@ func TestDefaultRules_ContainsExpectedEntries(t *testing.T) {
 	rules := DefaultRules()
 
 	expected := []struct {
-		name      string
-		wantSkip  bool
-		wantFlat  string
+		name     string
+		wantSkip bool
+		wantFlat string
 	}{
 		{"org.openmcf.shared.foreignkey.v1.StringValueOrRef", false, "string"},
 		{"org.openmcf.shared.foreignkey.v1.ValueFromRef", true, ""},

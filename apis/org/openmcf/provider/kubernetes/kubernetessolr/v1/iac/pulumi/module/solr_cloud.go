@@ -47,9 +47,9 @@ func solrCloud(ctx *pulumi.Context, locals *Locals,
 					Repository: pulumi.String(locals.KubernetesSolr.Spec.SolrContainer.Image.Repo),
 					Tag:        pulumi.String(locals.KubernetesSolr.Spec.SolrContainer.Image.Tag),
 				},
-			SolrJavaMem: pulumi.String(solrConfigJavaMem(locals.KubernetesSolr.Spec)),
-			SolrOpts:    pulumi.String(solrConfigOpts(locals.KubernetesSolr.Spec)),
-			SolrGCTune:  pulumi.String(solrConfigGCTune(locals.KubernetesSolr.Spec)),
+				SolrJavaMem: pulumi.String(solrConfigJavaMem(locals.KubernetesSolr.Spec)),
+				SolrOpts:    pulumi.String(solrConfigOpts(locals.KubernetesSolr.Spec)),
+				SolrGCTune:  pulumi.String(solrConfigGCTune(locals.KubernetesSolr.Spec)),
 				SolrModules: pulumi.ToStringArray(vars.SolrCloudSolrModules),
 				CustomSolrKubeOptions: v1beta1.SolrCloudSpecCustomSolrKubeOptionsArgs{
 					PodOptions: v1beta1.SolrCloudSpecCustomSolrKubeOptionsPodOptionsArgs{

@@ -26,7 +26,7 @@ var operatorKinds = map[string]bool{
 	"kubernetesstrimzikafkaoperator":    true,
 	"kuberneteszalandopostgresoperator": true,
 	// Tier 4 operators with configurable namespace (session 010)
-	"kubernetesexternalsecrets":            true,
+	"kubernetesexternalsecrets":             true,
 	"kubernetesgharunnerscalesetcontroller": true,
 	"kubernetesrookcephoperator":            true,
 }

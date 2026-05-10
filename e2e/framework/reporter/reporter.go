@@ -14,12 +14,12 @@ import (
 
 // Report is the top-level E2E test report structure.
 type Report struct {
-	Timestamp  time.Time             `json:"timestamp"`
-	Duration   time.Duration         `json:"duration"`
-	TotalTests int                   `json:"total_tests"`
-	Passed     int                   `json:"passed"`
-	Failed     int                   `json:"failed"`
-	Results    []ComponentReport     `json:"results"`
+	Timestamp  time.Time         `json:"timestamp"`
+	Duration   time.Duration     `json:"duration"`
+	TotalTests int               `json:"total_tests"`
+	Passed     int               `json:"passed"`
+	Failed     int               `json:"failed"`
+	Results    []ComponentReport `json:"results"`
 }
 
 // ComponentReport holds the outcome of one component's E2E test.

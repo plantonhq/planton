@@ -73,7 +73,6 @@ use_repo(
     "com_github_spf13_cobra",
     "com_github_spf13_pflag",
     "com_github_stretchr_testify",
-    "com_github_zclconf_go_cty",
     "com_github_zyedidia_clipboard",
     "in_gopkg_yaml_v3",
     "io_k8s_api",

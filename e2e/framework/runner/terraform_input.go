@@ -9,8 +9,8 @@ import (
 	"github.com/plantonhq/openmcf/internal/manifest"
 	"github.com/plantonhq/openmcf/pkg/iac/stackinput"
 	"github.com/plantonhq/openmcf/pkg/iac/stackinput/providerenvvars"
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/tfbackend"
 	"github.com/plantonhq/openmcf/pkg/iac/tofu/generators"
+	"github.com/plantonhq/openmcf/pkg/iac/tofu/tfbackend"
 )
 
 // TerraformInput holds the prepared inputs for a Terraform E2E test run.
