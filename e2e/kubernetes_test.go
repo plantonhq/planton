@@ -74,6 +74,8 @@ var kubernetesTier2Components = []string{
 	"kubernetesperconamysqloperator",
 	"kubernetesperconapostgresoperator",
 	"kubernetesgitlab",
+	"kubernetestemporal",
+	"kubernetessignoz",
 }
 
 // ─── Tier 1 Pulumi ──────────────────────────────────────────────────────────
@@ -115,6 +117,8 @@ func TestKubernetesPerconaMongoOperator_Pulumi(t *testing.T)   { runAllScenarios
 func TestKubernetesPerconaMysqlOperator_Pulumi(t *testing.T)   { runAllScenariosForComponent(t, "kubernetesperconamysqloperator", "pulumi") }
 func TestKubernetesPerconaPostgresOperator_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "kubernetesperconapostgresoperator", "pulumi") }
 func TestKubernetesGitlab_Pulumi(t *testing.T)                 { runAllScenariosForComponent(t, "kubernetesgitlab", "pulumi") }
+func TestKubernetesTemporal_Pulumi(t *testing.T)               { runAllScenariosForComponent(t, "kubernetestemporal", "pulumi") }
+func TestKubernetesSignoz_Pulumi(t *testing.T)                 { runAllScenariosForComponent(t, "kubernetessignoz", "pulumi") }
 
 // ─── Tier 2 Terraform (Helm-based) ──────────────────────────────────────────
 
@@ -127,6 +131,8 @@ func TestKubernetesSolrOperator_Terraform(t *testing.T)           { runAllScenar
 func TestKubernetesPerconaMongoOperator_Terraform(t *testing.T)   { runAllScenariosForComponent(t, "kubernetesperconamongooperator", "terraform") }
 func TestKubernetesPerconaMysqlOperator_Terraform(t *testing.T)   { runAllScenariosForComponent(t, "kubernetesperconamysqloperator", "terraform") }
 func TestKubernetesPerconaPostgresOperator_Terraform(t *testing.T) { runAllScenariosForComponent(t, "kubernetesperconapostgresoperator", "terraform") }
+func TestKubernetesTemporal_Terraform(t *testing.T)                { runAllScenariosForComponent(t, "kubernetestemporal", "terraform") }
+func TestKubernetesSignoz_Terraform(t *testing.T)                  { runAllScenariosForComponent(t, "kubernetessignoz", "terraform") }
 
 // ─── Tier 3 Pulumi (operator-dependent) ─────────────────────────────────────
 

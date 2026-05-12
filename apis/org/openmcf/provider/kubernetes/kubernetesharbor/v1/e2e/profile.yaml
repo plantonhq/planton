@@ -4,8 +4,11 @@ metadata:
   name: kubernetesharbor
 spec:
   tier: 2
-  status: skip
-  deferred_reason: "requires external PostgreSQL + Redis + storage backend"
+  status: deferred
+  deferred_reason: "too heavy for default kind -- 6+ subcomponents (core, portal, registry, jobservice, PostgreSQL, Redis) exceed kind resources"
   validated_provisioners:
     - pulumi
   timeout_minutes: 15
+  limitations:
+    - "Managed database + cache + filesystem storage work (not external-only as previously documented)"
+    - "Same class of kind limitation as GitLab"
