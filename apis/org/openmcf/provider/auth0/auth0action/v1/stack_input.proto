@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package org.openmcf.provider.auth0.auth0action.v1;
+
+import "org/openmcf/provider/auth0/auth0action/v1/api.proto";
+import "org/openmcf/provider/auth0/provider.proto";
+
+// Auth0ActionStackInput is the input to the Auth0Action IaC module.
+// It contains the target resource and the Auth0 provider configuration.
+message Auth0ActionStackInput {
+  // target is the Auth0Action resource to be deployed.
+  Auth0Action target = 1;
+
+  // auth0_provider_config contains the Auth0 credentials for authentication.
+  // Includes domain, client_id, and client_secret.
+  org.openmcf.provider.auth0.Auth0ProviderConfig provider_config = 2;
+}
