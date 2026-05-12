@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+package org.openmcf.provider.auth0.auth0action.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/auth0/auth0action/v1/spec.proto";
+import "org/openmcf/provider/auth0/auth0action/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// Auth0Action is a deployment component that manages an Auth0 Action.
+// Actions are custom Node.js functions that execute at specific points in
+// the Auth0 pipeline (post-login, pre-registration, credentials-exchange, etc.)
+// to customize authentication and authorization behavior.
+//
+// Use cases:
+// - Enrich ID and access tokens with custom claims from user metadata or external APIs
+// - Restrict user registration to allowed email domains
+// - Add multi-factor authentication requirements based on risk signals
+// - Send notifications (Slack, email) on login events
+// - Implement custom rate limiting or bot detection
+// - Log authentication events to external SIEM systems
+//
+// Example manifest for a post-login action:
+// ```yaml
+// apiVersion: auth0.openmcf.org/v1
+// kind: Auth0Action
+// metadata:
+//   name: enrich-token-claims
+//   org: my-organization
+//   env: production
+// spec:
+//   supported_trigger:
+//     id: post-login
+//     version: v3
+//   code: |
+//     exports.onExecutePostLogin = async (event, api) => {
+//       const namespace = 'https://myapp.example.com';
+//       api.idToken.setCustomClaim(`${namespace}/roles`, event.authorization?.roles || []);
+//       api.accessToken.setCustomClaim(`${namespace}/email`, event.user.email);
+//     };
+//   deploy: true
+//   trigger_binding:
+//     display_name: Enrich Token Claims
+// ```
+//
+// Example manifest for a pre-registration action with secrets:
+// ```yaml
+// apiVersion: auth0.openmcf.org/v1
+// kind: Auth0Action
+// metadata:
+//   name: validate-email-domain
+//   org: my-organization
+//   env: production
+// spec:
+//   supported_trigger:
+//     id: pre-user-registration
+//     version: v2
+//   code: |
+//     exports.onExecutePreUserRegistration = async (event, api) => {
+//       const allowedDomains = event.secrets.ALLOWED_DOMAINS.split(',');
+//       const domain = event.user.email.split('@')[1];
+//       if (!allowedDomains.includes(domain)) {
+//         api.access.deny('registration_denied', 'Email domain not allowed.');
+//       }
+//     };
+//   runtime: node22
+//   deploy: true
+//   secrets:
+//     - name: ALLOWED_DOMAINS
+//       value: "example.com,mycompany.com"
+//   trigger_binding: {}
+// ```
+message Auth0Action {
+  // api_version is the version of the Auth0 API resource.
+  // Must be "auth0.openmcf.org/v1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'auth0.openmcf.org/v1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "Auth0Action" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'Auth0Action'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the action within OpenMCF (becomes the Auth0 action name)
+  // - org: Organization that owns this action
+  // - env: Environment (development, staging, production)
+  // - labels: Key-value pairs for filtering and organization
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the desired configuration for the Auth0 action.
+  // This includes the trigger, source code, runtime, dependencies, secrets,
+  // and optional trigger binding.
+  Auth0ActionSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the current state of the Auth0 action.
+  // This is populated by the system after deployment and includes
+  // the action ID, deployed version ID, and runtime information.
+  Auth0ActionStatus status = 5;
+}
+
+// Auth0ActionStatus represents the current state of an Auth0 Action resource.
+// This is populated by the deployment system and contains read-only outputs.
+message Auth0ActionStatus {
+  // outputs contains the stack outputs from the Auth0 action deployment.
+  // These values are populated after successful deployment and include
+  // the action ID, version ID, and resolved runtime.
+  Auth0ActionStackOutputs outputs = 1;
+}

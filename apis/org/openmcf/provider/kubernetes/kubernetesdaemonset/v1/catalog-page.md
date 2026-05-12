@@ -74,8 +74,8 @@ This creates a Fluent Bit DaemonSet running on every node in the `monitoring` na
 | `container.app.resources.limits.memory` | `string` | `1Gi` | Maximum memory allocation. |
 | `container.app.resources.requests.cpu` | `string` | `50m` | Minimum guaranteed CPU. |
 | `container.app.resources.requests.memory` | `string` | `100Mi` | Minimum guaranteed memory. |
-| `container.app.env.variables` | `map<string, StringValueOrRef>` | `{}` | Environment variables. Each value can be a direct string via `value` or a reference to another resource via `valueFrom`. |
-| `container.app.env.secrets` | `map<string, KubernetesSensitiveValue>` | `{}` | Secret environment variables. Each value can be a direct string via `value` (auto-stored in a Kubernetes Secret) or a reference to an existing Kubernetes Secret via `secretRef`. |
+| `container.app.env.variables` | `ContainerEnvVariable[]` | `[]` | Environment variables as a list. Each entry has a `name` and either a direct string `value` or a `valueFrom` reference to another resource. |
+| `container.app.env.secrets` | `ContainerEnvSecret[]` | `[]` | Secret environment variables as a list. Each entry has a `name` and either a direct string `value` (auto-stored in a Kubernetes Secret) or a `secretRef` referencing an existing Kubernetes Secret. |
 | `container.app.ports` | `object[]` | `[]` | Container port definitions. Each port requires `name` (lowercase alphanumeric and hyphens), `containerPort`, and `networkProtocol` (`TCP`, `UDP`, or `SCTP`). Optional `hostPort` exposes the port on the host node. |
 | `container.app.volumeMounts` | `VolumeMount[]` | `[]` | Volume mounts supporting ConfigMap, Secret, HostPath, EmptyDir, and PVC sources. |
 | `container.app.livenessProbe` | `Probe` | — | Periodic probe of container liveness. Restarts the container on failure. Supports `httpGet`, `tcpSocket`, `grpc`, and `exec` handlers. |
@@ -285,15 +285,15 @@ spec:
         - "/etc/vector"
       env:
         variables:
-          VECTOR_SELF_NODE_NAME:
+          - name: VECTOR_SELF_NODE_NAME
             value: "${K8S_NODE_NAME}"
-          SINK_ENDPOINT:
+          - name: SINK_ENDPOINT
             valueFrom:
               kind: KubernetesDeployment
               name: log-aggregator
               fieldPath: status.outputs.kubeEndpoint
         secrets:
-          SINK_API_KEY:
+          - name: SINK_API_KEY
             secretRef:
               name: vector-credentials
               key: api-key

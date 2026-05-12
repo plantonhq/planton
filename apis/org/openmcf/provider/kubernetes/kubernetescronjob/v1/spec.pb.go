@@ -50,9 +50,7 @@ type KubernetesCronJobSpec struct {
 	Resources *kubernetes.ContainerResources `protobuf:"bytes,5,opt,name=resources,proto3" json:"resources,omitempty"`
 	// *
 	// Environment variables and secrets for the cron-job container.
-	// This includes both straightforward environment variables (key=value)
-	// and references to secrets.
-	Env *KubernetesCronJobContainerAppEnv `protobuf:"bytes,6,opt,name=env,proto3" json:"env,omitempty"`
+	Env *kubernetes.ContainerEnv `protobuf:"bytes,6,opt,name=env,proto3" json:"env,omitempty"`
 	// *
 	// A cron schedule expression in standard Cron format, e.g. "0 0 * * *".
 	// This field is required.
@@ -194,7 +192,7 @@ func (x *KubernetesCronJobSpec) GetResources() *kubernetes.ContainerResources {
 	return nil
 }
 
-func (x *KubernetesCronJobSpec) GetEnv() *KubernetesCronJobContainerAppEnv {
+func (x *KubernetesCronJobSpec) GetEnv() *kubernetes.ContainerEnv {
 	if x != nil {
 		return x.Env
 	}
@@ -285,100 +283,11 @@ func (x *KubernetesCronJobSpec) GetVolumeMounts() []*kubernetes.VolumeMount {
 	return nil
 }
 
-// *
-// KubernetesCronJobContainerAppEnv defines the environment variables
-// and secrets for the cron-job container.
-type KubernetesCronJobContainerAppEnv struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// *
-	// A map of environment variable names to their values.
-	// Each variable can be provided either as a literal string value or as a reference
-	// to another OpenMCF resource's field.
-	//
-	// **Option 1: Direct string value**
-	// ```yaml
-	// variables:
-	//
-	//	BACKUP_RETENTION_DAYS:
-	//	  value: "30"
-	//
-	// ```
-	//
-	// **Option 2: Reference to another resource's field**
-	// ```yaml
-	// variables:
-	//
-	//	DATABASE_HOST:
-	//	  valueFrom:
-	//	    kind: PostgresCluster
-	//	    name: my-postgres
-	//	    fieldPath: "status.outputs.host"
-	//
-	// ```
-	//
-	// When using valueFrom references, the orchestrator resolves the reference
-	// and populates the value field before invoking the IaC modules.
-	Variables map[string]*v1.StringValueOrRef `protobuf:"bytes,1,rep,name=variables,proto3" json:"variables,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// *
-	// A map of secret environment variable names to their values.
-	// Each secret can be provided either as a literal string value or as a reference
-	// to an existing Kubernetes Secret.
-	//
-	// Using secret references is recommended for production deployments.
-	Secrets       map[string]*kubernetes.KubernetesSensitiveValue `protobuf:"bytes,2,rep,name=secrets,proto3" json:"secrets,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *KubernetesCronJobContainerAppEnv) Reset() {
-	*x = KubernetesCronJobContainerAppEnv{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetescronjob_v1_spec_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *KubernetesCronJobContainerAppEnv) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*KubernetesCronJobContainerAppEnv) ProtoMessage() {}
-
-func (x *KubernetesCronJobContainerAppEnv) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetescronjob_v1_spec_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use KubernetesCronJobContainerAppEnv.ProtoReflect.Descriptor instead.
-func (*KubernetesCronJobContainerAppEnv) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetescronjob_v1_spec_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *KubernetesCronJobContainerAppEnv) GetVariables() map[string]*v1.StringValueOrRef {
-	if x != nil {
-		return x.Variables
-	}
-	return nil
-}
-
-func (x *KubernetesCronJobContainerAppEnv) GetSecrets() map[string]*kubernetes.KubernetesSensitiveValue {
-	if x != nil {
-		return x.Secrets
-	}
-	return nil
-}
-
 var File_org_openmcf_provider_kubernetes_kubernetescronjob_v1_spec_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_kubernetes_kubernetescronjob_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"?org/openmcf/provider/kubernetes/kubernetescronjob/v1/spec.proto\x124org.openmcf.provider.kubernetes.kubernetescronjob.v1\x1a\x1bbuf/validate/validate.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a7org/openmcf/provider/kubernetes/kubernetes_secret.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/provider/kubernetes/volume_mount.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xac\f\n" +
+	"?org/openmcf/provider/kubernetes/kubernetescronjob/v1/spec.proto\x124org.openmcf.provider.kubernetes.kubernetescronjob.v1\x1a\x1bbuf/validate/validate.proto\x1a3org/openmcf/provider/kubernetes/container_env.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/provider/kubernetes/volume_mount.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x83\f\n" +
 	"\x15KubernetesCronJobSpec\x12a\n" +
 	"\x0etarget_cluster\x18\x01 \x01(\v2:.org.openmcf.provider.kubernetes.KubernetesClusterSelectorR\rtargetCluster\x12j\n" +
 	"\tnamespace\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xc4\x06\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
@@ -387,8 +296,8 @@ const file_org_openmcf_provider_kubernetes_kubernetescronjob_v1_spec_proto_rawDe
 	"\tresources\x18\x05 \x01(\v23.org.openmcf.provider.kubernetes.ContainerResourcesB!\xba\xfb\xa4\x02\x1c\n" +
 	"\f\n" +
 	"\x051000m\x12\x031Gi\x12\f\n" +
-	"\x0350m\x12\x05100MiR\tresources\x12h\n" +
-	"\x03env\x18\x06 \x01(\v2V.org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobContainerAppEnvR\x03env\x12\"\n" +
+	"\x0350m\x12\x05100MiR\tresources\x12?\n" +
+	"\x03env\x18\x06 \x01(\v2-.org.openmcf.provider.kubernetes.ContainerEnvR\x03env\x12\"\n" +
 	"\bschedule\x18\a \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bschedule\x12F\n" +
 	"\x19starting_deadline_seconds\x18\b \x01(\x04B\x05\x8a\xa6\x1d\x010H\x00R\x17startingDeadlineSeconds\x88\x01\x01\x12[\n" +
 	"\x12concurrency_policy\x18\t \x01(\tB'\xbaH\x1ar\x18R\x05AllowR\x06ForbidR\aReplace\x8a\xa6\x1d\x06ForbidH\x01R\x11concurrencyPolicy\x88\x01\x01\x12(\n" +
@@ -413,16 +322,7 @@ const file_org_openmcf_provider_kubernetes_kubernetescronjob_v1_spec_proto_rawDe
 	"\x1e_successful_jobs_history_limitB\x1c\n" +
 	"\x1a_failed_jobs_history_limitB\x10\n" +
 	"\x0e_backoff_limitB\x11\n" +
-	"\x0f_restart_policy\"\x90\x04\n" +
-	" KubernetesCronJobContainerAppEnv\x12\x83\x01\n" +
-	"\tvariables\x18\x01 \x03(\v2e.org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobContainerAppEnv.VariablesEntryR\tvariables\x12}\n" +
-	"\asecrets\x18\x02 \x03(\v2c.org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobContainerAppEnv.SecretsEntryR\asecrets\x1ap\n" +
-	"\x0eVariablesEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12H\n" +
-	"\x05value\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x05value:\x028\x01\x1au\n" +
-	"\fSecretsEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12O\n" +
-	"\x05value\x18\x02 \x01(\v29.org.openmcf.provider.kubernetes.KubernetesSensitiveValueR\x05value:\x028\x01B\xa8\x03\n" +
+	"\x0f_restart_policyB\xa8\x03\n" +
 	"8com.org.openmcf.provider.kubernetes.kubernetescronjob.v1B\tSpecProtoP\x01Zjgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1;kubernetescronjobv1\xa2\x02\x05OOPKK\xaa\x024Org.Openmcf.Provider.Kubernetes.Kubernetescronjob.V1\xca\x024Org\\Openmcf\\Provider\\Kubernetes\\Kubernetescronjob\\V1\xe2\x02@Org\\Openmcf\\Provider\\Kubernetes\\Kubernetescronjob\\V1\\GPBMetadata\xea\x029Org::Openmcf::Provider::Kubernetes::Kubernetescronjob::V1b\x06proto3"
 
 var (
@@ -437,37 +337,30 @@ func file_org_openmcf_provider_kubernetes_kubernetescronjob_v1_spec_proto_rawDes
 	return file_org_openmcf_provider_kubernetes_kubernetescronjob_v1_spec_proto_rawDescData
 }
 
-var file_org_openmcf_provider_kubernetes_kubernetescronjob_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_org_openmcf_provider_kubernetes_kubernetescronjob_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_kubernetes_kubernetescronjob_v1_spec_proto_goTypes = []any{
-	(*KubernetesCronJobSpec)(nil),            // 0: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec
-	(*KubernetesCronJobContainerAppEnv)(nil), // 1: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobContainerAppEnv
-	nil,                                      // 2: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.ConfigMapsEntry
-	nil,                                      // 3: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobContainerAppEnv.VariablesEntry
-	nil,                                      // 4: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobContainerAppEnv.SecretsEntry
-	(*kubernetes.KubernetesClusterSelector)(nil), // 5: org.openmcf.provider.kubernetes.KubernetesClusterSelector
-	(*v1.StringValueOrRef)(nil),                  // 6: org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.ContainerImage)(nil),            // 7: org.openmcf.provider.kubernetes.ContainerImage
-	(*kubernetes.ContainerResources)(nil),        // 8: org.openmcf.provider.kubernetes.ContainerResources
-	(*kubernetes.VolumeMount)(nil),               // 9: org.openmcf.provider.kubernetes.VolumeMount
-	(*kubernetes.KubernetesSensitiveValue)(nil),  // 10: org.openmcf.provider.kubernetes.KubernetesSensitiveValue
+	(*KubernetesCronJobSpec)(nil), // 0: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec
+	nil,                           // 1: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.ConfigMapsEntry
+	(*kubernetes.KubernetesClusterSelector)(nil), // 2: org.openmcf.provider.kubernetes.KubernetesClusterSelector
+	(*v1.StringValueOrRef)(nil),                  // 3: org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.ContainerImage)(nil),            // 4: org.openmcf.provider.kubernetes.ContainerImage
+	(*kubernetes.ContainerResources)(nil),        // 5: org.openmcf.provider.kubernetes.ContainerResources
+	(*kubernetes.ContainerEnv)(nil),              // 6: org.openmcf.provider.kubernetes.ContainerEnv
+	(*kubernetes.VolumeMount)(nil),               // 7: org.openmcf.provider.kubernetes.VolumeMount
 }
 var file_org_openmcf_provider_kubernetes_kubernetescronjob_v1_spec_proto_depIdxs = []int32{
-	5,  // 0: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.target_cluster:type_name -> org.openmcf.provider.kubernetes.KubernetesClusterSelector
-	6,  // 1: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.namespace:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	7,  // 2: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.image:type_name -> org.openmcf.provider.kubernetes.ContainerImage
-	8,  // 3: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.resources:type_name -> org.openmcf.provider.kubernetes.ContainerResources
-	1,  // 4: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.env:type_name -> org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobContainerAppEnv
-	2,  // 5: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.config_maps:type_name -> org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.ConfigMapsEntry
-	9,  // 6: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.volume_mounts:type_name -> org.openmcf.provider.kubernetes.VolumeMount
-	3,  // 7: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobContainerAppEnv.variables:type_name -> org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobContainerAppEnv.VariablesEntry
-	4,  // 8: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobContainerAppEnv.secrets:type_name -> org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobContainerAppEnv.SecretsEntry
-	6,  // 9: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobContainerAppEnv.VariablesEntry.value:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	10, // 10: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobContainerAppEnv.SecretsEntry.value:type_name -> org.openmcf.provider.kubernetes.KubernetesSensitiveValue
-	11, // [11:11] is the sub-list for method output_type
-	11, // [11:11] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	2, // 0: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.target_cluster:type_name -> org.openmcf.provider.kubernetes.KubernetesClusterSelector
+	3, // 1: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.namespace:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	4, // 2: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.image:type_name -> org.openmcf.provider.kubernetes.ContainerImage
+	5, // 3: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.resources:type_name -> org.openmcf.provider.kubernetes.ContainerResources
+	6, // 4: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.env:type_name -> org.openmcf.provider.kubernetes.ContainerEnv
+	1, // 5: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.config_maps:type_name -> org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.ConfigMapsEntry
+	7, // 6: org.openmcf.provider.kubernetes.kubernetescronjob.v1.KubernetesCronJobSpec.volume_mounts:type_name -> org.openmcf.provider.kubernetes.VolumeMount
+	7, // [7:7] is the sub-list for method output_type
+	7, // [7:7] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_kubernetes_kubernetescronjob_v1_spec_proto_init() }
@@ -482,7 +375,7 @@ func file_org_openmcf_provider_kubernetes_kubernetescronjob_v1_spec_proto_init()
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_kubernetes_kubernetescronjob_v1_spec_proto_rawDesc), len(file_org_openmcf_provider_kubernetes_kubernetescronjob_v1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

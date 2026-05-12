@@ -1,0 +1,17 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "containerenv",
+    srcs = [
+        "envfrom.go",
+        "envvars.go",
+        "secrets.go",
+    ],
+    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/kubernetes/containerenv",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/org/openmcf/provider/kubernetes",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/core/v1:core",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

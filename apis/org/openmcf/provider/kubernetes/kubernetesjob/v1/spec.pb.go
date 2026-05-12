@@ -50,9 +50,7 @@ type KubernetesJobSpec struct {
 	Resources *kubernetes.ContainerResources `protobuf:"bytes,5,opt,name=resources,proto3" json:"resources,omitempty"`
 	// *
 	// Environment variables and secrets for the job container.
-	// This includes both straightforward environment variables (key=value)
-	// and references to secrets.
-	Env *KubernetesJobContainerAppEnv `protobuf:"bytes,6,opt,name=env,proto3" json:"env,omitempty"`
+	Env *kubernetes.ContainerEnv `protobuf:"bytes,6,opt,name=env,proto3" json:"env,omitempty"`
 	// *
 	// Number of parallel pods to run for the job.
 	// Default is 1 (sequential execution).
@@ -204,7 +202,7 @@ func (x *KubernetesJobSpec) GetResources() *kubernetes.ContainerResources {
 	return nil
 }
 
-func (x *KubernetesJobSpec) GetEnv() *KubernetesJobContainerAppEnv {
+func (x *KubernetesJobSpec) GetEnv() *kubernetes.ContainerEnv {
 	if x != nil {
 		return x.Env
 	}
@@ -295,100 +293,11 @@ func (x *KubernetesJobSpec) GetSuspend() bool {
 	return false
 }
 
-// *
-// KubernetesJobContainerAppEnv defines the environment variables
-// and secrets for the job container.
-type KubernetesJobContainerAppEnv struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// *
-	// A map of environment variable names to their values.
-	// Each variable can be provided either as a literal string value or as a reference
-	// to another OpenMCF resource's field.
-	//
-	// **Option 1: Direct string value**
-	// ```yaml
-	// variables:
-	//
-	//	BATCH_SIZE:
-	//	  value: "1000"
-	//
-	// ```
-	//
-	// **Option 2: Reference to another resource's field**
-	// ```yaml
-	// variables:
-	//
-	//	DATABASE_HOST:
-	//	  valueFrom:
-	//	    kind: PostgresCluster
-	//	    name: my-postgres
-	//	    fieldPath: "status.outputs.host"
-	//
-	// ```
-	//
-	// When using valueFrom references, the orchestrator resolves the reference
-	// and populates the value field before invoking the IaC modules.
-	Variables map[string]*v1.StringValueOrRef `protobuf:"bytes,1,rep,name=variables,proto3" json:"variables,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// *
-	// A map of secret environment variable names to their values.
-	// Each secret can be provided either as a literal string value or as a reference
-	// to an existing Kubernetes Secret.
-	//
-	// Using secret references is recommended for production deployments.
-	Secrets       map[string]*kubernetes.KubernetesSensitiveValue `protobuf:"bytes,2,rep,name=secrets,proto3" json:"secrets,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *KubernetesJobContainerAppEnv) Reset() {
-	*x = KubernetesJobContainerAppEnv{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *KubernetesJobContainerAppEnv) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*KubernetesJobContainerAppEnv) ProtoMessage() {}
-
-func (x *KubernetesJobContainerAppEnv) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use KubernetesJobContainerAppEnv.ProtoReflect.Descriptor instead.
-func (*KubernetesJobContainerAppEnv) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *KubernetesJobContainerAppEnv) GetVariables() map[string]*v1.StringValueOrRef {
-	if x != nil {
-		return x.Variables
-	}
-	return nil
-}
-
-func (x *KubernetesJobContainerAppEnv) GetSecrets() map[string]*kubernetes.KubernetesSensitiveValue {
-	if x != nil {
-		return x.Secrets
-	}
-	return nil
-}
-
 var File_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	";org/openmcf/provider/kubernetes/kubernetesjob/v1/spec.proto\x120org.openmcf.provider.kubernetes.kubernetesjob.v1\x1a\x1bbuf/validate/validate.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a7org/openmcf/provider/kubernetes/kubernetes_secret.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/provider/kubernetes/volume_mount.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xec\v\n" +
+	";org/openmcf/provider/kubernetes/kubernetesjob/v1/spec.proto\x120org.openmcf.provider.kubernetes.kubernetesjob.v1\x1a\x1bbuf/validate/validate.proto\x1a3org/openmcf/provider/kubernetes/container_env.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/provider/kubernetes/volume_mount.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xcb\v\n" +
 	"\x11KubernetesJobSpec\x12a\n" +
 	"\x0etarget_cluster\x18\x01 \x01(\v2:.org.openmcf.provider.kubernetes.KubernetesClusterSelectorR\rtargetCluster\x12j\n" +
 	"\tnamespace\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xc4\x06\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
@@ -397,8 +306,8 @@ const file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_rawDesc =
 	"\tresources\x18\x05 \x01(\v23.org.openmcf.provider.kubernetes.ContainerResourcesB!\xba\xfb\xa4\x02\x1c\n" +
 	"\f\n" +
 	"\x051000m\x12\x031Gi\x12\f\n" +
-	"\x0350m\x12\x05100MiR\tresources\x12`\n" +
-	"\x03env\x18\x06 \x01(\v2N.org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobContainerAppEnvR\x03env\x12,\n" +
+	"\x0350m\x12\x05100MiR\tresources\x12?\n" +
+	"\x03env\x18\x06 \x01(\v2-.org.openmcf.provider.kubernetes.ContainerEnvR\x03env\x12,\n" +
 	"\vparallelism\x18\a \x01(\rB\x05\x8a\xa6\x1d\x011H\x00R\vparallelism\x88\x01\x01\x12,\n" +
 	"\vcompletions\x18\b \x01(\rB\x05\x8a\xa6\x1d\x011H\x01R\vcompletions\x88\x01\x01\x12/\n" +
 	"\rbackoff_limit\x18\t \x01(\rB\x05\x8a\xa6\x1d\x016H\x02R\fbackoffLimit\x88\x01\x01\x12B\n" +
@@ -426,16 +335,7 @@ const file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_rawDesc =
 	"\x10_completion_modeB\x11\n" +
 	"\x0f_restart_policyB\n" +
 	"\n" +
-	"\b_suspend\"\xfb\x03\n" +
-	"\x1cKubernetesJobContainerAppEnv\x12{\n" +
-	"\tvariables\x18\x01 \x03(\v2].org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobContainerAppEnv.VariablesEntryR\tvariables\x12u\n" +
-	"\asecrets\x18\x02 \x03(\v2[.org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobContainerAppEnv.SecretsEntryR\asecrets\x1ap\n" +
-	"\x0eVariablesEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12H\n" +
-	"\x05value\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x05value:\x028\x01\x1au\n" +
-	"\fSecretsEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12O\n" +
-	"\x05value\x18\x02 \x01(\v29.org.openmcf.provider.kubernetes.KubernetesSensitiveValueR\x05value:\x028\x01B\x8c\x03\n" +
+	"\b_suspendB\x8c\x03\n" +
 	"4com.org.openmcf.provider.kubernetes.kubernetesjob.v1B\tSpecProtoP\x01Zbgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesjob/v1;kubernetesjobv1\xa2\x02\x05OOPKK\xaa\x020Org.Openmcf.Provider.Kubernetes.Kubernetesjob.V1\xca\x020Org\\Openmcf\\Provider\\Kubernetes\\Kubernetesjob\\V1\xe2\x02<Org\\Openmcf\\Provider\\Kubernetes\\Kubernetesjob\\V1\\GPBMetadata\xea\x025Org::Openmcf::Provider::Kubernetes::Kubernetesjob::V1b\x06proto3"
 
 var (
@@ -450,37 +350,30 @@ func file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_rawDescGZI
 	return file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_rawDescData
 }
 
-var file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_goTypes = []any{
-	(*KubernetesJobSpec)(nil),            // 0: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec
-	(*KubernetesJobContainerAppEnv)(nil), // 1: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobContainerAppEnv
-	nil,                                  // 2: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.ConfigMapsEntry
-	nil,                                  // 3: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobContainerAppEnv.VariablesEntry
-	nil,                                  // 4: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobContainerAppEnv.SecretsEntry
-	(*kubernetes.KubernetesClusterSelector)(nil), // 5: org.openmcf.provider.kubernetes.KubernetesClusterSelector
-	(*v1.StringValueOrRef)(nil),                  // 6: org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.ContainerImage)(nil),            // 7: org.openmcf.provider.kubernetes.ContainerImage
-	(*kubernetes.ContainerResources)(nil),        // 8: org.openmcf.provider.kubernetes.ContainerResources
-	(*kubernetes.VolumeMount)(nil),               // 9: org.openmcf.provider.kubernetes.VolumeMount
-	(*kubernetes.KubernetesSensitiveValue)(nil),  // 10: org.openmcf.provider.kubernetes.KubernetesSensitiveValue
+	(*KubernetesJobSpec)(nil), // 0: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec
+	nil,                       // 1: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.ConfigMapsEntry
+	(*kubernetes.KubernetesClusterSelector)(nil), // 2: org.openmcf.provider.kubernetes.KubernetesClusterSelector
+	(*v1.StringValueOrRef)(nil),                  // 3: org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.ContainerImage)(nil),            // 4: org.openmcf.provider.kubernetes.ContainerImage
+	(*kubernetes.ContainerResources)(nil),        // 5: org.openmcf.provider.kubernetes.ContainerResources
+	(*kubernetes.ContainerEnv)(nil),              // 6: org.openmcf.provider.kubernetes.ContainerEnv
+	(*kubernetes.VolumeMount)(nil),               // 7: org.openmcf.provider.kubernetes.VolumeMount
 }
 var file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_depIdxs = []int32{
-	5,  // 0: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.target_cluster:type_name -> org.openmcf.provider.kubernetes.KubernetesClusterSelector
-	6,  // 1: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.namespace:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	7,  // 2: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.image:type_name -> org.openmcf.provider.kubernetes.ContainerImage
-	8,  // 3: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.resources:type_name -> org.openmcf.provider.kubernetes.ContainerResources
-	1,  // 4: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.env:type_name -> org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobContainerAppEnv
-	2,  // 5: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.config_maps:type_name -> org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.ConfigMapsEntry
-	9,  // 6: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.volume_mounts:type_name -> org.openmcf.provider.kubernetes.VolumeMount
-	3,  // 7: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobContainerAppEnv.variables:type_name -> org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobContainerAppEnv.VariablesEntry
-	4,  // 8: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobContainerAppEnv.secrets:type_name -> org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobContainerAppEnv.SecretsEntry
-	6,  // 9: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobContainerAppEnv.VariablesEntry.value:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	10, // 10: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobContainerAppEnv.SecretsEntry.value:type_name -> org.openmcf.provider.kubernetes.KubernetesSensitiveValue
-	11, // [11:11] is the sub-list for method output_type
-	11, // [11:11] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	2, // 0: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.target_cluster:type_name -> org.openmcf.provider.kubernetes.KubernetesClusterSelector
+	3, // 1: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.namespace:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	4, // 2: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.image:type_name -> org.openmcf.provider.kubernetes.ContainerImage
+	5, // 3: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.resources:type_name -> org.openmcf.provider.kubernetes.ContainerResources
+	6, // 4: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.env:type_name -> org.openmcf.provider.kubernetes.ContainerEnv
+	1, // 5: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.config_maps:type_name -> org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.ConfigMapsEntry
+	7, // 6: org.openmcf.provider.kubernetes.kubernetesjob.v1.KubernetesJobSpec.volume_mounts:type_name -> org.openmcf.provider.kubernetes.VolumeMount
+	7, // [7:7] is the sub-list for method output_type
+	7, // [7:7] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_init() }
@@ -495,7 +388,7 @@ func file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_rawDesc), len(file_org_openmcf_provider_kubernetes_kubernetesjob_v1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

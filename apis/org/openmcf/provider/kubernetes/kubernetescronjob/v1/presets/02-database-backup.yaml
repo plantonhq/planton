@@ -25,9 +25,9 @@ spec:
   failedJobsHistoryLimit: 3
   env:
     variables:
-      DATABASE_URL:
+      - name: DATABASE_URL
         value: "<your-database-connection-string>"
-      BACKUP_BUCKET:
+      - name: BACKUP_BUCKET
         value: "<your-backup-bucket-name>"
   command:
     - /bin/sh

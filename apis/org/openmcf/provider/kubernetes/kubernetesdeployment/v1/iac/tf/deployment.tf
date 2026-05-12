@@ -68,52 +68,105 @@ resource "kubernetes_deployment" "this" {
             }
           }
 
-          # Add env variables from var.spec.container.app.env.variables
-          # After generator flattening, each value is a plain string.
-          # Empty string is a valid value (distinct from null/not-declared).
+          # Environment variables with direct values
           dynamic "env" {
-            for_each = {
-              for k, v in (try(var.spec.container.app.env.variables, null) != null ? var.spec.container.app.env.variables : {}) :
-              k => v
-              if v != null
-            }
+            for_each = [for v in try(var.spec.container.app.env.variables, []) : v if v.value != null]
             content {
-              name  = env.key
-              value = env.value
+              name  = env.value.name
+              value = env.value.value
             }
           }
 
-          # Add env variables from secrets with direct string values (using computed secret name)
+          # Environment variables from ConfigMap key references
           dynamic "env" {
-            for_each = {
-              for k, v in (try(var.spec.container.app.env.secrets, null) != null ? var.spec.container.app.env.secrets : {}) :
-              k => v
-              if try(v.value, null) != null && v.value != ""
-            }
+            for_each = [for v in try(var.spec.container.app.env.variables, []) : v if v.config_map_key_ref != null]
             content {
-              name = env.key
+              name = env.value.name
               value_from {
-                secret_key_ref {
-                  name = local.env_secret_name
-                  key  = env.key
+                config_map_key_ref {
+                  name     = env.value.config_map_key_ref.name
+                  key      = env.value.config_map_key_ref.key
+                  optional = try(env.value.config_map_key_ref.optional, false)
                 }
               }
             }
           }
 
-          # Add env variables from external Kubernetes Secret references
+          # Environment variables from pod field references
           dynamic "env" {
-            for_each = {
-              for k, v in (try(var.spec.container.app.env.secrets, null) != null ? var.spec.container.app.env.secrets : {}) :
-              k => v
-              if try(v.secret_ref, null) != null
-            }
+            for_each = [for v in try(var.spec.container.app.env.variables, []) : v if v.field_ref != null]
             content {
-              name = env.key
+              name = env.value.name
+              value_from {
+                field_ref {
+                  field_path  = env.value.field_ref.field_path
+                  api_version = try(env.value.field_ref.api_version, null)
+                }
+              }
+            }
+          }
+
+          # Environment variables from container resource field references
+          dynamic "env" {
+            for_each = [for v in try(var.spec.container.app.env.variables, []) : v if v.resource_field_ref != null]
+            content {
+              name = env.value.name
+              value_from {
+                resource_field_ref {
+                  resource       = env.value.resource_field_ref.resource
+                  container_name = try(env.value.resource_field_ref.container_name, null)
+                  divisor        = try(env.value.resource_field_ref.divisor, null)
+                }
+              }
+            }
+          }
+
+          # Secret environment variables with direct string values (auto-created K8s Secret)
+          dynamic "env" {
+            for_each = [for s in try(var.spec.container.app.env.secrets, []) : s if try(s.value, null) != null && s.value != ""]
+            content {
+              name = env.value.name
               value_from {
                 secret_key_ref {
-                  name = env.value.secret_ref.name
-                  key  = env.value.secret_ref.key
+                  name = local.env_secret_name
+                  key  = env.value.name
+                }
+              }
+            }
+          }
+
+          # Secret environment variables from external Kubernetes Secret references
+          dynamic "env" {
+            for_each = [for s in try(var.spec.container.app.env.secrets, []) : s if s.secret_ref != null]
+            content {
+              name = env.value.name
+              value_from {
+                secret_key_ref {
+                  name     = env.value.secret_ref.name
+                  key      = env.value.secret_ref.key
+                  optional = try(env.value.secret_ref.optional, false)
+                }
+              }
+            }
+          }
+
+          # Bulk envFrom: import all keys from ConfigMaps or Secrets
+          dynamic "env_from" {
+            for_each = try(var.spec.container.app.env.env_from, [])
+            content {
+              prefix = try(env_from.value.prefix, null)
+              dynamic "config_map_ref" {
+                for_each = env_from.value.config_map_ref != null ? [env_from.value.config_map_ref] : []
+                content {
+                  name     = config_map_ref.value.name
+                  optional = try(config_map_ref.value.optional, false)
+                }
+              }
+              dynamic "secret_ref" {
+                for_each = env_from.value.secret_ref != null ? [env_from.value.secret_ref] : []
+                content {
+                  name     = secret_ref.value.name
+                  optional = try(secret_ref.value.optional, false)
                 }
               }
             }
@@ -122,11 +175,11 @@ resource "kubernetes_deployment" "this" {
           # Resource requests/limits
           resources {
             limits = {
-              cpu = try(var.spec.container.app.resources.limits.cpu, null)
+              cpu    = try(var.spec.container.app.resources.limits.cpu, null)
               memory = try(var.spec.container.app.resources.limits.memory, null)
             }
             requests = {
-              cpu = try(var.spec.container.app.resources.requests.cpu, null)
+              cpu    = try(var.spec.container.app.resources.requests.cpu, null)
               memory = try(var.spec.container.app.resources.requests.memory, null)
             }
           }

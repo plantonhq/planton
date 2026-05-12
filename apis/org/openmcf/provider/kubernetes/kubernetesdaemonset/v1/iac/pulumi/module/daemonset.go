@@ -2,11 +2,11 @@ package module
 
 import (
 	"fmt"
-	"sort"
 
 	"github.com/pkg/errors"
 	kubernetesv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
 	kubernetesdaemonsetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesdaemonset/v1"
+	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/kubernetes/containerenv"
 	appsv1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/apps/v1"
 	kubernetescorev1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/core/v1"
 	metav1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/meta/v1"
@@ -16,31 +16,9 @@ import (
 func daemonSet(ctx *pulumi.Context, locals *Locals, serviceAccountName string, kubernetesProvider pulumi.ProviderResource, namespaceDeps []pulumi.ResourceOption) error {
 	target := locals.KubernetesDaemonSet
 
-	// Build environment variables
-	envVarInputs := make([]kubernetescorev1.EnvVarInput, 0)
+	envVarInputs := containerenv.BuildEnvVars(target.Spec.Container.App.Env, locals.EnvSecretName)
 
-	// Add HOSTNAME env var
-	envVarInputs = append(envVarInputs, kubernetescorev1.EnvVarInput(kubernetescorev1.EnvVarArgs{
-		Name: pulumi.String("HOSTNAME"),
-		ValueFrom: &kubernetescorev1.EnvVarSourceArgs{
-			FieldRef: &kubernetescorev1.ObjectFieldSelectorArgs{
-				FieldPath: pulumi.String("status.podIP"),
-			},
-		},
-	}))
-
-	// Add K8S_POD_ID env var
-	envVarInputs = append(envVarInputs, kubernetescorev1.EnvVarInput(kubernetescorev1.EnvVarArgs{
-		Name: pulumi.String("K8S_POD_ID"),
-		ValueFrom: &kubernetescorev1.EnvVarSourceArgs{
-			FieldRef: &kubernetescorev1.ObjectFieldSelectorArgs{
-				ApiVersion: pulumi.String("v1"),
-				FieldPath:  pulumi.String("metadata.name"),
-			},
-		},
-	}))
-
-	// Add K8S_NODE_NAME env var (useful for DaemonSets)
+	// DaemonSets additionally inject the node name for node-level operations.
 	envVarInputs = append(envVarInputs, kubernetescorev1.EnvVarInput(kubernetescorev1.EnvVarArgs{
 		Name: pulumi.String("K8S_NODE_NAME"),
 		ValueFrom: &kubernetescorev1.EnvVarSourceArgs{
@@ -50,65 +28,7 @@ func daemonSet(ctx *pulumi.Context, locals *Locals, serviceAccountName string, k
 		},
 	}))
 
-	if target.Spec.Container.App.Env != nil {
-		if target.Spec.Container.App.Env.Variables != nil {
-			// Sort keys for deterministic output
-			sortedVarKeys := make([]string, 0, len(target.Spec.Container.App.Env.Variables))
-			for k := range target.Spec.Container.App.Env.Variables {
-				sortedVarKeys = append(sortedVarKeys, k)
-			}
-			sort.Strings(sortedVarKeys)
-
-			for _, envVarKey := range sortedVarKeys {
-				envVarValue := target.Spec.Container.App.Env.Variables[envVarKey]
-				// Orchestrator resolves valueFrom and places result in .value
-				if envVarValue.GetValue() != "" {
-					envVarInputs = append(envVarInputs, kubernetescorev1.EnvVarInput(kubernetescorev1.EnvVarArgs{
-						Name:  pulumi.String(envVarKey),
-						Value: pulumi.String(envVarValue.GetValue()),
-					}))
-				}
-			}
-		}
-
-		if target.Spec.Container.App.Env.Secrets != nil {
-			// Sort keys for deterministic output
-			sortedSecretKeys := make([]string, 0, len(target.Spec.Container.App.Env.Secrets))
-			for k := range target.Spec.Container.App.Env.Secrets {
-				sortedSecretKeys = append(sortedSecretKeys, k)
-			}
-			sort.Strings(sortedSecretKeys)
-
-			for _, secretKey := range sortedSecretKeys {
-				secretValue := target.Spec.Container.App.Env.Secrets[secretKey]
-
-				if secretValue.GetSecretRef() != nil {
-					// Use external Kubernetes Secret reference
-					secretRef := secretValue.GetSecretRef()
-					envVarInputs = append(envVarInputs, kubernetescorev1.EnvVarInput(kubernetescorev1.EnvVarArgs{
-						Name: pulumi.String(secretKey),
-						ValueFrom: &kubernetescorev1.EnvVarSourceArgs{
-							SecretKeyRef: &kubernetescorev1.SecretKeySelectorArgs{
-								Name: pulumi.String(secretRef.Name),
-								Key:  pulumi.String(secretRef.Key),
-							},
-						},
-					}))
-				} else if secretValue.GetValue() != "" {
-					// Use the internally created secret for direct string values
-					envVarInputs = append(envVarInputs, kubernetescorev1.EnvVarInput(kubernetescorev1.EnvVarArgs{
-						Name: pulumi.String(secretKey),
-						ValueFrom: &kubernetescorev1.EnvVarSourceArgs{
-							SecretKeyRef: &kubernetescorev1.SecretKeySelectorArgs{
-								Name: pulumi.String(locals.EnvSecretName),
-								Key:  pulumi.String(secretKey),
-							},
-						},
-					}))
-				}
-			}
-		}
-	}
+	envFromInputs := containerenv.BuildEnvFrom(target.Spec.Container.App.Env)
 
 	// Build ports array
 	portsArray := make(kubernetescorev1.ContainerPortArray, 0)
@@ -134,6 +54,7 @@ func daemonSet(ctx *pulumi.Context, locals *Locals, serviceAccountName string, k
 			target.Spec.Container.App.Image.Repo,
 			target.Spec.Container.App.Image.Tag)),
 		Env:          kubernetescorev1.EnvVarArray(envVarInputs),
+		EnvFrom:      envFromInputs,
 		Ports:        portsArray,
 		VolumeMounts: volumeMounts,
 		Resources: kubernetescorev1.ResourceRequirementsArgs{

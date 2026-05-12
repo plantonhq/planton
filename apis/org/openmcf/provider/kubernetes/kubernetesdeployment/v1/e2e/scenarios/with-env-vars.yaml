@@ -27,9 +27,9 @@ spec:
           service_port: 80
       env:
         variables:
-          APP_ENV:
+          - name: APP_ENV
             value: "test"
-          LOG_LEVEL:
+          - name: LOG_LEVEL
             value: "debug"
-          PORT:
+          - name: PORT
             value: "8080"

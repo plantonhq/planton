@@ -1,0 +1,6 @@
+# Auth0Action Pulumi Module
+# This module creates and manages Auth0 Actions.
+name: auth0-action
+runtime:
+  name: go
+description: Pulumi module for Auth0Action deployment component

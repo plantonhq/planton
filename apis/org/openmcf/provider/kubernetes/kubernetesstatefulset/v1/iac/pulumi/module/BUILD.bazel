@@ -22,6 +22,7 @@ go_library(
         "//apis/org/openmcf/provider/kubernetes",
         "//apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1:kubernetesstatefulset",
         "//apis/org/openmcf/shared/cloudresourcekind",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/containerenv",
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
         "//pkg/kubernetes/kuberneteslabels",
