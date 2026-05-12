@@ -174,11 +174,11 @@ locals {
       if try(p.is_ingress_port, false)
     ]) > 0
     ? [
-    for p in var.spec.container.app.ports : p.service_port
-    if try(p.is_ingress_port, false)
-  ][
-  0
-  ]
+      for p in var.spec.container.app.ports : p.service_port
+      if try(p.is_ingress_port, false)
+      ][
+      0
+    ]
     : 80
   )
 }

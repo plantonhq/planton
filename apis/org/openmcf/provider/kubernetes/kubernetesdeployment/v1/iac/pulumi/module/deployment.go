@@ -2,11 +2,11 @@ package module
 
 import (
 	"fmt"
-	"sort"
 
 	"github.com/pkg/errors"
 	kubernetesv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
 	kubernetesdeploymentv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1"
+	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/kubernetes/containerenv"
 	appsv1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/apps/v1"
 	kubernetescorev1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/core/v1"
 	metav1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/meta/v1"
@@ -33,84 +33,12 @@ func deployment(ctx *pulumi.Context, locals *Locals,
 		return nil, errors.Wrap(err, "failed to add service account")
 	}
 
-	envVarInputs := make([]kubernetescorev1.EnvVarInput, 0)
-	//add HOSTNAME env var
-	envVarInputs = append(envVarInputs, kubernetescorev1.EnvVarInput(kubernetescorev1.EnvVarArgs{
-		Name: pulumi.String("HOSTNAME"),
-		ValueFrom: &kubernetescorev1.EnvVarSourceArgs{
-			FieldRef: &kubernetescorev1.ObjectFieldSelectorArgs{
-				FieldPath: pulumi.String("status.podIP"),
-			},
-		},
-	}))
-	//add K8S_POD_ID env var
-	envVarInputs = append(envVarInputs, kubernetescorev1.EnvVarInput(kubernetescorev1.EnvVarArgs{
-		Name: pulumi.String("K8S_POD_ID"),
-		ValueFrom: &kubernetescorev1.EnvVarSourceArgs{
-			FieldRef: &kubernetescorev1.ObjectFieldSelectorArgs{
-				ApiVersion: pulumi.String("v1"),
-				FieldPath:  pulumi.String("metadata.name"),
-			},
-		},
-	}))
+	envVarInputs := containerenv.BuildEnvVars(
+		locals.KubernetesDeployment.Spec.Container.App.Env,
+		locals.EnvSecretName,
+	)
 
-	if locals.KubernetesDeployment.Spec.Container.App.Env != nil {
-		if locals.KubernetesDeployment.Spec.Container.App.Env.Variables != nil {
-			// Sort keys for deterministic output
-			sortedEnvVariableKeys := make([]string, 0, len(locals.KubernetesDeployment.Spec.Container.App.Env.Variables))
-			for k := range locals.KubernetesDeployment.Spec.Container.App.Env.Variables {
-				sortedEnvVariableKeys = append(sortedEnvVariableKeys, k)
-			}
-			sort.Strings(sortedEnvVariableKeys)
-
-			for _, envVarKey := range sortedEnvVariableKeys {
-				envVarValue := locals.KubernetesDeployment.Spec.Container.App.Env.Variables[envVarKey]
-				envVarInputs = append(envVarInputs, kubernetescorev1.EnvVarInput(kubernetescorev1.EnvVarArgs{
-					Name:  pulumi.String(envVarKey),
-					Value: pulumi.String(envVarValue.GetValue()),
-				}))
-			}
-		}
-
-		if locals.KubernetesDeployment.Spec.Container.App.Env.Secrets != nil {
-			// Sort keys for deterministic output
-			sortedSecretKeys := make([]string, 0, len(locals.KubernetesDeployment.Spec.Container.App.Env.Secrets))
-			for k := range locals.KubernetesDeployment.Spec.Container.App.Env.Secrets {
-				sortedSecretKeys = append(sortedSecretKeys, k)
-			}
-			sort.Strings(sortedSecretKeys)
-
-			for _, secretKey := range sortedSecretKeys {
-				secretValue := locals.KubernetesDeployment.Spec.Container.App.Env.Secrets[secretKey]
-
-				// Determine which secret to reference based on the value type
-				if secretValue.GetSecretRef() != nil {
-					// Use external Kubernetes Secret reference
-					secretRef := secretValue.GetSecretRef()
-					envVarInputs = append(envVarInputs, kubernetescorev1.EnvVarInput(kubernetescorev1.EnvVarArgs{
-						Name: pulumi.String(secretKey),
-						ValueFrom: &kubernetescorev1.EnvVarSourceArgs{
-							SecretKeyRef: &kubernetescorev1.SecretKeySelectorArgs{
-								Name: pulumi.String(secretRef.Name),
-								Key:  pulumi.String(secretRef.Key),
-							},
-						},
-					}))
-				} else if secretValue.GetValue() != "" {
-					// Use the internally created secret (env-secrets) for direct string values
-					envVarInputs = append(envVarInputs, kubernetescorev1.EnvVarInput(kubernetescorev1.EnvVarArgs{
-						Name: pulumi.String(secretKey),
-						ValueFrom: &kubernetescorev1.EnvVarSourceArgs{
-							SecretKeyRef: &kubernetescorev1.SecretKeySelectorArgs{
-								Name: pulumi.String(locals.EnvSecretName),
-								Key:  pulumi.String(secretKey),
-							},
-						},
-					}))
-				}
-			}
-		}
-	}
+	envFromInputs := containerenv.BuildEnvFrom(locals.KubernetesDeployment.Spec.Container.App.Env)
 
 	portsArray := make(kubernetescorev1.ContainerPortArray, 0)
 	for _, p := range locals.KubernetesDeployment.Spec.Container.App.Ports {
@@ -129,8 +57,9 @@ func deployment(ctx *pulumi.Context, locals *Locals,
 		Image: pulumi.String(fmt.Sprintf("%s:%s",
 			locals.KubernetesDeployment.Spec.Container.App.Image.Repo,
 			locals.KubernetesDeployment.Spec.Container.App.Image.Tag)),
-		Env:          kubernetescorev1.EnvVarArray(envVarInputs),
-		Ports:        portsArray,
+		Env:     kubernetescorev1.EnvVarArray(envVarInputs),
+		EnvFrom: envFromInputs,
+		Ports:   portsArray,
 		VolumeMounts: volumeMounts,
 		Resources: kubernetescorev1.ResourceRequirementsArgs{
 			Limits: pulumi.ToStringMap(map[string]string{

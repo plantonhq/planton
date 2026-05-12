@@ -38,7 +38,11 @@ type KubernetesSecretKeyRef struct {
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	// *
 	// The key within the Kubernetes Secret that contains the value.
-	Key           string `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty"`
+	Key string `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty"`
+	// *
+	// If true, the env var is silently skipped when the Secret or key does not exist
+	// (instead of blocking pod startup).
+	Optional      bool `protobuf:"varint,4,opt,name=optional,proto3" json:"optional,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -92,6 +96,13 @@ func (x *KubernetesSecretKeyRef) GetKey() string {
 		return x.Key
 	}
 	return ""
+}
+
+func (x *KubernetesSecretKeyRef) GetOptional() bool {
+	if x != nil {
+		return x.Optional
+	}
+	return false
 }
 
 // *
@@ -193,11 +204,12 @@ var File_org_openmcf_provider_kubernetes_kubernetes_secret_proto protoreflect.Fi
 
 const file_org_openmcf_provider_kubernetes_kubernetes_secret_proto_rawDesc = "" +
 	"\n" +
-	"7org/openmcf/provider/kubernetes/kubernetes_secret.proto\x12\x1forg.openmcf.provider.kubernetes\x1a\x1bbuf/validate/validate.proto\"l\n" +
+	"7org/openmcf/provider/kubernetes/kubernetes_secret.proto\x12\x1forg.openmcf.provider.kubernetes\x1a\x1bbuf/validate/validate.proto\"\x88\x01\n" +
 	"\x16KubernetesSecretKeyRef\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x1a\n" +
 	"\x04name\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12\x18\n" +
-	"\x03key\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x03key\"\x9f\x01\n" +
+	"\x03key\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x03key\x12\x1a\n" +
+	"\boptional\x18\x04 \x01(\bR\boptional\"\x9f\x01\n" +
 	"\x18KubernetesSensitiveValue\x12\x16\n" +
 	"\x05value\x18\x01 \x01(\tH\x00R\x05value\x12X\n" +
 	"\n" +

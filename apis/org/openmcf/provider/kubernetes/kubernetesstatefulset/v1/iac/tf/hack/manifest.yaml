@@ -27,9 +27,11 @@ spec:
           isIngressPort: false
       env:
         variables:
-          POSTGRES_DB: myapp
+          - name: POSTGRES_DB
+            value: "myapp"
         secrets:
-          POSTGRES_PASSWORD: supersecret
+          - name: POSTGRES_PASSWORD
+            value: "supersecret"
       volumeMounts:
         - name: data
           mountPath: /var/lib/postgresql/data

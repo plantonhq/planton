@@ -1,12 +1,12 @@
 variable "metadata" {
   description = "Metadata for the resource, including name and labels"
   type = object({
-    name = string,
-    id = optional(string),
-    org = optional(string),
-    env = optional(string),
-    labels = optional(map(string)),
-    tags = optional(list(string)),
+    name    = string,
+    id      = optional(string),
+    org     = optional(string),
+    env     = optional(string),
+    labels  = optional(map(string)),
+    tags    = optional(list(string)),
     version = optional(object({ id = string, message = string }))
   })
 }
@@ -78,27 +78,60 @@ variable "spec" {
 
         # The environment variables and secrets for the application container.
         env = optional(object({
-          # A map of environment variable names to their values.
-          # Each variable can be provided either as a direct string value (value)
-          # or as a reference to another OpenMCF resource's field (value_from).
-          # The orchestrator resolves value_from references and populates .value before invoking Terraform.
-          variables = optional(map(string))
-          # A map of secret environment variable names to their values.
-          # Each secret can be provided either as a literal string value (value)
-          # or as a reference to an existing Kubernetes Secret (secret_ref).
-          secrets = optional(map(object({
-            # A literal string value for the secret (for development/testing).
+          # Environment variables (non-sensitive). Each entry supports multiple value sources.
+          variables = optional(list(object({
+            name  = string
             value = optional(string)
-            # A reference to a key within a Kubernetes Secret (recommended for production).
-            secret_ref = optional(object({
-              # The namespace of the Kubernetes Secret (optional, defaults to deployment namespace).
-              namespace = optional(string)
-              # The name of the Kubernetes Secret.
-              name = string
-              # The key within the Secret that contains the value.
-              key = string
+            value_from = optional(object({
+              kind       = optional(string)
+              env        = optional(string)
+              name       = string
+              field_path = optional(string)
             }))
-          })))
+            config_map_key_ref = optional(object({
+              name     = string
+              key      = string
+              optional = optional(bool, false)
+            }))
+            field_ref = optional(object({
+              api_version = optional(string)
+              field_path  = string
+            }))
+            resource_field_ref = optional(object({
+              container_name = optional(string)
+              resource       = string
+              divisor        = optional(string)
+            }))
+          })), [])
+          # Secret environment variables (sensitive).
+          secrets = optional(list(object({
+            name  = string
+            value = optional(string)
+            secret_ref = optional(object({
+              namespace = optional(string)
+              name      = string
+              key       = string
+              optional  = optional(bool, false)
+            }))
+            value_from = optional(object({
+              kind       = optional(string)
+              env        = optional(string)
+              name       = string
+              field_path = optional(string)
+            }))
+          })), [])
+          # Bulk import of environment variables from ConfigMaps or Secrets.
+          env_from = optional(list(object({
+            prefix = optional(string)
+            config_map_ref = optional(object({
+              name     = string
+              optional = optional(bool, false)
+            }))
+            secret_ref = optional(object({
+              name     = string
+              optional = optional(bool, false)
+            }))
+          })), [])
         }))
 
         # A list of ports to be configured for the application container.

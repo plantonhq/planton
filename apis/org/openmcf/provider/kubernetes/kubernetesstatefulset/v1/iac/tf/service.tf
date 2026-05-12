@@ -8,18 +8,18 @@ resource "kubernetes_service" "headless" {
   }
 
   spec {
-    type                         = "ClusterIP"
-    cluster_ip                   = "None" # Makes it headless
-    publish_not_ready_addresses  = true    # Important for StatefulSets
-    selector                     = local.selector_labels
+    type                        = "ClusterIP"
+    cluster_ip                  = "None" # Makes it headless
+    publish_not_ready_addresses = true   # Important for StatefulSets
+    selector                    = local.selector_labels
 
     dynamic "port" {
       for_each = try(var.spec.container.app.ports, [])
       content {
-        name        = port.value.name
-        protocol    = port.value.network_protocol
-        port        = port.value.service_port
-        target_port = port.value.container_port
+        name         = port.value.name
+        protocol     = port.value.network_protocol
+        port         = port.value.service_port
+        target_port  = port.value.container_port
         app_protocol = port.value.app_protocol
       }
     }
@@ -47,10 +47,10 @@ resource "kubernetes_service" "client" {
     dynamic "port" {
       for_each = try(var.spec.container.app.ports, [])
       content {
-        name        = port.value.name
-        protocol    = port.value.network_protocol
-        port        = port.value.service_port
-        target_port = port.value.container_port
+        name         = port.value.name
+        protocol     = port.value.network_protocol
+        port         = port.value.service_port
+        target_port  = port.value.container_port
         app_protocol = port.value.app_protocol
       }
     }

@@ -49,18 +49,57 @@ variable "spec" {
       })
     })
     env = optional(object({
-      # A map of environment variable names to their string values.
-      # StringValueOrRef wrapper types are flattened to plain strings by the
-      # tfvars generator before reaching the TF module.
-      variables = optional(map(string))
-      secrets = optional(map(object({
+      variables = optional(list(object({
+        name  = string
+        value = optional(string)
+        value_from = optional(object({
+          kind       = optional(string)
+          env        = optional(string)
+          name       = string
+          field_path = optional(string)
+        }))
+        config_map_key_ref = optional(object({
+          name     = string
+          key      = string
+          optional = optional(bool, false)
+        }))
+        field_ref = optional(object({
+          api_version = optional(string)
+          field_path  = string
+        }))
+        resource_field_ref = optional(object({
+          container_name = optional(string)
+          resource       = string
+          divisor        = optional(string)
+        }))
+      })), [])
+      secrets = optional(list(object({
+        name  = string
         value = optional(string)
         secret_ref = optional(object({
           namespace = optional(string)
           name      = string
           key       = string
+          optional  = optional(bool, false)
         }))
-      })))
+        value_from = optional(object({
+          kind       = optional(string)
+          env        = optional(string)
+          name       = string
+          field_path = optional(string)
+        }))
+      })), [])
+      env_from = optional(list(object({
+        prefix = optional(string)
+        config_map_ref = optional(object({
+          name     = string
+          optional = optional(bool, false)
+        }))
+        secret_ref = optional(object({
+          name     = string
+          optional = optional(bool, false)
+        }))
+      })), [])
     }))
     command = optional(list(string))
     args    = optional(list(string))

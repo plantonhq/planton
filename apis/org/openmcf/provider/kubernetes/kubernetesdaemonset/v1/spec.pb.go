@@ -272,7 +272,7 @@ type KubernetesDaemonSetContainerApp struct {
 	Resources *kubernetes.ContainerResources `protobuf:"bytes,2,opt,name=resources,proto3" json:"resources,omitempty"`
 	// *
 	// The environment variables and secrets for the application container.
-	Env *KubernetesDaemonSetContainerAppEnv `protobuf:"bytes,3,opt,name=env,proto3" json:"env,omitempty"`
+	Env *kubernetes.ContainerEnv `protobuf:"bytes,3,opt,name=env,proto3" json:"env,omitempty"`
 	// *
 	// A list of ports to be configured for the application container.
 	Ports []*KubernetesDaemonSetContainerAppPort `protobuf:"bytes,4,rep,name=ports,proto3" json:"ports,omitempty"`
@@ -351,7 +351,7 @@ func (x *KubernetesDaemonSetContainerApp) GetResources() *kubernetes.ContainerRe
 	return nil
 }
 
-func (x *KubernetesDaemonSetContainerApp) GetEnv() *KubernetesDaemonSetContainerAppEnv {
+func (x *KubernetesDaemonSetContainerApp) GetEnv() *kubernetes.ContainerEnv {
 	if x != nil {
 		return x.Env
 	}
@@ -415,94 +415,6 @@ func (x *KubernetesDaemonSetContainerApp) GetSecurityContext() *KubernetesDaemon
 }
 
 // *
-// **KubernetesDaemonSetContainerAppEnv** defines the environment variables and secrets for the application container.
-type KubernetesDaemonSetContainerAppEnv struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// *
-	// A map of environment variable names to their values.
-	// Each variable can be provided either as a literal string value or as a reference
-	// to another OpenMCF resource's field.
-	//
-	// **Option 1: Direct string value**
-	// ```yaml
-	// variables:
-	//
-	//	LOG_LEVEL:
-	//	  value: "info"
-	//
-	// ```
-	//
-	// **Option 2: Reference to another resource's field**
-	// ```yaml
-	// variables:
-	//
-	//	CLUSTER_NAME:
-	//	  valueFrom:
-	//	    kind: GcpGkeCluster
-	//	    name: my-cluster
-	//	    fieldPath: "status.outputs.name"
-	//
-	// ```
-	//
-	// When using valueFrom references, the orchestrator resolves the reference
-	// and populates the value field before invoking the IaC modules.
-	Variables map[string]*v1.StringValueOrRef `protobuf:"bytes,1,rep,name=variables,proto3" json:"variables,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// *
-	// A map of secret environment variable names to their values.
-	// Each secret can be provided either as a literal string value or as a reference
-	// to an existing Kubernetes Secret.
-	//
-	// Using secret references is recommended for production deployments.
-	Secrets       map[string]*kubernetes.KubernetesSensitiveValue `protobuf:"bytes,2,rep,name=secrets,proto3" json:"secrets,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *KubernetesDaemonSetContainerAppEnv) Reset() {
-	*x = KubernetesDaemonSetContainerAppEnv{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *KubernetesDaemonSetContainerAppEnv) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*KubernetesDaemonSetContainerAppEnv) ProtoMessage() {}
-
-func (x *KubernetesDaemonSetContainerAppEnv) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use KubernetesDaemonSetContainerAppEnv.ProtoReflect.Descriptor instead.
-func (*KubernetesDaemonSetContainerAppEnv) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *KubernetesDaemonSetContainerAppEnv) GetVariables() map[string]*v1.StringValueOrRef {
-	if x != nil {
-		return x.Variables
-	}
-	return nil
-}
-
-func (x *KubernetesDaemonSetContainerAppEnv) GetSecrets() map[string]*kubernetes.KubernetesSensitiveValue {
-	if x != nil {
-		return x.Secrets
-	}
-	return nil
-}
-
-// *
 // **KubernetesDaemonSetContainerAppPort** specifies the port configuration for the application container.
 type KubernetesDaemonSetContainerAppPort struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -522,7 +434,7 @@ type KubernetesDaemonSetContainerAppPort struct {
 
 func (x *KubernetesDaemonSetContainerAppPort) Reset() {
 	*x = KubernetesDaemonSetContainerAppPort{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[4]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -534,7 +446,7 @@ func (x *KubernetesDaemonSetContainerAppPort) String() string {
 func (*KubernetesDaemonSetContainerAppPort) ProtoMessage() {}
 
 func (x *KubernetesDaemonSetContainerAppPort) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[4]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -547,7 +459,7 @@ func (x *KubernetesDaemonSetContainerAppPort) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use KubernetesDaemonSetContainerAppPort.ProtoReflect.Descriptor instead.
 func (*KubernetesDaemonSetContainerAppPort) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescGZIP(), []int{4}
+	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *KubernetesDaemonSetContainerAppPort) GetName() string {
@@ -601,7 +513,7 @@ type KubernetesDaemonSetToleration struct {
 
 func (x *KubernetesDaemonSetToleration) Reset() {
 	*x = KubernetesDaemonSetToleration{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[5]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -613,7 +525,7 @@ func (x *KubernetesDaemonSetToleration) String() string {
 func (*KubernetesDaemonSetToleration) ProtoMessage() {}
 
 func (x *KubernetesDaemonSetToleration) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[5]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -626,7 +538,7 @@ func (x *KubernetesDaemonSetToleration) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesDaemonSetToleration.ProtoReflect.Descriptor instead.
 func (*KubernetesDaemonSetToleration) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescGZIP(), []int{5}
+	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *KubernetesDaemonSetToleration) GetKey() string {
@@ -681,7 +593,7 @@ type KubernetesDaemonSetUpdateStrategy struct {
 
 func (x *KubernetesDaemonSetUpdateStrategy) Reset() {
 	*x = KubernetesDaemonSetUpdateStrategy{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[6]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -693,7 +605,7 @@ func (x *KubernetesDaemonSetUpdateStrategy) String() string {
 func (*KubernetesDaemonSetUpdateStrategy) ProtoMessage() {}
 
 func (x *KubernetesDaemonSetUpdateStrategy) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[6]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -706,7 +618,7 @@ func (x *KubernetesDaemonSetUpdateStrategy) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use KubernetesDaemonSetUpdateStrategy.ProtoReflect.Descriptor instead.
 func (*KubernetesDaemonSetUpdateStrategy) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescGZIP(), []int{6}
+	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *KubernetesDaemonSetUpdateStrategy) GetType() string {
@@ -743,7 +655,7 @@ type KubernetesDaemonSetRollingUpdate struct {
 
 func (x *KubernetesDaemonSetRollingUpdate) Reset() {
 	*x = KubernetesDaemonSetRollingUpdate{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[7]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -755,7 +667,7 @@ func (x *KubernetesDaemonSetRollingUpdate) String() string {
 func (*KubernetesDaemonSetRollingUpdate) ProtoMessage() {}
 
 func (x *KubernetesDaemonSetRollingUpdate) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[7]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -768,7 +680,7 @@ func (x *KubernetesDaemonSetRollingUpdate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesDaemonSetRollingUpdate.ProtoReflect.Descriptor instead.
 func (*KubernetesDaemonSetRollingUpdate) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescGZIP(), []int{7}
+	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *KubernetesDaemonSetRollingUpdate) GetMaxUnavailable() string {
@@ -808,7 +720,7 @@ type KubernetesDaemonSetSecurityContext struct {
 
 func (x *KubernetesDaemonSetSecurityContext) Reset() {
 	*x = KubernetesDaemonSetSecurityContext{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[8]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -820,7 +732,7 @@ func (x *KubernetesDaemonSetSecurityContext) String() string {
 func (*KubernetesDaemonSetSecurityContext) ProtoMessage() {}
 
 func (x *KubernetesDaemonSetSecurityContext) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[8]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -833,7 +745,7 @@ func (x *KubernetesDaemonSetSecurityContext) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use KubernetesDaemonSetSecurityContext.ProtoReflect.Descriptor instead.
 func (*KubernetesDaemonSetSecurityContext) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescGZIP(), []int{8}
+	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *KubernetesDaemonSetSecurityContext) GetPrivileged() bool {
@@ -892,7 +804,7 @@ type KubernetesDaemonSetCapabilities struct {
 
 func (x *KubernetesDaemonSetCapabilities) Reset() {
 	*x = KubernetesDaemonSetCapabilities{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[9]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -904,7 +816,7 @@ func (x *KubernetesDaemonSetCapabilities) String() string {
 func (*KubernetesDaemonSetCapabilities) ProtoMessage() {}
 
 func (x *KubernetesDaemonSetCapabilities) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[9]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -917,7 +829,7 @@ func (x *KubernetesDaemonSetCapabilities) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesDaemonSetCapabilities.ProtoReflect.Descriptor instead.
 func (*KubernetesDaemonSetCapabilities) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescGZIP(), []int{9}
+	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *KubernetesDaemonSetCapabilities) GetAdd() []string {
@@ -956,7 +868,7 @@ type KubernetesDaemonSetRbac struct {
 
 func (x *KubernetesDaemonSetRbac) Reset() {
 	*x = KubernetesDaemonSetRbac{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[10]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -968,7 +880,7 @@ func (x *KubernetesDaemonSetRbac) String() string {
 func (*KubernetesDaemonSetRbac) ProtoMessage() {}
 
 func (x *KubernetesDaemonSetRbac) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[10]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -981,7 +893,7 @@ func (x *KubernetesDaemonSetRbac) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesDaemonSetRbac.ProtoReflect.Descriptor instead.
 func (*KubernetesDaemonSetRbac) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescGZIP(), []int{10}
+	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *KubernetesDaemonSetRbac) GetClusterRules() []*KubernetesDaemonSetRbacRule {
@@ -1027,7 +939,7 @@ type KubernetesDaemonSetRbacRule struct {
 
 func (x *KubernetesDaemonSetRbacRule) Reset() {
 	*x = KubernetesDaemonSetRbacRule{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[11]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1039,7 +951,7 @@ func (x *KubernetesDaemonSetRbacRule) String() string {
 func (*KubernetesDaemonSetRbacRule) ProtoMessage() {}
 
 func (x *KubernetesDaemonSetRbacRule) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[11]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1052,7 +964,7 @@ func (x *KubernetesDaemonSetRbacRule) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesDaemonSetRbacRule.ProtoReflect.Descriptor instead.
 func (*KubernetesDaemonSetRbacRule) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescGZIP(), []int{11}
+	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *KubernetesDaemonSetRbacRule) GetApiGroups() []string {
@@ -1087,7 +999,7 @@ var File_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto proto
 
 const file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Aorg/openmcf/provider/kubernetes/kubernetesdaemonset/v1/spec.proto\x126org.openmcf.provider.kubernetes.kubernetesdaemonset.v1\x1a\x1bbuf/validate/validate.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a7org/openmcf/provider/kubernetes/kubernetes_secret.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a+org/openmcf/provider/kubernetes/probe.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/provider/kubernetes/volume_mount.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x92\n" +
+	"Aorg/openmcf/provider/kubernetes/kubernetesdaemonset/v1/spec.proto\x126org.openmcf.provider.kubernetes.kubernetesdaemonset.v1\x1a\x1bbuf/validate/validate.proto\x1a3org/openmcf/provider/kubernetes/container_env.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a+org/openmcf/provider/kubernetes/probe.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/provider/kubernetes/volume_mount.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x92\n" +
 	"\n" +
 	"\x17KubernetesDaemonSetSpec\x12a\n" +
 	"\x0etarget_cluster\x18\x01 \x01(\v2:.org.openmcf.provider.kubernetes.KubernetesClusterSelectorR\rtargetCluster\x12j\n" +
@@ -1112,7 +1024,7 @@ const file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_raw
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xd9\x01\n" +
 	"\x1cKubernetesDaemonSetContainer\x12q\n" +
 	"\x03app\x18\x01 \x01(\v2W.org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppB\x06\xbaH\x03\xc8\x01\x01R\x03app\x12F\n" +
-	"\bsidecars\x18\x02 \x03(\v2*.org.openmcf.provider.kubernetes.ContainerR\bsidecars\"\xf6\b\n" +
+	"\bsidecars\x18\x02 \x03(\v2*.org.openmcf.provider.kubernetes.ContainerR\bsidecars\"\xc9\b\n" +
 	"\x1fKubernetesDaemonSetContainerApp\x12\x85\x02\n" +
 	"\x05image\x18\x01 \x01(\v2/.org.openmcf.provider.kubernetes.ContainerImageB\xbd\x01\xbaH\xb9\x01\xba\x01Z\n" +
 	"\x1dspec.container.app.image.repo\x12\x16Image repo is required\x1a!has(this.repo) && this.repo != ''\xba\x01V\n" +
@@ -1120,8 +1032,8 @@ const file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_raw
 	"\tresources\x18\x02 \x01(\v23.org.openmcf.provider.kubernetes.ContainerResourcesB!\xba\xfb\xa4\x02\x1c\n" +
 	"\f\n" +
 	"\x051000m\x12\x031Gi\x12\f\n" +
-	"\x0350m\x12\x05100MiR\tresources\x12l\n" +
-	"\x03env\x18\x03 \x01(\v2Z.org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppEnvR\x03env\x12q\n" +
+	"\x0350m\x12\x05100MiR\tresources\x12?\n" +
+	"\x03env\x18\x03 \x01(\v2-.org.openmcf.provider.kubernetes.ContainerEnvR\x03env\x12q\n" +
 	"\x05ports\x18\x04 \x03(\v2[.org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppPortR\x05ports\x12Q\n" +
 	"\rvolume_mounts\x18\x05 \x03(\v2,.org.openmcf.provider.kubernetes.VolumeMountR\fvolumeMounts\x12M\n" +
 	"\x0eliveness_probe\x18\x06 \x01(\v2&.org.openmcf.provider.kubernetes.ProbeR\rlivenessProbe\x12O\n" +
@@ -1130,16 +1042,7 @@ const file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_raw
 	"\acommand\x18\t \x03(\tR\acommand\x12\x12\n" +
 	"\x04args\x18\n" +
 	" \x03(\tR\x04args\x12\x85\x01\n" +
-	"\x10security_context\x18\v \x01(\v2Z.org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSecurityContextR\x0fsecurityContext\"\x9b\x04\n" +
-	"\"KubernetesDaemonSetContainerAppEnv\x12\x87\x01\n" +
-	"\tvariables\x18\x01 \x03(\v2i.org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppEnv.VariablesEntryR\tvariables\x12\x81\x01\n" +
-	"\asecrets\x18\x02 \x03(\v2g.org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppEnv.SecretsEntryR\asecrets\x1ap\n" +
-	"\x0eVariablesEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12H\n" +
-	"\x05value\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x05value:\x028\x01\x1au\n" +
-	"\fSecretsEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12O\n" +
-	"\x05value\x18\x02 \x01(\v29.org.openmcf.provider.kubernetes.KubernetesSensitiveValueR\x05value:\x028\x01\"\xb9\x04\n" +
+	"\x10security_context\x18\v \x01(\v2Z.org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSecurityContextR\x0fsecurityContext\"\xb9\x04\n" +
 	"#KubernetesDaemonSetContainerAppPort\x12\x82\x02\n" +
 	"\x04name\x18\x01 \x01(\tB\xed\x01\xbaH\xe9\x01\xba\x01\xe2\x01\n" +
 	"\x1dspec.container.app.ports.name\x12\x92\x01Name for ports must only contain lowercase alphanumeric characters and hyphens. Port names must also start and end with an alphanumeric character.\x1a,this.matches('^[a-z0-9][a-z0-9-]*[a-z0-9]$')\xc8\x01\x01R\x04name\x12-\n" +
@@ -1198,66 +1101,59 @@ func file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawD
 	return file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDescData
 }
 
-var file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_goTypes = []any{
 	(*KubernetesDaemonSetSpec)(nil),              // 0: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec
 	(*KubernetesDaemonSetContainer)(nil),         // 1: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainer
 	(*KubernetesDaemonSetContainerApp)(nil),      // 2: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp
-	(*KubernetesDaemonSetContainerAppEnv)(nil),   // 3: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppEnv
-	(*KubernetesDaemonSetContainerAppPort)(nil),  // 4: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppPort
-	(*KubernetesDaemonSetToleration)(nil),        // 5: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetToleration
-	(*KubernetesDaemonSetUpdateStrategy)(nil),    // 6: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetUpdateStrategy
-	(*KubernetesDaemonSetRollingUpdate)(nil),     // 7: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRollingUpdate
-	(*KubernetesDaemonSetSecurityContext)(nil),   // 8: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSecurityContext
-	(*KubernetesDaemonSetCapabilities)(nil),      // 9: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetCapabilities
-	(*KubernetesDaemonSetRbac)(nil),              // 10: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRbac
-	(*KubernetesDaemonSetRbacRule)(nil),          // 11: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRbacRule
-	nil,                                          // 12: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.NodeSelectorEntry
-	nil,                                          // 13: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.ConfigMapsEntry
-	nil,                                          // 14: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppEnv.VariablesEntry
-	nil,                                          // 15: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppEnv.SecretsEntry
-	(*kubernetes.KubernetesClusterSelector)(nil), // 16: org.openmcf.provider.kubernetes.KubernetesClusterSelector
-	(*v1.StringValueOrRef)(nil),                  // 17: org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.Container)(nil),                 // 18: org.openmcf.provider.kubernetes.Container
-	(*kubernetes.ContainerImage)(nil),            // 19: org.openmcf.provider.kubernetes.ContainerImage
-	(*kubernetes.ContainerResources)(nil),        // 20: org.openmcf.provider.kubernetes.ContainerResources
-	(*kubernetes.VolumeMount)(nil),               // 21: org.openmcf.provider.kubernetes.VolumeMount
-	(*kubernetes.Probe)(nil),                     // 22: org.openmcf.provider.kubernetes.Probe
-	(*kubernetes.KubernetesSensitiveValue)(nil),  // 23: org.openmcf.provider.kubernetes.KubernetesSensitiveValue
+	(*KubernetesDaemonSetContainerAppPort)(nil),  // 3: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppPort
+	(*KubernetesDaemonSetToleration)(nil),        // 4: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetToleration
+	(*KubernetesDaemonSetUpdateStrategy)(nil),    // 5: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetUpdateStrategy
+	(*KubernetesDaemonSetRollingUpdate)(nil),     // 6: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRollingUpdate
+	(*KubernetesDaemonSetSecurityContext)(nil),   // 7: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSecurityContext
+	(*KubernetesDaemonSetCapabilities)(nil),      // 8: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetCapabilities
+	(*KubernetesDaemonSetRbac)(nil),              // 9: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRbac
+	(*KubernetesDaemonSetRbacRule)(nil),          // 10: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRbacRule
+	nil,                                          // 11: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.NodeSelectorEntry
+	nil,                                          // 12: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.ConfigMapsEntry
+	(*kubernetes.KubernetesClusterSelector)(nil), // 13: org.openmcf.provider.kubernetes.KubernetesClusterSelector
+	(*v1.StringValueOrRef)(nil),                  // 14: org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.Container)(nil),                 // 15: org.openmcf.provider.kubernetes.Container
+	(*kubernetes.ContainerImage)(nil),            // 16: org.openmcf.provider.kubernetes.ContainerImage
+	(*kubernetes.ContainerResources)(nil),        // 17: org.openmcf.provider.kubernetes.ContainerResources
+	(*kubernetes.ContainerEnv)(nil),              // 18: org.openmcf.provider.kubernetes.ContainerEnv
+	(*kubernetes.VolumeMount)(nil),               // 19: org.openmcf.provider.kubernetes.VolumeMount
+	(*kubernetes.Probe)(nil),                     // 20: org.openmcf.provider.kubernetes.Probe
 }
 var file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_depIdxs = []int32{
-	16, // 0: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.target_cluster:type_name -> org.openmcf.provider.kubernetes.KubernetesClusterSelector
-	17, // 1: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.namespace:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	13, // 0: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.target_cluster:type_name -> org.openmcf.provider.kubernetes.KubernetesClusterSelector
+	14, // 1: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.namespace:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
 	1,  // 2: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.container:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainer
-	12, // 3: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.node_selector:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.NodeSelectorEntry
-	5,  // 4: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.tolerations:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetToleration
-	6,  // 5: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.update_strategy:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetUpdateStrategy
-	13, // 6: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.config_maps:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.ConfigMapsEntry
-	10, // 7: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.rbac:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRbac
+	11, // 3: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.node_selector:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.NodeSelectorEntry
+	4,  // 4: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.tolerations:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetToleration
+	5,  // 5: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.update_strategy:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetUpdateStrategy
+	12, // 6: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.config_maps:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.ConfigMapsEntry
+	9,  // 7: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSpec.rbac:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRbac
 	2,  // 8: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainer.app:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp
-	18, // 9: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainer.sidecars:type_name -> org.openmcf.provider.kubernetes.Container
-	19, // 10: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.image:type_name -> org.openmcf.provider.kubernetes.ContainerImage
-	20, // 11: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.resources:type_name -> org.openmcf.provider.kubernetes.ContainerResources
-	3,  // 12: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.env:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppEnv
-	4,  // 13: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.ports:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppPort
-	21, // 14: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.volume_mounts:type_name -> org.openmcf.provider.kubernetes.VolumeMount
-	22, // 15: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.liveness_probe:type_name -> org.openmcf.provider.kubernetes.Probe
-	22, // 16: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.readiness_probe:type_name -> org.openmcf.provider.kubernetes.Probe
-	22, // 17: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.startup_probe:type_name -> org.openmcf.provider.kubernetes.Probe
-	8,  // 18: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.security_context:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSecurityContext
-	14, // 19: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppEnv.variables:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppEnv.VariablesEntry
-	15, // 20: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppEnv.secrets:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppEnv.SecretsEntry
-	7,  // 21: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetUpdateStrategy.rolling_update:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRollingUpdate
-	9,  // 22: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSecurityContext.capabilities:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetCapabilities
-	11, // 23: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRbac.cluster_rules:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRbacRule
-	11, // 24: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRbac.namespace_rules:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRbacRule
-	17, // 25: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppEnv.VariablesEntry.value:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	23, // 26: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppEnv.SecretsEntry.value:type_name -> org.openmcf.provider.kubernetes.KubernetesSensitiveValue
-	27, // [27:27] is the sub-list for method output_type
-	27, // [27:27] is the sub-list for method input_type
-	27, // [27:27] is the sub-list for extension type_name
-	27, // [27:27] is the sub-list for extension extendee
-	0,  // [0:27] is the sub-list for field type_name
+	15, // 9: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainer.sidecars:type_name -> org.openmcf.provider.kubernetes.Container
+	16, // 10: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.image:type_name -> org.openmcf.provider.kubernetes.ContainerImage
+	17, // 11: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.resources:type_name -> org.openmcf.provider.kubernetes.ContainerResources
+	18, // 12: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.env:type_name -> org.openmcf.provider.kubernetes.ContainerEnv
+	3,  // 13: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.ports:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerAppPort
+	19, // 14: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.volume_mounts:type_name -> org.openmcf.provider.kubernetes.VolumeMount
+	20, // 15: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.liveness_probe:type_name -> org.openmcf.provider.kubernetes.Probe
+	20, // 16: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.readiness_probe:type_name -> org.openmcf.provider.kubernetes.Probe
+	20, // 17: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.startup_probe:type_name -> org.openmcf.provider.kubernetes.Probe
+	7,  // 18: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetContainerApp.security_context:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSecurityContext
+	6,  // 19: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetUpdateStrategy.rolling_update:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRollingUpdate
+	8,  // 20: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetSecurityContext.capabilities:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetCapabilities
+	10, // 21: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRbac.cluster_rules:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRbacRule
+	10, // 22: org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRbac.namespace_rules:type_name -> org.openmcf.provider.kubernetes.kubernetesdaemonset.v1.KubernetesDaemonSetRbacRule
+	23, // [23:23] is the sub-list for method output_type
+	23, // [23:23] is the sub-list for method input_type
+	23, // [23:23] is the sub-list for extension type_name
+	23, // [23:23] is the sub-list for extension extendee
+	0,  // [0:23] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_init() }
@@ -1271,7 +1167,7 @@ func file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_init
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDesc), len(file_org_openmcf_provider_kubernetes_kubernetesdaemonset_v1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   16,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

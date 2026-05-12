@@ -18,12 +18,12 @@ spec:
       memory: 64Mi
   env:
     variables:
-      BATCH_SIZE:
+      - name: BATCH_SIZE
         value: "100"
-      LOG_LEVEL:
+      - name: LOG_LEVEL
         value: info
     secrets:
-      API_KEY:
+      - name: API_KEY
         value: test-api-key-value
   parallelism: 1
   completions: 1

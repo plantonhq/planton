@@ -69,8 +69,8 @@ This creates a Job that runs one pod to completion in the `my-namespace` namespa
 | `resources.limits.memory` | `string` | `1Gi` | Maximum memory allocation. |
 | `resources.requests.cpu` | `string` | `50m` | Minimum guaranteed CPU. |
 | `resources.requests.memory` | `string` | `100Mi` | Minimum guaranteed memory. |
-| `env.variables` | `map<string, StringValueOrRef>` | `{}` | Environment variables. Each value can be a direct string via `value` or a reference to another resource via `valueFrom`. |
-| `env.secrets` | `map<string, KubernetesSensitiveValue>` | `{}` | Secret environment variables. Each value can be a direct string via `value` (auto-stored in a Kubernetes Secret) or a reference to an existing Kubernetes Secret via `secretRef`. |
+| `env.variables` | `ContainerEnvVariable[]` | `[]` | Environment variables as a list. Each entry has a `name` and either a direct string `value` or a `valueFrom` reference to another resource. |
+| `env.secrets` | `ContainerEnvSecret[]` | `[]` | Secret environment variables as a list. Each entry has a `name` and either a direct string `value` (auto-stored in a Kubernetes Secret) or a `secretRef` referencing an existing Kubernetes Secret. |
 | `parallelism` | `uint32` | `1` | Number of pods to run in parallel. Set higher for parallel batch processing. |
 | `completions` | `uint32` | `1` | Number of successful pod completions required before the job is considered complete. |
 | `backoffLimit` | `uint32` | `6` | Number of retries before the job is marked as failed. |
@@ -112,13 +112,13 @@ spec:
     - "flyway -url=jdbc:postgresql://$DATABASE_HOST:5432/mydb migrate"
   env:
     variables:
-      DATABASE_HOST:
+      - name: DATABASE_HOST
         valueFrom:
           kind: KubernetesPostgres
           name: my-postgres
           field: status.outputs.service
     secrets:
-      DATABASE_PASSWORD:
+      - name: DATABASE_PASSWORD
         secretRef:
           name: postgres-credentials
           key: password
@@ -156,12 +156,12 @@ spec:
       memory: "1Gi"
   env:
     variables:
-      INPUT_BUCKET:
+      - name: INPUT_BUCKET
         value: "s3://my-bucket/input"
-      OUTPUT_BUCKET:
+      - name: OUTPUT_BUCKET
         value: "s3://my-bucket/output"
     secrets:
-      AWS_SECRET_ACCESS_KEY:
+      - name: AWS_SECRET_ACCESS_KEY
         secretRef:
           name: aws-credentials
           key: secret-access-key
@@ -206,12 +206,12 @@ spec:
       memory: "2Gi"
   env:
     variables:
-      SOURCE_DB:
+      - name: SOURCE_DB
         valueFrom:
           kind: KubernetesPostgres
           name: source-db
           field: status.outputs.service
-      TARGET_DB:
+      - name: TARGET_DB
         valueFrom:
           kind: KubernetesPostgres
           name: target-db

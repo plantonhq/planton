@@ -53,19 +53,17 @@ var _ = ginkgo.Describe("KubernetesJob Custom Validation Tests", func() {
 						Memory: "100Mi",
 					},
 				},
-				Env: &KubernetesJobContainerAppEnv{
-					Variables: map[string]*foreignkeyv1.StringValueOrRef{
-						"BATCH_SIZE": {
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
-								Value: "1000",
-							},
+				Env: &kubernetes.ContainerEnv{
+					Variables: []*kubernetes.EnvVar{
+						{
+							Name:   "BATCH_SIZE",
+							Source: &kubernetes.EnvVar_Value{Value: "1000"},
 						},
 					},
-					Secrets: map[string]*kubernetes.KubernetesSensitiveValue{
-						"API_KEY": {
-							SensitiveValue: &kubernetes.KubernetesSensitiveValue_Value{
-								Value: "secret_value",
-							},
+					Secrets: []*kubernetes.SecretEnvVar{
+						{
+							Name:   "API_KEY",
+							Source: &kubernetes.SecretEnvVar_Value{Value: "secret_value"},
 						},
 					},
 				},
@@ -156,12 +154,11 @@ var _ = ginkgo.Describe("KubernetesJob Custom Validation Tests", func() {
 	ginkgo.Describe("Environment secrets validation", func() {
 		ginkgo.Context("When secrets have direct string values", func() {
 			ginkgo.It("should pass validation", func() {
-				input.Spec.Env = &KubernetesJobContainerAppEnv{
-					Secrets: map[string]*kubernetes.KubernetesSensitiveValue{
-						"DATABASE_PASSWORD": {
-							SensitiveValue: &kubernetes.KubernetesSensitiveValue_Value{
-								Value: "my-password",
-							},
+				input.Spec.Env = &kubernetes.ContainerEnv{
+					Secrets: []*kubernetes.SecretEnvVar{
+						{
+							Name:   "DATABASE_PASSWORD",
+							Source: &kubernetes.SecretEnvVar_Value{Value: "my-password"},
 						},
 					},
 				}
@@ -172,10 +169,11 @@ var _ = ginkgo.Describe("KubernetesJob Custom Validation Tests", func() {
 
 		ginkgo.Context("When secrets have Kubernetes Secret references", func() {
 			ginkgo.It("should pass validation with valid secret ref", func() {
-				input.Spec.Env = &KubernetesJobContainerAppEnv{
-					Secrets: map[string]*kubernetes.KubernetesSensitiveValue{
-						"DATABASE_PASSWORD": {
-							SensitiveValue: &kubernetes.KubernetesSensitiveValue_SecretRef{
+				input.Spec.Env = &kubernetes.ContainerEnv{
+					Secrets: []*kubernetes.SecretEnvVar{
+						{
+							Name: "DATABASE_PASSWORD",
+							Source: &kubernetes.SecretEnvVar_SecretRef{
 								SecretRef: &kubernetes.KubernetesSecretKeyRef{
 									Name: "my-app-secrets",
 									Key:  "db-password",
@@ -191,15 +189,15 @@ var _ = ginkgo.Describe("KubernetesJob Custom Validation Tests", func() {
 
 		ginkgo.Context("When secrets have mixed types", func() {
 			ginkgo.It("should pass validation with both string values and secret refs", func() {
-				input.Spec.Env = &KubernetesJobContainerAppEnv{
-					Secrets: map[string]*kubernetes.KubernetesSensitiveValue{
-						"DEBUG_TOKEN": {
-							SensitiveValue: &kubernetes.KubernetesSensitiveValue_Value{
-								Value: "debug-only-token",
-							},
+				input.Spec.Env = &kubernetes.ContainerEnv{
+					Secrets: []*kubernetes.SecretEnvVar{
+						{
+							Name:   "DEBUG_TOKEN",
+							Source: &kubernetes.SecretEnvVar_Value{Value: "debug-only-token"},
 						},
-						"DATABASE_PASSWORD": {
-							SensitiveValue: &kubernetes.KubernetesSensitiveValue_SecretRef{
+						{
+							Name: "DATABASE_PASSWORD",
+							Source: &kubernetes.SecretEnvVar_SecretRef{
 								SecretRef: &kubernetes.KubernetesSecretKeyRef{
 									Name: "postgres-credentials",
 									Key:  "password",
@@ -215,10 +213,11 @@ var _ = ginkgo.Describe("KubernetesJob Custom Validation Tests", func() {
 
 		ginkgo.Context("When secret ref is missing required fields", func() {
 			ginkgo.It("should fail validation when name is missing", func() {
-				input.Spec.Env = &KubernetesJobContainerAppEnv{
-					Secrets: map[string]*kubernetes.KubernetesSensitiveValue{
-						"DATABASE_PASSWORD": {
-							SensitiveValue: &kubernetes.KubernetesSensitiveValue_SecretRef{
+				input.Spec.Env = &kubernetes.ContainerEnv{
+					Secrets: []*kubernetes.SecretEnvVar{
+						{
+							Name: "DATABASE_PASSWORD",
+							Source: &kubernetes.SecretEnvVar_SecretRef{
 								SecretRef: &kubernetes.KubernetesSecretKeyRef{
 									Name: "",
 									Key:  "password",
@@ -232,10 +231,11 @@ var _ = ginkgo.Describe("KubernetesJob Custom Validation Tests", func() {
 			})
 
 			ginkgo.It("should fail validation when key is missing", func() {
-				input.Spec.Env = &KubernetesJobContainerAppEnv{
-					Secrets: map[string]*kubernetes.KubernetesSensitiveValue{
-						"DATABASE_PASSWORD": {
-							SensitiveValue: &kubernetes.KubernetesSensitiveValue_SecretRef{
+				input.Spec.Env = &kubernetes.ContainerEnv{
+					Secrets: []*kubernetes.SecretEnvVar{
+						{
+							Name: "DATABASE_PASSWORD",
+							Source: &kubernetes.SecretEnvVar_SecretRef{
 								SecretRef: &kubernetes.KubernetesSecretKeyRef{
 									Name: "my-secret",
 									Key:  "",
@@ -253,17 +253,15 @@ var _ = ginkgo.Describe("KubernetesJob Custom Validation Tests", func() {
 	ginkgo.Describe("Environment variables validation", func() {
 		ginkgo.Context("When variables have direct string values", func() {
 			ginkgo.It("should pass validation", func() {
-				input.Spec.Env = &KubernetesJobContainerAppEnv{
-					Variables: map[string]*foreignkeyv1.StringValueOrRef{
-						"INPUT_FILE": {
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
-								Value: "/data/input.csv",
-							},
+				input.Spec.Env = &kubernetes.ContainerEnv{
+					Variables: []*kubernetes.EnvVar{
+						{
+							Name:   "INPUT_FILE",
+							Source: &kubernetes.EnvVar_Value{Value: "/data/input.csv"},
 						},
-						"OUTPUT_FILE": {
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
-								Value: "/data/output.csv",
-							},
+						{
+							Name:   "OUTPUT_FILE",
+							Source: &kubernetes.EnvVar_Value{Value: "/data/output.csv"},
 						},
 					},
 				}
@@ -274,10 +272,11 @@ var _ = ginkgo.Describe("KubernetesJob Custom Validation Tests", func() {
 
 		ginkgo.Context("When variables have valueFrom references", func() {
 			ginkgo.It("should pass validation with valid valueFrom ref", func() {
-				input.Spec.Env = &KubernetesJobContainerAppEnv{
-					Variables: map[string]*foreignkeyv1.StringValueOrRef{
-						"DATABASE_HOST": {
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
+				input.Spec.Env = &kubernetes.ContainerEnv{
+					Variables: []*kubernetes.EnvVar{
+						{
+							Name: "DATABASE_HOST",
+							Source: &kubernetes.EnvVar_ValueFrom{
 								ValueFrom: &foreignkeyv1.ValueFromRef{
 									Name: "my-postgres",
 								},
@@ -292,15 +291,15 @@ var _ = ginkgo.Describe("KubernetesJob Custom Validation Tests", func() {
 
 		ginkgo.Context("When variables have mixed types", func() {
 			ginkgo.It("should pass validation with both direct values and valueFrom refs", func() {
-				input.Spec.Env = &KubernetesJobContainerAppEnv{
-					Variables: map[string]*foreignkeyv1.StringValueOrRef{
-						"BATCH_SIZE": {
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
-								Value: "1000",
-							},
+				input.Spec.Env = &kubernetes.ContainerEnv{
+					Variables: []*kubernetes.EnvVar{
+						{
+							Name:   "BATCH_SIZE",
+							Source: &kubernetes.EnvVar_Value{Value: "1000"},
 						},
-						"DATABASE_HOST": {
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
+						{
+							Name: "DATABASE_HOST",
+							Source: &kubernetes.EnvVar_ValueFrom{
 								ValueFrom: &foreignkeyv1.ValueFromRef{
 									Name: "my-postgres",
 								},
@@ -315,14 +314,77 @@ var _ = ginkgo.Describe("KubernetesJob Custom Validation Tests", func() {
 
 		ginkgo.Context("When valueFrom ref is missing required name", func() {
 			ginkgo.It("should fail validation", func() {
-				input.Spec.Env = &KubernetesJobContainerAppEnv{
-					Variables: map[string]*foreignkeyv1.StringValueOrRef{
-						"DATABASE_HOST": {
-							LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
+				input.Spec.Env = &kubernetes.ContainerEnv{
+					Variables: []*kubernetes.EnvVar{
+						{
+							Name: "DATABASE_HOST",
+							Source: &kubernetes.EnvVar_ValueFrom{
 								ValueFrom: &foreignkeyv1.ValueFromRef{
 									Name: "",
 								},
 							},
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+	})
+
+	ginkgo.Describe("Environment variable name validation", func() {
+		ginkgo.Context("When env var name starts with a digit", func() {
+			ginkgo.It("should fail validation", func() {
+				input.Spec.Env = &kubernetes.ContainerEnv{
+					Variables: []*kubernetes.EnvVar{
+						{
+							Name:   "1BAD_NAME",
+							Source: &kubernetes.EnvVar_Value{Value: "value"},
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("When env var name contains a hyphen", func() {
+			ginkgo.It("should fail validation", func() {
+				input.Spec.Env = &kubernetes.ContainerEnv{
+					Variables: []*kubernetes.EnvVar{
+						{
+							Name:   "BAD-NAME",
+							Source: &kubernetes.EnvVar_Value{Value: "value"},
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("When secret env var name starts with a digit", func() {
+			ginkgo.It("should fail validation", func() {
+				input.Spec.Env = &kubernetes.ContainerEnv{
+					Secrets: []*kubernetes.SecretEnvVar{
+						{
+							Name:   "2BAD_SECRET",
+							Source: &kubernetes.SecretEnvVar_Value{Value: "secret"},
+						},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("When secret env var name contains a hyphen", func() {
+			ginkgo.It("should fail validation", func() {
+				input.Spec.Env = &kubernetes.ContainerEnv{
+					Secrets: []*kubernetes.SecretEnvVar{
+						{
+							Name:   "BAD-SECRET",
+							Source: &kubernetes.SecretEnvVar_Value{Value: "secret"},
 						},
 					},
 				}

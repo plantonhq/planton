@@ -3,8 +3,8 @@ syntax = "proto3";
 package org.openmcf.provider.kubernetes.kubernetescronjob.v1;
 
 import "buf/validate/validate.proto";
+import "org/openmcf/provider/kubernetes/container_env.proto";
 import "org/openmcf/provider/kubernetes/kubernetes.proto";
-import "org/openmcf/provider/kubernetes/kubernetes_secret.proto";
 import "org/openmcf/provider/kubernetes/options.proto";
 import "org/openmcf/provider/kubernetes/target_cluster.proto";
 import "org/openmcf/provider/kubernetes/volume_mount.proto";
@@ -56,10 +56,8 @@ message KubernetesCronJobSpec {
 
   /**
    * Environment variables and secrets for the cron-job container.
-   * This includes both straightforward environment variables (key=value)
-   * and references to secrets.
    */
-  KubernetesCronJobContainerAppEnv env = 6;
+  org.openmcf.provider.kubernetes.ContainerEnv env = 6;
 
   /**
    * A cron schedule expression in standard Cron format, e.g. "0 0 * * *".
@@ -172,46 +170,4 @@ message KubernetesCronJobSpec {
    *         path: backup.sh
    */
   repeated org.openmcf.provider.kubernetes.VolumeMount volume_mounts = 18;
-}
-
-/**
- * KubernetesCronJobContainerAppEnv defines the environment variables
- * and secrets for the cron-job container.
- */
-message KubernetesCronJobContainerAppEnv {
-  /**
-   * A map of environment variable names to their values.
-   * Each variable can be provided either as a literal string value or as a reference
-   * to another OpenMCF resource's field.
-   *
-   * **Option 1: Direct string value**
-   * ```yaml
-   * variables:
-   *   BACKUP_RETENTION_DAYS:
-   *     value: "30"
-   * ```
-   *
-   * **Option 2: Reference to another resource's field**
-   * ```yaml
-   * variables:
-   *   DATABASE_HOST:
-   *     valueFrom:
-   *       kind: PostgresCluster
-   *       name: my-postgres
-   *       fieldPath: "status.outputs.host"
-   * ```
-   *
-   * When using valueFrom references, the orchestrator resolves the reference
-   * and populates the value field before invoking the IaC modules.
-   */
-  map<string, org.openmcf.shared.foreignkey.v1.StringValueOrRef> variables = 1;
-
-  /**
-   * A map of secret environment variable names to their values.
-   * Each secret can be provided either as a literal string value or as a reference
-   * to an existing Kubernetes Secret.
-   *
-   * Using secret references is recommended for production deployments.
-   */
-  map<string, org.openmcf.provider.kubernetes.KubernetesSensitiveValue> secrets = 2;
 }

@@ -294,7 +294,7 @@ type KubernetesStatefulSetContainerApp struct {
 	Resources *kubernetes.ContainerResources `protobuf:"bytes,2,opt,name=resources,proto3" json:"resources,omitempty"`
 	// *
 	// The environment variables and secrets for the application container.
-	Env *KubernetesStatefulSetContainerAppEnv `protobuf:"bytes,3,opt,name=env,proto3" json:"env,omitempty"`
+	Env *kubernetes.ContainerEnv `protobuf:"bytes,3,opt,name=env,proto3" json:"env,omitempty"`
 	// *
 	// A list of ports to be configured for the application container.
 	Ports []*KubernetesStatefulSetContainerAppPort `protobuf:"bytes,4,rep,name=ports,proto3" json:"ports,omitempty"`
@@ -386,7 +386,7 @@ func (x *KubernetesStatefulSetContainerApp) GetResources() *kubernetes.Container
 	return nil
 }
 
-func (x *KubernetesStatefulSetContainerApp) GetEnv() *KubernetesStatefulSetContainerAppEnv {
+func (x *KubernetesStatefulSetContainerApp) GetEnv() *kubernetes.ContainerEnv {
 	if x != nil {
 		return x.Env
 	}
@@ -443,94 +443,6 @@ func (x *KubernetesStatefulSetContainerApp) GetArgs() []string {
 }
 
 // *
-// **KubernetesStatefulSetContainerAppEnv** defines the environment variables and secrets for the application container.
-type KubernetesStatefulSetContainerAppEnv struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// *
-	// A map of environment variable names to their values.
-	// Each variable can be provided either as a literal string value or as a reference
-	// to another OpenMCF resource's field.
-	//
-	// **Option 1: Direct string value**
-	// ```yaml
-	// variables:
-	//
-	//	DATABASE_PORT:
-	//	  value: "5432"
-	//
-	// ```
-	//
-	// **Option 2: Reference to another resource's field**
-	// ```yaml
-	// variables:
-	//
-	//	DATABASE_HOST:
-	//	  valueFrom:
-	//	    kind: PostgresCluster
-	//	    name: my-postgres
-	//	    fieldPath: "status.outputs.host"
-	//
-	// ```
-	//
-	// When using valueFrom references, the orchestrator resolves the reference
-	// and populates the value field before invoking the IaC modules.
-	Variables map[string]*v1.StringValueOrRef `protobuf:"bytes,1,rep,name=variables,proto3" json:"variables,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// *
-	// A map of secret environment variable names to their values.
-	// Each secret can be provided either as a literal string value or as a reference
-	// to an existing Kubernetes Secret.
-	//
-	// Using secret references is recommended for production deployments.
-	Secrets       map[string]*kubernetes.KubernetesSensitiveValue `protobuf:"bytes,2,rep,name=secrets,proto3" json:"secrets,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *KubernetesStatefulSetContainerAppEnv) Reset() {
-	*x = KubernetesStatefulSetContainerAppEnv{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *KubernetesStatefulSetContainerAppEnv) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*KubernetesStatefulSetContainerAppEnv) ProtoMessage() {}
-
-func (x *KubernetesStatefulSetContainerAppEnv) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use KubernetesStatefulSetContainerAppEnv.ProtoReflect.Descriptor instead.
-func (*KubernetesStatefulSetContainerAppEnv) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *KubernetesStatefulSetContainerAppEnv) GetVariables() map[string]*v1.StringValueOrRef {
-	if x != nil {
-		return x.Variables
-	}
-	return nil
-}
-
-func (x *KubernetesStatefulSetContainerAppEnv) GetSecrets() map[string]*kubernetes.KubernetesSensitiveValue {
-	if x != nil {
-		return x.Secrets
-	}
-	return nil
-}
-
-// *
 // **KubernetesStatefulSetContainerAppPort** specifies the port configuration for the application container.
 type KubernetesStatefulSetContainerAppPort struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -554,7 +466,7 @@ type KubernetesStatefulSetContainerAppPort struct {
 
 func (x *KubernetesStatefulSetContainerAppPort) Reset() {
 	*x = KubernetesStatefulSetContainerAppPort{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[5]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -566,7 +478,7 @@ func (x *KubernetesStatefulSetContainerAppPort) String() string {
 func (*KubernetesStatefulSetContainerAppPort) ProtoMessage() {}
 
 func (x *KubernetesStatefulSetContainerAppPort) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[5]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -579,7 +491,7 @@ func (x *KubernetesStatefulSetContainerAppPort) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use KubernetesStatefulSetContainerAppPort.ProtoReflect.Descriptor instead.
 func (*KubernetesStatefulSetContainerAppPort) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_rawDescGZIP(), []int{5}
+	return file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *KubernetesStatefulSetContainerAppPort) GetName() string {
@@ -640,7 +552,7 @@ type KubernetesStatefulSetAvailability struct {
 
 func (x *KubernetesStatefulSetAvailability) Reset() {
 	*x = KubernetesStatefulSetAvailability{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[6]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -652,7 +564,7 @@ func (x *KubernetesStatefulSetAvailability) String() string {
 func (*KubernetesStatefulSetAvailability) ProtoMessage() {}
 
 func (x *KubernetesStatefulSetAvailability) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[6]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -665,7 +577,7 @@ func (x *KubernetesStatefulSetAvailability) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use KubernetesStatefulSetAvailability.ProtoReflect.Descriptor instead.
 func (*KubernetesStatefulSetAvailability) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_rawDescGZIP(), []int{6}
+	return file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *KubernetesStatefulSetAvailability) GetReplicas() int32 {
@@ -701,7 +613,7 @@ type KubernetesStatefulSetPodDisruptionBudget struct {
 
 func (x *KubernetesStatefulSetPodDisruptionBudget) Reset() {
 	*x = KubernetesStatefulSetPodDisruptionBudget{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[7]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -713,7 +625,7 @@ func (x *KubernetesStatefulSetPodDisruptionBudget) String() string {
 func (*KubernetesStatefulSetPodDisruptionBudget) ProtoMessage() {}
 
 func (x *KubernetesStatefulSetPodDisruptionBudget) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[7]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -726,7 +638,7 @@ func (x *KubernetesStatefulSetPodDisruptionBudget) ProtoReflect() protoreflect.M
 
 // Deprecated: Use KubernetesStatefulSetPodDisruptionBudget.ProtoReflect.Descriptor instead.
 func (*KubernetesStatefulSetPodDisruptionBudget) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_rawDescGZIP(), []int{7}
+	return file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *KubernetesStatefulSetPodDisruptionBudget) GetEnabled() bool {
@@ -773,7 +685,7 @@ type KubernetesStatefulSetVolumeClaimTemplate struct {
 
 func (x *KubernetesStatefulSetVolumeClaimTemplate) Reset() {
 	*x = KubernetesStatefulSetVolumeClaimTemplate{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[8]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -785,7 +697,7 @@ func (x *KubernetesStatefulSetVolumeClaimTemplate) String() string {
 func (*KubernetesStatefulSetVolumeClaimTemplate) ProtoMessage() {}
 
 func (x *KubernetesStatefulSetVolumeClaimTemplate) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[8]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -798,7 +710,7 @@ func (x *KubernetesStatefulSetVolumeClaimTemplate) ProtoReflect() protoreflect.M
 
 // Deprecated: Use KubernetesStatefulSetVolumeClaimTemplate.ProtoReflect.Descriptor instead.
 func (*KubernetesStatefulSetVolumeClaimTemplate) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_rawDescGZIP(), []int{8}
+	return file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *KubernetesStatefulSetVolumeClaimTemplate) GetName() string {
@@ -833,7 +745,7 @@ var File_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto pro
 
 const file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Corg/openmcf/provider/kubernetes/kubernetesstatefulset/v1/spec.proto\x128org.openmcf.provider.kubernetes.kubernetesstatefulset.v1\x1a\x1bbuf/validate/validate.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a7org/openmcf/provider/kubernetes/kubernetes_secret.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a+org/openmcf/provider/kubernetes/probe.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/provider/kubernetes/volume_mount.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xc1\t\n" +
+	"Corg/openmcf/provider/kubernetes/kubernetesstatefulset/v1/spec.proto\x128org.openmcf.provider.kubernetes.kubernetesstatefulset.v1\x1a\x1bbuf/validate/validate.proto\x1a3org/openmcf/provider/kubernetes/container_env.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a+org/openmcf/provider/kubernetes/probe.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/provider/kubernetes/volume_mount.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xc1\t\n" +
 	"\x19KubernetesStatefulSetSpec\x12a\n" +
 	"\x0etarget_cluster\x18\x01 \x01(\v2:.org.openmcf.provider.kubernetes.KubernetesClusterSelectorR\rtargetCluster\x12j\n" +
 	"\tnamespace\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xc4\x06\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
@@ -855,7 +767,7 @@ const file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_r
 	"\x1espec.ingress.hostname.required\x12,hostname is required when ingress is enabled\x1a(!this.enabled || size(this.hostname) > 0\"\xdf\x01\n" +
 	"\x1eKubernetesStatefulSetContainer\x12u\n" +
 	"\x03app\x18\x01 \x01(\v2[.org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppB\x06\xbaH\x03\xc8\x01\x01R\x03app\x12F\n" +
-	"\bsidecars\x18\x02 \x03(\v2*.org.openmcf.provider.kubernetes.ContainerR\bsidecars\"\xf8\a\n" +
+	"\bsidecars\x18\x02 \x03(\v2*.org.openmcf.provider.kubernetes.ContainerR\bsidecars\"\xc7\a\n" +
 	"!KubernetesStatefulSetContainerApp\x12\x85\x02\n" +
 	"\x05image\x18\x01 \x01(\v2/.org.openmcf.provider.kubernetes.ContainerImageB\xbd\x01\xbaH\xb9\x01\xba\x01Z\n" +
 	"\x1dspec.container.app.image.repo\x12\x16Image repo is required\x1a!has(this.repo) && this.repo != ''\xba\x01V\n" +
@@ -863,8 +775,8 @@ const file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_r
 	"\tresources\x18\x02 \x01(\v23.org.openmcf.provider.kubernetes.ContainerResourcesB!\xba\xfb\xa4\x02\x1c\n" +
 	"\f\n" +
 	"\x051000m\x12\x031Gi\x12\f\n" +
-	"\x0350m\x12\x05100MiR\tresources\x12p\n" +
-	"\x03env\x18\x03 \x01(\v2^.org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppEnvR\x03env\x12u\n" +
+	"\x0350m\x12\x05100MiR\tresources\x12?\n" +
+	"\x03env\x18\x03 \x01(\v2-.org.openmcf.provider.kubernetes.ContainerEnvR\x03env\x12u\n" +
 	"\x05ports\x18\x04 \x03(\v2_.org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppPortR\x05ports\x12Q\n" +
 	"\rvolume_mounts\x18\x05 \x03(\v2,.org.openmcf.provider.kubernetes.VolumeMountR\fvolumeMounts\x12M\n" +
 	"\x0eliveness_probe\x18\x06 \x01(\v2&.org.openmcf.provider.kubernetes.ProbeR\rlivenessProbe\x12O\n" +
@@ -872,16 +784,7 @@ const file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_r
 	"\rstartup_probe\x18\b \x01(\v2&.org.openmcf.provider.kubernetes.ProbeR\fstartupProbe\x12\x18\n" +
 	"\acommand\x18\t \x03(\tR\acommand\x12\x12\n" +
 	"\x04args\x18\n" +
-	" \x03(\tR\x04args\"\xa5\x04\n" +
-	"$KubernetesStatefulSetContainerAppEnv\x12\x8b\x01\n" +
-	"\tvariables\x18\x01 \x03(\v2m.org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppEnv.VariablesEntryR\tvariables\x12\x85\x01\n" +
-	"\asecrets\x18\x02 \x03(\v2k.org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppEnv.SecretsEntryR\asecrets\x1ap\n" +
-	"\x0eVariablesEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12H\n" +
-	"\x05value\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x05value:\x028\x01\x1au\n" +
-	"\fSecretsEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12O\n" +
-	"\x05value\x18\x02 \x01(\v29.org.openmcf.provider.kubernetes.KubernetesSensitiveValueR\x05value:\x028\x01\"\x9c\x05\n" +
+	" \x03(\tR\x04args\"\x9c\x05\n" +
 	"%KubernetesStatefulSetContainerAppPort\x12\x82\x02\n" +
 	"\x04name\x18\x01 \x01(\tB\xed\x01\xbaH\xe9\x01\xba\x01\xe2\x01\n" +
 	"\x1dspec.container.app.ports.name\x12\x92\x01Name for ports must only contain lowercase alphanumeric characters and hyphens. Port names must also start and end with an alphanumeric character.\x1a,this.matches('^[a-z0-9][a-z0-9-]*[a-z0-9]$')\xc8\x01\x01R\x04name\x12-\n" +
@@ -919,57 +822,50 @@ func file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_ra
 	return file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_rawDescData
 }
 
-var file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_goTypes = []any{
 	(*KubernetesStatefulSetSpec)(nil),                // 0: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetSpec
 	(*KubernetesStatefulSetIngress)(nil),             // 1: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetIngress
 	(*KubernetesStatefulSetContainer)(nil),           // 2: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainer
 	(*KubernetesStatefulSetContainerApp)(nil),        // 3: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp
-	(*KubernetesStatefulSetContainerAppEnv)(nil),     // 4: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppEnv
-	(*KubernetesStatefulSetContainerAppPort)(nil),    // 5: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppPort
-	(*KubernetesStatefulSetAvailability)(nil),        // 6: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetAvailability
-	(*KubernetesStatefulSetPodDisruptionBudget)(nil), // 7: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetPodDisruptionBudget
-	(*KubernetesStatefulSetVolumeClaimTemplate)(nil), // 8: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetVolumeClaimTemplate
-	nil, // 9: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetSpec.ConfigMapsEntry
-	nil, // 10: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppEnv.VariablesEntry
-	nil, // 11: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppEnv.SecretsEntry
-	(*kubernetes.KubernetesClusterSelector)(nil), // 12: org.openmcf.provider.kubernetes.KubernetesClusterSelector
-	(*v1.StringValueOrRef)(nil),                  // 13: org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.Container)(nil),                 // 14: org.openmcf.provider.kubernetes.Container
-	(*kubernetes.ContainerImage)(nil),            // 15: org.openmcf.provider.kubernetes.ContainerImage
-	(*kubernetes.ContainerResources)(nil),        // 16: org.openmcf.provider.kubernetes.ContainerResources
-	(*kubernetes.VolumeMount)(nil),               // 17: org.openmcf.provider.kubernetes.VolumeMount
-	(*kubernetes.Probe)(nil),                     // 18: org.openmcf.provider.kubernetes.Probe
-	(*kubernetes.KubernetesSensitiveValue)(nil),  // 19: org.openmcf.provider.kubernetes.KubernetesSensitiveValue
+	(*KubernetesStatefulSetContainerAppPort)(nil),    // 4: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppPort
+	(*KubernetesStatefulSetAvailability)(nil),        // 5: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetAvailability
+	(*KubernetesStatefulSetPodDisruptionBudget)(nil), // 6: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetPodDisruptionBudget
+	(*KubernetesStatefulSetVolumeClaimTemplate)(nil), // 7: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetVolumeClaimTemplate
+	nil, // 8: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetSpec.ConfigMapsEntry
+	(*kubernetes.KubernetesClusterSelector)(nil), // 9: org.openmcf.provider.kubernetes.KubernetesClusterSelector
+	(*v1.StringValueOrRef)(nil),                  // 10: org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.Container)(nil),                 // 11: org.openmcf.provider.kubernetes.Container
+	(*kubernetes.ContainerImage)(nil),            // 12: org.openmcf.provider.kubernetes.ContainerImage
+	(*kubernetes.ContainerResources)(nil),        // 13: org.openmcf.provider.kubernetes.ContainerResources
+	(*kubernetes.ContainerEnv)(nil),              // 14: org.openmcf.provider.kubernetes.ContainerEnv
+	(*kubernetes.VolumeMount)(nil),               // 15: org.openmcf.provider.kubernetes.VolumeMount
+	(*kubernetes.Probe)(nil),                     // 16: org.openmcf.provider.kubernetes.Probe
 }
 var file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_depIdxs = []int32{
-	12, // 0: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetSpec.target_cluster:type_name -> org.openmcf.provider.kubernetes.KubernetesClusterSelector
-	13, // 1: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetSpec.namespace:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	9,  // 0: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetSpec.target_cluster:type_name -> org.openmcf.provider.kubernetes.KubernetesClusterSelector
+	10, // 1: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetSpec.namespace:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
 	2,  // 2: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetSpec.container:type_name -> org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainer
 	1,  // 3: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetSpec.ingress:type_name -> org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetIngress
-	6,  // 4: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetSpec.availability:type_name -> org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetAvailability
-	8,  // 5: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetSpec.volume_claim_templates:type_name -> org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetVolumeClaimTemplate
-	9,  // 6: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetSpec.config_maps:type_name -> org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetSpec.ConfigMapsEntry
+	5,  // 4: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetSpec.availability:type_name -> org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetAvailability
+	7,  // 5: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetSpec.volume_claim_templates:type_name -> org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetVolumeClaimTemplate
+	8,  // 6: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetSpec.config_maps:type_name -> org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetSpec.ConfigMapsEntry
 	3,  // 7: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainer.app:type_name -> org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp
-	14, // 8: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainer.sidecars:type_name -> org.openmcf.provider.kubernetes.Container
-	15, // 9: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp.image:type_name -> org.openmcf.provider.kubernetes.ContainerImage
-	16, // 10: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp.resources:type_name -> org.openmcf.provider.kubernetes.ContainerResources
-	4,  // 11: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp.env:type_name -> org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppEnv
-	5,  // 12: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp.ports:type_name -> org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppPort
-	17, // 13: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp.volume_mounts:type_name -> org.openmcf.provider.kubernetes.VolumeMount
-	18, // 14: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp.liveness_probe:type_name -> org.openmcf.provider.kubernetes.Probe
-	18, // 15: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp.readiness_probe:type_name -> org.openmcf.provider.kubernetes.Probe
-	18, // 16: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp.startup_probe:type_name -> org.openmcf.provider.kubernetes.Probe
-	10, // 17: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppEnv.variables:type_name -> org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppEnv.VariablesEntry
-	11, // 18: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppEnv.secrets:type_name -> org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppEnv.SecretsEntry
-	7,  // 19: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetAvailability.pod_disruption_budget:type_name -> org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetPodDisruptionBudget
-	13, // 20: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppEnv.VariablesEntry.value:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	19, // 21: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppEnv.SecretsEntry.value:type_name -> org.openmcf.provider.kubernetes.KubernetesSensitiveValue
-	22, // [22:22] is the sub-list for method output_type
-	22, // [22:22] is the sub-list for method input_type
-	22, // [22:22] is the sub-list for extension type_name
-	22, // [22:22] is the sub-list for extension extendee
-	0,  // [0:22] is the sub-list for field type_name
+	11, // 8: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainer.sidecars:type_name -> org.openmcf.provider.kubernetes.Container
+	12, // 9: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp.image:type_name -> org.openmcf.provider.kubernetes.ContainerImage
+	13, // 10: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp.resources:type_name -> org.openmcf.provider.kubernetes.ContainerResources
+	14, // 11: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp.env:type_name -> org.openmcf.provider.kubernetes.ContainerEnv
+	4,  // 12: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp.ports:type_name -> org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerAppPort
+	15, // 13: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp.volume_mounts:type_name -> org.openmcf.provider.kubernetes.VolumeMount
+	16, // 14: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp.liveness_probe:type_name -> org.openmcf.provider.kubernetes.Probe
+	16, // 15: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp.readiness_probe:type_name -> org.openmcf.provider.kubernetes.Probe
+	16, // 16: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetContainerApp.startup_probe:type_name -> org.openmcf.provider.kubernetes.Probe
+	6,  // 17: org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetAvailability.pod_disruption_budget:type_name -> org.openmcf.provider.kubernetes.kubernetesstatefulset.v1.KubernetesStatefulSetPodDisruptionBudget
+	18, // [18:18] is the sub-list for method output_type
+	18, // [18:18] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_init() }
@@ -983,7 +879,7 @@ func file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_in
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_rawDesc), len(file_org_openmcf_provider_kubernetes_kubernetesstatefulset_v1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

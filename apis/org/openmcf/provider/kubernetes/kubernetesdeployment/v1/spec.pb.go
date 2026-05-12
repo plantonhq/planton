@@ -286,7 +286,7 @@ type KubernetesDeploymentContainerApp struct {
 	Resources *kubernetes.ContainerResources `protobuf:"bytes,2,opt,name=resources,proto3" json:"resources,omitempty"`
 	// *
 	// The environment variables and secrets for the application container.
-	Env *KubernetesDeploymentContainerAppEnv `protobuf:"bytes,3,opt,name=env,proto3" json:"env,omitempty"`
+	Env *kubernetes.ContainerEnv `protobuf:"bytes,3,opt,name=env,proto3" json:"env,omitempty"`
 	// *
 	// A list of ports to be configured for the application container.
 	Ports []*KubernetesDeploymentContainerAppPort `protobuf:"bytes,4,rep,name=ports,proto3" json:"ports,omitempty"`
@@ -380,7 +380,7 @@ func (x *KubernetesDeploymentContainerApp) GetResources() *kubernetes.ContainerR
 	return nil
 }
 
-func (x *KubernetesDeploymentContainerApp) GetEnv() *KubernetesDeploymentContainerAppEnv {
+func (x *KubernetesDeploymentContainerApp) GetEnv() *kubernetes.ContainerEnv {
 	if x != nil {
 		return x.Env
 	}
@@ -437,118 +437,6 @@ func (x *KubernetesDeploymentContainerApp) GetArgs() []string {
 }
 
 // *
-// **KubernetesDeploymentContainerAppEnv** defines the environment variables and secrets for the application container.
-type KubernetesDeploymentContainerAppEnv struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// *
-	// A map of environment variable names to their values.
-	// Each variable can be provided either as a literal string value or as a reference
-	// to another OpenMCF resource's field.
-	//
-	// **Option 1: Direct string value**
-	// ```yaml
-	// variables:
-	//
-	//	DATABASE_PORT:
-	//	  value: "5432"
-	//
-	// ```
-	//
-	// **Option 2: Reference to another resource's field**
-	// ```yaml
-	// variables:
-	//
-	//	DATABASE_HOST:
-	//	  valueFrom:
-	//	    kind: PostgresCluster
-	//	    name: my-postgres
-	//	    fieldPath: "status.outputs.host"
-	//
-	// ```
-	//
-	// When using valueFrom references, the orchestrator resolves the reference
-	// and populates the value field before invoking the IaC modules.
-	Variables map[string]*v1.StringValueOrRef `protobuf:"bytes,1,rep,name=variables,proto3" json:"variables,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// *
-	// A map of secret environment variable names to their values.
-	// Each secret can be provided either as a literal string value or as a reference to an existing Kubernetes Secret.
-	//
-	// Using secret references is recommended for production deployments to avoid storing
-	// sensitive values in plain text within configuration files or version control.
-	//
-	// **Option 1: Direct string value (for development/testing)**
-	// ```yaml
-	// secrets:
-	//
-	//	DATABASE_PASSWORD:
-	//	  stringValue: my-password
-	//
-	// ```
-	//
-	// **Option 2: Kubernetes Secret reference (recommended for production)**
-	// ```yaml
-	// secrets:
-	//
-	//	DATABASE_PASSWORD:
-	//	  secretRef:
-	//	    name: my-app-secrets
-	//	    key: db-password
-	//
-	// ```
-	//
-	// When using string values, a Kubernetes Secret is automatically created and the environment
-	// variable references that secret. When using secret references, the environment variable
-	// directly references the specified external Kubernetes Secret.
-	Secrets       map[string]*kubernetes.KubernetesSensitiveValue `protobuf:"bytes,2,rep,name=secrets,proto3" json:"secrets,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *KubernetesDeploymentContainerAppEnv) Reset() {
-	*x = KubernetesDeploymentContainerAppEnv{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *KubernetesDeploymentContainerAppEnv) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*KubernetesDeploymentContainerAppEnv) ProtoMessage() {}
-
-func (x *KubernetesDeploymentContainerAppEnv) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use KubernetesDeploymentContainerAppEnv.ProtoReflect.Descriptor instead.
-func (*KubernetesDeploymentContainerAppEnv) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *KubernetesDeploymentContainerAppEnv) GetVariables() map[string]*v1.StringValueOrRef {
-	if x != nil {
-		return x.Variables
-	}
-	return nil
-}
-
-func (x *KubernetesDeploymentContainerAppEnv) GetSecrets() map[string]*kubernetes.KubernetesSensitiveValue {
-	if x != nil {
-		return x.Secrets
-	}
-	return nil
-}
-
-// *
 // **KubernetesDeploymentContainerAppPort** specifies the port configuration for the application container.
 // It includes details such as the port name, container port, network protocol, application protocol, and service port.
 type KubernetesDeploymentContainerAppPort struct {
@@ -578,7 +466,7 @@ type KubernetesDeploymentContainerAppPort struct {
 
 func (x *KubernetesDeploymentContainerAppPort) Reset() {
 	*x = KubernetesDeploymentContainerAppPort{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[5]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -590,7 +478,7 @@ func (x *KubernetesDeploymentContainerAppPort) String() string {
 func (*KubernetesDeploymentContainerAppPort) ProtoMessage() {}
 
 func (x *KubernetesDeploymentContainerAppPort) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[5]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -603,7 +491,7 @@ func (x *KubernetesDeploymentContainerAppPort) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use KubernetesDeploymentContainerAppPort.ProtoReflect.Descriptor instead.
 func (*KubernetesDeploymentContainerAppPort) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_rawDescGZIP(), []int{5}
+	return file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *KubernetesDeploymentContainerAppPort) GetName() string {
@@ -672,7 +560,7 @@ type KubernetesDeploymentAvailability struct {
 
 func (x *KubernetesDeploymentAvailability) Reset() {
 	*x = KubernetesDeploymentAvailability{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[6]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -684,7 +572,7 @@ func (x *KubernetesDeploymentAvailability) String() string {
 func (*KubernetesDeploymentAvailability) ProtoMessage() {}
 
 func (x *KubernetesDeploymentAvailability) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[6]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -697,7 +585,7 @@ func (x *KubernetesDeploymentAvailability) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesDeploymentAvailability.ProtoReflect.Descriptor instead.
 func (*KubernetesDeploymentAvailability) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_rawDescGZIP(), []int{6}
+	return file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *KubernetesDeploymentAvailability) GetMinReplicas() int32 {
@@ -745,7 +633,7 @@ type KubernetesDeploymentAvailabilityHpa struct {
 
 func (x *KubernetesDeploymentAvailabilityHpa) Reset() {
 	*x = KubernetesDeploymentAvailabilityHpa{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[7]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -757,7 +645,7 @@ func (x *KubernetesDeploymentAvailabilityHpa) String() string {
 func (*KubernetesDeploymentAvailabilityHpa) ProtoMessage() {}
 
 func (x *KubernetesDeploymentAvailabilityHpa) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[7]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -770,7 +658,7 @@ func (x *KubernetesDeploymentAvailabilityHpa) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use KubernetesDeploymentAvailabilityHpa.ProtoReflect.Descriptor instead.
 func (*KubernetesDeploymentAvailabilityHpa) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_rawDescGZIP(), []int{7}
+	return file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *KubernetesDeploymentAvailabilityHpa) GetIsEnabled() bool {
@@ -827,7 +715,7 @@ type KubernetesDeploymentDeploymentStrategy struct {
 
 func (x *KubernetesDeploymentDeploymentStrategy) Reset() {
 	*x = KubernetesDeploymentDeploymentStrategy{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[8]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -839,7 +727,7 @@ func (x *KubernetesDeploymentDeploymentStrategy) String() string {
 func (*KubernetesDeploymentDeploymentStrategy) ProtoMessage() {}
 
 func (x *KubernetesDeploymentDeploymentStrategy) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[8]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -852,7 +740,7 @@ func (x *KubernetesDeploymentDeploymentStrategy) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use KubernetesDeploymentDeploymentStrategy.ProtoReflect.Descriptor instead.
 func (*KubernetesDeploymentDeploymentStrategy) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_rawDescGZIP(), []int{8}
+	return file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *KubernetesDeploymentDeploymentStrategy) GetMaxUnavailable() string {
@@ -905,7 +793,7 @@ type KubernetesDeploymentPodDisruptionBudget struct {
 
 func (x *KubernetesDeploymentPodDisruptionBudget) Reset() {
 	*x = KubernetesDeploymentPodDisruptionBudget{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[9]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -917,7 +805,7 @@ func (x *KubernetesDeploymentPodDisruptionBudget) String() string {
 func (*KubernetesDeploymentPodDisruptionBudget) ProtoMessage() {}
 
 func (x *KubernetesDeploymentPodDisruptionBudget) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[9]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -930,7 +818,7 @@ func (x *KubernetesDeploymentPodDisruptionBudget) ProtoReflect() protoreflect.Me
 
 // Deprecated: Use KubernetesDeploymentPodDisruptionBudget.ProtoReflect.Descriptor instead.
 func (*KubernetesDeploymentPodDisruptionBudget) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_rawDescGZIP(), []int{9}
+	return file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *KubernetesDeploymentPodDisruptionBudget) GetEnabled() bool {
@@ -958,7 +846,7 @@ var File_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto prot
 
 const file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Borg/openmcf/provider/kubernetes/kubernetesdeployment/v1/spec.proto\x127org.openmcf.provider.kubernetes.kubernetesdeployment.v1\x1a\x1bbuf/validate/validate.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a7org/openmcf/provider/kubernetes/kubernetes_secret.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a+org/openmcf/provider/kubernetes/probe.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/provider/kubernetes/volume_mount.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xb1\b\n" +
+	"Borg/openmcf/provider/kubernetes/kubernetesdeployment/v1/spec.proto\x127org.openmcf.provider.kubernetes.kubernetesdeployment.v1\x1a\x1bbuf/validate/validate.proto\x1a3org/openmcf/provider/kubernetes/container_env.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a+org/openmcf/provider/kubernetes/probe.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/provider/kubernetes/volume_mount.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xb1\b\n" +
 	"\x18KubernetesDeploymentSpec\x12a\n" +
 	"\x0etarget_cluster\x18\x01 \x01(\v2:.org.openmcf.provider.kubernetes.KubernetesClusterSelectorR\rtargetCluster\x12j\n" +
 	"\tnamespace\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xc4\x06\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
@@ -980,7 +868,7 @@ const file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_ra
 	"\x1espec.ingress.hostname.required\x12,hostname is required when ingress is enabled\x1a(!this.enabled || size(this.hostname) > 0\"\xdc\x01\n" +
 	"\x1dKubernetesDeploymentContainer\x12s\n" +
 	"\x03app\x18\x01 \x01(\v2Y.org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppB\x06\xbaH\x03\xc8\x01\x01R\x03app\x12F\n" +
-	"\bsidecars\x18\x02 \x03(\v2*.org.openmcf.provider.kubernetes.ContainerR\bsidecars\"\xf3\a\n" +
+	"\bsidecars\x18\x02 \x03(\v2*.org.openmcf.provider.kubernetes.ContainerR\bsidecars\"\xc4\a\n" +
 	" KubernetesDeploymentContainerApp\x12\x85\x02\n" +
 	"\x05image\x18\x01 \x01(\v2/.org.openmcf.provider.kubernetes.ContainerImageB\xbd\x01\xbaH\xb9\x01\xba\x01Z\n" +
 	"\x1dspec.container.app.image.repo\x12\x16Image repo is required\x1a!has(this.repo) && this.repo != ''\xba\x01V\n" +
@@ -988,8 +876,8 @@ const file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_ra
 	"\tresources\x18\x02 \x01(\v23.org.openmcf.provider.kubernetes.ContainerResourcesB!\xba\xfb\xa4\x02\x1c\n" +
 	"\f\n" +
 	"\x051000m\x12\x031Gi\x12\f\n" +
-	"\x0350m\x12\x05100MiR\tresources\x12n\n" +
-	"\x03env\x18\x03 \x01(\v2\\.org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppEnvR\x03env\x12s\n" +
+	"\x0350m\x12\x05100MiR\tresources\x12?\n" +
+	"\x03env\x18\x03 \x01(\v2-.org.openmcf.provider.kubernetes.ContainerEnvR\x03env\x12s\n" +
 	"\x05ports\x18\x04 \x03(\v2].org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppPortR\x05ports\x12M\n" +
 	"\x0eliveness_probe\x18\x05 \x01(\v2&.org.openmcf.provider.kubernetes.ProbeR\rlivenessProbe\x12O\n" +
 	"\x0freadiness_probe\x18\x06 \x01(\v2&.org.openmcf.provider.kubernetes.ProbeR\x0ereadinessProbe\x12K\n" +
@@ -997,16 +885,7 @@ const file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_ra
 	"\rvolume_mounts\x18\b \x03(\v2,.org.openmcf.provider.kubernetes.VolumeMountR\fvolumeMounts\x12\x18\n" +
 	"\acommand\x18\t \x03(\tR\acommand\x12\x12\n" +
 	"\x04args\x18\n" +
-	" \x03(\tR\x04args\"\xa0\x04\n" +
-	"#KubernetesDeploymentContainerAppEnv\x12\x89\x01\n" +
-	"\tvariables\x18\x01 \x03(\v2k.org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppEnv.VariablesEntryR\tvariables\x12\x83\x01\n" +
-	"\asecrets\x18\x02 \x03(\v2i.org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppEnv.SecretsEntryR\asecrets\x1ap\n" +
-	"\x0eVariablesEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12H\n" +
-	"\x05value\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x05value:\x028\x01\x1au\n" +
-	"\fSecretsEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12O\n" +
-	"\x05value\x18\x02 \x01(\v29.org.openmcf.provider.kubernetes.KubernetesSensitiveValueR\x05value:\x028\x01\"\xe9\x05\n" +
+	" \x03(\tR\x04args\"\xe9\x05\n" +
 	"$KubernetesDeploymentContainerAppPort\x12\xd0\x02\n" +
 	"\x04name\x18\x01 \x01(\tB\xbb\x02\xbaH\xb7\x02\xba\x01\xb0\x02\n" +
 	"\x1dspec.container.app.ports.name\x12\xe0\x01Name for ports must only contain lowercase alphanumeric characters and hyphens. Port names must also start and end with an alphanumeric character. For example, '123-abc' and 'web' are valid, but '123_abc' and '-web' are not.\x1a,this.matches('^[a-z0-9][a-z0-9-]*[a-z0-9]$')\xc8\x01\x01R\x04name\x12-\n" +
@@ -1047,59 +926,52 @@ func file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_raw
 	return file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_rawDescData
 }
 
-var file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_goTypes = []any{
 	(*KubernetesDeploymentSpec)(nil),                // 0: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentSpec
 	(*KubernetesDeploymentIngress)(nil),             // 1: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentIngress
 	(*KubernetesDeploymentContainer)(nil),           // 2: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainer
 	(*KubernetesDeploymentContainerApp)(nil),        // 3: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp
-	(*KubernetesDeploymentContainerAppEnv)(nil),     // 4: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppEnv
-	(*KubernetesDeploymentContainerAppPort)(nil),    // 5: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppPort
-	(*KubernetesDeploymentAvailability)(nil),        // 6: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentAvailability
-	(*KubernetesDeploymentAvailabilityHpa)(nil),     // 7: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentAvailabilityHpa
-	(*KubernetesDeploymentDeploymentStrategy)(nil),  // 8: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentDeploymentStrategy
-	(*KubernetesDeploymentPodDisruptionBudget)(nil), // 9: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentPodDisruptionBudget
-	nil, // 10: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentSpec.ConfigMapsEntry
-	nil, // 11: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppEnv.VariablesEntry
-	nil, // 12: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppEnv.SecretsEntry
-	(*kubernetes.KubernetesClusterSelector)(nil), // 13: org.openmcf.provider.kubernetes.KubernetesClusterSelector
-	(*v1.StringValueOrRef)(nil),                  // 14: org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.Container)(nil),                 // 15: org.openmcf.provider.kubernetes.Container
-	(*kubernetes.ContainerImage)(nil),            // 16: org.openmcf.provider.kubernetes.ContainerImage
-	(*kubernetes.ContainerResources)(nil),        // 17: org.openmcf.provider.kubernetes.ContainerResources
-	(*kubernetes.Probe)(nil),                     // 18: org.openmcf.provider.kubernetes.Probe
-	(*kubernetes.VolumeMount)(nil),               // 19: org.openmcf.provider.kubernetes.VolumeMount
-	(*kubernetes.KubernetesSensitiveValue)(nil),  // 20: org.openmcf.provider.kubernetes.KubernetesSensitiveValue
+	(*KubernetesDeploymentContainerAppPort)(nil),    // 4: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppPort
+	(*KubernetesDeploymentAvailability)(nil),        // 5: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentAvailability
+	(*KubernetesDeploymentAvailabilityHpa)(nil),     // 6: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentAvailabilityHpa
+	(*KubernetesDeploymentDeploymentStrategy)(nil),  // 7: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentDeploymentStrategy
+	(*KubernetesDeploymentPodDisruptionBudget)(nil), // 8: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentPodDisruptionBudget
+	nil, // 9: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentSpec.ConfigMapsEntry
+	(*kubernetes.KubernetesClusterSelector)(nil), // 10: org.openmcf.provider.kubernetes.KubernetesClusterSelector
+	(*v1.StringValueOrRef)(nil),                  // 11: org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.Container)(nil),                 // 12: org.openmcf.provider.kubernetes.Container
+	(*kubernetes.ContainerImage)(nil),            // 13: org.openmcf.provider.kubernetes.ContainerImage
+	(*kubernetes.ContainerResources)(nil),        // 14: org.openmcf.provider.kubernetes.ContainerResources
+	(*kubernetes.ContainerEnv)(nil),              // 15: org.openmcf.provider.kubernetes.ContainerEnv
+	(*kubernetes.Probe)(nil),                     // 16: org.openmcf.provider.kubernetes.Probe
+	(*kubernetes.VolumeMount)(nil),               // 17: org.openmcf.provider.kubernetes.VolumeMount
 }
 var file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_depIdxs = []int32{
-	13, // 0: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentSpec.target_cluster:type_name -> org.openmcf.provider.kubernetes.KubernetesClusterSelector
-	14, // 1: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentSpec.namespace:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	10, // 0: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentSpec.target_cluster:type_name -> org.openmcf.provider.kubernetes.KubernetesClusterSelector
+	11, // 1: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentSpec.namespace:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
 	2,  // 2: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentSpec.container:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainer
 	1,  // 3: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentSpec.ingress:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentIngress
-	6,  // 4: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentSpec.availability:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentAvailability
-	10, // 5: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentSpec.config_maps:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentSpec.ConfigMapsEntry
+	5,  // 4: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentSpec.availability:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentAvailability
+	9,  // 5: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentSpec.config_maps:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentSpec.ConfigMapsEntry
 	3,  // 6: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainer.app:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp
-	15, // 7: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainer.sidecars:type_name -> org.openmcf.provider.kubernetes.Container
-	16, // 8: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp.image:type_name -> org.openmcf.provider.kubernetes.ContainerImage
-	17, // 9: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp.resources:type_name -> org.openmcf.provider.kubernetes.ContainerResources
-	4,  // 10: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp.env:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppEnv
-	5,  // 11: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp.ports:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppPort
-	18, // 12: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp.liveness_probe:type_name -> org.openmcf.provider.kubernetes.Probe
-	18, // 13: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp.readiness_probe:type_name -> org.openmcf.provider.kubernetes.Probe
-	18, // 14: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp.startup_probe:type_name -> org.openmcf.provider.kubernetes.Probe
-	19, // 15: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp.volume_mounts:type_name -> org.openmcf.provider.kubernetes.VolumeMount
-	11, // 16: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppEnv.variables:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppEnv.VariablesEntry
-	12, // 17: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppEnv.secrets:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppEnv.SecretsEntry
-	7,  // 18: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentAvailability.horizontal_pod_autoscaling:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentAvailabilityHpa
-	8,  // 19: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentAvailability.deployment_strategy:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentDeploymentStrategy
-	9,  // 20: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentAvailability.pod_disruption_budget:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentPodDisruptionBudget
-	14, // 21: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppEnv.VariablesEntry.value:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	20, // 22: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppEnv.SecretsEntry.value:type_name -> org.openmcf.provider.kubernetes.KubernetesSensitiveValue
-	23, // [23:23] is the sub-list for method output_type
-	23, // [23:23] is the sub-list for method input_type
-	23, // [23:23] is the sub-list for extension type_name
-	23, // [23:23] is the sub-list for extension extendee
-	0,  // [0:23] is the sub-list for field type_name
+	12, // 7: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainer.sidecars:type_name -> org.openmcf.provider.kubernetes.Container
+	13, // 8: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp.image:type_name -> org.openmcf.provider.kubernetes.ContainerImage
+	14, // 9: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp.resources:type_name -> org.openmcf.provider.kubernetes.ContainerResources
+	15, // 10: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp.env:type_name -> org.openmcf.provider.kubernetes.ContainerEnv
+	4,  // 11: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp.ports:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerAppPort
+	16, // 12: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp.liveness_probe:type_name -> org.openmcf.provider.kubernetes.Probe
+	16, // 13: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp.readiness_probe:type_name -> org.openmcf.provider.kubernetes.Probe
+	16, // 14: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp.startup_probe:type_name -> org.openmcf.provider.kubernetes.Probe
+	17, // 15: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentContainerApp.volume_mounts:type_name -> org.openmcf.provider.kubernetes.VolumeMount
+	6,  // 16: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentAvailability.horizontal_pod_autoscaling:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentAvailabilityHpa
+	7,  // 17: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentAvailability.deployment_strategy:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentDeploymentStrategy
+	8,  // 18: org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentAvailability.pod_disruption_budget:type_name -> org.openmcf.provider.kubernetes.kubernetesdeployment.v1.KubernetesDeploymentPodDisruptionBudget
+	19, // [19:19] is the sub-list for method output_type
+	19, // [19:19] is the sub-list for method input_type
+	19, // [19:19] is the sub-list for extension type_name
+	19, // [19:19] is the sub-list for extension extendee
+	0,  // [0:19] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_init() }
@@ -1113,7 +985,7 @@ func file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_ini
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_rawDesc), len(file_org_openmcf_provider_kubernetes_kubernetesdeployment_v1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

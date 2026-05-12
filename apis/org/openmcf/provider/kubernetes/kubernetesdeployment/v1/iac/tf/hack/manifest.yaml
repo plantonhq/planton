@@ -9,7 +9,8 @@ spec:
     app:
       env:
         variables:
-          SOME_ENV_VAR_ONE: some-env-var-value-one
+          - name: SOME_ENV_VAR_ONE
+            value: "some-env-var-value-one"
       image:
         repo: nginx
         tag: latest

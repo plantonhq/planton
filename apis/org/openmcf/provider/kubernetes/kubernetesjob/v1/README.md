@@ -61,12 +61,12 @@ spec:
       memory: 1Gi
   env:
     variables:
-      DATABASE_URL:
+      - name: DATABASE_URL
         value: postgres://localhost:5432/mydb
-      BATCH_SIZE:
+      - name: BATCH_SIZE
         value: "1000"
     secrets:
-      DATABASE_PASSWORD:
+      - name: DATABASE_PASSWORD
         secretRef:
           name: db-credentials
           key: password

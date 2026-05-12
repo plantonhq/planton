@@ -49,19 +49,57 @@ variable "spec" {
       })
     })
     env = optional(object({
-      # A map of environment variable names to their values.
-      # Each variable can be provided either as a direct string value (value)
-      # or as a reference to another OpenMCF resource's field (value_from).
-      # The orchestrator resolves value_from references and populates .value before invoking Terraform.
-      variables = optional(map(string))
-      secrets = optional(map(object({
+      variables = optional(list(object({
+        name  = string
+        value = optional(string)
+        value_from = optional(object({
+          kind       = optional(string)
+          env        = optional(string)
+          name       = string
+          field_path = optional(string)
+        }))
+        config_map_key_ref = optional(object({
+          name     = string
+          key      = string
+          optional = optional(bool, false)
+        }))
+        field_ref = optional(object({
+          api_version = optional(string)
+          field_path  = string
+        }))
+        resource_field_ref = optional(object({
+          container_name = optional(string)
+          resource       = string
+          divisor        = optional(string)
+        }))
+      })), [])
+      secrets = optional(list(object({
+        name  = string
         value = optional(string)
         secret_ref = optional(object({
           namespace = optional(string)
           name      = string
           key       = string
+          optional  = optional(bool, false)
         }))
-      })))
+        value_from = optional(object({
+          kind       = optional(string)
+          env        = optional(string)
+          name       = string
+          field_path = optional(string)
+        }))
+      })), [])
+      env_from = optional(list(object({
+        prefix = optional(string)
+        config_map_ref = optional(object({
+          name     = string
+          optional = optional(bool, false)
+        }))
+        secret_ref = optional(object({
+          name     = string
+          optional = optional(bool, false)
+        }))
+      })), [])
     }))
     command = optional(list(string))
     args    = optional(list(string))

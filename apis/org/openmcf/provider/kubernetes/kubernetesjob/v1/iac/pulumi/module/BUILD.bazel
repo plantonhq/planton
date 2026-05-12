@@ -20,6 +20,7 @@ go_library(
         "//apis/org/openmcf/provider/kubernetes",
         "//apis/org/openmcf/provider/kubernetes/kubernetesjob/v1:kubernetesjob",
         "//apis/org/openmcf/shared/cloudresourcekind",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/containerenv",
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
         "@com_github_pkg_errors//:errors",

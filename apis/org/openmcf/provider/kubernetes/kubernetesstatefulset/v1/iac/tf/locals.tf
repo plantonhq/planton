@@ -45,9 +45,9 @@ locals {
   namespace = var.spec.namespace
 
   # Computed resource names to avoid conflicts when multiple instances share a namespace
-  env_secret_name       = "${var.metadata.name}-env-secrets"
+  env_secret_name        = "${var.metadata.name}-env-secrets"
   image_pull_secret_name = "${var.metadata.name}-image-pull"
-  headless_service_name = "${var.metadata.name}-headless"
+  headless_service_name  = "${var.metadata.name}-headless"
 
   # The client service name
   kube_service_name = var.metadata.name
