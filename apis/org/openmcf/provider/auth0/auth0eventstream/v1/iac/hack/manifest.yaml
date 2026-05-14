@@ -15,9 +15,8 @@ spec:
   subscriptions:
     - user.created
     - user.updated
-    - authentication.success
   webhook_configuration:
-    webhook_endpoint: "https://webhook.site/test-endpoint"
+    webhook_endpoint: "https://api.planton.ai"
     webhook_authorization:
       method: bearer
       token: "test-token-for-development"

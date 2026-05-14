@@ -1,9 +1,10 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "runner",
     srcs = [
         "fixtures.go",
+        "outputs_verifier.go",
         "pulumi.go",
         "runner.go",
         "stackinput.go",
@@ -13,14 +14,30 @@ go_library(
     importpath = "github.com/plantonhq/openmcf/e2e/framework/runner",
     visibility = ["//visibility:public"],
     deps = [
+        "//apis/org/openmcf/shared/cloudresourcekind",
         "//apis/org/openmcf/shared/iac/terraform",
         "//e2e/framework/provider",
         "//internal/manifest",
+        "//pkg/crkreflect",
         "//pkg/iac/stackinput",
         "//pkg/iac/stackinput/providerenvvars",
         "//pkg/iac/tofu/generators",
         "//pkg/iac/tofu/tfbackend",
+        "//pkg/outputs",
         "@com_github_gruntwork_io_terratest//modules/terraform",
         "@com_github_pkg_errors//:errors",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+    ],
+)
+
+go_test(
+    name = "runner_test",
+    srcs = [
+        "outputs_verifier_test.go",
+    ],
+    embed = [":runner"],
+    deps = [
+        "//apis/org/openmcf/provider/auth0/auth0resourceserver/v1:auth0resourceserver",
     ],
 )

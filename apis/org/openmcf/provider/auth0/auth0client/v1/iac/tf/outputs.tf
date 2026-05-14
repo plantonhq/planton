@@ -24,6 +24,7 @@ output "application_type" {
 output "signing_keys" {
   description = "Signing keys for this client (for RS256 token verification)"
   value       = auth0_client.this.signing_keys
+  sensitive   = true
 }
 
 

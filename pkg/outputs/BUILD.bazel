@@ -1,0 +1,46 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "outputs",
+    srcs = [
+        "flatten.go",
+        "populate.go",
+        "preprocess.go",
+        "resolve.go",
+        "scalar.go",
+        "transform.go",
+    ],
+    importpath = "github.com/plantonhq/openmcf/pkg/outputs",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/org/openmcf/shared/cloudresourcekind",
+        "//pkg/crkreflect",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_sirupsen_logrus//:logrus",
+        "@org_golang_google_protobuf//encoding/protojson",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+    ],
+)
+
+go_test(
+    name = "outputs_test",
+    srcs = [
+        "flatten_test.go",
+        "populate_test.go",
+        "preprocess_test.go",
+        "resolve_test.go",
+        "scalar_test.go",
+        "transform_test.go",
+    ],
+    embed = [":outputs"],
+    deps = [
+        "//apis/org/openmcf/provider/auth0/auth0resourceserver/v1:auth0resourceserver",
+        "//apis/org/openmcf/provider/aws/awsvpc/v1:awsvpc",
+        "//apis/org/openmcf/provider/gcp/gcpdnszone/v1:gcpdnszone",
+        "//apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1:kubernetespostgres",
+        "//apis/org/openmcf/shared/cloudresourcekind",
+        "//pkg/crkreflect",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+    ],
+)
