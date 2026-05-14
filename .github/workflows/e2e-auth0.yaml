@@ -119,9 +119,12 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
           if [ -f results-auth0.xml ]; then
-            TESTS=$(grep -c '<testcase' results-auth0.xml 2>/dev/null || echo "0")
-            FAILURES=$(grep -oP 'failures="\K[0-9]+' results-auth0.xml 2>/dev/null | head -1 || echo "0")
-            SKIPPED=$(grep -c '<skipped' results-auth0.xml 2>/dev/null || echo "0")
+            TESTS="$(grep -c '<testcase' results-auth0.xml 2>/dev/null | tr -d '[:space:]')"
+            TESTS="${TESTS:-0}"
+            FAILURES="$(grep -oP 'failures="\K[0-9]+' results-auth0.xml 2>/dev/null | head -1 | tr -d '[:space:]')"
+            FAILURES="${FAILURES:-0}"
+            SKIPPED="$(grep -c '<skipped' results-auth0.xml 2>/dev/null | tr -d '[:space:]')"
+            SKIPPED="${SKIPPED:-0}"
             PASSED=$((TESTS - FAILURES - SKIPPED))
 
             echo "| Tests | Passed | Failed | Skipped |" >> "$GITHUB_STEP_SUMMARY"
