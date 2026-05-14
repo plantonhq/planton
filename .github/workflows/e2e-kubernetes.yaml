@@ -203,10 +203,14 @@ jobs:
             [ -f "$f" ] || continue
             CELL=$(basename "$f" .xml | sed 's/^results-//')
 
-            TESTS=$(grep -c '<testcase' "$f" 2>/dev/null || echo "0")
-            FAILURES=$(grep -oP 'failures="\K[0-9]+' "$f" 2>/dev/null | head -1 || echo "0")
-            SKIPPED=$(grep -c '<skipped' "$f" 2>/dev/null || echo "0")
-            TIME=$(grep -oP 'time="\K[0-9.]+' "$f" 2>/dev/null | head -1 || echo "0")
+            TESTS="$(grep -c '<testcase' "$f" 2>/dev/null | tr -d '[:space:]')"
+            TESTS="${TESTS:-0}"
+            FAILURES="$(grep -oP 'failures="\K[0-9]+' "$f" 2>/dev/null | head -1 | tr -d '[:space:]')"
+            FAILURES="${FAILURES:-0}"
+            SKIPPED="$(grep -c '<skipped' "$f" 2>/dev/null | tr -d '[:space:]')"
+            SKIPPED="${SKIPPED:-0}"
+            TIME="$(grep -oP 'time="\K[0-9.]+' "$f" 2>/dev/null | head -1 | tr -d '[:space:]')"
+            TIME="${TIME:-0}"
             PASSED=$((TESTS - FAILURES - SKIPPED))
 
             TOTAL_TESTS=$((TOTAL_TESTS + TESTS))
@@ -228,7 +232,8 @@ jobs:
             echo "" >> "$GITHUB_STEP_SUMMARY"
             for f in results-*.xml; do
               [ -f "$f" ] || continue
-              FAILURES=$(grep -oP 'failures="\K[0-9]+' "$f" 2>/dev/null | head -1 || echo "0")
+              FAILURES="$(grep -oP 'failures="\K[0-9]+' "$f" 2>/dev/null | head -1 | tr -d '[:space:]')"
+              FAILURES="${FAILURES:-0}"
               [ "$FAILURES" -gt 0 ] || continue
 
               CELL=$(basename "$f" .xml | sed 's/^results-//')
