@@ -245,6 +245,20 @@ e2e-test-kubernetes-terraform-tier3:  ## Run Kubernetes Tier 3 Terraform (operat
 e2e-test-kubernetes-terraform-tier4:  ## Run Kubernetes Tier 4 Terraform (operators, addons) E2E tests
 	go test -tags=e2e -timeout=150m -v -count=1 -run "Test(KubernetesZalandoPostgresOperator|KubernetesStrimziKafkaOperator|KubernetesElasticOperator|KubernetesAltinityOperator|KubernetesGatewayApiCrds|KubernetesGhaRunnerScaleSetController|KubernetesRookCephOperator|KubernetesExternalSecrets|KubernetesTekton)_Terraform" ./e2e/...
 
+# ── Auth0 E2E targets ────────────────────────────────────────────────────────
+
+.PHONY: e2e-test-auth0
+e2e-test-auth0:  ## Run all Auth0 E2E tests (requires AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET)
+	go test -tags=e2e -timeout=20m -v -count=1 ./e2e/auth0/...
+
+.PHONY: e2e-test-auth0-pulumi
+e2e-test-auth0-pulumi:  ## Run Auth0 Pulumi E2E tests only
+	go test -tags=e2e -timeout=20m -v -count=1 -run ".*_Pulumi" ./e2e/auth0/...
+
+.PHONY: e2e-test-auth0-terraform
+e2e-test-auth0-terraform:  ## Run Auth0 Terraform E2E tests only
+	go test -tags=e2e -timeout=20m -v -count=1 -run ".*_Terraform" ./e2e/auth0/...
+
 # ── Generic component E2E targets ────────────────────────────────────────────
 
 .PHONY: e2e-test-component
