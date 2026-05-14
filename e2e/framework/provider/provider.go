@@ -58,8 +58,17 @@ type ComponentTestContext struct {
 	// StackInputFilePath is the path to the generated stack-input YAML.
 	StackInputFilePath string
 
-	// Outputs holds stack outputs after deployment.
+	// Outputs holds raw stack outputs after deployment (map[string]interface{}).
 	Outputs map[string]interface{}
+
+	// FlatOutputs holds the flattened string-keyed outputs after outputs.Flatten().
+	// Populated during the VERIFY-OUT phase.
+	FlatOutputs map[string]string
+
+	// TransformedOutputs holds the typed StackOutputs proto after outputs.Transform().
+	// Stored as interface{} to avoid importing proto in this package.
+	// The runner package type-asserts to proto.Message when needed.
+	TransformedOutputs interface{}
 
 	// RepoRoot is the absolute path to the openmcf repository root.
 	// Used by the fixture system to discover fixture YAML files.

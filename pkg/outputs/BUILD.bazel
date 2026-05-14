@@ -3,6 +3,7 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "outputs",
     srcs = [
+        "flatten.go",
         "populate.go",
         "preprocess.go",
         "resolve.go",
@@ -25,6 +26,7 @@ go_library(
 go_test(
     name = "outputs_test",
     srcs = [
+        "flatten_test.go",
         "populate_test.go",
         "preprocess_test.go",
         "resolve_test.go",

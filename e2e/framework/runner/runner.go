@@ -2,6 +2,7 @@ package runner
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -191,26 +192,41 @@ func runVerifyOutputs(tc *provider.ComponentTestContext) error {
 	case "pulumi":
 		outputJSON, err := PulumiStackOutputs(tc.ModuleDir, tc.StackName, tc.BackendURL)
 		if err != nil {
-			return nil
+			return errors.Wrap(err, "failed to retrieve pulumi stack outputs")
 		}
-		_ = outputJSON
-		return nil
+		rawOutputs, parseErr := parsePulumiOutputs(outputJSON)
+		if parseErr != nil {
+			return errors.Wrap(parseErr, "failed to parse pulumi stack outputs JSON")
+		}
+		tc.Outputs = rawOutputs
 
 	case "terraform":
 		opts, ok := tc.TerraformOpts.(*tt.Options)
 		if !ok || opts == nil {
-			return nil
+			return errors.New("terraform options not initialized (runValidate must run first)")
 		}
-		outputs, err := TerraformOutputs(tc.T, opts)
+		rawOutputs, err := TerraformOutputs(tc.T, opts)
 		if err != nil {
-			return nil
+			return errors.Wrap(err, "failed to retrieve terraform outputs")
 		}
-		tc.Outputs = outputs
-		return nil
+		tc.Outputs = rawOutputs
 
 	default:
 		return nil
 	}
+
+	if len(tc.Outputs) == 0 {
+		fmt.Printf("  [outputs] %s: no outputs captured, skipping transformation validation\n", tc.Component)
+		return nil
+	}
+
+	msg, flatOutputs, err := VerifyOutputTransformation(tc.Component, tc.Outputs)
+	if err != nil {
+		return err
+	}
+	tc.FlatOutputs = flatOutputs
+	tc.TransformedOutputs = msg
+	return nil
 }
 
 func runVerifyResources(ctx context.Context, tc *provider.ComponentTestContext, harness provider.Harness) error {
@@ -239,4 +255,17 @@ func runDestroy(tc *provider.ComponentTestContext) error {
 
 func runVerifyCleanup(ctx context.Context, tc *provider.ComponentTestContext, harness provider.Harness) error {
 	return harness.VerifyDestroyed(ctx, tc.Component)
+}
+
+// parsePulumiOutputs converts the JSON string from `pulumi stack output --json`
+// into a map[string]interface{} compatible with tc.Outputs.
+func parsePulumiOutputs(outputJSON string) (map[string]interface{}, error) {
+	if outputJSON == "" {
+		return nil, nil
+	}
+	var raw map[string]interface{}
+	if err := json.Unmarshal([]byte(outputJSON), &raw); err != nil {
+		return nil, err
+	}
+	return raw, nil
 }
