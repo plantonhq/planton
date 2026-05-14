@@ -174,9 +174,6 @@ snapshot: deps  ## build a local snapshot using GoReleaser
 	goreleaser release --snapshot --clean --skip=publish
 
 .PHONY: release
-release: test
-
-.PHONY: release
 release: test  ## auto-bump version, tag & push (bump=major|minor|patch, default: patch). Override with version=vX.Y.Z
 	@if [ "$(VERSION_EXPLICIT)" = "true" ]; then \
 		rel_version="$(version)"; \
@@ -187,6 +184,9 @@ release: test  ## auto-bump version, tag & push (bump=major|minor|patch, default
 	fi; \
 	git tag -a $$rel_version -m "$$rel_version"; \
 	git push origin $$rel_version
+
+.PHONY: test-and-release
+test-and-release: test release
 
 .PHONY: run-docs
 run-docs:
