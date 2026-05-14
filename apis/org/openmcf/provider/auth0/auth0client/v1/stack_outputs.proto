@@ -41,6 +41,8 @@ message Auth0ClientStackOutputs {
 
   // callback_url_template indicates if callback URL templating is enabled.
   // When true, Auth0 allows parameterized callback URLs.
+  // NOTE: Not populated by default Terraform or Pulumi modules -- this attribute
+  // is only available via the Auth0 Management API and can be set by custom module overrides.
   string callback_url_template = 7;
 
   // allowed_clients lists clients allowed to perform delegation for this client.
@@ -49,6 +51,8 @@ message Auth0ClientStackOutputs {
 
   // global indicates if this is a global client (the tenant's default client).
   // There is only one global client per tenant.
+  // NOTE: Not populated by default Terraform or Pulumi modules -- this attribute
+  // is only available via the Auth0 Management API and can be set by custom module overrides.
   string global = 9;
 
   // token_endpoint_auth_method is the authentication method for the token endpoint.

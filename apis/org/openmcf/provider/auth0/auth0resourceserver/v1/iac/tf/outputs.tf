@@ -56,3 +56,13 @@ output "token_dialect" {
   description = "The access token format configured for this API"
   value       = auth0_resource_server.this.token_dialect
 }
+
+output "is_system" {
+  description = "Indicates if this is a system-managed resource server (e.g. Auth0 Management API)"
+  value       = auth0_resource_server.this.is_system
+}
+
+output "client_id" {
+  description = "The client ID associated with this resource server, if one has been linked"
+  value       = auth0_resource_server.this.client_id
+}

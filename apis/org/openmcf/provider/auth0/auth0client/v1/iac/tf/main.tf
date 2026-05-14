@@ -135,4 +135,9 @@ resource "auth0_client_grant" "api_grants" {
   allow_any_organization = coalesce(each.value.allow_any_organization, false)
 }
 
-
+# Data source to read back computed-only attributes (client_secret, token_endpoint_auth_method)
+# that the auth0_client resource does not expose in its schema.
+# Requires the read:client_keys scope on the Auth0 management API client.
+data "auth0_client" "this" {
+  client_id = auth0_client.this.client_id
+}
