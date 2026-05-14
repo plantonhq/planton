@@ -1,0 +1,8 @@
+version: v1
+mappings:
+  custom_id: id
+  custom_name: name
+  custom_endpoint: endpoint
+skip:
+  - internal_debug
+  - temp_value

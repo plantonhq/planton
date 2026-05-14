@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Test fixture: executable that coexists with output_transform.yaml.
+# The executable should take precedence when both exist.
+set -euo pipefail
+
+input=$(cat)
+python3 -c "
+import sys, json
+data = json.loads('''$input''')
+raw = data.get('outputs', {})
+result = {}
+for k, v in raw.items():
+    if k == 'executable_was_used':
+        result['id'] = str(v)
+    else:
+        result[k] = str(v) if not isinstance(v, str) else v
+json.dump(result, sys.stdout)
+"

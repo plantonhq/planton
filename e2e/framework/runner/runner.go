@@ -220,7 +220,7 @@ func runVerifyOutputs(tc *provider.ComponentTestContext) error {
 		return nil
 	}
 
-	msg, flatOutputs, err := VerifyOutputTransformation(tc.Component, tc.Outputs)
+	msg, flatOutputs, err := VerifyOutputTransformation(tc.Component, tc.Outputs, tc.ModuleDir)
 	if err != nil {
 		return err
 	}

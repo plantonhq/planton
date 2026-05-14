@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Test fixture: exits non-zero to simulate a failing transform script.
+echo "something went wrong" >&2
+exit 1

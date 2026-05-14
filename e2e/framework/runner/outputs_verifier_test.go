@@ -23,7 +23,7 @@ func TestVerifyOutputTransformation_Auth0ResourceServer(t *testing.T) {
 		"client_id":        nil,
 	}
 
-	msg, flatOutputs, err := VerifyOutputTransformation("auth0resourceserver", rawOutputs)
+	msg, flatOutputs, err := VerifyOutputTransformation("auth0resourceserver", rawOutputs, "")
 	if err != nil {
 		t.Fatalf("VerifyOutputTransformation failed: %v", err)
 	}
@@ -56,7 +56,7 @@ func TestVerifyOutputTransformation_Auth0ResourceServer(t *testing.T) {
 func TestVerifyOutputTransformation_UnknownComponent(t *testing.T) {
 	rawOutputs := map[string]interface{}{"id": "test-123"}
 
-	_, _, err := VerifyOutputTransformation("nonexistent_component_xyz", rawOutputs)
+	_, _, err := VerifyOutputTransformation("nonexistent_component_xyz", rawOutputs, "")
 	if err == nil {
 		t.Fatal("expected error for unknown component, got nil")
 	}
@@ -65,7 +65,7 @@ func TestVerifyOutputTransformation_UnknownComponent(t *testing.T) {
 func TestVerifyOutputTransformation_EmptyOutputs(t *testing.T) {
 	rawOutputs := map[string]interface{}{}
 
-	msg, flatOutputs, err := VerifyOutputTransformation("auth0resourceserver", rawOutputs)
+	msg, flatOutputs, err := VerifyOutputTransformation("auth0resourceserver", rawOutputs, "")
 	if err != nil {
 		t.Fatalf("VerifyOutputTransformation failed: %v", err)
 	}
@@ -86,7 +86,7 @@ func TestVerifyOutputTransformation_FlatOutputsCorrect(t *testing.T) {
 		"is_system":      false,
 	}
 
-	_, flatOutputs, err := VerifyOutputTransformation("auth0resourceserver", rawOutputs)
+	_, flatOutputs, err := VerifyOutputTransformation("auth0resourceserver", rawOutputs, "")
 	if err != nil {
 		t.Fatalf("VerifyOutputTransformation failed: %v", err)
 	}

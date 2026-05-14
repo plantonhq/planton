@@ -14,18 +14,25 @@ import (
 // VerifyOutputTransformation validates that raw IaC engine outputs can be
 // correctly transformed into a typed StackOutputs proto message.
 //
-// The pipeline is: resolve kind -> Flatten(raw) -> Transform(kind, flat) -> proto.
+// The pipeline uses TransformRaw which supports module-directory overrides:
+//   - transform-outputs executable (highest priority)
+//   - output_transform.yaml declarative mapping
+//   - generic reflection transformer (default fallback)
+//
 // Returns the populated proto message on success, or an error if any step fails.
 // Unknown output fields are logged as warnings by Transform() but do not cause failure.
-func VerifyOutputTransformation(component string, rawOutputs map[string]interface{}) (proto.Message, map[string]string, error) {
+func VerifyOutputTransformation(component string, rawOutputs map[string]interface{}, moduleDir string) (proto.Message, map[string]string, error) {
 	kind := crkreflect.KindFromString(component)
 	if kind == cloudresourcekind.CloudResourceKind_unspecified {
 		return nil, nil, errors.Errorf("cannot resolve CloudResourceKind from component name %q", component)
 	}
 
-	flatOutputs := outputs.Flatten(rawOutputs)
+	var opts *outputs.TransformOptions
+	if moduleDir != "" {
+		opts = &outputs.TransformOptions{ModuleDir: moduleDir}
+	}
 
-	msg, err := outputs.Transform(kind, flatOutputs)
+	msg, flatOutputs, err := outputs.TransformRaw(kind, rawOutputs, opts)
 	if err != nil {
 		return nil, flatOutputs, errors.Wrapf(err, "output transformation failed for %s (kind=%s)", component, kind.String())
 	}

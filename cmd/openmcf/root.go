@@ -58,6 +58,7 @@ func init() {
 		root.Tofu,
 		root.Upgrade,
 		root.ValidateManifest,
+		root.ValidateOutputs,
 		root.Version,
 	)
 }

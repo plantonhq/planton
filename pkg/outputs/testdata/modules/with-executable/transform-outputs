@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Test fixture: reads stdin JSON and renames keys in the output map.
+# Expects stdin: {"kind":"...","outputs":{...}}
+# Produces stdout: flat map with renamed keys.
+set -euo pipefail
+
+input=$(cat)
+kind=$(echo "$input" | python3 -c "import sys,json; print(json.load(sys.stdin)['kind'])")
+
+# Read raw outputs, flatten to string values, and rename keys
+python3 -c "
+import sys, json
+
+data = json.loads('''$input''')
+raw = data.get('outputs', {})
+
+# Simulate a custom transform: rename 'custom_id' -> 'id', format non-strings
+result = {}
+for k, v in raw.items():
+    # Rename custom_id to id
+    if k == 'custom_id':
+        result['id'] = str(v) if not isinstance(v, str) else v
+    else:
+        result[k] = str(v) if not isinstance(v, str) else v
+
+json.dump(result, sys.stdout)
+"
