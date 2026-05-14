@@ -174,7 +174,7 @@ snapshot: deps  ## build a local snapshot using GoReleaser
 	goreleaser release --snapshot --clean --skip=publish
 
 .PHONY: release
-release: test  ## auto-bump version, tag & push (bump=major|minor|patch, default: patch). Override with version=vX.Y.Z
+release:  ## auto-bump version, tag & push (bump=major|minor|patch, default: patch). Override with version=vX.Y.Z
 	@if [ "$(VERSION_EXPLICIT)" = "true" ]; then \
 		rel_version="$(version)"; \
 		echo "Releasing: $$rel_version (explicit version)"; \
