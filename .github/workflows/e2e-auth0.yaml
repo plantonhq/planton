@@ -1,0 +1,132 @@
+# =============================================================================
+# Auth0 E2E Tests
+# =============================================================================
+# Runs E2E tests for Auth0 components against a free-tier Auth0 tenant.
+# No Docker, kind, or kubectl needed -- Auth0 resources are SaaS API objects.
+#
+# Architecture:
+#   1. build-check: compile E2E code + go vet (fast gate, every trigger)
+#   2. e2e: run all Auth0 component tests (both Pulumi and Terraform)
+#
+# Triggers:
+#   - Pull requests (path-filtered): build-check only
+#   - Weekly schedule: full pipeline
+#   - Manual dispatch
+# =============================================================================
+
+name: e2e-auth0
+
+on:
+  schedule:
+    - cron: '0 4 * * 0' # Weekly Sunday 4am UTC (1 hour after Kubernetes)
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'apis/org/openmcf/provider/auth0/**'
+      - 'e2e/auth0/**'
+      - 'e2e/framework/**'
+      - 'pkg/iac/**'
+      - 'go.mod'
+      - 'go.sum'
+      - '.github/workflows/e2e-auth0.yaml'
+
+concurrency:
+  group: e2e-auth0-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  PULUMI_CONFIG_PASSPHRASE: ''
+
+jobs:
+  # ============================================================================
+  # Build Check -- fast compile + vet gate (every trigger)
+  # ============================================================================
+  build-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+
+      - name: Compile Auth0 E2E tests
+        run: go test -tags=e2e -c -o /dev/null ./e2e/auth0/...
+
+      - name: Vet Auth0 E2E packages
+        run: go vet -tags=e2e ./e2e/auth0/...
+
+  # ============================================================================
+  # E2E -- run all Auth0 component tests
+  # ============================================================================
+  e2e:
+    needs: build-check
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+      AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+      AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+
+      - name: Install gotestsum
+        run: go install gotest.tools/gotestsum@latest
+
+      - name: Install Pulumi
+        run: curl -fsSL https://get.pulumi.com | sh && echo "$HOME/.pulumi/bin" >> "$GITHUB_PATH"
+
+      - name: Install OpenTofu
+        run: |
+          curl -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
+          chmod +x install-opentofu.sh
+          ./install-opentofu.sh --install-method standalone --skip-verify
+          rm install-opentofu.sh
+
+      - name: Run Auth0 E2E tests
+        run: |
+          gotestsum \
+            --format=testdox \
+            --junitfile=results-auth0.xml \
+            -- \
+            -tags=e2e \
+            -timeout=15m \
+            -v \
+            -count=1 \
+            ./e2e/auth0/...
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-results-auth0
+          path: results-auth0.xml
+          retention-days: 30
+
+      - name: Generate summary
+        if: always()
+        run: |
+          echo "## Auth0 E2E Results" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -f results-auth0.xml ]; then
+            TESTS=$(grep -c '<testcase' results-auth0.xml 2>/dev/null || echo "0")
+            FAILURES=$(grep -oP 'failures="\K[0-9]+' results-auth0.xml 2>/dev/null | head -1 || echo "0")
+            SKIPPED=$(grep -c '<skipped' results-auth0.xml 2>/dev/null || echo "0")
+            PASSED=$((TESTS - FAILURES - SKIPPED))
+
+            echo "| Tests | Passed | Failed | Skipped |" >> "$GITHUB_STEP_SUMMARY"
+            echo "|-------|--------|--------|---------|" >> "$GITHUB_STEP_SUMMARY"
+            echo "| $TESTS | $PASSED | $FAILURES | $SKIPPED |" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No test results found." >> "$GITHUB_STEP_SUMMARY"
+          fi

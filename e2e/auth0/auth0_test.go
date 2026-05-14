@@ -1,0 +1,174 @@
+//go:build e2e
+
+package auth0
+
+import (
+	"context"
+	"fmt"
+	"os"
+	"path/filepath"
+	"testing"
+
+	"github.com/google/uuid"
+	auth0e2e "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/aa_e2e"
+	"github.com/plantonhq/openmcf/e2e/framework/discovery"
+	"github.com/plantonhq/openmcf/e2e/framework/provider"
+	"github.com/plantonhq/openmcf/e2e/framework/runner"
+)
+
+var (
+	testHarness      *auth0e2e.Harness
+	repoRoot         string
+	runID            string
+	pulumiBackendURL string
+)
+
+func TestMain(m *testing.M) {
+	var err error
+	repoRoot, err = filepath.Abs(filepath.Join("..", ".."))
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to resolve repo root: %v\n", err)
+		os.Exit(1)
+	}
+
+	runID = uuid.New().String()[:8]
+
+	backendDir, err := os.MkdirTemp("", "openmcf-e2e-auth0-pulumi-*")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to create temp backend dir: %v\n", err)
+		os.Exit(1)
+	}
+	pulumiBackendURL = "file://" + backendDir
+	defer os.RemoveAll(backendDir)
+
+	if err := runner.PulumiLogin(pulumiBackendURL); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to login to pulumi backend: %v\n", err)
+		os.Exit(1)
+	}
+
+	testHarness = auth0e2e.NewHarness()
+	ctx := context.Background()
+	if err := testHarness.Setup(ctx); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to setup Auth0 harness: %v\n", err)
+		os.Exit(1)
+	}
+
+	code := m.Run()
+
+	if err := testHarness.Teardown(ctx); err != nil {
+		fmt.Fprintf(os.Stderr, "warning: failed to teardown Auth0 harness: %v\n", err)
+	}
+
+	os.Exit(code)
+}
+
+// --- Auth0 Client ---
+
+func TestAuth0Client_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "auth0client", "pulumi") }
+func TestAuth0Client_Terraform(t *testing.T) { runAllScenariosForComponent(t, "auth0client", "terraform") }
+
+// --- Auth0 Connection ---
+
+func TestAuth0Connection_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "auth0connection", "pulumi") }
+func TestAuth0Connection_Terraform(t *testing.T) { runAllScenariosForComponent(t, "auth0connection", "terraform") }
+
+// --- Auth0 Resource Server ---
+
+func TestAuth0ResourceServer_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "auth0resourceserver", "pulumi") }
+func TestAuth0ResourceServer_Terraform(t *testing.T) { runAllScenariosForComponent(t, "auth0resourceserver", "terraform") }
+
+// --- Auth0 Action ---
+
+func TestAuth0Action_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "auth0action", "pulumi") }
+func TestAuth0Action_Terraform(t *testing.T) { runAllScenariosForComponent(t, "auth0action", "terraform") }
+
+// --- Auth0 Event Stream ---
+
+func TestAuth0EventStream_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "auth0eventstream", "pulumi") }
+func TestAuth0EventStream_Terraform(t *testing.T) { runAllScenariosForComponent(t, "auth0eventstream", "terraform") }
+
+// runAllScenariosForComponent discovers and runs all E2E scenarios for an Auth0 component.
+func runAllScenariosForComponent(t *testing.T, component, engine string) {
+	t.Helper()
+
+	var moduleDir string
+	switch engine {
+	case "pulumi":
+		moduleDir = filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", "auth0", component, "v1", "iac", "pulumi")
+	case "terraform":
+		moduleDir = filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", "auth0", component, "v1", "iac", "tf")
+	default:
+		t.Fatalf("unsupported engine: %s", engine)
+	}
+
+	if !fileExists(moduleDir) {
+		t.Skipf("component %s %s module not found at %s", component, engine, moduleDir)
+	}
+
+	scenarios, err := discovery.DiscoverTestScenarios(repoRoot, "auth0", component)
+	if err != nil {
+		t.Fatalf("failed to discover test scenarios for %s: %v", component, err)
+	}
+
+	if len(scenarios) == 0 {
+		t.Skipf("no test scenarios found for %s", component)
+	}
+
+	t.Logf("Discovered %d scenarios for %s [%s]", len(scenarios), component, engine)
+
+	for _, scenario := range scenarios {
+		scenario := scenario
+		t.Run(scenario.Name, func(t *testing.T) {
+			runSingleScenario(t, component, moduleDir, engine, scenario)
+		})
+	}
+}
+
+func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenario discovery.TestScenario) {
+	t.Helper()
+
+	tc := &provider.ComponentTestContext{
+		Component:    component,
+		Provider:     "auth0",
+		Engine:       engine,
+		ModuleDir:    moduleDir,
+		ManifestPath: scenario.ManifestPath,
+		RepoRoot:     repoRoot,
+		RunID:        runID,
+		T:            t,
+	}
+
+	if engine == "pulumi" {
+		stackName := runner.GenerateStackName(component+"-"+scenario.Name, runID)
+		if len(stackName) > 50 {
+			stackName = stackName[:50]
+		}
+		tc.StackName = stackName
+		tc.BackendURL = pulumiBackendURL
+	}
+
+	ctx := context.Background()
+	result := runner.RunComponentTest(ctx, tc, testHarness)
+
+	for _, phase := range result.Phases {
+		status := "PASS"
+		if !phase.Passed {
+			status = "FAIL"
+		}
+		t.Logf("  %s: %s (%s)", phase.Phase, status, phase.Duration)
+		if phase.Error != nil {
+			t.Logf("    Error: %v", phase.Error)
+		}
+	}
+
+	if !result.Passed {
+		t.Fatalf("scenario %s/%s [%s] failed (total: %s)", component, scenario.Name, engine, result.Duration)
+	}
+
+	t.Logf("scenario %s/%s [%s] passed (total: %s)", component, scenario.Name, engine, result.Duration)
+}
+
+func fileExists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
+}

@@ -43,6 +43,7 @@ import (
 	alicloudvpngatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudvpngateway/v1"
 	alicloudvswitchv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudvswitch/v1"
 	atlasmongodbv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/atlas/atlasmongodb/v1"
+	auth0actionv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/auth0action/v1"
 	auth0clientv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/auth0client/v1"
 	auth0connectionv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/auth0connection/v1"
 	auth0eventstreamv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/auth0eventstream/v1"
@@ -431,6 +432,7 @@ var ProviderAtlasMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 }
 
 var ProviderAuth0Map = map[cloudresourcekind.CloudResourceKind]proto.Message{
+	cloudresourcekind.CloudResourceKind_Auth0Action:         &auth0actionv1.Auth0Action{},
 	cloudresourcekind.CloudResourceKind_Auth0Client:         &auth0clientv1.Auth0Client{},
 	cloudresourcekind.CloudResourceKind_Auth0Connection:     &auth0connectionv1.Auth0Connection{},
 	cloudresourcekind.CloudResourceKind_Auth0EventStream:    &auth0eventstreamv1.Auth0EventStream{},
