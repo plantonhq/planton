@@ -170,7 +170,7 @@ var _ = ginkgo.Describe("GcpSecretsManagerSpec Custom Validation Tests", func() 
 			// The assertion is now inverted to reflect the corrected behavior.
 			//
 			// Comprehensive boundary tests for the CEL rule live on the permanent test
-			// resource at _test/testcloudresourceone/v1/spec_test.go, not here.
+			// resource at _test/testcloudresourcegeneric/v1/spec_test.go, not here.
 			ginkgo.It("should return a validation error with empty StringValueOrRef (CEL rule rejects empty content)", func() {
 				input := &GcpSecretsManager{
 					ApiVersion: "gcp.openmcf.org/v1",

@@ -50,20 +50,15 @@ enum CloudResourceKind {
   unspecified = 0;
 
   // 1–49: Test/dev/custom
-  TestCloudResourceOne = 1 [(kind_meta) = {
+  TestCloudResourceGeneric = 1 [(kind_meta) = {
     provider: _test
     version: v1
-    id_prefix: "tcr1"
+    id_prefix: "tcrg"
   }];
-  TestCloudResourceTwo = 2 [(kind_meta) = {
+  TestCloudResourceKubernetes = 2 [(kind_meta) = {
     provider: _test
     version: v1
-    id_prefix: "tcr2"
-  }];
-  TestCloudResourceThree = 3 [(kind_meta) = {
-    provider: _test
-    version: v1
-    id_prefix: "tcr3"
+    id_prefix: "tcrk"
   }];
 
   // 50–199: saas platform resources

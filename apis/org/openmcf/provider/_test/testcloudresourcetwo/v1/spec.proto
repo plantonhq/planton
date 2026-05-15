@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-package org.openmcf.provider._test.testcloudresourcetwo.v1;
-
-//TestCloudResourceTwoSpec is a stub
-message TestCloudResourceTwoSpec {
-  string placeholder = 1;
-}

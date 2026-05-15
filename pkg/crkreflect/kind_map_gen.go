@@ -9,9 +9,8 @@
 package crkreflect
 
 import (
-	testcloudresourceonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourceone/v1"
-	testcloudresourcethreev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourcethree/v1"
-	testcloudresourcetwov1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourcetwo/v1"
+	testcloudresourcegenericv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourcegeneric/v1"
+	testcloudresourcekubernetesv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourcekubernetes/v1"
 	alicloudapplicationloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudapplicationloadbalancer/v1"
 	alicloudcdndomainv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudcdndomain/v1"
 	alicloudceninstancev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud/alicloudceninstance/v1"
@@ -389,9 +388,8 @@ func merge(maps ...map[cloudresourcekind.CloudResourceKind]proto.Message) map[cl
 }
 
 var ProviderTestMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
-	cloudresourcekind.CloudResourceKind_TestCloudResourceOne:   &testcloudresourceonev1.TestCloudResourceOne{},
-	cloudresourcekind.CloudResourceKind_TestCloudResourceThree: &testcloudresourcethreev1.TestCloudResourceThree{},
-	cloudresourcekind.CloudResourceKind_TestCloudResourceTwo:   &testcloudresourcetwov1.TestCloudResourceTwo{},
+	cloudresourcekind.CloudResourceKind_TestCloudResourceGeneric:    &testcloudresourcegenericv1.TestCloudResourceGeneric{},
+	cloudresourcekind.CloudResourceKind_TestCloudResourceKubernetes: &testcloudresourcekubernetesv1.TestCloudResourceKubernetes{},
 }
 
 var ProviderAlicloudMap = map[cloudresourcekind.CloudResourceKind]proto.Message{

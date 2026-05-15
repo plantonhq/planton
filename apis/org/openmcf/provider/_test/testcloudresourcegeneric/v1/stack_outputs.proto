@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package org.openmcf.provider._test.testcloudresourcegeneric.v1;
+
+// Stack outputs for TestCloudResourceGeneric.
+// Generic output fields for testing output loading, setting, getting, and
+// state-building machinery without depending on Kubernetes-specific shapes.
+message TestCloudResourceGenericStackOutputs {
+  string id = 1;
+  string name = 2;
+  string endpoint = 3;
+  repeated string tags = 4;
+}

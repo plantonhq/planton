@@ -33,9 +33,7 @@ go_library(
 
 go_test(
     name = "runner_test",
-    srcs = [
-        "outputs_verifier_test.go",
-    ],
+    srcs = ["outputs_verifier_test.go"],
     embed = [":runner"],
     deps = [
         "//apis/org/openmcf/provider/auth0/auth0resourceserver/v1:auth0resourceserver",

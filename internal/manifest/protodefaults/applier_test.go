@@ -3,7 +3,7 @@ package protodefaults
 import (
 	"testing"
 
-	testcloudresourceonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourceone/v1"
+	testgenericv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourcegeneric/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -13,13 +13,13 @@ import (
 func TestApplyDefaults_AllScalarTypes(t *testing.T) {
 	t.Run("applies defaults to unset fields", func(t *testing.T) {
 		// Create a message with minimal required fields, leaving fields with defaults unset
-		msg := &testcloudresourceonev1.TestCloudResourceOne{
+		msg := &testgenericv1.TestCloudResourceGeneric{
 			ApiVersion: "_test.openmcf.org/v1",
-			Kind:       "TestCloudResourceOne",
+			Kind:       "TestCloudResourceGeneric",
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "test-resource",
 			},
-			Spec: &testcloudresourceonev1.TestCloudResourceOneSpec{
+			Spec: &testgenericv1.TestCloudResourceGenericSpec{
 				// All fields with defaults are left unset (nil pointers)
 			},
 		}
@@ -59,13 +59,13 @@ func TestApplyDefaults_AllScalarTypes(t *testing.T) {
 
 	t.Run("preserves existing values when field is already set", func(t *testing.T) {
 		// Create a message with custom values (using pointers)
-		msg := &testcloudresourceonev1.TestCloudResourceOne{
+		msg := &testgenericv1.TestCloudResourceGeneric{
 			ApiVersion: "_test.openmcf.org/v1",
-			Kind:       "TestCloudResourceOne",
+			Kind:       "TestCloudResourceGeneric",
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "test-resource",
 			},
-			Spec: &testcloudresourceonev1.TestCloudResourceOneSpec{
+			Spec: &testgenericv1.TestCloudResourceGenericSpec{
 				StringField: proto.String("custom-string"),
 				Int32Field:  proto.Int32(999),
 				FloatField:  proto.Float32(1.23),
@@ -97,13 +97,13 @@ func TestApplyDefaults_AllScalarTypes(t *testing.T) {
 	})
 
 	t.Run("handles partial values - some set, some unset", func(t *testing.T) {
-		msg := &testcloudresourceonev1.TestCloudResourceOne{
+		msg := &testgenericv1.TestCloudResourceGeneric{
 			ApiVersion: "_test.openmcf.org/v1",
-			Kind:       "TestCloudResourceOne",
+			Kind:       "TestCloudResourceGeneric",
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "test-resource",
 			},
-			Spec: &testcloudresourceonev1.TestCloudResourceOneSpec{
+			Spec: &testgenericv1.TestCloudResourceGenericSpec{
 				StringField: proto.String("custom-value"),
 				// Other fields left unset (nil)
 			},
@@ -132,9 +132,9 @@ func TestApplyDefaults_AllScalarTypes(t *testing.T) {
 	})
 
 	t.Run("handles nil spec gracefully", func(t *testing.T) {
-		msg := &testcloudresourceonev1.TestCloudResourceOne{
+		msg := &testgenericv1.TestCloudResourceGeneric{
 			ApiVersion: "_test.openmcf.org/v1",
-			Kind:       "TestCloudResourceOne",
+			Kind:       "TestCloudResourceGeneric",
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "test-resource",
 			},
@@ -149,15 +149,15 @@ func TestApplyDefaults_AllScalarTypes(t *testing.T) {
 func TestApplyDefaults_NestedMessages(t *testing.T) {
 	t.Run("applies defaults recursively to nested messages", func(t *testing.T) {
 		// Create message with nested structure
-		msg := &testcloudresourceonev1.TestCloudResourceOne{
+		msg := &testgenericv1.TestCloudResourceGeneric{
 			ApiVersion: "_test.openmcf.org/v1",
-			Kind:       "TestCloudResourceOne",
+			Kind:       "TestCloudResourceGeneric",
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "test-resource",
 			},
-			Spec: &testcloudresourceonev1.TestCloudResourceOneSpec{
+			Spec: &testgenericv1.TestCloudResourceGenericSpec{
 				// Leave defaults unset at spec level
-				Nested: &testcloudresourceonev1.TestNestedMessage{
+				Nested: &testgenericv1.TestGenericNestedMessage{
 					// Leave nested defaults unset (nil pointers)
 				},
 			},
@@ -184,13 +184,13 @@ func TestApplyDefaults_NestedMessages(t *testing.T) {
 
 func TestApplyDefaults_FieldsWithoutDefaults(t *testing.T) {
 	t.Run("leaves fields without defaults unchanged", func(t *testing.T) {
-		msg := &testcloudresourceonev1.TestCloudResourceOne{
+		msg := &testgenericv1.TestCloudResourceGeneric{
 			ApiVersion: "_test.openmcf.org/v1",
-			Kind:       "TestCloudResourceOne",
+			Kind:       "TestCloudResourceGeneric",
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "test-resource",
 			},
-			Spec: &testcloudresourceonev1.TestCloudResourceOneSpec{
+			Spec: &testgenericv1.TestCloudResourceGenericSpec{
 				// string_no_default field has no default option
 			},
 		}
@@ -214,13 +214,13 @@ func TestApplyDefaults_ZeroValuesPreserved(t *testing.T) {
 	t.Run("preserves explicitly set zero values for all scalar types", func(t *testing.T) {
 		// This is THE critical test that validates the bug fix!
 		// With optional fields, we can now distinguish "not set" from "set to zero value"
-		msg := &testcloudresourceonev1.TestCloudResourceOne{
+		msg := &testgenericv1.TestCloudResourceGeneric{
 			ApiVersion: "_test.openmcf.org/v1",
-			Kind:       "TestCloudResourceOne",
+			Kind:       "TestCloudResourceGeneric",
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "test-resource",
 			},
-			Spec: &testcloudresourceonev1.TestCloudResourceOneSpec{
+			Spec: &testgenericv1.TestCloudResourceGenericSpec{
 				// Explicitly set ALL fields to their ZERO values
 				StringField: proto.String(""),   // Empty string (zero value for string)
 				Int32Field:  proto.Int32(0),     // Zero (zero value for int32)
@@ -267,14 +267,14 @@ func TestApplyDefaults_ZeroValuesPreserved(t *testing.T) {
 	})
 
 	t.Run("zero values in nested messages are preserved", func(t *testing.T) {
-		msg := &testcloudresourceonev1.TestCloudResourceOne{
+		msg := &testgenericv1.TestCloudResourceGeneric{
 			ApiVersion: "_test.openmcf.org/v1",
-			Kind:       "TestCloudResourceOne",
+			Kind:       "TestCloudResourceGeneric",
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "test-resource",
 			},
-			Spec: &testcloudresourceonev1.TestCloudResourceOneSpec{
-				Nested: &testcloudresourceonev1.TestNestedMessage{
+			Spec: &testgenericv1.TestCloudResourceGenericSpec{
+				Nested: &testgenericv1.TestGenericNestedMessage{
 					NestedString: proto.String(""), // Empty string
 					NestedInt:    proto.Int32(0),   // Zero
 				},
@@ -295,13 +295,13 @@ func TestApplyDefaults_ZeroValuesPreserved(t *testing.T) {
 
 func TestApplyDefaults_Idempotency(t *testing.T) {
 	t.Run("applying defaults multiple times is idempotent", func(t *testing.T) {
-		msg := &testcloudresourceonev1.TestCloudResourceOne{
+		msg := &testgenericv1.TestCloudResourceGeneric{
 			ApiVersion: "_test.openmcf.org/v1",
-			Kind:       "TestCloudResourceOne",
+			Kind:       "TestCloudResourceGeneric",
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "test-resource",
 			},
-			Spec: &testcloudresourceonev1.TestCloudResourceOneSpec{},
+			Spec: &testgenericv1.TestCloudResourceGenericSpec{},
 		}
 
 		// Apply defaults first time
@@ -325,13 +325,13 @@ func TestApplyDefaults_UnsetNestedMessageBehavior(t *testing.T) {
 		// Create message WITHOUT nested message set - the key scenario!
 		// This simulates when a YAML manifest has spec.some_field but NOT spec.nested
 		// Semantically: "I don't want this optional feature"
-		msg := &testcloudresourceonev1.TestCloudResourceOne{
+		msg := &testgenericv1.TestCloudResourceGeneric{
 			ApiVersion: "_test.openmcf.org/v1",
-			Kind:       "TestCloudResourceOne",
+			Kind:       "TestCloudResourceGeneric",
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "test-resource",
 			},
-			Spec: &testcloudresourceonev1.TestCloudResourceOneSpec{
+			Spec: &testgenericv1.TestCloudResourceGenericSpec{
 				// Nested field is NOT set (nil)
 				// Even though TestNestedMessage has fields with defaults,
 				// we should NOT auto-initialize it - user didn't request this feature
@@ -357,15 +357,15 @@ func TestApplyDefaults_UnsetNestedMessageBehavior(t *testing.T) {
 	t.Run("empty nested message triggers default application", func(t *testing.T) {
 		// User explicitly sets nested message to empty: `nested: {}`
 		// This signals: "I want this feature with defaults"
-		msg := &testcloudresourceonev1.TestCloudResourceOne{
+		msg := &testgenericv1.TestCloudResourceGeneric{
 			ApiVersion: "_test.openmcf.org/v1",
-			Kind:       "TestCloudResourceOne",
+			Kind:       "TestCloudResourceGeneric",
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "test-resource",
 			},
-			Spec: &testcloudresourceonev1.TestCloudResourceOneSpec{
+			Spec: &testgenericv1.TestCloudResourceGenericSpec{
 				// Empty nested message - user is opting in to defaults
-				Nested: &testcloudresourceonev1.TestNestedMessage{},
+				Nested: &testgenericv1.TestGenericNestedMessage{},
 			},
 		}
 
@@ -388,13 +388,13 @@ func TestApplyDefaults_UnsetNestedMessageBehavior(t *testing.T) {
 	})
 
 	t.Run("unset messages without defaults also remain unset", func(t *testing.T) {
-		// TestCloudResourceOne has metadata field which is a message without defaults
+		// TestCloudResourceGeneric has metadata field which is a message without defaults
 		// It should NOT be created automatically
-		msg := &testcloudresourceonev1.TestCloudResourceOne{
+		msg := &testgenericv1.TestCloudResourceGeneric{
 			ApiVersion: "_test.openmcf.org/v1",
-			Kind:       "TestCloudResourceOne",
+			Kind:       "TestCloudResourceGeneric",
 			// Metadata is nil - and CloudResourceMetadata has no fields with defaults
-			Spec: &testcloudresourceonev1.TestCloudResourceOneSpec{},
+			Spec: &testgenericv1.TestCloudResourceGenericSpec{},
 		}
 
 		// Verify metadata is nil before applying defaults

@@ -6,25 +6,25 @@ import (
 
 	"github.com/hashicorp/hcl/v2/hclparse"
 
+	testkubernetesv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourcekubernetes/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
-	kubernetescronjobv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1"
 	kubernetesredisv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesredis/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
 	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
 
-func TestProtoToTFVars_CronJob_NamespaceFlattened(t *testing.T) {
-	msg := &kubernetescronjobv1.KubernetesCronJob{
-		ApiVersion: "kubernetes.openmcf.org/v1",
-		Kind:       "KubernetesCronJob",
-		Spec: &kubernetescronjobv1.KubernetesCronJobSpec{
+func TestProtoToTFVars_NamespaceFlattened(t *testing.T) {
+	msg := &testkubernetesv1.TestCloudResourceKubernetes{
+		ApiVersion: "_test.openmcf.org/v1",
+		Kind:       "TestCloudResourceKubernetes",
+		Spec: &testkubernetesv1.TestCloudResourceKubernetesSpec{
 			Namespace: &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
-					Value: "e2e-cronjob-ns",
+					Value: "e2e-test-ns",
 				},
 			},
 			CreateNamespace: true,
-			Schedule:        "*/5 * * * *",
+			Schedule:        stringPtr("*/5 * * * *"),
 		},
 	}
 
@@ -33,18 +33,14 @@ func TestProtoToTFVars_CronJob_NamespaceFlattened(t *testing.T) {
 		t.Fatalf("ProtoToTFVars: %v", err)
 	}
 
-	// namespace must be a flat string, not {value = "..."}
-	if strings.Contains(got, `"value" = "e2e-cronjob-ns"`) {
+	if strings.Contains(got, `"value" = "e2e-test-ns"`) {
 		t.Errorf("namespace should be flattened to plain string, got nested object:\n%s", got)
 	}
-	// After flatten, the key is the proto field name ("namespace") and inside
-	// the spec map it's at indent > 0 so it gets quoted.
-	if !strings.Contains(got, `"namespace" = "e2e-cronjob-ns"`) &&
-		!strings.Contains(got, `namespace = "e2e-cronjob-ns"`) {
+	if !strings.Contains(got, `"namespace" = "e2e-test-ns"`) &&
+		!strings.Contains(got, `namespace = "e2e-test-ns"`) {
 		t.Errorf("namespace should appear as flat string assignment, got:\n%s", got)
 	}
 
-	// Verify HCL parses cleanly
 	parser := hclparse.NewParser()
 	_, diags := parser.ParseHCL([]byte(got), "test.tfvars")
 	if diags.HasErrors() {
@@ -52,11 +48,11 @@ func TestProtoToTFVars_CronJob_NamespaceFlattened(t *testing.T) {
 	}
 }
 
-func TestProtoToTFVars_CronJob_TargetClusterSkipped(t *testing.T) {
-	msg := &kubernetescronjobv1.KubernetesCronJob{
-		ApiVersion: "kubernetes.openmcf.org/v1",
-		Kind:       "KubernetesCronJob",
-		Spec: &kubernetescronjobv1.KubernetesCronJobSpec{
+func TestProtoToTFVars_TargetClusterSkipped(t *testing.T) {
+	msg := &testkubernetesv1.TestCloudResourceKubernetes{
+		ApiVersion: "_test.openmcf.org/v1",
+		Kind:       "TestCloudResourceKubernetes",
+		Spec: &testkubernetesv1.TestCloudResourceKubernetesSpec{
 			TargetCluster: &kubernetes.KubernetesClusterSelector{
 				ClusterName: "test-cluster",
 			},
@@ -78,22 +74,20 @@ func TestProtoToTFVars_CronJob_TargetClusterSkipped(t *testing.T) {
 	}
 }
 
-func TestProtoToTFVars_CronJob_MapVariablesFlattened(t *testing.T) {
-	msg := &kubernetescronjobv1.KubernetesCronJob{
-		ApiVersion: "kubernetes.openmcf.org/v1",
-		Kind:       "KubernetesCronJob",
-		Spec: &kubernetescronjobv1.KubernetesCronJobSpec{
+func TestProtoToTFVars_MapRefValuesFlattened(t *testing.T) {
+	msg := &testkubernetesv1.TestCloudResourceKubernetes{
+		ApiVersion: "_test.openmcf.org/v1",
+		Kind:       "TestCloudResourceKubernetes",
+		Spec: &testkubernetesv1.TestCloudResourceKubernetesSpec{
 			Namespace: &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 					Value: "ns",
 				},
 			},
-			Env: &kubernetescronjobv1.KubernetesCronJobContainerAppEnv{
-				Variables: map[string]*foreignkeyv1.StringValueOrRef{
-					"DB_HOST": {
-						LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
-							Value: "localhost",
-						},
+			RefMap: map[string]*foreignkeyv1.StringValueOrRef{
+				"DB_HOST": {
+					LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
+						Value: "localhost",
 					},
 				},
 			},
@@ -105,8 +99,6 @@ func TestProtoToTFVars_CronJob_MapVariablesFlattened(t *testing.T) {
 		t.Fatalf("ProtoToTFVars: %v", err)
 	}
 
-	// DB_HOST should be a flat string inside the variables map,
-	// not a nested {value = "localhost"} object.
 	if strings.Contains(got, `"value" = "localhost"`) {
 		t.Errorf("map value should be flattened, got nested object:\n%s", got)
 	}
@@ -115,11 +107,11 @@ func TestProtoToTFVars_CronJob_MapVariablesFlattened(t *testing.T) {
 	}
 }
 
-func TestProtoToTFVars_CronJob_ApiVersionKindSkipped(t *testing.T) {
-	msg := &kubernetescronjobv1.KubernetesCronJob{
-		ApiVersion: "kubernetes.openmcf.org/v1",
-		Kind:       "KubernetesCronJob",
-		Spec: &kubernetescronjobv1.KubernetesCronJobSpec{
+func TestProtoToTFVars_ApiVersionKindSkipped(t *testing.T) {
+	msg := &testkubernetesv1.TestCloudResourceKubernetes{
+		ApiVersion: "_test.openmcf.org/v1",
+		Kind:       "TestCloudResourceKubernetes",
+		Spec: &testkubernetesv1.TestCloudResourceKubernetesSpec{
 			Namespace: &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 					Value: "ns",
@@ -175,12 +167,10 @@ func TestProtoToTFVars_Redis_BackwardCompatible(t *testing.T) {
 		t.Fatalf("ProtoToTFVars: %v", err)
 	}
 
-	// Verify basic structure
 	if !strings.Contains(got, `"name" = "red-one"`) {
 		t.Errorf("metadata.name missing, got:\n%s", got)
 	}
 
-	// Verify HCL validity
 	parser := hclparse.NewParser()
 	_, diags := parser.ParseHCL([]byte(got), "test.tfvars")
 	if diags.HasErrors() {

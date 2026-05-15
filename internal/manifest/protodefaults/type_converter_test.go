@@ -4,21 +4,21 @@ import (
 	"math"
 	"testing"
 
-	testcloudresourceonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourceone/v1"
+	testgenericv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourcegeneric/v1"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
-// getFieldDescriptor is a helper to get a field descriptor from TestCloudResourceOneSpec
+// getFieldDescriptor is a helper to get a field descriptor from TestCloudResourceGenericSpec
 func getFieldDescriptor(fieldName string) protoreflect.FieldDescriptor {
-	specDesc := (&testcloudresourceonev1.TestCloudResourceOneSpec{}).ProtoReflect().Descriptor()
+	specDesc := (&testgenericv1.TestCloudResourceGenericSpec{}).ProtoReflect().Descriptor()
 	return specDesc.Fields().ByName(protoreflect.Name(fieldName))
 }
 
 // getNestedFieldDescriptor gets a field descriptor from TestNestedMessage
 func getNestedFieldDescriptor(fieldName string) protoreflect.FieldDescriptor {
-	nestedDesc := (&testcloudresourceonev1.TestNestedMessage{}).ProtoReflect().Descriptor()
+	nestedDesc := (&testgenericv1.TestGenericNestedMessage{}).ProtoReflect().Descriptor()
 	return nestedDesc.Fields().ByName(protoreflect.Name(fieldName))
 }
 

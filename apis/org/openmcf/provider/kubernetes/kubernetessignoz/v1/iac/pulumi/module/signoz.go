@@ -97,9 +97,9 @@ func signoz(ctx *pulumi.Context, locals *Locals,
 			// Self-managed ClickHouse configuration
 			if locals.KubernetesSignoz.Spec.Database.ManagedDatabase != nil {
 				managed := locals.KubernetesSignoz.Spec.Database.ManagedDatabase
-			clickhouseValues := pulumi.Map{
-				"enabled": pulumi.Bool(true),
-			}
+				clickhouseValues := pulumi.Map{
+					"enabled": pulumi.Bool(true),
+				}
 
 				// ClickHouse container configuration
 				if managed.Container != nil {

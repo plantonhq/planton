@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-package org.openmcf.provider._test.testcloudresourceone.v1;
-
-//stack outputs for test-cloud-resource-one
-message TestCloudResourceOneStackOutputs {
-  // Empty for test purposes
-}

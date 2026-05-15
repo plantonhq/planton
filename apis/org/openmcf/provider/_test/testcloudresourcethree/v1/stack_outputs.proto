@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package org.openmcf.provider._test.testcloudresourcethree.v1;
-
-message TestCloudResourceThreeStackOutputs {
-  // Empty stub
-}

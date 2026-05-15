@@ -57,9 +57,9 @@ func deployment(ctx *pulumi.Context, locals *Locals,
 		Image: pulumi.String(fmt.Sprintf("%s:%s",
 			locals.KubernetesDeployment.Spec.Container.App.Image.Repo,
 			locals.KubernetesDeployment.Spec.Container.App.Image.Tag)),
-		Env:     kubernetescorev1.EnvVarArray(envVarInputs),
-		EnvFrom: envFromInputs,
-		Ports:   portsArray,
+		Env:          kubernetescorev1.EnvVarArray(envVarInputs),
+		EnvFrom:      envFromInputs,
+		Ports:        portsArray,
 		VolumeMounts: volumeMounts,
 		Resources: kubernetescorev1.ResourceRequirementsArgs{
 			Limits: pulumi.ToStringMap(map[string]string{

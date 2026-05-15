@@ -24,7 +24,7 @@ go_test(
     ],
     embed = [":protodefaults"],
     deps = [
-        "//apis/org/openmcf/provider/_test/testcloudresourceone/v1:testcloudresourceone",
+        "//apis/org/openmcf/provider/_test/testcloudresourcegeneric/v1:testcloudresourcegeneric",
         "//apis/org/openmcf/shared",
         "@com_github_stretchr_testify//assert",
         "@com_github_stretchr_testify//require",

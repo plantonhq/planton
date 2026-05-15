@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package org.openmcf.provider._test.testcloudresourcekubernetes.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/_test/testcloudresourcekubernetes/v1/spec.proto";
+import "org/openmcf/provider/_test/testcloudresourcekubernetes/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// TestCloudResourceKubernetes is permanent test infrastructure for
+// Kubernetes-specific proto processing tests. It mirrors the shape of real
+// Kubernetes cloud resources (namespace, resources, env, target_cluster)
+// without coupling tests to any production resource kind.
+// For generic testing, use TestCloudResourceGeneric.
+message TestCloudResourceKubernetes {
+  string api_version = 1 [(buf.validate.field).string.const = '_test.openmcf.org/v1'];
+  string kind = 2 [(buf.validate.field).string.const = 'TestCloudResourceKubernetes'];
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  TestCloudResourceKubernetesSpec spec = 4;
+  TestCloudResourceKubernetesStatus status = 5;
+}
+
+message TestCloudResourceKubernetesStatus {
+  TestCloudResourceKubernetesStackOutputs outputs = 1;
+}

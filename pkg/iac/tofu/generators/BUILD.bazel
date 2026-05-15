@@ -36,6 +36,7 @@ go_test(
     ],
     embed = [":generators"],
     deps = [
+        "//apis/org/openmcf/provider/_test/testcloudresourcekubernetes/v1:testcloudresourcekubernetes",
         "//apis/org/openmcf/provider/kubernetes",
         "//apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1:kubernetescronjob",
         "//apis/org/openmcf/provider/kubernetes/kubernetesredis/v1:kubernetesredis",

@@ -4,40 +4,39 @@ import (
 	"encoding/json"
 	"testing"
 
-	kubernetescronjobv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1"
+	testkubernetesv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourcekubernetes/v1"
 	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-// buildCronJobJSON creates a CronJob proto with StringValueOrRef namespace,
-// KubernetesClusterSelector target_cluster, and map<string, StringValueOrRef>
-// env variables, then returns its JSON-unmarshaled map alongside the proto
-// descriptor. This exercises all three shapes the flatten logic must handle.
-func buildCronJobJSON(t *testing.T) map[string]interface{} {
+// buildTestK8sJSON creates a TestCloudResourceKubernetes proto with
+// StringValueOrRef namespace, KubernetesClusterSelector target_cluster,
+// and map<string, StringValueOrRef> ref_map, then returns its
+// JSON-unmarshaled map. This exercises all three shapes the flatten
+// logic must handle.
+func buildTestK8sJSON(t *testing.T) map[string]interface{} {
 	t.Helper()
 
-	msg := &kubernetescronjobv1.KubernetesCronJob{
-		ApiVersion: "kubernetes.openmcf.org/v1",
-		Kind:       "KubernetesCronJob",
-		Spec: &kubernetescronjobv1.KubernetesCronJobSpec{
+	msg := &testkubernetesv1.TestCloudResourceKubernetes{
+		ApiVersion: "_test.openmcf.org/v1",
+		Kind:       "TestCloudResourceKubernetes",
+		Spec: &testkubernetesv1.TestCloudResourceKubernetesSpec{
 			Namespace: &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
-					Value: "e2e-cronjob-ns",
+					Value: "e2e-test-ns",
 				},
 			},
 			CreateNamespace: true,
-			Schedule:        "*/5 * * * *",
-			Env: &kubernetescronjobv1.KubernetesCronJobContainerAppEnv{
-				Variables: map[string]*foreignkeyv1.StringValueOrRef{
-					"DB_HOST": {
-						LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
-							Value: "localhost",
-						},
+			Schedule:        stringPtr("*/5 * * * *"),
+			RefMap: map[string]*foreignkeyv1.StringValueOrRef{
+				"DB_HOST": {
+					LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
+						Value: "localhost",
 					},
-					"DB_PORT": {
-						LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
-							Value: "5432",
-						},
+				},
+				"DB_PORT": {
+					LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
+						Value: "5432",
 					},
 				},
 			},
@@ -57,9 +56,11 @@ func buildCronJobJSON(t *testing.T) map[string]interface{} {
 	return data
 }
 
+func stringPtr(s string) *string { return &s }
+
 func TestFlatten_StringValueOrRef_Singular(t *testing.T) {
-	data := buildCronJobJSON(t)
-	md := (&kubernetescronjobv1.KubernetesCronJob{}).ProtoReflect().Descriptor()
+	data := buildTestK8sJSON(t)
+	md := (&testkubernetesv1.TestCloudResourceKubernetes{}).ProtoReflect().Descriptor()
 
 	Flatten(data, md, DefaultRules())
 
@@ -76,18 +77,18 @@ func TestFlatten_StringValueOrRef_Singular(t *testing.T) {
 	if !ok {
 		t.Fatalf("spec.namespace should be a string, got %T", ns)
 	}
-	if nsStr != "e2e-cronjob-ns" {
-		t.Errorf("spec.namespace = %q, want %q", nsStr, "e2e-cronjob-ns")
+	if nsStr != "e2e-test-ns" {
+		t.Errorf("spec.namespace = %q, want %q", nsStr, "e2e-test-ns")
 	}
 }
 
 func TestFlatten_KubernetesClusterSelector_Skipped(t *testing.T) {
-	data := buildCronJobJSON(t)
-	md := (&kubernetescronjobv1.KubernetesCronJob{}).ProtoReflect().Descriptor()
+	data := buildTestK8sJSON(t)
+	md := (&testkubernetesv1.TestCloudResourceKubernetes{}).ProtoReflect().Descriptor()
 
-	// The CronJob proto has target_cluster but our test message doesn't set it.
-	// Ensure that even if it were present, the flatten logic would skip it.
-	// Inject a fake target_cluster into spec using the JSON key (camelCase).
+	// TestCloudResourceKubernetes has target_cluster but our test message
+	// doesn't set it. Inject a fake target_cluster into spec using the
+	// JSON key (camelCase) to verify the skip rule removes it.
 	if spec, ok := data["spec"].(map[string]interface{}); ok {
 		spec["targetCluster"] = map[string]interface{}{
 			"clusterKind": "AzureAksCluster",
@@ -98,7 +99,6 @@ func TestFlatten_KubernetesClusterSelector_Skipped(t *testing.T) {
 	Flatten(data, md, DefaultRules())
 
 	spec := data["spec"].(map[string]interface{})
-	// After flatten, neither the JSON key nor the snake_case key should exist.
 	if _, exists := spec["targetCluster"]; exists {
 		t.Error("spec.targetCluster (camelCase) should have been skipped by flatten")
 	}
@@ -108,33 +108,28 @@ func TestFlatten_KubernetesClusterSelector_Skipped(t *testing.T) {
 }
 
 func TestFlatten_MapWithStringValueOrRef(t *testing.T) {
-	data := buildCronJobJSON(t)
-	md := (&kubernetescronjobv1.KubernetesCronJob{}).ProtoReflect().Descriptor()
+	data := buildTestK8sJSON(t)
+	md := (&testkubernetesv1.TestCloudResourceKubernetes{}).ProtoReflect().Descriptor()
 
 	Flatten(data, md, DefaultRules())
 
 	spec := data["spec"].(map[string]interface{})
-	env, ok := spec["env"].(map[string]interface{})
+	refMap, ok := spec["ref_map"].(map[string]interface{})
 	if !ok {
-		t.Fatal("spec.env should be a map")
+		t.Fatal("spec.ref_map should be a map after flatten")
 	}
 
-	vars, ok := env["variables"].(map[string]interface{})
+	dbHost, ok := refMap["DB_HOST"]
 	if !ok {
-		t.Fatal("spec.env.variables should be a map after flatten")
-	}
-
-	dbHost, ok := vars["DB_HOST"]
-	if !ok {
-		t.Fatal("DB_HOST should exist in variables")
+		t.Fatal("DB_HOST should exist in ref_map")
 	}
 	if dbHost != "localhost" {
 		t.Errorf("DB_HOST = %v, want %q", dbHost, "localhost")
 	}
 
-	dbPort, ok := vars["DB_PORT"]
+	dbPort, ok := refMap["DB_PORT"]
 	if !ok {
-		t.Fatal("DB_PORT should exist in variables")
+		t.Fatal("DB_PORT should exist in ref_map")
 	}
 	if dbPort != "5432" {
 		t.Errorf("DB_PORT = %v, want %q", dbPort, "5432")
@@ -142,15 +137,13 @@ func TestFlatten_MapWithStringValueOrRef(t *testing.T) {
 }
 
 func TestFlatten_PreservesNonRuleFields(t *testing.T) {
-	data := buildCronJobJSON(t)
-	md := (&kubernetescronjobv1.KubernetesCronJob{}).ProtoReflect().Descriptor()
+	data := buildTestK8sJSON(t)
+	md := (&testkubernetesv1.TestCloudResourceKubernetes{}).ProtoReflect().Descriptor()
 
 	Flatten(data, md, DefaultRules())
 
 	spec := data["spec"].(map[string]interface{})
 
-	// After flatten, proto field names are snake_case (proto name), not
-	// camelCase (JSON name).
 	if _, ok := spec["schedule"]; !ok {
 		t.Error("spec.schedule should be preserved (plain string, no rule)")
 	}
@@ -160,16 +153,14 @@ func TestFlatten_PreservesNonRuleFields(t *testing.T) {
 }
 
 func TestFlatten_EmptyRules_NoChanges(t *testing.T) {
-	data := buildCronJobJSON(t)
-	md := (&kubernetescronjobv1.KubernetesCronJob{}).ProtoReflect().Descriptor()
+	data := buildTestK8sJSON(t)
+	md := (&testkubernetesv1.TestCloudResourceKubernetes{}).ProtoReflect().Descriptor()
 
-	// With empty rules, nothing should be flattened or skipped.
 	Flatten(data, md, map[string]TypeRule{})
 
 	spec := data["spec"].(map[string]interface{})
 	ns := spec["namespace"]
 
-	// namespace should still be a map (not flattened).
 	if _, ok := ns.(map[string]interface{}); !ok {
 		t.Errorf("with empty rules, namespace should remain a map, got %T", ns)
 	}

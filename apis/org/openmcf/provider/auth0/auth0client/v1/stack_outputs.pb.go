@@ -55,12 +55,16 @@ type Auth0ClientStackOutputs struct {
 	SigningKeys []*Auth0SigningKey `protobuf:"bytes,6,rep,name=signing_keys,json=signingKeys,proto3" json:"signing_keys,omitempty"`
 	// callback_url_template indicates if callback URL templating is enabled.
 	// When true, Auth0 allows parameterized callback URLs.
+	// NOTE: Not populated by default Terraform or Pulumi modules -- this attribute
+	// is only available via the Auth0 Management API and can be set by custom module overrides.
 	CallbackUrlTemplate string `protobuf:"bytes,7,opt,name=callback_url_template,json=callbackUrlTemplate,proto3" json:"callback_url_template,omitempty"`
 	// allowed_clients lists clients allowed to perform delegation for this client.
 	// Used in legacy delegation flows.
 	AllowedClients []string `protobuf:"bytes,8,rep,name=allowed_clients,json=allowedClients,proto3" json:"allowed_clients,omitempty"`
 	// global indicates if this is a global client (the tenant's default client).
 	// There is only one global client per tenant.
+	// NOTE: Not populated by default Terraform or Pulumi modules -- this attribute
+	// is only available via the Auth0 Management API and can be set by custom module overrides.
 	Global string `protobuf:"bytes,9,opt,name=global,proto3" json:"global,omitempty"`
 	// token_endpoint_auth_method is the authentication method for the token endpoint.
 	// Common values: "none", "client_secret_post", "client_secret_basic", "private_key_jwt"

@@ -413,7 +413,7 @@ Status: ✅ Complete
 
 ```bash
 # Test component with no references
-@delete-openmcf-component TestCloudResourceOne --force --backup
+@delete-openmcf-component TestCloudResourceGeneric --force --backup
 
 # Output:
 # ✅ No references found

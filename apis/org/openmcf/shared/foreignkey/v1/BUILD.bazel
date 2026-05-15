@@ -22,7 +22,7 @@ go_test(
     ],
     embed = [":foreignkey"],
     deps = [
-        "//apis/org/openmcf/provider/_test/testcloudresourceone/v1:testcloudresourceone",
+        "//apis/org/openmcf/provider/_test/testcloudresourcegeneric/v1:testcloudresourcegeneric",
         "//apis/org/openmcf/shared",
         "//apis/org/openmcf/shared/cloudresourcekind",
         "@build_buf_go_protovalidate//:protovalidate",

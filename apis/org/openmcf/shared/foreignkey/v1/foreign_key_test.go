@@ -3,16 +3,16 @@
 // These test StringValueOrRef directly (no consumer wrapper message) to validate that
 // the CEL rule (id: "string_value_or_ref.non_empty") works at the message level.
 //
-// Cross-cutting consumer tests that import TestCloudResourceOne live in a separate
-// file (foreign_key_consumer_test.go) using Go's external test package convention
-// (`package foreignkeyv1_test`). This avoids Go's import cycle restriction:
-// foreignkeyv1 -> testcloudresourceonev1 -> foreignkeyv1 would form a cycle in the
-// same package, but the external test package breaks it.
+// Cross-cutting consumer tests that import TestCloudResourceGeneric live in a
+// separate file (foreign_key_consumer_test.go) using Go's external test package
+// convention (`package foreignkeyv1_test`). This avoids Go's import cycle
+// restriction: foreignkeyv1 -> testcloudresourcegenericv1 -> foreignkeyv1 would
+// form a cycle in the same package, but the external test package breaks it.
 //
 // RELATED FILES:
-//   - foreign_key.proto                (the CEL rule)
-//   - foreign_key_consumer_test.go     (cross-cutting consumer tests with TestCloudResourceOne)
-//   - _test/testcloudresourceone/v1/spec_test.go (comprehensive boundary tests)
+//   - foreign_key.proto                              (the CEL rule)
+//   - foreign_key_consumer_test.go                   (cross-cutting consumer tests with TestCloudResourceGeneric)
+//   - _test/testcloudresourcegeneric/v1/spec_test.go (comprehensive boundary tests)
 
 package foreignkeyv1
 
@@ -57,7 +57,7 @@ var _ = ginkgo.Describe("StringValueOrRef Validation", func() {
 				input := &StringValueOrRef{
 					LiteralOrRef: &StringValueOrRef_ValueFrom{
 						ValueFrom: &ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_TestCloudResourceOne,
+							Kind:      cloudresourcekind.CloudResourceKind_TestCloudResourceGeneric,
 							Env:       "dev",
 							Name:      "my-cert",
 							FieldPath: "status.outputs.cert_arn",
@@ -78,7 +78,7 @@ var _ = ginkgo.Describe("StringValueOrRef Validation", func() {
 				}
 				input.LiteralOrRef = &StringValueOrRef_ValueFrom{
 					ValueFrom: &ValueFromRef{
-						Kind: cloudresourcekind.CloudResourceKind_TestCloudResourceOne,
+						Kind: cloudresourcekind.CloudResourceKind_TestCloudResourceGeneric,
 						Env:  "dev",
 						Name: "overwrites-literal",
 					},

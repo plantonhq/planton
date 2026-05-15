@@ -75,9 +75,8 @@ const (
 	// 0: Default/unspecified
 	CloudResourceKind_unspecified CloudResourceKind = 0
 	// 1–49: Test/dev/custom
-	CloudResourceKind_TestCloudResourceOne   CloudResourceKind = 1
-	CloudResourceKind_TestCloudResourceTwo   CloudResourceKind = 2
-	CloudResourceKind_TestCloudResourceThree CloudResourceKind = 3
+	CloudResourceKind_TestCloudResourceGeneric    CloudResourceKind = 1
+	CloudResourceKind_TestCloudResourceKubernetes CloudResourceKind = 2
 	// 50–199: saas platform resources
 	CloudResourceKind_ConfluentKafka    CloudResourceKind = 50
 	CloudResourceKind_AtlasMongodb      CloudResourceKind = 51
@@ -467,9 +466,8 @@ const (
 var (
 	CloudResourceKind_name = map[int32]string{
 		0:    "unspecified",
-		1:    "TestCloudResourceOne",
-		2:    "TestCloudResourceTwo",
-		3:    "TestCloudResourceThree",
+		1:    "TestCloudResourceGeneric",
+		2:    "TestCloudResourceKubernetes",
 		50:   "ConfluentKafka",
 		51:   "AtlasMongodb",
 		52:   "SnowflakeDatabase",
@@ -835,9 +833,8 @@ var (
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                           0,
-		"TestCloudResourceOne":                  1,
-		"TestCloudResourceTwo":                  2,
-		"TestCloudResourceThree":                3,
+		"TestCloudResourceGeneric":              1,
+		"TestCloudResourceKubernetes":           2,
 		"ConfluentKafka":                        50,
 		"AtlasMongodb":                          51,
 		"SnowflakeDatabase":                     52,
@@ -1373,15 +1370,13 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\rprerequisites\x18\a \x03(\x0e27.org.openmcf.shared.cloudresourcekind.CloudResourceKindR\rprerequisites*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\x9d|\n" +
+	"\x02v1\x10\x01*\xfc{\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
-	"\vunspecified\x10\x00\x12(\n" +
-	"\x14TestCloudResourceOne\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
-	"\b\x01\x10\x01\"\x04tcr1\x12(\n" +
-	"\x14TestCloudResourceTwo\x10\x02\x1a\x0e\xa2\xf7\x04\n" +
-	"\b\x01\x10\x01\"\x04tcr2\x12*\n" +
-	"\x16TestCloudResourceThree\x10\x03\x1a\x0e\xa2\xf7\x04\n" +
-	"\b\x01\x10\x01\"\x04tcr3\x12$\n" +
+	"\vunspecified\x10\x00\x12,\n" +
+	"\x18TestCloudResourceGeneric\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x01\x10\x01\"\x04tcrg\x12/\n" +
+	"\x1bTestCloudResourceKubernetes\x10\x02\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x01\x10\x01\"\x04tcrk\x12$\n" +
 	"\x0eConfluentKafka\x102\x1a\x10\xa2\xf7\x04\f\b\x10\x10\x01\"\x06conkaf\x12\"\n" +
 	"\fAtlasMongodb\x103\x1a\x10\xa2\xf7\x04\f\b\v\x10\x01\"\x06atlmdb\x12'\n" +
 	"\x11SnowflakeDatabase\x104\x1a\x10\xa2\xf7\x04\f\b\x14\x10\x01\"\x06snowdb\x12\x1d\n" +

@@ -1,0 +1,14 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "validateoutputs",
+    srcs = ["render.go"],
+    importpath = "github.com/plantonhq/openmcf/internal/cli/ui/validateoutputs",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//apis/org/openmcf/shared/cloudresourcekind",
+        "//pkg/crkreflect",
+        "//pkg/outputs",
+        "@com_github_charmbracelet_lipgloss//:lipgloss",
+    ],
+)

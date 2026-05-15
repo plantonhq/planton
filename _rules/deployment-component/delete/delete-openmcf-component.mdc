@@ -353,7 +353,7 @@ go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
 
 ```bash
 # Delete test component (known to have no references)
-@delete-openmcf-component TestCloudResourceOne --force --backup
+@delete-openmcf-component TestCloudResourceGeneric --force --backup
 
 # Verify and commit
 go build ./apis/org/openmcf/provider/<provider>/<component>/v1/... && go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/ && git add -A && git commit -m "Remove test component"
@@ -384,7 +384,7 @@ git commit -m "Remove deprecated PostgresKubernetes (consolidated into PostgresO
 
 ```bash
 # Delete multiple test components
-for component in TestCloudResourceOne TestCloudResourceTwo TestCloudResourceThree; do
+for component in TestCloudResourceGeneric TestCloudResourceKubernetes TestCloudResourceKubernetes; do
   @delete-openmcf-component $component --force --backup
 done
 
