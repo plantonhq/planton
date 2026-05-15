@@ -1,0 +1,24 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "schema",
+    srcs = ["generator.go"],
+    importpath = "github.com/plantonhq/openmcf/pkg/kustomize/schema",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/crkreflect",
+        "@com_github_sirupsen_logrus//:logrus",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+    ],
+)
+
+go_test(
+    name = "schema_test",
+    srcs = ["generator_test.go"],
+    embed = [":schema"],
+    deps = [
+        "//apis/org/openmcf/shared/cloudresourcekind",
+        "//pkg/crkreflect",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+    ],
+)

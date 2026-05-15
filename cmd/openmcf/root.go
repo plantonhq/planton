@@ -48,6 +48,7 @@ func init() {
 		root.Downgrade,
 		root.E2E,
 		root.Init,
+		root.Kustomize,
 		root.LoadManifest,
 		root.ModulesVersion,
 		root.Plan,

@@ -508,6 +508,14 @@ resources:
 EOF
 ```
 
+### List Fields Replaced Instead of Merged
+
+**Problem**: Your overlay adds entries to a list field (e.g., `env.variables`, `ports`), but the overlay's list replaces the base list entirely instead of merging.
+
+**Cause**: Kustomize only knows how to merge lists by key for built-in Kubernetes types. For OpenMCF custom resource types (`KubernetesDeployment`, `KubernetesCronJob`, etc.), it has no schema and falls back to replacing lists wholesale.
+
+**Solution**: Use `openmcf kustomize init` to generate and wire up the OpenAPI schema that teaches kustomize how to merge OpenMCF lists correctly. See [OpenAPI Schema for List Merging](#openapi-schema-for-list-merging) below.
+
 ### Patch Not Applied
 
 **Problem**: Your patch isn't affecting the final output.
@@ -547,6 +555,82 @@ else
   openmcf pulumi up --kustomize-dir ... --overlay $OVERLAY
 fi
 ```
+
+---
+
+## OpenAPI Schema for List Merging
+
+Kustomize uses **strategic merge patch** for overlays. For built-in Kubernetes types, it knows to merge list fields by key (e.g., `containers` by `name`, `env` by `name`). For OpenMCF custom resource types, kustomize has no schema and falls back to **replacing lists entirely**.
+
+This means an overlay that adds one environment variable will replace the entire `variables` list from the base, losing all base entries.
+
+OpenMCF solves this with a built-in schema generator that uses proto reflection to discover all list fields with merge keys across all 360+ cloud resource kinds.
+
+### Generating the Schema
+
+```bash
+# Print the universal schema to stdout
+openmcf kustomize schema
+
+# Write to a file
+openmcf kustomize schema -o openmcf-schema.json
+```
+
+The schema covers every OpenMCF kind that has list fields which should merge by name — environment variables, secrets, ports, volume mounts, sidecars, and more. Kinds without merge-worthy fields are excluded automatically.
+
+### Initializing a Kustomize Directory
+
+```bash
+# Initialize a single service's _kustomize directory
+openmcf kustomize init --dir ./services/api/_kustomize
+
+# Scan a directory tree and initialize ALL _kustomize directories
+openmcf kustomize init --scan ./services
+```
+
+The `init` command:
+
+1. Generates the universal schema
+2. Writes `openmcf-schema.json` at the `_kustomize/` root
+3. Adds the `openapi:` reference to every overlay `kustomization.yaml`
+
+After initialization, overlay kustomization files look like:
+
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+openapi:
+  path: ../../openmcf-schema.json
+
+resources:
+  - ../../base
+
+patches:
+  - path: patch.yaml
+```
+
+### When to Re-run
+
+Re-run `openmcf kustomize init` after upgrading OpenMCF to pick up schema changes from new or modified cloud resource kinds. The command is idempotent — it regenerates the schema file and skips overlays that already have the `openapi:` reference.
+
+### What Gets Merged
+
+The schema declares `x-kubernetes-patch-merge-key: "name"` for list fields whose elements have a `name` field. Common examples:
+
+| Kind | Field Path | Merge Key |
+|------|-----------|-----------|
+| KubernetesDeployment | `spec.container.app.env.variables` | `name` |
+| KubernetesDeployment | `spec.container.app.env.secrets` | `name` |
+| KubernetesDeployment | `spec.container.app.ports` | `name` |
+| KubernetesDeployment | `spec.container.app.volumeMounts` | `name` |
+| KubernetesDeployment | `spec.container.sidecars` | `name` |
+| KubernetesCronJob | `spec.env.variables` | `name` |
+| KubernetesCronJob | `spec.env.secrets` | `name` |
+| KubernetesJob | `spec.env.variables` | `name` |
+| KubernetesService | `spec.ports` | `name` |
+
+Scalar fields (like `replicas`, `cpu`) and map fields (like `configMaps`) are unaffected — kustomize already handles those correctly without a schema.
 
 ---
 
@@ -747,5 +831,6 @@ openmcf pulumi up \
 - [CI/CD Integration](./cicd-integration) — Kustomize with GitHub Actions and GitLab CI
 - [Advanced Usage](./advanced-usage) — Combining Kustomize with `--set` overrides
 - [State Backends](./state-backends) — Per-environment state configuration
+- [CLI Reference](/docs/cli/cli-reference) — Full `openmcf kustomize schema` and `openmcf kustomize init` usage
 - [Official Kustomize Docs](https://kustomize.io/) — Kustomize reference documentation
 
