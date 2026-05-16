@@ -157,11 +157,8 @@ variable "spec" {
     }))
 
     # enabled_connections limits which connections this app can use.
-    # Each entry is an object with a 'value' field containing the connection name.
-    # This supports foreign key references resolved by OpenMCF runtime.
-    enabled_connections = optional(list(object({
-      value = string
-    })))
+    # StringValueOrRef fields are flattened to plain strings by the tfvars generator.
+    enabled_connections = optional(list(string))
 
     # api_grants configures which APIs this client is authorized to access.
     # For M2M applications using client_credentials grant, at least one API grant is typically required.
@@ -169,10 +166,8 @@ variable "spec" {
     api_grants = optional(list(object({
       # audience is the API identifier the client is authorized to access.
       # Required. For Auth0 Management API: "https://{tenant}.{region}.auth0.com/api/v2/"
-      # This is an object with a 'value' field supporting foreign key references.
-      audience = object({
-        value = string
-      })
+      # StringValueOrRef fields are flattened to plain strings by the tfvars generator.
+      audience = string
 
       # scopes are the permissions granted for this API.
       scopes = optional(list(string))

@@ -9,9 +9,10 @@ locals {
   is_domain_connection = coalesce(var.spec.is_domain_connection, false)
   show_as_button      = coalesce(var.spec.show_as_button, true)
 
-  # Enabled clients - extract values from StringValueOrRef objects
+  # enabled_clients values are already flattened to plain strings by the tfvars generator.
   enabled_clients = var.spec.enabled_clients != null ? [
-    for client in var.spec.enabled_clients : client.value
+    for client in var.spec.enabled_clients : client
+    if client != null && client != ""
   ] : []
 
   # Realms - default to empty list if not specified

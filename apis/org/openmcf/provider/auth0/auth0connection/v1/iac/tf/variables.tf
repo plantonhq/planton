@@ -27,11 +27,8 @@ variable "spec" {
     display_name = optional(string)
 
     # enabled_clients is a list of Auth0 application client IDs that can use this connection.
-    # Each entry is an object with a 'value' field containing the client ID.
-    # This supports foreign key references resolved by OpenMCF runtime.
-    enabled_clients = optional(list(object({
-      value = string
-    })))
+    # StringValueOrRef fields are flattened to plain strings by the tfvars generator.
+    enabled_clients = optional(list(string))
 
     # is_domain_connection indicates whether this connection can be used for identifier-first flows.
     is_domain_connection = optional(bool, false)
