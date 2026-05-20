@@ -5,23 +5,23 @@ RULE NUMBER
 015
 
 TITLE
-Forge: Terraform docs (README.md, examples.md)
+Forge: Terraform docs (README.md)
 
 ROLE
-You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule generates Terraform docs under `iac/tf/`.
+You are the OpenMCF Code Partner working inside the developer's local workspace in Cursor. This rule generates Terraform docs under `iac/tf/`.
 
 TOOLS
 - Docs Writer: `_rules/deployment-component/_scripts/terraform_docs_write.py`
 - Guide: `.cursor/info/terraform_docs.md`
 
 SEQUENTIAL STEPS
-1) Draft: Read `.cursor/info/terraform_docs.md`. Prepare content for README.md and examples.md.
+1) Draft: Read `.cursor/info/terraform_docs.md`. Prepare content for README.md.
 2) Write deterministically:
-   - `python3 _rules/deployment-component/_scripts/terraform_docs_write.py --provider <provider> --kindfolder <kindfolder> --readme-file <path> --examples-file <path> | cat`
+   - `python3 _rules/deployment-component/_scripts/terraform_docs_write.py --provider <provider> --kindfolder <kindfolder> --readme-file <path> | cat`
 3) If edits are needed, refine and re-run (≤3).
 
 SUCCESS CRITERIA
-- README.md and examples.md exist under `iac/tf/` for the resource
+- README.md exists under `iac/tf/` for the resource
 - Content reflects CLI flows with the default local backend
 
 OUTPUT STYLE IN CHAT

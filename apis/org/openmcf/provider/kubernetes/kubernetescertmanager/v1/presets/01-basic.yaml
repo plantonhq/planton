@@ -1,0 +1,8 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesCertManager
+metadata:
+  name: my-cert-manager
+spec:
+  namespace:
+    value: cert-manager
+  createNamespace: true

@@ -48,7 +48,7 @@
     - [AwsAlb Preset: `01-internet-facing-https.yaml`](#awsalb-preset-01-internet-facing-httpsyaml)
     - [AwsAlb Preset: `01-internet-facing-https.md`](#awsalb-preset-01-internet-facing-httpsmd)
   - [Known Issues](#known-issues)
-    - [StringValueOrRef Inconsistency in examples.md](#stringvalueorref-inconsistency-in-examplesmd)
+    - [StringValueOrRef Inconsistency in Legacy Docs](#stringvalueorref-inconsistency-in-legacy-docs)
 
 ---
 
@@ -66,10 +66,10 @@ A preset consists of two files:
 
 ### What Presets Are NOT
 
-- **Not documentation** -- Presets are deployable artifacts, not prose with embedded YAML. That role belongs to `examples.md`.
+- **Not documentation** -- Presets are deployable artifacts, not prose with embedded YAML. That role belongs to the component `README.md`.
 - **Not test manifests** -- Presets represent production-quality configurations. Test manifests live at `iac/hack/manifest.yaml`.
 - **Not abstractions** -- Each preset is a complete, concrete manifest. There is no templating engine or variable substitution system. Users copy a preset, replace angle-bracket placeholders with real values, and deploy.
-- **Not exhaustive** -- Presets cover common patterns, not every possible configuration. Advanced or niche configurations are documented in `examples.md` or left to the user.
+- **Not exhaustive** -- Presets cover common patterns, not every possible configuration. Advanced or niche configurations are documented in the component `README.md` or left to the user.
 
 ---
 
@@ -87,7 +87,7 @@ Consider `AwsAlb`. Its `spec.proto` defines fields for subnets, security groups,
 - Should I enable DNS management or handle it separately?
 - What combination of these fields represents a "standard production" ALB?
 
-The answers are available across `docs/README.md`, `examples.md`, and provider documentation, but the user must synthesize them. Presets eliminate this synthesis step.
+The answers are available across `docs/README.md`, `README.md`, and provider documentation, but the user must synthesize them. Presets eliminate this synthesis step.
 
 ### The Solution
 
@@ -111,7 +111,7 @@ Each deployment component has several YAML-related artifacts. They serve differe
 - **Deployability:** Directly deployable after replacing placeholders
 - **StringValueOrRef:** Uses proto-correct `value:` wrapper form (see [StringValueOrRef Fields](#stringvalueorref-fields))
 
-**Examples** (`v1/examples.md`):
+**README** (`v1/README.md`):
 
 - **Purpose:** Documentation showing various configuration scenarios with explanatory prose
 - **Audience:** Users learning the component's capabilities
@@ -127,7 +127,7 @@ Each deployment component has several YAML-related artifacts. They serve differe
 - **Deployability:** For testing only -- uses non-production values
 - **StringValueOrRef:** Uses proto-correct `value:` wrapper form
 
-**Relationship summary:** Presets complement rather than replace existing artifacts. A user might discover a component through its README, understand its capabilities via `examples.md`, then grab a preset as their starting point for actual deployment.
+**Relationship summary:** Presets complement rather than replace existing artifacts. A user might discover a component through its README, understand its capabilities via the research doc, then grab a preset as their starting point for actual deployment.
 
 ---
 
@@ -468,7 +468,7 @@ Simple components (DNS records, IAM roles, security groups) may only have 1-2 pr
 - **Recommended:** 2-4 for most components
 - **Maximum:** 5-6 for components with high variety (e.g., load balancers, databases, Kubernetes workloads)
 
-**Resist the urge to create presets for edge cases.** If a configuration serves fewer than 10% of deployments, it belongs in `examples.md`, not as a preset.
+**Resist the urge to create presets for edge cases.** If a configuration serves fewer than 10% of deployments, document it in the component's `README.md` instead of creating a preset.
 
 ### Quality Standards
 
@@ -487,7 +487,7 @@ When creating presets for a component:
 
 1. **Read `spec.proto`** -- Understand all available fields, their types, validations, and default annotations
 2. **Read `api.proto`** -- Extract the exact `apiVersion` and `kind` constant values
-3. **Read `examples.md` and `docs/README.md`** -- Understand common configurations and design rationale
+3. **Read `docs/README.md`** -- Understand common configurations and design rationale
 4. **Read `iac/hack/manifest.yaml`** -- See the minimal test manifest for structural reference
 5. **Identify common patterns** -- Based on cloud provider documentation and real-world usage, determine which configurations most users deploy
 6. **Create presets in rank order** -- Start with rank 01 (most common), then work outward
@@ -571,12 +571,12 @@ production ALB configuration.
 
 ## Known Issues
 
-### StringValueOrRef Inconsistency in examples.md
+### StringValueOrRef Inconsistency in Legacy Docs
 
-Existing `examples.md` files across all 213 components use a simplified YAML form for `StringValueOrRef` fields -- plain strings instead of the proto-correct `value:` wrapper:
+Some legacy component documentation used a simplified YAML form for `StringValueOrRef` fields -- plain strings instead of the proto-correct `value:` wrapper:
 
 ```yaml
-# Simplified form used in current examples.md (technically incorrect for deserialization)
+# Simplified form (technically incorrect for deserialization)
 subnets:
   - subnet-12345abc
 
@@ -585,6 +585,6 @@ subnets:
   - value: subnet-12345abc
 ```
 
-This inconsistency is being addressed incrementally. As presets are created for each provider (T02-T08), the corresponding `examples.md` files will be updated to use the proto-correct form. The `value:` wrapper is required for proper protobuf deserialization of the `StringValueOrRef` message type.
+This inconsistency is being addressed incrementally. As presets are created for each provider (T02-T08), all documentation is being updated to use the proto-correct form. The `value:` wrapper is required for proper protobuf deserialization of the `StringValueOrRef` message type.
 
 **Presets always use the proto-correct form.** This is non-negotiable for a "directly deployable" artifact.

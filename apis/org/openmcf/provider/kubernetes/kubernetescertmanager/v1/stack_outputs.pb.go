@@ -21,19 +21,18 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Outputs emitted after cert‑manager installation.
+// KubernetesCertManagerStackOutputs captures observable outputs after
+// cert-manager installation.
 type KubernetesCertManagerStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Kubernetes namespace where cert‑manager was deployed.
+	// Kubernetes namespace where cert-manager was deployed.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
-	// Helm release name (useful for upgrades).
+	// Helm release name.
 	ReleaseName string `protobuf:"bytes,2,opt,name=release_name,json=releaseName,proto3" json:"release_name,omitempty"`
-	// The service account e‑mail/ARN/ClientID used for DNS‑01 solver.
-	SolverIdentity string `protobuf:"bytes,3,opt,name=solver_identity,json=solverIdentity,proto3" json:"solver_identity,omitempty"`
-	// The name of the Kubernetes Secret containing the Cloudflare API token (only set for Cloudflare configs).
-	CloudflareSecretName string `protobuf:"bytes,4,opt,name=cloudflare_secret_name,json=cloudflareSecretName,proto3" json:"cloudflare_secret_name,omitempty"`
-	unknownFields        protoimpl.UnknownFields
-	sizeCache            protoimpl.SizeCache
+	// Name of the cert-manager controller ServiceAccount.
+	ServiceAccountName string `protobuf:"bytes,3,opt,name=service_account_name,json=serviceAccountName,proto3" json:"service_account_name,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *KubernetesCertManagerStackOutputs) Reset() {
@@ -80,16 +79,9 @@ func (x *KubernetesCertManagerStackOutputs) GetReleaseName() string {
 	return ""
 }
 
-func (x *KubernetesCertManagerStackOutputs) GetSolverIdentity() string {
+func (x *KubernetesCertManagerStackOutputs) GetServiceAccountName() string {
 	if x != nil {
-		return x.SolverIdentity
-	}
-	return ""
-}
-
-func (x *KubernetesCertManagerStackOutputs) GetCloudflareSecretName() string {
-	if x != nil {
-		return x.CloudflareSecretName
+		return x.ServiceAccountName
 	}
 	return ""
 }
@@ -98,12 +90,11 @@ var File_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_stack_outputs_
 
 const file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Lorg/openmcf/provider/kubernetes/kubernetescertmanager/v1/stack_outputs.proto\x128org.openmcf.provider.kubernetes.kubernetescertmanager.v1\"\xc3\x01\n" +
+	"Lorg/openmcf/provider/kubernetes/kubernetescertmanager/v1/stack_outputs.proto\x128org.openmcf.provider.kubernetes.kubernetescertmanager.v1\"\x96\x01\n" +
 	"!KubernetesCertManagerStackOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
-	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12'\n" +
-	"\x0fsolver_identity\x18\x03 \x01(\tR\x0esolverIdentity\x124\n" +
-	"\x16cloudflare_secret_name\x18\x04 \x01(\tR\x14cloudflareSecretNameB\xcc\x03\n" +
+	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x120\n" +
+	"\x14service_account_name\x18\x03 \x01(\tR\x12serviceAccountNameB\xcc\x03\n" +
 	"<com.org.openmcf.provider.kubernetes.kubernetescertmanager.v1B\x11StackOutputsProtoP\x01Zrgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetescertmanager/v1;kubernetescertmanagerv1\xa2\x02\x05OOPKK\xaa\x028Org.Openmcf.Provider.Kubernetes.Kubernetescertmanager.V1\xca\x028Org\\Openmcf\\Provider\\Kubernetes\\Kubernetescertmanager\\V1\xe2\x02DOrg\\Openmcf\\Provider\\Kubernetes\\Kubernetescertmanager\\V1\\GPBMetadata\xea\x02=Org::Openmcf::Provider::Kubernetes::Kubernetescertmanager::V1b\x06proto3"
 
 var (

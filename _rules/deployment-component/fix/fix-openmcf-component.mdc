@@ -73,7 +73,7 @@ Use fix when you need to:
 
 **Fix documentation sync:**
 ```bash
-@fix-openmcf-component PostgresKubernetes --explain "examples.md shows old field 'database_name' but current spec uses 'db_identifier', update all examples to match"
+@fix-openmcf-component PostgresKubernetes --explain "presets show old field 'database_name' but current spec uses 'db_identifier', update all presets to match"
 ```
 
 **Fix missing field:**
@@ -148,8 +148,8 @@ go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
 
 **Update in Priority Order:**
 
-1. **Update examples.md** (must match current API)
-   - Review all examples
+1. **Update presets** (must match current API)
+   - Review all preset YAML files
    - Update field names if proto changed
    - Update values if validations changed
    - Add new examples if new fields added
@@ -162,7 +162,7 @@ go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
    - Update example usage if API changed
    - Update field descriptions if schema changed
    - Update "Key Features" if capabilities changed
-   - Ensure example code matches examples.md
+   - Ensure README examples match current spec.proto
 
 3. **Update docs/README.md** (research document)
    - Update if fix changes deployment approach
@@ -268,8 +268,8 @@ Source Code:
      - No changes needed (uses variable directly)
 
 Documentation Updates:
-  ✅ v1/examples.md
-     - Added example: Wildcard certificate (*.example.com)
+  ✅ v1/README.md
+     - Added wildcard certificate section (*.example.com)
      - Updated existing examples to show both formats
      
   ✅ v1/README.md
@@ -324,8 +324,7 @@ Next Steps:
 3. Run component tests: `go test ./apis/org/openmcf/provider/gcp/gcpcloudsql/v1/`
 4. Update spec_test.go (test with large values)
 5. Update Terraform variables.tf (int → number)
-6. Update examples.md (show large disk example)
-7. Update README.md (mention TB-scale support)
+6. Update README.md (mention TB-scale support)
 8. Run build: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
 9. Run all tests: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
 10. Validate consistency
@@ -345,8 +344,7 @@ Next Steps:
 3. Run build: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
 4. Update spec_test.go (test backup retention values)
 5. Run component tests: `go test ./apis/org/openmcf/provider/aws/awsrdsinstance/v1/`
-6. Update examples.md (show backup retention usage)
-7. Update iac/pulumi/overview.md (document backup behavior)
+6. Update iac/pulumi/overview.md (document backup behavior)
 8. Run E2E tests to verify fix works
 9. Run all tests: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
 10. Validate consistency
@@ -357,14 +355,14 @@ Next Steps:
 
 **Example:**
 ```bash
-@fix-openmcf-component PostgresKubernetes --explain "examples.md uses deprecated field 'database_name' but spec.proto now uses 'db_identifier'"
+@fix-openmcf-component PostgresKubernetes --explain "presets use deprecated field 'database_name' but spec.proto now uses 'db_identifier'"
 ```
 
 **Actions:**
 1. **Don't change code** (code is correct, docs are wrong)
 2. Read current spec.proto to understand actual fields
-3. Update examples.md (use db_identifier everywhere)
-4. Update README.md (fix any references to old field)
+3. Update README.md (fix any references to old field)
+4. Update presets (use db_identifier everywhere)
 5. Update docs/README.md (note the field name if discussed)
 6. Validate examples against schema
 7. No test changes needed (code unchanged)
@@ -424,8 +422,7 @@ Next Steps:
 2. Regenerate stubs: `make protos`
 3. Run component tests: `go test ./apis/org/openmcf/provider/aws/awsvpc/v1/`
 4. Update spec_test.go (test 10.0.0.0/8 is now valid)
-5. Update examples.md (show 10.0.0.0/8 example)
-6. Update docs/README.md (document valid CIDR ranges)
+5. Update docs/README.md (document valid CIDR ranges)
 7. Run build: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
 8. Run all tests: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
 9. Validate consistency
@@ -464,7 +461,7 @@ Action: Updating variables.tf to match proto validation...
 
 **After any proto change:**
 ```bash
-# Parse all examples in examples.md
+# Parse all preset YAML files
 # Validate each against current spec.proto schema
 # Check field names are current (not deprecated)
 # Check values meet validation rules
@@ -474,13 +471,13 @@ Action: Updating variables.tf to match proto validation...
 ```
 ⚠️  Inconsistency: Examples ↔ Proto
 
-examples.md line 42:
+presets/01-standard.yaml line 12:
   database_name: mydb  # ❌ Field doesn't exist in spec.proto
   
 Current spec.proto uses:
   db_identifier: mydb  # ✓ Correct field name
 
-Action: Updating examples.md to use current field names...
+Action: Updating presets to use current field names...
 ```
 
 ### Check 3: Pulumi ↔ Terraform
@@ -576,7 +573,7 @@ Understanding current state:
   ✓ Reading Pulumi module (how field is used)
   ✓ Reading Terraform module (how field is used)
   ✓ Reading spec_test.go (current test coverage)
-  ✓ Reading examples.md (current examples)
+  ✓ Reading presets/ (current preset configurations)
   ✓ Reading v1/docs/README.md (design context)
 
 Current behavior:
@@ -624,8 +621,8 @@ Source code fix complete!
 ```
 📝 Propagating to documentation...
 
-[1/4] ✅ Updated v1/examples.md
-  - Added: Wildcard Domain Example (*.example.com)
+[1/4] ✅ Updated v1/README.md
+  - Added: Wildcard Domain section (*.example.com)
   - Added: Multi-Domain Wildcard Example
   - Verified all examples against schema: ✓ Valid
   
@@ -719,8 +716,8 @@ Source Code Changes:
   ℹ️  IaC modules (no changes needed)
 
 Documentation Updates:
-  📝 examples.md (+45 lines)
-     - Added 2 wildcard examples
+  📝 README.md updated
+     - Added wildcard certificate guidance
   📝 README.md (+12 lines)
      - Updated feature list
   📝 docs/README.md (+25 lines)
@@ -760,11 +757,11 @@ Git command:
 
 **Right:**
 1. Update spec.proto with new validation
-2. Update examples.md to meet new validation
-3. Validate examples: `openmcf validate --manifest example.yaml`
+2. Update presets to meet new validation
+3. Validate presets: `openmcf validate --manifest preset.yaml`
 
 **Wrong:**
-1. Update examples.md with desired usage
+1. Update presets with desired usage
 2. Hope spec.proto eventually matches
 
 **Why:** Examples that don't validate are worse than no examples.
@@ -1053,10 +1050,10 @@ git restore .
 ```bash
 # Audit reveals specific issue
 @audit-openmcf-component MyComponent
-# Report: "examples.md uses deprecated fields"
+# Report: "presets use deprecated fields"
 
 # Fix the issue
-@fix-openmcf-component MyComponent --explain "update examples.md to use current field names from spec.proto"
+@fix-openmcf-component MyComponent --explain "update presets to use current field names from spec.proto"
 ```
 
 ### Before Complete

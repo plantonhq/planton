@@ -70,8 +70,7 @@ Use update when you need to:
 1. Regenerates proto stubs: `make protos` (rule 017)
 2. Validates component tests: `go test ./apis/org/openmcf/provider/<provider>/<component>/v1/`
 3. Updates Terraform variables.tf to match spec.proto
-4. Updates examples.md with new fields
-5. **Validates existing presets against new schema** (if `v1/presets/` exists):
+4. **Validates existing presets against new schema** (if `v1/presets/` exists):
    - Checks for renamed fields (preset uses old field names that no longer exist in spec.proto)
    - Checks for removed fields (preset references fields deleted from spec.proto)
    - Checks for new required fields (preset may need them added)
@@ -100,8 +99,7 @@ Use update when you need to:
 **What it does:**
 1. Regenerates v1/docs/README.md (rule 020)
 2. Updates v1/README.md if needed
-3. Refreshes examples.md with current best practices
-4. Updates IaC documentation (Pulumi/Terraform READMEs)
+3. Updates IaC documentation (Pulumi/Terraform READMEs)
 
 **Use when:**
 - New best practices discovered
@@ -136,7 +134,7 @@ Use update when you need to:
 **When:** You have a specific problem to fix
 
 ```
-@update-openmcf-component GcpCertManagerCert --explain "examples.md uses deprecated fields, update to match current spec"
+@update-openmcf-component GcpCertManagerCert --explain "presets use deprecated fields, update to match current spec"
 ```
 
 **What it does:**
@@ -303,7 +301,6 @@ Show:
 # - make protos (regenerate proto stubs)
 # - go test ./apis/org/openmcf/provider/gcp/gcpcloudsql/v1/ (validate spec tests)
 # - Update Terraform variables.tf (add enable_ssl variable)
-# - Update examples.md (show enable_ssl usage)
 # - Validate presets against new schema (check for stale fields, add enable_ssl if appropriate)
 # - go build ./apis/org/openmcf/provider/<provider>/<component>/v1/... (validate build)
 # - go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/ (validate tests)
@@ -320,7 +317,6 @@ Show:
 # Update executes:
 # - Regenerate v1/docs/README.md with latest research
 # - Update v1/README.md with current best practices
-# - Refresh examples.md with new patterns
 # - Update IaC READMEs
 
 # Result: Documentation reflects current state
@@ -416,13 +412,10 @@ Identified Gaps (from audit):
   ❌ Missing: iac/tf/ (Terraform module)
   ❌ Missing: v1/docs/README.md (research docs)
   ❌ Missing: v1/presets/ (no presets)
-  ⚠️  Incomplete: examples.md (only 1 example, need 3+)
-
 Planned Updates:
   1. Run rule 013-015 → Create Terraform module
   2. Run rule 020 → Generate research documentation
-  3. Update examples.md → Add 2 more examples
-  4. Run rule 022 → Generate initial presets (2-3 common configurations)
+  3. Run rule 022 → Generate initial presets (2-3 common configurations)
 
 Estimated time: 10-15 minutes
 No files will be modified (dry-run mode)

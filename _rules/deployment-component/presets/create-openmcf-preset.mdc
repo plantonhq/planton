@@ -41,7 +41,6 @@ If `--name` or `--rank` are omitted, determine them based on analysis of the com
 2. **Read essential files** (all within the component's `v1/` directory):
    - `api.proto` -- Extract exact `apiVersion` and `kind` constant values from buf.validate constraints
    - `spec.proto` -- Understand all fields, types, validations, and default annotations (`recommended_default`, `default`)
-   - `examples.md` -- Understand existing configuration scenarios
    - `docs/README.md` -- Understand design rationale and common deployment patterns
    - `iac/hack/manifest.yaml` -- See the minimal test manifest for structural reference
 
@@ -55,7 +54,7 @@ If `--name` or `--rank` are omitted, determine them based on analysis of the com
 
 ### Step 2: Identify the Configuration Pattern
 
-Based on the `spec.proto` fields, `examples.md` scenarios, `docs/README.md` rationale, and cloud infrastructure expertise:
+Based on the `spec.proto` fields, `docs/README.md` rationale, and cloud infrastructure expertise:
 
 1. **Determine the target use case** -- What real-world deployment pattern does this preset represent?
 2. **Select which fields to include** -- All required fields plus optional fields relevant to the use case

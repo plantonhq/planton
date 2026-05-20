@@ -1,30 +1,11 @@
 apiVersion: kubernetes.openmcf.org/v1
 kind: KubernetesCertManager
 metadata:
-  name: test-kubernetes-cert-manager-multi-provider
+  name: test-cert-manager
 spec:
-  targetCluster:
-    kubernetesProviderConfigId: test-cluster-01
-  
-  # Global ACME configuration
-  acme:
-    email: "admin@example.com"
-    server: "https://acme-v02.api.letsencrypt.org/directory"
-  
-  # Multiple DNS provider configurations
-  dnsProviders:
-    # Cloudflare provider for example.com and example.org
-    - name: cloudflare-prod
-      dnsZones:
-        - example.com
-        - example.org
-      cloudflare:
-        apiToken: "test-cloudflare-api-token-placeholder"
-    
-    # GCP Cloud DNS provider for internal domains
-    - name: gcp-internal
-      dnsZones:
-        - internal.example.net
-      gcpCloudDns:
-        projectId: "my-gcp-project"
-        serviceAccountEmail: "kubernetes-cert-manager@my-gcp-project.iam.gserviceaccount.com"
+  namespace:
+    value: cert-manager
+  createNamespace: true
+  workloadIdentity:
+    gke:
+      serviceAccountEmail: "cert-manager@my-gcp-project.iam.gserviceaccount.com"

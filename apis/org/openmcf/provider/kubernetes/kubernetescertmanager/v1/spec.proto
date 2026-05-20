@@ -7,8 +7,12 @@ import "org/openmcf/provider/kubernetes/target_cluster.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 import "org/openmcf/shared/options/options.proto";
 
-// KubernetesCertManagerSpec defines configuration for kubernetes-cert-manager on any cluster.
-// The addon automatically creates a ClusterIssuer with multiple DNS solvers based on the provided DNS provider configurations.
+// KubernetesCertManagerSpec defines configuration for installing cert-manager
+// on any Kubernetes cluster. This component handles the controller lifecycle
+// (Helm chart, CRDs, ServiceAccount with optional workload identity).
+//
+// ClusterIssuer management is handled separately by the KubernetesClusterIssuer
+// component, which creates individual ClusterIssuers per DNS domain.
 message KubernetesCertManagerSpec {
   // Target Kubernetes Cluster
   org.openmcf.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
@@ -23,104 +27,49 @@ message KubernetesCertManagerSpec {
   // flag to indicate if the namespace should be created
   bool create_namespace = 3;
 
-  // kubernetes-cert-manager version such as "v1.19.1". Used to set the image tag.
-  // Minimum version v1.16.4 is enforced for Cloudflare API compatibility.
+  // cert-manager version such as "v1.19.1". Used to set the controller image tag.
   optional string kubernetes_cert_manager_version = 4 [(org.openmcf.shared.options.default) = "v1.19.1"];
 
   // Helm chart version to deploy. If not specified, uses the default version.
   optional string helm_chart_version = 5 [(org.openmcf.shared.options.default) = "v1.19.1"];
 
-  // skip installation of self-signed issuer.
+  // Skip installation of the self-signed issuer that cert-manager creates by default.
   bool skip_install_self_signed_issuer = 6;
 
-  // Global ACME configuration used for all DNS providers.
-  AcmeConfig acme = 7 [(buf.validate.field).required = true];
-
-  // List of DNS provider configurations. Each provider can manage multiple DNS zones.
-  // The addon will create a single ClusterIssuer with multiple solvers based on these configurations.
-  repeated DnsProviderConfig dns_providers = 8 [(buf.validate.field).repeated.min_items = 1];
+  // Workload identity configuration for the cert-manager controller ServiceAccount.
+  // Required when using GCP Cloud DNS, AWS Route53, or Azure DNS solvers in
+  // KubernetesClusterIssuer resources. Not needed for Cloudflare (uses API token secrets).
+  WorkloadIdentityConfig workload_identity = 7;
 }
 
-// AcmeConfig defines global ACME settings for certificate issuance.
-// These settings apply to all DNS providers configured in the addon.
-message AcmeConfig {
-  // ACME account email for registration and expiry notifications.
-  // This email will be used by the Certificate Authority (e.g., Let's Encrypt).
-  string email = 1 [(buf.validate.field).required = true];
-
-  // ACME server URL.
-  // Use https://acme-v02.api.letsencrypt.org/directory for production.
-  // Use https://acme-staging-v02.api.letsencrypt.org/directory for testing.
-  optional string server = 2 [(org.openmcf.shared.options.default) = "https://acme-v02.api.letsencrypt.org/directory"];
-}
-
-// DnsProviderConfig defines a DNS provider configuration with credentials and domain mappings.
-// Each configuration represents a single DNS provider account/identity that manages one or more DNS zones.
-message DnsProviderConfig {
-  // Unique identifier for this provider configuration.
-  // Used for generating Kubernetes secret names (e.g., "cloudflare-prod", "gcp-internal").
-  // Must be unique within the dns_providers list.
-  string name = 1 [(buf.validate.field).required = true];
-
-  // List of DNS zones this provider is responsible for managing.
-  // kubernetes-cert-manager will use this provider's solver for any certificate requests matching these zones.
-  // Examples: ["example.com", "example.org"] or ["internal.example.net"]
-  repeated string dns_zones = 2 [(buf.validate.field).repeated.min_items = 1];
-
-  // Provider-specific configuration. Exactly one must be set.
+// WorkloadIdentityConfig binds the cert-manager controller's Kubernetes
+// ServiceAccount to a cloud identity, enabling keyless authentication
+// for DNS-01 challenges.
+message WorkloadIdentityConfig {
   oneof provider {
-    // Google Cloud DNS provider configuration.
-    GcpCloudDnsProvider gcp_cloud_dns = 100;
-    // AWS Route53 provider configuration.
-    AwsRoute53Provider aws_route53 = 101;
-    // Azure DNS provider configuration.
-    AzureDnsProvider azure_dns = 102;
-    // Cloudflare DNS provider configuration.
-    CloudflareProvider cloudflare = 103;
+    GkeWorkloadIdentity gke = 1;
+    EksIrsa eks = 2;
+    AksWorkloadIdentity aks = 3;
   }
 }
 
-// GcpCloudDnsProvider configures Google Cloud DNS with Workload Identity.
-// The addon will configure the kubernetes-cert-manager ServiceAccount with the appropriate Workload Identity annotation.
-message GcpCloudDnsProvider {
-  // GCP project ID that contains the DNS zones.
-  string project_id = 1 [(buf.validate.field).required = true];
-
+// GkeWorkloadIdentity configures GKE Workload Identity for cert-manager.
+message GkeWorkloadIdentity {
   // GCP Service Account email for Workload Identity.
-  // This service account must have the dns.admin role on the specified project.
-  string service_account_email = 2 [(buf.validate.field).required = true];
+  // Must have dns.admin role on the project containing the DNS zones.
+  string service_account_email = 1 [(buf.validate.field).required = true];
 }
 
-// AwsRoute53Provider configures AWS Route53 with IAM Roles for Service Accounts (IRSA).
-// The addon will configure the kubernetes-cert-manager ServiceAccount with the appropriate IRSA annotation.
-message AwsRoute53Provider {
-  // AWS region where Route53 is configured.
-  string region = 1 [(buf.validate.field).required = true];
-
+// EksIrsa configures IAM Roles for Service Accounts (IRSA) for cert-manager on EKS.
+message EksIrsa {
   // IAM Role ARN for IRSA.
-  // This role must have permissions to modify Route53 records in the specified zones.
-  string role_arn = 2 [(buf.validate.field).required = true];
+  // Must have permissions to modify Route53 records.
+  string role_arn = 1 [(buf.validate.field).required = true];
 }
 
-// AzureDnsProvider configures Azure DNS with Managed Identity.
-// The addon will configure the kubernetes-cert-manager ServiceAccount with the appropriate Managed Identity annotation.
-message AzureDnsProvider {
-  // Azure subscription ID that contains the DNS zones.
-  string subscription_id = 1 [(buf.validate.field).required = true];
-
-  // Azure resource group containing the DNS zones.
-  string resource_group = 2 [(buf.validate.field).required = true];
-
+// AksWorkloadIdentity configures Azure Workload Identity for cert-manager on AKS.
+message AksWorkloadIdentity {
   // Managed Identity Client ID.
-  // This identity must have DNS Zone Contributor role on the specified resource group.
-  string client_id = 3 [(buf.validate.field).required = true];
-}
-
-// CloudflareProvider configures Cloudflare DNS for DNS-01 ACME challenges.
-// The addon will create a Kubernetes Secret containing the API token in the kubernetes-cert-manager namespace.
-message CloudflareProvider {
-  // Cloudflare API token for DNS-01 challenge authentication.
-  // Required permissions: Zone:Zone:Read and Zone:DNS:Edit
-  // The token should be scoped to the specific zones listed in dns_zones for security best practices.
-  string api_token = 1 [(buf.validate.field).required = true];
+  // Must have DNS Zone Contributor role.
+  string client_id = 1 [(buf.validate.field).required = true];
 }

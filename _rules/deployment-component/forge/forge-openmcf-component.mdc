@@ -65,7 +65,7 @@ The following 20 rules execute in order. Each rule is atomic and can be run indi
 
 ### Phase 3: Documentation (Rules 007, 020)
 
-9. **007-docs** - Generate v1/README.md (user-facing) and v1/examples.md
+9. **007-docs** - Generate v1/README.md (user-facing)
 10. **020-research-docs** - Generate v1/docs/README.md (comprehensive research)
 
 ### Phase 4: Supporting Files (Rule 008)
@@ -156,7 +156,7 @@ After forge completes, the component should have:
 ✅ spec_test.go with validation tests
 ✅ **Component tests execute and pass** (validates buf.validate rules)
 ✅ Registered in cloud_resource_kind.proto
-✅ Complete user-facing documentation (README.md, examples.md)
+✅ Complete user-facing documentation (README.md)
 ✅ Comprehensive research documentation (docs/README.md)
 ✅ Pulumi module that compiles and works
 ✅ Terraform module that validates and works

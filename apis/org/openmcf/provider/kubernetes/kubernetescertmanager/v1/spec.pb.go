@@ -25,8 +25,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesCertManagerSpec defines configuration for kubernetes-cert-manager on any cluster.
-// The addon automatically creates a ClusterIssuer with multiple DNS solvers based on the provided DNS provider configurations.
+// KubernetesCertManagerSpec defines configuration for installing cert-manager
+// on any Kubernetes cluster. This component handles the controller lifecycle
+// (Helm chart, CRDs, ServiceAccount with optional workload identity).
+//
+// ClusterIssuer management is handled separately by the KubernetesClusterIssuer
+// component, which creates individual ClusterIssuers per DNS domain.
 type KubernetesCertManagerSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Target Kubernetes Cluster
@@ -35,20 +39,18 @@ type KubernetesCertManagerSpec struct {
 	Namespace *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=namespace,proto3" json:"namespace,omitempty"`
 	// flag to indicate if the namespace should be created
 	CreateNamespace bool `protobuf:"varint,3,opt,name=create_namespace,json=createNamespace,proto3" json:"create_namespace,omitempty"`
-	// kubernetes-cert-manager version such as "v1.19.1". Used to set the image tag.
-	// Minimum version v1.16.4 is enforced for Cloudflare API compatibility.
+	// cert-manager version such as "v1.19.1". Used to set the controller image tag.
 	KubernetesCertManagerVersion *string `protobuf:"bytes,4,opt,name=kubernetes_cert_manager_version,json=kubernetesCertManagerVersion,proto3,oneof" json:"kubernetes_cert_manager_version,omitempty"`
 	// Helm chart version to deploy. If not specified, uses the default version.
 	HelmChartVersion *string `protobuf:"bytes,5,opt,name=helm_chart_version,json=helmChartVersion,proto3,oneof" json:"helm_chart_version,omitempty"`
-	// skip installation of self-signed issuer.
+	// Skip installation of the self-signed issuer that cert-manager creates by default.
 	SkipInstallSelfSignedIssuer bool `protobuf:"varint,6,opt,name=skip_install_self_signed_issuer,json=skipInstallSelfSignedIssuer,proto3" json:"skip_install_self_signed_issuer,omitempty"`
-	// Global ACME configuration used for all DNS providers.
-	Acme *AcmeConfig `protobuf:"bytes,7,opt,name=acme,proto3" json:"acme,omitempty"`
-	// List of DNS provider configurations. Each provider can manage multiple DNS zones.
-	// The addon will create a single ClusterIssuer with multiple solvers based on these configurations.
-	DnsProviders  []*DnsProviderConfig `protobuf:"bytes,8,rep,name=dns_providers,json=dnsProviders,proto3" json:"dns_providers,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	// Workload identity configuration for the cert-manager controller ServiceAccount.
+	// Required when using GCP Cloud DNS, AWS Route53, or Azure DNS solvers in
+	// KubernetesClusterIssuer resources. Not needed for Cloudflare (uses API token secrets).
+	WorkloadIdentity *WorkloadIdentityConfig `protobuf:"bytes,7,opt,name=workload_identity,json=workloadIdentity,proto3" json:"workload_identity,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *KubernetesCertManagerSpec) Reset() {
@@ -123,49 +125,42 @@ func (x *KubernetesCertManagerSpec) GetSkipInstallSelfSignedIssuer() bool {
 	return false
 }
 
-func (x *KubernetesCertManagerSpec) GetAcme() *AcmeConfig {
+func (x *KubernetesCertManagerSpec) GetWorkloadIdentity() *WorkloadIdentityConfig {
 	if x != nil {
-		return x.Acme
+		return x.WorkloadIdentity
 	}
 	return nil
 }
 
-func (x *KubernetesCertManagerSpec) GetDnsProviders() []*DnsProviderConfig {
-	if x != nil {
-		return x.DnsProviders
-	}
-	return nil
-}
-
-// AcmeConfig defines global ACME settings for certificate issuance.
-// These settings apply to all DNS providers configured in the addon.
-type AcmeConfig struct {
+// WorkloadIdentityConfig binds the cert-manager controller's Kubernetes
+// ServiceAccount to a cloud identity, enabling keyless authentication
+// for DNS-01 challenges.
+type WorkloadIdentityConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// ACME account email for registration and expiry notifications.
-	// This email will be used by the Certificate Authority (e.g., Let's Encrypt).
-	Email string `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
-	// ACME server URL.
-	// Use https://acme-v02.api.letsencrypt.org/directory for production.
-	// Use https://acme-staging-v02.api.letsencrypt.org/directory for testing.
-	Server        *string `protobuf:"bytes,2,opt,name=server,proto3,oneof" json:"server,omitempty"`
+	// Types that are valid to be assigned to Provider:
+	//
+	//	*WorkloadIdentityConfig_Gke
+	//	*WorkloadIdentityConfig_Eks
+	//	*WorkloadIdentityConfig_Aks
+	Provider      isWorkloadIdentityConfig_Provider `protobuf_oneof:"provider"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AcmeConfig) Reset() {
-	*x = AcmeConfig{}
+func (x *WorkloadIdentityConfig) Reset() {
+	*x = WorkloadIdentityConfig{}
 	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AcmeConfig) String() string {
+func (x *WorkloadIdentityConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AcmeConfig) ProtoMessage() {}
+func (*WorkloadIdentityConfig) ProtoMessage() {}
 
-func (x *AcmeConfig) ProtoReflect() protoreflect.Message {
+func (x *WorkloadIdentityConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -177,197 +172,92 @@ func (x *AcmeConfig) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AcmeConfig.ProtoReflect.Descriptor instead.
-func (*AcmeConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use WorkloadIdentityConfig.ProtoReflect.Descriptor instead.
+func (*WorkloadIdentityConfig) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AcmeConfig) GetEmail() string {
-	if x != nil {
-		return x.Email
-	}
-	return ""
-}
-
-func (x *AcmeConfig) GetServer() string {
-	if x != nil && x.Server != nil {
-		return *x.Server
-	}
-	return ""
-}
-
-// DnsProviderConfig defines a DNS provider configuration with credentials and domain mappings.
-// Each configuration represents a single DNS provider account/identity that manages one or more DNS zones.
-type DnsProviderConfig struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Unique identifier for this provider configuration.
-	// Used for generating Kubernetes secret names (e.g., "cloudflare-prod", "gcp-internal").
-	// Must be unique within the dns_providers list.
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// List of DNS zones this provider is responsible for managing.
-	// kubernetes-cert-manager will use this provider's solver for any certificate requests matching these zones.
-	// Examples: ["example.com", "example.org"] or ["internal.example.net"]
-	DnsZones []string `protobuf:"bytes,2,rep,name=dns_zones,json=dnsZones,proto3" json:"dns_zones,omitempty"`
-	// Provider-specific configuration. Exactly one must be set.
-	//
-	// Types that are valid to be assigned to Provider:
-	//
-	//	*DnsProviderConfig_GcpCloudDns
-	//	*DnsProviderConfig_AwsRoute53
-	//	*DnsProviderConfig_AzureDns
-	//	*DnsProviderConfig_Cloudflare
-	Provider      isDnsProviderConfig_Provider `protobuf_oneof:"provider"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *DnsProviderConfig) Reset() {
-	*x = DnsProviderConfig{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *DnsProviderConfig) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DnsProviderConfig) ProtoMessage() {}
-
-func (x *DnsProviderConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use DnsProviderConfig.ProtoReflect.Descriptor instead.
-func (*DnsProviderConfig) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *DnsProviderConfig) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *DnsProviderConfig) GetDnsZones() []string {
-	if x != nil {
-		return x.DnsZones
-	}
-	return nil
-}
-
-func (x *DnsProviderConfig) GetProvider() isDnsProviderConfig_Provider {
+func (x *WorkloadIdentityConfig) GetProvider() isWorkloadIdentityConfig_Provider {
 	if x != nil {
 		return x.Provider
 	}
 	return nil
 }
 
-func (x *DnsProviderConfig) GetGcpCloudDns() *GcpCloudDnsProvider {
+func (x *WorkloadIdentityConfig) GetGke() *GkeWorkloadIdentity {
 	if x != nil {
-		if x, ok := x.Provider.(*DnsProviderConfig_GcpCloudDns); ok {
-			return x.GcpCloudDns
+		if x, ok := x.Provider.(*WorkloadIdentityConfig_Gke); ok {
+			return x.Gke
 		}
 	}
 	return nil
 }
 
-func (x *DnsProviderConfig) GetAwsRoute53() *AwsRoute53Provider {
+func (x *WorkloadIdentityConfig) GetEks() *EksIrsa {
 	if x != nil {
-		if x, ok := x.Provider.(*DnsProviderConfig_AwsRoute53); ok {
-			return x.AwsRoute53
+		if x, ok := x.Provider.(*WorkloadIdentityConfig_Eks); ok {
+			return x.Eks
 		}
 	}
 	return nil
 }
 
-func (x *DnsProviderConfig) GetAzureDns() *AzureDnsProvider {
+func (x *WorkloadIdentityConfig) GetAks() *AksWorkloadIdentity {
 	if x != nil {
-		if x, ok := x.Provider.(*DnsProviderConfig_AzureDns); ok {
-			return x.AzureDns
+		if x, ok := x.Provider.(*WorkloadIdentityConfig_Aks); ok {
+			return x.Aks
 		}
 	}
 	return nil
 }
 
-func (x *DnsProviderConfig) GetCloudflare() *CloudflareProvider {
-	if x != nil {
-		if x, ok := x.Provider.(*DnsProviderConfig_Cloudflare); ok {
-			return x.Cloudflare
-		}
-	}
-	return nil
+type isWorkloadIdentityConfig_Provider interface {
+	isWorkloadIdentityConfig_Provider()
 }
 
-type isDnsProviderConfig_Provider interface {
-	isDnsProviderConfig_Provider()
+type WorkloadIdentityConfig_Gke struct {
+	Gke *GkeWorkloadIdentity `protobuf:"bytes,1,opt,name=gke,proto3,oneof"`
 }
 
-type DnsProviderConfig_GcpCloudDns struct {
-	// Google Cloud DNS provider configuration.
-	GcpCloudDns *GcpCloudDnsProvider `protobuf:"bytes,100,opt,name=gcp_cloud_dns,json=gcpCloudDns,proto3,oneof"`
+type WorkloadIdentityConfig_Eks struct {
+	Eks *EksIrsa `protobuf:"bytes,2,opt,name=eks,proto3,oneof"`
 }
 
-type DnsProviderConfig_AwsRoute53 struct {
-	// AWS Route53 provider configuration.
-	AwsRoute53 *AwsRoute53Provider `protobuf:"bytes,101,opt,name=aws_route53,json=awsRoute53,proto3,oneof"`
+type WorkloadIdentityConfig_Aks struct {
+	Aks *AksWorkloadIdentity `protobuf:"bytes,3,opt,name=aks,proto3,oneof"`
 }
 
-type DnsProviderConfig_AzureDns struct {
-	// Azure DNS provider configuration.
-	AzureDns *AzureDnsProvider `protobuf:"bytes,102,opt,name=azure_dns,json=azureDns,proto3,oneof"`
-}
+func (*WorkloadIdentityConfig_Gke) isWorkloadIdentityConfig_Provider() {}
 
-type DnsProviderConfig_Cloudflare struct {
-	// Cloudflare DNS provider configuration.
-	Cloudflare *CloudflareProvider `protobuf:"bytes,103,opt,name=cloudflare,proto3,oneof"`
-}
+func (*WorkloadIdentityConfig_Eks) isWorkloadIdentityConfig_Provider() {}
 
-func (*DnsProviderConfig_GcpCloudDns) isDnsProviderConfig_Provider() {}
+func (*WorkloadIdentityConfig_Aks) isWorkloadIdentityConfig_Provider() {}
 
-func (*DnsProviderConfig_AwsRoute53) isDnsProviderConfig_Provider() {}
-
-func (*DnsProviderConfig_AzureDns) isDnsProviderConfig_Provider() {}
-
-func (*DnsProviderConfig_Cloudflare) isDnsProviderConfig_Provider() {}
-
-// GcpCloudDnsProvider configures Google Cloud DNS with Workload Identity.
-// The addon will configure the kubernetes-cert-manager ServiceAccount with the appropriate Workload Identity annotation.
-type GcpCloudDnsProvider struct {
+// GkeWorkloadIdentity configures GKE Workload Identity for cert-manager.
+type GkeWorkloadIdentity struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// GCP project ID that contains the DNS zones.
-	ProjectId string `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// GCP Service Account email for Workload Identity.
-	// This service account must have the dns.admin role on the specified project.
-	ServiceAccountEmail string `protobuf:"bytes,2,opt,name=service_account_email,json=serviceAccountEmail,proto3" json:"service_account_email,omitempty"`
+	// Must have dns.admin role on the project containing the DNS zones.
+	ServiceAccountEmail string `protobuf:"bytes,1,opt,name=service_account_email,json=serviceAccountEmail,proto3" json:"service_account_email,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *GcpCloudDnsProvider) Reset() {
-	*x = GcpCloudDnsProvider{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[3]
+func (x *GkeWorkloadIdentity) Reset() {
+	*x = GkeWorkloadIdentity{}
+	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudDnsProvider) String() string {
+func (x *GkeWorkloadIdentity) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudDnsProvider) ProtoMessage() {}
+func (*GkeWorkloadIdentity) ProtoMessage() {}
 
-func (x *GcpCloudDnsProvider) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[3]
+func (x *GkeWorkloadIdentity) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -378,53 +268,43 @@ func (x *GcpCloudDnsProvider) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudDnsProvider.ProtoReflect.Descriptor instead.
-func (*GcpCloudDnsProvider) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_rawDescGZIP(), []int{3}
+// Deprecated: Use GkeWorkloadIdentity.ProtoReflect.Descriptor instead.
+func (*GkeWorkloadIdentity) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *GcpCloudDnsProvider) GetProjectId() string {
-	if x != nil {
-		return x.ProjectId
-	}
-	return ""
-}
-
-func (x *GcpCloudDnsProvider) GetServiceAccountEmail() string {
+func (x *GkeWorkloadIdentity) GetServiceAccountEmail() string {
 	if x != nil {
 		return x.ServiceAccountEmail
 	}
 	return ""
 }
 
-// AwsRoute53Provider configures AWS Route53 with IAM Roles for Service Accounts (IRSA).
-// The addon will configure the kubernetes-cert-manager ServiceAccount with the appropriate IRSA annotation.
-type AwsRoute53Provider struct {
+// EksIrsa configures IAM Roles for Service Accounts (IRSA) for cert-manager on EKS.
+type EksIrsa struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// AWS region where Route53 is configured.
-	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// IAM Role ARN for IRSA.
-	// This role must have permissions to modify Route53 records in the specified zones.
-	RoleArn       string `protobuf:"bytes,2,opt,name=role_arn,json=roleArn,proto3" json:"role_arn,omitempty"`
+	// Must have permissions to modify Route53 records.
+	RoleArn       string `protobuf:"bytes,1,opt,name=role_arn,json=roleArn,proto3" json:"role_arn,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsRoute53Provider) Reset() {
-	*x = AwsRoute53Provider{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[4]
+func (x *EksIrsa) Reset() {
+	*x = EksIrsa{}
+	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRoute53Provider) String() string {
+func (x *EksIrsa) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRoute53Provider) ProtoMessage() {}
+func (*EksIrsa) ProtoMessage() {}
 
-func (x *AwsRoute53Provider) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[4]
+func (x *EksIrsa) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -435,55 +315,43 @@ func (x *AwsRoute53Provider) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRoute53Provider.ProtoReflect.Descriptor instead.
-func (*AwsRoute53Provider) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_rawDescGZIP(), []int{4}
+// Deprecated: Use EksIrsa.ProtoReflect.Descriptor instead.
+func (*EksIrsa) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *AwsRoute53Provider) GetRegion() string {
-	if x != nil {
-		return x.Region
-	}
-	return ""
-}
-
-func (x *AwsRoute53Provider) GetRoleArn() string {
+func (x *EksIrsa) GetRoleArn() string {
 	if x != nil {
 		return x.RoleArn
 	}
 	return ""
 }
 
-// AzureDnsProvider configures Azure DNS with Managed Identity.
-// The addon will configure the kubernetes-cert-manager ServiceAccount with the appropriate Managed Identity annotation.
-type AzureDnsProvider struct {
+// AksWorkloadIdentity configures Azure Workload Identity for cert-manager on AKS.
+type AksWorkloadIdentity struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Azure subscription ID that contains the DNS zones.
-	SubscriptionId string `protobuf:"bytes,1,opt,name=subscription_id,json=subscriptionId,proto3" json:"subscription_id,omitempty"`
-	// Azure resource group containing the DNS zones.
-	ResourceGroup string `protobuf:"bytes,2,opt,name=resource_group,json=resourceGroup,proto3" json:"resource_group,omitempty"`
 	// Managed Identity Client ID.
-	// This identity must have DNS Zone Contributor role on the specified resource group.
-	ClientId      string `protobuf:"bytes,3,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	// Must have DNS Zone Contributor role.
+	ClientId      string `protobuf:"bytes,1,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureDnsProvider) Reset() {
-	*x = AzureDnsProvider{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[5]
+func (x *AksWorkloadIdentity) Reset() {
+	*x = AksWorkloadIdentity{}
+	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDnsProvider) String() string {
+func (x *AksWorkloadIdentity) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDnsProvider) ProtoMessage() {}
+func (*AksWorkloadIdentity) ProtoMessage() {}
 
-func (x *AzureDnsProvider) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[5]
+func (x *AksWorkloadIdentity) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -494,77 +362,14 @@ func (x *AzureDnsProvider) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDnsProvider.ProtoReflect.Descriptor instead.
-func (*AzureDnsProvider) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_rawDescGZIP(), []int{5}
+// Deprecated: Use AksWorkloadIdentity.ProtoReflect.Descriptor instead.
+func (*AksWorkloadIdentity) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *AzureDnsProvider) GetSubscriptionId() string {
-	if x != nil {
-		return x.SubscriptionId
-	}
-	return ""
-}
-
-func (x *AzureDnsProvider) GetResourceGroup() string {
-	if x != nil {
-		return x.ResourceGroup
-	}
-	return ""
-}
-
-func (x *AzureDnsProvider) GetClientId() string {
+func (x *AksWorkloadIdentity) GetClientId() string {
 	if x != nil {
 		return x.ClientId
-	}
-	return ""
-}
-
-// CloudflareProvider configures Cloudflare DNS for DNS-01 ACME challenges.
-// The addon will create a Kubernetes Secret containing the API token in the kubernetes-cert-manager namespace.
-type CloudflareProvider struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Cloudflare API token for DNS-01 challenge authentication.
-	// Required permissions: Zone:Zone:Read and Zone:DNS:Edit
-	// The token should be scoped to the specific zones listed in dns_zones for security best practices.
-	ApiToken      string `protobuf:"bytes,1,opt,name=api_token,json=apiToken,proto3" json:"api_token,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *CloudflareProvider) Reset() {
-	*x = CloudflareProvider{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[6]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CloudflareProvider) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CloudflareProvider) ProtoMessage() {}
-
-func (x *CloudflareProvider) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[6]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CloudflareProvider.ProtoReflect.Descriptor instead.
-func (*CloudflareProvider) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *CloudflareProvider) GetApiToken() string {
-	if x != nil {
-		return x.ApiToken
 	}
 	return ""
 }
@@ -573,48 +378,29 @@ var File_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto pro
 
 const file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Corg/openmcf/provider/kubernetes/kubernetescertmanager/v1/spec.proto\x128org.openmcf.provider.kubernetes.kubernetescertmanager.v1\x1a\x1bbuf/validate/validate.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x8d\x06\n" +
+	"Corg/openmcf/provider/kubernetes/kubernetescertmanager/v1/spec.proto\x128org.openmcf.provider.kubernetes.kubernetescertmanager.v1\x1a\x1bbuf/validate/validate.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xae\x05\n" +
 	"\x19KubernetesCertManagerSpec\x12a\n" +
 	"\x0etarget_cluster\x18\x01 \x01(\v2:.org.openmcf.provider.kubernetes.KubernetesClusterSelectorR\rtargetCluster\x12j\n" +
 	"\tnamespace\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xc4\x06\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x03 \x01(\bR\x0fcreateNamespace\x12W\n" +
 	"\x1fkubernetes_cert_manager_version\x18\x04 \x01(\tB\v\x8a\xa6\x1d\av1.19.1H\x00R\x1ckubernetesCertManagerVersion\x88\x01\x01\x12>\n" +
 	"\x12helm_chart_version\x18\x05 \x01(\tB\v\x8a\xa6\x1d\av1.19.1H\x01R\x10helmChartVersion\x88\x01\x01\x12D\n" +
-	"\x1fskip_install_self_signed_issuer\x18\x06 \x01(\bR\x1bskipInstallSelfSignedIssuer\x12`\n" +
-	"\x04acme\x18\a \x01(\v2D.org.openmcf.provider.kubernetes.kubernetescertmanager.v1.AcmeConfigB\x06\xbaH\x03\xc8\x01\x01R\x04acme\x12z\n" +
-	"\rdns_providers\x18\b \x03(\v2K.org.openmcf.provider.kubernetes.kubernetescertmanager.v1.DnsProviderConfigB\b\xbaH\x05\x92\x01\x02\b\x01R\fdnsProvidersB\"\n" +
+	"\x1fskip_install_self_signed_issuer\x18\x06 \x01(\bR\x1bskipInstallSelfSignedIssuer\x12}\n" +
+	"\x11workload_identity\x18\a \x01(\v2P.org.openmcf.provider.kubernetes.kubernetescertmanager.v1.WorkloadIdentityConfigR\x10workloadIdentityB\"\n" +
 	" _kubernetes_cert_manager_versionB\x15\n" +
-	"\x13_helm_chart_version\"\x86\x01\n" +
+	"\x13_helm_chart_version\"\xc1\x02\n" +
+	"\x16WorkloadIdentityConfig\x12a\n" +
+	"\x03gke\x18\x01 \x01(\v2M.org.openmcf.provider.kubernetes.kubernetescertmanager.v1.GkeWorkloadIdentityH\x00R\x03gke\x12U\n" +
+	"\x03eks\x18\x02 \x01(\v2A.org.openmcf.provider.kubernetes.kubernetescertmanager.v1.EksIrsaH\x00R\x03eks\x12a\n" +
+	"\x03aks\x18\x03 \x01(\v2M.org.openmcf.provider.kubernetes.kubernetescertmanager.v1.AksWorkloadIdentityH\x00R\x03aksB\n" +
 	"\n" +
-	"AcmeConfig\x12\x1c\n" +
-	"\x05email\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05email\x12O\n" +
-	"\x06server\x18\x02 \x01(\tB2\x8a\xa6\x1d.https://acme-v02.api.letsencrypt.org/directoryH\x00R\x06server\x88\x01\x01B\t\n" +
-	"\a_server\"\xa3\x04\n" +
-	"\x11DnsProviderConfig\x12\x1a\n" +
-	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12%\n" +
-	"\tdns_zones\x18\x02 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\bdnsZones\x12s\n" +
-	"\rgcp_cloud_dns\x18d \x01(\v2M.org.openmcf.provider.kubernetes.kubernetescertmanager.v1.GcpCloudDnsProviderH\x00R\vgcpCloudDns\x12o\n" +
-	"\vaws_route53\x18e \x01(\v2L.org.openmcf.provider.kubernetes.kubernetescertmanager.v1.AwsRoute53ProviderH\x00R\n" +
-	"awsRoute53\x12i\n" +
-	"\tazure_dns\x18f \x01(\v2J.org.openmcf.provider.kubernetes.kubernetescertmanager.v1.AzureDnsProviderH\x00R\bazureDns\x12n\n" +
-	"\n" +
-	"cloudflare\x18g \x01(\v2L.org.openmcf.provider.kubernetes.kubernetescertmanager.v1.CloudflareProviderH\x00R\n" +
-	"cloudflareB\n" +
-	"\n" +
-	"\bprovider\"x\n" +
-	"\x13GcpCloudDnsProvider\x12%\n" +
-	"\n" +
-	"project_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\tprojectId\x12:\n" +
-	"\x15service_account_email\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x13serviceAccountEmail\"W\n" +
-	"\x12AwsRoute53Provider\x12\x1e\n" +
-	"\x06region\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12!\n" +
-	"\brole_arn\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\aroleArn\"\x97\x01\n" +
-	"\x10AzureDnsProvider\x12/\n" +
-	"\x0fsubscription_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0esubscriptionId\x12-\n" +
-	"\x0eresource_group\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\rresourceGroup\x12#\n" +
-	"\tclient_id\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bclientId\"9\n" +
-	"\x12CloudflareProvider\x12#\n" +
-	"\tapi_token\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bapiTokenB\xc4\x03\n" +
+	"\bprovider\"Q\n" +
+	"\x13GkeWorkloadIdentity\x12:\n" +
+	"\x15service_account_email\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x13serviceAccountEmail\",\n" +
+	"\aEksIrsa\x12!\n" +
+	"\brole_arn\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\aroleArn\":\n" +
+	"\x13AksWorkloadIdentity\x12#\n" +
+	"\tclient_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bclientIdB\xc4\x03\n" +
 	"<com.org.openmcf.provider.kubernetes.kubernetescertmanager.v1B\tSpecProtoP\x01Zrgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetescertmanager/v1;kubernetescertmanagerv1\xa2\x02\x05OOPKK\xaa\x028Org.Openmcf.Provider.Kubernetes.Kubernetescertmanager.V1\xca\x028Org\\Openmcf\\Provider\\Kubernetes\\Kubernetescertmanager\\V1\xe2\x02DOrg\\Openmcf\\Provider\\Kubernetes\\Kubernetescertmanager\\V1\\GPBMetadata\xea\x02=Org::Openmcf::Provider::Kubernetes::Kubernetescertmanager::V1b\x06proto3"
 
 var (
@@ -629,32 +415,28 @@ func file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_ra
 	return file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_rawDescData
 }
 
-var file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_goTypes = []any{
 	(*KubernetesCertManagerSpec)(nil),            // 0: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.KubernetesCertManagerSpec
-	(*AcmeConfig)(nil),                           // 1: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.AcmeConfig
-	(*DnsProviderConfig)(nil),                    // 2: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.DnsProviderConfig
-	(*GcpCloudDnsProvider)(nil),                  // 3: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.GcpCloudDnsProvider
-	(*AwsRoute53Provider)(nil),                   // 4: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.AwsRoute53Provider
-	(*AzureDnsProvider)(nil),                     // 5: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.AzureDnsProvider
-	(*CloudflareProvider)(nil),                   // 6: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.CloudflareProvider
-	(*kubernetes.KubernetesClusterSelector)(nil), // 7: org.openmcf.provider.kubernetes.KubernetesClusterSelector
-	(*v1.StringValueOrRef)(nil),                  // 8: org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	(*WorkloadIdentityConfig)(nil),               // 1: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.WorkloadIdentityConfig
+	(*GkeWorkloadIdentity)(nil),                  // 2: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.GkeWorkloadIdentity
+	(*EksIrsa)(nil),                              // 3: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.EksIrsa
+	(*AksWorkloadIdentity)(nil),                  // 4: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.AksWorkloadIdentity
+	(*kubernetes.KubernetesClusterSelector)(nil), // 5: org.openmcf.provider.kubernetes.KubernetesClusterSelector
+	(*v1.StringValueOrRef)(nil),                  // 6: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_depIdxs = []int32{
-	7, // 0: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.KubernetesCertManagerSpec.target_cluster:type_name -> org.openmcf.provider.kubernetes.KubernetesClusterSelector
-	8, // 1: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.KubernetesCertManagerSpec.namespace:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	1, // 2: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.KubernetesCertManagerSpec.acme:type_name -> org.openmcf.provider.kubernetes.kubernetescertmanager.v1.AcmeConfig
-	2, // 3: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.KubernetesCertManagerSpec.dns_providers:type_name -> org.openmcf.provider.kubernetes.kubernetescertmanager.v1.DnsProviderConfig
-	3, // 4: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.DnsProviderConfig.gcp_cloud_dns:type_name -> org.openmcf.provider.kubernetes.kubernetescertmanager.v1.GcpCloudDnsProvider
-	4, // 5: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.DnsProviderConfig.aws_route53:type_name -> org.openmcf.provider.kubernetes.kubernetescertmanager.v1.AwsRoute53Provider
-	5, // 6: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.DnsProviderConfig.azure_dns:type_name -> org.openmcf.provider.kubernetes.kubernetescertmanager.v1.AzureDnsProvider
-	6, // 7: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.DnsProviderConfig.cloudflare:type_name -> org.openmcf.provider.kubernetes.kubernetescertmanager.v1.CloudflareProvider
-	8, // [8:8] is the sub-list for method output_type
-	8, // [8:8] is the sub-list for method input_type
-	8, // [8:8] is the sub-list for extension type_name
-	8, // [8:8] is the sub-list for extension extendee
-	0, // [0:8] is the sub-list for field type_name
+	5, // 0: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.KubernetesCertManagerSpec.target_cluster:type_name -> org.openmcf.provider.kubernetes.KubernetesClusterSelector
+	6, // 1: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.KubernetesCertManagerSpec.namespace:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	1, // 2: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.KubernetesCertManagerSpec.workload_identity:type_name -> org.openmcf.provider.kubernetes.kubernetescertmanager.v1.WorkloadIdentityConfig
+	2, // 3: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.WorkloadIdentityConfig.gke:type_name -> org.openmcf.provider.kubernetes.kubernetescertmanager.v1.GkeWorkloadIdentity
+	3, // 4: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.WorkloadIdentityConfig.eks:type_name -> org.openmcf.provider.kubernetes.kubernetescertmanager.v1.EksIrsa
+	4, // 5: org.openmcf.provider.kubernetes.kubernetescertmanager.v1.WorkloadIdentityConfig.aks:type_name -> org.openmcf.provider.kubernetes.kubernetescertmanager.v1.AksWorkloadIdentity
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_init() }
@@ -663,12 +445,10 @@ func file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_in
 		return
 	}
 	file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[0].OneofWrappers = []any{}
-	file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[1].OneofWrappers = []any{}
-	file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[2].OneofWrappers = []any{
-		(*DnsProviderConfig_GcpCloudDns)(nil),
-		(*DnsProviderConfig_AwsRoute53)(nil),
-		(*DnsProviderConfig_AzureDns)(nil),
-		(*DnsProviderConfig_Cloudflare)(nil),
+	file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_msgTypes[1].OneofWrappers = []any{
+		(*WorkloadIdentityConfig_Gke)(nil),
+		(*WorkloadIdentityConfig_Eks)(nil),
+		(*WorkloadIdentityConfig_Aks)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -676,7 +456,7 @@ func file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_in
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_rawDesc), len(file_org_openmcf_provider_kubernetes_kubernetescertmanager_v1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

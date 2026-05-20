@@ -109,7 +109,7 @@ Advanced fields like certificate scope, location, labels are either defaulted or
 
 3. **Both IaC Modules Implement the Schema** - Every field defined in `spec.proto` is actually used in both Pulumi and Terraform modules (no unused fields, no missing implementations)
 
-4. **Examples Validate the API** - The `examples.md` file contains working, realistic examples that demonstrate the API's capabilities and validate against the current schema
+4. **Presets Validate the API** - The preset YAML files contain working, deployable configurations that demonstrate the API's capabilities and validate against the current schema
 
 5. **Documentation Explains Decisions** - Users understand *why* certain features are included and others are not, reducing support burden
 
@@ -216,7 +216,6 @@ apis/org/openmcf/provider/gcp/gcpcertmanagercert/v1/
 ├── stack_outputs.pb.go
 ├── spec_test.go
 ├── README.md
-├── examples.md
 ├── docs/
 │   └── README.md
 ├── presets/
@@ -704,50 +703,6 @@ variable "alternate_domain_names" {
 - Assumes reader knows basic concepts
 - Points to other documentation for depth
 
-#### 7.2 examples.md
-
-**Location:** `v1/examples.md`
-
-**Purpose:** Working, copy-paste ready examples
-
-**Requirements:**
-
-- [ ] **File Exists** - `v1/examples.md` is present
-- [ ] **Multiple Examples** - At least 3-5 examples covering:
-  - Basic/minimal configuration
-  - Standard/recommended configuration
-  - Advanced use cases
-- [ ] **Complete Manifests** - Each example is a full YAML manifest:
-  - Includes `apiVersion`, `kind`, `metadata`, `spec`
-  - Uses realistic values (not `<placeholder>`)
-  - Can be copy-pasted and used with minimal changes
-- [ ] **Example Descriptions** - Each example has:
-  - A descriptive title
-  - Explanation of what it demonstrates
-  - When to use this pattern
-- [ ] **Deployment Instructions** - Shows how to deploy:
-  ```bash
-  openmcf pulumi up --manifest example.yaml --stack org/project/env
-  ```
-- [ ] **Schema Validation** - All examples validate against current proto schema
-  - No references to deprecated fields
-  - No missing required fields
-  - No type mismatches
-- [ ] **Realistic Scenarios** - Examples reflect real-world use cases:
-  - Development environment
-  - Production environment
-  - Multi-region/multi-domain
-  - Cost-optimized
-  - High-availability
-
-**Example Categories:**
-- Minimal (only required fields)
-- Basic (common single-resource)
-- Standard (recommended production config)
-- Advanced (complex multi-resource)
-- Environment-specific (dev, staging, prod)
-- Feature-specific (wildcard, multi-domain, etc.)
-
 ---
 
 ### 8. Supporting Files
@@ -846,7 +801,7 @@ variable "alternate_domain_names" {
 
 | Artifact | Purpose | Presets Difference |
 |----------|---------|-------------------|
-| `examples.md` | Documentation with realistic values | Presets use placeholders, are standalone files |
+| `README.md` | User-facing component overview | Presets are actionable starting points, README is explanation |
 | `iac/hack/manifest.yaml` | Minimal test manifest for CI/CD | Presets are production-quality, not minimal test configs |
 | `docs/README.md` | Research and design rationale | Presets are actionable starting points, not explanation |
 
@@ -886,8 +841,7 @@ These are non-negotiable for a component to be considered functional:
 These significantly improve quality and usability:
 
 10. ✅ Comprehensive research document (docs/README.md) (13.18%)
-11. ✅ Working examples (examples.md) (6.55%)
-12. ✅ User-facing README (v1/README.md) (6.54%)
+11. ✅ User-facing README (v1/README.md) (13.09%)
 13. ✅ Pulumi supporting documentation (README, overview) (5.05%)
 14. ✅ Terraform supporting documentation (README) (2.52%)
 15. ✅ Supporting files (hack manifest, debug scripts) (2.52%)

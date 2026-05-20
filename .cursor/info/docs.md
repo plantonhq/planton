@@ -1,6 +1,6 @@
 # Build and Docs Authoring Guide
 
-Purpose: produce `README.md` and `examples.md` for a resource after its protos exist.
+Purpose: produce `README.md` for a resource after its protos exist.
 
 ## Inputs to read
 - `api.proto` — envelope (api_version/kind/metadata/spec/status)
@@ -17,15 +17,6 @@ Purpose: produce `README.md` and `examples.md` for a resource after its protos e
 - How it works: Pulumi and Terraform modules in this repo
 - References: official docs URLs
 
-## examples.md (outline)
-- Scenarios
-  - `## Minimal manifest (YAML)` — only required fields
-  - `## <Scenario name>` — realistic example(s)
-- Include complete YAML manifests in fenced blocks
-- CLI flows
-  - Validate: `openmcf validate --manifest <file>`
-  - Pulumi deploy: `openmcf pulumi update --manifest <file> --stack <org/project/stack> --module-dir <path>`
-  - Terraform deploy: `openmcf tofu apply --manifest <file> --auto-approve`
-
 ## Notes
 - Keep concise and practical (80/20). Avoid secrets in examples.
+- Usage examples belong in presets (v1/presets/), not in a separate examples.md file.

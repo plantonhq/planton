@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 """
-Deterministic tool: Write Pulumi docs (README.md, examples.md, debug.sh) under iac/pulumi/ for a provider/kind.
+Deterministic tool: Write Pulumi docs (README.md, debug.sh) under iac/pulumi/ for a provider/kind.
 
 Usage:
   python3 _rules/deployment-component/_scripts/pulumi_docs_write.py --provider aws --kindfolder awscloudfront \
-    --readme-file /tmp/README.md --examples-file /tmp/examples.md --debug-file /tmp/debug.sh
+    --readme-file /tmp/README.md --debug-file /tmp/debug.sh
 
 Outputs JSON:
   - base_path, base_relative_path
-  - wrote_readme/examples/debug: bool
+  - wrote_readme/debug: bool
   - readme_path/relative_path/bytes/sha256
-  - examples_path/relative_path/bytes/sha256
   - debug_path/relative_path/bytes/sha256 (file will be chmod +x)
   - created_dirs: list
   - error: optional string
@@ -64,7 +63,6 @@ def main() -> int:
     parser.add_argument("--provider", required=True)
     parser.add_argument("--kindfolder", required=True)
     parser.add_argument("--readme-file", required=True)
-    parser.add_argument("--examples-file", required=True)
     parser.add_argument("--debug-file", required=True)
     args = parser.parse_args()
 
@@ -77,7 +75,6 @@ def main() -> int:
 
     try:
         readme_content = read_file(args.readme_file)
-        examples_content = read_file(args.examples_file)
         debug_content = read_file(args.debug_file)
     except Exception as exc:
         print(json.dumps({"error": f"failed to read content files: {exc}"}))
@@ -91,7 +88,6 @@ def main() -> int:
         "base_relative_path": base_rel,
         "created_dirs": [],
         "wrote_readme": False,
-        "wrote_examples": False,
         "wrote_debug": False,
     }
 
@@ -107,17 +103,6 @@ def main() -> int:
             "readme_bytes": len(readme_content.encode("utf-8")),
             "readme_sha256": hashlib.sha256(readme_content.encode("utf-8")).hexdigest(),
             "wrote_readme": True,
-        })
-
-        examples_abs = os.path.join(base_abs, "examples.md")
-        with open(examples_abs, "w", encoding="utf-8", newline="\n") as f:
-            f.write(examples_content)
-        result.update({
-            "examples_path": examples_abs,
-            "examples_relative_path": os.path.join(base_rel, "examples.md"),
-            "examples_bytes": len(examples_content.encode("utf-8")),
-            "examples_sha256": hashlib.sha256(examples_content.encode("utf-8")).hexdigest(),
-            "wrote_examples": True,
         })
 
         debug_abs = os.path.join(base_abs, "debug.sh")
@@ -142,5 +127,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
-

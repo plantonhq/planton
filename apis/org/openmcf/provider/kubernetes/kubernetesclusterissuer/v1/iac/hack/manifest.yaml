@@ -1,0 +1,13 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesClusterIssuer
+metadata:
+  name: test-cluster-issuer
+spec:
+  certManagerNamespace:
+    value: cert-manager
+  dnsDomain: test.example.com
+  acme:
+    email: "test@example.com"
+    server: "https://acme-staging-v02.api.letsencrypt.org/directory"
+  cloudflare:
+    apiToken: "test-token-replace-in-actual-deployment"

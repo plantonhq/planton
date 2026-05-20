@@ -182,7 +182,6 @@ Files to Delete (23 files):
   📄 *.pb.go (4 files)
   📄 spec_test.go
   📄 README.md
-  📄 examples.md
   📁 docs/ (1 file)
   📁 iac/pulumi/ (6 files)
   📁 iac/tf/ (5 files)

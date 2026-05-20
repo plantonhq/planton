@@ -208,7 +208,6 @@ Every deployment component contains:
 ├── stack_input.proto            # Input to IaC modules
 ├── stack_outputs.proto          # Output from IaC modules
 ├── README.md                    # User-facing documentation
-├── examples.md                  # Real-world examples
 ├── docs/
 │   └── README.md                # Deep research and design rationale
 └── iac/
@@ -310,7 +309,7 @@ All Protocol Buffer definitions organized by provider. Each component's v1 direc
 - API definitions (api.proto, spec.proto)
 - Validation tests (spec_test.go)
 - IaC modules (iac/pulumi, iac/terraform)
-- Documentation (README.md, examples.md, docs/README.md)
+- Documentation (README.md, docs/README.md)
 
 #### `/architecture`
 
@@ -1123,7 +1122,6 @@ vim apis/org/openmcf/provider/atlas/mongodbatlas/v1/spec.proto
 # This will:
 # - Update validation rule in spec.proto
 # - Update spec_test.go with new test case
-# - Update examples.md to include wildcard example
 # - Update README.md to document wildcard support
 # - Run consistency checks
 # - Execute tests
@@ -1137,8 +1135,8 @@ vim apis/org/openmcf/provider/atlas/mongodbatlas/v1/spec.proto
 # This will:
 # - Read current source code (proto, IaC)
 # - Regenerate README.md to match current behavior
-# - Update examples.md with current field names
-# - Verify examples validate
+# - Update presets with current field names
+# - Verify presets validate
 ```
 
 ### Quality Assurance Workflow

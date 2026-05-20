@@ -19,7 +19,6 @@ SCOPE
 PREREQUISITES
 - `api.proto` exists (provides `apiVersion` and `kind` constants)
 - `spec.proto` exists (provides field definitions, types, validations, defaults)
-- `examples.md` exists (provides configuration context)
 - `docs/README.md` exists (provides design rationale)
 
 SEQUENTIAL STEPS

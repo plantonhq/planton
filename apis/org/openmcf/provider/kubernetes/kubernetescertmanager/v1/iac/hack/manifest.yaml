@@ -3,18 +3,6 @@ kind: KubernetesCertManager
 metadata:
   name: test-cert-manager
 spec:
-  namespace: kubernetes-cert-manager
-  kubernetesCertManagerVersion: "v1.19.1"
-  helmChartVersion: "v1.19.1"
-  
-  acme:
-    email: "test@example.com"
-    server: "https://acme-staging-v02.api.letsencrypt.org/directory"
-  
-  dnsProviders:
-    - name: cloudflare-test
-      dnsZones:
-        - test.example.com
-      cloudflare:
-        apiToken: "test-token-replace-in-actual-deployment"
-
+  namespace:
+    value: cert-manager
+  createNamespace: true

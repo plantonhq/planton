@@ -5,28 +5,28 @@ RULE NUMBER
 007
 
 TITLE
-Forge: Docs (README.md, examples.md)
+Forge: Docs (README.md)
 
 ROLE
-You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule runs after proto files exist and generates `README.md` and `examples.md` for the resource.
+You are the OpenMCF Code Partner working inside the developer's local workspace in Cursor. This rule runs after proto files exist and generates `README.md` for the resource.
 
 TOOLS
 - Proto Readers: reuse `_rules/deployment-component/_scripts/*_reader.py` for `api.proto`, `spec.proto`, `stack_input.proto`, `stack_outputs.proto` as needed.
-- Docs Writer: `_rules/deployment-component/_scripts/docs_write.py` writes `README.md` and `examples.md` deterministically.
+- Docs Writer: `_rules/deployment-component/_scripts/docs_write.py` writes `README.md` deterministically.
 - Authoring guide: `.cursor/info/docs.md`.
 
 SCOPE
 - Target: `apis/project/planton/provider/<provider>/<kindfolder>/v1/`
-- Create/update `README.md` and `examples.md`.
+- Create/update `README.md`.
 
 SEQUENTIAL STEPS
 1) Read: Use proto readers to fetch contents of `api.proto`, `spec.proto`, `stack_input.proto`, `stack_outputs.proto`.
-2) Draft: Read `.cursor/info/docs.md`. Generate README and examples content using proto details and guide.
-3) Write: `python3 _rules/deployment-component/_scripts/docs_write.py --provider <provider> --kindfolder <kindfolder> --readme-file <path> --examples-file <path>`
+2) Draft: Read `.cursor/info/docs.md`. Generate README content using proto details and guide.
+3) Write: `python3 _rules/deployment-component/_scripts/docs_write.py --provider <provider> --kindfolder <kindfolder> --readme-file <path>`
    - If edits are needed, refine content and re-run (≤3).
 
 SUCCESS CRITERIA
- - `README.md` and `examples.md` exist at the resource path
+ - `README.md` exists at the resource path
  - Docs list fields and outputs accurately and reference official docs
 
 OUTPUT STYLE IN CHAT

@@ -1,15 +1,16 @@
 # Pulumi Docs Authoring Guide
 
-Purpose: author `README.md`, `examples.md`, and `debug.sh` for the Pulumi package under `iac/pulumi/`.
+Purpose: author `README.md` and `debug.sh` for the Pulumi package under `iac/pulumi/`.
 
-## Target directory
-- `apis/project/planton/provider/<provider>/<kindfolder>/v1/iac/pulumi/`
+## Inputs to read
+- `iac/pulumi/module/main.go` — controller logic
+- `iac/pulumi/module/locals.go` — computed values
+- `iac/hack/manifest.yaml` — test manifest
 
-## Files
+## Outputs to produce
 - `README.md` — overview of the Pulumi program and how it wires the resource
-- `examples.md` — runnable examples (manifests and CLI flows)
 - `debug.sh` — helper script to run the Pulumi program locally (optional binary mode)
 
 ## Notes
-- Do not lint here; focus on content.
-- Align examples with the resource’s `iac/hack/manifest.yaml` and CLI flows.
+- Keep README concise — focus on how to run and test locally.
+- Usage examples belong in presets (v1/presets/), not in a separate examples.md file.

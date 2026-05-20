@@ -104,8 +104,8 @@ Phase 2: Generate Documentation
 [8/9] ✅ Generated v1/docs/README.md (research document, 850 lines)
 [9/9] ✅ Generated iac/pulumi/overview.md
 
-Phase 3: Enhance Examples
-[10/10] ✅ Added 3 more examples to examples.md
+Phase 3: Enhance Presets
+[10/10] ✅ Verified presets match current spec.proto
 
 Phase 4: Final Validation
 [11/14] ✅ Proto stubs regenerated (make protos)
@@ -175,7 +175,7 @@ Files Created:
   ✅ iac/tf/ (6 files) - Terraform module
   ✅ v1/docs/README.md (850 lines) - Research documentation
   ✅ iac/pulumi/overview.md - Architecture overview
-  ✅ Enhanced v1/examples.md (3 new examples)
+  ✅ Verified presets are up to date
 
 Audit Reports:
   📊 Before: v1/docs/audit/2025-11-13-094500.md
@@ -217,8 +217,7 @@ Planned Actions:
   1. Run forge rules 013-015 → Create Terraform module
   2. Run forge rule 020 → Generate research docs
   3. Run forge rule 021 → Generate Pulumi overview
-  4. Enhance examples.md → Add 3 examples
-  5. Run validation (rules 018-019)
+  4. Run validation (rules 018-019)
 
 Expected Result:
   Score: 98% (+33%)

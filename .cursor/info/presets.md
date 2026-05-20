@@ -5,7 +5,6 @@ Purpose: create production-quality, deployable YAML presets with companion markd
 ## Inputs to read
 - `api.proto` — `api_version` and `kind` constant values
 - `spec.proto` — all fields, types, validations, default annotations (`recommended_default`, `default`)
-- `examples.md` — existing configuration scenarios for context
 - `docs/README.md` — design rationale and common deployment patterns
 - `iac/hack/manifest.yaml` — structural reference for KRM envelope
 - Existing `presets/` directory — avoid duplication, determine next available rank
@@ -110,6 +109,6 @@ Optional section: `## Related Presets` — reference other presets in the same c
 - Do NOT create presets for edge cases serving <10% of deployments
 
 ## Notes
-- Presets are deployable artifacts, not documentation. `examples.md` serves the documentation role.
+- Presets are deployable artifacts, not documentation. README.md serves the documentation role.
 - Read `architecture/presets.md` for the full convention reference.
 - Quality over quantity: 1 excellent preset > 5 mediocre ones.

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Deterministic tool: Write Terraform docs (README.md, examples.md) under iac/tf/ for a provider/kind.
+Deterministic tool: Write Terraform docs (README.md) under iac/tf/ for a provider/kind.
 
 Usage:
   python3 _rules/deployment-component/_scripts/terraform_docs_write.py --provider aws --kindfolder awscloudfront \
-    --readme-file /tmp/README.md --examples-file /tmp/examples.md
+    --readme-file /tmp/README.md
 
 Outputs JSON similar to pulumi_docs_write.py (without debug.sh).
 """
@@ -56,7 +56,6 @@ def main() -> int:
     parser.add_argument("--provider", required=True)
     parser.add_argument("--kindfolder", required=True)
     parser.add_argument("--readme-file", required=True)
-    parser.add_argument("--examples-file", required=True)
     args = parser.parse_args()
 
     try:
@@ -68,9 +67,8 @@ def main() -> int:
 
     try:
         readme_content = read_file(args.readme_file)
-        examples_content = read_file(args.examples_file)
     except Exception as exc:
-        print(json.dumps({"error": f"failed to read content files: {exc}"}))
+        print(json.dumps({"error": f"failed to read content file: {exc}"}))
         return 3
 
     repo_root = os.environ.get("REPO_ROOT", find_repo_root(os.getcwd()))
@@ -81,7 +79,6 @@ def main() -> int:
         "base_relative_path": base_rel,
         "created_dirs": [],
         "wrote_readme": False,
-        "wrote_examples": False,
     }
 
     try:
@@ -98,17 +95,6 @@ def main() -> int:
             "wrote_readme": True,
         })
 
-        examples_abs = os.path.join(base_abs, "examples.md")
-        with open(examples_abs, "w", encoding="utf-8", newline="\n") as f:
-            f.write(examples_content)
-        result.update({
-            "examples_path": examples_abs,
-            "examples_relative_path": os.path.join(base_rel, "examples.md"),
-            "examples_bytes": len(examples_content.encode("utf-8")),
-            "examples_sha256": hashlib.sha256(examples_content.encode("utf-8")).hexdigest(),
-            "wrote_examples": True,
-        })
-
         print(json.dumps(result))
         return 0
     except Exception as exc:
@@ -119,5 +105,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
-

@@ -286,6 +286,7 @@ const (
 	CloudResourceKind_KubernetesRookCephCluster             CloudResourceKind = 848
 	CloudResourceKind_KubernetesService                     CloudResourceKind = 849
 	CloudResourceKind_KubernetesSecret                      CloudResourceKind = 850
+	CloudResourceKind_KubernetesClusterIssuer               CloudResourceKind = 851
 	// 1200–1499: DigitalOcean resources
 	CloudResourceKind_DigitalOceanAppPlatformService CloudResourceKind = 1200
 	CloudResourceKind_DigitalOceanBucket             CloudResourceKind = 1201
@@ -664,6 +665,7 @@ var (
 		848:  "KubernetesRookCephCluster",
 		849:  "KubernetesService",
 		850:  "KubernetesSecret",
+		851:  "KubernetesClusterIssuer",
 		1200: "DigitalOceanAppPlatformService",
 		1201: "DigitalOceanBucket",
 		1202: "DigitalOceanContainerRegistry",
@@ -1031,6 +1033,7 @@ var (
 		"KubernetesRookCephCluster":             848,
 		"KubernetesService":                     849,
 		"KubernetesSecret":                      850,
+		"KubernetesClusterIssuer":               851,
 		"DigitalOceanAppPlatformService":        1200,
 		"DigitalOceanBucket":                    1201,
 		"DigitalOceanContainerRegistry":         1202,
@@ -1370,7 +1373,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\rprerequisites\x18\a \x03(\x0e27.org.openmcf.shared.cloudresourcekind.CloudResourceKindR\rprerequisites*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xfc{\n" +
+	"\x02v1\x10\x01*\xab|\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12,\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1592,7 +1595,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x1aKubernetesRookCephOperator\x10\xcf\x06\x1a\x13\xa2\xf7\x04\x0f\b\x13\x10\x01\"\tk8srookop\x123\n" +
 	"\x19KubernetesRookCephCluster\x10\xd0\x06\x1a\x13\xa2\xf7\x04\x0f\b\x13\x10\x01\"\tk8srookcl\x12(\n" +
 	"\x11KubernetesService\x10\xd1\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8ssvc\x12'\n" +
-	"\x10KubernetesSecret\x10\xd2\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8ssec\x124\n" +
+	"\x10KubernetesSecret\x10\xd2\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8ssec\x12-\n" +
+	"\x17KubernetesClusterIssuer\x10\xd3\x06\x1a\x0f\xa2\xf7\x04\v\b\x13\x10\x01\"\x05k8sci\x124\n" +
 	"\x1eDigitalOceanAppPlatformService\x10\xb0\t\x1a\x0f\xa2\xf7\x04\v\b\x11\x10\x01\"\x05doapp\x12(\n" +
 	"\x12DigitalOceanBucket\x10\xb1\t\x1a\x0f\xa2\xf7\x04\v\b\x11\x10\x01\"\x05dobkt\x122\n" +
 	"\x1dDigitalOceanContainerRegistry\x10\xb2\t\x1a\x0e\xa2\xf7\x04\n" +

@@ -258,6 +258,7 @@ go_library(
         "//apis/org/openmcf/provider/kubernetes/kubernetesargocd/v1:kubernetesargocd",
         "//apis/org/openmcf/provider/kubernetes/kubernetescertmanager/v1:kubernetescertmanager",
         "//apis/org/openmcf/provider/kubernetes/kubernetesclickhouse/v1:kubernetesclickhouse",
+        "//apis/org/openmcf/provider/kubernetes/kubernetesclusterissuer/v1:kubernetesclusterissuer",
         "//apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1:kubernetescronjob",
         "//apis/org/openmcf/provider/kubernetes/kubernetesdaemonset/v1:kubernetesdaemonset",
         "//apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1:kubernetesdeployment",

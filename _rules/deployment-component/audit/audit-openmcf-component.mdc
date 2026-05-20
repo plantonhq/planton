@@ -170,15 +170,11 @@ For each category, check files and record results. Use the following structure t
 
 #### Category 7: Documentation - User-Facing (Important - 13.33% total)
 
-**README (6.67%):**
+**README (13.33%):**
 - [ ] `README.md` exists (at v1/ level)
 - [ ] File size is substantial (>2KB = good, 1-2KB = minimal, <1KB = stub)
 
-**Examples (6.66%):**
-- [ ] `examples.md` exists
-- [ ] File size is substantial (>1KB = multiple examples, <1KB = minimal)
-
-**Scoring:** Each scored independently by file size
+**Scoring:** Scored by file size
 
 #### Category 8: Supporting Files (Important - 13.33% total)
 
@@ -196,10 +192,6 @@ For each category, check files and record results. Use the following structure t
 **Scoring:** Each sub-category scored independently
 
 #### Category 9: Supporting Files - Nice to Have (Nice to Have - 10%)
-
-**Additional Documentation (5%):**
-- [ ] `iac/pulumi/examples.md` exists (optional, not required per updated requirements)
-- [ ] `iac/tf/examples.md` exists (optional, not required per updated requirements)
 
 **Build Files (5%):**
 - [ ] BUILD.bazel files exist (auto-generated, optional check)
