@@ -8,10 +8,10 @@ import (
 )
 
 type Locals struct {
-	KubernetesClusterIssuer *kubernetesclusterissuerv1.KubernetesClusterIssuer
-	CertManagerNamespace    string
-	DnsDomain               string
-	CloudflareSecretName    string
+	KubernetesClusterIssuer  *kubernetesclusterissuerv1.KubernetesClusterIssuer
+	CertManagerNamespace     string
+	DnsDomain                string
+	CloudflareSecretName     string
 	AcmeAccountKeySecretName string
 }
 
