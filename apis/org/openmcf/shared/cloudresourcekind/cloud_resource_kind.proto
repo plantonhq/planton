@@ -1122,6 +1122,16 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "k8sci"
   }];
+  KubernetesIssuer = 852 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8siss"
+  }];
+  KubernetesCertificate = 853 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8scrt"
+  }];
 
   // 1200–1499: DigitalOcean resources
   DigitalOceanAppPlatformService = 1200 [(kind_meta) = {

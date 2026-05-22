@@ -240,6 +240,7 @@ import (
 	hetznercloudvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud/hetznercloudvolume/v1"
 	kubernetesaltinityoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesaltinityoperator/v1"
 	kubernetesargocdv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesargocd/v1"
+	kubernetescertificatev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetescertificate/v1"
 	kubernetescertmanagerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetescertmanager/v1"
 	kubernetesclickhousev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesclickhouse/v1"
 	kubernetesclusterissuerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesclusterissuer/v1"
@@ -258,6 +259,7 @@ import (
 	kubernetesharborv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesharbor/v1"
 	kuberneteshelmreleasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kuberneteshelmrelease/v1"
 	kubernetesingressnginxv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesingressnginx/v1"
+	kubernetesissuerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesissuer/v1"
 	kubernetesistiov1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesistio/v1"
 	kubernetesjenkinsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesjenkins/v1"
 	kubernetesjobv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesjob/v1"
@@ -657,6 +659,7 @@ var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 	cloudresourcekind.CloudResourceKind_KubernetesAltinityOperator:            &kubernetesaltinityoperatorv1.KubernetesAltinityOperator{},
 	cloudresourcekind.CloudResourceKind_KubernetesArgocd:                      &kubernetesargocdv1.KubernetesArgocd{},
 	cloudresourcekind.CloudResourceKind_KubernetesCertManager:                 &kubernetescertmanagerv1.KubernetesCertManager{},
+	cloudresourcekind.CloudResourceKind_KubernetesCertificate:                 &kubernetescertificatev1.KubernetesCertificate{},
 	cloudresourcekind.CloudResourceKind_KubernetesClickHouse:                  &kubernetesclickhousev1.KubernetesClickHouse{},
 	cloudresourcekind.CloudResourceKind_KubernetesClusterIssuer:               &kubernetesclusterissuerv1.KubernetesClusterIssuer{},
 	cloudresourcekind.CloudResourceKind_KubernetesCronJob:                     &kubernetescronjobv1.KubernetesCronJob{},
@@ -674,6 +677,7 @@ var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 	cloudresourcekind.CloudResourceKind_KubernetesHarbor:                      &kubernetesharborv1.KubernetesHarbor{},
 	cloudresourcekind.CloudResourceKind_KubernetesHelmRelease:                 &kuberneteshelmreleasev1.KubernetesHelmRelease{},
 	cloudresourcekind.CloudResourceKind_KubernetesIngressNginx:                &kubernetesingressnginxv1.KubernetesIngressNginx{},
+	cloudresourcekind.CloudResourceKind_KubernetesIssuer:                      &kubernetesissuerv1.KubernetesIssuer{},
 	cloudresourcekind.CloudResourceKind_KubernetesIstio:                       &kubernetesistiov1.KubernetesIstio{},
 	cloudresourcekind.CloudResourceKind_KubernetesJenkins:                     &kubernetesjenkinsv1.KubernetesJenkins{},
 	cloudresourcekind.CloudResourceKind_KubernetesJob:                         &kubernetesjobv1.KubernetesJob{},
