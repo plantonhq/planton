@@ -1,0 +1,14 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesCertificate
+metadata:
+  name: my-certificate
+spec:
+  namespace:
+    value: "<your-namespace>"
+  dnsNames:
+    - "<your-hostname.example.com>"
+  secretName: "<your-hostname>-tls"
+  issuerRef:
+    clusterIssuer:
+      name:
+        value: "<your-cluster-issuer>"

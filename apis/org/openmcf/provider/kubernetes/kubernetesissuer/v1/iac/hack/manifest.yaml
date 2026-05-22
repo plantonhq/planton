@@ -1,0 +1,8 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesIssuer
+metadata:
+  name: test-selfsigned-issuer
+spec:
+  namespace:
+    value: cert-manager
+  selfSigned: {}

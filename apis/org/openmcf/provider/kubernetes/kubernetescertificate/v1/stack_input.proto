@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetescertificate.v1;
+
+import "org/openmcf/provider/kubernetes/kubernetescertificate/v1/api.proto";
+import "org/openmcf/provider/kubernetes/provider.proto";
+
+// Input for the KubernetesCertificate IaC stack.
+message KubernetesCertificateStackInput {
+  // Target cloud-resource.
+  KubernetesCertificate target = 1;
+  // Kubernetes provider configuration (cluster credentials).
+  org.openmcf.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

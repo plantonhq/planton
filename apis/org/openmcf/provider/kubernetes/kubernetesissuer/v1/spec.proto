@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetesissuer.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/kubernetes/target_cluster.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// KubernetesIssuerSpec defines configuration for a namespace-scoped cert-manager
+// Issuer. Unlike ClusterIssuer (which operates cluster-wide with DNS-01/ACME),
+// an Issuer is scoped to a single namespace and supports simpler signing modes:
+//
+//   - **CA**: signs certificates using a CA keypair stored in a Kubernetes Secret
+//     (typically created by a KubernetesCertificate with is_ca=true).
+//   - **SelfSigned**: issues self-signed certificates, commonly used to bootstrap
+//     a CA chain or for development/testing.
+//
+// Only CA and SelfSigned are included (80/20 rule). ACME issuance is handled by
+// KubernetesClusterIssuer; Vault or other backends can be added later.
+message KubernetesIssuerSpec {
+  option (buf.validate.message).cel = {
+    id: "issuer_type.required"
+    message: "An issuer type must be selected -- choose 'ca' to sign certificates using a CA keypair from a Kubernetes Secret, or 'self_signed' for self-signed certificates used to bootstrap CA chains or for development"
+    expression: "has(this.ca) || has(this.self_signed)"
+  };
+
+  // Target Kubernetes cluster where cert-manager is installed.
+  org.openmcf.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Namespace where the Issuer will be created.
+  // The Issuer is namespace-scoped, so all Certificate resources that reference
+  // it must reside in this same namespace.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Exactly one issuer type must be selected.
+  oneof issuer_type {
+    // CA issuer -- signs certificates using a CA keypair from a Kubernetes Secret.
+    CaIssuerConfig ca = 100;
+    // Self-signed issuer -- issues self-signed certificates (no external CA needed).
+    SelfSignedIssuerConfig self_signed = 101;
+  }
+}
+
+// CaIssuerConfig configures the Issuer to sign certificates using a CA keypair
+// stored in a Kubernetes Secret. The Secret must contain tls.crt (CA certificate)
+// and tls.key (CA private key), and must reside in the same namespace as the Issuer.
+//
+// Typically, the CA Secret is created by a KubernetesCertificate with is_ca=true.
+// The foreign-key annotation on ca_secret_name points to
+// KubernetesCertificate.status.outputs.secret_name so that the Issuer
+// automatically picks up the correct Secret when wired via a resource reference.
+message CaIssuerConfig {
+  // Kubernetes Secret containing the CA certificate (tls.crt) and private key (tls.key).
+  // Must be in the same namespace as the Issuer.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef ca_secret_name = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = KubernetesCertificate,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secret_name"
+  ];
+}
+
+// SelfSignedIssuerConfig selects self-signed mode for the Issuer.
+// No configuration required. Selecting this issuer type creates a self-signed
+// Issuer, commonly used to bootstrap a root CA or for development environments.
+message SelfSignedIssuerConfig {}

@@ -1,0 +1,15 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesCertificate
+metadata:
+  name: my-wildcard-cert
+spec:
+  namespace:
+    value: "<your-namespace>"
+  dnsNames:
+    - "*.example.com"
+    - "example.com"
+  secretName: "<your-domain>-wildcard-tls"
+  issuerRef:
+    clusterIssuer:
+      name:
+        value: "<your-cluster-issuer>"
