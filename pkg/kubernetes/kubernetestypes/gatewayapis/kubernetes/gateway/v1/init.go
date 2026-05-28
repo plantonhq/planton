@@ -45,6 +45,18 @@ func (m *module) Construct(ctx *pulumi.Context, name, typ, urn string) (r pulumi
 		r = &HTTPRouteList{}
 	case "kubernetes:gateway.networking.k8s.io/v1:HTTPRoutePatch":
 		r = &HTTPRoutePatch{}
+	case "kubernetes:gateway.networking.k8s.io/v1:ReferenceGrant":
+		r = &ReferenceGrant{}
+	case "kubernetes:gateway.networking.k8s.io/v1:ReferenceGrantList":
+		r = &ReferenceGrantList{}
+	case "kubernetes:gateway.networking.k8s.io/v1:ReferenceGrantPatch":
+		r = &ReferenceGrantPatch{}
+	case "kubernetes:gateway.networking.k8s.io/v1:TLSRoute":
+		r = &TLSRoute{}
+	case "kubernetes:gateway.networking.k8s.io/v1:TLSRouteList":
+		r = &TLSRouteList{}
+	case "kubernetes:gateway.networking.k8s.io/v1:TLSRoutePatch":
+		r = &TLSRoutePatch{}
 	default:
 		return nil, fmt.Errorf("unknown resource type: %s", typ)
 	}

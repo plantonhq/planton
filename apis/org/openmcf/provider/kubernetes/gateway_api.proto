@@ -1,0 +1,322 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes;
+
+import "buf/validate/validate.proto";
+
+// Shared Gateway API types used across multiple OpenMCF Gateway API components.
+// Translated from kubernetes-sigs/gateway-api v1.5.1:
+//   - apis/v1/shared_types.go
+//   - apis/v1/object_reference_types.go
+//   - apis/v1/gatewayclass_types.go (ParametersReference only)
+//
+// Status types (RouteStatus, RouteParentStatus, GatewayStatus, etc.) are
+// intentionally excluded — OpenMCF captures deployment outputs via
+// stack_outputs.proto, not CRD status subresources.
+//
+// Types used only by excluded resources (ParentGatewayReference for ListenerSet)
+// are also excluded.
+
+// KubernetesGatewayApiParentReference identifies an API object (usually a
+// Gateway) that can be considered a parent of a route resource.
+//
+// Upstream: ParentReference in apis/v1/shared_types.go
+message KubernetesGatewayApiParentReference {
+  // Group of the referent.
+  // When unspecified, "gateway.networking.k8s.io" is inferred.
+  // Set to "" (empty string) for the core API group.
+  //
+  // Upstream default: "gateway.networking.k8s.io"
+  optional string group = 1;
+
+  // Kind of the referent.
+  // Core parent kinds: Gateway (Gateway conformance), Service (Mesh conformance).
+  //
+  // Upstream default: "Gateway"
+  optional string kind = 2;
+
+  // Namespace of the referent. When unspecified, refers to the local
+  // namespace of the Route. Cross-namespace references require a
+  // ReferenceGrant in the target namespace.
+  optional string namespace = 3;
+
+  // Name of the referent.
+  string name = 4 [(buf.validate.field).required = true];
+
+  // Name of a section within the target resource (e.g., a Gateway Listener
+  // name). When unspecified, references the entire resource.
+  optional string section_name = 5;
+
+  // Network port this Route targets on the parent resource.
+  optional int32 port = 6 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+}
+
+// KubernetesGatewayApiCommonRouteSpec defines the common attributes that all
+// Route types include within their spec. Embedded inline (flattened) into each
+// route's spec.proto.
+//
+// Upstream: CommonRouteSpec in apis/v1/shared_types.go
+message KubernetesGatewayApiCommonRouteSpec {
+  // References to the parent resources (usually Gateways) that a Route wants
+  // to be attached to. The referenced parent must allow attachment from Routes
+  // of this kind and namespace.
+  repeated KubernetesGatewayApiParentReference parent_refs = 1 [(buf.validate.field).repeated.max_items = 32];
+
+  // Experimental: indicates the default Gateway scope for this Route.
+  // When unset or "None", the Route will not attach to any default Gateway.
+  // When "All", the Route attaches to any default Gateway supporting the scope.
+  //
+  // May change in future Gateway API versions.
+  optional string use_default_gateways = 2;
+}
+
+// KubernetesGatewayApiBackendObjectReference defines a reference to a backend
+// Kubernetes object (usually a Service).
+//
+// Upstream: BackendObjectReference in apis/v1/object_reference_types.go
+//
+// When the referent is a core Service, port is required.
+message KubernetesGatewayApiBackendObjectReference {
+  option (buf.validate.message).cel = {
+    id: "backend_object_ref.port_required_for_service"
+    message: "port must be specified when referencing a core API Service (group is empty and kind is 'Service')"
+    expression: "(!has(this.group) || this.group == '') && (!has(this.kind) || this.kind == 'Service') ? has(this.port) : true"
+  };
+
+  // Group of the referent. Empty string infers the core API group.
+  //
+  // Upstream default: "" (core API group)
+  optional string group = 1;
+
+  // Kind of the referent.
+  //
+  // Upstream default: "Service"
+  optional string kind = 2;
+
+  // Name of the referent.
+  string name = 3 [(buf.validate.field).required = true];
+
+  // Namespace of the backend. When unspecified, the local namespace is inferred.
+  // Cross-namespace references require a ReferenceGrant.
+  optional string namespace = 4;
+
+  // Destination port number. Required when the referent is a core Service.
+  optional int32 port = 5 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+}
+
+// KubernetesGatewayApiBackendRef defines how a Route should forward a request
+// to a Kubernetes resource. Flattens BackendObjectReference fields plus weight.
+//
+// Upstream: BackendRef in apis/v1/shared_types.go (embeds BackendObjectReference)
+message KubernetesGatewayApiBackendRef {
+  // Group of the referent. Empty string infers the core API group.
+  //
+  // Upstream default: "" (core API group)
+  optional string group = 1;
+
+  // Kind of the referent.
+  //
+  // Upstream default: "Service"
+  optional string kind = 2;
+
+  // Name of the referent.
+  string name = 3 [(buf.validate.field).required = true];
+
+  // Namespace of the backend. When unspecified, the local namespace is inferred.
+  // Cross-namespace references require a ReferenceGrant.
+  optional string namespace = 4;
+
+  // Destination port number. Required when the referent is a core Service.
+  optional int32 port = 5 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+
+  // Proportion of requests forwarded to this backend, computed as
+  // weight/(sum of all weights). Unspecified defaults to 1.
+  //
+  // Upstream default: 1
+  optional int32 weight = 6 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 1000000
+  }];
+}
+
+// KubernetesGatewayApiLocalObjectReference identifies an API object within the
+// namespace of the referrer. All fields are required.
+//
+// Upstream: LocalObjectReference in apis/v1/object_reference_types.go
+message KubernetesGatewayApiLocalObjectReference {
+  // Group of the referent (e.g., "gateway.networking.k8s.io").
+  // Empty string infers the core API group.
+  string group = 1;
+
+  // Kind of the referent (e.g., "HTTPRoute" or "Service").
+  string kind = 2;
+
+  // Name of the referent.
+  string name = 3 [(buf.validate.field).required = true];
+}
+
+// KubernetesGatewayApiSecretObjectReference identifies a Secret-like API
+// object including its namespace.
+//
+// Upstream: SecretObjectReference in apis/v1/object_reference_types.go
+message KubernetesGatewayApiSecretObjectReference {
+  // Group of the referent. Empty string infers the core API group.
+  //
+  // Upstream default: "" (core API group)
+  optional string group = 1;
+
+  // Kind of the referent.
+  //
+  // Upstream default: "Secret"
+  optional string kind = 2;
+
+  // Name of the referent.
+  string name = 3 [(buf.validate.field).required = true];
+
+  // Namespace of the referenced object. When unspecified, the local namespace
+  // is inferred. Cross-namespace references require a ReferenceGrant.
+  optional string namespace = 4;
+}
+
+// KubernetesGatewayApiObjectReference identifies an API object including its
+// namespace. Group and Kind are required (value types, not pointers upstream).
+//
+// Upstream: ObjectReference in apis/v1/object_reference_types.go
+message KubernetesGatewayApiObjectReference {
+  // Group of the referent.
+  string group = 1;
+
+  // Kind of the referent (e.g., "ConfigMap" or "Service").
+  string kind = 2;
+
+  // Name of the referent.
+  string name = 3 [(buf.validate.field).required = true];
+
+  // Namespace of the referenced object. When unspecified, the local namespace
+  // is inferred. Cross-namespace references require a ReferenceGrant.
+  optional string namespace = 4;
+}
+
+// KubernetesGatewayApiParametersReference references an arbitrary API object
+// used for GatewayClass parameters.
+//
+// Upstream: ParametersReference in apis/v1/gatewayclass_types.go
+message KubernetesGatewayApiParametersReference {
+  // Group of the referent.
+  string group = 1;
+
+  // Kind of the referent.
+  string kind = 2;
+
+  // Name of the referent.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 253
+    }
+  ];
+
+  // Namespace of the referent. Required for namespace-scoped resources,
+  // must be unset for cluster-scoped resources.
+  optional string namespace = 4;
+}
+
+// KubernetesGatewayApiSessionPersistence defines session persistence
+// configuration for route rules.
+//
+// Upstream: SessionPersistence in apis/v1/shared_types.go
+message KubernetesGatewayApiSessionPersistence {
+  option (buf.validate.message).cel = {
+    id: "session_persistence.absolute_timeout_for_permanent_cookie"
+    message: "absolute_timeout must be specified when cookie lifetime_type is 'Permanent'"
+    expression: "!has(this.cookie_config) || !has(this.cookie_config.lifetime_type) || this.cookie_config.lifetime_type != 'Permanent' || has(this.absolute_timeout)"
+  };
+  option (buf.validate.message).cel = {
+    id: "session_persistence.cookie_config_requires_cookie_type"
+    message: "cookie_config can only be set when type is 'Cookie'"
+    expression: "!has(this.cookie_config) || (!has(this.type) || this.type == 'Cookie')"
+  };
+
+  // Name of the persistent session token, which may be reflected in the
+  // cookie or header. Avoid reusing names to prevent unintended behavior.
+  optional string session_name = 1 [(buf.validate.field).string.max_len = 128];
+
+  // Absolute timeout of the persistent session. Once elapsed, the session
+  // becomes invalid. Format: Gateway API Duration (e.g., "1h", "30m", "10s").
+  optional string absolute_timeout = 2;
+
+  // Idle timeout of the persistent session. Once the session has been idle
+  // for longer than this duration, it becomes invalid.
+  // Format: Gateway API Duration (e.g., "30m", "5m").
+  optional string idle_timeout = 3;
+
+  // Type of session persistence. Defaults to cookie-based.
+  //
+  // Upstream default: "Cookie"
+  //
+  // external standard exception — matches Gateway API constant
+  optional string type = 4;
+
+  // Cookie-specific configuration. Only valid when type is "Cookie".
+  KubernetesGatewayApiCookieConfig cookie_config = 5;
+}
+
+// KubernetesGatewayApiCookieConfig provides cookie-specific session
+// persistence configuration.
+//
+// Upstream: CookieConfig in apis/v1/shared_types.go
+message KubernetesGatewayApiCookieConfig {
+  // Specifies whether the cookie has a permanent or session-based lifetime.
+  // Permanent cookies persist until their specified expiry time (Expires/Max-Age).
+  // Session cookies are deleted when the current session ends.
+  //
+  // When "Permanent", absolute_timeout in SessionPersistence is required.
+  //
+  // Upstream default: "Session"
+  //
+  // external standard exception — matches Gateway API constant
+  optional string lifetime_type = 1;
+}
+
+// KubernetesGatewayApiFraction represents a fraction used for traffic
+// splitting (e.g., mirror percentages).
+//
+// Upstream: Fraction in apis/v1/shared_types.go
+message KubernetesGatewayApiFraction {
+  option (buf.validate.message).cel = {
+    id: "fraction.numerator_lte_denominator"
+    message: "numerator must be less than or equal to denominator"
+    expression: "!has(this.denominator) || this.numerator <= this.denominator"
+  };
+
+  // Numerator of the fraction. Must be non-negative.
+  int32 numerator = 1 [(buf.validate.field).int32.gte = 0];
+
+  // Denominator of the fraction.
+  //
+  // Upstream default: 100
+  optional int32 denominator = 2 [(buf.validate.field).int32.gte = 1];
+}
+
+// Note on enums: The upstream Gateway API uses string type aliases with
+// kubebuilder Enum validation (e.g., SessionPersistenceType, CookieLifetimeType,
+// AddressType). These are represented as `optional string` fields in proto
+// because:
+//   1. Proto enums change CEL expression semantics (string comparison breaks)
+//   2. Upstream defaults are controller-specific and should not be baked in
+//   3. Component-specific enums (ProtocolType, HTTPMethod, etc.) are defined
+//      nested inside each component's spec.proto per forge convention
+//
+// Valid values are documented in field comments. Component specs that need
+// typed enum validation for their own fields will define nested enums
+// following DD-003 (uppercase external standard exception).

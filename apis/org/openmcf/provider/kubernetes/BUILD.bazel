@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "cli_help.go",
         "container_env.pb.go",
+        "gateway_api.pb.go",
         "kubernetes.pb.go",
         "kubernetes_secret.pb.go",
         "options.pb.go",

@@ -1,8 +1,8 @@
 go_build_dir=pkg
 
 #https://github.com/kubernetes-sigs/gateway-api/tree/main/config/crd/standard
-#https://github.com/kubernetes-sigs/gateway-api/tree/v1.1.0/config/crd/standard
-gateway_apis=v1.1.0
+#https://github.com/kubernetes-sigs/gateway-api/tree/v1.5.1/config/crd/standard
+gateway_apis=v1.5.1
 
 #https://github.com/istio/istio/tree/master/manifests/charts/base/crds
 #https://github.com/istio/istio/tree/release-1.22
@@ -65,7 +65,9 @@ gen-gateway-apis:
 	https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/${gateway_apis}/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
 	https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/${gateway_apis}/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
 	https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/${gateway_apis}/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml \
-	https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/${gateway_apis}/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
+	https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/${gateway_apis}/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml \
+	https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/${gateway_apis}/config/crd/standard/gateway.networking.k8s.io_tlsroutes.yaml \
+	https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/${gateway_apis}/config/crd/experimental/gateway.networking.k8s.io_tcproutes.yaml
 
 .PHONY: gen-istio
 gen-istio:

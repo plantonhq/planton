@@ -1132,6 +1132,41 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "k8scrt"
   }];
+  KubernetesGatewayClass = 854 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8sgwc"
+  }];
+  KubernetesGateway = 855 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8sgw"
+  }];
+  KubernetesHttpRoute = 856 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8shrt"
+  }];
+  KubernetesGrpcRoute = 857 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8sgrt"
+  }];
+  KubernetesTcpRoute = 858 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8strt"
+  }];
+  KubernetesTlsRoute = 859 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8stlsrt"
+  }];
+  KubernetesReferenceGrant = 860 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8srefgrt"
+  }];
 
   // 1200–1499: DigitalOcean resources
   DigitalOceanAppPlatformService = 1200 [(kind_meta) = {
