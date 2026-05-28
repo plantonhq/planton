@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetesgatewayclass.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/kubernetes/kubernetesgatewayclass/v1/spec.proto";
+import "org/openmcf/provider/kubernetes/kubernetesgatewayclass/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// KubernetesGatewayClass is a Kubernetes Gateway API GatewayClass: a
+// cluster-scoped template identifying the controller that manages Gateways of
+// this class.
+message KubernetesGatewayClass {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesGatewayClass'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  KubernetesGatewayClassSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  KubernetesGatewayClassStatus status = 5;
+}
+
+// KubernetesGatewayClassStatus holds the deployment status and outputs.
+message KubernetesGatewayClassStatus {
+  // stack-outputs
+  KubernetesGatewayClassStackOutputs outputs = 1;
+}

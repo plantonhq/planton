@@ -1,0 +1,12 @@
+apiVersion: qa.openmcf.org/v1
+kind: ComponentE2EProfile
+metadata:
+  name: kubernetesgatewayclass
+spec:
+  tier: 4
+  status: deferred
+  deferred_reason: "Requires the Gateway API CRDs (KubernetesGatewayApiCrds prerequisite) to be present on the test substrate before a GatewayClass can be applied. The current E2E harness runs each component on a bare kind cluster and does not yet provision registered prerequisites, so this is deferred until prerequisite provisioning is supported. Both Pulumi and Terraform modules build and validate clean."
+  validated_provisioners:
+    - pulumi
+    - terraform
+  timeout_minutes: 15
