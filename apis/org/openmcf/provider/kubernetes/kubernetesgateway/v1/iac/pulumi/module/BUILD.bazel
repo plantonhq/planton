@@ -1,0 +1,27 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "addresses.go",
+        "infrastructure.go",
+        "listeners.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+        "selectors.go",
+        "tls.go",
+    ],
+    importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesgateway/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/org/openmcf/provider/kubernetes",
+        "//apis/org/openmcf/provider/kubernetes/kubernetesgateway/v1:kubernetesgateway",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
+        "//pkg/kubernetes/kubernetestypes/gatewayapis/kubernetes/gateway/v1:gateway",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/meta/v1:meta",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

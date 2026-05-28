@@ -1,0 +1,555 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetesgateway.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/kubernetes/gateway_api.proto";
+import "org/openmcf/provider/kubernetes/target_cluster.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// KubernetesGatewaySpec defines a Kubernetes Gateway API Gateway: a
+// namespaced instance of traffic-handling infrastructure that binds a set of
+// Listeners (logical endpoints with a port, protocol, and optional TLS) to
+// addresses, managed by the controller behind a GatewayClass.
+//
+// 100% fidelity with the upstream Gateway API v1.5.1 GatewaySpec
+// (kubernetes-sigs/gateway-api apis/v1/gateway_types.go), standard channel.
+// Upstream spec fields are flattened after the OpenMCF namespaced envelope
+// (target_cluster, namespace). The experimental `defaultScope` field is
+// intentionally excluded: it is absent from the standard-channel CRD and from
+// the typed Pulumi resource OpenMCF provisions with.
+message KubernetesGatewaySpec {
+  // Listener distinctness rules (translated verbatim from the upstream
+  // GatewaySpec.listeners XValidation rules):
+  // listener names must be unique within the Gateway.
+  option (buf.validate.message).cel = {
+    id: "gateway.listener_names_unique"
+    message: "each listener name must be unique within the Gateway"
+    expression: "this.listeners.all(l1, this.listeners.exists_one(l2, l1.name == l2.name))"
+  };
+  // the combination of port, protocol, and hostname must be unique across
+  // listeners so that every inbound flow maps to exactly one listener.
+  option (buf.validate.message).cel = {
+    id: "gateway.listener_port_protocol_hostname_unique"
+    message: "each listener must have a unique combination of port, protocol, and hostname"
+    expression: "this.listeners.all(l1, this.listeners.exists_one(l2, l1.port == l2.port && l1.protocol == l2.protocol && (has(l1.hostname) && has(l2.hostname) ? l1.hostname == l2.hostname : !has(l1.hostname) && !has(l2.hostname))))"
+  };
+  // requested IPAddress address values must be unique.
+  option (buf.validate.message).cel = {
+    id: "gateway.ip_addresses_unique"
+    message: "each requested IPAddress value must be unique"
+    expression: "this.addresses.all(a1, ((!has(a1.type) || a1.type == '' || a1.type == 'IPAddress') && a1.value != '') ? this.addresses.exists_one(a2, (!has(a2.type) || a2.type == '' || a2.type == 'IPAddress') && a2.value == a1.value) : true)"
+  };
+  // requested Hostname address values must be unique.
+  option (buf.validate.message).cel = {
+    id: "gateway.hostname_addresses_unique"
+    message: "each requested Hostname address value must be unique"
+    expression: "this.addresses.all(a1, (a1.type == 'Hostname' && a1.value != '') ? this.addresses.exists_one(a2, a2.type == 'Hostname' && a2.value == a1.value) : true)"
+  };
+
+  // Target Kubernetes cluster where this Gateway is created. The Gateway API
+  // CRDs (KubernetesGatewayApiCrds) and a controller-backed GatewayClass must
+  // already be present on the cluster.
+  org.openmcf.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Namespace in which the Gateway is created. Routes that attach to this
+  // Gateway, and the TLS Secrets its listeners reference, are subject to the
+  // usual same-namespace / ReferenceGrant rules.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Name of the GatewayClass this Gateway belongs to. The GatewayClass selects
+  // the controller (Istio, Envoy Gateway, NGINX, ...) that programs this
+  // Gateway. As a foreign key it points at a KubernetesGatewayClass output so
+  // InfraChart DAGs deploy the class before the Gateway.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef gateway_class_name = 3 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = KubernetesGatewayClass,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.gateway_class_name"
+  ];
+
+  // Listeners are the logical endpoints bound on this Gateway's addresses.
+  // Each listener defines a port, protocol, and optional TLS and hostname.
+  // At least one listener is required.
+  repeated KubernetesGatewayListener listeners = 4 [(buf.validate.field).repeated = {
+    min_items: 1
+    max_items: 64
+  }];
+
+  // Addresses requested for this Gateway (for example a specific static IP).
+  // Optional; when omitted the controller assigns addresses. Behavior is
+  // implementation-specific. Upstream support level: Extended.
+  repeated KubernetesGatewayAddress addresses = 5 [(buf.validate.field).repeated.max_items = 16];
+
+  // Infrastructure-level attributes (labels, annotations, and a per-Gateway
+  // parameters reference) applied to resources the controller creates for this
+  // Gateway. Upstream support level: Extended.
+  KubernetesGatewayInfrastructure infrastructure = 6;
+
+  // Controls which ListenerSets may attach to this Gateway. Defaults to
+  // allowing none. ListenerSet itself is not yet an OpenMCF resource; this
+  // field is retained for full spec fidelity and forward compatibility.
+  KubernetesGatewayAllowedListeners allowed_listeners = 7;
+
+  // Gateway-wide TLS configuration: client-certificate validation for inbound
+  // (frontend) HTTPS traffic and client-certificate material for outbound
+  // (backend) connections. Per-listener TLS termination is configured on each
+  // listener instead. Upstream support level: Extended.
+  KubernetesGatewayTlsConfig tls = 8;
+}
+
+// KubernetesGatewayListener is a logical endpoint where the Gateway accepts
+// network connections.
+//
+// Upstream: Listener in apis/v1/gateway_types.go
+message KubernetesGatewayListener {
+  // tls must not be set for protocols that do not terminate or inspect TLS.
+  option (buf.validate.message).cel = {
+    id: "listener.tls_not_allowed_for_protocol"
+    message: "tls must not be set when protocol is HTTP, TCP, or UDP"
+    expression: "this.protocol in ['HTTP', 'TCP', 'UDP'] ? !has(this.tls) : true"
+  };
+  // an HTTPS listener may only terminate TLS (mode must be unset or Terminate).
+  option (buf.validate.message).cel = {
+    id: "listener.https_requires_terminate_mode"
+    message: "tls mode must be Terminate (or left unset) when protocol is HTTPS"
+    expression: "(this.protocol == 'HTTPS' && has(this.tls)) ? (!has(this.tls.mode) || this.tls.mode == '' || this.tls.mode == 'Terminate') : true"
+  };
+  // a TLS listener must declare its TLS mode (Terminate or Passthrough).
+  option (buf.validate.message).cel = {
+    id: "listener.tls_protocol_requires_mode"
+    message: "tls and tls.mode must be set when protocol is TLS"
+    expression: "this.protocol == 'TLS' ? (has(this.tls) && has(this.tls.mode) && this.tls.mode != '') : true"
+  };
+  // hostname matching does not apply to connection-oriented protocols.
+  option (buf.validate.message).cel = {
+    id: "listener.hostname_not_allowed_for_protocol"
+    message: "hostname must not be set when protocol is TCP or UDP"
+    expression: "this.protocol in ['TCP', 'UDP'] ? (!has(this.hostname) || this.hostname == '') : true"
+  };
+
+  // Name of the listener; must be unique within the Gateway. Routes attach to
+  // a specific listener by this name (parentRef.sectionName).
+  //
+  // Upstream SectionName constraints: 1-253 chars; lowercase RFC 1123
+  // subdomain. Pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 253
+      pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+    }
+  ];
+
+  // Virtual hostname to match for protocols that support it (HTTP, HTTPS, TLS).
+  // When unset, all hostnames match. A leading wildcard label (for example
+  // "*.example.com") is a suffix match. Ignored for TCP and UDP.
+  //
+  // Upstream Hostname constraints: 1-253 chars. Pattern (wildcard prefix
+  // allowed): ^(\*\.)?[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$
+  optional string hostname = 2 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 253
+    pattern: "^(\\*\\.)?[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+  }];
+
+  // Network port this listener binds. Multiple listeners may share a port
+  // subject to the distinctness rules above.
+  int32 port = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  // Application protocol the listener accepts. Core values are HTTP, HTTPS,
+  // TLS, TCP, and UDP. Implementation-specific protocols use a domain-prefixed
+  // path such as "example.com/my-protocol".
+  //
+  // Upstream ProtocolType is an open set validated by pattern (not a closed
+  // enum), so custom domain-prefixed protocols remain valid.
+  // Pattern: ^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?$|<domain>/<path>
+  string protocol = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 255
+      pattern: "^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?$|[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*\\/[A-Za-z0-9]+$"
+    }
+  ];
+
+  // TLS configuration for this listener. Required for HTTPS and TLS protocols;
+  // must be absent for HTTP, TCP, and UDP (enforced above).
+  KubernetesGatewayListenerTlsConfig tls = 5;
+
+  // Restricts which Routes (by kind and namespace) may attach to this
+  // listener. When unset, the controller selects routes by listener protocol
+  // and the same namespace as the Gateway.
+  KubernetesGatewayAllowedRoutes allowed_routes = 6;
+}
+
+// KubernetesGatewayListenerTlsConfig describes the TLS behavior of a listener.
+//
+// Upstream: ListenerTLSConfig in apis/v1/gateway_types.go
+message KubernetesGatewayListenerTlsConfig {
+  // when terminating TLS, the listener must have somewhere to source its
+  // certificate from (an explicit certificate reference or an
+  // implementation-specific option). Mode left unset defaults to Terminate.
+  option (buf.validate.message).cel = {
+    id: "listener_tls.terminate_requires_cert_or_options"
+    message: "certificate_refs or options must be provided when tls mode is Terminate (the default)"
+    expression: "(!has(this.mode) || this.mode == '' || this.mode == 'Terminate') ? (size(this.certificate_refs) > 0 || size(this.options) > 0) : true"
+  };
+
+  // How the listener handles the client's TLS session. "Terminate" (default)
+  // decrypts at the Gateway and requires a certificate. "Passthrough" forwards
+  // the encrypted stream untouched (TLSRoute only) and ignores certificate_refs.
+  //
+  // Upstream default: "Terminate". Closed enum: Terminate | Passthrough.
+  optional string mode = 1 [(buf.validate.field).cel = {
+    id: "listener_tls.mode_enum"
+    message: "tls mode must be either 'Terminate' or 'Passthrough'"
+    expression: "this == '' || this in ['Terminate', 'Passthrough']"
+  }];
+
+  // References to Kubernetes Secrets holding the TLS certificate/key used to
+  // terminate the listener. A single reference to a kubernetes.io/tls Secret
+  // has Core support; multiple references are implementation-specific.
+  repeated org.openmcf.provider.kubernetes.KubernetesGatewayApiSecretObjectReference certificate_refs = 2 [(buf.validate.field).repeated.max_items = 64];
+
+  // Implementation-specific TLS options (for example minimum TLS version or
+  // cipher suites). Keys should be domain-prefixed to avoid ambiguity.
+  //
+  // Upstream key/value: Gateway API AnnotationKey (1-253) / AnnotationValue
+  // (0-4096).
+  map<string, string> options = 3 [(buf.validate.field).map = {
+    max_pairs: 16
+    keys: {
+      string: {
+        min_len: 1
+        max_len: 253
+        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?([A-Za-z0-9][-A-Za-z0-9_.]{0,61})?[A-Za-z0-9]$"
+      }
+    }
+    values: {
+      string: {max_len: 4096}
+    }
+  }];
+}
+
+// KubernetesGatewayAllowedRoutes defines which Routes may attach to a listener.
+//
+// Upstream: AllowedRoutes in apis/v1/gateway_types.go
+message KubernetesGatewayAllowedRoutes {
+  // Namespaces from which Routes may attach. Defaults to the Gateway's own
+  // namespace.
+  KubernetesGatewayRouteNamespaces namespaces = 1;
+
+  // Route kinds allowed to bind to this listener. When empty, allowed kinds
+  // are inferred from the listener protocol.
+  repeated KubernetesGatewayRouteGroupKind kinds = 2 [(buf.validate.field).repeated.max_items = 8];
+}
+
+// KubernetesGatewayRouteNamespaces indicates the namespaces Routes are
+// selected from.
+//
+// Upstream: RouteNamespaces in apis/v1/gateway_types.go
+message KubernetesGatewayRouteNamespaces {
+  // Where Routes are selected from: "All" (any namespace), "Selector"
+  // (namespaces matching the selector), or "Same" (the Gateway's namespace).
+  //
+  // Upstream default: "Same". Closed enum: All | Selector | Same.
+  optional string from = 1 [(buf.validate.field).cel = {
+    id: "route_namespaces.from_enum"
+    message: "from must be one of 'All', 'Selector', or 'Same'"
+    expression: "this == '' || this in ['All', 'Selector', 'Same']"
+  }];
+
+  // Namespace label selector. Required (and only honored) when `from` is
+  // "Selector".
+  KubernetesGatewayLabelSelector selector = 2;
+}
+
+// KubernetesGatewayRouteGroupKind identifies a Route group and kind allowed on
+// a listener.
+//
+// Upstream: RouteGroupKind in apis/v1/gateway_types.go
+message KubernetesGatewayRouteGroupKind {
+  // API group of the Route. Empty string selects the core API group.
+  //
+  // Upstream default: "gateway.networking.k8s.io".
+  // Group pattern: empty or an RFC 1123 subdomain (max 253).
+  optional string group = 1 [(buf.validate.field).string = {
+    max_len: 253
+    pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+  }];
+
+  // Kind of the Route (for example "HTTPRoute", "GRPCRoute", "TLSRoute").
+  //
+  // Kind pattern: 1-63 chars, ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
+  string kind = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 63
+      pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+    }
+  ];
+}
+
+// KubernetesGatewayLabelSelector is a Kubernetes label selector used to choose
+// namespaces (mirrors metav1.LabelSelector). Reused for both AllowedRoutes and
+// AllowedListeners namespace selection.
+message KubernetesGatewayLabelSelector {
+  // Map of {key,value} pairs. A namespace matches if it carries all of these
+  // labels.
+  map<string, string> match_labels = 1;
+
+  // List of label selector requirements, ANDed together with match_labels.
+  repeated KubernetesGatewayLabelSelectorRequirement match_expressions = 2;
+}
+
+// KubernetesGatewayLabelSelectorRequirement is a single label selector
+// requirement (mirrors metav1.LabelSelectorRequirement).
+message KubernetesGatewayLabelSelectorRequirement {
+  // Label key the requirement applies to.
+  string key = 1 [(buf.validate.field).required = true];
+
+  // Relationship between the key and values: "In", "NotIn", "Exists", or
+  // "DoesNotExist". For "Exists"/"DoesNotExist", values must be empty.
+  string operator = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "label_selector.operator_enum"
+      message: "operator must be one of 'In', 'NotIn', 'Exists', or 'DoesNotExist'"
+      expression: "this in ['In', 'NotIn', 'Exists', 'DoesNotExist']"
+    }
+  ];
+
+  // Values for the requirement. Must be non-empty for "In"/"NotIn" and empty
+  // for "Exists"/"DoesNotExist".
+  repeated string values = 3;
+}
+
+// KubernetesGatewayAddress is an address requested for the Gateway.
+//
+// Upstream: GatewaySpecAddress in apis/v1/gateway_types.go
+message KubernetesGatewayAddress {
+  // hostname address values must be valid DNS hostnames.
+  option (buf.validate.message).cel = {
+    id: "address.hostname_value_format"
+    message: "a Hostname address value must be a valid lowercase DNS hostname"
+    expression: "this.type == 'Hostname' ? (this.value == '' || this.value.matches('^(\\\\*\\\\.)?[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$')) : true"
+  };
+
+  // How the address value is interpreted. Core values are "IPAddress"
+  // (default) and "Hostname"; "NamedAddress" is deprecated. Custom types use a
+  // domain-prefixed string.
+  //
+  // Upstream default: "IPAddress". Open set validated by pattern.
+  optional string type = 1 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 253
+    pattern: "^Hostname|IPAddress|NamedAddress|[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*\\/[A-Za-z0-9\\/\\-._~%!$&'()*+,;=:]+$"
+  }];
+
+  // The address value (for example "1.2.3.4", "128::1", or "my-ip-address").
+  // When empty, the implementation assigns a matching address if it can.
+  string value = 2 [(buf.validate.field).string.max_len = 253];
+}
+
+// KubernetesGatewayInfrastructure carries infrastructure-level attributes for
+// resources the controller creates for this Gateway.
+//
+// Upstream: GatewayInfrastructure in apis/v1/gateway_types.go
+message KubernetesGatewayInfrastructure {
+  // Labels applied to created resources. Up to 8 entries.
+  //
+  // Upstream key/value: Gateway API LabelKey (1-253) / LabelValue (0-63).
+  map<string, string> labels = 1 [(buf.validate.field).map = {
+    max_pairs: 8
+    keys: {
+      string: {
+        min_len: 1
+        max_len: 253
+        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?([A-Za-z0-9][-A-Za-z0-9_.]{0,61})?[A-Za-z0-9]$"
+      }
+    }
+    values: {
+      string: {max_len: 63}
+    }
+  }];
+
+  // Annotations applied to created resources. Up to 8 entries.
+  //
+  // Upstream key/value: Gateway API AnnotationKey (1-253) / AnnotationValue
+  // (0-4096).
+  map<string, string> annotations = 2 [(buf.validate.field).map = {
+    max_pairs: 8
+    keys: {
+      string: {
+        min_len: 1
+        max_len: 253
+        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?([A-Za-z0-9][-A-Za-z0-9_.]{0,61})?[A-Za-z0-9]$"
+      }
+    }
+    values: {
+      string: {max_len: 4096}
+    }
+  }];
+
+  // Reference to a controller-specific parameters resource for this Gateway,
+  // mirroring GatewayClass.parametersRef but per-Gateway. Optional.
+  KubernetesGatewayLocalParametersReference parameters_ref = 3;
+}
+
+// KubernetesGatewayLocalParametersReference identifies a namespace-local
+// controller-configuration resource for this Gateway.
+//
+// Upstream: LocalParametersReference in apis/v1/gateway_types.go (Gateway-only,
+// not shared: it has no namespace field, unlike GatewayClass's
+// ParametersReference).
+message KubernetesGatewayLocalParametersReference {
+  // API group of the referent.
+  string group = 1 [(buf.validate.field).required = true];
+
+  // Kind of the referent.
+  string kind = 2 [(buf.validate.field).required = true];
+
+  // Name of the referent (1-253 chars).
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 253
+    }
+  ];
+}
+
+// KubernetesGatewayAllowedListeners defines which ListenerSets may attach to
+// this Gateway.
+//
+// Upstream: AllowedListeners in apis/v1/gateway_types.go
+message KubernetesGatewayAllowedListeners {
+  // Namespaces from which ListenerSets may attach. Defaults to allowing none.
+  KubernetesGatewayListenerNamespaces namespaces = 1;
+}
+
+// KubernetesGatewayListenerNamespaces indicates the namespaces ListenerSets
+// are selected from.
+//
+// Upstream: ListenerNamespaces in apis/v1/gateway_types.go
+message KubernetesGatewayListenerNamespaces {
+  // Where ListenerSets may attach from: "All", "Selector", "Same", or "None".
+  //
+  // Upstream default: "None". Closed enum: All | Selector | Same | None.
+  optional string from = 1 [(buf.validate.field).cel = {
+    id: "listener_namespaces.from_enum"
+    message: "from must be one of 'All', 'Selector', 'Same', or 'None'"
+    expression: "this == '' || this in ['All', 'Selector', 'Same', 'None']"
+  }];
+
+  // Namespace label selector. Required (and only honored) when `from` is
+  // "Selector".
+  KubernetesGatewayLabelSelector selector = 2;
+}
+
+// KubernetesGatewayTlsConfig holds gateway-wide frontend and backend TLS
+// configuration.
+//
+// Upstream: GatewayTLSConfig in apis/v1/gateway_types.go
+message KubernetesGatewayTlsConfig {
+  // TLS configuration the Gateway uses as a client when connecting to backends.
+  KubernetesGatewayBackendTls backend = 1;
+
+  // Client-certificate validation for inbound (frontend) HTTPS connections.
+  KubernetesGatewayFrontendTlsConfig frontend = 2;
+}
+
+// KubernetesGatewayBackendTls describes backend (Gateway-as-client) TLS config.
+//
+// Upstream: GatewayBackendTLS in apis/v1/gateway_types.go
+message KubernetesGatewayBackendTls {
+  // Reference to a Secret holding a client certificate and key the Gateway
+  // presents to backends. A kubernetes.io/tls Secret has Core support.
+  org.openmcf.provider.kubernetes.KubernetesGatewayApiSecretObjectReference client_certificate_ref = 1;
+}
+
+// KubernetesGatewayFrontendTlsConfig describes inbound client-certificate
+// validation for the Gateway.
+//
+// Upstream: FrontendTLSConfig in apis/v1/gateway_types.go
+message KubernetesGatewayFrontendTlsConfig {
+  // each per-port frontend TLS override must target a unique port.
+  option (buf.validate.message).cel = {
+    id: "frontend_tls.per_port_unique"
+    message: "each per-port frontend TLS configuration must target a unique port"
+    expression: "this.per_port.all(t1, this.per_port.exists_one(t2, t1.port == t2.port))"
+  };
+
+  // Default client-certificate validation applied to every HTTPS listener
+  // unless overridden per port. Required.
+  KubernetesGatewayFrontendTlsValidationConfig default = 1 [(buf.validate.field).required = true];
+
+  // Per-port overrides of the default validation. Each entry targets a unique
+  // port.
+  repeated KubernetesGatewayTlsPortConfig per_port = 2 [(buf.validate.field).repeated.max_items = 64];
+}
+
+// KubernetesGatewayTlsPortConfig binds a frontend TLS validation config to a
+// specific port.
+//
+// Upstream: TLSPortConfig in apis/v1/gateway_types.go
+message KubernetesGatewayTlsPortConfig {
+  // Port the configuration applies to.
+  int32 port = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  // TLS validation configuration applied to HTTPS listeners on this port.
+  KubernetesGatewayFrontendTlsValidationConfig tls = 2 [(buf.validate.field).required = true];
+}
+
+// KubernetesGatewayFrontendTlsValidationConfig wraps frontend client-cert
+// validation (mirrors upstream TLSConfig, currently validation-only).
+//
+// Upstream: TLSConfig in apis/v1/gateway_types.go
+message KubernetesGatewayFrontendTlsValidationConfig {
+  // Client (frontend) certificate validation settings. Setting this enables
+  // mutual TLS for connections to the Gateway.
+  KubernetesGatewayFrontendTlsValidation validation = 1;
+}
+
+// KubernetesGatewayFrontendTlsValidation configures validation of client
+// certificates presented to the Gateway.
+//
+// Upstream: FrontendTLSValidation in apis/v1/gateway_types.go
+message KubernetesGatewayFrontendTlsValidation {
+  // References to ConfigMaps holding PEM-encoded CA bundles used as trust
+  // anchors for client certificates. At least one, up to eight.
+  repeated org.openmcf.provider.kubernetes.KubernetesGatewayApiObjectReference ca_certificate_refs = 1 [(buf.validate.field).repeated = {
+    min_items: 1
+    max_items: 8
+  }];
+
+  // How strictly client certificates are validated. "AllowValidOnly" (default)
+  // accepts only connections presenting a valid client certificate.
+  // "AllowInsecureFallback" accepts connections even without a valid
+  // certificate and carries significant security risk.
+  //
+  // Upstream default: "AllowValidOnly". Closed enum.
+  optional string mode = 2 [(buf.validate.field).cel = {
+    id: "frontend_tls_validation.mode_enum"
+    message: "mode must be either 'AllowValidOnly' or 'AllowInsecureFallback'"
+    expression: "this == '' || this in ['AllowValidOnly', 'AllowInsecureFallback']"
+  }];
+}
