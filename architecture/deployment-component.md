@@ -169,9 +169,11 @@ The following sections define the complete, ideal state of any deployment compon
   - `provider` - Correct provider enum value
   - `version` - Currently `v1` for all components
   - `id_prefix` - Short, descriptive prefix (3-7 characters)
-- [ ] **Kubernetes Metadata (if applicable)** - For Kubernetes provider resources, includes `kubernetes_meta` with:
-  - `category` - One of: `addon`, `workload`, or `config`
-  - `namespace_prefix` - For workload category only
+- [ ] **Optional Metadata (when applicable)** - `kind_meta` may also include:
+  - `prerequisites` - Other `CloudResourceKind`s that must exist first (e.g. an operator or CRD-installer like `KubernetesGatewayApiCrds`); drives resource-graph and infra-chart ordering
+  - `is_service_kind` - Whether this kind is a Service Hub deployment target
+  - `container_kind` - Whether this kind contains child resources in the org graph
+  - Note: there is no `kubernetes_meta`/`category`/`namespace_prefix` field on `CloudResourceKindMeta`; the Kubernetes layout is flat (`provider/kubernetes/<component>/v1/`).
 
 **Example:**
 ```protobuf
@@ -264,26 +266,26 @@ apis/org/openmcf/provider/gcp/gcpcertmanagercert/v1/
   - `package org.openmcf.provider.<provider>.<component>.v1;`
 - [ ] **Standard Imports** - Imports common proto dependencies:
   ```protobuf
-  import "org/openmcf/shared/pulumi/pulumi.proto";
+  import "buf/validate/validate.proto";
   import "org/openmcf/provider/<provider>/<component>/v1/spec.proto";
   import "org/openmcf/provider/<provider>/<component>/v1/stack_outputs.proto";
+  import "org/openmcf/shared/metadata.proto";
   ```
 - [ ] **Resource Message** - Defines `<Kind>` message with KRM structure:
   ```protobuf
   message <Kind> {
-    string api_version = 1;
-    string kind = 2;
-    org.openmcf.shared.pulumi.ApiResourceMetadata metadata = 3;
-    <Kind>Spec spec = 4;
+    string api_version = 1 [(buf.validate.field).string.const = '<provider>.openmcf.org/v1'];
+    string kind = 2 [(buf.validate.field).string.const = '<Kind>'];
+    org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+    <Kind>Spec spec = 4 [(buf.validate.field).required = true];
     <Kind>Status status = 5;
   }
   ```
-- [ ] **Status Message** - Defines `<Kind>Status` message with lifecycle and outputs:
+- [ ] **Status Message** - Defines `<Kind>Status` message wrapping the stack outputs:
   ```protobuf
   message <Kind>Status {
-    org.openmcf.shared.pulumi.ApiResourceLifecycle lifecycle = 1;
-    org.openmcf.shared.pulumi.PulumiStackOutputs pulumi_stack = 2;
-    <Kind>StackOutputs outputs = 3;
+    // stack-outputs
+    <Kind>StackOutputs outputs = 1;
   }
   ```
 
@@ -335,15 +337,16 @@ message GcpCertManagerCertSpec {
 - [ ] **Correct Package** - Package declaration matches path
 - [ ] **Standard Imports** - Imports common dependencies:
   ```protobuf
-  import "org/openmcf/shared/pulumi/pulumi.proto";
-  import "org/openmcf/provider/<provider>/<component>/v1/spec.proto";
+  import "org/openmcf/provider/<provider>/<component>/v1/api.proto";
+  import "org/openmcf/provider/<provider>/provider.proto";
   ```
-- [ ] **StackInput Message** - Defines `<Kind>StackInput` message:
+- [ ] **StackInput Message** - Defines `<Kind>StackInput` message with the target resource and the provider config:
   ```protobuf
   message <Kind>StackInput {
-    org.openmcf.shared.pulumi.StackUpdateSettings stack_job_settings = 1;
-    <Kind>Spec spec = 2;
-    <ProviderCredential> <provider>_credential = 3;
+    // target cloud-resource
+    <Kind> target = 1;
+    // provider configuration / credentials
+    <Provider>ProviderConfig provider_config = 2;
   }
   ```
 - [ ] **Credential Field** - References the correct provider credential type:
