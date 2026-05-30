@@ -38,8 +38,6 @@ apis/org/openmcf/provider/{provider}/{component}/v1/
       minimal.yaml
       with-probes.yaml
       with-hpa.yaml
-    fixtures/              <-- optional: pin a prerequisite's exact config (override)
-      01-operator.yaml
     prerequisite.yaml      <-- optional: this kind's install profile, used when it
                                is itself a prerequisite of another component
   iac/
@@ -69,27 +67,20 @@ verification.
 Some components need other resources installed before they can be applied -- an
 operator that owns their CRD, or the CRDs themselves. The harness deploys these
 dependencies (via Pulumi) before the component under test and tears them down in
-reverse order afterward. Dependencies come from two sources, merged into one
-ordered list by `ResolveDependencies` ([dependencies.go](framework/runner/dependencies.go)):
+reverse order afterward, resolved by `ResolveDependencies`
+([dependencies.go](framework/runner/dependencies.go)) from the proto registry:
 
-1. **Registry prerequisites (source of truth).** Each kind declares its
-   prerequisites in the proto registry
-   (`CloudResourceKindMeta.prerequisites` in `cloud_resource_kind.proto`). The
-   harness resolves them transitively and installs each one using, in order of
-   preference, the dependency's `v1/e2e/prerequisite.yaml` (its published install
-   profile) or its `v1/e2e/scenarios/minimal.yaml`. Declaring
-   `prerequisites: [X]` is all that is needed -- no per-component wiring.
-   *Example:* every Gateway API kind declares `KubernetesGatewayApiCrds`, so the
-   harness installs the Gateway API CRDs (experimental channel, version-pinned)
-   before applying a GatewayClass / Gateway / route / ReferenceGrant.
-
-2. **Fixture overrides (optional).** A hand-authored manifest in
-   `v1/e2e/fixtures/` (numbered, e.g. `01-operator.yaml`) lets a consumer pin a
-   prerequisite's exact configuration when the flat registry list cannot express
-   it. When a fixture supplies the same kind as a registry prerequisite, the
-   fixture wins and the registry entry is deduped out.
-   *Example:* the Tier 3 operator-dependent components (Postgres, Kafka, ...)
-   ship a fixture that pins their operator's namespace/config.
+Each kind declares its prerequisites in the proto registry
+(`CloudResourceKindMeta.prerequisites` in `cloud_resource_kind.proto`). The
+harness resolves them transitively and installs each one using, in order of
+preference, the dependency's `v1/e2e/prerequisite.yaml` (its published install
+profile) or its `v1/e2e/scenarios/minimal.yaml`. Declaring `prerequisites: [X]`
+is all that is needed -- no per-component wiring.
+*Example:* every Gateway API kind declares `KubernetesGatewayApiCrds`, so the
+harness installs the Gateway API CRDs (experimental channel, version-pinned)
+before applying a GatewayClass / Gateway / route / ReferenceGrant. The Tier 3
+operator-dependent components (Postgres, Kafka, ...) likewise declare their
+operator kind, which installs from the operator's `scenarios/minimal.yaml`.
 
 ## E2E Profiles
 
@@ -251,8 +242,7 @@ scenario is as simple as dropping a YAML file into the component's
 3. Create at least `v1/e2e/scenarios/minimal.yaml` with a minimal test manifest
 4. If the component needs other resources installed first, declare them as
    `prerequisites` on the kind in `cloud_resource_kind.proto` (the harness
-   installs them automatically -- see "Component Dependencies"). Use a
-   `fixtures/` override only when the registry list cannot express the config.
+   installs them automatically -- see "Component Dependencies").
 5. Add a `Test{ComponentName}_{Provisioner}` function in the appropriate test
    file (e.g., `kubernetes_test.go`), and -- if the component name does not
    PascalCase trivially -- a `toPascalCase` entry in

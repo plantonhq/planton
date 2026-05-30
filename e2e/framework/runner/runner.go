@@ -43,9 +43,8 @@ type TestResult struct {
 }
 
 // RunComponentTest executes the E2E lifecycle for a single component.
-// If the component has dependencies (registry prerequisites and/or fixture
-// overrides), they are deployed first and torn down last, wrapping the standard
-// 6-phase lifecycle.
+// If the component has dependencies (registry prerequisites), they are deployed
+// first and torn down last, wrapping the standard 6-phase lifecycle.
 func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, harness provider.Harness) *TestResult {
 	start := time.Now()
 	result := &TestResult{
@@ -56,7 +55,7 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 
 	verifyCtx := context.WithValue(ctx, provider.ManifestPathKey{}, tc.ManifestPath)
 
-	// Phase 0: deploy dependencies (registry prerequisites + fixture overrides)
+	// Phase 0: deploy dependencies (registry prerequisites)
 	var dependencyStates []DependencyState
 	if tc.RepoRoot != "" {
 		depStart := time.Now()
